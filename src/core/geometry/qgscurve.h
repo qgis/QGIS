@@ -72,7 +72,11 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry
      * Returns a new line string geometry corresponding to a segmentized approximation
      * of the curve.
      * \param tolerance segmentation tolerance
-     * \param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
+     * \param toleranceType maximum segmentation angle or maximum difference between approximation and curve
+     *
+     * Uses a MaximumAngle tolerance of 1 degrees by default (360
+     * segments in a full circle)
+     */
     virtual QgsLineString *curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const = 0 SIP_FACTORY;
 
     /**
@@ -103,6 +107,8 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry
 
     QgsCoordinateSequence coordinateSequence() const override;
     bool nextVertex( QgsVertexId &id, QgsPoint &vertex SIP_OUT ) const override;
+    void adjacentVertices( QgsVertexId vertex, QgsVertexId &previousVertex SIP_OUT, QgsVertexId &nextVertex SIP_OUT ) const override;
+    int vertexNumberFromVertexId( QgsVertexId id ) const override;
 
     /**
      * Returns the point and vertex id of a point within the curve.
@@ -184,13 +190,23 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry
 
     void clearCache() const override;
 
-    virtual int childCount() const override;
-    virtual QgsPoint childPoint( int index ) const override;
+    int childCount() const override;
+    QgsPoint childPoint( int index ) const override;
+
+#ifndef SIP_RUN
+
+    /**
+     * Helper function for QgsCurve subclasses to snap to grids.
+     * \note Not available in Python bindings.
+     */
+    bool snapToGridPrivate( double hSpacing, double vSpacing, double dSpacing, double mSpacing,
+                            const QVector<double> &srcX, const QVector<double> &srcY, const QVector<double> &srcZ, const QVector<double> &srcM,
+                            QVector<double> &outX, QVector<double> &outY, QVector<double> &outZ, QVector<double> &outM ) const;
+#endif
 
   private:
 
     mutable QgsRectangle mBoundingBox;
-    mutable QgsCoordinateSequence mCoordinateSequence;
 };
 
 #endif // QGSCURVEV2_H

@@ -42,7 +42,7 @@ class APP_EXPORT QgsSimplifyDialog : public QDialog, private Ui::SimplifyLineDia
   protected:
 
     //! Also cancels pending simplification
-    virtual void closeEvent( QCloseEvent *e ) override;
+    void closeEvent( QCloseEvent *e ) override;
 
   private:
     QgsMapToolSimplify *mTool = nullptr;
@@ -56,7 +56,7 @@ class APP_EXPORT QgsMapToolSimplify: public QgsMapToolEdit
     Q_OBJECT
   public:
     QgsMapToolSimplify( QgsMapCanvas *canvas );
-    virtual ~QgsMapToolSimplify();
+    ~QgsMapToolSimplify() override;
 
     void canvasPressEvent( QgsMapMouseEvent *e ) override;
     void canvasMoveEvent( QgsMapMouseEvent *e ) override;

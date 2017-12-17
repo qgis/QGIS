@@ -15,6 +15,7 @@ class QgsProjectionSelectionWidget : QWidget
 {
 %Docstring
  A widget for selecting a projection.
+
 .. versionadded:: 2.7
 %End
 
@@ -34,42 +35,50 @@ class QgsProjectionSelectionWidget : QWidget
     };
 
     explicit QgsProjectionSelectionWidget( QWidget *parent /TransferThis/ = 0 );
-
-    QgsProjectionSelectionDialog *dialog();
 %Docstring
- Returns a pointer to the projection selector dialog used by the widget.
- Can be used to modify how the projection selector dialog behaves.
- :return: projection selector dialog
- :rtype: QgsProjectionSelectionDialog
+Constructor for QgsProjectionSelectionWidget
 %End
 
     QgsCoordinateReferenceSystem crs() const;
 %Docstring
- Returns the currently selected CRS for the widget
- :return: current CRS
- :rtype: QgsCoordinateReferenceSystem
+Returns the currently selected CRS for the widget
+
+:return: current CRS
 %End
 
     void setOptionVisible( const CrsOption option, const bool visible );
 %Docstring
- Sets whether a predefined CRS option should be shown in the widget.
- \param option CRS option to show/hide
- \param visible whether the option should be shown
-.. seealso:: optionVisible()
+Sets whether a predefined CRS option should be shown in the widget.
+
+:param option: CRS option to show/hide
+:param visible: whether the option should be shown
+
+.. seealso:: :py:func:`optionVisible()`
 %End
 
     bool optionVisible( CrsOption option ) const;
 %Docstring
- Returns whether the specified CRS option is visible in the widget.
+Returns whether the specified CRS option is visible in the widget.
+
 .. versionadded:: 3.0
-.. seealso:: setOptionVisible()
- :rtype: bool
+
+.. seealso:: :py:func:`setOptionVisible()`
 %End
 
     void setNotSetText( const QString &text );
 %Docstring
- Sets the text to show for the not set option. Note that this option is not shown
- by default and must be set visible by calling setOptionVisible().
+Sets the text to show for the not set option. Note that this option is not shown
+by default and must be set visible by calling setOptionVisible().
+
+.. versionadded:: 3.0
+%End
+
+    void setMessage( const QString &text );
+%Docstring
+Sets a ``message`` to show in the dialog. If an empty string is
+passed, the message will be a generic
+'define the CRS for this layer'.
+
 .. versionadded:: 3.0
 %End
 
@@ -77,12 +86,13 @@ class QgsProjectionSelectionWidget : QWidget
 
     void crsChanged( const QgsCoordinateReferenceSystem & );
 %Docstring
- Emitted when the selected CRS is changed
+Emitted when the selected CRS is changed
 %End
 
     void cleared();
 %Docstring
- Emitted when the not set option is selected.
+Emitted when the not set option is selected.
+
 .. versionadded:: 3.0
 %End
 
@@ -90,20 +100,22 @@ class QgsProjectionSelectionWidget : QWidget
 
     void setCrs( const QgsCoordinateReferenceSystem &crs );
 %Docstring
- Sets the current CRS for the widget
- \param crs new CRS
+Sets the current CRS for the widget
+
+:param crs: new CRS
 %End
 
     void setLayerCrs( const QgsCoordinateReferenceSystem &crs );
 %Docstring
- Sets the layer CRS for the widget. If set, this will be added as an option
- to the preset CRSes shown in the widget.
- \param crs layer CRS
+Sets the layer CRS for the widget. If set, this will be added as an option
+to the preset CRSes shown in the widget.
+
+:param crs: layer CRS
 %End
 
     void selectCrs();
 %Docstring
- Opens the dialog for selecting a new CRS
+Opens the dialog for selecting a new CRS
 %End
 
 };

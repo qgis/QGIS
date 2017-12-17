@@ -53,10 +53,17 @@ class CORE_EXPORT QgsDxfExport
   public:
     enum SymbologyExport
     {
-      NoSymbology = 0, //export only data
-      FeatureSymbology, //Keeps the number of features and export symbology per feature (using the first symbol level)
-      SymbolLayerSymbology //Exports one feature per symbol layer (considering symbol levels)
+      NoSymbology = 0, //!< Export only data
+      FeatureSymbology, //!< Keeps the number of features and export symbology per feature (using the first symbol level)
+      SymbolLayerSymbology //!< Exports one feature per symbol layer (considering symbol levels)
     };
+
+    //! Export flags
+    enum Flag
+    {
+      FlagNoMText = 1 << 1, //!< Export text as TEXT elements. If not set, text will be exported as MTEXT elements.
+    };
+    Q_DECLARE_FLAGS( Flags, Flag )
 
     /**
      * Constructor for QgsDxfExport.
@@ -70,6 +77,20 @@ class CORE_EXPORT QgsDxfExport
      * \param settings map settings to apply
      */
     void setMapSettings( const QgsMapSettings &settings );
+
+    /**
+     * Sets the export flags.
+     * \since QGIS 3.0
+     * \see flags()
+     */
+    void setFlags( QgsDxfExport::Flags flags );
+
+    /**
+     * Returns the export flags.
+     * \since QGIS 3.0
+     * \see setFlags()
+     */
+    QgsDxfExport::Flags flags() const;
 
     /**
      * Add layers to export
@@ -440,6 +461,11 @@ class CORE_EXPORT QgsDxfExport
     QHash<QString, int> mLayerNameAttribute;
     double mFactor = 1.0;
     bool mForce2d = false;
+
+    QgsDxfExport::Flags mFlags = nullptr;
+
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsDxfExport::Flags )
 
 #endif // QGSDXFEXPORT_H

@@ -52,7 +52,7 @@ class CORE_EXPORT QgsAnnotationManager : public QObject
      */
     explicit QgsAnnotationManager( QgsProject *project SIP_TRANSFERTHIS = nullptr );
 
-    ~QgsAnnotationManager();
+    ~QgsAnnotationManager() override;
 
     /**
      * Adds an annotation to the manager. Ownership of the annotation is transferred to the manager.

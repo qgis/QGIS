@@ -37,7 +37,7 @@ inline void qgsConnectionPool_ConnectionCreate( const QString &connInfo, QgsOgrC
 {
   c = new QgsOgrConn;
   QString filePath = connInfo.left( connInfo.indexOf( QLatin1String( "|" ) ) );
-  c->ds = GDALOpenEx( filePath.toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr, nullptr );
+  c->ds = QgsOgrProviderUtils::GDALOpenWrapper( filePath.toUtf8().constData(), false, nullptr, nullptr );
   c->path = connInfo;
   c->valid = true;
 }
@@ -156,7 +156,7 @@ class QgsOgrConnPool : public QgsConnectionPool<QgsOgrConn *, QgsOgrConnPoolGrou
 
   private:
     QgsOgrConnPool();
-    ~QgsOgrConnPool();
+    ~QgsOgrConnPool() override;
     static QgsOgrConnPool *sInstance;
 };
 

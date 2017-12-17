@@ -12,8 +12,9 @@
 class QgsMapToolPan : QgsMapTool
 {
 %Docstring
- A map tool for panning the map.
-.. seealso:: QgsMapTool
+A map tool for panning the map.
+
+.. seealso:: :py:class:`QgsMapTool`
 %End
 
 %TypeHeaderCode
@@ -33,9 +34,13 @@ constructor
 
     virtual Flags flags() const;
     virtual void canvasPressEvent( QgsMapMouseEvent *e );
+
     virtual void canvasMoveEvent( QgsMapMouseEvent *e );
+
     virtual void canvasReleaseEvent( QgsMapMouseEvent *e );
+
     virtual void canvasDoubleClickEvent( QgsMapMouseEvent *e );
+
     virtual bool gestureEvent( QGestureEvent *e );
 
 

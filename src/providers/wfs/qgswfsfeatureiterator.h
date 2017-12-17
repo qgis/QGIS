@@ -25,6 +25,8 @@
 #include <memory>
 #include <QProgressDialog>
 #include <QPushButton>
+#include <QMutex>
+#include <QWaitCondition>
 
 class QgsWFSProvider;
 class QgsWFSSharedData;
@@ -53,7 +55,7 @@ class QgsWFSFeatureHitsAsyncRequest: public QgsWfsRequest
     void hitsReplyFinished();
 
   protected:
-    virtual QString errorMessageWithReason( const QString &reason ) override;
+    QString errorMessageWithReason( const QString &reason ) override;
 
   private:
     int mNumberMatched;
@@ -91,7 +93,7 @@ class QgsWFSFeatureDownloader: public QgsWfsRequest
     Q_OBJECT
   public:
     explicit QgsWFSFeatureDownloader( QgsWFSSharedData *shared );
-    ~QgsWFSFeatureDownloader();
+    ~QgsWFSFeatureDownloader() override;
 
     /**
      * Start the download.
@@ -123,7 +125,7 @@ class QgsWFSFeatureDownloader: public QgsWfsRequest
     void updateProgress( int totalFeatureCount );
 
   protected:
-    virtual QString errorMessageWithReason( const QString &reason ) override;
+    QString errorMessageWithReason( const QString &reason ) override;
 
   private slots:
     void createProgressDialog();
@@ -163,17 +165,16 @@ class QgsWFSThreadedFeatureDownloader: public QThread
     Q_OBJECT
   public:
     explicit QgsWFSThreadedFeatureDownloader( QgsWFSSharedData *shared );
-    ~QgsWFSThreadedFeatureDownloader();
+    ~QgsWFSThreadedFeatureDownloader() override;
 
     //! Return downloader object
     QgsWFSFeatureDownloader *downloader() { return mDownloader; }
 
+    //! Starts thread and wait for it to be started
+    void startAndWait();
+
     //! Stops (synchronously) the download
     void stop();
-
-  signals:
-    //! Emitted when the thread is ready
-    void ready();
 
   protected:
     //! Inherited from QThread. Starts the download
@@ -182,6 +183,8 @@ class QgsWFSThreadedFeatureDownloader: public QThread
   private:
     QgsWFSSharedData *mShared;  //!< Mutable data shared between provider and feature sources
     QgsWFSFeatureDownloader *mDownloader = nullptr;
+    QWaitCondition mWaitCond;
+    QMutex mWaitMutex;
 };
 
 class QgsWFSFeatureSource;
@@ -197,7 +200,7 @@ class QgsWFSFeatureIterator : public QObject,
     Q_OBJECT
   public:
     explicit QgsWFSFeatureIterator( QgsWFSFeatureSource *source, bool ownSource, const QgsFeatureRequest &request );
-    ~QgsWFSFeatureIterator();
+    ~QgsWFSFeatureIterator() override;
 
     bool rewind() override;
 

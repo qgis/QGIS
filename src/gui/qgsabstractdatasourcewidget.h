@@ -44,9 +44,6 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
 
   public:
 
-    //! Destructor
-    ~QgsAbstractDataSourceWidget() = default;
-
     /**
      * Store a pointer to the map canvas to retrieve extent and CRS
      * Used to select an appropriate CRS and possibly to retrieve data only in the current extent
@@ -69,11 +66,6 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
      */
     virtual void addButtonClicked() { }
 
-    /**
-     * Triggered when the dialog is accepted, call addButtonClicked() and
-     * emit the accepted() signal
-     */
-    virtual void okButtonClicked();
 
   signals:
 

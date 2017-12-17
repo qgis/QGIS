@@ -29,7 +29,6 @@
 #include "qgsproject.h"
 #include "qgsmessagelog.h"
 #include "qgsexpressioncontext.h"
-#include "qgscrscache.h"
 #include "qgsmapsettings.h"
 
 QgsAtlasComposition::QgsAtlasComposition( QgsComposition *composition )
@@ -815,7 +814,7 @@ QgsGeometry QgsAtlasComposition::currentGeometry( const QgsCoordinateReferenceSy
   }
 
   QgsGeometry transformed = mCurrentFeature.geometry();
-  transformed.transform( QgsCoordinateTransformCache::instance()->transform( mCoverageLayer->crs().authid(), crs.authid() ) );
+  transformed.transform( QgsCoordinateTransform( mCoverageLayer->crs(), crs, mComposition->project() ) );
   mGeometryCache[crs.srsid()] = transformed;
   return transformed;
 }

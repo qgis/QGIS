@@ -24,14 +24,15 @@
 using namespace Qt3DRender;
 
 
-static QByteArray createPlaneVertexData( int res, const QByteArray &heights )
+static QByteArray createPlaneVertexData( int res, float skirtHeight, const QByteArray &heights )
 {
   Q_ASSERT( res >= 2 );
   Q_ASSERT( heights.count() == res * res * ( int )sizeof( float ) );
 
-  const float *zBits = ( const float * ) heights.constData();
+  const float *zData = ( const float * ) heights.constData();
+  const float *zBits = zData;
 
-  const int nVerts = res * res;
+  const int nVerts = ( res + 2 ) * ( res + 2 );
 
   // Populate a buffer with the interleaved per-vertex data with
   // vec3 pos, vec2 texCoord, vec3 normal, vec4 tangent
@@ -51,26 +52,35 @@ static QByteArray createPlaneVertexData( int res, const QByteArray &heights )
   const float dv = 1.0 / ( resolution.height() - 1 );
 
   // Iterate over z
-  for ( int j = 0; j < resolution.height(); ++j )
+  for ( int j = -1; j <= resolution.height(); ++j )
   {
-    const float z = z0 + static_cast<float>( j ) * dz;
-    const float v = static_cast<float>( j ) * dv;
+    int jBound = qBound( 0, j, resolution.height() - 1 );
+    const float z = z0 + static_cast<float>( jBound ) * dz;
+    const float v = static_cast<float>( jBound ) * dv;
 
     // Iterate over x
-    for ( int i = 0; i < resolution.width(); ++i )
+    for ( int i = -1; i <= resolution.width(); ++i )
     {
-      const float x = x0 + static_cast<float>( i ) * dx;
-      const float u = static_cast<float>( i ) * du;
+      int iBound = qBound( 0, i, resolution.width() - 1 );
+      const float x = x0 + static_cast<float>( iBound ) * dx;
+      const float u = static_cast<float>( iBound ) * du;
+
+      float height;
+      if ( i == iBound && j == jBound )
+        height = *zBits++;
+      else
+        height = zData[ jBound * resolution.width() + iBound ] - skirtHeight;
 
       // position
       *fptr++ = x;
-      *fptr++ = *zBits++;
+      *fptr++ = height;
       *fptr++ = z;
 
       // texture coordinates
       *fptr++ = u;
       *fptr++ = v;
 
+      // TODO: compute correct normals based on neighboring pixels
       // normal
       *fptr++ = 0.0f;
       *fptr++ = 1.0f;
@@ -85,8 +95,11 @@ static QByteArray createPlaneVertexData( int res, const QByteArray &heights )
 static QByteArray createPlaneIndexData( int res )
 {
   QSize resolution( res, res );
+  int numVerticesX = resolution.width() + 2;
+  int numVerticesZ = resolution.height() + 2;
+
   // Create the index data. 2 triangles per rectangular face
-  const int faces = 2 * ( resolution.width() - 1 ) * ( resolution.height() - 1 );
+  const int faces = 2 * ( numVerticesX - 1 ) * ( numVerticesZ - 1 );
   const quint32 indices = 3 * faces;
   Q_ASSERT( indices < std::numeric_limits<quint32>::max() );
   QByteArray indexBytes;
@@ -94,13 +107,13 @@ static QByteArray createPlaneIndexData( int res )
   quint32 *indexPtr = reinterpret_cast<quint32 *>( indexBytes.data() );
 
   // Iterate over z
-  for ( int j = 0; j < resolution.height() - 1; ++j )
+  for ( int j = 0; j < numVerticesZ - 1; ++j )
   {
-    const int rowStartIndex = j * resolution.width();
-    const int nextRowStartIndex = ( j + 1 ) * resolution.width();
+    const int rowStartIndex = j * numVerticesX;
+    const int nextRowStartIndex = ( j + 1 ) * numVerticesX;
 
     // Iterate over x
-    for ( int i = 0; i < resolution.width() - 1; ++i )
+    for ( int i = 0; i < numVerticesX - 1; ++i )
     {
       // Split quad into two triangles
       *indexPtr++ = rowStartIndex + i;
@@ -122,16 +135,15 @@ static QByteArray createPlaneIndexData( int res )
 class PlaneVertexBufferFunctor : public QBufferDataGenerator
 {
   public:
-    explicit PlaneVertexBufferFunctor( int resolution, const QByteArray &heightMap )
+    explicit PlaneVertexBufferFunctor( int resolution, float skirtHeight, const QByteArray &heightMap )
       : mResolution( resolution )
+      , mSkirtHeight( skirtHeight )
       , mHeightMap( heightMap )
     {}
 
-    ~PlaneVertexBufferFunctor() {}
-
     QByteArray operator()() final
     {
-      return createPlaneVertexData( mResolution, mHeightMap );
+      return createPlaneVertexData( mResolution, mSkirtHeight, mHeightMap );
     }
 
     bool operator ==( const QBufferDataGenerator &other ) const final
@@ -139,6 +151,7 @@ class PlaneVertexBufferFunctor : public QBufferDataGenerator
       const PlaneVertexBufferFunctor *otherFunctor = functor_cast<PlaneVertexBufferFunctor>( &other );
       if ( otherFunctor != nullptr )
         return ( otherFunctor->mResolution == mResolution &&
+                 otherFunctor->mSkirtHeight == mSkirtHeight &&
                  otherFunctor->mHeightMap == mHeightMap );
       return false;
     }
@@ -147,6 +160,7 @@ class PlaneVertexBufferFunctor : public QBufferDataGenerator
 
   private:
     int mResolution;
+    float mSkirtHeight;
     QByteArray mHeightMap;
 };
 
@@ -158,8 +172,6 @@ class PlaneIndexBufferFunctor : public QBufferDataGenerator
     explicit PlaneIndexBufferFunctor( int resolution )
       : mResolution( resolution )
     {}
-
-    ~PlaneIndexBufferFunctor() {}
 
     QByteArray operator()() final
     {
@@ -184,9 +196,10 @@ class PlaneIndexBufferFunctor : public QBufferDataGenerator
 // ------------
 
 
-DemTerrainTileGeometry::DemTerrainTileGeometry( int resolution, const QByteArray &heightMap, DemTerrainTileGeometry::QNode *parent )
+DemTerrainTileGeometry::DemTerrainTileGeometry( int resolution, float skirtHeight, const QByteArray &heightMap, DemTerrainTileGeometry::QNode *parent )
   : QGeometry( parent )
   , mResolution( resolution )
+  , mSkirtHeight( skirtHeight )
   , mHeightMap( heightMap )
 {
   init();
@@ -201,9 +214,11 @@ void DemTerrainTileGeometry::init()
   mVertexBuffer = new Qt3DRender::QBuffer( Qt3DRender::QBuffer::VertexBuffer, this );
   mIndexBuffer = new Qt3DRender::QBuffer( Qt3DRender::QBuffer::IndexBuffer, this );
 
-  const int nVerts = mResolution * mResolution;
+  int nVertsX = mResolution + 2;
+  int nVertsZ = mResolution + 2;
+  const int nVerts = nVertsX * nVertsZ;
   const int stride = ( 3 + 2 + 3 ) * sizeof( float );
-  const int faces = 2 * ( mResolution - 1 ) * ( mResolution - 1 );
+  const int faces = 2 * ( nVertsX - 1 ) * ( nVertsZ - 1 );
 
   mPositionAttribute->setName( QAttribute::defaultPositionAttributeName() );
   mPositionAttribute->setVertexBaseType( QAttribute::Float );
@@ -238,7 +253,7 @@ void DemTerrainTileGeometry::init()
   // Each primitive has 3 vertives
   mIndexAttribute->setCount( faces * 3 );
 
-  mVertexBuffer->setDataGenerator( QSharedPointer<PlaneVertexBufferFunctor>::create( mResolution, mHeightMap ) );
+  mVertexBuffer->setDataGenerator( QSharedPointer<PlaneVertexBufferFunctor>::create( mResolution, mSkirtHeight, mHeightMap ) );
   mIndexBuffer->setDataGenerator( QSharedPointer<PlaneIndexBufferFunctor>::create( mResolution ) );
 
   addAttribute( mPositionAttribute );

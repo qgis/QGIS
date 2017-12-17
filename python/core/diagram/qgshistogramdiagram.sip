@@ -22,6 +22,7 @@ class QgsHistogramDiagram: QgsDiagram
 
     virtual QgsHistogramDiagram *clone() const /Factory/;
 
+
     virtual void renderDiagram( const QgsFeature &feature, QgsRenderContext &c, const QgsDiagramSettings &s, QPointF position );
 
 

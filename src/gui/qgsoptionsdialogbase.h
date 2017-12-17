@@ -57,7 +57,7 @@ class GUI_EXPORT QgsSearchHighlightOptionWidget : public QObject
      * Constructor
      * \param widget the widget used to search text into
      */
-    explicit QgsSearchHighlightOptionWidget( QWidget *widget = 0 );
+    explicit QgsSearchHighlightOptionWidget( QWidget *widget = nullptr );
 
     /**
      * Returns if it valid: if the widget type is handled and if the widget is not still available
@@ -123,8 +123,8 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
      * \param fl widget flags
      * \param settings custom QgsSettings pointer
      */
-    QgsOptionsDialogBase( const QString &settingsKey, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = 0, QgsSettings *settings = nullptr );
-    ~QgsOptionsDialogBase();
+    QgsOptionsDialogBase( const QString &settingsKey, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = nullptr, QgsSettings *settings = nullptr );
+    ~QgsOptionsDialogBase() override;
 
     /**
      * Set up the base ui connections for vertical tabs.
@@ -158,9 +158,13 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
     void searchText( const QString &text );
 
   protected slots:
-    void updateOptionsListVerticalTabs();
-    void optionsStackedWidget_CurrentChanged( int indx );
-    void optionsStackedWidget_WidgetRemoved( int indx );
+    //! Update tabs on the splitter move
+    virtual void updateOptionsListVerticalTabs();
+    //! Select relevant tab on current page change
+    virtual void optionsStackedWidget_CurrentChanged( int index );
+    //! Remove tab and unregister widgets on page remove
+    virtual void optionsStackedWidget_WidgetRemoved( int index );
+
     void warnAboutMissingObjects();
 
   protected:

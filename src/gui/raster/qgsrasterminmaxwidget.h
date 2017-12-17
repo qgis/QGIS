@@ -38,7 +38,9 @@ class GUI_EXPORT QgsRasterMinMaxWidget: public QWidget, private Ui::QgsRasterMin
 {
     Q_OBJECT
   public:
-    QgsRasterMinMaxWidget( QgsRasterLayer *layer, QWidget *parent SIP_TRANSFERTHIS = 0 );
+
+    //! Constructor for QgsRasterMinMaxWidget
+    QgsRasterMinMaxWidget( QgsRasterLayer *layer, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Sets the extent to use for minimum and maximum value calculation.

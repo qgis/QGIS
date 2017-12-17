@@ -78,16 +78,17 @@
 #include "qgsauthguiutils.h"
 #include "qgsauthmanager.h"
 #include "qgslogger.h"
+#include "qgsapplication.h"
 
 
 QgsAuthSslImportDialog::QgsAuthSslImportDialog( QWidget *parent )
   : QDialog( parent )
 {
-  if ( QgsAuthManager::instance()->isDisabled() )
+  if ( QgsApplication::authManager()->isDisabled() )
   {
     mAuthNotifyLayout = new QVBoxLayout;
     this->setLayout( mAuthNotifyLayout );
-    mAuthNotify = new QLabel( QgsAuthManager::instance()->disabledMessage(), this );
+    mAuthNotify = new QLabel( QgsApplication::authManager()->disabledMessage(), this );
     mAuthNotifyLayout->addWidget( mAuthNotify );
   }
   else
@@ -132,7 +133,7 @@ QgsAuthSslImportDialog::QgsAuthSslImportDialog( QWidget *parent )
              this, &QgsAuthSslImportDialog::widgetReadyToSaveChanged );
     wdgtSslConfig->setEnabled( false );
 
-    mTrustedCAs = QgsAuthManager::instance()->getTrustedCaCertsCache();
+    mTrustedCAs = QgsApplication::authManager()->trustedCaCertsCache();
   }
 }
 
@@ -158,7 +159,7 @@ void QgsAuthSslImportDialog::updateEnabledState()
   bool connected = mSocket && mSocket->state() == QAbstractSocket::ConnectedState;
   if ( connected && !mSocket->peerName().isEmpty() )
   {
-    appendString( tr( "Connected to %1:%2" ).arg( mSocket->peerName() ).arg( mSocket->peerPort() ) );
+    appendString( tr( "Connected to %1: %2" ).arg( mSocket->peerName() ).arg( mSocket->peerPort() ) );
   }
 }
 
@@ -368,7 +369,7 @@ void QgsAuthSslImportDialog::radioFileImportToggled( bool checked )
 
 void QgsAuthSslImportDialog::btnCertPath_clicked()
 {
-  const QString &fn = getOpenFileName( tr( "Open Server Certificate File" ),  tr( "PEM (*.pem);;DER (*.der)" ) );
+  const QString &fn = getOpenFileName( tr( "Open Server Certificate File" ),  tr( "All files (*.*);;PEM (*.pem);;DER (*.der)" ) );
   if ( !fn.isEmpty() )
   {
     leCertPath->setText( fn );

@@ -27,6 +27,7 @@ __revision__ = '$Format:%H$'
 
 from qgis.testing import start_app, unittest
 from qgis.core import QgsApplication
+from qgis.analysis import QgsNativeAlgorithms
 
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.gui.BatchAlgorithmDialog import BatchAlgorithmDialog
@@ -34,6 +35,7 @@ from processing.modeler.ModelerParametersDialog import ModelerParametersDialog
 from processing.gui.wrappers import *
 
 start_app()
+QgsApplication.processingRegistry().addProvider(QgsNativeAlgorithms())
 
 
 class AlgorithmDialogTest(unittest.TestCase):
@@ -41,7 +43,7 @@ class AlgorithmDialogTest(unittest.TestCase):
     def testCreation(self):
         alg = QgsApplication.processingRegistry().algorithmById('native:centroids')
         a = AlgorithmDialog(alg)
-        self.assertEqual(a.mainWidget.alg, alg)
+        self.assertEqual(a.mainWidget().alg, alg)
 
 
 class WrappersTest(unittest.TestCase):

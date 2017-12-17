@@ -421,20 +421,20 @@ class QgsStaticExpressionFunction : public QgsExpressionFunction
      * \param parent parent expression
      * \returns result of function
      */
-    virtual QVariant func( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction *node ) override
+    QVariant func( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction *node ) override
     {
       return mFnc ? mFnc( values, context, parent, node ) : QVariant();
     }
 
-    virtual QStringList aliases() const override;
+    QStringList aliases() const override;
 
-    virtual bool usesGeometry( const QgsExpressionNodeFunction *node ) const override;
+    bool usesGeometry( const QgsExpressionNodeFunction *node ) const override;
 
-    virtual QSet<QString> referencedColumns( const QgsExpressionNodeFunction *node ) const override;
+    QSet<QString> referencedColumns( const QgsExpressionNodeFunction *node ) const override;
 
-    virtual bool isStatic( const QgsExpressionNodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) const override;
+    bool isStatic( const QgsExpressionNodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) const override;
 
-    virtual bool prepare( const QgsExpressionNodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) const override;
+    bool prepare( const QgsExpressionNodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) const override;
 
     /**
      * Set a function that will be called in the prepare step to determine if the function is

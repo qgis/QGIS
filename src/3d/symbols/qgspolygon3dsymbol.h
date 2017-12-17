@@ -22,6 +22,7 @@
 #include "qgsphongmaterialsettings.h"
 #include "qgs3dutils.h"
 
+#include <Qt3DRender/QCullFace>
 
 /**
  * \ingroup 3d
@@ -31,7 +32,8 @@
 class _3D_EXPORT QgsPolygon3DSymbol : public QgsAbstract3DSymbol
 {
   public:
-    QgsPolygon3DSymbol();
+    //! Constructor for QgsPolygon3DSymbol
+    QgsPolygon3DSymbol() = default;
 
     QString type() const override { return "polygon"; }
     QgsAbstract3DSymbol *clone() const override SIP_FACTORY;
@@ -64,13 +66,27 @@ class _3D_EXPORT QgsPolygon3DSymbol : public QgsAbstract3DSymbol
     //! Sets material used for shading of the symbol
     void setMaterial( const QgsPhongMaterialSettings &material ) { mMaterial = material; }
 
-  private:
-    AltitudeClamping mAltClamping;  //! how to handle altitude of vector features
-    AltitudeBinding mAltBinding;    //! how to handle clamping of vertices of individual features
+    //! Returns front/back culling mode
+    Qt3DRender::QCullFace::CullingMode cullingMode() const { return mCullingMode; }
+    //! Sets front/back culling mode
+    void setCullingMode( Qt3DRender::QCullFace::CullingMode mode ) { mCullingMode = mode; }
 
-    float mHeight;           //!< Base height of polygons
-    float mExtrusionHeight;  //!< How much to extrude (0 means no walls)
+    //! Returns whether the normals of triangles will be inverted (useful for fixing clockwise / counter-clockwise face vertex orders)
+    bool invertNormals() const { return mInvertNormals; }
+    //! Sets whether the normals of triangles will be inverted (useful for fixing clockwise / counter-clockwise face vertex orders)
+    void setInvertNormals( bool invert ) { mInvertNormals = invert; }
+
+  private:
+    //! how to handle altitude of vector features
+    AltitudeClamping mAltClamping = AltClampRelative;
+    //! how to handle clamping of vertices of individual features
+    AltitudeBinding mAltBinding = AltBindCentroid;
+
+    float mHeight = 0.0f;           //!< Base height of polygons
+    float mExtrusionHeight = 0.0f;  //!< How much to extrude (0 means no walls)
     QgsPhongMaterialSettings mMaterial;  //!< Defines appearance of objects
+    Qt3DRender::QCullFace::CullingMode mCullingMode = Qt3DRender::QCullFace::NoCulling;  //!< Front/back culling mode
+    bool mInvertNormals = false;
 };
 
 

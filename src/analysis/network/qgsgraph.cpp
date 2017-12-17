@@ -26,18 +26,18 @@ int QgsGraph::addVertex( const QgsPointXY &pt )
   return mGraphVertices.size() - 1;
 }
 
-int QgsGraph::addEdge( int outVertexIdx, int inVertexIdx, const QVector< QVariant > &strategies )
+int QgsGraph::addEdge( int fromVertexIdx, int toVertexIdx, const QVector< QVariant > &strategies )
 {
   QgsGraphEdge e;
 
   e.mStrategies = strategies;
-  e.mOut = outVertexIdx;
-  e.mIn  = inVertexIdx;
+  e.mToIdx = toVertexIdx;
+  e.mFromIdx  = fromVertexIdx;
   mGraphEdges.push_back( e );
   int edgeIdx = mGraphEdges.size() - 1;
 
-  mGraphVertices[ outVertexIdx ].mOutEdges.push_back( edgeIdx );
-  mGraphVertices[ inVertexIdx ].mInEdges.push_back( edgeIdx );
+  mGraphVertices[ toVertexIdx ].mIncomingEdges.push_back( edgeIdx );
+  mGraphVertices[ fromVertexIdx ].mOutgoingEdges.push_back( edgeIdx );
 
   return mGraphEdges.size() - 1;
 }
@@ -85,14 +85,14 @@ QVector< QVariant > QgsGraphEdge::strategies() const
   return mStrategies;
 }
 
-int QgsGraphEdge::inVertex() const
+int QgsGraphEdge::fromVertex() const
 {
-  return mIn;
+  return mFromIdx;
 }
 
-int QgsGraphEdge::outVertex() const
+int QgsGraphEdge::toVertex() const
 {
-  return mOut;
+  return mToIdx;
 }
 
 QgsGraphVertex::QgsGraphVertex( const QgsPointXY &point )
@@ -101,14 +101,14 @@ QgsGraphVertex::QgsGraphVertex( const QgsPointXY &point )
 
 }
 
-QgsGraphEdgeIds QgsGraphVertex::outEdges() const
+QgsGraphEdgeIds QgsGraphVertex::incomingEdges() const
 {
-  return mOutEdges;
+  return mIncomingEdges;
 }
 
-QgsGraphEdgeIds QgsGraphVertex::inEdges() const
+QgsGraphEdgeIds QgsGraphVertex::outgoingEdges() const
 {
-  return mInEdges;
+  return mOutgoingEdges;
 }
 
 QgsPointXY QgsGraphVertex::point() const

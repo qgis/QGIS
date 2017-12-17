@@ -26,10 +26,8 @@
 #include "qgssymbol.h"
 #include "qgstaskmanager.h"
 #include "qgsvectorlayer.h"
+#include "qgsogrutils.h"
 #include <ogr_api.h>
-
-#include <QPair>
-
 
 class QgsSymbolLayer;
 class QTextCodec;
@@ -141,8 +139,8 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
 
     struct MetaData
     {
-      MetaData()
-      {}
+      //! Constructor for MetaData
+      MetaData() = default;
 
       MetaData( const QString &longName, const QString &trLongName, const QString &glob, const QString &ext, const QMap<QString, QgsVectorFileWriter::Option *> &driverOptions, const QMap<QString, QgsVectorFileWriter::Option *> &layerOptions, const QString &compulsoryEncoding = QString() )
         : longName( longName )
@@ -184,6 +182,18 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
       FeatureSymbology, //Keeps the number of features and export symbology per feature
       SymbolLayerSymbology //Exports one feature per symbol layer (considering symbol levels)
     };
+
+
+    /**
+     * Options for sorting and filtering vector formats.
+     * \since QGIS 3.0
+     */
+    enum VectorFormatOption
+    {
+      SortRecommended = 1 << 1, //!< Use recommended sort order, with extremely commonly used formats listed first
+      SkipNonSpatialFormats = 1 << 2, //!< Filter out any formats which do not have spatial support (e.g. those which cannot save geometries)
+    };
+    Q_DECLARE_FLAGS( VectorFormatOptions, VectorFormatOption )
 
     /**
      * \ingroup core
@@ -288,7 +298,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
         const QString &fileName,
         const QString &fileEncoding,
         const QgsCoordinateReferenceSystem &destCRS = QgsCoordinateReferenceSystem(),
-        const QString &driverName = "ESRI Shapefile",
+        const QString &driverName = "GPKG",
         bool onlySelected = false,
         QString *errorMessage SIP_OUT = nullptr,
         const QStringList &datasourceOptions = QStringList(),
@@ -334,7 +344,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
         const QString &fileName,
         const QString &fileEncoding,
         const QgsCoordinateTransform &ct,
-        const QString &driverName = "ESRI Shapefile",
+        const QString &driverName = "GPKG",
         bool onlySelected = false,
         QString *errorMessage SIP_OUT = nullptr,
         const QStringList &datasourceOptions = QStringList(),
@@ -450,7 +460,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
                          const QgsFields &fields,
                          QgsWkbTypes::Type geometryType,
                          const QgsCoordinateReferenceSystem &srs = QgsCoordinateReferenceSystem(),
-                         const QString &driverName = "ESRI Shapefile",
+                         const QString &driverName = "GPKG",
                          const QStringList &datasourceOptions = QStringList(),
                          const QStringList &layerOptions = QStringList(),
                          QString *newFilename = nullptr,
@@ -495,24 +505,73 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     QgsVectorFileWriter &operator=( const QgsVectorFileWriter &rh ) = delete;
 
     /**
-     * Returns a map with format filter string as key and OGR format key as value.
+     * Details of available filters and formats.
+     * \since QGIS 3.0
+     */
+    struct FilterFormatDetails
+    {
+      //! Unique driver name
+      QString driverName;
+
+      //! Filter string for file picker dialogs
+      QString filterString;
+    };
+
+    /**
+     * Returns a list or pairs, with format filter string as first element and OGR format key as second element.
+     *
+     * The \a options argument can be used to control the sorting and filtering of
+     * returned formats.
+     *
      * \see supportedOutputVectorLayerExtensions()
      */
-    static QMap< QString, QString> supportedFiltersAndFormats();
+    static QList< QgsVectorFileWriter::FilterFormatDetails > supportedFiltersAndFormats( VectorFormatOptions options = SortRecommended );
 
     /**
      * Returns a list of file extensions for supported formats.
+     *
+     * The \a options argument can be used to control the sorting and filtering of
+     * returned formats.
+     *
      * \since QGIS 3.0
      * \see supportedFiltersAndFormats()
      */
-    static QStringList supportedFormatExtensions();
+    static QStringList supportedFormatExtensions( VectorFormatOptions options = SortRecommended );
 
     /**
-     * Returns driver list that can be used for dialogs. It contains all OGR drivers
-     * + some additional internal QGIS driver names to distinguish between more
-     * supported formats of the same OGR driver
+     * Returns true if the specified \a driverName supports feature styles.
+     *
+     * The \a driverName argument must be a valid GDAL driver name.
+     *
+     * \since QGIS 3.0
      */
-    static QMap< QString, QString> ogrDriverList();
+    static bool supportsFeatureStyles( const QString &driverName );
+
+    /**
+     * Details of available driver formats.
+     * \since QGIS 3.0
+     */
+    struct DriverDetails
+    {
+      //! Descriptive, user friendly name for the driver
+      QString longName;
+
+      //! Unique driver name
+      QString driverName;
+    };
+
+    /**
+     * Returns the driver list that can be used for dialogs. It contains all OGR drivers
+     * plus some additional internal QGIS driver names to distinguish between more
+     * supported formats of the same OGR driver.
+     *
+     * The returned list consists of structs containing the driver long name (e.g. user-friendly
+     * display name for the format) and internal driver short name.
+     *
+     * The \a options argument can be used to control the sorting and filtering of
+     * returned drivers.
+     */
+    static QList< QgsVectorFileWriter::DriverDetails > ogrDriverList( VectorFormatOptions options = SortRecommended );
 
     /**
      * Returns the OGR driver name for a specified file \a extension. E.g. the
@@ -522,8 +581,13 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
      */
     static QString driverForExtension( const QString &extension );
 
-    //! Returns filter string that can be used for dialogs
-    static QString fileFilterString();
+    /**
+     * Returns filter string that can be used for dialogs.
+     *
+     * The \a options argument can be used to control the sorting and filtering of
+     * returned drivers.
+     */
+    static QString fileFilterString( VectorFormatOptions options = SortRecommended );
 
     //! Creates a filter for an OGR driver key
     static QString filterForDriver( const QString &driverName );
@@ -537,8 +601,8 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     //! Retrieves error message
     QString errorMessage();
 
-    bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = 0 ) override;
-    bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = 0 ) override;
+    bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = nullptr ) override;
+    bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = nullptr ) override;
 
     /**
      * Adds a \a feature to the currently opened data source, using the style from a specified \a renderer.
@@ -550,7 +614,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     QMap<int, int> attrIdxToOgrIdx() { return mAttrIdxToOgrIdx; } SIP_SKIP
 
     //! Close opened shapefile for writing
-    ~QgsVectorFileWriter();
+    ~QgsVectorFileWriter() override;
 
     /**
      * Delete a shapefile (and its accompanying shx / dbf / prf)
@@ -630,7 +694,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     //! \note not available in Python bindings
     OGRGeometryH createEmptyGeometry( QgsWkbTypes::Type wkbType ) SIP_SKIP;
 
-    OGRDataSourceH mDS = nullptr;
+    gdal::ogr_datasource_unique_ptr mDS;
     OGRLayerH mLayer = nullptr;
     OGRSpatialReferenceH mOgrRef = nullptr;
 
@@ -674,11 +738,14 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
                QgsVectorFileWriter::ActionOnExistingFile action );
     void resetMap( const QgsAttributeList &attributes );
 
+    std::unique_ptr< QgsFeatureRenderer > mRenderer;
     QgsRenderContext mRenderContext;
+
+    bool mUsingTransaction = false;
 
     static QMap<QString, MetaData> initMetaData();
     void createSymbolLayerTable( QgsVectorLayer *vl, const QgsCoordinateTransform &ct, OGRDataSourceH ds );
-    OGRFeatureH createFeature( const QgsFeature &feature );
+    gdal::ogr_feature_unique_ptr createFeature( const QgsFeature &feature );
     bool writeFeature( OGRLayerH layer, OGRFeatureH feature );
 
     //! Writes features considering symbol level order
@@ -687,8 +754,8 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     double mapUnitScaleFactor( double scale, QgsUnitTypes::RenderUnit symbolUnits, QgsUnitTypes::DistanceUnit mapUnits );
 
     void startRender( QgsVectorLayer *vl );
-    void stopRender( QgsVectorLayer *vl );
-    QgsFeatureRenderer *symbologyRenderer( QgsVectorLayer *vl ) const;
+    void stopRender();
+    std::unique_ptr< QgsFeatureRenderer > createSymbologyRenderer( QgsVectorLayer *vl ) const;
     //! Adds attributes needed for classification
     void addRendererAttributes( QgsVectorLayer *vl, QgsAttributeList &attList );
     static QMap<QString, MetaData> sDriverMetadata;
@@ -698,6 +765,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsVectorFileWriter::EditionCapabilities )
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsVectorFileWriter::VectorFormatOptions )
 
 // clazy:excludeall=qstring-allocations
 

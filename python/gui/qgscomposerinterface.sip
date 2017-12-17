@@ -12,11 +12,11 @@
 class QgsComposerInterface: QObject
 {
 %Docstring
- A common interface for composer dialogs.
+A common interface for composer dialogs.
 
- Provides a common interface and stable API for composer editor dialogs.
- This interface can be used by plugins and scripts to interact with
- open composer dialogs.
+Provides a common interface and stable API for composer editor dialogs.
+This interface can be used by plugins and scripts to interact with
+open composer dialogs.
 
 .. versionadded:: 3.0
 %End
@@ -28,26 +28,22 @@ class QgsComposerInterface: QObject
 
     QgsComposerInterface( QObject *parent /TransferThis/ = 0 );
 %Docstring
- Constructor for QgsComposerInterface.
+Constructor for QgsComposerInterface.
 %End
-
-    virtual ~QgsComposerInterface();
 
     virtual QgsComposerView *view() = 0;
 %Docstring
- Returns the composer's QgsComposerView editor widget.
- :rtype: QgsComposerView
+Returns the composer's QgsComposerView editor widget.
 %End
 
     virtual QgsComposition *composition() = 0;
 %Docstring
- Returns the composition displated in the composer.
- :rtype: QgsComposition
+Returns the composition displated in the composer.
 %End
 
     virtual void close() = 0;
 %Docstring
- Closes the composer window.
+Closes the composer window.
 %End
 
 };

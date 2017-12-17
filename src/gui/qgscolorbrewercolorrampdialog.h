@@ -118,6 +118,10 @@ class GUI_EXPORT QgsColorBrewerColorRampDialog : public QDialog
 
     QgsColorBrewerColorRampWidget *mWidget = nullptr;
 
+  private slots:
+
+    void showHelp();
+
 };
 
 #endif

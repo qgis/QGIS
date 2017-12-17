@@ -16,19 +16,10 @@ class QgsColorBrewerPalette
 %End
   public:
     static QList<QColor> listSchemeColors( const QString &schemeName, int colors );
-%Docstring
- :rtype: list of QColor
-%End
 
     static QStringList listSchemes();
-%Docstring
- :rtype: list of str
-%End
 
     static QList<int> listSchemeVariants( const QString &schemeName );
-%Docstring
- :rtype: list of int
-%End
 
     static const char *BREWER_STRING;
 };

@@ -199,8 +199,18 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
      */
     void setCache( QgsMapRendererCache *cache );
 
-    //! Find out how long it took to finish the job (in milliseconds)
+    /**
+     * Returns the total time it took to finish the job (in milliseconds).
+     * \see perLayerRenderingTime()
+     */
     int renderingTime() const { return mRenderingTime; }
+
+    /**
+     * Returns the render time (in ms) per layer.
+     * \note Not available in Python bindings.
+     * \since QGIS 3.0
+     */
+    QHash< QgsMapLayer *, int > perLayerRenderingTime() const SIP_SKIP;
 
     /**
      * Return map settings with which this job was started.
@@ -238,6 +248,9 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
     QgsMapRendererCache *mCache = nullptr;
 
     int mRenderingTime = 0;
+
+    //! Render time (in ms) per layer, by layer ID
+    QHash< QgsWeakMapLayerPointer, int > mPerLayerRenderingTime;
 
     /**
      * Prepares the cache for storing the result of labeling. Returns false if

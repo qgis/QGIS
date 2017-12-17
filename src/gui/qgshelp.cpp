@@ -160,7 +160,7 @@ bool QgsHelp::urlExists( const QString &url )
     if ( socket.waitForReadyRead() )
     {
       QByteArray bytes = socket.readAll();
-      if ( bytes.contains( "200 OK" ) ||  bytes.contains( "302 Found" ) )
+      if ( bytes.contains( "200 OK" ) ||  bytes.contains( "302 Found" ) ||  bytes.contains( "301 Moved" ) )
       {
         return true;
       }

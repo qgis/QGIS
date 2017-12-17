@@ -13,8 +13,9 @@
 class QgsColorDialog : QDialog
 {
 %Docstring
- A custom QGIS dialog for selecting a color. Has many improvements over the standard Qt color picker dialog, including
- hue wheel supports, color swatches, and a color sampler.
+A custom QGIS dialog for selecting a color. Has many improvements over the standard Qt color picker dialog, including
+hue wheel supports, color swatches, and a color sampler.
+
 .. versionadded:: 2.5
 %End
 
@@ -26,30 +27,34 @@ class QgsColorDialog : QDialog
     QgsColorDialog( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags,
                     const QColor &color = QColor() );
 %Docstring
- Create a new color picker dialog
- \param parent parent widget
- \param fl window flags
- \param color initial color for dialog
+Create a new color picker dialog
+
+:param parent: parent widget
+:param fl: window flags
+:param color: initial color for dialog
 %End
 
     QColor color() const;
 %Docstring
- Returns the current color for the dialog
- :return: dialog color
- :rtype: QColor
+Returns the current color for the dialog
+
+:return: dialog color
 %End
 
     void setTitle( const QString &title );
 %Docstring
- Sets the title for the color dialog
- \param title title for dialog box
+Sets the title for the color dialog
+
+:param title: title for dialog box
 %End
 
     void setAllowOpacity( const bool allowOpacity );
 %Docstring
- Sets whether opacity modification (transparency) is permitted
- for the color dialog. Defaults to true.
- \param allowOpacity set to false to disable opacity modification
+Sets whether opacity modification (transparency) is permitted
+for the color dialog. Defaults to true.
+
+:param allowOpacity: set to false to disable opacity modification
+
 .. versionadded:: 3.0
 %End
 
@@ -58,45 +63,51 @@ class QgsColorDialog : QDialog
                                 const QString &title = QString(),
                                 const bool allowOpacity = true );
 %Docstring
- Return a color selection from a color dialog, with live updating of interim selections.
- \param initialColor the initial color of the selection dialog.
- \param updateObject the receiver object of the live updating.
- \param updateSlot the receiver object's slot for live updating (e.g. SLOT( setValidColor( const QColor& ) ) ).
- \param parent parent widget
- \param title the title of the dialog.
- \param allowOpacity set to true to allow modification of color opacity value (transparency)
- :return: Selected color on accepted() or initialColor on rejected().
-.. seealso:: getColor
- :rtype: QColor
+Return a color selection from a color dialog, with live updating of interim selections.
+
+:param initialColor: the initial color of the selection dialog.
+:param updateObject: the receiver object of the live updating.
+:param updateSlot: the receiver object's slot for live updating (e.g. SLOT( setValidColor( const QColor& ) ) ).
+:param parent: parent widget
+:param title: the title of the dialog.
+:param allowOpacity: set to true to allow modification of color opacity value (transparency)
+
+:return: Selected color on accepted() or initialColor on rejected().
+
+.. seealso:: :py:func:`getColor`
 %End
 
     static QColor getColor( const QColor &initialColor, QWidget *parent, const QString &title = QString(),
                             const bool allowOpacity = false );
 %Docstring
- Return a color selection from a color dialog.
- \param initialColor the initial color of the selection dialog.
- \param parent parent widget
- \param title the title of the dialog.
- \param allowOpacity set to true to allow modification of color opacity value (transparency)
- :return: Selected color on accepted() or initialColor on rejected().
-.. seealso:: getLiveColor
- :rtype: QColor
+Return a color selection from a color dialog.
+
+:param initialColor: the initial color of the selection dialog.
+:param parent: parent widget
+:param title: the title of the dialog.
+:param allowOpacity: set to true to allow modification of color opacity value (transparency)
+
+:return: Selected color on accepted() or initialColor on rejected().
+
+.. seealso:: :py:func:`getLiveColor`
 %End
 
   signals:
 
     void currentColorChanged( const QColor &color );
 %Docstring
- Emitted when the dialog's color changes
- \param color current color
+Emitted when the dialog's color changes
+
+:param color: current color
 %End
 
   public slots:
 
     void setColor( const QColor &color );
 %Docstring
- Sets the current color for the dialog
- \param color desired color
+Sets the current color for the dialog
+
+:param color: desired color
 %End
 
   protected:

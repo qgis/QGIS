@@ -28,20 +28,24 @@ class QgsFeatureSelectionDlg : QDialog
       sipType = 0;
 %End
   public:
+
     explicit QgsFeatureSelectionDlg( QgsVectorLayer *vl, QgsAttributeEditorContext &context, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsFeatureSelectionDlg
+%End
 
     const QgsFeatureIds &selectedFeatures();
 %Docstring
- Get the selected features
+Get the selected features
 
- :return: The selected feature ids
- :rtype: QgsFeatureIds
+:return: The selected feature ids
 %End
 
     void setSelectedFeatures( const QgsFeatureIds &ids );
 %Docstring
- Set the selected features
- \param ids The feature ids to select
+Set the selected features
+
+:param ids: The feature ids to select
 %End
 
 };

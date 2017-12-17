@@ -20,6 +20,12 @@
 #include "qgspoint.h"
 #include "qgspolygon.h"
 #include "qgstessellator.h"
+#include "qgsmultipolygon.h"
+
+static bool qgsVectorNear( const QVector3D &v1, const QVector3D &v2, double eps )
+{
+  return qgsDoubleNear( v1.x(), v2.x(), eps ) && qgsDoubleNear( v1.y(), v2.y(), eps ) && qgsDoubleNear( v1.z(), v2.z(), eps );
+}
 
 /**
  * Simple structure to record an expected triangle from tessellator.
@@ -54,8 +60,13 @@ struct TriangleCoords
   bool operator==( const TriangleCoords &other ) const
   {
     // TODO: allow that the two triangles have coordinates shifted (but still in the same order)
-    return pts[0] == other.pts[0] && pts[1] == other.pts[1] && pts[2] == other.pts[2] &&
-           normals[0] == other.normals[0] && normals[1] == other.normals[1] && normals[2] == other.normals[2];
+    const double eps = 1e-6;
+    return qgsVectorNear( pts[0], other.pts[0], eps ) &&
+           qgsVectorNear( pts[1], other.pts[1], eps ) &&
+           qgsVectorNear( pts[2], other.pts[2], eps ) &&
+           qgsVectorNear( normals[0], other.normals[0], eps ) &&
+           qgsVectorNear( normals[1], other.normals[1], eps ) &&
+           qgsVectorNear( normals[2], other.normals[2], eps );
   }
 
   bool operator!=( const TriangleCoords &other ) const
@@ -77,7 +88,10 @@ bool checkTriangleOutput( const QVector<float> &data, bool withNormals, const QL
 {
   int valuesPerTriangle = withNormals ? 18 : 9;
   if ( data.count() != expected.count() * valuesPerTriangle )
+  {
+    qDebug() << "expected" << expected.count() << "triangles, got" << data.count() / valuesPerTriangle;
     return false;
+  }
 
   // TODO: allow arbitrary order of triangles in output
   const float *dataRaw = data.constData();
@@ -107,19 +121,19 @@ class TestQgsTessellator : public QObject
 {
     Q_OBJECT
   public:
-    TestQgsTessellator();
+    TestQgsTessellator() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
 
     void testBasic();
+    void testWalls();
+    void asMultiPolygon();
+    void testBadCoordinates();
 
   private:
 };
-
-TestQgsTessellator::TestQgsTessellator() = default;
-
 
 //runs before all tests
 void TestQgsTessellator::initTestCase()
@@ -133,10 +147,10 @@ void TestQgsTessellator::cleanupTestCase()
 
 void TestQgsTessellator::testBasic()
 {
-  QgsPolygonV2 polygon;
+  QgsPolygon polygon;
   polygon.fromWkt( "POLYGON((1 1, 2 1, 3 2, 1 2, 1 1))" );
 
-  QgsPolygonV2 polygonZ;
+  QgsPolygon polygonZ;
   polygonZ.fromWkt( "POLYGONZ((1 1 0, 2 1 0, 3 2 0, 1 2 0, 1 1 0))" );
 
   QList<TriangleCoords> tc;
@@ -167,6 +181,112 @@ void TestQgsTessellator::testBasic()
   QgsTessellator tNZ( 0, 0, true );
   tNZ.addPolygon( polygonZ, 0 );
   QVERIFY( checkTriangleOutput( tNZ.data(), true, tcNormals ) );
+}
+
+void TestQgsTessellator::testWalls()
+{
+  QgsPolygon rect;
+  rect.fromWkt( "POLYGON((0 0, 3 0, 3 2, 0 2, 0 0))" );
+
+  QVector3D zPos( 0, 0, 1 );
+  QVector3D xPos( 1, 0, 0 );
+  QVector3D yPos( 0, 1, 0 );
+  QVector3D xNeg( -1, 0, 0 );
+  QVector3D yNeg( 0, -1, 0 );
+
+  QList<TriangleCoords> tcRect;
+  tcRect << TriangleCoords( QVector3D( 0, 2, 1 ), QVector3D( 3, 0, 1 ), QVector3D( 3, 2, 1 ), zPos, zPos, zPos );
+  tcRect << TriangleCoords( QVector3D( 0, 2, 1 ), QVector3D( 0, 0, 1 ), QVector3D( 3, 0, 1 ), zPos, zPos, zPos );
+  tcRect << TriangleCoords( QVector3D( 0, 0, 1 ), QVector3D( 0, 2, 1 ), QVector3D( 0, 0, 0 ), xNeg, xNeg, xNeg );
+  tcRect << TriangleCoords( QVector3D( 0, 0, 0 ), QVector3D( 0, 2, 1 ), QVector3D( 0, 2, 0 ), xNeg, xNeg, xNeg );
+  tcRect << TriangleCoords( QVector3D( 0, 2, 1 ), QVector3D( 3, 2, 1 ), QVector3D( 0, 2, 0 ), yPos, yPos, yPos );
+  tcRect << TriangleCoords( QVector3D( 0, 2, 0 ), QVector3D( 3, 2, 1 ), QVector3D( 3, 2, 0 ), yPos, yPos, yPos );
+  tcRect << TriangleCoords( QVector3D( 3, 2, 1 ), QVector3D( 3, 0, 1 ), QVector3D( 3, 2, 0 ), xPos, xPos, xPos );
+  tcRect << TriangleCoords( QVector3D( 3, 2, 0 ), QVector3D( 3, 0, 1 ), QVector3D( 3, 0, 0 ), xPos, xPos, xPos );
+  tcRect << TriangleCoords( QVector3D( 3, 0, 1 ), QVector3D( 0, 0, 1 ), QVector3D( 3, 0, 0 ), yNeg, yNeg, yNeg );
+  tcRect << TriangleCoords( QVector3D( 3, 0, 0 ), QVector3D( 0, 0, 1 ), QVector3D( 0, 0, 0 ), yNeg, yNeg, yNeg );
+
+  QgsTessellator tRect( 0, 0, true );
+  tRect.addPolygon( rect, 1 );
+  QVERIFY( checkTriangleOutput( tRect.data(), true, tcRect ) );
+
+  // try to extrude a polygon with reverse (clock-wise) order of vertices and check it is still fine
+
+  QgsPolygon rectRev;
+  rectRev.fromWkt( "POLYGON((0 0, 0 2, 3 2, 3 0, 0 0))" );
+
+  QgsTessellator tRectRev( 0, 0, true );
+  tRectRev.addPolygon( rectRev, 1 );
+  QVERIFY( checkTriangleOutput( tRectRev.data(), true, tcRect ) );
+
+  // this is a more complicated polygon with Z coordinates where the "roof" is not in one plane
+
+  QgsPolygon polygonZ;
+  polygonZ.fromWkt( "POLYGONZ((1 1 1, 2 1 2, 3 2 3, 1 2 4, 1 1 1))" );
+
+  QList<TriangleCoords> tc;
+
+  tc << TriangleCoords( QVector3D( 1, 2, 14 ), QVector3D( 2, 1, 12 ), QVector3D( 3, 2, 13 ) );
+  tc << TriangleCoords( QVector3D( 1, 2, 14 ), QVector3D( 1, 1, 11 ), QVector3D( 2, 1, 12 ) );
+
+  tc << TriangleCoords( QVector3D( 1, 1, 11 ), QVector3D( 1, 2, 14 ), QVector3D( 1, 1, 1 ) );
+  tc << TriangleCoords( QVector3D( 1, 1, 1 ), QVector3D( 1, 2, 14 ), QVector3D( 1, 2, 4 ) );
+  tc << TriangleCoords( QVector3D( 1, 2, 14 ), QVector3D( 3, 2, 13 ), QVector3D( 1, 2, 4 ) );
+  tc << TriangleCoords( QVector3D( 1, 2, 4 ), QVector3D( 3, 2, 13 ), QVector3D( 3, 2, 3 ) );
+  tc << TriangleCoords( QVector3D( 3, 2, 13 ), QVector3D( 2, 1, 12 ), QVector3D( 3, 2, 3 ) );
+  tc << TriangleCoords( QVector3D( 3, 2, 3 ), QVector3D( 2, 1, 12 ), QVector3D( 2, 1, 2 ) );
+  tc << TriangleCoords( QVector3D( 2, 1, 12 ), QVector3D( 1, 1, 11 ), QVector3D( 2, 1, 2 ) );
+  tc << TriangleCoords( QVector3D( 2, 1, 2 ), QVector3D( 1, 1, 11 ), QVector3D( 1, 1, 1 ) );
+
+  QgsTessellator tZ( 0, 0, false );
+  tZ.addPolygon( polygonZ, 10 );
+  QVERIFY( checkTriangleOutput( tZ.data(), false, tc ) );
+}
+
+void TestQgsTessellator::asMultiPolygon()
+{
+  QgsPolygon polygon;
+  polygon.fromWkt( "POLYGON((1 1, 2 1, 3 2, 1 2, 1 1))" );
+
+  QgsPolygon polygonZ;
+  polygonZ.fromWkt( "POLYGONZ((1 1 1, 2 1 2, 3 2 3, 1 2 4, 1 1 1))" );
+
+  QgsTessellator t( 0, 0, false );
+  t.addPolygon( polygon, 0 );
+  QCOMPARE( t.asMultiPolygon()->asWkt(), QStringLiteral( "MultiPolygonZ (((1 2 0, 2 1 0, 3 2 0, 1 2 0)),((1 2 0, 1 1 0, 2 1 0, 1 2 0)))" ) );
+
+  QgsTessellator t2( 0, 0, false );
+  t2.addPolygon( polygonZ, 0 );
+  QCOMPARE( t2.asMultiPolygon()->asWkt(), QStringLiteral( "MultiPolygonZ (((1 2 4, 2 1 2, 3 2 3, 1 2 4)),((1 2 4, 1 1 1, 2 1 2, 1 2 4)))" ) );
+}
+
+void TestQgsTessellator::testBadCoordinates()
+{
+  // check with a vertical "wall" polygon - if the Z coordinates are ignored,
+  // the polygon may be incorrectly considered as having close/repeated coordinates
+  QList<TriangleCoords> tcZ;
+  tcZ << TriangleCoords( QVector3D( 1, 2, 2 ), QVector3D( 2, 1, 1 ), QVector3D( 2, 1, 2 ) );
+  tcZ << TriangleCoords( QVector3D( 1, 2, 2 ), QVector3D( 1, 2, 1 ), QVector3D( 2, 1, 1 ) );
+
+  QgsPolygon polygonZ;
+  polygonZ.fromWkt( "POLYGONZ((1 2 1, 2 1 1, 2 1 2, 1 2 2, 1 2 1))" );
+
+  QgsTessellator tZ( 0, 0, false );
+  tZ.addPolygon( polygonZ, 0 );
+  QVERIFY( checkTriangleOutput( tZ.data(), false, tcZ ) );
+
+  // triangulation would crash for me with this polygon if there is no simplification
+  // to remove the coordinates that are very close to each other
+  QgsPolygon polygon;
+  polygon.fromWkt( "POLYGON((1 1, 2 1, 2.0000001 1.0000001, 2.0000002 1.0000001, 2.0000001 1.0000002, 2.0000002 1.0000002, 3 2, 1 2, 1 1))" );
+
+  QList<TriangleCoords> tc;
+  tc << TriangleCoords( QVector3D( 1, 2, 0 ), QVector3D( 2, 1, 0 ), QVector3D( 3, 2, 0 ) );
+  tc << TriangleCoords( QVector3D( 1, 2, 0 ), QVector3D( 1, 1, 0 ), QVector3D( 2, 1, 0 ) );
+
+  QgsTessellator t( 0, 0, false );
+  t.addPolygon( polygon, 0 );
+  QVERIFY( checkTriangleOutput( t.data(), false, tc ) );
 }
 
 

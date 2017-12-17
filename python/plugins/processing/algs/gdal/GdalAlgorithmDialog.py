@@ -40,7 +40,8 @@ from qgis.PyQt.QtWidgets import (QWidget,
 from qgis.core import (QgsProcessingFeedback,
                        QgsProcessingParameterDefinition)
 from qgis.gui import (QgsMessageBar,
-                      QgsProjectionSelectionWidget)
+                      QgsProjectionSelectionWidget,
+                      QgsProcessingAlgorithmDialogBase)
 
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.gui.AlgorithmDialogBase import AlgorithmDialogBase
@@ -53,22 +54,11 @@ from processing.tools.dataobjects import createContext
 class GdalAlgorithmDialog(AlgorithmDialog):
 
     def __init__(self, alg):
-        AlgorithmDialogBase.__init__(self, alg)
+        super().__init__(alg)
+        self.mainWidget().parametersHaveChanged()
 
-        self.alg = alg
-
-        self.bar = QgsMessageBar()
-        self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
-        self.layout().insertWidget(0, self.bar)
-
-        self.setMainWidget(GdalParametersPanel(self, alg))
-
-        self.runAsBatchButton = QPushButton(QCoreApplication.translate("AlgorithmDialog", "Run as Batch Process…"))
-        self.runAsBatchButton.clicked.connect(self.runAsBatch)
-        self.buttonBox.addButton(self.runAsBatchButton,
-                                 QDialogButtonBox.ResetRole)  # reset role to ensure left alignment
-
-        self.mainWidget.parametersHaveChanged()
+    def getParametersPanel(self, alg, parent):
+        return GdalParametersPanel(parent, alg)
 
 
 class GdalParametersPanel(ParametersPanel):
@@ -117,7 +107,7 @@ class GdalParametersPanel(ParametersPanel):
         context = createContext()
         feedback = QgsProcessingFeedback()
         try:
-            parameters = self.parent.getParamValues()
+            parameters = self.parent.getParameterValues()
             for output in self.alg.destinationParameterDefinitions():
                 if not output.name() in parameters or parameters[output.name()] is None:
                     parameters[output.name()] = self.tr("[temporary file]")
@@ -128,7 +118,7 @@ class GdalParametersPanel(ParametersPanel):
                     self.text.setPlainText('')
                     return
 
-            commands = self.alg.getConsoleCommands(parameters, context, feedback)
+            commands = self.alg.getConsoleCommands(parameters, context, feedback, executing=False)
             commands = [c for c in commands if c not in ['cmd.exe', '/C ']]
             self.text.setPlainText(" ".join(commands))
         except AlgorithmDialogBase.InvalidParameterValue as e:

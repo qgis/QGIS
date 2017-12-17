@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
 
 __author__ = 'Alexander Bruy'
 __date__ = 'September 2013'
@@ -64,7 +63,10 @@ class ExtractProjection(GdalAlgorithm):
     def group(self):
         return self.tr('Raster projections')
 
-    def getConsoleCommands(self, parameters, context, feedback):
+    def groupId(self):
+        return 'rasterprojections'
+
+    def getConsoleCommands(self, parameters, context, feedback, executing=True):
         return ["extractprojection"]
 
     def processAlgorithm(self, parameters, context, feedback):

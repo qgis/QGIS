@@ -31,6 +31,8 @@
 //qgis includes
 #include "qgis.h"
 #include "qgsunittypes.h"
+#include "qgsrectangle.h"
+#include "qgssqliteutils.h"
 
 class QDomNode;
 class QDomDocument;
@@ -302,9 +304,9 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     /**
      * Sets this CRS by lookup of the given ID in the CRS database.
+     * \returns True on success else false
      * \note We encourage you to use EPSG code, WKT or Proj4 to describe CRS's in your code
      * wherever possible. Internal QGIS CRS IDs are not guaranteed to be permanent / involatile.
-     * \returns True on success else false
      */     // TODO QGIS 3: remove type and always use EPSG code, rename to createFromEpsg
     bool createFromId( const long id, CrsType type = PostgisCrsId );
 
@@ -314,8 +316,8 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * Accepts both "<auth>:<code>" format and OGC URN "urn:ogc:def:crs:<auth>:[<version>]:<code>".
      * It also recognizes "QGIS", "USER", "CUSTOM" authorities, which all have the same meaning
      * and refer to QGIS internal CRS IDs.
-     * \note this method uses an internal cache. Call invalidateCache() to clear the cache.
      * \returns True on success else false
+     * \note this method uses an internal cache. Call invalidateCache() to clear the cache.
      * \see fromOgcWmsCrs()
      */     // TODO QGIS 3: remove "QGIS" and "CUSTOM", only support "USER" (also returned by authid())
     bool createFromOgcWmsCrs( const QString &crs );
@@ -334,10 +336,10 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * and createFromOgcWmsCrs() is used to initialize the object.
      * Otherwise the WKT will be converted to a proj4 string and createFromProj4()
      * set up the object.
-     * \note Some members may be left blank if no match can be found in CRS database.
-     * \note this method uses an internal cache. Call invalidateCache() to clear the cache.
      * \param wkt The WKT for the desired spatial reference system.
      * \returns True on success else false
+     * \note Some members may be left blank if no match can be found in CRS database.
+     * \note this method uses an internal cache. Call invalidateCache() to clear the cache.
      * \see fromWkt()
      */
     bool createFromWkt( const QString &wkt );
@@ -347,9 +349,9 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      *
      * If the srsid is < USER_CRS_START_ID, system CRS database is used, otherwise
      * user's local CRS database from home directory is used.
-     * \note this method uses an internal cache. Call invalidateCache() to clear the cache.
      * \param srsId The internal QGIS CRS ID for the desired spatial reference system.
      * \returns True on success else false
+     * \note this method uses an internal cache. Call invalidateCache() to clear the cache.
      * \see fromSrsId()
      */
     bool createFromSrsId( const long srsId );
@@ -371,10 +373,10 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      *   a match where the parameters are in a different order
      * - if none of the above match, use findMatchingProj()
      *
-     * \note Some members may be left blank if no match can be found in CRS database.
-     * \note this method uses an internal cache. Call invalidateCache() to clear the cache.
      * \param projString A proj4 format string
      * \returns True on success else false
+     * \note Some members may be left blank if no match can be found in CRS database.
+     * \note this method uses an internal cache. Call invalidateCache() to clear the cache.
      * \see fromProj4()
      */
     bool createFromProj4( const QString &projString );
@@ -405,10 +407,10 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      *
      * For more details on supported formats see OGRSpatialReference::SetFromUserInput()
      * ( http://www.gdal.org/ogr/classOGRSpatialReference.html#aec3c6a49533fe457ddc763d699ff8796 )
-     * \note this function generates a WKT string using OSRSetFromUserInput() and
-     * passes it to createFromWkt() function.
      * \param definition A String containing a coordinate reference system definition.
      * \returns True on success else false
+     * \note this function generates a WKT string using OSRSetFromUserInput() and
+     * passes it to createFromWkt() function.
      */    // TODO QGIS3: rename to createFromStringOGR so it is clear it's similar to createFromString, just different backend
     bool createFromUserInput( const QString &definition );
 
@@ -580,6 +582,16 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      */
     QgsUnitTypes::DistanceUnit mapUnits() const;
 
+    /**
+     * Returns the approximate bounds for the region the CRS is usable within.
+     *
+     * The returned bounds represent the latitude and longitude extent for the
+     * projection in the WGS 84 CRS.
+     *
+     * \since QGIS 3.0
+     */
+    QgsRectangle bounds() const;
+
     // Mutators -----------------------------------
 
     /**
@@ -602,10 +614,11 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
 
     /**
-     * Save the proj4-string as a custom CRS
-     * \returns bool true if success else false
+     * Save the proj4-string as a custom CRS.
+     *
+     * Returns the new CRS srsid(), or -1 if the CRS could not be saved.
      */
-    bool saveAsUserCrs( const QString &name );
+    long saveAsUserCrs( const QString &name );
 
     //! Returns auth id of related geographic CRS
     QString geographicCrsAuthId() const;
@@ -708,10 +721,10 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     /**
      * Get a record from the srs.db or qgis.db backends, given an sql statement.
-     * \note only handles queries that return a single record.
-     * \note it will first try the system srs.db then the users qgis.db!
      * \param sql The sql query to execute
      * \returns An associative array of field name <-> value pairs
+     * \note only handles queries that return a single record.
+     * \note it will first try the system srs.db then the users qgis.db!
      */
     RecordMap getRecord( const QString &sql );
 
@@ -719,7 +732,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * Open SQLite db and show message if cannot be opened
      * \returns the same code as sqlite3_open
      */
-    static int openDatabase( const QString &path, sqlite3 **db, bool readonly = true );
+    static int openDatabase( const QString &path, sqlite3_database_unique_ptr &database, bool readonly = true );
 
     //! Work out the projection units and set the appropriate local variable
     void setMapUnits();

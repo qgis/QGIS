@@ -14,12 +14,7 @@
  ***************************************************************************/
 #include "qgsfieldconstraints.h"
 
-
-
-
-QgsFieldConstraints::QgsFieldConstraints()
-  : mConstraints( 0 )
-{}
+QgsFieldConstraints::QgsFieldConstraints() = default;
 
 QgsFieldConstraints::ConstraintOrigin QgsFieldConstraints::constraintOrigin( QgsFieldConstraints::Constraint constraint ) const
 {

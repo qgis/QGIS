@@ -33,7 +33,7 @@ class GUI_EXPORT QgsPanelWidget : public QWidget
      * \brief Base class for any widget that can be shown as a inline panel
      * \param parent Parent widget.
      */
-    QgsPanelWidget( QWidget *parent = 0 );
+    QgsPanelWidget( QWidget *parent = nullptr );
 
     /**
      * Set the title of the panel when shown in the interface.
@@ -160,7 +160,7 @@ class GUI_EXPORT QgsPanelWidget : public QWidget
      * \brief Overridden key press event to handle the esc event on the widget.
      * \param event The key event
      */
-    void keyPressEvent( QKeyEvent *event );
+    void keyPressEvent( QKeyEvent *event ) override;
 
   private:
     bool mAutoDelete = true;

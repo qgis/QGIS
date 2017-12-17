@@ -89,6 +89,7 @@ void QgsActionMenu::triggerAction()
   {
     // define custom substitutions: layer id and clicked coords
     QgsExpressionContext context = mLayer->createExpressionContext();
+    context.setFeature( mFeature );
 
     QgsExpressionContextScope *actionScope = new QgsExpressionContextScope();
     actionScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "action_scope" ), mActionScope, true ) );
@@ -106,8 +107,11 @@ void QgsActionMenu::reloadActions()
 
   Q_FOREACH ( const QgsAction &action, mActions )
   {
+    QgsAction act( action );
+    act.setExpressionContextScope( mExpressionContextScope );
+
     QAction *qAction = new QAction( action.icon(), action.name(), this );
-    qAction->setData( QVariant::fromValue<ActionData>( ActionData( action, mFeatureId, mLayer ) ) );
+    qAction->setData( QVariant::fromValue<ActionData>( ActionData( act, mFeatureId, mLayer ) ) );
     qAction->setIcon( action.icon() );
 
     // Only enable items on supported platforms
@@ -159,3 +163,15 @@ QgsActionMenu::ActionData::ActionData( const QgsAction &action, QgsFeatureId fea
   , featureId( featureId )
   , mapLayer( mapLayer )
 {}
+
+
+void QgsActionMenu::setExpressionContextScope( const QgsExpressionContextScope &scope )
+{
+  mExpressionContextScope = scope;
+  reloadActions();
+}
+
+QgsExpressionContextScope QgsActionMenu::expressionContextScope() const
+{
+  return mExpressionContextScope;
+}

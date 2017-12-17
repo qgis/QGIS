@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import range
 
 __author__ = 'Luigi Pirelli'
 __date__ = 'May 2015'
@@ -49,6 +48,9 @@ class Datasources2Vrt(QgisAlgorithm):
 
     def group(self):
         return self.tr('Vector general')
+
+    def groupId(self):
+        return 'vectorgeneral'
 
     def __init__(self):
         super().__init__()

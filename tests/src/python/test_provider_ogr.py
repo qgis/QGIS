@@ -17,13 +17,12 @@ import shutil
 import sys
 import tempfile
 
-from qgis.core import QgsVectorLayer, QgsVectorDataProvider, QgsWkbTypes, QgsFeature, QgsFeatureRequest
-from qgis.testing import (
-    start_app,
-    unittest
-)
-from utilities import unitTestDataPath
 from osgeo import gdal, ogr  # NOQA
+from qgis.core import (QgsFeature, QgsFeatureRequest, QgsSettings, QgsDataProvider,
+                       QgsVectorDataProvider, QgsVectorLayer, QgsWkbTypes, QgsNetworkAccessManager)
+from qgis.testing import start_app, unittest
+
+from utilities import unitTestDataPath
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
@@ -112,7 +111,7 @@ class PyQgsOGRProvider(unittest.TestCase):
         vl = QgsVectorLayer('{}|layerid=0'.format(datasource), 'test', 'ogr')
         self.assertTrue(vl.isValid())
         self.assertEqual(len(vl.dataProvider().subLayers()), 1)
-        self.assertEqual(vl.dataProvider().subLayers()[0], '0:testMixOfPolygonCurvePolygon:4:CurvePolygon:')
+        self.assertEqual(vl.dataProvider().subLayers()[0], QgsDataProvider.SUBLAYER_SEPARATOR.join(['0', 'testMixOfPolygonCurvePolygon', '4', 'CurvePolygon', '']))
 
     def testMixOfLineStringCompoundCurve(self):
 
@@ -128,7 +127,7 @@ class PyQgsOGRProvider(unittest.TestCase):
         vl = QgsVectorLayer('{}|layerid=0'.format(datasource), 'test', 'ogr')
         self.assertTrue(vl.isValid())
         self.assertEqual(len(vl.dataProvider().subLayers()), 1)
-        self.assertEqual(vl.dataProvider().subLayers()[0], '0:testMixOfLineStringCompoundCurve:5:CompoundCurve:')
+        self.assertEqual(vl.dataProvider().subLayers()[0], QgsDataProvider.SUBLAYER_SEPARATOR.join(['0', 'testMixOfLineStringCompoundCurve', '5', 'CompoundCurve', '']))
 
     def testGpxElevation(self):
         # GPX without elevation data
@@ -136,17 +135,17 @@ class PyQgsOGRProvider(unittest.TestCase):
         vl = QgsVectorLayer('{}|layername=routes'.format(datasource), 'test', 'ogr')
         self.assertTrue(vl.isValid())
         f = next(vl.getFeatures())
-        self.assertEqual(f.geometry().geometry().wkbType(), QgsWkbTypes.LineString)
+        self.assertEqual(f.geometry().wkbType(), QgsWkbTypes.LineString)
 
         # GPX with elevation data
         datasource = os.path.join(TEST_DATA_DIR, 'elev.gpx')
         vl = QgsVectorLayer('{}|layername=routes'.format(datasource), 'test', 'ogr')
         self.assertTrue(vl.isValid())
         f = next(vl.getFeatures())
-        self.assertEqual(f.geometry().geometry().wkbType(), QgsWkbTypes.LineString25D)
-        self.assertEqual(f.geometry().geometry().pointN(0).z(), 1)
-        self.assertEqual(f.geometry().geometry().pointN(1).z(), 2)
-        self.assertEqual(f.geometry().geometry().pointN(2).z(), 3)
+        self.assertEqual(f.geometry().wkbType(), QgsWkbTypes.LineString25D)
+        self.assertEqual(f.geometry().constGet().pointN(0).z(), 1)
+        self.assertEqual(f.geometry().constGet().pointN(1).z(), 2)
+        self.assertEqual(f.geometry().constGet().pointN(2).z(), 3)
 
     def testNoDanglingFileDescriptorAfterCloseVariant1(self):
         ''' Test that when closing the provider all file handles are released '''
@@ -286,11 +285,38 @@ class PyQgsOGRProvider(unittest.TestCase):
             f = QgsFeature()
             self.assertTrue(vl.getFeatures(QgsFeatureRequest(1)).nextFeature(f))
             self.assertTrue(f.geometry())
-            self.assertEqual(f.geometry().geometry().asWkt(), row[2])
+            self.assertEqual(f.geometry().constGet().asWkt(), row[2])
 
     """PolyhedralSurface, Tin => mapped to MultiPolygon
           Triangle => mapped to Polygon
       """
+
+    def testSetupProxy(self):
+        """Test proxy setup"""
+        settings = QgsSettings()
+        settings.setValue("proxy/proxyEnabled", True)
+        settings.setValue("proxy/proxyPort", '1234')
+        settings.setValue("proxy/proxyHost", 'myproxyhostname.com')
+        settings.setValue("proxy/proxyUser", 'username')
+        settings.setValue("proxy/proxyPassword", 'password')
+        settings.setValue("proxy/proxyExcludedUrls", "http://www.myhost.com|http://www.myotherhost.com")
+        QgsNetworkAccessManager.instance().setupDefaultProxyAndCache()
+        vl = QgsVectorLayer(TEST_DATA_DIR + '/' + 'lines.shp', 'proxy_test', 'ogr')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(gdal.GetConfigOption("GDAL_HTTP_PROXY"), "myproxyhostname.com:1234")
+        self.assertEqual(gdal.GetConfigOption("GDAL_HTTP_PROXYUSERPWD"), "username:password")
+
+        settings.setValue("proxy/proxyEnabled", True)
+        settings.remove("proxy/proxyPort")
+        settings.setValue("proxy/proxyHost", 'myproxyhostname.com')
+        settings.setValue("proxy/proxyUser", 'username')
+        settings.remove("proxy/proxyPassword")
+        settings.setValue("proxy/proxyExcludedUrls", "http://www.myhost.com|http://www.myotherhost.com")
+        QgsNetworkAccessManager.instance().setupDefaultProxyAndCache()
+        vl = QgsVectorLayer(TEST_DATA_DIR + '/' + 'lines.shp', 'proxy_test', 'ogr')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(gdal.GetConfigOption("GDAL_HTTP_PROXY"), "myproxyhostname.com")
+        self.assertEqual(gdal.GetConfigOption("GDAL_HTTP_PROXYUSERPWD"), "username")
 
 
 if __name__ == '__main__':

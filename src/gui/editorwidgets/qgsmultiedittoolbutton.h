@@ -47,7 +47,7 @@ class GUI_EXPORT QgsMultiEditToolButton : public QToolButton
      * Constructor for QgsMultiEditToolButton.
      * \param parent parent object
      */
-    explicit QgsMultiEditToolButton( QWidget *parent SIP_TRANSFERTHIS = 0 );
+    explicit QgsMultiEditToolButton( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Returns the current displayed state of the button.

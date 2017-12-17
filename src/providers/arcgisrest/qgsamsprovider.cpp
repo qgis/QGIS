@@ -216,29 +216,33 @@ QgsRasterInterface *QgsAmsProvider::clone() const
 
 static inline QString dumpVariantMap( const QVariantMap &variantMap, const QString &title = QString() )
 {
-  QString result = QStringLiteral( "<table>" );
+  QString result;
   if ( !title.isEmpty() )
   {
-    result += QStringLiteral( "<tr><td class=\"glossy\" colspan=\"2\">%1</td></tr>" ).arg( title );
+    result += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>" ).arg( title );
+  }
+  else
+  {
+    result += QStringLiteral( "<tr><td>" );
   }
   for ( auto it = variantMap.constBegin(); it != variantMap.constEnd(); ++it )
   {
     QVariantMap childMap = it.value().toMap();
     if ( childMap.isEmpty() )
     {
-      result += QStringLiteral( "<tr><td>%1</td><td>%2</td></tr>" ).arg( it.key(), it.value().toString() );
+      result += QStringLiteral( "%1:%2</td></tr>" ).arg( it.key(), it.value().toString() );
     }
     else
     {
-      result += QStringLiteral( "<tr><td>%1</td><td>%2</td></tr>" ).arg( it.key(), dumpVariantMap( childMap ) );
+      result += QStringLiteral( "%1:<table>%2</table></td></tr>" ).arg( it.key(), dumpVariantMap( childMap ) );
     }
   }
-  result += QLatin1String( "</table>" );
   return result;
 }
 
-QString QgsAmsProvider::metadata()
+QString QgsAmsProvider::htmlMetadata()
 {
+  // This must return the content of a HTML table starting by tr and ending by tr
   return dumpVariantMap( mServiceInfo, tr( "Service Info" ) ) + dumpVariantMap( mLayerInfo, tr( "Layer Info" ) );
 }
 
@@ -347,7 +351,6 @@ void QgsAmsProvider::draw( const QgsRectangle &viewExtent, int pixelWidth, int p
       mCachedImage = mCachedImage.convertToFormat( QImage::Format_ARGB32 );
     }
   }
-  return;
 }
 
 QImage QgsAmsProvider::getLegendGraphic( double /*scale*/, bool forceRefresh, const QgsRectangle * /*visibleExtent*/ )
@@ -462,11 +465,11 @@ class QgsAmsSourceSelectProvider : public QgsSourceSelectProvider
 {
   public:
 
-    virtual QString providerKey() const override { return QStringLiteral( "arcgismapserver" ); }
-    virtual QString text() const override { return QObject::tr( "ArcGIS Map Server" ); }
-    virtual int ordering() const override { return QgsSourceSelectProvider::OrderRemoteProvider + 140; }
-    virtual QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddAmsLayer.svg" ) ); }
-    virtual QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
+    QString providerKey() const override { return QStringLiteral( "arcgismapserver" ); }
+    QString text() const override { return QObject::tr( "ArcGIS Map Server" ); }
+    int ordering() const override { return QgsSourceSelectProvider::OrderRemoteProvider + 140; }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddAmsLayer.svg" ) ); }
+    QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
     {
       return new QgsAmsSourceSelect( parent, fl, widgetMode );
     }

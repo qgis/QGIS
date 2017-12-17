@@ -126,13 +126,13 @@ QString TestQgsGrassCommand::toString() const
     {
       if ( grassFeature.hasGeometry() )
       {
-        string += "<br>grass: " + grassFeature.geometry().exportToWkt( 1 );
+        string += "<br>grass: " + grassFeature.geometry().asWkt( 1 );
       }
     }
 
     if ( expectedFeature.hasGeometry() )
     {
-      string += "<br>expected: " + expectedFeature.geometry().exportToWkt( 1 );
+      string += "<br>expected: " + expectedFeature.geometry().asWkt( 1 );
     }
   }
   else if ( command == DeleteFeature )
@@ -143,7 +143,7 @@ QString TestQgsGrassCommand::toString() const
   else if ( command == ChangeGeometry )
   {
     string += QLatin1String( "ChangeGeometry " );
-    string += QStringLiteral( "fid: %1 geometry: %2" ).arg( fid ).arg( geometry->exportToWkt( 1 ) );
+    string += QStringLiteral( "fid: %1 geometry: %2" ).arg( fid ).arg( geometry->asWkt( 1 ) );
   }
   else if ( command == AddAttribute )
   {
@@ -910,7 +910,7 @@ QList< TestQgsGrassCommandGroup > TestQgsGrassProvider::createCommands()
   TestQgsGrassFeature grassFeature;
   QgsLineString *line = nullptr;
   QgsGeometry *geometry = nullptr;
-  QList<QgsPoint> pointList;
+  QVector<QgsPoint> pointList;
 
   // Start editing
   command = TestQgsGrassCommand( TestQgsGrassCommand::StartEditing );

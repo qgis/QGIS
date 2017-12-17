@@ -61,15 +61,15 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
 
     QgsGrassProvider( const QString &uri = QString() );
 
-    virtual ~QgsGrassProvider();
+    ~QgsGrassProvider() override;
 
-    virtual QgsVectorDataProvider::Capabilities capabilities() const override;
-    virtual QgsAbstractFeatureSource *featureSource() const override;
-    virtual QString storageType() const override;
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) const override;
+    QgsVectorDataProvider::Capabilities capabilities() const override;
+    QgsAbstractFeatureSource *featureSource() const override;
+    QString storageType() const override;
+    QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) const override;
     QgsWkbTypes::Type wkbType() const override;
     long featureCount() const override;
-    virtual QgsRectangle extent() const override;
+    QgsRectangle extent() const override;
     QgsFields fields() const override;
 
     // ! Key (category) field index
@@ -102,12 +102,12 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     // ----------------------------------- New edit --------------------------------
     // Changes are written during editing.
     // TODO: implement also these functions but disable during manual layer editing
-    virtual bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = 0 ) override { Q_UNUSED( flist ); Q_UNUSED( flags ); return true; }
-    virtual bool deleteFeatures( const QgsFeatureIds &id ) override { Q_UNUSED( id ); return true; }
-    virtual bool addAttributes( const QList<QgsField> &attributes ) override;
-    virtual bool deleteAttributes( const QgsAttributeIds &attributes ) override;
-    virtual bool changeAttributeValues( const QgsChangedAttributesMap &attr_map ) override  { Q_UNUSED( attr_map ); return true; }
-    virtual bool changeGeometryValues( const QgsGeometryMap &geometry_map ) override { Q_UNUSED( geometry_map ); return true; }
+    bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = nullptr ) override { Q_UNUSED( flist ); Q_UNUSED( flags ); return true; }
+    bool deleteFeatures( const QgsFeatureIds &id ) override { Q_UNUSED( id ); return true; }
+    bool addAttributes( const QList<QgsField> &attributes ) override;
+    bool deleteAttributes( const QgsAttributeIds &attributes ) override;
+    bool changeAttributeValues( const QgsChangedAttributesMap &attr_map ) override  { Q_UNUSED( attr_map ); return true; }
+    bool changeGeometryValues( const QgsGeometryMap &geometry_map ) override { Q_UNUSED( geometry_map ); return true; }
 
 
     //----------------------------------------------------------------------------
@@ -155,7 +155,7 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
      *   \returns true success
      *   \returns false failed to close vector or vector was not in update mode
      */
-    bool closeEdit( bool newMap = false, QgsVectorLayer *vectorLayer = 0 );
+    bool closeEdit( bool newMap = false, QgsVectorLayer *vectorLayer = nullptr );
 
     /**
      * Get current number of lines.
@@ -479,8 +479,8 @@ class GRASS_LIB_EXPORT QgsGrassProvider : public QgsVectorDataProvider
     QList<QgsGrassVectorMapLayer *> mOtherEditLayers;
 
     // points and cats used only for editing
-    struct line_pnts *mPoints = 0;
-    struct line_cats *mCats = 0;
+    struct line_pnts *mPoints = nullptr;
+    struct line_cats *mCats = nullptr;
 
     // last geometry GV_* type, used e.g. for splitting features
     int mLastType = 0;

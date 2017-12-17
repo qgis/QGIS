@@ -93,7 +93,10 @@ class aspect(GdalAlgorithm):
     def group(self):
         return self.tr('Raster analysis')
 
-    def getConsoleCommands(self, parameters, context, feedback):
+    def groupId(self):
+        return 'rasteranalysis'
+
+    def getConsoleCommands(self, parameters, context, feedback, executing=True):
         arguments = ['aspect']
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
         arguments.append(inLayer.source())

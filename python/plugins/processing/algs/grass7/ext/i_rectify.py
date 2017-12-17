@@ -25,14 +25,14 @@ __copyright__ = '(C) 2016, Médéric Ribreux'
 
 __revision__ = '$Format:%H$'
 
-from .i import copyFile, multipleOutputDir
+from .i import copyFile
 from qgis.core import QgsCoordinateReferenceSystem
 from ..Grass7Utils import Grass7Utils
 from processing.core.parameters import getParameterFromString
 from os import path
 
 
-def processCommand(alg, parameters):
+def processCommand(alg, parameters, context):
     # Creates a new location with the CRS
     crsParam = alg.getParameterFromName('crs')
     crsId = int(crsParam.value[5:])
@@ -73,29 +73,15 @@ def processCommand(alg, parameters):
     command = "i.target group={} location=TARGET mapset=PERMANENT".format(group.value)
     alg.commands.append(command)
 
-    # remove output
-    output = alg.getOutputFromName('output')
-    alg.removeOutputFromName('output')
-
     # Add an extension
     #extension = getParameterFromString("ParameterString|extension|Output raster map(s) suffix|None|False|False")
     #extension.value = "rectified"
     #alg.addParameter(extension)
 
     # modify parameters values
-    alg.processCommand()
+    alg.processCommand(parameters, context)
 
     # Re-add input rasters
     alg.addParameter(rasters)
     alg.addParameter(gcp)
     alg.addParameter(crs)
-
-    # Re-add output
-    alg.addOutput(output)
-
-
-def processOutputs(alg):
-    # We need to export from the TARGET location
-    command = "g.mapset location=TARGET mapset=PERMANENT"
-    alg.commands.append(command)
-    multipleOutputDir(alg, 'output')

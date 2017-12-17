@@ -1,12 +1,14 @@
 r.flow
 Construction of flowlines, flowpath lengths, and flowaccumulation (contributing areas) from a raster digital elevation model (DEM).
 Raster (r.*)
-ParameterRaster|elevation|Elevation|False
-ParameterNumber|skip|Number of cells between flowlines|None|None|7
-ParameterNumber|bound|Maximum number of segments per flowline|None|None|1609
-ParameterBoolean|-u|Compute upslope flowlines instead of default downhill flowlines|False
-ParameterBoolean|-3|3-D lengths instead of 2-D|False
-*ParameterBoolean|-m|Use less memory, at a performance penalty|False
-OutputVector|flowline|Flow line
-OutputRaster|flowlength|Flow path length
-OutputRaster|flowaccumulation|Flow accumulation
+QgsProcessingParameterRasterLayer|elevation|Elevation|None|False
+QgsProcessingParameterRasterLayer|aspect|Aspect|None|True
+QgsProcessingParameterRasterLayer|barrier|Barrier|None|True
+QgsProcessingParameterNumber|skip|Number of cells between flowlines|QgsProcessingParameterNumber.Integer|7|False|None|None
+QgsProcessingParameterNumber|bound|Maximum number of segments per flowline|QgsProcessingParameterNumber.Integer|1609|False|None|None
+QgsProcessingParameterBoolean|-u|Compute upslope flowlines instead of default downhill flowlines|False
+QgsProcessingParameterBoolean|-3|3-D lengths instead of 2-D|False
+*QgsProcessingParameterBoolean|-m|Use less memory, at a performance penalty|False
+QgsProcessingParameterVectorDestination|flowline|Flow line|QgsProcessing.TypeVectorLine|None|True
+QgsProcessingParameterRasterDestination|flowlength|Flow path length
+QgsProcessingParameterRasterDestination|flowaccumulation|Flow accumulation

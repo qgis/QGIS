@@ -11,7 +11,7 @@
 class QgsRasterPyramid
 {
 %Docstring
- This struct is used to store pyramid info for the raster layer.
+This struct is used to store pyramid info for the raster layer.
 %End
 
 %TypeHeaderCode

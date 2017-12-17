@@ -16,23 +16,29 @@ class QgsSlider : QSlider
 #include "qgsslider.h"
 %End
   public:
+
     QgsSlider( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsSlider
+%End
+
     QgsSlider( Qt::Orientation orientation, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsSlider
+%End
 
     void setMinimum( const QVariant &min );
     void setMaximum( const QVariant &max );
     void setSingleStep( const QVariant &step );
     void setValue( const QVariant &value );
     QVariant variantValue() const;
-%Docstring
- :rtype: QVariant
-%End
 
   signals:
     void valueChanged( const QVariant & );
 
   protected:
     virtual void paintEvent( QPaintEvent *event );
+
 
 };
 /************************************************************************

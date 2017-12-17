@@ -23,6 +23,7 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QListView>
+#include <QDesktopServices>
 
 QgsWelcomePage::QgsWelcomePage( bool skipVersionCheck, QWidget *parent )
   : QWidget( parent )
@@ -50,14 +51,16 @@ QgsWelcomePage::QgsWelcomePage( bool skipVersionCheck, QWidget *parent )
 
   recentProjectsContainer->layout()->addWidget( recentProjectsTitle );
 
-  QListView *recentProjectsListView = new QListView();
-  recentProjectsListView->setResizeMode( QListView::Adjust );
+  mRecentProjectsListView = new QListView();
+  mRecentProjectsListView->setResizeMode( QListView::Adjust );
+  mRecentProjectsListView->setContextMenuPolicy( Qt::CustomContextMenu );
+  connect( mRecentProjectsListView, &QListView::customContextMenuRequested, this, &QgsWelcomePage::showContextMenuForProjects );
 
-  mModel = new QgsWelcomePageItemsModel( recentProjectsListView );
-  recentProjectsListView->setModel( mModel );
-  recentProjectsListView->setItemDelegate( new QgsWelcomePageItemDelegate( recentProjectsListView ) );
+  mModel = new QgsWelcomePageItemsModel( mRecentProjectsListView );
+  mRecentProjectsListView->setModel( mModel );
+  mRecentProjectsListView->setItemDelegate( new QgsWelcomePageItemDelegate( mRecentProjectsListView ) );
 
-  recentProjectsContainer->layout()->addWidget( recentProjectsListView );
+  recentProjectsContainer->layout()->addWidget( mRecentProjectsListView );
 
   layout->addWidget( recentProjectsContainer );
 
@@ -72,7 +75,7 @@ QgsWelcomePage::QgsWelcomePage( bool skipVersionCheck, QWidget *parent )
     mVersionInfo->checkVersion();
   }
 
-  connect( recentProjectsListView, &QAbstractItemView::activated, this, &QgsWelcomePage::itemActivated );
+  connect( mRecentProjectsListView, &QAbstractItemView::activated, this, &QgsWelcomePage::itemActivated );
 }
 
 QgsWelcomePage::~QgsWelcomePage()
@@ -106,4 +109,70 @@ void QgsWelcomePage::versionInfoReceived()
                                         "  padding: 5px;"
                                         "}" );
   }
+}
+
+void QgsWelcomePage::showContextMenuForProjects( QPoint point )
+{
+  QModelIndex index = mRecentProjectsListView->indexAt( point );
+  if ( !index.isValid() )
+    return;
+
+  bool pin = mModel->data( index, QgsWelcomePageItemsModel::PinRole ).toBool();
+  QString path = mModel->data( index, QgsWelcomePageItemsModel::PathRole ).toString();
+  if ( path.isEmpty() )
+    return;
+
+  bool enabled = mModel->flags( index ) & Qt::ItemIsEnabled;
+
+  QMenu *menu = new QMenu( this );
+
+  if ( enabled )
+  {
+    if ( !pin )
+    {
+      QAction *pinAction = new QAction( tr( "Pin to List" ), menu );
+      connect( pinAction, &QAction::triggered, this, [this, index]
+      {
+        mModel->pinProject( index );
+        emit projectPinned( index.row() );
+      } );
+      menu->addAction( pinAction );
+    }
+    else
+    {
+      QAction *pinAction = new QAction( tr( "Unpin from List" ), menu );
+      connect( pinAction, &QAction::triggered, this, [this, index]
+      {
+        mModel->unpinProject( index );
+        emit projectUnpinned( index.row() );
+      } );
+      menu->addAction( pinAction );
+    }
+    QAction *openFolderAction = new QAction( tr( "Open Directory…" ), menu );
+    connect( openFolderAction, &QAction::triggered, this, [this, path]
+    {
+      QFileInfo fi( path );
+      QString folder = fi.path();
+      QDesktopServices::openUrl( QUrl::fromLocalFile( folder ) );
+    } );
+    menu->addAction( openFolderAction );
+  }
+  else
+  {
+    QAction *rescanAction = new QAction( tr( "Refresh" ), menu );
+    connect( rescanAction, &QAction::triggered, this, [this, index]
+    {
+      mModel->recheckProject( index );
+    } );
+    menu->addAction( rescanAction );
+  }
+  QAction *removeProjectAction = new QAction( tr( "Remove from List" ), menu );
+  connect( removeProjectAction, &QAction::triggered, this, [this, index]
+  {
+    mModel->removeProject( index );
+    emit projectRemoved( index.row() );
+  } );
+  menu->addAction( removeProjectAction );
+
+  menu->popup( mapToGlobal( point ) );
 }

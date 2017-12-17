@@ -63,7 +63,7 @@ QgsServerInterfaceImpl *QgsServer::sServerInterface = nullptr;
 bool QgsServer::sInitialized = false;
 QgsServerSettings QgsServer::sSettings;
 
-QgsServiceRegistry QgsServer::sServiceRegistry;
+QgsServiceRegistry *QgsServer::sServiceRegistry = nullptr;
 
 QgsServer::QgsServer()
 {
@@ -240,11 +240,11 @@ bool QgsServer::init()
 
   QgsApplication::createDatabase(); //init qgis.db (e.g. necessary for user crs)
 
-  // Instantiate authentication system
+  // Initialize the authentication system
   //   creates or uses qgis-auth.db in ~/.qgis3/ or directory defined by QGIS_AUTH_DB_DIR_PATH env variable
   //   set the master password as first line of file defined by QGIS_AUTH_PASSWORD_FILE env variable
   //   (QGIS_AUTH_PASSWORD_FILE variable removed from environment after accessing)
-  QgsAuthManager::instance()->init( QgsApplication::pluginPath() );
+  QgsApplication::authManager()->init( QgsApplication::pluginPath(), QgsApplication::qgisAuthDatabaseFilePath() );
 
   QString defaultConfigFilePath;
   QFileInfo projectFileInfo = defaultProjectFile(); //try to find a .qgs file in the server directory
@@ -271,12 +271,14 @@ bool QgsServer::init()
   QgsFontUtils::loadStandardTestFonts( QStringList() << QStringLiteral( "Roman" ) << QStringLiteral( "Bold" ) );
 #endif
 
-  sServerInterface = new QgsServerInterfaceImpl( sCapabilitiesCache, &sServiceRegistry, &sSettings );
+  sServiceRegistry = new QgsServiceRegistry();
+
+  sServerInterface = new QgsServerInterfaceImpl( sCapabilitiesCache, sServiceRegistry, &sSettings );
 
   // Load service module
   QString modulePath = QgsApplication::libexecPath() + "server";
   qDebug() << "Initializing server modules from " << modulePath << endl;
-  sServiceRegistry.init( modulePath,  sServerInterface );
+  sServiceRegistry->init( modulePath,  sServerInterface );
 
   sInitialized = true;
   QgsMessageLog::logMessage( QStringLiteral( "Server initialized" ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
@@ -300,8 +302,7 @@ void QgsServer::putenv( const QString &var, const QString &val )
  * @param queryString
  * @return response headers and body
  */
-
-void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &response )
+void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &response, const QgsProject *project )
 {
   QgsMessageLog::MessageLevel logLevel = QgsServerLogger::instance()->logLevel();
   QTime time; //used for measuring request time if loglevel < 1
@@ -346,16 +347,23 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
       printRequestParameters( parameterMap, logLevel );
 
       //Config file path
-      QString configFilePath = configPath( *sConfigFilePath, parameterMap );
-
-      // load the project if needed and not empty
-      const QgsProject *project = mConfigCache->project( configFilePath );
       if ( ! project )
       {
-        throw QgsServerException( QStringLiteral( "Project file error" ) );
-      }
+        QString configFilePath = configPath( *sConfigFilePath, parameterMap );
 
-      sServerInterface->setConfigFilePath( configFilePath );
+        // load the project if needed and not empty
+        project = mConfigCache->project( configFilePath );
+        if ( ! project )
+        {
+          throw QgsServerException( QStringLiteral( "Project file error" ) );
+        }
+
+        sServerInterface->setConfigFilePath( configFilePath );
+      }
+      else
+      {
+        sServerInterface->setConfigFilePath( project->fileName() );
+      }
 
       //Service parameter
       QString serviceString = parameterMap.value( QStringLiteral( "SERVICE" ) );
@@ -380,7 +388,7 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
       }
 
       // Lookup for service
-      QgsService *service = sServiceRegistry.getService( serviceString, versionString );
+      QgsService *service = sServiceRegistry->getService( serviceString, versionString );
       if ( service )
       {
         service->executeRequest( request, responseDecorator, project );

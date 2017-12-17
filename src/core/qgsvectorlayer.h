@@ -40,6 +40,7 @@
 #include "qgsaggregatecalculator.h"
 #include "qgsfeatureiterator.h"
 #include "qgsexpressioncontextgenerator.h"
+#include "qgsexpressioncontextscopegenerator.h"
 
 class QPainter;
 class QImage;
@@ -350,7 +351,7 @@ typedef QSet<int> QgsAttributeIds;
  * TODO QGIS3: Remove virtual from non-inherited methods (like isModified)
  * \see QgsVectorLayerUtils()
  */
-class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionContextGenerator, public QgsFeatureSink, public QgsFeatureSource
+class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionContextGenerator, public QgsExpressionContextScopeGenerator, public QgsFeatureSink, public QgsFeatureSource
 {
     Q_OBJECT
 
@@ -382,26 +383,49 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     };
 
     /**
+     * Setting options for loading vector layers.
+     * \since QGIS 3.0
+     */
+    struct LayerOptions
+    {
+
+      /**
+       * Constructor for LayerOptions.
+       */
+      explicit LayerOptions( bool loadDefaultStyle = true, bool readExtentFromXml = false )
+        : loadDefaultStyle( loadDefaultStyle )
+        , readExtentFromXml( readExtentFromXml )
+      {}
+
+      //! Set to true if the default layer style should be loaded
+      bool loadDefaultStyle = true;
+
+      /**
+       * If true, the layer extent will be read from XML (i.e. stored in the
+       * project file). If false, the extent will be determined by the provider on layer load.
+       */
+      bool readExtentFromXml = false;
+
+    };
+
+    /**
      * Constructor - creates a vector layer
      *
      * The QgsVectorLayer is constructed by instantiating a data provider.  The provider
      * interprets the supplied path (url) of the data source to connect to and access the
      * data.
      *
-     * \param  path  The path or url of the parameter.  Typically this encodes
+     * \param path  The path or url of the parameter.  Typically this encodes
      *               parameters used by the data provider as url query items.
-     * \param  baseName The name used to represent the layer in the legend
-     * \param  providerLib  The name of the data provider, e.g., "memory", "postgres"
-     * \param  loadDefaultStyleFlag whether to load the default style
-     * \param  readExtentFromXml Read extent from XML if true or let provider determine it if false
-     *
+     * \param baseName The name used to represent the layer in the legend
+     * \param providerLib  The name of the data provider, e.g., "memory", "postgres"
+     * \param options layer load options
      */
-    QgsVectorLayer( const QString &path = QString(), const QString &baseName = QString(),
-                    const QString &providerLib = "ogr", bool loadDefaultStyleFlag = true,
-                    bool readExtentFromXml = false );
+    explicit QgsVectorLayer( const QString &path = QString(), const QString &baseName = QString(),
+                             const QString &providerLib = "ogr", const QgsVectorLayer::LayerOptions &options = QgsVectorLayer::LayerOptions() );
 
 
-    virtual ~QgsVectorLayer();
+    ~QgsVectorLayer() override;
 
     //! QgsVectorLayer cannot be copied.
     QgsVectorLayer( const QgsVectorLayer &rhs ) = delete;
@@ -416,7 +440,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \returns a new layer instance
      * \since QGIS 3.0
      */
-    virtual QgsVectorLayer *clone() const override SIP_FACTORY;
+    QgsVectorLayer *clone() const override SIP_FACTORY;
 
     /**
      * Returns the permanent storage type for this layer as a friendly name.
@@ -495,7 +519,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \returns false if a dependency cycle has been detected
      * \since QGIS 3.0
      */
-    virtual bool setDependencies( const QSet<QgsMapLayerDependency> &layers ) override;
+    bool setDependencies( const QSet<QgsMapLayerDependency> &layers ) override;
 
     /**
      * Gets the list of dependencies. This includes data dependencies set by the user (\see setDataDependencies)
@@ -504,7 +528,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \returns a set of QgsMapLayerDependency
      * \since QGIS 3.0
      */
-    virtual QSet<QgsMapLayerDependency> dependencies() const override;
+    QSet<QgsMapLayerDependency> dependencies() const override;
 
     /**
      * Add a new field which is calculated by the expression specified
@@ -720,19 +744,19 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * Reads vector layer specific state from project file Dom node.
      * \note Called by QgsMapLayer::readXml().
      */
-    virtual bool readXml( const QDomNode &layer_node, const QgsReadWriteContext &context ) override;
+    bool readXml( const QDomNode &layer_node, const QgsReadWriteContext &context ) override;
 
     /**
      * Write vector layer specific state to project file Dom node.
      * \note Called by QgsMapLayer::writeXml().
      */
-    virtual bool writeXml( QDomNode &layer_node, QDomDocument &doc, const QgsReadWriteContext &context ) const override;
+    bool writeXml( QDomNode &layer_node, QDomDocument &doc, const QgsReadWriteContext &context ) const override;
 
     /**
      * Resolve references to other layers (kept as layer IDs after reading XML) into layer objects.
      * \since QGIS 3.0
      */
-    virtual void resolveReferences( QgsProject *project ) override;
+    void resolveReferences( QgsProject *project ) override;
 
     /**
      * Save named and sld style of the layer to the style table in the db.
@@ -764,10 +788,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     /**
      * Delete a style from the database
-     * \since QGIS 3.0
      * \param styleId the provider's layer_styles table id of the style to delete
      * \param msgError reference to string that will be updated with any error messages
      * \returns true in case of success
+     * \since QGIS 3.0
      */
     virtual bool deleteStyleFromDatabase( const QString &styleId, QString &msgError SIP_OUT );
 
@@ -783,7 +807,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * Calls loadNamedStyle( theURI, resultFlag, false );
      * Retained for backward compatibility
      */
-    virtual QString loadNamedStyle( const QString &theURI, bool &resultFlag SIP_OUT ) override;
+    QString loadNamedStyle( const QString &theURI, bool &resultFlag SIP_OUT ) override;
 
     /**
      * Loads the auxiliary layer for this vector layer. If there's no
@@ -965,7 +989,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
       return getFeatures( QgsFeatureRequest( rectangle ) );
     }
 
-    bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = 0 ) override;
+    bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = nullptr ) override;
 
     /**
      * Updates an existing feature. This method needs to query the datasource
@@ -1026,65 +1050,64 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * Adds a ring to polygon/multipolygon features
      * \param ring ring to add
      * \param featureId if specified, feature ID for feature ring was added to will be stored in this parameter
-     * \returns
-     *  0 in case of success,
-     *  1 problem with feature type,
-     *  2 ring not closed,
-     *  3 ring not valid,
-     *  4 ring crosses existing rings,
-     *  5 no feature found where ring can be inserted
-     *  6 layer not editable
+     * \returns QgsGeometry::OperationResult
+     * - Success
+     * - LayerNotEditable
+     * - AddRingNotInExistingFeature
+     * - InvalidInputGeometryType
+     * - AddRingNotClosed
+     * - AddRingNotValid
+     * - AddRingCrossesExistingRings
      */
-    // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int addRing( const QList<QgsPointXY> &ring, QgsFeatureId *featureId = nullptr );
+    QgsGeometry::OperationResult addRing( const QVector<QgsPointXY> &ring, QgsFeatureId *featureId = nullptr );
 
     /**
      * Adds a ring to polygon/multipolygon features (takes ownership)
      * \param ring ring to add
      * \param featureId if specified, feature ID for feature ring was added to will be stored in this parameter
-     * \returns
-     *  0 in case of success
-     *  1 problem with feature type
-     *  2 ring not closed
-     *  6 layer not editable
+     * \returns QgsGeometry::OperationResult
+     * - Success
+     * - LayerNotEditable
+     * - AddRingNotInExistingFeature
+     * - InvalidInputGeometryType
+     * - AddRingNotClosed
+     * - AddRingNotValid
+     * - AddRingCrossesExistingRings
      * \note available in Python as addCurvedRing
      */
-    // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int addRing( QgsCurve *ring SIP_TRANSFER, QgsFeatureId *featureId = nullptr ) SIP_PYNAME( addCurvedRing );
+    QgsGeometry::OperationResult addRing( QgsCurve *ring SIP_TRANSFER, QgsFeatureId *featureId = nullptr ) SIP_PYNAME( addCurvedRing );
 
     /**
      * Adds a new part polygon to a multipart feature
-     * \returns
-     *   0 in case of success,
-     *   1 if selected feature is not multipart,
-     *   2 if ring is not a valid geometry,
-     *   3 if new polygon ring not disjoint with existing rings,
-     *   4 if no feature was selected,
-     *   5 if several features are selected,
-     *   6 if selected geometry not found
-     *   7 layer not editable
+     * \returns QgsGeometry::OperationResult
+     * - Success
+     * - LayerNotEditable
+     * - SelectionIsEmpty
+     * - SelectionIsGreaterThanOne
+     * - AddPartSelectedGeometryNotFound
+     * - AddPartNotMultiGeometry
+     * - InvalidBaseGeometry
+     * - InvalidInputGeometryType
      */
-    // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int addPart( const QList<QgsPointXY> &ring );
+    QgsGeometry::OperationResult addPart( const QList<QgsPointXY> &ring );
 
     /**
      * Adds a new part polygon to a multipart feature
-     * \returns
-     *   0 in case of success,
-     *   1 if selected feature is not multipart,
-     *   2 if ring is not a valid geometry,
-     *   3 if new polygon ring not disjoint with existing rings,
-     *   4 if no feature was selected,
-     *   5 if several features are selected,
-     *   6 if selected geometry not found
-     *   7 layer not editable
+     * \returns QgsGeometry::OperationResult
+     * - Success
+     * - LayerNotEditable
+     * - SelectionIsEmpty
+     * - SelectionIsGreaterThanOne
+     * - AddPartSelectedGeometryNotFound
+     * - AddPartNotMultiGeometry
+     * - InvalidBaseGeometry
+     * - InvalidInputGeometryType
      * \note available in Python bindings as addPartV2
      */
-    // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int addPart( const QgsPointSequence &ring ) SIP_PYNAME( addPartV2 );
+    QgsGeometry::OperationResult addPart( const QgsPointSequence &ring ) SIP_PYNAME( addPartV2 );
 
     //! \note available in Python as addCurvedPart
-    int addPart( QgsCurve *ring SIP_TRANSFER ) SIP_PYNAME( addCurvedPart );
+    QgsGeometry::OperationResult addPart( QgsCurve *ring SIP_TRANSFER ) SIP_PYNAME( addCurvedPart );
 
     /**
      * Translates feature by dx, dy
@@ -1099,29 +1122,37 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * Splits parts cut by the given line
      *  \param splitLine line that splits the layer features
      *  \param topologicalEditing true if topological editing is enabled
-     *  \returns
-     *   0 in case of success,
-     *   4 if there is a selection but no feature split
+     *  \returns QgsGeometry::OperationResult
+     * - Success
+     * - NothingHappened
+     * - LayerNotEditable
+     * - InvalidInputGeometryType
+     * - InvalidBaseGeometry
+     * - GeometryEngineError
+     * - SplitCannotSplitPoint
      */
-    // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int splitParts( const QList<QgsPointXY> &splitLine, bool topologicalEditing = false );
+    QgsGeometry::OperationResult splitParts( const QVector<QgsPointXY> &splitLine, bool topologicalEditing = false );
 
     /**
      * Splits features cut by the given line
      *  \param splitLine line that splits the layer features
      *  \param topologicalEditing true if topological editing is enabled
-     *  \returns
-     *   0 in case of success,
-     *   4 if there is a selection but no feature split
+     *  \returns QgsGeometry::OperationResult
+     * - Success
+     * - NothingHappened
+     * - LayerNotEditable
+     * - InvalidInputGeometryType
+     * - InvalidBaseGeometry
+     * - GeometryEngineError
+     * - SplitCannotSplitPoint
      */
-    // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int splitFeatures( const QList<QgsPointXY> &splitLine, bool topologicalEditing = false );
+    QgsGeometry::OperationResult splitFeatures( const QVector<QgsPointXY> &splitLine, bool topologicalEditing = false );
 
     /**
      * Adds topological points for every vertex of the geometry.
      * \param geom the geometry where each vertex is added to segments of other features
-     * \note geom is not going to be modified by the function
      * \returns 0 in case of success
+     * \note geom is not going to be modified by the function
      */
     int addTopologicalPoints( const QgsGeometry &geom );
 
@@ -1154,10 +1185,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     void setLabeling( QgsAbstractVectorLayerLabeling *labeling SIP_TRANSFER );
 
     //! Returns true if the provider is in editing mode
-    virtual bool isEditable() const override;
+    bool isEditable() const override;
 
     //! Returns true if this is a geometry layer and false in case of NoGeometry (table only) or UnknownGeometry
-    virtual bool isSpatial() const override;
+    bool isSpatial() const override;
 
     //! Returns true if the provider has been modified since the last commit
     virtual bool isModified() const;
@@ -1171,13 +1202,13 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     bool isAuxiliaryField( int index, int &srcIndex ) const;
 
     //! Synchronises with changes in the datasource
-    virtual void reload() override;
+    void reload() override;
 
     /**
      * Return new instance of QgsMapLayerRenderer that will be used for rendering of given context
      * \since QGIS 2.4
      */
-    virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override SIP_FACTORY;
+    QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override SIP_FACTORY;
 
     QgsRectangle extent() const override;
     QgsRectangle sourceExtent() const override;
@@ -1329,7 +1360,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     bool deleteAttributes( QList<int> attrs );
 
-    bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = 0 ) override;
+    bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = nullptr ) override;
 
     //! Delete a feature from the layer (but does not commit it)
     bool deleteFeature( QgsFeatureId fid );
@@ -1718,6 +1749,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     QgsExpressionContext createExpressionContext() const override;
 
+    QgsExpressionContextScope *createExpressionContextScope() const override SIP_FACTORY;
+
     /**
      * Get the configuration of the form used to represent this vector layer.
      * This is a writable configuration that can directly be changed in place.
@@ -2066,6 +2099,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     void onFeatureDeleted( QgsFeatureId fid );
     void onRelationsLoaded();
     void onSymbolsCounted();
+    void onDirtyTransaction( const QString &sql );
 
   protected:
     //! Set the extent
@@ -2078,7 +2112,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /**
      * Returns true if the provider is in read-only mode
      */
-    virtual bool isReadOnly() const override;
+    bool isReadOnly() const override;
 
     /**
      * Bind layer to a specific data provider

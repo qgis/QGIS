@@ -23,6 +23,7 @@
 #include <gdal_version.h>
 #include "qgis_analysis.h"
 #include "qgis.h"
+#include "qgsogrutils.h"
 
 class QgsRectangle;
 
@@ -54,7 +55,6 @@ class ANALYSIS_EXPORT QgsAlignRaster
       public:
         //! Construct raster info with a path to a raster file
         RasterInfo( const QString &layerpath );
-        ~RasterInfo();
 
         RasterInfo( const RasterInfo &rh ) = delete;
         RasterInfo &operator=( const RasterInfo &rh ) = delete;
@@ -85,15 +85,17 @@ class ANALYSIS_EXPORT QgsAlignRaster
 
       protected:
         //! handle to open GDAL dataset
-        GDALDatasetH mDataset;
+        gdal::dataset_unique_ptr mDataset;
         //! CRS stored in WKT format
         QString mCrsWkt;
         //! geotransform coefficients
         double mGeoTransform[6];
-        //! raster grid size
-        int mXSize, mYSize;
+        //! raster grid size X
+        int mXSize = 0;
+        //! raster grid size Y
+        int mYSize = 0;
         //! number of raster's bands
-        int mBandCnt;
+        int mBandCnt = 0;
 
       private:
 #ifdef SIP_RUN

@@ -26,7 +26,7 @@ class QgsComposer;
 class QgsComposition;
 class QgsLayoutManager;
 
-class QgsLayoutManagerModel : public QAbstractListModel
+class QgsComposerManagerModel : public QAbstractListModel
 {
     Q_OBJECT
 
@@ -37,7 +37,7 @@ class QgsLayoutManagerModel : public QAbstractListModel
       CompositionRole = Qt::UserRole + 1,
     };
 
-    explicit QgsLayoutManagerModel( QgsLayoutManager *manager, QObject *parent = nullptr );
+    explicit QgsComposerManagerModel( QgsLayoutManager *manager, QObject *parent = nullptr );
 
     int rowCount( const QModelIndex &parent ) const override;
     QVariant data( const QModelIndex &index, int role ) const override;
@@ -62,8 +62,8 @@ class QgsComposerManager: public QDialog, private Ui::QgsComposerManagerBase
 {
     Q_OBJECT
   public:
-    QgsComposerManager( QWidget *parent = nullptr, Qt::WindowFlags f = 0 );
-    ~QgsComposerManager();
+    QgsComposerManager( QWidget *parent = nullptr, Qt::WindowFlags f = nullptr );
+    ~QgsComposerManager() override;
 
     void addTemplates( const QMap<QString, QString> &templates );
 
@@ -93,7 +93,7 @@ class QgsComposerManager: public QDialog, private Ui::QgsComposerManagerBase
     QPushButton *mRemoveButton = nullptr;
     QPushButton *mRenameButton = nullptr;
     QPushButton *mDuplicateButton = nullptr;
-    QgsLayoutManagerModel *mModel = nullptr;
+    QgsComposerManagerModel *mModel = nullptr;
 
 #ifdef Q_OS_MAC
     void showEvent( QShowEvent *event );

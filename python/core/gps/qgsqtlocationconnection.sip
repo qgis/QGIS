@@ -18,6 +18,7 @@
 class QgsQtLocationConnection: QgsGPSConnection
 {
 %Docstring
+
 .. note::
 
    may not be available in Python bindings on all platforms
@@ -35,7 +36,8 @@ class QgsQtLocationConnection: QgsGPSConnection
 Needed to make QtLocation detected
 %End
 
-    void parseData();
+    virtual void parseData();
+
 %Docstring
 Parse available data source content
 %End
@@ -45,7 +47,8 @@ Parse available data source content
 
     void satellitesInViewUpdated( const QList<QGeoSatelliteInfo> &satellites );
 %Docstring
- Called when the number of satellites in view is updated.
+Called when the number of satellites in view is updated.
+
 .. note::
 
    not available in Python bindings on android
@@ -53,7 +56,8 @@ Parse available data source content
 
     void satellitesInUseUpdated( const QList<QGeoSatelliteInfo> &satellites );
 %Docstring
- Called when the number of satellites in use is updated.
+Called when the number of satellites in use is updated.
+
 .. note::
 
    not available in Python bindings on android

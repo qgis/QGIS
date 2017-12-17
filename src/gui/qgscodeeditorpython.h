@@ -43,7 +43,7 @@ class GUI_EXPORT QgsCodeEditorPython : public QgsCodeEditor
      * \param filenames The list of apis files to load for the Python lexer
      * \since QGIS 2.6
      */
-    QgsCodeEditorPython( QWidget *parent SIP_TRANSFERTHIS = 0, const QList<QString> &filenames = QList<QString>() );
+    QgsCodeEditorPython( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QList<QString> &filenames = QList<QString>() );
 
     /**
      * Load APIs from one or more files

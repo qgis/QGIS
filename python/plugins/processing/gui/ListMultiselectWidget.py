@@ -1,18 +1,30 @@
+# -*- coding: utf-8 -*-
+
 """
-allows multiple selection in a large list
-
-Contact : marco@opengis.ch
-
-.. note:: This program is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published by
-     the Free Software Foundation; either version 2 of the License, or
-     (at your option) any later version.
+***************************************************************************
+    ListMultiSelectWidget.py
+    ---------------------
+    Date                 : June 2016
+    Copyright            : (C) 2016 by Marco Bernasocchi
+    Email                : marco at opengis.ch
+***************************************************************************
+*                                                                         *
+*   This program is free software; you can redistribute it and/or modify  *
+*   it under the terms of the GNU General Public License as published by  *
+*   the Free Software Foundation; either version 2 of the License, or     *
+*   (at your option) any later version.                                   *
+*                                                                         *
+***************************************************************************
 """
-from builtins import range
 
-__author__ = 'marco@opengis.ch'
+__author__ = 'Marco Bernasocchi'
+__date__ = 'June 2016'
+__copyright__ = '(C) 2016, Marco Bernasocchi'
+
+# This will get replaced with a git SHA1 when you do a git archive
+
 __revision__ = '$Format:%H$'
-__date__ = '9/07/2013'
+
 
 from qgis.PyQt.QtWidgets import (QGroupBox,
                                  QPushButton,

@@ -12,8 +12,8 @@
 class QgsMapCanvasItem : QGraphicsItem
 {
 %Docstring
- An abstract class for items that can be placed on the
- map canvas.
+An abstract class for items that can be placed on the
+map canvas.
 %End
 
 %TypeHeaderCode
@@ -26,16 +26,16 @@ class QgsMapCanvasItem : QGraphicsItem
 protected constructor: cannot be constructed directly
 %End
 
-    virtual ~QgsMapCanvasItem();
+    ~QgsMapCanvasItem();
 
     virtual void paint( QPainter *painter ) = 0;
 %Docstring
 function to be implemented by derived classes
 %End
 
-    virtual void paint( QPainter *painter,
-                        const QStyleOptionGraphicsItem *option,
-                        QWidget *widget = 0 );
+     virtual void paint( QPainter *painter,
+                const QStyleOptionGraphicsItem *option,
+                QWidget *widget = 0 );
 
     void updateCanvas();
 %Docstring
@@ -44,11 +44,12 @@ schedules map canvas for repaint
 
     bool setRenderContextVariables( QPainter *p, QgsRenderContext &context ) const;
 %Docstring
- Sets render context parameters
-\param p painter for rendering
-\param context out: configured context
+Sets render context parameters
+
+:param p: painter for rendering
+:param context: out: configured context
+
 :return: true in case of success *
- :rtype: bool
 %End
 
   public:
@@ -60,10 +61,10 @@ called on changed extent or resize event to update position of the item
 
     virtual QRectF boundingRect() const;
 
+
     QgsRectangle rect() const;
 %Docstring
 returns canvas item rectangle in map units
- :rtype: QgsRectangle
 %End
 
     void setRect( const QgsRectangle &r, bool resetRotation = true );
@@ -74,13 +75,11 @@ sets canvas item rectangle in map units
     QgsPointXY toMapCoordinates( QPoint point ) const;
 %Docstring
 transformation from screen coordinates to map coordinates
- :rtype: QgsPointXY
 %End
 
     QPointF toCanvasCoordinates( const QgsPointXY &point ) const;
 %Docstring
 transformation from map coordinates to screen coordinates
- :rtype: QPointF
 %End
 
   protected:

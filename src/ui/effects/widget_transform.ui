@@ -288,7 +288,7 @@
      <property name="sizeHint" stdset="0">
       <size>
        <width>20</width>
-       <height>189</height>
+       <height>0</height>
       </size>
      </property>
     </spacer>
@@ -297,14 +297,14 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsDoubleSpinBox</class>
-   <extends>QDoubleSpinBox</extends>
-   <header>qgsdoublespinbox.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsEffectDrawModeComboBox</class>
    <extends>QComboBox</extends>
    <header>qgseffectdrawmodecombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsUnitSelectionWidget</class>

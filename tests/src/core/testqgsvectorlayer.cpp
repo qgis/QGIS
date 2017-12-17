@@ -41,7 +41,7 @@ class TestSignalReceiver : public QObject
 
   public:
     TestSignalReceiver()
-      : QObject( 0 )
+      : QObject( nullptr )
       , featureBlendMode( QPainter::CompositionMode( 0 ) )
     {}
     bool rendererChanged =  false ;
@@ -338,10 +338,10 @@ void TestQgsVectorLayer::testAddTopologicalPoints()
   QgsVectorLayer *layerLine = new QgsVectorLayer( QStringLiteral( "LineString?crs=EPSG:27700" ), QStringLiteral( "layer line" ), QStringLiteral( "memory" ) );
   QVERIFY( layerLine->isValid() );
 
-  QgsPolyline line1;
+  QgsPolylineXY line1;
   line1 << QgsPointXY( 2, 1 ) << QgsPointXY( 1, 1 ) << QgsPointXY( 1, 3 );
   QgsFeature lineF1;
-  lineF1.setGeometry( QgsGeometry::fromPolyline( line1 ) );
+  lineF1.setGeometry( QgsGeometry::fromPolylineXY( line1 ) );
 
   layerLine->startEditing();
   layerLine->addFeature( lineF1 );

@@ -32,7 +32,7 @@ class APP_EXPORT QgsHandleBadLayersHandler
     QgsHandleBadLayersHandler() = default;
 
     //! Implementation of the handler
-    virtual void handleBadLayers( const QList<QDomNode> &layers ) override;
+    void handleBadLayers( const QList<QDomNode> &layers ) override;
 };
 
 

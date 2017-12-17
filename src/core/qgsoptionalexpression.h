@@ -77,8 +77,10 @@ class CORE_EXPORT QgsOptionalExpression : public QgsOptional<QgsExpression>
 };
 
 
-#if defined(Q_OS_WIN)
+#if defined(_MSC_VER)
+#ifndef SIP_RUN
 template CORE_EXPORT QgsOptional<QgsExpression>;
+#endif
 #endif
 
 

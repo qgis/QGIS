@@ -123,7 +123,15 @@ void QgsDecorationNorthArrow::render( const QgsMapSettings &mapSettings, QgsRend
       // called when the projection or map extent changes
       if ( mAutomatic )
       {
-        mRotationInt = QgsBearingUtils:: bearingTrueNorth( mapSettings.destinationCrs(), context.extent().center() );
+        try
+        {
+          mRotationInt = QgsBearingUtils:: bearingTrueNorth( mapSettings.destinationCrs(), context.extent().center() );
+        }
+        catch ( QgsException & )
+        {
+          mRotationInt = 0.0;
+          //QgsDebugMsg( "Can not get direction to true north. Probably project CRS is not defined." );
+        }
         mRotationInt += mapSettings.rotation();
       }
 
@@ -210,5 +218,4 @@ void QgsDecorationNorthArrow::render( const QgsMapSettings &mapSettings, QgsRend
       context.painter()->drawText( 10, 20, tr( "North arrow pixmap not found" ) );
     }
   }
-
 }

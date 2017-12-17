@@ -69,7 +69,10 @@ class gdal2xyz(GdalAlgorithm):
     def group(self):
         return self.tr('Raster conversion')
 
-    def getConsoleCommands(self, parameters, context, feedback):
+    def groupId(self):
+        return 'rasterconversion'
+
+    def getConsoleCommands(self, parameters, context, feedback, executing=True):
         arguments = []
         arguments = []
         arguments.append('-band')

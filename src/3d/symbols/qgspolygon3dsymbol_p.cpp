@@ -21,6 +21,9 @@
 #include "qgs3dutils.h"
 
 #include <Qt3DCore/QTransform>
+#include <Qt3DRender/QEffect>
+#include <Qt3DRender/QTechnique>
+#include <Qt3DRender/QCullFace>
 
 #include "qgsvectorlayer.h"
 #include "qgsmultipolygon.h"
@@ -103,9 +106,24 @@ void QgsPolygon3DSymbolEntity::addEntityForNotSelectedPolygons( const Qgs3DMapSe
   entity->setParent( this );
 }
 
+
 Qt3DExtras::QPhongMaterial *QgsPolygon3DSymbolEntity::material( const QgsPolygon3DSymbol &symbol ) const
 {
   Qt3DExtras::QPhongMaterial *material = new Qt3DExtras::QPhongMaterial;
+
+  // front/back side culling
+  auto techniques = material->effect()->techniques();
+  for ( auto tit = techniques.constBegin(); tit != techniques.constEnd(); ++tit )
+  {
+    auto renderPasses = ( *tit )->renderPasses();
+    for ( auto rpit = renderPasses.begin(); rpit != renderPasses.end(); ++rpit )
+    {
+      Qt3DRender::QCullFace *cullFace = new Qt3DRender::QCullFace;
+      cullFace->setMode( symbol.cullingMode() );
+      ( *rpit )->addRenderState( cullFace );
+    }
+  }
+
   material->setAmbient( symbol.material().ambient() );
   material->setDiffuse( symbol.material().diffuse() );
   material->setSpecular( symbol.material().specular() );
@@ -121,8 +139,8 @@ QgsPolygon3DSymbolEntityNode::QgsPolygon3DSymbolEntityNode( const Qgs3DMapSettin
 
 Qt3DRender::QGeometryRenderer *QgsPolygon3DSymbolEntityNode::renderer( const Qgs3DMapSettings &map, const QgsPolygon3DSymbol &symbol, const QgsVectorLayer *layer, const QgsFeatureRequest &request )
 {
-  QgsPointXY origin( map.originX(), map.originY() );
-  QList<QgsPolygonV2 *> polygons;
+  QgsPointXY origin( map.origin().x(), map.origin().y() );
+  QList<QgsPolygon *> polygons;
   QList<float> extrusionHeightPerPolygon;  // will stay empty if not needed per polygon
 
   QgsExpressionContext ctx( _expressionContext3D() );
@@ -142,10 +160,10 @@ Qt3DRender::QGeometryRenderer *QgsPolygon3DSymbolEntityNode::renderer( const Qgs
     QgsGeometry geom = f.geometry();
 
     // segmentize curved geometries if necessary
-    if ( QgsWkbTypes::isCurvedType( geom.geometry()->wkbType() ) )
-      geom = QgsGeometry( geom.geometry()->segmentize() );
+    if ( QgsWkbTypes::isCurvedType( geom.constGet()->wkbType() ) )
+      geom = QgsGeometry( geom.constGet()->segmentize() );
 
-    const QgsAbstractGeometry *g = geom.geometry();
+    const QgsAbstractGeometry *g = geom.constGet();
 
     ctx.setFeature( f );
     float height = symbol.height();
@@ -155,21 +173,21 @@ Qt3DRender::QGeometryRenderer *QgsPolygon3DSymbolEntityNode::renderer( const Qgs
     if ( hasDDExtrusion )
       extrusionHeight = ddp.valueAsDouble( QgsAbstract3DSymbol::PropertyExtrusionHeight, ctx, extrusionHeight );
 
-    if ( const QgsPolygonV2 *poly = qgsgeometry_cast< const QgsPolygonV2 *>( g ) )
+    if ( const QgsPolygon *poly = qgsgeometry_cast< const QgsPolygon *>( g ) )
     {
-      QgsPolygonV2 *polyClone = poly->clone();
+      QgsPolygon *polyClone = poly->clone();
       Qgs3DUtils::clampAltitudes( polyClone, symbol.altitudeClamping(), symbol.altitudeBinding(), height, map );
       polygons.append( polyClone );
       if ( hasDDExtrusion )
         extrusionHeightPerPolygon.append( extrusionHeight );
     }
-    else if ( const QgsMultiPolygonV2 *mpoly = qgsgeometry_cast< const QgsMultiPolygonV2 *>( g ) )
+    else if ( const QgsMultiPolygon *mpoly = qgsgeometry_cast< const QgsMultiPolygon *>( g ) )
     {
       for ( int i = 0; i < mpoly->numGeometries(); ++i )
       {
         const QgsAbstractGeometry *g2 = mpoly->geometryN( i );
         Q_ASSERT( QgsWkbTypes::flatType( g2->wkbType() ) == QgsWkbTypes::Polygon );
-        QgsPolygonV2 *polyClone = static_cast< const QgsPolygonV2 *>( g2 )->clone();
+        QgsPolygon *polyClone = static_cast< const QgsPolygon *>( g2 )->clone();
         Qgs3DUtils::clampAltitudes( polyClone, symbol.altitudeClamping(), symbol.altitudeBinding(), height, map );
         polygons.append( polyClone );
         if ( hasDDExtrusion )
@@ -181,6 +199,7 @@ Qt3DRender::QGeometryRenderer *QgsPolygon3DSymbolEntityNode::renderer( const Qgs
   }
 
   mGeometry = new QgsTessellatedPolygonGeometry;
+  mGeometry->setInvertNormals( symbol.invertNormals() );
   mGeometry->setPolygons( polygons, origin, symbol.extrusionHeight(), extrusionHeightPerPolygon );
 
   Qt3DRender::QGeometryRenderer *renderer = new Qt3DRender::QGeometryRenderer;

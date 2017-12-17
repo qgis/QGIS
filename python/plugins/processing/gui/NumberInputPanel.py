@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -28,15 +27,20 @@ __revision__ = '$Format:%H$'
 
 import os
 import math
+import sip
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import pyqtSignal
 from qgis.PyQt.QtWidgets import QDialog
 
 from qgis.core import (QgsExpression,
+                       QgsProperty,
                        QgsProcessingParameterNumber,
                        QgsProcessingOutputNumber,
-                       QgsProcessingModelChildParameterSource)
+                       QgsProcessingParameterDefinition,
+                       QgsProcessingModelChildParameterSource,
+                       QgsProcessingFeatureSourceDefinition,
+                       QgsProcessingUtils)
 from qgis.gui import QgsExpressionBuilderDialog
 from processing.tools.dataobjects import createExpressionContext, createContext
 
@@ -123,9 +127,7 @@ class NumberInputPanel(NUMBER_BASE, NUMBER_WIDGET):
 
     """
     Number input panel for use outside the modeller - this input panel
-    contains a user friendly spin box for entering values. It also
-    allows expressions to be evaluated, but these expressions are evaluated
-    immediately after entry and are not stored anywhere.
+    contains a user friendly spin box for entering values.
     """
 
     hasChanged = pyqtSignal()
@@ -156,43 +158,68 @@ class NumberInputPanel(NUMBER_BASE, NUMBER_WIDGET):
         else:
             self.spnValue.setMinimum(-999999999)
 
+        self.allowing_null = False
         # set default value
+        if param.flags() & QgsProcessingParameterDefinition.FlagOptional:
+            self.spnValue.setShowClearButton(True)
+            min = self.spnValue.minimum() - 1
+            self.spnValue.setMinimum(min)
+            self.spnValue.setValue(min)
+            self.spnValue.setSpecialValueText(self.tr('Not set'))
+            self.allowing_null = True
+
         if param.defaultValue() is not None:
             self.setValue(param.defaultValue())
-            try:
-                self.spnValue.setClearValue(float(param.defaultValue()))
-            except:
-                pass
+            if not self.allowing_null:
+                try:
+                    self.spnValue.setClearValue(float(param.defaultValue()))
+                except:
+                    pass
         elif self.param.minimum() is not None:
             try:
                 self.setValue(float(self.param.minimum()))
-                self.spnValue.setClearValue(float(self.param.minimum()))
+                if not self.allowing_null:
+                    self.spnValue.setClearValue(float(self.param.minimum()))
             except:
                 pass
-        else:
+        elif not self.allowing_null:
             self.setValue(0)
             self.spnValue.setClearValue(0)
-        self.btnSelect.setFixedHeight(self.spnValue.height())
 
-        self.btnSelect.clicked.connect(self.showExpressionsBuilder)
+        # we don't show the expression button outside of modeler
+        self.layout().removeWidget(self.btnSelect)
+        sip.delete(self.btnSelect)
+        self.btnSelect = None
+
+        if not self.param.isDynamic():
+            # only show data defined button for dynamic properties
+            self.layout().removeWidget(self.btnDataDefined)
+            sip.delete(self.btnDataDefined)
+            self.btnDataDefined = None
+        else:
+            self.btnDataDefined.init(0, QgsProperty(), self.param.dynamicPropertyDefinition())
+            self.btnDataDefined.registerEnabledWidget(self.spnValue, False)
+
         self.spnValue.valueChanged.connect(lambda: self.hasChanged.emit())
 
-    def showExpressionsBuilder(self):
-        context = createExpressionContext()
-        dlg = QgsExpressionBuilderDialog(None, str(self.spnValue.value()), self, 'generic', context)
-
-        dlg.setWindowTitle(self.tr('Expression based input'))
-        if dlg.exec_() == QDialog.Accepted:
-            exp = QgsExpression(dlg.expressionText())
-            if not exp.hasParserError():
-                try:
-                    val = float(exp.evaluate(context))
-                    self.setValue(val)
-                except:
-                    return
+    def setDynamicLayer(self, layer):
+        context = createContext()
+        try:
+            if isinstance(layer, QgsProcessingFeatureSourceDefinition):
+                layer, ok = layer.source.valueAsString(context.expressionContext())
+            if isinstance(layer, str):
+                layer = QgsProcessingUtils.mapLayerFromString(layer, context)
+            self.btnDataDefined.setVectorLayer(layer)
+        except:
+            pass
 
     def getValue(self):
-        return self.spnValue.value()
+        if self.btnDataDefined is not None and self.btnDataDefined.isActive():
+            return self.btnDataDefined.toProperty()
+        elif self.allowing_null and self.spnValue.value() == self.spnValue.minimum():
+            return None
+        else:
+            return self.spnValue.value()
 
     def setValue(self, value):
         try:

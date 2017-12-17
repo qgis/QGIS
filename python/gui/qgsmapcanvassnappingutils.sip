@@ -12,8 +12,9 @@
 class QgsMapCanvasSnappingUtils : QgsSnappingUtils
 {
 %Docstring
- Snapping utils instance that is connected to a canvas and updates the configuration
-  (map settings + current layer) whenever that is changed in the canvas.
+Snapping utils instance that is connected to a canvas and updates the configuration
+(map settings + current layer) whenever that is changed in the canvas.
+
 .. versionadded:: 2.8
 %End
 
@@ -25,7 +26,9 @@ class QgsMapCanvasSnappingUtils : QgsSnappingUtils
 
   protected:
     virtual void prepareIndexStarting( int count );
+
     virtual void prepareIndexProgress( int index );
+
 
 };
 

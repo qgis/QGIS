@@ -29,6 +29,8 @@
 #include "qgsgdalproviderbase.h"
 #include "qgsrectangle.h"
 #include "qgscoordinatetransform.h"
+#include "qgsogrutils.h"
+#include "qgsapplication.h"
 
 #include <QString>
 #include <QStringList>
@@ -63,7 +65,7 @@ struct QgsWcsAuthorization
   {
     if ( !mAuthCfg.isEmpty() )
     {
-      return QgsAuthManager::instance()->updateNetworkRequest( request, mAuthCfg );
+      return QgsApplication::authManager()->updateNetworkRequest( request, mAuthCfg );
     }
     else if ( !mUserName.isNull() || !mPassword.isNull() )
     {
@@ -77,7 +79,7 @@ struct QgsWcsAuthorization
   {
     if ( !mAuthCfg.isEmpty() )
     {
-      return QgsAuthManager::instance()->updateNetworkReply( reply, mAuthCfg );
+      return QgsApplication::authManager()->updateNetworkReply( reply, mAuthCfg );
     }
     return true;
   }
@@ -117,11 +119,11 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     explicit QgsWcsProvider( const QString &uri = QString() );
 
 
-    virtual ~QgsWcsProvider();
+    ~QgsWcsProvider() override;
 
     QgsWcsProvider *clone() const override;
 
-    virtual QgsCoordinateReferenceSystem crs() const override;
+    QgsCoordinateReferenceSystem crs() const override;
 
     /**
      * Get the coverage format used in the transfer from the WCS server
@@ -149,7 +151,7 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     //! Download cache
     void getCache( int bandNo, QgsRectangle  const &viewExtent, int width, int height, QString crs = QString(), QgsRasterBlockFeedback *feedback = nullptr ) const;
 
-    virtual QgsRectangle extent() const override;
+    QgsRectangle extent() const override;
 
     bool isValid() const override;
 
@@ -171,7 +173,7 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     int yBlockSize() const override;
     int xSize() const override;
     int ySize() const override;
-    QString metadata() override;
+    QString htmlMetadata() override;
     QgsRasterIdentifyResult identify( const QgsPointXY &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 ) override;
     QString lastErrorTitle() override;
     QString lastError() override;
@@ -330,7 +332,7 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     mutable VSILFILE *mCachedMemFile = nullptr;
 
     //! Pointer to cached GDAL dataset
-    mutable GDALDatasetH mCachedGdalDataset = nullptr;
+    mutable gdal::dataset_unique_ptr mCachedGdalDataset;
 
     //! Current cache error last getCache() error.
     mutable QgsError mCachedError;
@@ -399,7 +401,7 @@ class QgsWcsDownloadHandler : public QObject
     Q_OBJECT
   public:
     QgsWcsDownloadHandler( const QUrl &url, QgsWcsAuthorization &auth, QNetworkRequest::CacheLoadControl cacheLoadControl, QByteArray &cachedData, const QString &wcsVersion, QgsError &cachedError, QgsRasterBlockFeedback *feedback );
-    ~QgsWcsDownloadHandler();
+    ~QgsWcsDownloadHandler() override;
 
     void blockingDownload();
 

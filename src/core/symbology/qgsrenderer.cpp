@@ -89,6 +89,27 @@ QSet< QString > QgsFeatureRenderer::legendKeysForFeature( QgsFeature &feature, Q
   return QSet< QString >();
 }
 
+void QgsFeatureRenderer::startRender( QgsRenderContext &, const QgsFields & )
+{
+#ifdef QGISDEBUG
+  if ( !mThread )
+  {
+    mThread = QThread::currentThread();
+  }
+  else
+  {
+    Q_ASSERT_X( mThread == QThread::currentThread(), "QgsFeatureRenderer::startRender", "startRender called in a different thread - use a cloned renderer instead" );
+  }
+#endif
+}
+
+void QgsFeatureRenderer::stopRender( QgsRenderContext & )
+{
+#ifdef QGISDEBUG
+  Q_ASSERT_X( mThread == QThread::currentThread(), "QgsFeatureRenderer::stopRender", "stopRender called in a different thread - use a cloned renderer instead" );
+#endif
+}
+
 bool QgsFeatureRenderer::filterNeedsGeometry() const
 {
   return false;
@@ -96,6 +117,10 @@ bool QgsFeatureRenderer::filterNeedsGeometry() const
 
 bool QgsFeatureRenderer::renderFeature( QgsFeature &feature, QgsRenderContext &context, int layer, bool selected, bool drawVertexMarker )
 {
+#ifdef QGISDEBUG
+  Q_ASSERT_X( mThread == QThread::currentThread(), "QgsFeatureRenderer::renderFeature", "renderFeature called in a different thread - use a cloned renderer instead" );
+#endif
+
   QgsSymbol *symbol = symbolForFeature( feature, context );
   if ( !symbol )
     return false;

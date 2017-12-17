@@ -26,7 +26,6 @@
 **/
 #include "eviseventidtool.h"
 
-#include "qgscursors.h"
 #include "qgsmaptopixel.h"
 #include "qgsmaptool.h"
 #include "qgsvectorlayer.h"
@@ -45,8 +44,7 @@ eVisEventIdTool::eVisEventIdTool( QgsMapCanvas *canvas )
   : QgsMapTool( canvas )
 {
   //set cursor
-  QPixmap myIdentifyQPixmap = QPixmap( ( const char ** ) identify_cursor );
-  mCursor = QCursor( myIdentifyQPixmap, 1, 1 );
+  setCursor( QgsApplication::getThemeCursor( QgsApplication::Cursor::Identify ) );
 
   //set the current tool to this object
   if ( mCanvas )
@@ -120,6 +118,6 @@ void eVisEventIdTool::select( const QgsPointXY &point )
   myLayer->selectByIds( newSelectedFeatures );
 
   //Launch a new event browser to view selected features
-  mBrowser = new eVisGenericEventBrowserGui( mCanvas, mCanvas, 0 );
+  mBrowser = new eVisGenericEventBrowserGui( mCanvas, mCanvas, nullptr );
   mBrowser->setAttribute( Qt::WA_DeleteOnClose );
 }

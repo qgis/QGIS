@@ -39,14 +39,14 @@ class TerrainTextureImageDataGenerator : public Qt3DRender::QTextureImageDataGen
     TerrainTextureImageDataGenerator( const QgsRectangle &extent, const QString &debugText, const QImage &img, int version )
       : mExtent( extent ), mDebugText( debugText ), mImage( img ), mVersion( version ) {}
 
-    virtual Qt3DRender::QTextureImageDataPtr operator()() override
+    Qt3DRender::QTextureImageDataPtr operator()() override
     {
       Qt3DRender::QTextureImageDataPtr dataPtr = Qt3DRender::QTextureImageDataPtr::create();
       dataPtr->setImage( mImage.isNull() ? placeholderImage() : mImage ); // will copy image data to the internal byte array
       return dataPtr;
     }
 
-    virtual bool operator ==( const QTextureImageDataGenerator &other ) const override
+    bool operator ==( const QTextureImageDataGenerator &other ) const override
     {
       const TerrainTextureImageDataGenerator *otherFunctor = functor_cast<TerrainTextureImageDataGenerator>( &other );
       return otherFunctor != nullptr && otherFunctor->mVersion == mVersion &&
@@ -72,12 +72,6 @@ QgsTerrainTextureImage::QgsTerrainTextureImage( const QImage &image, const QgsRe
   , mExtent( extent )
   , mDebugText( debugText )
   , mImage( image )
-  , mVersion( 1 )
-{
-}
-
-
-QgsTerrainTextureImage::~QgsTerrainTextureImage()
 {
 }
 

@@ -60,10 +60,10 @@
 #include <QDir>
 #include <QUrl>
 
-#ifdef Q_OS_UNIX
-#include <utime.h>
-#elif _MSC_VER
+#ifdef _MSC_VER
 #include <sys/utime.h>
+#else
+#include <utime.h>
 #endif
 
 // canonical project instance
@@ -373,6 +373,10 @@ QgsProject::~QgsProject()
   delete mRelationManager;
   delete mLayerTreeRegistryBridge;
   delete mRootGroup;
+  if ( this == sProject )
+  {
+    sProject = nullptr;
+  }
 }
 
 
@@ -447,9 +451,6 @@ QgsCoordinateReferenceSystem QgsProject::crs() const
 void QgsProject::setCrs( const QgsCoordinateReferenceSystem &crs )
 {
   mCrs = crs;
-  writeEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectCRSProj4String" ), crs.toProj4() );
-  writeEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectCRSID" ), static_cast< int >( crs.srsid() ) );
-  writeEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectCrs" ), crs.authid() );
   writeEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectionsEnabled" ), crs.isValid() ? 1 : 0 );
   setDirty( true );
   emit crsChanged();
@@ -470,6 +471,17 @@ void QgsProject::setEllipsoid( const QString &ellipsoid )
   emit ellipsoidChanged( ellipsoid );
 }
 
+QgsCoordinateTransformContext QgsProject::transformContext() const
+{
+  return mTransformContext;
+}
+
+void QgsProject::setTransformContext( const QgsCoordinateTransformContext &context )
+{
+  mTransformContext = context;
+  emit transformContextChanged();
+}
+
 void QgsProject::clear()
 {
   mFile.setFileName( QString() );
@@ -480,6 +492,10 @@ void QgsProject::clear()
   mDirty = false;
   mTrustLayerMetadata = false;
   mCustomVariables.clear();
+
+  QgsCoordinateTransformContext context;
+  context.readSettings();
+  setTransformContext( context );
 
   mEmbeddedLayers.clear();
   mRelationManager->clear();
@@ -880,14 +896,41 @@ bool QgsProject::readProjectFile( const QString &filename )
   QgsCoordinateReferenceSystem projectCrs;
   if ( readNumEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectionsEnabled" ), 0 ) )
   {
-    long currentCRS = readNumEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectCRSID" ), -1 );
-    if ( currentCRS != -1 )
+    // first preference - dedicated projectCrs node
+    QDomNode srsNode = doc->documentElement().namedItem( QStringLiteral( "projectCrs" ) );
+    if ( !srsNode.isNull() )
     {
-      projectCrs = QgsCoordinateReferenceSystem::fromSrsId( currentCRS );
+      projectCrs.readXml( srsNode );
+    }
+
+    if ( !projectCrs.isValid() )
+    {
+      // else we try using the stored proj4 string - it's consistent across different QGIS installs,
+      // whereas the srsid can vary (e.g. for custom projections)
+      QString projCrsString = readEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectCRSProj4String" ) );
+      if ( !projCrsString.isEmpty() )
+      {
+        projectCrs = QgsCoordinateReferenceSystem::fromProj4( projCrsString );
+      }
+      // last try using crs id - most fragile
+      if ( !projectCrs.isValid() )
+      {
+        long currentCRS = readNumEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectCRSID" ), -1 );
+        if ( currentCRS != -1 && currentCRS < USER_CRS_START_ID )
+        {
+          projectCrs = QgsCoordinateReferenceSystem::fromSrsId( currentCRS );
+        }
+      }
     }
   }
   mCrs = projectCrs;
-  emit crsChanged();
+
+  QStringList datumErrors;
+  if ( !mTransformContext.readXml( doc->documentElement(), context, datumErrors ) )
+  {
+    emit missingDatumTransforms( datumErrors );
+  }
+  emit transformContextChanged();
 
   QDomNodeList nl = doc->elementsByTagName( QStringLiteral( "autotransaction" ) );
   if ( nl.count() )
@@ -920,7 +963,7 @@ bool QgsProject::readProjectFile( const QString &filename )
   QDomElement layerTreeElem = doc->documentElement().firstChildElement( QStringLiteral( "layer-tree-group" ) );
   if ( !layerTreeElem.isNull() )
   {
-    mRootGroup->readChildrenFromXml( layerTreeElem );
+    mRootGroup->readChildrenFromXml( layerTreeElem, context );
   }
   else
   {
@@ -1018,6 +1061,8 @@ bool QgsProject::readProjectFile( const QString &filename )
     QgsMessageLog::logMessage( tr( "Project Variables Invalid" ), tr( "The project contains invalid variable settings." ) );
   }
   emit customVariablesChanged();
+  emit crsChanged();
+  emit ellipsoidChanged( ellipsoid() );
 
   // read the project: used by map canvas and legend
   emit readProject( *doc );
@@ -1027,8 +1072,6 @@ bool QgsProject::readProjectFile( const QString &filename )
     setDirty( false );
 
   emit nonIdentifiableLayersChanged( nonIdentifiableLayers() );
-  emit crsChanged();
-  emit ellipsoidChanged( ellipsoid() );
 
   return true;
 }
@@ -1036,6 +1079,7 @@ bool QgsProject::readProjectFile( const QString &filename )
 
 void QgsProject::loadEmbeddedNodes( QgsLayerTreeGroup *group )
 {
+
   Q_FOREACH ( QgsLayerTreeNode *child, group->children() )
   {
     if ( QgsLayerTree::isGroup( child ) )
@@ -1046,7 +1090,6 @@ void QgsProject::loadEmbeddedNodes( QgsLayerTreeGroup *group )
         // make sure to convert the path from relative to absolute
         QString projectPath = readPath( childGroup->customProperty( QStringLiteral( "embedded_project" ) ).toString() );
         childGroup->setCustomProperty( QStringLiteral( "embedded_project" ), projectPath );
-
         QgsLayerTreeGroup *newGroup = createEmbeddedGroup( childGroup->name(), projectPath, childGroup->customProperty( QStringLiteral( "embedded-invisible-layers" ) ).toStringList() );
         if ( newGroup )
         {
@@ -1336,11 +1379,17 @@ bool QgsProject::writeProjectFile( const QString &filename )
   QDomText titleText = doc->createTextNode( title() );  // XXX why have title TWICE?
   titleNode.appendChild( titleText );
 
+  // write project CRS
+  QDomElement srsNode = doc->createElement( QStringLiteral( "projectCrs" ) );
+  mCrs.writeXml( srsNode, *doc );
+  qgisNode.appendChild( srsNode );
+
   // write layer tree - make sure it is without embedded subgroups
   QgsLayerTreeNode *clonedRoot = mRootGroup->clone();
   QgsLayerTreeUtils::replaceChildrenOfEmbeddedGroups( QgsLayerTree::toGroup( clonedRoot ) );
   QgsLayerTreeUtils::updateEmbeddedGroupsProjectPath( QgsLayerTree::toGroup( clonedRoot ), this ); // convert absolute paths to relative paths if required
-  clonedRoot->writeXml( qgisNode );
+
+  clonedRoot->writeXml( qgisNode, context );
   delete clonedRoot;
 
   mSnappingConfig.writeProject( *doc );
@@ -1418,6 +1467,8 @@ bool QgsProject::writeProjectFile( const QString &filename )
   mMapThemeCollection->writeXml( *doc );
 
   mLabelingEngineSettings->writeSettingsToProject( this );
+
+  mTransformContext.writeXml( qgisNode, context );
 
   QDomElement annotationsElem = mAnnotationManager->writeXml( *doc, context );
   qgisNode.appendChild( annotationsElem );
@@ -1856,6 +1907,9 @@ QgsLayerTreeGroup *QgsProject::createEmbeddedGroup( const QString &groupName, co
     return nullptr;
   }
 
+  QgsReadWriteContext context;
+  context.setPathResolver( pathResolver() );
+
   // store identify disabled layers of the embedded project
   QSet<QString> embeddedIdentifyDisabledLayers;
   QDomElement disabledLayersElem = projectDocument.documentElement().firstChildElement( QStringLiteral( "properties" ) ).firstChildElement( QStringLiteral( "Identify" ) ).firstChildElement( QStringLiteral( "disabledLayers" ) );
@@ -1873,7 +1927,7 @@ QgsLayerTreeGroup *QgsProject::createEmbeddedGroup( const QString &groupName, co
   QDomElement layerTreeElem = projectDocument.documentElement().firstChildElement( QStringLiteral( "layer-tree-group" ) );
   if ( !layerTreeElem.isNull() )
   {
-    root->readChildrenFromXml( layerTreeElem );
+    root->readChildrenFromXml( layerTreeElem, context );
   }
   else
   {
@@ -2254,7 +2308,7 @@ QList<QgsMapLayer *> QgsProject::addMapLayers(
       QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mlayer );
       if ( vl )
       {
-        vl->loadAuxiliaryLayer( *mAuxiliaryStorage.get() );
+        vl->loadAuxiliaryLayer( *mAuxiliaryStorage );
       }
     }
   }

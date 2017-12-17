@@ -53,7 +53,7 @@ void QgsGPSDeviceDialog::pbnNewDevice_clicked()
 
 void QgsGPSDeviceDialog::pbnDeleteDevice_clicked()
 {
-  if ( QMessageBox::warning( this, tr( "Are you sure?" ),
+  if ( QMessageBox::warning( this, tr( "Delete Device" ),
                              tr( "Are you sure that you want to delete this device?" ),
                              QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Ok )
   {

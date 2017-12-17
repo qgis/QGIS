@@ -29,7 +29,7 @@ class QgsWfsRequest : public QObject
   public:
     explicit QgsWfsRequest( const QString &uri );
 
-    virtual ~QgsWfsRequest();
+    ~QgsWfsRequest() override;
 
     //! \brief proceed to sending a GET request
     bool sendGET( const QUrl &url, bool synchronous, bool forceRefresh = false, bool cache = true );

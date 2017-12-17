@@ -1,7 +1,7 @@
 v.kcv
 Randomly partition points into test/train sets.
 Vector (v.*)
-ParameterVector|map|Input layer|-1|False
-ParameterNumber|npartitions|Number of partitions|2.0|32767|10
-ParameterString|column|Name for new column to which partition number is written|part
-OutputVector|output|Partition
+QgsProcessingParameterVectorLayer|map|Input layer|-1|None|False
+QgsProcessingParameterNumber|npartitions|Number of partitions|QgsProcessingParameterNumber.Double|10|False|32767|2.0
+QgsProcessingParameterString|column|Name for new column to which partition number is written|part
+QgsProcessingParameterVectorDestination|output|Partition

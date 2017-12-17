@@ -22,8 +22,8 @@
 class QgsExternalResourceWidget : QWidget
 {
 %Docstring
- Widget to display file path with a push button for an "open file" dialog
- It can also be used to display a picture or a web page.
+Widget to display file path with a push button for an "open file" dialog
+It can also be used to display a picture or a web page.
 *
 %End
 
@@ -47,28 +47,27 @@ class QgsExternalResourceWidget : QWidget
     explicit QgsExternalResourceWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
  QgsExternalResourceWidget creates a widget with a file widget and a document viewer
- Both part of the widget are optional.
-.. seealso:: QgsFileWidget
+Both part of the widget are optional.
+
+.. seealso:: :py:class:`QgsFileWidget`
 %End
 
     QVariant documentPath( QVariant::Type type = QVariant::String ) const;
 %Docstring
  documentPath returns the path of the current document in the widget
- \param type determines the type of the returned null variant if the document is not defined yet
- :rtype: QVariant
+
+:param type: determines the type of the returned null variant if the document is not defined yet
 %End
     void setDocumentPath( const QVariant &documentPath );
 
     QgsFileWidget *fileWidget();
 %Docstring
 access the file widget to allow its configuration
- :rtype: QgsFileWidget
 %End
 
     bool fileWidgetVisible() const;
 %Docstring
 returns if the file widget is visible in the widget
- :rtype: bool
 %End
     void setFileWidgetVisible( bool visible );
 %Docstring
@@ -78,7 +77,6 @@ set the visiblity of the file widget in the layout
     QgsExternalResourceWidget::DocumentViewerContent documentViewerContent() const;
 %Docstring
 returns the type of content used in the document viewer
- :rtype: QgsExternalResourceWidget.DocumentViewerContent
 %End
     void setDocumentViewerContent( QgsExternalResourceWidget::DocumentViewerContent content );
 %Docstring
@@ -88,24 +86,24 @@ setDocumentViewerContent defines the type of content to be shown. Widget will be
     int documentViewerHeight() const;
 %Docstring
 returns the height of the document viewer
- :rtype: int
 %End
 
     void setDocumentViewerHeight( int height );
 %Docstring
  setDocumentViewerWidth set the height of the document viewer.
- \param height the height. Use 0 for automatic best display.
+
+:param height: the height. Use 0 for automatic best display.
 %End
     int documentViewerWidth() const;
 %Docstring
 returns the width of the document viewer
- :rtype: int
 %End
 
     void setDocumentViewerWidth( int width );
 %Docstring
  setDocumentViewerWidth set the width of the document viewer.
- \param width the width. Use 0 for automatic best display.
+
+:param width: the width. Use 0 for automatic best display.
 %End
 
     void setReadOnly( bool readOnly );
@@ -115,29 +113,27 @@ defines if the widget is readonly
 
     QgsFileWidget::RelativeStorage relativeStorage() const;
 %Docstring
- Configures if paths are handled absolute or relative and if relative,
- which should be the base path.
- :rtype: QgsFileWidget.RelativeStorage
+Configures if paths are handled absolute or relative and if relative,
+which should be the base path.
 %End
 
     void setRelativeStorage( QgsFileWidget::RelativeStorage relativeStorage );
 %Docstring
- Configures if paths are handled absolute or relative and if relative,
- which should be the base path.
+Configures if paths are handled absolute or relative and if relative,
+which should be the base path.
 %End
 
 
     QString defaultRoot() const;
 %Docstring
- Configures the base path which should be used if the relativeStorage property
- is set to QgsFileWidget.RelativeDefaultPath.
- :rtype: str
+Configures the base path which should be used if the relativeStorage property
+is set to QgsFileWidget.RelativeDefaultPath.
 %End
 
     void setDefaultRoot( const QString &defaultRoot );
 %Docstring
- Configures the base path which should be used if the relativeStorage property
- is set to QgsFileWidget.RelativeDefaultPath.
+Configures the base path which should be used if the relativeStorage property
+is set to QgsFileWidget.RelativeDefaultPath.
 %End
 
   signals:

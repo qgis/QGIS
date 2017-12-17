@@ -28,6 +28,26 @@
       <Type>Real</Type>
     </PropertyDefn>
     <PropertyDefn>
+      <Name>node_index</Name>
+      <ElementPath>node_index</ElementPath>
+      <Type>Integer</Type>
+    </PropertyDefn>
+    <PropertyDefn>
+      <Name>node_part</Name>
+      <ElementPath>node_part</ElementPath>
+      <Type>Integer</Type>
+    </PropertyDefn>
+    <PropertyDefn>
+      <Name>node_part_ring</Name>
+      <ElementPath>node_part_ring</ElementPath>
+      <Type>Integer</Type>
+    </PropertyDefn>
+    <PropertyDefn>
+      <Name>node_part_index</Name>
+      <ElementPath>node_part_index</ElementPath>
+      <Type>Integer</Type>
+    </PropertyDefn>
+    <PropertyDefn>
       <Name>distance</Name>
       <ElementPath>distance</ElementPath>
       <Type>Real</Type>

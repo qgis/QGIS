@@ -14,19 +14,19 @@
 class QgsProviderMetadata
 {
 %Docstring
- Holds data provider key, description, and associated shared library file or function pointer information.
+Holds data provider key, description, and associated shared library file or function pointer information.
 
- Provider metadata refers either to providers which are loaded via libraries or
- which are native providers that are included in the core QGIS installation
- and accessed through function pointers.
+Provider metadata refers either to providers which are loaded via libraries or
+which are native providers that are included in the core QGIS installation
+and accessed through function pointers.
 
- For library based providers, the metadata class is used in a lazy load
- implementation in QgsProviderRegistry.  To save memory, data providers
- are only actually loaded via QLibrary calls if they're to be used.  (Though they're all
- iteratively loaded once to get their metadata information, and then
- unloaded when the QgsProviderRegistry is created.)  QgsProviderMetadata
- supplies enough information to be able to later load the associated shared
- library object.
+For library based providers, the metadata class is used in a lazy load
+implementation in QgsProviderRegistry.  To save memory, data providers
+are only actually loaded via QLibrary calls if they're to be used.  (Though they're all
+iteratively loaded once to get their metadata information, and then
+unloaded when the QgsProviderRegistry is created.)  QgsProviderMetadata
+supplies enough information to be able to later load the associated shared
+library object.
 %End
 
 %TypeHeaderCode
@@ -40,26 +40,23 @@ class QgsProviderMetadata
 
     QString key() const;
 %Docstring
- This returns the unique key associated with the provider
+This returns the unique key associated with the provider
 
 This key string is used for the associative container in QgsProviderRegistry
- :rtype: str
 %End
 
     QString description() const;
 %Docstring
- This returns descriptive text for the provider
+This returns descriptive text for the provider
 
 This is used to provide a descriptive list of available data providers.
- :rtype: str
 %End
 
     QString library() const;
 %Docstring
- This returns the library file name
+This returns the library file name
 
 This is used to QLibrary calls to load the data provider.
- :rtype: str
 %End
 
 

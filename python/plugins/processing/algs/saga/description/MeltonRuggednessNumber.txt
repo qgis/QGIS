@@ -1,6 +1,6 @@
-Melton Ruggedness Number
+ParameMelton Ruggedness Number
 ta_hydrology
-ParameterRaster|DEM|Elevation|False
-OutputRaster|AREA|Catchment Area
-OutputRaster|ZMAX|Maximum Height
-OutputRaster|MRN|Melton Ruggedness Number
+QgsProcessingParameterRasterLayer|DEM|Elevation|None|False
+QgsProcessingParameterRasterDestination|AREA|Catchment Area
+QgsProcessingParameterRasterDestination|ZMAX|Maximum Height
+QgsProcessingParameterRasterDestination|MRN|Melton Ruggedness Number

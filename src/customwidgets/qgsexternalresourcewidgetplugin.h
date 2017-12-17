@@ -29,7 +29,7 @@ class CUSTOMWIDGETS_EXPORT QgsExternalResourceWidgetPlugin : public QObject, pub
     Q_INTERFACES( QDesignerCustomWidgetInterface )
 
   public:
-    explicit QgsExternalResourceWidgetPlugin( QObject *parent = 0 );
+    explicit QgsExternalResourceWidgetPlugin( QObject *parent = nullptr );
 
   private:
     bool mInitialized;

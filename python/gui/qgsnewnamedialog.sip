@@ -12,8 +12,9 @@
 class QgsNewNameDialog : QgsDialog
 {
 %Docstring
- New name, for example new layer name dialog. If existing names are provided,
- the dialog warns users if an entered name already exists.
+New name, for example new layer name dialog. If existing names are provided,
+the dialog warns users if an entered name already exists.
+
 .. versionadded:: 2.10
 %End
 
@@ -27,85 +28,98 @@ class QgsNewNameDialog : QgsDialog
                       const QRegExp &regexp = QRegExp(), Qt::CaseSensitivity cs = Qt::CaseSensitive,
                       QWidget *parent /TransferThis/ = 0, Qt::WindowFlags flags = QgsGuiUtils::ModalDialogFlags );
 %Docstring
- New dialog constructor.
- \param source original data source name, e.g. original layer name of the layer to be copied
- \param initial initial name
- \param extensions base name extensions, e.g. raster base name band extensions or vector layer type extensions
- \param existing existing names
- \param regexp regular expression to be used as validator, for example db tables should have "[A-Za-z_][A-Za-z0-9_]+"
- \param cs case sensitivity for new name to existing names comparison
- \param parent
- \param flags
+New dialog constructor.
+
+:param source: original data source name, e.g. original layer name of the layer to be copied
+:param initial: initial name
+:param extensions: base name extensions, e.g. raster base name band extensions or vector layer type extensions
+:param existing: existing names
+:param regexp: regular expression to be used as validator, for example db tables should have "[A-Za-z_][A-Za-z0-9_]+"
+:param cs: case sensitivity for new name to existing names comparison
+:param parent:
+:param flags:
 %End
 
     void setHintString( const QString &hintString );
 %Docstring
- Sets the hint string for the dialog (the text shown above the name
- input box).
- \param hintString hint text
-.. seealso:: hintString()
+Sets the hint string for the dialog (the text shown above the name
+input box).
+
+:param hintString: hint text
+
+.. seealso:: :py:func:`hintString()`
+
 .. versionadded:: 2.12
 %End
 
     QString hintString() const;
 %Docstring
- Returns the hint string for the dialog (the text shown above the name
- input box).
-.. seealso:: setHintString()
+Returns the hint string for the dialog (the text shown above the name
+input box).
+
+.. seealso:: :py:func:`setHintString()`
+
 .. versionadded:: 2.12
- :rtype: str
 %End
 
     void setOverwriteEnabled( bool enabled );
 %Docstring
- Sets whether users are permitted to overwrite existing names. If true, then
- the dialog will reflect that the new name will overwrite an existing name. If false,
- then the dialog will not accept names which already exist.
+Sets whether users are permitted to overwrite existing names. If true, then
+the dialog will reflect that the new name will overwrite an existing name. If false,
+then the dialog will not accept names which already exist.
+
 .. versionadded:: 2.12
-.. seealso:: overwriteEnabled()
+
+.. seealso:: :py:func:`overwriteEnabled()`
 %End
 
     bool overwriteEnabled() const;
 %Docstring
- Returns whether users are permitted to overwrite existing names.
+Returns whether users are permitted to overwrite existing names.
+
 .. versionadded:: 2.12
-.. seealso:: setOverwriteEnabled()
- :rtype: bool
+
+.. seealso:: :py:func:`setOverwriteEnabled()`
 %End
 
     void setConflictingNameWarning( const QString &string );
 %Docstring
- Sets the string used for warning users if a conflicting name exists.
- \param string warning string. If empty a default warning string will be used.
+Sets the string used for warning users if a conflicting name exists.
+
+:param string: warning string. If empty a default warning string will be used.
+
 .. versionadded:: 2.12
-.. seealso:: conflictingNameWarning()
+
+.. seealso:: :py:func:`conflictingNameWarning()`
 %End
 
     QString conflictingNameWarning() const;
 %Docstring
- Returns the string used for warning users if a conflicting name exists.
+Returns the string used for warning users if a conflicting name exists.
+
 .. versionadded:: 2.12
-.. seealso:: setConflictingNameWarning()
- :rtype: str
+
+.. seealso:: :py:func:`setConflictingNameWarning()`
 %End
 
     QString name() const;
 %Docstring
- Name entered by user.
- :return: new name
- :rtype: str
+Name entered by user.
+
+:return: new name
 %End
 
     static bool exists( const QString &name, const QStringList &extensions,
                         const QStringList &existing, Qt::CaseSensitivity cs = Qt::CaseSensitive );
 %Docstring
- Test if name or name with at least one extension exists.
- \param name name or base name
- \param extensions base name extensions
- \param existing existing names
- \param cs case sensitivity for new name to existing names comparison
- :return: true if name exists
- :rtype: bool
+Test if name or name with at least one extension exists.
+
+:param name: name or base name
+:param extensions: base name extensions
+:param existing: existing names
+:param cs: case sensitivity for new name to existing names comparison
+
+:return: true if name exists
 %End
   public slots:
     void nameChanged();
@@ -115,17 +129,10 @@ class QgsNewNameDialog : QgsDialog
     QString highlightText( const QString &text );
 %Docstring
 List of names with extensions
- :rtype: str
 %End
     static QStringList fullNames( const QString &name, const QStringList &extensions );
-%Docstring
- :rtype: list of str
-%End
     static QStringList matching( const QStringList &newNames, const QStringList &existingNames,
                                  Qt::CaseSensitivity cs = Qt::CaseSensitive );
-%Docstring
- :rtype: list of str
-%End
 };
 
 /************************************************************************

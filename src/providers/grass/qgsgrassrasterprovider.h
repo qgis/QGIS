@@ -97,10 +97,10 @@ class GRASS_LIB_EXPORT QgsGrassRasterProvider : public QgsRasterDataProvider
      *                otherwise we contact the host directly.
      *
      */
-    explicit QgsGrassRasterProvider( QString const &uri = 0 );
+    explicit QgsGrassRasterProvider( QString const &uri = QString() );
 
 
-    ~QgsGrassRasterProvider();
+    ~QgsGrassRasterProvider() override;
 
     QgsRasterInterface *clone() const override;
 
@@ -136,12 +136,12 @@ class GRASS_LIB_EXPORT QgsGrassRasterProvider : public QgsRasterDataProvider
      */
     QString description() const override;
 
-    virtual QgsCoordinateReferenceSystem crs() const override;
+    QgsCoordinateReferenceSystem crs() const override;
 
     /**
      * Return the extent for this data layer
      */
-    virtual QgsRectangle extent() const override;
+    QgsRectangle extent() const override;
 
     bool isValid() const override;
 
@@ -205,9 +205,9 @@ class GRASS_LIB_EXPORT QgsGrassRasterProvider : public QgsRasterDataProvider
      * Get metadata in a format suitable for feeding directly
      * into a subset of the GUI raster properties "Metadata" tab.
      */
-    QString metadata() override;
+    QString htmlMetadata() override;
 
-    virtual QDateTime dataTimestamp() const override;
+    QDateTime dataTimestamp() const override;
 
     // used by GRASS tools
     void freeze();

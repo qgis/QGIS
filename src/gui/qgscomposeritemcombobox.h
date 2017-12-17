@@ -43,7 +43,7 @@ class GUI_EXPORT QgsComposerItemComboBox : public QComboBox
      * \param composition composition to show items from. If not set, no items will be shown
      * until setComposition() is called
      */
-    explicit QgsComposerItemComboBox( QWidget *parent SIP_TRANSFERTHIS = 0, QgsComposition *composition = nullptr );
+    explicit QgsComposerItemComboBox( QWidget *parent SIP_TRANSFERTHIS = nullptr, QgsComposition *composition = nullptr );
 
     /**
      * Sets the composition containing the items to list in the combo box.

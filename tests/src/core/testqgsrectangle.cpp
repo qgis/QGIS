@@ -27,6 +27,7 @@ class TestQgsRectangle: public QObject
   private slots:
     void isEmpty();
     void fromWkt();
+    void fromCenter();
     void manipulate();
     void regression6194();
     void operators();
@@ -37,6 +38,7 @@ class TestQgsRectangle: public QObject
     void include();
     void buffered();
     void isFinite();
+    void combine();
     void dataStream();
 };
 
@@ -74,6 +76,28 @@ void TestQgsRectangle::fromWkt()
   QVERIFY( QgsRectangle::fromWkt( QStringLiteral( "POLYGON((0 0,1 0,1 1,0 1,0 1))" ) ).isEmpty() );
   QVERIFY( QgsRectangle::fromWkt( QStringLiteral( "POLYGON((0 0,1 0,1 1,0 1,0 1))" ) ).isEmpty() );
   QVERIFY( QgsRectangle::fromWkt( QStringLiteral( "POLYGON((0 0,1 0,1 1,0 1))" ) ).isEmpty() );
+}
+
+void TestQgsRectangle::fromCenter()
+{
+  QgsRectangle rect = QgsRectangle::fromCenterAndSize( QgsPointXY( 12, 21 ), 20, 40 );
+  QVERIFY( ! rect.isEmpty() );
+  QCOMPARE( rect.xMinimum(), 2.0 );
+  QCOMPARE( rect.yMinimum(), 1.0 );
+  QCOMPARE( rect.xMaximum(), 22.0 );
+  QCOMPARE( rect.yMaximum(), 41.0 );
+
+  rect = QgsRectangle::fromCenterAndSize( QgsPointXY( 12, 21 ), 0, 40 );
+  QCOMPARE( rect.xMinimum(), 12.0 );
+  QCOMPARE( rect.yMinimum(), 1.0 );
+  QCOMPARE( rect.xMaximum(), 12.0 );
+  QCOMPARE( rect.yMaximum(), 41.0 );
+
+  rect = QgsRectangle::fromCenterAndSize( QgsPointXY( 12, 21 ), 20, 0 );
+  QCOMPARE( rect.xMinimum(), 2.0 );
+  QCOMPARE( rect.yMinimum(), 21.0 );
+  QCOMPARE( rect.xMaximum(), 22.0 );
+  QCOMPARE( rect.yMaximum(), 21.0 );
 }
 
 void TestQgsRectangle::manipulate()
@@ -288,6 +312,25 @@ void TestQgsRectangle::isFinite()
   QVERIFY( !QgsRectangle( 1, std::numeric_limits<double>::quiet_NaN(), 3, 4 ).isFinite() );
   QVERIFY( !QgsRectangle( 1, 2, std::numeric_limits<double>::quiet_NaN(), 4 ).isFinite() );
   QVERIFY( !QgsRectangle( 1, 2, 3, std::numeric_limits<double>::quiet_NaN() ).isFinite() );
+}
+
+void TestQgsRectangle::combine()
+{
+  QgsRectangle rect;
+  // combine extent of null rectangle with valid rectangle
+  rect.combineExtentWith( QgsRectangle( 1, 2, 3, 4 ) );
+  QCOMPARE( rect.xMinimum(), 1.0 );
+  QCOMPARE( rect.yMinimum(), 2.0 );
+  QCOMPARE( rect.xMaximum(), 3.0 );
+  QCOMPARE( rect.yMaximum(), 4.0 );
+
+  // combine extent of valid rectangle with null rectangle
+  rect = QgsRectangle( 1, 2, 3, 4 );
+  rect.combineExtentWith( QgsRectangle() );
+  QCOMPARE( rect.xMinimum(), 1.0 );
+  QCOMPARE( rect.yMinimum(), 2.0 );
+  QCOMPARE( rect.xMaximum(), 3.0 );
+  QCOMPARE( rect.yMaximum(), 4.0 );
 }
 
 void TestQgsRectangle::dataStream()

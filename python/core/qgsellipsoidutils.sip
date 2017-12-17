@@ -11,7 +11,7 @@
 class QgsEllipsoidUtils
 {
 %Docstring
- Contains utility functions for working with ellipsoids and querying the ellipsoid database.
+Contains utility functions for working with ellipsoids and querying the ellipsoid database.
 
 .. versionadded:: 3.0
 %End
@@ -71,25 +71,24 @@ Ellipsoid parameters
 
     static EllipsoidParameters ellipsoidParameters( const QString &ellipsoid );
 %Docstring
- Returns the parameters for the specified ``ellipsoid``.
- Results are cached to allow for fast retrieval of parameters.
- :rtype: EllipsoidParameters
+Returns the parameters for the specified ``ellipsoid``.
+Results are cached to allow for fast retrieval of parameters.
 %End
 
     static QList< QgsEllipsoidUtils::EllipsoidDefinition > definitions();
 %Docstring
- Returns a list of the definitions for all known ellipsoids from the
- internal ellipsoid database.
-.. seealso:: acronyms()
- :rtype: list of QgsEllipsoidUtils.EllipsoidDefinition
+Returns a list of the definitions for all known ellipsoids from the
+internal ellipsoid database.
+
+.. seealso:: :py:func:`acronyms()`
 %End
 
     static QStringList acronyms();
 %Docstring
- Returns a list of all known ellipsoid acronyms from the internal
- ellipsoid database.
-.. seealso:: definitions()
- :rtype: list of str
+Returns a list of all known ellipsoid acronyms from the internal
+ellipsoid database.
+
+.. seealso:: :py:func:`definitions()`
 %End
 
 };

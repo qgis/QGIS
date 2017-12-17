@@ -17,13 +17,6 @@
 
 #include "qgsrectangle.h"
 
-
-QgsTilingScheme::QgsTilingScheme()
-  : mMapOrigin()
-  , mBaseTileSide( 0 )
-{
-}
-
 QgsTilingScheme::QgsTilingScheme( const QgsRectangle &fullExtent, const QgsCoordinateReferenceSystem &crs )
   : mCrs( crs )
 {

@@ -93,9 +93,9 @@ void QgsMapToolSplitFeatures::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     //bring up dialog if a split was not possible (polygon) or only done once (line)
     int topologicalEditing = QgsProject::instance()->topologicalEditing();
     vlayer->beginEditCommand( tr( "Features split" ) );
-    int returnCode = vlayer->splitFeatures( points(), topologicalEditing );
+    QgsGeometry::OperationResult returnCode = vlayer->splitFeatures( points(), topologicalEditing );
     vlayer->endEditCommand();
-    if ( returnCode == 4 )
+    if ( returnCode == QgsGeometry::OperationResult::NothingHappened )
     {
       QgisApp::instance()->messageBar()->pushMessage(
         tr( "No features were split" ),
@@ -103,7 +103,7 @@ void QgsMapToolSplitFeatures::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
         QgsMessageBar::WARNING,
         QgisApp::instance()->messageTimeout() );
     }
-    else if ( returnCode == 3 )
+    else if ( returnCode == QgsGeometry::OperationResult::GeometryEngineError )
     {
       QgisApp::instance()->messageBar()->pushMessage(
         tr( "No feature split done" ),
@@ -111,7 +111,7 @@ void QgsMapToolSplitFeatures::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
         QgsMessageBar::WARNING,
         QgisApp::instance()->messageTimeout() );
     }
-    else if ( returnCode == 7 )
+    else if ( returnCode == QgsGeometry::OperationResult::InvalidBaseGeometry )
     {
       QgisApp::instance()->messageBar()->pushMessage(
         tr( "No feature split done" ),
@@ -119,7 +119,7 @@ void QgsMapToolSplitFeatures::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
         QgsMessageBar::WARNING,
         QgisApp::instance()->messageTimeout() );
     }
-    else if ( returnCode != 0 )
+    else if ( returnCode != QgsGeometry::OperationResult::Success )
     {
       //several intersections but only one split (most likely line)
       QgisApp::instance()->messageBar()->pushMessage(

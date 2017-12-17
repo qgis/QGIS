@@ -283,7 +283,7 @@ void TestQgsDistanceArea::measureAreaAndUnits()
   da.setEllipsoid( QStringLiteral( "NONE" ) );
   QgsCoordinateReferenceSystem daCRS;
   daCRS.createFromSrsId( da.sourceCrs().srsid() );
-  QgsPolyline ring;
+  QgsPolylineXY ring;
   ring << QgsPointXY( 0, 0 )
        << QgsPointXY( 1, 0 )
        << QgsPointXY( 1, 1 )
@@ -291,10 +291,10 @@ void TestQgsDistanceArea::measureAreaAndUnits()
        << QgsPointXY( 2, 2 )
        << QgsPointXY( 0, 2 )
        << QgsPointXY( 0, 0 );
-  QgsPolygon poly;
+  QgsPolygonXY poly;
   poly << ring;
 
-  QgsGeometry polygon( QgsGeometry::fromPolygon( poly ) );
+  QgsGeometry polygon( QgsGeometry::fromPolygonXY( poly ) );
 
   // We check both the measured area AND the units, in case the logic regarding
   // ellipsoids and units changes in future
@@ -329,7 +329,7 @@ void TestQgsDistanceArea::measureAreaAndUnits()
        << QgsPointXY( 1850000, 4423000 );
   poly.clear();
   poly << ring;
-  polygon = QgsGeometry::fromPolygon( poly );
+  polygon = QgsGeometry::fromPolygonXY( poly );
 
   da.setSourceCrs( QgsCoordinateReferenceSystem::fromSrsId( 27469 ) );
   da.setEllipsoid( QStringLiteral( "NONE" ) );
@@ -365,7 +365,7 @@ void TestQgsDistanceArea::emptyPolygon()
   da.setEllipsoid( QStringLiteral( "WGS84" ) );
 
   //test that measuring an empty polygon doesn't crash
-  da.measurePolygon( QList< QgsPointXY >() );
+  da.measurePolygon( QVector< QgsPointXY >() );
 }
 
 void TestQgsDistanceArea::regression14675()

@@ -299,7 +299,7 @@ void QgsFieldCalculator::accept()
       }
       else
       {
-        field.convertCompatible( value );
+        ( void )field.convertCompatible( value );
         mVectorLayer->changeAttributeValue( feature.id(), mAttributeId, value, newField ? emptyAttribute : feature.attributes().value( mAttributeId ) );
       }
 

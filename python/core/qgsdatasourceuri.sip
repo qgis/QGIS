@@ -41,19 +41,16 @@ constructor which parses input URI
     QString connectionInfo( bool expandAuthConfig = true ) const;
 %Docstring
 return connection part of URI
- :rtype: str
 %End
 
     QString uri( bool expandAuthConfig = true ) const;
 %Docstring
 return complete uri
- :rtype: str
 %End
 
     QByteArray encodedUri() const;
 %Docstring
 return complete encoded uri (generic mode)
- :rtype: QByteArray
 %End
 
 
@@ -65,18 +62,19 @@ set complete encoded uri (generic mode)
     QString quotedTablename() const;
 %Docstring
 quoted table name
- :rtype: str
 %End
 
     void setParam( const QString &key, const QString &value );
 %Docstring
- Set generic param (generic mode)
+Set generic param (generic mode)
+
 .. note::
 
    if key exists, another is inserted
 %End
     void setParam( const QString &key, const QStringList &value ) /PyName=setParamList/;
 %Docstring
+
 .. note::
 
    available in Python as setParamList
@@ -84,29 +82,26 @@ quoted table name
 
     int removeParam( const QString &key );
 %Docstring
- Remove generic param (generic mode)
+Remove generic param (generic mode)
+
 .. note::
 
    remove all occurrences of key, returns number of params removed
- :rtype: int
 %End
 
     QString param( const QString &key ) const;
 %Docstring
 Get generic param (generic mode)
- :rtype: str
 %End
 
     QStringList params( const QString &key ) const;
 %Docstring
 Get multiple generic param (generic mode)
- :rtype: list of str
 %End
 
     bool hasParam( const QString &key ) const;
 %Docstring
 Test if param exists (generic mode)
- :rtype: bool
 %End
 
     void setConnection( const QString &aHost,
@@ -162,43 +157,36 @@ set password
     static QString removePassword( const QString &aUri );
 %Docstring
 Removes password element from uris
- :rtype: str
 %End
 
     QString authConfigId() const;
 %Docstring
 Any associated authentication configuration ID
- :rtype: str
 %End
 
     QString username() const;
 %Docstring
 Returns the username
- :rtype: str
 %End
 
     QString schema() const;
 %Docstring
 Returns the schema
- :rtype: str
 %End
 
     QString table() const;
 %Docstring
 Returns the table
- :rtype: str
 %End
 
     QString sql() const;
 %Docstring
 Returns the SQL query
- :rtype: str
 %End
 
     QString geometryColumn() const;
 %Docstring
 Return the name of the geometry column
- :rtype: str
 %End
 
     void setUseEstimatedMetadata( bool flag );
@@ -209,7 +197,6 @@ set use Estimated Metadata
     bool useEstimatedMetadata() const;
 %Docstring
 Returns true if estimated metadata are used
- :rtype: bool
 %End
 
     void disableSelectAtId( bool flag );
@@ -219,7 +206,6 @@ Set to true to disable selection by id
     bool selectAtIdDisabled() const;
 %Docstring
 Returns whether the selection by id is disabled
- :rtype: bool
 %End
 
     void clearSchema();
@@ -237,44 +223,34 @@ Sets the SQL query
     QString host() const;
 %Docstring
 Returns the host
- :rtype: str
 %End
     QString database() const;
 %Docstring
 Returns the database
- :rtype: str
 %End
     QString port() const;
 %Docstring
 Returns the port
- :rtype: str
 %End
     QString driver() const;
-%Docstring
- :rtype: str
-%End
     void setDriver( const QString &driver );
     QString password() const;
 %Docstring
 Returns the password
- :rtype: str
 %End
     SslMode sslMode() const;
 %Docstring
 Returns the SSL mode
- :rtype: SslMode
 %End
 
     QString service() const;
 %Docstring
 Returns the service name
- :rtype: str
 %End
 
     QString keyColumn() const;
 %Docstring
 Returns the name of the (primary) key column
- :rtype: str
 %End
     void setKeyColumn( const QString &column );
 %Docstring
@@ -283,8 +259,7 @@ Sets the name of the (primary) key column
 
     QgsWkbTypes::Type wkbType() const;
 %Docstring
- The wkb type.
- :rtype: QgsWkbTypes.Type
+The wkb type.
 %End
 
     void setWkbType( QgsWkbTypes::Type type );
@@ -295,7 +270,6 @@ Sets the wkb type
     QString srid() const;
 %Docstring
 Returns the srid
- :rtype: str
 %End
     void setSrid( const QString &srid );
 %Docstring

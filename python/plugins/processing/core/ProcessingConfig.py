@@ -16,8 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
-from builtins import object
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -33,7 +31,8 @@ from qgis.PyQt.QtCore import QCoreApplication, QObject, pyqtSignal
 from qgis.core import (NULL,
                        QgsApplication,
                        QgsSettings,
-                       QgsVectorFileWriter)
+                       QgsVectorFileWriter,
+                       QgsRasterFileWriter)
 from processing.tools.system import defaultOutputFolder
 import processing.tools.dataobjects
 
@@ -45,7 +44,7 @@ class SettingsWatcher(QObject):
 settingsWatcher = SettingsWatcher()
 
 
-class ProcessingConfig(object):
+class ProcessingConfig:
 
     OUTPUT_FOLDER = 'OUTPUTS_FOLDER'
     RASTER_STYLE = 'RASTER_STYLE'
@@ -172,7 +171,7 @@ class ProcessingConfig(object):
             valuetype=Setting.SELECTION,
             options=extensions))
 
-        extensions = processing.tools.dataobjects.getSupportedOutputRasterLayerExtensions()
+        extensions = QgsRasterFileWriter.supportedFormatExtensions()
         ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),
             ProcessingConfig.DEFAULT_OUTPUT_RASTER_LAYER_EXT,
@@ -254,7 +253,7 @@ class ProcessingConfig(object):
         return QCoreApplication.translate(context, string)
 
 
-class Setting(object):
+class Setting:
 
     """A simple config parameter that will appear on the config dialog.
     """

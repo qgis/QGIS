@@ -18,6 +18,7 @@
 
 #include "gdal.h"
 #include "gdal_utils.h"
+#include "qgsogrutils.h"
 
 #include "qgsgeopackagerasterwriter.h"
 #include "qgscplerrorhandler.h"
@@ -46,7 +47,7 @@ QgsGeoPackageRasterWriter::WriterError QgsGeoPackageRasterWriter::writeRaster( Q
     return ! feedback->isCanceled();
   }, feedback );
 
-  GDALDatasetH hSrcDS = GDALOpen( mSourceUri.uri.toUtf8().constData(), GA_ReadOnly );
+  gdal::dataset_unique_ptr hSrcDS( GDALOpen( mSourceUri.uri.toUtf8().constData(), GA_ReadOnly ) );
   if ( ! hSrcDS )
   {
     *errorMessage = QObject::tr( "Failed to open source layer %1! See the OGR panel in the message logs for details.\n\n" ).arg( mSourceUri.name );
@@ -55,17 +56,12 @@ QgsGeoPackageRasterWriter::WriterError QgsGeoPackageRasterWriter::writeRaster( Q
   else
   {
     CPLErrorReset();
-    GDALDatasetH hOutDS = GDALTranslate( mOutputUrl.toUtf8().constData(), hSrcDS, psOptions, nullptr );
+    gdal::dataset_unique_ptr hOutDS( GDALTranslate( mOutputUrl.toUtf8().constData(), hSrcDS.get(), psOptions, nullptr ) );
     if ( ! hOutDS )
     {
       *errorMessage = QObject::tr( "Failed to import layer %1! See the OGR panel in the message logs for details.\n\n" ).arg( mSourceUri.name );
       mHasError = true;
     }
-    else // All good!
-    {
-      GDALClose( hOutDS );
-    }
-    GDALClose( hSrcDS );
   }
   GDALTranslateOptionsFree( psOptions );
   return ( feedback && feedback->isCanceled() ) ? ErrUserCanceled : ( mHasError ? WriteError : NoError );

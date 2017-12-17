@@ -46,6 +46,9 @@ class AddTableField(QgisFeatureBasedAlgorithm):
     def group(self):
         return self.tr('Vector table')
 
+    def groupId(self):
+        return 'vectortable'
+
     def __init__(self):
         super().__init__()
         self.type_names = [self.tr('Integer'),
@@ -90,7 +93,7 @@ class AddTableField(QgisFeatureBasedAlgorithm):
         inputFields.append(self.field)
         return inputFields
 
-    def processFeature(self, feature, feedback):
+    def processFeature(self, feature, context, feedback):
         attributes = feature.attributes()
         attributes.append(None)
         feature.setAttributes(attributes)

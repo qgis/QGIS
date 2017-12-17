@@ -34,6 +34,7 @@ class QgsFeatureSink;
 class QgsProcessingFeatureSource;
 class QgsProcessingOutputDefinition;
 class QgsProcessingFeedback;
+class QgsProcessingProvider;
 
 /**
  * \class QgsProcessingFeatureSourceDefinition
@@ -277,53 +278,53 @@ class CORE_EXPORT QgsProcessingParameterDefinition
     /**
      * Returns the name of the parameter. This is the internal identifier by which
      * algorithms access this parameter.
-     * @see setName()
+     * \see setName()
      */
     QString name() const { return mName; }
 
     /**
      * Sets the \a name of the parameter. This is the internal identifier by which
      * algorithms access this parameter.
-     * @see name()
+     * \see name()
      */
     void setName( const QString &name ) { mName = name; }
 
     /**
      * Returns the description for the parameter. This is the user-visible string
      * used to identify this parameter.
-     * @see setDescription()
+     * \see setDescription()
      */
     QString description() const { return mDescription; }
 
     /**
      * Sets the \a description for the parameter. This is the user-visible string
      * used to identify this parameter.
-     * @see description()
+     * \see description()
      */
     void setDescription( const QString &description ) { mDescription = description; }
 
     /**
      * Returns the default value for the parameter.
-     * @see setDefaultValue()
+     * \see setDefaultValue()
      */
     QVariant defaultValue() const { return mDefault; }
 
     /**
      * Sets the default \a value for the parameter. Caller takes responsibility
      * to ensure that \a value is a valid input for the parameter subclass.
-     * @see defaultValue()
+     * \see defaultValue()
      */
     void setDefaultValue( const QVariant &value ) { mDefault = value; }
 
     /**
      * Returns any flags associated with the parameter.
-     * @see setFlags()
+     * \see setFlags()
      */
     Flags flags() const { return mFlags; }
 
     /**
      * Sets the \a flags associated with the parameter.
-     * @see flags()
+     * \see flags()
      */
     void setFlags( const Flags &flags ) { mFlags = flags; }
 
@@ -391,6 +392,86 @@ class CORE_EXPORT QgsProcessingParameterDefinition
      */
     virtual QStringList dependsOnOtherParameters() const { return QStringList(); }
 
+    /**
+     * Returns a pointer to the algorithm which owns this parameter. May be nullptr
+     * for non-owned parameters.
+     * \see provider()
+     */
+    QgsProcessingAlgorithm *algorithm() const;
+
+    /**
+     * Returns a pointer to the provider for the algorithm which owns this parameter. May be nullptr
+     * for non-owned parameters or algorithms.
+     * \see algorithm()
+     */
+    QgsProcessingProvider *provider() const;
+
+    /**
+     * Returns a formatted tooltip for use with the parameter, which gives helpful information
+     * like parameter description, ID, and extra content like default values (depending on parameter type).
+     */
+    virtual QString toolTip() const;
+
+    /**
+     * Returns true if the parameter supports is dynamic, and can support data-defined values
+     * (i.e. QgsProperty based values).
+     * \see setIsDynamic()
+     * \see dynamicPropertyDefinition()
+     * \see dynamicLayerParameterName()
+     */
+    bool isDynamic() const { return mIsDynamic; }
+
+    /**
+     * Sets whether the parameter is \a dynamic, and can support data-defined values
+     * (i.e. QgsProperty based values).
+     * \see isDynamic()
+     * \see setDynamicPropertyDefinition()
+     * \see setDynamicLayerParameterName()
+     */
+    void setIsDynamic( bool dynamic ) { mIsDynamic = dynamic; }
+
+    /**
+     * Returns the property definition for dynamic properties.
+     * \see isDynamic()
+     * \see setDynamicPropertyDefinition()
+     * \see dynamicLayerParameterName()
+     */
+    QgsPropertyDefinition dynamicPropertyDefinition() const { return mPropertyDefinition; }
+
+    /**
+     * Sets the property \a definition for dynamic properties.
+     * \see isDynamic()
+     * \see dynamicPropertyDefinition()
+     * \see setDynamicLayerParameterName()
+     */
+    void setDynamicPropertyDefinition( const QgsPropertyDefinition &definition ) { mPropertyDefinition = definition; }
+
+    /**
+     * Returns the name of the parameter for a layer linked to a dynamic parameter, or an empty string if this is not set.
+     *
+     * Dynamic parameters (see isDynamic()) can have an optional vector layer parameter linked to them,
+     * which indicates which layer the fields and values will be available from when evaluating
+     * the dynamic parameter.
+     *
+     * \see setDynamicLayerParameterName()
+     * \see isDynamic()
+     * \see dynamicPropertyDefinition()
+     */
+    QString dynamicLayerParameterName() const { return mDynamicLayerParameterName; }
+
+    /**
+     * Sets the \a name for the parameter for a layer linked to a dynamic parameter, or an empty string if this is not set.
+     *
+     * Dynamic parameters (see isDynamic()) can have an optional vector layer parameter linked to them,
+     * which indicates which layer the fields and values will be available from when evaluating
+     * the dynamic parameter.
+     *
+     * \see dynamicLayerParameterName()
+     * \see isDynamic()
+     * \see setDynamicPropertyDefinition()
+     */
+    void setDynamicLayerParameterName( const QString &name ) { mDynamicLayerParameterName = name; }
+
   protected:
 
     //! Parameter name
@@ -407,6 +488,21 @@ class CORE_EXPORT QgsProcessingParameterDefinition
 
     //! Freeform metadata for parameter. Mostly used by widget wrappers to customise their appearance and behavior.
     QVariantMap mMetadata;
+
+    //! Pointer to algorithm which owns this parameter
+    QgsProcessingAlgorithm *mAlgorithm = nullptr;
+
+    //! True for dynamic parameters, which can have data-defined (QgsProperty) based values
+    bool mIsDynamic = false;
+
+    //! Data defined property definition
+    QgsPropertyDefinition mPropertyDefinition;
+
+    //! Linked vector layer parameter name for dynamic properties
+    QString mDynamicLayerParameterName;
+
+    // To allow access to mAlgorithm. We don't want a public setter for this!
+    friend class QgsProcessingAlgorithm;
 
 };
 
@@ -1072,7 +1168,7 @@ class CORE_EXPORT QgsProcessingParameterNumber : public QgsProcessingParameterDe
                                            Type type = Integer,
                                            const QVariant &defaultValue = QVariant(),
                                            bool optional = false,
-                                           double minValue = -DBL_MAX,
+                                           double minValue = -DBL_MAX + 1,
                                            double maxValue = DBL_MAX
                                          );
 
@@ -1084,6 +1180,7 @@ class CORE_EXPORT QgsProcessingParameterNumber : public QgsProcessingParameterDe
     QString type() const override { return typeName(); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
+    QString toolTip() const override;
 
     /**
      * Returns the minimum value acceptable by the parameter.
@@ -1131,7 +1228,7 @@ class CORE_EXPORT QgsProcessingParameterNumber : public QgsProcessingParameterDe
 
   private:
 
-    double mMin = -DBL_MAX;
+    double mMin = -DBL_MAX + 1;
     double mMax = DBL_MAX;
     Type mDataType = Integer;
 };

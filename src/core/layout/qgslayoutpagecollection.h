@@ -46,7 +46,7 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject, public QgsLayoutSeri
      */
     explicit QgsLayoutPageCollection( QgsLayout *layout SIP_TRANSFERTHIS );
 
-    ~QgsLayoutPageCollection();
+    ~QgsLayoutPageCollection() override;
 
     QString stringType() const override { return QStringLiteral( "LayoutPageCollection" ); }
     QgsLayout *layout() override;
@@ -94,6 +94,17 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject, public QgsLayoutSeri
     QList< int > visiblePageNumbers( QRectF region ) const;
 
     /**
+     * Returns whether a given \a page index is empty, ie, it contains no items except for the background
+     * paper item.
+     */
+    bool pageIsEmpty( int page ) const;
+
+    /**
+     * Returns a list of layout items on the specified \a page index.
+     */
+    QList< QgsLayoutItem *> itemsOnPage( int page ) const;
+
+    /**
      * Adds a \a page to the collection. Ownership of the \a page is transferred
      * to the collection, and the page will automatically be added to the collection's
      * layout() (there is no need to manually add the page item to the layout).
@@ -101,9 +112,21 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject, public QgsLayoutSeri
      *
      * Calling addPage() automatically triggers a reflow() of pages.
      *
+     * \see extendByNewPage()
      * \see insertPage()
      */
     void addPage( QgsLayoutItemPage *page SIP_TRANSFER );
+
+    /**
+     * Adds a new page to the end of the collection. This page will inherit the
+     * same size as the current final page in the collection.
+     *
+     * The newly created page will be returned.
+     *
+     * \see addPage()
+     * \see insertPage()
+     */
+    QgsLayoutItemPage *extendByNewPage();
 
     /**
      * Inserts a \a page into a specific position in the collection.
@@ -130,6 +153,8 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject, public QgsLayoutSeri
      * the first page in the collection.
      *
      * Calling deletePage() automatically triggers a reflow() of pages.
+     *
+     * \see clear()
      */
     void deletePage( int pageNumber );
 
@@ -138,8 +163,16 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject, public QgsLayoutSeri
      * from the collection's layout().
      *
      * Calling deletePage() automatically triggers a reflow() of pages.
+     *
+     * \see clear()
      */
     void deletePage( QgsLayoutItemPage *page );
+
+    /**
+     * Removes all pages from the collection.
+     * \see deletePage()
+     */
+    void clear();
 
     /**
      * Takes a \a page from the collection, returning ownership of the page to the caller.
@@ -182,10 +215,28 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject, public QgsLayoutSeri
      * it does not consider x coordinates and vertical coordinates before the first page or
      * after the last page will still return the nearest page.
      *
+     * \see predicatePageNumberForPoint()
      * \see pageAtPoint()
      * \see positionOnPage()
      */
     int pageNumberForPoint( QPointF point ) const;
+
+    /**
+     * Returns the theoretical page number corresponding to a \a point in the layout (in layout units),
+     * assuming that enough pages exist in the layout to cover that point.
+     *
+     * If there are insufficient pages currently in the layout, this method will assume that extra
+     * "imaginary" pages have been added at the end of the layout until that point is reached. These
+     * imaginary pages will inherit the size of the existing final page in the layout.
+     *
+     * Page numbers in collections begin at 0 - so a page number of 0 indicates the
+     * first page.
+     *
+     * \see pageNumberForPoint()
+     * \see pageAtPoint()
+     * \see positionOnPage()
+     */
+    int predictPageNumberForPoint( QPointF point ) const;
 
     /**
      * Returns the page at a specified \a point (in layout coordinates).
@@ -198,6 +249,18 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject, public QgsLayoutSeri
      * \see pageNumberForPoint()
      */
     QgsLayoutItemPage *pageAtPoint( QPointF point ) const;
+
+    /**
+     * Converts a \a position on a \a page to an absolute position in layout coordinates.\
+     * \see pagePositionToAbsolute()
+     */
+    QPointF pagePositionToLayoutPosition( int page, const QgsLayoutPoint &position ) const;
+
+    /**
+     * Converts a \a position on a \a page to an absolute position in (maintaining the units from the input \a position).
+     * \see pagePositionToLayoutPosition()
+     */
+    QgsLayoutPoint pagePositionToAbsolute( int page, const QgsLayoutPoint &position ) const;
 
     /**
      * Returns the position within a page of a \a point in the layout (in layout units).

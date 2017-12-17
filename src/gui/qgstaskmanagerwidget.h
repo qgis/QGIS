@@ -48,9 +48,9 @@ class GUI_EXPORT QgsTaskManagerWidget : public QWidget
      * \param manager task manager associated with widget
      * \param parent parent widget
      */
-    QgsTaskManagerWidget( QgsTaskManager *manager, QWidget *parent SIP_TRANSFERTHIS = 0 );
+    QgsTaskManagerWidget( QgsTaskManager *manager, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    ~QgsTaskManagerWidget();
+    ~QgsTaskManagerWidget() override;
 
   private slots:
 

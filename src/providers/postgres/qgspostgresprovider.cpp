@@ -90,7 +90,6 @@ QgsPostgresProvider::pkType( const QgsField &f ) const
 QgsPostgresProvider::QgsPostgresProvider( QString const &uri )
   : QgsVectorDataProvider( uri )
   , mShared( new QgsPostgresSharedData )
-  , mEnabledCapabilities( 0 )
 {
 
   QgsDebugMsg( QString( "URI: %1 " ).arg( uri ) );
@@ -1304,7 +1303,7 @@ bool QgsPostgresProvider::determinePrimaryKey()
 
       QgsPostgresProvider::Relkind type = relkind();
 
-      if ( type == Relkind::OrdinaryTable )
+      if ( type == Relkind::OrdinaryTable || type == Relkind::PartitionedTable )
       {
         QgsDebugMsg( "Relation is a table. Checking to see if it has an oid column." );
 
@@ -1846,7 +1845,7 @@ bool QgsPostgresProvider::skipConstraintCheck( int fieldIndex, QgsFieldConstrain
 {
   if ( providerProperty( EvaluateDefaultValues, false ).toBool() )
   {
-    return mDefaultValues.contains( fieldIndex );
+    return !mDefaultValues.value( fieldIndex ).isEmpty();
   }
   else
   {
@@ -2050,7 +2049,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 
       if ( i == flist.size() )
       {
-        if ( v == defVal )
+        if ( v == defVal && defVal.isNull() == v.isNull() )
         {
           if ( defVal.isNull() )
           {
@@ -2681,7 +2680,7 @@ void QgsPostgresProvider::appendGeomParam( const QgsGeometry &geom, QStringList 
   QString param;
 
   QgsGeometry convertedGeom( convertToProviderType( geom ) );
-  QByteArray wkb( convertedGeom ? convertedGeom.exportToWkb() : geom.exportToWkb() );
+  QByteArray wkb( convertedGeom ? convertedGeom.asWkb() : geom.asWkb() );
   const unsigned char *buf = reinterpret_cast< const unsigned char * >( wkb.constData() );
   int wkbSize = wkb.length();
 
@@ -3097,6 +3096,12 @@ long QgsPostgresProvider::featureCount() const
   int featuresCounted = mShared->featuresCounted();
   if ( featuresCounted >= 0 )
     return featuresCounted;
+
+  // See: https://issues.qgis.org/issues/17388 - QGIS crashes on featureCount())
+  if ( ! connectionRO() )
+  {
+    return 0;
+  }
 
   // get total number of features
   QString sql;
@@ -3690,6 +3695,7 @@ QgsVectorLayerExporter::ExportError QgsPostgresProvider::createEmptyLayer( const
 {
   // populate members from the uri structure
   QgsDataSourceUri dsUri( uri );
+
   QString schemaName = dsUri.schema();
   QString tableName = dsUri.table();
 
@@ -3784,6 +3790,20 @@ QgsVectorLayerExporter::ExportError QgsPostgresProvider::createEmptyLayer( const
   try
   {
     conn->PQexecNR( QStringLiteral( "BEGIN" ) );
+
+    // We want a valid schema name ...
+    if ( schemaName.isEmpty() )
+    {
+      QString sql = QString( "SELECT current_schema" );
+      QgsPostgresResult result( conn->PQexec( sql ) );
+      if ( result.PQresultStatus() != PGRES_TUPLES_OK )
+        throw PGException( result );
+      schemaName = result.PQgetvalue( 0, 0 );
+      if ( schemaName.isEmpty() )
+      {
+        schemaName = QStringLiteral( "public" );
+      }
+    }
 
     QString sql = QString( "SELECT 1"
                            " FROM pg_class AS cls JOIN pg_namespace AS nsp"
@@ -4290,6 +4310,9 @@ QgsAttrPalIndexNameHash QgsPostgresProvider::palAttributeIndexNames() const
 
 QgsPostgresProvider::Relkind QgsPostgresProvider::relkind() const
 {
+  if ( mIsQuery )
+    return Relkind::Unknown;
+
   QString sql = QStringLiteral( "SELECT relkind FROM pg_class WHERE oid=regclass(%1)::oid" ).arg( quotedValue( mQuery ) );
   QgsPostgresResult res( connectionRO()->PQexec( sql ) );
   QString type = res.PQgetvalue( 0, 0 );
@@ -4327,6 +4350,10 @@ QgsPostgresProvider::Relkind QgsPostgresProvider::relkind() const
   else if ( type == QLatin1String( "f" ) )
   {
     kind = Relkind::ForeignTable;
+  }
+  else if ( type == QLatin1String( "p" ) )
+  {
+    kind = Relkind::PartitionedTable;
   }
 
   return kind;
@@ -4560,6 +4587,11 @@ QGISEXTERN bool saveStyle( const QString &uri, const QString &qmlStyle, const QS
     }
   }
 
+  if ( dsUri.database().isEmpty() ) // typically when a service file is used
+  {
+    dsUri.setDatabase( conn->currentDatabase() );
+  }
+
   QString uiFileColumn;
   QString uiFileValue;
   if ( !uiFileContent.isEmpty() )
@@ -4680,6 +4712,11 @@ QGISEXTERN QString loadStyle( const QString &uri, QString &errCause )
     return QLatin1String( "" );
   }
 
+  if ( dsUri.database().isEmpty() ) // typically when a service file is used
+  {
+    dsUri.setDatabase( conn->currentDatabase() );
+  }
+
   if ( !tableExists( *conn, QStringLiteral( "layer_styles" ) ) )
   {
     return QLatin1String( "" );
@@ -4716,6 +4753,11 @@ QGISEXTERN int listStyles( const QString &uri, QStringList &ids, QStringList &na
   {
     errCause = QObject::tr( "Connection to database failed using username: %1" ).arg( dsUri.username() );
     return -1;
+  }
+
+  if ( dsUri.database().isEmpty() ) // typically when a service file is used
+  {
+    dsUri.setDatabase( conn->currentDatabase() );
   }
 
   QString selectRelatedQuery = QString( "SELECT id,styleName,description"

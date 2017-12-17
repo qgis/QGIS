@@ -28,7 +28,7 @@
  * @ingroup UnitTests
  * This is a unit test for the field expression widget
  *
- * @see QgsFieldExpressionWidget
+ * \see QgsFieldExpressionWidget
  */
 class TestQgsFieldExpressionWidget : public QObject
 {

@@ -11,7 +11,8 @@
 class QgsLayoutViewToolTemporaryKeyZoom : QgsLayoutViewToolZoom
 {
 %Docstring
- Layout view tool for temporarily zooming a layout while a key is depressed.
+Layout view tool for temporarily zooming a layout while a key is depressed.
+
 .. versionadded:: 3.0
 %End
 
@@ -22,7 +23,7 @@ class QgsLayoutViewToolTemporaryKeyZoom : QgsLayoutViewToolZoom
 
     QgsLayoutViewToolTemporaryKeyZoom( QgsLayoutView *view /TransferThis/ );
 %Docstring
- Constructor for QgsLayoutViewToolTemporaryKeyZoom.
+Constructor for QgsLayoutViewToolTemporaryKeyZoom.
 %End
 
     virtual void layoutReleaseEvent( QgsLayoutViewMouseEvent *event );

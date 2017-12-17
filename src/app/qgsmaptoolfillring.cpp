@@ -88,30 +88,32 @@ void QgsMapToolFillRing::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
     vlayer->beginEditCommand( tr( "Ring added and filled" ) );
 
-    QList< QgsPointXY > pointList = points();
+    QVector< QgsPointXY > pointList = points();
 
-    int addRingReturnCode = vlayer->addRing( pointList, &fid );
-    if ( addRingReturnCode != 0 )
+    QgsGeometry::OperationResult addRingReturnCode = vlayer->addRing( pointList, &fid );
+
+    // AP: this is all dead code:
+    //todo: open message box to communicate errors
+    if ( addRingReturnCode != QgsGeometry::OperationResult::Success )
     {
       QString errorMessage;
-      //todo: open message box to communicate errors
-      if ( addRingReturnCode == 1 )
+      if ( addRingReturnCode == QgsGeometry::OperationResult::InvalidInputGeometryType )
       {
         errorMessage = tr( "a problem with geometry type occurred" );
       }
-      else if ( addRingReturnCode == 2 )
+      else if ( addRingReturnCode == QgsGeometry::OperationResult::AddRingNotClosed )
       {
         errorMessage = tr( "the inserted Ring is not closed" );
       }
-      else if ( addRingReturnCode == 3 )
+      else if ( addRingReturnCode ==  QgsGeometry::OperationResult::AddRingNotValid )
       {
         errorMessage = tr( "the inserted Ring is not a valid geometry" );
       }
-      else if ( addRingReturnCode == 4 )
+      else if ( addRingReturnCode == QgsGeometry::OperationResult::AddRingCrossesExistingRings )
       {
         errorMessage = tr( "the inserted Ring crosses existing rings" );
       }
-      else if ( addRingReturnCode == 5 )
+      else if ( addRingReturnCode == QgsGeometry::OperationResult::AddRingNotInExistingFeature )
       {
         errorMessage = tr( "the inserted Ring is not contained in a feature" );
       }
@@ -125,7 +127,7 @@ void QgsMapToolFillRing::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       return;
     }
 
-    g = QgsGeometry::fromPolygon( QgsPolygon() << pointList.toVector() );
+    g = QgsGeometry::fromPolygonXY( QgsPolygonXY() << pointList );
   }
   else
   {
@@ -199,10 +201,10 @@ QgsGeometry QgsMapToolFillRing::ringUnderPoint( const QgsPointXY &p, QgsFeatureI
     if ( g.isNull() )
       continue;
 
-    QgsMultiPolygon pol;
+    QgsMultiPolygonXY pol;
     if ( g.wkbType() == QgsWkbTypes::Polygon ||  g.wkbType()  == QgsWkbTypes::Polygon25D )
     {
-      pol = QgsMultiPolygon() << g.asPolygon();
+      pol = QgsMultiPolygonXY() << g.asPolygon();
     }
     else
     {
@@ -216,8 +218,8 @@ QgsGeometry QgsMapToolFillRing::ringUnderPoint( const QgsPointXY &p, QgsFeatureI
       {
         for ( int j = 1; j < pol[i].size(); ++j )
         {
-          QgsPolygon tempPol = QgsPolygon() << pol[i][j];
-          QgsGeometry tempGeom = QgsGeometry::fromPolygon( tempPol );
+          QgsPolygonXY tempPol = QgsPolygonXY() << pol[i][j];
+          QgsGeometry tempGeom = QgsGeometry::fromPolygonXY( tempPol );
           if ( tempGeom.area() < area && tempGeom.contains( &p ) )
           {
             fid = f.id();

@@ -11,15 +11,20 @@
 class QgsDetailedItemWidget : QWidget
 {
 %Docstring
- A widget renderer for detailed item views.
-.. seealso:: also QgsDetailedItem and QgsDetailedItemData.
+A widget renderer for detailed item views.
+
+.. seealso:: :py:func:`also`
 %End
 
 %TypeHeaderCode
 #include "qgsdetaileditemwidget.h"
 %End
   public:
+
     QgsDetailedItemWidget( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsDetailedItemWidget
+%End
     void setData( const QgsDetailedItemData &data );
     void setChecked( bool flag );
 };

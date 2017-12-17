@@ -14,7 +14,7 @@ class QgsNewHttpConnection : QDialog
 {
 %Docstring
  Dialog to allow the user to configure and save connection
- information for an HTTP Server for WMS, etc.
+information for an HTTP Server for WMS, etc.
 %End
 
 %TypeHeaderCode
@@ -35,6 +35,7 @@ class QgsNewHttpConnection : QDialog
     enum Flag
     {
       FlagShowTestConnection,
+      FlagHideAuthenticationGroup,
     };
     typedef QFlags<QgsNewHttpConnection::Flag> Flags;
 
@@ -46,27 +47,27 @@ class QgsNewHttpConnection : QDialog
                           QgsNewHttpConnection::Flags flags = 0,
                           Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 %Docstring
- Constructor for QgsNewHttpConnection.
+Constructor for QgsNewHttpConnection.
 
- The ``types`` argument dictates which connection type settings should be
- shown in the dialog.
+The ``types`` argument dictates which connection type settings should be
+shown in the dialog.
 
- The ``flags`` argument allows specifying flags which control the dialog behavior
- and appearance.
+The ``flags`` argument allows specifying flags which control the dialog behavior
+and appearance.
 %End
 
     QString name() const;
 %Docstring
- Returns the current connection name.
+Returns the current connection name.
+
 .. versionadded:: 3.0
- :rtype: str
 %End
 
     QString url() const;
 %Docstring
- Returns the current connection url.
+Returns the current connection url.
+
 .. versionadded:: 3.0
- :rtype: str
 %End
 
   public slots:
@@ -78,39 +79,42 @@ class QgsNewHttpConnection : QDialog
 
     virtual bool validate();
 %Docstring
- Returns true if dialog settings are valid, or false if current
- settings are not valid and the dialog should not be acceptable.
+Returns true if dialog settings are valid, or false if current
+settings are not valid and the dialog should not be acceptable.
+
 .. versionadded:: 3.0
- :rtype: bool
 %End
 
     QPushButton *testConnectButton();
 %Docstring
- Returns the "test connection" button.
+Returns the "test connection" button.
+
 .. versionadded:: 3.0
- :rtype: QPushButton
 %End
 
     virtual QString wfsSettingsKey( const QString &base, const QString &connectionName ) const;
 %Docstring
- Returns the QSettings key for WFS related settings for the connection.
-.. seealso:: wmsSettingsKey()
+Returns the QSettings key for WFS related settings for the connection.
+
+.. seealso:: :py:func:`wmsSettingsKey()`
+
 .. versionadded:: 3.0
- :rtype: str
 %End
 
     virtual QString wmsSettingsKey( const QString &base, const QString &connectionName ) const;
 %Docstring
- Returns the QSettings key for WMS related settings for the connection.
-.. seealso:: wfsSettingsKey()
+Returns the QSettings key for WMS related settings for the connection.
+
+.. seealso:: :py:func:`wfsSettingsKey()`
+
 .. versionadded:: 3.0
- :rtype: str
 %End
 
     void updateServiceSpecificSettings();
 %Docstring
- Triggers a resync of the GUI widgets for the service specific settings (i.e. WFS
- and WMS related settings).
+Triggers a resync of the GUI widgets for the service specific settings (i.e. WFS
+and WMS related settings).
+
 .. versionadded:: 3.0
 %End
 

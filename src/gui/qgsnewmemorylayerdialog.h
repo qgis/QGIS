@@ -44,7 +44,7 @@ class GUI_EXPORT QgsNewMemoryLayerDialog: public QDialog, private Ui::QgsNewMemo
     static QgsVectorLayer *runAndCreateLayer( QWidget *parent = nullptr, const QgsCoordinateReferenceSystem &defaultCrs = QgsCoordinateReferenceSystem() );
 
     QgsNewMemoryLayerDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
-    ~QgsNewMemoryLayerDialog();
+    ~QgsNewMemoryLayerDialog() override;
 
     //! Returns the selected geometry type
     QgsWkbTypes::Type selectedType() const;
@@ -71,6 +71,7 @@ class GUI_EXPORT QgsNewMemoryLayerDialog: public QDialog, private Ui::QgsNewMemo
 
   private slots:
 
+    void geometryTypeChanged( int index );
     void showHelp();
 };
 

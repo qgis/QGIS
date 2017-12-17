@@ -38,11 +38,11 @@ class GUI_EXPORT QgsGenericFeatureSelectionManager : public QgsIFeatureSelection
     QgsGenericFeatureSelectionManager( const QgsFeatureIds &initialSelection, QObject *parent = nullptr );
 
     // QgsIFeatureSelection interface
-    virtual int selectedFeatureCount() override;
-    virtual void select( const QgsFeatureIds &ids ) override;
-    virtual void deselect( const QgsFeatureIds &ids ) override;
-    virtual void setSelectedFeatures( const QgsFeatureIds &ids ) override;
-    virtual const QgsFeatureIds &selectedFeatureIds() const override;
+    int selectedFeatureCount() override;
+    void select( const QgsFeatureIds &ids ) override;
+    void deselect( const QgsFeatureIds &ids ) override;
+    void setSelectedFeatures( const QgsFeatureIds &ids ) override;
+    const QgsFeatureIds &selectedFeatureIds() const override;
 
   private:
     QgsFeatureIds mSelectedFeatures;

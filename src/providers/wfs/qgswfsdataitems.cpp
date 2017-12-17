@@ -46,9 +46,9 @@ QgsWfsLayerItem::QgsWfsLayerItem( QgsDataItem *parent, QString name, const QgsDa
 {
   QgsSettings settings;
   bool useCurrentViewExtent = settings.value( QStringLiteral( "Windows/WFSSourceSelect/FeatureCurrentViewExtent" ), true ).toBool();
-  mUri = QgsWFSDataSourceURI::build( uri.uri(), featureType, crsString, QString(), useCurrentViewExtent );
+  mUri = QgsWFSDataSourceURI::build( uri.uri( false ), featureType, crsString, QString(), useCurrentViewExtent );
   setState( Populated );
-  mIconName = QStringLiteral( "mIconConnect.png" );
+  mIconName = QStringLiteral( "mIconWfs.svg" );
   mBaseUri = uri.param( QStringLiteral( "url" ) );
 }
 
@@ -137,7 +137,7 @@ QgsWfsConnectionItem::QgsWfsConnectionItem( QgsDataItem *parent, QString name, Q
   : QgsDataCollectionItem( parent, name, path )
   , mUri( uri )
 {
-  mIconName = QStringLiteral( "mIconWfs.svg" );
+  mIconName = QStringLiteral( "mIconConnect.png" );
   mCapabilities |= Collapse;
 }
 
@@ -249,7 +249,7 @@ QList<QAction *> QgsWfsRootItem::actions( QWidget *parent )
 
 QWidget *QgsWfsRootItem::paramWidget()
 {
-  QgsWFSSourceSelect *select = new QgsWFSSourceSelect( nullptr, 0, QgsProviderRegistry::WidgetMode::Manager );
+  QgsWFSSourceSelect *select = new QgsWFSSourceSelect( nullptr, nullptr, QgsProviderRegistry::WidgetMode::Manager );
   connect( select, &QgsWFSSourceSelect::connectionsChanged, this, &QgsWfsRootItem::onConnectionsChanged );
   return select;
 }
@@ -278,7 +278,7 @@ void QgsWfsRootItem::newConnection()
 
 QgsDataItem *QgsWfsDataItemProvider::createDataItem( const QString &path, QgsDataItem *parentItem )
 {
-  QgsDebugMsg( "thePath = " + path );
+  QgsDebugMsgLevel( "WFS path = " + path, 4 );
   if ( path.isEmpty() )
   {
     return new QgsWfsRootItem( parentItem, QStringLiteral( "WFS" ), QStringLiteral( "wfs:" ) );
@@ -291,7 +291,7 @@ QgsDataItem *QgsWfsDataItemProvider::createDataItem( const QString &path, QgsDat
     if ( QgsWfsConnection::connectionList().contains( connectionName ) )
     {
       QgsWfsConnection connection( connectionName );
-      return new QgsWfsConnectionItem( parentItem, QStringLiteral( "WFS" ), path, connection.uri().uri() );
+      return new QgsWfsConnectionItem( parentItem, QStringLiteral( "WFS" ), path, connection.uri().uri( false ) );
     }
   }
   else if ( path.startsWith( QLatin1String( "geonode:/" ) ) )
@@ -306,9 +306,9 @@ QgsDataItem *QgsWfsDataItemProvider::createDataItem( const QString &path, QgsDat
 
       QgsWFSDataSourceURI sourceUri( geonodeRequest.fetchServiceUrlsBlocking( QStringLiteral( "WFS" ) )[0] );
 
-      QgsDebugMsg( QString( "WFS full uri: '%1'." ).arg( QString( sourceUri.uri() ) ) );
+      QgsDebugMsgLevel( QString( "WFS full uri: '%1'." ).arg( QString( sourceUri.uri() ) ), 4 );
 
-      return new QgsWfsConnectionItem( parentItem, QStringLiteral( "WFS" ), path, sourceUri.uri() );
+      return new QgsWfsConnectionItem( parentItem, QStringLiteral( "WFS" ), path, sourceUri.uri( false ) );
     }
   }
 
@@ -335,9 +335,9 @@ QVector<QgsDataItem *> QgsWfsDataItemProvider::createDataItems( const QString &p
         for ( const QString &encodedUri : encodedUris )
         {
           QgsWFSDataSourceURI uri( encodedUri );
-          QgsDebugMsg( QStringLiteral( "WFS full uri: '%1'." ).arg( uri.uri() ) );
+          QgsDebugMsgLevel( QStringLiteral( "WFS full uri: '%1'." ).arg( uri.uri( false ) ), 4 );
 
-          QgsDataItem *item = new QgsWfsConnectionItem( parentItem, QStringLiteral( "WFS" ), path, uri.uri() );
+          QgsDataItem *item = new QgsWfsConnectionItem( parentItem, QStringLiteral( "WFS" ), path, uri.uri( false ) );
           if ( item )
           {
             items.append( item );

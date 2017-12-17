@@ -158,7 +158,7 @@ namespace QgsGuiUtils
       outputFileName = fileDialog->selectedFiles().first();
     }
 
-    selectedFilter = fileDialog->selectedFilter();
+    selectedFilter = fileDialog->selectedNameFilter();
     QgsDebugMsg( "Selected filter: " + selectedFilter );
     ext = filterMap.value( selectedFilter, QString() );
 
@@ -200,5 +200,38 @@ namespace QgsGuiUtils
 #else
     return QFontDialog::getFont( &ok, initial, nullptr, title );
 #endif
+  }
+
+  void saveGeometry( QWidget *widget, const QString &keyName )
+  {
+    QgsSettings settings;
+    QString key = createWidgetKey( widget, keyName );
+    settings.setValue( key, widget->saveGeometry() );
+  }
+
+  bool restoreGeometry( QWidget *widget, const QString &keyName )
+  {
+    QgsSettings settings;
+    QString key = createWidgetKey( widget, keyName );
+    return widget->restoreGeometry( settings.value( key ).toByteArray() );
+  }
+
+  QString createWidgetKey( QWidget *widget, const QString &keyName )
+  {
+    QString subKey;
+    if ( !keyName.isEmpty() )
+    {
+      subKey = keyName;
+    }
+    else if ( widget->objectName().isEmpty() )
+    {
+      subKey = QString( widget->metaObject()->className() );
+    }
+    else
+    {
+      subKey = widget->objectName();
+    }
+    QString key = QStringLiteral( "Windows/%1/geometry" ).arg( subKey );
+    return key;
   }
 }

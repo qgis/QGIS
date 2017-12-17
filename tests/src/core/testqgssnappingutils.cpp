@@ -30,7 +30,7 @@ struct FilterExcludePoint : public QgsPointLocator::MatchFilter
 {
   explicit FilterExcludePoint( const QgsPointXY &p ) : mPoint( p ) {}
 
-  bool acceptMatch( const QgsPointLocator::Match &match ) { return match.point() != mPoint; }
+  bool acceptMatch( const QgsPointLocator::Match &match ) override { return match.point() != mPoint; }
 
   QgsPointXY mPoint;
 };
@@ -62,11 +62,11 @@ class TestQgsSnappingUtils : public QObject
       //           + (1,0)
       mVL = new QgsVectorLayer( QStringLiteral( "Polygon" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
       QgsFeature ff( 0 );
-      QgsPolygon polygon;
-      QgsPolyline polyline;
+      QgsPolygonXY polygon;
+      QgsPolylineXY polyline;
       polyline << QgsPointXY( 0, 1 ) << QgsPointXY( 1, 0 ) << QgsPointXY( 1, 1 ) << QgsPointXY( 0, 1 );
       polygon << polyline;
-      QgsGeometry polygonGeom = QgsGeometry::fromPolygon( polygon );
+      QgsGeometry polygonGeom = QgsGeometry::fromPolygonXY( polygon );
       ff.setGeometry( polygonGeom );
       QgsFeatureList flist;
       flist << ff;
@@ -191,14 +191,14 @@ class TestQgsSnappingUtils : public QObject
       //         /\    .
       // (0,0)  x  x (1,0)
       QgsVectorLayer *vl = new QgsVectorLayer( QStringLiteral( "LineString" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
-      QgsPolyline polyline1, polyline2;
+      QgsPolylineXY polyline1, polyline2;
       polyline1 << QgsPointXY( 0, 0 ) << QgsPointXY( 1, 1 );
       polyline2 << QgsPointXY( 1, 0 ) << QgsPointXY( 0, 1 );
       QgsFeature f1;
-      QgsGeometry f1g = QgsGeometry::fromPolyline( polyline1 ) ;
+      QgsGeometry f1g = QgsGeometry::fromPolylineXY( polyline1 ) ;
       f1.setGeometry( f1g );
       QgsFeature f2;
-      QgsGeometry f2g = QgsGeometry::fromPolyline( polyline2 );
+      QgsGeometry f2g = QgsGeometry::fromPolylineXY( polyline2 );
       f2.setGeometry( f2g );
       QgsFeatureList flist;
       flist << f1 << f2;

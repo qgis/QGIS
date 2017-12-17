@@ -29,8 +29,9 @@ class QgsApplyDialog: public QDialog
     Q_OBJECT
 
   public:
-    QgsApplyDialog() {}
-    ~QgsApplyDialog() {}
+
+    //! Constructor for QgsApplyDialog
+    QgsApplyDialog() = default;
 
     /**
      * This method is called when changes should be applied.

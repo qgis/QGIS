@@ -53,7 +53,7 @@ class CORE_EXPORT QgsComposerMapItem : public QgsComposerObject
      * \param doc DOM document
      * \see readXml
      */
-    virtual bool writeXml( QDomElement &elem, QDomDocument &doc ) const override;
+    bool writeXml( QDomElement &elem, QDomDocument &doc ) const override;
 
     /**
      * Sets map item state from a DOM document
@@ -61,7 +61,7 @@ class CORE_EXPORT QgsComposerMapItem : public QgsComposerObject
      * \param doc is DOM document
      * \see writeXml
      */
-    virtual bool readXml( const QDomElement &itemElem, const QDomDocument &doc ) override;
+    bool readXml( const QDomElement &itemElem, const QDomDocument &doc ) override;
 
     /**
      * Sets composer map for the item

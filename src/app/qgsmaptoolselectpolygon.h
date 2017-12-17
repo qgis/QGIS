@@ -29,13 +29,13 @@ class APP_EXPORT QgsMapToolSelectPolygon : public QgsMapTool
   public:
     QgsMapToolSelectPolygon( QgsMapCanvas *canvas );
 
-    virtual ~QgsMapToolSelectPolygon();
+    ~QgsMapToolSelectPolygon() override;
 
     //! Overridden mouse move event
-    virtual void canvasMoveEvent( QgsMapMouseEvent *e ) override;
+    void canvasMoveEvent( QgsMapMouseEvent *e ) override;
 
     //! Overridden mouse press event
-    virtual void canvasPressEvent( QgsMapMouseEvent *e ) override;
+    void canvasPressEvent( QgsMapMouseEvent *e ) override;
 
   private:
 

@@ -36,9 +36,9 @@ QVariant QgsNetworkSpeedStrategy::cost( double distance, const QgsFeature &f ) c
   return QVariant( val );
 }
 
-QgsAttributeList QgsNetworkSpeedStrategy::requiredAttributes() const
+QSet<int> QgsNetworkSpeedStrategy::requiredAttributes() const
 {
-  QgsAttributeList l;
-  l.push_back( mAttributeId );
+  QSet< int > l;
+  l.insert( mAttributeId );
   return l;
 }

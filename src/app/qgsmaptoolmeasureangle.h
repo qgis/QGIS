@@ -30,9 +30,9 @@ class APP_EXPORT QgsMapToolMeasureAngle: public QgsMapTool
     Q_OBJECT
   public:
     QgsMapToolMeasureAngle( QgsMapCanvas *canvas );
-    ~QgsMapToolMeasureAngle();
+    ~QgsMapToolMeasureAngle() override;
 
-    virtual Flags flags() const override { return QgsMapTool::AllowZoomRect; }
+    Flags flags() const override { return QgsMapTool::AllowZoomRect; }
 
     //! Mouse move event for overriding
     void canvasMoveEvent( QgsMapMouseEvent *e ) override;

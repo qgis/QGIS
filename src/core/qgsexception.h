@@ -42,8 +42,7 @@ class CORE_EXPORT QgsException
       : mWhat( message )
     {}
 
-    virtual ~QgsException() throw()
-    {}
+    virtual ~QgsException() throw() = default;
 
     //! \note not available in Python bindings
     QString what() const throw()

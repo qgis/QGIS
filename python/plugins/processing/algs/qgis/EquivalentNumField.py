@@ -43,6 +43,9 @@ class EquivalentNumField(QgisAlgorithm):
     def group(self):
         return self.tr('Vector table')
 
+    def groupId(self):
+        return 'vectortable'
+
     def __init__(self):
         super().__init__()
 

@@ -10,7 +10,7 @@
 class QgsComposerRuler: QWidget
 {
 %Docstring
- A class to show paper scale and the current cursor position
+A class to show paper scale and the current cursor position
 %End
 
 %TypeHeaderCode
@@ -34,14 +34,8 @@ class QgsComposerRuler: QWidget
 
     void setComposition( QgsComposition *c );
     QgsComposition *composition();
-%Docstring
- :rtype: QgsComposition
-%End
 
     int rulerSize();
-%Docstring
- :rtype: int
-%End
 
   protected:
     virtual void paintEvent( QPaintEvent *event );

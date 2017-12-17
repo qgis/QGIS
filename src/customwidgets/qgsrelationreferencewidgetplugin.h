@@ -29,7 +29,7 @@ class CUSTOMWIDGETS_EXPORT QgsRelationReferenceWidgetPlugin : public QObject, pu
     Q_INTERFACES( QDesignerCustomWidgetInterface )
 
   public:
-    explicit QgsRelationReferenceWidgetPlugin( QObject *parent = 0 );
+    explicit QgsRelationReferenceWidgetPlugin( QObject *parent = nullptr );
 
   private:
     bool mInitialized;

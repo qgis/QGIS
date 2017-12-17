@@ -12,7 +12,8 @@
 class QgsLayoutViewToolSelect : QgsLayoutViewTool
 {
 %Docstring
- Layout view tool for selecting items in the layout.
+Layout view tool for selecting items in the layout.
+
 .. versionadded:: 3.0
 %End
 
@@ -23,8 +24,9 @@ class QgsLayoutViewToolSelect : QgsLayoutViewTool
 
     QgsLayoutViewToolSelect( QgsLayoutView *view /TransferThis/ );
 %Docstring
- Constructor for QgsLayoutViewToolSelect.
+Constructor for QgsLayoutViewToolSelect.
 %End
+    ~QgsLayoutViewToolSelect();
 
     virtual void layoutPressEvent( QgsLayoutViewMouseEvent *event );
 

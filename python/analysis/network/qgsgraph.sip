@@ -14,6 +14,7 @@
 class QgsGraphEdge
 {
 %Docstring
+
 .. versionadded:: 3.0
  This class implements a graph edge
 %End
@@ -25,32 +26,33 @@ class QgsGraphEdge
 
     QgsGraphEdge();
 %Docstring
- Constructor for QgsGraphEdge.
+Constructor for QgsGraphEdge.
 %End
 
     QVariant cost( int strategyIndex ) const;
 %Docstring
- Returns edge cost calculated using specified strategy
- \param strategyIndex strategy index
- :rtype: QVariant
+Returns edge cost calculated using specified strategy
+
+:param strategyIndex: strategy index
 %End
 
     QVector< QVariant > strategies() const;
 %Docstring
- Returns array of available strategies
- :rtype: list of QVariant
+Returns array of available strategies
 %End
 
-    int outVertex() const;
+    int toVertex() const;
 %Docstring
- Returns index of the outgoing vertex
- :rtype: int
+Returns the index of the vertex at the end of this edge.
+
+.. seealso:: :py:func:`fromVertex()`
 %End
 
-    int inVertex() const;
+    int fromVertex() const;
 %Docstring
- Returns index of the incoming vertex
- :rtype: int
+Returns the index of the vertex at the start of this edge.
+
+.. seealso:: :py:func:`toVertex()`
 %End
 
 };
@@ -62,6 +64,8 @@ class QgsGraphVertex
 {
 %Docstring
  This class implements a graph vertex
+
+.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -71,31 +75,32 @@ class QgsGraphVertex
 
     QgsGraphVertex();
 %Docstring
- Default constructor. It is needed for Qt's container, e.g. QVector
+Default constructor. It is needed for Qt's container, e.g. QVector
 %End
 
 
     QgsGraphVertex( const QgsPointXY &point );
 %Docstring
- This constructor initializes QgsGraphVertex object and associates a vertex with a point
+This constructor initializes QgsGraphVertex object and associates a vertex with a point
 %End
 
-    QgsGraphEdgeIds outEdges() const;
+    QgsGraphEdgeIds incomingEdges() const;
 %Docstring
- Returns outgoing edges ids
- :rtype: QgsGraphEdgeIds
+Returns the incoming edge ids, i.e. edges which end at this node.
+
+.. seealso:: :py:func:`outgoingEdges()`
 %End
 
-    QgsGraphEdgeIds inEdges() const;
+    QgsGraphEdgeIds outgoingEdges() const;
 %Docstring
- Return incoming edges ids
- :rtype: QgsGraphEdgeIds
+Returns outgoing edge ids, i.e. edges which start at this node.
+
+.. seealso:: :py:func:`incomingEdges()`
 %End
 
     QgsPointXY point() const;
 %Docstring
- Returns point associated with graph vertex
- :rtype: QgsPointXY
+Returns point associated with graph vertex.
 %End
 
 };
@@ -105,6 +110,8 @@ class QgsGraph
 {
 %Docstring
  Mathematical graph representation
+
+.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
@@ -114,51 +121,46 @@ class QgsGraph
 
     QgsGraph();
 %Docstring
- Constructor for QgsGraph.
+Constructor for QgsGraph.
 %End
 
 
     int addVertex( const QgsPointXY &pt );
 %Docstring
- Add a vertex to the graph
- :rtype: int
+Add a vertex to the graph
 %End
 
-    int addEdge( int outVertexIdx, int inVertexIdx, const QVector< QVariant > &strategies );
+    int addEdge( int fromVertexIdx, int toVertexIdx, const QVector< QVariant > &strategies );
 %Docstring
- Add an edge to the graph
- :rtype: int
+Add an edge to the graph, going from the ``fromVertexIdx``
+to ``toVertexIdx``.
 %End
 
     int vertexCount() const;
 %Docstring
- Returns number of graph vertices
- :rtype: int
+Returns number of graph vertices
 %End
 
     const QgsGraphVertex &vertex( int idx ) const;
 %Docstring
- Returns vertex at given index
- :rtype: QgsGraphVertex
+Returns vertex at given index
 %End
 
     int edgeCount() const;
 %Docstring
- Returns number of graph edges
- :rtype: int
+Returns number of graph edges
 %End
 
     const QgsGraphEdge &edge( int idx ) const;
 %Docstring
- Returns edge at given index
- :rtype: QgsGraphEdge
+Returns edge at given index
 %End
 
     int findVertex( const QgsPointXY &pt ) const;
 %Docstring
- Find vertex by associated point
- :return: vertex index
- :rtype: int
+Find vertex by associated point
+
+:return: vertex index
 %End
 
 };

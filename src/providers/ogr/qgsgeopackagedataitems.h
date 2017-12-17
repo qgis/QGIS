@@ -37,7 +37,7 @@ class QgsGeoPackageAbstractLayerItem : public QgsLayerItem
      */
     virtual bool executeDeleteLayer( QString &errCause );
 #ifdef HAVE_GUI
-    QList<QAction *> actions();
+    QList<QAction *> actions( QWidget *parent ) override;
   public slots:
     virtual void deleteLayer();
 #endif
@@ -51,7 +51,7 @@ class QgsGeoPackageRasterLayerItem : public QgsGeoPackageAbstractLayerItem
   public:
     QgsGeoPackageRasterLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri );
   protected:
-    virtual bool executeDeleteLayer( QString &errCause ) override;
+    bool executeDeleteLayer( QString &errCause ) override;
 };
 
 
@@ -62,7 +62,7 @@ class QgsGeoPackageVectorLayerItem : public QgsGeoPackageAbstractLayerItem
   public:
     QgsGeoPackageVectorLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, LayerType layerType );
   protected:
-    virtual bool executeDeleteLayer( QString &errCause ) override;
+    bool executeDeleteLayer( QString &errCause ) override;
 };
 
 
@@ -77,11 +77,11 @@ class QgsGeoPackageCollectionItem : public QgsDataCollectionItem
   public:
     QgsGeoPackageCollectionItem( QgsDataItem *parent, const QString &name, const QString &path );
     QVector<QgsDataItem *> createChildren() override;
-    virtual bool equal( const QgsDataItem *other ) override;
+    bool equal( const QgsDataItem *other ) override;
 
 #ifdef HAVE_GUI
-    virtual bool acceptDrop() override { return true; }
-    virtual bool handleDrop( const QMimeData *data, Qt::DropAction action ) override;
+    bool acceptDrop() override { return true; }
+    bool handleDrop( const QMimeData *data, Qt::DropAction action ) override;
     QList<QAction *> actions( QWidget *parent ) override;
 #endif
 
@@ -113,7 +113,7 @@ class QgsGeoPackageConnectionItem : public QgsGeoPackageCollectionItem
 
   public:
     QgsGeoPackageConnectionItem( QgsDataItem *parent, const QString &name, const QString &path );
-    virtual bool equal( const QgsDataItem *other ) override;
+    bool equal( const QgsDataItem *other ) override;
 
 #ifdef HAVE_GUI
     QList<QAction *> actions( QWidget *parent ) override;
@@ -137,7 +137,7 @@ class QgsGeoPackageRootItem : public QgsDataCollectionItem
     QVector<QgsDataItem *> createChildren() override;
 
 #ifdef HAVE_GUI
-    virtual QWidget *paramWidget() override;
+    QWidget *paramWidget() override;
     QList<QAction *> actions( QWidget *parent ) override;
 
   public slots:
@@ -152,9 +152,9 @@ class QgsGeoPackageRootItem : public QgsDataCollectionItem
 class QgsGeoPackageDataItemProvider : public QgsDataItemProvider
 {
   public:
-    virtual QString name() override { return QStringLiteral( "GPKG" ); }
-    virtual int capabilities() override { return QgsDataProvider::Database; }
-    virtual QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
+    QString name() override { return QStringLiteral( "GPKG" ); }
+    int capabilities() override { return QgsDataProvider::Database; }
+    QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
 };
 
 

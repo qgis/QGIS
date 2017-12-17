@@ -55,7 +55,7 @@ class QgsHistogramValuesGatherer: public QThread
   public:
     QgsHistogramValuesGatherer() = default;
 
-    virtual void run() override
+    void run() override
     {
       mWasCanceled = false;
       if ( mExpression.isEmpty() || !mLayer )
@@ -149,9 +149,9 @@ class GUI_EXPORT QgsCurveEditorWidget : public QWidget
     /**
      * Constructor for QgsCurveEditorWidget.
      */
-    QgsCurveEditorWidget( QWidget *parent SIP_TRANSFERTHIS = 0, const QgsCurveTransform &curve = QgsCurveTransform() );
+    QgsCurveEditorWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QgsCurveTransform &curve = QgsCurveTransform() );
 
-    ~QgsCurveEditorWidget();
+    ~QgsCurveEditorWidget() override;
 
     /**
      * Returns a curve representing the current curve from the widget.
@@ -211,7 +211,7 @@ class GUI_EXPORT QgsCurveEditorWidget : public QWidget
 
   protected:
 
-    virtual void keyPressEvent( QKeyEvent *event ) override;
+    void keyPressEvent( QKeyEvent *event ) override;
 
   private slots:
 
@@ -265,7 +265,7 @@ class GUI_EXPORT QgsCurveEditorPlotEventFilter: public QObject
 
     QgsCurveEditorPlotEventFilter( QwtPlot *plot );
 
-    virtual bool eventFilter( QObject *object, QEvent *event ) override;
+    bool eventFilter( QObject *object, QEvent *event ) override;
 
   signals:
 

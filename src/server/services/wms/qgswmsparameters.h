@@ -141,7 +141,9 @@ namespace QgsWms
         EXTENT,
         ROTATION,
         GRID_INTERVAL_X,
-        GRID_INTERVAL_Y
+        GRID_INTERVAL_Y,
+        WITH_GEOMETRY,
+        WITH_MAPTIP
       };
       Q_ENUM( ParameterName )
 
@@ -909,6 +911,25 @@ namespace QgsWms
        */
       QgsWmsParametersComposerMap composerMapParameters( int mapId ) const;
 
+      /**
+       * Return the external WMS uri
+       * \param id the id of the external wms
+       * @return uri string or an empty string if the external wms id does not exist
+       */
+      QString externalWMSUri( const QString &id ) const;
+
+      /**
+       * \brief Returns if the client wants the feature info response with geometry information
+       * \returns true if geometry information is requested for feature info response
+       */
+      bool withGeometry() const;
+
+      /**
+       * \brief withMapTip
+       * \returns true if maptip information is requested for feature info response
+       */
+      bool withMapTip() const;
+
     private:
       QString name( ParameterName name ) const;
       void raiseError( ParameterName name ) const;
@@ -951,10 +972,12 @@ namespace QgsWms
       QList<QgsGeometry> toGeomList( const QStringList &l, bool *error = Q_NULLPTR ) const;
       QList<QgsGeometry> toGeomList( const QStringList &l, ParameterName name ) const;
       QList<QgsGeometry> toGeomList( const QStringList &l, ParameterName name, int mapId ) const;
+      QMultiMap<QString, QString> getLayerFilters( const QStringList &layers ) const;
 
       QgsServerRequest::Parameters mRequestParameters;
       QMap<ParameterName, Parameter> mParameters;
       QMap<int, QMap<ParameterName, Parameter>> mComposerParameters;
+      QMap<QString, QMap<QString, QString> > mExternalWMSParameters;
       QList<QgsProjectVersion> mVersions;
   };
 }

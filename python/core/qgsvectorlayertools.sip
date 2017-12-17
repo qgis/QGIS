@@ -13,12 +13,12 @@
 class QgsVectorLayerTools : QObject
 {
 %Docstring
- Methods in this class are used to handle basic operations on vector layers.
- With an implementation of this class, parts of the application can ask for
- an operation to be done and the implementation will then take care of it.
+Methods in this class are used to handle basic operations on vector layers.
+With an implementation of this class, parts of the application can ask for
+an operation to be done and the implementation will then take care of it.
 
- Reimplement this class, if you need to have custom checks or GUI elements
- in your application.
+Reimplement this class, if you need to have custom checks or GUI elements
+in your application.
 %End
 
 %TypeHeaderCode
@@ -29,69 +29,68 @@ class QgsVectorLayerTools : QObject
 
     virtual bool addFeature( QgsVectorLayer *layer, const QgsAttributeMap &defaultValues = QgsAttributeMap(), const QgsGeometry &defaultGeometry = QgsGeometry(), QgsFeature *feature /Out/ = 0 ) const = 0;
 %Docstring
- This method should/will be called, whenever a new feature will be added to the layer
+This method should/will be called, whenever a new feature will be added to the layer
 
- \param layer           The layer to which the feature should be added
- \param defaultValues   Default values for the feature to add
- \param defaultGeometry A default geometry to add to the feature
- \param feature         Updated feature after adding will be written back to this
- :return:                True in case of success, False if the operation failed/was aborted
+:param layer:           The layer to which the feature should be added
+:param defaultValues:   Default values for the feature to add
+:param defaultGeometry: A default geometry to add to the feature
+:param feature:         Updated feature after adding will be written back to this
 
- TODO QGIS 3: remove const qualifier
- :rtype: bool
+:return:                True in case of success, False if the operation failed/was aborted
+
+TODO QGIS 3: remove const qualifier
 %End
 
     virtual bool startEditing( QgsVectorLayer *layer ) const = 0;
 %Docstring
- This will be called, whenever a vector layer should be switched to edit mode. Check the providers
- capability to edit in here.
- If successful layer->startEditing() will be called and true returned.
+This will be called, whenever a vector layer should be switched to edit mode. Check the providers
+capability to edit in here.
+If successful layer->startEditing() will be called and true returned.
 
- \param layer  The layer on which to start an edit session
+:param layer:  The layer on which to start an edit session
 
- :return:       True, if the editing session was started
+:return:       True, if the editing session was started
 
- TODO QGIS 3: remove const qualifier
- :rtype: bool
+TODO QGIS 3: remove const qualifier
 %End
 
     virtual bool stopEditing( QgsVectorLayer *layer, bool allowCancel = true ) const = 0;
 %Docstring
- Will be called, when an editing session is ended and the features should be committed.
- Appropriate dialogs should be shown like
+Will be called, when an editing session is ended and the features should be committed.
+Appropriate dialogs should be shown like
 
- \param layer       The layer to commit
- \param allowCancel True if a cancel button should be offered
- :return:            True if successful
+:param layer:       The layer to commit
+:param allowCancel: True if a cancel button should be offered
 
- TODO QGIS 3: remove const qualifier
- :rtype: bool
+:return:            True if successful
+
+TODO QGIS 3: remove const qualifier
 %End
 
     virtual bool saveEdits( QgsVectorLayer *layer ) const = 0;
 %Docstring
- Should be called, when the features should be committed but the editing session is not ended.
+Should be called, when the features should be committed but the editing session is not ended.
 
- \param layer       The layer to commit
- :return:            True if successful
+:param layer:       The layer to commit
 
- TODO QGIS 3: remove const qualifier
- :rtype: bool
+:return:            True if successful
+
+TODO QGIS 3: remove const qualifier
 %End
 
     virtual bool copyMoveFeatures( QgsVectorLayer *layer, QgsFeatureRequest &request /In,Out/, double dx = 0, double dy = 0, QString *errorMsg /Out/ = 0 ) const;
 %Docstring
- Copy and move features with defined translation.
+Copy and move features with defined translation.
 
- \param layer The layer
- \param request The request for the features to be moved. It will be assigned to a new feature request with the newly copied features.
- \param dx The translation on x
- \param dy The translation on y
- \param errorMsg If given, it will contain the error message
- :return: True if all features could be copied.
+:param layer: The layer
+:param request: The request for the features to be moved. It will be assigned to a new feature request with the newly copied features.
+:param dx: The translation on x
+:param dy: The translation on y
+:param errorMsg: If given, it will contain the error message
 
- TODO QGIS 3: remove const qualifier
- :rtype: bool
+:return: True if all features could be copied.
+
+TODO QGIS 3: remove const qualifier
 %End
 
 };

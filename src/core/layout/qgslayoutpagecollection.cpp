@@ -44,6 +44,12 @@ void QgsLayoutPageCollection::setPageStyleSymbol( QgsFillSymbol *symbol )
     return;
 
   mPageStyleSymbol.reset( static_cast<QgsFillSymbol *>( symbol->clone() ) );
+
+  for ( QgsLayoutItemPage *page : qgis::as_const( mPages ) )
+  {
+    page->update();
+  }
+
 }
 
 void QgsLayoutPageCollection::reflow()
@@ -87,6 +93,36 @@ int QgsLayoutPageCollection::pageNumberForPoint( QPointF point ) const
   return pageNumber;
 }
 
+int QgsLayoutPageCollection::predictPageNumberForPoint( QPointF point ) const
+{
+  int pageNumber = 0;
+  double startNextPageY = 0;
+  Q_FOREACH ( QgsLayoutItemPage *page, mPages )
+  {
+    startNextPageY += page->rect().height() + spaceBetweenPages();
+    if ( startNextPageY >= point.y() )
+      break;
+    pageNumber++;
+  }
+
+  if ( startNextPageY >= point.y() )
+  {
+    // found an existing page
+    return pageNumber;
+  }
+
+  double lastPageHeight = mPages.last()->rect().height();
+  while ( startNextPageY < point.y() )
+  {
+    startNextPageY += lastPageHeight + spaceBetweenPages();
+    if ( startNextPageY >= point.y() )
+      break;
+    pageNumber++;
+  }
+
+  return pageNumber;
+}
+
 QgsLayoutItemPage *QgsLayoutPageCollection::pageAtPoint( QPointF point ) const
 {
   Q_FOREACH ( QGraphicsItem *item, mLayout->items( point ) )
@@ -99,6 +135,27 @@ QgsLayoutItemPage *QgsLayoutPageCollection::pageAtPoint( QPointF point ) const
     }
   }
   return nullptr;
+}
+
+QPointF QgsLayoutPageCollection::pagePositionToLayoutPosition( int page, const QgsLayoutPoint &position ) const
+{
+  QPointF layoutUnitsPos = mLayout->convertToLayoutUnits( position );
+  if ( page > 0 && page < mPages.count() )
+  {
+    layoutUnitsPos.ry() += mPages.at( page )->pos().y();
+  }
+  return layoutUnitsPos;
+}
+
+QgsLayoutPoint QgsLayoutPageCollection::pagePositionToAbsolute( int page, const QgsLayoutPoint &position ) const
+{
+  double vDelta = 0.0;
+  if ( page > 0 && page < mPages.count() )
+  {
+    vDelta = mLayout->convertFromLayoutUnits( mPages.at( page )->pos().y(), position.units() ).length();
+  }
+
+  return QgsLayoutPoint( position.x(), position.y() + vDelta, position.units() );
 }
 
 QPointF QgsLayoutPageCollection::positionOnPage( QPointF position ) const
@@ -195,6 +252,7 @@ bool QgsLayoutPageCollection::readXml( const QDomElement &e, const QDomDocument 
     QDomElement pageElement = pageList.at( i ).toElement();
     std::unique_ptr< QgsLayoutItemPage > page( new QgsLayoutItemPage( mLayout ) );
     page->readXml( pageElement, document, context );
+    page->finalizeRestoreFromXml();
     mPages.append( page.get() );
     mLayout->addItem( page.release() );
   }
@@ -274,6 +332,40 @@ QList<int> QgsLayoutPageCollection::visiblePageNumbers( QRectF region ) const
   return pages;
 }
 
+bool QgsLayoutPageCollection::pageIsEmpty( int page ) const
+{
+  //get all items on page
+  const QList<QgsLayoutItem *> items = mLayout->pageCollection()->itemsOnPage( page );
+
+  //loop through and check for non-paper items
+  for ( QgsLayoutItem *item : items )
+  {
+    //is item a paper item?
+    if ( item->type() != QgsLayoutItemRegistry::LayoutPage )
+    {
+      //item is not a paper item, so we have other items on the page
+      return false;
+    }
+  }
+  //no non-paper items
+  return true;
+}
+
+QList<QgsLayoutItem *> QgsLayoutPageCollection::itemsOnPage( int page ) const
+{
+  QList<QgsLayoutItem *> itemList;
+  const QList<QGraphicsItem *> graphicsItemList = mLayout->items();
+  for ( QGraphicsItem *graphicsItem : graphicsItemList )
+  {
+    QgsLayoutItem *item = dynamic_cast<QgsLayoutItem *>( graphicsItem );
+    if ( item && item->page() == page )
+    {
+      itemList.push_back( item );
+    }
+  }
+  return itemList;
+}
+
 void QgsLayoutPageCollection::addPage( QgsLayoutItemPage *page )
 {
   if ( !mBlockUndoCommands )
@@ -283,6 +375,18 @@ void QgsLayoutPageCollection::addPage( QgsLayoutItemPage *page )
   reflow();
   if ( !mBlockUndoCommands )
     mLayout->undoStack()->endCommand();
+}
+
+QgsLayoutItemPage *QgsLayoutPageCollection::extendByNewPage()
+{
+  if ( mPages.empty() )
+    return nullptr;
+
+  QgsLayoutItemPage *lastPage = mPages.at( mPages.count() - 1 );
+  std::unique_ptr< QgsLayoutItemPage > newPage = qgis::make_unique< QgsLayoutItemPage >( mLayout );
+  newPage->attemptResize( lastPage->sizeWithUnits() );
+  addPage( newPage.release() );
+  return mPages.at( mPages.count() - 1 );
 }
 
 void QgsLayoutPageCollection::insertPage( QgsLayoutItemPage *page, int beforePage )
@@ -350,6 +454,26 @@ void QgsLayoutPageCollection::deletePage( QgsLayoutItemPage *page )
   }
 }
 
+void QgsLayoutPageCollection::clear()
+{
+  if ( !mBlockUndoCommands )
+  {
+    mLayout->undoStack()->beginMacro( tr( "Remove Pages" ) );
+    mLayout->undoStack()->beginCommand( this, tr( "Remove Pages" ) );
+  }
+  for ( int i = mPages.count() - 1;  i >= 0; --i )
+  {
+    emit pageAboutToBeRemoved( i );
+    mPages.takeAt( i )->deleteLater();
+  }
+  reflow();
+  if ( !mBlockUndoCommands )
+  {
+    mLayout->undoStack()->endCommand();
+    mLayout->undoStack()->endMacro();
+  }
+}
+
 QgsLayoutItemPage *QgsLayoutPageCollection::takePage( QgsLayoutItemPage *page )
 {
   mPages.removeAll( page );
@@ -365,3 +489,5 @@ void QgsLayoutPageCollection::createDefaultPageStyleSymbol()
   properties.insert( QStringLiteral( "joinstyle" ), QStringLiteral( "miter" ) );
   mPageStyleSymbol.reset( QgsFillSymbol::createSimple( properties ) );
 }
+
+

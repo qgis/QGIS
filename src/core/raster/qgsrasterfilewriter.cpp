@@ -226,7 +226,9 @@ QgsRasterFileWriter::WriterError QgsRasterFileWriter::writeDataRaster( const Qgs
       QgsRasterProjector *projector = pipe->projector();
       if ( projector && projector->destinationCrs() != projector->sourceCrs() )
       {
+        Q_NOWARN_DEPRECATED_PUSH
         QgsCoordinateTransform ct( projector->destinationCrs(), projector->sourceCrs() );
+        Q_NOWARN_DEPRECATED_POP
         srcExtent = ct.transformBoundingBox( outputExtent );
       }
       if ( !srcProvider->extent().contains( srcExtent ) )
@@ -1008,4 +1010,118 @@ QString QgsRasterFileWriter::driverForExtension( const QString &extension )
     }
   }
   return QString();
+}
+
+QStringList QgsRasterFileWriter::extensionsForFormat( const QString &format )
+{
+  GDALDriverH drv = GDALGetDriverByName( format.toLocal8Bit().data() );
+  if ( drv )
+  {
+    char **driverMetadata = GDALGetMetadata( drv, nullptr );
+    if ( CSLFetchBoolean( driverMetadata, GDAL_DCAP_CREATE, false ) && CSLFetchBoolean( driverMetadata, GDAL_DCAP_RASTER, false ) )
+    {
+      return QString( GDALGetMetadataItem( drv, GDAL_DMD_EXTENSIONS, nullptr ) ).split( ' ' );
+    }
+  }
+  return QStringList();
+}
+
+QString QgsRasterFileWriter::filterForDriver( const QString &driverName )
+{
+  GDALDriverH drv = GDALGetDriverByName( driverName.toLocal8Bit().data() );
+  if ( drv )
+  {
+    QString drvName = GDALGetDriverLongName( drv );
+    QString extensionsString = QString( GDALGetMetadataItem( drv, GDAL_DMD_EXTENSIONS, nullptr ) );
+    if ( extensionsString.isEmpty() )
+    {
+      return QString();
+    }
+    QStringList extensions = extensionsString.split( ' ' );
+    QString filter = drvName + " (";
+    for ( const QString &ext : extensions )
+    {
+      filter.append( QStringLiteral( "*.%1 *.%2 " ).arg( ext.toLower(), ext.toUpper() ) );
+    }
+    filter = filter.trimmed().append( QStringLiteral( ")" ) );
+    return filter;
+  }
+
+  return QString();
+}
+
+QList< QgsRasterFileWriter::FilterFormatDetails > QgsRasterFileWriter::supportedFiltersAndFormats( RasterFormatOptions options )
+{
+  QList< FilterFormatDetails > results;
+
+  GDALAllRegister();
+  int const drvCount = GDALGetDriverCount();
+
+  FilterFormatDetails tifFormat;
+
+  for ( int i = 0; i < drvCount; ++i )
+  {
+    GDALDriverH drv = GDALGetDriver( i );
+    if ( drv )
+    {
+      QString drvName = GDALGetDriverShortName( drv );
+      char **driverMetadata = GDALGetMetadata( drv, nullptr );
+      if ( CSLFetchBoolean( driverMetadata, GDAL_DCAP_CREATE, false ) && CSLFetchBoolean( driverMetadata, GDAL_DCAP_RASTER, false ) )
+      {
+        QString filterString = filterForDriver( drvName );
+        if ( filterString.isEmpty() )
+          continue;
+
+        FilterFormatDetails details;
+        details.driverName = drvName;
+        details.filterString = filterString;
+
+        if ( options & SortRecommended )
+        {
+          if ( drvName == QLatin1String( "GTiff" ) )
+          {
+            tifFormat = details;
+            continue;
+          }
+        }
+
+        results << details;
+      }
+    }
+  }
+
+  std::sort( results.begin(), results.end(), []( const FilterFormatDetails & a, const FilterFormatDetails & b ) -> bool
+  {
+    return a.driverName < b.driverName;
+  } );
+
+  if ( options & SortRecommended )
+  {
+    if ( !tifFormat.filterString.isEmpty() )
+    {
+      results.insert( 0, tifFormat );
+    }
+  }
+
+  return results;
+}
+
+QStringList QgsRasterFileWriter::supportedFormatExtensions( const RasterFormatOptions options )
+{
+  const auto formats = supportedFiltersAndFormats( options );
+  QStringList extensions;
+
+  QRegularExpression rx( QStringLiteral( "\\*\\.([a-zA-Z0-9]*)" ) );
+
+  for ( const FilterFormatDetails &format : formats )
+  {
+    QString ext = format.filterString;
+    QRegularExpressionMatch match = rx.match( ext );
+    if ( !match.hasMatch() )
+      continue;
+
+    QString matched = match.captured( 1 );
+    extensions << matched;
+  }
+  return extensions;
 }

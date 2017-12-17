@@ -78,7 +78,7 @@ class QgsFieldPrivate : public QSharedData
     {
     }
 
-    ~QgsFieldPrivate() {}
+    ~QgsFieldPrivate() = default;
 
     bool operator==( const QgsFieldPrivate &other ) const
     {

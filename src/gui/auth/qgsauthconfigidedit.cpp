@@ -19,6 +19,7 @@
 
 #include "qgsauthguiutils.h"
 #include "qgsauthmanager.h"
+#include "qgsapplication.h"
 
 
 QgsAuthConfigIdEdit::QgsAuthConfigIdEdit( QWidget *parent, const QString &authcfg, bool allowEmpty )
@@ -53,9 +54,9 @@ bool QgsAuthConfigIdEdit::validate()
   bool curvalid = ( ( authcfg == mAuthCfgOrig && authcfg.size() == 7 )
                     || ( mAllowEmpty && authcfg.isEmpty() ) );
 
-  if ( !QgsAuthManager::instance()->isDisabled() && !curvalid && authcfg.size() == 7 && isAlphaNumeric( authcfg ) )
+  if ( !QgsApplication::authManager()->isDisabled() && !curvalid && authcfg.size() == 7 && isAlphaNumeric( authcfg ) )
   {
-    curvalid = QgsAuthManager::instance()->configIdUnique( authcfg );
+    curvalid = QgsApplication::authManager()->configIdUnique( authcfg );
   }
 
   if ( mValid != curvalid )

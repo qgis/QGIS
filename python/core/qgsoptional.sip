@@ -15,12 +15,13 @@ class QgsOptional
 
  QgsOptional is a container for other classes and adds an additional enabled/disabled flag.
 
- Often it is used for configuration options which can be enabled or disabled but also have
- more internal configuration information that should not be lost when disabling and re-enabling.
+Often it is used for configuration options which can be enabled or disabled but also have
+more internal configuration information that should not be lost when disabling and re-enabling.
 
 .. note::
 
    For Python you need to use implementations for specific template classes
+
 .. note::
 
    Not available in Python bindings (although SIP file is present for specific implementations).
@@ -35,37 +36,36 @@ class QgsOptional
 
     QgsOptional();
 %Docstring
- A QgsOptional is disabled by default if default constructed.
+A QgsOptional is disabled by default if default constructed.
 %End
 
     QgsOptional( const T &data );
 %Docstring
- A QgsOptional is enabled by default if constructed with payload.
+A QgsOptional is enabled by default if constructed with payload.
 %End
 
     QgsOptional( const T &data, bool enabled );
 %Docstring
- A QgsOptional constructed with enabled status and data
+A QgsOptional constructed with enabled status and data
 %End
 
     bool operator== ( const QgsOptional<T> &other ) const;
 
     operator bool() const;
 %Docstring
- Boolean operator. Will return true if this optional is enabled.
+Boolean operator. Will return true if this optional is enabled.
 %End
 
     bool enabled() const;
 %Docstring
- Check if this optional is enabled
+Check if this optional is enabled
 
 .. versionadded:: 3.0
- :rtype: bool
 %End
 
     void setEnabled( bool enabled );
 %Docstring
- Set if this optional is enabled
+Set if this optional is enabled
 
 .. versionadded:: 3.0
 %End
@@ -73,15 +73,14 @@ class QgsOptional
 
     T data() const;
 %Docstring
- Access the payload data
+Access the payload data
 
 .. versionadded:: 3.0
- :rtype: T
 %End
 
     void setData( const T &data );
 %Docstring
- Set the payload data
+Set the payload data
 
 .. versionadded:: 3.0
 %End

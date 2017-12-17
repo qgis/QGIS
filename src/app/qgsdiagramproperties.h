@@ -34,7 +34,7 @@ class APP_EXPORT QgsDiagramProperties : public QWidget, private Ui::QgsDiagramPr
   public:
     QgsDiagramProperties( QgsVectorLayer *layer, QWidget *parent, QgsMapCanvas *canvas );
 
-    ~QgsDiagramProperties();
+    ~QgsDiagramProperties() override;
 
     //! Adds an attribute from the list of available attributes to the assigned attributes with a random color.
     void addAttribute( QTreeWidgetItem *item );
@@ -112,7 +112,7 @@ class EditBlockerDelegate: public QStyledItemDelegate
       : QStyledItemDelegate( parent )
     {}
 
-    virtual QWidget *createEditor( QWidget *, const QStyleOptionViewItem &, const QModelIndex & ) const override
+    QWidget *createEditor( QWidget *, const QStyleOptionViewItem &, const QModelIndex & ) const override
     {
       return nullptr;
     }

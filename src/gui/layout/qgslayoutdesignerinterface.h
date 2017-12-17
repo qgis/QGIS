@@ -22,6 +22,7 @@
 
 class QgsLayout;
 class QgsLayoutView;
+class QgsLayoutItem;
 
 /**
  * \ingroup gui
@@ -43,11 +44,9 @@ class GUI_EXPORT QgsLayoutDesignerInterface: public QObject
     /**
      * Constructor for QgsLayoutDesignerInterface.
      */
-    QgsLayoutDesignerInterface( QObject *parent SIP_TRANSFERTHIS = 0 )
+    QgsLayoutDesignerInterface( QObject *parent SIP_TRANSFERTHIS = nullptr )
       : QObject( parent )
     {}
-
-    virtual ~QgsLayoutDesignerInterface() = default;
 
     /**
      * Returns the layout displayed in the designer.
@@ -61,6 +60,11 @@ class GUI_EXPORT QgsLayoutDesignerInterface: public QObject
      * \see layout()
      */
     virtual QgsLayoutView *view() = 0;
+
+    /**
+     * Selects the specified \a items.
+     */
+    virtual void selectItems( const QList< QgsLayoutItem * > items ) = 0;
 
   public slots:
 

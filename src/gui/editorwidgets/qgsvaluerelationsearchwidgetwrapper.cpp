@@ -36,7 +36,7 @@ bool QgsValueRelationSearchWidgetWrapper::applyDirectly()
   return !mLineEdit;
 }
 
-QString QgsValueRelationSearchWidgetWrapper::expression()
+QString QgsValueRelationSearchWidgetWrapper::expression() const
 {
   return mExpression;
 }
@@ -94,7 +94,7 @@ QgsSearchWidgetWrapper::FilterFlags QgsValueRelationSearchWidgetWrapper::default
 
 QString QgsValueRelationSearchWidgetWrapper::createExpression( QgsSearchWidgetWrapper::FilterFlags flags ) const
 {
-  QString fieldName = QgsExpression::quotedColumnRef( layer()->fields().at( mFieldIdx ).name() );
+  QString fieldName = createFieldIdentifier();
 
   //clear any unsupported flags
   flags &= supportedFlags();
@@ -189,9 +189,9 @@ void QgsValueRelationSearchWidgetWrapper::onValueChanged()
   emit expressionChanged( mExpression );
 }
 
-void QgsValueRelationSearchWidgetWrapper::setExpression( QString exp )
+void QgsValueRelationSearchWidgetWrapper::setExpression( const QString &expression )
 {
-  QgsSettings settings;
+  QString exp = expression;
   QString nullValue = QgsApplication::nullRepresentation();
   QString fieldName = layer()->fields().at( mFieldIdx ).name();
 

@@ -35,19 +35,19 @@ class APP_EXPORT QgsRuleBasedLabelingModel : public QAbstractItemModel
   public:
     QgsRuleBasedLabelingModel( QgsRuleBasedLabeling::Rule *rootRule, QObject *parent = nullptr );
 
-    virtual Qt::ItemFlags flags( const QModelIndex &index ) const override;
-    virtual QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
-    virtual QVariant headerData( int section, Qt::Orientation orientation,
-                                 int role = Qt::DisplayRole ) const override;
-    virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
-    virtual int columnCount( const QModelIndex & = QModelIndex() ) const override;
+    Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
+    QVariant headerData( int section, Qt::Orientation orientation,
+                         int role = Qt::DisplayRole ) const override;
+    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
+    int columnCount( const QModelIndex & = QModelIndex() ) const override;
     //! provide model index for parent's child item
-    virtual QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
+    QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
     //! provide parent model index
-    virtual QModelIndex parent( const QModelIndex &index ) const override;
+    QModelIndex parent( const QModelIndex &index ) const override;
 
     // editing support
-    virtual bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
+    bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
 
     // drag'n'drop support
     Qt::DropActions supportedDropActions() const override;
@@ -83,7 +83,7 @@ class QgsRuleBasedLabelingWidget : public QgsPanelWidget, private Ui::QgsRuleBas
     Q_OBJECT
   public:
     QgsRuleBasedLabelingWidget( QgsVectorLayer *layer, QgsMapCanvas *canvas, QWidget *parent = nullptr );
-    ~QgsRuleBasedLabelingWidget();
+    ~QgsRuleBasedLabelingWidget() override;
 
     //! Gives access to the internal root of the rule tree
     const QgsRuleBasedLabeling::Rule *rootRule() const { return mRootRule; }
@@ -135,11 +135,11 @@ class APP_EXPORT QgsLabelingRulePropsWidget : public QgsPanelWidget, private Ui:
 
     QgsLabelingRulePropsWidget( QgsRuleBasedLabeling::Rule *rule, QgsVectorLayer *layer,
                                 QWidget *parent = nullptr, QgsMapCanvas *mapCanvas = nullptr );
-    ~QgsLabelingRulePropsWidget();
+    ~QgsLabelingRulePropsWidget() override;
 
     QgsRuleBasedLabeling::Rule *rule() { return mRule; }
 
-    virtual void setDockMode( bool dockMode ) override;
+    void setDockMode( bool dockMode ) override;
 
   public slots:
     void testFilter();

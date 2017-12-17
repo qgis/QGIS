@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import range
 
 __author__ = 'Arnaud Morvan'
 __date__ = 'October 2014'
@@ -76,7 +75,8 @@ class FieldsMappingModel(QAbstractTableModel):
         (QVariant.Double, "Double"),
         (QVariant.Int, "Integer"),
         (QVariant.LongLong, "Integer64"),
-        (QVariant.String, "String")])
+        (QVariant.String, "String"),
+        (QVariant.Bool, "Boolean")])
 
     def __init__(self, parent=None):
         super(FieldsMappingModel, self).__init__(parent)
@@ -225,8 +225,7 @@ class FieldsMappingModel(QAbstractTableModel):
 
         self._mapping = []
         if layer is not None:
-            dp = layer.dataProvider()
-            for field in dp.fields():
+            for field in layer.fields():
                 self._mapping.append(self.newField(field))
 
         self.endResetModel()
@@ -263,6 +262,7 @@ class ExpressionDelegate(QStyledItemDelegate):
         editor.registerExpressionContextGenerator(index.model().contextGenerator())
         editor.fieldChanged.connect(self.on_expression_fieldChange)
         editor.setAutoFillBackground(True)
+        editor.setAllowEvalErrors(self.parent().dialogType == DIALOG_MODELER)
         return editor
 
     def setEditorData(self, editor, index):
@@ -303,6 +303,7 @@ class FieldsMappingPanel(BASE, WIDGET):
 
         self.layerCombo.setAllowEmptyLayer(True)
         self.layerCombo.setFilters(QgsMapLayerProxyModel.VectorLayer)
+        self.dialogType = None
 
     def configure(self):
         self.model = FieldsMappingModel()
@@ -324,7 +325,7 @@ class FieldsMappingPanel(BASE, WIDGET):
             self.on_resetButton_clicked()
             return
         dlg = QMessageBox(self)
-        dlg.setText("Do you want to reset the field mapping?")
+        dlg.setText(self.tr("Do you want to reset the field mapping?"))
         dlg.setStandardButtons(
             QMessageBox.StandardButtons(QMessageBox.Yes |
                                         QMessageBox.No))
@@ -472,12 +473,15 @@ class FieldsMappingWidgetWrapper(WidgetWrapper):
         self._layer = None
 
     def createWidget(self):
-        return FieldsMappingPanel()
+        panel = FieldsMappingPanel()
+        panel.dialogType = self.dialogType
+        return panel
 
     def postInitialize(self, wrappers):
         for wrapper in wrappers:
             if wrapper.param.name() == self.param.parentLayerParameter():
-                self.setLayer(wrapper.value())
+                if wrapper.value():
+                    self.setLayer(wrapper.value())
                 wrapper.widgetValueHasChanged.connect(self.parentLayerChanged)
                 break
 

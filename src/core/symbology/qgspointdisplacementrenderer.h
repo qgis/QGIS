@@ -37,7 +37,8 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsPointDistanceRenderer
     enum Placement
     {
       Ring, //!< Place points in a single ring around group
-      ConcentricRings //!< Place points in concentric rings around group
+      ConcentricRings, //!< Place points in concentric rings around group
+      Grid //!< Place points in a grid around group
     };
 
     /**
@@ -47,10 +48,10 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsPointDistanceRenderer
     QgsPointDisplacementRenderer( const QString &labelAttributeName = QString() );
 
     QgsPointDisplacementRenderer *clone() const override SIP_FACTORY;
-    virtual void startRender( QgsRenderContext &context, const QgsFields &fields ) override;
+    void startRender( QgsRenderContext &context, const QgsFields &fields ) override;
     void stopRender( QgsRenderContext &context ) override;
     QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) override;
-    virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
+    QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
 
     //! Create a renderer from XML element
     static QgsFeatureRenderer *create( QDomElement &symbologyElem, const QgsReadWriteContext &context ) SIP_FACTORY;
@@ -128,8 +129,8 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsPointDistanceRenderer
 
     /**
      * Creates a QgsPointDisplacementRenderer from an existing renderer.
-     * \since QGIS 2.5
      * \returns a new renderer if the conversion was possible, otherwise nullptr.
+     * \since QGIS 2.5
      */
     static QgsPointDisplacementRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) SIP_FACTORY;
 
@@ -152,12 +153,16 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsPointDistanceRenderer
     //! Addition to the default circle radius
     double mCircleRadiusAddition = 0;
 
-    virtual void drawGroup( QPointF centerPoint, QgsRenderContext &context, const QgsPointDistanceRenderer::ClusteredGroup &group ) override SIP_FORCE;
+    void drawGroup( QPointF centerPoint, QgsRenderContext &context, const QgsPointDistanceRenderer::ClusteredGroup &group ) override SIP_FORCE;
 
     //helper functions
-    void calculateSymbolAndLabelPositions( QgsSymbolRenderContext &symbolContext, QPointF centerPoint, int nPosition, double symbolDiagonal, QList<QPointF> &symbolPositions, QList<QPointF> &labelShifts, double &circleRadius ) const;
+    void calculateSymbolAndLabelPositions( QgsSymbolRenderContext &symbolContext, QPointF centerPoint, int nPosition, double symbolDiagonal, QList<QPointF> &symbolPositions, QList<QPointF> &labelShifts, double &circleRadius,
+                                           double &gridRadius, int &gridSize ) const;
     void drawCircle( double radiusPainterUnits, QgsSymbolRenderContext &context, QPointF centerPoint, int nSymbols );
     void drawSymbols( const ClusteredGroup &group, QgsRenderContext &context, const QList<QPointF> &symbolPositions );
+    void drawGrid( int gridSizeUnits, QgsSymbolRenderContext &context,
+                   QList<QPointF> pointSymbolPositions, int nSymbols );
+    void centralizeGrid( QList<QPointF> &pointSymbolPositions, double radius, int size ) const;
 };
 
 #endif // QGSPOINTDISPLACEMENTRENDERER_H

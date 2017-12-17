@@ -1,24 +1,27 @@
 r.sim.water
 Overland flow hydrologic simulation using path sampling method (SIMWE).
 Raster (r.*)
-ParameterRaster|elevation|Name of the elevation raster map [m]|False
-ParameterRaster|dx|Name of the x-derivatives raster map [m/m]|False
-ParameterRaster|dy|Name of the y-derivatives raster map [m/m]|False
-ParameterRaster|rain|Name of the rainfall excess rate (rain-infilt) raster map [mm/hr]|False
-ParameterString|rain_value|Rainfall excess rate unique value [mm/hr]|50
-ParameterRaster|infil|Name of the runoff infiltration rate raster map [mm/hr]|False
-ParameterString|infil_value|Runoff infiltration rate unique value [mm/hr]|0.0
-ParameterRaster|man|Name of the Mannings n raster map|False
-ParameterString|man_value|Mannings n unique value|0.1
-ParameterRaster|flow_control|Name of the flow controls raster map (permeability ratio 0-1)|False
-ParameterString|nwalkers|Number of walkers, default is twice the no. of cells|
-ParameterString|niterations|Time used for iterations [minutes]|10
-ParameterString|output_step|Time interval for creating output maps [minutes]|2
-ParameterString|diffusion_coeff|Water diffusion constant|0.8
-ParameterString|hmax|Threshold water depth [m] (diffusion increases after this water depth is reached)|0.3
-ParameterString|halpha|Diffusion increase constant|4.0
-ParameterString|hbeta|Weighting factor for water flow velocity vector|0.5
-ParameterBoolean|-t|Time-series output|True
-OutputRaster|depth|Water depth [m]
-OutputRaster|discharge|Water discharge [m3/s]
-OutputRaster|error|Simulation error [m]
+QgsProcessingParameterRasterLayer|elevation|Name of the elevation raster map [m]|None|False
+QgsProcessingParameterRasterLayer|dx|Name of the x-derivatives raster map [m/m]|None|False
+QgsProcessingParameterRasterLayer|dy|Name of the y-derivatives raster map [m/m]|None|False
+QgsProcessingParameterRasterLayer|rain|Name of the rainfall excess rate (rain-infilt) raster map [mm/hr]|None|True
+QgsProcessingParameterNumber|rain_value|Rainfall excess rate unique value [mm/hr]|QgsProcessingParameterNumber.Double|50|True|None|None
+QgsProcessingParameterRasterLayer|infil|Name of the runoff infiltration rate raster map [mm/hr]|None|False
+QgsProcessingParameterNumber|infil_value|Runoff infiltration rate unique value [mm/hr]|QgsProcessingParameterNumber.Double|0.0|True|None|None
+QgsProcessingParameterRasterLayer|man|Name of the Mannings n raster map|None|True
+QgsProcessingParameterNumber|man_value|Manning's n unique value|QgsProcessingParameterNumber.Double|0.1|True|None|None
+QgsProcessingParameterRasterLayer|flow_control|Name of the flow controls raster map (permeability ratio 0-1)|None|False
+QgsProcessingParameterVectorLayer|observation|Sampling locations vector points|None|True
+QgsProcessingParameterNumber|nwalkers|Number of walkers, default is twice the number of cells|QgsProcessingParameterNumber.Integer|None|True|None|None
+QgsProcessingParameterNumber|niterations|Time used for iterations [minutes]|QgsProcessingParameterNumber.Integer|10|True|None|None
+QgsProcessingParameterNumber|output_step|Time interval for creating output maps [minutes]|QgsProcessingParameterNumber.Integer|2|True|None|None
+QgsProcessingParameterNumber|diffusion_coeff|Water diffusion constant|QgsProcessingParameterNumber.Double|0.8|True|None|None
+QgsProcessingParameterNumber|hmax|Threshold water depth [m]|QgsProcessingParameterNumber.Double|4.0|True|None|None
+QgsProcessingParameterNumber|halpha|Diffusion increase constant|QgsProcessingParameterNumber.Double|4.0|True|None|None
+QgsProcessingParameterNumber|hbeta|Weighting factor for water flow velocity vector|QgsProcessingParameterNumber.Double|0.5|True|None|None
+QgsProcessingParameterBoolean|-t|Time-series output|True
+QgsProcessingParameterRasterDestination|depth|Water depth [m]
+QgsProcessingParameterRasterDestination|discharge|Water discharge [m3/s]
+QgsProcessingParameterRasterDestination|error|Simulation error [m]
+QgsProcessingParameterVectorDestination|walkers_output|Name of the output walkers vector points layer|QgsProcessing.TypeVectorAnyGeometry|None|True
+QgsProcessingParameterFileDestination|logfile|Name for sampling points output text file.|Txt files (*.txt)|None|True

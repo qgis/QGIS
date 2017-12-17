@@ -38,6 +38,7 @@ from qgis.core import (QgsWkbTypes,
                        QgsFeatureRequest,
                        QgsGeometry,
                        QgsFields,
+                       QgsPointXY,
                        QgsField,
                        QgsProcessing,
                        QgsProcessingParameterEnum,
@@ -82,14 +83,17 @@ class ServiceAreaFromLayer(QgisAlgorithm):
     def group(self):
         return self.tr('Network analysis')
 
+    def groupId(self):
+        return 'networkanalysis'
+
     def __init__(self):
         super().__init__()
 
     def initAlgorithm(self, config=None):
         self.DIRECTIONS = OrderedDict([
             (self.tr('Forward direction'), QgsVectorLayerDirector.DirectionForward),
-            (self.tr('Backward direction'), QgsVectorLayerDirector.DirectionForward),
-            (self.tr('Both directions'), QgsVectorLayerDirector.DirectionForward)])
+            (self.tr('Backward direction'), QgsVectorLayerDirector.DirectionBackward),
+            (self.tr('Both directions'), QgsVectorLayerDirector.DirectionBoth)])
 
         self.STRATEGIES = [self.tr('Shortest'),
                            self.tr('Fastest')
@@ -172,7 +176,7 @@ class ServiceAreaFromLayer(QgisAlgorithm):
         defaultSpeed = self.parameterAsDouble(parameters, self.DEFAULT_SPEED, context)
         tolerance = self.parameterAsDouble(parameters, self.TOLERANCE, context)
 
-        fields = QgsFields()
+        fields = startPoints.fields()
         fields.append(QgsField('type', QVariant.String, '', 254, 0))
         fields.append(QgsField('start', QVariant.String, '', 254, 0))
 
@@ -209,17 +213,25 @@ class ServiceAreaFromLayer(QgisAlgorithm):
 
         feedback.pushInfo(self.tr('Loading start points...'))
         request = QgsFeatureRequest()
-        request.setFlags(request.flags() ^ QgsFeatureRequest.SubsetOfAttributes)
         request.setDestinationCrs(network.sourceCrs())
         features = startPoints.getFeatures(request)
         total = 100.0 / startPoints.featureCount() if startPoints.featureCount() else 0
 
         points = []
+        source_attributes = {}
+        i = 0
         for current, f in enumerate(features):
             if feedback.isCanceled():
                 break
 
-            points.append(f.geometry().asPoint())
+            if not f.hasGeometry():
+                continue
+
+            for p in f.geometry().vertices():
+                points.append(QgsPointXY(p))
+                source_attributes[i] = f.attributes()
+                i += 1
+
             feedback.setProgress(int(current * total))
 
         feedback.pushInfo(self.tr('Building graph...'))
@@ -245,25 +257,27 @@ class ServiceAreaFromLayer(QgisAlgorithm):
             tree, cost = QgsGraphAnalyzer.dijkstra(graph, idxStart, 0)
             for j, v in enumerate(cost):
                 if v > travelCost and tree[j] != -1:
-                    vertexId = graph.edge(tree[j]).outVertex()
+                    vertexId = graph.edge(tree[j]).fromVertex()
                     if cost[vertexId] <= travelCost:
                         vertices.append(j)
 
             for j in vertices:
-                upperBoundary.append(graph.vertex(graph.edge(tree[j]).inVertex()).point())
-                lowerBoundary.append(graph.vertex(graph.edge(tree[j]).outVertex()).point())
+                upperBoundary.append(graph.vertex(graph.edge(tree[j]).toVertex()).point())
+                lowerBoundary.append(graph.vertex(graph.edge(tree[j]).fromVertex()).point())
 
-            geomUpper = QgsGeometry.fromMultiPoint(upperBoundary)
-            geomLower = QgsGeometry.fromMultiPoint(lowerBoundary)
+            geomUpper = QgsGeometry.fromMultiPointXY(upperBoundary)
+            geomLower = QgsGeometry.fromMultiPointXY(lowerBoundary)
 
             feat.setGeometry(geomUpper)
-            feat['type'] = 'upper'
-            feat['start'] = origPoint
+
+            attrs = source_attributes[i]
+            attrs.extend(['upper', origPoint])
+            feat.setAttributes(attrs)
             sink.addFeature(feat, QgsFeatureSink.FastInsert)
 
             feat.setGeometry(geomLower)
-            feat['type'] = 'lower'
-            feat['start'] = origPoint
+            attrs[-2] = 'lower'
+            feat.setAttributes(attrs)
             sink.addFeature(feat, QgsFeatureSink.FastInsert)
 
             vertices[:] = []

@@ -63,7 +63,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
     explicit QgsPointLocator( QgsVectorLayer *layer, const QgsCoordinateReferenceSystem &destinationCrs = QgsCoordinateReferenceSystem(),
                               const QgsRectangle *extent = nullptr );
 
-    ~QgsPointLocator();
+    ~QgsPointLocator() override;
 
     /**
      * Get associated layer
@@ -116,8 +116,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
     struct Match
     {
         //! construct invalid match
-        Match()
-        {}
+        Match() = default;
 
         Match( QgsPointLocator::Type t, QgsVectorLayer *vl, QgsFeatureId fid, double dist, const QgsPointXY &pt, int vertexIndex = 0, QgsPointXY *edgePoints = nullptr )
           : mType( t )

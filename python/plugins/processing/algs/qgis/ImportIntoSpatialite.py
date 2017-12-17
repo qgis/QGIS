@@ -57,6 +57,9 @@ class ImportIntoSpatialite(QgisAlgorithm):
     def group(self):
         return self.tr('Database')
 
+    def groupId(self):
+        return 'database'
+
     def __init__(self):
         super().__init__()
 
@@ -64,7 +67,7 @@ class ImportIntoSpatialite(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT, self.tr('Layer to import')))
         self.addParameter(QgsProcessingParameterVectorLayer(self.DATABASE, self.tr('File database'), [], False, False))
         self.addParameter(QgsProcessingParameterString(self.TABLENAME, self.tr('Table to import to (leave blank to use layer name)'), optional=True))
-        self.addParameter(QgsProcessingParameterField(self.PRIMARY_KEY, self.tr('Primary key field'), self.INPUT, optional=True))
+        self.addParameter(QgsProcessingParameterField(self.PRIMARY_KEY, self.tr('Primary key field'), None, self.INPUT, QgsProcessingParameterField.Any, False, True))
         self.addParameter(QgsProcessingParameterString(self.GEOMETRY_COLUMN, self.tr('Geometry column'), 'geom'))
         self.addParameter(QgsProcessingParameterString(self.ENCODING, self.tr('Encoding'), 'UTF-8', optional=True))
         self.addParameter(QgsProcessingParameterBoolean(self.OVERWRITE, self.tr('Overwrite'), True))
@@ -84,7 +87,9 @@ class ImportIntoSpatialite(QgisAlgorithm):
         databaseuri = database.dataProvider().dataSourceUri()
         uri = QgsDataSourceUri(databaseuri)
         if uri.database() is '':
-            if '|layerid' in databaseuri:
+            if '|layername' in databaseuri:
+                databaseuri = databaseuri[:databaseuri.find('|layername')]
+            elif '|layerid' in databaseuri:
                 databaseuri = databaseuri[:databaseuri.find('|layerid')]
             uri = QgsDataSourceUri('dbname=\'%s\'' % (databaseuri))
         db = spatialite.GeoDB(uri)

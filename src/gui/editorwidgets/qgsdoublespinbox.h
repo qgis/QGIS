@@ -70,7 +70,7 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
      * Constructor for QgsDoubleSpinBox.
      * \param parent parent widget
      */
-    explicit QgsDoubleSpinBox( QWidget *parent SIP_TRANSFERTHIS = 0 );
+    explicit QgsDoubleSpinBox( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Sets whether the widget will show a clear button. The clear button
@@ -103,7 +103,7 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
     bool expressionsEnabled() const {return mExpressionsEnabled;}
 
     //! Set the current value to the value defined by the clear value.
-    virtual void clear() override;
+    void clear() override;
 
     /**
      * Defines the clear value as a custom value and will automatically set the clear value mode to CustomValue.
@@ -126,12 +126,12 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
      */
     double clearValue() const;
 
-    virtual double valueFromText( const QString &text ) const override;
-    virtual QValidator::State validate( QString &input, int &pos ) const override;
+    double valueFromText( const QString &text ) const override;
+    QValidator::State validate( QString &input, int &pos ) const override;
     void paintEvent( QPaintEvent *e ) override;
 
   protected:
-    virtual void changeEvent( QEvent *event ) override;
+    void changeEvent( QEvent *event ) override;
     void wheelEvent( QWheelEvent *event ) override;
 
   private slots:

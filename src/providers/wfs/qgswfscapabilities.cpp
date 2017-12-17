@@ -22,6 +22,8 @@
 #include "qgsogcutils.h"
 #include "qgssettings.h"
 
+#include <cpl_minixml.h>
+
 #include <QDomDocument>
 #include <QStringList>
 
@@ -81,6 +83,35 @@ QString QgsWfsCapabilities::Capabilities::addPrefixIfNeeded( const QString &name
   return mapUnprefixedTypenameToPrefixedTypename[name];
 }
 
+class CPLXMLTreeUniquePointer
+{
+  public:
+    //! Constructor
+    explicit CPLXMLTreeUniquePointer( CPLXMLNode *data ) { the_data_ = data; }
+
+    //! Destructor
+    ~CPLXMLTreeUniquePointer()
+    {
+      if ( the_data_ ) CPLDestroyXMLNode( the_data_ );
+    }
+
+    /**
+     * Returns the node pointer/
+     * Modifying the contents pointed to by the return is allowed.
+     * @return the node pointer */
+    CPLXMLNode *get() const { return the_data_; }
+
+    /**
+     * Returns the node pointer/
+     * Modifying the contents pointed to by the return is allowed.
+     * @return the node pointer */
+    CPLXMLNode *operator->() const { return get(); }
+
+  private:
+    CPLXMLNode *the_data_;
+};
+
+
 void QgsWfsCapabilities::capabilitiesReplyFinished()
 {
   const QByteArray &buffer = mResponse;
@@ -97,6 +128,8 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
     emit gotCapabilities();
     return;
   }
+
+  CPLXMLTreeUniquePointer oCPLXML( CPLParseXMLString( buffer.constData() ) );
 
   QDomElement doc = capabilitiesDocument.documentElement();
 
@@ -303,6 +336,20 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
     }
   }
 
+  // This is messy, but there's apparently no way to get the xmlns:ci attribute value with QDom API
+  // in snippets like
+  //  <wfs:FeatureType xmlns:ci="http://www.interactive-instruments.de/namespaces/demo/cities/4.0/cities">
+  //    <wfs:Name>ci:City</wfs:Name>
+  // so fallback to using GDAL XML parser for that...
+
+  CPLXMLNode *psFeatureTypeIter = nullptr;
+  if ( oCPLXML.get() )
+  {
+    psFeatureTypeIter = CPLGetXMLNode( oCPLXML.get(), "=wfs:WFS_Capabilities.wfs:FeatureTypeList" );
+    if ( psFeatureTypeIter )
+      psFeatureTypeIter = psFeatureTypeIter->psChild;
+  }
+
   // get the <FeatureType> elements
   QDomNodeList featureTypeList = featureTypeListElem.elementsByTagName( QStringLiteral( "FeatureType" ) );
   for ( int i = 0; i < featureTypeList.size(); ++i )
@@ -310,12 +357,35 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
     FeatureType featureType;
     QDomElement featureTypeElem = featureTypeList.at( i ).toElement();
 
+    for ( ; psFeatureTypeIter; psFeatureTypeIter = psFeatureTypeIter->psNext )
+    {
+      if ( psFeatureTypeIter->eType != CXT_Element )
+        continue;
+      break;
+    }
+
     //Name
     QDomNodeList nameList = featureTypeElem.elementsByTagName( QStringLiteral( "Name" ) );
     if ( nameList.length() > 0 )
     {
       featureType.name = nameList.at( 0 ).toElement().text();
+
+      QgsDebugMsg( QString( "featureType.name = %1" ) . arg( featureType.name ) );
+      if ( featureType.name.contains( ':' ) )
+      {
+        QString prefixOfTypename = featureType.name.section( ':', 0, 0 );
+
+        // for some Deegree servers that requires a NAMESPACES parameter for GetFeature
+        if ( psFeatureTypeIter )
+        {
+          featureType.nameSpace = CPLGetXMLValue( psFeatureTypeIter, ( "xmlns:" + prefixOfTypename ).toUtf8().constData(), "" );
+        }
+      }
     }
+
+    if ( psFeatureTypeIter )
+      psFeatureTypeIter = psFeatureTypeIter->psNext;
+
     //Title
     QDomNodeList titleList = featureTypeElem.elementsByTagName( QStringLiteral( "Title" ) );
     if ( titleList.length() > 0 )
@@ -388,7 +458,10 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
           // If the CRS is projected then check that projecting the corner of the bbox, assumed to be in WGS84,
           // into the CRS, and then back to WGS84, works (check that we are in the validity area)
           QgsCoordinateReferenceSystem crsWGS84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "CRS:84" ) );
+
+          Q_NOWARN_DEPRECATED_PUSH
           QgsCoordinateTransform ct( crsWGS84, crs );
+          Q_NOWARN_DEPRECATED_POP
 
           QgsPointXY ptMin( featureType.bbox.xMinimum(), featureType.bbox.yMinimum() );
           QgsPointXY ptMinBack( ct.transform( ct.transform( ptMin, QgsCoordinateTransform::ForwardTransform ), QgsCoordinateTransform::ReverseTransform ) );

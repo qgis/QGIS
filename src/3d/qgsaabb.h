@@ -31,7 +31,7 @@ class _3D_EXPORT QgsAABB
 {
   public:
     //! Constructs bounding box with null coordinates
-    QgsAABB();
+    QgsAABB() = default;
 
     //! Constructs bounding box
     QgsAABB( float xMin, float yMin, float zMin, float xMax, float yMax, float zMax );
@@ -72,8 +72,12 @@ class _3D_EXPORT QgsAABB
     //! Returns a list of pairs of vertices (useful for display of bounding boxes)
     QList<QVector3D> verticesForLines() const;
 
-    float xMin, yMin, zMin;
-    float xMax, yMax, zMax;
+    float xMin = 0.0f;
+    float yMin = 0.0f;
+    float zMin = 0.0f;
+    float xMax = 0.0f;
+    float yMax = 0.0f;
+    float zMax = 0.0f;
 };
 
 #endif // QGSAABB_H

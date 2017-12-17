@@ -71,7 +71,6 @@ void QgsMessageLogViewer::logMessage( const QString &message, const QString &tag
     w->setReadOnly( true );
     tabWidget->addTab( w, cleanedTag );
     tabWidget->setCurrentIndex( tabWidget->count() - 1 );
-    tabWidget->setTabsClosable( true );
   }
 
   QString levelString;
@@ -101,6 +100,8 @@ void QgsMessageLogViewer::logMessage( const QString &message, const QString &tag
 
 void QgsMessageLogViewer::closeTab( int index )
 {
-  tabWidget->removeTab( index );
-  tabWidget->setTabsClosable( tabWidget->count() > 1 );
+  if ( tabWidget->count() == 1 )
+    qobject_cast<QPlainTextEdit *>( tabWidget->widget( 0 ) )->clear();
+  else
+    tabWidget->removeTab( index );
 }

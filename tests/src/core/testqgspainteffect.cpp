@@ -53,17 +53,17 @@ class DummyPaintEffect : public QgsPaintEffect
       : mProp1( prop1 )
       , mProp2( prop2 )
     {}
-    virtual QString type() const override { return QStringLiteral( "Dummy" ); }
-    virtual QgsPaintEffect *clone() const override { return new DummyPaintEffect( mProp1, mProp2 ); }
+    QString type() const override { return QStringLiteral( "Dummy" ); }
+    QgsPaintEffect *clone() const override { return new DummyPaintEffect( mProp1, mProp2 ); }
     static QgsPaintEffect *create( const QgsStringMap &props ) { return new DummyPaintEffect( props[QStringLiteral( "testProp" )], props[QStringLiteral( "testProp2" )] ); }
-    virtual QgsStringMap properties() const override
+    QgsStringMap properties() const override
     {
       QgsStringMap props;
       props[QStringLiteral( "testProp" )] = mProp1;
       props[QStringLiteral( "testProp2" )] = mProp2;
       return props;
     }
-    virtual void readProperties( const QgsStringMap &props ) override
+    void readProperties( const QgsStringMap &props ) override
     {
       mProp1 = props[QStringLiteral( "testProp" )];
       mProp2 = props[QStringLiteral( "testProp2" )];
@@ -74,7 +74,7 @@ class DummyPaintEffect : public QgsPaintEffect
 
   protected:
 
-    virtual void draw( QgsRenderContext &context ) override { Q_UNUSED( context ); }
+    void draw( QgsRenderContext &context ) override { Q_UNUSED( context ); }
 
   private:
     QString mProp1;
@@ -138,7 +138,7 @@ void TestQgsPaintEffect::initTestCase()
   QgsApplication::initQgis();
 
   mReport += QLatin1String( "<h1>Paint Effect Tests</h1>\n" );
-  mPicture = 0;
+  mPicture = nullptr;
 
   QgsPaintEffectRegistry *registry = QgsApplication::paintEffectRegistry();
   registry->addEffectType( new QgsPaintEffectMetadata( QStringLiteral( "Dummy" ), QStringLiteral( "Dummy effect" ), DummyPaintEffect::create ) );

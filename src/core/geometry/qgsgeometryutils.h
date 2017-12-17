@@ -39,7 +39,7 @@ class CORE_EXPORT QgsGeometryUtils
      * Returns list of linestrings extracted from the passed geometry. The returned objects
      *  have to be deleted by the caller.
      */
-    static QList<QgsLineString *> extractLineStrings( const QgsAbstractGeometry *geom ) SIP_FACTORY;
+    static QVector<QgsLineString *> extractLineStrings( const QgsAbstractGeometry *geom ) SIP_FACTORY;
 
     /**
      * Returns the closest vertex to a geometry for a specified point.
@@ -70,19 +70,14 @@ class CORE_EXPORT QgsGeometryUtils
      * \param distance distance to traverse along geometry
      * \param previousVertex will be set to previous vertex ID
      * \param nextVertex will be set to next vertex ID
-     * \note if the distance coincides exactly with a vertex, then both previousVertex and nextVertex will be set to this vertex
      * \returns true if vertices were successfully retrieved
+     * \note if the distance coincides exactly with a vertex, then both previousVertex and nextVertex will be set to this vertex
      * \since QGIS 3.0
      */
     static bool verticesAtDistance( const QgsAbstractGeometry &geometry,
                                     double distance,
                                     QgsVertexId &previousVertex SIP_OUT,
                                     QgsVertexId &nextVertex SIP_OUT );
-
-    /**
-     * Returns vertices adjacent to a specified vertex within a geometry.
-     */
-    static void adjacentVertices( const QgsAbstractGeometry &geom, QgsVertexId atVertex, QgsVertexId &beforeVertex SIP_OUT, QgsVertexId &afterVertex SIP_OUT );
 
     /**
      * Returns the squared 2D distance between two points.
@@ -97,13 +92,13 @@ class CORE_EXPORT QgsGeometryUtils
     /**
      * \brief Compute the intersection between two lines
      * \param p1 Point on the first line
-     * \param v Direction vector of the first line
-     * \param q1 Point on the second line
-     * \param w Direction vector of the second line
-     * \param inter Output parameter, the intersection point
+     * \param v1 Direction vector of the first line
+     * \param p2 Point on the second line
+     * \param v2 Direction vector of the second line
+     * \param intersection Output parameter, the intersection point
      * \returns Whether the lines intersect
      */
-    static bool lineIntersection( const QgsPoint &p1, QgsVector v, const QgsPoint &q1, QgsVector w, QgsPoint &inter SIP_OUT );
+    static bool lineIntersection( const QgsPoint &p1, QgsVector v1, const QgsPoint &p2, QgsVector v2, QgsPoint &intersection SIP_OUT );
 
     /**
      * \brief Compute the intersection between two segments
@@ -150,10 +145,16 @@ class CORE_EXPORT QgsGeometryUtils
      * \note not available in Python bindings
      * \since QGIS 2.12
      */
-    static QList<SelfIntersection> getSelfIntersections( const QgsAbstractGeometry *geom, int part, int ring, double tolerance ) SIP_SKIP;
+    static QVector<SelfIntersection> getSelfIntersections( const QgsAbstractGeometry *geom, int part, int ring, double tolerance ) SIP_SKIP;
 
-    //! Returns < 0 if point(x/y) is left of the line x1,y1 -> x2,y2
-    static double leftOfLine( double x, double y, double x1, double y1, double x2, double y2 );
+    /**
+     * Returns a value < 0 if the point (\a x, \a y) is left of the line from (\a x1, \a y1) -> ( \a x2, \a y2).
+     * A positive return value indicates the point is to the right of the line.
+     *
+     * If the return value is 0, then the test was unsuccessful (e.g. due to testing a point exactly
+     * on the line, or exactly in line with the segment) and the result is undefined.
+     */
+    static int leftOfLine( double x, double y, double x1, double y1, double x2, double y2 );
 
     /**
      * Returns a point a specified distance toward a second point.
@@ -196,7 +197,7 @@ class CORE_EXPORT QgsGeometryUtils
      * \since 3.0
      */
     static void segmentizeArc( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3,
-                               QgsPointSequence SIP_PYALTERNATIVETYPE( QList<QgsPoint> ) &points SIP_OUT, double tolerance = M_PI_2 / 90,
+                               QgsPointSequence SIP_PYALTERNATIVETYPE( QVector<QgsPoint> ) &points SIP_OUT, double tolerance = M_PI_2 / 90,
                                QgsAbstractGeometry::SegmentationToleranceType toleranceType = QgsAbstractGeometry::MaximumAngle,
                                bool hasZ = false, bool hasM = false );
 
@@ -379,12 +380,12 @@ class CORE_EXPORT QgsGeometryUtils
     };
 
     //! \note not available in Python bindings
-    template<class T> static double closestSegmentFromComponents( T &container, ComponentType ctype, const QgsPoint &pt, QgsPoint &segmentPt,  QgsVertexId &vertexAfter, bool *leftOf, double epsilon ) SIP_SKIP
+    template<class T> static double closestSegmentFromComponents( T &container, ComponentType ctype, const QgsPoint &pt, QgsPoint &segmentPt,  QgsVertexId &vertexAfter, int *leftOf, double epsilon ) SIP_SKIP
     {
       double minDist = std::numeric_limits<double>::max();
       double minDistSegmentX = 0.0, minDistSegmentY = 0.0;
       QgsVertexId minDistVertexAfter;
-      bool minDistLeftOf = false;
+      int minDistLeftOf = 0;
       double sqrDist = 0.0;
       int vertexOffset = 0;
       int ringOffset = 0;

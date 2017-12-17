@@ -12,16 +12,21 @@
 class QgsDetailedItemDelegate : QAbstractItemDelegate
 {
 %Docstring
- A custom model/view delegate that can display an icon, heading
- and detail sections.
-.. seealso:: also QgsDetailedItemData
+A custom model/view delegate that can display an icon, heading
+and detail sections.
+
+.. seealso:: :py:func:`also`
 %End
 
 %TypeHeaderCode
 #include "qgsdetaileditemdelegate.h"
 %End
   public:
+
     QgsDetailedItemDelegate( QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsDetailedItemDelegate
+%End
     ~QgsDetailedItemDelegate();
      virtual void paint( QPainter *painter,
                 const QStyleOptionViewItem &option,
@@ -33,22 +38,15 @@ Reimplement for parent class
                     const QModelIndex &index ) const;
 %Docstring
 Reimplement for parent class
- :rtype: QSize
 %End
 
     void setVerticalSpacing( int value );
 
     int verticalSpacing() const;
-%Docstring
- :rtype: int
-%End
 
     void setHorizontalSpacing( int value );
 
     int horizontalSpacing() const;
-%Docstring
- :rtype: int
-%End
 
 };
 

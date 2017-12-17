@@ -27,6 +27,8 @@ class QgsCoordinateTransformPrivate;
 class QgsPointXY;
 class QgsRectangle;
 class QPolygonF;
+class QgsCoordinateTransformContext;
+class QgsProject;
 
 /**
  * \ingroup core
@@ -62,9 +64,54 @@ class CORE_EXPORT QgsCoordinateTransform
      * Constructs a QgsCoordinateTransform using QgsCoordinateReferenceSystem objects.
      * \param source source CRS, typically of the layer's coordinate system
      * \param destination CRS, typically of the map canvas coordinate system
+     * \deprecated Use of this constructor is strongly discouraged, as it will not
+     * correctly handle the user's datum transform setup. Instead the constructor
+     * variant which accepts a QgsCoordinateTransformContext or QgsProject
+     * argument should be used instead. It is highly likely that this constructor
+     * will be removed in future QGIS versions.
+     * \note Not available in Python bindings.
      */
-    QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source,
-                            const QgsCoordinateReferenceSystem &destination );
+    Q_DECL_DEPRECATED explicit QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination ) SIP_SKIP;
+
+    /**
+     * Constructs a QgsCoordinateTransform to transform from the \a source
+     * to \a destination coordinate reference system.
+     *
+     * The \a context argument specifies the context under which the transform
+     * will be applied, and is used for calculating necessary datum transforms
+     * to utilize.
+     *
+     * \since QGIS 3.0
+     */
+    explicit QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source,
+                                     const QgsCoordinateReferenceSystem &destination,
+                                     const QgsCoordinateTransformContext &context );
+
+    /**
+     * Constructs a QgsCoordinateTransform to transform from the \a source
+     * to \a destination coordinate reference system, when used with the
+     * given \a project.
+     *
+     * No reference to \a project is stored or utilized outside of the constructor,
+     * and it is used to retrieve the project's transform context only.
+     *
+     * \since QGIS 3.0
+     */
+    explicit QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source,
+                                     const QgsCoordinateReferenceSystem &destination,
+                                     const QgsProject *project );
+
+    /**
+     * Constructs a QgsCoordinateTransform to transform from the \a source
+     * to \a destination coordinate reference system, with the specified
+     * datum transforms.
+     *
+     * \since QGIS 3.0
+     */
+    explicit QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source,
+                                     const QgsCoordinateReferenceSystem &destination,
+                                     int sourceDatumTransformId,
+                                     int destinationDatumTransformId );
 
     /**
      * Copy constructor
@@ -100,6 +147,13 @@ class CORE_EXPORT QgsCoordinateTransform
      * \see setSourceCrs()
      */
     void setDestinationCrs( const QgsCoordinateReferenceSystem &crs );
+
+    /**
+     * Sets the \a context in which the coordinate transform should be
+     * calculated.
+     * \since QGIS 3.0
+     */
+    void setContext( const QgsCoordinateTransformContext &context );
 
     /**
      * Returns the source coordinate reference system, which the transform will
@@ -239,7 +293,7 @@ class CORE_EXPORT QgsCoordinateTransform
      * \param direction transform direction (defaults to ForwardTransform)
      * \returns transformed rectangle
      */
-    QgsRectangle transform( const QgsRectangle &rectangle, TransformDirection direction = ForwardTransform ) const SIP_SKIP;
+    QgsRectangle transform( const QgsRectangle &rectangle, TransformDirection direction = ForwardTransform ) const;
 
     /**
      * Transform an array of coordinates to the destination CRS.
@@ -259,48 +313,191 @@ class CORE_EXPORT QgsCoordinateTransform
     bool isShortCircuited() const;
 
     /**
-     * Returns list of datum transformations for the given src and dest CRS
-     * \note not available in Python bindings
+     * Contains datum transform information.
+     * \since QGIS 3.0
      */
-    static QList< QList< int > > datumTransformations( const QgsCoordinateReferenceSystem &srcCRS, const QgsCoordinateReferenceSystem &destinationCrs ) SIP_SKIP;
+    struct TransformPair
+    {
 
-    static QString datumTransformString( int datumTransform );
+      /**
+       * Constructor for a TransformPair with the specified \a sourceTransformId
+       * and \a destinationTransformId transforms.
+       */
+      TransformPair( int sourceTransformId = -1, int destinationTransformId = -1 )
+        : sourceTransformId( sourceTransformId )
+        , destinationTransformId( destinationTransformId )
+      {}
+
+      /**
+        * ID for the datum transform to use when projecting from the source CRS.
+        * \see QgsCoordinateTransform::datumTransformCrsInfo()
+       */
+      int sourceTransformId = -1;
+
+      /**
+       * ID for the datum transform to use when projecting to the destination CRS.
+       * \see QgsCoordinateTransform::datumTransformCrsInfo()
+       */
+      int destinationTransformId = -1;
+
+      bool operator==( const QgsCoordinateTransform::TransformPair &other ) const
+      {
+        return other.sourceTransformId == sourceTransformId && other.destinationTransformId == destinationTransformId;
+      }
+
+      bool operator!=( const QgsCoordinateTransform::TransformPair &other ) const
+      {
+        return other.sourceTransformId != sourceTransformId || other.destinationTransformId != destinationTransformId;
+      }
+
+    };
 
     /**
-     * Gets name of source and dest geographical CRS (to show in a tooltip)
-        \returns epsgNr epsg code of the transformation (or 0 if not in epsg db)*/
-    static bool datumTransformCrsInfo( int datumTransform, int &epsgNr, QString &srcProjection, QString &dstProjection, QString &remarks, QString &scope, bool &preferred, bool &deprecated );
-
-    int sourceDatumTransform() const;
-    void setSourceDatumTransform( int dt );
-    int destinationDatumTransform() const;
-    void setDestinationDatumTransform( int dt );
-
-    //!initialize is used to actually create the Transformer instance
-    void initialize();
+     * Returns a list of datum transformations which are available for the given \a source and \a destination CRS.
+     * \see datumTransformToProj()
+     * \see datumTransformInfo()
+     */
+    static QList< QgsCoordinateTransform::TransformPair > datumTransformations( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination );
 
     /**
-     * Restores state from the given Dom node.
-     * \param node The node from which state will be restored
-     * \returns bool True on success, False on failure
-     * \see writeXml()
+     * Returns a proj string representing the specified \a datumTransformId datum transform ID.
+     * \see datumTransformations()
+     * \see datumTransformInfo()
+     * \see projStringToDatumTransformId()
      */
-    bool readXml( const QDomNode &node );
+    static QString datumTransformToProj( int datumTransformId );
 
     /**
-     * Stores state to the given Dom node in the given document
-     * \param node The node in which state will be restored
-     * \param document The document in which state will be stored
-     * \returns bool True on success, False on failure
-     * \see readXml()
+     * Returns the datum transform ID corresponding to a specified proj \a string.
+     * Returns -1 if matching datum ID was not found.
+     * \see datumTransformToProj()
+     * \since QGIS 3.0
      */
-    bool writeXml( QDomNode &node, QDomDocument &document ) const;
+    static int projStringToDatumTransformId( const QString &string );
+
+    /**
+     * Contains datum transform information.
+     * \since QGIS 3.0
+     */
+    struct TransformInfo
+    {
+      //! Datum transform ID
+      int datumTransformId = -1;
+
+      //! EPSG code for the transform, or 0 if not found in EPSG database
+      int epsgCode;
+
+      //! Source CRS auth ID
+      QString sourceCrsAuthId;
+
+      //! Destination CRS auth ID
+      QString destinationCrsAuthId;
+
+      //! Source CRS description
+      QString sourceCrsDescription;
+
+      //! Destination CRS description
+      QString destinationCrsDescription;
+
+      //! Transform remarks
+      QString remarks;
+
+      //! Scope of transform
+      QString scope;
+
+      //! True if transform is the preferred transform to use for the source/destination CRS combination
+      bool preferred = false;
+
+      //! True if transform is deprecated
+      bool deprecated = false;
+
+    };
+
+    /**
+     * Returns detailed information about the specified \a datumTransformId.
+     * If \a datumTransformId was not a valid transform ID, a TransformInfo with TransformInfo::datumTransformId of
+     * -1 will be returned.
+     * \see datumTransformations()
+     * \see datumTransformToProj()
+    */
+    static QgsCoordinateTransform::TransformInfo datumTransformInfo( int datumTransformId );
+
+    /**
+     * Returns the ID of the datum transform to use when projecting from the source
+     * CRS.
+     *
+     * This is usually calculated automatically from the transform's QgsCoordinateTransformContext,
+     * but can be manually overwritten by a call to setSourceDatumTransformId().
+     *
+     * \see setSourceDatumTransformId()
+     * \see destinationDatumTransformId()
+     * \see datumTransformInfo()
+     */
+    int sourceDatumTransformId() const;
+
+    /**
+     * Sets the \a datumId ID of the datum transform to use when projecting from the source
+     * CRS.
+     *
+     * This is usually calculated automatically from the transform's QgsCoordinateTransformContext.
+     * Calling this method will overwrite any automatically calculated datum transform.
+     *
+     * \see sourceDatumTransformId()
+     * \see setDestinationDatumTransformId()
+     * \see datumTransformInfo()
+     */
+    void setSourceDatumTransformId( int datumId );
+
+    /**
+     * Returns the ID of the datum transform to use when projecting to the destination
+     * CRS.
+     *
+     * This is usually calculated automatically from the transform's QgsCoordinateTransformContext,
+     * but can be manually overwritten by a call to setDestinationDatumTransformId().
+     *
+     * \see setDestinationDatumTransformId()
+     * \see sourceDatumTransformId()
+     * \see datumTransformInfo()
+     */
+    int destinationDatumTransformId() const;
+
+    /**
+     * Sets the \a datumId ID of the datum transform to use when projecting to the destination
+     * CRS.
+     *
+     * This is usually calculated automatically from the transform's QgsCoordinateTransformContext.
+     * Calling this method will overwrite any automatically calculated datum transform.
+     *
+     * \see destinationDatumTransformId()
+     * \see setSourceDatumTransformId()
+     * \see datumTransformInfo()
+     */
+    void setDestinationDatumTransformId( int datumId );
+
+    /**
+     * Clears the internal cache used to initialize QgsCoordinateTransform objects.
+     * This should be called whenever the srs database has
+     * been modified in order to ensure that outdated CRS transforms are not created.
+     * \since QGIS 3.0
+     */
+    static void invalidateCache();
 
   private:
 
     static void searchDatumTransform( const QString &sql, QList< int > &transforms );
 
     mutable QExplicitlySharedDataPointer<QgsCoordinateTransformPrivate> d;
+
+    bool setFromCache( const QgsCoordinateReferenceSystem &src,
+                       const QgsCoordinateReferenceSystem &dest,
+                       int srcDatumTransform,
+                       int destDatumTransform );
+    void addToCache();
+
+    // cache
+    static QReadWriteLock sCacheLock;
+    static QMultiHash< QPair< QString, QString >, QgsCoordinateTransform > sTransforms; //same auth_id pairs might have different datum transformations
+
 };
 
 //! Output stream operator

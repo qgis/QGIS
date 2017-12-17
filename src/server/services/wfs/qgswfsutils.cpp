@@ -29,7 +29,7 @@ namespace QgsWfs
 {
   QString implementationVersion()
   {
-    return QStringLiteral( "1.0.0" );
+    return QStringLiteral( "1.1.0" );
   }
 
   QString serviceUrl( const QgsServerRequest &request, const QgsProject *project )
@@ -63,6 +63,7 @@ namespace QgsWfs
     QgsFeatureRequest request;
 
     QDomNodeList fidNodes = filterElem.elementsByTagName( QStringLiteral( "FeatureId" ) );
+    QDomNodeList goidNodes = filterElem.elementsByTagName( QStringLiteral( "GmlObjectId" ) );
     if ( !fidNodes.isEmpty() )
     {
       QgsFeatureIds fids;
@@ -91,7 +92,42 @@ namespace QgsWfs
       }
       else
       {
-        throw QgsRequestNotWellFormedException( QStringLiteral( "No FeatureId element corrcetly parse against typeName '%1'" ).arg( typeName ) );
+        throw QgsRequestNotWellFormedException( QStringLiteral( "No FeatureId element correctly parse against typeName '%1'" ).arg( typeName ) );
+      }
+      request.setFlags( QgsFeatureRequest::NoFlags );
+      return request;
+    }
+    else if ( !goidNodes.isEmpty() )
+    {
+      QgsFeatureIds fids;
+      QDomElement goidElem;
+      for ( int f = 0; f < goidNodes.size(); f++ )
+      {
+        goidElem = goidNodes.at( f ).toElement();
+        if ( !goidElem.hasAttribute( QStringLiteral( "id" ) ) && !goidElem.hasAttribute( QStringLiteral( "gml:id" ) ) )
+        {
+          throw QgsRequestNotWellFormedException( "GmlObjectId element without gml:id attribute" );
+        }
+
+        QString fid = goidElem.attribute( QStringLiteral( "id" ) );
+        if ( fid.isEmpty() )
+          fid = goidElem.attribute( QStringLiteral( "gml:id" ) );
+        if ( fid.contains( QLatin1String( "." ) ) )
+        {
+          if ( fid.section( QStringLiteral( "." ), 0, 0 ) != typeName )
+            continue;
+          fid = fid.section( QStringLiteral( "." ), 1, 1 );
+        }
+        fids.insert( fid.toInt() );
+      }
+
+      if ( !fids.isEmpty() )
+      {
+        request.setFilterFids( fids );
+      }
+      else
+      {
+        throw QgsRequestNotWellFormedException( QStringLiteral( "No GmlObjectId element correctly parse against typeName '%1'" ).arg( typeName ) );
       }
       request.setFlags( QgsFeatureRequest::NoFlags );
       return request;

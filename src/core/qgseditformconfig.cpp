@@ -287,7 +287,7 @@ void QgsEditFormConfig::readXml( const QDomNode &node, const QgsReadWriteContext
   }
 
   // Temporary < 2.12 b/w compatibility "dot" support patch
-  // @see: https://github.com/qgis/QGIS/pull/2498
+  // \see: https://github.com/qgis/QGIS/pull/2498
   // For b/w compatibility, check if there's a dot in the function name
   // and if yes, transform it in an import statement for the module
   // and set the PythonInitCodeSource to CodeSourceDialog

@@ -15,6 +15,7 @@ class QgsGeometryCollection: QgsAbstractGeometry
 {
 %Docstring
  Geometry collection
+
 .. versionadded:: 2.10
 %End
 
@@ -24,23 +25,22 @@ class QgsGeometryCollection: QgsAbstractGeometry
   public:
     QgsGeometryCollection();
     QgsGeometryCollection( const QgsGeometryCollection &c );
-    virtual ~QgsGeometryCollection();
+    ~QgsGeometryCollection();
 
     virtual QgsGeometryCollection *clone() const /Factory/;
 
 
     int numGeometries() const;
 %Docstring
- Returns the number of geometries within the collection.
- :rtype: int
+Returns the number of geometries within the collection.
 %End
 
 
     QgsAbstractGeometry *geometryN( int n );
 %Docstring
- Returns a geometry from within the collection.
- \param n index of geometry to return
- :rtype: QgsAbstractGeometry
+Returns a geometry from within the collection.
+
+:param n: index of geometry to return
 %End
 
     virtual bool isEmpty() const;
@@ -51,34 +51,42 @@ class QgsGeometryCollection: QgsAbstractGeometry
 
     virtual void clear();
 
+    virtual QgsGeometryCollection *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const /Factory/;
+
+    virtual bool removeDuplicateNodes( double epsilon = 4 * DBL_EPSILON, bool useZValues = false );
+
     virtual QgsAbstractGeometry *boundary() const /Factory/;
+
+    virtual void adjacentVertices( QgsVertexId vertex, QgsVertexId &previousVertex /Out/, QgsVertexId &nextVertex /Out/ ) const;
+
+    virtual int vertexNumberFromVertexId( QgsVertexId id ) const;
 
 
     virtual bool addGeometry( QgsAbstractGeometry *g /Transfer/ );
 %Docstring
 Adds a geometry and takes ownership. Returns true in case of success.
- :rtype: bool
 %End
 
     virtual bool insertGeometry( QgsAbstractGeometry *g /Transfer/, int index );
 %Docstring
- Inserts a geometry before a specified index and takes ownership. Returns true in case of success.
- \param g geometry to insert. Ownership is transferred to the collection.
- \param index position to insert geometry before
- :rtype: bool
+Inserts a geometry before a specified index and takes ownership. Returns true in case of success.
+
+:param g: geometry to insert. Ownership is transferred to the collection.
+:param index: position to insert geometry before
 %End
 
     virtual bool removeGeometry( int nr );
 %Docstring
- Removes a geometry from the collection.
- \param nr index of geometry to remove
- :return: true if removal was successful.
- :rtype: bool
+Removes a geometry from the collection.
+
+:param nr: index of geometry to remove
+
+:return: true if removal was successful.
 %End
 
      virtual void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform,
                     bool transformZ = false );
-    virtual void transform( const QTransform &t );
+    virtual void transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0, double mTranslate = 0.0, double mScale = 1.0 );
 
 
     virtual void draw( QPainter &p ) const;
@@ -92,11 +100,11 @@ Adds a geometry and takes ownership. Returns true in case of success.
 
     virtual QString asWkt( int precision = 17 ) const;
 
-    virtual QDomElement asGML2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const;
+    virtual QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const;
 
-    virtual QDomElement asGML3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const;
+    virtual QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const;
 
-    virtual QString asJSON( int precision = 17 ) const;
+    virtual QString asJson( int precision = 17 ) const;
 
 
     virtual QgsRectangle boundingBox() const;
@@ -107,7 +115,7 @@ Adds a geometry and takes ownership. Returns true in case of success.
     virtual int nCoordinates() const;
 
 
-    virtual double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt /Out/, QgsVertexId &vertexAfter /Out/, bool *leftOf /Out/ = 0, double epsilon = 4 * DBL_EPSILON ) const;
+    virtual double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt /Out/, QgsVertexId &vertexAfter /Out/, int *leftOf /Out/ = 0, double epsilon = 4 * DBL_EPSILON ) const;
 
     virtual bool nextVertex( QgsVertexId &id, QgsPoint &vertex /Out/ ) const;
 
@@ -132,20 +140,15 @@ Adds a geometry and takes ownership. Returns true in case of success.
     virtual QgsAbstractGeometry *segmentize( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const /Factory/;
 
 %Docstring
- Returns a geometry without curves. Caller takes ownership
- \param tolerance segmentation tolerance
- \param toleranceType maximum segmentation angle or maximum difference between approximation and curve*
- :rtype: QgsAbstractGeometry
+Returns a geometry without curves. Caller takes ownership
+
+:param tolerance: segmentation tolerance
+:param toleranceType: maximum segmentation angle or maximum difference between approximation and curve*
 %End
 
     virtual double vertexAngle( QgsVertexId vertex ) const;
 
-%Docstring
- Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.
- \param vertex the vertex id
- :return: rotation in radians, clockwise from north
- :rtype: float
-%End
+    virtual double segmentLength( QgsVertexId startVertex ) const;
 
     virtual int vertexCount( int part = 0, int ring = 0 ) const;
 
@@ -169,22 +172,25 @@ Adds a geometry and takes ownership. Returns true in case of success.
 
 
   protected:
+    virtual QgsGeometryCollection *createEmptyWithSameType() const /Factory/;
+
     virtual int childCount() const;
+
     virtual QgsAbstractGeometry *childGeometry( int index ) const;
+
 
   protected:
 
     virtual bool wktOmitChildType() const;
 %Docstring
- Returns whether child type names are omitted from Wkt representations of the collection
+Returns whether child type names are omitted from Wkt representations of the collection
+
 .. versionadded:: 2.12
- :rtype: bool
 %End
 
-    bool fromCollectionWkt( const QString &wkt, const QList<QgsAbstractGeometry *> &subtypes, const QString &defaultChildWkbType = QString() );
+    bool fromCollectionWkt( const QString &wkt, const QVector<QgsAbstractGeometry *> &subtypes, const QString &defaultChildWkbType = QString() );
 %Docstring
- Reads a collection from a WKT string.
- :rtype: bool
+Reads a collection from a WKT string.
 %End
 
     virtual QgsRectangle calculateBoundingBox() const;

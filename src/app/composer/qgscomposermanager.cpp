@@ -47,8 +47,8 @@ QgsComposerManager::QgsComposerManager( QWidget *parent, Qt::WindowFlags f ): QD
   QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "Windows/ComposerManager/geometry" ) ).toByteArray() );
 
-  mModel = new QgsLayoutManagerModel( QgsProject::instance()->layoutManager(),
-                                      this );
+  mModel = new QgsComposerManagerModel( QgsProject::instance()->layoutManager(),
+                                        this );
   mComposerListView->setModel( mModel );
 
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QWidget::close );
@@ -192,6 +192,10 @@ void QgsComposerManager::mAddButton_clicked()
 {
   QFile templateFile;
   bool loadingTemplate = ( mTemplate->currentIndex() > 0 );
+  QDomDocument templateDoc;
+
+  QString currentTitle;
+
   if ( loadingTemplate )
   {
     if ( mTemplate->currentIndex() == 1 )
@@ -213,13 +217,20 @@ void QgsComposerManager::mAddButton_clicked()
       QMessageBox::warning( this, tr( "Template error" ), tr( "Error, could not read file" ) );
       return;
     }
+
+    if ( templateDoc.setContent( &templateFile, false ) )
+    {
+      QDomElement compositionElem = templateDoc.documentElement().firstChildElement( QStringLiteral( "Composition" ) );
+      if ( !compositionElem.isNull() )
+        currentTitle = compositionElem.attribute( "name" );
+    }
   }
 
   QgsComposer *newComposer = nullptr;
   bool loadedOK = false;
 
   QString title;
-  if ( !QgisApp::instance()->uniqueComposerTitle( this, title, true ) )
+  if ( !QgisApp::instance()->uniqueComposerTitle( this, title, true, currentTitle ) )
   {
     return;
   }
@@ -237,7 +248,6 @@ void QgsComposerManager::mAddButton_clicked()
 
   if ( loadingTemplate )
   {
-    QDomDocument templateDoc;
     if ( templateDoc.setContent( &templateFile, false ) )
     {
       loadedOK = newComposer->loadFromTemplate( templateDoc, true );
@@ -440,27 +450,27 @@ void QgsComposerManager::renameClicked()
 }
 
 //
-// QgsLayoutManagerModel
+// QgsComposerManagerModel
 //
 
-QgsLayoutManagerModel::QgsLayoutManagerModel( QgsLayoutManager *manager, QObject *parent )
+QgsComposerManagerModel::QgsComposerManagerModel( QgsLayoutManager *manager, QObject *parent )
   : QAbstractListModel( parent )
   , mLayoutManager( manager )
 {
-  connect( mLayoutManager, &QgsLayoutManager::compositionAboutToBeAdded, this, &QgsLayoutManagerModel::compositionAboutToBeAdded );
-  connect( mLayoutManager, &QgsLayoutManager::compositionAdded, this, &QgsLayoutManagerModel::compositionAdded );
-  connect( mLayoutManager, &QgsLayoutManager::compositionAboutToBeRemoved, this, &QgsLayoutManagerModel::compositionAboutToBeRemoved );
-  connect( mLayoutManager, &QgsLayoutManager::compositionRemoved, this, &QgsLayoutManagerModel::compositionRemoved );
-  connect( mLayoutManager, &QgsLayoutManager::compositionRenamed, this, &QgsLayoutManagerModel::compositionRenamed );
+  connect( mLayoutManager, &QgsLayoutManager::compositionAboutToBeAdded, this, &QgsComposerManagerModel::compositionAboutToBeAdded );
+  connect( mLayoutManager, &QgsLayoutManager::compositionAdded, this, &QgsComposerManagerModel::compositionAdded );
+  connect( mLayoutManager, &QgsLayoutManager::compositionAboutToBeRemoved, this, &QgsComposerManagerModel::compositionAboutToBeRemoved );
+  connect( mLayoutManager, &QgsLayoutManager::compositionRemoved, this, &QgsComposerManagerModel::compositionRemoved );
+  connect( mLayoutManager, &QgsLayoutManager::compositionRenamed, this, &QgsComposerManagerModel::compositionRenamed );
 }
 
-int QgsLayoutManagerModel::rowCount( const QModelIndex &parent ) const
+int QgsComposerManagerModel::rowCount( const QModelIndex &parent ) const
 {
   Q_UNUSED( parent );
   return mLayoutManager->compositions().count();
 }
 
-QVariant QgsLayoutManagerModel::data( const QModelIndex &index, int role ) const
+QVariant QgsComposerManagerModel::data( const QModelIndex &index, int role ) const
 {
   if ( index.row() < 0 || index.row() >= rowCount( QModelIndex() ) )
     return QVariant();
@@ -480,7 +490,7 @@ QVariant QgsLayoutManagerModel::data( const QModelIndex &index, int role ) const
   }
 }
 
-bool QgsLayoutManagerModel::setData( const QModelIndex &index, const QVariant &value, int role )
+bool QgsComposerManagerModel::setData( const QModelIndex &index, const QVariant &value, int role )
 {
   if ( !index.isValid() || role != Qt::EditRole )
   {
@@ -520,7 +530,7 @@ bool QgsLayoutManagerModel::setData( const QModelIndex &index, const QVariant &v
   return true;
 }
 
-Qt::ItemFlags QgsLayoutManagerModel::flags( const QModelIndex &index ) const
+Qt::ItemFlags QgsComposerManagerModel::flags( const QModelIndex &index ) const
 {
   Qt::ItemFlags flags = QAbstractListModel::flags( index );
 
@@ -534,18 +544,18 @@ Qt::ItemFlags QgsLayoutManagerModel::flags( const QModelIndex &index ) const
   }
 }
 
-QgsComposition *QgsLayoutManagerModel::compositionFromIndex( const QModelIndex &index ) const
+QgsComposition *QgsComposerManagerModel::compositionFromIndex( const QModelIndex &index ) const
 {
   return qobject_cast< QgsComposition * >( qvariant_cast<QObject *>( data( index, CompositionRole ) ) );
 }
 
-void QgsLayoutManagerModel::compositionAboutToBeAdded( const QString & )
+void QgsComposerManagerModel::compositionAboutToBeAdded( const QString & )
 {
   int row = mLayoutManager->compositions().count();
   beginInsertRows( QModelIndex(), row, row );
 }
 
-void QgsLayoutManagerModel::compositionAboutToBeRemoved( const QString &name )
+void QgsComposerManagerModel::compositionAboutToBeRemoved( const QString &name )
 {
   QgsComposition *c = mLayoutManager->compositionByName( name );
   int row = mLayoutManager->compositions().indexOf( c );
@@ -553,17 +563,17 @@ void QgsLayoutManagerModel::compositionAboutToBeRemoved( const QString &name )
     beginRemoveRows( QModelIndex(), row, row );
 }
 
-void QgsLayoutManagerModel::compositionAdded( const QString & )
+void QgsComposerManagerModel::compositionAdded( const QString & )
 {
   endInsertRows();
 }
 
-void QgsLayoutManagerModel::compositionRemoved( const QString & )
+void QgsComposerManagerModel::compositionRemoved( const QString & )
 {
   endRemoveRows();
 }
 
-void QgsLayoutManagerModel::compositionRenamed( QgsComposition *composition, const QString & )
+void QgsComposerManagerModel::compositionRenamed( QgsComposition *composition, const QString & )
 {
   int row = mLayoutManager->compositions().indexOf( composition );
   QModelIndex index = createIndex( row, 0 );

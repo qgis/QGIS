@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import object
 
 __author__ = 'Victor Olaya'
 __date__ = 'May 2016'
@@ -31,7 +30,7 @@ import os
 from processing.core.Processing import Processing
 
 
-class ProcessingExampleScriptsPlugin(object):
+class ProcessingExampleScriptsPlugin:
 
     def initGui(self):
         Processing.addScripts(os.path.join(os.path.dirname(__file__), "scripts"))

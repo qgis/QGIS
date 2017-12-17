@@ -1,15 +1,15 @@
 Support Vector Machine Classification (OpenCV)
 imagery_opencv
-ParameterMultipleInput|FEATURES|Features|3|False
-ParameterBoolean|NORMALIZE|Normalize|False
-ParameterVector|TRAIN_AREAS|Training Areas|-1|False
-ParameterTable|TRAIN_CLASS|Class Identifier|False
-OutputRaster|CLASSES|Classification
-ParameterSelection|SVM_TYPE|SVM Type|[0] c-support vector classification;[1] nu support vector classification;[2] distribution estimation (one class);[3] epsilon support vector regression;[4] nu support vector regression| 0
-ParameterNumber|C|C| 0.000000|None| 1.000000
-ParameterNumber|NU|Nu| 0.000000|None| 0.500000
-ParameterNumber|P|P| 0.000000|None| 0.500000
-ParameterSelection|KERNEL|Kernel Type|[0] linear;[1] polynomial;[2] radial basis function;[3] sigmoid;[4] exponential chi2;[5] histogram intersection| 1
-ParameterNumber|COEF0|Coefficient 0| 0.000000|None| 1.000000
-ParameterNumber|DEGREE|Degree| 0.000000|None| 0.500000
-ParameterNumber|GAMMA|Gamma| 0.000000|None| 1.000000
+QgsProcessingParameterMultipleLayers|FEATURES|Features|3|None|False
+QgsProcessingParameterBoolean|NORMALIZE|Normalize|False
+QgsProcessingParameterFeatureSource|TRAIN_AREAS|Training Areas|-1|None|False
+QgsProcessingParameterFeatureSource|TRAIN_CLASS|Class Identifier|5|None|False
+QgsProcessingParameterRasterDestination|CLASSES|Classification
+QgsProcessingParameterEnum|SVM_TYPE|SVM Type|[0] c-support vector classification;[1] nu support vector classification;[2] distribution estimation (one class);[3] epsilon support vector regression;[4] nu support vector regression|False|0
+QgsProcessingParameterNumber|C|C|QgsProcessingParameterNumber.Double|1.000000|False| 0.000000|None
+QgsProcessingParameterNumber|NU|Nu|QgsProcessingParameterNumber.Double|0.500000|False| 0.000000|None
+QgsProcessingParameterNumber|P|P|QgsProcessingParameterNumber.Double|0.500000|False| 0.000000|None
+QgsProcessingParameterEnum|KERNEL|Kernel Type|[0] linear;[1] polynomial;[2] radial basis function;[3] sigmoid;[4] exponential chi2;[5] histogram intersection|False|1
+QgsProcessingParameterNumber|COEF0|Coefficient 0|QgsProcessingParameterNumber.Double|1.000000|False| 0.000000|None
+QgsProcessingParameterNumber|DEGREE|Degree|QgsProcessingParameterNumber.Double|0.500000|False| 0.000000|None
+QgsProcessingParameterNumber|GAMMA|Gamma|QgsProcessingParameterNumber.Double|1.000000|False| 0.000000|None

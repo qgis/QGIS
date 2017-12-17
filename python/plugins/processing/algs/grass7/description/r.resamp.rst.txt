@@ -1,9 +1,22 @@
 r.resamp.rst
 Reinterpolates using regularized spline with tension and smoothing.
 Raster (r.*)
-ParameterRaster|input|Raster layer|False
-ParameterNumber|ew_res|Desired east-west resolution|0.0|None|1.0
-ParameterNumber|ns_res|Desired north-south resolution|0.0|None|1.0
-ParameterBoolean|-t|Use dnorm independent tension|False
-ParameterBoolean|-a_r.region|Align region to resolution (default = align to bounds) in r.region|False
-OutputRaster|elevation|Resampled RST
+QgsProcessingParameterRasterLayer|input|Raster layer|None|False
+QgsProcessingParameterRasterLayer|smooth|Input raster map containing smoothing|None|True
+QgsProcessingParameterRasterLayer|maskmap|Input raster map to be used as mask|None|True
+QgsProcessingParameterNumber|ew_res|Desired east-west resolution|QgsProcessingParameterNumber.Double|0.0|False|None|None
+QgsProcessingParameterNumber|ns_res|Desired north-south resolution|QgsProcessingParameterNumber.Double|0.0|False|None|None
+QgsProcessingParameterNumber|overlap|Rows/columns overlap for segmentation|QgsProcessingParameterNumber.Integer|3|True|0|None
+QgsProcessingParameterNumber|zscale|Multiplier for z-values|QgsProcessingParameterNumber.Double|1.0|True|None|None
+QgsProcessingParameterNumber|tension|Spline tension value|QgsProcessingParameterNumber.Double|40.0|True|None|None
+QgsProcessingParameterNumber|theta|Anisotropy angle (in degrees counterclockwise from East)|QgsProcessingParameterNumber.Double|0.0|False|None|None
+QgsProcessingParameterNumber|scalex|Anisotropy scaling factor|QgsProcessingParameterNumber.Double|0.0|True|None|None
+QgsProcessingParameterBoolean|-t|Use dnorm independent tension|False
+QgsProcessingParameterBoolean|-d|Output partial derivatives instead of topographic parameters|False
+QgsProcessingParameterRasterDestination|elevation|Resampled RST
+QgsProcessingParameterRasterDestination|slope|Slope raster
+QgsProcessingParameterRasterDestination|aspect|Aspect raster
+QgsProcessingParameterRasterDestination|pcurvature|Profile curvature raster
+QgsProcessingParameterRasterDestination|tcurvature|Tangential curvature raster
+QgsProcessingParameterRasterDestination|mcurvature|Mean curvature raster
+

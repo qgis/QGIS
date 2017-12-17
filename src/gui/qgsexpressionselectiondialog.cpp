@@ -21,6 +21,7 @@
 #include "qgsmessagebar.h"
 #include "qgsvectorlayer.h"
 #include "qgssettings.h"
+#include "qgsgui.h"
 
 
 QgsExpressionSelectionDialog::QgsExpressionSelectionDialog( QgsVectorLayer *layer, const QString &startText, QWidget *parent )
@@ -29,6 +30,9 @@ QgsExpressionSelectionDialog::QgsExpressionSelectionDialog( QgsVectorLayer *laye
 
 {
   setupUi( this );
+
+  QgsGui::instance()->enableAutoGeometryRestore( this );
+
   connect( mActionSelect, &QAction::triggered, this, &QgsExpressionSelectionDialog::mActionSelect_triggered );
   connect( mActionAddToSelection, &QAction::triggered, this, &QgsExpressionSelectionDialog::mActionAddToSelection_triggered );
   connect( mActionRemoveFromSelection, &QAction::triggered, this, &QgsExpressionSelectionDialog::mActionRemoveFromSelection_triggered );
@@ -59,9 +63,6 @@ QgsExpressionSelectionDialog::QgsExpressionSelectionDialog( QgsVectorLayer *laye
 
   // by default, zoom to features is hidden, shown only if canvas is set
   mButtonZoomToFeatures->setVisible( false );
-
-  QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "Windows/ExpressionSelectionDialog/geometry" ) ).toByteArray() );
 
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsExpressionSelectionDialog::showHelp );
 }
@@ -146,7 +147,7 @@ void QgsExpressionSelectionDialog::mButtonZoomToFeatures_clicked()
   while ( features.nextFeature( feat ) )
   {
     QgsGeometry geom = feat.geometry();
-    if ( geom.isNull() || geom.geometry()->isEmpty() )
+    if ( geom.isNull() || geom.constGet()->isEmpty() )
       continue;
 
     QgsRectangle r = mMapCanvas->mapSettings().layerExtentToOutputExtent( mLayer, geom.boundingBox() );
@@ -181,9 +182,6 @@ void QgsExpressionSelectionDialog::mButtonZoomToFeatures_clicked()
 void QgsExpressionSelectionDialog::closeEvent( QCloseEvent *closeEvent )
 {
   QDialog::closeEvent( closeEvent );
-
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/ExpressionSelectionDialog/geometry" ), saveGeometry() );
 }
 
 void QgsExpressionSelectionDialog::mPbnClose_clicked()

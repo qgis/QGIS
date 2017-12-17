@@ -8,8 +8,8 @@ Content-Type: text/xml; charset=utf-8
    <Attribute value="2" name="id"/>
    <Attribute value="two" name="name"/>
    <Attribute value="two àò" name="utf8nameè"/>
+   <Attribute value="1" name="orig_ogc_fid"/>
    <BoundingBox maxy="5606017.8743" maxx="913214.6741" miny="5606017.8743" CRS="EPSG:3857" minx="913214.6741"/>
-   <Attribute type="derived" value="Point (913214.6741 5606017.8743)" name="geometry"/>
   </Feature>
  </Layer>
 </GetFeatureInfoResponse>

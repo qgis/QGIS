@@ -199,7 +199,7 @@ bool QgsMapToolShowHideLabels::selectedFeatures( QgsVectorLayer *vlayer,
 
   try
   {
-    QgsCoordinateTransform ct( mCanvas->mapSettings().destinationCrs(), vlayer->crs() );
+    QgsCoordinateTransform ct( mCanvas->mapSettings().destinationCrs(), vlayer->crs(), QgsProject::instance() );
     selectGeomTrans.transform( ct );
   }
   catch ( QgsCsException &cse )
@@ -214,7 +214,7 @@ bool QgsMapToolShowHideLabels::selectedFeatures( QgsVectorLayer *vlayer,
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
   QgsDebugMsg( "Selection layer: " + vlayer->name() );
-  QgsDebugMsg( "Selection polygon: " + selectGeomTrans.exportToWkt() );
+  QgsDebugMsg( "Selection polygon: " + selectGeomTrans.asWkt() );
 
   QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest()
                            .setFilterRect( selectGeomTrans.boundingBox() )

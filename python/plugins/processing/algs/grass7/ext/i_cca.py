@@ -25,34 +25,16 @@ __copyright__ = '(C) 2016, Médéric Ribreux'
 
 __revision__ = '$Format:%H$'
 
-from .i import multipleOutputDir, verifyRasterNum, regroupRasters
-from processing.core.parameters import getParameterFromString
+from .i import verifyRasterNum, regroupRasters
 
 
-def checkParameterValuesBeforeExecuting(alg):
-    return verifyRasterNum(alg, 'input', 2, 8)
+def checkParameterValuesBeforeExecuting(alg, parameters, context):
+    return verifyRasterNum(alg, parameters, context, 'input', 2, 8)
 
 
-def processCommand(alg, parameters):
-    # Remove output
-    output = alg.getOutputFromName('output')
-    alg.removeOutputFromName('output')
-
-    # Create output parameter
-    param = getParameterFromString("ParameterString|output|output basename|None|False|False")
-    param.value = alg.getTempFilename()
-    alg.addParameter(param)
-
+def processCommand(alg, parameters, context):
     # Regroup rasters
     regroupRasters(alg, parameters, 'input', 'group', 'subgroup', {'signature': 'sig'})
 
-    # re-add output
-    alg.addOutput(output)
-
-
-def processOutputs(alg):
-    param = alg.getParameterFromName('output')
-    multipleOutputDir(alg, 'output', param.value)
-
-    # Delete output parameter
-    alg.parameters.remove(param)
+    # Handle other parameters
+    alg.processCommand(alg, parameters, context)

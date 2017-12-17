@@ -101,13 +101,13 @@ class GUI_EXPORT QgsMetadataWidget : public QWidget, private Ui::QgsMetadataWidg
     void removeSelectedRight() const;
     void addConstraint() const;
     void removeSelectedConstraint() const;
-    void addContact() const;
-    void removeSelectedContact() const;
+    void toggleExtentSelector() const;
+    void addAddress() const;
+    void removeSelectedAddress() const;
     void addLink() const;
     void removeSelectedLink() const;
     void addHistory();
     void removeSelectedHistory() const;
-    void updateContactDetails() const;
     void fillComboBox() const;
     void setPropertiesFromLayer() const;
     void syncFromCategoriesTabToKeywordsTab() const;
@@ -141,9 +141,15 @@ class LinkItemDelegate : public QStyledItemDelegate
   public:
 
     /**
+     * \brief LinkItemDelegate constructor
+     * \param parent
+     */
+    explicit LinkItemDelegate( QObject *parent = nullptr );
+
+    /**
      * Create a special editor with a QCombobox in the link view.
      */
-    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
+    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
 };
 
 /**
@@ -161,9 +167,15 @@ class ConstraintItemDelegate : public QStyledItemDelegate
   public:
 
     /**
+     * \brief ConstraintItemDelegate constructor
+     * \param parent
+     */
+    explicit ConstraintItemDelegate( QObject *parent = nullptr );
+
+    /**
      * Create a special editor with a QCombobox in the constraint view.
      */
-    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
+    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
 };
 
 /**

@@ -46,7 +46,7 @@ while ($LINE_IDX < $LINE_COUNT){
 
     if ( $new_line =~ m/^(\s*)\/\/!\s*(.*?)$/ ){
        #found a //! comment
-       my $identation = $1;
+       my $indentation = $1;
        my $comment = $2;
        #check next line to see if it begins with //!
        if ( $INPUT_LINES[$LINE_IDX+1] =~ m/\s*\/\/!\s*(.*?)$/){
@@ -54,18 +54,18 @@ while ($LINE_IDX < $LINE_COUNT){
           if ( !$PREVIOUS_WAS_BLANKLINE ){
             print $out_handle "\n";
           }
-          print $out_handle $identation."/**\n";
-          print $out_handle $identation." * ".$comment."\n";
+          print $out_handle $indentation."/**\n";
+          print $out_handle $indentation." * ".$comment."\n";
           while ( $INPUT_LINES[$LINE_IDX+1] =~ m/\s*\/\/!\s*(.*?)$/ ){
             if ($1 ne ''){
-              print $out_handle $identation." * ".$1."\n";
+              print $out_handle $indentation." * ".$1."\n";
             }
             else {
-              print $out_handle $identation." *\n";
+              print $out_handle $indentation." *\n";
             }
             $LINE_IDX++;
           }
-          print $out_handle $identation." */\n";
+          print $out_handle $indentation." */\n";
        }
        else {
           print $out_handle $new_line."\n";

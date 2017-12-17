@@ -56,9 +56,9 @@ class CORE_EXPORT QgsVectorLayerFeatureSource : public QgsAbstractFeatureSource
      */
     explicit QgsVectorLayerFeatureSource( const QgsVectorLayer *layer );
 
-    ~QgsVectorLayerFeatureSource();
+    ~QgsVectorLayerFeatureSource() override;
 
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) override;
+    QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) override;
 
     friend class QgsVectorLayerFeatureIterator SIP_SKIP;
 
@@ -111,15 +111,15 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
   public:
     QgsVectorLayerFeatureIterator( QgsVectorLayerFeatureSource *source, bool ownSource, const QgsFeatureRequest &request );
 
-    ~QgsVectorLayerFeatureIterator();
+    ~QgsVectorLayerFeatureIterator() override;
 
     //! reset the iterator to the starting position
-    virtual bool rewind() override;
+    bool rewind() override;
 
     //! end of iterating: free the resources / lock
-    virtual bool close() override;
+    bool close() override;
 
-    virtual void setInterruptionChecker( QgsInterruptionChecker *interruptionChecker ) override SIP_SKIP;
+    void setInterruptionChecker( QgsInterruptionChecker *interruptionChecker ) override SIP_SKIP;
 
     /**
      * Join information prepared for fast attribute id mapping in QgsVectorLayerJoinBuffer::updateFeatureAttributes().
@@ -139,18 +139,20 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
     };
 
 
+    bool isValid() const override;
+
   protected:
     //! fetch next feature, return true on success
-    virtual bool fetchFeature( QgsFeature &feature ) override;
+    bool fetchFeature( QgsFeature &feature ) override;
 
     /**
      * Overrides default method as we only need to filter features in the edit buffer
      * while for others filtering is left to the provider implementation.
      */
-    virtual bool nextFeatureFilterExpression( QgsFeature &f ) override { return fetchFeature( f ); }
+    bool nextFeatureFilterExpression( QgsFeature &f ) override { return fetchFeature( f ); }
 
     //! Setup the simplification of geometries to fetch using the specified simplify method
-    virtual bool prepareSimplification( const QgsSimplifyMethod &simplifyMethod ) override;
+    bool prepareSimplification( const QgsSimplifyMethod &simplifyMethod ) override;
 
     //! \note not available in Python bindings
     void rewindEditBuffer() SIP_SKIP;
@@ -260,7 +262,7 @@ class CORE_EXPORT QgsVectorLayerFeatureIterator : public QgsAbstractFeatureItera
     bool prepareOrderBy( const QList<QgsFeatureRequest::OrderByClause> &orderBys ) override;
 
     //! returns whether the iterator supports simplify geometries on provider side
-    virtual bool providerCanSimplify( QgsSimplifyMethod::MethodType methodType ) const override;
+    bool providerCanSimplify( QgsSimplifyMethod::MethodType methodType ) const override;
 
     void createOrderedJoinList();
 

@@ -39,7 +39,8 @@ from qgis.core import (QgsProcessingParameterDefinition,
                        QgsProcessingOutputRasterLayer,
                        QgsProcessingParameterRasterDestination,
                        QgsProcessingParameterFeatureSink,
-                       QgsProcessingParameterVectorDestination)
+                       QgsProcessingParameterVectorDestination,
+                       QgsProject)
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import QCoreApplication, Qt
 from qgis.PyQt.QtWidgets import (QWidget, QHBoxLayout, QToolButton,
@@ -78,6 +79,9 @@ class ParametersPanel(BASE, WIDGET):
         self.iterateButtons = {}
 
         self.initWidgets()
+
+        QgsProject.instance().layerWasAdded.connect(self.layerRegistryChanged)
+        QgsProject.instance().layersWillBeRemoved.connect(self.layerRegistryChanged)
 
     def layerRegistryChanged(self, layers):
         for wrapper in list(self.wrappers.values()):
@@ -133,7 +137,7 @@ class ParametersPanel(BASE, WIDGET):
                         widget = QWidget()
                         widget.setLayout(layout)
 
-                    widget.setToolTip(self.formatParameterTooltip(param))
+                    widget.setToolTip(param.toolTip())
 
                     if type(widget) is QCheckBox:
                         # checkbox widget - so description is embedded in widget rather than a separate
@@ -171,7 +175,7 @@ class ParametersPanel(BASE, WIDGET):
                 self.layoutMain.insertWidget(self.layoutMain.count() - 1, check)
                 self.checkBoxes[output.name()] = check
 
-            widget.setToolTip(self.formatParameterTooltip(param))
+            widget.setToolTip(param.toolTip())
             self.outputWidgets[output.name()] = widget
 
         for wrapper in list(self.wrappers.values()):

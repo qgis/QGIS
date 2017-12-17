@@ -7,11 +7,11 @@
     <x>0</x>
     <y>0</y>
     <width>691</width>
-    <height>719</height>
+    <height>775</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>Configure 3D Map Rendering</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -20,6 +20,13 @@
       <string>Terrain</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>Tile resolution</string>
+        </property>
+       </widget>
+      </item>
       <item row="0" column="0">
        <widget class="QLabel" name="label">
         <property name="text">
@@ -44,20 +51,36 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="0" colspan="2">
-       <widget class="QLabel" name="label_3">
-        <property name="text">
-         <string>Tile resolution</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="2">
-       <widget class="QSpinBox" name="spinTerrainResolution">
+      <item row="2" column="1" colspan="2">
+       <widget class="QgsSpinBox" name="spinTerrainResolution">
         <property name="suffix">
          <string> px</string>
         </property>
         <property name="maximum">
          <number>4096</number>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_8">
+        <property name="text">
+         <string>Skirt height</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1" colspan="2">
+       <widget class="QgsDoubleSpinBox" name="spinTerrainSkirtHeight">
+        <property name="suffix">
+         <string> map units</string>
+        </property>
+        <property name="decimals">
+         <number>1</number>
+        </property>
+        <property name="maximum">
+         <double>10000.000000000000000</double>
+        </property>
+        <property name="singleStep">
+         <double>10.000000000000000</double>
         </property>
        </widget>
       </item>
@@ -81,7 +104,7 @@
       </widget>
      </item>
      <item row="0" column="1">
-      <widget class="QSpinBox" name="spinMapResolution">
+      <widget class="QgsSpinBox" name="spinMapResolution">
        <property name="suffix">
         <string> px</string>
        </property>
@@ -171,7 +194,7 @@
      <property name="sizeHint" stdset="0">
       <size>
        <width>20</width>
-       <height>40</height>
+       <height>0</height>
       </size>
      </property>
     </spacer>
@@ -189,14 +212,21 @@
    <extends>QComboBox</extends>
    <header>qgsmaplayercombobox.h</header>
   </customwidget>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>cboTerrainLayer</tabstop>
   <tabstop>spinTerrainScale</tabstop>
   <tabstop>spinTerrainResolution</tabstop>
+  <tabstop>spinTerrainSkirtHeight</tabstop>
   <tabstop>spinMapResolution</tabstop>
   <tabstop>spinScreenError</tabstop>
   <tabstop>spinGroundError</tabstop>
+  <tabstop>chkShowLabels</tabstop>
   <tabstop>chkShowTileInfo</tabstop>
   <tabstop>chkShowBoundingBoxes</tabstop>
  </tabstops>

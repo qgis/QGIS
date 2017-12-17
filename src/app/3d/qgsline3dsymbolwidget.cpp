@@ -23,6 +23,10 @@ QgsLine3DSymbolWidget::QgsLine3DSymbolWidget( QWidget *parent )
 {
   setupUi( this );
 
+  spinHeight->setClearValue( 0.0 );
+  spinWidth->setClearValue( 0.0 );
+  spinExtrusion->setClearValue( 0.0 );
+
   setSymbol( QgsLine3DSymbol() );
 
   connect( spinWidth, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLine3DSymbolWidget::changed );

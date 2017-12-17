@@ -15,7 +15,7 @@
 class QgsAuthSslImportDialog : QDialog
 {
 %Docstring
- Widget for importing an SSL server certificate exception into the authentication database
+Widget for importing an SSL server certificate exception into the authentication database
 %End
 
 %TypeHeaderCode
@@ -25,8 +25,9 @@ class QgsAuthSslImportDialog : QDialog
 
     QgsAuthSslImportDialog( QWidget *parent /TransferThis/ = 0 );
 %Docstring
- Construct dialog for importing certificates
- \param parent
+Construct dialog for importing certificates
+
+:param parent:
 %End
 
   public slots:

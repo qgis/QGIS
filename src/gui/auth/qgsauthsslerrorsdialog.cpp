@@ -25,10 +25,12 @@
 #include <QToolButton>
 
 #include "qgsauthmanager.h"
+#include "qgsnetworkaccessmanager.h"
 #include "qgsauthcertutils.h"
 #include "qgsauthtrustedcasdialog.h"
 #include "qgscollapsiblegroupbox.h"
 #include "qgslogger.h"
+#include "qgsapplication.h"
 
 
 QgsAuthSslErrorsDialog::QgsAuthSslErrorsDialog( QNetworkReply *reply,
@@ -69,7 +71,7 @@ QgsAuthSslErrorsDialog::QgsAuthSslErrorsDialog( QNetworkReply *reply,
   ignoreButton()->setDefault( false );
   abortButton()->setDefault( true );
 
-  if ( !QgsAuthManager::instance()->isDisabled() )
+  if ( !QgsApplication::authManager()->isDisabled() )
   {
     saveButton()->setEnabled( false );
 
@@ -135,6 +137,11 @@ void QgsAuthSslErrorsDialog::showCertificateChainInfo()
 
 void QgsAuthSslErrorsDialog::showCertificateChainCAsInfo()
 {
+  for ( const auto &cert : mSslConfiguration.caCertificates() )
+  {
+    qDebug() << cert.subjectInfo( QSslCertificate::SubjectInfo::CommonName );
+  }
+
   QgsAuthTrustedCAsDialog *dlg = new QgsAuthTrustedCAsDialog( this, mSslConfiguration.caCertificates() );
   dlg->setWindowModality( Qt::WindowModal );
   dlg->resize( 675, 500 );
@@ -168,7 +175,7 @@ void QgsAuthSslErrorsDialog::buttonBox_clicked( QAbstractButton *button )
   switch ( btnenum )
   {
     case QDialogButtonBox::Ignore:
-      QgsAuthManager::instance()->updateIgnoredSslErrorsCache(
+      QgsApplication::authManager()->updateIgnoredSslErrorsCache(
         QStringLiteral( "%1:%2" ).arg( mDigest, mHostPort ),
         mSslErrors );
       accept();
@@ -182,6 +189,15 @@ void QgsAuthSslErrorsDialog::buttonBox_clicked( QAbstractButton *button )
     default:
       reject();
       break;
+  }
+  // Clear access cache if the user choose abort and the
+  // setting allows it
+  if ( btnenum == QDialogButtonBox::Abort &&
+       QgsSettings().value( QStringLiteral( "clear_auth_cache_on_errors" ),
+                            true,
+                            QgsSettings::Section::Auth ).toBool( ) )
+  {
+    QgsNetworkAccessManager::instance()->clearAccessCache();
   }
 }
 
@@ -225,7 +241,7 @@ void QgsAuthSslErrorsDialog::btnChainCAs_clicked()
 
 void QgsAuthSslErrorsDialog::grpbxSslErrors_collapsedStateChanged( bool collapsed )
 {
-  if ( !collapsed && QgsAuthManager::instance()->isDisabled() )
+  if ( !collapsed && QgsApplication::authManager()->isDisabled() )
   {
     btnChainInfo->setVisible( false );
     btnChainCAs->setVisible( false );

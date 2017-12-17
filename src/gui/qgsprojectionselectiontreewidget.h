@@ -20,6 +20,8 @@
 #include "qgis_gui.h"
 #include "qgscoordinatereferencesystem.h"
 
+
+class QgsVertexMarker;
 class QResizeEvent;
 
 /**
@@ -45,9 +47,9 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
     /**
      * Constructor for QgsProjectionSelectionTreeWidget.
      */
-    QgsProjectionSelectionTreeWidget( QWidget *parent SIP_TRANSFERTHIS = 0 );
+    QgsProjectionSelectionTreeWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    ~QgsProjectionSelectionTreeWidget();
+    ~QgsProjectionSelectionTreeWidget() override;
 
     /**
      * Returns the CRS currently selected in the widget.
@@ -65,12 +67,26 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
     void setShowNoProjection( bool show );
 
     /**
+     * Sets whether to show the bounnds preview map.
+     * \see showBoundsMap()
+     * \since QGIS 3.0
+     */
+    void setShowBoundsMap( bool show );
+
+    /**
      * Returns whether the "no/invalid" projection option is shown. If this
      * option is selected, calling crs() will return an invalid QgsCoordinateReferenceSystem.
      * \since QGIS 3.0
      * \see setShowNoProjection()
      */
     bool showNoProjection() const;
+
+    /**
+     * Returns whether the bounds preview map is shown.
+     * \since QGIS 3.0
+     * \see setShowBoundsMap()
+     */
+    bool showBoundsMap() const;
 
     /**
      * Returns true if the current selection in the widget is a valid choice. Valid
@@ -88,6 +104,20 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
      * \see crs()
      */
     void setCrs( const QgsCoordinateReferenceSystem &crs );
+
+    /**
+     * Sets the initial "preview" rectangle for the bounds overview map.
+     * \since QGIS 3.0
+     * \see previewRect()
+     */
+    void setPreviewRect( const QgsRectangle &rect );
+
+    /**
+     * The initial "preview" rectangle for the bounds overview map.
+     * \since QGIS 3.0
+     * \see previewRect()
+     */
+    QgsRectangle previewRect() const;
 
     /**
      * \brief filters this widget by the given CRSs
@@ -251,8 +281,20 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
     //! Hide deprecated CRSes
     void hideDeprecated( QTreeWidgetItem *item );
 
+    QgsRubberBand *mPreviewBand;
+    QgsRubberBand *mPreviewBand2;
+    QgsVertexMarker *mVertexMarker;
+
+    bool mShowMap = true;
+
+    QList<QgsMapLayer *> mLayers;
+
+    QgsRectangle mPreviewRect;
+
+
   private slots:
     //! get list of authorities
+    void updateBoundsPreview();
     QStringList authorities();
 
     //! Apply projection on double-click

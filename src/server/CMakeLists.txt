@@ -29,15 +29,8 @@ SET(QGIS_SERVER_SRCS
   qgsfcgiserverresponse.cpp
   qgsfilterresponsedecorator.cpp
   qgsfilterrestorer.cpp
-  qgshostedrdsbuilder.cpp
-  qgshostedvdsbuilder.cpp
-  qgsinterpolationlayerbuilder.cpp
-  qgsmslayerbuilder.cpp
   qgsmslayercache.cpp
-  qgsremotedatasourcebuilder.cpp
-  qgsremoteowsbuilder.cpp
   qgsrequesthandler.cpp
-  qgssentdatasourcebuilder.cpp
   qgsserver.cpp
   qgsserverexception.cpp
   qgsserverinterface.cpp
@@ -51,6 +44,8 @@ SET(QGIS_SERVER_SRCS
   qgsservicemodule.cpp
   qgsservicenativeloader.cpp
   qgsserviceregistry.cpp
+  qgsfeaturefilterprovidergroup.cpp
+  qgsfeaturefilter.cpp
 )
 
 SET (QGIS_SERVER_HDRS
@@ -61,8 +56,6 @@ SET (QGIS_SERVER_HDRS
 SET (QGIS_SERVER_MOC_HDRS
   qgscapabilitiescache.h
   qgsconfigcache.h
-  # qgshttptransaction.h
-  # qgsftptransaction.cpp
   qgsmslayercache.h
   qgsserverlogger.h
   qgsserversettings.h
@@ -118,6 +111,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/symbology
   ${CMAKE_SOURCE_DIR}/src/core/composer
+  ${CMAKE_SOURCE_DIR}/src/core/layout
   ${CMAKE_SOURCE_DIR}/src/core/layertree
   ${CMAKE_SOURCE_DIR}/src/analysis/interpolation
   ${CMAKE_SOURCE_DIR}/src/plugins/diagram_overlay

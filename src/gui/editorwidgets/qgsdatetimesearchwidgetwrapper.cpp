@@ -36,7 +36,7 @@ bool QgsDateTimeSearchWidgetWrapper::applyDirectly()
   return true;
 }
 
-QString QgsDateTimeSearchWidgetWrapper::expression()
+QString QgsDateTimeSearchWidgetWrapper::expression() const
 {
   return mExpression;
 }
@@ -62,7 +62,7 @@ QgsSearchWidgetWrapper::FilterFlags QgsDateTimeSearchWidgetWrapper::defaultFlags
 
 QString QgsDateTimeSearchWidgetWrapper::createExpression( QgsSearchWidgetWrapper::FilterFlags flags ) const
 {
-  QString fieldName = QgsExpression::quotedColumnRef( layer()->fields().at( mFieldIdx ).name() );
+  QString fieldName = createFieldIdentifier();
 
   //clear any unsupported flags
   flags &= supportedFlags();
@@ -112,8 +112,9 @@ bool QgsDateTimeSearchWidgetWrapper::valid() const
   return true;
 }
 
-void QgsDateTimeSearchWidgetWrapper::setExpression( QString exp )
+void QgsDateTimeSearchWidgetWrapper::setExpression( const QString &expression )
 {
+  QString exp = expression;
   QString fieldName = layer()->fields().at( mFieldIdx ).name();
 
   QString str = QStringLiteral( "%1 = '%3'" )

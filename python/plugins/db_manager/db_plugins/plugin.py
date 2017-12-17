@@ -103,7 +103,7 @@ class DBPlugin(QObject):
         return DatabaseInfo(None)
 
     def connect(self, parent=None):
-        raise NotImplemented
+        raise NotImplementedError('Needs to be implemented by subclasses')
 
     def connectToUri(self, uri):
         self.db = self.databasesFactory(self, uri)
@@ -128,7 +128,7 @@ class DBPlugin(QObject):
 
     @classmethod
     def addConnection(self, conn_name, uri):
-        raise NotImplemented
+        raise NotImplementedError('Needs to be implemented by subclasses')
 
     @classmethod
     def icon(self):
@@ -170,7 +170,7 @@ class DBPlugin(QObject):
 
     @classmethod
     def addConnectionActionSlot(self, item, action, parent):
-        raise NotImplemented
+        raise NotImplementedError('Needs to be implemented by subclasses')
 
     def removeActionSlot(self, item, action, parent):
         QApplication.restoreOverrideCursor()
@@ -726,8 +726,8 @@ class Table(DbItemObject):
     def tableDataModel(self, parent):
         pass
 
-    def tableFieldsFactory(self):
-        return None
+    def tableFieldsFactory(self, row, table):
+        raise NotImplementedError('Needs to be implemented by subclasses')
 
     def fields(self):
         if self._fields is None:

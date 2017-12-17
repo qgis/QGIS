@@ -15,12 +15,14 @@ SET(QGIS_APP_SRCS
   qgsattributeactiondialog.cpp
   qgsattributeactionpropertiesdialog.cpp
   qgsattributetypedialog.cpp
+  qgsattributerelationedit.cpp
+  qgsattributesforminitcode.cpp
   qgsattributetabledialog.cpp
   qgsbookmarks.cpp
   qgsclipboard.cpp
   qgscustomization.cpp
   qgscustomprojectiondialog.cpp
-  qgscrashreport.cpp
+  qgsdatumtransformtablewidget.cpp
   qgsdecorationitem.cpp
   qgsdecorationcopyright.cpp
   qgsdecorationcopyrightdialog.cpp
@@ -41,7 +43,9 @@ SET(QGIS_APP_SRCS
   qgsdiagramproperties.cpp
   qgsdisplayangle.cpp
   qgsfieldcalculator.cpp
-  qgsfieldsproperties.cpp
+  qgsfirstrundialog.cpp
+  qgssourcefieldsproperties.cpp
+  qgsattributesformproperties.cpp
   qgsidentifyresultsdialog.cpp
   qgsfeatureaction.cpp
   qgslabelpropertydialog.cpp
@@ -52,6 +56,7 @@ SET(QGIS_APP_SRCS
   qgsmapcanvasdockwidget.cpp
   qgsmaplayerstyleguiutils.cpp
   qgsmapsavedialog.cpp
+  qgsversionmigration.cpp
   qgsrulebasedlabelingwidget.cpp
   qgssavestyletodbdialog.cpp
   qgssnappinglayertreemodel.cpp
@@ -131,6 +136,25 @@ SET(QGIS_APP_SRCS
   qgsmaptooladdcircularstring.cpp
   qgsmaptoolcircularstringcurvepoint.cpp
   qgsmaptoolcircularstringradius.cpp
+  qgsmaptooladdcircle.cpp
+  qgsmaptoolcircle2points.cpp
+  qgsmaptoolcircle3points.cpp
+  qgsmaptoolcircle3tangents.cpp
+  qgsmaptoolcircle2tangentspoint.cpp
+  qgsmaptoolcirclecenterpoint.cpp
+  qgsmaptooladdellipse.cpp
+  qgsmaptoolellipsefoci.cpp
+  qgsmaptoolellipseextent.cpp
+  qgsmaptoolellipsecenterpoint.cpp
+  qgsmaptoolellipsecenter2points.cpp
+  qgsmaptooladdrectangle.cpp
+  qgsmaptooladdregularpolygon.cpp
+  qgsmaptoolrectanglecenter.cpp
+  qgsmaptoolrectangleextent.cpp
+  qgsmaptoolrectangle3points.cpp
+  qgsmaptoolregularpolygon2points.cpp
+  qgsmaptoolregularpolygoncenterpoint.cpp
+  qgsmaptoolregularpolygoncentercorner.cpp
 
   composer/qgsattributeselectiondialog.cpp
   composer/qgscomposer.cpp
@@ -155,11 +179,29 @@ SET(QGIS_APP_SRCS
   composer/qgsatlascompositionwidget.cpp
 
   layout/qgslayoutaddpagesdialog.cpp
+  layout/qgslayoutapputils.cpp
+  layout/qgslayoutattributeselectiondialog.cpp
+  layout/qgslayoutattributetablewidget.cpp
   layout/qgslayoutdesignerdialog.cpp
   layout/qgslayoutguidewidget.cpp
+  layout/qgslayouthtmlwidget.cpp
+  layout/qgslayoutitemslistview.cpp
   layout/qgslayoutappmenuprovider.cpp
+  layout/qgslayoutlabelwidget.cpp
+  layout/qgslayoutlegendlayersdialog.cpp
+  layout/qgslayoutlegendwidget.cpp
+  layout/qgslayoutmanagerdialog.cpp
+  layout/qgslayoutmapwidget.cpp
+  layout/qgslayoutmapgridwidget.cpp
   layout/qgslayoutpagepropertieswidget.cpp
+  layout/qgslayoutpicturewidget.cpp
+  layout/qgslayoutpolygonwidget.cpp
+  layout/qgslayoutpolylinewidget.cpp
   layout/qgslayoutpropertieswidget.cpp
+  layout/qgslayoutqptdrophandler.cpp
+  layout/qgslayoutscalebarwidget.cpp
+  layout/qgslayoutshapewidget.cpp
+  layout/qgslayouttablebackgroundcolorsdialog.cpp
 
   locator/qgsinbuiltlocatorfilters.cpp
   locator/qgslocatoroptionswidget.cpp
@@ -180,7 +222,6 @@ SET(QGIS_APP_SRCS
 
   qgssettingstree.cpp
   qgsvariantdelegate.cpp
-  qgscrashdialog.cpp
   qgscrashhandler.cpp
 )
 
@@ -199,11 +240,14 @@ SET (QGIS_APP_MOC_HDRS
   qgsattributeactiondialog.h
   qgsattributeactionpropertiesdialog.h
   qgsattributetypedialog.h
+  qgsattributerelationedit.h
+  qgsattributesforminitcode.h
   qgsattributetabledialog.h
   qgsbookmarks.h
   qgsclipboard.h
   qgscustomization.h
   qgscustomprojectiondialog.h
+  qgsdatumtransformtablewidget.h
   qgsdecorationitem.h
   qgsdecorationcopyright.h
   qgsdecorationcopyrightdialog.h
@@ -222,7 +266,9 @@ SET (QGIS_APP_MOC_HDRS
   qgsdxfexportdialog.h
   qgsfeatureaction.h
   qgsfieldcalculator.h
-  qgsfieldsproperties.h
+  qgsfirstrundialog.h
+  qgssourcefieldsproperties.h
+  qgsattributesformproperties.h
   qgsformannotationdialog.h
   qgsguivectorlayertools.h
   qgshtmlannotationdialog.h
@@ -284,6 +330,25 @@ SET (QGIS_APP_MOC_HDRS
   qgsmaptooltextannotation.h
   qgsmaptooladdcircularstring.h
   qgsmaptoolcircularstringcurvepoint.h
+  qgsmaptooladdcircle.h
+  qgsmaptoolcircle2points.h
+  qgsmaptoolcircle3points.h
+  qgsmaptoolcircle3tangents.h
+  qgsmaptoolcircle2tangentspoint.h
+  qgsmaptoolcirclecenterpoint.h
+  qgsmaptooladdellipse.h
+  qgsmaptoolellipsefoci.h
+  qgsmaptoolellipseextent.h
+  qgsmaptoolellipsecenterpoint.h
+  qgsmaptoolellipsecenter2points.h
+  qgsmaptooladdrectangle.h
+  qgsmaptooladdregularpolygon.h
+  qgsmaptoolrectanglecenter.h
+  qgsmaptoolrectangleextent.h
+  qgsmaptoolrectangle3points.h
+  qgsmaptoolregularpolygon2points.h
+  qgsmaptoolregularpolygoncenterpoint.h
+  qgsmaptoolregularpolygoncentercorner.h
 
   nodetool/qgsselectedfeature.h
   nodetool/qgsnodeeditor.h
@@ -333,10 +398,27 @@ SET (QGIS_APP_MOC_HDRS
 
   layout/qgslayoutaddpagesdialog.h
   layout/qgslayoutappmenuprovider.h
+  layout/qgslayoutattributeselectiondialog.h
+  layout/qgslayoutattributetablewidget.h
   layout/qgslayoutdesignerdialog.h
   layout/qgslayoutguidewidget.h
+  layout/qgslayouthtmlwidget.h
+  layout/qgslayoutitemslistview.h
+  layout/qgslayoutlabelwidget.h
+  layout/qgslayoutlegendwidget.h
+  layout/qgslayoutlegendlayersdialog.h
+  layout/qgslayoutmanagerdialog.h
+  layout/qgslayoutmapwidget.h
+  layout/qgslayoutmapgridwidget.h
   layout/qgslayoutpagepropertieswidget.h
+  layout/qgslayoutpicturewidget.h
+  layout/qgslayoutpolygonwidget.h
+  layout/qgslayoutpolylinewidget.h
   layout/qgslayoutpropertieswidget.h
+  layout/qgslayoutqptdrophandler.h
+  layout/qgslayoutscalebarwidget.h
+  layout/qgslayoutshapewidget.h
+  layout/qgslayouttablebackgroundcolorsdialog.h
 
   locator/qgsinbuiltlocatorfilters.h
   locator/qgslocatoroptionswidget.h
@@ -354,7 +436,6 @@ SET (QGIS_APP_MOC_HDRS
 
   qgssettingstree.h
   qgsvariantdelegate.h
-  qgscrashdialog.h
   )
 
 
@@ -579,6 +660,7 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${QEXTSERIALPORT_INCLUDE_DIR}
 )
 INCLUDE_DIRECTORIES(
+  ../analysis/processing
   ../analysis/raster
   ../core
   ../core/annotations
@@ -591,6 +673,7 @@ INCLUDE_DIRECTORIES(
   ../core/layout
   ../core/metadata
   ../core/layertree
+  ../core/processing
   ../core/providers/memory
   ../core/raster
   ../core/scalebar

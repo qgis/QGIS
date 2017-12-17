@@ -13,7 +13,7 @@
 class QgsAuthCertEditors : QWidget
 {
 %Docstring
- Wrapper widget to manage available certificate editors
+Wrapper widget to manage available certificate editors
 %End
 
 %TypeHeaderCode
@@ -23,13 +23,14 @@ class QgsAuthCertEditors : QWidget
 
     explicit QgsAuthCertEditors( QWidget *parent /TransferThis/ = 0 );
 %Docstring
- Construct a widget to contain various certificate editors
- \param parent Parent widget
+Construct a widget to contain various certificate editors
+
+:param parent: Parent widget
 %End
 
     ~QgsAuthCertEditors( );
 %Docstring
- Destructor: store last selected tab
+Destructor: store last selected tab
 %End
 
 };
@@ -39,7 +40,7 @@ class QgsAuthCertEditors : QWidget
 class QgsAuthCertManager : QDialog
 {
 %Docstring
- Dialog wrapper for widget to manage available certificate editors
+Dialog wrapper for widget to manage available certificate editors
 %End
 
 %TypeHeaderCode
@@ -49,14 +50,14 @@ class QgsAuthCertManager : QDialog
 
     explicit QgsAuthCertManager( QWidget *parent /TransferThis/ = 0 );
 %Docstring
- Construct a dialog wrapper for widget to manage available certificate editors
- \param parent Parent widget
+Construct a dialog wrapper for widget to manage available certificate editors
+
+:param parent: Parent widget
 %End
 
     QgsAuthCertEditors *certEditorsWidget();
 %Docstring
 Get access to embedded editors widget
- :rtype: QgsAuthCertEditors
 %End
 
 };

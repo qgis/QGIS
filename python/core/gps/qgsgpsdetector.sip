@@ -14,7 +14,7 @@
 class QgsGPSDetector : QObject
 {
 %Docstring
- Class to detect the GPS port
+Class to detect the GPS port
 %End
 
 %TypeHeaderCode
@@ -25,9 +25,6 @@ class QgsGPSDetector : QObject
     ~QgsGPSDetector();
 
     static QList< QPair<QString, QString> > availablePorts();
-%Docstring
- :rtype: list of QPair<str, QString>
-%End
 
   public slots:
     void advance();

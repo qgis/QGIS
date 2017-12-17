@@ -13,7 +13,7 @@
 class QgsCharacterSelectorDialog : QDialog
 {
 %Docstring
- A dialog for selecting a single character from a single font
+A dialog for selecting a single character from a single font
 %End
 
 %TypeHeaderCode
@@ -24,9 +24,6 @@ class QgsCharacterSelectorDialog : QDialog
 
   public slots:
     const QChar &selectCharacter( bool *gotChar, const QFont &font, const QString &style );
-%Docstring
- :rtype: QChar
-%End
 
   protected:
 };

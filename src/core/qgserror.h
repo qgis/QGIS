@@ -39,8 +39,8 @@ class CORE_EXPORT QgsErrorMessage
       Html
     };
 
-    QgsErrorMessage()
-    {}
+    //! Constructor for QgsErrorMessage
+    QgsErrorMessage() = default;
 
     /**
      * Constructor.
@@ -84,7 +84,8 @@ class CORE_EXPORT QgsError
 {
   public:
 
-    QgsError() {}
+    //! Constructor for QgsError
+    QgsError() = default;
 
     /**
      * Constructor with single message.
@@ -127,6 +128,12 @@ class CORE_EXPORT QgsError
 
     //! Clear error messages
     void clear() { mMessageList.clear(); }
+
+    /**
+     * \brief messageList return the list of current error messages
+     * \return current list of error messages
+     */
+    QList<QgsErrorMessage> messageList() const { return mMessageList; }
 
   private:
     //! List of messages

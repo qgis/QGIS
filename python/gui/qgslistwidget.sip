@@ -14,7 +14,8 @@
 class QgsListWidget: QgsTableWidgetBase
 {
 %Docstring
- Widget allowing to edit a QVariantList, using a table.
+Widget allowing to edit a QVariantList, using a table.
+
 .. versionadded:: 3.0
 %End
 
@@ -25,26 +26,26 @@ class QgsListWidget: QgsTableWidgetBase
 
     explicit QgsListWidget( QVariant::Type subType, QWidget *parent = 0 );
 %Docstring
- Constructor.
+Constructor.
 %End
 
     void setList( const QVariantList &list );
 %Docstring
- Set the initial value of the widget.
+Set the initial value of the widget.
 %End
 
     QVariantList list() const;
 %Docstring
- Get the edit value.
- :return: the QVariantList
- :rtype: QVariantList
+Get the edit value.
+
+:return: the QVariantList
 %End
 
     bool valid() const;
 %Docstring
- Check the content is valid
- :return: true if valid
- :rtype: bool
+Check the content is valid
+
+:return: true if valid
 %End
 
 };

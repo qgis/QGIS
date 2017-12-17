@@ -14,7 +14,7 @@
 class QgsAddRemoveItemCommand: QObject, QUndoCommand
 {
 %Docstring
- A composer command class for adding / removing composer items. If mState == Removed, the command owns the item
+A composer command class for adding / removing composer items. If mState == Removed, the command owns the item
 %End
 
 %TypeHeaderCode
@@ -29,6 +29,9 @@ class QgsAddRemoveItemCommand: QObject, QUndoCommand
     };
 
     QgsAddRemoveItemCommand( State s, QgsComposerItem *item, QgsComposition *c, const QString &text, QUndoCommand *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsAddRemoveItemCommand
+%End
     ~QgsAddRemoveItemCommand();
 
     virtual void redo();

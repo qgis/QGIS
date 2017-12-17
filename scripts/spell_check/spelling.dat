@@ -1575,6 +1575,7 @@ conesencus:consensus
 confidental:confidential
 confidentally:confidentially
 confids:confides
+configire:configure
 configration:configuration
 configrations:configurations
 configuation:configuration
@@ -2202,6 +2203,7 @@ differents:different
 differnet:different
 differnt:different
 difficulity:difficulty
+diffreent:different
 diffrent:different
 dificulties:difficulties
 dificulty:difficulty
@@ -2488,6 +2490,7 @@ eletronic:electronic
 elicided:elicited
 eligable:eligible
 elimentary:elementary
+elimnated:eliminated
 ellected:elected
 elliminate:eliminate
 elliminated:eliminated
@@ -2547,6 +2550,7 @@ empirial:imperial
 emporer:emperor
 emprisoned:imprisoned
 emptry:empty
+empy:empty
 emtied:emptied
 emties:empties
 emtpy:empty
@@ -2966,6 +2970,7 @@ finacial:financial
 finaly:finally
 financialy:financially
 findout:find out
+finnished:finished
 finsih:finish
 finsihed:finished
 finsihes:finishes
@@ -3450,6 +3455,7 @@ idealogy:ideology
 identicial:identical
 identifer:identifier
 identifers:identifiers
+identation:indentation
 ideosyncratic:idiosyncratic
 idesa:ideas
 idicate:indicate
@@ -3735,6 +3741,8 @@ inflexable:inflexible
 influencial:influential
 influented:influenced
 infomation:information
+inforce:enforce
+inforced:enforced
 informaion:information
 informatiom:information
 informations:information
@@ -4072,6 +4080,7 @@ juducial:judicial
 juristiction:jurisdiction
 juristictions:jurisdictions
 kenrel:kernel
+kepps:keeps
 keyboad:keyboard
 keyboads:keyboards
 keybord:keyboard
@@ -4370,6 +4379,7 @@ meterology:meteorology
 methaphor:metaphor
 methaphors:metaphors
 metres:meters
+mial:mail
 Michagan:Michigan
 micoscopy:microscopy
 microprocesspr:microprocessor:*
@@ -5145,6 +5155,7 @@ pleaes:please
 pleasent:pleasant
 plebicite:plebiscite
 plesant:pleasant
+pllatforms:platforms
 ploting:plotting
 poenis:penis
 poeoples:peoples
@@ -5532,6 +5543,7 @@ pususading:persuading
 puting:putting:*
 pwoer:power
 pyscic:psychic
+pythin:python
 qgsi:qgis
 qoute:quote
 qouted:quoted
@@ -6835,6 +6847,7 @@ technitian:technician
 technnology:technology
 technolgy:technology
 teh:the
+hte:the
 tehy:they
 telelevision:television
 televsion:television
@@ -6868,6 +6881,12 @@ terriory:territory
 territorist:terrorist
 territoy:territory
 terroist:terrorist
+tesellate:tessellate
+tesselate:tessellate
+tesellation:tessellation
+tesselation:tessellation
+tesellator:tessellator
+tesselator:tessellator
 testiclular:testicular
 testomony:testimony
 texual:textual

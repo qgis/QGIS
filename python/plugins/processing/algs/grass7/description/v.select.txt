@@ -1,10 +1,10 @@
 v.select
 Selects features from vector map (A) by features from other vector map (B).
 Vector (v.*)
-ParameterVector|ainput|Input layer (A)|-1|False
-ParameterSelection|atype|Input layer (A) Type|area;line;point
-ParameterVector|binput|Input layer (B)|-1|False
-ParameterSelection|btype|Input layer (B) Type|area;line;point
-ParameterSelection|operator|Operator to use|overlap;equals;disjoint;intersect;touches;crosses;within;contains;relate
-ParameterBoolean|-r|Reverse selection|False
-OutputVector|output|Selected
+QgsProcessingParameterVectorLayer|ainput|Input layer (A)|-1|None|False
+QgsProcessingParameterEnum|atype|Input layer (A) Type|area;line;point
+QgsProcessingParameterVectorLayer|binput|Input layer (B)|-1|None|False
+QgsProcessingParameterEnum|btype|Input layer (B) Type|area;line;point
+QgsProcessingParameterEnum|operator|Operator to use|overlap;equals;disjoint;intersect;touches;crosses;within;contains;relate
+QgsProcessingParameterBoolean|-r|Reverse selection|False
+QgsProcessingParameterVectorDestination|output|Selected

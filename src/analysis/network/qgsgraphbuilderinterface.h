@@ -66,8 +66,7 @@ class ANALYSIS_EXPORT QgsGraphBuilderInterface
       mDa.setEllipsoid( ellipsoidID );
     }
 
-    virtual ~QgsGraphBuilderInterface()
-    { }
+    virtual ~QgsGraphBuilderInterface() = default;
 
     //! Returns destinaltion CRS
     QgsCoordinateReferenceSystem destinationCrs() const

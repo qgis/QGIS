@@ -24,23 +24,22 @@ class QgsDartMeasurement
     };
 
     QgsDartMeasurement();
+%Docstring
+Constructor for QgsDartMeasurement
+%End
 
     QgsDartMeasurement( const QString &name, Type type, const QString &value );
 
     const QString toString() const;
-%Docstring
- :rtype: str
-%End
 
     void send() const;
 
     static const QString typeToString( QgsDartMeasurement::Type type );
 %Docstring
- Convert a QgsDartMeasurement.Type enum to a string that is understood
- by the system.
+Convert a QgsDartMeasurement.Type enum to a string that is understood
+by the system.
 
 .. versionadded:: 2.
- :rtype: str
 %End
 
 };

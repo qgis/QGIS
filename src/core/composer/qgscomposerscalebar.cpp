@@ -69,7 +69,10 @@ void QgsComposerScaleBar::paint( QPainter *painter, const QStyleOptionGraphicsIt
 
   QgsRenderContext c = QgsComposerUtils::createRenderContextForMap( mComposerMap, painter );
 
+  // scale painter from mm to dots
+  painter->scale( 1.0 / c.scaleFactor(), 1.0 / c.scaleFactor() );
   mStyle->draw( c, mSettings, createScaleContext() );
+  painter->scale( c.scaleFactor(), c.scaleFactor() );
 
   //draw frame and selection boxes if necessary
   drawFrame( painter );

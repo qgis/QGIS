@@ -33,25 +33,25 @@ class QgsServerRequest
 
     QgsServerRequest();
 %Docstring
- Constructor
+Constructor
 %End
 
     QgsServerRequest( const QString &url, QgsServerRequest::Method method = QgsServerRequest::GetMethod, const QgsServerRequest::Headers &headers = QgsServerRequest::Headers() );
 %Docstring
- Constructor
+Constructor
 
- \param url the url string
- \param method the request method
- \param headers
+:param url: the url string
+:param method: the request method
+:param headers:
 %End
 
     QgsServerRequest( const QUrl &url, QgsServerRequest::Method method = QgsServerRequest::GetMethod, const QgsServerRequest::Headers &headers = QgsServerRequest::Headers() );
 %Docstring
- Constructor
+Constructor
 
- \param url QUrl
- \param method the request method
- \param headers
+:param url: QUrl
+:param method: the request method
+:param headers:
 %End
 
     virtual ~QgsServerRequest();
@@ -61,83 +61,81 @@ destructor
 
     QUrl url() const;
 %Docstring
- :return:  the request url
- :rtype: QUrl
+
+:return:  the request url
 %End
 
     QgsServerRequest::Method method() const;
 %Docstring
- :return: the request method
- :rtype: QgsServerRequest.Method
+
+:return: the request method
 %End
 
     QgsServerRequest::Parameters parameters() const;
 %Docstring
- Return a map of query parameters with keys converted
- to uppercase
- :rtype: QgsServerRequest.Parameters
+Return a map of query parameters with keys converted
+to uppercase
 %End
 
     void setParameter( const QString &key, const QString &value );
 %Docstring
- Set a parameter
+Set a parameter
 %End
 
     QString parameter( const QString &key ) const;
 %Docstring
- Get a parameter value
- :rtype: str
+Get a parameter value
 %End
 
     void removeParameter( const QString &key );
 %Docstring
- Remove a parameter
+Remove a parameter
 %End
 
     QString header( const QString &name ) const;
 %Docstring
- Return the header value
- @param name of the header
- @return the header value or an empty string
- :rtype: str
+Return the header value
+
+:param name: of the header
+@return the header value or an empty string
 %End
 
     void setHeader( const QString &name, const QString &value );
 %Docstring
- Set an header
- @param name
- @param value
+Set an header
+
+:param name:
+:param value:
 %End
 
     QMap<QString, QString> headers() const;
 %Docstring
- Return the header map
- @return the headers map
- :rtype: QMap<str, QString>
+Return the header map
+@return the headers map
 %End
 
     void removeHeader( const QString &name );
 %Docstring
- Remove an header
- @param name
+Remove an header
+
+:param name:
 %End
 
     virtual QByteArray data() const;
 %Docstring
- Return post/put data
- Check for QByteArray.isNull() to check if data
- is available.
- :rtype: QByteArray
+Return post/put data
+Check for QByteArray.isNull() to check if data
+is available.
 %End
 
     void setUrl( const QUrl &url );
 %Docstring
- Set the request url
+Set the request url
 %End
 
     void setMethod( QgsServerRequest::Method method );
 %Docstring
- Set the request method
+Set the request method
 %End
 
 };

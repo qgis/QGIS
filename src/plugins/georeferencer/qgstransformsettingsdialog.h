@@ -30,7 +30,7 @@ class QgsTransformSettingsDialog : public QDialog, private Ui::QgsTransformSetti
     QgsTransformSettingsDialog( const QString &raster, const QString &output,
                                 int countGCPpoints, QWidget *parent = nullptr );
 
-    ~QgsTransformSettingsDialog();
+    ~QgsTransformSettingsDialog() override;
     void getTransformSettings( QgsGeorefTransform::TransformParametrisation &tp,
                                QgsImageWarper::ResamplingMethod &rm, QString &comprMethod,
                                QString &raster, QgsCoordinateReferenceSystem &proj, QString &pdfMapFile, QString &pdfReportFile, bool &zt, bool &loadInQgis,

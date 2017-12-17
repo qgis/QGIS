@@ -1,11 +1,11 @@
 Modified Quadratic Shepard
 grid_gridding
-ParameterVector|SHAPES|Points|0|False
-ParameterTableField|FIELD|Attribute|SHAPES|-1|False
+QgsProcessingParameterFeatureSource|SHAPES|Points|0|None|False
+QgsProcessingParameterField|FIELD|Attribute|None|SHAPES|-1|False|False
 Hardcoded|-TARGET_DEFINITION 0
-ParameterNumber|QUADRATIC_NEIGHBORS|Quadratic Neighbors|5.0|None|13
-ParameterNumber|WEIGHTING_NEIGHBORS|Weighting Neighbors|3.0|None|19
+QgsProcessingParameterNumber|QUADRATIC_NEIGHBORS|Quadratic Neighbors|QgsProcessingParameterNumber.Integer|13|False|5.0|None
+QgsProcessingParameterNumber|WEIGHTING_NEIGHBORS|Weighting Neighbors|QgsProcessingParameterNumber.Integer|19|False|3.0|None
 Extent TARGET_USER_XMIN TARGET_USER_XMAX TARGET_USER_YMIN TARGET_USER_YMAX
-ParameterNumber|TARGET_USER_SIZE|Cellsize|None|None|100.0
-ParameterSelection|TARGET_USER_FITS|Fit|[0] nodes;[1] cells
-OutputRaster|TARGET_OUT_GRID|Grid
+QgsProcessingParameterNumber|TARGET_USER_SIZE|Cellsize|QgsProcessingParameterNumber.Double|100.0|False|None|None
+QgsProcessingParameterEnum|TARGET_USER_FITS|Fit|[0] nodes;[1] cells
+QgsProcessingParameterRasterDestination|TARGET_OUT_GRID|Grid

@@ -128,7 +128,7 @@ class QgsAbstractDataSourceWidgetItemDelegate : public QItemDelegate
 
   public:
     //! Constructor
-    QgsAbstractDataSourceWidgetItemDelegate( QObject *parent = 0 ) : QItemDelegate( parent ) { }
+    QgsAbstractDataSourceWidgetItemDelegate( QObject *parent = nullptr ) : QItemDelegate( parent ) { }
     QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
 };
 

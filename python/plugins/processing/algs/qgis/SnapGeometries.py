@@ -48,6 +48,9 @@ class SnapGeometriesToLayer(QgisAlgorithm):
     def group(self):
         return self.tr('Vector geometry')
 
+    def groupId(self):
+        return 'vectorgeometry'
+
     def __init__(self):
         super().__init__()
 
@@ -61,8 +64,10 @@ class SnapGeometriesToLayer(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterNumber(self.TOLERANCE, self.tr('Tolerance (layer units)'), type=QgsProcessingParameterNumber.Double,
                                                        minValue=0.00000001, maxValue=9999999999, defaultValue=10.0))
 
-        self.modes = [self.tr('Prefer aligning nodes'),
-                      self.tr('Prefer closest point'),
+        self.modes = [self.tr('Prefer aligning nodes, insert extra vertices where required'),
+                      self.tr('Prefer closest point, insert extra vertices where required'),
+                      self.tr('Prefer aligning nodes, don\'t insert new vertices'),
+                      self.tr('Prefer closest point, don\'t insert new vertices'),
                       self.tr('Move end points only, prefer aligning nodes'),
                       self.tr('Move end points only, prefer closest point'),
                       self.tr('Snap end points to end points only')]

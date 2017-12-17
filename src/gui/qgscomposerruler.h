@@ -37,7 +37,7 @@ class GUI_EXPORT QgsComposerRuler: public QWidget
     };
 
     QgsComposerRuler( QgsComposerRuler::Direction d );
-    ~QgsComposerRuler();
+    ~QgsComposerRuler() override;
 
     QSize minimumSizeHint() const override;
 

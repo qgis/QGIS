@@ -26,7 +26,7 @@ from .plugin import LVectorTable
 from ..plugin import DbError
 
 from qgis.PyQt.QtCore import QTime, QTemporaryFile
-from qgis.core import Qgis, QgsVectorLayer, QgsWkbTypes, QgsVirtualLayerDefinition
+from qgis.core import QgsVectorLayer, QgsWkbTypes, QgsVirtualLayerDefinition
 
 
 class LTableDataModel(TableDataModel):
@@ -49,7 +49,7 @@ class LTableDataModel(TableDataModel):
             a = f.attributes()
             # add the geometry type
             if f.hasGeometry():
-                a.append(QgsWkbTypes.displayString(Qgis.fromOldWkbType(f.geometry().wkbType())))
+                a.append(QgsWkbTypes.displayString(f.geometry().wkbType()))
             else:
                 a.append('None')
             self.resdata.append(a)
@@ -100,7 +100,7 @@ class LSqlResultModel(BaseTableModel):
                 a = f.attributes()
                 if has_geometry:
                     if f.hasGeometry():
-                        a += [f.geometry().exportToWkt()]
+                        a += [f.geometry().asWkt()]
                     else:
                         a += [None]
                 data += [a]

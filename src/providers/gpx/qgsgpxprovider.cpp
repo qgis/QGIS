@@ -210,7 +210,7 @@ bool QgsGPXProvider::addFeatures( QgsFeatureList &flist, Flags flags )
 
 bool QgsGPXProvider::addFeature( QgsFeature &f, Flags )
 {
-  QByteArray wkb( f.geometry().exportToWkb() );
+  QByteArray wkb( f.geometry().asWkb() );
   const char *geo = wkb.constData();
   QgsWkbTypes::Type wkbType = f.geometry().wkbType();
   bool success = false;

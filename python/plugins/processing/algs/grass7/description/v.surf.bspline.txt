@@ -1,11 +1,11 @@
 v.surf.bspline
 Bicubic or bilinear spline interpolation with Tykhonov regularization.
 Vector (v.*)
-ParameterVector|input|Input points layer|-1|False
-ParameterNumber|ew_step|Length of each spline step in the east-west direction|None|None|4
-ParameterNumber|ns_step|Length of each spline step in the north-south direction|None|None|4
-ParameterSelection|method|Spline interpolation algorithm|bilinear;bicubic
-ParameterNumber|lambda_i|Tykhonov regularization parameter (affects smoothing)|None|None|0.01
-ParameterTableField|column|Attribute table column with values to interpolate|input|-1|False
-ParameterSelection|layer|layer|1;0
-OutputRaster|raster_output|Interpolated spline
+QgsProcessingParameterVectorLayer|input|Input points layer|-1|None|False
+QgsProcessingParameterNumber|ew_step|Length of each spline step in the east-west direction|QgsProcessingParameterNumber.Double|4|False|None|None
+QgsProcessingParameterNumber|ns_step|Length of each spline step in the north-south direction|QgsProcessingParameterNumber.Double|4|False|None|None
+QgsProcessingParameterEnum|method|Spline interpolation algorithm|bilinear;bicubic
+QgsProcessingParameterNumber|lambda_i|Tykhonov regularization parameter (affects smoothing)|QgsProcessingParameterNumber.Double|0.01|False|None|None
+QgsProcessingParameterField|column|Attribute table column with values to interpolate|None|input|-1|False|False
+QgsProcessingParameterEnum|layer|layer|1;0
+QgsProcessingParameterRasterDestination|raster_output|Interpolated spline

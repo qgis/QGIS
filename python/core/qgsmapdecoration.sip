@@ -24,14 +24,14 @@ class QgsMapDecoration
 
     QgsMapDecoration();
 %Docstring
- Constructor for QgsMapDecoration.
+Constructor for QgsMapDecoration.
 %End
 
     virtual ~QgsMapDecoration();
 
     virtual void render( const QgsMapSettings &mapSettings, QgsRenderContext &context ) = 0;
 %Docstring
- Renders a map decoration.
+Renders a map decoration.
 %End
 
 };

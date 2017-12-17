@@ -47,6 +47,7 @@ class QgsLayoutPagePropertiesWidget : public QgsLayoutItemBaseWidget, private Ui
     void orientationChanged( int index );
     void updatePageSize();
     void setToCustomSize();
+    void symbolChanged();
 
   private:
 

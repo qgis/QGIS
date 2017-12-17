@@ -226,7 +226,7 @@ QStringList QgsOracleConn::pkCandidates( QString ownerName, QString viewName )
   if ( !exec( qry, QString( "SELECT column_name FROM all_tab_columns WHERE owner=? AND table_name=? ORDER BY column_id" ),
               QVariantList() << ownerName << viewName ) )
   {
-    QgsMessageLog::logMessage( tr( "SQL:%1 [owner:%2 table_name:%3]\nerror:%4\n" ).arg( qry.lastQuery(), qry.lastError().text(), ownerName, viewName ), tr( "Oracle" ) );
+    QgsMessageLog::logMessage( tr( "SQL: %1 [owner: %2 table_name: %3]\nerror: %4\n" ).arg( qry.lastQuery(), qry.lastError().text(), ownerName, viewName ), tr( "Oracle" ) );
     return cols;
   }
 
@@ -275,7 +275,7 @@ bool QgsOracleConn::tableInfo( bool geometryColumnsOnly, bool userTablesOnly, bo
   QSqlQuery qry( mDatabase );
   if ( !exec( qry, sql, QVariantList() ) )
   {
-    QgsMessageLog::logMessage( tr( "Querying available tables failed.\nSQL:%1\nerror:%2\n" ).arg( qry.lastQuery() ).arg( qry.lastError().text() ), tr( "Oracle" ) );
+    QgsMessageLog::logMessage( tr( "Querying available tables failed.\nSQL: %1\nerror: %2\n" ).arg( qry.lastQuery() ).arg( qry.lastError().text() ), tr( "Oracle" ) );
     return false;
   }
 
@@ -484,7 +484,7 @@ void QgsOracleConn::retrieveLayerTypes( QgsOracleLayerProperty &layerProperty, b
               .arg( table )
               .arg( where.isEmpty() ? "" : QString( " AND (%1)" ).arg( where ) ), QVariantList() ) )
   {
-    QgsMessageLog::logMessage( tr( "SQL:%1\nerror:%2\n" )
+    QgsMessageLog::logMessage( tr( "SQL: %1\nerror: %2\n" )
                                .arg( qry.lastQuery() )
                                .arg( qry.lastError().text() ),
                                tr( "Oracle" ) );

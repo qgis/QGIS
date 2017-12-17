@@ -1,11 +1,11 @@
 Diffusive Hillslope Evolution (ADI)
 sim_qm_of_esp
-ParameterRaster|DEM|Elevation|False
-ParameterRaster|CHANNELS|Channel Mask|True
-ParameterBoolean|UPDATE|Update|True
-ParameterNumber|KAPPA|Diffusivity [m2/kyr]|0.0|None|10.0
-ParameterNumber|DURATION|Simulation Time [kyr]|0.0|None|10000.0
-ParameterSelection|TIMESTEP|Time Step|[0] user defined;[1] automatically|1
-ParameterNumber|DTIME|Time Step [kyr]|0.0|None|1000.0
-OutputRaster|MODEL|Modelled Elevation
-OutputRaster|DIFF|Elevation Difference
+QgsProcessingParameterRasterLayer|DEM|Elevation|None|False
+QgsProcessingParameterRasterLayer|CHANNELS|Channel Mask|None|True
+QgsProcessingParameterBoolean|UPDATE|Update|True
+QgsProcessingParameterNumber|KAPPA|Diffusivity [m2/kyr]|QgsProcessingParameterNumber.Double|10.0|False|0.0|None
+QgsProcessingParameterNumber|DURATION|Simulation Time [kyr]|QgsProcessingParameterNumber.Double|10000.0|False|0.0|None
+QgsProcessingParameterEnum|TIMESTEP|Time Step|[0] user defined;[1] automatically|False|1
+QgsProcessingParameterNumber|DTIME|Time Step [kyr]|QgsProcessingParameterNumber.Double|1000.0|False|0.0|None
+QgsProcessingParameterRasterDestination|MODEL|Modelled Elevation
+QgsProcessingParameterRasterDestination|DIFF|Elevation Difference

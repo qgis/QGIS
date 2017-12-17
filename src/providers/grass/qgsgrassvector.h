@@ -28,9 +28,9 @@ class GRASS_LIB_EXPORT QgsGrassVectorLayer : public QObject
 {
     Q_OBJECT
   public:
-    QgsGrassVectorLayer( QObject *parent = 0 );
+    QgsGrassVectorLayer( QObject *parent = nullptr );
 
-    QgsGrassVectorLayer( const QgsGrassObject &grassObject, int number, struct field_info *fieldInfo, QObject *parent = 0 );
+    QgsGrassVectorLayer( const QgsGrassObject &grassObject, int number, struct field_info *fieldInfo, QObject *parent = nullptr );
 
     QgsGrassObject grassObject() const { return mGrassObject; }
 
@@ -78,9 +78,9 @@ class GRASS_LIB_EXPORT QgsGrassVector : public QObject
     Q_OBJECT
   public:
     QgsGrassVector( const QString &gisdbase, const QString &location, const QString &mapset,
-                    const QString &name, QObject *parent = 0 );
+                    const QString &name, QObject *parent = nullptr );
 
-    QgsGrassVector( const QgsGrassObject &grassObject, QObject *parent = 0 );
+    QgsGrassVector( const QgsGrassObject &grassObject, QObject *parent = nullptr );
 
     //! Open header and read layers/types
     bool openHead();

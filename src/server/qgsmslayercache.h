@@ -58,7 +58,7 @@ class QgsMSLayerCache: public QObject
     Q_OBJECT
   public:
     static QgsMSLayerCache *instance();
-    ~QgsMSLayerCache();
+    ~QgsMSLayerCache() override;
 
     /**
       * Set the maximum number of layers in cache.

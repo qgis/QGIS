@@ -25,6 +25,16 @@ QgsPoint3DSymbolWidget::QgsPoint3DSymbolWidget( QWidget *parent )
 {
   setupUi( this );
 
+  spinTX->setClearValue( 0.0 );
+  spinTY->setClearValue( 0.0 );
+  spinTZ->setClearValue( 0.0 );
+  spinSX->setClearValue( 1.0 );
+  spinSY->setClearValue( 1.0 );
+  spinSZ->setClearValue( 1.0 );
+  spinRX->setClearValue( 0.0 );
+  spinRY->setClearValue( 0.0 );
+  spinRZ->setClearValue( 0.0 );
+
   cboShape->addItem( tr( "Sphere" ), QgsPoint3DSymbol::Sphere );
   cboShape->addItem( tr( "Cylinder" ), QgsPoint3DSymbol::Cylinder );
   cboShape->addItem( tr( "Cube" ), QgsPoint3DSymbol::Cube );
@@ -36,6 +46,7 @@ QgsPoint3DSymbolWidget::QgsPoint3DSymbolWidget( QWidget *parent )
   setSymbol( QgsPoint3DSymbol() );
   onShapeChanged();
 
+  connect( cboAltClamping, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPoint3DSymbolWidget::changed );
   connect( cboShape, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPoint3DSymbolWidget::onShapeChanged );
   QList<QDoubleSpinBox *> spinWidgets;
   spinWidgets << spinRadius << spinTopRadius << spinBottomRadius << spinMinorRadius << spinSize << spinLength;
@@ -86,6 +97,8 @@ void QgsPoint3DSymbolWidget::onOverwriteMaterialChecked( int state )
 
 void QgsPoint3DSymbolWidget::setSymbol( const QgsPoint3DSymbol &symbol )
 {
+  cboAltClamping->setCurrentIndex( ( int ) symbol.altitudeClamping() );
+
   QVariantMap vm = symbol.shapeProperties();
   int index = cboShape->findData( symbol.shape() );
   cboShape->setCurrentIndex( index != -1 ? index : 1 );  // use cylinder by default if shape is not set
@@ -196,6 +209,7 @@ QgsPoint3DSymbol QgsPoint3DSymbolWidget::symbol() const
   tr.rotate( rot );
 
   QgsPoint3DSymbol sym;
+  sym.setAltitudeClamping( ( AltitudeClamping ) cboAltClamping->currentIndex() );
   sym.setShape( ( QgsPoint3DSymbol::Shape ) cboShape->itemData( cboShape->currentIndex() ).toInt() );
   sym.setShapeProperties( vm );
   sym.setMaterial( widgetMaterial->material() );

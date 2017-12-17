@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
 
 __author__ = 'Alexander Bruy'
 __date__ = 'April 2014'
@@ -60,6 +59,9 @@ class PointsToPaths(QgisAlgorithm):
 
     def group(self):
         return self.tr('Vector creation')
+
+    def groupId(self):
+        return 'vectorcreation'
 
     def __init__(self):
         super().__init__()
@@ -133,7 +135,7 @@ class PointsToPaths(QgisAlgorithm):
             if not f.hasGeometry():
                 continue
 
-            point = f.geometry().geometry().clone()
+            point = f.geometry().constGet().clone()
             if group_field_index >= 0:
                 group = f.attributes()[group_field_index]
             else:

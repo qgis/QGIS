@@ -12,6 +12,7 @@ class QgsMultiLineString: QgsMultiCurve
 {
 %Docstring
  Multi line string geometry collection.
+
 .. versionadded:: 2.10
 %End
 
@@ -29,11 +30,11 @@ class QgsMultiLineString: QgsMultiCurve
 
     virtual bool fromWkt( const QString &wkt );
 
-    virtual QDomElement asGML2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const;
+    virtual QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const;
 
-    virtual QDomElement asGML3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const;
+    virtual QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const;
 
-    virtual QString asJSON( int precision = 17 ) const;
+    virtual QString asJson( int precision = 17 ) const;
 
     virtual bool addGeometry( QgsAbstractGeometry *g /Transfer/ );
 
@@ -43,12 +44,13 @@ class QgsMultiLineString: QgsMultiCurve
     virtual QgsMultiCurve *toCurveType() const /Factory/;
 
 %Docstring
- Returns the geometry converted to the more generic curve type QgsMultiCurve
+Returns the geometry converted to the more generic curve type QgsMultiCurve
+
 :return: the converted geometry. Caller takes ownership*
- :rtype: QgsMultiCurve
 %End
 
   protected:
+    virtual QgsMultiLineString *createEmptyWithSameType() const /Factory/;
 
     virtual bool wktOmitChildType() const;
 

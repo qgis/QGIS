@@ -1,14 +1,13 @@
 i.landsat.acca
 Performs Landsat TM/ETM+ Automatic Cloud Cover Assessment (ACCA).
 Imagery (i.*)
-ParameterMultipleInput|rasters|Landsat input rasters|3|False
-ParameterNumber|b56composite|B56composite (step 6)|0|None|225|True
-ParameterNumber|b45ratio|B45ratio: Desert detection (step 10)|0|None|1|True
-ParameterNumber|histogram|Number of classes in the cloud temperature histogram|0|None|100|True
-*ParameterBoolean|-5|Data is Landsat-5 TM|False
-*ParameterBoolean|-f|Apply post-processing filter to remove small holes|False
-*ParameterBoolean|-x|Always use cloud signature (step 14)|False
-*ParameterBoolean|-2|Bypass second-pass processing, and merge warm (not ambiguous) and cold clouds|False
-*ParameterBoolean|-s|Include a category for cloud shadows|False
-OutputRaster|output|ACCA Raster
-
+QgsProcessingParameterMultipleLayers|rasters|Landsat input rasters|3|None|False
+QgsProcessingParameterNumber|b56composite|B56composite (step 6)|QgsProcessingParameterNumber.Double|225.0|True|0.0|None
+QgsProcessingParameterNumber|b45ratio|B45ratio: Desert detection (step 10)|QgsProcessingParameterNumber.Double|1.0|True|0.0|None
+QgsProcessingParameterNumber|histogram|Number of classes in the cloud temperature histogram|QgsProcessingParameterNumber.Integer|100|True|0|None
+*QgsProcessingParameterBoolean|-5|Data is Landsat-5 TM|False
+*QgsProcessingParameterBoolean|-f|Apply post-processing filter to remove small holes|False
+*QgsProcessingParameterBoolean|-x|Always use cloud signature (step 14)|False
+*QgsProcessingParameterBoolean|-2|Bypass second-pass processing, and merge warm (not ambiguous) and cold clouds|False
+*QgsProcessingParameterBoolean|-s|Include a category for cloud shadows|False
+QgsProcessingParameterRasterDestination|output|ACCA Raster

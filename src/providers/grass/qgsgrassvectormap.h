@@ -49,7 +49,7 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
     };
 
     QgsGrassVectorMap( const QgsGrassObject &grassObject );
-    ~QgsGrassVectorMap();
+    ~QgsGrassVectorMap() override;
 
     QgsGrassObject grassObject() const { return mGrassObject; }
     struct Map_info *map() { return mMap; }
@@ -192,7 +192,7 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
     QDateTime mLastAttributesModified;
     // when attributes are changed
     // map header
-    struct  Map_info *mMap;
+    struct  Map_info *mMap = nullptr;
     // Is 3D, has z coordinates
     bool mIs3d;
     // Vector layers

@@ -36,41 +36,56 @@ class QgsDemHeightMapGenerator;
 class _3D_EXPORT QgsDemTerrainGenerator : public QgsTerrainGenerator
 {
   public:
-    QgsDemTerrainGenerator();
-    ~QgsDemTerrainGenerator();
+    //! Constructor for QgsDemTerrainGenerator
+    QgsDemTerrainGenerator() = default;
+    ~QgsDemTerrainGenerator() override;
 
     //! Sets raster layer with elevation model to be used for terrain generation
     void setLayer( QgsRasterLayer *layer );
     //! Returns raster layer with elevation model to be used for terrain generation
     QgsRasterLayer *layer() const;
 
+    //! Sets CRS of the terrain
+    void setCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context );
+
     //! Sets resolution of the generator (how many elevation samples on one side of a terrain tile)
     void setResolution( int resolution ) { mResolution = resolution; updateGenerator(); }
     //! Returns resolution of the generator (how many elevation samples on one side of a terrain tile)
     int resolution() const { return mResolution; }
 
+    //! Sets skirt height (in world units). Skirts at the edges of terrain tiles help hide cracks between adjacent tiles.
+    void setSkirtHeight( float skirtHeight ) { mSkirtHeight = skirtHeight; }
+    //! Returns skirt height (in world units). Skirts at the edges of terrain tiles help hide cracks between adjacent tiles.
+    float skirtHeight() const { return mSkirtHeight; }
+
     //! Returns height map generator object - takes care of extraction of elevations from the layer)
     QgsDemHeightMapGenerator *heightMapGenerator() { return mHeightMapGenerator; }
 
-    virtual QgsTerrainGenerator *clone() const override SIP_FACTORY;
+    QgsTerrainGenerator *clone() const override SIP_FACTORY;
     Type type() const override;
     QgsRectangle extent() const override;
     float heightAt( double x, double y, const Qgs3DMapSettings &map ) const override;
-    virtual void writeXml( QDomElement &elem ) const override;
-    virtual void readXml( const QDomElement &elem ) override;
-    virtual void resolveReferences( const QgsProject &project ) override;
+    void writeXml( QDomElement &elem ) const override;
+    void readXml( const QDomElement &elem ) override;
+    void resolveReferences( const QgsProject &project ) override;
 
-    virtual QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override SIP_FACTORY;
+    QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override SIP_FACTORY;
 
   private:
     void updateGenerator();
 
     QgsDemHeightMapGenerator *mHeightMapGenerator = nullptr;
 
+    QgsCoordinateReferenceSystem mCrs;
+
+    QgsCoordinateTransformContext mTransformContext;
+
     //! source layer for heights
     QgsMapLayerRef mLayer;
     //! how many vertices to place on one side of the tile
-    int mResolution;
+    int mResolution = 16;
+    //! height of the "skirts" at the edges of tiles to hide cracks between adjacent cracks
+    float mSkirtHeight = 10.f;
 };
 
 

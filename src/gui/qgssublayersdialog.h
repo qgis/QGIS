@@ -44,8 +44,6 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
      */
     struct LayerDefinition
     {
-      LayerDefinition() {}
-
       int layerId = -1 ;        //!< Identifier of the layer (one unique layer id may have multiple types though)
       QString layerName;  //!< Name of the layer (not necessarily unique)
       int count = -1 ;          //!< Number of features (might be unused)
@@ -58,12 +56,13 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
      */
     typedef QList<QgsSublayersDialog::LayerDefinition> LayerDefinitionList;
 
+    //! Constructor for QgsSublayersDialog
     QgsSublayersDialog( ProviderType providerType,
                         const QString &name,
                         QWidget *parent SIP_TRANSFERTHIS = nullptr,
-                        Qt::WindowFlags fl = 0 );
+                        Qt::WindowFlags fl = nullptr );
 
-    ~QgsSublayersDialog();
+    ~QgsSublayersDialog() override;
 
     /**
      * Populate the table with layers
@@ -102,7 +101,7 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
     int countColumn() const { return mShowCount ? 2 : -1; }
 
   public slots:
-    int exec();
+    int exec() override;
 
   protected:
     QString mName;

@@ -20,11 +20,15 @@
 #include <qgsapplication.h>
 #include "qgseditorwidgetwrapper.h"
 #include <editorwidgets/qgsrelationreferencewidget.h>
+#include <editorwidgets/qgsrelationreferencewidgetwrapper.h>
 #include <qgsproject.h>
 #include <qgsattributeform.h>
 #include <qgsrelationmanager.h>
 #include <attributetable/qgsattributetablefiltermodel.h>
+#include "qgsfeaturelistcombobox.h"
+#include "qgsfeaturefiltermodel.h"
 #include "qgsgui.h"
+#include "qgsmapcanvas.h"
 
 class TestQgsRelationReferenceWidget : public QObject
 {
@@ -41,6 +45,7 @@ class TestQgsRelationReferenceWidget : public QObject
     void testChainFilter();
     void testChainFilterRefreshed();
     void testChainFilterDeleteForeignKey();
+    void testInvalidRelation();
 
   private:
     std::unique_ptr<QgsVectorLayer> mLayer1;
@@ -77,7 +82,7 @@ void TestQgsRelationReferenceWidget::init()
   mRelation->setReferencedLayer( mLayer2->id() );
   mRelation->addFieldPair( QStringLiteral( "fk" ), QStringLiteral( "pk" ) );
   QVERIFY( mRelation->isValid() );
-  QgsProject::instance()->relationManager()->addRelation( *mRelation.get() );
+  QgsProject::instance()->relationManager()->addRelation( *mRelation );
 
   // add features
   QgsFeature ft0( mLayer1->fields() );
@@ -179,12 +184,17 @@ void TestQgsRelationReferenceWidget::testChainFilter()
   cbs[2]->setCurrentIndex( cbs[2]->findText( QStringLiteral( "brides" ) ) );
   cbs[1]->setCurrentIndex( cbs[1]->findText( QStringLiteral( "diameter" ) ) );
 
+  QEventLoop loop;
+  connect( qobject_cast<QgsFeatureFilterModel *>( w.mComboBox->model() ), &QgsFeatureFilterModel::filterJobCompleted, &loop, &QEventLoop::quit );
+  loop.exec();
+
   // combobox should propose NULL, 10 and 11 because the filter is now:
   // "material" == 'iron'
   QCOMPARE( w.mComboBox->count(), 3 );
 
   // if there's no filter at all, all features' id should be proposed
   cbs[0]->setCurrentIndex( cbs[0]->findText( QStringLiteral( "material" ) ) );
+  loop.exec();
   QCOMPARE( w.mComboBox->count(), 4 );
 }
 
@@ -264,6 +274,17 @@ void TestQgsRelationReferenceWidget::testChainFilterDeleteForeignKey()
 
   QCOMPARE( cbs[2]->currentText(), QString( "raccord" ) );
   QCOMPARE( cbs[2]->isEnabled(), false );
+}
+
+void TestQgsRelationReferenceWidget::testInvalidRelation()
+{
+  QgsVectorLayer vl( QStringLiteral( "LineString?crs=epsg:3111&field=pk:int&field=fk:int" ), QStringLiteral( "vl1" ), QStringLiteral( "memory" ) );
+  QgsMapCanvas canvas;
+  QgsRelationReferenceWidget editor( new QWidget() );
+
+  // initWidget with an invalid relation
+  QgsRelationReferenceWidgetWrapper ww( &vl, 10, &editor, &canvas, nullptr, nullptr );
+  ww.initWidget( nullptr );
 }
 
 QGSTEST_MAIN( TestQgsRelationReferenceWidget )

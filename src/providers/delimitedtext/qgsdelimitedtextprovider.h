@@ -77,24 +77,24 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
 
     explicit QgsDelimitedTextProvider( const QString &uri = QString() );
 
-    virtual ~QgsDelimitedTextProvider();
+    ~QgsDelimitedTextProvider() override;
 
     /* Implementation of functions from QgsVectorDataProvider */
 
-    virtual QgsAbstractFeatureSource *featureSource() const override;
+    QgsAbstractFeatureSource *featureSource() const override;
 
     /**
      * Returns the permanent storage type for this layer as a friendly name.
      */
-    virtual QString storageType() const override;
+    QString storageType() const override;
 
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) const override;
+    QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) const override;
 
-    virtual QgsWkbTypes::Type wkbType() const override;
+    QgsWkbTypes::Type wkbType() const override;
 
-    virtual long featureCount() const override;
+    long featureCount() const override;
 
-    virtual QgsFields fields() const override;
+    QgsFields fields() const override;
 
     /**
      * Returns a bitmask containing the supported capabilities
@@ -102,13 +102,13 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
      * a spatial filter is active on this provider, so it may
      * be prudent to check this value per intended operation.
      */
-    virtual QgsVectorDataProvider::Capabilities capabilities() const override;
+    QgsVectorDataProvider::Capabilities capabilities() const override;
 
     /**
      * Creates a spatial index on the data
      * \returns indexCreated  Returns true if a spatial index is created
      */
-    virtual bool createSpatialIndex() override;
+    bool createSpatialIndex() override;
 
     /* Implementation of functions from QgsDataProvider */
 
@@ -141,20 +141,20 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
      */
     QString description() const override;
 
-    virtual QgsRectangle extent() const override;
+    QgsRectangle extent() const override;
     bool isValid() const override;
 
-    virtual QgsCoordinateReferenceSystem crs() const override;
+    QgsCoordinateReferenceSystem crs() const override;
 
     /**
      * Set the subset string used to create a subset of features in
      * the layer.
      */
-    virtual bool setSubsetString( const QString &subset, bool updateFeatureCount = true ) override;
+    bool setSubsetString( const QString &subset, bool updateFeatureCount = true ) override;
 
-    virtual bool supportsSubsetString() const override { return true; }
+    bool supportsSubsetString() const override { return true; }
 
-    virtual QString subsetString() const override
+    QString subsetString() const override
     {
       return mSubsetString;
     }
@@ -217,7 +217,7 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     mutable bool mValid = false;
 
     //! Text file
-    QgsDelimitedTextFile *mFile = nullptr;
+    std::unique_ptr< QgsDelimitedTextFile > mFile;
 
     // Fields
     GeomRepresentationType mGeomRep = GeomNone;
@@ -249,7 +249,7 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
 
     QString mSubsetString;
     mutable QString mCachedSubsetString;
-    QgsExpression *mSubsetExpression = nullptr;
+    std::unique_ptr< QgsExpression > mSubsetExpression;
     bool mBuildSubsetIndex = true;
     mutable QList<quintptr> mSubsetIndex;
     mutable bool mUseSubsetIndex = false;
@@ -275,7 +275,7 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     bool mBuildSpatialIndex = false;
     mutable bool mUseSpatialIndex;
     mutable bool mCachedUseSpatialIndex;
-    mutable QgsSpatialIndex *mSpatialIndex = nullptr;
+    mutable std::unique_ptr< QgsSpatialIndex > mSpatialIndex;
 
     friend class QgsDelimitedTextFeatureIterator;
     friend class QgsDelimitedTextFeatureSource;

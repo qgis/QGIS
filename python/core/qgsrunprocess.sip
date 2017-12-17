@@ -14,9 +14,9 @@
 class QgsRunProcess: QObject /NoDefaultCtors/
 {
 %Docstring
- A class that executes an external program/script.
- It can optionally capture the standard output and error from the
- process and displays them in a dialog box.
+A class that executes an external program/script.
+It can optionally capture the standard output and error from the
+process and displays them in a dialog box.
 %End
 
 %TypeHeaderCode
@@ -25,9 +25,6 @@ class QgsRunProcess: QObject /NoDefaultCtors/
   public:
 
     static QgsRunProcess *create( const QString &action, bool capture ) /Factory/;
-%Docstring
- :rtype: QgsRunProcess
-%End
 
   public slots:
     void stdoutAvailable();

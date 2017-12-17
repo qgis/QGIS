@@ -18,7 +18,11 @@ class QgsComposerMultiFrameCommand: QUndoCommand
 #include "qgscomposermultiframecommand.h"
 %End
   public:
+
     QgsComposerMultiFrameCommand( QgsComposerMultiFrame *multiFrame, const QString &text, QUndoCommand *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsComposerMultiFrameCommand
+%End
 
     virtual void undo();
 
@@ -29,24 +33,14 @@ class QgsComposerMultiFrameCommand: QUndoCommand
     void saveAfterState();
 
     QDomDocument previousState() const;
-%Docstring
- :rtype: QDomDocument
-%End
     QDomDocument afterState() const;
-%Docstring
- :rtype: QDomDocument
-%End
 
     bool containsChange() const;
 %Docstring
 Returns true if previous state and after state are valid and different
- :rtype: bool
 %End
 
     const QgsComposerMultiFrame *multiFrame() const;
-%Docstring
- :rtype: QgsComposerMultiFrame
-%End
 
   protected:
 
@@ -56,17 +50,14 @@ Returns true if previous state and after state are valid and different
     void saveState( QDomDocument &stateDoc );
     void restoreState( QDomDocument &stateDoc );
     bool checkFirstRun();
-%Docstring
- :rtype: bool
-%End
 };
 
 class QgsComposerMultiFrameMergeCommand: QgsComposerMultiFrameCommand
 {
 %Docstring
- A composer command that merges together with other commands having the same context (=id)
- for multi frame items. Keeps the oldest previous state and uses the newest after state.
- The purpose is to avoid too many micro changes in the history*
+A composer command that merges together with other commands having the same context (=id)
+for multi frame items. Keeps the oldest previous state and uses the newest after state.
+The purpose is to avoid too many micro changes in the history*
 %End
 
 %TypeHeaderCode

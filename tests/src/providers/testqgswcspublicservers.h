@@ -43,7 +43,7 @@ class TestQgsWcsPublicServers: public QObject
     };
     struct Server
     {
-      Server() {}
+      Server() = default;
       Server( const QString &u ) : url( u ) {}
       QString url; // URL
       QString description; // notes
@@ -61,7 +61,7 @@ class TestQgsWcsPublicServers: public QObject
 
     TestQgsWcsPublicServers( const QString &cacheDirPath, int maxCoverages, const QString &server = QString(), const QString &coverage = QString(), const QString &version = QString(), bool force = false );
 
-    ~TestQgsWcsPublicServers();
+    ~TestQgsWcsPublicServers() override;
 
     void init();
     void test();

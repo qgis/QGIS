@@ -31,7 +31,7 @@ class QgsResidualPlotItem: public QgsComposerItem
     explicit QgsResidualPlotItem( QgsComposition *c );
 
     //! \brief Reimplementation of QCanvasItem::paint
-    virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget ) override;
+    void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget ) override;
 
     void setGCPList( const QgsGCPList &list ) { mGCPList = list; }
     QgsGCPList GCPList() const { return mGCPList; }
@@ -42,8 +42,8 @@ class QgsResidualPlotItem: public QgsComposerItem
     void setConvertScaleToMapUnits( bool convert ) { mConvertScaleToMapUnits = convert; }
     bool convertScaleToMapUnits() const { return mConvertScaleToMapUnits; }
 
-    virtual bool writeXml( QDomElement &elem, QDomDocument &doc ) const override;
-    virtual bool readXml( const QDomElement &itemElem, const QDomDocument &doc ) override;
+    bool writeXml( QDomElement &elem, QDomDocument &doc ) const override;
+    bool readXml( const QDomElement &itemElem, const QDomDocument &doc ) override;
 
   private:
     //gcp list

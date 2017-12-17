@@ -15,8 +15,8 @@ class QgsProcessing
 {
 %Docstring
 
- Contains enumerations and other constants for use in processing algorithms
- and parameters.
+Contains enumerations and other constants for use in processing algorithms
+and parameters.
 
 .. versionadded:: 3.0
 %End

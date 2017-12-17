@@ -19,6 +19,7 @@
 #include "qgscoordinatetransform.h"
 #include "qgsmapcanvas.h"
 #include "qgsexception.h"
+#include "qgsproject.h"
 
 QgsGpsMarker::QgsGpsMarker( QgsMapCanvas *mapCanvas )
   : QgsMapCanvasItem( mapCanvas )
@@ -42,7 +43,7 @@ void QgsGpsMarker::setCenter( const QgsPointXY &point )
   //transform to map crs
   if ( mMapCanvas )
   {
-    QgsCoordinateTransform t( mWgs84CRS, mMapCanvas->mapSettings().destinationCrs() );
+    QgsCoordinateTransform t( mWgs84CRS, mMapCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
     try
     {
       mCenter = t.transform( point );

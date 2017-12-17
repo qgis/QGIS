@@ -13,7 +13,7 @@
 class QgsMessageViewer: QDialog, QgsMessageOutput
 {
 %Docstring
- A generic message view for displaying QGIS messages.
+A generic message view for displaying QGIS messages.
 %End
 
 %TypeHeaderCode
@@ -25,11 +25,15 @@ class QgsMessageViewer: QDialog, QgsMessageOutput
 
     virtual void setMessage( const QString &message, MessageType msgType );
 
+
     virtual void appendMessage( const QString &message );
+
 
     virtual void showMessage( bool blocking = true );
 
+
     virtual void setTitle( const QString &title );
+
 
 
     void setMessageAsHtml( const QString &msg );
@@ -38,9 +42,6 @@ class QgsMessageViewer: QDialog, QgsMessageOutput
     void setCheckBoxVisible( bool visible );
     void setCheckBoxState( Qt::CheckState state );
     Qt::CheckState checkBoxState();
-%Docstring
- :rtype: Qt.CheckState
-%End
     void setCheckBoxQgsSettingsLabel( const QString &label );
 
 };

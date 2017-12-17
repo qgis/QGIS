@@ -84,7 +84,7 @@ void TestQgsComposerGroup::initTestCase()
   mItem2 = new QgsComposerLabel( mComposition );
   mComposition->addItem( mItem2 );
 
-  mGroup = 0;
+  mGroup = nullptr;
 
   mReport = QStringLiteral( "<h1>Composer Grouped Item Tests</h1>\n" );
 }
@@ -136,7 +136,7 @@ void TestQgsComposerGroup::ungroup()
   //test ungrouping items
 
   //simple tests - check that we don't crash
-  mComposition->ungroupItems( 0 ); //no item
+  mComposition->ungroupItems( nullptr ); //no item
 
   //ungroup mGroup
   QList<QgsComposerItem *> ungroupedItems;

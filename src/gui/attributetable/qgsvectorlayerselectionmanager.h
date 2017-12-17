@@ -41,21 +41,21 @@ class GUI_EXPORT QgsVectorLayerSelectionManager : public QgsIFeatureSelectionMan
      *
      * \returns See description
      */
-    virtual int selectedFeatureCount() override;
+    int selectedFeatureCount() override;
 
     /**
      * Select features
      *
      * \param ids            Feature ids to select
      */
-    virtual void select( const QgsFeatureIds &ids ) override;
+    void select( const QgsFeatureIds &ids ) override;
 
     /**
      * Deselect features
      *
      * \param ids            Feature ids to deselect
      */
-    virtual void deselect( const QgsFeatureIds &ids ) override;
+    void deselect( const QgsFeatureIds &ids ) override;
 
     /**
      * Change selection to the new set of features. Dismisses the current selection.
@@ -64,7 +64,7 @@ class GUI_EXPORT QgsVectorLayerSelectionManager : public QgsIFeatureSelectionMan
      *
      * \param ids   The ids which will be the new selection
      */
-    virtual void setSelectedFeatures( const QgsFeatureIds &ids ) override;
+    void setSelectedFeatures( const QgsFeatureIds &ids ) override;
 
     /**
      * Return reference to identifiers of selected features
@@ -72,7 +72,7 @@ class GUI_EXPORT QgsVectorLayerSelectionManager : public QgsIFeatureSelectionMan
      * \returns A list of QgsFeatureIds
      * \see selectedFeatures()
      */
-    virtual const QgsFeatureIds &selectedFeatureIds() const override;
+    const QgsFeatureIds &selectedFeatureIds() const override;
 
   private:
     QgsVectorLayer *mLayer = nullptr;

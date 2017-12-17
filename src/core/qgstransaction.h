@@ -40,7 +40,7 @@ class QgsVectorLayer;
  * and all layers need to be in read-only mode for a transaction to be committed
  * or rolled back.
  *
- * Layers cannot only be included in one transaction at a time.
+ * Layers can only be included in one transaction at a time.
  *
  * When editing layers which are part of a transaction group, all changes are
  * sent directly to the data provider (bypassing the undo/redo stack), and the
@@ -52,6 +52,7 @@ class QgsVectorLayer;
  *
  * Edits on features can get rejected if another conflicting transaction is active.
  */
+
 class CORE_EXPORT QgsTransaction : public QObject SIP_ABSTRACT
 {
     Q_OBJECT
@@ -65,20 +66,13 @@ class CORE_EXPORT QgsTransaction : public QObject SIP_ABSTRACT
     static QgsTransaction *create( const QString &connString, const QString &providerKey ) SIP_FACTORY;
 
     /**
-     * Create a transaction which includes the layers specified with
-     * \a layerIds.
+     * Create a transaction which includes the \a layers.
      * All layers are expected to have the same connection string and data
      * provider.
      */
-    static QgsTransaction *create( const QStringList &layerIds ) SIP_FACTORY;
+    static QgsTransaction *create( const QSet<QgsVectorLayer *> &layers ) SIP_FACTORY;
 
-    virtual ~QgsTransaction();
-
-    /**
-     * Add the layer with \a layerId to the transaction. The layer must not be
-     * in edit mode and the connection string must match.
-     */
-    bool addLayer( const QString &layerId );
+    ~QgsTransaction() override;
 
     /**
      * Add the \a layer to the transaction. The layer must not be
@@ -109,13 +103,18 @@ class CORE_EXPORT QgsTransaction : public QObject SIP_ABSTRACT
     bool rollback( QString &errorMsg SIP_OUT );
 
     /**
-     * Execute the \a sql string. The result must not be a tuple, so running a
-     * ``SELECT`` query will return an error.
+     * Execute the \a sql string.
+     *
+     * \param sql The sql query to execute
+     * \param error The error message
+     * \param isDirty Flag to indicate if the underlying data will be modified
+     *
+     * \returns true if everything is OK, false otherwise
      */
-    virtual bool executeSql( const QString &sql, QString &error SIP_OUT ) = 0;
+    virtual bool executeSql( const QString &sql, QString &error SIP_OUT, bool isDirty = false ) = 0;
 
     /**
-     * Checks if a the provider of a given \a layer supports transactions.
+     * Checks if the provider of a given \a layer supports transactions.
      */
     static bool supportsTransaction( const QgsVectorLayer *layer );
 
@@ -165,13 +164,18 @@ class CORE_EXPORT QgsTransaction : public QObject SIP_ABSTRACT
      */
     void afterRollback();
 
+    /**
+     * Emitted if a sql query is executed and the underlying data is modified
+     */
+    void dirtied( const QString &sql );
+
   protected:
     QgsTransaction( const QString &connString ) SIP_SKIP;
 
     QString mConnString;
 
   private slots:
-    void onLayersDeleted( const QStringList &layerids );
+    void onLayerDeleted();
 
   private:
 

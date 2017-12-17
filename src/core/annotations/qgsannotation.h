@@ -72,7 +72,7 @@ class CORE_EXPORT QgsAnnotation : public QObject
     /**
      * Constructor for QgsAnnotation.
      */
-    QgsAnnotation( QObject *parent SIP_TRANSFERTHIS = 0 );
+    QgsAnnotation( QObject *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Clones the annotation, returning a new copy of the annotation

@@ -107,27 +107,14 @@ datasets with maximum width and height specified below.</string>
         <string>Save as</string>
        </property>
        <property name="buddy">
-        <cstring>mSaveAsLineEdit</cstring>
+        <cstring>mFilename</cstring>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QLineEdit" name="mSaveAsLineEdit">
+      <widget class="QgsFileWidget" name="mFilename">
        <property name="enabled">
         <bool>true</bool>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="mBrowseButton">
-       <property name="enabled">
-        <bool>true</bool>
-       </property>
-       <property name="text">
-        <string>Browse...</string>
        </property>
       </widget>
      </item>
@@ -717,14 +704,19 @@ datasets with maximum width and height specified below.</string>
    <header>qgsrasterpyramidsoptionswidget.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>QgsFileWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsfilewidget.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>mRawModeRadioButton</tabstop>
   <tabstop>mRenderedModeRadioButton</tabstop>
   <tabstop>mFormatComboBox</tabstop>
   <tabstop>mTileModeCheckBox</tabstop>
-  <tabstop>mSaveAsLineEdit</tabstop>
-  <tabstop>mBrowseButton</tabstop>
+  <tabstop>mFilename</tabstop>
   <tabstop>mCrsSelector</tabstop>
   <tabstop>mAddToCanvas</tabstop>
   <tabstop>mScrollArea</tabstop>

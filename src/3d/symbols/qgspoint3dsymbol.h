@@ -32,13 +32,19 @@
 class _3D_EXPORT QgsPoint3DSymbol : public QgsAbstract3DSymbol
 {
   public:
-    QgsPoint3DSymbol();
+    //! Constructor for QgsPoint3DSymbol.
+    QgsPoint3DSymbol() = default;
 
     QString type() const override { return "point"; }
     QgsAbstract3DSymbol *clone() const override SIP_FACTORY;
 
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
+
+    //! Returns method that determines altitude (whether to clamp to feature to terrain)
+    AltitudeClamping altitudeClamping() const { return mAltClamping; }
+    //! Sets method that determines altitude (whether to clamp to feature to terrain)
+    void setAltitudeClamping( AltitudeClamping altClamping ) { mAltClamping = altClamping; }
 
     //! Returns material used for shading of the symbol
     QgsPhongMaterialSettings material() const { return mMaterial; }
@@ -79,6 +85,9 @@ class _3D_EXPORT QgsPoint3DSymbol : public QgsAbstract3DSymbol
     void setTransform( const QMatrix4x4 &transform ) { mTransform = transform; }
 
   private:
+    //! how to handle altitude of vector features
+    AltitudeClamping mAltClamping = AltClampRelative;
+
     QgsPhongMaterialSettings mMaterial;  //!< Defines appearance of objects
     Shape mShape = Cylinder;  //!< What kind of shape to use
     QVariantMap mShapeProperties;  //!< Key-value dictionary of shape's properties (different keys for each shape)

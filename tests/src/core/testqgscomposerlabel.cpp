@@ -107,7 +107,7 @@ void TestQgsComposerLabel::cleanup()
 {
   mComposition->removeItem( mComposerLabel );
   delete mComposerLabel;
-  mComposerLabel = 0;
+  mComposerLabel = nullptr;
 }
 
 void TestQgsComposerLabel::evaluation()

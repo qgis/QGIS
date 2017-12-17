@@ -13,8 +13,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "sqlite3.h"
+#include <sqlite3.h>
 
+#include "qgssqliteutils.h"
 #include "qgsgeopackagedataitems.h"
 #include "qgsogrdbconnection.h"
 #include "qgslogger.h"
@@ -181,7 +182,7 @@ QList<QAction *> QgsGeoPackageCollectionItem::actions( QWidget *parent )
   }
 
   // Add table to existing DB
-  QAction *actionAddTable = new QAction( tr( "Create a new layer or table..." ), parent );
+  QAction *actionAddTable = new QAction( tr( "Create a New Layer or Table..." ), parent );
   connect( actionAddTable, &QAction::triggered, this, &QgsGeoPackageCollectionItem::addTable );
   lst.append( actionAddTable );
 
@@ -358,11 +359,11 @@ bool QgsGeoPackageCollectionItem::deleteGeoPackageRasterLayer( const QString &ur
     {
       QString baseUri = pieces.at( 1 );
       QString layerName = pieces.at( 2 );
-      sqlite3 *handle = nullptr;
-      int status = sqlite3_open_v2( baseUri.toUtf8().constData(), &handle, SQLITE_OPEN_READWRITE, nullptr );
+      sqlite3_database_unique_ptr database;
+      int status = database.open_v2( baseUri, SQLITE_OPEN_READWRITE, nullptr );
       if ( status != SQLITE_OK )
       {
-        errCause = sqlite3_errmsg( handle );
+        errCause = sqlite3_errmsg( database.get() );
       }
       else
       {
@@ -378,7 +379,7 @@ bool QgsGeoPackageCollectionItem::deleteGeoPackageRasterLayer( const QString &ur
                       layerName.toUtf8().constData(),
                       layerName.toUtf8().constData() );
         status = sqlite3_exec(
-                   handle,                              /* An open database */
+                   database.get(),                              /* An open database */
                    sql,                                 /* SQL to be evaluated */
                    nullptr,                                /* Callback function */
                    nullptr,                                /* 1st argument to callback */
@@ -395,7 +396,7 @@ bool QgsGeoPackageCollectionItem::deleteGeoPackageRasterLayer( const QString &ur
                                        tableName.toUtf8().constData(),
                                        layerName.toUtf8().constData() );
           ( void )sqlite3_exec(
-            handle,                              /* An open database */
+            database.get(),                              /* An open database */
             sql,                                 /* SQL to be evaluated */
             nullptr,                                /* Callback function */
             nullptr,                                /* 1st argument to callback */
@@ -408,7 +409,7 @@ bool QgsGeoPackageCollectionItem::deleteGeoPackageRasterLayer( const QString &ur
           char *sql = sqlite3_mprintf( "DELETE FROM gpkg_2d_gridded_coverage_ancillary WHERE tile_matrix_set_name = '%q'",
                                        layerName.toUtf8().constData() );
           ( void )sqlite3_exec(
-            handle,                              /* An open database */
+            database.get(),                              /* An open database */
             sql,                                 /* SQL to be evaluated */
             nullptr,                                /* Callback function */
             nullptr,                                /* 1st argument to callback */
@@ -420,7 +421,7 @@ bool QgsGeoPackageCollectionItem::deleteGeoPackageRasterLayer( const QString &ur
           char *sql = sqlite3_mprintf( "DELETE FROM gpkg_2d_gridded_tile_ancillary WHERE tpudt_name = '%q'",
                                        layerName.toUtf8().constData() );
           ( void )sqlite3_exec(
-            handle,                              /* An open database */
+            database.get(),                              /* An open database */
             sql,                                 /* SQL to be evaluated */
             nullptr,                                /* Callback function */
             nullptr,                                /* 1st argument to callback */
@@ -431,7 +432,7 @@ bool QgsGeoPackageCollectionItem::deleteGeoPackageRasterLayer( const QString &ur
         // Vacuum
         {
           ( void )sqlite3_exec(
-            handle,                              /* An open database */
+            database.get(),                              /* An open database */
             "VACUUM",                            /* SQL to be evaluated */
             nullptr,                                /* Callback function */
             nullptr,                                /* 1st argument to callback */
@@ -449,7 +450,6 @@ bool QgsGeoPackageCollectionItem::deleteGeoPackageRasterLayer( const QString &ur
         }
         sqlite3_free( errmsg );
       }
-      sqlite3_close( handle );
     }
   }
   else
@@ -505,21 +505,13 @@ void QgsGeoPackageCollectionItem::deleteConnection()
 void QgsGeoPackageCollectionItem::addTable()
 {
   QgsNewGeoPackageLayerDialog dialog( nullptr );
-  QFileInfo fileInfo( mPath );
-  QString connName = fileInfo.fileName();
-  QgsOgrDbConnection connection( connName, QStringLiteral( "GPKG" ) );
-  if ( ! connection.path().isEmpty() )
+  dialog.setDatabasePath( mPath );
+  dialog.setCrs( QgsProject::instance()->defaultCrsForNewLayers() );
+  dialog.setOverwriteBehavior( QgsNewGeoPackageLayerDialog::AddNewLayer );
+  dialog.lockDatabasePath();
+  if ( dialog.exec() == QDialog::Accepted )
   {
-    dialog.setDatabasePath( connection.path() );
-    dialog.setCrs( QgsProject::instance()->defaultCrsForNewLayers() );
-    if ( dialog.exec() == QDialog::Accepted )
-    {
-      refreshConnections();
-    }
-  }
-  else
-  {
-    QgsDebugMsg( QStringLiteral( "Cannot add Table: connection %1 does not exists or the path is empy!" ).arg( connName ) );
+    refreshConnections();
   }
 }
 
@@ -534,7 +526,7 @@ void QgsGeoPackageCollectionItem::addConnection()
 #endif
 
 #ifdef HAVE_GUI
-QList<QAction *> QgsGeoPackageAbstractLayerItem::actions()
+QList<QAction *> QgsGeoPackageAbstractLayerItem::actions( QWidget * )
 {
   QList<QAction *> lst;
   QAction *actionDeleteLayer = new QAction( tr( "Delete Layer '%1'..." ).arg( mName ), this );
@@ -593,7 +585,7 @@ QgsGeoPackageAbstractLayerItem::QgsGeoPackageAbstractLayerItem( QgsDataItem *par
 
 bool QgsGeoPackageAbstractLayerItem::executeDeleteLayer( QString &errCause )
 {
-  errCause = QObject::tr( "The layer <b>%1</b> cannot be deleted because the this feature is not yet implemented for this kind of layers." ).arg( mName );
+  errCause = QObject::tr( "The layer <b>%1</b> cannot be deleted because this feature is not yet implemented for this kind of layers." ).arg( mName );
   return false;
 }
 

@@ -23,7 +23,9 @@ my @lang;
 
 # script to generate a html list of the qgis application translations
 # showing the percentage finished and the names of the translators
-
+#
+# try to always use ISO 639-1 language codes
+#
 # without argument it generates html which is used in the about-dialog of the application
 # output to std-out, to be piped to doc/TRANSLATORS so it can be used in dialog
 #   scripts/tsstat.pl > doc/TRANSLATORS
@@ -62,6 +64,7 @@ my $translators= {
 	'ka' => 'Shota Murtskhvaladze, George Machitidze',
 	'km' => 'Khoem Sokhem',
 	'ko' => 'OSGeo Korean Chapter',
+	'ky' => 'Stéphane Henriod, Azamat Karypov, Salaidin Kamaldinov, Akylbek Chymyrov, Chinara Saparova, Almaz Abdiev, Nurlan Tokbaev, Tatygul Urmambetova, Adilet Bekturov, Nursultan Ismailov, Nurlan Zhusupov',
 	'lo' => 'Anousak Souphavanh, Soukanh Lathsavong',
 	'lv' => 'Maris Nartiss, Pēteris Brūns',
 	'lt' => 'Paulius Litvinas, Tomas Straupis, Kestas M',
@@ -173,7 +176,7 @@ if ( @ARGV && $ARGV[0] eq "site") {
 	print "<head>";
 	print "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"/>";
 	print "<style>";
-	print "body{font-family:sans-serif;}";
+	print "body {font-family:sans-serif; background-color:#d3d3d3; }";
 	print "table {font-size:80%;border-collapse: collapse;}";
 	print "td {border-left:solid 1px #aaaaaa;border-right:solid 1px #aaaaaa;padding:1px 10px;}";
 	print ".bartodo{ background-color:red;width:100px;height:20px;}";
@@ -184,7 +187,7 @@ if ( @ARGV && $ARGV[0] eq "site") {
 	for my $l (sort { $b->{percentage} <=> $a->{percentage} } @lang) {
 		last if $l->{percentage} < 35;
 		printf "\n<tr>"
-			. '<td><img src="flags/%s.png"></td><td nowrap>%s</td>'
+			. '<td align="center"><img src="flags/%s.svg" height="20"></td><td nowrap>%s</td>'
 			. '<td nowrap>%s</td><td>%d</td><td>%d</td><td>%d</td>'
 			. '<td><div class="bartodo"><div class="bardone" style="width:%dpx">%.1f</div></div></td>'
 			. '<td>%s</td>'
@@ -198,6 +201,7 @@ if ( @ARGV && $ARGV[0] eq "site") {
 	print "</table></body></html>\n";
 } else {
 	print "<style>";
+	print "body { font-family:sans-serif; background-color:#d3d3d3; }";
 	print "table {font-size:80%;}";
 	print "th {text-align:left; }";
 	print ".bartodo{ background-color:red;width:100px;height:20px;}";
@@ -208,7 +212,7 @@ if ( @ARGV && $ARGV[0] eq "site") {
 	for my $l (sort { $b->{percentage} <=> $a->{percentage} } @lang) {
 		last if $l->{percentage} < 35;
 		printf "\n<tr>"
-			. '<td><img src="qrc:/images/flags/%s.png"></td><td>%s</td>'
+			. '<td align="center"><img src="qrc:/images/flags/%s.svg" height="20"></td><td>%s</td>'
 			. '<td><div title="finished:%d unfinished:%d untranslated:%d" class="bartodo"><div class="bardone" style="width:%dpx">%.1f</div></div></td>'
 			. '<td>%s</td>'
 			. '</tr>',

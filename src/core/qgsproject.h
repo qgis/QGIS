@@ -37,6 +37,7 @@
 #include "qgsprojectversion.h"
 #include "qgsexpressioncontextgenerator.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgscoordinatetransformcontext.h"
 #include "qgsprojectproperty.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerstore.h"
@@ -100,9 +101,9 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *
      * Most of the time you want to use QgsProject::instance() instead as many components of QGIS work with the singleton.
      */
-    explicit QgsProject( QObject *parent SIP_TRANSFERTHIS = 0 );
+    explicit QgsProject( QObject *parent SIP_TRANSFERTHIS = nullptr );
 
-    ~QgsProject();
+    ~QgsProject() override;
 
     /**
      * Sets the project's title.
@@ -178,6 +179,29 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     void setEllipsoid( const QString &ellipsoid );
 
+
+    /**
+     * Returns a copy of the project's coordinate transform context, which stores various
+     * information regarding which datum transforms should be used when transforming points
+     * from a source to destination coordinate reference system.
+     *
+     * \since QGIS 3.0
+     * \see setTransformContext()
+     * \see transformContextChanged()
+     */
+    QgsCoordinateTransformContext transformContext() const;
+
+    /**
+     * Sets the project's coordinate transform \a context, which stores various
+     * information regarding which datum transforms should be used when transforming points
+     * from a source to destination coordinate reference system.
+     *
+     * \since QGIS 3.0
+     * \see transformContext()
+     * \see transformContextChanged()
+     */
+    void setTransformContext( const QgsCoordinateTransformContext &context );
+
     /**
      * Clear the project - removes all settings and resets it back to an empty, default state.
      * \since QGIS 2.4
@@ -211,18 +235,17 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * Writes the project to a file.
      * \param filename destination file
+     * \returns true if project was written successfully
      * \note calling this implicitly sets the project's filename (see setFileName() )
      * \note isDirty() will be set to false if project is successfully written
-     * \returns true if project was written successfully
-     *
      * \since QGIS 3.0
      */
     bool write( const QString &filename );
 
     /**
      * Writes the project to its current associated file (see fileName() ).
-     * \note isDirty() will be set to false if project is successfully written
      * \returns true if project was written successfully
+     * \note isDirty() will be set to false if project is successfully written
      */
     bool write();
 
@@ -900,6 +923,21 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     void ellipsoidChanged( const QString &ellipsoid );
 
+
+    /**
+     * Emitted when the project transformContext() is changed.
+     *
+     * \since QGIS 3.0
+     * \see transformContext()
+     */
+    void transformContextChanged();
+
+    /**
+     * Emitted when datum transforms stored in the project are not available locally.
+     * \since QGIS 3.0
+     */
+    void missingDatumTransforms( const QStringList &missingTransforms );
+
     /**
      * Emitted whenever a new transaction group has been created or a
      * transaction group has been removed.
@@ -1164,6 +1202,8 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     QgsCoordinateReferenceSystem mCrs;
     bool mDirty = false;                 // project has been modified since it has been read or saved
     bool mTrustLayerMetadata = false;
+
+    QgsCoordinateTransformContext mTransformContext;
 };
 
 /**

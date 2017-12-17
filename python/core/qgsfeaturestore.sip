@@ -10,7 +10,7 @@
 class QgsFeatureStore : QgsFeatureSink
 {
 %Docstring
- A container for features with the same fields and crs.
+A container for features with the same fields and crs.
 %End
 
 %TypeHeaderCode
@@ -29,28 +29,30 @@ Constructor
 
     QgsFields fields() const;
 %Docstring
- Returns the store's field list.
-.. seealso:: setFields()
- :rtype: QgsFields
+Returns the store's field list.
+
+.. seealso:: :py:func:`setFields()`
 %End
 
     void setFields( const QgsFields &fields );
 %Docstring
- Sets the store's ``fields``. Every contained feature's fields will be reset to match ``fields``.
-.. seealso:: fields()
+Sets the store's ``fields``. Every contained feature's fields will be reset to match ``fields``.
+
+.. seealso:: :py:func:`fields()`
 %End
 
     QgsCoordinateReferenceSystem crs() const;
 %Docstring
- Returns the store's coordinate reference system.
-.. seealso:: setCrs()
- :rtype: QgsCoordinateReferenceSystem
+Returns the store's coordinate reference system.
+
+.. seealso:: :py:func:`setCrs()`
 %End
 
     void setCrs( const QgsCoordinateReferenceSystem &crs );
 %Docstring
- Sets the store's ``crs``.
-.. seealso:: crs()
+Sets the store's ``crs``.
+
+.. seealso:: :py:func:`crs()`
 %End
 
     virtual bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = 0 );
@@ -60,15 +62,13 @@ Constructor
 
     int count() const;
 %Docstring
- Returns the number of features contained in the store.
- :rtype: int
+Returns the number of features contained in the store.
 %End
 
 
     int __len__() const;
 %Docstring
- Returns the number of features contained in the store.
- :rtype: int
+Returns the number of features contained in the store.
 %End
 %MethodCode
     sipRes = sipCpp->count();
@@ -76,21 +76,21 @@ Constructor
 
     QgsFeatureList features() const;
 %Docstring
- Returns the list of features contained in the store.
- :rtype: QgsFeatureList
+Returns the list of features contained in the store.
 %End
 
     void setParams( const QMap<QString, QVariant> &parameters );
 %Docstring
- Sets a map of optional ``parameters`` for the store.
-.. seealso:: params()
+Sets a map of optional ``parameters`` for the store.
+
+.. seealso:: :py:func:`params()`
 %End
 
     QMap<QString, QVariant> params() const;
 %Docstring
- Returns the map of optional parameters.
-.. seealso:: setParams()
- :rtype: QMap<str, QVariant>
+Returns the map of optional parameters.
+
+.. seealso:: :py:func:`setParams()`
 %End
 
 };

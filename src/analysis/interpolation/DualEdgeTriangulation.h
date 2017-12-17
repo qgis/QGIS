@@ -45,54 +45,47 @@ class ANALYSIS_EXPORT DualEdgeTriangulation: public Triangulation
   public:
     DualEdgeTriangulation();
     DualEdgeTriangulation( int nop, Triangulation *decorator );
-    virtual ~DualEdgeTriangulation();
+    ~DualEdgeTriangulation() override;
     void setDecorator( Triangulation *d ) {mDecorator = d;}
-    //! Adds a line (e.g. a break-, structure- or an isoline) to the triangulation. The class takes ownership of the line object and its points
-    void addLine( Line3D *line SIP_TRANSFER, bool breakline ) override;
-    //! Adds a point to the triangulation and returns the number of this point in case of success or -100 in case of failure
-    int addPoint( QgsPoint *p SIP_TRANSFER ) override;
+    void addLine( const QVector< QgsPoint > &points, QgsInterpolator::SourceType lineType ) override;
+    int addPoint( const QgsPoint &p ) override;
     //! Performs a consistency check, remove this later
-    virtual void performConsistencyTest() override;
+    void performConsistencyTest() override;
     //! Calculates the normal at a point on the surface
-    virtual bool calcNormal( double x, double y, Vector3D *result SIP_OUT ) override;
-    //! Calculates x-, y and z-value of the point on the surface
-    virtual bool calcPoint( double x, double y, QgsPoint *result SIP_OUT ) override;
+    bool calcNormal( double x, double y, Vector3D *result SIP_OUT ) override;
+    bool calcPoint( double x, double y, QgsPoint &result SIP_OUT ) override;
     //! Draws the points, edges and the forced lines
     //virtual void draw(QPainter* p, double xlowleft, double ylowleft, double xupright, double yupright, double width, double height) const;
     //! Returns a pointer to the point with number i
-    virtual QgsPoint *getPoint( unsigned int i ) const override;
-    //! Returns the number of the point opposite to the triangle points p1, p2 (which have to be on a halfedge)
+    QgsPoint *getPoint( int i ) const override;
     int getOppositePoint( int p1, int p2 ) override;
-    //! Finds out, in which triangle the point with coordinates x and y is and assigns the numbers of the vertices to 'n1', 'n2' and 'n3' and the vertices to 'p1', 'p2' and 'p3'
-    virtual bool getTriangle( double x, double y, QgsPoint *p1 SIP_OUT, int *n1 SIP_OUT, QgsPoint *p2 SIP_OUT, int *n2 SIP_OUT, QgsPoint *p3 SIP_OUT, int *n3 SIP_OUT ) SIP_PYNAME( getTriangleVertices ) override;
-    //! Finds out, in which triangle the point with coordinates x and y is and assigns addresses to the points at the vertices to 'p1', 'p2' and 'p3
-    virtual bool getTriangle( double x, double y, QgsPoint *p1 SIP_OUT, QgsPoint *p2 SIP_OUT, QgsPoint *p3 SIP_OUT ) override;
-    //! Returns a pointer to a value list with the information of the triangles surrounding (counterclockwise) a point. Four integer values describe a triangle, the first three are the number of the half edges of the triangle and the fourth is -10, if the third (and most counterclockwise) edge is a breakline, and -20 otherwise. The value list has to be deleted by the code which called the method
-    QList<int> *getSurroundingTriangles( int pointno ) override;
+    bool getTriangle( double x, double y, QgsPoint &p1 SIP_OUT, int &n1 SIP_OUT, QgsPoint &p2 SIP_OUT, int &n2 SIP_OUT, QgsPoint &p3 SIP_OUT, int &n3 SIP_OUT ) SIP_PYNAME( getTriangleVertices ) override;
+    bool getTriangle( double x, double y, QgsPoint &p1 SIP_OUT, QgsPoint &p2 SIP_OUT, QgsPoint &p3 SIP_OUT ) override;
+    QList<int> getSurroundingTriangles( int pointno ) override;
     //! Returns the largest x-coordinate value of the bounding box
-    virtual double getXMax() const override { return xMax; }
+    double getXMax() const override { return xMax; }
     //! Returns the smallest x-coordinate value of the bounding box
-    virtual double getXMin() const override { return xMin; }
+    double getXMin() const override { return xMin; }
     //! Returns the largest y-coordinate value of the bounding box
-    virtual double getYMax() const override { return yMax; }
+    double getYMax() const override { return yMax; }
     //! Returns the smallest x-coordinate value of the bounding box
-    virtual double getYMin() const override { return yMin; }
+    double getYMin() const override { return yMin; }
     //! Returns the number of points
-    virtual int getNumberOfPoints() const override;
+    int getNumberOfPoints() const override;
     //! Sets the behavior of the triangulation in case of crossing forced lines
-    virtual void setForcedCrossBehavior( Triangulation::ForcedCrossBehavior b ) override;
+    void setForcedCrossBehavior( Triangulation::ForcedCrossBehavior b ) override;
     //! Sets the color of the normal edges
-    virtual void setEdgeColor( int r, int g, int b ) override;
+    void setEdgeColor( int r, int g, int b ) override;
     //! Sets the color of the forced edges
-    virtual void setForcedEdgeColor( int r, int g, int b ) override;
+    void setForcedEdgeColor( int r, int g, int b ) override;
     //! Sets the color of the breaklines
-    virtual void setBreakEdgeColor( int r, int g, int b ) override;
+    void setBreakEdgeColor( int r, int g, int b ) override;
     //! Sets an interpolator object
     void setTriangleInterpolator( TriangleInterpolator *interpolator ) override;
     //! Eliminates the horizontal triangles by swapping or by insertion of new points
     void eliminateHorizontalTriangles() override;
     //! Adds points to make the triangles better shaped (algorithm of ruppert)
-    virtual void ruppertRefinement() override;
+    void ruppertRefinement() override;
     //! Returns true, if the point with coordinates x and y is inside the convex hull and false otherwise
     bool pointInside( double x, double y ) override;
     //! Reads the dual edge structure of a taff file
@@ -100,11 +93,11 @@ class ANALYSIS_EXPORT DualEdgeTriangulation: public Triangulation
     //! Saves the dual edge structure to a taff file
     //bool saveToTAFF(QString fileName) const;
     //! Swaps the edge which is closest to the point with x and y coordinates (if this is possible)
-    virtual bool swapEdge( double x, double y ) override;
+    bool swapEdge( double x, double y ) override;
     //! Returns a value list with the numbers of the four points, which would be affected by an edge swap. This function is e.g. needed by NormVecDecorator to know the points, for which the normals have to be recalculated. The returned ValueList has to be deleted by the code which calls the method
-    virtual QList<int> *getPointsAroundEdge( double x, double y ) override;
+    QList<int> *getPointsAroundEdge( double x, double y ) override;
 
-    virtual bool saveTriangulation( QgsFeatureSink *sink, QgsFeedback *feedback = nullptr ) const override;
+    bool saveTriangulation( QgsFeatureSink *sink, QgsFeedback *feedback = nullptr ) const override;
 
   protected:
     //! X-coordinate of the upper right corner of the bounding box
@@ -138,7 +131,7 @@ class ANALYSIS_EXPORT DualEdgeTriangulation: public Triangulation
     //! Inserts an edge and makes sure, everything is OK with the storage of the edge. The number of the HalfEdge is returned
     unsigned int insertEdge( int dual, int next, int point, bool mbreak, bool forced );
     //! Inserts a forced segment between the points with the numbers p1 and p2 into the triangulation and returns the number of a HalfEdge belonging to this forced edge or -100 in case of failure
-    int insertForcedSegment( int p1, int p2, bool breakline );
+    int insertForcedSegment( int p1, int p2, QgsInterpolator::SourceType segmentType );
     //! Threshold for the leftOfTest to handle numerical instabilities
     //const static double leftOfTresh=0.00001;
     //! Security to prevent endless loops in 'baseEdgeOfTriangle'. It there are more iteration then this number, the point will not be inserted
@@ -146,7 +139,7 @@ class ANALYSIS_EXPORT DualEdgeTriangulation: public Triangulation
     //! Returns the number of an edge which points to the point with number 'point' or -1 if there is an error
     int baseEdgeOfPoint( int point );
     //! Returns the number of a HalfEdge from a triangle in which 'point' is in. If the number -10 is returned, this means, that 'point' is outside the convex hull. If -5 is returned, then numerical problems with the leftOfTest occurred (and the value of the possible edge is stored in the variable 'mUnstableEdge'. -20 means, that the inserted point is exactly on an edge (the number is stored in the variable 'mEdgeWithPoint'). -25 means, that the point is already in the triangulation (the number of the point is stored in the member 'mTwiceInsPoint'. If -100 is returned, this means that something else went wrong
-    int baseEdgeOfTriangle( QgsPoint *point );
+    int baseEdgeOfTriangle( const QgsPoint &point );
     //! Checks, if 'edge' has to be swapped because of the empty circle criterion. If so, doSwap(...) is called.
     bool checkSwap( unsigned int edge, unsigned int recursiveDeep );
     //! Swaps 'edge' and test recursively for other swaps (delaunay criterion)
@@ -177,6 +170,8 @@ class ANALYSIS_EXPORT DualEdgeTriangulation: public Triangulation
     bool edgeOnConvexHull( int edge );
     //! Function needed for the ruppert algorithm. Tests, if point is in the circle through both endpoints of edge and the endpoint of edge->dual->next->point. If so, the function calls itself recursively for edge->next and edge->next->next. Stops, if it finds a forced edge or a convex hull edge
     void evaluateInfluenceRegion( QgsPoint *point, int edge, QSet<int> &set );
+
+    friend class TestQgsInterpolator;
 };
 
 #ifndef SIP_RUN
@@ -206,8 +201,11 @@ inline int DualEdgeTriangulation::getNumberOfPoints() const
   return mPointVector.count();
 }
 
-inline QgsPoint *DualEdgeTriangulation::getPoint( unsigned int i ) const
+inline QgsPoint *DualEdgeTriangulation::getPoint( int i ) const
 {
+  if ( i < 0 || i >= mPointVector.count() )
+    return nullptr;
+
   return mPointVector.at( i );
 }
 

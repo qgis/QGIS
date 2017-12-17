@@ -11,8 +11,10 @@
 class QgsMenuHeader : QWidget
 {
 %Docstring
- Custom widget for displaying subheaders within a QMenu in a standard style.
+Custom widget for displaying subheaders within a QMenu in a standard style.
+
 .. versionadded:: 3.0
+
 .. seealso:: QgsMenuHeaderWidgetAction()
 %End
 
@@ -23,11 +25,13 @@ class QgsMenuHeader : QWidget
 
     explicit QgsMenuHeader( const QString &text, QWidget *parent /TransferThis/ = 0 );
 %Docstring
- Constructor for QgsMenuHeader, showing the specified ``text``.
+Constructor for QgsMenuHeader, showing the specified ``text``.
 %End
 
     virtual QSize minimumSizeHint() const;
+
     virtual QSize sizeHint() const;
+
 
   protected:
 
@@ -39,8 +43,10 @@ class QgsMenuHeader : QWidget
 class QgsMenuHeaderWidgetAction: QWidgetAction
 {
 %Docstring
- Custom QWidgetAction for displaying subheaders within a QMenu in a standard style.
+Custom QWidgetAction for displaying subheaders within a QMenu in a standard style.
+
 .. versionadded:: 3.0
+
 .. seealso:: QgsMenuHeader()
 %End
 
@@ -51,7 +57,7 @@ class QgsMenuHeaderWidgetAction: QWidgetAction
 
     QgsMenuHeaderWidgetAction( const QString &text, QObject *parent = 0 );
 %Docstring
- Constructor for QgsMenuHeaderWidgetAction, showing the specified ``text``.
+Constructor for QgsMenuHeaderWidgetAction, showing the specified ``text``.
 %End
 
 };

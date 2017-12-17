@@ -6,7 +6,7 @@ Content-Type: text/xml; charset=utf-8
  <Service>
   <Name>WMS</Name>
   <Title>QGIS TestProject</Title>
-  <Abstract>Some UTF8 text èòù</Abstract>
+  <Abstract><![CDATA[Some UTF8 text èòù]]></Abstract>
   <KeywordList>
    <Keyword vocabulary="ISO">infoMapAccessService</Keyword>
   </KeywordList>
@@ -97,9 +97,9 @@ Content-Type: text/xml; charset=utf-8
   <Exception>
    <Format>XML</Format>
   </Exception>
-  <Layer queryable="1">
-   <Name>QGIS Test Project</Name>
+  <Layer>
    <Title>QGIS Test Project</Title>
+   <Abstract>QGIS Test Project</Abstract>
    <CRS>CRS:84</CRS>
    <CRS>EPSG:4326</CRS>
    <CRS>EPSG:3857</CRS>
@@ -111,6 +111,11 @@ Content-Type: text/xml; charset=utf-8
    </EX_GeographicBoundingBox>
    <BoundingBox maxy="5.60604e+06" maxx="913283" miny="5.60599e+06" CRS="EPSG:3857" minx="913171"/>
    <BoundingBox maxy="8.20416" maxx="44.9016" miny="8.20315" CRS="EPSG:4326" minx="44.9012"/>
+   <Name>QGIS Test Project</Name>
+   <KeywordList>
+    <Keyword vocabulary="ISO">infoMapAccessService</Keyword>
+   </KeywordList>
+   <MetadataURL/>
    <Layer queryable="1">
     <Name>testlayer èé</Name>
     <Title>A test vector layer</Title>

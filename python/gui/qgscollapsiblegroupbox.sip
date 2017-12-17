@@ -21,15 +21,9 @@ class QgsGroupBoxCollapseButton : QToolButton
     QgsGroupBoxCollapseButton( QWidget *parent /TransferThis/ = 0 );
 
     bool altDown() const;
-%Docstring
- :rtype: bool
-%End
     void setAltDown( bool updown );
 
     bool shiftDown() const;
-%Docstring
- :rtype: bool
-%End
     void setShiftDown( bool shiftdown );
 
   protected:
@@ -41,14 +35,15 @@ class QgsGroupBoxCollapseButton : QToolButton
 class QgsCollapsibleGroupBoxBasic : QGroupBox
 {
 %Docstring
- A groupbox that collapses/expands when toggled.
- Basic class QgsCollapsibleGroupBoxBasic does not auto-save collapsed or checked state
- Holding Alt modifier key when toggling collapsed state will synchronize the toggling across other collapsible group boxes with the same syncGroup QString value
- Holding Shift modifier key when attempting to toggle collapsed state will expand current group box, then collapse any others with the same syncGroup QString value
+A groupbox that collapses/expands when toggled.
+Basic class QgsCollapsibleGroupBoxBasic does not auto-save collapsed or checked state
+Holding Alt modifier key when toggling collapsed state will synchronize the toggling across other collapsible group boxes with the same syncGroup QString value
+Holding Shift modifier key when attempting to toggle collapsed state will expand current group box, then collapse any others with the same syncGroup QString value
+
 .. note::
 
    To add Collapsible properties in promoted QtDesigner widgets, you can add the following "Dynamic properties" by clicking on the green + in the propreties palette:
- bool collapsed, QString syncGroup, bool scrollOnExpand
+bool collapsed, QString syncGroup, bool scrollOnExpand
 %End
 
 %TypeHeaderCode
@@ -60,26 +55,24 @@ class QgsCollapsibleGroupBoxBasic : QGroupBox
 
     bool isCollapsed() const;
 %Docstring
- Returns the current collapsed state of this group box
- :rtype: bool
+Returns the current collapsed state of this group box
 %End
 
     void setCollapsed( bool collapse );
 %Docstring
- Collapse or uncollapse this groupbox
+Collapse or uncollapse this groupbox
 
- \param collapse Will collapse on true and uncollapse on false
+:param collapse: Will collapse on true and uncollapse on false
 %End
 
     QString syncGroup() const;
 %Docstring
- Named group which synchronizes collapsing action when triangle is clicked while holding alt modifier key
- :rtype: str
+Named group which synchronizes collapsing action when triangle is clicked while holding alt modifier key
 %End
 
     void setSyncGroup( const QString &grp );
 %Docstring
- Named group which synchronizes collapsing action when triangle is clicked while holding alt modifier key
+Named group which synchronizes collapsing action when triangle is clicked while holding alt modifier key
 %End
 
     void setScrollOnExpand( bool scroll );
@@ -90,7 +83,6 @@ Set this to false to not automatically scroll parent QScrollArea to this widget'
     bool scrollOnExpand();
 %Docstring
 If this is set to false the parent QScrollArea will not be automatically scrolled to this widget's contents when expanded
- :rtype: bool
 %End
 
   signals:
@@ -123,9 +115,6 @@ Visual fixes for when group box is collapsed/expanded
 
     void updateStyle();
     QRect titleRect() const;
-%Docstring
- :rtype: QRect
-%End
     void clearModifiers();
 
 
@@ -135,15 +124,17 @@ Visual fixes for when group box is collapsed/expanded
 class QgsCollapsibleGroupBox : QgsCollapsibleGroupBoxBasic
 {
 %Docstring
- A groupbox that collapses/expands when toggled and can save its collapsed and checked states.
- By default, it auto-saves only its collapsed state to the global settings based on the widget and it's parent names.
- Holding Alt modifier key when toggling collapsed state will synchronize the toggling across other collapsible group boxes with the same syncGroup QString value
- Holding Shift modifier key when attempting to toggle collapsed state will expand current group box, then collapse any others with the same syncGroup QString value
-.. seealso:: basic class QgsCollapsibleGroupBoxBasic which does not auto-save states
+A groupbox that collapses/expands when toggled and can save its collapsed and checked states.
+By default, it auto-saves only its collapsed state to the global settings based on the widget and it's parent names.
+Holding Alt modifier key when toggling collapsed state will synchronize the toggling across other collapsible group boxes with the same syncGroup QString value
+Holding Shift modifier key when attempting to toggle collapsed state will expand current group box, then collapse any others with the same syncGroup QString value
+
+.. seealso:: :py:func:`basic`
+
 .. note::
 
    To add Collapsible properties in promoted QtDesigner widgets, you can add the following "Dynamic properties" by clicking on the green + in the propreties palette:
- bool collapsed, bool saveCollapsedState, bool saveCheckedState, QString syncGroup
+bool collapsed, bool saveCollapsedState, bool saveCheckedState, QString syncGroup
 %End
 
 %TypeHeaderCode
@@ -163,20 +154,15 @@ set this to false to not save/restore collapsed state
 
     void setSaveCheckedState( bool save );
 %Docstring
- Set this to true to save/restore checked state
+Set this to true to save/restore checked state
+
 .. note::
 
    only turn on mSaveCheckedState for groupboxes NOT used
- in multiple places or used as options for different parent objects *
+in multiple places or used as options for different parent objects *
 %End
     bool saveCollapsedState();
-%Docstring
- :rtype: bool
-%End
     bool saveCheckedState();
-%Docstring
- :rtype: bool
-%End
 
     void setSettingGroup( const QString &group );
 %Docstring
@@ -185,27 +171,26 @@ Set this to a defined string to share save/restore states across different paren
     QString settingGroup() const;
 %Docstring
 Returns the name of the setting group in which the collapsed state will be saved
- :rtype: str
 %End
 
   protected slots:
 
     void loadState();
 %Docstring
- Will load the collapsed and checked state
+Will load the collapsed and checked state
 
- The configuration path from which it is loaded is defined by
-  * The object name
-  * The settingGroup
+The configuration path from which it is loaded is defined by
+* The object name
+* The settingGroup
 %End
 
     void saveState() const;
 %Docstring
- Will save the collapsed and checked state
+Will save the collapsed and checked state
 
- The configuration path to which it is saved is defined by
-  * The object name
-  * The settingGroup
+The configuration path to which it is saved is defined by
+* The object name
+* The settingGroup
 %End
 
   protected:
@@ -213,9 +198,6 @@ Returns the name of the setting group in which the collapsed state will be saved
     virtual void showEvent( QShowEvent *event );
 
     QString saveKey() const;
-%Docstring
- :rtype: str
-%End
 
 
 };

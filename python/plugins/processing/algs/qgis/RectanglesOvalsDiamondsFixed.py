@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import range
 
 __author__ = 'Alexander Bruy'
 __date__ = 'August 2012'
@@ -54,6 +53,9 @@ class RectanglesOvalsDiamondsFixed(QgisAlgorithm):
 
     def group(self):
         return self.tr('Vector geometry')
+
+    def groupId(self):
+        return 'vectorgeometry'
 
     def __init__(self):
         super().__init__()
@@ -134,7 +136,7 @@ class RectanglesOvalsDiamondsFixed(QgisAlgorithm):
                 polygon = [[QgsPointXY(i[0] * math.cos(phi) + i[1] * math.sin(phi) + x,
                                        -i[0] * math.sin(phi) + i[1] * math.cos(phi) + y) for i in points]]
 
-                ft.setGeometry(QgsGeometry.fromPolygon(polygon))
+                ft.setGeometry(QgsGeometry.fromPolygonXY(polygon))
                 ft.setAttributes(feat.attributes())
                 sink.addFeature(ft, QgsFeatureSink.FastInsert)
 
@@ -153,7 +155,7 @@ class RectanglesOvalsDiamondsFixed(QgisAlgorithm):
                 points = [(-xOffset, -yOffset), (-xOffset, yOffset), (xOffset, yOffset), (xOffset, -yOffset)]
                 polygon = [[QgsPointXY(i[0] + x, i[1] + y) for i in points]]
 
-                ft.setGeometry(QgsGeometry.fromPolygon(polygon))
+                ft.setGeometry(QgsGeometry.fromPolygonXY(polygon))
                 ft.setAttributes(feat.attributes())
                 sink.addFeature(ft, QgsFeatureSink.FastInsert)
 
@@ -183,7 +185,7 @@ class RectanglesOvalsDiamondsFixed(QgisAlgorithm):
                 polygon = [[QgsPointXY(i[0] * math.cos(phi) + i[1] * math.sin(phi) + x,
                                        -i[0] * math.sin(phi) + i[1] * math.cos(phi) + y) for i in points]]
 
-                ft.setGeometry(QgsGeometry.fromPolygon(polygon))
+                ft.setGeometry(QgsGeometry.fromPolygonXY(polygon))
                 ft.setAttributes(feat.attributes())
                 sink.addFeature(ft, QgsFeatureSink.FastInsert)
                 feedback.setProgress(int(current * total))
@@ -201,7 +203,7 @@ class RectanglesOvalsDiamondsFixed(QgisAlgorithm):
                 points = [(0.0, -yOffset), (-xOffset, 0.0), (0.0, yOffset), (xOffset, 0.0)]
                 polygon = [[QgsPointXY(i[0] + x, i[1] + y) for i in points]]
 
-                ft.setGeometry(QgsGeometry.fromPolygon(polygon))
+                ft.setGeometry(QgsGeometry.fromPolygonXY(polygon))
                 ft.setAttributes(feat.attributes())
                 sink.addFeature(ft, QgsFeatureSink.FastInsert)
                 feedback.setProgress(int(current * total))
@@ -232,7 +234,7 @@ class RectanglesOvalsDiamondsFixed(QgisAlgorithm):
                 polygon = [[QgsPointXY(i[0] * math.cos(phi) + i[1] * math.sin(phi) + x,
                                        -i[0] * math.sin(phi) + i[1] * math.cos(phi) + y) for i in points]]
 
-                ft.setGeometry(QgsGeometry.fromPolygon(polygon))
+                ft.setGeometry(QgsGeometry.fromPolygonXY(polygon))
                 ft.setAttributes(feat.attributes())
                 sink.addFeature(ft, QgsFeatureSink.FastInsert)
                 feedback.setProgress(int(current * total))
@@ -252,7 +254,7 @@ class RectanglesOvalsDiamondsFixed(QgisAlgorithm):
                     points.append((xOffset * math.cos(t), yOffset * math.sin(t)))
                 polygon = [[QgsPointXY(i[0] + x, i[1] + y) for i in points]]
 
-                ft.setGeometry(QgsGeometry.fromPolygon(polygon))
+                ft.setGeometry(QgsGeometry.fromPolygonXY(polygon))
                 ft.setAttributes(feat.attributes())
                 sink.addFeature(ft, QgsFeatureSink.FastInsert)
                 feedback.setProgress(int(current * total))

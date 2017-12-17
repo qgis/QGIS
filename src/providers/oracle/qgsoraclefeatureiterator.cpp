@@ -264,7 +264,7 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature &feature )
       mRewind = false;
       if ( !QgsOracleProvider::exec( mQry, mSql, mArgs ) )
       {
-        QgsMessageLog::logMessage( QObject::tr( "Fetching features failed.\nSQL:%1\nError: %2" )
+        QgsMessageLog::logMessage( QObject::tr( "Fetching features failed.\nSQL: %1\nError: %2" )
                                    .arg( mQry.lastQuery() )
                                    .arg( mQry.lastError().text() ),
                                    QObject::tr( "Oracle" ) );
@@ -393,7 +393,7 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature &feature )
         {
           QgsGeometry g;
           g.fromWkb( ba );
-          v = g.exportToWkt();
+          v = g.asWkt();
         }
         else
         {
@@ -498,7 +498,7 @@ bool QgsOracleFeatureIterator::openQuery( QString whereClause, QVariantList args
     {
       if ( showLog )
       {
-        QgsMessageLog::logMessage( QObject::tr( "Fetching features failed.\nSQL:%1\nError: %2" )
+        QgsMessageLog::logMessage( QObject::tr( "Fetching features failed.\nSQL: %1\nError: %2" )
                                    .arg( mQry.lastQuery() )
                                    .arg( mQry.lastError().text() ),
                                    QObject::tr( "Oracle" ) );

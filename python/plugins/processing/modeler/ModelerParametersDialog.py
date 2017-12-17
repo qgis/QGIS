@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -53,7 +52,8 @@ from qgis.core import (QgsProcessingParameterDefinition,
 
 from qgis.gui import (QgsMessageBar,
                       QgsScrollArea,
-                      QgsFilterLineEdit)
+                      QgsFilterLineEdit,
+                      QgsHelp)
 
 from processing.gui.wrappers import WidgetWrapperFactory
 from processing.gui.wrappers import InvalidParameterValue
@@ -68,7 +68,7 @@ class ModelerParametersDialog(QDialog):
     def __init__(self, alg, model, algName=None):
         QDialog.__init__(self)
         self.setModal(True)
-        # The algorithm to define in this dialog. It is an instance of GeoAlgorithm
+        # The algorithm to define in this dialog. It is an instance of QgsProcessingModelAlgorithm
         self._alg = alg
         # The model this algorithm is going to be added to
         self.model = model
@@ -362,6 +362,10 @@ class ModelerParametersDialog(QDialog):
         self.reject()
 
     def openHelp(self):
-        algHelp = self._alg.help()
-        if algHelp is not None:
+        algHelp = self._alg.helpUrl()
+        if not algHelp:
+            algHelp = QgsHelp.helpUrl("processing_algs/{}/{}.html{}".format(
+                self._alg.provider().id(), self._alg.groupId(), self._alg.name())).toString()
+
+        if algHelp not in [None, ""]:
             webbrowser.open(algHelp)

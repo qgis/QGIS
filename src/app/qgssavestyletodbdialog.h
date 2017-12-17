@@ -28,7 +28,7 @@ class APP_EXPORT QgsSaveStyleToDbDialog : public QDialog, private Ui::QgsSaveToD
   public:
     explicit QgsSaveStyleToDbDialog( QWidget *parent = nullptr );
 
-    ~QgsSaveStyleToDbDialog();
+    ~QgsSaveStyleToDbDialog() override;
 
   signals:
 

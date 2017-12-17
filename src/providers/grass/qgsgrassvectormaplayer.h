@@ -181,7 +181,7 @@ class GRASS_LIB_EXPORT QgsGrassVectorMapLayer : public QObject
     int mField;
     bool mValid;
     QgsGrassVectorMap *mMap = nullptr;
-    struct field_info *mFieldInfo;
+    struct field_info *mFieldInfo = nullptr;
     dbDriver *mDriver = nullptr;
 
     bool mHasTable;

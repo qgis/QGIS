@@ -47,8 +47,10 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
 {
     Q_OBJECT
     Q_PROPERTY( QString expressionDialogTitle READ expressionDialogTitle WRITE setExpressionDialogTitle )
-    Q_FLAGS( QgsFieldProxyModel::Filters )
     Q_PROPERTY( QgsFieldProxyModel::Filters filters READ filters WRITE setFilters )
+    Q_PROPERTY( bool allowEvalErrors READ allowEvalErrors WRITE setAllowEvalErrors NOTIFY allowEvalErrorsChanged )
+
+    Q_FLAGS( QgsFieldProxyModel::Filters )
 
   public:
 
@@ -130,12 +132,36 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
      */
     void registerExpressionContextGenerator( const QgsExpressionContextGenerator *generator );
 
+    /**
+     * Allow accepting expressions with evaluation errors. This can be useful when we are not able to
+     * provide an expression context of which we are sure it's completely populated.
+     *
+     * \since QGIS 3.0
+     */
+    bool allowEvalErrors() const;
+
+    /**
+     * Allow accepting expressions with evaluation errors. This can be useful when we are not able to
+     * provide an expression context of which we are sure it's completely populated.
+     *
+     * \since QGIS 3.0
+     */
+    void setAllowEvalErrors( bool allowEvalErrors );
+
   signals:
     //! the signal is emitted when the currently selected field changes
     void fieldChanged( const QString &fieldName );
 
     //! fieldChanged signal with indication of the validity of the expression
     void fieldChanged( const QString &fieldName, bool isValid );
+
+    /**
+     * Allow accepting expressions with evaluation errors. This can be useful when we are not able to
+     * provide an expression context of which we are sure it's completely populated.
+     *
+     * \since QGIS 3.0
+     */
+    void allowEvalErrorsChanged();
 
   public slots:
 
@@ -198,6 +224,7 @@ class GUI_EXPORT QgsFieldExpressionWidget : public QWidget
     QgsExpressionContext mExpressionContext;
     const QgsExpressionContextGenerator *mExpressionContextGenerator = nullptr;
     QString mBackupExpression;
+    bool mAllowEvalErrors = false;
 
     friend class TestQgsFieldExpressionWidget;
 };

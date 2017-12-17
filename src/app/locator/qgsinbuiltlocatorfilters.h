@@ -28,9 +28,9 @@ class QgsLayerTreeLocatorFilter : public QgsLocatorFilter
   public:
 
     QgsLayerTreeLocatorFilter( QObject *parent = nullptr );
-    virtual QString name() const override { return QStringLiteral( "layertree" ); }
-    virtual QString displayName() const override { return tr( "Project Layers" ); }
-    virtual Priority priority() const override { return Highest; }
+    QString name() const override { return QStringLiteral( "layertree" ); }
+    QString displayName() const override { return tr( "Project Layers" ); }
+    Priority priority() const override { return Highest; }
     QString prefix() const override { return QStringLiteral( "l" ); }
 
     void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;
@@ -45,9 +45,9 @@ class QgsLayoutLocatorFilter : public QgsLocatorFilter
   public:
 
     QgsLayoutLocatorFilter( QObject *parent = nullptr );
-    virtual QString name() const override { return QStringLiteral( "layouts" ); }
-    virtual QString displayName() const override { return tr( "Project Layouts" ); }
-    virtual Priority priority() const override { return Highest; }
+    QString name() const override { return QStringLiteral( "layouts" ); }
+    QString displayName() const override { return tr( "Project Layouts" ); }
+    Priority priority() const override { return Highest; }
     QString prefix() const override { return QStringLiteral( "pl" ); }
 
     void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;
@@ -62,9 +62,9 @@ class QgsActionLocatorFilter : public QgsLocatorFilter
   public:
 
     QgsActionLocatorFilter( const QList<QWidget *> &parentObjectsForActions, QObject *parent = nullptr );
-    virtual QString name() const override { return QStringLiteral( "actions" ); }
-    virtual QString displayName() const override { return tr( "Actions" ); }
-    virtual Priority priority() const override { return Lowest; }
+    QString name() const override { return QStringLiteral( "actions" ); }
+    QString displayName() const override { return tr( "Actions" ); }
+    Priority priority() const override { return Lowest; }
     QString prefix() const override { return QStringLiteral( "." ); }
 
     void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;
@@ -84,9 +84,9 @@ class QgsActiveLayerFeaturesLocatorFilter : public QgsLocatorFilter
   public:
 
     QgsActiveLayerFeaturesLocatorFilter( QObject *parent = nullptr );
-    virtual QString name() const override { return QStringLiteral( "features" ); }
-    virtual QString displayName() const override { return tr( "Active Layer Features" ); }
-    virtual Priority priority() const override { return Medium; }
+    QString name() const override { return QStringLiteral( "features" ); }
+    QString displayName() const override { return tr( "Active Layer Features" ); }
+    Priority priority() const override { return Medium; }
     QString prefix() const override { return QStringLiteral( "f" ); }
 
     void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;

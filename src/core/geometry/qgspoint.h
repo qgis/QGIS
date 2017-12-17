@@ -56,10 +56,10 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      *
      * \code{.py}
      *   pt = QgsPoint(43.4, 5.3)
-     *   pt.exportToWkt() # Point(43.4 5.3)
+     *   pt.asWkt() # Point(43.4 5.3)
      *
      *   pt_z = QgsPoint(120, 343, 77)
-     *   pt.exportToWkt() # PointZ(120 343 77)
+     *   pt.asWkt() # PointZ(120 343 77)
      *
      *   pt_m = QgsPoint(33, 88, m=5)
      *   pt_m.m() # 5
@@ -391,20 +391,23 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     QString geometryType() const override;
     int dimension() const override;
     QgsPoint *clone() const override SIP_FACTORY;
+    QgsPoint *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const override SIP_FACTORY;
+    bool removeDuplicateNodes( double epsilon = 4 * DBL_EPSILON, bool useZValues = false ) override;
     void clear() override;
     bool fromWkb( QgsConstWkbPtr &wkb ) override;
     bool fromWkt( const QString &wkt ) override;
     QByteArray asWkb() const override;
     QString asWkt( int precision = 17 ) const override;
-    QDomElement asGML2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
-    QDomElement asGML3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
-    QString asJSON( int precision = 17 ) const override;
+    QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
+    QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
+    QString asJson( int precision = 17 ) const override;
     void draw( QPainter &p ) const override;
     void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform,
                     bool transformZ = false ) override;
-    void transform( const QTransform &t ) override;
+    void transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0, double mTranslate = 0.0, double mScale = 1.0 ) override;
     QgsCoordinateSequence coordinateSequence() const override;
     int nCoordinates() const override;
+    int vertexNumberFromVertexId( QgsVertexId id ) const override;
     QgsAbstractGeometry *boundary() const override SIP_FACTORY;
 
     //low-level editing
@@ -412,8 +415,9 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     bool moveVertex( QgsVertexId position, const QgsPoint &newPos ) override;
     bool deleteVertex( QgsVertexId position ) override;
 
-    double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt SIP_OUT, QgsVertexId &vertexAfter SIP_OUT, bool *leftOf SIP_OUT = nullptr, double epsilon = 4 * DBL_EPSILON ) const override;
+    double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt SIP_OUT, QgsVertexId &vertexAfter SIP_OUT, int *leftOf SIP_OUT = nullptr, double epsilon = 4 * DBL_EPSILON ) const override;
     bool nextVertex( QgsVertexId &id, QgsPoint &vertex SIP_OUT ) const override;
+    void adjacentVertices( QgsVertexId vertex, QgsVertexId &previousVertex SIP_OUT, QgsVertexId &nextVertex SIP_OUT ) const override;
 
     /**
      * Angle undefined. Always returns 0.0
@@ -426,6 +430,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     int partCount() const override;
     QgsPoint vertexAt( QgsVertexId /*id*/ ) const override;
     QgsPoint *toCurveType() const override SIP_FACTORY;
+    double segmentLength( QgsVertexId startVertex ) const override;
 
     bool addZValue( double zValue = 0 ) override;
     bool addMValue( double mValue = 0 ) override;
@@ -451,8 +456,9 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
 #endif
 
   protected:
-    virtual int childCount() const override;
-    virtual QgsPoint childPoint( int index ) const override;
+    QgsPoint *createEmptyWithSameType() const override SIP_FACTORY;
+    int childCount() const override;
+    QgsPoint childPoint( int index ) const override;
 
   private:
     double mX;

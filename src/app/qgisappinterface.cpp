@@ -31,6 +31,7 @@
 #include "qgsapplayertreeviewmenuprovider.h"
 #include "qgscomposer.h"
 #include "qgscomposerview.h"
+#include "qgsdatumtransformdialog.h"
 #include "qgsgui.h"
 #include "qgsmaplayer.h"
 #include "qgsmaptooladvanceddigitizing.h"
@@ -184,6 +185,16 @@ QgsMapLayer *QgisAppInterface::activeLayer()
 bool QgisAppInterface::setActiveLayer( QgsMapLayer *layer )
 {
   return qgis->setActiveLayer( layer );
+}
+
+void QgisAppInterface::copySelectionToClipboard( QgsMapLayer *layer )
+{
+  return qgis->copySelectionToClipboard( layer );
+}
+
+void QgisAppInterface::pasteFromClipboard( QgsMapLayer *layer )
+{
+  return qgis->pasteFromClipboard( layer );
 }
 
 void QgisAppInterface::addPluginToMenu( const QString &name, QAction *action )
@@ -436,6 +447,11 @@ void QgisAppInterface::closeComposer( QgsComposition *composition )
   }
 }
 
+void QgisAppInterface::showLayoutManager()
+{
+  qgis->showLayoutManager();
+}
+
 QList<QgsLayoutDesignerInterface *> QgisAppInterface::openLayoutDesigners()
 {
   QList<QgsLayoutDesignerInterface *> designerInterfaceList;
@@ -521,7 +537,7 @@ QDialog *QgisAppInterface::showAttributeTable( QgsVectorLayer *l, const QString 
 {
   if ( l )
   {
-    QgsAttributeTableDialog *dialog = new QgsAttributeTableDialog( l );
+    QgsAttributeTableDialog *dialog = new QgsAttributeTableDialog( l, QgsAttributeTableFilterModel::ShowFilteredList );
     dialog->setFilterExpression( filterExpression );
     dialog->show();
     return dialog;
@@ -572,6 +588,16 @@ void QgisAppInterface::unregisterOptionsWidgetFactory( QgsOptionsWidgetFactory *
 void QgisAppInterface::registerCustomDropHandler( QgsCustomDropHandler *handler )
 {
   qgis->registerCustomDropHandler( handler );
+}
+
+void QgisAppInterface::registerCustomLayoutDropHandler( QgsLayoutCustomDropHandler *handler )
+{
+  qgis->registerCustomLayoutDropHandler( handler );
+}
+
+void QgisAppInterface::unregisterCustomLayoutDropHandler( QgsLayoutCustomDropHandler *handler )
+{
+  qgis->unregisterCustomLayoutDropHandler( handler );
 }
 
 void QgisAppInterface::unregisterCustomDropHandler( QgsCustomDropHandler *handler )
@@ -797,4 +823,9 @@ void QgisAppInterface::registerLocatorFilter( QgsLocatorFilter *filter )
 void QgisAppInterface::deregisterLocatorFilter( QgsLocatorFilter *filter )
 {
   qgis->mLocatorWidget->locator()->deregisterFilter( filter );
+}
+
+bool QgisAppInterface::askForDatumTransform( QgsCoordinateReferenceSystem sourceCrs, QgsCoordinateReferenceSystem destinationCrs )
+{
+  return qgis->askUserForDatumTransform( sourceCrs, destinationCrs );
 }

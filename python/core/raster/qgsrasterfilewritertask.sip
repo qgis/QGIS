@@ -12,11 +12,14 @@
 class QgsRasterFileWriterTask : QgsTask
 {
 %Docstring
- QgsTask task which performs a QgsRasterFileWriter layer saving operation as a background
- task. This can be used to save a raster layer out to a file without blocking the
- QGIS interface.
-.. seealso:: QgsVectorFileWriterTask
-.. seealso:: QgsVectorFileExporterTask
+QgsTask task which performs a QgsRasterFileWriter layer saving operation as a background
+task. This can be used to save a raster layer out to a file without blocking the
+QGIS interface.
+
+.. seealso:: :py:class:`QgsVectorFileWriterTask`
+
+.. seealso:: :py:class:`QgsVectorFileExporterTask`
+
 .. versionadded:: 3.0
 %End
 
@@ -30,32 +33,35 @@ class QgsRasterFileWriterTask : QgsTask
                              const QgsRectangle &outputExtent,
                              const QgsCoordinateReferenceSystem &crs );
 %Docstring
- Constructor for QgsRasterFileWriterTask. Takes a source ``writer``,
- ``columns``, ``rows``, ``outputExtent`` and destination ``crs``.
- Ownership of the ``pipe`` is transferred to the writer task, and will
- be deleted when the task completes.
+Constructor for QgsRasterFileWriterTask. Takes a source ``writer``,
+``columns``, ``rows``, ``outputExtent`` and destination ``crs``.
+Ownership of the ``pipe`` is transferred to the writer task, and will
+be deleted when the task completes.
 %End
 
     virtual void cancel();
+
 
   signals:
 
     void writeComplete( const QString &outputUrl );
 %Docstring
- Emitted when writing the layer is successfully completed. The ``outputUrl``
- parameter indicates the file path for the written file(s).
+Emitted when writing the layer is successfully completed. The ``outputUrl``
+parameter indicates the file path for the written file(s).
 %End
 
     void errorOccurred( int error );
 %Docstring
- Emitted when an error occurs which prevented the file being written (or if
- the task is canceled). The writing ``error`` will be reported.
+Emitted when an error occurs which prevented the file being written (or if
+the task is canceled). The writing ``error`` will be reported.
 %End
 
   protected:
 
     virtual bool run();
+
     virtual void finished( bool result );
+
 
 };
 

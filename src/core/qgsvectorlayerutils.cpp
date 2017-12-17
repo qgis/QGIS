@@ -16,6 +16,9 @@
 #include "qgsvectorlayerutils.h"
 #include "qgsvectordataprovider.h"
 #include <QRegularExpression>
+#include "qgsproject.h"
+#include "qgsrelationmanager.h"
+#include "qgslogger.h"
 
 bool QgsVectorLayerUtils::valueExists( const QgsVectorLayer *layer, int fieldIndex, const QVariant &value, const QgsFeatureIds &ignoreIds )
 {
@@ -320,3 +323,84 @@ QgsFeature QgsVectorLayerUtils::createFeature( QgsVectorLayer *layer, const QgsG
   return newFeature;
 }
 
+QgsFeature QgsVectorLayerUtils::duplicateFeature( QgsVectorLayer *layer, const QgsFeature &feature, QgsProject *project, int depth, QgsDuplicateFeatureContext &duplicateFeatureContext )
+{
+  if ( !layer )
+    return QgsFeature();
+
+  if ( !layer->isEditable() )
+    return QgsFeature();
+
+  //get context from layer
+  QgsExpressionContext context = layer->createExpressionContext();
+  context.setFeature( feature );
+
+  //create the attribute map
+  QgsAttributes srcAttr = feature.attributes();
+  QgsAttributeMap dstAttr;
+  for ( int src = 0; src < srcAttr.count(); ++src )
+  {
+    dstAttr[ src ] = srcAttr.at( src );
+  }
+
+  QgsFeature newFeature = createFeature( layer, feature.geometry(), dstAttr, &context );
+
+  const QList<QgsRelation> relations = project->relationManager()->referencedRelations( layer );
+
+  for ( const QgsRelation &relation : relations )
+  {
+    //check if composition (and not association)
+    if ( relation.strength() == QgsRelation::Composition && depth < 1 )
+    {
+      depth++;
+      //get features connected over this relation
+      QgsFeatureIterator relatedFeaturesIt = relation.getRelatedFeatures( feature );
+      QgsFeatureIds childFeatureIds;
+      QgsFeature childFeature;
+      while ( relatedFeaturesIt.nextFeature( childFeature ) )
+      {
+        //set childlayer editable
+        relation.referencingLayer()->startEditing();
+        //change the fk of the child to the id of the new parent
+        for ( const QgsRelation::FieldPair &fieldPair : relation.fieldPairs() )
+        {
+          childFeature.setAttribute( fieldPair.first, newFeature.attribute( fieldPair.second ) );
+        }
+        //call the function for the child
+        childFeatureIds.insert( duplicateFeature( relation.referencingLayer(), childFeature, project, depth, duplicateFeatureContext ).id() );
+      }
+
+      //store for feedback
+      duplicateFeatureContext.setDuplicatedFeatures( relation.referencingLayer(), childFeatureIds );
+    }
+  }
+
+  layer->addFeature( newFeature );
+
+  return newFeature;
+}
+
+QList<QgsVectorLayer *> QgsVectorLayerUtils::QgsDuplicateFeatureContext::layers() const
+{
+  QList<QgsVectorLayer *> layers;
+  QMap<QgsVectorLayer *, QgsFeatureIds>::const_iterator i;
+  for ( i = mDuplicatedFeatures.begin(); i != mDuplicatedFeatures.end(); ++i )
+    layers.append( i.key() );
+  return layers;
+}
+
+QgsFeatureIds QgsVectorLayerUtils::QgsDuplicateFeatureContext::duplicatedFeatures( QgsVectorLayer *layer ) const
+{
+  return mDuplicatedFeatures[layer];
+}
+
+void QgsVectorLayerUtils::QgsDuplicateFeatureContext::setDuplicatedFeatures( QgsVectorLayer *layer, QgsFeatureIds ids )
+{
+  mDuplicatedFeatures.insert( layer, ids );
+}
+/*
+QMap<QgsVectorLayer *, QgsFeatureIds>  QgsVectorLayerUtils::QgsDuplicateFeatureContext::duplicateFeatureContext() const
+{
+  return mDuplicatedFeatures;
+}
+*/

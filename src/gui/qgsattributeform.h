@@ -34,6 +34,7 @@ class QgsMessageBar;
 class QgsMessageBarItem;
 class QgsWidgetWrapper;
 class QgsTabWidget;
+class QgsAttributeFormWidget;
 
 /**
  * \ingroup gui
@@ -53,6 +54,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
       will add a new feature when the form is accepted. */
       MultiEditMode, //!< Multi edit mode, for editing fields of multiple features at once
       SearchMode, //!< Form values are used for searching/filtering the layer
+      AggregateSearchMode, //!< Form is in aggregate search mode, show each widget in this mode \since QGIS 3.0
     };
 
     //! Filter types
@@ -67,7 +69,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
                                const QgsFeature &feature = QgsFeature(),
                                const QgsAttributeEditorContext &context = QgsAttributeEditorContext(),
                                QWidget *parent SIP_TRANSFERTHIS = nullptr );
-    ~QgsAttributeForm();
+    ~QgsAttributeForm() override;
 
     const QgsFeature &feature() { return mFeature; }
 
@@ -158,6 +160,15 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      * \since QGIS 2.16
      */
     void setMessageBar( QgsMessageBar *messageBar );
+
+    /**
+     * The aggregate filter is only useful if the form is in AggregateFilter mode.
+     * In this case it will return a combined expression according to the chosen filters
+     * on all attribute widgets.
+     *
+     * \since QGIS 3.0
+     */
+    QString aggregateFilter() const;
 
   signals:
 
@@ -299,11 +310,9 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
 
     struct WidgetInfo
     {
-      WidgetInfo()
-      {}
-
       QWidget *widget = nullptr;
       QString labelText;
+      QString hint;
       bool labelOnTop = false;
       bool labelAlignRight = false;
       bool showLabel = true;
@@ -339,9 +348,6 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     bool currentFormFeature( QgsFeature &feature );
     bool currentFormValidConstraints( QStringList &invalidFields, QStringList &descriptions );
     QList<QgsEditorWidgetWrapper *> constraintDependencies( QgsEditorWidgetWrapper *w );
-    void clearInvalidConstraintsMessage();
-    void displayInvalidConstraintMessage( const QStringList &invalidFields,
-                                          const QStringList &description );
 
     QgsVectorLayer *mLayer = nullptr;
     QgsFeature mFeature;
@@ -349,14 +355,13 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     bool mOwnsMessageBar;
     QgsMessageBarItem *mMultiEditUnsavedMessageBarItem = nullptr;
     QgsMessageBarItem *mMultiEditMessageBarItem = nullptr;
-    QLabel *mInvalidConstraintMessage = nullptr;
-    QWidget *mTopMessageWidget = nullptr;
     QList<QgsWidgetWrapper *> mWidgets;
     QgsAttributeEditorContext mContext;
     QDialogButtonBox *mButtonBox = nullptr;
     QWidget *mSearchButtonBox = nullptr;
     QList<QgsAttributeFormInterface *> mInterfaces;
     QMap< int, QgsAttributeFormEditorWidget * > mFormEditorWidgets;
+    QList< QgsAttributeFormWidget *> mFormWidgets;
     QgsExpressionContext mExpressionContext;
     QMap<const QgsVectorLayerJoinInfo *, QgsFeature> mJoinedFeatures;
 
@@ -404,8 +409,6 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     //! Flag to prevent refreshFeature() to change mFeature
     bool mPreventFeatureRefresh;
 
-    //! Set to true while setting feature to prevent attributeChanged signal
-    bool mIsSettingFeature;
     bool mIsSettingMultiEditFeatures;
 
     QgsFeatureIds mMultiEditFeatureIds;
@@ -415,8 +418,6 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
 
     Mode mMode;
 
-    //! Backlinks widgets to buddies.
-    QMap<QWidget *, QLabel *> mBuddyMap;
     QMap<QWidget *, QSvgWidget *> mIconMap;
 
     friend class TestQgsDualView;

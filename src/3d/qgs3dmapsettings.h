@@ -24,18 +24,20 @@
 
 #include "qgscoordinatereferencesystem.h"
 #include "qgsmaplayerref.h"
+#include "qgsterraingenerator.h"
+#include "qgsvector3d.h"
 
 class QgsMapLayer;
 class QgsRasterLayer;
 
 class QgsAbstract3DRenderer;
-class QgsTerrainGenerator;
 
 
 class QgsReadWriteContext;
 class QgsProject;
 
 class QDomElement;
+
 
 /**
  * \ingroup 3d
@@ -47,10 +49,12 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject
 {
     Q_OBJECT
   public:
-    Qgs3DMapSettings();
+
+    //! Constructor for Qgs3DMapSettings
+    Qgs3DMapSettings() = default;
     //! Copy constructor
     Qgs3DMapSettings( const Qgs3DMapSettings &other );
-    ~Qgs3DMapSettings();
+    ~Qgs3DMapSettings() override;
 
     //! Reads configuration from a DOM element previously written by writeXml()
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
@@ -59,19 +63,48 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject
     //! Resolves references to other objects (map layers) after the call to readXml()
     void resolveReferences( const QgsProject &project );
 
-    //! Sets coordinates in map CRS at which our 3D world has origin (0,0,0)
-    void setOrigin( double originX, double originY, double originZ );
-    //! Returns X coordinate in map CRS at which 3D scene has origin (zero)
-    double originX() const { return mOriginX; }
-    //! Returns Y coordinate in map CRS at which 3D scene has origin (zero)
-    double originY() const { return mOriginY; }
-    //! Returns Z coordinate in map CRS at which 3D scene has origin (zero)
-    double originZ() const { return mOriginZ; }
+    /**
+     * Sets coordinates in map CRS at which our 3D world has origin (0,0,0)
+     *
+     * We move the 3D world origin to the center of the extent of our terrain: this is done
+     * to minimize the impact of numerical errors when operating with 32-bit floats.
+     * Unfortunately this is not enough when working with a large area (still results in jitter
+     * with scenes spanning hundreds of kilometers and zooming in a lot).
+     *
+     * Need to look into more advanced techniques like "relative to center" or "relative to eye"
+     * to improve the precision.
+     */
+    void setOrigin( const QgsVector3D &origin ) { mOrigin = origin; }
+    //! Returns coordinates in map CRS at which 3D scene has origin (0,0,0)
+    QgsVector3D origin() const { return mOrigin; }
+
+    //! Converts map coordinates to 3D world coordinates (applies offset and turns (x,y,z) into (x,-z,y))
+    QgsVector3D mapToWorldCoordinates( const QgsVector3D &mapCoords ) const;
+    //! Converts 3D world coordinates to map coordinates (applies offset and turns (x,y,z) into (x,-z,y))
+    QgsVector3D worldToMapCoordinates( const QgsVector3D &worldCoords ) const;
 
     //! Sets coordinate reference system used in the 3D scene
     void setCrs( const QgsCoordinateReferenceSystem &crs );
     //! Returns coordinate reference system used in the 3D scene
     QgsCoordinateReferenceSystem crs() const { return mCrs; }
+
+    /**
+     * Returns the coordinate transform context, which stores various
+     * information regarding which datum transforms should be used when transforming points
+     * from a source to destination coordinate reference system.
+     *
+     * \see setTransformContext()
+     */
+    QgsCoordinateTransformContext transformContext() const;
+
+    /**
+     * Sets the coordinate transform \a context, which stores various
+     * information regarding which datum transforms should be used when transforming points
+     * from a source to destination coordinate reference system.
+     *
+     * \see transformContext()
+     */
+    void setTransformContext( const QgsCoordinateTransformContext &context );
 
     //! Sets background color of the 3D map view
     void setBackgroundColor( const QColor &color );
@@ -206,23 +239,26 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject
     void showLabelsChanged();
 
   private:
-    double mOriginX, mOriginY, mOriginZ;   //!< Coordinates in map CRS at which our 3D world has origin (0,0,0)
+    //! Offset in map CRS coordinates at which our 3D world has origin (0,0,0)
+    QgsVector3D mOrigin;
     QgsCoordinateReferenceSystem mCrs;   //!< Destination coordinate system of the world
-    QColor mBackgroundColor;   //!< Background color of the scene
-    QColor mSelectionColor;    //!< Color to be used for selected map features
-    double mTerrainVerticalScale;   //!< Multiplier of terrain heights to make the terrain shape more pronounced
+    QColor mBackgroundColor = Qt::black;   //!< Background color of the scene
+    QColor mSelectionColor; //!< Color to be used for selected map features
+    double mTerrainVerticalScale = 1;   //!< Multiplier of terrain heights to make the terrain shape more pronounced
     std::unique_ptr<QgsTerrainGenerator> mTerrainGenerator;  //!< Implementation of the terrain generation
-    int mMapTileResolution;   //!< Size of map textures of tiles in pixels (width/height)
-    float mMaxTerrainScreenError;   //!< Maximum allowed terrain error in pixels (determines when tiles are switched to more detailed ones)
-    float mMaxTerrainGroundError;  //!< Maximum allowed horizontal map error in map units (determines how many zoom levels will be used)
-    bool mShowTerrainBoundingBoxes;  //!< Whether to show bounding boxes of entities - useful for debugging
-    bool mShowTerrainTileInfo;  //!< Whether to draw extra information about terrain tiles to the textures - useful for debugging
-    bool mShowLabels; //!< Whether to display labels on terrain tiles
+    int mMapTileResolution = 512;   //!< Size of map textures of tiles in pixels (width/height)
+    float mMaxTerrainScreenError = 3.f;   //!< Maximum allowed terrain error in pixels (determines when tiles are switched to more detailed ones)
+    float mMaxTerrainGroundError = 1.f;  //!< Maximum allowed horizontal map error in map units (determines how many zoom levels will be used)
+    bool mShowTerrainBoundingBoxes = false;  //!< Whether to show bounding boxes of entities - useful for debugging
+    bool mShowTerrainTileInfo = false;  //!< Whether to draw extra information about terrain tiles to the textures - useful for debugging
+    bool mShowLabels = false; //!< Whether to display labels on terrain tiles
     QList<QgsMapLayerRef> mLayers;   //!< Layers to be rendered
     QList<QgsAbstract3DRenderer *> mRenderers;  //!< Extra stuff to render as 3D object
-    bool mSkyboxEnabled;  //!< Whether to render skybox
-    QString mSkyboxFileBase;   //!< Base part of the files with skybox textures
-    QString mSkyboxFileExtension;  //!< Extension part of the files with skybox textures
+    bool mSkyboxEnabled = false;  //!< Whether to render skybox
+    QString mSkyboxFileBase; //!< Base part of the files with skybox textures
+    QString mSkyboxFileExtension; //!< Extension part of the files with skybox textures
+    //! Coordinate transform context
+    QgsCoordinateTransformContext mTransformContext;
 };
 
 

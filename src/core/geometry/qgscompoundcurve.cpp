@@ -61,6 +61,13 @@ bool QgsCompoundCurve::operator!=( const QgsCurve &other ) const
   return !operator==( other );
 }
 
+QgsCompoundCurve *QgsCompoundCurve::createEmptyWithSameType() const
+{
+  auto result = qgis::make_unique< QgsCompoundCurve >();
+  result->mWkbType = mWkbType;
+  return result.release();
+}
+
 QString QgsCompoundCurve::geometryType() const
 {
   return QStringLiteral( "CompoundCurve" );
@@ -218,7 +225,7 @@ bool QgsCompoundCurve::fromWkt( const QString &wkt )
 QByteArray QgsCompoundCurve::asWkb() const
 {
   int binarySize = sizeof( char ) + sizeof( quint32 ) + sizeof( quint32 );
-  QList<QByteArray> wkbForCurves;
+  QVector<QByteArray> wkbForCurves;
   for ( const QgsCurve *curve : mCurves )
   {
     QByteArray wkbForCurve = curve->asWkb();
@@ -260,21 +267,25 @@ QString QgsCompoundCurve::asWkt( int precision ) const
   return wkt;
 }
 
-QDomElement QgsCompoundCurve::asGML2( QDomDocument &doc, int precision, const QString &ns ) const
+QDomElement QgsCompoundCurve::asGml2( QDomDocument &doc, int precision, const QString &ns ) const
 {
   // GML2 does not support curves
   std::unique_ptr< QgsLineString > line( curveToLine() );
-  QDomElement gml = line->asGML2( doc, precision, ns );
+  QDomElement gml = line->asGml2( doc, precision, ns );
   return gml;
 }
 
-QDomElement QgsCompoundCurve::asGML3( QDomDocument &doc, int precision, const QString &ns ) const
+QDomElement QgsCompoundCurve::asGml3( QDomDocument &doc, int precision, const QString &ns ) const
 {
   QDomElement compoundCurveElem = doc.createElementNS( ns, QStringLiteral( "CompositeCurve" ) );
+
+  if ( isEmpty() )
+    return compoundCurveElem;
+
   for ( const QgsCurve *curve : mCurves )
   {
     QDomElement curveMemberElem = doc.createElementNS( ns, QStringLiteral( "curveMember" ) );
-    QDomElement curveElem = curve->asGML3( doc, precision, ns );
+    QDomElement curveElem = curve->asGml3( doc, precision, ns );
     curveMemberElem.appendChild( curveElem );
     compoundCurveElem.appendChild( curveMemberElem );
   }
@@ -282,21 +293,20 @@ QDomElement QgsCompoundCurve::asGML3( QDomDocument &doc, int precision, const QS
   return compoundCurveElem;
 }
 
-QString QgsCompoundCurve::asJSON( int precision ) const
+QString QgsCompoundCurve::asJson( int precision ) const
 {
   // GeoJSON does not support curves
   std::unique_ptr< QgsLineString > line( curveToLine() );
-  QString json = line->asJSON( precision );
+  QString json = line->asJson( precision );
   return json;
 }
 
 double QgsCompoundCurve::length() const
 {
   double length = 0;
-  QList< QgsCurve * >::const_iterator curveIt = mCurves.constBegin();
-  for ( ; curveIt != mCurves.constEnd(); ++curveIt )
+  for ( const QgsCurve *curve : mCurves )
   {
-    length += ( *curveIt )->length();
+    length += curve->length();
   }
   return length;
 }
@@ -369,15 +379,62 @@ bool QgsCompoundCurve::isEmpty() const
 
 QgsLineString *QgsCompoundCurve::curveToLine( double tolerance, SegmentationToleranceType toleranceType ) const
 {
-  QList< QgsCurve * >::const_iterator curveIt = mCurves.constBegin();
   QgsLineString *line = new QgsLineString();
   std::unique_ptr< QgsLineString > currentLine;
-  for ( ; curveIt != mCurves.constEnd(); ++curveIt )
+  for ( const QgsCurve *curve : mCurves )
   {
-    currentLine.reset( ( *curveIt )->curveToLine( tolerance, toleranceType ) );
+    currentLine.reset( curve->curveToLine( tolerance, toleranceType ) );
     line->append( currentLine.get() );
   }
   return line;
+}
+
+QgsCompoundCurve *QgsCompoundCurve::snappedToGrid( double hSpacing, double vSpacing, double dSpacing, double mSpacing ) const
+{
+  std::unique_ptr<QgsCompoundCurve> result( createEmptyWithSameType() );
+
+  for ( QgsCurve *curve : mCurves )
+  {
+    std::unique_ptr<QgsCurve> gridified( static_cast< QgsCurve * >( curve->snappedToGrid( hSpacing, vSpacing, dSpacing, mSpacing ) ) );
+    if ( gridified )
+    {
+      result->mCurves.append( gridified.release() );
+    }
+  }
+
+  if ( result->mCurves.empty() )
+    return nullptr;
+  else
+    return result.release();
+}
+
+bool QgsCompoundCurve::removeDuplicateNodes( double epsilon, bool useZValues )
+{
+  bool result = false;
+  const QVector< QgsCurve * > curves = mCurves;
+  int i = 0;
+  QgsPoint lastEnd;
+  for ( QgsCurve *curve : curves )
+  {
+    result = result || curve->removeDuplicateNodes( epsilon, useZValues );
+    if ( curve->numPoints() == 0 || qgsDoubleNear( curve->length(), 0.0, epsilon ) )
+    {
+      // empty curve, remove it
+      delete mCurves.takeAt( i );
+      result = true;
+    }
+    else
+    {
+      // ensure this line starts exactly where previous line ended
+      if ( i > 0 )
+      {
+        curve->moveVertex( QgsVertexId( -1, -1, 0 ), lastEnd );
+      }
+      lastEnd = curve->vertexAt( QgsVertexId( -1, -1, curve->numPoints() - 1 ) );
+    }
+    i++;
+  }
+  return result;
 }
 
 const QgsCurve *QgsCompoundCurve::curveAt( int i ) const
@@ -466,10 +523,9 @@ void QgsCompoundCurve::addVertex( const QgsPoint &pt )
 
 void QgsCompoundCurve::draw( QPainter &p ) const
 {
-  QList< QgsCurve * >::const_iterator it = mCurves.constBegin();
-  for ( ; it != mCurves.constEnd(); ++it )
+  for ( const QgsCurve *curve : mCurves )
   {
-    ( *it )->draw( p );
+    curve->draw( p );
   }
 }
 
@@ -482,11 +538,11 @@ void QgsCompoundCurve::transform( const QgsCoordinateTransform &ct, QgsCoordinat
   clearCache();
 }
 
-void QgsCompoundCurve::transform( const QTransform &t )
+void QgsCompoundCurve::transform( const QTransform &t, double zTranslate, double zScale, double mTranslate, double mScale )
 {
   for ( QgsCurve *curve : qgis::as_const( mCurves ) )
   {
-    curve->transform( t );
+    curve->transform( t, zTranslate, zScale, mTranslate, mScale );
   }
   clearCache();
 }
@@ -494,10 +550,9 @@ void QgsCompoundCurve::transform( const QTransform &t )
 void QgsCompoundCurve::addToPainterPath( QPainterPath &path ) const
 {
   QPainterPath pp;
-  QList< QgsCurve * >::const_iterator it = mCurves.constBegin();
-  for ( ; it != mCurves.constEnd(); ++it )
+  for ( const QgsCurve *curve : mCurves )
   {
-    ( *it )->addToPainterPath( pp );
+    curve->addToPainterPath( pp );
   }
   path.addPath( pp );
 }
@@ -505,17 +560,16 @@ void QgsCompoundCurve::addToPainterPath( QPainterPath &path ) const
 void QgsCompoundCurve::drawAsPolygon( QPainter &p ) const
 {
   QPainterPath pp;
-  QList< QgsCurve * >::const_iterator it = mCurves.constBegin();
-  for ( ; it != mCurves.constEnd(); ++it )
+  for ( const QgsCurve *curve : mCurves )
   {
-    ( *it )->addToPainterPath( pp );
+    curve->addToPainterPath( pp );
   }
   p.drawPath( pp );
 }
 
 bool QgsCompoundCurve::insertVertex( QgsVertexId position, const QgsPoint &vertex )
 {
-  QList< QPair<int, QgsVertexId> > curveIds = curveVertexId( position );
+  QVector< QPair<int, QgsVertexId> > curveIds = curveVertexId( position );
   if ( curveIds.empty() )
   {
     return false;
@@ -536,8 +590,8 @@ bool QgsCompoundCurve::insertVertex( QgsVertexId position, const QgsPoint &verte
 
 bool QgsCompoundCurve::moveVertex( QgsVertexId position, const QgsPoint &newPos )
 {
-  QList< QPair<int, QgsVertexId> > curveIds = curveVertexId( position );
-  QList< QPair<int, QgsVertexId> >::const_iterator idIt = curveIds.constBegin();
+  QVector< QPair<int, QgsVertexId> > curveIds = curveVertexId( position );
+  QVector< QPair<int, QgsVertexId> >::const_iterator idIt = curveIds.constBegin();
   for ( ; idIt != curveIds.constEnd(); ++idIt )
   {
     mCurves.at( idIt->first )->moveVertex( idIt->second, newPos );
@@ -553,7 +607,7 @@ bool QgsCompoundCurve::moveVertex( QgsVertexId position, const QgsPoint &newPos 
 
 bool QgsCompoundCurve::deleteVertex( QgsVertexId position )
 {
-  QList< QPair<int, QgsVertexId> > curveIds = curveVertexId( position );
+  QVector< QPair<int, QgsVertexId> > curveIds = curveVertexId( position );
   if ( curveIds.size() == 1 )
   {
     if ( !mCurves.at( curveIds.at( 0 ).first )->deleteVertex( curveIds.at( 0 ).second ) )
@@ -645,9 +699,9 @@ bool QgsCompoundCurve::deleteVertex( QgsVertexId position )
   return success;
 }
 
-QList< QPair<int, QgsVertexId> > QgsCompoundCurve::curveVertexId( QgsVertexId id ) const
+QVector< QPair<int, QgsVertexId> > QgsCompoundCurve::curveVertexId( QgsVertexId id ) const
 {
-  QList< QPair<int, QgsVertexId> > curveIds;
+  QVector< QPair<int, QgsVertexId> > curveIds;
 
   int currentVertexIndex = 0;
   for ( int i = 0; i < mCurves.size(); ++i )
@@ -674,7 +728,7 @@ QList< QPair<int, QgsVertexId> > QgsCompoundCurve::curveVertexId( QgsVertexId id
   return curveIds;
 }
 
-double QgsCompoundCurve::closestSegment( const QgsPoint &pt, QgsPoint &segmentPt,  QgsVertexId &vertexAfter, bool *leftOf, double epsilon ) const
+double QgsCompoundCurve::closestSegment( const QgsPoint &pt, QgsPoint &segmentPt,  QgsVertexId &vertexAfter, int *leftOf, double epsilon ) const
 {
   return QgsGeometryUtils::closestSegmentFromComponents( mCurves, QgsGeometryUtils::Vertex, pt, segmentPt, vertexAfter, leftOf, epsilon );
 }
@@ -726,10 +780,9 @@ double QgsCompoundCurve::yAt( int index ) const
 
 void QgsCompoundCurve::sumUpArea( double &sum ) const
 {
-  QList< QgsCurve * >::const_iterator curveIt = mCurves.constBegin();
-  for ( ; curveIt != mCurves.constEnd(); ++curveIt )
+  for ( const QgsCurve *curve : mCurves )
   {
-    ( *curveIt )->sumUpArea( sum );
+    curve->sumUpArea( sum );
   }
 }
 
@@ -744,10 +797,9 @@ void QgsCompoundCurve::close()
 
 bool QgsCompoundCurve::hasCurvedSegments() const
 {
-  QList< QgsCurve * >::const_iterator curveIt = mCurves.constBegin();
-  for ( ; curveIt != mCurves.constEnd(); ++curveIt )
+  for ( const QgsCurve *curve : mCurves )
   {
-    if ( ( *curveIt )->hasCurvedSegments() )
+    if ( curve->hasCurvedSegments() )
     {
       return true;
     }
@@ -757,7 +809,7 @@ bool QgsCompoundCurve::hasCurvedSegments() const
 
 double QgsCompoundCurve::vertexAngle( QgsVertexId vertex ) const
 {
-  QList< QPair<int, QgsVertexId> > curveIds = curveVertexId( vertex );
+  QVector< QPair<int, QgsVertexId> > curveIds = curveVertexId( vertex );
   if ( curveIds.size() == 1 )
   {
     QgsCurve *curve = mCurves[curveIds.at( 0 ).first];
@@ -775,6 +827,17 @@ double QgsCompoundCurve::vertexAngle( QgsVertexId vertex ) const
   {
     return 0.0;
   }
+}
+
+double QgsCompoundCurve::segmentLength( QgsVertexId startVertex ) const
+{
+  QVector< QPair<int, QgsVertexId> > curveIds = curveVertexId( startVertex );
+  double length = 0.0;
+  for ( auto it = curveIds.constBegin(); it != curveIds.constEnd(); ++it )
+  {
+    length += mCurves.at( it->first )->segmentLength( it->second );
+  }
+  return length;
 }
 
 QgsCompoundCurve *QgsCompoundCurve::reversed() const

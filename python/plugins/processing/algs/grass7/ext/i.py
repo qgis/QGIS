@@ -45,7 +45,7 @@ def multipleOutputDir(alg, field, basename=None):
         commands = ["for r in $(g.list type=rast pattern='{}*'); do".format(basename)]
     # Otherwise, export everything
     else:
-        commands = ["for r in $(g.list type=rast); do".format(basename)]
+        commands = ["for r in $(g.list type=rast); do"]
     commands.append("  r.out.gdal -c -t -f input=${{r}} output={}/${{r}}.tif createopt=\"TFW=YES,COMPRESS=LZW\"".format(outputDir))
     commands.append("done")
     alg.commands.extend(commands)
@@ -102,7 +102,7 @@ def orderedInput(alg, inputParameter, targetParameterDef, numSeq=None):
 def regroupRasters(alg, parameters, field, groupField, subgroupField=None, extFile=None):
     """
     Group multiple input rasters into a group
-    * If there is a subgroupField, a subgroup will automatically created.
+    * If there is a subgroupField, a subgroup will automatically be created.
     * When an external file is provided, the file is copied into the respective
       directory of the subgroup.
     * extFile is a dict of the form 'parameterName':'directory name'.
@@ -169,9 +169,9 @@ def exportInputRasters(alg, rasterDic):
         alg.outputCommands.append(command)
 
 
-def verifyRasterNum(alg, rasters, mini, maxi=None):
+def verifyRasterNum(alg, parameters, context, rasters, mini, maxi=None):
     """Verify if we have at least n rasters in multipleInput"""
-    num = len(alg.getParameterValue(rasters).split(';'))
+    num = len(alg.parameterAsStrings(rasters).split(';'))
     if num < mini:
         return 'You need to set at least {} input rasters for this algorithm!'.format(mini)
     if maxi and num > maxi:

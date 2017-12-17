@@ -218,6 +218,11 @@ QgsExpression &QgsExpression::operator=( const QgsExpression &other )
   return *this;
 }
 
+QgsExpression::operator QString() const
+{
+  return d->mExp;
+}
+
 QgsExpression::QgsExpression()
   : d( new QgsExpressionPrivate )
 {
@@ -471,7 +476,9 @@ double QgsExpression::evaluateToDouble( const QString &text, const double fallba
 {
   bool ok;
   //first test if text is directly convertible to double
-  double convertedValue = text.toDouble( &ok );
+  // use system locale: e.g. in German locale, user is presented with numbers "1,23" instead of "1.23" in C locale
+  // so we also want to allow user to rewrite it to "5,23" and it is still accepted
+  double convertedValue = QLocale::system().toDouble( text, &ok );
   if ( ok )
   {
     return convertedValue;
@@ -559,7 +566,7 @@ QString QgsExpression::helpText( QString name )
 
         if ( v.mVariableLenArguments )
         {
-          helpContents += QStringLiteral( "…" );
+          helpContents += QChar( 0x2026 );
         }
 
         helpContents += ')';
@@ -778,7 +785,7 @@ QString QgsExpression::formatPreviewString( const QVariant &value )
     if ( geom.isNull() )
       return tr( "<i>&lt;empty geometry&gt;</i>" );
     else
-      return tr( "<i>&lt;geometry: %1&gt;</i>" ).arg( QgsWkbTypes::displayString( geom.geometry()->wkbType() ) );
+      return tr( "<i>&lt;geometry: %1&gt;</i>" ).arg( QgsWkbTypes::displayString( geom.constGet()->wkbType() ) );
   }
   else if ( !value.isValid() )
   {

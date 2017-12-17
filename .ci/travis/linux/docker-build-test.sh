@@ -6,13 +6,17 @@ set -e
 # Setup ccache
 ##############
 export CCACHE_TEMPDIR=/tmp
-ccache -M 500M
+ccache -M 1G
+
+# Temporarily uncomment to debug ccache issues
+# export CCACHE_LOGFILE=/tmp/cache.debug
 ccache -z
 
 ############################
 # Setup the (c)test environment
 ############################
 export LD_PRELOAD=/lib/x86_64-linux-gnu/libSegFault.so
+export SEGFAULT_SIGNALS="abrt segv"
 export CTEST_BUILD_COMMAND="/usr/bin/ninja"
 export CTEST_PARALLEL_LEVEL=1
 
@@ -46,6 +50,7 @@ cmake \
  -DWITH_ASTYLE=OFF \
  -DWITH_DESKTOP=ON \
  -DWITH_BINDINGS=ON \
+ -DWITH_SERVER=ON \
  -DDISABLE_DEPRECATED=ON \
  -DCXX_EXTRA_FLAGS=${CLANG_WARNINGS} ..
 echo "travis_fold:end:cmake"
@@ -57,6 +62,11 @@ echo "travis_fold:start:ninja-build.1"
 echo "${bold}Building QGIS...${endbold}"
 ${CTEST_BUILD_COMMAND}
 echo "travis_fold:end:ninja-build.1"
+
+# Temporarily uncomment to debug ccache issues
+# echo "travis_fold:start:ccache-debug"
+# cat /tmp/cache.debug
+# echo "travis_fold:end:ccache-debug"
 
 ############################
 # Restore postgres test data

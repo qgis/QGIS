@@ -78,7 +78,7 @@ class GUI_EXPORT QgsLayoutViewRubberBand
      * band is no longer required.
      * Returns the final bounding box of the rubber band.
      */
-    virtual QRectF finish( QPointF position = QPointF(), Qt::KeyboardModifiers modifiers = 0 ) = 0;
+    virtual QRectF finish( QPointF position = QPointF(), Qt::KeyboardModifiers modifiers = nullptr ) = 0;
 
     /**
      * Returns the view associated with the rubber band.
@@ -155,11 +155,11 @@ class GUI_EXPORT QgsLayoutViewRectangularRubberBand : public QgsLayoutViewRubber
     QgsLayoutViewRectangularRubberBand( QgsLayoutView *view = nullptr );
     QgsLayoutViewRectangularRubberBand *create( QgsLayoutView *view ) const override SIP_FACTORY;
 
-    ~QgsLayoutViewRectangularRubberBand();
+    ~QgsLayoutViewRectangularRubberBand() override;
 
     void start( QPointF position, Qt::KeyboardModifiers modifiers ) override;
     void update( QPointF position, Qt::KeyboardModifiers modifiers ) override;
-    QRectF finish( QPointF position = QPointF(), Qt::KeyboardModifiers modifiers = 0 ) override;
+    QRectF finish( QPointF position = QPointF(), Qt::KeyboardModifiers modifiers = nullptr ) override;
 
   private:
 
@@ -186,11 +186,11 @@ class GUI_EXPORT QgsLayoutViewEllipticalRubberBand : public QgsLayoutViewRubberB
     QgsLayoutViewEllipticalRubberBand( QgsLayoutView *view = nullptr );
     QgsLayoutViewEllipticalRubberBand *create( QgsLayoutView *view ) const override SIP_FACTORY;
 
-    ~QgsLayoutViewEllipticalRubberBand();
+    ~QgsLayoutViewEllipticalRubberBand() override;
 
     void start( QPointF position, Qt::KeyboardModifiers modifiers ) override;
     void update( QPointF position, Qt::KeyboardModifiers modifiers ) override;
-    QRectF finish( QPointF position = QPointF(), Qt::KeyboardModifiers modifiers = 0 ) override;
+    QRectF finish( QPointF position = QPointF(), Qt::KeyboardModifiers modifiers = nullptr ) override;
 
   private:
 
@@ -217,11 +217,11 @@ class GUI_EXPORT QgsLayoutViewTriangleRubberBand : public QgsLayoutViewRubberBan
     QgsLayoutViewTriangleRubberBand( QgsLayoutView *view = nullptr );
     QgsLayoutViewTriangleRubberBand *create( QgsLayoutView *view ) const override SIP_FACTORY;
 
-    ~QgsLayoutViewTriangleRubberBand();
+    ~QgsLayoutViewTriangleRubberBand() override;
 
     void start( QPointF position, Qt::KeyboardModifiers modifiers ) override;
     void update( QPointF position, Qt::KeyboardModifiers modifiers ) override;
-    QRectF finish( QPointF position = QPointF(), Qt::KeyboardModifiers modifiers = 0 ) override;
+    QRectF finish( QPointF position = QPointF(), Qt::KeyboardModifiers modifiers = nullptr ) override;
 
   private:
 

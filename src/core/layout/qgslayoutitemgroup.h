@@ -35,10 +35,10 @@ class CORE_EXPORT QgsLayoutItemGroup: public QgsLayoutItem
      * Constructor for QgsLayoutItemGroup, belonging to the specified \a layout.
      */
     explicit QgsLayoutItemGroup( QgsLayout *layout );
-    ~QgsLayoutItemGroup();
+
+    void cleanup() override;
 
     int type() const override;
-    QString stringType() const override;
     QString displayName() const override;
 
     /**
@@ -46,7 +46,7 @@ class CORE_EXPORT QgsLayoutItemGroup: public QgsLayoutItem
      *
      * The caller takes responsibility for deleting the returned object.
      */
-    static QgsLayoutItemGroup *create( QgsLayout *layout, const QVariantMap &settings ) SIP_FACTORY;
+    static QgsLayoutItemGroup *create( QgsLayout *layout ) SIP_FACTORY;
 
     /**
      * Adds an \a item to the group. Ownership of the item
@@ -69,16 +69,17 @@ class CORE_EXPORT QgsLayoutItemGroup: public QgsLayoutItem
     void setVisibility( const bool visible ) override;
 
     //overridden to move child items
-    void attemptMove( const QgsLayoutPoint &point ) override;
-    void attemptResize( const QgsLayoutSize &size ) override;
-
-    bool writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const override;
-    bool readXml( const QDomElement &itemElement, const QDomDocument &document, const QgsReadWriteContext &context ) override;
+    void attemptMove( const QgsLayoutPoint &point, bool useReferencePoint = true, bool includesFrame = false, int page = -1 ) override;
+    void attemptResize( const QgsLayoutSize &size, bool includesFrame = false ) override;
 
     void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget ) override;
 
+    void finalizeRestoreFromXml() override;
+
   protected:
     void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = nullptr ) override;
+    bool writePropertiesToElement( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const override;
+    bool readPropertiesFromElement( const QDomElement &itemElement, const QDomDocument &document, const QgsReadWriteContext &context ) override;
 
   private:
 
@@ -86,7 +87,7 @@ class CORE_EXPORT QgsLayoutItemGroup: public QgsLayoutItem
     void updateBoundingRect( QgsLayoutItem *item );
     void setSceneRect( const QRectF &rectangle );
 
-
+    QList< QString > mItemUuids;
     QList< QPointer< QgsLayoutItem >> mItems;
     QRectF mBoundingRectangle;
 };

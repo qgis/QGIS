@@ -22,6 +22,8 @@
 #include "qgsgeometryutils.h"
 #include "qgsmaptopixel.h"
 #include "qgswkbptr.h"
+
+#include <cmath>
 #include <QPainter>
 #include <QRegularExpression>
 
@@ -112,6 +114,32 @@ bool QgsPoint::operator!=( const QgsPoint &pt ) const
 QgsPoint *QgsPoint::clone() const
 {
   return new QgsPoint( *this );
+}
+
+QgsPoint *QgsPoint::snappedToGrid( double hSpacing, double vSpacing, double dSpacing, double mSpacing ) const
+{
+  // helper function
+  auto gridifyValue = []( double value, double spacing, bool extraCondition = true ) -> double
+  {
+    if ( spacing > 0 && extraCondition )
+      return  std::round( value / spacing ) * spacing;
+    else
+      return value;
+  };
+
+  // Get the new values
+  auto x = gridifyValue( mX, hSpacing );
+  auto y = gridifyValue( mY, vSpacing );
+  auto z = gridifyValue( mZ, dSpacing, QgsWkbTypes::hasZ( mWkbType ) );
+  auto m = gridifyValue( mM, mSpacing, QgsWkbTypes::hasM( mWkbType ) );
+
+  // return the new object
+  return new QgsPoint( mWkbType, x, y, z, m );
+}
+
+bool QgsPoint::removeDuplicateNodes( double, bool )
+{
+  return false;
 }
 
 bool QgsPoint::fromWkb( QgsConstWkbPtr &wkbPtr )
@@ -224,7 +252,7 @@ QString QgsPoint::asWkt( int precision ) const
   return wkt;
 }
 
-QDomElement QgsPoint::asGML2( QDomDocument &doc, int precision, const QString &ns ) const
+QDomElement QgsPoint::asGml2( QDomDocument &doc, int precision, const QString &ns ) const
 {
   QDomElement elemPoint = doc.createElementNS( ns, QStringLiteral( "Point" ) );
   QDomElement elemCoordinates = doc.createElementNS( ns, QStringLiteral( "coordinates" ) );
@@ -243,7 +271,7 @@ QDomElement QgsPoint::asGML2( QDomDocument &doc, int precision, const QString &n
   return elemPoint;
 }
 
-QDomElement QgsPoint::asGML3( QDomDocument &doc, int precision, const QString &ns ) const
+QDomElement QgsPoint::asGml3( QDomDocument &doc, int precision, const QString &ns ) const
 {
   QDomElement elemPoint = doc.createElementNS( ns, QStringLiteral( "Point" ) );
   QDomElement elemPosList = doc.createElementNS( ns, QStringLiteral( "pos" ) );
@@ -263,7 +291,7 @@ QDomElement QgsPoint::asGML3( QDomDocument &doc, int precision, const QString &n
  * See details in QEP #17
  ****************************************************************************/
 
-QString QgsPoint::asJSON( int precision ) const
+QString QgsPoint::asJson( int precision ) const
 {
   return "{\"type\": \"Point\", \"coordinates\": ["
          + qgsDoubleToString( mX, precision ) + ", " + qgsDoubleToString( mY, precision )
@@ -320,6 +348,14 @@ int QgsPoint::nCoordinates() const
   return 1;
 }
 
+int QgsPoint::vertexNumberFromVertexId( QgsVertexId id ) const
+{
+  if ( id.vertex != 0 )
+    return -1;
+  else
+    return 0;
+}
+
 QgsAbstractGeometry *QgsPoint::boundary() const
 {
   return nullptr;
@@ -361,12 +397,13 @@ bool QgsPoint::deleteVertex( QgsVertexId position )
   return false;
 }
 
-double QgsPoint::closestSegment( const QgsPoint &pt, QgsPoint &segmentPt,  QgsVertexId &vertexAfter, bool *leftOf, double epsilon ) const
+double QgsPoint::closestSegment( const QgsPoint &pt, QgsPoint &segmentPt,  QgsVertexId &vertexAfter, int *leftOf, double epsilon ) const
 {
   Q_UNUSED( pt );
   Q_UNUSED( segmentPt );
   Q_UNUSED( vertexAfter );
-  Q_UNUSED( leftOf );
+  if ( leftOf )
+    *leftOf = 0;
   Q_UNUSED( epsilon );
   return -1;  // no segments - return error
 }
@@ -391,6 +428,12 @@ bool QgsPoint::nextVertex( QgsVertexId &id, QgsPoint &vertex ) const
   {
     return false;
   }
+}
+
+void QgsPoint::adjacentVertices( QgsVertexId, QgsVertexId &previousVertex, QgsVertexId &nextVertex ) const
+{
+  previousVertex = QgsVertexId();
+  nextVertex = QgsVertexId();
 }
 
 double QgsPoint::vertexAngle( QgsVertexId vertex ) const
@@ -424,6 +467,11 @@ QgsPoint *QgsPoint::toCurveType() const
   return clone();
 }
 
+double QgsPoint::segmentLength( QgsVertexId ) const
+{
+  return 0.0;
+}
+
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
  * full unit tests.
@@ -452,13 +500,22 @@ bool QgsPoint::addMValue( double mValue )
   return true;
 }
 
-void QgsPoint::transform( const QTransform &t )
+void QgsPoint::transform( const QTransform &t, double zTranslate, double zScale, double mTranslate, double mScale )
 {
   clearCache();
   qreal x, y;
   t.map( mX, mY, &x, &y );
   mX = x;
   mY = y;
+
+  if ( is3D() )
+  {
+    mZ = mZ * zScale + zTranslate;
+  }
+  if ( isMeasure() )
+  {
+    mM = mM * mScale + mTranslate;
+  }
 }
 
 
@@ -654,4 +711,10 @@ QgsPoint QgsPoint::childPoint( int index ) const
 {
   Q_ASSERT( index == 0 );
   return *this;
+}
+
+QgsPoint *QgsPoint::createEmptyWithSameType() const
+{
+  double nan = std::numeric_limits<double>::quiet_NaN();
+  return new QgsPoint( nan, nan, nan, nan, mWkbType );
 }

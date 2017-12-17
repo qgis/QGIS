@@ -38,12 +38,14 @@ class QgsApplyDialog;
 class QgsVectorLayer;
 class QgsLabelingWidget;
 class QgsDiagramProperties;
-class QgsFieldsProperties;
+class QgsSourceFieldsProperties;
+class QgsAttributesFormProperties;
 class QgsRendererPropertiesDialog;
 class QgsMapLayerConfigWidgetFactory;
 class QgsMapLayerConfigWidget;
 class QgsMetadataWidget;
 class QgsPanelWidget;
+class QgsVectorLayer3DRendererWidget;
 
 class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private Ui::QgsVectorLayerPropertiesBase, private QgsExpressionContextGenerator
 {
@@ -116,7 +118,7 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     void saveDefaultStyle_clicked();
     void loadStyle_clicked();
     void saveStyleAs_clicked();
-    void mOptionsStackedWidget_CurrentChanged( int indx );
+    void optionsStackedWidget_CurrentChanged( int index ) override;
     void pbnUpdateExtents_clicked();
 
     void mButtonAddJoin_clicked();
@@ -150,11 +152,6 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
      * Updates the variable editor to reflect layer changes
      */
     void updateVariableEditor();
-
-    /**
-     * \brief updates the FieldsPropertiesDialog when syncing the layer properties
-     */
-    void updateFieldsPropertiesDialog();
 
     void onAuxiliaryLayerNew();
 
@@ -199,8 +196,10 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     QgsAttributeActionDialog *mActionDialog = nullptr;
     //! Diagram dialog. If apply is pressed, options are applied to vector's diagrams
     QgsDiagramProperties *diagramPropertiesDialog = nullptr;
-    //! Fields dialog. If apply is pressed, options are applied to vector's diagrams
-    QgsFieldsProperties *mFieldsPropertiesDialog = nullptr;
+    //! SourceFields dialog. If apply is pressed, options are applied to vector's diagrams
+    QgsSourceFieldsProperties *mSourceFieldsPropertiesDialog = nullptr;
+    //! AttributesForm dialog. If apply is pressed, options are applied to vector's diagrams
+    QgsAttributesFormProperties *mAttributesFormPropertiesDialog = nullptr;
 
     //! List of joins of a layer at the time of creation of the dialog. Used to return joins to previous state if dialog is canceled
     QList< QgsVectorLayerJoinInfo > mOldJoins;
@@ -238,6 +237,8 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     QAction *mAuxiliaryLayerActionExport = nullptr;
     QAction *mAuxiliaryLayerActionDeleteField = nullptr;
     QAction *mAuxiliaryLayerActionAddField = nullptr;
+
+    QgsVectorLayer3DRendererWidget *mVector3DWidget = nullptr;
 
   private slots:
     void openPanel( QgsPanelWidget *panel );

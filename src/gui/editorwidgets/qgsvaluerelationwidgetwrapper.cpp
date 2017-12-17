@@ -29,7 +29,6 @@
 
 QgsValueRelationWidgetWrapper::QgsValueRelationWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent )
   : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
-  , mUpdating( false )
 {
 }
 
@@ -66,7 +65,7 @@ QVariant QgsValueRelationWidgetWrapper::value() const
     {
       if ( item.value == mLineEdit->text() )
       {
-        v = item.value;
+        v = item.key;
         break;
       }
     }
@@ -138,6 +137,8 @@ void QgsValueRelationWidgetWrapper::initWidget( QWidget *editor )
     QCompleter *completer = new QCompleter( m, mLineEdit );
     completer->setCaseSensitivity( Qt::CaseInsensitive );
     mLineEdit->setCompleter( completer );
+
+    connect( mLineEdit, &QLineEdit::textChanged, this, static_cast<void ( QgsEditorWidgetWrapper::* )()>( &QgsEditorWidgetWrapper::valueChanged ) );
   }
 }
 
@@ -150,7 +151,11 @@ void QgsValueRelationWidgetWrapper::setValue( const QVariant &value )
 {
   if ( mListWidget )
   {
-    QStringList checkList = value.toString().remove( QChar( '{' ) ).remove( QChar( '}' ) ).split( ',' );
+    QStringList checkList;
+    if ( value.type() == QVariant::StringList )
+      checkList = value.toStringList();
+    else if ( value.type() == QVariant::String )
+      checkList = value.toString().remove( QChar( '{' ) ).remove( QChar( '}' ) ).split( ',' );
 
     for ( int i = 0; i < mListWidget->count(); ++i )
     {
@@ -198,12 +203,13 @@ void QgsValueRelationWidgetWrapper::showIndeterminateState()
 
 void QgsValueRelationWidgetWrapper::setEnabled( bool enabled )
 {
-  if ( mUpdating )
+  if ( mEnabled == enabled )
     return;
+
+  mEnabled = enabled;
 
   if ( mListWidget )
   {
-    mUpdating = true;
     for ( int i = 0; i < mListWidget->count(); ++i )
     {
       QListWidgetItem *item = mListWidget->item( i );
@@ -213,7 +219,6 @@ void QgsValueRelationWidgetWrapper::setEnabled( bool enabled )
       else
         item->setFlags( item->flags() & ~Qt::ItemIsEnabled );
     }
-    mUpdating = false;
   }
   else
     QgsEditorWidgetWrapper::setEnabled( enabled );

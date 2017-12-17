@@ -54,14 +54,24 @@ class CORE_EXPORT QgsRasterFileWriter
       WriteCanceled = 6, //!< Writing was manually canceled
     };
 
+    /**
+     * Options for sorting and filtering raster formats.
+     * \since QGIS 3.0
+     */
+    enum RasterFormatOption
+    {
+      SortRecommended = 1 << 1, //!< Use recommended sort order, with extremely commonly used formats listed first
+    };
+    Q_DECLARE_FLAGS( RasterFormatOptions, RasterFormatOption )
+
     QgsRasterFileWriter( const QString &outputUrl );
 
     /**
      * Create a raster file with one band without initializing the pixel data.
      * Returned provider may be used to initialize the raster using writeBlock() calls.
      * Ownership of the returned provider is passed to the caller.
-     * \note Does not work with tiled mode enabled.
      * \returns Instance of data provider in editing mode (on success) or nullptr on error.
+     * \note Does not work with tiled mode enabled.
      * \since QGIS 3.0
      */
     QgsRasterDataProvider *createOneBandRaster( Qgis::DataType dataType,
@@ -73,8 +83,8 @@ class CORE_EXPORT QgsRasterFileWriter
      * Create a raster file with given number of bands without initializing the pixel data.
      * Returned provider may be used to initialize the raster using writeBlock() calls.
      * Ownership of the returned provider is passed to the caller.
-     * \note Does not work with tiled mode enabled.
      * \returns Instance of data provider in editing mode (on success) or nullptr on error.
+     * \note Does not work with tiled mode enabled.
      * \since QGIS 3.0
      */
     QgsRasterDataProvider *createMultiBandRaster( Qgis::DataType dataType,
@@ -134,6 +144,44 @@ class CORE_EXPORT QgsRasterFileWriter
     void setPyramidsConfigOptions( const QStringList &list ) { mPyramidsConfigOptions = list; }
     QStringList pyramidsConfigOptions() const { return mPyramidsConfigOptions; }
 
+    //! Creates a filter for an GDAL driver key
+    static QString filterForDriver( const QString &driverName );
+
+    /**
+     * Details of available filters and formats.
+     * \since QGIS 3.0
+     */
+    struct FilterFormatDetails
+    {
+      //! Unique driver name
+      QString driverName;
+
+      //! Filter string for file picker dialogs
+      QString filterString;
+    };
+
+    /**
+     * Returns a list or pairs, with format filter string as first element and GDAL format key as second element.
+     * Relies on GDAL_DMD_EXTENSIONS metadata, if it is empty corresponding driver will be skipped even if supported.
+     *
+     * The \a options argument can be used to control the sorting and filtering of
+     * returned formats.
+     *
+     * \see supportedOutputRasterLayerExtensions()
+     */
+    static QList< QgsRasterFileWriter::FilterFormatDetails > supportedFiltersAndFormats( RasterFormatOptions options = SortRecommended );
+
+    /**
+     * Returns a list of file extensions for supported formats.
+     *
+     * The \a options argument can be used to control the sorting and filtering of
+     * returned formats.
+     *
+     * \since QGIS 3.0
+     * \see supportedFiltersAndFormats()
+     */
+    static QStringList supportedFormatExtensions( RasterFormatOptions options = SortRecommended );
+
     /**
      * Returns the GDAL driver name for a specified file \a extension. E.g. the
      * driver name for the ".tif" extension is "GTiff".
@@ -141,6 +189,16 @@ class CORE_EXPORT QgsRasterFileWriter
      * \since QGIS 3.0
      */
     static QString driverForExtension( const QString &extension );
+
+    /**
+     * Returns a list of known file extensions for the given GDAL driver \a format.
+     * E.g. returns "tif", "tiff" for the format "GTiff".
+     *
+     * If no matching format driver is found an empty list will be returned.
+     *
+     * \since QGIS 3.0
+     */
+    static QStringList extensionsForFormat( const QString &format );
 
   private:
     QgsRasterFileWriter(); //forbidden

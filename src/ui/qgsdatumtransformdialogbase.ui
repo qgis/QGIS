@@ -6,42 +6,42 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>547</width>
-    <height>285</height>
+    <width>620</width>
+    <height>490</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Select Datum Transformations</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="3" column="0" colspan="2">
-    <widget class="QTreeWidget" name="mDatumTransformTreeWidget">
-     <column>
-      <property name="text">
-       <string>src transform</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>dst transform</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string/>
-      </property>
-     </column>
+   <item row="4" column="0">
+    <widget class="QLabel" name="mLabelSrcDescription">
+     <property name="text">
+      <string notr="true">Description</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
     </widget>
    </item>
-   <item row="6" column="0" colspan="2">
+   <item row="4" column="1">
+    <widget class="QLabel" name="mLabelDstDescription">
+     <property name="text">
+      <string notr="true">Description</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="0" colspan="2">
     <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <widget class="QCheckBox" name="mRememberSelectionCheckBox">
-       <property name="text">
-        <string>Remember selection</string>
-       </property>
-      </widget>
-     </item>
      <item>
       <spacer name="horizontalSpacer">
        <property name="orientation">
@@ -64,36 +64,8 @@
      </item>
     </layout>
    </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="label_2">
-     <property name="text">
-      <string>Destination CRS</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="1">
-    <widget class="QLabel" name="mLabelSrcCrs">
-     <property name="text">
-      <string notr="true">Source CRS</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="1">
-    <widget class="QLabel" name="mLabelDstCrs">
-     <property name="text">
-      <string notr="true">Destination CRS</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0">
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string>Source CRS</string>
-     </property>
-    </widget>
-   </item>
-   <item row="7" column="0" colspan="2">
-    <widget class="QDialogButtonBox" name="buttonBox">
+   <item row="6" column="0" colspan="2">
+    <widget class="QDialogButtonBox" name="mButtonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
@@ -102,58 +74,72 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="0">
-    <widget class="QLabel" name="label_3">
-     <property name="text">
-      <string>Layer</string>
-     </property>
+   <item row="3" column="0" colspan="2">
+    <widget class="QTreeWidget" name="mDatumTransformTreeWidget">
+     <column>
+      <property name="text">
+       <string>src transform</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>dst transform</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string/>
+      </property>
+     </column>
     </widget>
    </item>
-   <item row="0" column="1">
-    <widget class="QLabel" name="mLabelLayer">
-     <property name="text">
-      <string notr="true">layer name</string>
-     </property>
-    </widget>
+   <item row="0" column="0" colspan="2">
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Source CRS</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QgsProjectionSelectionWidget" name="mSourceProjectionSelectionWidget"/>
+     </item>
+    </layout>
    </item>
-   <item row="4" column="1">
-    <widget class="QLabel" name="mLabelDstDescription">
-     <property name="text">
-      <string notr="true">Description</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-     </property>
-     <property name="wordWrap">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="0">
-    <widget class="QLabel" name="mLabelSrcDescription">
-     <property name="text">
-      <string notr="true">Description</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-     </property>
-     <property name="wordWrap">
-      <bool>true</bool>
-     </property>
-    </widget>
+   <item row="1" column="0" colspan="2">
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <item>
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>Destination CRS</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QgsProjectionSelectionWidget" name="mDestinationProjectionSelectionWidget"/>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsProjectionSelectionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsprojectionselectionwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>mDatumTransformTreeWidget</tabstop>
-  <tabstop>mRememberSelectionCheckBox</tabstop>
   <tabstop>mHideDeprecatedCheckBox</tabstop>
-  <tabstop>buttonBox</tabstop>
+  <tabstop>mButtonBox</tabstop>
  </tabstops>
  <resources/>
  <connections>
   <connection>
-   <sender>buttonBox</sender>
+   <sender>mButtonBox</sender>
    <signal>accepted()</signal>
    <receiver>QgsDatumTransformDialogBase</receiver>
    <slot>accept()</slot>
@@ -169,7 +155,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>buttonBox</sender>
+   <sender>mButtonBox</sender>
    <signal>rejected()</signal>
    <receiver>QgsDatumTransformDialogBase</receiver>
    <slot>reject()</slot>

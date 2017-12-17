@@ -13,8 +13,9 @@
 class QgsCodeEditorCSS : QgsCodeEditor
 {
 %Docstring
- A CSS editor based on QScintilla2. Adds syntax highlighting and
- code autocompletion.
+A CSS editor based on QScintilla2. Adds syntax highlighting and
+code autocompletion.
+
 .. versionadded:: 2.6
 %End
 
@@ -22,7 +23,11 @@ class QgsCodeEditorCSS : QgsCodeEditor
 #include "qgscodeeditorcss.h"
 %End
   public:
+
     QgsCodeEditorCSS( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsCodeEditorCSS
+%End
 
 };
 

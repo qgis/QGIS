@@ -12,8 +12,9 @@
 class QgsMapToolZoom : QgsMapTool
 {
 %Docstring
- A map tool for zooming into the map.
-.. seealso:: QgsMapTool
+A map tool for zooming into the map.
+
+.. seealso:: :py:class:`QgsMapTool`
 %End
 
 %TypeHeaderCode
@@ -28,9 +29,13 @@ constructor
 
     virtual Flags flags() const;
     virtual void canvasMoveEvent( QgsMapMouseEvent *e );
+
     virtual void canvasPressEvent( QgsMapMouseEvent *e );
+
     virtual void canvasReleaseEvent( QgsMapMouseEvent *e );
+
     virtual void deactivate();
+
 
   protected:
 

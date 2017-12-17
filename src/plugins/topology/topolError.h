@@ -29,8 +29,7 @@ typedef bool ( TopolError::*fixFunction )();
 class FeatureLayer
 {
   public:
-    FeatureLayer()
-    {}
+    FeatureLayer() = default;
 
     /**
      * Constructor

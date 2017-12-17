@@ -34,6 +34,7 @@
 #include <memory>
 #include <QDesktopWidget>
 #include <QMenu>
+#include <QClipboard>
 
 #define MIN_VIEW_SCALE 0.05
 #define MAX_VIEW_SCALE 1000.0
@@ -54,10 +55,11 @@ QgsLayoutView::QgsLayoutView( QWidget *parent )
   mSpacePanTool = new QgsLayoutViewToolTemporaryKeyPan( this );
   mMidMouseButtonPanTool = new QgsLayoutViewToolTemporaryMousePan( this );
   mSpaceZoomTool = new QgsLayoutViewToolTemporaryKeyZoom( this );
-  mSnapMarker.reset( new QgsLayoutViewSnapMarker() );
 
   mPreviewEffect = new QgsPreviewEffect( this );
   viewport()->setGraphicsEffect( mPreviewEffect );
+
+  connect( this, &QgsLayoutView::zoomLevelChanged, this, &QgsLayoutView::invalidateCachedRenders );
 }
 
 QgsLayout *QgsLayoutView::currentLayout()
@@ -79,16 +81,19 @@ void QgsLayoutView::setCurrentLayout( QgsLayout *layout )
 
   viewChanged();
 
-  mSnapMarker.reset( new QgsLayoutViewSnapMarker() );
+  delete mSnapMarker;
+  mSnapMarker = new QgsLayoutViewSnapMarker();
   mSnapMarker->hide();
-  layout->addItem( mSnapMarker.get() );
+  layout->addItem( mSnapMarker );
 
-  mHorizontalSnapLine.reset( createSnapLine() );
+  delete mHorizontalSnapLine;
+  mHorizontalSnapLine = createSnapLine();
   mHorizontalSnapLine->hide();
-  layout->addItem( mHorizontalSnapLine.get() );
-  mVerticalSnapLine.reset( createSnapLine() );
+  layout->addItem( mHorizontalSnapLine );
+  delete mVerticalSnapLine;
+  mVerticalSnapLine = createSnapLine();
   mVerticalSnapLine->hide();
-  layout->addItem( mVerticalSnapLine.get() );
+  layout->addItem( mVerticalSnapLine );
 
   if ( mHorizontalRuler )
   {
@@ -125,7 +130,8 @@ void QgsLayoutView::setTool( QgsLayoutViewTool *tool )
     disconnect( mTool, &QgsLayoutViewTool::itemFocused, this, &QgsLayoutView::itemFocused );
   }
 
-  mSnapMarker->hide();
+  if ( mSnapMarker )
+    mSnapMarker->hide();
   if ( mHorizontalSnapLine )
     mHorizontalSnapLine->hide();
   if ( mVerticalSnapLine )
@@ -272,6 +278,170 @@ void QgsLayoutView::resizeSelectedItems( QgsLayoutAligner::Resize resize )
 {
   const QList<QgsLayoutItem *> selectedItems = currentLayout()->selectedLayoutItems();
   QgsLayoutAligner::resizeItems( currentLayout(), selectedItems, resize );
+}
+
+void QgsLayoutView::copySelectedItems( QgsLayoutView::ClipboardOperation operation )
+{
+  copyItems( currentLayout()->selectedLayoutItems(), operation );
+}
+
+void QgsLayoutView::copyItems( const QList<QgsLayoutItem *> &items, QgsLayoutView::ClipboardOperation operation )
+{
+  QgsReadWriteContext context;
+  QDomDocument doc;
+  QDomElement documentElement = doc.createElement( QStringLiteral( "LayoutItemClipboard" ) );
+  if ( operation == ClipboardCut )
+    currentLayout()->undoStack()->beginMacro( tr( "Cut Items" ) );
+  for ( QgsLayoutItem *item : items )
+  {
+    // copy every child from a group
+    if ( QgsLayoutItemGroup *itemGroup = qobject_cast<QgsLayoutItemGroup *>( item ) )
+    {
+      const QList<QgsLayoutItem *> groupedItems = itemGroup->items();
+      for ( const QgsLayoutItem *groupedItem : groupedItems )
+      {
+        groupedItem->writeXml( documentElement, doc, context );
+      }
+    }
+    item->writeXml( documentElement, doc, context );
+    if ( operation == ClipboardCut )
+      currentLayout()->removeLayoutItem( item );
+  }
+  doc.appendChild( documentElement );
+  if ( operation == ClipboardCut )
+  {
+    currentLayout()->undoStack()->endMacro();
+    currentLayout()->update();
+  }
+
+  //remove the UUIDs since we don't want any duplicate UUID
+  QDomNodeList itemsNodes = doc.elementsByTagName( QStringLiteral( "LayoutItem" ) );
+  for ( int i = 0; i < itemsNodes.count(); ++i )
+  {
+    QDomNode itemNode = itemsNodes.at( i );
+    if ( itemNode.isElement() )
+    {
+      itemNode.toElement().removeAttribute( QStringLiteral( "uuid" ) );
+    }
+  }
+
+  QMimeData *mimeData = new QMimeData;
+  mimeData->setData( QStringLiteral( "text/xml" ), doc.toByteArray() );
+  QClipboard *clipboard = QApplication::clipboard();
+  clipboard->setMimeData( mimeData );
+}
+
+QList< QgsLayoutItem * > QgsLayoutView::pasteItems( QgsLayoutView::PasteMode mode )
+{
+  QList< QgsLayoutItem * > pastedItems;
+  QDomDocument doc;
+  QClipboard *clipboard = QApplication::clipboard();
+  if ( doc.setContent( clipboard->mimeData()->data( QStringLiteral( "text/xml" ) ) ) )
+  {
+    QDomElement docElem = doc.documentElement();
+    if ( docElem.tagName() == QLatin1String( "LayoutItemClipboard" ) )
+    {
+      QPointF pt;
+      switch ( mode )
+      {
+        case PasteModeCursor:
+        case PasteModeInPlace:
+        {
+          // place items at cursor position
+          pt = mapToScene( mapFromGlobal( QCursor::pos() ) );
+          break;
+        }
+        case PasteModeCenter:
+        {
+          // place items in center of viewport
+          pt = mapToScene( viewport()->rect().center() );
+          break;
+        }
+      }
+      bool pasteInPlace = ( mode == PasteModeInPlace );
+      currentLayout()->undoStack()->beginMacro( tr( "Paste Items" ) );
+      currentLayout()->undoStack()->beginCommand( currentLayout(), tr( "Paste Items" ) );
+      pastedItems = currentLayout()->addItemsFromXml( docElem, doc, QgsReadWriteContext(), &pt, pasteInPlace );
+      currentLayout()->undoStack()->endCommand();
+      currentLayout()->undoStack()->endMacro();
+    }
+  }
+  return pastedItems;
+}
+
+QList<QgsLayoutItem *> QgsLayoutView::pasteItems( QPointF layoutPoint )
+{
+  QList< QgsLayoutItem * > pastedItems;
+  QDomDocument doc;
+  QClipboard *clipboard = QApplication::clipboard();
+  if ( doc.setContent( clipboard->mimeData()->data( QStringLiteral( "text/xml" ) ) ) )
+  {
+    QDomElement docElem = doc.documentElement();
+    if ( docElem.tagName() == QLatin1String( "LayoutItemClipboard" ) )
+    {
+      currentLayout()->undoStack()->beginMacro( tr( "Paste Items" ) );
+      currentLayout()->undoStack()->beginCommand( currentLayout(), tr( "Paste Items" ) );
+      pastedItems = currentLayout()->addItemsFromXml( docElem, doc, QgsReadWriteContext(), &layoutPoint, false );
+      currentLayout()->undoStack()->endCommand();
+      currentLayout()->undoStack()->endMacro();
+    }
+  }
+  return pastedItems;
+}
+
+bool QgsLayoutView::hasItemsInClipboard() const
+{
+  QDomDocument doc;
+  QClipboard *clipboard = QApplication::clipboard();
+  if ( doc.setContent( clipboard->mimeData()->data( QStringLiteral( "text/xml" ) ) ) )
+  {
+    QDomElement docElem = doc.documentElement();
+    if ( docElem.tagName() == QLatin1String( "LayoutItemClipboard" ) )
+      return true;
+  }
+  return false;
+}
+
+QPointF QgsLayoutView::deltaForKeyEvent( QKeyEvent *event )
+{
+  // increment used for cursor key item movement
+  double increment = 1.0;
+  if ( event->modifiers() & Qt::ShiftModifier )
+  {
+    //holding shift while pressing cursor keys results in a big step
+    increment = 10.0;
+  }
+  else if ( event->modifiers() & Qt::AltModifier )
+  {
+    //holding alt while pressing cursor keys results in a 1 pixel step
+    double viewScale = transform().m11();
+    if ( viewScale > 0 )
+    {
+      increment = 1 / viewScale;
+    }
+  }
+
+  double deltaX = 0;
+  double deltaY = 0;
+  switch ( event->key() )
+  {
+    case Qt::Key_Left:
+      deltaX = -increment;
+      break;
+    case Qt::Key_Right:
+      deltaX = increment;
+      break;
+    case Qt::Key_Up:
+      deltaY = -increment;
+      break;
+    case Qt::Key_Down:
+      deltaY = increment;
+      break;
+    default:
+      break;
+  }
+
+  return QPointF( deltaX, deltaY );
 }
 
 void QgsLayoutView::zoomFull()
@@ -564,55 +734,22 @@ void QgsLayoutView::unlockAllItems()
 
 void QgsLayoutView::deleteSelectedItems()
 {
-  if ( !currentLayout() )
-  {
+  deleteItems( currentLayout()->selectedLayoutItems() );
+}
+
+void QgsLayoutView::deleteItems( const QList<QgsLayoutItem *> &items )
+{
+  if ( items.empty() )
     return;
-  }
 
-#if 0 //TODO
-  if ( mCurrentTool == QgsComposerView::EditNodesItem )
+  currentLayout()->undoStack()->beginMacro( tr( "Delete Items" ) );
+  //delete selected items
+  for ( QgsLayoutItem *item : items )
   {
-    if ( mNodesItemIndex != -1 )
-    {
-      composition()->beginCommand( mNodesItem, tr( "Remove item node" ) );
-      if ( mNodesItem->removeNode( mNodesItemIndex ) )
-      {
-        composition()->endCommand();
-        if ( mNodesItem->nodesSize() > 0 )
-        {
-          mNodesItemIndex = mNodesItem->selectedNode();
-          // setSelectedNode( mNodesItem, mNodesItemIndex );
-        }
-        else
-        {
-          mNodesItemIndex = -1;
-          mNodesItem = nullptr;
-        }
-        scene()->update();
-      }
-      else
-      {
-        composition()->cancelCommand();
-      }
-    }
+    currentLayout()->removeLayoutItem( item );
   }
-  else
-  {
-#endif
-    const QList<QgsLayoutItem *> selectedItems = currentLayout()->selectedLayoutItems();
-
-    currentLayout()->undoStack()->beginMacro( tr( "Delete Items" ) );
-    //delete selected items
-    for ( QgsLayoutItem *item : selectedItems )
-    {
-      currentLayout()->removeLayoutItem( item );
-    }
-    currentLayout()->undoStack()->endMacro();
-    currentLayout()->project()->setDirty( true );
-
-#if 0
-  }
-#endif
+  currentLayout()->undoStack()->endMacro();
+  currentLayout()->project()->setDirty( true );
 }
 
 void QgsLayoutView::groupSelectedItems()
@@ -671,7 +808,8 @@ void QgsLayoutView::ungroupSelectedItems()
 
 void QgsLayoutView::mousePressEvent( QMouseEvent *event )
 {
-  mSnapMarker->setVisible( false );
+  if ( mSnapMarker )
+    mSnapMarker->setVisible( false );
 
   if ( mTool )
   {
@@ -727,7 +865,7 @@ void QgsLayoutView::mouseMoveEvent( QMouseEvent *event )
     std::unique_ptr<QgsLayoutViewMouseEvent> me( new QgsLayoutViewMouseEvent( this, event, false ) );
     if ( mTool->flags() & QgsLayoutViewTool::FlagSnaps )
     {
-      me->snapPoint( mHorizontalSnapLine.get(), mVerticalSnapLine.get() );
+      me->snapPoint( mHorizontalSnapLine, mVerticalSnapLine, mTool->ignoredSnapItems() );
     }
     if ( mTool->flags() & QgsLayoutViewTool::FlagSnaps )
     {
@@ -735,11 +873,16 @@ void QgsLayoutView::mouseMoveEvent( QMouseEvent *event )
       if ( me->isSnapped() )
       {
         cursorPos = me->snappedPoint();
-        mSnapMarker->setPos( me->snappedPoint() );
-        mSnapMarker->setVisible( true );
+        if ( mSnapMarker )
+        {
+          mSnapMarker->setPos( me->snappedPoint() );
+          mSnapMarker->setVisible( true );
+        }
       }
-      else
+      else if ( mSnapMarker )
+      {
         mSnapMarker->setVisible( false );
+      }
     }
     mTool->layoutMoveEvent( me.get() );
     event->setAccepted( me->isAccepted() );
@@ -811,57 +954,13 @@ void QgsLayoutView::keyPressEvent( QKeyEvent *event )
     QgsLayout *l = currentLayout();
     const QList<QgsLayoutItem *> layoutItemList = l->selectedLayoutItems();
 
-    // increment used for cursor key item movement
-    double increment = 1.0;
-    if ( event->modifiers() & Qt::ShiftModifier )
-    {
-      //holding shift while pressing cursor keys results in a big step
-      increment = 10.0;
-    }
-    else if ( event->modifiers() & Qt::AltModifier )
-    {
-      //holding alt while pressing cursor keys results in a 1 pixel step
-      double viewScale = transform().m11();
-      if ( viewScale > 0 )
-      {
-        increment = 1 / viewScale;
-      }
-    }
-
-    double deltaX = 0;
-    double deltaY = 0;
-    switch ( event->key() )
-    {
-      case Qt::Key_Left:
-        deltaX = -increment;
-        break;
-      case Qt::Key_Right:
-        deltaX = increment;
-        break;
-      case Qt::Key_Up:
-        deltaY = -increment;
-        break;
-      case Qt::Key_Down:
-        deltaY = increment;
-        break;
-      default:
-        break;
-    }
-
-    auto moveItem = [ l, deltaX, deltaY ]( QgsLayoutItem * item )
-    {
-      QgsLayoutPoint itemPos = item->positionWithUnits();
-      QgsLayoutPoint deltaPos = l->convertFromLayoutUnits( QPointF( deltaX, deltaY ), itemPos.units() );
-      itemPos.setX( itemPos.x() + deltaPos.x() );
-      itemPos.setY( itemPos.y() + deltaPos.y() );
-      item->attemptMove( itemPos );
-    };
+    QPointF delta = deltaForKeyEvent( event );
 
     l->undoStack()->beginMacro( tr( "Move Item" ) );
     for ( QgsLayoutItem *item : layoutItemList )
     {
       l->undoStack()->beginCommand( item, tr( "Move Item" ), QgsLayoutItem::UndoIncrementalMove );
-      moveItem( item );
+      item->attemptMoveBy( delta.x(), delta.y() );
       l->undoStack()->endCommand();
     }
     l->undoStack()->endMacro();
@@ -891,6 +990,29 @@ void QgsLayoutView::scrollContentsBy( int dx, int dy )
 {
   QGraphicsView::scrollContentsBy( dx, dy );
   viewChanged();
+}
+
+void QgsLayoutView::dragEnterEvent( QDragEnterEvent *e )
+{
+  // By default graphics view delegates the drag events to graphics items.
+  // But we do not want that and by ignoring the drag enter we let the
+  // parent (e.g. QgsLayoutDesignerDialog) to handle drops of files.
+  e->ignore();
+}
+
+void QgsLayoutView::invalidateCachedRenders()
+{
+  if ( !currentLayout() )
+    return;
+
+  //redraw cached map items
+  QList< QgsLayoutItem *> items;
+  currentLayout()->layoutItems( items );
+
+  for ( QgsLayoutItem *item : qgis::as_const( items ) )
+  {
+    item->invalidateCache();
+  }
 }
 
 void QgsLayoutView::viewChanged()

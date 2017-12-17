@@ -33,7 +33,7 @@ class FlatTerrainChunkLoader : public QgsTerrainTileLoader
     //! Construct the loader for a node
     FlatTerrainChunkLoader( QgsTerrainEntity *terrain, QgsChunkNode *mNode );
 
-    virtual Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;
+    Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;
 
   private:
     Qt3DExtras::QPlaneGeometry *mTileGeometry = nullptr;
@@ -91,11 +91,6 @@ Qt3DCore::QEntity *FlatTerrainChunkLoader::createEntity( Qt3DCore::QEntity *pare
 /// @endcond
 
 // ---------------
-
-
-QgsFlatTerrainGenerator::QgsFlatTerrainGenerator()
-{
-}
 
 QgsChunkLoader *QgsFlatTerrainGenerator::createChunkLoader( QgsChunkNode *node ) const
 {

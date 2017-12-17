@@ -6,14 +6,26 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>797</width>
-    <height>568</height>
+    <width>804</width>
+    <height>697</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_4">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="enabled">
@@ -23,7 +35,7 @@
       <enum>QTabWidget::Rounded</enum>
      </property>
      <property name="currentIndex">
-      <number>7</number>
+      <number>4</number>
      </property>
      <widget class="QWidget" name="tabIdentificationDialog">
       <attribute name="title">
@@ -55,8 +67,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>752</width>
-            <height>625</height>
+            <width>798</width>
+            <height>668</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_15">
@@ -210,7 +222,7 @@
            <item>
             <widget class="QFrame" name="encodingFrame">
              <property name="enabled">
-              <bool>false</bool>
+              <bool>true</bool>
              </property>
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
@@ -340,10 +352,14 @@
             <item>
              <widget class="QPushButton" name="btnNewCategory">
               <property name="toolTip">
-               <string>Categories chosen will be added as a new entry in the keywords tab.</string>
+               <string>Create a new category</string>
               </property>
               <property name="text">
-               <string>New</string>
+               <string/>
+              </property>
+              <property name="icon">
+               <iconset resource="../../images/images.qrc">
+                <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
               </property>
              </widget>
             </item>
@@ -356,7 +372,7 @@
                </sizepolicy>
               </property>
               <property name="toolTip">
-               <string>Categories chosen will be added as a new entry in the keywords tab.</string>
+               <string>Add category to selection</string>
               </property>
               <property name="text">
                <string/>
@@ -382,7 +398,7 @@
                </sizepolicy>
               </property>
               <property name="toolTip">
-               <string>Categories chosen will be added as a new entry in the keywords tab.</string>
+               <string>Remove category from selection</string>
               </property>
               <property name="text">
                <string/>
@@ -413,7 +429,7 @@
             <item>
              <widget class="QLabel" name="label_22">
               <property name="text">
-               <string>Categories</string>
+               <string>Chosen categories</string>
               </property>
              </widget>
             </item>
@@ -555,8 +571,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>767</width>
-            <height>521</height>
+            <width>798</width>
+            <height>668</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_16">
@@ -786,7 +802,7 @@
        <item>
         <widget class="QLabel" name="label_9">
          <property name="text">
-          <string>Coordinate Reference System, spatial and temporal extent(s) for this dataset.</string>
+          <string>Coordinate Reference System and spatial extent for this dataset.</string>
          </property>
         </widget>
        </item>
@@ -823,6 +839,76 @@
         </widget>
        </item>
        <item>
+        <widget class="QgsExtentGroupBox" name="spatialExtentSelector">
+         <property name="title">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_14">
+         <item>
+          <widget class="QLabel" name="label_32">
+           <property name="text">
+            <string>Z Maximum</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QgsSpinBox" name="spinBoxZMaximum"/>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_13">
+         <item>
+          <widget class="QLabel" name="label_31">
+           <property name="text">
+            <string>Z Minimum</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QgsSpinBox" name="spinBoxZMinimum"/>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_35">
+         <property name="text">
+          <string>Temporal extent for this dataset.</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_15">
+         <item>
+          <widget class="QLabel" name="label_33">
+           <property name="text">
+            <string>From</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QgsDateTimeEdit" name="dateTimeFrom"/>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_16">
+         <item>
+          <widget class="QLabel" name="label_34">
+           <property name="text">
+            <string>To</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QgsDateTimeEdit" name="dateTimeTo"/>
+         </item>
+        </layout>
+       </item>
+       <item>
         <spacer name="verticalSpacer">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -838,93 +924,19 @@
       </layout>
      </widget>
      <widget class="QWidget" name="tabContactsDialog">
-      <property name="enabled">
-       <bool>false</bool>
-      </property>
       <attribute name="title">
-       <string>Contacts</string>
+       <string>Contact</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_10">
        <item>
         <widget class="QLabel" name="label_16">
          <property name="text">
-          <string>Contacts, HELP TEXT</string>
+          <string>Contact describe the owner of the dataset.</string>
          </property>
         </widget>
        </item>
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_10">
-         <item>
-          <spacer name="horizontalSpacer_6">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
-          <widget class="QPushButton" name="btnAddContact">
-           <property name="toolTip">
-            <string>Add class</string>
-           </property>
-           <property name="icon">
-            <iconset resource="../../images/images.qrc">
-             <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="btnRemoveContact">
-           <property name="toolTip">
-            <string>Delete</string>
-           </property>
-           <property name="icon">
-            <iconset resource="../../images/images.qrc">
-             <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item>
         <layout class="QHBoxLayout" name="horizontalLayout_3">
-         <item>
-          <widget class="QTableWidget" name="tabContacts">
-           <property name="maximumSize">
-            <size>
-             <width>200</width>
-             <height>16777215</height>
-            </size>
-           </property>
-           <property name="editTriggers">
-            <set>QAbstractItemView::NoEditTriggers</set>
-           </property>
-           <property name="selectionMode">
-            <enum>QAbstractItemView::SingleSelection</enum>
-           </property>
-           <property name="selectionBehavior">
-            <enum>QAbstractItemView::SelectRows</enum>
-           </property>
-           <attribute name="horizontalHeaderStretchLastSection">
-            <bool>true</bool>
-           </attribute>
-           <column>
-            <property name="text">
-             <string>Name</string>
-            </property>
-           </column>
-           <column>
-            <property name="text">
-             <string>Organization</string>
-            </property>
-           </column>
-          </widget>
-         </item>
          <item>
           <widget class="QScrollArea" name="panelDetails">
            <property name="sizePolicy">
@@ -941,80 +953,142 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>513</width>
-              <height>419</height>
+              <width>754</width>
+              <height>608</height>
              </rect>
             </property>
             <layout class="QGridLayout" name="gridLayout_2">
-             <item row="0" column="0">
-              <widget class="QLabel" name="label_10">
-               <property name="text">
-                <string>Name</string>
+             <item row="3" column="2" colspan="2">
+              <widget class="QLineEdit" name="lineEditContactPosition">
+               <property name="toolTip">
+                <string>Position/title of contact</string>
                </property>
               </widget>
              </item>
-             <item row="0" column="1" colspan="2">
-              <widget class="QLineEdit" name="lineEditContactName"/>
+             <item row="0" column="2" colspan="2">
+              <widget class="QLineEdit" name="lineEditContactName">
+               <property name="toolTip">
+                <string>Name of contact</string>
+               </property>
+              </widget>
              </item>
              <item row="1" column="0">
               <widget class="QLabel" name="label_15">
+               <property name="toolTip">
+                <string>Role of contact</string>
+               </property>
                <property name="text">
                 <string>Role</string>
                </property>
               </widget>
              </item>
-             <item row="1" column="1" colspan="2">
-              <widget class="QComboBox" name="comboContactRole"/>
-             </item>
-             <item row="2" column="0">
-              <widget class="QLabel" name="label_12">
-               <property name="text">
-                <string>Organization</string>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="1" colspan="2">
-              <widget class="QLineEdit" name="lineEditContactOrganization"/>
-             </item>
              <item row="3" column="0">
               <widget class="QLabel" name="label_14">
+               <property name="toolTip">
+                <string>Position/title of contact</string>
+               </property>
                <property name="text">
                 <string>Position</string>
                </property>
               </widget>
              </item>
-             <item row="3" column="1" colspan="2">
-              <widget class="QLineEdit" name="lineEditContactPosition"/>
-             </item>
-             <item row="4" column="0">
-              <widget class="QLabel" name="label_18">
-               <property name="text">
-                <string>Email</string>
+             <item row="2" column="2" colspan="2">
+              <widget class="QLineEdit" name="lineEditContactOrganization">
+               <property name="toolTip">
+                <string>Organization contact belongs to/represents</string>
                </property>
               </widget>
              </item>
-             <item row="4" column="1" colspan="2">
-              <widget class="QLineEdit" name="lineEditContactEmail"/>
-             </item>
-             <item row="5" column="0">
-              <widget class="QLabel" name="label_19">
+             <item row="0" column="0">
+              <widget class="QLabel" name="label_10">
+               <property name="toolTip">
+                <string>Name of contact</string>
+               </property>
                <property name="text">
-                <string>Voice</string>
+                <string>Name</string>
                </property>
               </widget>
              </item>
-             <item row="5" column="1" colspan="2">
-              <widget class="QLineEdit" name="lineEditContactVoice"/>
+             <item row="5" column="2" colspan="2">
+              <widget class="QLineEdit" name="lineEditContactVoice">
+               <property name="toolTip">
+                <string>Phone number</string>
+               </property>
+              </widget>
+             </item>
+             <item row="6" column="2" colspan="2">
+              <widget class="QLineEdit" name="lineEditContactFax">
+               <property name="toolTip">
+                <string>Fax number</string>
+               </property>
+              </widget>
              </item>
              <item row="6" column="0">
               <widget class="QLabel" name="label_20">
+               <property name="toolTip">
+                <string>Fax number</string>
+               </property>
                <property name="text">
                 <string>Fax</string>
                </property>
               </widget>
              </item>
-             <item row="6" column="1" colspan="2">
-              <widget class="QLineEdit" name="lineEditContactFax"/>
+             <item row="2" column="0">
+              <widget class="QLabel" name="label_12">
+               <property name="toolTip">
+                <string>Organization contact belongs to/represents</string>
+               </property>
+               <property name="text">
+                <string>Organization</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="2" colspan="2">
+              <widget class="QComboBox" name="comboContactRole">
+               <property name="toolTip">
+                <string>Role of contact</string>
+               </property>
+               <property name="editable">
+                <bool>true</bool>
+               </property>
+               <item>
+                <property name="text">
+                 <string/>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>custodian</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>distributor</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>owner</string>
+                </property>
+               </item>
+              </widget>
+             </item>
+             <item row="4" column="2" colspan="2">
+              <widget class="QLineEdit" name="lineEditContactEmail">
+               <property name="toolTip">
+                <string>Electronic mail address</string>
+               </property>
+              </widget>
+             </item>
+             <item row="5" column="0">
+              <widget class="QLabel" name="label_19">
+               <property name="toolTip">
+                <string>Phone number</string>
+               </property>
+               <property name="text">
+                <string>Voice</string>
+               </property>
+              </widget>
              </item>
              <item row="7" column="0">
               <widget class="QLabel" name="label_21">
@@ -1023,30 +1097,14 @@
                </property>
               </widget>
              </item>
-             <item row="7" column="1">
-              <widget class="QPushButton" name="btnAddAddress">
-               <property name="toolTip">
-                <string>Add class</string>
-               </property>
-               <property name="icon">
-                <iconset resource="../../images/images.qrc">
-                 <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
-               </property>
-              </widget>
-             </item>
-             <item row="7" column="2">
-              <widget class="QPushButton" name="btnRemoveAddress">
-               <property name="toolTip">
-                <string>Delete</string>
-               </property>
-               <property name="icon">
-                <iconset resource="../../images/images.qrc">
-                 <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
-               </property>
-              </widget>
-             </item>
-             <item row="8" column="0" colspan="3">
+             <item row="8" column="0" colspan="4">
               <widget class="QTableWidget" name="tabAddresses">
+               <property name="selectionMode">
+                <enum>QAbstractItemView::SingleSelection</enum>
+               </property>
+               <property name="selectionBehavior">
+                <enum>QAbstractItemView::SelectRows</enum>
+               </property>
                <attribute name="horizontalHeaderStretchLastSection">
                 <bool>true</bool>
                </attribute>
@@ -1054,33 +1112,87 @@
                 <property name="text">
                  <string>Type</string>
                 </property>
+                <property name="toolTip">
+                 <string>Type of address, e.g 'postal'</string>
+                </property>
                </column>
                <column>
                 <property name="text">
                  <string>Address</string>
+                </property>
+                <property name="toolTip">
+                 <string>Free-form physical address component</string>
                 </property>
                </column>
                <column>
                 <property name="text">
                  <string>Postal Code</string>
                 </property>
+                <property name="toolTip">
+                 <string>Postal (or ZIP) code</string>
+                </property>
                </column>
                <column>
                 <property name="text">
                  <string>City</string>
+                </property>
+                <property name="toolTip">
+                 <string>City or locality name</string>
                 </property>
                </column>
                <column>
                 <property name="text">
                  <string>Administrative Area</string>
                 </property>
+                <property name="toolTip">
+                 <string>Administrative area (state, provice/territory, etc.)</string>
+                </property>
                </column>
                <column>
                 <property name="text">
                  <string>Country</string>
                 </property>
+                <property name="toolTip">
+                 <string>Free-form country</string>
+                </property>
                </column>
               </widget>
+             </item>
+             <item row="4" column="0">
+              <widget class="QLabel" name="label_18">
+               <property name="toolTip">
+                <string>Electronic mail address</string>
+               </property>
+               <property name="text">
+                <string>Email</string>
+               </property>
+              </widget>
+             </item>
+             <item row="7" column="3">
+              <layout class="QHBoxLayout" name="horizontalLayout_10">
+               <item>
+                <widget class="QPushButton" name="btnAddAddress">
+                 <property name="toolTip">
+                  <string>Add address</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="../../images/images.qrc">
+                   <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="btnRemoveAddress">
+                 <property name="toolTip">
+                  <string>Remove Address</string>
+                 </property>
+                 <property name="icon">
+                  <iconset resource="../../images/images.qrc">
+                   <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
+                 </property>
+                </widget>
+               </item>
+              </layout>
              </item>
             </layout>
            </widget>
@@ -1238,7 +1350,7 @@
        <item>
         <widget class="QLabel" name="label_28">
          <property name="text">
-          <string>Validation is not inforced, but it's recommended to resolve any validation issues listed here.</string>
+          <string>Validation is not enforced, but it's recommended to resolve any validation issues listed here.</string>
          </property>
         </widget>
        </item>
@@ -1263,6 +1375,22 @@
    <extends>QWidget</extends>
    <header>qgsprojectionselectionwidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsExtentGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgsextentgroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgsspinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsDateTimeEdit</class>
+   <extends>QDateTimeEdit</extends>
+   <header>qgsdatetimeedit.h</header>
   </customwidget>
  </customwidgets>
  <resources>

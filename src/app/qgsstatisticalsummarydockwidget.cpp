@@ -154,7 +154,7 @@ void QgsStatisticalSummaryDockWidget::updateNumericStatistics( bool selectedOnly
   }
 
   QList< QgsStatisticalSummary::Statistic > statsToDisplay;
-  QgsStatisticalSummary::Statistics statsToCalc = 0;
+  QgsStatisticalSummary::Statistics statsToCalc = nullptr;
   Q_FOREACH ( QgsStatisticalSummary::Statistic stat, sDisplayStats )
   {
     if ( mStatsActions.value( stat )->isChecked() )
@@ -207,7 +207,7 @@ void QgsStatisticalSummaryDockWidget::updateStringStatistics( bool selectedOnly 
   }
 
   QList< QgsStringStatisticalSummary::Statistic > statsToDisplay;
-  QgsStringStatisticalSummary::Statistics statsToCalc = 0;
+  QgsStringStatisticalSummary::Statistics statsToCalc = nullptr;
   Q_FOREACH ( QgsStringStatisticalSummary::Statistic stat, sDisplayStringStats )
   {
     if ( mStatsActions.value( stat )->isChecked() )
@@ -323,7 +323,7 @@ void QgsStatisticalSummaryDockWidget::updateDateTimeStatistics( bool selectedOnl
   }
 
   QList< QgsDateTimeStatisticalSummary::Statistic > statsToDisplay;
-  QgsDateTimeStatisticalSummary::Statistics statsToCalc = 0;
+  QgsDateTimeStatisticalSummary::Statistics statsToCalc = nullptr;
   Q_FOREACH ( QgsDateTimeStatisticalSummary::Statistic stat, sDisplayDateTimeStats )
   {
     if ( mStatsActions.value( stat )->isChecked() )

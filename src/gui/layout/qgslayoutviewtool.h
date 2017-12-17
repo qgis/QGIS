@@ -66,7 +66,7 @@ class GUI_EXPORT QgsLayoutViewTool : public QObject
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
-    virtual ~QgsLayoutViewTool();
+    ~QgsLayoutViewTool() override;
 
     /**
      * Returns the current combination of flags set for the tool.
@@ -166,6 +166,11 @@ class GUI_EXPORT QgsLayoutViewTool : public QObject
      */
     QgsLayout *layout() const;
 
+    /**
+     * Returns a list of items which should be ignored while snapping events
+     * for this tool.
+     */
+    virtual QList< QgsLayoutItem * > ignoredSnapItems() const;
 
   signals:
 
@@ -212,10 +217,10 @@ class GUI_EXPORT QgsLayoutViewTool : public QObject
     //! Pointer to layout view.
     QgsLayoutView *mView = nullptr;
 
-    QgsLayoutViewTool::Flags mFlags;
+    QgsLayoutViewTool::Flags mFlags = nullptr;
 
     //! Cursor used by tool
-    QCursor mCursor;
+    QCursor mCursor = Qt::ArrowCursor;
 
     //! Optional action associated with tool
     QPointer< QAction > mAction;

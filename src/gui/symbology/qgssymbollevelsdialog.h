@@ -39,7 +39,7 @@ class GUI_EXPORT QgsSymbolLevelsWidget : public QgsPanelWidget, private Ui::QgsS
     Q_OBJECT
   public:
     //! Constructor for QgsSymbolLevelsWidget
-    QgsSymbolLevelsWidget( QgsFeatureRenderer *renderer, bool usingSymbolLevels, QWidget *parent SIP_TRANSFERTHIS = 0 );
+    QgsSymbolLevelsWidget( QgsFeatureRenderer *renderer, bool usingSymbolLevels, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     //! Returns whether the level ordering is enabled
     bool usingLevels() const;
@@ -93,7 +93,7 @@ class GUI_EXPORT QgsSymbolLevelsDialog : public QDialog
   public:
 
     //! Constructor for QgsSymbolLevelsDialog.
-    QgsSymbolLevelsDialog( QgsFeatureRenderer *renderer, bool usingSymbolLevels, QWidget *parent SIP_TRANSFERTHIS = 0 );
+    QgsSymbolLevelsDialog( QgsFeatureRenderer *renderer, bool usingSymbolLevels, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     // used by rule-based renderer (to hide checkbox to enable/disable ordering)
     void setForceOrderingEnabled( bool enabled );
@@ -102,6 +102,9 @@ class GUI_EXPORT QgsSymbolLevelsDialog : public QDialog
 
     QgsSymbolLevelsWidget *mWidget = nullptr;
 
+  private slots:
+
+    void showHelp();
 };
 
 #ifndef SIP_RUN

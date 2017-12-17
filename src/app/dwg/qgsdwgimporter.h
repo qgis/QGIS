@@ -21,6 +21,7 @@
 #include <ogr_api.h>
 
 #include "qgsabstractgeometry.h"
+#include "qgsogrutils.h"
 
 class QgsCompoundCurve;
 class QgsQgsCoordinateReferenceSystem;
@@ -186,7 +187,7 @@ class QgsDwgImporter : public DRW_Interface
 
     bool createFeature( OGRLayerH layer, OGRFeatureH f, const QgsAbstractGeometry &g ) const;
 
-    OGRDataSourceH mDs;
+    gdal::ogr_datasource_unique_ptr mDs;
     QString mDatabase;
     bool mInTransaction;
     int mSplineSegs;

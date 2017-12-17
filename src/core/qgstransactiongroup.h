@@ -32,7 +32,9 @@ class CORE_EXPORT QgsTransactionGroup : public QObject
 {
     Q_OBJECT
   public:
-    explicit QgsTransactionGroup( QObject *parent = 0 );
+
+    //! Constructor for QgsTransactionGroup
+    explicit QgsTransactionGroup( QObject *parent = nullptr );
 
     /**
      * Add a layer to this transaction group.

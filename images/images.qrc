@@ -1,46 +1,70 @@
 <RCC>
     <qresource prefix="/images">
         <file alias="last-hackfest.png">splash/dev-splash.png</file>
-        <file>flags/af.png</file>
-        <file>flags/ar.png</file>
-        <file>flags/bg.png</file>
-        <file>flags/cy.png</file>
-        <file>flags/de.png</file>
-        <file>flags/en_GB.png</file>
-        <file>flags/en_US.png</file>
-        <file>flags/eo.png</file>
-        <file>flags/es.png</file>
-        <file>flags/fa.png</file>
-        <file>flags/fi.png</file>
-        <file>flags/fr.png</file>
-        <file>flags/ga.png</file>
-        <file>flags/gd.png</file>
-        <file>flags/he.png</file>
-        <file>flags/hu.png</file>
-        <file>flags/id.png</file>
-        <file>flags/is.png</file>
-        <file>flags/it.png</file>
-        <file>flags/ja.png</file>
-        <file>flags/km.png</file>
-        <file>flags/lo.png</file>
-        <file>flags/lt.png</file>
-        <file>flags/lv.png</file>
-        <file>flags/mn.png</file>
-        <file>flags/mt.png</file>
-        <file>flags/nl.png</file>
-        <file>flags/pt_BR.png</file>
-        <file>flags/pt_PT.png</file>
-        <file>flags/ro.png</file>
-        <file>flags/ru.png</file>
-        <file>flags/sk.png</file>
-        <file>flags/sv.png</file>
-        <file>flags/sw.png</file>
-        <file>flags/ta.png</file>
-        <file>flags/th.png</file>
-        <file>flags/tr.png</file>
-        <file>flags/uk.png</file>
-        <file>flags/vi.png</file>
-        <file>flags/xh.png</file>
+        <file>flags/af.svg</file>
+        <file>flags/ar.svg</file>
+        <file>flags/bg.svg</file>
+        <file>flags/cy.svg</file>
+        <file>flags/de.svg</file>
+        <file>flags/en_GB.svg</file>
+        <file>flags/en_US.svg</file>
+        <file>flags/eo.svg</file>
+        <file>flags/es.svg</file>
+        <file>flags/fa.svg</file>
+        <file>flags/fi.svg</file>
+        <file>flags/fr.svg</file>
+        <file>flags/ga.svg</file>
+        <file>flags/gd.svg</file>
+        <file>flags/he.svg</file>
+        <file>flags/hu.svg</file>
+        <file>flags/id.svg</file>
+        <file>flags/is.svg</file>
+        <file>flags/it.svg</file>
+        <file>flags/ja.svg</file>
+        <file>flags/km.svg</file>
+        <file>flags/lo.svg</file>
+        <file>flags/lt.svg</file>
+        <file>flags/lv.svg</file>
+        <file>flags/mn.svg</file>
+        <file>flags/mt.svg</file>
+        <file>flags/nl.svg</file>
+        <file>flags/pt_BR.svg</file>
+        <file>flags/pt_PT.svg</file>
+        <file>flags/ro.svg</file>
+        <file>flags/ru.svg</file>
+        <file>flags/sk.svg</file>
+        <file>flags/sv.svg</file>
+        <file>flags/sw.svg</file>
+        <file>flags/ta.svg</file>
+        <file>flags/th.svg</file>
+        <file>flags/tr.svg</file>
+        <file>flags/uk.svg</file>
+        <file>flags/vi.svg</file>
+        <file>flags/xh.svg</file>
+        <file>flags/eu.svg</file>
+        <file>flags/bn.svg</file>
+        <file>flags/gl.svg</file>
+        <file>flags/hi.svg</file>
+        <file>flags/mr.svg</file>
+        <file>flags/bs.svg</file>
+        <file>flags/ca.svg</file>
+        <file>flags/cs.svg</file>
+        <file>flags/da.svg</file>
+        <file>flags/el.svg</file>
+        <file>flags/et.svg</file>
+        <file>flags/hr.svg</file>
+        <file>flags/ka.svg</file>
+        <file>flags/ko.svg</file>
+        <file>flags/ml.svg</file>
+        <file>flags/pl.svg</file>
+        <file>flags/sl.svg</file>
+        <file>flags/sq.svg</file>
+        <file>flags/nb.svg</file>
+        <file>flags/sr.svg</file>
+        <file>flags/te.svg</file>
+        <file>flags/tl.svg</file>
+        <file>flags/zh.svg</file>
+        <file>flags/ky.svg</file>
         <file>icons/qgis-icon-16x16.png</file>
         <file>icons/qgis-icon-60x60.png</file>
         <file>icons/qbrowser_icon.svg</file>
@@ -301,7 +325,6 @@
         <file>themes/default/mActionShowHideLabels.svg</file>
         <file>themes/default/mActionShowPinnedLabels.svg</file>
         <file>themes/default/mActionShowPluginManager.svg</file>
-        <file>themes/default/mActionInstallPluginFromZip.svg</file>
         <file>themes/default/mActionShowRasterCalculator.png</file>
         <file>themes/default/mActionShowSelectedLayers.svg</file>
         <file>themes/default/mActionSimplify.svg</file>
@@ -342,6 +365,8 @@
         <file>themes/default/mIconColorWheel.svg</file>
         <file>themes/default/mIconConnect.png</file>
         <file>themes/default/mIconClose.svg</file>
+        <file>themes/default/mIconCloseTab.svg</file>
+        <file>themes/default/mIconCloseTabHover.svg</file>
         <file>themes/default/mIconCritical.png</file>
         <file>themes/default/mIconDataDefine.svg</file>
         <file>themes/default/mIconDataDefineError.svg</file>
@@ -414,6 +439,7 @@
         <file>themes/default/north_arrow.png</file>
         <file>themes/default/diagramNone.svg</file>
         <file>themes/default/pie-chart.svg</file>
+        <file>themes/default/pin.svg</file>
         <file>themes/default/pluginExperimental.png</file>
         <file>themes/default/pluginDeprecated.png</file>
         <file>themes/default/propertyicons/action.svg</file>
@@ -445,6 +471,7 @@
         <file>themes/default/propertyicons/plugin-installed.svg</file>
         <file>themes/default/propertyicons/plugin-new.svg</file>
         <file>themes/default/propertyicons/plugin-upgrade.svg</file>
+        <file>themes/default/propertyicons/plugin-install_from_zip.svg</file>
         <file>themes/default/propertyicons/plugins.svg</file>
         <file>themes/default/propertyicons/pyramids.png</file>
         <file>themes/default/propertyicons/rendering.svg</file>
@@ -454,6 +481,7 @@
         <file>themes/default/propertyicons/symbology.svg</file>
         <file>themes/default/propertyicons/system.svg</file>
         <file>themes/default/propertyicons/transparency.png</file>
+        <file>themes/default/propertyicons/spacer.svg</file>
         <file>themes/default/rendererCategorizedSymbol.svg</file>
         <file>themes/default/rendererGraduatedSymbol.svg</file>
         <file>themes/default/rendererNullSymbol.svg</file>
@@ -486,31 +514,9 @@
         <file>themes/default/unlockedGray.svg</file>
         <file>themes/default/user.svg</file>
         <file>themes/default/mIconAuxiliaryStorage.svg</file>
-        <file>flags/eu.png</file>
-        <file>flags/bn.png</file>
-        <file>flags/gl.png</file>
-        <file>flags/hi.png</file>
         <file>themes/default/relation.svg</file>
         <file>themes/default/mActionLink.svg</file>
         <file>themes/default/mActionUnlink.svg</file>
-        <file>flags/mr.png</file>
-        <file>flags/bs.png</file>
-        <file>flags/ca.png</file>
-        <file>flags/cs.png</file>
-        <file>flags/da.png</file>
-        <file>flags/el.png</file>
-        <file>flags/et.png</file>
-        <file>flags/hr.png</file>
-        <file>flags/ka.png</file>
-        <file>flags/ko.png</file>
-        <file>flags/ml.png</file>
-        <file>flags/pl.png</file>
-        <file>flags/sl.png</file>
-        <file>flags/sq.png</file>
-        <file>flags/nb.png</file>
-        <file>flags/sr.png</file>
-        <file>flags/te.png</file>
-        <file>flags/tl.png</file>
         <file>themes/default/mActionZoomToArea.svg</file>
         <file>themes/default/mActionMapIdentification.svg</file>
         <file>themes/default/mActionHighlightFeature.svg</file>
@@ -527,7 +533,6 @@
         <file>themes/default/mIconPaintEffects.svg</file>
         <file>themes/default/mActionCircularStringCurvePoint.svg</file>
         <file>themes/default/mActionCircularStringRadius.svg</file>
-        <file>flags/zh.png</file>
         <file>themes/default/vector_grid.png</file>
         <file>themes/default/legend.svg</file>
         <file>themes/default/multieditChangedValues.svg</file>
@@ -580,10 +585,38 @@
         <file>themes/default/mActionMapSettings.svg</file>
         <file>themes/default/mActionLockExtent.svg</file>
         <file>themes/default/mGeoPackage.svg</file>
+        <file>themes/default/mActionCircle2Points.svg</file>
+        <file>themes/default/mActionCircle3Points.svg</file>
+        <file>themes/default/mActionCircleCenterPoint.svg</file>
+        <file>themes/default/mActionEllipseFoci.svg</file>
+        <file>themes/default/mActionEllipseCenter2Points.svg</file>
+        <file>themes/default/mActionEllipseCenterPoint.svg</file>
+        <file>themes/default/mActionEllipseExtent.svg</file>
+        <file>themes/default/mActionRectangleExtent.svg</file>
+        <file>themes/default/mActionRectangle3Points.svg</file>
+        <file>themes/default/mActionRectangleCenter.svg</file>
+        <file>themes/default/mActionRegularPolygonCenterCorner.svg</file>
+        <file>themes/default/mActionRegularPolygon2Points.svg</file>
+        <file>themes/default/mActionCircle3Tangents.svg</file>
         <file>themes/default/mActionAddGeoPackageLayer.svg</file>
+        <file>themes/default/mActionFindReplace.svg</file>
         <file>icons/qgis_icon.svg</file>
+        <file>themes/default/mActionCircle2TangentsPoint.svg</file>
+        <file>themes/default/mActionRegularPolygonCenterPoint.svg</file>
         <file>themes/default/3d.svg</file>
         <file>themes/default/mActionResizeSquare.svg</file>
+        <file>themes/default/mSourceFields.svg</file>
+        <file>flags/zh_Hant.svg</file>
+        <file>themes/default/cursors/mCapturePoint.svg</file>
+        <file>themes/default/cursors/mCrossHair.svg</file>
+        <file>themes/default/cursors/mSampler.svg</file>
+        <file>themes/default/cursors/mSelect.svg</file>
+        <file>themes/default/cursors/mZoomIn.svg</file>
+        <file>themes/default/cursors/mZoomOut.svg</file>
+        <file>themes/default/cursors/mIdentify.svg</file>
+        <file>themes/default/mIconQgsProjectFile.svg</file>
+        <file>themes/default/mIconPythonFile.svg</file>
+        <file>themes/default/mIconQptFile.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

@@ -28,6 +28,7 @@ email                : jpalmer at linz dot govt dot nz
 #include "qgsexception.h"
 #include "qgslogger.h"
 #include "qgis.h"
+#include "qgsproject.h"
 
 #include <QMouseEvent>
 #include <QApplication>
@@ -176,20 +177,20 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas *canvas, 
 
   try
   {
-    QgsCoordinateTransform ct( canvas->mapSettings().destinationCrs(), vlayer->crs() );
+    QgsCoordinateTransform ct( canvas->mapSettings().destinationCrs(), vlayer->crs(), QgsProject::instance() );
 
     if ( !ct.isShortCircuited() && selectGeomTrans.type() == QgsWkbTypes::PolygonGeometry )
     {
       // convert add more points to the edges of the rectangle
       // improve transformation result
-      QgsPolygon poly( selectGeomTrans.asPolygon() );
+      QgsPolygonXY poly( selectGeomTrans.asPolygon() );
       if ( poly.size() == 1 && poly.at( 0 ).size() == 5 )
       {
-        const QgsPolyline &ringIn = poly.at( 0 );
+        const QgsPolylineXY &ringIn = poly.at( 0 );
 
-        QgsPolygon newpoly( 1 );
+        QgsPolygonXY newpoly( 1 );
         newpoly[0].resize( 41 );
-        QgsPolyline &ringOut = newpoly[0];
+        QgsPolylineXY &ringOut = newpoly[0];
 
         ringOut[ 0 ] = ringIn.at( 0 );
 
@@ -204,7 +205,7 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas *canvas, 
           }
           ringOut[ i++ ] = ringIn.at( j );
         }
-        selectGeomTrans = QgsGeometry::fromPolygon( newpoly );
+        selectGeomTrans = QgsGeometry::fromPolygonXY( newpoly );
       }
     }
 
@@ -224,14 +225,17 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas *canvas, 
   }
 
   QgsDebugMsgLevel( "Selection layer: " + vlayer->name(), 3 );
-  QgsDebugMsgLevel( "Selection polygon: " + selectGeomTrans.exportToWkt(), 3 );
+  QgsDebugMsgLevel( "Selection polygon: " + selectGeomTrans.asWkt(), 3 );
   QgsDebugMsgLevel( "doContains: " + QString( doContains ? "T" : "F" ), 3 );
 
   QgsRenderContext context = QgsRenderContext::fromMapSettings( canvas->mapSettings() );
   context.expressionContext() << QgsExpressionContextUtils::layerScope( vlayer );
-  QgsFeatureRenderer *r = vlayer->renderer();
-  if ( r )
+  std::unique_ptr< QgsFeatureRenderer > r;
+  if ( vlayer->renderer() )
+  {
+    r.reset( vlayer->renderer()->clone() );
     r->startRender( context, vlayer->fields() );
+  }
 
   QgsFeatureRequest request;
   request.setFilterRect( selectGeomTrans.boundingBox() );

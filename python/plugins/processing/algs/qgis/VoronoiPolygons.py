@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import next
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -60,6 +59,9 @@ class VoronoiPolygons(QgisAlgorithm):
 
     def group(self):
         return self.tr('Vector geometry')
+
+    def groupId(self):
+        return 'vectorgeometry'
 
     def __init__(self):
         super().__init__()
@@ -135,7 +137,7 @@ class VoronoiPolygons(QgisAlgorithm):
             inFeat = next(source.getFeatures(request))
             lines = self.clip_voronoi(edges, c, width, height, extent, extraX, extraY)
 
-            geom = QgsGeometry.fromMultiPoint(lines)
+            geom = QgsGeometry.fromMultiPointXY(lines)
             geom = QgsGeometry(geom.convexHull())
             outFeat.setGeometry(geom)
             outFeat.setAttributes(inFeat.attributes())

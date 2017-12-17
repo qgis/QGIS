@@ -24,6 +24,7 @@
 #include "qgisapp.h"
 #include "qgscomposer.h"
 #include "qgscoordinatetransform.h"
+#include "qgsdatumtransformtablewidget.h"
 #include "qgslayoutmanager.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
@@ -153,6 +154,35 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
 
   updateGuiForMapUnits( QgsProject::instance()->crs().mapUnits() );
   projectionSelector->setCrs( QgsProject::instance()->crs() );
+
+  // Datum transforms
+  QgsCoordinateTransformContext context = QgsProject::instance()->transformContext();
+  mDatumTransformTableWidget->setTransformContext( context );
+
+  bool show = settings.value( QStringLiteral( "/Projections/showDatumTransformDialog" ), false ).toBool();
+  mShowDatumTransformDialogCheckBox->setChecked( show );
+
+  QPolygonF mainCanvasPoly = mapCanvas->mapSettings().visiblePolygon();
+  QgsGeometry g = QgsGeometry::fromQPolygonF( mainCanvasPoly );
+  // close polygon
+  mainCanvasPoly << mainCanvasPoly.at( 0 );
+  if ( QgsProject::instance()->crs() !=
+       QgsCoordinateReferenceSystem::fromEpsgId( 4326 ) )
+  {
+    // reproject extent
+    QgsCoordinateTransform ct( QgsProject::instance()->crs(),
+                               QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), QgsProject::instance() );
+
+    g = g.densifyByCount( 5 );
+    try
+    {
+      g.transform( ct );
+    }
+    catch ( QgsCsException & )
+    {
+    }
+  }
+  projectionSelector->setPreviewRect( g.boundingBox() );
 
   mMapTileRenderingCheckBox->setChecked( mMapCanvas->mapSettings().testFlag( QgsMapSettings::RenderMapTile ) );
 
@@ -783,6 +813,9 @@ void QgsProjectProperties::apply()
     // mark selected projection for push to front
     projectionSelector->pushProjectionToFront();
   }
+
+  QgsCoordinateTransformContext transformContext = mDatumTransformTableWidget->transformContext();
+  QgsProject::instance()->setTransformContext( transformContext );
 
   // Set the project title
   QgsProject::instance()->setTitle( title() );
@@ -1970,11 +2003,11 @@ void QgsProjectProperties::addScaleToScaleList( QListWidgetItem *newItem )
   QListWidgetItem *duplicateItem = lstScales->findItems( newItem->text(), Qt::MatchExactly ).value( 0 );
   delete duplicateItem;
 
-  int newDenominator = newItem->text().split( QStringLiteral( ":" ) ).value( 1 ).toInt();
+  int newDenominator = newItem->text().split( ':' ).value( 1 ).toInt();
   int i;
   for ( i = 0; i < lstScales->count(); i++ )
   {
-    int denominator = lstScales->item( i )->text().split( QStringLiteral( ":" ) ).value( 1 ).toInt();
+    int denominator = lstScales->item( i )->text().split( ':' ).value( 1 ).toInt();
     if ( newDenominator > denominator )
       break;
   }

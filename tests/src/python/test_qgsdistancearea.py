@@ -47,7 +47,7 @@ class TestQgsDistanceArea(unittest.TestCase):
         #   +-+
         #   | |
         # +-+ +
-        linestring = QgsGeometry.fromPolyline(
+        linestring = QgsGeometry.fromPolylineXY(
             [QgsPointXY(0, 0), QgsPointXY(1, 0), QgsPointXY(1, 1), QgsPointXY(2, 1), QgsPointXY(2, 0), ]
         )
         da = QgsDistanceArea()
@@ -175,13 +175,13 @@ class TestQgsDistanceArea(unittest.TestCase):
         point_meter_result = QgsPointXY(0, 0)
         length_meter_mapunits, point_meter_result = da_3068.measureLineProjected(point_berlin_3068, 1.0, (math.pi / 2))
         pprint(point_meter_result)
-        print('-I-> Berlin 3068 length_meter_mapunits[{}] point_meter_result[{}]'.format(QgsDistanceArea.formatDistance(length_meter_mapunits, 7, da_3068.lengthUnits(), True), point_meter_result.wellKnownText()))
+        print('-I-> Berlin 3068 length_meter_mapunits[{}] point_meter_result[{}]'.format(QgsDistanceArea.formatDistance(length_meter_mapunits, 7, da_3068.lengthUnits(), True), point_meter_result.asWkt()))
         self.assertEqual(QgsDistanceArea.formatDistance(length_meter_mapunits, 1, da_3068.lengthUnits(), True), '1.0 m')
         self.assertEqual(point_meter_result.toString(7), point_berlin_3068_project.toString(7))
         point_berlin_wsg84 = QgsPointXY(13.37770458660236, 52.51627178856762)
         point_berlin_wsg84_project = QgsPointXY(13.37771931736259, 52.51627178856669)
         length_meter_mapunits, point_meter_result = da_wsg84.measureLineProjected(point_berlin_wsg84, 1.0, (math.pi / 2))
-        print('-I-> Berlin Wsg84 length_meter_mapunits[{}] point_meter_result[{}] ellipsoid[{}]'.format(QgsDistanceArea.formatDistance(length_meter_mapunits, 20, da_wsg84.lengthUnits(), True), point_meter_result.wellKnownText(), da_wsg84.ellipsoid()))
+        print('-I-> Berlin Wsg84 length_meter_mapunits[{}] point_meter_result[{}] ellipsoid[{}]'.format(QgsDistanceArea.formatDistance(length_meter_mapunits, 20, da_wsg84.lengthUnits(), True), point_meter_result.asWkt(), da_wsg84.ellipsoid()))
         # for unknown reasons, this is returning '0.00001473026 m' instead of '0.00001473026 deg' when using da_wsg84.lengthUnits()
         # self.assertEqual(QgsDistanceArea.formatDistance(length_meter_mapunits,11,da_wsg84.lengthUnits(),True), '0.00001473026 deg')
         self.assertEqual(QgsDistanceArea.formatDistance(length_meter_mapunits, 11, QgsUnitTypes.DistanceDegrees, True), '0.00001473026 deg')
@@ -189,191 +189,191 @@ class TestQgsDistanceArea(unittest.TestCase):
         point_berlin_4314 = QgsPointXY(13.37944343021465, 52.51767872437083)
         point_berlin_4314_project = QgsPointXY(13.37945816324759, 52.5176787243699)
         length_meter_mapunits, point_meter_result = da_4314.measureLineProjected(point_berlin_4314, 1.0, (math.pi / 2))
-        print('-I-> Berlin 4314 length_meter_mapunits[{}] point_meter_result[{}]'.format(QgsDistanceArea.formatDistance(length_meter_mapunits, 7, da_4314.lengthUnits(), True), point_meter_result.wellKnownText()))
+        print('-I-> Berlin 4314 length_meter_mapunits[{}] point_meter_result[{}]'.format(QgsDistanceArea.formatDistance(length_meter_mapunits, 7, da_4314.lengthUnits(), True), point_meter_result.asWkt()))
         self.assertEqual(QgsDistanceArea.formatDistance(length_meter_mapunits, 9, QgsUnitTypes.DistanceDegrees, True), '0.000014733 deg')
         self.assertEqual(point_meter_result.toString(7), point_berlin_4314_project.toString(7))
         point_berlin_4805 = QgsPointXY(31.04960570069176, 52.5174657497405)
         point_berlin_4805_project = QgsPointXY(31.04962043365347, 52.51746574973957)
         length_meter_mapunits, point_meter_result = da_4805.measureLineProjected(point_berlin_4805, 1.0, (math.pi / 2))
-        print('-I-> Berlin 4805 length_meter_mapunits[{}] point_meter_result[{}]'.format(QgsDistanceArea.formatDistance(length_meter_mapunits, 7, da_4805.lengthUnits(), True), point_meter_result.wellKnownText()))
+        print('-I-> Berlin 4805 length_meter_mapunits[{}] point_meter_result[{}]'.format(QgsDistanceArea.formatDistance(length_meter_mapunits, 7, da_4805.lengthUnits(), True), point_meter_result.asWkt()))
         self.assertEqual(QgsDistanceArea.formatDistance(length_meter_mapunits, 9, QgsUnitTypes.DistanceDegrees, True), '0.000014733 deg')
         self.assertEqual(point_meter_result.toString(7), point_berlin_4805_project.toString(7))
         point_berlin_25833 = QgsPointXY(389918.0748318382, 5819698.772194743)
         point_berlin_25833_project = point_berlin_25833.project(1, (math.pi / 2))
         length_meter_mapunits, point_meter_result = da_25833.measureLineProjected(point_berlin_25833, 1.0, (math.pi / 2))
-        print('-I-> Berlin 25833 length_meter_mapunits[{}] point_meter_result[{}]'.format(QgsDistanceArea.formatDistance(length_meter_mapunits, 7, da_25833.lengthUnits(), True), point_meter_result.wellKnownText()))
+        print('-I-> Berlin 25833 length_meter_mapunits[{}] point_meter_result[{}]'.format(QgsDistanceArea.formatDistance(length_meter_mapunits, 7, da_25833.lengthUnits(), True), point_meter_result.asWkt()))
         self.assertEqual(QgsDistanceArea.formatDistance(length_meter_mapunits, 7, da_25833.lengthUnits(), True), '1.0000000 m')
         self.assertEqual(point_meter_result.toString(7), point_berlin_25833_project.toString(7))
         if da_5665.sourceCrs().authid() != "":
             point_berlin_5665 = QgsPointXY(3389996.871728864, 5822169.719727578)
             point_berlin_5665_project = point_berlin_5665.project(1, (math.pi / 2))
             length_meter_mapunits, point_meter_result = da_5665.measureLineProjected(point_berlin_5665, 1.0, (math.pi / 2))
-            print('-I-> Berlin 5665 length_meter_mapunits[{}] point_meter_result[{}]'.format(QgsDistanceArea.formatDistance(length_meter_mapunits, 7, da_5665.lengthUnits(), True), point_meter_result.wellKnownText()))
+            print('-I-> Berlin 5665 length_meter_mapunits[{}] point_meter_result[{}]'.format(QgsDistanceArea.formatDistance(length_meter_mapunits, 7, da_5665.lengthUnits(), True), point_meter_result.asWkt()))
             self.assertEqual(QgsDistanceArea.formatDistance(length_meter_mapunits, 1.0, da_5665.lengthUnits(), True), '1.0 m')
             self.assertEqual(point_meter_result.toString(7), point_berlin_5665_project.toString(7))
         print('\n12 points ''above over'' and on the Equator')
         point_wsg84 = QgsPointXY(25.7844, 71.1725)
         point_wsg84_project = QgsPointXY(25.78442775215388, 71.17249999999795)
         length_meter_mapunits, point_meter_result = da_wsg84.measureLineProjected(point_wsg84, 1.0, (math.pi / 2))
-        print('-I-> Nordkap, Norway - Wsg84 - length_meter_mapunits[{}] point_meter_result[{}] '.format(QgsDistanceArea.formatDistance(length_meter_mapunits, 7, da_wsg84.lengthUnits(), True), point_meter_result.wellKnownText()))
+        print('-I-> Nordkap, Norway - Wsg84 - length_meter_mapunits[{}] point_meter_result[{}] '.format(QgsDistanceArea.formatDistance(length_meter_mapunits, 7, da_wsg84.lengthUnits(), True), point_meter_result.asWkt()))
         self.assertEqual(QgsDistanceArea.formatDistance(length_meter_mapunits, 7, QgsUnitTypes.DistanceDegrees, True), '0.0000278 deg')
         self.assertEqual(point_meter_result.toString(7), point_wsg84_project.toString(7))
         point_wsg84 = QgsPointXY(24.95995, 60.16841)
         point_wsg84_project = QgsPointXY(24.95996801277454, 60.16840999999877)
         length_meter_mapunits, point_meter_result = da_wsg84.measureLineProjected(point_wsg84, 1.0, (math.pi / 2))
-        print('-I-> Helsinki, Finnland - Wsg84 - length_meter_mapunits[{}] point_meter_result[{}] '.format(QgsDistanceArea.formatDistance(length_meter_mapunits, 7, da_wsg84.lengthUnits(), True), point_meter_result.wellKnownText()))
+        print('-I-> Helsinki, Finnland - Wsg84 - length_meter_mapunits[{}] point_meter_result[{}] '.format(QgsDistanceArea.formatDistance(length_meter_mapunits, 7, da_wsg84.lengthUnits(), True), point_meter_result.asWkt()))
         self.assertEqual(QgsDistanceArea.formatDistance(length_meter_mapunits, 8, QgsUnitTypes.DistanceDegrees, True), '0.00001801 deg')
         self.assertEqual(point_meter_result.toString(7), point_wsg84_project.toString(7))
         point_wsg84 = QgsPointXY(12.599278, 55.692861)
         point_wsg84_project = QgsPointXY(12.59929390161872, 55.69286099999897)
         length_meter_mapunits, point_meter_result = da_wsg84.measureLineProjected(point_wsg84, 1.0, (math.pi / 2))
-        print('-I-> Copenhagen, Denmark - Wsg84 - length_meter_mapunits[{}] point_meter_result[{}] '.format(QgsDistanceArea.formatDistance(length_meter_mapunits, 7, da_wsg84.lengthUnits(), True), point_meter_result.wellKnownText()))
+        print('-I-> Copenhagen, Denmark - Wsg84 - length_meter_mapunits[{}] point_meter_result[{}] '.format(QgsDistanceArea.formatDistance(length_meter_mapunits, 7, da_wsg84.lengthUnits(), True), point_meter_result.asWkt()))
         self.assertEqual(QgsDistanceArea.formatDistance(length_meter_mapunits, 8, QgsUnitTypes.DistanceDegrees, True), '0.00001590 deg')
         self.assertEqual(point_meter_result.toString(7), point_wsg84_project.toString(7))
 
         point_wsg84 = QgsPointXY(-0.001389, 51.477778)
         point_wsg84_project = QgsPointXY(-0.001374606184398, 51.4777779999991)
         length_meter_mapunits, point_meter_result = da_wsg84.measureLineProjected(point_wsg84, 1.0, (math.pi / 2))
-        print('-I-> Royal Greenwich Observatory, United Kingdom - Wsg84 - length_meter_mapunits[{}] point_meter_result[{}] '.format(QgsDistanceArea.formatDistance(length_meter_mapunits, 7, da_wsg84.lengthUnits(), True), point_meter_result.wellKnownText()))
+        print('-I-> Royal Greenwich Observatory, United Kingdom - Wsg84 - length_meter_mapunits[{}] point_meter_result[{}] '.format(QgsDistanceArea.formatDistance(length_meter_mapunits, 7, da_wsg84.lengthUnits(), True), point_meter_result.asWkt()))
         self.assertEqual(QgsDistanceArea.formatDistance(length_meter_mapunits, 8, QgsUnitTypes.DistanceDegrees, True), '0.00001439 deg')
         self.assertEqual(point_meter_result.toString(7), point_wsg84_project.toString(7))
         point_wsg84 = QgsPointXY(7.58769, 47.55814)
         point_wsg84_project = QgsPointXY(7.587703287209086, 47.55813999999922)
         length_meter_mapunits, point_meter_result = da_wsg84.measureLineProjected(point_wsg84, 1.0, (math.pi / 2))
-        print('-I-> Basel, Switzerland - Wsg84 - length_meter_mapunits[{}] point_meter_result[{}] '.format(QgsDistanceArea.formatDistance(length_meter_mapunits, 7, da_wsg84.lengthUnits(), True), point_meter_result.wellKnownText()))
+        print('-I-> Basel, Switzerland - Wsg84 - length_meter_mapunits[{}] point_meter_result[{}] '.format(QgsDistanceArea.formatDistance(length_meter_mapunits, 7, da_wsg84.lengthUnits(), True), point_meter_result.asWkt()))
         self.assertEqual(QgsDistanceArea.formatDistance(length_meter_mapunits, 8, QgsUnitTypes.DistanceDegrees, True), '0.00001329 deg')
         self.assertEqual(point_meter_result.toString(7), point_wsg84_project.toString(7))
         point_wsg84 = QgsPointXY(11.255278, 43.775278)
         point_wsg84_project = QgsPointXY(11.25529042107924, 43.77527799999933)
         length_meter_mapunits, point_meter_result = da_wsg84.measureLineProjected(point_wsg84, 1.0, (math.pi / 2))
-        print('-I-> Florenz, Italy - Wsg84 - length_meter_mapunits[{}] point_meter_result[{}] '.format(QgsDistanceArea.formatDistance(length_meter_mapunits, 7, da_wsg84.lengthUnits(), True), point_meter_result.wellKnownText()))
+        print('-I-> Florenz, Italy - Wsg84 - length_meter_mapunits[{}] point_meter_result[{}] '.format(QgsDistanceArea.formatDistance(length_meter_mapunits, 7, da_wsg84.lengthUnits(), True), point_meter_result.asWkt()))
         self.assertEqual(QgsDistanceArea.formatDistance(length_meter_mapunits, 8, QgsUnitTypes.DistanceDegrees, True), '0.00001242 deg')
         self.assertEqual(point_meter_result.toString(7), point_wsg84_project.toString(7))
         point_wsg84 = QgsPointXY(14.514722, 35.899722)
         point_wsg84_project = QgsPointXY(14.51473307693308, 35.89972199999949)
         length_meter_mapunits, point_meter_result = da_wsg84.measureLineProjected(point_wsg84, 1.0, (math.pi / 2))
-        print('-I-> Valletta, Malta - Wsg84 - length_meter_mapunits[{}] point_meter_result[{}] '.format(QgsDistanceArea.formatDistance(length_meter_mapunits, 7, da_wsg84.lengthUnits(), True), point_meter_result.wellKnownText()))
+        print('-I-> Valletta, Malta - Wsg84 - length_meter_mapunits[{}] point_meter_result[{}] '.format(QgsDistanceArea.formatDistance(length_meter_mapunits, 7, da_wsg84.lengthUnits(), True), point_meter_result.asWkt()))
         self.assertEqual(QgsDistanceArea.formatDistance(length_meter_mapunits, 8, QgsUnitTypes.DistanceDegrees, True), '0.00001108 deg')
         self.assertEqual(point_meter_result.toString(7), point_wsg84_project.toString(7))
         point_wsg84 = QgsPointXY(-79.933333, 32.783333)
         point_wsg84_project = QgsPointXY(-79.93332232547254, 32.78333299999955)
         length_meter_mapunits, point_meter_result = da_wsg84.measureLineProjected(point_wsg84, 1.0, (math.pi / 2))
-        print('-I-> Charlston, South Carolina - Wsg84 - length_meter_mapunits[{}] point_meter_result[{}] '.format(QgsDistanceArea.formatDistance(length_meter_mapunits, 7, da_wsg84.lengthUnits(), True), point_meter_result.wellKnownText()))
+        print('-I-> Charlston, South Carolina - Wsg84 - length_meter_mapunits[{}] point_meter_result[{}] '.format(QgsDistanceArea.formatDistance(length_meter_mapunits, 7, da_wsg84.lengthUnits(), True), point_meter_result.asWkt()))
         self.assertEqual(QgsDistanceArea.formatDistance(length_meter_mapunits, 8, QgsUnitTypes.DistanceDegrees, True), '0.00001067 deg')
         self.assertEqual(point_meter_result.toString(7), point_wsg84_project.toString(7))
         point_wsg84 = QgsPointXY(-17.6666666, 27.733333)
         point_wsg84_project = QgsPointXY(-17.66665645831515, 27.73333299999962)
         length_meter_mapunits, point_meter_result = da_wsg84.measureLineProjected(point_wsg84, 1.0, (math.pi / 2))
-        print('-I-> Ferro, Spain - Wsg84 - length_meter_mapunits[{}] point_meter_result[{}] '.format(QgsDistanceArea.formatDistance(length_meter_mapunits, 7, da_wsg84.lengthUnits(), True), point_meter_result.wellKnownText()))
+        print('-I-> Ferro, Spain - Wsg84 - length_meter_mapunits[{}] point_meter_result[{}] '.format(QgsDistanceArea.formatDistance(length_meter_mapunits, 7, da_wsg84.lengthUnits(), True), point_meter_result.asWkt()))
         self.assertEqual(QgsDistanceArea.formatDistance(length_meter_mapunits, 8, QgsUnitTypes.DistanceDegrees, True), '0.00001014 deg')
         self.assertEqual(point_meter_result.toString(7), point_wsg84_project.toString(7))
         point_wsg84 = QgsPointXY(-99.133333, 19.433333)
         point_wsg84_project = QgsPointXY(-99.1333234776827, 19.43333299999975)
         length_meter_mapunits, point_meter_result = da_wsg84.measureLineProjected(point_wsg84, 1.0, (math.pi / 2))
-        print('-I-> Mexico City, Mexico - Wsg84 - length_meter_mapunits[{}] point_meter_result[{}] '.format(QgsDistanceArea.formatDistance(length_meter_mapunits, 7, da_wsg84.lengthUnits(), True), point_meter_result.wellKnownText()))
+        print('-I-> Mexico City, Mexico - Wsg84 - length_meter_mapunits[{}] point_meter_result[{}] '.format(QgsDistanceArea.formatDistance(length_meter_mapunits, 7, da_wsg84.lengthUnits(), True), point_meter_result.asWkt()))
         self.assertEqual(QgsDistanceArea.formatDistance(length_meter_mapunits, 8, QgsUnitTypes.DistanceDegrees, True), '0.00000952 deg')
         self.assertEqual(point_meter_result.toString(7), point_wsg84_project.toString(7))
         point_wsg84 = QgsPointXY(-79.894444, 9.341667)
         point_wsg84_project = QgsPointXY(-79.89443489691369, 9.341666999999882)
         length_meter_mapunits, point_meter_result = da_wsg84.measureLineProjected(point_wsg84, 1.0, (math.pi / 2))
-        print('-I-> Colón, Panama - Wsg84 - length_meter_mapunits[{}] point_meter_result[{}] '.format(QgsDistanceArea.formatDistance(length_meter_mapunits, 7, da_wsg84.lengthUnits(), True), point_meter_result.wellKnownText()))
+        print('-I-> Colón, Panama - Wsg84 - length_meter_mapunits[{}] point_meter_result[{}] '.format(QgsDistanceArea.formatDistance(length_meter_mapunits, 7, da_wsg84.lengthUnits(), True), point_meter_result.asWkt()))
         self.assertEqual(QgsDistanceArea.formatDistance(length_meter_mapunits, 8, QgsUnitTypes.DistanceDegrees, True), '0.00000910 deg')
         self.assertEqual(point_meter_result.toString(7), point_wsg84_project.toString(7))
         point_wsg84 = QgsPointXY(-74.075833, 4.598056)
         point_wsg84_project = QgsPointXY(-74.07582398803629, 4.598055999999943)
         length_meter_mapunits, point_meter_result = da_wsg84.measureLineProjected(point_wsg84, 1.0, (math.pi / 2))
-        print('-I-> Bogotá, Colombia - Wsg84 - length_meter_mapunits[{}] point_meter_result[{}] '.format(QgsDistanceArea.formatDistance(length_meter_mapunits, 7, da_wsg84.lengthUnits(), True), point_meter_result.wellKnownText()))
+        print('-I-> Bogotá, Colombia - Wsg84 - length_meter_mapunits[{}] point_meter_result[{}] '.format(QgsDistanceArea.formatDistance(length_meter_mapunits, 7, da_wsg84.lengthUnits(), True), point_meter_result.asWkt()))
         self.assertEqual(QgsDistanceArea.formatDistance(length_meter_mapunits, 8, QgsUnitTypes.DistanceDegrees, True), '0.00000901 deg')
         self.assertEqual(point_meter_result.toString(7), point_wsg84_project.toString(7))
         point_wsg84 = QgsPointXY(0, 0)
         point_wsg84_project = QgsPointXY(0.000008983152841, 0)
         length_meter_mapunits, point_meter_result = da_wsg84.measureLineProjected(point_wsg84, 1.0, (math.pi / 2))
-        print('-I-> Equator, Atlantic Ocean - Wsg84 - length_meter_mapunits[{}] point_meter_result[{}] '.format(QgsDistanceArea.formatDistance(length_meter_mapunits, 7, da_wsg84.lengthUnits(), True), point_meter_result.wellKnownText()))
+        print('-I-> Equator, Atlantic Ocean - Wsg84 - length_meter_mapunits[{}] point_meter_result[{}] '.format(QgsDistanceArea.formatDistance(length_meter_mapunits, 7, da_wsg84.lengthUnits(), True), point_meter_result.asWkt()))
         self.assertEqual(QgsDistanceArea.formatDistance(length_meter_mapunits, 8, QgsUnitTypes.DistanceDegrees, True), '0.00000898 deg')
         self.assertEqual(point_meter_result.toString(7), point_wsg84_project.toString(7))
         print('\n12 points ''down under'' and 1 point that should be considered invalid')
         point_wsg84 = QgsPointXY(-78.509722, -0.218611)
         point_wsg84_project = QgsPointXY(-78.50971301678221, -0.218610999999997)
         length_meter_mapunits, point_meter_result = da_wsg84.measureLineProjected(point_wsg84, 1.0, (math.pi / 2))
-        print('-I-> Quito, Ecuador - Wsg84 - length_meter_mapunits[{}] point_meter_result[{}] '.format(QgsDistanceArea.formatDistance(length_meter_mapunits, 7, da_wsg84.lengthUnits(), True), point_meter_result.wellKnownText()))
+        print('-I-> Quito, Ecuador - Wsg84 - length_meter_mapunits[{}] point_meter_result[{}] '.format(QgsDistanceArea.formatDistance(length_meter_mapunits, 7, da_wsg84.lengthUnits(), True), point_meter_result.asWkt()))
         self.assertEqual(QgsDistanceArea.formatDistance(length_meter_mapunits, 8, QgsUnitTypes.DistanceDegrees, True), '0.00000898 deg')
         self.assertEqual(point_meter_result.toString(7), point_wsg84_project.toString(7))
         point_wsg84 = QgsPointXY(106.816667, -6.2)
         point_wsg84_project = QgsPointXY(106.8166760356519, -6.199999999999922)
         length_meter_mapunits, point_meter_result = da_wsg84.measureLineProjected(point_wsg84, 1.0, (math.pi / 2))
-        print('-I-> Jakarta, Indonesia - Wsg84 - length_meter_mapunits[{}] point_meter_result[{}] '.format(QgsDistanceArea.formatDistance(length_meter_mapunits, 7, da_wsg84.lengthUnits(), True), point_meter_result.wellKnownText()))
+        print('-I-> Jakarta, Indonesia - Wsg84 - length_meter_mapunits[{}] point_meter_result[{}] '.format(QgsDistanceArea.formatDistance(length_meter_mapunits, 7, da_wsg84.lengthUnits(), True), point_meter_result.asWkt()))
         self.assertEqual(QgsDistanceArea.formatDistance(length_meter_mapunits, 8, QgsUnitTypes.DistanceDegrees, True), '0.00000904 deg')
         self.assertEqual(point_meter_result.toString(7), point_wsg84_project.toString(7))
         point_wsg84 = QgsPointXY(-77.018611, -12.035)
         point_wsg84_project = QgsPointXY(-77.01860181630058, -12.03499999999985)
         length_meter_mapunits, point_meter_result = da_wsg84.measureLineProjected(point_wsg84, 1.0, (math.pi / 2))
-        print('-I-> Lima, Peru - Wsg84 - length_meter_mapunits[{}] point_meter_result[{}] '.format(QgsDistanceArea.formatDistance(length_meter_mapunits, 7, da_wsg84.lengthUnits(), True), point_meter_result.wellKnownText()))
+        print('-I-> Lima, Peru - Wsg84 - length_meter_mapunits[{}] point_meter_result[{}] '.format(QgsDistanceArea.formatDistance(length_meter_mapunits, 7, da_wsg84.lengthUnits(), True), point_meter_result.asWkt()))
         self.assertEqual(QgsDistanceArea.formatDistance(length_meter_mapunits, 8, QgsUnitTypes.DistanceDegrees, True), '0.00000918 deg')
         self.assertEqual(point_meter_result.toString(7), point_wsg84_project.toString(7))
         point_wsg84 = QgsPointXY(25.466667, -10.716667)
         point_wsg84_project = QgsPointXY(25.46667614155322, -10.71666699999986)
         length_meter_mapunits, point_meter_result = da_wsg84.measureLineProjected(point_wsg84, 1.0, (math.pi / 2))
-        print('-I-> Kolwezi, Congo - Wsg84 - length_meter_mapunits[{}] point_meter_result[{}] '.format(QgsDistanceArea.formatDistance(length_meter_mapunits, 7, da_wsg84.lengthUnits(), True), point_meter_result.wellKnownText()))
+        print('-I-> Kolwezi, Congo - Wsg84 - length_meter_mapunits[{}] point_meter_result[{}] '.format(QgsDistanceArea.formatDistance(length_meter_mapunits, 7, da_wsg84.lengthUnits(), True), point_meter_result.asWkt()))
         self.assertEqual(QgsDistanceArea.formatDistance(length_meter_mapunits, 8, QgsUnitTypes.DistanceDegrees, True), '0.00000914 deg')
         self.assertEqual(point_meter_result.toString(7), point_wsg84_project.toString(7))
         point_wsg84 = QgsPointXY(-70.333333, -18.483333)
         point_wsg84_project = QgsPointXY(-70.3333235314429, -18.48333299999976)
         length_meter_mapunits, point_meter_result = da_wsg84.measureLineProjected(point_wsg84, 1.0, (math.pi / 2))
-        print('-I-> Arica, Chile - Wsg84 - length_meter_mapunits[{}] point_meter_result[{}] '.format(QgsDistanceArea.formatDistance(length_meter_mapunits, 7, da_wsg84.lengthUnits(), True), point_meter_result.wellKnownText()))
+        print('-I-> Arica, Chile - Wsg84 - length_meter_mapunits[{}] point_meter_result[{}] '.format(QgsDistanceArea.formatDistance(length_meter_mapunits, 7, da_wsg84.lengthUnits(), True), point_meter_result.asWkt()))
         self.assertEqual(QgsDistanceArea.formatDistance(length_meter_mapunits, 8, QgsUnitTypes.DistanceDegrees, True), '0.00000947 deg')
         self.assertEqual(point_meter_result.toString(7), point_wsg84_project.toString(7))
         point_wsg84 = QgsPointXY(-70.666667, -33.45)
         point_wsg84_project = QgsPointXY(-70.66665624452817, -33.44999999999953)
         length_meter_mapunits, point_meter_result = da_wsg84.measureLineProjected(point_wsg84, 1.0, (math.pi / 2))
-        print('-I-> Santiago, Chile - Wsg84 - length_meter_mapunits[{}] point_meter_result[{}] '.format(QgsDistanceArea.formatDistance(length_meter_mapunits, 7, da_wsg84.lengthUnits(), True), point_meter_result.wellKnownText()))
+        print('-I-> Santiago, Chile - Wsg84 - length_meter_mapunits[{}] point_meter_result[{}] '.format(QgsDistanceArea.formatDistance(length_meter_mapunits, 7, da_wsg84.lengthUnits(), True), point_meter_result.asWkt()))
         self.assertEqual(QgsDistanceArea.formatDistance(length_meter_mapunits, 8, QgsUnitTypes.DistanceDegrees, True), '0.00001076 deg')
         self.assertEqual(point_meter_result.toString(7), point_wsg84_project.toString(7))
         point_wsg84 = QgsPointXY(144.9604, -37.8191)
         point_wsg84_project = QgsPointXY(144.96041135746983741, -37.81909999999945171)
         length_meter_mapunits, point_meter_result = da_wsg84.measureLineProjected(point_wsg84, 1.0, (math.pi / 2))
-        print('-I-> Melbourne, Australia - Wsg84 - length_meter_mapunits[{}] point_meter_result[{}] '.format(QgsDistanceArea.formatDistance(length_meter_mapunits, 8, da_wsg84.lengthUnits(), True), point_meter_result.wellKnownText()))
+        print('-I-> Melbourne, Australia - Wsg84 - length_meter_mapunits[{}] point_meter_result[{}] '.format(QgsDistanceArea.formatDistance(length_meter_mapunits, 8, da_wsg84.lengthUnits(), True), point_meter_result.asWkt()))
         self.assertEqual(QgsDistanceArea.formatDistance(length_meter_mapunits, 8, QgsUnitTypes.DistanceDegrees, True), '0.00001136 deg')
         self.assertEqual(point_meter_result.toString(7), point_wsg84_project.toString(7))
         point_wsg84 = QgsPointXY(147.29, -42.88)
         point_wsg84_project = QgsPointXY(147.2900122399815, -42.87999999999934)
         length_meter_mapunits, point_meter_result = da_wsg84.measureLineProjected(point_wsg84, 1.0, (math.pi / 2))
-        print('-I-> Hobart City,Tasmania, Australia - Wsg84 - length_meter_mapunits[{}] point_meter_result[{}] '.format(QgsDistanceArea.formatDistance(length_meter_mapunits, 7, da_wsg84.lengthUnits(), True), point_meter_result.wellKnownText()))
+        print('-I-> Hobart City,Tasmania, Australia - Wsg84 - length_meter_mapunits[{}] point_meter_result[{}] '.format(QgsDistanceArea.formatDistance(length_meter_mapunits, 7, da_wsg84.lengthUnits(), True), point_meter_result.asWkt()))
         self.assertEqual(QgsDistanceArea.formatDistance(length_meter_mapunits, 8, QgsUnitTypes.DistanceDegrees, True), '0.00001224 deg')
         self.assertEqual(point_meter_result.toString(7), point_wsg84_project.toString(7))
         point_wsg84 = QgsPointXY(168.101667, -46.899722)
         point_wsg84_project = QgsPointXY(168.101680123673, -46.89972199999923)
         length_meter_mapunits, point_meter_result = da_wsg84.measureLineProjected(point_wsg84, 1.0, (math.pi / 2))
-        print('-I-> Ryan''s Creek Aerodrome, New Zealand - Wsg84 - length_meter_mapunits[{}] point_meter_result[{}] '.format(QgsDistanceArea.formatDistance(length_meter_mapunits, 7, da_wsg84.lengthUnits(), True), point_meter_result.wellKnownText()))
+        print('-I-> Ryan''s Creek Aerodrome, New Zealand - Wsg84 - length_meter_mapunits[{}] point_meter_result[{}] '.format(QgsDistanceArea.formatDistance(length_meter_mapunits, 7, da_wsg84.lengthUnits(), True), point_meter_result.asWkt()))
         self.assertEqual(QgsDistanceArea.formatDistance(length_meter_mapunits, 8, QgsUnitTypes.DistanceDegrees, True), '0.00001312 deg')
         self.assertEqual(point_meter_result.toString(7), point_wsg84_project.toString(7))
         point_wsg84 = QgsPointXY(-69.216667, -51.633333)
         point_wsg84_project = QgsPointXY(-69.21665255700216, -51.6333329999991)
         length_meter_mapunits, point_meter_result = da_wsg84.measureLineProjected(point_wsg84, 1.0, (math.pi / 2))
-        print('-I-> Río Gallegos, Argentina - Wsg84 - length_meter_mapunits[{}] point_meter_result[{}] '.format(QgsDistanceArea.formatDistance(length_meter_mapunits, 7, da_wsg84.lengthUnits(), True), point_meter_result.wellKnownText()))
+        print('-I-> Río Gallegos, Argentina - Wsg84 - length_meter_mapunits[{}] point_meter_result[{}] '.format(QgsDistanceArea.formatDistance(length_meter_mapunits, 7, da_wsg84.lengthUnits(), True), point_meter_result.asWkt()))
         self.assertEqual(QgsDistanceArea.formatDistance(length_meter_mapunits, 8, QgsUnitTypes.DistanceDegrees, True), '0.00001444 deg')
         self.assertEqual(point_meter_result.toString(7), point_wsg84_project.toString(7))
         point_wsg84 = QgsPointXY(-68.3, -54.8)
         point_wsg84_project = QgsPointXY(-68.29998445081456, -54.79999999999899)
         length_meter_mapunits, point_meter_result = da_wsg84.measureLineProjected(point_wsg84, 1.0, (math.pi / 2))
-        print('-I-> Ushuaia, Tierra del Fuego, Argentina - Wsg84 - length_meter_mapunits[{}] point_meter_result[{}] '.format(QgsDistanceArea.formatDistance(length_meter_mapunits, 7, da_wsg84.lengthUnits(), True), point_meter_result.wellKnownText()))
+        print('-I-> Ushuaia, Tierra del Fuego, Argentina - Wsg84 - length_meter_mapunits[{}] point_meter_result[{}] '.format(QgsDistanceArea.formatDistance(length_meter_mapunits, 7, da_wsg84.lengthUnits(), True), point_meter_result.asWkt()))
         self.assertEqual(QgsDistanceArea.formatDistance(length_meter_mapunits, 8, QgsUnitTypes.DistanceDegrees, True), '0.00001555 deg')
         self.assertEqual(point_meter_result.toString(7), point_wsg84_project.toString(7))
         point_wsg84 = QgsPointXY(-63.494444, -64.825278)
         point_wsg84_project = QgsPointXY(-63.49442294002932, -64.82527799999851)
         length_meter_mapunits, point_meter_result = da_wsg84.measureLineProjected(point_wsg84, 1.0, (math.pi / 2))
-        print('-I-> Port Lockroy, Antarctica - Wsg84 - length_meter_mapunits[{}] point_meter_result[{}] '.format(QgsDistanceArea.formatDistance(length_meter_mapunits, 7, da_wsg84.lengthUnits(), True), point_meter_result.wellKnownText()))
+        print('-I-> Port Lockroy, Antarctica - Wsg84 - length_meter_mapunits[{}] point_meter_result[{}] '.format(QgsDistanceArea.formatDistance(length_meter_mapunits, 7, da_wsg84.lengthUnits(), True), point_meter_result.asWkt()))
         self.assertEqual(QgsDistanceArea.formatDistance(length_meter_mapunits, 8, QgsUnitTypes.DistanceDegrees, True), '0.00002106 deg')
         self.assertEqual(point_meter_result.toString(7), point_wsg84_project.toString(7))
         point_wsg84 = QgsPointXY(-180, -84.863272250)
         point_wsg84_project = QgsPointXY(-179.9999000000025, -84.8632722499922)
         length_meter_mapunits, point_meter_result = da_wsg84.measureLineProjected(point_wsg84, 1.0, (math.pi / 2))
-        print('-I-> Someware, Antarctica - Wsg84 - length_meter_mapunits[{}] point_meter_result[{}] '.format(QgsDistanceArea.formatDistance(length_meter_mapunits, 7, da_wsg84.lengthUnits(), True), point_meter_result.wellKnownText()))
+        print('-I-> Someware, Antarctica - Wsg84 - length_meter_mapunits[{}] point_meter_result[{}] '.format(QgsDistanceArea.formatDistance(length_meter_mapunits, 7, da_wsg84.lengthUnits(), True), point_meter_result.asWkt()))
         self.assertEqual(QgsDistanceArea.formatDistance(length_meter_mapunits, 8, QgsUnitTypes.DistanceDegrees, True), '0.00010000 deg')
         self.assertEqual(point_meter_result.toString(7), point_wsg84_project.toString(7))
         point_wsg84 = QgsPointXY(-180, -85.0511300)
         point_wsg84_project = QgsPointXY(-179.9998962142197, -85.05112999999191)
         length_meter_mapunits, point_meter_result = da_wsg84.measureLineProjected(point_wsg84, 1.0, (math.pi / 2))
-        print('-W-> Mercator''s Last Stop, Antarctica - Wsg84 - length_meter_mapunits[{}] point_meter_result[{}] '.format(QgsDistanceArea.formatDistance(length_meter_mapunits, 7, da_wsg84.lengthUnits(), True), point_meter_result.wellKnownText()))
+        print('-W-> Mercator''s Last Stop, Antarctica - Wsg84 - length_meter_mapunits[{}] point_meter_result[{}] '.format(QgsDistanceArea.formatDistance(length_meter_mapunits, 7, da_wsg84.lengthUnits(), True), point_meter_result.asWkt()))
         self.assertEqual(QgsDistanceArea.formatDistance(length_meter_mapunits, 8, QgsUnitTypes.DistanceDegrees, True), '0.00010379 deg')
         self.assertEqual(point_meter_result.toString(7), point_wsg84_project.toString(7))
 
@@ -381,7 +381,7 @@ class TestQgsDistanceArea(unittest.TestCase):
         #   +-+ +-+-+
         #   | | |   |
         # +-+ + +   +-+
-        linestring = QgsGeometry.fromMultiPolyline(
+        linestring = QgsGeometry.fromMultiPolylineXY(
             [
                 [QgsPointXY(0, 0), QgsPointXY(1, 0), QgsPointXY(1, 1), QgsPointXY(2, 1), QgsPointXY(2, 0), ],
                 [QgsPointXY(3, 0), QgsPointXY(3, 1), QgsPointXY(5, 1), QgsPointXY(5, 0), QgsPointXY(6, 0), ]
@@ -399,7 +399,7 @@ class TestQgsDistanceArea(unittest.TestCase):
         # + +-+
         # | |
         # +-+
-        polygon = QgsGeometry.fromPolygon(
+        polygon = QgsGeometry.fromPolygonXY(
             [[
                 QgsPointXY(0, 0), QgsPointXY(1, 0), QgsPointXY(1, 1), QgsPointXY(2, 1), QgsPointXY(2, 2), QgsPointXY(0, 2), QgsPointXY(0, 0),
             ]]
@@ -420,7 +420,7 @@ class TestQgsDistanceArea(unittest.TestCase):
         # + +-+ +
         # |     |
         # +-+-+-+
-        polygon = QgsGeometry.fromPolygon(
+        polygon = QgsGeometry.fromPolygonXY(
             [
                 [QgsPointXY(0, 0), QgsPointXY(3, 0), QgsPointXY(3, 3), QgsPointXY(0, 3), QgsPointXY(0, 0)],
                 [QgsPointXY(1, 1), QgsPointXY(2, 1), QgsPointXY(2, 2), QgsPointXY(1, 2), QgsPointXY(1, 1)],
@@ -440,7 +440,7 @@ class TestQgsDistanceArea(unittest.TestCase):
         # + +-+ +-+ +
         # | |     | |
         # +-+     +-+
-        polygon = QgsGeometry.fromMultiPolygon(
+        polygon = QgsGeometry.fromMultiPolygonXY(
             [
                 [[QgsPointXY(0, 0), QgsPointXY(1, 0), QgsPointXY(1, 1), QgsPointXY(2, 1), QgsPointXY(2, 2), QgsPointXY(0, 2), QgsPointXY(0, 0), ]],
                 [[QgsPointXY(4, 0), QgsPointXY(5, 0), QgsPointXY(5, 2), QgsPointXY(3, 2), QgsPointXY(3, 1), QgsPointXY(4, 1), QgsPointXY(4, 0), ]]
@@ -530,7 +530,7 @@ class TestQgsDistanceArea(unittest.TestCase):
         da.setSourceCrs(QgsCoordinateReferenceSystem.fromSrsId(3452))
         da.setEllipsoid("NONE")
 
-        polygon = QgsGeometry.fromPolygon(
+        polygon = QgsGeometry.fromPolygonXY(
             [[
                 QgsPointXY(0, 0), QgsPointXY(1, 0), QgsPointXY(1, 1), QgsPointXY(2, 1), QgsPointXY(2, 2), QgsPointXY(0, 2), QgsPointXY(0, 0),
             ]]
@@ -559,7 +559,7 @@ class TestQgsDistanceArea(unittest.TestCase):
         self.assertAlmostEqual(area, 14446.7378, delta=0.001)
 
         # now try with a source CRS which is in feet
-        polygon = QgsGeometry.fromPolygon(
+        polygon = QgsGeometry.fromPolygonXY(
             [[
                 QgsPointXY(1850000, 4423000), QgsPointXY(1851000, 4423000), QgsPointXY(1851000, 4424000), QgsPointXY(1852000, 4424000), QgsPointXY(1852000, 4425000), QgsPointXY(1851000, 4425000), QgsPointXY(1850000, 4423000)
             ]]

@@ -53,7 +53,7 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     QgsOptions( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags,
                 const QList<QgsOptionsWidgetFactory *> &optionsFactories = QList<QgsOptionsWidgetFactory *>() );
 
-    ~QgsOptions();
+    ~QgsOptions() override;
 
     /**
      * Sets the page with the specified widget name as the current page
@@ -187,6 +187,12 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     void clearCache();
 
     /**
+     * \brief clearAuthenticationConnectionCache clears the QNetworkAccessManager
+     * authentication connection cache
+     */
+    void clearAccessCache();
+
+    /**
      * Let the user add a scale to the list of scales
      * used in scale combobox
      */
@@ -210,7 +216,7 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     void exportScales();
 
     //! Auto slot executed when the active page in the option section widget is changed
-    void mOptionsStackedWidget_currentChanged( int indx );
+    void optionsStackedWidget_CurrentChanged( int index ) override;
 
     //! A scale in the list of predefined scales changed
     void scaleItemChanged( QListWidgetItem *changedScaleItem );
@@ -220,9 +226,6 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
 
     /* Save the list of which gdal drivers should be used. */
     void saveGdalDriverList();
-
-    void removeDefaultTransformation();
-    void addDefaultTransformation();
 
     void addColor();
 
@@ -242,8 +245,6 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     //! Generate table row for custom environment variables
     void addCustomEnvVarRow( const QString &varName, const QString &varVal, const QString &varApply = QString() );
 
-    void saveDefaultDatumTransformations();
-
     void showHelp();
 
     QListWidgetItem *addScaleToScaleList( const QString &newScale );
@@ -261,7 +262,6 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
 
     QList< QgsOptionsPageWidget * > mAdditionalOptionWidgets;
     QgsLocatorOptionsWidget *mLocatorOptionsWidget = nullptr;
-
 };
 
 #endif // #ifndef QGSOPTIONS_H

@@ -16,9 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
-from builtins import range
-from builtins import object
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -57,10 +54,11 @@ except:
     gdalAvailable = False
 
 
-class GdalUtils(object):
+class GdalUtils:
     GDAL_HELP_PATH = 'GDAL_HELP_PATH'
 
     supportedRasters = None
+    supportedOutputRasters = None
 
     @staticmethod
     def runGdal(commands, feedback=None):
@@ -113,7 +111,7 @@ class GdalUtils(object):
                     retry_count += 1
                 else:
                     raise IOError(
-                        e.message + u'\nTried 5 times without success. Last iteration stopped after reading {} line(s).\nLast line(s):\n{}'.format(
+                        str(e) + u'\nTried 5 times without success. Last iteration stopped after reading {} line(s).\nLast line(s):\n{}'.format(
                             len(loglines), u'\n'.join(loglines[-10:])))
 
             QgsMessageLog.logMessage('\n'.join(loglines), 'Processing', QgsMessageLog.INFO)
@@ -135,7 +133,10 @@ class GdalUtils(object):
             gdal.AllRegister()
 
         GdalUtils.supportedRasters = {}
+        GdalUtils.supportedOutputRasters = {}
         GdalUtils.supportedRasters['GTiff'] = ['tif']
+        GdalUtils.supportedOutputRasters['GTiff'] = ['tif']
+
         for i in range(gdal.GetDriverCount()):
             driver = gdal.GetDriver(i)
             if driver is None:
@@ -146,22 +147,44 @@ class GdalUtils(object):
                     or metadata[gdal.DCAP_RASTER] != 'YES':
                 continue
 
-            # ===================================================================
-            # if gdal.DCAP_CREATE not in metadata \
-            #         or metadata[gdal.DCAP_CREATE] != 'YES':
-            #     continue
-            # ===================================================================
             if gdal.DMD_EXTENSION in metadata:
                 extensions = metadata[gdal.DMD_EXTENSION].split('/')
                 if extensions:
                     GdalUtils.supportedRasters[shortName] = extensions
+                    # Only creatable rasters can be referenced in output rasters
+                    if ((gdal.DCAP_CREATE in metadata
+                         and metadata[gdal.DCAP_CREATE] == 'YES')
+                        or (gdal.DCAP_CREATECOPY in metadata
+                            and metadata[gdal.DCAP_CREATECOPY] == 'YES')):
+                        GdalUtils.supportedOutputRasters[shortName] = extensions
 
         return GdalUtils.supportedRasters
+
+    @staticmethod
+    def getSupportedOutputRasters():
+        if not gdalAvailable:
+            return {}
+
+        if GdalUtils.supportedOutputRasters is not None:
+            return GdalUtils.supportedOutputRasters
+        else:
+            GdalUtils.getSupportedRasters()
+
+        return GdalUtils.supportedOutputRasters
 
     @staticmethod
     def getSupportedRasterExtensions():
         allexts = ['tif']
         for exts in list(GdalUtils.getSupportedRasters().values()):
+            for ext in exts:
+                if ext not in allexts and ext != '':
+                    allexts.append(ext)
+        return allexts
+
+    @staticmethod
+    def getSupportedOutputRasterExtensions():
+        allexts = ['tif']
+        for exts in list(GdalUtils.getSupportedOutputRasters().values()):
             for ext in exts:
                 if ext not in allexts and ext != '':
                     allexts.append(ext)
@@ -174,9 +197,9 @@ class GdalUtils(object):
             return 'ESRI Shapefile'
 
         formats = QgsVectorFileWriter.supportedFiltersAndFormats()
-        for k, v in list(formats.items()):
-            if ext in k:
-                return v
+        for format in formats:
+            if ext in format.filterString:
+                return format.driverName
         return 'ESRI Shapefile'
 
     @staticmethod

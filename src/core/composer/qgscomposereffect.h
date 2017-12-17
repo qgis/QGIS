@@ -42,7 +42,7 @@ class CORE_EXPORT QgsComposerEffect : public QGraphicsEffect
 
   protected:
     //! Called whenever source needs to be drawn
-    virtual void draw( QPainter *painter ) override;
+    void draw( QPainter *painter ) override;
 
   private:
 

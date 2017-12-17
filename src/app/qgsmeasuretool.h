@@ -35,9 +35,9 @@ class APP_EXPORT QgsMeasureTool : public QgsMapTool
 
     QgsMeasureTool( QgsMapCanvas *canvas, bool measureArea );
 
-    ~QgsMeasureTool();
+    ~QgsMeasureTool() override;
 
-    virtual Flags flags() const override { return QgsMapTool::AllowZoomRect; }
+    Flags flags() const override { return QgsMapTool::AllowZoomRect; }
 
     //! returns whether measuring distance or area
     bool measureArea() { return mMeasureArea; }
@@ -52,26 +52,26 @@ class APP_EXPORT QgsMeasureTool : public QgsMapTool
     void addPoint( const QgsPointXY &point );
 
     //! Returns reference to array of the points
-    QList<QgsPointXY> points();
+    QVector<QgsPointXY> points();
 
     // Inherited from QgsMapTool
 
     //! Mouse move event for overriding
-    virtual void canvasMoveEvent( QgsMapMouseEvent *e ) override;
+    void canvasMoveEvent( QgsMapMouseEvent *e ) override;
 
     //! Mouse press event for overriding
-    virtual void canvasPressEvent( QgsMapMouseEvent *e ) override;
+    void canvasPressEvent( QgsMapMouseEvent *e ) override;
 
     //! Mouse release event for overriding
-    virtual void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
+    void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
 
     //! called when set as currently active map tool
-    virtual void activate() override;
+    void activate() override;
 
     //! called when map tool is being deactivated
-    virtual void deactivate() override;
+    void deactivate() override;
 
-    virtual void keyPressEvent( QKeyEvent *e ) override;
+    void keyPressEvent( QKeyEvent *e ) override;
 
   public slots:
     //! updates the projections we're using
@@ -79,7 +79,7 @@ class APP_EXPORT QgsMeasureTool : public QgsMapTool
 
   protected:
 
-    QList<QgsPointXY> mPoints;
+    QVector<QgsPointXY> mPoints;
 
     QgsMeasureDialog *mDialog = nullptr;
 

@@ -77,16 +77,19 @@ def handleAlgorithmResults(alg, context, feedback=None, showResults=True):
                 if style:
                     layer.loadNamedStyle(style)
                 details.project.addMapLayer(context.temporaryLayerStore().takeMapLayer(layer))
+            else:
+                wrongLayers.append(str(l))
         except Exception:
-            QgsMessageLog.logMessage("Error loading result layer:\n" + traceback.format_exc(), 'Processing', QgsMessageLog.CRITICAL)
+            QgsMessageLog.logMessage(QCoreApplication.translate('Postprocessing', "Error loading result layer:") + "\n" + traceback.format_exc(), 'Processing', QgsMessageLog.CRITICAL)
             wrongLayers.append(str(l))
         i += 1
 
-    QApplication.restoreOverrideCursor()
+    feedback.setProgress(100)
+
     if wrongLayers:
-        msg = "The following layers were not correctly generated.<ul>"
-        msg += "".join(["<li>%s</li>" % lay for lay in wrongLayers]) + "</ul>"
-        msg += "You can check the log messages to find more information about the execution of the algorithm"
+        msg = QCoreApplication.translate('Postprocessing', "The following layers were not correctly generated.")
+        msg += "<ul>" + "".join(["<li>%s</li>" % lay for lay in wrongLayers]) + "</ul>"
+        msg += QCoreApplication.translate('Postprocessing', "You can check the 'Log Messages Panel' in QGIS main window to find more information about the execution of the algorithm.")
         feedback.reportError(msg)
 
     return len(wrongLayers) == 0

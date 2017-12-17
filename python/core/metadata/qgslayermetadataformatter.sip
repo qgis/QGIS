@@ -13,6 +13,7 @@ class QgsLayerMetadataFormatter
 {
 %Docstring
  Class for metadata formatter.
+
 .. versionadded:: 3.0
 %End
 
@@ -23,49 +24,43 @@ class QgsLayerMetadataFormatter
 
     QgsLayerMetadataFormatter( const QgsLayerMetadata &metadata );
 %Docstring
- Constructor for QgsLayerMetadataFormatter
+Constructor for QgsLayerMetadataFormatter
 %End
 
     QString accessSectionHtml() const;
 %Docstring
- Formats the "Access" section according to a ``metadata`` object.
- This will return a HTML table.
- :rtype: str
+Formats the "Access" section according to a ``metadata`` object.
+This will return a HTML table.
 %End
 
     QString contactsSectionHtml() const;
 %Docstring
- Formats the "Contacts" section according to a ``metadata`` object.
- This will return a HTML table.
- :rtype: str
+Formats the "Contacts" section according to a ``metadata`` object.
+This will return a HTML table.
 %End
 
     QString extentSectionHtml() const;
 %Docstring
- Formats the "Extents" section according to a ``metadata`` object.
- This will return a HTML table.
- :rtype: str
+Formats the "Extents" section according to a ``metadata`` object.
+This will return a HTML table.
 %End
 
     QString identificationSectionHtml() const;
 %Docstring
- Formats the "Identification" section according to a ``metadata`` object.
- This will return a HTML table.
- :rtype: str
+Formats the "Identification" section according to a ``metadata`` object.
+This will return a HTML table.
 %End
 
     QString historySectionHtml() const;
 %Docstring
- Formats the "History" section according to a ``metadata`` object.
- This will return a HTML table.
- :rtype: str
+Formats the "History" section according to a ``metadata`` object.
+This will return a HTML table.
 %End
 
     QString linksSectionHtml() const;
 %Docstring
- Formats the "Links" section according to a ``metadata`` object.
- This will return a HTML table.
- :rtype: str
+Formats the "Links" section according to a ``metadata`` object.
+This will return a HTML table.
 %End
 
 };

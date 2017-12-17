@@ -38,8 +38,8 @@ class CORE_EXPORT QgsShadowEffect : public QgsPaintEffect
 
     QgsShadowEffect();
 
-    virtual QgsStringMap properties() const override;
-    virtual void readProperties( const QgsStringMap &props ) override;
+    QgsStringMap properties() const override;
+    void readProperties( const QgsStringMap &props ) override;
 
     /**
      * Sets blur level (strength) for the shadow.
@@ -175,8 +175,8 @@ class CORE_EXPORT QgsShadowEffect : public QgsPaintEffect
 
   protected:
 
-    virtual QRectF boundingRect( const QRectF &rect, const QgsRenderContext &context ) const override;
-    virtual void draw( QgsRenderContext &context ) override;
+    QRectF boundingRect( const QRectF &rect, const QgsRenderContext &context ) const override;
+    void draw( QgsRenderContext &context ) override;
 
     /**
      * Specifies whether the shadow is drawn outside the picture or within
@@ -219,12 +219,12 @@ class CORE_EXPORT QgsDropShadowEffect : public QgsShadowEffect
 
     QgsDropShadowEffect();
 
-    virtual QString type() const override;
-    virtual QgsDropShadowEffect *clone() const override SIP_FACTORY;
+    QString type() const override;
+    QgsDropShadowEffect *clone() const override SIP_FACTORY;
 
   protected:
 
-    virtual bool exteriorShadow() const override;
+    bool exteriorShadow() const override;
 
 };
 
@@ -250,12 +250,12 @@ class CORE_EXPORT QgsInnerShadowEffect : public QgsShadowEffect
 
     QgsInnerShadowEffect();
 
-    virtual QString type() const override;
-    virtual QgsInnerShadowEffect *clone() const override SIP_FACTORY;
+    QString type() const override;
+    QgsInnerShadowEffect *clone() const override SIP_FACTORY;
 
   protected:
 
-    virtual bool exteriorShadow() const override;
+    bool exteriorShadow() const override;
 
 };
 

@@ -12,11 +12,11 @@
 class QgsLayoutDesignerInterface: QObject
 {
 %Docstring
- A common interface for layout designer dialogs and widgets.
+A common interface for layout designer dialogs and widgets.
 
- Provides a common interface and stable API for layout designer dialogs and widgets.
- This interface can be used by plugins and scripts to interact with
- open layout designer dialogs.
+Provides a common interface and stable API for layout designer dialogs and widgets.
+This interface can be used by plugins and scripts to interact with
+open layout designer dialogs.
 
 .. versionadded:: 3.0
 %End
@@ -28,31 +28,34 @@ class QgsLayoutDesignerInterface: QObject
 
     QgsLayoutDesignerInterface( QObject *parent /TransferThis/ = 0 );
 %Docstring
- Constructor for QgsLayoutDesignerInterface.
+Constructor for QgsLayoutDesignerInterface.
 %End
-
-    virtual ~QgsLayoutDesignerInterface();
 
     virtual QgsLayout *layout() = 0;
 %Docstring
- Returns the layout displayed in the designer.
-.. seealso:: view()
- :rtype: QgsLayout
+Returns the layout displayed in the designer.
+
+.. seealso:: :py:func:`view()`
 %End
 
 
     virtual QgsLayoutView *view() = 0;
 %Docstring
- Returns the layout view utilized by the designer.
-.. seealso:: layout()
- :rtype: QgsLayoutView
+Returns the layout view utilized by the designer.
+
+.. seealso:: :py:func:`layout()`
+%End
+
+    virtual void selectItems( const QList< QgsLayoutItem * > items ) = 0;
+%Docstring
+Selects the specified ``items``.
 %End
 
   public slots:
 
     virtual void close() = 0;
 %Docstring
- Closes the layout designer.
+Closes the layout designer.
 %End
 
 };

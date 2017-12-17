@@ -120,7 +120,7 @@ void TestQgsComposerUtils::cleanup()
 void TestQgsComposerUtils::drawArrowHead()
 {
   //test drawing with no painter
-  QgsComposerUtils::drawArrowHead( 0, 100, 100, 90, 30 );
+  QgsComposerUtils::drawArrowHead( nullptr, 100, 100, 90, 30 );
 
   //test painting on to image
   QImage testImage = QImage( 250, 250, QImage::Format_RGB32 );
@@ -573,7 +573,7 @@ void TestQgsComposerUtils::textHeightMM()
 void TestQgsComposerUtils::drawTextPos()
 {
   //test drawing with no painter
-  QgsComposerUtils::drawText( 0, QPointF( 5, 15 ), QStringLiteral( "Abc123" ), mTestFont );
+  QgsComposerUtils::drawText( nullptr, QPointF( 5, 15 ), QStringLiteral( "Abc123" ), mTestFont );
 
   //test drawing text on to image
   mTestFont.setPointSize( 48 );
@@ -598,7 +598,7 @@ void TestQgsComposerUtils::drawTextPos()
 void TestQgsComposerUtils::drawTextRect()
 {
   //test drawing with no painter
-  QgsComposerUtils::drawText( 0, QRectF( 5, 15, 200, 50 ), QStringLiteral( "Abc123" ), mTestFont );
+  QgsComposerUtils::drawText( nullptr, QRectF( 5, 15, 200, 50 ), QStringLiteral( "Abc123" ), mTestFont );
 
   //test drawing text on to image
   mTestFont.setPointSize( 48 );

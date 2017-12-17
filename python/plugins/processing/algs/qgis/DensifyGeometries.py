@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import range
 
 __author__ = 'Victor Olaya'
 __date__ = 'October 2012'
@@ -44,6 +43,9 @@ class DensifyGeometries(QgisFeatureBasedAlgorithm):
     def group(self):
         return self.tr('Vector geometry')
 
+    def groupId(self):
+        return 'vectorgeometry'
+
     def __init__(self):
         super().__init__()
         self.vertices = None
@@ -57,7 +59,7 @@ class DensifyGeometries(QgisFeatureBasedAlgorithm):
         return 'densifygeometries'
 
     def displayName(self):
-        return self.tr('Densify geometries')
+        return self.tr('Densify by count')
 
     def outputName(self):
         return self.tr('Densified')
@@ -69,7 +71,7 @@ class DensifyGeometries(QgisFeatureBasedAlgorithm):
         self.vertices = self.parameterAsInt(parameters, self.VERTICES, context)
         return True
 
-    def processFeature(self, feature, feedback):
+    def processFeature(self, feature, context, feedback):
         if feature.hasGeometry():
             new_geometry = feature.geometry().densifyByCount(self.vertices)
             feature.setGeometry(new_geometry)

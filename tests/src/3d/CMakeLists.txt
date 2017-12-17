@@ -8,6 +8,8 @@ SET (util_SRCS)
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/tests/core #for render checker class
   ${CMAKE_SOURCE_DIR}/src/3d
+  ${CMAKE_SOURCE_DIR}/src/3d/chunks
+  ${CMAKE_SOURCE_DIR}/src/3d/terrain
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/core/auth
@@ -68,4 +70,5 @@ MACRO (ADD_QGIS_TEST testname testsrc)
   #  INSTALL_RPATH_USE_LINK_PATH true )
 ENDMACRO (ADD_QGIS_TEST)
 
+ADD_QGIS_TEST(3dutilstest testqgs3dutils.cpp)
 ADD_QGIS_TEST(tessellatortest testqgstessellator.cpp)

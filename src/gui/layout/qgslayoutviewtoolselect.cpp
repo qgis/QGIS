@@ -30,6 +30,17 @@ QgsLayoutViewToolSelect::QgsLayoutViewToolSelect( QgsLayoutView *view )
   mRubberBand->setPen( QPen( QBrush( QColor( 254, 58, 29, 100 ) ), 0, Qt::DotLine ) );
 }
 
+QgsLayoutViewToolSelect::~QgsLayoutViewToolSelect()
+{
+  if ( mMouseHandles )
+  {
+    // want to force them to be removed from the scene
+    if ( mMouseHandles->scene() )
+      mMouseHandles->scene()->removeItem( mMouseHandles );
+    mMouseHandles->deleteLater();
+  }
+}
+
 void QgsLayoutViewToolSelect::layoutPressEvent( QgsLayoutViewMouseEvent *event )
 {
   if ( mMouseHandles->shouldBlockEvent( event ) )
@@ -62,11 +73,12 @@ void QgsLayoutViewToolSelect::layoutPressEvent( QgsLayoutViewMouseEvent *event )
   QgsLayoutItem *selectedItem = nullptr;
   QgsLayoutItem *previousSelectedItem = nullptr;
 
+  QList<QgsLayoutItem *> selectedItems = layout()->selectedLayoutItems();
+
   if ( event->modifiers() & Qt::ControlModifier )
   {
     //CTRL modifier, so we are trying to select the next item below the current one
     //first, find currently selected item
-    QList<QgsLayoutItem *> selectedItems = layout()->selectedLayoutItems();
     if ( !selectedItems.isEmpty() )
     {
       previousSelectedItem = selectedItems.at( 0 );
@@ -96,14 +108,8 @@ void QgsLayoutViewToolSelect::layoutPressEvent( QgsLayoutViewMouseEvent *event )
     //not clicking over an item, so start marquee selection
     mIsSelecting = true;
     mMousePressStartPos = event->pos();
-    mRubberBand->start( event->layoutPoint(), 0 );
+    mRubberBand->start( event->layoutPoint(), nullptr );
     return;
-  }
-
-  if ( ( !selectedItem->isSelected() ) &&       //keep selection if an already selected item pressed
-       !( event->modifiers() & Qt::ShiftModifier ) ) //keep selection if shift key pressed
-  {
-    layout()->deselectAll();
   }
 
   if ( ( event->modifiers() & Qt::ShiftModifier ) && ( selectedItem->isSelected() ) )
@@ -117,10 +123,22 @@ void QgsLayoutViewToolSelect::layoutPressEvent( QgsLayoutViewMouseEvent *event )
     {
       emit itemFocused( selectedItems.at( 0 ) );
     }
+    else
+    {
+      emit itemFocused( nullptr );
+    }
   }
   else
   {
-    selectedItem->setSelected( true );
+    if ( ( !selectedItem->isSelected() ) &&       //keep selection if an already selected item pressed
+         !( event->modifiers() & Qt::ShiftModifier ) ) //keep selection if shift key pressed
+    {
+      layout()->setSelectedItem( selectedItem ); // clears existing selection
+    }
+    else
+    {
+      selectedItem->setSelected( true );
+    }
     event->ignore();
     emit itemFocused( selectedItem );
   }
@@ -130,7 +148,7 @@ void QgsLayoutViewToolSelect::layoutMoveEvent( QgsLayoutViewMouseEvent *event )
 {
   if ( mIsSelecting )
   {
-    mRubberBand->update( event->layoutPoint(), 0 );
+    mRubberBand->update( event->layoutPoint(), nullptr );
   }
   else
   {
@@ -170,7 +188,7 @@ void QgsLayoutViewToolSelect::layoutReleaseEvent( QgsLayoutViewMouseEvent *event
   else
   {
     //not adding to or removing from selection, so clear current selection
-    layout()->deselectAll();
+    whileBlocking( layout() )->deselectAll();
   }
 
   //determine item selection mode, default to intersection
@@ -218,6 +236,11 @@ void QgsLayoutViewToolSelect::layoutReleaseEvent( QgsLayoutViewMouseEvent *event
   {
     emit itemFocused( selectedItemList.at( 0 ) );
   }
+  else
+  {
+    emit itemFocused( nullptr );
+  }
+  mMouseHandles->selectionChanged();
 }
 
 void QgsLayoutViewToolSelect::wheelEvent( QWheelEvent *event )
@@ -264,6 +287,7 @@ QgsLayoutMouseHandles *QgsLayoutViewToolSelect::mouseHandles()
 void QgsLayoutViewToolSelect::setLayout( QgsLayout *layout )
 {
   // existing handles are owned by previous layout
+  mMouseHandles->deleteLater();
 
   //add mouse selection handles to layout, and initially hide
   mMouseHandles = new QgsLayoutMouseHandles( layout, view() );

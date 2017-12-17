@@ -85,6 +85,7 @@ QgsFeatureRequest &QgsFeatureRequest::operator=( const QgsFeatureRequest &rh )
   mOrderBy = rh.mOrderBy;
   mCrs = rh.mCrs;
   mTransformErrorCallback = rh.mTransformErrorCallback;
+  mConnectionTimeout = rh.mConnectionTimeout;
   return *this;
 }
 
@@ -281,6 +282,16 @@ bool QgsFeatureRequest::acceptFeature( const QgsFeature &feature )
   return true;
 }
 
+int QgsFeatureRequest::connectionTimeout() const
+{
+  return mConnectionTimeout;
+}
+
+void QgsFeatureRequest::setConnectionTimeout( int connectionTimeout )
+{
+  mConnectionTimeout = connectionTimeout;
+}
+
 
 #include "qgsfeatureiterator.h"
 #include "qgslogger.h"
@@ -375,6 +386,8 @@ bool QgsFeatureRequest::OrderByClause::prepare( QgsExpressionContext *context )
 {
   return mExpression.prepare( context );
 }
+
+QgsFeatureRequest::OrderBy::OrderBy() = default;
 
 QgsFeatureRequest::OrderBy::OrderBy( const QList<QgsFeatureRequest::OrderByClause> &other )
 {

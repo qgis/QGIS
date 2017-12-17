@@ -49,8 +49,7 @@ class CORE_EXPORT QgsPointXY
 
   public:
     /// Default constructor
-    QgsPointXY()
-    {}
+    QgsPointXY() = default;
 
     //! Create a point from another point
     QgsPointXY( const QgsPointXY &p );
@@ -148,43 +147,17 @@ class CORE_EXPORT QgsPointXY
      */
     QPointF toQPointF() const;
 
-    //! String representation of the point (x,y)
-    QString toString() const;
-
-    //! As above but with precision for string representation of a point
-    QString toString( int precision ) const;
-
     /**
-     * Return a string representation as degrees minutes seconds.
-     *  Its up to the calling function to ensure that this point can
-     *  be meaningfully represented in this form.
-     *  \param precision number of decimal points to use for seconds
-     *  \param useSuffix set to true to include a direction suffix (e.g., 'N'),
-     *  set to false to use a "-" prefix for west and south coordinates
-     *  \param padded set to true to force minutes and seconds to use two decimals,
-     *  e.g., '05' instead of '5'.
+     * Returns a string representation of the point (x, y) with a preset \a precision.
+     * If  \a precision is -1, then a default precision will be used.
      */
-    QString toDegreesMinutesSeconds( int precision, const bool useSuffix = true, const bool padded = false ) const;
+    QString toString( int precision = -1 ) const;
 
     /**
-     * Return a string representation as degrees minutes.
-     *  Its up to the calling function to ensure that this point can
-     *  be meaningfully represented in this form.
-     *  \param precision number of decimal points to use for minutes
-     *  \param useSuffix set to true to include a direction suffix (e.g., 'N'),
-     *  set to false to use a "-" prefix for west and south coordinates
-     *  \param padded set to true to force minutes to use two decimals,
-     *  e.g., '05' instead of '5'.
-     */
-    QString toDegreesMinutes( int precision, const bool useSuffix = true, const bool padded = false ) const;
-
-
-    /**
-     * Return the well known text representation for the point.
+     * Return the well known text representation for the point (e.g. "POINT(x y)").
      * The wkt is created without an SRID.
-     * \returns Well known text in the form POINT(x y)
      */
-    QString wellKnownText() const;
+    QString asWkt() const;
 
     /**
      * Returns the squared distance between this point a specified x, y coordinate.

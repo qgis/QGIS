@@ -19,25 +19,27 @@ class QgsCategorizedSymbolRendererWidget : QgsRendererWidget
 %End
   public:
     static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer ) /Factory/;
-%Docstring
- :rtype: QgsRendererWidget
-%End
 
     QgsCategorizedSymbolRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );
     ~QgsCategorizedSymbolRendererWidget();
 
     virtual QgsFeatureRenderer *renderer();
 
+
     int matchToSymbols( QgsStyle *style );
 %Docstring
- Replaces category symbols with the symbols from a style that have a matching
- name.
- \param style style containing symbols to match with
- :return: number of symbols matched
-.. seealso:: matchToSymbolsFromLibrary
-.. seealso:: matchToSymbolsFromXml
+Replaces category symbols with the symbols from a style that have a matching
+name.
+
+:param style: style containing symbols to match with
+
+:return: number of symbols matched
+
+.. seealso:: :py:func:`matchToSymbolsFromLibrary`
+
+.. seealso:: :py:func:`matchToSymbolsFromXml`
+
 .. versionadded:: 2.9
- :rtype: int
 %End
 
   public slots:
@@ -49,7 +51,7 @@ class QgsCategorizedSymbolRendererWidget : QgsRendererWidget
 
     void applyColorRamp();
 %Docstring
- Applies the color ramp passed on by the color ramp button
+Applies the color ramp passed on by the color ramp button
 %End
 
     void deleteCategories();
@@ -61,19 +63,25 @@ class QgsCategorizedSymbolRendererWidget : QgsRendererWidget
 
     void matchToSymbolsFromLibrary();
 %Docstring
- Replaces category symbols with the symbols from the users' symbol library that have a
- matching name.
-.. seealso:: matchToSymbolsFromXml
-.. seealso:: matchToSymbols
+Replaces category symbols with the symbols from the users' symbol library that have a
+matching name.
+
+.. seealso:: :py:func:`matchToSymbolsFromXml`
+
+.. seealso:: :py:func:`matchToSymbols`
+
 .. versionadded:: 2.9
 %End
 
     void matchToSymbolsFromXml();
 %Docstring
- Prompts for selection of an xml file, then replaces category symbols with the symbols
- from the XML file with a matching name.
-.. seealso:: matchToSymbolsFromLibrary
-.. seealso:: matchToSymbols
+Prompts for selection of an xml file, then replaces category symbols with the symbols
+from the XML file with a matching name.
+
+.. seealso:: :py:func:`matchToSymbolsFromLibrary`
+
+.. seealso:: :py:func:`matchToSymbols`
+
 .. versionadded:: 2.9
 %End
 
@@ -88,13 +96,11 @@ class QgsCategorizedSymbolRendererWidget : QgsRendererWidget
     int currentCategoryRow();
 %Docstring
 return row index for the currently selected category (-1 if on no selection)
- :rtype: int
 %End
 
     QList<int> selectedCategories();
 %Docstring
 return a list of indexes for the categories unders selection
- :rtype: list of int
 %End
 
     void changeSelectedSymbols();
@@ -107,9 +113,6 @@ change the selected symbols alone for the change button, if there is a selection
     virtual QList<QgsSymbol *> selectedSymbols();
 
     QgsCategoryList selectedCategoryList();
-%Docstring
- :rtype: QgsCategoryList
-%End
     virtual void refreshSymbolView();
 
     virtual void keyPressEvent( QKeyEvent *event );

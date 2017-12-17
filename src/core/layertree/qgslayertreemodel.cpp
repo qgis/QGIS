@@ -195,15 +195,7 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
       // icons possibly overriding default icon
       if ( layer->type() == QgsMapLayer::RasterLayer )
       {
-        if ( testFlag( ShowRasterPreviewIcon ) )
-        {
-          QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( layer );
-          return QIcon( QPixmap::fromImage( rlayer->previewAsImage( QSize( 32, 32 ) ) ) );
-        }
-        else
-        {
-          return QgsLayerItem::iconRaster();
-        }
+        return QgsLayerItem::iconRaster();
       }
 
       QgsVectorLayer *vlayer = dynamic_cast<QgsVectorLayer *>( layer );
@@ -297,7 +289,12 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
           title = layer->name();
         title = "<b>" + title + "</b>";
         if ( layer->crs().isValid() )
-          title = tr( "%1 (%2)" ).arg( title, layer->crs().authid() );
+        {
+          if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer ) )
+            title = tr( "%1 (%2 - %3)" ).arg( title, QgsWkbTypes::displayString( vl->wkbType() ), layer->crs().authid() );
+          else
+            title = tr( "%1 (%2) " ).arg( title, layer->crs().authid() );
+        }
 
         parts << title;
 
@@ -416,7 +413,7 @@ bool QgsLayerTreeModel::setData( const QModelIndex &index, const QVariant &value
 
 QModelIndex QgsLayerTreeModel::node2index( QgsLayerTreeNode *node ) const
 {
-  if ( !node->parent() )
+  if ( !node || !node->parent() )
     return QModelIndex(); // this is the only root item -> invalid index
 
   QModelIndex parentIndex = node2index( node->parent() );
@@ -504,7 +501,7 @@ void QgsLayerTreeModel::refreshLayerLegend( QgsLayerTreeLayer *nodeLayer )
 
   // update children
   int oldNodeCount = rowCount( idx );
-  beginRemoveRows( idx, 0, oldNodeCount - 1 );
+  beginRemoveRows( idx, 0, std::max( oldNodeCount - 1, 0 ) );
   removeLegendFromLayer( nodeLayer );
   endRemoveRows();
 
@@ -999,7 +996,7 @@ QMimeData *QgsLayerTreeModel::mimeData( const QModelIndexList &indexes ) const
   QDomDocument doc;
   QDomElement rootElem = doc.createElement( QStringLiteral( "layer_tree_model_data" ) );
   Q_FOREACH ( QgsLayerTreeNode *node, nodesFinal )
-    node->writeXml( rootElem );
+    node->writeXml( rootElem, QgsReadWriteContext() );
   doc.appendChild( rootElem );
   QString txt = doc.toString();
 
@@ -1171,7 +1168,7 @@ void QgsLayerTreeModel::removeLegendFromLayer( QgsLayerTreeLayer *nodeLayer )
 
 void QgsLayerTreeModel::addLegendToLayer( QgsLayerTreeLayer *nodeL )
 {
-  if ( !nodeL->layer() )
+  if ( !nodeL || !nodeL->layer() )
     return;
 
   QgsMapLayer *ml = nodeL->layer();

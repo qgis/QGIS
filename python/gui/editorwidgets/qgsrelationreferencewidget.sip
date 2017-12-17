@@ -54,7 +54,6 @@ this sets the related feature using from the foreign key
     QVariant foreignKey() const;
 %Docstring
 returns the related feature foreign key
- :rtype: QVariant
 %End
 
     void setEditorContext( const QgsAttributeEditorContext &context, QgsMapCanvas *canvas, QgsMessageBar *messageBar );
@@ -62,28 +61,24 @@ returns the related feature foreign key
     bool embedForm();
 %Docstring
 determines if the form of the related feature will be shown
- :rtype: bool
 %End
     void setEmbedForm( bool display );
 
     bool readOnlySelector();
 %Docstring
 determines if the foreign key is shown in a combox box or a read-only line edit
- :rtype: bool
 %End
     void setReadOnlySelector( bool readOnly );
 
     bool allowMapIdentification();
 %Docstring
 determines if the widge offers the possibility to select the related feature on the map (using a dedicated map tool)
- :rtype: bool
 %End
     void setAllowMapIdentification( bool allowMapIdentification );
 
     bool orderByValue();
 %Docstring
 If the widget will order the combobox entries by value
- :rtype: bool
 %End
     void setOrderByValue( bool orderByValue );
 %Docstring
@@ -97,50 +92,47 @@ Set the fields for which filter comboboxes will be created
     bool openFormButtonVisible();
 %Docstring
 determines the open form button is visible in the widget
- :rtype: bool
 %End
     void setOpenFormButtonVisible( bool openFormButtonVisible );
 
     bool chainFilters() const;
 %Docstring
- Determines if the filters are chained
+Determines if the filters are chained
 
- :return: True if filters are chained
- :rtype: bool
+:return: True if filters are chained
 %End
 
     void setChainFilters( bool chainFilters );
 %Docstring
- Set if filters are chained.
- Chained filters restrict the option of subsequent filters based on the selection of a previous filter.
+Set if filters are chained.
+Chained filters restrict the option of subsequent filters based on the selection of a previous filter.
 
- \param chainFilters If chaining should be enabled
+:param chainFilters: If chaining should be enabled
 %End
 
     QgsFeature referencedFeature() const;
 %Docstring
- return the related feature (from the referenced layer)
- if no feature is related, it returns an invalid feature
- :rtype: QgsFeature
+return the related feature (from the referenced layer)
+if no feature is related, it returns an invalid feature
 %End
 
     void showIndeterminateState();
 %Docstring
- Sets the widget to display in an indeterminate "mixed value" state.
+Sets the widget to display in an indeterminate "mixed value" state.
+
 .. versionadded:: 2.16
 %End
 
     bool allowAddFeatures() const;
 %Docstring
- Determines if a button for adding new features should be shown.
+Determines if a button for adding new features should be shown.
 
 .. versionadded:: 2.16
- :rtype: bool
 %End
 
     void setAllowAddFeatures( bool allowAddFeatures );
 %Docstring
- Determines if a button for adding new features should be shown.
+Determines if a button for adding new features should be shown.
 
 .. versionadded:: 2.16
 %End
@@ -163,6 +155,7 @@ unset the currently related feature
 
   protected:
     virtual void showEvent( QShowEvent *e );
+
 
     void init();
 

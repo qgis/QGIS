@@ -13,8 +13,8 @@
 class QgsPreviewEffect: QGraphicsEffect
 {
 %Docstring
- A graphics effect which can be applied to a widget to simulate various printing and
- color blindness modes.
+A graphics effect which can be applied to a widget to simulate various printing and
+color blindness modes.
 %End
 
 %TypeHeaderCode
@@ -33,23 +33,29 @@ class QgsPreviewEffect: QGraphicsEffect
 
     void setMode( PreviewMode mode );
 %Docstring
- Sets the mode for the preview effect, which controls how the effect modifies a widgets appearance.
- \param mode PreviewMode to use to draw the widget
+Sets the mode for the preview effect, which controls how the effect modifies a widgets appearance.
+
+:param mode: PreviewMode to use to draw the widget
+
 .. versionadded:: 2.3
-.. seealso:: mode
+
+.. seealso:: :py:func:`mode`
 %End
 
     PreviewMode mode() const;
 %Docstring
- Returns the mode used for the preview effect.
- :return: PreviewMode currently used by the effect
+Returns the mode used for the preview effect.
+
+:return: PreviewMode currently used by the effect
+
 .. versionadded:: 2.3
-.. seealso:: setMode
- :rtype: PreviewMode
+
+.. seealso:: :py:func:`setMode`
 %End
 
   protected:
     virtual void draw( QPainter *painter );
+
 
 };
 

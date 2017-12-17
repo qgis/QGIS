@@ -17,6 +17,8 @@
 
 #include "qgscolorramp.h"
 #include "qgssymbollayerutils.h"
+#include "qgshelp.h"
+
 #include <QAbstractButton>
 #include <QDialogButtonBox>
 
@@ -124,10 +126,17 @@ QgsColorBrewerColorRampDialog::QgsColorBrewerColorRampDialog( const QgsColorBrew
   QVBoxLayout *vLayout = new QVBoxLayout();
   mWidget = new QgsColorBrewerColorRampWidget( ramp );
   vLayout->addWidget( mWidget );
-  QDialogButtonBox *bbox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal );
+  QDialogButtonBox *bbox = new QDialogButtonBox( QDialogButtonBox::Cancel | QDialogButtonBox::Help | QDialogButtonBox::Ok, Qt::Horizontal );
   connect( bbox, &QDialogButtonBox::accepted, this, &QDialog::accept );
   connect( bbox, &QDialogButtonBox::rejected, this, &QDialog::reject );
+  connect( bbox, &QDialogButtonBox::helpRequested, this, &QgsColorBrewerColorRampDialog::showHelp );
   vLayout->addWidget( bbox );
   setLayout( vLayout );
+  setWindowTitle( tr( "ColorBrewer Ramp" ) );
   connect( mWidget, &QgsColorBrewerColorRampWidget::changed, this, &QgsColorBrewerColorRampDialog::changed );
+}
+
+void QgsColorBrewerColorRampDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "working_with_vector/style_library.html#color-ramp" ) );
 }

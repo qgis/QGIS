@@ -16,16 +16,16 @@ class QgsLayoutModel: QAbstractItemModel
 {
 %Docstring
 
- A model for items attached to a layout. The model also maintains the z-order for the
- layout, and must be notified whenever item stacking changes.
+A model for items attached to a layout. The model also maintains the z-order for the
+layout, and must be notified whenever item stacking changes.
 
- Internally, QgsLayoutModel maintains two lists. One contains a complete list of all items for
- the layout, ordered by their position within the z-order stack.
+Internally, QgsLayoutModel maintains two lists. One contains a complete list of all items for
+the layout, ordered by their position within the z-order stack.
 
- The second list contains only items which are currently displayed in the layout's scene.
- It is used as a cache of the last known stacking order, so that the model can compare the current
- stacking of items in the layout to the last known state, and emit the corresponding signals
- as required.
+The second list contains only items which are currently displayed in the layout's scene.
+It is used as a cache of the last known stacking order, so that the model can compare the current
+stacking of items in the layout to the last known state, and emit the corresponding signals
+as required.
 
 .. versionadded:: 3.0
 %End
@@ -44,7 +44,7 @@ class QgsLayoutModel: QAbstractItemModel
 
     explicit QgsLayoutModel( QgsLayout *layout, QObject *parent /TransferThis/ = 0 );
 %Docstring
- Constructor for a QgsLayoutModel attached to the specified ``layout``.
+Constructor for a QgsLayoutModel attached to the specified ``layout``.
 %End
 
     virtual QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const;
@@ -66,17 +66,27 @@ class QgsLayoutModel: QAbstractItemModel
     virtual Qt::DropActions supportedDropActions() const;
 
     virtual QStringList mimeTypes() const;
+
     virtual QMimeData *mimeData( const QModelIndexList &indexes ) const;
+
     virtual bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent );
 
     virtual bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() );
 
 
 
+    QgsLayoutItem *itemFromIndex( const QModelIndex &index ) const;
+%Docstring
+Returns the QgsLayoutItem corresponding to a QModelIndex ``index``, if possible.
+
+.. seealso:: :py:func:`indexForItem()`
+%End
+
     QModelIndex indexForItem( QgsLayoutItem *item, const int column = 0 );
 %Docstring
- Returns the QModelIndex corresponding to a QgsLayoutItem ``item`` and ``column``, if possible.
- :rtype: QModelIndex
+Returns the QModelIndex corresponding to a QgsLayoutItem ``item`` and ``column``, if possible.
+
+.. seealso:: :py:func:`itemFromIndex()`
 %End
 
   public slots:
@@ -89,6 +99,7 @@ class QgsLayoutProxyModel: QSortFilterProxyModel
 {
 %Docstring
  Allows for filtering a QgsLayoutModel by item type.
+
 .. versionadded:: 3.0
 %End
 
@@ -99,49 +110,49 @@ class QgsLayoutProxyModel: QSortFilterProxyModel
 
     QgsLayoutProxyModel( QgsLayout *layout, QObject *parent /TransferThis/ = 0 );
 %Docstring
- Constructor for QgsLayoutProxyModelm, attached to the specified ``layout``.
+Constructor for QgsLayoutProxyModelm, attached to the specified ``layout``.
 %End
 
     QgsLayoutItemRegistry::ItemType filterType() const;
 %Docstring
- Returns the current item type filter, or QgsLayoutItemRegistry.LayoutItem if no
- item type filter is set.
-.. seealso:: setFilterType()
- :rtype: QgsLayoutItemRegistry.ItemType
+Returns the current item type filter, or QgsLayoutItemRegistry.LayoutItem if no
+item type filter is set.
+
+.. seealso:: :py:func:`setFilterType()`
 %End
 
     void setFilterType( QgsLayoutItemRegistry::ItemType filter );
 %Docstring
- Sets the item type ``filter``. Only matching item types will be shown.
- Set ``filter`` to QgsLayoutItemRegistry.LayoutItem to show all
- item types.
-.. seealso:: filterType()
+Sets the item type ``filter``. Only matching item types will be shown.
+Set ``filter`` to QgsLayoutItemRegistry.LayoutItem to show all
+item types.
+
+.. seealso:: :py:func:`filterType()`
 %End
 
     void setExceptedItemList( const QList< QgsLayoutItem * > &items );
 %Docstring
- Sets a list of specific ``items`` to exclude from the model.
-.. seealso:: exceptedItemList()
+Sets a list of specific ``items`` to exclude from the model.
+
+.. seealso:: :py:func:`exceptedItemList()`
 %End
 
     QList< QgsLayoutItem * > exceptedItemList() const;
 %Docstring
- Returns the list of specific items excluded from the model.
-.. seealso:: setExceptedItemList()
- :rtype: list of QgsLayoutItem
+Returns the list of specific items excluded from the model.
+
+.. seealso:: :py:func:`setExceptedItemList()`
 %End
 
     QgsLayoutModel *sourceLayerModel() const;
 %Docstring
- Returns the QgsLayoutModel used in this proxy model.
- :rtype: QgsLayoutModel
+Returns the QgsLayoutModel used in this proxy model.
 %End
 
     QgsLayoutItem *itemFromSourceIndex( const QModelIndex &sourceIndex ) const;
 %Docstring
- Returns the QgsLayoutItem corresponding to an index from the source
- QgsLayoutModel model.
- :rtype: QgsLayoutItem
+Returns the QgsLayoutItem corresponding to an index from the source
+QgsLayoutModel model.
 %End
 
   protected:

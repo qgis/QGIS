@@ -6,7 +6,6 @@ qgis_composermapgridtest
 qgis_composerutils
 ProcessingGrass7AlgorithmsImageryTest
 ProcessingGrass7AlgorithmsRasterTest
-PyQgsDBManagerGpkg
 PyQgsAppStartup
 
 # temporary during processing refactoring
@@ -18,9 +17,20 @@ qgis_sipify
 qgis_sip_include
 qgis_sip_uptodate
 
-# flacky
+# flaky
 qgis_filedownloader
 qgis_openstreetmaptest
 qgis_wcsprovidertest
 PyQgsWFSProviderGUI
 qgis_ziplayertest
+
+# Flaky, see https://dash.orfeo-toolbox.org/testDetails.php?test=63061783&build=297405
+PyQgsSpatialiteProvider
+
+# Flaky, see https://travis-ci.org/qgis/QGIS/jobs/297708174
+PyQgsServerAccessControl
+
+# Need a local postgres installation
+PyQgsAuthManagerPKIPostgresTest
+PyQgsAuthManagerPasswordPostgresTest
+PyQgsAuthManagerOgrPostgresTest

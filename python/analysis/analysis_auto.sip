@@ -26,4 +26,5 @@
 %Include network/qgsnetworkdistancestrategy.sip
 %Include network/qgsgraphanalyzer.sip
 %Include network/qgsvectorlayerdirector.sip
+%Include processing/qgsnativealgorithms.sip
 %Include network/qgsgraphdirector.sip

@@ -19,8 +19,9 @@ class QgsDial : QDial
 
     QgsDial( QWidget *parent /TransferThis/ = 0 );
 %Docstring
- QgsDial constructor for QgsDial
- @param parent parent object
+Constructor for QgsDial
+
+:param parent: parent object
 %End
 
     void setMinimum( const QVariant &min );
@@ -28,15 +29,13 @@ class QgsDial : QDial
     void setSingleStep( const QVariant &step );
     void setValue( const QVariant &value );
     QVariant variantValue() const;
-%Docstring
- :rtype: QVariant
-%End
 
   signals:
     void valueChanged( const QVariant & );
 
   protected:
     virtual void paintEvent( QPaintEvent *event );
+
 
 };
 /************************************************************************

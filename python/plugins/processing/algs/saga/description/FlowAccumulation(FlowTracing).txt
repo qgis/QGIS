@@ -1,18 +1,18 @@
 Flow Accumulation (Flow Tracing)
 ta_hydrology
-ParameterRaster|ELEVATION|Elevation|False
-ParameterSelection|FLOW_UNIT|Flow Accumulation Units|[0] Number of Cells;[1] Cell Area|1
-ParameterRaster|SINKROUTE|Sink Routes|True
-ParameterRaster|WEIGHTS|Weights|True
-ParameterRaster|ACCU_MATERIAL|Material for Accumulation|True
-ParameterRaster|VAL_INPUT|Input for Mean over Catchment|True
-ParameterRaster|ACCU_TARGET|Accumulation Target|True
-ParameterNumber|STEP|Step|None|None|1
-ParameterSelection|METHOD|Method|[0] Rho 8;[1] Kinematic Routing Algorithm;[2] DEMON
-ParameterNumber|MINDQV|DEMON - Min. DQV|None|None|0.0
-ParameterBoolean|CORRECT|Flow Correction|False
-OutputRaster|FLOW|Flow Accumulation
-OutputRaster|VAL_MEAN|Mean over Catchment
-OutputRaster|ACCU_TOTAL|Accumulated Material
-OutputRaster|ACCU_LEFT|Accumulated Material from left side
-OutputRaster|ACCU_RIGHT|Accumulated Material from right side
+QgsProcessingParameterRasterLayer|ELEVATION|Elevation|None|False
+QgsProcessingParameterEnum|FLOW_UNIT|Flow Accumulation Units|[0] Number of Cells;[1] Cell Area|False|1
+QgsProcessingParameterRasterLayer|SINKROUTE|Sink Routes|None|True
+QgsProcessingParameterRasterLayer|WEIGHTS|Weights|None|True
+QgsProcessingParameterRasterLayer|ACCU_MATERIAL|Material for Accumulation|None|True
+QgsProcessingParameterRasterLayer|VAL_INPUT|Input for Mean over Catchment|None|True
+QgsProcessingParameterRasterLayer|ACCU_TARGET|Accumulation Target|None|True
+QgsProcessingParameterNumber|STEP|Step|QgsProcessingParameterNumber.Integer|1|False|None|None
+QgsProcessingParameterEnum|METHOD|Method|[0] Rho 8;[1] Kinematic Routing Algorithm;[2] DEMON
+QgsProcessingParameterNumber|MINDQV|DEMON - Min. DQV|QgsProcessingParameterNumber.Double|0.0|False|None|None
+QgsProcessingParameterBoolean|CORRECT|Flow Correction|False
+QgsProcessingParameterRasterDestination|FLOW|Flow Accumulation
+QgsProcessingParameterRasterDestination|VAL_MEAN|Mean over Catchment
+QgsProcessingParameterRasterDestination|ACCU_TOTAL|Accumulated Material
+QgsProcessingParameterRasterDestination|ACCU_LEFT|Accumulated Material from left side
+QgsProcessingParameterRasterDestination|ACCU_RIGHT|Accumulated Material from right side

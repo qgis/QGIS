@@ -14,7 +14,8 @@
 class QgsConfigureShortcutsDialog : QDialog
 {
 %Docstring
- Reusable dialog for allowing users to configure shortcuts contained in a QgsShortcutsManager.
+Reusable dialog for allowing users to configure shortcuts contained in a QgsShortcutsManager.
+
 .. versionadded:: 2.16
 %End
 
@@ -25,10 +26,11 @@ class QgsConfigureShortcutsDialog : QDialog
 
     QgsConfigureShortcutsDialog( QWidget *parent /TransferThis/ = 0, QgsShortcutsManager *manager = 0 );
 %Docstring
- Constructor for QgsConfigureShortcutsDialog.
- \param parent parent widget
- \param manager associated QgsShortcutsManager, or leave as null to use the default
- singleton QgsShortcutsManager instance.
+Constructor for QgsConfigureShortcutsDialog.
+
+:param parent: parent widget
+:param manager: associated QgsShortcutsManager, or leave as null to use the default
+singleton QgsShortcutsManager instance.
 %End
 
     ~QgsConfigureShortcutsDialog();

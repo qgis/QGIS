@@ -33,7 +33,7 @@ bool QgsCheckboxSearchWidgetWrapper::applyDirectly()
   return true;
 }
 
-QString QgsCheckboxSearchWidgetWrapper::expression()
+QString QgsCheckboxSearchWidgetWrapper::expression() const
 {
   return mExpression;
 }
@@ -61,7 +61,7 @@ QgsSearchWidgetWrapper::FilterFlags QgsCheckboxSearchWidgetWrapper::defaultFlags
 QString QgsCheckboxSearchWidgetWrapper::createExpression( QgsSearchWidgetWrapper::FilterFlags flags ) const
 {
   QVariant::Type fldType = layer()->fields().at( mFieldIdx ).type();
-  QString fieldName = QgsExpression::quotedColumnRef( layer()->fields().at( mFieldIdx ).name() );
+  QString fieldName = createFieldIdentifier();
 
   //clear any unsupported flags
   flags &= supportedFlags();
@@ -124,8 +124,9 @@ bool QgsCheckboxSearchWidgetWrapper::valid() const
   return true;
 }
 
-void QgsCheckboxSearchWidgetWrapper::setExpression( QString exp )
+void QgsCheckboxSearchWidgetWrapper::setExpression( const QString &expression )
 {
+  QString exp = expression;
   QString fieldName = layer()->fields().at( mFieldIdx ).name();
 
   QString str = QStringLiteral( "%1 = '%3'" )

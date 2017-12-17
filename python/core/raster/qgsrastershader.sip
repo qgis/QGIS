@@ -14,7 +14,7 @@
 class QgsRasterShader
 {
 %Docstring
- Interface for all raster shaders.
+Interface for all raster shaders.
 %End
 
 %TypeHeaderCode
@@ -27,19 +27,14 @@ class QgsRasterShader
     double maximumValue();
 %Docstring
  Return the maximum value for the raster shader
- :rtype: float
 %End
 
     double minimumValue();
 %Docstring
  Return the minimum value for the raster shader
- :rtype: float
 %End
 
     QgsRasterShaderFunction *rasterShaderFunction();
-%Docstring
- :rtype: QgsRasterShaderFunction
-%End
 
     bool shade( double value,
                 int *returnRedValue /Out/,
@@ -48,7 +43,6 @@ class QgsRasterShader
                 int *returnAlpha /Out/ );
 %Docstring
  generates and new RGBA value based on one input value
- :rtype: bool
 %End
 
     bool shade( double redValue,
@@ -61,12 +55,12 @@ class QgsRasterShader
                 int *returnAlpha /Out/ );
 %Docstring
  generates and new RGBA value based on original RGBA value
- :rtype: bool
 %End
 
     void setRasterShaderFunction( QgsRasterShaderFunction *function /Transfer/ );
 %Docstring
  A public method that allows the user to set their own shader function
+
 .. note::
 
    Raster shader takes ownership of the shader function instance *
@@ -84,12 +78,12 @@ class QgsRasterShader
 
     void writeXml( QDomDocument &doc, QDomElement &parent ) const;
 %Docstring
- Writes shader state to an XML element.
+Writes shader state to an XML element.
 %End
 
     void readXml( const QDomElement &elem );
 %Docstring
- Reads shader state from an XML element.
+Reads shader state from an XML element.
 %End
 
   private:

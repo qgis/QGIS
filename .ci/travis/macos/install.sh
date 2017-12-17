@@ -58,7 +58,6 @@ cmake \
   -DENABLE_MODELTEST=ON \
   -DENABLE_PGTEST=OFF \
   -DWITH_QWTPOLAR=OFF \
-  -DWITH_PYSPATIALITE=ON \
   -DCMAKE_CXX_FLAGS="-Wno-deprecated-declarations" \
   ..
 

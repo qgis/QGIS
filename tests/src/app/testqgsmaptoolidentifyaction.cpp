@@ -26,6 +26,14 @@
 #include "qgsunittypes.h"
 #include "qgsmaptoolidentifyaction.h"
 #include "qgssettings.h"
+#include "qgsidentifymenu.h"
+#include "qgisapp.h"
+#include "qgsaction.h"
+#include "qgsactionmanager.h"
+#include "qgsactionmenu.h"
+#include "qgsidentifyresultsdialog.h"
+
+#include <QTimer>
 
 #include "cpl_conv.h"
 
@@ -46,9 +54,14 @@ class TestQgsMapToolIdentifyAction : public QObject
     void identifyRasterFloat32(); // test pixel identification and decimal precision
     void identifyRasterFloat64(); // test pixel identification and decimal precision
     void identifyInvalidPolygons(); // test selecting invalid polygons
+    void clickxy(); // test if clicked_x and clicked_y variables are propagated
 
   private:
+    void doAction();
+
     QgsMapCanvas *canvas = nullptr;
+    QgsMapToolIdentifyAction *mIdentifyAction = nullptr;
+    QgisApp *mQgisApp = nullptr;
 
     QString testIdentifyRaster( QgsRasterLayer *layer, double xGeoref, double yGeoref );
     QList<QgsMapToolIdentify::IdentifyResult> testIdentifyVector( QgsVectorLayer *layer, double xGeoref, double yGeoref );
@@ -91,6 +104,8 @@ void TestQgsMapToolIdentifyAction::initTestCase()
   // enforce C locale because the tests expect it
   // (decimal separators / thousand separators)
   QLocale::setDefault( QLocale::c() );
+
+  mQgisApp = new QgisApp();
 }
 
 void TestQgsMapToolIdentifyAction::cleanupTestCase()
@@ -108,6 +123,92 @@ void TestQgsMapToolIdentifyAction::cleanup()
   delete canvas;
 }
 
+void TestQgsMapToolIdentifyAction::doAction()
+{
+  bool ok = false;
+  int clickxOk = 2484588;
+  int clickyOk = 2425722;
+
+  // test QActionMenu
+  QList<QAction *> actions = mIdentifyAction->identifyMenu()->actions();
+  bool testDone = false;
+
+  for ( int i = 0; i < actions.count(); i++ )
+  {
+    if ( actions[i]->text().compare( "MyAction" ) == 0 )
+    {
+      QgsActionMenu::ActionData data = actions[i]->data().value<QgsActionMenu::ActionData>();
+      QgsAction act = data.actionData.value<QgsAction>();
+
+      int clickx = act.expressionContextScope().variable( "click_x" ).toString().toInt( &ok, 10 );
+      QCOMPARE( clickx, clickxOk );
+
+      int clicky = act.expressionContextScope().variable( "click_y" ).toString().toInt( &ok, 10 );
+      QCOMPARE( clicky, clickyOk );
+
+      testDone = true;
+    }
+  }
+
+  QCOMPARE( testDone, true );
+
+  // test QgsIdentifyResultsDialog expression context scope
+  QgsIdentifyResultsDialog *dlg = mIdentifyAction->resultsDialog();
+  int clickx = dlg->expressionContextScope().variable( "click_x" ).toString().toInt( &ok, 10 );
+  QCOMPARE( clickx, clickxOk );
+
+  int clicky = dlg->expressionContextScope().variable( "click_y" ).toString().toInt( &ok, 10 );
+  QCOMPARE( clicky, clickyOk );
+
+  // close
+  mIdentifyAction->identifyMenu()->close();
+}
+
+void TestQgsMapToolIdentifyAction::clickxy()
+{
+  // create temp layer
+  std::unique_ptr< QgsVectorLayer> tempLayer( new QgsVectorLayer( QStringLiteral( "Point?crs=epsg:3111" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  QVERIFY( tempLayer->isValid() );
+
+  // add feature
+  QgsFeature f1( tempLayer->dataProvider()->fields(), 1 );
+  QgsPointXY wordPoint( 2484588, 2425722 );
+  QgsGeometry geom = QgsGeometry::fromPointXY( wordPoint ) ;
+  f1.setGeometry( geom );
+  tempLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 );
+
+  // prepare canvas
+  QList<QgsMapLayer *> layers;
+  layers.append( tempLayer.get() );
+
+  QgsCoordinateReferenceSystem srs( 3111, QgsCoordinateReferenceSystem::EpsgCrsId );
+  canvas->setDestinationCrs( srs );
+  canvas->setLayers( layers );
+  canvas->setCurrentLayer( tempLayer.get() );
+
+  // create/add action
+  QgsAction act( QgsAction::GenericPython, "MyAction", "", true );
+
+  QSet<QString> scopes;
+  scopes << "Feature";
+  act.setActionScopes( scopes );
+  tempLayer->actions()->addAction( act );
+
+  // init map tool identify action
+  mIdentifyAction = new QgsMapToolIdentifyAction( canvas );
+
+  // simulate a click on the canvas
+  QgsPointXY mapPoint = canvas->getCoordinateTransform()->transform( 2484588, 2425722 );
+  QPoint point = QPoint( mapPoint.x(), mapPoint.y() );
+  QMouseEvent releases( QEvent::MouseButtonRelease, point,
+                        Qt::RightButton, Qt::LeftButton, Qt::NoModifier );
+  QgsMapMouseEvent mapReleases( 0, &releases );
+
+  // simulate a click on the corresponding action
+  QTimer::singleShot( 2000, this, &TestQgsMapToolIdentifyAction::doAction );
+  mIdentifyAction->canvasReleaseEvent( &mapReleases );
+}
+
 void TestQgsMapToolIdentifyAction::lengthCalculation()
 {
   QgsSettings s;
@@ -119,9 +220,9 @@ void TestQgsMapToolIdentifyAction::lengthCalculation()
   QgsFeature f1( tempLayer->dataProvider()->fields(), 1 );
   f1.setAttribute( QStringLiteral( "pk" ), 1 );
   f1.setAttribute( QStringLiteral( "col1" ), 0.0 );
-  QgsPolyline line3111;
+  QgsPolylineXY line3111;
   line3111 << QgsPointXY( 2484588, 2425722 ) << QgsPointXY( 2482767, 2398853 );
-  QgsGeometry line3111G = QgsGeometry::fromPolyline( line3111 ) ;
+  QgsGeometry line3111G = QgsGeometry::fromPolylineXY( line3111 ) ;
   f1.setGeometry( line3111G );
   tempLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 );
 
@@ -170,11 +271,11 @@ void TestQgsMapToolIdentifyAction::perimeterCalculation()
   QgsFeature f1( tempLayer->dataProvider()->fields(), 1 );
   f1.setAttribute( QStringLiteral( "pk" ), 1 );
   f1.setAttribute( QStringLiteral( "col1" ), 0.0 );
-  QgsPolyline polygonRing3111;
+  QgsPolylineXY polygonRing3111;
   polygonRing3111 << QgsPointXY( 2484588, 2425722 ) << QgsPointXY( 2482767, 2398853 ) << QgsPointXY( 2520109, 2397715 ) << QgsPointXY( 2520792, 2425494 ) << QgsPointXY( 2484588, 2425722 );
-  QgsPolygon polygon3111;
+  QgsPolygonXY polygon3111;
   polygon3111 << polygonRing3111;
-  QgsGeometry polygon3111G = QgsGeometry::fromPolygon( polygon3111 ) ;
+  QgsGeometry polygon3111G = QgsGeometry::fromPolygonXY( polygon3111 ) ;
   f1.setGeometry( polygon3111G );
   tempLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 );
 
@@ -224,11 +325,11 @@ void TestQgsMapToolIdentifyAction::areaCalculation()
   f1.setAttribute( QStringLiteral( "pk" ), 1 );
   f1.setAttribute( QStringLiteral( "col1" ), 0.0 );
 
-  QgsPolyline polygonRing3111;
+  QgsPolylineXY polygonRing3111;
   polygonRing3111 << QgsPointXY( 2484588, 2425722 ) << QgsPointXY( 2482767, 2398853 ) << QgsPointXY( 2520109, 2397715 ) << QgsPointXY( 2520792, 2425494 ) << QgsPointXY( 2484588, 2425722 );
-  QgsPolygon polygon3111;
+  QgsPolygonXY polygon3111;
   polygon3111 << polygonRing3111;
-  QgsGeometry polygon3111G = QgsGeometry::fromPolygon( polygon3111 ) ;
+  QgsGeometry polygon3111G = QgsGeometry::fromPolygonXY( polygon3111 ) ;
   f1.setGeometry( polygon3111G );
   tempLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 );
 

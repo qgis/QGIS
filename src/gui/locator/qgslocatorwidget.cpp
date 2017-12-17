@@ -172,6 +172,11 @@ void QgsLocatorWidget::searchFinished()
     mHasQueuedRequest = false;
     updateResults( nextSearch );
   }
+  else
+  {
+    if ( !mLocator->isRunning() )
+      mLineEdit->setShowSpinner( false );
+  }
 }
 
 bool QgsLocatorWidget::eventFilter( QObject *obj, QEvent *event )
@@ -292,6 +297,7 @@ void QgsLocatorWidget::configMenuAboutToShow()
 
 void QgsLocatorWidget::updateResults( const QString &text )
 {
+  mLineEdit->setShowSpinner( true );
   if ( mLocator->isRunning() )
   {
     // can't do anything while a query is running, and can't block

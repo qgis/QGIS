@@ -39,11 +39,11 @@ class QgsNodeEditorModel : public QAbstractTableModel
                         QgsSelectedFeature *selectedFeature,
                         QgsMapCanvas *canvas, QObject *parent = nullptr );
 
-    virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
+    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
     int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
-    virtual QVariant data( const QModelIndex &index, int role ) const override;
+    QVariant data( const QModelIndex &index, int role ) const override;
     QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
-    virtual bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
+    bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
 
   private:
@@ -88,7 +88,7 @@ class QgsNodeEditor : public QgsDockWidget
     void deleteSelectedRequested();
 
   protected:
-    void keyPressEvent( QKeyEvent *event );
+    void keyPressEvent( QKeyEvent *event ) override;
 
   private slots:
     void updateTableSelection();
@@ -107,6 +107,9 @@ class CoordinateItemDelegate : public QStyledItemDelegate
     Q_OBJECT
 
   public:
+
+    explicit CoordinateItemDelegate( QObject *parent = nullptr );
+
     QString displayText( const QVariant &value, const QLocale &locale ) const override;
 
   protected:

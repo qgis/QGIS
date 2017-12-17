@@ -121,6 +121,11 @@ QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes typ
     mGroupBox->layout()->removeWidget( mTestConnectionButton );
   }
 
+  if ( flags & FlagHideAuthenticationGroup )
+  {
+    mAuthGroupBox->hide();
+    mGroupBox->layout()->removeWidget( mAuthGroupBox );
+  }
   // Adjust height
   int w = width();
   adjustSize();
@@ -173,7 +178,7 @@ bool QgsNewHttpConnection::validate()
   if ( ( mOriginalConnName.isNull() || mOriginalConnName.compare( txtName->text(), Qt::CaseInsensitive ) != 0 ) &&
        settings.contains( key + "/url" ) &&
        QMessageBox::question( this,
-                              tr( "Save connection" ),
+                              tr( "Save Connection" ),
                               tr( "Should the existing connection %1 be overwritten?" ).arg( txtName->text() ),
                               QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
   {
@@ -182,7 +187,7 @@ bool QgsNewHttpConnection::validate()
 
   if ( ! mAuthSettings->password().isEmpty() &&
        QMessageBox::question( this,
-                              tr( "Saving passwords" ),
+                              tr( "Saving Passwords" ),
                               trUtf8( "WARNING: You have entered a password. It will be stored in unsecured plain text in your project files and your home directory (Unix-like OS) or user profile (Windows). If you want to avoid this, press Cancel and either:\n\na) Don't provide a password in the connection settings — it will be requested interactively when needed;\nb) Use the Configuration tab to add your credentials in an HTTP Basic Authentication method and store them in an encrypted database." ),
                               QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
   {

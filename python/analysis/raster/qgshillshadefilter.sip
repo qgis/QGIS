@@ -23,20 +23,13 @@ class QgsHillshadeFilter: QgsDerivativeFilter
                                  float *x12, float *x22, float *x32,
                                  float *x13, float *x23, float *x33 );
 %Docstring
- Calculates output value from nine input values. The input values and the output value can be equal to the
+Calculates output value from nine input values. The input values and the output value can be equal to the
 nodata value if not present or outside of the border. Must be implemented by subclasses*
- :rtype: float
 %End
 
     float lightAzimuth() const;
-%Docstring
- :rtype: float
-%End
     void setLightAzimuth( float azimuth );
     float lightAngle() const;
-%Docstring
- :rtype: float
-%End
     void setLightAngle( float angle );
 
 };

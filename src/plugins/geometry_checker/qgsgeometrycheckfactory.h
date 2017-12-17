@@ -18,17 +18,16 @@
 #include "qgis.h"
 #include "ui_qgsgeometrycheckersetuptab.h"
 
-class QgsFeaturePool;
+struct QgsGeometryCheckerContext;
 class QgsGeometryCheck;
-class QgsMapSettings;
 
 class QgsGeometryCheckFactory
 {
   public:
     virtual ~QgsGeometryCheckFactory() = default;
     virtual void restorePrevious( Ui::QgsGeometryCheckerSetupTab & /*ui*/ ) const = 0;
-    virtual bool checkApplicability( Ui::QgsGeometryCheckerSetupTab & /*ui*/, QgsWkbTypes::GeometryType /*geomType*/ ) const = 0;
-    virtual QgsGeometryCheck *createInstance( QgsFeaturePool *featurePool, const Ui::QgsGeometryCheckerSetupTab &ui, double mapToLayerUnits ) const = 0;
+    virtual bool checkApplicability( Ui::QgsGeometryCheckerSetupTab & /*ui*/, int /*nPoint*/, int /*nLineString*/, int /*nPolygon*/ ) const = 0;
+    virtual QgsGeometryCheck *createInstance( QgsGeometryCheckerContext *context, const Ui::QgsGeometryCheckerSetupTab &ui ) const = 0;
 
   protected:
     static QString sSettingsGroup;
@@ -38,8 +37,8 @@ template<class T>
 class QgsGeometryCheckFactoryT : public QgsGeometryCheckFactory
 {
     void restorePrevious( Ui::QgsGeometryCheckerSetupTab & /*ui*/ ) const override;
-    bool checkApplicability( Ui::QgsGeometryCheckerSetupTab &ui, QgsWkbTypes::GeometryType geomType ) const override;
-    QgsGeometryCheck *createInstance( QgsFeaturePool *featurePool, const Ui::QgsGeometryCheckerSetupTab &ui, double mapToLayerUnits ) const override;
+    bool checkApplicability( Ui::QgsGeometryCheckerSetupTab &ui, int nPoint, int nLineString, int nPolygon ) const override;
+    QgsGeometryCheck *createInstance( QgsGeometryCheckerContext *context, const Ui::QgsGeometryCheckerSetupTab &ui ) const override;
 };
 
 class QgsGeometryCheckFactoryRegistry
@@ -56,7 +55,7 @@ class QgsGeometryCheckFactoryRegistry
     }
   private:
     QList<const QgsGeometryCheckFactory *> mFactories;
-    QgsGeometryCheckFactoryRegistry() {}
+    QgsGeometryCheckFactoryRegistry() = default;
     ~QgsGeometryCheckFactoryRegistry() { qDeleteAll( mFactories ); }
 
     static QgsGeometryCheckFactoryRegistry *instance()

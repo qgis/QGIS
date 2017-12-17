@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
 
 __author__ = 'Victor Olaya, Carterix Geomatics'
 __date__ = 'October 2012'
@@ -38,6 +37,9 @@ class PostGISExecuteSQL(QgisAlgorithm):
 
     def group(self):
         return self.tr('Database')
+
+    def groupId(self):
+        return 'database'
 
     def __init__(self):
         super().__init__()

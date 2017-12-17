@@ -80,7 +80,7 @@ class TestTerminationTask : public TestTask
 
   public:
 
-    ~TestTerminationTask()
+    ~TestTerminationTask() override
     {
       //make sure task has been terminated by manager prior to deletion
       Q_ASSERT( status() == QgsTask::Terminated );
@@ -102,7 +102,7 @@ class CancelableTask : public QgsTask
 
   public:
 
-    ~CancelableTask()
+    ~CancelableTask() override
     {
       int i = 1;
       i++;

@@ -36,14 +36,13 @@ from shutil import rmtree
 
 from utilities import unitTestDataPath, waitServer
 from qgis.core import (
-    QgsAuthManager,
+    QgsApplication,
     QgsAuthMethodConfig,
     QgsVectorLayer,
     QgsRasterLayer,
-)
-from qgis.gui import (
     QgsFileDownloader,
 )
+
 from qgis.testing import (
     start_app,
     unittest,
@@ -84,7 +83,7 @@ class TestAuthManager(unittest.TestCase):
         cls.project_path = cls.testdata_path + "test_project.qgs"
         # Enable auth
         # os.environ['QGIS_AUTH_PASSWORD_FILE'] = QGIS_AUTH_PASSWORD_FILE
-        authm = QgsAuthManager.instance()
+        authm = QgsApplication.authManager()
         assert (authm.setMasterPassword('masterpassword', True))
         cls.auth_config = QgsAuthMethodConfig('Basic')
         cls.auth_config.setName('test_auth_config')
@@ -105,7 +104,7 @@ class TestAuthManager(unittest.TestCase):
         server_path = os.path.dirname(os.path.realpath(__file__)) + \
             '/qgis_wrapped_server.py'
         cls.server = subprocess.Popen([sys.executable, server_path],
-                                      env=os.environ, stdout=subprocess.PIPE)
+                                      env=os.environ, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         line = cls.server.stdout.readline()
         cls.port = int(re.findall(b':(\d+)', line)[0])
@@ -171,6 +170,19 @@ class TestAuthManager(unittest.TestCase):
         wms_layer = QgsRasterLayer(uri, layer_name, 'wms')
         return wms_layer
 
+    @classmethod
+    def _getGeoJsonLayer(cls, type_name, layer_name=None, authcfg=None):
+        """
+        OGR layer factory
+        """
+        if layer_name is None:
+            layer_name = 'geojson_' + type_name
+        uri = '%s://%s:%s/?MAP=%s&SERVICE=WFS&REQUEST=GetFeature&TYPENAME=%s&VERSION=2.0.0&OUTPUTFORMAT=geojson' % (cls.protocol, cls.hostname, cls.port, cls.project_path, urllib.parse.quote(type_name))
+        if authcfg is not None:
+            uri += " authcfg='%s'" % authcfg
+        geojson_layer = QgsVectorLayer(uri, layer_name, 'ogr')
+        return geojson_layer
+
     def testValidAuthAccess(self):
         """
         Access the HTTP Basic protected layer with valid credentials
@@ -179,6 +191,8 @@ class TestAuthManager(unittest.TestCase):
         self.assertTrue(wfs_layer.isValid())
         wms_layer = self._getWMSLayer('testlayer_èé', authcfg=self.auth_config.id())
         self.assertTrue(wms_layer.isValid())
+        geojson_layer = self._getGeoJsonLayer('testlayer_èé', authcfg=self.auth_config.id())
+        self.assertTrue(geojson_layer.isValid())
 
     def testInvalidAuthAccess(self):
         """
@@ -188,6 +202,8 @@ class TestAuthManager(unittest.TestCase):
         self.assertFalse(wfs_layer.isValid())
         wms_layer = self._getWMSLayer('testlayer_èé')
         self.assertFalse(wms_layer.isValid())
+        geojson_layer = self._getGeoJsonLayer('testlayer_èé')
+        self.assertFalse(geojson_layer.isValid())
 
     def testInvalidAuthFileDownload(self):
         """
@@ -211,7 +227,7 @@ class TestAuthManager(unittest.TestCase):
         destination = tempfile.mktemp()
         loop = QEventLoop()
 
-        downloader = QgsFileDownloader(QUrl(url), destination, False)
+        downloader = QgsFileDownloader(QUrl(url), destination, None, False)
         downloader.downloadCompleted.connect(partial(self._set_slot, 'completed'))
         downloader.downloadExited.connect(partial(self._set_slot, 'exited'))
         downloader.downloadCanceled.connect(partial(self._set_slot, 'canceled'))
@@ -247,7 +263,7 @@ class TestAuthManager(unittest.TestCase):
         destination = tempfile.mktemp()
         loop = QEventLoop()
 
-        downloader = QgsFileDownloader(QUrl(url), destination, False, self.auth_config.id())
+        downloader = QgsFileDownloader(QUrl(url), destination, self.auth_config.id(), False)
         downloader.downloadCompleted.connect(partial(self._set_slot, 'completed'))
         downloader.downloadExited.connect(partial(self._set_slot, 'exited'))
         downloader.downloadCanceled.connect(partial(self._set_slot, 'canceled'))

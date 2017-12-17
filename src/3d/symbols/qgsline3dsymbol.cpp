@@ -15,16 +15,6 @@
 
 #include "qgsline3dsymbol.h"
 
-QgsLine3DSymbol::QgsLine3DSymbol()
-  : mAltClamping( AltClampRelative )
-  , mAltBinding( AltBindCentroid )
-  , mWidth( 2 )
-  , mHeight( 0 )
-  , mExtrusionHeight( 0 )
-{
-
-}
-
 QgsAbstract3DSymbol *QgsLine3DSymbol::clone() const
 {
   return new QgsLine3DSymbol( *this );

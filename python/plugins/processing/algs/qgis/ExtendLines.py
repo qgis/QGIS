@@ -39,6 +39,9 @@ class ExtendLines(QgisFeatureBasedAlgorithm):
     def group(self):
         return self.tr('Vector geometry')
 
+    def groupId(self):
+        return 'vectorgeometry'
+
     def __init__(self):
         super().__init__()
         self.start_distance = None
@@ -67,7 +70,7 @@ class ExtendLines(QgisFeatureBasedAlgorithm):
         self.end_distance = self.parameterAsDouble(parameters, self.END_DISTANCE, context)
         return True
 
-    def processFeature(self, feature, feedback):
+    def processFeature(self, feature, context, feedback):
         input_geometry = feature.geometry()
         if input_geometry:
             output_geometry = input_geometry.extendLine(self.start_distance, self.end_distance)

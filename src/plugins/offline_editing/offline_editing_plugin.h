@@ -33,11 +33,11 @@ class QgsOfflineEditingPlugin : public QObject, public QgisPlugin
 
   public:
     explicit QgsOfflineEditingPlugin( QgisInterface *qgisInterface );
-    virtual ~QgsOfflineEditingPlugin();
+    ~QgsOfflineEditingPlugin() override;
 
   public slots:
     //! init the gui
-    virtual void initGui() override;
+    void initGui() override;
     //! actions
     void convertProject();
     void synchronize();

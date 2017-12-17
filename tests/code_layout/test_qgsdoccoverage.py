@@ -17,7 +17,7 @@ import sys
 try:
     from qgis.static_testing import unittest
 except ImportError:
-    from nose2.compat import unittest
+    import unittest
 
 from termcolor import colored
 

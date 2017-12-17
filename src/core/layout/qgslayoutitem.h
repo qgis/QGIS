@@ -25,10 +25,12 @@
 #include "qgslayoutundocommand.h"
 #include "qgslayoutmeasurement.h"
 #include <QGraphicsRectItem>
+#include <QPainter>
 
 class QgsLayout;
 class QPainter;
 class QgsLayoutItemGroup;
+class QgsLayoutEffect;
 
 /**
  * \ingroup core
@@ -39,8 +41,29 @@ class QgsLayoutItemGroup;
 class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectItem, public QgsLayoutUndoObjectInterface
 {
 #ifdef SIP_RUN
-#include <qgslayoutitemshape.h>
-#include <qgslayoutitempage.h>
+#include "qgslayoutitemgroup.h"
+#include "qgslayoutitemmap.h"
+#include "qgslayoutitempicture.h"
+#include "qgslayoutitemlabel.h"
+#include "qgslayoutitemlegend.h"
+#include "qgslayoutitempolygon.h"
+#include "qgslayoutitempolyline.h"
+#include "qgslayoutitemscalebar.h"
+#include "qgslayoutframe.h"
+#include "qgslayoutitemshape.h"
+#include "qgslayoutitempage.h"
+
+#include "qgscomposerarrow.h"
+#include "qgscomposeritemgroup.h"
+#include "qgscomposerlabel.h"
+#include "qgscomposerlegend.h"
+#include "qgspaperitem.h"
+#include "qgscomposerscalebar.h"
+#include "qgscomposershape.h"
+#include "qgscomposerpolygon.h"
+#include "qgscomposerpolyline.h"
+
+
 #endif
 
 
@@ -50,10 +73,105 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     // (seen in PyQt4 .sip files for some QGraphicsItem classes)
     switch ( sipCpp->type() )
     {
+      case QgsComposerItem::ComposerItem:
+        sipType = sipType_QgsComposerItem;
+        *sipCppRet = static_cast<QgsComposerItem *>( sipCpp );
+        break;
+      case QgsComposerItem::ComposerArrow:
+        sipType = sipType_QgsComposerArrow;
+        *sipCppRet = static_cast<QgsComposerArrow *>( sipCpp );
+        break;
+      case QgsComposerItem::ComposerItemGroup:
+        sipType = sipType_QgsComposerItemGroup;
+        *sipCppRet = static_cast<QgsComposerItemGroup *>( sipCpp );
+        break;
+      case QgsComposerItem::ComposerLabel:
+        sipType = sipType_QgsComposerLabel;
+        *sipCppRet = static_cast<QgsComposerLabel *>( sipCpp );
+        break;
+      case QgsComposerItem::ComposerLegend:
+        sipType = sipType_QgsComposerLegend;
+        *sipCppRet = static_cast<QgsComposerLegend *>( sipCpp );
+        break;
+      case QgsComposerItem::ComposerMap:
+        sipType = sipType_QgsComposerMap;
+        *sipCppRet = static_cast<QgsComposerMap *>( sipCpp );
+        break;
+      case QgsComposerItem::ComposerPaper:
+        sipType = sipType_QgsPaperItem;
+        *sipCppRet = static_cast<QgsPaperItem *>( sipCpp );
+        break;
+      case QgsComposerItem::ComposerPicture:
+        sipType = sipType_QgsComposerPicture;
+        *sipCppRet = static_cast<QgsComposerPicture *>( sipCpp );
+        break;
+      case QgsComposerItem::ComposerScaleBar:
+        sipType = sipType_QgsComposerScaleBar;
+        *sipCppRet = static_cast<QgsComposerScaleBar *>( sipCpp );
+        break;
+      case QgsComposerItem::ComposerShape:
+        sipType = sipType_QgsComposerShape;
+        *sipCppRet = static_cast<QgsComposerShape *>( sipCpp );
+        break;
+      case QgsComposerItem::ComposerPolygon:
+        sipType = sipType_QgsComposerPolygon;
+        *sipCppRet = static_cast<QgsComposerPolygon *>( sipCpp );
+        break;
+      case QgsComposerItem::ComposerPolyline:
+        sipType = sipType_QgsComposerPolyline;
+        *sipCppRet = static_cast<QgsComposerPolyline *>( sipCpp );
+        break;
+      case QgsComposerItem::ComposerFrame:
+        sipType = sipType_QgsComposerFrame;
+        *sipCppRet = static_cast<QgsComposerFrame *>( sipCpp );
+        break;
+
+
+
       // really, these *should* use the constants from QgsLayoutItemRegistry, but sip doesn't like that!
       case QGraphicsItem::UserType + 101:
+        sipType = sipType_QgsLayoutItemGroup;
+        *sipCppRet = static_cast<QgsLayoutItemGroup *>( sipCpp );
+        break;
+      case QGraphicsItem::UserType + 102:
         sipType = sipType_QgsLayoutItemPage;
         *sipCppRet = static_cast<QgsLayoutItemPage *>( sipCpp );
+        break;
+      case QGraphicsItem::UserType + 103:
+        sipType = sipType_QgsLayoutItemMap;
+        *sipCppRet = static_cast<QgsLayoutItemMap *>( sipCpp );
+        break;
+      case QGraphicsItem::UserType + 104:
+        sipType = sipType_QgsLayoutItemPicture;
+        *sipCppRet = static_cast<QgsLayoutItemPicture *>( sipCpp );
+        break;
+      case QGraphicsItem::UserType + 105:
+        sipType = sipType_QgsLayoutItemLabel;
+        *sipCppRet = static_cast<QgsLayoutItemLabel *>( sipCpp );
+        break;
+      case QGraphicsItem::UserType + 106:
+        sipType = sipType_QgsLayoutItemLegend;
+        *sipCppRet = static_cast<QgsLayoutItemLegend *>( sipCpp );
+        break;
+      case QGraphicsItem::UserType + 107:
+        sipType = sipType_QgsLayoutItemShape;
+        *sipCppRet = static_cast<QgsLayoutItemShape *>( sipCpp );
+        break;
+      case QGraphicsItem::UserType + 108:
+        sipType = sipType_QgsLayoutItemPolygon;
+        *sipCppRet = static_cast<QgsLayoutItemPolygon *>( sipCpp );
+        break;
+      case QGraphicsItem::UserType + 109:
+        sipType = sipType_QgsLayoutItemPolyline;
+        *sipCppRet = static_cast<QgsLayoutItemPolyline *>( sipCpp );
+        break;
+      case QGraphicsItem::UserType + 110:
+        sipType = sipType_QgsLayoutItemScaleBar;
+        *sipCppRet = static_cast<QgsLayoutItemScaleBar *>( sipCpp );
+        break;
+      case QGraphicsItem::UserType + 111:
+        sipType = sipType_QgsLayoutFrame;
+        *sipCppRet = static_cast<QgsLayoutFrame *>( sipCpp );
         break;
       default:
         sipType = 0;
@@ -83,7 +201,78 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     //! Layout item undo commands, used for collapsing undo commands
     enum UndoCommand
     {
+      UndoNone = -1, //!< No command suppression
       UndoIncrementalMove = 1, //!< Layout item incremental movement, e.g. as a result of a keypress
+      UndoIncrementalResize, //!< Incremental resize
+      UndoStrokeColor, //!< Stroke color adjustment
+      UndoStrokeWidth, //!< Stroke width adjustment
+      UndoBackgroundColor, //!< Background color adjustment
+      UndoOpacity, //!< Opacity adjustment
+      UndoSetId, //!< Change item ID
+      UndoRotation, //!< Rotation adjustment
+      UndoShapeStyle, //!< Shape symbol style
+      UndoShapeCornerRadius, //!< Shape corner radius
+      UndoNodeMove, //!< Node move
+      UndoAtlasMargin, //!< Map atlas margin changed
+      UndoMapRotation, //!< Map rotation changed
+      UndoZoomContent, //!< Item content zoomed
+      UndoOverviewStyle, //!< Map overview style
+      UndoGridFramePenColor, //!< Map grid frame pen color
+      UndoMapGridFrameFill1Color, //!< Map grid frame fill color 1
+      UndoMapGridFrameFill2Color, //!< Map grid frame fill color 2
+      UndoMapAnnotationDistance, //!< Map frame annotation distance
+      UndoMapGridAnnotationFontColor, //!< Map frame annotation color
+      UndoMapGridLineSymbol, //!< Grid line symbol
+      UndoMapGridMarkerSymbol, //!< Grid marker symbol
+      UndoPictureRotation, //!< Picture rotation
+      UndoPictureFillColor, //!< Picture fill color
+      UndoPictureStrokeColor, //!< Picture stroke color
+      UndoPictureStrokeWidth, //!< Picture stroke width
+      UndoPictureNorthOffset, //!< Picture north offset
+      UndoLabelText, //!< Label text
+      UndoLabelFont, //!< Label font
+      UndoLabelMargin, //!< Label margin
+      UndoLabelFontColor, //!< Label color
+      UndoLegendText, //!< Legend text
+      UndoLegendColumnCount, //!< Legend column count
+      UndoLegendSymbolWidth, //!< Legend symbol width
+      UndoLegendSymbolHeight, //!< Legend symbol height
+      UndoLegendWmsLegendWidth, //!< Legend WMS width
+      UndoLegendWmsLegendHeight, //!< Legend WMS height
+      UndoLegendTitleSpaceBottom, //!< Legend title space
+      UndoLegendGroupSpace, //!< Legend group spacing
+      UndoLegendLayerSpace, //!< Legend layer spacing
+      UndoLegendSymbolSpace, //!< Legend symbol spacing
+      UndoLegendIconSymbolSpace, //!< Legend icon symbol space
+      UndoLegendFontColor, //!< Legend font color
+      UndoLegendBoxSpace, //!< Legend box space
+      UndoLegendColumnSpace, //!< Legend column space
+      UndoLegendLineSpacing, //!< Legend line spacing
+      UndoLegendRasterStrokeWidth, //!< Legend raster stroke width
+      UndoLegendRasterStrokeColor, //!< Legend raster stroke color
+      UndoLegendTitleFont, //!< Legend title font
+      UndoLegendGroupFont, //!< Legend group font
+      UndoLegendLayerFont, //!< Legend layer font
+      UndoLegendItemFont, //!< Legend item font
+      UndoScaleBarLineWidth, //!< Scalebar line width
+      UndoScaleBarSegmentSize, //!< Scalebar segment size
+      UndoScaleBarSegmentsLeft, //!< Scalebar segments left
+      UndoScaleBarSegments, //!< Scalebar number of segments
+      UndoScaleBarHeight, //!< Scalebar height
+      UndoScaleBarFontColor, //!< Scalebar font color
+      UndoScaleBarFillColor, //!< Scalebar fill color
+      UndoScaleBarFillColor2, //!< Scalebar secondary fill color
+      UndoScaleBarStrokeColor, //!< Scalebar stroke color
+      UndoScaleBarUnitText, //!< Scalebar unit text
+      UndoScaleBarMapUnitsSegment, //!< Scalebar map units per segment
+      UndoScaleBarLabelBarSize, //!< Scalebar label bar size
+      UndoScaleBarBoxContentSpace, //!< Scalebar box context space
+      UndoArrowStrokeWidth, //!< Arrow stroke width
+      UndoArrowHeadWidth, //!< Arrow head width
+      UndoArrowHeadFillColor, //!< Arrow head fill color
+      UndoArrowHeadStrokeColor, //!< Arrow head stroke color
+
+      UndoCustomCommand, //!< Base id for plugin based item undo commands
     };
 
     /**
@@ -94,21 +283,20 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      */
     explicit QgsLayoutItem( QgsLayout *layout, bool manageZValue = true );
 
-    ~QgsLayoutItem();
+    ~QgsLayoutItem() override;
 
     /**
-     * Return correct graphics item type
-     * \see stringType()
+     * Called just before a batch of items are deleted, allowing them to run cleanup
+     * tasks.
+     */
+    virtual void cleanup();
+
+    /**
+     * Return unique graphics item type identifier.
+     *
+     * Plugin based subclasses should return an identifier greater than QgsLayoutItemRegistry::PluginItem.
      */
     int type() const override;
-
-    /**
-     * Return the item type as a string.
-     *
-     * This string must be a unique, single word, character only representation of the item type, eg "LayoutScaleBar"
-     * \see type()
-     */
-    virtual QString stringType() const = 0;
 
     /**
      * Returns the item identification string. This is a unique random string set for the item
@@ -116,8 +304,18 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * \note There is no corresponding setter for the uuid - it's created automatically.
      * \see id()
      * \see setId()
+     * \see templateUuid()
     */
-    QString uuid() const { return mUuid; }
+    virtual QString uuid() const { return mUuid; }
+
+    /**
+     * Returns the item's original identification string. This may differ from the item's uuid()
+     * for items which have been added to an existing layout from a template. In this case
+     * templateUuid() returns the original item UUID at the time the template was created,
+     * while uuid() returns the current instance of the item's unique identifier.
+     * \see uuid()
+    */
+    QString templateUuid() const { return mTemplateUuid; }
 
     /**
      * Returns the item's ID name. This is not necessarily unique, and duplicate ID names may exist
@@ -192,6 +390,16 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     void setParentGroup( QgsLayoutItemGroup *group );
 
     /**
+     * Returns the number of layers that this item requires for exporting during layered exports (e.g. SVG).
+     * Returns 0 if this item is to be placed on the same layer as the previous item,
+     * 1 if it should be placed on its own layer, and >1 if it requires multiple export layers.
+     *
+     * Items which require multiply layers should check QgsLayoutContext::currentExportLayer() during
+     * their rendering to determine which layer should be drawn.
+     */
+    virtual int numberExportLayers() const { return 0; }
+
+    /**
      * Handles preparing a paint surface for the layout item and painting the item's
      * content. Derived classes must not override this method, but instead implement
      * the pure virtual method QgsLayoutItem::draw.
@@ -220,7 +428,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * \see setFixedSize()
      * \see minimumSize()
     */
-    QgsLayoutSize fixedSize() const { return mFixedSize; }
+    virtual QgsLayoutSize fixedSize() const { return mFixedSize; }
 
     /**
      * Returns the minimum allowed size of the item, if applicable, or an empty size if item can be freely
@@ -235,24 +443,74 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * item may not match the specified target size, as items with a fixed or minimum
      * size will place restrictions on the allowed item size. Data defined item size overrides
      * will also override the specified target size.
+     *
+     * If \a includesFrame is true, then the size specified by \a size includes the
+     * item's frame.
+     *
      * \see minimumSize()
      * \see fixedSize()
      * \see attemptMove()
      * \see sizeWithUnits()
     */
-    virtual void attemptResize( const QgsLayoutSize &size );
+    virtual void attemptResize( const QgsLayoutSize &size, bool includesFrame = false );
 
     /**
-     * Attempts to move the item to a specified \a point. This method respects the item's
+     * Attempts to move the item to a specified \a point.
+     *
+     * If \a useReferencePoint is true, this method will respect the item's
      * reference point, in that the item will be moved so that its current reference
      * point is placed at the specified target point.
+     *
+     * If \a useReferencePoint is false, the item will be moved so that \a point
+     * falls at the top-left corner of the item.
+     *
+     * If \a includesFrame is true, then the position specified by \a point represents the
+     * point at which to place the outside of the item's frame.
+     *
+     * If \a page is not left at the default -1 value, then the position specified by \a point
+     * refers to the relative position on the corresponding layout \a page (where a \a page
+     * of 0 represents the first page).
+     *
      * Note that the final position of the item may not match the specified target position,
      * as data defined item position may override the specified value.
+     *
+     * \see attemptMoveBy()
      * \see attemptResize()
      * \see referencePoint()
      * \see positionWithUnits()
     */
-    virtual void attemptMove( const QgsLayoutPoint &point );
+    virtual void attemptMove( const QgsLayoutPoint &point, bool useReferencePoint = true, bool includesFrame = false, int page = -1 );
+
+    /**
+     * Attempts to update the item's position and size to match the passed \a rect in layout
+     * coordinates.
+     *
+     * If \a includesFrame is true, then the position and size specified by \a rect represents the
+     * position and size at for the outside of the item's frame.
+     *
+     * Note that the final position and size of the item may not match the specified target rect,
+     * as data defined item position and size may override the specified value.
+     *
+     * \see attemptResize()
+     * \see attemptMove()
+     * \see referencePoint()
+     * \see positionWithUnits()
+     */
+    void attemptSetSceneRect( const QRectF &rect, bool includesFrame = false );
+
+    /**
+     * Attempts to shift the item's position by a specified \a deltaX and \a deltaY, in layout
+     * units.
+     *
+     * Note that the final position of the item may not match the specified offsets,
+     * as data defined item position and size may override the specified value.
+     *
+     * \see attemptResize()
+     * \see attemptMove()
+     * \see referencePoint()
+     * \see positionWithUnits()
+     */
+    void attemptMoveBy( double deltaX, double deltaY );
 
     /**
      * Returns the item's current position, including units. The position returned
@@ -265,6 +523,26 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     QgsLayoutPoint positionWithUnits() const { return mItemPosition; }
 
     /**
+     * Returns the page the item is currently on, with the first page returning 0.
+     * \see pagePos()
+     */
+    int page() const;
+
+    /**
+     * Returns the item's position (in layout units) relative to the top left corner of its current page.
+     * \see page()
+     * \see pagePositionWithUnits()
+     */
+    QPointF pagePos() const;
+
+    /**
+     * Returns the item's position (in item units) relative to the top left corner of its current page.
+     * \see page()
+     * \see pagePos()
+     */
+    QgsLayoutPoint pagePositionWithUnits() const;
+
+    /**
      * Returns the item's current size, including units.
      * \see attemptResize()
      * \see positionWithUnits()
@@ -273,9 +551,14 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
 
     /**
      * Returns the current rotation for the item, in degrees clockwise.
+     *
+     * Note that this method will always return the user-set rotation for the item,
+     * which may differ from the current item rotation (if data defined rotation
+     * settings are present). Use QGraphicsItem::rotation() to obtain the current
+     * item rotation.
+     *
      * \see setItemRotation()
      */
-    //TODO
     double itemRotation() const;
 
     /**
@@ -284,19 +567,35 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * \param document DOM document
      * \param context read write context
      * \see readXml()
-     * \note Subclasses should ensure that they call writePropertiesToElement() in their implementation.
      */
-    virtual bool writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const;
+    bool writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const;
 
     /**
      * Sets the item state from a DOM element.
      * \param itemElement is the DOM node corresponding to item (e.g. 'LayoutItem' element)
      * \param document DOM document
      * \param context read write context
+     *
+     * Note that item subclasses should not rely on all other items being present in the
+     * layout at the time this method is called. Instead, any connections and links to
+     * other items must be made in the finalizeRestoreFromXml() method. E.g. when restoring
+     * a scalebar, the connection to the linked map's signals should be implemented
+     * in finalizeRestoreFromXml(), not readXml().
+     *
      * \see writeXml()
-     * \note Subclasses should ensure that they call readPropertiesFromElement() in their implementation.
+     * \see finalizeRestoreFromXml()
      */
-    virtual bool readXml( const QDomElement &itemElement, const QDomDocument &document, const QgsReadWriteContext &context );
+    bool readXml( const QDomElement &itemElement, const QDomDocument &document, const QgsReadWriteContext &context );
+
+    /**
+     * Called after all pending items have been restored from XML. Items can use
+     * this method to run steps which must take place after all items have been restored to the layout,
+     * such as connecting to signals emitted by other items, which may not have existed in the layout
+     * at the time readXml() was called. E.g. a scalebar can use this to connect to its linked
+     * map item after restoration from XML.
+     * \see readXml()
+     */
+    virtual void finalizeRestoreFromXml();
 
     QgsAbstractLayoutUndoCommand *createCommand( const QString &text, int id, QUndoCommand *parent = nullptr ) override SIP_FACTORY;
 
@@ -384,7 +683,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * \see hasBackground()
      * \see setBackgroundColor()
      */
-    void setBackgroundEnabled( bool drawBackground ) { mBackground = drawBackground; }
+    void setBackgroundEnabled( bool drawBackground );
 
     /**
      * Returns the background color for this item. This is only used if hasBackground()
@@ -400,6 +699,48 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * \see setBackgroundEnabled()
      */
     void setBackgroundColor( const QColor &color );
+
+    /**
+     * Returns the item's composition blending mode.
+     * \see setBlendMode()
+     */
+    QPainter::CompositionMode blendMode() const { return mBlendMode; }
+
+    /**
+     * Sets the item's composition blending \a mode.
+     * \see blendMode()
+     */
+    void setBlendMode( const QPainter::CompositionMode mode );
+
+    /**
+     * Returns the item's opacity. This method should be used instead of
+     * QGraphicsItem::opacity() as any data defined overrides will be
+     * respected.
+     * \returns opacity as double between 1.0 (opaque) and 0 (transparent).
+     * \see setItemOpacity()
+     */
+    double itemOpacity() const { return mOpacity; }
+
+    /**
+     * Sets the item's \a opacity. This method should be used instead of
+     * QGraphicsItem::setOpacity() as any data defined overrides will be
+     * respected.
+     * \param opacity double between 1.0 (opaque) and 0 (transparent).
+     * \see itemOpacity()
+     */
+    void setItemOpacity( double opacity );
+
+    /**
+     * Returns whether the item should be excluded from layout exports and prints.
+     * \see setExcludeFromExports()
+     */
+    bool excludeFromExports() const;
+
+    /**
+     * Sets whether the item should be excluded from composer exports and prints.
+     * \see excludeFromExports()
+     */
+    void setExcludeFromExports( bool exclude );
 
     /**
      * Returns the estimated amount the item's frame bleeds outside the item's
@@ -424,6 +765,54 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      */
     virtual QRectF rectWithFrame() const;
 
+    /**
+     * Moves the content of the item, by a specified \a dx and \a dy in layout units.
+     * The default implementation has no effect.
+     * \see setMoveContentPreviewOffset()
+     * \see zoomContent()
+     */
+    virtual void moveContent( double dx, double dy );
+
+    /**
+     * Sets temporary offset for the item, by a specified \a dx and \a dy in layout units.
+     * This is useful for live updates when moving item content in a QgsLayoutView.
+     * The default implementation has no effect.
+     * \see moveContent()
+     */
+    virtual void setMoveContentPreviewOffset( double dx, double dy );
+
+    /**
+     * Zooms content of item. Does nothing by default.
+     * \param factor zoom factor, where > 1 results in a zoom in and < 1 results in a zoom out
+     * \param point item point for zoom center
+     * \see moveContent()
+     */
+    virtual void zoomContent( double factor, QPointF point );
+
+    /**
+     * Starts new undo command for this item.
+     * The \a commandText should be a capitalized, imperative tense description (e.g. "Add Map Item").
+     * If specified, multiple consecutive commands for this item with the same \a command will
+     * be collapsed into a single undo command in the layout history.
+     * \see endCommand()
+     * \see cancelCommand()
+    */
+    void beginCommand( const QString &commandText, UndoCommand command = UndoNone );
+
+    /**
+     * Completes the current item command and push it onto the layout's undo stack.
+     * \see beginCommand()
+     * \see cancelCommand()
+     */
+    void endCommand();
+
+    /**
+     * Cancels the current item command and discards it.
+     * \see beginCommand()
+     * \see endCommand()
+     */
+    void cancelCommand();
+
   public slots:
 
     /**
@@ -431,6 +820,11 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * recalculation of its position and size.
      */
     void refresh() override;
+
+    /**
+     * Forces a deferred update of any cached image the item uses.
+     */
+    virtual void invalidateCache();
 
     /**
      * Triggers a redraw (update) of the item.
@@ -446,11 +840,15 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     virtual void refreshDataDefinedProperty( const QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties );
 
     /**
-     * Sets the layout item's \a rotation, in degrees clockwise. This rotation occurs around the center of the item.
+     * Sets the layout item's \a rotation, in degrees clockwise.
+     *
+     * If \a adjustPosition is true, then this rotation occurs around the center of the item.
+     * If \a adjustPosition is false, rotation occurs around the item origin.
+     *
      * \see itemRotation()
      * \see rotateItem()
     */
-    virtual void setItemRotation( const double rotation );
+    virtual void setItemRotation( double rotation, bool adjustPosition = true );
 
     /**
      * Rotates the item by a specified \a angle in degrees clockwise around a specified reference point.
@@ -488,7 +886,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     /**
      * Draws a debugging rectangle of the item's current bounds within the specified
      * painter.
-     * @param painter destination QPainter
+     * \param painter destination QPainter
      */
     virtual void drawDebugRect( QPainter *painter );
 
@@ -526,6 +924,16 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     virtual void setMinimumSize( const QgsLayoutSize &size );
 
     /**
+     * Applies any item-specific size constraint handling to a given \a targetSize in layout units.
+     * Subclasses can override this method if they need to apply advanced logic regarding item
+     * sizes, which cannot be covered by setFixedSize() or setMinimumSize().
+     * Item size constraints are applied after fixed, minimum and data defined size constraints.
+     * \see setFixedSize()
+     * \see setMinimumSize()
+     */
+    virtual QSizeF applyItemSizeConstraint( const QSizeF &targetSize );
+
+    /**
      * Refreshes an item's size by rechecking it against any possible item fixed
      * or minimum sizes.
      * \see setFixedSize()
@@ -544,10 +952,21 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     /**
      * Refreshes an item's rotation by rechecking it against any possible overrides
      * such as data defined rotation.
+     *
+     * The optional \a origin point specifies the origin (in item coordinates)
+     * around which the rotation should be applied.
+     *
      * \see refreshItemSize()
      * \see refreshItemPosition()
      */
-    void refreshItemRotation();
+    void refreshItemRotation( QPointF *origin = nullptr );
+
+    /**
+     * Refresh item's opacity, considering data defined opacity.
+      * If \a updateItem is set to false the item will not be automatically
+      * updated after the opacity is set and a later call to update() must be made.
+     */
+    void refreshOpacity( bool updateItem = true );
 
     /**
      * Refresh item's frame, considering data defined colors and frame size.
@@ -564,8 +983,13 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     void refreshBackgroundColor( bool updateItem = true );
 
     /**
+     * Refresh item's blend mode, considering data defined blend mode.
+     */
+    void refreshBlendMode();
+
+    /**
      * Adjusts the specified \a point at which a \a reference position of the item
-     * sits and returns the top left corner of the item, if reference point where placed at the specified position.
+     * sits and returns the top left corner of the item, if reference point were placed at the specified position.
      */
     QPointF adjustPointForReferencePosition( const QPointF &point, const QSizeF &size, const ReferencePoint &reference ) const;
 
@@ -575,13 +999,18 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     QPointF positionAtReferencePoint( const ReferencePoint &reference ) const;
 
     /**
+     * Returns the position for the reference point of the item, if the top-left of the item
+     * was placed at the specified \a point.
+    */
+    QgsLayoutPoint topLeftToReferencePoint( const QgsLayoutPoint &point ) const;
+
+    /**
      * Stores item state within an XML DOM element.
      * \param element is the DOM element to store the item's properties in
      * \param document DOM document
      * \param context read write context
      * \see writeXml()
      * \see readPropertiesFromElement()
-     * \note derived classes must call this base implementation when overriding this method
      */
     virtual bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
 
@@ -590,11 +1019,27 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * \param element is the DOM element for the item
      * \param document DOM document
      * \param context read write context
+     *
+     * Note that item subclasses should not rely on all other items being present in the
+     * layout at the time this method is called. Instead, any connections and links to
+     * other items must be made in the finalizeRestoreFromXml() method. E.g. when restoring
+     * a scalebar, the connection to the linked map's signals should be implemented
+     * in finalizeRestoreFromXml(), not readPropertiesFromElement().
+     *
      * \see writePropertiesToElement()
      * \see readXml()
-     * \note derived classes must call this base implementation when overriding this method
      */
     virtual bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context );
+
+    /**
+     * Returns whether the item should be drawn in the current context.
+     */
+    bool shouldDrawItem() const;
+
+    /**
+     * Applies any present data defined size overrides to the specified layout \a size.
+     */
+    QgsLayoutSize applyDataDefinedSize( const QgsLayoutSize &size );
 
   private:
 
@@ -607,6 +1052,9 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     //! Unique id
     QString mUuid;
 
+    //! Original uuid from template
+    QString mTemplateUuid;
+
     //! Parent group unique id
     QString mParentGroupUuid;
 
@@ -617,6 +1065,22 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     QgsLayoutSize mItemSize;
     QgsLayoutPoint mItemPosition;
     double mItemRotation = 0.0;
+
+    //! Whether item should be excluded in exports
+    bool mExcludeFromExports = false;
+
+    /**
+     * Temporary evaluated item exclusion. Data defined properties may mean
+     * this value differs from mExcludeFromExports.
+     */
+    bool mEvaluatedExcludeFromExports = false;
+
+    //! Composition blend mode for item
+    QPainter::CompositionMode mBlendMode = QPainter::CompositionMode_SourceOver;
+    std::unique_ptr< QgsLayoutEffect > mEffect;
+
+    //! Item opacity, between 0 and 1
+    double mOpacity = 1.0;
 
     QImage mItemCachedImage;
     double mItemCacheDpi = -1;
@@ -649,7 +1113,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     QSizeF applyMinimumSize( const QSizeF &targetSize );
     QSizeF applyFixedSize( const QSizeF &targetSize );
     QgsLayoutPoint applyDataDefinedPosition( const QgsLayoutPoint &position );
-    QgsLayoutSize applyDataDefinedSize( const QgsLayoutSize &size );
+
     double applyDataDefinedRotation( const double rotation );
     void updateStoredItemPosition();
     QPointF itemPositionAtReferencePoint( const ReferencePoint reference, const QSizeF &size ) const;
@@ -657,6 +1121,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     bool shouldBlockUndoCommands() const;
 
     friend class TestQgsLayoutItem;
+    friend class TestQgsLayoutView;
     friend class QgsLayoutItemGroup;
 };
 

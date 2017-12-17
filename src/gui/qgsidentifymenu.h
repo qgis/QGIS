@@ -59,8 +59,8 @@ class GUI_EXPORT QgsIdentifyMenu : public QMenu
 
     struct ActionData
     {
-      ActionData()
-      {}
+      //! Constructor for ActionData
+      ActionData() = default;
 
       ActionData( QgsMapLayer *layer, QgsMapLayerAction *mapLayerAction = nullptr )
         : mIsValid( true )
@@ -93,7 +93,7 @@ class GUI_EXPORT QgsIdentifyMenu : public QMenu
      */
     explicit QgsIdentifyMenu( QgsMapCanvas *canvas );
 
-    ~QgsIdentifyMenu();
+    ~QgsIdentifyMenu() override;
 
     //! define if the menu executed can return multiple results (e.g. all results or all identified features of a vector layer)
     void setAllowMultipleReturn( bool multipleReturn ) { mAllowMultipleReturn = multipleReturn;}
@@ -102,6 +102,20 @@ class GUI_EXPORT QgsIdentifyMenu : public QMenu
     //! define if the menu will be shown with a single idetify result
     void setExecWithSingleResult( bool execWithSingleResult ) { mExecWithSingleResult = execWithSingleResult;}
     bool execWithSingleResult() { return mExecWithSingleResult;}
+
+    /**
+     * Sets an expression context scope used to resolve underlying actions.
+     *
+     * \since QGIS 3.0
+     */
+    void setExpressionContextScope( const QgsExpressionContextScope &scope );
+
+    /**
+     * Returns an expression context scope used to resolve underlying actions.
+     *
+     * \since QGIS 3.0
+     */
+    QgsExpressionContextScope expressionContextScope() const;
 
     /**
      * \brief define if attribute actions(1) and map layer actions(2) can be listed and run from the menu
@@ -147,7 +161,7 @@ class GUI_EXPORT QgsIdentifyMenu : public QMenu
     QList<QgsMapToolIdentify::IdentifyResult> exec( const QList<QgsMapToolIdentify::IdentifyResult> &idResults, QPoint pos );
 
   protected:
-    virtual void closeEvent( QCloseEvent *e ) override;
+    void closeEvent( QCloseEvent *e ) override;
 
   private slots:
     void handleMenuHover();
@@ -177,6 +191,8 @@ class GUI_EXPORT QgsIdentifyMenu : public QMenu
     bool mResultsIfExternalAction;
     int mMaxLayerDisplay;
     int mMaxFeatureDisplay;
+
+    QgsExpressionContextScope mExpressionContextScope;
 
     // name of the action to be displayed for feature default action, if other actions are shown
     QString mDefaultActionName;

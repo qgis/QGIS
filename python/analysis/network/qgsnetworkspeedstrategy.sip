@@ -11,9 +11,10 @@
 class QgsNetworkSpeedStrategy : QgsNetworkStrategy
 {
 %Docstring
+
 .. versionadded:: 3.0
  Strategy for calculating edge cost based on travel time. Should be
- used for finding fastest path between two points.
+used for finding fastest path between two points.
 %End
 
 %TypeHeaderCode
@@ -23,23 +24,13 @@ class QgsNetworkSpeedStrategy : QgsNetworkStrategy
 
     QgsNetworkSpeedStrategy( int attributeId, double defaultValue, double toMetricFactor );
 %Docstring
- Default constructor
+Default constructor
 %End
 
     virtual QVariant cost( double distance, const QgsFeature &f ) const;
 
-%Docstring
-Returns edge cost
- :rtype: QVariant
-%End
+    virtual QSet< int > requiredAttributes() const;
 
-    virtual QgsAttributeList requiredAttributes() const;
-
-%Docstring
- Returns list of the source layer attributes needed for cost calculation.
- This method called by QgsGraphDirector.
- :rtype: QgsAttributeList
-%End
 
 };
 

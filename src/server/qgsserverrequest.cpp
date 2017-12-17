@@ -79,7 +79,11 @@ QMap<QString, QString> QgsServerRequest::parameters() const
     QList<pair_t> items = query.queryItems( QUrl::FullyDecoded );
     Q_FOREACH ( const pair_t &pair, items )
     {
-      mParams.insert( pair.first.toUpper(), pair.second );
+      // prepare the value
+      QString value = pair.second;
+      value.replace( '+', ' ' );
+
+      mParams.insert( pair.first.toUpper(), value );
     }
     mDecoded = true;
   }

@@ -59,7 +59,11 @@ void QgsAction::run( const QgsExpressionContext &expressionContext ) const
     return;
   }
 
-  QString expandedAction = QgsExpression::replaceExpressionText( mCommand, &expressionContext );
+  QgsExpressionContextScope *scope = new QgsExpressionContextScope( mExpressionContextScope );
+  QgsExpressionContext context( expressionContext );
+  context << scope;
+
+  QString expandedAction = QgsExpression::replaceExpressionText( mCommand, &context );
 
   if ( mType == QgsAction::OpenUrl )
   {
@@ -146,3 +150,13 @@ void QgsAction::writeXml( QDomNode &actionsNode ) const
 
   actionsNode.appendChild( actionSetting );
 }
+
+void QgsAction::setExpressionContextScope( const QgsExpressionContextScope &scope )
+{
+  mExpressionContextScope = scope;
+}
+
+QgsExpressionContextScope QgsAction::expressionContextScope() const
+{
+  return mExpressionContextScope;
+};

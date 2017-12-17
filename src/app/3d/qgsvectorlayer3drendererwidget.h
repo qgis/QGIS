@@ -19,6 +19,7 @@
 #include <memory>
 
 #include "qgsmaplayerconfigwidget.h"
+#include "qgsvectorlayer3drenderer.h"
 
 class QCheckBox;
 class QLabel;
@@ -29,7 +30,6 @@ class QgsPoint3DSymbolWidget;
 class QgsPolygon3DSymbolWidget;
 class QgsVectorLayer;
 class QgsMapCanvas;
-class QgsVectorLayer3DRenderer;
 
 
 //! Widget for configuration of 3D renderer of a vector layer
@@ -38,7 +38,6 @@ class QgsVectorLayer3DRendererWidget : public QgsMapLayerConfigWidget
     Q_OBJECT
   public:
     explicit QgsVectorLayer3DRendererWidget( QgsVectorLayer *layer, QgsMapCanvas *canvas, QWidget *parent = nullptr );
-    ~QgsVectorLayer3DRendererWidget();
 
     void setLayer( QgsVectorLayer *layer );
 
@@ -48,7 +47,7 @@ class QgsVectorLayer3DRendererWidget : public QgsMapLayerConfigWidget
     QgsVectorLayer3DRenderer *renderer();
 
   public slots:
-    virtual void apply() override;
+    void apply() override;
 
   private slots:
     void onEnabledClicked();

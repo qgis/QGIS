@@ -95,16 +95,19 @@ class Buffer(GdalAlgorithm):
     def group(self):
         return self.tr('Vector geoprocessing')
 
+    def groupId(self):
+        return 'vectorgeoprocessing'
+
     def commandName(self):
         return 'ogr2ogr'
 
-    def getConsoleCommands(self, parameters, context, feedback):
+    def getConsoleCommands(self, parameters, context, feedback, executing=True):
         fields = self.parameterAsSource(parameters, self.INPUT, context).fields()
-        ogrLayer, layerName = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback)
+        ogrLayer, layerName = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback, executing)
         geometry = self.parameterAsString(parameters, self.GEOMETRY, context)
         distance = self.parameterAsDouble(parameters, self.DISTANCE, context)
         fieldName = self.parameterAsString(parameters, self.FIELD, context)
-        dissolve = self.parameterAsString(parameters, self.DISSOLVE, context)
+        dissolve = self.parameterAsBool(parameters, self.DISSOLVE, context)
         options = self.parameterAsString(parameters, self.OPTIONS, context)
         outFile = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
 
@@ -116,6 +119,11 @@ class Buffer(GdalAlgorithm):
                 continue
             other_fields.append(f.name())
 
+        if other_fields:
+            other_fields = ', {}'.format(','.join(other_fields))
+        else:
+            other_fields = ''
+
         arguments = []
         arguments.append(output)
         arguments.append(ogrLayer)
@@ -124,9 +132,9 @@ class Buffer(GdalAlgorithm):
         arguments.append('-sql')
 
         if dissolve or fieldName:
-            sql = "SELECT ST_Union(ST_Buffer({}, {})) AS {}, {} FROM '{}'".format(geometry, distance, geometry, ','.join(other_fields), layerName)
+            sql = "SELECT ST_Union(ST_Buffer({}, {})) AS {}{} FROM '{}'".format(geometry, distance, geometry, other_fields, layerName)
         else:
-            sql = "SELECT ST_Buffer({}, {}) AS {}, {} FROM '{}'".format(geometry, distance, geometry, ','.join(other_fields), layerName)
+            sql = "SELECT ST_Buffer({}, {}) AS {}{} FROM '{}'".format(geometry, distance, geometry, other_fields, layerName)
 
         if fieldName:
             sql = '{} GROUP BY {}'.format(sql, fieldName)

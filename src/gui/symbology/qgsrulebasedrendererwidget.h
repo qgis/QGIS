@@ -49,19 +49,23 @@ class GUI_EXPORT QgsRuleBasedRendererModel : public QAbstractItemModel
     Q_OBJECT
 
   public:
-    QgsRuleBasedRendererModel( QgsRuleBasedRenderer *r );
 
-    virtual Qt::ItemFlags flags( const QModelIndex &index ) const override;
-    virtual QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
-    virtual QVariant headerData( int section, Qt::Orientation orientation,
-                                 int role = Qt::DisplayRole ) const override;
-    virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
-    virtual int columnCount( const QModelIndex & = QModelIndex() ) const override;
-    virtual QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
-    virtual QModelIndex parent( const QModelIndex &index ) const override;
+    /**
+     * Constructor for QgsRuleBasedRendererModel, for the specified \a renderer.
+     */
+    QgsRuleBasedRendererModel( QgsRuleBasedRenderer *renderer, QObject *parent );
+
+    Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
+    QVariant headerData( int section, Qt::Orientation orientation,
+                         int role = Qt::DisplayRole ) const override;
+    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
+    int columnCount( const QModelIndex & = QModelIndex() ) const override;
+    QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
+    QModelIndex parent( const QModelIndex &index ) const override;
 
     // editing support
-    virtual bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
+    bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
 
     // drag'n'drop support
     Qt::DropActions supportedDropActions() const override;
@@ -111,9 +115,9 @@ class GUI_EXPORT QgsRuleBasedRendererWidget : public QgsRendererWidget, private 
     static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer ) SIP_FACTORY;
 
     QgsRuleBasedRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );
-    ~QgsRuleBasedRendererWidget();
+    ~QgsRuleBasedRendererWidget() override;
 
-    virtual QgsFeatureRenderer *renderer() override;
+    QgsFeatureRenderer *renderer() override;
 
   public slots:
 
@@ -228,7 +232,7 @@ class GUI_EXPORT QgsRendererRulePropsWidget : public QgsPanelWidget, private Ui:
      * Set the widget in dock mode.
      * \param dockMode True for dock mode.
      */
-    virtual void setDockMode( bool dockMode );
+    void setDockMode( bool dockMode ) override;
 
   protected:
     QgsRuleBasedRenderer::Rule *mRule; // borrowed
@@ -258,9 +262,9 @@ class GUI_EXPORT QgsRendererRulePropsDialog : public QDialog
      * \param parent parent widget
      * \param context symbol widget context
      */
-    QgsRendererRulePropsDialog( QgsRuleBasedRenderer::Rule *rule, QgsVectorLayer *layer, QgsStyle *style, QWidget *parent SIP_TRANSFERTHIS = 0, const QgsSymbolWidgetContext &context = QgsSymbolWidgetContext() );
+    QgsRendererRulePropsDialog( QgsRuleBasedRenderer::Rule *rule, QgsVectorLayer *layer, QgsStyle *style, QWidget *parent SIP_TRANSFERTHIS = nullptr, const QgsSymbolWidgetContext &context = QgsSymbolWidgetContext() );
 
-    ~QgsRendererRulePropsDialog();
+    ~QgsRendererRulePropsDialog() override;
 
     QgsRuleBasedRenderer::Rule *rule() { return mPropsWidget->rule(); }
 

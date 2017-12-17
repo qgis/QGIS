@@ -36,7 +36,9 @@ QgsMssqlFeatureIterator::QgsMssqlFeatureIterator( QgsMssqlFeatureSource *source,
 
   if ( mRequest.destinationCrs().isValid() && mRequest.destinationCrs() != mSource->mCrs )
   {
+    Q_NOWARN_DEPRECATED_PUSH
     mTransform = QgsCoordinateTransform( mSource->mCrs, mRequest.destinationCrs() );
+    Q_NOWARN_DEPRECATED_POP
   }
   try
   {
@@ -45,7 +47,7 @@ QgsMssqlFeatureIterator::QgsMssqlFeatureIterator( QgsMssqlFeatureSource *source,
   catch ( QgsCsException & )
   {
     // can't reproject mFilterRect
-    mClosed = true;
+    close();
     return;
   }
 
@@ -413,13 +415,7 @@ bool QgsMssqlFeatureIterator::rewind()
   if ( !result )
   {
     QgsDebugMsg( mQuery->lastError().text() );
-    mQuery.reset();
-    if ( mDatabase.isOpen() )
-      mDatabase.close();
-
-    iteratorClosed();
-
-    mClosed = true;
+    close();
     return false;
   }
 
@@ -431,14 +427,8 @@ bool QgsMssqlFeatureIterator::close()
   if ( mClosed )
     return false;
 
-  if ( mQuery )
+  if ( mQuery && mQuery->isActive() )
   {
-    if ( !mQuery->isActive() )
-    {
-      QgsDebugMsg( "QgsMssqlFeatureIterator::close on inactive query" );
-      return false;
-    }
-
     mQuery->finish();
   }
 

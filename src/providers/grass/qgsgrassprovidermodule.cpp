@@ -434,7 +434,7 @@ void QgsGrassMapsetItem::setState( State state )
     if ( mMapsetFileSystemWatcher )
     {
       delete mMapsetFileSystemWatcher;
-      mMapsetFileSystemWatcher = 0;
+      mMapsetFileSystemWatcher = nullptr;
     }
   }
 
@@ -499,7 +499,7 @@ QVector<QgsDataItem *> QgsGrassMapsetItem::createChildren()
 
     QString mapPath = mPath + "/vector/" + name;
     QStringList layerNames;
-    QgsGrassVectorItem *map = 0;
+    QgsGrassVectorItem *map = nullptr;
 
     // test topo version before getting layers, because GRASS 7 Vect_open_old is calling G_fatal_error
     // if topo version does not match GRASS lib version
@@ -559,8 +559,8 @@ QVector<QgsDataItem *> QgsGrassMapsetItem::createChildren()
       // somewhere not properly escaped (there was bug in QgsMimeDataUtils for example)
       QString uri = mDirPath + "/" + name + "/" + layerName;
       QgsLayerItem::LayerType layerType = QgsLayerItem::Vector;
-      QString typeName = layerName.split( QStringLiteral( "_" ) ).value( 1 );
-      QString baseLayerName = layerName.split( QStringLiteral( "_" ) ).value( 0 );
+      QString typeName = layerName.split( '_' ).value( 1 );
+      QString baseLayerName = layerName.split( '_' ).value( 0 );
 
       if ( typeName == QLatin1String( "point" ) || typeName == QLatin1String( "node" ) )
         layerType = QgsLayerItem::Point;
@@ -695,9 +695,9 @@ bool QgsGrassMapsetItem::handleDrop( const QMimeData *data, Qt::DropAction )
       errors.append( tr( "%1 layer type not supported" ).arg( u.name ) );
       continue;
     }
-    QgsRasterDataProvider *rasterProvider = 0;
-    QgsVectorDataProvider *vectorProvider = 0;
-    QgsDataProvider *provider = 0;
+    QgsRasterDataProvider *rasterProvider = nullptr;
+    QgsVectorDataProvider *vectorProvider = nullptr;
+    QgsDataProvider *provider = nullptr;
     QStringList extensions;
     QStringList existingNames;
     QRegExp regExp;
@@ -780,7 +780,7 @@ bool QgsGrassMapsetItem::handleDrop( const QMimeData *data, Qt::DropAction )
     }
 #endif
 
-    QgsGrassImport *import = 0;
+    QgsGrassImport *import = nullptr;
     if ( useCopy )
     {
       QgsDebugMsg( "location is the same -> g.copy" );
@@ -1153,7 +1153,7 @@ void QgsGrassImportItemWidget::onProgressChanged( const QString &recentHtml, con
 
 //----------------------- QgsGrassImportItem ------------------------------
 
-QgsAnimatedIcon *QgsGrassImportItem::sImportIcon = 0;
+QgsAnimatedIcon *QgsGrassImportItem::sImportIcon = nullptr;
 
 QgsGrassImportItem::QgsGrassImportItem( QgsDataItem *parent, const QString &name, const QString &path, QgsGrassImport *import )
   : QgsDataItem( QgsDataItem::Layer, parent, name, path )
@@ -1239,7 +1239,7 @@ QGISEXTERN QgsDataItem *dataItem( QString dirPath, QgsDataItem *parentItem )
 {
   if ( !QgsGrass::init() )
   {
-    return 0;
+    return nullptr;
   }
   if ( QgsGrass::isLocation( dirPath ) )
   {
@@ -1259,7 +1259,7 @@ QGISEXTERN QgsDataItem *dataItem( QString dirPath, QgsDataItem *parentItem )
     QgsGrassLocationItem *location = new QgsGrassLocationItem( parentItem, dirPath, path );
     return location;
   }
-  return 0;
+  return nullptr;
 }
 
 /**

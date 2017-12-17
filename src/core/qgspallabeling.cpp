@@ -1494,7 +1494,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature &f, QgsRenderContext &cont
   if ( ( geom.type() == QgsWkbTypes::PolygonGeometry )
        && ( placement == Line || placement == PerimeterCurved ) )
   {
-    geom = QgsGeometry( geom.geometry()->boundary() );
+    geom = QgsGeometry( geom.constGet()->boundary() );
   }
 
   GEOSGeometry *geos_geom_clone = nullptr;
@@ -1779,8 +1779,8 @@ void QgsPalLayerSettings::registerFeature( QgsFeature &f, QgsRenderContext &cont
         if ( QgsPalLabeling::geometryRequiresPreparation( ddPoint, context, ct ) )
         {
           ddPoint = QgsPalLabeling::prepareGeometry( ddPoint, context, ct );
-          xPos = static_cast< QgsPoint * >( ddPoint.geometry() )->x();
-          yPos = static_cast< QgsPoint * >( ddPoint.geometry() )->y();
+          xPos = static_cast< const QgsPoint * >( ddPoint.constGet() )->x();
+          yPos = static_cast< const QgsPoint * >( ddPoint.constGet() )->y();
         }
 
         xPos += xdiff;
@@ -2912,7 +2912,7 @@ QgsGeometry QgsPalLabeling::prepareGeometry( const QgsGeometry &geometry, QgsRen
 
     if ( geom.rotate( m2p.mapRotation(), center ) )
     {
-      QgsDebugMsg( QString( "Error rotating geometry" ).arg( geom.exportToWkt() ) );
+      QgsDebugMsg( QString( "Error rotating geometry" ).arg( geom.asWkt() ) );
       return QgsGeometry();
     }
   }

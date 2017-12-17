@@ -39,11 +39,11 @@ QgsLayoutGuideWidget::QgsLayoutGuideWidget( QWidget *parent, QgsLayout *layout, 
   mVertGuidesTableView->setEditTriggers( QAbstractItemView::AllEditTriggers );
 
 
-  mHozGuidesTableView->setItemDelegateForColumn( 0, new QgsLayoutGuidePositionDelegate( mLayout, mHozProxyModel ) );
-  mHozGuidesTableView->setItemDelegateForColumn( 1, new QgsLayoutGuideUnitDelegate( mLayout, mHozProxyModel ) );
+  mHozGuidesTableView->setItemDelegateForColumn( 0, new QgsLayoutGuidePositionDelegate( mHozGuidesTableView, mLayout, mHozProxyModel ) );
+  mHozGuidesTableView->setItemDelegateForColumn( 1, new QgsLayoutGuideUnitDelegate( mHozGuidesTableView, mLayout, mHozProxyModel ) );
 
-  mVertGuidesTableView->setItemDelegateForColumn( 0, new QgsLayoutGuidePositionDelegate( mLayout, mVertProxyModel ) );
-  mVertGuidesTableView->setItemDelegateForColumn( 1, new QgsLayoutGuideUnitDelegate( mLayout, mVertProxyModel ) );
+  mVertGuidesTableView->setItemDelegateForColumn( 0, new QgsLayoutGuidePositionDelegate( mVertGuidesTableView, mLayout, mVertProxyModel ) );
+  mVertGuidesTableView->setItemDelegateForColumn( 1, new QgsLayoutGuideUnitDelegate( mVertGuidesTableView, mLayout, mVertProxyModel ) );
 
   connect( mAddHozGuideButton, &QPushButton::clicked, this, &QgsLayoutGuideWidget::addHorizontalGuide );
   connect( mAddVertGuideButton, &QPushButton::clicked, this, &QgsLayoutGuideWidget::addVerticalGuide );
@@ -139,8 +139,9 @@ void QgsLayoutGuideWidget::applyToAll()
 }
 
 
-QgsLayoutGuidePositionDelegate::QgsLayoutGuidePositionDelegate( QgsLayout *layout, QAbstractItemModel *model )
-  : mLayout( layout )
+QgsLayoutGuidePositionDelegate::QgsLayoutGuidePositionDelegate( QObject *parent, QgsLayout *layout, QAbstractItemModel *model )
+  : QStyledItemDelegate( parent )
+  , mLayout( layout )
   , mModel( model )
 {
 
@@ -172,8 +173,9 @@ void QgsLayoutGuidePositionDelegate::setModelData( const QModelIndex &index, con
   mModel->setData( index, value, role );
 }
 
-QgsLayoutGuideUnitDelegate::QgsLayoutGuideUnitDelegate( QgsLayout *layout, QAbstractItemModel *model )
-  : mLayout( layout )
+QgsLayoutGuideUnitDelegate::QgsLayoutGuideUnitDelegate( QObject *parent, QgsLayout *layout, QAbstractItemModel *model )
+  : QStyledItemDelegate( parent )
+  , mLayout( layout )
   , mModel( model )
 {
 

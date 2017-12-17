@@ -22,6 +22,7 @@
 #include "qgsvertexentry.h"
 #include "qgsvectorlayer.h"
 #include "qgsgeometryutils.h"
+#include "qgsproject.h"
 
 #include <QTableWidget>
 #include <QHeaderView>
@@ -297,11 +298,11 @@ QgsNodeEditor::QgsNodeEditor(
 
   mTableView->setSelectionMode( QTableWidget::ExtendedSelection );
   mTableView->setSelectionBehavior( QTableWidget::SelectRows );
-  mTableView->setItemDelegateForColumn( 0, new CoordinateItemDelegate() );
-  mTableView->setItemDelegateForColumn( 1, new CoordinateItemDelegate() );
-  mTableView->setItemDelegateForColumn( 2, new CoordinateItemDelegate() );
-  mTableView->setItemDelegateForColumn( 3, new CoordinateItemDelegate() );
-  mTableView->setItemDelegateForColumn( 4, new CoordinateItemDelegate() );
+  mTableView->setItemDelegateForColumn( 0, new CoordinateItemDelegate( this ) );
+  mTableView->setItemDelegateForColumn( 1, new CoordinateItemDelegate( this ) );
+  mTableView->setItemDelegateForColumn( 2, new CoordinateItemDelegate( this ) );
+  mTableView->setItemDelegateForColumn( 3, new CoordinateItemDelegate( this ) );
+  mTableView->setItemDelegateForColumn( 4, new CoordinateItemDelegate( this ) );
 
   setWidget( mTableView );
 
@@ -366,14 +367,14 @@ void QgsNodeEditor::zoomToNode( int idx )
   double y = mSelectedFeature->vertexMap().at( idx )->point().y();
   QgsPointXY newCenter( x, y );
 
-  QgsCoordinateTransform t( mLayer->crs(), mCanvas->mapSettings().destinationCrs() );
+  QgsCoordinateTransform t( mLayer->crs(), mCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
   QgsPointXY tCenter = t.transform( newCenter );
 
   QPolygonF ext = mCanvas->mapSettings().visiblePolygon();
   //close polygon
   ext.append( ext.first() );
   QgsGeometry extGeom( QgsGeometry::fromQPolygonF( ext ) );
-  QgsGeometry nodeGeom( QgsGeometry::fromPoint( tCenter ) );
+  QgsGeometry nodeGeom( QgsGeometry::fromPointXY( tCenter ) );
   if ( !nodeGeom.within( extGeom ) )
   {
     mCanvas->setCenter( tCenter );
@@ -395,6 +396,12 @@ void QgsNodeEditor::keyPressEvent( QKeyEvent *e )
 //
 // CoordinateItemDelegate
 //
+
+CoordinateItemDelegate::CoordinateItemDelegate( QObject *parent )
+  : QStyledItemDelegate( parent )
+{
+
+}
 
 QString CoordinateItemDelegate::displayText( const QVariant &value, const QLocale &locale ) const
 {

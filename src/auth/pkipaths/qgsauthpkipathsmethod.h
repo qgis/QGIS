@@ -30,7 +30,7 @@ class QgsAuthPkiPathsMethod : public QgsAuthMethod
 
   public:
     explicit QgsAuthPkiPathsMethod();
-    ~QgsAuthPkiPathsMethod();
+    ~QgsAuthPkiPathsMethod() override;
 
     // QgsAuthMethod interface
     QString key() const override;
@@ -58,8 +58,6 @@ class QgsAuthPkiPathsMethod : public QgsAuthMethod
     void removePkiConfigBundle( const QString &authcfg );
 
     static QMap<QString, QgsPkiConfigBundle *> sPkiConfigBundleCache;
-
-    QMutex mConfigMutex;
 
 };
 

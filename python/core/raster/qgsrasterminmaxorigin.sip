@@ -13,8 +13,9 @@
 class QgsRasterMinMaxOrigin
 {
 %Docstring
- This class describes the origin of min/max values. It does not store by
- itself the min/max values.
+This class describes the origin of min/max values. It does not store by
+itself the min/max values.
+
 .. versionadded:: 3.0
 %End
 
@@ -78,37 +79,31 @@ class QgsRasterMinMaxOrigin
     QgsRasterMinMaxOrigin::Limits limits() const;
 %Docstring
  Return limits.
- :rtype: QgsRasterMinMaxOrigin.Limits
 %End
 
     QgsRasterMinMaxOrigin::Extent extent() const;
 %Docstring
  Return extent.
- :rtype: QgsRasterMinMaxOrigin.Extent
 %End
 
     QgsRasterMinMaxOrigin::StatAccuracy statAccuracy() const;
 %Docstring
  Return statistic accuracy.
- :rtype: QgsRasterMinMaxOrigin.StatAccuracy
 %End
 
     double cumulativeCutLower() const;
 %Docstring
  Return lower bound of cumulative cut method (between 0 and 1).
- :rtype: float
 %End
 
     double cumulativeCutUpper() const;
 %Docstring
  Return upper bound of cumulative cut method (between 0 and 1).
- :rtype: float
 %End
 
     double stdDevFactor() const;
 %Docstring
  Return factor f so that the min/max range is [ mean - f * stddev , mean + f * stddev ]
- :rtype: float
 %End
 
 
@@ -157,37 +152,31 @@ class QgsRasterMinMaxOrigin
     static QString limitsString( Limits limits );
 %Docstring
  Return a string to serialize Limits
- :rtype: str
 %End
 
     static Limits limitsFromString( const QString &limits );
 %Docstring
  Deserialize Limits
- :rtype: Limits
 %End
 
     static QString extentString( QgsRasterMinMaxOrigin::Extent extent );
 %Docstring
  Return a string to serialize Extent
- :rtype: str
 %End
 
     static QgsRasterMinMaxOrigin::Extent extentFromString( const QString &extent );
 %Docstring
  Deserialize Extent
- :rtype: QgsRasterMinMaxOrigin.Extent
 %End
 
     static QString statAccuracyString( QgsRasterMinMaxOrigin::StatAccuracy accuracy );
 %Docstring
  Return a string to serialize StatAccuracy
- :rtype: str
 %End
 
     static QgsRasterMinMaxOrigin::StatAccuracy statAccuracyFromString( const QString &accuracy );
 %Docstring
  Deserialize StatAccuracy
- :rtype: QgsRasterMinMaxOrigin.StatAccuracy
 %End
 
 };

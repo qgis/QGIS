@@ -40,6 +40,9 @@ class DeleteColumn(QgisFeatureBasedAlgorithm):
     def group(self):
         return self.tr('Vector table')
 
+    def groupId(self):
+        return 'vectortable'
+
     def __init__(self):
         super().__init__()
         self.fields_to_delete = []
@@ -80,7 +83,7 @@ class DeleteColumn(QgisFeatureBasedAlgorithm):
             input_fields.remove(index)
         return input_fields
 
-    def processFeature(self, feature, feedback):
+    def processFeature(self, feature, context, feedback):
         attributes = feature.attributes()
         for index in self.field_indices:
             del attributes[index]

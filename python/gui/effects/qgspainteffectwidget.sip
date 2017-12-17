@@ -27,15 +27,16 @@ class QgsPaintEffectWidget : QWidget
 
     virtual void setPaintEffect( QgsPaintEffect *effect ) = 0;
 %Docstring
- Sets the paint effect to modify with the widget
- \param effect paint effect
+Sets the paint effect to modify with the widget
+
+:param effect: paint effect
 %End
 
   signals:
 
     void changed();
 %Docstring
- Emitted when properties of the effect are changed through the widget
+Emitted when properties of the effect are changed through the widget
 %End
 
 };
@@ -52,11 +53,9 @@ class QgsDrawSourceWidget : QgsPaintEffectWidget
     QgsDrawSourceWidget( QWidget *parent /TransferThis/ = 0 );
 
     static QgsPaintEffectWidget *create() /Factory/;
-%Docstring
- :rtype: QgsPaintEffectWidget
-%End
 
     virtual void setPaintEffect( QgsPaintEffect *effect );
+
 
 };
 
@@ -73,11 +72,9 @@ class QgsBlurWidget : QgsPaintEffectWidget
     QgsBlurWidget( QWidget *parent /TransferThis/ = 0 );
 
     static QgsPaintEffectWidget *create() /Factory/;
-%Docstring
- :rtype: QgsPaintEffectWidget
-%End
 
     virtual void setPaintEffect( QgsPaintEffect *effect );
+
 
 };
 
@@ -94,11 +91,9 @@ class QgsShadowEffectWidget : QgsPaintEffectWidget
     QgsShadowEffectWidget( QWidget *parent /TransferThis/ = 0 );
 
     static QgsPaintEffectWidget *create() /Factory/;
-%Docstring
- :rtype: QgsPaintEffectWidget
-%End
 
     virtual void setPaintEffect( QgsPaintEffect *effect );
+
 
 };
 
@@ -114,11 +109,9 @@ class QgsGlowWidget : QgsPaintEffectWidget
     QgsGlowWidget( QWidget *parent /TransferThis/ = 0 );
 
     static QgsPaintEffectWidget *create() /Factory/;
-%Docstring
- :rtype: QgsPaintEffectWidget
-%End
 
     virtual void setPaintEffect( QgsPaintEffect *effect );
+
 
 };
 
@@ -133,11 +126,9 @@ class QgsTransformWidget : QgsPaintEffectWidget
     QgsTransformWidget( QWidget *parent /TransferThis/ = 0 );
 
     static QgsPaintEffectWidget *create() /Factory/;
-%Docstring
- :rtype: QgsPaintEffectWidget
-%End
 
     virtual void setPaintEffect( QgsPaintEffect *effect );
+
 
 };
 
@@ -153,11 +144,9 @@ class QgsColorEffectWidget : QgsPaintEffectWidget
     QgsColorEffectWidget( QWidget *parent = 0 );
 
     static QgsPaintEffectWidget *create() /Factory/;
-%Docstring
- :rtype: QgsPaintEffectWidget
-%End
 
     virtual void setPaintEffect( QgsPaintEffect *effect );
+
 
 };
 

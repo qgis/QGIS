@@ -100,7 +100,7 @@ QgsDataItem *QgsQptDataItemProvider::createDataItem( const QString &path, QgsDat
 
   if ( fileInfo.suffix().compare( QStringLiteral( "qpt" ), Qt::CaseInsensitive ) == 0 )
   {
-    return new QgsQptDataItem( parentItem, fileInfo.fileName(), path );
+    return new QgsQptDataItem( parentItem, fileInfo.baseName(), path );
   }
   return nullptr;
 }
@@ -139,7 +139,7 @@ QgsQptDataItem::QgsQptDataItem( QgsDataItem *parent, const QString &name, const 
   : QgsDataItem( QgsDataItem::Custom, parent, name, path )
 {
   setState( QgsDataItem::Populated ); // no children
-  setIconName( QStringLiteral( ":/images/icons/qgis-icon-16x16.png" ) );
+  setIconName( QStringLiteral( "/mIconQptFile.svg" ) );
   setToolTip( QDir::toNativeSeparators( path ) );
 }
 
@@ -182,7 +182,7 @@ QgsPyDataItem::QgsPyDataItem( QgsDataItem *parent, const QString &name, const QS
   : QgsDataItem( QgsDataItem::Custom, parent, name, path )
 {
   setState( QgsDataItem::Populated ); // no children
-  setIconName( QStringLiteral( ":/images/icons/qgis-icon-16x16.png" ) );
+  setIconName( QStringLiteral( "/mIconPythonFile.svg" ) );
   setToolTip( QDir::toNativeSeparators( path ) );
 }
 
@@ -242,7 +242,7 @@ QgsDataItem *QgsPyDataItemProvider::createDataItem( const QString &path, QgsData
 
   if ( fileInfo.suffix().compare( QStringLiteral( "py" ), Qt::CaseInsensitive ) == 0 )
   {
-    return new QgsPyDataItem( parentItem, fileInfo.fileName(), path );
+    return new QgsPyDataItem( parentItem, fileInfo.baseName(), path );
   }
   return nullptr;
 }

@@ -1,9 +1,9 @@
 Mesh Denoise
 grid_filter
-ParameterRaster|INPUT|Grid|False
-OutputRaster|OUTPUT|Denoised Grid
-ParameterNumber|SIGMA|Threshold| 0.000000| 1.000000| 0.900000
-ParameterNumber|ITER|Number of Iterations for Normal Updating| 1|None| 5
-ParameterNumber|VITER|Number of Iterations for Vertex Updating| 1|None| 50
-ParameterSelection|NB_CV|Common Edge Type of Face Neighbourhood|[0] Common Vertex;[1] Common Edge| 0
-ParameterBoolean|ZONLY|Only Z-Direction Position is Updated|False
+QgsProcessingParameterRasterLayer|INPUT|Grid|None|False
+QgsProcessingParameterRasterDestination|OUTPUT|Denoised Grid
+QgsProcessingParameterNumber|SIGMA|Threshold|QgsProcessingParameterNumber.Double|0.900000|False| 0.000000| 1.000000
+QgsProcessingParameterNumber|ITER|Number of Iterations for Normal Updating|QgsProcessingParameterNumber.Integer|5|False| 1|None
+QgsProcessingParameterNumber|VITER|Number of Iterations for Vertex Updating|QgsProcessingParameterNumber.Integer|50|False| 1|None
+QgsProcessingParameterEnum|NB_CV|Common Edge Type of Face Neighbourhood|[0] Common Vertex;[1] Common Edge|False|0
+QgsProcessingParameterBoolean|ZONLY|Only Z-Direction Position is Updated|False

@@ -13,17 +13,21 @@
 class QgsDefaultSearchWidgetWrapper : QgsSearchWidgetWrapper
 {
 %Docstring
- Wraps a search widget. Default form is just a QgsLineFilterEdit
+Wraps a search widget. Default form is just a QgsLineFilterEdit
 %End
 
 %TypeHeaderCode
 #include "qgsdefaultsearchwidgetwrapper.h"
 %End
   public:
+
     explicit QgsDefaultSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsDefaultSearchWidgetWrapper
+%End
 
   public:
-    virtual QString expression();
+    virtual QString expression() const;
 
     virtual bool applyDirectly();
 
@@ -33,14 +37,17 @@ class QgsDefaultSearchWidgetWrapper : QgsSearchWidgetWrapper
 
     virtual QString createExpression( QgsSearchWidgetWrapper::FilterFlags flags ) const;
 
+
   public slots:
 
     virtual void clearWidget();
 
+
     virtual void setEnabled( bool enabled );
 
+
   protected slots:
-    virtual void setExpression( QString exp );
+    virtual void setExpression( const QString &exp );
 
 
   protected:
@@ -53,22 +60,22 @@ class QgsDefaultSearchWidgetWrapper : QgsSearchWidgetWrapper
 
     QgsFilterLineEdit *lineEdit();
 %Docstring
- Returns a pointer to the line edit part of the widget.
+Returns a pointer to the line edit part of the widget.
+
 .. note::
 
    this method is in place for unit testing only, and is not considered
- stable API
- :rtype: QgsFilterLineEdit
+stable API
 %End
 
     QCheckBox *caseSensitiveCheckBox();
 %Docstring
- Returns a pointer to the case sensitivity checkbox in the widget.
+Returns a pointer to the case sensitivity checkbox in the widget.
+
 .. note::
 
    this method is in place for unit testing only, and is not considered
- stable API
- :rtype: QCheckBox
+stable API
 %End
 
 };

@@ -74,7 +74,7 @@ public:
     /**
      * Constructor
      */
-    explicit KPtyProcess(QObject *parent = 0);
+    explicit KPtyProcess(QObject *parent = nullptr);
 
     /**
      * Construct a process using an open pty master.
@@ -83,12 +83,12 @@ public:
      *   The process does not take ownership of the descriptor;
      *   it will not be automatically closed at any point.
      */
-    KPtyProcess(int ptyMasterFd, QObject *parent = 0);
+    KPtyProcess(int ptyMasterFd, QObject *parent = nullptr);
 
     /**
      * Destructor
      */
-    virtual ~KPtyProcess();
+    ~KPtyProcess() override;
 
     /**
      * Set to which channels the PTY should be assigned.
@@ -144,7 +144,7 @@ protected:
     /**
      * @reimp
      */
-    virtual void setupChildProcess();
+    void setupChildProcess() override;
 
 private:
     Q_PRIVATE_SLOT(d_func(), void _k_onStateChanged(QProcess::ProcessState))

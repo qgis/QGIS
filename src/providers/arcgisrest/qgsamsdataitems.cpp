@@ -58,7 +58,7 @@ QList<QAction *> QgsAmsRootItem::actions( QWidget *parent )
 
 QWidget *QgsAmsRootItem::paramWidget()
 {
-  QgsAmsSourceSelect *select = new QgsAmsSourceSelect( 0, 0, QgsProviderRegistry::WidgetMode::Manager );
+  QgsAmsSourceSelect *select = new QgsAmsSourceSelect( nullptr, nullptr, QgsProviderRegistry::WidgetMode::Manager );
   connect( select, &QgsArcGisServiceSourceSelect::connectionsChanged, this, &QgsAmsRootItem::onConnectionsChanged );
   return select;
 }
@@ -70,7 +70,7 @@ void QgsAmsRootItem::onConnectionsChanged()
 
 void QgsAmsRootItem::newConnection()
 {
-  QgsNewHttpConnection nc( 0, QgsNewHttpConnection::ConnectionOther, QStringLiteral( "qgis/connections-arcgismapserver/" ) );
+  QgsNewHttpConnection nc( nullptr, QgsNewHttpConnection::ConnectionOther, QStringLiteral( "qgis/connections-arcgismapserver/" ) );
   nc.setWindowTitle( tr( "Create a New ArcGIS Map Server Connection" ) );
 
   if ( nc.exec() )
@@ -103,7 +103,7 @@ QVector<QgsDataItem *> QgsAmsConnectionItem::createChildren()
   QString format = QStringLiteral( "jpg" );
   bool found = false;
   QList<QByteArray> supportedFormats = QImageReader::supportedImageFormats();
-  foreach ( const QString &encoding, serviceData["supportedImageFormatTypes"].toString().split( "," ) )
+  foreach ( const QString &encoding, serviceData["supportedImageFormatTypes"].toString().split( ',' ) )
   {
     foreach ( const QByteArray &fmt, supportedFormats )
     {
@@ -132,7 +132,7 @@ QVector<QgsDataItem *> QgsAmsConnectionItem::createChildren()
 bool QgsAmsConnectionItem::equal( const QgsDataItem *other )
 {
   const QgsAmsConnectionItem *o = dynamic_cast<const QgsAmsConnectionItem *>( other );
-  return ( type() == other->type() && o != 0 && mPath == o->mPath && mName == o->mName );
+  return ( type() == other->type() && o && mPath == o->mPath && mName == o->mName );
 }
 
 #ifdef HAVE_GUI
@@ -153,7 +153,7 @@ QList<QAction *> QgsAmsConnectionItem::actions( QWidget *parent )
 
 void QgsAmsConnectionItem::editConnection()
 {
-  QgsNewHttpConnection nc( 0, QgsNewHttpConnection::ConnectionOther, QStringLiteral( "qgis/connections-arcgismapserver/" ), mName );
+  QgsNewHttpConnection nc( nullptr, QgsNewHttpConnection::ConnectionOther, QStringLiteral( "qgis/connections-arcgismapserver/" ), mName );
   nc.setWindowTitle( tr( "Modify ArcGIS Map Server Connection" ) );
 
   if ( nc.exec() )

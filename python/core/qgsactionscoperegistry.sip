@@ -10,16 +10,16 @@
 class QgsActionScopeRegistry : QObject
 {
 %Docstring
- The action scope registry is an application wide registry that
- contains a list of available action scopes.
- Some scopes are available by default, additional ones can be registered
- at runtime by plugins or custom applications.
+The action scope registry is an application wide registry that
+contains a list of available action scopes.
+Some scopes are available by default, additional ones can be registered
+at runtime by plugins or custom applications.
 
- To get access use the QgsApplication:
+To get access use the QgsApplication:
 
- ```
- QgsApplication.actionScopeRegistry()
- ```
+```
+QgsApplication.actionScopeRegistry()
+```
 
 .. versionadded:: 3.0
 %End
@@ -31,50 +31,48 @@ class QgsActionScopeRegistry : QObject
 
     explicit QgsActionScopeRegistry( QObject *parent = 0 );
 %Docstring
- Create a new QgsActionScopeRegistry.
- QGIS already creates a central registry. You will normally
- want to use QgsApplication.actionScopeRegistry() to get access
- to that one instead.
+Create a new QgsActionScopeRegistry.
+QGIS already creates a central registry. You will normally
+want to use QgsApplication.actionScopeRegistry() to get access
+to that one instead.
 
 .. versionadded:: 3.0
 %End
 
     QSet<QgsActionScope> actionScopes() const;
 %Docstring
- Get all registered action scopes.
+Get all registered action scopes.
 
 .. versionadded:: 3.0
- :rtype: set of QgsActionScope
 %End
 
     void registerActionScope( const QgsActionScope &actionScope );
 %Docstring
- Register an additional action scope.
+Register an additional action scope.
 
 .. versionadded:: 3.0
 %End
 
     void unregisterActionScope( const QgsActionScope &actionScope );
 %Docstring
- Unregister an additional action scope.
+Unregister an additional action scope.
 
 .. versionadded:: 3.0
 %End
 
     QgsActionScope actionScope( const QString &id );
 %Docstring
- Get an action scope by its id.
+Get an action scope by its id.
 
 .. versionadded:: 3.0
- :rtype: QgsActionScope
 %End
 
   signals:
 
     void actionScopesChanged();
 %Docstring
- Emitted whenever a new action scope is registered or an action scope
- is unregistered.
+Emitted whenever a new action scope is registered or an action scope
+is unregistered.
 
 .. versionadded:: 3.0
 %End

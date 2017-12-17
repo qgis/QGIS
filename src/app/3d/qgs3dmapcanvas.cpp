@@ -25,10 +25,6 @@
 
 Qgs3DMapCanvas::Qgs3DMapCanvas( QWidget *parent )
   : QWidget( parent )
-  , mWindow3D( nullptr )
-  , mContainer( nullptr )
-  , mMap( nullptr )
-  , mScene( nullptr )
 {
   mWindow3D = new Qt3DExtras::Qt3DWindow;
   mContainer = QWidget::createWindowContainer( mWindow3D );
@@ -48,6 +44,9 @@ Qgs3DMapCanvas::~Qgs3DMapCanvas()
 void Qgs3DMapCanvas::resizeEvent( QResizeEvent *ev )
 {
   QWidget::resizeEvent( ev );
+
+  if ( !mScene )
+    return;
 
   QRect viewportRect( QPoint( 0, 0 ), size() );
   mScene->cameraController()->setViewport( viewportRect );
@@ -74,7 +73,19 @@ void Qgs3DMapCanvas::setMap( Qgs3DMapSettings *map )
   resetView();
 }
 
+QgsCameraController *Qgs3DMapCanvas::cameraController()
+{
+  return mScene ? mScene->cameraController() : nullptr;
+}
+
 void Qgs3DMapCanvas::resetView()
 {
   mScene->viewZoomFull();
+}
+
+void Qgs3DMapCanvas::setViewFromTop( const QgsPointXY &center, float distance, float rotation )
+{
+  float worldX = center.x() - mMap->origin().x();
+  float worldY = center.y() - mMap->origin().y();
+  mScene->cameraController()->setViewFromTop( worldX, -worldY, distance, rotation );
 }

@@ -69,22 +69,22 @@ class CORE_EXPORT QgsEffectStack : public QgsPaintEffect
      */
     explicit QgsEffectStack( const QgsPaintEffect &effect );
 
-    virtual ~QgsEffectStack();
+    ~QgsEffectStack() override;
 
-    virtual QString type() const override { return QStringLiteral( "effectStack" ); }
-    virtual QgsEffectStack *clone() const override SIP_FACTORY;
-    virtual bool saveProperties( QDomDocument &doc, QDomElement &element ) const override;
-    virtual bool readProperties( const QDomElement &element ) override;
+    QString type() const override { return QStringLiteral( "effectStack" ); }
+    QgsEffectStack *clone() const override SIP_FACTORY;
+    bool saveProperties( QDomDocument &doc, QDomElement &element ) const override;
+    bool readProperties( const QDomElement &element ) override;
 
     /**
      * Unused for QgsEffectStack, will always return an empty string map
      */
-    virtual QgsStringMap properties() const override;
+    QgsStringMap properties() const override;
 
     /**
      * Unused for QgsEffectStack, props parameter will be ignored
      */
-    virtual void readProperties( const QgsStringMap &props ) override;
+    void readProperties( const QgsStringMap &props ) override;
 
     /**
      * Appends an effect to the end of the stack.
@@ -141,7 +141,7 @@ class CORE_EXPORT QgsEffectStack : public QgsPaintEffect
 
   protected:
 
-    virtual void draw( QgsRenderContext &context ) override;
+    void draw( QgsRenderContext &context ) override;
 
   private:
 

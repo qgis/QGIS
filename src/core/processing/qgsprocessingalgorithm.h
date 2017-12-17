@@ -193,9 +193,19 @@ class CORE_EXPORT QgsProcessingAlgorithm
     /**
      * Returns the name of the group this algorithm belongs to. This string
      * should be localised.
+     * \see groupId()
      * \see tags()
     */
     virtual QString group() const { return QString(); }
+
+    /**
+     * Returns the unique ID of the group this algorithm belongs to. This string
+     * should be fixed for the algorithm, and must not be localised. The group id
+     * should be unique within each provider. Group id should contain lowercase
+     * alphanumeric characters only and no spaces or other formatting characters.
+     * \see group()
+     */
+    virtual QString groupId() const { return QString(); };
 
     /**
      * Returns the flags indicating how and when the algorithm operates and should be exposed to users.
@@ -339,9 +349,11 @@ class CORE_EXPORT QgsProcessingAlgorithm
     /**
      * Creates an expression context relating to the algorithm. This can be called by algorithms
      * to create a new expression context ready for evaluating expressions within the algorithm.
+     * Optionally, a \a source can be specified which will be used to populate the context if it
+     * implements the QgsExpressionContextGenerator interface.
      */
     QgsExpressionContext createExpressionContext( const QVariantMap &parameters,
-        QgsProcessingContext &context ) const;
+        QgsProcessingContext &context, QgsProcessingFeatureSource *source = nullptr ) const;
 
     /**
      * Checks whether the coordinate reference systems for the specified set of \a parameters
@@ -872,10 +884,10 @@ class CORE_EXPORT QgsProcessingFeatureBasedAlgorithm : public QgsProcessingAlgor
      * can break valid model execution - so use with extreme caution, and consider using
      * \a feedback to instead report non-fatal processing failures for features instead.
      */
-    virtual QgsFeature processFeature( const QgsFeature &feature, QgsProcessingFeedback *feedback ) = 0;
+    virtual QgsFeature processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) = 0;
 
-    virtual QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                          QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters,
+                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
     /**
      * Returns the feature request used for fetching features to process from the

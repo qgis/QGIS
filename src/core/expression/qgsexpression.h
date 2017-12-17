@@ -138,6 +138,13 @@ class CORE_EXPORT QgsExpression
     QgsExpression &operator=( const QgsExpression &other );
 
     /**
+     * Automatically convert this expression to a string where requested.
+     *
+     * \since QGIS 3.0
+     */
+    operator QString() const SIP_SKIP;
+
+    /**
      * Create an empty expression.
      *
      * \since QGIS 3.0
@@ -564,7 +571,8 @@ class CORE_EXPORT QgsExpression
 
     struct Help SIP_SKIP
     {
-      Help() {}
+      //! Constructor for expression help
+      Help() = default;
 
       Help( const QString &name, const QString &type, const QString &description, const QList<QgsExpression::HelpVariant> &variants )
         : mName( name )

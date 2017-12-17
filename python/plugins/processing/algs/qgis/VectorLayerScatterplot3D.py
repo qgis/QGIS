@@ -49,6 +49,9 @@ class VectorLayerScatterplot3D(QgisAlgorithm):
     def group(self):
         return self.tr('Graphics')
 
+    def groupId(self):
+        return 'graphics'
+
     def __init__(self):
         super().__init__()
 

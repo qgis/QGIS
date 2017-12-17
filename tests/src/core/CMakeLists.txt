@@ -11,6 +11,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/annotations
   ${CMAKE_SOURCE_DIR}/src/core/auth
   ${CMAKE_SOURCE_DIR}/src/core/composer
+  ${CMAKE_SOURCE_DIR}/src/core/dxf
   ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/core/geometry
   ${CMAKE_SOURCE_DIR}/src/core/layout
@@ -74,6 +75,7 @@ SET(TESTS
  testqgsapplication.cpp
  testqgsatlascomposition.cpp
  testqgsauthcrypto.cpp
+ testqgsauthcertutils.cpp
  testqgsauthconfig.cpp
  testqgsauthmanager.cpp
  testqgsblendmodes.cpp
@@ -108,6 +110,7 @@ SET(TESTS
  testqgsdatasourceuri.cpp
  testqgsdiagram.cpp
  testqgsdistancearea.cpp
+ testqgsdxfexport.cpp
  testqgsellipsemarker.cpp
  testqgsexpressioncontext.cpp
  testqgsexpression.cpp
@@ -132,11 +135,21 @@ SET(TESTS
  testqgslayertree.cpp
  testqgslayout.cpp
  testqgslayoutcontext.cpp
+ testqgslayouthtml.cpp
  testqgslayoutitem.cpp
  testqgslayoutitemgroup.cpp
+ testqgslayoutlabel.cpp
+ testqgslayoutmap.cpp
+ testqgslayoutmapgrid.cpp
+ testqgslayoutmapoverview.cpp
  testqgslayoutmodel.cpp
+ testqgslayoutmultiframe.cpp
  testqgslayoutobject.cpp
  testqgslayoutpage.cpp
+ testqgslayoutpicture.cpp
+ testqgslayoutscalebar.cpp
+ testqgslayoutshapes.cpp
+ testqgslayouttable.cpp
  testqgslayoutunits.cpp
  testqgslayoututils.cpp
  testqgslegendrenderer.cpp
@@ -161,7 +174,6 @@ SET(TESTS
  testqgspointlocator.cpp
  testqgspointpatternfillsymbol.cpp
  testqgspoint.cpp
- testqgsprocessing.cpp
  testqgsproject.cpp
  testqgsproperty.cpp
  testqgis.cpp
@@ -180,6 +192,7 @@ SET(TESTS
  testqgsstatisticalsummary.cpp
  testqgsstringutils.cpp
  testqgsstyle.cpp
+ testqgssvgcache.cpp
  testqgssvgmarker.cpp
  testqgssymbol.cpp
  testqgstaskmanager.cpp

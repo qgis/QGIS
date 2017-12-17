@@ -62,6 +62,7 @@ class TestQgsMapLayer : public QObject
     void cleanup(); // will be called after every testfunction.
 
     void isValid();
+    void formatName();
 
     void setBlendMode();
 
@@ -114,6 +115,14 @@ void TestQgsMapLayer::cleanupTestCase()
 void TestQgsMapLayer::isValid()
 {
   QVERIFY( mpLayer->isValid() );
+}
+
+void TestQgsMapLayer::formatName()
+{
+  QCOMPARE( QgsMapLayer::formatLayerName( QString() ), QString() );
+  QCOMPARE( QgsMapLayer::formatLayerName( QStringLiteral( "layer" ) ), QStringLiteral( "Layer" ) );
+  QCOMPARE( QgsMapLayer::formatLayerName( QStringLiteral( "layer name" ) ), QStringLiteral( "Layer Name" ) );
+  QCOMPARE( QgsMapLayer::formatLayerName( QStringLiteral( "layer_name" ) ), QStringLiteral( "Layer Name" ) );
 }
 
 void TestQgsMapLayer::setBlendMode()

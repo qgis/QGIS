@@ -40,114 +40,13 @@ class QgsComposerEffect;
  */
 class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRectItem
 {
-#ifdef SIP_RUN
-#include <qgscomposerarrow.h>
-#include <qgscomposerframe.h>
-#include <qgscomposeritemgroup.h>
-#include <qgscomposerlabel.h>
-#include <qgscomposerlegend.h>
-#include <qgscomposermap.h>
-#include <qgspaperitem.h>
-#include <qgscomposerpicture.h>
-#include <qgscomposerscalebar.h>
-#include <qgscomposershape.h>
-#include <qgscomposerpolygon.h>
-#include <qgscomposerpolyline.h>
-#include <qgscomposertexttable.h>
-#include <qgslayoutitemshape.h>
-#include <qgslayoutitempage.h>
-#endif
-
-
-#ifdef SIP_RUN
-    SIP_CONVERT_TO_SUBCLASS_CODE
-    // the conversions have to be static, because they're using multiple inheritance
-    // (seen in PyQt4 .sip files for some QGraphicsItem classes)
-    if ( dynamic_cast< QgsComposerItem * >( sipCpp ) )
-    {
-      switch ( sipCpp->type() )
-      {
-        case QgsComposerItem::ComposerItem:
-          sipType = sipType_QgsComposerItem;
-          *sipCppRet = static_cast<QgsComposerItem *>( sipCpp );
-          break;
-        case QgsComposerItem::ComposerArrow:
-          sipType = sipType_QgsComposerArrow;
-          *sipCppRet = static_cast<QgsComposerArrow *>( sipCpp );
-          break;
-        case QgsComposerItem::ComposerItemGroup:
-          sipType = sipType_QgsComposerItemGroup;
-          *sipCppRet = static_cast<QgsComposerItemGroup *>( sipCpp );
-          break;
-        case QgsComposerItem::ComposerLabel:
-          sipType = sipType_QgsComposerLabel;
-          *sipCppRet = static_cast<QgsComposerLabel *>( sipCpp );
-          break;
-        case QgsComposerItem::ComposerLegend:
-          sipType = sipType_QgsComposerLegend;
-          *sipCppRet = static_cast<QgsComposerLegend *>( sipCpp );
-          break;
-        case QgsComposerItem::ComposerMap:
-          sipType = sipType_QgsComposerMap;
-          *sipCppRet = static_cast<QgsComposerMap *>( sipCpp );
-          break;
-        case QgsComposerItem::ComposerPaper:
-          sipType = sipType_QgsPaperItem;
-          *sipCppRet = static_cast<QgsPaperItem *>( sipCpp );
-          break;
-        case QgsComposerItem::ComposerPicture:
-          sipType = sipType_QgsComposerPicture;
-          *sipCppRet = static_cast<QgsComposerPicture *>( sipCpp );
-          break;
-        case QgsComposerItem::ComposerScaleBar:
-          sipType = sipType_QgsComposerScaleBar;
-          *sipCppRet = static_cast<QgsComposerScaleBar *>( sipCpp );
-          break;
-        case QgsComposerItem::ComposerShape:
-          sipType = sipType_QgsComposerShape;
-          *sipCppRet = static_cast<QgsComposerShape *>( sipCpp );
-          break;
-        case QgsComposerItem::ComposerPolygon:
-          sipType = sipType_QgsComposerPolygon;
-          *sipCppRet = static_cast<QgsComposerPolygon *>( sipCpp );
-          break;
-        case QgsComposerItem::ComposerPolyline:
-          sipType = sipType_QgsComposerPolyline;
-          *sipCppRet = static_cast<QgsComposerPolyline *>( sipCpp );
-          break;
-        case QgsComposerItem::ComposerFrame:
-          sipType = sipType_QgsComposerFrame;
-          *sipCppRet = static_cast<QgsComposerFrame *>( sipCpp );
-          break;
-        default:
-          sipType = 0;
-      }
-    }
-    else
-    {
-      switch ( sipCpp->type() )
-      {
-        // really, these *should* use the constants from QgsLayoutItemRegistry, but sip doesn't like that!
-        case QGraphicsItem::UserType + 101:
-          sipType = sipType_QgsLayoutItemPage;
-          *sipCppRet = static_cast<QgsLayoutItemPage *>( sipCpp );
-          break;
-        default:
-          sipType = 0;
-      }
-    }
-
-    SIP_END
-#endif
-
-
     Q_OBJECT
   public:
 
     enum ItemType
     {
       // base class for the items
-      ComposerItem = UserType + 100,
+      ComposerItem = UserType + 10000,
 
       // derived classes
       ComposerArrow,
@@ -224,10 +123,10 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      \param composition parent composition
      \param manageZValue true if the z-Value of this object should be managed by mComposition*/
     QgsComposerItem( qreal x, qreal y, qreal width, qreal height, QgsComposition *composition SIP_TRANSFERTHIS, bool manageZValue = true );
-    virtual ~QgsComposerItem();
+    ~QgsComposerItem() override;
 
     //! Return correct graphics item type.
-    virtual int type() const override { return ComposerItem; }
+    int type() const override { return ComposerItem; }
 
     /**
      * Returns whether this item has been removed from the composition. Items removed
@@ -682,7 +581,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * scopes for global, project, composition, atlas and item properties.
      * \since QGIS 2.12
      */
-    virtual QgsExpressionContext createExpressionContext() const override;
+    QgsExpressionContext createExpressionContext() const override;
 
     /**
      * Sets whether updates to the item are enabled. If false,
@@ -727,7 +626,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * \param context expression context for evaluating data defined expressions
      * \since QGIS 2.5
      */
-    virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext *context = nullptr ) override;
+    void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext *context = nullptr ) override;
 
   protected:
     //! True if item has been removed from the composition

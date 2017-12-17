@@ -48,7 +48,7 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
 
     QgsComposerHtml( QgsComposition *c SIP_TRANSFERTHIS, bool createUndoCommands );
 
-    ~QgsComposerHtml();
+    ~QgsComposerHtml() override;
 
     /**
      * Sets the source mode for item's HTML content.
@@ -219,7 +219,7 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
      */
     bool userStylesheetEnabled() const { return mEnableUserStylesheet; }
 
-    virtual QString displayName() const override;
+    QString displayName() const override;
     QSizeF totalSize() const override;
     void render( QPainter *p, const QRectF &renderExtent, const int frameIndex ) override;
     bool writeXml( QDomElement &elem, QDomDocument &doc, bool ignoreFrames = false ) const override;
@@ -244,7 +244,7 @@ class CORE_EXPORT QgsComposerHtml: public QgsComposerMultiFrame
     void recalculateFrameSizes() override;
     void refreshExpressionContext();
 
-    virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext *context = nullptr ) override;
+    void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext *context = nullptr ) override;
 
   private slots:
     void frameLoaded( bool ok = true );

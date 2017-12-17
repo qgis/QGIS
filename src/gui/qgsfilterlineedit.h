@@ -23,7 +23,7 @@
 #include "qgis_gui.h"
 
 class QToolButton;
-
+class QgsAnimatedIcon;
 
 /**
  * \class QgsFilterLineEdit
@@ -54,6 +54,7 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
     Q_PROPERTY( QString value READ value WRITE setValue NOTIFY valueChanged )
     Q_PROPERTY( bool showClearButton READ showClearButton WRITE setShowClearButton )
     Q_PROPERTY( bool showSearchIcon READ showSearchIcon WRITE setShowSearchIcon )
+    Q_PROPERTY( bool showSpinner READ showSpinner WRITE setShowSpinner NOTIFY showSpinnerChanged )
 
   public:
 
@@ -70,7 +71,7 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
      * \param parent parent widget
      * \param nullValue string for representing null values
      */
-    QgsFilterLineEdit( QWidget *parent SIP_TRANSFERTHIS = 0, const QString &nullValue = QString() );
+    QgsFilterLineEdit( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QString &nullValue = QString() );
 
     /**
      * Returns true if the widget's clear button is visible.
@@ -182,6 +183,36 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
      */
     inline bool isNull() const { return text() == mNullValue; }
 
+    /**
+     * Show a spinner icon. This can be used for search boxes to indicate that
+     * something is going on in the background.
+     *
+     * \since QGIS 3.0
+     */
+    bool showSpinner() const;
+
+    /**
+     * Show a spinner icon. This can be used for search boxes to indicate that
+     * something is going on in the background.
+     *
+     * \since QGIS 3.0
+     */
+    void setShowSpinner( bool showSpinner );
+
+    /**
+     * Will select all text when this widget receives the focus.
+     *
+     * \since QGIS 3.0
+     */
+    bool selectOnFocus() const;
+
+    /**
+     * Will select all text when this widget receives the focus.
+     *
+     * \since QGIS 3.0
+     */
+    void setSelectOnFocus( bool selectOnFocus );
+
   public slots:
 
     /**
@@ -206,6 +237,22 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
      */
     void valueChanged( const QString &value );
 
+    /**
+     * Show a spinner icon. This can be used for search boxes to indicate that
+     * something is going on in the background.
+     *
+     * \since QGIS 3.0
+     */
+    void showSpinnerChanged();
+
+
+    /**
+     * Will select all text when this widget receives the focus.
+     *
+     * \since QGIS 3.0
+     */
+    void selectOnFocusChanged();
+
   protected:
     void mousePressEvent( QMouseEvent *e ) override;
     void mouseMoveEvent( QMouseEvent *e ) override;
@@ -215,11 +262,13 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
 
   private slots:
     void onTextChanged( const QString &text );
+    void updateBusySpinner();
 
   private:
 
     bool mClearButtonVisible = true;
     bool mSearchIconVisible = false;
+    bool mShowSpinner = false;
 
     ClearMode mClearMode = ClearToNull;
 
@@ -228,6 +277,7 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
     QString mStyleSheet;
     bool mFocusInEvent = false;
     bool mClearHover = false;
+    bool mSelectOnFocus = false;
 
     QSize mClearIconSize;
     QPixmap mClearIconPixmap;
@@ -235,12 +285,14 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
 
     QSize mSearchIconSize;
     QPixmap mSearchIconPixmap;
+    QgsAnimatedIcon *mBusySpinner = nullptr;
 
     //! Returns true if clear button should be shown
     bool shouldShowClear() const;
 
     QRect clearRect() const;
     QRect searchRect() const;
+    QRect busySpinnerRect() const;
 };
 
 /// @cond PRIVATE
@@ -263,7 +315,7 @@ class SIP_SKIP QgsSpinBoxLineEdit : public QgsFilterLineEdit
 
   public slots:
 
-    virtual void clearValue() override
+    void clearValue() override
     {
       // don't change the value - let spin boxes handle that by detecting cleared() signal
       setCursor( Qt::IBeamCursor );

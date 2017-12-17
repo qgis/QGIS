@@ -128,7 +128,7 @@ QgsFieldConstraints::Constraints QgsVectorDataProvider::fieldConstraints( int fi
 {
   QgsFields f = fields();
   if ( fieldIndex < 0 || fieldIndex >= f.count() )
-    return 0;
+    return nullptr;
 
   return f.at( fieldIndex ).constraints().constraints();
 }
@@ -692,7 +692,7 @@ QgsGeometry QgsVectorDataProvider::convertToProviderType( const QgsGeometry &geo
     return QgsGeometry();
   }
 
-  QgsAbstractGeometry *geometry = geom.geometry();
+  const QgsAbstractGeometry *geometry = geom.constGet();
   if ( !geometry )
   {
     return QgsGeometry();

@@ -344,7 +344,7 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
 
     //! Constructs the labeling from given tree of rules (takes ownership)
     explicit QgsRuleBasedLabeling( QgsRuleBasedLabeling::Rule *root SIP_TRANSFER );
-    ~QgsRuleBasedLabeling();
+    ~QgsRuleBasedLabeling() override;
 
     QgsRuleBasedLabeling::Rule *rootRule() { return mRootRule; }
     const Rule *rootRule() const SIP_SKIP { return mRootRule; }
@@ -354,13 +354,13 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
 
     // implementation of parent interface
 
-    virtual QString type() const override;
-    virtual QgsRuleBasedLabeling *clone() const override SIP_FACTORY;
-    virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const override;
+    QString type() const override;
+    QgsRuleBasedLabeling *clone() const override SIP_FACTORY;
+    QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const override;
     //! \note not available in Python bindings
-    virtual QgsVectorLayerLabelProvider *provider( QgsVectorLayer *layer ) const override SIP_SKIP;
-    virtual QStringList subProviders() const override;
-    virtual QgsPalLayerSettings settings( const QString &providerId = QString() ) const override;
+    QgsVectorLayerLabelProvider *provider( QgsVectorLayer *layer ) const override SIP_SKIP;
+    QStringList subProviders() const override;
+    QgsPalLayerSettings settings( const QString &providerId = QString() ) const override;
 
     /**
      * Set pal settings for a specific provider (takes ownership).
@@ -370,8 +370,9 @@ class CORE_EXPORT QgsRuleBasedLabeling : public QgsAbstractVectorLayerLabeling
      *
      * \since QGIS 3.0
      */
-    virtual void setSettings( QgsPalLayerSettings *settings SIP_TRANSFER, const QString &providerId = QString() ) override;
+    void setSettings( QgsPalLayerSettings *settings SIP_TRANSFER, const QString &providerId = QString() ) override;
     bool requiresAdvancedEffects() const override;
+    void toSld( QDomNode &parent, const QgsStringMap &props ) const override;
 
   protected:
     Rule *mRootRule = nullptr;
@@ -392,15 +393,15 @@ class CORE_EXPORT QgsRuleBasedLabelProvider : public QgsVectorLayerLabelProvider
 
     // reimplemented
 
-    virtual bool prepare( const QgsRenderContext &context, QSet<QString> &attributeNames ) override;
+    bool prepare( const QgsRenderContext &context, QSet<QString> &attributeNames ) override;
 
-    virtual void registerFeature( QgsFeature &feature, QgsRenderContext &context, const QgsGeometry &obstacleGeometry = QgsGeometry() ) override;
+    void registerFeature( QgsFeature &feature, QgsRenderContext &context, const QgsGeometry &obstacleGeometry = QgsGeometry() ) override;
 
     //! create a label provider
     virtual QgsVectorLayerLabelProvider *createProvider( QgsVectorLayer *layer, const QString &providerId, bool withFeatureLoop, const QgsPalLayerSettings *settings );
 
     //! return subproviders
-    virtual QList<QgsAbstractLabelProvider *> subProviders() override;
+    QList<QgsAbstractLabelProvider *> subProviders() override;
 
   protected:
     //! owned copy

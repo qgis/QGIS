@@ -59,13 +59,13 @@ class NewConnectionDialog(QDialog, BASE_CLASS):
         conn_password = self.lePassword.text().strip()
 
         if any([conn_name == '', conn_url == '']):
-            QMessageBox.warning(self, self.tr('Save connection'),
-                                self.tr('Both Name and URL must be provided'))
+            QMessageBox.warning(self, self.tr('Save Connection'),
+                                self.tr('Both Name and URL must be provided.'))
             return
 
         if '/' in conn_name:
-            QMessageBox.warning(self, self.tr('Save connection'),
-                                self.tr('Name cannot contain \'/\''))
+            QMessageBox.warning(self, self.tr('Save Connection'),
+                                self.tr('Name cannot contain \'/\'.'))
             return
 
         if conn_name is not None:
@@ -76,7 +76,7 @@ class NewConnectionDialog(QDialog, BASE_CLASS):
             # warn if entry was renamed to an existing connection
             if all([self.conn_name_orig != conn_name,
                     self.settings.contains(keyurl)]):
-                res = QMessageBox.warning(self, self.tr('Save connection'),
+                res = QMessageBox.warning(self, self.tr('Save Connection'),
                                           self.tr('Overwrite {0}?').format(conn_name),
                                           QMessageBox.Ok | QMessageBox.Cancel)
                 if res == QMessageBox.Cancel:

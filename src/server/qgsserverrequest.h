@@ -113,15 +113,15 @@ class SERVER_EXPORT QgsServerRequest
 
     /**
      * Return the header value
-     * @param name of the header
+     * \param name of the header
      * @return the header value or an empty string
      */
     QString header( const QString &name ) const;
 
     /**
      * Set an header
-     * @param name
-     * @param value
+     * \param name
+     * \param value
      */
     void setHeader( const QString &name, const QString &value );
 
@@ -133,7 +133,7 @@ class SERVER_EXPORT QgsServerRequest
 
     /**
     * Remove an header
-    * @param name
+    * \param name
     */
     void removeHeader( const QString &name );
 

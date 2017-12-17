@@ -18,11 +18,12 @@
 class QgsNetworkStrategy
 {
 %Docstring
+
 .. versionadded:: 3.0
  QgsNetworkStrategy defines strategy used for calculation of the edge cost. For example it can
- take into account travel distance, amount of time or money. Currently there are two strategies
- implemented in the analysis library: QgsNetworkDistanceStrategy and QgsNetworkSpeedStrategy.
- QgsNetworkStrategy implemented using "strategy" design pattern.
+take into account travel distance, amount of time or money. Currently there are two strategies
+implemented in the analysis library: QgsNetworkDistanceStrategy and QgsNetworkSpeedStrategy.
+QgsNetworkStrategy implemented using "strategy" design pattern.
 %End
 
 %TypeHeaderCode
@@ -40,23 +41,20 @@ class QgsNetworkStrategy
 
     QgsNetworkStrategy();
 %Docstring
- Default constructor
+Default constructor
 %End
 
     virtual ~QgsNetworkStrategy();
 
-    virtual QgsAttributeList requiredAttributes() const;
+    virtual QSet< int > requiredAttributes() const;
 %Docstring
- Returns list of the source layer attributes needed for cost calculation.
- This method called by QgsGraphDirector.
- :return: list of required attributes
- :rtype: QgsAttributeList
+Returns a list of the source layer attributes needed for cost calculation.
+This is method called by QgsGraphDirector.
 %End
 
     virtual QVariant cost( double distance, const QgsFeature &f ) const = 0;
 %Docstring
- Returns edge cost
- :rtype: QVariant
+Returns edge cost
 %End
 };
 

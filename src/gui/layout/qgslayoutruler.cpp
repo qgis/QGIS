@@ -338,7 +338,8 @@ void QgsLayoutRuler::drawGuideAtPos( QPainter *painter, QPoint pos )
 
 void QgsLayoutRuler::createTemporaryGuideItem()
 {
-  mGuideItem.reset( new QGraphicsLineItem() );
+  delete mGuideItem;
+  mGuideItem = new QGraphicsLineItem();
 
   mGuideItem->setZValue( QgsLayout::ZGuide );
   QPen linePen( Qt::DotLine );
@@ -346,7 +347,7 @@ void QgsLayoutRuler::createTemporaryGuideItem()
   linePen.setWidthF( 0 );
   mGuideItem->setPen( linePen );
 
-  mView->currentLayout()->addItem( mGuideItem.get() );
+  mView->currentLayout()->addItem( mGuideItem );
 }
 
 QPointF QgsLayoutRuler::convertLocalPointToLayout( QPoint localPoint ) const
@@ -735,7 +736,8 @@ void QgsLayoutRuler::mouseReleaseEvent( QMouseEvent *event )
     {
       mCreatingGuide = false;
       QApplication::restoreOverrideCursor();
-      mGuideItem.reset();
+      delete mGuideItem;
+      mGuideItem = nullptr;
 
       // check that cursor left the ruler
       switch ( mOrientation )

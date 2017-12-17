@@ -154,9 +154,9 @@ class DlgSqlLayerWindow(QWidget, Ui_Dialog):
         if not sql.startswith('(') and not sql.endswith(')'):
             schema = uri.schema()
             if schema and schema.upper() != 'PUBLIC':
-                sql = 'SELECT * FROM ' + schema + '.' + sql
-            else
-                sql = 'SELECT * FROM ' + sql
+                sql = 'SELECT * FROM {0}.{1}'.format(self.db.connector.quoteId(schema), self.db.connector.quoteId(sql))
+            else:
+                sql = 'SELECT * FROM {0}'.format(self.db.connector.quoteId(sql))
         self.editSql.setText(sql)
         self.executeSql()
 

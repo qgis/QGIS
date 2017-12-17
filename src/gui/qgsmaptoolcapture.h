@@ -26,6 +26,7 @@
 #include "qgis_gui.h"
 
 class QgsRubberBand;
+class QgsSnapIndicator;
 class QgsVertexMarker;
 class QgsMapLayer;
 class QgsGeometryValidator;
@@ -52,10 +53,10 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     //! constructor
     QgsMapToolCapture( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget, CaptureMode mode );
 
-    virtual ~QgsMapToolCapture();
+    ~QgsMapToolCapture() override;
 
-    virtual void activate() override;
-    virtual void deactivate() override;
+    void activate() override;
+    void deactivate() override;
 
     /**
      * The capture mode
@@ -66,6 +67,13 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
 
     //! Adds a whole curve (e.g. circularstring) to the captured geometry. Curve must be in map CRS
     int addCurve( QgsCurve *c );
+
+    /**
+     * Clear capture curve.
+     *
+     * \since QGIS 3.0
+     */
+    void clearCurve( );
 
     /**
      * Get the capture curve
@@ -81,13 +89,13 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      */
     QList<QgsPointLocator::Match> snappingMatches() const;
 
-    virtual void cadCanvasMoveEvent( QgsMapMouseEvent *e ) override;
+    void cadCanvasMoveEvent( QgsMapMouseEvent *e ) override;
 
     /**
      * Intercept key events like Esc or Del to delete the last point
      * \param e key event
      */
-    virtual void keyPressEvent( QKeyEvent *e ) override;
+    void keyPressEvent( QKeyEvent *e ) override;
 
 #ifdef Q_OS_WIN
     virtual bool eventFilter( QObject *obj, QEvent *e ) override;
@@ -97,6 +105,9 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      * Clean a temporary rubberband
      */
     void deleteTempRubberBand();
+
+    //! convenient method to clean members
+    void clean() override;
 
   private slots:
     void validationFinished();
@@ -181,14 +192,14 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      * List of digitized points
      * \returns List of points
      */
-    QList<QgsPointXY> points();
+    QVector<QgsPointXY> points() const;
 
     /**
      * Set the points on which to work
      *
      * \param pointList A list of points
      */
-    void setPoints( const QList<QgsPointXY> &pointList );
+    void setPoints( const QVector<QgsPointXY> &pointList );
 
     /**
      * Close an open polygon
@@ -238,7 +249,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
 
     bool mCaptureModeFromLayer;
 
-    QgsVertexMarker *mSnappingMarker = nullptr;
+    std::unique_ptr<QgsSnapIndicator> mSnapIndicator;
 
     /**
      * Keeps point (in map units) snapped to a segment where we most recently finished tracing,
@@ -247,6 +258,8 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      * again after every time a new trace with offset is created (to get new "anchor" point)
      */
     QgsPointXY mTracingStartPoint;
+
+    friend class TestQgsMapToolReshape;
 
 #ifdef Q_OS_WIN
     int mSkipNextContextMenuEvent;

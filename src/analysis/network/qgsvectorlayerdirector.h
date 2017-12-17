@@ -68,8 +68,6 @@ class ANALYSIS_EXPORT QgsVectorLayerDirector : public QgsGraphDirector
                             const Direction defaultDirection
                           );
 
-    virtual ~QgsVectorLayerDirector() = default;
-
     /*
      * MANDATORY DIRECTOR PROPERTY DECLARATION
      */
@@ -82,11 +80,14 @@ class ANALYSIS_EXPORT QgsVectorLayerDirector : public QgsGraphDirector
 
   private:
     QgsFeatureSource *mSource = nullptr;
-    int mDirectionFieldId;
+    int mDirectionFieldId = -1;
     QString mDirectDirectionValue;
     QString mReverseDirectionValue;
     QString mBothDirectionValue;
-    Direction mDefaultDirection;
+    Direction mDefaultDirection = DirectionBoth;
+
+    QgsAttributeList requiredAttributes() const;
+    Direction directionForFeature( const QgsFeature &feature ) const;
 };
 
 #endif // QGSVECTORLAYERDIRECTOR_H

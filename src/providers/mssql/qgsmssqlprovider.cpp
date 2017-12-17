@@ -363,8 +363,15 @@ void QgsMssqlProvider::loadMetadata()
   }
 }
 
+void QgsMssqlProvider::setLastError( const QString &error )
+{
+  appendError( error );
+  mLastError = error;
+}
+
 void QgsMssqlProvider::loadFields()
 {
+  bool isIdentity = false;
   mAttributeFields.clear();
   mDefaultValues.clear();
   mComputedColumns.clear();
@@ -410,14 +417,19 @@ void QgsMssqlProvider::loadFields()
       {
         QVariant::Type sqlType = DecodeSqlType( sqlTypeName );
         if ( sqlTypeName == QLatin1String( "int identity" ) || sqlTypeName == QLatin1String( "bigint identity" ) )
+        {
           mFidColName = query.value( 3 ).toString();
+          isIdentity = true;
+        }
         else if ( sqlTypeName == QLatin1String( "int" ) || sqlTypeName == QLatin1String( "bigint" ) )
         {
           pkCandidates << query.value( 3 ).toString();
         }
         if ( sqlType == QVariant::String )
         {
-          int length = query.value( 7 ).toInt();
+          // Field length in chars is column 7 ("Length") of the sp_columns output,
+          // except for uniqueidentifiers which must use column 6 ("Precision").
+          int length = query.value( sqlTypeName.startsWith( QLatin1String( "uniqueidentifier" ), Qt::CaseInsensitive ) ? 6 : 7 ).toInt();
           if ( sqlTypeName.startsWith( QLatin1String( "n" ) ) )
           {
             length = length / 2;
@@ -497,7 +509,7 @@ void QgsMssqlProvider::loadFields()
       setLastError( error );
     }
 
-    if ( !mFidColName.isEmpty() )
+    if ( !mFidColName.isEmpty() && !isIdentity )
     {
       mFidColIdx = mAttributeFields.indexFromName( mFidColName );
       if ( mFidColIdx >= 0 )
@@ -992,7 +1004,7 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList &flist, Flags flags )
       QgsGeometry geom = it->geometry();
       if ( mUseWkb )
       {
-        QByteArray bytea = geom.exportToWkb();
+        QByteArray bytea = geom.asWkb();
         query.addBindValue( bytea, QSql::In | QSql::Binary );
       }
       else
@@ -1002,7 +1014,7 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList &flist, Flags flags )
         {
           // Z and M on the end of a WKT string isn't valid for
           // SQL Server so we have to remove it first.
-          wkt = geom.exportToWkt();
+          wkt = geom.asWkt();
           wkt.replace( QRegExp( "[mzMZ]+\\s*\\(" ), QStringLiteral( "(" ) );
         }
         query.addBindValue( wkt );
@@ -1331,12 +1343,12 @@ bool QgsMssqlProvider::changeGeometryValues( const QgsGeometryMap &geometry_map 
     // add geometry param
     if ( mUseWkb )
     {
-      QByteArray bytea = it->exportToWkb();
+      QByteArray bytea = it->asWkb();
       query.addBindValue( bytea, QSql::In | QSql::Binary );
     }
     else
     {
-      QString wkt = it->exportToWkt();
+      QString wkt = it->asWkt();
       // Z and M on the end of a WKT string isn't valid for
       // SQL Server so we have to remove it first.
       wkt.replace( QRegExp( "[mzMZ]+\\s*\\(" ), QStringLiteral( "(" ) );
@@ -2314,11 +2326,11 @@ class QgsMssqlSourceSelectProvider : public QgsSourceSelectProvider
 {
   public:
 
-    virtual QString providerKey() const override { return QStringLiteral( "mssql" ); }
-    virtual QString text() const override { return QObject::tr( "MSSQL" ); }
-    virtual int ordering() const override { return QgsSourceSelectProvider::OrderDatabaseProvider + 30; }
-    virtual QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddMssqlLayer.svg" ) ); }
-    virtual QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
+    QString providerKey() const override { return QStringLiteral( "mssql" ); }
+    QString text() const override { return QObject::tr( "MSSQL" ); }
+    int ordering() const override { return QgsSourceSelectProvider::OrderDatabaseProvider + 30; }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddMssqlLayer.svg" ) ); }
+    QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
     {
       return new QgsMssqlSourceSelect( parent, fl, widgetMode );
     }

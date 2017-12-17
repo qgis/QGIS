@@ -73,7 +73,7 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
      */
     explicit QgsLayerTreeModel( QgsLayerTree *rootNode, QObject *parent SIP_TRANSFERTHIS = nullptr );
 
-    ~QgsLayerTreeModel();
+    ~QgsLayerTreeModel() override;
 
     // Implementation of virtual functions from QAbstractItemModel
 
@@ -96,7 +96,6 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
     {
       // display flags
       ShowLegend                 = 0x0001,  //!< Add legend nodes for layer nodes
-      ShowRasterPreviewIcon      = 0x0002,  //!< Will use real preview of raster layer as icon (may be slow)
       ShowLegendAsTree           = 0x0004,  //!< For legends that support it, will show them in a tree instead of a list (needs also ShowLegend). Added in 2.8
       DeferredLegendInvalidation = 0x0008,  //!< Defer legend model invalidation
       UseEmbeddedWidgets         = 0x0010,  //!< Layer nodes may optionally include extra embedded widgets (if used in QgsLayerTreeView). Added in 2.16

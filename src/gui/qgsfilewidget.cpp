@@ -56,7 +56,7 @@ QgsFileWidget::QgsFileWidget( QWidget *parent )
   mLayout->addWidget( mLineEdit );
 
   mFileWidgetButton = new QToolButton( this );
-  mFileWidgetButton->setText( QStringLiteral( "…" ) );
+  mFileWidgetButton->setText( QChar( 0x2026 ) );
   connect( mFileWidgetButton, &QAbstractButton::clicked, this, &QgsFileWidget::openFileDialog );
   mLayout->addWidget( mFileWidgetButton );
 
@@ -210,7 +210,7 @@ void QgsFileWidget::setRelativeStorage( QgsFileWidget::RelativeStorage relativeS
   mRelativeStorage = relativeStorage;
 }
 
-QLineEdit *QgsFileWidget::lineEdit()
+QgsFilterLineEdit *QgsFileWidget::lineEdit()
 {
   return mLineEdit;
 }
@@ -262,6 +262,17 @@ void QgsFileWidget::openFileDialog()
       title = !mDialogTitle.isEmpty() ? mDialogTitle : tr( "Select a directory" );
       fileName = QFileDialog::getExistingDirectory( this, title, QFileInfo( oldPath ).absoluteFilePath(),  QFileDialog::ShowDirsOnly );
       break;
+    case SaveFile:
+      title = !mDialogTitle.isEmpty() ? mDialogTitle : tr( "Create or select a file" );
+      if ( !confirmOverwrite() )
+      {
+        fileName = QFileDialog::getSaveFileName( this, title, QFileInfo( oldPath ).absoluteFilePath(), mFilter, nullptr, QFileDialog::DontConfirmOverwrite );
+      }
+      else
+      {
+        fileName = QFileDialog::getSaveFileName( this, title, QFileInfo( oldPath ).absoluteFilePath(), mFilter );
+      }
+      break;
   }
 
   if ( fileName.isEmpty() && fileNames.isEmpty( ) )
@@ -283,6 +294,7 @@ void QgsFileWidget::openFileDialog()
   switch ( mStorageMode )
   {
     case GetFile:
+    case SaveFile:
       settings.setValue( QStringLiteral( "UI/lastFileNameWidgetDir" ), QFileInfo( fileName ).absolutePath() );
       break;
     case GetDirectory:

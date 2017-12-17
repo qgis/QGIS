@@ -12,9 +12,11 @@
 class QgsCodeEditorSQL : QgsCodeEditor
 {
 %Docstring
- A SQL editor based on QScintilla2. Adds syntax highlighting and
- code autocompletion.
+A SQL editor based on QScintilla2. Adds syntax highlighting and
+code autocompletion.
+
 .. versionadded:: 2.6
+
 .. note::
 
    may not be available in Python bindings, depending on platform support
@@ -25,6 +27,9 @@ class QgsCodeEditorSQL : QgsCodeEditor
 %End
   public:
     QgsCodeEditorSQL( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsCodeEditorSQL
+%End
 
 };
 

@@ -11,9 +11,10 @@
 class QgsNetworkDistanceStrategy : QgsNetworkStrategy
 {
 %Docstring
+
 .. versionadded:: 3.0
  Strategy for caclulating edge cost based on its length. Should be
- used for finding shortest path between two points.
+used for finding shortest path between two points.
 %End
 
 %TypeHeaderCode
@@ -21,6 +22,7 @@ class QgsNetworkDistanceStrategy : QgsNetworkStrategy
 %End
   public:
     virtual QVariant cost( double distance, const QgsFeature & ) const;
+
 };
 
 /************************************************************************

@@ -14,7 +14,8 @@
 class QgsRelationReferenceSearchWidgetWrapper : QgsSearchWidgetWrapper
 {
 %Docstring
- Wraps a relation reference search widget.
+Wraps a relation reference search widget.
+
 .. versionadded:: 2.16
 %End
 
@@ -25,22 +26,22 @@ class QgsRelationReferenceSearchWidgetWrapper : QgsSearchWidgetWrapper
 
     explicit QgsRelationReferenceSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QgsMapCanvas *canvas, QWidget *parent = 0 );
 %Docstring
- Constructor for QgsRelationReferenceSearchWidgetWrapper
- \param vl associated vector layer
- \param fieldIdx associated field index
- \param canvas optional map canvas
- \param parent parent widget
+Constructor for QgsRelationReferenceSearchWidgetWrapper
+
+:param vl: associated vector layer
+:param fieldIdx: associated field index
+:param canvas: optional map canvas
+:param parent: parent widget
 %End
 
     QVariant value() const;
 %Docstring
- Returns a variant representing the current state of the widget.
- :rtype: QVariant
+Returns a variant representing the current state of the widget.
 %End
 
     virtual bool applyDirectly();
 
-    virtual QString expression();
+    virtual QString expression() const;
 
     virtual bool valid() const;
 
@@ -50,10 +51,13 @@ class QgsRelationReferenceSearchWidgetWrapper : QgsSearchWidgetWrapper
 
     virtual QString createExpression( QgsSearchWidgetWrapper::FilterFlags flags ) const;
 
+
   public slots:
 
     virtual void clearWidget();
+
     virtual void setEnabled( bool enabled );
+
 
   protected:
     virtual QWidget *createWidget( QWidget *parent );
@@ -69,7 +73,7 @@ Called when current value of search widget changes
 %End
 
   protected slots:
-    virtual void setExpression( QString exp );
+    virtual void setExpression( const QString &exp );
 
 
 };

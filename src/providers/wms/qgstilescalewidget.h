@@ -38,8 +38,8 @@ class QgsTileScaleWidget : public QWidget, private Ui::QgsTileScaleWidget
     void scaleEnabled( bool );
 
   private:
-    QgsTileScaleWidget( QgsMapCanvas *mapCanvas, QWidget *parent = nullptr, Qt::WindowFlags f = 0 );
-    ~QgsTileScaleWidget() = default;
+    QgsTileScaleWidget( QgsMapCanvas *mapCanvas, QWidget *parent = nullptr, Qt::WindowFlags f = nullptr );
+    ~QgsTileScaleWidget() override = default;
 
     QgsMapCanvas *mMapCanvas = nullptr;
     QList<double> mResolutions;

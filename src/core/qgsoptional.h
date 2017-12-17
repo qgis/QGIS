@@ -40,9 +40,7 @@ class CORE_EXPORT QgsOptional
     /**
      * A QgsOptional is disabled by default if default constructed.
      */
-    QgsOptional()
-    {
-    }
+    QgsOptional() = default;
 
     /**
      * A QgsOptional is enabled by default if constructed with payload.

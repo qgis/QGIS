@@ -57,10 +57,10 @@ class GUI_EXPORT QgsDataSourceManagerDialog : public QgsOptionsDialogBase, priva
       * \param fl window flags
       */
     explicit QgsDataSourceManagerDialog( QgsBrowserModel *browserModel, QWidget *parent = nullptr, QgsMapCanvas *canvas = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
-    ~QgsDataSourceManagerDialog();
+    ~QgsDataSourceManagerDialog() override;
 
     /**
-     * @brief openPage open a given page in the dialog
+     * Open a given page in the dialog
      * \param pageName the page name, usually the provider name or "browser" (for the browser panel)
      *        or "ogr" (vector layers) or "raster" (raster layers)
      */
@@ -86,7 +86,7 @@ class GUI_EXPORT QgsDataSourceManagerDialog : public QgsOptionsDialogBase, priva
     void refresh();
 
   protected:
-    virtual void showEvent( QShowEvent *event ) override;
+    void showEvent( QShowEvent *event ) override;
 
   signals:
     //! Emitted when a raster layer was selected for addition: for signal forwarding to QgisApp

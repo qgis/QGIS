@@ -283,12 +283,12 @@ class TestQgsAtlasComposition(unittest.TestCase):
         f1.initAttributes(2)
         f1.setAttribute(0, 1)
         f1.setAttribute(1, "Test label 1")
-        f1.setGeometry(QgsGeometry.fromPoint(QgsPointXY(-0.638, 48.954)))
+        f1.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(-0.638, 48.954)))
         f2 = QgsFeature(2)
         f2.initAttributes(2)
         f2.setAttribute(0, 2)
         f2.setAttribute(1, "Test label 2")
-        f2.setGeometry(QgsGeometry.fromPoint(QgsPointXY(-1.682, 48.550)))
+        f2.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(-1.682, 48.550)))
         pr.addFeatures([f1, f2])
 
         # categorized symbology
@@ -336,7 +336,7 @@ class TestQgsAtlasComposition(unittest.TestCase):
         polygonLayer = QgsVectorLayer('Polygon', 'test_polygon', 'memory')
         poly = QgsFeature(polygonLayer.pendingFields())
         points = [(10, 15), (15, 10), (45, 40), (40, 45)]
-        poly.setGeometry(QgsGeometry.fromPolygon([[QgsPointXY(x[0], x[1]) for x in points]]))
+        poly.setGeometry(QgsGeometry.fromPolygonXY([[QgsPointXY(x[0], x[1]) for x in points]]))
         polygonLayer.dataProvider().addFeatures([poly])
         QgsProject.instance().addMapLayer(polygonLayer)
 

@@ -59,9 +59,9 @@ class GUI_EXPORT QgsHistogramWidget : public QWidget, private Ui::QgsHistogramWi
      * \param layer source vector layer
      * \param fieldOrExp field name or expression string
      */
-    QgsHistogramWidget( QWidget *parent SIP_TRANSFERTHIS = 0, QgsVectorLayer *layer = nullptr, const QString &fieldOrExp = QString() );
+    QgsHistogramWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr, QgsVectorLayer *layer = nullptr, const QString &fieldOrExp = QString() );
 
-    ~QgsHistogramWidget();
+    ~QgsHistogramWidget() override;
 
     /**
      * Returns the layer currently associated with the widget.

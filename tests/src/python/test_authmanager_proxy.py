@@ -18,7 +18,7 @@ from shutil import rmtree
 import tempfile
 import random
 
-from qgis.core import QgsAuthManager, QgsAuthMethodConfig, QgsNetworkAccessManager, QgsSettings
+from qgis.core import QgsAuthManager, QgsAuthMethodConfig, QgsNetworkAccessManager, QgsSettings, QgsApplication
 from qgis.testing import start_app, unittest
 
 __author__ = 'Alessandro Pasotti'
@@ -43,7 +43,7 @@ class TestAuthManager(unittest.TestCase):
         Creates an auth configuration"""
         # Enable auth
         # os.environ['QGIS_AUTH_PASSWORD_FILE'] = QGIS_AUTH_PASSWORD_FILE
-        authm = QgsAuthManager.instance()
+        authm = QgsApplication.authManager()
         assert (authm.setMasterPassword('masterpassword', True))
         cls.auth_config = QgsAuthMethodConfig('Basic')
         cls.auth_config.setName('test_auth_config')
@@ -70,7 +70,7 @@ class TestAuthManager(unittest.TestCase):
         """
         Test that proxy is updated
         """
-        authm = QgsAuthManager.instance()
+        authm = QgsApplication.authManager()
         nam = QgsNetworkAccessManager.instance()
         proxy = nam.proxy()
         self.assertEqual(proxy.password(), '')

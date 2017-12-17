@@ -20,13 +20,14 @@ class QgsComposerEffect : QGraphicsEffect
 
     QgsComposerEffect();
 %Docstring
- Constructor for QgsComposerEffect.
+Constructor for QgsComposerEffect.
 %End
 
     void setCompositionMode( QPainter::CompositionMode compositionMode );
 
   protected:
     virtual void draw( QPainter *painter );
+
 %Docstring
 Called whenever source needs to be drawn
 %End

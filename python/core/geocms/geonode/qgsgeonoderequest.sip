@@ -44,8 +44,8 @@ class QgsGeoNodeRequest : QObject
 %Docstring
  Request handler for GeoNode servers.
 
- QgsGeoNodeRequest handles requesting and parsing service details from a GeoNode
- server instance, for instance requesting all available layers or layer styles.
+QgsGeoNodeRequest handles requesting and parsing service details from a GeoNode
+server instance, for instance requesting all available layers or layer styles.
 
 .. versionadded:: 3.0
 %End
@@ -89,160 +89,153 @@ XYZ tileserver URL for layer
 
     QgsGeoNodeRequest( const QString &baseUrl, bool forceRefresh, QObject *parent = 0 );
 %Docstring
- Constructor for QgsGeoNodeRequest.
+Constructor for QgsGeoNodeRequest.
 
- If ``forceRefresh`` is false, then cached copies of the request may be reused.
+If ``forceRefresh`` is false, then cached copies of the request may be reused.
 %End
 
-    virtual ~QgsGeoNodeRequest();
+    ~QgsGeoNodeRequest();
 
     void request( const QString &endPoint );
 %Docstring
- Triggers a new request to the GeoNode server, with the requested ``endPoint``.
- Any existing request will be aborted.
+Triggers a new request to the GeoNode server, with the requested ``endPoint``.
+Any existing request will be aborted.
 
- Calling this method does not block while waiting for a result.
+Calling this method does not block while waiting for a result.
 
- \warning When using the non-blocking methods in this class, sending
- overlapping requests results in undefined behavior. Use separate instances
- of QgsGeoNodeRequest instead to avoid this.
+\warning When using the non-blocking methods in this class, sending
+overlapping requests results in undefined behavior. Use separate instances
+of QgsGeoNodeRequest instead to avoid this.
 
-.. seealso:: requestBlocking()
+.. seealso:: :py:func:`requestBlocking()`
 %End
 
     bool requestBlocking( const QString &endPoint );
 %Docstring
- Triggers a new request to the GeoNode server, with the requested ``endPoint``.
- Any existing request will be aborted.
+Triggers a new request to the GeoNode server, with the requested ``endPoint``.
+Any existing request will be aborted.
 
- Calling this method will block while waiting for a result. It should not be
- used from any code which potentially blocks operation in the main GUI thread.
+Calling this method will block while waiting for a result. It should not be
+used from any code which potentially blocks operation in the main GUI thread.
 
-.. seealso:: request()
- :rtype: bool
+.. seealso:: :py:func:`request()`
 %End
 
     void fetchLayers();
 %Docstring
- Triggers a new request to fetch the list of available layers from the
- server. When complete, the layersFetched() signal will be emitted
- with the result.
+Triggers a new request to fetch the list of available layers from the
+server. When complete, the layersFetched() signal will be emitted
+with the result.
 
- This method is non-blocking and returns immediately.
+This method is non-blocking and returns immediately.
 
- \warning When using the non-blocking methods in this class, sending
- overlapping requests results in undefined behavior. Use separate instances
- of QgsGeoNodeRequest instead to avoid this.
+\warning When using the non-blocking methods in this class, sending
+overlapping requests results in undefined behavior. Use separate instances
+of QgsGeoNodeRequest instead to avoid this.
 
-.. seealso:: layersFetched()
-.. seealso:: fetchLayersBlocking()
+.. seealso:: :py:func:`layersFetched()`
+
+.. seealso:: :py:func:`fetchLayersBlocking()`
 %End
 
     QList<QgsGeoNodeRequest::ServiceLayerDetail> fetchLayersBlocking();
 %Docstring
- Requests the list of available layers from the server.
+Requests the list of available layers from the server.
 
- This method is blocking and will wait for results from the server before returning.
- Accordingly it should not be used from any code which potentially blocks operation in the main GUI thread.
+This method is blocking and will wait for results from the server before returning.
+Accordingly it should not be used from any code which potentially blocks operation in the main GUI thread.
 
-.. seealso:: fetchLayers()
- :rtype: list of QgsGeoNodeRequest.ServiceLayerDetail
+.. seealso:: :py:func:`fetchLayers()`
 %End
 
     QList<QgsGeoNodeStyle> fetchStylesBlocking( const QString &layerName );
 %Docstring
- Requests the list of available styles for the layer
- with matching ``layerName`` from the server.
+Requests the list of available styles for the layer
+with matching ``layerName`` from the server.
 
- This method is blocking and will wait for results from the server before returning.
- Accordingly it should not be used from any code which potentially blocks operation in the main GUI thread.
- :rtype: list of QgsGeoNodeStyle
+This method is blocking and will wait for results from the server before returning.
+Accordingly it should not be used from any code which potentially blocks operation in the main GUI thread.
 %End
 
     QgsGeoNodeStyle fetchDefaultStyleBlocking( const QString &layerName );
 %Docstring
- Requests the default style for the layer with matching ``layerName`` from the server.
+Requests the default style for the layer with matching ``layerName`` from the server.
 
- This method is blocking and will wait for results from the server before returning.
- Accordingly it should not be used from any code which potentially blocks operation in the main GUI thread.
- :rtype: QgsGeoNodeStyle
+This method is blocking and will wait for results from the server before returning.
+Accordingly it should not be used from any code which potentially blocks operation in the main GUI thread.
 %End
 
     QgsGeoNodeStyle fetchStyleBlocking( const QString &styleId );
 %Docstring
- Requests the details for the style with matching ``styleId`` from the server.
+Requests the details for the style with matching ``styleId`` from the server.
 
- This method is blocking and will wait for results from the server before returning.
- Accordingly it should not be used from any code which potentially blocks operation in the main GUI thread.
- :rtype: QgsGeoNodeStyle
+This method is blocking and will wait for results from the server before returning.
+Accordingly it should not be used from any code which potentially blocks operation in the main GUI thread.
 %End
 
     QStringList fetchServiceUrlsBlocking( const QString &serviceType );
 %Docstring
- Requests the list of unique URLs for available services with matching ``serviceType`` from the server.
+Requests the list of unique URLs for available services with matching ``serviceType`` from the server.
 
- This method is blocking and will wait for results from the server before returning.
- Accordingly it should not be used from any code which potentially blocks operation in the main GUI thread.
- :rtype: list of str
+This method is blocking and will wait for results from the server before returning.
+Accordingly it should not be used from any code which potentially blocks operation in the main GUI thread.
 %End
 
     QgsStringMap fetchServiceUrlDataBlocking( const QString &serviceType );
 %Docstring
- Obtains a map of layer name to URL for available services with matching ``serviceType`` from the server.
+Obtains a map of layer name to URL for available services with matching ``serviceType`` from the server.
 
- This method is blocking and will wait for results from the server before returning.
- Accordingly it should not be used from any code which potentially blocks operation in the main GUI thread.
- :rtype: QgsStringMap
+This method is blocking and will wait for results from the server before returning.
+Accordingly it should not be used from any code which potentially blocks operation in the main GUI thread.
 %End
 
     QString lastError() const;
 %Docstring
- Returns the most recent error string for any encountered errors, or an empty string if
- no errors have been encountered.
- :rtype: str
+Returns the most recent error string for any encountered errors, or an empty string if
+no errors have been encountered.
 %End
 
     QByteArray lastResponse() const;
 %Docstring
- Returns the most recent response obtained from the server.
- :rtype: QByteArray
+Returns the most recent response obtained from the server.
 %End
 
     QString protocol() const;
 %Docstring
- Returns the network protocol (e.g. 'http') used for connecting with the server.
-.. seealso:: setProtocol()
- :rtype: str
+Returns the network protocol (e.g. 'http') used for connecting with the server.
+
+.. seealso:: :py:func:`setProtocol()`
 %End
 
     void setProtocol( const QString &protocol );
 %Docstring
- Sets the network ``protocol`` (e.g. 'http') used for connecting with the server.
-.. seealso:: protocol()
+Sets the network ``protocol`` (e.g. 'http') used for connecting with the server.
+
+.. seealso:: :py:func:`protocol()`
 %End
 
   public slots:
 
     void abort();
 %Docstring
- Aborts any active network request immediately.
+Aborts any active network request immediately.
 %End
 
   signals:
 
     void statusChanged( const QString &statusQString );
 %Docstring
- Emitted when the status of an ongoing request is changed.
+Emitted when the status of an ongoing request is changed.
 %End
 
     void requestFinished();
 %Docstring
- Emitted when the existing request has been completed.
+Emitted when the existing request has been completed.
 %End
 
     void layersFetched( const QList<QgsGeoNodeRequest::ServiceLayerDetail> &layers );
 %Docstring
- Emitted when the result of a fetchLayers call has been received and processed.
+Emitted when the result of a fetchLayers call has been received and processed.
 %End
 
 };

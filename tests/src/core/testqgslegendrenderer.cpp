@@ -125,9 +125,9 @@ class TestQgsLegendRenderer : public QObject
 
   private:
     QgsLayerTree *mRoot = nullptr;
-    QgsVectorLayer *mVL1 =  0 ; // line
-    QgsVectorLayer *mVL2 =  0 ; // polygon
-    QgsVectorLayer *mVL3 =  0 ; // point
+    QgsVectorLayer *mVL1 =  nullptr ; // line
+    QgsVectorLayer *mVL2 =  nullptr ; // polygon
+    QgsVectorLayer *mVL3 =  nullptr ; // point
     QgsRasterLayer *mRL = nullptr;
     QString mReport;
     bool _testLegendColumns( int itemCount, int columnCount, const QString &testName );
@@ -185,15 +185,15 @@ void TestQgsLegendRenderer::init()
     QList<QgsFeature> features;
     QgsFeature f1( fields, 1 );
     f1.setAttribute( 0, 1 );
-    QgsGeometry f1G = QgsGeometry::fromPoint( QgsPointXY( 1.0, 1.0 ) );
+    QgsGeometry f1G = QgsGeometry::fromPointXY( QgsPointXY( 1.0, 1.0 ) );
     f1.setGeometry( f1G );
     QgsFeature f2( fields, 2 );
     f2.setAttribute( 0, 2 );
-    QgsGeometry f2G = QgsGeometry::fromPoint( QgsPointXY( 9.0, 1.0 ) );
+    QgsGeometry f2G = QgsGeometry::fromPointXY( QgsPointXY( 9.0, 1.0 ) );
     f2.setGeometry( f2G );
     QgsFeature f3( fields, 3 );
     f3.setAttribute( 0, 3 );
-    QgsGeometry f3G = QgsGeometry::fromPoint( QgsPointXY( 5.0, 5.0 ) ) ;
+    QgsGeometry f3G = QgsGeometry::fromPointXY( QgsPointXY( 5.0, 5.0 ) ) ;
     f3.setGeometry( f3G );
     features << f1 << f2 << f3;
     pr->addFeatures( features );
@@ -230,7 +230,7 @@ void TestQgsLegendRenderer::init()
 void TestQgsLegendRenderer::cleanup()
 {
   delete mRoot;
-  mRoot = 0;
+  mRoot = nullptr;
 
   QgsProject::instance()->removeAllMapLayers();
 }
@@ -445,15 +445,15 @@ void TestQgsLegendRenderer::testFilterByMapSameSymbol()
     QList<QgsFeature> features;
     QgsFeature f1( fields, 1 );
     f1.setAttribute( 0, 1 );
-    QgsGeometry f1G = QgsGeometry::fromPoint( QgsPointXY( 1.0, 1.0 ) );
+    QgsGeometry f1G = QgsGeometry::fromPointXY( QgsPointXY( 1.0, 1.0 ) );
     f1.setGeometry( f1G );
     QgsFeature f2( fields, 2 );
     f2.setAttribute( 0, 2 );
-    QgsGeometry f2G =  QgsGeometry::fromPoint( QgsPointXY( 9.0, 1.0 ) );
+    QgsGeometry f2G =  QgsGeometry::fromPointXY( QgsPointXY( 9.0, 1.0 ) );
     f2.setGeometry( f2G );
     QgsFeature f3( fields, 3 );
     f3.setAttribute( 0, 3 );
-    QgsGeometry f3G = QgsGeometry::fromPoint( QgsPointXY( 5.0, 5.0 ) );
+    QgsGeometry f3G = QgsGeometry::fromPointXY( QgsPointXY( 5.0, 5.0 ) );
     f3.setGeometry( f3G );
     features << f1 << f2 << f3;
     pr->addFeatures( features );
@@ -632,7 +632,7 @@ void TestQgsLegendRenderer::testFilterByExpression()
   QVERIFY( _verifyImage( testName, mReport ) );
 
   // test again with setLegendFilter and only expressions
-  legendModel.setLegendFilterByMap( 0 );
+  legendModel.setLegendFilterByMap( nullptr );
   legendModel.setLegendFilter( &mapSettings, /*useExtent*/ false );
 
   QString testName2 = testName + "2";
@@ -736,7 +736,7 @@ void TestQgsLegendRenderer::testDataDefinedSizeCollapsed()
     QgsFields fields;
     fields.append( attrs.back() );
 
-    QgsGeometry g = QgsGeometry::fromPoint( QgsPointXY( 1.0, 1.0 ) );
+    QgsGeometry g = QgsGeometry::fromPointXY( QgsPointXY( 1.0, 1.0 ) );
 
     QList<QgsFeature> features;
     QgsFeature f1( fields, 1 );

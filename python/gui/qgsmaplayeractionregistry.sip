@@ -13,7 +13,7 @@
 class QgsMapLayerAction : QAction
 {
 %Docstring
- An action which can run on map layers
+An action which can run on map layers
 %End
 
 %TypeHeaderCode
@@ -32,7 +32,8 @@ class QgsMapLayerAction : QAction
 
     QgsMapLayerAction( const QString &name, QObject *parent /TransferThis/, Targets targets = AllActions, const QIcon &icon = QIcon() );
 %Docstring
- Creates a map layer action which can run on any layer
+Creates a map layer action which can run on any layer
+
 .. note::
 
    using AllActions as a target probably does not make a lot of sense. This default action was settled for API compatibility reasons.
@@ -53,7 +54,6 @@ Creates a map layer action which can run on a specific type of layer
     bool canRunUsingLayer( QgsMapLayer *layer ) const;
 %Docstring
 True if action can run using the specified layer
- :rtype: bool
 %End
 
     void triggerForFeatures( QgsMapLayer *layer, const QList<QgsFeature> &featureList );
@@ -78,7 +78,6 @@ Define the targets of the action
     const Targets &targets() const;
 %Docstring
 Return availibity of action
- :rtype: Targets
 %End
 
   signals:
@@ -105,10 +104,10 @@ QFlags<QgsMapLayerAction::Target> operator|(QgsMapLayerAction::Target f1, QFlags
 class QgsMapLayerActionRegistry : QObject
 {
 %Docstring
- This class tracks map layer actions.
+This class tracks map layer actions.
 
- QgsMapLayerActionRegistry is not usually directly created, but rather accessed through
- QgsGui.mapLayerActionRegistry().
+QgsMapLayerActionRegistry is not usually directly created, but rather accessed through
+QgsGui.mapLayerActionRegistry().
 %End
 
 %TypeHeaderCode
@@ -118,10 +117,10 @@ class QgsMapLayerActionRegistry : QObject
 
     QgsMapLayerActionRegistry( QObject *parent = 0 );
 %Docstring
- Constructor for QgsMapLayerActionRegistry.
+Constructor for QgsMapLayerActionRegistry.
 
- QgsMapLayerActionRegistry is not usually directly created, but rather accessed through
- QgsGui.mapLayerActionRegistry().
+QgsMapLayerActionRegistry is not usually directly created, but rather accessed through
+QgsGui.mapLayerActionRegistry().
 %End
 
     void addMapLayerAction( QgsMapLayerAction *action );
@@ -132,13 +131,11 @@ Adds a map layer action to the registry
     QList<QgsMapLayerAction *> mapLayerActions( QgsMapLayer *layer, QgsMapLayerAction::Targets targets = QgsMapLayerAction::AllActions );
 %Docstring
 Returns the map layer actions which can run on the specified layer
- :rtype: list of QgsMapLayerAction
 %End
 
     bool removeMapLayerAction( QgsMapLayerAction *action );
 %Docstring
 Removes a map layer action from the registry
- :rtype: bool
 %End
 
     void setDefaultActionForLayer( QgsMapLayer *layer, QgsMapLayerAction *action );
@@ -148,7 +145,6 @@ Sets the default action for a layer
     QgsMapLayerAction *defaultActionForLayer( QgsMapLayer *layer );
 %Docstring
 Returns the default action for a layer
- :rtype: QgsMapLayerAction
 %End
 
   protected:

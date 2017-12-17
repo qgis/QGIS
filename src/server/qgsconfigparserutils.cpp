@@ -105,7 +105,9 @@ void QgsConfigParserUtils::appendLayerBoundingBoxes( QDomElement &layerElem, QDo
   QgsRectangle wgs84BoundingRect;
   if ( !layerExtent.isNull() )
   {
+    Q_NOWARN_DEPRECATED_PUSH
     QgsCoordinateTransform exGeoTransform( layerCRS, wgs84 );
+    Q_NOWARN_DEPRECATED_POP
     try
     {
       wgs84BoundingRect = exGeoTransform.transformBoundingBox( layerExtent );
@@ -213,7 +215,9 @@ void QgsConfigParserUtils::appendLayerBoundingBox( QDomElement &layerElem, QDomD
   QgsRectangle crsExtent;
   if ( !layerExtent.isNull() )
   {
+    Q_NOWARN_DEPRECATED_PUSH
     QgsCoordinateTransform crsTransform( layerCRS, crs );
+    Q_NOWARN_DEPRECATED_POP
     try
     {
       crsExtent = crsTransform.transformBoundingBox( layerExtent );

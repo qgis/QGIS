@@ -16,8 +16,10 @@
  ***************************************************************************/
 
 #include "qgsprocessingparameters.h"
+#include "qgsprocessingprovider.h"
 #include "qgsprocessingcontext.h"
 #include "qgsprocessingutils.h"
+#include "qgsprocessingalgorithm.h"
 #include "qgsvectorlayerfeatureiterator.h"
 #include "qgsprocessingoutputs.h"
 #include "qgssettings.h"
@@ -502,7 +504,7 @@ QgsRectangle QgsProcessingParameters::parameterAsExtent( const QgsProcessingPara
     QgsReferencedRectangle rr = val.value<QgsReferencedRectangle>();
     if ( crs.isValid() && rr.crs().isValid() && crs != rr.crs() )
     {
-      QgsCoordinateTransform ct( rr.crs(), crs );
+      QgsCoordinateTransform ct( rr.crs(), crs, context.project() );
       try
       {
         return ct.transformBoundingBox( rr );
@@ -542,7 +544,7 @@ QgsRectangle QgsProcessingParameters::parameterAsExtent( const QgsProcessingPara
       QgsCoordinateReferenceSystem rectCrs( match.captured( 5 ) );
       if ( crs.isValid() && rectCrs.isValid() && crs != rectCrs )
       {
-        QgsCoordinateTransform ct( rectCrs, crs );
+        QgsCoordinateTransform ct( rectCrs, crs, context.project() );
         try
         {
           return ct.transformBoundingBox( rect );
@@ -562,7 +564,7 @@ QgsRectangle QgsProcessingParameters::parameterAsExtent( const QgsProcessingPara
     QgsRectangle rect = layer->extent();
     if ( crs.isValid() && layer->crs().isValid() && crs != layer->crs() )
     {
-      QgsCoordinateTransform ct( layer->crs(), crs );
+      QgsCoordinateTransform ct( layer->crs(), crs, context.project() );
       try
       {
         return ct.transformBoundingBox( rect );
@@ -591,7 +593,7 @@ QgsGeometry QgsProcessingParameters::parameterAsExtentGeometry( const QgsProcess
     if ( crs.isValid() && rr.crs().isValid() && crs != rr.crs() )
     {
       g = g.densifyByCount( 20 );
-      QgsCoordinateTransform ct( rr.crs(), crs );
+      QgsCoordinateTransform ct( rr.crs(), crs, context.project() );
       try
       {
         g.transform( ct );
@@ -632,7 +634,7 @@ QgsGeometry QgsProcessingParameters::parameterAsExtentGeometry( const QgsProcess
         if ( crs.isValid() && rectCrs.isValid() && crs != rectCrs )
         {
           g = g.densifyByCount( 20 );
-          QgsCoordinateTransform ct( rectCrs, crs );
+          QgsCoordinateTransform ct( rectCrs, crs, context.project() );
           try
           {
             g.transform( ct );
@@ -655,7 +657,7 @@ QgsGeometry QgsProcessingParameters::parameterAsExtentGeometry( const QgsProcess
     if ( crs.isValid() && layer->crs().isValid() && crs != layer->crs() )
     {
       g = g.densifyByCount( 20 );
-      QgsCoordinateTransform ct( layer->crs(), crs );
+      QgsCoordinateTransform ct( layer->crs(), crs, context.project() );
       try
       {
         g.transform( ct );
@@ -722,7 +724,7 @@ QgsPointXY QgsProcessingParameters::parameterAsPoint( const QgsProcessingParamet
     QgsReferencedPointXY rp = val.value<QgsReferencedPointXY>();
     if ( crs.isValid() && rp.crs().isValid() && crs != rp.crs() )
     {
-      QgsCoordinateTransform ct( rp.crs(), crs );
+      QgsCoordinateTransform ct( rp.crs(), crs, context.project() );
       try
       {
         return ct.transform( rp );
@@ -760,7 +762,7 @@ QgsPointXY QgsProcessingParameters::parameterAsPoint( const QgsProcessingParamet
       QgsCoordinateReferenceSystem pointCrs( match.captured( 3 ) );
       if ( crs.isValid() && pointCrs.isValid() && crs != pointCrs )
       {
-        QgsCoordinateTransform ct( pointCrs, crs );
+        QgsCoordinateTransform ct( pointCrs, crs, context.project() );
         try
         {
           return ct.transform( pt );
@@ -1235,6 +1237,23 @@ bool QgsProcessingParameterDefinition::fromVariantMap( const QVariantMap &map )
   mFlags = static_cast< Flags >( map.value( QStringLiteral( "flags" ) ).toInt() );
   mMetadata = map.value( QStringLiteral( "metadata" ) ).toMap();
   return true;
+}
+
+QgsProcessingAlgorithm *QgsProcessingParameterDefinition::algorithm() const
+{
+  return mAlgorithm;
+}
+
+QgsProcessingProvider *QgsProcessingParameterDefinition::provider() const
+{
+  return mAlgorithm ? mAlgorithm->provider() : nullptr;
+}
+
+QString QgsProcessingParameterDefinition::toolTip() const
+{
+  return QStringLiteral( "<p><b>%1</b></p><p>%2</p>" ).arg(
+           description(),
+           QObject::tr( "Python identifier: ‘%1’" ).arg( QStringLiteral( "<i>%1</i>" ).arg( name() ) ) );
 }
 
 QgsProcessingParameterBoolean::QgsProcessingParameterBoolean( const QString &name, const QString &description, const QVariant &defaultValue, bool optional )
@@ -1978,6 +1997,22 @@ QString QgsProcessingParameterNumber::valueAsPythonString( const QVariant &value
     return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( value.value< QgsProperty >().asExpression() );
 
   return value.toString();
+}
+
+QString QgsProcessingParameterNumber::toolTip() const
+{
+  QString text = QgsProcessingParameterDefinition::toolTip();
+  QStringList parts;
+  if ( mMin > -DBL_MAX + 1 )
+    parts << QObject::tr( "Minimum value: %1" ).arg( mMin );
+  if ( mMax < DBL_MAX )
+    parts << QObject::tr( "Maximum value: %1" ).arg( mMax );
+  if ( mDefault.isValid() )
+    parts << QObject::tr( "Default value: %1" ).arg( mDataType == Integer ? mDefault.toInt() : mDefault.toDouble() );
+  QString extra = parts.join( QStringLiteral( "<br />" ) );
+  if ( !extra.isEmpty() )
+    text += QStringLiteral( "<p>%1</p>" ).arg( extra );
+  return text;
 }
 
 double QgsProcessingParameterNumber::minimum() const
@@ -3087,14 +3122,21 @@ QgsProcessingOutputDefinition *QgsProcessingParameterFeatureSink::toOutputDefini
 
 QString QgsProcessingParameterFeatureSink::defaultFileExtension() const
 {
-  QgsSettings settings;
-  if ( hasGeometry() )
+  if ( QgsProcessingProvider *p = provider() )
   {
-    return settings.value( QStringLiteral( "Processing/DefaultOutputVectorLayerExt" ), QStringLiteral( "shp" ), QgsSettings::Core ).toString();
+    return p->defaultVectorFileExtension( hasGeometry() );
   }
   else
   {
-    return QStringLiteral( "dbf" );
+    QgsSettings settings;
+    if ( hasGeometry() )
+    {
+      return settings.value( QStringLiteral( "Processing/DefaultOutputVectorLayerExt" ), QStringLiteral( "shp" ), QgsSettings::Core ).toString();
+    }
+    else
+    {
+      return QStringLiteral( "dbf" );
+    }
   }
 }
 
@@ -3144,7 +3186,7 @@ bool QgsProcessingParameterFeatureSink::fromVariantMap( const QVariantMap &map )
 QString QgsProcessingParameterFeatureSink::generateTemporaryDestination() const
 {
   if ( supportsNonFileBasedOutputs() )
-    return QStringLiteral( "memory:" );
+    return QStringLiteral( "memory:%1" ).arg( description() );
   else
     return QgsProcessingDestinationParameter::generateTemporaryDestination();
 }
@@ -3240,8 +3282,15 @@ QgsProcessingOutputDefinition *QgsProcessingParameterRasterDestination::toOutput
 
 QString QgsProcessingParameterRasterDestination::defaultFileExtension() const
 {
-  QgsSettings settings;
-  return settings.value( QStringLiteral( "Processing/DefaultOutputRasterLayerExt" ), QStringLiteral( "tif" ), QgsSettings::Core ).toString();
+  if ( QgsProcessingProvider *p = provider() )
+  {
+    return p->defaultRasterFileExtension();
+  }
+  else
+  {
+    QgsSettings settings;
+    return settings.value( QStringLiteral( "Processing/DefaultOutputRasterLayerExt" ), QStringLiteral( "tif" ), QgsSettings::Core ).toString();
+  }
 }
 
 QgsProcessingParameterRasterDestination *QgsProcessingParameterRasterDestination::fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition )
@@ -3536,14 +3585,21 @@ QgsProcessingOutputDefinition *QgsProcessingParameterVectorDestination::toOutput
 
 QString QgsProcessingParameterVectorDestination::defaultFileExtension() const
 {
-  QgsSettings settings;
-  if ( hasGeometry() )
+  if ( QgsProcessingProvider *p = provider() )
   {
-    return settings.value( QStringLiteral( "Processing/DefaultOutputVectorLayerExt" ), QStringLiteral( "shp" ), QgsSettings::Core ).toString();
+    return p->defaultVectorFileExtension( hasGeometry() );
   }
   else
   {
-    return QStringLiteral( "dbf" );
+    QgsSettings settings;
+    if ( hasGeometry() )
+    {
+      return settings.value( QStringLiteral( "Processing/DefaultOutputVectorLayerExt" ), QStringLiteral( "shp" ), QgsSettings::Core ).toString();
+    }
+    else
+    {
+      return QStringLiteral( "dbf" );
+    }
   }
 }
 

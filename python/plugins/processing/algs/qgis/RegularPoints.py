@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
 
 __author__ = 'Alexander Bruy'
 __date__ = 'September 2014'
@@ -66,6 +65,9 @@ class RegularPoints(QgisAlgorithm):
 
     def group(self):
         return self.tr('Vector creation')
+
+    def groupId(self):
+        return 'vectorcreation'
 
     def __init__(self):
         super().__init__()
@@ -124,7 +126,7 @@ class RegularPoints(QgisAlgorithm):
         y = extent.yMaximum() - inset
 
         extent_geom = QgsGeometry.fromRect(extent)
-        extent_engine = QgsGeometry.createGeometryEngine(extent_geom.geometry())
+        extent_engine = QgsGeometry.createGeometryEngine(extent_geom.constGet())
         extent_engine.prepareGeometry()
 
         while y >= extent.yMinimum():
@@ -134,13 +136,13 @@ class RegularPoints(QgisAlgorithm):
                     break
 
                 if randomize:
-                    geom = QgsGeometry().fromPoint(QgsPointXY(
+                    geom = QgsGeometry().fromPointXY(QgsPointXY(
                         uniform(x - (pSpacing / 2.0), x + (pSpacing / 2.0)),
                         uniform(y - (pSpacing / 2.0), y + (pSpacing / 2.0))))
                 else:
-                    geom = QgsGeometry().fromPoint(QgsPointXY(x, y))
+                    geom = QgsGeometry().fromPointXY(QgsPointXY(x, y))
 
-                if extent_engine.intersects(geom.geometry()):
+                if extent_engine.intersects(geom.constGet()):
                     f.setAttribute('id', count)
                     f.setGeometry(geom)
                     sink.addFeature(f, QgsFeatureSink.FastInsert)

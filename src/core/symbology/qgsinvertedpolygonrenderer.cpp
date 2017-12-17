@@ -93,6 +93,8 @@ void QgsInvertedPolygonRenderer::checkLegendSymbolItem( const QString &key, bool
 
 void QgsInvertedPolygonRenderer::startRender( QgsRenderContext &context, const QgsFields &fields )
 {
+  QgsFeatureRenderer::startRender( context, fields );
+
   if ( !mSubRenderer )
   {
     return;
@@ -120,7 +122,7 @@ void QgsInvertedPolygonRenderer::startRender( QgsRenderContext &context, const Q
   QRect e( context.painter()->viewport() );
   // add some space to hide borders and tend to infinity
   e.adjust( -e.width() * 5, -e.height() * 5, e.width() * 5, e.height() * 5 );
-  QgsPolyline exteriorRing;
+  QgsPolylineXY exteriorRing;
   exteriorRing << mtp.toMapCoordinates( e.topLeft() );
   exteriorRing << mtp.toMapCoordinates( e.topRight() );
   exteriorRing << mtp.toMapCoordinates( e.bottomRight() );
@@ -243,6 +245,8 @@ bool QgsInvertedPolygonRenderer::renderFeature( QgsFeature &feature, QgsRenderCo
 
 void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext &context )
 {
+  QgsFeatureRenderer::stopRender( context );
+
   if ( !mSubRenderer )
   {
     return;
@@ -252,8 +256,8 @@ void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext &context )
     return;
   }
 
-  QgsMultiPolygon finalMulti; //avoid expensive allocation for list for every feature
-  QgsPolygon newPoly;
+  QgsMultiPolygonXY finalMulti; //avoid expensive allocation for list for every feature
+  QgsPolygonXY newPoly;
 
   Q_FOREACH ( const CombinedFeature &cit, mFeaturesCategories )
   {
@@ -264,7 +268,7 @@ void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext &context )
       // compute the unary union on the polygons
       QgsGeometry unioned( QgsGeometry::unaryUnion( cit.geometries ) );
       // compute the difference with the extent
-      QgsGeometry rect = QgsGeometry::fromPolygon( mExtentPolygon );
+      QgsGeometry rect = QgsGeometry::fromPolygonXY( mExtentPolygon );
       QgsGeometry final = rect.difference( unioned );
       feat.setGeometry( final );
     }
@@ -284,8 +288,8 @@ void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext &context )
       finalMulti.append( mExtentPolygon );
       Q_FOREACH ( const QgsGeometry &geom, cit.geometries )
       {
-        QgsMultiPolygon multi;
-        QgsWkbTypes::Type type = QgsWkbTypes::flatType( geom.geometry()->wkbType() );
+        QgsMultiPolygonXY multi;
+        QgsWkbTypes::Type type = QgsWkbTypes::flatType( geom.constGet()->wkbType() );
 
         if ( ( type == QgsWkbTypes::Polygon ) || ( type == QgsWkbTypes::CurvePolygon ) )
         {
@@ -298,7 +302,7 @@ void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext &context )
 
         for ( int i = 0; i < multi.size(); i++ )
         {
-          const QgsPolyline &exterior = multi[i][0];
+          const QgsPolylineXY &exterior = multi[i][0];
           // add the exterior ring as interior ring to the first polygon
           // make sure it satisfies at least very basic requirements of GEOS
           // (otherwise the creation of GEOS geometry will fail)
@@ -315,7 +319,7 @@ void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext &context )
           }
         }
       }
-      feat.setGeometry( QgsGeometry::fromMultiPolygon( finalMulti ) );
+      feat.setGeometry( QgsGeometry::fromMultiPolygonXY( finalMulti ) );
     }
     if ( feat.hasGeometry() )
     {
@@ -332,7 +336,7 @@ void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext &context )
   {
     // empty feature with default attributes
     QgsFeature feat( mFields );
-    feat.setGeometry( QgsGeometry::fromPolygon( mExtentPolygon ) );
+    feat.setGeometry( QgsGeometry::fromPolygonXY( mExtentPolygon ) );
     mSubRenderer->renderFeature( feat, mContext );
   }
 
@@ -458,7 +462,7 @@ QgsFeatureRenderer::Capabilities QgsInvertedPolygonRenderer::capabilities()
 {
   if ( !mSubRenderer )
   {
-    return 0;
+    return nullptr;
   }
   return mSubRenderer->capabilities();
 }

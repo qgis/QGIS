@@ -234,11 +234,13 @@ void QgsExpressionBuilderWidget::newFunctionFile( const QString &fileName )
   if ( !items.isEmpty() )
     return;
 
+  QListWidgetItem *item = new QListWidgetItem( QgsApplication::getThemeIcon( QStringLiteral( "console/iconTabEditorConsole.png" ) ), fileName );
+  cmbFileNames->insertItem( 0, item );
+  cmbFileNames->setCurrentRow( 0 );
+
   QString templatetxt;
   QgsPythonRunner::eval( QStringLiteral( "qgis.user.expressions.template" ), templatetxt );
   txtPython->setText( templatetxt );
-  cmbFileNames->insertItem( 0, fileName );
-  cmbFileNames->setCurrentRow( 0 );
   saveFunctionFile( fileName );
 }
 
@@ -576,6 +578,8 @@ void QgsExpressionBuilderWidget::txtExpressionString_textChanged()
     txtExpressionString->setToolTip( QLatin1String( "" ) );
     lblPreview->setToolTip( QLatin1String( "" ) );
     emit expressionParsed( false );
+    setParserError( true );
+    setEvalError( true );
     return;
   }
 
@@ -612,14 +616,18 @@ void QgsExpressionBuilderWidget::txtExpressionString_textChanged()
     txtExpressionString->setToolTip( tooltip );
     lblPreview->setToolTip( tooltip );
     emit expressionParsed( false );
+    setParserError( exp.hasParserError() );
+    setEvalError( exp.hasEvalError() );
     return;
   }
   else
   {
-    lblPreview->setStyleSheet( QLatin1String( "" ) );
-    txtExpressionString->setToolTip( QLatin1String( "" ) );
-    lblPreview->setToolTip( QLatin1String( "" ) );
+    lblPreview->setStyleSheet( QString() );
+    txtExpressionString->setToolTip( QString() );
+    lblPreview->setToolTip( QString() );
     emit expressionParsed( true );
+    setParserError( false );
+    setEvalError( false );
   }
 }
 
@@ -668,6 +676,34 @@ QString QgsExpressionBuilderWidget::formatLayerHelp( const QgsMapLayer *layer ) 
   QString text = QStringLiteral( "<p>%1</p>" ).arg( tr( "Inserts the layer ID for the layer named '%1'." ).arg( layer->name() ) );
   text.append( QStringLiteral( "<p>%1</p>" ).arg( tr( "Current value: '%1'" ).arg( layer->id() ) ) );
   return text;
+}
+
+bool QgsExpressionBuilderWidget::parserError() const
+{
+  return mParserError;
+}
+
+void QgsExpressionBuilderWidget::setParserError( bool parserError )
+{
+  if ( parserError == mParserError )
+    return;
+
+  mParserError = parserError;
+  emit parserErrorChanged();
+}
+
+bool QgsExpressionBuilderWidget::evalError() const
+{
+  return mEvalError;
+}
+
+void QgsExpressionBuilderWidget::setEvalError( bool evalError )
+{
+  if ( evalError == mEvalError )
+    return;
+
+  mEvalError = evalError;
+  emit evalErrorChanged();
 }
 
 QStandardItemModel *QgsExpressionBuilderWidget::model()

@@ -124,11 +124,19 @@ QWidget *QgsProcessingAlgorithm::createCustomParametersWidget( QWidget * ) const
 }
 
 QgsExpressionContext QgsProcessingAlgorithm::createExpressionContext( const QVariantMap &parameters,
-    QgsProcessingContext &context ) const
+    QgsProcessingContext &context, QgsProcessingFeatureSource *source ) const
 {
   // start with context's expression context
   QgsExpressionContext c = context.expressionContext();
-  if ( c.scopeCount() == 0 )
+
+  // If there's a source capable of generating a context scope, use it
+  if ( source )
+  {
+    QgsExpressionContextScope *scope = source->createExpressionContextScope();
+    if ( scope )
+      c << scope;
+  }
+  else if ( c.scopeCount() == 0 )
   {
     //empty scope, populate with initial scopes
     c << QgsExpressionContextUtils::globalScope()
@@ -169,7 +177,7 @@ bool QgsProcessingAlgorithm::validateInputCrs( const QVariantMap &parameters, Qg
     }
     else if ( def->type() == QStringLiteral( "source" ) )
     {
-      QgsFeatureSource *source = QgsProcessingParameters::parameterAsSource( def, parameters, context );
+      std::unique_ptr< QgsFeatureSource  > source( QgsProcessingParameters::parameterAsSource( def, parameters, context ) );
       if ( source )
       {
         if ( foundCrs && source->sourceCrs().isValid() && crs != source->sourceCrs() )
@@ -242,6 +250,7 @@ bool QgsProcessingAlgorithm::addParameter( QgsProcessingParameterDefinition *def
   }
 
   mParameters << definition;
+  definition->mAlgorithm = this;
 
   if ( createOutput )
     return createAutoOutputForParameter( definition );
@@ -552,7 +561,7 @@ QgsCoordinateReferenceSystem QgsProcessingAlgorithm::parameterAsCrs( const QVari
 
 QgsCoordinateReferenceSystem QgsProcessingAlgorithm::parameterAsExtentCrs( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context )
 {
-  return QgsProcessingParameters::parameterAsCrs( parameterDefinition( name ), parameters, context );
+  return QgsProcessingParameters::parameterAsExtentCrs( parameterDefinition( name ), parameters, context );
 }
 
 QgsRectangle QgsProcessingAlgorithm::parameterAsExtent( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, const QgsCoordinateReferenceSystem &crs ) const
@@ -690,6 +699,13 @@ QVariantMap QgsProcessingFeatureBasedAlgorithm::processAlgorithm( const QVariant
   if ( !sink )
     return QVariantMap();
 
+  // prepare expression context for feature iteration
+  QgsExpressionContext prevContext = context.expressionContext();
+  QgsExpressionContext algContext = prevContext;
+
+  algContext.appendScopes( createExpressionContext( parameters, context, dynamic_cast< QgsProcessingFeatureSource * >( mSource.get() ) ).takeScopes() );
+  context.setExpressionContext( algContext );
+
   long count = mSource->featureCount();
 
   QgsFeature f;
@@ -704,7 +720,8 @@ QVariantMap QgsProcessingFeatureBasedAlgorithm::processAlgorithm( const QVariant
       break;
     }
 
-    QgsFeature transformed = processFeature( f, feedback );
+    context.expressionContext().setFeature( f );
+    QgsFeature transformed = processFeature( f, context, feedback );
     if ( transformed.isValid() )
       sink->addFeature( transformed, QgsFeatureSink::FastInsert );
 
@@ -713,6 +730,9 @@ QVariantMap QgsProcessingFeatureBasedAlgorithm::processAlgorithm( const QVariant
   }
 
   mSource.reset();
+
+  // probably not necessary - context's aren't usually recycled, but can't hurt
+  context.setExpressionContext( prevContext );
 
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "OUTPUT" ), dest );

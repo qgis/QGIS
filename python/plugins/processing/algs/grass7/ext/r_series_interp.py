@@ -28,12 +28,12 @@ __revision__ = '$Format:%H$'
 from os import path
 
 
-def checkParameterValuesBeforeExecuting(alg):
+def checkParameterValuesBeforeExecuting(alg, parameters, context):
     """ Verify if we have the right parameters """
-    datapos = alg.getParameterValue(u'datapos')
-    infile = alg.getParameterValue(u'infile')
-    output = alg.getParameterValue(u'output')
-    outfile = alg.getParameterValue(u'outfile')
+    datapos = alg.parameterAsDouble(parameters, 'datapos', context)
+    infile = alg.parameterAsString(parameters, 'infile', context)
+    output = alg.parameterAsString(parameters, 'output', context)
+    outfile = alg.parameterAsString(parameters, 'outfile', context)
 
     if datapos and infile:
         return alg.tr("You need to set either inline data positions or an input data positions file!")
@@ -44,18 +44,18 @@ def checkParameterValuesBeforeExecuting(alg):
     return None
 
 
-def processCommand(alg, parameters):
+def processCommand(alg, parameters, context):
     # We temporary remove the output directory
     outdir = alg.getOutputFromName('output_dir')
     alg.removeOutputFromName('output_dir')
 
-    alg.processCommand()
+    alg.processCommand(parameters, context)
 
     # We re-add the new output
     alg.addOutput(outdir)
 
 
-def processOutputs(alg):
+def processOutputs(alg, parameters, context):
     # We take all the outputs and we export them to the output directory
     outdir = alg.getOutputFromName('output_dir')
     output = alg.getParameterValue('output')

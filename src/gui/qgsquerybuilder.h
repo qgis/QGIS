@@ -51,10 +51,10 @@ class GUI_EXPORT QgsQueryBuilder : public QDialog, private Ui::QgsQueryBuilderBa
      * \param parent Parent widget
      * \param fl dialog flags
      */
-    QgsQueryBuilder( QgsVectorLayer *layer, QWidget *parent SIP_TRANSFERTHIS = 0,
+    QgsQueryBuilder( QgsVectorLayer *layer, QWidget *parent SIP_TRANSFERTHIS = nullptr,
                      Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
-    ~QgsQueryBuilder();
+    ~QgsQueryBuilder() override;
 
     void showEvent( QShowEvent *event ) override;
 

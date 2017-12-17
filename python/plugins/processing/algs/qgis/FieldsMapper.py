@@ -46,6 +46,9 @@ class FieldsMapper(QgisFeatureBasedAlgorithm):
     def group(self):
         return self.tr('Vector table')
 
+    def groupId(self):
+        return 'vectortable'
+
     def initParameters(self, config=None):
 
         class ParameterFieldsMapping(QgsProcessingParameterDefinition):
@@ -121,6 +124,9 @@ class FieldsMapper(QgisFeatureBasedAlgorithm):
         da.setSourceCrs(source.sourceCrs())
         da.setEllipsoid(context.project().ellipsoid())
 
+        # create an expression context using thread safe processing context
+        self.expr_context = self.createExpressionContext(parameters, context, source)
+
         for field_def in mapping:
             self.fields.append(QgsField(name=field_def['name'],
                                         type=field_def['type'],
@@ -134,8 +140,8 @@ class FieldsMapper(QgisFeatureBasedAlgorithm):
             if expression.hasParserError():
                 raise QgsProcessingException(
                     self.tr(u'Parser error in expression "{}": {}')
-                    .format(str(expression.expression()),
-                            str(expression.parserErrorString())))
+                    .format(expression.expression(),
+                            expression.parserErrorString()))
             self.expressions.append(expression)
         return True
 
@@ -143,14 +149,12 @@ class FieldsMapper(QgisFeatureBasedAlgorithm):
         return self.fields
 
     def processAlgorithm(self, parameters, context, feeback):
-        # create an expression context using thead safe processing context
-        self.expr_context = self.createExpressionContext(parameters, context)
         for expression in self.expressions:
             expression.prepare(self.expr_context)
         self._row_number = 0
         return super().processAlgorithm(parameters, context, feeback)
 
-    def processFeature(self, feature, feedback):
+    def processFeature(self, feature, context, feedback):
         attributes = []
         for expression in self.expressions:
             self.expr_context.setFeature(feature)
@@ -159,8 +163,8 @@ class FieldsMapper(QgisFeatureBasedAlgorithm):
             if expression.hasEvalError():
                 raise QgsProcessingException(
                     self.tr(u'Evaluation error in expression "{}": {}')
-                        .format(str(expression.expression()),
-                                str(expression.parserErrorString())))
+                        .format(expression.expression(),
+                                expression.parserErrorString()))
             attributes.append(value)
         feature.setAttributes(attributes)
         self._row_number += 1

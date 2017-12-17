@@ -298,15 +298,15 @@ namespace QgsServerProjectUtils
 
   /**
    * Returns the Layer ids list defined in a QGIS project as published in WFS.
-    * @param project the QGIS project
+    * \param project the QGIS project
     * @return the Layer ids list.
     */
   SERVER_EXPORT QStringList wfsLayerIds( const QgsProject &project );
 
   /**
    * Returns the Layer precision defined in a QGIS project for the WFS GetFeature.
-    * @param project the QGIS project
-    * @param layerId the layer id in the project
+    * \param project the QGIS project
+    * \param layerId the layer id in the project
     * @return the layer precision for WFS GetFeature.
     */
 
@@ -314,21 +314,21 @@ namespace QgsServerProjectUtils
 
   /**
    * Returns the Layer ids list defined in a QGIS project as published as WFS-T with update capabilities.
-    * @param project the QGIS project
+    * \param project the QGIS project
     * @return the Layer ids list.
     */
   SERVER_EXPORT QStringList wfstUpdateLayerIds( const QgsProject &project );
 
   /**
    * Returns the Layer ids list defined in a QGIS project as published as WFS-T with insert capabilities.
-    * @param project the QGIS project
+    * \param project the QGIS project
     * @return the Layer ids list.
     */
   SERVER_EXPORT QStringList wfstInsertLayerIds( const QgsProject &project );
 
   /**
    * Returns the Layer ids list defined in a QGIS project as published as WFS-T with delete capabilities.
-    * @param project the QGIS project
+    * \param project the QGIS project
     * @return the Layer ids list.
     */
   SERVER_EXPORT QStringList wfstDeleteLayerIds( const QgsProject &project );

@@ -7,10 +7,10 @@
     <SRSName>EPSG:4326</SRSName>
     <DatasetSpecificInfo>
       <FeatureCount>7</FeatureCount>
-      <ExtentXMin>2.00000</ExtentXMin>
+      <ExtentXMin>-2.00000</ExtentXMin>
       <ExtentXMax>12.00000</ExtentXMax>
       <ExtentYMin>-4.00000</ExtentYMin>
-      <ExtentYMax>4.00000</ExtentYMax>
+      <ExtentYMax>6.00000</ExtentYMax>
     </DatasetSpecificInfo>
   </GMLFeatureClass>
 </GMLFeatureClassList>

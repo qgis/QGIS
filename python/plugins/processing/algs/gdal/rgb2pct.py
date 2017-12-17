@@ -70,10 +70,13 @@ class rgb2pct(GdalAlgorithm):
     def group(self):
         return self.tr('Raster conversion')
 
+    def groupId(self):
+        return 'rasterconversion'
+
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', '24-to-8-bits.png'))
 
-    def getConsoleCommands(self, parameters, context, feedback):
+    def getConsoleCommands(self, parameters, context, feedback, executing=True):
         arguments = []
         arguments.append('-n')
         arguments.append(str(self.parameterAsInt(parameters, self.NCOLORS, context)))

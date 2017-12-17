@@ -50,9 +50,9 @@ class eVisDatabaseConnectionGui : public QDialog, private Ui::eVisDatabaseConnec
 
   public:
     //! \brief Constructor
-    eVisDatabaseConnectionGui( QList<QTemporaryFile *> *, QWidget *parent = nullptr, Qt::WindowFlags fl = 0 );
+    eVisDatabaseConnectionGui( QList<QTemporaryFile *> *, QWidget *parent = nullptr, Qt::WindowFlags fl = nullptr );
 
-    ~eVisDatabaseConnectionGui();
+    ~eVisDatabaseConnectionGui() override;
 
   private:
     //! \brief Pointer to a database connection

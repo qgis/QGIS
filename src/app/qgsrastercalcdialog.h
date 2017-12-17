@@ -28,8 +28,8 @@ class APP_EXPORT QgsRasterCalcDialog: public QDialog, private Ui::QgsRasterCalcD
 {
     Q_OBJECT
   public:
-    QgsRasterCalcDialog( QWidget *parent = nullptr, Qt::WindowFlags f = 0 );
-    ~QgsRasterCalcDialog();
+    QgsRasterCalcDialog( QWidget *parent = nullptr, Qt::WindowFlags f = nullptr );
+    ~QgsRasterCalcDialog() override;
 
     QString formulaString() const;
     QString outputFile() const;

@@ -16,7 +16,6 @@
 #include "qgsapplication.h"
 #include "qgisapp.h"
 #include "qgsattributetabledialog.h"
-#include "qgscursors.h"
 #include "qgsdistancearea.h"
 #include "qgsfeature.h"
 #include "qgsfeaturestore.h"
@@ -37,6 +36,7 @@
 #include "qgsrenderer.h"
 #include "qgsunittypes.h"
 #include "qgsstatusbar.h"
+#include "qgsactionscoperegistry.h"
 
 #include "qgssettings.h"
 #include <QMouseEvent>
@@ -49,14 +49,9 @@ QgsMapToolIdentifyAction::QgsMapToolIdentifyAction( QgsMapCanvas *canvas )
   : QgsMapToolIdentify( canvas )
 {
   mToolName = tr( "Identify" );
-  // set cursor
-  QPixmap myIdentifyQPixmap = QPixmap( ( const char ** ) identify_cursor );
-  mCursor = QCursor( myIdentifyQPixmap, 1, 1 );
-
+  setCursor( QgsApplication::getThemeCursor( QgsApplication::Cursor::Identify ) );
   connect( this, &QgsMapToolIdentify::changedRasterResults, this, &QgsMapToolIdentifyAction::handleChangedRasterResults );
-
   mIdentifyMenu->setAllowMultipleReturn( true );
-
   QgsMapLayerAction *attrTableAction = new QgsMapLayerAction( tr( "Show attribute table" ), mIdentifyMenu, QgsMapLayer::VectorLayer, QgsMapLayerAction::MultipleFeatures );
   connect( attrTableAction, &QgsMapLayerAction::triggeredForFeatures, this, &QgsMapToolIdentifyAction::showAttributeTable );
   identifyMenu()->addCustomAction( attrTableAction );
@@ -98,7 +93,7 @@ void QgsMapToolIdentifyAction::showAttributeTable( QgsMapLayer *layer, const QLi
   }
   filter = filter.replace( QRegExp( ",$" ), QStringLiteral( ")" ) );
 
-  QgsAttributeTableDialog *tableDialog = new QgsAttributeTableDialog( vl );
+  QgsAttributeTableDialog *tableDialog = new QgsAttributeTableDialog( vl, QgsAttributeTableFilterModel::ShowFilteredList );
   tableDialog->setFilterExpression( filter );
   tableDialog->show();
 }
@@ -118,6 +113,8 @@ void QgsMapToolIdentifyAction::canvasReleaseEvent( QgsMapMouseEvent *e )
   resultsDialog()->clear();
   connect( this, &QgsMapToolIdentifyAction::identifyProgress, QgisApp::instance(), &QgisApp::showProgress );
   connect( this, &QgsMapToolIdentifyAction::identifyMessage, QgisApp::instance(), &QgisApp::showStatusMessage );
+
+  setClickContextScope( toMapCoordinates( e->pos() ) );
 
   identifyMenu()->setResultsIfExternalAction( false );
 
@@ -201,4 +198,16 @@ void QgsMapToolIdentifyAction::handleCopyToClipboard( QgsFeatureStore &featureSt
   emit copyToClipboard( featureStore );
 }
 
+void QgsMapToolIdentifyAction::setClickContextScope( const QgsPointXY &point )
+{
+  QgsExpressionContextScope clickScope;
+  clickScope.addVariable( QgsExpressionContextScope::StaticVariable( QString( "click_x" ), point.x(), true ) );
+  clickScope.addVariable( QgsExpressionContextScope::StaticVariable( QString( "click_y" ), point.y(), true ) );
 
+  resultsDialog()->setExpressionContextScope( clickScope );
+
+  if ( mIdentifyMenu )
+  {
+    mIdentifyMenu->setExpressionContextScope( clickScope );
+  }
+}

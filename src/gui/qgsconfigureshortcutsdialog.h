@@ -45,9 +45,9 @@ class GUI_EXPORT QgsConfigureShortcutsDialog : public QDialog, private Ui::QgsCo
      * \param manager associated QgsShortcutsManager, or leave as null to use the default
      * singleton QgsShortcutsManager instance.
      */
-    QgsConfigureShortcutsDialog( QWidget *parent SIP_TRANSFERTHIS = 0, QgsShortcutsManager *manager = nullptr );
+    QgsConfigureShortcutsDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr, QgsShortcutsManager *manager = nullptr );
 
-    ~QgsConfigureShortcutsDialog();
+    ~QgsConfigureShortcutsDialog() override;
 
   protected:
     void keyPressEvent( QKeyEvent *event ) override;

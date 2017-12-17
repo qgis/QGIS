@@ -58,42 +58,43 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
 
   public:
     explicit QgsBrowserModel( QObject *parent = nullptr );
-    ~QgsBrowserModel();
+    ~QgsBrowserModel() override;
 
     enum ItemDataRole
     {
       PathRole = Qt::UserRole, //!< Item path used to access path in the tree, see QgsDataItem::mPath
       CommentRole = Qt::UserRole + 1, //!< Item comment
+      SortRole, //!< Custom sort role, see QgsDataItem::sortKey()
     };
     // implemented methods from QAbstractItemModel for read-only access
 
     /**
      * Used by other components to obtain information about each item provided by the model.
       In many models, the combination of flags should include Qt::ItemIsEnabled and Qt::ItemIsSelectable. */
-    virtual Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    Qt::ItemFlags flags( const QModelIndex &index ) const override;
 
     /**
      * Used to supply item data to views and delegates. Generally, models only need to supply data
       for Qt::DisplayRole and any application-specific user roles, but it is also good practice
       to provide data for Qt::ToolTipRole, Qt::AccessibleTextRole, and Qt::AccessibleDescriptionRole.
       See the Qt::ItemDataRole enum documentation for information about the types associated with each role. */
-    virtual QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
+    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
 
     /**
      * Provides views with information to show in their headers. The information is only retrieved
       by views that can display header information. */
-    virtual QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
+    QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
 
     //! Provides the number of rows of data exposed by the model.
-    virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
+    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
 
     /**
      * Provides the number of columns of data exposed by the model. List models do not provide this function
       because it is already implemented in QAbstractListModel. */
-    virtual int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
+    int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
 
     //! Returns the index of the item in the model specified by the given row, column and parent index.
-    virtual QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
+    QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
 
     QModelIndex findItem( QgsDataItem *item, QgsDataItem *parent = nullptr ) const;
 
@@ -101,16 +102,16 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
      * Returns the parent of the model item with the given index.
      * If the item has no parent, an invalid QModelIndex is returned.
      */
-    virtual QModelIndex parent( const QModelIndex &index ) const override;
+    QModelIndex parent( const QModelIndex &index ) const override;
 
     //! Returns a list of mime that can describe model indexes
-    virtual QStringList mimeTypes() const override;
+    QStringList mimeTypes() const override;
 
     //! Returns an object that contains serialized items of data corresponding to the list of indexes specified
-    virtual QMimeData *mimeData( const QModelIndexList &indexes ) const override;
+    QMimeData *mimeData( const QModelIndexList &indexes ) const override;
 
     //! Handles the data supplied by a drag and drop operation that ended with the given action
-    virtual bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) override;
+    bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) override;
 
     QgsDataItem *dataItem( const QModelIndex &idx ) const;
 
@@ -163,11 +164,15 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
     void itemStateChanged( QgsDataItem *item, QgsDataItem::State oldState );
 
     /**
-     * Adds a directory to the favorites group.
+     * Adds a \a directory to the favorites group.
+     *
+     * If \a name is specified, it will be used as the favorite's name. Otherwise
+     * the name will be set to match \a directory.
+     *
      * \since QGIS 3.0
      * \see removeFavorite()
      */
-    void addFavoriteDirectory( const QString &directory );
+    void addFavoriteDirectory( const QString &directory, const QString &name = QString() );
 
     /**
      * Removes a favorite directory from its corresponding model index.

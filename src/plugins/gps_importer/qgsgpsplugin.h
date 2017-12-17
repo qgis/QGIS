@@ -44,11 +44,11 @@ class QgsGPSPlugin: public QObject, public QgisPlugin
     explicit QgsGPSPlugin( QgisInterface * );
 
 
-    virtual ~QgsGPSPlugin();
+    ~QgsGPSPlugin() override;
 
   public slots:
     //! init the gui
-    virtual void initGui() override;
+    void initGui() override;
     //! Show the dialog box
     void run();
     //! Create a new GPX layer

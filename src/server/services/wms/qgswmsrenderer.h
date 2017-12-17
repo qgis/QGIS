@@ -22,6 +22,7 @@
 
 #include "qgsserversettings.h"
 #include "qgswmsparameters.h"
+#include "qgsfeaturefilter.h"
 #include <QDomDocument>
 #include <QMap>
 #include <QPair>
@@ -83,6 +84,8 @@ namespace QgsWms
       QgsRenderer( QgsServerInterface *serverIface,
                    const QgsProject *project,
                    const QgsServerRequest::Parameters &parameters );
+
+      ~QgsRenderer();
 
       /**
        * Returns the map legend as an image (or a null pointer in case of error). The caller takes ownership
@@ -154,7 +157,7 @@ namespace QgsWms
       void annotationsRendering( QPainter *painter ) const;
 
       // Return a list of layers stylized with LAYERS/STYLES parameters
-      QList<QgsMapLayer *> stylizedLayers( const QList<QgsWmsParametersLayer> &params ) const;
+      QList<QgsMapLayer *> stylizedLayers( const QList<QgsWmsParametersLayer> &params );
 
       // Return a list of layers stylized with SLD parameter
       QList<QgsMapLayer *> sldStylizedLayers( const QString &sld ) const;
@@ -163,7 +166,7 @@ namespace QgsWms
       void setLayerOpacity( QgsMapLayer *layer, int opacity ) const;
 
       // Set layer filter
-      void setLayerFilter( QgsMapLayer *layer, const QStringList &filter ) const;
+      void setLayerFilter( QgsMapLayer *layer, const QStringList &filter );
 
       // Set layer python filter
       void setLayerAccessControlFilter( QgsMapLayer *layer ) const;
@@ -274,18 +277,25 @@ namespace QgsWms
       //! configure the composition for the GetPrint request
       bool configureComposition( QgsComposition *c, const QgsMapSettings &mapSettings );
 
+      //! Creates external WMS layer. Caller takes ownership
+      QgsMapLayer *createExternalWMSLayer( const QString &externalLayerId ) const;
+
+      void removeTemporaryLayers();
+
     private:
 
       const QgsServerRequest::Parameters &mParameters;
 
       //! The access control helper
       QgsAccessControl *mAccessControl = nullptr;
+      QgsFeatureFilter mFeatureFilter;
 
       const QgsServerSettings &mSettings;
       const QgsProject *mProject = nullptr;
       QgsWmsParameters mWmsParameters;
       QStringList mRestrictedLayers;
       QMap<QString, QgsMapLayer *> mNicknameLayers;
+      QList<QgsMapLayer *> mTemporaryLayers;
 
     public:
 

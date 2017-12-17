@@ -28,9 +28,9 @@ class GRASS_LIB_EXPORT QgsGrassFeatureSource : public QgsAbstractFeatureSource
 {
   public:
     QgsGrassFeatureSource( const QgsGrassProvider *provider );
-    ~QgsGrassFeatureSource();
+    ~QgsGrassFeatureSource() override;
 
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
+    QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
 
   private:
 #if 0
@@ -73,11 +73,11 @@ class GRASS_LIB_EXPORT QgsGrassFeatureIterator : public QObject, public QgsAbstr
   public:
     QgsGrassFeatureIterator( QgsGrassFeatureSource *source, bool ownSource, const QgsFeatureRequest &request );
 
-    ~QgsGrassFeatureIterator();
+    ~QgsGrassFeatureIterator() override;
 
-    virtual bool fetchFeature( QgsFeature &feature ) override;
-    virtual bool rewind() override;
-    virtual bool close() override;
+    bool fetchFeature( QgsFeature &feature ) override;
+    bool rewind() override;
+    bool close() override;
 
     /**
      * Get GRASS line id from a QGIS \a fid.

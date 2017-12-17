@@ -82,6 +82,21 @@ class CORE_EXPORT QgsAbstractFeatureIterator
      */
     CompileStatus compileStatus() const { return mCompileStatus; }
 
+    /**
+     * Returns if this iterator is valid.
+     * An invalid feature iterator is not able to provide a reliable source for data.
+     * If an iterator is invalid, either give up or try to send the request again (preferably
+     * after a timeout to give the system some time to stay responsive).
+     *
+     * If you want to check if the iterator successfully completed, better use QgsFeatureIterator::isClosed().
+     *
+     * \since QGIS 3.0
+     */
+    virtual bool isValid() const
+    {
+      return mValid;
+    }
+
   protected:
 
     /**
@@ -144,7 +159,7 @@ class CORE_EXPORT QgsAbstractFeatureIterator
     QgsFeatureRequest mRequest;
 
     //! Set to true, as soon as the iterator is closed.
-    bool mClosed;
+    bool mClosed = false;
 
     /**
      * A feature iterator may be closed already but still be serving features from the cache.
@@ -153,13 +168,13 @@ class CORE_EXPORT QgsAbstractFeatureIterator
      * In such a scenario, all resources have been released (mClosed is true) but the deads
      * are still alive.
      */
-    bool mZombie;
+    bool mZombie = false;
 
     /**
      * reference counting (to allow seamless copying of QgsFeatureIterator instances)
      * TODO QGIS3: make this private
      */
-    int refs;
+    int refs = 0;
     //! Add reference
     void ref();
     //! Remove reference, delete if refs == 0
@@ -167,16 +182,26 @@ class CORE_EXPORT QgsAbstractFeatureIterator
     friend class QgsFeatureIterator;
 
     //! Number of features already fetched by iterator
-    long mFetchedCount;
+    long mFetchedCount = 0;
 
     //! Status of compilation of filter expression
-    CompileStatus mCompileStatus;
+    CompileStatus mCompileStatus = NoCompilation;
 
     //! Setup the simplification of geometries to fetch using the specified simplify method
     virtual bool prepareSimplification( const QgsSimplifyMethod &simplifyMethod );
 
+    /**
+     * An invalid state of a feature iterator indicates that there was a problem with
+     * even getting it up and running.
+     * This should be set to false by subclasses if they have problems connecting to
+     * the provider.
+     * Do NOT set this to false when the feature iterator closes or has no features but
+     * we are sure, that it's just an empty dataset.
+     */
+    bool mValid = true;
+
   private:
-    bool mUseCachedFeatures;
+    bool mUseCachedFeatures = false;
     QList<QgsIndexedFeature> mCachedFeatures;
     QList<QgsIndexedFeature>::ConstIterator mFeatureIterator;
 
@@ -220,7 +245,7 @@ class QgsAbstractFeatureIteratorFromSource : public QgsAbstractFeatureIterator
       mSource->iteratorOpened( this );
     }
 
-    ~QgsAbstractFeatureIteratorFromSource()
+    ~QgsAbstractFeatureIteratorFromSource() override
     {
       if ( mOwnSource )
         delete mSource;
@@ -263,7 +288,7 @@ class CORE_EXPORT QgsFeatureIterator
 #endif
 
     //! construct invalid iterator
-    QgsFeatureIterator();
+    QgsFeatureIterator() = default;
 #ifndef SIP_RUN
     //! construct a valid iterator
     QgsFeatureIterator( QgsAbstractFeatureIterator *iter );
@@ -278,6 +303,17 @@ class CORE_EXPORT QgsFeatureIterator
     bool nextFeature( QgsFeature &f );
     bool rewind();
     bool close();
+
+    /**
+     * Will return if this iterator is valid.
+     * An invalid iterator was probably introduced by a failed attempt to acquire a connection
+     * or is a default constructed iterator.
+     *
+     * \see isClosed to check if the iterator successfully completed and returned all the features.
+     *
+     * \since QGIS 3.0
+     */
+    virtual bool isValid() const;
 
     //! find out whether the iterator is still valid or closed already
     bool isClosed() const;
@@ -308,10 +344,6 @@ class CORE_EXPORT QgsFeatureIterator
 };
 
 #ifndef SIP_RUN
-
-inline QgsFeatureIterator::QgsFeatureIterator()
-{
-}
 
 inline QgsFeatureIterator::QgsFeatureIterator( QgsAbstractFeatureIterator *iter )
   : mIter( iter )

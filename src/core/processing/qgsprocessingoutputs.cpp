@@ -62,3 +62,16 @@ QgsProcessingOutputFolder::QgsProcessingOutputFolder( const QString &name, const
 QgsProcessingOutputFile::QgsProcessingOutputFile( const QString &name, const QString &description )
   : QgsProcessingOutputDefinition( name, description )
 {}
+
+QgsProcessingOutputMapLayer::QgsProcessingOutputMapLayer( const QString &name, const QString &description )
+  : QgsProcessingOutputDefinition( name, description )
+{
+
+}
+
+
+
+QString QgsProcessingOutputMapLayer::type() const
+{
+  return typeName();
+}

@@ -451,44 +451,44 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
     //! Constructor for convenience. Creates a root rule and adds a default rule with symbol (takes ownership)
     QgsRuleBasedRenderer( QgsSymbol *defaultSymbol SIP_TRANSFER );
 
-    ~QgsRuleBasedRenderer();
+    ~QgsRuleBasedRenderer() override;
 
     //! return symbol for current feature. Should not be used individually: there could be more symbols for a feature
-    virtual QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
+    QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
 
-    virtual bool renderFeature( QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) override;
+    bool renderFeature( QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) override;
 
-    virtual void startRender( QgsRenderContext &context, const QgsFields &fields ) override;
+    void startRender( QgsRenderContext &context, const QgsFields &fields ) override;
 
-    virtual void stopRender( QgsRenderContext &context ) override;
+    void stopRender( QgsRenderContext &context ) override;
 
-    virtual QString filter( const QgsFields &fields = QgsFields() ) override;
+    QString filter( const QgsFields &fields = QgsFields() ) override;
 
-    virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
+    QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
 
-    virtual bool filterNeedsGeometry() const override;
+    bool filterNeedsGeometry() const override;
 
-    virtual QgsRuleBasedRenderer *clone() const override SIP_FACTORY;
+    QgsRuleBasedRenderer *clone() const override SIP_FACTORY;
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const override;
+    void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const override;
 
     static QgsFeatureRenderer *createFromSld( QDomElement &element, QgsWkbTypes::GeometryType geomType ) SIP_FACTORY;
 
-    virtual QgsSymbolList symbols( QgsRenderContext &context ) override;
+    QgsSymbolList symbols( QgsRenderContext &context ) override;
 
-    virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) override;
-    virtual bool legendSymbolItemsCheckable() const override;
-    virtual bool legendSymbolItemChecked( const QString &key ) override;
-    virtual void checkLegendSymbolItem( const QString &key, bool state = true ) override;
+    QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) override;
+    bool legendSymbolItemsCheckable() const override;
+    bool legendSymbolItemChecked( const QString &key ) override;
+    void checkLegendSymbolItem( const QString &key, bool state = true ) override;
 
-    virtual void setLegendSymbolItem( const QString &key, QgsSymbol *symbol SIP_TRANSFER ) override;
-    virtual QgsLegendSymbolList legendSymbolItems() const override;
-    virtual QString dump() const override;
-    virtual bool willRenderFeature( QgsFeature &feat, QgsRenderContext &context ) override;
-    virtual QgsSymbolList symbolsForFeature( QgsFeature &feat, QgsRenderContext &context ) override;
-    virtual QgsSymbolList originalSymbolsForFeature( QgsFeature &feat, QgsRenderContext &context ) override;
-    virtual QSet<QString> legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
-    virtual QgsFeatureRenderer::Capabilities capabilities() override { return MoreSymbolsPerFeature | Filter | ScaleDependent; }
+    void setLegendSymbolItem( const QString &key, QgsSymbol *symbol SIP_TRANSFER ) override;
+    QgsLegendSymbolList legendSymbolItems() const override;
+    QString dump() const override;
+    bool willRenderFeature( QgsFeature &feat, QgsRenderContext &context ) override;
+    QgsSymbolList symbolsForFeature( QgsFeature &feat, QgsRenderContext &context ) override;
+    QgsSymbolList originalSymbolsForFeature( QgsFeature &feat, QgsRenderContext &context ) override;
+    QSet<QString> legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
+    QgsFeatureRenderer::Capabilities capabilities() override { return MoreSymbolsPerFeature | Filter | ScaleDependent; }
 
     /////
 
@@ -505,8 +505,8 @@ class CORE_EXPORT QgsRuleBasedRenderer : public QgsFeatureRenderer
 
     /**
      * creates a QgsRuleBasedRenderer from an existing renderer.
-     * \since QGIS 2.5
      * \returns a new renderer if the conversion was possible, otherwise 0.
+     * \since QGIS 2.5
      */
     static QgsRuleBasedRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) SIP_FACTORY;
 

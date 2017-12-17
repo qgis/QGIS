@@ -16,6 +16,7 @@
 #include "qgsauthsettingswidget.h"
 #include "qgsauthmanager.h"
 #include "qgsauthconfig.h"
+#include "qgsapplication.h"
 
 #include <QDateTime>
 
@@ -170,7 +171,7 @@ bool QgsAuthSettingsWidget::convertToEncrypted( )
   config.setName( tr( "Converted config %1" ).arg( QDateTime::currentDateTime().toString( ) ) );
   config.setConfig( QStringLiteral( "username" ), txtUserName->text() );
   config.setConfig( QStringLiteral( "password" ), txtPassword->text() );
-  if ( ! QgsAuthManager::instance()->storeAuthenticationConfig( config ) )
+  if ( ! QgsApplication::authManager()->storeAuthenticationConfig( config ) )
   {
     mAuthConfigSelect->showMessage( tr( "Couldn't create a Basic authentication configuration!" ) );
     return false;

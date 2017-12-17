@@ -267,13 +267,13 @@ QgsGeometry QgsMapToPixelSimplifier::simplifyGeometry(
   }
   else if ( flatType == QgsWkbTypes::Polygon )
   {
-    const QgsPolygonV2 &srcPolygon = dynamic_cast<const QgsPolygonV2 &>( geometry );
-    std::unique_ptr<QgsPolygonV2> polygon( new QgsPolygonV2() );
-    polygon->setExteriorRing( qgsgeometry_cast<QgsCurve *>( simplifyGeometry( simplifyFlags, simplifyAlgorithm, srcPolygon.exteriorRing()->wkbType(), *srcPolygon.exteriorRing(), envelope, map2pixelTol, true ).geometry()->clone() ) );
+    const QgsPolygon &srcPolygon = dynamic_cast<const QgsPolygon &>( geometry );
+    std::unique_ptr<QgsPolygon> polygon( new QgsPolygon() );
+    polygon->setExteriorRing( qgsgeometry_cast<QgsCurve *>( simplifyGeometry( simplifyFlags, simplifyAlgorithm, srcPolygon.exteriorRing()->wkbType(), *srcPolygon.exteriorRing(), envelope, map2pixelTol, true ).constGet()->clone() ) );
     for ( int i = 0; i < srcPolygon.numInteriorRings(); ++i )
     {
       const QgsCurve *sub = srcPolygon.interiorRing( i );
-      polygon->addInteriorRing( qgsgeometry_cast<QgsCurve *>( simplifyGeometry( simplifyFlags, simplifyAlgorithm, sub->wkbType(), *sub, envelope, map2pixelTol, true ).geometry()->clone() ) );
+      polygon->addInteriorRing( qgsgeometry_cast<QgsCurve *>( simplifyGeometry( simplifyFlags, simplifyAlgorithm, sub->wkbType(), *sub, envelope, map2pixelTol, true ).constGet()->clone() ) );
     }
     return QgsGeometry( polygon.release() );
   }
@@ -285,7 +285,7 @@ QgsGeometry QgsMapToPixelSimplifier::simplifyGeometry(
     for ( int i = 0; i < numGeoms; ++i )
     {
       const QgsAbstractGeometry *sub = srcCollection.geometryN( i );
-      collection->addGeometry( simplifyGeometry( simplifyFlags, simplifyAlgorithm, sub->wkbType(), *sub, envelope, map2pixelTol, false ).geometry()->clone() );
+      collection->addGeometry( simplifyGeometry( simplifyFlags, simplifyAlgorithm, sub->wkbType(), *sub, envelope, map2pixelTol, false ).constGet()->clone() );
     }
     return QgsGeometry( collection.release() );
   }
@@ -320,7 +320,7 @@ QgsGeometry QgsMapToPixelSimplifier::simplify( const QgsGeometry &geometry ) con
   }
 
   const bool isaLinearRing = flatType == QgsWkbTypes::Polygon;
-  const int numPoints = geometry.geometry()->nCoordinates();
+  const int numPoints = geometry.constGet()->nCoordinates();
 
   if ( numPoints <= ( isaLinearRing ? 6 : 3 ) )
   {
@@ -335,5 +335,5 @@ QgsGeometry QgsMapToPixelSimplifier::simplify( const QgsGeometry &geometry ) con
     return geometry;
   }
 
-  return simplifyGeometry( mSimplifyFlags, mSimplifyAlgorithm, geometry.wkbType(), *geometry.geometry(), envelope, mTolerance, false );
+  return simplifyGeometry( mSimplifyFlags, mSimplifyAlgorithm, geometry.wkbType(), *geometry.constGet(), envelope, mTolerance, false );
 }

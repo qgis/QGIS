@@ -18,7 +18,7 @@ class QgsGraphDirector : QObject
 {
 %Docstring
  Determine making the graph. QgsGraphBuilder and QgsGraphDirector implemented
- using "builder" design patter.
+using "builder" design patter.
 %End
 
 %TypeHeaderCode
@@ -32,19 +32,18 @@ class QgsGraphDirector : QObject
 %End
   public:
 
-    virtual ~QgsGraphDirector();
-
     virtual void makeGraph( QgsGraphBuilderInterface *builder,
                             const QVector< QgsPointXY > &additionalPoints,
                             QVector< QgsPointXY > &snappedPoints /Out/,
                             QgsFeedback *feedback = 0 ) const;
 %Docstring
- Make a graph using QgsGraphBuilder
+Make a graph using QgsGraphBuilder
 
- \param builder the graph builder
- \param additionalPoints list of points that should be snapped to the graph
- \param snappedPoints list of snapped points
- \param feedback feedback object for reporting progress
+:param builder: the graph builder
+:param additionalPoints: list of points that should be snapped to the graph
+:param snappedPoints: list of snapped points
+:param feedback: feedback object for reporting progress
+
 .. note::
 
    if snappedPoints[i] == QgsPointXY(0.0,0.0) then snapping failed.
@@ -58,7 +57,6 @@ Add optimization strategy
     virtual QString name() const = 0;
 %Docstring
 Returns director name
- :rtype: str
 %End
 
   protected:
