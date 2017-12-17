@@ -18,6 +18,7 @@
 #include "qgssettings.h"
 #include "qgslayout.h"
 #include "qgslayoutmeasurementconverter.h"
+#include "qgslayoutpagecollection.h"
 
 QgsLayoutAddPagesDialog::QgsLayoutAddPagesDialog( QWidget *parent, Qt::WindowFlags flags )
   : QDialog( parent, flags )

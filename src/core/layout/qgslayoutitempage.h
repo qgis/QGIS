@@ -74,7 +74,7 @@ class CORE_EXPORT QgsLayoutItemPage : public QgsLayoutItem
     /**
      * Constructor for QgsLayoutItemPage, with the specified parent \a layout.
      */
-    explicit QgsLayoutItemPage( QgsLayout *layout SIP_TRANSFERTHIS );
+    explicit QgsLayoutItemPage( QgsLayout *layout );
 
     /**
      * Returns a new page item for the specified \a layout.

@@ -17,6 +17,7 @@
 #include "qgslayoutaligner.h"
 #include "qgslayoutitem.h"
 #include "qgslayout.h"
+#include "qgslayoutundostack.h"
 
 void QgsLayoutAligner::alignItems( QgsLayout *layout, const QList<QgsLayoutItem *> &items, QgsLayoutAligner::Alignment alignment )
 {

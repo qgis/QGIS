@@ -48,6 +48,8 @@ class QgsLayoutPagePropertiesWidget : public QgsLayoutItemBaseWidget, private Ui
     void updatePageSize();
     void setToCustomSize();
     void symbolChanged();
+    void excludeExportsToggled( bool checked );
+    void refreshLayout();
 
   private:
 
@@ -56,6 +58,7 @@ class QgsLayoutPagePropertiesWidget : public QgsLayoutItemBaseWidget, private Ui
     QgsLayoutMeasurementConverter mConverter;
 
     bool mSettingPresetSize = false;
+    bool mBlockPageUpdate = false;
 
     void showCurrentPageSize();
 

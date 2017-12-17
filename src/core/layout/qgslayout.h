@@ -21,20 +21,27 @@
 #include "qgslayoutcontext.h"
 #include "qgslayoutsnapper.h"
 #include "qgsexpressioncontextgenerator.h"
-#include "qgslayoutpagecollection.h"
 #include "qgslayoutgridsettings.h"
 #include "qgslayoutguidecollection.h"
-#include "qgslayoutundostack.h"
 #include "qgslayoutexporter.h"
 
 class QgsLayoutItemMap;
 class QgsLayoutModel;
 class QgsLayoutMultiFrame;
+class QgsLayoutPageCollection;
+class QgsLayoutUndoStack;
 
 /**
  * \ingroup core
  * \class QgsLayout
  * \brief Base class for layouts, which can contain items such as maps, labels, scalebars, etc.
+ *
+ * While the raw QGraphicsScene API can be used to render the contents of a QgsLayout
+ * to a QPainter, it is recommended to instead use a QgsLayoutExporter to handle rendering
+ * layouts instead. QgsLayoutExporter automatically takes care of the intracacies of
+ * preparing the layout and paint devices for correct exports, respecting various
+ * user settings such as the layout context DPI.
+ *
  * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContextGenerator, public QgsLayoutUndoObjectInterface
@@ -55,6 +62,13 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
       ZMouseHandles = 10000, //!< Z-value for mouse handles
       ZViewTool = 10001, //!< Z-value for temporary view tool items
       ZSnapIndicator = 10002, //!< Z-value for snapping indicator
+    };
+
+    //! Layout undo commands, used for collapsing undo commands
+    enum UndoCommand
+    {
+      UndoLayoutDpi, //!< Change layout default DPI
+      UndoNone = -1, //!< No command suppression
     };
 
     /**
@@ -94,12 +108,6 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     QgsLayoutModel *itemsModel();
 
     /**
-     * Returns the layout's exporter, which is used for rendering the layout and exporting
-     * to various formats.
-     */
-    QgsLayoutExporter &exporter();
-
-    /**
      * Returns the layout's name.
      * \see setName()
      */
@@ -115,7 +123,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      * Returns a list of layout items of a specific type.
      * \note not available in Python bindings
      */
-    template<class T> void layoutItems( QList<T *> &itemList ) SIP_SKIP
+    template<class T> void layoutItems( QList<T *> &itemList ) const SIP_SKIP
     {
       itemList.clear();
       QList<QGraphicsItem *> graphicsItemList = items();
@@ -222,7 +230,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      *
      * \see multiFrameByUuid()
      */
-    QgsLayoutItem *itemByUuid( const QString &uuid, bool includeTemplateUuids = false );
+    QgsLayoutItem *itemByUuid( const QString &uuid, bool includeTemplateUuids = false ) const;
 
     /**
      * Returns the layout multiframe with matching \a uuid unique identifier, or a nullptr
@@ -403,7 +411,6 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      * \see setReferenceMap()
      * \see generateWorldFile()
      */
-    //TODO
     QgsLayoutItemMap *referenceMap() const;
 
     /**
@@ -412,7 +419,6 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      * \see referenceMap()
      * \see setGenerateWorldFile()
      */
-    //TODO
     void setReferenceMap( QgsLayoutItemMap *map );
 
     /**
@@ -433,8 +439,22 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      * \param ignorePages set to true to ignore page items
      * \param margin optional marginal (in percent, e.g., 0.05 = 5% ) to add around items
      * \returns layout bounds, in layout units.
+     *
+     * \see pageItemBounds()
      */
     QRectF layoutBounds( bool ignorePages = false, double margin = 0.0 ) const;
+
+    /**
+     * Returns the bounding box of the items contained on a specified \a page.
+     * A page number of 0 represents the first page in the layout.
+     *
+     * Set \a visibleOnly to true to only include visible items.
+     *
+     * The returned bounds are in layout units.
+     *
+     * \see layoutBounds()
+     */
+    QRectF pageItemBounds( int page, bool visibleOnly = false ) const;
 
     /**
      * Adds an \a item to the layout. This should be called instead of the base class addItem()
@@ -570,6 +590,13 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
   signals:
 
     /**
+     * Is emitted when properties of the layout change. This signal is only
+     * emitted for settings directly managed by the layout, and is not emitted
+     * when child items change.
+     */
+    void changed();
+
+    /**
      * Emitted whenever the expression variables stored in the layout have been changed.
      */
     void variablesChanged();
@@ -608,10 +635,12 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
 
     std::unique_ptr< QgsLayoutPageCollection > mPageCollection;
     std::unique_ptr< QgsLayoutUndoStack > mUndoStack;
-    QgsLayoutExporter mExporter;
 
     //! List of multiframe objects
     QList<QgsLayoutMultiFrame *> mMultiFrames;
+
+    //! Item ID for composer map to use for the world file generation
+    QString mWorldFileMapId;
 
     //! Writes only the layout settings (not member settings like grid settings, etc) to XML
     void writeXmlLayoutSettings( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
@@ -643,6 +672,3 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
 };
 
 #endif //QGSLAYOUT_H
-
-
-

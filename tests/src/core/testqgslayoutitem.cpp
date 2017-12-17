@@ -27,6 +27,8 @@
 #include "qgslayoutitemshape.h"
 #include "qgslayouteffect.h"
 #include "qgsfillsymbollayer.h"
+#include "qgslayoutpagecollection.h"
+#include "qgslayoutundostack.h"
 #include <QObject>
 #include <QPainter>
 #include <QImage>
@@ -605,9 +607,26 @@ void TestQgsLayoutItem::dataDefinedSize()
   QCOMPARE( item->sizeWithUnits().units(), QgsUnitTypes::LayoutCentimeters );
   QCOMPARE( item->rect().width(), 130.0 ); //mm
   QCOMPARE( item->rect().height(), 30.0 ); //mm
+  // data defined orientation
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::PaperOrientation, QgsProperty::fromValue( "portrait" ) );
+  item->attemptResize( QgsLayoutSize( 7.0, 1.50, QgsUnitTypes::LayoutCentimeters ) );
+  QCOMPARE( item->sizeWithUnits().width(), 3.0 );
+  QCOMPARE( item->sizeWithUnits().height(), 13.0 );
+  QCOMPARE( item->sizeWithUnits().units(), QgsUnitTypes::LayoutCentimeters );
+  QCOMPARE( item->rect().width(), 30.0 ); //mm
+  QCOMPARE( item->rect().height(), 130.0 ); //mm
+
   item->dataDefinedProperties().setProperty( QgsLayoutObject::ItemWidth, QgsProperty() );
   item->dataDefinedProperties().setProperty( QgsLayoutObject::ItemHeight, QgsProperty() );
   item->dataDefinedProperties().setProperty( QgsLayoutObject::PresetPaperSize, QgsProperty() );
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::PaperOrientation, QgsProperty::fromValue( "landscape" ) );
+  item->attemptResize( QgsLayoutSize( 1.0, 1.50, QgsUnitTypes::LayoutCentimeters ) );
+  QCOMPARE( item->sizeWithUnits().width(), 1.5 );
+  QCOMPARE( item->sizeWithUnits().height(), 1.0 );
+  QCOMPARE( item->sizeWithUnits().units(), QgsUnitTypes::LayoutCentimeters );
+  QCOMPARE( item->rect().width(), 15.0 ); //mm
+  QCOMPARE( item->rect().height(), 10.0 ); //mm
+  item->dataDefinedProperties().setProperty( QgsLayoutObject::PaperOrientation, QgsProperty() );
 
   //check change of units should apply to data defined size
   item->dataDefinedProperties().setProperty( QgsLayoutObject::ItemWidth, QgsProperty::fromExpression( QStringLiteral( "4+8" ) ) );

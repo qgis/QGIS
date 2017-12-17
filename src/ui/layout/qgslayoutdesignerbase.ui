@@ -69,6 +69,12 @@
    <addaction name="mActionLayoutManager"/>
    <addaction name="mActionLoadFromTemplate"/>
    <addaction name="mActionSaveAsTemplate"/>
+   <addaction name="separator"/>
+   <addaction name="mActionAddPages"/>
+   <addaction name="separator"/>
+   <addaction name="mActionExportAsImage"/>
+   <addaction name="mActionExportAsSVG"/>
+   <addaction name="mActionExportAsPDF"/>
   </widget>
   <widget class="QToolBar" name="mToolsToolbar">
    <property name="windowTitle">
@@ -112,6 +118,10 @@
     <addaction name="separator"/>
     <addaction name="mActionLoadFromTemplate"/>
     <addaction name="mActionSaveAsTemplate"/>
+    <addaction name="separator"/>
+    <addaction name="mActionExportAsImage"/>
+    <addaction name="mActionExportAsSVG"/>
+    <addaction name="mActionExportAsPDF"/>
     <addaction name="separator"/>
     <addaction name="mActionClose"/>
    </widget>
@@ -436,7 +446,7 @@
   <action name="mActionAddPages">
    <property name="icon">
     <iconset resource="../../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionFileNew.svg</normaloff>:/images/themes/default/mActionFileNew.svg</iconset>
+     <normaloff>:/images/themes/default/mActionNewPage.svg</normaloff>:/images/themes/default/mActionNewPage.svg</iconset>
    </property>
    <property name="text">
     <string>Add Pages…</string>
@@ -1171,6 +1181,36 @@
    </property>
    <property name="toolTip">
     <string>Delete layout</string>
+   </property>
+  </action>
+  <action name="mActionExportAsImage">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSaveMapAsImage.svg</normaloff>:/images/themes/default/mActionSaveMapAsImage.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Export as &amp;Image…</string>
+   </property>
+   <property name="toolTip">
+    <string>Export as image</string>
+   </property>
+  </action>
+  <action name="mActionExportAsPDF">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSaveAsPDF.svg</normaloff>:/images/themes/default/mActionSaveAsPDF.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Export as PDF…</string>
+   </property>
+  </action>
+  <action name="mActionExportAsSVG">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSaveAsSVG.svg</normaloff>:/images/themes/default/mActionSaveAsSVG.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Export as S&amp;VG…</string>
    </property>
   </action>
  </widget>

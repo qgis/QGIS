@@ -20,6 +20,7 @@
 #include "qgssymbollayerutils.h"
 #include "qgslayoutitemregistry.h"
 #include "qgslayout.h"
+#include "qgslayoutundostack.h"
 #include <QFileDialog>
 
 QgsLayoutPolylineWidget::QgsLayoutPolylineWidget( QgsLayoutItemPolyline *polyline )

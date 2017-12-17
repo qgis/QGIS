@@ -62,7 +62,6 @@ The caller takes responsibility for deleting the returned object.
     virtual void setFrameStrokeWidth( const QgsLayoutMeasurement &width );
 
 
-
     double scale() const;
 %Docstring
 Returns the map scale.
@@ -280,10 +279,10 @@ Sets preset name for map rendering. See followVisibilityPresetName() for more de
 Returns true if the map contains a WMS layer.
 %End
 
-    bool containsAdvancedEffects() const;
-%Docstring
-Returns true if the map contains layers with blend modes or flattened layers for vectors
-%End
+    virtual bool requiresRasterization() const;
+
+    virtual bool containsAdvancedEffects() const;
+
 
     void setMapRotation( double rotation );
 %Docstring
@@ -457,7 +456,7 @@ This is calculated using the width of the map item and the width of the
 current visible map extent.
 %End
 
-    QgsMapSettings mapSettings( const QgsRectangle &extent, QSizeF size, int dpi ) const;
+    QgsMapSettings mapSettings( const QgsRectangle &extent, QSizeF size, double dpi ) const;
 %Docstring
 Return map settings that will be used for drawing of the map.
 %End

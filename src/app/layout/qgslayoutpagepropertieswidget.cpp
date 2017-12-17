@@ -18,6 +18,8 @@
 #include "qgspagesizeregistry.h"
 #include "qgslayoutitempage.h"
 #include "qgslayout.h"
+#include "qgslayoutpagecollection.h"
+#include "qgslayoutundostack.h"
 
 QgsLayoutPagePropertiesWidget::QgsLayoutPagePropertiesWidget( QWidget *parent, QgsLayoutItem *layoutItem )
   : QgsLayoutItemBaseWidget( parent, layoutItem )
@@ -37,6 +39,7 @@ QgsLayoutPagePropertiesWidget::QgsLayoutPagePropertiesWidget( QWidget *parent, Q
   mWidthSpin->setValue( mPage->pageSize().width() );
   mHeightSpin->setValue( mPage->pageSize().height() );
   mSizeUnitsComboBox->setUnit( mPage->pageSize().units() );
+  mExcludePageCheckBox->setChecked( mPage->excludeFromExports() );
 
   mPageOrientationComboBox->setCurrentIndex( mPageOrientationComboBox->findData( mPage->orientation() ) );
 
@@ -57,17 +60,28 @@ QgsLayoutPagePropertiesWidget::QgsLayoutPagePropertiesWidget( QWidget *parent, Q
   connect( mHeightSpin, static_cast< void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutPagePropertiesWidget::updatePageSize );
   connect( mWidthSpin, static_cast< void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutPagePropertiesWidget::setToCustomSize );
   connect( mHeightSpin, static_cast< void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutPagePropertiesWidget::setToCustomSize );
+  connect( mExcludePageCheckBox, &QCheckBox::toggled, this, &QgsLayoutPagePropertiesWidget::excludeExportsToggled );
 
   connect( mSymbolButton, &QgsSymbolButton::changed, this, &QgsLayoutPagePropertiesWidget::symbolChanged );
   registerDataDefinedButton( mPaperSizeDDBtn, QgsLayoutObject::PresetPaperSize );
   registerDataDefinedButton( mWidthDDBtn, QgsLayoutObject::ItemWidth );
   registerDataDefinedButton( mHeightDDBtn, QgsLayoutObject::ItemHeight );
+  registerDataDefinedButton( mOrientationDDBtn, QgsLayoutObject::PaperOrientation );
+  registerDataDefinedButton( mExcludePageDDBtn, QgsLayoutObject::ExcludeFromExports );
+
+  connect( mPaperSizeDDBtn, &QgsPropertyOverrideButton::changed, this, &QgsLayoutPagePropertiesWidget::refreshLayout );
+  connect( mWidthDDBtn, &QgsPropertyOverrideButton::changed, this, &QgsLayoutPagePropertiesWidget::refreshLayout );
+  connect( mHeightDDBtn, &QgsPropertyOverrideButton::changed, this, &QgsLayoutPagePropertiesWidget::refreshLayout );
+  connect( mOrientationDDBtn, &QgsPropertyOverrideButton::changed, this, &QgsLayoutPagePropertiesWidget::refreshLayout );
+
+  mExcludePageDDBtn->registerEnabledWidget( mExcludePageCheckBox, false );
 
   showCurrentPageSize();
 }
 
 void QgsLayoutPagePropertiesWidget::pageSizeChanged( int )
 {
+  mBlockPageUpdate = true;
   if ( mPageSizeComboBox->currentData().toString().isEmpty() )
   {
     //custom size
@@ -98,6 +112,7 @@ void QgsLayoutPagePropertiesWidget::pageSizeChanged( int )
     }
     mSettingPresetSize = false;
   }
+  mBlockPageUpdate = false;
   updatePageSize();
 }
 
@@ -132,10 +147,17 @@ void QgsLayoutPagePropertiesWidget::orientationChanged( int )
 
 void QgsLayoutPagePropertiesWidget::updatePageSize()
 {
+  if ( mBlockPageUpdate )
+    return;
+
+  mPage->layout()->undoStack()->beginMacro( tr( "Change Page Size" ) );
+  mPage->layout()->pageCollection()->beginPageSizeChange();
   mPage->layout()->undoStack()->beginCommand( mPage, tr( "Change Page Size" ), 1 + mPage->layout()->pageCollection()->pageNumber( mPage ) );
   mPage->setPageSize( QgsLayoutSize( mWidthSpin->value(), mHeightSpin->value(), mSizeUnitsComboBox->unit() ) );
   mPage->layout()->undoStack()->endCommand();
   mPage->layout()->pageCollection()->reflow();
+  mPage->layout()->pageCollection()->endPageSizeChange();
+  mPage->layout()->undoStack()->endMacro();
 }
 
 void QgsLayoutPagePropertiesWidget::setToCustomSize()
@@ -153,13 +175,25 @@ void QgsLayoutPagePropertiesWidget::symbolChanged()
   mPage->layout()->undoStack()->endCommand();
 }
 
+void QgsLayoutPagePropertiesWidget::excludeExportsToggled( bool checked )
+{
+  mPage->beginCommand( !checked ? tr( "Include Page in Exports" ) : tr( "Exclude Page from Exports" ) );
+  mPage->setExcludeFromExports( checked );
+  mPage->endCommand();
+}
+
+void QgsLayoutPagePropertiesWidget::refreshLayout()
+{
+  mPage->layout()->refresh();
+}
+
 void QgsLayoutPagePropertiesWidget::showCurrentPageSize()
 {
   QgsLayoutSize paperSize = mPage->pageSize();
   QString pageSize = QgsApplication::pageSizeRegistry()->find( paperSize );
   if ( !pageSize.isEmpty() )
   {
-    mPageSizeComboBox->setCurrentIndex( mPageSizeComboBox->findData( pageSize ) );
+    whileBlocking( mPageSizeComboBox )->setCurrentIndex( mPageSizeComboBox->findData( pageSize ) );
     mLockAspectRatio->setEnabled( false );
     mLockAspectRatio->setLocked( false );
     mSizeUnitsComboBox->setEnabled( false );
@@ -168,7 +202,7 @@ void QgsLayoutPagePropertiesWidget::showCurrentPageSize()
   else
   {
     // custom
-    mPageSizeComboBox->setCurrentIndex( mPageSizeComboBox->count() - 1 );
+    whileBlocking( mPageSizeComboBox )->setCurrentIndex( mPageSizeComboBox->count() - 1 );
     mLockAspectRatio->setEnabled( true );
     mSizeUnitsComboBox->setEnabled( true );
     mPageOrientationComboBox->setEnabled( false );

@@ -33,6 +33,9 @@
 #include "qgslayoutviewtoolselect.h"
 #include "qgslayoutviewtooleditnodes.h"
 #include "qgslayoutitemwidget.h"
+#include "qgslayoutimageexportoptionsdialog.h"
+#include "qgslayoutitemmap.h"
+#include "qgsmessageviewer.h"
 #include "qgsgui.h"
 #include "qgslayoutitemguiregistry.h"
 #include "qgslayoutpropertieswidget.h"
@@ -48,6 +51,8 @@
 #include "qgslayoutitemslistview.h"
 #include "qgsproject.h"
 #include "qgsbusyindicatordialog.h"
+#include "qgslayoutundostack.h"
+#include "qgslayoutpagecollection.h"
 #include <QShortcut>
 #include <QComboBox>
 #include <QLineEdit>
@@ -86,6 +91,11 @@ QgsLayout *QgsAppLayoutDesignerInterface::layout()
 QgsLayoutView *QgsAppLayoutDesignerInterface::view()
 {
   return mDesigner->view();
+}
+
+QgsMessageBar *QgsAppLayoutDesignerInterface::messageBar()
+{
+  return mDesigner->messageBar();
 }
 
 void QgsAppLayoutDesignerInterface::selectItems( const QList<QgsLayoutItem *> items )
@@ -131,6 +141,10 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   centralWidget()->layout()->setMargin( 0 );
   centralWidget()->layout()->setContentsMargins( 0, 0, 0, 0 );
 
+  mMessageBar = new QgsMessageBar( centralWidget() );
+  mMessageBar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed );
+  static_cast< QGridLayout * >( centralWidget()->layout() )->addWidget( mMessageBar, 0, 0, 1, 1, Qt::AlignTop );
+
   mHorizontalRuler = new QgsLayoutRuler( nullptr, Qt::Horizontal );
   mVerticalRuler = new QgsLayoutRuler( nullptr, Qt::Vertical );
   mRulerLayoutFix = new QWidget();
@@ -165,6 +179,9 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   connect( mActionNewLayout, &QAction::triggered, this, &QgsLayoutDesignerDialog::newLayout );
   connect( mActionLayoutManager, &QAction::triggered, this, &QgsLayoutDesignerDialog::showManager );
   connect( mActionRemoveLayout, &QAction::triggered, this, &QgsLayoutDesignerDialog::deleteLayout );
+
+  connect( mActionExportAsImage, &QAction::triggered, this, &QgsLayoutDesignerDialog::exportToRaster );
+  connect( mActionExportAsPDF, &QAction::triggered, this, &QgsLayoutDesignerDialog::exportToPdf );
 
   connect( mActionShowGrid, &QAction::triggered, this, &QgsLayoutDesignerDialog::showGrid );
   connect( mActionSnapGrid, &QAction::triggered, this, &QgsLayoutDesignerDialog::snapToGrid );
@@ -1287,7 +1304,7 @@ void QgsLayoutDesignerDialog::saveAsTemplate()
   context.setPathResolver( QgsProject::instance()->pathResolver() );
   if ( !currentLayout()->saveAsTemplate( saveFileName, context ) )
   {
-    QMessageBox::warning( nullptr, tr( "Save template" ), tr( "Error creating template file." ) );
+    QMessageBox::warning( this, tr( "Save template" ), tr( "Error creating template file." ) );
   }
 }
 
@@ -1408,6 +1425,250 @@ void QgsLayoutDesignerDialog::deleteLayout()
   close();
 }
 
+void QgsLayoutDesignerDialog::exportToRaster()
+{
+  if ( containsWmsLayers() )
+    showWmsPrintingWarning();
+
+  // Image size
+  double oneInchInLayoutUnits = mLayout->convertToLayoutUnits( QgsLayoutMeasurement( 1, QgsUnitTypes::LayoutInches ) );
+  QSizeF maxPageSize = mLayout->pageCollection()->maximumPageSize();
+  bool hasUniformPageSizes = mLayout->pageCollection()->hasUniformPageSizes();
+  int width = ( int )( mLayout->context().dpi() * maxPageSize.width() / oneInchInLayoutUnits );
+  int height = ( int )( mLayout->context().dpi() * maxPageSize.height() / oneInchInLayoutUnits );
+  double dpi = mLayout->context().dpi();
+
+  int memuse = width * height * 3 / 1000000;  // pixmap + image
+  QgsDebugMsg( QString( "Image %1x%2" ).arg( width ).arg( height ) );
+  QgsDebugMsg( QString( "memuse = %1" ).arg( memuse ) );
+
+  if ( memuse > 400 )   // about 4500x4500
+  {
+    int answer = QMessageBox::warning( this, tr( "Export layout" ),
+                                       tr( "To create an image of %1x%2 requires about %3 MB of memory. Proceed?" )
+                                       .arg( width ).arg( height ).arg( memuse ),
+                                       QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok );
+
+    raise();
+    if ( answer == QMessageBox::Cancel )
+      return;
+  }
+
+  //get some defaults from the composition
+  bool cropToContents = mLayout->customProperty( QStringLiteral( "imageCropToContents" ), false ).toBool();
+  int marginTop = mLayout->customProperty( QStringLiteral( "imageCropMarginTop" ), 0 ).toInt();
+  int marginRight = mLayout->customProperty( QStringLiteral( "imageCropMarginRight" ), 0 ).toInt();
+  int marginBottom = mLayout->customProperty( QStringLiteral( "imageCropMarginBottom" ), 0 ).toInt();
+  int marginLeft = mLayout->customProperty( QStringLiteral( "imageCropMarginLeft" ), 0 ).toInt();
+  bool antialias = mLayout->customProperty( QStringLiteral( "imageAntialias" ), true ).toBool();
+
+  QgsLayoutImageExportOptionsDialog imageDlg( this );
+  imageDlg.setImageSize( maxPageSize );
+  imageDlg.setResolution( dpi );
+  imageDlg.setCropToContents( cropToContents );
+  imageDlg.setCropMargins( marginTop, marginRight, marginBottom, marginLeft );
+  imageDlg.setGenerateWorldFile( mLayout->customProperty( QStringLiteral( "exportWorldFile" ), false ).toBool() );
+  imageDlg.setAntialiasing( antialias );
+
+#if 0 //TODO
+  QgsAtlasComposition *atlasMap = &mComposition->atlasComposition();
+#endif
+
+  QString outputFileName;
+#if 0 //TODO
+  if ( atlasMap->enabled() && mComposition->atlasMode() == QgsComposition::PreviewAtlas )
+  {
+    QString lastUsedDir = settings.value( QStringLiteral( "UI/lastSaveAsImageDir" ), QDir::homePath() ).toString();
+    outputFileName = QDir( lastUsedDir ).filePath( atlasMap->currentFilename() );
+  }
+#endif
+
+#ifdef Q_OS_MAC
+  mQgis->activateWindow();
+  this->raise();
+#endif
+  QPair<QString, QString> fileNExt = QgsGuiUtils::getSaveAsImageName( this, tr( "Save layout as" ), outputFileName );
+  this->activateWindow();
+
+  if ( fileNExt.first.isEmpty() )
+  {
+    return;
+  }
+
+  if ( !imageDlg.exec() )
+    return;
+
+  cropToContents = imageDlg.cropToContents();
+  imageDlg.getCropMargins( marginTop, marginRight, marginBottom, marginLeft );
+  mLayout->setCustomProperty( QStringLiteral( "imageCropToContents" ), cropToContents );
+  mLayout->setCustomProperty( QStringLiteral( "imageCropMarginTop" ), marginTop );
+  mLayout->setCustomProperty( QStringLiteral( "imageCropMarginRight" ), marginRight );
+  mLayout->setCustomProperty( QStringLiteral( "imageCropMarginBottom" ), marginBottom );
+  mLayout->setCustomProperty( QStringLiteral( "imageCropMarginLeft" ), marginLeft );
+
+  mLayout->setCustomProperty( QStringLiteral( "imageAntialias" ), imageDlg.antialiasing() );
+
+  mView->setPaintingEnabled( false );
+  QApplication::setOverrideCursor( Qt::BusyCursor );
+
+  // force a refresh, to e.g. update data defined properties, tables, etc
+  mLayout->refresh();
+
+  QgsLayoutExporter exporter( mLayout );
+
+  QgsLayoutExporter::ImageExportSettings settings;
+  settings.cropToContents = cropToContents;
+  settings.cropMargins = QgsMargins( marginLeft, marginTop, marginRight, marginBottom );
+  settings.dpi = imageDlg.resolution();
+  if ( hasUniformPageSizes )
+  {
+    settings.imageSize = QSize( imageDlg.imageWidth(), imageDlg.imageHeight() );
+  }
+  settings.generateWorldFile = imageDlg.generateWorldFile();
+  settings.flags = QgsLayoutContext::FlagUseAdvancedEffects;
+  if ( imageDlg.antialiasing() )
+    settings.flags |= QgsLayoutContext::FlagAntialiasing;
+
+  switch ( exporter.exportToImage( fileNExt.first, settings ) )
+  {
+    case QgsLayoutExporter::Success:
+      mMessageBar->pushMessage( tr( "Export layout" ),
+                                tr( "Successfully exported layout to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( fileNExt.first ).toString(), fileNExt.first ),
+                                QgsMessageBar::INFO, 0 );
+      break;
+
+    case QgsLayoutExporter::PrintError:
+      break;
+
+    case QgsLayoutExporter::FileError:
+      QMessageBox::warning( this, tr( "Image Export Error" ),
+                            tr( "Cannot write to %1.\n\nThis file may be open in another application." ).arg( exporter.errorFile() ),
+                            QMessageBox::Ok,
+                            QMessageBox::Ok );
+      break;
+
+    case QgsLayoutExporter::MemoryError:
+      QMessageBox::warning( this, tr( "Memory Allocation Error" ),
+                            tr( "Trying to create image %1 (%2×%3 @ %4dpi ) "
+                                "resulted in a memory overflow.\n\n"
+                                "Please try a lower resolution or a smaller paper size." )
+                            .arg( exporter.errorFile() ).arg( imageDlg.imageWidth() ).arg( imageDlg.imageHeight() ).arg( settings.dpi ),
+                            QMessageBox::Ok, QMessageBox::Ok );
+      break;
+
+
+  }
+  QApplication::restoreOverrideCursor();
+  mView->setPaintingEnabled( true );
+}
+
+void QgsLayoutDesignerDialog::exportToPdf()
+{
+  if ( containsWmsLayers() )
+  {
+    showWmsPrintingWarning();
+  }
+
+  if ( requiresRasterization() )
+  {
+    showRasterizationWarning();
+  }
+
+  if ( containsAdvancedEffects() && ( mLayout->customProperty( QStringLiteral( "forceVector" ), false ).toBool() ) )
+  {
+    showForceVectorWarning();
+  }
+
+  QgsSettings settings;
+  QString lastUsedFile = settings.value( QStringLiteral( "UI/lastSaveAsPdfFile" ), QStringLiteral( "qgis.pdf" ) ).toString();
+  QFileInfo file( lastUsedFile );
+  QString outputFileName;
+
+#if 0// TODO
+  if ( hasAnAtlas && !atlasOnASingleFile &&
+       ( mode == QgsComposer::Atlas || mComposition->atlasMode() == QgsComposition::PreviewAtlas ) )
+  {
+    outputFileName = QDir( file.path() ).filePath( atlasMap->currentFilename() ) + ".pdf";
+  }
+  else
+  {
+#endif
+    outputFileName = file.path();
+#if 0 //TODO
+  }
+#endif
+
+#ifdef Q_OS_MAC
+  mQgis->activateWindow();
+  this->raise();
+#endif
+  outputFileName = QFileDialog::getSaveFileName(
+                     this,
+                     tr( "Export to PDF" ),
+                     outputFileName,
+                     tr( "PDF Format" ) + " (*.pdf *.PDF)" );
+  this->activateWindow();
+  if ( outputFileName.isEmpty() )
+  {
+    return;
+  }
+
+  if ( !outputFileName.endsWith( QLatin1String( ".pdf" ), Qt::CaseInsensitive ) )
+  {
+    outputFileName += QLatin1String( ".pdf" );
+  }
+
+  settings.setValue( QStringLiteral( "UI/lastSaveAsPdfFile" ), outputFileName );
+
+  mView->setPaintingEnabled( false );
+  QApplication::setOverrideCursor( Qt::BusyCursor );
+
+  QgsLayoutExporter::PdfExportSettings pdfSettings;
+  pdfSettings.rasterizeWholeImage = mLayout->customProperty( QStringLiteral( "rasterize" ), false ).toBool();
+  pdfSettings.forceVectorOutput = mLayout->customProperty( QStringLiteral( "forceVector" ), false ).toBool();
+
+  // force a refresh, to e.g. update data defined properties, tables, etc
+  mLayout->refresh();
+
+  QgsLayoutExporter exporter( mLayout );
+  switch ( exporter.exportToPdf( outputFileName, pdfSettings ) )
+  {
+    case QgsLayoutExporter::Success:
+    {
+      mMessageBar->pushMessage( tr( "Export layout" ),
+                                tr( "Successfully exported layout to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( outputFileName ).toString(), outputFileName ),
+                                QgsMessageBar::INFO, 0 );
+      break;
+    }
+
+    case QgsLayoutExporter::FileError:
+      QMessageBox::warning( this, tr( "Export to PDF" ),
+                            tr( "Cannot write to %1.\n\nThis file may be open in another application." ).arg( outputFileName ),
+                            QMessageBox::Ok,
+                            QMessageBox::Ok );
+      break;
+
+    case QgsLayoutExporter::PrintError:
+      QMessageBox::warning( this, tr( "Export to PDF" ),
+                            tr( "Could not create print device." ),
+                            QMessageBox::Ok,
+                            QMessageBox::Ok );
+      break;
+
+
+    case QgsLayoutExporter::MemoryError:
+      QMessageBox::warning( this, tr( "Memory Allocation Error" ),
+                            tr( "Exporting the PDF "
+                                "resulted in a memory overflow.\n\n"
+                                "Please try a lower resolution or a smaller paper size." ),
+                            QMessageBox::Ok, QMessageBox::Ok );
+      break;
+  }
+
+  mView->setPaintingEnabled( true );
+  QApplication::restoreOverrideCursor();
+}
+
 void QgsLayoutDesignerDialog::paste()
 {
   QPointF pt = mView->mapFromGlobal( QCursor::pos() );
@@ -1502,9 +1763,9 @@ void QgsLayoutDesignerDialog::createLayoutPropertiesWidget()
   QgsLayoutGuideWidget *oldGuideWidget = qobject_cast<QgsLayoutGuideWidget *>( mGuideStack->takeMainPanel() );
   delete oldGuideWidget;
 
-  QgsLayoutPropertiesWidget *widget = new QgsLayoutPropertiesWidget( mGeneralDock, mLayout );
-  widget->setDockMode( true );
-  mGeneralPropertiesStack->setMainPanel( widget );
+  mLayoutPropertiesWidget = new QgsLayoutPropertiesWidget( mGeneralDock, mLayout );
+  mLayoutPropertiesWidget->setDockMode( true );
+  mGeneralPropertiesStack->setMainPanel( mLayoutPropertiesWidget );
 
   QgsLayoutGuideWidget *guideWidget = new QgsLayoutGuideWidget( mGuideDock, mLayout, mView );
   guideWidget->setDockMode( true );
@@ -1521,6 +1782,102 @@ void QgsLayoutDesignerDialog::initializeRegistry()
 
   QgsGui::layoutItemGuiRegistry()->addLayoutItemGuiMetadata( new QgsLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutPage, QObject::tr( "Page" ), QIcon(), createPageWidget, nullptr, QString(), false, QgsLayoutItemAbstractGuiMetadata::FlagNoCreationTools ) );
 
+}
+
+bool QgsLayoutDesignerDialog::containsWmsLayers() const
+{
+  QList< QgsLayoutItemMap *> maps;
+  mLayout->layoutItems( maps );
+
+  for ( QgsLayoutItemMap *map : qgis::as_const( maps ) )
+  {
+    if ( map->containsWmsLayer() )
+      return true;
+  }
+  return false;
+}
+
+void QgsLayoutDesignerDialog::showWmsPrintingWarning()
+{
+  QgsSettings settings;
+  bool displayWMSWarning = settings.value( QStringLiteral( "/UI/displayComposerWMSWarning" ), true ).toBool();
+  if ( displayWMSWarning )
+  {
+    QgsMessageViewer *m = new QgsMessageViewer( this );
+    m->setWindowTitle( tr( "Project Contains WMS Layers" ) );
+    m->setMessage( tr( "Some WMS servers (e.g. UMN mapserver) have a limit for the WIDTH and HEIGHT parameter. Printing layers from such servers may exceed this limit. If this is the case, the WMS layer will not be printed" ), QgsMessageOutput::MessageText );
+    m->setCheckBoxText( tr( "Don't show this message again" ) );
+    m->setCheckBoxState( Qt::Unchecked );
+    m->setCheckBoxVisible( true );
+    m->setCheckBoxQgsSettingsLabel( QStringLiteral( "/UI/displayComposerWMSWarning" ) );
+    m->exec(); //deleted on close
+  }
+}
+
+bool QgsLayoutDesignerDialog::requiresRasterization() const
+{
+  QList< QgsLayoutItem *> items;
+  mLayout->layoutItems( items );
+
+  for ( QgsLayoutItem *currentItem : qgis::as_const( items ) )
+  {
+    if ( currentItem->requiresRasterization() )
+      return true;
+  }
+  return false;
+}
+
+bool QgsLayoutDesignerDialog::containsAdvancedEffects() const
+{
+  QList< QgsLayoutItem *> items;
+  mLayout->layoutItems( items );
+
+  for ( QgsLayoutItem *currentItem : qgis::as_const( items ) )
+  {
+    if ( currentItem->containsAdvancedEffects() )
+      return true;
+  }
+  return false;
+}
+
+void QgsLayoutDesignerDialog::showRasterizationWarning()
+{
+
+  if ( mLayout->customProperty( QStringLiteral( "rasterize" ), false ).toBool() ||
+       mLayout->customProperty( QStringLiteral( "forceVector" ), false ).toBool() )
+    return;
+
+  QgsMessageViewer m( this, QgsGuiUtils::ModalDialogFlags, false );
+  m.setWindowTitle( tr( "Composition Effects" ) );
+  m.setMessage( tr( "Advanced composition effects such as blend modes or vector layer transparency are enabled in this layout, which cannot be printed as vectors. Printing as a raster is recommended." ), QgsMessageOutput::MessageText );
+  m.setCheckBoxText( tr( "Print as raster" ) );
+  m.setCheckBoxState( Qt::Checked );
+  m.setCheckBoxVisible( true );
+  m.showMessage( true );
+
+  mLayout->setCustomProperty( QStringLiteral( "rasterize" ), m.checkBoxState() == Qt::Checked );
+  //make sure print as raster checkbox is updated
+  mLayoutPropertiesWidget->updateGui();
+}
+
+void QgsLayoutDesignerDialog::showForceVectorWarning()
+{
+  QgsSettings settings;
+  if ( settings.value( QStringLiteral( "LayoutDesigner/hideForceVectorWarning" ), false, QgsSettings::App ).toBool() )
+    return;
+
+  QgsMessageViewer m( this, QgsGuiUtils::ModalDialogFlags, false );
+  m.setWindowTitle( tr( "Force Vector" ) );
+  m.setMessage( tr( "This layout has the \"Always export as vectors\" option enabled, but the layout contains effects such as blend modes or vector layer transparency, which cannot be printed as vectors. The generated file will differ from the layout contents." ), QgsMessageOutput::MessageText );
+  m.setCheckBoxText( tr( "Never show this message again" ) );
+  m.setCheckBoxState( Qt::Unchecked );
+  m.setCheckBoxVisible( true );
+  m.showMessage( true );
+
+  if ( m.checkBoxState() == Qt::Checked )
+  {
+    settings.setValue( QStringLiteral( "LayoutDesigner/hideForceVectorWarning" ), true, QgsSettings::App );
+  }
 }
 
 void QgsLayoutDesignerDialog::selectItems( const QList<QgsLayoutItem *> items )
@@ -1543,6 +1900,11 @@ void QgsLayoutDesignerDialog::selectItems( const QList<QgsLayoutItem *> items )
   {
     showItemOptions( nullptr );
   }
+}
+
+QgsMessageBar *QgsLayoutDesignerDialog::messageBar()
+{
+  return mMessageBar;
 }
 
 

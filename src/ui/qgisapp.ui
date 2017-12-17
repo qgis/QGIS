@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1018</width>
-     <height>20</height>
+     <height>25</height>
     </rect>
    </property>
    <property name="toolTip">
@@ -370,6 +370,8 @@
    <addaction name="mActionSaveProjectAs"/>
    <addaction name="mActionNewPrintComposer"/>
    <addaction name="mActionShowComposerManager"/>
+   <addaction name="mActionNewPrintLayout"/>
+   <addaction name="mActionShowLayoutManager"/>
   </widget>
   <widget class="QToolBar" name="mLayerToolBar">
    <property name="windowTitle">
@@ -2934,8 +2936,62 @@ Acts on currently active editable layer</string>
     <string>Ctrl+Shift+M</string>
    </property>
   </action>
+  <action name="mActionShowLayoutManager">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionComposerManager.svg</normaloff>:/images/themes/default/mActionComposerManager.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Layout Manager…</string>
+   </property>
+   <property name="toolTip">
+    <string>Show Layout Manager</string>
+   </property>
+  </action>
+  <action name="mActionNewPrintLayout">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionNewComposer.svg</normaloff>:/images/themes/default/mActionNewComposer.svg</iconset>
+   </property>
+   <property name="text">
+    <string>New &amp;Print Layout</string>
+   </property>
+   <property name="toolTip">
+    <string>New Print Layout</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+P</string>
+   </property>
+  </action>
  </widget>
  <resources>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections/>

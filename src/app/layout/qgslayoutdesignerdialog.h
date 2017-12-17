@@ -41,6 +41,8 @@ class QgsDockWidget;
 class QUndoView;
 class QTreeView;
 class QgsLayoutItemsListView;
+class QgsLayoutPropertiesWidget;
+class QgsMessageBar;
 
 class QgsAppLayoutDesignerInterface : public QgsLayoutDesignerInterface
 {
@@ -50,6 +52,7 @@ class QgsAppLayoutDesignerInterface : public QgsLayoutDesignerInterface
     QgsAppLayoutDesignerInterface( QgsLayoutDesignerDialog *dialog );
     QgsLayout *layout() override;
     QgsLayoutView *view() override;
+    QgsMessageBar *messageBar() override;
     void selectItems( const QList< QgsLayoutItem * > items ) override;
 
   public slots:
@@ -112,6 +115,11 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
      * Selects the specified \a items.
      */
     void selectItems( const QList< QgsLayoutItem * > items );
+
+    /**
+     * Returns the designer's message bar.
+     */
+    QgsMessageBar *messageBar();
 
   public slots:
 
@@ -274,6 +282,8 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     void showManager();
     void renameLayout();
     void deleteLayout();
+    void exportToRaster();
+    void exportToPdf();
 
   private:
 
@@ -282,6 +292,8 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     QgsAppLayoutDesignerInterface *mInterface = nullptr;
 
     QgsLayout *mLayout = nullptr;
+
+    QgsMessageBar *mMessageBar = nullptr;
 
     QActionGroup *mToolsActionGroup = nullptr;
 
@@ -320,6 +332,8 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     QgsPanelWidgetStack *mGeneralPropertiesStack = nullptr;
     QgsDockWidget *mGuideDock = nullptr;
     QgsPanelWidgetStack *mGuideStack = nullptr;
+
+    QgsLayoutPropertiesWidget *mLayoutPropertiesWidget = nullptr;
 
     QUndoView *mUndoView = nullptr;
     QgsDockWidget *mUndoDock = nullptr;
@@ -360,6 +374,19 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
 
     void initializeRegistry();
 
+    bool containsWmsLayers() const;
+
+    //! Displays a warning because of possible min/max size in WMS
+    void showWmsPrintingWarning();
+
+    //! True if the layout contains advanced effects, such as blend modes
+    bool requiresRasterization() const;
+
+    bool containsAdvancedEffects() const;
+
+    //! Displays a warning because of incompatibility between blend modes and QPrinter
+    void showRasterizationWarning();
+    void showForceVectorWarning();
 };
 
 #endif // QGSLAYOUTDESIGNERDIALOG_H

@@ -27,6 +27,7 @@ class QgsLayoutContext : QObject
       FlagOutlineOnly,
       FlagAntialiasing,
       FlagUseAdvancedEffects,
+      FlagForceVectorOutput,
     };
     typedef QFlags<QgsLayoutContext::Flag> Flags;
 

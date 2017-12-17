@@ -30,15 +30,18 @@ from qgis.core import (QgsLayoutItemPicture,
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
 from qgslayoutchecker import QgsLayoutChecker
+from test_qgslayoutitem import LayoutItemTestCase
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsLayoutPicture(unittest.TestCase):
+class TestQgsLayoutPicture(unittest.TestCase, LayoutItemTestCase):
 
     @classmethod
     def setUpClass(cls):
+        cls.item_class = QgsLayoutItemPicture
+
         # Bring up a simple HTTP server, for remote picture tests
         os.chdir(unitTestDataPath() + '')
         handler = http.server.SimpleHTTPRequestHandler

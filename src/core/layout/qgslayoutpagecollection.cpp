@@ -20,6 +20,8 @@
 #include "qgsproject.h"
 #include "qgslayoutitemundocommand.h"
 #include "qgssymbollayerutils.h"
+#include "qgslayoutframe.h"
+#include "qgslayoutundostack.h"
 
 QgsLayoutPageCollection::QgsLayoutPageCollection( QgsLayout *layout )
   : QObject( layout )
@@ -52,6 +54,37 @@ void QgsLayoutPageCollection::setPageStyleSymbol( QgsFillSymbol *symbol )
 
 }
 
+void QgsLayoutPageCollection::beginPageSizeChange()
+{
+  mPreviousItemPositions.clear();
+  QList< QgsLayoutItem * > items;
+  mLayout->layoutItems( items );
+
+  for ( QgsLayoutItem *item : qgis::as_const( items ) )
+  {
+    if ( item->type() == QgsLayoutItemRegistry::LayoutPage )
+      continue;
+
+    mPreviousItemPositions.insert( item->uuid(), qMakePair( item->page(), item->pagePositionWithUnits() ) );
+  }
+}
+
+void QgsLayoutPageCollection::endPageSizeChange()
+{
+  for ( auto it = mPreviousItemPositions.constBegin(); it != mPreviousItemPositions.constEnd(); ++it )
+  {
+    if ( QgsLayoutItem *item = mLayout->itemByUuid( it.key() ) )
+    {
+      if ( !mBlockUndoCommands )
+        item->beginCommand( QString() );
+      item->attemptMove( it.value().second, true, false, it.value().first );
+      if ( !mBlockUndoCommands )
+        item->endCommand();
+    }
+  }
+  mPreviousItemPositions.clear();
+}
+
 void QgsLayoutPageCollection::reflow()
 {
   double currentY = 0;
@@ -69,11 +102,46 @@ void QgsLayoutPageCollection::reflow()
 double QgsLayoutPageCollection::maximumPageWidth() const
 {
   double maxWidth = 0;
-  Q_FOREACH ( QgsLayoutItemPage *page, mPages )
+  for ( QgsLayoutItemPage *page : mPages )
   {
     maxWidth = std::max( maxWidth, mLayout->convertToLayoutUnits( page->pageSize() ).width() );
   }
   return maxWidth;
+}
+
+QSizeF QgsLayoutPageCollection::maximumPageSize() const
+{
+  double maxArea = 0;
+  QSizeF maxSize;
+  for ( QgsLayoutItemPage *page : mPages )
+  {
+    QSizeF pageSize = mLayout->convertToLayoutUnits( page->pageSize() );
+    double area = pageSize.width() * pageSize.height();
+    if ( area > maxArea )
+    {
+      maxArea = area;
+      maxSize = pageSize;
+    }
+  }
+  return maxSize;
+}
+
+bool QgsLayoutPageCollection::hasUniformPageSizes() const
+{
+  QSizeF size;
+  for ( QgsLayoutItemPage *page : mPages )
+  {
+    QSizeF pageSize = mLayout->convertToLayoutUnits( page->pageSize() );
+    if ( !size.isValid() )
+      size = pageSize;
+    else
+    {
+      if ( !qgsDoubleNear( pageSize.width(), size.width(), 0.01 )
+           || !qgsDoubleNear( pageSize.height(), size.height(), 0.01 ) )
+        return false;
+    }
+  }
+  return true;
 }
 
 int QgsLayoutPageCollection::pageNumberForPoint( QPointF point ) const
@@ -195,6 +263,77 @@ double QgsLayoutPageCollection::spaceBetweenPages() const
 double QgsLayoutPageCollection::pageShadowWidth() const
 {
   return spaceBetweenPages() / 2;
+}
+
+void QgsLayoutPageCollection::resizeToContents( const QgsMargins &margins, QgsUnitTypes::LayoutUnit marginUnits )
+{
+  if ( !mBlockUndoCommands )
+    mLayout->undoStack()->beginCommand( this, tr( "Resize to Contents" ) );
+
+  //calculate current bounds
+  QRectF bounds = mLayout->layoutBounds( true, 0.0 );
+
+  for ( int page = mPages.count() - 1; page > 0; page-- )
+  {
+    deletePage( page );
+  }
+
+  if ( mPages.empty() )
+  {
+    std::unique_ptr< QgsLayoutItemPage > page = qgis::make_unique< QgsLayoutItemPage >( mLayout );
+    addPage( page.release() );
+  }
+
+  QgsLayoutItemPage *page = mPages.at( 0 );
+
+  double marginLeft = mLayout->convertToLayoutUnits( QgsLayoutMeasurement( margins.left(), marginUnits ) );
+  double marginTop = mLayout->convertToLayoutUnits( QgsLayoutMeasurement( margins.top(), marginUnits ) );
+  double marginBottom = mLayout->convertToLayoutUnits( QgsLayoutMeasurement( margins.bottom(), marginUnits ) );
+  double marginRight = mLayout->convertToLayoutUnits( QgsLayoutMeasurement( margins.right(), marginUnits ) );
+
+  bounds.setWidth( bounds.width() + marginLeft + marginRight );
+  bounds.setHeight( bounds.height() + marginTop + marginBottom );
+
+  QgsLayoutSize newPageSize = mLayout->convertFromLayoutUnits( bounds.size(), mLayout->units() );
+  page->setPageSize( newPageSize );
+
+  reflow();
+
+  //also move all items so that top-left of bounds is at marginLeft, marginTop
+  double diffX = marginLeft - bounds.left();
+  double diffY = marginTop - bounds.top();
+
+  const QList<QGraphicsItem *> itemList = mLayout->items();
+  for ( QGraphicsItem *item : itemList )
+  {
+    if ( QgsLayoutItem *layoutItem = dynamic_cast<QgsLayoutItem *>( item ) )
+    {
+      QgsLayoutItemPage *pageItem = dynamic_cast<QgsLayoutItemPage *>( layoutItem );
+      if ( !pageItem )
+      {
+        layoutItem->beginCommand( tr( "Move Item" ) );
+        layoutItem->attemptMoveBy( diffX, diffY );
+        layoutItem->endCommand();
+      }
+    }
+  }
+
+  //also move guides
+  mLayout->undoStack()->beginCommand( &mLayout->guides(), tr( "Move Guides" ) );
+  const QList< QgsLayoutGuide * > verticalGuides = mLayout->guides().guides( Qt::Vertical );
+  for ( QgsLayoutGuide *guide : verticalGuides )
+  {
+    guide->setLayoutPosition( guide->layoutPosition() + diffX );
+  }
+  const QList< QgsLayoutGuide * > horizontalGuides = mLayout->guides().guides( Qt::Horizontal );
+  for ( QgsLayoutGuide *guide : horizontalGuides )
+  {
+    guide->setLayoutPosition( guide->layoutPosition() + diffY );
+  }
+  mLayout->undoStack()->endCommand();
+
+  if ( !mBlockUndoCommands )
+    mLayout->undoStack()->endCommand();
 }
 
 bool QgsLayoutPageCollection::writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const
@@ -366,6 +505,32 @@ QList<QgsLayoutItem *> QgsLayoutPageCollection::itemsOnPage( int page ) const
   return itemList;
 }
 
+bool QgsLayoutPageCollection::shouldExportPage( int page ) const
+{
+  if ( page >= mPages.count() || page < 0 )
+  {
+    //page number out of range, of course we shouldn't export it - stop smoking crack!
+    return false;
+  }
+
+  QgsLayoutItemPage *pageItem = mPages.at( page );
+  if ( !pageItem->shouldDrawItem() )
+    return false;
+
+  //check all frame items on page
+  QList<QgsLayoutFrame *> frames;
+  itemsOnPage( frames, page );
+  for ( QgsLayoutFrame *frame : qgis::as_const( frames ) )
+  {
+    if ( frame->hidePageIfEmpty() && frame->isEmpty() )
+    {
+      //frame is set to hide page if empty, and frame is empty, so we don't want to export this page
+      return false;
+    }
+  }
+  return true;
+}
+
 void QgsLayoutPageCollection::addPage( QgsLayoutItemPage *page )
 {
   if ( !mBlockUndoCommands )
@@ -392,11 +557,15 @@ QgsLayoutItemPage *QgsLayoutPageCollection::extendByNewPage()
 void QgsLayoutPageCollection::insertPage( QgsLayoutItemPage *page, int beforePage )
 {
   if ( !mBlockUndoCommands )
+  {
+    mLayout->undoStack()->beginMacro( tr( "Add Page" ) );
     mLayout->undoStack()->beginCommand( this, tr( "Add Page" ) );
+  }
 
   if ( beforePage < 0 )
     beforePage = 0;
 
+  beginPageSizeChange();
   if ( beforePage >= mPages.count() )
   {
     mPages.append( page );
@@ -407,8 +576,22 @@ void QgsLayoutPageCollection::insertPage( QgsLayoutItemPage *page, int beforePag
   }
   mLayout->addItem( page );
   reflow();
+
+  // bump up stored page numbers to account
+  for ( auto it = mPreviousItemPositions.begin(); it != mPreviousItemPositions.end(); ++it )
+  {
+    if ( it.value().first < beforePage )
+      continue;
+
+    it.value().first = it.value().first + 1;
+  }
+
+  endPageSizeChange();
   if ( ! mBlockUndoCommands )
+  {
     mLayout->undoStack()->endCommand();
+    mLayout->undoStack()->endMacro();
+  }
 }
 
 void QgsLayoutPageCollection::deletePage( int pageNumber )
@@ -422,10 +605,22 @@ void QgsLayoutPageCollection::deletePage( int pageNumber )
     mLayout->undoStack()->beginCommand( this, tr( "Remove Page" ) );
   }
   emit pageAboutToBeRemoved( pageNumber );
+  beginPageSizeChange();
   QgsLayoutItemPage *page = mPages.takeAt( pageNumber );
   mLayout->removeItem( page );
   page->deleteLater();
   reflow();
+
+  // bump stored page numbers to account
+  for ( auto it = mPreviousItemPositions.begin(); it != mPreviousItemPositions.end(); ++it )
+  {
+    if ( it.value().first <= pageNumber )
+      continue;
+
+    it.value().first = it.value().first - 1;
+  }
+
+  endPageSizeChange();
   if ( ! mBlockUndoCommands )
   {
     mLayout->undoStack()->endCommand();
@@ -443,10 +638,23 @@ void QgsLayoutPageCollection::deletePage( QgsLayoutItemPage *page )
     mLayout->undoStack()->beginMacro( tr( "Remove Page" ) );
     mLayout->undoStack()->beginCommand( this, tr( "Remove Page" ) );
   }
-  emit pageAboutToBeRemoved( mPages.indexOf( page ) );
+  int pageIndex = mPages.indexOf( page );
+  emit pageAboutToBeRemoved( pageIndex );
+  beginPageSizeChange();
   mPages.removeAll( page );
   page->deleteLater();
   reflow();
+
+  // bump stored page numbers to account
+  for ( auto it = mPreviousItemPositions.begin(); it != mPreviousItemPositions.end(); ++it )
+  {
+    if ( it.value().first <= pageIndex )
+      continue;
+
+    it.value().first = it.value().first - 1;
+  }
+
+  endPageSizeChange();
   if ( !mBlockUndoCommands )
   {
     mLayout->undoStack()->endCommand();

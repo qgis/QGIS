@@ -820,6 +820,25 @@ Sets whether the item should be excluded from composer exports and prints.
 .. seealso:: :py:func:`excludeFromExports()`
 %End
 
+    virtual bool containsAdvancedEffects() const;
+%Docstring
+Returns true if the item contains contents with blend modes or transparency
+effects which can only be reproduced by rastering the item.
+
+Subclasses should ensure that implemented overrides of this method
+also check the base class result.
+
+.. seealso:: :py:func:`requiresRasterization()`
+%End
+
+    virtual bool requiresRasterization() const;
+%Docstring
+Returns true if the item is drawn in such a way that forces the whole layout
+to be rasterized when exporting to vector formats.
+
+.. seealso:: :py:func:`containsAdvancedEffects()`
+%End
+
     virtual double estimatedFrameBleed() const;
 %Docstring
 Returns the estimated amount the item's frame bleeds outside the item's
@@ -900,6 +919,11 @@ Cancels the current item command and discards it.
 .. seealso:: :py:func:`beginCommand()`
 
 .. seealso:: :py:func:`endCommand()`
+%End
+
+    bool shouldDrawItem() const;
+%Docstring
+Returns whether the item should be drawn in the current context.
 %End
 
   public slots:
@@ -1141,11 +1165,6 @@ in finalizeRestoreFromXml(), not readPropertiesFromElement().
 .. seealso:: :py:func:`writePropertiesToElement()`
 
 .. seealso:: :py:func:`readXml()`
-%End
-
-    bool shouldDrawItem() const;
-%Docstring
-Returns whether the item should be drawn in the current context.
 %End
 
     QgsLayoutSize applyDataDefinedSize( const QgsLayoutSize &size );

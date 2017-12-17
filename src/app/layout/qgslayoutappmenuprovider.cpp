@@ -18,6 +18,8 @@
 #include "qgslayoutitemgroup.h"
 #include "qgslayoutdesignerdialog.h"
 #include "qgslayout.h"
+#include "qgslayoutundostack.h"
+#include "qgslayoutpagecollection.h"
 #include <QMenu>
 #include <QMessageBox>
 

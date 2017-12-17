@@ -22,9 +22,13 @@ from qgis.core import (QgsUnitTypes,
                        QgsLayoutPoint,
                        QgsLayoutObject,
                        QgsProject,
+                       QgsMargins,
                        QgsProperty,
+                       QgsLayoutGuide,
+                       QgsLayoutMeasurement,
                        QgsLayoutPageCollection,
                        QgsSimpleFillSymbolLayer,
+                       QgsLayoutItemShape,
                        QgsFillSymbol,
                        QgsReadWriteContext)
 from qgis.PyQt.QtCore import Qt, QCoreApplication, QEvent, QPointF, QRectF
@@ -246,9 +250,9 @@ class TestQgsLayoutPageCollection(unittest.TestCase):
         self.assertEqual(collection.pageCount(), 3)
         self.assertEqual(new_page2.sizeWithUnits(), new_page.sizeWithUnits())
 
-    def testMaxPageWidth(self):
+    def testMaxPageWidthAndSize(self):
         """
-        Test calculating maximum page width
+        Test calculating maximum page width and size
         """
         p = QgsProject()
         l = QgsLayout(p)
@@ -259,18 +263,52 @@ class TestQgsLayoutPageCollection(unittest.TestCase):
         page.setPageSize('A4')
         collection.addPage(page)
         self.assertEqual(collection.maximumPageWidth(), 210.0)
+        self.assertEqual(collection.maximumPageSize().width(), 210.0)
+        self.assertEqual(collection.maximumPageSize().height(), 297.0)
 
         # add a second page
         page2 = QgsLayoutItemPage(l)
         page2.setPageSize('A3')
         collection.addPage(page2)
         self.assertEqual(collection.maximumPageWidth(), 297.0)
+        self.assertEqual(collection.maximumPageSize().width(), 297.0)
+        self.assertEqual(collection.maximumPageSize().height(), 420.0)
 
         # add a page with other units
         page3 = QgsLayoutItemPage(l)
         page3.setPageSize(QgsLayoutSize(100, 100, QgsUnitTypes.LayoutMeters))
         collection.addPage(page3)
         self.assertEqual(collection.maximumPageWidth(), 100000.0)
+        self.assertEqual(collection.maximumPageSize().width(), 100000.0)
+        self.assertEqual(collection.maximumPageSize().height(), 100000.0)
+
+    def testUniformPageSizes(self):
+        """
+        Test detection of uniform page sizes
+        """
+        p = QgsProject()
+        l = QgsLayout(p)
+        collection = l.pageCollection()
+
+        self.assertTrue(collection.hasUniformPageSizes())
+
+        # add a page
+        page = QgsLayoutItemPage(l)
+        page.setPageSize('A4')
+        collection.addPage(page)
+        self.assertTrue(collection.hasUniformPageSizes())
+
+        # add a second page
+        page2 = QgsLayoutItemPage(l)
+        page2.setPageSize(QgsLayoutSize(21.0, 29.7, QgsUnitTypes.LayoutCentimeters))
+        collection.addPage(page2)
+        self.assertTrue(collection.hasUniformPageSizes())
+
+        # add a page with other units
+        page3 = QgsLayoutItemPage(l)
+        page3.setPageSize('A5')
+        collection.addPage(page3)
+        self.assertFalse(collection.hasUniformPageSizes())
 
     def testReflow(self):
         """
@@ -326,6 +364,120 @@ class TestQgsLayoutPageCollection(unittest.TestCase):
         self.assertEqual(page2.pos().y(), 560)
         self.assertEqual(page3.pos().x(), 0)
         self.assertEqual(page3.pos().y(), 130)
+
+    def testInsertPageWithItems(self):
+        p = QgsProject()
+        l = QgsLayout(p)
+        collection = l.pageCollection()
+
+        # add a page
+        page = QgsLayoutItemPage(l)
+        page.setPageSize('A4')
+        collection.addPage(page)
+        page2 = QgsLayoutItemPage(l)
+        page2.setPageSize('A5')
+        collection.addPage(page2)
+
+        # item on pages
+        shape1 = QgsLayoutItemShape(l)
+        shape1.attemptResize(QgsLayoutSize(90, 50))
+        shape1.attemptMove(QgsLayoutPoint(90, 50), page=0)
+        l.addLayoutItem(shape1)
+
+        shape2 = QgsLayoutItemShape(l)
+        shape2.attemptResize(QgsLayoutSize(110, 50))
+        shape2.attemptMove(QgsLayoutPoint(100, 150), page=1)
+        l.addLayoutItem(shape2)
+
+        self.assertEqual(shape1.page(), 0)
+        self.assertEqual(shape2.page(), 1)
+
+        # third page, slotted in middle
+        page3 = QgsLayoutItemPage(l)
+        page3.setPageSize('A3')
+        collection.insertPage(page3, 0)
+
+        # check item position
+        self.assertEqual(shape1.page(), 1)
+        self.assertEqual(shape1.pagePositionWithUnits(), QgsLayoutPoint(90, 50))
+        self.assertEqual(shape2.page(), 2)
+        self.assertEqual(shape2.pagePositionWithUnits(), QgsLayoutPoint(100, 150))
+
+    def testDeletePageWithItems(self):
+        p = QgsProject()
+        l = QgsLayout(p)
+        collection = l.pageCollection()
+
+        # add a page
+        page = QgsLayoutItemPage(l)
+        page.setPageSize('A4')
+        collection.addPage(page)
+        page2 = QgsLayoutItemPage(l)
+        page2.setPageSize('A4')
+        collection.addPage(page2)
+        page3 = QgsLayoutItemPage(l)
+        page3.setPageSize('A4')
+        collection.addPage(page3)
+
+        # item on pages
+        shape1 = QgsLayoutItemShape(l)
+        shape1.attemptResize(QgsLayoutSize(90, 50))
+        shape1.attemptMove(QgsLayoutPoint(90, 50), page=0)
+        l.addLayoutItem(shape1)
+
+        shape2 = QgsLayoutItemShape(l)
+        shape2.attemptResize(QgsLayoutSize(110, 50))
+        shape2.attemptMove(QgsLayoutPoint(100, 150), page=2)
+        l.addLayoutItem(shape2)
+
+        self.assertEqual(shape1.page(), 0)
+        self.assertEqual(shape2.page(), 2)
+
+        collection.deletePage(1)
+
+        # check item position
+        self.assertEqual(shape1.page(), 0)
+        self.assertEqual(shape1.pagePositionWithUnits(), QgsLayoutPoint(90, 50))
+        self.assertEqual(shape2.page(), 1)
+        self.assertEqual(shape2.pagePositionWithUnits(), QgsLayoutPoint(100, 150))
+
+    def testDeletePageWithItems2(self):
+        p = QgsProject()
+        l = QgsLayout(p)
+        collection = l.pageCollection()
+
+        # add a page
+        page = QgsLayoutItemPage(l)
+        page.setPageSize('A4')
+        collection.addPage(page)
+        page2 = QgsLayoutItemPage(l)
+        page2.setPageSize('A4')
+        collection.addPage(page2)
+        page3 = QgsLayoutItemPage(l)
+        page3.setPageSize('A4')
+        collection.addPage(page3)
+
+        # item on pages
+        shape1 = QgsLayoutItemShape(l)
+        shape1.attemptResize(QgsLayoutSize(90, 50))
+        shape1.attemptMove(QgsLayoutPoint(90, 50), page=0)
+        l.addLayoutItem(shape1)
+
+        shape2 = QgsLayoutItemShape(l)
+        shape2.attemptResize(QgsLayoutSize(110, 50))
+        shape2.attemptMove(QgsLayoutPoint(100, 150), page=2)
+        l.addLayoutItem(shape2)
+
+        self.assertEqual(shape1.page(), 0)
+        self.assertEqual(shape2.page(), 2)
+
+        collection.deletePage(page2)
+
+        # check item position
+        self.assertEqual(shape1.page(), 0)
+        self.assertEqual(shape1.pagePositionWithUnits(), QgsLayoutPoint(90, 50))
+        self.assertEqual(shape2.page(), 1)
+        self.assertEqual(shape2.pagePositionWithUnits(), QgsLayoutPoint(100, 150))
 
     def testDataDefinedSize(self):
         p = QgsProject()
@@ -740,6 +892,68 @@ class TestQgsLayoutPageCollection(unittest.TestCase):
         l.undoStack().stack().redo()
         self.assertEqual(collection.pageCount(), 1)
         self.assertEqual(collection.page(0).pageSize().width(), 148)
+
+    def testResizeToContents(self):
+        p = QgsProject()
+        l = QgsLayout(p)
+
+        shape1 = QgsLayoutItemShape(l)
+        shape1.attemptResize(QgsLayoutSize(90, 50))
+        shape1.attemptMove(QgsLayoutPoint(90, 50))
+        shape1.setItemRotation(45, False)
+        l.addLayoutItem(shape1)
+        shape2 = QgsLayoutItemShape(l)
+        shape2.attemptResize(QgsLayoutSize(110, 50))
+        shape2.attemptMove(QgsLayoutPoint(100, 150), True, False, 0)
+        l.addLayoutItem(shape2)
+        shape3 = QgsLayoutItemShape(l)
+        l.addLayoutItem(shape3)
+        shape3.attemptResize(QgsLayoutSize(50, 100))
+        shape3.attemptMove(QgsLayoutPoint(210, 250), True, False, 0)
+        shape4 = QgsLayoutItemShape(l)
+        l.addLayoutItem(shape4)
+        shape4.attemptResize(QgsLayoutSize(50, 30))
+        shape4.attemptMove(QgsLayoutPoint(10, 340), True, False, 0)
+        shape4.setVisibility(False)
+
+        # resize with no existing pages
+        l.pageCollection().resizeToContents(QgsMargins(1, 2, 3, 4), QgsUnitTypes.LayoutCentimeters)
+        self.assertEqual(l.pageCollection().pageCount(), 1)
+
+        self.assertAlmostEqual(l.pageCollection().page(0).sizeWithUnits().width(), 290.3, 2)
+        self.assertAlmostEqual(l.pageCollection().page(0).sizeWithUnits().height(), 380.36, 2)
+        self.assertAlmostEqual(l.pageCollection().page(0).sizeWithUnits().units(), QgsUnitTypes.LayoutMillimeters)
+
+        self.assertAlmostEqual(shape1.positionWithUnits().x(), 90.15, 2)
+        self.assertAlmostEqual(shape1.positionWithUnits().y(), 20.21, 2)
+        self.assertAlmostEqual(shape2.positionWithUnits().x(), 100.15, 2)
+        self.assertAlmostEqual(shape2.positionWithUnits().y(), 120.21, 2)
+        self.assertAlmostEqual(shape3.positionWithUnits().x(), 210.15, 2)
+        self.assertAlmostEqual(shape3.positionWithUnits().y(), 220.21, 2)
+        self.assertAlmostEqual(shape4.positionWithUnits().x(), 10.15, 2)
+        self.assertAlmostEqual(shape4.positionWithUnits().y(), 310.21, 2)
+
+        # add a second page
+        page2 = QgsLayoutItemPage(l)
+        page2.setPageSize("A4", QgsLayoutItemPage.Landscape)
+        l.pageCollection().addPage(page2)
+
+        # add some guides
+        g1 = QgsLayoutGuide(Qt.Horizontal, QgsLayoutMeasurement(2.5, QgsUnitTypes.LayoutCentimeters), l.pageCollection().page(0))
+        l.guides().addGuide(g1)
+        g2 = QgsLayoutGuide(Qt.Vertical, QgsLayoutMeasurement(4.5, QgsUnitTypes.LayoutCentimeters), l.pageCollection().page(0))
+        l.guides().addGuide(g2)
+
+        # second page should be removed
+        l.pageCollection().resizeToContents(QgsMargins(0, 0, 0, 0), QgsUnitTypes.LayoutCentimeters)
+        self.assertEqual(l.pageCollection().pageCount(), 1)
+
+        self.assertAlmostEqual(l.pageCollection().page(0).sizeWithUnits().width(), 250.3, 2)
+        self.assertAlmostEqual(l.pageCollection().page(0).sizeWithUnits().height(), 320.36, 2)
+        self.assertAlmostEqual(l.pageCollection().page(0).sizeWithUnits().units(), QgsUnitTypes.LayoutMillimeters)
+
+        self.assertAlmostEqual(g1.position().length(), 0.5, 2)
+        self.assertAlmostEqual(g2.position().length(), 3.5, 2)
 
 
 if __name__ == '__main__':

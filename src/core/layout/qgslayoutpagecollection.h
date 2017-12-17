@@ -20,8 +20,11 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgssymbol.h"
+#include "qgslayout.h"
 #include "qgslayoutitempage.h"
+#include "qgslayoutitem.h"
 #include "qgslayoutserializableobject.h"
+#include "qgslayoutpoint.h"
 #include <QObject>
 #include <memory>
 
@@ -96,6 +99,7 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject, public QgsLayoutSeri
     /**
      * Returns whether a given \a page index is empty, ie, it contains no items except for the background
      * paper item.
+     * \see shouldExportPage()
      */
     bool pageIsEmpty( int page ) const;
 
@@ -103,6 +107,30 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject, public QgsLayoutSeri
      * Returns a list of layout items on the specified \a page index.
      */
     QList< QgsLayoutItem *> itemsOnPage( int page ) const;
+
+    /**
+     * Returns layout items of a specific type on a specified \a page.
+     * \note not available in Python bindings.
+     */
+    template<class T> void itemsOnPage( QList<T *> &itemList, int page ) const SIP_SKIP
+    {
+      itemList.clear();
+      const QList<QGraphicsItem *> graphicsItemList = mLayout->items();
+      for ( QGraphicsItem *graphicsItem : graphicsItemList )
+      {
+        T *item = dynamic_cast<T *>( graphicsItem );
+        if ( item && item->page() == page )
+        {
+          itemList.push_back( item );
+        }
+      }
+    }
+
+    /**
+     * Returns whether the specified \a page number should be included in exports of the layouts.
+     * \see pageIsEmpty()
+     */
+    bool shouldExportPage( int page ) const;
 
     /**
      * Adds a \a page to the collection. Ownership of the \a page is transferred
@@ -194,6 +222,22 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject, public QgsLayoutSeri
     const QgsFillSymbol *pageStyleSymbol() const { return mPageStyleSymbol.get(); }
 
     /**
+     * Should be called before changing any page item sizes, and followed by a call to
+     * endPageSizeChange(). If page size changes are wrapped in these calls, then items
+     * will maintain their same relative position on pages after the page sizes are updated.
+     * \see endPageSizeChange()
+     */
+    void beginPageSizeChange();
+
+    /**
+     * Should be called after changing any page item sizes, and preceded by a call to
+     * beginPageSizeChange(). If page size changes are wrapped in these calls, then items
+     * will maintain their same relative position on pages after the page sizes are updated.
+     * \see beginPageSizeChange()
+     */
+    void endPageSizeChange();
+
+    /**
      * Forces the page collection to reflow the arrangement of pages, e.g. to account
      * for page size/orientation change.
      */
@@ -202,8 +246,26 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject, public QgsLayoutSeri
     /**
      * Returns the maximum width of pages in the collection. The returned value is
      * in layout units.
+     *
+     * \see maximumPageSize()
      */
     double maximumPageWidth() const;
+
+    /**
+     * Returns the maximum size of any page in the collection, by area. The returned value
+     * is in layout units.
+     *
+     * \see maximumPageWidth()
+     */
+    QSizeF maximumPageSize() const;
+
+    /**
+     * Returns true if the layout has uniform page sizes, e.g. all pages are the same size.
+     *
+     * This method does not consider differing units as non-uniform sizes, only the actual
+     * physical size of the pages.
+     */
+    bool hasUniformPageSizes() const;
 
     /**
      * Returns the page number corresponding to a \a point in the layout (in layout units).
@@ -280,6 +342,16 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject, public QgsLayoutSeri
     double pageShadowWidth() const;
 
     /**
+     * Resizes the layout to a single page which fits the current contents of the layout.
+     *
+     * Calling this method resets the number of pages to 1, with the size set to the
+     * minimum size required to fit all existing layout items. Items will also be
+     * repositioned so that the new top-left bounds of the layout is at the point
+     * (marginLeft, marginTop). An optional margin can be specified.
+     */
+    void resizeToContents( const QgsMargins &margins, QgsUnitTypes::LayoutUnit marginUnits );
+
+    /**
      * Stores the collection's state in a DOM element. The \a parentElement should refer to the parent layout's DOM element.
      * \see readXml()
      */
@@ -335,6 +407,8 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject, public QgsLayoutSeri
     QList< QgsLayoutItemPage * > mPages;
 
     bool mBlockUndoCommands = false;
+
+    QMap< QString, QPair< int, QgsLayoutPoint > > mPreviousItemPositions;
 
     void createDefaultPageStyleSymbol();
 

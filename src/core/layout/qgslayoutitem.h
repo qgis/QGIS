@@ -743,6 +743,24 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     void setExcludeFromExports( bool exclude );
 
     /**
+     * Returns true if the item contains contents with blend modes or transparency
+     * effects which can only be reproduced by rastering the item.
+     *
+     * Subclasses should ensure that implemented overrides of this method
+     * also check the base class result.
+     *
+     * \see requiresRasterization()
+     */
+    virtual bool containsAdvancedEffects() const;
+
+    /**
+     * Returns true if the item is drawn in such a way that forces the whole layout
+     * to be rasterized when exporting to vector formats.
+     * \see containsAdvancedEffects()
+     */
+    virtual bool requiresRasterization() const;
+
+    /**
      * Returns the estimated amount the item's frame bleeds outside the item's
      * actual rectangle. For instance, if the item has a 2mm frame stroke, then
      * 1mm of this frame is drawn outside the item's rect. In this case the
@@ -812,6 +830,11 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * \see endCommand()
      */
     void cancelCommand();
+
+    /**
+     * Returns whether the item should be drawn in the current context.
+     */
+    bool shouldDrawItem() const;
 
   public slots:
 
@@ -1032,11 +1055,6 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     virtual bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context );
 
     /**
-     * Returns whether the item should be drawn in the current context.
-     */
-    bool shouldDrawItem() const;
-
-    /**
      * Applies any present data defined size overrides to the specified layout \a size.
      */
     QgsLayoutSize applyDataDefinedSize( const QgsLayoutSize &size );
@@ -1119,6 +1137,8 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     QPointF itemPositionAtReferencePoint( const ReferencePoint reference, const QSizeF &size ) const;
     void setScenePos( const QPointF &destinationPos );
     bool shouldBlockUndoCommands() const;
+
+    void applyDataDefinedOrientation( double &width, double &height, const QgsExpressionContext &context );
 
     friend class TestQgsLayoutItem;
     friend class TestQgsLayoutView;

@@ -17,6 +17,7 @@
 #include "qgslayout.h"
 #include "qgsproject.h"
 #include "qgslogger.h"
+#include "qgslayoutundostack.h"
 
 QgsLayoutManager::QgsLayoutManager( QgsProject *project )
   : QObject( project )
@@ -193,11 +194,13 @@ bool QgsLayoutManager::readXml( const QDomElement &element, const QDomDocument &
   for ( int i = 0; i < layoutNodes.size(); ++i )
   {
     std::unique_ptr< QgsLayout > l = qgis::make_unique< QgsLayout >( mProject );
+    l->undoStack()->blockCommands( true );
     if ( !l->readXml( layoutNodes.at( i ).toElement(), doc, context ) )
     {
       result = false;
       continue;
     }
+    l->undoStack()->blockCommands( false );
     if ( addLayout( l.get() ) )
     {
       ( void )l.release(); // ownership was transferred successfully

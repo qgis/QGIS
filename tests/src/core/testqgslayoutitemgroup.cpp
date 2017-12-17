@@ -26,6 +26,7 @@
 #include "qgslogger.h"
 #include "qgsproject.h"
 #include "qgsfillsymbollayer.h"
+#include "qgslayoutundostack.h"
 
 #include <QObject>
 #include <QtTest/QSignalSpy>

@@ -26,6 +26,7 @@
 #include "qgslayoutviewtoolselect.h"
 #include "qgslayoutsnapper.h"
 #include "qgslayoutitemgroup.h"
+#include "qgslayoutundostack.h"
 #include <QGraphicsView>
 #include <QGraphicsSceneHoverEvent>
 #include <QPainter>

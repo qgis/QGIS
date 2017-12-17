@@ -18,6 +18,7 @@
 #include "qgslayout.h"
 #include "qgsreadwritecontext.h"
 #include "qgsproject.h"
+#include "qgslayoutpagecollection.h"
 
 QgsLayoutSnapper::QgsLayoutSnapper( QgsLayout *layout )
   : mLayout( layout )

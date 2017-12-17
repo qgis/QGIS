@@ -24,6 +24,9 @@
 #include "qgslayoutitemgroup.h"
 #include "qgspainting.h"
 #include "qgslayouteffect.h"
+#include "qgslayoutundostack.h"
+#include "qgslayoutpagecollection.h"
+#include "qgslayoutitempage.h"
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
 #include <QUuid>
@@ -240,18 +243,32 @@ void QgsLayoutItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *it
     return;
   }
 
-  double destinationDpi = itemStyle->matrix.m11() * 25.4;
+  bool previewRender = !mLayout || mLayout->context().isPreviewRender();
+  double destinationDpi = previewRender ? itemStyle->matrix.m11() * 25.4 : mLayout->context().dpi();
   bool useImageCache = false;
+  bool forceRasterOutput = containsAdvancedEffects() && ( !mLayout || !( mLayout->context().flags() & QgsLayoutContext::FlagForceVectorOutput ) );
 
-  if ( useImageCache )
+  if ( useImageCache || forceRasterOutput )
   {
-    double widthInPixels = boundingRect().width() * itemStyle->matrix.m11();
-    double heightInPixels = boundingRect().height() * itemStyle->matrix.m11();
+    double widthInPixels = 0;
+    double heightInPixels = 0;
+
+    if ( previewRender )
+    {
+      widthInPixels = boundingRect().width() * itemStyle->matrix.m11();
+      heightInPixels = boundingRect().height() * itemStyle->matrix.m11();
+    }
+    else
+    {
+      double layoutUnitsToPixels = mLayout ? mLayout->convertFromLayoutUnits( 1, QgsUnitTypes::LayoutPixels ).length() : destinationDpi / 25.4;
+      widthInPixels = boundingRect().width() * layoutUnitsToPixels;
+      heightInPixels = boundingRect().height() * layoutUnitsToPixels;
+    }
 
     // limit size of image for better performance
-    double scale = 1.0;
-    if ( widthInPixels > CACHE_SIZE_LIMIT || heightInPixels > CACHE_SIZE_LIMIT )
+    if ( previewRender && ( widthInPixels > CACHE_SIZE_LIMIT || heightInPixels > CACHE_SIZE_LIMIT ) )
     {
+      double scale = 1.0;
       if ( widthInPixels > heightInPixels )
       {
         scale = widthInPixels / CACHE_SIZE_LIMIT;
@@ -267,7 +284,7 @@ void QgsLayoutItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *it
       destinationDpi = destinationDpi / scale;
     }
 
-    if ( !mItemCachedImage.isNull() && qgsDoubleNear( mItemCacheDpi, destinationDpi ) )
+    if ( previewRender && !mItemCachedImage.isNull() && qgsDoubleNear( mItemCacheDpi, destinationDpi ) )
     {
       // can reuse last cached image
       QgsRenderContext context = QgsLayoutUtils::createRenderContextForMap( nullptr, painter, destinationDpi );
@@ -282,13 +299,11 @@ void QgsLayoutItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *it
     }
     else
     {
-      mItemCacheDpi = destinationDpi;
-
-      mItemCachedImage = QImage( widthInPixels, heightInPixels, QImage::Format_ARGB32 );
-      mItemCachedImage.fill( Qt::transparent );
-      mItemCachedImage.setDotsPerMeterX( 1000 * destinationDpi * 25.4 );
-      mItemCachedImage.setDotsPerMeterY( 1000 * destinationDpi * 25.4 );
-      QPainter p( &mItemCachedImage );
+      QImage image = QImage( widthInPixels, heightInPixels, QImage::Format_ARGB32 );
+      image.fill( Qt::transparent );
+      image.setDotsPerMeterX( 1000 * destinationDpi * 25.4 );
+      image.setDotsPerMeterY( 1000 * destinationDpi * 25.4 );
+      QPainter p( &image );
 
       preparePainter( &p );
       QgsRenderContext context = QgsLayoutUtils::createRenderContextForLayout( nullptr, &p, destinationDpi );
@@ -304,8 +319,14 @@ void QgsLayoutItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *it
       // scale painter from mm to dots
       painter->scale( 1.0 / context.scaleFactor(), 1.0 / context.scaleFactor() );
       painter->drawImage( boundingRect().x() * context.scaleFactor(),
-                          boundingRect().y() * context.scaleFactor(), mItemCachedImage );
+                          boundingRect().y() * context.scaleFactor(), image );
       painter->restore();
+
+      if ( previewRender )
+      {
+        mItemCacheDpi = destinationDpi;
+        mItemCachedImage = image;
+      }
     }
   }
   else
@@ -838,6 +859,16 @@ void QgsLayoutItem::setExcludeFromExports( bool exclude )
   refreshDataDefinedProperty( QgsLayoutObject::ExcludeFromExports );
 }
 
+bool QgsLayoutItem::containsAdvancedEffects() const
+{
+  return false;
+}
+
+bool QgsLayoutItem::requiresRasterization() const
+{
+  return itemOpacity() < 1.0 || blendMode() != QPainter::CompositionMode_SourceOver;
+}
+
 double QgsLayoutItem::estimatedFrameBleed() const
 {
   if ( !hasFrame() )
@@ -902,6 +933,37 @@ QgsLayoutPoint QgsLayoutItem::applyDataDefinedPosition( const QgsLayoutPoint &po
   return QgsLayoutPoint( evaluatedX, evaluatedY, position.units() );
 }
 
+void QgsLayoutItem::applyDataDefinedOrientation( double &width, double &height, const QgsExpressionContext &context )
+{
+  bool ok = false;
+  QString orientationString = mDataDefinedProperties.valueAsString( QgsLayoutObject::PaperOrientation, context, QString(), &ok );
+  if ( ok && !orientationString.isEmpty() )
+  {
+    QgsLayoutItemPage::Orientation orientation = QgsLayoutUtils::decodePaperOrientation( orientationString, ok );
+    if ( ok )
+    {
+      double heightD, widthD;
+      switch ( orientation )
+      {
+        case QgsLayoutItemPage::Portrait:
+        {
+          heightD = std::max( height, width );
+          widthD = std::min( height, width );
+          break;
+        }
+        case QgsLayoutItemPage::Landscape:
+        {
+          heightD = std::min( height, width );
+          widthD = std::max( height, width );
+          break;
+        }
+      }
+      width = widthD;
+      height = heightD;
+    }
+  }
+}
+
 QgsLayoutSize QgsLayoutItem::applyDataDefinedSize( const QgsLayoutSize &size )
 {
   if ( !mLayout )
@@ -911,7 +973,8 @@ QgsLayoutSize QgsLayoutItem::applyDataDefinedSize( const QgsLayoutSize &size )
 
   if ( !mDataDefinedProperties.isActive( QgsLayoutObject::PresetPaperSize ) &&
        !mDataDefinedProperties.isActive( QgsLayoutObject::ItemWidth ) &&
-       !mDataDefinedProperties.isActive( QgsLayoutObject::ItemHeight ) )
+       !mDataDefinedProperties.isActive( QgsLayoutObject::ItemHeight ) &&
+       !mDataDefinedProperties.isActive( QgsLayoutObject::PaperOrientation ) )
     return size;
 
 
@@ -932,6 +995,10 @@ QgsLayoutSize QgsLayoutItem::applyDataDefinedSize( const QgsLayoutSize &size )
   // highest priority is dd width/height
   evaluatedWidth = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::ItemWidth, context, evaluatedWidth );
   evaluatedHeight = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::ItemHeight, context, evaluatedHeight );
+
+  //which is finally overwritten by data defined orientation
+  applyDataDefinedOrientation( evaluatedWidth, evaluatedHeight, context );
+
   return QgsLayoutSize( evaluatedWidth, evaluatedHeight, size.units() );
 }
 

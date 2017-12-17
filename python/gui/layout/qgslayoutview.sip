@@ -265,6 +265,7 @@ Returns the delta (in layout coordinates) by which to move items
 for the given key ``event``.
 %End
 
+
   public slots:
 
     void zoomFull();
@@ -556,6 +557,8 @@ item and should have its properties displayed in any designer windows.
     virtual void scrollContentsBy( int dx, int dy );
 
     virtual void dragEnterEvent( QDragEnterEvent *e );
+
+    virtual void paintEvent( QPaintEvent *event );
 
 
 };

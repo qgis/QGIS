@@ -377,8 +377,31 @@ bool QgsLayoutItemMap::containsWmsLayer() const
   return false;
 }
 
+bool QgsLayoutItemMap::requiresRasterization() const
+{
+  if ( QgsLayoutItem::requiresRasterization() )
+    return true;
+
+  // we MUST force the whole layout to render as a raster if any map item
+  // uses blend modes, and we are not drawing on a solid opaque background
+  // because in this case the map item needs to be rendered as a raster, but
+  // it also needs to interact with items below it
+  if ( !containsAdvancedEffects() )
+    return false;
+
+  // TODO layer transparency is probably ok to allow without forcing rasterization
+
+  if ( hasBackground() && qgsDoubleNear( backgroundColor().alphaF(), 1.0 ) )
+    return false;
+
+  return true;
+}
+
 bool QgsLayoutItemMap::containsAdvancedEffects() const
 {
+  if ( QgsLayoutItem::containsAdvancedEffects() )
+    return true;
+
   //check easy things first
 
   //overviews
@@ -733,11 +756,12 @@ void QgsLayoutItemMap::paint( QPainter *painter, const QStyleOptionGraphicsItem 
   if ( thisPaintRect.width() == 0 || thisPaintRect.height() == 0 )
     return;
 
-  painter->save();
-  painter->setClipRect( thisPaintRect );
+  //TODO - try to reduce the amount of duplicate code here!
 
   if ( mLayout->context().isPreviewRender() )
   {
+    painter->save();
+    painter->setClipRect( thisPaintRect );
     if ( !mCacheFinalImage || mCacheFinalImage->isNull() )
     {
       // No initial render available - so draw some preview text alerting user
@@ -777,6 +801,23 @@ void QgsLayoutItemMap::paint( QPainter *painter, const QStyleOptionGraphicsItem 
       //restore rotation
       painter->restore();
     }
+
+    painter->setClipRect( thisPaintRect, Qt::NoClip );
+
+    if ( shouldDrawPart( OverviewMapExtent ) )
+    {
+      mOverviewStack->drawItems( painter );
+    }
+    if ( shouldDrawPart( Grid ) )
+    {
+      mGridStack->drawItems( painter );
+    }
+    drawAnnotations( painter );
+    if ( shouldDrawPart( Frame ) )
+    {
+      drawMapFrame( painter );
+    }
+    painter->restore();
   }
   else
   {
@@ -788,49 +829,104 @@ void QgsLayoutItemMap::paint( QPainter *painter, const QStyleOptionGraphicsItem 
     if ( !paintDevice )
       return;
 
-    // Fill with background color
-    if ( shouldDrawPart( Background ) )
-    {
-      drawMapBackground( painter );
-    }
-
     QgsRectangle cExtent = extent();
-
     QSizeF size( cExtent.width() * mapUnitsToLayoutUnits(), cExtent.height() * mapUnitsToLayoutUnits() );
 
-    painter->save();
-    painter->translate( mXOffset, mYOffset );
+    if ( containsAdvancedEffects() && ( !mLayout || !( mLayout->context().flags() & QgsLayoutContext::FlagForceVectorOutput ) ) )
+    {
+      // rasterize
+      double destinationDpi = style->matrix.m11() * 25.4;
+      double layoutUnitsInInches = mLayout ? mLayout->convertFromLayoutUnits( 1, QgsUnitTypes::LayoutInches ).length() : 1;
+      int widthInPixels = std::round( boundingRect().width() * layoutUnitsInInches * destinationDpi );
+      int heightInPixels = std::round( boundingRect().height() * layoutUnitsInInches * destinationDpi );
+      QImage image = QImage( widthInPixels, heightInPixels, QImage::Format_ARGB32 );
 
-    double dotsPerMM = paintDevice->logicalDpiX() / 25.4;
-    size *= dotsPerMM; // output size will be in dots (pixels)
-    painter->scale( 1 / dotsPerMM, 1 / dotsPerMM ); // scale painter from mm to dots
-    drawMap( painter, cExtent, size, paintDevice->logicalDpiX() );
+      image.fill( Qt::transparent );
+      image.setDotsPerMeterX( 1000 * destinationDpi / 25.4 );
+      image.setDotsPerMeterY( 1000 * destinationDpi / 25.4 );
+      double dotsPerMM = destinationDpi / 25.4;
+      QPainter p( &image );
 
-    //restore rotation
+      QPointF tl = -boundingRect().topLeft();
+      QRect imagePaintRect( std::round( tl.x() * dotsPerMM ),
+                            std::round( tl.y() * dotsPerMM ),
+                            std::round( thisPaintRect.width() * dotsPerMM ),
+                            std::round( thisPaintRect.height() * dotsPerMM ) );
+      p.setClipRect( imagePaintRect );
+
+      p.translate( imagePaintRect.topLeft() );
+
+      // Fill with background color - must be drawn onto the flattened image
+      // so that layers with opacity or blend modes can correctly interact with it
+      if ( shouldDrawPart( Background ) )
+      {
+        p.scale( dotsPerMM, dotsPerMM );
+        drawMapBackground( &p );
+        p.scale( 1.0 / dotsPerMM, 1.0 / dotsPerMM );
+      }
+
+      drawMap( &p, cExtent, imagePaintRect.size(), image.logicalDpiX() );
+
+      // important - all other items, overviews, grids etc must be rendered to the
+      // flattened image, in case these have blend modes must need to interact
+      // with the map
+      p.scale( dotsPerMM, dotsPerMM );
+
+      if ( shouldDrawPart( OverviewMapExtent ) )
+      {
+        mOverviewStack->drawItems( &p );
+      }
+      if ( shouldDrawPart( Grid ) )
+      {
+        mGridStack->drawItems( &p );
+      }
+      drawAnnotations( &p );
+
+      painter->save();
+      painter->scale( 1 / dotsPerMM, 1 / dotsPerMM ); // scale painter from mm to dots
+      painter->drawImage( std::round( -tl.x()* dotsPerMM ), std::round( -tl.y() * dotsPerMM ), image );
+      painter->scale( dotsPerMM, dotsPerMM );
+    }
+    else
+    {
+      // Fill with background color
+      if ( shouldDrawPart( Background ) )
+      {
+        drawMapBackground( painter );
+      }
+
+      painter->setClipRect( thisPaintRect );
+      painter->save();
+      painter->translate( mXOffset, mYOffset );
+
+      double dotsPerMM = paintDevice->logicalDpiX() / 25.4;
+      size *= dotsPerMM; // output size will be in dots (pixels)
+      painter->scale( 1 / dotsPerMM, 1 / dotsPerMM ); // scale painter from mm to dots
+      drawMap( painter, cExtent, size, paintDevice->logicalDpiX() );
+
+      painter->restore();
+
+      painter->setClipRect( thisPaintRect, Qt::NoClip );
+
+      if ( shouldDrawPart( OverviewMapExtent ) )
+      {
+        mOverviewStack->drawItems( painter );
+      }
+      if ( shouldDrawPart( Grid ) )
+      {
+        mGridStack->drawItems( painter );
+      }
+      drawAnnotations( painter );
+
+    }
+
+    if ( shouldDrawPart( Frame ) )
+    {
+      drawMapFrame( painter );
+    }
     painter->restore();
     mDrawing = false;
   }
-
-  painter->setClipRect( thisPaintRect, Qt::NoClip );
-
-  if ( shouldDrawPart( OverviewMapExtent ) )
-  {
-    mOverviewStack->drawItems( painter );
-  }
-  if ( shouldDrawPart( Grid ) )
-  {
-    mGridStack->drawItems( painter );
-  }
-
-  //draw canvas items
-  drawAnnotations( painter );
-
-  if ( shouldDrawPart( Frame ) )
-  {
-    drawMapFrame( painter );
-  }
-
-  painter->restore();
 }
 
 int QgsLayoutItemMap::numberExportLayers() const
@@ -944,7 +1040,7 @@ void QgsLayoutItemMap::recreateCachedImageInBackground( double viewScaleFactor )
   mPainterJob->start();
 }
 
-QgsMapSettings QgsLayoutItemMap::mapSettings( const QgsRectangle &extent, QSizeF size, int dpi ) const
+QgsMapSettings QgsLayoutItemMap::mapSettings( const QgsRectangle &extent, QSizeF size, double dpi ) const
 {
   QgsExpressionContext expressionContext = createExpressionContext();
   QgsCoordinateReferenceSystem renderCrs = crs();
@@ -990,7 +1086,7 @@ QgsMapSettings QgsLayoutItemMap::mapSettings( const QgsRectangle &extent, QSizeF
 
   // layout-specific overrides of flags
   jobMapSettings.setFlag( QgsMapSettings::ForceVectorOutput, true ); // force vector output (no caching of marker images etc.)
-  jobMapSettings.setFlag( QgsMapSettings::Antialiasing, true );
+  jobMapSettings.setFlag( QgsMapSettings::Antialiasing, mLayout->context().flags() & QgsLayoutContext::FlagAntialiasing );
   jobMapSettings.setFlag( QgsMapSettings::DrawEditingInfo, false );
   jobMapSettings.setFlag( QgsMapSettings::DrawSelection, false );
   jobMapSettings.setFlag( QgsMapSettings::UseAdvancedEffects, mLayout->context().flags() & QgsLayoutContext::FlagUseAdvancedEffects );

@@ -91,7 +91,6 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
     int numberExportLayers() const override;
     void setFrameStrokeWidth( const QgsLayoutMeasurement &width ) override;
 
-
     /**
      * Returns the map scale.
      * The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
@@ -276,8 +275,8 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
     //! Returns true if the map contains a WMS layer.
     bool containsWmsLayer() const;
 
-    //! Returns true if the map contains layers with blend modes or flattened layers for vectors
-    bool containsAdvancedEffects() const;
+    bool requiresRasterization() const override;
+    bool containsAdvancedEffects() const override;
 
     /**
      * Sets the \a rotation for the map - this does not affect the composer item shape, only the
@@ -409,7 +408,7 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
     /**
      * Return map settings that will be used for drawing of the map.
      */
-    QgsMapSettings mapSettings( const QgsRectangle &extent, QSizeF size, int dpi ) const;
+    QgsMapSettings mapSettings( const QgsRectangle &extent, QSizeF size, double dpi ) const;
 
     void finalizeRestoreFromXml() override;
 

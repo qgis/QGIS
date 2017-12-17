@@ -270,6 +270,13 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
      */
     QPointF deltaForKeyEvent( QKeyEvent *event );
 
+    /**
+     * Sets whether widget repainting should be allowed for the view. This is
+     * used to temporarily halt painting while exporting layouts.
+     * \note Not available in Python bindings.
+     */
+    void setPaintingEnabled( bool enabled ) { mPaintingEnabled = enabled; } SIP_SKIP
+
   public slots:
 
     /**
@@ -512,6 +519,7 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
     void resizeEvent( QResizeEvent *event ) override;
     void scrollContentsBy( int dx, int dy ) override;
     void dragEnterEvent( QDragEnterEvent *e ) override;
+    void paintEvent( QPaintEvent *event ) override;
 
   private slots:
 
@@ -542,6 +550,8 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
     int mCurrentPage = 0;
 
     QgsPreviewEffect *mPreviewEffect = nullptr;
+
+    bool mPaintingEnabled = true;
 
     friend class TestQgsLayoutView;
     friend class QgsLayoutMouseHandles;

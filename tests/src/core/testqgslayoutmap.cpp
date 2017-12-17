@@ -27,6 +27,8 @@
 #include "qgsproject.h"
 #include "qgsmapthemecollection.h"
 #include "qgsproperty.h"
+#include "qgslayoutpagecollection.h"
+#include "qgslayoutitempolyline.h"
 #include <QObject>
 #include "qgstest.h"
 
@@ -46,11 +48,13 @@ class TestQgsLayoutMap : public QObject
     void render();
 #if 0
     void uniqueId(); //test if map id is adapted when doing copy paste
-    void worldFileGeneration(); // test world file generation
 #endif
+    void worldFileGeneration(); // test world file generation
+
     void mapPolygonVertices(); // test mapPolygon function with no map rotation
     void dataDefinedLayers(); //test data defined layer string
     void dataDefinedStyles(); //test data defined styles
+    void rasterized();
 
   private:
     QgsRasterLayer *mRasterLayer = nullptr;
@@ -189,17 +193,31 @@ void TestQgsLayoutMap::uniqueId()
 
   QVERIFY( oldId != newId );
 }
+#endif
 
 void TestQgsLayoutMap::worldFileGeneration()
 {
-  mComposerMap->setNewExtent( QgsRectangle( 781662.375, 3339523.125, 793062.375, 3345223.125 ) );
-  mComposerMap->setMapRotation( 30.0 );
+  QgsLayout l( QgsProject::instance() );
+  l.initializeDefaults();
+  QgsLayoutItemPage *page2 = new QgsLayoutItemPage( &l );
+  page2->setPageSize( "A4", QgsLayoutItemPage::Landscape );
+  l.pageCollection()->addPage( page2 );
 
-  mComposition->setGenerateWorldFile( true );
-  mComposition->setReferenceMap( mComposerMap );
+  QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
+  map->attemptSetSceneRect( QRectF( 20, 20, 200, 100 ) );
+  map->setFrameEnabled( true );
+  map->setLayers( QList<QgsMapLayer *>() << mRasterLayer );
+  l.addLayoutItem( map );
+
+  map->setExtent( QgsRectangle( 781662.375, 3339523.125, 793062.375, 3345223.125 ) );
+  map->setMapRotation( 30.0 );
+
+  l.setReferenceMap( map );
+
+  QgsLayoutExporter exporter( &l );
 
   double a, b, c, d, e, f;
-  mComposition->computeWorldFileParameters( a, b, c, d, e, f );
+  exporter.computeWorldFileParameters( a, b, c, d, e, f );
 
   QGSCOMPARENEAR( a, 4.18048, 0.001 );
   QGSCOMPARENEAR( b, 2.41331, 0.001 );
@@ -209,8 +227,8 @@ void TestQgsLayoutMap::worldFileGeneration()
   QGSCOMPARENEAR( f, 3.34241e+06, 1e+03 );
 
   //test with map on second page. Parameters should be the same
-  mComposerMap->setItemPosition( 20, 20, QgsComposerItem::UpperLeft, 2 );
-  mComposition->computeWorldFileParameters( a, b, c, d, e, f );
+  map->attemptMove( QgsLayoutPoint( 20, 20 ), true, false, 1 );
+  exporter.computeWorldFileParameters( a, b, c, d, e, f );
 
   QGSCOMPARENEAR( a, 4.18048, 0.001 );
   QGSCOMPARENEAR( b, 2.41331, 0.001 );
@@ -220,8 +238,8 @@ void TestQgsLayoutMap::worldFileGeneration()
   QGSCOMPARENEAR( f, 3.34241e+06, 1e+03 );
 
   //test computing parameters for specific region
-  mComposerMap->setItemPosition( 20, 20, QgsComposerItem::UpperLeft, 2 );
-  mComposition->computeWorldFileParameters( QRectF( 10, 5, 260, 200 ), a, b, c, d, e, f );
+  map->attemptMove( QgsLayoutPoint( 20, 20 ), true, false, 1 );
+  exporter.computeWorldFileParameters( QRectF( 10, 5, 260, 200 ), a, b, c, d, e, f );
 
   QGSCOMPARENEAR( a, 4.18061, 0.001 );
   QGSCOMPARENEAR( b, 2.41321, 0.001 );
@@ -229,12 +247,7 @@ void TestQgsLayoutMap::worldFileGeneration()
   QGSCOMPARENEAR( d, 2.4137, 0.001 );
   QGSCOMPARENEAR( e, -4.1798, 0.001 );
   QGSCOMPARENEAR( f, 3.35331e+06, 1e+03 );
-
-  mComposition->setGenerateWorldFile( false );
-  mComposerMap->setMapRotation( 0.0 );
-
 }
-#endif
 
 
 void TestQgsLayoutMap::mapPolygonVertices()
@@ -426,6 +439,67 @@ void TestQgsLayoutMap::dataDefinedStyles()
 
   QgsLayoutChecker checker( QStringLiteral( "composermap_ddstyles" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "composer_map" ) );
+  QVERIFY( checker.testLayout( mReport, 0, 0 ) );
+}
+
+void TestQgsLayoutMap::rasterized()
+{
+  // test a map which must be rasterized
+  QgsLayout l( QgsProject::instance() );
+  l.initializeDefaults();
+
+  QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
+  map->attemptMove( QgsLayoutPoint( 20, 30 ) );
+  map->attemptResize( QgsLayoutSize( 200, 100 ) );
+  map->setFrameEnabled( true );
+  map->setExtent( QgsRectangle( -110.0, 25.0, -90, 40.0 ) );
+  QList<QgsMapLayer *> layers = QList<QgsMapLayer *>() << mLinesLayer;
+  map->setLayers( layers );
+  map->setBackgroundColor( Qt::yellow );
+  l.addLayoutItem( map );
+
+  // add some guide lines, just for reference
+  QPolygonF points;
+  points << QPointF( 0, 30 ) << QPointF( 10, 30 );
+  QgsLayoutItemPolyline *line1 = new QgsLayoutItemPolyline( points, &l );
+  l.addLayoutItem( line1 );
+  points.clear();
+  points << QPointF( 0, 30 + map->rect().height() ) << QPointF( 10, 30 + map->rect().height() );
+  QgsLayoutItemPolyline *line2 = new QgsLayoutItemPolyline( points, &l );
+  l.addLayoutItem( line2 );
+  points.clear();
+  points << QPointF( 20, 0 ) << QPointF( 20, 20 );
+  QgsLayoutItemPolyline *line3 = new QgsLayoutItemPolyline( points, &l );
+  l.addLayoutItem( line3 );
+  points.clear();
+  points << QPointF( 220, 0 ) << QPointF( 220, 20 );
+  QgsLayoutItemPolyline *line4 = new QgsLayoutItemPolyline( points, &l );
+  l.addLayoutItem( line4 );
+
+  // force rasterization
+  QgsLayoutItemMapGrid *grid = new QgsLayoutItemMapGrid( "test", map );
+  grid->setIntervalX( 10 );
+  grid->setIntervalY( 10 );
+  grid->setBlendMode( QPainter::CompositionMode_Darken );
+  grid->setAnnotationEnabled( true );
+  grid->setAnnotationDisplay( QgsLayoutItemMapGrid::ShowAll, QgsLayoutItemMapGrid::Left );
+  grid->setAnnotationDisplay( QgsLayoutItemMapGrid::ShowAll, QgsLayoutItemMapGrid::Top );
+  grid->setAnnotationDisplay( QgsLayoutItemMapGrid::ShowAll, QgsLayoutItemMapGrid::Right );
+  grid->setAnnotationDisplay( QgsLayoutItemMapGrid::ShowAll, QgsLayoutItemMapGrid::Bottom );
+  map->grids()->addGrid( grid );
+  map->updateBoundingRect();
+
+  QVERIFY( map->containsAdvancedEffects() );
+
+  QgsLayoutChecker checker( QStringLiteral( "layoutmap_rasterized" ), &l );
+  checker.setControlPathPrefix( QStringLiteral( "composer_map" ) );
+  QVERIFY( checker.testLayout( mReport, 0, 0 ) );
+
+  // try rendering again, without requiring rasterization, for comparison
+  // (we can use the same test image, because CompositionMode_Darken doesn't actually have any noticeable
+  // rendering differences for the black grid!)
+  grid->setBlendMode( QPainter::CompositionMode_SourceOver );
+  QVERIFY( !map->containsAdvancedEffects() );
   QVERIFY( checker.testLayout( mReport, 0, 0 ) );
 }
 

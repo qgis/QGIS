@@ -19,11 +19,16 @@ from qgis.PyQt.QtCore import QFileInfo, QDate, QDateTime
 from qgis.core import QgsVectorLayer, QgsLayout, QgsLayoutItemLabel, QgsProject
 from utilities import unitTestDataPath
 
+from test_qgslayoutitem import LayoutItemTestCase
 
 start_app()
 
 
-class TestQgsLayoutItemLabel(unittest.TestCase):
+class TestQgsLayoutItemLabel(unittest.TestCase, LayoutItemTestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        cls.item_class = QgsLayoutItemLabel
 
     def testCase(self):
         TEST_DATA_DIR = unitTestDataPath()

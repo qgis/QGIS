@@ -34,7 +34,7 @@ class QgsLayoutItemPage : QgsLayoutItem
       UndoPageSymbol,
     };
 
-    explicit QgsLayoutItemPage( QgsLayout *layout /TransferThis/ );
+    explicit QgsLayoutItemPage( QgsLayout *layout );
 %Docstring
 Constructor for QgsLayoutItemPage, with the specified parent ``layout``.
 %End

@@ -18,6 +18,8 @@
 #include "qgsreadwritecontext.h"
 #include "qgslayout.h"
 #include "qgsproject.h"
+#include "qgslayoutundostack.h"
+#include "qgslayoutpagecollection.h"
 
 QgsLayoutGridSettings::QgsLayoutGridSettings( QgsLayout *layout )
   : mGridResolution( QgsLayoutMeasurement( 10 ) )

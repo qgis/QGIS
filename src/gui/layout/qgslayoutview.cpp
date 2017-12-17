@@ -31,6 +31,8 @@
 #include "qgslayoutitemundocommand.h"
 #include "qgsproject.h"
 #include "qgslayoutitemgroup.h"
+#include "qgslayoutpagecollection.h"
+#include "qgslayoutundostack.h"
 #include <memory>
 #include <QDesktopWidget>
 #include <QMenu>
@@ -998,6 +1000,19 @@ void QgsLayoutView::dragEnterEvent( QDragEnterEvent *e )
   // But we do not want that and by ignoring the drag enter we let the
   // parent (e.g. QgsLayoutDesignerDialog) to handle drops of files.
   e->ignore();
+}
+
+void QgsLayoutView::paintEvent( QPaintEvent *event )
+{
+  if ( mPaintingEnabled )
+  {
+    QGraphicsView::paintEvent( event );
+    event->accept();
+  }
+  else
+  {
+    event->ignore();
+  }
 }
 
 void QgsLayoutView::invalidateCachedRenders()

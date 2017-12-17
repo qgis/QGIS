@@ -17,6 +17,8 @@
 #include "qgslayoutmultiframeundocommand.h"
 #include "qgslayoutframe.h"
 #include "qgslayout.h"
+#include "qgslayoutpagecollection.h"
+#include "qgslayoutundostack.h"
 #include <QtCore>
 
 QgsLayoutMultiFrame::QgsLayoutMultiFrame( QgsLayout *layout )

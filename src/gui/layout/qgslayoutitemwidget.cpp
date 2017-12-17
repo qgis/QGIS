@@ -17,6 +17,7 @@
 #include "qgspropertyoverridebutton.h"
 #include "qgslayout.h"
 #include "qgsproject.h"
+#include "qgslayoutundostack.h"
 
 //
 // QgsLayoutConfigObject

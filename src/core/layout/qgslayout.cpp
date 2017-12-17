@@ -25,6 +25,8 @@
 #include "qgslayoutitemgroup.h"
 #include "qgslayoutitemgroupundocommand.h"
 #include "qgslayoutmultiframe.h"
+#include "qgslayoutitemmap.h"
+#include "qgslayoutundostack.h"
 
 QgsLayout::QgsLayout( QgsProject *project )
   : mProject( project )
@@ -32,7 +34,6 @@ QgsLayout::QgsLayout( QgsProject *project )
   , mGridSettings( this )
   , mPageCollection( new QgsLayoutPageCollection( this ) )
   , mUndoStack( new QgsLayoutUndoStack( this ) )
-  , mExporter( QgsLayoutExporter( this ) )
 {
   // just to make sure - this should be the default, but maybe it'll change in some future Qt version...
   setBackgroundBrush( Qt::NoBrush );
@@ -110,11 +111,6 @@ QgsProject *QgsLayout::project() const
 QgsLayoutModel *QgsLayout::itemsModel()
 {
   return mItemsModel.get();
-}
-
-QgsLayoutExporter &QgsLayout::exporter()
-{
-  return mExporter;
 }
 
 void QgsLayout::setName( const QString &name )
@@ -219,7 +215,7 @@ bool QgsLayout::moveItemToBottom( QgsLayoutItem *item, bool deferUpdate )
   return result;
 }
 
-QgsLayoutItem *QgsLayout::itemByUuid( const QString &uuid, bool includeTemplateUuids )
+QgsLayoutItem *QgsLayout::itemByUuid( const QString &uuid, bool includeTemplateUuids ) const
 {
   QList<QgsLayoutItem *> itemList;
   layoutItems( itemList );
@@ -363,12 +359,31 @@ QStringList QgsLayout::customProperties() const
 
 QgsLayoutItemMap *QgsLayout::referenceMap() const
 {
-  return nullptr;
+  // prefer explicitly set reference map
+  if ( QgsLayoutItemMap *map = qobject_cast< QgsLayoutItemMap * >( itemByUuid( mWorldFileMapId ) ) )
+    return map;
+
+  // else try to find largest map
+  QList< QgsLayoutItemMap * > maps;
+  layoutItems( maps );
+  QgsLayoutItemMap *largestMap = nullptr;
+  double largestMapArea = 0;
+  for ( QgsLayoutItemMap *map : qgis::as_const( maps ) )
+  {
+    double area = map->rect().width() * map->rect().height();
+    if ( area > largestMapArea )
+    {
+      largestMapArea = area;
+      largestMap = map;
+    }
+  }
+  return largestMap;
 }
 
 void QgsLayout::setReferenceMap( QgsLayoutItemMap *map )
 {
-  Q_UNUSED( map );
+  mWorldFileMapId = map ? map->uuid() : QString();
+  mProject->setDirty( true );
 }
 
 QgsLayoutPageCollection *QgsLayout::pageCollection()
@@ -423,6 +438,32 @@ QRectF QgsLayout::layoutBounds( bool ignorePages, double margin ) const
 
   return bounds;
 
+}
+
+QRectF QgsLayout::pageItemBounds( int page, bool visibleOnly ) const
+{
+  //start with an empty rectangle
+  QRectF bounds;
+
+  //add all QgsLayoutItems on page
+  const QList<QGraphicsItem *> itemList = items();
+  for ( QGraphicsItem *item : itemList )
+  {
+    const QgsLayoutItem *layoutItem = dynamic_cast<const QgsLayoutItem *>( item );
+    if ( layoutItem && layoutItem->type() != QgsLayoutItemRegistry::LayoutPage && layoutItem->page() == page )
+    {
+      if ( visibleOnly && !layoutItem->isVisible() )
+        continue;
+
+      //expand bounds with current item's bounds
+      if ( bounds.isValid() )
+        bounds = bounds.united( item->sceneBoundingRect() );
+      else
+        bounds = item->sceneBoundingRect();
+    }
+  }
+
+  return bounds;
 }
 
 void QgsLayout::addLayoutItem( QgsLayoutItem *item )
@@ -583,7 +624,7 @@ class QgsLayoutUndoCommand: public QgsAbstractLayoutUndoCommand
         return;
       }
 
-      mLayout->readXmlLayoutSettings( stateDoc.documentElement().firstChild().toElement(), stateDoc, QgsReadWriteContext() );
+      mLayout->readXmlLayoutSettings( stateDoc.documentElement(), stateDoc, QgsReadWriteContext() );
       mLayout->project()->setDirty( true );
     }
 
@@ -659,7 +700,12 @@ QList<QgsLayoutItem *> QgsLayout::ungroupItems( QgsLayoutItemGroup *group )
 
 void QgsLayout::refresh()
 {
+  mUndoStack->blockCommands( true );
+  mPageCollection->beginPageSizeChange();
   emit refreshed();
+  mPageCollection->reflow();
+  mPageCollection->endPageSizeChange();
+  mUndoStack->blockCommands( false );
   update();
 }
 
@@ -668,6 +714,8 @@ void QgsLayout::writeXmlLayoutSettings( QDomElement &element, QDomDocument &docu
   mCustomProperties.writeXml( element, document );
   element.setAttribute( QStringLiteral( "name" ), mName );
   element.setAttribute( QStringLiteral( "units" ), QgsUnitTypes::encodeUnit( mUnits ) );
+  element.setAttribute( QStringLiteral( "worldFileMap" ), mWorldFileMapId );
+  element.setAttribute( QStringLiteral( "printResolution" ), mContext.dpi() );
 }
 
 QDomElement QgsLayout::writeXml( QDomDocument &document, const QgsReadWriteContext &context ) const
@@ -710,6 +758,10 @@ bool QgsLayout::readXmlLayoutSettings( const QDomElement &layoutElement, const Q
   mCustomProperties.readXml( layoutElement );
   setName( layoutElement.attribute( QStringLiteral( "name" ) ) );
   setUnits( QgsUnitTypes::decodeLayoutUnit( layoutElement.attribute( QStringLiteral( "units" ) ) ) );
+  mWorldFileMapId = layoutElement.attribute( QStringLiteral( "worldFileMap" ) );
+  mContext.setDpi( layoutElement.attribute( QStringLiteral( "printResolution" ), "300" ).toDouble() );
+  emit changed();
+
   return true;
 }
 
@@ -804,12 +856,16 @@ bool QgsLayout::readXml( const QDomElement &layoutElement, const QDomDocument &d
     return object->readXml( layoutElement, document, context );
   };
 
+  blockSignals( true ); // defer changed signal to end
   readXmlLayoutSettings( layoutElement, document, context );
+  blockSignals( false );
 
   restore( mPageCollection.get() );
   restore( &mSnapper );
   restore( &mGridSettings );
   addItemsFromXml( layoutElement, document, context );
+
+  emit changed();
 
   return true;
 }

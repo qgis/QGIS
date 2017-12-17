@@ -375,7 +375,7 @@ void QgsLayoutItemMapGrid::setCrs( const QgsCoordinateReferenceSystem &crs )
 
 bool QgsLayoutItemMapGrid::usesAdvancedEffects() const
 {
-  return mBlendMode == QPainter::CompositionMode_SourceOver;
+  return mBlendMode != QPainter::CompositionMode_SourceOver;
 }
 
 QPolygonF QgsLayoutItemMapGrid::scalePolygon( const QPolygonF &polygon, const double scale ) const
@@ -1219,7 +1219,11 @@ void QgsLayoutItemMapGrid::drawCoordinateAnnotation( QPainter *p, QPointF pos, c
         ypos += ( mAnnotationFrameDistance + textHeight + gridFrameDistance );
         xpos -= textWidth / 2.0;
         if ( extension )
+        {
           extension->bottom = std::max( extension->bottom, mAnnotationFrameDistance + gridFrameDistance + textHeight );
+          extension->left = std::max( extension->left, textWidth / 2.0 ); // annotation at bottom left/right may extend outside the bounds
+          extension->right = std::max( extension->right, textWidth / 2.0 );
+        }
       }
       else if ( mBottomGridAnnotationDirection == QgsLayoutItemMapGrid::VerticalDescending )
       {
@@ -2028,11 +2032,11 @@ void QgsLayoutItemMapGrid::calculateMaxExtension( double &top, double &right, do
   QList< QPair< double, QLineF > > horizontalLines;
   if ( mGridUnit == MapUnit && mCRS.isValid() && mCRS != mMap->crs() )
   {
-    drawGridCrsTransform( context, 0, horizontalLines, verticalLines, false );
+    drawGridCrsTransform( context, 0, horizontalLines, verticalLines, true );
   }
   else
   {
-    drawGridNoTransform( context, 0, horizontalLines, verticalLines, false );
+    drawGridNoTransform( context, 0, horizontalLines, verticalLines, true );
   }
 
   if ( mGridFrameStyle != QgsLayoutItemMapGrid::NoFrame )

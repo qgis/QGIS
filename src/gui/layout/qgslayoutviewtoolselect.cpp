@@ -287,7 +287,8 @@ QgsLayoutMouseHandles *QgsLayoutViewToolSelect::mouseHandles()
 void QgsLayoutViewToolSelect::setLayout( QgsLayout *layout )
 {
   // existing handles are owned by previous layout
-  mMouseHandles->deleteLater();
+  if ( mMouseHandles )
+    mMouseHandles->deleteLater();
 
   //add mouse selection handles to layout, and initially hide
   mMouseHandles = new QgsLayoutMouseHandles( layout, view() );

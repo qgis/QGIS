@@ -20,6 +20,12 @@
 #include "qgsproject.h"
 #include "qgslayoutitemmap.h"
 #include "qgslayoutitemshape.h"
+#include "qgslayoutpagecollection.h"
+#include "qgslayoutundostack.h"
+#include "qgslayoutitemlabel.h"
+#include "qgslayoutitempolyline.h"
+#include "qgslayoutitemhtml.h"
+#include "qgslayoutframe.h"
 
 class TestQgsLayout: public QObject
 {
@@ -43,8 +49,10 @@ class TestQgsLayout: public QObject
     void layoutItemByUuid();
     void undoRedoOccurred();
     void itemsOnPage(); //test fetching matching items on a set page
+    void shouldExportPage();
     void pageIsEmpty();
     void clear();
+    void georeference();
 
   private:
     QString mReport;
@@ -232,27 +240,23 @@ void TestQgsLayout::referenceMap()
 
   // no maps
   QVERIFY( !l.referenceMap() );
-#if 0
 
   QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
-  map->setNewExtent( extent );
-  map->setSceneRect( QRectF( 30, 60, 200, 100 ) );
-  l.addComposerMap( map );
+  map->attemptSetSceneRect( QRectF( 30, 60, 200, 100 ) );
+  map->setExtent( extent );
+  l.addLayoutItem( map );
   QCOMPARE( l.referenceMap(), map );
-#endif
-#if 0 // TODO
 
   // add a larger map
   QgsLayoutItemMap *map2 = new QgsLayoutItemMap( &l );
-  map2->setNewExtent( extent );
-  map2->setSceneRect( QRectF( 30, 60, 250, 150 ) );
-  l.addComposerMap( map2 );
+  map2->attemptSetSceneRect( QRectF( 30, 60, 250, 150 ) );
+  map2->setExtent( extent );
+  l.addLayoutItem( map2 );
+
   QCOMPARE( l.referenceMap(), map2 );
   // explicitly set reference map
   l.setReferenceMap( map );
   QCOMPARE( l.referenceMap(), map );
-#endif
-
 }
 
 void TestQgsLayout::bounds()
@@ -260,73 +264,62 @@ void TestQgsLayout::bounds()
   //add some items to a layout
   QgsProject p;
   QgsLayout l( &p );
-  l.initializeDefaults();
+  QgsLayoutItemPage *page = new QgsLayoutItemPage( &l );
+  page->setPageSize( "A4", QgsLayoutItemPage::Landscape );
+  l.pageCollection()->addPage( page );
+  QgsLayoutItemPage *page2 = new QgsLayoutItemPage( &l );
+  page2->setPageSize( "A4", QgsLayoutItemPage::Landscape );
+  l.pageCollection()->addPage( page2 );
 
   QgsLayoutItemShape *shape1 = new QgsLayoutItemShape( &l );
   shape1->attemptResize( QgsLayoutSize( 90, 50 ) );
   shape1->attemptMove( QgsLayoutPoint( 90, 50 ) );
-  shape1->setItemRotation( 45 );
+  shape1->setItemRotation( 45, false );
   l.addLayoutItem( shape1 );
   QgsLayoutItemShape *shape2 = new QgsLayoutItemShape( &l );
   shape2->attemptResize( QgsLayoutSize( 110, 50 ) );
-  shape2->attemptMove( QgsLayoutPoint( 100, 150 ) );
+  shape2->attemptMove( QgsLayoutPoint( 100, 150 ), true, false, 0 );
   l.addLayoutItem( shape2 );
-
-#if 0
-  QgsLayoutItemRectangularShape *shape3 = new QgsLayoutItemRectangularShape( &l );
+  QgsLayoutItemShape *shape3 = new QgsLayoutItemShape( &l );
   l.addLayoutItem( shape3 );
-  shape3->setItemPosition( 210, 30, 50, 100, QgsComposerItem::UpperLeft, false, 2 );
-  QgsLayoutItemRectangularShape *shape4 = new QgsLayoutItemRectangularShape( &l );
+  shape3->attemptResize( QgsLayoutSize( 50, 100 ) );
+  shape3->attemptMove( QgsLayoutPoint( 210, 30 ), true, false, 1 );
+  QgsLayoutItemShape *shape4 = new QgsLayoutItemShape( &l );
   l.addLayoutItem( shape4 );
-  shape4->setItemPosition( 10, 120, 50, 30, QgsComposerItem::UpperLeft, false, 2 );
+  shape4->attemptResize( QgsLayoutSize( 50, 30 ) );
+  shape4->attemptMove( QgsLayoutPoint( 10, 120 ), true, false, 1 );
   shape4->setVisibility( false );
-#endif
 
   //check bounds
   QRectF layoutBounds = l.layoutBounds( false );
-#if 0 // correct values when 2nd page items are added back in
-  QGSCOMPARENEAR( layoutBounds.height(), 372.15, 0.01 );
-  QGSCOMPARENEAR( layoutBounds.width(), 301.00, 0.01 );
-  QGSCOMPARENEAR( layoutBounds.left(), -2, 0.01 );
-  QGSCOMPARENEAR( layoutBounds.top(), -2, 0.01 );
+  QGSCOMPARENEAR( layoutBounds.height(), 430, 0.01 );
+  QGSCOMPARENEAR( layoutBounds.width(), 297.00, 0.01 );
+  QGSCOMPARENEAR( layoutBounds.left(), 0.0, 0.01 );
+  QGSCOMPARENEAR( layoutBounds.top(), 0.0, 0.01 );
 
-  QRectF compositionBoundsNoPage = l.layoutBounds( true );
-  QGSCOMPARENEAR( compositionBoundsNoPage.height(), 320.36, 0.01 );
-  QGSCOMPARENEAR( compositionBoundsNoPage.width(), 250.30, 0.01 );
-  QGSCOMPARENEAR( compositionBoundsNoPage.left(), 9.85, 0.01 );
-  QGSCOMPARENEAR( compositionBoundsNoPage.top(), 49.79, 0.01 );
-#endif
+  QRectF layoutBoundsNoPage = l.layoutBounds( true );
+  QGSCOMPARENEAR( layoutBoundsNoPage.height(), 320.36, 0.01 );
+  QGSCOMPARENEAR( layoutBoundsNoPage.width(), 250.30, 0.01 );
+  QGSCOMPARENEAR( layoutBoundsNoPage.left(), 9.85, 0.01 );
+  QGSCOMPARENEAR( layoutBoundsNoPage.top(), 49.79, 0.01 );
 
-  QGSCOMPARENEAR( layoutBounds.height(), 210.000000, 0.01 );
-  QGSCOMPARENEAR( layoutBounds.width(), 297.000000, 0.01 );
-  QGSCOMPARENEAR( layoutBounds.left(), 0.00000, 0.01 );
-  QGSCOMPARENEAR( layoutBounds.top(), 0.00000, 0.01 );
-
-  QRectF compositionBoundsNoPage = l.layoutBounds( true );
-  QGSCOMPARENEAR( compositionBoundsNoPage.height(), 174.859607, 0.01 );
-  QGSCOMPARENEAR( compositionBoundsNoPage.width(), 124.859607, 0.01 );
-  QGSCOMPARENEAR( compositionBoundsNoPage.left(), 85.290393, 0.01 );
-  QGSCOMPARENEAR( compositionBoundsNoPage.top(), 25.290393, 0.01 );
-
-#if 0
-  QRectF page1Bounds = composition->pageItemBounds( 0, true );
+  QRectF page1Bounds = l.pageItemBounds( 0, true );
   QGSCOMPARENEAR( page1Bounds.height(), 150.36, 0.01 );
   QGSCOMPARENEAR( page1Bounds.width(), 155.72, 0.01 );
   QGSCOMPARENEAR( page1Bounds.left(), 54.43, 0.01 );
   QGSCOMPARENEAR( page1Bounds.top(), 49.79, 0.01 );
 
-  QRectF page2Bounds = composition->pageItemBounds( 1, true );
+  QRectF page2Bounds = l.pageItemBounds( 1, true );
   QGSCOMPARENEAR( page2Bounds.height(), 100.30, 0.01 );
   QGSCOMPARENEAR( page2Bounds.width(), 50.30, 0.01 );
   QGSCOMPARENEAR( page2Bounds.left(), 209.85, 0.01 );
   QGSCOMPARENEAR( page2Bounds.top(), 249.85, 0.01 );
 
-  QRectF page2BoundsWithHidden = composition->pageItemBounds( 1, false );
+  QRectF page2BoundsWithHidden = l.pageItemBounds( 1, false );
   QGSCOMPARENEAR( page2BoundsWithHidden.height(), 120.30, 0.01 );
   QGSCOMPARENEAR( page2BoundsWithHidden.width(), 250.30, 0.01 );
   QGSCOMPARENEAR( page2BoundsWithHidden.left(), 9.85, 0.01 );
   QGSCOMPARENEAR( page2BoundsWithHidden.top(), 249.85, 0.01 );
-#endif
 }
 
 void TestQgsLayout::addItem()
@@ -519,13 +512,13 @@ void TestQgsLayout::itemsOnPage()
   page3->setPageSize( "A4" );
   l.pageCollection()->addPage( page3 );
 
-  QgsLayoutItemShape *label1 = new QgsLayoutItemShape( &l );
+  QgsLayoutItemLabel *label1 = new QgsLayoutItemLabel( &l );
   l.addLayoutItem( label1 );
   label1->attemptMove( QgsLayoutPoint( 10, 10 ), true, false, 0 );
-  QgsLayoutItemShape *label2 = new QgsLayoutItemShape( &l );
+  QgsLayoutItemLabel *label2 = new QgsLayoutItemLabel( &l );
   l.addLayoutItem( label2 );
   label2->attemptMove( QgsLayoutPoint( 10, 10 ), true, false, 0 );
-  QgsLayoutItemShape *label3 = new QgsLayoutItemShape( &l );
+  QgsLayoutItemLabel *label3 = new QgsLayoutItemLabel( &l );
   l.addLayoutItem( label3 );
   label3->attemptMove( QgsLayoutPoint( 10, 10 ), true, false, 1 );
   QgsLayoutItemShape *shape1 = new QgsLayoutItemShape( &l );
@@ -534,10 +527,10 @@ void TestQgsLayout::itemsOnPage()
   QgsLayoutItemShape *shape2 = new QgsLayoutItemShape( &l );
   l.addLayoutItem( shape2 );
   shape2->attemptMove( QgsLayoutPoint( 10, 10 ), true, false, 1 );
-  QgsLayoutItemShape *arrow1 = new QgsLayoutItemShape( &l );
+  QgsLayoutItemPolyline *arrow1 = new QgsLayoutItemPolyline( &l );
   l.addLayoutItem( arrow1 );
   arrow1->attemptMove( QgsLayoutPoint( 10, 10 ), true, false, 2 );
-  QgsLayoutItemShape *arrow2 = new QgsLayoutItemShape( &l );
+  QgsLayoutItemPolyline *arrow2 = new QgsLayoutItemPolyline( &l );
   l.addLayoutItem( arrow2 );
   arrow2->attemptMove( QgsLayoutPoint( 10, 10 ), true, false, 2 );
 
@@ -551,6 +544,40 @@ void TestQgsLayout::itemsOnPage()
   items = l.pageCollection()->itemsOnPage( 2 );
   //should be 3 items on page 3
   QCOMPARE( items.length(), 3 );
+
+  //check fetching specific item types
+  QList<QgsLayoutItemLabel *> labels;
+  l.pageCollection()->itemsOnPage( labels, 0 );
+  //should be 2 labels on page 1
+  QCOMPARE( labels.length(), 2 );
+  l.pageCollection()->itemsOnPage( labels, 1 );
+  //should be 1 label on page 2
+  QCOMPARE( labels.length(), 1 );
+  l.pageCollection()->itemsOnPage( labels, 2 );
+  //should be no label on page 3
+  QCOMPARE( labels.length(), 0 );
+
+  QList<QgsLayoutItemShape *> shapes;
+  l.pageCollection()->itemsOnPage( shapes, 0 );
+  //should be 1 shapes on page 1
+  QCOMPARE( shapes.length(), 1 );
+  l.pageCollection()->itemsOnPage( shapes, 1 );
+  //should be 1 shapes on page 2
+  QCOMPARE( shapes.length(), 1 );
+  l.pageCollection()->itemsOnPage( shapes, 2 );
+  //should be no shapes on page 3
+  QCOMPARE( shapes.length(), 0 );
+
+  QList<QgsLayoutItemPolyline *> arrows;
+  l.pageCollection()->itemsOnPage( arrows, 0 );
+  //should be no arrows on page 1
+  QCOMPARE( arrows.length(), 0 );
+  l.pageCollection()->itemsOnPage( arrows, 1 );
+  //should be no arrows on page 2
+  QCOMPARE( arrows.length(), 0 );
+  l.pageCollection()->itemsOnPage( arrows, 2 );
+  //should be 2 arrows on page 3
+  QCOMPARE( arrows.length(), 2 );
 
   l.removeLayoutItem( label1 );
   l.removeLayoutItem( label2 );
@@ -567,6 +594,85 @@ void TestQgsLayout::itemsOnPage()
   QCOMPARE( items.length(), 1 );
   items = l.pageCollection()->itemsOnPage( 2 );
   QCOMPARE( items.length(), 1 );
+
+  l.pageCollection()->itemsOnPage( labels, 0 );
+  QCOMPARE( labels.length(), 0 );
+  l.pageCollection()->itemsOnPage( labels, 1 );
+  QCOMPARE( labels.length(), 0 );
+  l.pageCollection()->itemsOnPage( labels, 2 );
+  QCOMPARE( labels.length(), 0 );
+}
+
+void TestQgsLayout::shouldExportPage()
+{
+  QgsProject proj;
+  QgsLayout l( &proj );
+  QgsLayoutItemPage *page = new QgsLayoutItemPage( &l );
+  page->setPageSize( "A4" );
+  l.pageCollection()->addPage( page );
+  QgsLayoutItemPage *page2 = new QgsLayoutItemPage( &l );
+  page2->setPageSize( "A4" );
+  l.pageCollection()->addPage( page2 );
+  l.context().mIsPreviewRender = false;
+
+  QgsLayoutItemHtml *htmlItem = new QgsLayoutItemHtml( &l );
+  //frame on page 1
+  QgsLayoutFrame *frame1 = new QgsLayoutFrame( &l, htmlItem );
+  frame1->attemptSetSceneRect( QRectF( 0, 0, 100, 100 ) );
+  //frame on page 2
+  QgsLayoutFrame *frame2 = new QgsLayoutFrame( &l, htmlItem );
+  frame2->attemptSetSceneRect( QRectF( 0, 320, 100, 100 ) );
+  frame2->setHidePageIfEmpty( true );
+  htmlItem->addFrame( frame1 );
+  htmlItem->addFrame( frame2 );
+  htmlItem->setContentMode( QgsLayoutItemHtml::ManualHtml );
+  //short content, so frame 2 should be empty
+  htmlItem->setHtml( QStringLiteral( "<p><i>Test manual <b>html</b></i></p>" ) );
+  htmlItem->loadHtml();
+
+  QVERIFY( l.pageCollection()->shouldExportPage( 0 ) );
+  QVERIFY( !l.pageCollection()->shouldExportPage( 1 ) );
+
+  //long content, so frame 2 should not be empty
+  htmlItem->setHtml( QStringLiteral( "<p style=\"height: 10000px\"><i>Test manual <b>html</b></i></p>" ) );
+  htmlItem->loadHtml();
+
+  QVERIFY( l.pageCollection()->shouldExportPage( 0 ) );
+  QVERIFY( l.pageCollection()->shouldExportPage( 1 ) );
+
+  //...and back again...
+  htmlItem->setHtml( QStringLiteral( "<p><i>Test manual <b>html</b></i></p>" ) );
+  htmlItem->loadHtml();
+
+  QVERIFY( l.pageCollection()->shouldExportPage( 0 ) );
+  QVERIFY( !l.pageCollection()->shouldExportPage( 1 ) );
+
+  // get rid of frames
+  l.removeItem( frame1 );
+  l.removeItem( frame2 );
+  l.removeMultiFrame( htmlItem );
+  delete htmlItem;
+  QgsApplication::sendPostedEvents( nullptr, QEvent::DeferredDelete );
+
+  QVERIFY( l.pageCollection()->shouldExportPage( 0 ) );
+  QVERIFY( l.pageCollection()->shouldExportPage( 1 ) );
+
+  // explicitly set exclude from exports
+  l.pageCollection()->page( 0 )->setExcludeFromExports( true );
+  QVERIFY( !l.pageCollection()->shouldExportPage( 0 ) );
+  QVERIFY( l.pageCollection()->shouldExportPage( 1 ) );
+
+  l.pageCollection()->page( 0 )->setExcludeFromExports( false );
+  l.pageCollection()->page( 1 )->setExcludeFromExports( true );
+  QVERIFY( l.pageCollection()->shouldExportPage( 0 ) );
+  QVERIFY( !l.pageCollection()->shouldExportPage( 1 ) );
+
+  l.pageCollection()->page( 1 )->setExcludeFromExports( false );
+  l.pageCollection()->page( 0 )->dataDefinedProperties().setProperty( QgsLayoutObject::ExcludeFromExports, QgsProperty::fromExpression( "1" ) );
+  l.pageCollection()->page( 1 )->dataDefinedProperties().setProperty( QgsLayoutObject::ExcludeFromExports, QgsProperty::fromValue( true ) );
+  l.refresh();
+  QVERIFY( !l.pageCollection()->shouldExportPage( 0 ) );
+  QVERIFY( !l.pageCollection()->shouldExportPage( 1 ) );
 }
 
 void TestQgsLayout::pageIsEmpty()
@@ -645,6 +751,75 @@ void TestQgsLayout::clear()
   l.layoutItems( items );
   QVERIFY( items.empty() );
   QCOMPARE( l.undoStack()->stack()->count(), 0 );
+}
+
+void TestQgsLayout::georeference()
+{
+  QgsRectangle extent( 2000, 2800, 2500, 2900 );
+  QgsLayout l( QgsProject::instance() );
+  l.initializeDefaults();
+
+  QgsLayoutExporter exporter( &l );
+
+  // no map
+  std::unique_ptr< double [] > t = exporter.computeGeoTransform( nullptr );
+  QVERIFY( !t );
+
+  QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
+  map->attemptSetSceneRect( QRectF( 30, 60, 200, 100 ) );
+  map->setExtent( extent );
+  l.addLayoutItem( map );
+
+  t = exporter.computeGeoTransform( map );
+  QGSCOMPARENEAR( t[0], 1925.0, 1.0 );
+  QGSCOMPARENEAR( t[1], 0.211719, 0.0001 );
+  QGSCOMPARENEAR( t[2], 0.0, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( t[3], 3050, 1 );
+  QGSCOMPARENEAR( t[4], 0.0, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( t[5], -0.211694, 0.0001 );
+  t.reset();
+
+  // don't specify map
+  l.setReferenceMap( map );
+  t = exporter.computeGeoTransform();
+  QGSCOMPARENEAR( t[0], 1925.0, 1.0 );
+  QGSCOMPARENEAR( t[1], 0.211719, 0.0001 );
+  QGSCOMPARENEAR( t[2], 0.0, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( t[3], 3050, 1 );
+  QGSCOMPARENEAR( t[4], 0.0, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( t[5], -0.211694, 0.0001 );
+  t.reset();
+
+  // specify extent
+  t = exporter.computeGeoTransform( map, QRectF( 70, 100, 50, 60 ) );
+  QGSCOMPARENEAR( t[0], 2100.0, 1.0 );
+  QGSCOMPARENEAR( t[1], 0.211864, 0.0001 );
+  QGSCOMPARENEAR( t[2], 0.0, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( t[3], 2800, 1 );
+  QGSCOMPARENEAR( t[4], 0.0, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( t[5], -0.211864, 0.0001 );
+  t.reset();
+
+  // specify dpi
+  t = exporter.computeGeoTransform( map, QRectF(), 75 );
+  QGSCOMPARENEAR( t[0], 1925.0, 1 );
+  QGSCOMPARENEAR( t[1], 0.847603, 0.0001 );
+  QGSCOMPARENEAR( t[2], 0.0, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( t[3], 3050.0, 1 );
+  QGSCOMPARENEAR( t[4], 0.0, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( t[5], -0.846774, 0.0001 );
+  t.reset();
+
+  // rotation
+  map->setMapRotation( 45 );
+  t = exporter.computeGeoTransform( map );
+  QGSCOMPARENEAR( t[0], 1878.768940, 1 );
+  QGSCOMPARENEAR( t[1], 0.149708, 0.0001 );
+  QGSCOMPARENEAR( t[2], 0.149708, 0.0001 );
+  QGSCOMPARENEAR( t[3], 2761.611652, 1 );
+  QGSCOMPARENEAR( t[4], 0.14969, 0.0001 );
+  QGSCOMPARENEAR( t[5], -0.14969, 0.0001 );
+  t.reset();
 }
 
 
