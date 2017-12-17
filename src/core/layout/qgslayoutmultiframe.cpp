@@ -460,6 +460,8 @@ bool QgsLayoutMultiFrame::writeXml( QDomElement &parentElement, QDomDocument &do
       ( *frameIt )->writeXml( elem, doc );
     }
   }
+#else
+  Q_UNUSED( ignoreFrames );
 #endif
 
   writeObjectPropertiesToElement( element, doc, context );
@@ -502,6 +504,8 @@ bool QgsLayoutMultiFrame::readXml( const QDomElement &element, const QDomDocumen
 
     //TODO - think there should be a recalculateFrameSizes() call here
   }
+#else
+  Q_UNUSED( ignoreFrames );
 #endif
 
 

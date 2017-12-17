@@ -48,7 +48,6 @@ class QImage;
 class QgsAbstractGeometrySimplifier;
 class QgsActionManager;
 class QgsConditionalLayerStyles;
-class QgsCoordinateTransform;
 class QgsCurve;
 class QgsDiagramLayerSettings;
 class QgsDiagramRenderer;

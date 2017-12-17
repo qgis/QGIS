@@ -854,6 +854,7 @@ SET(QGIS_CORE_HDRS
   qgscoordinateformatter.h
   qgscoordinatetransform.h
   qgscoordinatetransformcontext.h
+  qgscoordinatetransformcontext_p.h
   qgscoordinateutils.h
   qgsdartmeasurement.h
   qgsdatadefinedsizelegend.h
