@@ -172,6 +172,11 @@ class QgsChunkNode
     //! called when bounding box
     void setExactBbox( const QgsAABB &box );
 
+    //! Sets whether the node has any data to be displayed. Can be used to set to false after load returned no data
+    void setHasData( bool hasData ) { mHasData = hasData; }
+    //! Returns whether the node has any data to be displayed. If not, it will be kept as a skeleton node and will not get loaded anymore
+    bool hasData() const { return mHasData; }
+
   private:
     QgsAABB mBbox;      //!< Bounding box in world coordinates
     float mError;    //!< Error of the node in world coordinates
@@ -193,6 +198,7 @@ class QgsChunkNode
     QgsChunkQueueJob *mUpdater;                //!< Object that does update of the chunk (not null <=> Updating state)
 
     QTime mEntityCreatedTime;
+    bool mHasData = true;   //!< Whether there are (will be) any data in this node (or any descentants) and so whether it makes sense to load this node
 };
 
 /// @endcond

@@ -18,6 +18,7 @@
 #include <Qt3DRender/qbuffer.h>
 #include <Qt3DRender/qbufferdatagenerator.h>
 #include <limits>
+#include <cmath>
 
 ///@cond PRIVATE
 
@@ -51,6 +52,10 @@ static QByteArray createPlaneVertexData( int res, float skirtHeight, const QByte
   const float du = 1.0 / ( resolution.width() - 1 );
   const float dv = 1.0 / ( resolution.height() - 1 );
 
+  // the height of vertices with no-data value... the value should not really matter
+  // as we do not create valid triangles that would use such vertices
+  const float noDataHeight = 0;
+
   // Iterate over z
   for ( int j = -1; j <= resolution.height(); ++j )
   {
@@ -70,6 +75,9 @@ static QByteArray createPlaneVertexData( int res, float skirtHeight, const QByte
         height = *zBits++;
       else
         height = zData[ jBound * resolution.width() + iBound ] - skirtHeight;
+
+      if ( std::isnan( height ) )
+        height = noDataHeight;
 
       // position
       *fptr++ = x;
@@ -91,8 +99,23 @@ static QByteArray createPlaneVertexData( int res, float skirtHeight, const QByte
   return bufferBytes;
 }
 
+inline int ijToHeightMapIndex( int i, int j, int numVerticesX, int numVerticesZ )
+{
+  i = qBound( 1, i, numVerticesX - 1 ) - 1;
+  j = qBound( 1, j, numVerticesZ - 1 ) - 1;
+  return j * ( numVerticesX - 2 ) + i;
+}
 
-static QByteArray createPlaneIndexData( int res )
+
+static bool hasNoData( int i, int j, const float *heightMap, int numVerticesX, int numVerticesZ )
+{
+  return std::isnan( heightMap[ ijToHeightMapIndex( i, j, numVerticesX, numVerticesZ ) ] ) ||
+         std::isnan( heightMap[ ijToHeightMapIndex( i + 1, j, numVerticesX, numVerticesZ ) ] ) ||
+         std::isnan( heightMap[ ijToHeightMapIndex( i, j + 1, numVerticesX, numVerticesZ ) ] ) ||
+         std::isnan( heightMap[ ijToHeightMapIndex( i + 1, j + 1, numVerticesX, numVerticesZ ) ] );
+}
+
+static QByteArray createPlaneIndexData( int res, const QByteArray &heightMap )
 {
   QSize resolution( res, res );
   int numVerticesX = resolution.width() + 2;
@@ -106,6 +129,8 @@ static QByteArray createPlaneIndexData( int res )
   indexBytes.resize( indices * sizeof( quint32 ) );
   quint32 *indexPtr = reinterpret_cast<quint32 *>( indexBytes.data() );
 
+  const float *heightMapFloat = reinterpret_cast<const float *>( heightMap.constData() );
+
   // Iterate over z
   for ( int j = 0; j < numVerticesZ - 1; ++j )
   {
@@ -115,6 +140,20 @@ static QByteArray createPlaneIndexData( int res )
     // Iterate over x
     for ( int i = 0; i < numVerticesX - 1; ++i )
     {
+      if ( hasNoData( i, j, heightMapFloat, numVerticesX, numVerticesZ ) )
+      {
+        // at least one corner of the quad has no-data value
+        // so let's make two invalid triangles
+        *indexPtr++ = rowStartIndex + i;
+        *indexPtr++ = rowStartIndex + i;
+        *indexPtr++ = rowStartIndex + i;
+
+        *indexPtr++ = rowStartIndex + i;
+        *indexPtr++ = rowStartIndex + i;
+        *indexPtr++ = rowStartIndex + i;
+        continue;
+      }
+
       // Split quad into two triangles
       *indexPtr++ = rowStartIndex + i;
       *indexPtr++ = nextRowStartIndex + i;
@@ -169,13 +208,14 @@ class PlaneVertexBufferFunctor : public QBufferDataGenerator
 class PlaneIndexBufferFunctor : public QBufferDataGenerator
 {
   public:
-    explicit PlaneIndexBufferFunctor( int resolution )
+    explicit PlaneIndexBufferFunctor( int resolution, const QByteArray &heightMap )
       : mResolution( resolution )
+      , mHeightMap( heightMap )
     {}
 
     QByteArray operator()() final
     {
-      return createPlaneIndexData( mResolution );
+      return createPlaneIndexData( mResolution, mHeightMap );
     }
 
     bool operator ==( const QBufferDataGenerator &other ) const final
@@ -190,6 +230,7 @@ class PlaneIndexBufferFunctor : public QBufferDataGenerator
 
   private:
     int mResolution;
+    QByteArray mHeightMap;
 };
 
 
@@ -254,7 +295,7 @@ void DemTerrainTileGeometry::init()
   mIndexAttribute->setCount( faces * 3 );
 
   mVertexBuffer->setDataGenerator( QSharedPointer<PlaneVertexBufferFunctor>::create( mResolution, mSkirtHeight, mHeightMap ) );
-  mIndexBuffer->setDataGenerator( QSharedPointer<PlaneIndexBufferFunctor>::create( mResolution ) );
+  mIndexBuffer->setDataGenerator( QSharedPointer<PlaneIndexBufferFunctor>::create( mResolution, mHeightMap ) );
 
   addAttribute( mPositionAttribute );
   addAttribute( mTexCoordAttribute );
