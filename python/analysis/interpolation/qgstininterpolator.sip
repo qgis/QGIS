@@ -37,7 +37,7 @@ Ownership of ``feedback`` is not transferred and callers must ensure that it exi
 %End
     ~QgsTinInterpolator();
 
-    virtual int interpolatePoint( double x, double y, double &result, QgsFeedback *feedback );
+    virtual int interpolatePoint( double x, double y, double &result /Out/, QgsFeedback *feedback );
 
 
     static QgsFields triangulationFields();

@@ -35,7 +35,7 @@ class ANALYSIS_EXPORT QgsIDWInterpolator: public QgsInterpolator
      */
     QgsIDWInterpolator( const QList<QgsInterpolator::LayerData> &layerData );
 
-    int interpolatePoint( double x, double y, double &result, QgsFeedback *feedback = nullptr ) override;
+    int interpolatePoint( double x, double y, double &result SIP_OUT, QgsFeedback *feedback = nullptr ) override;
 
     /**
      * Sets the distance \a coefficient, the parameter that sets how the values are

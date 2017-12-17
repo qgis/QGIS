@@ -97,7 +97,7 @@ Source type
 
     virtual ~QgsInterpolator();
 
-    virtual int interpolatePoint( double x, double y, double &result, QgsFeedback *feedback = 0 ) = 0;
+    virtual int interpolatePoint( double x, double y, double &result /Out/, QgsFeedback *feedback = 0 ) = 0;
 %Docstring
 Calculates interpolation value for map coordinates x, y
 
