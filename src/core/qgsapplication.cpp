@@ -432,7 +432,17 @@ QString QgsApplication::defaultThemePath()
 }
 QString QgsApplication::activeThemePath()
 {
-  return userThemesFolder() + QDir::separator() + themeName() + QDir::separator() + "icons/";
+  QString usersThemes = userThemesFolder() + QDir::separator() + themeName() + QDir::separator() + "icons/";
+  QDir dir( usersThemes );
+  if ( dir.exists() )
+  {
+    return usersThemes;
+  }
+  else
+  {
+    QString defaultThemes = defaultThemesFolder() + QDir::separator() + themeName() + QDir::separator() + "icons/";
+    return defaultThemes;
+  }
 }
 
 QString QgsApplication::appIconPath()
@@ -630,7 +640,7 @@ void QgsApplication::setUITheme( const QString &themeName )
 
 QHash<QString, QString> QgsApplication::uiThemes()
 {
-  QStringList paths = QStringList() << userThemesFolder();
+  QStringList paths = QStringList() << userThemesFolder() << defaultThemesFolder();
   QHash<QString, QString> mapping;
   mapping.insert( QStringLiteral( "default" ), QLatin1String( "" ) );
   Q_FOREACH ( const QString &path, paths )
@@ -1298,7 +1308,6 @@ bool QgsApplication::createThemeFolder()
     myDir.mkpath( folder );
   }
 
-  copyPath( defaultThemesFolder(), userThemesFolder() );
   return true;
 }
 
