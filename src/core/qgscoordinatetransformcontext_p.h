@@ -35,6 +35,9 @@
  * See details in QEP #17
  ****************************************************************************/
 
+#include "qgis_sip.h"
+SIP_NO_FILE
+
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
 
