@@ -1484,7 +1484,7 @@ void QgsLayoutDesignerDialog::exportToRaster()
 #endif
 
 #ifdef Q_OS_MAC
-  mQgis->activateWindow();
+  QgisApp::instance()->activateWindow();
   this->raise();
 #endif
   QPair<QString, QString> fileNExt = QgsGuiUtils::getSaveAsImageName( this, tr( "Save layout as" ), outputFileName );
@@ -1600,7 +1600,7 @@ void QgsLayoutDesignerDialog::exportToPdf()
 #endif
 
 #ifdef Q_OS_MAC
-  mQgis->activateWindow();
+  QgisApp::instance()->activateWindow();
   this->raise();
 #endif
   outputFileName = QFileDialog::getSaveFileName(
