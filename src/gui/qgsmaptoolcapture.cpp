@@ -713,7 +713,7 @@ int QgsMapToolCapture::size()
   return mCaptureCurve.numPoints();
 }
 
-QList<QgsPoint> QgsMapToolCapture::points()
+QList<QgsPoint> QgsMapToolCapture::points() const
 {
   QgsPointSequenceV2 pts;
   QList<QgsPoint> points;

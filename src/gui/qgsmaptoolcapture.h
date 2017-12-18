@@ -192,7 +192,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      * List of digitized points
      * @return List of points
      */
-    QList<QgsPoint> points();
+    QList<QgsPoint> points() const;
 
     /**
      * List of digitized points with z support
@@ -247,6 +247,8 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     bool mCaptureModeFromLayer;
 
     QgsVertexMarker* mSnappingMarker;
+
+    friend class TestQgsMapToolReshape;
 
 #ifdef Q_OS_WIN
     int mSkipNextContextMenuEvent;

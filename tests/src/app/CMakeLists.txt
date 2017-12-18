@@ -16,6 +16,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/gui/attributetable
   ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/gui/symbology-ng
   ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/gui/raster
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/gui/layertree
   ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/python
   ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/app
   ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/app/pluginmanager
@@ -108,5 +109,6 @@ ADD_QGIS_TEST(attributetabletest testqgsattributetable.cpp)
 ADD_QGIS_TEST(fieldcalculatortest testqgsfieldcalculator.cpp)
 ADD_QGIS_TEST(maptoolidentifyaction testqgsmaptoolidentifyaction.cpp)
 ADD_QGIS_TEST(maptoolselect testqgsmaptoolselect.cpp)
+ADD_QGIS_TEST(maptoolreshape testqgsmaptoolreshape.cpp)
 ADD_QGIS_TEST(measuretool testqgsmeasuretool.cpp)
 ADD_QGIS_TEST(vectorlayersaveasdialogtest testqgsvectorlayersaveasdialog.cpp)
