@@ -89,7 +89,7 @@ void QgsLayoutGuide::update()
       }
       else
       {
-        mLineItem->setLine( 0, layoutPos, mPage->rect().width(), layoutPos );
+        mLineItem->setLine( 0, layoutPos + mPage->y(), mPage->rect().width(), layoutPos + mPage->y() );
         mLineItem->setVisible( showGuide );
       }
 
@@ -102,7 +102,7 @@ void QgsLayoutGuide::update()
       }
       else
       {
-        mLineItem->setLine( layoutPos, 0, layoutPos, mPage->rect().height() );
+        mLineItem->setLine( layoutPos, mPage->y(), layoutPos, mPage->y() + mPage->rect().height() );
         mLineItem->setVisible( showGuide );
       }
 

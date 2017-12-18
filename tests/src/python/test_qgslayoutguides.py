@@ -65,6 +65,11 @@ class TestQgsLayoutGuide(unittest.TestCase):
         p = QgsProject()
         l = QgsLayout(p)
         l.initializeDefaults() # add a page
+        # add a second page
+        page2 = QgsLayoutItemPage(l)
+        page2.setPageSize('A5')
+        l.pageCollection().addPage(page2)
+
         g = QgsLayoutGuide(Qt.Horizontal, QgsLayoutMeasurement(5, QgsUnitTypes.LayoutCentimeters), l.pageCollection().page(0))
         g.setLayout(l)
         g.update()
@@ -84,6 +89,19 @@ class TestQgsLayoutGuide(unittest.TestCase):
         self.assertEqual(g.item().line().x2(), 297)
         self.assertEqual(g.item().line().y2(), 15)
         self.assertEqual(g.layoutPosition(), 15)
+
+        # guide on page2
+        g1 = QgsLayoutGuide(Qt.Horizontal, QgsLayoutMeasurement(5, QgsUnitTypes.LayoutCentimeters), l.pageCollection().page(1))
+        g1.setLayout(l)
+        g1.update()
+        g1.setPosition(QgsLayoutMeasurement(15, QgsUnitTypes.LayoutMillimeters))
+        g1.update()
+        self.assertTrue(g1.item().isVisible())
+        self.assertEqual(g1.item().line().x1(), 0)
+        self.assertEqual(g1.item().line().y1(), 235)
+        self.assertEqual(g1.item().line().x2(), 148)
+        self.assertEqual(g1.item().line().y2(), 235)
+        self.assertEqual(g1.layoutPosition(), 235)
 
         # vertical guide
         g2 = QgsLayoutGuide(Qt.Vertical, QgsLayoutMeasurement(5, QgsUnitTypes.LayoutCentimeters), l.pageCollection().page(0))
@@ -108,6 +126,17 @@ class TestQgsLayoutGuide(unittest.TestCase):
         g.setPosition(QgsLayoutMeasurement(1115, QgsUnitTypes.LayoutMillimeters))
         g.update()
         self.assertFalse(g.item().isVisible())
+
+        # guide on page2
+        g3 = QgsLayoutGuide(Qt.Vertical, QgsLayoutMeasurement(5, QgsUnitTypes.LayoutCentimeters), l.pageCollection().page(1))
+        g3.setLayout(l)
+        g3.update()
+        self.assertTrue(g3.item().isVisible())
+        self.assertEqual(g3.item().line().x1(), 50)
+        self.assertEqual(g3.item().line().y1(), 220)
+        self.assertEqual(g3.item().line().x2(), 50)
+        self.assertEqual(g3.item().line().y2(), 430)
+        self.assertEqual(g3.layoutPosition(), 50)
 
     def testCollection(self):
         p = QgsProject()
