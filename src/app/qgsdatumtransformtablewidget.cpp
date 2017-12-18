@@ -85,7 +85,7 @@ QVariant QgsDatumTransformTableModel::data( const QModelIndex &index, int role )
     QPair< QString, QString> crses = mTransformContext.sourceDestinationDatumTransforms().keys().at( index.row() );
     sourceCrs = crses.first;
     destinationCrs = crses.second;
-    const QgsCoordinateTransform::TransformPair transforms = mTransformContext.sourceDestinationDatumTransforms().value( crses );
+    const QgsDatumTransform::TransformPair transforms = mTransformContext.sourceDestinationDatumTransforms().value( crses );
     sourceTransform = transforms.sourceTransformId;
     destinationTransform = transforms.destinationTransformId;
 #ifdef singlesourcedest

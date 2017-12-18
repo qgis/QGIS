@@ -87,7 +87,7 @@ class QgsCoordinateTransformPrivate : public QSharedData
 
     bool initialize();
 
-    void calculateTransforms();
+    void calculateTransforms( const QgsCoordinateTransformContext &context );
 
     QPair< projPJ, projPJ > threadLocalProjData();
 
@@ -108,13 +108,6 @@ class QgsCoordinateTransformPrivate : public QSharedData
 
     //! QgsCoordinateReferenceSystem of the destination (map canvas) coordinate system
     QgsCoordinateReferenceSystem mDestCRS;
-
-    //! Transform context
-    QgsCoordinateTransformContext mContext;
-
-#ifdef QGISDEBUG
-    bool mHasContext = false;
-#endif
 
     QString mSourceProjString;
     QString mDestProjString;

@@ -38,7 +38,7 @@
 #define SIP_NO_FILE
 
 #include "qgscoordinatereferencesystem.h"
-#include "qgscoordinatetransform.h"
+#include "qgsdatumtransform.h"
 
 class QgsCoordinateTransformContextPrivate : public QSharedData
 {
@@ -63,7 +63,7 @@ class QgsCoordinateTransformContextPrivate : public QSharedData
      * Mapping for datum transforms to use for source/destination CRS pairs.
      * Matching records from this map will take precedence over other transform maps.
      */
-    QMap< QPair< QString, QString >, QgsCoordinateTransform::TransformPair > mSourceDestDatumTransforms;
+    QMap< QPair< QString, QString >, QgsDatumTransform::TransformPair > mSourceDestDatumTransforms;
 
 #if 0
     //! Mapping for datum transforms to use for source CRS

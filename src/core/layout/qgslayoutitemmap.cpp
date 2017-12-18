@@ -1090,9 +1090,7 @@ QgsMapSettings QgsLayoutItemMap::mapSettings( const QgsRectangle &extent, QSizeF
   jobMapSettings.setFlag( QgsMapSettings::DrawEditingInfo, false );
   jobMapSettings.setFlag( QgsMapSettings::DrawSelection, false );
   jobMapSettings.setFlag( QgsMapSettings::UseAdvancedEffects, mLayout->context().flags() & QgsLayoutContext::FlagUseAdvancedEffects );
-
-  // todo datum nyall
-  //jobMapSettings.datumTransformStore().setDestinationCrs( renderCrs );
+  jobMapSettings.setTransformContext( mLayout->project()->transformContext() );
 
   jobMapSettings.setLabelingEngineSettings( mLayout->project()->labelingEngineSettings() );
 

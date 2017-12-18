@@ -55,10 +55,9 @@ QgsCoordinateTransformPrivate::QgsCoordinateTransformPrivate( const QgsCoordinat
     const QgsCoordinateTransformContext &context )
   : mSourceCRS( source )
   , mDestCRS( destination )
-  , mContext( context )
 {
   setFinder();
-  calculateTransforms();
+  calculateTransforms( context );
 }
 
 QgsCoordinateTransformPrivate::QgsCoordinateTransformPrivate( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination, int sourceDatumTransform, int destDatumTransform )
@@ -76,10 +75,6 @@ QgsCoordinateTransformPrivate::QgsCoordinateTransformPrivate( const QgsCoordinat
   , mShortCircuit( other.mShortCircuit )
   , mSourceCRS( other.mSourceCRS )
   , mDestCRS( other.mDestCRS )
-  , mContext( other.mContext )
-#ifdef QGISDEBUG
-  , mHasContext( other.mHasContext )
-#endif
   , mSourceDatumTransform( other.mSourceDatumTransform )
   , mDestinationDatumTransform( other.mDestinationDatumTransform )
 {
@@ -217,10 +212,10 @@ bool QgsCoordinateTransformPrivate::initialize()
   return mIsValid;
 }
 
-void QgsCoordinateTransformPrivate::calculateTransforms()
+void QgsCoordinateTransformPrivate::calculateTransforms( const QgsCoordinateTransformContext &context )
 {
   // recalculate datum transforms from context
-  QgsCoordinateTransform::TransformPair transforms = mContext.calculateDatumTransforms( mSourceCRS, mDestCRS );
+  QgsDatumTransform::TransformPair transforms = context.calculateDatumTransforms( mSourceCRS, mDestCRS );
   mSourceDatumTransform = transforms.sourceTransformId;
   mDestinationDatumTransform = transforms.destinationTransformId;
 }
