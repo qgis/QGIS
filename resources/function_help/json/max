@@ -8,6 +8,6 @@
 	{"arg":"value2", "syntaxOnly": true},
 	{"arg":"value", "descOnly": true, "description":"a number"}],
   "examples": [ { "expression":"max(2, 10.2, 5.5)", "returns":"10.2"},
-  "examples": [ { "expression":"max(2, 10.2, NULL)", "returns":"NULL"}
+                { "expression":"max(2, 10.2, NULL)", "returns":"NULL"}
   ]
 }
