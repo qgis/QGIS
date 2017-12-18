@@ -26,6 +26,7 @@
 #include "qgsprojectionselectiondialog.h"
 #include "qgssettings.h"
 #include "qgssqliteutils.h"
+#include "qgsgui.h"
 
 //qt includes
 #include <QFileInfo>
@@ -47,6 +48,8 @@ QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget *parent, Qt::Windo
   : QDialog( parent, fl )
 {
   setupUi( this );
+  QgsGui::enableAutoGeometryRestore( this );
+
   connect( pbnCalculate, &QPushButton::clicked, this, &QgsCustomProjectionDialog::pbnCalculate_clicked );
   connect( pbnAdd, &QPushButton::clicked, this, &QgsCustomProjectionDialog::pbnAdd_clicked );
   connect( pbnRemove, &QPushButton::clicked, this, &QgsCustomProjectionDialog::pbnRemove_clicked );
@@ -55,8 +58,6 @@ QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget *parent, Qt::Windo
   connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsCustomProjectionDialog::buttonBox_accepted );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsCustomProjectionDialog::showHelp );
 
-  QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "Windows/CustomProjection/geometry" ) ).toByteArray() );
 
   // user database is created at QGIS startup in QgisApp::createDB
   // we just check whether there is our database [MD]
@@ -83,8 +84,6 @@ QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget *parent, Qt::Windo
 
 QgsCustomProjectionDialog::~QgsCustomProjectionDialog()
 {
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/CustomProjection/geometry" ), saveGeometry() );
 }
 
 

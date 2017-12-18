@@ -22,6 +22,7 @@
 #include "qgsmessagelog.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
+#include "qgsgui.h"
 
 #include <QFileDialog>
 #include <QFileInfo>
@@ -42,8 +43,9 @@ QgsBookmarks::QgsBookmarks( QWidget *parent )
 
 {
   setupUi( this );
+  QgsGui::enableAutoGeometryRestore( this );
+
   connect( lstBookmarks, &QTreeView::doubleClicked, this, &QgsBookmarks::lstBookmarks_doubleClicked );
-  restorePosition();
 
   bookmarksDockContents->layout()->setMargin( 0 );
   bookmarksDockContents->layout()->setContentsMargins( 0, 0, 0, 0 );
@@ -137,16 +139,9 @@ QgsBookmarks::~QgsBookmarks()
   saveWindowLocation();
 }
 
-void QgsBookmarks::restorePosition()
-{
-  QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "Windows/Bookmarks/geometry" ) ).toByteArray() );
-}
-
 void QgsBookmarks::saveWindowLocation()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/Bookmarks/geometry" ), saveGeometry() );
   settings.setValue( QStringLiteral( "Windows/Bookmarks/headerstate" ), lstBookmarks->header()->saveState() );
 }
 

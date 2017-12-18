@@ -164,7 +164,6 @@ class APP_EXPORT QgsBookmarks : public QgsDockWidget, private Ui::QgsBookmarksBa
     QgsBookmarksProxyModel *mProxyModel = nullptr;
 
     void saveWindowLocation();
-    void restorePosition();
 
 };
 
