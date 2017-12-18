@@ -12603,7 +12603,7 @@ bool QgisApp::askUserForDatumTransform( const QgsCoordinateReferenceSystem &sour
       {
         ok = false;
       }
-      if ( dlg.exec() )
+      else if ( dlg.exec() )
       {
         QPair< QPair<QgsCoordinateReferenceSystem, int>, QPair<QgsCoordinateReferenceSystem, int > > dt = dlg.selectedDatumTransforms();
         QgsCoordinateTransformContext context = QgsProject::instance()->transformContext();
