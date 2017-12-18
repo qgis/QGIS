@@ -216,6 +216,7 @@ class Repositories(QObject):
         # TODO: make this proper again after 3.0 release, by uncommenting
         # the line below and removing the other return line:
         # return "?qgis=%d.%d" % (int(v[0]), int(v[1:3]))
+        # TODO: Do the same for lines 469-472
         return "?qgis=3.0"
 
     # ----------------------------------------- #
@@ -465,7 +466,10 @@ class Repositories(QObject):
                         qgisMaximumVersion = qgisMinimumVersion[0] + ".99"
                     # if compatible, add the plugin to the list
                     if not pluginNodes.item(i).firstChildElement("disabled").text().strip().upper() in ["TRUE", "YES"]:
-                        if isCompatible(Qgis.QGIS_VERSION, qgisMinimumVersion, qgisMaximumVersion):
+                        # TODO: make this proper again after 3.0 release, by uncommenting the line below and removing the next line
+                        # TODO: Do the same for lines 215-220
+                        # if isCompatible(Qgis.QGIS_VERSION, qgisMinimumVersion, qgisMaximumVersion):
+                        if isCompatible("3.0", qgisMinimumVersion, qgisMaximumVersion):
                             # add the plugin to the cache
                             plugins.addFromRepository(plugin)
                 self.mRepositories[reposName]["state"] = 2
