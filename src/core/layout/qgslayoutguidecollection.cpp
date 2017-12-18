@@ -467,6 +467,11 @@ void QgsLayoutGuideCollection::update()
   }
 }
 
+QList<QgsLayoutGuide *> QgsLayoutGuideCollection::guides()
+{
+  return mGuides;
+}
+
 QList<QgsLayoutGuide *> QgsLayoutGuideCollection::guides( Qt::Orientation orientation, int page )
 {
   QList<QgsLayoutGuide *> res;

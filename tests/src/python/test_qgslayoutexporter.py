@@ -25,10 +25,13 @@ from qgis.core import (QgsMultiRenderChecker,
                        QgsProject,
                        QgsMargins,
                        QgsLayoutItemShape,
+                       QgsLayoutGuide,
                        QgsRectangle,
                        QgsLayoutItemPage,
                        QgsLayoutItemMap,
                        QgsLayoutPoint,
+                       QgsLayoutMeasurement,
+                       QgsUnitTypes,
                        QgsSimpleFillSymbolLayer,
                        QgsFillSymbol)
 from qgis.PyQt.QtCore import QSize, QSizeF, QDir, QRectF, Qt
@@ -187,6 +190,10 @@ class TestQgsLayoutExporter(unittest.TestCase):
     def testRenderRegion(self):
         l = QgsLayout(QgsProject.instance())
         l.initializeDefaults()
+
+        # add a guide, to ensure it is not included in export
+        g1 = QgsLayoutGuide(Qt.Horizontal, QgsLayoutMeasurement(15, QgsUnitTypes.LayoutMillimeters), l.pageCollection().page(0))
+        l.guides().addGuide(g1)
 
         # add some items
         item1 = QgsLayoutItemShape(l)
