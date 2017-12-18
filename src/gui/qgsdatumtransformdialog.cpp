@@ -46,7 +46,7 @@ QgsDatumTransformDialog::QgsDatumTransformDialog( const QgsCoordinateReferenceSy
   //get list of datum transforms
   mSourceCrs = sourceCrs;
   mDestinationCrs = destinationCrs;
-  mDatumTransforms = QgsCoordinateTransform::datumTransformations( sourceCrs, destinationCrs );
+  mDatumTransforms = QgsDatumTransform::datumTransformations( sourceCrs, destinationCrs );
 
   QApplication::setOverrideCursor( Qt::ArrowCursor );
 
@@ -84,10 +84,10 @@ void QgsDatumTransformDialog::load( const QPair<int, int> &selectedDatumTransfor
       if ( nr == -1 )
         continue;
 
-      item->setText( i, QgsCoordinateTransform::datumTransformToProj( nr ) );
+      item->setText( i, QgsDatumTransform::datumTransformToProj( nr ) );
 
       //Describe datums in a tooltip
-      QgsDatumTransform::TransformInfo info = QgsCoordinateTransform::datumTransformInfo( nr );
+      QgsDatumTransform::TransformInfo info = QgsDatumTransform::datumTransformInfo( nr );
       if ( info.datumTransformId == -1 )
         continue;
 
@@ -266,7 +266,7 @@ void QgsDatumTransformDialog::mDatumTransformTreeWidget_currentItemChanged( QTre
 void QgsDatumTransformDialog::setSourceCrs( const QgsCoordinateReferenceSystem &sourceCrs )
 {
   mSourceCrs = sourceCrs;
-  mDatumTransforms = QgsCoordinateTransform::datumTransformations( mSourceCrs, mDestinationCrs );
+  mDatumTransforms = QgsDatumTransform::datumTransformations( mSourceCrs, mDestinationCrs );
   load();
   setOKButtonEnabled();
 }
@@ -274,7 +274,7 @@ void QgsDatumTransformDialog::setSourceCrs( const QgsCoordinateReferenceSystem &
 void QgsDatumTransformDialog::setDestinationCrs( const QgsCoordinateReferenceSystem &destinationCrs )
 {
   mDestinationCrs = destinationCrs;
-  mDatumTransforms = QgsCoordinateTransform::datumTransformations( mSourceCrs, mDestinationCrs );
+  mDatumTransforms = QgsDatumTransform::datumTransformations( mSourceCrs, mDestinationCrs );
   load();
   setOKButtonEnabled();
 }

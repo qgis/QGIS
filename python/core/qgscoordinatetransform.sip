@@ -28,6 +28,10 @@ transforms coordinates from the layer's coordinate system to the map canvas.
 .. note::
 
    Since QGIS 3.0 QgsCoordinateReferenceSystem objects are implicitly shared.
+
+.. seealso:: :py:class:`QgsDatumTransform`
+
+.. seealso:: :py:class:`QgsCoordinateTransformContext`
 %End
 
 %TypeHeaderCode
@@ -252,47 +256,6 @@ otherwise points are transformed from destination to source CRS.
     bool isShortCircuited() const;
 %Docstring
 Returns true if the transform short circuits because the source and destination are equivalent.
-%End
-
-    static QList< QgsDatumTransform::TransformPair > datumTransformations( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination );
-%Docstring
-Returns a list of datum transformations which are available for the given ``source`` and ``destination`` CRS.
-
-.. seealso:: :py:func:`datumTransformToProj()`
-
-.. seealso:: :py:func:`datumTransformInfo()`
-%End
-
-    static QString datumTransformToProj( int datumTransformId );
-%Docstring
-Returns a proj string representing the specified ``datumTransformId`` datum transform ID.
-
-.. seealso:: :py:func:`datumTransformations()`
-
-.. seealso:: :py:func:`datumTransformInfo()`
-
-.. seealso:: :py:func:`projStringToDatumTransformId()`
-%End
-
-    static int projStringToDatumTransformId( const QString &string );
-%Docstring
-Returns the datum transform ID corresponding to a specified proj ``string``.
-Returns -1 if matching datum ID was not found.
-
-.. seealso:: :py:func:`datumTransformToProj()`
-
-.. versionadded:: 3.0
-%End
-
-    static QgsDatumTransform::TransformInfo datumTransformInfo( int datumTransformId );
-%Docstring
-Returns detailed information about the specified ``datumTransformId``.
-If ``datumTransformId`` was not a valid transform ID, a TransformInfo with TransformInfo.datumTransformId of
--1 will be returned.
-
-.. seealso:: :py:func:`datumTransformations()`
-
-.. seealso:: :py:func:`datumTransformToProj()`
 %End
 
     int sourceDatumTransformId() const;

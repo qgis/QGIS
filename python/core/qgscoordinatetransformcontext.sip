@@ -37,6 +37,11 @@ applies for destination CRS transforms set using addDestinationDatumTransform().
    QgsCoordinateTransformContext objects are implicitly shared.
 
 
+.. seealso:: :py:class:`QgsDatumTransform`
+
+.. seealso:: :py:class:`QgsCoordinateTransform`
+
+
 .. versionadded:: 3.0
 %End
 

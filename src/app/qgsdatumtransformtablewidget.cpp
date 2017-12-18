@@ -110,7 +110,7 @@ QVariant QgsDatumTransformTableModel::data( const QModelIndex &index, int role )
         case SourceTransformColumn:
           if ( sourceTransform != -1 )
           {
-            return QgsCoordinateTransform::datumTransformToProj( sourceTransform );
+            return QgsDatumTransform::datumTransformToProj( sourceTransform );
           }
           break;
         case DestinationCrsColumn:
@@ -119,7 +119,7 @@ QVariant QgsDatumTransformTableModel::data( const QModelIndex &index, int role )
         case DestinationTransformColumn:
           if ( destinationTransform != -1 )
           {
-            return QgsCoordinateTransform::datumTransformToProj( destinationTransform );
+            return QgsDatumTransform::datumTransformToProj( destinationTransform );
           }
           break;
         default:
