@@ -65,9 +65,10 @@ QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateReferenceSyst
 
 QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination, const QgsCoordinateTransformContext &context )
 {
-  d = new QgsCoordinateTransformPrivate( source, destination, context );
+  mContext = context;
+  d = new QgsCoordinateTransformPrivate( source, destination, mContext );
 #ifdef QGISDEBUG
-  d->mHasContext = true;
+  mHasContext = true;
 #endif
 
   if ( !d->checkValidity() )
@@ -82,9 +83,11 @@ QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateReferenceSyst
 
 QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination, const QgsProject *project )
 {
-  d = new QgsCoordinateTransformPrivate( source, destination, project ? project->transformContext() : QgsCoordinateTransformContext() );
+  mContext = project ? project->transformContext() : QgsCoordinateTransformContext();
+  d = new QgsCoordinateTransformPrivate( source, destination, mContext );
 #ifdef QGISDEBUG
-  d->mHasContext = true;
+  if ( project )
+    mHasContext = true;
 #endif
 
   if ( !d->checkValidity() )
@@ -101,7 +104,7 @@ QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateReferenceSyst
 {
   d = new QgsCoordinateTransformPrivate( source, destination, sourceDatumTransform, destinationDatumTransform );
 #ifdef QGISDEBUG
-  d->mHasContext = true; // not strictly true, but we don't need to worry if datums have been explicitly set
+  mHasContext = true; // not strictly true, but we don't need to worry if datums have been explicitly set
 #endif
 
   if ( !d->checkValidity() )
@@ -115,6 +118,10 @@ QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateReferenceSyst
 }
 
 QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateTransform &o )
+  : mContext( o.mContext )
+#ifdef QGISDEBUG
+  , mHasContext( o.mHasContext )
+#endif
 {
   d = o.d;
 }
@@ -122,6 +129,10 @@ QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateTransform &o 
 QgsCoordinateTransform &QgsCoordinateTransform::operator=( const QgsCoordinateTransform &o )  //NOLINT
 {
   d = o.d;
+#ifdef QGISDEBUG
+  mHasContext = o.mHasContext;
+#endif
+  mContext = o.mContext;
   return *this;
 }
 
@@ -134,7 +145,7 @@ void QgsCoordinateTransform::setSourceCrs( const QgsCoordinateReferenceSystem &c
   if ( !d->checkValidity() )
     return;
 
-  d->calculateTransforms();
+  d->calculateTransforms( mContext );
   if ( !setFromCache( d->mSourceCRS, d->mDestCRS, d->mSourceDatumTransform, d->mDestinationDatumTransform ) )
   {
     d->initialize();
@@ -148,7 +159,7 @@ void QgsCoordinateTransform::setDestinationCrs( const QgsCoordinateReferenceSyst
   if ( !d->checkValidity() )
     return;
 
-  d->calculateTransforms();
+  d->calculateTransforms( mContext );
   if ( !setFromCache( d->mSourceCRS, d->mDestCRS, d->mSourceDatumTransform, d->mDestinationDatumTransform ) )
   {
     d->initialize();
@@ -159,14 +170,14 @@ void QgsCoordinateTransform::setDestinationCrs( const QgsCoordinateReferenceSyst
 void QgsCoordinateTransform::setContext( const QgsCoordinateTransformContext &context )
 {
   d.detach();
-  d->mContext = context;
+  mContext = context;
 #ifdef QGISDEBUG
-  d->mHasContext = true;
+  mHasContext = true;
 #endif
   if ( !d->checkValidity() )
     return;
 
-  d->calculateTransforms();
+  d->calculateTransforms( mContext );
   if ( !setFromCache( d->mSourceCRS, d->mDestCRS, d->mSourceDatumTransform, d->mDestinationDatumTransform ) )
   {
     d->initialize();
@@ -575,7 +586,7 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
 #endif
 
 #ifdef QGISDEBUG
-  if ( !d->mHasContext )
+  if ( !mHasContext )
     qWarning( "No QgsCoordinateTransformContext context set for transform" );
 #endif
 
@@ -792,8 +803,19 @@ bool QgsCoordinateTransform::setFromCache( const QgsCoordinateReferenceSystem &s
     if ( ( *valIt ).sourceDatumTransformId() == srcDatumTransform &&
          ( *valIt ).destinationDatumTransformId() == destDatumTransform )
     {
+      // need to save, and then restore the context... we don't want this to be cached or to use the values from the cache
+      QgsCoordinateTransformContext context = mContext;
+#ifdef QGISDEBUG
+      bool hasContext = mHasContext;
+#endif
       *this = *valIt;
       sCacheLock.unlock();
+
+      mContext = context;
+#ifdef QGISDEBUG
+      mHasContext = hasContext;
+#endif
+
       return true;
     }
   }

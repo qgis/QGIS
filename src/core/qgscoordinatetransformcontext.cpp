@@ -17,6 +17,7 @@
 
 #include "qgscoordinatetransformcontext.h"
 #include "qgscoordinatetransformcontext_p.h"
+#include "qgscoordinatetransform.h"
 #include "qgssettings.h"
 
 QgsCoordinateTransformContext::QgsCoordinateTransformContext()

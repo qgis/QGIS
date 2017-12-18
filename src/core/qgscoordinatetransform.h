@@ -22,12 +22,12 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgscoordinatetransformcontext.h"
 
 class QgsCoordinateTransformPrivate;
 class QgsPointXY;
 class QgsRectangle;
 class QPolygonF;
-class QgsCoordinateTransformContext;
 class QgsProject;
 
 /**
@@ -409,6 +409,13 @@ class CORE_EXPORT QgsCoordinateTransform
     static void searchDatumTransform( const QString &sql, QList< int > &transforms );
 
     mutable QExplicitlySharedDataPointer<QgsCoordinateTransformPrivate> d;
+
+    //! Transform context
+    QgsCoordinateTransformContext mContext;
+
+#ifdef QGISDEBUG
+    bool mHasContext = false;
+#endif
 
     bool setFromCache( const QgsCoordinateReferenceSystem &src,
                        const QgsCoordinateReferenceSystem &dest,
