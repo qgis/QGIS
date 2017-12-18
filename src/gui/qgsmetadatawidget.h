@@ -21,6 +21,7 @@
 #include "QStyledItemDelegate"
 
 #include "qgis_gui.h"
+#include "qgscoordinatereferencesystem.h"
 #include "qgsmaplayer.h"
 #include "qgslayermetadata.h"
 #include "ui_qgsmetadatawidget.h"
@@ -89,7 +90,8 @@ class GUI_EXPORT QgsMetadataWidget : public QWidget, private Ui::QgsMetadataWidg
   private:
     void updatePanel() const;
     void fillSourceFromLayer() const;
-    void fillCrsFromLayer() const;
+    void fillCrsFromLayer();
+    void fillCrsFromProvider();
     void addDefaultCategory() const;
     void addNewCategory();
     void removeSelectedCategory() const;
@@ -109,10 +111,11 @@ class GUI_EXPORT QgsMetadataWidget : public QWidget, private Ui::QgsMetadataWidg
     void addHistory();
     void removeSelectedHistory() const;
     void fillComboBox() const;
-    void setPropertiesFromLayer() const;
+    void setPropertiesFromLayer();
     void syncFromCategoriesTabToKeywordsTab() const;
     QStringList mDefaultCategories;
     QgsMapLayer *mLayer = nullptr;
+    QgsCoordinateReferenceSystem *mCrs = nullptr;
     QgsLayerMetadata mMetadata;
     QStandardItemModel *mConstraintsModel = nullptr;
     QStandardItemModel *mLinksModel = nullptr;
