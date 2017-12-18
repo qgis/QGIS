@@ -55,6 +55,7 @@ bool QgsMultiRenderChecker::runTest( const QString &testName, unsigned int misma
     QgsRenderChecker checker;
     checker.enableDashBuffering( true );
     checker.setColorTolerance( mColorTolerance );
+    checker.setSizeTolerance( mMaxSizeDifferenceX, mMaxSizeDifferenceY );
     checker.setControlPathPrefix( mControlPathPrefix );
     checker.setControlPathSuffix( suffix );
     checker.setControlName( mControlName );

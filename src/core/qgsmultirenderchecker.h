@@ -95,6 +95,14 @@ class CORE_EXPORT QgsMultiRenderChecker
     void setColorTolerance( unsigned int colorTolerance ) { mColorTolerance = colorTolerance; }
 
     /**
+     * Sets the largest allowable difference in size between the rendered and the expected image.
+     * \param xTolerance x tolerance in pixels
+     * \param yTolerance y tolerance in pixels
+     * \since QGIS 3.0
+     */
+    void setSizeTolerance( int xTolerance, int yTolerance ) { mMaxSizeDifferenceX = xTolerance; mMaxSizeDifferenceY = yTolerance; }
+
+    /**
      * Test using renderer to generate the image to be compared.
      *
      * \param testName - to be used as the basis for writing a file to
@@ -134,6 +142,8 @@ class CORE_EXPORT QgsMultiRenderChecker
     QString mControlName;
     QString mControlPathPrefix;
     unsigned int mColorTolerance = 0;
+    int mMaxSizeDifferenceX = 0;
+    int mMaxSizeDifferenceY = 0;
     QgsMapSettings mMapSettings;
 };
 
