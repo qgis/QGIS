@@ -96,8 +96,8 @@ class QgsComposerManager: public QDialog, private Ui::QgsComposerManagerBase
     QgsComposerManagerModel *mModel = nullptr;
 
 #ifdef Q_OS_MAC
-    void showEvent( QShowEvent *event );
-    void changeEvent( QEvent * );
+    void showEvent( QShowEvent *event ) override;
+    void changeEvent( QEvent * ) override;
 
     QAction *mWindowAction = nullptr;
 #endif
