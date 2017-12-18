@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>489</width>
-    <height>282</height>
+    <height>319</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -43,6 +43,16 @@
         </property>
         <property name="checked">
          <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="mForceVectorCheckBox">
+        <property name="toolTip">
+         <string>If checked, the layout will always be kept as vector objects when exported to a compatible format, even if the appearance of the resultant file does not match the layouts settings. If unchecked, some elements in the layout may be rasterized in order to keep their appearance intact.</string>
+        </property>
+        <property name="text">
+         <string>Always export as vectors</string>
         </property>
        </widget>
       </item>
@@ -196,6 +206,7 @@
   <tabstop>chkMapLayersAsGroup</tabstop>
   <tabstop>chkTextAsOutline</tabstop>
   <tabstop>mClipToContentGroupBox</tabstop>
+  <tabstop>mForceVectorCheckBox</tabstop>
   <tabstop>mTopMarginSpinBox</tabstop>
   <tabstop>mLeftMarginSpinBox</tabstop>
   <tabstop>mRightMarginSpinBox</tabstop>

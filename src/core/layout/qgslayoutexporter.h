@@ -247,6 +247,54 @@ class CORE_EXPORT QgsLayoutExporter
      */
     ExportResult exportToPdf( const QString &filePath, const QgsLayoutExporter::PdfExportSettings &settings );
 
+
+    //! Contains settings relating to exporting layouts to SVG
+    struct SvgExportSettings
+    {
+      //! Constructor for SvgExportSettings
+      SvgExportSettings()
+        : flags( QgsLayoutContext::FlagAntialiasing | QgsLayoutContext::FlagUseAdvancedEffects )
+      {}
+
+      //! Resolution to export layout at. If dpi <= 0 the default layout dpi will be used.
+      double dpi = -1;
+
+      /**
+       * Set to true to force vector object exports, even when the resultant appearance will differ
+       * from the layout. If false, some items may be rasterized in order to maintain their
+       * correct appearance in the output.
+       *
+       * This option is mutually exclusive with rasterizeWholeImage.
+       */
+      bool forceVectorOutput = false;
+
+      /**
+       * Set to true if image should be cropped so only parts of the layout
+       * containing items are exported.
+       */
+      bool cropToContents = false;
+
+      /**
+       * Crop to content margins, in layout units. These margins will be added
+       * to the bounds of the exported layout if cropToContents is true.
+       */
+      QgsMargins cropMargins;
+
+      /**
+       * Layout context flags, which control how the export will be created.
+       */
+      QgsLayoutContext::Flags flags = 0;
+
+    };
+
+    /**
+     * Exports the layout as an SVG to the a \a filePath, using the specified export \a settings.
+     *
+     * Returns a result code indicating whether the export was successful or an
+     * error was encountered.
+     */
+    ExportResult exportToSvg( const QString &filePath, const QgsLayoutExporter::SvgExportSettings &settings );
+
     /**
      * Returns the file name corresponding to the last error encountered during
      * an export.

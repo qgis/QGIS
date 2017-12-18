@@ -23,6 +23,7 @@
 #include "qgslayoutguidecollection.h"
 #include <QImageWriter>
 #include <QSize>
+#include <QSvgGenerator>
 
 #include "gdal.h"
 #include "cpl_conv.h"
@@ -399,6 +400,103 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
     georeferenceOutput( filePath, nullptr, QRectF(), settings.dpi );
   }
   return result;
+}
+
+QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToSvg( const QString &filePath, const QgsLayoutExporter::SvgExportSettings &s )
+{
+  if ( !mLayout )
+    return PrintError;
+
+  SvgExportSettings settings = s;
+  if ( settings.dpi <= 0 )
+    settings.dpi = mLayout->context().dpi();
+
+  mErrorFileName.clear();
+
+  LayoutContextPreviewSettingRestorer restorer( mLayout );
+  ( void )restorer;
+  LayoutContextSettingsRestorer contextRestorer( mLayout );
+  ( void )contextRestorer;
+  mLayout->context().setDpi( settings.dpi );
+
+  mLayout->context().setFlag( QgsLayoutContext::FlagForceVectorOutput, settings.forceVectorOutput );
+
+  QFileInfo fi( filePath );
+  PageExportDetails pageDetails;
+  pageDetails.directory = fi.path();
+  pageDetails.baseName = fi.baseName();
+  pageDetails.extension = fi.completeSuffix();
+
+  double inchesToLayoutUnits = mLayout->convertToLayoutUnits( QgsLayoutMeasurement( 1, QgsUnitTypes::LayoutInches ) );
+
+  for ( int i = 0; i < mLayout->pageCollection()->pageCount(); ++i )
+  {
+    if ( !mLayout->pageCollection()->shouldExportPage( i ) )
+    {
+      continue;
+    }
+
+    pageDetails.page = i;
+    QString fileName = generateFileName( pageDetails );
+
+    QSvgGenerator generator;
+    generator.setTitle( mLayout->project()->title() );
+    generator.setFileName( fileName );
+
+    QRectF bounds;
+    if ( settings.cropToContents )
+    {
+      if ( mLayout->pageCollection()->pageCount() == 1 )
+      {
+        // single page, so include everything
+        bounds = mLayout->layoutBounds( true );
+      }
+      else
+      {
+        // multi page, so just clip to items on current page
+        bounds = mLayout->pageItemBounds( i, true );
+      }
+      bounds = bounds.adjusted( -settings.cropMargins.left(),
+                                -settings.cropMargins.top(),
+                                settings.cropMargins.right(),
+                                settings.cropMargins.bottom() );
+    }
+    else
+    {
+      QgsLayoutItemPage *pageItem = mLayout->pageCollection()->page( i );
+      bounds = QRectF( pageItem->pos().x(), pageItem->pos().y(), pageItem->rect().width(), pageItem->rect().height() );
+    }
+
+    //width in pixel
+    int width = ( int )( bounds.width() * settings.dpi / inchesToLayoutUnits );
+    //height in pixel
+    int height = ( int )( bounds.height() * settings.dpi / inchesToLayoutUnits );
+    if ( width == 0 || height == 0 )
+    {
+      //invalid size, skip this page
+      continue;
+    }
+    generator.setSize( QSize( width, height ) );
+    generator.setViewBox( QRect( 0, 0, width, height ) );
+    generator.setResolution( settings.dpi );
+
+    QPainter p;
+    bool createOk = p.begin( &generator );
+    if ( !createOk )
+    {
+      mErrorFileName = fileName;
+      return FileError;
+    }
+
+    if ( settings.cropToContents )
+      renderRegion( &p, bounds );
+    else
+      renderPage( &p, i );
+
+    p.end();
+  }
+
+  return Success;
 }
 
 void QgsLayoutExporter::preparePrintAsPdf( QPrinter &printer, const QString &filePath )

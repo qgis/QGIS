@@ -240,6 +240,55 @@ Returns a result code indicating whether the export was successful or an
 error was encountered.
 %End
 
+
+    struct SvgExportSettings
+    {
+      SvgExportSettings();
+%Docstring
+Constructor for SvgExportSettings
+%End
+
+      double dpi;
+%Docstring
+Resolution to export layout at. If dpi <= 0 the default layout dpi will be used.
+%End
+
+      bool forceVectorOutput;
+%Docstring
+Set to true to force vector object exports, even when the resultant appearance will differ
+from the layout. If false, some items may be rasterized in order to maintain their
+correct appearance in the output.
+
+This option is mutually exclusive with rasterizeWholeImage.
+%End
+
+      bool cropToContents;
+%Docstring
+Set to true if image should be cropped so only parts of the layout
+containing items are exported.
+%End
+
+      QgsMargins cropMargins;
+%Docstring
+Crop to content margins, in layout units. These margins will be added
+to the bounds of the exported layout if cropToContents is true.
+%End
+
+      QgsLayoutContext::Flags flags;
+%Docstring
+Layout context flags, which control how the export will be created.
+%End
+
+    };
+
+    ExportResult exportToSvg( const QString &filePath, const QgsLayoutExporter::SvgExportSettings &settings );
+%Docstring
+Exports the layout as an SVG to the a ``filePath``, using the specified export ``settings``.
+
+Returns a result code indicating whether the export was successful or an
+error was encountered.
+%End
+
     QString errorFile() const;
 %Docstring
 Returns the file name corresponding to the last error encountered during
