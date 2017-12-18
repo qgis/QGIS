@@ -886,6 +886,7 @@ void QgsLayoutItemMap::paint( QPainter *painter, const QStyleOptionGraphicsItem 
       painter->scale( 1 / dotsPerMM, 1 / dotsPerMM ); // scale painter from mm to dots
       painter->drawImage( std::round( -tl.x()* dotsPerMM ), std::round( -tl.y() * dotsPerMM ), image );
       painter->scale( dotsPerMM, dotsPerMM );
+      painter->restore();
     }
     else
     {
@@ -895,6 +896,7 @@ void QgsLayoutItemMap::paint( QPainter *painter, const QStyleOptionGraphicsItem 
         drawMapBackground( painter );
       }
 
+      painter->save();
       painter->setClipRect( thisPaintRect );
       painter->save();
       painter->translate( mXOffset, mYOffset );
@@ -917,14 +919,13 @@ void QgsLayoutItemMap::paint( QPainter *painter, const QStyleOptionGraphicsItem 
         mGridStack->drawItems( painter );
       }
       drawAnnotations( painter );
-
+      painter->restore();
     }
 
     if ( shouldDrawPart( Frame ) )
     {
       drawMapFrame( painter );
     }
-    painter->restore();
     mDrawing = false;
   }
 }
