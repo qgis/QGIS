@@ -1529,11 +1529,12 @@ void QgsLayoutDesignerDialog::exportToRaster()
   if ( imageDlg.antialiasing() )
     settings.flags |= QgsLayoutContext::FlagAntialiasing;
 
+  QFileInfo fi( fileNExt.first );
   switch ( exporter.exportToImage( fileNExt.first, settings ) )
   {
     case QgsLayoutExporter::Success:
       mMessageBar->pushMessage( tr( "Export layout" ),
-                                tr( "Successfully exported layout to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( fileNExt.first ).toString(), fileNExt.first ),
+                                tr( "Successfully exported layout to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( fi.path() ).toString(), fileNExt.first ),
                                 QgsMessageBar::INFO, 0 );
       break;
 
@@ -1630,13 +1631,14 @@ void QgsLayoutDesignerDialog::exportToPdf()
   // force a refresh, to e.g. update data defined properties, tables, etc
   mLayout->refresh();
 
+  QFileInfo fi( outputFileName );
   QgsLayoutExporter exporter( mLayout );
   switch ( exporter.exportToPdf( outputFileName, pdfSettings ) )
   {
     case QgsLayoutExporter::Success:
     {
       mMessageBar->pushMessage( tr( "Export layout" ),
-                                tr( "Successfully exported layout to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( outputFileName ).toString(), outputFileName ),
+                                tr( "Successfully exported layout to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( fi.path() ).toString(), outputFileName ),
                                 QgsMessageBar::INFO, 0 );
       break;
     }
