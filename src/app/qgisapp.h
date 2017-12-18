@@ -1941,7 +1941,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
         QgsMapTool *mMeasureArea = nullptr;
         QgsMapTool *mMeasureAngle = nullptr;
         QgsMapToolAddFeature *mAddFeature = nullptr;
-        QgsMapToolDigitizeFeature *mDigitizeFeature = nullptr;
         QgsMapTool *mCircularStringCurvePoint = nullptr;
         QgsMapTool *mCircularStringRadius = nullptr;
         QgsMapTool *mCircle2Points = nullptr;

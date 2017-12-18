@@ -25,19 +25,18 @@ class APP_EXPORT QgsMapToolDigitizeFeature : public QgsMapToolCapture
     Q_OBJECT
   public:
     //! \since QGIS 3.2
-    QgsMapToolDigitizeFeature( QgsMapCanvas *canvas, CaptureMode mode );
+    QgsMapToolDigitizeFeature( QgsMapCanvas *canvas, QgsMapLayer *layer, CaptureMode mode );
 
     void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
 
-    virtual void digitized( QgsFeature *f );
+    virtual void digitized( const QgsFeature *f );
 
     virtual void activate() override;
     virtual void deactivate() override;
 
   signals:
-    void digitizingFinished( const QgsFeature & );
-    void digitizingFinalized( );
-    void digitizingAborted( );
+    void digitizingCompleted( const QgsFeature & );
+    void digitizingFinished( );
 
   protected:
 
@@ -54,6 +53,16 @@ class APP_EXPORT QgsMapToolDigitizeFeature : public QgsMapToolCapture
     void setCheckGeometryType( bool checkGeometryType );
 
   private:
+
+    /**
+     * individual layer per digitizing session
+     * \since QGIS 3.0 */
+    QgsMapLayer *mLayer = nullptr;
+
+    /**
+     * layer used before digitizing session
+     * \since QGIS 3.0 */
+    QgsMapLayer *mCurrentLayer = nullptr;
 
     /**
      * Check if CaptureMode matches layer type. Default is true.

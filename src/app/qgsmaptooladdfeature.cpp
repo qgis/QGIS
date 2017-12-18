@@ -37,7 +37,7 @@
 #include <QSettings>
 
 QgsMapToolAddFeature::QgsMapToolAddFeature( QgsMapCanvas *canvas, CaptureMode mode )
-  : QgsMapToolDigitizeFeature( canvas, mode )
+  : QgsMapToolDigitizeFeature( canvas, canvas->currentLayer(), mode )
   , mCheckGeometryType( true )
 {
   mToolName = tr( "Add feature" );
@@ -55,10 +55,10 @@ bool QgsMapToolAddFeature::addFeature( QgsVectorLayer *vlayer, QgsFeature *f, bo
   return res;
 }
 
-void QgsMapToolAddFeature::digitized( QgsFeature *f )
+void QgsMapToolAddFeature::digitized( const QgsFeature *f )
 {
   QgsVectorLayer *vlayer = currentVectorLayer();
-  bool res = addFeature( vlayer, f, false );
+  bool res = addFeature( vlayer, const_cast<QgsFeature *>( f ), false );
 
   if ( res && ( mode() == CaptureLine || mode() == CapturePolygon ) )
   {

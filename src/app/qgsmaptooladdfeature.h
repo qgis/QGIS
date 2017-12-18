@@ -25,7 +25,7 @@ class APP_EXPORT QgsMapToolAddFeature : public QgsMapToolDigitizeFeature
 
     bool addFeature( QgsVectorLayer *vlayer, QgsFeature *f, bool showModal = true );
 
-    void digitized( QgsFeature *f ) override;
+    void digitized( const QgsFeature *f ) override;
 
   protected:
 

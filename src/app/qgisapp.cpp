@@ -1382,7 +1382,6 @@ QgisApp::~QgisApp()
   delete mMapTools.mRegularPolygonCenterPoint;
   delete mMapTools.mRegularPolygonCenterCorner;
   delete mMapTools.mAddFeature;
-  delete mMapTools.mDigitizeFeature;
   delete mpMaptip;
 
   delete mpGpsWidget;
@@ -3299,7 +3298,6 @@ void QgisApp::createCanvasTools()
   mMapTools.mAnnotation->setAction( mActionAnnotation );
   mMapTools.mAddFeature = new QgsMapToolAddFeature( mMapCanvas, QgsMapToolCapture::CaptureNone );
   mMapTools.mAddFeature->setAction( mActionAddFeature );
-  mMapTools.mDigitizeFeature = new QgsMapToolDigitizeFeature( mMapCanvas, QgsMapToolCapture::CaptureNone );
   mMapTools.mCircularStringCurvePoint = new QgsMapToolCircularStringCurvePoint( mMapTools.mAddFeature, mMapCanvas );
   mMapTools.mCircularStringCurvePoint->setAction( mActionCircularStringCurvePoint );
   mMapTools.mCircularStringRadius = new QgsMapToolCircularStringRadius( mMapTools.mAddFeature, mMapCanvas );
@@ -13388,17 +13386,17 @@ QgsFeature QgisApp::duplicateFeatureDigitized( QgsMapLayer *mlayer, const QgsFea
 
   layer->startEditing();
 
-  QgsMapToolDigitizeFeature *digitizeFeature = new QgsMapToolDigitizeFeature( mMapCanvas, QgsMapToolCapture::CaptureNone );
+  QgsMapToolDigitizeFeature *digitizeFeature = new QgsMapToolDigitizeFeature( mMapCanvas, mlayer, QgsMapToolCapture::CaptureNone );
 
   mMapCanvas->setMapTool( digitizeFeature );
   mMapCanvas->window()->raise();
   mMapCanvas->activateWindow();
   mMapCanvas->setFocus();
 
-  QString msg = tr( "Digitize the duplicate, please." ).arg( layer->name() );
+  QString msg = tr( "Digitize the duplicate on layer %1" ).arg( layer->name() );
   messageBar()->pushMessage( msg, QgsMessageBar::INFO, 3 );
 
-  connect( digitizeFeature, static_cast<void ( QgsMapToolDigitizeFeature::* )( const QgsFeature & )>( &QgsMapToolDigitizeFeature::digitizingFinished ), this, [this, layer, feature, digitizeFeature]( const QgsFeature & digitizedFeature )
+  connect( digitizeFeature, static_cast<void ( QgsMapToolDigitizeFeature::* )( const QgsFeature & )>( &QgsMapToolDigitizeFeature::digitizingCompleted ), this, [this, layer, feature, digitizeFeature]( const QgsFeature & digitizedFeature )
   {
     QString msg = tr( "Duplicate digitized" );
     messageBar()->pushMessage( msg, QgsMessageBar::INFO, 1 );
@@ -13418,18 +13416,13 @@ QgsFeature QgisApp::duplicateFeatureDigitized( QgsMapLayer *mlayer, const QgsFea
 
     messageBar()->pushMessage( tr( "Feature on layer %2 duplicated\n%3" ).arg( layer->name() ).arg( childrenInfo ), QgsMessageBar::SUCCESS, 5 );
 
-  }
-         );
-
-  connect( digitizeFeature, static_cast<void ( QgsMapToolDigitizeFeature::* )()>( &QgsMapToolDigitizeFeature::digitizingFinalized ), this, [this, digitizeFeature]()
-  {
     mMapCanvas->unsetMapTool( digitizeFeature );
   }
          );
 
-  connect( digitizeFeature, static_cast<void ( QgsMapToolDigitizeFeature::* )()>( &QgsMapToolDigitizeFeature::digitizingAborted ), this, [this, digitizeFeature]()
+  connect( digitizeFeature, static_cast<void ( QgsMapToolDigitizeFeature::* )()>( &QgsMapToolDigitizeFeature::digitizingFinished ), this, [this, digitizeFeature]()
   {
-    delete digitizeFeature;
+    digitizeFeature->deleteLater();
   }
          );
 

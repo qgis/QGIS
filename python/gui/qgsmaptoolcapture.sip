@@ -96,6 +96,10 @@ Clean a temporary rubberband
 convenient method to clean members
 %End
 
+  public slots:
+    void setCurrentLayer( QgsMapLayer *layer );
+
+
   protected:
 
     int nextPoint( const QgsPoint &mapPoint, QgsPoint &layerPoint );

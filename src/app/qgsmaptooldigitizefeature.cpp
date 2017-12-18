@@ -37,33 +37,41 @@
 #include <QMouseEvent>
 #include <QSettings>
 
-QgsMapToolDigitizeFeature::QgsMapToolDigitizeFeature( QgsMapCanvas *canvas, CaptureMode mode )
+QgsMapToolDigitizeFeature::QgsMapToolDigitizeFeature( QgsMapCanvas *canvas, QgsMapLayer *layer, CaptureMode mode )
   : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), mode )
   , mCheckGeometryType( true )
 {
+  mLayer = layer;
   mToolName = tr( "Digitize feature" );
   connect( QgisApp::instance(), &QgisApp::newProject, this, &QgsMapToolDigitizeFeature::stopCapturing );
   connect( QgisApp::instance(), &QgisApp::projectRead, this, &QgsMapToolDigitizeFeature::stopCapturing );
 }
 
-void QgsMapToolDigitizeFeature::digitized( QgsFeature *f )
+void QgsMapToolDigitizeFeature::digitized( const QgsFeature *f )
 {
-  emit digitizingFinished( static_cast< const QgsFeature & >( *f ) );
+  emit digitizingCompleted( static_cast< const QgsFeature & >( *f ) );
 }
 
 void QgsMapToolDigitizeFeature::activate()
 {
-  QgsVectorLayer *vlayer = currentVectorLayer();
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mLayer );
+  if ( !vlayer )
+    vlayer = currentVectorLayer();
+
   if ( vlayer && vlayer->geometryType() == QgsWkbTypes::NullGeometry )
   {
     QgsFeature f;
     digitized( &f );
-    emit digitizingFinalized();
     return;
   }
 
-  //refresh the layer, with the current layer - so capturemode will be set at activate
-  canvas()->setCurrentLayer( canvas()->currentLayer() );
+  if ( mLayer )
+  {
+    //remember current layer
+    mCurrentLayer = mCanvas->currentLayer();
+    //set the layer with the given
+    mCanvas->setCurrentLayer( mLayer );
+  }
 
   QgsMapToolCapture::activate();
 }
@@ -71,7 +79,11 @@ void QgsMapToolDigitizeFeature::activate()
 void QgsMapToolDigitizeFeature::deactivate()
 {
   QgsMapToolCapture::deactivate();
-  emit digitizingAborted();
+
+  if ( mCurrentLayer )
+    //set the layer back to the one remembered
+    mCanvas->setCurrentLayer( mCurrentLayer );
+  emit digitizingFinished();
 }
 
 bool QgsMapToolDigitizeFeature::checkGeometryType() const
@@ -86,7 +98,11 @@ void QgsMapToolDigitizeFeature::setCheckGeometryType( bool checkGeometryType )
 
 void QgsMapToolDigitizeFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
-  QgsVectorLayer *vlayer = currentVectorLayer();
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mLayer );
+
+  if ( !vlayer )
+    //if no given layer take the current from canvas
+    vlayer = currentVectorLayer();
 
   if ( !vlayer )
   {
@@ -122,8 +138,6 @@ void QgsMapToolDigitizeFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       emit messageEmitted( tr( "Wrong editing tool, cannot apply the 'capture point' tool on this vector layer" ), QgsMessageBar::WARNING );
       return;
     }
-
-
 
     QgsPointXY savePoint; //point in layer coordinates
     try
@@ -192,8 +206,6 @@ void QgsMapToolDigitizeFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
       // we are done with digitizing for now so instruct advanced digitizing dock to reset its CAD points
       cadDockWidget()->clearPoints();
-
-      emit digitizingFinalized();
     }
   }
 
@@ -315,8 +327,6 @@ void QgsMapToolDigitizeFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       digitized( f.get() );
 
       stopCapturing();
-
-      emit digitizingFinalized();
     }
   }
 }
