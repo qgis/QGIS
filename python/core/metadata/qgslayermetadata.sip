@@ -50,6 +50,9 @@ using QgsNativeMetadataValidator.
       QgsCoordinateReferenceSystem extentCrs;
 %Docstring
 Coordinate reference system for spatial extent.
+The CRS should match the CRS defined in the QgsLayerMetadata CRS property.
+
+.. seealso:: :py:func:`QgsLayerMetadata.crs()`
 
 .. seealso:: :py:func:`spatial`
 %End
@@ -505,6 +508,11 @@ CRS which is actually used to display and manipulate the layer within QGIS.
 This may be the case when a layer has an incorrect CRS within its metadata
 and a user has manually overridden the layer's CRS within QGIS.
 
+The CRS described here should either match the CRS from the layer QgsMapLayer.crs()
+or the CRS from the data provider.
+
+This property should also match the CRS property used in the spatial extent.
+
 .. seealso:: :py:func:`setCrs()`
 %End
 
@@ -522,6 +530,11 @@ with a different CRS described by it's accompanying metadata versus the
 CRS which is actually used to display and manipulate the layer within QGIS.
 This may be the case when a layer has an incorrect CRS within its metadata
 and a user has manually overridden the layer's CRS within QGIS.
+
+The CRS described here should either match the CRS from the layer QgsMapLayer.crs()
+or the CRS from the data provider.
+
+This property should also match the CRS property used in the spatial extent.
 
 .. seealso:: :py:func:`crs()`
 %End
