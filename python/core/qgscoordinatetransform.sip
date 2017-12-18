@@ -86,7 +86,7 @@ and it is used to retrieve the project's transform context only.
 %Docstring
 Constructs a QgsCoordinateTransform to transform from the ``source``
 to ``destination`` coordinate reference system, with the specified
-datum transforms.
+datum transforms (see QgsDatumTransform).
 
 .. versionadded:: 3.0
 %End
@@ -266,6 +266,8 @@ CRS.
 This is usually calculated automatically from the transform's QgsCoordinateTransformContext,
 but can be manually overwritten by a call to setSourceDatumTransformId().
 
+.. seealso:: :py:class:`QgsDatumTransform`
+
 .. seealso:: :py:func:`setSourceDatumTransformId()`
 
 .. seealso:: :py:func:`destinationDatumTransformId()`
@@ -280,6 +282,8 @@ CRS.
 
 This is usually calculated automatically from the transform's QgsCoordinateTransformContext.
 Calling this method will overwrite any automatically calculated datum transform.
+
+.. seealso:: :py:class:`QgsDatumTransform`
 
 .. seealso:: :py:func:`sourceDatumTransformId()`
 
@@ -296,6 +300,8 @@ CRS.
 This is usually calculated automatically from the transform's QgsCoordinateTransformContext,
 but can be manually overwritten by a call to setDestinationDatumTransformId().
 
+.. seealso:: :py:class:`QgsDatumTransform`
+
 .. seealso:: :py:func:`setDestinationDatumTransformId()`
 
 .. seealso:: :py:func:`sourceDatumTransformId()`
@@ -310,6 +316,8 @@ CRS.
 
 This is usually calculated automatically from the transform's QgsCoordinateTransformContext.
 Calling this method will overwrite any automatically calculated datum transform.
+
+.. seealso:: :py:class:`QgsDatumTransform`
 
 .. seealso:: :py:func:`destinationDatumTransformId()`
 

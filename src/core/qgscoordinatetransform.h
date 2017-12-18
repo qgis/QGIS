@@ -107,7 +107,7 @@ class CORE_EXPORT QgsCoordinateTransform
     /**
      * Constructs a QgsCoordinateTransform to transform from the \a source
      * to \a destination coordinate reference system, with the specified
-     * datum transforms.
+     * datum transforms (see QgsDatumTransform).
      *
      * \since QGIS 3.0
      */
@@ -322,6 +322,7 @@ class CORE_EXPORT QgsCoordinateTransform
      * This is usually calculated automatically from the transform's QgsCoordinateTransformContext,
      * but can be manually overwritten by a call to setSourceDatumTransformId().
      *
+     * \see QgsDatumTransform
      * \see setSourceDatumTransformId()
      * \see destinationDatumTransformId()
      * \see datumTransformInfo()
@@ -335,6 +336,7 @@ class CORE_EXPORT QgsCoordinateTransform
      * This is usually calculated automatically from the transform's QgsCoordinateTransformContext.
      * Calling this method will overwrite any automatically calculated datum transform.
      *
+     * \see QgsDatumTransform
      * \see sourceDatumTransformId()
      * \see setDestinationDatumTransformId()
      * \see datumTransformInfo()
@@ -348,6 +350,7 @@ class CORE_EXPORT QgsCoordinateTransform
      * This is usually calculated automatically from the transform's QgsCoordinateTransformContext,
      * but can be manually overwritten by a call to setDestinationDatumTransformId().
      *
+     * \see QgsDatumTransform
      * \see setDestinationDatumTransformId()
      * \see sourceDatumTransformId()
      * \see datumTransformInfo()
@@ -361,6 +364,7 @@ class CORE_EXPORT QgsCoordinateTransform
      * This is usually calculated automatically from the transform's QgsCoordinateTransformContext.
      * Calling this method will overwrite any automatically calculated datum transform.
      *
+     * \see QgsDatumTransform
      * \see destinationDatumTransformId()
      * \see setSourceDatumTransformId()
      * \see datumTransformInfo()
