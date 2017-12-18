@@ -795,7 +795,7 @@ QVector<QgsDataItem *> QgsDirectoryItem::createChildren()
     QString path = dir.absoluteFilePath( name );
     QFileInfo fileInfo( path );
 
-    if ( fileInfo.suffix() == QLatin1String( "qgs" ) )
+    if ( fileInfo.suffix() == QLatin1String( "qgs" ) || fileInfo.suffix() == QLatin1String( "qgz" ) )
     {
       QgsDataItem *item = new QgsProjectItem( this, fileInfo.baseName(), path );
       children.append( item );

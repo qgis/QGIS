@@ -5962,7 +5962,7 @@ void QgisApp::openFile( const QString &fileName )
 {
   // check to see if we are opening a project file
   QFileInfo fi( fileName );
-  if ( fi.completeSuffix() == QLatin1String( "qgs" ) )
+  if ( fi.completeSuffix() == QLatin1String( "qgs" ) || fi.completeSuffix() == QLatin1String( "qgz" ) )
   {
     QgsDebugMsg( "Opening project " + fileName );
     openProject( fileName );
