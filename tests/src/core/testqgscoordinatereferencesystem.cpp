@@ -842,6 +842,14 @@ void TestQgsCoordinateReferenceSystem::saveAsUserCrs()
   QCOMPARE( userCrs2.srsid(), userCrs.srsid() );
   QCOMPARE( userCrs2.authid(), QStringLiteral( "USER:100000" ) );
   QCOMPARE( userCrs2.description(), QStringLiteral( "babies first projection" ) );
+
+  // createFromString with user crs
+  QgsCoordinateReferenceSystem userCrs3;
+  userCrs3.createFromString( QStringLiteral( "USER:100000" ) );
+  QVERIFY( userCrs3.isValid() );
+  QCOMPARE( userCrs3.authid(), QString( "USER:100000" ) );
+  QCOMPARE( userCrs3.toProj4(), madeUpProjection );
+  QCOMPARE( userCrs3.description(), QStringLiteral( "babies first projection" ) );
 }
 
 void TestQgsCoordinateReferenceSystem::projectWithCustomCrs()
