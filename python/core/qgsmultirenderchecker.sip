@@ -86,6 +86,16 @@ Default value is 0.
 including alpha to be considered correct.
 %End
 
+    void setSizeTolerance( int xTolerance, int yTolerance );
+%Docstring
+Sets the largest allowable difference in size between the rendered and the expected image.
+
+:param xTolerance: x tolerance in pixels
+:param yTolerance: y tolerance in pixels
+
+.. versionadded:: 3.0
+%End
+
     bool runTest( const QString &testName, unsigned int mismatchCount = 0 );
 %Docstring
 Test using renderer to generate the image to be compared.

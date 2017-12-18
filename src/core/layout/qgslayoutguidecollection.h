@@ -236,6 +236,11 @@ class CORE_EXPORT QgsLayoutGuideCollection : public QAbstractTableModel, public 
     void update();
 
     /**
+     * Returns a list of all guides contained in the collection.
+     */
+    QList< QgsLayoutGuide * > guides();
+
+    /**
      * Returns the list of guides contained in the collection with the specified
      * \a orientation and on a matching \a page.
      * If \a page is -1, guides from all pages will be returned.

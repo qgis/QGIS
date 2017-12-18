@@ -20,6 +20,7 @@
 #include "qgslayoutpagecollection.h"
 #include "qgsogrutils.h"
 #include "qgspaintenginehack.h"
+#include "qgslayoutguidecollection.h"
 #include <QImageWriter>
 #include <QSize>
 
@@ -46,6 +47,34 @@ class LayoutContextPreviewSettingRestorer
   private:
     QgsLayout *mLayout = nullptr;
     bool mPreviousSetting = false;
+};
+
+class LayoutGuideHider
+{
+  public:
+
+    LayoutGuideHider( QgsLayout *layout )
+      : mLayout( layout )
+    {
+      const QList< QgsLayoutGuide * > guides = mLayout->guides().guides();
+      for ( QgsLayoutGuide *guide : guides )
+      {
+        mPrevVisibility.insert( guide, guide->item()->isVisible() );
+        guide->item()->setVisible( false );
+      }
+    }
+
+    ~LayoutGuideHider()
+    {
+      for ( auto it = mPrevVisibility.constBegin(); it != mPrevVisibility.constEnd(); ++it )
+      {
+        it.key()->item()->setVisible( it.value() );
+      }
+    }
+
+  private:
+    QgsLayout *mLayout = nullptr;
+    QHash< QgsLayoutGuide *, bool > mPrevVisibility;
 };
 
 ///@endcond PRIVATE
@@ -150,18 +179,12 @@ void QgsLayoutExporter::renderRegion( QPainter *painter, const QRectF &region ) 
   ( void )cacheRestorer;
   LayoutContextPreviewSettingRestorer restorer( mLayout );
   ( void )restorer;
-
-#if 0 //TODO
-  setSnapLinesVisible( false );
-#endif
+  LayoutGuideHider guideHider( mLayout );
+  ( void ) guideHider;
 
   painter->setRenderHint( QPainter::Antialiasing, mLayout->context().flags() & QgsLayoutContext::FlagAntialiasing );
 
   mLayout->render( painter, QRectF( 0, 0, paintDevice->width(), paintDevice->height() ), region );
-
-#if 0 // TODO
-  setSnapLinesVisible( true );
-#endif
 }
 
 QImage QgsLayoutExporter::renderRegionToImage( const QRectF &region, QSize imageSize, double dpi ) const

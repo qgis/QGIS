@@ -17,6 +17,7 @@ import sip
 import tempfile
 import shutil
 import os
+import subprocess
 
 from qgis.core import (QgsMultiRenderChecker,
                        QgsLayoutExporter,
@@ -24,16 +25,71 @@ from qgis.core import (QgsMultiRenderChecker,
                        QgsProject,
                        QgsMargins,
                        QgsLayoutItemShape,
+                       QgsLayoutGuide,
                        QgsRectangle,
                        QgsLayoutItemPage,
                        QgsLayoutItemMap,
                        QgsLayoutPoint,
+                       QgsLayoutMeasurement,
+                       QgsUnitTypes,
                        QgsSimpleFillSymbolLayer,
                        QgsFillSymbol)
 from qgis.PyQt.QtCore import QSize, QSizeF, QDir, QRectF, Qt
 from qgis.PyQt.QtGui import QImage, QPainter
 
 from qgis.testing import start_app, unittest
+
+from utilities import getExecutablePath
+
+# PDF-to-image utility
+# look for Poppler w/ Cairo, then muPDF
+# * Poppler w/ Cairo renders correctly
+# * Poppler w/o Cairo does not always correctly render vectors in PDF to image
+# * muPDF renders correctly, but sightly shifts colors
+for util in [
+    'pdftocairo',
+    # 'mudraw',
+]:
+    PDFUTIL = getExecutablePath(util)
+    if PDFUTIL:
+        break
+
+# noinspection PyUnboundLocalVariable
+if not PDFUTIL:
+    raise Exception('PDF-to-image utility not found on PATH: '
+                    'install Poppler (with Cairo)')
+
+
+def pdfToPng(pdf_file_path, rendered_file_path, page, dpi=96):
+    if PDFUTIL.strip().endswith('pdftocairo'):
+        filebase = os.path.join(
+            os.path.dirname(rendered_file_path),
+            os.path.splitext(os.path.basename(rendered_file_path))[0]
+        )
+        call = [
+            PDFUTIL, '-png', '-singlefile', '-r', str(dpi),
+            '-x', '0', '-y', '0', '-f', str(page), '-l', str(page),
+            pdf_file_path, filebase
+        ]
+    elif PDFUTIL.strip().endswith('mudraw'):
+        call = [
+            PDFUTIL, '-c', 'rgba',
+            '-r', str(dpi), '-f', str(page), '-l', str(page),
+            # '-b', '8',
+            '-o', rendered_file_path, pdf_file_path
+        ]
+    else:
+        return False, ''
+
+    print("exportToPdf call: {0}".format(' '.join(call)))
+    try:
+        subprocess.check_call(call)
+    except subprocess.CalledProcessError as e:
+        assert False, ("exportToPdf failed!\n"
+                       "cmd: {0}\n"
+                       "returncode: {1}\n"
+                       "message: {2}".format(e.cmd, e.returncode, e.message))
+
 
 start_app()
 
@@ -54,12 +110,13 @@ class TestQgsLayoutExporter(unittest.TestCase):
         with open(report_file_path, 'a') as report_file:
             report_file.write(self.report)
 
-    def checkImage(self, name, reference_image, rendered_image):
+    def checkImage(self, name, reference_image, rendered_image, size_tolerance=0):
         checker = QgsMultiRenderChecker()
         checker.setControlPathPrefix("layout_exporter")
         checker.setControlName("expected_layoutexporter_" + reference_image)
         checker.setRenderedImage(rendered_image)
         checker.setColorTolerance(2)
+        checker.setSizeTolerance(size_tolerance, size_tolerance)
         result = checker.runTest(name, 20)
         self.report += checker.report()
         print((self.report))
@@ -133,6 +190,10 @@ class TestQgsLayoutExporter(unittest.TestCase):
     def testRenderRegion(self):
         l = QgsLayout(QgsProject.instance())
         l.initializeDefaults()
+
+        # add a guide, to ensure it is not included in export
+        g1 = QgsLayoutGuide(Qt.Horizontal, QgsLayoutMeasurement(15, QgsUnitTypes.LayoutMillimeters), l.pageCollection().page(0))
+        l.guides().addGuide(g1)
 
         # add some items
         item1 = QgsLayoutItemShape(l)
@@ -277,6 +338,57 @@ class TestQgsLayoutExporter(unittest.TestCase):
         self.assertFalse(os.path.exists(rendered_file_path))
         page2_path = os.path.join(self.basetestpath, 'test_exporttoimagesize_2.png')
         self.assertTrue(self.checkImage('exporttoimagesize_page2', 'exporttoimagesize_page2', page2_path))
+
+    def testExportToPdf(self):
+        l = QgsLayout(QgsProject.instance())
+        l.initializeDefaults()
+
+        # add a second page
+        page2 = QgsLayoutItemPage(l)
+        page2.setPageSize('A5')
+        l.pageCollection().addPage(page2)
+
+        # add some items
+        item1 = QgsLayoutItemShape(l)
+        item1.attemptSetSceneRect(QRectF(10, 20, 100, 150))
+        fill = QgsSimpleFillSymbolLayer()
+        fill_symbol = QgsFillSymbol()
+        fill_symbol.changeSymbolLayer(0, fill)
+        fill.setColor(Qt.green)
+        fill.setStrokeStyle(Qt.NoPen)
+        item1.setSymbol(fill_symbol)
+        l.addItem(item1)
+
+        item2 = QgsLayoutItemShape(l)
+        item2.attemptSetSceneRect(QRectF(10, 20, 100, 150))
+        item2.attemptMove(QgsLayoutPoint(10, 20), page=1)
+        fill = QgsSimpleFillSymbolLayer()
+        fill_symbol = QgsFillSymbol()
+        fill_symbol.changeSymbolLayer(0, fill)
+        fill.setColor(Qt.cyan)
+        fill.setStrokeStyle(Qt.NoPen)
+        item2.setSymbol(fill_symbol)
+        l.addItem(item2)
+
+        exporter = QgsLayoutExporter(l)
+        # setup settings
+        settings = QgsLayoutExporter.PdfExportSettings()
+        settings.dpi = 80
+        settings.rasterizeWholeImage = False
+        settings.forceVectorOutput = False
+
+        pdf_file_path = os.path.join(self.basetestpath, 'test_exporttopdfdpi.pdf')
+        self.assertEqual(exporter.exportToPdf(pdf_file_path, settings), QgsLayoutExporter.Success)
+        self.assertTrue(os.path.exists(pdf_file_path))
+
+        rendered_page_1 = os.path.join(self.basetestpath, 'test_exporttopdfdpi.png')
+        dpi = 80
+        pdfToPng(pdf_file_path, rendered_page_1, dpi=dpi, page=1)
+        rendered_page_2 = os.path.join(self.basetestpath, 'test_exporttopdfdpi2.png')
+        pdfToPng(pdf_file_path, rendered_page_2, dpi=dpi, page=2)
+
+        self.assertTrue(self.checkImage('exporttopdfdpi_page1', 'exporttopdfdpi_page1', rendered_page_1, size_tolerance=1))
+        self.assertTrue(self.checkImage('exporttopdfdpi_page2', 'exporttopdfdpi_page2', rendered_page_2, size_tolerance=1))
 
     def testExportWorldFile(self):
         l = QgsLayout(QgsProject.instance())

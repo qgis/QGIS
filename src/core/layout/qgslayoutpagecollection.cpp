@@ -95,6 +95,7 @@ void QgsLayoutPageCollection::reflow()
     currentY += mLayout->convertToLayoutUnits( page->pageSize() ).height() + spaceBetweenPages();
     p.setY( currentY );
   }
+  mLayout->guides().update();
   mLayout->updateBounds();
   emit changed();
 }
@@ -193,7 +194,8 @@ int QgsLayoutPageCollection::predictPageNumberForPoint( QPointF point ) const
 
 QgsLayoutItemPage *QgsLayoutPageCollection::pageAtPoint( QPointF point ) const
 {
-  Q_FOREACH ( QGraphicsItem *item, mLayout->items( point ) )
+  const QList< QGraphicsItem * > items = mLayout->items( point );
+  for ( QGraphicsItem *item : items )
   {
     if ( item->type() == QgsLayoutItemRegistry::LayoutPage )
     {

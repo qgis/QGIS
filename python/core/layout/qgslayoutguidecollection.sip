@@ -208,6 +208,11 @@ Resets all other pages' guides to match the guides from the specified ``sourcePa
 Updates the position (and visibility) of all guide line items.
 %End
 
+    QList< QgsLayoutGuide * > guides();
+%Docstring
+Returns a list of all guides contained in the collection.
+%End
+
     QList< QgsLayoutGuide * > guides( Qt::Orientation orientation, int page = -1 );
 %Docstring
 Returns the list of guides contained in the collection with the specified
