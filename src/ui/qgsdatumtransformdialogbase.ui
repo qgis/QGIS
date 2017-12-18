@@ -74,25 +74,6 @@
      </property>
     </widget>
    </item>
-   <item row="3" column="0" colspan="2">
-    <widget class="QTreeWidget" name="mDatumTransformTreeWidget">
-     <column>
-      <property name="text">
-       <string>src transform</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>dst transform</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string/>
-      </property>
-     </column>
-    </widget>
-   </item>
    <item row="0" column="0" colspan="2">
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
@@ -103,7 +84,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QgsProjectionSelectionWidget" name="mSourceProjectionSelectionWidget"/>
+      <widget class="QgsProjectionSelectionWidget" name="mSourceProjectionSelectionWidget" native="true"/>
      </item>
     </layout>
    </item>
@@ -117,9 +98,19 @@
       </widget>
      </item>
      <item>
-      <widget class="QgsProjectionSelectionWidget" name="mDestinationProjectionSelectionWidget"/>
+      <widget class="QgsProjectionSelectionWidget" name="mDestinationProjectionSelectionWidget" native="true"/>
      </item>
     </layout>
+   </item>
+   <item row="3" column="0" colspan="2">
+    <widget class="QTableWidget" name="mDatumTransformTableWidget">
+     <property name="selectionMode">
+      <enum>QAbstractItemView::SingleSelection</enum>
+     </property>
+     <property name="selectionBehavior">
+      <enum>QAbstractItemView::SelectRows</enum>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>
@@ -132,7 +123,7 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>mDatumTransformTreeWidget</tabstop>
+  <tabstop>mDatumTransformTableWidget</tabstop>
   <tabstop>mHideDeprecatedCheckBox</tabstop>
   <tabstop>mButtonBox</tabstop>
  </tabstops>
