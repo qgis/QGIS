@@ -347,6 +347,9 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
 
     void shapeChanged();
 
+    friend class QgsCompositionConverter;
+    friend class TestQgsCompositionConverter;
+
 };
 
 #endif // QGSLAYOUTITEMPICTURE_H

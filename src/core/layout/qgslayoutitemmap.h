@@ -657,6 +657,7 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
     friend class QgsLayoutItemMapOverview;
     friend class QgsLayoutItemLegend;
     friend class TestQgsLayoutMap;
+    friend class QgsCompositionConverter;
 
 };
 

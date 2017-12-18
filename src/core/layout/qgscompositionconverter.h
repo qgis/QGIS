@@ -25,11 +25,16 @@
 
 class QgsLayout;
 class QgsLayoutItem;
-class QgsLayoutItemLabel;
-class QgsLayoutItemShape;
 class QgsReadWriteContext;
 class QgsProperty;
 class QgsPropertyCollection;
+
+class QgsLayoutItemLabel;
+class QgsLayoutItemShape;
+class QgsLayoutItemPicture;
+class QgsLayoutItemPolygon;
+class QgsLayoutItemPolyline;
+class QgsLayoutItemMap;
 
 class CORE_EXPORT QgsCompositionConverter
 {
@@ -90,6 +95,17 @@ class CORE_EXPORT QgsCompositionConverter
     };
 
     /**
+     * The MarkerMode enum is the old 2.x arrow marker mode
+     */
+    enum MarkerMode
+    {
+      DefaultMarker,
+      NoMarker,
+      SVGMarker
+    };
+
+
+    /**
      * \brief createLayoutFromCompositionXml is a factory that creates layout instances from a
      *        QGIS 2.x XML composition \a document
      * \param parentElement is the Composition element
@@ -98,25 +114,44 @@ class CORE_EXPORT QgsCompositionConverter
      * \return a QgsLayout instance
      */
     static QgsLayout *createLayoutFromCompositionXml( const QDomElement &parentElement,
-        const QgsReadWriteContext &context ) SIP_FACTORY;
+        QgsProject *project ) SIP_FACTORY;
 
 
     static QList<QgsLayoutItem *> addItemsFromCompositionXml( QgsLayout *layout,
         const QDomElement &parentElement,
-        const QgsReadWriteContext &context,
         QPointF *position = nullptr,
         bool pasteInPlace = false );
 
   private:
+
     //! Property definitions
     static QgsPropertiesDefinition sPropertyDefinitions;
 
-    static bool readLabelXml( QgsLayoutItemLabel *label,
+
+    static bool readLabelXml( QgsLayoutItemLabel *layoutItem,
                               const QDomElement &itemElem,
-                              const QgsReadWriteContext &context );
+                              const QgsProject *project );
 
     static bool readShapeXml( QgsLayoutItemShape *layoutItem,
-                              const QDomElement &itemElem );
+                              const QDomElement &itemElem,
+                              const QgsProject *project );
+
+    static bool readPictureXml( QgsLayoutItemPicture *layoutItem,
+                                const QDomElement &itemElem,
+                                const QgsProject *project );
+
+    //! For both polylines and polygons
+    template <class T, class T2> static bool readPolyXml( T *layoutItem,
+        const QDomElement &itemElem,
+        const QgsProject *project );
+
+    static bool readArrowXml( QgsLayoutItemPolyline *layoutItem,
+                              const QDomElement &itemElem,
+                              const QgsProject *project );
+
+    static bool readMapXml( QgsLayoutItemMap *layoutItem,
+                            const QDomElement &itemElem,
+                            const QgsProject *project );
 
 
     /**
