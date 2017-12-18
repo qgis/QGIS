@@ -30,6 +30,7 @@
 #endif
 #include "qgsshortcutsmanager.h"
 #include "qgswidgetstatehelper_p.h"
+#include "qgslogger.h"
 
 QgsGui *QgsGui::instance()
 {
@@ -74,6 +75,10 @@ QgsLayoutItemGuiRegistry *QgsGui::layoutItemGuiRegistry()
 
 void QgsGui::enableAutoGeometryRestore( QWidget *widget, const QString &key )
 {
+  if ( widget->objectName().isEmpty() )
+  {
+    QgsDebugMsg( "WARNING: No object name set. Best for it to be set objectName when using QgsGui::enableAutoGeometryRestore" );
+  }
   instance()->mWidgetStateHelper->registerWidget( widget, key );
 }
 

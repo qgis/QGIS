@@ -58,6 +58,13 @@ class QgsWidgetStateHelper : public QObject
 
   private:
     QMap<QString, QString> mKeys;
+
+    /**
+     * Return a non null safe name for the widget.
+     * @param widget The widget.
+     * @return A non null safe name for the widget.
+     */
+    QString widgetSafeName( QWidget *widget );
 };
 
 #endif // QGSWIDGETSTATEHELPER_P_H
