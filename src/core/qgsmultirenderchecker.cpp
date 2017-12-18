@@ -187,7 +187,7 @@ QgsLayoutChecker::QgsLayoutChecker( const QString &testName, QgsLayout *layout )
   setColorTolerance( 5 );
 }
 
-bool QgsLayoutChecker::testLayout( QString &checkedReport, int page, int pixelDiff )
+bool QgsLayoutChecker::testLayout( QString &checkedReport, int page, int pixelDiff, bool createReferenceImage )
 {
   if ( !mLayout )
   {
@@ -196,22 +196,28 @@ bool QgsLayoutChecker::testLayout( QString &checkedReport, int page, int pixelDi
 
   setControlName( "expected_" + mTestName );
 
-#if 0
-  //fake mode to generate expected image
-  //assume 96 dpi and size of the control image 1122 * 794
-  QImage newImage( QSize( 1122, 794 ), QImage::Format_RGB32 );
-  mComposition->setPlotStyle( QgsComposition::Print );
-  newImage.setDotsPerMeterX( 96 / 25.4 * 1000 );
-  newImage.setDotsPerMeterY( 96 / 25.4 * 1000 );
-  drawBackground( &newImage );
-  QPainter expectedPainter( &newImage );
-  //QRectF sourceArea( 0, 0, mComposition->paperWidth(), mComposition->paperHeight() );
-  //QRectF targetArea( 0, 0, 3507, 2480 );
-  mComposition->renderPage( &expectedPainter, page );
-  expectedPainter.end();
-  newImage.save( controlImagePath() + QDir::separator() + "expected_" + mTestName + ".png", "PNG" );
-  return true;
-#endif //0
+
+  if ( createReferenceImage )
+  {
+    //fake mode to generate expected image
+    //assume 96 dpi
+
+
+    QImage _outputImage( mSize, QImage::Format_RGB32 );
+    _outputImage.setDotsPerMeterX( 96 / 25.4 * 1000 );
+    _outputImage.setDotsPerMeterY( 96 / 25.4 * 1000 );
+    QPainter _p( &_outputImage );
+    mLayout->exporter().renderPage( &_p, page );
+    _p.end();
+
+    if ( ! QDir( controlImagePath() ).exists() )
+    {
+      QDir().mkdir( controlImagePath() );
+    }
+    _outputImage.save( controlImagePath() + QDir::separator() + "expected_" + mTestName + ".png", "PNG" );
+    qDebug( ) << "Reference image saved to : " + controlImagePath() + QDir::separator() + "expected_" + mTestName + ".png";
+
+  }
 
   QImage outputImage( mSize, QImage::Format_RGB32 );
   outputImage.setDotsPerMeterX( mDotsPerMeter );
