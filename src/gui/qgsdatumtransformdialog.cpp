@@ -78,7 +78,7 @@ void QgsDatumTransformDialog::load( const QPair<int, int> &selectedDatumTransfor
     bool itemDisabled = false;
     bool itemHidden = false;
 
-    if ( transform.sourceTransformId == -1 || transform.destinationTransformId == -1 )
+    if ( transform.sourceTransformId == -1 && transform.destinationTransformId == -1 )
       continue;
 
     for ( int i = 0; i < 2; ++i )
@@ -157,8 +157,8 @@ void QgsDatumTransformDialog::load( const QPair<int, int> &selectedDatumTransfor
 
 void QgsDatumTransformDialog::setOKButtonEnabled()
 {
-  QTableWidgetItem *item = mDatumTransformTableWidget->currentItem();
-  mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( mSourceCrs.isValid() && mDestinationCrs.isValid() && item );
+  int row = mDatumTransformTableWidget->currentRow();
+  mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( mSourceCrs.isValid() && mDestinationCrs.isValid() && row >= 0 );
 }
 
 QgsDatumTransformDialog::~QgsDatumTransformDialog()
@@ -190,8 +190,10 @@ QPair<QPair<QgsCoordinateReferenceSystem, int>, QPair<QgsCoordinateReferenceSyst
 
   if ( row >= 0 )
   {
-    sdt.first.second = mDatumTransformTableWidget->item( row, 0 )->data( Qt::UserRole ).toInt();
-    sdt.second.second = mDatumTransformTableWidget->item( row, 1 )->data( Qt::UserRole ).toInt();
+    QTableWidgetItem *srcItem = mDatumTransformTableWidget->item( row, 0 );
+    sdt.first.second = srcItem ? srcItem->data( Qt::UserRole ).toInt() : -1;
+    QTableWidgetItem *destItem = mDatumTransformTableWidget->item( row, 1 );
+    sdt.second.second = destItem ? destItem->data( Qt::UserRole ).toInt() : -1;
   }
   else
   {
