@@ -385,7 +385,7 @@ class CORE_EXPORT QgsCoordinateTransform
       int datumTransformId = -1;
 
       //! EPSG code for the transform, or 0 if not found in EPSG database
-      int epsgCode;
+      int epsgCode = 0;
 
       //! Source CRS auth ID
       QString sourceCrsAuthId;
