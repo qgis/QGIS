@@ -12,7 +12,7 @@ RUN  apt-get update \
     ca-certificates \
     ccache \
     clang \
-    cmake \
+    # cmake \
     curl \
     dh-python \
     flex \
@@ -88,7 +88,10 @@ RUN  apt-get update \
     future \
     termcolor \
   && apt-get autoremove -y python3-pip python2.7 \
-  && apt-get clean
+  && apt-get clean \
+  && curl -s -S -O https://cmake.org/files/v3.10/cmake-3.10.1-Linux-x86_64.tar.gz \
+  && tar --strip-components=1 -zx -f cmake-3.10.1-Linux-x86_64.tar.gz -C /usr/local \
+  && rm cmake-3.10.1-Linux-x86_64.tar.gz
 
 RUN echo "alias python=python3" >> ~/.bash_aliases
 
@@ -96,5 +99,6 @@ ENV CC=/usr/lib/ccache/clang
 ENV CXX=/usr/lib/ccache/clang++
 ENV QT_SELECT=5
 ENV LANG=C.UTF-8
+ENV PATH="/usr/local/bin:${PATH}"
 
 CMD /root/QGIS/.ci/travis/linux/docker-build-test.sh
