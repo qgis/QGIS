@@ -420,7 +420,7 @@ void QgsLayoutItemPolyline::updateBoundingRect()
 
   double margin = std::max( mMaxSymbolBleed, computeMarkerMargin() );
   br.adjust( -margin, -margin, margin, margin );
-  currentRectangle = br;
+  mCurrentRectangle = br;
 
   // update
   prepareGeometryChange();
