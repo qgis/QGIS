@@ -213,10 +213,21 @@ class TestQgsCoordinateTransform(unittest.TestCase):
         transforms = QgsDatumTransform.datumTransformations(QgsCoordinateReferenceSystem(4613), QgsCoordinateReferenceSystem(4326))
         self.assertTrue(len(transforms) > 0)
         self.assertIn('+towgs84=-403,684,41', [QgsDatumTransform.datumTransformToProj(t.sourceTransformId) for t in transforms])
-        self.assertIn('+towgs84=-403,684,41', [QgsDatumTransform.datumTransformToProj(t.destinationTransformId) for t in transforms])
-        self.assertIn('EPSG:4613', [QgsDatumTransform.datumTransformInfo(t.destinationTransformId).sourceCrsAuthId for t in
+        self.assertEqual([''] * len(transforms), [QgsDatumTransform.datumTransformToProj(t.destinationTransformId) for t in transforms])
+        self.assertIn('EPSG:4613', [QgsDatumTransform.datumTransformInfo(t.sourceTransformId).sourceCrsAuthId for t in
                                     transforms])
-        self.assertIn('EPSG:4326', [QgsDatumTransform.datumTransformInfo(t.destinationTransformId).destinationCrsAuthId for t in
+        self.assertEqual([''] * len(transforms), [QgsDatumTransform.datumTransformInfo(t.destinationTransformId).destinationCrsAuthId for t in
+                                                  transforms])
+
+        # and the reverse
+        transforms = QgsDatumTransform.datumTransformations(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(4613))
+        self.assertTrue(len(transforms) > 0)
+        self.assertEqual([''] * len(transforms), [QgsDatumTransform.datumTransformToProj(t.sourceTransformId) for t in transforms])
+        self.assertIn('+towgs84=-403,684,41',
+                      [QgsDatumTransform.datumTransformToProj(t.destinationTransformId) for t in transforms])
+        self.assertEqual([''] * len(transforms), [QgsDatumTransform.datumTransformInfo(t.sourceTransformId).destinationCrsAuthId for t in
+                                                  transforms])
+        self.assertIn('EPSG:4613', [QgsDatumTransform.datumTransformInfo(t.destinationTransformId).sourceCrsAuthId for t in
                                     transforms])
 
     def testStringToTransformId(self):

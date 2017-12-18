@@ -68,7 +68,7 @@ QList< QgsDatumTransform::TransformPair > QgsDatumTransform::datumTransformation
   }
 
   //add direct datum transformations
-  for ( int transform : qgis::as_const( directTransforms ) )
+  for ( int transform : qgis::as_const( reverseDirectTransforms ) )
   {
     transformations.push_back( QgsDatumTransform::TransformPair( -1, transform ) );
   }
