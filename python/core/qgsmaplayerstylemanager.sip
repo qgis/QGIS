@@ -197,10 +197,9 @@ Restore the original store after a call to setOverrideStyle()
 
     bool isDefault( const QString &styleName ) const;
 %Docstring
- Returns true if this is the default style
+Returns true if this is the default style
 
 .. versionadded:: 3.0
- :rtype: bool
 %End
 
   signals:
