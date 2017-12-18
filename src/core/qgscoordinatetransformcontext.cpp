@@ -102,7 +102,7 @@ void QgsCoordinateTransformContext::removeDestinationDatumTransform( const QgsCo
 
 #endif
 
-QMap<QPair<QString, QString>, QgsCoordinateTransform::TransformPair> QgsCoordinateTransformContext::sourceDestinationDatumTransforms() const
+QMap<QPair<QString, QString>, QgsDatumTransform::TransformPair> QgsCoordinateTransformContext::sourceDestinationDatumTransforms() const
 {
   d->mLock.lockForRead();
   auto res = d->mSourceDestDatumTransforms;
@@ -118,7 +118,7 @@ bool QgsCoordinateTransformContext::addSourceDestinationDatumTransform( const Qg
 
   d.detach();
   d->mLock.lockForWrite();
-  d->mSourceDestDatumTransforms.insert( qMakePair( sourceCrs.authid(), destinationCrs.authid() ), QgsCoordinateTransform::TransformPair( sourceTransform, destinationTransform ) );
+  d->mSourceDestDatumTransforms.insert( qMakePair( sourceCrs.authid(), destinationCrs.authid() ), QgsDatumTransform::TransformPair( sourceTransform, destinationTransform ) );
   d->mLock.unlock();
   return true;
 }
@@ -130,24 +130,24 @@ void QgsCoordinateTransformContext::removeSourceDestinationDatumTransform( const
 
 bool QgsCoordinateTransformContext::hasTransform( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination ) const
 {
-  QgsCoordinateTransform::TransformPair t = calculateDatumTransforms( source, destination );
+  QgsDatumTransform::TransformPair t = calculateDatumTransforms( source, destination );
   // calculateDatumTransforms already takes care of switching source and destination
   return t.sourceTransformId != -1 || t.destinationTransformId != -1;
 }
 
-QgsCoordinateTransform::TransformPair QgsCoordinateTransformContext::calculateDatumTransforms( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination ) const
+QgsDatumTransform::TransformPair QgsCoordinateTransformContext::calculateDatumTransforms( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination ) const
 {
   QString srcKey = source.authid();
   QString destKey = destination.authid();
 
   d->mLock.lockForRead();
   // highest priority is exact match for source/dest pair
-  QgsCoordinateTransform::TransformPair res = d->mSourceDestDatumTransforms.value( qMakePair( srcKey, destKey ), QgsCoordinateTransform::TransformPair( -1, -1 ) );
+  QgsDatumTransform::TransformPair res = d->mSourceDestDatumTransforms.value( qMakePair( srcKey, destKey ), QgsDatumTransform::TransformPair( -1, -1 ) );
   if ( res.sourceTransformId == -1 && res.destinationTransformId == -1 )
   {
     // try to reverse
-    QgsCoordinateTransform::TransformPair res2 = d->mSourceDestDatumTransforms.value( qMakePair( destKey, srcKey ), QgsCoordinateTransform::TransformPair( -1, -1 ) );
-    res = QgsCoordinateTransform::TransformPair( res2.destinationTransformId, res2.sourceTransformId );
+    QgsDatumTransform::TransformPair res2 = d->mSourceDestDatumTransforms.value( qMakePair( destKey, srcKey ), QgsDatumTransform::TransformPair( -1, -1 ) );
+    res = QgsDatumTransform::TransformPair( res2.destinationTransformId, res2.sourceTransformId );
   }
   d->mLock.unlock();
   return res;
@@ -217,7 +217,7 @@ bool QgsCoordinateTransformContext::readXml( const QDomElement &element, const Q
       }
     }
 
-    d->mSourceDestDatumTransforms.insert( qMakePair( key1, key2 ), QgsCoordinateTransform::TransformPair( datumId1, datumId2 ) );
+    d->mSourceDestDatumTransforms.insert( qMakePair( key1, key2 ), QgsDatumTransform::TransformPair( datumId1, datumId2 ) );
   }
 
 #if 0
@@ -347,7 +347,7 @@ void QgsCoordinateTransformContext::readSettings()
   QMap< QPair< QString, QString >, QPair< int, int > >::const_iterator transformIt = transforms.constBegin();
   for ( ; transformIt != transforms.constEnd(); ++transformIt )
   {
-    d->mSourceDestDatumTransforms.insert( transformIt.key(), QgsCoordinateTransform::TransformPair( transformIt.value().first, transformIt.value().second ) );
+    d->mSourceDestDatumTransforms.insert( transformIt.key(), QgsDatumTransform::TransformPair( transformIt.value().first, transformIt.value().second ) );
   }
 
   d->mLock.unlock();

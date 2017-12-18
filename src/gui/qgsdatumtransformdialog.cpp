@@ -71,7 +71,7 @@ void QgsDatumTransformDialog::load( const QPair<int, int> &selectedDatumTransfor
 {
   mDatumTransformTreeWidget->clear();
 
-  for ( const QgsCoordinateTransform::TransformPair &transform : qgis::as_const( mDatumTransforms ) )
+  for ( const QgsDatumTransform::TransformPair &transform : qgis::as_const( mDatumTransforms ) )
   {
     QTreeWidgetItem *item = new QTreeWidgetItem();
     bool itemDisabled = false;
@@ -87,7 +87,7 @@ void QgsDatumTransformDialog::load( const QPair<int, int> &selectedDatumTransfor
       item->setText( i, QgsCoordinateTransform::datumTransformToProj( nr ) );
 
       //Describe datums in a tooltip
-      QgsCoordinateTransform::TransformInfo info = QgsCoordinateTransform::datumTransformInfo( nr );
+      QgsDatumTransform::TransformInfo info = QgsCoordinateTransform::datumTransformInfo( nr );
       if ( info.datumTransformId == -1 )
         continue;
 

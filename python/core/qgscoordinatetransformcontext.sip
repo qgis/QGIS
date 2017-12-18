@@ -65,7 +65,7 @@ Clears all stored transform information from the context.
 
 
 
-    QMap< QPair< QString, QString>, QgsCoordinateTransform::TransformPair > sourceDestinationDatumTransforms() const;
+    QMap< QPair< QString, QString>, QgsDatumTransform::TransformPair > sourceDestinationDatumTransforms() const;
 %Docstring
 Returns the stored mapping for source to destination CRS pairs to associated datum transforms to use.
 The map keys will be QgsCoordinateReferenceSystems.authid()s.
@@ -123,7 +123,7 @@ when transforming from the specified ``source`` CRS to ``destination`` CRS.
    source and destination are reversible.
 %End
 
-    QgsCoordinateTransform::TransformPair calculateDatumTransforms( const QgsCoordinateReferenceSystem &source,
+    QgsDatumTransform::TransformPair calculateDatumTransforms( const QgsCoordinateReferenceSystem &source,
         const QgsCoordinateReferenceSystem &destination ) const;
 %Docstring
 Returns the pair of source and destination datum transforms to use

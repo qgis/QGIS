@@ -854,7 +854,6 @@ SET(QGIS_CORE_HDRS
   qgscoordinateformatter.h
   qgscoordinatetransform.h
   qgscoordinatetransformcontext.h
-  qgscoordinatetransformcontext_p.h
   qgscoordinateutils.h
   qgsdartmeasurement.h
   qgsdatadefinedsizelegend.h
@@ -862,6 +861,7 @@ SET(QGIS_CORE_HDRS
   qgsdataitemproviderregistry.h
   qgsdatasourceuri.h
   qgsdatetimestatisticalsummary.h
+  qgsdatumtransform.h
   qgsdbfilterproxymodel.h
   qgsdefaultvalue.h
   qgsdiagramrenderer.h

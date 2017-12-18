@@ -254,36 +254,7 @@ otherwise points are transformed from destination to source CRS.
 Returns true if the transform short circuits because the source and destination are equivalent.
 %End
 
-    struct TransformPair
-    {
-
-      TransformPair( int sourceTransformId = -1, int destinationTransformId = -1 );
-%Docstring
-Constructor for a TransformPair with the specified ``sourceTransformId``
-and ``destinationTransformId`` transforms.
-%End
-
-      int sourceTransformId;
-%Docstring
-ID for the datum transform to use when projecting from the source CRS.
-
-.. seealso:: :py:func:`QgsCoordinateTransform.datumTransformCrsInfo()`
-%End
-
-      int destinationTransformId;
-%Docstring
-ID for the datum transform to use when projecting to the destination CRS.
-
-.. seealso:: :py:func:`QgsCoordinateTransform.datumTransformCrsInfo()`
-%End
-
-      bool operator==( const QgsCoordinateTransform::TransformPair &other ) const;
-
-      bool operator!=( const QgsCoordinateTransform::TransformPair &other ) const;
-
-    };
-
-    static QList< QgsCoordinateTransform::TransformPair > datumTransformations( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination );
+    static QList< QgsDatumTransform::TransformPair > datumTransformations( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination );
 %Docstring
 Returns a list of datum transformations which are available for the given ``source`` and ``destination`` CRS.
 
@@ -313,61 +284,7 @@ Returns -1 if matching datum ID was not found.
 .. versionadded:: 3.0
 %End
 
-    struct TransformInfo
-    {
-      int datumTransformId;
-%Docstring
-Datum transform ID
-%End
-
-      int epsgCode;
-%Docstring
-EPSG code for the transform, or 0 if not found in EPSG database
-%End
-
-      QString sourceCrsAuthId;
-%Docstring
-Source CRS auth ID
-%End
-
-      QString destinationCrsAuthId;
-%Docstring
-Destination CRS auth ID
-%End
-
-      QString sourceCrsDescription;
-%Docstring
-Source CRS description
-%End
-
-      QString destinationCrsDescription;
-%Docstring
-Destination CRS description
-%End
-
-      QString remarks;
-%Docstring
-Transform remarks
-%End
-
-      QString scope;
-%Docstring
-Scope of transform
-%End
-
-      bool preferred;
-%Docstring
-True if transform is the preferred transform to use for the source/destination CRS combination
-%End
-
-      bool deprecated;
-%Docstring
-True if transform is deprecated
-%End
-
-    };
-
-    static QgsCoordinateTransform::TransformInfo datumTransformInfo( int datumTransformId );
+    static QgsDatumTransform::TransformInfo datumTransformInfo( int datumTransformId );
 %Docstring
 Returns detailed information about the specified ``datumTransformId``.
 If ``datumTransformId`` was not a valid transform ID, a TransformInfo with TransformInfo.datumTransformId of

@@ -21,7 +21,7 @@
 #include "qgis_core.h"
 #include "qgis.h"
 #include "qgscoordinatetransformcontext_p.h"
-#include "qgscoordinatetransform.h"
+#include "qgsdatumtransform.h"
 
 class QgsReadWriteContext;
 
@@ -181,7 +181,7 @@ class CORE_EXPORT QgsCoordinateTransformContext
      *
      * \see addSourceDestinationDatumTransform()
      */
-    QMap< QPair< QString, QString>, QgsCoordinateTransform::TransformPair > sourceDestinationDatumTransforms() const;
+    QMap< QPair< QString, QString>, QgsDatumTransform::TransformPair > sourceDestinationDatumTransforms() const;
 
     /**
      * Adds a new \a sourceTransform and \a destinationTransform to use when projecting coordinates
@@ -228,7 +228,7 @@ class CORE_EXPORT QgsCoordinateTransformContext
      *
      * \note source and destination are reversible.
      */
-    QgsCoordinateTransform::TransformPair calculateDatumTransforms( const QgsCoordinateReferenceSystem &source,
+    QgsDatumTransform::TransformPair calculateDatumTransforms( const QgsCoordinateReferenceSystem &source,
         const QgsCoordinateReferenceSystem &destination ) const;
 
     /**

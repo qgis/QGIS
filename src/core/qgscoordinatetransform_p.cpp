@@ -217,10 +217,10 @@ bool QgsCoordinateTransformPrivate::initialize()
   return mIsValid;
 }
 
-void QgsCoordinateTransformPrivate::calculateTransforms()
+void QgsCoordinateTransformPrivate::calculateTransforms( const QgsCoordinateTransformContext &context )
 {
   // recalculate datum transforms from context
-  QgsCoordinateTransform::TransformPair transforms = mContext.calculateDatumTransforms( mSourceCRS, mDestCRS );
+  QgsDatumTransform::TransformPair transforms = context.calculateDatumTransforms( mSourceCRS, mDestCRS );
   mSourceDatumTransform = transforms.sourceTransformId;
   mDestinationDatumTransform = transforms.destinationTransformId;
 }

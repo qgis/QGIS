@@ -71,7 +71,7 @@ class GUI_EXPORT QgsDatumTransformDialog : public QDialog, private Ui::QgsDatumT
     void setOKButtonEnabled();
 
 
-    QList< QgsCoordinateTransform::TransformPair > mDatumTransforms;
+    QList< QgsDatumTransform::TransformPair > mDatumTransforms;
     QgsCoordinateReferenceSystem mSourceCrs;
     QgsCoordinateReferenceSystem mDestinationCrs;
 };

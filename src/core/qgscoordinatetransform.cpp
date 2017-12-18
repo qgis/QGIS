@@ -691,9 +691,9 @@ const char *finder( const char *name )
 
 
 
-QList< QgsCoordinateTransform::TransformPair > QgsCoordinateTransform::datumTransformations( const QgsCoordinateReferenceSystem &srcCRS, const QgsCoordinateReferenceSystem &destCRS )
+QList< QgsDatumTransform::TransformPair > QgsCoordinateTransform::datumTransformations( const QgsCoordinateReferenceSystem &srcCRS, const QgsCoordinateReferenceSystem &destCRS )
 {
-  QList< QgsCoordinateTransform::TransformPair > transformations;
+  QList< QgsDatumTransform::TransformPair > transformations;
 
   QString srcGeoId = srcCRS.geographicCrsAuthId();
   QString destGeoId = destCRS.geographicCrsAuthId();
@@ -735,20 +735,20 @@ QList< QgsCoordinateTransform::TransformPair > QgsCoordinateTransform::datumTran
   //add direct datum transformations
   for ( int transform : qgis::as_const( directTransforms ) )
   {
-    transformations.push_back( TransformPair( transform, -1 ) );
+    transformations.push_back( QgsDatumTransform::TransformPair( transform, -1 ) );
   }
 
   //add direct datum transformations
   for ( int transform : qgis::as_const( directTransforms ) )
   {
-    transformations.push_back( TransformPair( -1, transform ) );
+    transformations.push_back( QgsDatumTransform::TransformPair( -1, transform ) );
   }
 
   for ( int srcTransform : qgis::as_const( srcToWgs84 ) )
   {
     for ( int destTransform : qgis::as_const( destToWgs84 ) )
     {
-      transformations.push_back( TransformPair( srcTransform, destTransform ) );
+      transformations.push_back( QgsDatumTransform::TransformPair( srcTransform, destTransform ) );
     }
   }
 
@@ -821,9 +821,9 @@ int QgsCoordinateTransform::projStringToDatumTransformId( const QString &string 
   return QgsCoordinateTransformPrivate::transformIdFromString( string );
 }
 
-QgsCoordinateTransform::TransformInfo QgsCoordinateTransform::datumTransformInfo( int datumTransform )
+QgsDatumTransform::TransformInfo QgsCoordinateTransform::datumTransformInfo( int datumTransform )
 {
-  TransformInfo info;
+  QgsDatumTransform::TransformInfo info;
 
   sqlite3_database_unique_ptr database;
   int openResult = database.open_v2( QgsApplication::srsDatabaseFilePath(), SQLITE_OPEN_READONLY, nullptr );

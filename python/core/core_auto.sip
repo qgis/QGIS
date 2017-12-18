@@ -30,6 +30,7 @@
 %Include qgsdataitemproviderregistry.sip
 %Include qgsdatasourceuri.sip
 %Include qgsdatetimestatisticalsummary.sip
+%Include qgsdatumtransform.sip
 %Include qgsdbfilterproxymodel.sip
 %Include qgsdefaultvalue.sip
 %Include qgsdiagramrenderer.sip
