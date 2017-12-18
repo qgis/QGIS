@@ -20,11 +20,12 @@
 
 #include "qgis_core.h"
 #include "qgis.h"
-#include "qgscoordinatetransformcontext_p.h"
 #include "qgsdatumtransform.h"
 
+class QgsCoordinateReferenceSystem;
 class QgsReadWriteContext;
-
+class QgsCoordinateTransformContextPrivate;
+class QDomElement;
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
@@ -63,6 +64,8 @@ class CORE_EXPORT QgsCoordinateTransformContext
      * Constructor for QgsCoordinateTransformContext.
      */
     QgsCoordinateTransformContext();
+
+    ~QgsCoordinateTransformContext();
 
     /**
      * Copy constructor

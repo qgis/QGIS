@@ -24,6 +24,8 @@ QgsCoordinateTransformContext::QgsCoordinateTransformContext()
   : d( new QgsCoordinateTransformContextPrivate() )
 {}
 
+QgsCoordinateTransformContext::~QgsCoordinateTransformContext() = default;
+
 QgsCoordinateTransformContext::QgsCoordinateTransformContext( const QgsCoordinateTransformContext &rhs ) //NOLINT
   : d( rhs.d )
 {}

@@ -12,7 +12,6 @@
 
 
 
-
 class QgsCoordinateTransformContext
 {
 %Docstring
@@ -50,6 +49,8 @@ applies for destination CRS transforms set using addDestinationDatumTransform().
 %Docstring
 Constructor for QgsCoordinateTransformContext.
 %End
+
+    ~QgsCoordinateTransformContext();
 
     QgsCoordinateTransformContext( const QgsCoordinateTransformContext &rhs );
 %Docstring
