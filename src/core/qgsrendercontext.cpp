@@ -55,6 +55,10 @@ QgsRenderContext::QgsRenderContext( const QgsRenderContext &rh )
   , mFeatureFilterProvider( rh.mFeatureFilterProvider ? rh.mFeatureFilterProvider->clone() : nullptr )
   , mSegmentationTolerance( rh.mSegmentationTolerance )
   , mSegmentationToleranceType( rh.mSegmentationToleranceType )
+  , mTransformContext( rh.mTransformContext )
+#ifdef QGISDEBUG
+  , mHasTransformContext( rh.mHasTransformContext )
+#endif
 {
 }
 
@@ -77,6 +81,11 @@ QgsRenderContext &QgsRenderContext::operator=( const QgsRenderContext &rh )
   mSegmentationTolerance = rh.mSegmentationTolerance;
   mSegmentationToleranceType = rh.mSegmentationToleranceType;
   mDistanceArea = rh.mDistanceArea;
+  mTransformContext = rh.mTransformContext;
+#ifdef QGISDEBUG
+  mHasTransformContext = rh.mHasTransformContext;
+#endif
+
   return *this;
 }
 
