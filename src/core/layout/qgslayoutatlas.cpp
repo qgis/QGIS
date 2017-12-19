@@ -162,7 +162,16 @@ QString QgsLayoutAtlas::nameForPage( int pageNumber ) const
 
 bool QgsLayoutAtlas::setFilterExpression( const QString &expression, QString &errorString )
 {
+  errorString.clear();
   mFilterExpression = expression;
+
+  QgsExpression filterExpression( mFilterExpression );
+  if ( filterExpression.hasParserError() )
+  {
+    errorString = filterExpression.parserErrorString();
+    return false;
+  }
+
   return true;
 }
 

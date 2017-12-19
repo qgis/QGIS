@@ -16,13 +16,13 @@
 
 #include <QComboBox>
 #include <QImageWriter>
-#include <QMessageBox>
 
 #include "qgslayoutatlaswidget.h"
 #include "qgsprintlayout.h"
 #include "qgslayoutatlas.h"
 #include "qgsexpressionbuilderdialog.h"
 #include "qgslayoutundostack.h"
+#include "qgsmessagebar.h"
 
 QgsLayoutAtlasWidget::QgsLayoutAtlasWidget( QWidget *parent, QgsPrintLayout *layout )
   : QWidget( parent )
@@ -68,6 +68,11 @@ QgsLayoutAtlasWidget::QgsLayoutAtlasWidget( QWidget *parent, QgsPrintLayout *lay
   updateGuiElements();
 }
 
+void QgsLayoutAtlasWidget::setMessageBar( QgsMessageBar *bar )
+{
+  mMessageBar = bar;
+}
+
 void QgsLayoutAtlasWidget::mUseAtlasCheckBox_stateChanged( int state )
 {
   if ( state == Qt::Checked )
@@ -108,12 +113,10 @@ void QgsLayoutAtlasWidget::mAtlasFilenamePatternEdit_editingFinished()
   if ( !mAtlas->setFilenameExpression( mAtlasFilenamePatternEdit->text(), error ) )
   {
     //expression could not be set
-    QMessageBox::warning( this
-                          , tr( "Could not evaluate filename pattern" )
-                          , tr( "Could not set filename pattern as '%1'.\nParser error:\n%2" )
-                          .arg( mAtlasFilenamePatternEdit->text(),
-                                error )
-                        );
+    mMessageBar->pushWarning( tr( "Atlas" ),
+                              tr( "Could not set filename expression to '%1'.\nParser error:\n%2" )
+                              .arg( mAtlasFilenamePatternEdit->text(),
+                                    error ) );
   }
   mLayout->undoStack()->endCommand();
 }
@@ -141,12 +144,9 @@ void QgsLayoutAtlasWidget::mAtlasFilenameExpressionButton_clicked()
       if ( !mAtlas->setFilenameExpression( expression, error ) )
       {
         //expression could not be set
-        QMessageBox::warning( this
-                              , tr( "Could not evaluate filename pattern" )
-                              , tr( "Could not set filename pattern as '%1'.\nParser error:\n%2" )
-                              .arg( expression,
-                                    error )
-                            );
+        mMessageBar->pushWarning( tr( "Atlas" ), tr( "Could not set filename expression to '%1'.\nParser error:\n%2" )
+                                  .arg( expression,
+                                        error ) );
       }
       mLayout->undoStack()->endCommand();
     }
@@ -205,20 +205,15 @@ void QgsLayoutAtlasWidget::changesSortFeatureExpression( const QString &expressi
 
 void QgsLayoutAtlasWidget::updateAtlasFeatures()
 {
-#if 0 //TODO
   bool updated = mAtlas->updateFeatures();
   if ( !updated )
   {
-    QMessageBox::warning( nullptr, tr( "Atlas preview" ),
-                          tr( "No matching atlas features found!" ),
-                          QMessageBox::Ok,
-                          QMessageBox::Ok );
+    mMessageBar->pushInfo( tr( "Atlas" ),
+                           tr( "No matching atlas features found!" ) );
 
     //Perhaps atlas preview should be disabled now? If so, it may get annoying if user is editing
     //the filter expression and it keeps disabling itself.
-    return;
   }
-#endif
 }
 
 void QgsLayoutAtlasWidget::mAtlasFeatureFilterCheckBox_stateChanged( int state )
@@ -256,7 +251,15 @@ void QgsLayoutAtlasWidget::mAtlasFeatureFilterEdit_editingFinished()
 {
   QString error;
   mLayout->undoStack()->beginCommand( mAtlas, tr( "Change Atlas Filter" ) );
-  mAtlas->setFilterExpression( mAtlasFeatureFilterEdit->text(), error );
+
+  if ( !mAtlas->setFilterExpression( mAtlasFeatureFilterEdit->text(), error ) )
+  {
+    //expression could not be set
+    mMessageBar->pushWarning( tr( "Atlas" ), tr( "Could not set filter expression to '%1'.\nParser error:\n%2" )
+                              .arg( mAtlasFeatureFilterEdit->text(),
+                                    error ) );
+  }
+
   mLayout->undoStack()->endCommand();
   updateAtlasFeatures();
 }
@@ -282,7 +285,15 @@ void QgsLayoutAtlasWidget::mAtlasFeatureFilterButton_clicked()
       mAtlasFeatureFilterEdit->setText( expression );
       QString error;
       mLayout->undoStack()->beginCommand( mAtlas, tr( "Change Atlas Filter" ) );
-      mAtlas->setFilterExpression( mAtlasFeatureFilterEdit->text(), error );
+      if ( !mAtlas->setFilterExpression( mAtlasFeatureFilterEdit->text(), error ) )
+      {
+        //expression could not be set
+        mMessageBar->pushWarning( tr( "Atlas" ),
+                                  tr( "Could not set filter expression to '%1'.\nParser error:\n%2" )
+                                  .arg( mAtlasFeatureFilterEdit->text(),
+                                        error )
+                                );
+      }
       mLayout->undoStack()->endCommand();
       updateAtlasFeatures();
     }

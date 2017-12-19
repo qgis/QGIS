@@ -2219,6 +2219,7 @@ void QgsLayoutDesignerDialog::createAtlasWidget()
   QgsPrintLayout *printLayout = qobject_cast< QgsPrintLayout * >( mLayout );
   QgsLayoutAtlas *atlas = printLayout->atlas();
   QgsLayoutAtlasWidget *atlasWidget = new QgsLayoutAtlasWidget( mGeneralDock, printLayout );
+  atlasWidget->setMessageBar( mMessageBar );
   mAtlasDock->setWidget( atlasWidget );
   mAtlasDock->show();
 

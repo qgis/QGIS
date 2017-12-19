@@ -18,6 +18,7 @@
 
 class QgsPrintLayout;
 class QgsLayoutAtlas;
+class QgsMessageBar;
 
 /**
  * \ingroup app
@@ -28,6 +29,7 @@ class QgsLayoutAtlasWidget: public QWidget, private Ui::QgsLayoutAtlasWidgetBase
     Q_OBJECT
   public:
     QgsLayoutAtlasWidget( QWidget *parent, QgsPrintLayout *layout );
+    void setMessageBar( QgsMessageBar *bar );
 
   private slots:
     void mUseAtlasCheckBox_stateChanged( int state );
@@ -50,6 +52,7 @@ class QgsLayoutAtlasWidget: public QWidget, private Ui::QgsLayoutAtlasWidgetBase
   private:
     QgsPrintLayout *mLayout = nullptr;
     QgsLayoutAtlas *mAtlas = nullptr;
+    QgsMessageBar *mMessageBar = nullptr;
 
     void blockAllSignals( bool b );
     void checkLayerType( QgsVectorLayer *layer );
