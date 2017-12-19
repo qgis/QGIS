@@ -1530,18 +1530,15 @@ void QgsLayoutDesignerDialog::exportToRaster()
   imageDlg.setGenerateWorldFile( mLayout->customProperty( QStringLiteral( "exportWorldFile" ), false ).toBool() );
   imageDlg.setAntialiasing( antialias );
 
-#if 0 //TODO
-  QgsAtlasComposition *atlasMap = &mComposition->atlasComposition();
-#endif
+  QgsLayoutAtlas *printAtlas = atlas();
 
+  QgsSettings s;
   QString outputFileName = QgsFileUtils::stringToSafeFilename( mLayout->name() );
-#if 0 //TODO
-  if ( atlasMap->enabled() && mComposition->atlasMode() == QgsComposition::PreviewAtlas )
+  if ( printAtlas && printAtlas->enabled() && mActionAtlasPreview->isChecked() )
   {
-    QString lastUsedDir = settings.value( QStringLiteral( "UI/lastSaveAsImageDir" ), QDir::homePath() ).toString();
-    outputFileName = QDir( lastUsedDir ).filePath( atlasMap->currentFilename() );
+    QString lastUsedDir = s.value( QStringLiteral( "UI/lastSaveAsImageDir" ), QDir::homePath() ).toString();
+    outputFileName = QDir( lastUsedDir ).filePath( QgsFileUtils::stringToSafeFilename( printAtlas->currentFilename() ) );
   }
-#endif
 
 #ifdef Q_OS_MAC
   QgisApp::instance()->activateWindow();
@@ -1647,19 +1644,15 @@ void QgsLayoutDesignerDialog::exportToPdf()
   QFileInfo file( lastUsedFile );
   QString outputFileName;
 
-#if 0// TODO
-  if ( hasAnAtlas && !atlasOnASingleFile &&
-       ( mode == QgsComposer::Atlas || mComposition->atlasMode() == QgsComposition::PreviewAtlas ) )
+  QgsLayoutAtlas *printAtlas = atlas();
+  if ( printAtlas && printAtlas->enabled() && mActionAtlasPreview->isChecked() )
   {
-    outputFileName = QDir( file.path() ).filePath( atlasMap->currentFilename() ) + ".pdf";
+    outputFileName = QDir( file.path() ).filePath( QgsFileUtils::stringToSafeFilename( printAtlas->currentFilename() ) + QStringLiteral( ".pdf" ) );
   }
   else
   {
-#endif
     outputFileName = file.path() + '/' + QgsFileUtils::stringToSafeFilename( mLayout->name() ) + QStringLiteral( ".pdf" );
-#if 0 //TODO
   }
-#endif
 
 #ifdef Q_OS_MAC
   QgisApp::instance()->activateWindow();
@@ -1751,19 +1744,15 @@ void QgsLayoutDesignerDialog::exportToSvg()
   QFileInfo file( lastUsedFile );
   QString outputFileName = QgsFileUtils::stringToSafeFilename( mLayout->name() );
 
-#if 0// TODO
-  if ( hasAnAtlas && !atlasOnASingleFile &&
-       ( mode == QgsComposer::Atlas || mComposition->atlasMode() == QgsComposition::PreviewAtlas ) )
+  QgsLayoutAtlas *printAtlas = atlas();
+  if ( printAtlas && printAtlas->enabled() && mActionAtlasPreview->isChecked() )
   {
-    outputFileName = QDir( file.path() ).filePath( atlasMap->currentFilename() ) + ".pdf";
+    outputFileName = QDir( file.path() ).filePath( QgsFileUtils::stringToSafeFilename( printAtlas->currentFilename() + QStringLiteral( ".svg" ) ) );
   }
   else
   {
-#endif
     outputFileName = file.path() + '/' + QgsFileUtils::stringToSafeFilename( mLayout->name() ) + QStringLiteral( ".svg" );
-#if 0 //TODO
   }
-#endif
 
 #ifdef Q_OS_MAC
   QgisApp::instance()->activateWindow();
