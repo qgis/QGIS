@@ -1425,7 +1425,7 @@ static QVariant fcnAge( const QVariantList &values, const QgsExpressionContext *
 {
   QDateTime d1 = QgsExpressionUtils::getDateTimeValue( values.at( 0 ), parent );
   QDateTime d2 = QgsExpressionUtils::getDateTimeValue( values.at( 1 ), parent );
-  int seconds = d2.secsTo( d1 );
+  qint64 seconds = d2.secsTo( d1 );
   return QVariant::fromValue( QgsInterval( seconds ) );
 }
 
