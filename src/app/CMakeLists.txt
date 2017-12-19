@@ -180,6 +180,7 @@ SET(QGIS_APP_SRCS
 
   layout/qgslayoutaddpagesdialog.cpp
   layout/qgslayoutapputils.cpp
+  layout/qgslayoutatlaswidget.cpp
   layout/qgslayoutattributeselectiondialog.cpp
   layout/qgslayoutattributetablewidget.cpp
   layout/qgslayoutdesignerdialog.cpp
@@ -399,6 +400,7 @@ SET (QGIS_APP_MOC_HDRS
 
   layout/qgslayoutaddpagesdialog.h
   layout/qgslayoutappmenuprovider.h
+  layout/qgslayoutatlaswidget.h
   layout/qgslayoutattributeselectiondialog.h
   layout/qgslayoutattributetablewidget.h
   layout/qgslayoutdesignerdialog.h

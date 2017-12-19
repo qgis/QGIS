@@ -36,6 +36,7 @@
 #include "qgslayoutitemwidget.h"
 #include "qgslayoutimageexportoptionsdialog.h"
 #include "qgslayoutitemmap.h"
+#include "qgsprintlayout.h"
 #include "qgsmessageviewer.h"
 #include "qgsgui.h"
 #include "qgslayoutitemguiregistry.h"
@@ -53,6 +54,7 @@
 #include "qgsproject.h"
 #include "qgsbusyindicatordialog.h"
 #include "qgslayoutundostack.h"
+#include "qgslayoutatlaswidget.h"
 #include "qgslayoutpagecollection.h"
 #include "ui_qgssvgexportoptions.h"
 #include <QShortcut>
@@ -685,6 +687,11 @@ void QgsLayoutDesignerDialog::setCurrentLayout( QgsLayout *layout )
 #endif
 
   createLayoutPropertiesWidget();
+
+  if ( qobject_cast< QgsPrintLayout * >( layout ) )
+  {
+    createAtlasWidget();
+  }
 }
 
 void QgsLayoutDesignerDialog::setIconSizes( int size )
@@ -1935,6 +1942,22 @@ void QgsLayoutDesignerDialog::createLayoutPropertiesWidget()
   QgsLayoutGuideWidget *guideWidget = new QgsLayoutGuideWidget( mGuideDock, mLayout, mView );
   guideWidget->setDockMode( true );
   mGuideStack->setMainPanel( guideWidget );
+}
+
+void QgsLayoutDesignerDialog::createAtlasWidget()
+{
+  if ( !mAtlasDock )
+  {
+    mAtlasDock = new QgsDockWidget( tr( "Atlas" ), this );
+    mAtlasDock->setObjectName( QStringLiteral( "AtlasDock" ) );
+    mPanelsMenu->addAction( mAtlasDock->toggleViewAction() );
+    addDockWidget( Qt::RightDockWidgetArea, mAtlasDock );
+    tabifyDockWidget( mItemDock, mAtlasDock );
+  }
+
+  QgsLayoutAtlasWidget *atlasWidget = new QgsLayoutAtlasWidget( mGeneralDock, qobject_cast< QgsPrintLayout * >( mLayout ) );
+  mAtlasDock->setWidget( atlasWidget );
+  mAtlasDock->show();
 }
 
 void QgsLayoutDesignerDialog::initializeRegistry()

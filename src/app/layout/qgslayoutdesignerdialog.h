@@ -333,6 +333,7 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     QgsPanelWidgetStack *mGeneralPropertiesStack = nullptr;
     QgsDockWidget *mGuideDock = nullptr;
     QgsPanelWidgetStack *mGuideStack = nullptr;
+    QgsDockWidget *mAtlasDock = nullptr;
 
     QgsLayoutPropertiesWidget *mLayoutPropertiesWidget = nullptr;
 
@@ -372,6 +373,7 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     void activateNewItemCreationTool( int id, bool nodeBasedItem );
 
     void createLayoutPropertiesWidget();
+    void createAtlasWidget();
 
     void initializeRegistry();
 
