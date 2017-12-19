@@ -19,7 +19,7 @@ The expressions try to follow both syntax and semantics of SQL expressions.
 
 Usage:
 \code{.cpp}
-QgsExpression exp("gid*2 > 10 and type not in ('D','F'));
+QgsExpression exp("gid*2 > 10 and type not in ('D','F')");
 if (exp.hasParserError())
 {
 // show error message with parserErrorString() and exit
