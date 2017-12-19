@@ -485,6 +485,14 @@ class FeatureSourceTestCase(object):
         assert set(features) == set([1, 2, 3, 4, 5]), 'Got {} instead'.format(features)
         self.assertTrue(all_valid)
 
+        # ExactIntersection flag set, but no filter rect set. Should be ignored.
+        request = QgsFeatureRequest()
+        request.setFlags(QgsFeatureRequest.ExactIntersect)
+        features = [f['pk'] for f in self.source.getFeatures(request)]
+        all_valid = (all(f.isValid() for f in self.source.getFeatures(request)))
+        assert set(features) == set([1, 2, 3, 4, 5]), 'Got {} instead'.format(features)
+        self.assertTrue(all_valid)
+
     def testRectAndExpression(self):
         extent = QgsRectangle(-70, 67, -60, 80)
         request = QgsFeatureRequest().setFilterExpression('"cnt">200').setFilterRect(extent)
