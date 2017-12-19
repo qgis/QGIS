@@ -22,3 +22,8 @@ QgsPrintLayout::QgsPrintLayout( QgsProject *project )
   , mAtlas( new QgsLayoutAtlas( this ) )
 {
 }
+
+QgsLayoutAtlas *QgsPrintLayout::atlas()
+{
+  return mAtlas;
+}

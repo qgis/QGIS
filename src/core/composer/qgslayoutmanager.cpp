@@ -18,6 +18,7 @@
 #include "qgsproject.h"
 #include "qgslogger.h"
 #include "qgslayoutundostack.h"
+#include "qgsprintlayout.h"
 
 QgsLayoutManager::QgsLayoutManager( QgsProject *project )
   : QObject( project )
@@ -193,7 +194,7 @@ bool QgsLayoutManager::readXml( const QDomElement &element, const QDomDocument &
   const QDomNodeList layoutNodes = element.elementsByTagName( QStringLiteral( "Layout" ) );
   for ( int i = 0; i < layoutNodes.size(); ++i )
   {
-    std::unique_ptr< QgsLayout > l = qgis::make_unique< QgsLayout >( mProject );
+    std::unique_ptr< QgsLayout > l = qgis::make_unique< QgsPrintLayout >( mProject );
     l->undoStack()->blockCommands( true );
     if ( !l->readXml( layoutNodes.at( i ).toElement(), doc, context ) )
     {
