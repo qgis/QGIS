@@ -20,6 +20,7 @@
 
 #include "qgslayoutatlas.h"
 #include "qgslayout.h"
+#include "qgsmessagelog.h"
 
 QgsLayoutAtlas::QgsLayoutAtlas( QgsLayout *layout )
   : QObject( layout )
@@ -153,12 +154,10 @@ void QgsLayoutAtlas::setCoverageLayer( QgsVectorLayer *layer )
 
 QString QgsLayoutAtlas::nameForPage( int pageNumber ) const
 {
-#if 0 //TODO
   if ( pageNumber < 0 || pageNumber >= mFeatureIds.count() )
     return QString();
 
   return mFeatureIds.at( pageNumber ).second;
-#endif
 }
 
 bool QgsLayoutAtlas::setFilterExpression( const QString &expression, QString &errorString )
@@ -167,11 +166,12 @@ bool QgsLayoutAtlas::setFilterExpression( const QString &expression, QString &er
   return true;
 }
 
+
 /// @cond PRIVATE
-class AtlasFieldSorter
+class AtlasFeatureSorter
 {
   public:
-    AtlasFieldSorter( QgsLayoutAtlas::SorterKeys &keys, bool ascending = true )
+    AtlasFeatureSorter( QgsLayoutAtlas::SorterKeys &keys, bool ascending = true )
       : mKeys( keys )
       , mAscending( ascending )
     {}
@@ -188,6 +188,180 @@ class AtlasFieldSorter
 };
 
 /// @endcond
+
+int QgsLayoutAtlas::updateFeatures()
+{
+  if ( !mCoverageLayer )
+  {
+    return 0;
+  }
+
+  QgsExpressionContext expressionContext = createExpressionContext();
+
+  QString error;
+  updateFilenameExpression( error );
+
+  // select all features with all attributes
+  QgsFeatureRequest req;
+
+  mFilterParserError.clear();
+  if ( mFilterFeatures && !mFilterExpression.isEmpty() )
+  {
+    QgsExpression filterExpression( mFilterExpression );
+    if ( filterExpression.hasParserError() )
+    {
+      mFilterParserError = filterExpression.parserErrorString();
+      return 0;
+    }
+
+    //filter good to go
+    req.setFilterExpression( mFilterExpression );
+  }
+
+  QgsFeatureIterator fit = mCoverageLayer->getFeatures( req );
+
+  std::unique_ptr<QgsExpression> nameExpression;
+  if ( !mPageNameExpression.isEmpty() )
+  {
+    nameExpression = qgis::make_unique< QgsExpression >( mPageNameExpression );
+    if ( nameExpression->hasParserError() )
+    {
+      nameExpression.reset( nullptr );
+    }
+    else
+    {
+      nameExpression->prepare( &expressionContext );
+    }
+  }
+
+  // We cannot use nextFeature() directly since the feature pointer is rewinded by the rendering process
+  // We thus store the feature ids for future extraction
+  QgsFeature feat;
+  mFeatureIds.clear();
+  mFeatureKeys.clear();
+
+  std::unique_ptr<QgsExpression> sortExpression;
+  if ( mSortFeatures && !mSortExpression.isEmpty() )
+  {
+    sortExpression = qgis::make_unique< QgsExpression >( mSortExpression );
+    if ( sortExpression->hasParserError() )
+    {
+      sortExpression.reset( nullptr );
+    }
+    else
+    {
+      sortExpression->prepare( &expressionContext );
+    }
+  }
+
+  while ( fit.nextFeature( feat ) )
+  {
+    expressionContext.setFeature( feat );
+
+    QString pageName;
+    if ( nameExpression )
+    {
+      QVariant result = nameExpression->evaluate( &expressionContext );
+      if ( nameExpression->hasEvalError() )
+      {
+        QgsMessageLog::logMessage( tr( "Atlas name eval error: %1" ).arg( nameExpression->evalErrorString() ), tr( "Layout" ) );
+      }
+      pageName = result.toString();
+    }
+
+    mFeatureIds.push_back( qMakePair( feat.id(), pageName ) );
+
+    if ( sortExpression )
+    {
+      QVariant result = sortExpression->evaluate( &expressionContext );
+      if ( sortExpression->hasEvalError() )
+      {
+        QgsMessageLog::logMessage( tr( "Atlas sort eval error: %1" ).arg( sortExpression->evalErrorString() ), tr( "Layout" ) );
+      }
+      mFeatureKeys.insert( feat.id(), result );
+    }
+  }
+
+  // sort features, if asked for
+  if ( !mFeatureKeys.isEmpty() )
+  {
+    AtlasFeatureSorter sorter( mFeatureKeys, mSortAscending );
+    std::sort( mFeatureIds.begin(), mFeatureIds.end(), sorter );
+  }
+
+  emit numberFeaturesChanged( mFeatureIds.size() );
+
+#if 0 //TODO - move to app
+  //jump to first feature if currently using an atlas preview
+  //need to do this in case filtering/layer change has altered matching features
+  return first();
+#endif
+
+
+  return mFeatureIds.size();
+}
+
+bool QgsLayoutAtlas::beginRender()
+{
+  if ( !mCoverageLayer )
+  {
+    return false;
+  }
+
+  emit renderBegun();
+
+  if ( !updateFeatures() )
+  {
+    //no matching features found
+    return false;
+  }
+
+  return true;
+}
+
+bool QgsLayoutAtlas::endRender()
+{
+  emit renderEnded();
+  return true;
+}
+
+int QgsLayoutAtlas::count() const
+{
+  return mFeatureIds.size();
+}
+
+bool QgsLayoutAtlas::next()
+{
+  int newFeatureNo = mCurrentFeatureNo + 1;
+  if ( newFeatureNo >= mFeatureIds.size() )
+  {
+    return false;
+  }
+
+  return prepareForFeature( newFeatureNo );
+}
+
+bool QgsLayoutAtlas::previous()
+{
+  int newFeatureNo = mCurrentFeatureNo - 1;
+  if ( newFeatureNo < 0 )
+  {
+    return false;
+  }
+
+  return prepareForFeature( newFeatureNo );
+}
+
+bool QgsLayoutAtlas::first()
+{
+  return prepareForFeature( 0 );
+}
+
+bool QgsLayoutAtlas::last()
+{
+  return prepareForFeature( mFeatureIds.size() - 1 );
+}
+
 
 void QgsLayoutAtlas::setHideCoverage( bool hide )
 {
@@ -260,6 +434,122 @@ bool QgsLayoutAtlas::updateFilenameExpression( QString &error )
   if ( mComposition->atlasMode() == QgsComposition::PreviewAtlas )
   {
     evalFeatureFilename( expressionContext );
+  }
+#endif
+  return true;
+}
+
+bool QgsLayoutAtlas::evalFeatureFilename( const QgsExpressionContext &context )
+{
+  //generate filename for current atlas feature
+  if ( !mFilenameExpressionString.isEmpty() && mFilenameExpression.isValid() )
+  {
+    QVariant filenameRes = mFilenameExpression.evaluate( &context );
+    if ( mFilenameExpression.hasEvalError() )
+    {
+      QgsMessageLog::logMessage( tr( "Atlas filename evaluation error: %1" ).arg( mFilenameExpression.evalErrorString() ), tr( "Composer" ) );
+      return false;
+    }
+
+    mCurrentFilename = filenameRes.toString();
+  }
+  return true;
+}
+
+bool QgsLayoutAtlas::prepareForFeature( const int featureI )
+{
+  if ( !mCoverageLayer )
+  {
+    return false;
+  }
+
+  if ( mFeatureIds.isEmpty() )
+  {
+    emit messagePushed( tr( "No matching atlas features" ) );
+    return false;
+  }
+
+  if ( featureI >= mFeatureIds.size() )
+  {
+    return false;
+  }
+
+  mCurrentFeatureNo = featureI;
+
+  // retrieve the next feature, based on its id
+  if ( !mCoverageLayer->getFeatures( QgsFeatureRequest().setFilterFid( mFeatureIds[ featureI ].first ) ).nextFeature( mCurrentFeature ) )
+    return false;
+
+  QgsExpressionContext expressionContext = createExpressionContext();
+
+  // generate filename for current feature
+  if ( !evalFeatureFilename( expressionContext ) )
+  {
+
+    //error evaluating filename
+    return false;
+  }
+
+  mGeometryCache.clear();
+
+  mLayout->context().blockSignals( true ); // setFeature emits changed, we don't want 2 signals
+  mLayout->context().setLayer( mCoverageLayer.get() );
+  mLayout->context().blockSignals( false );
+  mLayout->context().setFeature( mCurrentFeature );
+
+  emit messagePushed( QString( tr( "Atlas feature %1 of %2" ) ).arg( featureI + 1 ).arg( mFeatureIds.size() ) );
+
+  if ( !mCurrentFeature.isValid() )
+  {
+    //bad feature
+    return false;
+  }
+
+#if 0 //TODO - move to map
+  //update composer maps
+
+  //build a list of atlas-enabled composer maps
+  QList<QgsComposerMap *> maps;
+  QList<QgsComposerMap *> atlasMaps;
+  mComposition->composerItems( maps );
+  if ( maps.isEmpty() )
+  {
+    return true;
+  }
+  for ( QList<QgsComposerMap *>::iterator mit = maps.begin(); mit != maps.end(); ++mit )
+  {
+    QgsComposerMap *currentMap = ( *mit );
+    if ( !currentMap->atlasDriven() )
+    {
+      continue;
+    }
+    atlasMaps << currentMap;
+  }
+
+  if ( !atlasMaps.isEmpty() )
+  {
+    //clear the transformed bounds of the previous feature
+    mTransformedFeatureBounds = QgsRectangle();
+
+    // compute extent of current feature in the map CRS. This should be set on a per-atlas map basis,
+    // but given that it's not currently possible to have maps with different CRSes we can just
+    // calculate it once based on the first atlas maps' CRS.
+    computeExtent( atlasMaps[0] );
+  }
+
+  for ( QList<QgsComposerMap *>::iterator mit = maps.begin(); mit != maps.end(); ++mit )
+  {
+    if ( ( *mit )->atlasDriven() )
+    {
+      // map is atlas driven, so update it's bounds (causes a redraw)
+      prepareMap( *mit );
+    }
+    else
+    {
+      // map is not atlas driven, so manually force a redraw (to reflect possibly atlas
+      // dependent symbology)
+      ( *mit )->invalidateCache();
+    }
   }
 #endif
   return true;

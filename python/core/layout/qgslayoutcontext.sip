@@ -90,6 +90,8 @@ Sets the current ``feature`` for evaluating the layout. This feature may
 be used for altering an item's content and appearance for a report
 or atlas layout.
 
+Emits the changed() signal.
+
 .. seealso:: :py:func:`feature()`
 %End
 
@@ -112,6 +114,8 @@ Returns the vector layer associated with the layout's context.
     void setLayer( QgsVectorLayer *layer );
 %Docstring
 Sets the vector ``layer`` associated with the layout's context.
+
+Emits the changed() signal.
 
 .. seealso:: :py:func:`layer()`
 %End
@@ -220,6 +224,12 @@ If ``layer`` is -1, all item layers should be rendered.
 Emitted whenever the context's ``flags`` change.
 
 .. seealso:: :py:func:`setFlags()`
+%End
+
+    void changed();
+%Docstring
+Emitted certain settings in the context is changed, e.g. by setting a new feature or vector layer
+for the context.
 %End
 
 };

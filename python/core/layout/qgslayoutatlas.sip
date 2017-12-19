@@ -8,7 +8,7 @@
 
 
 
-class QgsLayoutAtlas : QObject, QgsLayoutSerializableObject
+class QgsLayoutAtlas : QObject, QgsAbstractLayoutIterator, QgsLayoutSerializableObject
 {
 %Docstring
 Class used to render an Atlas, iterating over geometry features.
@@ -245,7 +245,29 @@ will be set to the expression error.
 .. seealso:: :py:func:`setFilterFeatures()`
 %End
 
+    int updateFeatures();
+%Docstring
+Requeries the current atlas coverage layer and applies filtering and sorting. Returns
+number of matching features.
+%End
+
+    virtual bool beginRender();
+
+    virtual bool endRender();
+
+    virtual int count() const;
+
+
   public slots:
+
+    virtual bool next();
+
+    virtual bool previous();
+
+    virtual bool first();
+
+    virtual bool last();
+
 
   signals:
 
@@ -262,6 +284,26 @@ Emitted when atlas is enabled or disabled.
     void coverageLayerChanged( QgsVectorLayer *layer );
 %Docstring
 Emitted when the coverage layer for the atlas changes.
+%End
+
+    void messagePushed( const QString &message );
+%Docstring
+Is emitted when the atlas has an updated status bar ``message``.
+%End
+
+    void numberFeaturesChanged( int numFeatures );
+%Docstring
+Emitted when the number of features for the atlas changes.
+%End
+
+    void renderBegun();
+%Docstring
+Emitted when atlas rendering has begun.
+%End
+
+    void renderEnded();
+%Docstring
+Emitted when atlas rendering has ended.
 %End
 
 };

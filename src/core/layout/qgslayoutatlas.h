@@ -19,6 +19,7 @@
 #include "qgis_core.h"
 #include "qgsvectorlayerref.h"
 #include "qgslayoutserializableobject.h"
+#include "qgsabstractlayoutiterator.h"
 #include <QObject>
 
 class QgsLayout;
@@ -33,7 +34,7 @@ class QgsLayout;
  * QgsLayoutAtlas which is automatically created and attached to the composition.
  * \since QGIS 3.0
  */
-class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsLayoutSerializableObject
+class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutIterator, public QgsLayoutSerializableObject
 {
     Q_OBJECT
   public:
@@ -217,7 +218,22 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsLayoutSerializableO
      */
     bool setFilterExpression( const QString &expression, QString &errorString SIP_OUT );
 
+    /**
+     * Requeries the current atlas coverage layer and applies filtering and sorting. Returns
+     * number of matching features.
+     */
+    int updateFeatures();
+
+    bool beginRender() override;
+    bool endRender() override;
+    int count() const override;
+
   public slots:
+
+    bool next() override;
+    bool previous() override;
+    bool first() override;
+    bool last() override;
 
   signals:
 
@@ -229,6 +245,20 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsLayoutSerializableO
 
     //! Emitted when the coverage layer for the atlas changes.
     void coverageLayerChanged( QgsVectorLayer *layer );
+
+    //! Is emitted when the atlas has an updated status bar \a message.
+    void messagePushed( const QString &message );
+
+    /**
+     * Emitted when the number of features for the atlas changes.
+     */
+    void numberFeaturesChanged( int numFeatures );
+
+    //! Emitted when atlas rendering has begun.
+    void renderBegun();
+
+    //! Emitted when atlas rendering has ended.
+    void renderEnded();
 
   private slots:
     void removeLayers( const QStringList &layers );
@@ -246,6 +276,13 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsLayoutSerializableO
      * \returns true if feature filename was successfully evaluated
      */
     bool evalFeatureFilename( const QgsExpressionContext &context );
+
+    /**
+     * Prepare the atlas for the given feature. Sets the extent and context variables
+     * \param i feature number
+     * \returns true if feature was successfully prepared
+     */
+    bool prepareForFeature( int i );
 
     QPointer< QgsLayout > mLayout;
 
@@ -273,9 +310,18 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsLayoutSerializableO
 
     QString mFilterParserError;
 
+    // id of each iterated feature (after filtering and sorting) paired with atlas page name
+    QVector< QPair<QgsFeatureId, QString> > mFeatureIds;
+    // current atlas feature number
+    int mCurrentFeatureNo = 0;
+    QgsFeature mCurrentFeature;
+
+    // projected geometry cache
+    mutable QMap<long, QgsGeometry> mGeometryCache;
+
     QgsExpressionContext createExpressionContext();
 
-    friend class AtlasFieldSorter;
+    friend class AtlasFeatureSorter;
 };
 
 #endif //QGSLAYOUTATLAS_H

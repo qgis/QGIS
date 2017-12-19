@@ -69,6 +69,12 @@ QgsRenderContext::Flags QgsLayoutContext::renderContextFlags() const
   return flags;
 }
 
+void QgsLayoutContext::setFeature( const QgsFeature &feature )
+{
+  mFeature = feature;
+  emit changed();
+}
+
 QgsVectorLayer *QgsLayoutContext::layer() const
 {
   return mLayer;
@@ -77,6 +83,7 @@ QgsVectorLayer *QgsLayoutContext::layer() const
 void QgsLayoutContext::setLayer( QgsVectorLayer *layer )
 {
   mLayer = layer;
+  emit changed();
 }
 
 void QgsLayoutContext::setDpi( double dpi )

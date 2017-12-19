@@ -1026,6 +1026,7 @@ SET(QGIS_CORE_HDRS
   composer/qgscomposertexttable.h
   composer/qgspaperitem.h
 
+  layout/qgsabstractlayoutiterator.h
   layout/qgslayoutaligner.h
   layout/qgslayoutexporter.h
   layout/qgslayoutgridsettings.h

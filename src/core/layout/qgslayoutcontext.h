@@ -93,9 +93,12 @@ class CORE_EXPORT QgsLayoutContext : public QObject
      * Sets the current \a feature for evaluating the layout. This feature may
      * be used for altering an item's content and appearance for a report
      * or atlas layout.
+     *
+     * Emits the changed() signal.
+     *
      * \see feature()
      */
-    void setFeature( const QgsFeature &feature ) { mFeature = feature; }
+    void setFeature( const QgsFeature &feature );
 
     /**
      * Returns the current feature for evaluating the layout. This feature may
@@ -113,6 +116,9 @@ class CORE_EXPORT QgsLayoutContext : public QObject
 
     /**
      * Sets the vector \a layer associated with the layout's context.
+     *
+     * Emits the changed() signal.
+     *
      * \see layer()
      */
     void setLayer( QgsVectorLayer *layer );
@@ -218,6 +224,12 @@ class CORE_EXPORT QgsLayoutContext : public QObject
      * \see setFlags()
      */
     void flagsChanged( QgsLayoutContext::Flags flags );
+
+    /**
+     * Emitted certain settings in the context is changed, e.g. by setting a new feature or vector layer
+     * for the context.
+     */
+    void changed();
 
   private:
 
