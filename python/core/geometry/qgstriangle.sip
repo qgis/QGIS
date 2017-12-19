@@ -117,13 +117,13 @@ Returns the three lengths of the triangle.
 :return: Lengths of triangle ABC where [AB] is at 0, [BC] is at 1, [CA] is at 2.
 An empty list is returned for empty triangle.
 * Example:
-\code{.py}
-tri = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ) )
-tri.lengths()
-# [5.0, 5.0, 7.0710678118654755]
-QgsTriangle().lengths()
-# []
-\endcode
+.. code-block:: python
+
+       tri = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ) )
+       tri.lengths()
+       # [5.0, 5.0, 7.0710678118654755]
+       QgsTriangle().lengths()
+       # []
 %End
 
     QVector<double> angles() const;
@@ -133,13 +133,13 @@ Returns the three angles of the triangle.
 :return: Angles in radians of triangle ABC where angle BAC is at 0, angle ABC is at 1, angle BCA is at 2.
 An empty list is returned for empty triangle.
 * Example:
-\code{.py}
-tri = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ) )
-[math.degrees(i) for i in tri.angles()]
-# [45.0, 90.0, 45.0]
-QgsTriangle().angles()
-# []
-\endcode
+.. code-block:: python
+
+       tri = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ) )
+       [math.degrees(i) for i in tri.angles()]
+       # [45.0, 90.0, 45.0]
+       QgsTriangle().angles()
+       # []
 %End
 
     bool isDegenerate();
@@ -148,20 +148,20 @@ Convenient method checking if the geometry is degenerate (have duplicate or coli
 
 :return: True if the triangle is degenerate or empty, otherwise false.
 Example:
-\code{.py}
-tri = QgsTriangle()
-tri.isDegenerate()
-# True
-tri = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ) )
-tri.isDegenerate()
-# False
-tri = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 5, 5 ), QgsPoint( 10, 10 ) )
-tri.isDegenerate()
-# True
-tri = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 0 ), QgsPoint( 5, 5 ) )
-tri.isDegenerate()
-# True
-\endcode
+.. code-block:: python
+
+       tri = QgsTriangle()
+       tri.isDegenerate()
+       # True
+       tri = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ) )
+       tri.isDegenerate()
+       # False
+       tri = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 5, 5 ), QgsPoint( 10, 10 ) )
+       tri.isDegenerate()
+       # True
+       tri = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 0 ), QgsPoint( 5, 5 ) )
+       tri.isDegenerate()
+       # True
 %End
 
     bool isIsocele( double lengthTolerance = 0.0001 ) const;
@@ -172,16 +172,16 @@ Is the triangle isocele (two sides with the same length)?
 
 :return: True or False. Always false for empty triangle.
 * Example:
-\code{.py}
-tri = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ) )
-tri.lengths()
-# [5.0, 5.0, 7.0710678118654755]
-tri.isIsocele()
-# True
-# length of [AB] == length of [BC]
-QgsTriangle().isIsocele()
-# False
-\endcode
+.. code-block:: python
+
+       tri = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ) )
+       tri.lengths()
+       # [5.0, 5.0, 7.0710678118654755]
+       tri.isIsocele()
+       # True
+       # length of [AB] == length of [BC]
+       QgsTriangle().isIsocele()
+       # False
 %End
 
     bool isEquilateral( double lengthTolerance = 0.0001 ) const;
@@ -192,16 +192,16 @@ Is the triangle equilateral (three sides with the same length)?
 
 :return: True or False. Always false for empty triangle.
 * Example:
-\code{.py}
-tri = QgsTriangle( QgsPoint( 10, 10 ), QgsPoint( 16, 10 ), QgsPoint( 13, 15.1962 ) )
-tri.lengths()
-# [6.0, 6.0000412031918575, 6.0000412031918575]
-tri.isEquilateral()
-# True
-# All lengths are close to 6.0
-QgsTriangle().isEquilateral()
-# False
-\endcode
+.. code-block:: python
+
+       tri = QgsTriangle( QgsPoint( 10, 10 ), QgsPoint( 16, 10 ), QgsPoint( 13, 15.1962 ) )
+       tri.lengths()
+       # [6.0, 6.0000412031918575, 6.0000412031918575]
+       tri.isEquilateral()
+       # True
+       # All lengths are close to 6.0
+       QgsTriangle().isEquilateral()
+       # False
 %End
 
     bool isRight( double angleTolerance = 0.0001 ) const;
@@ -212,16 +212,16 @@ Is the triangle right-angled?
 
 :return: True or False. Always false for empty triangle.
 * Example:
-\code{.py}
-tri = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ) )
-[math.degrees(i) for i in tri.angles()]
-# [45.0, 90.0, 45.0]
-tri.isRight()
-# True
-# angle of ABC == 90
-QgsTriangle().isRight()
-# False
-\endcode
+.. code-block:: python
+
+       tri = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ) )
+       [math.degrees(i) for i in tri.angles()]
+       # [45.0, 90.0, 45.0]
+       tri.isRight()
+       # True
+       # angle of ABC == 90
+       QgsTriangle().isRight()
+       # False
 %End
 
     bool isScalene( double lengthTolerance = 0.0001 ) const;
@@ -232,16 +232,16 @@ Is the triangle scalene (all sides have differen lengths)?
 
 :return: True or False. Always false for empty triangle.
 * Example:
-\code{.py}
-tri = QgsTriangle( QgsPoint( 7.2825, 4.2368 ), QgsPoint( 13.0058, 3.3218 ), QgsPoint( 9.2145, 6.5242 ) )
-tri.lengths()
-# [5.795980321740233, 4.962793714229921, 2.994131386562721]
-tri.isScalene()
-# True
-# All lengths are different
-QgsTriangle().isScalene()
-# False
-\endcode
+.. code-block:: python
+
+       tri = QgsTriangle( QgsPoint( 7.2825, 4.2368 ), QgsPoint( 13.0058, 3.3218 ), QgsPoint( 9.2145, 6.5242 ) )
+       tri.lengths()
+       # [5.795980321740233, 4.962793714229921, 2.994131386562721]
+       tri.isScalene()
+       # True
+       # All lengths are different
+       QgsTriangle().isScalene()
+       # False
 %End
 
     QVector<QgsLineString> altitudes() const;
@@ -251,13 +251,13 @@ An altitude is a segment (defined by a :py:class:`QgsLineString`) from a vertex 
 :return: Three altitudes from this triangle.
 An empty list is returned for empty triangle.
 * Example:
-\code{.py}
-tri = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ) )
-[alt.asWkt() for alt in tri.altitudes()]
-# ['LineString (0 0, 0 5)', 'LineString (0 5, 2.5 2.5)', 'LineString (5 5, 0 5)']
-QgsTriangle().altitudes()
-# []
-\endcode
+.. code-block:: python
+
+       tri = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ) )
+       [alt.asWkt() for alt in tri.altitudes()]
+       # ['LineString (0 0, 0 5)', 'LineString (0 5, 2.5 2.5)', 'LineString (5 5, 0 5)']
+       QgsTriangle().altitudes()
+       # []
 %End
 
     QVector<QgsLineString> medians() const;
@@ -267,13 +267,13 @@ A median is a segment (defined by a :py:class:`QgsLineString`) from a vertex to 
 :return: Three medians from this triangle.
 An empty list is returned for empty triangle.
 * Example:
-\code{.py}
-tri = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ) )
-[med.asWkt() for med in tri.medians()]
-# ['LineString (0 0, 2.5 5)', 'LineString (0 5, 2.5 2.5)', 'LineString (5 5, 0 2.5)']
-QgsTriangle().medians()
-# []
-\endcode
+.. code-block:: python
+
+       tri = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ) )
+       [med.asWkt() for med in tri.medians()]
+       # ['LineString (0 0, 2.5 5)', 'LineString (0 5, 2.5 2.5)', 'LineString (5 5, 0 2.5)']
+       QgsTriangle().medians()
+       # []
 %End
 
     QVector<QgsLineString> bisectors( double lengthTolerance = 0.0001 ) const;
@@ -285,13 +285,13 @@ The segment (defined by a :py:class:`QgsLineString`) returned bisect the angle o
 :return: Three angle bisector from this triangle.
 An empty list is returned for empty triangle.
 * Example:
-\code{.py}
-tri = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ) )
-[bis.asWkt() for bis in tri.bisectors()]
-# ['LineString (0 0, 2.07106781186547462 5)', 'LineString (0 5, 2.5 2.5)', 'LineString (5 5, 0 2.92893218813452538)']
-QgsTriangle().bisectors()
-# []
-\endcode
+.. code-block:: python
+
+       tri = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ) )
+       [bis.asWkt() for bis in tri.bisectors()]
+       # ['LineString (0 0, 2.07106781186547462 5)', 'LineString (0 5, 2.5 2.5)', 'LineString (5 5, 0 2.92893218813452538)']
+       QgsTriangle().bisectors()
+       # []
 %End
 
     QgsTriangle medial() const;
@@ -301,13 +301,13 @@ Medial (or midpoint) triangle of a triangle ABC is the triangle with vertices at
 :return: The medial from this triangle.
 An empty triangle is returned for empty triangle.
 * Example:
-\code{.py}
-tri = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ) )
-tri.medial().asWkt()
-# 'Triangle ((0 2.5, 2.5 5, 2.5 2.5, 0 2.5))'
-QgsTriangle().medial().asWkt()
-# 'Triangle ( )'
-\endcode
+.. code-block:: python
+
+       tri = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ) )
+       tri.medial().asWkt()
+       # 'Triangle ((0 2.5, 2.5 5, 2.5 2.5, 0 2.5))'
+       QgsTriangle().medial().asWkt()
+       # 'Triangle ( )'
 %End
 
     QgsPoint orthocenter( double lengthTolerance = 0.0001 ) const;
@@ -319,13 +319,13 @@ An orthocenter is the point of intersection of the altitudes of a triangle.
 :return: The orthocenter of the triangle.
 An empty point is returned for empty triangle.
 * Example:
-\code{.py}
-tri = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ) )
-tri.orthocenter().asWkt()
-# 'Point (0 5)'
-QgsTriangle().orthocenter().asWkt()
-# 'Point (0 0)'
-\endcode
+.. code-block:: python
+
+       tri = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ) )
+       tri.orthocenter().asWkt()
+       # 'Point (0 5)'
+       QgsTriangle().orthocenter().asWkt()
+       # 'Point (0 0)'
 %End
 
     QgsPoint circumscribedCenter() const;
@@ -335,13 +335,13 @@ Center of the circumscribed circle of the triangle.
 :return: The center of the circumscribed circle of the triangle.
 An empty point is returned for empty triangle.
 * Example:
-\code{.py}
-tri = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ) )
-tri.circumscribedCenter().asWkt()
-# 'Point (2.5 2.5)'
-QgsTriangle().circumscribedCenter().asWkt()
-# 'Point (0 0)'
-\endcode
+.. code-block:: python
+
+       tri = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ) )
+       tri.circumscribedCenter().asWkt()
+       # 'Point (2.5 2.5)'
+       QgsTriangle().circumscribedCenter().asWkt()
+       # 'Point (0 0)'
 %End
 
     double circumscribedRadius() const;
@@ -351,13 +351,13 @@ Radius of the circumscribed circle of the triangle.
 :return: The radius of the circumscribed circle of the triangle.
 0.0 is returned for empty triangle.
 * Example:
-\code{.py}
-tri = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ) )
-tri.circumscribedRadius()
-# 3.5355339059327378
-QgsTriangle().circumscribedRadius()
-# 0.0
-\endcode
+.. code-block:: python
+
+       tri = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ) )
+       tri.circumscribedRadius()
+       # 3.5355339059327378
+       QgsTriangle().circumscribedRadius()
+       # 0.0
 %End
 
     QgsCircle circumscribedCircle() const;
@@ -367,13 +367,13 @@ Circumscribed circle of the triangle.
 :return: The circumbscribed of the triangle with a :py:class:`QgsCircle`.
 An empty circle is returned for empty triangle.
 Example:
-\code{.py}
-tri = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ) )
-tri.circumscribedCircle()
-# QgsCircle(Point (2.5 2.5), 3.5355339059327378, 0)
-QgsTriangle().circumscribedCircle()
-# :py:class:`QgsCircle`()
-\endcode
+.. code-block:: python
+
+       tri = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ) )
+       tri.circumscribedCircle()
+       # QgsCircle(Point (2.5 2.5), 3.5355339059327378, 0)
+       QgsTriangle().circumscribedCircle()
+       # QgsCircle()
 %End
 
     QgsPoint inscribedCenter() const;
@@ -383,13 +383,13 @@ Center of the inscribed circle of the triangle.
 :return: The center of the inscribed circle of the triangle.
 An empty point is returned for empty triangle.
 * Example:
-\code{.py}
-tri = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ) )
-tri.inscribedCenter().asWkt()
-# 'Point (1.46446609406726225 3.53553390593273775)'
-QgsTriangle().inscribedCenter().asWkt()
-# 'Point (0 0)'
-\endcode
+.. code-block:: python
+
+       tri = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ) )
+       tri.inscribedCenter().asWkt()
+       # 'Point (1.46446609406726225 3.53553390593273775)'
+       QgsTriangle().inscribedCenter().asWkt()
+       # 'Point (0 0)'
 %End
 
     double inscribedRadius() const;
@@ -399,13 +399,13 @@ Radius of the inscribed circle of the triangle.
 :return: The radius of the inscribed circle of the triangle.
 0.0 is returned for empty triangle.
 * Example:
-\code{.py}
-tri = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ) )
-tri.inscribedRadius()
-# 1.4644660940672622
-QgsTriangle().inscribedRadius()
-# 0.0
-\endcode
+.. code-block:: python
+
+       tri = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ) )
+       tri.inscribedRadius()
+       # 1.4644660940672622
+       QgsTriangle().inscribedRadius()
+       # 0.0
 %End
 
     QgsCircle inscribedCircle() const;
@@ -415,13 +415,13 @@ Inscribed circle of the triangle.
 :return: The inscribed of the triangle with a :py:class:`QgsCircle`.
 An empty circle is returned for empty triangle.
 Example:
-\code{.py}
-tri = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ) )
-tri.inscribedCircle()
-# QgsCircle(Point (1.46446609406726225 3.53553390593273775), 1.4644660940672622, 0)
-QgsTriangle().inscribedCircle()
-# :py:class:`QgsCircle`()
-\endcode
+.. code-block:: python
+
+       tri = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ) )
+       tri.inscribedCircle()
+       # QgsCircle(Point (1.46446609406726225 3.53553390593273775), 1.4644660940672622, 0)
+       QgsTriangle().inscribedCircle()
+       # QgsCircle()
 %End
 
 

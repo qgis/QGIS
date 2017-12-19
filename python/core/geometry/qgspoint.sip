@@ -33,21 +33,21 @@ based on the following rules:
 - If only x and y are specified, the type will be a 2D point.
 - If any or both of the Z and M are specified, the appropriate type will be created.
 
-\code{.py}
-pt = QgsPoint(43.4, 5.3)
-pt.asWkt() # Point(43.4 5.3)
+.. code-block:: python
 
-pt_z = QgsPoint(120, 343, 77)
-pt.asWkt() # PointZ(120 343 77)
+       pt = QgsPoint(43.4, 5.3)
+       pt.asWkt() # Point(43.4 5.3)
 
-pt_m = QgsPoint(33, 88, m=5)
-pt_m.m() # 5
-pt_m.wkbType() # QgsWkbTypes.PointM
-
-pt = QgsPoint(30, 40, wkbType=QgsWkbTypes.PointZ)
-pt.z() # nan
-pt.wkbType() # QgsWkbTypes.PointZ
-\endcode
+       pt_z = QgsPoint(120, 343, 77)
+       pt.asWkt() # PointZ(120 343 77)
+    
+       pt_m = QgsPoint(33, 88, m=5)
+       pt_m.m() # 5
+       pt_m.wkbType() # QgsWkbTypes.PointM
+    
+       pt = QgsPoint(30, 40, wkbType=QgsWkbTypes.PointZ)
+       pt.z() # nan
+       pt.wkbType() # QgsWkbTypes.PointZ
 %End
 %MethodCode
     double z;
@@ -293,22 +293,22 @@ M value is preserved.
 :return: The point projected. If a 2D point is projected a 3D point will be returned except if
 inclination is 90. A 3D point is always returned if a 3D point is projected.
 Example:
-\code{.py}
-p = QgsPoint( 1, 2 ) # 2D point
-pr = p.project ( 1, 0 )
-# pr is a 2D point: 'Point (1 3)'
-pr = p.project ( 1, 0, 90 )
-# pr is a 2D point: 'Point (1 3)'
-pr = p.project (1, 0, 0 )
-# pr is a 3D point: 'PointZ (1 2 1)'
-p = QgsPoint( QgsWkbTypes.PointZ, 1, 2, 2 ) # 3D point
-pr = p.project ( 1, 0 )
-# pr is a 3D point: 'PointZ (1 3 2)'
-pr = p.project ( 1, 0, 90 )
-# pr is a 3D point: 'PointZ (1 3 2)'
-pr = p.project (1, 0, 0 )
-# pr is a 3D point: 'PointZ (1 2 3)'
-\endcode
+.. code-block:: python
+
+       p = QgsPoint( 1, 2 ) # 2D point
+       pr = p.project ( 1, 0 )
+       # pr is a 2D point: 'Point (1 3)'
+       pr = p.project ( 1, 0, 90 )
+       # pr is a 2D point: 'Point (1 3)'
+       pr = p.project (1, 0, 0 )
+       # pr is a 3D point: 'PointZ (1 2 1)'
+       p = QgsPoint( QgsWkbTypes.PointZ, 1, 2, 2 ) # 3D point
+       pr = p.project ( 1, 0 )
+       # pr is a 3D point: 'PointZ (1 3 2)'
+       pr = p.project ( 1, 0, 90 )
+       # pr is a 3D point: 'PointZ (1 3 2)'
+       pr = p.project (1, 0, 0 )
+       # pr is a 3D point: 'PointZ (1 2 3)'
 
 .. versionadded:: 3.0
 %End

@@ -127,11 +127,11 @@ EditorLayout.GeneratedLayout.
 Set the editor widget config for a widget which is not for a simple field.
 
 Example:
-\code{.py}
-editFormConfig = layer.editFormConfig()
-editFormConfig.setWidgetConfig( 'relation_id', { 'nm-rel': 'other_relation' } )
-layer.setEditFormConfig(editFormConfig)
-\endcode
+.. code-block:: python
+
+       editFormConfig = layer.editFormConfig()
+       editFormConfig.setWidgetConfig( 'relation_id', { 'nm-rel': 'other_relation' } )
+       layer.setEditFormConfig(editFormConfig)
 
 :param widgetName:  The name of the widget to configure
 :param config:      The config to set for this widget

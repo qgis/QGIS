@@ -18,14 +18,6 @@ A generic dialog to prompt the user for a Coordinate Reference System.
 Typically you will use this when you want to prompt the user for
 a coordinate system identifier e.g. from a plugin you might do this
 to get an epsg code:
-\code
-QgsProjectionSelectionDialog mySelector( mQGisIface->mainWindow() );
-mySelector.setCrs( crs );
-if ( mySelector.exec() )
-{
-mCrs = mySelector.crs();
-}
-\endcode
 
 If you wish to embed the projection selector into an existing dialog
 the you probably want to look at QgsProjectionSelectionWidget instead.
