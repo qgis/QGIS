@@ -453,13 +453,29 @@ class TestQgsLayoutExporter(unittest.TestCase):
         self.assertTrue(os.path.exists(svg_file_path_2))
 
         rendered_page_1 = os.path.join(self.basetestpath, 'test_exporttosvgdpi.png')
-        dpi = 80
         svgToPng(svg_file_path, rendered_page_1, width=936)
         rendered_page_2 = os.path.join(self.basetestpath, 'test_exporttosvgdpi2.png')
         svgToPng(svg_file_path_2, rendered_page_2, width=467)
 
         self.assertTrue(self.checkImage('exporttosvgdpi_page1', 'exporttopdfdpi_page1', rendered_page_1, size_tolerance=1))
         self.assertTrue(self.checkImage('exporttosvgdpi_page2', 'exporttopdfdpi_page2', rendered_page_2, size_tolerance=1))
+
+        # layered
+        settings.exportAsLayers = True
+
+        svg_file_path = os.path.join(self.basetestpath, 'test_exporttosvglayered.svg')
+        svg_file_path_2 = os.path.join(self.basetestpath, 'test_exporttosvglayered_2.svg')
+        self.assertEqual(exporter.exportToSvg(svg_file_path, settings), QgsLayoutExporter.Success)
+        self.assertTrue(os.path.exists(svg_file_path))
+        self.assertTrue(os.path.exists(svg_file_path_2))
+
+        rendered_page_1 = os.path.join(self.basetestpath, 'test_exporttosvglayered.png')
+        svgToPng(svg_file_path, rendered_page_1, width=936)
+        rendered_page_2 = os.path.join(self.basetestpath, 'test_exporttosvglayered2.png')
+        svgToPng(svg_file_path_2, rendered_page_2, width=467)
+
+        self.assertTrue(self.checkImage('exporttosvglayered_page1', 'exporttopdfdpi_page1', rendered_page_1, size_tolerance=1))
+        self.assertTrue(self.checkImage('exporttosvglayered_page2', 'exporttopdfdpi_page2', rendered_page_2, size_tolerance=1))
 
     def testExportWorldFile(self):
         l = QgsLayout(QgsProject.instance())

@@ -1542,6 +1542,8 @@ void QgsLayoutDesignerDialog::exportToRaster()
       break;
 
     case QgsLayoutExporter::PrintError:
+    case QgsLayoutExporter::SvgLayerError:
+      // no meaning for raster exports, will not be encountered
       break;
 
     case QgsLayoutExporter::FileError:
@@ -1668,6 +1670,10 @@ void QgsLayoutDesignerDialog::exportToPdf()
                                 "Please try a lower resolution or a smaller paper size." ),
                             QMessageBox::Ok, QMessageBox::Ok );
       break;
+
+    case QgsLayoutExporter::SvgLayerError:
+      // no meaning for PDF exports, will not be encountered
+      break;
   }
 
   mView->setPaintingEnabled( true );
@@ -1775,6 +1781,7 @@ void QgsLayoutDesignerDialog::exportToSvg()
   svgSettings.cropToContents = clipToContent;
   svgSettings.cropMargins = QgsMargins( marginLeft, marginTop, marginRight, marginBottom );
   svgSettings.forceVectorOutput = options.mForceVectorCheckBox->isChecked();
+  svgSettings.exportAsLayers = groupLayers;
 
   // force a refresh, to e.g. update data defined properties, tables, etc
   mLayout->refresh();
@@ -1794,6 +1801,13 @@ void QgsLayoutDesignerDialog::exportToSvg()
     case QgsLayoutExporter::FileError:
       QMessageBox::warning( this, tr( "Export to SVG" ),
                             tr( "Cannot write to %1.\n\nThis file may be open in another application." ).arg( outputFileName ),
+                            QMessageBox::Ok,
+                            QMessageBox::Ok );
+      break;
+
+    case QgsLayoutExporter::SvgLayerError:
+      QMessageBox::warning( this, tr( "Export to SVG" ),
+                            tr( "Cannot create layered SVG file %1." ).arg( outputFileName ),
                             QMessageBox::Ok,
                             QMessageBox::Ok );
       break;

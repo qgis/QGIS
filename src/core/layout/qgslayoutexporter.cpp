@@ -78,6 +78,39 @@ class LayoutGuideHider
     QHash< QgsLayoutGuide *, bool > mPrevVisibility;
 };
 
+class LayoutItemHider
+{
+  public:
+    explicit LayoutItemHider( const QList<QGraphicsItem *> &items )
+    {
+      for ( QGraphicsItem *item : items )
+      {
+        mPrevVisibility[item] = item->isVisible();
+        item->hide();
+      }
+    }
+
+    void hideAll()
+    {
+      for ( auto it = mPrevVisibility.constBegin(); it != mPrevVisibility.constEnd(); ++it )
+      {
+        it.key()->hide();
+      }
+    }
+
+    ~LayoutItemHider()
+    {
+      for ( auto it = mPrevVisibility.constBegin(); it != mPrevVisibility.constEnd(); ++it )
+      {
+        it.key()->setVisible( it.value() );
+      }
+    }
+
+  private:
+
+    QHash<QGraphicsItem *, bool> mPrevVisibility;
+};
+
 ///@endcond PRIVATE
 
 QgsLayoutExporter::QgsLayoutExporter( QgsLayout *layout )
@@ -240,6 +273,7 @@ class LayoutContextSettingsRestorer
       : mLayout( layout )
       , mPreviousDpi( layout->context().dpi() )
       , mPreviousFlags( layout->context().flags() )
+      , mPreviousExportLayer( layout->context().currentExportLayer() )
     {
     }
 
@@ -247,12 +281,14 @@ class LayoutContextSettingsRestorer
     {
       mLayout->context().setDpi( mPreviousDpi );
       mLayout->context().setFlags( mPreviousFlags );
+      mLayout->context().setCurrentExportLayer( mPreviousExportLayer );
     }
 
   private:
     QgsLayout *mLayout = nullptr;
     double mPreviousDpi = 0;
     QgsLayoutContext::Flags mPreviousFlags = 0;
+    int mPreviousExportLayer = 0;
 };
 ///@endcond PRIVATE
 
@@ -439,10 +475,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToSvg( const QString &f
     pageDetails.page = i;
     QString fileName = generateFileName( pageDetails );
 
-    QSvgGenerator generator;
-    generator.setTitle( mLayout->project()->title() );
-    generator.setFileName( fileName );
-
+    QgsLayoutItemPage *pageItem = mLayout->pageCollection()->page( i );
     QRectF bounds;
     if ( settings.cropToContents )
     {
@@ -463,7 +496,6 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToSvg( const QString &f
     }
     else
     {
-      QgsLayoutItemPage *pageItem = mLayout->pageCollection()->page( i );
       bounds = QRectF( pageItem->pos().x(), pageItem->pos().y(), pageItem->rect().width(), pageItem->rect().height() );
     }
 
@@ -476,24 +508,98 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToSvg( const QString &f
       //invalid size, skip this page
       continue;
     }
-    generator.setSize( QSize( width, height ) );
-    generator.setViewBox( QRect( 0, 0, width, height ) );
-    generator.setResolution( settings.dpi );
 
-    QPainter p;
-    bool createOk = p.begin( &generator );
-    if ( !createOk )
+    if ( settings.exportAsLayers )
     {
-      mErrorFileName = fileName;
-      return FileError;
+      const QRectF paperRect = QRectF( pageItem->pos().x(),
+                                       pageItem->pos().y(),
+                                       pageItem->rect().width(),
+                                       pageItem->rect().height() );
+      QDomDocument svg;
+      QDomNode svgDocRoot;
+      const QList<QGraphicsItem *> items = mLayout->items( paperRect,
+                                           Qt::IntersectsItemBoundingRect,
+                                           Qt::AscendingOrder );
+
+      LayoutItemHider itemHider( items );
+      ( void )itemHider;
+
+      int layoutItemLayerIdx = 0;
+      auto it = items.constBegin();
+      for ( unsigned svgLayerId = 1; it != items.constEnd(); ++svgLayerId )
+      {
+        itemHider.hideAll();
+        QgsLayoutItem *layoutItem = dynamic_cast<QgsLayoutItem *>( *it );
+        QString layerName = QObject::tr( "Layer %1" ).arg( svgLayerId );
+        if ( layoutItem && layoutItem->numberExportLayers() > 0 )
+        {
+          layoutItem->show();
+          mLayout->context().setCurrentExportLayer( layoutItemLayerIdx );
+          ++layoutItemLayerIdx;
+        }
+        else
+        {
+          // show all items until the next item that renders on a separate layer
+          for ( ; it != items.constEnd(); ++it )
+          {
+            layoutItem = dynamic_cast<QgsLayoutItem *>( *it );
+            if ( layoutItem && layoutItem->numberExportLayers() > 0 )
+            {
+              break;
+            }
+            else
+            {
+              ( *it )->show();
+            }
+          }
+        }
+
+        ExportResult result = renderToLayeredSvg( settings, width, height, i, bounds, fileName, svgLayerId, layerName, svg, svgDocRoot );
+        if ( result != Success )
+          return result;
+
+        if ( layoutItem && layoutItem->numberExportLayers() > 0 && layoutItem->numberExportLayers() == layoutItemLayerIdx ) // restore and pass to next item
+        {
+          mLayout->context().setCurrentExportLayer( -1 );
+          layoutItemLayerIdx = 0;
+          ++it;
+        }
+      }
+
+      QFile out( fileName );
+      bool openOk = out.open( QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate );
+      if ( !openOk )
+      {
+        mErrorFileName = fileName;
+        return FileError;
+      }
+
+      out.write( svg.toByteArray() );
     }
-
-    if ( settings.cropToContents )
-      renderRegion( &p, bounds );
     else
-      renderPage( &p, i );
+    {
+      QSvgGenerator generator;
+      generator.setTitle( mLayout->project()->title() );
+      generator.setFileName( fileName );
+      generator.setSize( QSize( width, height ) );
+      generator.setViewBox( QRect( 0, 0, width, height ) );
+      generator.setResolution( settings.dpi );
 
-    p.end();
+      QPainter p;
+      bool createOk = p.begin( &generator );
+      if ( !createOk )
+      {
+        mErrorFileName = fileName;
+        return FileError;
+      }
+
+      if ( settings.cropToContents )
+        renderRegion( &p, bounds );
+      else
+        renderPage( &p, i );
+
+      p.end();
+    }
   }
 
   return Success;
@@ -620,6 +726,57 @@ void QgsLayoutExporter::updatePrinterPageSize( QPrinter &printer, int page )
   QgsLayoutSize pageSize = mLayout->pageCollection()->page( page )->sizeWithUnits();
   QgsLayoutSize pageSizeMM = mLayout->context().measurementConverter().convert( pageSize, QgsUnitTypes::LayoutMillimeters );
   printer.setPaperSize( pageSizeMM.toQSizeF(), QPrinter::Millimeter );
+}
+
+QgsLayoutExporter::ExportResult QgsLayoutExporter::renderToLayeredSvg( const SvgExportSettings &settings, double width, double height, int page, QRectF bounds, const QString &filename, int svgLayerId, const QString &layerName, QDomDocument &svg, QDomNode &svgDocRoot ) const
+{
+  QBuffer svgBuffer;
+  {
+    QSvgGenerator generator;
+    generator.setTitle( mLayout->name() );
+    generator.setOutputDevice( &svgBuffer );
+    generator.setSize( QSize( width, height ) );
+    generator.setViewBox( QRect( 0, 0, width, height ) );
+    generator.setResolution( settings.dpi ); //because the rendering is done in mm, convert the dpi
+
+    QPainter svgPainter( &generator );
+    if ( settings.cropToContents )
+      renderRegion( &svgPainter, bounds );
+    else
+      renderPage( &svgPainter, page );
+  }
+
+  // post-process svg output to create groups in a single svg file
+  // we create inkscape layers since it's nice and clean and free
+  // and fully svg compatible
+  {
+    svgBuffer.close();
+    svgBuffer.open( QIODevice::ReadOnly );
+    QDomDocument doc;
+    QString errorMsg;
+    int errorLine;
+    if ( ! doc.setContent( &svgBuffer, false, &errorMsg, &errorLine ) )
+    {
+      mErrorFileName = filename;
+      return SvgLayerError;
+    }
+    if ( 1 == svgLayerId )
+    {
+      svg = QDomDocument( doc.doctype() );
+      svg.appendChild( svg.importNode( doc.firstChild(), false ) );
+      svgDocRoot = svg.importNode( doc.elementsByTagName( QStringLiteral( "svg" ) ).at( 0 ), false );
+      svgDocRoot.toElement().setAttribute( QStringLiteral( "xmlns:inkscape" ), QStringLiteral( "http://www.inkscape.org/namespaces/inkscape" ) );
+      svg.appendChild( svgDocRoot );
+    }
+    QDomNode mainGroup = svg.importNode( doc.elementsByTagName( QStringLiteral( "g" ) ).at( 0 ), true );
+    mainGroup.toElement().setAttribute( QStringLiteral( "id" ), layerName );
+    mainGroup.toElement().setAttribute( QStringLiteral( "inkscape:label" ), layerName );
+    mainGroup.toElement().setAttribute( QStringLiteral( "inkscape:groupmode" ), QStringLiteral( "layer" ) );
+    QDomNode defs = svg.importNode( doc.elementsByTagName( QStringLiteral( "defs" ) ).at( 0 ), true );
+    svgDocRoot.appendChild( defs );
+    svgDocRoot.appendChild( mainGroup );
+  }
+  return Success;
 }
 
 std::unique_ptr<double[]> QgsLayoutExporter::computeGeoTransform( const QgsLayoutItemMap *map, const QRectF &region, double dpi ) const

@@ -123,6 +123,7 @@ Returns the rendered image, or a null QImage if the image does not fit into avai
       MemoryError,
       FileError,
       PrintError,
+      SvgLayerError,
     };
 
     struct ImageExportSettings
@@ -272,6 +273,13 @@ containing items are exported.
 %Docstring
 Crop to content margins, in layout units. These margins will be added
 to the bounds of the exported layout if cropToContents is true.
+%End
+
+      bool exportAsLayers;
+%Docstring
+Set to true to export as a layered SVG file.
+Note that this option is considered experimental, and the generated
+SVG may differ from the expected appearance of the layout.
 %End
 
       QgsLayoutContext::Flags flags;

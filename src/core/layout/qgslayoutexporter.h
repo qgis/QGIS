@@ -132,6 +132,7 @@ class CORE_EXPORT QgsLayoutExporter
       MemoryError, //!< Unable to allocate memory required to export
       FileError, //!< Could not write to destination file, likely due to a lock held by another application
       PrintError, //!< Could not start printing to destination device
+      SvgLayerError, //!< Could not create layered SVG file
     };
 
     //! Contains settings relating to exporting layouts to raster images
@@ -281,6 +282,13 @@ class CORE_EXPORT QgsLayoutExporter
       QgsMargins cropMargins;
 
       /**
+       * Set to true to export as a layered SVG file.
+       * Note that this option is considered experimental, and the generated
+       * SVG may differ from the expected appearance of the layout.
+       */
+      bool exportAsLayers = false;
+
+      /**
        * Layout context flags, which control how the export will be created.
        */
       QgsLayoutContext::Flags flags = 0;
@@ -347,7 +355,7 @@ class CORE_EXPORT QgsLayoutExporter
 
     QPointer< QgsLayout > mLayout;
 
-    QString mErrorFileName;
+    mutable QString mErrorFileName;
 
     QImage createImage( const ImageExportSettings &settings, int page, QRectF &bounds, bool &skipPage ) const;
 
@@ -397,6 +405,10 @@ class CORE_EXPORT QgsLayoutExporter
     ExportResult printPrivate( QPrinter &printer, QPainter &painter, bool startNewPage = false, double dpi = -1, bool rasterize = false );
 
     void updatePrinterPageSize( QPrinter &printer, int page );
+
+    ExportResult renderToLayeredSvg( const SvgExportSettings &settings, double width, double height, int page, QRectF bounds,
+                                     const QString &filename, int svgLayerId, const QString &layerName,
+                                     QDomDocument &svg, QDomNode &svgDocRoot ) const;
 
     friend class TestQgsLayout;
 
