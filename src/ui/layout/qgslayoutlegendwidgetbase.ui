@@ -183,6 +183,9 @@
            <layout class="QHBoxLayout" name="horizontalLayout">
             <item>
              <widget class="QCheckBox" name="mCheckBoxAutoUpdate">
+              <property name="toolTip">
+               <string>Keeps the legend contents synchronized with the main application legend. Customisation is not possible and must be done in the main application.</string>
+              </property>
               <property name="text">
                <string>Auto update</string>
               </property>
@@ -1047,21 +1050,9 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>QgsScrollArea</class>
-   <extends>QScrollArea</extends>
-   <header>qgsscrollarea.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbutton.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsCollapsibleGroupBoxBasic</class>
    <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
+   <header location="global">qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -1070,9 +1061,10 @@
    <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsFontButton</class>
-   <extends>QToolButton</extends>
-   <header>qgsfontbutton.h</header>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsSpinBox</class>
@@ -1083,6 +1075,17 @@
    <class>QgsLayoutItemComboBox</class>
    <extends>QComboBox</extends>
    <header>qgslayoutitemcombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsFontButton</class>
+   <extends>QToolButton</extends>
+   <header>qgsfontbutton.h</header>
   </customwidget>
   <customwidget>
    <class>QgsPropertyOverrideButton</class>

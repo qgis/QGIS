@@ -132,6 +132,7 @@ class CORE_EXPORT QgsLayoutExporter
       MemoryError, //!< Unable to allocate memory required to export
       FileError, //!< Could not write to destination file, likely due to a lock held by another application
       PrintError, //!< Could not start printing to destination device
+      SvgLayerError, //!< Could not create layered SVG file
     };
 
     //! Contains settings relating to exporting layouts to raster images
@@ -247,6 +248,61 @@ class CORE_EXPORT QgsLayoutExporter
      */
     ExportResult exportToPdf( const QString &filePath, const QgsLayoutExporter::PdfExportSettings &settings );
 
+
+    //! Contains settings relating to exporting layouts to SVG
+    struct SvgExportSettings
+    {
+      //! Constructor for SvgExportSettings
+      SvgExportSettings()
+        : flags( QgsLayoutContext::FlagAntialiasing | QgsLayoutContext::FlagUseAdvancedEffects )
+      {}
+
+      //! Resolution to export layout at. If dpi <= 0 the default layout dpi will be used.
+      double dpi = -1;
+
+      /**
+       * Set to true to force vector object exports, even when the resultant appearance will differ
+       * from the layout. If false, some items may be rasterized in order to maintain their
+       * correct appearance in the output.
+       *
+       * This option is mutually exclusive with rasterizeWholeImage.
+       */
+      bool forceVectorOutput = false;
+
+      /**
+       * Set to true if image should be cropped so only parts of the layout
+       * containing items are exported.
+       */
+      bool cropToContents = false;
+
+      /**
+       * Crop to content margins, in layout units. These margins will be added
+       * to the bounds of the exported layout if cropToContents is true.
+       */
+      QgsMargins cropMargins;
+
+      /**
+       * Set to true to export as a layered SVG file.
+       * Note that this option is considered experimental, and the generated
+       * SVG may differ from the expected appearance of the layout.
+       */
+      bool exportAsLayers = false;
+
+      /**
+       * Layout context flags, which control how the export will be created.
+       */
+      QgsLayoutContext::Flags flags = 0;
+
+    };
+
+    /**
+     * Exports the layout as an SVG to the a \a filePath, using the specified export \a settings.
+     *
+     * Returns a result code indicating whether the export was successful or an
+     * error was encountered.
+     */
+    ExportResult exportToSvg( const QString &filePath, const QgsLayoutExporter::SvgExportSettings &settings );
+
     /**
      * Returns the file name corresponding to the last error encountered during
      * an export.
@@ -299,7 +355,7 @@ class CORE_EXPORT QgsLayoutExporter
 
     QPointer< QgsLayout > mLayout;
 
-    QString mErrorFileName;
+    mutable QString mErrorFileName;
 
     QImage createImage( const ImageExportSettings &settings, int page, QRectF &bounds, bool &skipPage ) const;
 
@@ -349,6 +405,10 @@ class CORE_EXPORT QgsLayoutExporter
     ExportResult printPrivate( QPrinter &printer, QPainter &painter, bool startNewPage = false, double dpi = -1, bool rasterize = false );
 
     void updatePrinterPageSize( QPrinter &printer, int page );
+
+    ExportResult renderToLayeredSvg( const SvgExportSettings &settings, double width, double height, int page, QRectF bounds,
+                                     const QString &filename, int svgLayerId, const QString &layerName,
+                                     QDomDocument &svg, QDomNode &svgDocRoot ) const;
 
     friend class TestQgsLayout;
 

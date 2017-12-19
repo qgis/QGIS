@@ -40,12 +40,11 @@ QgsLayoutGuideWidget::QgsLayoutGuideWidget( QWidget *parent, QgsLayout *layout, 
   mHozGuidesTableView->setEditTriggers( QAbstractItemView::AllEditTriggers );
   mVertGuidesTableView->setEditTriggers( QAbstractItemView::AllEditTriggers );
 
+  mHozGuidesTableView->setItemDelegateForColumn( 0, new QgsLayoutGuidePositionDelegate( mHozGuidesTableView ) );
+  mHozGuidesTableView->setItemDelegateForColumn( 1, new QgsLayoutGuideUnitDelegate( mHozGuidesTableView ) );
 
-  mHozGuidesTableView->setItemDelegateForColumn( 0, new QgsLayoutGuidePositionDelegate( mHozGuidesTableView, mLayout, mHozProxyModel ) );
-  mHozGuidesTableView->setItemDelegateForColumn( 1, new QgsLayoutGuideUnitDelegate( mHozGuidesTableView, mLayout, mHozProxyModel ) );
-
-  mVertGuidesTableView->setItemDelegateForColumn( 0, new QgsLayoutGuidePositionDelegate( mVertGuidesTableView, mLayout, mVertProxyModel ) );
-  mVertGuidesTableView->setItemDelegateForColumn( 1, new QgsLayoutGuideUnitDelegate( mVertGuidesTableView, mLayout, mVertProxyModel ) );
+  mVertGuidesTableView->setItemDelegateForColumn( 0, new QgsLayoutGuidePositionDelegate( mVertGuidesTableView ) );
+  mVertGuidesTableView->setItemDelegateForColumn( 1, new QgsLayoutGuideUnitDelegate( mVertGuidesTableView ) );
 
   connect( mAddHozGuideButton, &QPushButton::clicked, this, &QgsLayoutGuideWidget::addHorizontalGuide );
   connect( mAddVertGuideButton, &QPushButton::clicked, this, &QgsLayoutGuideWidget::addVerticalGuide );
@@ -141,25 +140,23 @@ void QgsLayoutGuideWidget::applyToAll()
 }
 
 
-QgsLayoutGuidePositionDelegate::QgsLayoutGuidePositionDelegate( QObject *parent, QgsLayout *layout, QAbstractItemModel *model )
+QgsLayoutGuidePositionDelegate::QgsLayoutGuidePositionDelegate( QObject *parent )
   : QStyledItemDelegate( parent )
-  , mLayout( layout )
-  , mModel( model )
 {
 
 }
 
-QWidget *QgsLayoutGuidePositionDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &, const QModelIndex &index ) const
+QWidget *QgsLayoutGuidePositionDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &, const QModelIndex & ) const
 {
   QgsDoubleSpinBox *spin = new QgsDoubleSpinBox( parent );
   spin->setMinimum( 0 );
   spin->setMaximum( 1000000 );
   spin->setDecimals( 2 );
   spin->setShowClearButton( false );
-  connect( spin, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, [ = ]( double v )
+  connect( spin, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, [ = ]( double )
   {
     // we want to update on every spin change, not just the final
-    setModelData( index, v, QgsLayoutGuideCollection::PositionRole );
+    const_cast< QgsLayoutGuidePositionDelegate * >( this )->emit commitData( spin );
   } );
   return spin;
 }
@@ -170,26 +167,18 @@ void QgsLayoutGuidePositionDelegate::setModelData( QWidget *editor, QAbstractIte
   model->setData( index, spin->value(), QgsLayoutGuideCollection::PositionRole );
 }
 
-void QgsLayoutGuidePositionDelegate::setModelData( const QModelIndex &index, const QVariant &value, int role ) const
-{
-  mModel->setData( index, value, role );
-}
-
-QgsLayoutGuideUnitDelegate::QgsLayoutGuideUnitDelegate( QObject *parent, QgsLayout *layout, QAbstractItemModel *model )
+QgsLayoutGuideUnitDelegate::QgsLayoutGuideUnitDelegate( QObject *parent )
   : QStyledItemDelegate( parent )
-  , mLayout( layout )
-  , mModel( model )
 {
-
 }
 
-QWidget *QgsLayoutGuideUnitDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &, const QModelIndex &index ) const
+QWidget *QgsLayoutGuideUnitDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &, const QModelIndex & ) const
 {
   QgsLayoutUnitsComboBox *unitsCb = new QgsLayoutUnitsComboBox( parent );
-  connect( unitsCb, &QgsLayoutUnitsComboBox::changed, this, [ = ]( int unit )
+  connect( unitsCb, &QgsLayoutUnitsComboBox::changed, this, [ = ]( int )
   {
     // we want to update on every unit change, not just the final
-    setModelData( index, unit, QgsLayoutGuideCollection::UnitsRole );
+    const_cast< QgsLayoutGuideUnitDelegate * >( this )->emit commitData( unitsCb );
   } );
   return unitsCb;
 }
@@ -200,7 +189,3 @@ void QgsLayoutGuideUnitDelegate::setModelData( QWidget *editor, QAbstractItemMod
   model->setData( index, cb->unit(), QgsLayoutGuideCollection::UnitsRole );
 }
 
-void QgsLayoutGuideUnitDelegate::setModelData( const QModelIndex &index, const QVariant &value, int role ) const
-{
-  mModel->setData( index, value, role );
-}

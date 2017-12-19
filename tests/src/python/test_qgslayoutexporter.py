@@ -36,6 +36,7 @@ from qgis.core import (QgsMultiRenderChecker,
                        QgsFillSymbol)
 from qgis.PyQt.QtCore import QSize, QSizeF, QDir, QRectF, Qt
 from qgis.PyQt.QtGui import QImage, QPainter
+from qgis.PyQt.QtSvg import QSvgRenderer, QSvgGenerator
 
 from qgis.testing import start_app, unittest
 
@@ -89,6 +90,24 @@ def pdfToPng(pdf_file_path, rendered_file_path, page, dpi=96):
                        "cmd: {0}\n"
                        "returncode: {1}\n"
                        "message: {2}".format(e.cmd, e.returncode, e.message))
+
+
+def svgToPng(svg_file_path, rendered_file_path, width):
+    svgr = QSvgRenderer(svg_file_path)
+
+    height = width / svgr.viewBoxF().width() * svgr.viewBoxF().height()
+
+    image = QImage(width, height, QImage.Format_ARGB32)
+    image.fill(Qt.transparent)
+
+    p = QPainter(image)
+    p.setRenderHint(QPainter.Antialiasing, False)
+    svgr.render(p)
+    p.end()
+
+    res = image.save(rendered_file_path, 'png')
+    if not res:
+        os.unlink(rendered_file_path)
 
 
 start_app()
@@ -389,6 +408,74 @@ class TestQgsLayoutExporter(unittest.TestCase):
 
         self.assertTrue(self.checkImage('exporttopdfdpi_page1', 'exporttopdfdpi_page1', rendered_page_1, size_tolerance=1))
         self.assertTrue(self.checkImage('exporttopdfdpi_page2', 'exporttopdfdpi_page2', rendered_page_2, size_tolerance=1))
+
+    def testExportToSvg(self):
+        l = QgsLayout(QgsProject.instance())
+        l.initializeDefaults()
+
+        # add a second page
+        page2 = QgsLayoutItemPage(l)
+        page2.setPageSize('A5')
+        l.pageCollection().addPage(page2)
+
+        # add some items
+        item1 = QgsLayoutItemShape(l)
+        item1.attemptSetSceneRect(QRectF(10, 20, 100, 150))
+        fill = QgsSimpleFillSymbolLayer()
+        fill_symbol = QgsFillSymbol()
+        fill_symbol.changeSymbolLayer(0, fill)
+        fill.setColor(Qt.green)
+        fill.setStrokeStyle(Qt.NoPen)
+        item1.setSymbol(fill_symbol)
+        l.addItem(item1)
+
+        item2 = QgsLayoutItemShape(l)
+        item2.attemptSetSceneRect(QRectF(10, 20, 100, 150))
+        item2.attemptMove(QgsLayoutPoint(10, 20), page=1)
+        fill = QgsSimpleFillSymbolLayer()
+        fill_symbol = QgsFillSymbol()
+        fill_symbol.changeSymbolLayer(0, fill)
+        fill.setColor(Qt.cyan)
+        fill.setStrokeStyle(Qt.NoPen)
+        item2.setSymbol(fill_symbol)
+        l.addItem(item2)
+
+        exporter = QgsLayoutExporter(l)
+        # setup settings
+        settings = QgsLayoutExporter.SvgExportSettings()
+        settings.dpi = 80
+        settings.forceVectorOutput = False
+
+        svg_file_path = os.path.join(self.basetestpath, 'test_exporttosvgdpi.svg')
+        svg_file_path_2 = os.path.join(self.basetestpath, 'test_exporttosvgdpi_2.svg')
+        self.assertEqual(exporter.exportToSvg(svg_file_path, settings), QgsLayoutExporter.Success)
+        self.assertTrue(os.path.exists(svg_file_path))
+        self.assertTrue(os.path.exists(svg_file_path_2))
+
+        rendered_page_1 = os.path.join(self.basetestpath, 'test_exporttosvgdpi.png')
+        svgToPng(svg_file_path, rendered_page_1, width=936)
+        rendered_page_2 = os.path.join(self.basetestpath, 'test_exporttosvgdpi2.png')
+        svgToPng(svg_file_path_2, rendered_page_2, width=467)
+
+        self.assertTrue(self.checkImage('exporttosvgdpi_page1', 'exporttopdfdpi_page1', rendered_page_1, size_tolerance=1))
+        self.assertTrue(self.checkImage('exporttosvgdpi_page2', 'exporttopdfdpi_page2', rendered_page_2, size_tolerance=1))
+
+        # layered
+        settings.exportAsLayers = True
+
+        svg_file_path = os.path.join(self.basetestpath, 'test_exporttosvglayered.svg')
+        svg_file_path_2 = os.path.join(self.basetestpath, 'test_exporttosvglayered_2.svg')
+        self.assertEqual(exporter.exportToSvg(svg_file_path, settings), QgsLayoutExporter.Success)
+        self.assertTrue(os.path.exists(svg_file_path))
+        self.assertTrue(os.path.exists(svg_file_path_2))
+
+        rendered_page_1 = os.path.join(self.basetestpath, 'test_exporttosvglayered.png')
+        svgToPng(svg_file_path, rendered_page_1, width=936)
+        rendered_page_2 = os.path.join(self.basetestpath, 'test_exporttosvglayered2.png')
+        svgToPng(svg_file_path_2, rendered_page_2, width=467)
+
+        self.assertTrue(self.checkImage('exporttosvglayered_page1', 'exporttopdfdpi_page1', rendered_page_1, size_tolerance=1))
+        self.assertTrue(self.checkImage('exporttosvglayered_page2', 'exporttopdfdpi_page2', rendered_page_2, size_tolerance=1))
 
     def testExportWorldFile(self):
         l = QgsLayout(QgsProject.instance())

@@ -140,11 +140,11 @@ void QgsLayoutGuide::setLayoutPosition( double position )
   switch ( mOrientation )
   {
     case Qt::Horizontal:
-      p = mLineItem->mapFromScene( QPointF( 0, position ) ).y();
+      p = mPage->mapFromScene( QPointF( 0, position ) ).y();
       break;
 
     case Qt::Vertical:
-      p = mLineItem->mapFromScene( QPointF( position, 0 ) ).x();
+      p = mPage->mapFromScene( QPointF( position, 0 ) ).x();
       break;
   }
   mPosition = mLayout->convertFromLayoutUnits( p, mPosition.units() );
@@ -299,6 +299,9 @@ bool QgsLayoutGuideCollection::setData( const QModelIndex &index, const QVariant
         return false;
 
       QgsLayoutMeasurement m = guide->position();
+      if ( m.length() == newPos )
+        return true;
+
       m.setLength( newPos );
       mLayout->undoStack()->beginCommand( mPageCollection, tr( "Move Guide" ), Move + index.row() );
       whileBlocking( guide )->setPosition( m );

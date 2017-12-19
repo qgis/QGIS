@@ -66,6 +66,14 @@ will be returned unchanged.
 
 .. seealso:: :py:func:`ensureFileNameHasExtension()`
 %End
+
+    static QString stringToSafeFilename( const QString &string );
+%Docstring
+Converts a ``string`` to a safe filename, replacing characters which are not safe
+for filenames with an '_' character.
+
+This method should be called with file names only, not complete paths.
+%End
 };
 
 /************************************************************************

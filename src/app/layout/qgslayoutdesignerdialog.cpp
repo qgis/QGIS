@@ -19,6 +19,7 @@
 #include "qgslayoutitemregistry.h"
 #include "qgssettings.h"
 #include "qgisapp.h"
+#include "qgsfileutils.h"
 #include "qgslogger.h"
 #include "qgslayout.h"
 #include "qgslayoutappmenuprovider.h"
@@ -53,6 +54,7 @@
 #include "qgsbusyindicatordialog.h"
 #include "qgslayoutundostack.h"
 #include "qgslayoutpagecollection.h"
+#include "ui_qgssvgexportoptions.h"
 #include <QShortcut>
 #include <QComboBox>
 #include <QLineEdit>
@@ -182,6 +184,7 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
 
   connect( mActionExportAsImage, &QAction::triggered, this, &QgsLayoutDesignerDialog::exportToRaster );
   connect( mActionExportAsPDF, &QAction::triggered, this, &QgsLayoutDesignerDialog::exportToPdf );
+  connect( mActionExportAsSVG, &QAction::triggered, this, &QgsLayoutDesignerDialog::exportToSvg );
 
   connect( mActionShowGrid, &QAction::triggered, this, &QgsLayoutDesignerDialog::showGrid );
   connect( mActionSnapGrid, &QAction::triggered, this, &QgsLayoutDesignerDialog::snapToGrid );
@@ -1474,7 +1477,7 @@ void QgsLayoutDesignerDialog::exportToRaster()
   QgsAtlasComposition *atlasMap = &mComposition->atlasComposition();
 #endif
 
-  QString outputFileName;
+  QString outputFileName = QgsFileUtils::stringToSafeFilename( mLayout->name() );
 #if 0 //TODO
   if ( atlasMap->enabled() && mComposition->atlasMode() == QgsComposition::PreviewAtlas )
   {
@@ -1539,6 +1542,8 @@ void QgsLayoutDesignerDialog::exportToRaster()
       break;
 
     case QgsLayoutExporter::PrintError:
+    case QgsLayoutExporter::SvgLayerError:
+      // no meaning for raster exports, will not be encountered
       break;
 
     case QgsLayoutExporter::FileError:
@@ -1594,7 +1599,7 @@ void QgsLayoutDesignerDialog::exportToPdf()
   else
   {
 #endif
-    outputFileName = file.path();
+    outputFileName = file.path() + '/' + QgsFileUtils::stringToSafeFilename( mLayout->name() ) + QStringLiteral( ".pdf" );
 #if 0 //TODO
   }
 #endif
@@ -1665,9 +1670,167 @@ void QgsLayoutDesignerDialog::exportToPdf()
                                 "Please try a lower resolution or a smaller paper size." ),
                             QMessageBox::Ok, QMessageBox::Ok );
       break;
+
+    case QgsLayoutExporter::SvgLayerError:
+      // no meaning for PDF exports, will not be encountered
+      break;
   }
 
   mView->setPaintingEnabled( true );
+  QApplication::restoreOverrideCursor();
+}
+
+void QgsLayoutDesignerDialog::exportToSvg()
+{
+  if ( containsWmsLayers() )
+  {
+    showWmsPrintingWarning();
+  }
+
+  showSvgExportWarning();
+
+  QgsSettings settings;
+  QString lastUsedFile = settings.value( QStringLiteral( "UI/lastSaveAsSvgFile" ), QStringLiteral( "qgis.svg" ) ).toString();
+  QFileInfo file( lastUsedFile );
+  QString outputFileName = QgsFileUtils::stringToSafeFilename( mLayout->name() );
+
+#if 0// TODO
+  if ( hasAnAtlas && !atlasOnASingleFile &&
+       ( mode == QgsComposer::Atlas || mComposition->atlasMode() == QgsComposition::PreviewAtlas ) )
+  {
+    outputFileName = QDir( file.path() ).filePath( atlasMap->currentFilename() ) + ".pdf";
+  }
+  else
+  {
+#endif
+    outputFileName = file.path() + '/' + QgsFileUtils::stringToSafeFilename( mLayout->name() ) + QStringLiteral( ".svg" );
+#if 0 //TODO
+  }
+#endif
+
+#ifdef Q_OS_MAC
+  QgisApp::instance()->activateWindow();
+  this->raise();
+#endif
+  outputFileName = QFileDialog::getSaveFileName(
+                     this,
+                     tr( "Export to SVG" ),
+                     outputFileName,
+                     tr( "SVG Format" ) + " (*.svg *.SVG)" );
+  this->activateWindow();
+  if ( outputFileName.isEmpty() )
+  {
+    return;
+  }
+
+  if ( !outputFileName.endsWith( QLatin1String( ".svg" ), Qt::CaseInsensitive ) )
+  {
+    outputFileName += QLatin1String( ".svg" );
+  }
+
+  settings.setValue( QStringLiteral( "UI/lastSaveAsSvgFile" ), outputFileName );
+
+  bool groupLayers = false;
+  bool prevSettingLabelsAsOutlines = mLayout->project()->readBoolEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawOutlineLabels" ), true );
+  bool clipToContent = false;
+  double marginTop = 0.0;
+  double marginRight = 0.0;
+  double marginBottom = 0.0;
+  double marginLeft = 0.0;
+  bool previousForceVector = mLayout->customProperty( QStringLiteral( "forceVector" ), false ).toBool();
+
+  // open options dialog
+  QDialog dialog;
+  Ui::QgsSvgExportOptionsDialog options;
+  options.setupUi( &dialog );
+  options.chkTextAsOutline->setChecked( prevSettingLabelsAsOutlines );
+  options.chkMapLayersAsGroup->setChecked( mLayout->customProperty( QStringLiteral( "svgGroupLayers" ), false ).toBool() );
+  options.mClipToContentGroupBox->setChecked( mLayout->customProperty( QStringLiteral( "svgCropToContents" ), false ).toBool() );
+  options.mForceVectorCheckBox->setChecked( previousForceVector );
+  options.mTopMarginSpinBox->setValue( mLayout->customProperty( QStringLiteral( "svgCropMarginTop" ), 0 ).toInt() );
+  options.mRightMarginSpinBox->setValue( mLayout->customProperty( QStringLiteral( "svgCropMarginRight" ), 0 ).toInt() );
+  options.mBottomMarginSpinBox->setValue( mLayout->customProperty( QStringLiteral( "svgCropMarginBottom" ), 0 ).toInt() );
+  options.mLeftMarginSpinBox->setValue( mLayout->customProperty( QStringLiteral( "svgCropMarginLeft" ), 0 ).toInt() );
+
+  if ( dialog.exec() != QDialog::Accepted )
+    return;
+
+  groupLayers = options.chkMapLayersAsGroup->isChecked();
+  clipToContent = options.mClipToContentGroupBox->isChecked();
+  marginTop = options.mTopMarginSpinBox->value();
+  marginRight = options.mRightMarginSpinBox->value();
+  marginBottom = options.mBottomMarginSpinBox->value();
+  marginLeft = options.mLeftMarginSpinBox->value();
+
+  //save dialog settings
+  mLayout->setCustomProperty( QStringLiteral( "svgGroupLayers" ), groupLayers );
+  mLayout->setCustomProperty( QStringLiteral( "svgCropToContents" ), clipToContent );
+  mLayout->setCustomProperty( QStringLiteral( "svgCropMarginTop" ), marginTop );
+  mLayout->setCustomProperty( QStringLiteral( "svgCropMarginRight" ), marginRight );
+  mLayout->setCustomProperty( QStringLiteral( "svgCropMarginBottom" ), marginBottom );
+  mLayout->setCustomProperty( QStringLiteral( "svgCropMarginLeft" ), marginLeft );
+
+  //temporarily override label draw outlines setting
+  mLayout->project()->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawOutlineLabels" ), options.chkTextAsOutline->isChecked() );
+
+  mView->setPaintingEnabled( false );
+  QApplication::setOverrideCursor( Qt::BusyCursor );
+
+  QgsLayoutExporter::SvgExportSettings svgSettings;
+  svgSettings.forceVectorOutput = mLayout->customProperty( QStringLiteral( "forceVector" ), false ).toBool();
+  svgSettings.cropToContents = clipToContent;
+  svgSettings.cropMargins = QgsMargins( marginLeft, marginTop, marginRight, marginBottom );
+  svgSettings.forceVectorOutput = options.mForceVectorCheckBox->isChecked();
+  svgSettings.exportAsLayers = groupLayers;
+
+  // force a refresh, to e.g. update data defined properties, tables, etc
+  mLayout->refresh();
+
+  QFileInfo fi( outputFileName );
+  QgsLayoutExporter exporter( mLayout );
+  switch ( exporter.exportToSvg( outputFileName, svgSettings ) )
+  {
+    case QgsLayoutExporter::Success:
+    {
+      mMessageBar->pushMessage( tr( "Export layout" ),
+                                tr( "Successfully exported layout to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( fi.path() ).toString(), outputFileName ),
+                                QgsMessageBar::INFO, 0 );
+      break;
+    }
+
+    case QgsLayoutExporter::FileError:
+      QMessageBox::warning( this, tr( "Export to SVG" ),
+                            tr( "Cannot write to %1.\n\nThis file may be open in another application." ).arg( outputFileName ),
+                            QMessageBox::Ok,
+                            QMessageBox::Ok );
+      break;
+
+    case QgsLayoutExporter::SvgLayerError:
+      QMessageBox::warning( this, tr( "Export to SVG" ),
+                            tr( "Cannot create layered SVG file %1." ).arg( outputFileName ),
+                            QMessageBox::Ok,
+                            QMessageBox::Ok );
+      break;
+
+    case QgsLayoutExporter::PrintError:
+      QMessageBox::warning( this, tr( "Export to SVG" ),
+                            tr( "Could not create print device." ),
+                            QMessageBox::Ok,
+                            QMessageBox::Ok );
+      break;
+
+
+    case QgsLayoutExporter::MemoryError:
+      QMessageBox::warning( this, tr( "Memory Allocation Error" ),
+                            tr( "Exporting the SVG "
+                                "resulted in a memory overflow.\n\n"
+                                "Please try a lower resolution or a smaller paper size." ),
+                            QMessageBox::Ok, QMessageBox::Ok );
+      break;
+  }
+
+  mView->setPaintingEnabled( true );
+  mLayout->project()->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawOutlineLabels" ), prevSettingLabelsAsOutlines );
   QApplication::restoreOverrideCursor();
 }
 
@@ -1813,6 +1976,34 @@ void QgsLayoutDesignerDialog::showWmsPrintingWarning()
     m->setCheckBoxVisible( true );
     m->setCheckBoxQgsSettingsLabel( QStringLiteral( "/UI/displayComposerWMSWarning" ) );
     m->exec(); //deleted on close
+  }
+}
+
+void QgsLayoutDesignerDialog::showSvgExportWarning()
+{
+  QgsSettings settings;
+
+  bool displaySVGWarning = settings.value( QStringLiteral( "/UI/displaySVGWarning" ), true ).toBool();
+
+  if ( displaySVGWarning )
+  {
+    QgsMessageViewer m( this );
+    m.setWindowTitle( tr( "Export as SVG" ) );
+    m.setCheckBoxText( tr( "Don't show this message again" ) );
+    m.setCheckBoxState( Qt::Unchecked );
+    m.setCheckBoxVisible( true );
+    m.setCheckBoxQgsSettingsLabel( QStringLiteral( "/UI/displaySVGWarning" ) );
+    m.setMessageAsHtml( tr( "<p>The SVG export function in QGIS has several "
+                            "problems due to bugs and deficiencies in the " )
+                        + tr( "underlying Qt SVG library. In particular, there are problems "
+                              "with layers not being clipped to the map "
+                              "bounding box.</p>" )
+                        + tr( "If you require a vector-based output file from "
+                              "QGIS it is suggested that you try exporting "
+                              "to PDF if the SVG output is not "
+                              "satisfactory."
+                              "</p>" ) );
+    m.exec();
   }
 }
 

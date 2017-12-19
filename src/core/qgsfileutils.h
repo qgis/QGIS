@@ -70,6 +70,14 @@ class CORE_EXPORT QgsFileUtils
      * \see ensureFileNameHasExtension()
      */
     static QString addExtensionFromFilter( const QString &fileName, const QString &filter );
+
+    /**
+     * Converts a \a string to a safe filename, replacing characters which are not safe
+     * for filenames with an '_' character.
+     *
+     * This method should be called with file names only, not complete paths.
+     */
+    static QString stringToSafeFilename( const QString &string );
 };
 
 #endif // QGSFILEUTILS_H

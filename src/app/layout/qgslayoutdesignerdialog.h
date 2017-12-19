@@ -284,6 +284,7 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     void deleteLayout();
     void exportToRaster();
     void exportToPdf();
+    void exportToSvg();
 
   private:
 
@@ -378,6 +379,8 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
 
     //! Displays a warning because of possible min/max size in WMS
     void showWmsPrintingWarning();
+
+    void showSvgExportWarning();
 
     //! True if the layout contains advanced effects, such as blend modes
     bool requiresRasterization() const;
