@@ -19,6 +19,7 @@
 #include "qgscompositionconverter.h"
 #include "qgsreadwritecontext.h"
 #include "qgslayout.h"
+#include "qgslayertree.h"
 #include "qgslayoutmodel.h"
 #include "qgslayoutitemgroup.h"
 #include "qgsfontutils.h"
@@ -37,9 +38,10 @@
 #include "qgslayoutitempolyline.h"
 #include "qgslayoutitemmap.h"
 #include "qgslayoutitemmapgrid.h"
+#include "qgslayoutitemscalebar.h"
+#include "qgslayoutitemlegend.h"
 
 QgsPropertiesDefinition QgsCompositionConverter::sPropertyDefinitions;
-
 
 void QgsCompositionConverter::initPropertyDefinitions()
 {
@@ -209,10 +211,6 @@ QList<QgsLayoutItem *> QgsCompositionConverter::addItemsFromCompositionXml( QgsL
   }
 
   /*
-  LayoutPage, //!< Page items
-  LayoutMap, //!< Map item
-  LayoutLegend, //!< Legend item
-  LayoutScaleBar, //!< Scale bar item
   LayoutFrame, //!< Frame item, part of a QgsLayoutMultiFrame object
 
   // known multi-frame types
@@ -220,8 +218,6 @@ QList<QgsLayoutItem *> QgsCompositionConverter::addItemsFromCompositionXml( QgsL
   LayoutAttributeTable, //!< Attribute table
   LayoutTextTable, //!< Preset text table
   */
-
-
 
   // Label
   for ( int i = 0; i < parentElement.elementsByTagName( QStringLiteral( "ComposerLabel" ) ).size(); i++ )
@@ -289,6 +285,26 @@ QList<QgsLayoutItem *> QgsCompositionConverter::addItemsFromCompositionXml( QgsL
     QDomNode itemNode( parentElement.elementsByTagName( QStringLiteral( "ComposerMap" ) ).at( i ) );
     QgsLayoutItemMap *layoutItem = new QgsLayoutItemMap( layout );
     readMapXml( layoutItem, itemNode.toElement(), layout->project() );
+    adjustPos( layout, layoutItem, itemNode, position, pasteInPlace, zOrderOffset, pasteShiftPos, pageNumber );
+    newItems << layoutItem ;
+  }
+
+  // Scalebar
+  for ( int i = 0; i < parentElement.elementsByTagName( QStringLiteral( "ComposerScaleBar" ) ).size(); i++ )
+  {
+    QDomNode itemNode( parentElement.elementsByTagName( QStringLiteral( "ComposerScaleBar" ) ).at( i ) );
+    QgsLayoutItemScaleBar *layoutItem = new QgsLayoutItemScaleBar( layout );
+    readScaleBarXml( layoutItem, itemNode.toElement(), layout->project() );
+    adjustPos( layout, layoutItem, itemNode, position, pasteInPlace, zOrderOffset, pasteShiftPos, pageNumber );
+    newItems << layoutItem ;
+  }
+
+  // Legend
+  for ( int i = 0; i < parentElement.elementsByTagName( QStringLiteral( "ComposerLegend" ) ).size(); i++ )
+  {
+    QDomNode itemNode( parentElement.elementsByTagName( QStringLiteral( "ComposerLegend" ) ).at( i ) );
+    QgsLayoutItemLegend *layoutItem = new QgsLayoutItemLegend( layout );
+    readLegendXml( layoutItem, itemNode.toElement(), layout->project() );
     adjustPos( layout, layoutItem, itemNode, position, pasteInPlace, zOrderOffset, pasteShiftPos, pageNumber );
     newItems << layoutItem ;
   }
@@ -677,8 +693,6 @@ bool QgsCompositionConverter::readMapXml( QgsLayoutItemMap *layoutItem, const QD
   //mLayers
   layoutItem->mLayers.clear();
 
-
-
   QDomNodeList layerSetNodeList = itemElem.elementsByTagName( QStringLiteral( "LayerSet" ) );
   if ( !layerSetNodeList.isEmpty() )
   {
@@ -840,6 +854,278 @@ bool QgsCompositionConverter::readMapXml( QgsLayoutItemMap *layoutItem, const QD
   */
 
   layoutItem->updateBoundingRect();
+
+  return true;
+}
+
+bool QgsCompositionConverter::readScaleBarXml( QgsLayoutItemScaleBar *layoutItem, const QDomElement &itemElem, const QgsProject *project )
+{
+  restoreGeneralComposeItemProperties( layoutItem, itemElem );
+
+  layoutItem->setHeight( itemElem.attribute( QStringLiteral( "height" ), QStringLiteral( "5.0" ) ).toDouble() );
+  layoutItem->setHeight( itemElem.attribute( QStringLiteral( "height" ), QStringLiteral( "5.0" ) ).toDouble() );
+  layoutItem->setLabelBarSpace( itemElem.attribute( QStringLiteral( "labelBarSpace" ), QStringLiteral( "3.0" ) ).toDouble() );
+  layoutItem->setBoxContentSpace( itemElem.attribute( QStringLiteral( "boxContentSpace" ), QStringLiteral( "1.0" ) ).toDouble() );
+  layoutItem->setNumberOfSegments( itemElem.attribute( QStringLiteral( "numSegments" ), QStringLiteral( "2" ) ).toInt() );
+  layoutItem->setNumberOfSegmentsLeft( itemElem.attribute( QStringLiteral( "numSegmentsLeft" ), QStringLiteral( "0" ) ).toInt() );
+  layoutItem->setUnitsPerSegment( itemElem.attribute( QStringLiteral( "numUnitsPerSegment" ), QStringLiteral( "1.0" ) ).toDouble() );
+  layoutItem->setSegmentSizeMode( static_cast<QgsScaleBarSettings::SegmentSizeMode>( itemElem.attribute( QStringLiteral( "segmentSizeMode" ), QStringLiteral( "0" ) ).toInt() ) );
+  layoutItem->setMinimumBarWidth( itemElem.attribute( QStringLiteral( "minBarWidth" ), QStringLiteral( "50" ) ).toDouble() );
+  layoutItem->setMaximumBarWidth( itemElem.attribute( QStringLiteral( "maxBarWidth" ), QStringLiteral( "150" ) ).toDouble() );
+  layoutItem->mSegmentMillimeters = itemElem.attribute( QStringLiteral( "segmentMillimeters" ), QStringLiteral( "0.0" ) ).toDouble();
+  layoutItem->setMapUnitsPerScaleBarUnit( itemElem.attribute( QStringLiteral( "numMapUnitsPerScaleBarUnit" ), QStringLiteral( "1.0" ) ).toDouble() );
+  layoutItem->setLineWidth( itemElem.attribute( QStringLiteral( "outlineWidth" ), QStringLiteral( "0.3" ) ).toDouble() );
+  layoutItem->setUnitLabel( itemElem.attribute( QStringLiteral( "unitLabel" ) ) );
+  layoutItem->setLineJoinStyle( QgsSymbolLayerUtils::decodePenJoinStyle( itemElem.attribute( QStringLiteral( "lineJoinStyle" ), QStringLiteral( "miter" ) ) ) );
+  layoutItem->setLineCapStyle( QgsSymbolLayerUtils::decodePenCapStyle( itemElem.attribute( QStringLiteral( "lineCapStyle" ), QStringLiteral( "square" ) ) ) );
+  QFont f;
+  if ( !QgsFontUtils::setFromXmlChildNode( f, itemElem, QStringLiteral( "scaleBarFont" ) ) )
+  {
+    f.fromString( itemElem.attribute( QStringLiteral( "font" ), QLatin1String( "" ) ) );
+  }
+  layoutItem->setFont( f );
+
+  //colors
+  //fill color
+  QDomNodeList fillColorList = itemElem.elementsByTagName( QStringLiteral( "fillColor" ) );
+  if ( !fillColorList.isEmpty() )
+  {
+    QDomElement fillColorElem = fillColorList.at( 0 ).toElement();
+    bool redOk, greenOk, blueOk, alphaOk;
+    int fillRed, fillGreen, fillBlue, fillAlpha;
+
+    fillRed = fillColorElem.attribute( QStringLiteral( "red" ) ).toDouble( &redOk );
+    fillGreen = fillColorElem.attribute( QStringLiteral( "green" ) ).toDouble( &greenOk );
+    fillBlue = fillColorElem.attribute( QStringLiteral( "blue" ) ).toDouble( &blueOk );
+    fillAlpha = fillColorElem.attribute( QStringLiteral( "alpha" ) ).toDouble( &alphaOk );
+
+    if ( redOk && greenOk && blueOk && alphaOk )
+    {
+      layoutItem->setFillColor( QColor( fillRed, fillGreen, fillBlue, fillAlpha ) );
+    }
+  }
+  else
+  {
+    layoutItem->setFillColor( QColor( itemElem.attribute( QStringLiteral( "brushColor" ), QStringLiteral( "#000000" ) ) ) );
+  }
+
+  //fill color 2
+  QDomNodeList fillColor2List = itemElem.elementsByTagName( QStringLiteral( "fillColor2" ) );
+  if ( !fillColor2List.isEmpty() )
+  {
+    QDomElement fillColor2Elem = fillColor2List.at( 0 ).toElement();
+    bool redOk, greenOk, blueOk, alphaOk;
+    int fillRed, fillGreen, fillBlue, fillAlpha;
+
+    fillRed = fillColor2Elem.attribute( QStringLiteral( "red" ) ).toDouble( &redOk );
+    fillGreen = fillColor2Elem.attribute( QStringLiteral( "green" ) ).toDouble( &greenOk );
+    fillBlue = fillColor2Elem.attribute( QStringLiteral( "blue" ) ).toDouble( &blueOk );
+    fillAlpha = fillColor2Elem.attribute( QStringLiteral( "alpha" ) ).toDouble( &alphaOk );
+
+    if ( redOk && greenOk && blueOk && alphaOk )
+    {
+      layoutItem->setFillColor2( QColor( fillRed, fillGreen, fillBlue, fillAlpha ) );
+    }
+  }
+  else
+  {
+    layoutItem->setFillColor2( QColor( itemElem.attribute( QStringLiteral( "brush2Color" ), QStringLiteral( "#ffffff" ) ) ) );
+  }
+
+  //stroke color
+  QDomNodeList strokeColorList = itemElem.elementsByTagName( QStringLiteral( "strokeColor" ) );
+  if ( !strokeColorList.isEmpty() )
+  {
+    QDomElement strokeColorElem = strokeColorList.at( 0 ).toElement();
+    bool redOk, greenOk, blueOk, alphaOk;
+    int strokeRed, strokeGreen, strokeBlue, strokeAlpha;
+
+    strokeRed = strokeColorElem.attribute( QStringLiteral( "red" ) ).toDouble( &redOk );
+    strokeGreen = strokeColorElem.attribute( QStringLiteral( "green" ) ).toDouble( &greenOk );
+    strokeBlue = strokeColorElem.attribute( QStringLiteral( "blue" ) ).toDouble( &blueOk );
+    strokeAlpha = strokeColorElem.attribute( QStringLiteral( "alpha" ) ).toDouble( &alphaOk );
+
+    if ( redOk && greenOk && blueOk && alphaOk )
+    {
+      layoutItem->setLineColor( QColor( strokeRed, strokeGreen, strokeBlue, strokeAlpha ) );
+      QPen p = layoutItem->mSettings.pen();
+      p.setColor( layoutItem->mSettings.lineColor() );
+      layoutItem->setPen( p );
+    }
+  }
+  else
+  {
+    layoutItem->setLineColor( QColor( itemElem.attribute( QStringLiteral( "penColor" ), QStringLiteral( "#000000" ) ) ) );
+    QPen p = layoutItem->mSettings.pen();
+    p.setColor( layoutItem->mSettings.lineColor() );
+    layoutItem->setPen( p );
+  }
+
+  //font color
+  QDomNodeList textColorList = itemElem.elementsByTagName( QStringLiteral( "textColor" ) );
+  if ( !textColorList.isEmpty() )
+  {
+    QDomElement textColorElem = textColorList.at( 0 ).toElement();
+    bool redOk, greenOk, blueOk, alphaOk;
+    int textRed, textGreen, textBlue, textAlpha;
+
+    textRed = textColorElem.attribute( QStringLiteral( "red" ) ).toDouble( &redOk );
+    textGreen = textColorElem.attribute( QStringLiteral( "green" ) ).toDouble( &greenOk );
+    textBlue = textColorElem.attribute( QStringLiteral( "blue" ) ).toDouble( &blueOk );
+    textAlpha = textColorElem.attribute( QStringLiteral( "alpha" ) ).toDouble( &alphaOk );
+
+    if ( redOk && greenOk && blueOk && alphaOk )
+    {
+      layoutItem->setFontColor( QColor( textRed, textGreen, textBlue, textAlpha ) );
+    }
+  }
+  else
+  {
+    QColor c;
+    c.setNamedColor( itemElem.attribute( QStringLiteral( "fontColor" ), QStringLiteral( "#000000" ) ) );
+    layoutItem->setFontColor( c );
+  }
+
+  //style
+  QString styleString = itemElem.attribute( QStringLiteral( "style" ), QLatin1String( "" ) );
+  layoutItem->setStyle( QObject::tr( styleString.toLocal8Bit().data() ) );
+
+  if ( itemElem.attribute( QStringLiteral( "unitType" ) ).isEmpty() )
+  {
+    QgsUnitTypes::DistanceUnit u = QgsUnitTypes::DistanceUnknownUnit;
+    switch ( itemElem.attribute( QStringLiteral( "units" ) ).toInt() )
+    {
+      case 0:
+        u = QgsUnitTypes::DistanceUnknownUnit;
+        break;
+      case 1:
+        u = QgsUnitTypes::DistanceMeters;
+        break;
+      case 2:
+        u = QgsUnitTypes::DistanceFeet;
+        break;
+      case 3:
+        u = QgsUnitTypes::DistanceNauticalMiles;
+        break;
+    }
+    layoutItem->setUnits( u );
+  }
+  else
+  {
+    layoutItem->setUnits( QgsUnitTypes::decodeDistanceUnit( itemElem.attribute( QStringLiteral( "unitType" ) ) ) );
+  }
+  layoutItem->setAlignment( static_cast< QgsScaleBarSettings::Alignment >( itemElem.attribute( QStringLiteral( "alignment" ), QStringLiteral( "0" ) ).toInt() ) );
+
+  //map TODO: map id
+  int mapId = itemElem.attribute( QStringLiteral( "mapId" ), QStringLiteral( "-1" ) ).toInt();
+  if ( mapId >= 0 )
+  {
+    /*
+    const QgsComposerMap *composerMap = mComposition->getComposerMapById( mapId );
+    mComposerMap = const_cast< QgsComposerMap *>( composerMap );
+    if ( mComposerMap )
+    {
+      connect( mComposerMap, &QgsComposerMap::extentChanged, this, &QgsComposerScaleBar::updateSegmentSize );
+      connect( mComposerMap, &QObject::destroyed, this, &QgsComposerScaleBar::invalidateCurrentMap );
+    }
+    */
+  }
+
+  return true;
+}
+
+bool QgsCompositionConverter::readLegendXml( QgsLayoutItemLegend *layoutItem, const QDomElement &itemElem, const QgsProject *project )
+{
+  restoreGeneralComposeItemProperties( layoutItem, itemElem );
+  QgsPathResolver pathResolver;
+  if ( project )
+    pathResolver = project->pathResolver();
+  QgsReadWriteContext context;
+  context.setPathResolver( pathResolver );
+
+  //read general properties
+  layoutItem->setTitle( itemElem.attribute( QStringLiteral( "title" ) ) );
+  if ( !itemElem.attribute( QStringLiteral( "titleAlignment" ) ).isEmpty() )
+  {
+    layoutItem->setTitleAlignment( static_cast< Qt::AlignmentFlag >( itemElem.attribute( QStringLiteral( "titleAlignment" ) ).toInt() ) );
+  }
+  int colCount = itemElem.attribute( QStringLiteral( "columnCount" ), QStringLiteral( "1" ) ).toInt();
+  if ( colCount < 1 ) colCount = 1;
+  layoutItem->setColumnCount( colCount );
+  layoutItem->setSplitLayer( itemElem.attribute( QStringLiteral( "splitLayer" ), QStringLiteral( "0" ) ).toInt() == 1 );
+  layoutItem->setEqualColumnWidth( itemElem.attribute( QStringLiteral( "equalColumnWidth" ), QStringLiteral( "0" ) ).toInt() == 1 );
+
+  QDomNodeList stylesNodeList = itemElem.elementsByTagName( QStringLiteral( "styles" ) );
+  if ( !stylesNodeList.isEmpty() )
+  {
+    QDomNode stylesNode = stylesNodeList.at( 0 );
+    for ( int i = 0; i < stylesNode.childNodes().size(); i++ )
+    {
+      QDomElement styleElem = stylesNode.childNodes().at( i ).toElement();
+      QgsLegendStyle style;
+      style.readXml( styleElem, QDomDocument() );
+      QString name = styleElem.attribute( QStringLiteral( "name" ) );
+      QgsLegendStyle::Style s;
+      if ( name == QLatin1String( "title" ) ) s = QgsLegendStyle::Title;
+      else if ( name == QLatin1String( "group" ) ) s = QgsLegendStyle::Group;
+      else if ( name == QLatin1String( "subgroup" ) ) s = QgsLegendStyle::Subgroup;
+      else if ( name == QLatin1String( "symbol" ) ) s = QgsLegendStyle::Symbol;
+      else if ( name == QLatin1String( "symbolLabel" ) ) s = QgsLegendStyle::SymbolLabel;
+      else continue;
+      layoutItem->setStyle( s, style );
+    }
+  }
+
+  //font color
+  QColor fontClr;
+  fontClr.setNamedColor( itemElem.attribute( QStringLiteral( "fontColor" ), QStringLiteral( "#000000" ) ) );
+  layoutItem->setFontColor( fontClr );
+
+  //spaces
+  layoutItem->setBoxSpace( itemElem.attribute( QStringLiteral( "boxSpace" ), QStringLiteral( "2.0" ) ).toDouble() );
+  layoutItem->setColumnSpace( itemElem.attribute( QStringLiteral( "columnSpace" ), QStringLiteral( "2.0" ) ).toDouble() );
+
+  layoutItem->setSymbolWidth( itemElem.attribute( QStringLiteral( "symbolWidth" ), QStringLiteral( "7.0" ) ).toDouble() );
+  layoutItem->setSymbolHeight( itemElem.attribute( QStringLiteral( "symbolHeight" ), QStringLiteral( "14.0" ) ).toDouble() );
+  layoutItem->setWmsLegendWidth( itemElem.attribute( QStringLiteral( "wmsLegendWidth" ), QStringLiteral( "50" ) ).toDouble() );
+  layoutItem->setWmsLegendHeight( itemElem.attribute( QStringLiteral( "wmsLegendHeight" ), QStringLiteral( "25" ) ).toDouble() );
+  layoutItem->setLineSpacing( itemElem.attribute( QStringLiteral( "lineSpacing" ), QStringLiteral( "1.0" ) ).toDouble() );
+
+  layoutItem->setDrawRasterStroke( itemElem.attribute( QStringLiteral( "rasterBorder" ), QStringLiteral( "1" ) ) != QLatin1String( "0" ) );
+  layoutItem->setRasterStrokeColor( QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "rasterBorderColor" ), QStringLiteral( "0,0,0" ) ) ) );
+  layoutItem->setRasterStrokeWidth( itemElem.attribute( QStringLiteral( "rasterBorderWidth" ), QStringLiteral( "0" ) ).toDouble() );
+
+  layoutItem->setWrapString( itemElem.attribute( QStringLiteral( "wrapChar" ) ) );
+
+  layoutItem->mSizeToContents = itemElem.attribute( QStringLiteral( "resizeToContents" ), QStringLiteral( "1" ) ) != QLatin1String( "0" );
+
+  layoutItem->mLegendFilterByMap = itemElem.attribute( QStringLiteral( "legendFilterByMap" ), QStringLiteral( "0" ) ).toInt();
+
+  //composer map TODO: use uuid
+  /*
+  if ( !itemElem.attribute( QStringLiteral( "map" ) ).isEmpty() )
+  {
+    layoutItem->setMap( layoutItem->layout()-> getComposerMapById( itemElem.attribute( QStringLiteral( "map" ) ).toInt() ) );
+  }
+
+  // TODO: atlas
+  mFilterOutAtlas = itemElem.attribute( QStringLiteral( "legendFilterByAtlas" ), QStringLiteral( "0" ) ).toInt();
+  */
+
+  // QGIS >= 2.6
+  QDomElement layerTreeElem = itemElem.firstChildElement( QStringLiteral( "layer-tree" ) );
+  if ( layerTreeElem.isNull() )
+    layerTreeElem = itemElem.firstChildElement( QStringLiteral( "layer-tree-group" ) );
+
+  if ( !layerTreeElem.isNull() )
+  {
+    std::unique_ptr< QgsLayerTree > tree( QgsLayerTree::readXml( layerTreeElem, context ) );
+    if ( project )
+      tree->resolveReferences( project, true );
+    layoutItem->setCustomLayerTree( tree.release() );
+  }
+  else
+    layoutItem->setCustomLayerTree( nullptr );
 
   return true;
 }

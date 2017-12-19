@@ -35,6 +35,8 @@ class QgsLayoutItemPicture;
 class QgsLayoutItemPolygon;
 class QgsLayoutItemPolyline;
 class QgsLayoutItemMap;
+class QgsLayoutItemScaleBar;
+class QgsLayoutItemLegend;
 
 class CORE_EXPORT QgsCompositionConverter
 {
@@ -152,6 +154,14 @@ class CORE_EXPORT QgsCompositionConverter
     static bool readMapXml( QgsLayoutItemMap *layoutItem,
                             const QDomElement &itemElem,
                             const QgsProject *project );
+
+    static bool readScaleBarXml( QgsLayoutItemScaleBar *layoutItem,
+                                 const QDomElement &itemElem,
+                                 const QgsProject *project );
+
+    static bool readLegendXml( QgsLayoutItemLegend *layoutItem,
+                               const QDomElement &itemElem,
+                               const QgsProject *project );
 
 
     /**

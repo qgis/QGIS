@@ -350,6 +350,7 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
 
     //! Will be true if the legend should be resized automatically to fit contents
     bool mSizeToContents = true;
+
 };
 
 #endif

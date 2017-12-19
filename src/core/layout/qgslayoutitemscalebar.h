@@ -456,6 +456,8 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
 
     QgsScaleBarRenderer::ScaleBarContext createScaleContext() const;
 
+    friend class QgsCompositionConverter;
+
 };
 
 #endif //QGSLAYOUTITEMSCALEBAR_H

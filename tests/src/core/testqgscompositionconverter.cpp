@@ -33,6 +33,8 @@
 #include "qgslayoutitempolygon.h"
 #include "qgslayoutitempolyline.h"
 #include "qgslayoutitemmap.h"
+#include "qgslayoutitemscalebar.h"
+#include "qgslayoutitemlegend.h"
 
 
 class TestQgsCompositionConverter: public QObject
@@ -84,6 +86,17 @@ class TestQgsCompositionConverter: public QObject
      * Test import map from a composer template
      */
     void importComposerTemplateMap();
+
+    /**
+     * Test import legend from a composer template
+     */
+    void importComposerTemplateLegend();
+
+    /**
+     * Test import scalebar from a composer template
+     */
+    void importComposerTemplateScaleBar();
+
 
   private:
 
@@ -324,6 +337,50 @@ void TestQgsCompositionConverter::importComposerTemplateMap()
 
 }
 
+void TestQgsCompositionConverter::importComposerTemplateLegend()
+{
+  QDomElement docElem( loadComposition( "2x_template_legend.qpt" ) );
+  QVERIFY( !docElem.isNull() );
+  QgsProject project;
+  QgsLayout *layout = QgsCompositionConverter::createLayoutFromCompositionXml( docElem, &project );
+  QVERIFY( layout );
+  QCOMPARE( layout->pageCollection()->pageCount(), 1 );
+
+  QList<QgsLayoutItemLegend *> items;
+  layout->layoutItems<QgsLayoutItemLegend>( items );
+  QCOMPARE( items.size(), 1 );
+
+  QgsLayoutItemLegend *item = items.at( 0 );
+  QVERIFY( item->isVisible() );
+
+  checkRenderedImage( layout, QTest::currentTestFunction(), 0 );
+
+  qDeleteAll( items );
+
+}
+
+void TestQgsCompositionConverter::importComposerTemplateScaleBar()
+{
+  QDomElement docElem( loadComposition( "2x_template_scalebar.qpt" ) );
+  QVERIFY( !docElem.isNull() );
+  QgsProject project;
+  QgsLayout *layout = QgsCompositionConverter::createLayoutFromCompositionXml( docElem, &project );
+  QVERIFY( layout );
+  QCOMPARE( layout->pageCollection()->pageCount(), 1 );
+
+  QList<QgsLayoutItemScaleBar *> items;
+  layout->layoutItems<QgsLayoutItemScaleBar>( items );
+  QCOMPARE( items.size(), 1 );
+
+  QgsLayoutItemScaleBar *item = items.at( 0 );
+  QVERIFY( item->isVisible() );
+
+  checkRenderedImage( layout, QTest::currentTestFunction(), 0 );
+
+  qDeleteAll( items );
+
+}
+
 void TestQgsCompositionConverter::importComposerTemplate()
 {
   QDomElement docElem( loadComposition( "2x_template.qpt" ) );
@@ -345,7 +402,7 @@ void TestQgsCompositionConverter::checkRenderedImage( QgsLayout *layout, const Q
   QSize size( layout->pageCollection()->page( pageNumber )->sizeWithUnits().width() * 3.77, layout->pageCollection()->page( pageNumber )->sizeWithUnits().height() * 3.77 );
   checker.setSize( size );
   checker.setControlPathPrefix( QStringLiteral( "compositionconverter" ) );
-  QVERIFY( checker.testLayout( mReport, pageNumber ) );
+  QVERIFY( checker.testLayout( mReport, pageNumber, 0, true ) );
 }
 
 void TestQgsCompositionConverter::exportLayout( QgsLayout *layout, const QString testName )
