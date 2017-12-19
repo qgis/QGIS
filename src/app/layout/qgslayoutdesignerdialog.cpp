@@ -1987,7 +1987,7 @@ void QgsLayoutDesignerDialog::showSvgExportWarning()
 
   if ( displaySVGWarning )
   {
-    QgsMessageViewer m( this );
+    QgsMessageViewer m( this, QgsGuiUtils::ModalDialogFlags, false );
     m.setWindowTitle( tr( "Export as SVG" ) );
     m.setCheckBoxText( tr( "Don't show this message again" ) );
     m.setCheckBoxState( Qt::Unchecked );
