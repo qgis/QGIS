@@ -173,8 +173,6 @@ Set this to a defined string to share save/restore states across different paren
 Returns the name of the setting group in which the collapsed state will be saved
 %End
 
-  protected slots:
-
     void loadState();
 %Docstring
 Will load the collapsed and checked state

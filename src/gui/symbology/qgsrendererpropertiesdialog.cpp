@@ -37,6 +37,7 @@
 #include "qgsvectorlayer.h"
 
 #include <QKeyEvent>
+#include <QHideEvent>
 #include <QMessageBox>
 
 static bool _initRenderer( const QString &name, QgsRendererWidgetFunc f, const QString &iconName = QString() )
@@ -417,4 +418,10 @@ void QgsRendererPropertiesDialog::keyPressEvent( QKeyEvent *e )
   {
     QDialog::keyPressEvent( e );
   }
+}
+
+void QgsRendererPropertiesDialog::hideEvent( QHideEvent *e )
+{
+  mLayerRenderingGroupBox->saveState();
+  QDialog::hideEvent( e );
 }

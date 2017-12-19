@@ -62,6 +62,10 @@ Apply the changes from the dialog to the layer.
 :param layer: The layer to use for the widget
 %End
 
+  protected:
+    virtual void hideEvent( QHideEvent *event );
+
+
 };
 
 /************************************************************************

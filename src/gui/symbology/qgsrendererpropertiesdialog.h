@@ -26,6 +26,7 @@
 #include "qgis_gui.h"
 
 class QKeyEvent;
+class QHideEvent;
 
 class QgsVectorLayer;
 class QgsStyle;
@@ -139,6 +140,9 @@ class GUI_EXPORT QgsRendererPropertiesDialog : public QDialog, private Ui::QgsRe
 
     // Reimplements dialog keyPress event so we can ignore it
     void keyPressEvent( QKeyEvent *event ) override;
+
+    // Reimplements dialog hide event so we can save groupboxes state
+    void hideEvent( QHideEvent *event ) override;
 
     QgsVectorLayer *mLayer = nullptr;
     QgsStyle *mStyle = nullptr;

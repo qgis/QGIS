@@ -121,6 +121,9 @@ to the slot.
     virtual void keyPressEvent( QKeyEvent *event );
 
 
+    virtual void hideEvent( QHideEvent *event );
+
+
 
 
 

@@ -35,6 +35,8 @@
 
 #include "qgsmessagelog.h"
 
+#include <QHideEvent>
+
 static void _initRendererWidgetFunctions()
 {
   static bool sInitialized = false;
@@ -62,6 +64,14 @@ QgsRendererRasterPropertiesWidget::QgsRendererRasterPropertiesWidget( QgsMapLaye
 
   setupUi( this );
   connect( mResetColorRenderingBtn, &QToolButton::clicked, this, &QgsRendererRasterPropertiesWidget::mResetColorRenderingBtn_clicked );
+
+  mColorRenderingBox->setSettingGroup( QStringLiteral( "colorRenderingGroupBox" ) );
+  mResamplingBox->setSettingGroup( QStringLiteral( "resamplingRenderingGroupBox" ) );
+
+  gridLayout->setSpacing( 6 );
+  gridLayout->setContentsMargins( 0, 12, 0, 0 );
+  gridLayout_3->setSpacing( 6 );
+  gridLayout_3->setContentsMargins( 0, 12, 0, 0 );
 
   _initRendererWidgetFunctions();
 
@@ -429,4 +439,11 @@ void QgsRendererRasterPropertiesWidget::refreshAfterStyleChanged()
       }
     }
   }
+}
+
+void QgsRendererRasterPropertiesWidget::hideEvent( QHideEvent *e )
+{
+  mColorRenderingBox->saveState();
+  mResamplingBox->saveState();
+  QgsMapLayerConfigWidget::hideEvent( e );
 }

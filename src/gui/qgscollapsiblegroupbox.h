@@ -218,8 +218,6 @@ class GUI_EXPORT QgsCollapsibleGroupBox : public QgsCollapsibleGroupBoxBasic
     //! Returns the name of the setting group in which the collapsed state will be saved
     QString settingGroup() const { return mSettingGroup; }
 
-  protected slots:
-
     /**
      * Will load the collapsed and checked state
      *

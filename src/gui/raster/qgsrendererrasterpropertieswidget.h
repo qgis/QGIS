@@ -23,6 +23,7 @@
 #include "qgsmaplayerconfigwidget.h"
 #include "qgis_gui.h"
 
+class QHideEvent;
 
 class QgsRasterLayer;
 class QgsMapCanvas;
@@ -71,6 +72,10 @@ class GUI_EXPORT QgsRendererRasterPropertiesWidget : public QgsMapLayerConfigWid
      * \param layer The layer to use for the widget
      */
     void syncToLayer( QgsRasterLayer *layer );
+
+  protected:
+    // Reimplements dialog hide event so we can save groupboxes state
+    void hideEvent( QHideEvent *event ) override;
 
   private slots:
     //! Slot to reset all color rendering options to default
