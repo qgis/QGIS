@@ -16,11 +16,15 @@
 #ifndef QGSCOMPOSITIONCONVERTER_H
 #define QGSCOMPOSITIONCONVERTER_H
 
+
 #include <QDomDocument>
 #include <QDomElement>
 
-
 #include "qgis.h"
+#include "qgis_sip.h"
+
+#define SIP_NO_FILE
+
 #include "qgspropertycollection.h"
 
 class QgsLayout;
@@ -38,6 +42,13 @@ class QgsLayoutItemMap;
 class QgsLayoutItemScaleBar;
 class QgsLayoutItemLegend;
 
+
+/**
+ * QgsCompositionConverter class converts a QGIS 2.x composition to a QGIS 3.x layout
+ * \since QGIS 3.0
+ * \note Not available in Python bindings.
+ * \ingroup core
+ */
 class CORE_EXPORT QgsCompositionConverter
 {
   public:
@@ -97,7 +108,7 @@ class CORE_EXPORT QgsCompositionConverter
     };
 
     /**
-     * The MarkerMode enum is the old 2.x arrow marker mode
+     * The MarkerMode enum is the old QGIS 2.x arrow marker mode
      */
     enum MarkerMode
     {
@@ -109,16 +120,28 @@ class CORE_EXPORT QgsCompositionConverter
 
     /**
      * \brief createLayoutFromCompositionXml is a factory that creates layout instances from a
-     *        QGIS 2.x XML composition \a document
+     *  QGIS 2.x XML composition \a document
      * \param parentElement is the Composition element
-     * \param document
-     * \param context
+     * \param project the QGIS project
      * \return a QgsLayout instance
+     * \since QGIS 3.0
+     * \note Not available in Python bindings.
      */
     static QgsLayout *createLayoutFromCompositionXml( const QDomElement &parentElement,
         QgsProject *project ) SIP_FACTORY;
 
 
+    /**
+     * addItemsFromCompositionXml parse a QGIS 2.x composition XML in the \a parentElement,
+     * converts the 2.x items to the new layout elements and add them to the  \a layout
+     * \param layout the lay
+     * \param parentElement
+     * \param position for pasting
+     * \param pasteInPlace if true element position is translated to \a position
+     * \return a list of layout items
+     * \since QGIS 3.0
+     * \note Not available in Python bindings.
+     */
     static QList<QgsLayoutItem *> addItemsFromCompositionXml( QgsLayout *layout,
         const QDomElement &parentElement,
         QPointF *position = nullptr,

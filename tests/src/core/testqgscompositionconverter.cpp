@@ -402,7 +402,7 @@ void TestQgsCompositionConverter::checkRenderedImage( QgsLayout *layout, const Q
   QSize size( layout->pageCollection()->page( pageNumber )->sizeWithUnits().width() * 3.77, layout->pageCollection()->page( pageNumber )->sizeWithUnits().height() * 3.77 );
   checker.setSize( size );
   checker.setControlPathPrefix( QStringLiteral( "compositionconverter" ) );
-  QVERIFY( checker.testLayout( mReport, pageNumber, 0, true ) );
+  QVERIFY( checker.testLayout( mReport, pageNumber ) );
 }
 
 void TestQgsCompositionConverter::exportLayout( QgsLayout *layout, const QString testName )
