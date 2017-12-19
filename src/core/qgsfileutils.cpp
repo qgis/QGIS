@@ -69,3 +69,11 @@ QString QgsFileUtils::addExtensionFromFilter( const QString &fileName, const QSt
   const QStringList extensions = extensionsFromFilter( filter );
   return ensureFileNameHasExtension( fileName, extensions );
 }
+
+QString QgsFileUtils::stringToSafeFilename( const QString &string )
+{
+  QRegularExpression rx( "[^\\w\\-. ]" );
+  QString s = string;
+  s.replace( rx, QStringLiteral( "_" ) );
+  return s;
+}
