@@ -433,6 +433,7 @@ class TestQgsExpression: public QObject
       if ( expression4.hasParserError() )
         qDebug() << expression4.parserErrorString();
       Q_ASSERT( !expression4.hasParserError() );
+      expression4.prepare( &context );
       Q_ASSERT( expression4.hasEvalError() );
     }
 
