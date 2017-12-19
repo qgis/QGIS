@@ -18,6 +18,7 @@ from qgis.core import (QgsRectangle,
                        QgsCoordinateReferenceSystem,
                        QgsCoordinateTransform,
                        QgsCoordinateTransformContext,
+                       QgsDatumTransform,
                        QgsProject)
 from qgis.testing import start_app, unittest
 
@@ -209,27 +210,38 @@ class TestQgsCoordinateTransform(unittest.TestCase):
 
     def testTransformInfo(self):
         # hopefully this transform is available on all platforms!
-        transforms = QgsCoordinateTransform.datumTransformations(QgsCoordinateReferenceSystem(4613), QgsCoordinateReferenceSystem(4326))
+        transforms = QgsDatumTransform.datumTransformations(QgsCoordinateReferenceSystem(4613), QgsCoordinateReferenceSystem(4326))
         self.assertTrue(len(transforms) > 0)
-        self.assertIn('+towgs84=-403,684,41', [QgsCoordinateTransform.datumTransformToProj(t.sourceTransformId) for t in transforms])
-        self.assertIn('+towgs84=-403,684,41', [QgsCoordinateTransform.datumTransformToProj(t.destinationTransformId) for t in transforms])
-        self.assertIn('EPSG:4613', [QgsCoordinateTransform.datumTransformInfo(t.destinationTransformId).sourceCrsAuthId for t in
+        self.assertIn('+towgs84=-403,684,41', [QgsDatumTransform.datumTransformToProj(t.sourceTransformId) for t in transforms])
+        self.assertEqual([''] * len(transforms), [QgsDatumTransform.datumTransformToProj(t.destinationTransformId) for t in transforms])
+        self.assertIn('EPSG:4613', [QgsDatumTransform.datumTransformInfo(t.sourceTransformId).sourceCrsAuthId for t in
                                     transforms])
-        self.assertIn('EPSG:4326', [QgsCoordinateTransform.datumTransformInfo(t.destinationTransformId).destinationCrsAuthId for t in
+        self.assertEqual([''] * len(transforms), [QgsDatumTransform.datumTransformInfo(t.destinationTransformId).destinationCrsAuthId for t in
+                                                  transforms])
+
+        # and the reverse
+        transforms = QgsDatumTransform.datumTransformations(QgsCoordinateReferenceSystem(4326), QgsCoordinateReferenceSystem(4613))
+        self.assertTrue(len(transforms) > 0)
+        self.assertEqual([''] * len(transforms), [QgsDatumTransform.datumTransformToProj(t.sourceTransformId) for t in transforms])
+        self.assertIn('+towgs84=-403,684,41',
+                      [QgsDatumTransform.datumTransformToProj(t.destinationTransformId) for t in transforms])
+        self.assertEqual([''] * len(transforms), [QgsDatumTransform.datumTransformInfo(t.sourceTransformId).destinationCrsAuthId for t in
+                                                  transforms])
+        self.assertIn('EPSG:4613', [QgsDatumTransform.datumTransformInfo(t.destinationTransformId).sourceCrsAuthId for t in
                                     transforms])
 
     def testStringToTransformId(self):
         """
         Test converting proj strings to corresponding datum IDs
         """
-        self.assertEqual(QgsCoordinateTransform.projStringToDatumTransformId(''), -1)
-        self.assertEqual(QgsCoordinateTransform.projStringToDatumTransformId('not'), -1)
+        self.assertEqual(QgsDatumTransform.projStringToDatumTransformId(''), -1)
+        self.assertEqual(QgsDatumTransform.projStringToDatumTransformId('not'), -1)
         test_string = '+towgs84=-403,684,41'
-        id = QgsCoordinateTransform.projStringToDatumTransformId(test_string)
+        id = QgsDatumTransform.projStringToDatumTransformId(test_string)
         self.assertNotEqual(id, -1)
-        string = QgsCoordinateTransform.datumTransformToProj(id)
+        string = QgsDatumTransform.datumTransformToProj(id)
         self.assertEqual(string, test_string)
-        self.assertEqual(QgsCoordinateTransform.projStringToDatumTransformId(test_string.upper()), id)
+        self.assertEqual(QgsDatumTransform.projStringToDatumTransformId(test_string.upper()), id)
 
 
 if __name__ == '__main__':

@@ -302,15 +302,15 @@ class TestQgsCoordinateTransformContext(unittest.TestCase):
         # setup a context
         context = QgsCoordinateTransformContext()
 
-        source_id_1 = QgsCoordinateTransform.datumTransformations(QgsCoordinateReferenceSystem(4204),
-                                                                  QgsCoordinateReferenceSystem(4326))[0].sourceTransformId
-        dest_id_1 = QgsCoordinateTransform.datumTransformations(QgsCoordinateReferenceSystem(4204),
-                                                                QgsCoordinateReferenceSystem(4326))[0].destinationTransformId
+        source_id_1 = QgsDatumTransform.datumTransformations(QgsCoordinateReferenceSystem(4204),
+                                                             QgsCoordinateReferenceSystem(4326))[0].sourceTransformId
+        dest_id_1 = QgsDatumTransform.datumTransformations(QgsCoordinateReferenceSystem(4204),
+                                                           QgsCoordinateReferenceSystem(4326))[0].destinationTransformId
 
-        source_id_2 = QgsCoordinateTransform.datumTransformations(QgsCoordinateReferenceSystem(4205),
-                                                                  QgsCoordinateReferenceSystem(4326))[0].sourceTransformId
-        dest_id_2 = QgsCoordinateTransform.datumTransformations(QgsCoordinateReferenceSystem(4205),
-                                                                QgsCoordinateReferenceSystem(4326))[0].destinationTransformId
+        source_id_2 = QgsDatumTransform.datumTransformations(QgsCoordinateReferenceSystem(4205),
+                                                             QgsCoordinateReferenceSystem(4326))[0].sourceTransformId
+        dest_id_2 = QgsDatumTransform.datumTransformations(QgsCoordinateReferenceSystem(4205),
+                                                           QgsCoordinateReferenceSystem(4326))[0].destinationTransformId
 
         self.assertTrue(context.addSourceDestinationDatumTransform(QgsCoordinateReferenceSystem(4204),
                                                                    QgsCoordinateReferenceSystem(4326), source_id_1, dest_id_1))
@@ -373,15 +373,15 @@ class TestQgsCoordinateTransformContext(unittest.TestCase):
         context = QgsCoordinateTransformContext()
         context.readSettings()
 
-        source_id_1 = QgsCoordinateTransform.datumTransformations(QgsCoordinateReferenceSystem(4204),
-                                                                  QgsCoordinateReferenceSystem(4326))[0].sourceTransformId
-        dest_id_1 = QgsCoordinateTransform.datumTransformations(QgsCoordinateReferenceSystem(4204),
-                                                                QgsCoordinateReferenceSystem(4326))[0].destinationTransformId
+        source_id_1 = QgsDatumTransform.datumTransformations(QgsCoordinateReferenceSystem(4204),
+                                                             QgsCoordinateReferenceSystem(4326))[0].sourceTransformId
+        dest_id_1 = QgsDatumTransform.datumTransformations(QgsCoordinateReferenceSystem(4204),
+                                                           QgsCoordinateReferenceSystem(4326))[0].destinationTransformId
 
-        source_id_2 = QgsCoordinateTransform.datumTransformations(QgsCoordinateReferenceSystem(4205),
-                                                                  QgsCoordinateReferenceSystem(4326))[0].sourceTransformId
-        dest_id_2 = QgsCoordinateTransform.datumTransformations(QgsCoordinateReferenceSystem(4205),
-                                                                QgsCoordinateReferenceSystem(4326))[0].destinationTransformId
+        source_id_2 = QgsDatumTransform.datumTransformations(QgsCoordinateReferenceSystem(4205),
+                                                             QgsCoordinateReferenceSystem(4326))[0].sourceTransformId
+        dest_id_2 = QgsDatumTransform.datumTransformations(QgsCoordinateReferenceSystem(4205),
+                                                           QgsCoordinateReferenceSystem(4326))[0].destinationTransformId
 
         # should be empty
         self.assertEqual(context.sourceDestinationDatumTransforms(), {})

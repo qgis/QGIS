@@ -128,21 +128,6 @@ class QgsCoordinateTransformPrivate : public QSharedData
     QReadWriteLock mProjLock;
     QMap < uintptr_t, QPair< projPJ, projPJ > > mProjProjections;
 
-    /**
-     * Returns the proj transform string corresponding to a
-     * datum transform ID.
-     * \see transformIdFromString()
-     */
-    static QString datumTransformString( int transformId );
-
-    /**
-     * Attempts to match a proj datum transform string to a datum ID.
-     * Returns -1 if datum ID was not found.
-     * \see datumTransformString()
-     * \since QGIS 3.0
-     */
-    static int transformIdFromString( const QString &string );
-
   private:
 
     //! Removes +nadgrids and +towgs84 from proj4 string

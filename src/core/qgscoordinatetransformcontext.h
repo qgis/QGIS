@@ -53,6 +53,9 @@ class QDomElement;
  *
  * \note QgsCoordinateTransformContext objects are implicitly shared.
  *
+ * \see QgsDatumTransform
+ * \see QgsCoordinateTransform
+ *
  * \since QGIS 3.0
 */
 

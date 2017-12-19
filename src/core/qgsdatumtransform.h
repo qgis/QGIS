@@ -20,9 +20,16 @@
 #include "qgis_core.h"
 #include <QString>
 
+class QgsCoordinateReferenceSystem;
+
+
 /**
  * Contains methods and classes relating the datum transformations.
  * \ingroup core
+ *
+ * \see QgsCoordinateTransformContext
+ * \see QgsCoordinateTransform
+ *
  * \since QGIS 3.0
  */
 class CORE_EXPORT QgsDatumTransform
@@ -107,6 +114,43 @@ class CORE_EXPORT QgsDatumTransform
       bool deprecated = false;
 
     };
+
+    /**
+     * Returns a list of datum transformations which are available for the given \a source and \a destination CRS.
+     * \see datumTransformToProj()
+     * \see datumTransformInfo()
+     */
+    static QList< QgsDatumTransform::TransformPair > datumTransformations( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination );
+
+    /**
+     * Returns a proj string representing the specified \a datumTransformId datum transform ID.
+     * \see datumTransformations()
+     * \see datumTransformInfo()
+     * \see projStringToDatumTransformId()
+     */
+    static QString datumTransformToProj( int datumTransformId );
+
+    /**
+     * Returns the datum transform ID corresponding to a specified proj \a string.
+     * Returns -1 if matching datum ID was not found.
+     * \see datumTransformToProj()
+     */
+    static int projStringToDatumTransformId( const QString &string );
+
+    /**
+     * Returns detailed information about the specified \a datumTransformId.
+     * If \a datumTransformId was not a valid transform ID, a TransformInfo with TransformInfo::datumTransformId of
+     * -1 will be returned.
+     * \see datumTransformations()
+     * \see datumTransformToProj()
+    */
+    static QgsDatumTransform::TransformInfo datumTransformInfo( int datumTransformId );
+
+  private:
+
+    static void searchDatumTransform( const QString &sql, QList< int > &transforms );
+
+
 };
 
 #endif // QGSDATUMTRANSFORM_H

@@ -44,6 +44,9 @@ class QgsProject;
 * operations are from the perspective of the layer. For example, a forward transformation
 * transforms coordinates from the layer's coordinate system to the map canvas.
 * \note Since QGIS 3.0 QgsCoordinateReferenceSystem objects are implicitly shared.
+*
+* \see QgsDatumTransform
+* \see QgsCoordinateTransformContext
 */
 class CORE_EXPORT QgsCoordinateTransform
 {
@@ -104,7 +107,7 @@ class CORE_EXPORT QgsCoordinateTransform
     /**
      * Constructs a QgsCoordinateTransform to transform from the \a source
      * to \a destination coordinate reference system, with the specified
-     * datum transforms.
+     * datum transforms (see QgsDatumTransform).
      *
      * \since QGIS 3.0
      */
@@ -313,44 +316,13 @@ class CORE_EXPORT QgsCoordinateTransform
     bool isShortCircuited() const;
 
     /**
-     * Returns a list of datum transformations which are available for the given \a source and \a destination CRS.
-     * \see datumTransformToProj()
-     * \see datumTransformInfo()
-     */
-    static QList< QgsDatumTransform::TransformPair > datumTransformations( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination );
-
-    /**
-     * Returns a proj string representing the specified \a datumTransformId datum transform ID.
-     * \see datumTransformations()
-     * \see datumTransformInfo()
-     * \see projStringToDatumTransformId()
-     */
-    static QString datumTransformToProj( int datumTransformId );
-
-    /**
-     * Returns the datum transform ID corresponding to a specified proj \a string.
-     * Returns -1 if matching datum ID was not found.
-     * \see datumTransformToProj()
-     * \since QGIS 3.0
-     */
-    static int projStringToDatumTransformId( const QString &string );
-
-    /**
-     * Returns detailed information about the specified \a datumTransformId.
-     * If \a datumTransformId was not a valid transform ID, a TransformInfo with TransformInfo::datumTransformId of
-     * -1 will be returned.
-     * \see datumTransformations()
-     * \see datumTransformToProj()
-    */
-    static QgsDatumTransform::TransformInfo datumTransformInfo( int datumTransformId );
-
-    /**
      * Returns the ID of the datum transform to use when projecting from the source
      * CRS.
      *
      * This is usually calculated automatically from the transform's QgsCoordinateTransformContext,
      * but can be manually overwritten by a call to setSourceDatumTransformId().
      *
+     * \see QgsDatumTransform
      * \see setSourceDatumTransformId()
      * \see destinationDatumTransformId()
      * \see datumTransformInfo()
@@ -364,6 +336,7 @@ class CORE_EXPORT QgsCoordinateTransform
      * This is usually calculated automatically from the transform's QgsCoordinateTransformContext.
      * Calling this method will overwrite any automatically calculated datum transform.
      *
+     * \see QgsDatumTransform
      * \see sourceDatumTransformId()
      * \see setDestinationDatumTransformId()
      * \see datumTransformInfo()
@@ -377,6 +350,7 @@ class CORE_EXPORT QgsCoordinateTransform
      * This is usually calculated automatically from the transform's QgsCoordinateTransformContext,
      * but can be manually overwritten by a call to setDestinationDatumTransformId().
      *
+     * \see QgsDatumTransform
      * \see setDestinationDatumTransformId()
      * \see sourceDatumTransformId()
      * \see datumTransformInfo()
@@ -390,6 +364,7 @@ class CORE_EXPORT QgsCoordinateTransform
      * This is usually calculated automatically from the transform's QgsCoordinateTransformContext.
      * Calling this method will overwrite any automatically calculated datum transform.
      *
+     * \see QgsDatumTransform
      * \see destinationDatumTransformId()
      * \see setSourceDatumTransformId()
      * \see datumTransformInfo()
@@ -405,8 +380,6 @@ class CORE_EXPORT QgsCoordinateTransform
     static void invalidateCache();
 
   private:
-
-    static void searchDatumTransform( const QString &sql, QList< int > &transforms );
 
     mutable QExplicitlySharedDataPointer<QgsCoordinateTransformPrivate> d;
 

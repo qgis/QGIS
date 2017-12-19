@@ -935,9 +935,9 @@ plugins calling these methods will need to be updated.
 - 'theNode', 'theDoc' parameters in readXML and writeXML have been renamed to 'node' and 'document' respectively
 - readXML() and writeXML() have been removed.
 - initialize() was removed.
-- datumTransformations() now returns a list of QgsCoordinateTransform.TransformPair instead of a list of lists.
-- datumTransformString() was renamed to datumTransformToProj()
-- datumTransformCrsInfo() was renamed to datumTransformInfo(), and now returns a QgsCoordinateTransform.TransformInfo object.
+- datumTransformations() was moved to QgsDatumTransform, and now returns a list of QgsDatumTransform.TransformPair instead of a list of lists.
+- datumTransformString() was moved to QgsDatumTransform and renamed to datumTransformToProj()
+- datumTransformCrsInfo() was moved to QgsDatumTransform and renamed to datumTransformInfo(), and now returns a QgsDatumTransform.TransformInfo object.
 - sourceDatumTransform() was renamed to sourceDatumTransformId()
 - setSourceDatumTransform() was renamed to setSourceDatumTransformId()
 - destinationDatumTransform() was renamed to destinationDatumTransformId()

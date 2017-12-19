@@ -9151,7 +9151,7 @@ void QgisApp::projectCrsChanged()
     if ( !transformsToAskFor.contains( it.value()->crs() ) &&
          it.value()->crs() != QgsProject::instance()->crs() &&
          !QgsProject::instance()->transformContext().hasTransform( it.value()->crs(), QgsProject::instance()->crs() ) &&
-         QgsCoordinateTransform::datumTransformations( it.value()->crs(), QgsProject::instance()->crs() ).count() > 1 )
+         QgsDatumTransform::datumTransformations( it.value()->crs(), QgsProject::instance()->crs() ).count() > 1 )
     {
       transformsToAskFor.append( it.value()->crs() );
     }
