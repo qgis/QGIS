@@ -16,14 +16,14 @@ A class for highlight features on the map.
 The QgsHighlight class provides a transparent overlay canvas item
 for highlighting features or geometries on a map canvas.
 
-\code{.py}
-color = QColor(Qt.red)
-highlight = QgsHighlight(mapCanvas, feature, layer)
-highlight.setColor(color)
-color.setAlpha(50)
-highlight.setFillColor(color)
-highlight.show()
-\endcode
+.. code-block:: python
+
+       color = QColor(Qt.red)
+       highlight = QgsHighlight(mapCanvas, feature, layer)
+       highlight.setColor(color)
+       color.setAlpha(50)
+       highlight.setFillColor(color)
+       highlight.show()
 %End
 
 %TypeHeaderCode

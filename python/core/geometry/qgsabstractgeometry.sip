@@ -456,9 +456,7 @@ If the gridified geometry could not be calculated a None will be returned.
 It may generate an invalid geometry (in some corner cases).
 It can also be thought as rounding the edges and it may be useful for removing errors.
 Example:
-\code
-geometry->snappedToGrid(1, 1);
-\endcode
+
 In this case we use a 2D grid of 1x1 to gridify.
 In this case, it can be thought like rounding the x and y of all the points/vertices to full units (remove all decimals).
 

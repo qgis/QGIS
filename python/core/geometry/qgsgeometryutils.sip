@@ -297,17 +297,17 @@ M value is computed if one of this point have M.
 
 :return: New point at middle between points pt1 and pt2.
 * Example:
-\code{.py}
-p = :py:class:`QgsPoint`( 4, 6 ) # 2D point
-pr = midpoint ( p, :py:class:`QgsPoint`( 2, 2 ) )
-# pr is a 2D point: 'Point (3 4)'
-pr = midpoint ( p, :py:class:`QgsPoint`( QgsWkbTypes.PointZ, 2, 2, 2 ) )
-# pr is a 3D point: 'PointZ (3 4 1)'
-pr = midpoint ( p, :py:class:`QgsPoint`( QgsWkbTypes.PointM, 2, 2, 0, 2 ) )
-# pr is a 3D point: 'PointM (3 4 1)'
-pr = midpoint ( p, :py:class:`QgsPoint`( QgsWkbTypes.PointZM, 2, 2, 2, 2 ) )
-# pr is a 3D point: 'PointZM (3 4 1 1)'
-\endcode
+.. code-block:: python
+
+       p = QgsPoint( 4, 6 ) # 2D point
+       pr = midpoint ( p, QgsPoint( 2, 2 ) )
+       # pr is a 2D point: 'Point (3 4)'
+       pr = midpoint ( p, QgsPoint( QgsWkbTypes.PointZ, 2, 2, 2 ) )
+       # pr is a 3D point: 'PointZ (3 4 1)'
+       pr = midpoint ( p, QgsPoint( QgsWkbTypes.PointM, 2, 2, 0, 2 ) )
+       # pr is a 3D point: 'PointM (3 4 1)'
+       pr = midpoint ( p, QgsPoint( QgsWkbTypes.PointZM, 2, 2, 2, 2 ) )
+       # pr is a 3D point: 'PointZM (3 4 1 1)'
 
 .. versionadded:: 3.0
 %End
