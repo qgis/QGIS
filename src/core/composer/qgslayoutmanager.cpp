@@ -289,7 +289,7 @@ QgsLayout *QgsLayoutManager::duplicateLayout( const QgsLayout *layout, const QSt
   QDomElement elem = layout->writeXml( currentDoc, context );
   currentDoc.appendChild( elem );
 
-  std::unique_ptr< QgsLayout > newLayout = qgis::make_unique< QgsLayout >( mProject );
+  std::unique_ptr< QgsLayout > newLayout = qgis::make_unique< QgsPrintLayout >( mProject );
   bool ok = false;
   newLayout->loadFromTemplate( currentDoc, context, true, &ok );
   if ( !ok )

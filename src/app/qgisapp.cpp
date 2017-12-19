@@ -246,6 +246,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgspointxy.h"
 #include "qgsruntimeprofiler.h"
 #include "qgshandlebadlayers.h"
+#include "qgsprintlayout.h"
 #include "qgsprocessingregistry.h"
 #include "qgsproject.h"
 #include "qgsprojectlayergroupdialog.h"
@@ -7450,7 +7451,7 @@ QgsLayoutDesignerDialog *QgisApp::createNewLayout( QString title )
     title = QgsProject::instance()->layoutManager()->generateUniqueTitle();
   }
   //create new layout object
-  QgsLayout *layout = new QgsLayout( QgsProject::instance() );
+  QgsLayout *layout = new QgsPrintLayout( QgsProject::instance() );
   layout->setName( title );
   layout->initializeDefaults();
   QgsProject::instance()->layoutManager()->addLayout( layout );

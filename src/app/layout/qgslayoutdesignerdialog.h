@@ -43,6 +43,8 @@ class QTreeView;
 class QgsLayoutItemsListView;
 class QgsLayoutPropertiesWidget;
 class QgsMessageBar;
+class QgsLayoutAtlas;
+class QgsFeature;
 
 class QgsAppLayoutDesignerInterface : public QgsLayoutDesignerInterface
 {
@@ -285,6 +287,17 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     void exportToRaster();
     void exportToPdf();
     void exportToSvg();
+    void showAtlasSettings();
+    void atlasPreviewTriggered( bool checked );
+    void atlasPageComboEditingFinished();
+    void atlasNext();
+    void atlasPrevious();
+    void atlasFirst();
+    void atlasLast();
+    void printAtlas();
+    void exportAtlasToRaster();
+    void exportAtlasToSvg();
+    void exportAtlasToPdf();
 
   private:
 
@@ -363,6 +376,8 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
 
     bool mBlockItemOptions = false;
 
+    QComboBox *mAtlasPageComboBox = nullptr;
+
     //! Save window state
     void saveWindowState();
 
@@ -392,6 +407,25 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     //! Displays a warning because of incompatibility between blend modes and QPrinter
     void showRasterizationWarning();
     void showForceVectorWarning();
+
+    void toggleAtlasActions( bool enabled );
+
+    /**
+     * Toggles the state of the atlas preview and navigation controls
+     */
+    void toggleAtlasControls( bool atlasEnabled );
+
+    /**
+     * Repopulates the atlas page combo box with valid items.
+     */
+    void updateAtlasPageComboBox( int pageCount );
+
+
+    void atlasFeatureChanged( const QgsFeature &feature );
+
+
+
+    QgsLayoutAtlas *atlas();
 };
 
 #endif // QGSLAYOUTDESIGNERDIALOG_H

@@ -26,6 +26,7 @@
 #include "qgslayoutmanager.h"
 #include "qgsproject.h"
 #include "qgsgui.h"
+#include "qgsprintlayout.h"
 
 #include <QDesktopServices>
 #include <QDialog>
@@ -245,7 +246,7 @@ void QgsLayoutManagerDialog::mAddButton_clicked()
     title = QgsProject::instance()->layoutManager()->generateUniqueTitle();
   }
 
-  std::unique_ptr< QgsLayout > layout = qgis::make_unique< QgsLayout >( QgsProject::instance() );
+  std::unique_ptr< QgsLayout > layout = qgis::make_unique< QgsPrintLayout >( QgsProject::instance() );
   if ( loadingTemplate )
   {
     bool loadedOK = false;

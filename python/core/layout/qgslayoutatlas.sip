@@ -258,6 +258,11 @@ number of matching features.
     virtual int count() const;
 
 
+    int currentFeatureNumber() const;
+%Docstring
+Returns the current feature number, where a value of 0 corresponds to the first feature.
+%End
+
   public slots:
 
     virtual bool next();
@@ -268,6 +273,12 @@ number of matching features.
 
     virtual bool last();
 
+    bool seekTo( int feature );
+
+    void refreshCurrentFeature();
+%Docstring
+Refreshes the current atlas feature, by refetching its attributes from the vector layer provider
+%End
 
   signals:
 
@@ -294,6 +305,11 @@ Is emitted when the atlas has an updated status bar ``message``.
     void numberFeaturesChanged( int numFeatures );
 %Docstring
 Emitted when the number of features for the atlas changes.
+%End
+
+    void featureChanged( const QgsFeature &feature );
+%Docstring
+Is emitted when the current atlas ``feature`` changes.
 %End
 
     void renderBegun();

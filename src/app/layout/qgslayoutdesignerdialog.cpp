@@ -22,6 +22,7 @@
 #include "qgsfileutils.h"
 #include "qgslogger.h"
 #include "qgslayout.h"
+#include "qgslayoutatlas.h"
 #include "qgslayoutappmenuprovider.h"
 #include "qgslayoutcustomdrophandler.h"
 #include "qgslayoutmanager.h"
@@ -37,6 +38,7 @@
 #include "qgslayoutimageexportoptionsdialog.h"
 #include "qgslayoutitemmap.h"
 #include "qgsprintlayout.h"
+#include "qgsmapcanvas.h"
 #include "qgsmessageviewer.h"
 #include "qgsgui.h"
 #include "qgslayoutitemguiregistry.h"
@@ -200,6 +202,17 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
 
   connect( mActionPasteInPlace, &QAction::triggered, this, &QgsLayoutDesignerDialog::pasteInPlace );
 
+  connect( mActionAtlasSettings, &QAction::triggered, this, &QgsLayoutDesignerDialog::showAtlasSettings );
+  connect( mActionAtlasPreview, &QAction::triggered, this, &QgsLayoutDesignerDialog::atlasPreviewTriggered );
+  connect( mActionAtlasNext, &QAction::triggered, this, &QgsLayoutDesignerDialog::atlasNext );
+  connect( mActionAtlasPrev, &QAction::triggered, this, &QgsLayoutDesignerDialog::atlasPrevious );
+  connect( mActionAtlasFirst, &QAction::triggered, this, &QgsLayoutDesignerDialog::atlasFirst );
+  connect( mActionAtlasLast, &QAction::triggered, this, &QgsLayoutDesignerDialog::atlasLast );
+  connect( mActionPrintAtlas, &QAction::triggered, this, &QgsLayoutDesignerDialog::printAtlas );
+  connect( mActionExportAtlasAsImage, &QAction::triggered, this, &QgsLayoutDesignerDialog::exportAtlasToRaster );
+  connect( mActionExportAtlasAsSVG, &QAction::triggered, this, &QgsLayoutDesignerDialog::exportAtlasToSvg );
+  connect( mActionExportAtlasAsPDF, &QAction::triggered, this, &QgsLayoutDesignerDialog::exportAtlasToPdf );
+
   mView = new QgsLayoutView();
   //mView->setMapCanvas( mQgis->mapCanvas() );
   mView->setContentsMargins( 0, 0, 0, 0 );
@@ -271,6 +284,28 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   resizeToolButton->addAction( mActionResizeToSquare );
   resizeToolButton->setDefaultAction( mActionResizeNarrowest );
   mActionsToolbar->addWidget( resizeToolButton );
+
+  QToolButton *atlasExportToolButton = new QToolButton( mAtlasToolbar );
+  atlasExportToolButton->setPopupMode( QToolButton::InstantPopup );
+  atlasExportToolButton->setAutoRaise( true );
+  atlasExportToolButton->setToolButtonStyle( Qt::ToolButtonIconOnly );
+  atlasExportToolButton->addAction( mActionExportAtlasAsImage );
+  atlasExportToolButton->addAction( mActionExportAtlasAsSVG );
+  atlasExportToolButton->addAction( mActionExportAtlasAsPDF );
+  atlasExportToolButton->setDefaultAction( mActionExportAtlasAsImage );
+  mAtlasToolbar->insertWidget( mActionAtlasSettings, atlasExportToolButton );
+  mAtlasPageComboBox = new QComboBox();
+  mAtlasPageComboBox->setEditable( true );
+  mAtlasPageComboBox->addItem( QString::number( 1 ) );
+  mAtlasPageComboBox->setCurrentIndex( 0 );
+  mAtlasPageComboBox->setMinimumHeight( mAtlasToolbar->height() );
+  mAtlasPageComboBox->setMinimumContentsLength( 6 );
+  mAtlasPageComboBox->setMaxVisibleItems( 20 );
+  mAtlasPageComboBox->setSizeAdjustPolicy( QComboBox::AdjustToContents );
+  mAtlasPageComboBox->setInsertPolicy( QComboBox::NoInsert );
+  connect( mAtlasPageComboBox->lineEdit(), &QLineEdit::editingFinished, this, &QgsLayoutDesignerDialog::atlasPageComboEditingFinished );
+  connect( mAtlasPageComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutDesignerDialog::atlasPageComboEditingFinished );
+  mAtlasToolbar->insertWidget( mActionAtlasNext, mAtlasPageComboBox );
 
   mAddItemTool = new QgsLayoutViewToolAddItem( mView );
   mAddNodeItemTool = new QgsLayoutViewToolAddNodeItem( mView );
@@ -624,6 +659,21 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   tabifyDockWidget( mGeneralDock, mItemDock );
   tabifyDockWidget( mItemDock, mItemsDock );
 
+  //set initial state of atlas controls
+  mActionAtlasPreview->setEnabled( false );
+  mActionAtlasPreview->setChecked( false );
+  mActionAtlasFirst->setEnabled( false );
+  mActionAtlasLast->setEnabled( false );
+  mActionAtlasNext->setEnabled( false );
+  mActionAtlasPrev->setEnabled( false );
+  mActionPrintAtlas->setEnabled( false );
+  mAtlasPageComboBox->setEnabled( false );
+  mActionExportAtlasAsImage->setEnabled( false );
+  mActionExportAtlasAsSVG->setEnabled( false );
+  mActionExportAtlasAsPDF->setEnabled( false );
+  mAtlasToolbar->hide();
+  mMenuAtlas->hide();
+
   restoreWindowState();
 
   //listen out to status bar updates from the view
@@ -929,17 +979,17 @@ void QgsLayoutDesignerDialog::refreshLayout()
     return;
   }
 
-#if 0 //TODO
-  //refresh atlas feature first, to update attributes
-  if ( mComposition->atlasMode() == QgsComposition::PreviewAtlas )
+  //refresh atlas feature first, to force an update of feature
+  //in case feature attributes or geometry has changed
+  if ( QgsLayoutAtlas *printAtlas = atlas() )
   {
-    //block signals from atlas, since the later call to mComposition->refreshItems() will
-    //also trigger items to refresh atlas dependent properties
-    mComposition->atlasComposition().blockSignals( true );
-    mComposition->atlasComposition().refreshFeature();
-    mComposition->atlasComposition().blockSignals( false );
+    if ( printAtlas->enabled() && mActionAtlasPreview->isChecked() )
+    {
+      //block signals from atlas, since the later call to mComposition->refreshItems() will
+      //also trigger items to refresh atlas dependent properties
+      whileBlocking( printAtlas )->refreshCurrentFeature();
+    }
   }
-#endif
 
   currentLayout()->refresh();
 }
@@ -1841,6 +1891,216 @@ void QgsLayoutDesignerDialog::exportToSvg()
   QApplication::restoreOverrideCursor();
 }
 
+void QgsLayoutDesignerDialog::showAtlasSettings()
+{
+  if ( !mAtlasDock )
+    return;
+
+  if ( !mAtlasDock->isVisible() )
+  {
+    mAtlasDock->show();
+  }
+
+  mAtlasDock->raise();
+}
+
+void QgsLayoutDesignerDialog::atlasPreviewTriggered( bool checked )
+{
+  QgsPrintLayout *printLayout = qobject_cast< QgsPrintLayout * >( mLayout );
+  if ( !printLayout )
+    return;
+  QgsLayoutAtlas *atlas = printLayout->atlas();
+
+  //check if composition has an atlas map enabled
+  if ( checked && !atlas->enabled() )
+  {
+    //no atlas current enabled
+    mMessageBar->pushWarning( tr( "Atlas" ),
+                              tr( "Atlas is not enabled for this layout!" ) );
+    whileBlocking( mActionAtlasPreview )->setChecked( false );
+    return;
+  }
+
+  //toggle other controls depending on whether atlas preview is active
+  mActionAtlasFirst->setEnabled( checked );
+  mActionAtlasLast->setEnabled( checked );
+  mActionAtlasNext->setEnabled( checked );
+  mActionAtlasPrev->setEnabled( checked );
+  mAtlasPageComboBox->setEnabled( checked );
+
+  if ( checked )
+  {
+#if 0 //TODO
+    loadAtlasPredefinedScalesFromProject();
+#endif
+  }
+
+  if ( checked )
+  {
+    if ( !atlas->beginRender() )
+    {
+      atlas->endRender();
+      //something went wrong, e.g., no matching features
+      mMessageBar->pushWarning( tr( "Atlas" ), tr( "No matching atlas features found!" ) );
+      mActionAtlasPreview->blockSignals( true );
+      mActionAtlasPreview->setChecked( false );
+      mActionAtlasFirst->setEnabled( false );
+      mActionAtlasLast->setEnabled( false );
+      mActionAtlasNext->setEnabled( false );
+      mActionAtlasPrev->setEnabled( false );
+      mAtlasPageComboBox->setEnabled( false );
+      mActionAtlasPreview->blockSignals( false );
+    }
+    else
+    {
+      QgisApp::instance()->mapCanvas()->stopRendering();
+#if 0 //TODO
+      emit atlasPreviewFeatureChanged();
+#endif
+    }
+  }
+  else
+  {
+    atlas->endRender();
+  }
+}
+
+void QgsLayoutDesignerDialog::atlasPageComboEditingFinished()
+{
+  QString text = mAtlasPageComboBox->lineEdit()->text();
+
+  //find matching record in combo box
+  int page = -1; //note - first page starts at 1, not 0
+  for ( int i = 0; i < mAtlasPageComboBox->count(); ++i )
+  {
+    if ( text.compare( mAtlasPageComboBox->itemData( i, Qt::UserRole + 1 ).toString(), Qt::CaseInsensitive ) == 0
+         || text.compare( mAtlasPageComboBox->itemData( i, Qt::UserRole + 2 ).toString(), Qt::CaseInsensitive ) == 0
+         || QString::number( i + 1 ) == text )
+    {
+      page = i + 1;
+      break;
+    }
+  }
+  bool ok = ( page > 0 );
+
+  QgsPrintLayout *printLayout = qobject_cast< QgsPrintLayout * >( mLayout );
+  if ( !printLayout )
+    return;
+  QgsLayoutAtlas *atlas = printLayout->atlas();
+
+  if ( !ok || page > atlas->count() || page < 1 )
+  {
+    whileBlocking( mAtlasPageComboBox )->setCurrentIndex( atlas->currentFeatureNumber() );
+  }
+  else if ( page != atlas->currentFeatureNumber() + 1 )
+  {
+    QgisApp::instance()->mapCanvas()->stopRendering();
+#if 0 //TODO
+    loadAtlasPredefinedScalesFromProject();
+#endif
+    atlas->seekTo( page - 1 );
+#if 0 //TODO
+    emit atlasPreviewFeatureChanged();
+#endif
+  }
+}
+
+void QgsLayoutDesignerDialog::atlasNext()
+{
+  QgsLayoutAtlas *printAtlas = atlas();
+  if ( !printAtlas )
+    return;
+
+  QgisApp::instance()->mapCanvas()->stopRendering();
+
+#if 0 //TODO
+  loadAtlasPredefinedScalesFromProject();
+#endif
+  if ( printAtlas->next() )
+  {
+#if 0 //TODO
+    emit atlasPreviewFeatureChanged();
+#endif
+  }
+}
+
+void QgsLayoutDesignerDialog::atlasPrevious()
+{
+  QgsLayoutAtlas *printAtlas = atlas();
+  if ( !printAtlas )
+    return;
+
+  QgisApp::instance()->mapCanvas()->stopRendering();
+
+#if 0 //TODO
+  loadAtlasPredefinedScalesFromProject();
+#endif
+  if ( printAtlas->previous() )
+  {
+#if 0 //TODO
+    emit atlasPreviewFeatureChanged();
+#endif
+  }
+}
+
+void QgsLayoutDesignerDialog::atlasFirst()
+{
+  QgsLayoutAtlas *printAtlas = atlas();
+  if ( !printAtlas )
+    return;
+
+  QgisApp::instance()->mapCanvas()->stopRendering();
+
+#if 0 //TODO
+  loadAtlasPredefinedScalesFromProject();
+#endif
+  if ( printAtlas->first() )
+  {
+#if 0 //TODO
+    emit atlasPreviewFeatureChanged();
+#endif
+  }
+}
+
+void QgsLayoutDesignerDialog::atlasLast()
+{
+  QgsLayoutAtlas *printAtlas = atlas();
+  if ( !printAtlas )
+    return;
+
+  QgisApp::instance()->mapCanvas()->stopRendering();
+
+#if 0 //TODO
+  loadAtlasPredefinedScalesFromProject();
+#endif
+  if ( printAtlas->last() )
+  {
+#if 0 //TODO
+    emit atlasPreviewFeatureChanged();
+#endif
+  }
+}
+
+void QgsLayoutDesignerDialog::printAtlas()
+{
+  //TODO
+}
+
+void QgsLayoutDesignerDialog::exportAtlasToRaster()
+{
+  //TODO
+}
+
+void QgsLayoutDesignerDialog::exportAtlasToSvg()
+{
+  //TODO
+}
+
+void QgsLayoutDesignerDialog::exportAtlasToPdf()
+{
+//TODO
+}
+
 void QgsLayoutDesignerDialog::paste()
 {
   QPointF pt = mView->mapFromGlobal( QCursor::pos() );
@@ -1953,11 +2213,26 @@ void QgsLayoutDesignerDialog::createAtlasWidget()
     mPanelsMenu->addAction( mAtlasDock->toggleViewAction() );
     addDockWidget( Qt::RightDockWidgetArea, mAtlasDock );
     tabifyDockWidget( mItemDock, mAtlasDock );
+    connect( mAtlasDock, &QDockWidget::visibilityChanged, this, &QgsLayoutDesignerDialog::dockVisibilityChanged );
   }
 
-  QgsLayoutAtlasWidget *atlasWidget = new QgsLayoutAtlasWidget( mGeneralDock, qobject_cast< QgsPrintLayout * >( mLayout ) );
+  QgsPrintLayout *printLayout = qobject_cast< QgsPrintLayout * >( mLayout );
+  QgsLayoutAtlas *atlas = printLayout->atlas();
+  QgsLayoutAtlasWidget *atlasWidget = new QgsLayoutAtlasWidget( mGeneralDock, printLayout );
   mAtlasDock->setWidget( atlasWidget );
   mAtlasDock->show();
+
+  mMenuAtlas->show();
+  mAtlasToolbar->show();
+
+  connect( atlas, &QgsLayoutAtlas::messagePushed, mStatusBar, [ = ]( const QString & message )
+  {
+    mStatusBar->showMessage( message );
+  } );
+  connect( atlas, &QgsLayoutAtlas::toggled, this, &QgsLayoutDesignerDialog::toggleAtlasControls );
+  connect( atlas, &QgsLayoutAtlas::numberFeaturesChanged, this, &QgsLayoutDesignerDialog::updateAtlasPageComboBox );
+  connect( atlas, &QgsLayoutAtlas::featureChanged, this, &QgsLayoutDesignerDialog::atlasFeatureChanged );
+  toggleAtlasControls( atlas->enabled() && atlas->coverageLayer() );
 }
 
 void QgsLayoutDesignerDialog::initializeRegistry()
@@ -2094,6 +2369,86 @@ void QgsLayoutDesignerDialog::showForceVectorWarning()
   {
     settings.setValue( QStringLiteral( "LayoutDesigner/hideForceVectorWarning" ), true, QgsSettings::App );
   }
+}
+
+void QgsLayoutDesignerDialog::toggleAtlasControls( bool atlasEnabled )
+{
+  //preview defaults to unchecked
+  mActionAtlasPreview->blockSignals( true );
+  mActionAtlasPreview->setChecked( false );
+  mActionAtlasFirst->setEnabled( false );
+  mActionAtlasLast->setEnabled( false );
+  mActionAtlasNext->setEnabled( false );
+  mActionAtlasPrev->setEnabled( false );
+  mAtlasPageComboBox->setEnabled( false );
+  mActionAtlasPreview->blockSignals( false );
+  mActionAtlasPreview->setEnabled( atlasEnabled );
+  mActionPrintAtlas->setEnabled( atlasEnabled );
+  mActionExportAtlasAsImage->setEnabled( atlasEnabled );
+  mActionExportAtlasAsSVG->setEnabled( atlasEnabled );
+  mActionExportAtlasAsPDF->setEnabled( atlasEnabled );
+}
+
+void QgsLayoutDesignerDialog::updateAtlasPageComboBox( int pageCount )
+{
+  QgsPrintLayout *printLayout = qobject_cast< QgsPrintLayout * >( mLayout );
+  if ( !printLayout )
+    return;
+
+  QgsLayoutAtlas *atlas = printLayout->atlas();
+  mAtlasPageComboBox->blockSignals( true );
+  mAtlasPageComboBox->clear();
+  for ( int i = 1; i <= pageCount && i < 500; ++i )
+  {
+    QString name = atlas->nameForPage( i - 1 );
+    QString fullName = ( !name.isEmpty() ? QStringLiteral( "%1: %2" ).arg( i ).arg( name ) : QString::number( i ) );
+
+    mAtlasPageComboBox->addItem( fullName, i );
+    mAtlasPageComboBox->setItemData( i - 1, name, Qt::UserRole + 1 );
+    mAtlasPageComboBox->setItemData( i - 1, fullName, Qt::UserRole + 2 );
+  }
+  mAtlasPageComboBox->blockSignals( false );
+
+}
+
+void QgsLayoutDesignerDialog::atlasFeatureChanged( const QgsFeature &feature )
+{
+  //TODO - this should be disabled during an export
+
+  QgsPrintLayout *printLayout = qobject_cast< QgsPrintLayout *>( mLayout );
+  if ( !printLayout )
+    return;
+
+  QgsLayoutAtlas *atlas = printLayout->atlas();
+
+  mAtlasPageComboBox->blockSignals( true );
+  //prefer to set index of current atlas page, if combo box is showing enough page items
+  if ( atlas->currentFeatureNumber() < mAtlasPageComboBox->count() )
+  {
+    mAtlasPageComboBox->setCurrentIndex( atlas->currentFeatureNumber() );
+  }
+  else
+  {
+    //fallback to setting the combo text to the page number
+    mAtlasPageComboBox->setEditText( QString::number( atlas->currentFeatureNumber() + 1 ) );
+  }
+  mAtlasPageComboBox->blockSignals( false );
+
+  //update expression context variables in map canvas to allow for previewing atlas feature based rendering
+  QgsMapCanvas *mapCanvas = QgisApp::instance()->mapCanvas();
+  mapCanvas->expressionContextScope().addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_featurenumber" ), atlas->currentFeatureNumber() + 1, true ) );
+  mapCanvas->expressionContextScope().addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_pagename" ), atlas->nameForPage( atlas->currentFeatureNumber() ), true ) );
+  mapCanvas->expressionContextScope().addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_feature" ), QVariant::fromValue( feature ), true ) );
+  mapCanvas->expressionContextScope().addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_featureid" ), feature.id(), true ) );
+  mapCanvas->expressionContextScope().addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_geometry" ), QVariant::fromValue( feature.geometry() ), true ) );
+}
+
+QgsLayoutAtlas *QgsLayoutDesignerDialog::atlas()
+{
+  QgsPrintLayout *layout = qobject_cast< QgsPrintLayout *>( mLayout );
+  if ( !layout )
+    return nullptr;
+  return layout->atlas();
 }
 
 void QgsLayoutDesignerDialog::selectItems( const QList<QgsLayoutItem *> items )

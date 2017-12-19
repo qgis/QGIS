@@ -98,7 +98,7 @@
      <x>0</x>
      <y>0</y>
      <width>1083</width>
-     <height>25</height>
+     <height>42</height>
     </rect>
    </property>
    <widget class="QMenu" name="mLayoutMenu">
@@ -251,11 +251,30 @@
     <addaction name="menu_Distribute_Items"/>
     <addaction name="menuResize"/>
    </widget>
+   <widget class="QMenu" name="mMenuAtlas">
+    <property name="title">
+     <string>Atlas</string>
+    </property>
+    <addaction name="mActionAtlasPreview"/>
+    <addaction name="separator"/>
+    <addaction name="mActionAtlasFirst"/>
+    <addaction name="mActionAtlasPrev"/>
+    <addaction name="mActionAtlasNext"/>
+    <addaction name="mActionAtlasLast"/>
+    <addaction name="separator"/>
+    <addaction name="mActionPrintAtlas"/>
+    <addaction name="mActionExportAtlasAsImage"/>
+    <addaction name="mActionExportAtlasAsSVG"/>
+    <addaction name="mActionExportAtlasAsPDF"/>
+    <addaction name="separator"/>
+    <addaction name="mActionAtlasSettings"/>
+   </widget>
    <addaction name="mLayoutMenu"/>
    <addaction name="menuEdit"/>
    <addaction name="mMenuView"/>
    <addaction name="menuLayout"/>
    <addaction name="mItemMenu"/>
+   <addaction name="mMenuAtlas"/>
   </widget>
   <widget class="QToolBar" name="mNavigationToolbar">
    <property name="windowTitle">
@@ -275,7 +294,7 @@
   </widget>
   <widget class="QToolBar" name="mActionsToolbar">
    <property name="windowTitle">
-    <string>toolBar</string>
+    <string>Actions</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -287,6 +306,24 @@
    <addaction name="mActionUnlockAll"/>
    <addaction name="mActionGroupItems"/>
    <addaction name="mActionUngroupItems"/>
+  </widget>
+  <widget class="QToolBar" name="mAtlasToolbar">
+   <property name="windowTitle">
+    <string>Atlas</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="mActionAtlasPreview"/>
+   <addaction name="mActionAtlasFirst"/>
+   <addaction name="mActionAtlasPrev"/>
+   <addaction name="mActionAtlasNext"/>
+   <addaction name="mActionAtlasLast"/>
+   <addaction name="mActionPrintAtlas"/>
+   <addaction name="mActionAtlasSettings"/>
   </widget>
   <action name="mActionClose">
    <property name="text">
@@ -1213,9 +1250,119 @@
     <string>Export as S&amp;VG…</string>
    </property>
   </action>
+  <action name="mActionAtlasFirst">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAtlasFirst.svg</normaloff>:/images/themes/default/mActionAtlasFirst.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;First Feature</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+&lt;</string>
+   </property>
+  </action>
+  <action name="mActionAtlasPrev">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAtlasPrev.svg</normaloff>:/images/themes/default/mActionAtlasPrev.svg</iconset>
+   </property>
+   <property name="text">
+    <string>P&amp;revious Feature</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+,</string>
+   </property>
+  </action>
+  <action name="mActionAtlasNext">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAtlasNext.svg</normaloff>:/images/themes/default/mActionAtlasNext.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Next Feature</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+.</string>
+   </property>
+  </action>
+  <action name="mActionAtlasLast">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAtlasLast.svg</normaloff>:/images/themes/default/mActionAtlasLast.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Last Feature</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+&gt;</string>
+   </property>
+  </action>
+  <action name="mActionPrintAtlas">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionFilePrint.svg</normaloff>:/images/themes/default/mActionFilePrint.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Print Atlas...</string>
+   </property>
+  </action>
+  <action name="mActionExportAtlasAsImage">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSaveMapAsImage.svg</normaloff>:/images/themes/default/mActionSaveMapAsImage.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Export Atlas as &amp;Images...</string>
+   </property>
+  </action>
+  <action name="mActionExportAtlasAsSVG">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSaveAsSVG.svg</normaloff>:/images/themes/default/mActionSaveAsSVG.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Export Atlas as S&amp;VG...</string>
+   </property>
+  </action>
+  <action name="mActionExportAtlasAsPDF">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSaveAsPDF.svg</normaloff>:/images/themes/default/mActionSaveAsPDF.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Export Atlas as PDF...</string>
+   </property>
+   <property name="toolTip">
+    <string>Export Atlas as PDF</string>
+   </property>
+  </action>
+  <action name="mActionAtlasSettings">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAtlasSettings.svg</normaloff>:/images/themes/default/mActionAtlasSettings.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Atlas &amp;Settings</string>
+   </property>
+  </action>
+  <action name="mActionAtlasPreview">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mIconAtlas.svg</normaloff>:/images/themes/default/mIconAtlas.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Preview &amp;Atlas</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Alt+/</string>
+   </property>
+  </action>
  </widget>
  <resources>
-  <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>

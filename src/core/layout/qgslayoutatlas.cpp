@@ -321,6 +321,7 @@ bool QgsLayoutAtlas::beginRender()
 
 bool QgsLayoutAtlas::endRender()
 {
+  emit featureChanged( QgsFeature() );
   emit renderEnded();
   return true;
 }
@@ -362,6 +363,15 @@ bool QgsLayoutAtlas::last()
   return prepareForFeature( mFeatureIds.size() - 1 );
 }
 
+bool QgsLayoutAtlas::seekTo( int feature )
+{
+  return prepareForFeature( feature );
+}
+
+void QgsLayoutAtlas::refreshCurrentFeature()
+{
+  prepareForFeature( mCurrentFeatureNo );
+}
 
 void QgsLayoutAtlas::setHideCoverage( bool hide )
 {
@@ -497,6 +507,7 @@ bool QgsLayoutAtlas::prepareForFeature( const int featureI )
   mLayout->context().blockSignals( false );
   mLayout->context().setFeature( mCurrentFeature );
 
+  emit featureChanged( mCurrentFeature );
   emit messagePushed( QString( tr( "Atlas feature %1 of %2" ) ).arg( featureI + 1 ).arg( mFeatureIds.size() ) );
 
   if ( !mCurrentFeature.isValid() )

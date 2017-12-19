@@ -228,12 +228,23 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutItera
     bool endRender() override;
     int count() const override;
 
+    /**
+     * Returns the current feature number, where a value of 0 corresponds to the first feature.
+     */
+    int currentFeatureNumber() const { return mCurrentFeatureNo; }
+
   public slots:
 
     bool next() override;
     bool previous() override;
     bool first() override;
     bool last() override;
+    bool seekTo( int feature );
+
+    /**
+     * Refreshes the current atlas feature, by refetching its attributes from the vector layer provider
+     */
+    void refreshCurrentFeature();
 
   signals:
 
@@ -253,6 +264,9 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutItera
      * Emitted when the number of features for the atlas changes.
      */
     void numberFeaturesChanged( int numFeatures );
+
+    //! Is emitted when the current atlas \a feature changes.
+    void featureChanged( const QgsFeature &feature );
 
     //! Emitted when atlas rendering has begun.
     void renderBegun();
