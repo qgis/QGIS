@@ -466,6 +466,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     /**
      * Restores state from the given DOM node.
+     * If it fails or if the node is empty, a default not empty CRS will be returned.
      * \param node The node from which state will be restored
      * \returns bool True on success, False on failure
      */
