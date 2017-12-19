@@ -412,6 +412,7 @@ SET(QGIS_CORE_SRCS
   layout/qgslayoutpoint.cpp
   layout/qgslayoutserializableobject.cpp
   layout/qgslayoutsize.cpp
+  layout/qgsprintlayout.cpp
 
   pal/costcalculator.cpp
   pal/feature.cpp
@@ -770,6 +771,7 @@ SET(QGIS_CORE_MOC_HDRS
   layout/qgslayouttable.h
   layout/qgslayouttablecolumn.h
   layout/qgslayoutundostack.h
+  layout/qgsprintlayout.h
 
   symbology/qgscptcityarchive.h
   symbology/qgssvgcache.h

@@ -22,7 +22,8 @@
 #include "qgslayout.h"
 
 QgsLayoutAtlas::QgsLayoutAtlas( QgsLayout *layout )
-  : mLayout( layout )
+  : QObject( layout )
+  , mLayout( layout )
   , mFilenameExpressionString( QStringLiteral( "'output_'||@atlas_featurenumber" ) )
 {
 

@@ -437,6 +437,7 @@
 %Include layout/qgslayouttable.sip
 %Include layout/qgslayouttablecolumn.sip
 %Include layout/qgslayoutundostack.sip
+%Include layout/qgsprintlayout.sip
 %Include symbology/qgscptcityarchive.sip
 %Include symbology/qgssvgcache.sip
 %Include symbology/qgsstyle.sip

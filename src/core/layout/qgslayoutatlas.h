@@ -40,7 +40,7 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject
     /**
      * Constructor for new QgsLayoutAtlas.
      */
-    QgsLayoutAtlas( QgsLayout *layout );
+    QgsLayoutAtlas( QgsLayout *layout SIP_TRANSFERTHIS );
 
     /**
      * Returns whether the atlas generation is enabled

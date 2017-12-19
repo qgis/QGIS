@@ -29,7 +29,7 @@ QgsLayoutAtlas which is automatically created and attached to the composition.
 %End
   public:
 
-    QgsLayoutAtlas( QgsLayout *layout );
+    QgsLayoutAtlas( QgsLayout *layout /TransferThis/ );
 %Docstring
 Constructor for new QgsLayoutAtlas.
 %End
