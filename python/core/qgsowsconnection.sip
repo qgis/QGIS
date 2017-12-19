@@ -57,7 +57,7 @@ Returns the connection uri.
 
     static QgsDataSourceUri &addWmsWcsConnectionSettings( QgsDataSourceUri &uri, const QString &settingsKey );
 %Docstring
-Adds uri parameters relating to the settings for a WMS or WCS connection to a QgsDataSourceUri ``uri``.
+Adds uri parameters relating to the settings for a WMS or WCS connection to a :py:class:`QgsDataSourceUri` ``uri``.
 Connection settings are taken from the specified QSettings ``settingsKey``.
 
 .. versionadded:: 3.0
@@ -65,7 +65,7 @@ Connection settings are taken from the specified QSettings ``settingsKey``.
 
     static QgsDataSourceUri &addWfsConnectionSettings( QgsDataSourceUri &uri, const QString &settingsKey );
 %Docstring
-Adds uri parameters relating to the settings for a WFS connection to a QgsDataSourceUri ``uri``.
+Adds uri parameters relating to the settings for a WFS connection to a :py:class:`QgsDataSourceUri` ``uri``.
 Connection settings are taken from the specified QSettings ``settingsKey``.
 
 .. versionadded:: 3.0

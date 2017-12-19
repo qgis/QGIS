@@ -703,7 +703,7 @@ Register a feature for labeling.
 :param f: feature to label
 :param context: render context. The QgsExpressionContext contained within the render context
 must have already had the feature and fields sets prior to calling this method.
-:param labelFeature: if using QgsLabelingEngine, this will receive the label feature. Not available
+:param labelFeature: if using :py:class:`QgsLabelingEngine`, this will receive the label feature. Not available
 in Python bindings.
 :param obstacleGeometry: optional obstacle geometry, if a different geometry to the feature's geometry
 should be used as an obstacle for labels (e.g., if the feature has been rendered with an offset point

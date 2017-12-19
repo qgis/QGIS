@@ -58,7 +58,7 @@ By default will init the user settings.
 
 .. note::
 
-   Returns a new QgsUserProfile. Ownership transferred to caller.
+   Returns a new :py:class:`QgsUserProfile`. Ownership transferred to caller.
 %End
 
     void setRootLocation( const QString &rootProfileLocation );

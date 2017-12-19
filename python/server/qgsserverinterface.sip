@@ -40,19 +40,19 @@ a certain priority through the registerFilter( QgsServerFilter* , int) method.
 %Docstring
 Get pointer to the capabiblities cache
 
-:return: QgsCapabilitiesCache
+:return: :py:class:`QgsCapabilitiesCache`
 %End
 
     virtual QgsRequestHandler *requestHandler() = 0 /KeepReference/;
 %Docstring
 Get pointer to the request handler
 
-:return: QgsRequestHandler
+:return: :py:class:`QgsRequestHandler`
 %End
 
     virtual void registerFilter( QgsServerFilter *filter /Transfer/, int priority = 0 ) = 0;
 %Docstring
-Register a QgsServerFilter
+Register a :py:class:`QgsServerFilter`
 
 :param filter: the QgsServerFilter to add
 :param priority: an optional priority for the filter order
@@ -62,14 +62,14 @@ Register a QgsServerFilter
 %Docstring
 Set the filters map
 
-:param filters: the QgsServerFiltersMap
+:param filters: the :py:class:`QgsServerFiltersMap`
 %End
 
     virtual QgsServerFiltersMap filters() = 0;
 %Docstring
-Return the list of current QgsServerFilter
+Return the list of current :py:class:`QgsServerFilter`
 
-:return: QgsServerFiltersMap list of QgsServerFilter
+:return: QgsServerFiltersMap list of :py:class:`QgsServerFilter`
 %End
 
     virtual void registerAccessControl( QgsAccessControlFilter *accessControl /Transfer/, int priority = 0 ) = 0;
@@ -122,7 +122,7 @@ Remove entries from layer cache
 %Docstring
 Return the service registry
 
-:return: QgsServiceResgistry
+:return: :py:class:`QgsServiceResgistry`
 %End
 
 

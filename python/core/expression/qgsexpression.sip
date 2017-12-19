@@ -350,7 +350,7 @@ Additional substitutions can be passed through the substitutionMap parameter
 
 :param action: The source string in which placeholders should be replaced.
 :param context: Expression context
-:param distanceArea: Optional QgsDistanceArea. If specified, the QgsDistanceArea is used for distance
+:param distanceArea: Optional :py:class:`QgsDistanceArea`. If specified, the QgsDistanceArea is used for distance
 and area conversion
 
 .. versionadded:: 2.12

@@ -21,7 +21,7 @@ QGIS application uses QgsMessageLog class for logging messages in a dockable
 window for the user.
 
 QgsMessageLog is not usually directly created, but rather accessed through
-QgsApplication.messageLog().
+:py:func:`QgsApplication.messageLog()`
 %End
 
 %TypeHeaderCode

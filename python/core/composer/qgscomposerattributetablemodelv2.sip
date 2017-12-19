@@ -31,7 +31,7 @@ A model for displaying columns shown in a QgsComposerAttributeTableV2
 
     QgsComposerAttributeTableColumnModelV2( QgsComposerAttributeTableV2 *composerTable, QObject *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsComposerAttributeTableColumnModel.
+Constructor for :py:class:`QgsComposerAttributeTableColumnModel`.
 
 :param composerTable: QgsComposerAttributeTable the model is attached to
 :param parent: optional parent
@@ -96,9 +96,9 @@ Returns the QgsComposerTableColumn corresponding to an index in the model.
 %Docstring
 Returns a QModelIndex corresponding to a QgsComposerTableColumn in the model.
 
-:return: QModelIndex for specified QgsComposerTableColumn
+:return: QModelIndex for specified :py:class:`QgsComposerTableColumn`
 
-:param column: a QgsComposerTableColumn
+:param column: a :py:class:`QgsComposerTableColumn`
 
 .. versionadded:: 2.3
 
@@ -107,10 +107,10 @@ Returns a QModelIndex corresponding to a QgsComposerTableColumn in the model.
 
     void setColumnAsSorted( QgsComposerTableColumn *column, Qt::SortOrder order );
 %Docstring
-Sets a specified column as a sorted column in the QgsComposerAttributeTable. The column will be
+Sets a specified column as a sorted column in the :py:class:`QgsComposerAttributeTable`. The column will be
 added to the end of the sort rank list, ie it will take the next largest available sort rank.
 
-:param column: a QgsComposerTableColumn
+:param column: a :py:class:`QgsComposerTableColumn`
 :param order: sort order for column
 
 .. versionadded:: 2.3
@@ -122,10 +122,10 @@ added to the end of the sort rank list, ie it will take the next largest availab
 
     void setColumnAsUnsorted( QgsComposerTableColumn *column );
 %Docstring
-Sets a specified column as an unsorted column in the QgsComposerAttributeTable. The column will be
+Sets a specified column as an unsorted column in the :py:class:`QgsComposerAttributeTable`. The column will be
 removed from the sort rank list.
 
-:param column: a QgsComposerTableColumn
+:param column: a :py:class:`QgsComposerTableColumn`
 
 .. versionadded:: 2.3
 
@@ -134,9 +134,9 @@ removed from the sort rank list.
 
     bool moveColumnInSortRank( QgsComposerTableColumn *column, ShiftDirection direction );
 %Docstring
-Moves a column up or down in the sort rank for the QgsComposerAttributeTable.
+Moves a column up or down in the sort rank for the :py:class:`QgsComposerAttributeTable`.
 
-:param column: a QgsComposerTableColumn
+:param column: a :py:class:`QgsComposerTableColumn`
 :param direction: direction to move the column in the sort rank list
 
 .. versionadded:: 2.3
@@ -167,7 +167,7 @@ Allows for filtering QgsComposerAttributeTable columns by columns which are sort
 
     QgsComposerTableSortColumnsProxyModelV2( QgsComposerAttributeTableV2 *composerTable, ColumnFilterType filterType, QObject *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsComposerTableSortColumnsProxyModel.
+Constructor for :py:class:`QgsComposerTableSortColumnsProxyModel`.
 
 :param composerTable: QgsComposerAttributeTable the model is attached to
 :param filterType: filter for columns, controls whether sorted or unsorted columns are shown
@@ -220,7 +220,7 @@ Returns the QgsComposerTableColumn corresponding to an index in the proxy model.
 Returns the QgsComposerTableColumn corresponding to an index from the source
 QgsComposerAttributeTableColumnModel model.
 
-:return: QgsComposerTableColumn for specified index from QgsComposerAttributeTableColumnModel
+:return: QgsComposerTableColumn for specified index from :py:class:`QgsComposerAttributeTableColumnModel`
 
 :param sourceIndex: a QModelIndex
 

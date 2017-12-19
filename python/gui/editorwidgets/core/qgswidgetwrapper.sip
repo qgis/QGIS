@@ -112,7 +112,7 @@ Returns information about the context in which this widget is shown
 
     QgsVectorLayer *layer() const;
 %Docstring
-Access the QgsVectorLayer, you are working on
+Access the :py:class:`QgsVectorLayer`, you are working on
 
 :return: The layer
 

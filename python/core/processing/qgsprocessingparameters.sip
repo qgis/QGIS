@@ -474,10 +474,10 @@ A collection of utilities for working with parameters when running a processing 
 
 Parameters are stored in a QVariantMap and referenced by a unique string key.
 The QVariants in parameters are not usually accessed
-directly, and instead the high level API provided through QgsProcessingParameters
+directly, and instead the high level API provided through :py:class:`QgsProcessingParameters`
 parameterAsString(), parameterAsDouble() are used instead.
 
-Parameters are evaluated using a provided QgsProcessingContext, allowing
+Parameters are evaluated using a provided :py:class:`QgsProcessingContext`, allowing
 the evaluation to understand available map layers and expression contexts
 (for expression based parameters).
 
@@ -542,7 +542,7 @@ of the resulting feature sink.
 Sinks will either be taken from ``context``'s active project, or created from external
 providers and stored temporarily in the ``context``. The ``destinationIdentifier``
 argument will be set to a string which can be used to retrieve the layer corresponding
-to the sink, e.g. via calling QgsProcessingUtils.mapLayerFromString().
+to the sink, e.g. via calling :py:func:`QgsProcessingUtils.mapLayerFromString()`
 
 This function creates a new object and the caller takes responsibility for deleting the returned object.
 %End

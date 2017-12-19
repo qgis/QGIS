@@ -35,7 +35,7 @@ Note that QgsServerRequest and QgsServerResponse MUST live in the same scope
 
     void setServiceException( const QgsServerException &ex );
 %Docstring
-Allow plugins to return a QgsMapServiceException
+Allow plugins to return a :py:class:`QgsMapServiceException`
 %End
 
     void sendResponse();

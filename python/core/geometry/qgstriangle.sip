@@ -25,7 +25,7 @@ class QgsTriangle : QgsPolygon
 
     QgsTriangle( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3 );
 %Docstring
-Construct a QgsTriangle from three QgsPointV2.
+Construct a QgsTriangle from three :py:class:`QgsPointV2`.
 
 :param p1: first point
 :param p2: second point
@@ -34,7 +34,7 @@ Construct a QgsTriangle from three QgsPointV2.
 
     explicit QgsTriangle( const QgsPointXY &p1, const QgsPointXY &p2, const QgsPointXY &p3 );
 %Docstring
-Construct a QgsTriangle from three QgsPoint.
+Construct a QgsTriangle from three :py:class:`QgsPoint`.
 
 :param p1: first point
 :param p2: second point
@@ -246,7 +246,7 @@ QgsTriangle().isScalene()
 
     QVector<QgsLineString> altitudes() const;
 %Docstring
-An altitude is a segment (defined by a QgsLineString) from a vertex to the opposite side (or, if necessary, to the extension of the opposite side).
+An altitude is a segment (defined by a :py:class:`QgsLineString`) from a vertex to the opposite side (or, if necessary, to the extension of the opposite side).
 
 :return: Three altitudes from this triangle.
 An empty list is returned for empty triangle.
@@ -262,7 +262,7 @@ QgsTriangle().altitudes()
 
     QVector<QgsLineString> medians() const;
 %Docstring
-A median is a segment (defined by a QgsLineString) from a vertex to the midpoint of the opposite side.
+A median is a segment (defined by a :py:class:`QgsLineString`) from a vertex to the midpoint of the opposite side.
 
 :return: Three medians from this triangle.
 An empty list is returned for empty triangle.
@@ -278,7 +278,7 @@ QgsTriangle().medians()
 
     QVector<QgsLineString> bisectors( double lengthTolerance = 0.0001 ) const;
 %Docstring
-The segment (defined by a QgsLineString) returned bisect the angle of a vertex to the opposite side.
+The segment (defined by a :py:class:`QgsLineString`) returned bisect the angle of a vertex to the opposite side.
 
 :param lengthTolerance: The tolerance to use.
 
@@ -364,7 +364,7 @@ QgsTriangle().circumscribedRadius()
 %Docstring
 Circumscribed circle of the triangle.
 
-:return: The circumbscribed of the triangle with a QgsCircle.
+:return: The circumbscribed of the triangle with a :py:class:`QgsCircle`.
 An empty circle is returned for empty triangle.
 Example:
 \code{.py}
@@ -372,7 +372,7 @@ tri = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ) )
 tri.circumscribedCircle()
 # QgsCircle(Point (2.5 2.5), 3.5355339059327378, 0)
 QgsTriangle().circumscribedCircle()
-# QgsCircle()
+# :py:class:`QgsCircle`()
 \endcode
 %End
 
@@ -412,7 +412,7 @@ QgsTriangle().inscribedRadius()
 %Docstring
 Inscribed circle of the triangle.
 
-:return: The inscribed of the triangle with a QgsCircle.
+:return: The inscribed of the triangle with a :py:class:`QgsCircle`.
 An empty circle is returned for empty triangle.
 Example:
 \code{.py}
@@ -420,7 +420,7 @@ tri = QgsTriangle( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 5 ) )
 tri.inscribedCircle()
 # QgsCircle(Point (1.46446609406726225 3.53553390593273775), 1.4644660940672622, 0)
 QgsTriangle().inscribedCircle()
-# QgsCircle()
+# :py:class:`QgsCircle`()
 \endcode
 %End
 

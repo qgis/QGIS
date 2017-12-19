@@ -206,7 +206,7 @@ Set the icon size
 %Docstring
 Calculates the minimum icon size to prevent cropping. When evaluating
 the size for multiple icons it is more efficient to create a single
-render context in advance and use the variant which accepts a QgsRenderContext
+render context in advance and use the variant which accepts a :py:class:`QgsRenderContext`
 argument.
 
 .. versionadded:: 2.10

@@ -52,7 +52,7 @@ should be called for the QgsComposerMap to prevent rendering artifacts
 
     void removeGrid( const QString &gridId );
 %Docstring
-Removes a grid from the stack and deletes the corresponding QgsComposerMapGrid
+Removes a grid from the stack and deletes the corresponding :py:class:`QgsComposerMapGrid`
 
 :param gridId: id for the QgsComposerMapGrid to remove
 
@@ -179,7 +179,7 @@ class QgsComposerMapGrid : QgsComposerMapItem
 {
 %Docstring
  An individual grid which is drawn above the map content in a
-QgsComposerMap.
+:py:class:`QgsComposerMap`.
 
 .. versionadded:: 2.5
 

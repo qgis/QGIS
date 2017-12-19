@@ -57,7 +57,7 @@ Emitted when the dialog settings change
 class QgsPresetColorRampDialog : QDialog
 {
 %Docstring
-A dialog which allows users to modify the properties of a QgsPresetSchemeColorRamp.
+A dialog which allows users to modify the properties of a :py:class:`QgsPresetSchemeColorRamp`.
 
 .. versionadded:: 3.0
 %End

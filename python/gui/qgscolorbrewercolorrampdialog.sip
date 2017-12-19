@@ -58,7 +58,7 @@ Emitted when the dialog settings change
 class QgsColorBrewerColorRampDialog : QDialog
 {
 %Docstring
-A dialog which allows users to modify the properties of a QgsColorBrewerColorRamp.
+A dialog which allows users to modify the properties of a :py:class:`QgsColorBrewerColorRamp`.
 
 .. versionadded:: 3.0
 %End

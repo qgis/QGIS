@@ -27,7 +27,7 @@ enter their sizes and positions.
 
     QgsLayoutItemPropertiesDialog( QWidget *parent = 0, Qt::WindowFlags flags = 0 );
 %Docstring
-Constructor for QgsLayoutNewItemPropertiesDialog.
+Constructor for :py:class:`QgsLayoutNewItemPropertiesDialog`.
 %End
 
     void setItemPosition( QgsLayoutPoint position );

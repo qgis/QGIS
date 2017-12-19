@@ -321,7 +321,7 @@ Must be called when an item's selection status changes
 
     QModelIndex indexForItem( QgsComposerItem *item, const int column = 0 );
 %Docstring
-Returns the QModelIndex corresponding to a QgsComposerItem, if possible
+Returns the QModelIndex corresponding to a :py:class:`QgsComposerItem`, if possible
 
 :param item: QgsComposerItem to find index for
 :param column: column number for created QModelIndex
@@ -414,7 +414,7 @@ QgsComposerModel model.
 
 :param sourceIndex: a QModelIndex
 
-:return: QgsComposerItem for specified index from QgsComposerModel
+:return: QgsComposerItem for specified index from :py:class:`QgsComposerModel`
 %End
 
   protected:

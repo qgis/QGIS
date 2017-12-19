@@ -58,7 +58,7 @@ If this cache index is able to completely answer the feature request, it will re
 and set the iterator to a valid iterator over the cached features. If it is not able
 it will return false.
 
-:param featureIterator:  A reference to a QgsFeatureIterator. A valid featureIterator will
+:param featureIterator:  A reference to a :py:class:`QgsFeatureIterator`. A valid featureIterator will
 be assigned in case this index is able to answer the request and the return
 value is true.
 :param featureRequest:   The feature request, for which this index is queried.

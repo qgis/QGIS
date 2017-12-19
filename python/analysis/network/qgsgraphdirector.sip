@@ -37,7 +37,7 @@ using "builder" design patter.
                             QVector< QgsPointXY > &snappedPoints /Out/,
                             QgsFeedback *feedback = 0 ) const;
 %Docstring
-Make a graph using QgsGraphBuilder
+Make a graph using :py:class:`QgsGraphBuilder`
 
 :param builder: the graph builder
 :param additionalPoints: list of points that should be snapped to the graph

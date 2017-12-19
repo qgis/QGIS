@@ -187,7 +187,7 @@ which deferred z-order updates.
 Returns the layout item with matching ``uuid`` unique identifier, or a None
 if a matching item could not be found.
 
-If ``includeTemplateUuids`` is true, then item's QgsLayoutItem.templateUuid()
+If ``includeTemplateUuids`` is true, then item's :py:func:`QgsLayoutItem.templateUuid()`
 will also be tested when trying to match the uuid.
 
 .. seealso:: :py:func:`multiFrameByUuid()`

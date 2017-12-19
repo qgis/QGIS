@@ -30,7 +30,7 @@ Widget for configuration of appearance of legend for marker symbols with data-de
 Creates the dialog and initializes the content to what is passed in the legend configuration (may be null).
 The ddSize argument determines scaling of the marker symbol - it should have a size scale transformer assigned
 to know the range of sizes. The overrideSymbol argument may override the source symbol: this is useful in case
-when the symbol is given from outside rather than being set inside QgsDataDefinedSizeLegend.
+when the symbol is given from outside rather than being set inside :py:class:`QgsDataDefinedSizeLegend`.
 %End
     ~QgsDataDefinedSizeLegendWidget();
 

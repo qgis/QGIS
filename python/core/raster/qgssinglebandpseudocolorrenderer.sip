@@ -23,7 +23,7 @@ Raster renderer pipe for single band pseudocolor.
 
     QgsSingleBandPseudoColorRenderer( QgsRasterInterface *input, int band = -1, QgsRasterShader *shader /Transfer/ = 0 );
 %Docstring
-Note: takes ownership of QgsRasterShader
+Note: takes ownership of :py:class:`QgsRasterShader`
 %End
 
 

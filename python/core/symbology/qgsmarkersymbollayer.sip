@@ -474,7 +474,7 @@ Prepares cache image
 class QgsFilledMarkerSymbolLayer : QgsSimpleMarkerSymbolLayerBase
 {
 %Docstring
- Filled marker symbol layer, consisting of a shape which is rendered using a QgsFillSymbol. This allows
+ Filled marker symbol layer, consisting of a shape which is rendered using a :py:class:`QgsFillSymbol`. This allows
 the symbol to support advanced styling of the interior and stroke of the shape.
 
 .. versionadded:: 2.16

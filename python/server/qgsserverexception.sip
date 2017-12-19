@@ -94,7 +94,7 @@ return exception version
     virtual QByteArray formatResponse( QString &responseFormat /Out/ ) const;
 
 %Docstring
-Overridden from QgsServerException
+Overridden from :py:class:`QgsServerException`
 %End
 
 };

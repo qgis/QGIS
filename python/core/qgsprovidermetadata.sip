@@ -42,7 +42,7 @@ library object.
 %Docstring
 This returns the unique key associated with the provider
 
-This key string is used for the associative container in QgsProviderRegistry
+This key string is used for the associative container in :py:class:`QgsProviderRegistry`
 %End
 
     QString description() const;

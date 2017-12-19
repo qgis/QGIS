@@ -43,7 +43,7 @@ class QgsMultiPolygon: QgsMultiSurface
     virtual QgsMultiSurface *toCurveType() const /Factory/;
 
 %Docstring
-Returns the geometry converted to the more generic curve type QgsMultiSurface
+Returns the geometry converted to the more generic curve type :py:class:`QgsMultiSurface`
 
 :return: the converted geometry. Caller takes ownership*
 %End

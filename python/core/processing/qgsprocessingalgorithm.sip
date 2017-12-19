@@ -269,7 +269,7 @@ Returns true if this algorithm generates HTML outputs.
 %Docstring
 Executes the algorithm using the specified ``parameters``. This method internally
 creates a copy of the algorithm before running it, so it is safe to call
-on algorithms directly retrieved from QgsProcessingRegistry and QgsProcessingProvider.
+on algorithms directly retrieved from QgsProcessingRegistry and :py:class:`QgsProcessingProvider`.
 
 The ``context`` argument specifies the context in which the algorithm is being run.
 
@@ -299,7 +299,7 @@ calling runPrepared() (which is safe to do in any thread).
 .. note::
 
    This method modifies the algorithm instance, so it is not safe to call
-on algorithms directly retrieved from QgsProcessingRegistry and QgsProcessingProvider. Instead, a copy
+on algorithms directly retrieved from QgsProcessingRegistry and :py:class:`QgsProcessingProvider`. Instead, a copy
 of the algorithm should be created with clone() and prepare()/runPrepared() called on the copy.
 %End
 
@@ -317,7 +317,7 @@ to allow the algorithm to perform any required cleanup tasks and return its fina
 .. note::
 
    This method modifies the algorithm instance, so it is not safe to call
-on algorithms directly retrieved from QgsProcessingRegistry and QgsProcessingProvider. Instead, a copy
+on algorithms directly retrieved from QgsProcessingRegistry and :py:class:`QgsProcessingProvider`. Instead, a copy
 of the algorithm should be created with clone() and prepare()/runPrepared() called on the copy.
 %End
 
@@ -330,7 +330,7 @@ includes the results evaluated by the algorithm.
 .. note::
 
    This method modifies the algorithm instance, so it is not safe to call
-on algorithms directly retrieved from QgsProcessingRegistry and QgsProcessingProvider. Instead, a copy
+on algorithms directly retrieved from QgsProcessingRegistry and :py:class:`QgsProcessingProvider`. Instead, a copy
 of the algorithm should be created with clone() and prepare()/runPrepared() called on the copy.
 %End
 
@@ -413,7 +413,7 @@ as a result of a duplicate name).
 This should usually be called from a subclass' initAlgorithm() implementation.
 
 If the ``createOutput`` argument is true, then a corresponding output definition will also be created
-(and added to the algorithm) where appropriate. E.g. when adding a QgsProcessingParameterVectorDestination
+(and added to the algorithm) where appropriate. E.g. when adding a :py:class:`QgsProcessingParameterVectorDestination`
 and ``createOutput`` is true, then a QgsProcessingOutputVectorLayer output will be created and
 added to the algorithm. There is no need to call addOutput() to manually add a corresponding output
 for this vector. If ``createOutput`` is false then this automatic output creation will not
@@ -590,7 +590,7 @@ The ``fields``, ``geometryType`` and ``crs`` parameters dictate the properties
 of the resulting feature sink.
 
 The ``destinationIdentifier`` argument will be set to a string which can be used to retrieve the layer corresponding
-to the sink, e.g. via calling QgsProcessingUtils.mapLayerFromString().
+to the sink, e.g. via calling :py:func:`QgsProcessingUtils.mapLayerFromString()`
 
 This function creates a new object and the caller takes responsibility for deleting the returned object.
 %End
@@ -861,7 +861,7 @@ geometry with the centroid of the original feature geometry for a 'centroid' typ
 algorithm).
 
 Implementations should return the modified feature. Returning an invalid feature (e.g.
-a default constructed QgsFeature) will indicate that this feature should be 'skipped',
+a default constructed :py:class:`QgsFeature`) will indicate that this feature should be 'skipped',
 and will not be added to the algorithm's output. Subclasses can use this approach to
 filter the incoming features as desired.
 

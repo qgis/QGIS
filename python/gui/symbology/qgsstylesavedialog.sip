@@ -25,7 +25,7 @@ class QgsStyleSaveDialog: QDialog
 
     QgsStyleSaveDialog( QWidget *parent /TransferThis/ = 0, QgsStyle::StyleEntity type = QgsStyle::SymbolEntity );
 %Docstring
-Constructor for QgsSymbolSaveDialog
+Constructor for :py:class:`QgsSymbolSaveDialog`
 
 :param parent: parent widget
 :param type: the QgsStyle entity type being saved

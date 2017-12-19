@@ -125,11 +125,11 @@ used for drawing column values within cells.
     QString attribute() const;
 %Docstring
 Returns the attribute name or expression used for the column's values. This property
-is only used when the column is part of a QgsLayoutItemAttributeTable.
+is only used when the column is part of a :py:class:`QgsLayoutItemAttributeTable`.
 
 .. note::
 
-   only applicable when used in a QgsLayoutItemAttributeTable
+   only applicable when used in a :py:class:`QgsLayoutItemAttributeTable`
 
 .. seealso:: :py:func:`setAttribute()`
 %End
@@ -137,11 +137,11 @@ is only used when the column is part of a QgsLayoutItemAttributeTable.
     void setAttribute( const QString &attribute );
 %Docstring
 Sets the ``attribute`` name or expression used for the column's values. This property
-is only used when the column is part of a QgsLayoutItemAttributeTable.
+is only used when the column is part of a :py:class:`QgsLayoutItemAttributeTable`.
 
 .. note::
 
-   only applicable when used in a QgsLayoutItemAttributeTable
+   only applicable when used in a :py:class:`QgsLayoutItemAttributeTable`
 
 .. seealso:: :py:func:`attribute()`
 %End
@@ -153,7 +153,7 @@ is part of a QgsLayoutItemAttributeTable and when sortByRank is > 0.
 
 .. note::
 
-   only applicable when used in a QgsLayoutItemAttributeTable
+   only applicable when used in a :py:class:`QgsLayoutItemAttributeTable`
 
 .. seealso:: :py:func:`setSortOrder()`
 
@@ -167,7 +167,7 @@ is part of a QgsLayoutItemAttributeTable and when sortByRank() is > 0.
 
 .. note::
 
-   only applicable when used in a QgsLayoutItemAttributeTable
+   only applicable when used in a :py:class:`QgsLayoutItemAttributeTable`
 
 .. seealso:: :py:func:`sortOrder()`
 
@@ -180,13 +180,13 @@ Returns the sort rank for the column. If the sort rank is > 0 then the column
 will be sorted in the table. The sort rank specifies the priority given to the
 column when the table is sorted by multiple columns, with lower sort ranks
 having higher priority. This property is only used when the column
-is part of a QgsLayoutItemAttributeTable.
+is part of a :py:class:`QgsLayoutItemAttributeTable`.
 
 If sort rank is <= 0 then the column is not being sorted.
 
 .. note::
 
-   only applicable when used in a QgsLayoutItemAttributeTable
+   only applicable when used in a :py:class:`QgsLayoutItemAttributeTable`
 
 .. seealso:: :py:func:`setSortByRank()`
 
@@ -199,12 +199,12 @@ Sets the sort ``rank`` for the column. If the sort rank is > 0 then the column
 will be sorted in the table. The sort rank specifies the priority given to the
 column when the table is sorted by multiple columns, with lower sort ranks
 having higher priority. This property is only used when the column
-is part of a QgsComposerAttributeTable.
+is part of a :py:class:`QgsComposerAttributeTable`.
 If the sort ``rank`` is <= 0 then the column is not being sorted.
 
 .. note::
 
-   only applicable when used in a QgsLayoutItemAttributeTable
+   only applicable when used in a :py:class:`QgsLayoutItemAttributeTable`
 
 .. seealso:: :py:func:`sortByRank()`
 

@@ -46,7 +46,7 @@ specifying the statistic in the constructor or via setStatistics().
 
     QgsStringStatisticalSummary( QgsStringStatisticalSummary::Statistics stats = QgsStringStatisticalSummary::All );
 %Docstring
-Constructor for QgsStringStatistics
+Constructor for :py:class:`QgsStringStatistics`
 
 :param stats: flags for statistics to calculate
 %End

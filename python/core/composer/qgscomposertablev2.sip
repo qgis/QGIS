@@ -543,7 +543,7 @@ Returns a pointer to the list of QgsComposerTableColumns shown in the table
 
     void setColumns( const QgsComposerTableColumns &columns /Transfer/ );
 %Docstring
-Replaces the columns in the table with a specified list of QgsComposerTableColumns.
+Replaces the columns in the table with a specified list of :py:class:`QgsComposerTableColumns`.
 
 :param columns: list of QgsComposerTableColumns to show in table. Ownership of columns
 is transferred to the table.

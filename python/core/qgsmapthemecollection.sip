@@ -193,7 +193,7 @@ in the canvas.
 
     QMap<QString, QString> mapThemeStyleOverrides( const QString &name );
 %Docstring
-Get layer style overrides (for QgsMapSettings) of the visible layers for given map theme.
+Get layer style overrides (for :py:class:`QgsMapSettings`) of the visible layers for given map theme.
 
 .. versionadded:: 3.0
 %End

@@ -66,7 +66,7 @@ passed, the message will be a generic
     void setShowNoProjection( bool show );
 %Docstring
 Sets whether a "no/invalid" projection option should be shown. If this
-option is selected, calling crs() will return an invalid QgsCoordinateReferenceSystem.
+option is selected, calling crs() will return an invalid :py:class:`QgsCoordinateReferenceSystem`.
 
 .. seealso:: :py:func:`showNoProjection()`
 
@@ -76,7 +76,7 @@ option is selected, calling crs() will return an invalid QgsCoordinateReferenceS
     bool showNoProjection() const;
 %Docstring
 Returns whether the "no/invalid" projection option is shown. If this
-option is selected, calling crs() will return an invalid QgsCoordinateReferenceSystem.
+option is selected, calling crs() will return an invalid :py:class:`QgsCoordinateReferenceSystem`.
 
 .. versionadded:: 3.0
 

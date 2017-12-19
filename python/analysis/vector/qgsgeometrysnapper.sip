@@ -77,7 +77,7 @@ class QgsInternalGeometrySnapper
 %Docstring
 QgsInternalGeometrySnapper allows a set of geometries to be snapped to each other. It can be used to close gaps in layers.
 
-To use QgsInternalGeometrySnapper, first construct the snapper using the desired snap parameters. Then,
+To use :py:class:`QgsInternalGeometrySnapper`, first construct the snapper using the desired snap parameters. Then,
 features are fed to to the snapper one-by-one by calling snapFeature(). Each feature passed by calling
 snapFeature() will be snapped to any features which have already been processed by the snapper.
 

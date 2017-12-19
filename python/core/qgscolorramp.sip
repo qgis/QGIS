@@ -517,7 +517,7 @@ Constructor for QgsPresetSchemeColorRamp.
 
     QgsPresetSchemeColorRamp( const QgsNamedColorList &colors );
 %Docstring
-Constructor for QgsPresetColorRamp.
+Constructor for :py:class:`QgsPresetColorRamp`.
 
 :param colors: list of named colors in ramp
 

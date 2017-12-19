@@ -84,7 +84,7 @@ Returns the type of the layer.
 
     QString id() const;
 %Docstring
-Returns the layer's unique ID, which is used to access this layer from QgsProject.
+Returns the layer's unique ID, which is used to access this layer from :py:class:`QgsProject`.
 %End
 
     void setName( const QString &name );
@@ -446,12 +446,12 @@ Sets state from Dom document
 \note
 
 The Dom node corresponds to a Dom document project file XML element read
-by QgsProject.
+by :py:class:`QgsProject`.
 
 This, in turn, calls readXml(), which is over-rideable by sub-classes so
 that they can read their own specific state from the given Dom node.
 
-Invoked by QgsProject.read().
+Invoked by :py:func:`QgsProject.read()`
 
 :return: true if successful
 %End
@@ -466,12 +466,12 @@ Stores state in Dom node
 \note
 
 The Dom node corresponds to a Dom document project file XML element to be
-written by QgsProject.
+written by :py:class:`QgsProject`.
 
 This, in turn, calls writeXml(), which is over-rideable by sub-classes so
 that they can write their own specific state to the given Dom node.
 
-Invoked by QgsProject.write().
+Invoked by :py:func:`QgsProject.write()`
 
 :return: true if successful
 %End
@@ -1140,7 +1140,7 @@ Data of layer changed
 
     void blendModeChanged( QPainter::CompositionMode blendMode );
 %Docstring
-Signal emitted when the blend mode is changed, through QgsMapLayer.setBlendMode()
+Signal emitted when the blend mode is changed, through :py:func:`QgsMapLayer.setBlendMode()`
 %End
 
     void rendererChanged();

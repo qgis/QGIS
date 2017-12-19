@@ -139,7 +139,7 @@ class QgsComposerMapItemStack
 {
 %Docstring
  A collection of map items which are drawn above the map content in a
-QgsComposerMap. The item stack controls which items are drawn and the
+:py:class:`QgsComposerMap`. The item stack controls which items are drawn and the
 order they are drawn in.
 
 .. versionadded:: 2.5
@@ -227,7 +227,7 @@ should be called for the QgsComposerMap to prevent rendering artifacts
 
     void removeItem( const QString &itemId );
 %Docstring
-Removes an item from the stack and deletes the corresponding QgsComposerMapItem
+Removes an item from the stack and deletes the corresponding :py:class:`QgsComposerMapItem`
 
 :param itemId: id for the QgsComposerMapItem to remove
 

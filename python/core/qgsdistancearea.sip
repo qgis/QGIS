@@ -69,7 +69,7 @@ Returns the source spatial reference system.
     bool setEllipsoid( const QString &ellipsoid );
 %Docstring
 Sets the ``ellipsoid`` by its acronym. Known ellipsoid acronyms can be
-retrieved using QgsEllipsoidUtils.acronyms().
+retrieved using :py:func:`QgsEllipsoidUtils.acronyms()`
 Calculations will only use the ellipsoid if a valid ellipsoid has been set.
 
 :return: true if ellipsoid was successfully set

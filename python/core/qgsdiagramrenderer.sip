@@ -467,7 +467,7 @@ Returns list of legend nodes for the diagram
 
 .. note::
 
-   caller is responsible for deletion of QgsLayerTreeModelLegendNodes
+   caller is responsible for deletion of :py:class:`QgsLayerTreeModelLegendNodes`
 
 .. versionadded:: 2.10
 %End
@@ -588,7 +588,7 @@ Returns list of legend nodes for the diagram
 
 .. note::
 
-   caller is responsible for deletion of QgsLayerTreeModelLegendNodes
+   caller is responsible for deletion of :py:class:`QgsLayerTreeModelLegendNodes`
 
 .. versionadded:: 2.10
 %End

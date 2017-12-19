@@ -160,7 +160,7 @@ the current name should contain its QgsProjectPropertyValue.
 
 E.g., given the key sequence "/foo/bar", "foo" will have a corresponding
 QgsProjectPropertyKey with a name "foo".  It will contain an element in its
-mProperties that maps to "bar", which is another QgsProjectPropertyKey.  The "bar"
+mProperties that maps to "bar", which is another :py:class:`QgsProjectPropertyKey`.  The "bar"
 QgsProjectPropertyKey will, in turn, have an element that maps to itself, i.e. "bar",
 that will contain a QgsProjectPropertyValue.
 

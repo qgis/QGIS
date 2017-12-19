@@ -63,7 +63,7 @@ and ``width`` and ``height``.
 
     void set( const QgsPointXY &p1, const QgsPointXY &p2 );
 %Docstring
-Sets the rectangle from two QgsPoints. The rectangle is
+Sets the rectangle from two :py:class:`QgsPoints`. The rectangle is
 normalised after construction.
 %End
 

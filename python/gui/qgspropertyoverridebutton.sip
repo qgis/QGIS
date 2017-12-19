@@ -96,7 +96,7 @@ widget.
 
     void setToProperty( const QgsProperty &property );
 %Docstring
-Sets the widget to reflect the current state of a QgsProperty.
+Sets the widget to reflect the current state of a :py:class:`QgsProperty`.
 %End
 
     int propertyKey() const;

@@ -318,7 +318,7 @@ if the map tool depends on preconditions like a feature selection.
 
     void disable();
 %Docstring
-Disable the widget. Normally done automatically from QgsMapToolAdvancedDigitizing.deactivate().
+Disable the widget. Normally done automatically from :py:func:`QgsMapToolAdvancedDigitizing.deactivate()`
 %End
 
     void updateCadPaintItem();

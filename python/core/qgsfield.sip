@@ -199,7 +199,7 @@ empty string if no default is set
 Sets an expression to use when calculating the default value for the field.
 
 :param defaultValueDefinition: expression to evaluate when calculating default values for field. Pass
-a default constructed QgsDefaultValue() to reset.
+a default constructed :py:class:`QgsDefaultValue`() to reset.
 
 .. versionadded:: 3.0
 
