@@ -27,7 +27,7 @@ class TestQgsMapToolReshape : public QObject
 {
     Q_OBJECT
   public:
-    TestQgsMapToolReshape() = default;
+    TestQgsMapToolReshape() : mQgisApp( nullptr ) {}
 
   private slots:
     void initTestCase(); // will be called before the first testfunction is executed.
@@ -38,7 +38,7 @@ class TestQgsMapToolReshape : public QObject
     void reshapeWithBindingLine();
 
   private:
-    QgisApp *mQgisApp = nullptr;
+    QgisApp *mQgisApp;
 };
 
 void TestQgsMapToolReshape::initTestCase()
