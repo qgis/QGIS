@@ -170,7 +170,7 @@ Runs a render check on the layout, adding results to the specified ``report``.
 The maximum number of allowable pixels differing from the reference image is
 specified via the ``pixelDiff`` argument.
 
-A reference image can be creates by setting ``createReferenceImage`` to true
+A reference image can be created by setting ``createReferenceImage`` to true
 in this case the test will always return true.
 
 The page number is specified via ``page``, where 0 corresponds to the first

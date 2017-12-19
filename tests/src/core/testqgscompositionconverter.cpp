@@ -59,7 +59,7 @@ class TestQgsCompositionConverter: public QObject
     void importComposerTemplateShape();
 
     /**
-     * Test import multiple ements from a composer template
+     * Test import multiple elements from a composer template
      */
     void importComposerTemplate();
 
