@@ -51,7 +51,7 @@ QgsDatumTransformDialog::QgsDatumTransformDialog( const QgsCoordinateReferenceSy
   //get list of datum transforms
   mSourceCrs = sourceCrs;
   mDestinationCrs = destinationCrs;
-  mDatumTransforms = QgsCoordinateTransform::datumTransformations( sourceCrs, destinationCrs );
+  mDatumTransforms = QgsDatumTransform::datumTransformations( sourceCrs, destinationCrs );
 
   QApplication::setOverrideCursor( Qt::ArrowCursor );
 
