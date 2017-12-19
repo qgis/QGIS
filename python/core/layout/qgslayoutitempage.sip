@@ -91,8 +91,9 @@ will be set to true if string could be successfully interpreted as a
 page orientation.
 %End
 
-    virtual void attemptResize( const QgsLayoutSize &size, bool includesFrame = false );
+    virtual QRectF boundingRect() const;
 
+    virtual void attemptResize( const QgsLayoutSize &size, bool includesFrame = false );
 
     virtual QgsAbstractLayoutUndoCommand *createCommand( const QString &text, int id, QUndoCommand *parent = 0 ) /Factory/;
 

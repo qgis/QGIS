@@ -32,10 +32,11 @@ QgsLayoutItemPage::QgsLayoutItemPage( QgsLayout *layout )
   setFlag( QGraphicsItem::ItemIsMovable, false );
   setZValue( QgsLayout::ZPage );
 
-  // use a hidden pen to specify the amount the page "bleeds" outside it's scene bounds,
-  // (it's a lot easier than reimplementing boundingRect() just to handle this)
-  QPen shadowPen( QBrush( Qt::transparent ), layout->pageCollection()->pageShadowWidth() * 2 );
-  setPen( shadowPen );
+  connect( this, &QgsLayoutItem::sizePositionChanged, this, [ = ]
+  {
+    mBoundingRect = QRectF();
+    prepareGeometryChange();
+  } );
 
   QFont font;
   QFontMetrics fm( font );
@@ -121,6 +122,17 @@ QgsLayoutItemPage::Orientation QgsLayoutItemPage::decodePageOrientation( const Q
     return Landscape;
   }
   return Landscape;
+}
+
+QRectF QgsLayoutItemPage::boundingRect() const
+{
+  if ( mBoundingRect.isNull() )
+  {
+    double shadowWidth = mLayout->pageCollection()->pageShadowWidth();
+    mBoundingRect = rect();
+    mBoundingRect.adjust( 0, 0, shadowWidth, shadowWidth );
+  }
+  return mBoundingRect;
 }
 
 void QgsLayoutItemPage::attemptResize( const QgsLayoutSize &size, bool includesFrame )
