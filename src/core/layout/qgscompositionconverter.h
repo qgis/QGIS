@@ -4,7 +4,7 @@
  ---------------------
  begin                : 13.12.2017
  copyright            : (C) 2017 by Alessandro Pasotti
- email                : apasotti at boundlessgeo dot com
+ email                : elpaso at itopen dot it
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *

@@ -216,7 +216,7 @@ QList<QgsLayoutItem *> QgsCompositionConverter::addItemsFromCompositionXml( QgsL
   // known multi-frame types
   LayoutHtml, //!< Html multiframe item
   LayoutAttributeTable, //!< Attribute table
-  LayoutTextTable, //!< Preset text table
+  LayoutTextTable, //!< Preset text table IGNORE!
   */
 
   // Label
@@ -249,7 +249,7 @@ QList<QgsLayoutItem *> QgsCompositionConverter::addItemsFromCompositionXml( QgsL
     newItems << layoutItem ;
   }
 
-  // Polygon TODO:frames and background are ignored: is that ok?
+  // Polygon
   for ( int i = 0; i < parentElement.elementsByTagName( QStringLiteral( "ComposerPolygon" ) ).size(); i++ )
   {
     QDomNode itemNode( parentElement.elementsByTagName( QStringLiteral( "ComposerPolygon" ) ).at( i ) );
@@ -259,7 +259,7 @@ QList<QgsLayoutItem *> QgsCompositionConverter::addItemsFromCompositionXml( QgsL
     newItems << layoutItem ;
   }
 
-  // Polyline TODO:frames and background are ignored: is that ok?
+  // Polylin
   for ( int i = 0; i < parentElement.elementsByTagName( QStringLiteral( "ComposerPolyline" ) ).size(); i++ )
   {
     QDomNode itemNode( parentElement.elementsByTagName( QStringLiteral( "ComposerPolyline" ) ).at( i ) );
@@ -269,7 +269,7 @@ QList<QgsLayoutItem *> QgsCompositionConverter::addItemsFromCompositionXml( QgsL
     newItems << layoutItem ;
   }
 
-  // Arrow TODO:frames and background are ignored: is that ok?
+  // Arrow
   for ( int i = 0; i < parentElement.elementsByTagName( QStringLiteral( "ComposerArrow" ) ).size(); i++ )
   {
     QDomNode itemNode( parentElement.elementsByTagName( QStringLiteral( "ComposerArrow" ) ).at( i ) );
