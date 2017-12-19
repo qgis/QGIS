@@ -228,7 +228,10 @@ void QgsLayoutItemPage::draw( QgsRenderContext &context, const QStyleOptionGraph
   //Now subtract 1 pixel to prevent semi-transparent borders at edge of solid page caused by
   //anti-aliased painting. This may cause a pixel to be cropped from certain edge lines/symbols,
   //but that can be counteracted by adding a dummy transparent line symbol layer with a wider line width
-  maxBleedPixels = std::floor( maxBleedPixels - 2 );
+  if ( !mLayout->context().isPreviewRender() || !qgsDoubleNear( maxBleedPixels, 0.0 ) )
+  {
+    maxBleedPixels = std::floor( maxBleedPixels - 2 );
+  }
 
   // round up
   QPolygonF pagePolygon = QPolygonF( QRectF( maxBleedPixels, maxBleedPixels,
