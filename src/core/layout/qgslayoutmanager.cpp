@@ -20,6 +20,7 @@
 #include "qgslayoutundostack.h"
 #include "qgsprintlayout.h"
 #include "qgsreport.h"
+#include "qgscompositionconverter.h"
 
 QgsLayoutManager::QgsLayoutManager( QgsProject *project )
   : QObject( project )
@@ -188,6 +189,17 @@ bool QgsLayoutManager::readXml( const QDomElement &element, const QDomDocument &
   QDomNodeList composerNodes = element.elementsByTagName( QStringLiteral( "Composer" ) );
   for ( int i = 0; i < composerNodes.size(); ++i )
   {
+    // Convert compositions to layouts
+    QDomNodeList compositionNodes = composerNodes.at( i ).toElement().elementsByTagName( QStringLiteral( "Composition" ) );
+    for ( int j = 0; j < compositionNodes.size(); ++j )
+    {
+      QgsLayout  *l = nullptr;
+      l = QgsCompositionConverter::createLayoutFromCompositionXml( compositionNodes.at( j ).toElement(), mProject );
+      if ( l )
+        addLayout( l );
+    }
+
+    // legacy import
     QString legacyTitle = composerNodes.at( i ).toElement().attribute( QStringLiteral( "title" ) );
     QgsComposition *c = createCompositionFromXml( composerNodes.at( i ).toElement(), doc );
     if ( !c )

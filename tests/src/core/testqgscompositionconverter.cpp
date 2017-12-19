@@ -27,6 +27,7 @@
 #include "qgssettings.h"
 
 
+#include "qgslayoutpagecollection.h"
 #include "qgslayoutitemlabel.h"
 #include "qgslayoutitemshape.h"
 #include "qgslayoutitempicture.h"
@@ -100,10 +101,7 @@ class TestQgsCompositionConverter: public QObject
 
   private:
 
-
     void checkRenderedImage( QgsLayout *layout, const QString testName, const int pageNumber = 0 );
-
-    void exportLayout( QgsLayout *layout, const QString testName );
 
     QDomElement loadComposition( const QString name );
 
@@ -405,36 +403,6 @@ void TestQgsCompositionConverter::checkRenderedImage( QgsLayout *layout, const Q
   QVERIFY( checker.testLayout( mReport, pageNumber ) );
 }
 
-void TestQgsCompositionConverter::exportLayout( QgsLayout *layout, const QString testName )
-{
-  // Save the template for inspection
-  QTemporaryFile tmpTemplate( QString( "%1_converted-XXXXXX.qpt" ).arg( testName ) );
-  tmpTemplate.setAutoRemove( false );
-  tmpTemplate.open();
-  tmpTemplate.close();
-  QgsReadWriteContext context;
-  layout->saveAsTemplate( tmpTemplate.fileName(), context );
-  qDebug() << tmpTemplate.fileName();
-
-  for ( int i = 0; i < layout->pageCollection()->pageCount(); ++i )
-  {
-    QgsLayoutItemPage *page = layout->pageCollection()->pages().at( i );
-    QSize size;
-    QgsLayoutSize pageSize = page->sizeWithUnits();
-    size.setHeight( pageSize.height() * 3.77 );
-    size.setWidth( pageSize.width() * 3.77 );
-
-    QImage outputImage( size, QImage::Format_RGB32 );
-    outputImage.setDotsPerMeterX( 96 / 25.4 * 1000 );
-    outputImage.setDotsPerMeterY( 96 / 25.4 * 1000 );
-    QPainter p( &outputImage );
-    layout->exporter().renderPage( &p, i );
-    p.end();
-
-    QString renderedFilePath = tmpTemplate.fileName() + QString( "_%1_.png" ).arg( i );
-    outputImage.save( renderedFilePath, "PNG" );
-  }
-}
 
 QDomElement TestQgsCompositionConverter::loadComposition( const QString name )
 {

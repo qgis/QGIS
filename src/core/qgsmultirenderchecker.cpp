@@ -207,7 +207,8 @@ bool QgsLayoutChecker::testLayout( QString &checkedReport, int page, int pixelDi
     _outputImage.setDotsPerMeterX( 96 / 25.4 * 1000 );
     _outputImage.setDotsPerMeterY( 96 / 25.4 * 1000 );
     QPainter _p( &_outputImage );
-    mLayout->exporter().renderPage( &_p, page );
+    QgsLayoutExporter _exporter( mLayout );
+    _exporter.renderPage( &_p, page );
     _p.end();
 
     if ( ! QDir( controlImagePath() ).exists() )

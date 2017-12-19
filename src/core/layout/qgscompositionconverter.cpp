@@ -30,6 +30,7 @@
 #include "qgsproject.h"
 #include "qgsmaplayerstylemanager.h"
 
+#include "qgslayoutpagecollection.h"
 #include "qgslayoutitemregistry.h"
 #include "qgslayoutitemlabel.h"
 #include "qgslayoutitemshape.h"
@@ -860,6 +861,7 @@ bool QgsCompositionConverter::readMapXml( QgsLayoutItemMap *layoutItem, const QD
 
 bool QgsCompositionConverter::readScaleBarXml( QgsLayoutItemScaleBar *layoutItem, const QDomElement &itemElem, const QgsProject *project )
 {
+  Q_UNUSED( project );
   restoreGeneralComposeItemProperties( layoutItem, itemElem );
 
   layoutItem->setHeight( itemElem.attribute( QStringLiteral( "height" ), QStringLiteral( "5.0" ) ).toDouble() );
