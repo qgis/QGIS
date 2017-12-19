@@ -46,6 +46,7 @@ my $PYTHON_SIGNATURE = '';
 
 my $COMMENT = '';
 my $COMMENT_PARAM_LIST = 0;
+my $CODE_SNIPPET = 0;
 my $GLOB_IFDEF_NESTING_IDX = 0;
 my @GLOB_BRACKET_NESTING_IDX = (0);
 my $PRIVATE_SECTION_LINE = '';
@@ -119,6 +120,22 @@ sub write_header_footer {
 
 sub processDoxygenLine {
     my $line = $_[0];
+
+    # detect code snipped
+    if ( $line =~ m/\\code\{\.(\w+)\}/ ) {
+        my $codelang = $1;
+        $codelang =~ s/py/python/;
+        $CODE_SNIPPET=1;
+        return ".. code-block:: $codelang\n\n";
+    }
+    if ( $line =~ m/\\endcode/ ) {
+        $CODE_SNIPPET = 0;
+        return "\n";
+    }
+    if ($CODE_SNIPPET == 1){
+        return "    $line\n";
+    }
+
     # remove prepending spaces
     $line =~ s/^\s+//g;
     # remove \a formatting
@@ -130,6 +147,7 @@ sub processDoxygenLine {
     # replace \returns with :return:
     $line =~ s/\s*\\return(s)?/\n:return:/;
 
+    # params
     if ( $line =~ m/\\param / ){
         $line =~ s/\s*\\param (\w+)\b/:param $1:/g;
         if ( $COMMENT_PARAM_LIST == 0 )
@@ -138,7 +156,6 @@ sub processDoxygenLine {
         }
         $COMMENT_PARAM_LIST = 1;
     }
-
 
     if ( $line =~ m/[\\@](ingroup|class)/ ) {
         return ""
@@ -305,6 +322,7 @@ sub detect_comment_block{
     my %args = ( strict_mode => STRICT, @_ );
     # dbg_info("detect comment strict:" . $args{strict_mode} );
     $COMMENT_PARAM_LIST = 0;
+    $CODE_SNIPPET = 0;
     if ( $LINE =~ m/^\s*\/\*/ || $args{strict_mode} == UNSTRICT && $LINE =~ m/\/\*/ ){
         dbg_info("found comment block");
         do {no warnings 'uninitialized';
