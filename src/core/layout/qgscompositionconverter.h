@@ -187,30 +187,15 @@ class CORE_EXPORT QgsCompositionConverter
                                const QgsProject *project );
 
 
-    /**
-     * Sets item state from DOM element
-     * \param itemElem is DOM node corresponding to item tag
-     * \param doc is DOM document
-     */
     static bool readOldComposerObjectXml( QgsLayoutItem *layoutItem, const QDomElement &itemElem );
 
-    /**
-     * Reads all pre 3.0 data defined properties from an XML element.
-     * \since QGIS 3.0
-     * \see readDataDefinedProperty
-     * \see writeDataDefinedPropertyMap
-     */
     static void readOldDataDefinedPropertyMap( const QDomElement &itemElem,
         QgsPropertyCollection &dataDefinedProperties );
 
-    /**
-     * Reads a pre 3.0 data defined property from an XML DOM element.
-     * \since QGIS 3.0
-     * \see readDataDefinedPropertyMap
-     */
     static QgsProperty readOldDataDefinedProperty( const DataDefinedProperty property, const QDomElement &ddElem );
 
     static void initPropertyDefinitions();
+
     static QgsPropertiesDefinition propertyDefinitions();
 
     //! Reads parameter that are not subclass specific in document. Usually called from readXml methods of subclasses
