@@ -39,8 +39,6 @@ Constructor for QgsLayoutItemShape, with the specified parent ``layout``.
 Returns a new shape item for the specified ``layout``.
 
 The caller takes responsibility for deleting the returned object.
-
-:rtype: QgsLayoutItemShape
 %End
 
 
