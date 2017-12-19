@@ -22,9 +22,11 @@
 #include "qgsprintlayout.h"
 #include "qgslayoutatlas.h"
 #include "qgsexpressionbuilderdialog.h"
+#include "qgslayoutundostack.h"
 
 QgsLayoutAtlasWidget::QgsLayoutAtlasWidget( QWidget *parent, QgsPrintLayout *layout )
   : QWidget( parent )
+  , mLayout( layout )
   , mAtlas( layout->atlas() )
 {
   setupUi( this );
@@ -86,6 +88,7 @@ void QgsLayoutAtlasWidget::changeCoverageLayer( QgsMapLayer *layer )
 {
   QgsVectorLayer *vl = dynamic_cast<QgsVectorLayer *>( layer );
 
+  mLayout->undoStack()->beginCommand( mAtlas, tr( "Change Atlas Layer" ) );
   if ( !vl )
   {
     mAtlas->setCoverageLayer( nullptr );
@@ -95,11 +98,13 @@ void QgsLayoutAtlasWidget::changeCoverageLayer( QgsMapLayer *layer )
     mAtlas->setCoverageLayer( vl );
     updateAtlasFeatures();
   }
+  mLayout->undoStack()->endCommand();
 }
 
 void QgsLayoutAtlasWidget::mAtlasFilenamePatternEdit_editingFinished()
 {
   QString error;
+  mLayout->undoStack()->beginCommand( mAtlas, tr( "Change Atlas Filename" ) );
   if ( !mAtlas->setFilenameExpression( mAtlasFilenamePatternEdit->text(), error ) )
   {
     //expression could not be set
@@ -110,6 +115,7 @@ void QgsLayoutAtlasWidget::mAtlasFilenamePatternEdit_editingFinished()
                                 error )
                         );
   }
+  mLayout->undoStack()->endCommand();
 }
 
 void QgsLayoutAtlasWidget::mAtlasFilenameExpressionButton_clicked()
@@ -131,6 +137,7 @@ void QgsLayoutAtlasWidget::mAtlasFilenameExpressionButton_clicked()
       //set atlas filename expression
       mAtlasFilenamePatternEdit->setText( expression );
       QString error;
+      mLayout->undoStack()->beginCommand( mAtlas, tr( "Change Atlas Filename" ) );
       if ( !mAtlas->setFilenameExpression( expression, error ) )
       {
         //expression could not be set
@@ -141,13 +148,16 @@ void QgsLayoutAtlasWidget::mAtlasFilenameExpressionButton_clicked()
                                     error )
                             );
       }
+      mLayout->undoStack()->endCommand();
     }
   }
 }
 
 void QgsLayoutAtlasWidget::mAtlasHideCoverageCheckBox_stateChanged( int state )
 {
+  mLayout->undoStack()->beginCommand( mAtlas, tr( "Toggle Atlas Layer" ) );
   mAtlas->setHideCoverage( state == Qt::Checked );
+  mLayout->undoStack()->endCommand();
 }
 
 void QgsLayoutAtlasWidget::mAtlasSingleFileCheckBox_stateChanged( int state )
@@ -179,7 +189,9 @@ void QgsLayoutAtlasWidget::mAtlasSortFeatureCheckBox_stateChanged( int state )
     mAtlasSortFeatureDirectionButton->setEnabled( false );
     mAtlasSortFeatureKeyComboBox->setEnabled( false );
   }
+  mLayout->undoStack()->beginCommand( mAtlas, tr( "Toggle Atlas Sorting" ) );
   mAtlas->setSortFeatures( state == Qt::Checked );
+  mLayout->undoStack()->endCommand();
   updateAtlasFeatures();
 }
 
@@ -203,7 +215,9 @@ void QgsLayoutAtlasWidget::updateAtlasFeatures()
 
 void QgsLayoutAtlasWidget::changesSortFeatureField( const QString &fieldName )
 {
+  mLayout->undoStack()->beginCommand( mAtlas, tr( "Change Atlas Sort" ) );
   mAtlas->setSortExpression( fieldName );
+  mLayout->undoStack()->endCommand();
   updateAtlasFeatures();
 }
 
@@ -219,7 +233,9 @@ void QgsLayoutAtlasWidget::mAtlasFeatureFilterCheckBox_stateChanged( int state )
     mAtlasFeatureFilterEdit->setEnabled( false );
     mAtlasFeatureFilterButton->setEnabled( false );
   }
+  mLayout->undoStack()->beginCommand( mAtlas, tr( "Change Atlas Filter" ) );
   mAtlas->setFilterFeatures( state == Qt::Checked );
+  mLayout->undoStack()->endCommand();
   updateAtlasFeatures();
 }
 
@@ -231,13 +247,17 @@ void QgsLayoutAtlasWidget::pageNameExpressionChanged( const QString &, bool vali
     return;
   }
 
+  mLayout->undoStack()->beginCommand( mAtlas, tr( "Change Atlas Name" ) );
   mAtlas->setPageNameExpression( expression );
+  mLayout->undoStack()->endCommand();
 }
 
 void QgsLayoutAtlasWidget::mAtlasFeatureFilterEdit_editingFinished()
 {
   QString error;
+  mLayout->undoStack()->beginCommand( mAtlas, tr( "Change Atlas Filter" ) );
   mAtlas->setFilterExpression( mAtlasFeatureFilterEdit->text(), error );
+  mLayout->undoStack()->endCommand();
   updateAtlasFeatures();
 }
 
@@ -261,7 +281,9 @@ void QgsLayoutAtlasWidget::mAtlasFeatureFilterButton_clicked()
     {
       mAtlasFeatureFilterEdit->setText( expression );
       QString error;
+      mLayout->undoStack()->beginCommand( mAtlas, tr( "Change Atlas Filter" ) );
       mAtlas->setFilterExpression( mAtlasFeatureFilterEdit->text(), error );
+      mLayout->undoStack()->endCommand();
       updateAtlasFeatures();
     }
   }
@@ -273,7 +295,9 @@ void QgsLayoutAtlasWidget::mAtlasSortFeatureDirectionButton_clicked()
   at = ( at == Qt::UpArrow ) ? Qt::DownArrow : Qt::UpArrow;
   mAtlasSortFeatureDirectionButton->setArrowType( at );
 
+  mLayout->undoStack()->beginCommand( mAtlas, tr( "Change Atlas Sort" ) );
   mAtlas->setSortAscending( at == Qt::UpArrow );
+  mLayout->undoStack()->endCommand();
   updateAtlasFeatures();
 }
 
