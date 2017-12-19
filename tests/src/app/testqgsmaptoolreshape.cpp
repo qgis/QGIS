@@ -47,9 +47,9 @@ void TestQgsMapToolReshape::initTestCase()
   QgsApplication::initQgis();
 
   // Set up the QgsSettings environment
-  QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
-  QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
-  QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
+  QCoreApplication::setOrganizationName( "QGIS" );
+  QCoreApplication::setOrganizationDomain( "qgis.org" );
+  QCoreApplication::setApplicationName( "QGIS-TEST" );
 
   QgsApplication::showSettings();
 
@@ -76,7 +76,7 @@ void TestQgsMapToolReshape::cleanup()
 void TestQgsMapToolReshape::reshapeWithBindingLine()
 {
   // prepare vector layer
-  QgsVectorLayer *vl = new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:4326&field=name:string(20)" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  QgsVectorLayer *vl = new QgsVectorLayer( "LineString?crs=epsg:4326&field=name:string(20)", "vl", "memory" );
 
   QgsGeometry *g0 = QgsGeometry::fromWkt( "LineString (0 0, 1 1, 1 2)" );
   QgsFeature f0;
@@ -116,10 +116,10 @@ void TestQgsMapToolReshape::reshapeWithBindingLine()
   tool0.reshape( vl );
 
   vl->getFeatures( QgsFeatureRequest().setFilterFid( 1 ) ).nextFeature( f0 );
-  QCOMPARE( f0.geometry()->exportToWkt(), QStringLiteral( "LineString (0 0, 1 1, 1 2, 2 1)" ) );
+  QCOMPARE( f0.geometry()->exportToWkt(), QString( "LineString (0 0, 1 1, 1 2, 2 1)" ) );
 
   vl->getFeatures( QgsFeatureRequest().setFilterFid( 2 ) ).nextFeature( f1 );
-  QCOMPARE( f1.geometry()->exportToWkt(), QStringLiteral( "LineString (2 1, 3 2, 3 3, 2 2)" ) );
+  QCOMPARE( f1.geometry()->exportToWkt(), QString( "LineString (2 1, 3 2, 3 3, 2 2)" ) );
 
   vl->rollBack();
 
@@ -138,10 +138,10 @@ void TestQgsMapToolReshape::reshapeWithBindingLine()
   tool1.reshape( vl );
 
   vl->getFeatures( QgsFeatureRequest().setFilterFid( 1 ) ).nextFeature( f0 );
-  QCOMPARE( f0.geometry()->exportToWkt(), QStringLiteral( "LineString (0 0, 1 1, 1 2)" ) );
+  QCOMPARE( f0.geometry()->exportToWkt(), QString( "LineString (0 0, 1 1, 1 2)" ) );
 
   vl->getFeatures( QgsFeatureRequest().setFilterFid( 2 ) ).nextFeature( f1 );
-  QCOMPARE( f1.geometry()->exportToWkt(), QStringLiteral( "LineString (1 2, 2 1, 3 2, 3 3, 2 2)" ) );
+  QCOMPARE( f1.geometry()->exportToWkt(), QString( "LineString (1 2, 2 1, 3 2, 3 3, 2 2)" ) );
 
   vl->rollBack();
 }
