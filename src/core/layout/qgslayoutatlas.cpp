@@ -290,14 +290,6 @@ int QgsLayoutAtlas::updateFeatures()
   }
 
   emit numberFeaturesChanged( mFeatureIds.size() );
-
-#if 0 //TODO - move to app
-  //jump to first feature if currently using an atlas preview
-  //need to do this in case filtering/layer change has altered matching features
-  return first();
-#endif
-
-
   return mFeatureIds.size();
 }
 

@@ -86,6 +86,8 @@ class TestQgsLayoutAtlas(unittest.TestCase):
         self.assertTrue(atlas2.filterFeatures())
         self.assertEqual(atlas2.filterExpression(), 'filter exp')
 
+    def test
+
 
 if __name__ == '__main__':
     unittest.main()
