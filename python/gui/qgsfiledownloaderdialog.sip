@@ -33,7 +33,7 @@ cancelation.
 
     QgsFileDownloaderDialog( const QUrl &url, const QString &outputFileName, const QString &authcfg = QString() );
 %Docstring
-QgsFileDownloader
+:py:class:`QgsFileDownloader`
 
 :param url: the download url
 :param outputFileName: file name where the downloaded content will be stored

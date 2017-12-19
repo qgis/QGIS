@@ -29,7 +29,7 @@ QgsMapLayer.createMapRenderer() and gets instance of this class.
 The instance is initialized at that point and should not need
 additional calls to QgsVectorLayer.
 2. renderer job (still in GUI thread) stores the renderer for later use.
-3. renderer job (in worker thread) calls QgsMapLayerRenderer.render()
+3. renderer job (in worker thread) calls :py:func:`QgsMapLayerRenderer.render()`
 4. renderer job (again in GUI thread) will check errors() and report them
 
 .. versionadded:: 2.4

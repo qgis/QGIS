@@ -158,7 +158,7 @@ used for drawing column values within cells.
     QString attribute() const;
 %Docstring
 Returns the attribute name or expression used for the column's values. This property
-is only used when the column is part of a QgsComposerAttributeTable.
+is only used when the column is part of a :py:class:`QgsComposerAttributeTable`.
 
 :return: attribute name or expression text for column
 
@@ -166,7 +166,7 @@ is only used when the column is part of a QgsComposerAttributeTable.
 
 .. note::
 
-   only applicable when used in a QgsComposerAttributeTable
+   only applicable when used in a :py:class:`QgsComposerAttributeTable`
 
 .. seealso:: :py:func:`setAttribute`
 %End
@@ -174,7 +174,7 @@ is only used when the column is part of a QgsComposerAttributeTable.
     void setAttribute( const QString &attribute );
 %Docstring
 Sets the attribute name or expression used for the column's values. This property
-is only used when the column is part of a QgsComposerAttributeTable.
+is only used when the column is part of a :py:class:`QgsComposerAttributeTable`.
 
 :param attribute: attribute name or expression text for column
 
@@ -182,7 +182,7 @@ is only used when the column is part of a QgsComposerAttributeTable.
 
 .. note::
 
-   only applicable when used in a QgsComposerAttributeTable
+   only applicable when used in a :py:class:`QgsComposerAttributeTable`
 
 .. seealso:: :py:func:`attribute`
 %End
@@ -198,7 +198,7 @@ is part of a QgsComposerAttributeTable and when sortByRank is > 0.
 
 .. note::
 
-   only applicable when used in a QgsComposerAttributeTable
+   only applicable when used in a :py:class:`QgsComposerAttributeTable`
 
 .. seealso:: :py:func:`setSortOrder`
 
@@ -216,7 +216,7 @@ is part of a QgsComposerAttributeTable and when sortByRank is > 0.
 
 .. note::
 
-   only applicable when used in a QgsComposerAttributeTable
+   only applicable when used in a :py:class:`QgsComposerAttributeTable`
 
 .. seealso:: :py:func:`sortOrder`
 
@@ -229,7 +229,7 @@ Returns the sort rank for the column. If the sort rank is > 0 then the column
 will be sorted in the table. The sort rank specifies the priority given to the
 column when the table is sorted by multiple columns, with lower sort ranks
 having higher priority. This property is only used when the column
-is part of a QgsComposerAttributeTable.
+is part of a :py:class:`QgsComposerAttributeTable`.
 
 :return: sort rank for column. If sort rank is <= 0 then the column is not being
 sorted.
@@ -238,7 +238,7 @@ sorted.
 
 .. note::
 
-   only applicable when used in a QgsComposerAttributeTable
+   only applicable when used in a :py:class:`QgsComposerAttributeTable`
 
 .. seealso:: :py:func:`setSortByRank`
 
@@ -251,7 +251,7 @@ Sets the sort rank for the column. If the sort rank is > 0 then the column
 will be sorted in the table. The sort rank specifies the priority given to the
 column when the table is sorted by multiple columns, with lower sort ranks
 having higher priority. This property is only used when the column
-is part of a QgsComposerAttributeTable.
+is part of a :py:class:`QgsComposerAttributeTable`.
 
 :param sortByRank: sort rank for column. If sort rank is <= 0 then the column is not being
 sorted.
@@ -260,7 +260,7 @@ sorted.
 
 .. note::
 
-   only applicable when used in a QgsComposerAttributeTable
+   only applicable when used in a :py:class:`QgsComposerAttributeTable`
 
 .. seealso:: :py:func:`sortByRank`
 

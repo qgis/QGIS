@@ -45,13 +45,13 @@ Return combination of flags from QgsDataProvider.DataCapabilities
 
     virtual QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) = 0 /Factory/;
 %Docstring
-Create a new instance of QgsDataItem (or null) for given path and parent item.
+Create a new instance of :py:class:`QgsDataItem` (or null) for given path and parent item.
 Caller takes responsibility of deleting created items.
 %End
 
     virtual QVector<QgsDataItem *> createDataItems( const QString &path, QgsDataItem *parentItem );
 %Docstring
-Create a vector of instances of QgsDataItem (or null) for given path and parent item.
+Create a vector of instances of :py:class:`QgsDataItem` (or null) for given path and parent item.
 Caller takes responsibility of deleting created items.
 %End
 

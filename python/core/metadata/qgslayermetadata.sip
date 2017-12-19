@@ -498,7 +498,7 @@ Sets the spatial and temporal extents associated with the resource.
 %Docstring
 Returns the coordinate reference system described by the layer's metadata.
 
-Note that this has no link to QgsMapLayer.crs(). While in most cases these
+Note that this has no link to :py:func:`QgsMapLayer.crs()` While in most cases these
 two systems are likely to be identical, it is possible to have a layer
 with a different CRS described by it's accompanying metadata versus the
 CRS which is actually used to display and manipulate the layer within QGIS.
@@ -512,7 +512,7 @@ and a user has manually overridden the layer's CRS within QGIS.
 %Docstring
 Sets the coordinate reference system for the layer's metadata.
 
-Note that this has no link to QgsMapLayer.setCrs(). Setting the layer's
+Note that this has no link to :py:func:`QgsMapLayer.setCrs()` Setting the layer's
 CRS via QgsMapLayer.setCrs() does not affect the layer's metadata CRS,
 and changing the CRS from the metadata will not change the layer's
 CRS or how it is projected within QGIS.

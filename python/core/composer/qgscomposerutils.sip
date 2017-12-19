@@ -346,7 +346,7 @@ painter device.
 %Docstring
 Creates a render context suitable for the specified ``composition`` and ``painter`` destination.
 This method returns a new QgsRenderContext which matches the scale and settings from the composition's
-QgsComposition.referenceMap().
+:py:func:`QgsComposition.referenceMap()`
 
 .. versionadded:: 3.0
 

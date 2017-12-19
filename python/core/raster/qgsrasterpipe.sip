@@ -68,7 +68,7 @@ if connection would fail, the interface is not inserted and false is returned *
 %Docstring
 Insert a new known interface in default place or replace interface of the same
 role if it already exists. Known interfaces are: QgsRasterDataProvider,
-QgsRasterRenderer, QgsRasterResampleFilter, QgsRasterProjector and their
+:py:class:`QgsRasterRenderer`, :py:class:`QgsRasterResampleFilter`, QgsRasterProjector and their
 subclasses. For unknown interfaces it mus be explicitly specified position
 where it should be inserted using insert() method.
 %End

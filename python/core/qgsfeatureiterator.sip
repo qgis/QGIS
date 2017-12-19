@@ -67,7 +67,7 @@ An invalid feature iterator is not able to provide a reliable source for data.
 If an iterator is invalid, either give up or try to send the request again (preferably
 after a timeout to give the system some time to stay responsive).
 
-If you want to check if the iterator successfully completed, better use QgsFeatureIterator.isClosed().
+If you want to check if the iterator successfully completed, better use :py:func:`QgsFeatureIterator.isClosed()`
 
 .. versionadded:: 3.0
 %End
@@ -125,7 +125,7 @@ QgsFeatureRequest.destinationCrs() set on the request is respected.
 
     QgsRectangle filterRectToSourceCrs( const QgsCoordinateTransform &transform ) const;
 %Docstring
-Returns a rectangle representing the original request's QgsFeatureRequest.filterRect().
+Returns a rectangle representing the original request's :py:func:`QgsFeatureRequest.filterRect()`
 If ``transform`` is a valid coordinate transform, the return rectangle will represent
 the requested filterRect() transformed to the source's coordinate reference system.
 Iterators should call this method and use the returned rectangle for filtering

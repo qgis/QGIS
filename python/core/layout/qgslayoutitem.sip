@@ -875,7 +875,7 @@ The default implementation has no effect.
     virtual void setMoveContentPreviewOffset( double dx, double dy );
 %Docstring
 Sets temporary offset for the item, by a specified ``dx`` and ``dy`` in layout units.
-This is useful for live updates when moving item content in a QgsLayoutView.
+This is useful for live updates when moving item content in a :py:class:`QgsLayoutView`.
 The default implementation has no effect.
 
 .. seealso:: :py:func:`moveContent()`

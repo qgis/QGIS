@@ -74,7 +74,7 @@ Clears all stored transform information from the context.
     QMap< QPair< QString, QString>, QgsDatumTransform::TransformPair > sourceDestinationDatumTransforms() const;
 %Docstring
 Returns the stored mapping for source to destination CRS pairs to associated datum transforms to use.
-The map keys will be QgsCoordinateReferenceSystems.authid()s.
+The map keys will be :py:func:`QgsCoordinateReferenceSystems.authid()`s.
 
 If either the source transform ID or destination transform ID is -1, then no datum transform is
 required for transformations for that source or destination.

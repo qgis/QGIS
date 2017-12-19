@@ -78,7 +78,7 @@ class QgsLocatorAutomaticModel : QgsLocatorModel
 {
 %Docstring
 A QgsLocatorModel which has is associated directly with a
-QgsLocator, and is automatically populated with results
+:py:class:`QgsLocator`, and is automatically populated with results
 from locator searches.
 
 Use this QgsLocatorModel subclass when you want the connections
@@ -87,7 +87,7 @@ for you. If more flexibility in model behavior is required,
 use the base QgsLocatorModel class instead and setup the
 connections manually.
 
-Note that this class should generally be used with a QgsLocatorProxyModel
+Note that this class should generally be used with a :py:class:`QgsLocatorProxyModel`
 in order to ensure correct sorting of results by priority and match level.
 
 .. versionadded:: 3.0
@@ -124,7 +124,7 @@ search string as soon as possible.
     virtual QgsLocatorContext createContext();
 %Docstring
 Returns a new locator context for searches. The default implementation
-returns a default constructed QgsLocatorContext. Subclasses can override
+returns a default constructed :py:class:`QgsLocatorContext`. Subclasses can override
 this method to implement custom context creation logic.
 %End
 
@@ -133,7 +133,7 @@ this method to implement custom context creation logic.
 class QgsLocatorProxyModel : QSortFilterProxyModel
 {
 %Docstring
-A sort proxy model for QgsLocatorModel, which automatically sorts
+A sort proxy model for :py:class:`QgsLocatorModel`, which automatically sorts
 results by precedence.
 
 .. versionadded:: 3.0

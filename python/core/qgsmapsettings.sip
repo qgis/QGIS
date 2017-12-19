@@ -122,7 +122,7 @@ The layers are stored in the reverse order of how they are rendered (layer with 
 
     void setLayers( const QList<QgsMapLayer *> &layers );
 %Docstring
-Set list of layers for map rendering. The layers must be registered in QgsProject.
+Set list of layers for map rendering. The layers must be registered in :py:class:`QgsProject`.
 The layers are stored in the reverse order of how they are rendered (layer with index 0 will be on top)
 %End
 
@@ -179,7 +179,7 @@ Get units of map's geographical coordinates - used for scale calculation
     bool setEllipsoid( const QString &ellipsoid );
 %Docstring
 Sets the ``ellipsoid`` by its acronym. Known ellipsoid acronyms can be
-retrieved using QgsEllipsoidUtils.acronyms().
+retrieved using :py:func:`QgsEllipsoidUtils.acronyms()`
 Calculations will only use the ellipsoid if a valid ellipsoid has been set.
 
 :return: true if ellipsoid was successfully set

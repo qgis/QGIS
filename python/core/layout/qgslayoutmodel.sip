@@ -84,7 +84,7 @@ Returns the QgsLayoutItem corresponding to a QModelIndex ``index``, if possible.
 
     QModelIndex indexForItem( QgsLayoutItem *item, const int column = 0 );
 %Docstring
-Returns the QModelIndex corresponding to a QgsLayoutItem ``item`` and ``column``, if possible.
+Returns the QModelIndex corresponding to a :py:class:`QgsLayoutItem` ``item`` and ``column``, if possible.
 
 .. seealso:: :py:func:`itemFromIndex()`
 %End

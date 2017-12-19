@@ -289,7 +289,7 @@ class QgsTaskManager : QObject
 {
 %Docstring
  Task manager for managing a set of long-running QgsTask tasks. This class can be created directly,
-or accessed via QgsApplication.taskManager().
+or accessed via :py:func:`QgsApplication.taskManager()`
 
 .. versionadded:: 3.0
 %End

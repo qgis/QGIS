@@ -53,7 +53,7 @@ as follows:
 
 - crs=definition
 Defines the coordinate reference system to use for the layer.
-definition is any string accepted by QgsCoordinateReferenceSystem.createFromString()
+definition is any string accepted by :py:func:`QgsCoordinateReferenceSystem.createFromString()`
 
 - index=yes
 Specifies that the layer will be constructed with a spatial index
@@ -255,7 +255,7 @@ Defines an expression that will identify a subset of records to display
 - crs=crsstring
 
 Defines the coordinate reference system used for the layer.  This can be
-any string accepted by QgsCoordinateReferenceSystem.createFromString()
+any string accepted by :py:func:`QgsCoordinateReferenceSystem.createFromString()`
 
 -subsetIndex=(yes|no)
 
@@ -397,7 +397,7 @@ be returned.
     void setDisplayExpression( const QString &displayExpression );
 %Docstring
 Set the preview expression, used to create a human readable preview string.
-Used e.g. in the attribute table feature list. Uses QgsExpression.
+Used e.g. in the attribute table feature list. Uses :py:class:`QgsExpression`.
 
 :param displayExpression: The expression which will be used to preview features
 for this layer
@@ -406,7 +406,7 @@ for this layer
     QString displayExpression() const;
 %Docstring
 Get the preview expression, used to create a human readable preview string.
-Uses QgsExpression
+Uses :py:class:`QgsExpression`
 
 :return: The expression which will be used to preview features for this layer
 %End
@@ -457,7 +457,7 @@ Sets the list of dependencies.
 
 .. seealso:: :py:func:`dependencies()`
 
-:param layers: set of QgsMapLayerDependency. Only user-defined dependencies will be added
+:param layers: set of :py:class:`QgsMapLayerDependency`. Only user-defined dependencies will be added
 
 :return: false if a dependency cycle has been detected
 
@@ -471,7 +471,7 @@ Sets the list of dependencies.
 .. seealso:: :py:func:`setDataDependencies`
 as well as dependencies given by the provider
 
-:return: a set of QgsMapLayerDependency
+:return: a set of :py:class:`QgsMapLayerDependency`
 
 .. versionadded:: 3.0
 %End
@@ -624,7 +624,7 @@ Invert selection of features found within the search rectangle (in layer's coord
 %Docstring
 Get a copy of the user-selected features
 
-:return: A list of QgsFeature
+:return: A list of :py:class:`QgsFeature`
 
 .. seealso:: :py:func:`selectedFeatureIds()`
 
@@ -650,7 +650,7 @@ Any filter on the request will be discarded.
 %Docstring
 Return reference to identifiers of selected features
 
-:return: A list of QgsFeatureId
+:return: A list of :py:class:`QgsFeatureId`
 
 .. seealso:: :py:func:`selectedFeatures()`
 %End
@@ -727,7 +727,7 @@ Reads vector layer specific state from project file Dom node.
 
 .. note::
 
-   Called by QgsMapLayer.readXml().
+   Called by :py:func:`QgsMapLayer.readXml()`
 %End
 
     virtual bool writeXml( QDomNode &layer_node, QDomDocument &doc, const QgsReadWriteContext &context ) const;
@@ -737,7 +737,7 @@ Write vector layer specific state to project file Dom node.
 
 .. note::
 
-   Called by QgsMapLayer.writeXml().
+   Called by :py:func:`QgsMapLayer.writeXml()`
 %End
 
     virtual void resolveReferences( QgsProject *project );
@@ -2110,7 +2110,7 @@ Emitted when a new feature has been added to the layer
 Emitted when a feature has been deleted.
 
 If you do expensive operations in a slot connected to this, you should prefer to use
-featuresDeleted( const QgsFeatureIds& ).
+featuresDeleted( const :py:class:`QgsFeatureIds`& ).
 
 :param fid: The id of the feature which has been deleted
 %End

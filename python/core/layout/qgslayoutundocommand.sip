@@ -26,7 +26,7 @@ Base class for commands to undo/redo layout and layout object changes.
 
     QgsAbstractLayoutUndoCommand( const QString &text, int id = 0, QUndoCommand *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsLayoutUndoCommand.
+Constructor for :py:class:`QgsLayoutUndoCommand`.
 The ``id`` argument can be used to specify an id number for the source event - this is used to determine whether QUndoCommand
 command compression can apply to the command.
 %End

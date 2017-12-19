@@ -32,7 +32,7 @@ Returns a new QgsPointClusterRendererWidget.
 :param style: style collection
 :param renderer: source QgsPointClusterRenderer renderer
 
-:return: new QgsRendererWidget
+:return: new :py:class:`QgsRendererWidget`
 %End
 
     QgsPointClusterRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );

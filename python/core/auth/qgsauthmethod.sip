@@ -101,7 +101,7 @@ for custom updater code specific to the provider
 %Docstring
 Update data source connection items with authentication components
 
-:param connectionItems: QStringlist of 'key=value' pairs, as utilized in QgsDataSourceUri.connectionInfo()
+:param connectionItems: QStringlist of 'key=value' pairs, as utilized in :py:func:`QgsDataSourceUri.connectionInfo()`
 :param authcfg: Authentication configuration ID
 :param dataprovider: Textual key for a data provider, e.g. 'postgres', that allows
 for custom updater code specific to the provider

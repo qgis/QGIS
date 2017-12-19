@@ -383,7 +383,7 @@ provider.
 This is emitted whenever an asynchronous operation has finished
 and the data should be redrawn
 
-When emitted from a QgsVectorDataProvider, any cached information such as
+When emitted from a :py:class:`QgsVectorDataProvider`, any cached information such as
 feature ids should be invalidated.
 %End
 

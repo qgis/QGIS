@@ -58,7 +58,7 @@ Embedded widgets are assigned per individual map layers and they are shown befor
 Layer tree must have UseEmbeddedWidgets flag enabled in order to show assigned widgets.
 
 QgsLayerTreeEmbeddedWidgetRegistry is not usually directly created, but rather accessed through
-QgsGui.layerTreeEmbeddedWidgetRegistry().
+:py:func:`QgsGui.layerTreeEmbeddedWidgetRegistry()`
 
 .. seealso:: :py:class:`QgsLayerTreeEmbeddedWidgetRegistry`
 
@@ -75,7 +75,7 @@ QgsGui.layerTreeEmbeddedWidgetRegistry().
 Constructor for QgsLayerTreeEmbeddedWidgetRegistry
 
 QgsLayerTreeEmbeddedWidgetRegistry is not usually directly created, but rather accessed through
-QgsGui.layerTreeEmbeddedWidgetRegistry().
+:py:func:`QgsGui.layerTreeEmbeddedWidgetRegistry()`
 %End
 
     ~QgsLayerTreeEmbeddedWidgetRegistry();

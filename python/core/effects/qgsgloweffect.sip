@@ -231,7 +231,7 @@ paint device
 
     void setColorType( GlowColorType colorType );
 %Docstring
-Sets the color mode to use for the glow. The glow can either be drawn using a QgsColorRamp
+Sets the color mode to use for the glow. The glow can either be drawn using a :py:class:`QgsColorRamp`
 color ramp or by simply specificing a single color. setColorType is used to specify which mode to use
 for the glow.
 
@@ -246,7 +246,7 @@ for the glow.
 
     GlowColorType colorType() const;
 %Docstring
-Returns the color mode used for the glow. The glow can either be drawn using a QgsColorRamp
+Returns the color mode used for the glow. The glow can either be drawn using a :py:class:`QgsColorRamp`
 color ramp or by specificing a single color.
 
 :return: current color mode used for the glow

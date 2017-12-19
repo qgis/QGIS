@@ -86,7 +86,7 @@ and it is used to retrieve the project's transform context only.
 %Docstring
 Constructs a QgsCoordinateTransform to transform from the ``source``
 to ``destination`` coordinate reference system, with the specified
-datum transforms (see QgsDatumTransform).
+datum transforms (see :py:class:`QgsDatumTransform`).
 
 .. versionadded:: 3.0
 %End

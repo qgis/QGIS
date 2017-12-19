@@ -78,7 +78,7 @@ Returns a clone of the function.
 class QgsExpressionContextScope
 {
 %Docstring
- Single scope for storing variables and functions for use within a QgsExpressionContext.
+ Single scope for storing variables and functions for use within a :py:class:`QgsExpressionContext`.
 Examples include a project's scope, which could contain information about the current project such as
 the project file's location. QgsExpressionContextScope can encapsulate both variables (static values)
 and functions(which are calculated only when an expression is evaluated).
@@ -158,7 +158,7 @@ Returns the friendly display name of the context scope.
 Convenience method for setting a variable in the context scope by ``name`` name and ``value``. If a variable
 with the same name is already set then its value is overwritten, otherwise a new variable is added to the scope.
 If the ``isStatic`` parameter is set to true, this variable can be cached during the execution
-of QgsExpression.prepare().
+of :py:func:`QgsExpression.prepare()`
 
 .. seealso:: :py:func:`addVariable()`
 %End
@@ -909,7 +909,7 @@ Remove project context variable.
 
     static QgsExpressionContextScope *layerScope( const QgsMapLayer *layer ) /Factory/;
 %Docstring
-Creates a new scope which contains variables and functions relating to a QgsMapLayer.
+Creates a new scope which contains variables and functions relating to a :py:class:`QgsMapLayer`.
 For instance, layer name, id and fields.
 %End
 
@@ -973,7 +973,7 @@ Updates a symbol scope related to a QgsSymbol to an expression context.
 
     static QgsExpressionContextScope *compositionScope( const QgsComposition *composition ) /Factory/;
 %Docstring
-Creates a new scope which contains variables and functions relating to a QgsComposition.
+Creates a new scope which contains variables and functions relating to a :py:class:`QgsComposition`.
 For instance, number of pages and page sizes.
 
 :param composition: source composition
@@ -1008,7 +1008,7 @@ with the variables specified.
 
     static QgsExpressionContextScope *layoutScope( const QgsLayout *layout ) /Factory/;
 %Docstring
-Creates a new scope which contains variables and functions relating to a QgsLayout ``layout``.
+Creates a new scope which contains variables and functions relating to a :py:class:`QgsLayout` ``layout``.
 For instance, number of pages and page sizes.
 
 .. versionadded:: 3.0
@@ -1047,7 +1047,7 @@ with the variables specified.
 
     static QgsExpressionContextScope *atlasScope( const QgsAtlasComposition *atlas ) /Factory/;
 %Docstring
-Creates a new scope which contains variables and functions relating to a QgsAtlasComposition.
+Creates a new scope which contains variables and functions relating to a :py:class:`QgsAtlasComposition`.
 For instance, current page name and number.
 
 :param atlas: source atlas. If null, a set of default atlas variables will be added to the scope.
@@ -1055,7 +1055,7 @@ For instance, current page name and number.
 
     static QgsExpressionContextScope *composerItemScope( const QgsComposerItem *composerItem ) /Factory/;
 %Docstring
-Creates a new scope which contains variables and functions relating to a QgsComposerItem.
+Creates a new scope which contains variables and functions relating to a :py:class:`QgsComposerItem`.
 For instance, item size and position.
 
 :param composerItem: source composer item

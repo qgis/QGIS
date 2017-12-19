@@ -172,7 +172,7 @@ Closes the line string by appending the first point to the end of the line, if i
     virtual QgsCompoundCurve *toCurveType() const /Factory/;
 
 %Docstring
-Returns the geometry converted to the more generic curve type QgsCompoundCurve
+Returns the geometry converted to the more generic curve type :py:class:`QgsCompoundCurve`
 
 :return: the converted geometry. Caller takes ownership*
 %End

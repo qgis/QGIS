@@ -568,11 +568,11 @@ Add items from XML representation to the graphics scene (for project file readin
 
     void addItemToZList( QgsComposerItem *item );
 %Docstring
-Adds item to z list. Usually called from constructor of QgsComposerItem
+Adds item to z list. Usually called from constructor of :py:class:`QgsComposerItem`
 %End
     void removeItemFromZList( QgsComposerItem *item );
 %Docstring
-Removes item from z list. Usually called from destructor of QgsComposerItem
+Removes item from z list. Usually called from destructor of :py:class:`QgsComposerItem`
 %End
 
     void raiseSelectedItems();
@@ -742,7 +742,7 @@ Remove item from the graphics scene. Additionally to QGraphicsScene.removeItem, 
 
     void pushAddRemoveCommand( QgsComposerItem *item, const QString &text, const QgsAddRemoveItemCommand::State state = QgsAddRemoveItemCommand::Added );
 %Docstring
-Convenience function to create a QgsAddRemoveItemCommand, connect its signals and push it to the undo stack
+Convenience function to create a :py:class:`QgsAddRemoveItemCommand`, connect its signals and push it to the undo stack
 %End
 
     void setPreventCursorChange( const bool preventChange );
@@ -914,7 +914,7 @@ Return pages in the correct order
 
 .. note::
 
-   composerItems(QList< QgsPaperItem* > &) may not return pages in the correct order
+   composerItems(QList< :py:class:`QgsPaperItem`* > &) may not return pages in the correct order
 
 .. versionadded:: 2.4
 %End

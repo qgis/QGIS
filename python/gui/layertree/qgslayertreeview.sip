@@ -53,7 +53,7 @@ Overridden setModel() from base class. Only QgsLayerTreeModel is an acceptable m
 
     QgsLayerTreeModel *layerTreeModel() const;
 %Docstring
-Get access to the model casted to QgsLayerTreeModel
+Get access to the model casted to :py:class:`QgsLayerTreeModel`
 %End
 
     QgsLayerTreeViewDefaultActions *defaultActions();

@@ -64,7 +64,7 @@ Returns the title for the color ramp dialog window.
 
     bool acceptLiveUpdates() const;
 %Docstring
-Returns whether the button accepts live updates from QgsColorRampDialog.
+Returns whether the button accepts live updates from :py:class:`QgsColorRampDialog`.
 
 :return: true if the button will be accepted immediately when the dialog's color ramp changes
 
@@ -73,7 +73,7 @@ Returns whether the button accepts live updates from QgsColorRampDialog.
 
     void setAcceptLiveUpdates( const bool accept );
 %Docstring
-Sets whether the button accepts live updates from QgsColorRampDialog. Live updates may cause changes
+Sets whether the button accepts live updates from :py:class:`QgsColorRampDialog`. Live updates may cause changes
 that are not undoable on QColorRampDialog cancel.
 
 :param accept: set to true to enable live updates

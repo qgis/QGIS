@@ -105,7 +105,7 @@ The azimuth always takes the default value.
 
     static QgsCircle fromExtent( const QgsPoint &pt1, const QgsPoint &pt2 );
 %Docstring
-Constructs a circle by an extent (aka bounding box / QgsRectangle).
+Constructs a circle by an extent (aka bounding box / :py:class:`QgsRectangle`).
 The center point can have z and m values which are the result from the midpoint operation between ``pt1`` and ``pt2``.
 Axes are calculated from the 2D distance between ``pt1`` and ``pt2``.
 The azimuth always takes the default value.

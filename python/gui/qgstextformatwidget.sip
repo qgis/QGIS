@@ -85,7 +85,7 @@ Constructor for QgsTextFormatWidget.
 
     void updateWidgetForFormat( const QgsTextFormat &format );
 %Docstring
-Updates the widget's state to reflect the settings in a QgsTextFormat.
+Updates the widget's state to reflect the settings in a :py:class:`QgsTextFormat`.
 
 :param format: source format
 %End
@@ -127,8 +127,8 @@ class QgsTextFormatDialog : QDialog
 A simple dialog for customising text formatting settings.
 
 QgsTextFormatDialog provides a dialog for controlling the appearance of text rendered
-using QgsTextRenderer. The dialog includes all settings contained within
-a QgsTextFormat, including shadow, background and buffer.
+using :py:class:`QgsTextRenderer`. The dialog includes all settings contained within
+a :py:class:`QgsTextFormat`, including shadow, background and buffer.
 
 .. versionadded:: 3.0
 %End
@@ -164,8 +164,8 @@ class QgsTextFormatPanelWidget : QgsPanelWidgetWrapper
 A panel widget for customising text formatting settings.
 
 QgsTextFormatPanelWidget provides a panel widget for controlling the appearance of text rendered
-using QgsTextRenderer. The dialog includes all settings contained within
-a QgsTextFormat, including shadow, background and buffer.
+using :py:class:`QgsTextRenderer`. The dialog includes all settings contained within
+a :py:class:`QgsTextFormat`, including shadow, background and buffer.
 
 .. versionadded:: 3.0
 %End

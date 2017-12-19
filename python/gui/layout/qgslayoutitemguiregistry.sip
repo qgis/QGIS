@@ -128,7 +128,7 @@ class QgsLayoutItemGuiGroup
 QgsLayoutItemGuiGroup stores settings about groups of related layout item classes
 which should be presented to users grouped together.
 
-For instance, the various basic shape creation tools would use QgsLayoutItemGuiGroup
+For instance, the various basic shape creation tools would use :py:class:`QgsLayoutItemGuiGroup`
 to display grouped within designer dialogs.
 
 .. versionadded:: 3.0
@@ -168,9 +168,9 @@ class QgsLayoutItemGuiRegistry : QObject
  Registry of available layout item GUI behavior.
 
 QgsLayoutItemGuiRegistry is not usually directly created, but rather accessed through
-QgsGui.layoutItemGuiRegistry().
+:py:func:`QgsGui.layoutItemGuiRegistry()`
 
-This acts as a companion to QgsLayoutItemRegistry, handling only
+This acts as a companion to :py:class:`QgsLayoutItemRegistry`, handling only
 the components related to the GUI behavior of layout items.
 
 .. versionadded:: 3.0
@@ -186,7 +186,7 @@ the components related to the GUI behavior of layout items.
 Creates a new empty item GUI registry.
 
 QgsLayoutItemGuiRegistry is not usually directly created, but rather accessed through
-QgsGui.layoutItemGuiRegistry().
+:py:func:`QgsGui.layoutItemGuiRegistry()`
 
 .. seealso:: :py:func:`populate()`
 %End

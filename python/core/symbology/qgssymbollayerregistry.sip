@@ -92,7 +92,7 @@ class QgsSymbolLayerRegistry
 Registry of available symbol layer classes.
 
 QgsSymbolLayerRegistry is not usually directly created, but rather accessed through
-QgsApplication.symbolLayerRegistry().
+:py:func:`QgsApplication.symbolLayerRegistry()`
 %End
 
 %TypeHeaderCode

@@ -26,7 +26,7 @@ Constructor for QgsEllipseSymbolLayerWidget.
 
     static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) /Factory/;
 %Docstring
-Creates a new QgsSymbolLayerWidget.
+Creates a new :py:class:`QgsSymbolLayerWidget`.
 
 :param vl: associated vector layer
 %End

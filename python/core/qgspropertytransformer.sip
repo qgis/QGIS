@@ -361,7 +361,7 @@ Constructor for QgsGenericNumericTransformer.
 
     static QgsGenericNumericTransformer *fromExpression( const QString &expression, QString &baseExpression /Out/, QString &fieldName /Out/ ) /Factory/;
 %Docstring
-Attempts to parse an expression into a corresponding QgsSizeScaleTransformer.
+Attempts to parse an expression into a corresponding :py:class:`QgsSizeScaleTransformer`.
 
 :param expression: expression to parse
 :param baseExpression: will be set to the component of the source expression which
@@ -371,7 +371,7 @@ empty string if a field reference is the transformer input.
 to the property transformer. This will be set to an
 empty string if an expression is the transformer input.
 
-:return: corresponding QgsSizeScaleTransformer, or None if expression could not
+:return: corresponding :py:class:`QgsSizeScaleTransformer`, or None if expression could not
 be parsed to a size scale transformer.
 %End
 

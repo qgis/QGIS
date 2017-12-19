@@ -40,7 +40,7 @@ MANDATORY BUILDER PROPERTY DECLARATION
 
     QgsGraph *graph() /Factory/;
 %Docstring
-Returns generated QgsGraph
+Returns generated :py:class:`QgsGraph`
 %End
 
 };

@@ -49,7 +49,7 @@ should be called for the QgsLayoutItemMap to prevent rendering artifacts.
 
     void removeOverview( const QString &overviewId );
 %Docstring
-Removes an overview with matching overviewId from the stack and deletes the corresponding QgsLayoutItemMapOverview
+Removes an overview with matching overviewId from the stack and deletes the corresponding :py:class:`QgsLayoutItemMapOverview`
 
 .. note::
 
@@ -112,7 +112,7 @@ class QgsLayoutItemMapOverview : QgsLayoutItemMapItem
 {
 %Docstring
  An individual overview which is drawn above the map content in a
-QgsLayoutItemMap, and shows the extent of another QgsLayoutItemMap.
+:py:class:`QgsLayoutItemMap`, and shows the extent of another :py:class:`QgsLayoutItemMap`.
 
 .. versionadded:: 3.0
 

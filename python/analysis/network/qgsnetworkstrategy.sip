@@ -49,7 +49,7 @@ Default constructor
     virtual QSet< int > requiredAttributes() const;
 %Docstring
 Returns a list of the source layer attributes needed for cost calculation.
-This is method called by QgsGraphDirector.
+This is method called by :py:class:`QgsGraphDirector`.
 %End
 
     virtual QVariant cost( double distance, const QgsFeature &f ) const = 0;

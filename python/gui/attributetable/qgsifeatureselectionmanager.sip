@@ -47,7 +47,7 @@ Deselect features
     virtual void setSelectedFeatures( const QgsFeatureIds &ids ) = 0;
 %Docstring
 Change selection to the new set of features. Dismisses the current selection.
-Will emit the selectionChanged( const QgsFeatureIds&, const QgsFeatureIds&, bool ) signal with the
+Will emit the selectionChanged( const :py:class:`QgsFeatureIds`&, const :py:class:`QgsFeatureIds`&, bool ) signal with the
 clearAndSelect flag set.
 
 :param ids:   The ids which will be the new selection

@@ -208,7 +208,7 @@ Sets whether the effect is enabled
     DrawMode drawMode() const;
 %Docstring
 Returns the draw mode for the effect. This property only has an
-effect if the paint effect is used in a QgsEffectStack.
+effect if the paint effect is used in a :py:class:`QgsEffectStack`.
 
 :return: draw mode for effect
 
@@ -218,7 +218,7 @@ effect if the paint effect is used in a QgsEffectStack.
     void setDrawMode( const DrawMode drawMode );
 %Docstring
 Sets the draw mode for the effect. This property only has an
-effect if the paint effect is used in a QgsEffectStack.
+effect if the paint effect is used in a :py:class:`QgsEffectStack`.
 
 :param drawMode: draw mode for effect
 

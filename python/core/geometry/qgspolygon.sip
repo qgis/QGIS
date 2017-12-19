@@ -39,7 +39,7 @@ class QgsPolygon: QgsCurvePolygon
     virtual QgsCurvePolygon *toCurveType() const /Factory/;
 
 %Docstring
-Returns the geometry converted to the more generic curve type QgsCurvePolygon
+Returns the geometry converted to the more generic curve type :py:class:`QgsCurvePolygon`
 
 :return: the converted geometry. Caller takes ownership*
 %End

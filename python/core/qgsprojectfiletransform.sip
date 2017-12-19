@@ -35,7 +35,7 @@ Create an instance from a Dom and a supplied version
 
     void dump();
 %Docstring
-Prints the contents via QgsDebugMsg()
+Prints the contents via :py:class:`QgsDebugMsg`()
 %End
 
     static void convertRasterProperties( QDomDocument &doc, QDomNode &parentNode, QDomElement &rasterPropertiesElem, QgsRasterLayer *rlayer );

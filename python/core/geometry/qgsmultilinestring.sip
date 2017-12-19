@@ -44,7 +44,7 @@ class QgsMultiLineString: QgsMultiCurve
     virtual QgsMultiCurve *toCurveType() const /Factory/;
 
 %Docstring
-Returns the geometry converted to the more generic curve type QgsMultiCurve
+Returns the geometry converted to the more generic curve type :py:class:`QgsMultiCurve`
 
 :return: the converted geometry. Caller takes ownership*
 %End

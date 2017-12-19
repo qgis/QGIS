@@ -52,7 +52,7 @@ Returns the CRS currently selected in the widget.
     void setShowNoProjection( bool show );
 %Docstring
 Sets whether a "no/invalid" projection option should be shown. If this
-option is selected, calling crs() will return an invalid QgsCoordinateReferenceSystem.
+option is selected, calling crs() will return an invalid :py:class:`QgsCoordinateReferenceSystem`.
 
 .. seealso:: :py:func:`showNoProjection()`
 
@@ -71,7 +71,7 @@ Sets whether to show the bounnds preview map.
     bool showNoProjection() const;
 %Docstring
 Returns whether the "no/invalid" projection option is shown. If this
-option is selected, calling crs() will return an invalid QgsCoordinateReferenceSystem.
+option is selected, calling crs() will return an invalid :py:class:`QgsCoordinateReferenceSystem`.
 
 .. versionadded:: 3.0
 

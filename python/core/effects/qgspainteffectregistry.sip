@@ -87,7 +87,7 @@ class QgsPaintEffectRegistry
  Registry of available paint effects.
 
 QgsPaintEffectRegistry is not usually directly created, but rather accessed through
-QgsApplication.paintEffectRegistry().
+:py:func:`QgsApplication.paintEffectRegistry()`
 
 .. versionadded:: 2.9
 %End

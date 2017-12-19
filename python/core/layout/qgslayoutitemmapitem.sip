@@ -116,7 +116,7 @@ class QgsLayoutItemMapItemStack
 {
 %Docstring
  A collection of map items which are drawn above the map content in a
-QgsLayoutItemMap. The item stack controls which items are drawn and the
+:py:class:`QgsLayoutItemMap`. The item stack controls which items are drawn and the
 order they are drawn in.
 
 .. versionadded:: 3.0
@@ -187,7 +187,7 @@ should be called for the QgsLayoutItemMap to prevent rendering artifacts.
 
     void removeItem( const QString &itemId );
 %Docstring
-Removes an item which matching ``itemId`` from the stack and deletes the corresponding QgsLayoutItemMapItem
+Removes an item which matching ``itemId`` from the stack and deletes the corresponding :py:class:`QgsLayoutItemMapItem`
 
 .. note::
 

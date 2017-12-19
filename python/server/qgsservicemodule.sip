@@ -42,7 +42,7 @@ Destructor
 %Docstring
 Ask module to register all provided services
 
-:param registry: QgsServiceRegistry
+:param registry: :py:class:`QgsServiceRegistry`
 %End
 };
 
