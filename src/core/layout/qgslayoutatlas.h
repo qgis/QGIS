@@ -77,7 +77,7 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutItera
      * Returns the filename expression used for generating output filenames for each
      * atlas page.
      * \see setFilenameExpression()
-     * \see filenameExpressionErrorString()
+     * \see currentFilename()
      */
     QString filenameExpression() const { return mFilenameExpressionString; }
 
@@ -87,8 +87,16 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutItera
      * If an invalid expression is passed, false will be returned and \a errorString
      * will be set to the expression error.
      * \see filenameExpression()
+     * \see currentFilename()
      */
     bool setFilenameExpression( const QString &expression, QString &errorString SIP_OUT );
+
+    /**
+     * Returns the current feature filename.
+     * \see filenameExpression()
+     * \see setFilenameExpression()
+     */
+    QString currentFilename() const;
 
     /**
      * Returns the coverage layer used for the atlas features.

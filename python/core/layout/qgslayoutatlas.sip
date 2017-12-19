@@ -78,7 +78,7 @@ atlas page.
 
 .. seealso:: :py:func:`setFilenameExpression()`
 
-.. seealso:: :py:func:`filenameExpressionErrorString()`
+.. seealso:: :py:func:`currentFilename()`
 %End
 
     bool setFilenameExpression( const QString &expression, QString &errorString /Out/ );
@@ -89,6 +89,17 @@ If an invalid expression is passed, false will be returned and ``errorString``
 will be set to the expression error.
 
 .. seealso:: :py:func:`filenameExpression()`
+
+.. seealso:: :py:func:`currentFilename()`
+%End
+
+    QString currentFilename() const;
+%Docstring
+Returns the current feature filename.
+
+.. seealso:: :py:func:`filenameExpression()`
+
+.. seealso:: :py:func:`setFilenameExpression()`
 %End
 
     QgsVectorLayer *coverageLayer() const;

@@ -43,6 +43,7 @@ from qgis.PyQt.QtTest import QSignalSpy
 from qgis.PyQt.QtXml import QDomDocument
 from utilities import unitTestDataPath
 from qgis.testing import start_app, unittest
+from qgis.PyQt.QtTest import QSignalSpy
 
 start_app()
 
@@ -86,7 +87,148 @@ class TestQgsLayoutAtlas(unittest.TestCase):
         self.assertTrue(atlas2.filterFeatures())
         self.assertEqual(atlas2.filterExpression(), 'filter exp')
 
-    def test
+    def testIteration(self):
+        p = QgsProject()
+        vectorFileInfo = QFileInfo(unitTestDataPath() + "/france_parts.shp")
+        vector_layer = QgsVectorLayer(vectorFileInfo.filePath(), vectorFileInfo.completeBaseName(), "ogr")
+        self.assertTrue(vector_layer.isValid())
+        p.addMapLayer(vector_layer)
+
+        l = QgsPrintLayout(p)
+        atlas = l.atlas()
+        atlas.setEnabled(True)
+        atlas.setCoverageLayer(vector_layer)
+
+        atlas_feature_changed_spy = QSignalSpy(atlas.featureChanged)
+        context_changed_spy = QSignalSpy(l.context().changed)
+
+        self.assertTrue(atlas.beginRender())
+        self.assertTrue(atlas.first())
+        self.assertEqual(len(atlas_feature_changed_spy), 1)
+        self.assertEqual(len(context_changed_spy), 1)
+        self.assertEqual(atlas.currentFeatureNumber(), 0)
+        self.assertEqual(l.context().feature()[4], 'Basse-Normandie')
+        self.assertEqual(l.context().layer(), vector_layer)
+
+        self.assertTrue(atlas.next())
+        self.assertEqual(len(atlas_feature_changed_spy), 2)
+        self.assertEqual(len(context_changed_spy), 2)
+        self.assertEqual(atlas.currentFeatureNumber(), 1)
+        self.assertEqual(l.context().feature()[4], 'Bretagne')
+
+        self.assertTrue(atlas.next())
+        self.assertEqual(len(atlas_feature_changed_spy), 3)
+        self.assertEqual(len(context_changed_spy), 3)
+        self.assertEqual(atlas.currentFeatureNumber(), 2)
+        self.assertEqual(l.context().feature()[4], 'Pays de la Loire')
+
+        self.assertTrue(atlas.next())
+        self.assertEqual(len(atlas_feature_changed_spy), 4)
+        self.assertEqual(len(context_changed_spy), 4)
+        self.assertEqual(atlas.currentFeatureNumber(), 3)
+        self.assertEqual(l.context().feature()[4], 'Centre')
+
+        self.assertFalse(atlas.next())
+        self.assertTrue(atlas.seekTo(2))
+        self.assertEqual(len(atlas_feature_changed_spy), 5)
+        self.assertEqual(len(context_changed_spy), 5)
+        self.assertEqual(atlas.currentFeatureNumber(), 2)
+        self.assertEqual(l.context().feature()[4], 'Pays de la Loire')
+
+        self.assertTrue(atlas.last())
+        self.assertEqual(len(atlas_feature_changed_spy), 6)
+        self.assertEqual(len(context_changed_spy), 6)
+        self.assertEqual(atlas.currentFeatureNumber(), 3)
+        self.assertEqual(l.context().feature()[4], 'Centre')
+
+        self.assertTrue(atlas.previous())
+        self.assertEqual(len(atlas_feature_changed_spy), 7)
+        self.assertEqual(len(context_changed_spy), 7)
+        self.assertEqual(atlas.currentFeatureNumber(), 2)
+        self.assertEqual(l.context().feature()[4], 'Pays de la Loire')
+
+        self.assertTrue(atlas.previous())
+        self.assertTrue(atlas.previous())
+        self.assertEqual(len(atlas_feature_changed_spy), 9)
+        self.assertFalse(atlas.previous())
+        self.assertEqual(len(atlas_feature_changed_spy), 9)
+
+        self.assertTrue(atlas.endRender())
+        self.assertEqual(len(atlas_feature_changed_spy), 10)
+
+    def testUpdateFeature(self):
+        p = QgsProject()
+        vectorFileInfo = QFileInfo(unitTestDataPath() + "/france_parts.shp")
+        vector_layer = QgsVectorLayer(vectorFileInfo.filePath(), vectorFileInfo.completeBaseName(), "ogr")
+        self.assertTrue(vector_layer.isValid())
+        p.addMapLayer(vector_layer)
+
+        l = QgsPrintLayout(p)
+        atlas = l.atlas()
+        atlas.setEnabled(True)
+        atlas.setCoverageLayer(vector_layer)
+
+        self.assertTrue(atlas.beginRender())
+        self.assertTrue(atlas.first())
+        self.assertEqual(atlas.currentFeatureNumber(), 0)
+        self.assertEqual(l.context().feature()[4], 'Basse-Normandie')
+        self.assertEqual(l.context().layer(), vector_layer)
+
+        vector_layer.startEditing()
+        self.assertTrue(vector_layer.changeAttributeValue(l.context().feature().id(), 4, 'Nah, Canberra mate!'))
+        self.assertEqual(l.context().feature()[4], 'Basse-Normandie')
+        l.atlas().refreshCurrentFeature()
+        self.assertEqual(l.context().feature()[4], 'Nah, Canberra mate!')
+        vector_layer.rollBack()
+
+    def testFileName(self):
+        p = QgsProject()
+        vectorFileInfo = QFileInfo(unitTestDataPath() + "/france_parts.shp")
+        vector_layer = QgsVectorLayer(vectorFileInfo.filePath(), vectorFileInfo.completeBaseName(), "ogr")
+        self.assertTrue(vector_layer.isValid())
+        p.addMapLayer(vector_layer)
+
+        l = QgsPrintLayout(p)
+        atlas = l.atlas()
+        atlas.setEnabled(True)
+        atlas.setCoverageLayer(vector_layer)
+        atlas.setFilenameExpression("'output_' || \"NAME_1\"")
+
+        self.assertTrue(atlas.beginRender())
+        self.assertEqual(atlas.count(), 4)
+        atlas.first()
+        self.assertEqual(atlas.currentFilename(), 'output_Basse-Normandie')
+        atlas.next()
+        self.assertEqual(atlas.currentFilename(), 'output_Bretagne')
+        atlas.next()
+        self.assertEqual(atlas.currentFilename(), 'output_Pays de la Loire')
+        atlas.next()
+        self.assertEqual(atlas.currentFilename(), 'output_Centre')
+
+        # try changing expression, filename should be updated instantly
+        atlas.setFilenameExpression("'export_' || \"NAME_1\"")
+        self.assertEqual(atlas.currentFilename(), 'export_Centre')
+
+        atlas.endRender()
+
+    def testNameForPage(self):
+        p = QgsProject()
+        vectorFileInfo = QFileInfo(unitTestDataPath() + "/france_parts.shp")
+        vector_layer = QgsVectorLayer(vectorFileInfo.filePath(), vectorFileInfo.completeBaseName(), "ogr")
+        self.assertTrue(vector_layer.isValid())
+        p.addMapLayer(vector_layer)
+
+        l = QgsPrintLayout(p)
+        atlas = l.atlas()
+        atlas.setEnabled(True)
+        atlas.setCoverageLayer(vector_layer)
+        atlas.setPageNameExpression("\"NAME_1\"")
+
+        self.assertTrue(atlas.beginRender())
+        self.assertEqual(atlas.nameForPage(0), 'Basse-Normandie')
+        self.assertEqual(atlas.nameForPage(1), 'Bretagne')
+        self.assertEqual(atlas.nameForPage(2), 'Pays de la Loire')
+        self.assertEqual(atlas.nameForPage(3), 'Centre')
 
 
 if __name__ == '__main__':

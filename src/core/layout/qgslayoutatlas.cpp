@@ -394,6 +394,11 @@ bool QgsLayoutAtlas::setFilenameExpression( const QString &pattern, QString &err
   return updateFilenameExpression( errorString );
 }
 
+QString QgsLayoutAtlas::currentFilename() const
+{
+  return mCurrentFilename;
+}
+
 QgsExpressionContext QgsLayoutAtlas::createExpressionContext()
 {
   QgsExpressionContext expressionContext;
@@ -408,10 +413,9 @@ QgsExpressionContext QgsLayoutAtlas::createExpressionContext()
 
   if ( mCoverageLayer )
     expressionContext.lastScope()->setFields( mCoverageLayer->fields() );
-#if 0 //TODO
+
   if ( mLayout && mEnabled )
     expressionContext.lastScope()->setFeature( mCurrentFeature );
-#endif
 
   return expressionContext;
 }
@@ -440,13 +444,8 @@ bool QgsLayoutAtlas::updateFilenameExpression( QString &error )
     mFilenameExpression.prepare( &expressionContext );
   }
 
-#if 0 //TODO
-  //if atlas preview is currently enabled, regenerate filename for current feature
-  if ( mComposition->atlasMode() == QgsComposition::PreviewAtlas )
-  {
-    evalFeatureFilename( expressionContext );
-  }
-#endif
+  // regenerate current filename
+  evalFeatureFilename( expressionContext );
   return true;
 }
 
@@ -496,7 +495,6 @@ bool QgsLayoutAtlas::prepareForFeature( const int featureI )
   // generate filename for current feature
   if ( !evalFeatureFilename( expressionContext ) )
   {
-
     //error evaluating filename
     return false;
   }
