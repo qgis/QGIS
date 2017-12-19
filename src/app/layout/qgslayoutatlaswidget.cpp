@@ -43,15 +43,15 @@ QgsLayoutAtlasWidget::QgsLayoutAtlasWidget( QWidget *parent, QgsPrintLayout *lay
 
   mAtlasCoverageLayerComboBox->setFilters( QgsMapLayerProxyModel::VectorLayer );
 
-  connect( mAtlasCoverageLayerComboBox, &QgsMapLayerComboBox::layerChanged, mAtlasSortFeatureKeyComboBox, &QgsFieldComboBox::setLayer );
+  connect( mAtlasCoverageLayerComboBox, &QgsMapLayerComboBox::layerChanged, mAtlasSortExpressionWidget, &QgsFieldExpressionWidget::setLayer );
   connect( mAtlasCoverageLayerComboBox, &QgsMapLayerComboBox::layerChanged, mPageNameWidget, &QgsFieldExpressionWidget::setLayer );
   connect( mAtlasCoverageLayerComboBox, &QgsMapLayerComboBox::layerChanged, this, &QgsLayoutAtlasWidget::changeCoverageLayer );
-  connect( mAtlasSortFeatureKeyComboBox, &QgsFieldComboBox::fieldChanged, this, &QgsLayoutAtlasWidget::changesSortFeatureField );
+  connect( mAtlasSortExpressionWidget, static_cast < void ( QgsFieldExpressionWidget::* )( const QString &, bool ) > ( &QgsFieldExpressionWidget::fieldChanged ), this, &QgsLayoutAtlasWidget::changesSortFeatureExpression );
   connect( mPageNameWidget, static_cast < void ( QgsFieldExpressionWidget::* )( const QString &, bool ) > ( &QgsFieldExpressionWidget::fieldChanged ), this, &QgsLayoutAtlasWidget::pageNameExpressionChanged );
 
   // Sort direction
   mAtlasSortFeatureDirectionButton->setEnabled( false );
-  mAtlasSortFeatureKeyComboBox->setEnabled( false );
+  mAtlasSortExpressionWidget->setEnabled( false );
 
   // connect to updates
   connect( mAtlas, &QgsLayoutAtlas::changed, this, &QgsLayoutAtlasWidget::updateGuiElements );
@@ -182,15 +182,23 @@ void QgsLayoutAtlasWidget::mAtlasSortFeatureCheckBox_stateChanged( int state )
   if ( state == Qt::Checked )
   {
     mAtlasSortFeatureDirectionButton->setEnabled( true );
-    mAtlasSortFeatureKeyComboBox->setEnabled( true );
+    mAtlasSortExpressionWidget->setEnabled( true );
   }
   else
   {
     mAtlasSortFeatureDirectionButton->setEnabled( false );
-    mAtlasSortFeatureKeyComboBox->setEnabled( false );
+    mAtlasSortExpressionWidget->setEnabled( false );
   }
   mLayout->undoStack()->beginCommand( mAtlas, tr( "Toggle Atlas Sorting" ) );
   mAtlas->setSortFeatures( state == Qt::Checked );
+  mLayout->undoStack()->endCommand();
+  updateAtlasFeatures();
+}
+
+void QgsLayoutAtlasWidget::changesSortFeatureExpression( const QString &expression, bool )
+{
+  mLayout->undoStack()->beginCommand( mAtlas, tr( "Change Atlas Sort" ) );
+  mAtlas->setSortExpression( expression );
   mLayout->undoStack()->endCommand();
   updateAtlasFeatures();
 }
@@ -211,14 +219,6 @@ void QgsLayoutAtlasWidget::updateAtlasFeatures()
     return;
   }
 #endif
-}
-
-void QgsLayoutAtlasWidget::changesSortFeatureField( const QString &fieldName )
-{
-  mLayout->undoStack()->beginCommand( mAtlas, tr( "Change Atlas Sort" ) );
-  mAtlas->setSortExpression( fieldName );
-  mLayout->undoStack()->endCommand();
-  updateAtlasFeatures();
 }
 
 void QgsLayoutAtlasWidget::mAtlasFeatureFilterCheckBox_stateChanged( int state )
@@ -319,8 +319,8 @@ void QgsLayoutAtlasWidget::updateGuiElements()
   mPageNameWidget->setLayer( mAtlas->coverageLayer() );
   mPageNameWidget->setField( mAtlas->pageNameExpression() );
 
-  mAtlasSortFeatureKeyComboBox->setLayer( mAtlas->coverageLayer() );
-  mAtlasSortFeatureKeyComboBox->setField( mAtlas->sortExpression() );
+  mAtlasSortExpressionWidget->setLayer( mAtlas->coverageLayer() );
+  mAtlasSortExpressionWidget->setField( mAtlas->sortExpression() );
 
   mAtlasFilenamePatternEdit->setText( mAtlas->filenameExpression() );
   mAtlasHideCoverageCheckBox->setCheckState( mAtlas->hideCoverage() ? Qt::Checked : Qt::Unchecked );
@@ -333,7 +333,7 @@ void QgsLayoutAtlasWidget::updateGuiElements()
 
   mAtlasSortFeatureCheckBox->setCheckState( mAtlas->sortFeatures() ? Qt::Checked : Qt::Unchecked );
   mAtlasSortFeatureDirectionButton->setEnabled( mAtlas->sortFeatures() );
-  mAtlasSortFeatureKeyComboBox->setEnabled( mAtlas->sortFeatures() );
+  mAtlasSortExpressionWidget->setEnabled( mAtlas->sortFeatures() );
 
   mAtlasSortFeatureDirectionButton->setArrowType( mAtlas->sortAscending() ? Qt::UpArrow : Qt::DownArrow );
   mAtlasFeatureFilterEdit->setText( mAtlas->filterExpression() );
@@ -356,7 +356,7 @@ void QgsLayoutAtlasWidget::blockAllSignals( bool b )
   mOutputGroup->blockSignals( b );
   mAtlasCoverageLayerComboBox->blockSignals( b );
   mPageNameWidget->blockSignals( b );
-  mAtlasSortFeatureKeyComboBox->blockSignals( b );
+  mAtlasSortExpressionWidget->blockSignals( b );
   mAtlasFilenamePatternEdit->blockSignals( b );
   mAtlasHideCoverageCheckBox->blockSignals( b );
   mAtlasSingleFileCheckBox->blockSignals( b );

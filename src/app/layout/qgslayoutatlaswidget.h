@@ -29,27 +29,22 @@ class QgsLayoutAtlasWidget: public QWidget, private Ui::QgsLayoutAtlasWidgetBase
   public:
     QgsLayoutAtlasWidget( QWidget *parent, QgsPrintLayout *layout );
 
-  public slots:
+  private slots:
     void mUseAtlasCheckBox_stateChanged( int state );
     void changeCoverageLayer( QgsMapLayer *layer );
     void mAtlasFilenamePatternEdit_editingFinished();
     void mAtlasFilenameExpressionButton_clicked();
     void mAtlasHideCoverageCheckBox_stateChanged( int state );
     void mAtlasSingleFileCheckBox_stateChanged( int state );
-
     void mAtlasSortFeatureCheckBox_stateChanged( int state );
-    void changesSortFeatureField( const QString &fieldName );
+    void changesSortFeatureExpression( const QString &expression, bool valid );
     void mAtlasSortFeatureDirectionButton_clicked();
     void mAtlasFeatureFilterEdit_editingFinished();
     void mAtlasFeatureFilterButton_clicked();
     void mAtlasFeatureFilterCheckBox_stateChanged( int state );
     void pageNameExpressionChanged( const QString &expression, bool valid );
-
     void changeFileFormat();
-
-  private slots:
     void updateGuiElements();
-
     void updateAtlasFeatures();
 
   private:

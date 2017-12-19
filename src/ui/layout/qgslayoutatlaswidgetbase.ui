@@ -109,10 +109,10 @@
          </property>
          <property name="geometry">
           <rect>
-           <x>0</x>
-           <y>-63</y>
-           <width>417</width>
-           <height>389</height>
+           <x>-122</x>
+           <y>-223</y>
+           <width>525</width>
+           <height>673</height>
           </rect>
          </property>
          <layout class="QVBoxLayout" name="mainLayout">
@@ -154,7 +154,7 @@
               </widget>
              </item>
              <item row="4" column="1">
-              <widget class="QgsFieldComboBox" name="mAtlasSortFeatureKeyComboBox"/>
+              <widget class="QgsFieldExpressionWidget" name="mAtlasSortExpressionWidget" native="true"/>
              </item>
              <item row="3" column="0">
               <widget class="QCheckBox" name="mAtlasFeatureFilterCheckBox">
@@ -343,11 +343,6 @@
    <header location="global">qgsmaplayercombobox.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsFieldComboBox</class>
-   <extends>QComboBox</extends>
-   <header location="global">qgsfieldcombobox.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsFieldExpressionWidget</class>
    <extends>QWidget</extends>
    <header>qgsfieldexpressionwidget.h</header>
@@ -362,7 +357,7 @@
   <tabstop>mAtlasFeatureFilterEdit</tabstop>
   <tabstop>mAtlasFeatureFilterButton</tabstop>
   <tabstop>mAtlasSortFeatureCheckBox</tabstop>
-  <tabstop>mAtlasSortFeatureKeyComboBox</tabstop>
+  <tabstop>mAtlasSortExpressionWidget</tabstop>
   <tabstop>mAtlasSortFeatureDirectionButton</tabstop>
   <tabstop>mOutputGroup</tabstop>
   <tabstop>mAtlasFilenamePatternEdit</tabstop>
@@ -371,7 +366,6 @@
   <tabstop>scrollArea</tabstop>
  </tabstops>
  <resources>
-  <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
