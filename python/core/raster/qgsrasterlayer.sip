@@ -55,36 +55,12 @@ so the rasterlayer class appends the band number in brackets behind each band na
 
 Sample usage of the QgsRasterLayer class:
 
-\code
-QString myFileNameQString = "/path/to/file";
-QFileInfo myFileInfo(myFileNameQString);
-QString myBaseNameQString = myFileInfo.baseName();
-QgsRasterLayer *myRasterLayer = new QgsRasterLayer(myFileNameQString, myBaseNameQString);
-
-\endcode
-
 In order to automate redrawing of a raster layer, you should like it to a map canvas like this :
-
-\code
-QObject.connect( myRasterLayer, SIGNAL(repaintRequested()), mapCanvas, SLOT(refresh()) );
-\endcode
 
 Once a layer has been created you can find out what type of layer it is (GrayOrUndefined, Palette or Multiband):
 
-\code
-if (rasterLayer->rasterType()==QgsRasterLayer.Multiband)
-{
-//do something
-}
-else if (rasterLayer->rasterType()==QgsRasterLayer.Palette)
-{
-//do something
-}
-else // QgsRasterLayer.GrayOrUndefined
-{
-//do something.
-}
-\endcode
+
+
 
 Raster layers can also have an arbitrary level of transparency defined, and have their
 color palettes inverted using the setTransparency and setInvertHistogram methods.

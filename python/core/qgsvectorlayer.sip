@@ -33,10 +33,10 @@ manages editing transactions.
 
 Sample usage of the QgsVectorLayer class:
 
-\code
-QString uri = "point?crs=epsg:4326&field=id:integer";
-QgsVectorLayer *scratchLayer = new QgsVectorLayer(uri, "Scratch point layer",  "memory");
-\endcode
+.. code-block::
+
+         QString uri = "point?crs=epsg:4326&field=id:integer";
+         QgsVectorLayer *scratchLayer = new QgsVectorLayer(uri, "Scratch point layer",  "memory");
 
 The main data providers supported by QGIS are listed below.
 
