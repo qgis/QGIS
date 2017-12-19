@@ -57,7 +57,10 @@ class TestQgsFileUtils(unittest.TestCase):
 
     def testStringToSafeFilename(self):
         self.assertEqual(QgsFileUtils.stringToSafeFilename('my FiLe v2.0_new.tif'), 'my FiLe v2.0_new.tif')
-        self.assertEqual(QgsFileUtils.stringToSafeFilename('rendered map_final? rev (12-03-1017)_real@#$&*#%&*$!!@$%^&(*(.tif'), 'rendered map_final_ rev _12-03-1017__real____________________.tif')
+        self.assertEqual(
+            QgsFileUtils.stringToSafeFilename('rendered map_final? rev (12-03-1017)_real@#$&*#%&*$!!@$%^&(*(.tif'),
+            'rendered map_final_ rev _12-03-1017__real____________________.tif')
+
 
 if __name__ == '__main__':
     unittest.main()
