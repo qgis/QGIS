@@ -47,9 +47,9 @@ QgsMapToolDigitizeFeature::QgsMapToolDigitizeFeature( QgsMapCanvas *canvas, QgsM
   connect( QgisApp::instance(), &QgisApp::projectRead, this, &QgsMapToolDigitizeFeature::stopCapturing );
 }
 
-void QgsMapToolDigitizeFeature::digitized( const QgsFeature *f )
+void QgsMapToolDigitizeFeature::digitized( QgsFeature &f )
 {
-  emit digitizingCompleted( static_cast< const QgsFeature & >( *f ) );
+  emit digitizingCompleted( f );
 }
 
 void QgsMapToolDigitizeFeature::activate()
@@ -61,7 +61,7 @@ void QgsMapToolDigitizeFeature::activate()
   if ( vlayer && vlayer->geometryType() == QgsWkbTypes::NullGeometry )
   {
     QgsFeature f;
-    digitized( &f );
+    digitized( f );
     return;
   }
 
@@ -202,7 +202,7 @@ void QgsMapToolDigitizeFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       f.setGeometry( g );
       f.setValid( true );
 
-      digitized( &f );
+      digitized( f );
 
       // we are done with digitizing for now so instruct advanced digitizing dock to reset its CAD points
       cadDockWidget()->clearPoints();
@@ -324,7 +324,7 @@ void QgsMapToolDigitizeFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       }
       f->setValid( true );
 
-      digitized( f.get() );
+      digitized( *f );
 
       stopCapturing();
     }

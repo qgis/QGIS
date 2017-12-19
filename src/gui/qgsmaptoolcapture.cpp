@@ -53,7 +53,7 @@ QgsMapToolCapture::QgsMapToolCapture( QgsMapCanvas *canvas, QgsAdvancedDigitizin
   setCursor( QgsApplication::getThemeCursor( QgsApplication::Cursor::CapturePoint ) );
 
   connect( canvas, &QgsMapCanvas::currentLayerChanged,
-           this, &QgsMapToolCapture::setCurrentLayer );
+           this, &QgsMapToolCapture::currentLayerChanged );
 }
 
 QgsMapToolCapture::~QgsMapToolCapture()
@@ -95,7 +95,7 @@ void QgsMapToolCapture::validationFinished()
   }
 }
 
-void QgsMapToolCapture::setCurrentLayer( QgsMapLayer *layer )
+void QgsMapToolCapture::currentLayerChanged( QgsMapLayer *layer )
 {
   if ( !mCaptureModeFromLayer )
     return;

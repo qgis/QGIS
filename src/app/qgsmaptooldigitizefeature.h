@@ -29,7 +29,7 @@ class APP_EXPORT QgsMapToolDigitizeFeature : public QgsMapToolCapture
 
     void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
 
-    virtual void digitized( const QgsFeature *f );
+    virtual void digitized( QgsFeature &f );
 
     virtual void activate() override;
     virtual void deactivate() override;

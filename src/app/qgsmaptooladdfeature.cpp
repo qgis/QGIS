@@ -55,10 +55,10 @@ bool QgsMapToolAddFeature::addFeature( QgsVectorLayer *vlayer, QgsFeature *f, bo
   return res;
 }
 
-void QgsMapToolAddFeature::digitized( const QgsFeature *f )
+void QgsMapToolAddFeature::digitized( QgsFeature &f )
 {
   QgsVectorLayer *vlayer = currentVectorLayer();
-  bool res = addFeature( vlayer, const_cast<QgsFeature *>( f ), false );
+  bool res = addFeature( vlayer, &f, false );
 
   if ( res && ( mode() == CaptureLine || mode() == CapturePolygon ) )
   {
@@ -76,13 +76,13 @@ void QgsMapToolAddFeature::digitized( const QgsFeature *f )
         //can only add topological points if background layer is editable...
         if ( vl->geometryType() == QgsWkbTypes::PolygonGeometry && vl->isEditable() )
         {
-          vl->addTopologicalPoints( f->geometry() );
+          vl->addTopologicalPoints( f.geometry() );
         }
       }
     }
     else if ( topologicalEditing )
     {
-      vlayer->addTopologicalPoints( f->geometry() );
+      vlayer->addTopologicalPoints( f.geometry() );
     }
   }
 }

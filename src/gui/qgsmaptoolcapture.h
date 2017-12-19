@@ -112,9 +112,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
   private slots:
     void validationFinished();
     void addError( QgsGeometry::Error );
-
-  public slots:
-    void setCurrentLayer( QgsMapLayer *layer );
+    void currentLayerChanged( QgsMapLayer *layer );
 
 
   protected:
