@@ -128,7 +128,7 @@ class CORE_EXPORT QgsCompositionConverter
      * \note Not available in Python bindings.
      */
     static QgsLayout *createLayoutFromCompositionXml( const QDomElement &parentElement,
-        QgsProject *project ) SIP_FACTORY;
+        QgsProject *project );
 
 
     /**
