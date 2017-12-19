@@ -8,7 +8,7 @@
 
 
 
-class QgsLayoutAtlas : QObject
+class QgsLayoutAtlas : QObject, QgsLayoutSerializableObject
 {
 %Docstring
 Class used to render an Atlas, iterating over geometry features.
@@ -33,6 +33,15 @@ QgsLayoutAtlas which is automatically created and attached to the composition.
 %Docstring
 Constructor for new QgsLayoutAtlas.
 %End
+
+    virtual QString stringType() const;
+
+    virtual QgsLayout *layout();
+
+    virtual bool writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const;
+
+    virtual bool readXml( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context );
+
 
     bool enabled() const;
 %Docstring
@@ -72,7 +81,7 @@ atlas page.
 .. seealso:: :py:func:`filenameExpressionErrorString()`
 %End
 
-    bool setFilenameExpression( const QString &expression, QString &errorString );
+    bool setFilenameExpression( const QString &expression, QString &errorString /Out/ );
 %Docstring
 Sets the filename ``expression`` used for generating output filenames for each
 atlas page.
@@ -222,7 +231,7 @@ This property has no effect is filterFeatures() is false.
 .. seealso:: :py:func:`filterFeatures()`
 %End
 
-    bool setFilterExpression( const QString &expression, QString &errorString );
+    bool setFilterExpression( const QString &expression, QString &errorString /Out/ );
 %Docstring
 Sets the ``expression`` used for filtering features in the coverage layer.
 

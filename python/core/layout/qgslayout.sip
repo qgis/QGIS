@@ -500,14 +500,14 @@ If ``ok`` is specified, it will be set to true if the load was successful.
 Returns a list of loaded items.
 %End
 
-    QDomElement writeXml( QDomDocument &document, const QgsReadWriteContext &context ) const;
+    virtual QDomElement writeXml( QDomDocument &document, const QgsReadWriteContext &context ) const;
 %Docstring
 Returns the layout's state encapsulated in a DOM element.
 
 .. seealso:: :py:func:`readXml()`
 %End
 
-    bool readXml( const QDomElement &layoutElement, const QDomDocument &document, const QgsReadWriteContext &context );
+    virtual bool readXml( const QDomElement &layoutElement, const QDomDocument &document, const QgsReadWriteContext &context );
 %Docstring
 Sets the collection's state from a DOM element. ``layoutElement`` is the DOM node corresponding to the layout.
 

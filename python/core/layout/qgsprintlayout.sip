@@ -31,6 +31,11 @@ Constructor for QgsPrintLayout.
 Returns the print layout's atlas.
 %End
 
+    virtual QDomElement writeXml( QDomDocument &document, const QgsReadWriteContext &context ) const;
+
+    virtual bool readXml( const QDomElement &layoutElement, const QDomDocument &document, const QgsReadWriteContext &context );
+
+
 };
 
 /************************************************************************

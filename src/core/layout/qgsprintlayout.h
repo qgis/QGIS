@@ -43,6 +43,9 @@ class CORE_EXPORT QgsPrintLayout : public QgsLayout
      */
     QgsLayoutAtlas *atlas();
 
+    QDomElement writeXml( QDomDocument &document, const QgsReadWriteContext &context ) const override;
+    bool readXml( const QDomElement &layoutElement, const QDomDocument &document, const QgsReadWriteContext &context ) override;
+
   private:
 
     QgsLayoutAtlas *mAtlas = nullptr;

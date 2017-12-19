@@ -18,6 +18,7 @@
 
 #include "qgis_core.h"
 #include "qgsvectorlayerref.h"
+#include "qgslayoutserializableobject.h"
 #include <QObject>
 
 class QgsLayout;
@@ -32,7 +33,7 @@ class QgsLayout;
  * QgsLayoutAtlas which is automatically created and attached to the composition.
  * \since QGIS 3.0
  */
-class CORE_EXPORT QgsLayoutAtlas : public QObject
+class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsLayoutSerializableObject
 {
     Q_OBJECT
   public:
@@ -41,6 +42,11 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject
      * Constructor for new QgsLayoutAtlas.
      */
     QgsLayoutAtlas( QgsLayout *layout SIP_TRANSFERTHIS );
+
+    QString stringType() const override;
+    QgsLayout *layout() override;
+    bool writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const override;
+    bool readXml( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context ) override;
 
     /**
      * Returns whether the atlas generation is enabled
@@ -81,7 +87,7 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject
      * will be set to the expression error.
      * \see filenameExpression()
      */
-    bool setFilenameExpression( const QString &expression, QString &errorString );
+    bool setFilenameExpression( const QString &expression, QString &errorString SIP_OUT );
 
     /**
      * Returns the coverage layer used for the atlas features.
@@ -209,7 +215,7 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject
      * \see filterExpression()
      * \see setFilterFeatures()
      */
-    bool setFilterExpression( const QString &expression, QString &errorString );
+    bool setFilterExpression( const QString &expression, QString &errorString SIP_OUT );
 
   public slots:
 

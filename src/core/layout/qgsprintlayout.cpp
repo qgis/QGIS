@@ -27,3 +27,20 @@ QgsLayoutAtlas *QgsPrintLayout::atlas()
 {
   return mAtlas;
 }
+
+QDomElement QgsPrintLayout::writeXml( QDomDocument &document, const QgsReadWriteContext &context ) const
+{
+  QDomElement layoutElem = QgsLayout::writeXml( document, context );
+  mAtlas->writeXml( layoutElem, document, context );
+  return layoutElem;
+}
+
+bool QgsPrintLayout::readXml( const QDomElement &layoutElement, const QDomDocument &document, const QgsReadWriteContext &context )
+{
+  if ( !QgsLayout::readXml( layoutElement, document, context ) )
+    return false;
+
+  QDomElement atlasElem = layoutElement.firstChildElement( QStringLiteral( "Atlas" ) );
+  mAtlas->readXml( atlasElem, document, context );
+  return true;
+}

@@ -514,13 +514,13 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      * Returns the layout's state encapsulated in a DOM element.
      * \see readXml()
      */
-    QDomElement writeXml( QDomDocument &document, const QgsReadWriteContext &context ) const;
+    virtual QDomElement writeXml( QDomDocument &document, const QgsReadWriteContext &context ) const;
 
     /**
      * Sets the collection's state from a DOM element. \a layoutElement is the DOM node corresponding to the layout.
      * \see writeXml()
      */
-    bool readXml( const QDomElement &layoutElement, const QDomDocument &document, const QgsReadWriteContext &context );
+    virtual bool readXml( const QDomElement &layoutElement, const QDomDocument &document, const QgsReadWriteContext &context );
 
     /**
      * Add items from an XML representation to the layout. Used for project file reading and pasting items from clipboard.
