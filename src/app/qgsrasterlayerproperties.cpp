@@ -1223,6 +1223,7 @@ void QgsRasterLayerProperties::mCrsSelector_crsChanged( const QgsCoordinateRefer
 {
   QgisApp::instance()->askUserForDatumTransform( crs, QgsProject::instance()->crs() );
   mRasterLayer->setCrs( crs );
+  mMetadataWidget->crsChanged();
 }
 
 void QgsRasterLayerProperties::pbnDefaultValues_clicked()

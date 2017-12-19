@@ -21,6 +21,8 @@
 #include "QStyledItemDelegate"
 
 #include "qgis_gui.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgsdataprovider.h"
 #include "qgsmaplayer.h"
 #include "qgslayermetadata.h"
 #include "ui_qgsmetadatawidget.h"
@@ -53,6 +55,11 @@ class GUI_EXPORT QgsMetadataWidget : public QWidget, private Ui::QgsMetadataWidg
      * Check if values in the wizard are correct.
      */
     bool checkMetadata() const;
+
+    /**
+     * If the CRS is updated.
+     */
+    void crsChanged() const;
 
     /**
      * Saves the metadata to the layer.
@@ -89,7 +96,8 @@ class GUI_EXPORT QgsMetadataWidget : public QWidget, private Ui::QgsMetadataWidg
   private:
     void updatePanel() const;
     void fillSourceFromLayer() const;
-    void fillCrsFromLayer() const;
+    void fillCrsFromLayer();
+    void fillCrsFromProvider();
     void addDefaultCategory() const;
     void addNewCategory();
     void removeSelectedCategory() const;
@@ -101,7 +109,6 @@ class GUI_EXPORT QgsMetadataWidget : public QWidget, private Ui::QgsMetadataWidg
     void removeSelectedRight() const;
     void addConstraint() const;
     void removeSelectedConstraint() const;
-    void toggleExtentSelector() const;
     void addAddress() const;
     void removeSelectedAddress() const;
     void addLink() const;
@@ -109,10 +116,11 @@ class GUI_EXPORT QgsMetadataWidget : public QWidget, private Ui::QgsMetadataWidg
     void addHistory();
     void removeSelectedHistory() const;
     void fillComboBox() const;
-    void setPropertiesFromLayer() const;
+    void setPropertiesFromLayer();
     void syncFromCategoriesTabToKeywordsTab() const;
     QStringList mDefaultCategories;
     QgsMapLayer *mLayer = nullptr;
+    QgsCoordinateReferenceSystem mCrs;
     QgsLayerMetadata mMetadata;
     QStandardItemModel *mConstraintsModel = nullptr;
     QStandardItemModel *mLinksModel = nullptr;

@@ -834,6 +834,7 @@ void QgsVectorLayerProperties::mCrsSelector_crsChanged( const QgsCoordinateRefer
   QgisApp::instance()->askUserForDatumTransform( crs, QgsProject::instance()->crs() );
   mLayer->setCrs( crs );
   mMetadataFilled = false;
+  mMetadataWidget->crsChanged();
 }
 
 void QgsVectorLayerProperties::loadDefaultStyle_clicked()
