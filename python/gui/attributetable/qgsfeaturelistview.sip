@@ -73,7 +73,7 @@ Returns the expression which is currently used to render the features.
 
     QString parserErrorString();
 %Docstring
-Returns a detailed message about errors while parsing a QgsExpression.
+Returns a detailed message about errors while parsing a :py:class:`QgsExpression`.
 
 :return: A message containing information about the parser error.
 %End

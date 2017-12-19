@@ -36,9 +36,9 @@ This is an abstract base class and will always need to be subclassed.
     virtual QString id() const = 0;
 %Docstring
 Return a unique id for this field formatter.
-This id will later be used to identify this field formatter in the registry with QgsFieldFormatterRegistry.fieldFormatter().
+This id will later be used to identify this field formatter in the registry with :py:func:`QgsFieldFormatterRegistry.fieldFormatter()`
 
-This id matches the id of a QgsEditorWidgetFactory.
+This id matches the id of a :py:class:`QgsEditorWidgetFactory`.
 %End
 
     virtual QString representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const;
@@ -72,10 +72,10 @@ values are represented.
 Create a cache for a given field.
 
 This will be used in situations where a field is being represented various times in a loop. And will be passed
-to other methods on QgsFieldKit and QgsEditorWidgetWrapper.
+to other methods on QgsFieldKit and :py:class:`QgsEditorWidgetWrapper`.
 
 For example, the attribute table will create a cache once for each field and then use this
-cache for representation. The QgsValueRelationFieldFormatter and QgsValueRelationEditorWidget
+cache for representation. The QgsValueRelationFieldFormatter and :py:class:`QgsValueRelationEditorWidget`
 implement this functionality to create a lookuptable once (a QVariantMap / dict) and are
 make use of a cache if present.
 

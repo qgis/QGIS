@@ -125,7 +125,7 @@ If a subset of attributes has been set for the request, then only
 those selected fields will be present in the output layer.
 
 The CRS for the output layer will match the input layer, unless
-QgsFeatureRequest.setDestinationCrs() has been called with a valid QgsCoordinateReferenceSystem.
+QgsFeatureRequest.setDestinationCrs() has been called with a valid :py:class:`QgsCoordinateReferenceSystem`.
 In this case the output layer will match the QgsFeatureRequest.destinationCrs() CRS.
 
 The returned layer WKB type will match wkbType(), unless the QgsFeatureRequest.NoGeometry flag is set

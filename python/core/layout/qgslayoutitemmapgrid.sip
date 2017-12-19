@@ -48,7 +48,7 @@ should be called for the QgsLayoutItemMap to prevent rendering artifacts.
 
     void removeGrid( const QString &gridId );
 %Docstring
-Removes a grid with matching ``gridId`` from the stack and deletes the corresponding QgsLayoutItemMapGrid.
+Removes a grid with matching ``gridId`` from the stack and deletes the corresponding :py:class:`QgsLayoutItemMapGrid`.
 
 .. note::
 
@@ -129,7 +129,7 @@ class QgsLayoutItemMapGrid : QgsLayoutItemMapItem
 {
 %Docstring
  An individual grid which is drawn above the map content in a
-QgsLayoutItemMap.
+:py:class:`QgsLayoutItemMap`.
 
 .. versionadded:: 3.0
 

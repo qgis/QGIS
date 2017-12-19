@@ -256,7 +256,7 @@ Attempts to parse a GeoJSON string to a collection of features.
 
 .. note::
 
-   this function is a wrapper around QgsOgrUtils.stringToFeatureList()
+   this function is a wrapper around :py:func:`QgsOgrUtils.stringToFeatureList()`
 %End
 
     static QgsFields stringToFields( const QString &string, QTextCodec *encoding );
@@ -272,7 +272,7 @@ Attempts to retrieve the fields from a GeoJSON string representing a collection 
 
 .. note::
 
-   this function is a wrapper around QgsOgrUtils.stringToFields()
+   this function is a wrapper around :py:func:`QgsOgrUtils.stringToFields()`
 %End
 
     static QString encodeValue( const QVariant &value );

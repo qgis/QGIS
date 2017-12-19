@@ -24,7 +24,7 @@ class QgsLayoutPageCollection : QObject, QgsLayoutSerializableObject
 
     explicit QgsLayoutPageCollection( QgsLayout *layout /TransferThis/ );
 %Docstring
-Constructor for QgsLayoutItemPage, with the specified parent ``layout``.
+Constructor for :py:class:`QgsLayoutItemPage`, with the specified parent ``layout``.
 %End
 
     ~QgsLayoutPageCollection();

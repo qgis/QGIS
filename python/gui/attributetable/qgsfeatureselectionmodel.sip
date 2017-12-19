@@ -20,7 +20,7 @@ class QgsFeatureSelectionModel : QItemSelectionModel
 
     void enableSync( bool enable );
 %Docstring
-Enables or disables synchronisation to the QgsVectorLayer
+Enables or disables synchronisation to the :py:class:`QgsVectorLayer`
 When synchronisation is disabled, any selection change will be buffered inside this selection model.
 When enabled, any buffered changes are communicated to the layer and the buffer is emptied.
 Mainly to be used for performance reasons, because selection change on the layer can cost time as it

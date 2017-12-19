@@ -142,7 +142,7 @@ Returns whether the color scheme model has been modified
 class QgsColorSchemeList: QTreeView
 {
 %Docstring
-An editable list of color swatches, taken from an associated QgsColorScheme.
+An editable list of color swatches, taken from an associated :py:class:`QgsColorScheme`.
 
 .. seealso:: :py:class:`QgsColorSchemeList`
 

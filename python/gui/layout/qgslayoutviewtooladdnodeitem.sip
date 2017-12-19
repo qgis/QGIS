@@ -35,7 +35,7 @@ Returns the item metadata id for items created by the tool.
 Sets the item metadata ``metadataId`` for items created by the tool.
 
 The ``metadataId`` associates the current tool behavior with a metadata entry
-from QgsLayoutItemGuiRegistry.
+from :py:class:`QgsLayoutItemGuiRegistry`.
 
 .. seealso:: :py:func:`itemMetadataId()`
 %End

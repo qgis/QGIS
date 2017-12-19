@@ -65,7 +65,7 @@ Type of URI. Recognized types: "vector" / "raster" / "plugin" / "custom"
 %Docstring
 For "vector" / "raster" type: provider id.
 For "plugin" type: plugin layer type name.
-For "custom" type: key of its QgsCustomDropHandler
+For "custom" type: key of its :py:class:`QgsCustomDropHandler`
 %End
       QString name;
 %Docstring

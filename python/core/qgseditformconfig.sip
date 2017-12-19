@@ -271,7 +271,7 @@ Deserialize drag and drop designer elements.
 
     explicit QgsEditFormConfig();
 %Docstring
-Create a new edit form config. Normally invoked by QgsVectorLayer
+Create a new edit form config. Normally invoked by :py:class:`QgsVectorLayer`
 %End
 
 };

@@ -173,7 +173,7 @@ class QgsProperty
  A store for object properties.
 
 QgsProperty objects are used for storing properties for objects, which can then be transformed to
-a QVariant value by evaluating them against a supplied QgsExpressionContext. Multiple QgsProperty objects
+a QVariant value by evaluating them against a supplied :py:class:`QgsExpressionContext`. Multiple QgsProperty objects
 can be grouped using a QgsPropertyCollection for easier bulk storage, retrieval and evaluation.
 
 QgsProperty objects are implicitly shared and can be inexpensively copied.
@@ -196,7 +196,7 @@ QgsProperty objects are implicitly shared and can be inexpensively copied.
 
     QgsProperty();
 %Docstring
-Constructor for a QgsAbstractProperty. The property will be set to an InvalidProperty type.
+Constructor for a :py:class:`QgsAbstractProperty`. The property will be set to an InvalidProperty type.
 %End
 
     virtual ~QgsProperty();

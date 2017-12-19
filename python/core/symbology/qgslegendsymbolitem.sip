@@ -101,7 +101,7 @@ Set symbol of the item. Takes ownership of symbol.
 
     void setDataDefinedSizeLegendSettings( QgsDataDefinedSizeLegend *settings /Transfer/ );
 %Docstring
-Sets extra information about data-defined size. If set, this item should be converted to QgsDataDefinedSizeLegendNode
+Sets extra information about data-defined size. If set, this item should be converted to :py:class:`QgsDataDefinedSizeLegendNode`
 rather than QgsSymbolLegendNode instance as usual. Passing null removes any data-defined size legend settings.
 
 Takes ownership of the settings object.

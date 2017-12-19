@@ -480,7 +480,7 @@ Returns pointer to the project's map theme collection.
 
 .. note::
 
-   renamed in QGIS 3.0, formerly QgsVisibilityPresetCollection
+   renamed in QGIS 3.0, formerly :py:class:`QgsVisibilityPresetCollection`
 %End
 
     QgsAnnotationManager *annotationManager();

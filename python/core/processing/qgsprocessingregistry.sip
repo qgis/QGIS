@@ -16,7 +16,7 @@ Registry for various processing components, including providers, algorithms
 and various parameters and outputs.
 
 QgsProcessingRegistry is not usually directly created, but rather accessed through
-QgsApplication.processingRegistry().
+:py:func:`QgsApplication.processingRegistry()`
 
 .. versionadded:: 3.0
 %End
@@ -45,7 +45,7 @@ Add a processing provider to the registry. Ownership of the provider is transfer
 and the provider's parent will be set to the registry.
 Returns false if the provider could not be added (eg if a provider with a duplicate ID already exists
 in the registry).
-Adding a provider to the registry automatically triggers the providers QgsProcessingProvider.load()
+Adding a provider to the registry automatically triggers the providers :py:func:`QgsProcessingProvider.load()`
 method to populate the provider with algorithms.
 
 .. seealso:: :py:func:`removeProvider()`

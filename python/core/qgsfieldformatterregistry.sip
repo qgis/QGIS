@@ -14,7 +14,7 @@ class QgsFieldFormatterRegistry : QObject
 %Docstring
 The QgsFieldFormatterRegistry manages registered classes of QgsFieldFormatter.
 A reference to the QgsFieldFormatterRegistry can be obtained from
-QgsApplication.fieldFormatterRegistry().
+:py:func:`QgsApplication.fieldFormatterRegistry()`
 
 .. versionadded:: 3.0
 %End

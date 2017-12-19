@@ -246,7 +246,7 @@ class QgsVectorLayerUndoPassthroughCommandDeleteAttribute : QgsVectorLayerUndoPa
 
     QgsVectorLayerUndoPassthroughCommandDeleteAttribute( QgsVectorLayerEditBuffer *buffer /Transfer/, int attr );
 %Docstring
-Constructor for QgsVectorLayerUndoCommandDeleteAttribute
+Constructor for :py:class:`QgsVectorLayerUndoCommandDeleteAttribute`
 
 :param buffer: associated edit buffer
 :param attr:
@@ -275,7 +275,7 @@ class QgsVectorLayerUndoPassthroughCommandRenameAttribute : QgsVectorLayerUndoPa
 
     QgsVectorLayerUndoPassthroughCommandRenameAttribute( QgsVectorLayerEditBuffer *buffer /Transfer/, int attr, const QString &newName );
 %Docstring
-Constructor for QgsVectorLayerUndoCommandRenameAttribute
+Constructor for :py:class:`QgsVectorLayerUndoCommandRenameAttribute`
 
 :param buffer: associated edit buffer
 :param attr:
@@ -305,7 +305,7 @@ class QgsVectorLayerUndoPassthroughCommandUpdate : QgsVectorLayerUndoPassthrough
 
     QgsVectorLayerUndoPassthroughCommandUpdate( QgsVectorLayerEditBuffer *buffer /Transfer/, QgsTransaction *transaction, const QString &sql );
 %Docstring
-Constructor for QgsVectorLayerUndoCommandUpdate
+Constructor for :py:class:`QgsVectorLayerUndoCommandUpdate`
 
 :param buffer: associated edit buffer
 :param transaction: transaction running the sql query

@@ -122,7 +122,7 @@ Inverts current selection
 
     void setComposition( QgsComposition *c /KeepReference/ );
 %Docstring
-Sets the composition for the view. If the composition is being set manually and not by a QgsComposer, then this must
+Sets the composition for the view. If the composition is being set manually and not by a :py:class:`QgsComposer`, then this must
 be set BEFORE adding any items to the composition.
 %End
 

@@ -48,7 +48,7 @@ Retrieve a service from its name
 :param name: the name of the service
 :param version: the version string (optional)
 
-:return: QgsService
+:return: :py:class:`QgsService`
 
 If the version is not provided the higher version of the service is returned
 %End

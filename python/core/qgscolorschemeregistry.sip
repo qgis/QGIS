@@ -15,7 +15,7 @@ class QgsColorSchemeRegistry
  Registry of color schemes
 
 A registry of QgsColorScheme color schemes. This class can be created directly, or
-accessed via a QgsApplication.colorSchemeRegistry().
+accessed via a :py:func:`QgsApplication.colorSchemeRegistry()`
 
 .. versionadded:: 2.5
 %End

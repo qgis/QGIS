@@ -38,7 +38,7 @@ Constructor
     virtual QgsEditorWidgetWrapper *create( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent ) const = 0 /Factory/;
 %Docstring
 Override this in your implementation.
-Create a new editor widget wrapper. Call QgsEditorWidgetRegistry.create()
+Create a new editor widget wrapper. Call :py:func:`QgsEditorWidgetRegistry.create()`
 instead of calling this method directly.
 
 :param vl:       The vector layer on which this widget will act

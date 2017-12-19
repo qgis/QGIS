@@ -107,7 +107,7 @@ from the provider.
 
         OrderByClause( const QString &expression, bool ascending = true );
 %Docstring
-Creates a new OrderByClause for a QgsFeatureRequest
+Creates a new OrderByClause for a :py:class:`QgsFeatureRequest`
 
 :param expression: The expression to use for ordering
 :param ascending:  If the order should be ascending (1,2,3) or descending (3,2,1)
@@ -117,7 +117,7 @@ If the order is descending, by default nulls are first
 
         OrderByClause( const QString &expression, bool ascending, bool nullsfirst );
 %Docstring
-Creates a new OrderByClause for a QgsFeatureRequest
+Creates a new OrderByClause for a :py:class:`QgsFeatureRequest`
 
 :param expression: The expression to use for ordering
 :param ascending:  If the order should be ascending (1,2,3) or descending (3,2,1)
@@ -126,7 +126,7 @@ Creates a new OrderByClause for a QgsFeatureRequest
 
         OrderByClause( const QgsExpression &expression, bool ascending = true );
 %Docstring
-Creates a new OrderByClause for a QgsFeatureRequest
+Creates a new OrderByClause for a :py:class:`QgsFeatureRequest`
 
 :param expression: The expression to use for ordering
 :param ascending:  If the order should be ascending (1,2,3) or descending (3,2,1)
@@ -136,7 +136,7 @@ If the order is descending, by default nulls are first
 
         OrderByClause( const QgsExpression &expression, bool ascending, bool nullsfirst );
 %Docstring
-Creates a new OrderByClause for a QgsFeatureRequest
+Creates a new OrderByClause for a :py:class:`QgsFeatureRequest`
 
 :param expression: The expression to use for ordering
 :param ascending:  If the order should be ascending (1,2,3) or descending (3,2,1)
@@ -336,7 +336,7 @@ Sets invalid geometry checking behavior.
 .. note::
 
    Invalid geometry checking is not performed when retrieving features
-directly from a QgsVectorDataProvider.
+directly from a :py:class:`QgsVectorDataProvider`.
 
 .. seealso:: :py:func:`invalidGeometryCheck()`
 

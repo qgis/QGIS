@@ -52,7 +52,7 @@ should be called for the QgsComposerMap to prevent rendering artifacts
 
     void removeOverview( const QString &overviewId );
 %Docstring
-Removes an overview from the stack and deletes the corresponding QgsComposerMapOverview
+Removes an overview from the stack and deletes the corresponding :py:class:`QgsComposerMapOverview`
 
 :param overviewId: id for the QgsComposerMapOverview to remove
 
@@ -153,7 +153,7 @@ class QgsComposerMapOverview : QgsComposerMapItem
 {
 %Docstring
  An individual overview which is drawn above the map content in a
-QgsComposerMap, and shows the extent of another QgsComposerMap.
+:py:class:`QgsComposerMap`, and shows the extent of another :py:class:`QgsComposerMap`.
 
 .. versionadded:: 2.5
 

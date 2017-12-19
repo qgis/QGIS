@@ -62,7 +62,7 @@ service.
                                  QgsServerResponse &response,
                                  const QgsProject *project ) = 0;
 %Docstring
-Execute the requests and set result in QgsServerRequest
+Execute the requests and set result in :py:class:`QgsServerRequest`
 %End
 };
 

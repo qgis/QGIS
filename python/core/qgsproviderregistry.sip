@@ -160,7 +160,7 @@ buildSupportedRasterFileFilter to a string, which is then returned.
 
 .. note::
 
-   This replaces QgsRasterLayer.buildSupportedRasterFileFilter()
+   This replaces :py:func:`QgsRasterLayer.buildSupportedRasterFileFilter()`
 %End
     virtual QString databaseDrivers() const;
 %Docstring

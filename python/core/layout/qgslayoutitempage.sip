@@ -59,8 +59,8 @@ Sets the ``size`` of the page.
     bool setPageSize( const QString &size, Orientation orientation = Portrait );
 %Docstring
 Sets the page size to a known page ``size``, e.g. "A4" and ``orientation``.
-The known page sizes are managed by QgsPageSizeRegistry. Valid page sizes
-can be retrieved via QgsPageSizeRegistry.entries().
+The known page sizes are managed by :py:class:`QgsPageSizeRegistry`. Valid page sizes
+can be retrieved via :py:func:`QgsPageSizeRegistry.entries()`
 The function returns true if ``size`` was a valid page size and the page
 size was changed. If false is returned then ``size`` could not be matched
 to a known page size.

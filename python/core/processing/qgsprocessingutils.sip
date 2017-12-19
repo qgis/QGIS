@@ -30,7 +30,7 @@ Utility functions for use with processing classes.
 Returns a list of raster layers from a ``project`` which are compatible with the processing
 framework.
 
-If the ``sort`` argument is true then the layers will be sorted by their QgsMapLayer.name()
+If the ``sort`` argument is true then the layers will be sorted by their :py:func:`QgsMapLayer.name()`
 value.
 
 .. seealso:: :py:func:`compatibleVectorLayers()`
@@ -49,7 +49,7 @@ If the ``geometryTypes`` list is non-empty then the layers will be sorted so tha
 layers with geometry types included in the list will be returned. Leaving the ``geometryTypes``
 list empty will cause all vector layers, regardless of their geometry type, to be returned.
 
-If the ``sort`` argument is true then the layers will be sorted by their QgsMapLayer.name()
+If the ``sort`` argument is true then the layers will be sorted by their :py:func:`QgsMapLayer.name()`
 value.
 
 .. seealso:: :py:func:`compatibleRasterLayers()`
@@ -62,7 +62,7 @@ value.
 Returns a list of map layers from a ``project`` which are compatible with the processing
 framework.
 
-If the ``sort`` argument is true then the layers will be sorted by their QgsMapLayer.name()
+If the ``sort`` argument is true then the layers will be sorted by their :py:func:`QgsMapLayer.name()`
 value.
 
 .. seealso:: :py:func:`compatibleRasterLayers()`
@@ -215,8 +215,8 @@ be truncated when saving to these formats.
 class QgsProcessingFeatureSource : QgsFeatureSource
 {
 %Docstring
-QgsFeatureSource subclass which proxies methods to an underlying QgsFeatureSource, modifying
-results according to the settings in a QgsProcessingContext.
+QgsFeatureSource subclass which proxies methods to an underlying :py:class:`QgsFeatureSource`, modifying
+results according to the settings in a :py:class:`QgsProcessingContext`.
 
 .. versionadded:: 3.0
 %End

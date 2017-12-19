@@ -76,8 +76,8 @@ class QgsLayoutMultiFrameAbstractMetadata
 %Docstring
  Stores metadata about one layout multiframe class.
 
-A companion class, QgsLayoutMultiFrameAbstractGuiMetadata, handles the
-GUI behavior of QgsLayoutMultiFrames.
+A companion class, :py:class:`QgsLayoutMultiFrameAbstractGuiMetadata`, handles the
+GUI behavior of :py:class:`QgsLayoutMultiFrames`.
 
 .. note::
 
@@ -140,9 +140,9 @@ class QgsLayoutItemRegistry : QObject
  Registry of available layout item types.
 
 QgsLayoutItemRegistry is not usually directly created, but rather accessed through
-QgsApplication.layoutItemRegistry().
+:py:func:`QgsApplication.layoutItemRegistry()`
 
-A companion class, QgsLayoutItemGuiRegistry, handles the GUI behavior
+A companion class, :py:class:`QgsLayoutItemGuiRegistry`, handles the GUI behavior
 of layout items.
 
 .. versionadded:: 3.0
@@ -184,7 +184,7 @@ of layout items.
 Creates a new empty item registry.
 
 QgsLayoutItemRegistry is not usually directly created, but rather accessed through
-QgsApplication.layoutItemRegistry().
+:py:func:`QgsApplication.layoutItemRegistry()`
 
 .. seealso:: :py:func:`populate()`
 %End

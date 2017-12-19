@@ -172,7 +172,7 @@ Execute an action
 
     void executeMapLayerAction( QgsMapLayerAction *action, const QModelIndex &idx ) const;
 %Docstring
-Execute a QgsMapLayerAction
+Execute a :py:class:`QgsMapLayerAction`
 %End
 
     QgsFeature feature( const QModelIndex &idx ) const;

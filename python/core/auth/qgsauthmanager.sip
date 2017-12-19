@@ -352,7 +352,7 @@ Provider call to update a QNetworkReply with an authentication config (used to s
 %Docstring
 Provider call to update a QgsDataSourceUri with an authentication config
 
-:param connectionItems: The connection items, e.g. username=myname, of QgsDataSourceUri
+:param connectionItems: The connection items, e.g. username=myname, of :py:class:`QgsDataSourceUri`
 :param authcfg: Associated authentication config id
 :param dataprovider: Provider key filter, offering logic branching in authentication method
 
@@ -745,7 +745,7 @@ mainly used in the tests to exit main application loop
 
     void messageOut( const QString &message, const QString &tag = QgsAuthManager::AUTH_MAN_TAG, QgsAuthManager::MessageLevel level = QgsAuthManager::INFO ) const;
 %Docstring
-Custom logging signal to relay to console output and QgsMessageLog
+Custom logging signal to relay to console output and :py:class:`QgsMessageLog`
 
 :param message: Message to send
 :param tag: Associated tag (title)

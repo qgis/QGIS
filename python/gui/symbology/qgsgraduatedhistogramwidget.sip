@@ -36,7 +36,7 @@ QgsGraduatedHistogramWidget constructor
 Sets the QgsGraduatedSymbolRenderer renderer associated with the histogram.
 The histogram will fetch the ranges from the renderer before every refresh.
 
-:param renderer: associated QgsGraduatedSymbolRenderer
+:param renderer: associated :py:class:`QgsGraduatedSymbolRenderer`
 %End
 
   signals:

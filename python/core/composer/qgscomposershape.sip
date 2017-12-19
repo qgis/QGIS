@@ -88,7 +88,7 @@ Note: added in version 2.1*
 
     void setUseSymbol( bool useSymbol );
 %Docstring
-Controls whether the shape should be drawn using a QgsFillSymbol.
+Controls whether the shape should be drawn using a :py:class:`QgsFillSymbol`.
 Note: Added in v2.1 *
 %End
 

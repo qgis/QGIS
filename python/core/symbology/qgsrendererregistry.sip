@@ -114,7 +114,7 @@ class QgsRendererRegistry
  Registry of renderers.
 
 QgsRendererRegistry is not usually directly created, but rather accessed through
-QgsApplication.rendererRegistry().
+:py:func:`QgsApplication.rendererRegistry()`
 %End
 
 %TypeHeaderCode

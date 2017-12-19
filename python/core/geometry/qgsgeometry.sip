@@ -196,15 +196,15 @@ Creates a new geometry from a QgsMultiPolylineXY object
 %End
     static QgsGeometry fromPolygonXY( const QgsPolygonXY &polygon );
 %Docstring
-Creates a new geometry from a QgsPolygon
+Creates a new geometry from a :py:class:`QgsPolygon`
 %End
     static QgsGeometry fromMultiPolygonXY( const QgsMultiPolygonXY &multipoly );
 %Docstring
-Creates a new geometry from a QgsMultiPolygon
+Creates a new geometry from a :py:class:`QgsMultiPolygon`
 %End
     static QgsGeometry fromRect( const QgsRectangle &rect );
 %Docstring
-Creates a new geometry from a QgsRectangle
+Creates a new geometry from a :py:class:`QgsRectangle`
 %End
     static QgsGeometry collectGeometry( const QVector<QgsGeometry> &geometries );
 %Docstring
@@ -1464,7 +1464,7 @@ Creates a QgsPolylineXY from a QPolygonF.
 
 :param polygon: source polygon
 
-:return: QgsPolylineXY
+:return: :py:class:`QgsPolylineXY`
 
 .. seealso:: :py:func:`createPolygonFromQPolygonF`
 %End
@@ -1475,7 +1475,7 @@ Creates a QgsPolygonXYfrom a QPolygonF.
 
 :param polygon: source polygon
 
-:return: QgsPolygon
+:return: :py:class:`QgsPolygon`
 
 .. seealso:: :py:func:`createPolylineFromQPolygonF`
 %End
@@ -1484,7 +1484,7 @@ Creates a QgsPolygonXYfrom a QPolygonF.
     static bool compare( PyObject *obj1, PyObject *obj2, double epsilon = 4 * DBL_EPSILON );
 %Docstring
 Compares two geometry objects for equality within a specified tolerance.
-The objects can be of type QgsPolylineXY, QgsPolygonXYor QgsMultiPolygon.
+The objects can be of type :py:class:`QgsPolylineXY`, QgsPolygonXYor :py:class:`QgsMultiPolygon`.
 The 2 types should match.
 
 :param p1: first geometry object
@@ -1624,18 +1624,18 @@ Creates and returns a new geometry engine
 
     static void convertPointList( const QVector<QgsPointXY> &input, QgsPointSequence &output );
 %Docstring
-Upgrades a point list from QgsPointXY to QgsPoint
+Upgrades a point list from QgsPointXY to :py:class:`QgsPoint`
 
 :param input: list of QgsPointXY objects to be upgraded
-:param output: destination for list of points converted to QgsPoint
+:param output: destination for list of points converted to :py:class:`QgsPoint`
 %End
 
     static void convertPointList( const QgsPointSequence &input, QVector<QgsPointXY> &output );
 %Docstring
-Downgrades a point list from QgsPoint to QgsPointXY
+Downgrades a point list from QgsPoint to :py:class:`QgsPointXY`
 
 :param input: list of QgsPoint objects to be downgraded
-:param output: destination for list of points converted to QgsPointXY
+:param output: destination for list of points converted to :py:class:`QgsPointXY`
 %End
 
     operator QVariant() const;

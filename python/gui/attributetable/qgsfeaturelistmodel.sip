@@ -82,7 +82,7 @@ for a meaningful error message.
 
     QString parserErrorString();
 %Docstring
- Returns a detailed message about errors while parsing a QgsExpression.
+ Returns a detailed message about errors while parsing a :py:class:`QgsExpression`.
 
 :return: A message containing information about the parser error.
 %End

@@ -427,7 +427,7 @@ empty string before setLayerStyleOverrides() calls can be made.
     void setTheme( const QString &theme );
 %Docstring
 Sets a map ``theme`` to show in the canvas. The theme name must match
-a theme present in the associated project's QgsMapThemeCollection.
+a theme present in the associated project's :py:class:`QgsMapThemeCollection`.
 
 When the canvas is associated to a map theme, it will automatically follow
 the layer selection and layer styles from that theme. Calls to setLayers()
@@ -436,7 +436,7 @@ with a QgsLayerTreeMapCanvasBridge will no longer synchronize their
 state with the layer tree. In these cases it is necessary to call
 setTheme() with an empty string to clear the theme association and
 allow map updates with setLayers(), setLayerStyleOverrides(), or via
-QgsLayerTreeMapCanvasBridge.
+:py:class:`QgsLayerTreeMapCanvasBridge`.
 
 If an empty string is passed then the current theme association will be
 cleared.

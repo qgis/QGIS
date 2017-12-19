@@ -72,7 +72,7 @@ the source selects (ascending) using this integer value
 
     virtual QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = 0, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const = 0 /Factory/;
 %Docstring
-Create a new instance of QgsAbstractDataSourceWidget (or null).
+Create a new instance of :py:class:`QgsAbstractDataSourceWidget` (or null).
 Caller takes responsibility of deleting created.
 %End
 

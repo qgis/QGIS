@@ -87,7 +87,7 @@ In such cases, the implementation must ensure that the data is not susceptible t
 if it is possible that both feature source and provider may need reading/writing to some shared data at the
 same time, some synchronization mechanisms must be used (e.g. mutexes) to prevent data corruption.
 
-:return: new instance of QgsAbstractFeatureSource (caller is responsible for deleting it)
+:return: new instance of :py:class:`QgsAbstractFeatureSource` (caller is responsible for deleting it)
 
 .. versionadded:: 2.4
 %End
@@ -297,7 +297,7 @@ directly into the database. Do not call this method for non-feature creation or 
 e.g., when validating an attribute or to compare it against an existing value, as calling it
 can cause changes to the underlying data source (e.g., Postgres provider where the default value
 is calculated as a result of a sequence). It is recommended that you instead use the methods
-in QgsVectorLayerUtils such as QgsVectorLayerUtils.createFeature()
+in QgsVectorLayerUtils such as :py:func:`QgsVectorLayerUtils.createFeature()`
 so that default value handling and validation is automatically carried out.
 
 .. seealso:: :py:func:`defaultValueClause()`

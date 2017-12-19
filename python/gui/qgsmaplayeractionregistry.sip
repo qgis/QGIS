@@ -107,7 +107,7 @@ class QgsMapLayerActionRegistry : QObject
 This class tracks map layer actions.
 
 QgsMapLayerActionRegistry is not usually directly created, but rather accessed through
-QgsGui.mapLayerActionRegistry().
+:py:func:`QgsGui.mapLayerActionRegistry()`
 %End
 
 %TypeHeaderCode
@@ -120,7 +120,7 @@ QgsGui.mapLayerActionRegistry().
 Constructor for QgsMapLayerActionRegistry.
 
 QgsMapLayerActionRegistry is not usually directly created, but rather accessed through
-QgsGui.mapLayerActionRegistry().
+:py:func:`QgsGui.mapLayerActionRegistry()`
 %End
 
     void addMapLayerAction( QgsMapLayerAction *action );

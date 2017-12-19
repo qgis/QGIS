@@ -76,7 +76,7 @@ Check whether a particular flag is enabled.
 
     static QgsRenderContext fromMapSettings( const QgsMapSettings &mapSettings );
 %Docstring
-create initialized QgsRenderContext instance from given QgsMapSettings
+create initialized QgsRenderContext instance from given :py:class:`QgsMapSettings`
 
 .. versionadded:: 2.4
 %End

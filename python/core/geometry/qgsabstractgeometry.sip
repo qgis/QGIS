@@ -441,8 +441,8 @@ the returned geometry.
     virtual QgsAbstractGeometry *toCurveType() const = 0 /Factory/;
 %Docstring
 Returns the geometry converted to the more generic curve type.
-E.g. QgsLineString -> QgsCompoundCurve, QgsPolygon -> QgsCurvePolygon,
-QgsMultiLineString -> QgsMultiCurve, QgsMultiPolygon -> QgsMultiSurface
+E.g. :py:class:`QgsLineString` -> :py:class:`QgsCompoundCurve`, :py:class:`QgsPolygon` -> QgsCurvePolygon,
+:py:class:`QgsMultiLineString` -> :py:class:`QgsMultiCurve`, :py:class:`QgsMultiPolygon` -> :py:class:`QgsMultiSurface`
 
 :return: the converted geometry. Caller takes ownership
 %End

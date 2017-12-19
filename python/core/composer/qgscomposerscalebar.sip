@@ -397,7 +397,7 @@ Sets box size suitable to content
 
     void update();
 %Docstring
-Adjusts box size and calls QgsComposerItem.update()
+Adjusts box size and calls :py:func:`QgsComposerItem.update()`
 %End
 
 

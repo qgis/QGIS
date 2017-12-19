@@ -156,7 +156,7 @@ Setup the simplification of geometries to fetch using the specified simplify met
 class QgsVectorLayerSelectedFeatureSource : QgsFeatureSource
 {
 %Docstring
-QgsFeatureSource subclass for the selected features from a QgsVectorLayer.
+QgsFeatureSource subclass for the selected features from a :py:class:`QgsVectorLayer`.
 
 .. versionadded:: 3.0
 %End
