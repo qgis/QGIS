@@ -406,6 +406,7 @@
 %Include gps/qgsnmeaconnection.sip
 %Include gps/qgsgpsdconnection.sip
 %Include layout/qgslayout.sip
+%Include layout/qgslayoutatlas.sip
 %Include layout/qgslayoutcontext.sip
 %Include layout/qgslayouteffect.sip
 %Include layout/qgslayoutguidecollection.sip

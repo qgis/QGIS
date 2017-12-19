@@ -1,0 +1,269 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/layout/qgslayoutatlas.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsLayoutAtlas : QObject
+{
+%Docstring
+Class used to render an Atlas, iterating over geometry features.
+prepareForFeature() modifies the atlas map's extent to zoom on the given feature.
+This class is used for printing, exporting to PDF and images.
+
+.. note::
+
+   This class should not be created directly. For the atlas to function correctly
+the atlasComposition() property for QgsComposition should be used to retrieve a
+QgsLayoutAtlas which is automatically created and attached to the composition.
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgslayoutatlas.h"
+%End
+  public:
+
+    QgsLayoutAtlas( QgsLayout *layout );
+%Docstring
+Constructor for new QgsLayoutAtlas.
+%End
+
+    bool enabled() const;
+%Docstring
+Returns whether the atlas generation is enabled
+
+.. seealso:: :py:func:`setEnabled()`
+%End
+
+    void setEnabled( bool enabled );
+%Docstring
+Sets whether the atlas is ``enabled``.
+
+.. seealso:: :py:func:`enabled()`
+%End
+
+    bool hideCoverage() const;
+%Docstring
+Returns true if the atlas is set to hide the coverage layer.
+
+.. seealso:: :py:func:`setHideCoverage()`
+%End
+
+    void setHideCoverage( bool hide );
+%Docstring
+Sets whether the coverage layer should be hidden in map items in the layouts.
+
+.. seealso:: :py:func:`hideCoverage()`
+%End
+
+    QString filenameExpression() const;
+%Docstring
+Returns the filename expression used for generating output filenames for each
+atlas page.
+
+.. seealso:: :py:func:`setFilenameExpression()`
+
+.. seealso:: :py:func:`filenameExpressionErrorString()`
+%End
+
+    bool setFilenameExpression( const QString &expression, QString &errorString );
+%Docstring
+Sets the filename ``expression`` used for generating output filenames for each
+atlas page.
+If an invalid expression is passed, false will be returned and ``errorString``
+will be set to the expression error.
+
+.. seealso:: :py:func:`filenameExpression()`
+%End
+
+    QgsVectorLayer *coverageLayer() const;
+%Docstring
+Returns the coverage layer used for the atlas features.
+
+.. seealso:: :py:func:`setCoverageLayer()`
+%End
+
+    void setCoverageLayer( QgsVectorLayer *layer );
+%Docstring
+Sets the coverage ``layer`` to use for the atlas features.
+
+.. seealso:: :py:func:`coverageLayer()`
+%End
+
+    QString pageNameExpression() const;
+%Docstring
+Returns the expression (or field name) used for calculating the page name.
+
+.. seealso:: :py:func:`setPageNameExpression()`
+
+.. seealso:: :py:func:`nameForPage()`
+%End
+
+    void setPageNameExpression( const QString &expression );
+%Docstring
+Sets the ``expression`` (or field name) used for calculating the page name.
+
+.. seealso:: :py:func:`pageNameExpression()`
+%End
+
+    QString nameForPage( int page ) const;
+%Docstring
+Returns the calculated name for a specified atlas ``page`` number. Page numbers start at 0.
+
+.. seealso:: :py:func:`pageNameExpression()`
+%End
+
+    bool sortFeatures() const;
+%Docstring
+Returns true if features should be sorted in the atlas.
+
+.. seealso:: :py:func:`setSortFeatures()`
+
+.. seealso:: :py:func:`sortAscending()`
+
+.. seealso:: :py:func:`sortExpression()`
+%End
+
+    void setSortFeatures( bool enabled );
+%Docstring
+Sets whether features should be sorted in the atlas.
+
+.. seealso:: :py:func:`sortFeatures()`
+
+.. seealso:: :py:func:`setSortAscending()`
+
+.. seealso:: :py:func:`setSortExpression()`
+%End
+
+    bool sortAscending() const;
+%Docstring
+Returns true if features should be sorted in an ascending order.
+
+This property has no effect is sortFeatures() is false.
+
+.. seealso:: :py:func:`sortFeatures()`
+
+.. seealso:: :py:func:`setSortAscending()`
+
+.. seealso:: :py:func:`sortExpression()`
+%End
+
+    void setSortAscending( bool ascending );
+%Docstring
+Sets whether features should be sorted in an ascending order.
+
+This property has no effect is sortFeatures() is false.
+
+.. seealso:: :py:func:`setSortFeatures()`
+
+.. seealso:: :py:func:`sortAscending()`
+
+.. seealso:: :py:func:`setSortExpression()`
+%End
+
+    QString sortExpression() const;
+%Docstring
+Returns the expression (or field name) to use for sorting features.
+
+This property has no effect is sortFeatures() is false.
+
+.. seealso:: :py:func:`sortFeatures()`
+
+.. seealso:: :py:func:`sortAscending()`
+
+.. seealso:: :py:func:`setSortExpression()`
+%End
+
+    void setSortExpression( const QString &expression );
+%Docstring
+Sets the ``expression`` (or field name) to use for sorting features.
+
+This property has no effect is sortFeatures() is false.
+
+.. seealso:: :py:func:`setSortFeatures()`
+
+.. seealso:: :py:func:`setSortAscending()`
+
+.. seealso:: :py:func:`sortExpression()`
+%End
+
+    bool filterFeatures() const;
+%Docstring
+Returns true if features should be filtered in the coverage layer.
+
+.. seealso:: :py:func:`filterExpression()`
+
+.. seealso:: :py:func:`setFilterExpression()`
+%End
+
+    void setFilterFeatures( bool filtered );
+%Docstring
+Sets whether features should be ``filtered`` in the coverage layer.
+
+.. seealso:: :py:func:`filterFeatures()`
+
+.. seealso:: :py:func:`setFilterExpression()`
+%End
+
+    QString filterExpression() const;
+%Docstring
+Returns the expression used for filtering features in the coverage layer.
+
+This property has no effect is filterFeatures() is false.
+
+.. seealso:: :py:func:`setFilterExpression()`
+
+.. seealso:: :py:func:`filterFeatures()`
+%End
+
+    bool setFilterExpression( const QString &expression, QString &errorString );
+%Docstring
+Sets the ``expression`` used for filtering features in the coverage layer.
+
+This property has no effect is filterFeatures() is false.
+
+If an invalid expression is passed, false will be returned and ``errorString``
+will be set to the expression error.
+
+.. seealso:: :py:func:`filterExpression()`
+
+.. seealso:: :py:func:`setFilterFeatures()`
+%End
+
+  public slots:
+
+  signals:
+
+    void changed();
+%Docstring
+Emitted when one of the atlas parameters changes.
+%End
+
+    void toggled( bool );
+%Docstring
+Emitted when atlas is enabled or disabled.
+%End
+
+    void coverageLayerChanged( QgsVectorLayer *layer );
+%Docstring
+Emitted when the coverage layer for the atlas changes.
+%End
+
+};
+
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/layout/qgslayoutatlas.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
