@@ -205,12 +205,12 @@ Returns details about internals of this renderer.
 
 E.g. if you only want to deal with visible features:
 
-~~~{.py}
-if not renderer.capabilities().testFlag(QgsFeatureRenderer.Filter) or renderer.willRenderFeature(feature, context):
-deal_with_my_feature()
-else:
-skip_the_curren_feature()
-~~~
+.. code-block:: python
+
+     if not renderer.capabilities().testFlag(QgsFeatureRenderer.Filter) or renderer.willRenderFeature(feature, context):
+         deal_with_my_feature()
+     else:
+         skip_the_curren_feature()
 %End
 
     virtual QgsSymbolList symbols( QgsRenderContext &context );

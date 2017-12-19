@@ -44,21 +44,21 @@ Transformations between coordinate reference systems are done using QgsCoordinat
 
 For example, the following code will create and inspect "British national grid" CRS:
 
-~~~{.py}
-crs = QgsCoordinateReferenceSystem("EPSG:27700")
-if crs.isValid():
-print("CRS Description: {}".format(crs.description()))
-print("CRS PROJ.4 text: {}".format(crs.toProj4()))
-else:
-print("Invalid CRS!")
-~~~
+.. code-block:: python
+
+     crs = QgsCoordinateReferenceSystem("EPSG:27700")
+     if crs.isValid():
+         print("CRS Description: {}".format(crs.description()))
+         print("CRS PROJ.4 text: {}".format(crs.toProj4()))
+     else:
+         print("Invalid CRS!")
 
 This will produce the following output:
 
-~~~
-CRS Description: OSGB 1936 / British National Grid
-CRS PROJ.4 text: +proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 [output trimmed]
-~~~
+.. code-block:: python
+
+     CRS Description: OSGB 1936 / British National Grid
+     CRS PROJ.4 text: +proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 [output trimmed]
 
 CRS Definition Formats
 ======================
@@ -148,6 +148,7 @@ Caveats
 There are two different flavors of WKT: one is defined by OGC, the other is the standard
 used by ESRI. They look very similar, but they are not the same. QGIS is able to consume
 both flavors.
+
 
 .. seealso:: :py:class:`QgsCoordinateTransform`
 %End
