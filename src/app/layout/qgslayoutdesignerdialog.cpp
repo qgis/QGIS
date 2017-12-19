@@ -19,6 +19,7 @@
 #include "qgslayoutitemregistry.h"
 #include "qgssettings.h"
 #include "qgisapp.h"
+#include "qgsfileutils.h"
 #include "qgslogger.h"
 #include "qgslayout.h"
 #include "qgslayoutappmenuprovider.h"
@@ -1476,7 +1477,7 @@ void QgsLayoutDesignerDialog::exportToRaster()
   QgsAtlasComposition *atlasMap = &mComposition->atlasComposition();
 #endif
 
-  QString outputFileName;
+  QString outputFileName = QgsFileUtils::stringToSafeFilename( mLayout->name() );
 #if 0 //TODO
   if ( atlasMap->enabled() && mComposition->atlasMode() == QgsComposition::PreviewAtlas )
   {
@@ -1596,7 +1597,7 @@ void QgsLayoutDesignerDialog::exportToPdf()
   else
   {
 #endif
-    outputFileName = file.path();
+    outputFileName = file.path() + '/' + QgsFileUtils::stringToSafeFilename( mLayout->name() ) + QStringLiteral( ".pdf" );
 #if 0 //TODO
   }
 #endif
@@ -1685,7 +1686,7 @@ void QgsLayoutDesignerDialog::exportToSvg()
   QgsSettings settings;
   QString lastUsedFile = settings.value( QStringLiteral( "UI/lastSaveAsSvgFile" ), QStringLiteral( "qgis.svg" ) ).toString();
   QFileInfo file( lastUsedFile );
-  QString outputFileName;
+  QString outputFileName = QgsFileUtils::stringToSafeFilename( mLayout->name() );
 
 #if 0// TODO
   if ( hasAnAtlas && !atlasOnASingleFile &&
@@ -1696,7 +1697,7 @@ void QgsLayoutDesignerDialog::exportToSvg()
   else
   {
 #endif
-    outputFileName = file.path();
+    outputFileName = file.path() + '/' + QgsFileUtils::stringToSafeFilename( mLayout->name() ) + QStringLiteral( ".svg" );
 #if 0 //TODO
   }
 #endif
