@@ -21,7 +21,7 @@
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
-from qgis.PyQt.QtGui import QImage, QPainter
+from qgis.PyQt.QtGui import QImage, QPainter, QColor
 from qgis.PyQt.QtCore import QSize
 from qgis.core import (
     QgsMapSettings,
@@ -228,7 +228,7 @@ class TileSet():
         xsize = self.x_tile_count * tile_size
         ysize = self.y_tile_count * tile_size
 
-        self.dataset = driver.Create(output, xsize, ysize, 3)  # 3 bands
+        self.dataset = driver.Create(output, xsize, ysize, 4)  # 4 bands
         self.dataset.SetProjection(str(crs.toWkt()))
         self.dataset.SetGeoTransform(
             [extent.xMinimum(), mupp, 0, extent.yMaximum(), 0, -mupp])
@@ -240,6 +240,7 @@ class TileSet():
         self.settings.setOutputImageFormat(QImage.Format_ARGB32)
         self.settings.setDestinationCrs(crs)
         self.settings.setOutputSize(self.image.size())
+        self.settings.setBackgroundColor(QColor(255,255,255,0))
         self.settings.setFlag(QgsMapSettings.Antialiasing, True)
         self.settings.setFlag(QgsMapSettings.RenderMapTile, True)
 
@@ -277,6 +278,10 @@ class TileSet():
         :param x: The x index of the current tile
         :param y: The y index of the current tile
         """
+
+        background_colour = QColor(255,255,255,0)
+        self.image.fill(background_colour.rgba())
+        
         painter = QPainter(self.image)
 
         self.settings.setExtent(QgsRectangle(
