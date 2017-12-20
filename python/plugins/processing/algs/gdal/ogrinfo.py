@@ -68,7 +68,7 @@ class ogrinfo(GdalAlgorithm):
     def group(self):
         return self.tr('Vector miscellaneous')
 
-    def group(self):
+    def groupId(self):
         return 'vectormiscellaneous'
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
