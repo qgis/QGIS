@@ -40,11 +40,11 @@ based on the following rules:
 
        pt_z = QgsPoint(120, 343, 77)
        pt.asWkt() # PointZ(120 343 77)
-    
+
        pt_m = QgsPoint(33, 88, m=5)
        pt_m.m() # 5
        pt_m.wkbType() # QgsWkbTypes.PointM
-    
+
        pt = QgsPoint(30, 40, wkbType=QgsWkbTypes.PointZ)
        pt.z() # nan
        pt.wkbType() # QgsWkbTypes.PointZ
