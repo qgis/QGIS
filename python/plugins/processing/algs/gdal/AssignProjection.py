@@ -70,7 +70,7 @@ class AssignProjection(GdalAlgorithm):
     def group(self):
         return self.tr('Raster projections')
 
-    def group(self):
+    def groupId(self):
         return 'rasterprojections'
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
