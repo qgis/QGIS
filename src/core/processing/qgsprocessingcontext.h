@@ -102,9 +102,18 @@ class CORE_EXPORT QgsProcessingContext
 
     /**
      * Sets the \a project in which the algorithm will be executed.
+     *
+     * This also automatically sets the transformContext() to match
+     * the project's transform context.
+     *
      * \see project()
      */
-    void setProject( QgsProject *project ) { mProject = project; }
+    void setProject( QgsProject *project )
+    {
+      mProject = project;
+      if ( mProject )
+        mTransformContext = mProject->transformContext();
+    }
 
     /**
      * Returns the expression context.
@@ -120,6 +129,22 @@ class CORE_EXPORT QgsProcessingContext
      * Sets the expression \a context.
      */
     void setExpressionContext( const QgsExpressionContext &context ) { mExpressionContext = context; }
+
+    /**
+     * Returns the coordinate transform context.
+     * \see setTransformContext()
+     */
+    QgsCoordinateTransformContext transformContext() const { return mTransformContext; }
+
+    /**
+     * Sets the coordinate transform \a context.
+     *
+     * Note that setting a project for the context will automatically set the coordinate transform
+     * context.
+     *
+     * \see transformContext()
+     */
+    void setTransformContext( const QgsCoordinateTransformContext &context ) { mTransformContext = context; }
 
     /**
      * Returns a reference to the layer store used for storing temporary layers during
@@ -375,6 +400,7 @@ class CORE_EXPORT QgsProcessingContext
 
     QgsProcessingContext::Flags mFlags = nullptr;
     QPointer< QgsProject > mProject;
+    QgsCoordinateTransformContext mTransformContext;
     //! Temporary project owned by the context, used for storing temporarily loaded map layers
     QgsMapLayerStore tempLayerStore;
     QgsExpressionContext mExpressionContext;
