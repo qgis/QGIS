@@ -430,7 +430,7 @@ class CORE_EXPORT QgsAbstractGeometry
      * It may generate an invalid geometry (in some corner cases).
      * It can also be thought as rounding the edges and it may be useful for removing errors.
      * Example:
-     * \code
+     * \code{.cpp}
      * geometry->snappedToGrid(1, 1);
      * \endcode
      * In this case we use a 2D grid of 1x1 to gridify.

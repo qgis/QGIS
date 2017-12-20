@@ -77,7 +77,7 @@ class QextSerialRegistrationWidget : public QWidget
   QextPortInfo structure will populated with information about the corresponding device.
 
   \b Example
-  \code
+  \code{.cpp}
   QList<QextPortInfo> ports = QextSerialEnumerator::getPorts();
   Q_FOREACH( QextPortInfo port, ports ) {
       // inspect port...
@@ -89,7 +89,7 @@ class QextSerialRegistrationWidget : public QWidget
   signals.  Event-driven behavior is currently available only on Windows and OS X.
 
   \b Example
-  \code
+  \code{.cpp}
   QextSerialEnumerator* enumerator = new QextSerialEnumerator();
   connect(enumerator, &QextSerialEnumerator::deviceDiscovered,
              myClass, &MyObject::onDeviceDiscovered);

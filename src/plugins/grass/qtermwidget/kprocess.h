@@ -171,7 +171,7 @@ public:
      * If no executable is set yet, it will be set instead.
      *
      * For example, doing an "ls -l /usr/local/bin" can be achieved by:
-     *  \code
+     *  \code{.cpp}
      *  KProcess p;
      *  p << "ls" << "-l" << "/usr/local/bin";
      *  ...

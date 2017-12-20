@@ -150,7 +150,7 @@ QextSerialPort offers both a polling and event driven API.  Event driven is typi
 to use, since you never have to worry about checking for new data.
 
 \b Example
-\code
+\code{.cpp}
 QextSerialPort* port = new QextSerialPort("COM1", QextSerialPort::EventDriven);
 connect(port, &QextSerialPort::readyRead, myClass, &MyObject::onDataAvailable);
 port->open();
