@@ -38,6 +38,11 @@ Save all fields in a QgsLayerMetadata object.
 Check if values in the wizard are correct.
 %End
 
+    void crsChanged() const;
+%Docstring
+If the CRS is updated.
+%End
+
     void acceptMetadata();
 %Docstring
 Saves the metadata to the layer.
