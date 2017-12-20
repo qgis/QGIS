@@ -436,20 +436,14 @@ void QgsRelationEditorWidget::linkFeature()
 
 void QgsRelationEditorWidget::duplicateFeature()
 {
-  QgsVectorLayer *layer = nullptr;
+  QgsVectorLayer *layer = mRelation.referencingLayer();
 
-  layer = mNmRelation.referencingLayer();
-
-  const QgsFeatureIds fids = mFeatureSelectionMgr->selectedFeatureIds();
-
-  for ( const QgsFeatureId &fid : fids )
+  QgsFeatureIterator fit = layer->getFeatures( QgsFeatureRequest().setFilterFids( mFeatureSelectionMgr->selectedFeatureIds() ) );
+  QgsFeature f;
+  while ( fit.nextFeature( f ) )
   {
     QgsVectorLayerUtils::QgsDuplicateFeatureContext duplicatedFeatureContext;
-    QgsFeature feature; //= layer->getFeature( fid );
-    QgsFeatureRequest freq;
-    freq.setFilterFid( fid );
-    layer->getFeatures( freq ).nextFeature( feature );
-    QgsVectorLayerUtils::duplicateFeature( layer, feature, QgsProject::instance(), 1, duplicatedFeatureContext );
+    QgsVectorLayerUtils::duplicateFeature( layer, f, QgsProject::instance(), 0, duplicatedFeatureContext );
   }
 }
 
