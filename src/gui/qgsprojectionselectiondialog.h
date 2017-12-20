@@ -34,7 +34,7 @@
  * Typically you will use this when you want to prompt the user for
  * a coordinate system identifier e.g. from a plugin you might do this
  * to get an epsg code:
- * \code
+ * \code{.cpp}
  * QgsProjectionSelectionDialog mySelector( mQGisIface->mainWindow() );
  * mySelector.setCrs( crs );
  * if ( mySelector.exec() )

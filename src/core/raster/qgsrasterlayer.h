@@ -91,23 +91,22 @@ typedef QList < QPair< QString, QColor > > QgsLegendColorList;
  *
  *  Sample usage of the QgsRasterLayer class:
  *
- * \code
+ * \code{.cpp}
  *     QString myFileNameQString = "/path/to/file";
  *     QFileInfo myFileInfo(myFileNameQString);
  *     QString myBaseNameQString = myFileInfo.baseName();
  *     QgsRasterLayer *myRasterLayer = new QgsRasterLayer(myFileNameQString, myBaseNameQString);
- *
  * \endcode
  *
  *  In order to automate redrawing of a raster layer, you should like it to a map canvas like this :
  *
- * \code
+ * \code{.cpp}
  *     QObject::connect( myRasterLayer, SIGNAL(repaintRequested()), mapCanvas, SLOT(refresh()) );
  * \endcode
  *
  * Once a layer has been created you can find out what type of layer it is (GrayOrUndefined, Palette or Multiband):
  *
- * \code
+ * \code{.cpp}
  *    if (rasterLayer->rasterType()==QgsRasterLayer::Multiband)
  *    {
  *      //do something
