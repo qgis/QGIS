@@ -782,7 +782,13 @@ class MapLayerWidgetWrapper(WidgetWrapper):
 
     def setValue(self, value):
         if self.dialogType == DIALOG_STANDARD:
-            pass  # TODO
+            if self.combo.findText(value) >= 0:
+                self.combo.setCurrentIndex(self.combo.findText(value))
+            else:
+                items = self.combo.additionalItems()
+                items.append(value)
+                self.combo.setAdditionalItems(items)
+                self.combo.setCurrentIndex(self.combo.findText(value))
         elif self.dialogType == DIALOG_BATCH:
             self.widget.setText(value)
         else:
@@ -985,7 +991,13 @@ class FeatureSourceWidgetWrapper(WidgetWrapper):
 
     def setValue(self, value):
         if self.dialogType == DIALOG_STANDARD:
-            pass  # TODO
+            if self.combo.findText(value) >= 0:
+                self.combo.setCurrentIndex(self.combo.findText(value))
+            else:
+                items = self.combo.additionalItems()
+                items.append(value)
+                self.combo.setAdditionalItems(items)
+                self.combo.setCurrentIndex(self.combo.findText(value))
         elif self.dialogType == DIALOG_BATCH:
             self.widget.setValue(value)
         else:
@@ -1262,7 +1274,13 @@ class VectorLayerWidgetWrapper(WidgetWrapper):
 
     def setValue(self, value):
         if self.dialogType == DIALOG_STANDARD:
-            pass  # TODO
+            if self.combo.findText(value) >= 0:
+                self.combo.setCurrentIndex(self.combo.findText(value))
+            else:
+                items = self.combo.additionalItems()
+                items.append(value)
+                self.combo.setAdditionalItems(items)
+                self.combo.setCurrentIndex(self.combo.findText(value))
         elif self.dialogType == DIALOG_BATCH:
             return self.widget.setText(value)
         else:
