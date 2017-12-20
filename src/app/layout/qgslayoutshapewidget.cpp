@@ -60,9 +60,11 @@ QgsLayoutShapeWidget::QgsLayoutShapeWidget( QgsLayoutItemShape *shape )
   connect( mShapeStyleButton, &QgsSymbolButton::changed, this, &QgsLayoutShapeWidget::symbolChanged );
   connect( mRadiusUnitsComboBox, &QgsLayoutUnitsComboBox::changed, this, &QgsLayoutShapeWidget::radiusUnitsChanged );
 
-#if 0 //TODO
-  mShapeStyleButton->setLayer( atlasCoverageLayer() );
-#endif
+  mShapeStyleButton->setLayer( coverageLayer() );
+  if ( mShape->layout() )
+  {
+    connect( &mShape->layout()->context(), &QgsLayoutContext::layerChanged, mShapeStyleButton, &QgsSymbolButton::setLayer );
+  }
 }
 
 bool QgsLayoutShapeWidget::setNewItem( QgsLayoutItem *item )

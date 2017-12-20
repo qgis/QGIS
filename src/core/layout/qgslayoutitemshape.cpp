@@ -43,15 +43,6 @@ QgsLayoutItemShape::QgsLayoutItemShape( QgsLayout *layout )
     updateBoundingRect();
     update();
   } );
-
-#if 0 //TODO
-  if ( mComposition )
-  {
-    //connect to atlas feature changes
-    //to update symbol style (in case of data-defined symbology)
-    connect( &mComposition->atlasComposition(), &QgsAtlasComposition::featureChanged, this, &QgsComposerItem::repaint );
-  }
-#endif
 }
 
 int QgsLayoutItemShape::type() const
