@@ -366,7 +366,8 @@ bool QgsLayerMetadata::readMetadataXml( const QDomElement &metadataElement )
 
   // crs
   mnl = metadataElement.namedItem( QStringLiteral( "crs" ) );
-  mCrs.readXml( mnl );
+  if ( !mCrs.readXml( mnl ) )
+    mCrs = QgsCoordinateReferenceSystem();
 
   // extent
   mnl = metadataElement.namedItem( QStringLiteral( "extent" ) );
