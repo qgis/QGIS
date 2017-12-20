@@ -74,7 +74,7 @@ QStringList QgsLocationBasedAlgorithm::predicateOptionsList() const
          << QObject::tr( "cross" );
 }
 
-void QgsLocationBasedAlgorithm::process( QgsFeatureSource *targetSource,
+void QgsLocationBasedAlgorithm::process( const QgsProcessingContext &context, QgsFeatureSource *targetSource,
     QgsFeatureSource *intersectSource,
     const QList< int > &selectedPredicates,
     const std::function < void( const QgsFeature & ) > &handleFeatureFunction,
@@ -95,7 +95,7 @@ void QgsLocationBasedAlgorithm::process( QgsFeatureSource *targetSource,
     disjointSet = targetSource->allFeatureIds();
 
   QgsFeatureIds foundSet;
-  QgsFeatureRequest request = QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() ).setDestinationCrs( targetSource->sourceCrs() );
+  QgsFeatureRequest request = QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() ).setDestinationCrs( targetSource->sourceCrs(), context.transformContext() );
   QgsFeatureIterator fIt = intersectSource->getFeatures( request );
   double step = intersectSource->featureCount() > 0 ? 100.0 / intersectSource->featureCount() : 1;
   int current = 0;
@@ -273,7 +273,7 @@ QVariantMap QgsSelectByLocationAlgorithm::processAlgorithm( const QVariantMap &p
   {
     selectedIds.insert( feature.id() );
   };
-  process( selectLayer, intersectSource.get(), selectedPredicates, addToSelection, true, feedback );
+  process( context, selectLayer, intersectSource.get(), selectedPredicates, addToSelection, true, feedback );
 
   selectLayer->selectByIds( selectedIds, method );
   QVariantMap results;
@@ -351,7 +351,7 @@ QVariantMap QgsExtractByLocationAlgorithm::processAlgorithm( const QVariantMap &
     QgsFeature f = feature;
     sink->addFeature( f, QgsFeatureSink::FastInsert );
   };
-  process( input.get(), intersectSource.get(), selectedPredicates, addToSink, false, feedback );
+  process( context, input.get(), intersectSource.get(), selectedPredicates, addToSink, false, feedback );
 
   QVariantMap results;
   results.insert( QStringLiteral( "OUTPUT" ), dest );

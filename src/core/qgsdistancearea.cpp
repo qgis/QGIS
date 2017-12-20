@@ -44,7 +44,8 @@ QgsDistanceArea::QgsDistanceArea()
   mSemiMajor = -1.0;
   mSemiMinor = -1.0;
   mInvFlattening = -1.0;
-  setSourceCrs( QgsCoordinateReferenceSystem::fromSrsId( GEOCRS_ID ) ); // WGS 84
+  QgsCoordinateTransformContext context; // this is ok - by default we have a source/dest of WGS84, so no reprojection takes place
+  setSourceCrs( QgsCoordinateReferenceSystem::fromSrsId( GEOCRS_ID ), context ); // WGS 84
   setEllipsoid( GEO_NONE );
 }
 
@@ -53,8 +54,9 @@ bool QgsDistanceArea::willUseEllipsoid() const
   return mEllipsoid != GEO_NONE;
 }
 
-void QgsDistanceArea::setSourceCrs( const QgsCoordinateReferenceSystem &srcCRS )
+void QgsDistanceArea::setSourceCrs( const QgsCoordinateReferenceSystem &srcCRS, const QgsCoordinateTransformContext &context )
 {
+  mCoordTransform.setContext( context );
   mCoordTransform.setSourceCrs( srcCRS );
 }
 

@@ -104,7 +104,7 @@ class FieldsCalculator(QgisAlgorithm):
 
         expression = QgsExpression(formula)
         da = QgsDistanceArea()
-        da.setSourceCrs(source.sourceCrs())
+        da.setSourceCrs(source.sourceCrs(), context.transformContext())
         da.setEllipsoid(context.project().ellipsoid())
         expression.setGeomCalculator(da)
 

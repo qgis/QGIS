@@ -530,14 +530,14 @@ void QgsComposerHtml::setExpressionContext( const QgsFeature &feature, QgsVector
   //setup distance area conversion
   if ( layer )
   {
-    mDistanceArea->setSourceCrs( layer->crs() );
+    mDistanceArea->setSourceCrs( layer->crs(), mComposition->project()->transformContext() );
   }
   else if ( mComposition )
   {
     //set to composition's mapsettings' crs
     QgsComposerMap *referenceMap = mComposition->referenceMap();
     if ( referenceMap )
-      mDistanceArea->setSourceCrs( referenceMap->crs() );
+      mDistanceArea->setSourceCrs( referenceMap->crs(), mComposition->project()->transformContext() );
   }
   if ( mComposition )
   {

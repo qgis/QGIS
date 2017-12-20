@@ -168,7 +168,7 @@ class SpatialJoin(QgisAlgorithm):
 
         added_set = set()
 
-        request = QgsFeatureRequest().setSubsetOfAttributes(join_field_indexes).setDestinationCrs(source.sourceCrs())
+        request = QgsFeatureRequest().setSubsetOfAttributes(join_field_indexes).setDestinationCrs(source.sourceCrs(), context.transformContext())
         features = join_source.getFeatures(request)
         total = 100.0 / join_source.featureCount() if join_source.featureCount() else 0
 

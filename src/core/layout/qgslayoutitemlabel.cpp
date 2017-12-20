@@ -250,7 +250,7 @@ void QgsLayoutItemLabel::refreshExpressionContext()
   //setup distance area conversion
   if ( layer )
   {
-    mDistanceArea->setSourceCrs( layer->crs() );
+    mDistanceArea->setSourceCrs( layer->crs(), mLayout->project()->transformContext() );
   }
   else
   {

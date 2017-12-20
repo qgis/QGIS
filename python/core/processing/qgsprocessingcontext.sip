@@ -70,6 +70,9 @@ Returns the project in which the algorithm is being executed.
 %Docstring
 Sets the ``project`` in which the algorithm will be executed.
 
+This also automatically sets the transformContext() to match
+the project's transform context.
+
 .. seealso:: :py:func:`project()`
 %End
 
@@ -82,6 +85,23 @@ Returns the expression context.
     void setExpressionContext( const QgsExpressionContext &context );
 %Docstring
 Sets the expression ``context``.
+%End
+
+    QgsCoordinateTransformContext transformContext() const;
+%Docstring
+Returns the coordinate transform context.
+
+.. seealso:: :py:func:`setTransformContext()`
+%End
+
+    void setTransformContext( const QgsCoordinateTransformContext &context );
+%Docstring
+Sets the coordinate transform ``context``.
+
+Note that setting a project for the context will automatically set the coordinate transform
+context.
+
+.. seealso:: :py:func:`transformContext()`
 %End
 
     QgsMapLayerStore *temporaryLayerStore();

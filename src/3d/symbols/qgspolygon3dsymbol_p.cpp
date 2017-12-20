@@ -70,7 +70,7 @@ void QgsPolygon3DSymbolEntity::addEntityForSelectedPolygons( const Qgs3DMapSetti
 
   // build the feature request to select features
   QgsFeatureRequest req;
-  req.setDestinationCrs( map.crs() );
+  req.setDestinationCrs( map.crs(), map.transformContext() );
   req.setSubsetOfAttributes( _requiredAttributes( symbol, layer ), layer->fields() );
   req.setFilterFids( layer->selectedFeatureIds() );
 
@@ -93,7 +93,7 @@ void QgsPolygon3DSymbolEntity::addEntityForNotSelectedPolygons( const Qgs3DMapSe
   // build the feature request to select features
   QgsFeatureRequest req;
   req.setSubsetOfAttributes( _requiredAttributes( symbol, layer ), layer->fields() );
-  req.setDestinationCrs( map.crs() );
+  req.setDestinationCrs( map.crs(), map.transformContext() );
 
   QgsFeatureIds notSelected = layer->allFeatureIds();
   notSelected.subtract( layer->selectedFeatureIds() );

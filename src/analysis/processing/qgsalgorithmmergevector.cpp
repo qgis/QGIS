@@ -195,7 +195,7 @@ QVariantMap QgsMergeVectorAlgorithm::processAlgorithm( const QVariantMap &parame
 
     feedback->pushInfo( QObject::tr( "Packaging layer %1/%2: %3" ).arg( i ).arg( layers.count() ).arg( layer->name() ) );
 
-    QgsFeatureIterator it = vl->getFeatures( QgsFeatureRequest().setDestinationCrs( outputCrs ) );
+    QgsFeatureIterator it = vl->getFeatures( QgsFeatureRequest().setDestinationCrs( outputCrs, context.transformContext() ) );
     QgsFeature f;
     while ( it.nextFeature( f ) )
     {

@@ -61,7 +61,7 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer *vl, QWidget *parent )
   connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsFieldCalculator::showHelp );
 
   QgsDistanceArea myDa;
-  myDa.setSourceCrs( vl->crs() );
+  myDa.setSourceCrs( vl->crs(), QgsProject::instance()->transformContext() );
   myDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
   builder->setGeomCalculator( myDa );
 
@@ -160,7 +160,7 @@ void QgsFieldCalculator::accept()
   // Set up QgsDistanceArea each time we (re-)calculate
   QgsDistanceArea myDa;
 
-  myDa.setSourceCrs( mVectorLayer->crs() );
+  myDa.setSourceCrs( mVectorLayer->crs(), QgsProject::instance()->transformContext() );
   myDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
 
   QString calcString = builder->expressionText();

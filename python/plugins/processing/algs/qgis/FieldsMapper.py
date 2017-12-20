@@ -121,7 +121,7 @@ class FieldsMapper(QgisFeatureBasedAlgorithm):
         self.expressions = []
 
         da = QgsDistanceArea()
-        da.setSourceCrs(source.sourceCrs())
+        da.setSourceCrs(source.sourceCrs(), context.transformContext())
         da.setEllipsoid(context.project().ellipsoid())
 
         # create an expression context using thread safe processing context
