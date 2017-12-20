@@ -1943,6 +1943,7 @@ void QgsLayoutDesignerDialog::atlasPreviewTriggered( bool checked )
     else
     {
       QgisApp::instance()->mapCanvas()->stopRendering();
+      atlas->first();
 #if 0 //TODO
       emit atlasPreviewFeatureChanged();
 #endif
@@ -2220,6 +2221,7 @@ void QgsLayoutDesignerDialog::createAtlasWidget()
     mStatusBar->showMessage( message );
   } );
   connect( atlas, &QgsLayoutAtlas::toggled, this, &QgsLayoutDesignerDialog::toggleAtlasControls );
+  connect( atlas, &QgsLayoutAtlas::toggled, this, &QgsLayoutDesignerDialog::refreshLayout );
   connect( atlas, &QgsLayoutAtlas::numberFeaturesChanged, this, &QgsLayoutDesignerDialog::updateAtlasPageComboBox );
   connect( atlas, &QgsLayoutAtlas::featureChanged, this, &QgsLayoutDesignerDialog::atlasFeatureChanged );
   toggleAtlasControls( atlas->enabled() && atlas->coverageLayer() );

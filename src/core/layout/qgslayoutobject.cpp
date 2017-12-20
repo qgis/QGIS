@@ -18,6 +18,7 @@
 #include <QPainter>
 
 #include "qgslayout.h"
+#include "qgslayoutcontext.h"
 #include "qgslayoutobject.h"
 
 
@@ -92,6 +93,7 @@ QgsLayoutObject::QgsLayoutObject( QgsLayout *layout )
   if ( mLayout )
   {
     connect( mLayout, &QgsLayout::refreshed, this, &QgsLayoutObject::refresh );
+    connect( &mLayout->context(), &QgsLayoutContext::changed, this, &QgsLayoutObject::refresh );
   }
 }
 
