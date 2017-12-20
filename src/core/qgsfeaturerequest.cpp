@@ -243,9 +243,15 @@ QgsCoordinateReferenceSystem QgsFeatureRequest::destinationCrs() const
   return mCrs;
 }
 
-QgsFeatureRequest &QgsFeatureRequest::setDestinationCrs( const QgsCoordinateReferenceSystem &crs )
+QgsCoordinateTransformContext QgsFeatureRequest::transformContext() const
+{
+  return mTransformContext;
+}
+
+QgsFeatureRequest &QgsFeatureRequest::setDestinationCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context )
 {
   mCrs = crs;
+  mTransformContext = context;
   return *this;
 }
 

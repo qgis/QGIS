@@ -92,7 +92,7 @@ class SymmetricalDifference(QgisAlgorithm):
         outFeat = QgsFeature()
 
         indexA = QgsSpatialIndex(sourceA, feedback)
-        indexB = QgsSpatialIndex(sourceB.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([]).setDestinationCrs(sourceA.sourceCrs())), feedback)
+        indexB = QgsSpatialIndex(sourceB.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([]).setDestinationCrs(sourceA.sourceCrs(), context.transformContext())), feedback)
 
         total = 100.0 / (sourceA.featureCount() * sourceB.featureCount()) if sourceA.featureCount() and sourceB.featureCount() else 1
         count = 0
@@ -106,7 +106,7 @@ class SymmetricalDifference(QgisAlgorithm):
             attrs = featA.attributes()
             intersects = indexB.intersects(geom.boundingBox())
             request = QgsFeatureRequest().setFilterFids(intersects).setSubsetOfAttributes([])
-            request.setDestinationCrs(sourceA.sourceCrs())
+            request.setDestinationCrs(sourceA.sourceCrs(), context.transformContext())
             for featB in sourceB.getFeatures(request):
                 if feedback.isCanceled():
                     break
@@ -128,7 +128,7 @@ class SymmetricalDifference(QgisAlgorithm):
 
         length = len(sourceA.fields())
 
-        for featA in sourceB.getFeatures(QgsFeatureRequest().setDestinationCrs(sourceA.sourceCrs())):
+        for featA in sourceB.getFeatures(QgsFeatureRequest().setDestinationCrs(sourceA.sourceCrs(), context.transformContext())):
             if feedback.isCanceled():
                 break
 

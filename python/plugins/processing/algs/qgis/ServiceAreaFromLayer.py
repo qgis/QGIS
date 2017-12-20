@@ -213,7 +213,7 @@ class ServiceAreaFromLayer(QgisAlgorithm):
 
         feedback.pushInfo(self.tr('Loading start points...'))
         request = QgsFeatureRequest()
-        request.setDestinationCrs(network.sourceCrs())
+        request.setDestinationCrs(network.sourceCrs(), context.transformContext())
         features = startPoints.getFeatures(request)
         total = 100.0 / startPoints.featureCount() if startPoints.featureCount() else 0
 

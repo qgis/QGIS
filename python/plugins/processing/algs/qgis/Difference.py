@@ -86,7 +86,7 @@ class Difference(QgisAlgorithm):
         featB = QgsFeature()
         outFeat = QgsFeature()
 
-        indexB = QgsSpatialIndex(sourceB.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([]).setDestinationCrs(sourceA.sourceCrs())), feedback)
+        indexB = QgsSpatialIndex(sourceB.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([]).setDestinationCrs(sourceA.sourceCrs(), context.transformContext())), feedback)
 
         total = 100.0 / (sourceA.featureCount() * sourceB.featureCount()) if sourceA.featureCount() and sourceB.featureCount() else 1
         count = 0
@@ -101,7 +101,7 @@ class Difference(QgisAlgorithm):
                 attrs = featA.attributes()
                 intersects = indexB.intersects(geom.boundingBox())
                 request = QgsFeatureRequest().setFilterFids(intersects).setSubsetOfAttributes([])
-                request.setDestinationCrs(sourceA.sourceCrs())
+                request.setDestinationCrs(sourceA.sourceCrs(), context.transformContext())
                 for featB in sourceB.getFeatures(request):
                     if feedback.isCanceled():
                         break

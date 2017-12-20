@@ -57,7 +57,7 @@ void QgsLine3DSymbolEntity::addEntityForSelectedLines( const Qgs3DMapSettings &m
 
   // build the feature request to select features
   QgsFeatureRequest req;
-  req.setDestinationCrs( map.crs() );
+  req.setDestinationCrs( map.crs(), map.transformContext() );
   req.setFilterFids( layer->selectedFeatureIds() );
 
   // build the entity
@@ -73,7 +73,7 @@ void QgsLine3DSymbolEntity::addEntityForNotSelectedLines( const Qgs3DMapSettings
 
   // build the feature request to select features
   QgsFeatureRequest req;
-  req.setDestinationCrs( map.crs() );
+  req.setDestinationCrs( map.crs(), map.transformContext() );
 
   QgsFeatureIds notSelected = layer->allFeatureIds();
   notSelected.subtract( layer->selectedFeatureIds() );

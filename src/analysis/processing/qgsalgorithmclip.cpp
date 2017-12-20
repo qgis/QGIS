@@ -85,7 +85,7 @@ QVariantMap QgsClipAlgorithm::processAlgorithm( const QVariantMap &parameters, Q
 
   // first build up a list of clip geometries
   QVector< QgsGeometry > clipGeoms;
-  QgsFeatureIterator it = maskSource->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QList< int >() ).setDestinationCrs( featureSource->sourceCrs() ) );
+  QgsFeatureIterator it = maskSource->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QList< int >() ).setDestinationCrs( featureSource->sourceCrs(), context.transformContext() ) );
   QgsFeature f;
   while ( it.nextFeature( f ) )
   {

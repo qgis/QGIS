@@ -815,9 +815,7 @@ QgsWFSFeatureIterator::QgsWFSFeatureIterator( QgsWFSFeatureSource *source,
 {
   if ( mRequest.destinationCrs().isValid() && mRequest.destinationCrs() != mSource->mCrs )
   {
-    Q_NOWARN_DEPRECATED_PUSH
-    mTransform = QgsCoordinateTransform( mSource->mCrs, mRequest.destinationCrs() );
-    Q_NOWARN_DEPRECATED_POP
+    mTransform = QgsCoordinateTransform( mSource->mCrs, mRequest.destinationCrs(), mRequest.transformContext() );
   }
   try
   {

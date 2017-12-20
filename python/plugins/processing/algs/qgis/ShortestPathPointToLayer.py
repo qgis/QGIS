@@ -216,7 +216,7 @@ class ShortestPathPointToLayer(QgisAlgorithm):
 
         feedback.pushInfo(self.tr('Loading end points...'))
         request = QgsFeatureRequest()
-        request.setDestinationCrs(network.sourceCrs())
+        request.setDestinationCrs(network.sourceCrs(), context.transformContext())
         features = endPoints.getFeatures(request)
         total = 100.0 / endPoints.featureCount() if endPoints.featureCount() else 0
 
