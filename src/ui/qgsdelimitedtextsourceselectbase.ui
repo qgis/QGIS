@@ -1326,8 +1326,6 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>txtFilePath</tabstop>
-  <tabstop>btnBrowseForFile</tabstop>
   <tabstop>txtLayerName</tabstop>
   <tabstop>cmbEncoding</tabstop>
   <tabstop>cbxPointIsComma</tabstop>
