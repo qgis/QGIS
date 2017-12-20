@@ -145,7 +145,7 @@ void TestQgsCompositionConverter::importComposerTemplateLabel()
   QgsProject project;
   std::unique_ptr< QgsLayout > layout( QgsCompositionConverter::createLayoutFromCompositionXml( docElem, &project ) );
 
-  QVERIFY( layout );
+  QVERIFY( layout.get() );
   QCOMPARE( layout->pageCollection()->pageCount(), 1 );
 
   QList<QgsLayoutItemLabel *> items;
@@ -173,11 +173,10 @@ void TestQgsCompositionConverter::importComposerTemplateLabel()
 void TestQgsCompositionConverter::importComposerTemplateShape()
 {
   QDomElement docElem( loadComposition( "2x_template_shape.qpt" ) );
-  QgsReadWriteContext context;
   QgsProject project;
   std::unique_ptr< QgsLayout > layout( QgsCompositionConverter::createLayoutFromCompositionXml( docElem, &project ) );
 
-  QVERIFY( layout );
+  QVERIFY( layout.get() );
   QCOMPARE( layout->pageCollection()->pageCount(), 1 );
 
   QList<QgsLayoutItemShape *> items;
@@ -209,7 +208,7 @@ void TestQgsCompositionConverter::importComposerTemplatePicture()
   QVERIFY( !docElem.isNull() );
   QgsProject project;
   std::unique_ptr< QgsLayout > layout( QgsCompositionConverter::createLayoutFromCompositionXml( docElem, &project ) );
-  QVERIFY( layout );
+  QVERIFY( layout.get() );
   QCOMPARE( layout->pageCollection()->pageCount(), 1 );
 
   QList<QgsLayoutItemPicture *> items;
@@ -238,7 +237,7 @@ void TestQgsCompositionConverter::importComposerTemplatePolygon()
   QVERIFY( !docElem.isNull() );
   QgsProject project;
   std::unique_ptr< QgsLayout > layout( QgsCompositionConverter::createLayoutFromCompositionXml( docElem, &project ) );
-  QVERIFY( layout );
+  QVERIFY( layout.get() );
   QCOMPARE( layout->pageCollection()->pageCount(), 1 );
 
   QList<QgsLayoutItemPolygon *> items;
@@ -261,7 +260,7 @@ void TestQgsCompositionConverter::importComposerTemplatePolyline()
   QVERIFY( !docElem.isNull() );
   QgsProject project;
   std::unique_ptr< QgsLayout > layout( QgsCompositionConverter::createLayoutFromCompositionXml( docElem, &project ) );
-  QVERIFY( layout );
+  QVERIFY( layout.get() );
   QCOMPARE( layout->pageCollection()->pageCount(), 1 );
 
   QList<QgsLayoutItemPolyline *> items;
@@ -288,7 +287,7 @@ void TestQgsCompositionConverter::importComposerTemplateArrow()
   QVERIFY( !docElem.isNull() );
   QgsProject project;
   std::unique_ptr< QgsLayout > layout( QgsCompositionConverter::createLayoutFromCompositionXml( docElem, &project ) );
-  QVERIFY( layout );
+  QVERIFY( layout.get() );
   QCOMPARE( layout->pageCollection()->pageCount(), 1 );
 
   QList<QgsLayoutItemPolyline *> items;
@@ -314,7 +313,7 @@ void TestQgsCompositionConverter::importComposerTemplateMap()
   QVERIFY( !docElem.isNull() );
   QgsProject project;
   std::unique_ptr< QgsLayout > layout( QgsCompositionConverter::createLayoutFromCompositionXml( docElem, &project ) );
-  QVERIFY( layout );
+  QVERIFY( layout.get() );
   QCOMPARE( layout->pageCollection()->pageCount(), 1 );
 
   QList<QgsLayoutItemMap *> items;
@@ -336,7 +335,7 @@ void TestQgsCompositionConverter::importComposerTemplateLegend()
   QVERIFY( !docElem.isNull() );
   QgsProject project;
   std::unique_ptr< QgsLayout > layout( QgsCompositionConverter::createLayoutFromCompositionXml( docElem, &project ) );
-  QVERIFY( layout );
+  QVERIFY( layout.get() );
   QCOMPARE( layout->pageCollection()->pageCount(), 1 );
 
   QList<QgsLayoutItemLegend *> items;
@@ -358,7 +357,7 @@ void TestQgsCompositionConverter::importComposerTemplateScaleBar()
   QVERIFY( !docElem.isNull() );
   QgsProject project;
   std::unique_ptr< QgsLayout > layout( QgsCompositionConverter::createLayoutFromCompositionXml( docElem, &project ) );
-  QVERIFY( layout );
+  QVERIFY( layout.get() );
   QCOMPARE( layout->pageCollection()->pageCount(), 1 );
 
   QList<QgsLayoutItemScaleBar *> items;
@@ -380,7 +379,7 @@ void TestQgsCompositionConverter::importComposerTemplate()
   QgsProject project;
   std::unique_ptr< QgsLayout > layout( QgsCompositionConverter::createLayoutFromCompositionXml( docElem, &project ) );
 
-  QVERIFY( layout );
+  QVERIFY( layout.get() );
   QCOMPARE( layout->pageCollection()->pageCount(), 2 );
 
   checkRenderedImage( layout.get(), QTest::currentTestFunction(), 0 );
