@@ -104,7 +104,7 @@ class SumLines(QgisAlgorithm):
                                                fields, poly_source.wkbType(), poly_source.sourceCrs())
 
         spatialIndex = QgsSpatialIndex(line_source.getFeatures(
-            QgsFeatureRequest().setSubsetOfAttributes([]).setDestinationCrs(poly_source.sourceCrs())), feedback)
+            QgsFeatureRequest().setSubsetOfAttributes([]).setDestinationCrs(poly_source.sourceCrs(), context.transformContext())), feedback)
 
         distArea = QgsDistanceArea()
         distArea.setSourceCrs(poly_source.sourceCrs())
@@ -131,7 +131,7 @@ class SumLines(QgisAlgorithm):
                     engine.prepareGeometry()
 
                 if has_intersections:
-                    request = QgsFeatureRequest().setFilterFids(lines).setSubsetOfAttributes([]).setDestinationCrs(poly_source.sourceCrs())
+                    request = QgsFeatureRequest().setFilterFids(lines).setSubsetOfAttributes([]).setDestinationCrs(poly_source.sourceCrs(), context.transformContext())
                     for line_feature in line_source.getFeatures(request):
                         if feedback.isCanceled():
                             break

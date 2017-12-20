@@ -114,7 +114,7 @@ class HypsometricCurves(QgisAlgorithm):
         memVectorDriver = ogr.GetDriverByName('Memory')
         memRasterDriver = gdal.GetDriverByName('MEM')
 
-        features = source.getFeatures(QgsFeatureRequest().setDestinationCrs(target_crs))
+        features = source.getFeatures(QgsFeatureRequest().setDestinationCrs(target_crs, context.transformContext()))
         total = 100.0 / source.featureCount() if source.featureCount() else 0
 
         for current, f in enumerate(features):

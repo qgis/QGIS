@@ -278,7 +278,7 @@ class SpatialJoinSummary(QgisAlgorithm):
 
             values = []
 
-            request = QgsFeatureRequest().setFilterRect(bbox).setSubsetOfAttributes(join_field_indexes).setDestinationCrs(source.sourceCrs())
+            request = QgsFeatureRequest().setFilterRect(bbox).setSubsetOfAttributes(join_field_indexes).setDestinationCrs(source.sourceCrs(), context.transformContext())
             for test_feat in join_source.getFeatures(request):
                 if feedback.isCanceled():
                     break

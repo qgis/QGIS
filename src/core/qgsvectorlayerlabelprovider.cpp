@@ -173,14 +173,12 @@ bool QgsVectorLayerLabelProvider::prepare( const QgsRenderContext &context, QSet
   lyr.xform = &mapSettings.mapToPixel();
   lyr.ct = QgsCoordinateTransform();
   if ( context.coordinateTransform().isValid() )
-    // this is context for layer rendering - use its CT as it includes correct datum transform
+    // this is context for layer rendering
     lyr.ct = context.coordinateTransform();
   else
   {
-    Q_NOWARN_DEPRECATED_PUSH
-    // otherwise fall back to creating our own CT - this one may not have the correct datum transform!
-    lyr.ct = QgsCoordinateTransform( mCrs, mapSettings.destinationCrs() );
-    Q_NOWARN_DEPRECATED_POP
+    // otherwise fall back to creating our own CT
+    lyr.ct = QgsCoordinateTransform( mCrs, mapSettings.destinationCrs(), mapSettings.transformContext() );
   }
   lyr.ptZero = lyr.xform->toMapCoordinates( 0, 0 );
   lyr.ptOne = lyr.xform->toMapCoordinates( 1, 0 );

@@ -549,10 +549,24 @@ and all features will be left with their original geometry.
 
 .. seealso:: :py:func:`setDestinationCrs()`
 
+.. seealso:: :py:func:`transformContext()`
+
 .. versionadded:: 3.0
 %End
 
-    QgsFeatureRequest &setDestinationCrs( const QgsCoordinateReferenceSystem &crs );
+    QgsCoordinateTransformContext transformContext() const;
+%Docstring
+Returns the transform context, for use when a destinationCrs() has been set
+and reprojection is required
+
+.. seealso:: :py:func:`setDestinationCrs()`
+
+.. seealso:: :py:func:`destinationCrs()`
+
+.. versionadded:: 3.0
+%End
+
+    QgsFeatureRequest &setDestinationCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context );
 %Docstring
 Sets the destination ``crs`` for feature's geometries. If set, all
 geometries will be reprojected from their original coordinate reference

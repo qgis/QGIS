@@ -92,7 +92,7 @@ class Union(QgisAlgorithm):
         outFeat = QgsFeature()
 
         indexA = QgsSpatialIndex(sourceA, feedback)
-        indexB = QgsSpatialIndex(sourceB.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([]).setDestinationCrs(sourceA.sourceCrs())), feedback)
+        indexB = QgsSpatialIndex(sourceB.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([]).setDestinationCrs(sourceA.sourceCrs(), context.transformContext())), feedback)
 
         total = 100.0 / (sourceA.featureCount() * sourceB.featureCount()) if sourceA.featureCount() and sourceB.featureCount() else 1
         count = 0
@@ -117,7 +117,7 @@ class Union(QgisAlgorithm):
                     feedback.pushInfo(self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'))
             else:
                 request = QgsFeatureRequest().setFilterFids(intersects).setSubsetOfAttributes([])
-                request.setDestinationCrs(sourceA.sourceCrs())
+                request.setDestinationCrs(sourceA.sourceCrs(), context.transformContext())
 
                 engine = QgsGeometry.createGeometryEngine(geom.constGet())
                 engine.prepareGeometry()
@@ -190,7 +190,7 @@ class Union(QgisAlgorithm):
         length = len(sourceA.fields())
         atMapA = [None] * length
 
-        for featA in sourceB.getFeatures(QgsFeatureRequest().setDestinationCrs(sourceA.sourceCrs())):
+        for featA in sourceB.getFeatures(QgsFeatureRequest().setDestinationCrs(sourceA.sourceCrs(), context.transformContext())):
             if feedback.isCanceled():
                 break
 
@@ -211,7 +211,7 @@ class Union(QgisAlgorithm):
                     feedback.pushInfo(self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'))
             else:
                 request = QgsFeatureRequest().setFilterFids(intersects).setSubsetOfAttributes([])
-                request.setDestinationCrs(sourceA.sourceCrs())
+                request.setDestinationCrs(sourceA.sourceCrs(), context.transformContext())
 
                 # use prepared geometries for faster intersection tests
                 engine = QgsGeometry.createGeometryEngine(diff_geom.constGet())

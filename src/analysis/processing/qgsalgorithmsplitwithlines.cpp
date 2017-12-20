@@ -87,7 +87,7 @@ QVariantMap QgsSplitWithLinesAlgorithm::processAlgorithm( const QVariantMap &par
   QMap< QgsFeatureId, QgsGeometry > splitGeoms;
   QgsFeatureRequest request;
   request.setSubsetOfAttributes( QgsAttributeList() );
-  request.setDestinationCrs( source->sourceCrs() );
+  request.setDestinationCrs( source->sourceCrs(), context.transformContext() );
 
   QgsFeatureIterator splitLines = linesSource->getFeatures( request );
   QgsFeature aSplitFeature;

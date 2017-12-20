@@ -97,7 +97,7 @@ class PointsFromLines(QgisAlgorithm):
         self.lineId = 0
         self.pointId = 0
 
-        features = source.getFeatures(QgsFeatureRequest().setDestinationCrs(raster_layer.crs()))
+        features = source.getFeatures(QgsFeatureRequest().setDestinationCrs(raster_layer.crs(), context.transformContext()))
         total = 100.0 / source.featureCount() if source.featureCount() else 0
         for current, f in enumerate(features):
             if feedback.isCanceled():

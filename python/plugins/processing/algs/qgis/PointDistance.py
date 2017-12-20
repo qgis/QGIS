@@ -154,7 +154,7 @@ class PointDistance(QgisAlgorithm):
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                fields, out_wkb, source.sourceCrs())
 
-        index = QgsSpatialIndex(target_source.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([]).setDestinationCrs(source.sourceCrs())), feedback)
+        index = QgsSpatialIndex(target_source.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([]).setDestinationCrs(source.sourceCrs(), context.transformContext())), feedback)
 
         distArea = QgsDistanceArea()
         distArea.setSourceCrs(source.sourceCrs())
@@ -171,7 +171,7 @@ class PointDistance(QgisAlgorithm):
             featList = index.nearestNeighbor(inGeom.asPoint(), nPoints)
             distList = []
             vari = 0.0
-            request = QgsFeatureRequest().setFilterFids(featList).setSubsetOfAttributes([outIdx]).setDestinationCrs(source.sourceCrs())
+            request = QgsFeatureRequest().setFilterFids(featList).setSubsetOfAttributes([outIdx]).setDestinationCrs(source.sourceCrs(), context.transformContext())
             for outFeat in target_source.getFeatures(request):
                 if feedback.isCanceled():
                     break
@@ -214,7 +214,7 @@ class PointDistance(QgisAlgorithm):
         inIdx = source.fields().lookupField(inField)
         targetIdx = target_source.fields().lookupField(targetField)
 
-        index = QgsSpatialIndex(target_source.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([]).setDestinationCrs(source.sourceCrs())), feedback)
+        index = QgsSpatialIndex(target_source.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([]).setDestinationCrs(source.sourceCrs(), context.transformContext())), feedback)
 
         first = True
         sink = None
@@ -233,14 +233,14 @@ class PointDistance(QgisAlgorithm):
                 input_id_field = source.fields()[inIdx]
                 input_id_field.setName('ID')
                 fields.append(input_id_field)
-                for f in target_source.getFeatures(QgsFeatureRequest().setFilterFids(featList).setSubsetOfAttributes([targetIdx]).setDestinationCrs(source.sourceCrs())):
+                for f in target_source.getFeatures(QgsFeatureRequest().setFilterFids(featList).setSubsetOfAttributes([targetIdx]).setDestinationCrs(source.sourceCrs(), context.transformContext())):
                     fields.append(QgsField(str(f[targetField]), QVariant.Double))
 
                 (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                        fields, source.wkbType(), source.sourceCrs())
 
             data = [inFeat[inField]]
-            for target in target_source.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([]).setFilterFids(featList).setDestinationCrs(source.sourceCrs())):
+            for target in target_source.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([]).setFilterFids(featList).setDestinationCrs(source.sourceCrs(), context.transformContext())):
                 if feedback.isCanceled():
                     break
                 outGeom = target.geometry()
