@@ -66,7 +66,6 @@ QgsMetadataWidget::QgsMetadataWidget( QWidget *parent, QgsMapLayer *layer )
   tabConstraints->setItemDelegate( new ConstraintItemDelegate( this ) );
 
   // Extent
-  selectionCrs->setOptionVisible( QgsProjectionSelectionWidget::CrsNotSet, true );
   dateTimeFrom->setAllowNull( true );
   dateTimeTo->setAllowNull( true );
 
@@ -94,8 +93,8 @@ QgsMetadataWidget::QgsMetadataWidget( QWidget *parent, QgsMapLayer *layer )
   connect( btnRemoveLicence, &QPushButton::clicked, this, &QgsMetadataWidget::removeSelectedLicence );
   connect( btnAddConstraint, &QPushButton::clicked, this, &QgsMetadataWidget::addConstraint );
   connect( btnRemoveConstraint, &QPushButton::clicked, this, &QgsMetadataWidget::removeSelectedConstraint );
-  connect( btnAutoCrs, &QPushButton::clicked, this, &QgsMetadataWidget::fillCrsFromLayer );
-  connect( selectionCrs, &QgsProjectionSelectionWidget::crsChanged, this, &QgsMetadataWidget::toggleExtentSelector );
+  connect( btnSetCrsFromLayer, &QPushButton::clicked, this, &QgsMetadataWidget::fillCrsFromLayer );
+  connect( btnSetCrsFromProvider, &QPushButton::clicked, this, &QgsMetadataWidget::fillCrsFromProvider );
   connect( btnAddAddress, &QPushButton::clicked, this, &QgsMetadataWidget::addAddress );
   connect( btnRemoveAddress, &QPushButton::clicked, this, &QgsMetadataWidget::removeSelectedAddress );
   connect( btnAddLink, &QPushButton::clicked, this, &QgsMetadataWidget::addLink );
@@ -200,10 +199,37 @@ void QgsMetadataWidget::removeSelectedConstraint() const
   mConstraintsModel->removeRow( selectedRows[0].row() );
 }
 
-void QgsMetadataWidget::toggleExtentSelector() const
+void QgsMetadataWidget::crsChanged() const
 {
-  spatialExtentSelector->setEnabled( selectionCrs->crs().isValid() );
-  spatialExtentSelector->setOutputCrs( selectionCrs->crs() );
+  if ( mCrs.isValid() )
+  {
+    lblCurrentCrs->setText( tr( "CRS: %1 - %2" ).arg( mCrs.authid(), mCrs.description() ) );
+    spatialExtentSelector->setEnabled( true );
+    spatialExtentSelector->setOutputCrs( mCrs );
+
+    if ( mCrs == mLayer->crs() && mCrs == mLayer->dataProvider()->crs() )
+    {
+      lblCurrentCrsStatus->setText( tr( "Same as layer properties and provider." ) );
+    }
+    else if ( mCrs == mLayer->crs() && mCrs != mLayer->dataProvider()->crs() )
+    {
+      lblCurrentCrsStatus->setText( tr( "Same as layer properties but different than the provider." ) );
+    }
+    else if ( mCrs != mLayer->crs() && mCrs == mLayer->dataProvider()->crs() )
+    {
+      lblCurrentCrsStatus->setText( tr( "Same as the provider but different than the layer properties." ) );
+    }
+    else
+    {
+      lblCurrentCrsStatus->setText( tr( "Does not match either layer properties or the provider." ) );
+    }
+  }
+  else
+  {
+    lblCurrentCrs->setText( tr( "CRS: Not set." ) );
+    lblCurrentCrsStatus->setText( QString() );
+    spatialExtentSelector->setEnabled( false );
+  }
 }
 
 void QgsMetadataWidget::addAddress() const
@@ -242,9 +268,16 @@ void QgsMetadataWidget::removeSelectedAddress() const
   }
 }
 
-void QgsMetadataWidget::fillCrsFromLayer() const
+void QgsMetadataWidget::fillCrsFromLayer()
 {
-  selectionCrs->setCrs( mLayer->crs() );
+  mCrs = mLayer->crs();
+  crsChanged();
+}
+
+void QgsMetadataWidget::fillCrsFromProvider()
+{
+  mCrs = mLayer->dataProvider()->crs();
+  crsChanged();
 }
 
 void QgsMetadataWidget::addLink() const
@@ -322,7 +355,7 @@ void QgsMetadataWidget::fillComboBox() const
   }
 }
 
-void QgsMetadataWidget::setPropertiesFromLayer() const
+void QgsMetadataWidget::setPropertiesFromLayer()
 {
   // Parent ID
   lineEditParentId->setText( mMetadata.parentIdentifier() );
@@ -409,11 +442,8 @@ void QgsMetadataWidget::setPropertiesFromLayer() const
   }
 
   // CRS
-  if ( mMetadata.crs().isValid() )
-  {
-    selectionCrs->setCrs( mMetadata.crs() );
-  }
-  toggleExtentSelector();
+  mCrs = mMetadata.crs();
+  crsChanged();
 
   // Spatial extent
   const QList<QgsLayerMetadata::SpatialExtent> &spatialExtents = mMetadata.extent().spatialExtents();
@@ -534,7 +564,10 @@ void QgsMetadataWidget::saveMetadata( QgsLayerMetadata &layerMetadata ) const
   layerMetadata.setConstraints( constraints );
 
   // CRS
-  layerMetadata.setCrs( selectionCrs->crs() );
+  if ( mCrs.isValid() )
+  {
+    layerMetadata.setCrs( mCrs );
+  }
 
   // Extent
   struct QgsLayerMetadata::SpatialExtent spatialExtent = QgsLayerMetadata::SpatialExtent();

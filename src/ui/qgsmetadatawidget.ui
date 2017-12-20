@@ -818,10 +818,14 @@
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout_7">
             <item>
-             <widget class="QgsProjectionSelectionWidget" name="selectionCrs" native="true"/>
+             <widget class="QLabel" name="lblCurrentCrs">
+              <property name="text">
+               <string notr="true">CRS label set in cpp code</string>
+              </property>
+             </widget>
             </item>
             <item>
-             <widget class="QPushButton" name="btnAutoCrs">
+             <widget class="QPushButton" name="btnSetCrsFromLayer">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
                 <horstretch>0</horstretch>
@@ -833,7 +837,27 @@
               </property>
              </widget>
             </item>
+            <item>
+             <widget class="QPushButton" name="btnSetCrsFromProvider">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>Set CRS from provider</string>
+              </property>
+             </widget>
+            </item>
            </layout>
+          </item>
+          <item>
+           <widget class="QLabel" name="lblCurrentCrsStatus">
+            <property name="text">
+             <string notr="true">CRS status set in cpp code</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
@@ -1368,12 +1392,6 @@
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsProjectionSelectionWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsprojectionselectionwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
