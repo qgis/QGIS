@@ -56,6 +56,7 @@ class CORE_EXPORT QgsLayoutItemHtml: public QgsLayoutMultiFrame
     ~QgsLayoutItemHtml() override;
 
     int type() const override;
+    QIcon icon() const override;
 
     /**
      * Returns a new QgsLayoutItemHtml for the specified parent \a layout.

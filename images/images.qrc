@@ -434,6 +434,19 @@
         <file>themes/default/mIconWms.svg</file>
         <file>themes/default/mIconZip.png</file>
         <file>themes/default/mIconZoom.svg</file>
+        <file>themes/default/mLayoutItem.svg</file>
+        <file>themes/default/mLayoutItemShapeEllipse.svg</file>
+        <file>themes/default/mLayoutItemShapeRectangle.svg</file>
+        <file>themes/default/mLayoutItemShapeTriangle.svg</file>
+        <file>themes/default/mLayoutItemHtml.svg</file>
+        <file>themes/default/mLayoutItemPicture.svg</file>
+        <file>themes/default/mLayoutItemLabel.svg</file>
+        <file>themes/default/mLayoutItemLegend.svg</file>
+        <file>themes/default/mLayoutItemMap.svg</file>
+        <file>themes/default/mLayoutItemPolygon.svg</file>
+        <file>themes/default/mLayoutItemPolyline.svg</file>
+        <file>themes/default/mLayoutItemScaleBar.svg</file>
+        <file>themes/default/mLayoutItemTable.svg</file>
         <file>themes/default/mMessageLog.svg</file>
         <file>themes/default/mMessageLogRead.svg</file>
         <file>themes/default/north_arrow.png</file>

@@ -71,6 +71,11 @@ int QgsLayoutItemPicture::type() const
   return QgsLayoutItemRegistry::LayoutPicture;
 }
 
+QIcon QgsLayoutItemPicture::icon() const
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "/mLayoutItemPicture.svg" ) );
+}
+
 QgsLayoutItemPicture *QgsLayoutItemPicture::create( QgsLayout *layout )
 {
   return new QgsLayoutItemPicture( layout );

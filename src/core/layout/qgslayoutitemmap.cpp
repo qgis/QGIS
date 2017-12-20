@@ -75,6 +75,11 @@ int QgsLayoutItemMap::type() const
   return QgsLayoutItemRegistry::LayoutMap;
 }
 
+QIcon QgsLayoutItemMap::icon() const
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "/mLayoutItemMap.svg" ) );
+}
+
 void QgsLayoutItemMap::assignFreeId()
 {
   if ( !mLayout )

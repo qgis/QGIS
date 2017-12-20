@@ -71,6 +71,7 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
     QgsLayoutItemPicture( QgsLayout *layout );
 
     int type() const override;
+    QIcon icon() const override;
 
     /**
      * Returns a new picture item for the specified \a layout.

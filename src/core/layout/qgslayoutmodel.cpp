@@ -139,6 +139,16 @@ QVariant QgsLayoutModel::data( const QModelIndex &index, int role ) const
         return QVariant();
       }
 
+    case Qt::DecorationRole:
+      if ( index.column() == ItemId )
+      {
+        return item->icon();
+      }
+      else
+      {
+        return QVariant();
+      }
+
     case Qt::EditRole:
       if ( index.column() == ItemId )
       {

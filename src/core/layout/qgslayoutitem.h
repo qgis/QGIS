@@ -25,6 +25,7 @@
 #include "qgslayoutundocommand.h"
 #include "qgslayoutmeasurement.h"
 #include <QGraphicsRectItem>
+#include <QIcon>
 #include <QPainter>
 
 class QgsLayout;
@@ -292,11 +293,16 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     virtual void cleanup();
 
     /**
-     * Return unique graphics item type identifier.
+     * Returns a unique graphics item type identifier.
      *
      * Plugin based subclasses should return an identifier greater than QgsLayoutItemRegistry::PluginItem.
      */
     int type() const override;
+
+    /**
+     * Returns the item's icon.
+     */
+    virtual QIcon icon() const { return QgsApplication::getThemeIcon( QStringLiteral( "/mLayoutItem.svg" ) ); }
 
     /**
      * Returns the item identification string. This is a unique random string set for the item

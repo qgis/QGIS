@@ -77,6 +77,7 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
     static QgsLayoutItemLegend *create( QgsLayout *layout ) SIP_FACTORY;
 
     int type() const override;
+    QIcon icon() const override;
     //Overridden to show legend title
     QString displayName() const override;
 

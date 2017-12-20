@@ -35,6 +35,8 @@ Creates a new QgsLayoutFrame belonging to the specified ``layout``.
 
     virtual int type() const;
 
+    virtual QIcon icon() const;
+
     virtual QString uuid() const;
 
 
