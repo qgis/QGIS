@@ -123,7 +123,7 @@ class ExportGeometryInfo(QgisAlgorithm):
 
         self.distance_area = QgsDistanceArea()
         if method == 2:
-            self.distance_area.setSourceCrs(source.sourceCrs())
+            self.distance_area.setSourceCrs(source.sourceCrs(), context.transformContext())
             self.distance_area.setEllipsoid(context.project().ellipsoid())
         elif method == 1:
             coordTransform = QgsCoordinateTransform(source.sourceCrs(), context.project().crs(), context.project())

@@ -351,7 +351,7 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( QgsFeatur
   QString ellipsoid = QgsProject::instance()->ellipsoid();
   QgsDistanceArea calc;
   calc.setEllipsoid( ellipsoid );
-  calc.setSourceCrs( layer->crs() );
+  calc.setSourceCrs( layer->crs(), QgsProject::instance()->transformContext() );
 
   QgsWkbTypes::Type wkbType = QgsWkbTypes::NoGeometry;
   QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::NullGeometry;

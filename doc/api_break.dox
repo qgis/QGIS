@@ -1128,7 +1128,8 @@ ellipsoid to 'NONE' to disable ellipsoidal calculations.
 - ellipsoidalEnabled() was removed. Ellipsoidal calculations are now enabled whenever a valid ellipsoid() is set. Check
 willUseEllipsoid() to determine whether ellipsoidal calculations will be performed.
 - sourceCrs() now returns a QgsCoordinateReferenceSystem instead of the crs ID.
-- setSourceCrs() now requires a QgsCoordinateReferenceSystem instead of crs ID.
+- setSourceCrs() now requires a QgsCoordinateReferenceSystem instead of crs ID, and requires a QgsCoordinateTransformContext object. PyQGIS code
+can use QgsProject.instance().transformContext() for the QgsCoordinateTransformContext argument.
 - setSourceAuthId() was removed. Use setSourceCrs() instead.
 - geographic() was removed. Check sourceCrs().isGeographic() instead.
 - measure() has been removed. Use measureArea() or measureLength() instead.

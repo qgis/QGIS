@@ -105,7 +105,7 @@ void QgsMeasureDialog::updateSettings()
   // Configure QgsDistanceArea
   mDistanceUnits = QgsProject::instance()->distanceUnits();
   mAreaUnits = QgsProject::instance()->areaUnits();
-  mDa.setSourceCrs( mTool->canvas()->mapSettings().destinationCrs() );
+  mDa.setSourceCrs( mTool->canvas()->mapSettings().destinationCrs(), QgsProject::instance()->transformContext() );
   mDa.setEllipsoid( QgsProject::instance()->ellipsoid() );
 
   mTable->clear();

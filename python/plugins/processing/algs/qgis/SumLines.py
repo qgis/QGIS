@@ -107,7 +107,7 @@ class SumLines(QgisAlgorithm):
             QgsFeatureRequest().setSubsetOfAttributes([]).setDestinationCrs(poly_source.sourceCrs(), context.transformContext())), feedback)
 
         distArea = QgsDistanceArea()
-        distArea.setSourceCrs(poly_source.sourceCrs())
+        distArea.setSourceCrs(poly_source.sourceCrs(), context.transformContext())
         distArea.setEllipsoid(context.project().ellipsoid())
 
         features = poly_source.getFeatures()

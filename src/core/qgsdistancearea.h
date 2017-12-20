@@ -62,11 +62,11 @@ class CORE_EXPORT QgsDistanceArea
     bool willUseEllipsoid() const;
 
     /**
-     * Sets source spatial reference system.
+     * Sets source spatial reference system \a crs.
      * \since QGIS 2.2
      * \see sourceCrs()
      */
-    void setSourceCrs( const QgsCoordinateReferenceSystem &srcCRS );
+    void setSourceCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context );
 
     /**
      * Returns the source spatial reference system.

@@ -113,7 +113,7 @@ class HubDistancePoints(QgisAlgorithm):
         index = QgsSpatialIndex(hub_source.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([]).setDestinationCrs(point_source.sourceCrs(), context.transformContext())))
 
         distance = QgsDistanceArea()
-        distance.setSourceCrs(point_source.sourceCrs())
+        distance.setSourceCrs(point_source.sourceCrs(), context.transformContext())
         distance.setEllipsoid(context.project().ellipsoid())
 
         # Scan source points, find nearest hub, and write to output file

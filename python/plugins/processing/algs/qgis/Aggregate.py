@@ -135,7 +135,7 @@ class Aggregate(QgisAlgorithm):
         aggregates = self.parameterAsAggregates(parameters, self.AGGREGATES, context)
 
         da = QgsDistanceArea()
-        da.setSourceCrs(source.sourceCrs())
+        da.setSourceCrs(source.sourceCrs(), context.transformContext())
         da.setEllipsoid(context.project().ellipsoid())
 
         self.source = source

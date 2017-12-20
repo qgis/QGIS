@@ -153,7 +153,7 @@ class PointsToPaths(QgisAlgorithm):
         feedback.setProgress(0)
 
         da = QgsDistanceArea()
-        da.setSourceCrs(source.sourceCrs())
+        da.setSourceCrs(source.sourceCrs(), context.transformContext())
         da.setEllipsoid(context.project().ellipsoid())
 
         current = 0

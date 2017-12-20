@@ -74,6 +74,7 @@ class CORE_EXPORT QgsProcessingContext
     {
       mFlags = other.mFlags;
       mProject = other.mProject;
+      mTransformContext = other.mTransformContext;
       mExpressionContext = other.mExpressionContext;
       mInvalidGeometryCallback = other.mInvalidGeometryCallback;
       mInvalidGeometryCheck = other.mInvalidGeometryCheck;
