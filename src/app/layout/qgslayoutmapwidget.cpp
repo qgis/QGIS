@@ -130,6 +130,14 @@ QgsLayoutMapWidget::QgsLayoutMapWidget( QgsLayoutItemMap *item )
   connect( mCrsSelector, &QgsProjectionSelectionWidget::crsChanged, this, &QgsLayoutMapWidget::mapCrsChanged );
   connect( mOverviewFrameStyleButton, &QgsSymbolButton::changed, this, &QgsLayoutMapWidget::overviewSymbolChanged );
 
+  mOverviewFrameStyleButton->registerExpressionContextGenerator( item );
+  mOverviewFrameStyleButton->setLayer( coverageLayer() );
+  if ( item->layout() )
+  {
+    connect( &item->layout()->context(), &QgsLayoutContext::layerChanged, mOverviewFrameStyleButton, &QgsSymbolButton::setLayer );
+  }
+
+
   registerDataDefinedButton( mScaleDDBtn, QgsLayoutObject::MapScale );
   registerDataDefinedButton( mMapRotationDDBtn, QgsLayoutObject::MapRotation );
   registerDataDefinedButton( mXMinDDBtn, QgsLayoutObject::MapXMin );

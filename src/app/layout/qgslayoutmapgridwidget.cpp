@@ -149,6 +149,17 @@ QgsLayoutMapGridWidget::QgsLayoutMapGridWidget( QgsLayoutItemMapGrid *mapGrid, Q
   connect( mAnnotationFontButton, &QgsFontButton::changed, this, &QgsLayoutMapGridWidget::annotationFontChanged );
   connect( mGridLineStyleButton, &QgsSymbolButton::changed, this, &QgsLayoutMapGridWidget::lineSymbolChanged );
   connect( mGridMarkerStyleButton, &QgsSymbolButton::changed, this, &QgsLayoutMapGridWidget::markerSymbolChanged );
+
+  mGridLineStyleButton->registerExpressionContextGenerator( mMapGrid );
+  mGridLineStyleButton->setLayer( coverageLayer() );
+  mGridMarkerStyleButton->registerExpressionContextGenerator( mMapGrid );
+  mGridMarkerStyleButton->setLayer( coverageLayer() );
+  if ( mMap->layout() )
+  {
+    connect( &mMap->layout()->context(), &QgsLayoutContext::layerChanged, mGridLineStyleButton, &QgsSymbolButton::setLayer );
+    connect( &mMap->layout()->context(), &QgsLayoutContext::layerChanged, mGridMarkerStyleButton, &QgsSymbolButton::setLayer );
+  }
+
 }
 
 void QgsLayoutMapGridWidget::populateDataDefinedButtons()
