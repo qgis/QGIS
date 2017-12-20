@@ -142,7 +142,11 @@ sub processDoxygenLine {
         if ( $CODE_SNIPPET == CODE_SNIPPET_CPP ){
             return "";
         } else {
-            return "    $line\n";
+            if ( $line ne ''){
+                  return "    $line\n";
+              } else {
+                  return "\n";
+              }
         }
     }
 
