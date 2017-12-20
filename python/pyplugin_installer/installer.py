@@ -366,7 +366,9 @@ class QgsPluginInstaller(QObject):
 
         if infoString[0]:
             level = error and QgsMessageBar.CRITICAL or QgsMessageBar.INFO
-            msg = "<b>%s:</b>%s" % (infoString[0], infoString[1])
+            msg = "<b>%s</b>" % infoString[0]
+            if infoString[1]:
+                msg += "<b>:</b> %s" % infoString[1]
             iface.pluginManagerInterface().pushMessage(msg, level)
 
     # ----------------------------------------- #
@@ -582,5 +584,7 @@ class QgsPluginInstaller(QObject):
 
         if infoString[0]:
             level = error and QgsMessageBar.CRITICAL or QgsMessageBar.INFO
-            msg = "<b>%s:</b>%s" % (infoString[0], infoString[1])
+            msg = "<b>%s</b>" % infoString[0]
+            if infoString[1]:
+                msg += "<b>:</b> %s" % infoString[1]
             iface.pluginManagerInterface().pushMessage(msg, level)
