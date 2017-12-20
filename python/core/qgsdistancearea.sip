@@ -50,9 +50,9 @@ ellipsoid if a valid ellipsoid() has been set.
 .. seealso:: :py:func:`ellipsoid()`
 %End
 
-    void setSourceCrs( const QgsCoordinateReferenceSystem &srcCRS );
+    void setSourceCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context );
 %Docstring
-Sets source spatial reference system.
+Sets source spatial reference system ``crs``.
 
 .. versionadded:: 2.2
 

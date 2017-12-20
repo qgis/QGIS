@@ -301,7 +301,7 @@ double QgsLayoutItemScaleBar::mapWidth() const
   else
   {
     QgsDistanceArea da;
-    da.setSourceCrs( mMap->crs() );
+    da.setSourceCrs( mMap->crs(), mLayout->project()->transformContext() );
     da.setEllipsoid( mLayout->project()->ellipsoid() );
 
     QgsUnitTypes::DistanceUnit units = da.lengthUnits();

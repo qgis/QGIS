@@ -615,7 +615,7 @@ void QgsVectorLayerFeatureIterator::prepareExpression( int fieldIdx )
   QgsExpression *exp = new QgsExpression( exps[oi].cachedExpression );
 
   QgsDistanceArea da;
-  da.setSourceCrs( mSource->mCrs );
+  da.setSourceCrs( mSource->mCrs, QgsProject::instance()->transformContext() );
   da.setEllipsoid( QgsProject::instance()->ellipsoid() );
   exp->setGeomCalculator( &da );
   exp->setDistanceUnits( QgsProject::instance()->distanceUnits() );

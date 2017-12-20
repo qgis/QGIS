@@ -20,7 +20,8 @@ from qgis.core import (QgsRenderContext,
                        QgsRectangle, QgsPointXY,
                        QgsCoordinateReferenceSystem,
                        QgsMapUnitScale,
-                       QgsUnitTypes)
+                       QgsUnitTypes,
+                       QgsProject)
 from qgis.PyQt.QtCore import QSize
 from qgis.PyQt.QtGui import QPainter, QImage
 from qgis.testing import start_app, unittest
@@ -65,7 +66,7 @@ class TestQgsRenderContext(unittest.TestCase):
         length_wsg84_mapunits = 0.00001473026350140572
         meters_test = 2.40
         da_wsg84 = QgsDistanceArea()
-        da_wsg84.setSourceCrs(crs_wsg84)
+        da_wsg84.setSourceCrs(crs_wsg84, QgsProject.instance().transformContext())
         if (da_wsg84.sourceCrs().isGeographic()):
             da_wsg84.setEllipsoid(da_wsg84.sourceCrs().ellipsoidAcronym())
         length_meter_mapunits = da_wsg84.measureLineProjected(point_berlin_wsg84, 1.0, (math.pi / 2))

@@ -337,7 +337,7 @@ double QgsComposerScaleBar::mapWidth() const
   else
   {
     QgsDistanceArea da;
-    da.setSourceCrs( mComposerMap->crs() );
+    da.setSourceCrs( mComposerMap->crs(), mComposition->project()->transformContext() );
     da.setEllipsoid( mComposition->project()->ellipsoid() );
 
     QgsUnitTypes::DistanceUnit units = da.lengthUnits();

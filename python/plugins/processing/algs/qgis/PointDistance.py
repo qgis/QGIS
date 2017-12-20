@@ -157,7 +157,7 @@ class PointDistance(QgisAlgorithm):
         index = QgsSpatialIndex(target_source.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([]).setDestinationCrs(source.sourceCrs(), context.transformContext())), feedback)
 
         distArea = QgsDistanceArea()
-        distArea.setSourceCrs(source.sourceCrs())
+        distArea.setSourceCrs(source.sourceCrs(), context.transformContext())
         distArea.setEllipsoid(context.project().ellipsoid())
 
         features = source.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([inIdx]))
@@ -208,7 +208,7 @@ class PointDistance(QgisAlgorithm):
     def regularMatrix(self, parameters, context, source, inField, target_source, targetField,
                       nPoints, feedback):
         distArea = QgsDistanceArea()
-        distArea.setSourceCrs(source.sourceCrs())
+        distArea.setSourceCrs(source.sourceCrs(), context.transformContext())
         distArea.setEllipsoid(context.project().ellipsoid())
 
         inIdx = source.fields().lookupField(inField)

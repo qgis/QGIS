@@ -487,7 +487,7 @@ void QgsLayoutItemHtml::setExpressionContext( const QgsFeature &feature, QgsVect
   //setup distance area conversion
   if ( layer )
   {
-    mDistanceArea.setSourceCrs( layer->crs() );
+    mDistanceArea.setSourceCrs( layer->crs(), mLayout->project()->transformContext() );
   }
   else if ( mLayout )
   {
