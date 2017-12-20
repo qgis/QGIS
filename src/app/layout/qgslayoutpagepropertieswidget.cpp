@@ -76,6 +76,13 @@ QgsLayoutPagePropertiesWidget::QgsLayoutPagePropertiesWidget( QWidget *parent, Q
 
   mExcludePageDDBtn->registerEnabledWidget( mExcludePageCheckBox, false );
 
+  mSymbolButton->registerExpressionContextGenerator( mPage );
+  mSymbolButton->setLayer( coverageLayer() );
+  if ( mPage->layout() )
+  {
+    connect( &mPage->layout()->context(), &QgsLayoutContext::layerChanged, mSymbolButton, &QgsSymbolButton::setLayer );
+  }
+
   showCurrentPageSize();
 }
 

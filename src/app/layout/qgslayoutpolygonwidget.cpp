@@ -46,9 +46,13 @@ QgsLayoutPolygonWidget::QgsLayoutPolygonWidget( QgsLayoutItemPolygon *polygon )
   }
 
   setGuiElementValues();
-#if 0 //TODO
-  mShapeStyleButton->setLayer( atlasCoverageLayer() );
-#endif
+
+  mPolygonStyleButton->registerExpressionContextGenerator( mPolygon );
+  mPolygonStyleButton->setLayer( coverageLayer() );
+  if ( mPolygon->layout() )
+  {
+    connect( &mPolygon->layout()->context(), &QgsLayoutContext::layerChanged, mPolygonStyleButton, &QgsSymbolButton::setLayer );
+  }
 }
 
 bool QgsLayoutPolygonWidget::setNewItem( QgsLayoutItem *item )
