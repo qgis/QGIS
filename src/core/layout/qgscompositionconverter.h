@@ -125,9 +125,8 @@ class CORE_EXPORT QgsCompositionConverter
      * \param project the QGIS project
      * \return a QgsLayout instance
      * \since QGIS 3.0
-     * \note Not available in Python bindings.
      */
-    static QgsLayout *createLayoutFromCompositionXml( const QDomElement &parentElement,
+    static std::unique_ptr< QgsLayout > createLayoutFromCompositionXml( const QDomElement &parentElement,
         QgsProject *project );
 
 
@@ -140,7 +139,6 @@ class CORE_EXPORT QgsCompositionConverter
      * \param pasteInPlace if true element position is translated to \a position
      * \return a list of layout items
      * \since QGIS 3.0
-     * \note Not available in Python bindings.
      */
     static QList<QgsLayoutItem *> addItemsFromCompositionXml( QgsLayout *layout,
         const QDomElement &parentElement,
@@ -206,6 +204,12 @@ class CORE_EXPORT QgsCompositionConverter
 
     //! Restore general composer item properties
     static void restoreGeneralComposeItemProperties( QgsLayoutItem *layoutItem, const QDomElement &itemElem );
+
+    //! Get item position
+    static QRectF itemPosition( QgsLayoutItem *layoutItem, const QDomElement &itemElem );
+
+    //! Calculates the item minimum position from an xml string
+    static QPointF minPointFromXml( const QDomElement &elem );
 
 };
 

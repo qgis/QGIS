@@ -105,20 +105,21 @@ QgsPropertiesDefinition QgsCompositionConverter::propertyDefinitions()
 }
 
 
-QgsLayout *QgsCompositionConverter::createLayoutFromCompositionXml( const QDomElement &parentElement, QgsProject *project )
+std::unique_ptr< QgsLayout > QgsCompositionConverter::createLayoutFromCompositionXml( const QDomElement &parentElement, QgsProject *project )
 {
   initPropertyDefinitions();
-  QgsLayout *layout = new QgsLayout( project );
+  std::unique_ptr< QgsLayout > layout = qgis::make_unique< QgsLayout >( project );
   // Create pages
   int pages = parentElement.attribute( QStringLiteral( "numPages" ) ).toInt( );
-  float paperHeight = parentElement.attribute( QStringLiteral( "paperHeight" ) ).toFloat( );
-  float paperWidth = parentElement.attribute( QStringLiteral( "paperWidth" ) ).toFloat( );
+  float paperHeight = parentElement.attribute( QStringLiteral( "paperHeight" ) ).toDouble( );
+  float paperWidth = parentElement.attribute( QStringLiteral( "paperWidth" ) ).toDouble( );
 
   if ( parentElement.elementsByTagName( QStringLiteral( "symbol" ) ).size() )
   {
     QDomElement symbolElement = parentElement.elementsByTagName( QStringLiteral( "symbol" ) ).at( 0 ).toElement();
     QgsReadWriteContext context;
-    context.setPathResolver( project->pathResolver() );
+    if ( project )
+      context.setPathResolver( project->pathResolver() );
     QgsFillSymbol *symbol = QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( symbolElement, context );
     if ( symbol )
       layout->pageCollection()->setPageStyleSymbol( symbol );
@@ -126,26 +127,25 @@ QgsLayout *QgsCompositionConverter::createLayoutFromCompositionXml( const QDomEl
 
   QString name = parentElement.attribute( QStringLiteral( "name" ) );
   layout->setName( name );
-  // TODO: check that it is always landscape
   QgsLayoutSize pageSize( paperWidth, paperHeight );
   for ( int j = 0; j < pages; j++ )
   {
-    QgsLayoutItemPage *page = QgsLayoutItemPage::create( layout );
+    QgsLayoutItemPage *page = QgsLayoutItemPage::create( layout.get() );
     page->setPageSize( pageSize );
     layout->pageCollection()->addPage( page );
   }
-  addItemsFromCompositionXml( layout, parentElement );
+  addItemsFromCompositionXml( layout.get(), parentElement );
   return layout;
 }
 
 void QgsCompositionConverter::adjustPos( QgsLayout *layout, QgsLayoutItem *layoutItem, QDomNode &itemNode, QPointF *position, bool &pasteInPlace, int zOrderOffset, QPointF &pasteShiftPos, int &pageNumber )
 {
+  Q_UNUSED( itemNode );
   if ( position )
   {
     if ( pasteInPlace )
     {
-      QgsLayoutPoint posOnPage = QgsLayoutPoint::decodePoint( itemNode.toElement().attribute( QStringLiteral( "positionOnPage" ) ) );
-      layoutItem->attemptMove( posOnPage, true, false, pageNumber );
+      layoutItem->attemptMove( QgsLayoutPoint( *position ), true, false, pageNumber );
     }
     else
     {
@@ -171,12 +171,79 @@ void QgsCompositionConverter::restoreGeneralComposeItemProperties( QgsLayoutItem
       //check for old (pre 2.1) rotation attribute
       layoutItem->setItemRotation( composerItemElem.attribute( QStringLiteral( "rotation" ), QStringLiteral( "0" ) ).toDouble(), false );
     }
-
     QgsCompositionConverter::readXml( layoutItem, composerItemElem );
+  }
+}
 
-    // Frame color
+QRectF QgsCompositionConverter::itemPosition( QgsLayoutItem *layoutItem, const QDomElement &itemElem )
+{
+  int page;
+  double x, y, pagex, pagey, width, height;
+  bool xOk, yOk, pageOk, pagexOk, pageyOk, widthOk, heightOk, positionModeOk;
 
-    // Background color
+  x = itemElem.attribute( QStringLiteral( "x" ) ).toDouble( &xOk );
+  y = itemElem.attribute( QStringLiteral( "y" ) ).toDouble( &yOk );
+  page = itemElem.attribute( QStringLiteral( "page" ) ).toInt( &pageOk );
+  pagex = itemElem.attribute( QStringLiteral( "pagex" ) ).toDouble( &pagexOk );
+  pagey = itemElem.attribute( QStringLiteral( "pagey" ) ).toDouble( &pageyOk );
+  width = itemElem.attribute( QStringLiteral( "width" ) ).toDouble( &widthOk );
+  height = itemElem.attribute( QStringLiteral( "height" ) ).toDouble( &heightOk );
+
+
+  layoutItem->mReferencePoint = static_cast< QgsLayoutItem::ReferencePoint >( itemElem.attribute( QStringLiteral( "positionMode" ) ).toInt( &positionModeOk ) );
+  if ( !positionModeOk )
+  {
+    layoutItem->setReferencePoint( QgsLayoutItem::ReferencePoint::UpperLeft );
+  }
+
+  if ( pageOk && pagexOk && pageyOk )
+  {
+    xOk = true;
+    yOk = true;
+    x = pagex;
+    // position in the page (1-based)
+    if ( page <= layoutItem->layout()->pageCollection()->pageCount() )
+    {
+      QgsLayoutItemPage *pageObject = layoutItem->layout()->pageCollection()->pages().at( page - 1 );
+      y = ( page - 1 )
+          * ( pageObject->sizeWithUnits().height()
+              + layoutItem->layout()->pageCollection()->spaceBetweenPages() )
+          + pagey;
+    }
+    else
+    {
+      y = pagey;
+    }
+  }
+  return QRectF( x, y, width, height );
+}
+
+QPointF QgsCompositionConverter::minPointFromXml( const QDomElement &elem )
+{
+  double minX = std::numeric_limits<double>::max();
+  double minY = std::numeric_limits<double>::max();
+  QDomNodeList composerItemList = elem.elementsByTagName( QStringLiteral( "ComposerItem" ) );
+  for ( int i = 0; i < composerItemList.size(); ++i )
+  {
+    QDomElement currentComposerItemElem = composerItemList.at( i ).toElement();
+    double x, y;
+    bool xOk, yOk;
+    x = currentComposerItemElem.attribute( QStringLiteral( "x" ) ).toDouble( &xOk );
+    y = currentComposerItemElem.attribute( QStringLiteral( "y" ) ).toDouble( &yOk );
+    if ( !xOk || !yOk )
+    {
+      continue;
+    }
+    minX = std::min( minX, x );
+    minY = std::min( minY, y );
+  }
+  if ( minX < std::numeric_limits<double>::max() )
+  {
+    return QPointF( minX, minY );
+  }
+  else
+  {
+    return QPointF( 0, 0 );
   }
 }
 
@@ -200,8 +267,7 @@ QList<QgsLayoutItem *> QgsCompositionConverter::addItemsFromCompositionXml( QgsL
     //If we are placing items relative to a certain point, then calculate how much we need
     //to shift the items by so that they are placed at this point
     //First, calculate the minimum position from the xml
-    // TODO: check this!
-    QPointF minItemPos = layout->minPointFromXml( parentElement );
+    QPointF minItemPos = minPointFromXml( parentElement );
     //next, calculate how much each item needs to be shifted from its original position
     //so that it's placed at the correct relative position
     pasteShiftPos = *position - minItemPos;
@@ -383,7 +449,8 @@ bool QgsCompositionConverter::readShapeXml( QgsLayoutItemShape *layoutItem, cons
   restoreGeneralComposeItemProperties( layoutItem, itemElem );
 
   QgsReadWriteContext context;
-  context.setPathResolver( project->pathResolver() );
+  if ( project )
+    context.setPathResolver( project->pathResolver() );
 
   if ( itemElem.elementsByTagName( QStringLiteral( "symbol" ) ).size() )
   {
@@ -391,12 +458,7 @@ bool QgsCompositionConverter::readShapeXml( QgsLayoutItemShape *layoutItem, cons
     QgsFillSymbol *shapeStyleSymbol = QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( symbolElement, context );
     if ( shapeStyleSymbol )
       layoutItem->setSymbol( shapeStyleSymbol );
-  } /*
-  QDomElement shapeStyleSymbolElem = itemElem.firstChildElement( QStringLiteral( "symbol" ) );
-  if ( !shapeStyleSymbolElem.isNull() )
-  {
-    layoutItem->setSymbol( QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( shapeStyleSymbolElem, context ) );
-  } */
+  }
   else
   {
     //upgrade project file from 2.0 to use symbol styling
@@ -431,10 +493,10 @@ bool QgsCompositionConverter::readShapeXml( QgsLayoutItemShape *layoutItem, cons
       double penWidth;
 
       penWidth = itemElem.attribute( QStringLiteral( "outlineWidth" ) ).toDouble( &widthOk );
-      penRed = frameColorElem.attribute( QStringLiteral( "red" ) ).toDouble( &redOk );
-      penGreen = frameColorElem.attribute( QStringLiteral( "green" ) ).toDouble( &greenOk );
-      penBlue = frameColorElem.attribute( QStringLiteral( "blue" ) ).toDouble( &blueOk );
-      penAlpha = frameColorElem.attribute( QStringLiteral( "alpha" ) ).toDouble( &alphaOk );
+      penRed = frameColorElem.attribute( QStringLiteral( "red" ) ).toInt( &redOk );
+      penGreen = frameColorElem.attribute( QStringLiteral( "green" ) ).toInt( &greenOk );
+      penBlue = frameColorElem.attribute( QStringLiteral( "blue" ) ).toInt( &blueOk );
+      penAlpha = frameColorElem.attribute( QStringLiteral( "alpha" ) ).toInt( &alphaOk );
 
       if ( redOk && greenOk && blueOk && alphaOk && widthOk )
       {
@@ -449,10 +511,10 @@ bool QgsCompositionConverter::readShapeXml( QgsLayoutItemShape *layoutItem, cons
       bool redOk, greenOk, blueOk, alphaOk;
       int fillRed, fillGreen, fillBlue, fillAlpha;
 
-      fillRed = fillColorElem.attribute( QStringLiteral( "red" ) ).toDouble( &redOk );
-      fillGreen = fillColorElem.attribute( QStringLiteral( "green" ) ).toDouble( &greenOk );
-      fillBlue = fillColorElem.attribute( QStringLiteral( "blue" ) ).toDouble( &blueOk );
-      fillAlpha = fillColorElem.attribute( QStringLiteral( "alpha" ) ).toDouble( &alphaOk );
+      fillRed = fillColorElem.attribute( QStringLiteral( "red" ) ).toInt( &redOk );
+      fillGreen = fillColorElem.attribute( QStringLiteral( "green" ) ).toInt( &greenOk );
+      fillBlue = fillColorElem.attribute( QStringLiteral( "blue" ) ).toInt( &blueOk );
+      fillAlpha = fillColorElem.attribute( QStringLiteral( "alpha" ) ).toInt( &alphaOk );
 
       if ( redOk && greenOk && blueOk && alphaOk )
       {
@@ -632,7 +694,9 @@ bool QgsCompositionConverter::readMapXml( QgsLayoutItemMap *layoutItem, const QD
   */
 
   QgsReadWriteContext context;
-  context.setPathResolver( project->pathResolver() );
+
+  if ( project )
+    context.setPathResolver( project->pathResolver() );
 
   //extent
   QDomNodeList extentNodeList = itemElem.elementsByTagName( QStringLiteral( "Extent" ) );
@@ -811,29 +875,6 @@ bool QgsCompositionConverter::readMapXml( QgsLayoutItemMap *layoutItem, const QD
     }
     layoutItem->mGridStack->addGrid( mapGrid );
   }
-
-  /* TODO: skip?
-  //load overview in old xml format
-  QDomElement overviewFrameElem = itemElem.firstChildElement( QStringLiteral( "overviewFrame" ) );
-  if ( !overviewFrameElem.isNull() )
-  {
-    QgsComposerMapOverview *mapOverview = new QgsComposerMapOverview( tr( "Overview %1" ).arg( mOverviewStack->size() + 1 ), this );
-
-    mapOverview->setFrameMap( overviewFrameElem.attribute( QStringLiteral( "overviewFrameMap" ), QStringLiteral( "-1" ) ).toInt() );
-    mapOverview->setBlendMode( QgsPainting::getCompositionMode( static_cast< QgsPainting::BlendMode >( overviewFrameElem.attribute( QStringLiteral( "overviewBlendMode" ), QStringLiteral( "0" ) ).toUInt() ) ) );
-    mapOverview->setInverted( overviewFrameElem.attribute( QStringLiteral( "overviewInverted" ) ).compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0 );
-    mapOverview->setCentered( overviewFrameElem.attribute( QStringLiteral( "overviewCentered" ) ).compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0 );
-
-    QgsFillSymbol *fillSymbol = nullptr;
-    QDomElement overviewFrameSymbolElem = overviewFrameElem.firstChildElement( QStringLiteral( "symbol" ) );
-    if ( !overviewFrameSymbolElem.isNull() )
-    {
-      fillSymbol = QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( overviewFrameSymbolElem, context );
-      mapOverview->setFrameSymbol( fillSymbol );
-    }
-    mOverviewStack->addOverview( mapOverview );
-  }
-  */
 
   //atlas TODO:
   /*
@@ -1208,49 +1249,8 @@ bool QgsCompositionConverter::readXml( QgsLayoutItem *layoutItem, const QDomElem
   }
   layoutItem->mTemplateUuid = itemElem.attribute( "templateUuid" );
 
-  int page;
-  double x, y, pagex, pagey, width, height;
-  bool xOk, yOk, pageOk, pagexOk, pageyOk, widthOk, heightOk, positionModeOK;
 
-  x = itemElem.attribute( QStringLiteral( "x" ) ).toDouble( &xOk );
-  y = itemElem.attribute( QStringLiteral( "y" ) ).toDouble( &yOk );
-  page = itemElem.attribute( QStringLiteral( "page" ) ).toInt( &pageOk );
-  pagex = itemElem.attribute( QStringLiteral( "pagex" ) ).toDouble( &pagexOk );
-  pagey = itemElem.attribute( QStringLiteral( "pagey" ) ).toDouble( &pageyOk );
-  width = itemElem.attribute( QStringLiteral( "width" ) ).toDouble( &widthOk );
-  height = itemElem.attribute( QStringLiteral( "height" ) ).toDouble( &heightOk );
-
-
-  layoutItem->mReferencePoint = static_cast< QgsLayoutItem::ReferencePoint >( itemElem.attribute( QStringLiteral( "positionMode" ) ).toInt( &positionModeOK ) );
-  if ( !positionModeOK )
-  {
-    layoutItem->setReferencePoint( QgsLayoutItem::ReferencePoint::UpperLeft );
-  }
-
-  if ( pageOk && pagexOk && pageyOk )
-  {
-    xOk = true;
-    yOk = true;
-    x = pagex;
-    // position in the page (1-based)
-    if ( page <= layoutItem->layout()->pageCollection()->pageCount() )
-    {
-      QgsLayoutItemPage *pageObject = layoutItem->layout()->pageCollection()->pages().at( page - 1 );
-      y = ( page - 1 )
-          * ( pageObject->sizeWithUnits().height()
-              + layoutItem->layout()->pageCollection()->spaceBetweenPages() )
-          + pagey;
-    }
-    else
-    {
-      y = pagey;
-    }
-  }
-
-  if ( !xOk || !yOk || !widthOk || !heightOk )
-  {
-    return false;
-  }
+  QRectF position = itemPosition( layoutItem, itemElem );
 
   // TODO: missing?
   // mLastValidViewScaleFactor = itemElem.attribute( QStringLiteral( "lastValidViewScaleFactor" ), QStringLiteral( "-1" ) ).toDouble();
@@ -1323,7 +1323,7 @@ bool QgsCompositionConverter::readXml( QgsLayoutItem *layoutItem, const QDomElem
   layoutItem->mEvaluatedExcludeFromExports = layoutItem->mExcludeFromExports;
 
   // positioning
-  layoutItem->attemptSetSceneRect( QRectF( x, y, width, height ) );
+  layoutItem->attemptSetSceneRect( position );
   //rotation
   layoutItem->setItemRotation( itemElem.attribute( QStringLiteral( "itemRotation" ), QStringLiteral( "0" ) ).toDouble(), false );
 

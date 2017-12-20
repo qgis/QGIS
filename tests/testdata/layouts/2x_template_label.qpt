@@ -1,29 +1,50 @@
-<Composer title="test_label" visible="1">
- <Composition resizeToContentsMarginLeft="0" snapping="0" showPages="1" guidesVisible="1" resizeToContentsMarginTop="0" worldFileMap="" alignmentSnap="1" printResolution="300" paperWidth="297" gridVisible="0" snapGridOffsetX="0" smartGuides="1" snapGridOffsetY="0" resizeToContentsMarginRight="0" snapTolerancePixels="5" printAsRaster="0" generateWorldFile="0" paperHeight="210" numPages="1" snapGridResolution="10" resizeToContentsMarginBottom="0">
-  <symbol alpha="1" clip_to_extent="1" type="fill" name="">
-   <layer pass="0" class="SimpleFill" locked="0">
-    <prop k="border_width_map_unit_scale" v="0,0,0,0,0,0"/>
-    <prop k="color" v="255,255,255,255"/>
-    <prop k="joinstyle" v="miter"/>
-    <prop k="offset" v="0,0"/>
-    <prop k="offset_map_unit_scale" v="0,0,0,0,0,0"/>
-    <prop k="offset_unit" v="MM"/>
-    <prop k="outline_color" v="0,0,0,255"/>
-    <prop k="outline_style" v="no"/>
-    <prop k="outline_width" v="0.26"/>
-    <prop k="outline_width_unit" v="MM"/>
-    <prop k="style" v="solid"/>
+<Composer>
+ <Composition alignmentSnap="1" resizeToContentsMarginTop="0" snapGridResolution="10" worldFileMap="" guidesVisible="1" gridVisible="0" paperHeight="210" resizeToContentsMarginRight="0" numPages="1" resizeToContentsMarginLeft="0" snapTolerancePixels="5" paperWidth="297" snapGridOffsetX="0" printResolution="300" name="" resizeToContentsMarginBottom="0" printAsRaster="0" snapping="0" generateWorldFile="0" snapGridOffsetY="0" smartGuides="1" showPages="1">
+  <symbol type="fill" alpha="1" clip_to_extent="1" name="">
+   <layer pass="0" locked="0" enabled="1" class="SimpleFill">
+    <prop v="3x:0,0,0,0,0,0" k="border_width_map_unit_scale"/>
+    <prop v="255,255,255,255" k="color"/>
+    <prop v="miter" k="joinstyle"/>
+    <prop v="0,0" k="offset"/>
+    <prop v="3x:0,0,0,0,0,0" k="offset_map_unit_scale"/>
+    <prop v="MM" k="offset_unit"/>
+    <prop v="0,0,0,255" k="outline_color"/>
+    <prop v="no" k="outline_style"/>
+    <prop v="0.26" k="outline_width"/>
+    <prop v="MM" k="outline_width_unit"/>
+    <prop v="solid" k="style"/>
+    <data_defined_properties>
+     <Option type="Map">
+      <Option value="" type="QString" name="name"/>
+      <Option name="properties"/>
+      <Option value="collection" type="QString" name="type"/>
+     </Option>
+    </data_defined_properties>
    </layer>
   </symbol>
-  <ComposerLabel valign="32" marginX="1" marginY="1" labelText="QGIS" htmlState="0" halign="1">
-   <LabelFont description="Ubuntu,10,-1,5,50,0,0,0,0,0" style=""/>
-   <FontColor red="0" blue="0" green="0"/>
-   <ComposerItem pagey="35.3929" page="1" id="" lastValidViewScaleFactor="-1" positionMode="8" positionLock="false" x="55.5333" y="35.3929" visibility="1" zValue="1" background="true" transparency="0" frameJoinStyle="miter" blendMode="0" width="10.875" outlineWidth="0.2" excludeFromExports="0" uuid="{cd959c12-5d4b-4e2b-a57d-fd205da26cae}" height="6" itemRotation="4" frame="true" pagex="55.5333">
-    <FrameColor alpha="255" red="251" blue="0" green="0"/>
-    <BackgroundColor alpha="255" red="239" blue="241" green="240"/>
+  <ComposerLabel htmlState="0" valign="32" halign="1" marginX="1" marginY="1" labelText="QGIS">
+   <LabelFont description="QGIS Vera Sans,13,-1,5,75,0,0,0,0,0,Bold" style="Bold"/>
+   <FontColor red="0" green="0" blue="0"/>
+   <ComposerItem opacity="1" id="" y="35.3929" pagey="35.3929" width="15.3686" itemRotation="4" frameJoinStyle="miter" height="7.93747" outlineWidth="0.2" page="1" background="true" visibility="1" excludeFromExports="0" uuid="{68ea82e4-2061-43cd-8521-6bb93f1a9db3}" blendMode="0" frame="true" positionMode="2" lastValidViewScaleFactor="-1" x="55.5333" pagex="55.5333" zValue="1" positionLock="false">
+    <FrameColor red="251" green="0" alpha="255" blue="0"/>
+    <BackgroundColor red="239" green="240" alpha="255" blue="241"/>
+    <dataDefinedProperties>
+     <Option type="Map">
+      <Option value="" type="QString" name="name"/>
+      <Option name="properties"/>
+      <Option value="collection" type="QString" name="type"/>
+     </Option>
+    </dataDefinedProperties>
     <customproperties/>
    </ComposerItem>
   </ComposerLabel>
+  <dataDefinedProperties>
+   <Option type="Map">
+    <Option value="" type="QString" name="name"/>
+    <Option name="properties"/>
+    <Option value="collection" type="QString" name="type"/>
+   </Option>
+  </dataDefinedProperties>
   <customproperties/>
  </Composition>
 </Composer>
