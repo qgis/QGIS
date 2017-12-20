@@ -192,13 +192,10 @@ void QgsLayoutLabelWidget::mInsertExpressionButton_clicked()
     selText = selText.mid( 2, selText.size() - 4 );
 
   // use the atlas coverage layer, if any
-#if 0 //TODO
-  QgsVectorLayer *coverageLayer = atlasCoverageLayer();
-#endif
-  QgsVectorLayer *coverageLayer = nullptr;
+  QgsVectorLayer *layer = coverageLayer();
 
   QgsExpressionContext context = mLabel->createExpressionContext();
-  QgsExpressionBuilderDialog exprDlg( coverageLayer, selText, this, QStringLiteral( "generic" ), context );
+  QgsExpressionBuilderDialog exprDlg( layer, selText, this, QStringLiteral( "generic" ), context );
 
   exprDlg.setWindowTitle( tr( "Insert Expression" ) );
   if ( exprDlg.exec() == QDialog::Accepted )

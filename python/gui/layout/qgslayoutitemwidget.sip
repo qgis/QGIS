@@ -50,6 +50,10 @@ Updates a data defined button to reflect the item's current properties.
 Returns the current layout context coverage layer (if set).
 %End
 
+    QgsLayoutAtlas *layoutAtlas() const;
+%Docstring
+Returns the atlas for the layout, if available
+%End
 
 };
 
@@ -117,7 +121,10 @@ Implementations must return true if the item was accepted and
 the widget was updated.
 %End
 
-
+    QgsLayoutAtlas *layoutAtlas() const;
+%Docstring
+Returns the atlas for the layout (if available)
+%End
 
 };
 

@@ -83,6 +83,7 @@ QgsVectorLayer *QgsLayoutContext::layer() const
 void QgsLayoutContext::setLayer( QgsVectorLayer *layer )
 {
   mLayer = layer;
+  emit layerChanged( layer );
   emit changed();
 }
 

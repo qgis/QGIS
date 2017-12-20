@@ -97,6 +97,7 @@ bool QgsLayoutAtlas::readXml( const QDomElement &atlasElem, const QDomDocument &
 
   mCoverageLayer = QgsVectorLayerRef( layerId, layerName, layerSource, layerProvider );
   mCoverageLayer.resolveWeakly( mLayout->project() );
+  mLayout->context().setLayer( mCoverageLayer.get() );
 
   mPageNameExpression = atlasElem.attribute( QStringLiteral( "pageNameExpression" ), QString() );
   QString error;

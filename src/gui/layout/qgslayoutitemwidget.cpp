@@ -18,6 +18,8 @@
 #include "qgslayout.h"
 #include "qgsproject.h"
 #include "qgslayoutundostack.h"
+#include "qgsprintlayout.h"
+#include "qgslayoutatlas.h"
 
 //
 // QgsLayoutConfigObject
@@ -27,11 +29,15 @@ QgsLayoutConfigObject::QgsLayoutConfigObject( QWidget *parent, QgsLayoutObject *
   : QObject( parent )
   , mLayoutObject( layoutObject )
 {
-#if 0 //TODO
-  connect( atlasComposition(), &QgsAtlasComposition::coverageLayerChanged,
-           this, [ = ] { updateDataDefinedButtons(); } );
-  connect( atlasComposition(), &QgsAtlasComposition::toggled, this, &QgsComposerConfigObject::updateDataDefinedButtons );
-#endif
+  if ( mLayoutObject->layout() )
+  {
+    connect( &mLayoutObject->layout()->context(), &QgsLayoutContext::layerChanged,
+             this, [ = ] { updateDataDefinedButtons(); } );
+  }
+  if ( layoutAtlas() )
+  {
+    connect( layoutAtlas(), &QgsLayoutAtlas::toggled, this, &QgsLayoutConfigObject::updateDataDefinedButtons );
+  }
 }
 
 void QgsLayoutConfigObject::updateDataDefinedProperty()
@@ -62,12 +68,11 @@ void QgsLayoutConfigObject::updateDataDefinedProperty()
 
 void QgsLayoutConfigObject::updateDataDefinedButtons()
 {
-#if 0 //TODO
-  Q_FOREACH ( QgsPropertyOverrideButton *button, findChildren< QgsPropertyOverrideButton * >() )
+  const QList< QgsPropertyOverrideButton * > buttons = findChildren< QgsPropertyOverrideButton * >();
+  for ( QgsPropertyOverrideButton *button : buttons )
   {
-    button->setVectorLayer( atlasCoverageLayer() );
+    button->setVectorLayer( coverageLayer() );
   }
-#endif
 }
 
 void QgsLayoutConfigObject::initializeDataDefinedButton( QgsPropertyOverrideButton *button, QgsLayoutObject::DataDefinedProperty key )
@@ -91,24 +96,22 @@ void QgsLayoutConfigObject::updateDataDefinedButton( QgsPropertyOverrideButton *
   whileBlocking( button )->setToProperty( mLayoutObject->dataDefinedProperties().property( key ) );
 }
 
-#if 0 // TODO
-QgsAtlasComposition *QgsLayoutConfigObject::atlasComposition() const
+QgsLayoutAtlas *QgsLayoutConfigObject::layoutAtlas() const
 {
   if ( !mLayoutObject )
   {
     return nullptr;
   }
 
-  QgsComposition *composition = mComposerObject->composition();
+  QgsPrintLayout *printLayout = qobject_cast< QgsPrintLayout * >( mLayoutObject->layout() );
 
-  if ( !composition )
+  if ( !printLayout )
   {
     return nullptr;
   }
 
-  return &composition->atlasComposition();
+  return printLayout->atlas();
 }
-#endif
 
 QgsVectorLayer *QgsLayoutConfigObject::coverageLayer() const
 {
@@ -171,13 +174,10 @@ bool QgsLayoutItemBaseWidget::setNewItem( QgsLayoutItem * )
   return false;
 }
 
-#if 0 //TODO
-QgsAtlasComposition *QgsLayoutItemBaseWidget::atlasComposition() const
+QgsLayoutAtlas *QgsLayoutItemBaseWidget::layoutAtlas() const
 {
-  return mConfigObject->atlasComposition();
+  return mConfigObject->layoutAtlas();
 }
-#endif
-
 
 //
 
@@ -258,10 +258,6 @@ QgsLayoutItemPropertiesWidget::QgsLayoutItemPropertiesWidget( QWidget *parent, Q
   buttonGroup->setExclusive( true );
 
   initializeDataDefinedButtons();
-
-#if 0 //TODO
-  connect( mItem->composition(), &QgsComposition::paperSizeChanged, this, &QgsLayoutItemPropertiesWidget::setValuesForGuiPositionElements );
-#endif
 
   setItem( item );
 

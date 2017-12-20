@@ -226,6 +226,11 @@ Emitted whenever the context's ``flags`` change.
 .. seealso:: :py:func:`setFlags()`
 %End
 
+    void layerChanged( QgsVectorLayer *layer );
+%Docstring
+Emitted when the context's ``layer`` is changed.
+%End
+
     void changed();
 %Docstring
 Emitted certain settings in the context is changed, e.g. by setting a new feature or vector layer

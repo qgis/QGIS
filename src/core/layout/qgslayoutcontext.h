@@ -226,6 +226,11 @@ class CORE_EXPORT QgsLayoutContext : public QObject
     void flagsChanged( QgsLayoutContext::Flags flags );
 
     /**
+     * Emitted when the context's \a layer is changed.
+     */
+    void layerChanged( QgsVectorLayer *layer );
+
+    /**
      * Emitted certain settings in the context is changed, e.g. by setting a new feature or vector layer
      * for the context.
      */

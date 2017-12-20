@@ -79,13 +79,8 @@ QgsLayoutItemAttributeTable::QgsLayoutItemAttributeTable( QgsLayout *layout )
   {
     connect( mLayout->project(), static_cast < void ( QgsProject::* )( const QString & ) >( &QgsProject::layerWillBeRemoved ), this, &QgsLayoutItemAttributeTable::removeLayer );
 
-#if 0 //TODO
-    //connect to atlas feature changes to update table rows
-    connect( &mComposition->atlasComposition(), &QgsAtlasComposition::featureChanged, this, &QgsLayoutTable::refreshAttributes );
-
-    //atlas coverage layer change = regenerate columns
-    connect( &mComposition->atlasComposition(), &QgsAtlasComposition::coverageLayerChanged, this, &QgsLayoutItemAttributeTable::atlasLayerChanged );
-#endif
+    //coverage layer change = regenerate columns
+    connect( &mLayout->context(), &QgsLayoutContext::layerChanged, this, &QgsLayoutItemAttributeTable::atlasLayerChanged );
   }
   refreshAttributes();
 }
@@ -394,17 +389,7 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
 {
   contents.clear();
 
-  if ( ( mSource == QgsLayoutItemAttributeTable::AtlasFeature || mSource == QgsLayoutItemAttributeTable::RelationChildren ) )
-#if 0 //TODO
-    // && !mComposition->atlasComposition().enabled() )
-#endif
-  {
-    //source mode requires atlas, but atlas disabled
-    return false;
-  }
-
   QgsVectorLayer *layer = sourceLayer();
-
   if ( !layer )
   {
     //no source layer
@@ -451,10 +436,7 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
   if ( mSource == QgsLayoutItemAttributeTable::RelationChildren )
   {
     QgsRelation relation = mLayout->project()->relationManager()->relation( mRelationId );
-    QgsFeature atlasFeature;
-#if 0 //TODO
-      = mLayout->atlasComposition().feature();
-#endif
+    QgsFeature atlasFeature = mLayout->context().feature();
     req = relation.getRelatedFeaturesRequest( atlasFeature );
   }
 
@@ -464,15 +446,9 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
   req.setFlags( mShowOnlyVisibleFeatures ? QgsFeatureRequest::ExactIntersect : QgsFeatureRequest::NoFlags );
 
   if ( mSource == QgsLayoutItemAttributeTable::AtlasFeature )
-#if 0 // TODO
-    && mComposition->atlasComposition().enabled() )
-#endif
   {
     //source mode is current atlas feature
-    QgsFeature atlasFeature;
-#if 0 //TODO
-      = mLayout->atlasComposition().feature();
-#endif
+    QgsFeature atlasFeature = mLayout->context().feature();
     req.setFilterFid( atlasFeature.id() );
   }
 
@@ -497,18 +473,12 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
     if ( mFilterToAtlasIntersection )
     {
       if ( !f.hasGeometry() )
-#if 0 //TODO
-        || ! mComposition->atlasComposition().enabled() )
-#endif
       {
         continue;
       }
-      QgsFeature atlasFeature;
-#if 0 //TODO
-        = mComposition->atlasComposition().feature();
-#endif
+      QgsFeature atlasFeature = mLayout->context().feature();
       if ( !atlasFeature.hasGeometry() ||
-             !f.geometry().intersects( atlasFeature.geometry() ) )
+           !f.geometry().intersects( atlasFeature.geometry() ) )
       {
         //feature falls outside current atlas feature
         continue;
@@ -584,10 +554,7 @@ QgsVectorLayer *QgsLayoutItemAttributeTable::sourceLayer()
   switch ( mSource )
   {
     case QgsLayoutItemAttributeTable::AtlasFeature:
-#if 0 //TODO
-      return mComposition->atlasComposition().coverageLayer();
-#endif
-      return nullptr;
+      return mLayout->context().layer();
     case QgsLayoutItemAttributeTable::LayerAttributes:
       return mVectorLayer.get();
     case QgsLayoutItemAttributeTable::RelationChildren:
@@ -704,10 +671,7 @@ bool QgsLayoutItemAttributeTable::readPropertiesFromElement( const QDomElement &
 
   if ( mSource == QgsLayoutItemAttributeTable::AtlasFeature )
   {
-    mCurrentAtlasLayer = nullptr;
-#if 0 //TODO
-    mComposition->atlasComposition().coverageLayer();
-#endif
+    mCurrentAtlasLayer = mLayout->context().layer();
   }
 
   mShowUniqueRowsOnly = itemElem.attribute( QStringLiteral( "showUniqueRowsOnly" ), QStringLiteral( "0" ) ).toInt();
