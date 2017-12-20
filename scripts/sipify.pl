@@ -18,6 +18,9 @@ use constant MULTILINE_NO => 20;
 use constant MULTILINE_METHOD => 21;
 use constant MULTILINE_CONDITIONAL_STATEMENT => 22;
 
+use constant CODE_SNIPPET => 30;
+use constant CODE_SNIPPET_CPP => 31;
+
 # read arguments
 my $debug = 0;
 die("usage: $0 [-debug] headerfile\n") unless GetOptions ("debug" => \$debug) && @ARGV == 1;
@@ -121,19 +124,26 @@ sub write_header_footer {
 sub processDoxygenLine {
     my $line = $_[0];
 
-    # detect code snipped
-    if ( $line =~ m/\\code\{\.(\w+)\}/ ) {
-        my $codelang = $1;
+    # detect code snippet
+    if ( $line =~ m/\\code(\{\.(\w+)\})?/ ) {
+        my $codelang = "";
+        $codelang = " $2" if (defined $2);
+        $CODE_SNIPPET = CODE_SNIPPET;
+        $CODE_SNIPPET = CODE_SNIPPET_CPP if ($codelang =~ m/cpp/ );
         $codelang =~ s/py/python/;
-        $CODE_SNIPPET=1;
-        return ".. code-block:: $codelang\n\n";
+        return "\n" if ( $CODE_SNIPPET == CODE_SNIPPET_CPP );
+        return ".. code-block::$codelang\n\n";
     }
     if ( $line =~ m/\\endcode/ ) {
         $CODE_SNIPPET = 0;
         return "\n";
     }
-    if ($CODE_SNIPPET == 1){
-        return "    $line\n";
+    if ($CODE_SNIPPET != 0){
+        if ( $CODE_SNIPPET == CODE_SNIPPET_CPP ){
+            return "";
+        } else {
+            return "    $line\n";
+        }
     }
 
     # remove prepending spaces
@@ -181,7 +191,7 @@ sub processDoxygenLine {
     }
     # create links in plain text too (less performant)
     if ( $line =~ m/\b(Qgs[A-Z]\w+)\b(\.?$|[^\w]{2})/) {
-        if ( $1 !~ $ACTUAL_CLASS ) {
+        if ( defined $ACTUAL_CLASS && $1 !~ $ACTUAL_CLASS ) {
             $line =~ s/\b(Qgs[A-Z]\w+)\b(\.?$|[^\w]{2})/:py:class:`$1`$2/g;
         }
     }
