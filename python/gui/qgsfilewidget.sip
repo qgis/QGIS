@@ -98,6 +98,16 @@ returns the filters used for QDialog.getOpenFileName
 :param filter: Only files that match the given filter are shown, it may be an empty string. If you want multiple filters, separate them with ';;',
 %End
 
+    void setSelectedFilter( const QString selectedFilter );
+%Docstring
+Sets the selected filter when the file dialog opens.
+%End
+
+    QString selectedFilter() const;
+%Docstring
+Returns the selected filter from the last opened file dialog.
+%End
+
     void setConfirmOverwrite( bool confirmOverwrite );
 %Docstring
 Sets whether a confirmation to overwrite an existing file will appear.

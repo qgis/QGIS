@@ -122,6 +122,16 @@ class GUI_EXPORT QgsFileWidget : public QWidget
     void setFilter( const QString &filter );
 
     /**
+     * Sets the selected filter when the file dialog opens.
+     */
+    void setSelectedFilter( const QString selectedFilter ) { mSelectedFilter = selectedFilter; }
+
+    /**
+     * Returns the selected filter from the last opened file dialog.
+     */
+    QString selectedFilter() const { return mSelectedFilter; }
+
+    /**
      * Sets whether a confirmation to overwrite an existing file will appear.
      * By default, a confirmation will appear.
      * \param confirmOverwrite If set to true, an overwrite confirmation will be shown
@@ -185,6 +195,7 @@ class GUI_EXPORT QgsFileWidget : public QWidget
     bool mFullUrl = false;
     QString mDialogTitle;
     QString mFilter;
+    QString mSelectedFilter;
     QString mDefaultRoot;
     bool mConfirmOverwrite = true;
     StorageMode mStorageMode = GetFile;

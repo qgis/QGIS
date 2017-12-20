@@ -253,11 +253,11 @@ void QgsFileWidget::openFileDialog()
   {
     case GetFile:
       title = !mDialogTitle.isEmpty() ? mDialogTitle : tr( "Select a file" );
-      fileName = QFileDialog::getOpenFileName( this, title, QFileInfo( oldPath ).absoluteFilePath(), mFilter );
+      fileName = QFileDialog::getOpenFileName( this, title, QFileInfo( oldPath ).absoluteFilePath(), mFilter, &mSelectedFilter );
       break;
     case GetMultipleFiles:
       title = !mDialogTitle.isEmpty() ? mDialogTitle : tr( "Select one or more files" );
-      fileNames = QFileDialog::getOpenFileNames( this, title, QFileInfo( oldPath ).absoluteFilePath(), mFilter );
+      fileNames = QFileDialog::getOpenFileNames( this, title, QFileInfo( oldPath ).absoluteFilePath(), mFilter, &mSelectedFilter );
       break;
     case GetDirectory:
       title = !mDialogTitle.isEmpty() ? mDialogTitle : tr( "Select a directory" );
@@ -265,20 +265,19 @@ void QgsFileWidget::openFileDialog()
       break;
     case SaveFile:
     {
-      QString filter;
       title = !mDialogTitle.isEmpty() ? mDialogTitle : tr( "Create or select a file" );
       if ( !confirmOverwrite() )
       {
-        fileName = QFileDialog::getSaveFileName( this, title, QFileInfo( oldPath ).absoluteFilePath(), mFilter, &filter, QFileDialog::DontConfirmOverwrite );
+        fileName = QFileDialog::getSaveFileName( this, title, QFileInfo( oldPath ).absoluteFilePath(), mFilter, &mSelectedFilter, QFileDialog::DontConfirmOverwrite );
       }
       else
       {
-        fileName = QFileDialog::getSaveFileName( this, title, QFileInfo( oldPath ).absoluteFilePath(), mFilter, &filter );
+        fileName = QFileDialog::getSaveFileName( this, title, QFileInfo( oldPath ).absoluteFilePath(), mFilter, &mSelectedFilter );
       }
 
       // make sure filename ends with filter. This isn't automatically done by
       // getSaveFileName on some platforms (e.g. gnome)
-      fileName = QgsFileUtils::addExtensionFromFilter( fileName, filter );
+      fileName = QgsFileUtils::addExtensionFromFilter( fileName, mSelectedFilter );
     }
     break;
   }
