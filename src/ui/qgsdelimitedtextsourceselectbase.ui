@@ -79,42 +79,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="txtFilePath">
-          <property name="toolTip">
-           <string>Full path to the delimited text file</string>
-          </property>
-          <property name="whatsThis">
-           <string>Full path to the delimited text file. In order to properly parse the fields in the file, the delimiter must be defined prior to entering the file name. Use the Browse button to the right of this field to choose the input file.</string>
-          </property>
-          <property name="readOnly">
-           <bool>false</bool>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="btnBrowseForFile">
-          <property name="enabled">
-           <bool>true</bool>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="toolTip">
-           <string>Browse to find the delimited text file to be processed</string>
-          </property>
-          <property name="whatsThis">
-           <string>Use this button to browse to the location of the delimited text file. This button will not be enabled until a delimiter has been entered in the &lt;i&gt;Delimiter&lt;/i&gt; box. Once a file is chosen, the X and Y field drop-down boxes will be populated with the fields from the delimited text file.</string>
-          </property>
-          <property name="text">
-           <string>Browse...</string>
-          </property>
-          <property name="flat">
-           <bool>false</bool>
-          </property>
-         </widget>
+         <widget class="QgsFileWidget" name="mFileWidget" native="true"/>
         </item>
        </layout>
       </item>
@@ -132,7 +97,7 @@
            </sizepolicy>
           </property>
           <property name="text">
-           <string>Layer name</string>
+           <string>Layer Name</string>
           </property>
          </widget>
         </item>
@@ -1353,6 +1318,11 @@
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsFileWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsfilewidget.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
