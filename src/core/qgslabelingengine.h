@@ -148,7 +148,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( QgsAbstractLabelProvider::Flags )
  * (if labeling / diagrams were configured for such vector layer).
  *
  * The labeling engine may also be used independently from map rendering loop:
- * \code
+ * \code{.cpp}
  *   QgsLabelingEngine engine;
  *   engine.setMapSettings( mapSettings );
  *   // add one or more providers
