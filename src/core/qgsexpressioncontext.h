@@ -40,6 +40,7 @@ class QgsProject;
 class QgsSymbol;
 class QgsProcessingAlgorithm;
 class QgsProcessingContext;
+class QgsLayoutAtlas;
 
 /**
  * \ingroup core
@@ -926,7 +927,14 @@ class CORE_EXPORT QgsExpressionContextUtils
      * For instance, current page name and number.
      * \param atlas source atlas. If null, a set of default atlas variables will be added to the scope.
      */
-    static QgsExpressionContextScope *atlasScope( const QgsAtlasComposition *atlas ) SIP_FACTORY;
+    static QgsExpressionContextScope *compositionAtlasScope( const QgsAtlasComposition *atlas ) SIP_FACTORY;
+
+    /**
+     * Creates a new scope which contains variables and functions relating to a QgsLayoutAtlas.
+     * For instance, current page name and number.
+     * \param atlas source atlas. If null, a set of default atlas variables will be added to the scope.
+     */
+    static QgsExpressionContextScope *atlasScope( const QgsLayoutAtlas *atlas ) SIP_FACTORY;
 
     /**
      * Creates a new scope which contains variables and functions relating to a QgsComposerItem.

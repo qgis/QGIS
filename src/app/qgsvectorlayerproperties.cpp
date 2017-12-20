@@ -130,7 +130,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
 
   mContext << QgsExpressionContextUtils::globalScope()
            << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-           << QgsExpressionContextUtils::atlasScope( nullptr )
+           << QgsExpressionContextUtils::compositionAtlasScope( nullptr )
            << QgsExpressionContextUtils::mapSettingsScope( QgisApp::instance()->mapCanvas()->mapSettings() )
            << QgsExpressionContextUtils::layerScope( mLayer );
 

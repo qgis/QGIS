@@ -31,6 +31,7 @@
 #include "qgsmaplayerlistutils.h"
 #include "qgsprocessingcontext.h"
 #include "qgsprocessingalgorithm.h"
+#include "qgslayoutatlas.h"
 #include "qgslayout.h"
 
 #include <QSettings>
@@ -1127,7 +1128,7 @@ void QgsExpressionContextUtils::setLayoutVariables( QgsLayout *layout, const QVa
   layout->setCustomProperty( QStringLiteral( "variableValues" ), variableValues );
 }
 
-QgsExpressionContextScope *QgsExpressionContextUtils::atlasScope( const QgsAtlasComposition *atlas )
+QgsExpressionContextScope *QgsExpressionContextUtils::compositionAtlasScope( const QgsAtlasComposition *atlas )
 {
   QgsExpressionContextScope *scope = new QgsExpressionContextScope( QObject::tr( "Atlas" ) );
   if ( !atlas )
@@ -1157,6 +1158,45 @@ QgsExpressionContextScope *QgsExpressionContextUtils::atlasScope( const QgsAtlas
   if ( atlas->enabled() )
   {
     QgsFeature atlasFeature = atlas->feature();
+    scope->setFeature( atlasFeature );
+    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_feature" ), QVariant::fromValue( atlasFeature ), true ) );
+    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_featureid" ), atlasFeature.id(), true ) );
+    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_geometry" ), QVariant::fromValue( atlasFeature.geometry() ), true ) );
+  }
+
+  return scope;
+}
+
+QgsExpressionContextScope *QgsExpressionContextUtils::atlasScope( const QgsLayoutAtlas *atlas )
+{
+  QgsExpressionContextScope *scope = new QgsExpressionContextScope( QObject::tr( "Atlas" ) );
+  if ( !atlas )
+  {
+    //add some dummy atlas variables. This is done so that as in certain contexts we want to show
+    //users that these variables are available even if they have no current value
+    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_pagename" ), QString(), true ) );
+    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_feature" ), QVariant::fromValue( QgsFeature() ), true ) );
+    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_featureid" ), 0, true ) );
+    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_geometry" ), QVariant::fromValue( QgsGeometry() ), true ) );
+    return scope;
+  }
+
+  //add known atlas variables
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_totalfeatures" ), atlas->count(), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_featurenumber" ), atlas->currentFeatureNumber() + 1, true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_filename" ), atlas->currentFilename(), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_pagename" ), atlas->nameForPage( atlas->currentFeatureNumber() ), true ) );
+
+  if ( atlas->enabled() && atlas->coverageLayer() )
+  {
+    scope->setFields( atlas->coverageLayer()->fields() );
+    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_layerid" ), atlas->coverageLayer()->id(), true ) );
+    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_layername" ), atlas->coverageLayer()->name(), true ) );
+  }
+
+  if ( atlas->enabled() )
+  {
+    QgsFeature atlasFeature = atlas->layout()->context().feature();
     scope->setFeature( atlasFeature );
     scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_feature" ), QVariant::fromValue( atlasFeature ), true ) );
     scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_featureid" ), atlasFeature.id(), true ) );

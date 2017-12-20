@@ -42,6 +42,11 @@ QgsLayout *QgsLayoutAtlas::layout()
   return mLayout;
 }
 
+const QgsLayout *QgsLayoutAtlas::layout() const
+{
+  return mLayout.data();
+}
+
 bool QgsLayoutAtlas::writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext & ) const
 {
   QDomElement atlasElem = document.createElement( QStringLiteral( "Atlas" ) );

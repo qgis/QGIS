@@ -46,6 +46,13 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutItera
 
     QString stringType() const override;
     QgsLayout *layout() override;
+
+    /**
+     * Returns the atlas' layout.
+     * \note Not available in Python bindings.
+     */
+    const QgsLayout *layout() const SIP_SKIP;
+
     bool writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const override;
     bool readXml( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context ) override;
 

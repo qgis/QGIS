@@ -38,6 +38,8 @@ Constructor for new QgsLayoutAtlas.
 
     virtual QgsLayout *layout();
 
+
+
     virtual bool writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const;
 
     virtual bool readXml( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context );

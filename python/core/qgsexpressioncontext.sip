@@ -1045,9 +1045,17 @@ with the variables specified.
 .. versionadded:: 3.0
 %End
 
-    static QgsExpressionContextScope *atlasScope( const QgsAtlasComposition *atlas ) /Factory/;
+    static QgsExpressionContextScope *compositionAtlasScope( const QgsAtlasComposition *atlas ) /Factory/;
 %Docstring
 Creates a new scope which contains variables and functions relating to a :py:class:`QgsAtlasComposition`.
+For instance, current page name and number.
+
+:param atlas: source atlas. If null, a set of default atlas variables will be added to the scope.
+%End
+
+    static QgsExpressionContextScope *atlasScope( const QgsLayoutAtlas *atlas ) /Factory/;
+%Docstring
+Creates a new scope which contains variables and functions relating to a QgsLayoutAtlas.
 For instance, current page name and number.
 
 :param atlas: source atlas. If null, a set of default atlas variables will be added to the scope.

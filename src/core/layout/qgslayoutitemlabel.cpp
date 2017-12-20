@@ -29,7 +29,7 @@
 #include "qgsfontutils.h"
 #include "qgsexpressioncontext.h"
 #include "qgsmapsettings.h"
-#include "qgscomposermap.h"
+#include "qgslayoutitemmap.h"
 #include "qgssettings.h"
 
 #include "qgswebview.h"
@@ -69,11 +69,9 @@ QgsLayoutItemLabel::QgsLayoutItemLabel( QgsLayout *layout )
 
   if ( mLayout )
   {
-#if 0 //TODO
-    //connect to atlas feature changes
+    //connect to context feature changes
     //to update the expression context
-    connect( &mLayout->atlasComposition(), &QgsAtlasComposition::featureChanged, this, &QgsLayoutItemLabel::refreshExpressionContext );
-#endif
+    connect( &mLayout->context(), &QgsLayoutContext::changed, this, &QgsLayoutItemLabel::refreshExpressionContext );
   }
 
   mWebPage.reset( new QgsWebPage( this ) );
@@ -244,14 +242,7 @@ void QgsLayoutItemLabel::refreshExpressionContext()
   if ( !mLayout )
     return;
 
-  QgsVectorLayer *layer = nullptr;
-#if 0 //TODO
-  if ( mComposition->atlasComposition().enabled() )
-  {
-    layer = mComposition->atlasComposition().coverageLayer();
-  }
-#endif
-
+  QgsVectorLayer *layer = mLayout->context().layer();
   //setup distance area conversion
   if ( layer )
   {
@@ -259,12 +250,10 @@ void QgsLayoutItemLabel::refreshExpressionContext()
   }
   else
   {
-#if 0 //TODO
     //set to composition's reference map's crs
-    QgsLayoutItemMap *referenceMap = mComposition->referenceMap();
+    QgsLayoutItemMap *referenceMap = mLayout->referenceMap();
     if ( referenceMap )
       mDistanceArea->setSourceCrs( referenceMap->crs() );
-#endif
   }
   mDistanceArea->setEllipsoid( mLayout->project()->ellipsoid() );
   contentChanged();

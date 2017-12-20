@@ -35,6 +35,8 @@ Returns the print layout's atlas.
 
     virtual bool readXml( const QDomElement &layoutElement, const QDomDocument &document, const QgsReadWriteContext &context );
 
+    virtual QgsExpressionContext createExpressionContext() const;
+
 
 };
 

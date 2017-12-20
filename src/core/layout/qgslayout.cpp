@@ -325,12 +325,6 @@ QgsExpressionContext QgsLayout::createExpressionContext() const
   context.appendScope( QgsExpressionContextUtils::globalScope() );
   context.appendScope( QgsExpressionContextUtils::projectScope( mProject ) );
   context.appendScope( QgsExpressionContextUtils::layoutScope( this ) );
-#if 0 //TODO
-  if ( mAtlasComposition.enabled() )
-  {
-    context.appendScope( QgsExpressionContextUtils::atlasScope( &mAtlasComposition ) );
-  }
-#endif
   return context;
 }
 

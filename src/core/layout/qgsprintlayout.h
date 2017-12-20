@@ -45,6 +45,7 @@ class CORE_EXPORT QgsPrintLayout : public QgsLayout
 
     QDomElement writeXml( QDomDocument &document, const QgsReadWriteContext &context ) const override;
     bool readXml( const QDomElement &layoutElement, const QDomDocument &document, const QgsReadWriteContext &context ) override;
+    QgsExpressionContext createExpressionContext() const override;
 
   private:
 

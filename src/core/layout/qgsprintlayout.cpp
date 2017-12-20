@@ -44,3 +44,15 @@ bool QgsPrintLayout::readXml( const QDomElement &layoutElement, const QDomDocume
   mAtlas->readXml( atlasElem, document, context );
   return true;
 }
+
+QgsExpressionContext QgsPrintLayout::createExpressionContext() const
+{
+  QgsExpressionContext context = QgsLayout::createExpressionContext();
+
+  if ( mAtlas->enabled() )
+  {
+    context.appendScope( QgsExpressionContextUtils::atlasScope( mAtlas ) );
+  }
+
+  return context;
+}
