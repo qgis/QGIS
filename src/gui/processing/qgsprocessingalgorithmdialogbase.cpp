@@ -210,6 +210,11 @@ void QgsProcessingAlgorithmDialogBase::setExecuted( bool executed )
   mExecuted = executed;
 }
 
+void QgsProcessingAlgorithmDialogBase::setResults( const QVariantMap &results )
+{
+  mResults = results;
+}
+
 void QgsProcessingAlgorithmDialogBase::finished( bool, const QVariantMap &, QgsProcessingContext &, QgsProcessingFeedback * )
 {
 

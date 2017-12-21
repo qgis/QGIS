@@ -118,8 +118,17 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, private Ui::
 
     /**
      * Returns true if an algorithm was executed in the dialog.
+     * \see results()
+     * \see setExecuted()
      */
     bool wasExecuted() const { return mExecuted; }
+
+    /**
+     * Returns the results returned by the algorithm executed.
+     * \see wasExecuted()
+     * \see setResults()
+     */
+    QVariantMap results() const { return mResults; }
 
     /**
      * Creates a new processing feedback object, automatically connected to the appropriate
@@ -203,8 +212,17 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, private Ui::
 
     /**
      * Sets whether the algorithm was executed through the dialog.
+     * \see wasExecuted()
+     * \see setResults()
      */
     void setExecuted( bool executed );
+
+    /**
+     * Sets the algorithm results.
+     * \see results()
+     * \see setExecuted()
+     */
+    void setResults( const QVariantMap &results );
 
     /**
      * Displays an info \a message in the dialog's log.
@@ -250,6 +268,7 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, private Ui::
     QgsMessageBar *mMessageBar = nullptr;
 
     bool mExecuted = false;
+    QVariantMap mResults;
     QWidget *mMainWidget = nullptr;
     QgsProcessingAlgorithm *mAlgorithm = nullptr;
     bool mHelpCollapsed = false;

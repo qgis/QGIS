@@ -276,6 +276,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                 return
 
         self.setExecuted(True)
+        self.setResults(result)
         self.setInfo(self.tr('Algorithm \'{0}\' finished').format(self.algorithm().displayName()), escapeHtml=False)
 
         if not keepOpen:
