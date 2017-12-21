@@ -21,6 +21,8 @@
 
 #include <QComboBox>
 #include <QListWidget>
+#include <QTableWidget>
+#include <QHeaderView>
 #include <QLineEdit>
 #include "qgis_gui.h"
 
@@ -73,6 +75,7 @@ class GUI_EXPORT QgsValueRelationWidgetWrapper : public QgsEditorWidgetWrapper
   private:
     QComboBox *mComboBox = nullptr;
     QListWidget *mListWidget = nullptr;
+    QTableWidget *mTableWidget = nullptr;
     QLineEdit *mLineEdit = nullptr;
 
     QgsValueRelationFieldFormatter::ValueRelationCache mCache;
