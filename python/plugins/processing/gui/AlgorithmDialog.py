@@ -80,6 +80,9 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
         dlg.show()
         dlg.exec_()
 
+    def setParameters(self, parameters):
+        self.mainWidget().setParameters(parameters)
+
     def getParameterValues(self):
         parameters = {}
 

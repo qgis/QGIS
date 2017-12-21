@@ -266,6 +266,12 @@ class DestinationSelectionPanel(BASE, WIDGET):
             self.leText.setText(QDir.toNativeSeparators(dirName))
             settings.setValue('/Processing/LastOutputPath', dirName)
 
+    def setValue(self, value):
+        if value == 'memory:':
+            self.saveToTemporary()
+        else:
+            self.leText.setText(value)
+
     def getValue(self):
         key = None
         if self.use_temporary and isinstance(self.parameter, QgsProcessingParameterFeatureSink):
