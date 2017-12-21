@@ -30,6 +30,7 @@
 #include <QDialogButtonBox>
 #include <QProgressBar>
 #include <QToolBar>
+#include <QUrl>
 
 Qgs3DMapCanvasDockWidget::Qgs3DMapCanvasDockWidget( QWidget *parent )
   : QgsDockWidget( parent )
@@ -42,12 +43,19 @@ Qgs3DMapCanvasDockWidget::Qgs3DMapCanvasDockWidget( QWidget *parent )
   toolBar->setIconSize( QgisApp::instance()->iconSize( true ) );
   toolBar->addAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionZoomFullExtent.svg" ) ),
                       tr( "Zoom Full" ), this, &Qgs3DMapCanvasDockWidget::resetView );
+  toolBar->addAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionSaveMapAsImage.svg" ) ),
+                      tr( "Save as image..." ), this, &Qgs3DMapCanvasDockWidget::saveAsImage );
   toolBar->addAction( QgsApplication::getThemeIcon( QStringLiteral( "mIconProperties.svg" ) ),
                       tr( "Configure" ), this, &Qgs3DMapCanvasDockWidget::configure );
 
   mCanvas = new Qgs3DMapCanvas( contentsWidget );
   mCanvas->setMinimumSize( QSize( 200, 200 ) );
   mCanvas->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+
+  connect( mCanvas, &Qgs3DMapCanvas::savedAsImage, this, [ = ]( const QString fileName )
+  {
+    QgisApp::instance()->messageBar()->pushSuccess( tr( "Save as Image" ), tr( "Successfully saved the 3D map to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( QFileInfo( fileName ).path() ).toString(), fileName ) );
+  } );
 
   mLabelPendingJobs = new QLabel( this );
   mProgressPendingJobs = new QProgressBar( this );
@@ -72,6 +80,15 @@ Qgs3DMapCanvasDockWidget::Qgs3DMapCanvasDockWidget( QWidget *parent )
   setWidget( contentsWidget );
 
   onTerrainPendingJobsCountChanged();
+}
+
+void Qgs3DMapCanvasDockWidget::saveAsImage()
+{
+  QPair< QString, QString> fileNameAndFilter = QgsGuiUtils::getSaveAsImageName( this, tr( "Choose a file name to save the 3D map canvas to an image" ) );
+  if ( !fileNameAndFilter.first.isEmpty() )
+  {
+    mCanvas->saveAsImage( fileNameAndFilter.first, fileNameAndFilter.second );
+  }
 }
 
 void Qgs3DMapCanvasDockWidget::setMapSettings( Qgs3DMapSettings *map )

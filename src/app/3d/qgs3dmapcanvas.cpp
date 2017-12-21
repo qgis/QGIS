@@ -17,6 +17,7 @@
 
 #include <QBoxLayout>
 #include <Qt3DExtras/Qt3DWindow>
+#include <Qt3DRender/QRenderCapture>
 
 #include "qgscameracontroller.h"
 #include "qgs3dmapsettings.h"
@@ -27,6 +28,11 @@ Qgs3DMapCanvas::Qgs3DMapCanvas( QWidget *parent )
   : QWidget( parent )
 {
   mWindow3D = new Qt3DExtras::Qt3DWindow;
+
+  mCapture = new Qt3DRender::QRenderCapture;
+  mWindow3D->activeFrameGraph()->setParent( mCapture );
+  mWindow3D->setActiveFrameGraph( mCapture );
+
   mContainer = QWidget::createWindowContainer( mWindow3D );
 
   QHBoxLayout *hLayout = new QHBoxLayout( this );
@@ -88,4 +94,20 @@ void Qgs3DMapCanvas::setViewFromTop( const QgsPointXY &center, float distance, f
   float worldX = center.x() - mMap->origin().x();
   float worldY = center.y() - mMap->origin().y();
   mScene->cameraController()->setViewFromTop( worldX, -worldY, distance, rotation );
+}
+
+void Qgs3DMapCanvas::saveAsImage( const QString fileName, const QString fileFormat )
+{
+  if ( !fileName.isEmpty() )
+  {
+    Qt3DRender::QRenderCaptureReply *captureReply;
+    captureReply = mCapture->requestCapture();
+    connect( captureReply, &Qt3DRender::QRenderCaptureReply::completed, this, [ = ]
+    {
+      captureReply->image().save( fileName, fileFormat.toLocal8Bit().data() );
+      emit savedAsImage( fileName );
+
+      captureReply->deleteLater();
+    } );
+  }
 }

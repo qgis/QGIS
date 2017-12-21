@@ -42,6 +42,7 @@ class Qgs3DMapCanvasDockWidget : public QgsDockWidget
   private slots:
     void resetView();
     void configure();
+    void saveAsImage();
 
     void onMainCanvasLayersChanged();
     void onMainCanvasColorChanged();
