@@ -430,10 +430,13 @@ class TestQgsExpression: public QObject
 
 
       QgsExpression expression4( "represent_value('Class')" );
+      qDebug() << "xxx constructed: " << expression.evalErrorString();
       if ( expression4.hasParserError() )
         qDebug() << expression4.parserErrorString();
       Q_ASSERT( !expression4.hasParserError() );
+      qDebug() << "xxx after hasParserError: " << expression.evalErrorString();
       expression4.prepare( &context );
+      qDebug() << "xxx prepared: " << expression.evalErrorString();
       Q_ASSERT( expression4.hasEvalError() );
     }
 
