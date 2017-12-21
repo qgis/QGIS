@@ -97,10 +97,6 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      */
     void keyPressEvent( QKeyEvent *e ) override;
 
-#ifdef Q_OS_WIN
-    virtual bool eventFilter( QObject *obj, QEvent *e ) override;
-#endif
-
     /**
      * Clean a temporary rubberband
      */
@@ -261,9 +257,6 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
 
     friend class TestQgsMapToolReshape;
 
-#ifdef Q_OS_WIN
-    int mSkipNextContextMenuEvent;
-#endif
 };
 
 #endif
