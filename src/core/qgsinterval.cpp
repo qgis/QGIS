@@ -44,8 +44,8 @@ bool QgsInterval::operator==( QgsInterval other ) const
 
 QgsInterval QgsInterval::fromString( const QString &string )
 {
-  int seconds = 0;
-  QRegExp rx( "([-+]?\\d?\\.?\\d+\\s+\\S+)", Qt::CaseInsensitive );
+  double seconds = 0;
+  QRegExp rx( "([-+]?\\d*\\.?\\d+\\s+\\S+)", Qt::CaseInsensitive );
   QStringList list;
   int pos = 0;
 
