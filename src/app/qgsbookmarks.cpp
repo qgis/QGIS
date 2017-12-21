@@ -109,6 +109,7 @@ QgsBookmarks::QgsBookmarks( QWidget *parent )
 
   mProxyModel = new QgsBookmarksProxyModel( this );
   mProxyModel->setSourceModel( mMergedModel );
+  mProxyModel->setSortCaseSensitivity( Qt::CaseInsensitive );
 
   lstBookmarks->setModel( mProxyModel );
   lstBookmarks->setItemDelegate( new QgsDoubleSpinBoxBookmarksDelegate( this ) );
