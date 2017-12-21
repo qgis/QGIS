@@ -625,7 +625,7 @@
   <action name="mActionLockItems">
    <property name="icon">
     <iconset resource="../../../images/images.qrc">
-     <normaloff>:/images/themes/default/locked.svg</normaloff>:/images/themes/default/locked.svg</iconset>
+     <normaloff>:/images/themes/default/mActionLockItems.svg</normaloff>:/images/themes/default/mActionLockItems.svg</iconset>
    </property>
    <property name="text">
     <string>Loc&amp;k Selected Items</string>
@@ -637,7 +637,7 @@
   <action name="mActionUnlockAll">
    <property name="icon">
     <iconset resource="../../../images/images.qrc">
-     <normaloff>:/images/themes/default/unlocked.svg</normaloff>:/images/themes/default/unlocked.svg</iconset>
+     <normaloff>:/images/themes/default/mActionUnlockAll.svg</normaloff>:/images/themes/default/mActionUnlockAll.svg</iconset>
    </property>
    <property name="text">
     <string>Unl&amp;ock All</string>
