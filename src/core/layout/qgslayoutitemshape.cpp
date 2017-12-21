@@ -59,6 +59,21 @@ int QgsLayoutItemShape::type() const
   return QgsLayoutItemRegistry::LayoutShape;
 }
 
+QIcon QgsLayoutItemShape::icon() const
+{
+  switch ( mShape )
+  {
+    case Ellipse:
+      return QgsApplication::getThemeIcon( QStringLiteral( "/mLayoutItemShapeEllipse.svg" ) );
+    case Rectangle:
+      return QgsApplication::getThemeIcon( QStringLiteral( "/mLayoutItemShapeRectangle.svg" ) );
+    case Triangle:
+      return QgsApplication::getThemeIcon( QStringLiteral( "/mLayoutItemShapeTriangle.svg" ) );
+  }
+
+  return QIcon();
+}
+
 QString QgsLayoutItemShape::displayName() const
 {
   if ( !id().isEmpty() )

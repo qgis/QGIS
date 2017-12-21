@@ -47,6 +47,11 @@ int QgsLayoutItemPolygon::type() const
   return QgsLayoutItemRegistry::LayoutPolygon;
 }
 
+QIcon QgsLayoutItemPolygon::icon() const
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "/mLayoutItemPolygon.svg" ) );
+}
+
 bool QgsLayoutItemPolygon::_addNode( const int indexPoint,
                                      QPointF newPoint,
                                      const double radius )

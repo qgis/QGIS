@@ -75,6 +75,11 @@ Returns the total size of the multiframe's content, in layout units.
 Returns unique multiframe type id.
 %End
 
+    virtual QIcon icon() const;
+%Docstring
+Returns the item's icon.
+%End
+
     virtual QSizeF fixedFrameSize( const int frameIndex = -1 ) const;
 %Docstring
 Returns the fixed size for a frame, if desired. If the fixed frame size changes,

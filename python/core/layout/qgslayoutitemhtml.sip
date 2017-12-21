@@ -39,6 +39,8 @@ Ownership is transferred to the layout.
 
     virtual int type() const;
 
+    virtual QIcon icon() const;
+
 
     static QgsLayoutItemHtml *create( QgsLayout *layout ) /Factory/;
 %Docstring

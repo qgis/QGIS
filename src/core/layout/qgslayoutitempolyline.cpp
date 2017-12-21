@@ -48,6 +48,11 @@ int QgsLayoutItemPolyline::type() const
   return QgsLayoutItemRegistry::LayoutPolyline;
 }
 
+QIcon QgsLayoutItemPolyline::icon() const
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "/mLayoutItemPolyline.svg" ) );
+}
+
 bool QgsLayoutItemPolyline::_addNode( const int indexPoint,
                                       QPointF newPoint,
                                       const double radius )

@@ -102,6 +102,11 @@ int QgsLayoutItemLabel::type() const
   return QgsLayoutItemRegistry::LayoutLabel;
 }
 
+QIcon QgsLayoutItemLabel::icon() const
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "/mLayoutItemLabel.svg" ) );
+}
+
 void QgsLayoutItemLabel::draw( QgsRenderContext &context, const QStyleOptionGraphicsItem * )
 {
   QPainter *painter = context.painter();

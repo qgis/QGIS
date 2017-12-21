@@ -39,6 +39,8 @@ Constructor for QgsLayoutItemMap, with the specified parent ``layout``.
 
     virtual int type() const;
 
+    virtual QIcon icon() const;
+
 
     void assignFreeId();
 %Docstring

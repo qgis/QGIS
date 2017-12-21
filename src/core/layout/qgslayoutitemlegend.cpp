@@ -58,6 +58,11 @@ int QgsLayoutItemLegend::type() const
   return QgsLayoutItemRegistry::LayoutLegend;
 }
 
+QIcon QgsLayoutItemLegend::icon() const
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "/mLayoutItemLegend.svg" ) );
+}
+
 void QgsLayoutItemLegend::paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget )
 {
   if ( !painter )

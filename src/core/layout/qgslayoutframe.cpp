@@ -110,6 +110,14 @@ int QgsLayoutFrame::type() const
   return QgsLayoutItemRegistry::LayoutFrame;
 }
 
+QIcon QgsLayoutFrame::icon() const
+{
+  if ( mMultiFrame )
+    return mMultiFrame->icon();
+  else
+    return QIcon();
+}
+
 QString QgsLayoutFrame::uuid() const
 {
   if ( mMultiFrame )

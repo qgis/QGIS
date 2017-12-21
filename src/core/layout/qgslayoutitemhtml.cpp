@@ -81,6 +81,11 @@ int QgsLayoutItemHtml::type() const
   return QgsLayoutItemRegistry::LayoutHtml;
 }
 
+QIcon QgsLayoutItemHtml::icon() const
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "/mLayoutItemHtml.svg" ) );
+}
+
 QgsLayoutItemHtml *QgsLayoutItemHtml::create( QgsLayout *layout )
 {
   return new QgsLayoutItemHtml( layout );

@@ -95,6 +95,11 @@ int QgsLayoutItemAttributeTable::type() const
   return QgsLayoutItemRegistry::LayoutAttributeTable;
 }
 
+QIcon QgsLayoutItemAttributeTable::icon() const
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "/mLayoutItemTable.svg" ) );
+}
+
 QgsLayoutItemAttributeTable *QgsLayoutItemAttributeTable::create( QgsLayout *layout )
 {
   return new QgsLayoutItemAttributeTable( layout );

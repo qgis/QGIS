@@ -262,9 +262,14 @@ tasks.
     virtual int type() const;
 
 %Docstring
-Return unique graphics item type identifier.
+Returns a unique graphics item type identifier.
 
 Plugin based subclasses should return an identifier greater than QgsLayoutItemRegistry.PluginItem.
+%End
+
+    virtual QIcon icon() const;
+%Docstring
+Returns the item's icon.
 %End
 
     virtual QString uuid() const;

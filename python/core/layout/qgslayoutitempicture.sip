@@ -51,6 +51,8 @@ Constructor for QgsLayoutItemPicture, with the specified parent ``layout``.
 
     virtual int type() const;
 
+    virtual QIcon icon() const;
+
 
     static QgsLayoutItemPicture *create( QgsLayout *layout ) /Factory/;
 %Docstring

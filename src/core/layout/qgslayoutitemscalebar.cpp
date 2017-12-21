@@ -52,6 +52,11 @@ int QgsLayoutItemScaleBar::type() const
   return QgsLayoutItemRegistry::LayoutScaleBar;
 }
 
+QIcon QgsLayoutItemScaleBar::icon() const
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "/mLayoutItemScaleBar.svg" ) );
+}
+
 QgsLayoutItemScaleBar *QgsLayoutItemScaleBar::create( QgsLayout *layout )
 {
   return new QgsLayoutItemScaleBar( layout );

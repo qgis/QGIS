@@ -28,6 +28,8 @@ Constructor for QgsLayoutItemScaleBar, with the specified parent ``layout``.
 
     virtual int type() const;
 
+    virtual QIcon icon() const;
+
 
     static QgsLayoutItemScaleBar *create( QgsLayout *layout ) /Factory/;
 %Docstring
