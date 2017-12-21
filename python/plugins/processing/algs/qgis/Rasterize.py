@@ -110,7 +110,7 @@ class RasterizeAlgorithm(QgisAlgorithm):
                 self.MAKE_BACKGROUND_TRANSPARENT,
                 self.tr('Make background transparent'),
                 defaultValue=False))
-        
+
         map_theme_param = QgsProcessingParameterString(
             self.MAP_THEME,
             description=self.tr(
@@ -136,7 +136,6 @@ class RasterizeAlgorithm(QgisAlgorithm):
             self.tr(
                 'Output layer')))
 
-                
     def name(self):
         # Unique (non-user visible) name of algorithm
         return 'rasterize'
@@ -184,7 +183,7 @@ class RasterizeAlgorithm(QgisAlgorithm):
             parameters,
             self.MAKE_BACKGROUND_TRANSPARENT,
             context)
-            
+
         mupp = self.parameterAsDouble(
             parameters,
             self.MAP_UNITS_PER_PIXEL,
@@ -244,12 +243,12 @@ class TileSet():
             no_bands = 4
         else:
             no_bands = 3
-        
+
         self.dataset = driver.Create(output, xsize, ysize, no_bands)
         self.dataset.SetProjection(str(crs.toWkt()))
         self.dataset.SetGeoTransform(
             [extent.xMinimum(), mupp, 0, extent.yMaximum(), 0, -mupp])
-            
+
         self.image = QImage(QSize(tile_size, tile_size), QImage.Format_ARGB32)
 
         self.settings = QgsMapSettings()
@@ -265,7 +264,7 @@ class TileSet():
             self.settings.setBackgroundColor(QColor(255, 255, 255, 0))
         else:
             self.settings.setBackgroundColor(QColor(255, 255, 255))
-        
+
         if QgsProject.instance().mapThemeCollection().hasMapTheme(map_theme):
             self.settings.setLayers(
                 QgsProject.instance().mapThemeCollection(
@@ -318,7 +317,7 @@ class TileSet():
         job = QgsMapRendererCustomPainterJob(self.settings, painter)
         job.renderSynchronously()
         painter.end()
-        
+
         # Needs not to be deleted or Windows will kill it too early...
         tmpfile = tempfile.NamedTemporaryFile(suffix='.png', delete=False)
         try:
