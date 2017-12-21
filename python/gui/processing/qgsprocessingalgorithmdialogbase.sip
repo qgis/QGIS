@@ -99,8 +99,6 @@ Returns the parameter values for the algorithm to run in the dialog.
 
     virtual void accept();
 
-    virtual void reject();
-
 
     void reportError( const QString &error );
 %Docstring
@@ -138,9 +136,6 @@ Pushes a console info string to the dialog's log.
 %End
 
   protected:
-
-    virtual void closeEvent( QCloseEvent *e );
-
 
     QPushButton *runButton();
 %Docstring

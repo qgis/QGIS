@@ -144,7 +144,6 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, private Ui::
   public slots:
 
     void accept() override;
-    void reject() override;
 
     /**
      * Reports an \a error string to the dialog's log.
@@ -182,8 +181,6 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, private Ui::
     void pushConsoleInfo( const QString &info );
 
   protected:
-
-    void closeEvent( QCloseEvent *e ) override;
 
     /**
      * Returns the dialog's run button.
@@ -274,7 +271,6 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, private Ui::
     bool mHelpCollapsed = false;
 
     QString formatHelp( QgsProcessingAlgorithm *algorithm );
-    void saveWindowGeometry();
 
 };
 
