@@ -182,9 +182,16 @@ QgsCircle QgsCircle::fromCenterPoint( const QgsPoint &center, const QgsPoint &pt
 QgsCircle QgsCircle::from3Tangents( const QgsPoint &pt1_tg1, const QgsPoint &pt2_tg1, const QgsPoint &pt1_tg2, const QgsPoint &pt2_tg2, const QgsPoint &pt1_tg3, const QgsPoint &pt2_tg3, double epsilon )
 {
   QgsPoint p1, p2, p3;
-  QgsGeometryUtils::segmentIntersection( pt1_tg1, pt2_tg1, pt1_tg2, pt2_tg2, p1, epsilon );
-  QgsGeometryUtils::segmentIntersection( pt1_tg1, pt2_tg1, pt1_tg3, pt2_tg3, p2, epsilon );
-  QgsGeometryUtils::segmentIntersection( pt1_tg2, pt2_tg2, pt1_tg3, pt2_tg3, p3, epsilon );
+  bool isIntersect = false;
+  QgsGeometryUtils::segmentIntersection( pt1_tg1, pt2_tg1, pt1_tg2, pt2_tg2, p1, isIntersect, epsilon );
+  if ( !isIntersect )
+    return QgsCircle();
+  QgsGeometryUtils::segmentIntersection( pt1_tg1, pt2_tg1, pt1_tg3, pt2_tg3, p2, isIntersect, epsilon );
+  if ( !isIntersect )
+    return QgsCircle();
+  QgsGeometryUtils::segmentIntersection( pt1_tg2, pt2_tg2, pt1_tg3, pt2_tg3, p3, isIntersect, epsilon );
+  if ( !isIntersect )
+    return QgsCircle();
 
   return QgsTriangle( p1, p2, p3 ).inscribedCircle();
 }

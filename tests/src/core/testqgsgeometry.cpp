@@ -6974,6 +6974,13 @@ void TestQgsGeometry::circle()
   QgsCircle circ_tgt = QgsCircle().from3Tangents( QgsPoint( 0, 0 ), QgsPoint( 0, 1 ), QgsPoint( 2, 0 ), QgsPoint( 3, 0 ), QgsPoint( 5, 0 ), QgsPoint( 0, 5 ) );
   QGSCOMPARENEARPOINT( circ_tgt.center(), QgsPoint( 1.4645, 1.4645 ), 0.0001 );
   QGSCOMPARENEAR( circ_tgt.radius(), 1.4645, 0.0001 );
+  // with parallels
+  circ_tgt = QgsCircle().from3Tangents( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 1, 0 ), QgsPoint( 1, 5 ), QgsPoint( 5, 0 ), QgsPoint( 0, 5 ) );
+  QVERIFY( circ_tgt.isEmpty() );
+  circ_tgt = QgsCircle().from3Tangents( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 5, 0 ), QgsPoint( 0, 5 ), QgsPoint( 1, 0 ), QgsPoint( 1, 5 ) );
+  QVERIFY( circ_tgt.isEmpty() );
+  circ_tgt = QgsCircle().from3Tangents( QgsPoint( 5, 0 ), QgsPoint( 0, 5 ), QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 1, 0 ), QgsPoint( 1, 5 ) );
+  QVERIFY( circ_tgt.isEmpty() );
   // minimalCircleFrom3points
   QgsCircle minCircle3Points = QgsCircle().minimalCircleFrom3Points( QgsPoint( 0, 5 ), QgsPoint( 0, -5 ), QgsPoint( 1, 2 ) );
   QGSCOMPARENEARPOINT( minCircle3Points.center(), QgsPoint( 0, 0 ), 0.0001 );
