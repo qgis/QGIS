@@ -100,7 +100,7 @@ void QgsMessageBarItem::writeContent()
         msgIcon = QStringLiteral( "/mIconWarning.svg" );
         break;
       case QgsMessageBar::SUCCESS:
-        msgIcon = QStringLiteral( "/mIconSuccess.png" );
+        msgIcon = QStringLiteral( "/mIconSuccess.svg" );
         break;
       default:
         break;
