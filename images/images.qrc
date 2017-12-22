@@ -249,6 +249,7 @@
         <file>themes/default/mActionLabeling.svg</file>
         <file>themes/default/mActionLocalCumulativeCutStretch.svg</file>
         <file>themes/default/mActionLocalHistogramStretch.svg</file>
+        <file>themes/default/mActionLockItems.svg</file>
         <file>themes/default/mActionLowerItems.svg</file>
         <file>themes/default/mActionMapTips.svg</file>
         <file>themes/default/mActionMeasure.svg</file>
@@ -340,6 +341,7 @@
         <file>themes/default/mActionTracing.svg</file>
         <file>themes/default/mActionUndo.svg</file>
         <file>themes/default/mActionUngroupItems.svg</file>
+        <file>themes/default/mActionUnlockAll.svg</file>
         <file>themes/default/mActionSvgAnnotation.svg</file>
         <file>themes/default/mActionWhatsThis.svg</file>
         <file>themes/default/mActionZoomActual.svg</file>
