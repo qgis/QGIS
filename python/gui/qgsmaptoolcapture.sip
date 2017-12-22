@@ -83,8 +83,6 @@ Intercept key events like Esc or Del to delete the last point
 :param e: key event
 %End
 
-    virtual bool eventFilter( QObject *obj, QEvent *e );
-
     void deleteTempRubberBand();
 %Docstring
 Clean a temporary rubberband
