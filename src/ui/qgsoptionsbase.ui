@@ -308,7 +308,7 @@
        <item>
         <widget class="QStackedWidget" name="mOptionsStackedWidget">
          <property name="currentIndex">
-          <number>10</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="mOptionsPageGeneral">
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -337,8 +337,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>577</width>
-                <height>766</height>
+                <width>846</width>
+                <height>842</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -513,6 +513,67 @@
                        </property>
                       </item>
                      </widget>
+                    </item>
+                   </layout>
+                  </item>
+                  <item>
+                   <layout class="QHBoxLayout" name="horizontalLayout_29">
+                    <item>
+                     <widget class="QLabel" name="label_52">
+                      <property name="toolTip">
+                       <string>Size of QGIS custom cursors used for map operations (identify, zoom, select etc.)</string>
+                      </property>
+                      <property name="text">
+                       <string>Cursor size  &lt;i&gt;(QGIS restart required)&lt;/i&gt;</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <spacer name="horizontalSpacer_2">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>40</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                    <item>
+                     <widget class="QComboBox" name="cmbCursorSize">
+		                  <item>
+                       <property name="text">
+                        <string>16</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>20</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>24</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>28</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>32</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>36</string>
+                       </property>
+                      </item>
+                    </widget>
                     </item>
                    </layout>
                   </item>
@@ -1032,8 +1093,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>545</width>
-                <height>1114</height>
+                <width>537</width>
+                <height>1128</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_22">
@@ -1568,8 +1629,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>540</width>
-                <height>705</height>
+                <width>499</width>
+                <height>754</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -1936,8 +1997,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>717</width>
-                <height>1020</height>
+                <width>672</width>
+                <height>1043</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_22">
@@ -2687,8 +2748,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>140</width>
-                <height>276</height>
+                <width>130</width>
+                <height>322</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_46">
@@ -2838,8 +2899,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>532</width>
-                <height>236</height>
+                <width>500</width>
+                <height>238</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -3095,8 +3156,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>637</width>
-                <height>663</height>
+                <width>623</width>
+                <height>734</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_30">
@@ -3539,8 +3600,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>513</width>
-                <height>611</height>
+                <width>491</width>
+                <height>610</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_39">
@@ -3808,8 +3869,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>597</width>
-                <height>784</height>
+                <width>548</width>
+                <height>855</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -4403,8 +4464,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>521</width>
-                <height>361</height>
+                <width>431</width>
+                <height>376</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -4542,8 +4603,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>848</width>
-                <height>812</height>
+                <width>866</width>
+                <height>822</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_15">
@@ -4662,7 +4723,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                   </widget>
                  </item>
                  <item>
-                  <widget class="QgsProjectionSelectionWidget" name="leProjectGlobalCrs">
+                  <widget class="QgsProjectionSelectionWidget" name="leProjectGlobalCrs" native="true">
                    <property name="minimumSize">
                     <size>
                      <width>0</width>
@@ -4719,8 +4780,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>641</width>
-                <height>764</height>
+                <width>866</width>
+                <height>822</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_33">
