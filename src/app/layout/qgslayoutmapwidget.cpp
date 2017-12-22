@@ -109,8 +109,6 @@ QgsLayoutMapWidget::QgsLayoutMapWidget( QgsLayoutItemMap *item )
   mLayerListFromPresetButton->setToolTip( tr( "Set layer list from a map theme" ) );
   connect( menuKeepLayers, &QMenu::aboutToShow, this, &QgsLayoutMapWidget::aboutToShowKeepLayersVisibilityPresetsMenu );
 
-  mOverviewFrameMapComboBox->setItemType( QgsLayoutItemRegistry::LayoutMap );
-
   connect( item, &QgsLayoutObject::changed, this, &QgsLayoutMapWidget::updateGuiElements );
 
 #if 0 //TODO
@@ -125,6 +123,7 @@ QgsLayoutMapWidget::QgsLayoutMapWidget( QgsLayoutItemMap *item )
   }
 #endif
   mOverviewFrameMapComboBox->setCurrentLayout( item->layout() );
+  mOverviewFrameMapComboBox->setItemType( QgsLayoutItemRegistry::LayoutMap );
   mOverviewFrameStyleButton->registerExpressionContextGenerator( item );
 
   connect( mOverviewFrameMapComboBox, &QgsLayoutItemComboBox::itemChanged, this, &QgsLayoutMapWidget::overviewMapChanged );
