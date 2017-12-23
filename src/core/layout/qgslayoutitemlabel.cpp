@@ -67,13 +67,6 @@ QgsLayoutItemLabel::QgsLayoutItemLabel( QgsLayout *layout )
   //otherwise fields in the label aren't correctly evaluated until atlas preview feature changes (#9457)
   refreshExpressionContext();
 
-  if ( mLayout )
-  {
-    //connect to context feature changes
-    //to update the expression context
-    connect( &mLayout->context(), &QgsLayoutContext::changed, this, &QgsLayoutItemLabel::refreshExpressionContext );
-  }
-
   mWebPage.reset( new QgsWebPage( this ) );
   mWebPage->setIdentifier( tr( "Layout label item" ) );
   mWebPage->setNetworkAccessManager( QgsNetworkAccessManager::instance() );
@@ -253,7 +246,7 @@ void QgsLayoutItemLabel::refreshExpressionContext()
     //set to composition's reference map's crs
     QgsLayoutItemMap *referenceMap = mLayout->referenceMap();
     if ( referenceMap )
-      mDistanceArea->setSourceCrs( referenceMap->crs() );
+      mDistanceArea->setSourceCrs( referenceMap->crs(), mLayout->project()->transformContext() );
   }
   mDistanceArea->setEllipsoid( mLayout->project()->ellipsoid() );
   contentChanged();
@@ -493,7 +486,7 @@ void QgsLayoutItemLabel::setFrameStrokeWidth( const QgsLayoutMeasurement &stroke
 void QgsLayoutItemLabel::refresh()
 {
   QgsLayoutItem::refresh();
-  contentChanged();
+  refreshExpressionContext();
 }
 
 void QgsLayoutItemLabel::itemShiftAdjustSize( double newWidth, double newHeight, double &xShift, double &yShift ) const

@@ -28,6 +28,7 @@
 #include "qgsmapsettings.h"
 #include "qgswebpage.h"
 #include "qgswebframe.h"
+#include "qgslayoutitemmap.h"
 
 #include <QCoreApplication>
 #include <QPainter>
@@ -50,23 +51,11 @@ QgsLayoutItemHtml::QgsLayoutItemHtml( QgsLayout *layout )
 
   mWebPage->setNetworkAccessManager( QgsNetworkAccessManager::instance() );
 
-#if 0 //TODO
-  if ( mLayout )
-  {
-    connect( mLayout, &QgsComposition::itemRemoved, this, &QgsComposerMultiFrame::handleFrameRemoval );
-  }
+  //a html item added to a layout needs to have the initial expression context set,
+  //otherwise fields in the html aren't correctly evaluated until atlas preview feature changes (#9457)
+  setExpressionContext( mLayout->context().feature(), mLayout->context().layer() );
 
-  if ( mComposition && mComposition->atlasMode() == QgsComposition::PreviewAtlas )
-  {
-    //a html item added while atlas preview is enabled needs to have the expression context set,
-    //otherwise fields in the html aren't correctly evaluated until atlas preview feature changes (#9457)
-    setExpressionContext( mComposition->atlasComposition().feature(), mComposition->atlasComposition().coverageLayer() );
-  }
-
-  //connect to atlas feature changes
-  //to update the expression context
-  connect( &mComposition->atlasComposition(), &QgsAtlasComposition::featureChanged, this, &QgsLayoutItemHtml::refreshExpressionContext );
-#endif
+  connect( &mLayout->context(), &QgsLayoutContext::changed, this, &QgsLayoutItemHtml::refreshExpressionContext );
 
   mFetcher = new QgsNetworkContentFetcher();
 }
@@ -496,22 +485,27 @@ void QgsLayoutItemHtml::setExpressionContext( const QgsFeature &feature, QgsVect
   }
   else if ( mLayout )
   {
-#if 0 //TODO
     //set to composition's mapsettings' crs
-    QgsComposerMap *referenceMap = mComposition->referenceMap();
+    QgsLayoutItemMap *referenceMap = mLayout->referenceMap();
     if ( referenceMap )
-      mDistanceArea->setSourceCrs( referenceMap->crs() );
-#endif
+      mDistanceArea.setSourceCrs( referenceMap->crs(), mLayout->project()->transformContext() );
   }
   if ( mLayout )
   {
     mDistanceArea.setEllipsoid( mLayout->project()->ellipsoid() );
   }
 
-  // create JSON representation of feature
-  QgsJsonExporter exporter( layer );
-  exporter.setIncludeRelated( true );
-  mAtlasFeatureJSON = exporter.exportFeature( feature );
+  if ( feature.isValid() )
+  {
+    // create JSON representation of feature
+    QgsJsonExporter exporter( layer );
+    exporter.setIncludeRelated( true );
+    mAtlasFeatureJSON = exporter.exportFeature( feature );
+  }
+  else
+  {
+    mAtlasFeatureJSON.clear();
+  }
 }
 
 void QgsLayoutItemHtml::refreshExpressionContext()
@@ -519,16 +513,11 @@ void QgsLayoutItemHtml::refreshExpressionContext()
   QgsVectorLayer *vl = nullptr;
   QgsFeature feature;
 
-#if 0 //TODO
-  if ( mComposition->atlasComposition().enabled() )
+  if ( mLayout )
   {
-    vl = mComposition->atlasComposition().coverageLayer();
+    vl = mLayout->context().layer();
+    feature = mLayout->context().feature();
   }
-  if ( mComposition->atlasMode() != QgsComposition::AtlasOff )
-  {
-    feature = mComposition->atlasComposition().feature();
-  }
-#endif
 
   setExpressionContext( feature, vl );
   loadHtml( true );
