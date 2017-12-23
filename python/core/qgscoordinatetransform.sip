@@ -62,6 +62,16 @@ The ``context`` argument specifies the context under which the transform
 will be applied, and is used for calculating necessary datum transforms
 to utilize.
 
+Python scripts should generally use the constructor variant which accepts
+a QgsProject instance instead of this constructor.
+
+\warning Do NOT use an empty/default constructed QgsCoordinateTransformContext()
+object when creating QgsCoordinateTransform objects. This prevents correct
+datum transform handling and may result in inaccurate transformations. Always
+ensure that the QgsCoordinateTransformContext object is correctly retrieved
+based on the current code context, or use the constructor variant which
+accepts a QgsProject argument instead.
+
 .. versionadded:: 3.0
 %End
 
@@ -75,6 +85,16 @@ given ``project``.
 
 No reference to ``project`` is stored or utilized outside of the constructor,
 and it is used to retrieve the project's transform context only.
+
+Python scripts should utilise the QgsProject.instance() project
+instance when creating QgsCoordinateTransform. This will ensure
+that any datum transforms defined in the project will be
+correctly respected during coordinate transforms. E.g.
+
+.. code-block:: python
+
+       transform = QgsCoordinateTransform(QgsCoordinateReferenceSystem("EPSG:3111"),
+                                          QgsCoordinateReferenceSystem("EPSG:4326"), QgsProject.instance())
 
 .. versionadded:: 3.0
 %End
