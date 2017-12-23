@@ -504,10 +504,6 @@ void QgsLayoutItemMap::draw( QgsRenderContext &, const QStyleOptionGraphicsItem 
 
 bool QgsLayoutItemMap::writePropertiesToElement( QDomElement &composerMapElem, QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
-#if 0 //TODO - is this needed?
-  composerMapElem.setAttribute( QStringLiteral( "id" ), mId );
-#endif
-
   if ( mKeepLayerSet )
   {
     composerMapElem.setAttribute( QStringLiteral( "keepLayerSet" ), QStringLiteral( "true" ) );
@@ -608,14 +604,6 @@ bool QgsLayoutItemMap::writePropertiesToElement( QDomElement &composerMapElem, Q
 bool QgsLayoutItemMap::readPropertiesFromElement( const QDomElement &itemElem, const QDomDocument &doc, const QgsReadWriteContext &context )
 {
   mUpdatesEnabled = false;
-#if 0 //TODO
-  QString idRead = itemElem.attribute( QStringLiteral( "id" ), QStringLiteral( "not found" ) );
-  if ( idRead != QLatin1String( "not found" ) )
-  {
-    mId = idRead.toInt();
-    updateToolTip();
-  }
-#endif
 
   //extent
   QDomNodeList extentNodeList = itemElem.elementsByTagName( QStringLiteral( "Extent" ) );
@@ -1597,7 +1585,6 @@ QPointF QgsLayoutItemMap::layoutMapPosForItem( const QgsAnnotation *annotation )
   if ( annotationCrs != crs() )
   {
     //need to reproject
-    // todo datum nyall set context
     QgsCoordinateTransform t( annotationCrs, crs(), mLayout->project() );
     double z = 0.0;
     try
