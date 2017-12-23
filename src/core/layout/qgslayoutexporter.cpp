@@ -466,8 +466,8 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
   mLayout->context().setFlag( QgsLayoutContext::FlagForceVectorOutput, settings.forceVectorOutput );
 
   QPrinter printer;
-  preparePrintAsPdf( printer, filePath );
-  preparePrint( printer, false );
+  preparePrintAsPdf( mLayout, printer, filePath );
+  preparePrint( mLayout, printer, false );
   QPainter p;
   if ( !p.begin( &printer ) )
   {
@@ -483,6 +483,80 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
     georeferenceOutput( filePath, nullptr, QRectF(), settings.dpi );
   }
   return result;
+}
+
+QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( QgsAbstractLayoutIterator *iterator, const QString &fileName, const QgsLayoutExporter::PdfExportSettings &s, QString &error, QgsFeedback *feedback )
+{
+  error.clear();
+
+  if ( !iterator->layout() || !iterator->beginRender() )
+    return IteratorError;
+
+  PdfExportSettings settings = s;
+  if ( settings.dpi <= 0 )
+    settings.dpi = iterator->layout()->context().dpi();
+
+  LayoutContextPreviewSettingRestorer restorer( iterator->layout() );
+  ( void )restorer;
+  LayoutContextSettingsRestorer contextRestorer( iterator->layout() );
+  ( void )contextRestorer;
+  iterator->layout()->context().setDpi( settings.dpi );
+
+  // If we are not printing as raster, temporarily disable advanced effects
+  // as QPrinter does not support composition modes and can result
+  // in items missing from the output
+  iterator->layout()->context().setFlag( QgsLayoutContext::FlagUseAdvancedEffects, !settings.forceVectorOutput );
+
+  iterator->layout()->context().setFlag( QgsLayoutContext::FlagForceVectorOutput, settings.forceVectorOutput );
+
+  QPrinter printer;
+  preparePrintAsPdf( iterator->layout(), printer, fileName );
+  preparePrint( iterator->layout(), printer, false );
+  QPainter p;
+  if ( !p.begin( &printer ) )
+  {
+    //error beginning print
+    return PrintError;
+  }
+
+  QgsLayoutExporter exporter( iterator->layout() );
+
+  int total = iterator->count();
+  double step = total > 0 ? 100.0 / total : 100.0;
+  int i = 0;
+  bool first = true;
+  while ( iterator->next() )
+  {
+    if ( feedback )
+    {
+      feedback->setProperty( "progress", QObject::tr( "Exporting %1 of %2" ).arg( i + 1 ).arg( total ) );
+      feedback->setProgress( step * i );
+    }
+    if ( feedback && feedback->isCanceled() )
+    {
+      iterator->endRender();
+      return Canceled;
+    }
+
+    ExportResult result = exporter.printPrivate( printer, p, !first, settings.dpi, settings.rasterizeWholeImage );
+    if ( result != Success )
+    {
+      if ( result == FileError )
+        error = QObject::tr( "Cannot write to %1. This file may be open in another application." ).arg( fileName );
+      iterator->endRender();
+      return result;
+    }
+    first = false;
+    i++;
+  }
+
+  if ( feedback )
+  {
+    feedback->setProgress( 100 );
+  }
+
+  iterator->endRender();
+  return Success;
 }
 
 QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToSvg( const QString &filePath, const QgsLayoutExporter::SvgExportSettings &s )
@@ -698,7 +772,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToSvg( QgsAbstractLayou
 
 }
 
-void QgsLayoutExporter::preparePrintAsPdf( QPrinter &printer, const QString &filePath )
+void QgsLayoutExporter::preparePrintAsPdf( QgsLayout *layout, QPrinter &printer, const QString &filePath )
 {
   printer.setOutputFileName( filePath );
   // setOutputFormat should come after setOutputFileName, which auto-sets format to QPrinter::PdfFormat.
@@ -709,7 +783,7 @@ void QgsLayoutExporter::preparePrintAsPdf( QPrinter &printer, const QString &fil
   // Also an issue with PDF paper size using QPrinter::NativeFormat on Mac (always outputs portrait letter-size)
   printer.setOutputFormat( QPrinter::PdfFormat );
 
-  updatePrinterPageSize( printer, 0 );
+  updatePrinterPageSize( layout, printer, 0 );
 
   // TODO: add option for this in Composer
   // May not work on Windows or non-X11 Linux. Works fine on Mac using QPrinter::NativeFormat
@@ -718,23 +792,23 @@ void QgsLayoutExporter::preparePrintAsPdf( QPrinter &printer, const QString &fil
   QgsPaintEngineHack::fixEngineFlags( printer.paintEngine() );
 }
 
-void QgsLayoutExporter::preparePrint( QPrinter &printer, bool setFirstPageSize )
+void QgsLayoutExporter::preparePrint( QgsLayout *layout, QPrinter &printer, bool setFirstPageSize )
 {
   printer.setFullPage( true );
   printer.setColorMode( QPrinter::Color );
 
   //set user-defined resolution
-  printer.setResolution( mLayout->context().dpi() );
+  printer.setResolution( layout->context().dpi() );
 
   if ( setFirstPageSize )
   {
-    updatePrinterPageSize( printer, 0 );
+    updatePrinterPageSize( layout, printer, 0 );
   }
 }
 
 QgsLayoutExporter::ExportResult QgsLayoutExporter::print( QPrinter &printer )
 {
-  preparePrint( printer, true );
+  preparePrint( mLayout, printer, true );
   QPainter p;
   if ( !p.begin( &printer ) )
   {
@@ -763,11 +837,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::printPrivate( QPrinter &print
         continue;
       }
 
-      if ( i > 0 )
-      {
-        updatePrinterPageSize( printer, i );
-      }
-
+      updatePrinterPageSize( mLayout, printer, i );
       if ( ( pageExported && i > fromPage ) || startNewPage )
       {
         printer.newPage();
@@ -795,10 +865,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::printPrivate( QPrinter &print
         continue;
       }
 
-      if ( i > 0 )
-      {
-        updatePrinterPageSize( printer, i );
-      }
+      updatePrinterPageSize( mLayout, printer, i );
 
       if ( ( pageExported && i > fromPage ) || startNewPage )
       {
@@ -811,13 +878,13 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::printPrivate( QPrinter &print
   return Success;
 }
 
-void QgsLayoutExporter::updatePrinterPageSize( QPrinter &printer, int page )
+void QgsLayoutExporter::updatePrinterPageSize( QgsLayout *layout, QPrinter &printer, int page )
 {
   //must set orientation to portrait before setting paper size, otherwise size will be flipped
   //for landscape sized outputs (#11352)
   printer.setOrientation( QPrinter::Portrait );
-  QgsLayoutSize pageSize = mLayout->pageCollection()->page( page )->sizeWithUnits();
-  QgsLayoutSize pageSizeMM = mLayout->context().measurementConverter().convert( pageSize, QgsUnitTypes::LayoutMillimeters );
+  QgsLayoutSize pageSize = layout->pageCollection()->page( page )->sizeWithUnits();
+  QgsLayoutSize pageSizeMM = layout->context().measurementConverter().convert( pageSize, QgsUnitTypes::LayoutMillimeters );
   printer.setPaperSize( pageSizeMM.toQSizeF(), QPrinter::Millimeter );
 }
 

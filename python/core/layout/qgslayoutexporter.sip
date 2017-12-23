@@ -259,6 +259,20 @@ Returns a result code indicating whether the export was successful or an
 error was encountered.
 %End
 
+    static ExportResult exportToPdf( QgsAbstractLayoutIterator *iterator, const QString &fileName,
+                                     const QgsLayoutExporter::PdfExportSettings &settings,
+                                     QString &error /Out/, QgsFeedback *feedback = 0 );
+%Docstring
+Exports a layout ``iterator`` to a single PDF file, with the specified export ``settings``.
+
+The ``fileName`` argument gives the destination file name for the output PDF.
+
+Returns a result code indicating whether the export was successful or an
+error was encountered. If an error was obtained then ``error`` will be set
+to the error description.
+%End
+
+
 
     struct SvgExportSettings
     {

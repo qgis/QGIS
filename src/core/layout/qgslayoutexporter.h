@@ -267,6 +267,20 @@ class CORE_EXPORT QgsLayoutExporter
      */
     ExportResult exportToPdf( const QString &filePath, const QgsLayoutExporter::PdfExportSettings &settings );
 
+    /**
+     * Exports a layout \a iterator to a single PDF file, with the specified export \a settings.
+     *
+     * The \a fileName argument gives the destination file name for the output PDF.
+     *
+     * Returns a result code indicating whether the export was successful or an
+     * error was encountered. If an error was obtained then \a error will be set
+     * to the error description.
+     */
+    static ExportResult exportToPdf( QgsAbstractLayoutIterator *iterator, const QString &fileName,
+                                     const QgsLayoutExporter::PdfExportSettings &settings,
+                                     QString &error SIP_OUT, QgsFeedback *feedback = nullptr );
+
+
 
     //! Contains settings relating to exporting layouts to SVG
     struct SvgExportSettings
@@ -419,9 +433,9 @@ class CORE_EXPORT QgsLayoutExporter
     /**
      * Prepare a \a printer for printing a layout as a PDF, to the destination \a filePath.
      */
-    void preparePrintAsPdf( QPrinter &printer, const QString &filePath );
+    static void preparePrintAsPdf( QgsLayout *layout, QPrinter &printer, const QString &filePath );
 
-    void preparePrint( QPrinter &printer, bool setFirstPageSize = false );
+    static void preparePrint( QgsLayout *layout, QPrinter &printer, bool setFirstPageSize = false );
 
     /**
      * Convenience function that prepares the printer and prints.
@@ -438,7 +452,7 @@ class CORE_EXPORT QgsLayoutExporter
      */
     ExportResult printPrivate( QPrinter &printer, QPainter &painter, bool startNewPage = false, double dpi = -1, bool rasterize = false );
 
-    void updatePrinterPageSize( QPrinter &printer, int page );
+    static void updatePrinterPageSize( QgsLayout *layout, QPrinter &printer, int page );
 
     ExportResult renderToLayeredSvg( const SvgExportSettings &settings, double width, double height, int page, QRectF bounds,
                                      const QString &filename, int svgLayerId, const QString &layerName,

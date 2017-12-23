@@ -2291,8 +2291,172 @@ void QgsLayoutDesignerDialog::exportAtlasToSvg()
 
 void QgsLayoutDesignerDialog::exportAtlasToPdf()
 {
+  QgsLayoutAtlas *printAtlas = atlas();
+  if ( !printAtlas || !printAtlas->enabled() )
+    return;
+
   loadAtlasPredefinedScalesFromProject();
-//TODO
+  if ( containsWmsLayers() )
+  {
+    showWmsPrintingWarning();
+  }
+
+  if ( requiresRasterization() )
+  {
+    showRasterizationWarning();
+  }
+
+  if ( containsAdvancedEffects() && ( mLayout->customProperty( QStringLiteral( "forceVector" ), false ).toBool() ) )
+  {
+    showForceVectorWarning();
+  }
+
+  bool singleFile = mLayout->customProperty( QStringLiteral( "singleFile" ), true ).toBool();
+
+  QString outputFileName;
+  QgsSettings settings;
+  if ( singleFile )
+  {
+    QString lastUsedFile = settings.value( QStringLiteral( "UI/lastSaveAsPdfFile" ), QStringLiteral( "qgis.pdf" ) ).toString();
+    QFileInfo file( lastUsedFile );
+
+    QgsLayoutAtlas *printAtlas = atlas();
+    if ( printAtlas && printAtlas->enabled() && mActionAtlasPreview->isChecked() )
+    {
+      outputFileName = QDir( file.path() ).filePath( QgsFileUtils::stringToSafeFilename( printAtlas->currentFilename() ) + QStringLiteral( ".pdf" ) );
+    }
+    else
+    {
+      outputFileName = file.path() + '/' + QgsFileUtils::stringToSafeFilename( mLayout->name() ) + QStringLiteral( ".pdf" );
+    }
+
+#ifdef Q_OS_MAC
+    QgisApp::instance()->activateWindow();
+    this->raise();
+#endif
+    outputFileName = QFileDialog::getSaveFileName(
+                       this,
+                       tr( "Export to PDF" ),
+                       outputFileName,
+                       tr( "PDF Format" ) + " (*.pdf *.PDF)" );
+    this->activateWindow();
+    if ( outputFileName.isEmpty() )
+    {
+      return;
+    }
+
+    if ( !outputFileName.endsWith( QLatin1String( ".pdf" ), Qt::CaseInsensitive ) )
+    {
+      outputFileName += QLatin1String( ".pdf" );
+    }
+    settings.setValue( QStringLiteral( "UI/lastSaveAsPdfFile" ), outputFileName );
+  }
+
+  mView->setPaintingEnabled( false );
+  QApplication::setOverrideCursor( Qt::BusyCursor );
+
+  QgsLayoutExporter::PdfExportSettings pdfSettings;
+  pdfSettings.rasterizeWholeImage = mLayout->customProperty( QStringLiteral( "rasterize" ), false ).toBool();
+  pdfSettings.forceVectorOutput = mLayout->customProperty( QStringLiteral( "forceVector" ), false ).toBool();
+
+  QFileInfo fi( outputFileName );
+
+  QString error;
+  std::unique_ptr< QgsFeedback > feedback = qgis::make_unique< QgsFeedback >();
+  std::unique_ptr< QProgressDialog > progressDialog = qgis::make_unique< QProgressDialog >( tr( "Rendering maps..." ), tr( "Abort" ), 0, 100, this );
+  progressDialog->setWindowTitle( tr( "Exporting Atlas" ) );
+  connect( feedback.get(), &QgsFeedback::progressChanged, this, [ & ]( double progress )
+  {
+    progressDialog->setValue( progress );
+    progressDialog->setLabelText( feedback->property( "progress" ).toString() ) ;
+
+#ifdef Q_OS_LINUX
+    // For some reason on Windows hasPendingEvents() always return true,
+    // but one iteration is actually enough on Windows to get good interactivity
+    // whereas on Linux we must allow for far more iterations.
+    // For safety limit the number of iterations
+    int nIters = 0;
+    while ( QCoreApplication::hasPendingEvents() && ++nIters < 100 )
+#endif
+    {
+      QCoreApplication::processEvents();
+    }
+
+  } );
+  connect( progressDialog.get(), &QProgressDialog::canceled, this, [ & ]
+  {
+    feedback->cancel();
+  } );
+
+  QgsLayoutExporter::ExportResult result = QgsLayoutExporter::Success;
+  if ( singleFile )
+  {
+    result = QgsLayoutExporter::exportToPdf( printAtlas, outputFileName, pdfSettings, error, feedback.get() );
+  }
+  else
+  {
+
+  }
+
+  switch ( result )
+  {
+    case QgsLayoutExporter::Success:
+    {
+      if ( singleFile )
+      {
+        mMessageBar->pushMessage( tr( "Export atlas" ),
+                                  tr( "Successfully exported atlas to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( fi.path() ).toString(), outputFileName ),
+                                  QgsMessageBar::SUCCESS, 0 );
+      }
+      else
+      {
+        mMessageBar->pushMessage( tr( "Export atlas" ),
+                                  tr( "Successfully exported atlas to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( outputFileName ).toString(), outputFileName ),
+                                  QgsMessageBar::SUCCESS, 0 );
+      }
+      break;
+    }
+
+    case QgsLayoutExporter::FileError:
+      QMessageBox::warning( this, tr( "Export atlas" ),
+                            error, QMessageBox::Ok,
+                            QMessageBox::Ok );
+      break;
+
+    case QgsLayoutExporter::SvgLayerError:
+      // no meaning
+      break;
+
+    case QgsLayoutExporter::PrintError:
+      QMessageBox::warning( this, tr( "Export atlas" ),
+                            tr( "Could not create print device." ),
+                            QMessageBox::Ok,
+                            QMessageBox::Ok );
+      break;
+
+
+    case QgsLayoutExporter::MemoryError:
+      QMessageBox::warning( this, tr( "Memory Allocation Error" ),
+                            tr( "Exporting the PDF "
+                                "resulted in a memory overflow.\n\n"
+                                "Please try a lower resolution or a smaller paper size." ),
+                            QMessageBox::Ok, QMessageBox::Ok );
+      break;
+
+    case QgsLayoutExporter::IteratorError:
+      QMessageBox::warning( this, tr( "Atlas Export Error" ),
+                            tr( "Error encountered while exporting atlas" ),
+                            QMessageBox::Ok,
+                            QMessageBox::Ok );
+      break;
+
+    case QgsLayoutExporter::Canceled:
+      // no meaning here
+      break;
+  }
+
+  mView->setPaintingEnabled( true );
+  QApplication::restoreOverrideCursor();
 }
 
 void QgsLayoutDesignerDialog::paste()
@@ -2412,7 +2576,7 @@ void QgsLayoutDesignerDialog::createAtlasWidget()
 
   QgsPrintLayout *printLayout = qobject_cast< QgsPrintLayout * >( mLayout );
   QgsLayoutAtlas *atlas = printLayout->atlas();
-  QgsLayoutAtlasWidget *atlasWidget = new QgsLayoutAtlasWidget( mGeneralDock, printLayout );
+  QgsLayoutAtlasWidget *atlasWidget = new QgsLayoutAtlasWidget( mAtlasDock, printLayout );
   atlasWidget->setMessageBar( mMessageBar );
   mAtlasDock->setWidget( atlasWidget );
   mAtlasDock->show();

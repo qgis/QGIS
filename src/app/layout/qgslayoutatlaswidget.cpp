@@ -172,9 +172,8 @@ void QgsLayoutAtlasWidget::mAtlasSingleFileCheckBox_stateChanged( int state )
     mAtlasFilenamePatternEdit->setEnabled( true );
     mAtlasFilenameExpressionButton->setEnabled( true );
   }
-#if 0 //TODO
-  mAtlas->setSingleFile( state == Qt::Checked );
-#endif
+
+  mLayout->setCustomProperty( QStringLiteral( "singleFile" ), state == Qt::Checked );
 }
 
 void QgsLayoutAtlasWidget::mAtlasSortFeatureCheckBox_stateChanged( int state )
@@ -334,11 +333,10 @@ void QgsLayoutAtlasWidget::updateGuiElements()
   mAtlasFilenamePatternEdit->setText( mAtlas->filenameExpression() );
   mAtlasHideCoverageCheckBox->setCheckState( mAtlas->hideCoverage() ? Qt::Checked : Qt::Unchecked );
 
-#if 0 //TODO
-  mAtlasSingleFileCheckBox->setCheckState( mAtlas->singleFile() ? Qt::Checked : Qt::Unchecked );
-  mAtlasFilenamePatternEdit->setEnabled( !mAtlas->singleFile() );
-  mAtlasFilenameExpressionButton->setEnabled( !mAtlas->singleFile() );
-#endif
+  bool singleFile = mLayout->customProperty( "singleFile", true ).toBool();
+  mAtlasSingleFileCheckBox->setCheckState( singleFile ? Qt::Checked : Qt::Unchecked );
+  mAtlasFilenamePatternEdit->setEnabled( !singleFile );
+  mAtlasFilenameExpressionButton->setEnabled( !singleFile );
 
   mAtlasSortFeatureCheckBox->setCheckState( mAtlas->sortFeatures() ? Qt::Checked : Qt::Unchecked );
   mAtlasSortFeatureDirectionButton->setEnabled( mAtlas->sortFeatures() );
