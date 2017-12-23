@@ -559,6 +559,51 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( QgsAbstractLayou
   return Success;
 }
 
+QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdfs( QgsAbstractLayoutIterator *iterator, const QString &baseFilePath, const QgsLayoutExporter::PdfExportSettings &settings, QString &error, QgsFeedback *feedback )
+{
+  QgsLayoutExporter exporter( iterator->layout() );
+  error.clear();
+
+  if ( !iterator->beginRender() )
+    return IteratorError;
+
+  int total = iterator->count();
+  double step = total > 0 ? 100.0 / total : 100.0;
+  int i = 0;
+  while ( iterator->next() )
+  {
+    if ( feedback )
+    {
+      feedback->setProperty( "progress", QObject::tr( "Exporting %1 of %2" ).arg( i + 1 ).arg( total ) );
+      feedback->setProgress( step * i );
+    }
+    if ( feedback && feedback->isCanceled() )
+    {
+      iterator->endRender();
+      return Canceled;
+    }
+
+    QString filePath = iterator->filePath( baseFilePath, QStringLiteral( "pdf" ) );
+    ExportResult result = exporter.exportToPdf( filePath, settings );
+    if ( result != Success )
+    {
+      if ( result == FileError )
+        error = QObject::tr( "Cannot write to %1. This file may be open in another application." ).arg( filePath );
+      iterator->endRender();
+      return result;
+    }
+    i++;
+  }
+
+  if ( feedback )
+  {
+    feedback->setProgress( 100 );
+  }
+
+  iterator->endRender();
+  return Success;
+}
+
 QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToSvg( const QString &filePath, const QgsLayoutExporter::SvgExportSettings &s )
 {
   if ( !mLayout )

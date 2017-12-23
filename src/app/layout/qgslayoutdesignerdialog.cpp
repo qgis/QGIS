@@ -2351,6 +2351,63 @@ void QgsLayoutDesignerDialog::exportAtlasToPdf()
     }
     settings.setValue( QStringLiteral( "UI/lastSaveAsPdfFile" ), outputFileName );
   }
+  else
+  {
+    if ( printAtlas->filenameExpression().isEmpty() )
+    {
+      int res = QMessageBox::warning( nullptr, tr( "Export Atlas" ),
+                                      tr( "The filename expression is empty. A default one will be used instead." ),
+                                      QMessageBox::Ok | QMessageBox::Cancel,
+                                      QMessageBox::Ok );
+      if ( res == QMessageBox::Cancel )
+      {
+        return;
+      }
+      QString error;
+      printAtlas->setFilenameExpression( QStringLiteral( "'output_'||@atlas_featurenumber" ), error );
+    }
+
+
+    QString lastUsedDir = settings.value( QStringLiteral( "UI/lastSaveAtlasAsPdfDir" ), QDir::homePath() ).toString();
+
+    QFileDialog dlg( this, tr( "Export Atlas to Directory" ) );
+    dlg.setFileMode( QFileDialog::Directory );
+    dlg.setOption( QFileDialog::ShowDirsOnly, true );
+    dlg.setDirectory( lastUsedDir );
+    if ( !dlg.exec() )
+    {
+      return;
+    }
+
+#ifdef Q_OS_MAC
+    QgisApp::instance()->activateWindow();
+    this->raise();
+#endif
+
+    const QStringList files = dlg.selectedFiles();
+    if ( files.empty() || files.at( 0 ).isEmpty() )
+    {
+      return;
+    }
+    QString dir = files.at( 0 );
+    if ( dir.isEmpty() )
+    {
+      return;
+    }
+    settings.setValue( QStringLiteral( "UI/lastSaveAtlasAsPdfDir" ), dir );
+
+    // test directory (if it exists and is writable)
+    if ( !QDir( dir ).exists() || !QFileInfo( dir ).isWritable() )
+    {
+      QMessageBox::warning( nullptr, tr( "Unable to write into the directory" ),
+                            tr( "The given output directory is not writable. Canceling." ),
+                            QMessageBox::Ok,
+                            QMessageBox::Ok );
+      return;
+    }
+
+    outputFileName = dir;
+  }
 
   mView->setPaintingEnabled( false );
   QApplication::setOverrideCursor( Qt::BusyCursor );
@@ -2395,7 +2452,7 @@ void QgsLayoutDesignerDialog::exportAtlasToPdf()
   }
   else
   {
-
+    result = QgsLayoutExporter::exportToPdfs( printAtlas, outputFileName, pdfSettings, error, feedback.get() );
   }
 
   switch ( result )

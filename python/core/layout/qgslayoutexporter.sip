@@ -270,9 +270,25 @@ The ``fileName`` argument gives the destination file name for the output PDF.
 Returns a result code indicating whether the export was successful or an
 error was encountered. If an error was obtained then ``error`` will be set
 to the error description.
+
+.. seealso:: :py:func:`exportToPdfs()`
 %End
 
+    static ExportResult exportToPdfs( QgsAbstractLayoutIterator *iterator, const QString &baseFilePath,
+                                      const QgsLayoutExporter::PdfExportSettings &settings,
+                                      QString &error /Out/, QgsFeedback *feedback = 0 );
+%Docstring
+Exports a layout ``iterator`` to multiple PDF files, with the specified export ``settings``.
 
+The ``baseFilePath`` argument gives a base file path, which is modified by the
+iterator to obtain file paths for each iterator feature.
+
+Returns a result code indicating whether the export was successful or an
+error was encountered. If an error was obtained then ``error`` will be set
+to the error description.
+
+.. seealso:: :py:func:`exportToPdf()`
+%End
 
     struct SvgExportSettings
     {

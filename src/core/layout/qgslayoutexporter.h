@@ -275,12 +275,28 @@ class CORE_EXPORT QgsLayoutExporter
      * Returns a result code indicating whether the export was successful or an
      * error was encountered. If an error was obtained then \a error will be set
      * to the error description.
+     *
+     * \see exportToPdfs()
      */
     static ExportResult exportToPdf( QgsAbstractLayoutIterator *iterator, const QString &fileName,
                                      const QgsLayoutExporter::PdfExportSettings &settings,
                                      QString &error SIP_OUT, QgsFeedback *feedback = nullptr );
 
-
+    /**
+     * Exports a layout \a iterator to multiple PDF files, with the specified export \a settings.
+     *
+     * The \a baseFilePath argument gives a base file path, which is modified by the
+     * iterator to obtain file paths for each iterator feature.
+     *
+     * Returns a result code indicating whether the export was successful or an
+     * error was encountered. If an error was obtained then \a error will be set
+     * to the error description.
+     *
+     * \see exportToPdf()
+     */
+    static ExportResult exportToPdfs( QgsAbstractLayoutIterator *iterator, const QString &baseFilePath,
+                                      const QgsLayoutExporter::PdfExportSettings &settings,
+                                      QString &error SIP_OUT, QgsFeedback *feedback = nullptr );
 
     //! Contains settings relating to exporting layouts to SVG
     struct SvgExportSettings
