@@ -490,6 +490,7 @@ Returns the legend's renderer settings object.
 
   public slots:
 
+    void refresh();
     virtual void refreshDataDefinedProperty( const QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties );
 
 

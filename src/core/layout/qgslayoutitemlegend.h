@@ -446,6 +446,7 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
 
   public slots:
 
+    void refresh();
     void refreshDataDefinedProperty( const QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties ) override;
 
   protected:
@@ -469,7 +470,7 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
 
     //! react to atlas
     void onAtlasEnded();
-    void onAtlasFeature( QgsFeature * );
+    void onAtlasFeature();
 
     void nodeCustomPropertyChanged( QgsLayerTreeNode *node, const QString &key );
 
