@@ -340,12 +340,15 @@ class PropertyIsBetween(OgcExpression):
         
 class BBox(OgcExpression):
     """Construct a BBox, two pairs of coordinates (west-south and east-north)"""
-    def __init__(self, bbox):
+    def __init__(self, bbox, crs=None):
         self.bbox = bbox
+        self.crs = crs
     def toXML(self):
         tmp = etree.Element(util.nspath_eval('ogc:BBOX', namespaces))
         etree.SubElement(tmp, util.nspath_eval('ogc:PropertyName', namespaces)).text = 'ows:BoundingBox'
         tmp2 = etree.SubElement(tmp, util.nspath_eval('gml:Envelope', namespaces))
+        if self.crs is not None:
+            tmp2.set('srsName', self.crs)
         etree.SubElement(tmp2, util.nspath_eval('gml:lowerCorner', namespaces)).text = '%s %s' % (self.bbox[0], self.bbox[1])
         etree.SubElement(tmp2, util.nspath_eval('gml:upperCorner', namespaces)).text = '%s %s' % (self.bbox[2], self.bbox[3])
         return tmp
