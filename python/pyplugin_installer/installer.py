@@ -569,6 +569,7 @@ class QgsPluginInstaller(QObject):
             loadPlugin(pluginName)
             plugins.getAllInstalled()
             plugins.rebuild()
+            self.exportPluginsToManager()
 
             if settings.contains('/PythonPlugins/' + pluginName):
                 if settings.value('/PythonPlugins/' + pluginName, False, bool):
