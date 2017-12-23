@@ -108,7 +108,7 @@ class CORE_EXPORT QgsCoordinateTransform
      * No reference to \a project is stored or utilized outside of the constructor,
      * and it is used to retrieve the project's transform context only.
      *
-     * Python scripts should utilise the QgsProject.instance() project
+     * Python scripts should utilize the QgsProject.instance() project
      * instance when creating QgsCoordinateTransform. This will ensure
      * that any datum transforms defined in the project will be
      * correctly respected during coordinate transforms. E.g.
