@@ -115,27 +115,27 @@ Returns the squared distance between a point and a line.
 
 :return:  Whether the segments intersect
 * Example:
-\code{.py}
-ret = QgsGeometryUtils.segmentIntersection( QgsPoint( 0, 0 ), QgsPoint( 0, 1 ), QgsPoint( 1, 1 ), QgsPoint( 1, 0 ) )
-ret[0], ret[1].asWkt(), ret[2]
-# Whether the segments intersect, the intersection point, is intersect
-# (False, 'Point (0 0)', False)
-ret = QgsGeometryUtils.segmentIntersection( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 0, 5 ), QgsPoint( 1, 5 ) )
-ret[0], ret[1].asWkt(), ret[2]
-# (False, 'Point (0 5)', True)
-ret = QgsGeometryUtils.segmentIntersection( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 0, 5 ), QgsPoint( 1, 5 ), acceptImproperIntersection=True )
-ret[0], ret[1].asWkt(), ret[2]
-# (True, 'Point (0 5)', True)
-ret = QgsGeometryUtils.segmentIntersection( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 0, 2 ), QgsPoint( 1, 5 ) )
-ret[0], ret[1].asWkt(), ret[2]
-# (False, 'Point (0 2)', True)
-ret = QgsGeometryUtils.segmentIntersection( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 0, 2 ), QgsPoint( 1, 5 ), acceptImproperIntersection=True )
-ret[0], ret[1].asWkt(), ret[2]
-# (True, 'Point (0 2)', True)
-ret = QgsGeometryUtils.segmentIntersection( QgsPoint( 0, -5 ), QgsPoint( 0, 5 ), QgsPoint( 2, 0 ), QgsPoint( -1, 0 ) )
-ret[0], ret[1].asWkt(), ret[2]
-# (True, 'Point (0 0)', True)
-\endcode
+.. code-block:: python
+
+       ret = QgsGeometryUtils.segmentIntersection( QgsPoint( 0, 0 ), QgsPoint( 0, 1 ), QgsPoint( 1, 1 ), QgsPoint( 1, 0 ) )
+       ret[0], ret[1].asWkt(), ret[2]
+       # Whether the segments intersect, the intersection point, is intersect
+       # (False, 'Point (0 0)', False)
+       ret = QgsGeometryUtils.segmentIntersection( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 0, 5 ), QgsPoint( 1, 5 ) )
+       ret[0], ret[1].asWkt(), ret[2]
+       # (False, 'Point (0 5)', True)
+       ret = QgsGeometryUtils.segmentIntersection( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 0, 5 ), QgsPoint( 1, 5 ), acceptImproperIntersection=True )
+       ret[0], ret[1].asWkt(), ret[2]
+       # (True, 'Point (0 5)', True)
+       ret = QgsGeometryUtils.segmentIntersection( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 0, 2 ), QgsPoint( 1, 5 ) )
+       ret[0], ret[1].asWkt(), ret[2]
+       # (False, 'Point (0 2)', True)
+       ret = QgsGeometryUtils.segmentIntersection( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 0, 2 ), QgsPoint( 1, 5 ), acceptImproperIntersection=True )
+       ret[0], ret[1].asWkt(), ret[2]
+       # (True, 'Point (0 2)', True)
+       ret = QgsGeometryUtils.segmentIntersection( QgsPoint( 0, -5 ), QgsPoint( 0, 5 ), QgsPoint( 2, 0 ), QgsPoint( -1, 0 ) )
+       ret[0], ret[1].asWkt(), ret[2]
+       # (True, 'Point (0 0)', True)
 %End
 
     static QgsPoint projPointOnSegment( const QgsPoint &p, const QgsPoint &s1, const QgsPoint &s2 );
