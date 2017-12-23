@@ -626,7 +626,7 @@ QString QgsLayoutItemLegend::displayName() const
   QString text = mSettings.title();
   if ( text.isEmpty() )
   {
-    return tr( "<legend>" );
+    return tr( "<Legend>" );
   }
   if ( text.length() > 25 )
   {
