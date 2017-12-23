@@ -63,11 +63,6 @@ class CORE_EXPORT QgsLayoutItemAbstractMetadata
     int type() const { return mType; }
 
     /**
-     * Returns an icon representing the layout item type.
-     */
-    virtual QIcon icon() const { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddBasicRectangle.svg" ) ); }
-
-    /**
      * Returns a translated, user visible name for the layout item class.
      */
     QString visibleName() const { return mVisibleName; }
@@ -119,11 +114,10 @@ class CORE_EXPORT QgsLayoutItemMetadata : public QgsLayoutItemAbstractMetadata
      * Constructor for QgsLayoutItemMetadata with the specified class \a type
      * and \a visibleName, and function pointers for the various item creation functions.
      */
-    QgsLayoutItemMetadata( int type, const QString &visibleName, const QIcon &icon,
+    QgsLayoutItemMetadata( int type, const QString &visibleName,
                            QgsLayoutItemCreateFunc pfCreate,
                            QgsLayoutItemPathResolverFunc pfPathResolver = nullptr )
       : QgsLayoutItemAbstractMetadata( type, visibleName )
-      , mIcon( icon )
       , mCreateFunc( pfCreate )
       , mPathResolverFunc( pfPathResolver )
     {}
@@ -138,7 +132,6 @@ class CORE_EXPORT QgsLayoutItemMetadata : public QgsLayoutItemAbstractMetadata
      */
     QgsLayoutItemPathResolverFunc pathResolverFunction() const { return mPathResolverFunc; }
 
-    QIcon icon() const override { return mIcon.isNull() ? QgsLayoutItemAbstractMetadata::icon() : mIcon; }
     QgsLayoutItem *createItem( QgsLayout *layout ) override { return mCreateFunc ? mCreateFunc( layout ) : nullptr; }
 
     void resolvePaths( QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving ) override
@@ -148,7 +141,6 @@ class CORE_EXPORT QgsLayoutItemMetadata : public QgsLayoutItemAbstractMetadata
     }
 
   protected:
-    QIcon mIcon;
     QgsLayoutItemCreateFunc mCreateFunc = nullptr;
     QgsLayoutItemPathResolverFunc mPathResolverFunc = nullptr;
 
@@ -243,11 +235,10 @@ class CORE_EXPORT QgsLayoutMultiFrameMetadata : public QgsLayoutMultiFrameAbstra
      * Constructor for QgsLayoutMultiFrameMetadata with the specified class \a type
      * and \a visibleName, and function pointers for the various item creation functions.
      */
-    QgsLayoutMultiFrameMetadata( int type, const QString &visibleName, const QIcon &icon,
+    QgsLayoutMultiFrameMetadata( int type, const QString &visibleName,
                                  QgsLayoutMultiFrameCreateFunc pfCreate,
                                  QgsLayoutMultiFramePathResolverFunc pfPathResolver = nullptr )
       : QgsLayoutMultiFrameAbstractMetadata( type, visibleName )
-      , mIcon( icon )
       , mCreateFunc( pfCreate )
       , mPathResolverFunc( pfPathResolver )
     {}
@@ -262,7 +253,6 @@ class CORE_EXPORT QgsLayoutMultiFrameMetadata : public QgsLayoutMultiFrameAbstra
      */
     QgsLayoutMultiFramePathResolverFunc pathResolverFunction() const { return mPathResolverFunc; }
 
-    QIcon icon() const override { return mIcon.isNull() ? QgsLayoutMultiFrameAbstractMetadata::icon() : mIcon; }
     QgsLayoutMultiFrame *createMultiFrame( QgsLayout *layout ) override { return mCreateFunc ? mCreateFunc( layout ) : nullptr; }
 
     void resolvePaths( QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving ) override
@@ -272,7 +262,6 @@ class CORE_EXPORT QgsLayoutMultiFrameMetadata : public QgsLayoutMultiFrameAbstra
     }
 
   protected:
-    QIcon mIcon;
     QgsLayoutMultiFrameCreateFunc mCreateFunc = nullptr;
     QgsLayoutMultiFramePathResolverFunc mPathResolverFunc = nullptr;
 
