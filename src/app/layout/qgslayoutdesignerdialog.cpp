@@ -2058,10 +2058,7 @@ void QgsLayoutDesignerDialog::exportAtlasToRaster()
     return;
   }
   QString dir = files.at( 0 );
-#if 0 //TODO
-  QString format = printAtlas->fileFormat();
-#endif
-  QString format = "png";
+  QString format = mLayout->customProperty( QStringLiteral( "atlasRasterFormat" ), QStringLiteral( "png" ) ).toString();
   QString fileExt = '.' + format;
   if ( dir.isEmpty() )
   {

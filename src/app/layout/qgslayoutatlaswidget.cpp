@@ -314,11 +314,9 @@ void QgsLayoutAtlasWidget::mAtlasSortFeatureDirectionButton_clicked()
 
 void QgsLayoutAtlasWidget::changeFileFormat()
 {
-#if 0 //TODO
-  QgsAtlasComposition *atlasMap = mAtlas;
-  atlasMap->setFileFormat( mAtlasFileFormat->currentText() );
-#endif
+  mLayout->setCustomProperty( QStringLiteral( "atlasRasterFormat" ), mAtlasFileFormat->currentText() );
 }
+
 void QgsLayoutAtlasWidget::updateGuiElements()
 {
   blockAllSignals( true );
@@ -353,9 +351,7 @@ void QgsLayoutAtlasWidget::updateGuiElements()
   mAtlasFeatureFilterEdit->setEnabled( mAtlas->filterFeatures() );
   mAtlasFeatureFilterButton->setEnabled( mAtlas->filterFeatures() );
 
-#if 0 //TODO
-  mAtlasFileFormat->setCurrentIndex( mAtlasFileFormat->findText( mAtlas->fileFormat() ) );
-#endif
+  mAtlasFileFormat->setCurrentIndex( mAtlasFileFormat->findText( mLayout->customProperty( QStringLiteral( "atlasRasterFormat" ), QStringLiteral( "png" ) ).toString() ) );
 
   blockAllSignals( false );
 }
