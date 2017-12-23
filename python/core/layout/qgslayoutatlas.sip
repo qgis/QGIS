@@ -280,11 +280,39 @@ Returns the current feature number, where a value of 0 corresponds to the first 
 
     virtual bool next();
 
-    virtual bool previous();
 
-    virtual bool first();
+    bool previous();
+%Docstring
+Iterates to the previous feature, returning false if no previous feature exists.
 
-    virtual bool last();
+.. seealso:: :py:func:`next()`
+
+.. seealso:: :py:func:`last()`
+
+.. seealso:: :py:func:`first()`
+%End
+
+    bool last();
+%Docstring
+Seeks to the last feature, returning false if no feature was found.
+
+.. seealso:: :py:func:`next()`
+
+.. seealso:: :py:func:`previous()`
+
+.. seealso:: :py:func:`first()`
+%End
+
+    bool first();
+%Docstring
+Seeks to the first feature, returning false if no feature was found.
+
+.. seealso:: :py:func:`next()`
+
+.. seealso:: :py:func:`previous()`
+
+.. seealso:: :py:func:`last()`
+%End
 
     bool seekTo( int feature );
 

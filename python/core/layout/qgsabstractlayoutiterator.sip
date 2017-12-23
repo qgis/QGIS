@@ -49,46 +49,8 @@ Returns the number of features to iterate over.
     virtual bool next() = 0;
 %Docstring
 Iterates to next feature, returning false if no more features exist to iterate over.
-
-.. seealso:: :py:func:`previous()`
-
-.. seealso:: :py:func:`last()`
-
-.. seealso:: :py:func:`first()`
 %End
 
-    virtual bool previous() = 0;
-%Docstring
-Iterates to the previous feature, returning false if no previous feature exists.
-
-.. seealso:: :py:func:`next()`
-
-.. seealso:: :py:func:`last()`
-
-.. seealso:: :py:func:`first()`
-%End
-
-    virtual bool last() = 0;
-%Docstring
-Seeks to the last feature, returning false if no feature was found.
-
-.. seealso:: :py:func:`next()`
-
-.. seealso:: :py:func:`previous()`
-
-.. seealso:: :py:func:`first()`
-%End
-
-    virtual bool first() = 0;
-%Docstring
-Seeks to the first feature, returning false if no feature was found.
-
-.. seealso:: :py:func:`next()`
-
-.. seealso:: :py:func:`previous()`
-
-.. seealso:: :py:func:`last()`
-%End
 };
 
 

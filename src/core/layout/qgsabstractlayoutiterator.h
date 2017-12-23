@@ -45,35 +45,9 @@ class CORE_EXPORT QgsAbstractLayoutIterator
 
     /**
      * Iterates to next feature, returning false if no more features exist to iterate over.
-     * \see previous()
-     * \see last()
-     * \see first()
      */
     virtual bool next() = 0;
 
-    /**
-     * Iterates to the previous feature, returning false if no previous feature exists.
-     * \see next()
-     * \see last()
-     * \see first()
-     */
-    virtual bool previous() = 0;
-
-    /**
-     * Seeks to the last feature, returning false if no feature was found.
-     * \see next()
-     * \see previous()
-     * \see first()
-     */
-    virtual bool last() = 0;
-
-    /**
-     * Seeks to the first feature, returning false if no feature was found.
-     * \see next()
-     * \see previous()
-     * \see last()
-     */
-    virtual bool first() = 0;
 };
 
 #endif //QGSABSTRACTLAYOUTITERATOR_H

@@ -251,9 +251,31 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutItera
   public slots:
 
     bool next() override;
-    bool previous() override;
-    bool first() override;
-    bool last() override;
+
+    /**
+     * Iterates to the previous feature, returning false if no previous feature exists.
+     * \see next()
+     * \see last()
+     * \see first()
+     */
+    bool previous();
+
+    /**
+     * Seeks to the last feature, returning false if no feature was found.
+     * \see next()
+     * \see previous()
+     * \see first()
+     */
+    bool last();
+
+    /**
+     * Seeks to the first feature, returning false if no feature was found.
+     * \see next()
+     * \see previous()
+     * \see last()
+     */
+    bool first();
+
     bool seekTo( int feature );
 
     /**
