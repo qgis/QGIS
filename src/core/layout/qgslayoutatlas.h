@@ -242,6 +242,7 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutItera
     bool beginRender() override;
     bool endRender() override;
     int count() const override;
+    QString filePath( const QString &baseFilePath, const QString &extension ) override;
 
     /**
      * Returns the current feature number, where a value of 0 corresponds to the first feature.
@@ -366,9 +367,6 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutItera
     // current atlas feature number
     int mCurrentFeatureNo = 0;
     QgsFeature mCurrentFeature;
-
-    // projected geometry cache
-    mutable QMap<long, QgsGeometry> mGeometryCache;
 
     QgsExpressionContext createExpressionContext();
 

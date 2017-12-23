@@ -338,6 +338,15 @@ int QgsLayoutAtlas::count() const
   return mFeatureIds.size();
 }
 
+QString QgsLayoutAtlas::filePath( const QString &baseFilePath, const QString &extension )
+{
+  QString base = QDir( baseFilePath ).filePath( mCurrentFilename );
+  if ( !extension.startsWith( '.' ) )
+    base += '.';
+  base += extension;
+  return base;
+}
+
 bool QgsLayoutAtlas::next()
 {
   int newFeatureNo = mCurrentFeatureNo + 1;
@@ -497,8 +506,6 @@ bool QgsLayoutAtlas::prepareForFeature( const int featureI )
     return false;
   }
 
-  mGeometryCache.clear();
-
   mLayout->context().blockSignals( true ); // setFeature emits changed, we don't want 2 signals
   mLayout->context().setLayer( mCoverageLayer.get() );
   mLayout->context().blockSignals( false );
@@ -507,59 +514,6 @@ bool QgsLayoutAtlas::prepareForFeature( const int featureI )
   emit featureChanged( mCurrentFeature );
   emit messagePushed( QString( tr( "Atlas feature %1 of %2" ) ).arg( featureI + 1 ).arg( mFeatureIds.size() ) );
 
-  if ( !mCurrentFeature.isValid() )
-  {
-    //bad feature
-    return false;
-  }
-
-#if 0 //TODO - move to map
-  //update composer maps
-
-  //build a list of atlas-enabled composer maps
-  QList<QgsComposerMap *> maps;
-  QList<QgsComposerMap *> atlasMaps;
-  mComposition->composerItems( maps );
-  if ( maps.isEmpty() )
-  {
-    return true;
-  }
-  for ( QList<QgsComposerMap *>::iterator mit = maps.begin(); mit != maps.end(); ++mit )
-  {
-    QgsComposerMap *currentMap = ( *mit );
-    if ( !currentMap->atlasDriven() )
-    {
-      continue;
-    }
-    atlasMaps << currentMap;
-  }
-
-  if ( !atlasMaps.isEmpty() )
-  {
-    //clear the transformed bounds of the previous feature
-    mTransformedFeatureBounds = QgsRectangle();
-
-    // compute extent of current feature in the map CRS. This should be set on a per-atlas map basis,
-    // but given that it's not currently possible to have maps with different CRSes we can just
-    // calculate it once based on the first atlas maps' CRS.
-    computeExtent( atlasMaps[0] );
-  }
-
-  for ( QList<QgsComposerMap *>::iterator mit = maps.begin(); mit != maps.end(); ++mit )
-  {
-    if ( ( *mit )->atlasDriven() )
-    {
-      // map is atlas driven, so update it's bounds (causes a redraw)
-      prepareMap( *mit );
-    }
-    else
-    {
-      // map is not atlas driven, so manually force a redraw (to reflect possibly atlas
-      // dependent symbology)
-      ( *mit )->invalidateCache();
-    }
-  }
-#endif
-  return true;
+  return mCurrentFeature.isValid();
 }
 

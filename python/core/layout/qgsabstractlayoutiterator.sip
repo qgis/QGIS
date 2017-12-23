@@ -28,6 +28,11 @@ the Free Software Foundation; either version 2 of the License, or     *
 
     virtual ~QgsAbstractLayoutIterator();
 
+    virtual QgsLayout *layout() = 0;
+%Docstring
+Returns the layout associated with the iterator.
+%End
+
     virtual bool beginRender() = 0;
 %Docstring
 Called when rendering begins, before iteration commences. Returns true if successful, false if no iteration
@@ -49,6 +54,12 @@ Returns the number of features to iterate over.
     virtual bool next() = 0;
 %Docstring
 Iterates to next feature, returning false if no more features exist to iterate over.
+%End
+
+    virtual QString filePath( const QString &baseFilePath, const QString &extension ) = 0;
+%Docstring
+Returns the file path for the current feature, based on a
+specified base file path and extension.
 %End
 
 };

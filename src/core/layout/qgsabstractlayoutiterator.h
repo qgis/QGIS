@@ -17,7 +17,9 @@
 #define QGSABSTRACTLAYOUTITERATOR_H
 
 #include "qgis_core.h"
+#include <QString>
 
+class QgsLayout;
 
 class CORE_EXPORT QgsAbstractLayoutIterator
 {
@@ -25,6 +27,11 @@ class CORE_EXPORT QgsAbstractLayoutIterator
   public:
 
     virtual ~QgsAbstractLayoutIterator() = default;
+
+    /**
+     * Returns the layout associated with the iterator.
+     */
+    virtual QgsLayout *layout() = 0;
 
     /**
      * Called when rendering begins, before iteration commences. Returns true if successful, false if no iteration
@@ -47,6 +54,12 @@ class CORE_EXPORT QgsAbstractLayoutIterator
      * Iterates to next feature, returning false if no more features exist to iterate over.
      */
     virtual bool next() = 0;
+
+    /**
+     * Returns the file path for the current feature, based on a
+     * specified base file path and extension.
+     */
+    virtual QString filePath( const QString &baseFilePath, const QString &extension ) = 0;
 
 };
 

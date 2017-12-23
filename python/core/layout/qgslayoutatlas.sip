@@ -270,6 +270,8 @@ number of matching features.
 
     virtual int count() const;
 
+    virtual QString filePath( const QString &baseFilePath, const QString &extension );
+
 
     int currentFeatureNumber() const;
 %Docstring
