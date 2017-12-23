@@ -79,7 +79,9 @@ The map keys will be :py:func:`QgsCoordinateReferenceSystems.authid()`s.
 If either the source transform ID or destination transform ID is -1, then no datum transform is
 required for transformations for that source or destination.
 
-\warning This method should not be used to calculate the corresponding datum transforms
+.. warning::
+
+   This method should not be used to calculate the corresponding datum transforms
 to use for a coordinate transform. Instead, always use calculateDatumTransforms()
 to determine this.
 

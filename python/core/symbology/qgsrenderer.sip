@@ -115,7 +115,10 @@ be followed by a corresponding call to stopRender() after all features have been
 
 .. seealso:: :py:func:`stopRender()`
 
-\warning This method is not thread safe. Before calling startRender() in a non-main thread,
+
+.. warning::
+
+   This method is not thread safe. Before calling startRender() in a non-main thread,
 the renderer should instead be cloned and startRender()/stopRender() called on the clone.
 %End
 
@@ -125,7 +128,9 @@ Must be called when a render cycle has finished, to allow the renderer to clean 
 
 Calls to stopRender() must always be preceded by a call to startRender().
 
-\warning This method is not thread safe. Before calling startRender() in a non-main thread,
+.. warning::
+
+   This method is not thread safe. Before calling startRender() in a non-main thread,
 the renderer should instead be cloned and startRender()/stopRender() called on the clone.
 
 .. seealso:: :py:func:`startRender()`

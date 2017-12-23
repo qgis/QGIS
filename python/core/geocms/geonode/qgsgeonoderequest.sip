@@ -103,7 +103,9 @@ Any existing request will be aborted.
 
 Calling this method does not block while waiting for a result.
 
-\warning When using the non-blocking methods in this class, sending
+.. warning::
+
+   When using the non-blocking methods in this class, sending
 overlapping requests results in undefined behavior. Use separate instances
 of QgsGeoNodeRequest instead to avoid this.
 
@@ -129,7 +131,9 @@ with the result.
 
 This method is non-blocking and returns immediately.
 
-\warning When using the non-blocking methods in this class, sending
+.. warning::
+
+   When using the non-blocking methods in this class, sending
 overlapping requests results in undefined behavior. Use separate instances
 of QgsGeoNodeRequest instead to avoid this.
 

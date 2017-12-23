@@ -912,7 +912,10 @@ More information here: http://qt-project.org/forums/viewthread/27098
 %Docstring
 Registers a locator ``filter`` for the app's locator bar. Ownership of the filter is transferred to the
 locator.
-\warning Plugins which register filters to the locator bar must take care to correctly call
+
+.. warning::
+
+   Plugins which register filters to the locator bar must take care to correctly call
 deregisterLocatorFilter() and deregister their filters upon plugin unload to avoid crashes.
 
 .. seealso:: :py:func:`deregisterLocatorFilter()`
