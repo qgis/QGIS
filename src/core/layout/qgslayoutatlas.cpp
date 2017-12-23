@@ -206,6 +206,7 @@ class AtlasFeatureSorter
 
 int QgsLayoutAtlas::updateFeatures()
 {
+  mCurrentFeatureNo = -1;
   if ( !mCoverageLayer )
   {
     return 0;

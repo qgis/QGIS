@@ -365,7 +365,7 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutItera
     // id of each iterated feature (after filtering and sorting) paired with atlas page name
     QVector< QPair<QgsFeatureId, QString> > mFeatureIds;
     // current atlas feature number
-    int mCurrentFeatureNo = 0;
+    int mCurrentFeatureNo = -1;
     QgsFeature mCurrentFeature;
 
     QgsExpressionContext createExpressionContext();

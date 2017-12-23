@@ -120,10 +120,12 @@ Returns the rendered image, or a null QImage if the image does not fit into avai
     enum ExportResult
     {
       Success,
+      Canceled,
       MemoryError,
       FileError,
       PrintError,
       SvgLayerError,
+      IteratorError,
     };
 
     struct ImageExportSettings
@@ -197,6 +199,22 @@ Returns a result code indicating whether the export was successful or an
 error was encountered. If an error code is returned, errorFile() can be called
 to determine the filename for the export which encountered the error.
 %End
+
+
+    static ExportResult exportToImage( QgsAbstractLayoutIterator *iterator, const QString &baseFilePath,
+                                       const QString &extension, const QgsLayoutExporter::ImageExportSettings &settings,
+                                       QString &error /Out/, QgsFeedback *feedback = 0 );
+%Docstring
+Exports a layout ``iterator`` to raster images, with the specified export ``settings``.
+
+The ``baseFilePath`` argument gives a base file path, which is modified by the
+iterator to obtain file paths for each iterator feature.
+
+Returns a result code indicating whether the export was successful or an
+error was encountered. If an error was obtained then ``error`` will be set
+to the error description.
+%End
+
 
     struct PdfExportSettings
     {

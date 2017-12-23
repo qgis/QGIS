@@ -27,6 +27,7 @@
 class QgsLayout;
 class QPainter;
 class QgsLayoutItemMap;
+class QgsAbstractLayoutIterator;
 
 /**
  * \ingroup core
@@ -129,10 +130,12 @@ class CORE_EXPORT QgsLayoutExporter
     enum ExportResult
     {
       Success, //!< Export was successful
+      Canceled, //!< Export was canceled
       MemoryError, //!< Unable to allocate memory required to export
       FileError, //!< Could not write to destination file, likely due to a lock held by another application
       PrintError, //!< Could not start printing to destination device
       SvgLayerError, //!< Could not create layered SVG file
+      IteratorError, //!< Error iterating over layout
     };
 
     //! Contains settings relating to exporting layouts to raster images
@@ -205,6 +208,22 @@ class CORE_EXPORT QgsLayoutExporter
      * to determine the filename for the export which encountered the error.
      */
     ExportResult exportToImage( const QString &filePath, const QgsLayoutExporter::ImageExportSettings &settings );
+
+
+    /**
+     * Exports a layout \a iterator to raster images, with the specified export \a settings.
+     *
+     * The \a baseFilePath argument gives a base file path, which is modified by the
+     * iterator to obtain file paths for each iterator feature.
+     *
+     * Returns a result code indicating whether the export was successful or an
+     * error was encountered. If an error was obtained then \a error will be set
+     * to the error description.
+     */
+    static ExportResult exportToImage( QgsAbstractLayoutIterator *iterator, const QString &baseFilePath,
+                                       const QString &extension, const QgsLayoutExporter::ImageExportSettings &settings,
+                                       QString &error SIP_OUT, QgsFeedback *feedback = nullptr );
+
 
     //! Contains settings relating to exporting layouts to PDF
     struct PdfExportSettings
