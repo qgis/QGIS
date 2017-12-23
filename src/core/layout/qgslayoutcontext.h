@@ -49,7 +49,10 @@ class CORE_EXPORT QgsLayoutContext : public QObject
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
-    QgsLayoutContext();
+    /**
+     * Constructor for QgsLayoutContext.
+     */
+    QgsLayoutContext( QgsLayout *layout SIP_TRANSFERTHIS );
 
     /**
      * Sets the combination of \a flags that will be used for rendering the layout.
@@ -244,6 +247,8 @@ class CORE_EXPORT QgsLayoutContext : public QObject
   private:
 
     Flags mFlags = nullptr;
+
+    QgsLayout *mLayout = nullptr;
 
     int mCurrentExportLayer = -1;
 

@@ -32,7 +32,10 @@ class QgsLayoutContext : QObject
     typedef QFlags<QgsLayoutContext::Flag> Flags;
 
 
-    QgsLayoutContext();
+    QgsLayoutContext( QgsLayout *layout /TransferThis/ );
+%Docstring
+Constructor for QgsLayoutContext.
+%End
 
     void setFlags( const QgsLayoutContext::Flags flags );
 %Docstring

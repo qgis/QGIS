@@ -16,10 +16,12 @@
 
 #include "qgslayoutcontext.h"
 #include "qgsfeature.h"
+#include "qgslayout.h"
 
-
-QgsLayoutContext::QgsLayoutContext()
-  : mFlags( FlagAntialiasing | FlagUseAdvancedEffects )
+QgsLayoutContext::QgsLayoutContext( QgsLayout *layout )
+  : QObject( layout )
+  , mFlags( FlagAntialiasing | FlagUseAdvancedEffects )
+  , mLayout( layout )
 {}
 
 void QgsLayoutContext::setFlags( const QgsLayoutContext::Flags flags )

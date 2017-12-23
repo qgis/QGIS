@@ -18,7 +18,6 @@
 
 #include "qgis_core.h"
 #include <QGraphicsScene>
-#include "qgslayoutcontext.h"
 #include "qgslayoutsnapper.h"
 #include "qgsexpressioncontextgenerator.h"
 #include "qgslayoutgridsettings.h"
@@ -30,6 +29,7 @@ class QgsLayoutModel;
 class QgsLayoutMultiFrame;
 class QgsLayoutPageCollection;
 class QgsLayoutUndoStack;
+class QgsLayoutContext;
 
 /**
  * \ingroup core
@@ -318,13 +318,13 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      * Returns a reference to the layout's context, which stores information relating to the
      * current context and rendering settings for the layout.
      */
-    QgsLayoutContext &context() { return mContext; }
+    QgsLayoutContext &context();
 
     /**
      * Returns a reference to the layout's context, which stores information relating to the
      * current context and rendering settings for the layout.
      */
-    SIP_SKIP const QgsLayoutContext &context() const { return mContext; }
+    SIP_SKIP const QgsLayoutContext &context() const;
 
     /**
      * Returns a reference to the layout's snapper, which stores handles layout snap grids and lines
@@ -629,7 +629,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     QgsObjectCustomProperties mCustomProperties;
 
     QgsUnitTypes::LayoutUnit mUnits = QgsUnitTypes::LayoutMillimeters;
-    QgsLayoutContext mContext;
+    QgsLayoutContext *mContext = nullptr;
     QgsLayoutSnapper mSnapper;
     QgsLayoutGridSettings mGridSettings;
 

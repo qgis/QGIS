@@ -75,14 +75,14 @@ void TestQgsLayoutContext::cleanup()
 
 void TestQgsLayoutContext::creation()
 {
-  QgsLayoutContext *context = new QgsLayoutContext();
+  QgsLayoutContext *context = new QgsLayoutContext( nullptr );
   QVERIFY( context );
   delete context;
 }
 
 void TestQgsLayoutContext::flags()
 {
-  QgsLayoutContext context;
+  QgsLayoutContext context( nullptr );
   QSignalSpy spyFlagsChanged( &context, &QgsLayoutContext::flagsChanged );
 
   //test getting and setting flags
@@ -108,7 +108,7 @@ void TestQgsLayoutContext::flags()
 
 void TestQgsLayoutContext::feature()
 {
-  QgsLayoutContext context;
+  QgsLayoutContext context( nullptr );
 
   //test removing feature
   context.setFeature( QgsFeature() );
@@ -124,7 +124,7 @@ void TestQgsLayoutContext::feature()
 
 void TestQgsLayoutContext::layer()
 {
-  QgsLayoutContext context;
+  QgsLayoutContext context( nullptr );
 
   //test clearing layer
   context.setLayer( nullptr );
@@ -144,7 +144,7 @@ void TestQgsLayoutContext::layer()
 
 void TestQgsLayoutContext::dpi()
 {
-  QgsLayoutContext context;
+  QgsLayoutContext context( nullptr );
 
   QSignalSpy spyDpiChanged( &context, &QgsLayoutContext::dpiChanged );
   context.setDpi( 600 );
@@ -160,7 +160,7 @@ void TestQgsLayoutContext::dpi()
 
 void TestQgsLayoutContext::renderContextFlags()
 {
-  QgsLayoutContext context;
+  QgsLayoutContext context( nullptr );
   context.setFlags( 0 );
   QgsRenderContext::Flags flags = context.renderContextFlags();
   QVERIFY( !( flags & QgsRenderContext::Antialiasing ) );
@@ -182,7 +182,7 @@ void TestQgsLayoutContext::renderContextFlags()
 
 void TestQgsLayoutContext::boundingBoxes()
 {
-  QgsLayoutContext context;
+  QgsLayoutContext context( nullptr );
   context.setBoundingBoxesVisible( false );
   QVERIFY( !context.boundingBoxesVisible() );
   context.setBoundingBoxesVisible( true );
@@ -191,7 +191,7 @@ void TestQgsLayoutContext::boundingBoxes()
 
 void TestQgsLayoutContext::exportLayer()
 {
-  QgsLayoutContext context;
+  QgsLayoutContext context( nullptr );
   // must default to -1
   QCOMPARE( context.currentExportLayer(), -1 );
   context.setCurrentExportLayer( 1 );
