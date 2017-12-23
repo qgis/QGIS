@@ -41,6 +41,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsmessageviewer.h"
 #include "qgsgui.h"
+#include "qgsfeedback.h"
 #include "qgslayoutitemguiregistry.h"
 #include "qgslayoutpropertieswidget.h"
 #include "qgslayoutruler.h"
@@ -69,6 +70,7 @@
 #include <QTreeView>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QProgressDialog>
 #ifdef Q_OS_MACX
 #include <ApplicationServices/ApplicationServices.h>
 #endif
@@ -1490,50 +1492,12 @@ void QgsLayoutDesignerDialog::exportToRaster()
   if ( containsWmsLayers() )
     showWmsPrintingWarning();
 
-  // Image size
-  double oneInchInLayoutUnits = mLayout->convertToLayoutUnits( QgsLayoutMeasurement( 1, QgsUnitTypes::LayoutInches ) );
-  QSizeF maxPageSize = mLayout->pageCollection()->maximumPageSize();
-  bool hasUniformPageSizes = mLayout->pageCollection()->hasUniformPageSizes();
-  int width = ( int )( mLayout->context().dpi() * maxPageSize.width() / oneInchInLayoutUnits );
-  int height = ( int )( mLayout->context().dpi() * maxPageSize.height() / oneInchInLayoutUnits );
-  double dpi = mLayout->context().dpi();
-
-  int memuse = width * height * 3 / 1000000;  // pixmap + image
-  QgsDebugMsg( QString( "Image %1x%2" ).arg( width ).arg( height ) );
-  QgsDebugMsg( QString( "memuse = %1" ).arg( memuse ) );
-
-  if ( memuse > 400 )   // about 4500x4500
-  {
-    int answer = QMessageBox::warning( this, tr( "Export layout" ),
-                                       tr( "To create an image of %1x%2 requires about %3 MB of memory. Proceed?" )
-                                       .arg( width ).arg( height ).arg( memuse ),
-                                       QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok );
-
-    raise();
-    if ( answer == QMessageBox::Cancel )
-      return;
-  }
-
-  //get some defaults from the composition
-  bool cropToContents = mLayout->customProperty( QStringLiteral( "imageCropToContents" ), false ).toBool();
-  int marginTop = mLayout->customProperty( QStringLiteral( "imageCropMarginTop" ), 0 ).toInt();
-  int marginRight = mLayout->customProperty( QStringLiteral( "imageCropMarginRight" ), 0 ).toInt();
-  int marginBottom = mLayout->customProperty( QStringLiteral( "imageCropMarginBottom" ), 0 ).toInt();
-  int marginLeft = mLayout->customProperty( QStringLiteral( "imageCropMarginLeft" ), 0 ).toInt();
-  bool antialias = mLayout->customProperty( QStringLiteral( "imageAntialias" ), true ).toBool();
-
-  QgsLayoutImageExportOptionsDialog imageDlg( this );
-  imageDlg.setImageSize( maxPageSize );
-  imageDlg.setResolution( dpi );
-  imageDlg.setCropToContents( cropToContents );
-  imageDlg.setCropMargins( marginTop, marginRight, marginBottom, marginLeft );
-  imageDlg.setGenerateWorldFile( mLayout->customProperty( QStringLiteral( "exportWorldFile" ), false ).toBool() );
-  imageDlg.setAntialiasing( antialias );
-
-  QgsLayoutAtlas *printAtlas = atlas();
+  if ( !showFileSizeWarning() )
+    return;
 
   QgsSettings s;
   QString outputFileName = QgsFileUtils::stringToSafeFilename( mLayout->name() );
+  QgsLayoutAtlas *printAtlas = atlas();
   if ( printAtlas && printAtlas->enabled() && mActionAtlasPreview->isChecked() )
   {
     QString lastUsedDir = s.value( QStringLiteral( "UI/lastSaveAsImageDir" ), QDir::homePath() ).toString();
@@ -1552,18 +1516,10 @@ void QgsLayoutDesignerDialog::exportToRaster()
     return;
   }
 
-  if ( !imageDlg.exec() )
+  QgsLayoutExporter::ImageExportSettings settings;
+  QSize imageSize;
+  if ( !getRasterExportSettings( settings, imageSize ) )
     return;
-
-  cropToContents = imageDlg.cropToContents();
-  imageDlg.getCropMargins( marginTop, marginRight, marginBottom, marginLeft );
-  mLayout->setCustomProperty( QStringLiteral( "imageCropToContents" ), cropToContents );
-  mLayout->setCustomProperty( QStringLiteral( "imageCropMarginTop" ), marginTop );
-  mLayout->setCustomProperty( QStringLiteral( "imageCropMarginRight" ), marginRight );
-  mLayout->setCustomProperty( QStringLiteral( "imageCropMarginBottom" ), marginBottom );
-  mLayout->setCustomProperty( QStringLiteral( "imageCropMarginLeft" ), marginLeft );
-
-  mLayout->setCustomProperty( QStringLiteral( "imageAntialias" ), imageDlg.antialiasing() );
 
   mView->setPaintingEnabled( false );
   QApplication::setOverrideCursor( Qt::BusyCursor );
@@ -1572,19 +1528,6 @@ void QgsLayoutDesignerDialog::exportToRaster()
   mLayout->refresh();
 
   QgsLayoutExporter exporter( mLayout );
-
-  QgsLayoutExporter::ImageExportSettings settings;
-  settings.cropToContents = cropToContents;
-  settings.cropMargins = QgsMargins( marginLeft, marginTop, marginRight, marginBottom );
-  settings.dpi = imageDlg.resolution();
-  if ( hasUniformPageSizes )
-  {
-    settings.imageSize = QSize( imageDlg.imageWidth(), imageDlg.imageHeight() );
-  }
-  settings.generateWorldFile = imageDlg.generateWorldFile();
-  settings.flags = QgsLayoutContext::FlagUseAdvancedEffects;
-  if ( imageDlg.antialiasing() )
-    settings.flags |= QgsLayoutContext::FlagAntialiasing;
 
   QFileInfo fi( fileNExt.first );
   switch ( exporter.exportToImage( fileNExt.first, settings ) )
@@ -1597,6 +1540,8 @@ void QgsLayoutDesignerDialog::exportToRaster()
 
     case QgsLayoutExporter::PrintError:
     case QgsLayoutExporter::SvgLayerError:
+    case QgsLayoutExporter::IteratorError:
+    case QgsLayoutExporter::Canceled:
       // no meaning for raster exports, will not be encountered
       break;
 
@@ -1612,7 +1557,7 @@ void QgsLayoutDesignerDialog::exportToRaster()
                             tr( "Trying to create image %1 (%2×%3 @ %4dpi ) "
                                 "resulted in a memory overflow.\n\n"
                                 "Please try a lower resolution or a smaller paper size." )
-                            .arg( exporter.errorFile() ).arg( imageDlg.imageWidth() ).arg( imageDlg.imageHeight() ).arg( settings.dpi ),
+                            .arg( exporter.errorFile() ).arg( imageSize.width() ).arg( imageSize.height() ).arg( settings.dpi ),
                             QMessageBox::Ok, QMessageBox::Ok );
       break;
 
@@ -1722,6 +1667,8 @@ void QgsLayoutDesignerDialog::exportToPdf()
       break;
 
     case QgsLayoutExporter::SvgLayerError:
+    case QgsLayoutExporter::IteratorError:
+    case QgsLayoutExporter::Canceled:
       // no meaning for PDF exports, will not be encountered
       break;
   }
@@ -1872,6 +1819,11 @@ void QgsLayoutDesignerDialog::exportToSvg()
                                 "resulted in a memory overflow.\n\n"
                                 "Please try a lower resolution or a smaller paper size." ),
                             QMessageBox::Ok, QMessageBox::Ok );
+      break;
+
+    case QgsLayoutExporter::IteratorError:
+    case QgsLayoutExporter::Canceled:
+      // no meaning here
       break;
   }
 
@@ -2067,9 +2019,155 @@ void QgsLayoutDesignerDialog::printAtlas()
 
 void QgsLayoutDesignerDialog::exportAtlasToRaster()
 {
-  loadAtlasPredefinedScalesFromProject();
-  //TODO
+  QgsLayoutAtlas *printAtlas = atlas();
+  if ( !printAtlas || !printAtlas->enabled() )
+    return;
 
+  loadAtlasPredefinedScalesFromProject();
+
+  // else, it has an atlas to render, so a directory must first be selected
+  if ( printAtlas->filenameExpression().isEmpty() )
+  {
+    int res = QMessageBox::warning( nullptr, tr( "Export Atlas" ),
+                                    tr( "The filename expression is empty. A default one will be used instead." ),
+                                    QMessageBox::Ok | QMessageBox::Cancel,
+                                    QMessageBox::Ok );
+    if ( res == QMessageBox::Cancel )
+    {
+      return;
+    }
+    QString error;
+    printAtlas->setFilenameExpression( QStringLiteral( "'output_'||@atlas_featurenumber" ), error );
+  }
+
+  QgsSettings s;
+  QString lastUsedDir = s.value( QStringLiteral( "UI/lastSaveAtlasAsImagesDir" ), QDir::homePath() ).toString();
+
+  QFileDialog dlg( this, tr( "Export Atlas to Directory" ) );
+  dlg.setFileMode( QFileDialog::Directory );
+  dlg.setOption( QFileDialog::ShowDirsOnly, true );
+  dlg.setDirectory( lastUsedDir );
+  if ( !dlg.exec() )
+  {
+    return;
+  }
+
+  const QStringList files = dlg.selectedFiles();
+  if ( files.empty() || files.at( 0 ).isEmpty() )
+  {
+    return;
+  }
+  QString dir = files.at( 0 );
+#if 0 //TODO
+  QString format = printAtlas->fileFormat();
+#endif
+  QString format = "png";
+  QString fileExt = '.' + format;
+  if ( dir.isEmpty() )
+  {
+    return;
+  }
+  s.setValue( QStringLiteral( "UI/lastSaveAtlasAsImagesDir" ), dir );
+
+  // test directory (if it exists and is writable)
+  if ( !QDir( dir ).exists() || !QFileInfo( dir ).isWritable() )
+  {
+    QMessageBox::warning( nullptr, tr( "Unable to write into the directory" ),
+                          tr( "The given output directory is not writable. Canceling." ),
+                          QMessageBox::Ok,
+                          QMessageBox::Ok );
+    return;
+  }
+
+  if ( containsWmsLayers() )
+    showWmsPrintingWarning();
+
+  if ( !showFileSizeWarning() )
+    return;
+
+#ifdef Q_OS_MAC
+  QgisApp::instance()->activateWindow();
+  this->raise();
+#endif
+
+  QgsLayoutExporter::ImageExportSettings settings;
+  QSize imageSize;
+  if ( !getRasterExportSettings( settings, imageSize ) )
+    return;
+
+  mView->setPaintingEnabled( false );
+  QApplication::setOverrideCursor( Qt::BusyCursor );
+
+  // force a refresh, to e.g. update data defined properties, tables, etc
+  mLayout->refresh();
+
+  QString error;
+  std::unique_ptr< QgsFeedback > feedback = qgis::make_unique< QgsFeedback >();
+  std::unique_ptr< QProgressDialog > progressDialog = qgis::make_unique< QProgressDialog >( tr( "Rendering maps..." ), tr( "Abort" ), 0, 100, this );
+  progressDialog->setWindowTitle( tr( "Exporting Atlas" ) );
+  connect( feedback.get(), &QgsFeedback::progressChanged, this, [ & ]( double progress )
+  {
+    progressDialog->setValue( progress );
+    progressDialog->setLabelText( feedback->property( "progress" ).toString() ) ;
+
+#ifdef Q_OS_LINUX
+    // For some reason on Windows hasPendingEvents() always return true,
+    // but one iteration is actually enough on Windows to get good interactivity
+    // whereas on Linux we must allow for far more iterations.
+    // For safety limit the number of iterations
+    int nIters = 0;
+    while ( QCoreApplication::hasPendingEvents() && ++nIters < 100 )
+#endif
+    {
+      QCoreApplication::processEvents();
+    }
+
+  } );
+  connect( progressDialog.get(), &QProgressDialog::canceled, this, [ & ]
+  {
+    feedback->cancel();
+  } );
+
+  QgsLayoutExporter::ExportResult result = QgsLayoutExporter::exportToImage( printAtlas, dir, fileExt, settings, error, feedback.get() );
+  switch ( result )
+  {
+    case QgsLayoutExporter::Success:
+      mMessageBar->pushMessage( tr( "Export atlas" ),
+                                tr( "Successfully exported atlas to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( dir ).toString(), dir ),
+                                QgsMessageBar::SUCCESS, 0 );
+      break;
+
+    case QgsLayoutExporter::IteratorError:
+      QMessageBox::warning( this, tr( "Atlas Export Error" ),
+                            tr( "Error encountered while exporting atlas" ),
+                            QMessageBox::Ok,
+                            QMessageBox::Ok );
+      break;
+
+    case QgsLayoutExporter::PrintError:
+    case QgsLayoutExporter::SvgLayerError:
+    case QgsLayoutExporter::Canceled:
+      // no meaning for raster exports, will not be encountered
+      break;
+
+    case QgsLayoutExporter::FileError:
+      QMessageBox::warning( this, tr( "Image Export Error" ),
+                            error,
+                            QMessageBox::Ok,
+                            QMessageBox::Ok );
+      break;
+
+    case QgsLayoutExporter::MemoryError:
+      QMessageBox::warning( this, tr( "Memory Allocation Error" ),
+                            tr( "Trying to create image of %2×%3 @ %4dpi "
+                                "resulted in a memory overflow.\n\n"
+                                "Please try a lower resolution or a smaller paper size." )
+                            .arg( imageSize.width() ).arg( imageSize.height() ).arg( settings.dpi ),
+                            QMessageBox::Ok, QMessageBox::Ok );
+      break;
+  }
+  QApplication::restoreOverrideCursor();
+  mView->setPaintingEnabled( true );
 }
 
 void QgsLayoutDesignerDialog::exportAtlasToSvg()
@@ -2354,6 +2452,83 @@ void QgsLayoutDesignerDialog::showForceVectorWarning()
   {
     settings.setValue( QStringLiteral( "LayoutDesigner/hideForceVectorWarning" ), true, QgsSettings::App );
   }
+}
+
+bool QgsLayoutDesignerDialog::showFileSizeWarning()
+{
+  // Image size
+  double oneInchInLayoutUnits = mLayout->convertToLayoutUnits( QgsLayoutMeasurement( 1, QgsUnitTypes::LayoutInches ) );
+  QSizeF maxPageSize = mLayout->pageCollection()->maximumPageSize();
+  int width = ( int )( mLayout->context().dpi() * maxPageSize.width() / oneInchInLayoutUnits );
+  int height = ( int )( mLayout->context().dpi() * maxPageSize.height() / oneInchInLayoutUnits );
+  int memuse = width * height * 3 / 1000000;  // pixmap + image
+  QgsDebugMsg( QString( "Image %1x%2" ).arg( width ).arg( height ) );
+  QgsDebugMsg( QString( "memuse = %1" ).arg( memuse ) );
+
+  if ( memuse > 400 )   // about 4500x4500
+  {
+    int answer = QMessageBox::warning( this, tr( "Export layout" ),
+                                       tr( "To create an image of %1x%2 requires about %3 MB of memory. Proceed?" )
+                                       .arg( width ).arg( height ).arg( memuse ),
+                                       QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok );
+
+    raise();
+    if ( answer == QMessageBox::Cancel )
+      return false;
+  }
+  return true;
+}
+
+bool QgsLayoutDesignerDialog::getRasterExportSettings( QgsLayoutExporter::ImageExportSettings &settings, QSize &imageSize )
+{
+  // Image size
+  QSizeF maxPageSize = mLayout->pageCollection()->maximumPageSize();
+  bool hasUniformPageSizes = mLayout->pageCollection()->hasUniformPageSizes();
+  double dpi = mLayout->context().dpi();
+
+  //get some defaults from the composition
+  bool cropToContents = mLayout->customProperty( QStringLiteral( "imageCropToContents" ), false ).toBool();
+  int marginTop = mLayout->customProperty( QStringLiteral( "imageCropMarginTop" ), 0 ).toInt();
+  int marginRight = mLayout->customProperty( QStringLiteral( "imageCropMarginRight" ), 0 ).toInt();
+  int marginBottom = mLayout->customProperty( QStringLiteral( "imageCropMarginBottom" ), 0 ).toInt();
+  int marginLeft = mLayout->customProperty( QStringLiteral( "imageCropMarginLeft" ), 0 ).toInt();
+  bool antialias = mLayout->customProperty( QStringLiteral( "imageAntialias" ), true ).toBool();
+
+  QgsLayoutImageExportOptionsDialog imageDlg( this );
+  imageDlg.setImageSize( maxPageSize );
+  imageDlg.setResolution( dpi );
+  imageDlg.setCropToContents( cropToContents );
+  imageDlg.setCropMargins( marginTop, marginRight, marginBottom, marginLeft );
+  imageDlg.setGenerateWorldFile( mLayout->customProperty( QStringLiteral( "exportWorldFile" ), false ).toBool() );
+  imageDlg.setAntialiasing( antialias );
+
+  if ( !imageDlg.exec() )
+    return false;
+
+  imageSize = QSize( imageDlg.imageWidth(), imageDlg.imageHeight() );
+  cropToContents = imageDlg.cropToContents();
+  imageDlg.getCropMargins( marginTop, marginRight, marginBottom, marginLeft );
+  mLayout->setCustomProperty( QStringLiteral( "imageCropToContents" ), cropToContents );
+  mLayout->setCustomProperty( QStringLiteral( "imageCropMarginTop" ), marginTop );
+  mLayout->setCustomProperty( QStringLiteral( "imageCropMarginRight" ), marginRight );
+  mLayout->setCustomProperty( QStringLiteral( "imageCropMarginBottom" ), marginBottom );
+  mLayout->setCustomProperty( QStringLiteral( "imageCropMarginLeft" ), marginLeft );
+
+  mLayout->setCustomProperty( QStringLiteral( "imageAntialias" ), imageDlg.antialiasing() );
+
+  settings.cropToContents = cropToContents;
+  settings.cropMargins = QgsMargins( marginLeft, marginTop, marginRight, marginBottom );
+  settings.dpi = imageDlg.resolution();
+  if ( hasUniformPageSizes )
+  {
+    settings.imageSize = imageSize;
+  }
+  settings.generateWorldFile = imageDlg.generateWorldFile();
+  settings.flags = QgsLayoutContext::FlagUseAdvancedEffects;
+  if ( imageDlg.antialiasing() )
+    settings.flags |= QgsLayoutContext::FlagAntialiasing;
+
+  return true;
 }
 
 void QgsLayoutDesignerDialog::toggleAtlasControls( bool atlasEnabled )

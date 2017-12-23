@@ -19,6 +19,7 @@
 
 #include "ui_qgslayoutdesignerbase.h"
 #include "qgslayoutdesignerinterface.h"
+#include "qgslayoutexporter.h"
 #include <QToolButton>
 
 class QgsLayoutDesignerDialog;
@@ -407,6 +408,10 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     //! Displays a warning because of incompatibility between blend modes and QPrinter
     void showRasterizationWarning();
     void showForceVectorWarning();
+
+    bool showFileSizeWarning();
+    bool getRasterExportSettings( QgsLayoutExporter::ImageExportSettings &settings, QSize &imageSize );
+
 
     void toggleAtlasActions( bool enabled );
 
