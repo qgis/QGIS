@@ -29,6 +29,7 @@
 #include "qgslayoutmapgridwidget.h"
 #include "qgsstyle.h"
 #include "qgslayoutundostack.h"
+#include "qgslayoutatlas.h"
 #include <QMenu>
 #include <QMessageBox>
 
@@ -111,17 +112,14 @@ QgsLayoutMapWidget::QgsLayoutMapWidget( QgsLayoutItemMap *item )
 
   connect( item, &QgsLayoutObject::changed, this, &QgsLayoutMapWidget::updateGuiElements );
 
-#if 0 //TODO
-  QgsAtlasComposition *atlas = atlasComposition();
-  if ( atlas )
+  connect( &item->layout()->context(), &QgsLayoutContext::layerChanged,
+           this, &QgsLayoutMapWidget::atlasLayerChanged );
+  if ( QgsLayoutAtlas *atlas = layoutAtlas() )
   {
-    connect( atlas, &QgsAtlasComposition::coverageLayerChanged,
-             this, &QgsLayoutMapWidget::atlasLayerChanged );
-    connect( atlas, &QgsAtlasComposition::toggled, this, &QgsLayoutMapWidget::compositionAtlasToggled );
-
+    connect( atlas, &QgsLayoutAtlas::toggled, this, &QgsLayoutMapWidget::compositionAtlasToggled );
     compositionAtlasToggled( atlas->enabled() );
   }
-#endif
+
   mOverviewFrameMapComboBox->setCurrentLayout( item->layout() );
   mOverviewFrameMapComboBox->setItemType( QgsLayoutItemRegistry::LayoutMap );
   mOverviewFrameStyleButton->registerExpressionContextGenerator( item );
@@ -196,11 +194,9 @@ void QgsLayoutMapWidget::populateDataDefinedButtons()
 
 void QgsLayoutMapWidget::compositionAtlasToggled( bool atlasEnabled )
 {
-  Q_UNUSED( atlasEnabled );
-#if 0 //TODO
   if ( atlasEnabled &&
-       mMapItem && mMapItem->composition() && mMapItem->composition()->atlasComposition().coverageLayer()
-       && mMapItem->composition()->atlasComposition().coverageLayer()->wkbType() != QgsWkbTypes::NoGeometry )
+       mMapItem && mMapItem->layout() && mMapItem->layout()->context().layer()
+       && mMapItem->layout()->context().layer()->wkbType() != QgsWkbTypes::NoGeometry )
   {
     mAtlasCheckBox->setEnabled( true );
   }
@@ -209,7 +205,6 @@ void QgsLayoutMapWidget::compositionAtlasToggled( bool atlasEnabled )
     mAtlasCheckBox->setEnabled( false );
     mAtlasCheckBox->setChecked( false );
   }
-#endif
 }
 
 void QgsLayoutMapWidget::aboutToShowKeepLayersVisibilityPresetsMenu()
@@ -387,31 +382,16 @@ void QgsLayoutMapWidget::mAtlasCheckBox_toggled( bool checked )
 
 void QgsLayoutMapWidget::updateMapForAtlas()
 {
-#if 0 //TODO
   //update map if in atlas preview mode
-  QgsComposition *composition = mMapItem->composition();
-  if ( !composition )
-  {
-    return;
-  }
-  if ( composition->atlasMode() == QgsComposition::AtlasOff )
-  {
-    return;
-  }
-
   if ( mMapItem->atlasDriven() )
   {
-    //update atlas based extent for map
-    QgsAtlasComposition *atlas = &composition->atlasComposition();
-    //prepareMap causes a redraw
-    atlas->prepareMap( mMapItem );
+    mMapItem->refresh();
   }
   else
   {
     //redraw map
     mMapItem->invalidateCache();
   }
-#endif
 }
 
 void QgsLayoutMapWidget::mAtlasMarginRadio_toggled( bool checked )
@@ -708,15 +688,14 @@ void QgsLayoutMapWidget::toggleAtlasScalingOptionsByLayerType()
     return;
   }
 
-#if 0 //TODO
   //get atlas coverage layer
-  QgsVectorLayer *coverageLayer = atlasCoverageLayer();
-  if ( !coverageLayer )
+  QgsVectorLayer *layer = coverageLayer();
+  if ( !layer )
   {
     return;
   }
 
-  switch ( coverageLayer->wkbType() )
+  switch ( layer->wkbType() )
   {
     case QgsWkbTypes::Point:
     case QgsWkbTypes::Point25D:
@@ -732,7 +711,6 @@ void QgsLayoutMapWidget::toggleAtlasScalingOptionsByLayerType()
       mAtlasMarginRadio->setEnabled( true );
       mAtlasPredefinedScaleRadio->setEnabled( true );
   }
-#endif
 }
 
 void QgsLayoutMapWidget::updateComposerExtentFromGui()
@@ -1066,8 +1044,6 @@ void QgsLayoutMapWidget::initAnnotationDirectionBox( QComboBox *c, QgsLayoutItem
 
 void QgsLayoutMapWidget::atlasLayerChanged( QgsVectorLayer *layer )
 {
-  Q_UNUSED( layer );
-#if 0 //TODO
   if ( !layer || layer->wkbType() == QgsWkbTypes::NoGeometry )
   {
     //geometryless layer, disable atlas control
@@ -1083,7 +1059,6 @@ void QgsLayoutMapWidget::atlasLayerChanged( QgsVectorLayer *layer )
   // enable or disable fixed scale control based on layer type
   if ( mAtlasCheckBox->isChecked() )
     toggleAtlasScalingOptionsByLayerType();
-#endif
 }
 
 bool QgsLayoutMapWidget::hasPredefinedScales() const

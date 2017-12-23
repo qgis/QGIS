@@ -531,6 +531,9 @@ associated legend items know they should update
 
   public slots:
 
+    virtual void refresh();
+
+
     virtual void invalidateCache();
 
 

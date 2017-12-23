@@ -123,6 +123,14 @@ QgsLayoutItemMap *QgsLayoutItemMap::create( QgsLayout *layout )
   return new QgsLayoutItemMap( layout );
 }
 
+void QgsLayoutItemMap::refresh()
+{
+  QgsLayoutItem::refresh();
+  invalidateCache();
+
+  updateAtlasFeature();
+}
+
 double QgsLayoutItemMap::scale() const
 {
   QgsScaleCalculator calculator;
@@ -1797,5 +1805,159 @@ void QgsLayoutItemMap::refreshMapExtents( const QgsExpressionContext *context )
   {
     mEvaluatedMapRotation = mapRotation;
     emit mapRotationChanged( mapRotation );
+  }
+}
+
+void QgsLayoutItemMap::updateAtlasFeature()
+{
+  if ( !atlasDriven() || !mLayout->context().layer() )
+    return; // nothing to do
+
+  QgsRectangle bounds = computeAtlasRectangle();
+  if ( bounds.isNull() )
+    return;
+
+  double xa1 = bounds.xMinimum();
+  double xa2 = bounds.xMaximum();
+  double ya1 = bounds.yMinimum();
+  double ya2 = bounds.yMaximum();
+  QgsRectangle newExtent = bounds;
+  QgsRectangle originalExtent = mExtent;
+
+  //sanity check - only allow fixed scale mode for point layers
+  bool isPointLayer = false;
+  switch ( mLayout->context().layer()->wkbType() )
+  {
+    case QgsWkbTypes::Point:
+    case QgsWkbTypes::Point25D:
+    case QgsWkbTypes::MultiPoint:
+    case QgsWkbTypes::MultiPoint25D:
+      isPointLayer = true;
+      break;
+    default:
+      isPointLayer = false;
+      break;
+  }
+
+  if ( mAtlasScalingMode == Fixed || mAtlasScalingMode == Predefined || isPointLayer )
+  {
+    QgsScaleCalculator calc;
+    calc.setMapUnits( crs().mapUnits() );
+    calc.setDpi( 25.4 );
+    double originalScale = calc.calculate( originalExtent, rect().width() );
+    double geomCenterX = ( xa1 + xa2 ) / 2.0;
+    double geomCenterY = ( ya1 + ya2 ) / 2.0;
+
+    if ( mAtlasScalingMode == Fixed || isPointLayer )
+    {
+      // only translate, keep the original scale (i.e. width x height)
+      double xMin = geomCenterX - originalExtent.width() / 2.0;
+      double yMin = geomCenterY - originalExtent.height() / 2.0;
+      newExtent = QgsRectangle( xMin,
+                                yMin,
+                                xMin + originalExtent.width(),
+                                yMin + originalExtent.height() );
+
+      //scale newExtent to match original scale of map
+      //this is required for geographic coordinate systems, where the scale varies by extent
+      double newScale = calc.calculate( newExtent, rect().width() );
+      newExtent.scale( originalScale / newScale );
+    }
+    else if ( mAtlasScalingMode == Predefined )
+    {
+      // choose one of the predefined scales
+      double newWidth = originalExtent.width();
+      double newHeight = originalExtent.height();
+      QVector<qreal> scales = mLayout->context().predefinedScales();
+      for ( int i = 0; i < scales.size(); i++ )
+      {
+        double ratio = scales[i] / originalScale;
+        newWidth = originalExtent.width() * ratio;
+        newHeight = originalExtent.height() * ratio;
+
+        // compute new extent, centered on feature
+        double xMin = geomCenterX - newWidth / 2.0;
+        double yMin = geomCenterY - newHeight / 2.0;
+        newExtent = QgsRectangle( xMin,
+                                  yMin,
+                                  xMin + newWidth,
+                                  yMin + newHeight );
+
+        //scale newExtent to match desired map scale
+        //this is required for geographic coordinate systems, where the scale varies by extent
+        double newScale = calc.calculate( newExtent, rect().width() );
+        newExtent.scale( scales[i] / newScale );
+
+        if ( ( newExtent.width() >= bounds.width() ) && ( newExtent.height() >= bounds.height() ) )
+        {
+          // this is the smallest extent that embeds the feature, stop here
+          break;
+        }
+      }
+    }
+  }
+  else if ( mAtlasScalingMode == Auto )
+  {
+    // auto scale
+
+    double geomRatio = bounds.width() / bounds.height();
+    double mapRatio = originalExtent.width() / originalExtent.height();
+
+    // geometry height is too big
+    if ( geomRatio < mapRatio )
+    {
+      // extent the bbox's width
+      double adjWidth = ( mapRatio * bounds.height() - bounds.width() ) / 2.0;
+      xa1 -= adjWidth;
+      xa2 += adjWidth;
+    }
+    // geometry width is too big
+    else if ( geomRatio > mapRatio )
+    {
+      // extent the bbox's height
+      double adjHeight = ( bounds.width() / mapRatio - bounds.height() ) / 2.0;
+      ya1 -= adjHeight;
+      ya2 += adjHeight;
+    }
+    newExtent = QgsRectangle( xa1, ya1, xa2, ya2 );
+
+    if ( mAtlasMargin > 0.0 )
+    {
+      newExtent.scale( 1 + mAtlasMargin );
+    }
+  }
+
+  // set the new extent (and render)
+  setExtent( newExtent );
+}
+
+QgsRectangle QgsLayoutItemMap::computeAtlasRectangle()
+{
+  // QgsGeometry::boundingBox is expressed in the geometry"s native CRS
+  // We have to transform the geometry to the destination CRS and ask for the bounding box
+  // Note: we cannot directly take the transformation of the bounding box, since transformations are not linear
+  QgsGeometry g = mLayout->context().currentGeometry( crs() );
+  // Rotating the geometry, so the bounding box is correct wrt map rotation
+  if ( mEvaluatedMapRotation != 0.0 )
+  {
+    QgsPointXY prevCenter = g.boundingBox().center();
+    g.rotate( mEvaluatedMapRotation, g.boundingBox().center() );
+    // Rotation center will be still the bounding box center of an unrotated geometry.
+    // Which means, if the center of bbox moves after rotation, the viewport will
+    // also be offset, and part of the geometry will fall out of bounds.
+    // Here we compensate for that roughly: by extending the rotated bounds
+    // so that its center is the same as the original.
+    QgsRectangle bounds = g.boundingBox();
+    double dx = std::max( std::abs( prevCenter.x() - bounds.xMinimum() ),
+                          std::abs( prevCenter.x() - bounds.xMaximum() ) );
+    double dy = std::max( std::abs( prevCenter.y() - bounds.yMinimum() ),
+                          std::abs( prevCenter.y() - bounds.yMaximum() ) );
+    QgsPointXY center = g.boundingBox().center();
+    return QgsRectangle( center.x() - dx, center.y() - dy,
+                         center.x() + dx, center.y() + dy );
+  }
+  else
+  {
+    return g.boundingBox();
   }
 }
