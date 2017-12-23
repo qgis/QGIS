@@ -104,7 +104,21 @@ Returns the current feature for evaluating the layout. This feature may
 be used for altering an item's content and appearance for a report
 or atlas layout.
 
+.. seealso:: :py:func:`currentGeometry()`
+
 .. seealso:: :py:func:`setFeature()`
+%End
+
+    QgsGeometry currentGeometry( const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() ) const;
+%Docstring
+Returns the current feature() geometry in the given ``crs``.
+If no CRS is specified, the original feature geometry is returned.
+
+Reprojection only works if a valid layer is set for layer().
+
+.. seealso:: :py:func:`feature()`
+
+.. seealso:: :py:func:`layer()`
 %End
 
     QgsVectorLayer *layer() const;

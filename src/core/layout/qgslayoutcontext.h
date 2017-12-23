@@ -107,9 +107,21 @@ class CORE_EXPORT QgsLayoutContext : public QObject
      * Returns the current feature for evaluating the layout. This feature may
      * be used for altering an item's content and appearance for a report
      * or atlas layout.
+     * \see currentGeometry()
      * \see setFeature()
      */
     QgsFeature feature() const { return mFeature; }
+
+    /**
+     * Returns the current feature() geometry in the given \a crs.
+     * If no CRS is specified, the original feature geometry is returned.
+     *
+     * Reprojection only works if a valid layer is set for layer().
+     *
+     * \see feature()
+     * \see layer()
+     */
+    QgsGeometry currentGeometry( const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() ) const;
 
     /**
      * Returns the vector layer associated with the layout's context.
@@ -261,6 +273,9 @@ class CORE_EXPORT QgsLayoutContext : public QObject
     bool mGridVisible = false;
     bool mBoundingBoxesVisible = true;
     bool mPagesVisible = true;
+
+    // projected geometry cache
+    mutable QMap<long, QgsGeometry> mGeometryCache;
 
     friend class QgsLayoutExporter;
     friend class TestQgsLayout;

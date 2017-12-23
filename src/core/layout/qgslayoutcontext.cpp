@@ -74,7 +74,40 @@ QgsRenderContext::Flags QgsLayoutContext::renderContextFlags() const
 void QgsLayoutContext::setFeature( const QgsFeature &feature )
 {
   mFeature = feature;
+  mGeometryCache.clear();
   emit changed();
+}
+
+QgsGeometry QgsLayoutContext::currentGeometry( const QgsCoordinateReferenceSystem &crs ) const
+{
+  if ( !crs.isValid() )
+  {
+    // no projection, return the native geometry
+    return mFeature.geometry();
+  }
+
+  if ( !mLayer || !mFeature.isValid() || !mFeature.hasGeometry() )
+  {
+    return QgsGeometry();
+  }
+
+  if ( mLayer->crs() == crs )
+  {
+    // no projection, return the native geometry
+    return mFeature.geometry();
+  }
+
+  auto it = mGeometryCache.constFind( crs.srsid() );
+  if ( it != mGeometryCache.constEnd() )
+  {
+    // we have it in cache, return it
+    return it.value();
+  }
+
+  QgsGeometry transformed = mFeature.geometry();
+  transformed.transform( QgsCoordinateTransform( mLayer->crs(), crs, mLayout->project() ) );
+  mGeometryCache[crs.srsid()] = transformed;
+  return transformed;
 }
 
 QgsVectorLayer *QgsLayoutContext::layer() const

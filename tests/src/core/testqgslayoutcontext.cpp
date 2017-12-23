@@ -19,6 +19,9 @@
 #include "qgis.h"
 #include "qgsfeature.h"
 #include "qgsvectorlayer.h"
+#include "qgsgeometry.h"
+#include "qgsproject.h"
+#include "qgslayout.h"
 #include <QObject>
 #include "qgstest.h"
 #include <QtTest/QSignalSpy>
@@ -40,6 +43,7 @@ class TestQgsLayoutContext: public QObject
     void renderContextFlags();
     void boundingBoxes();
     void exportLayer();
+    void geometry();
 
   private:
     QString mReport;
@@ -196,6 +200,46 @@ void TestQgsLayoutContext::exportLayer()
   QCOMPARE( context.currentExportLayer(), -1 );
   context.setCurrentExportLayer( 1 );
   QCOMPARE( context.currentExportLayer(), 1 );
+}
+
+void TestQgsLayoutContext::geometry()
+{
+  QgsProject p;
+  QgsLayout l( &p );
+  QgsLayoutContext context( &l );
+
+  // no feature set
+  QVERIFY( context.currentGeometry().isNull() );
+  QVERIFY( context.currentGeometry( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ) ).isNull() );
+
+  // no layer set
+  QgsFeature f;
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "LineString( 144 -38, 145 -39 )" ) ) );
+  context.setFeature( f );
+  QCOMPARE( context.currentGeometry().asWkt(), f.geometry().asWkt() );
+  QVERIFY( context.currentGeometry( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ) ).isNull() );
+
+  //with layer
+  QgsVectorLayer *layer = new QgsVectorLayer( QStringLiteral( "Point?crs=EPSG:4326&field=id_a:integer" ), QStringLiteral( "A" ), QStringLiteral( "memory" ) );
+  context.setLayer( layer );
+
+  QCOMPARE( context.currentGeometry().asWkt(), f.geometry().asWkt() );
+  QVERIFY( !context.currentGeometry( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ) ).isNull() );
+  QCOMPARE( context.currentGeometry( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ) ).asWkt( 0 ), QStringLiteral( "LineString (2412169 2388563, 2500000 2277996)" ) );
+
+  // should be cached
+  QCOMPARE( context.currentGeometry( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ) ).asWkt( 0 ), QStringLiteral( "LineString (2412169 2388563, 2500000 2277996)" ) );
+
+  // layer crs
+  QCOMPARE( context.currentGeometry( layer->crs() ).asWkt(), f.geometry().asWkt() );
+
+  // clear cache
+  QgsFeature f2;
+  context.setFeature( f2 );
+  QVERIFY( context.currentGeometry().isNull() );
+  QVERIFY( context.currentGeometry( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ) ).isNull() );
+
+  delete layer;
 }
 
 QGSTEST_MAIN( TestQgsLayoutContext )
