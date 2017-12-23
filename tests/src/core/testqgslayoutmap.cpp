@@ -55,6 +55,7 @@ class TestQgsLayoutMap : public QObject
     void dataDefinedLayers(); //test data defined layer string
     void dataDefinedStyles(); //test data defined styles
     void rasterized();
+    void layersToRender();
 
   private:
     QgsRasterLayer *mRasterLayer = nullptr;
@@ -501,6 +502,28 @@ void TestQgsLayoutMap::rasterized()
   grid->setBlendMode( QPainter::CompositionMode_SourceOver );
   QVERIFY( !map->containsAdvancedEffects() );
   QVERIFY( checker.testLayout( mReport, 0, 0 ) );
+}
+
+void TestQgsLayoutMap::layersToRender()
+{
+  QList<QgsMapLayer *> layers = QList<QgsMapLayer *>() << mRasterLayer << mPolysLayer << mPointsLayer << mLinesLayer;
+  QList<QgsMapLayer *> layers2 = QList<QgsMapLayer *>() << mRasterLayer << mPolysLayer << mLinesLayer;
+
+  QgsLayout l( QgsProject::instance() );
+
+  QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
+  map->setLayers( layers );
+  l.addLayoutItem( map );
+
+  QCOMPARE( map->layersToRender(), layers );
+
+  // hide coverage layer
+  l.context().setLayer( mPointsLayer );
+  l.context().setFlag( QgsLayoutContext::FlagHideCoverageLayer, true );
+  QCOMPARE( map->layersToRender(), layers2 );
+
+  l.context().setFlag( QgsLayoutContext::FlagHideCoverageLayer, false );
+  QCOMPARE( map->layersToRender(), layers );
 }
 
 QGSTEST_MAIN( TestQgsLayoutMap )

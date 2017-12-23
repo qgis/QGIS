@@ -46,6 +46,7 @@ class CORE_EXPORT QgsLayoutContext : public QObject
       FlagAntialiasing = 1 << 3, //!< Use antialiasing when drawing items.
       FlagUseAdvancedEffects = 1 << 4, //!< Enable advanced effects such as blend modes.
       FlagForceVectorOutput = 1 << 5, //!< Force output in vector format where possible, even if items require rasterization to keep their correct appearance.
+      FlagHideCoverageLayer = 1 << 6, //!< Hide coverage layer in outputs
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 

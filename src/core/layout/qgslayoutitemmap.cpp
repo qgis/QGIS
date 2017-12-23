@@ -1400,22 +1400,17 @@ QList<QgsMapLayer *> QgsLayoutItemMap::layersToRender( const QgsExpressionContex
     }
   }
 
-#if 0 //TODO
   //remove atlas coverage layer if required
-  //TODO - move setting for hiding coverage layer to map item properties
-  if ( mLayout->atlasMode() != QgsComposition::AtlasOff )
+  if ( mLayout->context().flags() & QgsLayoutContext::FlagHideCoverageLayer )
   {
-    if ( mComposition->atlasComposition().hideCoverage() )
+    //hiding coverage layer
+    int removeAt = renderLayers.indexOf( mLayout->context().layer() );
+    if ( removeAt != -1 )
     {
-      //hiding coverage layer
-      int removeAt = renderLayers.indexOf( mComposition->atlasComposition().coverageLayer() );
-      if ( removeAt != -1 )
-      {
-        renderLayers.removeAt( removeAt );
-      }
+      renderLayers.removeAt( removeAt );
     }
   }
-#endif
+
   return renderLayers;
 }
 

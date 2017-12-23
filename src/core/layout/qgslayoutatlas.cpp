@@ -384,14 +384,8 @@ void QgsLayoutAtlas::setHideCoverage( bool hide )
 {
   mHideCoverage = hide;
 
-#if 0 //TODO
-  if ( mComposition->atlasMode() == QgsComposition::PreviewAtlas )
-  {
-    //an atlas preview is enabled, so reflect changes in coverage layer visibility immediately
-    updateAtlasMaps();
-    mComposition->update();
-  }
-#endif
+  mLayout->context().setFlag( QgsLayoutContext::FlagHideCoverageLayer, hide );
+  mLayout->refresh();
 }
 
 bool QgsLayoutAtlas::setFilenameExpression( const QString &pattern, QString &errorString )
@@ -410,12 +404,10 @@ QgsExpressionContext QgsLayoutAtlas::createExpressionContext()
   QgsExpressionContext expressionContext;
   expressionContext << QgsExpressionContextUtils::globalScope();
   if ( mLayout )
-    expressionContext << QgsExpressionContextUtils::projectScope( mLayout->project() );
-#if 0 //TODO
-      << QgsExpressionContextUtils::compositionScope( mLayout );
+    expressionContext << QgsExpressionContextUtils::projectScope( mLayout->project() )
+                      << QgsExpressionContextUtils::layoutScope( mLayout );
 
   expressionContext.appendScope( QgsExpressionContextUtils::atlasScope( this ) );
-#endif
 
   if ( mCoverageLayer )
     expressionContext.lastScope()->setFields( mCoverageLayer->fields() );
