@@ -275,7 +275,7 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
      * used to temporarily halt painting while exporting layouts.
      * \note Not available in Python bindings.
      */
-    void setPaintingEnabled( bool enabled ) { mPaintingEnabled = enabled; } SIP_SKIP
+    void setPaintingEnabled( bool enabled ); SIP_SKIP
 
   public slots:
 

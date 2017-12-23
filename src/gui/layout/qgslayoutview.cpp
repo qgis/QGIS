@@ -446,6 +446,13 @@ QPointF QgsLayoutView::deltaForKeyEvent( QKeyEvent *event )
   return QPointF( deltaX, deltaY );
 }
 
+void QgsLayoutView::setPaintingEnabled( bool enabled )
+{
+  mPaintingEnabled = enabled;
+  if ( enabled )
+    update();
+}
+
 void QgsLayoutView::zoomFull()
 {
   fitInView( scene()->sceneRect(), Qt::KeepAspectRatio );
