@@ -160,3 +160,10 @@ void QgsLayoutContext::setPagesVisible( bool visible )
 {
   mPagesVisible = visible;
 }
+
+void QgsLayoutContext::setPredefinedScales( const QVector<qreal> &scales )
+{
+  mPredefinedScales = scales;
+  // make sure the list is sorted
+  std::sort( mPredefinedScales.begin(), mPredefinedScales.end() );
+}

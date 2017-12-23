@@ -235,6 +235,21 @@ If ``layer`` is -1, all item layers should be rendered.
 .. seealso:: :py:func:`setCurrentExportLayer()`
 %End
 
+    void setPredefinedScales( const QVector<qreal> &scales );
+%Docstring
+Sets the list of predefined ``scales`` to use with the layout. This is used
+for maps which are set to the predefined atlas scaling mode.
+
+.. seealso:: :py:func:`predefinedScales()`
+%End
+
+    QVector<qreal> predefinedScales() const;
+%Docstring
+Returns the current list of predefined scales for use with the layout.
+
+.. seealso:: :py:func:`setPredefinedScales()`
+%End
+
   signals:
 
     void flagsChanged( QgsLayoutContext::Flags flags );

@@ -480,7 +480,6 @@ Return map settings that will be used for drawing of the map.
 True if a draw is already in progress
 %End
 
-
     virtual QRectF boundingRect() const;
 
 

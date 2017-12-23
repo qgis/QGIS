@@ -423,7 +423,8 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
 
     void atlasFeatureChanged( const QgsFeature &feature );
 
-
+    //! Load predefined scales from the project's properties
+    void loadAtlasPredefinedScalesFromProject();
 
     QgsLayoutAtlas *atlas();
 };

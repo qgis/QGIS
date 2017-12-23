@@ -1,3 +1,4 @@
+
 /***************************************************************************
                          testqgslayoutcontext.cpp
                          ------------------------
@@ -44,6 +45,7 @@ class TestQgsLayoutContext: public QObject
     void boundingBoxes();
     void exportLayer();
     void geometry();
+    void scales();
 
   private:
     QString mReport;
@@ -240,6 +242,18 @@ void TestQgsLayoutContext::geometry()
   QVERIFY( context.currentGeometry( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ) ).isNull() );
 
   delete layer;
+}
+
+void TestQgsLayoutContext::scales()
+{
+  QVector< qreal > scales;
+  scales << 1 << 15 << 5 << 10;
+
+  QgsLayoutContext context( nullptr );
+  context.setPredefinedScales( scales );
+
+  // should be sorted
+  QCOMPARE( context.predefinedScales(), QVector< qreal >() << 1 << 5 << 10 << 15 );
 }
 
 QGSTEST_MAIN( TestQgsLayoutContext )

@@ -233,6 +233,19 @@ class CORE_EXPORT QgsLayoutContext : public QObject
      */
     int currentExportLayer() const { return mCurrentExportLayer; }
 
+    /**
+     * Sets the list of predefined \a scales to use with the layout. This is used
+     * for maps which are set to the predefined atlas scaling mode.
+     * \see predefinedScales()
+     */
+    void setPredefinedScales( const QVector<qreal> &scales );
+
+    /**
+     * Returns the current list of predefined scales for use with the layout.
+     * \see setPredefinedScales()
+     */
+    QVector<qreal> predefinedScales() const { return mPredefinedScales; }
+
   signals:
 
     /**
@@ -277,6 +290,9 @@ class CORE_EXPORT QgsLayoutContext : public QObject
 
     // projected geometry cache
     mutable QMap<long, QgsGeometry> mGeometryCache;
+
+    //list of predefined scales
+    QVector<qreal> mPredefinedScales;
 
     friend class QgsLayoutExporter;
     friend class TestQgsLayout;

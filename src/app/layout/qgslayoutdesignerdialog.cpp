@@ -1919,9 +1919,7 @@ void QgsLayoutDesignerDialog::atlasPreviewTriggered( bool checked )
 
   if ( checked )
   {
-#if 0 //TODO
     loadAtlasPredefinedScalesFromProject();
-#endif
   }
 
   if ( checked )
@@ -1985,9 +1983,7 @@ void QgsLayoutDesignerDialog::atlasPageComboEditingFinished()
   else if ( page != atlas->currentFeatureNumber() + 1 )
   {
     QgisApp::instance()->mapCanvas()->stopRendering();
-#if 0 //TODO
     loadAtlasPredefinedScalesFromProject();
-#endif
     atlas->seekTo( page - 1 );
 #if 0 //TODO
     emit atlasPreviewFeatureChanged();
@@ -2003,9 +1999,7 @@ void QgsLayoutDesignerDialog::atlasNext()
 
   QgisApp::instance()->mapCanvas()->stopRendering();
 
-#if 0 //TODO
   loadAtlasPredefinedScalesFromProject();
-#endif
   if ( printAtlas->next() )
   {
 #if 0 //TODO
@@ -2022,9 +2016,7 @@ void QgsLayoutDesignerDialog::atlasPrevious()
 
   QgisApp::instance()->mapCanvas()->stopRendering();
 
-#if 0 //TODO
   loadAtlasPredefinedScalesFromProject();
-#endif
   if ( printAtlas->previous() )
   {
 #if 0 //TODO
@@ -2041,9 +2033,7 @@ void QgsLayoutDesignerDialog::atlasFirst()
 
   QgisApp::instance()->mapCanvas()->stopRendering();
 
-#if 0 //TODO
   loadAtlasPredefinedScalesFromProject();
-#endif
   if ( printAtlas->first() )
   {
 #if 0 //TODO
@@ -2060,9 +2050,7 @@ void QgsLayoutDesignerDialog::atlasLast()
 
   QgisApp::instance()->mapCanvas()->stopRendering();
 
-#if 0 //TODO
   loadAtlasPredefinedScalesFromProject();
-#endif
   if ( printAtlas->last() )
   {
 #if 0 //TODO
@@ -2073,21 +2061,26 @@ void QgsLayoutDesignerDialog::atlasLast()
 
 void QgsLayoutDesignerDialog::printAtlas()
 {
+  loadAtlasPredefinedScalesFromProject();
   //TODO
 }
 
 void QgsLayoutDesignerDialog::exportAtlasToRaster()
 {
+  loadAtlasPredefinedScalesFromProject();
   //TODO
+
 }
 
 void QgsLayoutDesignerDialog::exportAtlasToSvg()
 {
+  loadAtlasPredefinedScalesFromProject();
   //TODO
 }
 
 void QgsLayoutDesignerDialog::exportAtlasToPdf()
 {
+  loadAtlasPredefinedScalesFromProject();
 //TODO
 }
 
@@ -2433,6 +2426,31 @@ void QgsLayoutDesignerDialog::atlasFeatureChanged( const QgsFeature &feature )
   mapCanvas->expressionContextScope().addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_feature" ), QVariant::fromValue( feature ), true ) );
   mapCanvas->expressionContextScope().addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_featureid" ), feature.id(), true ) );
   mapCanvas->expressionContextScope().addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_geometry" ), QVariant::fromValue( feature.geometry() ), true ) );
+}
+
+void QgsLayoutDesignerDialog::loadAtlasPredefinedScalesFromProject()
+{
+  QVector<qreal> projectScales;
+  // first look at project's scales
+  QStringList scales( mLayout->project()->readListEntry( QStringLiteral( "Scales" ), QStringLiteral( "/ScalesList" ) ) );
+  bool hasProjectScales( mLayout->project()->readBoolEntry( QStringLiteral( "Scales" ), QStringLiteral( "/useProjectScales" ) ) );
+  if ( !hasProjectScales || scales.isEmpty() )
+  {
+    // default to global map tool scales
+    QgsSettings settings;
+    QString scalesStr( settings.value( QStringLiteral( "Map/scales" ), PROJECT_SCALES ).toString() );
+    scales = scalesStr.split( ',' );
+  }
+
+  for ( auto scaleIt = scales.constBegin(); scaleIt != scales.constEnd(); ++scaleIt )
+  {
+    QStringList parts( scaleIt->split( ':' ) );
+    if ( parts.size() == 2 )
+    {
+      projectScales.push_back( parts[1].toDouble() );
+    }
+  }
+  mLayout->context().setPredefinedScales( projectScales );
 }
 
 QgsLayoutAtlas *QgsLayoutDesignerDialog::atlas()
