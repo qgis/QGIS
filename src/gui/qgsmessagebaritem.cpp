@@ -100,7 +100,7 @@ void QgsMessageBarItem::writeContent()
         msgIcon = QStringLiteral( "/mIconWarning.svg" );
         break;
       case QgsMessageBar::SUCCESS:
-        msgIcon = QStringLiteral( "/mIconSuccess.png" );
+        msgIcon = QStringLiteral( "/mIconSuccess.svg" );
         break;
       default:
         break;
@@ -108,6 +108,35 @@ void QgsMessageBarItem::writeContent()
     icon = QgsApplication::getThemeIcon( msgIcon );
   }
   mLblIcon->setPixmap( icon.pixmap( 24 ) );
+
+
+  // STYLESHEETS
+  QString contentStyleSheet;
+  if ( mLevel == QgsMessageBar::SUCCESS )
+  {
+    mStyleSheet = "QgsMessageBar { background-color: #dff0d8; border: 1px solid #8e998a; } "
+                  "QLabel,QTextEdit { color: black; } ";
+    contentStyleSheet = "<style> a, a:visited, a:hover { color:#268300; } </style>";
+  }
+  else if ( mLevel == QgsMessageBar::CRITICAL )
+  {
+    mStyleSheet = "QgsMessageBar { background-color: #d65253; border: 1px solid #9b3d3d; } "
+                  "QLabel,QTextEdit { color: white; } ";
+    contentStyleSheet = "<style>a, a:visited, a:hover { color:#4e0001; }</style>";
+  }
+  else if ( mLevel == QgsMessageBar::WARNING )
+  {
+    mStyleSheet = "QgsMessageBar { background-color: #ffc800; border: 1px solid #e0aa00; } "
+                  "QLabel,QTextEdit { color: black; } ";
+    contentStyleSheet = "<style>a, a:visited, a:hover { color:#945a00; }</style>";
+  }
+  else if ( mLevel == QgsMessageBar::INFO )
+  {
+    mStyleSheet = "QgsMessageBar { background-color: #e7f5fe; border: 1px solid #b9cfe4; } "
+                  "QLabel,QTextEdit { color: #2554a1; } ";
+    contentStyleSheet = "<style>a, a:visited, a:hover { color:#3bb2fe; }</style>";
+  }
+  mStyleSheet += QLatin1String( "QLabel#mItemCount { font-style: italic; }" );
 
   // TITLE AND TEXT
   if ( mTitle.isEmpty() && mText.isEmpty() )
@@ -147,6 +176,7 @@ void QgsMessageBarItem::writeContent()
         t += QLatin1String( ": " );
       content.prepend( QStringLiteral( "<b>" ) + t + " </b>" );
     }
+    content.prepend( contentStyleSheet );
     mTextBrowser->setText( content );
   }
 
@@ -159,29 +189,6 @@ void QgsMessageBarItem::writeContent()
       mLayout->addWidget( mWidget );
     }
   }
-
-  // STYLESHEET
-  if ( mLevel == QgsMessageBar::SUCCESS )
-  {
-    mStyleSheet = "QgsMessageBar { background-color: #dff0d8; border: 1px solid #8e998a; } "
-                  "QLabel,QTextEdit { color: black; } ";
-  }
-  else if ( mLevel == QgsMessageBar::CRITICAL )
-  {
-    mStyleSheet = "QgsMessageBar { background-color: #d65253; border: 1px solid #9b3d3d; } "
-                  "QLabel,QTextEdit { color: white; } ";
-  }
-  else if ( mLevel == QgsMessageBar::WARNING )
-  {
-    mStyleSheet = "QgsMessageBar { background-color: #ffc800; border: 1px solid #e0aa00; } "
-                  "QLabel,QTextEdit { color: black; } ";
-  }
-  else if ( mLevel == QgsMessageBar::INFO )
-  {
-    mStyleSheet = "QgsMessageBar { background-color: #e7f5fe; border: 1px solid #b9cfe4; } "
-                  "QLabel,QTextEdit { color: #2554a1; } ";
-  }
-  mStyleSheet += QLatin1String( "QLabel#mItemCount { font-style: italic; }" );
 }
 
 QgsMessageBarItem *QgsMessageBarItem::setText( const QString &text )

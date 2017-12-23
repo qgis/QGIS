@@ -1538,7 +1538,7 @@ void QgsLayoutDesignerDialog::exportToRaster()
     case QgsLayoutExporter::Success:
       mMessageBar->pushMessage( tr( "Export layout" ),
                                 tr( "Successfully exported layout to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( fi.path() ).toString(), fileNExt.first ),
-                                QgsMessageBar::INFO, 0 );
+                                QgsMessageBar::SUCCESS, 0 );
       break;
 
     case QgsLayoutExporter::PrintError:
@@ -1644,7 +1644,7 @@ void QgsLayoutDesignerDialog::exportToPdf()
     {
       mMessageBar->pushMessage( tr( "Export layout" ),
                                 tr( "Successfully exported layout to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( fi.path() ).toString(), outputFileName ),
-                                QgsMessageBar::INFO, 0 );
+                                QgsMessageBar::SUCCESS, 0 );
       break;
     }
 
@@ -1794,7 +1794,7 @@ void QgsLayoutDesignerDialog::exportToSvg()
     {
       mMessageBar->pushMessage( tr( "Export layout" ),
                                 tr( "Successfully exported layout to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( fi.path() ).toString(), outputFileName ),
-                                QgsMessageBar::INFO, 0 );
+                                QgsMessageBar::SUCCESS, 0 );
       break;
     }
 
