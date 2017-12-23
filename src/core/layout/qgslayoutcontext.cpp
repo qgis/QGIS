@@ -89,7 +89,11 @@ void QgsLayoutContext::setLayer( QgsVectorLayer *layer )
 
 void QgsLayoutContext::setDpi( double dpi )
 {
+  if ( dpi == mMeasurementConverter.dpi() )
+    return;
+
   mMeasurementConverter.setDpi( dpi );
+  emit dpiChanged();
 }
 
 double QgsLayoutContext::dpi() const

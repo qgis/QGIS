@@ -145,9 +145,17 @@ void TestQgsLayoutContext::layer()
 void TestQgsLayoutContext::dpi()
 {
   QgsLayoutContext context;
+
+  QSignalSpy spyDpiChanged( &context, &QgsLayoutContext::dpiChanged );
   context.setDpi( 600 );
   QCOMPARE( context.dpi(), 600.0 );
   QCOMPARE( context.measurementConverter().dpi(), 600.0 );
+  QCOMPARE( spyDpiChanged.count(), 1 );
+
+  context.setDpi( 600 );
+  QCOMPARE( spyDpiChanged.count(), 1 );
+  context.setDpi( 6000 );
+  QCOMPARE( spyDpiChanged.count(), 2 );
 }
 
 void TestQgsLayoutContext::renderContextFlags()

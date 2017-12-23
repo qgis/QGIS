@@ -54,14 +54,12 @@ QgsLayoutItemPicture::QgsLayoutItemPicture( QgsLayout *layout )
 
   //connect some signals
 
-#if 0 //TODO
   //connect to atlas feature changing
   //to update the picture source expression
-  connect( &mComposition->atlasComposition(), &QgsAtlasComposition::featureChanged, this, [ = ] { refreshPicture(); } );
+  connect( &layout->context(), &QgsLayoutContext::changed, this, [ = ] { refreshPicture(); } );
 
   //connect to layout print resolution changing
-  connect( layout->context(), &QgsLayoutContext::printResolutionChanged, this, &QgsLayoutItemPicture::recalculateSize );
-#endif
+  connect( &layout->context(), &QgsLayoutContext::dpiChanged, this, &QgsLayoutItemPicture::recalculateSize );
 
   connect( this, &QgsLayoutItem::sizePositionChanged, this, &QgsLayoutItemPicture::shapeChanged );
 }

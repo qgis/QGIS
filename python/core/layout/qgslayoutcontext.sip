@@ -237,6 +237,11 @@ Emitted certain settings in the context is changed, e.g. by setting a new featur
 for the context.
 %End
 
+    void dpiChanged();
+%Docstring
+Emitted when the context's DPI is changed.
+%End
+
 };
 
 

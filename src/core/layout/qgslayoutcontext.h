@@ -236,6 +236,11 @@ class CORE_EXPORT QgsLayoutContext : public QObject
      */
     void changed();
 
+    /**
+     * Emitted when the context's DPI is changed.
+     */
+    void dpiChanged();
+
   private:
 
     Flags mFlags = nullptr;
