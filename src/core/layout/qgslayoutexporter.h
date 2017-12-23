@@ -323,6 +323,21 @@ class CORE_EXPORT QgsLayoutExporter
     ExportResult exportToSvg( const QString &filePath, const QgsLayoutExporter::SvgExportSettings &settings );
 
     /**
+     * Exports a layout \a iterator to SVG files, with the specified export \a settings.
+     *
+     * The \a baseFilePath argument gives a base file path, which is modified by the
+     * iterator to obtain file paths for each iterator feature.
+     *
+     * Returns a result code indicating whether the export was successful or an
+     * error was encountered. If an error was obtained then \a error will be set
+     * to the error description.
+     */
+    static ExportResult exportToSvg( QgsAbstractLayoutIterator *iterator, const QString &baseFilePath,
+                                     const QgsLayoutExporter::SvgExportSettings &settings,
+                                     QString &error SIP_OUT, QgsFeedback *feedback = nullptr );
+
+
+    /**
      * Returns the file name corresponding to the last error encountered during
      * an export.
      */

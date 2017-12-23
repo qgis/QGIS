@@ -315,6 +315,21 @@ Returns a result code indicating whether the export was successful or an
 error was encountered.
 %End
 
+    static ExportResult exportToSvg( QgsAbstractLayoutIterator *iterator, const QString &baseFilePath,
+                                     const QgsLayoutExporter::SvgExportSettings &settings,
+                                     QString &error /Out/, QgsFeedback *feedback = 0 );
+%Docstring
+Exports a layout ``iterator`` to SVG files, with the specified export ``settings``.
+
+The ``baseFilePath`` argument gives a base file path, which is modified by the
+iterator to obtain file paths for each iterator feature.
+
+Returns a result code indicating whether the export was successful or an
+error was encountered. If an error was obtained then ``error`` will be set
+to the error description.
+%End
+
+
     QString errorFile() const;
 %Docstring
 Returns the file name corresponding to the last error encountered during

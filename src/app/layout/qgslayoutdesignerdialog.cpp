@@ -1721,60 +1721,19 @@ void QgsLayoutDesignerDialog::exportToSvg()
     outputFileName += QLatin1String( ".svg" );
   }
 
+  bool prevSettingLabelsAsOutlines = mLayout->project()->readBoolEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawOutlineLabels" ), true );
   settings.setValue( QStringLiteral( "UI/lastSaveAsSvgFile" ), outputFileName );
 
-  bool groupLayers = false;
-  bool prevSettingLabelsAsOutlines = mLayout->project()->readBoolEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawOutlineLabels" ), true );
-  bool clipToContent = false;
-  double marginTop = 0.0;
-  double marginRight = 0.0;
-  double marginBottom = 0.0;
-  double marginLeft = 0.0;
-  bool previousForceVector = mLayout->customProperty( QStringLiteral( "forceVector" ), false ).toBool();
-
-  // open options dialog
-  QDialog dialog;
-  Ui::QgsSvgExportOptionsDialog options;
-  options.setupUi( &dialog );
-  options.chkTextAsOutline->setChecked( prevSettingLabelsAsOutlines );
-  options.chkMapLayersAsGroup->setChecked( mLayout->customProperty( QStringLiteral( "svgGroupLayers" ), false ).toBool() );
-  options.mClipToContentGroupBox->setChecked( mLayout->customProperty( QStringLiteral( "svgCropToContents" ), false ).toBool() );
-  options.mForceVectorCheckBox->setChecked( previousForceVector );
-  options.mTopMarginSpinBox->setValue( mLayout->customProperty( QStringLiteral( "svgCropMarginTop" ), 0 ).toInt() );
-  options.mRightMarginSpinBox->setValue( mLayout->customProperty( QStringLiteral( "svgCropMarginRight" ), 0 ).toInt() );
-  options.mBottomMarginSpinBox->setValue( mLayout->customProperty( QStringLiteral( "svgCropMarginBottom" ), 0 ).toInt() );
-  options.mLeftMarginSpinBox->setValue( mLayout->customProperty( QStringLiteral( "svgCropMarginLeft" ), 0 ).toInt() );
-
-  if ( dialog.exec() != QDialog::Accepted )
+  QgsLayoutExporter::SvgExportSettings svgSettings;
+  bool exportAsText = false;
+  if ( !getSvgExportSettings( svgSettings, exportAsText ) )
     return;
 
-  groupLayers = options.chkMapLayersAsGroup->isChecked();
-  clipToContent = options.mClipToContentGroupBox->isChecked();
-  marginTop = options.mTopMarginSpinBox->value();
-  marginRight = options.mRightMarginSpinBox->value();
-  marginBottom = options.mBottomMarginSpinBox->value();
-  marginLeft = options.mLeftMarginSpinBox->value();
-
-  //save dialog settings
-  mLayout->setCustomProperty( QStringLiteral( "svgGroupLayers" ), groupLayers );
-  mLayout->setCustomProperty( QStringLiteral( "svgCropToContents" ), clipToContent );
-  mLayout->setCustomProperty( QStringLiteral( "svgCropMarginTop" ), marginTop );
-  mLayout->setCustomProperty( QStringLiteral( "svgCropMarginRight" ), marginRight );
-  mLayout->setCustomProperty( QStringLiteral( "svgCropMarginBottom" ), marginBottom );
-  mLayout->setCustomProperty( QStringLiteral( "svgCropMarginLeft" ), marginLeft );
-
   //temporarily override label draw outlines setting
-  mLayout->project()->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawOutlineLabels" ), options.chkTextAsOutline->isChecked() );
+  mLayout->project()->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawOutlineLabels" ), exportAsText );
 
   mView->setPaintingEnabled( false );
   QApplication::setOverrideCursor( Qt::BusyCursor );
-
-  QgsLayoutExporter::SvgExportSettings svgSettings;
-  svgSettings.forceVectorOutput = mLayout->customProperty( QStringLiteral( "forceVector" ), false ).toBool();
-  svgSettings.cropToContents = clipToContent;
-  svgSettings.cropMargins = QgsMargins( marginLeft, marginTop, marginRight, marginBottom );
-  svgSettings.forceVectorOutput = options.mForceVectorCheckBox->isChecked();
-  svgSettings.exportAsLayers = groupLayers;
 
   // force a refresh, to e.g. update data defined properties, tables, etc
   mLayout->refresh();
@@ -2095,9 +2054,6 @@ void QgsLayoutDesignerDialog::exportAtlasToRaster()
   mView->setPaintingEnabled( false );
   QApplication::setOverrideCursor( Qt::BusyCursor );
 
-  // force a refresh, to e.g. update data defined properties, tables, etc
-  mLayout->refresh();
-
   QString error;
   std::unique_ptr< QgsFeedback > feedback = qgis::make_unique< QgsFeedback >();
   std::unique_ptr< QProgressDialog > progressDialog = qgis::make_unique< QProgressDialog >( tr( "Rendering maps..." ), tr( "Abort" ), 0, 100, this );
@@ -2126,6 +2082,8 @@ void QgsLayoutDesignerDialog::exportAtlasToRaster()
   } );
 
   QgsLayoutExporter::ExportResult result = QgsLayoutExporter::exportToImage( printAtlas, dir, fileExt, settings, error, feedback.get() );
+  QApplication::restoreOverrideCursor();
+
   switch ( result )
   {
     case QgsLayoutExporter::Success:
@@ -2163,14 +2121,172 @@ void QgsLayoutDesignerDialog::exportAtlasToRaster()
                             QMessageBox::Ok, QMessageBox::Ok );
       break;
   }
-  QApplication::restoreOverrideCursor();
   mView->setPaintingEnabled( true );
 }
 
 void QgsLayoutDesignerDialog::exportAtlasToSvg()
 {
+  QgsLayoutAtlas *printAtlas = atlas();
+  if ( !printAtlas || !printAtlas->enabled() )
+    return;
+
   loadAtlasPredefinedScalesFromProject();
-  //TODO
+  if ( containsWmsLayers() )
+  {
+    showWmsPrintingWarning();
+  }
+
+  showSvgExportWarning();
+
+  // else, it has an atlas to render, so a directory must first be selected
+  if ( printAtlas->filenameExpression().isEmpty() )
+  {
+    int res = QMessageBox::warning( nullptr, tr( "Export Atlas" ),
+                                    tr( "The filename expression is empty. A default one will be used instead." ),
+                                    QMessageBox::Ok | QMessageBox::Cancel,
+                                    QMessageBox::Ok );
+    if ( res == QMessageBox::Cancel )
+    {
+      return;
+    }
+    QString error;
+    printAtlas->setFilenameExpression( QStringLiteral( "'output_'||@atlas_featurenumber" ), error );
+  }
+
+  QgsSettings s;
+  QString lastUsedDir = s.value( QStringLiteral( "UI/lastSaveAtlasAsSvgDir" ), QDir::homePath() ).toString();
+
+  QFileDialog dlg( this, tr( "Export Atlas to Directory" ) );
+  dlg.setFileMode( QFileDialog::Directory );
+  dlg.setOption( QFileDialog::ShowDirsOnly, true );
+  dlg.setDirectory( lastUsedDir );
+  if ( !dlg.exec() )
+  {
+    return;
+  }
+
+#ifdef Q_OS_MAC
+  QgisApp::instance()->activateWindow();
+  this->raise();
+#endif
+
+  const QStringList files = dlg.selectedFiles();
+  if ( files.empty() || files.at( 0 ).isEmpty() )
+  {
+    return;
+  }
+  QString dir = files.at( 0 );
+  if ( dir.isEmpty() )
+  {
+    return;
+  }
+  s.setValue( QStringLiteral( "UI/lastSaveAtlasAsSvgDir" ), dir );
+
+  // test directory (if it exists and is writable)
+  if ( !QDir( dir ).exists() || !QFileInfo( dir ).isWritable() )
+  {
+    QMessageBox::warning( nullptr, tr( "Unable to write into the directory" ),
+                          tr( "The given output directory is not writable. Canceling." ),
+                          QMessageBox::Ok,
+                          QMessageBox::Ok );
+    return;
+  }
+
+  bool prevSettingLabelsAsOutlines = mLayout->project()->readBoolEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawOutlineLabels" ), true );
+  QgsLayoutExporter::SvgExportSettings svgSettings;
+  bool exportAsText = false;
+  if ( !getSvgExportSettings( svgSettings, exportAsText ) )
+    return;
+
+  //temporarily override label draw outlines setting
+  mLayout->project()->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawOutlineLabels" ), exportAsText );
+
+  mView->setPaintingEnabled( false );
+  QApplication::setOverrideCursor( Qt::BusyCursor );
+
+  QString error;
+  std::unique_ptr< QgsFeedback > feedback = qgis::make_unique< QgsFeedback >();
+  std::unique_ptr< QProgressDialog > progressDialog = qgis::make_unique< QProgressDialog >( tr( "Rendering maps..." ), tr( "Abort" ), 0, 100, this );
+  progressDialog->setWindowTitle( tr( "Exporting Atlas" ) );
+  connect( feedback.get(), &QgsFeedback::progressChanged, this, [ & ]( double progress )
+  {
+    progressDialog->setValue( progress );
+    progressDialog->setLabelText( feedback->property( "progress" ).toString() ) ;
+
+#ifdef Q_OS_LINUX
+    // For some reason on Windows hasPendingEvents() always return true,
+    // but one iteration is actually enough on Windows to get good interactivity
+    // whereas on Linux we must allow for far more iterations.
+    // For safety limit the number of iterations
+    int nIters = 0;
+    while ( QCoreApplication::hasPendingEvents() && ++nIters < 100 )
+#endif
+    {
+      QCoreApplication::processEvents();
+    }
+
+  } );
+  connect( progressDialog.get(), &QProgressDialog::canceled, this, [ & ]
+  {
+    feedback->cancel();
+  } );
+
+  QgsLayoutExporter::ExportResult result = QgsLayoutExporter::exportToSvg( printAtlas, dir, svgSettings, error, feedback.get() );
+
+  QApplication::restoreOverrideCursor();
+  switch ( result )
+  {
+    case QgsLayoutExporter::Success:
+    {
+      mMessageBar->pushMessage( tr( "Export atlas" ),
+                                tr( "Successfully exported atlas to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( dir ).toString(), dir ),
+                                QgsMessageBar::SUCCESS, 0 );
+      break;
+    }
+
+    case QgsLayoutExporter::FileError:
+      QMessageBox::warning( this, tr( "Export atlas" ),
+                            error, QMessageBox::Ok,
+                            QMessageBox::Ok );
+      break;
+
+    case QgsLayoutExporter::SvgLayerError:
+      QMessageBox::warning( this, tr( "Export atlas" ),
+                            tr( "Cannot create layered SVG file." ),
+                            QMessageBox::Ok,
+                            QMessageBox::Ok );
+      break;
+
+    case QgsLayoutExporter::PrintError:
+      QMessageBox::warning( this, tr( "Export atlas" ),
+                            tr( "Could not create print device." ),
+                            QMessageBox::Ok,
+                            QMessageBox::Ok );
+      break;
+
+
+    case QgsLayoutExporter::MemoryError:
+      QMessageBox::warning( this, tr( "Memory Allocation Error" ),
+                            tr( "Exporting the SVG "
+                                "resulted in a memory overflow.\n\n"
+                                "Please try a lower resolution or a smaller paper size." ),
+                            QMessageBox::Ok, QMessageBox::Ok );
+      break;
+
+    case QgsLayoutExporter::IteratorError:
+      QMessageBox::warning( this, tr( "Atlas Export Error" ),
+                            tr( "Error encountered while exporting atlas" ),
+                            QMessageBox::Ok,
+                            QMessageBox::Ok );
+      break;
+
+    case QgsLayoutExporter::Canceled:
+      // no meaning here
+      break;
+  }
+
+  mView->setPaintingEnabled( true );
+  mLayout->project()->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawOutlineLabels" ), prevSettingLabelsAsOutlines );
 }
 
 void QgsLayoutDesignerDialog::exportAtlasToPdf()
@@ -2525,6 +2641,58 @@ bool QgsLayoutDesignerDialog::getRasterExportSettings( QgsLayoutExporter::ImageE
   if ( imageDlg.antialiasing() )
     settings.flags |= QgsLayoutContext::FlagAntialiasing;
 
+  return true;
+}
+
+bool QgsLayoutDesignerDialog::getSvgExportSettings( QgsLayoutExporter::SvgExportSettings &settings, bool &exportAsText )
+{
+  bool groupLayers = false;
+  bool prevSettingLabelsAsOutlines = mLayout->project()->readBoolEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawOutlineLabels" ), true );
+  bool clipToContent = false;
+  double marginTop = 0.0;
+  double marginRight = 0.0;
+  double marginBottom = 0.0;
+  double marginLeft = 0.0;
+  bool previousForceVector = mLayout->customProperty( QStringLiteral( "forceVector" ), false ).toBool();
+
+  // open options dialog
+  QDialog dialog;
+  Ui::QgsSvgExportOptionsDialog options;
+  options.setupUi( &dialog );
+  options.chkTextAsOutline->setChecked( prevSettingLabelsAsOutlines );
+  options.chkMapLayersAsGroup->setChecked( mLayout->customProperty( QStringLiteral( "svgGroupLayers" ), false ).toBool() );
+  options.mClipToContentGroupBox->setChecked( mLayout->customProperty( QStringLiteral( "svgCropToContents" ), false ).toBool() );
+  options.mForceVectorCheckBox->setChecked( previousForceVector );
+  options.mTopMarginSpinBox->setValue( mLayout->customProperty( QStringLiteral( "svgCropMarginTop" ), 0 ).toInt() );
+  options.mRightMarginSpinBox->setValue( mLayout->customProperty( QStringLiteral( "svgCropMarginRight" ), 0 ).toInt() );
+  options.mBottomMarginSpinBox->setValue( mLayout->customProperty( QStringLiteral( "svgCropMarginBottom" ), 0 ).toInt() );
+  options.mLeftMarginSpinBox->setValue( mLayout->customProperty( QStringLiteral( "svgCropMarginLeft" ), 0 ).toInt() );
+
+  if ( dialog.exec() != QDialog::Accepted )
+    return false;
+
+  groupLayers = options.chkMapLayersAsGroup->isChecked();
+  clipToContent = options.mClipToContentGroupBox->isChecked();
+  marginTop = options.mTopMarginSpinBox->value();
+  marginRight = options.mRightMarginSpinBox->value();
+  marginBottom = options.mBottomMarginSpinBox->value();
+  marginLeft = options.mLeftMarginSpinBox->value();
+
+  //save dialog settings
+  mLayout->setCustomProperty( QStringLiteral( "svgGroupLayers" ), groupLayers );
+  mLayout->setCustomProperty( QStringLiteral( "svgCropToContents" ), clipToContent );
+  mLayout->setCustomProperty( QStringLiteral( "svgCropMarginTop" ), marginTop );
+  mLayout->setCustomProperty( QStringLiteral( "svgCropMarginRight" ), marginRight );
+  mLayout->setCustomProperty( QStringLiteral( "svgCropMarginBottom" ), marginBottom );
+  mLayout->setCustomProperty( QStringLiteral( "svgCropMarginLeft" ), marginLeft );
+
+  settings.forceVectorOutput = mLayout->customProperty( QStringLiteral( "forceVector" ), false ).toBool();
+  settings.cropToContents = clipToContent;
+  settings.cropMargins = QgsMargins( marginLeft, marginTop, marginRight, marginBottom );
+  settings.forceVectorOutput = options.mForceVectorCheckBox->isChecked();
+  settings.exportAsLayers = groupLayers;
+
+  exportAsText = options.chkTextAsOutline->isChecked();
   return true;
 }
 
