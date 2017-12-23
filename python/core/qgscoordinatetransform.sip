@@ -65,7 +65,9 @@ to utilize.
 Python scripts should generally use the constructor variant which accepts
 a QgsProject instance instead of this constructor.
 
-\warning Do NOT use an empty/default constructed QgsCoordinateTransformContext()
+.. warning::
+
+   Do NOT use an empty/default constructed QgsCoordinateTransformContext()
 object when creating QgsCoordinateTransform objects. This prevents correct
 datum transform handling and may result in inaccurate transformations. Always
 ensure that the QgsCoordinateTransformContext object is correctly retrieved

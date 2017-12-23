@@ -203,6 +203,9 @@ sub processDoxygenLine {
     if ( $line =~ m/[\\@]note (.*)/ ) {
         return "\n.. note::\n\n   $1\n";
     }
+    if ( $line =~ m/[\\@]warning (.*)/ ) {
+        return "\n.. warning::\n\n   $1\n";
+    }
     if ( $line =~ m/[\\@]brief (.*)/ ) {
         return " $1\n";
     }

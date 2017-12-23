@@ -97,7 +97,9 @@ by the given Coordinate Reference Systems.
 list of projections by.  This is useful in (e.g.) WMS situations
 where you just want to offer what the WMS server can support.
 
-\warning This function's behavior is undefined if it is called after the dialog is shown.
+.. warning::
+
+   This function's behavior is undefined if it is called after the dialog is shown.
 %End
 
 };
