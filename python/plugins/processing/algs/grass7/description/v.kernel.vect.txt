@@ -8,8 +8,8 @@ QgsProcessingParameterNumber|dsize|Discretization error in map units|QgsProcessi
 QgsProcessingParameterNumber|segmax|Maximum length of segment on network|QgsProcessingParameterNumber.Double|100.0|True|0.0|None
 QgsProcessingParameterNumber|distmax|Maximum distance from point to network|QgsProcessingParameterNumber.Double|100.0|True|0.0|None
 QgsProcessingParameterNumber|multiplier|Multiply the density result by this number|QgsProcessingParameterNumber.Double|1.0|True|0.0|None
-QgsProcessingParameterEnum|node|Node method|none;split|False|0
-QgsProcessingParameterEnum|kernel|Kernel function|cosine;gaussian;epanechnikov;quartic;triangular;triweight;uniform|False|1
+QgsProcessingParameterEnum|node|Node method|none;split|False|0|False
+QgsProcessingParameterEnum|kernel|Kernel function|uniform;triangular;epanechnikov;quartic;triweight;gaussian;cosine|False|5|True
 *QgsProcessingParameterBoolean|-o|Try to calculate an optimal radius with given 'radius' taken as maximum (experimental)|False
 *QgsProcessingParameterBoolean|-n|Normalize values by sum of density multiplied by length of each segment.|False
 *QgsProcessingParameterBoolean|-m|Multiply the result by number of input points|False

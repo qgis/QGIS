@@ -3,5 +3,5 @@ Classifies the cell spectral reflectances in imagery data.
 Imagery (i.*)
 QgsProcessingParameterMultipleLayers|input|Input rasters|3|None|False
 QgsProcessingParameterFile|signaturefile|Name of input file containing signatures|0|txt|None|False
-QgsProcessingParameterRasterDestination|output|Classification
-QgsProcessingParameterRasterDestination|reject|Reject Threshold
+QgsProcessingParameterRasterDestination|output|Classification|None|False
+QgsProcessingParameterRasterDestination|reject|Reject Threshold|None|True

@@ -1,7 +1,0 @@
-v.to.rast
-v.to.rast.attribute - Converts (rasterize) a vector layer into a raster layer.
-Vector (v.*)
-QgsProcessingParameterVectorLayer|input|Input vector layer|-1|None|False
-QgsProcessingParameterEnum|use|Source of raster values|attr
-QgsProcessingParameterField|attribute_column|Name of column for 'attr' parameter (data type must be numeric)|None|input|0|False|False
-QgsProcessingParameterRasterDestination|output|Rasterized

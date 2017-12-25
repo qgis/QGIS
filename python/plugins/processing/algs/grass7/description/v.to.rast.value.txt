@@ -1,7 +1,0 @@
-v.to.rast
-v.to.rast.value - Converts (rasterize) a vector layer into a raster layer.
-Vector (v.*)
-QgsProcessingParameterVectorLayer|input|Input vector layer|-1|None|False
-QgsProcessingParameterEnum|use|Source of raster values|val
-QgsProcessingParameterNumber|value|Raster value|QgsProcessingParameterNumber.Double|1.0|False|None|None
-QgsProcessingParameterRasterDestination|output|Rasterized

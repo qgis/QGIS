@@ -1,8 +1,0 @@
-v.clean
-v.clean.advanced - Toolset for cleaning topology of vector map (Advanced).
-Vector (v.*)
-QgsProcessingParameterVectorLayer|input|Layer to clean|-1|None|False
-QgsProcessingParameterString|tool|Cleaning tools (comma separated)|break|False|True
-QgsProcessingParameterString|threshold|Threshold (comma separated)|None|False|True
-QgsProcessingParameterVectorDestination|output|Cleaned
-QgsProcessingParameterVectorDestination|error|Errors
