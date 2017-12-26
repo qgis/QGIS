@@ -3,198 +3,9 @@ TODO List for GRASS7 algorithms support into QGIS Processing
 QGIS3 Processing Port
 =====================
 
-* Things to do elsewhere
-  * TODO We need Null QgsProcessingParameterNumber!
-  * TODO We need NULL QgsProcessingParameterPoint!
-  * TODO We need a QgsParameterMultipleInputLayers parameter for minimum and maximum number of layers.
-  * TODO Open all the files in a QgsProcessingOutputFolder at the end of the algorithm.
-* TODO Review all the methods of QgsProcessingAlgorithm.
-* TODO Make tests under MS-Windows 7 for Utf-8 support.
-  * DONE Algorithms can handle data with utf-8 in filepath.
-  * TODO Support utf-8 profiles filepath.
-* TODO Review Python3 port.
-  * dict iteritems
-* TODO Improve unit tests.
-* TODO Use prepareAlgorithm for algorithm preparation.
-* TODO Support ParameterTable.
-* TODO Support multiple output vector formats.
-  * TODO Try to use v.external.out on simple algorithms.
-  * TODO Add an optional/advanced 'format option' textbox if vector output is detected.
-* TODO Support multiple input vector formats
-  * DONE create a general inputVectorLayer method.
-  * TODO Support database connections.
-  * TODO Support Auth API for databases connections.
-  * TODO Some formats can't be correctly used by v.external:
-    * GML.
-  * TODO Build a workaround for those formats (use v.in.ogr).
-* TODO Review all algorithm parameters.
-  * MOD r.basins.fill
-  * OK r.blend
-  * OK r.buffer
-  * OK r.buffer.lowmem
-  * OK r.carve
-  * OK r.category
-  * MOD r.circle
-  * MOD r.clump
-  * OK r.coin
-  * TODO r.colors OutputDirectory
-  * OK r.colors.out
-  * OK r.colors.stddev
-  * OK r.composite
-  * OK r.compress
-  * MOD r.contour
-  * MOD r.cost
-  * OK r.covar
-  * OK r.cross
-  * r.describe
-  * r.distance
-  * r.drain
-  * r.external
-  * r.external.out
-  * r.fill.dir
-  * r.fillnulls
-  * r.flow
-  * r.grow.distance
-  * r.grow
-  * r.gwflow
-  * r.his
-  * r.horizon
-  * r.import
-  * r.in.ascii
-  * r.in.aster
-  * r.in.bin
-  * r.in.gdal
-  * r.in.gridatb
-  * r.in.lidar
-  * r.in.mat
-  * r.in.png
-  * r.in.poly
-  * r.in.srtm
-  * r.in.wms
-  * r.in.xyz
-  * r.info
-  * r.kappa
-  * r.lake
-  * r.latlong
-  * r.li.cwed
-  * r.li.daemon
-  * r.li.dominance
-  * r.li.edgedensity
-  * r.li
-  * r.li.mpa
-  * r.li.mps
-  * r.li.padcv
-  * r.li.padrange
-  * r.li.padsd
-  * r.li.patchdensity
-  * r.li.patchnum
-  * r.li.pielou
-  * r.li.renyi
-  * r.li.richness
-  * r.li.shannon
-  * r.li.shape
-  * r.li.simpson
-  * r.mapcalc
-  * r.mask
-  * r.mfilter
-  * r.mode
-  * r.neighbors
-  * r.null
-  * r.out.ascii
-  * r.out.bin
-  * r.out.gdal
-  * r.out.gridatb
-  * r.out.mat
-  * r.out.mpeg
-  * r.out.png
-  * r.out.pov
-  * r.out.ppm
-  * r.out.ppm3
-  * r.out.vrml
-  * r.out.vtk
-  * r.out.xyz
-  * r.pack
-  * r.param.scale
-  * r.patch
-  * r.plane
-  * r.profile
-  * r.proj
-  * r.quant
-  * r.quantile
-  * r.random.cells
-  * r.random
-  * r.random.surface
-  * r.reclass.area
-  * r.reclass
-  * r.recode
-  * r.region
-  * r.regression.line
-  * r.regression.multi
-  * r.relief
-  * r.report
-  * r.resamp.bspline
-  * r.resamp.filter
-  * r.resamp.interp
-  * r.resamp.rst
-  * r.resamp.stats
-  * r.resample
-  * r.rescale.eq
-  * r.rescale
-  * r.rgb
-  * r.ros
-  * r.series.accumulate
-  * r.series
-  * r.series.interp
-  * r.shade
-  * r.sim.sediment
-  * r.sim.water
-  * r.slope.aspect
-  * r.solute.transport
-  * r.spread
-  * r.spreadpath
-  * r.statistics
-  * r.stats
-  * r.stats.quantile
-  * r.stats.zonal
-  * r.stream.extract
-  * r.sun
-  * r.sunhours
-  * r.sunmask
-  * r.support
-  * r.support.stats
-  * r.surf.area
-  * r.surf.contour
-  * r.surf.fractal
-  * r.surf.gauss
-  * r.surf.idw
-  * r.surf.random
-  * r.terraflow
-  * r.texture
-  * r.thin
-  * r.tile
-  * r.tileset
-  * r.timestamp
-  * r.to.rast3
-  * r.to.rast3elev
-  * r.to.vect
-  * r.topidx
-  * r.topmodel
-  * r.transect
-  * r.univar
-  * r.unpack
-  * r.uslek
-  * r.usler
-  * r.viewshed
-  * r.volume
-  * r.walk
-  * r.water.outlet
-  * r.watershed
-  * r.what.color
-  * r.what
-
 * TODO Convert all ext scripts.
-  * TODO Review i.py.
-  * TODO Force projection in description file?
+  * Review i.py.
+  * Force projection in description file?
   * r_rgb.py
   * r_blend_combine.py
   * r_blend_rgb.py
@@ -229,7 +40,31 @@ QGIS3 Processing Port
   * v_net_path.py
   * v_net_steiner.py
   * v_net_visibility.py
-  
+* Things to do elsewhere
+  * TODO We need NULL QgsProcessingParameterPoint!
+  * TODO We need a QgsParameterMultipleInputLayers parameter for minimum and maximum number of layers.
+  * TODO Open all the files in a QgsProcessingOutputFolder at the end of the algorithm.
+* TODO Review all the methods of QgsProcessingAlgorithm.
+* TODO Make tests under MS-Windows 7 for Utf-8 support.
+  * DONE Algorithms can handle data with utf-8 in filepath.
+  * TODO Support utf-8 profiles filepath.
+* TODO Review Python3 port.
+  * dict iteritems
+* TODO Improve unit tests.
+* TODO Use prepareAlgorithm for algorithm preparation.
+* TODO Support ParameterTable.
+* TODO Support multiple output vector formats.
+  * TODO Try to use v.external.out on simple algorithms.
+  * TODO Add an optional/advanced 'format option' textbox if vector output is detected.
+* TODO Support multiple input vector formats
+  * DONE create a general inputVectorLayer method.
+  * TODO Support database connections.
+  * TODO Support Auth API for databases connections.
+  * TODO Some formats can't be correctly used by v.external:
+    * GML.
+  * TODO Build a workaround for those formats (use v.in.ogr).
+
+* DONE Review all algorithm parameters.
 * DONE Support multiple output file raster formats.
   * DONE Add an optional/advanced 'format option' textbox if raster output is detected.
   * DONE Detext file format from extension.
