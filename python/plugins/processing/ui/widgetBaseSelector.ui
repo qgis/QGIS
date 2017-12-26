@@ -15,7 +15,7 @@
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout">
    <property name="spacing">
-    <number>2</number>
+    <number>6</number>
    </property>
    <property name="margin">
     <number>0</number>
@@ -39,7 +39,7 @@
       </sizepolicy>
      </property>
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
