@@ -409,8 +409,12 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
             paramName = param.name()
             if not paramName in parameters:
                 continue
-            if isinstance(parameters[paramName], str) and len(parameters[paramName]) == 0:
+            # Handle Null parameter
+            if parameters[paramName] is None:
                 continue
+            elif isinstance(parameters[paramName], str) and len(parameters[paramName]) == 0:
+                continue
+            
             # Raster inputs needs to be imported into temp GRASS DB
             if isinstance(param, QgsProcessingParameterRasterLayer):
                 if paramName not in self.exportedLayers:
@@ -622,6 +626,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         :param band: imports only specified band. None for all bands.
         """
         layer = self.parameterAsRasterLayer(parameters, name, context)
+        QgsMessageLog.logMessage('raster: {0}'.format(name), 'DEBUG', QgsMessageLog.INFO)
         self.loadRasterLayer(name, layer, external, band)
 
     def loadRasterLayer(self, name, layer, external=True, band=1):
