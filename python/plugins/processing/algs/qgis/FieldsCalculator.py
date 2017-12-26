@@ -26,7 +26,17 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from qgis.PyQt.QtCore import QVariant
-from qgis.core import QgsExpression, QgsExpressionContext, QgsExpressionContextUtils, QgsFeature, QgsField, QgsDistanceArea, QgsProject, GEO_NONE
+from qgis.core import (
+    QgsExpression,
+    QgsExpressionContext,
+    QgsExpressionContextUtils,
+    QgsFeature,
+    QgsField,
+    QgsDistanceArea,
+    QgsProject,
+    QgsMapLayerRegistry,
+    GEO_NONE
+)
 from qgis.utils import iface
 from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
@@ -122,6 +132,14 @@ class FieldsCalculator(GeoAlgorithm):
             raise GeoAlgorithmExecutionException(
                 self.tr('Evaluation error: %s' % exp.evalErrorString()))
 
+        # add layer to registry to fix https://issues.qgis.org/issues/17300
+        # it is necessary only for aggregate expressions that verify that layer
+        # is registered
+        removeRegistryAfterEvaluation = False
+        if not QgsMapLayerRegistry.instance().mapLayer(layer.id()):
+            removeRegistryAfterEvaluation = True
+            QgsMapLayerRegistry.instance().addMapLayer(layer, addToLegend=False)
+
         outFeature = QgsFeature()
         outFeature.initAttributes(len(fields))
         outFeature.setFields(fields)
@@ -151,6 +169,11 @@ class FieldsCalculator(GeoAlgorithm):
 
             progress.setPercentage(int(current * total))
         del writer
+
+        # remove from registry if added for expression requirement
+        # see above comment about fix #17300
+        if removeRegistryAfterEvaluation:
+            QgsMapLayerRegistry.instance().removeMapLayer(layer)
 
         if not calculationSuccess:
             raise GeoAlgorithmExecutionException(
