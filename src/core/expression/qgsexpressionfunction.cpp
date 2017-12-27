@@ -415,7 +415,7 @@ static QVariant fcnExpScale( const QVariantList &values, const QgsExpressionCont
 
 static QVariant fcnMax( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  QVariant result;
+  QVariant result( QVariant::Double );
   double maxVal = std::numeric_limits<double>::quiet_NaN();
   for ( const QVariant &val : values )
   {
@@ -439,7 +439,7 @@ static QVariant fcnMax( const QVariantList &values, const QgsExpressionContext *
 
 static QVariant fcnMin( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  QVariant result;
+  QVariant result( QVariant::Double );
   double minVal = std::numeric_limits<double>::quiet_NaN();
   for ( const QVariant &val : values )
   {
@@ -3941,8 +3941,8 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
     sFunctions << randfFunc;
 
     sFunctions
-        << new QgsStaticExpressionFunction( QStringLiteral( "max" ), -1, fcnMax, QStringLiteral( "Math" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "min" ), -1, fcnMin, QStringLiteral( "Math" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "max" ), -1, fcnMax, QStringLiteral( "Math" ), QString(), false, QSet<QString>(), false, QStringList(), /* handlesNull = */ true )
+        << new QgsStaticExpressionFunction( QStringLiteral( "min" ), -1, fcnMin, QStringLiteral( "Math" ), QString(), false, QSet<QString>(), false, QStringList(), /* handlesNull = */ true )
         << new QgsStaticExpressionFunction( QStringLiteral( "clamp" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "min" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "max" ) ), fcnClamp, QStringLiteral( "Math" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "scale_linear" ), 5, fcnLinearScale, QStringLiteral( "Math" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "scale_exp" ), 6, fcnExpScale, QStringLiteral( "Math" ) )
