@@ -26,7 +26,7 @@ __copyright__ = '(C) 2017, Médéric Ribreux'
 __revision__ = '$Format:%H$'
 
 from qgis.core import QgsProcessingParameterString
-
+from processing.algs.grass7.Grass7Utils import Grass7Utils
 
 def processCommand(alg, parameters, context):
     # We had a new "output" parameter
@@ -45,8 +45,13 @@ def processCommand(alg, parameters, context):
 
 
 def processOutputs(alg, parameters, context):
+    createOpt = alg.parameterAsString(parameters, alg.GRASS_RASTER_FORMAT_OPT, context)
+    metaOpt = alg.parameterAsString(parameters, alg.GRASS_RASTER_FORMAT_META, context)
+
     # Export the results from correctedoutput
     grassName = 'correctedoutput{}'.format(alg.uniqueSuffix)
     fileName = alg.parameterAsOutputLayer(
         parameters, 'routput', context)
-    alg.exportRasterLayer(grassName, fileName)
+    outFormat = Grass7Utils.getRasterFormatFromFilename(fileName)
+    alg.exportRasterLayer(grassName, fileName, True,
+                          outFormat, createOpt, metaOpt)

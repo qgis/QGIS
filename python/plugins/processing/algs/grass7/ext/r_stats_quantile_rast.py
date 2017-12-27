@@ -25,7 +25,8 @@ __copyright__ = '(C) 2016, Médéric Ribreux'
 
 __revision__ = '$Format:%H$'
 
-from processing.core.parameters import getParameterFromString
+from qgis.core import QgsProcessingParameterString
+from processing.algs.grass7.Grass7Utils import Grass7Utils
 import os
 
 
@@ -35,31 +36,26 @@ def processCommand(alg, parameters, context):
     outputs = []
     for i in range(0, int(quantiles)):
         outputs.append('output_{}'.format(i))
+    param = QgsProcessingParameterString(
+        'output', 'virtual output',
+        ','.join(outputs), False, False)
+    alg.addParameter(param)
 
-    output = getParameterFromString('ParameterString|output|Output Rasters|None|False|True')
-    output.value = ','.join(outputs)
-    alg.addParameter(output)
-
-    output_dir = alg.getOutputFromName('output_dir')
-    alg.removeOutputFromName('output_dir')
-
-    # Launch the algorithm
-    alg.processCommand(parameters, context)
-
-    # We re-add the previous output
-    alg.addOutput(output_dir)
+    # Removes outputs
+    alg.processCommand(parameters, context, True)
 
 
 def processOutputs(alg, parameters, context):
+    createOpt = alg.parameterAsString(parameters, alg.GRASS_RASTER_FORMAT_OPT, context)
+    metaOpt = alg.parameterAsString(parameters, alg.GRASS_RASTER_FORMAT_META, context)
+    outputDir = alg.parameterAsString(parameters, 'output_dir', context)
+    outputParam = alg.parameterAsString(parameters, 'output', context)
+    outputs = outputParam.split(',')
+
     # We need to export each of the output
-    output_dir = alg.getOutputValue('output_dir')
-    outputParam = alg.getParameterFromName('output')
-    outputs = outputParam.value.split(',')
-    alg.parameters.remove(outputParam)
     for output in outputs:
-        command = u"r.out.gdal -c createopt=\"TFW=YES,COMPRESS=LZW\" input={} output=\"{}\" --overwrite".format(
-            output,
-            os.path.join(output_dir, output + '.tif')
-        )
-        alg.commands.append(command)
-        alg.outputCommands.append(command)
+        fileName = os.path.join(outputDir, output)
+        outFormat = Grass7Utils.getRasterFormatFromFilename(fileName)
+        alg.exportRasterLayer(output, fileName, True,
+                              outFormat, createOpt, metaOpt)
+
