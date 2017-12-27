@@ -540,8 +540,8 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                     )
             # For fields, we just translate as string
             elif isinstance(param, QgsProcessingParameterField):
-                value = '{}'.format(
-                    self.parameterAsString(parameters, paramName, context)
+                value = ','.join(
+                    self.parameterAsFields(parameters, paramName, context)
                 )
             # For numbers and points, we translate as a string
             elif isinstance(param, (QgsProcessingParameterNumber,
