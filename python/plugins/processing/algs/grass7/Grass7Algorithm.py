@@ -558,6 +558,9 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         # Handle outputs
         if not delOutputs:
             for out in self.destinationParameterDefinitions():
+                # We exclude hidden parameters
+                if out.flags() & QgsProcessingParameterDefinition.FlagHidden:
+                    continue
                 outName = out.name()
                 # For File destination
                 if isinstance(out, QgsProcessingParameterFileDestination):
