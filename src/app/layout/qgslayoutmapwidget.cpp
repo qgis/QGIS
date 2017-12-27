@@ -695,21 +695,18 @@ void QgsLayoutMapWidget::toggleAtlasScalingOptionsByLayerType()
     return;
   }
 
-  switch ( layer->wkbType() )
+  if ( QgsWkbTypes::geometryType( layer->wkbType() ) == QgsWkbTypes::PointGeometry )
   {
-    case QgsWkbTypes::Point:
-    case QgsWkbTypes::Point25D:
-    case QgsWkbTypes::MultiPoint:
-    case QgsWkbTypes::MultiPoint25D:
-      //For point layers buffer setting makes no sense, so set "fixed scale" on and disable margin control
-      mAtlasFixedScaleRadio->setChecked( true );
-      mAtlasMarginRadio->setEnabled( false );
-      mAtlasPredefinedScaleRadio->setEnabled( false );
-      break;
-    default:
-      //Not a point layer, so enable changes to fixed scale control
-      mAtlasMarginRadio->setEnabled( true );
-      mAtlasPredefinedScaleRadio->setEnabled( true );
+    //For point layers buffer setting makes no sense, so set "fixed scale" on and disable margin control
+    mAtlasFixedScaleRadio->setChecked( true );
+    mAtlasMarginRadio->setEnabled( false );
+    mAtlasPredefinedScaleRadio->setEnabled( false );
+  }
+  else
+  {
+    //Not a point layer, so enable changes to fixed scale control
+    mAtlasMarginRadio->setEnabled( true );
+    mAtlasPredefinedScaleRadio->setEnabled( true );
   }
 }
 
