@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsexpressionnode.h"
+#include "qgsexpression.h"
 
 
 QVariant QgsExpressionNode::eval( QgsExpression *parent, const QgsExpressionContext *context )
@@ -34,7 +35,10 @@ bool QgsExpressionNode::prepare( QgsExpression *parent, const QgsExpressionConte
   if ( isStatic( parent, context ) )
   {
     mCachedStaticValue = evalNode( parent, context );
-    mHasCachedValue = true;
+    if ( !parent->hasEvalError() )
+      mHasCachedValue = true;
+    else
+      mHasCachedValue = false;
     return true;
   }
   else
