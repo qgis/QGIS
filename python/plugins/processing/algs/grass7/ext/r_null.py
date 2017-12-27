@@ -40,7 +40,7 @@ def processInputs(alg, parameters, context):
     if 'map' in alg.exportedLayers:
         return
 
-    # We need to import all the bands and color tables of the input raster
+    # We need to import without r.external
     alg.loadRasterLayerFromParameter('map', parameters, context, False)
     alg.postInputs()
 
@@ -52,5 +52,5 @@ def processCommand(alg, parameters, context):
 
 def processOutputs(alg, parameters, context):
     fileName = alg.parameterAsOutputLayer(parameters, 'output', context)
-    grassName = '{}{}'.format('map', alg.uniqueSuffix)
+    grassName = alg.exportedLayers['map']
     alg.exportRasterLayer(grassName, fileName, False)

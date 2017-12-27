@@ -2,7 +2,7 @@ i.rectify
 Rectifies an image by computing a coordinate transformation for each pixel in the image based on the control points. 
 Imagery (i.*)
 QgsProcessingParameterMultipleLayers|rasters|Name of raster maps to rectify|3|None|False
-QgsProcessingParameterFile|gcp|Ground Control Points file|0|txt|None|False
+QgsProcessingParameterFile|gcp|Ground Control Points file|False|txt|None|False
 QgsProcessingParameterEnum|order|Rectification polynomial order|1;2;3|False|0|False
 QgsProcessingParameterNumber|resolution|Target resolution|QgsProcessingParameterNumber.Double|None|True|None|None
 QgsProcessingParameterNumber|memory|Amount of memory to use in MB|QgsProcessingParameterNumber.Integer|300|True|1|None

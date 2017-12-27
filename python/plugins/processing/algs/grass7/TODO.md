@@ -5,24 +5,17 @@ QGIS3 Processing Port
 
 * TODO Convert all ext scripts.
   * Review i.py.
-  * Force projection in description file?
+  * Use a message band rather than a messageBox for errors on exclusives parameters.
   * r_rgb.py
   * r_blend_combine.py
   * r_blend_rgb.py
-  * r_drain.py
   * r_horizon.py
   * r_mask.py
   * r_mask_vect.py
   * r_mask_rast.py
-  * r_null.py
   * r_statistics.py
   * v_voronoi.py
-  * v_build_polylines.py => TO delete.
-  * v_in_geonames.py.
-  * v_sample.py.
   * v_to_3d.py.
-  * v_pack.py.
-  * v_what_vect.py => TO delete.
   * v_what_rast_points.py.
   * v_what_rast_centroids.py.
   * v_vect_stats.py
@@ -41,6 +34,7 @@ QGIS3 Processing Port
   * v_net_steiner.py
   * v_net_visibility.py
 * Things to do elsewhere
+  * TODO QgsProcessingParameterPoint can't be used anymore.
   * TODO We need NULL QgsProcessingParameterPoint!
   * TODO We need a QgsParameterMultipleInputLayers parameter for minimum and maximum number of layers.
   * TODO Open all the files in a QgsProcessingOutputFolder at the end of the algorithm.
@@ -53,9 +47,6 @@ QGIS3 Processing Port
 * TODO Improve unit tests.
 * TODO Use prepareAlgorithm for algorithm preparation.
 * TODO Support ParameterTable.
-* TODO Support multiple output vector formats.
-  * TODO Try to use v.external.out on simple algorithms.
-  * TODO Add an optional/advanced 'format option' textbox if vector output is detected.
 * TODO Support multiple input vector formats
   * DONE create a general inputVectorLayer method.
   * TODO Support database connections.
@@ -64,6 +55,9 @@ QGIS3 Processing Port
     * GML.
   * TODO Build a workaround for those formats (use v.in.ogr).
 
+* DONE Fix ParameterFiles (use False instead of 0 value for file type).
+* DONE Support multiple output vector formats.
+  * DONE Add an optional/advanced 'format option' textbox if vector output is detected.
 * DONE Review all algorithm parameters.
 * DONE Support multiple output file raster formats.
   * DONE Add an optional/advanced 'format option' textbox if raster output is detected.

@@ -626,7 +626,6 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         :param band: imports only specified band. None for all bands.
         """
         layer = self.parameterAsRasterLayer(parameters, name, context)
-        QgsMessageLog.logMessage('raster: {0}'.format(name), 'DEBUG', QgsMessageLog.INFO)
         self.loadRasterLayer(name, layer, external, band)
 
     def loadRasterLayer(self, name, layer, external=True, band=1):
@@ -723,7 +722,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
             )
             cmd.append("done")
 
-    def loadVectorLayerFromParameter(self, name, parameters, context, external=None):
+    def loadVectorLayerFromParameter(self, name, parameters, context, external=False):
         """
         Creates a dedicated command to load a vector into
         the temporary GRASS DB.
@@ -735,7 +734,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         layer = self.parameterAsVectorLayer(parameters, name, context)
         self.loadVectorLayer(name, layer, external)
 
-    def loadVectorLayer(self, name, layer, external=None):
+    def loadVectorLayer(self, name, layer, external=False):
         """
         Creates a dedicated command to load a vector into
         temporary GRASS DB.

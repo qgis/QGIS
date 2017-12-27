@@ -4,7 +4,7 @@ Vector (v.*)
 QgsProcessingParameterVectorLayer|map|Name of vector layer|-1|None|False
 QgsProcessingParameterEnum|type|Input feature type|point;line;boundary;centroid|True|0,1,3,4|True
 QgsProcessingParameterEnum|tool|Tool|create;add;delete;copy;move;flip;catadd;catdel;merge;break;snap;connect;chtype;vertexadd;vertexdel;vertexmove;areadel;zbulk;select|False|0|False
-QgsProcessingParameterFile|input|ASCII file for add tool|0|txt|None|True
+QgsProcessingParameterFile|input|ASCII file for add tool|False|txt|None|True
 QgsProcessingParameterString|move|Difference in x,y,z direction for moving feature or vertex|None|False|True
 QgsProcessingParameterString|threshold|Threshold distance (coords,snap,query)|None|False|True
 QgsProcessingParameterString|ids|Feature ids|None|False|True

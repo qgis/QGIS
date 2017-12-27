@@ -3,5 +3,5 @@ Creates points/segments from input lines, linear reference system and positions 
 Vector (v.*)
 QgsProcessingParameterVectorLayer|input|Input vector map containing lines|1|None|False
 QgsProcessingParameterVectorLayer|rstable|Name of the reference system table|-1|None|False
-QgsProcessingParameterFile|file|Name of file containing segment rules|0|txt|None|True
+QgsProcessingParameterFile|file|Name of file containing segment rules|False|txt|None|True
 QgsProcessingParameterVectorDestination|output|Segments
