@@ -524,8 +524,12 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                     command += ' {}'.format(paramName)
             # For enumeration, we need to grab the string value
             elif isinstance(param, QgsProcessingParameterEnum):
-                idx = self.parameterAsEnum(parameters, paramName, context)
-                value = '"{}"'.format(param.options()[idx])
+                # Handle multiple values
+                if param.allowMultiple():
+                    indexes = self.parameterAsEnums(parameters, paramName, context)
+                else:
+                    indexes = [self.parameterAsEnum(parameters, paramName, context)]
+                value = '"{}"'.format(','.join([param.options()[i] for i in indexes]))
             # For strings, we just translate as string
             elif isinstance(param, QgsProcessingParameterString):
                 data = self.parameterAsString(parameters, paramName, context)

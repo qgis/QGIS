@@ -14,12 +14,6 @@ QGIS3 Processing Port
   * r_mask_vect.py
   * r_mask_rast.py
   * r_statistics.py
-  * v_voronoi.py
-  * v_to_3d.py.
-  * v_what_rast_points.py.
-  * v_what_rast_centroids.py.
-  * v_vect_stats.py
-  * v_rast_stats.py
   * v_net.py
   * v_net_alloc.py
   * v_net_allpairs.py
