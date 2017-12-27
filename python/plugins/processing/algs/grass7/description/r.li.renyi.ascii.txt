@@ -5,4 +5,4 @@ QgsProcessingParameterRasterLayer|input|Name of input raster map|None|False
 QgsProcessingParameterString|config_txt|Landscape structure configuration|None|True|True
 QgsProcessingParameterFile|config|Landscape structure configuration file|False|txt|None|True
 QgsProcessingParameterString|alpha|Alpha value is the order of the generalized entropy|None|False|False
-QgsProcessingParameterFileDestination|output|Renyi|Txt files (*.txt)|None|False
+QgsProcessingParameterFileDestination|output_txt|Renyi|Txt files (*.txt)|None|False

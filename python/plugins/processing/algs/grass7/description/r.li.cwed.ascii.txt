@@ -5,4 +5,4 @@ QgsProcessingParameterRasterLayer|input|Name of input raster map|None|False
 QgsProcessingParameterString|config_txt|Landscape structure configuration|None|True|True
 QgsProcessingParameterFile|config|Landscape structure configuration file|False|txt|None|True
 QgsProcessingParameterFile|path|Name of file that contains the weight to calculate the index|False|txt|None|False
-QgsProcessingParameterFileDestination|output|CWED|Txt files (*.txt)|None|False
+QgsProcessingParameterFileDestination|output_txt|CWED|Txt files (*.txt)|None|False

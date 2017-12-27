@@ -6,4 +6,4 @@ QgsProcessingParameterString|config_txt|Landscape structure configuration|None|T
 QgsProcessingParameterFile|config|Landscape structure configuration file|False|txt|None|True
 QgsProcessingParameterString|patch_type|The value of the patch type|None|False|True
 QgsProcessingParameterBoolean|-b|Exclude border edges|False
-QgsProcessingParameterFileDestination|output|Edge Density|Txt files (*.txt)|None|False
+QgsProcessingParameterFileDestination|output_txt|Edge Density|Txt files (*.txt)|None|False

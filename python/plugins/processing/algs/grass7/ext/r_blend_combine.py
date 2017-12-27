@@ -2,8 +2,8 @@
 
 """
 ***************************************************************************
-    r_blend.py
-    ----------
+    r_blend_combine.py
+    ------------------
     Date                 : February 2016
     Copyright            : (C) 2016 by Médéric Ribreux
     Email                : medspx at medspx dot fr
@@ -29,7 +29,8 @@ __revision__ = '$Format:%H$'
 def processInputs(alg, parameters, context):
     if 'first' and 'second' in alg.exportedLayers:
         return
-
+    
+    # Use v.in.ogr
     for name in ['first', 'second']:
         alg.loadRasterLayerFromParameter(name, parameters, context, False, None)
     alg.postInputs()

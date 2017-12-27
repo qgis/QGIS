@@ -4,4 +4,4 @@ Raster (r.*)
 QgsProcessingParameterRasterLayer|input|Name of input raster map|None|False
 QgsProcessingParameterString|config_txt|Landscape structure configuration|None|True|True
 QgsProcessingParameterFile|config|Landscape structure configuration file|False|txt|None|True
-QgsProcessingParameterFileDestination|output|Richness|Txt files (*.txt)|None|False
+QgsProcessingParameterFileDestination|output_txt|Richness|Txt files (*.txt)|None|False
