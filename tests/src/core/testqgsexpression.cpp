@@ -359,7 +359,7 @@ class TestQgsExpression: public QObject
       }
 
       QgsExpressionContext context;
-      Q_ASSERT( exp.prepare( &context ) );
+      QVERIFY( exp.prepare( &context ) );
 
       QVariant res = exp.evaluate();
       if ( exp.hasEvalError() )
@@ -388,10 +388,10 @@ class TestQgsExpression: public QObject
       QgsExpression expression( "represent_value(\"Pilots\", 'Pilots')" );
       if ( expression.hasParserError() )
         qDebug() << expression.parserErrorString();
-      Q_ASSERT( !expression.hasParserError() );
+      QVERIFY( !expression.hasParserError() );
       if ( expression.hasEvalError() )
         qDebug() << expression.evalErrorString();
-      Q_ASSERT( !expression.hasEvalError() );
+      QVERIFY( !expression.hasEvalError() );
       expression.prepare( &context );
 
       QgsFeature feature;
@@ -403,10 +403,10 @@ class TestQgsExpression: public QObject
       QgsExpression expression2( "represent_value(\"Class\", 'Class')" );
       if ( expression2.hasParserError() )
         qDebug() << expression2.parserErrorString();
-      Q_ASSERT( !expression2.hasParserError() );
+      QVERIFY( !expression2.hasParserError() );
       if ( expression2.hasEvalError() )
         qDebug() << expression2.evalErrorString();
-      Q_ASSERT( !expression2.hasEvalError() );
+      QVERIFY( !expression2.hasEvalError() );
       expression2.prepare( &context );
       mPointsLayer->getFeatures( QgsFeatureRequest().setFilterExpression( "Class = 'Jet'" ) ).nextFeature( feature );
       context.setFeature( feature );
@@ -416,10 +416,10 @@ class TestQgsExpression: public QObject
       QgsExpression expression3( "represent_value(\"Pilots\")" );
       if ( expression3.hasParserError() )
         qDebug() << expression.parserErrorString();
-      Q_ASSERT( !expression3.hasParserError() );
+      QVERIFY( !expression3.hasParserError() );
       if ( expression3.hasEvalError() )
         qDebug() << expression3.evalErrorString();
-      Q_ASSERT( !expression3.hasEvalError() );
+      QVERIFY( !expression3.hasEvalError() );
 
       mPointsLayer->getFeatures( QgsFeatureRequest().setFilterExpression( "Pilots = 1" ) ).nextFeature( feature );
       context.setFeature( feature );
@@ -428,12 +428,22 @@ class TestQgsExpression: public QObject
       expression3.prepare( &context );
       QCOMPARE( expression.evaluate( &context ).toString(), QStringLiteral( "one" ) );
 
-
       QgsExpression expression4( "represent_value('Class')" );
+      expression4.evaluate();
       if ( expression4.hasParserError() )
         qDebug() << expression4.parserErrorString();
-      Q_ASSERT( !expression4.hasParserError() );
-      Q_ASSERT( expression4.hasEvalError() );
+      QVERIFY( !expression4.hasParserError() );
+      if ( expression4.hasEvalError() )
+        qDebug() << expression4.evalErrorString();
+      QVERIFY( expression4.hasEvalError() );
+
+      expression4.prepare( &context );
+      if ( expression4.hasParserError() )
+        qDebug() << expression4.parserErrorString();
+      QVERIFY( !expression4.hasParserError() );
+      if ( expression4.hasEvalError() )
+        qDebug() << expression4.evalErrorString();
+      QVERIFY( expression4.hasEvalError() );
     }
 
     void evaluation_data()
@@ -1224,7 +1234,7 @@ class TestQgsExpression: public QObject
 
       QgsExpressionContext context;
 
-      Q_ASSERT( exp.prepare( &context ) );
+      QVERIFY( exp.prepare( &context ) );
 
       QVariant::Type resultType = result.type();
       QVariant::Type expectedType = expected.type();
@@ -1278,7 +1288,7 @@ class TestQgsExpression: public QObject
           break;
         }
         default:
-          Q_ASSERT( false ); // should never happen
+          QVERIFY( false ); // should never happen
       }
     }
 
@@ -2417,7 +2427,7 @@ class TestQgsExpression: public QObject
       QgsExpression exp1( QStringLiteral( "eval()" ) );
       QVariant v1 = exp1.evaluate( &context );
 
-      Q_ASSERT( !v1.isValid() );
+      QVERIFY( !v1.isValid() );
 
       QgsExpression exp2( QStringLiteral( "eval('4')" ) );
       QVariant v2 = exp2.evaluate( &context );
@@ -2903,7 +2913,7 @@ class TestQgsExpression: public QObject
       QgsExpression e3( QStringLiteral( "env('TESTENV_I_DO_NOT_EXIST')" ) );
       QVariant result3 = e3.evaluate( &context );
 
-      Q_ASSERT( result3.isNull() );
+      QVERIFY( result3.isNull() );
     }
 
     void test_formatPreviewString()
