@@ -20,7 +20,6 @@
 #include "qgsvaluerelationfieldformatter.h"
 
 #include <QComboBox>
-#include <QListWidget>
 #include <QTableWidget>
 #include <QHeaderView>
 #include <QLineEdit>
@@ -74,7 +73,6 @@ class GUI_EXPORT QgsValueRelationWidgetWrapper : public QgsEditorWidgetWrapper
 
   private:
     QComboBox *mComboBox = nullptr;
-    QListWidget *mListWidget = nullptr;
     QTableWidget *mTableWidget = nullptr;
     QLineEdit *mLineEdit = nullptr;
 

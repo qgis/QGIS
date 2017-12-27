@@ -46,20 +46,6 @@ QVariant QgsValueRelationWidgetWrapper::value() const
       v = mComboBox->currentData();
     }
   }
-
-  if ( mListWidget )
-  {
-    QStringList selection;
-    for ( int i = 0; i < mListWidget->count(); ++i )
-    {
-      QListWidgetItem *item = mListWidget->item( i );
-      if ( item->checkState() == Qt::Checked )
-        selection << item->data( Qt::UserRole ).toString();
-    }
-
-    v = selection.join( QStringLiteral( "," ) ).prepend( '{' ).append( '}' );
-  }
-
   if ( mTableWidget )
   {
     QStringList selection;
@@ -67,7 +53,6 @@ QVariant QgsValueRelationWidgetWrapper::value() const
     {
       for ( int i = 0; i < config( QStringLiteral( "NofColumns" ) ).toInt(); ++i )
       {
-        QgsDebugMsg( QString( "davedebug fill row %1 %2" ).arg( i ).arg( j ) );
         QTableWidgetItem *item = mTableWidget->item( j, i );
         if ( item )
         {
@@ -114,7 +99,6 @@ void QgsValueRelationWidgetWrapper::initWidget( QWidget *editor )
   mCache = QgsValueRelationFieldFormatter::createCache( config() );
 
   mComboBox = qobject_cast<QComboBox *>( editor );
-  mListWidget = qobject_cast<QListWidget *>( editor );
   mTableWidget = qobject_cast<QTableWidget *>( editor );
   mLineEdit = qobject_cast<QLineEdit *>( editor );
 
@@ -132,18 +116,6 @@ void QgsValueRelationWidgetWrapper::initWidget( QWidget *editor )
 
     connect( mComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ),
              this, static_cast<void ( QgsEditorWidgetWrapper::* )()>( &QgsEditorWidgetWrapper::valueChanged ) );
-  }
-  else if ( mListWidget )
-  {
-    Q_FOREACH ( const QgsValueRelationFieldFormatter::ValueRelationItem &element, mCache )
-    {
-      QListWidgetItem *item = nullptr;
-      item = new QListWidgetItem( element.value );
-      item->setData( Qt::UserRole, element.key );
-
-      mListWidget->addItem( item );
-    }
-    connect( mListWidget, &QListWidget::itemChanged, this, static_cast<void ( QgsEditorWidgetWrapper::* )()>( &QgsEditorWidgetWrapper::valueChanged ) );
   }
   else if ( mTableWidget )
   {
@@ -193,26 +165,12 @@ void QgsValueRelationWidgetWrapper::initWidget( QWidget *editor )
 
 bool QgsValueRelationWidgetWrapper::valid() const
 {
-  return mListWidget || mTableWidget || mLineEdit || mComboBox;
+  return mTableWidget || mLineEdit || mComboBox;
 }
 
 void QgsValueRelationWidgetWrapper::setValue( const QVariant &value )
 {
-  if ( mListWidget )
-  {
-    QStringList checkList;
-    if ( value.type() == QVariant::StringList )
-      checkList = value.toStringList();
-    else if ( value.type() == QVariant::String )
-      checkList = value.toString().remove( QChar( '{' ) ).remove( QChar( '}' ) ).split( ',' );
-
-    for ( int i = 0; i < mListWidget->count(); ++i )
-    {
-      QListWidgetItem *item = mListWidget->item( i );
-      item->setCheckState( checkList.contains( item->data( Qt::UserRole ).toString() ) ? Qt::Checked : Qt::Unchecked );
-    }
-  }
-  else if ( mTableWidget )
+  if ( mTableWidget )
   {
     QStringList checkList;
     if ( value.type() == QVariant::StringList )
@@ -251,16 +209,7 @@ void QgsValueRelationWidgetWrapper::setValue( const QVariant &value )
 
 void QgsValueRelationWidgetWrapper::showIndeterminateState()
 {
-  if ( mListWidget )
-  {
-    mListWidget->blockSignals( true );
-    for ( int i = 0; i < mListWidget->count(); ++i )
-    {
-      mListWidget->item( i )->setCheckState( Qt::PartiallyChecked );
-    }
-    mListWidget->blockSignals( false );
-  }
-  else if ( mTableWidget )
+  if ( mTableWidget )
   {
     mTableWidget->blockSignals( true );
     for ( int j = 0; j < mTableWidget->rowCount(); j++ )
@@ -289,19 +238,7 @@ void QgsValueRelationWidgetWrapper::setEnabled( bool enabled )
 
   mEnabled = enabled;
 
-  if ( mListWidget )
-  {
-    for ( int i = 0; i < mListWidget->count(); ++i )
-    {
-      QListWidgetItem *item = mListWidget->item( i );
-
-      if ( enabled )
-        item->setFlags( item->flags() | Qt::ItemIsEnabled );
-      else
-        item->setFlags( item->flags() & ~Qt::ItemIsEnabled );
-    }
-  }
-  else if ( mTableWidget )
+  if ( mTableWidget )
   {
     for ( int j = 0; j < mTableWidget->rowCount(); j++ )
     {
