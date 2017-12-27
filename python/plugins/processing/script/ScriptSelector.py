@@ -59,7 +59,7 @@ class ScriptSelector(BASE, WIDGET):
                 scriptItem.setFlags(scriptItem.flags() | Qt.ItemIsUserCheckable)
                 scriptItem.setCheckState(0, Qt.Checked)
                 scriptItem.script = script
-                scriptItem.setText(0, script.name)
+                scriptItem.setText(0, script.name())
                 groupItem.addChild(scriptItem)
             self.scriptsTree.addTopLevelItem(groupItem)
 
@@ -74,7 +74,7 @@ class ScriptSelector(BASE, WIDGET):
         self.buttonBox.rejected.connect(self.cancelPressed)
 
     def selectFolder(self):
-        folder = QFileDialog.getExistingDirectory(self, 'Select folder')
+        folder = QFileDialog.getExistingDirectory(self, "Select folder")
         if folder:
             self.folderBox.setText(folder)
 
@@ -95,7 +95,7 @@ class ScriptSelector(BASE, WIDGET):
         if value:
             return value
         textBox.setStyleSheet("QLineEdit{background: yellow}")
-        raise Exception("wrong parameter value")
+        raise Exception("Wrong parameter value")
 
     def okPressed(self):
         self.scripts = []
@@ -113,4 +113,5 @@ class ScriptSelector(BASE, WIDGET):
             self.email = self._getValue(self.emailBox)
         except:
             return
+
         self.close()
