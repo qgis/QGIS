@@ -29,7 +29,7 @@ from processing.algs.grass7.Grass7Utils import Grass7Utils
 
 def processInputs(alg, parameters, context):
     # We need to import all the bands and to preserve color table
-    if 'input' in alg.exportedLayers:
+    if 'map' in alg.exportedLayers:
         return
 
     # We need to import all the bands and color tables of the input raster

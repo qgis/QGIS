@@ -7,8 +7,6 @@ QGIS3 Processing Port
   * Review i.py.
   * Use a message band rather than a messageBox for errors on exclusives parameters.
   * r_rgb.py
-  * r_blend_combine.py
-  * r_blend_rgb.py
   * r_horizon.py
   * r_mask.py
   * r_mask_vect.py

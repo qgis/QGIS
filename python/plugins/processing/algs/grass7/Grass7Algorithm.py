@@ -56,6 +56,7 @@ from qgis.core import (QgsRasterLayer,
                        QgsProcessingParameterVectorDestination,
                        QgsProcessingParameterRasterDestination,
                        QgsProcessingParameterFileDestination,
+                       QgsProcessingParameterFile,
                        QgsProcessingParameterFolderDestination,
                        QgsProcessingOutputFolder,
                        QgsProcessingOutputVectorLayer,
@@ -543,6 +544,8 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                 value = ','.join(
                     self.parameterAsFields(parameters, paramName, context)
                 )
+            elif isinstance(param, QgsProcessingParameterFile):
+                value = self.parameterAsString(parameters, paramName, context)
             # For numbers and points, we translate as a string
             elif isinstance(param, (QgsProcessingParameterNumber,
                                     QgsProcessingParameterPoint)):
@@ -694,8 +697,8 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
             # Adjust region to layer before exporting
             cmd.append('g.region raster={}'.format(grassName))
             cmd.append(
-                'r.out.gdal -c -m{0} input="{1}" output="{2}" format="{3}" {4}{5} --overwrite'.format(
-                    ' -t' if colorTable else '',
+                'r.out.gdal -t -m{0} input="{1}" output="{2}" format="{3}" {4}{5} --overwrite'.format(
+                    '' if colorTable else ' -c',
                     grassName, fileName,
                     outFormat,
                     ' createopt="{}"'.format(createOpt) if createOpt else '',
@@ -719,8 +722,8 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
 
         # Add a loop export from the basename
         for cmd in [self.commands, self.outputCommands]:
-            # Adjust region to layer before exporting
-            # TODO: Does-it works under MS-Windows or MacOSX?
+            # TODO Windows support
+            # TODO Format/options support
             cmd.append("for r in $(g.list type=rast pattern='{}*'); do".format(basename))
             cmd.append("  r.out.gdal -m{0} input=${{r}} output={1}/${{r}}.tif {2}".format(
                 ' -t' if colorTable else '', outDir,
