@@ -133,7 +133,7 @@ void TestQgsFileDownloader::init()
   mCompleted = false;
   mExited = false;
   mTempFile = new QTemporaryFile();
-  Q_ASSERT( mTempFile->open() );
+  QVERIFY( mTempFile->open() );
   mTempFile->close();
 }
 

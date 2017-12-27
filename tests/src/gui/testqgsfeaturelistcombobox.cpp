@@ -99,7 +99,7 @@ void TestQgsFeatureListComboBox::testSetGetLayer()
 {
   std::unique_ptr<QgsFeatureListComboBox> cb( new QgsFeatureListComboBox() );
 
-  Q_ASSERT( cb->sourceLayer() == nullptr );
+  QVERIFY( cb->sourceLayer() == nullptr );
   cb->setSourceLayer( mLayer.get() );
   QCOMPARE( cb->sourceLayer(), mLayer.get() );
 }
@@ -109,17 +109,17 @@ void TestQgsFeatureListComboBox::testSetGetForeignKey()
   QgsFeatureListComboBox *cb = new QgsFeatureListComboBox();
   // std::unique_ptr<QgsFeatureListComboBox> cb( new QgsFeatureListComboBox() );
 
-  Q_ASSERT( cb->identifierValue().isNull() );
+  QVERIFY( cb->identifierValue().isNull() );
 
   cb->setSourceLayer( mLayer.get() );
   cb->setDisplayExpression( "\"material\"" );
   cb->lineEdit()->setText( "ro" );
   emit cb->lineEdit()->textChanged( "ro" );
-  Q_ASSERT( cb->identifierValue().isNull() );
+  QVERIFY( cb->identifierValue().isNull() );
 
   waitForLoaded( cb );
 
-  Q_ASSERT( cb->identifierValue().isNull() );
+  QVERIFY( cb->identifierValue().isNull() );
 
   cb->setIdentifierValue( 20 );
   QCOMPARE( cb->identifierValue(), QVariant( 20 ) );
@@ -127,7 +127,7 @@ void TestQgsFeatureListComboBox::testSetGetForeignKey()
 
 void TestQgsFeatureListComboBox::testAllowNull()
 {
-  Q_ASSERT( false );
+  QVERIFY( false );
   // Note to self: implement this!
 }
 
