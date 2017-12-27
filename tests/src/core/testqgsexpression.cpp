@@ -1221,7 +1221,7 @@ class TestQgsExpression: public QObject
         qDebug() << exp.evalErrorString();
       if ( result.type() != expected.type() )
       {
-        qDebug() << "got " << result.typeName() << " instead of " << expected.typeName();
+        qDebug() << "got type " << result.typeName() << "(" << result.type() << ") instead of " << expected.typeName() << "(" << expected.type() << ")";
       }
       //qDebug() << res.type() << " " << result.type();
       //qDebug() << "type " << res.typeName();
