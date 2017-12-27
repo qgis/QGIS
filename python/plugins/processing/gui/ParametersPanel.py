@@ -183,6 +183,21 @@ class ParametersPanel(BASE, WIDGET):
         for wrapper in list(self.wrappers.values()):
             wrapper.postInitialize(list(self.wrappers.values()))
 
+    def setParameters(self, parameters):
+        for param in self.alg.parameterDefinitions():
+            if param.flags() & QgsProcessingParameterDefinition.FlagHidden:
+                continue
+
+            if not param.name() in parameters:
+                continue
+
+            if not param.isDestination():
+                wrapper = self.wrappers[param.name()]
+                wrapper.setValue(parameters[param.name()])
+            else:
+                dest_widget = self.outputWidgets[param.name()]
+                dest_widget.setValue(parameters[param.name()])
+
     def buttonToggled(self, value):
         if value:
             sender = self.sender()

@@ -17,6 +17,7 @@
 #include "qgssettings.h"
 #include "qgshelp.h"
 #include "qgsmessagebar.h"
+#include "qgsgui.h"
 #include "processing/qgsprocessingalgorithm.h"
 #include "processing/qgsprocessingprovider.h"
 #include <QToolButton>
@@ -83,8 +84,9 @@ QgsProcessingAlgorithmDialogBase::QgsProcessingAlgorithmDialogBase( QWidget *par
   handleLayout->addStretch();
   splitterHandle->setLayout( handleLayout );
 
+  QgsGui::instance()->enableAutoGeometryRestore( this );
+
   QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Processing/dialogBase" ) ).toByteArray() );
   splitter->restoreState( settings.value( QStringLiteral( "/Processing/dialogBaseSplitter" ), QByteArray() ).toByteArray() );
   mSplitterState = splitter->saveState();
   splitterChanged( 0, 0 );
@@ -184,12 +186,6 @@ void QgsProcessingAlgorithmDialogBase::showLog()
   mTabWidget->setCurrentIndex( 1 );
 }
 
-void QgsProcessingAlgorithmDialogBase::closeEvent( QCloseEvent *e )
-{
-  saveWindowGeometry();
-  QDialog::closeEvent( e );
-}
-
 QPushButton *QgsProcessingAlgorithmDialogBase::runButton()
 {
   return mButtonRun;
@@ -210,6 +206,11 @@ void QgsProcessingAlgorithmDialogBase::setExecuted( bool executed )
   mExecuted = executed;
 }
 
+void QgsProcessingAlgorithmDialogBase::setResults( const QVariantMap &results )
+{
+  mResults = results;
+}
+
 void QgsProcessingAlgorithmDialogBase::finished( bool, const QVariantMap &, QgsProcessingContext &, QgsProcessingFeedback * )
 {
 
@@ -217,12 +218,6 @@ void QgsProcessingAlgorithmDialogBase::finished( bool, const QVariantMap &, QgsP
 
 void QgsProcessingAlgorithmDialogBase::accept()
 {
-}
-
-void QgsProcessingAlgorithmDialogBase::reject()
-{
-  saveWindowGeometry();
-  QDialog::reject();
 }
 
 void QgsProcessingAlgorithmDialogBase::openHelp()
@@ -328,11 +323,6 @@ QString QgsProcessingAlgorithmDialogBase::formatHelp( QgsProcessingAlgorithm *al
   }
   else
     return QString();
-}
-
-void QgsProcessingAlgorithmDialogBase::saveWindowGeometry()
-{
-
 }
 
 void QgsProcessingAlgorithmDialogBase::resetGui()
