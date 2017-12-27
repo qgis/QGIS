@@ -7622,7 +7622,7 @@ void QgisApp::setupDuplicateFeaturesAction()
   }
          );
 
-  action = new QgsMapLayerAction( QString( tr( "Duplicate feature redigitized" ) ),
+  action = new QgsMapLayerAction( QString( tr( "Duplicate feature and digitize" ) ),
                                   this, QgsMapLayerAction::AllActions,
                                   QgsApplication::getThemeIcon( QStringLiteral( "/mActionDuplicateFeatureDigitized.svg" ) ) );
 
