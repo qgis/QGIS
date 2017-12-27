@@ -136,13 +136,13 @@ QgsGeometry QgsMapToolDeletePart::partUnderPoint( QPoint point, QgsFeatureId &fi
         fid = match.featureId();
         return QgsGeometry::fromPointXY( match.point() );
       }
-      if ( g.wkbType() == QgsWkbTypes::MultiPoint || g.wkbType() == QgsWkbTypes::MultiPoint25D )
+      else if ( QgsWkbTypes::geometryType( g.wkbType() ) == QgsWkbTypes::PointGeometry )
       {
         fid = match.featureId();
         partNum = snapVertex;
         return QgsGeometry::fromPointXY( match.point() );
       }
-      if ( g.wkbType() == QgsWkbTypes::MultiLineString || g.wkbType() == QgsWkbTypes::MultiLineString25D )
+      else if ( QgsWkbTypes::geometryType( g.wkbType() ) == QgsWkbTypes::LineGeometry )
       {
         QgsMultiPolylineXY mline = g.asMultiPolyline();
         for ( int part = 0; part < mline.count(); part++ )
