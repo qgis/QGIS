@@ -619,11 +619,15 @@ class TestQgsExpression: public QObject
       QTest::newRow( "max(3.5,-2.1,1)" ) << "max(3.5,-2.1,1)" << false << QVariant( 3.5 );
       QTest::newRow( "max with null value" ) << "max(1,3.5,null)" << false << QVariant( 3.5 );
       QTest::newRow( "max with null value first" ) << "max(null,-3.5,2)" << false << QVariant( 2. );
+      QTest::newRow( "max with no params" ) << "max()" << false << QVariant( QVariant::Double );
+      QTest::newRow( "max with only null value" ) << "max(null)" << false << QVariant( QVariant::Double );
       QTest::newRow( "min(-1.5)" ) << "min(-1.5)" << false << QVariant( -1.5 );
       QTest::newRow( "min(-16.6,3.5,-2.1)" ) << "min(-16.6,3.5,-2.1)" << false << QVariant( -16.6 );
       QTest::newRow( "min(5,3.5,-2.1)" ) << "min(5,3.5,-2.1)" << false << QVariant( -2.1 );
       QTest::newRow( "min with null value" ) << "min(5,null,-2.1)" << false << QVariant( -2.1 );
       QTest::newRow( "min with null value first" ) << "min(null,3.2,6.5)" << false << QVariant( 3.2 );
+      QTest::newRow( "min with no params" ) << "min()" << false << QVariant( QVariant::Double );
+      QTest::newRow( "min with only null value" ) << "min(null)" << false << QVariant( QVariant::Double );
       QTest::newRow( "clamp(-2,1,5)" ) << "clamp(-2,1,5)" << false << QVariant( 1.0 );
       QTest::newRow( "clamp(min:=-2,value:=1,max:=5)" ) << "clamp(min:=-2,value:=1,max:=5)" << false << QVariant( 1.0 );
       QTest::newRow( "clamp(-2,-10,5)" ) << "clamp(-2,-10,5)" << false << QVariant( -2.0 );
