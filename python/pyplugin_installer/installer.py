@@ -71,8 +71,8 @@ class QgsPluginInstaller(QObject):
 
         if repositories.checkingOnStart() and repositories.timeForChecking() and repositories.allEnabled():
             # start fetching repositories
-            self.statusLabel = QLabel(self.tr("Looking for new plugins...") + " ", iface.mainWindow().statusBar())
-            iface.mainWindow().statusBar().insertPermanentWidget(0, self.statusLabel)
+            self.statusLabel = QLabel(iface.mainWindow().statusBar())
+            iface.mainWindow().statusBar().addPermanentWidget(self.statusLabel)
             self.statusLabel.linkActivated.connect(self.showPluginManagerWhenReady)
             repositories.checkingDone.connect(self.checkingDone)
             for key in repositories.allEnabled():
