@@ -44,7 +44,7 @@ from qgis.core import (QgsProcessingParameterDefinition,
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import QCoreApplication, Qt
 from qgis.PyQt.QtWidgets import (QWidget, QHBoxLayout, QToolButton,
-                                 QLabel, QCheckBox)
+                                 QLabel, QCheckBox, QSizePolicy)
 from qgis.PyQt.QtGui import QIcon
 
 from processing.gui.DestinationSelectionPanel import DestinationSelectionPanel
@@ -66,6 +66,7 @@ class ParametersPanel(BASE, WIDGET):
 
         self.grpAdvanced.hide()
 
+        self.scrollAreaWidgetContents.setContentsMargins(4, 4, 4, 4)
         self.layoutMain = self.scrollAreaWidgetContents.layout()
         self.layoutAdvanced = self.grpAdvanced.layout()
 
@@ -122,12 +123,13 @@ class ParametersPanel(BASE, WIDGET):
                 if widget is not None:
                     if isinstance(param, QgsProcessingParameterFeatureSource):
                         layout = QHBoxLayout()
-                        layout.setSpacing(2)
+                        layout.setSpacing(6)
                         layout.setMargin(0)
                         layout.addWidget(widget)
                         button = QToolButton()
                         icon = QIcon(os.path.join(pluginPath, 'images', 'iterate.png'))
                         button.setIcon(icon)
+                        button.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Expanding)
                         button.setToolTip(self.tr('Iterate over this layer, creating a separate output for every feature in the layer'))
                         button.setCheckable(True)
                         layout.addWidget(button)
@@ -139,7 +141,7 @@ class ParametersPanel(BASE, WIDGET):
 
                     widget.setToolTip(param.toolTip())
 
-                    if type(widget) is QCheckBox:
+                    if isinstance(widget, QCheckBox):
                         # checkbox widget - so description is embedded in widget rather than a separate
                         # label
                         widget.setText(desc)
