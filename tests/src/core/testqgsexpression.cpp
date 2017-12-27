@@ -16,6 +16,7 @@
 #include <QObject>
 #include <QString>
 #include <QtConcurrentMap>
+#include <iostream>
 
 #include <qgsapplication.h>
 //header for class being tested
@@ -430,10 +431,18 @@ class TestQgsExpression: public QObject
 
 
       QgsExpression expression4( "represent_value('Class')" );
+      qDebug() << "xxx constructed: " << expression.evalErrorString();
+      std::cout << "xxx constructed: " << expression.evalErrorString().toUtf8().constData() << std::endl;
       if ( expression4.hasParserError() )
         qDebug() << expression4.parserErrorString();
       Q_ASSERT( !expression4.hasParserError() );
+      qDebug() << "xxx after hasParserError: " << expression.evalErrorString();
+      std::cout << "xxx after hasParserError: " << expression.evalErrorString().toUtf8().constData() << std::endl;
+      expression4.prepare( &context );
+      qDebug() << "xxx prepared: " << expression.evalErrorString();
+      std::cout << "xxx prepared: " << expression.evalErrorString().toUtf8().constData() << std::endl;
       Q_ASSERT( expression4.hasEvalError() );
+      Q_ASSERT( false );
     }
 
     void evaluation_data()
