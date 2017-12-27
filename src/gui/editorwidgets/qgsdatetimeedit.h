@@ -74,6 +74,8 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
   private slots:
     void changed( const QDateTime &dateTime );
 
+    void calendarSelectionChanged();
+
 
   private:
     int spinButtonWidth() const;
@@ -101,7 +103,6 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
     {
       setMinimumDateTime( QDateTime::fromString( QStringLiteral( "0100-01-01" ), Qt::ISODate ) );
     }
-
 };
 
 #endif // QGSDATETIMEEDIT_H
