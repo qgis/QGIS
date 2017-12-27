@@ -458,6 +458,8 @@
         <file>themes/default/pin.svg</file>
         <file>themes/default/pluginExperimental.png</file>
         <file>themes/default/pluginDeprecated.png</file>
+        <file>themes/default/pluginNew.svg</file>
+        <file>themes/default/pluginUpgrade.svg</file>
         <file>themes/default/propertyicons/action.svg</file>
         <file>themes/default/propertyicons/attributes.png</file>
         <file>themes/default/propertyicons/CRS.svg</file>

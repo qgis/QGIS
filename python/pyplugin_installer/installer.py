@@ -155,17 +155,17 @@ class QgsPluginInstaller(QObject):
         for key in plugins.all():
             if plugins.all()[key]["status"] == "new":
                 status = self.tr("There is a new plugin available")
-                icon = "plugin-new.svg"
+                icon = "pluginNew.svg"
                 tabIndex = 4  # PLUGMAN_TAB_NEW
         # then check for updates (and eventually overwrite status)
         for key in plugins.all():
             if plugins.all()[key]["status"] == "upgradeable":
                 status = self.tr("There is a plugin update available")
-                icon = "plugin-upgrade.svg"
+                icon = "pluginUpgrade.svg"
                 tabIndex = 3  # PLUGMAN_TAB_UPGRADEABLE
         # finally set the notify label
         if status:
-            self.statusLabel.setText(u'<a href="%d"><img src="qrc:/images/themes/default/propertyicons/%s"></a>' % (tabIndex, icon))
+            self.statusLabel.setText(u'<a href="%d"><img src="qrc:/images/themes/default/%s"></a>' % (tabIndex, icon))
             self.statusLabel.setToolTip(status)
         else:
             iface.mainWindow().statusBar().removeWidget(self.statusLabel)
