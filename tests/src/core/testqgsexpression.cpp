@@ -429,6 +429,15 @@ class TestQgsExpression: public QObject
       QCOMPARE( expression.evaluate( &context ).toString(), QStringLiteral( "one" ) );
 
       QgsExpression expression4( "represent_value('Class')" );
+      expression4.evaluate();
+      if ( expression4.hasParserError() )
+        qDebug() << expression4.parserErrorString();
+      QVERIFY( !expression4.hasParserError() );
+      if ( expression4.hasEvalError() )
+        qDebug() << expression4.evalErrorString();
+      QVERIFY( expression4.hasEvalError() );
+
+      expression4.prepare( &context );
       if ( expression4.hasParserError() )
         qDebug() << expression4.parserErrorString();
       QVERIFY( !expression4.hasParserError() );

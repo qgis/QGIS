@@ -3446,42 +3446,50 @@ static QVariant fcnRepresentValue( const QVariantList &values, const QgsExpressi
 {
   QVariant result;
   QString fieldName;
-  if ( !values.isEmpty() )
+
+  if ( context )
   {
-    QgsExpressionNodeColumnRef *col = dynamic_cast<QgsExpressionNodeColumnRef *>( node->args()->at( 0 ) );
-    if ( col && ( values.size() == 1 || !values.at( 1 ).isValid() ) )
-      fieldName = col->name();
-    else if ( values.size() == 2 )
-      fieldName = QgsExpressionUtils::getStringValue( values.at( 1 ), parent );
-  }
+    if ( !values.isEmpty() )
+    {
+      QgsExpressionNodeColumnRef *col = dynamic_cast<QgsExpressionNodeColumnRef *>( node->args()->at( 0 ) );
+      if ( col && ( values.size() == 1 || !values.at( 1 ).isValid() ) )
+        fieldName = col->name();
+      else if ( values.size() == 2 )
+        fieldName = QgsExpressionUtils::getStringValue( values.at( 1 ), parent );
+    }
 
-  QVariant value = values.at( 0 );
+    QVariant value = values.at( 0 );
 
-  const QgsFields fields = context->fields();
-  int fieldIndex = fields.lookupField( fieldName );
+    const QgsFields fields = context->fields();
+    int fieldIndex = fields.lookupField( fieldName );
 
-  if ( fieldIndex == -1 )
-  {
-    parent->setEvalErrorString( QCoreApplication::translate( "expression", "%1: Field not found %2" ).arg( QStringLiteral( "represent_value" ), fieldName ) );
+    if ( fieldIndex == -1 )
+    {
+      parent->setEvalErrorString( QCoreApplication::translate( "expression", "%1: Field not found %2" ).arg( QStringLiteral( "represent_value" ), fieldName ) );
+    }
+    else
+    {
+      QgsVectorLayer *layer = QgsExpressionUtils::getVectorLayer( context->variable( "layer" ), parent );
+      const QgsEditorWidgetSetup setup = fields.at( fieldIndex ).editorWidgetSetup();
+      const QgsFieldFormatter *formatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
+
+      const QString cacheKey = QStringLiteral( "repvalfcn:%1:%2" ).arg( layer ? layer->id() : QStringLiteral( "[None]" ), fieldName );
+
+      QVariant cache;
+      if ( !context->hasCachedValue( cacheKey ) )
+      {
+        cache = formatter->createCache( layer, fieldIndex, setup.config() );
+        context->setCachedValue( cacheKey, cache );
+      }
+      else
+        cache = context->cachedValue( cacheKey );
+
+      result = formatter->representValue( layer, fieldIndex, setup.config(), cache, value );
+    }
   }
   else
   {
-    QgsVectorLayer *layer = QgsExpressionUtils::getVectorLayer( context->variable( "layer" ), parent );
-    const QgsEditorWidgetSetup setup = fields.at( fieldIndex ).editorWidgetSetup();
-    const QgsFieldFormatter *formatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
-
-    const QString cacheKey = QStringLiteral( "repvalfcn:%1:%2" ).arg( layer ? layer->id() : QStringLiteral( "[None]" ), fieldName );
-
-    QVariant cache;
-    if ( !context->hasCachedValue( cacheKey ) )
-    {
-      cache = formatter->createCache( layer, fieldIndex, setup.config() );
-      context->setCachedValue( cacheKey, cache );
-    }
-    else
-      cache = context->cachedValue( cacheKey );
-
-    result = formatter->representValue( layer, fieldIndex, setup.config(), cache, value );
+    parent->setEvalErrorString( QCoreApplication::translate( "expression", "%1: function cannot be evaluated without a context." ).arg( QStringLiteral( "represent_value" ), fieldName ) );
   }
 
   return result;
