@@ -33,14 +33,20 @@ from qgis.core import (QgsMultiRenderChecker,
                        QgsLayoutMeasurement,
                        QgsUnitTypes,
                        QgsSimpleFillSymbolLayer,
-                       QgsFillSymbol)
+                       QgsFillSymbol,
+                       QgsVectorLayer,
+                       QgsCoordinateReferenceSystem,
+                       QgsPrintLayout,
+                       QgsSingleSymbolRenderer)
 from qgis.PyQt.QtCore import QSize, QSizeF, QDir, QRectF, Qt
 from qgis.PyQt.QtGui import QImage, QPainter
 from qgis.PyQt.QtSvg import QSvgRenderer, QSvgGenerator
 
 from qgis.testing import start_app, unittest
 
-from utilities import getExecutablePath
+from utilities import getExecutablePath, unitTestDataPath
+
+TEST_DATA_DIR = unitTestDataPath()
 
 # PDF-to-image utility
 # look for Poppler w/ Cairo, then muPDF
@@ -575,6 +581,150 @@ class TestQgsLayoutExporter(unittest.TestCase):
         self.assertEqual(exporter.generateFileName(details), '/tmp/output/my_maps_2.png')
         details.page = 2
         self.assertEqual(exporter.generateFileName(details), '/tmp/output/my_maps_3.png')
+
+    def prepareIteratorLayout(self):
+        layer_path = os.path.join(TEST_DATA_DIR, 'france_parts.shp')
+        layer = QgsVectorLayer(layer_path, 'test', "ogr")
+
+        project=QgsProject()
+        project.addMapLayers([layer])
+        # select epsg:2154
+        crs = QgsCoordinateReferenceSystem()
+        crs.createFromSrid(2154)
+        project.setCrs(crs)
+
+        layout = QgsPrintLayout(project)
+        layout.initializeDefaults()
+
+        # fix the renderer, fill with green
+        props = {"color": "0,127,0", "outline_width":"4", "outline_color":'255,255,255'}
+        fillSymbol = QgsFillSymbol.createSimple(props)
+        renderer = QgsSingleSymbolRenderer(fillSymbol)
+        layer.setRenderer(renderer)
+
+        # the atlas map
+        atlas_map = QgsLayoutItemMap(layout)
+        atlas_map.attemptSetSceneRect(QRectF(20, 20, 130, 130))
+        atlas_map.setFrameEnabled(True)
+        atlas_map.setLayers([layer])
+        layout.addLayoutItem(atlas_map)
+
+        # the atlas
+        atlas = layout.atlas()
+        atlas.setCoverageLayer(layer)
+        atlas.setEnabled(True)
+
+        atlas_map.setExtent(
+            QgsRectangle(332719.06221504929, 6765214.5887386119, 560957.85090677091, 6993453.3774303338))
+
+        atlas_map.setAtlasDriven(True)
+        atlas_map.setAtlasScalingMode(QgsLayoutItemMap.Auto)
+        atlas_map.setAtlasMargin(0.10)
+
+        return project, layout
+
+    def testIteratorToImages(self):
+        project, layout = self.prepareIteratorLayout()
+        atlas = layout.atlas()
+        atlas.setFilenameExpression("'test_exportiteratortoimage_' || \"NAME_1\"")
+
+        # setup settings
+        settings = QgsLayoutExporter.ImageExportSettings()
+        settings.dpi = 80
+
+        result, error = QgsLayoutExporter.exportToImage(atlas,self.basetestpath, 'png', settings)
+        self.assertEqual(result, QgsLayoutExporter.Success, error)
+
+        page1_path = os.path.join(self.basetestpath, 'test_exportiteratortoimage_Basse-Normandie.png')
+        self.assertTrue(self.checkImage('iteratortoimage1', 'iteratortoimage1', page1_path))
+        page2_path = os.path.join(self.basetestpath, 'test_exportiteratortoimage_Bretagne.png')
+        self.assertTrue(self.checkImage('iteratortoimage2', 'iteratortoimage2', page2_path))
+        page3_path = os.path.join(self.basetestpath, 'test_exportiteratortoimage_Centre.png')
+        self.assertTrue(os.path.exists(page3_path))
+        page4_path = os.path.join(self.basetestpath, 'test_exportiteratortoimage_Pays de la Loire.png')
+        self.assertTrue(os.path.exists(page4_path))
+
+    def testIteratorToSvgs(self):
+        project, layout = self.prepareIteratorLayout()
+        atlas = layout.atlas()
+        atlas.setFilenameExpression("'test_exportiteratortosvg_' || \"NAME_1\"")
+
+        # setup settings
+        settings = QgsLayoutExporter.SvgExportSettings()
+        settings.dpi = 80
+        settings.forceVectorOutput = False
+
+        result, error = QgsLayoutExporter.exportToSvg(atlas,self.basetestpath, settings)
+        self.assertEqual(result, QgsLayoutExporter.Success, error)
+
+        page1_path = os.path.join(self.basetestpath, 'test_exportiteratortosvg_Basse-Normandie.svg')
+        rendered_page_1 = os.path.join(self.basetestpath, 'test_exportiteratortosvg_Basse-Normandie.png')
+        svgToPng(page1_path, rendered_page_1, width=935)
+        self.assertTrue(self.checkImage('iteratortosvg1', 'iteratortoimage1', rendered_page_1, size_tolerance=2))
+        page2_path = os.path.join(self.basetestpath, 'test_exportiteratortosvg_Bretagne.svg')
+        rendered_page_2 = os.path.join(self.basetestpath, 'test_exportiteratortosvg_Bretagne.png')
+        svgToPng(page2_path, rendered_page_2, width=935)
+        self.assertTrue(self.checkImage('iteratortosvg2', 'iteratortoimage2', rendered_page_2, size_tolerance=2))
+        page3_path = os.path.join(self.basetestpath, 'test_exportiteratortosvg_Centre.svg')
+        self.assertTrue(os.path.exists(page3_path))
+        page4_path = os.path.join(self.basetestpath, 'test_exportiteratortosvg_Pays de la Loire.svg')
+        self.assertTrue(os.path.exists(page4_path))
+
+    def testIteratorToPdfs(self):
+        project, layout = self.prepareIteratorLayout()
+        atlas = layout.atlas()
+        atlas.setFilenameExpression("'test_exportiteratortopdf_' || \"NAME_1\"")
+
+        # setup settings
+        settings = QgsLayoutExporter.PdfExportSettings()
+        settings.dpi = 80
+        settings.rasterizeWholeImage = False
+        settings.forceVectorOutput = False
+
+        result, error = QgsLayoutExporter.exportToPdfs(atlas,self.basetestpath, settings)
+        self.assertEqual(result, QgsLayoutExporter.Success, error)
+
+        page1_path = os.path.join(self.basetestpath, 'test_exportiteratortopdf_Basse-Normandie.pdf')
+        rendered_page_1 = os.path.join(self.basetestpath, 'test_exportiteratortopdf_Basse-Normandie.png')
+        pdfToPng(page1_path, rendered_page_1, dpi=80, page=1)
+        self.assertTrue(self.checkImage('iteratortopdf1', 'iteratortoimage1', rendered_page_1, size_tolerance=2))
+        page2_path = os.path.join(self.basetestpath, 'test_exportiteratortopdf_Bretagne.pdf')
+        rendered_page_2 = os.path.join(self.basetestpath, 'test_exportiteratortopdf_Bretagne.png')
+        pdfToPng(page2_path, rendered_page_2, dpi=80, page=1)
+        self.assertTrue(self.checkImage('iteratortopdf2', 'iteratortoimage2', rendered_page_2, size_tolerance=2))
+        page3_path = os.path.join(self.basetestpath, 'test_exportiteratortopdf_Centre.pdf')
+        self.assertTrue(os.path.exists(page3_path))
+        page4_path = os.path.join(self.basetestpath, 'test_exportiteratortopdf_Pays de la Loire.pdf')
+        self.assertTrue(os.path.exists(page4_path))
+
+    def testIteratorToPdf(self):
+        project, layout = self.prepareIteratorLayout()
+        atlas = layout.atlas()
+
+        # setup settings
+        settings = QgsLayoutExporter.PdfExportSettings()
+        settings.dpi = 80
+        settings.rasterizeWholeImage = False
+        settings.forceVectorOutput = False
+
+        pdf_path = os.path.join(self.basetestpath, 'test_exportiteratortopdf_single.pdf')
+        result, error = QgsLayoutExporter.exportToPdf(atlas,pdf_path, settings)
+        self.assertEqual(result, QgsLayoutExporter.Success, error)
+
+        rendered_page_1 = os.path.join(self.basetestpath, 'test_exportiteratortopdf_single1.png')
+        pdfToPng(pdf_path, rendered_page_1, dpi=80, page=1)
+        self.assertTrue(self.checkImage('iteratortopdfsingle1', 'iteratortoimage1', rendered_page_1, size_tolerance=2))
+
+        rendered_page_2 = os.path.join(self.basetestpath, 'test_exportiteratortopdf_single2.png')
+        pdfToPng(pdf_path, rendered_page_2, dpi=80, page=2)
+        self.assertTrue(self.checkImage('iteratortopdfsingle2', 'iteratortoimage2', rendered_page_2, size_tolerance=2))
+
+        rendered_page_3 = os.path.join(self.basetestpath, 'test_exportiteratortopdf_single3.png')
+        pdfToPng(pdf_path, rendered_page_3, dpi=80, page=3)
+        self.assertTrue(os.path.exists(rendered_page_3))
+        rendered_page_4 = os.path.join(self.basetestpath, 'test_exportiteratortopdf_single4.png')
+        pdfToPng(pdf_path, rendered_page_4, dpi=80, page=4)
+        self.assertTrue(os.path.exists(rendered_page_4))
 
 
 if __name__ == '__main__':
