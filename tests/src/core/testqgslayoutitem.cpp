@@ -1399,15 +1399,15 @@ void TestQgsLayoutItem::itemVariablesFunction()
   QVERIFY( !r.isValid() );
 
   QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
-  map->setExtent( extent );
-  map->attemptSetSceneRect( QRectF( 30, 60, 200, 100 ) );
   map->setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
+  map->attemptSetSceneRect( QRectF( 30, 60, 200, 100 ) );
+  map->setExtent( extent );
   l.addLayoutItem( map );
   map->setId( QStringLiteral( "map_id" ) );
 
   c = l.createExpressionContext();
   r = e.evaluate( &c );
-  QGSCOMPARENEAR( r.toDouble(), 1.38916e+08, 100 );
+  QGSCOMPARENEAR( r.toDouble(), 184764103, 100 );
 
   QgsExpression e2( QStringLiteral( "map_get( item_variables( 'map_id' ), 'map_crs' )" ) );
   r = e2.evaluate( &c );

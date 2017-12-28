@@ -716,7 +716,7 @@ class GetLayoutItemVariables : public QgsScopedExpressionFunction
 
       QString id = values.at( 0 ).toString().toLower();
 
-      const QgsLayoutItem *item = mLayout->itemByUuid( id );
+      const QgsLayoutItem *item = mLayout->itemById( id );
       if ( !item )
         return QVariant();
 

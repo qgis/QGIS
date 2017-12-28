@@ -17,6 +17,7 @@ import sip
 import tempfile
 import shutil
 import os
+import glob
 
 from qgis.core import (QgsUnitTypes,
                        QgsLayout,
@@ -37,18 +38,124 @@ from qgis.core import (QgsUnitTypes,
                        QgsLayoutItemLabel,
                        QgsLayoutSize,
                        QgsLayoutPoint,
-                       QgsVectorLayer)
-from qgis.PyQt.QtCore import QFileInfo
+                       QgsVectorLayer,
+                       QgsRectangle,
+                       QgsCoordinateReferenceSystem,
+                       QgsSingleSymbolRenderer,
+                       QgsLayoutItemLabel,
+                       QgsFontUtils,
+                       QgsFeature,
+                       QgsGeometry,
+                       QgsPointXY,
+                       QgsCategorizedSymbolRenderer,
+                       QgsRendererCategory,
+                       QgsMarkerSymbol,
+                       QgsLayoutItemLegend)
+from qgis.PyQt.QtCore import QFileInfo, QRectF, QDir
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.PyQt.QtXml import QDomDocument
 from utilities import unitTestDataPath
 from qgis.testing import start_app, unittest
 from qgis.PyQt.QtTest import QSignalSpy
 
+from qgslayoutchecker import QgsLayoutChecker
+
 start_app()
 
 
 class TestQgsLayoutAtlas(unittest.TestCase):
+
+    def setUp(self):
+        self.report = "<h1>Python QgsLayoutAtlas Tests</h1>\n"
+
+    def tearDown(self):
+        report_file_path = "%s/qgistest.html" % QDir.tempPath()
+        with open(report_file_path, 'a') as report_file:
+            report_file.write(self.report)
+
+    def testCase(self):
+        self.TEST_DATA_DIR = unitTestDataPath()
+        tmppath = tempfile.mkdtemp()
+        for file in glob.glob(os.path.join(self.TEST_DATA_DIR, 'france_parts.*')):
+            shutil.copy(os.path.join(self.TEST_DATA_DIR, file), tmppath)
+        vectorFileInfo = QFileInfo(tmppath + "/france_parts.shp")
+        mVectorLayer = QgsVectorLayer(vectorFileInfo.filePath(), vectorFileInfo.completeBaseName(), "ogr")
+
+        QgsProject.instance().addMapLayers([mVectorLayer])
+        self.layers = [mVectorLayer]
+
+        # create composition with composer map
+
+        # select epsg:2154
+        crs = QgsCoordinateReferenceSystem()
+        crs.createFromSrid(2154)
+        QgsProject.instance().setCrs(crs)
+
+        self.layout = QgsPrintLayout(QgsProject.instance())
+        self.layout.initializeDefaults()
+
+        # fix the renderer, fill with green
+        props = {"color": "0,127,0"}
+        fillSymbol = QgsFillSymbol.createSimple(props)
+        renderer = QgsSingleSymbolRenderer(fillSymbol)
+        mVectorLayer.setRenderer(renderer)
+
+        # the atlas map
+        self.atlas_map = QgsLayoutItemMap(self.layout)
+        self.atlas_map.attemptSetSceneRect(QRectF(20, 20, 130, 130))
+        self.atlas_map.setFrameEnabled(True)
+        self.atlas_map.setLayers([mVectorLayer])
+        self.layout.addLayoutItem(self.atlas_map)
+
+        # the atlas
+        self.atlas = self.layout.atlas()
+        self.atlas.setCoverageLayer(mVectorLayer)
+        self.atlas.setEnabled(True)
+
+        # an overview
+        self.overview = QgsLayoutItemMap(self.layout)
+        self.overview.attemptSetSceneRect(QRectF(180, 20, 50, 50))
+        self.overview.setFrameEnabled(True)
+        self.overview.overview().setFrameMap(self.atlas_map)
+        self.overview.setLayers([mVectorLayer])
+        self.layout.addLayoutItem(self.overview)
+        nextent = QgsRectangle(49670.718, 6415139.086, 699672.519, 7065140.887)
+        self.overview.setExtent(nextent)
+
+        # set the fill symbol of the overview map
+        props2 = {"color": "127,0,0,127"}
+        fillSymbol2 = QgsFillSymbol.createSimple(props2)
+        self.overview.overview().setFrameSymbol(fillSymbol2)
+
+        # header label
+        self.mLabel1 = QgsLayoutItemLabel(self.layout)
+        self.layout.addLayoutItem(self.mLabel1)
+        self.mLabel1.setText("[% \"NAME_1\" %] area")
+        self.mLabel1.setFont(QgsFontUtils.getStandardTestFont())
+        self.mLabel1.adjustSizeToText()
+        self.mLabel1.attemptSetSceneRect(QRectF(150, 5, 60, 15))
+        self.mLabel1.setMarginX(1)
+        self.mLabel1.setMarginY(1)
+
+        # feature number label
+        self.mLabel2 = QgsLayoutItemLabel(self.layout)
+        self.layout.addLayoutItem(self.mLabel2)
+        self.mLabel2.setText("# [%@atlas_featurenumber || ' / ' || @atlas_totalfeatures%]")
+        self.mLabel2.setFont(QgsFontUtils.getStandardTestFont())
+        self.mLabel2.adjustSizeToText()
+        self.mLabel2.attemptSetSceneRect(QRectF(150, 200, 60, 15))
+        self.mLabel2.setMarginX(1)
+        self.mLabel2.setMarginY(1)
+
+        self.filename_test()
+        self.autoscale_render_test()
+        self.fixedscale_render_test()
+        self.predefinedscales_render_test()
+        self.hidden_render_test()
+        self.legend_test()
+        self.rotation_test()
+
+        shutil.rmtree(tmppath, True)
 
     def testReadWriteXml(self):
         p = QgsProject()
@@ -236,6 +343,259 @@ class TestQgsLayoutAtlas(unittest.TestCase):
         self.assertEqual(atlas.nameForPage(1), 'Bretagne')
         self.assertEqual(atlas.nameForPage(2), 'Pays de la Loire')
         self.assertEqual(atlas.nameForPage(3), 'Centre')
+
+    def filename_test(self):
+        self.atlas.setFilenameExpression("'output_' || @atlas_featurenumber")
+        self.atlas.beginRender()
+        for i in range(0, self.atlas.count()):
+            self.atlas.seekTo(i)
+            expected = "output_%d" % (i + 1)
+            self.assertEqual(self.atlas.currentFilename(), expected)
+        self.atlas.endRender()
+
+    def autoscale_render_test(self):
+        self.atlas_map.setExtent(
+            QgsRectangle(332719.06221504929, 6765214.5887386119, 560957.85090677091, 6993453.3774303338))
+
+        self.atlas_map.setAtlasDriven(True)
+        self.atlas_map.setAtlasScalingMode(QgsLayoutItemMap.Auto)
+        self.atlas_map.setAtlasMargin(0.10)
+
+        self.atlas.beginRender()
+
+        for i in range(0, 2):
+            self.atlas.seekTo(i)
+            self.mLabel1.adjustSizeToText()
+
+            checker = QgsLayoutChecker('atlas_autoscale%d' % (i + 1), self.layout)
+            checker.setControlPathPrefix("atlas")
+            myTestResult, myMessage = checker.testLayout(0, 200)
+            self.report += checker.report()
+
+            self.assertTrue(myTestResult, myMessage)
+        self.atlas.endRender()
+
+        self.atlas_map.setAtlasDriven(False)
+        self.atlas_map.setAtlasScalingMode(QgsLayoutItemMap.Fixed)
+        self.atlas_map.setAtlasMargin(0)
+
+    def fixedscale_render_test(self):
+        self.atlas_map.setExtent(QgsRectangle(209838.166, 6528781.020, 610491.166, 6920530.620))
+        self.atlas_map.setAtlasDriven(True)
+        self.atlas_map.setAtlasScalingMode(QgsLayoutItemMap.Fixed)
+
+        self.atlas.beginRender()
+
+        for i in range(0, 2):
+            self.atlas.seekTo(i)
+            self.mLabel1.adjustSizeToText()
+
+            checker = QgsLayoutChecker('atlas_fixedscale%d' % (i + 1), self.layout)
+            checker.setControlPathPrefix("atlas")
+            myTestResult, myMessage = checker.testLayout(0, 200)
+            self.report += checker.report()
+
+            self.assertTrue(myTestResult, myMessage)
+        self.atlas.endRender()
+
+    def predefinedscales_render_test(self):
+        self.atlas_map.setExtent(QgsRectangle(209838.166, 6528781.020, 610491.166, 6920530.620))
+        self.atlas_map.setAtlasDriven(True)
+        self.atlas_map.setAtlasScalingMode(QgsLayoutItemMap.Predefined)
+
+        scales = [1800000, 5000000]
+        self.layout.context().setPredefinedScales(scales)
+        for i, s in enumerate(self.layout.context().predefinedScales()):
+            self.assertEqual(s, scales[i])
+
+        self.atlas.beginRender()
+
+        for i in range(0, 2):
+            self.atlas.seekTo(i)
+            self.mLabel1.adjustSizeToText()
+
+            checker = QgsLayoutChecker('atlas_predefinedscales%d' % (i + 1), self.layout)
+            checker.setControlPathPrefix("atlas")
+            myTestResult, myMessage = checker.testLayout(0, 200)
+            self.report += checker.report()
+
+            self.assertTrue(myTestResult, myMessage)
+        self.atlas.endRender()
+
+    def hidden_render_test(self):
+        self.atlas_map.setExtent(QgsRectangle(209838.166, 6528781.020, 610491.166, 6920530.620))
+        self.atlas_map.setAtlasScalingMode(QgsLayoutItemMap.Fixed)
+        self.atlas.setHideCoverage(True)
+
+        self.atlas.beginRender()
+
+        for i in range(0, 2):
+            self.atlas.seekTo(i)
+            self.mLabel1.adjustSizeToText()
+
+            checker = QgsLayoutChecker('atlas_hiding%d' % (i + 1), self.layout)
+            checker.setControlPathPrefix("atlas")
+            myTestResult, myMessage = checker.testLayout(0, 200)
+            self.report += checker.report()
+
+            self.assertTrue(myTestResult, myMessage)
+        self.atlas.endRender()
+
+        self.atlas.setHideCoverage(False)
+
+    def sorting_render_test(self):
+        self.atlas_map.setExtent(QgsRectangle(209838.166, 6528781.020, 610491.166, 6920530.620))
+        self.atlas_map.setAtlasScalingMode(QgsLayoutItemMap.Fixed)
+        self.atlas.setHideCoverage(False)
+
+        self.atlas.setSortFeatures(True)
+        self.atlas.setSortKeyAttributeIndex(4)  # departement name
+        self.atlas.setSortAscending(False)
+
+        self.atlas.beginRender()
+
+        for i in range(0, 2):
+            self.atlas.seekTo(i)
+            self.mLabel1.adjustSizeToText()
+
+            checker = QgsLayoutChecker('atlas_sorting%d' % (i + 1), self.layout)
+            checker.setControlPathPrefix("atlas")
+            myTestResult, myMessage = checker.testLayout(0, 200)
+            self.report += checker.report()
+
+            self.assertTrue(myTestResult, myMessage)
+        self.atlas.endRender()
+
+    def filtering_render_test(self):
+        self.atlas_map.setExtent(QgsRectangle(209838.166, 6528781.020, 610491.166, 6920530.620))
+        self.atlas_map.setAtlasScalingMode(QgsLayoutItemMap.Fixed)
+        self.atlas.setHideCoverage(False)
+
+        self.atlas.setSortFeatures(False)
+
+        self.atlas.setFilterFeatures(True)
+        self.atlas.setFeatureFilter("substr(NAME_1,1,1)='P'")  # select only 'Pays de la loire'
+
+        self.atlas.beginRender()
+
+        for i in range(0, 1):
+            self.atlas.seekTo(i)
+            self.mLabel1.adjustSizeToText()
+
+            checker = QgsLayoutChecker('atlas_filtering%d' % (i + 1), self.layout)
+            checker.setControlPathPrefix("atlas")
+            myTestResult, myMessage = checker.testLayout(0, 200)
+            self.report += checker.report()
+
+            self.assertTrue(myTestResult, myMessage)
+        self.atlas.endRender()
+
+    def legend_test(self):
+        self.atlas_map.setAtlasDriven(True)
+        self.atlas_map.setAtlasScalingMode(QgsLayoutItemMap.Auto)
+        self.atlas_map.setAtlasMargin(0.10)
+
+        # add a point layer
+        ptLayer = QgsVectorLayer("Point?crs=epsg:4326&field=attr:int(1)&field=label:string(20)", "points", "memory")
+
+        pr = ptLayer.dataProvider()
+        f1 = QgsFeature(1)
+        f1.initAttributes(2)
+        f1.setAttribute(0, 1)
+        f1.setAttribute(1, "Test label 1")
+        f1.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(-0.638, 48.954)))
+        f2 = QgsFeature(2)
+        f2.initAttributes(2)
+        f2.setAttribute(0, 2)
+        f2.setAttribute(1, "Test label 2")
+        f2.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(-1.682, 48.550)))
+        pr.addFeatures([f1, f2])
+
+        # categorized symbology
+        r = QgsCategorizedSymbolRenderer("attr", [QgsRendererCategory(1, QgsMarkerSymbol.createSimple({"color": "255,0,0"}), "red"),
+                                                  QgsRendererCategory(2, QgsMarkerSymbol.createSimple({"color": "0,0,255"}), "blue")])
+        ptLayer.setRenderer(r)
+
+        QgsProject.instance().addMapLayer(ptLayer)
+
+        # add the point layer to the map settings
+        layers = self.layers
+        layers = [ptLayer] + layers
+        self.atlas_map.setLayers(layers)
+        self.overview.setLayers(layers)
+
+        # add a legend
+        legend = QgsLayoutItemLegend(self.layout)
+        legend.attemptMove(QgsLayoutPoint(200, 100))
+        # sets the legend filter parameter
+        legend.setMap(self.atlas_map)
+        legend.setLegendFilterOutAtlas(True)
+        self.layout.addLayoutItem(legend)
+
+        self.atlas.beginRender()
+
+        self.atlas.seekTo(0)
+        self.mLabel1.adjustSizeToText()
+
+        checker = QgsLayoutChecker('atlas_legend', self.layout)
+        myTestResult, myMessage = checker.testLayout()
+        self.report += checker.report()
+        self.assertTrue(myTestResult, myMessage)
+
+        self.atlas.endRender()
+
+        # restore state
+        self.atlas_map.setLayers([layers[1]])
+        self.layout.removeLayoutItem(legend)
+        QgsProject.instance().removeMapLayer(ptLayer.id())
+
+    def rotation_test(self):
+        # We will create a polygon layer with a rotated rectangle.
+        # Then we will make it the object layer for the atlas,
+        # rotate the map and test that the bounding rectangle
+        # is smaller than the bounds without rotation.
+        polygonLayer = QgsVectorLayer('Polygon', 'test_polygon', 'memory')
+        poly = QgsFeature(polygonLayer.pendingFields())
+        points = [(10, 15), (15, 10), (45, 40), (40, 45)]
+        poly.setGeometry(QgsGeometry.fromPolygonXY([[QgsPointXY(x[0], x[1]) for x in points]]))
+        polygonLayer.dataProvider().addFeatures([poly])
+        QgsProject.instance().addMapLayer(polygonLayer)
+
+        # Recreating the composer locally
+        composition = QgsPrintLayout(QgsProject.instance())
+        composition.initializeDefaults()
+
+        # the atlas map
+        atlasMap = QgsLayoutItemMap(composition)
+        atlasMap.attemptSetSceneRect(QRectF(20, 20, 130, 130))
+        atlasMap.setFrameEnabled(True)
+        atlasMap.setLayers([polygonLayer])
+        atlasMap.setExtent(QgsRectangle(0, 0, 100, 50))
+        composition.addLayoutItem(atlasMap)
+
+        # the atlas
+        atlas = composition.atlas()
+        atlas.setCoverageLayer(polygonLayer)
+        atlas.setEnabled(True)
+
+        atlasMap.setAtlasDriven(True)
+        atlasMap.setAtlasScalingMode(QgsLayoutItemMap.Auto)
+        atlasMap.setAtlasMargin(0.0)
+
+        # Testing
+        atlasMap.setMapRotation(0.0)
+        atlas.beginRender()
+        atlas.first()
+        nonRotatedExtent = QgsRectangle(atlasMap.extent())
+
+        atlasMap.setMapRotation(45.0)
+        atlas.first()
+        rotatedExtent = QgsRectangle(atlasMap.extent())
+
+        self.assertLess(rotatedExtent.width(), nonRotatedExtent.width() * 0.9)
+        self.assertLess(rotatedExtent.height(), nonRotatedExtent.height() * 0.9)
+
+        QgsProject.instance().removeMapLayer(polygonLayer)
 
 
 if __name__ == '__main__':

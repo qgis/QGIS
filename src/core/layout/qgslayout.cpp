@@ -231,6 +231,20 @@ QgsLayoutItem *QgsLayout::itemByUuid( const QString &uuid, bool includeTemplateU
   return nullptr;
 }
 
+QgsLayoutItem *QgsLayout::itemById( const QString &id ) const
+{
+  const QList<QGraphicsItem *> itemList = items();
+  for ( QGraphicsItem *item : itemList )
+  {
+    QgsLayoutItem *layoutItem = dynamic_cast<QgsLayoutItem *>( item );
+    if ( layoutItem && layoutItem->id() == id )
+    {
+      return layoutItem;
+    }
+  }
+  return nullptr;
+}
+
 QgsLayoutMultiFrame *QgsLayout::multiFrameByUuid( const QString &uuid ) const
 {
   for ( QgsLayoutMultiFrame *mf : mMultiFrames )

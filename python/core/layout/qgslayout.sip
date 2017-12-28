@@ -191,6 +191,17 @@ If ``includeTemplateUuids`` is true, then item's :py:func:`QgsLayoutItem.templat
 will also be tested when trying to match the uuid.
 
 .. seealso:: :py:func:`multiFrameByUuid()`
+
+.. seealso:: :py:func:`itemById()`
+%End
+
+    QgsLayoutItem *itemById( const QString &id ) const;
+%Docstring
+Returns a layout item given its ``id``.
+Since item IDs are not necessarely unique, this function returns the first matching
+item found.
+
+.. seealso:: :py:func:`itemByUuid()`
 %End
 
     QgsLayoutMultiFrame *multiFrameByUuid( const QString &uuid ) const;

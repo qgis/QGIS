@@ -47,6 +47,7 @@ class TestQgsLayout: public QObject
     void addItem();
     void layoutItems();
     void layoutItemByUuid();
+    void layoutItemById();
     void undoRedoOccurred();
     void itemsOnPage(); //test fetching matching items on a set page
     void shouldExportPage();
@@ -399,7 +400,6 @@ void TestQgsLayout::layoutItemByUuid()
 {
   QgsProject p;
   QgsLayout l( &p );
-  l.pageCollection()->deletePage( 0 );
 
   QgsLayoutItemShape *shape1 = new QgsLayoutItemShape( &l );
   l.addLayoutItem( shape1 );
@@ -414,6 +414,28 @@ void TestQgsLayout::layoutItemByUuid()
   QCOMPARE( l.itemByUuid( shape1->uuid() ), shape1 );
   QCOMPARE( l.itemByUuid( shape2->uuid() ), shape2 );
   QCOMPARE( l.itemByUuid( map1->uuid() ), map1 );
+}
+
+void TestQgsLayout::layoutItemById()
+{
+  QgsProject p;
+  QgsLayout l( &p );
+
+  QgsLayoutItemShape *shape1 = new QgsLayoutItemShape( &l );
+  l.addLayoutItem( shape1 );
+  shape1->setId( QStringLiteral( "shape" ) );
+
+  QgsLayoutItemShape *shape2 = new QgsLayoutItemShape( &l );
+  l.addLayoutItem( shape2 );
+  shape2->setId( QStringLiteral( "shape" ) );
+
+  QgsLayoutItemMap *map1 = new QgsLayoutItemMap( &l );
+  l.addLayoutItem( map1 );
+  map1->setId( QStringLiteral( "map" ) );
+
+  QVERIFY( !l.itemById( QStringLiteral( "xxx" ) ) );
+  QVERIFY( l.itemById( QStringLiteral( "shape" ) ) == shape1 || l.itemById( QStringLiteral( "shape" ) ) == shape2 );
+  QCOMPARE( l.itemById( map1->id() ), map1 );
 }
 
 void TestQgsLayout::undoRedoOccurred()

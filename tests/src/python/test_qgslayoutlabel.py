@@ -16,7 +16,13 @@ import qgis  # NOQA
 
 from qgis.testing import start_app, unittest
 from qgis.PyQt.QtCore import QFileInfo, QDate, QDateTime
-from qgis.core import QgsVectorLayer, QgsLayout, QgsLayoutItemLabel, QgsProject
+from qgis.core import (QgsVectorLayer,
+                       QgsPrintLayout,
+                       QgsLayout,
+                       QgsLayoutItemLabel,
+                       QgsProject,
+                       QgsLayoutItemPage,
+                       QgsLayoutPoint)
 from utilities import unitTestDataPath
 
 from test_qgslayoutitem import LayoutItemTestCase
@@ -37,7 +43,7 @@ class TestQgsLayoutItemLabel(unittest.TestCase, LayoutItemTestCase):
 
         QgsProject.instance().addMapLayers([mVectorLayer])
 
-        layout = QgsLayout(QgsProject.instance())
+        layout = QgsPrintLayout(QgsProject.instance())
         layout.initializeDefaults()
 
         label = QgsLayoutItemLabel(layout)
@@ -68,31 +74,28 @@ class TestQgsLayoutItemLabel(unittest.TestCase, LayoutItemTestCase):
         assert label.currentText() == "__[NAME_1]42__"
 
     def feature_evaluation_test(self, layout, label, mVectorLayer):
-        pass
-        # TODO
-        #atlas = layout.atlasComposition()
-        #atlas.setCoverageLayer(mVectorLayer)
-        #atlas.setEnabled(True)
-        #layout.setAtlasMode(QgsComposition.ExportAtlas)
+        atlas = layout.atlas()
+        atlas.setCoverageLayer(mVectorLayer)
+        atlas.setEnabled(True)
 
-        #label.setText("[%\"NAME_1\"||'_ok'%]")
-        #atlas.beginRender()
-        #atlas.prepareForFeature(0)
-        #assert label.currentText() == "Basse-Normandie_ok"
+        label.setText("[%\"NAME_1\"||'_ok'%]")
+        atlas.beginRender()
+        atlas.seekTo(0)
+        assert label.currentText() == "Basse-Normandie_ok"
 
-        #atlas.prepareForFeature(1)
-        #assert label.currentText() == "Bretagne_ok"
+        atlas.seekTo(1)
+        assert label.currentText() == "Bretagne_ok"
 
     def page_evaluation_test(self, layout, label, mVectorLayer):
-        pass
-        # TODO
-        #layout.setNumPages(2)
-        #label.setText("[%@layout_page||'/'||@layout_numpages%]")
-        #assert label.currentText() == "1/2"
+        page = QgsLayoutItemPage(layout)
+        page.setPageSize('A4')
+        layout.pageCollection().addPage(page)
+        label.setText("[%@layout_page||'/'||@layout_numpages%]")
+        assert label.currentText() == "1/2"
 
         # move the the second page and re-evaluate
-        #label.setItemPosition(0, 320)
-        #assert label.currentText() == "2/2"
+        label.attemptMove(QgsLayoutPoint(0, 320))
+        assert label.currentText() == "2/2"
 
 
 if __name__ == '__main__':

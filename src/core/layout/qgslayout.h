@@ -229,8 +229,17 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      * will also be tested when trying to match the uuid.
      *
      * \see multiFrameByUuid()
+     * \see itemById()
      */
     QgsLayoutItem *itemByUuid( const QString &uuid, bool includeTemplateUuids = false ) const;
+
+    /**
+     * Returns a layout item given its \a id.
+     * Since item IDs are not necessarely unique, this function returns the first matching
+     * item found.
+     * \see itemByUuid()
+     */
+    QgsLayoutItem *itemById( const QString &id ) const;
 
     /**
      * Returns the layout multiframe with matching \a uuid unique identifier, or a nullptr
