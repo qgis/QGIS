@@ -22,6 +22,7 @@
 const QString QgsDateTimeFieldFormatter::DEFAULT_DATE_FORMAT = QStringLiteral( "yyyy-MM-dd" );
 const QString QgsDateTimeFieldFormatter::DEFAULT_TIME_FORMAT = QStringLiteral( "HH:mm:ss" );
 const QString QgsDateTimeFieldFormatter::DEFAULT_DATETIME_FORMAT = QStringLiteral( "yyyy-MM-dd HH:mm:ss" );
+const QString QgsDateTimeFieldFormatter::DEFAULT_ISO_FORMAT = QStringLiteral( "yyyy-MM-dd HH:mm:ss+t" );
 
 
 QString QgsDateTimeFieldFormatter::id() const
@@ -37,7 +38,6 @@ QString QgsDateTimeFieldFormatter::representValue( QgsVectorLayer *layer, int fi
 
   if ( value.isNull() )
   {
-    QgsSettings settings;
     return QgsApplication::nullRepresentation();
   }
 
@@ -45,7 +45,16 @@ QString QgsDateTimeFieldFormatter::representValue( QgsVectorLayer *layer, int fi
   const QString displayFormat = config.value( QStringLiteral( "display_format" ), defaultFormat( field.type() ) ).toString();
   const QString fieldFormat = config.value( QStringLiteral( "field_format" ), defaultFormat( field.type() ) ).toString();
 
-  QDateTime date = QDateTime::fromString( value.toString(), fieldFormat );
+  QDateTime date;
+  if ( fieldFormat == QgsDateTimeFieldFormatter::DEFAULT_ISO_FORMAT )
+  {
+    date = QDateTime::fromString( value.toString(), Qt::ISODate );
+  }
+  else
+  {
+    date = QDateTime::fromString( value.toString(), fieldFormat );
+  }
+
 
   if ( date.isValid() )
   {

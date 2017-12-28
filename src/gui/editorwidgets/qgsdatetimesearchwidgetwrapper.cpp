@@ -47,7 +47,14 @@ QVariant QgsDateTimeSearchWidgetWrapper::value() const
     return QDateTime();
 
   const QString fieldFormat = config( QStringLiteral( "field_format" ), QgsDateTimeFieldFormatter::defaultFormat( layer()->fields().at( mFieldIdx ).type() ) ).toString();
-  return mDateTimeEdit->dateTime().toString( fieldFormat );
+  if ( fieldFormat == QgsDateTimeFieldFormatter::DEFAULT_ISO_FORMAT )
+  {
+    return mDateTimeEdit->dateTime().toString( fieldFormat );
+  }
+  else
+  {
+    return mDateTimeEdit->dateTime().toString( Qt::ISODate );
+  }
 }
 
 QgsSearchWidgetWrapper::FilterFlags QgsDateTimeSearchWidgetWrapper::supportedFlags() const

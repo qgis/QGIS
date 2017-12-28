@@ -67,9 +67,13 @@ void QgsDateTimeEditConfig::updateFieldFormat( int idx )
   {
     mFieldFormatEdit->setText( QgsDateTimeFieldFormatter::DEFAULT_DATETIME_FORMAT );
   }
+  else if ( idx == 3 )
+  {
+    mFieldFormatEdit->setText( QgsDateTimeFieldFormatter::DEFAULT_ISO_FORMAT );
+  }
 
-  mFieldFormatEdit->setVisible( idx == 3 );
-  mFieldHelpToolButton->setVisible( idx == 3 );
+  mFieldFormatEdit->setEnabled( idx == 4 );
+  mFieldHelpToolButton->setVisible( idx == 4 );
   if ( mFieldHelpToolButton->isHidden() && mDisplayHelpToolButton->isHidden() )
   {
     mHelpScrollArea->setVisible( false );
@@ -132,8 +136,10 @@ void QgsDateTimeEditConfig::setConfig( const QVariantMap &config )
     mFieldFormatComboBox->setCurrentIndex( 1 );
   else if ( fieldFormat == QgsDateTimeFieldFormatter::DEFAULT_DATETIME_FORMAT )
     mFieldFormatComboBox->setCurrentIndex( 2 );
-  else
+  else if ( fieldFormat == QgsDateTimeFieldFormatter::DEFAULT_ISO_FORMAT )
     mFieldFormatComboBox->setCurrentIndex( 3 );
+  else
+    mFieldFormatComboBox->setCurrentIndex( 4 );
 
   QString displayFormat = config.value( QStringLiteral( "display_format" ), QgsDateTimeFieldFormatter::defaultFormat( fieldDef.type() ) ).toString();
   mDisplayFormatEdit->setText( displayFormat );

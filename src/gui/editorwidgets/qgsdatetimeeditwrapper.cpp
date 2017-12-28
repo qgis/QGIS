@@ -115,7 +115,14 @@ void QgsDateTimeEditWrapper::showIndeterminateState()
 void QgsDateTimeEditWrapper::dateTimeChanged( const QDateTime &dateTime )
 {
   const QString fieldFormat = config( QStringLiteral( "field_format" ), QgsDateTimeFieldFormatter::defaultFormat( field().type() ) ).toString();
-  emit valueChanged( dateTime.toString( fieldFormat ) );
+  if ( fieldFormat == QgsDateTimeFieldFormatter::DEFAULT_ISO_FORMAT )
+  {
+    emit valueChanged( dateTime.toString( Qt::ISODate ) );
+  }
+  else
+  {
+    emit valueChanged( dateTime.toString( fieldFormat ) );
+  }
 }
 
 QVariant QgsDateTimeEditWrapper::value() const
@@ -137,13 +144,22 @@ QVariant QgsDateTimeEditWrapper::value() const
 
   const QString fieldFormat = config( QStringLiteral( "field_format" ), QgsDateTimeFieldFormatter::defaultFormat( field().type() ) ).toString();
 
+  QDateTime date;
   if ( mQgsDateTimeEdit )
   {
-    return mQgsDateTimeEdit->dateTime().toString( fieldFormat );
+    date = mQgsDateTimeEdit->dateTime();
   }
   else
   {
-    return mQDateTimeEdit->dateTime().toString( fieldFormat );
+    date = mQDateTimeEdit->dateTime();
+  }
+  if ( fieldFormat == QgsDateTimeFieldFormatter::DEFAULT_ISO_FORMAT )
+  {
+    return date.toString( Qt::ISODate );
+  }
+  else
+  {
+    return date.toString( fieldFormat );
   }
 }
 
@@ -153,7 +169,22 @@ void QgsDateTimeEditWrapper::setValue( const QVariant &value )
     return;
 
   const QString fieldFormat = config( QStringLiteral( "field_format" ), QgsDateTimeFieldFormatter::defaultFormat( field().type() ) ).toString();
-  const QDateTime date = field().type() == QVariant::DateTime ? value.toDateTime() : QDateTime::fromString( value.toString(), fieldFormat );
+  QDateTime date;
+  if ( field().type() == QVariant::DateTime )
+  {
+    date = value.toDateTime();
+  }
+  else
+  {
+    if ( fieldFormat == QgsDateTimeFieldFormatter::DEFAULT_ISO_FORMAT )
+    {
+      date = QDateTime::fromString( value.toString(), Qt::ISODate );
+    }
+    else
+    {
+      date = QDateTime::fromString( value.toString(), fieldFormat );
+    }
+  }
 
   if ( mQgsDateTimeEdit )
   {
