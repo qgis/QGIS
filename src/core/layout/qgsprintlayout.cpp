@@ -16,11 +16,31 @@
 
 #include "qgsprintlayout.h"
 #include "qgslayoutatlas.h"
+#include "qgsreadwritecontext.h"
 
 QgsPrintLayout::QgsPrintLayout( QgsProject *project )
   : QgsLayout( project )
   , mAtlas( new QgsLayoutAtlas( this ) )
 {
+}
+
+QgsPrintLayout *QgsPrintLayout::clone() const
+{
+  QDomDocument currentDoc;
+
+  QgsReadWriteContext context;
+  QDomElement elem = writeXml( currentDoc, context );
+  currentDoc.appendChild( elem );
+
+  std::unique_ptr< QgsPrintLayout > newLayout = qgis::make_unique< QgsPrintLayout >( project() );
+  bool ok = false;
+  newLayout->loadFromTemplate( currentDoc, context, true, &ok );
+  if ( !ok )
+  {
+    return nullptr;
+  }
+
+  return newLayout.release();
 }
 
 QgsLayoutAtlas *QgsPrintLayout::atlas()

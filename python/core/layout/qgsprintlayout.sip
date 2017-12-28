@@ -26,6 +26,9 @@ class QgsPrintLayout : QgsLayout
 Constructor for QgsPrintLayout.
 %End
 
+    virtual QgsPrintLayout *clone() const /Factory/;
+
+
     QgsLayoutAtlas *atlas();
 %Docstring
 Returns the print layout's atlas.

@@ -56,6 +56,12 @@ called on the new layout.
 
     ~QgsLayout();
 
+    virtual QgsLayout *clone() const /Factory/;
+%Docstring
+Creates a clone of the layout. Ownership of the return layout
+is transferred to the caller.
+%End
+
     void initializeDefaults();
 %Docstring
 Initializes an empty layout, e.g. by adding a default page to the layout. This should be called after creating

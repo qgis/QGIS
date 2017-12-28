@@ -38,6 +38,8 @@ class CORE_EXPORT QgsPrintLayout : public QgsLayout
      */
     QgsPrintLayout( QgsProject *project );
 
+    QgsPrintLayout *clone() const override SIP_FACTORY;
+
     /**
      * Returns the print layout's atlas.
      */

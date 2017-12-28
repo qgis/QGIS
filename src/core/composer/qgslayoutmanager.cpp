@@ -283,16 +283,8 @@ QgsComposition *QgsLayoutManager::duplicateComposition( const QString &name, con
 
 QgsLayout *QgsLayoutManager::duplicateLayout( const QgsLayout *layout, const QString &newName )
 {
-  QDomDocument currentDoc;
-
-  QgsReadWriteContext context;
-  QDomElement elem = layout->writeXml( currentDoc, context );
-  currentDoc.appendChild( elem );
-
-  std::unique_ptr< QgsLayout > newLayout = qgis::make_unique< QgsPrintLayout >( mProject );
-  bool ok = false;
-  newLayout->loadFromTemplate( currentDoc, context, true, &ok );
-  if ( !ok )
+  std::unique_ptr< QgsLayout > newLayout( layout->clone() );
+  if ( !newLayout )
   {
     return nullptr;
   }

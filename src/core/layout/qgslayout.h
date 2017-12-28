@@ -84,6 +84,12 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     ~QgsLayout() override;
 
     /**
+     * Creates a clone of the layout. Ownership of the return layout
+     * is transferred to the caller.
+     */
+    virtual QgsLayout *clone() const SIP_FACTORY;
+
+    /**
      * Initializes an empty layout, e.g. by adding a default page to the layout. This should be called after creating
      * a new layout.
      */

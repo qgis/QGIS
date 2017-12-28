@@ -75,6 +75,25 @@ QgsLayout::~QgsLayout()
   mItemsModel.reset(); // manually delete, so we can control order of destruction
 }
 
+QgsLayout *QgsLayout::clone() const
+{
+  QDomDocument currentDoc;
+
+  QgsReadWriteContext context;
+  QDomElement elem = writeXml( currentDoc, context );
+  currentDoc.appendChild( elem );
+
+  std::unique_ptr< QgsLayout > newLayout = qgis::make_unique< QgsLayout >( mProject );
+  bool ok = false;
+  newLayout->loadFromTemplate( currentDoc, context, true, &ok );
+  if ( !ok )
+  {
+    return nullptr;
+  }
+
+  return newLayout.release();
+}
+
 void QgsLayout::initializeDefaults()
 {
   // default to a A4 landscape page

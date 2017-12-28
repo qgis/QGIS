@@ -26,6 +26,8 @@
 #include "qgslayoutitempolyline.h"
 #include "qgslayoutitemhtml.h"
 #include "qgslayoutframe.h"
+#include "qgsprintlayout.h"
+#include "qgslayoutatlas.h"
 
 class TestQgsLayout: public QObject
 {
@@ -54,6 +56,7 @@ class TestQgsLayout: public QObject
     void pageIsEmpty();
     void clear();
     void georeference();
+    void clone();
 
   private:
     QString mReport;
@@ -842,6 +845,44 @@ void TestQgsLayout::georeference()
   QGSCOMPARENEAR( t[4], 0.14969, 0.0001 );
   QGSCOMPARENEAR( t[5], -0.14969, 0.0001 );
   t.reset();
+}
+
+void TestQgsLayout::clone()
+{
+  QgsProject proj;
+  QgsLayout l( &proj );
+  QgsLayoutItemPage *page = new QgsLayoutItemPage( &l );
+  page->setPageSize( "A4" );
+  l.pageCollection()->addPage( page );
+  QgsLayoutItemPage *page2 = new QgsLayoutItemPage( &l );
+  page2->setPageSize( "A4" );
+  l.pageCollection()->addPage( page2 );
+  QgsLayoutItemPage *page3 = new QgsLayoutItemPage( &l );
+  page3->setPageSize( "A4" );
+  l.pageCollection()->addPage( page3 );
+
+  //add some items to the composition
+  QgsLayoutItemShape *label1 = new QgsLayoutItemShape( &l );
+  l.addLayoutItem( label1 );
+  QgsLayoutItemShape *label2 = new QgsLayoutItemShape( &l );
+  l.addLayoutItem( label2 );
+  QgsLayoutItemShape *label3 = new QgsLayoutItemShape( &l );
+  l.addLayoutItem( label3 );
+
+  // clone and check a few poperties
+  std::unique_ptr< QgsLayout > cloned( l.clone() );
+  QVERIFY( cloned.get() );
+  QCOMPARE( cloned->pageCollection()->pageCount(), 3 );
+  QList< QgsLayoutItem * > items;
+  cloned->layoutItems( items );
+  QCOMPARE( items.count(), 6 ); // 3 pages + 3 items
+
+  // clone a print layout
+  QgsPrintLayout pl( &proj );
+  pl.atlas()->setPageNameExpression( QStringLiteral( "not a real expression" ) );
+  std::unique_ptr< QgsPrintLayout > plClone( pl.clone() );
+  QVERIFY( plClone.get() );
+  QCOMPARE( plClone->atlas()->pageNameExpression(), QStringLiteral( "not a real expression" ) );
 }
 
 
