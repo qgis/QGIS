@@ -80,7 +80,7 @@ QgsLayoutItemAttributeTable::QgsLayoutItemAttributeTable( QgsLayout *layout )
     connect( mLayout->project(), static_cast < void ( QgsProject::* )( const QString & ) >( &QgsProject::layerWillBeRemoved ), this, &QgsLayoutItemAttributeTable::removeLayer );
 
     //coverage layer change = regenerate columns
-    connect( &mLayout->context(), &QgsLayoutContext::layerChanged, this, &QgsLayoutItemAttributeTable::atlasLayerChanged );
+    connect( &mLayout->reportContext(), &QgsLayoutReportContext::layerChanged, this, &QgsLayoutItemAttributeTable::atlasLayerChanged );
   }
   refreshAttributes();
 }
@@ -436,7 +436,7 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
   if ( mSource == QgsLayoutItemAttributeTable::RelationChildren )
   {
     QgsRelation relation = mLayout->project()->relationManager()->relation( mRelationId );
-    QgsFeature atlasFeature = mLayout->context().feature();
+    QgsFeature atlasFeature = mLayout->reportContext().feature();
     req = relation.getRelatedFeaturesRequest( atlasFeature );
   }
 
@@ -448,7 +448,7 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
   if ( mSource == QgsLayoutItemAttributeTable::AtlasFeature )
   {
     //source mode is current atlas feature
-    QgsFeature atlasFeature = mLayout->context().feature();
+    QgsFeature atlasFeature = mLayout->reportContext().feature();
     req.setFilterFid( atlasFeature.id() );
   }
 
@@ -476,7 +476,7 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
       {
         continue;
       }
-      QgsFeature atlasFeature = mLayout->context().feature();
+      QgsFeature atlasFeature = mLayout->reportContext().feature();
       if ( !atlasFeature.hasGeometry() ||
            !f.geometry().intersects( atlasFeature.geometry() ) )
       {
@@ -554,7 +554,7 @@ QgsVectorLayer *QgsLayoutItemAttributeTable::sourceLayer()
   switch ( mSource )
   {
     case QgsLayoutItemAttributeTable::AtlasFeature:
-      return mLayout->context().layer();
+      return mLayout->reportContext().layer();
     case QgsLayoutItemAttributeTable::LayerAttributes:
       return mVectorLayer.get();
     case QgsLayoutItemAttributeTable::RelationChildren:
@@ -671,7 +671,7 @@ bool QgsLayoutItemAttributeTable::readPropertiesFromElement( const QDomElement &
 
   if ( mSource == QgsLayoutItemAttributeTable::AtlasFeature )
   {
-    mCurrentAtlasLayer = mLayout->context().layer();
+    mCurrentAtlasLayer = mLayout->reportContext().layer();
   }
 
   mShowUniqueRowsOnly = itemElem.attribute( QStringLiteral( "showUniqueRowsOnly" ), QStringLiteral( "0" ) ).toInt();

@@ -102,7 +102,7 @@ void TestQgsLayoutLabel::evaluation()
   QgsLayout l( QgsProject::instance() );
   l.initializeDefaults();
 
-  l.context().setLayer( mVectorLayer );
+  l.reportContext().setLayer( mVectorLayer );
 
   QgsLayoutItemLabel *label = new QgsLayoutItemLabel( &l );
   label->setMargin( 1 );
@@ -188,9 +188,9 @@ void TestQgsLayoutLabel::feature_evaluation2()
   QgsFeature f;
   QgsFeatureIterator it = mVectorLayer->getFeatures();
 
-  l.context().setLayer( mVectorLayer );
+  l.reportContext().setLayer( mVectorLayer );
   it.nextFeature( f );
-  l.context().setFeature( f );
+  l.reportContext().setFeature( f );
   {
     // evaluation with a feature
     label->setText( QStringLiteral( "[%\"NAME_1\"||'_ok'%]" ) );
@@ -199,7 +199,7 @@ void TestQgsLayoutLabel::feature_evaluation2()
     QCOMPARE( evaluated, expected );
   }
   it.nextFeature( f );
-  l.context().setFeature( f );
+  l.reportContext().setFeature( f );
   {
     // evaluation with a feature
     label->setText( QStringLiteral( "[%\"NAME_1\"||'_ok'%]" ) );
@@ -216,7 +216,7 @@ void TestQgsLayoutLabel::page_evaluation()
   QgsLayoutItemPage *page2 = new QgsLayoutItemPage( &l );
   page2->setPageSize( "A4", QgsLayoutItemPage::Landscape );
   l.pageCollection()->addPage( page2 );
-  l.context().setLayer( mVectorLayer );
+  l.reportContext().setLayer( mVectorLayer );
 
   QgsLayoutItemLabel *label = new QgsLayoutItemLabel( &l );
   label->setMargin( 1 );

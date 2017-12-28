@@ -408,7 +408,6 @@
 %Include gps/qgsgpsdconnection.sip
 %Include layout/qgslayout.sip
 %Include layout/qgslayoutatlas.sip
-%Include layout/qgslayoutcontext.sip
 %Include layout/qgslayouteffect.sip
 %Include layout/qgslayoutguidecollection.sip
 %Include layout/qgslayoutframe.sip
@@ -435,6 +434,8 @@
 %Include layout/qgslayoutmultiframe.sip
 %Include layout/qgslayoutpagecollection.sip
 %Include layout/qgslayoutobject.sip
+%Include layout/qgslayoutrendercontext.sip
+%Include layout/qgslayoutreportcontext.sip
 %Include layout/qgslayouttable.sip
 %Include layout/qgslayouttablecolumn.sip
 %Include layout/qgslayoutundostack.sip

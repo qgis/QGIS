@@ -156,8 +156,8 @@ QgsLayoutMapGridWidget::QgsLayoutMapGridWidget( QgsLayoutItemMapGrid *mapGrid, Q
   mGridMarkerStyleButton->setLayer( coverageLayer() );
   if ( mMap->layout() )
   {
-    connect( &mMap->layout()->context(), &QgsLayoutContext::layerChanged, mGridLineStyleButton, &QgsSymbolButton::setLayer );
-    connect( &mMap->layout()->context(), &QgsLayoutContext::layerChanged, mGridMarkerStyleButton, &QgsSymbolButton::setLayer );
+    connect( &mMap->layout()->reportContext(), &QgsLayoutReportContext::layerChanged, mGridLineStyleButton, &QgsSymbolButton::setLayer );
+    connect( &mMap->layout()->reportContext(), &QgsLayoutReportContext::layerChanged, mGridMarkerStyleButton, &QgsSymbolButton::setLayer );
   }
 
 }

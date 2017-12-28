@@ -181,7 +181,7 @@ Set to true to generate an external world file alongside
 exported images.
 %End
 
-      QgsLayoutContext::Flags flags;
+      QgsLayoutRenderContext::Flags flags;
 %Docstring
 Layout context flags, which control how the export will be created.
 %End
@@ -244,7 +244,7 @@ correct appearance in the output.
 This option is mutually exclusive with rasterizeWholeImage.
 %End
 
-      QgsLayoutContext::Flags flags;
+      QgsLayoutRenderContext::Flags flags;
 %Docstring
 Layout context flags, which control how the export will be created.
 %End
@@ -330,7 +330,7 @@ Note that this option is considered experimental, and the generated
 SVG may differ from the expected appearance of the layout.
 %End
 
-      QgsLayoutContext::Flags flags;
+      QgsLayoutRenderContext::Flags flags;
 %Docstring
 Layout context flags, which control how the export will be created.
 %End

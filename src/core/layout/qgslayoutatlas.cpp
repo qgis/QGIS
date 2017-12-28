@@ -97,7 +97,7 @@ bool QgsLayoutAtlas::readXml( const QDomElement &atlasElem, const QDomDocument &
 
   mCoverageLayer = QgsVectorLayerRef( layerId, layerName, layerSource, layerProvider );
   mCoverageLayer.resolveWeakly( mLayout->project() );
-  mLayout->context().setLayer( mCoverageLayer.get() );
+  mLayout->reportContext().setLayer( mCoverageLayer.get() );
 
   mPageNameExpression = atlasElem.attribute( QStringLiteral( "pageNameExpression" ), QString() );
   QString error;
@@ -394,7 +394,7 @@ void QgsLayoutAtlas::setHideCoverage( bool hide )
 {
   mHideCoverage = hide;
 
-  mLayout->context().setFlag( QgsLayoutContext::FlagHideCoverageLayer, hide );
+  mLayout->renderContext().setFlag( QgsLayoutRenderContext::FlagHideCoverageLayer, hide );
   mLayout->refresh();
 }
 
@@ -507,10 +507,10 @@ bool QgsLayoutAtlas::prepareForFeature( const int featureI )
     return false;
   }
 
-  mLayout->context().blockSignals( true ); // setFeature emits changed, we don't want 2 signals
-  mLayout->context().setLayer( mCoverageLayer.get() );
-  mLayout->context().blockSignals( false );
-  mLayout->context().setFeature( mCurrentFeature );
+  mLayout->reportContext().blockSignals( true ); // setFeature emits changed, we don't want 2 signals
+  mLayout->reportContext().setLayer( mCoverageLayer.get() );
+  mLayout->reportContext().blockSignals( false );
+  mLayout->reportContext().setFeature( mCurrentFeature );
 
   emit featureChanged( mCurrentFeature );
   emit messagePushed( QString( tr( "Atlas feature %1 of %2" ) ).arg( featureI + 1 ).arg( mFeatureIds.size() ) );

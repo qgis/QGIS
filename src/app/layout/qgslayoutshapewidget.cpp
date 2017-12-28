@@ -48,7 +48,7 @@ QgsLayoutShapeWidget::QgsLayoutShapeWidget( QgsLayoutItemShape *shape )
 
   mShapeStyleButton->setSymbolType( QgsSymbol::Fill );
   mRadiusUnitsComboBox->linkToWidget( mCornerRadiusSpinBox );
-  mRadiusUnitsComboBox->setConverter( &mShape->layout()->context().measurementConverter() );
+  mRadiusUnitsComboBox->setConverter( &mShape->layout()->renderContext().measurementConverter() );
 
   setGuiElementValues();
 
@@ -63,7 +63,7 @@ QgsLayoutShapeWidget::QgsLayoutShapeWidget( QgsLayoutItemShape *shape )
   mShapeStyleButton->setLayer( coverageLayer() );
   if ( mShape->layout() )
   {
-    connect( &mShape->layout()->context(), &QgsLayoutContext::layerChanged, mShapeStyleButton, &QgsSymbolButton::setLayer );
+    connect( &mShape->layout()->reportContext(), &QgsLayoutReportContext::layerChanged, mShapeStyleButton, &QgsSymbolButton::setLayer );
   }
 }
 

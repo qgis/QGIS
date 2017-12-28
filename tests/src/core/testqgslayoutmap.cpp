@@ -349,23 +349,23 @@ void TestQgsLayoutMap::dataDefinedLayers()
   f2.setAttribute( QStringLiteral( "col1" ), mPointsLayer->name() );
   atlasLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 << f2 );
 
-  l.context().setLayer( atlasLayer );
+  l.reportContext().setLayer( atlasLayer );
   QgsFeature f;
   QgsFeatureIterator it = atlasLayer->getFeatures();
   it.nextFeature( f );
-  l.context().setFeature( f );
+  l.reportContext().setFeature( f );
 
   map->dataDefinedProperties().setProperty( QgsLayoutObject::MapLayers, QgsProperty::fromField( QStringLiteral( "col1" ) ) );
   result = map->layersToRender();
   QCOMPARE( result.count(), 1 );
   QCOMPARE( result.at( 0 ), mLinesLayer );
   it.nextFeature( f );
-  l.context().setFeature( f );
+  l.reportContext().setFeature( f );
   result = map->layersToRender();
   QCOMPARE( result.count(), 1 );
   QCOMPARE( result.at( 0 ), mPointsLayer );
   it.nextFeature( f );
-  l.context().setFeature( f );
+  l.reportContext().setFeature( f );
 
   delete atlasLayer;
 
@@ -518,11 +518,11 @@ void TestQgsLayoutMap::layersToRender()
   QCOMPARE( map->layersToRender(), layers );
 
   // hide coverage layer
-  l.context().setLayer( mPointsLayer );
-  l.context().setFlag( QgsLayoutContext::FlagHideCoverageLayer, true );
+  l.reportContext().setLayer( mPointsLayer );
+  l.renderContext().setFlag( QgsLayoutRenderContext::FlagHideCoverageLayer, true );
   QCOMPARE( map->layersToRender(), layers2 );
 
-  l.context().setFlag( QgsLayoutContext::FlagHideCoverageLayer, false );
+  l.renderContext().setFlag( QgsLayoutRenderContext::FlagHideCoverageLayer, false );
   QCOMPARE( map->layersToRender(), layers );
 }
 

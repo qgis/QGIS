@@ -124,7 +124,7 @@ QgsLayoutAttributeTableWidget::QgsLayoutAttributeTableWidget( QgsLayoutFrame *fr
     connect( mTable, &QgsLayoutMultiFrame::changed, this, &QgsLayoutAttributeTableWidget::updateGuiElements );
 
     // repopulate relations combo box if atlas layer changes
-    connect( &mTable->layout()->context(), &QgsLayoutContext::layerChanged,
+    connect( &mTable->layout()->reportContext(), &QgsLayoutReportContext::layerChanged,
              this, &QgsLayoutAttributeTableWidget::updateRelationsCombo );
 
     if ( QgsLayoutAtlas *atlas = layoutAtlas() )

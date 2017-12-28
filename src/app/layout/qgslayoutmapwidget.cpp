@@ -112,7 +112,7 @@ QgsLayoutMapWidget::QgsLayoutMapWidget( QgsLayoutItemMap *item )
 
   connect( item, &QgsLayoutObject::changed, this, &QgsLayoutMapWidget::updateGuiElements );
 
-  connect( &item->layout()->context(), &QgsLayoutContext::layerChanged,
+  connect( &item->layout()->reportContext(), &QgsLayoutReportContext::layerChanged,
            this, &QgsLayoutMapWidget::atlasLayerChanged );
   if ( QgsLayoutAtlas *atlas = layoutAtlas() )
   {
@@ -132,7 +132,7 @@ QgsLayoutMapWidget::QgsLayoutMapWidget( QgsLayoutItemMap *item )
   mOverviewFrameStyleButton->setLayer( coverageLayer() );
   if ( item->layout() )
   {
-    connect( &item->layout()->context(), &QgsLayoutContext::layerChanged, mOverviewFrameStyleButton, &QgsSymbolButton::setLayer );
+    connect( &item->layout()->reportContext(), &QgsLayoutReportContext::layerChanged, mOverviewFrameStyleButton, &QgsSymbolButton::setLayer );
   }
 
 
@@ -195,8 +195,8 @@ void QgsLayoutMapWidget::populateDataDefinedButtons()
 void QgsLayoutMapWidget::compositionAtlasToggled( bool atlasEnabled )
 {
   if ( atlasEnabled &&
-       mMapItem && mMapItem->layout() && mMapItem->layout()->context().layer()
-       && mMapItem->layout()->context().layer()->wkbType() != QgsWkbTypes::NoGeometry )
+       mMapItem && mMapItem->layout() && mMapItem->layout()->reportContext().layer()
+       && mMapItem->layout()->reportContext().layer()->wkbType() != QgsWkbTypes::NoGeometry )
   {
     mAtlasCheckBox->setEnabled( true );
   }

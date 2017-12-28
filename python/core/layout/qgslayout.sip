@@ -309,10 +309,17 @@ Converts a ``point`` from the layout's native units to a specified target ``unit
 .. seealso:: :py:func:`units()`
 %End
 
-    QgsLayoutContext &context();
+    QgsLayoutRenderContext &renderContext();
 %Docstring
-Returns a reference to the layout's context, which stores information relating to the
-current context and rendering settings for the layout.
+Returns a reference to the layout's render context, which stores information relating to the
+current rendering settings for the layout.
+%End
+
+
+    QgsLayoutReportContext &reportContext();
+%Docstring
+Returns a reference to the layout's report context, which stores information relating to the
+current reporting context for the layout.
 %End
 
 

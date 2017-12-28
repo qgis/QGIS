@@ -207,52 +207,52 @@ class TestQgsLayoutAtlas(unittest.TestCase):
         atlas.setCoverageLayer(vector_layer)
 
         atlas_feature_changed_spy = QSignalSpy(atlas.featureChanged)
-        context_changed_spy = QSignalSpy(l.context().changed)
+        context_changed_spy = QSignalSpy(l.reportContext().changed)
 
         self.assertTrue(atlas.beginRender())
         self.assertTrue(atlas.first())
         self.assertEqual(len(atlas_feature_changed_spy), 1)
         self.assertEqual(len(context_changed_spy), 1)
         self.assertEqual(atlas.currentFeatureNumber(), 0)
-        self.assertEqual(l.context().feature()[4], 'Basse-Normandie')
-        self.assertEqual(l.context().layer(), vector_layer)
+        self.assertEqual(l.reportContext().feature()[4], 'Basse-Normandie')
+        self.assertEqual(l.reportContext().layer(), vector_layer)
 
         self.assertTrue(atlas.next())
         self.assertEqual(len(atlas_feature_changed_spy), 2)
         self.assertEqual(len(context_changed_spy), 2)
         self.assertEqual(atlas.currentFeatureNumber(), 1)
-        self.assertEqual(l.context().feature()[4], 'Bretagne')
+        self.assertEqual(l.reportContext().feature()[4], 'Bretagne')
 
         self.assertTrue(atlas.next())
         self.assertEqual(len(atlas_feature_changed_spy), 3)
         self.assertEqual(len(context_changed_spy), 3)
         self.assertEqual(atlas.currentFeatureNumber(), 2)
-        self.assertEqual(l.context().feature()[4], 'Pays de la Loire')
+        self.assertEqual(l.reportContext().feature()[4], 'Pays de la Loire')
 
         self.assertTrue(atlas.next())
         self.assertEqual(len(atlas_feature_changed_spy), 4)
         self.assertEqual(len(context_changed_spy), 4)
         self.assertEqual(atlas.currentFeatureNumber(), 3)
-        self.assertEqual(l.context().feature()[4], 'Centre')
+        self.assertEqual(l.reportContext().feature()[4], 'Centre')
 
         self.assertFalse(atlas.next())
         self.assertTrue(atlas.seekTo(2))
         self.assertEqual(len(atlas_feature_changed_spy), 5)
         self.assertEqual(len(context_changed_spy), 5)
         self.assertEqual(atlas.currentFeatureNumber(), 2)
-        self.assertEqual(l.context().feature()[4], 'Pays de la Loire')
+        self.assertEqual(l.reportContext().feature()[4], 'Pays de la Loire')
 
         self.assertTrue(atlas.last())
         self.assertEqual(len(atlas_feature_changed_spy), 6)
         self.assertEqual(len(context_changed_spy), 6)
         self.assertEqual(atlas.currentFeatureNumber(), 3)
-        self.assertEqual(l.context().feature()[4], 'Centre')
+        self.assertEqual(l.reportContext().feature()[4], 'Centre')
 
         self.assertTrue(atlas.previous())
         self.assertEqual(len(atlas_feature_changed_spy), 7)
         self.assertEqual(len(context_changed_spy), 7)
         self.assertEqual(atlas.currentFeatureNumber(), 2)
-        self.assertEqual(l.context().feature()[4], 'Pays de la Loire')
+        self.assertEqual(l.reportContext().feature()[4], 'Pays de la Loire')
 
         self.assertTrue(atlas.previous())
         self.assertTrue(atlas.previous())
@@ -278,14 +278,14 @@ class TestQgsLayoutAtlas(unittest.TestCase):
         self.assertTrue(atlas.beginRender())
         self.assertTrue(atlas.first())
         self.assertEqual(atlas.currentFeatureNumber(), 0)
-        self.assertEqual(l.context().feature()[4], 'Basse-Normandie')
-        self.assertEqual(l.context().layer(), vector_layer)
+        self.assertEqual(l.reportContext().feature()[4], 'Basse-Normandie')
+        self.assertEqual(l.reportContext().layer(), vector_layer)
 
         vector_layer.startEditing()
-        self.assertTrue(vector_layer.changeAttributeValue(l.context().feature().id(), 4, 'Nah, Canberra mate!'))
-        self.assertEqual(l.context().feature()[4], 'Basse-Normandie')
+        self.assertTrue(vector_layer.changeAttributeValue(l.reportContext().feature().id(), 4, 'Nah, Canberra mate!'))
+        self.assertEqual(l.reportContext().feature()[4], 'Basse-Normandie')
         l.atlas().refreshCurrentFeature()
-        self.assertEqual(l.context().feature()[4], 'Nah, Canberra mate!')
+        self.assertEqual(l.reportContext().feature()[4], 'Nah, Canberra mate!')
         vector_layer.rollBack()
 
     def testFileName(self):
@@ -404,8 +404,8 @@ class TestQgsLayoutAtlas(unittest.TestCase):
         self.atlas_map.setAtlasScalingMode(QgsLayoutItemMap.Predefined)
 
         scales = [1800000, 5000000]
-        self.layout.context().setPredefinedScales(scales)
-        for i, s in enumerate(self.layout.context().predefinedScales()):
+        self.layout.reportContext().setPredefinedScales(scales)
+        for i, s in enumerate(self.layout.reportContext().predefinedScales()):
             self.assertEqual(s, scales[i])
 
         self.atlas.beginRender()

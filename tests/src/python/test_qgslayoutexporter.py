@@ -274,7 +274,7 @@ class TestQgsLayoutExporter(unittest.TestCase):
         self.assertTrue(self.checkImage('rendertoimageregionsize', 'rendertoimageregionsize', rendered_file_path))
 
         # using layout dpi
-        l.context().setDpi(40)
+        l.renderContext().setDpi(40)
         image = exporter.renderRegionToImage(QRectF(5, 10, 110, 100))
         self.assertFalse(image.isNull())
 
@@ -586,7 +586,7 @@ class TestQgsLayoutExporter(unittest.TestCase):
         layer_path = os.path.join(TEST_DATA_DIR, 'france_parts.shp')
         layer = QgsVectorLayer(layer_path, 'test', "ogr")
 
-        project=QgsProject()
+        project = QgsProject()
         project.addMapLayers([layer])
         # select epsg:2154
         crs = QgsCoordinateReferenceSystem()
@@ -597,7 +597,7 @@ class TestQgsLayoutExporter(unittest.TestCase):
         layout.initializeDefaults()
 
         # fix the renderer, fill with green
-        props = {"color": "0,127,0", "outline_width":"4", "outline_color":'255,255,255'}
+        props = {"color": "0,127,0", "outline_width": "4", "outline_color": '255,255,255'}
         fillSymbol = QgsFillSymbol.createSimple(props)
         renderer = QgsSingleSymbolRenderer(fillSymbol)
         layer.setRenderer(renderer)
@@ -632,7 +632,7 @@ class TestQgsLayoutExporter(unittest.TestCase):
         settings = QgsLayoutExporter.ImageExportSettings()
         settings.dpi = 80
 
-        result, error = QgsLayoutExporter.exportToImage(atlas,self.basetestpath, 'png', settings)
+        result, error = QgsLayoutExporter.exportToImage(atlas, self.basetestpath, 'png', settings)
         self.assertEqual(result, QgsLayoutExporter.Success, error)
 
         page1_path = os.path.join(self.basetestpath, 'test_exportiteratortoimage_Basse-Normandie.png')
@@ -654,7 +654,7 @@ class TestQgsLayoutExporter(unittest.TestCase):
         settings.dpi = 80
         settings.forceVectorOutput = False
 
-        result, error = QgsLayoutExporter.exportToSvg(atlas,self.basetestpath, settings)
+        result, error = QgsLayoutExporter.exportToSvg(atlas, self.basetestpath, settings)
         self.assertEqual(result, QgsLayoutExporter.Success, error)
 
         page1_path = os.path.join(self.basetestpath, 'test_exportiteratortosvg_Basse-Normandie.svg')
@@ -681,7 +681,7 @@ class TestQgsLayoutExporter(unittest.TestCase):
         settings.rasterizeWholeImage = False
         settings.forceVectorOutput = False
 
-        result, error = QgsLayoutExporter.exportToPdfs(atlas,self.basetestpath, settings)
+        result, error = QgsLayoutExporter.exportToPdfs(atlas, self.basetestpath, settings)
         self.assertEqual(result, QgsLayoutExporter.Success, error)
 
         page1_path = os.path.join(self.basetestpath, 'test_exportiteratortopdf_Basse-Normandie.pdf')
@@ -708,7 +708,7 @@ class TestQgsLayoutExporter(unittest.TestCase):
         settings.forceVectorOutput = False
 
         pdf_path = os.path.join(self.basetestpath, 'test_exportiteratortopdf_single.pdf')
-        result, error = QgsLayoutExporter.exportToPdf(atlas,pdf_path, settings)
+        result, error = QgsLayoutExporter.exportToPdf(atlas, pdf_path, settings)
         self.assertEqual(result, QgsLayoutExporter.Success, error)
 
         rendered_page_1 = os.path.join(self.basetestpath, 'test_exportiteratortopdf_single1.png')

@@ -262,19 +262,19 @@ void TestQgsLayoutUtils::createRenderContextFromLayout()
   QVERIFY( !rc.painter() );
 
   // check render context flags are correctly set
-  l.context().setFlags( nullptr );
+  l.renderContext().setFlags( nullptr );
   rc = QgsLayoutUtils::createRenderContextForLayout( &l, nullptr );
   QVERIFY( !( rc.flags() & QgsRenderContext::Antialiasing ) );
   QVERIFY( !( rc.flags() & QgsRenderContext::UseAdvancedEffects ) );
   QVERIFY( ( rc.flags() & QgsRenderContext::ForceVectorOutput ) );
 
-  l.context().setFlag( QgsLayoutContext::FlagAntialiasing );
+  l.renderContext().setFlag( QgsLayoutRenderContext::FlagAntialiasing );
   rc = QgsLayoutUtils::createRenderContextForLayout( &l, nullptr );
   QVERIFY( ( rc.flags() & QgsRenderContext::Antialiasing ) );
   QVERIFY( !( rc.flags() & QgsRenderContext::UseAdvancedEffects ) );
   QVERIFY( ( rc.flags() & QgsRenderContext::ForceVectorOutput ) );
 
-  l.context().setFlag( QgsLayoutContext::FlagUseAdvancedEffects );
+  l.renderContext().setFlag( QgsLayoutRenderContext::FlagUseAdvancedEffects );
   rc = QgsLayoutUtils::createRenderContextForLayout( &l, nullptr );
   QVERIFY( ( rc.flags() & QgsRenderContext::Antialiasing ) );
   QVERIFY( ( rc.flags() & QgsRenderContext::UseAdvancedEffects ) );
@@ -334,19 +334,19 @@ void TestQgsLayoutUtils::createRenderContextFromMap()
   QVERIFY( rc.painter() );
 
   // check render context flags are correctly set
-  l.context().setFlags( 0 );
+  l.renderContext().setFlags( 0 );
   rc = QgsLayoutUtils::createRenderContextForLayout( &l, nullptr );
   QVERIFY( !( rc.flags() & QgsRenderContext::Antialiasing ) );
   QVERIFY( !( rc.flags() & QgsRenderContext::UseAdvancedEffects ) );
   QVERIFY( ( rc.flags() & QgsRenderContext::ForceVectorOutput ) );
 
-  l.context().setFlag( QgsLayoutContext::FlagAntialiasing );
+  l.renderContext().setFlag( QgsLayoutRenderContext::FlagAntialiasing );
   rc = QgsLayoutUtils::createRenderContextForLayout( &l, nullptr );
   QVERIFY( ( rc.flags() & QgsRenderContext::Antialiasing ) );
   QVERIFY( !( rc.flags() & QgsRenderContext::UseAdvancedEffects ) );
   QVERIFY( ( rc.flags() & QgsRenderContext::ForceVectorOutput ) );
 
-  l.context().setFlag( QgsLayoutContext::FlagUseAdvancedEffects );
+  l.renderContext().setFlag( QgsLayoutRenderContext::FlagUseAdvancedEffects );
   rc = QgsLayoutUtils::createRenderContextForLayout( &l, nullptr );
   QVERIFY( ( rc.flags() & QgsRenderContext::Antialiasing ) );
   QVERIFY( ( rc.flags() & QgsRenderContext::UseAdvancedEffects ) );

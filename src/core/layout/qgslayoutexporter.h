@@ -18,7 +18,8 @@
 
 #include "qgis_core.h"
 #include "qgsmargins.h"
-#include "qgslayoutcontext.h"
+#include "qgslayoutrendercontext.h"
+#include "qgslayoutreportcontext.h"
 #include <QPointer>
 #include <QSize>
 #include <QRectF>
@@ -143,7 +144,7 @@ class CORE_EXPORT QgsLayoutExporter
     {
       //! Constructor for ImageExportSettings
       ImageExportSettings()
-        : flags( QgsLayoutContext::FlagAntialiasing | QgsLayoutContext::FlagUseAdvancedEffects )
+        : flags( QgsLayoutRenderContext::FlagAntialiasing | QgsLayoutRenderContext::FlagUseAdvancedEffects )
       {}
 
       //! Resolution to export layout at. If dpi <= 0 the default layout dpi will be used.
@@ -193,7 +194,7 @@ class CORE_EXPORT QgsLayoutExporter
       /**
        * Layout context flags, which control how the export will be created.
        */
-      QgsLayoutContext::Flags flags = 0;
+      QgsLayoutRenderContext::Flags flags = 0;
 
     };
 
@@ -230,7 +231,7 @@ class CORE_EXPORT QgsLayoutExporter
     {
       //! Constructor for PdfExportSettings
       PdfExportSettings()
-        : flags( QgsLayoutContext::FlagAntialiasing | QgsLayoutContext::FlagUseAdvancedEffects )
+        : flags( QgsLayoutRenderContext::FlagAntialiasing | QgsLayoutRenderContext::FlagUseAdvancedEffects )
       {}
 
       //! Resolution to export layout at. If dpi <= 0 the default layout dpi will be used.
@@ -255,7 +256,7 @@ class CORE_EXPORT QgsLayoutExporter
       /**
        * Layout context flags, which control how the export will be created.
        */
-      QgsLayoutContext::Flags flags = 0;
+      QgsLayoutRenderContext::Flags flags = 0;
 
     };
 
@@ -303,7 +304,7 @@ class CORE_EXPORT QgsLayoutExporter
     {
       //! Constructor for SvgExportSettings
       SvgExportSettings()
-        : flags( QgsLayoutContext::FlagAntialiasing | QgsLayoutContext::FlagUseAdvancedEffects )
+        : flags( QgsLayoutRenderContext::FlagAntialiasing | QgsLayoutRenderContext::FlagUseAdvancedEffects )
       {}
 
       //! Resolution to export layout at. If dpi <= 0 the default layout dpi will be used.
@@ -340,7 +341,7 @@ class CORE_EXPORT QgsLayoutExporter
       /**
        * Layout context flags, which control how the export will be created.
        */
-      QgsLayoutContext::Flags flags = 0;
+      QgsLayoutRenderContext::Flags flags = 0;
 
     };
 

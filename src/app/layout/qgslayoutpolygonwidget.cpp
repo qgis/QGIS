@@ -51,7 +51,7 @@ QgsLayoutPolygonWidget::QgsLayoutPolygonWidget( QgsLayoutItemPolygon *polygon )
   mPolygonStyleButton->setLayer( coverageLayer() );
   if ( mPolygon->layout() )
   {
-    connect( &mPolygon->layout()->context(), &QgsLayoutContext::layerChanged, mPolygonStyleButton, &QgsSymbolButton::setLayer );
+    connect( &mPolygon->layout()->reportContext(), &QgsLayoutReportContext::layerChanged, mPolygonStyleButton, &QgsSymbolButton::setLayer );
   }
 }
 

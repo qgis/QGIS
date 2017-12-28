@@ -31,7 +31,7 @@ QgsLayoutConfigObject::QgsLayoutConfigObject( QWidget *parent, QgsLayoutObject *
 {
   if ( mLayoutObject->layout() )
   {
-    connect( &mLayoutObject->layout()->context(), &QgsLayoutContext::layerChanged,
+    connect( &mLayoutObject->layout()->reportContext(), &QgsLayoutReportContext::layerChanged,
              this, [ = ] { updateDataDefinedButtons(); } );
   }
   if ( layoutAtlas() )
@@ -122,7 +122,7 @@ QgsVectorLayer *QgsLayoutConfigObject::coverageLayer() const
   if ( !layout )
     return nullptr;
 
-  return layout->context().layer();
+  return layout->reportContext().layer();
 }
 
 
@@ -201,15 +201,15 @@ QgsLayoutItemPropertiesWidget::QgsLayoutItemPropertiesWidget( QWidget *parent, Q
 
   mItemRotationSpinBox->setClearValue( 0 );
   mStrokeUnitsComboBox->linkToWidget( mStrokeWidthSpinBox );
-  mStrokeUnitsComboBox->setConverter( &item->layout()->context().measurementConverter() );
+  mStrokeUnitsComboBox->setConverter( &item->layout()->renderContext().measurementConverter() );
 
   mPosUnitsComboBox->linkToWidget( mXPosSpin );
   mPosUnitsComboBox->linkToWidget( mYPosSpin );
   mSizeUnitsComboBox->linkToWidget( mWidthSpin );
   mSizeUnitsComboBox->linkToWidget( mHeightSpin );
 
-  mPosUnitsComboBox->setConverter( &item->layout()->context().measurementConverter() );
-  mSizeUnitsComboBox->setConverter( &item->layout()->context().measurementConverter() );
+  mPosUnitsComboBox->setConverter( &item->layout()->renderContext().measurementConverter() );
+  mSizeUnitsComboBox->setConverter( &item->layout()->renderContext().measurementConverter() );
 
   mPosLockAspectRatio->setWidthSpinBox( mXPosSpin );
   mPosLockAspectRatio->setHeightSpinBox( mYPosSpin );

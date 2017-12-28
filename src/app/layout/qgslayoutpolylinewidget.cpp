@@ -92,7 +92,7 @@ QgsLayoutPolylineWidget::QgsLayoutPolylineWidget( QgsLayoutItemPolyline *polylin
   mLineStyleButton->setLayer( coverageLayer() );
   if ( mPolyline->layout() )
   {
-    connect( &mPolyline->layout()->context(), &QgsLayoutContext::layerChanged, mLineStyleButton, &QgsSymbolButton::setLayer );
+    connect( &mPolyline->layout()->reportContext(), &QgsLayoutReportContext::layerChanged, mLineStyleButton, &QgsSymbolButton::setLayer );
   }
 }
 

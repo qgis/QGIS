@@ -108,8 +108,8 @@ void QgsLayoutItemPolyline::refreshSymbol()
 {
   if ( layout() )
   {
-    QgsRenderContext rc = QgsLayoutUtils::createRenderContextForLayout( layout(), nullptr, layout()->context().dpi() );
-    mMaxSymbolBleed = ( 25.4 / layout()->context().dpi() ) * QgsSymbolLayerUtils::estimateMaxSymbolBleed( mPolylineStyleSymbol.get(), rc );
+    QgsRenderContext rc = QgsLayoutUtils::createRenderContextForLayout( layout(), nullptr, layout()->renderContext().dpi() );
+    mMaxSymbolBleed = ( 25.4 / layout()->renderContext().dpi() ) * QgsSymbolLayerUtils::estimateMaxSymbolBleed( mPolylineStyleSymbol.get(), rc );
   }
 
   updateSceneRect();

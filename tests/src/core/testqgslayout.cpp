@@ -111,8 +111,8 @@ void TestQgsLayout::units()
 
   //check with dpi conversion
   layout.setUnits( QgsUnitTypes::LayoutInches );
-  layout.context().setDpi( 96.0 );
-  QCOMPARE( layout.context().dpi(), 96.0 );
+  layout.renderContext().setDpi( 96.0 );
+  QCOMPARE( layout.renderContext().dpi(), 96.0 );
   QCOMPARE( layout.convertToLayoutUnits( QgsLayoutMeasurement( 96, QgsUnitTypes::LayoutPixels ) ), 1.0 );
   QCOMPARE( layout.convertToLayoutUnits( QgsLayoutSize( 96, 96, QgsUnitTypes::LayoutPixels ) ), QSizeF( 1.0, 1.0 ) );
   QCOMPARE( layout.convertToLayoutUnits( QgsLayoutPoint( 96, 96, QgsUnitTypes::LayoutPixels ) ), QPointF( 1.0, 1.0 ) );
@@ -635,7 +635,7 @@ void TestQgsLayout::shouldExportPage()
   QgsLayoutItemPage *page2 = new QgsLayoutItemPage( &l );
   page2->setPageSize( "A4" );
   l.pageCollection()->addPage( page2 );
-  l.context().mIsPreviewRender = false;
+  l.renderContext().mIsPreviewRender = false;
 
   QgsLayoutItemHtml *htmlItem = new QgsLayoutItemHtml( &l );
   //frame on page 1

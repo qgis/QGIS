@@ -15,7 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgslayoutcontext.h"
+#include "qgslayoutrendercontext.h"
+#include "qgslayoutreportcontext.h"
 #include "qgis.h"
 #include "qgsfeature.h"
 #include "qgsvectorlayer.h"
@@ -80,40 +81,40 @@ void TestQgsLayoutContext::cleanup()
 
 void TestQgsLayoutContext::creation()
 {
-  QgsLayoutContext *context = new QgsLayoutContext( nullptr );
+  QgsLayoutRenderContext *context = new QgsLayoutRenderContext( nullptr );
   QVERIFY( context );
   delete context;
 }
 
 void TestQgsLayoutContext::flags()
 {
-  QgsLayoutContext context( nullptr );
-  QSignalSpy spyFlagsChanged( &context, &QgsLayoutContext::flagsChanged );
+  QgsLayoutRenderContext context( nullptr );
+  QSignalSpy spyFlagsChanged( &context, &QgsLayoutRenderContext::flagsChanged );
 
   //test getting and setting flags
-  context.setFlags( QgsLayoutContext::Flags( QgsLayoutContext::FlagAntialiasing | QgsLayoutContext::FlagUseAdvancedEffects ) );
+  context.setFlags( QgsLayoutRenderContext::Flags( QgsLayoutRenderContext::FlagAntialiasing | QgsLayoutRenderContext::FlagUseAdvancedEffects ) );
   // default flags, so should be no signal
   QCOMPARE( spyFlagsChanged.count(), 0 );
 
-  QVERIFY( context.flags() == ( QgsLayoutContext::FlagAntialiasing | QgsLayoutContext::FlagUseAdvancedEffects ) );
-  QVERIFY( context.testFlag( QgsLayoutContext::FlagAntialiasing ) );
-  QVERIFY( context.testFlag( QgsLayoutContext::FlagUseAdvancedEffects ) );
-  QVERIFY( ! context.testFlag( QgsLayoutContext::FlagDebug ) );
-  context.setFlag( QgsLayoutContext::FlagDebug );
+  QVERIFY( context.flags() == ( QgsLayoutRenderContext::FlagAntialiasing | QgsLayoutRenderContext::FlagUseAdvancedEffects ) );
+  QVERIFY( context.testFlag( QgsLayoutRenderContext::FlagAntialiasing ) );
+  QVERIFY( context.testFlag( QgsLayoutRenderContext::FlagUseAdvancedEffects ) );
+  QVERIFY( ! context.testFlag( QgsLayoutRenderContext::FlagDebug ) );
+  context.setFlag( QgsLayoutRenderContext::FlagDebug );
   QCOMPARE( spyFlagsChanged.count(), 1 );
-  QVERIFY( context.testFlag( QgsLayoutContext::FlagDebug ) );
-  context.setFlag( QgsLayoutContext::FlagDebug, false );
+  QVERIFY( context.testFlag( QgsLayoutRenderContext::FlagDebug ) );
+  context.setFlag( QgsLayoutRenderContext::FlagDebug, false );
   QCOMPARE( spyFlagsChanged.count(), 2 );
-  QVERIFY( ! context.testFlag( QgsLayoutContext::FlagDebug ) );
-  context.setFlag( QgsLayoutContext::FlagDebug, false ); //no change
+  QVERIFY( ! context.testFlag( QgsLayoutRenderContext::FlagDebug ) );
+  context.setFlag( QgsLayoutRenderContext::FlagDebug, false ); //no change
   QCOMPARE( spyFlagsChanged.count(), 2 );
-  context.setFlags( QgsLayoutContext::FlagDebug );
+  context.setFlags( QgsLayoutRenderContext::FlagDebug );
   QCOMPARE( spyFlagsChanged.count(), 3 );
 }
 
 void TestQgsLayoutContext::feature()
 {
-  QgsLayoutContext context( nullptr );
+  QgsLayoutReportContext context( nullptr );
 
   //test removing feature
   context.setFeature( QgsFeature() );
@@ -129,7 +130,7 @@ void TestQgsLayoutContext::feature()
 
 void TestQgsLayoutContext::layer()
 {
-  QgsLayoutContext context( nullptr );
+  QgsLayoutReportContext context( nullptr );
 
   //test clearing layer
   context.setLayer( nullptr );
@@ -149,9 +150,9 @@ void TestQgsLayoutContext::layer()
 
 void TestQgsLayoutContext::dpi()
 {
-  QgsLayoutContext context( nullptr );
+  QgsLayoutRenderContext context( nullptr );
 
-  QSignalSpy spyDpiChanged( &context, &QgsLayoutContext::dpiChanged );
+  QSignalSpy spyDpiChanged( &context, &QgsLayoutRenderContext::dpiChanged );
   context.setDpi( 600 );
   QCOMPARE( context.dpi(), 600.0 );
   QCOMPARE( context.measurementConverter().dpi(), 600.0 );
@@ -165,20 +166,20 @@ void TestQgsLayoutContext::dpi()
 
 void TestQgsLayoutContext::renderContextFlags()
 {
-  QgsLayoutContext context( nullptr );
+  QgsLayoutRenderContext context( nullptr );
   context.setFlags( 0 );
   QgsRenderContext::Flags flags = context.renderContextFlags();
   QVERIFY( !( flags & QgsRenderContext::Antialiasing ) );
   QVERIFY( !( flags & QgsRenderContext::UseAdvancedEffects ) );
   QVERIFY( ( flags & QgsRenderContext::ForceVectorOutput ) );
 
-  context.setFlag( QgsLayoutContext::FlagAntialiasing );
+  context.setFlag( QgsLayoutRenderContext::FlagAntialiasing );
   flags = context.renderContextFlags();
   QVERIFY( ( flags & QgsRenderContext::Antialiasing ) );
   QVERIFY( !( flags & QgsRenderContext::UseAdvancedEffects ) );
   QVERIFY( ( flags & QgsRenderContext::ForceVectorOutput ) );
 
-  context.setFlag( QgsLayoutContext::FlagUseAdvancedEffects );
+  context.setFlag( QgsLayoutRenderContext::FlagUseAdvancedEffects );
   flags = context.renderContextFlags();
   QVERIFY( ( flags & QgsRenderContext::Antialiasing ) );
   QVERIFY( ( flags & QgsRenderContext::UseAdvancedEffects ) );
@@ -187,7 +188,7 @@ void TestQgsLayoutContext::renderContextFlags()
 
 void TestQgsLayoutContext::boundingBoxes()
 {
-  QgsLayoutContext context( nullptr );
+  QgsLayoutRenderContext context( nullptr );
   context.setBoundingBoxesVisible( false );
   QVERIFY( !context.boundingBoxesVisible() );
   context.setBoundingBoxesVisible( true );
@@ -196,7 +197,7 @@ void TestQgsLayoutContext::boundingBoxes()
 
 void TestQgsLayoutContext::exportLayer()
 {
-  QgsLayoutContext context( nullptr );
+  QgsLayoutRenderContext context( nullptr );
   // must default to -1
   QCOMPARE( context.currentExportLayer(), -1 );
   context.setCurrentExportLayer( 1 );
@@ -207,7 +208,7 @@ void TestQgsLayoutContext::geometry()
 {
   QgsProject p;
   QgsLayout l( &p );
-  QgsLayoutContext context( &l );
+  QgsLayoutReportContext context( &l );
 
   // no feature set
   QVERIFY( context.currentGeometry().isNull() );
@@ -248,7 +249,7 @@ void TestQgsLayoutContext::scales()
   QVector< qreal > scales;
   scales << 1 << 15 << 5 << 10;
 
-  QgsLayoutContext context( nullptr );
+  QgsLayoutReportContext context( nullptr );
   context.setPredefinedScales( scales );
 
   // should be sorted

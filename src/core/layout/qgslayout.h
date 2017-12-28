@@ -29,7 +29,8 @@ class QgsLayoutModel;
 class QgsLayoutMultiFrame;
 class QgsLayoutPageCollection;
 class QgsLayoutUndoStack;
-class QgsLayoutContext;
+class QgsLayoutRenderContext;
+class QgsLayoutReportContext;
 
 /**
  * \ingroup core
@@ -324,16 +325,28 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     QgsLayoutPoint convertFromLayoutUnits( const QPointF &point, const QgsUnitTypes::LayoutUnit unit ) const;
 
     /**
-     * Returns a reference to the layout's context, which stores information relating to the
-     * current context and rendering settings for the layout.
+     * Returns a reference to the layout's render context, which stores information relating to the
+     * current rendering settings for the layout.
      */
-    QgsLayoutContext &context();
+    QgsLayoutRenderContext &renderContext();
 
     /**
-     * Returns a reference to the layout's context, which stores information relating to the
-     * current context and rendering settings for the layout.
+     * Returns a reference to the layout's render context, which stores information relating to the
+     * current rendering settings for the layout.
      */
-    SIP_SKIP const QgsLayoutContext &context() const;
+    SIP_SKIP const QgsLayoutRenderContext &renderContext() const;
+
+    /**
+     * Returns a reference to the layout's report context, which stores information relating to the
+     * current reporting context for the layout.
+     */
+    QgsLayoutReportContext &reportContext();
+
+    /**
+     * Returns a reference to the layout's report context, which stores information relating to the
+     * current reporting context for the layout.
+     */
+    SIP_SKIP const QgsLayoutReportContext &reportContext() const;
 
     /**
      * Returns a reference to the layout's snapper, which stores handles layout snap grids and lines
@@ -638,7 +651,8 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     QgsObjectCustomProperties mCustomProperties;
 
     QgsUnitTypes::LayoutUnit mUnits = QgsUnitTypes::LayoutMillimeters;
-    QgsLayoutContext *mContext = nullptr;
+    QgsLayoutRenderContext *mRenderContext = nullptr;
+    QgsLayoutReportContext *mReportContext = nullptr;
     QgsLayoutSnapper mSnapper;
     QgsLayoutGridSettings mGridSettings;
 

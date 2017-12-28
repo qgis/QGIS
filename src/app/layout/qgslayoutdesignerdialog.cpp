@@ -722,13 +722,13 @@ void QgsLayoutDesignerDialog::setCurrentLayout( QgsLayout *layout )
   connect( mLayout, &QgsLayout::nameChanged, this, &QgsLayoutDesignerDialog::setWindowTitle );
   setWindowTitle( mLayout->name() );
 
-  mActionShowGrid->setChecked( mLayout->context().gridVisible() );
+  mActionShowGrid->setChecked( mLayout->renderContext().gridVisible() );
   mActionSnapGrid->setChecked( mLayout->snapper().snapToGrid() );
   mActionShowGuides->setChecked( mLayout->guides().visible() );
   mActionSnapGuides->setChecked( mLayout->snapper().snapToGuides() );
   mActionSmartGuides->setChecked( mLayout->snapper().snapToItems() );
-  mActionShowBoxes->setChecked( mLayout->context().boundingBoxesVisible() );
-  mActionShowPage->setChecked( mLayout->context().pagesVisible() );
+  mActionShowBoxes->setChecked( mLayout->renderContext().boundingBoxesVisible() );
+  mActionShowPage->setChecked( mLayout->renderContext().pagesVisible() );
 
   mUndoView->setStack( mLayout->undoStack()->stack() );
 
@@ -850,19 +850,19 @@ void QgsLayoutDesignerDialog::showRulers( bool visible )
 
 void QgsLayoutDesignerDialog::showGrid( bool visible )
 {
-  mLayout->context().setGridVisible( visible );
+  mLayout->renderContext().setGridVisible( visible );
   mLayout->pageCollection()->redraw();
 }
 
 void QgsLayoutDesignerDialog::showBoxes( bool visible )
 {
-  mLayout->context().setBoundingBoxesVisible( visible );
+  mLayout->renderContext().setBoundingBoxesVisible( visible );
   mSelectTool->mouseHandles()->update();
 }
 
 void QgsLayoutDesignerDialog::showPages( bool visible )
 {
-  mLayout->context().setPagesVisible( visible );
+  mLayout->renderContext().setPagesVisible( visible );
   mLayout->pageCollection()->redraw();
 }
 
@@ -2793,8 +2793,8 @@ bool QgsLayoutDesignerDialog::showFileSizeWarning()
   // Image size
   double oneInchInLayoutUnits = mLayout->convertToLayoutUnits( QgsLayoutMeasurement( 1, QgsUnitTypes::LayoutInches ) );
   QSizeF maxPageSize = mLayout->pageCollection()->maximumPageSize();
-  int width = ( int )( mLayout->context().dpi() * maxPageSize.width() / oneInchInLayoutUnits );
-  int height = ( int )( mLayout->context().dpi() * maxPageSize.height() / oneInchInLayoutUnits );
+  int width = ( int )( mLayout->renderContext().dpi() * maxPageSize.width() / oneInchInLayoutUnits );
+  int height = ( int )( mLayout->renderContext().dpi() * maxPageSize.height() / oneInchInLayoutUnits );
   int memuse = width * height * 3 / 1000000;  // pixmap + image
   QgsDebugMsg( QString( "Image %1x%2" ).arg( width ).arg( height ) );
   QgsDebugMsg( QString( "memuse = %1" ).arg( memuse ) );
@@ -2818,7 +2818,7 @@ bool QgsLayoutDesignerDialog::getRasterExportSettings( QgsLayoutExporter::ImageE
   // Image size
   QSizeF maxPageSize = mLayout->pageCollection()->maximumPageSize();
   bool hasUniformPageSizes = mLayout->pageCollection()->hasUniformPageSizes();
-  double dpi = mLayout->context().dpi();
+  double dpi = mLayout->renderContext().dpi();
 
   //get some defaults from the composition
   bool cropToContents = mLayout->customProperty( QStringLiteral( "imageCropToContents" ), false ).toBool();
@@ -2858,9 +2858,9 @@ bool QgsLayoutDesignerDialog::getRasterExportSettings( QgsLayoutExporter::ImageE
     settings.imageSize = imageSize;
   }
   settings.generateWorldFile = imageDlg.generateWorldFile();
-  settings.flags = QgsLayoutContext::FlagUseAdvancedEffects;
+  settings.flags = QgsLayoutRenderContext::FlagUseAdvancedEffects;
   if ( imageDlg.antialiasing() )
-    settings.flags |= QgsLayoutContext::FlagAntialiasing;
+    settings.flags |= QgsLayoutRenderContext::FlagAntialiasing;
 
   return true;
 }
@@ -3011,7 +3011,7 @@ void QgsLayoutDesignerDialog::loadAtlasPredefinedScalesFromProject()
       projectScales.push_back( parts[1].toDouble() );
     }
   }
-  mLayout->context().setPredefinedScales( projectScales );
+  mLayout->reportContext().setPredefinedScales( projectScales );
 }
 
 QgsLayoutAtlas *QgsLayoutDesignerDialog::atlas()

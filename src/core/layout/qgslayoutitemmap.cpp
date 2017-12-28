@@ -16,7 +16,8 @@
 
 #include "qgslayoutitemmap.h"
 #include "qgslayout.h"
-#include "qgslayoutcontext.h"
+#include "qgslayoutrendercontext.h"
+#include "qgslayoutreportcontext.h"
 #include "qgslayoututils.h"
 #include "qgslayoutmodel.h"
 #include "qgsmapthemecollection.h"
@@ -759,7 +760,7 @@ void QgsLayoutItemMap::paint( QPainter *painter, const QStyleOptionGraphicsItem 
 
   //TODO - try to reduce the amount of duplicate code here!
 
-  if ( mLayout->context().isPreviewRender() )
+  if ( mLayout->renderContext().isPreviewRender() )
   {
     painter->save();
     painter->setClipRect( thisPaintRect );
@@ -833,7 +834,7 @@ void QgsLayoutItemMap::paint( QPainter *painter, const QStyleOptionGraphicsItem 
     QgsRectangle cExtent = extent();
     QSizeF size( cExtent.width() * mapUnitsToLayoutUnits(), cExtent.height() * mapUnitsToLayoutUnits() );
 
-    if ( containsAdvancedEffects() && ( !mLayout || !( mLayout->context().flags() & QgsLayoutContext::FlagForceVectorOutput ) ) )
+    if ( containsAdvancedEffects() && ( !mLayout || !( mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagForceVectorOutput ) ) )
     {
       // rasterize
       double destinationDpi = style->matrix.m11() * 25.4;
@@ -1059,9 +1060,9 @@ QgsMapSettings QgsLayoutItemMap::mapSettings( const QgsRectangle &extent, QSizeF
 
   //set layers to render
   QList<QgsMapLayer *> layers = layersToRender( &expressionContext );
-  if ( mLayout && -1 != mLayout->context().currentExportLayer() )
+  if ( mLayout && -1 != mLayout->renderContext().currentExportLayer() )
   {
-    const int layerIdx = mLayout->context().currentExportLayer() - ( hasBackground() ? 1 : 0 );
+    const int layerIdx = mLayout->renderContext().currentExportLayer() - ( hasBackground() ? 1 : 0 );
     if ( layerIdx >= 0 && layerIdx < layers.length() )
     {
       // exporting with separate layers (e.g., to svg layers), so we only want to render a single map layer
@@ -1078,7 +1079,7 @@ QgsMapSettings QgsLayoutItemMap::mapSettings( const QgsRectangle &extent, QSizeF
   jobMapSettings.setLayers( layers );
   jobMapSettings.setLayerStyleOverrides( layerStyleOverridesToRender( expressionContext ) );
 
-  if ( !mLayout->context().isPreviewRender() )
+  if ( !mLayout->renderContext().isPreviewRender() )
   {
     //if outputting layout, disable optimisations like layer simplification
     jobMapSettings.setFlag( QgsMapSettings::UseRenderingOptimization, false );
@@ -1088,10 +1089,10 @@ QgsMapSettings QgsLayoutItemMap::mapSettings( const QgsRectangle &extent, QSizeF
 
   // layout-specific overrides of flags
   jobMapSettings.setFlag( QgsMapSettings::ForceVectorOutput, true ); // force vector output (no caching of marker images etc.)
-  jobMapSettings.setFlag( QgsMapSettings::Antialiasing, mLayout->context().flags() & QgsLayoutContext::FlagAntialiasing );
+  jobMapSettings.setFlag( QgsMapSettings::Antialiasing, mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagAntialiasing );
   jobMapSettings.setFlag( QgsMapSettings::DrawEditingInfo, false );
   jobMapSettings.setFlag( QgsMapSettings::DrawSelection, false );
-  jobMapSettings.setFlag( QgsMapSettings::UseAdvancedEffects, mLayout->context().flags() & QgsLayoutContext::FlagUseAdvancedEffects );
+  jobMapSettings.setFlag( QgsMapSettings::UseAdvancedEffects, mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagUseAdvancedEffects );
   jobMapSettings.setTransformContext( mLayout->project()->transformContext() );
 
   jobMapSettings.setLabelingEngineSettings( mLayout->project()->labelingEngineSettings() );
@@ -1409,10 +1410,10 @@ QList<QgsMapLayer *> QgsLayoutItemMap::layersToRender( const QgsExpressionContex
   }
 
   //remove atlas coverage layer if required
-  if ( mLayout->context().flags() & QgsLayoutContext::FlagHideCoverageLayer )
+  if ( mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagHideCoverageLayer )
   {
     //hiding coverage layer
-    int removeAt = renderLayers.indexOf( mLayout->context().layer() );
+    int removeAt = renderLayers.indexOf( mLayout->reportContext().layer() );
     if ( removeAt != -1 )
     {
       renderLayers.removeAt( removeAt );
@@ -1630,7 +1631,7 @@ void QgsLayoutItemMap::drawMapBackground( QPainter *p )
 
 bool QgsLayoutItemMap::shouldDrawPart( QgsLayoutItemMap::PartType part ) const
 {
-  int currentExportLayer = mLayout->context().currentExportLayer();
+  int currentExportLayer = mLayout->renderContext().currentExportLayer();
 
   if ( -1 == currentExportLayer )
   {
@@ -1810,7 +1811,7 @@ void QgsLayoutItemMap::refreshMapExtents( const QgsExpressionContext *context )
 
 void QgsLayoutItemMap::updateAtlasFeature()
 {
-  if ( !atlasDriven() || !mLayout->context().layer() )
+  if ( !atlasDriven() || !mLayout->reportContext().layer() )
     return; // nothing to do
 
   QgsRectangle bounds = computeAtlasRectangle();
@@ -1825,7 +1826,7 @@ void QgsLayoutItemMap::updateAtlasFeature()
   QgsRectangle originalExtent = mExtent;
 
   //sanity check - only allow fixed scale mode for point layers
-  bool isPointLayer = QgsWkbTypes::geometryType( mLayout->context().layer()->wkbType() ) == QgsWkbTypes::PointGeometry;
+  bool isPointLayer = QgsWkbTypes::geometryType( mLayout->reportContext().layer()->wkbType() ) == QgsWkbTypes::PointGeometry;
 
   if ( mAtlasScalingMode == Fixed || mAtlasScalingMode == Predefined || isPointLayer )
   {
@@ -1856,7 +1857,7 @@ void QgsLayoutItemMap::updateAtlasFeature()
       // choose one of the predefined scales
       double newWidth = originalExtent.width();
       double newHeight = originalExtent.height();
-      QVector<qreal> scales = mLayout->context().predefinedScales();
+      QVector<qreal> scales = mLayout->reportContext().predefinedScales();
       for ( int i = 0; i < scales.size(); i++ )
       {
         double ratio = scales[i] / originalScale;
@@ -1925,7 +1926,7 @@ QgsRectangle QgsLayoutItemMap::computeAtlasRectangle()
   // QgsGeometry::boundingBox is expressed in the geometry"s native CRS
   // We have to transform the geometry to the destination CRS and ask for the bounding box
   // Note: we cannot directly take the transformation of the bounding box, since transformations are not linear
-  QgsGeometry g = mLayout->context().currentGeometry( crs() );
+  QgsGeometry g = mLayout->reportContext().currentGeometry( crs() );
   // Rotating the geometry, so the bounding box is correct wrt map rotation
   if ( mEvaluatedMapRotation != 0.0 )
   {

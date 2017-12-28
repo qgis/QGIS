@@ -142,7 +142,7 @@ QgsLayoutLegendWidget::QgsLayoutLegendWidget( QgsLayoutItemLegend *legend )
   {
     connect( layoutAtlas(), &QgsLayoutAtlas::toggled, this, &QgsLayoutLegendWidget::updateFilterLegendByAtlasButton );
   }
-  connect( &legend->layout()->context(), &QgsLayoutContext::layerChanged, this, &QgsLayoutLegendWidget::updateFilterLegendByAtlasButton );
+  connect( &legend->layout()->reportContext(), &QgsLayoutReportContext::layerChanged, this, &QgsLayoutLegendWidget::updateFilterLegendByAtlasButton );
 
   registerDataDefinedButton( mLegendTitleDDBtn, QgsLayoutObject::LegendTitle );
   registerDataDefinedButton( mColumnsDDBtn, QgsLayoutObject::LegendColumnCount );
@@ -1033,7 +1033,7 @@ void QgsLayoutLegendWidget::updateFilterLegendByAtlasButton()
 {
   if ( QgsLayoutAtlas *atlas = layoutAtlas() )
   {
-    mFilterLegendByAtlasCheckBox->setEnabled( atlas->enabled() && mLegend->layout()->context().layer() && mLegend->layout()->context().layer()->geometryType() == QgsWkbTypes::PolygonGeometry );
+    mFilterLegendByAtlasCheckBox->setEnabled( atlas->enabled() && mLegend->layout()->reportContext().layer() && mLegend->layout()->reportContext().layer()->geometryType() == QgsWkbTypes::PolygonGeometry );
   }
 }
 

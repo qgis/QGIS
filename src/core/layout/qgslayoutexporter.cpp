@@ -37,14 +37,14 @@ class LayoutContextPreviewSettingRestorer
 
     LayoutContextPreviewSettingRestorer( QgsLayout *layout )
       : mLayout( layout )
-      , mPreviousSetting( layout->context().mIsPreviewRender )
+      , mPreviousSetting( layout->renderContext().mIsPreviewRender )
     {
-      mLayout->context().mIsPreviewRender = false;
+      mLayout->renderContext().mIsPreviewRender = false;
     }
 
     ~LayoutContextPreviewSettingRestorer()
     {
-      mLayout->context().mIsPreviewRender = mPreviousSetting;
+      mLayout->renderContext().mIsPreviewRender = mPreviousSetting;
     }
 
   private:
@@ -218,7 +218,7 @@ void QgsLayoutExporter::renderRegion( QPainter *painter, const QRectF &region ) 
   LayoutGuideHider guideHider( mLayout );
   ( void ) guideHider;
 
-  painter->setRenderHint( QPainter::Antialiasing, mLayout->context().flags() & QgsLayoutContext::FlagAntialiasing );
+  painter->setRenderHint( QPainter::Antialiasing, mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagAntialiasing );
 
   mLayout->render( painter, QRectF( 0, 0, paintDevice->width(), paintDevice->height() ), region );
 }
@@ -231,7 +231,7 @@ QImage QgsLayoutExporter::renderRegionToImage( const QRectF &region, QSize image
   LayoutContextPreviewSettingRestorer restorer( mLayout );
   ( void )restorer;
 
-  double resolution = mLayout->context().dpi();
+  double resolution = mLayout->renderContext().dpi();
   double oneInchInLayoutUnits = mLayout->convertToLayoutUnits( QgsLayoutMeasurement( 1, QgsUnitTypes::LayoutInches ) );
   if ( imageSize.isValid() )
   {
@@ -273,23 +273,23 @@ class LayoutContextSettingsRestorer
 
     LayoutContextSettingsRestorer( QgsLayout *layout )
       : mLayout( layout )
-      , mPreviousDpi( layout->context().dpi() )
-      , mPreviousFlags( layout->context().flags() )
-      , mPreviousExportLayer( layout->context().currentExportLayer() )
+      , mPreviousDpi( layout->renderContext().dpi() )
+      , mPreviousFlags( layout->renderContext().flags() )
+      , mPreviousExportLayer( layout->renderContext().currentExportLayer() )
     {
     }
 
     ~LayoutContextSettingsRestorer()
     {
-      mLayout->context().setDpi( mPreviousDpi );
-      mLayout->context().setFlags( mPreviousFlags );
-      mLayout->context().setCurrentExportLayer( mPreviousExportLayer );
+      mLayout->renderContext().setDpi( mPreviousDpi );
+      mLayout->renderContext().setFlags( mPreviousFlags );
+      mLayout->renderContext().setCurrentExportLayer( mPreviousExportLayer );
     }
 
   private:
     QgsLayout *mLayout = nullptr;
     double mPreviousDpi = 0;
-    QgsLayoutContext::Flags mPreviousFlags = 0;
+    QgsLayoutRenderContext::Flags mPreviousFlags = 0;
     int mPreviousExportLayer = 0;
 };
 ///@endcond PRIVATE
@@ -301,7 +301,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToImage( const QString 
 
   ImageExportSettings settings = s;
   if ( settings.dpi <= 0 )
-    settings.dpi = mLayout->context().dpi();
+    settings.dpi = mLayout->renderContext().dpi();
 
   mErrorFileName.clear();
 
@@ -322,8 +322,8 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToImage( const QString 
   ( void )restorer;
   LayoutContextSettingsRestorer dpiRestorer( mLayout );
   ( void )dpiRestorer;
-  mLayout->context().setDpi( settings.dpi );
-  mLayout->context().setFlags( settings.flags );
+  mLayout->renderContext().setDpi( settings.dpi );
+  mLayout->renderContext().setFlags( settings.flags );
 
   QList< int > pages;
   if ( settings.pages.empty() )
@@ -448,7 +448,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
 
   PdfExportSettings settings = s;
   if ( settings.dpi <= 0 )
-    settings.dpi = mLayout->context().dpi();
+    settings.dpi = mLayout->renderContext().dpi();
 
   mErrorFileName.clear();
 
@@ -456,14 +456,14 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
   ( void )restorer;
   LayoutContextSettingsRestorer contextRestorer( mLayout );
   ( void )contextRestorer;
-  mLayout->context().setDpi( settings.dpi );
+  mLayout->renderContext().setDpi( settings.dpi );
 
   // If we are not printing as raster, temporarily disable advanced effects
   // as QPrinter does not support composition modes and can result
   // in items missing from the output
-  mLayout->context().setFlag( QgsLayoutContext::FlagUseAdvancedEffects, !settings.forceVectorOutput );
+  mLayout->renderContext().setFlag( QgsLayoutRenderContext::FlagUseAdvancedEffects, !settings.forceVectorOutput );
 
-  mLayout->context().setFlag( QgsLayoutContext::FlagForceVectorOutput, settings.forceVectorOutput );
+  mLayout->renderContext().setFlag( QgsLayoutRenderContext::FlagForceVectorOutput, settings.forceVectorOutput );
 
   QPrinter printer;
   preparePrintAsPdf( mLayout, printer, filePath );
@@ -515,20 +515,20 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( QgsAbstractLayou
     }
 
     if ( s.dpi <= 0 )
-      settings.dpi = iterator->layout()->context().dpi();
+      settings.dpi = iterator->layout()->renderContext().dpi();
 
     LayoutContextPreviewSettingRestorer restorer( iterator->layout() );
     ( void )restorer;
     LayoutContextSettingsRestorer contextRestorer( iterator->layout() );
     ( void )contextRestorer;
-    iterator->layout()->context().setDpi( settings.dpi );
+    iterator->layout()->renderContext().setDpi( settings.dpi );
 
     // If we are not printing as raster, temporarily disable advanced effects
     // as QPrinter does not support composition modes and can result
     // in items missing from the output
-    iterator->layout()->context().setFlag( QgsLayoutContext::FlagUseAdvancedEffects, !settings.forceVectorOutput );
+    iterator->layout()->renderContext().setFlag( QgsLayoutRenderContext::FlagUseAdvancedEffects, !settings.forceVectorOutput );
 
-    iterator->layout()->context().setFlag( QgsLayoutContext::FlagForceVectorOutput, settings.forceVectorOutput );
+    iterator->layout()->renderContext().setFlag( QgsLayoutRenderContext::FlagForceVectorOutput, settings.forceVectorOutput );
 
     if ( first )
     {
@@ -618,7 +618,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToSvg( const QString &f
 
   SvgExportSettings settings = s;
   if ( settings.dpi <= 0 )
-    settings.dpi = mLayout->context().dpi();
+    settings.dpi = mLayout->renderContext().dpi();
 
   mErrorFileName.clear();
 
@@ -626,9 +626,9 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToSvg( const QString &f
   ( void )restorer;
   LayoutContextSettingsRestorer contextRestorer( mLayout );
   ( void )contextRestorer;
-  mLayout->context().setDpi( settings.dpi );
+  mLayout->renderContext().setDpi( settings.dpi );
 
-  mLayout->context().setFlag( QgsLayoutContext::FlagForceVectorOutput, settings.forceVectorOutput );
+  mLayout->renderContext().setFlag( QgsLayoutRenderContext::FlagForceVectorOutput, settings.forceVectorOutput );
 
   QFileInfo fi( filePath );
   PageExportDetails pageDetails;
@@ -707,7 +707,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToSvg( const QString &f
         if ( layoutItem && layoutItem->numberExportLayers() > 0 )
         {
           layoutItem->show();
-          mLayout->context().setCurrentExportLayer( layoutItemLayerIdx );
+          mLayout->renderContext().setCurrentExportLayer( layoutItemLayerIdx );
           ++layoutItemLayerIdx;
         }
         else
@@ -733,7 +733,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToSvg( const QString &f
 
         if ( layoutItem && layoutItem->numberExportLayers() > 0 && layoutItem->numberExportLayers() == layoutItemLayerIdx ) // restore and pass to next item
         {
-          mLayout->context().setCurrentExportLayer( -1 );
+          mLayout->renderContext().setCurrentExportLayer( -1 );
           layoutItemLayerIdx = 0;
           ++it;
         }
@@ -851,7 +851,7 @@ void QgsLayoutExporter::preparePrint( QgsLayout *layout, QPrinter &printer, bool
   printer.setColorMode( QPrinter::Color );
 
   //set user-defined resolution
-  printer.setResolution( layout->context().dpi() );
+  printer.setResolution( layout->renderContext().dpi() );
 
   if ( setFirstPageSize )
   {
@@ -937,7 +937,7 @@ void QgsLayoutExporter::updatePrinterPageSize( QgsLayout *layout, QPrinter &prin
   //for landscape sized outputs (#11352)
   printer.setOrientation( QPrinter::Portrait );
   QgsLayoutSize pageSize = layout->pageCollection()->page( page )->sizeWithUnits();
-  QgsLayoutSize pageSizeMM = layout->context().measurementConverter().convert( pageSize, QgsUnitTypes::LayoutMillimeters );
+  QgsLayoutSize pageSizeMM = layout->renderContext().measurementConverter().convert( pageSize, QgsUnitTypes::LayoutMillimeters );
   printer.setPaperSize( pageSizeMM.toQSizeF(), QPrinter::Millimeter );
 }
 
@@ -1001,7 +1001,7 @@ std::unique_ptr<double[]> QgsLayoutExporter::computeGeoTransform( const QgsLayou
     return nullptr;
 
   if ( dpi < 0 )
-    dpi = mLayout->context().dpi();
+    dpi = mLayout->renderContext().dpi();
 
   // calculate region of composition to export (in mm)
   QRectF exportRegion = region;
@@ -1107,7 +1107,7 @@ bool QgsLayoutExporter::georeferenceOutput( const QString &file, QgsLayoutItemMa
     return false; // no reference map
 
   if ( dpi < 0 )
-    dpi = mLayout->context().dpi();
+    dpi = mLayout->renderContext().dpi();
 
   std::unique_ptr<double[]> t = computeGeoTransform( map, exportRegion, dpi );
   if ( !t )
@@ -1190,7 +1190,7 @@ void QgsLayoutExporter::computeWorldFileParameters( const QRectF &exportRegion, 
   double Y0 = paperExtent.yMinimum();
 
   if ( dpi < 0 )
-    dpi = mLayout->context().dpi();
+    dpi = mLayout->renderContext().dpi();
 
   int widthPx = static_cast< int >( dpi * destinationWidth / 25.4 );
   int heightPx = static_cast< int >( dpi * destinationHeight / 25.4 );

@@ -53,9 +53,9 @@ QgsLayoutItemHtml::QgsLayoutItemHtml( QgsLayout *layout )
 
   //a html item added to a layout needs to have the initial expression context set,
   //otherwise fields in the html aren't correctly evaluated until atlas preview feature changes (#9457)
-  setExpressionContext( mLayout->context().feature(), mLayout->context().layer() );
+  setExpressionContext( mLayout->reportContext().feature(), mLayout->reportContext().layer() );
 
-  connect( &mLayout->context(), &QgsLayoutContext::changed, this, &QgsLayoutItemHtml::refreshExpressionContext );
+  connect( &mLayout->reportContext(), &QgsLayoutReportContext::changed, this, &QgsLayoutItemHtml::refreshExpressionContext );
 
   mFetcher = new QgsNetworkContentFetcher();
 }
@@ -301,7 +301,7 @@ double QgsLayoutItemHtml::htmlUnitsToLayoutUnits()
     return 1.0;
   }
 
-  return mLayout->convertToLayoutUnits( QgsLayoutMeasurement( mLayout->context().dpi() / 72.0, QgsUnitTypes::LayoutMillimeters ) ); //webkit seems to assume a standard dpi of 96
+  return mLayout->convertToLayoutUnits( QgsLayoutMeasurement( mLayout->renderContext().dpi() / 72.0, QgsUnitTypes::LayoutMillimeters ) ); //webkit seems to assume a standard dpi of 96
 }
 
 bool candidateSort( QPair<int, int> c1, QPair<int, int> c2 )
@@ -518,8 +518,8 @@ void QgsLayoutItemHtml::refreshExpressionContext()
 
   if ( mLayout )
   {
-    vl = mLayout->context().layer();
-    feature = mLayout->context().feature();
+    vl = mLayout->reportContext().layer();
+    feature = mLayout->reportContext().feature();
   }
 
   setExpressionContext( feature, vl );

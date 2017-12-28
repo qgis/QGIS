@@ -271,7 +271,7 @@ void TestQgsLayoutHtml::javascriptSetFeature()
   //atlas
   QgsLayout l( QgsProject::instance() );
   l.initializeDefaults();
-  l.context().setLayer( parentLayer );
+  l.reportContext().setLayer( parentLayer );
 
   QgsRelation rel;
   rel.setId( QStringLiteral( "rel1" ) );
@@ -299,7 +299,7 @@ void TestQgsLayoutHtml::javascriptSetFeature()
   QgsFeature f;
   QgsFeatureIterator it = parentLayer->getFeatures();
   it.nextFeature( f );
-  l.context().setFeature( f );
+  l.reportContext().setFeature( f );
 
   htmlItem->loadHtml();
 

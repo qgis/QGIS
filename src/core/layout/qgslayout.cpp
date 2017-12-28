@@ -30,7 +30,8 @@
 
 QgsLayout::QgsLayout( QgsProject *project )
   : mProject( project )
-  , mContext( new QgsLayoutContext( this ) )
+  , mRenderContext( new QgsLayoutRenderContext( this ) )
+  , mReportContext( new QgsLayoutReportContext( this ) )
   , mSnapper( QgsLayoutSnapper( this ) )
   , mGridSettings( this )
   , mPageCollection( new QgsLayoutPageCollection( this ) )
@@ -296,42 +297,52 @@ QgsLayoutItem *QgsLayout::layoutItemAt( QPointF position, const QgsLayoutItem *b
 
 double QgsLayout::convertToLayoutUnits( const QgsLayoutMeasurement &measurement ) const
 {
-  return mContext->measurementConverter().convert( measurement, mUnits ).length();
+  return mRenderContext->measurementConverter().convert( measurement, mUnits ).length();
 }
 
 QSizeF QgsLayout::convertToLayoutUnits( const QgsLayoutSize &size ) const
 {
-  return mContext->measurementConverter().convert( size, mUnits ).toQSizeF();
+  return mRenderContext->measurementConverter().convert( size, mUnits ).toQSizeF();
 }
 
 QPointF QgsLayout::convertToLayoutUnits( const QgsLayoutPoint &point ) const
 {
-  return mContext->measurementConverter().convert( point, mUnits ).toQPointF();
+  return mRenderContext->measurementConverter().convert( point, mUnits ).toQPointF();
 }
 
 QgsLayoutMeasurement QgsLayout::convertFromLayoutUnits( const double length, const QgsUnitTypes::LayoutUnit unit ) const
 {
-  return mContext->measurementConverter().convert( QgsLayoutMeasurement( length, mUnits ), unit );
+  return mRenderContext->measurementConverter().convert( QgsLayoutMeasurement( length, mUnits ), unit );
 }
 
 QgsLayoutSize QgsLayout::convertFromLayoutUnits( const QSizeF &size, const QgsUnitTypes::LayoutUnit unit ) const
 {
-  return mContext->measurementConverter().convert( QgsLayoutSize( size.width(), size.height(), mUnits ), unit );
+  return mRenderContext->measurementConverter().convert( QgsLayoutSize( size.width(), size.height(), mUnits ), unit );
 }
 
 QgsLayoutPoint QgsLayout::convertFromLayoutUnits( const QPointF &point, const QgsUnitTypes::LayoutUnit unit ) const
 {
-  return mContext->measurementConverter().convert( QgsLayoutPoint( point.x(), point.y(), mUnits ), unit );
+  return mRenderContext->measurementConverter().convert( QgsLayoutPoint( point.x(), point.y(), mUnits ), unit );
 }
 
-QgsLayoutContext &QgsLayout::context()
+QgsLayoutRenderContext &QgsLayout::renderContext()
 {
-  return *mContext;
+  return *mRenderContext;
 }
 
-const QgsLayoutContext &QgsLayout::context() const
+const QgsLayoutRenderContext &QgsLayout::renderContext() const
 {
-  return *mContext;
+  return *mRenderContext;
+}
+
+QgsLayoutReportContext &QgsLayout::reportContext()
+{
+  return *mReportContext;
+}
+
+const QgsLayoutReportContext &QgsLayout::reportContext() const
+{
+  return *mReportContext;
 }
 
 QgsLayoutGuideCollection &QgsLayout::guides()
@@ -734,7 +745,7 @@ void QgsLayout::writeXmlLayoutSettings( QDomElement &element, QDomDocument &docu
   element.setAttribute( QStringLiteral( "name" ), mName );
   element.setAttribute( QStringLiteral( "units" ), QgsUnitTypes::encodeUnit( mUnits ) );
   element.setAttribute( QStringLiteral( "worldFileMap" ), mWorldFileMapId );
-  element.setAttribute( QStringLiteral( "printResolution" ), mContext->dpi() );
+  element.setAttribute( QStringLiteral( "printResolution" ), mRenderContext->dpi() );
 }
 
 QDomElement QgsLayout::writeXml( QDomDocument &document, const QgsReadWriteContext &context ) const
@@ -778,7 +789,7 @@ bool QgsLayout::readXmlLayoutSettings( const QDomElement &layoutElement, const Q
   setName( layoutElement.attribute( QStringLiteral( "name" ) ) );
   setUnits( QgsUnitTypes::decodeLayoutUnit( layoutElement.attribute( QStringLiteral( "units" ) ) ) );
   mWorldFileMapId = layoutElement.attribute( QStringLiteral( "worldFileMap" ) );
-  mContext->setDpi( layoutElement.attribute( QStringLiteral( "printResolution" ), "300" ).toDouble() );
+  mRenderContext->setDpi( layoutElement.attribute( QStringLiteral( "printResolution" ), "300" ).toDouble() );
   emit changed();
 
   return true;

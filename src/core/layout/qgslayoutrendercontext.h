@@ -1,5 +1,5 @@
 /***************************************************************************
-                             qgslayoutcontext.h
+                             qgslayoutrendercontext.h
                              -------------------
     begin                : July 2017
     copyright            : (C) 2017 by Nyall Dawson
@@ -13,25 +13,23 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSLAYOUTCONTEXT_H
-#define QGSLAYOUTCONTEXT_H
+#ifndef QGSLAYOUTRENDERCONTEXT_H
+#define QGSLAYOUTRENDERCONTEXT_H
 
 #include "qgis_core.h"
-#include "qgsfeature.h"
-#include "qgsvectorlayer.h"
 #include "qgslayoutmeasurementconverter.h"
+#include "qgsrendercontext.h"
 #include <QtGlobal>
 
-class QgsFeature;
-class QgsVectorLayer;
+class QgsLayout;
 
 /**
  * \ingroup core
- * \class QgsLayoutContext
- * \brief Stores information relating to the current context and rendering settings for a layout.
+ * \class QgsLayoutRenderContext
+ * \brief Stores information relating to the current rendering settings for a layout.
  * \since QGIS 3.0
  */
-class CORE_EXPORT QgsLayoutContext : public QObject
+class CORE_EXPORT QgsLayoutRenderContext : public QObject
 {
 
     Q_OBJECT
@@ -51,9 +49,9 @@ class CORE_EXPORT QgsLayoutContext : public QObject
     Q_DECLARE_FLAGS( Flags, Flag )
 
     /**
-     * Constructor for QgsLayoutContext.
+     * Constructor for QgsLayoutRenderContext.
      */
-    QgsLayoutContext( QgsLayout *layout SIP_TRANSFERTHIS );
+    QgsLayoutRenderContext( QgsLayout *layout SIP_TRANSFERTHIS );
 
     /**
      * Sets the combination of \a flags that will be used for rendering the layout.
@@ -61,7 +59,7 @@ class CORE_EXPORT QgsLayoutContext : public QObject
      * \see flags()
      * \see testFlag()
      */
-    void setFlags( const QgsLayoutContext::Flags flags );
+    void setFlags( const QgsLayoutRenderContext::Flags flags );
 
     /**
      * Enables or disables a particular rendering \a flag for the layout. Other existing
@@ -70,7 +68,7 @@ class CORE_EXPORT QgsLayoutContext : public QObject
      * \see flags()
      * \see testFlag()
      */
-    void setFlag( const QgsLayoutContext::Flag flag, const bool on = true );
+    void setFlag( const QgsLayoutRenderContext::Flag flag, const bool on = true );
 
     /**
      * Returns the current combination of flags used for rendering the layout.
@@ -78,7 +76,7 @@ class CORE_EXPORT QgsLayoutContext : public QObject
      * \see setFlag()
      * \see testFlag()
      */
-    QgsLayoutContext::Flags flags() const;
+    QgsLayoutRenderContext::Flags flags() const;
 
     /**
      * Check whether a particular rendering \a flag is enabled for the layout.
@@ -92,52 +90,6 @@ class CORE_EXPORT QgsLayoutContext : public QObject
      * Returns the combination of render context flags matched to the layout context's settings.
      */
     QgsRenderContext::Flags renderContextFlags() const;
-
-    /**
-     * Sets the current \a feature for evaluating the layout. This feature may
-     * be used for altering an item's content and appearance for a report
-     * or atlas layout.
-     *
-     * Emits the changed() signal.
-     *
-     * \see feature()
-     */
-    void setFeature( const QgsFeature &feature );
-
-    /**
-     * Returns the current feature for evaluating the layout. This feature may
-     * be used for altering an item's content and appearance for a report
-     * or atlas layout.
-     * \see currentGeometry()
-     * \see setFeature()
-     */
-    QgsFeature feature() const { return mFeature; }
-
-    /**
-     * Returns the current feature() geometry in the given \a crs.
-     * If no CRS is specified, the original feature geometry is returned.
-     *
-     * Reprojection only works if a valid layer is set for layer().
-     *
-     * \see feature()
-     * \see layer()
-     */
-    QgsGeometry currentGeometry( const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() ) const;
-
-    /**
-     * Returns the vector layer associated with the layout's context.
-     * \see setLayer()
-     */
-    QgsVectorLayer *layer() const;
-
-    /**
-     * Sets the vector \a layer associated with the layout's context.
-     *
-     * Emits the changed() signal.
-     *
-     * \see layer()
-     */
-    void setLayer( QgsVectorLayer *layer );
 
     /**
      * Sets the \a dpi for outputting the layout. This also sets the
@@ -233,37 +185,13 @@ class CORE_EXPORT QgsLayoutContext : public QObject
      */
     int currentExportLayer() const { return mCurrentExportLayer; }
 
-    /**
-     * Sets the list of predefined \a scales to use with the layout. This is used
-     * for maps which are set to the predefined atlas scaling mode.
-     * \see predefinedScales()
-     */
-    void setPredefinedScales( const QVector<qreal> &scales );
-
-    /**
-     * Returns the current list of predefined scales for use with the layout.
-     * \see setPredefinedScales()
-     */
-    QVector<qreal> predefinedScales() const { return mPredefinedScales; }
-
   signals:
 
     /**
      * Emitted whenever the context's \a flags change.
      * \see setFlags()
      */
-    void flagsChanged( QgsLayoutContext::Flags flags );
-
-    /**
-     * Emitted when the context's \a layer is changed.
-     */
-    void layerChanged( QgsVectorLayer *layer );
-
-    /**
-     * Emitted certain settings in the context is changed, e.g. by setting a new feature or vector layer
-     * for the context.
-     */
-    void changed();
+    void flagsChanged( QgsLayoutRenderContext::Flags flags );
 
     /**
      * Emitted when the context's DPI is changed.
@@ -278,9 +206,6 @@ class CORE_EXPORT QgsLayoutContext : public QObject
 
     int mCurrentExportLayer = -1;
 
-    QgsFeature mFeature;
-    QPointer< QgsVectorLayer > mLayer;
-
     QgsLayoutMeasurementConverter mMeasurementConverter;
 
     bool mIsPreviewRender = true;
@@ -288,22 +213,15 @@ class CORE_EXPORT QgsLayoutContext : public QObject
     bool mBoundingBoxesVisible = true;
     bool mPagesVisible = true;
 
-    // projected geometry cache
-    mutable QMap<long, QgsGeometry> mGeometryCache;
-
-    //list of predefined scales
-    QVector<qreal> mPredefinedScales;
-
     friend class QgsLayoutExporter;
     friend class TestQgsLayout;
     friend class LayoutContextPreviewSettingRestorer;
 
-
 };
 
-Q_DECLARE_METATYPE( QgsLayoutContext::Flags )
+Q_DECLARE_METATYPE( QgsLayoutRenderContext::Flags )
 
-#endif //QGSLAYOUTCONTEXT_H
+#endif //QGSLAYOUTRENDERCONTEXT_H
 
 
 

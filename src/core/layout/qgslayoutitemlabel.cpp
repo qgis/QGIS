@@ -196,7 +196,7 @@ double QgsLayoutItemLabel::htmlUnitsToLayoutUnits()
   }
 
   //TODO : fix this more precisely so that the label's default text size is the same with or without "display as html"
-  return mLayout->convertToLayoutUnits( QgsLayoutMeasurement( mLayout->context().dpi() / 72.0, QgsUnitTypes::LayoutMillimeters ) ); //webkit seems to assume a standard dpi of 72
+  return mLayout->convertToLayoutUnits( QgsLayoutMeasurement( mLayout->renderContext().dpi() / 72.0, QgsUnitTypes::LayoutMillimeters ) ); //webkit seems to assume a standard dpi of 72
 }
 
 void QgsLayoutItemLabel::setText( const QString &text )
@@ -235,7 +235,7 @@ void QgsLayoutItemLabel::refreshExpressionContext()
   if ( !mLayout )
     return;
 
-  QgsVectorLayer *layer = mLayout->context().layer();
+  QgsVectorLayer *layer = mLayout->reportContext().layer();
   //setup distance area conversion
   if ( layer )
   {

@@ -533,12 +533,12 @@ void TestQgsLayoutTable::attributeTableAtlasSource()
                                     vectorFileInfo.completeBaseName(),
                                     QStringLiteral( "ogr" ) );
   QgsProject::instance()->addMapLayer( vectorLayer );
-  l.context().setLayer( vectorLayer );
+  l.reportContext().setLayer( vectorLayer );
 
   QgsFeature f;
   QgsFeatureIterator it = vectorLayer->getFeatures();
   it.nextFeature( f );
-  l.context().setFeature( f );
+  l.reportContext().setFeature( f );
 
   QCOMPARE( table->contents().length(), 1 );
   QgsLayoutTableRow row = table->contents().at( 0 );
@@ -553,7 +553,7 @@ void TestQgsLayoutTable::attributeTableAtlasSource()
 
   //next atlas feature
   it.nextFeature( f );
-  l.context().setFeature( f );
+  l.reportContext().setFeature( f );
 
   QCOMPARE( table->contents().length(), 1 );
   row = table->contents().at( 0 );
@@ -566,7 +566,7 @@ void TestQgsLayoutTable::attributeTableAtlasSource()
 
   //next atlas feature
   it.nextFeature( f );
-  l.context().setFeature( f );
+  l.reportContext().setFeature( f );
 
   QCOMPARE( table->contents().length(), 1 );
   row = table->contents().at( 0 );
@@ -612,12 +612,12 @@ void TestQgsLayoutTable::attributeTableRelationSource()
   QgsProject::instance()->addMapLayer( atlasLayer );
 
   //setup atlas
-  l.context().setLayer( atlasLayer );
+  l.reportContext().setLayer( atlasLayer );
 
   QgsFeature f;
   QgsFeatureIterator it = atlasLayer->getFeatures();
   it.nextFeature( f );
-  l.context().setFeature( f );
+  l.reportContext().setFeature( f );
 
   //create a relation
   QgsRelation relation;
@@ -661,7 +661,7 @@ void TestQgsLayoutTable::attributeTableRelationSource()
 
   //next atlas feature
   it.nextFeature( f );
-  l.context().setFeature( f );
+  l.reportContext().setFeature( f );
   QCOMPARE( f.attribute( "Class" ).toString(), QString( "Biplane" ) );
   QCOMPARE( table->contents().length(), 5 );
   row = table->contents().at( 0 );

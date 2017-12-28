@@ -78,7 +78,7 @@ void QgsLayoutItemLegend::paint( QPainter *painter, const QStyleOptionGraphicsIt
 
   if ( mLayout )
   {
-    mSettings.setUseAdvancedEffects( mLayout->context().flags() & QgsLayoutContext::FlagUseAdvancedEffects );
+    mSettings.setUseAdvancedEffects( mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagUseAdvancedEffects );
     mSettings.setDpi( dpi );
   }
   if ( mMap && mLayout )
@@ -754,7 +754,7 @@ void QgsLayoutItemLegend::doUpdateFilterByMap()
 
   if ( mMap && ( mLegendFilterByMap || filterByExpression || mInAtlas ) )
   {
-    int dpi = mLayout->context().dpi();
+    int dpi = mLayout->renderContext().dpi();
 
     QgsRectangle requestRectangle = mMap->requestedExtent();
 
@@ -766,7 +766,7 @@ void QgsLayoutItemLegend::doUpdateFilterByMap()
     QgsGeometry filterPolygon;
     if ( mInAtlas )
     {
-      filterPolygon = mLayout->context().currentGeometry( mMap->crs() );
+      filterPolygon = mLayout->reportContext().currentGeometry( mMap->crs() );
     }
     mLegendModel->setLegendFilter( &ms, /* useExtent */ mInAtlas || mLegendFilterByMap, filterPolygon, /* useExpressions */ true );
   }
@@ -788,7 +788,7 @@ bool QgsLayoutItemLegend::legendFilterOutAtlas() const
 
 void QgsLayoutItemLegend::onAtlasFeature()
 {
-  if ( !mLayout->context().feature().isValid() )
+  if ( !mLayout->reportContext().feature().isValid() )
     return;
   mInAtlas = mFilterOutAtlas;
   updateFilterByMap();
