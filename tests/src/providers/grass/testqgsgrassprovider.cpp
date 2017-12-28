@@ -1577,7 +1577,7 @@ bool TestQgsGrassProvider::compare( QMap<QString, QgsVectorLayer *> layers, bool
   Q_FOREACH ( const QString &grassUri, layers.keys() )
   {
     QgsVectorLayer *layer = layers.value( grassUri );
-    QVERIFY( layer );
+    Q_ASSERT( layer );
     if ( !compare( grassUri, layer, ok ) )
     {
       reportRow( "comparison failed: " + grassUri );
