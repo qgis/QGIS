@@ -521,9 +521,8 @@ void TestQgsLayoutTable::attributeTableRepeat()
 
 void TestQgsLayoutTable::attributeTableAtlasSource()
 {
-#if 0 //TODO
-  QgsLayoutItemAttributeTable *table = new QgsLayoutItemAttributeTable( mComposition, false );
-
+  QgsLayout l( QgsProject::instance() );
+  QgsLayoutItemAttributeTable *table = new QgsLayoutItemAttributeTable( &l );
 
   table->setSource( QgsLayoutItemAttributeTable::AtlasFeature );
 
@@ -534,13 +533,15 @@ void TestQgsLayoutTable::attributeTableAtlasSource()
                                     vectorFileInfo.completeBaseName(),
                                     QStringLiteral( "ogr" ) );
   QgsProject::instance()->addMapLayer( vectorLayer );
-  mComposition->atlasComposition().setCoverageLayer( vectorLayer );
-  mComposition->atlasComposition().setEnabled( true );
-  QVERIFY( mComposition->atlasComposition().beginRender() );
+  l.context().setLayer( vectorLayer );
 
-  QVERIFY( mComposition->atlasComposition().prepareForFeature( 0 ) );
-  QCOMPARE( table->contents()->length(), 1 );
-  QgsComposerTableRow row = table->contents()->at( 0 );
+  QgsFeature f;
+  QgsFeatureIterator it = vectorLayer->getFeatures();
+  it.nextFeature( f );
+  l.context().setFeature( f );
+
+  QCOMPARE( table->contents().length(), 1 );
+  QgsLayoutTableRow row = table->contents().at( 0 );
 
   //check a couple of results
   QCOMPARE( row.at( 0 ), QVariant( "Jet" ) );
@@ -551,9 +552,11 @@ void TestQgsLayoutTable::attributeTableAtlasSource()
   QCOMPARE( row.at( 5 ), QVariant( 2 ) );
 
   //next atlas feature
-  QVERIFY( mComposition->atlasComposition().prepareForFeature( 1 ) );
-  QCOMPARE( table->contents()->length(), 1 );
-  row = table->contents()->at( 0 );
+  it.nextFeature( f );
+  l.context().setFeature( f );
+
+  QCOMPARE( table->contents().length(), 1 );
+  row = table->contents().at( 0 );
   QCOMPARE( row.at( 0 ), QVariant( "Biplane" ) );
   QCOMPARE( row.at( 1 ), QVariant( 0 ) );
   QCOMPARE( row.at( 2 ), QVariant( 1 ) );
@@ -562,9 +565,11 @@ void TestQgsLayoutTable::attributeTableAtlasSource()
   QCOMPARE( row.at( 5 ), QVariant( 6 ) );
 
   //next atlas feature
-  QVERIFY( mComposition->atlasComposition().prepareForFeature( 2 ) );
-  QCOMPARE( table->contents()->length(), 1 );
-  row = table->contents()->at( 0 );
+  it.nextFeature( f );
+  l.context().setFeature( f );
+
+  QCOMPARE( table->contents().length(), 1 );
+  row = table->contents().at( 0 );
   QCOMPARE( row.at( 0 ), QVariant( "Jet" ) );
   QCOMPARE( row.at( 1 ), QVariant( 85 ) );
   QCOMPARE( row.at( 2 ), QVariant( 3 ) );
@@ -572,15 +577,10 @@ void TestQgsLayoutTable::attributeTableAtlasSource()
   QCOMPARE( row.at( 4 ), QVariant( 1 ) );
   QCOMPARE( row.at( 5 ), QVariant( 2 ) );
 
-  mComposition->atlasComposition().endRender();
-
   //try for a crash when removing current atlas layer
   QgsProject::instance()->removeMapLayer( vectorLayer->id() );
   table->refreshAttributes();
 
-  mComposition->removeMultiFrame( table );
-  delete table;
-#endif
 }
 
 
@@ -611,10 +611,13 @@ void TestQgsLayoutTable::attributeTableRelationSource()
 
   QgsProject::instance()->addMapLayer( atlasLayer );
 
-#if 0 //TODO
   //setup atlas
-  mComposition->atlasComposition().setCoverageLayer( atlasLayer );
-  mComposition->atlasComposition().setEnabled( true );
+  l.context().setLayer( atlasLayer );
+
+  QgsFeature f;
+  QgsFeatureIterator it = atlasLayer->getFeatures();
+  it.nextFeature( f );
+  l.context().setFeature( f );
 
   //create a relation
   QgsRelation relation;
@@ -624,18 +627,15 @@ void TestQgsLayoutTable::attributeTableRelationSource()
   relation.addFieldPair( QStringLiteral( "Class" ), QStringLiteral( "Class" ) );
   QgsProject::instance()->relationManager()->addRelation( relation );
 
-  QgsLayoutItemAttributeTable *table = new QgsLayoutItemAttributeTable( mComposition, false );
+  table = new QgsLayoutItemAttributeTable( &l );
   table->setMaximumNumberOfFeatures( 50 );
   table->setSource( QgsLayoutItemAttributeTable::RelationChildren );
   table->setRelationId( relation.id() );
 
-  QVERIFY( mComposition->atlasComposition().beginRender() );
-  QVERIFY( mComposition->atlasComposition().prepareForFeature( 0 ) );
+  QCOMPARE( f.attribute( "Class" ).toString(), QString( "Jet" ) );
+  QCOMPARE( table->contents().length(), 8 );
 
-  QCOMPARE( mComposition->atlasComposition().feature().attribute( "Class" ).toString(), QString( "Jet" ) );
-  QCOMPARE( table->contents()->length(), 8 );
-
-  QgsComposerTableRow row = table->contents()->at( 0 );
+  QgsLayoutTableRow row = table->contents().at( 0 );
 
   //check a couple of results
   QCOMPARE( row.at( 0 ), QVariant( "Jet" ) );
@@ -644,14 +644,14 @@ void TestQgsLayoutTable::attributeTableRelationSource()
   QCOMPARE( row.at( 3 ), QVariant( 2 ) );
   QCOMPARE( row.at( 4 ), QVariant( 0 ) );
   QCOMPARE( row.at( 5 ), QVariant( 2 ) );
-  row = table->contents()->at( 1 );
+  row = table->contents().at( 1 );
   QCOMPARE( row.at( 0 ), QVariant( "Jet" ) );
   QCOMPARE( row.at( 1 ), QVariant( 85 ) );
   QCOMPARE( row.at( 2 ), QVariant( 3 ) );
   QCOMPARE( row.at( 3 ), QVariant( 1 ) );
   QCOMPARE( row.at( 4 ), QVariant( 1 ) );
   QCOMPARE( row.at( 5 ), QVariant( 2 ) );
-  row = table->contents()->at( 2 );
+  row = table->contents().at( 2 );
   QCOMPARE( row.at( 0 ), QVariant( "Jet" ) );
   QCOMPARE( row.at( 1 ), QVariant( 95 ) );
   QCOMPARE( row.at( 2 ), QVariant( 3 ) );
@@ -660,17 +660,18 @@ void TestQgsLayoutTable::attributeTableRelationSource()
   QCOMPARE( row.at( 5 ), QVariant( 2 ) );
 
   //next atlas feature
-  QVERIFY( mComposition->atlasComposition().prepareForFeature( 1 ) );
-  QCOMPARE( mComposition->atlasComposition().feature().attribute( "Class" ).toString(), QString( "Biplane" ) );
-  QCOMPARE( table->contents()->length(), 5 );
-  row = table->contents()->at( 0 );
+  it.nextFeature( f );
+  l.context().setFeature( f );
+  QCOMPARE( f.attribute( "Class" ).toString(), QString( "Biplane" ) );
+  QCOMPARE( table->contents().length(), 5 );
+  row = table->contents().at( 0 );
   QCOMPARE( row.at( 0 ), QVariant( "Biplane" ) );
   QCOMPARE( row.at( 1 ), QVariant( 0 ) );
   QCOMPARE( row.at( 2 ), QVariant( 1 ) );
   QCOMPARE( row.at( 3 ), QVariant( 3 ) );
   QCOMPARE( row.at( 4 ), QVariant( 3 ) );
   QCOMPARE( row.at( 5 ), QVariant( 6 ) );
-  row = table->contents()->at( 1 );
+  row = table->contents().at( 1 );
   QCOMPARE( row.at( 0 ), QVariant( "Biplane" ) );
   QCOMPARE( row.at( 1 ), QVariant( 340 ) );
   QCOMPARE( row.at( 2 ), QVariant( 1 ) );
@@ -678,16 +679,10 @@ void TestQgsLayoutTable::attributeTableRelationSource()
   QCOMPARE( row.at( 4 ), QVariant( 3 ) );
   QCOMPARE( row.at( 5 ), QVariant( 6 ) );
 
-  mComposition->atlasComposition().endRender();
-
   //try for a crash when removing current atlas layer
   QgsProject::instance()->removeMapLayer( atlasLayer->id() );
 
   table->refreshAttributes();
-
-  mComposition->removeMultiFrame( table );
-  delete table;
-#endif
 }
 
 void TestQgsLayoutTable::contentsContainsRow()

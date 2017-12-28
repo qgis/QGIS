@@ -340,7 +340,6 @@ void TestQgsLayoutMap::dataDefinedLayers()
   result = map->layersToRender();
   QVERIFY( result.isEmpty() );
 
-
   //test with atlas feature evaluation
   QgsVectorLayer *atlasLayer = new QgsVectorLayer( QStringLiteral( "Point?field=col1:string" ), QStringLiteral( "atlas" ), QStringLiteral( "memory" ) );
   QVERIFY( atlasLayer->isValid() );
@@ -349,23 +348,24 @@ void TestQgsLayoutMap::dataDefinedLayers()
   QgsFeature f2( atlasLayer->dataProvider()->fields(), 1 );
   f2.setAttribute( QStringLiteral( "col1" ), mPointsLayer->name() );
   atlasLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 << f2 );
-#if 0 //TODO
-  mComposition->atlasComposition().setCoverageLayer( atlasLayer );
-  mComposition->atlasComposition().setEnabled( true );
-  mComposition->setAtlasMode( QgsComposition::ExportAtlas );
-  mComposition->atlasComposition().beginRender();
-  mComposition->atlasComposition().prepareForFeature( 0 );
+
+  l.context().setLayer( atlasLayer );
+  QgsFeature f;
+  QgsFeatureIterator it = atlasLayer->getFeatures();
+  it.nextFeature( f );
+  l.context().setFeature( f );
 
   map->dataDefinedProperties().setProperty( QgsLayoutObject::MapLayers, QgsProperty::fromField( QStringLiteral( "col1" ) ) );
   result = map->layersToRender();
   QCOMPARE( result.count(), 1 );
   QCOMPARE( result.at( 0 ), mLinesLayer );
-  mComposition->atlasComposition().prepareForFeature( 1 );
+  it.nextFeature( f );
+  l.context().setFeature( f );
   result = map->layersToRender();
   QCOMPARE( result.count(), 1 );
   QCOMPARE( result.at( 0 ), mPointsLayer );
-  mComposition->atlasComposition().setEnabled( false );
-#endif
+  it.nextFeature( f );
+  l.context().setFeature( f );
 
   delete atlasLayer;
 

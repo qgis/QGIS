@@ -268,10 +268,10 @@ void TestQgsLayoutHtml::javascriptSetFeature()
 
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << childLayer << parentLayer );
 
-#if 0 //TODO
   //atlas
-  mComposition->atlasComposition().setCoverageLayer( parentLayer );
-  mComposition->atlasComposition().setEnabled( true );
+  QgsLayout l( QgsProject::instance() );
+  l.initializeDefaults();
+  l.context().setLayer( parentLayer );
 
   QgsRelation rel;
   rel.setId( QStringLiteral( "rel1" ) );
@@ -281,8 +281,6 @@ void TestQgsLayoutHtml::javascriptSetFeature()
   rel.addFieldPair( QStringLiteral( "y" ), QStringLiteral( "foreignkey" ) );
   QgsProject::instance()->relationManager()->addRelation( rel );
 
-  QgsLayout l( QgsProject::instance() );
-  l.initializeDefaults();
   QgsLayoutItemHtml *htmlItem = new QgsLayoutItemHtml( &l );
   QgsLayoutFrame *htmlFrame = new QgsLayoutFrame( &l, htmlItem );
   htmlFrame->attemptSetSceneRect( QRectF( 0, 0, 100, 200 ) );
@@ -298,21 +296,19 @@ void TestQgsLayoutHtml::javascriptSetFeature()
                               "  feature.properties['relation one'][0].z + ',' + feature.properties['relation one'][1].z;}"
                               "</script></body>" ) );
 
-  mComposition->setAtlasMode( QgsComposition::ExportAtlas );
-  QVERIFY( mComposition->atlasComposition().beginRender() );
-  QVERIFY( mComposition->atlasComposition().prepareForFeature( 0 ) );
+  QgsFeature f;
+  QgsFeatureIterator it = parentLayer->getFeatures();
+  it.nextFeature( f );
+  l.context().setFeature( f );
 
   htmlItem->loadHtml();
 
-  QgsLayoutChecker checker( QStringLiteral( "composerhtml_setfeature" ), mComposition );
+  QgsLayoutChecker checker( QStringLiteral( "composerhtml_setfeature" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "composer_html" ) );
   bool result = checker.testLayout( mReport );
-  mComposition->removeMultiFrame( htmlItem );
-  delete htmlItem;
   QVERIFY( result );
 
   QgsProject::instance()->removeMapLayers( QList<QgsMapLayer *>() << childLayer << parentLayer );
-#endif
 }
 
 
