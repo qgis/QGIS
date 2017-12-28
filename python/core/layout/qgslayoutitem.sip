@@ -979,6 +979,9 @@ Rotates the item by a specified ``angle`` in degrees clockwise around a specifie
 .. seealso:: :py:func:`itemRotation()`
 %End
 
+    virtual QgsExpressionContext createExpressionContext() const;
+
+
   signals:
 
     void frameChanged();

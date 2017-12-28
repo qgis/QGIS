@@ -1091,6 +1091,13 @@ void QgsLayoutItem::rotateItem( const double angle, const QPointF &transformOrig
   refreshItemRotation( &itemTransformOrigin );
 }
 
+QgsExpressionContext QgsLayoutItem::createExpressionContext() const
+{
+  QgsExpressionContext context = QgsLayoutObject::createExpressionContext();
+  context.appendScope( QgsExpressionContextUtils::layoutItemScope( this ) );
+  return context;
+}
+
 
 void QgsLayoutItem::refresh()
 {

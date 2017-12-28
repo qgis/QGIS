@@ -168,6 +168,7 @@ class TestQgsLayoutItem: public QObject
     void excludeFromExports();
     void setSceneRect();
     void page();
+    void itemVariablesFunction();
 
   private:
 
@@ -1384,6 +1385,41 @@ void TestQgsLayoutItem::page()
   QCOMPARE( item->page(), 2 );
   QCOMPARE( item->pagePositionWithUnits(), QgsLayoutPoint( 5, 6, QgsUnitTypes::LayoutCentimeters ) );
   QCOMPARE( item->positionWithUnits(), QgsLayoutPoint( 5, 38, QgsUnitTypes::LayoutCentimeters ) );
+}
+
+void TestQgsLayoutItem::itemVariablesFunction()
+{
+  QgsRectangle extent( 2000, 2800, 2500, 2900 );
+  QgsLayout l( QgsProject::instance() );
+
+  QgsExpression e( QStringLiteral( "map_get( item_variables( 'map_id' ), 'map_scale' )" ) );
+  // no map
+  QgsExpressionContext c = l.createExpressionContext();
+  QVariant r = e.evaluate( &c );
+  QVERIFY( !r.isValid() );
+
+  QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
+  map->setExtent( extent );
+  map->attemptSetSceneRect( QRectF( 30, 60, 200, 100 ) );
+  map->setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
+  l.addLayoutItem( map );
+  map->setId( QStringLiteral( "map_id" ) );
+
+  c = l.createExpressionContext();
+  r = e.evaluate( &c );
+  QGSCOMPARENEAR( r.toDouble(), 1.38916e+08, 100 );
+
+  QgsExpression e2( QStringLiteral( "map_get( item_variables( 'map_id' ), 'map_crs' )" ) );
+  r = e2.evaluate( &c );
+  QCOMPARE( r.toString(), QString( "EPSG:4326" ) );
+
+  QgsExpression e3( QStringLiteral( "map_get( item_variables( 'map_id' ), 'map_crs_definition' )" ) );
+  r = e3.evaluate( &c );
+  QCOMPARE( r.toString(), QString( "+proj=longlat +datum=WGS84 +no_defs" ) );
+
+  QgsExpression e4( QStringLiteral( "map_get( item_variables( 'map_id' ), 'map_units' )" ) );
+  r = e4.evaluate( &c );
+  QCOMPARE( r.toString(), QString( "degrees" ) );
 }
 
 void TestQgsLayoutItem::rotation()

@@ -33,6 +33,7 @@
 #include "qgsprocessingalgorithm.h"
 #include "qgslayoutatlas.h"
 #include "qgslayout.h"
+#include "qgslayoutpagecollection.h"
 
 #include <QSettings>
 #include <QDir>
@@ -700,6 +701,41 @@ class GetComposerItemVariables : public QgsScopedExpressionFunction
 
 };
 
+class GetLayoutItemVariables : public QgsScopedExpressionFunction
+{
+  public:
+    GetLayoutItemVariables( const QgsLayout *c )
+      : QgsScopedExpressionFunction( QStringLiteral( "item_variables" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "id" ) ), QStringLiteral( "Layout" ) )
+      , mLayout( c )
+    {}
+
+    QVariant func( const QVariantList &values, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * ) override
+    {
+      if ( !mLayout )
+        return QVariant();
+
+      QString id = values.at( 0 ).toString().toLower();
+
+      const QgsLayoutItem *item = mLayout->itemByUuid( id );
+      if ( !item )
+        return QVariant();
+
+      QgsExpressionContext c = item->createExpressionContext();
+
+      return c.variablesToMap();
+    }
+
+    QgsScopedExpressionFunction *clone() const override
+    {
+      return new GetLayoutItemVariables( mLayout );
+    }
+
+  private:
+
+    const QgsLayout *mLayout = nullptr;
+
+};
+
 class GetLayerVisibility : public QgsScopedExpressionFunction
 {
   public:
@@ -1079,16 +1115,34 @@ QgsExpressionContextScope *QgsExpressionContextUtils::layoutScope( const QgsLayo
 
   //add known layout context variables
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layout_name" ), layout->name(), true ) );
-#if 0 //TODO
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layout_numpages" ), composition->numPages(), true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layout_pageheight" ), composition->paperHeight(), true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layout_pagewidth" ), composition->paperWidth(), true ) );
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layout_dpi" ), layout->context().dpi(), true ) );
-#endif
 
-#if 0 //TODO
-  scope->addFunction( QStringLiteral( "item_variables" ), new GetComposerItemVariables( composition ) );
-#endif
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layout_numpages" ), layout->pageCollection()->pageCount(), true ) );
+  if ( layout->pageCollection()->pageCount() > 0 )
+  {
+    // just take first page size
+    QSizeF s = layout->pageCollection()->page( 0 )->sizeWithUnits().toQSizeF();
+    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layout_pageheight" ), s.height(), true ) );
+    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layout_pagewidth" ), s.width(), true ) );
+  }
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layout_dpi" ), layout->context().dpi(), true ) );
+
+  scope->addFunction( QStringLiteral( "item_variables" ), new GetLayoutItemVariables( layout ) );
+
+  if ( layout->context().layer() )
+  {
+    scope->setFields( layout->context().layer()->fields() );
+    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_layerid" ), layout->context().layer()->id(), true ) );
+    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_layername" ), layout->context().layer()->name(), true ) );
+  }
+
+  if ( layout->context().feature().isValid() )
+  {
+    QgsFeature atlasFeature = layout->context().feature();
+    scope->setFeature( atlasFeature );
+    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_feature" ), QVariant::fromValue( atlasFeature ), true ) );
+    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_featureid" ), atlasFeature.id(), true ) );
+    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_geometry" ), QVariant::fromValue( atlasFeature.geometry() ), true ) );
+  }
 
   return scope.release();
 }
@@ -1233,6 +1287,52 @@ QgsExpressionContextScope *QgsExpressionContextUtils::composerItemScope( const Q
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "item_id" ), composerItem->id(), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "item_uuid" ), composerItem->uuid(), true ) );
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layout_page" ), composerItem->page(), true ) );
+  return scope;
+}
+
+QgsExpressionContextScope *QgsExpressionContextUtils::layoutItemScope( const QgsLayoutItem *item )
+{
+  QgsExpressionContextScope *scope = new QgsExpressionContextScope( QObject::tr( "Layout Item" ) );
+  if ( !item )
+    return scope;
+
+  //add variables defined in composer item properties
+  const QStringList variableNames = item->customProperty( QStringLiteral( "variableNames" ) ).toStringList();
+  const QStringList variableValues = item->customProperty( QStringLiteral( "variableValues" ) ).toStringList();
+
+  int varIndex = 0;
+  for ( const QString &variableName : variableNames )
+  {
+    if ( varIndex >= variableValues.length() )
+    {
+      break;
+    }
+
+    QVariant varValue = variableValues.at( varIndex );
+    varIndex++;
+    scope->setVariable( variableName, varValue );
+  }
+
+  //add known composer item context variables
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "item_id" ), item->id(), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "item_uuid" ), item->uuid(), true ) );
+  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layout_page" ), item->page() + 1, true ) );
+
+  if ( item->layout() )
+  {
+    const QgsLayoutItemPage *page = item->layout()->pageCollection()->page( item->page() );
+    if ( page )
+    {
+      const QSizeF s = page->sizeWithUnits().toQSizeF();
+      scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layout_pageheight" ), s.height(), true ) );
+      scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layout_pagewidth" ), s.width(), true ) );
+    }
+    else
+    {
+      scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layout_pageheight" ), QVariant(), true ) );
+      scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layout_pagewidth" ), QVariant(), true ) );
+    }
+  }
 
   return scope;
 }

@@ -1055,7 +1055,7 @@ For instance, current page name and number.
 
     static QgsExpressionContextScope *atlasScope( const QgsLayoutAtlas *atlas ) /Factory/;
 %Docstring
-Creates a new scope which contains variables and functions relating to a QgsLayoutAtlas.
+Creates a new scope which contains variables and functions relating to a :py:class:`QgsLayoutAtlas`.
 For instance, current page name and number.
 
 :param atlas: source atlas. If null, a set of default atlas variables will be added to the scope.
@@ -1067,6 +1067,14 @@ Creates a new scope which contains variables and functions relating to a :py:cla
 For instance, item size and position.
 
 :param composerItem: source composer item
+%End
+
+    static QgsExpressionContextScope *layoutItemScope( const QgsLayoutItem *item ) /Factory/;
+%Docstring
+Creates a new scope which contains variables and functions relating to a :py:class:`QgsLayoutItem`.
+For instance, item size and position.
+
+.. versionadded:: 3.0
 %End
 
     static void setComposerItemVariable( QgsComposerItem *composerItem, const QString &name, const QVariant &value );
