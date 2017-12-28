@@ -398,7 +398,6 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToImage( const QString 
 
 QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToImage( QgsAbstractLayoutIterator *iterator, const QString &baseFilePath, const QString &extension, const QgsLayoutExporter::ImageExportSettings &settings, QString &error, QgsFeedback *feedback )
 {
-  QgsLayoutExporter exporter( iterator->layout() );
   error.clear();
 
   if ( !iterator->beginRender() )
@@ -420,6 +419,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToImage( QgsAbstractLay
       return Canceled;
     }
 
+    QgsLayoutExporter exporter( iterator->layout() );
     QString filePath = iterator->filePath( baseFilePath, extension );
     ExportResult result = exporter.exportToImage( filePath, settings );
     if ( result != Success )
@@ -489,37 +489,13 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( QgsAbstractLayou
 {
   error.clear();
 
-  if ( !iterator->layout() || !iterator->beginRender() )
+  if ( !iterator->beginRender() )
     return IteratorError;
 
   PdfExportSettings settings = s;
-  if ( settings.dpi <= 0 )
-    settings.dpi = iterator->layout()->context().dpi();
-
-  LayoutContextPreviewSettingRestorer restorer( iterator->layout() );
-  ( void )restorer;
-  LayoutContextSettingsRestorer contextRestorer( iterator->layout() );
-  ( void )contextRestorer;
-  iterator->layout()->context().setDpi( settings.dpi );
-
-  // If we are not printing as raster, temporarily disable advanced effects
-  // as QPrinter does not support composition modes and can result
-  // in items missing from the output
-  iterator->layout()->context().setFlag( QgsLayoutContext::FlagUseAdvancedEffects, !settings.forceVectorOutput );
-
-  iterator->layout()->context().setFlag( QgsLayoutContext::FlagForceVectorOutput, settings.forceVectorOutput );
 
   QPrinter printer;
-  preparePrintAsPdf( iterator->layout(), printer, fileName );
-  preparePrint( iterator->layout(), printer, false );
   QPainter p;
-  if ( !p.begin( &printer ) )
-  {
-    //error beginning print
-    return PrintError;
-  }
-
-  QgsLayoutExporter exporter( iterator->layout() );
 
   int total = iterator->count();
   double step = total > 0 ? 100.0 / total : 100.0;
@@ -537,6 +513,36 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( QgsAbstractLayou
       iterator->endRender();
       return Canceled;
     }
+
+    if ( s.dpi <= 0 )
+      settings.dpi = iterator->layout()->context().dpi();
+
+    LayoutContextPreviewSettingRestorer restorer( iterator->layout() );
+    ( void )restorer;
+    LayoutContextSettingsRestorer contextRestorer( iterator->layout() );
+    ( void )contextRestorer;
+    iterator->layout()->context().setDpi( settings.dpi );
+
+    // If we are not printing as raster, temporarily disable advanced effects
+    // as QPrinter does not support composition modes and can result
+    // in items missing from the output
+    iterator->layout()->context().setFlag( QgsLayoutContext::FlagUseAdvancedEffects, !settings.forceVectorOutput );
+
+    iterator->layout()->context().setFlag( QgsLayoutContext::FlagForceVectorOutput, settings.forceVectorOutput );
+
+    if ( first )
+    {
+      preparePrintAsPdf( iterator->layout(), printer, fileName );
+      preparePrint( iterator->layout(), printer, false );
+
+      if ( !p.begin( &printer ) )
+      {
+        //error beginning print
+        return PrintError;
+      }
+    }
+
+    QgsLayoutExporter exporter( iterator->layout() );
 
     ExportResult result = exporter.printPrivate( printer, p, !first, settings.dpi, settings.rasterizeWholeImage );
     if ( result != Success )
@@ -561,7 +567,6 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( QgsAbstractLayou
 
 QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdfs( QgsAbstractLayoutIterator *iterator, const QString &baseFilePath, const QgsLayoutExporter::PdfExportSettings &settings, QString &error, QgsFeedback *feedback )
 {
-  QgsLayoutExporter exporter( iterator->layout() );
   error.clear();
 
   if ( !iterator->beginRender() )
@@ -584,6 +589,8 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdfs( QgsAbstractLayo
     }
 
     QString filePath = iterator->filePath( baseFilePath, QStringLiteral( "pdf" ) );
+
+    QgsLayoutExporter exporter( iterator->layout() );
     ExportResult result = exporter.exportToPdf( filePath, settings );
     if ( result != Success )
     {
@@ -773,7 +780,6 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToSvg( const QString &f
 
 QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToSvg( QgsAbstractLayoutIterator *iterator, const QString &baseFilePath, const QgsLayoutExporter::SvgExportSettings &settings, QString &error, QgsFeedback *feedback )
 {
-  QgsLayoutExporter exporter( iterator->layout() );
   error.clear();
 
   if ( !iterator->beginRender() )
@@ -796,6 +802,8 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToSvg( QgsAbstractLayou
     }
 
     QString filePath = iterator->filePath( baseFilePath, QStringLiteral( "svg" ) );
+
+    QgsLayoutExporter exporter( iterator->layout() );
     ExportResult result = exporter.exportToSvg( filePath, settings );
     if ( result != Success )
     {
