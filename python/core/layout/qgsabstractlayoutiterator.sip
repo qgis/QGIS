@@ -46,7 +46,7 @@ is available or required.
 Ends the render, performing any required cleanup tasks.
 %End
 
-    virtual int count() const = 0;
+    virtual int count() = 0;
 %Docstring
 Returns the number of features to iterate over.
 %End

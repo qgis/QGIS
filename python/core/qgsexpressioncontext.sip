@@ -1053,7 +1053,7 @@ For instance, current page name and number.
 :param atlas: source atlas. If null, a set of default atlas variables will be added to the scope.
 %End
 
-    static QgsExpressionContextScope *atlasScope( const QgsLayoutAtlas *atlas ) /Factory/;
+    static QgsExpressionContextScope *atlasScope( QgsLayoutAtlas *atlas ) /Factory/;
 %Docstring
 Creates a new scope which contains variables and functions relating to a :py:class:`QgsLayoutAtlas`.
 For instance, current page name and number.

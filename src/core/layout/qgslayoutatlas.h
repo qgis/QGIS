@@ -241,7 +241,7 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutItera
 
     bool beginRender() override;
     bool endRender() override;
-    int count() const override;
+    int count() override;
     QString filePath( const QString &baseFilePath, const QString &extension ) override;
 
     /**

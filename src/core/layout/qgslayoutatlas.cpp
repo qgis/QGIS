@@ -334,7 +334,7 @@ bool QgsLayoutAtlas::endRender()
   return true;
 }
 
-int QgsLayoutAtlas::count() const
+int QgsLayoutAtlas::count()
 {
   return mFeatureIds.size();
 }

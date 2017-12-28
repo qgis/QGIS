@@ -1222,7 +1222,7 @@ QgsExpressionContextScope *QgsExpressionContextUtils::compositionAtlasScope( con
   return scope;
 }
 
-QgsExpressionContextScope *QgsExpressionContextUtils::atlasScope( const QgsLayoutAtlas *atlas )
+QgsExpressionContextScope *QgsExpressionContextUtils::atlasScope( QgsLayoutAtlas *atlas )
 {
   QgsExpressionContextScope *scope = new QgsExpressionContextScope( QObject::tr( "Atlas" ) );
   if ( !atlas )
