@@ -261,6 +261,7 @@ Recalculates the frame sizes for the current viewport dimensions
 
 };
 
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

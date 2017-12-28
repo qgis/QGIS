@@ -197,9 +197,12 @@ void QgsLayoutItemHtml::loadHtml( const bool useCache, const QgsExpressionContex
   //inject JSON feature
   if ( !mAtlasFeatureJSON.isEmpty() )
   {
-    mWebPage->mainFrame()->evaluateJavaScript( QStringLiteral( "if ( typeof setFeature === \"function\" ) { setFeature(%1); }" ).arg( mAtlasFeatureJSON ) );
-    //needs an extra process events here to give JavaScript a chance to execute
-    qApp->processEvents();
+    JavascriptExecutorLoop jsLoop;
+
+    mWebPage->mainFrame()->addToJavaScriptWindowObject( "loop", &jsLoop );
+    mWebPage->mainFrame()->evaluateJavaScript( QStringLiteral( "if ( typeof setFeature === \"function\" ) { setFeature(%1); }; loop.done();" ).arg( mAtlasFeatureJSON ) );
+
+    jsLoop.execIfNotDone();
   }
 
   recalculateFrameSizes();
@@ -533,3 +536,25 @@ void QgsLayoutItemHtml::refreshDataDefinedProperty( const QgsLayoutObject::DataD
     loadHtml( true, &context );
   }
 }
+
+//JavascriptExecutorLoop
+///@cond PRIVATE
+
+void JavascriptExecutorLoop::done()
+{
+  mDone = true;
+  quit();
+}
+
+void JavascriptExecutorLoop::execIfNotDone()
+{
+  if ( !mDone )
+    exec( QEventLoop::ExcludeUserInputEvents );
+
+  // gross, but nothing else works, so f*** it.. it's not worth spending a day trying to find a non-hacky way
+  // to force the web page to update following the js execution
+  for ( int i = 0; i < 100; i++ )
+    qApp->processEvents();
+}
+
+///@endcond
