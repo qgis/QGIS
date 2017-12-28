@@ -1917,6 +1917,7 @@ void QgsLayoutItemMap::updateAtlasFeature()
 
   // set the new extent (and render)
   setExtent( newExtent );
+  emit preparedForAtlas();
 }
 
 QgsRectangle QgsLayoutItemMap::computeAtlasRectangle()
