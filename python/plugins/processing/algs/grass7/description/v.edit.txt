@@ -2,7 +2,7 @@ v.edit
 Edits a vector map, allows adding, deleting and modifying selected vector features.
 Vector (v.*)
 QgsProcessingParameterVectorLayer|map|Name of vector layer|-1|None|False
-QgsProcessingParameterEnum|type|Input feature type|point;line;boundary;centroid|True|0,1,3,4|True
+QgsProcessingParameterEnum|type|Input feature type|point;line;boundary;centroid|True|0,1,2,3|True
 QgsProcessingParameterEnum|tool|Tool|create;add;delete;copy;move;flip;catadd;catdel;merge;break;snap;connect;chtype;vertexadd;vertexdel;vertexmove;areadel;zbulk;select|False|0|False
 QgsProcessingParameterFile|input|ASCII file for add tool|False|txt|None|True
 QgsProcessingParameterString|move|Difference in x,y,z direction for moving feature or vertex|None|False|True
@@ -10,10 +10,10 @@ QgsProcessingParameterString|threshold|Threshold distance (coords,snap,query)|No
 QgsProcessingParameterString|ids|Feature ids|None|False|True
 QgsProcessingParameterString|cats|Category values|None|False|True
 QgsProcessingParameterString|coords|List of point coordinates|None|False|True
-QgsProcessingParameterString|bbox|Bounding box for selecting features|None|False|True
+QgsProcessingParameterExtent|bbox|Bounding box for selecting features|None|True
 QgsProcessingParameterString|polygon|Polygon for selecting features|None|False|True
 QgsProcessingParameterString|where|WHERE conditions of SQL statement without 'where' keyword|None|True|True
-QgsProcessingParameterEnum|query|Query tool|length;dangle|False|0|True
+QgsProcessingParameterEnum|query|Query tool|length;dangle|False|None|True
 QgsProcessingParameterVectorLayer|bgmap|Name of background vector map|-1|None|True
 QgsProcessingParameterEnum|snap|Snap added or modified features in the given threshold to the nearest existing feature|no;node;vertex|False|0|True
 QgsProcessingParameterString|zbulk|Starting value and step for z bulk-labeling. Pair: value,step (e.g. 1100,10)|None|False|True

@@ -523,6 +523,10 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
             elif isinstance(param, QgsProcessingParameterBoolean):
                 if self.parameterAsBool(parameters, paramName, context):
                     command += ' {}'.format(paramName)
+            # For Extents, remove if the value is null
+            elif isinstance(param, QgsProcessingParameterExtent):
+                if self.parameterAsExtent(parameters, paramName, context):
+                    value = self.parameterAsString(parameters, paramName, context)
             # For enumeration, we need to grab the string value
             elif isinstance(param, QgsProcessingParameterEnum):
                 # Handle multiple values
@@ -530,7 +534,8 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                     indexes = self.parameterAsEnums(parameters, paramName, context)
                 else:
                     indexes = [self.parameterAsEnum(parameters, paramName, context)]
-                value = '"{}"'.format(','.join([param.options()[i] for i in indexes]))
+                if indexes:
+                    value = '"{}"'.format(','.join([param.options()[i] for i in indexes]))
             # For strings, we just translate as string
             elif isinstance(param, QgsProcessingParameterString):
                 data = self.parameterAsString(parameters, paramName, context)
@@ -545,7 +550,10 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                     self.parameterAsFields(parameters, paramName, context)
                 )
             elif isinstance(param, QgsProcessingParameterFile):
-                value = self.parameterAsString(parameters, paramName, context)
+                if self.parameterAsString(parameters, paramName, context):
+                    value = '"{}"'.format(
+                        self.parameterAsString(parameters, paramName, context)
+                    )
             # For numbers and points, we translate as a string
             elif isinstance(param, (QgsProcessingParameterNumber,
                                     QgsProcessingParameterPoint)):
@@ -795,13 +803,16 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         """
         Creates a dedicated command to export a vector from
         temporary GRASS DB into a file via ogr.
-        :param grassName: name of the parameter
-        :param fileName: file path of raster layer
+        :param grassName: name of the parameter.
+        :param fileName: file path of raster layer.
+        :param dataType: GRASS data type for exporting data.
+        :param layer: In GRASS a vector can have multiple layers.
+        :param nocats: Also export features without category if True.
         """
         for cmd in [self.commands, self.outputCommands]:
             cmd.append(
                 'v.out.ogr{0} type={1} {2} input="{3}" output="{4}" {5}'.format(
-                    '' if nocats else ' -c',
+                    ' -c' if nocats else '',
                     dataType,
                     'layer={}'.format(layer) if layer else '',
                     grassName,

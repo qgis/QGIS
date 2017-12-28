@@ -26,19 +26,19 @@ __copyright__ = '(C) 2016, Médéric Ribreux'
 __revision__ = '$Format:%H$'
 
 
-def processOutputs(alg):
+def processOutputs(alg, parameters, context):
     # add some export commands
     command = 'v.build.all'
     alg.commands.append(command)
 
     # export the SQLite table to CSV
-    rstable = alg.getOutputValue('rstable')
-    # I don't use db.out.ogr because it doesn't work
-    command = 'db.select table={} separator=comma output=\"{}\" --overwrite'.format(
-        alg.exportedLayers[rstable],
-        rstable
-    )
-    alg.commands.append(command)
-    command = 'echo \"Integer\",\"Integer\",\"Integer\",\"Real\",\"Real\",\"Real\",\"Real\",\"Real\",\"Real\",\"Real\" > \"{}t\"'.format(rstable)
-    alg.commands.append(command)
-    alg.processOutputs()
+    # rstable = alg.getOutputValue('rstable')
+    # # I don't use db.out.ogr because it doesn't work
+    # command = 'db.select table={} separator=comma output=\"{}\" --overwrite'.format(
+    #     alg.exportedLayers[rstable],
+    #     rstable
+    # )
+    # alg.commands.append(command)
+    # command = 'echo \"Integer\",\"Integer\",\"Integer\",\"Real\",\"Real\",\"Real\",\"Real\",\"Real\",\"Real\",\"Real\" > \"{}t\"'.format(rstable)
+    # alg.commands.append(command)
+    alg.processOutputs(parameters, context)

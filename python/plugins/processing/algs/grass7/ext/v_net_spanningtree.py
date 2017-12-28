@@ -2,10 +2,10 @@
 
 """
 ***************************************************************************
-    v_net_connect.py
+    v_net_spanningtree.py
     ---------------------
-    Date                 : December 2015
-    Copyright            : (C) 2015 by Médéric Ribreux
+    Date                 : December 2017
+    Copyright            : (C) 2017 by Médéric Ribreux
     Email                : medspx at medspx dot fr
 ***************************************************************************
 *                                                                         *
@@ -18,16 +18,20 @@
 """
 
 __author__ = 'Médéric Ribreux'
-__date__ = 'December 2015'
-__copyright__ = '(C) 2015, Médéric Ribreux'
+__date__ = 'December 2017'
+__copyright__ = '(C) 2017, Médéric Ribreux'
 
 # This will get replaced with a git SHA1 when you do a git archive
 
 __revision__ = '$Format:%H$'
 
-import os
+from .v_net import incorporatePoints, variableOutput
+
+
+def processCommand(alg, parameters, context):
+    incorporatePoints(alg, parameters, context)
 
 
 def processOutputs(alg, parameters, context):
-    outputParameter = {'output': ['line', 1]}
-    variableOutput(alg, outputParameter, parameters, context, False)
+    outputParameter = {'output': ['output', 'line', 1, True]}
+    variableOutput(alg, outputParameter, parameters, context)
