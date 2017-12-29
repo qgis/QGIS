@@ -37,7 +37,8 @@ from qgis.core import (QgsMultiRenderChecker,
                        QgsVectorLayer,
                        QgsCoordinateReferenceSystem,
                        QgsPrintLayout,
-                       QgsSingleSymbolRenderer)
+                       QgsSingleSymbolRenderer,
+                       QgsReport)
 from qgis.PyQt.QtCore import QSize, QSizeF, QDir, QRectF, Qt
 from qgis.PyQt.QtGui import QImage, QPainter
 from qgis.PyQt.QtSvg import QSvgRenderer, QSvgGenerator
@@ -725,6 +726,56 @@ class TestQgsLayoutExporter(unittest.TestCase):
         rendered_page_4 = os.path.join(self.basetestpath, 'test_exportiteratortopdf_single4.png')
         pdfToPng(pdf_path, rendered_page_4, dpi=80, page=4)
         self.assertTrue(os.path.exists(rendered_page_4))
+
+    def testExportReport(self):
+        p = QgsProject()
+        r = QgsReport()
+
+        # add a header
+        r.setHeaderEnabled(True)
+        report_header = QgsLayout(p)
+        report_header.initializeDefaults()
+        item1 = QgsLayoutItemShape(report_header)
+        item1.attemptSetSceneRect(QRectF(10, 20, 100, 150))
+        fill = QgsSimpleFillSymbolLayer()
+        fill_symbol = QgsFillSymbol()
+        fill_symbol.changeSymbolLayer(0, fill)
+        fill.setColor(Qt.green)
+        fill.setStrokeStyle(Qt.NoPen)
+        item1.setSymbol(fill_symbol)
+        report_header.addItem(item1)
+
+        r.setHeader(report_header)
+
+        # add a footer
+        r.setFooterEnabled(True)
+        report_footer = QgsLayout(p)
+        report_footer.initializeDefaults()
+        item2 = QgsLayoutItemShape(report_footer)
+        item2.attemptSetSceneRect(QRectF(10, 20, 100, 150))
+        item2.attemptMove(QgsLayoutPoint(10, 20))
+        fill = QgsSimpleFillSymbolLayer()
+        fill_symbol = QgsFillSymbol()
+        fill_symbol.changeSymbolLayer(0, fill)
+        fill.setColor(Qt.cyan)
+        fill.setStrokeStyle(Qt.NoPen)
+        item2.setSymbol(fill_symbol)
+        report_footer.addItem(item2)
+
+        r.setFooter(report_footer)
+
+        # setup settings
+        settings = QgsLayoutExporter.ImageExportSettings()
+        settings.dpi = 80
+
+        report_path = os.path.join(self.basetestpath, 'test_report')
+        result, error = QgsLayoutExporter.exportToImage(r, report_path, 'png', settings)
+        self.assertEqual(result, QgsLayoutExporter.Success, error)
+
+        page1_path = os.path.join(self.basetestpath, 'test_report_0001.png')
+        self.assertTrue(self.checkImage('report_page1', 'report_page1', page1_path))
+        page2_path = os.path.join(self.basetestpath, 'test_report_0002.png')
+        self.assertTrue(self.checkImage('report_page2', 'report_page2', page2_path))
 
 
 if __name__ == '__main__':
