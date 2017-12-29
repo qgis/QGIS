@@ -646,7 +646,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         layer = self.parameterAsRasterLayer(parameters, name, context)
         self.loadRasterLayer(name, layer, external, band)
 
-    def loadRasterLayer(self, name, layer, external=True, band=1):
+    def loadRasterLayer(self, name, layer, external=True, band=1, destName=None):
         """
         Creates a dedicated command to load a raster into
         the temporary GRASS DB.
@@ -654,18 +654,20 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         :param layer: QgsMapLayer for the raster layer.
         :param external: True if using r.external.
         :param band: imports only specified band. None for all bands.
+        :param destName: force the destination name of the raster.
         """
         self.inputLayers.append(layer)
         self.setSessionProjectionFromLayer(layer)
-        destFilename = 'a' + os.path.basename(getTempFilename())
-        self.exportedLayers[name] = destFilename
+        if not destName:
+            destName = 'rast_{}'.format(os.path.basename(getTempFilename()))
+        self.exportedLayers[name] = destName
         command = '{0} input="{1}" {2}output="{3}" --overwrite -o'.format(
             'r.external' if external else 'r.in.gdal',
             os.path.normpath(layer.source()),
             'band={} '.format(band) if band else '',
-            destFilename)
+            destName)
         self.commands.append(command)
-
+        
     def exportRasterLayerFromParameter(self, name, parameters, context, colorTable=True):
         """
         Creates a dedicated command to export a raster from
@@ -714,7 +716,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                 )
             )
 
-    def exportRasterLayersIntoDirectory(self, name, parameters, context, colorTable=True):
+    def exportRasterLayersIntoDirectory(self, name, parameters, context, colorTable=True, wholeDB=False):
         """
         Creates a dedicated loop command to export rasters from
         temporary GRASS DB into a directory via gdal.
@@ -722,11 +724,14 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         :param parameters: Algorithm parameters dict.
         :param context: Algorithm context.
         :param colorTable: preserve color Table.
+        :param wholeDB: export every raster layer from the GRASSDB
         """
         # Grab directory name and temporary basename
         outDir = os.path.normpath(
             self.parameterAsString(parameters, name, context))
-        basename = name + self.uniqueSuffix
+        basename = ''
+        if not wholeDB:
+            basename = name + self.uniqueSuffix
 
         # Add a loop export from the basename
         for cmd in [self.commands, self.outputCommands]:

@@ -26,7 +26,6 @@ __copyright__ = '(C) 2016, Médéric Ribreux'
 __revision__ = '$Format:%H$'
 
 from .i import verifyRasterNum, orderedInput
-from processing.core.parameters import getParameterFromString
 
 
 def checkParameterValuesBeforeExecuting(alg, parameters, context):
@@ -34,12 +33,9 @@ def checkParameterValuesBeforeExecuting(alg, parameters, context):
 
 
 def processInputs(alg, parameters, context):
-    orderedInput(alg, 'rasters',
-                 "ParameterString|input|Base name of input raster bands|None|False|False",
+    orderedInput(alg, parameters, context, 'rasters', 'input',
                  [1, 2, 3, 4, 5, 61, 62, 7, 8])
 
 
 def processCommand(alg, parameters, context):
-    # Remove rasters parameter
-    rasters = alg.getParameterFromName('rasters')
-    alg.parameters.remove(rasters)
+    alg.processCommand(parameters, context)

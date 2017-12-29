@@ -58,11 +58,7 @@ def processCommand(alg, parameters, context):
     
 def processOutputs(alg, parameters, context):
     # We need to export every raster from the GRASSDB
-    outputDir = alg.parameterAsString(parameters, 'output_dir', context)
-    # TODO Windows support
-    # TODO Format/options support
-    commands = ["for r in $(g.list type=rast); do"]
-    commands.append("  r.out.gdal --overwrite -c -t -f input=${{r}} output={}/${{r}}.tif createopt=\"TFW=YES,COMPRESS=LZW\"".format(outputDir))
-    commands.append("done")
-    alg.commands.extend(commands)
+    alg.exportRasterLayersIntoDirectory('output_dir',
+                                        parameters, context,
+                                        wholeDB=True)
     
