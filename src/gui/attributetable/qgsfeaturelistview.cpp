@@ -19,7 +19,6 @@
 #include <QSet>
 #include <QSettings>
 
-#include "qgsactionmenu.h"
 #include "qgsattributetabledelegate.h"
 #include "qgsattributetablefiltermodel.h"
 #include "qgsattributetablemodel.h"
@@ -302,6 +301,9 @@ void QgsFeatureListView::contextMenuEvent( QContextMenuEvent *event )
     QgsFeature feature = mModel->data( index, QgsFeatureListModel::FeatureRole ).value<QgsFeature>();
 
     QgsActionMenu *menu = new QgsActionMenu( mModel->layerCache()->layer(), feature, QStringLiteral( "Feature" ), this );
+
+    emit willShowContextMenu( menu, index );
+
     menu->exec( event->globalPos() );
   }
 }

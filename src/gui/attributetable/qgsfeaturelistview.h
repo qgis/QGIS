@@ -20,6 +20,7 @@
 #include "qgis_sip.h"
 #include "qgis.h"
 #include <qdebug.h>
+#include "qgsactionmenu.h"
 
 #include "qgsfeature.h" // For QgsFeatureIds
 #include "qgis_gui.h"
@@ -146,6 +147,13 @@ class GUI_EXPORT QgsFeatureListView : public QListView
     //! \note not available in Python bindings
     void aboutToChangeEditSelection( bool &ok ) SIP_SKIP;
 
+    /**
+     * Is emitted, when the context menu is created to add the specific actions to it
+     * \param menu is the already created context menu
+     * \param atIndex is the position of the current feature in the model
+     */
+    void willShowContextMenu( QgsActionMenu *menu, const QModelIndex &atIndex );
+
   public slots:
 
     /**
@@ -191,6 +199,7 @@ class GUI_EXPORT QgsFeatureListView : public QListView
     bool mEditSelectionDrag = false; // Is set to true when the user initiated a left button click over an edit button and still keeps pressing //!< TODO
     int mRowAnchor = 0;
     QItemSelectionModel::SelectionFlags mCtrlDragSelectionFlag;
+
 };
 
 #endif

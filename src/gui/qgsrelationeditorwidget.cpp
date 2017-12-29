@@ -138,10 +138,12 @@ QgsRelationEditorWidget::QgsRelationEditorWidget( QWidget *parent )
   connect( mSaveEditsButton, &QAbstractButton::clicked, this, &QgsRelationEditorWidget::saveEdits );
   connect( mAddFeatureButton, &QAbstractButton::clicked, this, &QgsRelationEditorWidget::addFeature );
   connect( mDuplicateFeatureButton, &QAbstractButton::clicked, this, &QgsRelationEditorWidget::duplicateFeature );
-  connect( mDeleteFeatureButton, &QAbstractButton::clicked, this, &QgsRelationEditorWidget::deleteFeature );
+  connect( mDeleteFeatureButton, &QAbstractButton::clicked, this, &QgsRelationEditorWidget::deleteSelectedFeatures );
   connect( mLinkFeatureButton, &QAbstractButton::clicked, this, &QgsRelationEditorWidget::linkFeature );
-  connect( mUnlinkFeatureButton, &QAbstractButton::clicked, this, &QgsRelationEditorWidget::unlinkFeature );
+  connect( mUnlinkFeatureButton, &QAbstractButton::clicked, this, &QgsRelationEditorWidget::unlinkSelectedFeatures );
   connect( mFeatureSelectionMgr, &QgsIFeatureSelectionManager::selectionChanged, this, &QgsRelationEditorWidget::updateButtons );
+
+  connect( mDualView, &QgsDualView::showContextMenuExternally, this, &QgsRelationEditorWidget::showContextMenu );
 
   // Set initial state for add/remove etc. buttons
   updateButtons();
@@ -447,27 +449,55 @@ void QgsRelationEditorWidget::duplicateFeature()
   }
 }
 
-void QgsRelationEditorWidget::deleteFeature()
+void QgsRelationEditorWidget::deleteFeature( const QgsFeatureId featureid )
+{
+  QgsFeatureIds featureids;
+
+  featureids << featureid;
+
+  deleteFeatures( featureids );
+
+}
+
+void QgsRelationEditorWidget::deleteSelectedFeatures( )
+{
+  deleteFeatures( mFeatureSelectionMgr->selectedFeatureIds() );
+}
+
+void QgsRelationEditorWidget::deleteFeatures( const QgsFeatureIds &featureids )
 {
   QgsVectorLayer *layer = nullptr;
-
   if ( mNmRelation.isValid() )
-    // So far we expect the database to take care of cleaning up the linking table or restricting
-    // TODO: add more options for the behavior here
     layer = mNmRelation.referencedLayer();
   else
     layer = mRelation.referencingLayer();
-  QgsDebugMsg( QString( "Delete %1" ).arg( mFeatureSelectionMgr->selectedFeatureIds().size() ) );
-  layer->deleteFeatures( mFeatureSelectionMgr->selectedFeatureIds() );
+
+  QgsDebugMsg( QString( "Delete %1" ).arg( featureids.size() ) );
+  layer->deleteFeatures( featureids );
 }
 
-void QgsRelationEditorWidget::unlinkFeature()
+
+void QgsRelationEditorWidget::unlinkFeature( const QgsFeatureId featureid )
+{
+  QgsFeatureIds featureids;
+
+  featureids << featureid;
+
+  unlinkFeatures( featureids );
+}
+
+void QgsRelationEditorWidget::unlinkSelectedFeatures( )
+{
+  unlinkFeatures( mFeatureSelectionMgr->selectedFeatureIds() );
+}
+
+void QgsRelationEditorWidget::unlinkFeatures( const QgsFeatureIds &featureids )
 {
   if ( mNmRelation.isValid() )
   {
     QgsFeatureIterator selectedIterator = mNmRelation.referencedLayer()->getFeatures(
                                             QgsFeatureRequest()
-                                            .setFilterFids( mFeatureSelectionMgr->selectedFeatureIds() )
+                                            .setFilterFids( featureids )
                                             .setSubsetOfAttributes( mNmRelation.referencedFields() ) );
 
     QgsFeature f;
@@ -514,7 +544,7 @@ void QgsRelationEditorWidget::unlinkFeature()
       keyFields.insert( idx, fld );
     }
 
-    Q_FOREACH ( QgsFeatureId fid, mFeatureSelectionMgr->selectedFeatureIds() )
+    Q_FOREACH ( QgsFeatureId fid, featureids )
     {
       QMapIterator<int, QgsField> it( keyFields );
       while ( it.hasNext() )
@@ -629,4 +659,18 @@ void QgsRelationEditorWidget::setShowLabel( bool showLabel )
     setTitle( mRelation.name() );
   else
     setTitle( QString() );
+}
+
+void QgsRelationEditorWidget::showContextMenu( QgsActionMenu *menu, const QgsFeatureId fid )
+{
+  if ( mRelation.referencingLayer()->isEditable() )
+  {
+    QAction *qAction = nullptr;
+
+    qAction = menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDeleteSelected.svg" ) ),  tr( "Delete feature" ) );
+    connect( qAction, &QAction::triggered, this, [this, fid]() { deleteFeature( fid ); } );
+
+    qAction = menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionUnlink.svg" ) ),  tr( "Unlink feature" ) );
+    connect( qAction, &QAction::triggered, this, [this, fid]() { unlinkFeature( fid ); } );
+  }
 }

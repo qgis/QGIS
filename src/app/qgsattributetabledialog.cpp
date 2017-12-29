@@ -105,6 +105,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
   connect( mMainView, &QgsDualView::currentChanged, this, &QgsAttributeTableDialog::mMainView_currentChanged );
   connect( mActionAddFeature, &QAction::triggered, this, &QgsAttributeTableDialog::mActionAddFeature_triggered );
   connect( mActionExpressionSelect, &QAction::triggered, this, &QgsAttributeTableDialog::mActionExpressionSelect_triggered );
+  connect( mMainView, &QgsDualView::showContextMenuExternally, this, &QgsAttributeTableDialog::showContextMenu );
 
   Q_FOREACH ( const QgsField &field, mLayer->fields() )
   {
@@ -1041,6 +1042,21 @@ void QgsAttributeTableDialog::setFilterExpression( const QString &filterString, 
   mMainView->setFilterMode( QgsAttributeTableFilterModel::ShowFilteredList );
 }
 
+
+void QgsAttributeTableDialog::deleteFeature( const QgsFeatureId fid )
+{
+  QgsDebugMsg( QString( "Delete %1" ).arg( fid ) );
+  mLayer->deleteFeature( fid );
+}
+
+void QgsAttributeTableDialog::showContextMenu( QgsActionMenu *menu, const QgsFeatureId fid )
+{
+  if ( mLayer->isEditable() )
+  {
+    QAction *qAction = menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDeleteSelected.svg" ) ),  tr( "Delete feature" ) );
+    connect( qAction, &QAction::triggered, this, [this, fid]() { deleteFeature( fid ); } );
+  }
+}
 
 //
 // QgsAttributeTableDock
