@@ -1616,8 +1616,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     void updateCrsStatusBar();
 
-    void onFocusChanged( QWidget *oldWidget, QWidget *newWidget );
-
     //! handle project crs changes
     void projectCrsChanged();
 
