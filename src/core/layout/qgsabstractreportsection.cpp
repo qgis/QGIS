@@ -17,9 +17,29 @@
 #include "qgsabstractreportsection.h"
 #include "qgslayout.h"
 
+QgsAbstractReportSection::QgsAbstractReportSection( QgsAbstractReportSection *parent )
+  : mParent( parent )
+{}
+
 QgsAbstractReportSection::~QgsAbstractReportSection()
 {
   qDeleteAll( mChildren );
+}
+
+QgsProject *QgsAbstractReportSection::project()
+{
+  QgsAbstractReportSection *current = this;
+  while ( QgsAbstractReportSection *parent = current->parent() )
+  {
+    if ( !parent )
+      return nullptr;
+
+    if ( QgsReport *report = dynamic_cast< QgsReport * >( parent ) )
+      return report->project();
+
+    current = parent;
+  }
+  return nullptr;
 }
 
 QString QgsAbstractReportSection::filePath( const QString &baseFilePath, const QString &extension )
@@ -158,11 +178,13 @@ QgsAbstractReportSection *QgsAbstractReportSection::child( int index )
 
 void QgsAbstractReportSection::appendChild( QgsAbstractReportSection *section )
 {
+  section->setParent( this );
   mChildren.append( section );
 }
 
 void QgsAbstractReportSection::insertChild( int index, QgsAbstractReportSection *section )
 {
+  section->setParent( this );
   index = std::max( 0, index );
   index = std::min( index, mChildren.count() );
   mChildren.insert( index, section );
@@ -202,16 +224,21 @@ void QgsAbstractReportSection::copyCommonProperties( QgsAbstractReportSection *d
 
   for ( QgsAbstractReportSection *child : qgis::as_const( mChildren ) )
   {
-    destination->mChildren.append( child->clone() );
+    destination->appendChild( child->clone() );
   }
 }
 
 
 // QgsReport
 
+QgsReport::QgsReport( QgsProject *project )
+  : QgsAbstractReportSection( nullptr )
+  , mProject( project )
+{}
+
 QgsReport *QgsReport::clone() const
 {
-  std::unique_ptr< QgsReport > copy = qgis::make_unique< QgsReport >();
+  std::unique_ptr< QgsReport > copy = qgis::make_unique< QgsReport >( mProject );
   copyCommonProperties( copy.get() );
   return copy.release();
 }
@@ -220,13 +247,19 @@ QgsReport *QgsReport::clone() const
 // QgsReportSectionLayout
 //
 
+QgsReportSectionLayout::QgsReportSectionLayout( QgsAbstractReportSection *parent )
+  : QgsAbstractReportSection( parent )
+{}
+
 QgsReportSectionLayout *QgsReportSectionLayout::clone() const
 {
-  std::unique_ptr< QgsReportSectionLayout > copy = qgis::make_unique< QgsReportSectionLayout >();
+  std::unique_ptr< QgsReportSectionLayout > copy = qgis::make_unique< QgsReportSectionLayout >( nullptr );
   copyCommonProperties( copy.get() );
 
   if ( mBody )
+  {
     copy->mBody.reset( mBody->clone() );
+  }
   else
     copy->mBody.reset();
 

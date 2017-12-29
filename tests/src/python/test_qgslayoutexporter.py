@@ -729,7 +729,7 @@ class TestQgsLayoutExporter(unittest.TestCase):
 
     def testExportReport(self):
         p = QgsProject()
-        r = QgsReport()
+        r = QgsReport(p)
 
         # add a header
         r.setHeaderEnabled(True)

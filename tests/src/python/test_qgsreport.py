@@ -27,7 +27,9 @@ class TestQgsReport(unittest.TestCase):
 
     def testGettersSetters(self):
         p = QgsProject()
-        r = QgsReport()
+        r = QgsReport(p)
+
+        self.assertEqual(r.project(), p)
 
         r.setHeaderEnabled(True)
         self.assertTrue(r.headerEnabled())
@@ -45,7 +47,7 @@ class TestQgsReport(unittest.TestCase):
 
     def testChildren(self):
         p = QgsProject()
-        r = QgsReport()
+        r = QgsReport(p)
         self.assertEqual(r.childCount(), 0)
         self.assertEqual(r.children(), [])
         self.assertIsNone(r.child(-1))
@@ -60,32 +62,38 @@ class TestQgsReport(unittest.TestCase):
 
         # append child
         child1 = QgsReportSectionLayout()
+        self.assertIsNone(child1.project())
         r.appendChild(child1)
         self.assertEqual(r.childCount(), 1)
         self.assertEqual(r.children(), [child1])
         self.assertEqual(r.child(0), child1)
+        self.assertEqual(child1.parent(), r)
+        self.assertEqual(child1.project(), p)
         child2 = QgsReportSectionLayout()
         r.appendChild(child2)
         self.assertEqual(r.childCount(), 2)
         self.assertEqual(r.children(), [child1, child2])
         self.assertEqual(r.child(1), child2)
+        self.assertEqual(child2.parent(), r)
 
     def testInsertChild(self):
         p = QgsProject()
-        r = QgsReport()
+        r = QgsReport(p)
 
         child1 = QgsReportSectionLayout()
         r.insertChild(11, child1)
         self.assertEqual(r.childCount(), 1)
         self.assertEqual(r.children(), [child1])
+        self.assertEqual(child1.parent(), r)
         child2 = QgsReportSectionLayout()
         r.insertChild(-1, child2)
         self.assertEqual(r.childCount(), 2)
         self.assertEqual(r.children(), [child2, child1])
+        self.assertEqual(child2.parent(), r)
 
     def testRemoveChild(self):
         p = QgsProject()
-        r = QgsReport()
+        r = QgsReport(p)
 
         child1 = QgsReportSectionLayout()
         r.appendChild(child1)
@@ -108,7 +116,7 @@ class TestQgsReport(unittest.TestCase):
 
     def testClone(self):
         p = QgsProject()
-        r = QgsReport()
+        r = QgsReport(p)
 
         child1 = QgsReportSectionLayout()
         child1.setHeaderEnabled(True)
@@ -121,8 +129,10 @@ class TestQgsReport(unittest.TestCase):
         self.assertEqual(cloned.childCount(), 2)
         self.assertTrue(cloned.child(0).headerEnabled())
         self.assertFalse(cloned.child(0).footerEnabled())
+        self.assertEqual(cloned.child(0).parent(), cloned)
         self.assertFalse(cloned.child(1).headerEnabled())
         self.assertTrue(cloned.child(1).footerEnabled())
+        self.assertEqual(cloned.child(1).parent(), cloned)
 
     def testReportSectionLayout(self):
         r = QgsReportSectionLayout()
@@ -133,7 +143,7 @@ class TestQgsReport(unittest.TestCase):
 
     def testIteration(self):
         p = QgsProject()
-        r = QgsReport()
+        r = QgsReport(p)
 
         # empty report
         self.assertTrue(r.beginRender())

@@ -20,9 +20,10 @@ class QgsAbstractReportSection : QgsAbstractLayoutIterator
 %End
   public:
 
-    QgsAbstractReportSection();
+    QgsAbstractReportSection( QgsAbstractReportSection *parent = 0 );
 %Docstring
-Constructor for QgsAbstractReportSection
+Constructor for QgsAbstractReportSection, attached to the specified ``parent`` section.
+Note that ownership is not transferred to ``parent``.
 %End
 
     ~QgsAbstractReportSection();
@@ -36,6 +37,16 @@ transferred to the caller.
 
 Subclasses should call copyCommonProperties() in their clone()
 implementations.
+%End
+
+    QgsAbstractReportSection *parent();
+%Docstring
+Returns the parent report section.
+%End
+
+    QgsProject *project();
+%Docstring
+Returns the associated project.
 %End
 
     virtual int count();
@@ -232,6 +243,11 @@ Copies the common properties of a report section to a ``destination`` section.
 This method should be called from clone() implementations.
 %End
 
+    void setParent( QgsAbstractReportSection *parent );
+%Docstring
+Sets the ``parent`` report section.
+%End
+
   private:
     QgsAbstractReportSection( const QgsAbstractReportSection &other );
 };
@@ -248,6 +264,12 @@ class QgsReportSectionLayout : QgsAbstractReportSection
 #include "qgsabstractreportsection.h"
 %End
   public:
+
+    QgsReportSectionLayout( QgsAbstractReportSection *parent = 0 );
+%Docstring
+Constructor for QgsReportSectionLayout, attached to the specified ``parent`` section.
+Note that ownership is not transferred to ``parent``.
+%End
 
     QgsLayout *body();
 %Docstring
@@ -290,9 +312,17 @@ subclasses.
 %End
   public:
 
-    QgsReport();
+    QgsReport( QgsProject *project );
 %Docstring
-Constructor for QgsReport.
+Constructor for QgsReport, associated with the specified
+``project``.
+
+Note that ownership is not transferred to ``project``.
+%End
+
+    QgsProject *project();
+%Docstring
+Returns the associated project.
 %End
 
     virtual QgsReport *clone() const /Factory/;

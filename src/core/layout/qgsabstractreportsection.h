@@ -31,8 +31,11 @@ class CORE_EXPORT QgsAbstractReportSection : public QgsAbstractLayoutIterator
 
   public:
 
-    //! Constructor for QgsAbstractReportSection
-    QgsAbstractReportSection() = default;
+    /**
+     * Constructor for QgsAbstractReportSection, attached to the specified \a parent section.
+     * Note that ownership is not transferred to \a parent.
+     */
+    QgsAbstractReportSection( QgsAbstractReportSection *parent = nullptr );
 
     ~QgsAbstractReportSection() override;
 
@@ -50,6 +53,16 @@ class CORE_EXPORT QgsAbstractReportSection : public QgsAbstractLayoutIterator
      * implementations.
      */
     virtual QgsAbstractReportSection *clone() const = 0 SIP_FACTORY;
+
+    /**
+     * Returns the parent report section.
+     */
+    QgsAbstractReportSection *parent() { return mParent; }
+
+    /**
+     * Returns the associated project.
+     */
+    QgsProject *project();
 
     // TODO - how to handle this?
     int count() override { return -1; }
@@ -208,7 +221,14 @@ class CORE_EXPORT QgsAbstractReportSection : public QgsAbstractLayoutIterator
      */
     void copyCommonProperties( QgsAbstractReportSection *destination ) const;
 
+    /**
+     * Sets the \a parent report section.
+     */
+    void setParent( QgsAbstractReportSection *parent ) { mParent = parent; }
+
   private:
+
+    QgsAbstractReportSection *mParent = nullptr;
 
     int mSectionNumber = 0;
     SubSection mNextSection = Header;
@@ -236,6 +256,12 @@ class CORE_EXPORT QgsAbstractReportSection : public QgsAbstractLayoutIterator
 class CORE_EXPORT QgsReportSectionLayout : public QgsAbstractReportSection
 {
   public:
+
+    /**
+     * Constructor for QgsReportSectionLayout, attached to the specified \a parent section.
+     * Note that ownership is not transferred to \a parent.
+     */
+    QgsReportSectionLayout( QgsAbstractReportSection *parent = nullptr );
 
     /**
      * Returns the body layout for the section.
@@ -277,10 +303,24 @@ class CORE_EXPORT QgsReport : public QgsAbstractReportSection
 
   public:
 
-    //! Constructor for QgsReport.
-    QgsReport() = default;
+    /**
+     * Constructor for QgsReport, associated with the specified
+     * \a project.
+     *
+     * Note that ownership is not transferred to \a project.
+     */
+    QgsReport( QgsProject *project );
+
+    /**
+     * Returns the associated project.
+     */
+    QgsProject *project() { return mProject; }
 
     QgsReport *clone() const override SIP_FACTORY;
+
+  private:
+
+    QgsProject *mProject = nullptr;
 
 };
 
