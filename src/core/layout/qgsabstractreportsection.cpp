@@ -24,7 +24,7 @@ QgsAbstractReportSection::~QgsAbstractReportSection()
 
 QString QgsAbstractReportSection::filePath( const QString &baseFilePath, const QString &extension )
 {
-  QString base = QDir( baseFilePath ).filePath( "report_" ) + QString::number( mSectionNumber );
+  QString base = QStringLiteral( "%1_%2" ).arg( baseFilePath ).arg( mSectionNumber, 4, 10, QChar( '0' ) );
   if ( !extension.startsWith( '.' ) )
     base += '.';
   base += extension;

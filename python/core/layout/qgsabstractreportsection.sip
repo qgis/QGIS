@@ -40,10 +40,8 @@ implementations.
 
     virtual int count();
 
+
     virtual QString filePath( const QString &baseFilePath, const QString &extension );
-
-
-
 
     virtual QgsLayout *layout();
 

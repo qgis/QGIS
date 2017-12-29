@@ -2081,7 +2081,8 @@ void QgsLayoutDesignerDialog::exportAtlasToRaster()
     feedback->cancel();
   } );
 
-  QgsLayoutExporter::ExportResult result = QgsLayoutExporter::exportToImage( printAtlas, dir, fileExt, settings, error, feedback.get() );
+  QString fileName = QDir( dir ).filePath( QStringLiteral( "atlas" ) ); // filename is overridden by atlas
+  QgsLayoutExporter::ExportResult result = QgsLayoutExporter::exportToImage( printAtlas, fileName, fileExt, settings, error, feedback.get() );
   QApplication::restoreOverrideCursor();
 
   switch ( result )
@@ -2231,7 +2232,8 @@ void QgsLayoutDesignerDialog::exportAtlasToSvg()
     feedback->cancel();
   } );
 
-  QgsLayoutExporter::ExportResult result = QgsLayoutExporter::exportToSvg( printAtlas, dir, svgSettings, error, feedback.get() );
+  QString filename = QDir( dir ).filePath( QStringLiteral( "atlas" ) ); // filename is overridden by atlas
+  QgsLayoutExporter::ExportResult result = QgsLayoutExporter::exportToSvg( printAtlas, filename, svgSettings, error, feedback.get() );
 
   QApplication::restoreOverrideCursor();
   switch ( result )
@@ -2406,7 +2408,7 @@ void QgsLayoutDesignerDialog::exportAtlasToPdf()
       return;
     }
 
-    outputFileName = dir;
+    outputFileName = QDir( dir ).filePath( QStringLiteral( "atlas" ) ); // filename is overridden by atlas
   }
 
   mView->setPaintingEnabled( false );

@@ -54,14 +54,11 @@ class CORE_EXPORT QgsAbstractReportSection : public QgsAbstractLayoutIterator
     // TODO - how to handle this?
     int count() override { return -1; }
 
-    //TODO - baseFilePath should be a filename, not directory
-    QString filePath( const QString &baseFilePath, const QString &extension ) override;
-
-
 #if 0 //TODO
     virtual void setContext( const QgsLayoutReportContext &context ) = 0;
 #endif
 
+    QString filePath( const QString &baseFilePath, const QString &extension ) override;
     QgsLayout *layout() override;
     bool beginRender() override;
     bool next() override;

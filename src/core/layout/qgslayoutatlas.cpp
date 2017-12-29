@@ -341,7 +341,9 @@ int QgsLayoutAtlas::count()
 
 QString QgsLayoutAtlas::filePath( const QString &baseFilePath, const QString &extension )
 {
-  QString base = QDir( baseFilePath ).filePath( mCurrentFilename );
+  QFileInfo fi( baseFilePath );
+  QDir dir = fi.dir(); // ignore everything except the directory
+  QString base = dir.filePath( mCurrentFilename );
   if ( !extension.startsWith( '.' ) )
     base += '.';
   base += extension;
