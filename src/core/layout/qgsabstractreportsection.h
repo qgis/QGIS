@@ -68,6 +68,12 @@ class CORE_EXPORT QgsAbstractReportSection : public QgsAbstractLayoutIterator
     bool endRender() override;
 
     /**
+     * Returns the next body layout to export, or a nullptr if
+     * no body layouts remain for this section.
+     */
+    virtual QgsLayout *nextBody() { return nullptr; }
+
+    /**
      * Returns true if the header for the section is enabled.
      * \see setHeaderEnabled()
      * \see header()
@@ -194,6 +200,7 @@ class CORE_EXPORT QgsAbstractReportSection : public QgsAbstractLayoutIterator
     {
       Header, //!< Header for section
       Body, //!< Body of section
+      Children, //!< Child sections
       Footer, //!< Footer for section
       End, //!< End of section (i.e. past all available content)
     };
@@ -248,7 +255,7 @@ class CORE_EXPORT QgsReportSectionLayout : public QgsAbstractReportSection
 
     QgsReportSectionLayout *clone() const override SIP_FACTORY;
     bool beginRender() override;
-    bool next() override;
+    QgsLayout *nextBody() override;
 
   private:
 

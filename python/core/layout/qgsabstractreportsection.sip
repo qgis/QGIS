@@ -54,6 +54,12 @@ implementations.
     virtual bool endRender();
 
 
+    virtual QgsLayout *nextBody();
+%Docstring
+Returns the next body layout to export, or a None if
+no body layouts remain for this section.
+%End
+
     bool headerEnabled() const;
 %Docstring
 Returns true if the header for the section is enabled.
@@ -217,6 +223,7 @@ Removes the child section at the specified ``index``, deleting it.
     {
       Header,
       Body,
+      Children,
       Footer,
       End,
     };
@@ -263,7 +270,7 @@ is transferred to the report section.
 
     virtual bool beginRender();
 
-    virtual bool next();
+    virtual QgsLayout *nextBody();
 
 
 };

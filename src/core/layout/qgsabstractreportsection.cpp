@@ -77,7 +77,19 @@ bool QgsAbstractReportSection::next()
 
     case Body:
     {
+      // if we have a body, use it
+      if ( QgsLayout *body = nextBody() )
+      {
+        mCurrentLayout = body;
+        return true;
+      }
 
+      mNextSection = Children;
+      FALLTHROUGH;
+    }
+
+    case Children:
+    {
       // we iterate through all the section's children...
       while ( mNextChild < mChildren.count() )
       {
@@ -227,15 +239,15 @@ bool QgsReportSectionLayout::beginRender()
   return QgsAbstractReportSection::beginRender();
 }
 
-bool QgsReportSectionLayout::next()
+QgsLayout *QgsReportSectionLayout::nextBody()
 {
-  if ( !mExportedBody )
+  if ( !mExportedBody && mBody )
   {
     mExportedBody = true;
-    return true;
+    return mBody.get();
   }
   else
   {
-    return false;
+    return nullptr;
   }
 }
