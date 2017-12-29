@@ -79,6 +79,22 @@ Sets the ``field`` associated with this section.
 .. seealso:: :py:func:`field()`
 %End
 
+    bool sortAscending() const;
+%Docstring
+Returns true if the field values should be sorted ascending,
+or false for descending sort.
+
+.. seealso:: :py:func:`setSortAscending()`
+%End
+
+    void setSortAscending( bool sortAscending );
+%Docstring
+Sets whether the field values should be sorted ascending. Set to true to sort
+ascending, or false for descending sort.
+
+.. seealso:: :py:func:`sortAscending()`
+%End
+
     virtual QgsReportSectionFieldGroup *clone() const /Factory/;
 
     virtual bool beginRender();

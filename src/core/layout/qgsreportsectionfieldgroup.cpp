@@ -39,6 +39,7 @@ QgsReportSectionFieldGroup *QgsReportSectionFieldGroup::clone() const
 
   copy->setLayer( mCoverageLayer.get() );
   copy->setField( mField );
+  copy->setSortAscending( mSortAscending );
 
   return copy.release();
 }
@@ -108,6 +109,7 @@ void QgsReportSectionFieldGroup::setParentSection( QgsAbstractReportSection *par
 bool QgsReportSectionFieldGroup::writePropertiesToElement( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
   element.setAttribute( QStringLiteral( "field" ), mField );
+  element.setAttribute( QStringLiteral( "ascending" ), mSortAscending ? "1" : "0" );
 
   if ( mCoverageLayer )
   {
@@ -129,6 +131,7 @@ bool QgsReportSectionFieldGroup::writePropertiesToElement( QDomElement &element,
 bool QgsReportSectionFieldGroup::readPropertiesFromElement( const QDomElement &element, const QDomDocument &doc, const QgsReadWriteContext &context )
 {
   mField = element.attribute( QStringLiteral( "field" ) );
+  mSortAscending = element.attribute( QStringLiteral( "ascending" ) ).toInt();
 
   QString layerId = element.attribute( QStringLiteral( "coverageLayer" ) );
   QString layerName = element.attribute( QStringLiteral( "coverageLayerName" ) );
@@ -148,13 +151,23 @@ bool QgsReportSectionFieldGroup::readPropertiesFromElement( const QDomElement &e
   return true;
 }
 
+bool QgsReportSectionFieldGroup::sortAscending() const
+{
+  return mSortAscending;
+}
+
+void QgsReportSectionFieldGroup::setSortAscending( bool sortAscending )
+{
+  mSortAscending = sortAscending;
+}
+
 QgsFeatureRequest QgsReportSectionFieldGroup::buildFeatureRequest() const
 {
   QgsFeatureRequest request;
   QString filter = context().layerFilters.value( mCoverageLayer.get() );
   if ( !filter.isEmpty() )
     request.setFilterExpression( filter );
-  request.addOrderBy( mField, true );
+  request.addOrderBy( mField, mSortAscending );
   return request;
 }
 

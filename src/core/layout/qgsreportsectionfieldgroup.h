@@ -83,6 +83,20 @@ class CORE_EXPORT QgsReportSectionFieldGroup : public QgsAbstractReportSection
      */
     void setField( const QString &field ) { mField = field; }
 
+    /**
+     * Returns true if the field values should be sorted ascending,
+     * or false for descending sort.
+     * \see setSortAscending()
+     */
+    bool sortAscending() const;
+
+    /**
+     * Sets whether the field values should be sorted ascending. Set to true to sort
+     * ascending, or false for descending sort.
+     * \see sortAscending()
+     */
+    void setSortAscending( bool sortAscending );
+
     QgsReportSectionFieldGroup *clone() const override SIP_FACTORY;
     bool beginRender() override;
     QgsLayout *nextBody( bool &ok ) override;
@@ -98,6 +112,7 @@ class CORE_EXPORT QgsReportSectionFieldGroup : public QgsAbstractReportSection
 
     QgsVectorLayerRef mCoverageLayer;
     QString mField;
+    bool mSortAscending = true;
     int mFieldIndex = -1;
     QgsFeatureIterator mFeatures;
     QSet< QVariant > mEncounteredValues;
