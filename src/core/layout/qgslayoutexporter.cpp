@@ -946,7 +946,11 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::renderToLayeredSvg( const Svg
   QBuffer svgBuffer;
   {
     QSvgGenerator generator;
-    generator.setTitle( mLayout->name() );
+    if ( const QgsMasterLayoutInterface *l = dynamic_cast< const QgsMasterLayoutInterface * >( mLayout.data() ) )
+      generator.setTitle( l->name() );
+    else if ( mLayout->project() )
+      generator.setTitle( mLayout->project()->title() );
+
     generator.setOutputDevice( &svgBuffer );
     generator.setSize( QSize( width, height ) );
     generator.setViewBox( QRect( 0, 0, width, height ) );

@@ -151,7 +151,7 @@ void TestQgsLayout::units()
 void TestQgsLayout::name()
 {
   QgsProject p;
-  QgsLayout layout( &p );
+  QgsPrintLayout layout( &p );
   QString layoutName = QStringLiteral( "test name" );
   layout.setName( layoutName );
   QCOMPARE( layout.name(), layoutName );
@@ -203,7 +203,7 @@ void TestQgsLayout::variablesEdited()
 void TestQgsLayout::scope()
 {
   QgsProject p;
-  QgsLayout l( &p );
+  QgsPrintLayout l( &p );
 
   // no crash
   std::unique_ptr< QgsExpressionContextScope > scope( QgsExpressionContextUtils::layoutScope( nullptr ) );

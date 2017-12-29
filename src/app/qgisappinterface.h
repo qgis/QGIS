@@ -238,7 +238,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
 
     void showLayoutManager() override;
     QList<QgsLayoutDesignerInterface *> openLayoutDesigners() override;
-    QgsLayoutDesignerInterface *openLayoutDesigner( QgsLayout *layout ) override;
+    QgsLayoutDesignerInterface *openLayoutDesigner( QgsMasterLayoutInterface *layout ) override;
 
     void showOptionsDialog( QWidget *parent = nullptr, const QString &currentPage = QString() ) override;
 

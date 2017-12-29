@@ -136,7 +136,7 @@ void QgsReportSectionFieldGroup::updateChildContexts( const QgsFeature &feature 
   QString newFilter = currentFilter.isEmpty() ? thisFilter : QStringLiteral( "(%1) AND (%2)" ).arg( currentFilter, thisFilter );
   c.layerFilters[ mCoverageLayer.get() ] = newFilter;
 
-  const QList< QgsAbstractReportSection * > sections = children();
+  const QList< QgsAbstractReportSection * > sections = childSections();
   for ( QgsAbstractReportSection *section : qgis::as_const( sections ) )
   {
     section->setContext( c );

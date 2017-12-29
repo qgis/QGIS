@@ -19,7 +19,7 @@
 #include "qgis_core.h"
 #include "qgis.h"
 #include "qgscomposition.h"
-#include "qgslayout.h"
+#include "qgsmasterlayoutinterface.h"
 #include <QObject>
 
 class QgsProject;
@@ -69,7 +69,7 @@ class CORE_EXPORT QgsLayoutManager : public QObject
      * \see removeLayout()
      * \see layoutAdded()
      */
-    bool addLayout( QgsLayout *layout SIP_TRANSFER );
+    bool addLayout( QgsMasterLayoutInterface *layout SIP_TRANSFER );
 
     /**
      * Removes a composition from the manager. The composition is deleted.
@@ -91,7 +91,7 @@ class CORE_EXPORT QgsLayoutManager : public QObject
      * \see layoutAboutToBeRemoved()
      * \see clear()
      */
-    bool removeLayout( QgsLayout *layout );
+    bool removeLayout( QgsMasterLayoutInterface *layout );
 
     /**
      * Removes and deletes all layouts from the manager.
@@ -107,7 +107,7 @@ class CORE_EXPORT QgsLayoutManager : public QObject
     /**
      * Returns a list of all layouts contained in the manager.
      */
-    QList< QgsLayout * > layouts() const;
+    QList< QgsMasterLayoutInterface * > layouts() const;
 
     /**
      * Returns the composition with a matching name, or nullptr if no matching compositions
@@ -119,7 +119,7 @@ class CORE_EXPORT QgsLayoutManager : public QObject
      * Returns the layout with a matching name, or nullptr if no matching layouts
      * were found.
      */
-    QgsLayout *layoutByName( const QString &name ) const;
+    QgsMasterLayoutInterface *layoutByName( const QString &name ) const;
 
     /**
      * Reads the manager's state from a DOM element, restoring all layouts
@@ -152,7 +152,7 @@ class CORE_EXPORT QgsLayoutManager : public QObject
      * layout will automatically be stored in the manager.
      * Returns new the layout if duplication was successful.
      */
-    QgsLayout *duplicateLayout( const QgsLayout *layout, const QString &newName );
+    QgsMasterLayoutInterface *duplicateLayout( const QgsMasterLayoutInterface *layout, const QString &newName );
 
     /**
      * Generates a unique title for a new composition, which does not
@@ -196,14 +196,14 @@ class CORE_EXPORT QgsLayoutManager : public QObject
     void compositionRenamed( QgsComposition *composition, const QString &newName );
 
     //! Emitted when a layout is renamed
-    void layoutRenamed( QgsLayout *layout, const QString &newName );
+    void layoutRenamed( QgsMasterLayoutInterface *layout, const QString &newName );
 
   private:
 
     QgsProject *mProject = nullptr;
 
     QList< QgsComposition * > mCompositions;
-    QList< QgsLayout * > mLayouts;
+    QList< QgsMasterLayoutInterface * > mLayouts;
 
     QgsComposition *createCompositionFromXml( const QDomElement &element, const QDomDocument &doc ) const;
 

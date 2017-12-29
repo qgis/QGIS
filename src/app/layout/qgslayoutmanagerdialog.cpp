@@ -27,6 +27,7 @@
 #include "qgsproject.h"
 #include "qgsgui.h"
 #include "qgsprintlayout.h"
+#include "qgsreport.h"
 
 #include <QDesktopServices>
 #include <QDialog>
@@ -246,7 +247,7 @@ void QgsLayoutManagerDialog::mAddButton_clicked()
     title = QgsProject::instance()->layoutManager()->generateUniqueTitle();
   }
 
-  std::unique_ptr< QgsLayout > layout = qgis::make_unique< QgsPrintLayout >( QgsProject::instance() );
+  std::unique_ptr< QgsPrintLayout > layout = qgis::make_unique< QgsPrintLayout >( QgsProject::instance() );
   if ( loadingTemplate )
   {
     bool loadedOK = false;
@@ -353,11 +354,11 @@ void QgsLayoutManagerDialog::removeClicked()
     return;
   }
 
-  QList<QgsLayout *> layoutList;
+  QList<QgsMasterLayoutInterface *> layoutList;
   // Find the layouts that need to be deleted
   for ( const QModelIndex &index : layoutItems )
   {
-    QgsLayout *l = mModel->layoutFromIndex( index );
+    QgsMasterLayoutInterface *l = mModel->layoutFromIndex( index );
     if ( l )
     {
       layoutList << l;
@@ -365,7 +366,7 @@ void QgsLayoutManagerDialog::removeClicked()
   }
 
   // Once we have the layout list, we can delete all of them !
-  for ( QgsLayout *l : qgis::as_const( layoutList ) )
+  for ( QgsMasterLayoutInterface *l : qgis::as_const( layoutList ) )
   {
     QgsProject::instance()->layoutManager()->removeLayout( l );
   }
@@ -376,7 +377,7 @@ void QgsLayoutManagerDialog::showClicked()
   const QModelIndexList layoutItems = mLayoutListView->selectionModel()->selectedRows();
   for ( const QModelIndex &index : layoutItems )
   {
-    if ( QgsLayout *l = mModel->layoutFromIndex( index ) )
+    if ( QgsMasterLayoutInterface *l = mModel->layoutFromIndex( index ) )
     {
       QgisApp::instance()->openLayoutDesignerDialog( l );
     }
@@ -390,7 +391,7 @@ void QgsLayoutManagerDialog::duplicateClicked()
     return;
   }
 
-  QgsLayout *currentLayout = mModel->layoutFromIndex( mLayoutListView->selectionModel()->selectedRows().at( 0 ) );
+  QgsMasterLayoutInterface *currentLayout = mModel->layoutFromIndex( mLayoutListView->selectionModel()->selectedRows().at( 0 ) );
   if ( !currentLayout )
     return;
   QString currentTitle = currentLayout->name();
@@ -430,7 +431,7 @@ void QgsLayoutManagerDialog::renameClicked()
     return;
   }
 
-  QgsLayout *currentLayout = mModel->layoutFromIndex( mLayoutListView->selectionModel()->selectedRows().at( 0 ) );
+  QgsMasterLayoutInterface *currentLayout = mModel->layoutFromIndex( mLayoutListView->selectionModel()->selectedRows().at( 0 ) );
   if ( !currentLayout )
     return;
 
@@ -445,7 +446,7 @@ void QgsLayoutManagerDialog::renameClicked()
 
 void QgsLayoutManagerDialog::itemDoubleClicked( const QModelIndex &index )
 {
-  if ( QgsLayout *l = mModel->layoutFromIndex( index ) )
+  if ( QgsMasterLayoutInterface *l = mModel->layoutFromIndex( index ) )
   {
     QgisApp::instance()->openLayoutDesignerDialog( l );
   }
@@ -485,7 +486,14 @@ QVariant QgsLayoutManagerModel::data( const QModelIndex &index, int role ) const
       return mLayoutManager->layouts().at( index.row() )->name();
 
     case LayoutRole:
-      return QVariant::fromValue( mLayoutManager->layouts().at( index.row() ) );
+    {
+      if ( QgsLayout *l = dynamic_cast< QgsLayout * >( mLayoutManager->layouts().at( index.row() ) ) )
+        return QVariant::fromValue( l );
+      else if ( QgsReport *r = dynamic_cast< QgsReport * >( mLayoutManager->layouts().at( index.row() ) ) )
+        return QVariant::fromValue( r );
+      else
+        return QVariant();
+    }
 
     default:
       return QVariant();
@@ -506,7 +514,7 @@ bool QgsLayoutManagerModel::setData( const QModelIndex &index, const QVariant &v
   if ( value.toString().isEmpty() )
     return false;
 
-  QgsLayout *layout = layoutFromIndex( index );
+  QgsMasterLayoutInterface *layout = layoutFromIndex( index );
   if ( !layout )
     return false;
 
@@ -517,8 +525,8 @@ bool QgsLayoutManagerModel::setData( const QModelIndex &index, const QVariant &v
 
   //check if name already exists
   QStringList layoutNames;
-  const QList< QgsLayout * > layouts = QgsProject::instance()->layoutManager()->layouts();
-  for ( QgsLayout *l : layouts )
+  const QList< QgsMasterLayoutInterface * > layouts = QgsProject::instance()->layoutManager()->layouts();
+  for ( QgsMasterLayoutInterface *l : layouts )
   {
     layoutNames << l->name();
   }
@@ -549,9 +557,14 @@ Qt::ItemFlags QgsLayoutManagerModel::flags( const QModelIndex &index ) const
   return flags;
 }
 
-QgsLayout *QgsLayoutManagerModel::layoutFromIndex( const QModelIndex &index ) const
+QgsMasterLayoutInterface *QgsLayoutManagerModel::layoutFromIndex( const QModelIndex &index ) const
 {
-  return qobject_cast< QgsLayout * >( qvariant_cast<QObject *>( data( index, LayoutRole ) ) );
+  if ( QgsPrintLayout *l = qobject_cast< QgsPrintLayout * >( qvariant_cast<QObject *>( data( index, LayoutRole ) ) ) )
+    return l;
+  else if ( QgsReport *r = qobject_cast< QgsReport * >( qvariant_cast<QObject *>( data( index, LayoutRole ) ) ) )
+    return r;
+  else
+    return nullptr;
 }
 
 void QgsLayoutManagerModel::layoutAboutToBeAdded( const QString & )
@@ -562,7 +575,7 @@ void QgsLayoutManagerModel::layoutAboutToBeAdded( const QString & )
 
 void QgsLayoutManagerModel::layoutAboutToBeRemoved( const QString &name )
 {
-  QgsLayout *l = mLayoutManager->layoutByName( name );
+  QgsMasterLayoutInterface *l = mLayoutManager->layoutByName( name );
   int row = mLayoutManager->layouts().indexOf( l );
   if ( row >= 0 )
     beginRemoveRows( QModelIndex(), row, row );
@@ -578,7 +591,7 @@ void QgsLayoutManagerModel::layoutRemoved( const QString & )
   endRemoveRows();
 }
 
-void QgsLayoutManagerModel::layoutRenamed( QgsLayout *layout, const QString & )
+void QgsLayoutManagerModel::layoutRenamed( QgsMasterLayoutInterface *layout, const QString & )
 {
   int row = mLayoutManager->layouts().indexOf( layout );
   QModelIndex index = createIndex( row, 0 );

@@ -205,7 +205,7 @@ sections form the body of the report section.
 .. seealso:: :py:func:`children()`
 %End
 
-    QList< QgsAbstractReportSection * > children() const;
+    QList< QgsAbstractReportSection * > childSections() const;
 %Docstring
 Return all child sections for this report section. The child
 sections form the body of the report section.
@@ -221,7 +221,7 @@ sections form the body of the report section.
 .. seealso:: :py:func:`removeChild()`
 %End
 
-    QgsAbstractReportSection *child( int index );
+    QgsAbstractReportSection *childSection( int index );
 %Docstring
 Returns the child section at the specified ``index``.
 

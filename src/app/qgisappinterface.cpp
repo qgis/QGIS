@@ -474,7 +474,7 @@ QList<QgsLayoutDesignerInterface *> QgisAppInterface::openLayoutDesigners()
   return designerInterfaceList;
 }
 
-QgsLayoutDesignerInterface *QgisAppInterface::openLayoutDesigner( QgsLayout *layout )
+QgsLayoutDesignerInterface *QgisAppInterface::openLayoutDesigner( QgsMasterLayoutInterface *layout )
 {
   QgsLayoutDesignerDialog *designer = qgis->openLayoutDesignerDialog( layout );
   if ( designer )

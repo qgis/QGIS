@@ -34,6 +34,7 @@ class QgsFeature;
 class QgsLayerTreeMapCanvasBridge;
 class QgsLayerTreeView;
 class QgsLayout;
+class QgsMasterLayoutInterface;
 class QgsLayoutDesignerInterface;
 class QgsMapCanvas;
 class QgsMapLayer;
@@ -560,7 +561,7 @@ class GUI_EXPORT QgisInterface : public QObject
      * \since QGIS 3.0
      * \see closeComposer()
      */
-    virtual QgsLayoutDesignerInterface *openLayoutDesigner( QgsLayout *layout ) = 0;
+    virtual QgsLayoutDesignerInterface *openLayoutDesigner( QgsMasterLayoutInterface *layout ) = 0;
 
     /**
      * Opens the options dialog. The \a currentPage argument can be used to force

@@ -19,6 +19,7 @@
 #include "qgslogger.h"
 #include "qgslayoutundostack.h"
 #include "qgsprintlayout.h"
+#include "qgsreport.h"
 
 QgsLayoutManager::QgsLayoutManager( QgsProject *project )
   : QObject( project )
@@ -55,22 +56,34 @@ bool QgsLayoutManager::addComposition( QgsComposition *composition )
   return true;
 }
 
-bool QgsLayoutManager::addLayout( QgsLayout *layout )
+bool QgsLayoutManager::addLayout( QgsMasterLayoutInterface *layout )
 {
   if ( !layout )
     return false;
 
   // check for duplicate name
-  for ( QgsLayout *l : qgis::as_const( mLayouts ) )
+  for ( QgsMasterLayoutInterface *l : qgis::as_const( mLayouts ) )
   {
     if ( l->name() == layout->name() )
       return false;
   }
 
-  connect( layout, &QgsLayout::nameChanged, this, [this, layout]( const QString & newName )
+  // ugly, but unavoidable for interfaces...
+  if ( QgsPrintLayout *l = dynamic_cast< QgsPrintLayout * >( layout ) )
   {
-    emit layoutRenamed( layout, newName );
-  } );
+    connect( l, &QgsPrintLayout::nameChanged, this, [this, l]( const QString & newName )
+    {
+      emit layoutRenamed( l, newName );
+    } );
+  }
+  else if ( QgsReport *r = dynamic_cast< QgsReport * >( layout ) )
+  {
+    connect( r, &QgsReport::nameChanged, this, [this, r]( const QString & newName )
+    {
+      emit layoutRenamed( r, newName );
+    } );
+  }
+
   emit layoutAboutToBeAdded( layout->name() );
   mLayouts << layout;
   emit layoutAdded( layout->name() );
@@ -95,7 +108,7 @@ bool QgsLayoutManager::removeComposition( QgsComposition *composition )
   return true;
 }
 
-bool QgsLayoutManager::removeLayout( QgsLayout *layout )
+bool QgsLayoutManager::removeLayout( QgsMasterLayoutInterface *layout )
 {
   if ( !layout )
     return false;
@@ -118,8 +131,8 @@ void QgsLayoutManager::clear()
   {
     removeComposition( c );
   }
-  const QList< QgsLayout * > layouts = mLayouts;
-  for ( QgsLayout *l : layouts )
+  const QList< QgsMasterLayoutInterface * > layouts = mLayouts;
+  for ( QgsMasterLayoutInterface *l : layouts )
   {
     removeLayout( l );
   }
@@ -130,7 +143,7 @@ QList<QgsComposition *> QgsLayoutManager::compositions() const
   return mCompositions;
 }
 
-QList<QgsLayout *> QgsLayoutManager::layouts() const
+QList<QgsMasterLayoutInterface *> QgsLayoutManager::layouts() const
 {
   return mLayouts;
 }
@@ -145,9 +158,9 @@ QgsComposition *QgsLayoutManager::compositionByName( const QString &name ) const
   return nullptr;
 }
 
-QgsLayout *QgsLayoutManager::layoutByName( const QString &name ) const
+QgsMasterLayoutInterface *QgsLayoutManager::layoutByName( const QString &name ) const
 {
-  for ( QgsLayout *l : mLayouts )
+  for ( QgsMasterLayoutInterface *l : mLayouts )
   {
     if ( l->name() == name )
       return l;
@@ -194,9 +207,9 @@ bool QgsLayoutManager::readXml( const QDomElement &element, const QDomDocument &
   const QDomNodeList layoutNodes = element.elementsByTagName( QStringLiteral( "Layout" ) );
   for ( int i = 0; i < layoutNodes.size(); ++i )
   {
-    std::unique_ptr< QgsLayout > l = qgis::make_unique< QgsPrintLayout >( mProject );
+    std::unique_ptr< QgsPrintLayout > l = qgis::make_unique< QgsPrintLayout >( mProject );
     l->undoStack()->blockCommands( true );
-    if ( !l->readXml( layoutNodes.at( i ).toElement(), doc, context ) )
+    if ( !l->readLayoutXml( layoutNodes.at( i ).toElement(), doc, context ) )
     {
       result = false;
       continue;
@@ -205,6 +218,25 @@ bool QgsLayoutManager::readXml( const QDomElement &element, const QDomDocument &
     if ( addLayout( l.get() ) )
     {
       ( void )l.release(); // ownership was transferred successfully
+    }
+    else
+    {
+      result = false;
+    }
+  }
+  //reports
+  const QDomNodeList reportNodes = element.elementsByTagName( QStringLiteral( "Report" ) );
+  for ( int i = 0; i < reportNodes.size(); ++i )
+  {
+    std::unique_ptr< QgsReport > r = qgis::make_unique< QgsReport >( mProject );
+    if ( !r->readLayoutXml( reportNodes.at( i ).toElement(), doc, context ) )
+    {
+      result = false;
+      continue;
+    }
+    if ( addLayout( r.get() ) )
+    {
+      ( void )r.release(); // ownership was transferred successfully
     }
     else
     {
@@ -226,11 +258,12 @@ QDomElement QgsLayoutManager::writeXml( QDomDocument &doc ) const
     c->writeXml( composerElem, doc );
     c->atlasComposition().writeXml( composerElem, doc );
   }
+
   QgsReadWriteContext context;
   context.setPathResolver( mProject->pathResolver() );
-  for ( QgsLayout *l : mLayouts )
+  for ( QgsMasterLayoutInterface *l : mLayouts )
   {
-    QDomElement layoutElem = l->writeXml( doc, context );
+    QDomElement layoutElem = l->writeLayoutXml( doc, context );
     layoutsElem.appendChild( layoutElem );
   }
   return layoutsElem;
@@ -281,16 +314,16 @@ QgsComposition *QgsLayoutManager::duplicateComposition( const QString &name, con
   }
 }
 
-QgsLayout *QgsLayoutManager::duplicateLayout( const QgsLayout *layout, const QString &newName )
+QgsMasterLayoutInterface *QgsLayoutManager::duplicateLayout( const QgsMasterLayoutInterface *layout, const QString &newName )
 {
-  std::unique_ptr< QgsLayout > newLayout( layout->clone() );
+  std::unique_ptr< QgsMasterLayoutInterface > newLayout( layout->clone() );
   if ( !newLayout )
   {
     return nullptr;
   }
 
   newLayout->setName( newName );
-  QgsLayout *l = newLayout.get();
+  QgsMasterLayoutInterface *l = newLayout.get();
   if ( !addLayout( l ) )
   {
     return nullptr;
@@ -322,7 +355,7 @@ QString QgsLayoutManager::generateUniqueComposerTitle() const
 QString QgsLayoutManager::generateUniqueTitle() const
 {
   QStringList names;
-  for ( QgsLayout *l : mLayouts )
+  for ( QgsMasterLayoutInterface *l : mLayouts )
   {
     names << l->name();
   }

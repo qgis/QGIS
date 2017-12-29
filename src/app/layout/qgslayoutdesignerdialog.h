@@ -46,6 +46,7 @@ class QgsLayoutPropertiesWidget;
 class QgsMessageBar;
 class QgsLayoutAtlas;
 class QgsFeature;
+class QgsMasterLayoutInterface;
 
 class QgsAppLayoutDesignerInterface : public QgsLayoutDesignerInterface
 {
@@ -54,6 +55,7 @@ class QgsAppLayoutDesignerInterface : public QgsLayoutDesignerInterface
   public:
     QgsAppLayoutDesignerInterface( QgsLayoutDesignerDialog *dialog );
     QgsLayout *layout() override;
+    QgsMasterLayoutInterface *masterLayout() override;
     QgsLayoutView *view() override;
     QgsMessageBar *messageBar() override;
     void selectItems( const QList< QgsLayoutItem * > items ) override;
@@ -94,6 +96,18 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
      * Returns the layout view utilized by the designer.
      */
     QgsLayoutView *view();
+
+    /**
+     * Sets the current master \a layout to edit in the designer.
+     * \see masterLayout()
+     */
+    void setMasterLayout( QgsMasterLayoutInterface *layout );
+
+    /**
+     * Returns the current master layout associated with the designer.
+     * \see setMasterLayout()
+     */
+    QgsMasterLayoutInterface *masterLayout();
 
     /**
      * Sets the current \a layout to edit in the designer.
@@ -305,6 +319,8 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     static bool sInitializedRegistry;
 
     QgsAppLayoutDesignerInterface *mInterface = nullptr;
+
+    QgsMasterLayoutInterface *mMasterLayout = nullptr;
 
     QgsLayout *mLayout = nullptr;
 

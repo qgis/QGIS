@@ -7352,8 +7352,8 @@ bool QgisApp::uniqueLayoutTitle( QWidget *parent, QString &title, bool acceptEmp
 
   QStringList layoutNames;
   layoutNames << newTitle;
-  const QList< QgsLayout * > layouts = QgsProject::instance()->layoutManager()->layouts();
-  for ( QgsLayout *l : layouts )
+  const QList< QgsMasterLayoutInterface * > layouts = QgsProject::instance()->layoutManager()->layouts();
+  for ( QgsMasterLayoutInterface *l : layouts )
   {
     layoutNames << l->name();
   }
@@ -7451,19 +7451,19 @@ QgsLayoutDesignerDialog *QgisApp::createNewLayout( QString title )
     title = QgsProject::instance()->layoutManager()->generateUniqueTitle();
   }
   //create new layout object
-  QgsLayout *layout = new QgsPrintLayout( QgsProject::instance() );
+  QgsPrintLayout *layout = new QgsPrintLayout( QgsProject::instance() );
   layout->setName( title );
   layout->initializeDefaults();
   QgsProject::instance()->layoutManager()->addLayout( layout );
   return openLayoutDesignerDialog( layout );
 }
 
-QgsLayoutDesignerDialog *QgisApp::openLayoutDesignerDialog( QgsLayout *layout )
+QgsLayoutDesignerDialog *QgisApp::openLayoutDesignerDialog( QgsMasterLayoutInterface *layout )
 {
   // maybe a designer already open for this layout
   Q_FOREACH ( QgsLayoutDesignerDialog *designer, mLayoutDesignerDialogs )
   {
-    if ( designer->currentLayout() == layout )
+    if ( designer->masterLayout() == layout )
     {
       designer->show();
       designer->activate();
@@ -7474,7 +7474,7 @@ QgsLayoutDesignerDialog *QgisApp::openLayoutDesignerDialog( QgsLayout *layout )
 
   //nope, so make a new one
   QgsLayoutDesignerDialog *newDesigner = new QgsLayoutDesignerDialog( this );
-  newDesigner->setCurrentLayout( layout );
+  newDesigner->setMasterLayout( layout );
   connect( newDesigner, &QgsLayoutDesignerDialog::aboutToClose, this, [this, newDesigner]
   {
     emit layoutDesignerWillBeClosed( newDesigner->iface() );
@@ -7522,7 +7522,7 @@ QgsComposer *QgisApp::duplicateComposer( QgsComposer *currentComposer, QString t
   return newComposer;
 }
 
-QgsLayoutDesignerDialog *QgisApp::duplicateLayout( QgsLayout *layout, const QString &t )
+QgsLayoutDesignerDialog *QgisApp::duplicateLayout( QgsMasterLayoutInterface *layout, const QString &t )
 {
   QString title = t;
   if ( title.isEmpty() )
@@ -7531,7 +7531,7 @@ QgsLayoutDesignerDialog *QgisApp::duplicateLayout( QgsLayout *layout, const QStr
     title = tr( "%1 copy" ).arg( layout->name() );
   }
 
-  QgsLayout *newLayout = QgsProject::instance()->layoutManager()->duplicateLayout( layout, title );
+  QgsMasterLayoutInterface *newLayout = QgsProject::instance()->layoutManager()->duplicateLayout( layout, title );
   QgsLayoutDesignerDialog *dlg = openLayoutDesignerDialog( newLayout );
   dlg->activate();
   return dlg;

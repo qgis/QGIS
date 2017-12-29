@@ -143,7 +143,7 @@ class CORE_EXPORT QgsAbstractReportSection : public QgsAbstractLayoutIterator
      * \see headerEnabled()
      * \see header()
      */
-    void setHeader( QgsLayout *header SIP_TRANSFER ) { mHeader.reset( header ); }
+    void setHeader( QgsLayout *header SIP_TRANSFER );
 
     /**
      * Returns true if the footer for the section is enabled.
@@ -178,7 +178,7 @@ class CORE_EXPORT QgsAbstractReportSection : public QgsAbstractLayoutIterator
      * \see footerEnabled()
      * \see footer()
      */
-    void setFooter( QgsLayout *footer SIP_TRANSFER ) { mFooter.reset( footer ); }
+    void setFooter( QgsLayout *footer SIP_TRANSFER );
 
     /**
      * Return the number of child sections for this report section. The child
@@ -196,13 +196,13 @@ class CORE_EXPORT QgsAbstractReportSection : public QgsAbstractLayoutIterator
      * \see insertChild()
      * \see removeChild()
      */
-    QList< QgsAbstractReportSection * > children() const { return mChildren; }
+    QList< QgsAbstractReportSection * > childSections() const { return mChildren; }
 
     /**
      * Returns the child section at the specified \a index.
      * \see children()
      */
-    QgsAbstractReportSection *child( int index );
+    QgsAbstractReportSection *childSection( int index );
 
     /**
      * Adds a child \a section, transferring ownership of the section to this section.

@@ -134,12 +134,6 @@ QgsLayoutModel *QgsLayout::itemsModel()
   return mItemsModel.get();
 }
 
-void QgsLayout::setName( const QString &name )
-{
-  mName = name;
-  emit nameChanged( name );
-}
-
 QList<QgsLayoutItem *> QgsLayout::selectedLayoutItems( const bool includeLockedItems )
 {
   QList<QgsLayoutItem *> layoutItemList;
@@ -761,7 +755,6 @@ void QgsLayout::refresh()
 void QgsLayout::writeXmlLayoutSettings( QDomElement &element, QDomDocument &document, const QgsReadWriteContext & ) const
 {
   mCustomProperties.writeXml( element, document );
-  element.setAttribute( QStringLiteral( "name" ), mName );
   element.setAttribute( QStringLiteral( "units" ), QgsUnitTypes::encodeUnit( mUnits ) );
   element.setAttribute( QStringLiteral( "worldFileMap" ), mWorldFileMapId );
   element.setAttribute( QStringLiteral( "printResolution" ), mRenderContext->dpi() );
@@ -805,7 +798,6 @@ QDomElement QgsLayout::writeXml( QDomDocument &document, const QgsReadWriteConte
 bool QgsLayout::readXmlLayoutSettings( const QDomElement &layoutElement, const QDomDocument &, const QgsReadWriteContext & )
 {
   mCustomProperties.readXml( layoutElement );
-  setName( layoutElement.attribute( QStringLiteral( "name" ) ) );
   setUnits( QgsUnitTypes::decodeLayoutUnit( layoutElement.attribute( QStringLiteral( "units" ) ) ) );
   mWorldFileMapId = layoutElement.attribute( QStringLiteral( "worldFileMap" ) );
   mRenderContext->setDpi( layoutElement.attribute( QStringLiteral( "printResolution" ), "300" ).toDouble() );

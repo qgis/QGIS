@@ -18,7 +18,7 @@
 
 #include "qgis_core.h"
 #include "qgsabstractreportsection.h"
-
+#include "qgsmasterlayoutinterface.h"
 
 ///@cond NOT_STABLE
 
@@ -37,8 +37,10 @@
  *
  * \since QGIS 3.0
  */
-class CORE_EXPORT QgsReport : public QgsAbstractReportSection
+class CORE_EXPORT QgsReport : public QObject, public QgsAbstractReportSection, public QgsMasterLayoutInterface
 {
+
+    Q_OBJECT
 
   public:
 
@@ -50,16 +52,25 @@ class CORE_EXPORT QgsReport : public QgsAbstractReportSection
      */
     QgsReport( QgsProject *project );
 
-    /**
-     * Returns the associated project.
-     */
-    QgsProject *project() { return mProject; }
-
+    QgsProject *layoutProject() const override { return mProject; }
     QgsReport *clone() const override SIP_FACTORY;
+    QString name() const override { return mName; }
+    void setName( const QString &name ) override;
+    QDomElement writeLayoutXml( QDomDocument &document, const QgsReadWriteContext &context ) const override;
+    bool readLayoutXml( const QDomElement &layoutElement, const QDomDocument &document, const QgsReadWriteContext &context ) override;
+
+  signals:
+
+    /**
+     * Emitted when the report's name is changed.
+     * \see setName()
+     */
+    void nameChanged( const QString &name );
 
   private:
 
     QgsProject *mProject = nullptr;
+    QString mName;
 
 };
 

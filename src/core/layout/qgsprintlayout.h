@@ -27,9 +27,10 @@ class QgsLayoutAtlas;
  * \brief Print layout, a QgsLayout subclass for static or atlas-based layouts.
  * \since QGIS 3.0
  */
-class CORE_EXPORT QgsPrintLayout : public QgsLayout
+class CORE_EXPORT QgsPrintLayout : public QgsLayout, public QgsMasterLayoutInterface
 {
     Q_OBJECT
+    Q_PROPERTY( QString name READ name WRITE setName NOTIFY nameChanged )
 
   public:
 
@@ -39,18 +40,35 @@ class CORE_EXPORT QgsPrintLayout : public QgsLayout
     QgsPrintLayout( QgsProject *project );
 
     QgsPrintLayout *clone() const override SIP_FACTORY;
+    QgsProject *layoutProject() const override;
 
     /**
      * Returns the print layout's atlas.
      */
     QgsLayoutAtlas *atlas();
 
+    QString name() const override { return mName; }
+    void setName( const QString &name ) override;
+
     QDomElement writeXml( QDomDocument &document, const QgsReadWriteContext &context ) const override;
     bool readXml( const QDomElement &layoutElement, const QDomDocument &document, const QgsReadWriteContext &context ) override;
+
+    // QgsLayoutInterface
+    QDomElement writeLayoutXml( QDomDocument &document, const QgsReadWriteContext &context ) const override;
+    bool readLayoutXml( const QDomElement &layoutElement, const QDomDocument &document, const QgsReadWriteContext &context ) override;
     QgsExpressionContext createExpressionContext() const override;
+
+  signals:
+
+    /**
+     * Emitted when the layout's name is changed.
+     * \see setName()
+     */
+    void nameChanged( const QString &name );
 
   private:
 
+    QString mName;
     QgsLayoutAtlas *mAtlas = nullptr;
 
 };

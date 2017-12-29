@@ -43,14 +43,26 @@ QgsPrintLayout *QgsPrintLayout::clone() const
   return newLayout.release();
 }
 
+QgsProject *QgsPrintLayout::layoutProject() const
+{
+  return project();
+}
+
 QgsLayoutAtlas *QgsPrintLayout::atlas()
 {
   return mAtlas;
 }
 
+void QgsPrintLayout::setName( const QString &name )
+{
+  mName = name;
+  emit nameChanged( name );
+}
+
 QDomElement QgsPrintLayout::writeXml( QDomDocument &document, const QgsReadWriteContext &context ) const
 {
   QDomElement layoutElem = QgsLayout::writeXml( document, context );
+  layoutElem.setAttribute( QStringLiteral( "name" ), mName );
   mAtlas->writeXml( layoutElem, document, context );
   return layoutElem;
 }
@@ -62,7 +74,20 @@ bool QgsPrintLayout::readXml( const QDomElement &layoutElement, const QDomDocume
 
   QDomElement atlasElem = layoutElement.firstChildElement( QStringLiteral( "Atlas" ) );
   mAtlas->readXml( atlasElem, document, context );
+
+  setName( layoutElement.attribute( QStringLiteral( "name" ) ) );
+
   return true;
+}
+
+QDomElement QgsPrintLayout::writeLayoutXml( QDomDocument &document, const QgsReadWriteContext &context ) const
+{
+  return writeXml( document, context );
+}
+
+bool QgsPrintLayout::readLayoutXml( const QDomElement &layoutElement, const QDomDocument &document, const QgsReadWriteContext &context )
+{
+  return readXml( layoutElement, document, context );
 }
 
 QgsExpressionContext QgsPrintLayout::createExpressionContext() const

@@ -9,8 +9,7 @@
 
 
 
-
-class QgsReport : QgsAbstractReportSection
+class QgsReport : QObject, QgsAbstractReportSection, QgsMasterLayoutInterface
 {
 %Docstring
  Represents a report for use with the QgsLayout engine.
@@ -39,13 +38,25 @@ Constructor for QgsReport, associated with the specified
 Note that ownership is not transferred to ``project``.
 %End
 
-    QgsProject *project();
-%Docstring
-Returns the associated project.
-%End
-
+    virtual QgsProject *layoutProject() const;
     virtual QgsReport *clone() const /Factory/;
 
+    virtual QString name() const;
+    virtual void setName( const QString &name );
+
+    virtual QDomElement writeLayoutXml( QDomDocument &document, const QgsReadWriteContext &context ) const;
+
+    virtual bool readLayoutXml( const QDomElement &layoutElement, const QDomDocument &document, const QgsReadWriteContext &context );
+
+
+  signals:
+
+    void nameChanged( const QString &name );
+%Docstring
+Emitted when the report's name is changed.
+
+.. seealso:: :py:func:`setName()`
+%End
 
 };
 

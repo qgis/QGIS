@@ -62,6 +62,7 @@ class QgsGeometry;
 class QgsLayerTreeMapCanvasBridge;
 class QgsLayerTreeView;
 class QgsLayout;
+class QgsMasterLayoutInterface;
 class QgsLayoutCustomDropHandler;
 class QgsLayoutDesignerDialog;
 class QgsLayoutDesignerInterface;
@@ -392,7 +393,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * Opens a layout designer dialog for an existing \a layout.
      * If a designer already exists for this layout then it will be activated.
      */
-    QgsLayoutDesignerDialog *openLayoutDesignerDialog( QgsLayout *layout );
+    QgsLayoutDesignerDialog *openLayoutDesignerDialog( QgsMasterLayoutInterface *layout );
 
     //! Deletes a composer and removes entry from Set
     void deleteComposer( QgsComposer *c );
@@ -408,7 +409,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * If \a title is set, it will be used as the title for the new layout. If it is not set,
      * and auto-generated title will be used instead.
      */
-    QgsLayoutDesignerDialog *duplicateLayout( QgsLayout *layout, const QString &title = QString() );
+    QgsLayoutDesignerDialog *duplicateLayout( QgsMasterLayoutInterface *layout, const QString &title = QString() );
 
     //! Overloaded function used to sort menu entries alphabetically
     QMenu *createPopupMenu() override;

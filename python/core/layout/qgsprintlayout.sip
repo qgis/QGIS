@@ -8,7 +8,7 @@
 
 
 
-class QgsPrintLayout : QgsLayout
+class QgsPrintLayout : QgsLayout, QgsMasterLayoutInterface
 {
 %Docstring
  Print layout, a QgsLayout subclass for static or atlas-based layouts.
@@ -28,18 +28,38 @@ Constructor for QgsPrintLayout.
 
     virtual QgsPrintLayout *clone() const /Factory/;
 
+    virtual QgsProject *layoutProject() const;
+
 
     QgsLayoutAtlas *atlas();
 %Docstring
 Returns the print layout's atlas.
 %End
 
+    virtual QString name() const;
+    virtual void setName( const QString &name );
+
+
     virtual QDomElement writeXml( QDomDocument &document, const QgsReadWriteContext &context ) const;
 
     virtual bool readXml( const QDomElement &layoutElement, const QDomDocument &document, const QgsReadWriteContext &context );
 
+
+    virtual QDomElement writeLayoutXml( QDomDocument &document, const QgsReadWriteContext &context ) const;
+
+    virtual bool readLayoutXml( const QDomElement &layoutElement, const QDomDocument &document, const QgsReadWriteContext &context );
+
     virtual QgsExpressionContext createExpressionContext() const;
 
+
+  signals:
+
+    void nameChanged( const QString &name );
+%Docstring
+Emitted when the layout's name is changed.
+
+.. seealso:: :py:func:`setName()`
+%End
 
 };
 

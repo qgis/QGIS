@@ -33,7 +33,7 @@ class TestQgsReport(unittest.TestCase):
         p = QgsProject()
         r = QgsReport(p)
 
-        self.assertEqual(r.project(), p)
+        self.assertEqual(r.layoutProject(), p)
 
         r.setHeaderEnabled(True)
         self.assertTrue(r.headerEnabled())
@@ -49,16 +49,16 @@ class TestQgsReport(unittest.TestCase):
         r.setFooter(footer)
         self.assertEqual(r.footer(), footer)
 
-    def testChildren(self):
+    def testchildSections(self):
         p = QgsProject()
         r = QgsReport(p)
         self.assertEqual(r.childCount(), 0)
-        self.assertEqual(r.children(), [])
-        self.assertIsNone(r.child(-1))
-        self.assertIsNone(r.child(1))
-        self.assertIsNone(r.child(0))
+        self.assertEqual(r.childSections(), [])
+        self.assertIsNone(r.childSection(-1))
+        self.assertIsNone(r.childSection(1))
+        self.assertIsNone(r.childSection(0))
 
-        # try deleting non-existant children
+        # try deleting non-existant childSections
         r.removeChildAt(-1)
         r.removeChildAt(0)
         r.removeChildAt(100)
@@ -69,15 +69,15 @@ class TestQgsReport(unittest.TestCase):
         self.assertIsNone(child1.project())
         r.appendChild(child1)
         self.assertEqual(r.childCount(), 1)
-        self.assertEqual(r.children(), [child1])
-        self.assertEqual(r.child(0), child1)
+        self.assertEqual(r.childSections(), [child1])
+        self.assertEqual(r.childSection(0), child1)
         self.assertEqual(child1.parent(), r)
         self.assertEqual(child1.project(), p)
         child2 = QgsReportSectionLayout()
         r.appendChild(child2)
         self.assertEqual(r.childCount(), 2)
-        self.assertEqual(r.children(), [child1, child2])
-        self.assertEqual(r.child(1), child2)
+        self.assertEqual(r.childSections(), [child1, child2])
+        self.assertEqual(r.childSection(1), child2)
         self.assertEqual(child2.parent(), r)
 
     def testInsertChild(self):
@@ -87,12 +87,12 @@ class TestQgsReport(unittest.TestCase):
         child1 = QgsReportSectionLayout()
         r.insertChild(11, child1)
         self.assertEqual(r.childCount(), 1)
-        self.assertEqual(r.children(), [child1])
+        self.assertEqual(r.childSections(), [child1])
         self.assertEqual(child1.parent(), r)
         child2 = QgsReportSectionLayout()
         r.insertChild(-1, child2)
         self.assertEqual(r.childCount(), 2)
-        self.assertEqual(r.children(), [child2, child1])
+        self.assertEqual(r.childSections(), [child2, child1])
         self.assertEqual(child2.parent(), r)
 
     def testRemoveChild(self):
@@ -108,15 +108,15 @@ class TestQgsReport(unittest.TestCase):
         r.removeChildAt(100)
         r.removeChild(None)
         self.assertEqual(r.childCount(), 2)
-        self.assertEqual(r.children(), [child1, child2])
+        self.assertEqual(r.childSections(), [child1, child2])
 
         r.removeChildAt(1)
         self.assertEqual(r.childCount(), 1)
-        self.assertEqual(r.children(), [child1])
+        self.assertEqual(r.childSections(), [child1])
 
         r.removeChild(child1)
         self.assertEqual(r.childCount(), 0)
-        self.assertEqual(r.children(), [])
+        self.assertEqual(r.childSections(), [])
 
     def testClone(self):
         p = QgsProject()
@@ -131,12 +131,12 @@ class TestQgsReport(unittest.TestCase):
 
         cloned = r.clone()
         self.assertEqual(cloned.childCount(), 2)
-        self.assertTrue(cloned.child(0).headerEnabled())
-        self.assertFalse(cloned.child(0).footerEnabled())
-        self.assertEqual(cloned.child(0).parent(), cloned)
-        self.assertFalse(cloned.child(1).headerEnabled())
-        self.assertTrue(cloned.child(1).footerEnabled())
-        self.assertEqual(cloned.child(1).parent(), cloned)
+        self.assertTrue(cloned.childSection(0).headerEnabled())
+        self.assertFalse(cloned.childSection(0).footerEnabled())
+        self.assertEqual(cloned.childSection(0).parent(), cloned)
+        self.assertFalse(cloned.childSection(1).headerEnabled())
+        self.assertTrue(cloned.childSection(1).footerEnabled())
+        self.assertEqual(cloned.childSection(1).parent(), cloned)
 
     def testReportSectionLayout(self):
         r = QgsReportSectionLayout()

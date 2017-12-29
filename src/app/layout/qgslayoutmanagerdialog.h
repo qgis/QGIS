@@ -23,7 +23,7 @@
 
 class QListWidgetItem;
 class QgsLayoutDesignerDialog;
-class QgsLayout;
+class QgsMasterLayoutInterface;
 class QgsLayoutManager;
 
 class QgsLayoutManagerModel : public QAbstractListModel
@@ -43,14 +43,14 @@ class QgsLayoutManagerModel : public QAbstractListModel
     QVariant data( const QModelIndex &index, int role ) const override;
     bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
-    QgsLayout *layoutFromIndex( const QModelIndex &index ) const;
+    QgsMasterLayoutInterface *layoutFromIndex( const QModelIndex &index ) const;
 
   private slots:
     void layoutAboutToBeAdded( const QString &name );
     void layoutAboutToBeRemoved( const QString &name );
     void layoutAdded( const QString &name );
     void layoutRemoved( const QString &name );
-    void layoutRenamed( QgsLayout *layout, const QString &newName );
+    void layoutRenamed( QgsMasterLayoutInterface *layout, const QString &newName );
   private:
     QgsLayoutManager *mLayoutManager = nullptr;
 };

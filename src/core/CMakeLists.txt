@@ -778,6 +778,7 @@ SET(QGIS_CORE_MOC_HDRS
   layout/qgslayouttablecolumn.h
   layout/qgslayoutundostack.h
   layout/qgsprintlayout.h
+  layout/qgsreport.h
 
   symbology/qgscptcityarchive.h
   symbology/qgssvgcache.h
@@ -1034,6 +1035,7 @@ SET(QGIS_CORE_HDRS
 
   layout/qgsabstractlayoutiterator.h
   layout/qgsabstractreportsection.h
+  layout/qgsmasterlayoutinterface.h
   layout/qgslayoutaligner.h
   layout/qgslayoutexporter.h
   layout/qgslayoutgridsettings.h
@@ -1048,7 +1050,6 @@ SET(QGIS_CORE_HDRS
   layout/qgslayoutsnapper.h
   layout/qgslayoutundocommand.h
   layout/qgslayoututils.h
-  layout/qgsreport.h
   layout/qgsreportsectionfieldgroup.h
   layout/qgsreportsectionlayout.h
 

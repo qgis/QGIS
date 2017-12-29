@@ -59,6 +59,7 @@
 #include "qgslayoutundostack.h"
 #include "qgslayoutatlaswidget.h"
 #include "qgslayoutpagecollection.h"
+#include "qgsreport.h"
 #include "ui_qgssvgexportoptions.h"
 #include <QShortcut>
 #include <QComboBox>
@@ -94,6 +95,11 @@ QgsAppLayoutDesignerInterface::QgsAppLayoutDesignerInterface( QgsLayoutDesignerD
 QgsLayout *QgsAppLayoutDesignerInterface::layout()
 {
   return mDesigner->currentLayout();
+}
+
+QgsMasterLayoutInterface *QgsAppLayoutDesignerInterface::masterLayout()
+{
+  return mDesigner->masterLayout();
 }
 
 QgsLayoutView *QgsAppLayoutDesignerInterface::view()
@@ -692,11 +698,36 @@ QgsLayout *QgsLayoutDesignerDialog::currentLayout()
   return mLayout;
 }
 
+void QgsLayoutDesignerDialog::setMasterLayout( QgsMasterLayoutInterface *layout )
+{
+  mMasterLayout = layout;
+
+  QObject *obj = dynamic_cast< QObject * >( mMasterLayout );
+  if ( obj )
+    connect( obj, &QObject::destroyed, this, &QgsLayoutDesignerDialog::close );
+
+  setWindowTitle( mMasterLayout->name() );
+
+  if ( QgsPrintLayout *l = dynamic_cast< QgsPrintLayout * >( layout ) )
+  {
+    connect( l, &QgsPrintLayout::nameChanged, this, &QgsLayoutDesignerDialog::setWindowTitle );
+    setCurrentLayout( l );
+  }
+  else if ( QgsReport *r = dynamic_cast< QgsReport * >( layout ) )
+  {
+    connect( r, &QgsReport::nameChanged, this, &QgsLayoutDesignerDialog::setWindowTitle );
+  }
+}
+
+QgsMasterLayoutInterface *QgsLayoutDesignerDialog::masterLayout()
+{
+  return mMasterLayout;
+}
+
 void QgsLayoutDesignerDialog::setCurrentLayout( QgsLayout *layout )
 {
   layout->deselectAll();
   mLayout = layout;
-  connect( mLayout, &QgsLayout::destroyed, this, &QgsLayoutDesignerDialog::close );
 
   mView->setCurrentLayout( layout );
 
@@ -719,8 +750,6 @@ void QgsLayoutDesignerDialog::setCurrentLayout( QgsLayout *layout )
   {
     mLayout->guides().clear();
   } );
-  connect( mLayout, &QgsLayout::nameChanged, this, &QgsLayoutDesignerDialog::setWindowTitle );
-  setWindowTitle( mLayout->name() );
 
   mActionShowGrid->setChecked( mLayout->renderContext().gridVisible() );
   mActionSnapGrid->setChecked( mLayout->snapper().snapToGrid() );
@@ -1417,7 +1446,7 @@ void QgsLayoutDesignerDialog::addItemsFromTemplate()
 void QgsLayoutDesignerDialog::duplicate()
 {
   QString newTitle;
-  if ( !QgisApp::instance()->uniqueLayoutTitle( this, newTitle, false, tr( "%1 copy" ).arg( currentLayout()->name() ) ) )
+  if ( !QgisApp::instance()->uniqueLayoutTitle( this, newTitle, false, tr( "%1 copy" ).arg( masterLayout()->name() ) ) )
   {
     return;
   }
@@ -1427,7 +1456,7 @@ void QgsLayoutDesignerDialog::duplicate()
   dlg->setStyleSheet( QgisApp::instance()->styleSheet() );
   dlg->show();
 
-  QgsLayoutDesignerDialog *newDialog = QgisApp::instance()->duplicateLayout( currentLayout(), newTitle );
+  QgsLayoutDesignerDialog *newDialog = QgisApp::instance()->duplicateLayout( mMasterLayout, newTitle );
 
   dlg->close();
   delete dlg;
@@ -1468,22 +1497,22 @@ void QgsLayoutDesignerDialog::showManager()
 
 void QgsLayoutDesignerDialog::renameLayout()
 {
-  QString currentTitle = currentLayout()->name();
+  QString currentTitle = masterLayout()->name();
   QString newTitle;
   if ( !QgisApp::instance()->uniqueLayoutTitle( this, newTitle, false, currentTitle ) )
   {
     return;
   }
-  currentLayout()->setName( newTitle );
+  masterLayout()->setName( newTitle );
 }
 
 void QgsLayoutDesignerDialog::deleteLayout()
 {
-  if ( QMessageBox::question( this, tr( "Delete Layout" ), tr( "Are you sure you want to delete the layout “%1”?" ).arg( currentLayout()->name() ),
+  if ( QMessageBox::question( this, tr( "Delete Layout" ), tr( "Are you sure you want to delete the layout “%1”?" ).arg( masterLayout()->name() ),
                               QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
     return;
 
-  currentLayout()->project()->layoutManager()->removeLayout( currentLayout() );
+  masterLayout()->layoutProject()->layoutManager()->removeLayout( masterLayout() );
   close();
 }
 
@@ -1496,7 +1525,7 @@ void QgsLayoutDesignerDialog::exportToRaster()
     return;
 
   QgsSettings s;
-  QString outputFileName = QgsFileUtils::stringToSafeFilename( mLayout->name() );
+  QString outputFileName = QgsFileUtils::stringToSafeFilename( mMasterLayout->name() );
   QgsLayoutAtlas *printAtlas = atlas();
   if ( printAtlas && printAtlas->enabled() && mActionAtlasPreview->isChecked() )
   {
@@ -1596,7 +1625,7 @@ void QgsLayoutDesignerDialog::exportToPdf()
   }
   else
   {
-    outputFileName = file.path() + '/' + QgsFileUtils::stringToSafeFilename( mLayout->name() ) + QStringLiteral( ".pdf" );
+    outputFileName = file.path() + '/' + QgsFileUtils::stringToSafeFilename( mMasterLayout->name() ) + QStringLiteral( ".pdf" );
   }
 
 #ifdef Q_OS_MAC
@@ -1689,7 +1718,7 @@ void QgsLayoutDesignerDialog::exportToSvg()
   QgsSettings settings;
   QString lastUsedFile = settings.value( QStringLiteral( "UI/lastSaveAsSvgFile" ), QStringLiteral( "qgis.svg" ) ).toString();
   QFileInfo file( lastUsedFile );
-  QString outputFileName = QgsFileUtils::stringToSafeFilename( mLayout->name() );
+  QString outputFileName = QgsFileUtils::stringToSafeFilename( mMasterLayout->name() );
 
   QgsLayoutAtlas *printAtlas = atlas();
   if ( printAtlas && printAtlas->enabled() && mActionAtlasPreview->isChecked() )
@@ -1698,7 +1727,7 @@ void QgsLayoutDesignerDialog::exportToSvg()
   }
   else
   {
-    outputFileName = file.path() + '/' + QgsFileUtils::stringToSafeFilename( mLayout->name() ) + QStringLiteral( ".svg" );
+    outputFileName = file.path() + '/' + QgsFileUtils::stringToSafeFilename( mMasterLayout->name() ) + QStringLiteral( ".svg" );
   }
 
 #ifdef Q_OS_MAC
@@ -2329,7 +2358,7 @@ void QgsLayoutDesignerDialog::exportAtlasToPdf()
     }
     else
     {
-      outputFileName = file.path() + '/' + QgsFileUtils::stringToSafeFilename( mLayout->name() ) + QStringLiteral( ".pdf" );
+      outputFileName = file.path() + '/' + QgsFileUtils::stringToSafeFilename( mMasterLayout->name() ) + QStringLiteral( ".pdf" );
     }
 
 #ifdef Q_OS_MAC

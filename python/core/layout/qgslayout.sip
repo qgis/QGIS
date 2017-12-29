@@ -56,7 +56,7 @@ called on the new layout.
 
     ~QgsLayout();
 
-    virtual QgsLayout *clone() const /Factory/;
+    QgsLayout *clone() const /Factory/;
 %Docstring
 Creates a clone of the layout. Ownership of the return layout
 is transferred to the caller.
@@ -84,20 +84,6 @@ relations and various other bits. It is never null.
     QgsLayoutModel *itemsModel();
 %Docstring
 Returns the items model attached to the layout.
-%End
-
-    QString name() const;
-%Docstring
-Returns the layout's name.
-
-.. seealso:: :py:func:`setName()`
-%End
-
-    void setName( const QString &name );
-%Docstring
-Sets the layout's name.
-
-.. seealso:: :py:func:`name()`
 %End
 
 
@@ -624,13 +610,6 @@ If None, no item is selected.
 %Docstring
 Is emitted when the layout has been refreshed and items should also be refreshed
 and updated.
-%End
-
-    void nameChanged( const QString &name );
-%Docstring
-Emitted when the layout's name is changed.
-
-.. seealso:: :py:func:`setName()`
 %End
 
 };

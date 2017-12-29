@@ -50,7 +50,7 @@ as a result of a duplicate composition name).
 .. seealso:: :py:func:`compositionAdded()`
 %End
 
-    bool addLayout( QgsLayout *layout /Transfer/ );
+    bool addLayout( QgsMasterLayoutInterface *layout /Transfer/ );
 %Docstring
 Adds a ``layout`` to the manager. Ownership of the layout is transferred to the manager.
 Returns true if the addition was successful, or false if the layout could not be added (eg
@@ -76,7 +76,7 @@ of removing a composition which is not contained in the manager).
 .. seealso:: :py:func:`clear()`
 %End
 
-    bool removeLayout( QgsLayout *layout );
+    bool removeLayout( QgsMasterLayoutInterface *layout );
 %Docstring
 Removes a ``layout`` from the manager. The layout is deleted.
 Returns true if the removal was successful, or false if the removal failed (eg as a result
@@ -103,7 +103,7 @@ Removes and deletes all layouts from the manager.
 Returns a list of all compositions contained in the manager.
 %End
 
-    QList< QgsLayout * > layouts() const;
+    QList< QgsMasterLayoutInterface * > layouts() const;
 %Docstring
 Returns a list of all layouts contained in the manager.
 %End
@@ -114,7 +114,7 @@ Returns the composition with a matching name, or None if no matching composition
 were found.
 %End
 
-    QgsLayout *layoutByName( const QString &name ) const;
+    QgsMasterLayoutInterface *layoutByName( const QString &name ) const;
 %Docstring
 Returns the layout with a matching name, or None if no matching layouts
 were found.
@@ -148,7 +148,7 @@ composition will automatically be stored in the manager.
 Returns new composition if duplication was successful.
 %End
 
-    QgsLayout *duplicateLayout( const QgsLayout *layout, const QString &newName );
+    QgsMasterLayoutInterface *duplicateLayout( const QgsMasterLayoutInterface *layout, const QString &newName );
 %Docstring
 Duplicates an existing ``layout`` from the manager. The new
 layout will automatically be stored in the manager.
@@ -214,7 +214,7 @@ Emitted when a layout is about to be removed from the manager
 Emitted when a composition is renamed
 %End
 
-    void layoutRenamed( QgsLayout *layout, const QString &newName );
+    void layoutRenamed( QgsMasterLayoutInterface *layout, const QString &newName );
 %Docstring
 Emitted when a layout is renamed
 %End

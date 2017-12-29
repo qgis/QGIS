@@ -23,6 +23,7 @@
 #include "qgslayoutgridsettings.h"
 #include "qgslayoutguidecollection.h"
 #include "qgslayoutexporter.h"
+#include "qgsmasterlayoutinterface.h"
 
 class QgsLayoutItemMap;
 class QgsLayoutModel;
@@ -48,7 +49,6 @@ class QgsLayoutReportContext;
 class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContextGenerator, public QgsLayoutUndoObjectInterface
 {
     Q_OBJECT
-    Q_PROPERTY( QString name READ name WRITE setName NOTIFY nameChanged )
 
   public:
 
@@ -87,7 +87,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      * Creates a clone of the layout. Ownership of the return layout
      * is transferred to the caller.
      */
-    virtual QgsLayout *clone() const SIP_FACTORY;
+    QgsLayout *clone() const SIP_FACTORY;
 
     /**
      * Initializes an empty layout, e.g. by adding a default page to the layout. This should be called after creating
@@ -113,18 +113,6 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      * Returns the items model attached to the layout.
      */
     QgsLayoutModel *itemsModel();
-
-    /**
-     * Returns the layout's name.
-     * \see setName()
-     */
-    QString name() const { return mName; }
-
-    /**
-     * Sets the layout's name.
-     * \see name()
-     */
-    void setName( const QString &name );
 
     /**
      * Returns a list of layout items of a specific type.
@@ -641,18 +629,10 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      */
     void refreshed();
 
-    /**
-     * Emitted when the layout's name is changed.
-     * \see setName()
-     */
-    void nameChanged( const QString &name );
-
   private:
 
     QgsProject *mProject = nullptr;
     std::unique_ptr< QgsLayoutModel > mItemsModel;
-
-    QString mName;
 
     QgsObjectCustomProperties mCustomProperties;
 

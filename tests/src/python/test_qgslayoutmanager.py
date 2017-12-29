@@ -17,7 +17,7 @@ import qgis  # NOQA
 from qgis.PyQt.QtXml import QDomDocument
 
 from qgis.core import (QgsComposition,
-                       QgsLayout,
+                       QgsPrintLayout,
                        QgsLayoutManager,
                        QgsProject)
 
@@ -75,7 +75,7 @@ class TestQgsLayoutManager(unittest.TestCase):
 
     def testAddLayout(self):
         project = QgsProject()
-        layout = QgsLayout(project)
+        layout = QgsPrintLayout(project)
         layout.setName('test layout')
 
         manager = QgsLayoutManager(project)
@@ -92,7 +92,7 @@ class TestQgsLayoutManager(unittest.TestCase):
         self.assertFalse(manager.addLayout(layout))
 
         # try adding a second layout
-        layout2 = QgsLayout(project)
+        layout2 = QgsPrintLayout(project)
         layout2.setName('test layout2')
         self.assertTrue(manager.addLayout(layout2))
         self.assertEqual(len(layout_added_spy), 2)
@@ -101,7 +101,7 @@ class TestQgsLayoutManager(unittest.TestCase):
         self.assertEqual(layout_added_spy[1][0], 'test layout2')
 
         # adding a layout with duplicate name should fail
-        layout3 = QgsLayout(project)
+        layout3 = QgsPrintLayout(project)
         layout3.setName('test layout2')
         self.assertFalse(manager.addLayout(layout3))
 
@@ -125,11 +125,11 @@ class TestQgsLayoutManager(unittest.TestCase):
     def testLayouts(self):
         project = QgsProject()
         manager = QgsLayoutManager(project)
-        layout = QgsLayout(project)
+        layout = QgsPrintLayout(project)
         layout.setName('test layout')
-        layout2 = QgsLayout(project)
+        layout2 = QgsPrintLayout(project)
         layout2.setName('test layout2')
-        layout3 = QgsLayout(project)
+        layout3 = QgsPrintLayout(project)
         layout3.setName('test layout3')
 
         manager.addLayout(layout)
@@ -180,7 +180,7 @@ class TestQgsLayoutManager(unittest.TestCase):
 
     def testRemoveLayout(self):
         project = QgsProject()
-        layout = QgsLayout(project)
+        layout = QgsPrintLayout(project)
         layout.setName('test layout')
 
         self.manager = QgsLayoutManager(project)
@@ -217,11 +217,11 @@ class TestQgsLayoutManager(unittest.TestCase):
         composition3 = QgsComposition(project)
         composition3.setName('test composition3')
         # add a bunch of layouts
-        layout = QgsLayout(project)
+        layout = QgsPrintLayout(project)
         layout.setName('test layout')
-        layout2 = QgsLayout(project)
+        layout2 = QgsPrintLayout(project)
         layout2.setName('test layout2')
-        layout3 = QgsLayout(project)
+        layout3 = QgsPrintLayout(project)
         layout3.setName('test layout3')
 
         manager.addComposition(composition)
@@ -269,11 +269,11 @@ class TestQgsLayoutManager(unittest.TestCase):
         manager = QgsLayoutManager(project)
 
         # add a bunch of layouts
-        layout = QgsLayout(project)
+        layout = QgsPrintLayout(project)
         layout.setName('test layout')
-        layout2 = QgsLayout(project)
+        layout2 = QgsPrintLayout(project)
         layout2.setName('test layout2')
-        layout3 = QgsLayout(project)
+        layout3 = QgsPrintLayout(project)
         layout3.setName('test layout3')
 
         manager.addLayout(layout)
@@ -305,11 +305,11 @@ class TestQgsLayoutManager(unittest.TestCase):
         manager.addComposition(composition3)
 
         # add a bunch of layouts
-        layout = QgsLayout(project)
+        layout = QgsPrintLayout(project)
         layout.setName('test layout')
-        layout2 = QgsLayout(project)
+        layout2 = QgsPrintLayout(project)
         layout2.setName('test layout2')
-        layout3 = QgsLayout(project)
+        layout3 = QgsPrintLayout(project)
         layout3.setName('test layout3')
 
         manager.addLayout(layout)
@@ -377,12 +377,12 @@ class TestQgsLayoutManager(unittest.TestCase):
         manager = QgsLayoutManager(project)
         self.assertEqual(manager.generateUniqueTitle(), 'Layout 1')
 
-        layout = QgsLayout(project)
+        layout = QgsPrintLayout(project)
         layout.setName(manager.generateUniqueTitle())
         manager.addLayout(layout)
 
         self.assertEqual(manager.generateUniqueTitle(), 'Layout 2')
-        layout2 = QgsLayout(project)
+        layout2 = QgsPrintLayout(project)
         layout2.setName(manager.generateUniqueTitle())
         manager.addLayout(layout2)
 
@@ -413,10 +413,10 @@ class TestQgsLayoutManager(unittest.TestCase):
     def testRenameSignal(self):
         project = QgsProject()
         manager = QgsLayoutManager(project)
-        layout = QgsLayout(project)
+        layout = QgsPrintLayout(project)
         layout.setName('c1')
         manager.addLayout(layout)
-        layout2 = QgsLayout(project)
+        layout2 = QgsPrintLayout(project)
         layout2.setName('c2')
         manager.addLayout(layout2)
 

@@ -31,5 +31,25 @@ QgsReport *QgsReport::clone() const
   return copy.release();
 }
 
+void QgsReport::setName( const QString &name )
+{
+  mName = name;
+  emit nameChanged( mName );
+}
+
+QDomElement QgsReport::writeLayoutXml( QDomDocument &document, const QgsReadWriteContext &context ) const
+{
+  QDomElement element = document.createElement( QStringLiteral( "Report" ) );
+
+
+
+  return element;
+}
+
+bool QgsReport::readLayoutXml( const QDomElement &layoutElement, const QDomDocument &document, const QgsReadWriteContext &context )
+{
+
+}
+
 ///@endcond
 

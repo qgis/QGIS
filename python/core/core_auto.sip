@@ -163,6 +163,7 @@
 %Include composer/qgspaperitem.sip
 %Include layout/qgsabstractlayoutiterator.sip
 %Include layout/qgsabstractreportsection.sip
+%Include layout/qgsmasterlayoutinterface.sip
 %Include layout/qgslayoutaligner.sip
 %Include layout/qgslayoutexporter.sip
 %Include layout/qgslayoutgridsettings.sip
@@ -175,7 +176,6 @@
 %Include layout/qgslayoutsnapper.sip
 %Include layout/qgslayoutundocommand.sip
 %Include layout/qgslayoututils.sip
-%Include layout/qgsreport.sip
 %Include layout/qgsreportsectionfieldgroup.sip
 %Include layout/qgsreportsectionlayout.sip
 %Include metadata/qgslayermetadata.sip
@@ -444,6 +444,7 @@
 %Include layout/qgslayouttablecolumn.sip
 %Include layout/qgslayoutundostack.sip
 %Include layout/qgsprintlayout.sip
+%Include layout/qgsreport.sip
 %Include symbology/qgscptcityarchive.sip
 %Include symbology/qgssvgcache.sip
 %Include symbology/qgsstyle.sip

@@ -1115,7 +1115,8 @@ QgsExpressionContextScope *QgsExpressionContextUtils::layoutScope( const QgsLayo
   }
 
   //add known layout context variables
-  scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layout_name" ), layout->name(), true ) );
+  if ( const QgsMasterLayoutInterface *l = dynamic_cast< const QgsMasterLayoutInterface * >( layout ) )
+    scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layout_name" ), l->name(), true ) );
 
   scope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "layout_numpages" ), layout->pageCollection()->pageCount(), true ) );
   if ( layout->pageCollection()->pageCount() > 0 )

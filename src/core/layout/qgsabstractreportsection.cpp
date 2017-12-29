@@ -38,7 +38,7 @@ QgsProject *QgsAbstractReportSection::project()
       return nullptr;
 
     if ( QgsReport *report = dynamic_cast< QgsReport * >( parent ) )
-      return report->project();
+      return report->layoutProject();
 
     current = parent;
   }
@@ -218,7 +218,17 @@ void QgsAbstractReportSection::reset()
   }
 }
 
-QgsAbstractReportSection *QgsAbstractReportSection::child( int index )
+void QgsAbstractReportSection::setHeader( QgsLayout *header )
+{
+  mHeader.reset( header );
+}
+
+void QgsAbstractReportSection::setFooter( QgsLayout *footer )
+{
+  mFooter.reset( footer );
+}
+
+QgsAbstractReportSection *QgsAbstractReportSection::childSection( int index )
 {
   return mChildren.value( index );
 }
