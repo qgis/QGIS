@@ -10,8 +10,18 @@
 
 
 
-class QgsReportContext
+class QgsReportSectionContext
 {
+%Docstring
+ Current context for a report section.
+
+.. warning::
+
+   This is not considered stable API, and may change in future QGIS releases. It is
+exposed to the Python bindings for unit testing purposes only.
+
+.. versionadded:: 3.0
+%End
 
 %TypeHeaderCode
 #include "qgsabstractreportsection.h"
@@ -250,14 +260,14 @@ Removes the child section at the specified ``index``, deleting it.
 .. seealso:: :py:func:`children()`
 %End
 
-    void setContext( const QgsReportContext &context );
+    void setContext( const QgsReportSectionContext &context );
 %Docstring
 Sets the current ``context`` for this section.
 
 .. seealso:: :py:func:`context()`
 %End
 
-    const QgsReportContext &context() const;
+    const QgsReportSectionContext &context() const;
 %Docstring
 Returns the current context for this section.
 
@@ -288,172 +298,6 @@ Sets the ``parent`` report section.
 
   private:
     QgsAbstractReportSection( const QgsAbstractReportSection &other );
-};
-
-class QgsReportSectionLayout : QgsAbstractReportSection
-{
-%Docstring
- A report section consisting of a single QgsLayout body.
-
-.. warning::
-
-   This is not considered stable API, and may change in future QGIS releases. It is
-exposed to the Python bindings for unit testing purposes only.
-
-.. versionadded:: 3.0
-%End
-
-%TypeHeaderCode
-#include "qgsabstractreportsection.h"
-%End
-  public:
-
-    QgsReportSectionLayout( QgsAbstractReportSection *parent = 0 );
-%Docstring
-Constructor for QgsReportSectionLayout, attached to the specified ``parent`` section.
-Note that ownership is not transferred to ``parent``.
-%End
-
-    QgsLayout *body();
-%Docstring
-Returns the body layout for the section.
-
-.. seealso:: :py:func:`setBody()`
-%End
-
-    void setBody( QgsLayout *body /Transfer/ );
-%Docstring
-Sets the ``body`` layout for the section. Ownership of ``body``
-is transferred to the report section.
-
-.. seealso:: :py:func:`body()`
-%End
-
-    virtual QgsReportSectionLayout *clone() const /Factory/;
-
-    virtual bool beginRender();
-
-    virtual QgsLayout *nextBody( bool &ok );
-
-
-};
-
-class QgsReportSectionFieldGroup : QgsAbstractReportSection
-{
-%Docstring
- A report section consisting of a features
-
-.. warning::
-
-   This is not considered stable API, and may change in future QGIS releases. It is
-exposed to the Python bindings for unit testing purposes only.
-
-.. versionadded:: 3.0
-%End
-
-%TypeHeaderCode
-#include "qgsabstractreportsection.h"
-%End
-  public:
-
-    QgsReportSectionFieldGroup( QgsAbstractReportSection *parent = 0 );
-%Docstring
-Constructor for QgsReportSectionFieldGroup, attached to the specified ``parent`` section.
-Note that ownership is not transferred to ``parent``.
-%End
-
-    QgsLayout *body();
-%Docstring
-Returns the body layout for the section.
-
-.. seealso:: :py:func:`setBody()`
-%End
-
-    void setBody( QgsLayout *body /Transfer/ );
-%Docstring
-Sets the ``body`` layout for the section. Ownership of ``body``
-is transferred to the report section.
-
-.. seealso:: :py:func:`body()`
-%End
-
-    QgsVectorLayer *layer();
-%Docstring
-Returns the vector layer associated with this section.
-
-.. seealso:: :py:func:`setLayer()`
-%End
-
-    void setLayer( QgsVectorLayer *layer );
-%Docstring
-Sets the vector ``layer`` associated with this section.
-
-.. seealso:: :py:func:`layer()`
-%End
-
-    QString field() const;
-%Docstring
-Returns the field associated with this section.
-
-.. seealso:: :py:func:`setField()`
-%End
-
-    void setField( const QString &field );
-%Docstring
-Sets the ``field`` associated with this section.
-
-.. seealso:: :py:func:`field()`
-%End
-
-    virtual QgsReportSectionFieldGroup *clone() const /Factory/;
-
-    virtual bool beginRender();
-
-    virtual QgsLayout *nextBody( bool &ok );
-
-    virtual void reset();
-
-
-};
-
-
-class QgsReport : QgsAbstractReportSection
-{
-%Docstring
- Represents a report for use with the QgsLayout engine.
-
-Reports consist of multiple sections, represented by :py:class:`QgsAbstractReportSection`
-subclasses.
-
-.. warning::
-
-   This is not considered stable API, and may change in future QGIS releases. It is
-exposed to the Python bindings for unit testing purposes only.
-
-.. versionadded:: 3.0
-%End
-
-%TypeHeaderCode
-#include "qgsabstractreportsection.h"
-%End
-  public:
-
-    QgsReport( QgsProject *project );
-%Docstring
-Constructor for QgsReport, associated with the specified
-``project``.
-
-Note that ownership is not transferred to ``project``.
-%End
-
-    QgsProject *project();
-%Docstring
-Returns the associated project.
-%End
-
-    virtual QgsReport *clone() const /Factory/;
-
-
 };
 
 

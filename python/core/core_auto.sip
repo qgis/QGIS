@@ -175,6 +175,9 @@
 %Include layout/qgslayoutsnapper.sip
 %Include layout/qgslayoutundocommand.sip
 %Include layout/qgslayoututils.sip
+%Include layout/qgsreport.sip
+%Include layout/qgsreportsectionfieldgroup.sip
+%Include layout/qgsreportsectionlayout.sip
 %Include metadata/qgslayermetadata.sip
 %Include metadata/qgslayermetadatavalidator.sip
 %Include metadata/qgslayermetadataformatter.sip

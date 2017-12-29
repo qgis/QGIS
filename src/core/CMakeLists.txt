@@ -415,6 +415,9 @@ SET(QGIS_CORE_SRCS
   layout/qgslayoutserializableobject.cpp
   layout/qgslayoutsize.cpp
   layout/qgsprintlayout.cpp
+  layout/qgsreport.cpp
+  layout/qgsreportsectionfieldgroup.cpp
+  layout/qgsreportsectionlayout.cpp
 
   pal/costcalculator.cpp
   pal/feature.cpp
@@ -1045,6 +1048,9 @@ SET(QGIS_CORE_HDRS
   layout/qgslayoutsnapper.h
   layout/qgslayoutundocommand.h
   layout/qgslayoututils.h
+  layout/qgsreport.h
+  layout/qgsreportsectionfieldgroup.h
+  layout/qgsreportsectionlayout.h
 
   metadata/qgslayermetadata.h
   metadata/qgslayermetadatavalidator.h

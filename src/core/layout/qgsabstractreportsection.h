@@ -26,10 +26,19 @@
 
 // This is not considered stable API - it is exposed to python bindings only for unit testing!
 
-class CORE_EXPORT QgsReportContext
+/**
+ * \ingroup core
+ * \class QgsReportSectionContext
+ * \brief Current context for a report section.
+ * \warning This is not considered stable API, and may change in future QGIS releases. It is
+ * exposed to the Python bindings for unit testing purposes only.
+ * \since QGIS 3.0
+ */
+class CORE_EXPORT QgsReportSectionContext
 {
   public:
 
+    //! Current layer filters
     QMap< QgsVectorLayer *, QString > layerFilters SIP_SKIP;
 };
 
@@ -225,13 +234,13 @@ class CORE_EXPORT QgsAbstractReportSection : public QgsAbstractLayoutIterator
      * Sets the current \a context for this section.
      * \see context()
      */
-    void setContext( const QgsReportContext &context );
+    void setContext( const QgsReportSectionContext &context );
 
     /**
      * Returns the current context for this section.
      * \see setContext()
      */
-    const QgsReportContext &context() const { return mContext; }
+    const QgsReportSectionContext &context() const { return mContext; }
 
   protected:
 
@@ -272,167 +281,11 @@ class CORE_EXPORT QgsAbstractReportSection : public QgsAbstractLayoutIterator
 
     QList< QgsAbstractReportSection * > mChildren;
 
-    QgsReportContext mContext;
+    QgsReportSectionContext mContext;
 
 #ifdef SIP_RUN
     QgsAbstractReportSection( const QgsAbstractReportSection &other );
 #endif
-};
-
-/**
- * \ingroup core
- * \class QgsReportSectionLayout
- * \brief A report section consisting of a single QgsLayout body.
- * \warning This is not considered stable API, and may change in future QGIS releases. It is
- * exposed to the Python bindings for unit testing purposes only.
- * \since QGIS 3.0
- */
-class CORE_EXPORT QgsReportSectionLayout : public QgsAbstractReportSection
-{
-  public:
-
-    /**
-     * Constructor for QgsReportSectionLayout, attached to the specified \a parent section.
-     * Note that ownership is not transferred to \a parent.
-     */
-    QgsReportSectionLayout( QgsAbstractReportSection *parent = nullptr );
-
-    /**
-     * Returns the body layout for the section.
-     * \see setBody()
-     */
-    QgsLayout *body() { return mBody.get(); }
-
-    /**
-     * Sets the \a body layout for the section. Ownership of \a body
-     * is transferred to the report section.
-     * \see body()
-     */
-    void setBody( QgsLayout *body SIP_TRANSFER ) { mBody.reset( body ); }
-
-    QgsReportSectionLayout *clone() const override SIP_FACTORY;
-    bool beginRender() override;
-    QgsLayout *nextBody( bool &ok ) override;
-
-  private:
-
-    bool mExportedBody = false;
-    std::unique_ptr< QgsLayout > mBody;
-
-};
-
-/**
- * \ingroup core
- * \class QgsReportSectionFieldGroup
- * \brief A report section consisting of a features
- *
- * \warning This is not considered stable API, and may change in future QGIS releases. It is
- * exposed to the Python bindings for unit testing purposes only.
- *
- * \since QGIS 3.0
- */
-class CORE_EXPORT QgsReportSectionFieldGroup : public QgsAbstractReportSection
-{
-  public:
-
-    /**
-     * Constructor for QgsReportSectionFieldGroup, attached to the specified \a parent section.
-     * Note that ownership is not transferred to \a parent.
-     */
-    QgsReportSectionFieldGroup( QgsAbstractReportSection *parent = nullptr );
-
-    /**
-     * Returns the body layout for the section.
-     * \see setBody()
-     */
-    QgsLayout *body() { return mBody.get(); }
-
-    /**
-     * Sets the \a body layout for the section. Ownership of \a body
-     * is transferred to the report section.
-     * \see body()
-     */
-    void setBody( QgsLayout *body SIP_TRANSFER ) { mBody.reset( body ); }
-
-    /**
-     * Returns the vector layer associated with this section.
-     * \see setLayer()
-     */
-    QgsVectorLayer *layer() { return mCoverageLayer.get(); }
-
-    /**
-     * Sets the vector \a layer associated with this section.
-     * \see layer()
-     */
-    void setLayer( QgsVectorLayer *layer ) { mCoverageLayer = layer; }
-
-    /**
-     * Returns the field associated with this section.
-     * \see setField()
-     */
-    QString field() const { return mField; }
-
-    /**
-     * Sets the \a field associated with this section.
-     * \see field()
-     */
-    void setField( const QString &field ) { mField = field; }
-
-    QgsReportSectionFieldGroup *clone() const override SIP_FACTORY;
-    bool beginRender() override;
-    QgsLayout *nextBody( bool &ok ) override;
-    void reset() override;
-
-  private:
-
-    QgsVectorLayerRef mCoverageLayer;
-    QString mField;
-    int mFieldIndex = -1;
-    QgsFeatureIterator mFeatures;
-    QSet< QVariant > mEncounteredValues;
-
-    std::unique_ptr< QgsLayout > mBody;
-
-};
-
-
-/**
- * \ingroup core
- * \class QgsReport
- * \brief Represents a report for use with the QgsLayout engine.
- *
- * Reports consist of multiple sections, represented by QgsAbstractReportSection
- * subclasses.
- *
- * \warning This is not considered stable API, and may change in future QGIS releases. It is
- * exposed to the Python bindings for unit testing purposes only.
- *
- * \since QGIS 3.0
- */
-class CORE_EXPORT QgsReport : public QgsAbstractReportSection
-{
-
-  public:
-
-    /**
-     * Constructor for QgsReport, associated with the specified
-     * \a project.
-     *
-     * Note that ownership is not transferred to \a project.
-     */
-    QgsReport( QgsProject *project );
-
-    /**
-     * Returns the associated project.
-     */
-    QgsProject *project() { return mProject; }
-
-    QgsReport *clone() const override SIP_FACTORY;
-
-  private:
-
-    QgsProject *mProject = nullptr;
-
 };
 
 ///@endcond

@@ -1,0 +1,35 @@
+/***************************************************************************
+                             qgsreport.cpp
+                             --------------------
+    begin                : December 2017
+    copyright            : (C) 2017 by Nyall Dawson
+    email                : nyall dot dawson at gmail dot com
+ ***************************************************************************/
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+#include "qgsreport.h"
+#include "qgslayout.h"
+
+///@cond NOT_STABLE
+
+QgsReport::QgsReport( QgsProject *project )
+  : QgsAbstractReportSection( nullptr )
+  , mProject( project )
+{}
+
+QgsReport *QgsReport::clone() const
+{
+  std::unique_ptr< QgsReport > copy = qgis::make_unique< QgsReport >( mProject );
+  copyCommonProperties( copy.get() );
+  return copy.release();
+}
+
+///@endcond
+

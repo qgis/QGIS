@@ -16,6 +16,7 @@
 
 #include "qgsabstractreportsection.h"
 #include "qgslayout.h"
+#include "qgsreport.h"
 
 ///@cond NOT_STABLE
 
@@ -44,7 +45,7 @@ QgsProject *QgsAbstractReportSection::project()
   return nullptr;
 }
 
-void QgsAbstractReportSection::setContext( const QgsReportContext &context )
+void QgsAbstractReportSection::setContext( const QgsReportSectionContext &context )
 {
   mContext = context;
   for ( QgsAbstractReportSection *section : qgis::as_const( mChildren ) )
@@ -272,174 +273,6 @@ void QgsAbstractReportSection::copyCommonProperties( QgsAbstractReportSection *d
   {
     destination->appendChild( child->clone() );
   }
-}
-
-
-// QgsReport
-
-QgsReport::QgsReport( QgsProject *project )
-  : QgsAbstractReportSection( nullptr )
-  , mProject( project )
-{}
-
-QgsReport *QgsReport::clone() const
-{
-  std::unique_ptr< QgsReport > copy = qgis::make_unique< QgsReport >( mProject );
-  copyCommonProperties( copy.get() );
-  return copy.release();
-}
-
-//
-// QgsReportSectionLayout
-//
-
-QgsReportSectionLayout::QgsReportSectionLayout( QgsAbstractReportSection *parent )
-  : QgsAbstractReportSection( parent )
-{}
-
-QgsReportSectionLayout *QgsReportSectionLayout::clone() const
-{
-  std::unique_ptr< QgsReportSectionLayout > copy = qgis::make_unique< QgsReportSectionLayout >( nullptr );
-  copyCommonProperties( copy.get() );
-
-  if ( mBody )
-  {
-    copy->mBody.reset( mBody->clone() );
-  }
-  else
-    copy->mBody.reset();
-
-  return copy.release();
-}
-
-bool QgsReportSectionLayout::beginRender()
-{
-  mExportedBody = false;
-  return QgsAbstractReportSection::beginRender();
-}
-
-QgsLayout *QgsReportSectionLayout::nextBody( bool &ok )
-{
-  if ( !mExportedBody && mBody )
-  {
-    mExportedBody = true;
-    ok = true;
-    return mBody.get();
-  }
-  else
-  {
-    ok = false;
-    return nullptr;
-  }
-}
-
-//
-// QgsReportSectionFieldGroup
-//
-
-QgsReportSectionFieldGroup::QgsReportSectionFieldGroup( QgsAbstractReportSection *parent )
-  : QgsAbstractReportSection( parent )
-{
-
-}
-
-QgsReportSectionFieldGroup *QgsReportSectionFieldGroup::clone() const
-{
-  std::unique_ptr< QgsReportSectionFieldGroup > copy = qgis::make_unique< QgsReportSectionFieldGroup >( nullptr );
-  copyCommonProperties( copy.get() );
-
-  if ( mBody )
-  {
-    copy->mBody.reset( mBody->clone() );
-  }
-  else
-    copy->mBody.reset();
-
-  copy->setLayer( mCoverageLayer.get() );
-  copy->setField( mField );
-
-  return copy.release();
-}
-
-bool QgsReportSectionFieldGroup::beginRender()
-{
-  if ( !mCoverageLayer.get() )
-    return false;
-
-  if ( !mField.isEmpty() )
-  {
-    mFieldIndex = mCoverageLayer->fields().lookupField( mField );
-    if ( mFieldIndex < 0 )
-      return false;
-
-    if ( mBody )
-      mBody->reportContext().setLayer( mCoverageLayer.get() );
-
-    mFeatures = QgsFeatureIterator();
-  }
-  return QgsAbstractReportSection::beginRender();
-}
-
-QgsLayout *QgsReportSectionFieldGroup::nextBody( bool &ok )
-{
-  if ( !mFeatures.isValid() )
-  {
-    QgsFeatureRequest request;
-    QString filter = context().layerFilters.value( mCoverageLayer.get() );
-    if ( !filter.isEmpty() )
-      request.setFilterExpression( filter );
-    request.addOrderBy( mField, true );
-    mFeatures = mCoverageLayer->getFeatures( request );
-  }
-
-  QgsFeature f;
-  QVariant currentValue;
-  bool first = true;
-  while ( first || ( !mBody && mEncounteredValues.contains( currentValue ) ) )
-  {
-    if ( !mFeatures.nextFeature( f ) )
-    {
-      // no features left for this iteration
-      mFeatures = QgsFeatureIterator();
-      ok = false;
-      return nullptr;
-    }
-
-    first = false;
-    currentValue = f.attribute( mFieldIndex );
-  }
-
-  mEncounteredValues.insert( currentValue );
-
-  QgsReportContext c = context();
-  QString currentFilter = c.layerFilters.value( mCoverageLayer.get() );
-  QString thisFilter = QgsExpression::createFieldEqualityExpression( mField, currentValue );
-  QString newFilter = currentFilter.isEmpty() ? thisFilter : QStringLiteral( "(%1) AND (%2)" ).arg( currentFilter, thisFilter );
-  c.layerFilters[ mCoverageLayer.get() ] = newFilter;
-
-  const QList< QgsAbstractReportSection * > sections = children();
-  for ( QgsAbstractReportSection *section : qgis::as_const( sections ) )
-  {
-    section->setContext( c );
-  }
-
-  ok = true;
-
-  if ( mBody )
-  {
-    mBody->reportContext().blockSignals( true );
-    mBody->reportContext().setLayer( mCoverageLayer.get() );
-    mBody->reportContext().blockSignals( false );
-    mBody->reportContext().setFeature( f );
-  }
-
-  return mBody.get();
-}
-
-void QgsReportSectionFieldGroup::reset()
-{
-  QgsAbstractReportSection::reset();
-  mEncounteredValues.clear();
 }
 
 ///@endcond
