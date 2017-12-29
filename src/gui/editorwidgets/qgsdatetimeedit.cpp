@@ -19,6 +19,7 @@
 #include <QSettings>
 #include <QStyle>
 #include <QToolButton>
+#include <QStyleOptionSpinBox>
 
 
 #include "qgsdatetimeedit.h"
@@ -35,11 +36,6 @@ QgsDateTimeEdit::QgsDateTimeEdit( QWidget *parent )
   mClearButton->setStyleSheet( QStringLiteral( "position: absolute; border: none; padding: 0px;" ) );
   mClearButton->hide();
   connect( mClearButton, &QAbstractButton::clicked, this, &QgsDateTimeEdit::clear );
-
-  mNullLabel = new QLineEdit( QgsApplication::nullRepresentation(), this );
-  mNullLabel->setReadOnly( true );
-  mNullLabel->setStyleSheet( QStringLiteral( "position: absolute; border: none; font-style: italic; color: grey;" ) );
-  mNullLabel->hide();
 
   setStyleSheet( QStringLiteral( ".QWidget, QLineEdit, QToolButton { padding-right: %1px; }" ).arg( mClearButton->sizeHint().width() + spinButtonWidth() + frameWidth() + 1 ) );
 
@@ -65,39 +61,45 @@ QgsDateTimeEdit::QgsDateTimeEdit( QWidget *parent )
 void QgsDateTimeEdit::setAllowNull( bool allowNull )
 {
   mAllowNull = allowNull;
-
-  mNullLabel->setVisible( ( mAllowNull && mIsNull ) && !mIsEmpty );
   mClearButton->setVisible( mAllowNull && ( !mIsNull || mIsEmpty ) );
-  lineEdit()->setVisible( ( !mAllowNull || !mIsNull ) && !mIsEmpty );
 }
 
 
 void QgsDateTimeEdit::clear()
 {
-  if ( calendarPopup() )
-  {
-    QDateTimeEdit::blockSignals( true );
-    QDateTimeEdit::setDateTime( minimumDateTime() );
-    QDateTimeEdit::blockSignals( false );
-  }
+  QDateTimeEdit::blockSignals( true );
+  setSpecialValueText( QgsApplication::nullRepresentation() );
+  QDateTimeEdit::setDateTime( minimumDateTime() );
+  QDateTimeEdit::blockSignals( false );
   changed( QDateTime() );
   emit dateTimeChanged( QDateTime() );
 }
 
 void QgsDateTimeEdit::setEmpty()
 {
-  mNullLabel->setVisible( false );
-  lineEdit()->setVisible( false );
   mClearButton->setVisible( mAllowNull );
   mIsEmpty = true;
 }
 
 void QgsDateTimeEdit::mousePressEvent( QMouseEvent *event )
 {
-  QRect lerect = rect().adjusted( 0, 0, -spinButtonWidth(), 0 );
+  const QRect lerect = rect().adjusted( 0, 0, -spinButtonWidth(), 0 );
   if ( mAllowNull && mIsNull && lerect.contains( event->pos() ) )
     return;
 
+  if ( mIsNull && !calendarPopup() )
+  {
+    QStyleOptionSpinBox opt;
+    this->initStyleOption( &opt );
+    const QRect buttonUpRect = style()->subControlRect( QStyle::CC_SpinBox, &opt, QStyle::SC_SpinBoxUp );
+    const QRect buttonDownRect = style()->subControlRect( QStyle::CC_SpinBox, &opt, QStyle::SC_SpinBoxDown );
+    if ( buttonUpRect.contains( event->pos() ) || buttonDownRect.contains( event->pos() ) )
+    {
+      blockSignals( true );
+      QDateTimeEdit::setDateTime( QDateTime::currentDateTime() );
+      blockSignals( false );
+    }
+  }
 
   QDateTimeEdit::mousePressEvent( event );
 }
@@ -105,10 +107,24 @@ void QgsDateTimeEdit::mousePressEvent( QMouseEvent *event )
 void QgsDateTimeEdit::changed( const QDateTime &dateTime )
 {
   mIsEmpty = false;
-  mIsNull = dateTime.isNull();
-  mNullLabel->setVisible( mAllowNull && mIsNull );
+  bool isNull = dateTime.isNull() || dateTime == minimumDateTime();
+  if ( mIsNull != isNull )
+  {
+    mIsNull = isNull;
+    if ( mIsNull )
+    {
+      if ( mOriginalStyleSheet.isNull() )
+      {
+        mOriginalStyleSheet = lineEdit()->styleSheet();
+      }
+      lineEdit()->setStyleSheet( QStringLiteral( "font-style: italic; color: grey; }" ) );
+    }
+    else
+    {
+      lineEdit()->setStyleSheet( mOriginalStyleSheet );
+    }
+  }
   mClearButton->setVisible( mAllowNull && !mIsNull );
-  lineEdit()->setVisible( !mAllowNull || !mIsNull );
 }
 
 void QgsDateTimeEdit::calendarSelectionChanged()
@@ -164,11 +180,6 @@ void QgsDateTimeEdit::resizeEvent( QResizeEvent *event )
 
   QSize sz = mClearButton->sizeHint();
 
-
   mClearButton->move( rect().right() - frameWidth() - spinButtonWidth() - sz.width(),
                       ( rect().bottom() + 1 - sz.height() ) / 2 );
-
-  mNullLabel->move( 0, 0 );
-  mNullLabel->setMinimumSize( rect().adjusted( 0, 0, -spinButtonWidth(), 0 ).size() );
-  mNullLabel->setMaximumSize( rect().adjusted( 0, 0, -spinButtonWidth(), 0 ).size() );
 }

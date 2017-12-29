@@ -70,12 +70,10 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
 
     void mousePressEvent( QMouseEvent *event ) override;
 
-
   private slots:
     void changed( const QDateTime &dateTime );
 
     void calendarSelectionChanged();
-
 
   private:
     int spinButtonWidth() const;
@@ -85,8 +83,8 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
     bool mIsNull = true;
     bool mIsEmpty = false;
 
-    QLineEdit *mNullLabel = nullptr;
     QToolButton *mClearButton = nullptr;
+    QString mOriginalStyleSheet = QString();
 
     /**
      * Set the lowest Date that can be displayed with the Qt::ISODate format
