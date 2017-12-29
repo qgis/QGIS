@@ -247,7 +247,7 @@ subclasses.
 Constructor for QgsReport.
 %End
 
-    virtual QgsReport *clone() const;
+    virtual QgsReport *clone() const /Factory/;
 
 
     virtual int count();

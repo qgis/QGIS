@@ -234,7 +234,7 @@ class CORE_EXPORT QgsReport : public QgsAbstractReportSection
     //! Constructor for QgsReport.
     QgsReport() = default;
 
-    QgsReport *clone() const override;
+    QgsReport *clone() const override SIP_FACTORY;
 
     // TODO - how to handle this?
     int count() override { return -1; }
