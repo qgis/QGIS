@@ -16,7 +16,8 @@ import qgis  # NOQA
 
 from qgis.core import (QgsProject,
                        QgsLayout,
-                       QgsReport)
+                       QgsReport,
+                       QgsReportSectionLayout)
 from qgis.testing import start_app, unittest
 
 start_app()
@@ -58,12 +59,12 @@ class TestQgsReport(unittest.TestCase):
         r.removeChild(None)
 
         # append child
-        child1 = QgsReport()
+        child1 = QgsReportSectionLayout()
         r.appendChild(child1)
         self.assertEqual(r.childCount(), 1)
         self.assertEqual(r.children(), [child1])
         self.assertEqual(r.child(0), child1)
-        child2 = QgsReport()
+        child2 = QgsReportSectionLayout()
         r.appendChild(child2)
         self.assertEqual(r.childCount(), 2)
         self.assertEqual(r.children(), [child1, child2])
@@ -73,11 +74,11 @@ class TestQgsReport(unittest.TestCase):
         p = QgsProject()
         r = QgsReport()
 
-        child1 = QgsReport()
+        child1 = QgsReportSectionLayout()
         r.insertChild(11, child1)
         self.assertEqual(r.childCount(), 1)
         self.assertEqual(r.children(), [child1])
-        child2 = QgsReport()
+        child2 = QgsReportSectionLayout()
         r.insertChild(-1, child2)
         self.assertEqual(r.childCount(), 2)
         self.assertEqual(r.children(), [child2, child1])
@@ -86,9 +87,9 @@ class TestQgsReport(unittest.TestCase):
         p = QgsProject()
         r = QgsReport()
 
-        child1 = QgsReport()
+        child1 = QgsReportSectionLayout()
         r.appendChild(child1)
-        child2 = QgsReport()
+        child2 = QgsReportSectionLayout()
         r.appendChild(child2)
 
         r.removeChildAt(-1)
@@ -109,10 +110,10 @@ class TestQgsReport(unittest.TestCase):
         p = QgsProject()
         r = QgsReport()
 
-        child1 = QgsReport()
+        child1 = QgsReportSectionLayout()
         child1.setHeaderEnabled(True)
         r.appendChild(child1)
-        child2 = QgsReport()
+        child2 = QgsReportSectionLayout()
         child2.setFooterEnabled(True)
         r.appendChild(child2)
 
@@ -122,6 +123,13 @@ class TestQgsReport(unittest.TestCase):
         self.assertFalse(cloned.child(0).footerEnabled())
         self.assertFalse(cloned.child(1).headerEnabled())
         self.assertTrue(cloned.child(1).footerEnabled())
+
+    def testReportSectionLayout(self):
+        r = QgsReportSectionLayout()
+        p = QgsProject()
+        body = QgsLayout(p)
+        r.setBody(body)
+        self.assertEqual(r.body(), body)
 
 
 if __name__ == '__main__':

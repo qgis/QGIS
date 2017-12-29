@@ -38,6 +38,12 @@ Subclasses should call copyCommonProperties() in their clone()
 implementations.
 %End
 
+    virtual int count();
+
+    virtual QString filePath( const QString &baseFilePath, const QString &extension );
+
+
+
 
     virtual QgsLayout *layout();
 
@@ -225,13 +231,50 @@ This method should be called from clone() implementations.
     QgsAbstractReportSection( const QgsAbstractReportSection &other );
 };
 
+class QgsReportSectionLayout : QgsAbstractReportSection
+{
+%Docstring
+ A report section consisting of a single QgsLayout body.
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsabstractreportsection.h"
+%End
+  public:
+
+    QgsLayout *body();
+%Docstring
+Returns the body layout for the section.
+
+.. seealso:: :py:func:`setBody()`
+%End
+
+    void setBody( QgsLayout *body /Transfer/ );
+%Docstring
+Sets the ``body`` layout for the section. Ownership of ``body``
+is transferred to the report section.
+
+.. seealso:: :py:func:`body()`
+%End
+
+    virtual QgsReportSectionLayout *clone() const /Factory/;
+
+    virtual bool beginRender();
+
+    virtual bool next();
+
+
+};
+
 
 class QgsReport : QgsAbstractReportSection
 {
 %Docstring
  Represents a report for use with the QgsLayout engine.
 
-Reports consist of multiple sections, represented by QgsAbstractReportSection
+Reports consist of multiple sections, represented by :py:class:`QgsAbstractReportSection`
 subclasses.
 
 .. versionadded:: 3.0
@@ -248,15 +291,6 @@ Constructor for QgsReport.
 %End
 
     virtual QgsReport *clone() const /Factory/;
-
-
-    virtual int count();
-    virtual bool beginRender();
-
-    virtual bool next();
-
-
-    virtual QString filePath( const QString &baseFilePath, const QString &extension );
 
 
 };

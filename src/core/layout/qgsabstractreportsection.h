@@ -51,6 +51,13 @@ class CORE_EXPORT QgsAbstractReportSection : public QgsAbstractLayoutIterator
      */
     virtual QgsAbstractReportSection *clone() const = 0 SIP_FACTORY;
 
+    // TODO - how to handle this?
+    int count() override { return -1; }
+
+    //TODO - baseFilePath should be a filename, not directory
+    QString filePath( const QString &baseFilePath, const QString &extension ) override;
+
+
 #if 0 //TODO
     virtual void setContext( const QgsLayoutReportContext &context ) = 0;
 #endif
@@ -199,6 +206,7 @@ class CORE_EXPORT QgsAbstractReportSection : public QgsAbstractLayoutIterator
 
   private:
 
+    int mSectionNumber = 0;
     SubSection mNextSection = Header;
     int mNextChild = 0;
     QgsLayout *mCurrentLayout = nullptr;
@@ -213,6 +221,40 @@ class CORE_EXPORT QgsAbstractReportSection : public QgsAbstractLayoutIterator
 #ifdef SIP_RUN
     QgsAbstractReportSection( const QgsAbstractReportSection &other );
 #endif
+};
+
+/**
+ * \ingroup core
+ * \class QgsReportSectionLayout
+ * \brief A report section consisting of a single QgsLayout body.
+ * \since QGIS 3.0
+ */
+class CORE_EXPORT QgsReportSectionLayout : public QgsAbstractReportSection
+{
+  public:
+
+    /**
+     * Returns the body layout for the section.
+     * \see setBody()
+     */
+    QgsLayout *body() { return mBody.get(); }
+
+    /**
+     * Sets the \a body layout for the section. Ownership of \a body
+     * is transferred to the report section.
+     * \see body()
+     */
+    void setBody( QgsLayout *body SIP_TRANSFER ) { mBody.reset( body ); }
+
+    QgsReportSectionLayout *clone() const override SIP_FACTORY;
+    bool beginRender() override;
+    bool next() override;
+
+  private:
+
+    bool mExportedBody = false;
+    std::unique_ptr< QgsLayout > mBody;
+
 };
 
 
@@ -235,18 +277,6 @@ class CORE_EXPORT QgsReport : public QgsAbstractReportSection
     QgsReport() = default;
 
     QgsReport *clone() const override SIP_FACTORY;
-
-    // TODO - how to handle this?
-    int count() override { return -1; }
-    bool beginRender() override;
-    bool next() override;
-
-    //TODO - baseFilePath should be a filename, not directory
-    QString filePath( const QString &baseFilePath, const QString &extension ) override;
-
-  private:
-
-    int mSectionNumber = 0;
 
 };
 

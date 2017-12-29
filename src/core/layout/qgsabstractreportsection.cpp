@@ -22,6 +22,15 @@ QgsAbstractReportSection::~QgsAbstractReportSection()
   qDeleteAll( mChildren );
 }
 
+QString QgsAbstractReportSection::filePath( const QString &baseFilePath, const QString &extension )
+{
+  QString base = QDir( baseFilePath ).filePath( "report_" ) + QString::number( mSectionNumber );
+  if ( !extension.startsWith( '.' ) )
+    base += '.';
+  base += extension;
+  return base;
+}
+
 QgsLayout *QgsAbstractReportSection::layout()
 {
   return mCurrentLayout;
@@ -33,6 +42,7 @@ bool QgsAbstractReportSection::beginRender()
   mCurrentLayout = nullptr;
   mNextChild = 0;
   mNextSection = Header;
+  mSectionNumber = 0;
 
   // and all children too
   bool result = true;
@@ -45,6 +55,8 @@ bool QgsAbstractReportSection::beginRender()
 
 bool QgsAbstractReportSection::next()
 {
+  mSectionNumber++;
+
   switch ( mNextSection )
   {
     case Header:
@@ -192,24 +204,38 @@ QgsReport *QgsReport::clone() const
   return copy.release();
 }
 
-bool QgsReport::beginRender()
+//
+// QgsReportSectionLayout
+//
+
+QgsReportSectionLayout *QgsReportSectionLayout::clone() const
 {
-  mSectionNumber = 0;
+  std::unique_ptr< QgsReportSectionLayout > copy = qgis::make_unique< QgsReportSectionLayout >();
+  copyCommonProperties( copy.get() );
+
+  if ( mBody )
+    copy->mBody.reset( mBody->clone() );
+  else
+    copy->mBody.reset();
+
+  return copy.release();
+}
+
+bool QgsReportSectionLayout::beginRender()
+{
+  mExportedBody = false;
   return QgsAbstractReportSection::beginRender();
 }
 
-bool QgsReport::next()
+bool QgsReportSectionLayout::next()
 {
-  mSectionNumber++;
-  return QgsAbstractReportSection::next();
-}
-
-QString QgsReport::filePath( const QString &baseFilePath, const QString &extension )
-{
-  QString base = QDir( baseFilePath ).filePath( "report_" ) + QString::number( mSectionNumber );
-  if ( !extension.startsWith( '.' ) )
-    base += '.';
-  base += extension;
-  return base;
-
+  if ( !mExportedBody )
+  {
+    mExportedBody = true;
+    return true;
+  }
+  else
+  {
+    return false;
+  }
 }
