@@ -162,6 +162,7 @@
 %Include composer/qgscomposertexttable.sip
 %Include composer/qgspaperitem.sip
 %Include layout/qgsabstractlayoutiterator.sip
+%Include layout/qgsabstractreportsection.sip
 %Include layout/qgslayoutaligner.sip
 %Include layout/qgslayoutexporter.sip
 %Include layout/qgslayoutgridsettings.sip

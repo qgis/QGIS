@@ -364,6 +364,7 @@ SET(QGIS_CORE_SRCS
   dxf/qgsdxfpaintengine.cpp
   dxf/qgsdxfpallabeling.cpp
 
+  layout/qgsabstractreportsection.cpp
   layout/qgslayout.cpp
   layout/qgslayoutaligner.cpp
   layout/qgslayoutatlas.cpp
@@ -1029,6 +1030,7 @@ SET(QGIS_CORE_HDRS
   composer/qgspaperitem.h
 
   layout/qgsabstractlayoutiterator.h
+  layout/qgsabstractreportsection.h
   layout/qgslayoutaligner.h
   layout/qgslayoutexporter.h
   layout/qgslayoutgridsettings.h
