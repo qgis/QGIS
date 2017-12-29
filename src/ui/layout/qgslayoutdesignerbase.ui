@@ -92,7 +92,7 @@
    <addaction name="mActionMoveItemContent"/>
    <addaction name="mActionEditNodesItem"/>
   </widget>
-  <widget class="QMenuBar" name="menuBar">
+  <widget class="QMenuBar" name="mMenuBar">
    <property name="geometry">
     <rect>
      <x>0</x>

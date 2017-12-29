@@ -643,6 +643,9 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   mItemsTreeView = new QgsLayoutItemsListView( mItemsDock, this );
   mItemsDock->setWidget( mItemsTreeView );
 
+  mAtlasDock = new QgsDockWidget( tr( "Atlas" ), this );
+  mAtlasDock->setObjectName( QStringLiteral( "AtlasDock" ) );
+
   const QList<QDockWidget *> docks = findChildren<QDockWidget *>();
   for ( QDockWidget *dock : docks )
   {
@@ -654,18 +657,21 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   addDockWidget( Qt::RightDockWidgetArea, mGuideDock );
   addDockWidget( Qt::RightDockWidgetArea, mUndoDock );
   addDockWidget( Qt::RightDockWidgetArea, mItemsDock );
+  addDockWidget( Qt::RightDockWidgetArea, mAtlasDock );
 
   createLayoutPropertiesWidget();
 
   mUndoDock->show();
   mItemDock->show();
   mGeneralDock->show();
+  mAtlasDock->show();
   mItemsDock->show();
 
   tabifyDockWidget( mGeneralDock, mUndoDock );
   tabifyDockWidget( mItemDock, mUndoDock );
   tabifyDockWidget( mGeneralDock, mItemDock );
   tabifyDockWidget( mItemDock, mItemsDock );
+  tabifyDockWidget( mItemDock, mAtlasDock );
 
   toggleActions( false );
 
@@ -681,8 +687,6 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   mActionExportAtlasAsImage->setEnabled( false );
   mActionExportAtlasAsSVG->setEnabled( false );
   mActionExportAtlasAsPDF->setEnabled( false );
-  mAtlasToolbar->hide();
-  mMenuAtlas->hide();
 
   restoreWindowState();
 
@@ -723,6 +727,17 @@ void QgsLayoutDesignerDialog::setMasterLayout( QgsMasterLayoutInterface *layout 
   if ( dynamic_cast< QgsPrintLayout * >( layout ) )
   {
     createAtlasWidget();
+  }
+  else
+  {
+    // ideally we'd only create mAtlasDock in createAtlasWidget() -
+    // but if we do that, then it's always brought to the focus
+    // in tab widgets
+    mAtlasDock->hide();
+    mPanelsMenu->removeAction( mAtlasDock->toggleViewAction() );
+    delete mMenuAtlas;
+    mMenuAtlas = nullptr;
+    mAtlasToolbar->hide();
   }
 }
 
@@ -2665,25 +2680,14 @@ void QgsLayoutDesignerDialog::createLayoutPropertiesWidget()
 
 void QgsLayoutDesignerDialog::createAtlasWidget()
 {
-  if ( !mAtlasDock )
-  {
-    mAtlasDock = new QgsDockWidget( tr( "Atlas" ), this );
-    mAtlasDock->setObjectName( QStringLiteral( "AtlasDock" ) );
-    mPanelsMenu->addAction( mAtlasDock->toggleViewAction() );
-    addDockWidget( Qt::RightDockWidgetArea, mAtlasDock );
-    tabifyDockWidget( mItemDock, mAtlasDock );
-    connect( mAtlasDock, &QDockWidget::visibilityChanged, this, &QgsLayoutDesignerDialog::dockVisibilityChanged );
-  }
-
   QgsPrintLayout *printLayout = qobject_cast< QgsPrintLayout * >( mLayout );
   QgsLayoutAtlas *atlas = printLayout->atlas();
   QgsLayoutAtlasWidget *atlasWidget = new QgsLayoutAtlasWidget( mAtlasDock, printLayout );
   atlasWidget->setMessageBar( mMessageBar );
   mAtlasDock->setWidget( atlasWidget );
-  mAtlasDock->show();
 
-  mMenuAtlas->show();
   mAtlasToolbar->show();
+  mPanelsMenu->addAction( mAtlasDock->toggleViewAction() );
 
   connect( atlas, &QgsLayoutAtlas::messagePushed, mStatusBar, [ = ]( const QString & message )
   {
