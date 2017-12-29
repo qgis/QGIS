@@ -49,11 +49,11 @@ QVariant QgsDateTimeSearchWidgetWrapper::value() const
   const QString fieldFormat = config( QStringLiteral( "field_format" ), QgsDateTimeFieldFormatter::defaultFormat( layer()->fields().at( mFieldIdx ).type() ) ).toString();
   if ( fieldFormat == QgsDateTimeFieldFormatter::DEFAULT_ISO_FORMAT )
   {
-    return mDateTimeEdit->dateTime().toString( fieldFormat );
+    return mDateTimeEdit->dateTime().toString( Qt::ISODate );
   }
   else
   {
-    return mDateTimeEdit->dateTime().toString( Qt::ISODate );
+    return mDateTimeEdit->dateTime().toString( fieldFormat );
   }
 }
 
