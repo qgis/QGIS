@@ -4751,8 +4751,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>682</width>
-                <height>715</height>
+                <width>855</width>
+                <height>827</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_33">
@@ -5387,6 +5387,13 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
   <tabstop>mCustomVariablesTable</tabstop>
   <tabstop>mCurrentVariablesTable</tabstop>
   <tabstop>mCurrentVariablesQGISChxBx</tabstop>
+  <tabstop>mOptionsScrollArea_08</tabstop>
+  <tabstop>leProjectGlobalCrs</tabstop>
+  <tabstop>radPromptForProjection</tabstop>
+  <tabstop>radUseProjectProjection</tabstop>
+  <tabstop>radUseGlobalProjection</tabstop>
+  <tabstop>leLayerGlobalCrs</tabstop>
+  <tabstop>mShowDatumTransformDialogCheckBox</tabstop>
   <tabstop>mOptionsScrollArea_11</tabstop>
   <tabstop>cbxAttributeTableDocked</tabstop>
   <tabstop>mComboCopyFeatureFormat</tabstop>
@@ -5433,14 +5440,6 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
   <tabstop>mRasterCumulativeCutUpperDoubleSpinBox</tabstop>
   <tabstop>spnThreeBandStdDev</tabstop>
   <tabstop>mLogCanvasRefreshChkBx</tabstop>
-  <tabstop>scrollArea</tabstop>
-  <tabstop>mButtonAddColor</tabstop>
-  <tabstop>mButtonRemoveColor</tabstop>
-  <tabstop>mButtonCopyColors</tabstop>
-  <tabstop>mButtonPasteColors</tabstop>
-  <tabstop>mButtonImportColors</tabstop>
-  <tabstop>mButtonExportColors</tabstop>
-  <tabstop>mTreeCustomColors</tabstop>
   <tabstop>mOptionsScrollArea_06</tabstop>
   <tabstop>pbnSelectionColor</tabstop>
   <tabstop>pbnCanvasColor</tabstop>
@@ -5465,21 +5464,19 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
   <tabstop>pbnDefaultScaleValues</tabstop>
   <tabstop>pbnImportScales</tabstop>
   <tabstop>pbnExportScales</tabstop>
-  <tabstop>mOptionsScrollArea_12</tabstop>
-  <tabstop>mComposerFontComboBox</tabstop>
-  <tabstop>mGridStyleComboBox</tabstop>
-  <tabstop>mGridColorButton</tabstop>
-  <tabstop>mGridResolutionSpinBox</tabstop>
-  <tabstop>mOffsetXSpinBox</tabstop>
-  <tabstop>mOffsetYSpinBox</tabstop>
-  <tabstop>mSnapToleranceSpinBox</tabstop>
-  <tabstop>mBtnAddTemplatePath</tabstop>
-  <tabstop>mBtnRemoveTemplatePath</tabstop>
-  <tabstop>mListComposerTemplatePaths</tabstop>
+  <tabstop>scrollArea</tabstop>
+  <tabstop>mButtonAddColor</tabstop>
+  <tabstop>mButtonRemoveColor</tabstop>
+  <tabstop>mButtonCopyColors</tabstop>
+  <tabstop>mButtonPasteColors</tabstop>
+  <tabstop>mButtonImportColors</tabstop>
+  <tabstop>mButtonExportColors</tabstop>
+  <tabstop>mTreeCustomColors</tabstop>
   <tabstop>mOptionsScrollArea_07</tabstop>
   <tabstop>chkDisableAttributeValuesDlg</tabstop>
   <tabstop>chkReuseLastValues</tabstop>
   <tabstop>mValidateGeometries</tabstop>
+  <tabstop>mDefaultZValueSpinBox</tabstop>
   <tabstop>mLineWidthSpinBox</tabstop>
   <tabstop>mLineColorToolButton</tabstop>
   <tabstop>mFillColorToolButton</tabstop>
@@ -5491,23 +5488,30 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
   <tabstop>mSearchRadiusVertexEditSpinBox</tabstop>
   <tabstop>mSearchRadiusVertexEditComboBox</tabstop>
   <tabstop>mSnappingMainDialogComboBox</tabstop>
+  <tabstop>mSnappingMarkerColorButton</tabstop>
+  <tabstop>mSnappingTooltipsCheckbox</tabstop>
   <tabstop>mMarkersOnlyForSelectedCheckBox</tabstop>
   <tabstop>mMarkerStyleComboBox</tabstop>
   <tabstop>mMarkerSizeSpinBox</tabstop>
   <tabstop>mOffsetJoinStyleComboBox</tabstop>
   <tabstop>mOffsetQuadSegSpinBox</tabstop>
   <tabstop>mCurveOffsetMiterLimitComboBox</tabstop>
+  <tabstop>mOptionsScrollArea_12</tabstop>
+  <tabstop>mComposerFontComboBox</tabstop>
+  <tabstop>mGridStyleComboBox</tabstop>
+  <tabstop>mGridColorButton</tabstop>
+  <tabstop>mGridResolutionSpinBox</tabstop>
+  <tabstop>mOffsetXSpinBox</tabstop>
+  <tabstop>mOffsetYSpinBox</tabstop>
+  <tabstop>mSnapToleranceSpinBox</tabstop>
+  <tabstop>mBtnAddTemplatePath</tabstop>
+  <tabstop>mBtnRemoveTemplatePath</tabstop>
+  <tabstop>mListComposerTemplatePaths</tabstop>
   <tabstop>mOptionsScrollArea_02</tabstop>
   <tabstop>cmbEditCreateOptions</tabstop>
   <tabstop>pbnEditCreateOptions</tabstop>
   <tabstop>pbnEditPyramidsOptions</tabstop>
   <tabstop>lstGdalDrivers</tabstop>
-  <tabstop>mOptionsScrollArea_08</tabstop>
-  <tabstop>leProjectGlobalCrs</tabstop>
-  <tabstop>radPromptForProjection</tabstop>
-  <tabstop>radUseProjectProjection</tabstop>
-  <tabstop>radUseGlobalProjection</tabstop>
-  <tabstop>leLayerGlobalCrs</tabstop>
   <tabstop>mAuthConfigsGrpBx</tabstop>
   <tabstop>mOptionsScrollArea_10</tabstop>
   <tabstop>leWmsSearch</tabstop>
@@ -5516,8 +5520,13 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
   <tabstop>mDefaultTileExpirySpinBox</tabstop>
   <tabstop>mDefaultTileMaxRetrySpinBox</tabstop>
   <tabstop>leUserAgent</tabstop>
+  <tabstop>tabContentCache</tabstop>
   <tabstop>mCacheDirectory</tabstop>
+  <tabstop>mBrowseCacheDirectory</tabstop>
   <tabstop>mCacheSize</tabstop>
+  <tabstop>mClearCache</tabstop>
+  <tabstop>mAutoClearAccessCache</tabstop>
+  <tabstop>mClearAccessCache</tabstop>
   <tabstop>grpProxy</tabstop>
   <tabstop>mProxyTypeComboBox</tabstop>
   <tabstop>leProxyHost</tabstop>
@@ -5526,14 +5535,6 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
   <tabstop>mRemoveUrlPushButton</tabstop>
   <tabstop>mExcludeUrlListWidget</tabstop>
   <tabstop>mAdvancedSettingsEnableButton</tabstop>
-  <tabstop>mDefaultZValueSpinBox</tabstop>
-  <tabstop>mSnappingMarkerColorButton</tabstop>
-  <tabstop>mSnappingTooltipsCheckbox</tabstop>
-  <tabstop>tabContentCache</tabstop>
-  <tabstop>mBrowseCacheDirectory</tabstop>
-  <tabstop>mClearCache</tabstop>
-  <tabstop>mAutoClearAccessCache</tabstop>
-  <tabstop>mClearAccessCache</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
