@@ -39,6 +39,8 @@ Note that ownership is not transferred to ``project``.
 %End
 
     virtual QString type() const;
+    virtual QIcon icon() const;
+
     virtual QgsProject *layoutProject() const;
     virtual QgsReport *clone() const /Factory/;
 

@@ -35,6 +35,11 @@ Returns the layout's name.
 .. seealso:: :py:func:`setName()`
 %End
 
+    virtual QIcon icon() const = 0;
+%Docstring
+Returns an icon for the layout.
+%End
+
     virtual void setName( const QString &name ) = 0;
 %Docstring
 Sets the layout's name.

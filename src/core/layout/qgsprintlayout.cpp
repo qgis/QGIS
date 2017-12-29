@@ -48,6 +48,11 @@ QgsProject *QgsPrintLayout::layoutProject() const
   return project();
 }
 
+QIcon QgsPrintLayout::icon() const
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "mActionNewComposer.svg" ) );
+}
+
 QgsLayoutAtlas *QgsPrintLayout::atlas()
 {
   return mAtlas;

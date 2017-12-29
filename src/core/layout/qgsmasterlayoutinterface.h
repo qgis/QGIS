@@ -19,6 +19,7 @@
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include <QString>
+#include <QIcon>
 
 /**
  * \ingroup core
@@ -44,6 +45,11 @@ class CORE_EXPORT QgsMasterLayoutInterface
      * \see setName()
      */
     virtual QString name() const = 0;
+
+    /**
+     * Returns an icon for the layout.
+     */
+    virtual QIcon icon() const = 0;
 
     /**
      * Sets the layout's name.

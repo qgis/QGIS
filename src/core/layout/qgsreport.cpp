@@ -24,6 +24,11 @@ QgsReport::QgsReport( QgsProject *project )
   , mProject( project )
 {}
 
+QIcon QgsReport::icon() const
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "processingResult.svg" ) );
+}
+
 QgsReport *QgsReport::clone() const
 {
   std::unique_ptr< QgsReport > copy = qgis::make_unique< QgsReport >( mProject );

@@ -523,6 +523,11 @@ QVariant QgsLayoutManagerModel::data( const QModelIndex &index, int role ) const
         return QVariant();
     }
 
+    case Qt::DecorationRole:
+    {
+      return mLayoutManager->layouts().at( index.row() )->icon();
+    }
+
     default:
       return QVariant();
   }
