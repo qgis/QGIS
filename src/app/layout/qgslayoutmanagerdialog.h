@@ -92,6 +92,7 @@ class QgsLayoutManagerDialog: public QDialog, private Ui::QgsLayoutManagerBase
     QPushButton *mRemoveButton = nullptr;
     QPushButton *mRenameButton = nullptr;
     QPushButton *mDuplicateButton = nullptr;
+    QPushButton *mCreateReportButton = nullptr;
     QgsLayoutManagerModel *mModel = nullptr;
 
 #ifdef Q_OS_MAC
@@ -112,6 +113,7 @@ class QgsLayoutManagerDialog: public QDialog, private Ui::QgsLayoutManagerBase
     //! Slot to open user templates dir with user's system
     void mTemplatesUserDirBtn_pressed();
 
+    void createReport();
     void removeClicked();
     void showClicked();
     //! Duplicate layout

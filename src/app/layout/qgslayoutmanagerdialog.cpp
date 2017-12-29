@@ -75,6 +75,9 @@ QgsLayoutManagerDialog::QgsLayoutManagerDialog( QWidget *parent, Qt::WindowFlags
   mShowButton = mButtonBox->addButton( tr( "&Show" ), QDialogButtonBox::ActionRole );
   connect( mShowButton, &QAbstractButton::clicked, this, &QgsLayoutManagerDialog::showClicked );
 
+  mCreateReportButton = mButtonBox->addButton( tr( "Create &Report" ), QDialogButtonBox::ActionRole );
+  connect( mCreateReportButton, &QAbstractButton::clicked, this, &QgsLayoutManagerDialog::createReport );
+
   mDuplicateButton = mButtonBox->addButton( tr( "&Duplicate" ), QDialogButtonBox::ActionRole );
   connect( mDuplicateButton, &QAbstractButton::clicked, this, &QgsLayoutManagerDialog::duplicateClicked );
 
@@ -285,6 +288,31 @@ void QgsLayoutManagerDialog::mTemplatesDefaultDirBtn_pressed()
 void QgsLayoutManagerDialog::mTemplatesUserDirBtn_pressed()
 {
   openLocalDirectory( mUserTemplatesDir );
+}
+
+void QgsLayoutManagerDialog::createReport()
+{
+  QString title;
+  if ( !QgisApp::instance()->uniqueLayoutTitle( this, title, true ) )
+  {
+    return;
+  }
+
+  if ( title.isEmpty() )
+  {
+    title = QgsProject::instance()->layoutManager()->generateUniqueTitle();
+  }
+
+  std::unique_ptr< QgsReport > report = qgis::make_unique< QgsReport >( QgsProject::instance() );
+  report->setName( title );
+
+  std::unique_ptr< QgsLayout > header = qgis::make_unique< QgsLayout >( QgsProject::instance() );
+  header->initializeDefaults();
+  report->setHeader( header.release() );
+  report->setHeaderEnabled( true );
+
+  QgisApp::instance()->openLayoutDesignerDialog( report.get() );
+  QgsProject::instance()->layoutManager()->addLayout( report.release() );
 }
 
 void QgsLayoutManagerDialog::openLocalDirectory( const QString &localDirPath )
