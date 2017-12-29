@@ -18,6 +18,8 @@
 #include <QSettings>
 #include <QStyle>
 #include <QToolButton>
+#include <QStyleOptionComboBox>
+
 
 #include "qgsdatetimeedit.h"
 
@@ -100,7 +102,7 @@ int QgsDateTimeEdit::spinButtonWidth() const
 
 int QgsDateTimeEdit::frameWidth() const
 {
-  return style()->pixelMetric( QStyle::PM_DefaultFrameWidth );
+  return style()->pixelMetric( QStyle::PM_ComboBoxFrameWidth );
 }
 
 void QgsDateTimeEdit::setDateTime( const QDateTime &dateTime )
@@ -135,14 +137,31 @@ QDateTime QgsDateTimeEdit::dateTime() const
 void QgsDateTimeEdit::resizeEvent( QResizeEvent *event )
 {
   QDateTimeEdit::resizeEvent( event );
+  QRect rect = QDateTimeEdit::rect();
 
   QSize sz = mClearButton->sizeHint();
 
 
-  mClearButton->move( rect().right() - frameWidth() - spinButtonWidth() - sz.width(),
-                      ( rect().bottom() + 1 - sz.height() ) / 2 );
+  mClearButton->move( rect.right() - frameWidth() - spinButtonWidth() - sz.width(),
+                      ( rect.bottom() + 1 - sz.height() ) / 2 );
 
-  mNullLabel->move( 0, 0 );
-  mNullLabel->setMinimumSize( rect().adjusted( 0, 0, -spinButtonWidth(), 0 ).size() );
-  mNullLabel->setMaximumSize( rect().adjusted( 0, 0, -spinButtonWidth(), 0 ).size() );
+  QRect  r;
+  if ( !calendarPopup() )
+  {
+    QStyleOptionSpinBox *opt = new QStyleOptionSpinBox();
+    initStyleOption( opt );
+    r = style()->subControlRect( QStyle::CC_SpinBox, opt, QStyle::SC_SpinBoxEditField );
+    delete opt;
+  }
+  else
+  {
+    QStyleOptionComboBox *opt = new QStyleOptionComboBox();
+    opt->init( this );
+    r = style()->subControlRect( QStyle::CC_ComboBox, opt, QStyle::SC_ComboBoxEditField );
+    r.adjust( 0, 1, 0, 0 );
+    delete opt;
+  }
+  mNullLabel->setMinimumSize( r.width(), r.height() );
+  mNullLabel->setMaximumSize( r.width(), r.height() );
+  mNullLabel->move( r.x(), r.y() );
 }
