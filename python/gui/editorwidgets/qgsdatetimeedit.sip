@@ -73,7 +73,6 @@ Resets the widget to show no value (ie, an "unknown" state).
     virtual void mousePressEvent( QMouseEvent *event );
 
 
-
 };
 
 /************************************************************************
