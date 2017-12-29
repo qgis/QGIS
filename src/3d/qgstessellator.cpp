@@ -231,6 +231,14 @@ static void _ringToPoly2tri( const QgsCurve *ring, std::vector<p2t::Point *> &po
   }
 }
 
+
+inline double _round_coord( double x )
+{
+  const double exp = 1e10;   // round to 10 decimal digits
+  return round( x * exp ) / exp;
+}
+
+
 static QgsCurve *_transform_ring_to_new_base( const QgsCurve &curve, const QgsPoint &pt0, const QMatrix4x4 *toNewBase )
 {
   int count = curve.numPoints();
@@ -245,7 +253,19 @@ static QgsCurve *_transform_ring_to_new_base( const QgsCurve &curve, const QgsPo
     QVector4D v( pt2.x(), pt2.y(), pt2.z(), 0 );
     if ( toNewBase )
       v = toNewBase->map( v );
-    pts << QgsPoint( QgsWkbTypes::PointZ, v.x(), v.y(), v.z() );
+
+    // we also round coordinates before passing them to poly2tri triangulation in order to fix possible numerical
+    // stability issues. We had crashes with nearly collinear points where one of the points was off by a tiny bit (e.g. by 1e-20).
+    // See TestQgsTessellator::testIssue17745().
+    //
+    // A hint for a similar issue: https://github.com/greenm01/poly2tri/issues/99
+    //
+    //    The collinear tests uses epsilon 1e-12. Seems rounding to 12 places you still
+    //    can get problems with this test when points are pretty much on a straight line.
+    //    I suggest you round to 10 decimals for stability and you can live with that
+    //    precision.
+
+    pts << QgsPoint( QgsWkbTypes::PointZ, _round_coord( v.x() ), _round_coord( v.y() ), _round_coord( v.z() ) );
   }
   return new QgsLineString( pts );
 }
