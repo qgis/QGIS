@@ -121,6 +121,18 @@
          </item>
          <item>
           <property name="text">
+           <string>CRS</string>
+          </property>
+          <property name="toolTip">
+           <string>CRS</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../images/images.qrc">
+            <normaloff>:/images/themes/default/propertyicons/CRS.svg</normaloff>:/images/themes/default/propertyicons/CRS.svg</iconset>
+          </property>
+         </item>
+         <item>
+          <property name="text">
            <string>Data Sources</string>
           </property>
           <property name="toolTip">
@@ -141,18 +153,6 @@
           <property name="icon">
            <iconset resource="../../images/images.qrc">
             <normaloff>:/images/themes/default/propertyicons/rendering.svg</normaloff>:/images/themes/default/propertyicons/rendering.svg</iconset>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Colors</string>
-          </property>
-          <property name="toolTip">
-           <string>Colors</string>
-          </property>
-          <property name="icon">
-           <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/propertyicons/symbology.svg</normaloff>:/images/themes/default/propertyicons/symbology.svg</iconset>
           </property>
          </item>
          <item>
@@ -181,14 +181,14 @@
          </item>
          <item>
           <property name="text">
-           <string>Composer</string>
+           <string>Colors</string>
           </property>
           <property name="toolTip">
-           <string>Composer</string>
+           <string>Colors</string>
           </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/mActionNewComposer.svg</normaloff>:/images/themes/default/mActionNewComposer.svg</iconset>
+            <normaloff>:/images/themes/default/propertyicons/symbology.svg</normaloff>:/images/themes/default/propertyicons/symbology.svg</iconset>
           </property>
          </item>
          <item>
@@ -205,6 +205,18 @@
          </item>
          <item>
           <property name="text">
+           <string>Composer</string>
+          </property>
+          <property name="toolTip">
+           <string>Composer</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../images/images.qrc">
+            <normaloff>:/images/themes/default/mActionNewComposer.svg</normaloff>:/images/themes/default/mActionNewComposer.svg</iconset>
+          </property>
+         </item>
+         <item>
+          <property name="text">
            <string>GDAL</string>
           </property>
           <property name="toolTip">
@@ -217,18 +229,21 @@
          </item>
          <item>
           <property name="text">
-           <string>CRS</string>
+           <string>Variables</string>
           </property>
           <property name="toolTip">
-           <string>CRS</string>
+           <string>Variables</string>
           </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/propertyicons/CRS.svg</normaloff>:/images/themes/default/propertyicons/CRS.svg</iconset>
+            <normaloff>:/images/themes/default/mIconExpression.svg</normaloff>:/images/themes/default/mIconExpression.svg</iconset>
           </property>
          </item>
          <item>
           <property name="text">
+           <string>Authentication</string>
+          </property>
+          <property name="toolTip">
            <string>Authentication</string>
           </property>
           <property name="icon">
@@ -250,15 +265,9 @@
          </item>
          <item>
           <property name="text">
-           <string>Variables</string>
+           <string>Locator</string>
           </property>
-          <property name="icon">
-           <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/mIconExpression.svg</normaloff>:/images/themes/default/mIconExpression.svg</iconset>
-          </property>
-         </item>
-         <item>
-          <property name="text">
+          <property name="toolTip">
            <string>Locator</string>
           </property>
           <property name="icon">
@@ -268,6 +277,9 @@
          </item>
          <item>
           <property name="text">
+           <string>Advanced</string>
+          </property>
+          <property name="toolTip">
            <string>Advanced</string>
           </property>
           <property name="icon">
