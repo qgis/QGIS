@@ -448,6 +448,8 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     void loadAtlasPredefinedScalesFromProject();
 
     QgsLayoutAtlas *atlas();
+
+    void toggleActions( bool layoutAvailable );
 };
 
 #endif // QGSLAYOUTDESIGNERDIALOG_H

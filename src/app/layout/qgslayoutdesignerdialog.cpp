@@ -667,6 +667,8 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   tabifyDockWidget( mGeneralDock, mItemDock );
   tabifyDockWidget( mItemDock, mItemsDock );
 
+  toggleActions( false );
+
   //set initial state of atlas controls
   mActionAtlasPreview->setEnabled( false );
   mActionAtlasPreview->setChecked( false );
@@ -717,6 +719,11 @@ void QgsLayoutDesignerDialog::setMasterLayout( QgsMasterLayoutInterface *layout 
   {
     connect( r, &QgsReport::nameChanged, this, &QgsLayoutDesignerDialog::setWindowTitle );
   }
+
+  if ( dynamic_cast< QgsPrintLayout * >( layout ) )
+  {
+    createAtlasWidget();
+  }
 }
 
 QgsMasterLayoutInterface *QgsLayoutDesignerDialog::masterLayout()
@@ -726,52 +733,55 @@ QgsMasterLayoutInterface *QgsLayoutDesignerDialog::masterLayout()
 
 void QgsLayoutDesignerDialog::setCurrentLayout( QgsLayout *layout )
 {
-  layout->deselectAll();
-  mLayout = layout;
-
-  mView->setCurrentLayout( layout );
-
-  // add undo/redo actions which apply to the correct layout undo stack
-  delete mUndoAction;
-  delete mRedoAction;
-  mUndoAction = layout->undoStack()->stack()->createUndoAction( this );
-  mUndoAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionUndo.svg" ) ) );
-  mUndoAction->setShortcuts( QKeySequence::Undo );
-  mRedoAction = layout->undoStack()->stack()->createRedoAction( this );
-  mRedoAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionRedo.svg" ) ) );
-  mRedoAction->setShortcuts( QKeySequence::Redo );
-  menuEdit->insertAction( menuEdit->actions().at( 0 ), mRedoAction );
-  menuEdit->insertAction( mRedoAction, mUndoAction );
-  mLayoutToolbar->addAction( mUndoAction );
-  mLayoutToolbar->addAction( mRedoAction );
-
-  connect( mLayout->undoStack(), &QgsLayoutUndoStack::undoRedoOccurredForItems, this, &QgsLayoutDesignerDialog::undoRedoOccurredForItems );
-  connect( mActionClearGuides, &QAction::triggered, &mLayout->guides(), [ = ]
+  if ( !layout )
   {
-    mLayout->guides().clear();
-  } );
+    toggleActions( false );
+  }
+  else
+  {
+    layout->deselectAll();
+    mLayout = layout;
 
-  mActionShowGrid->setChecked( mLayout->renderContext().gridVisible() );
-  mActionSnapGrid->setChecked( mLayout->snapper().snapToGrid() );
-  mActionShowGuides->setChecked( mLayout->guides().visible() );
-  mActionSnapGuides->setChecked( mLayout->snapper().snapToGuides() );
-  mActionSmartGuides->setChecked( mLayout->snapper().snapToItems() );
-  mActionShowBoxes->setChecked( mLayout->renderContext().boundingBoxesVisible() );
-  mActionShowPage->setChecked( mLayout->renderContext().pagesVisible() );
+    mView->setCurrentLayout( layout );
 
-  mUndoView->setStack( mLayout->undoStack()->stack() );
+    // add undo/redo actions which apply to the correct layout undo stack
+    delete mUndoAction;
+    delete mRedoAction;
+    mUndoAction = layout->undoStack()->stack()->createUndoAction( this );
+    mUndoAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionUndo.svg" ) ) );
+    mUndoAction->setShortcuts( QKeySequence::Undo );
+    mRedoAction = layout->undoStack()->stack()->createRedoAction( this );
+    mRedoAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionRedo.svg" ) ) );
+    mRedoAction->setShortcuts( QKeySequence::Redo );
+    menuEdit->insertAction( menuEdit->actions().at( 0 ), mRedoAction );
+    menuEdit->insertAction( mRedoAction, mUndoAction );
+    mLayoutToolbar->addAction( mUndoAction );
+    mLayoutToolbar->addAction( mRedoAction );
 
-  mSelectTool->setLayout( layout );
-  mItemsTreeView->setCurrentLayout( mLayout );
+    connect( mLayout->undoStack(), &QgsLayoutUndoStack::undoRedoOccurredForItems, this, &QgsLayoutDesignerDialog::undoRedoOccurredForItems );
+    connect( mActionClearGuides, &QAction::triggered, &mLayout->guides(), [ = ]
+    {
+      mLayout->guides().clear();
+    } );
+
+    mActionShowGrid->setChecked( mLayout->renderContext().gridVisible() );
+    mActionSnapGrid->setChecked( mLayout->snapper().snapToGrid() );
+    mActionShowGuides->setChecked( mLayout->guides().visible() );
+    mActionSnapGuides->setChecked( mLayout->snapper().snapToGuides() );
+    mActionSmartGuides->setChecked( mLayout->snapper().snapToItems() );
+    mActionShowBoxes->setChecked( mLayout->renderContext().boundingBoxesVisible() );
+    mActionShowPage->setChecked( mLayout->renderContext().pagesVisible() );
+
+    mUndoView->setStack( mLayout->undoStack()->stack() );
+
+    mSelectTool->setLayout( layout );
+    mItemsTreeView->setCurrentLayout( mLayout );
 #ifdef ENABLE_MODELTEST
-  new ModelTest( mLayout->itemsModel(), this );
+    new ModelTest( mLayout->itemsModel(), this );
 #endif
 
-  createLayoutPropertiesWidget();
-
-  if ( qobject_cast< QgsPrintLayout * >( layout ) )
-  {
-    createAtlasWidget();
+    createLayoutPropertiesWidget();
+    toggleActions( true );
   }
 }
 
@@ -1243,6 +1253,9 @@ void QgsLayoutDesignerDialog::sliderZoomChanged( int value )
 
 void QgsLayoutDesignerDialog::updateStatusZoom()
 {
+  if ( !currentLayout() )
+    return;
+
   double zoomLevel = 0;
   if ( currentLayout()->units() == QgsUnitTypes::LayoutPixels )
   {
@@ -3051,6 +3064,89 @@ QgsLayoutAtlas *QgsLayoutDesignerDialog::atlas()
   if ( !layout )
     return nullptr;
   return layout->atlas();
+}
+
+void QgsLayoutDesignerDialog::toggleActions( bool layoutAvailable )
+{
+  mActionPan->setEnabled( layoutAvailable );
+  mActionZoomTool->setEnabled( layoutAvailable );
+  mActionSelectMoveItem->setEnabled( layoutAvailable );
+  mActionZoomAll->setEnabled( layoutAvailable );
+  mActionZoomIn->setEnabled( layoutAvailable );
+  mActionZoomOut->setEnabled( layoutAvailable );
+  mActionZoomActual->setEnabled( layoutAvailable );
+  mActionZoomToWidth->setEnabled( layoutAvailable );
+  mActionAddPages->setEnabled( layoutAvailable );
+  mActionShowGrid->setEnabled( layoutAvailable );
+  mActionSnapGrid->setEnabled( layoutAvailable );
+  mActionShowGuides->setEnabled( layoutAvailable );
+  mActionSnapGuides->setEnabled( layoutAvailable );
+  mActionClearGuides->setEnabled( layoutAvailable );
+  mActionLayoutProperties->setEnabled( layoutAvailable );
+  mActionShowBoxes->setEnabled( layoutAvailable );
+  mActionSmartGuides->setEnabled( layoutAvailable );
+  mActionDeselectAll->setEnabled( layoutAvailable );
+  mActionSelectAll->setEnabled( layoutAvailable );
+  mActionInvertSelection->setEnabled( layoutAvailable );
+  mActionSelectNextBelow->setEnabled( layoutAvailable );
+  mActionSelectNextAbove->setEnabled( layoutAvailable );
+  mActionLockItems->setEnabled( layoutAvailable );
+  mActionUnlockAll->setEnabled( layoutAvailable );
+  mActionRaiseItems->setEnabled( layoutAvailable );
+  mActionLowerItems->setEnabled( layoutAvailable );
+  mActionMoveItemsToTop->setEnabled( layoutAvailable );
+  mActionMoveItemsToBottom->setEnabled( layoutAvailable );
+  mActionAlignLeft->setEnabled( layoutAvailable );
+  mActionAlignHCenter->setEnabled( layoutAvailable );
+  mActionAlignRight->setEnabled( layoutAvailable );
+  mActionAlignTop->setEnabled( layoutAvailable );
+  mActionAlignVCenter->setEnabled( layoutAvailable );
+  mActionAlignBottom->setEnabled( layoutAvailable );
+  mActionDistributeLeft->setEnabled( layoutAvailable );
+  mActionDistributeHCenter->setEnabled( layoutAvailable );
+  mActionDistributeRight->setEnabled( layoutAvailable );
+  mActionDistributeTop->setEnabled( layoutAvailable );
+  mActionDistributeVCenter->setEnabled( layoutAvailable );
+  mActionDistributeBottom->setEnabled( layoutAvailable );
+  mActionResizeNarrowest->setEnabled( layoutAvailable );
+  mActionResizeWidest->setEnabled( layoutAvailable );
+  mActionResizeShortest->setEnabled( layoutAvailable );
+  mActionResizeTallest->setEnabled( layoutAvailable );
+  mActionDeleteSelection->setEnabled( layoutAvailable );
+  mActionResizeToSquare->setEnabled( layoutAvailable );
+  mActionShowPage->setEnabled( layoutAvailable );
+  mActionGroupItems->setEnabled( layoutAvailable );
+  mActionUngroupItems->setEnabled( layoutAvailable );
+  mActionRefreshView->setEnabled( layoutAvailable );
+  mActionEditNodesItem->setEnabled( layoutAvailable );
+  mActionMoveItemContent->setEnabled( layoutAvailable );
+  mActionPasteInPlace->setEnabled( layoutAvailable );
+  mActionSaveAsTemplate->setEnabled( layoutAvailable );
+  mActionLoadFromTemplate->setEnabled( layoutAvailable );
+  mActionDuplicateLayout->setEnabled( layoutAvailable );
+  mActionExportAsImage->setEnabled( layoutAvailable );
+  mActionExportAsPDF->setEnabled( layoutAvailable );
+  mActionExportAsSVG->setEnabled( layoutAvailable );
+  mActionCut->setEnabled( layoutAvailable );
+  mActionCopy->setEnabled( layoutAvailable );
+  mActionPaste->setEnabled( layoutAvailable );
+  menuAlign_Items->setEnabled( layoutAvailable );
+  menu_Distribute_Items->setEnabled( layoutAvailable );
+  menuResize->setEnabled( layoutAvailable );
+
+  const QList<QAction *> itemActions = mToolsActionGroup->actions();
+  for ( QAction *action : itemActions )
+  {
+    action->setEnabled( layoutAvailable );
+  }
+  for ( auto it = mItemGroupSubmenus.constBegin(); it != mItemGroupSubmenus.constEnd(); ++it )
+  {
+    it.value()->setEnabled( layoutAvailable );
+  }
+  for ( auto it = mItemGroupToolButtons.constBegin(); it != mItemGroupToolButtons.constEnd(); ++it )
+  {
+    it.value()->setEnabled( layoutAvailable );
+  }
 }
 
 void QgsLayoutDesignerDialog::selectItems( const QList<QgsLayoutItem *> items )
