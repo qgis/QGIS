@@ -204,9 +204,12 @@ bool QgsLayoutManager::readXml( const QDomElement &element, const QDomDocument &
   context.setPathResolver( mProject->pathResolver() );
 
   // restore layouts
-  const QDomNodeList layoutNodes = element.elementsByTagName( QStringLiteral( "Layout" ) );
+  const QDomNodeList layoutNodes = layoutsElem.childNodes();
   for ( int i = 0; i < layoutNodes.size(); ++i )
   {
+    if ( layoutNodes.at( i ).nodeName() != QStringLiteral( "Layout" ) )
+      continue;
+
     std::unique_ptr< QgsPrintLayout > l = qgis::make_unique< QgsPrintLayout >( mProject );
     l->undoStack()->blockCommands( true );
     if ( !l->readLayoutXml( layoutNodes.at( i ).toElement(), doc, context ) )
