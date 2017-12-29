@@ -17,7 +17,11 @@ import qgis  # NOQA
 from qgis.core import (QgsProject,
                        QgsLayout,
                        QgsReport,
-                       QgsReportSectionLayout)
+                       QgsReportSectionLayout,
+                       QgsReportSectionFieldGroup,
+                       QgsVectorLayer,
+                       QgsField,
+                       QgsFeature)
 from qgis.testing import start_app, unittest
 
 start_app()
@@ -268,6 +272,161 @@ class TestQgsReport(unittest.TestCase):
         self.assertTrue(r.next())
         self.assertEqual(r.layout(), report_footer)
         self.assertEqual(r.filePath('/tmp/myreport', 'png'), '/tmp/myreport_0009.png')
+        self.assertFalse(r.next())
+
+    def testFieldGroup(self):
+        # create a layer
+        ptLayer = QgsVectorLayer("Point?crs=epsg:4326&field=country:string(20)&field=state:string(20)&field=town:string(20)", "points", "memory")
+
+        attributes = [
+            ['Australia', 'QLD', 'Brisbane'],
+            ['Australia', 'QLD', 'Emerald'],
+            ['NZ', 'state1', 'town1'],
+            ['Australia', 'VIC', 'Melbourne'],
+            ['NZ', 'state1', 'town2'],
+            ['Australia', 'QLD', 'Beerburrum'],
+            ['Australia', 'VIC', 'Geelong'],
+            ['NZ', 'state2', 'town2'],
+            ['PNG', 'state1', 'town1'],
+            ['Australia', 'NSW', 'Sydney']
+        ]
+
+        pr = ptLayer.dataProvider()
+        for a in attributes:
+            f = QgsFeature()
+            f.initAttributes(3)
+            f.setAttribute(0, a[0])
+            f.setAttribute(1, a[1])
+            f.setAttribute(2, a[2])
+            self.assertTrue(pr.addFeature(f))
+
+        p = QgsProject()
+        r = QgsReport(p)
+
+        # add a child
+        child1 = QgsReportSectionFieldGroup()
+        child1_body = QgsLayout(p)
+        child1.setLayer(ptLayer)
+        child1.setBody(child1_body)
+        child1.setField('country')
+        r.appendChild(child1)
+        self.assertTrue(r.beginRender())
+        self.assertTrue(r.next())
+        self.assertEqual(r.layout(), child1_body)
+        self.assertEqual(r.layout().reportContext().feature().attributes(), ['Australia', 'QLD', 'Brisbane'])
+        self.assertTrue(r.next())
+        self.assertEqual(r.layout(), child1_body)
+        self.assertEqual(r.layout().reportContext().feature().attributes(), ['Australia', 'QLD', 'Emerald'])
+        self.assertTrue(r.next())
+        self.assertEqual(r.layout(), child1_body)
+        self.assertEqual(r.layout().reportContext().feature().attributes(), ['Australia', 'VIC', 'Melbourne'])
+        self.assertTrue(r.next())
+        self.assertEqual(r.layout(), child1_body)
+        self.assertEqual(r.layout().reportContext().feature().attributes(), ['Australia', 'QLD', 'Beerburrum'])
+        self.assertTrue(r.next())
+        self.assertEqual(r.layout(), child1_body)
+        self.assertEqual(r.layout().reportContext().feature().attributes(), ['Australia', 'VIC', 'Geelong'])
+        self.assertTrue(r.next())
+        self.assertEqual(r.layout(), child1_body)
+        self.assertEqual(r.layout().reportContext().feature().attributes(), ['Australia', 'NSW', 'Sydney'])
+        self.assertTrue(r.next())
+        self.assertEqual(r.layout(), child1_body)
+        self.assertEqual(r.layout().reportContext().feature().attributes(), ['NZ', 'state1', 'town1'])
+        self.assertTrue(r.next())
+        self.assertEqual(r.layout(), child1_body)
+        self.assertEqual(r.layout().reportContext().feature().attributes(), ['NZ', 'state1', 'town2'])
+        self.assertTrue(r.next())
+        self.assertEqual(r.layout(), child1_body)
+        self.assertEqual(r.layout().reportContext().feature().attributes(), ['NZ', 'state2', 'town2'])
+        self.assertTrue(r.next())
+        self.assertEqual(r.layout(), child1_body)
+        self.assertEqual(r.layout().reportContext().feature().attributes(), ['PNG', 'state1', 'town1'])
+        self.assertFalse(r.next())
+
+        # another group
+        # remove body from child1
+        child1.setBody(None)
+
+        child2 = QgsReportSectionFieldGroup()
+        child2_body = QgsLayout(p)
+        child2.setLayer(ptLayer)
+        child2.setBody(child2_body)
+        child2.setField('state')
+        child1.appendChild(child2)
+        self.assertTrue(r.beginRender())
+        self.assertTrue(r.next())
+        self.assertEqual(r.layout(), child2_body)
+        self.assertEqual(r.layout().reportContext().feature().attributes(), ['Australia', 'NSW', 'Sydney'])
+        self.assertTrue(r.next())
+        self.assertEqual(r.layout(), child2_body)
+        self.assertEqual(r.layout().reportContext().feature().attributes(), ['Australia', 'QLD', 'Brisbane'])
+        self.assertTrue(r.next())
+        self.assertEqual(r.layout(), child2_body)
+        self.assertEqual(r.layout().reportContext().feature().attributes(), ['Australia', 'QLD', 'Emerald'])
+        self.assertTrue(r.next())
+        self.assertEqual(r.layout(), child2_body)
+        self.assertEqual(r.layout().reportContext().feature().attributes(), ['Australia', 'QLD', 'Beerburrum'])
+        self.assertTrue(r.next())
+        self.assertEqual(r.layout(), child2_body)
+        self.assertEqual(r.layout().reportContext().feature().attributes(), ['Australia', 'VIC', 'Melbourne'])
+        self.assertTrue(r.next())
+        self.assertEqual(r.layout(), child2_body)
+        self.assertEqual(r.layout().reportContext().feature().attributes(), ['Australia', 'VIC', 'Geelong'])
+        self.assertTrue(r.next())
+        self.assertEqual(r.layout(), child2_body)
+        self.assertEqual(r.layout().reportContext().feature().attributes(), ['NZ', 'state1', 'town1'])
+        self.assertTrue(r.next())
+        self.assertEqual(r.layout(), child2_body)
+        self.assertEqual(r.layout().reportContext().feature().attributes(), ['NZ', 'state1', 'town2'])
+        self.assertTrue(r.next())
+        self.assertEqual(r.layout(), child2_body)
+        self.assertEqual(r.layout().reportContext().feature().attributes(), ['NZ', 'state2', 'town2'])
+        self.assertTrue(r.next())
+        self.assertEqual(r.layout(), child2_body)
+        self.assertEqual(r.layout().reportContext().feature().attributes(), ['PNG', 'state1', 'town1'])
+        self.assertFalse(r.next())
+
+        # another group
+        # remove body from child1
+        child2.setBody(None)
+
+        child3 = QgsReportSectionFieldGroup()
+        child3_body = QgsLayout(p)
+        child3.setLayer(ptLayer)
+        child3.setBody(child3_body)
+        child3.setField('town')
+        child2.appendChild(child3)
+        self.assertTrue(r.beginRender())
+        self.assertTrue(r.next())
+        self.assertEqual(r.layout(), child3_body)
+        self.assertEqual(r.layout().reportContext().feature().attributes(), ['Australia', 'NSW', 'Sydney'])
+        self.assertTrue(r.next())
+        self.assertEqual(r.layout(), child3_body)
+        self.assertEqual(r.layout().reportContext().feature().attributes(), ['Australia', 'QLD', 'Beerburrum'])
+        self.assertTrue(r.next())
+        self.assertEqual(r.layout(), child3_body)
+        self.assertEqual(r.layout().reportContext().feature().attributes(), ['Australia', 'QLD', 'Brisbane'])
+        self.assertTrue(r.next())
+        self.assertEqual(r.layout(), child3_body)
+        self.assertEqual(r.layout().reportContext().feature().attributes(), ['Australia', 'QLD', 'Emerald'])
+        self.assertTrue(r.next())
+        self.assertEqual(r.layout(), child3_body)
+        self.assertEqual(r.layout().reportContext().feature().attributes(), ['Australia', 'VIC', 'Geelong'])
+        self.assertTrue(r.next())
+        self.assertEqual(r.layout(), child3_body)
+        self.assertEqual(r.layout().reportContext().feature().attributes(), ['Australia', 'VIC', 'Melbourne'])
+        self.assertTrue(r.next())
+        self.assertEqual(r.layout(), child3_body)
+        self.assertEqual(r.layout().reportContext().feature().attributes(), ['NZ', 'state1', 'town1'])
+        self.assertTrue(r.next())
+        self.assertEqual(r.layout(), child3_body)
+        self.assertEqual(r.layout().reportContext().feature().attributes(), ['NZ', 'state1', 'town2'])
+        self.assertTrue(r.next())
+        self.assertEqual(r.layout(), child3_body)
+        self.assertEqual(r.layout().reportContext().feature().attributes(), ['NZ', 'state2', 'town2'])
+        self.assertTrue(r.next())
+        self.assertEqual(r.layout(), child3_body)
+        self.assertEqual(r.layout().reportContext().feature().attributes(), ['PNG', 'state1', 'town1'])
         self.assertFalse(r.next())
 
 

@@ -17,6 +17,8 @@
 #include "qgsabstractreportsection.h"
 #include "qgslayout.h"
 
+///@cond NOT_STABLE
+
 QgsAbstractReportSection::QgsAbstractReportSection( QgsAbstractReportSection *parent )
   : mParent( parent )
 {}
@@ -42,6 +44,15 @@ QgsProject *QgsAbstractReportSection::project()
   return nullptr;
 }
 
+void QgsAbstractReportSection::setContext( const QgsReportContext &context )
+{
+  mContext = context;
+  for ( QgsAbstractReportSection *section : qgis::as_const( mChildren ) )
+  {
+    section->setContext( mContext );
+  }
+}
+
 QString QgsAbstractReportSection::filePath( const QString &baseFilePath, const QString &extension )
 {
   QString base = QStringLiteral( "%1_%2" ).arg( baseFilePath ).arg( mSectionNumber, 4, 10, QChar( '0' ) );
@@ -59,9 +70,7 @@ QgsLayout *QgsAbstractReportSection::layout()
 bool QgsAbstractReportSection::beginRender()
 {
   // reset this section
-  mCurrentLayout = nullptr;
-  mNextChild = 0;
-  mNextSection = Header;
+  reset();
   mSectionNumber = 0;
 
   // and all children too
@@ -91,42 +100,70 @@ bool QgsAbstractReportSection::next()
         return true;
       }
 
-      // but if not, then the current section is the body
+      // but if not, then the current section is a body
+      mNextSection = Body;
       FALLTHROUGH;
     }
 
     case Body:
     {
-      // if we have a body, use it
-      if ( QgsLayout *body = nextBody() )
+      mNextSection = Children;
+
+      bool ok = false;
+      // if we have a next body available, use it
+      QgsLayout *body = nextBody( ok );
+      if ( body )
       {
+        mNextChild = 0;
         mCurrentLayout = body;
         return true;
       }
 
-      mNextSection = Children;
       FALLTHROUGH;
     }
 
     case Children:
     {
-      // we iterate through all the section's children...
-      while ( mNextChild < mChildren.count() )
+      bool bodiesAvailable = false;
+      do
       {
-        // ... staying on the current child only while it still has content for us
-        if ( mChildren.at( mNextChild )->next() )
+        // we iterate through all the section's children...
+        while ( mNextChild < mChildren.count() )
         {
-          mCurrentLayout = mChildren.at( mNextChild )->layout();
+          // ... staying on the current child only while it still has content for us
+          if ( mChildren.at( mNextChild )->next() )
+          {
+            mCurrentLayout = mChildren.at( mNextChild )->layout();
+            return true;
+          }
+          else
+          {
+            // no more content for this child, so move to next child
+            mNextChild++;
+          }
+        }
+
+        // used up all the children
+        // if we have a next body available, use it
+        QgsLayout *body = nextBody( bodiesAvailable );
+        if ( bodiesAvailable )
+        {
+          mNextChild = 0;
+
+          for ( QgsAbstractReportSection *section : qgis::as_const( mChildren ) )
+          {
+            section->reset();
+          }
+        }
+        if ( body )
+        {
+          mCurrentLayout = body;
           return true;
         }
-        else
-        {
-          // no more content for this child, so move to next child
-          mNextChild++;
-        }
       }
+      while ( bodiesAvailable );
 
-      // all children have spent their content, so move to the footer
+      // all children and bodies have spent their content, so move to the footer
       mNextSection = Footer;
       FALLTHROUGH;
     }
@@ -158,9 +195,7 @@ bool QgsAbstractReportSection::next()
 bool QgsAbstractReportSection::endRender()
 {
   // reset this section
-  mCurrentLayout = nullptr;
-  mNextChild = 0;
-  mNextSection = Header;
+  reset();
 
   // and all children too
   bool result = true;
@@ -169,6 +204,17 @@ bool QgsAbstractReportSection::endRender()
     result = result && child->endRender();
   }
   return result;
+}
+
+void QgsAbstractReportSection::reset()
+{
+  mCurrentLayout = nullptr;
+  mNextChild = 0;
+  mNextSection = Header;
+  for ( QgsAbstractReportSection *section : qgis::as_const( mChildren ) )
+  {
+    section->reset();
+  }
 }
 
 QgsAbstractReportSection *QgsAbstractReportSection::child( int index )
@@ -272,15 +318,129 @@ bool QgsReportSectionLayout::beginRender()
   return QgsAbstractReportSection::beginRender();
 }
 
-QgsLayout *QgsReportSectionLayout::nextBody()
+QgsLayout *QgsReportSectionLayout::nextBody( bool &ok )
 {
   if ( !mExportedBody && mBody )
   {
     mExportedBody = true;
+    ok = true;
     return mBody.get();
   }
   else
   {
+    ok = false;
     return nullptr;
   }
 }
+
+//
+// QgsReportSectionFieldGroup
+//
+
+QgsReportSectionFieldGroup::QgsReportSectionFieldGroup( QgsAbstractReportSection *parent )
+  : QgsAbstractReportSection( parent )
+{
+
+}
+
+QgsReportSectionFieldGroup *QgsReportSectionFieldGroup::clone() const
+{
+  std::unique_ptr< QgsReportSectionFieldGroup > copy = qgis::make_unique< QgsReportSectionFieldGroup >( nullptr );
+  copyCommonProperties( copy.get() );
+
+  if ( mBody )
+  {
+    copy->mBody.reset( mBody->clone() );
+  }
+  else
+    copy->mBody.reset();
+
+  copy->setLayer( mCoverageLayer.get() );
+  copy->setField( mField );
+
+  return copy.release();
+}
+
+bool QgsReportSectionFieldGroup::beginRender()
+{
+  if ( !mCoverageLayer.get() )
+    return false;
+
+  if ( !mField.isEmpty() )
+  {
+    mFieldIndex = mCoverageLayer->fields().lookupField( mField );
+    if ( mFieldIndex < 0 )
+      return false;
+
+    if ( mBody )
+      mBody->reportContext().setLayer( mCoverageLayer.get() );
+
+    mFeatures = QgsFeatureIterator();
+  }
+  return QgsAbstractReportSection::beginRender();
+}
+
+QgsLayout *QgsReportSectionFieldGroup::nextBody( bool &ok )
+{
+  if ( !mFeatures.isValid() )
+  {
+    QgsFeatureRequest request;
+    QString filter = context().layerFilters.value( mCoverageLayer.get() );
+    if ( !filter.isEmpty() )
+      request.setFilterExpression( filter );
+    request.addOrderBy( mField, true );
+    mFeatures = mCoverageLayer->getFeatures( request );
+  }
+
+  QgsFeature f;
+  QVariant currentValue;
+  bool first = true;
+  while ( first || ( !mBody && mEncounteredValues.contains( currentValue ) ) )
+  {
+    if ( !mFeatures.nextFeature( f ) )
+    {
+      // no features left for this iteration
+      mFeatures = QgsFeatureIterator();
+      ok = false;
+      return nullptr;
+    }
+
+    first = false;
+    currentValue = f.attribute( mFieldIndex );
+  }
+
+  mEncounteredValues.insert( currentValue );
+
+  QgsReportContext c = context();
+  QString currentFilter = c.layerFilters.value( mCoverageLayer.get() );
+  QString thisFilter = QgsExpression::createFieldEqualityExpression( mField, currentValue );
+  QString newFilter = currentFilter.isEmpty() ? thisFilter : QStringLiteral( "(%1) AND (%2)" ).arg( currentFilter, thisFilter );
+  c.layerFilters[ mCoverageLayer.get() ] = newFilter;
+
+  const QList< QgsAbstractReportSection * > sections = children();
+  for ( QgsAbstractReportSection *section : qgis::as_const( sections ) )
+  {
+    section->setContext( c );
+  }
+
+  ok = true;
+
+  if ( mBody )
+  {
+    mBody->reportContext().blockSignals( true );
+    mBody->reportContext().setLayer( mCoverageLayer.get() );
+    mBody->reportContext().blockSignals( false );
+    mBody->reportContext().setFeature( f );
+  }
+
+  return mBody.get();
+}
+
+void QgsReportSectionFieldGroup::reset()
+{
+  QgsAbstractReportSection::reset();
+  mEncounteredValues.clear();
+}
+
+///@endcond
+
