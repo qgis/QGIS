@@ -41,6 +41,8 @@ class CORE_EXPORT QgsReportSectionLayout : public QgsAbstractReportSection
      */
     QgsReportSectionLayout( QgsAbstractReportSection *parent = nullptr );
 
+    QString type() const override { return QStringLiteral( "SectionLayout" ); }
+
     /**
      * Returns the body layout for the section.
      * \see setBody()
@@ -57,6 +59,11 @@ class CORE_EXPORT QgsReportSectionLayout : public QgsAbstractReportSection
     QgsReportSectionLayout *clone() const override SIP_FACTORY;
     bool beginRender() override;
     QgsLayout *nextBody( bool &ok ) override;
+
+  protected:
+
+    bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;
+    bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context ) override;
 
   private:
 

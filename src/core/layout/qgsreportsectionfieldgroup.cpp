@@ -98,6 +98,56 @@ void QgsReportSectionFieldGroup::reset()
   mEncounteredValues.clear();
 }
 
+void QgsReportSectionFieldGroup::setParentSection( QgsAbstractReportSection *parent )
+{
+  QgsAbstractReportSection::setParentSection( parent );
+  if ( !mCoverageLayer )
+    mCoverageLayer.resolveWeakly( project() );
+}
+
+bool QgsReportSectionFieldGroup::writePropertiesToElement( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext &context ) const
+{
+  element.setAttribute( QStringLiteral( "field" ), mField );
+
+  if ( mCoverageLayer )
+  {
+    element.setAttribute( QStringLiteral( "coverageLayer" ), mCoverageLayer.layerId );
+    element.setAttribute( QStringLiteral( "coverageLayerName" ), mCoverageLayer.name );
+    element.setAttribute( QStringLiteral( "coverageLayerSource" ), mCoverageLayer.source );
+    element.setAttribute( QStringLiteral( "coverageLayerProvider" ), mCoverageLayer.provider );
+  }
+
+  if ( mBody )
+  {
+    QDomElement bodyElement = doc.createElement( QStringLiteral( "body" ) );
+    bodyElement.appendChild( mBody->writeXml( doc, context ) );
+    element.appendChild( bodyElement );
+  }
+  return true;
+}
+
+bool QgsReportSectionFieldGroup::readPropertiesFromElement( const QDomElement &element, const QDomDocument &doc, const QgsReadWriteContext &context )
+{
+  mField = element.attribute( QStringLiteral( "field" ) );
+
+  QString layerId = element.attribute( QStringLiteral( "coverageLayer" ) );
+  QString layerName = element.attribute( QStringLiteral( "coverageLayerName" ) );
+  QString layerSource = element.attribute( QStringLiteral( "coverageLayerSource" ) );
+  QString layerProvider = element.attribute( QStringLiteral( "coverageLayerProvider" ) );
+  mCoverageLayer = QgsVectorLayerRef( layerId, layerName, layerSource, layerProvider );
+  mCoverageLayer.resolveWeakly( project() );
+
+  const QDomElement bodyElement = element.firstChildElement( QStringLiteral( "body" ) );
+  if ( !bodyElement.isNull() )
+  {
+    const QDomElement bodyLayoutElem = bodyElement.firstChild().toElement();
+    std::unique_ptr< QgsLayout > body = qgis::make_unique< QgsLayout >( project() );
+    body->readXml( bodyLayoutElem, doc, context );
+    mBody = std::move( body );
+  }
+  return true;
+}
+
 QgsFeatureRequest QgsReportSectionFieldGroup::buildFeatureRequest() const
 {
   QgsFeatureRequest request;

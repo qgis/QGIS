@@ -46,6 +46,14 @@ exposed to the Python bindings for unit testing purposes only.
 %TypeHeaderCode
 #include "qgsabstractreportsection.h"
 %End
+%ConvertToSubClassCode
+    if ( dynamic_cast< QgsReportSectionFieldGroup * >( sipCpp ) )
+      sipType = sipType_QgsReportSectionFieldGroup;
+    else if ( dynamic_cast< QgsReportSectionLayout * >( sipCpp ) )
+      sipType = sipType_QgsReportSectionLayout;
+    else
+      sipType = NULL;
+%End
   public:
 
     QgsAbstractReportSection( QgsAbstractReportSection *parent = 0 );
@@ -57,6 +65,11 @@ Note that ownership is not transferred to ``parent``.
     ~QgsAbstractReportSection();
 
 
+
+    virtual QString type() const = 0;
+%Docstring
+Returns the section subclass type.
+%End
 
     virtual QgsAbstractReportSection *clone() const = 0 /Factory/;
 %Docstring
@@ -274,6 +287,20 @@ Returns the current context for this section.
 .. seealso:: :py:func:`setContext()`
 %End
 
+    bool writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const;
+%Docstring
+Stores the section state in a DOM element.
+
+.. seealso:: :py:func:`readXml()`
+%End
+
+    bool readXml( const QDomElement &sectionElement, const QDomDocument &document, const QgsReadWriteContext &context );
+%Docstring
+Sets the item state from a DOM element.
+
+.. seealso:: :py:func:`writeXml()`
+%End
+
   protected:
 
     enum SubSection
@@ -291,9 +318,27 @@ Copies the common properties of a report section to a ``destination`` section.
 This method should be called from clone() implementations.
 %End
 
-    void setParent( QgsAbstractReportSection *parent );
+    virtual void setParentSection( QgsAbstractReportSection *parent );
 %Docstring
 Sets the ``parent`` report section.
+%End
+
+    virtual bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
+%Docstring
+Stores section state within an XML DOM element.
+
+.. seealso:: :py:func:`writeXml()`
+
+.. seealso:: :py:func:`readPropertiesFromElement()`
+%End
+
+    virtual bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context );
+%Docstring
+Sets section state from a DOM element.
+
+.. seealso:: :py:func:`writePropertiesToElement()`
+
+.. seealso:: :py:func:`readXml()`
 %End
 
   private:

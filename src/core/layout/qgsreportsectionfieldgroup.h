@@ -44,6 +44,8 @@ class CORE_EXPORT QgsReportSectionFieldGroup : public QgsAbstractReportSection
      */
     QgsReportSectionFieldGroup( QgsAbstractReportSection *parent = nullptr );
 
+    QString type() const override { return QStringLiteral( "SectionFieldGroup" ); }
+
     /**
      * Returns the body layout for the section.
      * \see setBody()
@@ -85,6 +87,12 @@ class CORE_EXPORT QgsReportSectionFieldGroup : public QgsAbstractReportSection
     bool beginRender() override;
     QgsLayout *nextBody( bool &ok ) override;
     void reset() override;
+    void setParentSection( QgsAbstractReportSection *parent ) override;
+
+  protected:
+
+    bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const override;
+    bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context ) override;
 
   private:
 

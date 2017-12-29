@@ -40,15 +40,20 @@ void QgsReport::setName( const QString &name )
 QDomElement QgsReport::writeLayoutXml( QDomDocument &document, const QgsReadWriteContext &context ) const
 {
   QDomElement element = document.createElement( QStringLiteral( "Report" ) );
-
-
-
+  writeXml( element, document, context );
+  element.setAttribute( QStringLiteral( "name" ), mName );
   return element;
 }
 
 bool QgsReport::readLayoutXml( const QDomElement &layoutElement, const QDomDocument &document, const QgsReadWriteContext &context )
 {
-
+  const QDomNodeList sectionList = layoutElement.elementsByTagName( QStringLiteral( "Section" ) );
+  if ( sectionList.count() > 0 )
+  {
+    readXml( sectionList.at( 0 ).toElement(), document, context );
+  }
+  setName( layoutElement.attribute( QStringLiteral( "name" ) ) );
+  return true;
 }
 
 ///@endcond

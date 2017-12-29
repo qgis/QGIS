@@ -21,8 +21,11 @@ from qgis.core import (QgsProject,
                        QgsReportSectionFieldGroup,
                        QgsVectorLayer,
                        QgsField,
-                       QgsFeature)
+                       QgsFeature,
+                       QgsReadWriteContext,
+                       QgsUnitTypes)
 from qgis.testing import start_app, unittest
+from qgis.PyQt.QtXml import QDomDocument
 
 start_app()
 
@@ -428,6 +431,65 @@ class TestQgsReport(unittest.TestCase):
         self.assertEqual(r.layout(), child3_body)
         self.assertEqual(r.layout().reportContext().feature().attributes(), ['PNG', 'state1', 'town1'])
         self.assertFalse(r.next())
+
+    def testReadWriteXml(self):
+        p = QgsProject()
+        ptLayer = QgsVectorLayer("Point?crs=epsg:4326&field=country:string(20)&field=state:string(20)&field=town:string(20)", "points", "memory")
+        p.addMapLayer(ptLayer)
+
+        r = QgsReport(p)
+        r.setName('my report')
+        # add a header
+        r.setHeaderEnabled(True)
+        report_header = QgsLayout(p)
+        report_header.setUnits(QgsUnitTypes.LayoutInches)
+        r.setHeader(report_header)
+        # add a footer
+        r.setFooterEnabled(True)
+        report_footer = QgsLayout(p)
+        report_footer.setUnits(QgsUnitTypes.LayoutMeters)
+        r.setFooter(report_footer)
+
+        # add some subsections
+        child1 = QgsReportSectionLayout()
+        child1_body = QgsLayout(p)
+        child1_body.setUnits(QgsUnitTypes.LayoutPoints)
+        child1.setBody(child1_body)
+
+        child2 = QgsReportSectionLayout()
+        child2_body = QgsLayout(p)
+        child2_body.setUnits(QgsUnitTypes.LayoutPixels)
+        child2.setBody(child2_body)
+        child1.appendChild(child2)
+
+        child2a = QgsReportSectionFieldGroup()
+        child2a_body = QgsLayout(p)
+        child2a_body.setUnits(QgsUnitTypes.LayoutInches)
+        child2a.setBody(child2a_body)
+        child2a.setField('my field')
+        child2a.setLayer(ptLayer)
+        child1.appendChild(child2a)
+
+        r.appendChild(child1)
+
+        doc = QDomDocument("testdoc")
+        elem = r.writeLayoutXml(doc, QgsReadWriteContext())
+
+        r2 = QgsReport(p)
+        self.assertTrue(r2.readLayoutXml(elem, doc, QgsReadWriteContext()))
+        self.assertEqual(r2.name(), 'my report')
+        self.assertTrue(r2.headerEnabled())
+        self.assertEqual(r2.header().units(), QgsUnitTypes.LayoutInches)
+        self.assertTrue(r2.footerEnabled())
+        self.assertEqual(r2.footer().units(), QgsUnitTypes.LayoutMeters)
+
+        self.assertEqual(r2.childCount(), 1)
+        self.assertEqual(r2.childSection(0).body().units(), QgsUnitTypes.LayoutPoints)
+        self.assertEqual(r2.childSection(0).childCount(), 2)
+        self.assertEqual(r2.childSection(0).childSection(0).body().units(), QgsUnitTypes.LayoutPixels)
+        self.assertEqual(r2.childSection(0).childSection(1).body().units(), QgsUnitTypes.LayoutInches)
+        self.assertEqual(r2.childSection(0).childSection(1).field(), 'my field')
+        self.assertEqual(r2.childSection(0).childSection(1).layer(), ptLayer)
 
 
 if __name__ == '__main__':

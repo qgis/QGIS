@@ -33,6 +33,8 @@ Constructor for QgsReportSectionLayout, attached to the specified ``parent`` sec
 Note that ownership is not transferred to ``parent``.
 %End
 
+    virtual QString type() const;
+
     QgsLayout *body();
 %Docstring
 Returns the body layout for the section.
@@ -53,6 +55,13 @@ is transferred to the report section.
     virtual bool beginRender();
 
     virtual QgsLayout *nextBody( bool &ok );
+
+
+  protected:
+
+    virtual bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
+
+    virtual bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context );
 
 
 };

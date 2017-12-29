@@ -34,6 +34,8 @@ Constructor for QgsReportSectionFieldGroup, attached to the specified ``parent``
 Note that ownership is not transferred to ``parent``.
 %End
 
+    virtual QString type() const;
+
     QgsLayout *body();
 %Docstring
 Returns the body layout for the section.
@@ -84,6 +86,15 @@ Sets the ``field`` associated with this section.
     virtual QgsLayout *nextBody( bool &ok );
 
     virtual void reset();
+
+    virtual void setParentSection( QgsAbstractReportSection *parent );
+
+
+  protected:
+
+    virtual bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
+
+    virtual bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context );
 
 
 };

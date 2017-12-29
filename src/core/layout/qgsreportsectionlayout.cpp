@@ -59,5 +59,29 @@ QgsLayout *QgsReportSectionLayout::nextBody( bool &ok )
   }
 }
 
+bool QgsReportSectionLayout::writePropertiesToElement( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext &context ) const
+{
+  if ( mBody )
+  {
+    QDomElement bodyElement = doc.createElement( QStringLiteral( "body" ) );
+    bodyElement.appendChild( mBody->writeXml( doc, context ) );
+    element.appendChild( bodyElement );
+  }
+  return true;
+}
+
+bool QgsReportSectionLayout::readPropertiesFromElement( const QDomElement &element, const QDomDocument &doc, const QgsReadWriteContext &context )
+{
+  const QDomElement bodyElement = element.firstChildElement( QStringLiteral( "body" ) );
+  if ( !bodyElement.isNull() )
+  {
+    const QDomElement bodyLayoutElem = bodyElement.firstChild().toElement();
+    std::unique_ptr< QgsLayout > body = qgis::make_unique< QgsLayout >( project() );
+    body->readXml( bodyLayoutElem, doc, context );
+    mBody = std::move( body );
+  }
+  return true;
+}
+
 ///@endcond
 

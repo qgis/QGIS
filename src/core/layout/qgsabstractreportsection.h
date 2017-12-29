@@ -53,6 +53,17 @@ class CORE_EXPORT QgsReportSectionContext
 class CORE_EXPORT QgsAbstractReportSection : public QgsAbstractLayoutIterator
 {
 
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( dynamic_cast< QgsReportSectionFieldGroup * >( sipCpp ) )
+      sipType = sipType_QgsReportSectionFieldGroup;
+    else if ( dynamic_cast< QgsReportSectionLayout * >( sipCpp ) )
+      sipType = sipType_QgsReportSectionLayout;
+    else
+      sipType = NULL;
+    SIP_END
+#endif
+
   public:
 
     /**
@@ -68,6 +79,11 @@ class CORE_EXPORT QgsAbstractReportSection : public QgsAbstractLayoutIterator
 
     //! QgsAbstractReportSection cannot be copied
     QgsAbstractReportSection &operator=( const QgsAbstractReportSection &other ) = delete;
+
+    /**
+     * Returns the section subclass type.
+     */
+    virtual QString type() const = 0;
 
     /**
      * Clones the report section. Ownership of the returned section is
@@ -242,6 +258,18 @@ class CORE_EXPORT QgsAbstractReportSection : public QgsAbstractLayoutIterator
      */
     const QgsReportSectionContext &context() const { return mContext; }
 
+    /**
+     * Stores the section state in a DOM element.
+     * \see readXml()
+     */
+    bool writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const;
+
+    /**
+     * Sets the item state from a DOM element.
+     * \see writeXml()
+     */
+    bool readXml( const QDomElement &sectionElement, const QDomDocument &document, const QgsReadWriteContext &context );
+
   protected:
 
     //! Report sub-sections
@@ -263,7 +291,21 @@ class CORE_EXPORT QgsAbstractReportSection : public QgsAbstractLayoutIterator
     /**
      * Sets the \a parent report section.
      */
-    void setParent( QgsAbstractReportSection *parent ) { mParent = parent; }
+    virtual void setParentSection( QgsAbstractReportSection *parent ) { mParent = parent; }
+
+    /**
+     * Stores section state within an XML DOM element.
+     * \see writeXml()
+     * \see readPropertiesFromElement()
+     */
+    virtual bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
+
+    /**
+     * Sets section state from a DOM element.
+     * \see writePropertiesToElement()
+     * \see readXml()
+     */
+    virtual bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context );
 
   private:
 
