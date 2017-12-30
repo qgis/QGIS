@@ -53,6 +53,7 @@ class CORE_EXPORT QgsReport : public QObject, public QgsAbstractReportSection, p
     QgsReport( QgsProject *project );
 
     QString type() const override { return QStringLiteral( "SectionReport" ); }
+    QString description() const override { return QObject::tr( "Report" ); }
     QIcon icon() const override;
     QgsProject *layoutProject() const override { return mProject; }
     QgsReport *clone() const override SIP_FACTORY;

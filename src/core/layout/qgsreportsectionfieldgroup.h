@@ -45,6 +45,7 @@ class CORE_EXPORT QgsReportSectionFieldGroup : public QgsAbstractReportSection
     QgsReportSectionFieldGroup( QgsAbstractReportSection *parentSection = nullptr );
 
     QString type() const override { return QStringLiteral( "SectionFieldGroup" ); }
+    QString description() const override;
 
     /**
      * Returns the body layout for the section.

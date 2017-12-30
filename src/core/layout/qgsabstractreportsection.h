@@ -86,6 +86,11 @@ class CORE_EXPORT QgsAbstractReportSection : public QgsAbstractLayoutIterator
     virtual QString type() const = 0;
 
     /**
+     * Returns a user-visible, translated description of the section.
+     */
+    virtual QString description() const = 0;
+
+    /**
      * Clones the report section. Ownership of the returned section is
      * transferred to the caller.
      *

@@ -373,6 +373,8 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     QgsDockWidget *mItemsDock = nullptr;
     QgsLayoutItemsListView *mItemsTreeView = nullptr;
 
+    QgsDockWidget *mReportDock = nullptr;
+
     QAction *mUndoAction = nullptr;
     QAction *mRedoAction = nullptr;
     //! Copy/cut/paste actions
@@ -406,6 +408,7 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
 
     void createLayoutPropertiesWidget();
     void createAtlasWidget();
+    void createReportWidget();
 
     void initializeRegistry();
 

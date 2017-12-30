@@ -60,6 +60,7 @@
 #include "qgslayoutatlaswidget.h"
 #include "qgslayoutpagecollection.h"
 #include "qgsreport.h"
+#include "qgsreportorganizerwidget.h"
 #include "ui_qgssvgexportoptions.h"
 #include <QShortcut>
 #include <QComboBox>
@@ -646,6 +647,9 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   mAtlasDock = new QgsDockWidget( tr( "Atlas" ), this );
   mAtlasDock->setObjectName( QStringLiteral( "AtlasDock" ) );
 
+  mReportDock = new QgsDockWidget( tr( "Report" ), this );
+  mReportDock->setObjectName( QStringLiteral( "ReportDock" ) );
+
   const QList<QDockWidget *> docks = findChildren<QDockWidget *>();
   for ( QDockWidget *dock : docks )
   {
@@ -658,6 +662,7 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   addDockWidget( Qt::RightDockWidgetArea, mUndoDock );
   addDockWidget( Qt::RightDockWidgetArea, mItemsDock );
   addDockWidget( Qt::RightDockWidgetArea, mAtlasDock );
+  addDockWidget( Qt::RightDockWidgetArea, mReportDock );
 
   createLayoutPropertiesWidget();
 
@@ -665,6 +670,7 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   mItemDock->show();
   mGeneralDock->show();
   mAtlasDock->show();
+  mReportDock->show();
   mItemsDock->show();
 
   tabifyDockWidget( mGeneralDock, mUndoDock );
@@ -672,6 +678,7 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   tabifyDockWidget( mGeneralDock, mItemDock );
   tabifyDockWidget( mItemDock, mItemsDock );
   tabifyDockWidget( mItemDock, mAtlasDock );
+  tabifyDockWidget( mItemDock, mReportDock );
 
   toggleActions( false );
 
@@ -738,6 +745,19 @@ void QgsLayoutDesignerDialog::setMasterLayout( QgsMasterLayoutInterface *layout 
     delete mMenuAtlas;
     mMenuAtlas = nullptr;
     mAtlasToolbar->hide();
+  }
+
+  if ( dynamic_cast< QgsReport * >( layout ) )
+  {
+    createReportWidget();
+  }
+  else
+  {
+    // ideally we'd only create mReportDock in createReportWidget() -
+    // but if we do that, then it's always brought to the focus
+    // in tab widgets
+    mReportDock->hide();
+    mPanelsMenu->removeAction( mReportDock->toggleViewAction() );
   }
 }
 
@@ -2680,7 +2700,7 @@ void QgsLayoutDesignerDialog::createLayoutPropertiesWidget()
 
 void QgsLayoutDesignerDialog::createAtlasWidget()
 {
-  QgsPrintLayout *printLayout = qobject_cast< QgsPrintLayout * >( mLayout );
+  QgsPrintLayout *printLayout = dynamic_cast< QgsPrintLayout * >( mMasterLayout );
   QgsLayoutAtlas *atlas = printLayout->atlas();
   QgsLayoutAtlasWidget *atlasWidget = new QgsLayoutAtlasWidget( mAtlasDock, printLayout );
   atlasWidget->setMessageBar( mMessageBar );
@@ -2698,6 +2718,16 @@ void QgsLayoutDesignerDialog::createAtlasWidget()
   connect( atlas, &QgsLayoutAtlas::numberFeaturesChanged, this, &QgsLayoutDesignerDialog::updateAtlasPageComboBox );
   connect( atlas, &QgsLayoutAtlas::featureChanged, this, &QgsLayoutDesignerDialog::atlasFeatureChanged );
   toggleAtlasControls( atlas->enabled() && atlas->coverageLayer() );
+}
+
+void QgsLayoutDesignerDialog::createReportWidget()
+{
+  QgsReport *report = dynamic_cast< QgsReport * >( mMasterLayout );
+  QgsReportOrganizerWidget *reportWidget = new QgsReportOrganizerWidget( mReportDock, this, report );
+  reportWidget->setMessageBar( mMessageBar );
+  mReportDock->setWidget( reportWidget );
+
+  mPanelsMenu->addAction( mReportDock->toggleViewAction() );
 }
 
 void QgsLayoutDesignerDialog::initializeRegistry()

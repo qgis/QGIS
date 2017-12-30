@@ -25,6 +25,11 @@ QgsReportSectionFieldGroup::QgsReportSectionFieldGroup( QgsAbstractReportSection
 
 }
 
+QString QgsReportSectionFieldGroup::description() const
+{
+  return QObject::tr( "Group: %1" ).arg( mField );
+}
+
 QgsReportSectionFieldGroup *QgsReportSectionFieldGroup::clone() const
 {
   std::unique_ptr< QgsReportSectionFieldGroup > copy = qgis::make_unique< QgsReportSectionFieldGroup >( nullptr );

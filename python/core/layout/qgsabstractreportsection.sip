@@ -71,6 +71,11 @@ Note that ownership is not transferred to ``parent``.
 Returns the section subclass type.
 %End
 
+    virtual QString description() const = 0;
+%Docstring
+Returns a user-visible, translated description of the section.
+%End
+
     virtual QgsAbstractReportSection *clone() const = 0 /Factory/;
 %Docstring
 Clones the report section. Ownership of the returned section is

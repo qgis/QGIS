@@ -34,6 +34,7 @@ Note that ownership is not transferred to ``parent``.
 %End
 
     virtual QString type() const;
+    virtual QString description() const;
 
     QgsLayout *body();
 %Docstring
