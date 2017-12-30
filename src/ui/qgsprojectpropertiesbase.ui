@@ -2731,8 +2731,7 @@
   <tabstop>pbnExportScales</tabstop>
   <tabstop>lstScales</tabstop>
   <tabstop>scrollArea</tabstop>
-  <tabstop>scrollArea_3</tabstop>
-  <tabstop>twIdentifyLayers</tabstop>
+  <tabstop>mShowDatumTransformDialogCheckBox</tabstop>
   <tabstop>scrollArea_4</tabstop>
   <tabstop>cboStyleMarker</tabstop>
   <tabstop>pbtnStyleMarker</tabstop>
@@ -2751,6 +2750,13 @@
   <tabstop>mButtonPasteColors</tabstop>
   <tabstop>mButtonImportColors</tabstop>
   <tabstop>mButtonExportColors</tabstop>
+  <tabstop>scrollArea_3</tabstop>
+  <tabstop>twIdentifyLayers</tabstop>
+  <tabstop>mAutoTransaction</tabstop>
+  <tabstop>mEvaluateDefaultValues</tabstop>
+  <tabstop>mTrustProjectCheckBox</tabstop>
+  <tabstop>scrollArea_6</tabstop>
+  <tabstop>grpPythonMacros</tabstop>
   <tabstop>scrollArea_5</tabstop>
   <tabstop>grpOWSServiceCapabilities</tabstop>
   <tabstop>mWMSName</tabstop>
@@ -2772,18 +2778,19 @@
   <tabstop>mWMSExtMaxY</tabstop>
   <tabstop>pbnWMSExtCanvas</tabstop>
   <tabstop>grpWMSList</tabstop>
-  <tabstop>mWMSList</tabstop>
+  <tabstop>mSearchLineEdit</tabstop>
   <tabstop>pbnWMSAddSRS</tabstop>
   <tabstop>pbnWMSRemoveSRS</tabstop>
   <tabstop>pbnWMSSetUsedSRS</tabstop>
+  <tabstop>mWMSList</tabstop>
   <tabstop>mWMSComposerGroupBox</tabstop>
-  <tabstop>mComposerListWidget</tabstop>
   <tabstop>mAddWMSComposerButton</tabstop>
   <tabstop>mRemoveWMSComposerButton</tabstop>
+  <tabstop>mComposerListWidget</tabstop>
   <tabstop>mLayerRestrictionsGroupBox</tabstop>
-  <tabstop>mLayerRestrictionsListWidget</tabstop>
   <tabstop>mAddLayerRestrictionButton</tabstop>
   <tabstop>mRemoveLayerRestrictionButton</tabstop>
+  <tabstop>mLayerRestrictionsListWidget</tabstop>
   <tabstop>mWMSInspire</tabstop>
   <tabstop>mWMSInspireLanguage</tabstop>
   <tabstop>mWMSInspireScenario1</tabstop>
@@ -2811,11 +2818,6 @@
   <tabstop>mWCSUrlLineEdit</tabstop>
   <tabstop>pbnLaunchOWSChecker</tabstop>
   <tabstop>teOWSChecker</tabstop>
-  <tabstop>scrollArea_6</tabstop>
-  <tabstop>grpPythonMacros</tabstop>
-  <tabstop>mAutoTransaction</tabstop>
-  <tabstop>mEvaluateDefaultValues</tabstop>
-  <tabstop>mSearchLineEdit</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
