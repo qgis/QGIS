@@ -615,7 +615,7 @@ void QgsApplication::setUITheme( const QString &themeName )
     while ( !in.atEnd() )
     {
       QString line = in.readLine();
-      // This is is a variable
+      // This is a variable
       if ( line.startsWith( '@' ) )
       {
         int index = line.indexOf( ':' );
