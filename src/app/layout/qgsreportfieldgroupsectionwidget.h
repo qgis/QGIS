@@ -1,5 +1,5 @@
 /***************************************************************************
-                             qgsreportorganizerwidget.h
+                             qgsreportfieldgroupsectionwidget.h
                              ----------------------
     begin                : December 2017
     copyright            : (C) 2017 by Nyall Dawson
@@ -14,47 +14,32 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSREPORTORGANIZERWIDGET_H
-#define QGSREPORTORGANIZERWIDGET_H
+#ifndef QGSREPORTFIELDGROUPSECTIONWIDGET_H
+#define QGSREPORTFIELDGROUPSECTIONWIDGET_H
 
-#include "ui_qgsreportorganizerwidgetbase.h"
-#include "qgspanelwidget.h"
-#include <QStyledItemDelegate>
+#include "ui_qgsreportwidgetfieldgroupsectionbase.h"
 
-class QgsReportSectionModel;
-class QgsReport;
-class QgsMessageBar;
-class QgsLayoutDesignerDialog ;
+class QgsLayoutDesignerDialog;
+class QgsReportSectionFieldGroup;
 
-class QgsReportOrganizerWidget: public QgsPanelWidget, private Ui::QgsReportOrganizerBase
+class QgsReportSectionFieldGroupWidget: public QWidget, private Ui::QgsReportWidgetFieldGroupSectionBase
 {
     Q_OBJECT
   public:
-    QgsReportOrganizerWidget( QWidget *parent, QgsLayoutDesignerDialog *designer, QgsReport *report );
-
-    void setMessageBar( QgsMessageBar *bar );
+    QgsReportSectionFieldGroupWidget( QWidget *parent, QgsLayoutDesignerDialog *designer, QgsReportSectionFieldGroup *section );
 
   private slots:
 
-    void addLayoutSection();
-    void addFieldGroupSection();
-    void removeSection();
-    void toggleHeader( bool enabled );
-    void toggleFooter( bool enabled );
-    void editHeader();
-    void editFooter();
-    void selectionChanged( const QModelIndex &current, const QModelIndex &previous );
+    void editBody();
+    void sortAscendingToggled( bool checked );
+    void setLayer( QgsMapLayer *layer );
+    void setField( const QString &field );
 
   private:
 
-    QgsReport *mReport = nullptr;
-    QgsReportSectionModel *mSectionModel = nullptr;
-    QgsMessageBar *mMessageBar;
+    QgsReportSectionFieldGroup *mSection = nullptr;
     QgsLayoutDesignerDialog *mDesigner = nullptr;
-    QWidget *mConfigWidget = nullptr;
 
 };
 
-
-
-#endif // QGSREPORTORGANIZERWIDGET_H
+#endif // QGSREPORTFIELDGROUPSECTIONWIDGET_H

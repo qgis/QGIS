@@ -21,6 +21,8 @@
 #include "qgsreportsectionfieldgroup.h"
 #include "qgslayout.h"
 #include "qgslayoutdesignerdialog.h"
+#include "qgsreportlayoutsectionwidget.h"
+#include "qgsreportfieldgroupsectionwidget.h"
 #include <QMenu>
 #include <QMessageBox>
 
@@ -40,8 +42,13 @@ QgsReportOrganizerWidget::QgsReportOrganizerWidget( QWidget *parent, QgsLayoutDe
   mViewSections->setModel( mSectionModel );
 
 #ifdef ENABLE_MODELTEST
-  //new ModelTest( mSectionModel, this );
+  new ModelTest( mSectionModel, this );
 #endif
+
+  QVBoxLayout *vLayout = new QVBoxLayout();
+  vLayout->setMargin( 0 );
+  vLayout->setSpacing( 0 );
+  mSettingsFrame->setLayout( vLayout );
 
   mViewSections->setEditTriggers( QAbstractItemView::AllEditTriggers );
 
@@ -151,4 +158,22 @@ void QgsReportOrganizerWidget::selectionChanged( const QModelIndex &current, con
 
   whileBlocking( mCheckShowHeader )->setChecked( parent->headerEnabled() );
   whileBlocking( mCheckShowFooter )->setChecked( parent->footerEnabled() );
+
+  delete mConfigWidget;
+  if ( QgsReportSectionLayout *section = dynamic_cast< QgsReportSectionLayout * >( parent ) )
+  {
+    QgsReportLayoutSectionWidget *widget = new QgsReportLayoutSectionWidget( this, mDesigner, section );
+    mSettingsFrame->layout()->addWidget( widget );
+    mConfigWidget = widget;
+  }
+  else if ( QgsReportSectionFieldGroup *section = dynamic_cast< QgsReportSectionFieldGroup * >( parent ) )
+  {
+    QgsReportSectionFieldGroupWidget *widget = new QgsReportSectionFieldGroupWidget( this, mDesigner, section );
+    mSettingsFrame->layout()->addWidget( widget );
+    mConfigWidget = widget;
+  }
+  else
+  {
+    mConfigWidget = nullptr;
+  }
 }
