@@ -37,6 +37,7 @@ class TestQgsReport(unittest.TestCase):
         r = QgsReport(p)
 
         self.assertEqual(r.layoutProject(), p)
+        self.assertEqual(r.project(), p)
 
         r.setHeaderEnabled(True)
         self.assertTrue(r.headerEnabled())
