@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1083</width>
+    <width>1484</width>
     <height>609</height>
    </rect>
   </property>
@@ -97,7 +97,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1083</width>
+     <width>1484</width>
      <height>42</height>
     </rect>
    </property>
@@ -269,12 +269,23 @@
     <addaction name="separator"/>
     <addaction name="mActionAtlasSettings"/>
    </widget>
+   <widget class="QMenu" name="mMenuReport">
+    <property name="title">
+     <string>Report</string>
+    </property>
+    <addaction name="mActionExportReportAsImage"/>
+    <addaction name="mActionExportReportAsSVG"/>
+    <addaction name="mActionExportReportAsPDF"/>
+    <addaction name="separator"/>
+    <addaction name="mActionReportSettings"/>
+   </widget>
    <addaction name="mLayoutMenu"/>
    <addaction name="menuEdit"/>
    <addaction name="mMenuView"/>
    <addaction name="menuLayout"/>
    <addaction name="mItemMenu"/>
    <addaction name="mMenuAtlas"/>
+   <addaction name="mMenuReport"/>
   </widget>
   <widget class="QToolBar" name="mNavigationToolbar">
    <property name="windowTitle">
@@ -324,6 +335,21 @@
    <addaction name="mActionAtlasLast"/>
    <addaction name="mActionPrintAtlas"/>
    <addaction name="mActionAtlasSettings"/>
+  </widget>
+  <widget class="QToolBar" name="mReportToolbar">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="mActionExportReportAsImage"/>
+   <addaction name="mActionExportReportAsSVG"/>
+   <addaction name="mActionExportReportAsPDF"/>
+   <addaction name="mActionReportSettings"/>
   </widget>
   <action name="mActionClose">
    <property name="text">
@@ -1359,6 +1385,54 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Alt+/</string>
+   </property>
+  </action>
+  <action name="mActionExportReportAsImage">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSaveMapAsImage.svg</normaloff>:/images/themes/default/mActionSaveMapAsImage.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Export Report as &amp;Images...</string>
+   </property>
+   <property name="toolTip">
+    <string>Export Report as Images</string>
+   </property>
+  </action>
+  <action name="mActionExportReportAsSVG">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSaveAsSVG.svg</normaloff>:/images/themes/default/mActionSaveAsSVG.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Export Report as S&amp;VG...</string>
+   </property>
+   <property name="toolTip">
+    <string>Export Report as SVG</string>
+   </property>
+  </action>
+  <action name="mActionExportReportAsPDF">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionSaveAsPDF.svg</normaloff>:/images/themes/default/mActionSaveAsPDF.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Export Report as PDF...</string>
+   </property>
+   <property name="toolTip">
+    <string>Export Report as PDF</string>
+   </property>
+  </action>
+  <action name="mActionReportSettings">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAtlasSettings.svg</normaloff>:/images/themes/default/mActionAtlasSettings.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Report &amp;Settings</string>
+   </property>
+   <property name="toolTip">
+    <string>Report Settings</string>
    </property>
   </action>
  </widget>

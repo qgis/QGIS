@@ -222,6 +222,11 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   connect( mActionExportAtlasAsSVG, &QAction::triggered, this, &QgsLayoutDesignerDialog::exportAtlasToSvg );
   connect( mActionExportAtlasAsPDF, &QAction::triggered, this, &QgsLayoutDesignerDialog::exportAtlasToPdf );
 
+  connect( mActionReportSettings, &QAction::triggered, this, &QgsLayoutDesignerDialog::showReportSettings );
+  connect( mActionExportReportAsImage, &QAction::triggered, this, &QgsLayoutDesignerDialog::exportReportToRaster );
+  connect( mActionExportReportAsSVG, &QAction::triggered, this, &QgsLayoutDesignerDialog::exportReportToSvg );
+  connect( mActionExportReportAsPDF, &QAction::triggered, this, &QgsLayoutDesignerDialog::exportReportToPdf );
+
   mView = new QgsLayoutView();
   //mView->setMapCanvas( mQgis->mapCanvas() );
   mView->setContentsMargins( 0, 0, 0, 0 );
@@ -758,6 +763,9 @@ void QgsLayoutDesignerDialog::setMasterLayout( QgsMasterLayoutInterface *layout 
     // in tab widgets
     mReportDock->hide();
     mPanelsMenu->removeAction( mReportDock->toggleViewAction() );
+    delete mMenuReport;
+    mMenuReport = nullptr;
+    mReportToolbar->hide();
   }
 }
 
@@ -2595,6 +2603,375 @@ void QgsLayoutDesignerDialog::exportAtlasToPdf()
   QApplication::restoreOverrideCursor();
 }
 
+void QgsLayoutDesignerDialog::exportReportToRaster()
+{
+  QgsSettings s;
+  QString outputFileName = QgsFileUtils::stringToSafeFilename( mMasterLayout->name() );
+
+  QPair<QString, QString> fileNExt = QgsGuiUtils::getSaveAsImageName( this, tr( "Save report as" ), outputFileName );
+  this->activateWindow();
+
+  if ( fileNExt.first.isEmpty() )
+  {
+    return;
+  }
+
+#ifdef Q_OS_MAC
+  QgisApp::instance()->activateWindow();
+  this->raise();
+#endif
+
+  QgsLayoutExporter::ImageExportSettings settings;
+  QSize imageSize;
+  if ( !getRasterExportSettings( settings, imageSize ) )
+    return;
+
+  mView->setPaintingEnabled( false );
+  QApplication::setOverrideCursor( Qt::BusyCursor );
+
+  QString error;
+  std::unique_ptr< QgsFeedback > feedback = qgis::make_unique< QgsFeedback >();
+  std::unique_ptr< QProgressDialog > progressDialog = qgis::make_unique< QProgressDialog >( tr( "Rendering report..." ), tr( "Abort" ), 0, 100, this );
+  progressDialog->setWindowTitle( tr( "Exporting Report" ) );
+  connect( feedback.get(), &QgsFeedback::progressChanged, this, [ & ]( double progress )
+  {
+    progressDialog->setValue( progress );
+    progressDialog->setLabelText( feedback->property( "progress" ).toString() ) ;
+
+#ifdef Q_OS_LINUX
+    // For some reason on Windows hasPendingEvents() always return true,
+    // but one iteration is actually enough on Windows to get good interactivity
+    // whereas on Linux we must allow for far more iterations.
+    // For safety limit the number of iterations
+    int nIters = 0;
+    while ( QCoreApplication::hasPendingEvents() && ++nIters < 100 )
+#endif
+    {
+      QCoreApplication::processEvents();
+    }
+
+  } );
+  connect( progressDialog.get(), &QProgressDialog::canceled, this, [ & ]
+  {
+    feedback->cancel();
+  } );
+
+  QFileInfo fi( fileNExt.first );
+  QString dir = fi.path();
+  QString fileName = dir + '/' + fi.baseName();
+  QgsLayoutExporter::ExportResult result = QgsLayoutExporter::exportToImage( dynamic_cast< QgsReport * >( mMasterLayout ), fileName, fileNExt.second, settings, error, feedback.get() );
+  QApplication::restoreOverrideCursor();
+
+  switch ( result )
+  {
+    case QgsLayoutExporter::Success:
+      mMessageBar->pushMessage( tr( "Export report" ),
+                                tr( "Successfully exported report to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( dir ).toString(), dir ),
+                                QgsMessageBar::SUCCESS, 0 );
+      break;
+
+    case QgsLayoutExporter::IteratorError:
+      QMessageBox::warning( this, tr( "Report Export Error" ),
+                            tr( "Error encountered while exporting report" ),
+                            QMessageBox::Ok,
+                            QMessageBox::Ok );
+      break;
+
+    case QgsLayoutExporter::PrintError:
+    case QgsLayoutExporter::SvgLayerError:
+    case QgsLayoutExporter::Canceled:
+      // no meaning for raster exports, will not be encountered
+      break;
+
+    case QgsLayoutExporter::FileError:
+      QMessageBox::warning( this, tr( "Image Export Error" ),
+                            error,
+                            QMessageBox::Ok,
+                            QMessageBox::Ok );
+      break;
+
+    case QgsLayoutExporter::MemoryError:
+      QMessageBox::warning( this, tr( "Memory Allocation Error" ),
+                            tr( "Trying to create image of %2×%3 @ %4dpi "
+                                "resulted in a memory overflow.\n\n"
+                                "Please try a lower resolution or a smaller paper size." )
+                            .arg( imageSize.width() ).arg( imageSize.height() ).arg( settings.dpi ),
+                            QMessageBox::Ok, QMessageBox::Ok );
+      break;
+  }
+  mView->setPaintingEnabled( true );
+}
+
+void QgsLayoutDesignerDialog::exportReportToSvg()
+{
+  showSvgExportWarning();
+
+  QgsSettings settings;
+  QString lastUsedFile = settings.value( QStringLiteral( "UI/lastSaveAsSvgFile" ), QStringLiteral( "qgis.svg" ) ).toString();
+  QFileInfo file( lastUsedFile );
+  QString outputFileName = file.path() + '/' + QgsFileUtils::stringToSafeFilename( mMasterLayout->name() ) + QStringLiteral( ".svg" );
+
+  outputFileName = QFileDialog::getSaveFileName(
+                     this,
+                     tr( "Export to SVG" ),
+                     outputFileName,
+                     tr( "SVG Format" ) + " (*.svg *.SVG)" );
+  this->activateWindow();
+  if ( outputFileName.isEmpty() )
+  {
+    return;
+  }
+
+  if ( !outputFileName.endsWith( QLatin1String( ".svg" ), Qt::CaseInsensitive ) )
+  {
+    outputFileName += QLatin1String( ".svg" );
+  }
+#ifdef Q_OS_MAC
+  QgisApp::instance()->activateWindow();
+  this->raise();
+#endif
+  bool prevSettingLabelsAsOutlines = mMasterLayout->layoutProject()->readBoolEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawOutlineLabels" ), true );
+  settings.setValue( QStringLiteral( "UI/lastSaveAsSvgFile" ), outputFileName );
+
+  QgsLayoutExporter::SvgExportSettings svgSettings;
+  bool exportAsText = false;
+  if ( !getSvgExportSettings( svgSettings, exportAsText ) )
+    return;
+
+  //temporarily override label draw outlines setting
+  mMasterLayout->layoutProject()->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawOutlineLabels" ), exportAsText );
+
+  mView->setPaintingEnabled( false );
+  QApplication::setOverrideCursor( Qt::BusyCursor );
+
+  QString error;
+  std::unique_ptr< QgsFeedback > feedback = qgis::make_unique< QgsFeedback >();
+  std::unique_ptr< QProgressDialog > progressDialog = qgis::make_unique< QProgressDialog >( tr( "Rendering maps..." ), tr( "Abort" ), 0, 100, this );
+  progressDialog->setWindowTitle( tr( "Exporting Report" ) );
+  connect( feedback.get(), &QgsFeedback::progressChanged, this, [ & ]( double progress )
+  {
+    progressDialog->setValue( progress );
+    progressDialog->setLabelText( feedback->property( "progress" ).toString() ) ;
+
+#ifdef Q_OS_LINUX
+    // For some reason on Windows hasPendingEvents() always return true,
+    // but one iteration is actually enough on Windows to get good interactivity
+    // whereas on Linux we must allow for far more iterations.
+    // For safety limit the number of iterations
+    int nIters = 0;
+    while ( QCoreApplication::hasPendingEvents() && ++nIters < 100 )
+#endif
+    {
+      QCoreApplication::processEvents();
+    }
+
+  } );
+  connect( progressDialog.get(), &QProgressDialog::canceled, this, [ & ]
+  {
+    feedback->cancel();
+  } );
+
+  QFileInfo fi( outputFileName );
+  QString outFile = fi.path() + '/' + fi.baseName();
+  QString dir = fi.path();
+  QgsLayoutExporter::ExportResult result = QgsLayoutExporter::exportToSvg( dynamic_cast< QgsReport * >( mMasterLayout ), outFile, svgSettings, error, feedback.get() );
+
+  QApplication::restoreOverrideCursor();
+  switch ( result )
+  {
+    case QgsLayoutExporter::Success:
+    {
+      mMessageBar->pushMessage( tr( "Export report" ),
+                                tr( "Successfully exported report to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( dir ).toString(), dir ),
+                                QgsMessageBar::SUCCESS, 0 );
+      break;
+    }
+
+    case QgsLayoutExporter::FileError:
+      QMessageBox::warning( this, tr( "Export report" ),
+                            error, QMessageBox::Ok,
+                            QMessageBox::Ok );
+      break;
+
+    case QgsLayoutExporter::SvgLayerError:
+      QMessageBox::warning( this, tr( "Export report" ),
+                            tr( "Cannot create layered SVG file." ),
+                            QMessageBox::Ok,
+                            QMessageBox::Ok );
+      break;
+
+    case QgsLayoutExporter::PrintError:
+      QMessageBox::warning( this, tr( "Export report" ),
+                            tr( "Could not create print device." ),
+                            QMessageBox::Ok,
+                            QMessageBox::Ok );
+      break;
+
+
+    case QgsLayoutExporter::MemoryError:
+      QMessageBox::warning( this, tr( "Memory Allocation Error" ),
+                            tr( "Exporting the SVG "
+                                "resulted in a memory overflow.\n\n"
+                                "Please try a lower resolution or a smaller paper size." ),
+                            QMessageBox::Ok, QMessageBox::Ok );
+      break;
+
+    case QgsLayoutExporter::IteratorError:
+      QMessageBox::warning( this, tr( "Report Export Error" ),
+                            tr( "Error encountered while exporting report" ),
+                            QMessageBox::Ok,
+                            QMessageBox::Ok );
+      break;
+
+    case QgsLayoutExporter::Canceled:
+      // no meaning here
+      break;
+  }
+
+  mView->setPaintingEnabled( true );
+  mMasterLayout->layoutProject()->writeEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawOutlineLabels" ), prevSettingLabelsAsOutlines );
+}
+
+void QgsLayoutDesignerDialog::exportReportToPdf()
+{
+  QgsSettings settings;
+
+  QString lastUsedFile = settings.value( QStringLiteral( "UI/lastSaveAsPdfFile" ), QStringLiteral( "qgis.pdf" ) ).toString();
+  QFileInfo file( lastUsedFile );
+
+  QString outputFileName = file.path() + '/' + QgsFileUtils::stringToSafeFilename( mMasterLayout->name() ) + QStringLiteral( ".pdf" );
+
+#ifdef Q_OS_MAC
+  QgisApp::instance()->activateWindow();
+  this->raise();
+#endif
+  outputFileName = QFileDialog::getSaveFileName(
+                     this,
+                     tr( "Export to PDF" ),
+                     outputFileName,
+                     tr( "PDF Format" ) + " (*.pdf *.PDF)" );
+  this->activateWindow();
+  if ( outputFileName.isEmpty() )
+  {
+    return;
+  }
+
+  if ( !outputFileName.endsWith( QLatin1String( ".pdf" ), Qt::CaseInsensitive ) )
+  {
+    outputFileName += QLatin1String( ".pdf" );
+  }
+  settings.setValue( QStringLiteral( "UI/lastSaveAsPdfFile" ), outputFileName );
+
+  mView->setPaintingEnabled( false );
+  QApplication::setOverrideCursor( Qt::BusyCursor );
+
+  bool rasterize = false;
+  bool forceVectorOutput = false;
+  if ( mLayout )
+  {
+    rasterize = mLayout->customProperty( QStringLiteral( "rasterize" ), false ).toBool();
+    forceVectorOutput = mLayout->customProperty( QStringLiteral( "forceVector" ), false ).toBool();
+  }
+  QgsLayoutExporter::PdfExportSettings pdfSettings;
+  pdfSettings.rasterizeWholeImage = rasterize;
+  pdfSettings.forceVectorOutput = forceVectorOutput;
+
+  QFileInfo fi( outputFileName );
+
+  QString error;
+  std::unique_ptr< QgsFeedback > feedback = qgis::make_unique< QgsFeedback >();
+  std::unique_ptr< QProgressDialog > progressDialog = qgis::make_unique< QProgressDialog >( tr( "Rendering maps..." ), tr( "Abort" ), 0, 100, this );
+  progressDialog->setWindowTitle( tr( "Exporting Report" ) );
+  connect( feedback.get(), &QgsFeedback::progressChanged, this, [ & ]( double progress )
+  {
+    progressDialog->setValue( progress );
+    progressDialog->setLabelText( feedback->property( "progress" ).toString() ) ;
+
+#ifdef Q_OS_LINUX
+    // For some reason on Windows hasPendingEvents() always return true,
+    // but one iteration is actually enough on Windows to get good interactivity
+    // whereas on Linux we must allow for far more iterations.
+    // For safety limit the number of iterations
+    int nIters = 0;
+    while ( QCoreApplication::hasPendingEvents() && ++nIters < 100 )
+#endif
+    {
+      QCoreApplication::processEvents();
+    }
+
+  } );
+  connect( progressDialog.get(), &QProgressDialog::canceled, this, [ & ]
+  {
+    feedback->cancel();
+  } );
+
+  QgsLayoutExporter::ExportResult result = QgsLayoutExporter::exportToPdf( dynamic_cast< QgsReport * >( mMasterLayout ), outputFileName, pdfSettings, error, feedback.get() );
+
+  switch ( result )
+  {
+    case QgsLayoutExporter::Success:
+    {
+      mMessageBar->pushMessage( tr( "Export report" ),
+                                tr( "Successfully exported report to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( fi.path() ).toString(), outputFileName ),
+                                QgsMessageBar::SUCCESS, 0 );
+      break;
+    }
+
+    case QgsLayoutExporter::FileError:
+      QMessageBox::warning( this, tr( "Export report" ),
+                            error, QMessageBox::Ok,
+                            QMessageBox::Ok );
+      break;
+
+    case QgsLayoutExporter::SvgLayerError:
+      // no meaning
+      break;
+
+    case QgsLayoutExporter::PrintError:
+      QMessageBox::warning( this, tr( "Export report" ),
+                            tr( "Could not create print device." ),
+                            QMessageBox::Ok,
+                            QMessageBox::Ok );
+      break;
+
+
+    case QgsLayoutExporter::MemoryError:
+      QMessageBox::warning( this, tr( "Memory Allocation Error" ),
+                            tr( "Exporting the PDF "
+                                "resulted in a memory overflow.\n\n"
+                                "Please try a lower resolution or a smaller paper size." ),
+                            QMessageBox::Ok, QMessageBox::Ok );
+      break;
+
+    case QgsLayoutExporter::IteratorError:
+      QMessageBox::warning( this, tr( "Report Export Error" ),
+                            tr( "Error encountered while exporting report" ),
+                            QMessageBox::Ok,
+                            QMessageBox::Ok );
+      break;
+
+    case QgsLayoutExporter::Canceled:
+      // no meaning here
+      break;
+  }
+
+  mView->setPaintingEnabled( true );
+  QApplication::restoreOverrideCursor();
+}
+
+void QgsLayoutDesignerDialog::showReportSettings()
+{
+  if ( !mReportDock )
+    return;
+
+  if ( !mReportDock->isVisible() )
+  {
+    mReportDock->show();
+  }
+
+  mReportDock->raise();
+}
+
 void QgsLayoutDesignerDialog::paste()
 {
   QPointF pt = mView->mapFromGlobal( QCursor::pos() );
@@ -2726,6 +3103,8 @@ void QgsLayoutDesignerDialog::createReportWidget()
   QgsReportOrganizerWidget *reportWidget = new QgsReportOrganizerWidget( mReportDock, this, report );
   reportWidget->setMessageBar( mMessageBar );
   mReportDock->setWidget( reportWidget );
+
+  mReportToolbar->show();
 
   mPanelsMenu->addAction( mReportDock->toggleViewAction() );
 }
@@ -2893,25 +3272,39 @@ bool QgsLayoutDesignerDialog::showFileSizeWarning()
 
 bool QgsLayoutDesignerDialog::getRasterExportSettings( QgsLayoutExporter::ImageExportSettings &settings, QSize &imageSize )
 {
-  // Image size
-  QSizeF maxPageSize = mLayout->pageCollection()->maximumPageSize();
-  bool hasUniformPageSizes = mLayout->pageCollection()->hasUniformPageSizes();
-  double dpi = mLayout->renderContext().dpi();
+  QSizeF maxPageSize;
+  bool hasUniformPageSizes = false;
+  double dpi = 300;
+  bool cropToContents = false;
+  int marginTop = 0;
+  int marginRight = 0;
+  int marginBottom = 0;
+  int marginLeft = 0;
+  bool antialias = true;
 
-  //get some defaults from the composition
-  bool cropToContents = mLayout->customProperty( QStringLiteral( "imageCropToContents" ), false ).toBool();
-  int marginTop = mLayout->customProperty( QStringLiteral( "imageCropMarginTop" ), 0 ).toInt();
-  int marginRight = mLayout->customProperty( QStringLiteral( "imageCropMarginRight" ), 0 ).toInt();
-  int marginBottom = mLayout->customProperty( QStringLiteral( "imageCropMarginBottom" ), 0 ).toInt();
-  int marginLeft = mLayout->customProperty( QStringLiteral( "imageCropMarginLeft" ), 0 ).toInt();
-  bool antialias = mLayout->customProperty( QStringLiteral( "imageAntialias" ), true ).toBool();
+  // Image size
+  if ( mLayout )
+  {
+    maxPageSize = mLayout->pageCollection()->maximumPageSize();
+    hasUniformPageSizes = mLayout->pageCollection()->hasUniformPageSizes();
+    dpi = mLayout->renderContext().dpi();
+
+    //get some defaults from the composition
+    cropToContents = mLayout->customProperty( QStringLiteral( "imageCropToContents" ), false ).toBool();
+    marginTop = mLayout->customProperty( QStringLiteral( "imageCropMarginTop" ), 0 ).toInt();
+    marginRight = mLayout->customProperty( QStringLiteral( "imageCropMarginRight" ), 0 ).toInt();
+    marginBottom = mLayout->customProperty( QStringLiteral( "imageCropMarginBottom" ), 0 ).toInt();
+    marginLeft = mLayout->customProperty( QStringLiteral( "imageCropMarginLeft" ), 0 ).toInt();
+    antialias = mLayout->customProperty( QStringLiteral( "imageAntialias" ), true ).toBool();
+  }
 
   QgsLayoutImageExportOptionsDialog imageDlg( this );
   imageDlg.setImageSize( maxPageSize );
   imageDlg.setResolution( dpi );
   imageDlg.setCropToContents( cropToContents );
   imageDlg.setCropMargins( marginTop, marginRight, marginBottom, marginLeft );
-  imageDlg.setGenerateWorldFile( mLayout->customProperty( QStringLiteral( "exportWorldFile" ), false ).toBool() );
+  if ( mLayout )
+    imageDlg.setGenerateWorldFile( mLayout->customProperty( QStringLiteral( "exportWorldFile" ), false ).toBool() );
   imageDlg.setAntialiasing( antialias );
 
   if ( !imageDlg.exec() )
@@ -2920,13 +3313,15 @@ bool QgsLayoutDesignerDialog::getRasterExportSettings( QgsLayoutExporter::ImageE
   imageSize = QSize( imageDlg.imageWidth(), imageDlg.imageHeight() );
   cropToContents = imageDlg.cropToContents();
   imageDlg.getCropMargins( marginTop, marginRight, marginBottom, marginLeft );
-  mLayout->setCustomProperty( QStringLiteral( "imageCropToContents" ), cropToContents );
-  mLayout->setCustomProperty( QStringLiteral( "imageCropMarginTop" ), marginTop );
-  mLayout->setCustomProperty( QStringLiteral( "imageCropMarginRight" ), marginRight );
-  mLayout->setCustomProperty( QStringLiteral( "imageCropMarginBottom" ), marginBottom );
-  mLayout->setCustomProperty( QStringLiteral( "imageCropMarginLeft" ), marginLeft );
-
-  mLayout->setCustomProperty( QStringLiteral( "imageAntialias" ), imageDlg.antialiasing() );
+  if ( mLayout )
+  {
+    mLayout->setCustomProperty( QStringLiteral( "imageCropToContents" ), cropToContents );
+    mLayout->setCustomProperty( QStringLiteral( "imageCropMarginTop" ), marginTop );
+    mLayout->setCustomProperty( QStringLiteral( "imageCropMarginRight" ), marginRight );
+    mLayout->setCustomProperty( QStringLiteral( "imageCropMarginBottom" ), marginBottom );
+    mLayout->setCustomProperty( QStringLiteral( "imageCropMarginLeft" ), marginLeft );
+    mLayout->setCustomProperty( QStringLiteral( "imageAntialias" ), imageDlg.antialiasing() );
+  }
 
   settings.cropToContents = cropToContents;
   settings.cropMargins = QgsMargins( marginLeft, marginTop, marginRight, marginBottom );
@@ -2946,26 +3341,42 @@ bool QgsLayoutDesignerDialog::getRasterExportSettings( QgsLayoutExporter::ImageE
 bool QgsLayoutDesignerDialog::getSvgExportSettings( QgsLayoutExporter::SvgExportSettings &settings, bool &exportAsText )
 {
   bool groupLayers = false;
-  bool prevSettingLabelsAsOutlines = mLayout->project()->readBoolEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawOutlineLabels" ), true );
+  bool prevSettingLabelsAsOutlines = mMasterLayout->layoutProject()->readBoolEntry( QStringLiteral( "PAL" ), QStringLiteral( "/DrawOutlineLabels" ), true );
   bool clipToContent = false;
   double marginTop = 0.0;
   double marginRight = 0.0;
   double marginBottom = 0.0;
   double marginLeft = 0.0;
-  bool previousForceVector = mLayout->customProperty( QStringLiteral( "forceVector" ), false ).toBool();
+  bool previousForceVector = false;
+  bool layersAsGroup = false;
+  bool cropToContents = false;
+  double topMargin = 0.0;
+  double rightMargin = 0.0;
+  double bottomMargin = 0.0;
+  double leftMargin = 0.0;
+  if ( mLayout )
+  {
+    mLayout->customProperty( QStringLiteral( "forceVector" ), false ).toBool();
+    layersAsGroup = mLayout->customProperty( QStringLiteral( "svgGroupLayers" ), false ).toBool();
+    cropToContents = mLayout->customProperty( QStringLiteral( "svgCropToContents" ), false ).toBool();
+    topMargin = mLayout->customProperty( QStringLiteral( "svgCropMarginTop" ), 0 ).toInt();
+    rightMargin = mLayout->customProperty( QStringLiteral( "svgCropMarginRight" ), 0 ).toInt();
+    bottomMargin = mLayout->customProperty( QStringLiteral( "svgCropMarginBottom" ), 0 ).toInt();
+    leftMargin = mLayout->customProperty( QStringLiteral( "svgCropMarginLeft" ), 0 ).toInt();
+  }
 
   // open options dialog
   QDialog dialog;
   Ui::QgsSvgExportOptionsDialog options;
   options.setupUi( &dialog );
   options.chkTextAsOutline->setChecked( prevSettingLabelsAsOutlines );
-  options.chkMapLayersAsGroup->setChecked( mLayout->customProperty( QStringLiteral( "svgGroupLayers" ), false ).toBool() );
-  options.mClipToContentGroupBox->setChecked( mLayout->customProperty( QStringLiteral( "svgCropToContents" ), false ).toBool() );
+  options.chkMapLayersAsGroup->setChecked( layersAsGroup );
+  options.mClipToContentGroupBox->setChecked( cropToContents );
   options.mForceVectorCheckBox->setChecked( previousForceVector );
-  options.mTopMarginSpinBox->setValue( mLayout->customProperty( QStringLiteral( "svgCropMarginTop" ), 0 ).toInt() );
-  options.mRightMarginSpinBox->setValue( mLayout->customProperty( QStringLiteral( "svgCropMarginRight" ), 0 ).toInt() );
-  options.mBottomMarginSpinBox->setValue( mLayout->customProperty( QStringLiteral( "svgCropMarginBottom" ), 0 ).toInt() );
-  options.mLeftMarginSpinBox->setValue( mLayout->customProperty( QStringLiteral( "svgCropMarginLeft" ), 0 ).toInt() );
+  options.mTopMarginSpinBox->setValue( topMargin );
+  options.mRightMarginSpinBox->setValue( rightMargin );
+  options.mBottomMarginSpinBox->setValue( bottomMargin );
+  options.mLeftMarginSpinBox->setValue( leftMargin );
 
   if ( dialog.exec() != QDialog::Accepted )
     return false;
@@ -2977,15 +3388,17 @@ bool QgsLayoutDesignerDialog::getSvgExportSettings( QgsLayoutExporter::SvgExport
   marginBottom = options.mBottomMarginSpinBox->value();
   marginLeft = options.mLeftMarginSpinBox->value();
 
-  //save dialog settings
-  mLayout->setCustomProperty( QStringLiteral( "svgGroupLayers" ), groupLayers );
-  mLayout->setCustomProperty( QStringLiteral( "svgCropToContents" ), clipToContent );
-  mLayout->setCustomProperty( QStringLiteral( "svgCropMarginTop" ), marginTop );
-  mLayout->setCustomProperty( QStringLiteral( "svgCropMarginRight" ), marginRight );
-  mLayout->setCustomProperty( QStringLiteral( "svgCropMarginBottom" ), marginBottom );
-  mLayout->setCustomProperty( QStringLiteral( "svgCropMarginLeft" ), marginLeft );
+  if ( mLayout )
+  {
+    //save dialog settings
+    mLayout->setCustomProperty( QStringLiteral( "svgGroupLayers" ), groupLayers );
+    mLayout->setCustomProperty( QStringLiteral( "svgCropToContents" ), clipToContent );
+    mLayout->setCustomProperty( QStringLiteral( "svgCropMarginTop" ), marginTop );
+    mLayout->setCustomProperty( QStringLiteral( "svgCropMarginRight" ), marginRight );
+    mLayout->setCustomProperty( QStringLiteral( "svgCropMarginBottom" ), marginBottom );
+    mLayout->setCustomProperty( QStringLiteral( "svgCropMarginLeft" ), marginLeft );
+  }
 
-  settings.forceVectorOutput = mLayout->customProperty( QStringLiteral( "forceVector" ), false ).toBool();
   settings.cropToContents = clipToContent;
   settings.cropMargins = QgsMargins( marginLeft, marginTop, marginRight, marginBottom );
   settings.forceVectorOutput = options.mForceVectorCheckBox->isChecked();

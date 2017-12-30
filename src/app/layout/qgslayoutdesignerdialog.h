@@ -314,6 +314,10 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     void exportAtlasToSvg();
     void exportAtlasToPdf();
 
+    void exportReportToRaster();
+    void exportReportToSvg();
+    void exportReportToPdf();
+    void showReportSettings();
   private:
 
     static bool sInitializedRegistry;
