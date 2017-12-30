@@ -147,7 +147,7 @@ namespace pal
       int polygonIntersectionCost( PointSet *polygon ) const;
 
       /**
-       * Returns true if if any intersection between polygon and position exists.
+       * Returns true if any intersection between polygon and position exists.
       */
       bool intersectsWithPolygon( PointSet *polygon ) const;
 

@@ -19,7 +19,7 @@ thread, so it is necessary to keep all structures required for rendering away
 from the original map layer because it may change any time.
 
 Because the data needs to be copied (to avoid the need for locking),
-is is highly desirable to use copy-on-write where possible. This way,
+it is highly desirable to use copy-on-write where possible. This way,
 the overhead of copying (both memory and CPU) will be kept low.
 Qt containers and various Qt classes use implicit sharing.
 
