@@ -319,6 +319,14 @@ void QgsAbstractReportSection::setFooter( QgsLayout *footer )
   mFooter.reset( footer );
 }
 
+int QgsAbstractReportSection::row() const
+{
+  if ( mParent )
+    return mParent->childSections().indexOf( const_cast<QgsAbstractReportSection *>( this ) );
+
+  return 0;
+}
+
 QgsAbstractReportSection *QgsAbstractReportSection::childSection( int index )
 {
   return mChildren.value( index );

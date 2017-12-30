@@ -75,6 +75,7 @@ class TestQgsReport(unittest.TestCase):
         self.assertEqual(r.childSections(), [child1])
         self.assertEqual(r.childSection(0), child1)
         self.assertEqual(child1.parentSection(), r)
+        self.assertEqual(child1.row(), 0)
         self.assertEqual(child1.project(), p)
         child2 = QgsReportSectionLayout()
         r.appendChild(child2)
@@ -82,6 +83,7 @@ class TestQgsReport(unittest.TestCase):
         self.assertEqual(r.childSections(), [child1, child2])
         self.assertEqual(r.childSection(1), child2)
         self.assertEqual(child2.parentSection(), r)
+        self.assertEqual(child2.row(), 1)
 
     def testInsertChild(self):
         p = QgsProject()
@@ -92,11 +94,14 @@ class TestQgsReport(unittest.TestCase):
         self.assertEqual(r.childCount(), 1)
         self.assertEqual(r.childSections(), [child1])
         self.assertEqual(child1.parentSection(), r)
+        self.assertEqual(child1.row(), 0)
         child2 = QgsReportSectionLayout()
         r.insertChild(-1, child2)
         self.assertEqual(r.childCount(), 2)
         self.assertEqual(r.childSections(), [child2, child1])
         self.assertEqual(child2.parentSection(), r)
+        self.assertEqual(child2.row(), 0)
+        self.assertEqual(child1.row(), 1)
 
     def testRemoveChild(self):
         p = QgsProject()

@@ -218,6 +218,11 @@ sections form the body of the report section.
 .. seealso:: :py:func:`children()`
 %End
 
+    int row() const;
+%Docstring
+Returns the row number of the section within it's parent section.
+%End
+
     QList< QgsAbstractReportSection * > childSections() const;
 %Docstring
 Return all child sections for this report section. The child

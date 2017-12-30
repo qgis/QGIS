@@ -204,6 +204,11 @@ class CORE_EXPORT QgsAbstractReportSection : public QgsAbstractLayoutIterator
     int childCount() const { return mChildren.count(); }
 
     /**
+     * Returns the row number of the section within it's parent section.
+     */
+    int row() const;
+
+    /**
      * Return all child sections for this report section. The child
      * sections form the body of the report section.
      * \see childCount()
