@@ -2223,26 +2223,13 @@ p, li { white-space: pre-wrap; }
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>buttonBuildPyramids</tabstop>
+  <tabstop>mSearchLineEdit</tabstop>
   <tabstop>mOptionsListWidget</tabstop>
   <tabstop>teMetadataViewer</tabstop>
-  <tabstop>mSearchLineEdit</tabstop>
-  <tabstop>scrollArea_6</tabstop>
-  <tabstop>scrollArea_4</tabstop>
-  <tabstop>mLayerShortNameLineEdit</tabstop>
-  <tabstop>mLayerTitleLineEdit</tabstop>
-  <tabstop>mLayerAbstractTextEdit</tabstop>
-  <tabstop>mLayerKeywordListLineEdit</tabstop>
-  <tabstop>mLayerDataUrlLineEdit</tabstop>
-  <tabstop>mLayerDataUrlFormatComboBox</tabstop>
-  <tabstop>mLayerAttributionLineEdit</tabstop>
-  <tabstop>mLayerAttributionUrlLineEdit</tabstop>
-  <tabstop>mLayerMetadataUrlLineEdit</tabstop>
-  <tabstop>mLayerMetadataUrlTypeComboBox</tabstop>
-  <tabstop>mLayerMetadataUrlFormatComboBox</tabstop>
-  <tabstop>mLayerLegendUrlLineEdit</tabstop>
-  <tabstop>mLayerLegendUrlFormatComboBox</tabstop>
   <tabstop>scrollArea_3</tabstop>
+  <tabstop>mLayerOrigNameLineEd</tabstop>
+  <tabstop>leDisplayName</tabstop>
+  <tabstop>mCrsSelector</tabstop>
   <tabstop>scrollArea</tabstop>
   <tabstop>mRenderTypeComboBox</tabstop>
   <tabstop>mBlendModeComboBox</tabstop>
@@ -2276,11 +2263,30 @@ p, li { white-space: pre-wrap; }
   <tabstop>chkUseScaleDependentRendering</tabstop>
   <tabstop>mRefreshLayerCheckBox</tabstop>
   <tabstop>mRefreshLayerIntervalSpinBox</tabstop>
+  <tabstop>scrollArea_6</tabstop>
   <tabstop>scrollArea_5</tabstop>
   <tabstop>tePyramidDescription</tabstop>
   <tabstop>lbxPyramidResolutions</tabstop>
   <tabstop>cbxPyramidsFormat</tabstop>
   <tabstop>cboResamplingMethod</tabstop>
+  <tabstop>buttonBuildPyramids</tabstop>
+  <tabstop>scrollArea_4</tabstop>
+  <tabstop>mLayerShortNameLineEdit</tabstop>
+  <tabstop>mLayerTitleLineEdit</tabstop>
+  <tabstop>mLayerAbstractTextEdit</tabstop>
+  <tabstop>mLayerKeywordListLineEdit</tabstop>
+  <tabstop>mLayerDataUrlLineEdit</tabstop>
+  <tabstop>mLayerDataUrlFormatComboBox</tabstop>
+  <tabstop>mLayerAttributionLineEdit</tabstop>
+  <tabstop>mLayerAttributionUrlLineEdit</tabstop>
+  <tabstop>mLayerMetadataUrlLineEdit</tabstop>
+  <tabstop>mLayerMetadataUrlTypeComboBox</tabstop>
+  <tabstop>mLayerMetadataUrlFormatComboBox</tabstop>
+  <tabstop>mLayerLegendUrlLineEdit</tabstop>
+  <tabstop>mLayerLegendUrlFormatComboBox</tabstop>
+  <tabstop>mWMSPrintLayerLineEdit</tabstop>
+  <tabstop>mPublishDataSourceUrlCheckBox</tabstop>
+  <tabstop>mBackgroundLayerCheckBox</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
