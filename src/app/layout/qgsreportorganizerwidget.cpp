@@ -40,6 +40,7 @@ QgsReportOrganizerWidget::QgsReportOrganizerWidget( QWidget *parent, QgsLayoutDe
 
   mSectionModel = new QgsReportSectionModel( mReport, mViewSections );
   mViewSections->setModel( mSectionModel );
+  mViewSections->expandAll();
 
 #ifdef ENABLE_MODELTEST
   new ModelTest( mSectionModel, this );
