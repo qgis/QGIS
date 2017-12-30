@@ -27,7 +27,7 @@ exposed to the Python bindings for unit testing purposes only.
 %End
   public:
 
-    QgsReportSectionLayout( QgsAbstractReportSection *parent = 0 );
+    QgsReportSectionLayout( QgsAbstractReportSection *parentSection = 0 );
 %Docstring
 Constructor for QgsReportSectionLayout, attached to the specified ``parent`` section.
 Note that ownership is not transferred to ``parent``.

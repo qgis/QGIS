@@ -70,7 +70,7 @@ class CORE_EXPORT QgsAbstractReportSection : public QgsAbstractLayoutIterator
      * Constructor for QgsAbstractReportSection, attached to the specified \a parent section.
      * Note that ownership is not transferred to \a parent.
      */
-    QgsAbstractReportSection( QgsAbstractReportSection *parent = nullptr );
+    QgsAbstractReportSection( QgsAbstractReportSection *parentSection = nullptr );
 
     ~QgsAbstractReportSection() override;
 
@@ -97,7 +97,7 @@ class CORE_EXPORT QgsAbstractReportSection : public QgsAbstractLayoutIterator
     /**
      * Returns the parent report section.
      */
-    QgsAbstractReportSection *parent() { return mParent; }
+    QgsAbstractReportSection *parentSection() { return mParent; }
 
     /**
      * Returns the associated project.

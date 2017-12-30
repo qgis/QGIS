@@ -56,7 +56,7 @@ exposed to the Python bindings for unit testing purposes only.
 %End
   public:
 
-    QgsAbstractReportSection( QgsAbstractReportSection *parent = 0 );
+    QgsAbstractReportSection( QgsAbstractReportSection *parentSection = 0 );
 %Docstring
 Constructor for QgsAbstractReportSection, attached to the specified ``parent`` section.
 Note that ownership is not transferred to ``parent``.
@@ -80,7 +80,7 @@ Subclasses should call copyCommonProperties() in their clone()
 implementations.
 %End
 
-    QgsAbstractReportSection *parent();
+    QgsAbstractReportSection *parentSection();
 %Docstring
 Returns the parent report section.
 %End

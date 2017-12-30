@@ -39,7 +39,7 @@ class CORE_EXPORT QgsReportSectionLayout : public QgsAbstractReportSection
      * Constructor for QgsReportSectionLayout, attached to the specified \a parent section.
      * Note that ownership is not transferred to \a parent.
      */
-    QgsReportSectionLayout( QgsAbstractReportSection *parent = nullptr );
+    QgsReportSectionLayout( QgsAbstractReportSection *parentSection = nullptr );
 
     QString type() const override { return QStringLiteral( "SectionLayout" ); }
 

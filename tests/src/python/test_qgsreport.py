@@ -74,14 +74,14 @@ class TestQgsReport(unittest.TestCase):
         self.assertEqual(r.childCount(), 1)
         self.assertEqual(r.childSections(), [child1])
         self.assertEqual(r.childSection(0), child1)
-        self.assertEqual(child1.parent(), r)
+        self.assertEqual(child1.parentSection(), r)
         self.assertEqual(child1.project(), p)
         child2 = QgsReportSectionLayout()
         r.appendChild(child2)
         self.assertEqual(r.childCount(), 2)
         self.assertEqual(r.childSections(), [child1, child2])
         self.assertEqual(r.childSection(1), child2)
-        self.assertEqual(child2.parent(), r)
+        self.assertEqual(child2.parentSection(), r)
 
     def testInsertChild(self):
         p = QgsProject()
@@ -91,12 +91,12 @@ class TestQgsReport(unittest.TestCase):
         r.insertChild(11, child1)
         self.assertEqual(r.childCount(), 1)
         self.assertEqual(r.childSections(), [child1])
-        self.assertEqual(child1.parent(), r)
+        self.assertEqual(child1.parentSection(), r)
         child2 = QgsReportSectionLayout()
         r.insertChild(-1, child2)
         self.assertEqual(r.childCount(), 2)
         self.assertEqual(r.childSections(), [child2, child1])
-        self.assertEqual(child2.parent(), r)
+        self.assertEqual(child2.parentSection(), r)
 
     def testRemoveChild(self):
         p = QgsProject()
@@ -136,10 +136,10 @@ class TestQgsReport(unittest.TestCase):
         self.assertEqual(cloned.childCount(), 2)
         self.assertTrue(cloned.childSection(0).headerEnabled())
         self.assertFalse(cloned.childSection(0).footerEnabled())
-        self.assertEqual(cloned.childSection(0).parent(), cloned)
+        self.assertEqual(cloned.childSection(0).parentSection(), cloned)
         self.assertFalse(cloned.childSection(1).headerEnabled())
         self.assertTrue(cloned.childSection(1).footerEnabled())
-        self.assertEqual(cloned.childSection(1).parent(), cloned)
+        self.assertEqual(cloned.childSection(1).parentSection(), cloned)
 
     def testReportSectionLayout(self):
         r = QgsReportSectionLayout()

@@ -34,7 +34,7 @@ QgsAbstractReportSection::~QgsAbstractReportSection()
 QgsProject *QgsAbstractReportSection::project()
 {
   QgsAbstractReportSection *current = this;
-  while ( QgsAbstractReportSection *parent = current->parent() )
+  while ( QgsAbstractReportSection *parent = current->parentSection() )
   {
     if ( !parent )
       return nullptr;

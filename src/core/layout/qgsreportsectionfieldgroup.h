@@ -42,7 +42,7 @@ class CORE_EXPORT QgsReportSectionFieldGroup : public QgsAbstractReportSection
      * Constructor for QgsReportSectionFieldGroup, attached to the specified \a parent section.
      * Note that ownership is not transferred to \a parent.
      */
-    QgsReportSectionFieldGroup( QgsAbstractReportSection *parent = nullptr );
+    QgsReportSectionFieldGroup( QgsAbstractReportSection *parentSection = nullptr );
 
     QString type() const override { return QStringLiteral( "SectionFieldGroup" ); }
 
@@ -101,7 +101,7 @@ class CORE_EXPORT QgsReportSectionFieldGroup : public QgsAbstractReportSection
     bool beginRender() override;
     QgsLayout *nextBody( bool &ok ) override;
     void reset() override;
-    void setParentSection( QgsAbstractReportSection *parent ) override;
+    void setParentSection( QgsAbstractReportSection *parentSection ) override;
 
   protected:
 

@@ -28,7 +28,7 @@ exposed to the Python bindings for unit testing purposes only.
 %End
   public:
 
-    QgsReportSectionFieldGroup( QgsAbstractReportSection *parent = 0 );
+    QgsReportSectionFieldGroup( QgsAbstractReportSection *parentSection = 0 );
 %Docstring
 Constructor for QgsReportSectionFieldGroup, attached to the specified ``parent`` section.
 Note that ownership is not transferred to ``parent``.
@@ -103,7 +103,7 @@ ascending, or false for descending sort.
 
     virtual void reset();
 
-    virtual void setParentSection( QgsAbstractReportSection *parent );
+    virtual void setParentSection( QgsAbstractReportSection *parentSection );
 
 
   protected:
