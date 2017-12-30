@@ -122,15 +122,6 @@
          </item>
          <item>
           <property name="text">
-           <string>Metadata</string>
-          </property>
-          <property name="icon">
-           <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/propertyicons/editmetadata.svg</normaloff>:/images/themes/default/propertyicons/editmetadata.svg</iconset>
-          </property>
-         </item>
-         <item>
-          <property name="text">
            <string>Symbology</string>
           </property>
           <property name="toolTip">
@@ -151,6 +142,18 @@
           <property name="icon">
            <iconset resource="../../images/images.qrc">
             <normaloff>:/images/themes/default/propertyicons/labels.svg</normaloff>:/images/themes/default/propertyicons/labels.svg</iconset>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Diagrams</string>
+          </property>
+          <property name="toolTip">
+           <string>Diagrams</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../images/images.qrc">
+            <normaloff>:/images/themes/default/propertyicons/diagram.svg</normaloff>:/images/themes/default/propertyicons/diagram.svg</iconset>
           </property>
          </item>
          <item>
@@ -191,26 +194,26 @@
          </item>
          <item>
           <property name="text">
-           <string>Rendering</string>
+           <string>Joins</string>
           </property>
           <property name="toolTip">
-           <string>Rendering</string>
+           <string>Joins</string>
           </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/propertyicons/rendering.svg</normaloff>:/images/themes/default/propertyicons/rendering.svg</iconset>
+            <normaloff>:/images/themes/default/propertyicons/join.png</normaloff>:/images/themes/default/propertyicons/join.png</iconset>
           </property>
          </item>
          <item>
           <property name="text">
-           <string>Display</string>
+           <string>Auxiliary Storage</string>
           </property>
           <property name="toolTip">
-           <string>Display</string>
+           <string>Auxiliary storage</string>
           </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/propertyicons/display.svg</normaloff>:/images/themes/default/propertyicons/display.svg</iconset>
+            <normaloff>:/images/themes/default/mIconAuxiliaryStorage.svg</normaloff>:/images/themes/default/mIconAuxiliaryStorage.svg</iconset>
           </property>
          </item>
          <item>
@@ -227,26 +230,26 @@
          </item>
          <item>
           <property name="text">
-           <string>Joins</string>
+           <string>Display</string>
           </property>
           <property name="toolTip">
-           <string>Joins</string>
+           <string>Display</string>
           </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/propertyicons/join.png</normaloff>:/images/themes/default/propertyicons/join.png</iconset>
+            <normaloff>:/images/themes/default/propertyicons/display.svg</normaloff>:/images/themes/default/propertyicons/display.svg</iconset>
           </property>
          </item>
          <item>
           <property name="text">
-           <string>Diagrams</string>
+           <string>Rendering</string>
           </property>
           <property name="toolTip">
-           <string>Diagrams</string>
+           <string>Rendering</string>
           </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/propertyicons/diagram.svg</normaloff>:/images/themes/default/propertyicons/diagram.svg</iconset>
+            <normaloff>:/images/themes/default/propertyicons/rendering.svg</normaloff>:/images/themes/default/propertyicons/rendering.svg</iconset>
           </property>
          </item>
          <item>
@@ -263,14 +266,14 @@
          </item>
          <item>
           <property name="text">
-           <string>Legend</string>
+           <string>Metadata</string>
           </property>
           <property name="toolTip">
-           <string>Legend</string>
+           <string>Metadata</string>
           </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/legend.svg</normaloff>:/images/themes/default/legend.svg</iconset>
+            <normaloff>:/images/themes/default/propertyicons/editmetadata.svg</normaloff>:/images/themes/default/propertyicons/editmetadata.svg</iconset>
           </property>
          </item>
          <item>
@@ -287,6 +290,18 @@
          </item>
          <item>
           <property name="text">
+           <string>Legend</string>
+          </property>
+          <property name="toolTip">
+           <string>Legend</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../images/images.qrc">
+            <normaloff>:/images/themes/default/legend.svg</normaloff>:/images/themes/default/legend.svg</iconset>
+          </property>
+         </item>
+         <item>
+          <property name="text">
            <string>QGIS Server</string>
           </property>
           <property name="toolTip">
@@ -295,15 +310,6 @@
           <property name="icon">
            <iconset resource="../../images/images.qrc">
             <normaloff>:/images/themes/default/propertyicons/overlay.png</normaloff>:/images/themes/default/propertyicons/overlay.png</iconset>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Auxiliary Storage</string>
-          </property>
-          <property name="icon">
-           <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/mIconAuxiliaryStorage.svg</normaloff>:/images/themes/default/mIconAuxiliaryStorage.svg</iconset>
           </property>
          </item>
         </widget>
@@ -421,8 +427,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>662</width>
-                <height>534</height>
+                <width>322</width>
+                <height>367</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -722,8 +728,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>662</width>
-                <height>534</height>
+                <width>100</width>
+                <height>30</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_18">
@@ -876,8 +882,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>725</width>
-                <height>394</height>
+                <width>696</width>
+                <height>326</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">
@@ -1300,8 +1306,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>662</width>
-                <height>534</height>
+                <width>100</width>
+                <height>30</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_21">
@@ -1366,8 +1372,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>662</width>
-                <height>534</height>
+                <width>134</width>
+                <height>113</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_23">
@@ -1642,8 +1648,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>648</width>
-                <height>608</height>
+                <width>375</width>
+                <height>503</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -2342,39 +2348,38 @@ border-radius: 2px;</string>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsCollapsibleGroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsFieldExpressionWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsfieldexpressionwidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsScrollArea</class>
    <extends>QScrollArea</extends>
    <header>qgsscrollarea.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsLayerTreeView</class>
-   <extends>QTreeView</extends>
-   <header>qgslayertreeview.h</header>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsFilterLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header>qgsfilterlineedit.h</header>
   </customwidget>
   <customwidget>
    <class>QgsProjectionSelectionWidget</class>
    <extends>QWidget</extends>
    <header>qgsprojectionselectionwidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsVariableEditorWidget</class>
+   <extends>QWidget</extends>
+   <header location="global">qgsvariableeditorwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsScaleComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgsscalecombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsFilterLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgsfilterlineedit.h</header>
   </customwidget>
   <customwidget>
    <class>QgsScaleRangeWidget</class>
@@ -2388,15 +2393,16 @@ border-radius: 2px;</string>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsVariableEditorWidget</class>
+   <class>QgsFieldExpressionWidget</class>
    <extends>QWidget</extends>
-   <header location="global">qgsvariableeditorwidget.h</header>
+   <header>qgsfieldexpressionwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsScaleComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgsscalecombobox.h</header>
+   <class>QgsLayerTreeView</class>
+   <extends>QTreeView</extends>
+   <header>qgslayertreeview.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsCodeEditorHTML</class>
