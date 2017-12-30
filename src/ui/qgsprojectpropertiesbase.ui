@@ -118,18 +118,6 @@
          </item>
          <item>
           <property name="text">
-           <string>Identify Layers</string>
-          </property>
-          <property name="toolTip">
-           <string>Identifiable layers</string>
-          </property>
-          <property name="icon">
-           <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/propertyicons/map_tools.png</normaloff>:/images/themes/default/propertyicons/map_tools.png</iconset>
-          </property>
-         </item>
-         <item>
-          <property name="text">
            <string>Default Styles</string>
           </property>
           <property name="toolTip">
@@ -142,14 +130,50 @@
          </item>
          <item>
           <property name="text">
-           <string>QGIS Server</string>
+           <string>Identify Layers</string>
           </property>
           <property name="toolTip">
-           <string>WMS/WFS/WCS Server Configuration</string>
+           <string>Identifiable layers</string>
           </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/propertyicons/overlay.png</normaloff>:/images/themes/default/propertyicons/overlay.png</iconset>
+            <normaloff>:/images/themes/default/propertyicons/map_tools.png</normaloff>:/images/themes/default/propertyicons/map_tools.png</iconset>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Data Sources</string>
+          </property>
+          <property name="toolTip">
+           <string>Data sources</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../images/images.qrc">
+            <normaloff>:/images/themes/default/propertyicons/attributes.png</normaloff>:/images/themes/default/propertyicons/attributes.png</iconset>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Relations</string>
+          </property>
+          <property name="toolTip">
+           <string>Relations</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../images/images.qrc">
+            <normaloff>:/images/themes/default/relation.svg</normaloff>:/images/themes/default/relation.svg</iconset>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Variables</string>
+          </property>
+          <property name="toolTip">
+           <string>Variables</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../images/images.qrc">
+            <normaloff>:/images/themes/default/mIconExpression.svg</normaloff>:/images/themes/default/mIconExpression.svg</iconset>
           </property>
          </item>
          <item>
@@ -166,29 +190,14 @@
          </item>
          <item>
           <property name="text">
-           <string>Relations</string>
+           <string>QGIS Server</string>
+          </property>
+          <property name="toolTip">
+           <string>WMS/WFS/WCS Server Configuration</string>
           </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/relation.svg</normaloff>:/images/themes/default/relation.svg</iconset>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Data Sources</string>
-          </property>
-          <property name="icon">
-           <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/propertyicons/attributes.png</normaloff>:/images/themes/default/propertyicons/attributes.png</iconset>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Variables</string>
-          </property>
-          <property name="icon">
-           <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/mIconExpression.svg</normaloff>:/images/themes/default/mIconExpression.svg</iconset>
+            <normaloff>:/images/themes/default/propertyicons/overlay.png</normaloff>:/images/themes/default/propertyicons/overlay.png</iconset>
           </property>
          </item>
         </widget>
