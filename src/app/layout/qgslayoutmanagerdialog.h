@@ -18,6 +18,7 @@
 #define QGSLAYOUTMANAGERDIALOG_H
 
 #include <QItemDelegate>
+#include <QSortFilterProxyModel>
 
 #include "ui_qgslayoutmanagerbase.h"
 
@@ -53,6 +54,16 @@ class QgsLayoutManagerModel : public QAbstractListModel
     void layoutRenamed( QgsMasterLayoutInterface *layout, const QString &newName );
   private:
     QgsLayoutManager *mLayoutManager = nullptr;
+};
+
+class QgsLayoutManagerProxyModel : public QSortFilterProxyModel
+{
+    Q_OBJECT
+
+  public:
+
+    explicit QgsLayoutManagerProxyModel( QObject *parent );
+
 };
 
 /**
@@ -94,6 +105,7 @@ class QgsLayoutManagerDialog: public QDialog, private Ui::QgsLayoutManagerBase
     QPushButton *mDuplicateButton = nullptr;
     QPushButton *mCreateReportButton = nullptr;
     QgsLayoutManagerModel *mModel = nullptr;
+    QgsLayoutManagerProxyModel *mProxyModel = nullptr;
 
 #ifdef Q_OS_MAC
     void showEvent( QShowEvent *event );

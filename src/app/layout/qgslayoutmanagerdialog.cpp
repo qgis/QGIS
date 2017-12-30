@@ -65,7 +65,9 @@ QgsLayoutManagerDialog::QgsLayoutManagerDialog( QWidget *parent, Qt::WindowFlags
 
   mModel = new QgsLayoutManagerModel( QgsProject::instance()->layoutManager(),
                                       this );
-  mLayoutListView->setModel( mModel );
+  mProxyModel = new QgsLayoutManagerProxyModel( mLayoutListView );
+  mProxyModel->setSourceModel( mModel );
+  mLayoutListView->setModel( mProxyModel );
 
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QWidget::close );
   connect( mLayoutListView->selectionModel(), &QItemSelectionModel::selectionChanged,
@@ -386,7 +388,7 @@ void QgsLayoutManagerDialog::removeClicked()
   // Find the layouts that need to be deleted
   for ( const QModelIndex &index : layoutItems )
   {
-    QgsMasterLayoutInterface *l = mModel->layoutFromIndex( index );
+    QgsMasterLayoutInterface *l = mModel->layoutFromIndex( mProxyModel->mapToSource( index ) );
     if ( l )
     {
       layoutList << l;
@@ -405,7 +407,7 @@ void QgsLayoutManagerDialog::showClicked()
   const QModelIndexList layoutItems = mLayoutListView->selectionModel()->selectedRows();
   for ( const QModelIndex &index : layoutItems )
   {
-    if ( QgsMasterLayoutInterface *l = mModel->layoutFromIndex( index ) )
+    if ( QgsMasterLayoutInterface *l = mModel->layoutFromIndex( mProxyModel->mapToSource( index ) ) )
     {
       QgisApp::instance()->openLayoutDesignerDialog( l );
     }
@@ -419,7 +421,7 @@ void QgsLayoutManagerDialog::duplicateClicked()
     return;
   }
 
-  QgsMasterLayoutInterface *currentLayout = mModel->layoutFromIndex( mLayoutListView->selectionModel()->selectedRows().at( 0 ) );
+  QgsMasterLayoutInterface *currentLayout = mModel->layoutFromIndex( mProxyModel->mapToSource( mLayoutListView->selectionModel()->selectedRows().at( 0 ) ) );
   if ( !currentLayout )
     return;
   QString currentTitle = currentLayout->name();
@@ -459,7 +461,7 @@ void QgsLayoutManagerDialog::renameClicked()
     return;
   }
 
-  QgsMasterLayoutInterface *currentLayout = mModel->layoutFromIndex( mLayoutListView->selectionModel()->selectedRows().at( 0 ) );
+  QgsMasterLayoutInterface *currentLayout = mModel->layoutFromIndex( mProxyModel->mapToSource( mLayoutListView->selectionModel()->selectedRows().at( 0 ) ) );
   if ( !currentLayout )
     return;
 
@@ -474,7 +476,7 @@ void QgsLayoutManagerDialog::renameClicked()
 
 void QgsLayoutManagerDialog::itemDoubleClicked( const QModelIndex &index )
 {
-  if ( QgsMasterLayoutInterface *l = mModel->layoutFromIndex( index ) )
+  if ( QgsMasterLayoutInterface *l = mModel->layoutFromIndex( mProxyModel->mapToSource( index ) ) )
   {
     QgisApp::instance()->openLayoutDesignerDialog( l );
   }
@@ -629,4 +631,12 @@ void QgsLayoutManagerModel::layoutRenamed( QgsMasterLayoutInterface *layout, con
   int row = mLayoutManager->layouts().indexOf( layout );
   QModelIndex index = createIndex( row, 0 );
   emit dataChanged( index, index, QVector<int>() << Qt::DisplayRole );
+}
+
+QgsLayoutManagerProxyModel::QgsLayoutManagerProxyModel( QObject *parent )
+  : QSortFilterProxyModel( parent )
+{
+  setDynamicSortFilter( true );
+  sort( 0 );
+  setSortCaseSensitivity( Qt::CaseInsensitive );
 }
