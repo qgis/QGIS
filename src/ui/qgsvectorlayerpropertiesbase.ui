@@ -345,7 +345,7 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>5</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="mOptsPage_Information">
           <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -421,8 +421,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>322</width>
-                <height>367</height>
+                <width>651</width>
+                <height>537</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -696,8 +696,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>100</width>
-                <height>30</height>
+                <width>651</width>
+                <height>537</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_18">
@@ -882,8 +882,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>134</width>
-                <height>113</height>
+                <width>651</width>
+                <height>537</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_23">
@@ -1277,8 +1277,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>100</width>
-                <height>30</height>
+                <width>651</width>
+                <height>537</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_21">
@@ -1452,7 +1452,7 @@ border-radius: 2px;</string>
                 <x>0</x>
                 <y>0</y>
                 <width>696</width>
-                <height>326</height>
+                <height>521</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">
@@ -1905,8 +1905,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>375</width>
-                <height>503</height>
+                <width>651</width>
+                <height>537</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -2405,9 +2405,51 @@ border-radius: 2px;</string>
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>mOptionsListWidget</tabstop>
   <tabstop>mSearchLineEdit</tabstop>
+  <tabstop>mOptionsListWidget</tabstop>
   <tabstop>teMetadataViewer</tabstop>
+  <tabstop>scrollArea_4</tabstop>
+  <tabstop>mLayerOrigNameLineEdit</tabstop>
+  <tabstop>txtDisplayName</tabstop>
+  <tabstop>cboProviderEncoding</tabstop>
+  <tabstop>indexGroupBox_2</tabstop>
+  <tabstop>mCrsSelector</tabstop>
+  <tabstop>pbnIndex</tabstop>
+  <tabstop>pbnUpdateExtents</tabstop>
+  <tabstop>txtSubsetSQL</tabstop>
+  <tabstop>pbnQueryBuilder</tabstop>
+  <tabstop>scrollArea_3</tabstop>
+  <tabstop>mJoinTreeWidget</tabstop>
+  <tabstop>scrollArea_7</tabstop>
+  <tabstop>mButtonAddJoin</tabstop>
+  <tabstop>mButtonRemoveJoin</tabstop>
+  <tabstop>mButtonEditJoin</tabstop>
+  <tabstop>mAuxiliaryStorageKeyLineEdit</tabstop>
+  <tabstop>mAuxiliaryStorageFeaturesLineEdit</tabstop>
+  <tabstop>mAuxiliaryStorageFieldsLineEdit</tabstop>
+  <tabstop>mAuxiliaryStorageFieldsTree</tabstop>
+  <tabstop>mAuxiliaryStorageFieldsAddBtn</tabstop>
+  <tabstop>mAuxiliaryStorageFieldsDeleteBtn</tabstop>
+  <tabstop>mAuxiliaryStorageActions</tabstop>
+  <tabstop>scrollArea_6</tabstop>
+  <tabstop>mDisplayExpressionWidget</tabstop>
+  <tabstop>mMapTipExpressionFieldWidget</tabstop>
+  <tabstop>mInsertExpressionButton</tabstop>
+  <tabstop>mScaleVisibilityGroupBox</tabstop>
+  <tabstop>scrollArea_19</tabstop>
+  <tabstop>mScaleRangeWidget</tabstop>
+  <tabstop>mSimplifyDrawingGroupBox</tabstop>
+  <tabstop>mSimplifyDrawingSpinBox</tabstop>
+  <tabstop>mSimplifyAlgorithmComboBox</tabstop>
+  <tabstop>mSimplifyDrawingAtProvider</tabstop>
+  <tabstop>mSimplifyMaximumScaleComboBox</tabstop>
+  <tabstop>mForceRasterCheckBox</tabstop>
+  <tabstop>mRefreshLayerCheckBox</tabstop>
+  <tabstop>mRefreshLayerIntervalSpinBox</tabstop>
+  <tabstop>mRefreshLayerNotificationCheckBox</tabstop>
+  <tabstop>mNotificationMessageCheckBox</tabstop>
+  <tabstop>mNotifyMessagValueLineEdit</tabstop>
+  <tabstop>mLayersDependenciesTreeView</tabstop>
   <tabstop>scrollArea</tabstop>
   <tabstop>mLayerShortNameLineEdit</tabstop>
   <tabstop>mLayerTitleLineEdit</tabstop>
@@ -2422,36 +2464,6 @@ border-radius: 2px;</string>
   <tabstop>mLayerMetadataUrlFormatComboBox</tabstop>
   <tabstop>mLayerLegendUrlLineEdit</tabstop>
   <tabstop>mLayerLegendUrlFormatComboBox</tabstop>
-  <tabstop>scrollArea_4</tabstop>
-  <tabstop>cboProviderEncoding</tabstop>
-  <tabstop>indexGroupBox_2</tabstop>
-  <tabstop>mCrsSelector</tabstop>
-  <tabstop>pbnIndex</tabstop>
-  <tabstop>pbnUpdateExtents</tabstop>
-  <tabstop>txtSubsetSQL</tabstop>
-  <tabstop>pbnQueryBuilder</tabstop>
-  <tabstop>scrollArea_3</tabstop>
-  <tabstop>scrollArea_19</tabstop>
-  <tabstop>mScaleVisibilityGroupBox</tabstop>
-  <tabstop>mScaleRangeWidget</tabstop>
-  <tabstop>mSimplifyDrawingGroupBox</tabstop>
-  <tabstop>mSimplifyDrawingSpinBox</tabstop>
-  <tabstop>mSimplifyAlgorithmComboBox</tabstop>
-  <tabstop>mSimplifyDrawingAtProvider</tabstop>
-  <tabstop>mSimplifyMaximumScaleComboBox</tabstop>
-  <tabstop>mForceRasterCheckBox</tabstop>
-  <tabstop>mRefreshLayerCheckBox</tabstop>
-  <tabstop>mRefreshLayerIntervalSpinBox</tabstop>
-  <tabstop>mDisplayExpressionWidget</tabstop>
-  <tabstop>scrollArea_6</tabstop>
-  <tabstop>mJoinTreeWidget</tabstop>
-  <tabstop>mLayersDependenciesTreeView</tabstop>
-  <tabstop>mButtonRemoveJoin</tabstop>
-  <tabstop>scrollArea_7</tabstop>
-  <tabstop>mButtonAddJoin</tabstop>
-  <tabstop>mInsertExpressionButton</tabstop>
-  <tabstop>mButtonEditJoin</tabstop>
-  <tabstop>mMapTipExpressionFieldWidget</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
