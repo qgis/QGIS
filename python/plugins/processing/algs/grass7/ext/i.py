@@ -51,14 +51,14 @@ def orderedInput(alg, parameters, context, src, tgt, numSeq=None):
     # Handle specific range
     if numSeq is None:
         numSeq = list(range(1, len(rasters) + 1))
-        
+
     for idx, raster in enumerate(rasters):
         rasterName = '{}{}'.format(rootFilename, numSeq[idx])
         alg.loadRasterLayer(rasterName, raster, False, None, rasterName)
 
     # Don't forget to remove the old input parameter
     alg.removeParameter(src)
-    
+
 
 def regroupRasters(alg, parameters, context, src, group, subgroup=None, extFile=None):
     """
@@ -114,10 +114,9 @@ def regroupRasters(alg, parameters, context, src, group, subgroup=None, extFile=
     #                                     'subgroup', new_parameters[subgroup.name()],
     #                                     extFile[ext], shortFileName)
     #             copyFile(alg, extFileName, destPath)
-    
 
     alg.removeParameter(src)
-    
+
     return groupName, subgroupName
 
 

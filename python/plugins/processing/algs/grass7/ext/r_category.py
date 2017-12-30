@@ -28,6 +28,7 @@ __revision__ = '$Format:%H$'
 from processing.tools.system import getTempFilename
 from processing.algs.grass7.Grass7Utils import Grass7Utils
 
+
 def checkParameterValuesBeforeExecuting(alg, parameters, context):
     """ Verify if we have the right parameters """
     rules = alg.parameterAsString(parameters, 'rules', context)
@@ -68,7 +69,7 @@ def processCommand(alg, parameters, context):
         parameters['rules'] = tempRulesName
 
     alg.processCommand(parameters, context, True)
-    
+
 
 def processOutputs(alg, parameters, context):
     # Output results ('map' layer)

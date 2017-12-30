@@ -25,6 +25,7 @@ __copyright__ = '(C) 2016, Médéric Ribreux'
 
 __revision__ = '$Format:%H$'
 
+
 def processCommand(alg, parameters, context):
     # Remove input
     alg.removeParameter('input')

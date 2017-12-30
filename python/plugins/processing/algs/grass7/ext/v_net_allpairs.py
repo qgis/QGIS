@@ -32,6 +32,7 @@ from .v_net import incorporatePoints, variableOutput
 def processCommand(alg, parameters, context):
     incorporatePoints(alg, parameters, context)
 
+
 def processOutputs(alg, parameters, context):
     outputParameter = {'output': ['output', 'line', 1, True]}
     variableOutput(alg, outputParameter, parameters, context)

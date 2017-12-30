@@ -28,7 +28,6 @@ __revision__ = '$Format:%H$'
 from .r_li import checkMovingWindow, configFile, moveOutputTxtFile
 
 
-
 def checkParameterValuesBeforeExecuting(alg, parameters, context):
     return checkMovingWindow(alg, parameters, context, True)
 

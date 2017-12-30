@@ -34,4 +34,3 @@ def checkParameterValuesBeforeExecuting(alg, parameters, context):
 
 def processCommand(alg, parameters, context):
     configFile(alg, parameters, context)
-

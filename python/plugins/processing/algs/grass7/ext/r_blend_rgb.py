@@ -29,18 +29,21 @@ __revision__ = '$Format:%H$'
 import os
 from processing.algs.grass7.Grass7Utils import Grass7Utils
 
+
 def processInputs(alg, parameters, context):
     if 'first' and 'second' in alg.exportedLayers:
         return
-    
+
     # Use v.in.ogr
     for name in ['first', 'second']:
         alg.loadRasterLayerFromParameter(name, parameters, context, False, None)
     alg.postInputs()
 
+
 def processCommand(alg, parameters, context):
     # We need to remove all outputs
     alg.processCommand(parameters, context, True)
+
 
 def processOutputs(alg, parameters, context):
     createOpt = alg.parameterAsString(parameters, alg.GRASS_RASTER_FORMAT_OPT, context)
@@ -54,6 +57,3 @@ def processOutputs(alg, parameters, context):
         outFormat = Grass7Utils.getRasterFormatFromFilename(fileName)
         alg.exportRasterLayer('blended.{}'.format(color[0]),
                               fileName, True, outFormat, createOpt, metaOpt)
-                              
-
-                              

@@ -36,7 +36,6 @@ def processCommand(alg, parameters, context):
     signatureFile = alg.parameterAsString(parameters, 'signaturefile', context)
     shortSigFile = importSigFile(alg, group, subgroup, signatureFile)
     parameters['signaturefile'] = shortSigFile
-    
+
     # Handle other parameters
     alg.processCommand(parameters, context)
-    

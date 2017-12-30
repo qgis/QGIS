@@ -415,7 +415,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                 continue
             elif isinstance(parameters[paramName], str) and len(parameters[paramName]) == 0:
                 continue
-            
+
             # Raster inputs needs to be imported into temp GRASS DB
             if isinstance(param, QgsProcessingParameterRasterLayer):
                 if paramName not in self.exportedLayers:
@@ -424,11 +424,13 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
             # Vector inputs needs to be imported into temp GRASS DB
             elif isinstance(param, QgsProcessingParameterVectorLayer):
                 if paramName not in self.exportedLayers:
-                    self.loadVectorLayerFromParameter(
-                        paramName, parameters, context)
-            # TODO: find the best replacement for ParameterTable
-            #if isinstance(param, ParameterTable):
-            #    pass
+                    # Attribute tables are also vector inputs
+                    if QgsProcessing.TypeFile in param.dataTypes():
+                        self.loadAttributeTableFromParameter(
+                            paramName, parameters, context)
+                    else:
+                        self.loadVectorLayerFromParameter(
+                            paramName, parameters, context)
             # For multiple inputs, process each layer
             elif isinstance(param, QgsProcessingParameterMultipleLayers):
                 layers = self.parameterAsLayerList(parameters, paramName, context)
@@ -667,7 +669,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
             'band={} '.format(band) if band else '',
             destName)
         self.commands.append(command)
-        
+
     def exportRasterLayerFromParameter(self, name, parameters, context, colorTable=True):
         """
         Creates a dedicated command to export a raster from
@@ -772,7 +774,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                 Grass7Utils.GRASS_USE_VEXTERNAL)
         self.inputLayers.append(layer)
         self.setSessionProjectionFromLayer(layer)
-        destFilename = 'a' + os.path.basename(getTempFilename())
+        destFilename = 'vector_{}'.format(os.path.basename(getTempFilename()))
         self.exportedLayers[name] = destFilename
         command = '{0}{1}{2} input="{3}" output="{4}" --overwrite -o'.format(
             'v.external' if external else 'v.in.ogr',
@@ -823,6 +825,49 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                     grassName,
                     fileName,
                     'format=ESRI_Shapefile --overwrite'
+                )
+            )
+
+    def loadAttributeTableFromParameter(self, name, parameters, context):
+        """
+        Creates a dedicated command to load an attribute table
+        into the temporary GRASS DB.
+        :param name: name of the parameter
+        :param parameters: Parameters of the algorithm.
+        :param context: Processing context
+        """
+        table = self.parameterAsVectorLayer(parameters, name, context)
+        self.loadAttributeTable(name, table)
+
+    def loadAttributeTable(self, name, layer, destName=None):
+        """
+        Creates a dedicated command to load an attribute table
+        into the temporary GRASS DB.
+        :param name: name of the input parameter.
+        :param layer: a layer object to import from.
+        :param destName: force the name for the table into GRASS DB.
+        """
+        self.inputLayers.append(layer)
+        if not destName:
+            destName = 'table_{}'.format(os.path.basename(getTempFilename()))
+        self.exportedLayers[name] = destName
+        command = 'db.in.ogr --overwrite input="{0}" output="{1}"'.format(
+            os.path.normpath(layer.source()), destName)
+        self.commands.append(command)
+
+    def exportAttributeTable(self, grassName, fileName, outFormat='CSV', layer=1):
+        """
+        Creates a dedicated command to export an attribute
+        table from the temporary GRASS DB into a file via ogr.
+        :param grassName: name of the parameter.
+        :param fileName: file path of raster layer.
+        :param outFormat: file format for export.
+        :param layer: In GRASS a vector can have multiple layers.
+        """
+        for cmd in [self.commands, self.outputCommands]:
+            cmd.append(
+                'db.out.ogr input="{0}" output="{1}" layer={2} format={3} --overwrite'.format(
+                    grassName, fileName, layer, outFormat
                 )
             )
 

@@ -28,6 +28,7 @@ __revision__ = '$Format:%H$'
 from qgis.core import QgsProcessingParameterString
 from processing.algs.grass7.Grass7Utils import Grass7Utils
 
+
 def processCommand(alg, parameters, context):
     # We had a new "output" parameter
     out = 'output{}'.format(alg.uniqueSuffix)

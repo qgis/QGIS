@@ -28,6 +28,7 @@ __revision__ = '$Format:%H$'
 import os
 from processing.algs.grass7.Grass7Utils import Grass7Utils
 
+
 def checkParameterValuesBeforeExecuting(alg, parameters, context):
     """ Verify if we have the right parameters """
     txtRules = alg.parameterAsString(parameters, 'rules_txt', context)
@@ -61,16 +62,16 @@ def processCommand(alg, parameters, context):
     if txtRules:
         # Creates a temporary txt file
         tempRulesName = getTempFilename()
-        
+
         # Inject rules into temporary txt file
         with open(tempRulesName, "w") as tempRules:
             tempRules.write(txtRules)
         alg.removeParameter('txtrules')
         parameters['rules'] = tempRulesName
-        
+
     alg.processCommand(parameters, context, True)
-    
-    
+
+
 def processOutputs(alg, parameters, context):
     createOpt = alg.parameterAsString(parameters, alg.GRASS_RASTER_FORMAT_OPT, context)
     metaOpt = alg.parameterAsString(parameters, alg.GRASS_RASTER_FORMAT_META, context)
@@ -84,4 +85,3 @@ def processOutputs(alg, parameters, context):
         outFormat = Grass7Utils.getRasterFormatFromFilename(fileName)
         alg.exportRasterLayer(alg.exportedLayers[rasterName], fileName, True,
                               outFormat, createOpt, metaOpt)
-

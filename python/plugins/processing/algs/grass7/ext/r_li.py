@@ -130,6 +130,7 @@ def configFile(alg, parameters, context, outputTxt=False):
     # Remove Config file:
     removeConfigFile(alg, parameters, context)
 
+
 def moveOutputTxtFile(alg, parameters, context):
     # Find output file name:
     txtPath = alg.parameterAsString(parameters, 'output_txt', context)

@@ -32,7 +32,7 @@ import os
 def checkParameterValuesBeforeExecuting(alg, parameters, context):
     """ Verify if we have the right parameters """
     if (alg.parameterAsString(parameters, 'input_txt', context)
-        and alg.parameterAsString(parameters, 'input', context)):
+            and alg.parameterAsString(parameters, 'input', context)):
         return alg.tr("You need to set either an input ASCII file or inline data!")
 
     return None
@@ -44,13 +44,13 @@ def processCommand(alg, parameters, context):
     if txtRules:
         # Creates a temporary txt file
         tempRulesName = getTempFilename()
-        
+
         # Inject rules into temporary txt file
         with open(tempRulesName, "w") as tempRules:
             tempRules.write(txtRules)
         alg.removeParameter('input_txt')
         parameters['input'] = tempRulesName
-        
+
     alg.processCommand(parameters, context, True)
 
 

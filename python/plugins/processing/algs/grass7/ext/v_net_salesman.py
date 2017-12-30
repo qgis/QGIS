@@ -28,6 +28,7 @@ __revision__ = '$Format:%H$'
 from .v_net import incorporatePoints, variableOutput
 from qgis.core import QgsProcessingParameterDefinition
 
+
 def processCommand(alg, parameters, context):
     incorporatePoints(alg, parameters, context)
 

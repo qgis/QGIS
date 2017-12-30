@@ -28,6 +28,7 @@ __revision__ = '$Format:%H$'
 import os
 from .i import regroupRasters, exportSigFile
 
+
 def processCommand(alg, parameters, context):
     # We need to extract the basename of the signature file
     signatureFile = alg.parameterAsString(parameters, 'signaturefile', context)
@@ -37,10 +38,9 @@ def processCommand(alg, parameters, context):
     # Regroup rasters
     group, subgroup = regroupRasters(alg, parameters, context, 'input', 'group', 'subgroup')
     alg.processCommand(parameters, context)
-    
+
     # Re-add signature files
     parameters['signaturefile'] = signatureFile
 
     # Export signature file
     exportSigFile(alg, group, subgroup, signatureFile)
-

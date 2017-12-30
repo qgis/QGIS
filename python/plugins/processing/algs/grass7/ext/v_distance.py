@@ -27,6 +27,7 @@ __revision__ = '$Format:%H$'
 
 from qgis.core import QgsProcessingParameterDefinition
 
+
 def checkParameterValuesBeforeExecuting(alg, parameters, context):
     """ Verify if we have the right parameters """
     # Verifiy that we have the good number of columns

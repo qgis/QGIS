@@ -26,6 +26,7 @@ __copyright__ = '(C) 2017, Médéric Ribreux'
 __revision__ = '$Format:%H$'
 import os
 
+
 def checkParameterValuesBeforeExecuting(alg, parameters, context):
     """ Verify if we have the right parameters """
     start = alg.parameterAsDouble(parameters, 'start', context)
@@ -37,6 +38,7 @@ def checkParameterValuesBeforeExecuting(alg, parameters, context):
     if step == 0.0:
         return alg.tr("The step must be greater than zero!")
     return None
+
 
 def processOutputs(alg, parameters, context):
     # There will be as many outputs as the difference between start and end divided by steps

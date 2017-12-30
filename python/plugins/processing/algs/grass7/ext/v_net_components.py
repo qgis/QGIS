@@ -28,6 +28,7 @@ __revision__ = '$Format:%H$'
 from .v_net import incorporatePoints, variableOutput
 from qgis.core import QgsProcessingParameterDefinition
 
+
 def processCommand(alg, parameters, context):
     # We need to disable only output_point parameter
     outPoint = alg.parameterDefinition('output_point')
@@ -40,4 +41,3 @@ def processOutputs(alg, parameters, context):
     outputParameter = {'output': ['output', 'line', 1, True],
                        'output_point': ['output', 'point', 2, True]}
     variableOutput(alg, outputParameter, parameters, context)
-

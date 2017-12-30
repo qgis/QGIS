@@ -53,12 +53,13 @@ def processInputs(alg, parameters, context):
     alg.removeParameter('maps')
     alg.postInputs()
 
+
 def processCommand(alg, parameters, context):
     alg.processCommand(parameters, context, True)
-    
+
+
 def processOutputs(alg, parameters, context):
     # We need to export every raster from the GRASSDB
     alg.exportRasterLayersIntoDirectory('output_dir',
                                         parameters, context,
                                         wholeDB=True)
-    

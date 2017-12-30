@@ -28,6 +28,7 @@ __revision__ = '$Format:%H$'
 import os
 from .i import regroupRasters, verifyRasterNum, exportSigFile
 
+
 def checkParameterValuesBeforeExecuting(alg, parameters, context):
     return verifyRasterNum(alg, parameters, context, 'input', 2)
 
@@ -41,10 +42,9 @@ def processCommand(alg, parameters, context):
     # Regroup rasters
     group, subgroup = regroupRasters(alg, parameters, context, 'input', 'group', 'subgroup')
     alg.processCommand(parameters, context)
-    
+
     # Re-add signature files
     parameters['signaturefile'] = signatureFile
 
     # Export signature file
     exportSigFile(alg, group, subgroup, signatureFile)
-

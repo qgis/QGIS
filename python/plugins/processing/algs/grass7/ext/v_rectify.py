@@ -28,6 +28,7 @@ __revision__ = '$Format:%H$'
 import os
 from processing.algs.grass7.Grass7Utils import Grass7Utils
 
+
 def checkParameterValuesBeforeExecuting(alg, parameters, context):
     """ Verify if we have the right parameters """
     if (alg.parameterAsString(parameters, 'inline_points', context)
@@ -43,7 +44,7 @@ def processCommand(alg, parameters, context):
     if inlinePoints:
         # Creates a temporary txt file
         pointsName = getTempFilename()
-        
+
         # Inject rules into temporary txt file
         with open(pointsName, "w") as tempPoints:
             tempPoints.write(inlinePoints)
@@ -51,4 +52,3 @@ def processCommand(alg, parameters, context):
         parameters['points'] = tempPoints
 
     alg.processCommand(parameters, context, True)
-    

@@ -28,6 +28,7 @@ __revision__ = '$Format:%H$'
 import os
 from processing.algs.grass7.Grass7Utils import Grass7Utils
 
+
 def checkParameterValuesBeforeExecuting(alg, parameters, context):
     """ Verify if we have the right parameters """
     datapos = alg.parameterAsDouble(parameters, 'datapos', context)
@@ -63,7 +64,7 @@ def processOutputs(alg, parameters, context):
             for line in f:
                 if '|' in line:
                     outs.append(line.split('|')[0])
-                    
+
     createOpt = alg.parameterAsString(parameters, alg.GRASS_RASTER_FORMAT_OPT, context)
     metaOpt = alg.parameterAsString(parameters, alg.GRASS_RASTER_FORMAT_META, context)
 
@@ -73,4 +74,3 @@ def processOutputs(alg, parameters, context):
         outFormat = Grass7Utils.getRasterFormatFromFilename(fileName)
         alg.exportRasterLayer(out, fileName, True,
                               outFormat, createOpt, metaOpt)
-

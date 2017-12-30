@@ -33,6 +33,7 @@ def processInputs(alg, parameters, context):
     alg.loadRasterLayerFromParameter('color', parameters, context,
                                      False, None)
 
+
 def processOutputs(alg, parameters, context):
     # Keep color table
     alg.exportRasterLayerFromParameter('output', parameters, context, True)

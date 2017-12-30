@@ -58,4 +58,3 @@ def processOutputs(alg, parameters, context):
         outFormat = Grass7Utils.getRasterFormatFromFilename(fileName)
         alg.exportRasterLayer(output, fileName, True,
                               outFormat, createOpt, metaOpt)
-

@@ -30,6 +30,7 @@ from processing.tools.system import getTempFilename
 from processing.algs.grass7.Grass7Utils import Grass7Utils
 from qgis.core import QgsProcessingParameterString
 
+
 def processCommand(alg, parameters, context):
     # Temporary remove outputs and add a virtual output parameter
     outputName = 'output_{}'.format(os.path.basename(getTempFilename()))
@@ -48,5 +49,3 @@ def processOutputs(alg, parameters, context):
         grassName = '{}_{}'.format(outputName, channel)
         outFormat = Grass7Utils.getRasterFormatFromFilename(fileName)
         alg.exportRasterLayer(grassName, fileName, True, outFormat, createOpt, metaOpt)
-
-        

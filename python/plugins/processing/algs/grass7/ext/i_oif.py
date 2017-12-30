@@ -30,4 +30,3 @@ from .i import verifyRasterNum
 
 def checkParameterValuesBeforeExecuting(alg, parameters, context):
     return verifyRasterNum(alg, parameters, context, 'input', 4)
-
