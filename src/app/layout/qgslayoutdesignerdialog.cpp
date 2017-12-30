@@ -2631,11 +2631,11 @@ void QgsLayoutDesignerDialog::exportReportToRaster()
 
   QString error;
   std::unique_ptr< QgsFeedback > feedback = qgis::make_unique< QgsFeedback >();
-  std::unique_ptr< QProgressDialog > progressDialog = qgis::make_unique< QProgressDialog >( tr( "Rendering report..." ), tr( "Abort" ), 0, 100, this );
+  std::unique_ptr< QProgressDialog > progressDialog = qgis::make_unique< QProgressDialog >( tr( "Rendering report..." ), tr( "Abort" ), 0, 0, this );
   progressDialog->setWindowTitle( tr( "Exporting Report" ) );
-  connect( feedback.get(), &QgsFeedback::progressChanged, this, [ & ]( double progress )
+  connect( feedback.get(), &QgsFeedback::progressChanged, this, [ & ]( double )
   {
-    progressDialog->setValue( progress );
+    //progressDialog->setValue( progress );
     progressDialog->setLabelText( feedback->property( "progress" ).toString() ) ;
 
 #ifdef Q_OS_LINUX
@@ -2746,11 +2746,11 @@ void QgsLayoutDesignerDialog::exportReportToSvg()
 
   QString error;
   std::unique_ptr< QgsFeedback > feedback = qgis::make_unique< QgsFeedback >();
-  std::unique_ptr< QProgressDialog > progressDialog = qgis::make_unique< QProgressDialog >( tr( "Rendering maps..." ), tr( "Abort" ), 0, 100, this );
+  std::unique_ptr< QProgressDialog > progressDialog = qgis::make_unique< QProgressDialog >( tr( "Rendering maps..." ), tr( "Abort" ), 0, 0, this );
   progressDialog->setWindowTitle( tr( "Exporting Report" ) );
-  connect( feedback.get(), &QgsFeedback::progressChanged, this, [ & ]( double progress )
+  connect( feedback.get(), &QgsFeedback::progressChanged, this, [ & ]( double )
   {
-    progressDialog->setValue( progress );
+    //progressDialog->setValue( progress );
     progressDialog->setLabelText( feedback->property( "progress" ).toString() ) ;
 
 #ifdef Q_OS_LINUX
@@ -2880,11 +2880,11 @@ void QgsLayoutDesignerDialog::exportReportToPdf()
 
   QString error;
   std::unique_ptr< QgsFeedback > feedback = qgis::make_unique< QgsFeedback >();
-  std::unique_ptr< QProgressDialog > progressDialog = qgis::make_unique< QProgressDialog >( tr( "Rendering maps..." ), tr( "Abort" ), 0, 100, this );
+  std::unique_ptr< QProgressDialog > progressDialog = qgis::make_unique< QProgressDialog >( tr( "Rendering maps..." ), tr( "Abort" ), 0, 0, this );
   progressDialog->setWindowTitle( tr( "Exporting Report" ) );
-  connect( feedback.get(), &QgsFeedback::progressChanged, this, [ & ]( double progress )
+  connect( feedback.get(), &QgsFeedback::progressChanged, this, [ & ]( double )
   {
-    progressDialog->setValue( progress );
+    //progressDialog->setValue( progress );
     progressDialog->setLabelText( feedback->property( "progress" ).toString() ) ;
 
 #ifdef Q_OS_LINUX

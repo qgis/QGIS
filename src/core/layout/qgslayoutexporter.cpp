@@ -410,7 +410,10 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToImage( QgsAbstractLay
   {
     if ( feedback )
     {
-      feedback->setProperty( "progress", QObject::tr( "Exporting %1 of %2" ).arg( i + 1 ).arg( total ) );
+      if ( total > 0 )
+        feedback->setProperty( "progress", QObject::tr( "Exporting %1 of %2" ).arg( i + 1 ).arg( total ) );
+      else
+        feedback->setProperty( "progress", QObject::tr( "Exporting section %1" ).arg( i + 1 ).arg( total ) );
       feedback->setProgress( step * i );
     }
     if ( feedback && feedback->isCanceled() )
@@ -505,7 +508,10 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( QgsAbstractLayou
   {
     if ( feedback )
     {
-      feedback->setProperty( "progress", QObject::tr( "Exporting %1 of %2" ).arg( i + 1 ).arg( total ) );
+      if ( total > 0 )
+        feedback->setProperty( "progress", QObject::tr( "Exporting %1 of %2" ).arg( i + 1 ).arg( total ) );
+      else
+        feedback->setProperty( "progress", QObject::tr( "Exporting section %1" ).arg( i + 1 ).arg( total ) );
       feedback->setProgress( step * i );
     }
     if ( feedback && feedback->isCanceled() )
@@ -579,7 +585,10 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdfs( QgsAbstractLayo
   {
     if ( feedback )
     {
-      feedback->setProperty( "progress", QObject::tr( "Exporting %1 of %2" ).arg( i + 1 ).arg( total ) );
+      if ( total > 0 )
+        feedback->setProperty( "progress", QObject::tr( "Exporting %1 of %2" ).arg( i + 1 ).arg( total ) );
+      else
+        feedback->setProperty( "progress", QObject::tr( "Exporting section %1" ).arg( i + 1 ).arg( total ) );
       feedback->setProgress( step * i );
     }
     if ( feedback && feedback->isCanceled() )
@@ -792,7 +801,11 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToSvg( QgsAbstractLayou
   {
     if ( feedback )
     {
-      feedback->setProperty( "progress", QObject::tr( "Exporting %1 of %2" ).arg( i + 1 ).arg( total ) );
+      if ( total > 0 )
+        feedback->setProperty( "progress", QObject::tr( "Exporting %1 of %2" ).arg( i + 1 ).arg( total ) );
+      else
+        feedback->setProperty( "progress", QObject::tr( "Exporting section %1" ).arg( i + 1 ).arg( total ) );
+
       feedback->setProgress( step * i );
     }
     if ( feedback && feedback->isCanceled() )
