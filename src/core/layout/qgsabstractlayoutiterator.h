@@ -21,6 +21,12 @@
 
 class QgsLayout;
 
+/**
+ * \ingroup core
+ * \class QgsAbstractLayoutIterator
+ * \brief An abstract base class for QgsLayout based classes which can be exported by QgsLayoutExporter.
+ * \since QGIS 3.0
+ */
 class CORE_EXPORT QgsAbstractLayoutIterator
 {
 

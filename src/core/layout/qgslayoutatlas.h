@@ -258,6 +258,7 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutItera
      * \see next()
      * \see last()
      * \see first()
+     * \see seekTo()
      */
     bool previous();
 
@@ -266,6 +267,7 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutItera
      * \see next()
      * \see previous()
      * \see first()
+     * \see seekTo()
      */
     bool last();
 
@@ -274,9 +276,17 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutItera
      * \see next()
      * \see previous()
      * \see last()
+     * \see seekTo()
      */
     bool first();
 
+    /**
+     * Seeks to the specified \a feature number.
+     * \see first()
+     * \see previous()
+     * \see next()
+     * \see last()
+     */
     bool seekTo( int feature );
 
     /**

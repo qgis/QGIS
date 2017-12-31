@@ -292,6 +292,8 @@ Iterates to the previous feature, returning false if no previous feature exists.
 .. seealso:: :py:func:`last()`
 
 .. seealso:: :py:func:`first()`
+
+.. seealso:: :py:func:`seekTo()`
 %End
 
     bool last();
@@ -303,6 +305,8 @@ Seeks to the last feature, returning false if no feature was found.
 .. seealso:: :py:func:`previous()`
 
 .. seealso:: :py:func:`first()`
+
+.. seealso:: :py:func:`seekTo()`
 %End
 
     bool first();
@@ -314,9 +318,22 @@ Seeks to the first feature, returning false if no feature was found.
 .. seealso:: :py:func:`previous()`
 
 .. seealso:: :py:func:`last()`
+
+.. seealso:: :py:func:`seekTo()`
 %End
 
     bool seekTo( int feature );
+%Docstring
+Seeks to the specified ``feature`` number.
+
+.. seealso:: :py:func:`first()`
+
+.. seealso:: :py:func:`previous()`
+
+.. seealso:: :py:func:`next()`
+
+.. seealso:: :py:func:`last()`
+%End
 
     void refreshCurrentFeature();
 %Docstring

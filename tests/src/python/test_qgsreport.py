@@ -62,7 +62,7 @@ class TestQgsReport(unittest.TestCase):
         self.assertIsNone(r.childSection(1))
         self.assertIsNone(r.childSection(0))
 
-        # try deleting non-existant childSections
+        # try deleting non-existent childSections
         r.removeChildAt(-1)
         r.removeChildAt(0)
         r.removeChildAt(100)
