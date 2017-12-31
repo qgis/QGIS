@@ -57,6 +57,8 @@ class QgsReportSectionModel : public QAbstractItemModel
      */
     QgsAbstractReportSection *sectionForIndex( const QModelIndex &index ) const;
 
+    QModelIndex indexForSection( QgsAbstractReportSection *section ) const;
+
   private:
     QgsReport *mReport = nullptr;
 };

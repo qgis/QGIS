@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsreportsectionmodel.h"
+#include "functional"
 
 #ifdef ENABLE_MODELTEST
 #include "modeltest.h"
@@ -185,6 +186,29 @@ QgsAbstractReportSection *QgsReportSectionModel::sectionForIndex( const QModelIn
     return mReport; // IMPORTANT - QgsReport uses multiple inheritance, so cannot static cast the void*!
 
   return static_cast<QgsAbstractReportSection *>( index.internalPointer() );
+}
+
+QModelIndex QgsReportSectionModel::indexForSection( QgsAbstractReportSection *section ) const
+{
+  if ( !section )
+    return QModelIndex();
+
+  std::function< QModelIndex( const QModelIndex &parent, QgsAbstractReportSection *section ) > findIndex = [&]( const QModelIndex & parent, QgsAbstractReportSection * section )->QModelIndex
+  {
+    for ( int row = 0; row < rowCount( parent ); ++row )
+    {
+      QModelIndex current = index( row, 0, parent );
+      if ( sectionForIndex( current ) == section )
+        return current;
+
+      QModelIndex checkChildren = findIndex( current, section );
+      if ( checkChildren.isValid() )
+        return checkChildren;
+    }
+    return QModelIndex();
+  };
+
+  return findIndex( QModelIndex(), section );
 }
 
 bool QgsReportSectionModel::removeRows( int row, int count, const QModelIndex &parent )

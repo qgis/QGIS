@@ -79,13 +79,19 @@ void QgsReportOrganizerWidget::setMessageBar( QgsMessageBar *bar )
 void QgsReportOrganizerWidget::addLayoutSection()
 {
   std::unique_ptr< QgsReportSectionLayout > section = qgis::make_unique< QgsReportSectionLayout >();
+  QgsAbstractReportSection *newSection = section.get();
   mSectionModel->addSection( mViewSections->currentIndex(), std::move( section ) );
+  QModelIndex newIndex = mSectionModel->indexForSection( newSection );
+  mViewSections->setCurrentIndex( newIndex );
 }
 
 void QgsReportOrganizerWidget::addFieldGroupSection()
 {
   std::unique_ptr< QgsReportSectionFieldGroup > section = qgis::make_unique< QgsReportSectionFieldGroup >();
+  QgsAbstractReportSection *newSection = section.get();
   mSectionModel->addSection( mViewSections->currentIndex(), std::move( section ) );
+  QModelIndex newIndex = mSectionModel->indexForSection( newSection );
+  mViewSections->setCurrentIndex( newIndex );
 }
 
 void QgsReportOrganizerWidget::removeSection()
