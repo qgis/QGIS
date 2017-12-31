@@ -42,6 +42,7 @@ class QgsReportSectionModel : public QAbstractItemModel
     QVariant headerData( int section, Qt::Orientation orientation,
                          int role = Qt::DisplayRole ) const override;
     int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
+    bool hasChildren( const QModelIndex &parent = QModelIndex() ) const override;
     int columnCount( const QModelIndex & = QModelIndex() ) const override;
 
     QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;

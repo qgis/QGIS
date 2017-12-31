@@ -96,16 +96,20 @@ QVariant QgsReportSectionModel::headerData( int section, Qt::Orientation orienta
 
 int QgsReportSectionModel::rowCount( const QModelIndex &parent ) const
 {
-  QgsAbstractReportSection *parentSection = nullptr;
-  if ( parent.column() > 0 )
-    return 0;
-
   if ( !parent.isValid() )
-    parentSection = mReport;
-  else
-    parentSection = sectionForIndex( parent );
+    return 1; // report
 
-  return parentSection->childCount();
+  QgsAbstractReportSection *parentSection = sectionForIndex( parent );
+  return parentSection ? parentSection->childCount() : 0;
+}
+
+bool QgsReportSectionModel::hasChildren( const QModelIndex &parent ) const
+{
+  if ( !parent.isValid() )
+    return true; // root item: its children are top level items
+
+  QgsAbstractReportSection *parentSection = sectionForIndex( parent );
+  return parentSection && parentSection->childCount() > 0;
 }
 
 int QgsReportSectionModel::columnCount( const QModelIndex & ) const
@@ -118,32 +122,33 @@ QModelIndex QgsReportSectionModel::index( int row, int column, const QModelIndex
   if ( !hasIndex( row, column, parent ) )
     return QModelIndex();
 
-  QgsAbstractReportSection *parentSection = nullptr;
-
-  if ( !parent.isValid() )
-    parentSection = mReport;
+  QgsAbstractReportSection *parentSection = sectionForIndex( parent );
+  if ( parentSection )
+  {
+    QgsAbstractReportSection *item = parentSection->childSections().value( row, nullptr );
+    return item ? createIndex( row, column, item ) : QModelIndex();
+  }
   else
-    parentSection = sectionForIndex( parent );
-
-  QgsAbstractReportSection *childSection = parentSection->childSection( row );
-  if ( childSection )
-    return createIndex( row, column, childSection );
-  else
-    return QModelIndex();
+  {
+    if ( row == 0 )
+      return createIndex( row, column, nullptr );
+    else
+      return QModelIndex();
+  }
 }
 
 QModelIndex QgsReportSectionModel::parent( const QModelIndex &index ) const
 {
-  if ( !index.isValid() )
+  QgsAbstractReportSection *childSection = sectionForIndex( index );
+  if ( !childSection )
     return QModelIndex();
 
-  QgsAbstractReportSection *childSection = sectionForIndex( index );
   QgsAbstractReportSection *parentSection = childSection->parentSection();
 
-  if ( parentSection == mReport )
+  if ( !parentSection )
     return QModelIndex();
-
-  return createIndex( parentSection->row(), 0, parentSection );
+  else
+    return createIndex( parentSection->row(), 0, parentSection != mReport ? parentSection : nullptr );
 }
 
 bool QgsReportSectionModel::setData( const QModelIndex &index, const QVariant &value, int role )
@@ -173,6 +178,12 @@ bool QgsReportSectionModel::setData( const QModelIndex &index, const QVariant &v
 
 QgsAbstractReportSection *QgsReportSectionModel::sectionForIndex( const QModelIndex &index ) const
 {
+  if ( !index.isValid() )
+    return nullptr;
+
+  if ( !index.internalPointer() ) // top level item
+    return mReport; // IMPORTANT - QgsReport uses multiple inheritance, so cannot static cast the void*!
+
   return static_cast<QgsAbstractReportSection *>( index.internalPointer() );
 }
 
