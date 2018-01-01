@@ -41,7 +41,7 @@ QgsBookmarks::QgsBookmarks( QWidget *parent )
     : QgsDockWidget( parent )
     , mQgisModel( nullptr )
     , mProjectModel( nullptr )
-    , mModel( nullptr )
+    , mMergedModel( nullptr )
     , mProxyModel( nullptr )
 {
   setupUi( this );
@@ -109,15 +109,18 @@ QgsBookmarks::QgsBookmarks( QWidget *parent )
   mQgisModel->setHeaderData( 7, Qt::Horizontal, tr( "SRID" ) );
 
   mProjectModel = new QgsProjectBookmarksTableModel( this );
-  mModel = new QgsMergedBookmarksTableModel( *mQgisModel, *mProjectModel, lstBookmarks, this );
+  mMergedModel = new QgsMergedBookmarksTableModel( *mQgisModel, *mProjectModel, lstBookmarks, this );
 
-  mProxyModel = new QgsBookmarksProxyModel( this );
-  mProxyModel->setSourceModel( mModel );
+  mProxyModel = new QgsBookmarksProxyModel( );
+  mProxyModel->setSourceModel( mMergedModel );
+  mProxyModel->setSortCaseSensitivity( Qt::CaseInsensitive );
 
   lstBookmarks->setModel( mProxyModel );
   lstBookmarks->setItemDelegate( new QgsDoubleSpinBoxBookmarksDelegate( this ) );
+  lstBookmarks->setSortingEnabled( true );
+  lstBookmarks->sortByColumn( 1, Qt::AscendingOrder );
 
-  connect( mModel, SIGNAL( layoutChanged() ), mProxyModel, SLOT( _resetModel() ) );
+  connect( mMergedModel, SIGNAL( layoutChanged() ), mProxyModel, SLOT( _resetModel() ) );
 
   QSettings settings;
   lstBookmarks->header()->restoreState( settings.value( "Windows/Bookmarks/headerstate" ).toByteArray() );
@@ -130,6 +133,7 @@ QgsBookmarks::QgsBookmarks( QWidget *parent )
 QgsBookmarks::~QgsBookmarks()
 {
   delete mQgisModel;
+  delete mProxyModel;
   QSqlDatabase::removeDatabase( "bookmarks" );
   saveWindowLocation();
 }
@@ -149,7 +153,7 @@ void QgsBookmarks::saveWindowLocation()
 
 void QgsBookmarks::addClicked()
 {
-  Q_ASSERT( mModel );
+  Q_ASSERT( mMergedModel );
   Q_ASSERT( mQgisModel );
 
   QgsMapCanvas *canvas = QgisApp::instance()->mapCanvas();
@@ -182,7 +186,7 @@ void QgsBookmarks::addClicked()
   {
     mQgisModel->setSort( 0, Qt::AscendingOrder );
     mQgisModel->select();
-    QModelIndex newIdx = mProxyModel->mapFromSource( mModel->index( mQgisModel->rowCount() - 1, 1 ) );
+    QModelIndex newIdx = mProxyModel->mapFromSource( mMergedModel->index( mQgisModel->rowCount() - 1, 1 ) );
     // Edit new bookmark title
     lstBookmarks->scrollTo( newIdx );
     lstBookmarks->setCurrentIndex( newIdx );
@@ -219,7 +223,7 @@ void QgsBookmarks::deleteClicked()
   int i = 0;
   Q_FOREACH ( int row, rows )
   {
-    mModel->removeRow( row - i );
+    mMergedModel->removeRow( row - i );
     i++;
   }
 }
@@ -290,7 +294,7 @@ void QgsBookmarks::importFromXml()
   QDomElement docElem = doc.documentElement();
   QDomNodeList nodeList = docElem.elementsByTagName( "bookmark" );
 
-  Q_ASSERT( mModel );
+  Q_ASSERT( mMergedModel );
 
   QString queries;
 
@@ -359,8 +363,8 @@ void QgsBookmarks::exportToXml()
   QDomElement root = doc.createElement( "qgis_bookmarks" );
   doc.appendChild( root );
 
-  int rowCount = mModel->rowCount();
-  int colCount = mModel->columnCount() - 1;  // exclude virtual "In project" column
+  int rowCount = mMergedModel->rowCount();
+  int colCount = mMergedModel->columnCount() - 1;  // exclude virtual "In project" column
 
   QList<QString> headerList;
   headerList
@@ -379,7 +383,7 @@ void QgsBookmarks::exportToXml()
     root.appendChild( bookmark );
     for ( int j = 0; j < colCount; j++ )
     {
-      QModelIndex idx = mModel->index( i, j );
+      QModelIndex idx = mMergedModel->index( i, j );
       if ( idx.isValid() )
       {
         QString value = idx.data( Qt::DisplayRole ).toString();

@@ -158,7 +158,7 @@ class APP_EXPORT QgsBookmarks : public QgsDockWidget, private Ui::QgsBookmarksBa
   private:
     QSqlTableModel *mQgisModel;
     QgsProjectBookmarksTableModel *mProjectModel;
-    QgsMergedBookmarksTableModel *mModel;
+    QgsMergedBookmarksTableModel *mMergedModel;
     QgsBookmarksProxyModel *mProxyModel;
 
     void saveWindowLocation();
