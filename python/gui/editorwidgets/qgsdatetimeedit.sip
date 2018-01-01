@@ -67,9 +67,6 @@ Resets the widget to show no value (ie, an "unknown" state).
 %End
 
   protected:
-    virtual void resizeEvent( QResizeEvent *event );
-
-
     virtual void mousePressEvent( QMouseEvent *event );
 
 
