@@ -66,8 +66,6 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
     void setEmpty();
 
   protected:
-    void resizeEvent( QResizeEvent *event ) override;
-
     void mousePressEvent( QMouseEvent *event ) override;
 
   private slots:
@@ -76,15 +74,12 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
     void calendarSelectionChanged();
 
   private:
-    int spinButtonWidth() const;
-    int frameWidth() const;
-
     bool mAllowNull = true;
     bool mIsNull = true;
     bool mIsEmpty = false;
 
-    QToolButton *mClearButton = nullptr;
     QString mOriginalStyleSheet = QString();
+    QAction *mClearAction;
 
     /**
      * Set the lowest Date that can be displayed with the Qt::ISODate format

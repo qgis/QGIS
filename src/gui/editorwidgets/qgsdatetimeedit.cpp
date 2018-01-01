@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QAction>
 #include <QCalendarWidget>
 #include <QLineEdit>
 #include <QMouseEvent>
@@ -30,22 +31,16 @@
 QgsDateTimeEdit::QgsDateTimeEdit( QWidget *parent )
   : QDateTimeEdit( parent )
 {
-  mClearButton = new QToolButton( this );
-  mClearButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconClearText.svg" ) ) );
-  mClearButton->setCursor( Qt::ArrowCursor );
-  mClearButton->setStyleSheet( QStringLiteral( "position: absolute; border: none; padding: 0px;" ) );
-  mClearButton->hide();
-  connect( mClearButton, &QAbstractButton::clicked, this, &QgsDateTimeEdit::clear );
-
-  setStyleSheet( QStringLiteral( ".QWidget, QLineEdit, QToolButton { padding-right: %1px; }" ).arg( mClearButton->sizeHint().width() + spinButtonWidth() + frameWidth() + 1 ) );
-
-  QSize msz = minimumSizeHint();
-  setMinimumSize( std::max( msz.width(), mClearButton->sizeHint().height() + frameWidth() * 2 + 2 ),
-                  std::max( msz.height(), mClearButton->sizeHint().height() + frameWidth() * 2 + 2 ) );
+  QIcon clearIcon = QgsApplication::getThemeIcon( "/mIconClearText.svg" );
+  mClearAction = new QAction( clearIcon, tr( "clear" ), this );
+  mClearAction->setCheckable( false );
+  lineEdit()->addAction( mClearAction, QLineEdit::TrailingPosition );
+  mClearAction->setVisible( mAllowNull );
+  connect( mClearAction, &QAction::triggered, this, &QgsDateTimeEdit::clear );
 
   connect( this, &QDateTimeEdit::dateTimeChanged, this, &QgsDateTimeEdit::changed );
 
-  // set this by defaut to properly connect the calendar widget
+  // set this by default to properly connect the calendar widget
   setCalendarPopup( true );
   // when clearing the widget, date of the QDateTimeEdit will be set to minimum date
   // hence when the calendar popups, on selection changed if it set to the minimum date,
@@ -61,7 +56,7 @@ QgsDateTimeEdit::QgsDateTimeEdit( QWidget *parent )
 void QgsDateTimeEdit::setAllowNull( bool allowNull )
 {
   mAllowNull = allowNull;
-  mClearButton->setVisible( mAllowNull && ( !mIsNull || mIsEmpty ) );
+  mClearAction->setVisible( mAllowNull && ( !mIsNull || mIsEmpty ) );
 }
 
 
@@ -77,15 +72,14 @@ void QgsDateTimeEdit::clear()
 
 void QgsDateTimeEdit::setEmpty()
 {
-  mClearButton->setVisible( mAllowNull );
+  mClearAction->setVisible( mAllowNull );
   mIsEmpty = true;
 }
 
 void QgsDateTimeEdit::mousePressEvent( QMouseEvent *event )
 {
-  const QRect lerect = rect().adjusted( 0, 0, -spinButtonWidth(), 0 );
-  if ( mAllowNull && mIsNull && lerect.contains( event->pos() ) )
-    return;
+  // catch mouse press on the button when in non-calendar mode to modifiy the date
+  // so it leads to showing current date (don't bother about time)
 
   if ( mIsNull && !calendarPopup() )
   {
@@ -95,8 +89,28 @@ void QgsDateTimeEdit::mousePressEvent( QMouseEvent *event )
     const QRect buttonDownRect = style()->subControlRect( QStyle::CC_SpinBox, &opt, QStyle::SC_SpinBoxDown );
     if ( buttonUpRect.contains( event->pos() ) || buttonDownRect.contains( event->pos() ) )
     {
+      int before = 1;
+      if ( buttonUpRect.contains( event->pos() ) )
+      {
+        before = -1;
+      }
+
       blockSignals( true );
-      QDateTimeEdit::setDateTime( QDateTime::currentDateTime() );
+      switch ( currentSection() )
+      {
+        case QDateTimeEdit::DaySection:
+          QDateTimeEdit::setDateTime( QDateTime::currentDateTime().addDays( before ) );
+          break;
+        case QDateTimeEdit::MonthSection:
+          QDateTimeEdit::setDateTime( QDateTime::currentDateTime().addMonths( before ) );
+          break;
+        case QDateTimeEdit::YearSection:
+          QDateTimeEdit::setDateTime( QDateTime::currentDateTime().addYears( before ) );
+          break;
+        default:
+          QDateTimeEdit::setDateTime( QDateTime::currentDateTime() );
+          break;
+      }
       blockSignals( false );
     }
   }
@@ -124,25 +138,16 @@ void QgsDateTimeEdit::changed( const QDateTime &dateTime )
       lineEdit()->setStyleSheet( mOriginalStyleSheet );
     }
   }
-  mClearButton->setVisible( mAllowNull && !mIsNull );
+  mClearAction->setVisible( mAllowNull && !mIsNull );
 }
 
 void QgsDateTimeEdit::calendarSelectionChanged()
 {
+  // set calendar page to current date to avoid going to minimal date page when value is null
   if ( mAllowNull && calendarWidget() && calendarWidget()->selectedDate() == minimumDate() )
   {
     calendarWidget()->setCurrentPage( QDate::currentDate().year(), QDate::currentDate().month() );
   }
-}
-
-int QgsDateTimeEdit::spinButtonWidth() const
-{
-  return calendarPopup() ? 25 : 18;
-}
-
-int QgsDateTimeEdit::frameWidth() const
-{
-  return style()->pixelMetric( QStyle::PM_DefaultFrameWidth );
 }
 
 void QgsDateTimeEdit::setDateTime( const QDateTime &dateTime )
@@ -172,14 +177,4 @@ QDateTime QgsDateTimeEdit::dateTime() const
   {
     return QDateTimeEdit::dateTime();
   }
-}
-
-void QgsDateTimeEdit::resizeEvent( QResizeEvent *event )
-{
-  QDateTimeEdit::resizeEvent( event );
-
-  QSize sz = mClearButton->sizeHint();
-
-  mClearButton->move( rect().right() - frameWidth() - spinButtonWidth() - sz.width(),
-                      ( rect().bottom() + 1 - sz.height() ) / 2 );
 }
