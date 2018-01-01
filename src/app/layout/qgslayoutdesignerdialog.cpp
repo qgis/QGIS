@@ -1938,9 +1938,6 @@ void QgsLayoutDesignerDialog::atlasPreviewTriggered( bool checked )
     {
       QgisApp::instance()->mapCanvas()->stopRendering();
       atlas->first();
-#if 0 //TODO
-      emit atlasPreviewFeatureChanged();
-#endif
     }
   }
   else
@@ -1981,9 +1978,6 @@ void QgsLayoutDesignerDialog::atlasPageComboEditingFinished()
     QgisApp::instance()->mapCanvas()->stopRendering();
     loadAtlasPredefinedScalesFromProject();
     atlas->seekTo( page - 1 );
-#if 0 //TODO
-    emit atlasPreviewFeatureChanged();
-#endif
   }
 }
 
@@ -1996,12 +1990,7 @@ void QgsLayoutDesignerDialog::atlasNext()
   QgisApp::instance()->mapCanvas()->stopRendering();
 
   loadAtlasPredefinedScalesFromProject();
-  if ( printAtlas->next() )
-  {
-#if 0 //TODO
-    emit atlasPreviewFeatureChanged();
-#endif
-  }
+  printAtlas->next();
 }
 
 void QgsLayoutDesignerDialog::atlasPrevious()
@@ -2013,12 +2002,7 @@ void QgsLayoutDesignerDialog::atlasPrevious()
   QgisApp::instance()->mapCanvas()->stopRendering();
 
   loadAtlasPredefinedScalesFromProject();
-  if ( printAtlas->previous() )
-  {
-#if 0 //TODO
-    emit atlasPreviewFeatureChanged();
-#endif
-  }
+  printAtlas->previous();
 }
 
 void QgsLayoutDesignerDialog::atlasFirst()
@@ -2030,12 +2014,7 @@ void QgsLayoutDesignerDialog::atlasFirst()
   QgisApp::instance()->mapCanvas()->stopRendering();
 
   loadAtlasPredefinedScalesFromProject();
-  if ( printAtlas->first() )
-  {
-#if 0 //TODO
-    emit atlasPreviewFeatureChanged();
-#endif
-  }
+  printAtlas->first();
 }
 
 void QgsLayoutDesignerDialog::atlasLast()
@@ -2047,12 +2026,7 @@ void QgsLayoutDesignerDialog::atlasLast()
   QgisApp::instance()->mapCanvas()->stopRendering();
 
   loadAtlasPredefinedScalesFromProject();
-  if ( printAtlas->last() )
-  {
-#if 0 //TODO
-    emit atlasPreviewFeatureChanged();
-#endif
-  }
+  printAtlas->last();
 }
 
 void QgsLayoutDesignerDialog::printAtlas()
@@ -3478,6 +3452,8 @@ void QgsLayoutDesignerDialog::atlasFeatureChanged( const QgsFeature &feature )
   mapCanvas->expressionContextScope().addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_feature" ), QVariant::fromValue( feature ), true ) );
   mapCanvas->expressionContextScope().addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_featureid" ), feature.id(), true ) );
   mapCanvas->expressionContextScope().addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_geometry" ), QVariant::fromValue( feature.geometry() ), true ) );
+  mapCanvas->stopRendering();
+  mapCanvas->refreshAllLayers();
 }
 
 void QgsLayoutDesignerDialog::loadAtlasPredefinedScalesFromProject()

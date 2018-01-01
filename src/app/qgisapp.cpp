@@ -7487,9 +7487,6 @@ QgsLayoutDesignerDialog *QgisApp::openLayoutDesignerDialog( QgsMasterLayoutInter
 
   newDesigner->open();
   emit layoutDesignerOpened( newDesigner->iface() );
-#if 0 //TODO
-  connect( newDesigner, &QgsLayoutDesignerDialog::atlasPreviewFeatureChanged, this, &QgisApp::refreshMapCanvas );
-#endif
 
   return newDesigner;
 }
