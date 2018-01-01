@@ -3600,4 +3600,27 @@ QgsMessageBar *QgsLayoutDesignerDialog::messageBar()
   return mMessageBar;
 }
 
+void QgsLayoutDesignerDialog::setAtlasFeature( QgsMapLayer *layer, const QgsFeature &feat )
+{
+  QgsLayoutAtlas *layoutAtlas = atlas();
+  if ( !layoutAtlas || !layoutAtlas->enabled() || layoutAtlas->coverageLayer() != layer )
+  {
+    //either atlas isn't enabled, or layer doesn't match
+    return;
+  }
+
+  if ( !mActionAtlasPreview->isChecked() )
+  {
+    //update gui controls
+    whileBlocking( mActionAtlasPreview )->setChecked( true );
+    atlasPreviewTriggered( true );
+  }
+
+  //set current preview feature id
+  layoutAtlas->seekTo( feat );
+
+  //bring layout window to foreground
+  activate();
+}
+
 

@@ -81,6 +81,7 @@ class QgsPluginLayer;
 class QgsPluginLayer;
 class QgsPluginManager;
 class QgsPointXY;
+class QgsPrintLayout;
 class QgsProviderRegistry;
 class QgsPythonUtils;
 class QgsRasterLayer;
@@ -1780,9 +1781,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     void setupLayoutManagerConnections();
 
-    void setupAtlasMapLayerAction( QgsComposition *composition, bool enableAction );
+    void setupAtlasMapLayerAction( QgsPrintLayout *layout, bool enableAction );
 
-    void setCompositionAtlasFeature( QgsComposition *composition, QgsMapLayer *layer, const QgsFeature &feat );
+    void setLayoutAtlasFeature( QgsPrintLayout *layout, QgsMapLayer *layer, const QgsFeature &feat );
 
     void saveAsVectorFileGeneral( QgsVectorLayer *vlayer = nullptr, bool symbologyOption = true );
 
@@ -2187,7 +2188,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     QStackedWidget *mCentralContainer = nullptr;
 
-    QHash< QgsComposition *, QgsMapLayerAction * > mAtlasFeatureActions;
+    QHash< QgsPrintLayout *, QgsMapLayerAction * > mAtlasFeatureActions;
 
     int mProjOpen = 0;
 

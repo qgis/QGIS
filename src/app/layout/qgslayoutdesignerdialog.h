@@ -138,6 +138,11 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
      */
     QgsMessageBar *messageBar();
 
+    /**
+     * Sets the specified feature as the current atlas feature
+     */
+    void setAtlasFeature( QgsMapLayer *layer, const QgsFeature &feat );
+
   public slots:
 
     /**
