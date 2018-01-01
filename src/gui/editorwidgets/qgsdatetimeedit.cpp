@@ -17,9 +17,7 @@
 #include <QCalendarWidget>
 #include <QLineEdit>
 #include <QMouseEvent>
-#include <QSettings>
 #include <QStyle>
-#include <QToolButton>
 #include <QStyleOptionSpinBox>
 
 
