@@ -13,10 +13,12 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QCalendarWidget>
 #include <QLineEdit>
 #include <QMouseEvent>
 #include <QSettings>
 #include <QStyle>
+#include <QStyleOptionSpinBox>
 #include <QToolButton>
 
 #include "qgsdatetimeedit.h"
@@ -37,11 +39,6 @@ QgsDateTimeEdit::QgsDateTimeEdit( QWidget *parent )
   mClearButton->hide();
   connect( mClearButton, SIGNAL( clicked() ), this, SLOT( clear() ) );
 
-  mNullLabel = new QLineEdit( QSettings().value( "qgis/nullValue", "NULL" ).toString(), this );
-  mNullLabel->setReadOnly( true );
-  mNullLabel->setStyleSheet( "position: absolute; border: none; font-style: italic; color: grey;" );
-  mNullLabel->hide();
-
   setStyleSheet( QString( ".QWidget, QLineEdit, QToolButton { padding-right: %1px; }" ).arg( mClearButton->sizeHint().width() + spinButtonWidth() + frameWidth() + 1 ) );
 
   QSize msz = minimumSizeHint();
@@ -49,6 +46,13 @@ QgsDateTimeEdit::QgsDateTimeEdit( QWidget *parent )
                   qMax( msz.height(), mClearButton->sizeHint().height() + frameWidth() * 2 + 2 ) );
 
   connect( this, SIGNAL( dateTimeChanged( QDateTime ) ), this, SLOT( changed( QDateTime ) ) );
+
+  // set this by defaut to properly connect the calendar widget
+  setCalendarPopup( true );
+  // when clearing the widget, date of the QDateTimeEdit will be set to minimum date
+  // hence when the calendar popups, on selection changed if it set to the minimum date,
+  // the page of the current date will be shown
+  connect( calendarWidget(), SIGNAL( selectionChanged() ), this, SLOT( calendarSelectionChanged() ) );
 
   // init with current time so mIsNull is properly initialized
   QDateTimeEdit::setDateTime( QDateTime::currentDateTime() );
@@ -58,30 +62,45 @@ void QgsDateTimeEdit::setAllowNull( bool allowNull )
 {
   mAllowNull = allowNull;
 
-  mNullLabel->setVisible(( mAllowNull && mIsNull ) && !mIsEmpty );
   mClearButton->setVisible( mAllowNull && ( !mIsNull || mIsEmpty ) );
-  lineEdit()->setVisible(( !mAllowNull || !mIsNull ) && !mIsEmpty );
 }
 
 
 void QgsDateTimeEdit::clear()
 {
+  QDateTimeEdit::blockSignals( true );
+  setSpecialValueText( QSettings().value( "qgis/nullValue", "NULL" ).toString() );
+  QDateTimeEdit::setDateTime( minimumDateTime() );
+  QDateTimeEdit::blockSignals( false );
   changed( QDateTime() );
   emit dateTimeChanged( QDateTime() );
 }
 
 void QgsDateTimeEdit::setEmpty()
 {
-  mNullLabel->setVisible( false );
-  lineEdit()->setVisible( false );
   mClearButton->setVisible( mAllowNull );
+  mIsEmpty = true;
 }
 
 void QgsDateTimeEdit::mousePressEvent( QMouseEvent* event )
 {
-  QRect lerect = rect().adjusted( 0, 0, -spinButtonWidth(), 0 );
+  const QRect lerect = rect().adjusted( 0, 0, -spinButtonWidth(), 0 );
   if ( mAllowNull && mIsNull && lerect.contains( event->pos() ) )
     return;
+
+  if ( mIsNull && !calendarPopup() )
+  {
+    QStyleOptionSpinBox opt;
+    this->initStyleOption( &opt );
+    const QRect buttonUpRect = style()->subControlRect( QStyle::CC_SpinBox, &opt, QStyle::SC_SpinBoxUp );
+    const QRect buttonDownRect = style()->subControlRect( QStyle::CC_SpinBox, &opt, QStyle::SC_SpinBoxDown );
+    if ( buttonUpRect.contains( event->pos() ) || buttonDownRect.contains( event->pos() ) )
+    {
+      blockSignals( true );
+      QDateTimeEdit::setDateTime( QDateTime::currentDateTime() );
+      blockSignals( false );
+    }
+  }
 
   QDateTimeEdit::mousePressEvent( event );
 }
@@ -89,10 +108,32 @@ void QgsDateTimeEdit::mousePressEvent( QMouseEvent* event )
 void QgsDateTimeEdit::changed( const QDateTime & dateTime )
 {
   mIsEmpty = false;
-  mIsNull = dateTime.isNull();
-  mNullLabel->setVisible( mAllowNull && mIsNull );
+  bool isNull = dateTime.isNull() || dateTime == minimumDateTime();
+  if ( mIsNull != isNull )
+  {
+    mIsNull = isNull;
+    if ( mIsNull )
+    {
+      if ( mOriginalStyleSheet.isNull() )
+      {
+        mOriginalStyleSheet = lineEdit()->styleSheet();
+      }
+      lineEdit()->setStyleSheet( "font-style: italic; color: grey; }" );
+    }
+    else
+    {
+      lineEdit()->setStyleSheet( mOriginalStyleSheet );
+    }
+  }
   mClearButton->setVisible( mAllowNull && !mIsNull );
-  lineEdit()->setVisible( !mAllowNull || !mIsNull );
+}
+
+void QgsDateTimeEdit::calendarSelectionChanged()
+{
+  if ( mAllowNull && calendarWidget() && calendarWidget()->selectedDate() == minimumDate() )
+  {
+    calendarWidget()->setCurrentPage( QDate::currentDate().year(), QDate::currentDate().month() );
+  }
 }
 
 int QgsDateTimeEdit::spinButtonWidth() const
@@ -143,8 +184,4 @@ void QgsDateTimeEdit::resizeEvent( QResizeEvent * event )
 
   mClearButton->move( rect().right() - frameWidth() - spinButtonWidth() - sz.width(),
                       ( rect().bottom() + 1 - sz.height() ) / 2 );
-
-  mNullLabel->move( 0, 0 );
-  mNullLabel->setMinimumSize( rect().adjusted( 0, 0, -spinButtonWidth(), 0 ).size() );
-  mNullLabel->setMaximumSize( rect().adjusted( 0, 0, -spinButtonWidth(), 0 ).size() );
 }

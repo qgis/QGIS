@@ -66,6 +66,7 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
   private slots:
     void changed( const QDateTime & dateTime );
 
+    void calendarSelectionChanged();
 
   private:
     int spinButtonWidth() const;
@@ -77,6 +78,7 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
 
     QLineEdit* mNullLabel;
     QToolButton* mClearButton;
+    QString mOriginalStyleSheet = QString();
 
 };
 
