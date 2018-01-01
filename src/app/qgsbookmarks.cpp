@@ -202,16 +202,17 @@ void QgsBookmarks::addClicked()
 
 void QgsBookmarks::deleteClicked()
 {
-  QList<int> rows;
-  Q_FOREACH ( const QModelIndex &idx, lstBookmarks->selectionModel()->selectedIndexes() )
+  QItemSelection selection( mProxyModel->mapSelectionToSource( lstBookmarks->selectionModel()->selection() ) );
+  std::vector<int> rows;
+  Q_FOREACH ( const QModelIndex &idx, selection.indexes() )
   {
     if ( idx.column() == 1 )
     {
-      rows << idx.row();
+      rows.push_back( idx.row() );
     }
   }
 
-  if ( rows.isEmpty() )
+  if ( rows.size() == 0 )
     return;
 
   // make sure the user really wants to delete these bookmarks
@@ -220,12 +221,14 @@ void QgsBookmarks::deleteClicked()
        QMessageBox::Ok | QMessageBox::Cancel ) )
     return;
 
-  int i = 0;
+  // Remove in reverse order to keep the merged model indexes
+  std::sort( rows.begin(), rows.end(), std::greater<int>() );
+
   Q_FOREACH ( int row, rows )
   {
-    mMergedModel->removeRow( row - i );
-    i++;
+    mMergedModel->removeRow( row );
   }
+  mProxyModel->_resetModel();
 }
 
 void QgsBookmarks::lstBookmarks_doubleClicked( const QModelIndex &index )
