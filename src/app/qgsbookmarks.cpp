@@ -122,6 +122,8 @@ QgsBookmarks::QgsBookmarks( QWidget *parent )
 
   connect( mMergedModel, SIGNAL( layoutChanged() ), mProxyModel, SLOT( _resetModel() ) );
 
+  connect( mMergedModel, SIGNAL( &QgsMergedBookmarksTableModel::selectItem( const QModelIndex &index ) ), this, SLOT( scrollToIndex( const QModelIndex &index ) ) );
+
   QSettings settings;
   lstBookmarks->header()->restoreState( settings.value( "Windows/Bookmarks/headerstate" ).toByteArray() );
 
@@ -342,6 +344,7 @@ void QgsBookmarks::importFromXml()
   }
   mQgisModel->setSort( 0, Qt::AscendingOrder );
   mQgisModel->select();
+  mProxyModel->_resetModel();
 }
 
 void QgsBookmarks::exportToXml()
@@ -423,6 +426,13 @@ void QgsBookmarks::exportToXml()
   settings.setValue( "Windows/Bookmarks/LastUsedDirectory", QFileInfo( fileName ).path() );
 }
 
+void QgsBookmarks::scrollToIndex( const QModelIndex & index )
+{
+  QModelIndex proxyIndex( mProxyModel->mapFromSource( index ) );
+  lstBookmarks->scrollTo( proxyIndex );
+  lstBookmarks->setCurrentIndex( proxyIndex );
+}
+
 QgsProjectBookmarksTableModel::QgsProjectBookmarksTableModel( QObject *parent )
     : QAbstractTableModel( parent )
 {
@@ -449,8 +459,10 @@ int QgsProjectBookmarksTableModel::columnCount( const QModelIndex &parent ) cons
 
 QVariant QgsProjectBookmarksTableModel::data( const QModelIndex& index, int role ) const
 {
-  Q_UNUSED( role );
-  Q_ASSERT( role == Qt::DisplayRole );
+  if ( role != Qt::DisplayRole && role != Qt::EditRole )
+  {
+    return QVariant();
+  }
 
   switch ( index.column() )
   {
@@ -510,9 +522,11 @@ bool QgsProjectBookmarksTableModel::setData( const QModelIndex& index, const QVa
 bool QgsProjectBookmarksTableModel::insertRows( int row, int count, const QModelIndex &parent )
 {
   Q_UNUSED( parent );
-  beginInsertRows( parent, row, row + count );
-
-  bool result = QgsProject::instance()->writeEntry( "Bookmarks" ,  "/count", QgsProject::instance()->readNumEntry( "Bookmarks",  "/count" ) + count );
+  Q_UNUSED( row );
+  // append
+  int oldCount = QgsProject::instance()->readNumEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/count" ) );
+  beginInsertRows( parent, oldCount, oldCount + count );
+  bool result = QgsProject::instance()->writeEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/count" ), oldCount + count );
   endInsertRows();
   return result;
 }
@@ -626,6 +640,7 @@ QVariant QgsMergedBookmarksTableModel::data( const QModelIndex &index, int role 
 
 bool QgsMergedBookmarksTableModel::setData( const QModelIndex &index, const QVariant &value, int role )
 {
+  bool result = false;
   // last column triggers a move from QGIS to project bookmark
   if ( index.column() == mQgisTableModel.columnCount() )
   {
@@ -633,29 +648,30 @@ bool QgsMergedBookmarksTableModel::setData( const QModelIndex &index, const QVar
     {
       // Move from SQLite storage to project
       moveBookmark( mQgisTableModel, mProjectTableModel, index.row() );
-      mTreeView->scrollTo( this->index( rowCount() - 1, 1 ) );
-      mTreeView->setCurrentIndex( this->index( rowCount() - 1, 1 ) );
-      mTreeView->selectionModel()->select( this->index( rowCount() - 1, 1 ), QItemSelectionModel::Rows );
+      emit selectItem( this->index( rowCount() - 1, 1 ) );
     }
     else
     {
       //Move from project to SQLite storage
       moveBookmark( mProjectTableModel, mQgisTableModel, index.row() - mQgisTableModel.rowCount() );
-      mTreeView->scrollTo( this->index( mQgisTableModel.rowCount() - 1, 1 ) );
-      mTreeView->setCurrentIndex( this->index( mQgisTableModel.rowCount() - 1, 1 ) );
-      mTreeView->selectionModel()->select( this->index( mQgisTableModel.rowCount() - 1, 1 ), QItemSelectionModel::Rows );
+      emit selectItem( this->index( mQgisTableModel.rowCount() - 1, 1 ) );
     }
-    return true;
-  }
-
-  if ( index.row() < mQgisTableModel.rowCount() )
-  {
-    return mQgisTableModel.setData( index, value, role );
+    result = true;
   }
   else
   {
-    return mProjectTableModel.setData( this->index( index.row() - mQgisTableModel.rowCount(), index.column() ), value, role );
+    if ( index.row() < mQgisTableModel.rowCount() )
+    {
+      result = mQgisTableModel.setData( index, value, role );
+    }
+    else
+    {
+      result = mProjectTableModel.setData( this->index( index.row() - mQgisTableModel.rowCount(), index.column() ), value, role );
+    }
   }
+  if ( result )
+    emit dataChanged( index, index );
+  return result;
 }
 
 Qt::ItemFlags QgsMergedBookmarksTableModel::flags( const QModelIndex &index ) const
@@ -682,7 +698,6 @@ bool QgsMergedBookmarksTableModel::removeRows( int row, int count, const QModelI
 {
   Q_ASSERT( count == 1 );
   bool result;
-  beginRemoveRows( parent, row, row + count );
   if ( row < mQgisTableModel.rowCount() )
   {
     QSqlTableModel *qgisModel = static_cast<QSqlTableModel *>( &mQgisTableModel );
@@ -694,7 +709,7 @@ bool QgsMergedBookmarksTableModel::removeRows( int row, int count, const QModelI
   {
     result = mProjectTableModel.removeRows( row - mQgisTableModel.rowCount(), count, parent );
   }
-  endRemoveRows();
+  allLayoutChanged();
   return result;
 }
 
