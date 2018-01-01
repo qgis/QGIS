@@ -300,13 +300,14 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   mActionsToolbar->addWidget( resizeToolButton );
 
   QToolButton *atlasExportToolButton = new QToolButton( mAtlasToolbar );
+  atlasExportToolButton->setIcon( QgsApplication::getThemeIcon( "mActionExport.svg" ) );
   atlasExportToolButton->setPopupMode( QToolButton::InstantPopup );
   atlasExportToolButton->setAutoRaise( true );
   atlasExportToolButton->setToolButtonStyle( Qt::ToolButtonIconOnly );
   atlasExportToolButton->addAction( mActionExportAtlasAsImage );
   atlasExportToolButton->addAction( mActionExportAtlasAsSVG );
   atlasExportToolButton->addAction( mActionExportAtlasAsPDF );
-  atlasExportToolButton->setDefaultAction( mActionExportAtlasAsImage );
+  atlasExportToolButton->setToolTip( tr( "Export Atlas" ) );
   mAtlasToolbar->insertWidget( mActionAtlasSettings, atlasExportToolButton );
   mAtlasPageComboBox = new QComboBox();
   mAtlasPageComboBox->setEditable( true );
