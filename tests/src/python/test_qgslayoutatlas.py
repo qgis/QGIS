@@ -20,6 +20,7 @@ import os
 import glob
 
 from qgis.core import (QgsUnitTypes,
+                       QgsFeature,
                        QgsLayout,
                        QgsPrintLayout,
                        QgsLayoutAtlas,
@@ -216,24 +217,28 @@ class TestQgsLayoutAtlas(unittest.TestCase):
         self.assertEqual(atlas.currentFeatureNumber(), 0)
         self.assertEqual(l.reportContext().feature()[4], 'Basse-Normandie')
         self.assertEqual(l.reportContext().layer(), vector_layer)
+        f1 = l.reportContext().feature()
 
         self.assertTrue(atlas.next())
         self.assertEqual(len(atlas_feature_changed_spy), 2)
         self.assertEqual(len(context_changed_spy), 2)
         self.assertEqual(atlas.currentFeatureNumber(), 1)
         self.assertEqual(l.reportContext().feature()[4], 'Bretagne')
+        f2 = l.reportContext().feature()
 
         self.assertTrue(atlas.next())
         self.assertEqual(len(atlas_feature_changed_spy), 3)
         self.assertEqual(len(context_changed_spy), 3)
         self.assertEqual(atlas.currentFeatureNumber(), 2)
         self.assertEqual(l.reportContext().feature()[4], 'Pays de la Loire')
+        f3 = l.reportContext().feature()
 
         self.assertTrue(atlas.next())
         self.assertEqual(len(atlas_feature_changed_spy), 4)
         self.assertEqual(len(context_changed_spy), 4)
         self.assertEqual(atlas.currentFeatureNumber(), 3)
         self.assertEqual(l.reportContext().feature()[4], 'Centre')
+        f4 = l.reportContext().feature()
 
         self.assertFalse(atlas.next())
         self.assertTrue(atlas.seekTo(2))
@@ -262,6 +267,16 @@ class TestQgsLayoutAtlas(unittest.TestCase):
 
         self.assertTrue(atlas.endRender())
         self.assertEqual(len(atlas_feature_changed_spy), 10)
+
+        self.assertTrue(atlas.seekTo(f1))
+        self.assertEqual(l.reportContext().feature()[4], 'Basse-Normandie')
+        self.assertTrue(atlas.seekTo(f4))
+        self.assertEqual(l.reportContext().feature()[4], 'Centre')
+        self.assertTrue(atlas.seekTo(f3))
+        self.assertEqual(l.reportContext().feature()[4], 'Pays de la Loire')
+        self.assertTrue(atlas.seekTo(f2))
+        self.assertEqual(l.reportContext().feature()[4], 'Bretagne')
+        self.assertFalse(atlas.seekTo(QgsFeature(5)))
 
     def testUpdateFeature(self):
         p = QgsProject()

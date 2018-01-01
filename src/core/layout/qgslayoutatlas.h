@@ -290,6 +290,15 @@ class CORE_EXPORT QgsLayoutAtlas : public QObject, public QgsAbstractLayoutItera
     bool seekTo( int feature );
 
     /**
+     * Seeks to the specified \a feature.
+     * \see first()
+     * \see previous()
+     * \see next()
+     * \see last()
+     */
+    bool seekTo( const QgsFeature &feature );
+
+    /**
      * Refreshes the current atlas feature, by refetching its attributes from the vector layer provider
      */
     void refreshCurrentFeature();

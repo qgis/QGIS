@@ -335,6 +335,19 @@ Seeks to the specified ``feature`` number.
 .. seealso:: :py:func:`last()`
 %End
 
+    bool seekTo( const QgsFeature &feature );
+%Docstring
+Seeks to the specified ``feature``.
+
+.. seealso:: :py:func:`first()`
+
+.. seealso:: :py:func:`previous()`
+
+.. seealso:: :py:func:`next()`
+
+.. seealso:: :py:func:`last()`
+%End
+
     void refreshCurrentFeature();
 %Docstring
 Refreshes the current atlas feature, by refetching its attributes from the vector layer provider

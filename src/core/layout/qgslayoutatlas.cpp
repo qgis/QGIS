@@ -387,6 +387,28 @@ bool QgsLayoutAtlas::seekTo( int feature )
   return prepareForFeature( feature );
 }
 
+bool QgsLayoutAtlas::seekTo( const QgsFeature &feature )
+{
+  int i = -1;
+  auto it = mFeatureIds.constBegin();
+  for ( int currentIdx = 0; it != mFeatureIds.constEnd(); ++it, ++currentIdx )
+  {
+    if ( ( *it ).first == feature.id() )
+    {
+      i = currentIdx;
+      break;
+    }
+  }
+
+  if ( i < 0 )
+  {
+    //feature not found
+    return false;
+  }
+
+  return seekTo( i );
+}
+
 void QgsLayoutAtlas::refreshCurrentFeature()
 {
   prepareForFeature( mCurrentFeatureNo );
