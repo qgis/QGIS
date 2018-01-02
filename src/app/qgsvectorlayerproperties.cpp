@@ -287,6 +287,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   metadataLayout->setMargin( 0 );
   mMetadataWidget = new QgsMetadataWidget( this, mLayer );
   mMetadataWidget->layout()->setContentsMargins( -1, 0, -1, 0 );
+  mMetadataWidget->setMapCanvas( QgisApp::instance()->mapCanvas() );
   metadataLayout->addWidget( mMetadataWidget );
   metadataFrame->setLayout( metadataLayout );
 

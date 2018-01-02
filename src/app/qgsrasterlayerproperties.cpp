@@ -245,6 +245,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   layout->setMargin( 0 );
   mMetadataWidget = new QgsMetadataWidget( this, mRasterLayer );
   mMetadataWidget->layout()->setContentsMargins( -1, 0, -1, 0 );
+  mMetadataWidget->setMapCanvas( mMapCanvas );
   layout->addWidget( mMetadataWidget );
   metadataFrame->setLayout( layout );
 
