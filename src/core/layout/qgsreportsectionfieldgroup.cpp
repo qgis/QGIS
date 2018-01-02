@@ -125,7 +125,7 @@ QgsLayout *QgsReportSectionFieldGroup::nextBody( bool &ok )
 
   updateChildContexts( f );
 
-  ok = mBodyEnabled;
+  ok = true;
   if ( mBody && mBodyEnabled )
   {
     mBody->reportContext().blockSignals( true );

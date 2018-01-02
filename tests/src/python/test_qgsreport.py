@@ -317,6 +317,7 @@ class TestQgsReport(unittest.TestCase):
         child1_body = QgsLayout(p)
         child1.setLayer(ptLayer)
         child1.setBody(child1_body)
+        child1.setBodyEnabled(True)
         child1.setField('country')
         r.appendChild(child1)
         self.assertTrue(r.beginRender())
@@ -354,12 +355,13 @@ class TestQgsReport(unittest.TestCase):
 
         # another group
         # remove body from child1
-        child1.setBody(None)
+        child1.setBodyEnabled(False)
 
         child2 = QgsReportSectionFieldGroup()
         child2_body = QgsLayout(p)
         child2.setLayer(ptLayer)
         child2.setBody(child2_body)
+        child2.setBodyEnabled(True)
         child2.setField('state')
         child1.appendChild(child2)
         self.assertTrue(r.beginRender())
@@ -397,12 +399,13 @@ class TestQgsReport(unittest.TestCase):
 
         # another group
         # remove body from child1
-        child2.setBody(None)
+        child2.setBodyEnabled(False)
 
         child3 = QgsReportSectionFieldGroup()
         child3_body = QgsLayout(p)
         child3.setLayer(ptLayer)
         child3.setBody(child3_body)
+        child3.setBodyEnabled(True)
         child3.setField('town')
         child3.setSortAscending(False)
         child2.appendChild(child3)
