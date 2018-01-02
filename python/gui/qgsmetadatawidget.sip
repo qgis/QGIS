@@ -48,6 +48,11 @@ If the CRS is updated.
 Saves the metadata to the layer.
 %End
 
+    virtual void setMetadata( const QgsLayerMetadata &metadata );
+%Docstring
+Sets the layer's ``metadata`` store.
+%End
+
     static QMap<QString, QString> parseLanguages();
 %Docstring
 Returns a list of languages available by default in the wizard.

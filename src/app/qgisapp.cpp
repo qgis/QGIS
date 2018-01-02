@@ -4317,6 +4317,7 @@ bool QgisApp::addVectorLayers( const QStringList &layerQStringList, const QStrin
   {
     bool ok;
     l->loadDefaultStyle( ok );
+    l->loadDefaultMetadata( ok );
   }
   activateDeactivateLayerRelatedActions( activeLayer() );
 
@@ -4743,6 +4744,7 @@ void QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer )
     {
       bool ok;
       l->loadDefaultStyle( ok );
+      l->loadDefaultMetadata( ok );
       if ( addToGroup )
         group->addLayer( l );
     }
@@ -4835,6 +4837,7 @@ void QgisApp::addDatabaseLayers( QStringList const &layerPathList, QString const
   {
     bool ok;
     l->loadDefaultStyle( ok );
+    l->loadDefaultMetadata( ok );
   }
 
   // draw the map
@@ -10215,6 +10218,7 @@ QgsVectorLayer *QgisApp::addVectorLayer( const QString &vectorLayerPath, const Q
       QgsProject::instance()->addMapLayers( myList );
       bool ok;
       layer->loadDefaultStyle( ok );
+      layer->loadDefaultMetadata( ok );
     }
   }
   else

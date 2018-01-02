@@ -103,6 +103,16 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     void loadStyle_clicked();
     //! Save a style when appriate button is pressed.
     void saveStyleAs_clicked();
+
+    //! Load a saved metadata file.
+    void loadMetadata();
+    //! Save a metadata.
+    void saveMetadataAs();
+    //! Save the default metadata.
+    void saveDefaultMetadata();
+    //! Load the default metadata.
+    void loadDefaultMetadata();
+
     //! Help button
     void showHelp();
 
@@ -131,6 +141,11 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     void refreshLegend( const QString &layerID, bool expandItem );
 
   private:
+    QPushButton *mBtnStyle = nullptr;
+    QPushButton *mBtnMetadata = nullptr;
+    QAction *mActionLoadMetadata = nullptr;
+    QAction *mActionSaveMetadataAs = nullptr;
+
     //! \brief  A constant that signals property not used
     const QString TRSTRING_NOT_SET;
 
