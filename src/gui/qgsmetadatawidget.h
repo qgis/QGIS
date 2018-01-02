@@ -67,6 +67,11 @@ class GUI_EXPORT QgsMetadataWidget : public QWidget, private Ui::QgsMetadataWidg
     void acceptMetadata();
 
     /**
+     * Sets the layer's \a metadata store.
+     */
+    virtual void setMetadata( const QgsLayerMetadata &metadata );
+
+    /**
      * Returns a list of languages available by default in the wizard.
      */
     static QMap<QString, QString> parseLanguages();
