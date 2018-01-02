@@ -101,6 +101,8 @@ ascending, or false for descending sort.
 
     virtual bool beginRender();
 
+    virtual void prepareHeader();
+
     virtual QgsLayout *nextBody( bool &ok );
 
     virtual void reset();

@@ -38,6 +38,12 @@ class CORE_EXPORT QgsReportSectionContext
 {
   public:
 
+    //! Current feature
+    QgsFeature feature;
+
+    //! Current coverage layer
+    QgsVectorLayer *currentLayer = nullptr;
+
     //! Current layer filters
     QMap< QgsVectorLayer *, QString > layerFilters SIP_SKIP;
 };
@@ -122,6 +128,18 @@ class CORE_EXPORT QgsAbstractReportSection : public QgsAbstractLayoutIterator
      * Resets the section, ready for a new iteration.
      */
     virtual void reset();
+
+    /**
+     * Called just before rendering the section's header.
+     * \see prepareFooter()
+     */
+    virtual void prepareHeader() {}
+
+    /**
+     * Called just before rendering the section's footer.
+     * \see prepareHeader()
+     */
+    virtual void prepareFooter() {}
 
     /**
      * Returns the next body layout to export, or a nullptr if

@@ -52,7 +52,23 @@ QgsProject *QgsAbstractReportSection::project()
 
 void QgsAbstractReportSection::setContext( const QgsReportSectionContext &context )
 {
+  auto setReportContext = [&context]( QgsLayout * layout )
+  {
+    if ( context.currentLayer )
+    {
+      layout->reportContext().blockSignals( true );
+      layout->reportContext().setLayer( context.currentLayer );
+      layout->reportContext().blockSignals( false );
+    }
+    layout->reportContext().setFeature( context.feature );
+  };
+
   mContext = context;
+  if ( mHeader )
+    setReportContext( mHeader.get() );
+  if ( mFooter )
+    setReportContext( mFooter.get() );
+
   for ( QgsAbstractReportSection *section : qgis::as_const( mChildren ) )
   {
     section->setContext( mContext );
@@ -191,6 +207,7 @@ bool QgsAbstractReportSection::next()
       // if we have a header, then the current section will be the header
       if ( mHeaderEnabled && mHeader )
       {
+        prepareHeader();
         mCurrentLayout = mHeader.get();
         return true;
       }
@@ -271,6 +288,7 @@ bool QgsAbstractReportSection::next()
       // if we have a footer, then the current section will be the footer
       if ( mFooterEnabled && mFooter )
       {
+        prepareFooter();
         mCurrentLayout = mFooter.get();
         return true;
       }

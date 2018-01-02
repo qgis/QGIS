@@ -68,6 +68,24 @@ bool QgsReportSectionFieldGroup::beginRender()
   return QgsAbstractReportSection::beginRender();
 }
 
+void QgsReportSectionFieldGroup::prepareHeader()
+{
+  if ( !header() )
+    return;
+
+  if ( !mFeatures.isValid() )
+  {
+    mFeatures = mCoverageLayer->getFeatures( buildFeatureRequest() );
+  }
+
+  mHeaderFeature = getNextFeature();
+  header()->reportContext().blockSignals( true );
+  header()->reportContext().setLayer( mCoverageLayer.get() );
+  header()->reportContext().blockSignals( false );
+  header()->reportContext().setFeature( mHeaderFeature );
+  mSkipNextRequest = true;
+}
+
 QgsLayout *QgsReportSectionFieldGroup::nextBody( bool &ok )
 {
   if ( !mFeatures.isValid() )
@@ -75,14 +93,34 @@ QgsLayout *QgsReportSectionFieldGroup::nextBody( bool &ok )
     mFeatures = mCoverageLayer->getFeatures( buildFeatureRequest() );
   }
 
-  QgsFeature f = getNextFeature();
+  QgsFeature f;
+  if ( !mSkipNextRequest )
+  {
+    f = getNextFeature();
+  }
+  else
+  {
+    f = mHeaderFeature;
+    mSkipNextRequest = false;
+  }
+
   if ( !f.isValid() )
   {
     // no features left for this iteration
     mFeatures = QgsFeatureIterator();
+
+    if ( footer() )
+    {
+      footer()->reportContext().blockSignals( true );
+      footer()->reportContext().setLayer( mCoverageLayer.get() );
+      footer()->reportContext().blockSignals( false );
+      footer()->reportContext().setFeature( mLastFeature );
+    }
     ok = false;
     return nullptr;
   }
+
+  mLastFeature = f;
 
   updateChildContexts( f );
 
@@ -102,6 +140,10 @@ void QgsReportSectionFieldGroup::reset()
 {
   QgsAbstractReportSection::reset();
   mEncounteredValues.clear();
+  mSkipNextRequest = false;
+  mHeaderFeature = QgsFeature();
+  mLastFeature = QgsFeature();
+  mFeatures = QgsFeatureIterator();
 }
 
 void QgsReportSectionFieldGroup::setParentSection( QgsAbstractReportSection *parent )
@@ -199,6 +241,10 @@ QgsFeature QgsReportSectionFieldGroup::getNextFeature()
 void QgsReportSectionFieldGroup::updateChildContexts( const QgsFeature &feature )
 {
   QgsReportSectionContext c = context();
+  c.feature = feature;
+  if ( mCoverageLayer )
+    c.currentLayer = mCoverageLayer.get();
+
   QString currentFilter = c.layerFilters.value( mCoverageLayer.get() );
   QString thisFilter = QgsExpression::createFieldEqualityExpression( mField, feature.attribute( mFieldIndex ) );
   QString newFilter = currentFilter.isEmpty() ? thisFilter : QStringLiteral( "(%1) AND (%2)" ).arg( currentFilter, thisFilter );

@@ -28,6 +28,16 @@ exposed to the Python bindings for unit testing purposes only.
 %End
   public:
 
+    QgsFeature feature;
+%Docstring
+Current feature
+%End
+
+    QgsVectorLayer *currentLayer;
+%Docstring
+Current coverage layer
+%End
+
 };
 
 class QgsAbstractReportSection : QgsAbstractLayoutIterator
@@ -111,6 +121,20 @@ Returns the associated project.
     virtual void reset();
 %Docstring
 Resets the section, ready for a new iteration.
+%End
+
+    virtual void prepareHeader();
+%Docstring
+Called just before rendering the section's header.
+
+.. seealso:: :py:func:`prepareFooter()`
+%End
+
+    virtual void prepareFooter();
+%Docstring
+Called just before rendering the section's footer.
+
+.. seealso:: :py:func:`prepareHeader()`
 %End
 
     virtual QgsLayout *nextBody( bool &ok /Out/ );
