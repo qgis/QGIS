@@ -68,6 +68,12 @@ Resets the widget to show no value (ie, an "unknown" state).
   protected:
     virtual void mousePressEvent( QMouseEvent *event );
 
+    virtual void focusOutEvent( QFocusEvent *event );
+
+    virtual void wheelEvent( QWheelEvent *event );
+
+    virtual void showEvent( QShowEvent *event );
+
 
 };
 
