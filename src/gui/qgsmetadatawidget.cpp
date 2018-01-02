@@ -450,8 +450,9 @@ void QgsMetadataWidget::setPropertiesFromLayer()
   if ( ! spatialExtents.isEmpty() )
   {
     // Even if it's a list, it's supposed to store the same extent in different CRS.
-    spatialExtentSelector->setCurrentExtent( spatialExtents.at( 0 ).bounds.toRectangle(), spatialExtents.at( 0 ).extentCrs );
     spatialExtentSelector->setOutputCrs( spatialExtents.at( 0 ).extentCrs );
+    spatialExtentSelector->setOriginalExtent( spatialExtents.at( 0 ).bounds.toRectangle(), spatialExtents.at( 0 ).extentCrs );
+    spatialExtentSelector->setOutputExtentFromOriginal();
     spinBoxZMaximum->setValue( spatialExtents.at( 0 ).bounds.zMaximum() );
     spinBoxZMinimum->setValue( spatialExtents.at( 0 ).bounds.zMinimum() );
   }
