@@ -92,6 +92,14 @@ If false is returned, then the widget could not be successfully updated
 to show the properties of ``item``.
 %End
 
+    virtual void setReportTypeString( const QString &string );
+%Docstring
+Sets the ``string`` to use to describe the current report type (e.g.
+"atlas" or "report").
+Subclasses which display this text to users should override this
+and update their widget labels accordingly.
+%End
+
   protected:
 
     void registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsLayoutObject::DataDefinedProperty property );

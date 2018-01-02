@@ -922,6 +922,12 @@ void QgsLayoutLegendWidget::updateLegend()
   }
 }
 
+void QgsLayoutLegendWidget::setReportTypeString( const QString &string )
+{
+  mFilterLegendByAtlasCheckBox->setText( tr( "Only show items inside current %1 feature" ).arg( string ) );
+  mFilterLegendByAtlasCheckBox->setToolTip( tr( "Filter out legend elements that lie outside the current %1 feature." ).arg( string ) );
+}
+
 bool QgsLayoutLegendWidget::setNewItem( QgsLayoutItem *item )
 {
   if ( item->type() != QgsLayoutItemRegistry::LayoutLegend )

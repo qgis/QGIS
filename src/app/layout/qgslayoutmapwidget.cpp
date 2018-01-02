@@ -155,6 +155,12 @@ QgsLayoutMapWidget::QgsLayoutMapWidget( QgsLayoutItemMap *item )
   blockAllSignals( false );
 }
 
+void QgsLayoutMapWidget::setReportTypeString( const QString &string )
+{
+  mAtlasCheckBox->setTitle( tr( "Controlled by %1" ).arg( string ) );
+  mAtlasPredefinedScaleRadio->setToolTip( tr( "Use one of the predefined scales of the project where the %1 feature best fits." ).arg( string ) );
+}
+
 bool QgsLayoutMapWidget::setNewItem( QgsLayoutItem *item )
 {
   if ( item->type() != QgsLayoutItemRegistry::LayoutMap )

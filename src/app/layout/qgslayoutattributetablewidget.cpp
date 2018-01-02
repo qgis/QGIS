@@ -145,6 +145,11 @@ QgsLayoutAttributeTableWidget::QgsLayoutAttributeTableWidget( QgsLayoutFrame *fr
   connect( mContentFontToolButton, &QgsFontButton::changed, this, &QgsLayoutAttributeTableWidget::contentFontChanged );
 }
 
+void QgsLayoutAttributeTableWidget::setReportTypeString( const QString &string )
+{
+  mIntersectAtlasCheckBox->setText( tr( "Show only features intersecting %1 feature" ).arg( string ) );
+}
+
 bool QgsLayoutAttributeTableWidget::setNewItem( QgsLayoutItem *item )
 {
   QgsLayoutFrame *frame = qobject_cast< QgsLayoutFrame * >( item );

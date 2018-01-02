@@ -30,6 +30,8 @@ class QgsLayoutAttributeTableWidget: public QgsLayoutItemBaseWidget, private Ui:
   public:
     QgsLayoutAttributeTableWidget( QgsLayoutFrame *frame );
 
+    void setReportTypeString( const QString &string ) override;
+
   protected:
 
     bool setNewItem( QgsLayoutItem *item ) override;

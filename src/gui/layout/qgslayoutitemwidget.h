@@ -134,6 +134,14 @@ class GUI_EXPORT QgsLayoutItemBaseWidget: public QgsPanelWidget
      */
     bool setItem( QgsLayoutItem *item );
 
+    /**
+     * Sets the \a string to use to describe the current report type (e.g.
+     * "atlas" or "report").
+     * Subclasses which display this text to users should override this
+     * and update their widget labels accordingly.
+     */
+    virtual void setReportTypeString( const QString &string );
+
   protected:
 
     /**

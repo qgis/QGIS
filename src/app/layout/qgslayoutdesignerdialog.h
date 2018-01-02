@@ -478,6 +478,7 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
 
     void setPrinterPageOrientation( QgsLayoutItemPage::Orientation orientation );
     QPrinter *printer();
+    QString reportTypeString();
 };
 
 #endif // QGSLAYOUTDESIGNERDIALOG_H

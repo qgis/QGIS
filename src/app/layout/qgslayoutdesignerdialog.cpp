@@ -889,6 +889,7 @@ void QgsLayoutDesignerDialog::showItemOptions( QgsLayoutItem *item, bool bringPa
   if ( ! widget )
     return;
 
+  widget->setReportTypeString( reportTypeString() );
 
   if ( QgsLayoutPagePropertiesWidget *ppWidget = qobject_cast< QgsLayoutPagePropertiesWidget * >( widget.get() ) )
     connect( ppWidget, &QgsLayoutPagePropertiesWidget::pageOrientationChanged, this, &QgsLayoutDesignerDialog::pageOrientationChanged );
@@ -3959,6 +3960,14 @@ QPrinter *QgsLayoutDesignerDialog::printer()
     mPrinter = qgis::make_unique< QPrinter >();
 
   return mPrinter.get();
+}
+
+QString QgsLayoutDesignerDialog::reportTypeString()
+{
+  if ( atlas() )
+    return tr( "atlas" );
+  else
+    return tr( "report" );
 }
 
 void QgsLayoutDesignerDialog::selectItems( const QList<QgsLayoutItem *> items )

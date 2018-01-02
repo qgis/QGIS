@@ -154,6 +154,10 @@ bool QgsLayoutItemBaseWidget::setItem( QgsLayoutItem *item )
   return false;
 }
 
+void QgsLayoutItemBaseWidget::setReportTypeString( const QString & )
+{
+}
+
 void QgsLayoutItemBaseWidget::registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsLayoutObject::DataDefinedProperty property )
 {
   mConfigObject->initializeDataDefinedButton( button, property );
