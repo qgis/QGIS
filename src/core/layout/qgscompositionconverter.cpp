@@ -277,7 +277,8 @@ QList<QgsLayoutItem *> QgsCompositionConverter::addItemsFromCompositionXml( QgsL
     }
   }
 
-  /*
+
+  /* TODO: following item types are not yet converted
   LayoutFrame, //!< Frame item, part of a QgsLayoutMultiFrame object
 
   // known multi-frame types
@@ -285,6 +286,19 @@ QList<QgsLayoutItem *> QgsCompositionConverter::addItemsFromCompositionXml( QgsL
   LayoutAttributeTable, //!< Attribute table
   LayoutTextTable, //!< Preset text table IGNORE!
   */
+
+  QgsStringMap mapIdUiidMap;
+
+  // Map (this needs to come first to build the uuid <-> ID map for map composer items
+  for ( int i = 0; i < parentElement.elementsByTagName( QStringLiteral( "ComposerMap" ) ).size(); i++ )
+  {
+    QDomNode itemNode( parentElement.elementsByTagName( QStringLiteral( "ComposerMap" ) ).at( i ) );
+    QgsLayoutItemMap *layoutItem = new QgsLayoutItemMap( layout );
+    readMapXml( layoutItem, itemNode.toElement(), layout->project(), mapIdUiidMap );
+    adjustPos( layout, layoutItem, itemNode, position, pasteInPlace, zOrderOffset, pasteShiftPos, pageNumber );
+    newItems << layoutItem ;
+  }
+
 
   // Label
   for ( int i = 0; i < parentElement.elementsByTagName( QStringLiteral( "ComposerLabel" ) ).size(); i++ )
@@ -311,7 +325,7 @@ QList<QgsLayoutItem *> QgsCompositionConverter::addItemsFromCompositionXml( QgsL
   {
     QDomNode itemNode( parentElement.elementsByTagName( QStringLiteral( "ComposerPicture" ) ).at( i ) );
     QgsLayoutItemPicture *layoutItem = new QgsLayoutItemPicture( layout );
-    readPictureXml( layoutItem, itemNode.toElement(), layout->project() );
+    readPictureXml( layoutItem, itemNode.toElement(), layout->project(), mapIdUiidMap );
     adjustPos( layout, layoutItem, itemNode, position, pasteInPlace, zOrderOffset, pasteShiftPos, pageNumber );
     newItems << layoutItem ;
   }
@@ -346,22 +360,12 @@ QList<QgsLayoutItem *> QgsCompositionConverter::addItemsFromCompositionXml( QgsL
     newItems << layoutItem ;
   }
 
-  // Map
-  for ( int i = 0; i < parentElement.elementsByTagName( QStringLiteral( "ComposerMap" ) ).size(); i++ )
-  {
-    QDomNode itemNode( parentElement.elementsByTagName( QStringLiteral( "ComposerMap" ) ).at( i ) );
-    QgsLayoutItemMap *layoutItem = new QgsLayoutItemMap( layout );
-    readMapXml( layoutItem, itemNode.toElement(), layout->project() );
-    adjustPos( layout, layoutItem, itemNode, position, pasteInPlace, zOrderOffset, pasteShiftPos, pageNumber );
-    newItems << layoutItem ;
-  }
-
   // Scalebar
   for ( int i = 0; i < parentElement.elementsByTagName( QStringLiteral( "ComposerScaleBar" ) ).size(); i++ )
   {
     QDomNode itemNode( parentElement.elementsByTagName( QStringLiteral( "ComposerScaleBar" ) ).at( i ) );
     QgsLayoutItemScaleBar *layoutItem = new QgsLayoutItemScaleBar( layout );
-    readScaleBarXml( layoutItem, itemNode.toElement(), layout->project() );
+    readScaleBarXml( layoutItem, itemNode.toElement(), layout->project(), mapIdUiidMap );
     adjustPos( layout, layoutItem, itemNode, position, pasteInPlace, zOrderOffset, pasteShiftPos, pageNumber );
     newItems << layoutItem ;
   }
@@ -371,7 +375,7 @@ QList<QgsLayoutItem *> QgsCompositionConverter::addItemsFromCompositionXml( QgsL
   {
     QDomNode itemNode( parentElement.elementsByTagName( QStringLiteral( "ComposerLegend" ) ).at( i ) );
     QgsLayoutItemLegend *layoutItem = new QgsLayoutItemLegend( layout );
-    readLegendXml( layoutItem, itemNode.toElement(), layout->project() );
+    readLegendXml( layoutItem, itemNode.toElement(), layout->project(), mapIdUiidMap );
     adjustPos( layout, layoutItem, itemNode, position, pasteInPlace, zOrderOffset, pasteShiftPos, pageNumber );
     newItems << layoutItem ;
   }
@@ -541,7 +545,7 @@ bool QgsCompositionConverter::readShapeXml( QgsLayoutItemShape *layoutItem, cons
   return true;
 }
 
-bool QgsCompositionConverter::readPictureXml( QgsLayoutItemPicture *layoutItem, const QDomElement &itemElem, const QgsProject *project )
+bool QgsCompositionConverter::readPictureXml( QgsLayoutItemPicture *layoutItem, const QDomElement &itemElem, const QgsProject *project, const QgsStringMap &mapId2Uuid )
 {
   restoreGeneralComposeItemProperties( layoutItem, itemElem );
 
@@ -588,14 +592,20 @@ bool QgsCompositionConverter::readPictureXml( QgsLayoutItemPicture *layoutItem, 
   layoutItem->mNorthMode = static_cast< QgsLayoutItemPicture::NorthMode >( itemElem.attribute( QStringLiteral( "northMode" ), QStringLiteral( "0" ) ).toInt() );
   layoutItem->mNorthOffset = itemElem.attribute( QStringLiteral( "northOffset" ), QStringLiteral( "0" ) ).toDouble();
 
-  // TODO:
-  /*
-  int rotationMapId = itemElem.attribute( QStringLiteral( "mapId" ), QStringLiteral( "-1" ) ).toInt();
-  if ( rotationMapId == -1 )
+  QString rotationMapId = itemElem.attribute( QStringLiteral( "mapId" ), QStringLiteral( "-1" ) );
+  if ( rotationMapId != QStringLiteral( "-1" ) )
   {
-    layoutItem->setRotationMap( nullptr );
+    // Find uuid for map with given id
+    if ( mapId2Uuid.contains( rotationMapId ) )
+    {
+      layoutItem->setRotationMap( mapId2Uuid[  rotationMapId ] );
+    }
+    else
+    {
+      // This is an error!
+      return false;
+    }
   }
-  */
   return true;
 }
 
@@ -676,22 +686,14 @@ bool QgsCompositionConverter::readArrowXml( QgsLayoutItemPolyline *layoutItem, c
   return true;
 }
 
-bool QgsCompositionConverter::readMapXml( QgsLayoutItemMap *layoutItem, const QDomElement &itemElem, const QgsProject *project )
+bool QgsCompositionConverter::readMapXml( QgsLayoutItemMap *layoutItem, const QDomElement &itemElem, const QgsProject *project, QgsStringMap &mapId2Uuid )
 {
   restoreGeneralComposeItemProperties( layoutItem, itemElem );
 
+  mapId2Uuid[ itemElem.attribute( QStringLiteral( "id" ) ) ] = layoutItem->uuid();
+
   // TODO: Unused but all the layouts readXML require it (I'd suggest to remove it from the API)
   QDomDocument doc;
-
-  // TODO: check id!
-  /*
-  QString idRead = itemElem.attribute( QStringLiteral( "id" ), QStringLiteral( "not found" ) );
-  if ( idRead != QLatin1String( "not found" ) )
-  {
-    layoutItem->setId( idRead.toInt() );
-    layoutItem->updateToolTip();
-  }
-  */
 
   QgsReadWriteContext context;
 
@@ -806,7 +808,20 @@ bool QgsCompositionConverter::readMapXml( QgsLayoutItemMap *layoutItem, const QD
   layoutItem->mCacheInvalidated = true;
 
   //overviews
-  layoutItem->mOverviewStack->readXml( itemElem, doc, context );
+  //read overview stack
+  QDomNodeList mapOverviewNodeList = itemElem.elementsByTagName( QStringLiteral( "ComposerMapOverview" ) );
+  for ( int i = 0; i < mapOverviewNodeList.size(); ++i )
+  {
+    QDomElement mapOverviewElem = mapOverviewNodeList.at( i ).toElement();
+    std::unique_ptr<QgsLayoutItemMapOverview> mapOverview( new QgsLayoutItemMapOverview( mapOverviewElem.attribute( QStringLiteral( "name" ) ), layoutItem ) );
+    mapOverview->readXml( mapOverviewElem, doc, context );
+    QString frameMapId = mapOverviewElem.attribute( QStringLiteral( "frameMap" ), QStringLiteral( "-1" ) );
+    if ( frameMapId != QStringLiteral( "-1" ) && mapId2Uuid.contains( frameMapId ) )
+    {
+      mapOverview->setFrameMapUuid( mapId2Uuid[ frameMapId ] );
+      layoutItem->mOverviewStack->addOverview( mapOverview.release() );
+    }
+  }
 
   //grids
   layoutItem->mGridStack->readXml( itemElem, doc, context );
@@ -900,7 +915,7 @@ bool QgsCompositionConverter::readMapXml( QgsLayoutItemMap *layoutItem, const QD
   return true;
 }
 
-bool QgsCompositionConverter::readScaleBarXml( QgsLayoutItemScaleBar *layoutItem, const QDomElement &itemElem, const QgsProject *project )
+bool QgsCompositionConverter::readScaleBarXml( QgsLayoutItemScaleBar *layoutItem, const QDomElement &itemElem, const QgsProject *project, const QgsStringMap &mapId2Uuid )
 {
   Q_UNUSED( project );
   restoreGeneralComposeItemProperties( layoutItem, itemElem );
@@ -1059,32 +1074,40 @@ bool QgsCompositionConverter::readScaleBarXml( QgsLayoutItemScaleBar *layoutItem
   }
   layoutItem->setAlignment( static_cast< QgsScaleBarSettings::Alignment >( itemElem.attribute( QStringLiteral( "alignment" ), QStringLiteral( "0" ) ).toInt() ) );
 
-  //map TODO: map id
-  int mapId = itemElem.attribute( QStringLiteral( "mapId" ), QStringLiteral( "-1" ) ).toInt();
-  if ( mapId >= 0 )
+  //composer map: use uuid
+  QString mapId = itemElem.attribute( QStringLiteral( "mapId" ), QStringLiteral( "-1" ) );
+  if ( mapId != QStringLiteral( "-1" ) && mapId2Uuid.contains( mapId ) )
   {
-    /*
-    const QgsComposerMap *composerMap = mComposition->getComposerMapById( mapId );
-    mComposerMap = const_cast< QgsComposerMap *>( composerMap );
-    if ( mComposerMap )
+    QgsLayoutItemMap *mapInstance = qobject_cast<QgsLayoutItemMap *>( layoutItem->layout()->itemByUuid( mapId2Uuid[ mapId ] ) );
+    if ( mapInstance )
     {
-      connect( mComposerMap, &QgsComposerMap::extentChanged, this, &QgsComposerScaleBar::updateSegmentSize );
-      connect( mComposerMap, &QObject::destroyed, this, &QgsComposerScaleBar::invalidateCurrentMap );
+      layoutItem->setMap( mapInstance );
     }
-    */
   }
 
   return true;
 }
 
-bool QgsCompositionConverter::readLegendXml( QgsLayoutItemLegend *layoutItem, const QDomElement &itemElem, const QgsProject *project )
+bool QgsCompositionConverter::readLegendXml( QgsLayoutItemLegend *layoutItem, const QDomElement &itemElem, const QgsProject *project, const QgsStringMap &mapId2Uuid )
 {
   restoreGeneralComposeItemProperties( layoutItem, itemElem );
+
   QgsPathResolver pathResolver;
   if ( project )
     pathResolver = project->pathResolver();
   QgsReadWriteContext context;
   context.setPathResolver( pathResolver );
+
+  //composer map: use uuid
+  QString mapId = itemElem.attribute( QStringLiteral( "map" ), QStringLiteral( "-1" ) );
+  if ( mapId != QStringLiteral( "-1" ) && mapId2Uuid.contains( mapId ) )
+  {
+    QgsLayoutItemMap *mapInstance = qobject_cast<QgsLayoutItemMap *>( layoutItem->layout()->itemByUuid( mapId2Uuid[ mapId ] ) );
+    if ( mapInstance )
+    {
+      layoutItem->setMap( mapInstance );
+    }
+  }
 
   //read general properties
   layoutItem->setTitle( itemElem.attribute( QStringLiteral( "title" ) ) );
@@ -1144,14 +1167,7 @@ bool QgsCompositionConverter::readLegendXml( QgsLayoutItemLegend *layoutItem, co
 
   layoutItem->mLegendFilterByMap = itemElem.attribute( QStringLiteral( "legendFilterByMap" ), QStringLiteral( "0" ) ).toInt();
 
-  //composer map TODO: use uuid
-  /*
-  if ( !itemElem.attribute( QStringLiteral( "map" ) ).isEmpty() )
-  {
-    layoutItem->setMap( layoutItem->layout()-> getComposerMapById( itemElem.attribute( QStringLiteral( "map" ) ).toInt() ) );
-  }
-
-  // TODO: atlas
+  /* TODO: atlas
   mFilterOutAtlas = itemElem.attribute( QStringLiteral( "legendFilterByAtlas" ), QStringLiteral( "0" ) ).toInt();
   */
 
@@ -1162,13 +1178,15 @@ bool QgsCompositionConverter::readLegendXml( QgsLayoutItemLegend *layoutItem, co
 
   if ( !layerTreeElem.isNull() )
   {
-    std::unique_ptr< QgsLayerTree > tree( QgsLayerTree::readXml( layerTreeElem, context ) );
+    QgsLayerTree *tree( QgsLayerTree::readXml( layerTreeElem, context ) );
     if ( project )
       tree->resolveReferences( project, true );
-    layoutItem->setCustomLayerTree( tree.release() );
+    layoutItem->setCustomLayerTree( tree );
   }
   else
+  {
     layoutItem->setCustomLayerTree( nullptr );
+  }
 
   return true;
 }

@@ -147,6 +147,7 @@ class CORE_EXPORT QgsCompositionConverter
 
   private:
 
+
     //! Property definitions
     static QgsPropertiesDefinition sPropertyDefinitions;
 
@@ -161,7 +162,8 @@ class CORE_EXPORT QgsCompositionConverter
 
     static bool readPictureXml( QgsLayoutItemPicture *layoutItem,
                                 const QDomElement &itemElem,
-                                const QgsProject *project );
+                                const QgsProject *project,
+                                const QgsStringMap &mapId2Uuid );
 
     //! For both polylines and polygons
     template <class T, class T2> static bool readPolyXml( T *layoutItem,
@@ -174,15 +176,18 @@ class CORE_EXPORT QgsCompositionConverter
 
     static bool readMapXml( QgsLayoutItemMap *layoutItem,
                             const QDomElement &itemElem,
-                            const QgsProject *project );
+                            const QgsProject *project,
+                            QgsStringMap &mapId2Uuid );
 
     static bool readScaleBarXml( QgsLayoutItemScaleBar *layoutItem,
                                  const QDomElement &itemElem,
-                                 const QgsProject *project );
+                                 const QgsProject *project,
+                                 const QgsStringMap &mapId2Uuid );
 
     static bool readLegendXml( QgsLayoutItemLegend *layoutItem,
                                const QDomElement &itemElem,
-                               const QgsProject *project );
+                               const QgsProject *project,
+                               const QgsStringMap &mapId2Uuid );
 
 
     static bool readOldComposerObjectXml( QgsLayoutItem *layoutItem, const QDomElement &itemElem );
