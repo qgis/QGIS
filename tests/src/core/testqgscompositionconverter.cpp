@@ -42,11 +42,19 @@ class TestQgsCompositionConverter: public QObject
 {
     Q_OBJECT
 
+
+
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
     void init();// will be called before each testfunction is executed.
     void cleanup();// will be called after every testfunction.
+
+
+    /**
+     * Test import legend from a composer template
+     */
+    void importComposerTemplateLegend();
 
     /**
      * Test import label from a composer template
@@ -57,11 +65,6 @@ class TestQgsCompositionConverter: public QObject
      * Test import shape from a composer template
      */
     void importComposerTemplateShape();
-
-    /**
-     * Test import multiple elements from a composer template
-     */
-    void importComposerTemplate();
 
     /**
      * Test import pictures from a composer template
@@ -89,15 +92,14 @@ class TestQgsCompositionConverter: public QObject
     void importComposerTemplateMap();
 
     /**
-     * Test import legend from a composer template
-     */
-    void importComposerTemplateLegend();
-
-    /**
      * Test import scalebar from a composer template
      */
     void importComposerTemplateScaleBar();
 
+    /**
+     * Test import multiple elements from a composer template
+     */
+    void importComposerTemplate();
 
   private:
 
@@ -143,6 +145,8 @@ void TestQgsCompositionConverter::importComposerTemplateLabel()
 {
   QDomElement docElem( loadComposition( "2x_template_label.qpt" ) );
   QgsProject project;
+  project.read( QStringLiteral( TEST_DATA_DIR ) + "/layouts/sample_project.qgs" );
+
   std::unique_ptr< QgsLayout > layout( QgsCompositionConverter::createLayoutFromCompositionXml( docElem, &project ) );
 
   QVERIFY( layout.get() );
@@ -174,6 +178,8 @@ void TestQgsCompositionConverter::importComposerTemplateShape()
 {
   QDomElement docElem( loadComposition( "2x_template_shape.qpt" ) );
   QgsProject project;
+  project.read( QStringLiteral( TEST_DATA_DIR ) + "/layouts/sample_project.qgs" );
+
   std::unique_ptr< QgsLayout > layout( QgsCompositionConverter::createLayoutFromCompositionXml( docElem, &project ) );
 
   QVERIFY( layout.get() );
@@ -207,6 +213,8 @@ void TestQgsCompositionConverter::importComposerTemplatePicture()
   QDomElement docElem( loadComposition( "2x_template_pictures.qpt" ) );
   QVERIFY( !docElem.isNull() );
   QgsProject project;
+  project.read( QStringLiteral( TEST_DATA_DIR ) + "/layouts/sample_project.qgs" );
+
   std::unique_ptr< QgsLayout > layout( QgsCompositionConverter::createLayoutFromCompositionXml( docElem, &project ) );
   QVERIFY( layout.get() );
   QCOMPARE( layout->pageCollection()->pageCount(), 1 );
@@ -236,6 +244,8 @@ void TestQgsCompositionConverter::importComposerTemplatePolygon()
   QDomElement docElem( loadComposition( "2x_template_polygon.qpt" ) );
   QVERIFY( !docElem.isNull() );
   QgsProject project;
+  project.read( QStringLiteral( TEST_DATA_DIR ) + "/layouts/sample_project.qgs" );
+
   std::unique_ptr< QgsLayout > layout( QgsCompositionConverter::createLayoutFromCompositionXml( docElem, &project ) );
   QVERIFY( layout.get() );
   QCOMPARE( layout->pageCollection()->pageCount(), 1 );
@@ -259,6 +269,8 @@ void TestQgsCompositionConverter::importComposerTemplatePolyline()
   QDomElement docElem( loadComposition( "2x_template_polyline.qpt" ) );
   QVERIFY( !docElem.isNull() );
   QgsProject project;
+  project.read( QStringLiteral( TEST_DATA_DIR ) + "/layouts/sample_project.qgs" );
+
   std::unique_ptr< QgsLayout > layout( QgsCompositionConverter::createLayoutFromCompositionXml( docElem, &project ) );
   QVERIFY( layout.get() );
   QCOMPARE( layout->pageCollection()->pageCount(), 1 );
@@ -272,8 +284,6 @@ void TestQgsCompositionConverter::importComposerTemplatePolyline()
   QCOMPARE( item->nodes().count(), 4 );
   QCOMPARE( item->startMarker(), QgsLayoutItemPolyline::MarkerMode::NoMarker );
   QCOMPARE( item->endMarker(), QgsLayoutItemPolyline::MarkerMode::NoMarker );
-  //QCOMPARE( item->nodes().at(0), QPointF( 266.622, 371.215) );
-  //QCOMPARE( item->nodes().at(1), QPointF( 261.581, 296.606) );
 
   checkRenderedImage( layout.get(), QTest::currentTestFunction(), 0 );
 
@@ -286,6 +296,8 @@ void TestQgsCompositionConverter::importComposerTemplateArrow()
   QDomElement docElem( loadComposition( "2x_template_arrow.qpt" ) );
   QVERIFY( !docElem.isNull() );
   QgsProject project;
+  project.read( QStringLiteral( TEST_DATA_DIR ) + "/layouts/sample_project.qgs" );
+
   std::unique_ptr< QgsLayout > layout( QgsCompositionConverter::createLayoutFromCompositionXml( docElem, &project ) );
   QVERIFY( layout.get() );
   QCOMPARE( layout->pageCollection()->pageCount(), 1 );
@@ -312,6 +324,8 @@ void TestQgsCompositionConverter::importComposerTemplateMap()
   QDomElement docElem( loadComposition( "2x_template_map_overview.qpt" ) );
   QVERIFY( !docElem.isNull() );
   QgsProject project;
+  project.read( QStringLiteral( TEST_DATA_DIR ) + "/layouts/sample_project.qgs" );
+
   std::unique_ptr< QgsLayout > layout( QgsCompositionConverter::createLayoutFromCompositionXml( docElem, &project ) );
   QVERIFY( layout.get() );
   QCOMPARE( layout->pageCollection()->pageCount(), 1 );
@@ -322,6 +336,39 @@ void TestQgsCompositionConverter::importComposerTemplateMap()
 
   QgsLayoutItemMap *item = items.at( 0 );
   QVERIFY( item->isVisible() );
+
+  QgsLayoutItemMap *item1 = items.at( 1 );
+  QVERIFY( item1->isVisible() );
+  QCOMPARE( item1->opacity(), 0.78 );
+
+  // Check map ids
+  QStringList mapUuids;
+  QList<QgsLayoutItemMap *> mapItems;
+  layout->layoutItems<QgsLayoutItemMap>( mapItems );
+  for ( auto const &item : mapItems )
+  {
+    mapUuids << item->uuid();
+  }
+
+  {
+    int count = 0;
+    QList<QgsLayoutItemMap *> items;
+    layout->layoutItems<QgsLayoutItemMap>( items );
+    for ( auto const &mapItem : items )
+    {
+      for ( auto const &item : mapItem->overviews()->asList() )
+      {
+        if ( ! item->map( )->uuid().isEmpty( ) )
+        {
+          QVERIFY( mapUuids.contains( item->map()->uuid() ) );
+          QVERIFY( mapUuids.contains( item->frameMapUuid() ) );
+          count ++;
+        }
+      }
+    }
+    // We have at least one item linked to a map for this test
+    QVERIFY( count > 0 );
+  }
 
   checkRenderedImage( layout.get(), QTest::currentTestFunction(), 0 );
 
@@ -334,6 +381,8 @@ void TestQgsCompositionConverter::importComposerTemplateLegend()
   QDomElement docElem( loadComposition( "2x_template_legend.qpt" ) );
   QVERIFY( !docElem.isNull() );
   QgsProject project;
+  project.read( QStringLiteral( TEST_DATA_DIR ) + "/layouts/sample_project.qgs" );
+
   std::unique_ptr< QgsLayout > layout( QgsCompositionConverter::createLayoutFromCompositionXml( docElem, &project ) );
   QVERIFY( layout.get() );
   QCOMPARE( layout->pageCollection()->pageCount(), 1 );
@@ -344,6 +393,7 @@ void TestQgsCompositionConverter::importComposerTemplateLegend()
 
   QgsLayoutItemLegend *item = items.at( 0 );
   QVERIFY( item->isVisible() );
+  QVERIFY( ! item->autoUpdateModel() );
 
   checkRenderedImage( layout.get(), QTest::currentTestFunction(), 0 );
 
@@ -356,6 +406,8 @@ void TestQgsCompositionConverter::importComposerTemplateScaleBar()
   QDomElement docElem( loadComposition( "2x_template_scalebar.qpt" ) );
   QVERIFY( !docElem.isNull() );
   QgsProject project;
+  project.read( QStringLiteral( TEST_DATA_DIR ) + "/layouts/sample_project.qgs" );
+
   std::unique_ptr< QgsLayout > layout( QgsCompositionConverter::createLayoutFromCompositionXml( docElem, &project ) );
   QVERIFY( layout.get() );
   QCOMPARE( layout->pageCollection()->pageCount(), 1 );
@@ -367,6 +419,8 @@ void TestQgsCompositionConverter::importComposerTemplateScaleBar()
   QgsLayoutItemScaleBar *item = items.at( 0 );
   QVERIFY( item->isVisible() );
 
+  QCOMPARE( item->map(), nullptr );
+
   checkRenderedImage( layout.get(), QTest::currentTestFunction(), 0 );
 
   qDeleteAll( items );
@@ -377,10 +431,74 @@ void TestQgsCompositionConverter::importComposerTemplate()
 {
   QDomElement docElem( loadComposition( "2x_template.qpt" ) );
   QgsProject project;
+  project.read( QStringLiteral( TEST_DATA_DIR ) + "/layouts/sample_project.qgs" );
+
   std::unique_ptr< QgsLayout > layout( QgsCompositionConverter::createLayoutFromCompositionXml( docElem, &project ) );
 
   QVERIFY( layout.get() );
   QCOMPARE( layout->pageCollection()->pageCount(), 2 );
+
+  // Check map ids
+  QStringList mapUuids;
+  QList<QgsLayoutItemMap *> mapItems;
+  layout->layoutItems<QgsLayoutItemMap>( mapItems );
+  for ( auto const &item : mapItems )
+  {
+    mapUuids << item->uuid();
+  }
+
+  // Check that picture elements with a map id point to a valid map uuid
+  {
+    int count = 0;
+    QList<QgsLayoutItemPicture *> items;
+    layout->layoutItems<QgsLayoutItemPicture>( items );
+    for ( auto const &item : items )
+    {
+      if ( ! item->rotationMap( ).isEmpty( ) )
+      {
+        QVERIFY( mapUuids.contains( item->rotationMap() ) );
+        count ++;
+      }
+    }
+    // We have at least one item linked to a map for this test
+    QVERIFY( count > 0 );
+  }
+
+
+  // Check that elements with a map id point to a valid map uuid
+  {
+    int count = 0;
+    QList<QgsLayoutItemLegend *> items;
+    layout->layoutItems<QgsLayoutItemLegend>( items );
+    for ( auto const &item : items )
+    {
+      if ( ! item->map( )->uuid().isEmpty( ) )
+      {
+        QVERIFY( mapUuids.contains( item->map()->uuid() ) );
+        count ++;
+      }
+    }
+    // We have at least one item linked to a map for this test
+    QVERIFY( count > 0 );
+  }
+
+  // Check that elements with a map id point to a valid map uuid
+  {
+    int count = 0;
+    QList<QgsLayoutItemScaleBar *> items;
+    layout->layoutItems<QgsLayoutItemScaleBar>( items );
+    for ( auto const &item : items )
+    {
+      if ( ! item->map( )->uuid().isEmpty( ) )
+      {
+        QVERIFY( mapUuids.contains( item->map()->uuid() ) );
+        count ++;
+      }
+    }
+    // We have at least one item linked to a map for this test
+    QVERIFY( count > 0 );
+  }
+  // TODO: attr table (not yet imported)
 
   checkRenderedImage( layout.get(), QTest::currentTestFunction(), 0 );
   checkRenderedImage( layout.get(), QTest::currentTestFunction(), 1 );
