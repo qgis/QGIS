@@ -1,5 +1,5 @@
 /***************************************************************************
-                             qgsreportorganizerwidget.h
+                             qgsreportsectionwidget.h
                              ----------------------
     begin                : December 2017
     copyright            : (C) 2017 by Nyall Dawson
@@ -14,43 +14,32 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSREPORTORGANIZERWIDGET_H
-#define QGSREPORTORGANIZERWIDGET_H
+#ifndef QGSREPORTSECTIONWIDGET_H
+#define QGSREPORTSECTIONWIDGET_H
 
-#include "ui_qgsreportorganizerwidgetbase.h"
-#include "qgspanelwidget.h"
-#include <QStyledItemDelegate>
+#include "ui_qgsreportwidgetsectionbase.h"
 
-class QgsReportSectionModel;
+class QgsLayoutDesignerDialog;
 class QgsReport;
-class QgsMessageBar;
-class QgsLayoutDesignerDialog ;
 
-class QgsReportOrganizerWidget: public QgsPanelWidget, private Ui::QgsReportOrganizerBase
+class QgsReportSectionWidget: public QWidget, private Ui::QgsReportWidgetSectionBase
 {
     Q_OBJECT
   public:
-    QgsReportOrganizerWidget( QWidget *parent, QgsLayoutDesignerDialog *designer, QgsReport *report );
-
-    void setMessageBar( QgsMessageBar *bar );
+    QgsReportSectionWidget( QWidget *parent, QgsLayoutDesignerDialog *designer, QgsReport *section );
 
   private slots:
 
-    void addLayoutSection();
-    void addFieldGroupSection();
-    void removeSection();
-    void selectionChanged( const QModelIndex &current, const QModelIndex &previous );
+    void toggleHeader( bool enabled );
+    void toggleFooter( bool enabled );
+    void editHeader();
+    void editFooter();
 
   private:
 
-    QgsReport *mReport = nullptr;
-    QgsReportSectionModel *mSectionModel = nullptr;
-    QgsMessageBar *mMessageBar;
+    QgsReport *mSection = nullptr;
     QgsLayoutDesignerDialog *mDesigner = nullptr;
-    QWidget *mConfigWidget = nullptr;
 
 };
 
-
-
-#endif // QGSREPORTORGANIZERWIDGET_H
+#endif // QGSREPORTSECTIONWIDGET_H

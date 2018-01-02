@@ -43,6 +43,10 @@ Note that ownership is not transferred to ``parent``.
 Returns the body layout for the section.
 
 .. seealso:: :py:func:`setBody()`
+
+.. seealso:: :py:func:`bodyEnabled()`
+
+.. seealso:: :py:func:`setBodyEnabled()`
 %End
 
     void setBody( QgsLayout *body /Transfer/ );
@@ -51,7 +55,34 @@ Sets the ``body`` layout for the section. Ownership of ``body``
 is transferred to the report section.
 
 .. seealso:: :py:func:`body()`
+
+.. seealso:: :py:func:`bodyEnabled()`
+
+.. seealso:: :py:func:`setBodyEnabled()`
 %End
+
+    bool bodyEnabled() const;
+%Docstring
+Returns true if the body for the section is enabled.
+
+.. seealso:: :py:func:`setBodyEnabled()`
+
+.. seealso:: :py:func:`body()`
+
+.. seealso:: :py:func:`setBody()`
+%End
+
+    void setBodyEnabled( bool enabled );
+%Docstring
+Sets whether the body for the section is ``enabled``.
+
+.. seealso:: :py:func:`bodyEnabled()`
+
+.. seealso:: :py:func:`body()`
+
+.. seealso:: :py:func:`setBody()`
+%End
+
 
     QgsVectorLayer *layer();
 %Docstring

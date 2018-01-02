@@ -47,6 +47,8 @@ class CORE_EXPORT QgsReportSectionLayout : public QgsAbstractReportSection
     /**
      * Returns the body layout for the section.
      * \see setBody()
+     * \see bodyEnabled()
+     * \see setBodyEnabled()
      */
     QgsLayout *body() { return mBody.get(); }
 
@@ -54,8 +56,26 @@ class CORE_EXPORT QgsReportSectionLayout : public QgsAbstractReportSection
      * Sets the \a body layout for the section. Ownership of \a body
      * is transferred to the report section.
      * \see body()
+     * \see bodyEnabled()
+     * \see setBodyEnabled()
      */
     void setBody( QgsLayout *body SIP_TRANSFER ) { mBody.reset( body ); }
+
+    /**
+     * Returns true if the body for the section is enabled.
+     * \see setBodyEnabled()
+     * \see body()
+     * \see setBody()
+     */
+    bool bodyEnabled() const { return mBodyEnabled; }
+
+    /**
+     * Sets whether the body for the section is \a enabled.
+     * \see bodyEnabled()
+     * \see body()
+     * \see setBody()
+     */
+    void setBodyEnabled( bool enabled ) { mBodyEnabled = enabled; }
 
     QgsReportSectionLayout *clone() const override SIP_FACTORY;
     bool beginRender() override;
@@ -70,7 +90,7 @@ class CORE_EXPORT QgsReportSectionLayout : public QgsAbstractReportSection
 
     bool mExportedBody = false;
     std::unique_ptr< QgsLayout > mBody;
-
+    bool mBodyEnabled = true;
 };
 
 ///@endcond

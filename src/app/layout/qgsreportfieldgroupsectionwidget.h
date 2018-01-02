@@ -30,6 +30,11 @@ class QgsReportSectionFieldGroupWidget: public QWidget, private Ui::QgsReportWid
 
   private slots:
 
+    void toggleHeader( bool enabled );
+    void toggleFooter( bool enabled );
+    void editHeader();
+    void editFooter();
+    void toggleBody( bool enabled );
     void editBody();
     void sortAscendingToggled( bool checked );
     void setLayer( QgsMapLayer *layer );

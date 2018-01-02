@@ -35,6 +35,8 @@ QgsReportSectionLayout *QgsReportSectionLayout::clone() const
   else
     copy->mBody.reset();
 
+  copy->mBodyEnabled = mBodyEnabled;
+
   return copy.release();
 }
 
@@ -46,7 +48,7 @@ bool QgsReportSectionLayout::beginRender()
 
 QgsLayout *QgsReportSectionLayout::nextBody( bool &ok )
 {
-  if ( !mExportedBody && mBody )
+  if ( !mExportedBody && mBody && mBodyEnabled )
   {
     mExportedBody = true;
     ok = true;
@@ -67,6 +69,7 @@ bool QgsReportSectionLayout::writePropertiesToElement( QDomElement &element, QDo
     bodyElement.appendChild( mBody->writeXml( doc, context ) );
     element.appendChild( bodyElement );
   }
+  element.setAttribute( QStringLiteral( "bodyEnabled" ), mBodyEnabled ? "1" : "0" );
   return true;
 }
 
@@ -80,6 +83,7 @@ bool QgsReportSectionLayout::readPropertiesFromElement( const QDomElement &eleme
     body->readXml( bodyLayoutElem, doc, context );
     mBody = std::move( body );
   }
+  mBodyEnabled = element.attribute( QStringLiteral( "bodyEnabled" ) ).toInt();
   return true;
 }
 

@@ -30,6 +30,11 @@ class QgsReportLayoutSectionWidget: public QWidget, private Ui::QgsReportWidgetL
 
   private slots:
 
+    void toggleHeader( bool enabled );
+    void toggleFooter( bool enabled );
+    void editHeader();
+    void editFooter();
+    void toggleBody( bool enabled );
     void editBody();
 
   private:

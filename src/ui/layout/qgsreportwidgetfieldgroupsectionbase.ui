@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>705</width>
-    <height>231</height>
+    <width>611</width>
+    <height>415</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,41 +16,14 @@
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <layout class="QGridLayout" name="gridLayout">
-     <item row="3" column="0">
-      <widget class="QLabel" name="label">
-       <property name="text">
-        <string>Section body</string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="1">
-      <widget class="QPushButton" name="mButtonEditBody">
+     <item row="5" column="1">
+      <widget class="QPushButton" name="mButtonEditFooter">
        <property name="text">
         <string>Edit</string>
        </property>
       </widget>
      </item>
-     <item row="0" column="0">
-      <widget class="QLabel" name="label_2">
-       <property name="text">
-        <string>Layer</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1" colspan="2">
-      <widget class="QgsMapLayerComboBox" name="mLayerComboBox"/>
-     </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="label_3">
-       <property name="text">
-        <string>Field</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1" colspan="2">
-      <widget class="QgsFieldComboBox" name="mFieldComboBox"/>
-     </item>
-     <item row="3" column="2">
+     <item row="4" column="2">
       <spacer name="horizontalSpacer_2">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
@@ -63,10 +36,65 @@
        </property>
       </spacer>
      </item>
-     <item row="2" column="1" colspan="2">
+     <item row="2" column="0">
+      <widget class="QLabel" name="label_3">
+       <property name="text">
+        <string>Field</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1" colspan="2">
       <widget class="QCheckBox" name="mSortAscendingCheckBox">
        <property name="text">
         <string>Sort ascending</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>Layer</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1" colspan="2">
+      <widget class="QgsMapLayerComboBox" name="mLayerComboBox"/>
+     </item>
+     <item row="4" column="1">
+      <widget class="QPushButton" name="mButtonEditBody">
+       <property name="text">
+        <string>Edit</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1" colspan="2">
+      <widget class="QgsFieldComboBox" name="mFieldComboBox"/>
+     </item>
+     <item row="5" column="0">
+      <widget class="QCheckBox" name="mCheckShowFooter">
+       <property name="text">
+        <string>Include footer</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QCheckBox" name="mCheckShowHeader">
+       <property name="text">
+        <string>Include header</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QPushButton" name="mButtonEditHeader">
+       <property name="text">
+        <string>Edit</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0">
+      <widget class="QCheckBox" name="mCheckShowBody">
+       <property name="text">
+        <string>Include body</string>
        </property>
       </widget>
      </item>
@@ -99,8 +127,6 @@
    <header>qgsfieldcombobox.h</header>
   </customwidget>
  </customwidgets>
- <resources>
-  <include location="../../../images/images.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

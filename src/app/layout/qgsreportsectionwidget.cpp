@@ -1,5 +1,5 @@
 /***************************************************************************
-                             qgsreportlayoutsectionwidget.cpp
+                             qgsreportsectionwidget.cpp
                              ------------------------
     begin                : December 2017
     copyright            : (C) 2017 by Nyall Dawson
@@ -14,42 +14,39 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsreportlayoutsectionwidget.h"
-#include "qgsreportsectionlayout.h"
+#include "qgsreportsectionwidget.h"
+#include "qgsreport.h"
 #include "qgslayout.h"
 #include "qgslayoutdesignerdialog.h"
 
-QgsReportLayoutSectionWidget::QgsReportLayoutSectionWidget( QWidget *parent, QgsLayoutDesignerDialog *designer, QgsReportSectionLayout *section )
+QgsReportSectionWidget::QgsReportSectionWidget( QWidget *parent, QgsLayoutDesignerDialog *designer, QgsReport *section )
   : QWidget( parent )
   , mSection( section )
   , mDesigner( designer )
 {
   setupUi( this );
 
-  connect( mButtonEditBody, &QPushButton::clicked, this, &QgsReportLayoutSectionWidget::editBody );
-  connect( mButtonEditHeader, &QPushButton::clicked, this, &QgsReportLayoutSectionWidget::editHeader );
-  connect( mButtonEditFooter, &QPushButton::clicked, this, &QgsReportLayoutSectionWidget::editFooter );
+  connect( mButtonEditHeader, &QPushButton::clicked, this, &QgsReportSectionWidget::editHeader );
+  connect( mButtonEditFooter, &QPushButton::clicked, this, &QgsReportSectionWidget::editFooter );
 
   mCheckShowHeader->setChecked( section->headerEnabled() );
   mCheckShowFooter->setChecked( section->footerEnabled() );
-  mCheckShowBody->setChecked( section->bodyEnabled() );
 
-  connect( mCheckShowHeader, &QCheckBox::toggled, this, &QgsReportLayoutSectionWidget::toggleHeader );
-  connect( mCheckShowFooter, &QCheckBox::toggled, this, &QgsReportLayoutSectionWidget::toggleFooter );
-  connect( mCheckShowBody, &QCheckBox::toggled, this, &QgsReportLayoutSectionWidget::toggleBody );
+  connect( mCheckShowHeader, &QCheckBox::toggled, this, &QgsReportSectionWidget::toggleHeader );
+  connect( mCheckShowFooter, &QCheckBox::toggled, this, &QgsReportSectionWidget::toggleFooter );
 }
 
-void QgsReportLayoutSectionWidget::toggleHeader( bool enabled )
+void QgsReportSectionWidget::toggleHeader( bool enabled )
 {
   mSection->setHeaderEnabled( enabled );
 }
 
-void QgsReportLayoutSectionWidget::toggleFooter( bool enabled )
+void QgsReportSectionWidget::toggleFooter( bool enabled )
 {
   mSection->setFooterEnabled( enabled );
 }
 
-void QgsReportLayoutSectionWidget::editHeader()
+void QgsReportSectionWidget::editHeader()
 {
   if ( !mSection->header() )
   {
@@ -64,7 +61,7 @@ void QgsReportLayoutSectionWidget::editHeader()
   }
 }
 
-void QgsReportLayoutSectionWidget::editFooter()
+void QgsReportSectionWidget::editFooter()
 {
   if ( !mSection->footer() )
   {
@@ -79,19 +76,3 @@ void QgsReportLayoutSectionWidget::editFooter()
   }
 }
 
-void QgsReportLayoutSectionWidget::toggleBody( bool enabled )
-{
-  mSection->setBodyEnabled( enabled );
-}
-
-void QgsReportLayoutSectionWidget::editBody()
-{
-  if ( !mSection->body() )
-  {
-    std::unique_ptr< QgsLayout > body = qgis::make_unique< QgsLayout >( mSection->project() );
-    body->initializeDefaults();
-    mSection->setBody( body.release() );
-  }
-
-  mDesigner->setCurrentLayout( mSection->body() );
-}

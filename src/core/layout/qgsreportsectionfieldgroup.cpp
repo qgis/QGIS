@@ -45,6 +45,7 @@ QgsReportSectionFieldGroup *QgsReportSectionFieldGroup::clone() const
   copy->setLayer( mCoverageLayer.get() );
   copy->setField( mField );
   copy->setSortAscending( mSortAscending );
+  copy->setBodyEnabled( mBodyEnabled );
 
   return copy.release();
 }
@@ -124,8 +125,8 @@ QgsLayout *QgsReportSectionFieldGroup::nextBody( bool &ok )
 
   updateChildContexts( f );
 
-  ok = true;
-  if ( mBody )
+  ok = mBodyEnabled;
+  if ( mBody && mBodyEnabled )
   {
     mBody->reportContext().blockSignals( true );
     mBody->reportContext().setLayer( mCoverageLayer.get() );
@@ -133,7 +134,7 @@ QgsLayout *QgsReportSectionFieldGroup::nextBody( bool &ok )
     mBody->reportContext().setFeature( f );
   }
 
-  return mBody.get();
+  return mBodyEnabled ? mBody.get() : nullptr;
 }
 
 void QgsReportSectionFieldGroup::reset()
@@ -157,7 +158,7 @@ bool QgsReportSectionFieldGroup::writePropertiesToElement( QDomElement &element,
 {
   element.setAttribute( QStringLiteral( "field" ), mField );
   element.setAttribute( QStringLiteral( "ascending" ), mSortAscending ? "1" : "0" );
-
+  element.setAttribute( QStringLiteral( "bodyEnabled" ), mBodyEnabled ? "1" : "0" );
   if ( mCoverageLayer )
   {
     element.setAttribute( QStringLiteral( "coverageLayer" ), mCoverageLayer.layerId );
@@ -179,7 +180,7 @@ bool QgsReportSectionFieldGroup::readPropertiesFromElement( const QDomElement &e
 {
   mField = element.attribute( QStringLiteral( "field" ) );
   mSortAscending = element.attribute( QStringLiteral( "ascending" ) ).toInt();
-
+  mBodyEnabled = element.attribute( QStringLiteral( "bodyEnabled" ) ).toInt();
   QString layerId = element.attribute( QStringLiteral( "coverageLayer" ) );
   QString layerName = element.attribute( QStringLiteral( "coverageLayerName" ) );
   QString layerSource = element.attribute( QStringLiteral( "coverageLayerSource" ) );
@@ -223,7 +224,7 @@ QgsFeature QgsReportSectionFieldGroup::getNextFeature()
   QgsFeature f;
   QVariant currentValue;
   bool first = true;
-  while ( first || ( !mBody && mEncounteredValues.contains( currentValue ) ) )
+  while ( first || ( ( !mBody || !mBodyEnabled ) && mEncounteredValues.contains( currentValue ) ) )
   {
     if ( !mFeatures.nextFeature( f ) )
     {

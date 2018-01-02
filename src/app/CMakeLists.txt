@@ -208,6 +208,7 @@ SET(QGIS_APP_SRCS
   layout/qgsreportlayoutsectionwidget.cpp
   layout/qgsreportorganizerwidget.cpp
   layout/qgsreportsectionmodel.cpp
+  layout/qgsreportsectionwidget.cpp
 
   locator/qgsinbuiltlocatorfilters.cpp
   locator/qgslocatoroptionswidget.cpp
@@ -431,6 +432,7 @@ SET (QGIS_APP_MOC_HDRS
   layout/qgsreportlayoutsectionwidget.h
   layout/qgsreportorganizerwidget.h
   layout/qgsreportsectionmodel.h
+  layout/qgsreportsectionwidget.h
 
   locator/qgsinbuiltlocatorfilters.h
   locator/qgslocatoroptionswidget.h

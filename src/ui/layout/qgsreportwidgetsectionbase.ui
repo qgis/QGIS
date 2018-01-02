@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>QgsReportWidgetLayoutSectionBase</class>
- <widget class="QWidget" name="QgsReportWidgetLayoutSectionBase">
+ <class>QgsReportWidgetSectionBase</class>
+ <widget class="QWidget" name="QgsReportWidgetSectionBase">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>385</width>
-    <height>237</height>
+    <width>460</width>
+    <height>174</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -26,11 +26,11 @@
      <item row="0" column="0">
       <widget class="QCheckBox" name="mCheckShowHeader">
        <property name="text">
-        <string>Include header</string>
+        <string>Include report header</string>
        </property>
       </widget>
      </item>
-     <item row="2" column="2">
+     <item row="1" column="2">
       <spacer name="horizontalSpacer_3">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
@@ -43,31 +43,17 @@
        </property>
       </spacer>
      </item>
-     <item row="2" column="0">
+     <item row="1" column="0">
       <widget class="QCheckBox" name="mCheckShowFooter">
        <property name="text">
-        <string>Include footer</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="1">
-      <widget class="QPushButton" name="mButtonEditFooter">
-       <property name="text">
-        <string>Edit</string>
+        <string>Include report footer</string>
        </property>
       </widget>
      </item>
      <item row="1" column="1">
-      <widget class="QPushButton" name="mButtonEditBody">
+      <widget class="QPushButton" name="mButtonEditFooter">
        <property name="text">
         <string>Edit</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="QCheckBox" name="mCheckShowBody">
-       <property name="text">
-        <string>Include body</string>
        </property>
       </widget>
      </item>

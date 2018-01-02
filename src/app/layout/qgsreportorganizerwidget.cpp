@@ -22,6 +22,7 @@
 #include "qgslayout.h"
 #include "qgslayoutdesignerdialog.h"
 #include "qgsreportlayoutsectionwidget.h"
+#include "qgsreportsectionwidget.h"
 #include "qgsreportfieldgroupsectionwidget.h"
 #include <QMenu>
 #include <QMessageBox>
@@ -61,10 +62,6 @@ QgsReportOrganizerWidget::QgsReportOrganizerWidget( QWidget *parent, QgsLayoutDe
   addMenu->addAction( fieldGroupSection );
   connect( fieldGroupSection, &QAction::triggered, this, &QgsReportOrganizerWidget::addFieldGroupSection );
 
-  connect( mCheckShowHeader, &QCheckBox::toggled, this, &QgsReportOrganizerWidget::toggleHeader );
-  connect( mCheckShowFooter, &QCheckBox::toggled, this, &QgsReportOrganizerWidget::toggleFooter );
-  connect( mButtonEditHeader, &QPushButton::clicked, this, &QgsReportOrganizerWidget::editHeader );
-  connect( mButtonEditFooter, &QPushButton::clicked, this, &QgsReportOrganizerWidget::editFooter );
   connect( mViewSections->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsReportOrganizerWidget::selectionChanged );
 
   mButtonAddSection->setMenu( addMenu );
@@ -109,62 +106,11 @@ void QgsReportOrganizerWidget::removeSection()
   mSectionModel->removeRow( mViewSections->currentIndex().row(), mViewSections->currentIndex().parent() );
 }
 
-void QgsReportOrganizerWidget::toggleHeader( bool enabled )
-{
-  QgsAbstractReportSection *parent = mSectionModel->sectionForIndex( mViewSections->currentIndex() );
-  if ( !parent )
-    parent = mReport;
-  parent->setHeaderEnabled( enabled );
-}
-
-void QgsReportOrganizerWidget::toggleFooter( bool enabled )
-{
-  QgsAbstractReportSection *parent = mSectionModel->sectionForIndex( mViewSections->currentIndex() );
-  if ( !parent )
-    parent = mReport;
-  parent->setFooterEnabled( enabled );
-}
-
-void QgsReportOrganizerWidget::editHeader()
-{
-  QgsAbstractReportSection *parent = mSectionModel->sectionForIndex( mViewSections->currentIndex() );
-  if ( !parent )
-    parent = mReport;
-
-  if ( !parent->header() )
-  {
-    std::unique_ptr< QgsLayout > header = qgis::make_unique< QgsLayout >( mReport->layoutProject() );
-    header->initializeDefaults();
-    parent->setHeader( header.release() );
-  }
-
-  mDesigner->setCurrentLayout( parent->header() );
-}
-
-void QgsReportOrganizerWidget::editFooter()
-{
-  QgsAbstractReportSection *parent = mSectionModel->sectionForIndex( mViewSections->currentIndex() );
-  if ( !parent )
-    parent = mReport;
-
-  if ( !parent->footer() )
-  {
-    std::unique_ptr< QgsLayout > footer = qgis::make_unique< QgsLayout >( mReport->layoutProject() );
-    footer->initializeDefaults();
-    parent->setFooter( footer.release() );
-  }
-
-  mDesigner->setCurrentLayout( parent->footer() );
-}
-
 void QgsReportOrganizerWidget::selectionChanged( const QModelIndex &current, const QModelIndex & )
 {
   QgsAbstractReportSection *parent = mSectionModel->sectionForIndex( current );
   if ( !parent )
     parent = mReport;
-
-  whileBlocking( mCheckShowHeader )->setChecked( parent->headerEnabled() );
-  whileBlocking( mCheckShowFooter )->setChecked( parent->footerEnabled() );
 
   delete mConfigWidget;
   if ( QgsReportSectionLayout *section = dynamic_cast< QgsReportSectionLayout * >( parent ) )
@@ -176,6 +122,12 @@ void QgsReportOrganizerWidget::selectionChanged( const QModelIndex &current, con
   else if ( QgsReportSectionFieldGroup *section = dynamic_cast< QgsReportSectionFieldGroup * >( parent ) )
   {
     QgsReportSectionFieldGroupWidget *widget = new QgsReportSectionFieldGroupWidget( this, mDesigner, section );
+    mSettingsFrame->layout()->addWidget( widget );
+    mConfigWidget = widget;
+  }
+  else if ( QgsReport *section = dynamic_cast< QgsReport * >( parent ) )
+  {
+    QgsReportSectionWidget *widget = new QgsReportSectionWidget( this, mDesigner, section );
     mSettingsFrame->layout()->addWidget( widget );
     mConfigWidget = widget;
   }
