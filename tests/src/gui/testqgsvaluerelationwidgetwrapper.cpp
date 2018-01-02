@@ -62,6 +62,7 @@ void TestQgsValueRelationWidgetWrapper::cleanup()
 
 void TestQgsValueRelationWidgetWrapper::testScrollBarUnlocked()
 {
+
   // create a vector layer
   QgsVectorLayer vl1( QStringLiteral( "LineString?crs=epsg:3111&field=pk:int&field=fk|:int" ), QStringLiteral( "vl1" ), QStringLiteral( "memory" ) );
   QgsProject::instance()->addMapLayer( &vl1, false, false );
@@ -79,6 +80,7 @@ void TestQgsValueRelationWidgetWrapper::testScrollBarUnlocked()
   QTableWidgetItem item;
   item.setText( QStringLiteral( "MyText" ) );
   w.mTableWidget->setItem( 0, 0, &item );
+
   QCOMPARE( w.mTableWidget->item( 0, 0 )->text(), QString( "MyText" ) );
 
   // when the widget wrapper is enabled, the container should be enabled
