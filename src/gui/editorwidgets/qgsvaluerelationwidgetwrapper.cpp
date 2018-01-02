@@ -126,8 +126,14 @@ void QgsValueRelationWidgetWrapper::initWidget( QWidget *editor )
     mTableWidget->setShowGrid( false );
     mTableWidget->setEditTriggers( QAbstractItemView::NoEditTriggers );
     mTableWidget->setSelectionMode( QAbstractItemView::NoSelection );
-    mTableWidget->setRowCount( ( mCache.size() + config( QStringLiteral( "NofColumns" ) ).toInt() - 1 ) / config( QStringLiteral( "NofColumns" ) ).toInt() );
-    mTableWidget->setColumnCount( config( QStringLiteral( "NofColumns" ) ).toInt() );
+    if ( mCache.size() > 0 )
+      mTableWidget->setRowCount( ( mCache.size() + config( QStringLiteral( "NofColumns" ) ).toInt() - 1 ) / config( QStringLiteral( "NofColumns" ) ).toInt() );
+    else
+      mTableWidget->setRowCount( 1 );
+    if ( config( QStringLiteral( "NofColumns" ) ).toInt() > 0 )
+      mTableWidget->setColumnCount( config( QStringLiteral( "NofColumns" ) ).toInt() );
+    else
+      mTableWidget->setColumnCount( 1 );
 
     int row = 0, column = 0;
     for ( const QgsValueRelationFieldFormatter::ValueRelationItem &element : mCache )
@@ -242,7 +248,7 @@ void QgsValueRelationWidgetWrapper::setEnabled( bool enabled )
   {
     for ( int j = 0; j < mTableWidget->rowCount(); j++ )
     {
-      for ( int i = 0; i < config( QStringLiteral( "NofColumns" ) ).toInt(); ++i )
+      for ( int i = 0; i < mTableWidget->columnCount(); ++i )
       {
         QTableWidgetItem *item = mTableWidget->item( j, i );
         if ( item )
