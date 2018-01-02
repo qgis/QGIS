@@ -28,6 +28,7 @@
 #include "qgslogger.h"
 #include "qgslayermetadatavalidator.h"
 #include "qgsapplication.h"
+#include "qgsmapcanvas.h"
 
 QgsMetadataWidget::QgsMetadataWidget( QWidget *parent, QgsMapLayer *layer )
   : QWidget( parent ),
@@ -803,6 +804,12 @@ QMap<QString, QString> QgsMetadataWidget::parseTypes()
   }
   file.close();
   return types;
+}
+
+void QgsMetadataWidget::setMapCanvas( QgsMapCanvas *canvas )
+{
+  if ( canvas )
+    spatialExtentSelector->setCurrentExtent( canvas->extent(), canvas->mapSettings().destinationCrs() );
 }
 
 void QgsMetadataWidget::acceptMetadata()

@@ -93,6 +93,11 @@ class GUI_EXPORT QgsMetadataWidget : public QWidget, private Ui::QgsMetadataWidg
      */
     static QMap<QString, QString> parseTypes();
 
+    /**
+     * Sets a map \a canvas associated with the widget.
+     */
+    void setMapCanvas( QgsMapCanvas *canvas );
+
   private:
     void updatePanel() const;
     void fillSourceFromLayer() const;

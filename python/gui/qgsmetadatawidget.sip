@@ -77,6 +77,11 @@ Returns a list of MIME types available by default in the wizard.
 Returns a list of types available by default in the wizard.
 %End
 
+    void setMapCanvas( QgsMapCanvas *canvas );
+%Docstring
+Sets a map ``canvas`` associated with the widget.
+%End
+
 };
 
 /************************************************************************
