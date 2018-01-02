@@ -165,6 +165,8 @@ void QgsLayoutPagePropertiesWidget::updatePageSize()
   mPage->layout()->pageCollection()->reflow();
   mPage->layout()->pageCollection()->endPageSizeChange();
   mPage->layout()->undoStack()->endMacro();
+
+  emit pageOrientationChanged();
 }
 
 void QgsLayoutPagePropertiesWidget::setToCustomSize()

@@ -41,6 +41,7 @@ from qgis.core import (QgsMultiRenderChecker,
                        QgsReport)
 from qgis.PyQt.QtCore import QSize, QSizeF, QDir, QRectF, Qt
 from qgis.PyQt.QtGui import QImage, QPainter
+from qgis.PyQt.QtPrintSupport import QPrinter
 from qgis.PyQt.QtSvg import QSvgRenderer, QSvgGenerator
 
 from qgis.testing import start_app, unittest
@@ -484,6 +485,61 @@ class TestQgsLayoutExporter(unittest.TestCase):
         self.assertTrue(self.checkImage('exporttosvglayered_page1', 'exporttopdfdpi_page1', rendered_page_1, size_tolerance=1))
         self.assertTrue(self.checkImage('exporttosvglayered_page2', 'exporttopdfdpi_page2', rendered_page_2, size_tolerance=1))
 
+    def testPrint(self):
+        l = QgsLayout(QgsProject.instance())
+        l.initializeDefaults()
+
+        # add a second page
+        page2 = QgsLayoutItemPage(l)
+        page2.setPageSize('A5')
+        l.pageCollection().addPage(page2)
+
+        # add some items
+        item1 = QgsLayoutItemShape(l)
+        item1.attemptSetSceneRect(QRectF(10, 20, 100, 150))
+        fill = QgsSimpleFillSymbolLayer()
+        fill_symbol = QgsFillSymbol()
+        fill_symbol.changeSymbolLayer(0, fill)
+        fill.setColor(Qt.green)
+        fill.setStrokeStyle(Qt.NoPen)
+        item1.setSymbol(fill_symbol)
+        l.addItem(item1)
+
+        item2 = QgsLayoutItemShape(l)
+        item2.attemptSetSceneRect(QRectF(10, 20, 100, 150))
+        item2.attemptMove(QgsLayoutPoint(10, 20), page=1)
+        fill = QgsSimpleFillSymbolLayer()
+        fill_symbol = QgsFillSymbol()
+        fill_symbol.changeSymbolLayer(0, fill)
+        fill.setColor(Qt.cyan)
+        fill.setStrokeStyle(Qt.NoPen)
+        item2.setSymbol(fill_symbol)
+        l.addItem(item2)
+
+        exporter = QgsLayoutExporter(l)
+        # setup settings
+        settings = QgsLayoutExporter.PrintExportSettings()
+        settings.dpi = 80
+        settings.rasterizeWholeImage = False
+
+        pdf_file_path = os.path.join(self.basetestpath, 'test_printdpi.pdf')
+        # make a qprinter directed to pdf
+        printer = QPrinter()
+        printer.setOutputFileName(pdf_file_path)
+        printer.setOutputFormat(QPrinter.PdfFormat)
+
+        self.assertEqual(exporter.print(printer, settings), QgsLayoutExporter.Success)
+        self.assertTrue(os.path.exists(pdf_file_path))
+
+        rendered_page_1 = os.path.join(self.basetestpath, 'test_exporttopdfdpi.png')
+        dpi = 80
+        pdfToPng(pdf_file_path, rendered_page_1, dpi=dpi, page=1)
+        rendered_page_2 = os.path.join(self.basetestpath, 'test_exporttopdfdpi2.png')
+        pdfToPng(pdf_file_path, rendered_page_2, dpi=dpi, page=2)
+
+        self.assertTrue(self.checkImage('printdpi_page1', 'exporttopdfdpi_page1', rendered_page_1, size_tolerance=1))
+        self.assertTrue(self.checkImage('printdpi_page2', 'exporttopdfdpi_page2', rendered_page_2, size_tolerance=1))
+
     def testExportWorldFile(self):
         l = QgsLayout(QgsProject.instance())
         l.initializeDefaults()
@@ -724,6 +780,39 @@ class TestQgsLayoutExporter(unittest.TestCase):
         pdfToPng(pdf_path, rendered_page_3, dpi=80, page=3)
         self.assertTrue(os.path.exists(rendered_page_3))
         rendered_page_4 = os.path.join(self.basetestpath, 'test_exportiteratortopdf_single4.png')
+        pdfToPng(pdf_path, rendered_page_4, dpi=80, page=4)
+        self.assertTrue(os.path.exists(rendered_page_4))
+
+    def testPrintIterator(self):
+        project, layout = self.prepareIteratorLayout()
+        atlas = layout.atlas()
+
+        # setup settings
+        settings = QgsLayoutExporter.PrintExportSettings()
+        settings.dpi = 80
+        settings.rasterizeWholeImage = False
+
+        pdf_path = os.path.join(self.basetestpath, 'test_printiterator.pdf')
+        # make a qprinter directed to pdf
+        printer = QPrinter()
+        printer.setOutputFileName(pdf_path)
+        printer.setOutputFormat(QPrinter.PdfFormat)
+
+        result, error = QgsLayoutExporter.print(atlas, printer, settings)
+        self.assertEqual(result, QgsLayoutExporter.Success, error)
+
+        rendered_page_1 = os.path.join(self.basetestpath, 'test_printiterator1.png')
+        pdfToPng(pdf_path, rendered_page_1, dpi=80, page=1)
+        self.assertTrue(self.checkImage('printeriterator1', 'iteratortoimage1', rendered_page_1, size_tolerance=2))
+
+        rendered_page_2 = os.path.join(self.basetestpath, 'test_printiterator2.png')
+        pdfToPng(pdf_path, rendered_page_2, dpi=80, page=2)
+        self.assertTrue(self.checkImage('printiterator2', 'iteratortoimage2', rendered_page_2, size_tolerance=2))
+
+        rendered_page_3 = os.path.join(self.basetestpath, 'test_printiterator3.png')
+        pdfToPng(pdf_path, rendered_page_3, dpi=80, page=3)
+        self.assertTrue(os.path.exists(rendered_page_3))
+        rendered_page_4 = os.path.join(self.basetestpath, 'test_printiterator4.png')
         pdfToPng(pdf_path, rendered_page_4, dpi=80, page=4)
         self.assertTrue(os.path.exists(rendered_page_4))
 

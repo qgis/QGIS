@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1484</width>
+    <width>2180</width>
     <height>609</height>
    </rect>
   </property>
@@ -72,6 +72,7 @@
    <addaction name="separator"/>
    <addaction name="mActionAddPages"/>
    <addaction name="separator"/>
+   <addaction name="mActionPrint"/>
    <addaction name="mActionExportAsImage"/>
    <addaction name="mActionExportAsSVG"/>
    <addaction name="mActionExportAsPDF"/>
@@ -97,7 +98,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1484</width>
+     <width>2180</width>
      <height>42</height>
     </rect>
    </property>
@@ -122,6 +123,9 @@
     <addaction name="mActionExportAsImage"/>
     <addaction name="mActionExportAsSVG"/>
     <addaction name="mActionExportAsPDF"/>
+    <addaction name="separator"/>
+    <addaction name="mActionPageSetup"/>
+    <addaction name="mActionPrint"/>
     <addaction name="separator"/>
     <addaction name="mActionClose"/>
    </widget>
@@ -346,6 +350,7 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+   <addaction name="mActionPrintReport"/>
    <addaction name="mActionExportReportAsImage"/>
    <addaction name="mActionExportReportAsSVG"/>
    <addaction name="mActionExportReportAsPDF"/>
@@ -1433,6 +1438,47 @@
    </property>
    <property name="toolTip">
     <string>Report Settings</string>
+   </property>
+  </action>
+  <action name="mActionPrint">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionFilePrint.svg</normaloff>:/images/themes/default/mActionFilePrint.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Print...</string>
+   </property>
+   <property name="toolTip">
+    <string>Print Layout</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+P</string>
+   </property>
+  </action>
+  <action name="mActionPrintReport">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionFilePrint.svg</normaloff>:/images/themes/default/mActionFilePrint.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Print Report...</string>
+   </property>
+   <property name="toolTip">
+    <string>Print Report</string>
+   </property>
+  </action>
+  <action name="mActionPageSetup">
+   <property name="text">
+    <string>Pa&amp;ge Setup…</string>
+   </property>
+   <property name="toolTip">
+    <string>Page setup</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+P</string>
    </property>
   </action>
  </widget>

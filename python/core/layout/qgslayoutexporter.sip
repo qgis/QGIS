@@ -290,6 +290,53 @@ to the error description.
 .. seealso:: :py:func:`exportToPdf()`
 %End
 
+
+    struct PrintExportSettings
+    {
+      PrintExportSettings();
+%Docstring
+Constructor for PrintExportSettings
+%End
+
+      double dpi;
+%Docstring
+Resolution to export layout at. If dpi <= 0 the default layout dpi will be used.
+%End
+
+      bool rasterizeWholeImage;
+%Docstring
+Set to true to force whole layout to be rasterized while exporting.
+
+This option is mutually exclusive with forceVectorOutput.
+%End
+
+      QgsLayoutRenderContext::Flags flags;
+%Docstring
+Layout context flags, which control how the export will be created.
+%End
+
+    };
+
+    ExportResult print( QPrinter &printer, const QgsLayoutExporter::PrintExportSettings &settings );
+%Docstring
+Prints the layout to a ``printer``, using the specified export ``settings``.
+
+Returns a result code indicating whether the export was successful or an
+error was encountered.
+%End
+
+    static ExportResult print( QgsAbstractLayoutIterator *iterator, QPrinter &printer,
+                               const QgsLayoutExporter::PrintExportSettings &settings,
+                               QString &error /Out/, QgsFeedback *feedback = 0 );
+%Docstring
+Exports a layout ``iterator`` to a ``printer``, with the specified export ``settings``.
+
+Returns a result code indicating whether the export was successful or an
+error was encountered. If an error was obtained then ``error`` will be set
+to the error description.
+%End
+
+
     struct SvgExportSettings
     {
       SvgExportSettings();

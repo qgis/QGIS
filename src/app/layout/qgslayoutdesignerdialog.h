@@ -20,6 +20,7 @@
 #include "ui_qgslayoutdesignerbase.h"
 #include "qgslayoutdesignerinterface.h"
 #include "qgslayoutexporter.h"
+#include "qgslayoutpagecollection.h"
 #include <QToolButton>
 
 class QgsLayoutDesignerDialog;
@@ -304,6 +305,7 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     void showManager();
     void renameLayout();
     void deleteLayout();
+    void print();
     void exportToRaster();
     void exportToPdf();
     void exportToSvg();
@@ -322,7 +324,14 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     void exportReportToRaster();
     void exportReportToSvg();
     void exportReportToPdf();
+    void printReport();
     void showReportSettings();
+
+    void pageSetup();
+
+    //! Sets the printer page orientation when the page orientation changes
+    void pageOrientationChanged();
+
   private:
 
     static bool sInitializedRegistry;
@@ -406,6 +415,10 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
 
     QComboBox *mAtlasPageComboBox = nullptr;
 
+    //! Page & Printer Setup
+    std::unique_ptr< QPrinter > mPrinter;
+    bool mSetPageOrientation = false;
+
     //! Save window state
     void saveWindowState();
 
@@ -462,6 +475,9 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     QgsLayoutAtlas *atlas();
 
     void toggleActions( bool layoutAvailable );
+
+    void setPrinterPageOrientation( QgsLayoutItemPage::Orientation orientation );
+    QPrinter *printer();
 };
 
 #endif // QGSLAYOUTDESIGNERDIALOG_H

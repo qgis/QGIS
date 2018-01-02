@@ -299,6 +299,52 @@ class CORE_EXPORT QgsLayoutExporter
                                       const QgsLayoutExporter::PdfExportSettings &settings,
                                       QString &error SIP_OUT, QgsFeedback *feedback = nullptr );
 
+
+    //! Contains settings relating to printing layouts
+    struct PrintExportSettings
+    {
+      //! Constructor for PrintExportSettings
+      PrintExportSettings()
+        : flags( QgsLayoutRenderContext::FlagAntialiasing | QgsLayoutRenderContext::FlagUseAdvancedEffects )
+      {}
+
+      //! Resolution to export layout at. If dpi <= 0 the default layout dpi will be used.
+      double dpi = -1;
+
+      /**
+       * Set to true to force whole layout to be rasterized while exporting.
+       *
+       * This option is mutually exclusive with forceVectorOutput.
+       */
+      bool rasterizeWholeImage = false;
+
+      /**
+       * Layout context flags, which control how the export will be created.
+       */
+      QgsLayoutRenderContext::Flags flags = 0;
+
+    };
+
+    /**
+     * Prints the layout to a \a printer, using the specified export \a settings.
+     *
+     * Returns a result code indicating whether the export was successful or an
+     * error was encountered.
+     */
+    ExportResult print( QPrinter &printer, const QgsLayoutExporter::PrintExportSettings &settings );
+
+    /**
+     * Exports a layout \a iterator to a \a printer, with the specified export \a settings.
+     *
+     * Returns a result code indicating whether the export was successful or an
+     * error was encountered. If an error was obtained then \a error will be set
+     * to the error description.
+     */
+    static ExportResult print( QgsAbstractLayoutIterator *iterator, QPrinter &printer,
+                               const QgsLayoutExporter::PrintExportSettings &settings,
+                               QString &error SIP_OUT, QgsFeedback *feedback = nullptr );
+
+
     //! Contains settings relating to exporting layouts to SVG
     struct SvgExportSettings
     {

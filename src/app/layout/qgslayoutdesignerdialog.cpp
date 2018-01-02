@@ -73,6 +73,9 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QProgressDialog>
+#include <QPrinter>
+#include <QPrintDialog>
+#include <QPageSetupDialog>
 #ifdef Q_OS_MACX
 #include <ApplicationServices/ApplicationServices.h>
 #endif
@@ -195,6 +198,7 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   connect( mActionLayoutManager, &QAction::triggered, this, &QgsLayoutDesignerDialog::showManager );
   connect( mActionRemoveLayout, &QAction::triggered, this, &QgsLayoutDesignerDialog::deleteLayout );
 
+  connect( mActionPrint, &QAction::triggered, this, &QgsLayoutDesignerDialog::print );
   connect( mActionExportAsImage, &QAction::triggered, this, &QgsLayoutDesignerDialog::exportToRaster );
   connect( mActionExportAsPDF, &QAction::triggered, this, &QgsLayoutDesignerDialog::exportToPdf );
   connect( mActionExportAsSVG, &QAction::triggered, this, &QgsLayoutDesignerDialog::exportToSvg );
@@ -226,6 +230,9 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   connect( mActionExportReportAsImage, &QAction::triggered, this, &QgsLayoutDesignerDialog::exportReportToRaster );
   connect( mActionExportReportAsSVG, &QAction::triggered, this, &QgsLayoutDesignerDialog::exportReportToSvg );
   connect( mActionExportReportAsPDF, &QAction::triggered, this, &QgsLayoutDesignerDialog::exportReportToPdf );
+  connect( mActionPrintReport, &QAction::triggered, this, &QgsLayoutDesignerDialog::printReport );
+
+  connect( mActionPageSetup, &QAction::triggered, this, &QgsLayoutDesignerDialog::pageSetup );
 
   mView = new QgsLayoutView();
   //mView->setMapCanvas( mQgis->mapCanvas() );
@@ -881,6 +888,10 @@ void QgsLayoutDesignerDialog::showItemOptions( QgsLayoutItem *item, bool bringPa
 
   if ( ! widget )
     return;
+
+
+  if ( QgsLayoutPagePropertiesWidget *ppWidget = qobject_cast< QgsLayoutPagePropertiesWidget * >( widget.get() ) )
+    connect( ppWidget, &QgsLayoutPagePropertiesWidget::pageOrientationChanged, this, &QgsLayoutDesignerDialog::pageOrientationChanged );
 
   widget->setDockMode( true );
   connect( item, &QgsLayoutItem::destroyed, widget.get(), [this]
@@ -1573,6 +1584,102 @@ void QgsLayoutDesignerDialog::deleteLayout()
   close();
 }
 
+void QgsLayoutDesignerDialog::print()
+{
+  if ( containsWmsLayers() )
+  {
+    showWmsPrintingWarning();
+  }
+
+  if ( requiresRasterization() )
+  {
+    showRasterizationWarning();
+  }
+
+  if ( currentLayout()->pageCollection()->pageCount() == 0 )
+    return;
+
+  // get orientation from first page
+  QgsLayoutItemPage::Orientation orientation = currentLayout()->pageCollection()->page( 0 )->orientation();
+
+  //set printer page orientation
+  setPrinterPageOrientation( orientation );
+
+  QPrintDialog printDialog( printer(), nullptr );
+  if ( printDialog.exec() != QDialog::Accepted )
+  {
+    return;
+  }
+
+
+  mView->setPaintingEnabled( false );
+  QApplication::setOverrideCursor( Qt::BusyCursor );
+
+  QgsLayoutExporter::PrintExportSettings printSettings;
+  printSettings.rasterizeWholeImage = mLayout->customProperty( QStringLiteral( "rasterize" ), false ).toBool();
+
+  // force a refresh, to e.g. update data defined properties, tables, etc
+  mLayout->refresh();
+
+  QgsLayoutExporter exporter( mLayout );
+  QString printerName = printer()->printerName();
+  switch ( exporter.print( *printer(), printSettings ) )
+  {
+    case QgsLayoutExporter::Success:
+    {
+      QString message;
+      if ( !printerName.isEmpty() )
+      {
+        message =   tr( "Successfully printed layout to %1" ).arg( printerName );
+      }
+      else
+      {
+        message = tr( "Successfully printed layout" );
+      }
+      mMessageBar->pushMessage( tr( "Print layout" ),
+                                message,
+                                QgsMessageBar::SUCCESS, 0 );
+      break;
+    }
+
+    case QgsLayoutExporter::PrintError:
+    {
+      QString message;
+      if ( !printerName.isEmpty() )
+      {
+        message =   tr( "Could not create print device for %1" ).arg( printerName );
+      }
+      else
+      {
+        message = tr( "Could not create print device" );
+      }
+      QMessageBox::warning( this, tr( "Print layout" ),
+                            message,
+                            QMessageBox::Ok,
+                            QMessageBox::Ok );
+      break;
+    }
+
+    case QgsLayoutExporter::MemoryError:
+      QMessageBox::warning( this, tr( "Memory Allocation Error" ),
+                            tr( "Printing the layout "
+                                "resulted in a memory overflow.\n\n"
+                                "Please try a lower resolution or a smaller paper size." ),
+                            QMessageBox::Ok, QMessageBox::Ok );
+      break;
+
+    case QgsLayoutExporter::FileError:
+    case QgsLayoutExporter::SvgLayerError:
+    case QgsLayoutExporter::IteratorError:
+    case QgsLayoutExporter::Canceled:
+      // no meaning for PDF exports, will not be encountered
+      break;
+  }
+
+  mView->setPaintingEnabled( true );
+  QApplication::restoreOverrideCursor();
+}
+
 void QgsLayoutDesignerDialog::exportToRaster()
 {
   if ( containsWmsLayers() )
@@ -2032,8 +2139,132 @@ void QgsLayoutDesignerDialog::atlasLast()
 
 void QgsLayoutDesignerDialog::printAtlas()
 {
+  QgsLayoutAtlas *printAtlas = atlas();
+  if ( !printAtlas || !printAtlas->enabled() )
+    return;
+
   loadAtlasPredefinedScalesFromProject();
-  //TODO
+
+  if ( containsWmsLayers() )
+  {
+    showWmsPrintingWarning();
+  }
+
+  if ( requiresRasterization() )
+  {
+    showRasterizationWarning();
+  }
+
+  if ( currentLayout()->pageCollection()->pageCount() == 0 )
+    return;
+
+  // get orientation from first page
+  QgsLayoutItemPage::Orientation orientation = currentLayout()->pageCollection()->page( 0 )->orientation();
+
+  //set printer page orientation
+  setPrinterPageOrientation( orientation );
+
+  QPrintDialog printDialog( printer(), nullptr );
+  if ( printDialog.exec() != QDialog::Accepted )
+  {
+    return;
+  }
+
+  mView->setPaintingEnabled( false );
+  QApplication::setOverrideCursor( Qt::BusyCursor );
+
+  QgsLayoutExporter::PrintExportSettings printSettings;
+  printSettings.rasterizeWholeImage = mLayout->customProperty( QStringLiteral( "rasterize" ), false ).toBool();
+
+  QString error;
+  std::unique_ptr< QgsFeedback > feedback = qgis::make_unique< QgsFeedback >();
+  std::unique_ptr< QProgressDialog > progressDialog = qgis::make_unique< QProgressDialog >( tr( "Printing maps..." ), tr( "Abort" ), 0, 100, this );
+  progressDialog->setWindowTitle( tr( "Printing Atlas" ) );
+  connect( feedback.get(), &QgsFeedback::progressChanged, this, [ & ]( double progress )
+  {
+    progressDialog->setValue( progress );
+    progressDialog->setLabelText( feedback->property( "progress" ).toString() ) ;
+
+#ifdef Q_OS_LINUX
+    // For some reason on Windows hasPendingEvents() always return true,
+    // but one iteration is actually enough on Windows to get good interactivity
+    // whereas on Linux we must allow for far more iterations.
+    // For safety limit the number of iterations
+    int nIters = 0;
+    while ( QCoreApplication::hasPendingEvents() && ++nIters < 100 )
+#endif
+    {
+      QCoreApplication::processEvents();
+    }
+
+  } );
+  connect( progressDialog.get(), &QProgressDialog::canceled, this, [ & ]
+  {
+    feedback->cancel();
+  } );
+
+  QString printerName = printer()->printerName();
+  switch ( QgsLayoutExporter::print( printAtlas, *printer(), printSettings, error, feedback.get() ) )
+  {
+    case QgsLayoutExporter::Success:
+    {
+      QString message;
+      if ( !printerName.isEmpty() )
+      {
+        message =   tr( "Successfully printed atlas to %1" ).arg( printerName );
+      }
+      else
+      {
+        message = tr( "Successfully printed atlas" );
+      }
+      mMessageBar->pushMessage( tr( "Print atlas" ),
+                                message,
+                                QgsMessageBar::SUCCESS, 0 );
+      break;
+    }
+
+    case QgsLayoutExporter::PrintError:
+    {
+      QString message;
+      if ( !printerName.isEmpty() )
+      {
+        message =   tr( "Could not create print device for %1" ).arg( printerName );
+      }
+      else
+      {
+        message = tr( "Could not create print device" );
+      }
+      QMessageBox::warning( this, tr( "Print atlas" ),
+                            message,
+                            QMessageBox::Ok,
+                            QMessageBox::Ok );
+      break;
+    }
+
+    case QgsLayoutExporter::MemoryError:
+      QMessageBox::warning( this, tr( "Memory Allocation Error" ),
+                            tr( "Printing the layout "
+                                "resulted in a memory overflow.\n\n"
+                                "Please try a lower resolution or a smaller paper size." ),
+                            QMessageBox::Ok, QMessageBox::Ok );
+      break;
+
+    case QgsLayoutExporter::IteratorError:
+      QMessageBox::warning( this, tr( "Print Atlas" ),
+                            tr( "Error encountered while printing atlas" ),
+                            QMessageBox::Ok,
+                            QMessageBox::Ok );
+      break;
+
+    case QgsLayoutExporter::FileError:
+    case QgsLayoutExporter::SvgLayerError:
+    case QgsLayoutExporter::Canceled:
+      // no meaning for PDF exports, will not be encountered
+      break;
+  }
+
+  mView->setPaintingEnabled( true );
+  QApplication::restoreOverrideCursor();
 }
 
 void QgsLayoutDesignerDialog::exportAtlasToRaster()
@@ -2934,6 +3165,112 @@ void QgsLayoutDesignerDialog::exportReportToPdf()
   QApplication::restoreOverrideCursor();
 }
 
+void QgsLayoutDesignerDialog::printReport()
+{
+  QPrintDialog printDialog( printer(), nullptr );
+  if ( printDialog.exec() != QDialog::Accepted )
+  {
+    return;
+  }
+
+  mView->setPaintingEnabled( false );
+  QApplication::setOverrideCursor( Qt::BusyCursor );
+
+  QgsLayoutExporter::PrintExportSettings printSettings;
+  if ( mLayout )
+    printSettings.rasterizeWholeImage = mLayout->customProperty( QStringLiteral( "rasterize" ), false ).toBool();
+
+  QString error;
+  std::unique_ptr< QgsFeedback > feedback = qgis::make_unique< QgsFeedback >();
+  std::unique_ptr< QProgressDialog > progressDialog = qgis::make_unique< QProgressDialog >( tr( "Printing maps..." ), tr( "Abort" ), 0, 0, this );
+  progressDialog->setWindowTitle( tr( "Printing Report" ) );
+  connect( feedback.get(), &QgsFeedback::progressChanged, this, [ & ]( double )
+  {
+    //progressDialog->setValue( progress );
+    progressDialog->setLabelText( feedback->property( "progress" ).toString() ) ;
+
+#ifdef Q_OS_LINUX
+    // For some reason on Windows hasPendingEvents() always return true,
+    // but one iteration is actually enough on Windows to get good interactivity
+    // whereas on Linux we must allow for far more iterations.
+    // For safety limit the number of iterations
+    int nIters = 0;
+    while ( QCoreApplication::hasPendingEvents() && ++nIters < 100 )
+#endif
+    {
+      QCoreApplication::processEvents();
+    }
+
+  } );
+  connect( progressDialog.get(), &QProgressDialog::canceled, this, [ & ]
+  {
+    feedback->cancel();
+  } );
+
+  QString printerName = printer()->printerName();
+  switch ( QgsLayoutExporter::print( dynamic_cast< QgsReport * >( mMasterLayout ), *printer(), printSettings, error, feedback.get() ) )
+  {
+    case QgsLayoutExporter::Success:
+    {
+      QString message;
+      if ( !printerName.isEmpty() )
+      {
+        message =   tr( "Successfully printed report to %1" ).arg( printerName );
+      }
+      else
+      {
+        message = tr( "Successfully printed report" );
+      }
+      mMessageBar->pushMessage( tr( "Print report" ),
+                                message,
+                                QgsMessageBar::SUCCESS, 0 );
+      break;
+    }
+
+    case QgsLayoutExporter::PrintError:
+    {
+      QString message;
+      if ( !printerName.isEmpty() )
+      {
+        message =   tr( "Could not create print device for %1" ).arg( printerName );
+      }
+      else
+      {
+        message = tr( "Could not create print device" );
+      }
+      QMessageBox::warning( this, tr( "Print report" ),
+                            message,
+                            QMessageBox::Ok,
+                            QMessageBox::Ok );
+      break;
+    }
+
+    case QgsLayoutExporter::MemoryError:
+      QMessageBox::warning( this, tr( "Memory Allocation Error" ),
+                            tr( "Printing the report"
+                                "resulted in a memory overflow.\n\n"
+                                "Please try a lower resolution or a smaller paper size." ),
+                            QMessageBox::Ok, QMessageBox::Ok );
+      break;
+
+    case QgsLayoutExporter::IteratorError:
+      QMessageBox::warning( this, tr( "Print Report" ),
+                            tr( "Error encountered while printing report" ),
+                            QMessageBox::Ok,
+                            QMessageBox::Ok );
+      break;
+
+    case QgsLayoutExporter::FileError:
+    case QgsLayoutExporter::SvgLayerError:
+    case QgsLayoutExporter::Canceled:
+      // no meaning for PDF exports, will not be encountered
+      break;
+  }
+
+  mView->setPaintingEnabled( true );
+  QApplication::restoreOverrideCursor();
+}
+
 void QgsLayoutDesignerDialog::showReportSettings()
 {
   if ( !mReportDock )
@@ -2945,6 +3282,25 @@ void QgsLayoutDesignerDialog::showReportSettings()
   }
 
   mReportDock->raise();
+}
+
+void QgsLayoutDesignerDialog::pageSetup()
+{
+  if ( currentLayout() && currentLayout()->pageCollection()->pageCount() > 0 )
+  {
+    // get orientation from first page
+    QgsLayoutItemPage::Orientation orientation = currentLayout()->pageCollection()->page( 0 )->orientation();
+    //set printer page orientation
+    setPrinterPageOrientation( orientation );
+  }
+
+  QPageSetupDialog pageSetupDialog( printer(), this );
+  pageSetupDialog.exec();
+}
+
+void QgsLayoutDesignerDialog::pageOrientationChanged()
+{
+  mSetPageOrientation = false;
 }
 
 void QgsLayoutDesignerDialog::paste()
@@ -3078,6 +3434,8 @@ void QgsLayoutDesignerDialog::createReportWidget()
   QgsReportOrganizerWidget *reportWidget = new QgsReportOrganizerWidget( mReportDock, this, report );
   reportWidget->setMessageBar( mMessageBar );
   mReportDock->setWidget( reportWidget );
+  mReportDock->show();
+  mReportDock->raise();
 
   mReportToolbar->show();
 
@@ -3087,9 +3445,10 @@ void QgsLayoutDesignerDialog::createReportWidget()
 void QgsLayoutDesignerDialog::initializeRegistry()
 {
   sInitializedRegistry = true;
-  auto createPageWidget = ( []( QgsLayoutItem * item )->QgsLayoutItemBaseWidget *
+  auto createPageWidget = ( [this]( QgsLayoutItem * item )->QgsLayoutItemBaseWidget *
   {
-    return new QgsLayoutPagePropertiesWidget( nullptr, item );
+    std::unique_ptr< QgsLayoutPagePropertiesWidget > newWidget = qgis::make_unique< QgsLayoutPagePropertiesWidget >( nullptr, item );
+    return newWidget.release();
   } );
 
   QgsGui::layoutItemGuiRegistry()->addLayoutItemGuiMetadata( new QgsLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutPage, QObject::tr( "Page" ), QIcon(), createPageWidget, nullptr, QString(), false, QgsLayoutItemAbstractGuiMetadata::FlagNoCreationTools ) );
@@ -3571,6 +3930,35 @@ void QgsLayoutDesignerDialog::toggleActions( bool layoutAvailable )
   {
     it.value()->setEnabled( layoutAvailable );
   }
+}
+
+void QgsLayoutDesignerDialog::setPrinterPageOrientation( QgsLayoutItemPage::Orientation orientation )
+{
+  if ( !mSetPageOrientation )
+  {
+    switch ( orientation )
+    {
+      case QgsLayoutItemPage::Landscape:
+        printer()->setOrientation( QPrinter::Landscape );
+        break;
+
+      case QgsLayoutItemPage::Portrait:
+        printer()->setOrientation( QPrinter::Portrait );
+        break;
+    }
+
+    mSetPageOrientation = true;
+  }
+}
+
+QPrinter *QgsLayoutDesignerDialog::printer()
+{
+  //only create the printer on demand - creating a printer object can be very slow
+  //due to QTBUG-3033
+  if ( !mPrinter )
+    mPrinter = qgis::make_unique< QPrinter >();
+
+  return mPrinter.get();
 }
 
 void QgsLayoutDesignerDialog::selectItems( const QList<QgsLayoutItem *> items )

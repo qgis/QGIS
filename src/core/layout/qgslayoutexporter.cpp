@@ -620,6 +620,119 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdfs( QgsAbstractLayo
   return Success;
 }
 
+QgsLayoutExporter::ExportResult QgsLayoutExporter::print( QPrinter &printer, const QgsLayoutExporter::PrintExportSettings &s )
+{
+  if ( !mLayout )
+    return PrintError;
+
+  QgsLayoutExporter::PrintExportSettings settings = s;
+  if ( settings.dpi <= 0 )
+    settings.dpi = mLayout->renderContext().dpi();
+
+  mErrorFileName.clear();
+
+  LayoutContextPreviewSettingRestorer restorer( mLayout );
+  ( void )restorer;
+  LayoutContextSettingsRestorer contextRestorer( mLayout );
+  ( void )contextRestorer;
+  mLayout->renderContext().setDpi( settings.dpi );
+
+  // If we are not printing as raster, temporarily disable advanced effects
+  // as QPrinter does not support composition modes and can result
+  // in items missing from the output
+  mLayout->renderContext().setFlag( QgsLayoutRenderContext::FlagUseAdvancedEffects, !settings.rasterizeWholeImage );
+
+  preparePrint( mLayout, printer, true );
+  QPainter p;
+  if ( !p.begin( &printer ) )
+  {
+    //error beginning print
+    return PrintError;
+  }
+
+  ExportResult result = printPrivate( printer, p, false, settings.dpi, settings.rasterizeWholeImage );
+  p.end();
+
+  return result;
+}
+
+QgsLayoutExporter::ExportResult QgsLayoutExporter::print( QgsAbstractLayoutIterator *iterator, QPrinter &printer, const QgsLayoutExporter::PrintExportSettings &s, QString &error, QgsFeedback *feedback )
+{
+  error.clear();
+
+  if ( !iterator->beginRender() )
+    return IteratorError;
+
+  PrintExportSettings settings = s;
+
+  QPainter p;
+
+  int total = iterator->count();
+  double step = total > 0 ? 100.0 / total : 100.0;
+  int i = 0;
+  bool first = true;
+  while ( iterator->next() )
+  {
+    if ( feedback )
+    {
+      if ( total > 0 )
+        feedback->setProperty( "progress", QObject::tr( "Printing %1 of %2" ).arg( i + 1 ).arg( total ) );
+      else
+        feedback->setProperty( "progress", QObject::tr( "Printing section %1" ).arg( i + 1 ).arg( total ) );
+      feedback->setProgress( step * i );
+    }
+    if ( feedback && feedback->isCanceled() )
+    {
+      iterator->endRender();
+      return Canceled;
+    }
+
+    if ( s.dpi <= 0 )
+      settings.dpi = iterator->layout()->renderContext().dpi();
+
+    LayoutContextPreviewSettingRestorer restorer( iterator->layout() );
+    ( void )restorer;
+    LayoutContextSettingsRestorer contextRestorer( iterator->layout() );
+    ( void )contextRestorer;
+    iterator->layout()->renderContext().setDpi( settings.dpi );
+
+    // If we are not printing as raster, temporarily disable advanced effects
+    // as QPrinter does not support composition modes and can result
+    // in items missing from the output
+    iterator->layout()->renderContext().setFlag( QgsLayoutRenderContext::FlagUseAdvancedEffects, !settings.rasterizeWholeImage );
+
+    if ( first )
+    {
+      preparePrint( iterator->layout(), printer, true );
+
+      if ( !p.begin( &printer ) )
+      {
+        //error beginning print
+        return PrintError;
+      }
+    }
+
+    QgsLayoutExporter exporter( iterator->layout() );
+
+    ExportResult result = exporter.printPrivate( printer, p, !first, settings.dpi, settings.rasterizeWholeImage );
+    if ( result != Success )
+    {
+      iterator->endRender();
+      return result;
+    }
+    first = false;
+    i++;
+  }
+
+  if ( feedback )
+  {
+    feedback->setProgress( 100 );
+  }
+
+  iterator->endRender();
+  return Success;
+}
+
 QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToSvg( const QString &filePath, const QgsLayoutExporter::SvgExportSettings &s )
 {
   if ( !mLayout )
