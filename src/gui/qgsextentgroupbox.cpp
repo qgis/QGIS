@@ -70,6 +70,8 @@ void QgsExtentGroupBox::setCurrentExtent( const QgsRectangle &currentExtent, con
 {
   mCurrentExtent = currentExtent;
   mCurrentCrs = currentCrs;
+
+  mCurrentExtentButton->setVisible( true );
 }
 
 void QgsExtentGroupBox::setOutputCrs( const QgsCoordinateReferenceSystem &outputCrs )
