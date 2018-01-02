@@ -42,10 +42,10 @@
    </styles>
    <layer-tree-group>
     <customproperties/>
-    <layer-tree-layer providerKey="ogr" name="points" expanded="1" checked="Qt::Checked" id="points20171212162310546" source="../../../dev/QGIS/tests/testdata/points.shp">
+    <layer-tree-layer providerKey="ogr" name="points" expanded="1" checked="Qt::Checked" id="points20171212162310546" source="../points.shp">
      <customproperties/>
     </layer-tree-layer>
-    <layer-tree-layer providerKey="ogr" name="polys" expanded="1" checked="Qt::Checked" id="polys20171212162309844" source="../../../dev/QGIS/tests/testdata/polys.shp">
+    <layer-tree-layer providerKey="ogr" name="polys" expanded="1" checked="Qt::Checked" id="polys20171212162309844" source="../polys.shp">
      <customproperties/>
     </layer-tree-layer>
     <custom-order enabled="0"/>

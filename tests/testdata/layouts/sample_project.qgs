@@ -419,7 +419,7 @@
           <customproperties/>
         </ComposerItem>
       </ComposerLabel>
-      <ComposerPicture resizeMode="0" svgBorderWidth="1.4" pictureRotation="45" pictureWidth="18.1797" svgFillColor="250,196,0,255" svgBorderColor="251,54,54,255" northMode="0" file="../../../dev/QGIS/tests/testdata/svg_params.svg" northOffset="0" pictureHeight="18.1797" mapId="0" anchorPoint="0">
+      <ComposerPicture resizeMode="0" svgBorderWidth="1.4" pictureRotation="45" pictureWidth="18.1797" svgFillColor="250,196,0,255" svgBorderColor="251,54,54,255" northMode="0" file="../svg_params.svg" northOffset="0" pictureHeight="18.1797" mapId="0" anchorPoint="0">
         <ComposerItem pagey="12.6029" page="1" id="" lastValidViewScaleFactor="-1" positionMode="0" positionLock="false" x="207.192" y="12.6029" visibility="1" zValue="4" background="false" transparency="0" frameJoinStyle="miter" blendMode="0" width="25.7099" outlineWidth="0.3" excludeFromExports="0" uuid="{4b8321c4-dc09-4601-9ebf-f7aa047568b1}" height="30.7511" itemRotation="0" frame="false" pagex="207.192">
           <FrameColor alpha="255" red="0" blue="0" green="0"/>
           <BackgroundColor alpha="255" red="255" blue="255" green="255"/>
@@ -427,7 +427,7 @@
           <customproperties/>
         </ComposerItem>
       </ComposerPicture>
-      <ComposerPicture resizeMode="1" svgBorderWidth="0.2" pictureRotation="0" pictureWidth="65.5351" svgFillColor="255,255,255,255" svgBorderColor="0,0,0,255" northMode="0" file="../../../dev/QGIS/tests/testdata/sample_svg.svg" northOffset="0" pictureHeight="56.461" mapId="-1" anchorPoint="0">
+      <ComposerPicture resizeMode="1" svgBorderWidth="0.2" pictureRotation="0" pictureWidth="65.5351" svgFillColor="255,255,255,255" svgBorderColor="0,0,0,255" northMode="0" file="../sample_svg.svg" northOffset="0" pictureHeight="56.461" mapId="-1" anchorPoint="0">
         <ComposerItem pagey="9.07409" page="1" id="" lastValidViewScaleFactor="-1" positionMode="2" positionLock="false" x="133.087" y="9.07409" visibility="1" zValue="3" background="false" transparency="0" frameJoinStyle="miter" blendMode="0" width="65.5351" outlineWidth="0.3" excludeFromExports="0" uuid="{55cc46f7-acd7-4496-9af0-d5788ba93aad}" height="56.461" itemRotation="0" frame="false" pagex="133.087">
           <FrameColor alpha="255" red="0" blue="0" green="0"/>
           <BackgroundColor alpha="255" red="255" blue="255" green="255"/>
@@ -585,7 +585,7 @@
   <projectlayers>
     <maplayer simplifyAlgorithm="0" minimumScale="1" maximumScale="1e+08" simplifyDrawingHints="1" minLabelScale="1" maxLabelScale="1e+08" simplifyDrawingTol="1" readOnly="0" geometry="Line" simplifyMaxScale="1" type="vector" hasScaleBasedVisibilityFlag="0" simplifyLocal="1" scaleBasedLabelVisibilityFlag="0">
       <id>lines20171212162314640</id>
-      <datasource>../../../dev/QGIS/tests/testdata/lines.shp</datasource>
+      <datasource>../lines.shp</datasource>
       <keywordList>
         <value></value>
       </keywordList>
@@ -775,7 +775,7 @@ def my_form_open(dialog, layer, feature):
     </maplayer>
     <maplayer simplifyAlgorithm="0" minimumScale="1" maximumScale="1e+08" simplifyDrawingHints="0" minLabelScale="1" maxLabelScale="1e+08" simplifyDrawingTol="1" readOnly="0" geometry="Point" simplifyMaxScale="1" type="vector" hasScaleBasedVisibilityFlag="0" simplifyLocal="1" scaleBasedLabelVisibilityFlag="0">
       <id>points20171212162310546</id>
-      <datasource>../../../dev/QGIS/tests/testdata/points.shp</datasource>
+      <datasource>../points.shp</datasource>
       <keywordList>
         <value></value>
       </keywordList>
@@ -1018,7 +1018,7 @@ def my_form_open(dialog, layer, feature):
         <ymax>46.72617265077044379</ymax>
       </extent>
       <id>polys20171212162309844</id>
-      <datasource>../../../dev/QGIS/tests/testdata/polys.shp</datasource>
+      <datasource>../polys.shp</datasource>
       <keywordList>
         <value></value>
       </keywordList>
