@@ -5955,6 +5955,12 @@ bool QgisApp::openLayer( const QString &fileName, bool allowInteractive )
   return ok;
 }
 
+QgsProject *QgisApp::activeProject()
+{
+  //TODO (assigned to @wonder-sk) - allow multiple project instances at once ;)
+  return QgsProject::instance();
+}
+
 
 // Open a file specified by a commandline argument, Drop or FileOpen event.
 void QgisApp::openFile( const QString &fileName )
