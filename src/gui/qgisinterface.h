@@ -226,6 +226,9 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QToolBar *vectorToolBar() = 0;
     virtual QToolBar *databaseToolBar() = 0;
     virtual QToolBar *webToolBar() = 0;
+    virtual QToolBar *labelToolBar() = 0;
+    virtual QToolBar *snappingToolBar() = 0;
+    virtual QToolBar *dataSourceManagerToolBar() = 0;
 
     // Project menu actions
     virtual QAction *actionNewProject() = 0;

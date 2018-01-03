@@ -382,6 +382,9 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QToolBar *vectorToolBar() override;
     QToolBar *databaseToolBar() override;
     QToolBar *webToolBar() override;
+    QToolBar *snappingToolBar() override;
+    QToolBar *labelToolBar() override;
+    QToolBar *dataSourceManagerToolBar() override;
 
     //! Project menu actions
     QAction *actionNewProject() override;

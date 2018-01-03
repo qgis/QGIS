@@ -633,6 +633,10 @@ QToolBar *QgisAppInterface::rasterToolBar() { return qgis->rasterToolBar(); }
 QToolBar *QgisAppInterface::vectorToolBar() { return qgis->vectorToolBar(); }
 QToolBar *QgisAppInterface::databaseToolBar() { return qgis->databaseToolBar(); }
 QToolBar *QgisAppInterface::webToolBar() { return qgis->webToolBar(); }
+QToolBar *QgisAppInterface::snappingToolBar() { return qgis->snappingToolBar(); }
+QToolBar *QgisAppInterface::labelToolBar() { return qgis->labelToolBar(); }
+
+QToolBar *QgisAppInterface::dataSourceManagerToolBar() { return qgis->dataSourceManagerToolBar(); }
 
 QAction *QgisAppInterface::actionNewProject() { return qgis->actionNewProject(); }
 QAction *QgisAppInterface::actionOpenProject() { return qgis->actionOpenProject(); }
