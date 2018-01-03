@@ -499,6 +499,10 @@ QCursor QgsApplication::getThemeCursor( const Cursor &cursor )
 
   // All calculations are done on 32x32 icons
   // Defaults to center, individual cursors may override
+
+  QgsSettings settings;
+  int cursorSize = settings.value( QStringLiteral( "CursorSize" ), 22, QgsSettings::Section::Gui ).toInt();
+
   int activeX = 16;
   int activeY = 16;
 
@@ -547,13 +551,14 @@ QCursor QgsApplication::getThemeCursor( const Cursor &cursor )
   if ( ! icon.isNull( ) )
   {
     // Apply scaling
-    float scale( ( float ) app->fontMetrics().height() / 32 * 1.5 ) ; // Make them bigger to match 24x24
+    float scale( ( float ) cursorSize / 32.0 ) ;
     _cursor = QCursor( icon.pixmap( std::ceil( scale * 32 ), std::ceil( scale * 32 ) ), std::ceil( scale * activeX ), std::ceil( scale * activeY ) );
   }
   if ( app )
     app->mCursorCache.insert( cursor, _cursor );
   return _cursor;
 }
+
 
 // TODO: add some caching mechanism ?
 QPixmap QgsApplication::getThemePixmap( const QString &name )

@@ -522,6 +522,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   }
 
   cmbIconSize->setCurrentIndex( cmbIconSize->findText( mSettings->value( QStringLiteral( "/IconSize" ), QGIS_ICON_SIZE ).toString() ) );
+  cmbCursorSize->setCurrentIndex( cmbCursorSize->findText( mSettings->value( QStringLiteral( "CursorSize" ), 22, QgsSettings::Section::Gui ).toString() ) );
 
   // set font size and family
   spinFontSize->blockSignals( true );
@@ -1298,6 +1299,7 @@ void QgsOptions::saveOptions()
   QgsApplication::setNullRepresentation( leNullValue->text() );
   mSettings->setValue( QStringLiteral( "/qgis/style" ), cmbStyle->currentText() );
   mSettings->setValue( QStringLiteral( "/IconSize" ), cmbIconSize->currentText() );
+  mSettings->setValue( QStringLiteral( "CursorSize" ), cmbCursorSize->currentText(), QgsSettings::Section::Gui );
 
   mSettings->setValue( QStringLiteral( "/qgis/messageTimeout" ), mMessageTimeoutSpnBx->value() );
 
