@@ -28,7 +28,8 @@ class TestQgsLayoutItemPropertiesDialog(unittest.TestCase):
         """ test dialog getters/setters """
         dlg = qgis.gui.QgsLayoutItemPropertiesDialog()
 
-        l = QgsLayout(QgsProject.instance())
+        p = QgsProject()
+        l = QgsLayout(p)
         l.initializeDefaults()
         dlg.setLayout(l)
 

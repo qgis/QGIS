@@ -132,9 +132,9 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         self.presetCombo.clear()
 
         names = []
-        entries = QgsProject.instance().subkeyList('DBManager', 'savedQueries')
+        entries = self.iface.activeProject().subkeyList('DBManager', 'savedQueries')
         for entry in entries:
-            name = QgsProject.instance().readEntry('DBManager', 'savedQueries/' + entry + '/name')[0]
+            name = self.iface.activeProject().readEntry('DBManager', 'savedQueries/' + entry + '/name')[0]
             names.append(name)
 
         for name in sorted(names):
@@ -146,8 +146,8 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         if query == "":
             return
         name = self.presetName.text()
-        QgsProject.instance().writeEntry('DBManager', 'savedQueries/q' + str(name.__hash__()) + '/name', name)
-        QgsProject.instance().writeEntry('DBManager', 'savedQueries/q' + str(name.__hash__()) + '/query', query)
+        self.iface.activeProject().writeEntry('DBManager', 'savedQueries/q' + str(name.__hash__()) + '/name', name)
+        self.iface.activeProject().writeEntry('DBManager', 'savedQueries/q' + str(name.__hash__()) + '/query', query)
         index = self.presetCombo.findText(name)
         if index == -1:
             self.presetCombo.addItem(name)
@@ -157,13 +157,13 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
 
     def deletePreset(self):
         name = self.presetCombo.currentText()
-        QgsProject.instance().removeEntry('DBManager', 'savedQueries/q' + str(name.__hash__()))
+        self.iface.activeProject().removeEntry('DBManager', 'savedQueries/q' + str(name.__hash__()))
         self.presetCombo.removeItem(self.presetCombo.findText(name))
         self.presetCombo.setCurrentIndex(-1)
 
     def loadPreset(self, name):
-        query = QgsProject.instance().readEntry('DBManager', 'savedQueries/q' + str(name.__hash__()) + '/query')[0]
-        name = QgsProject.instance().readEntry('DBManager', 'savedQueries/q' + str(name.__hash__()) + '/name')[0]
+        query = self.iface.activeProject().readEntry('DBManager', 'savedQueries/q' + str(name.__hash__()) + '/query')[0]
+        name = self.iface.activeProject().readEntry('DBManager', 'savedQueries/q' + str(name.__hash__()) + '/name')[0]
         self.editSql.setText(query)
 
     def loadAsLayerToggled(self, checked):
@@ -247,7 +247,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
 
         # get a new layer name
         names = []
-        for layer in list(QgsProject.instance().mapLayers().values()):
+        for layer in list(self.iface.activeProject().mapLayers().values()):
             names.append(layer.name())
 
         layerName = self.layerNameEdit.text()
@@ -273,7 +273,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
             if layer is None:
                 return
 
-            QgsProject.instance().addMapLayers([layer], True)
+            self.iface.activeProject().addMapLayers([layer], True)
 
     def fillColumnCombos(self):
         query = self._getSqlQuery()

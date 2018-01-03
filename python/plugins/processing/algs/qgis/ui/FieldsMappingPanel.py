@@ -57,6 +57,7 @@ from qgis.core import (
     QgsVectorLayer,
 )
 from qgis.gui import QgsFieldExpressionWidget
+from qgis.utils import iface
 
 from processing.gui.wrappers import WidgetWrapper, DIALOG_STANDARD, DIALOG_MODELER
 from processing.tools import dataobjects
@@ -125,7 +126,7 @@ class FieldsMappingModel(QAbstractTableModel):
     def contextGenerator(self):
         if self._layer:
             return self._layer
-        return QgsProject.instance()
+        return iface.activeProject()
 
     def layer(self):
         return self._layer

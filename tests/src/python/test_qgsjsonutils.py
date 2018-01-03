@@ -36,6 +36,7 @@ from qgis.PyQt.QtCore import QVariant, QTextCodec
 start_app()
 codec = QTextCodec.codecForName("System")
 
+project_instance = QgsProject()
 
 class TestQgsJsonUtils(unittest.TestCase):
 
@@ -509,7 +510,7 @@ class TestQgsJsonUtils(unittest.TestCase):
         f3.setAttributes(["foobar", 124, 554])
         assert pr.addFeatures([f1, f2, f3])
 
-        QgsProject.instance().addMapLayers([child, parent])
+        project_instance.addMapLayers([child, parent])
 
         rel = QgsRelation()
         rel.setId('rel1')
@@ -518,7 +519,7 @@ class TestQgsJsonUtils(unittest.TestCase):
         rel.setReferencedLayer(parent.id())
         rel.addFieldPair('y', 'foreignkey')
 
-        QgsProject.instance().relationManager().addRelation(rel)
+        project_instance.relationManager().addRelation(rel)
 
         exporter = QgsJsonExporter()
 

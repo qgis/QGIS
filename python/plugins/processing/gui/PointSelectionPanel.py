@@ -50,7 +50,7 @@ class PointSelectionPanel(BASE, WIDGET):
         self.btnSelect.clicked.connect(self.selectOnCanvas)
 
         self.dialog = dialog
-        self.crs = QgsProject.instance().crs()
+        self.crs = iface.activeProject().crs()
 
         if iface is not None:
             canvas = iface.mapCanvas()
@@ -80,7 +80,7 @@ class PointSelectionPanel(BASE, WIDGET):
 
     def updatePoint(self, point, button):
         s = '{},{}'.format(point.x(), point.y())
-        self.crs = QgsProject.instance().crs()
+        self.crs = iface.activeProject().crs()
         if self.crs.isValid():
             s += ' [' + self.crs.authid() + ']'
         self.leText.setText(s)

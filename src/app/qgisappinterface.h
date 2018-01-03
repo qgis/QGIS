@@ -51,6 +51,8 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
 
     QgsPluginManagerInterface *pluginManagerInterface() override;
 
+    QgsProject *activeProject() override;
+
     QgsLayerTreeView *layerTreeView() override;
 
     void addCustomActionForLayerType( QAction *action, QString menu,

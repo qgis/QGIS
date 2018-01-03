@@ -196,7 +196,7 @@ class RasterizeAlgorithm(QgisAlgorithm):
 
         tile_set = TileSet(map_theme, layer, extent, tile_size, mupp,
                            output_layer, make_trans,
-                           qgis.utils.iface.mapCanvas().mapSettings())
+                           qgis.utils.iface.mapCanvas().mapSettings(), project=context.project())
         tile_set.render(feedback, make_trans)
 
         return {self.OUTPUT: output_layer}
@@ -209,7 +209,7 @@ class TileSet():
     """
 
     def __init__(self, map_theme, layer, extent, tile_size, mupp, output,
-                 make_trans, map_settings):
+                 make_trans, map_settings, project):
         """
         :param map_theme:
         :param extent:
@@ -265,14 +265,14 @@ class TileSet():
         else:
             self.settings.setBackgroundColor(QColor(255, 255, 255))
 
-        if QgsProject.instance().mapThemeCollection().hasMapTheme(map_theme):
+        if project.mapThemeCollection().hasMapTheme(map_theme):
             self.settings.setLayers(
-                QgsProject.instance().mapThemeCollection(
+                project.mapThemeCollection(
 
                 ).mapThemeVisibleLayers(
                     map_theme))
             self.settings.setLayerStyleOverrides(
-                QgsProject.instance().mapThemeCollection(
+                project.mapThemeCollection(
 
                 ).mapThemeStyleOverrides(
                     map_theme))

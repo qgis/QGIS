@@ -23,6 +23,7 @@ from qgis.testing import start_app, unittest
 
 start_app()
 
+project_instance = QgsProject()
 
 class TestQgsProjectionSelectionWidgets(unittest.TestCase):
 
@@ -47,7 +48,7 @@ class TestQgsProjectionSelectionWidgets(unittest.TestCase):
         w.setOptionVisible(QgsProjectionSelectionWidget.ProjectCrs, True)
         # should still be hidden, because project crs was not set
         self.assertFalse(w.optionVisible(QgsProjectionSelectionWidget.ProjectCrs))
-        QgsProject.instance().setCrs(QgsCoordinateReferenceSystem('EPSG:3113'))
+        project_instance.setCrs(QgsCoordinateReferenceSystem('EPSG:3113'))
         w = QgsProjectionSelectionWidget()
         w.setOptionVisible(QgsProjectionSelectionWidget.ProjectCrs, True)
         self.assertTrue(w.optionVisible(QgsProjectionSelectionWidget.ProjectCrs))

@@ -28,6 +28,7 @@ from qgis.testing import start_app, unittest
 def GDAL_COMPUTE_VERSION(maj, min, rev):
     return ((maj) * 1000000 + (min) * 10000 + (rev) * 100)
 
+project_instance = QgsProject()
 
 class TestPyQgsNewGeoPackageLayerDialog(unittest.TestCase):
 
@@ -142,12 +143,12 @@ class TestPyQgsNewGeoPackageLayerDialog(unittest.TestCase):
         QTest.mouseClick(ok_button, Qt.LeftButton)
         self.assertTrue(self.accepted)
 
-        layers = QgsProject.instance().mapLayers()
+        layers = project_instance.mapLayers()
         self.assertEqual(len(layers), 1)
         layer = layers[list(layers.keys())[0]]
         self.assertEqual(layer.name(), 'test')
         self.assertEqual(layer.geometryType(), QgsWkbTypes.PointGeometry)
-        QgsProject.instance().removeAllMapLayers()
+        project_instance.removeAllMapLayers()
 
         ds = ogr.Open(dbname)
         lyr = ds.GetLayer(0)
@@ -201,7 +202,7 @@ class TestPyQgsNewGeoPackageLayerDialog(unittest.TestCase):
         dialog.setProperty('question_existing_db_answer_add_new_layer', None)
         self.assertTrue(self.accepted)
 
-        QgsProject.instance().removeAllMapLayers()
+        project_instance.removeAllMapLayers()
         ds = ogr.Open(dbname)
         self.assertEqual(ds.GetLayerCount(), 2)
         ds = None
@@ -213,7 +214,7 @@ class TestPyQgsNewGeoPackageLayerDialog(unittest.TestCase):
         dialog.setProperty('question_existing_db_answer_overwrite', None)
         self.assertTrue(self.accepted)
 
-        QgsProject.instance().removeAllMapLayers()
+        project_instance.removeAllMapLayers()
         ds = ogr.Open(dbname)
         self.assertEqual(ds.GetLayerCount(), 1)
         ds = None
@@ -240,11 +241,11 @@ class TestPyQgsNewGeoPackageLayerDialog(unittest.TestCase):
 
         # Only check with OGR 2.0 since the IDENTIFIER and DESCRIPTION creation options don't exist in OGR 1.11
         if version_num >= GDAL_COMPUTE_VERSION(2, 0, 0):
-            layers = QgsProject.instance().mapLayers()
+            layers = project_instance.mapLayers()
             self.assertEqual(len(layers), 1)
             layer = layers[list(layers.keys())[0]]
             self.assertEqual(layer.name(), 'my_identifier')
-            QgsProject.instance().removeAllMapLayers()
+            project_instance.removeAllMapLayers()
 
             ds = ogr.Open(dbname)
             sql_lyr = ds.ExecuteSQL('SELECT * FROM gpkg_contents')
@@ -258,7 +259,7 @@ class TestPyQgsNewGeoPackageLayerDialog(unittest.TestCase):
             self.assertEqual(identifier, 'my_identifier')
             self.assertEqual(description, 'my_description')
         else:
-            QgsProject.instance().removeAllMapLayers()
+            project_instance.removeAllMapLayers()
 
         # Try invalid path
         mDatabase.setFilePath('/this/is/invalid/test.gpkg')

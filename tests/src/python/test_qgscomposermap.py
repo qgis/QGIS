@@ -38,6 +38,7 @@ from qgscompositionchecker import QgsCompositionChecker
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
+project_instance = QgsProject()
 
 class TestQgsComposerMap(unittest.TestCase):
 
@@ -60,10 +61,10 @@ class TestQgsComposerMap(unittest.TestCase):
 
         # pipe = mRasterLayer.pipe()
         # assert pipe.set(rasterRenderer), 'Cannot set pipe renderer'
-        QgsProject.instance().addMapLayers([self.raster_layer, self.vector_layer])
+        project_instance.addMapLayers([self.raster_layer, self.vector_layer])
 
         # create composition with composer map
-        self.mComposition = QgsComposition(QgsProject.instance())
+        self.mComposition = QgsComposition(project_instance)
         self.mComposition.setPaperSize(297, 210)
         self.mComposerMap = QgsComposerMap(self.mComposition, 20, 20, 200, 100)
         self.mComposerMap.setFrameEnabled(True)
@@ -146,11 +147,11 @@ class TestQgsComposerMap(unittest.TestCase):
         # create composition with composer map
         map_settings = QgsMapSettings()
         map_settings.setLayers([self.vector_layer])
-        composition = QgsComposition(QgsProject.instance())
+        composition = QgsComposition(project_instance)
         composition.setPaperSize(297, 210)
 
         # check that new maps inherit project CRS
-        QgsProject.instance().setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        project_instance.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
         map = QgsComposerMap(composition, 20, 20, 200, 100)
         map.setFrameEnabled(True)
         rectangle = QgsRectangle(-13838977, 2369660, -8672298, 6250909)

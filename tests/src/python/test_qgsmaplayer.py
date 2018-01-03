@@ -50,7 +50,8 @@ class TestQgsMapLayer(unittest.TestCase):
         doc = QDomDocument("testdoc")
         elem = doc.createElement("maplayer")
         self.assertTrue(source.writeLayerXml(elem, doc, QgsReadWriteContext()))
-        self.assertTrue(dest.readLayerXml(elem, QgsReadWriteContext()), QgsProject.instance())
+        p = QgsProject()
+        self.assertTrue(dest.readLayerXml(elem, QgsReadWriteContext()), p)
 
     def testGettersSetters(self):
         # test auto refresh getters/setters

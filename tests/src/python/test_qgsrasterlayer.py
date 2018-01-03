@@ -45,6 +45,7 @@ from qgis.testing import start_app, unittest
 # not used in this test
 start_app()
 
+project_instance = QgsProject()
 
 class TestQgsRasterLayer(unittest.TestCase):
 
@@ -138,7 +139,7 @@ class TestQgsRasterLayer(unittest.TestCase):
 
         rasterRenderer.setRasterTransparency(rasterTransparency)
 
-        QgsProject.instance().addMapLayers([myRasterLayer, ])
+        project_instance.addMapLayers([myRasterLayer, ])
 
         myMapSettings = QgsMapSettings()
         myMapSettings.setLayers([myRasterLayer])
@@ -161,7 +162,7 @@ class TestQgsRasterLayer(unittest.TestCase):
         myMessage = 'Raster not loaded: %s' % myPath
         assert myRasterLayer.isValid(), myMessage
         # crash on next line
-        QgsProject.instance().addMapLayers([myRasterLayer])
+        project_instance.addMapLayers([myRasterLayer])
 
     def testShaderCrash(self):
         """Check if we assign a shader and then reassign it no crash occurs."""

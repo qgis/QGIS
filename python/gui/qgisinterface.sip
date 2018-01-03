@@ -39,6 +39,14 @@ Constructor
 
     virtual QgsPluginManagerInterface *pluginManagerInterface() = 0;
 
+    virtual QgsProject *activeProject() = 0;
+%Docstring
+Returns a pointer to the active project (the project currently open
+and focused within the QGIS application).
+
+.. versionadded:: 3.0
+%End
+
     virtual QgsLayerTreeView *layerTreeView() = 0;
 
     virtual void addCustomActionForLayerType( QAction *action, QString menu,

@@ -25,6 +25,7 @@ from ..connector import DBConnector
 from ..plugin import Table
 
 from qgis.core import QgsDataSourceUri, QgsVirtualLayerDefinition, QgsProject, QgsMapLayer, QgsVectorLayer, QgsCoordinateReferenceSystem, QgsWkbTypes
+from qgis.utils import iface
 
 import sqlite3
 
@@ -96,7 +97,7 @@ class VLayerRegistry(object):
         lid = self.layers.get(l)
         if lid is None:
             return lid
-        return QgsProject.instance().mapLayer(lid)
+        return iface.activeProject().mapLayer(lid)
 
 
 class VLayerConnector(DBConnector):
@@ -190,7 +191,7 @@ class VLayerConnector(DBConnector):
         reg = VLayerRegistry.instance()
         VLayerRegistry.instance().reset()
         lst = []
-        for _, l in list(QgsProject.instance().mapLayers().items()):
+        for _, l in list(iface.activeProject().mapLayers().items()):
             if l.type() == QgsMapLayer.VectorLayer:
 
                 lname = l.name()
@@ -277,7 +278,7 @@ class VLayerConnector(DBConnector):
     def getTableExtent(self, table, geom):
         is_id, t = table
         if is_id:
-            l = QgsProject.instance().mapLayer(t)
+            l = iface.activeProject().mapLayer(t)
         else:
             l = VLayerRegistry.instance().getLayer(t)
         e = l.extent()

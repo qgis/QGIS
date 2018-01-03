@@ -52,6 +52,7 @@ from utilities import unitTestDataPath
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
+project_instance = QgsProject()
 
 class TestQgsArrowSymbolLayer(unittest.TestCase):
 
@@ -60,7 +61,7 @@ class TestQgsArrowSymbolLayer(unittest.TestCase):
 
         lines_shp = os.path.join(TEST_DATA_DIR, 'lines.shp')
         self.lines_layer = QgsVectorLayer(lines_shp, 'Lines', 'ogr')
-        QgsProject.instance().addMapLayer(self.lines_layer)
+        project_instance.addMapLayer(self.lines_layer)
 
         # Create style
         sym2 = QgsLineSymbol.createSimple({'color': '#fdbf6f'})
@@ -73,7 +74,7 @@ class TestQgsArrowSymbolLayer(unittest.TestCase):
         self.mapsettings.setBackgroundColor(QColor("white"))
 
     def tearDown(self):
-        QgsProject.instance().removeAllMapLayers()
+        project_instance.removeAllMapLayers()
 
     def test_1(self):
         sym = self.lines_layer.renderer().symbol()

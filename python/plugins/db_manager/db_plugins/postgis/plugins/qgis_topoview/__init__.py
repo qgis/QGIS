@@ -230,7 +230,7 @@ def run(item, action, mainwindow):
                       # , layerEdgeFaceLeft, layerEdgeFaceRight, layerEdgeNextLeft, layerEdgeNextRight
                       ]
 
-        QgsProject.instance().addMapLayers(faceLayers, False)
+        iface.activeProject().addMapLayers(faceLayers, False)
 
         groupFaces = QgsLayerTreeGroup(u'Faces')
         for layer in faceLayers:
@@ -253,7 +253,7 @@ def run(item, action, mainwindow):
         supergroup = QgsLayerTreeGroup(u'Topology "%s"' % toponame)
         supergroup.insertChildNodes(-1, [groupFaces, groupNodes, groupEdges])
 
-        QgsProject.instance().layerTreeRoot().addChildNode(supergroup)
+        iface.activeProject().layerTreeRoot().addChildNode(supergroup)
 
     finally:
 

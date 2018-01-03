@@ -122,7 +122,8 @@ class TestQgsFeatureSource(unittest.TestCase):
             self.assertEqual(new_features[id].attributes(), f.attributes())
 
         # materialize with reprojection
-        request = QgsFeatureRequest().setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:3785'), QgsProject.instance().transformContext())
+        p = QgsProject()
+        request = QgsFeatureRequest().setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:3785'), p.transformContext())
         new_layer = layer.materialize(request)
         self.assertEqual(new_layer.fields(), layer.fields())
         self.assertEqual(new_layer.crs().authid(), 'EPSG:3785')

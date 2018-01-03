@@ -23,6 +23,7 @@ from qgis.testing import start_app, unittest
 
 start_app()
 
+project_instance = QgsProject()
 
 def createReferencingLayer():
     layer = QgsVectorLayer("Point?field=fldtxt:string&field=foreignkey:integer",
@@ -42,10 +43,10 @@ class TestQgsRelationManager(unittest.TestCase):
     def setUp(self):
         self.referencedLayer = createReferencedLayer()
         self.referencingLayer = createReferencingLayer()
-        QgsProject.instance().addMapLayers([self.referencedLayer, self.referencingLayer])
+        project_instance.addMapLayers([self.referencedLayer, self.referencingLayer])
 
     def tearDown(self):
-        QgsProject.instance().removeAllMapLayers()
+        project_instance.removeAllMapLayers()
 
     def createRelation(self):
         rel = QgsRelation()

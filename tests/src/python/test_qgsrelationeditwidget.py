@@ -39,6 +39,7 @@ from qgis.testing import start_app, unittest
 
 start_app()
 
+project_instance = QgsProject()
 
 class TestQgsRelationEditWidget(unittest.TestCase):
 
@@ -58,11 +59,11 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         cls.vl_a = QgsVectorLayer(cls.dbconn + ' sslmode=disable key=\'pk\' table="qgis_test"."authors" sql=', 'authors', 'postgres')
         cls.vl_link = QgsVectorLayer(cls.dbconn + ' sslmode=disable key=\'pk\' table="qgis_test"."books_authors" sql=', 'books_authors', 'postgres')
 
-        QgsProject.instance().addMapLayer(cls.vl_b)
-        QgsProject.instance().addMapLayer(cls.vl_a)
-        QgsProject.instance().addMapLayer(cls.vl_link)
+        project_instance.addMapLayer(cls.vl_b)
+        project_instance.addMapLayer(cls.vl_a)
+        project_instance.addMapLayer(cls.vl_link)
 
-        cls.relMgr = QgsProject.instance().relationManager()
+        cls.relMgr = project_instance.relationManager()
 
         cls.rel_a = QgsRelation()
         cls.rel_a.setReferencingLayer(cls.vl_link.id())

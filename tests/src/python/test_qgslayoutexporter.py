@@ -112,6 +112,7 @@ def svgToPng(svg_file_path, rendered_file_path, width):
 
 start_app()
 
+project_instance = QgsProject()
 
 class TestQgsLayoutExporter(unittest.TestCase):
 
@@ -142,7 +143,7 @@ class TestQgsLayoutExporter(unittest.TestCase):
         return result
 
     def testRenderPage(self):
-        l = QgsLayout(QgsProject.instance())
+        l = QgsLayout(project_instance)
         l.initializeDefaults()
 
         # add some items
@@ -175,7 +176,7 @@ class TestQgsLayoutExporter(unittest.TestCase):
         self.assertTrue(self.checkImage('renderpage', 'renderpage', rendered_file_path))
 
     def testRenderPageToImage(self):
-        l = QgsLayout(QgsProject.instance())
+        l = QgsLayout(project_instance)
         l.initializeDefaults()
 
         # add some items
@@ -207,7 +208,7 @@ class TestQgsLayoutExporter(unittest.TestCase):
         self.assertTrue(self.checkImage('rendertoimagepage', 'rendertoimagepage', rendered_file_path))
 
     def testRenderRegion(self):
-        l = QgsLayout(QgsProject.instance())
+        l = QgsLayout(project_instance)
         l.initializeDefaults()
 
         # add a guide, to ensure it is not included in export
@@ -243,7 +244,7 @@ class TestQgsLayoutExporter(unittest.TestCase):
         self.assertTrue(self.checkImage('renderregion', 'renderregion', rendered_file_path))
 
     def testRenderRegionToImage(self):
-        l = QgsLayout(QgsProject.instance())
+        l = QgsLayout(project_instance)
         l.initializeDefaults()
 
         # add some items
@@ -285,7 +286,7 @@ class TestQgsLayoutExporter(unittest.TestCase):
         self.assertTrue(self.checkImage('rendertoimageregionoverridedpi', 'rendertoimageregionoverridedpi', rendered_file_path))
 
     def testExportToImage(self):
-        l = QgsLayout(QgsProject.instance())
+        l = QgsLayout(project_instance)
         l.initializeDefaults()
 
         # add a second page
@@ -359,7 +360,7 @@ class TestQgsLayoutExporter(unittest.TestCase):
         self.assertTrue(self.checkImage('exporttoimagesize_page2', 'exporttoimagesize_page2', page2_path))
 
     def testExportToPdf(self):
-        l = QgsLayout(QgsProject.instance())
+        l = QgsLayout(project_instance)
         l.initializeDefaults()
 
         # add a second page
@@ -410,7 +411,7 @@ class TestQgsLayoutExporter(unittest.TestCase):
         self.assertTrue(self.checkImage('exporttopdfdpi_page2', 'exporttopdfdpi_page2', rendered_page_2, size_tolerance=1))
 
     def testExportToSvg(self):
-        l = QgsLayout(QgsProject.instance())
+        l = QgsLayout(project_instance)
         l.initializeDefaults()
 
         # add a second page
@@ -478,7 +479,7 @@ class TestQgsLayoutExporter(unittest.TestCase):
         self.assertTrue(self.checkImage('exporttosvglayered_page2', 'exporttopdfdpi_page2', rendered_page_2, size_tolerance=1))
 
     def testExportWorldFile(self):
-        l = QgsLayout(QgsProject.instance())
+        l = QgsLayout(project_instance)
         l.initializeDefaults()
 
         # add some items
@@ -517,7 +518,7 @@ class TestQgsLayoutExporter(unittest.TestCase):
         self.assertAlmostEqual(values[5], 3050.000000000000, 2)
 
     def testExcludePagesImage(self):
-        l = QgsLayout(QgsProject.instance())
+        l = QgsLayout(project_instance)
         l.initializeDefaults()
         # add a second page
         page2 = QgsLayoutItemPage(l)
@@ -563,7 +564,7 @@ class TestQgsLayoutExporter(unittest.TestCase):
         self.assertFalse(os.path.exists(exporter.generateFileName(details)))
 
     def testPageFileName(self):
-        l = QgsLayout(QgsProject.instance())
+        l = QgsLayout(project_instance)
         exporter = QgsLayoutExporter(l)
         details = QgsLayoutExporter.PageExportDetails()
         details.directory = '/tmp/output'

@@ -48,13 +48,14 @@ from utilities import unitTestDataPath
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
+project_instance = QgsProject()
 
 class TestQgsSymbolExpressionVariables(unittest.TestCase):
 
     def setUp(self):
         myShpFile = os.path.join(TEST_DATA_DIR, 'polys.shp')
         self.layer = QgsVectorLayer(myShpFile, 'Polys', 'ogr')
-        QgsProject.instance().addMapLayer(self.layer)
+        project_instance.addMapLayer(self.layer)
 
         self.iface = get_iface()
         rendered_layers = [self.layer]
@@ -65,7 +66,7 @@ class TestQgsSymbolExpressionVariables(unittest.TestCase):
         self.mapsettings.setLayers(rendered_layers)
 
     def tearDown(self):
-        QgsProject.instance().removeAllMapLayers()
+        project_instance.removeAllMapLayers()
 
     def testPartNum(self):
         # Create rulebased style

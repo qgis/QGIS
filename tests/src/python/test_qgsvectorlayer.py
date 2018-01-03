@@ -65,6 +65,7 @@ from featuresourcetestbase import FeatureSourceTestCase
 from utilities import unitTestDataPath
 start_app()
 
+project_instance = QgsProject()
 
 def createEmptyLayer():
     layer = QgsVectorLayer("Point", "addfeat", "memory")
@@ -458,7 +459,7 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
     def test_DeleteJoinedFeature(self):
         joinLayer = createJoinLayer()
         joinLayer2 = createJoinLayer()
-        QgsProject.instance().addMapLayers([joinLayer, joinLayer2])
+        project_instance.addMapLayers([joinLayer, joinLayer2])
 
         layer = createLayerWithOnePoint()
 
@@ -1307,7 +1308,7 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
 
         joinLayer = createJoinLayer()
         joinLayer2 = createJoinLayer()
-        QgsProject.instance().addMapLayers([joinLayer, joinLayer2])
+        project_instance.addMapLayers([joinLayer, joinLayer2])
 
         layer = createLayerWithOnePoint()
 
@@ -1361,7 +1362,7 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         """ test calculating min/max/uniqueValues on joined field """
         joinLayer = createJoinLayer()
         layer = createLayerWithTwoPoints()
-        QgsProject.instance().addMapLayers([joinLayer, layer])
+        project_instance.addMapLayers([joinLayer, layer])
 
         join = QgsVectorLayerJoinInfo()
         join.setTargetFieldName("fldint")
@@ -1384,10 +1385,10 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
 
         # read project and get layers
         myPath = os.path.join(unitTestDataPath(), 'joins.qgs')
-        rc = QgsProject.instance().read(myPath)
+        rc = project_instance.read(myPath)
 
-        layer = QgsProject.instance().mapLayersByName("polys_with_id")[0]
-        join_layer = QgsProject.instance().mapLayersByName("polys_overlapping_with_id")[0]
+        layer = project_instance.mapLayersByName("polys_with_id")[0]
+        join_layer = project_instance.mapLayersByName("polys_overlapping_with_id")[0]
 
         # create an attribute table for the main_layer and the
         # joined layer
@@ -1674,9 +1675,9 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
 
         # set project CRS and ellipsoid
         srs = QgsCoordinateReferenceSystem(3111, QgsCoordinateReferenceSystem.EpsgCrsId)
-        QgsProject.instance().setCrs(srs)
-        QgsProject.instance().setEllipsoid("WGS84")
-        QgsProject.instance().setDistanceUnits(QgsUnitTypes.DistanceMeters)
+        project_instance.setCrs(srs)
+        project_instance.setEllipsoid("WGS84")
+        project_instance.setDistanceUnits(QgsUnitTypes.DistanceMeters)
 
         idx = temp_layer.addExpressionField('$length', QgsField('length', QVariant.Double))  # NOQA
 
@@ -1686,7 +1687,7 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         self.assertAlmostEqual(f['length'], expected, 3)
 
         # change project length unit, check calculation respects unit
-        QgsProject.instance().setDistanceUnits(QgsUnitTypes.DistanceFeet)
+        project_instance.setDistanceUnits(QgsUnitTypes.DistanceFeet)
         f = next(temp_layer.getFeatures())
         expected = 88360.0918635
         self.assertAlmostEqual(f['length'], expected, 3)
@@ -1702,9 +1703,9 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
 
         # set project CRS and ellipsoid
         srs = QgsCoordinateReferenceSystem(3111, QgsCoordinateReferenceSystem.EpsgCrsId)
-        QgsProject.instance().setCrs(srs)
-        QgsProject.instance().setEllipsoid("WGS84")
-        QgsProject.instance().setAreaUnits(QgsUnitTypes.AreaSquareMeters)
+        project_instance.setCrs(srs)
+        project_instance.setEllipsoid("WGS84")
+        project_instance.setAreaUnits(QgsUnitTypes.AreaSquareMeters)
 
         idx = temp_layer.addExpressionField('$area', QgsField('area', QVariant.Double))  # NOQA
 
@@ -1714,7 +1715,7 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         self.assertAlmostEqual(f['area'], expected, delta=1.0)
 
         # change project area unit, check calculation respects unit
-        QgsProject.instance().setAreaUnits(QgsUnitTypes.AreaSquareMiles)
+        project_instance.setAreaUnits(QgsUnitTypes.AreaSquareMiles)
         f = next(temp_layer.getFeatures())
         expected = 389.6117565069
         self.assertAlmostEqual(f['area'], expected, 3)
@@ -2081,7 +2082,7 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
 
         # if no scope passed, should use a default constructed one including layer variables
         QgsExpressionContextUtils.setLayerVariable(layer, 'var2', 4)
-        QgsExpressionContextUtils.setProjectVariable(QgsProject.instance(), 'var3', 8)
+        QgsExpressionContextUtils.setProjectVariable(project_instance, 'var3', 8)
         layer.setDefaultValueDefinition(1, QgsDefaultValue('to_int(@var2) + to_int(@var3) + $id'))
         self.assertEqual(layer.defaultValue(1, feature), 16)
 
@@ -2557,7 +2558,7 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         self.assertAlmostEqual(virtual_values[4], -65.32, 2)
 
         # repeat, with reprojection on request
-        request = QgsFeatureRequest().setDestinationCrs(QgsCoordinateReferenceSystem('epsg:3785'), QgsProject.instance().transformContext())
+        request = QgsFeatureRequest().setDestinationCrs(QgsCoordinateReferenceSystem('epsg:3785'), project_instance.transformContext())
         features = [f for f in layer.getFeatures(request)]
         # virtual field value should not change, even though geometry has
         self.assertAlmostEqual(features[0]['virtual'], -71.123, 2)

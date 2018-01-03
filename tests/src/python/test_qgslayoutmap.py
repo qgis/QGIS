@@ -39,6 +39,7 @@ from test_qgslayoutitem import LayoutItemTestCase
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
+project_instance = QgsProject()
 
 class TestQgsComposerMap(unittest.TestCase, LayoutItemTestCase):
 
@@ -73,10 +74,10 @@ class TestQgsComposerMap(unittest.TestCase, LayoutItemTestCase):
 
         # pipe = mRasterLayer.pipe()
         # assert pipe.set(rasterRenderer), 'Cannot set pipe renderer'
-        QgsProject.instance().addMapLayers([self.raster_layer, self.vector_layer])
+        project_instance.addMapLayers([self.raster_layer, self.vector_layer])
 
         # create composition with composer map
-        self.layout = QgsLayout(QgsProject.instance())
+        self.layout = QgsLayout(project_instance)
         self.layout.initializeDefaults()
         self.map = QgsLayoutItemMap(self.layout)
         self.map.attemptSetSceneRect(QRectF(20, 20, 200, 100))
@@ -169,11 +170,11 @@ class TestQgsComposerMap(unittest.TestCase, LayoutItemTestCase):
         # create composition with composer map
         map_settings = QgsMapSettings()
         map_settings.setLayers([self.vector_layer])
-        layout = QgsLayout(QgsProject.instance())
+        layout = QgsLayout(project_instance)
         layout.initializeDefaults()
 
         # check that new maps inherit project CRS
-        QgsProject.instance().setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
+        project_instance.setCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
         map = QgsLayoutItemMap(layout)
         map.attemptSetSceneRect(QRectF(20, 20, 200, 100))
         map.setFrameEnabled(True)
@@ -239,7 +240,7 @@ class TestQgsComposerMap(unittest.TestCase, LayoutItemTestCase):
     def testContainsAdvancedEffects(self):
         map_settings = QgsMapSettings()
         map_settings.setLayers([self.vector_layer])
-        layout = QgsLayout(QgsProject.instance())
+        layout = QgsLayout(project_instance)
         map = QgsLayoutItemMap(layout)
 
         self.assertFalse(map.containsAdvancedEffects())
@@ -251,7 +252,7 @@ class TestQgsComposerMap(unittest.TestCase, LayoutItemTestCase):
     def testRasterization(self):
         map_settings = QgsMapSettings()
         map_settings.setLayers([self.vector_layer])
-        layout = QgsLayout(QgsProject.instance())
+        layout = QgsLayout(project_instance)
         map = QgsLayoutItemMap(layout)
 
         self.assertFalse(map.requiresRasterization())

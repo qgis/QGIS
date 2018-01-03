@@ -23,6 +23,7 @@ from test_qgslayoutitem import LayoutItemTestCase
 
 start_app()
 
+project_instance = QgsProject()
 
 class TestQgsLayoutItemLabel(unittest.TestCase, LayoutItemTestCase):
 
@@ -35,9 +36,9 @@ class TestQgsLayoutItemLabel(unittest.TestCase, LayoutItemTestCase):
         vectorFileInfo = QFileInfo(TEST_DATA_DIR + "/france_parts.shp")
         mVectorLayer = QgsVectorLayer(vectorFileInfo.filePath(), vectorFileInfo.completeBaseName(), "ogr")
 
-        QgsProject.instance().addMapLayers([mVectorLayer])
+        project_instance.addMapLayers([mVectorLayer])
 
-        layout = QgsLayout(QgsProject.instance())
+        layout = QgsLayout(project_instance)
         layout.initializeDefaults()
 
         label = QgsLayoutItemLabel(layout)

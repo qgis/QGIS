@@ -301,7 +301,7 @@ class CrsWidgetWrapper(WidgetWrapper):
 
             if self.param.defaultValue():
                 if self.param.defaultValue() == 'ProjectCrs':
-                    crs = QgsProject.instance().crs()
+                    crs = iface.activeProject().crs()
                 else:
                     crs = QgsCoordinateReferenceSystem(self.param.defaultValue())
                 widget.setCrs(crs)
@@ -323,7 +323,7 @@ class CrsWidgetWrapper(WidgetWrapper):
         if self.dialogType == DIALOG_MODELER:
             self.setComboValue(value, self.combo)
         elif value == 'ProjectCrs':
-            self.widget.setCrs(QgsProject.instance().crs())
+            self.widget.setCrs(iface.activeProject().crs())
         else:
             self.widget.setCrs(QgsCoordinateReferenceSystem(value))
 
@@ -581,11 +581,11 @@ class MultipleLayerWidgetWrapper(WidgetWrapper):
                 return MultipleInputPanel(datatype=QgsProcessing.TypeFile)
             else:
                 if self.param.layerType() == QgsProcessing.TypeRaster:
-                    options = QgsProcessingUtils.compatibleRasterLayers(QgsProject.instance(), False)
+                    options = QgsProcessingUtils.compatibleRasterLayers(iface.activeProject(), False)
                 elif self.param.layerType() in (QgsProcessing.TypeVectorAnyGeometry, QgsProcessing.TypeVector):
-                    options = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance(), [], False)
+                    options = QgsProcessingUtils.compatibleVectorLayers(iface.activeProject(), [], False)
                 else:
-                    options = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance(), [self.param.layerType()],
+                    options = QgsProcessingUtils.compatibleVectorLayers(iface.activeProject(), [self.param.layerType()],
                                                                         False)
                 opts = [getExtendedLayerName(opt) for opt in options]
                 return MultipleInputPanel(opts, datatype=self.param.layerType())
@@ -600,11 +600,11 @@ class MultipleLayerWidgetWrapper(WidgetWrapper):
     def refresh(self):
         if self.param.layerType() != QgsProcessing.TypeFile:
             if self.param.layerType() == QgsProcessing.TypeRaster:
-                options = QgsProcessingUtils.compatibleRasterLayers(QgsProject.instance(), False)
+                options = QgsProcessingUtils.compatibleRasterLayers(iface.activeProject(), False)
             elif self.param.layerType() in (QgsProcessing.TypeVectorAnyGeometry, QgsProcessing.TypeVector):
-                options = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance(), [], False)
+                options = QgsProcessingUtils.compatibleVectorLayers(iface.activeProject(), [], False)
             else:
-                options = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance(), [self.param.layerType()],
+                options = QgsProcessingUtils.compatibleVectorLayers(iface.activeProject(), [self.param.layerType()],
                                                                     False)
             opts = [getExtendedLayerName(opt) for opt in options]
             self.widget.updateForOptions(opts)
@@ -637,11 +637,11 @@ class MultipleLayerWidgetWrapper(WidgetWrapper):
                 return self.param.setValue(self.widget.selectedoptions)
             else:
                 if self.param.layerType() == QgsProcessing.TypeRaster:
-                    options = QgsProcessingUtils.compatibleRasterLayers(QgsProject.instance(), False)
+                    options = QgsProcessingUtils.compatibleRasterLayers(iface.activeProject(), False)
                 elif self.param.layerType() in (QgsProcessing.TypeVectorAnyGeometry, QgsProcessing.TypeVector):
-                    options = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance(), [], False)
+                    options = QgsProcessingUtils.compatibleVectorLayers(iface.activeProject(), [], False)
                 else:
-                    options = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance(), [self.param.layerType()],
+                    options = QgsProcessingUtils.compatibleVectorLayers(iface.activeProject(), [self.param.layerType()],
                                                                         False)
                 return [options[i] if isinstance(i, int) else i for i in self.widget.selectedoptions]
         elif self.dialogType == DIALOG_BATCH:

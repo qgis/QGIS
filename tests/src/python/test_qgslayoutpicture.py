@@ -35,6 +35,7 @@ from test_qgslayoutitem import LayoutItemTestCase
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
+project_instance = QgsProject()
 
 class TestQgsLayoutPicture(unittest.TestCase, LayoutItemTestCase):
 
@@ -61,7 +62,7 @@ class TestQgsLayoutPicture(unittest.TestCase, LayoutItemTestCase):
         self.pngImage = TEST_DATA_DIR + "/sample_image.png"
 
         # create composition
-        self.layout = QgsLayout(QgsProject.instance())
+        self.layout = QgsLayout(project_instance)
         self.layout.initializeDefaults()
 
         self.picture = QgsLayoutItemPicture(self.layout)
@@ -95,7 +96,7 @@ class TestQgsLayoutPicture(unittest.TestCase, LayoutItemTestCase):
     def testGridNorth(self):
         """Test syncing picture to grid north"""
 
-        layout = QgsLayout(QgsProject.instance())
+        layout = QgsLayout(project_instance)
 
         map = QgsLayoutItemMap(layout)
         map.setExtent(QgsRectangle(0, -256, 256, 0))
@@ -118,7 +119,7 @@ class TestQgsLayoutPicture(unittest.TestCase, LayoutItemTestCase):
     def testTrueNorth(self):
         """Test syncing picture to true north"""
 
-        layout = QgsLayout(QgsProject.instance())
+        layout = QgsLayout(project_instance)
 
         map = QgsLayoutItemMap(layout)
         map.attemptSetSceneRect(QRectF(0, 0, 10, 10))

@@ -83,6 +83,13 @@ class GUI_EXPORT QgisInterface : public QObject
 
     virtual QgsPluginManagerInterface *pluginManagerInterface() = 0;
 
+    /**
+     * Returns a pointer to the active project (the project currently open
+     * and focused within the QGIS application).
+     * \since QGIS 3.0
+     */
+    virtual QgsProject *activeProject() = 0;
+
     virtual QgsLayerTreeView *layerTreeView() = 0;
 
     /**

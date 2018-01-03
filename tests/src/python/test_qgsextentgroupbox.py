@@ -25,6 +25,7 @@ from utilities import unitTestDataPath
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
+project_instance = QgsProject()
 
 class TestQgsExtentGroupBox(unittest.TestCase):
 
@@ -68,7 +69,7 @@ class TestQgsExtentGroupBox(unittest.TestCase):
 
         shapefile = os.path.join(TEST_DATA_DIR, 'polys.shp')
         layer = QgsVectorLayer(shapefile, 'Polys', 'ogr')
-        QgsProject.instance().addMapLayer(layer)
+        project_instance.addMapLayer(layer)
 
         w.setOutputExtentFromLayer(None)
         # no layer - should be unchanged
@@ -82,7 +83,7 @@ class TestQgsExtentGroupBox(unittest.TestCase):
         self.assertEqual(w.extentState(), QgsExtentGroupBox.ProjectLayerExtent)
         self.assertEqual(len(spy), 4)
 
-        QgsProject.instance().removeAllMapLayers()
+        project_instance.removeAllMapLayers()
 
     def testSetOutputCrs(self):
         w = qgis.gui.QgsExtentGroupBox()
@@ -123,7 +124,7 @@ class TestQgsExtentGroupBox(unittest.TestCase):
         f = QgsFeature()
         f.setGeometry(QgsGeometry.fromWkt('Polygon((1 2, 3 2, 3 4, 1 4, 1 2))'))
         layer.dataProvider().addFeatures([f])
-        QgsProject.instance().addMapLayer(layer)
+        project_instance.addMapLayer(layer)
         w.setOutputCrs(QgsCoordinateReferenceSystem('epsg:4326'))
         w.setOutputExtentFromLayer(layer)
         self.assertEqual(w.outputExtent(), QgsRectangle(1, 2, 3, 4))

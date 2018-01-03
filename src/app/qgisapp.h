@@ -216,6 +216,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     bool openLayer( const QString &fileName, bool allowInteractive = false );
 
     /**
+     * Returns the project currently open and focused within the application window.
+     */
+    QgsProject *activeProject();
+
+    /**
      * Open the specified project file; prompt to save previous project if necessary.
       Used to process a commandline argument, FileOpen or Drop event.
       */

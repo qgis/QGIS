@@ -23,6 +23,7 @@ from qgis.PyQt.QtWidgets import QTextEdit
 
 start_app()
 
+project_instance = QgsProject()
 
 class TestQgsTextEditWidget(unittest.TestCase):
 
@@ -72,7 +73,7 @@ class TestQgsTextEditWidget(unittest.TestCase):
         layer.dataProvider().addAttributes([QgsField('max', QVariant.String, 'string', 10),
                                             QgsField('nomax', QVariant.String, 'string', 0)])
         layer.updateFields()
-        QgsProject.instance().addMapLayer(layer)
+        project_instance.addMapLayer(layer)
 
         reg = QgsGui.editorWidgetRegistry()
         config = {'IsMultiline': 'True'}
@@ -90,7 +91,7 @@ class TestQgsTextEditWidget(unittest.TestCase):
 
         self.assertEqual(w.value(), 'this_is_a_')
 
-        QgsProject.instance().removeAllMapLayers()
+        project_instance.removeAllMapLayers()
 
 
 class TestQgsValueRelationWidget(unittest.TestCase):
@@ -115,7 +116,7 @@ class TestQgsValueMapEditWidget(unittest.TestCase):
     def test_ValueMap_set_get(self):
         layer = QgsVectorLayer("none?field=number:integer", "layer", "memory")
         self.assertTrue(layer.isValid())
-        QgsProject.instance().addMapLayer(layer)
+        project_instance.addMapLayer(layer)
         reg = QgsGui.editorWidgetRegistry()
         configWdg = reg.createConfigWidget('ValueMap', layer, 0, None)
 
@@ -127,7 +128,7 @@ class TestQgsValueMapEditWidget(unittest.TestCase):
         configWdg.setConfig(config)
         self.assertEqual(configWdg.config(), config)
 
-        QgsProject.instance().removeAllMapLayers()
+        project_instance.removeAllMapLayers()
 
 
 if __name__ == "__main__":

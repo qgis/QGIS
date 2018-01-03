@@ -20,6 +20,7 @@ import os
 
 start_app()
 
+project_instance = QgsProject()
 
 class SubQgsVectorLayerTools(QgsVectorLayerTools):
 
@@ -53,7 +54,7 @@ class TestQgsVectorLayerTools(unittest.TestCase):
         # Create test layer
         cls.vl = QgsVectorLayer(cls.dbconn + ' sslmode=disable key=\'pk\' table="qgis_test"."someData" (geom) sql=', 'layer', 'postgres')
 
-        QgsProject.instance().addMapLayer(cls.vl)
+        project_instance.addMapLayer(cls.vl)
 
         cls.vltools = SubQgsVectorLayerTools()
 

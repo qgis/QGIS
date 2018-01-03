@@ -101,9 +101,9 @@ def runAndLoadResults(algOrName, parameters, feedback=None, context=None):
         if isinstance(param, (QgsProcessingParameterFeatureSink, QgsProcessingParameterVectorDestination, QgsProcessingParameterRasterDestination)):
             p = parameters[param.name()]
             if not isinstance(p, QgsProcessingOutputLayerDefinition):
-                parameters[param.name()] = QgsProcessingOutputLayerDefinition(p, QgsProject.instance())
+                parameters[param.name()] = QgsProcessingOutputLayerDefinition(p, iface.activeProject())
             else:
-                p.destinationProject = QgsProject.instance()
+                p.destinationProject = iface.activeProject()
                 parameters[param.name()] = p
 
     return Processing.runAlgorithm(alg, parameters=parameters, onFinish=handleAlgorithmResults, feedback=feedback, context=context)

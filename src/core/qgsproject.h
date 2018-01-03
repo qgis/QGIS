@@ -66,17 +66,26 @@ class QgsAuxiliaryStorage;
 
 /**
  * \ingroup core
- * Reads and writes project states.
+ * Encapsulates a QGIS project, which consists of a set of map layers, a layer tree,
+ * layouts, relations, etc.
  *
-  \note
-
-  Has two general kinds of state to make persistent.  (I.e., to read and
-  write.)  First, QGIS proprietary information.  Second plug-in information.
-
-  A singleton since there shall only be one active project at a time; and
-  provides canonical location for plug-ins and main app to find/set
-  properties.
-
+ * QgsProject stores and manages all objects which belong to a QGIS project. A project
+ * object usually corresponds to a .qgs file, which encapsulates the contents of
+ * the QgsProject.
+ *
+ * \warning While a singleton QgsProject instance() exists in the c++ API, its
+ * use is heavily discouraged (especially from code within the core and server
+ * libraries). Where possible, take the QgsProject reference from the relevant
+ * context (e.g. a QgsProcessingContext object used by Processing algorithms
+ * has a project() member for retrieving the correct project instance).
+ *
+ * Since QGIS 3.0, the QgsProject singleton instance() is no longer accessible
+ * from the Python bindings and cannot be used in PyQGIS scripts. As noted
+ * above, where possible the correct project reference should be taken based
+ * on the code context. If this is not available, the iface QgisInterface::activeProject()
+ * method should be used to retrieve the currently active project open within
+ * the QGIS application.
+ *
 */
 
 class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenerator
@@ -93,8 +102,12 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     Q_PROPERTY( QList<QgsVectorLayer *> avoidIntersectionsLayers READ avoidIntersectionsLayers WRITE setAvoidIntersectionsLayers NOTIFY avoidIntersectionsLayersChanged )
 
   public:
-    //! Returns the QgsProject singleton instance
-    static QgsProject *instance();
+
+    /**
+     * Returns the QgsProject singleton instance.
+     * \note Not available in Python bindings. Python scripts should use iface.activeProject() instead.
+     */
+    static QgsProject *instance() SIP_SKIP;
 
     /**
      * Create a new QgsProject.

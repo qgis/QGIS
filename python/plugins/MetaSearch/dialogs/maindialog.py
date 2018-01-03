@@ -400,7 +400,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         if crsid != 4326:  # reproject to EPSG:4326
             src = QgsCoordinateReferenceSystem(crsid)
             dest = QgsCoordinateReferenceSystem(4326)
-            xform = QgsCoordinateTransform(src, dest, QgsProject.instance())
+            xform = QgsCoordinateTransform(src, dest, self.iface.activeProject())
             minxy = xform.transform(QgsPointXY(extent.xMinimum(),
                                                extent.yMinimum()))
             maxxy = xform.transform(QgsPointXY(extent.xMaximum(),
@@ -573,7 +573,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
                 dst = self.map.mapSettings().destinationCrs()
                 geom = QgsGeometry.fromWkt(points)
                 if src.postgisSrid() != dst.postgisSrid():
-                    ctr = QgsCoordinateTransform(src, dst, QgsProject.instance())
+                    ctr = QgsCoordinateTransform(src, dst, self.iface.activeProject())
                     try:
                         geom.transform(ctr)
                     except Exception as err:

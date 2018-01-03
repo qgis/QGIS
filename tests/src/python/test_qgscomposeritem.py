@@ -31,7 +31,8 @@ class TestQgsComposerItem(unittest.TestCase):
     def testDataDefinedFrameColor(self):
         mapSettings = QgsMapSettings()  # NOQA
 
-        composition = QgsComposition(QgsProject.instance())
+        self.project = QgsProject()
+        composition = QgsComposition(self.project)
         composition.setPaperSize(297, 210)
 
         item = QgsComposerLabel(composition)
@@ -49,7 +50,7 @@ class TestQgsComposerItem(unittest.TestCase):
     def testDataDefinedBackgroundColor(self):
         mapSettings = QgsMapSettings()  # NOQA
 
-        composition = QgsComposition(QgsProject.instance())
+        composition = QgsComposition(self.project())
         composition.setPaperSize(297, 210)
 
         item = QgsComposerLabel(composition)

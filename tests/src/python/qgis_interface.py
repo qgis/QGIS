@@ -41,6 +41,7 @@ class QgisInterface(QObject):
         """Constructor"""
         QObject.__init__(self)
         self.canvas = canvas
+        self.project = QgsProject()
 
     def zoomFull(self):
         """Zoom to the map full extent"""
@@ -66,9 +67,12 @@ class QgisInterface(QObject):
         """Add a raster layer given a raster layer file name"""
         pass
 
+    def activeProject(self):
+        return self.project
+
     def activeLayer(self):
         """Get pointer to the active layer (layer selected in the legend)"""
-        myLayers = QgsProject.instance().mapLayers()
+        myLayers = self.project.mapLayers()
         for myItem in myLayers:
             return myLayers[myItem]
 

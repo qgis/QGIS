@@ -34,6 +34,7 @@ from qgis.PyQt.QtXml import QDomDocument
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
+project_instance = QgsProject()
 
 class TestQgsComposition(unittest.TestCase):
 
@@ -57,7 +58,7 @@ class TestQgsComposition(unittest.TestCase):
         myText = 'Latitude: %s, Longitude: %s' % (myLatitude, myLongitude)
 
         # Load the composition with the substitutions
-        myComposition = QgsComposition(QgsProject.instance())
+        myComposition = QgsComposition(project_instance)
         mySubstitutionMap = {'replace-me': myText}
         myFile = os.path.join(TEST_DATA_DIR, 'template-for-substitution.qpt')
         with open(myFile) as f:
@@ -73,7 +74,7 @@ class TestQgsComposition(unittest.TestCase):
 
     def testNoSubstitutionMap(self):
         """Test that we can get a map if we use no text substitutions."""
-        myComposition = QgsComposition(QgsProject.instance())
+        myComposition = QgsComposition(project_instance)
         myFile = os.path.join(TEST_DATA_DIR, 'template-for-substitution.qpt')
         with open(myFile) as f:
             myTemplateContent = f.read()
@@ -99,9 +100,9 @@ class TestQgsComposition(unittest.TestCase):
         myPipe = myRasterLayer.pipe()
         assert myPipe.set(myRenderer), "Cannot set pipe renderer"
 
-        QgsProject.instance().addMapLayers([myRasterLayer])
+        project_instance.addMapLayers([myRasterLayer])
 
-        myComposition = QgsComposition(QgsProject.instance())
+        myComposition = QgsComposition(project_instance)
         myFile = os.path.join(TEST_DATA_DIR, 'template-for-substitution.qpt')
         with open(myFile) as f:
             myTemplateContent = f.read()
@@ -137,7 +138,7 @@ class TestQgsComposition(unittest.TestCase):
 
     def testSaveRestore(self):
         # test that properties are restored correctly from XML
-        composition = QgsComposition(QgsProject.instance())
+        composition = QgsComposition(project_instance)
         composition.setName('test composition')
 
         doc = QDomDocument("testdoc")
@@ -146,7 +147,7 @@ class TestQgsComposition(unittest.TestCase):
         elem = doc.createElement("composer")
         self.assertTrue(composition.writeXml(elem, doc))
 
-        composition2 = QgsComposition(QgsProject.instance())
+        composition2 = QgsComposition(project_instance)
         self.assertTrue(composition2.readXml(elem, doc))
 
         self.assertEqual(composition.name(), 'test composition')

@@ -46,6 +46,8 @@ from qgscompositionchecker import QgsCompositionChecker
 start_app()
 
 
+project_instance = QgsProject()
+
 class TestQgsAtlasComposition(unittest.TestCase):
 
     def testCase(self):
@@ -56,7 +58,7 @@ class TestQgsAtlasComposition(unittest.TestCase):
         vectorFileInfo = QFileInfo(tmppath + "/france_parts.shp")
         mVectorLayer = QgsVectorLayer(vectorFileInfo.filePath(), vectorFileInfo.completeBaseName(), "ogr")
 
-        QgsProject.instance().addMapLayers([mVectorLayer])
+        project_instance.addMapLayers([mVectorLayer])
         self.layers = [mVectorLayer]
 
         # create composition with composer map
@@ -64,9 +66,9 @@ class TestQgsAtlasComposition(unittest.TestCase):
         # select epsg:2154
         crs = QgsCoordinateReferenceSystem()
         crs.createFromSrid(2154)
-        QgsProject.instance().setCrs(crs)
+        project_instance.setCrs(crs)
 
-        self.mComposition = QgsComposition(QgsProject.instance())
+        self.mComposition = QgsComposition(project_instance)
         self.mComposition.setPaperSize(297, 210)
 
         # fix the renderer, fill with green
@@ -296,7 +298,7 @@ class TestQgsAtlasComposition(unittest.TestCase):
                                                   QgsRendererCategory(2, QgsMarkerSymbol.createSimple({"color": "0,0,255"}), "blue")])
         ptLayer.setRenderer(r)
 
-        QgsProject.instance().addMapLayer(ptLayer)
+        project_instance.addMapLayer(ptLayer)
 
         # add the point layer to the map settings
         layers = self.layers
@@ -326,7 +328,7 @@ class TestQgsAtlasComposition(unittest.TestCase):
         # restore state
         self.mAtlasMap.setLayers([layers[1]])
         self.mComposition.removeComposerItem(legend)
-        QgsProject.instance().removeMapLayer(ptLayer.id())
+        project_instance.removeMapLayer(ptLayer.id())
 
     def rotation_test(self):
         # We will create a polygon layer with a rotated rectangle.
@@ -338,10 +340,10 @@ class TestQgsAtlasComposition(unittest.TestCase):
         points = [(10, 15), (15, 10), (45, 40), (40, 45)]
         poly.setGeometry(QgsGeometry.fromPolygonXY([[QgsPointXY(x[0], x[1]) for x in points]]))
         polygonLayer.dataProvider().addFeatures([poly])
-        QgsProject.instance().addMapLayer(polygonLayer)
+        project_instance.addMapLayer(polygonLayer)
 
         # Recreating the composer locally
-        composition = QgsComposition(QgsProject.instance())
+        composition = QgsComposition(project_instance)
         composition.setPaperSize(297, 210)
 
         # the atlas map
@@ -373,7 +375,7 @@ class TestQgsAtlasComposition(unittest.TestCase):
         assert rotatedExtent.width() < nonRotatedExtent.width() * 0.9
         assert rotatedExtent.height() < nonRotatedExtent.height() * 0.9
 
-        QgsProject.instance().removeMapLayer(polygonLayer)
+        project_instance.removeMapLayer(polygonLayer)
 
 
 if __name__ == '__main__':

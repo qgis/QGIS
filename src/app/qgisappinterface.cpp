@@ -82,6 +82,11 @@ QgsPluginManagerInterface *QgisAppInterface::pluginManagerInterface()
   return &pluginManagerIface;
 }
 
+QgsProject *QgisAppInterface::activeProject()
+{
+  return qgis->activeProject();
+}
+
 QgsLayerTreeView *QgisAppInterface::layerTreeView()
 {
   return qgis->layerTreeView();

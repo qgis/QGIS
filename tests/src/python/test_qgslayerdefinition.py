@@ -26,6 +26,7 @@ from qgis.PyQt.QtXml import QDomDocument
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
+project_instance = QgsProject()
 
 class TestQgsLayerDefinition(unittest.TestCase):
 
@@ -99,16 +100,16 @@ class TestQgsLayerDefinition(unittest.TestCase):
 
     def testVectorAndRaster(self):
         # Load a simple QLR containing a vector layer and a raster layer.
-        QgsProject.instance().removeAllMapLayers()
-        layers = QgsProject.instance().mapLayers()
+        project_instance.removeAllMapLayers()
+        layers = project_instance.mapLayers()
         self.assertEqual(len(layers), 0)
 
-        (result, errMsg) = QgsLayerDefinition.loadLayerDefinition(TEST_DATA_DIR + '/vector_and_raster.qlr', QgsProject.instance(), QgsProject.instance().layerTreeRoot())
+        (result, errMsg) = QgsLayerDefinition.loadLayerDefinition(TEST_DATA_DIR + '/vector_and_raster.qlr', project_instance, project_instance.layerTreeRoot())
         self.assertTrue(result)
 
-        layers = QgsProject.instance().mapLayers()
+        layers = project_instance.mapLayers()
         self.assertEqual(len(layers), 2)
-        QgsProject.instance().removeAllMapLayers()
+        project_instance.removeAllMapLayers()
 
 
 if __name__ == '__main__':

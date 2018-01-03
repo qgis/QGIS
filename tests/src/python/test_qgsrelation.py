@@ -28,6 +28,7 @@ import os
 
 start_app()
 
+project_instance = QgsProject()
 
 def createReferencingLayer():
     layer = QgsVectorLayer("Point?field=fldtxt:string&field=foreignkey:integer",
@@ -79,10 +80,10 @@ class TestQgsRelation(unittest.TestCase):
     def setUp(self):
         self.referencedLayer = createReferencedLayer()
         self.referencingLayer = createReferencingLayer()
-        QgsProject.instance().addMapLayers([self.referencedLayer, self.referencingLayer])
+        project_instance.addMapLayers([self.referencedLayer, self.referencingLayer])
 
     def tearDown(self):
-        QgsProject.instance().removeAllMapLayers()
+        project_instance.removeAllMapLayers()
 
     def test_isValid(self):
         rel = QgsRelation()
@@ -162,10 +163,10 @@ class TestQgsRelation(unittest.TestCase):
     def testValidRelationAfterChangingStyle(self):
         # load project
         myPath = os.path.join(unitTestDataPath(), 'relations.qgs')
-        QgsProject.instance().read(myPath)
+        project_instance.read(myPath)
 
         # get referenced layer
-        relations = QgsProject.instance().relationManager().relations()
+        relations = project_instance.relationManager().relations()
         relation = relations[list(relations.keys())[0]]
         referencedLayer = relation.referencedLayer()
 

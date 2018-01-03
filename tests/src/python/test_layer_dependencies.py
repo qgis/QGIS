@@ -40,6 +40,7 @@ from qgis.utils import spatialite_connect
 # Convenience instances in case you may need them
 start_app()
 
+project_instance = QgsProject()
 
 class TestLayerDependencies(unittest.TestCase):
 
@@ -74,15 +75,15 @@ class TestLayerDependencies(unittest.TestCase):
         assert (cls.linesLayer.isValid())
         cls.pointsLayer2 = QgsVectorLayer("dbname='%s' table=\"node2\" (geom) sql=" % fn, "_points2", "spatialite")
         assert (cls.pointsLayer2.isValid())
-        QgsProject.instance().addMapLayers([cls.pointsLayer, cls.linesLayer, cls.pointsLayer2])
+        project_instance.addMapLayers([cls.pointsLayer, cls.linesLayer, cls.pointsLayer2])
 
         # save the project file
         fo = tempfile.NamedTemporaryFile()
         fn = fo.name
         fo.close()
         cls.projectFile = fn
-        QgsProject.instance().setFileName(cls.projectFile)
-        QgsProject.instance().write()
+        project_instance.setFileName(cls.projectFile)
+        project_instance.write()
 
     @classmethod
     def tearDownClass(cls):
@@ -186,14 +187,14 @@ class TestLayerDependencies(unittest.TestCase):
     def test_layerDefinitionRewriteId(self):
         tmpfile = os.path.join(tempfile.tempdir, "test.qlr")
 
-        ltr = QgsProject.instance().layerTreeRoot()
+        ltr = project_instance.layerTreeRoot()
 
         self.pointsLayer.setDependencies([QgsMapLayerDependency(self.linesLayer.id())])
 
         QgsLayerDefinition.exportLayerDefinition(tmpfile, [ltr])
 
         grp = ltr.addGroup("imported")
-        QgsLayerDefinition.loadLayerDefinition(tmpfile, QgsProject.instance(), grp)
+        QgsLayerDefinition.loadLayerDefinition(tmpfile, project_instance, grp)
 
         newPointsLayer = None
         newLinesLayer = None
@@ -210,7 +211,7 @@ class TestLayerDependencies(unittest.TestCase):
 
     def test_signalConnection(self):
         # remove all layers
-        QgsProject.instance().removeAllMapLayers()
+        project_instance.removeAllMapLayers()
         # set dependencies and add back layers
         self.pointsLayer = QgsVectorLayer("dbname='%s' table=\"node\" (geom) sql=" % self.fn, "points", "spatialite")
         assert (self.pointsLayer.isValid())
@@ -221,9 +222,9 @@ class TestLayerDependencies(unittest.TestCase):
         self.pointsLayer.setDependencies([QgsMapLayerDependency(self.linesLayer.id())])
         self.pointsLayer2.setDependencies([QgsMapLayerDependency(self.pointsLayer.id())])
         # this should update connections between layers
-        QgsProject.instance().addMapLayers([self.pointsLayer])
-        QgsProject.instance().addMapLayers([self.linesLayer])
-        QgsProject.instance().addMapLayers([self.pointsLayer2])
+        project_instance.addMapLayers([self.pointsLayer])
+        project_instance.addMapLayers([self.linesLayer])
+        project_instance.addMapLayers([self.pointsLayer2])
 
         ms = QgsMapSettings()
         ms.setOutputSize(QSize(100, 100))

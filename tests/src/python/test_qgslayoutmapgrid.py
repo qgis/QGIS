@@ -32,11 +32,12 @@ from qgslayoutchecker import QgsLayoutChecker
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
+project_instance = QgsProject()
 
 class TestQgsComposerMap(unittest.TestCase):
 
     def testGrid(self):
-        layout = QgsLayout(QgsProject.instance())
+        layout = QgsLayout(project_instance)
         layout.initializeDefaults()
         map = QgsLayoutItemMap(layout)
         map.attemptSetSceneRect(QRectF(20, 20, 200, 100))
@@ -75,7 +76,7 @@ class TestQgsComposerMap(unittest.TestCase):
         assert myTestResult, myMessage
 
     def testCrossGrid(self):
-        layout = QgsLayout(QgsProject.instance())
+        layout = QgsLayout(project_instance)
         layout.initializeDefaults()
         map = QgsLayoutItemMap(layout)
         map.attemptSetSceneRect(QRectF(20, 20, 200, 100))
@@ -107,7 +108,7 @@ class TestQgsComposerMap(unittest.TestCase):
         assert myTestResult, myMessage
 
     def testMarkerGrid(self):
-        layout = QgsLayout(QgsProject.instance())
+        layout = QgsLayout(project_instance)
         layout.initializeDefaults()
         map = QgsLayoutItemMap(layout)
         map.attemptSetSceneRect(QRectF(20, 20, 200, 100))
@@ -137,7 +138,7 @@ class TestQgsComposerMap(unittest.TestCase):
         assert myTestResult, myMessage
 
     def testFrameOnly(self):
-        layout = QgsLayout(QgsProject.instance())
+        layout = QgsLayout(project_instance)
         layout.initializeDefaults()
         map = QgsLayoutItemMap(layout)
         map.attemptSetSceneRect(QRectF(20, 20, 200, 100))
@@ -169,7 +170,7 @@ class TestQgsComposerMap(unittest.TestCase):
         assert myTestResult, myMessage
 
     def testZebraStyle(self):
-        layout = QgsLayout(QgsProject.instance())
+        layout = QgsLayout(project_instance)
         layout.initializeDefaults()
         map = QgsLayoutItemMap(layout)
         map.attemptSetSceneRect(QRectF(20, 20, 200, 100))
@@ -202,7 +203,7 @@ class TestQgsComposerMap(unittest.TestCase):
         assert myTestResult, myMessage
 
     def testZebraStyleSides(self):
-        layout = QgsLayout(QgsProject.instance())
+        layout = QgsLayout(project_instance)
         layout.initializeDefaults()
         map = QgsLayoutItemMap(layout)
         map.attemptSetSceneRect(QRectF(20, 20, 200, 100))
@@ -256,7 +257,7 @@ class TestQgsComposerMap(unittest.TestCase):
         map.grid().setFrameStyle(QgsLayoutItemMapGrid.NoFrame)
 
     def testInteriorTicks(self):
-        layout = QgsLayout(QgsProject.instance())
+        layout = QgsLayout(project_instance)
         layout.initializeDefaults()
         map = QgsLayoutItemMap(layout)
         map.attemptSetSceneRect(QRectF(20, 20, 200, 100))

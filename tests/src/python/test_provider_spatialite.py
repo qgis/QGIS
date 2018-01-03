@@ -42,6 +42,7 @@ from qgis.utils import spatialite_connect
 start_app(True)
 TEST_DATA_DIR = unitTestDataPath()
 
+project_instance = QgsProject()
 
 def count_opened_filedescriptors(filename_to_test):
     count = -1
@@ -502,10 +503,10 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(artist.isValid())
         track = QgsVectorLayer("dbname=%s table=test_relation_b (geometry)" % self.dbname, "test_relation_b", "spatialite")
         self.assertTrue(track.isValid())
-        QgsProject.instance().addMapLayer(artist)
-        QgsProject.instance().addMapLayer(track)
+        project_instance.addMapLayer(artist)
+        project_instance.addMapLayer(track)
         try:
-            relMgr = QgsProject.instance().relationManager()
+            relMgr = project_instance.relationManager()
             relations = relMgr.discoverRelations([], [artist, track])
             relations = {r.name(): r for r in relations}
             self.assertEqual({'fk_test_relation_b_0'}, set(relations.keys()))
@@ -517,8 +518,8 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
             self.assertEqual([2], a2t.referencingFields())
             self.assertEqual([0], a2t.referencedFields())
         finally:
-            QgsProject.instance().removeMapLayer(track.id())
-            QgsProject.instance().removeMapLayer(artist.id())
+            project_instance.removeMapLayer(track.id())
+            project_instance.removeMapLayer(artist.id())
 
     def testNotNullConstraint(self):
         vl = QgsVectorLayer("dbname=%s table=test_constraints key='id'" % self.dbname, "test_constraints",
