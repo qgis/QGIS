@@ -19,15 +19,20 @@
 
 #include "ui_qgsgpsinformationwidgetbase.h"
 
+#include "gmath.h"
+#include "info.h"
 #include "qgsmapcanvas.h"
 #include "qgsgpsmarker.h"
 #include "qgsmaptoolcapture.h"
 #include <qwt_plot_curve.h>
+
 #ifdef WITH_QWTPOLAR
 #include <qwt_polar_plot.h>
 #include <qwt_polar_grid.h>
 #include <qwt_polar_marker.h>
 #endif
+#define MAXACQUISITIONINTERVAL 300 // max gps information acquisition suspension interval (in seconds)
+#define MAXDISTANCETHRESHOLD 10 // max gps distance threshold (in meters)
 
 class QextSerialPort;
 class QgsGPSConnection;
@@ -68,10 +73,13 @@ class QgsGPSInformationWidget: public QWidget, private Ui::QgsGPSInformationWidg
     void mBtnResetFeature_clicked();
 // not needed    void on_mCbxAutoAddVertices_toggled( bool flag );
     void mBtnLogFile_clicked();
-
     void connected( QgsGPSConnection * );
     void timedout();
-
+    void switchAcquisition();
+    void cboAcquisitionIntervalActivated( const QString & );
+    void cboDistanceThresholdActivated( const QString & );
+    void cboAcquisitionIntervalEdited();
+    void cboDistanceThresholdEdited();
   private:
     enum FixStatus  //GPS status
     {
@@ -84,6 +92,8 @@ class QgsGPSInformationWidget: public QWidget, private Ui::QgsGPSInformationWidg
     void populateDevices();
     void setStatusIndicator( const FixStatus statusValue );
     void showStatusBarMessage( const QString &msg );
+    void setAcquisitionInterval( int );
+    void setDistanceThreshold( int );
     QgsGPSConnection *mNmea = nullptr;
     QgsMapCanvas *mpCanvas = nullptr;
     QgsGpsMarker *mpMapMarker = nullptr;
@@ -95,6 +105,7 @@ class QgsGPSInformationWidget: public QWidget, private Ui::QgsGPSInformationWidg
     QList< QwtPolarMarker * > mMarkerList;
 #endif
     void createRubberBand();
+
     QgsCoordinateReferenceSystem mWgs84CRS;
 // not used    QPointF gpsToPixelPosition( const QgsPoint& point );
     QgsRubberBand *mpRubberBand = nullptr;
@@ -106,6 +117,14 @@ class QgsGPSInformationWidget: public QWidget, private Ui::QgsGPSInformationWidg
     QFile *mLogFile = nullptr;
     QTextStream mLogFileTextStream;
     QColor mTrackColor;
+    QIntValidator *mAcquisitionIntValidator = nullptr;
+    QIntValidator *mDistanceThresholdValidator = nullptr;
+    QLineEdit *mAcIntervalEdit = nullptr, *mDistThresholdEdit = nullptr;
+    nmeaPOS mLastNmeaPosition;
+    std::unique_ptr<QTimer> mAcquisitionTimer;
+    bool mAcquisitionEnabled = true;
+    unsigned int mAcquisitionInterval = 0;
+    unsigned int mDistanceThreshold = 0;
 };
 
 #endif // QGSGPSINFORMATIONWIDGET_H
