@@ -998,15 +998,37 @@ Query the layer for the features which intersect the specified rectangle.
 
     bool updateFeature( const QgsFeature &feature, bool skipDefaultValues = false );
 %Docstring
-Updates an existing feature. This method needs to query the datasource
-on every call. Consider using changeAttributeValue() or
-changeGeometry() instead. The id of the feature will be used to match
-an existing feature.
+Updates an existing ``feature`` in the layer, replacing the attributes and geometry for the feature
+with matching QgsFeature.id() with the attributes and geometry from ``feature``.
+Changes are not immediately committed to the layer.
 
-:param feature:  Feature with changed geometry or attributes.
-:param skipDefaultValues: Default values will not be updated if this is true. False by default.
+If ``skipDefaultValue`` is set to true, default field values will not
+be updated. This can be used to override default field value expressions.
 
-:return:   True in case of success and False in case of error
+Returns true if the feature's attribute was successfully changed.
+
+.. note::
+
+   Calls to updateFeature() are only valid for layers in which edits have been enabled
+by a call to startEditing(). Changes made to features using this method are not committed
+to the underlying data provider until a commitChanges() call is made. Any uncommitted
+changes can be discarded by calling rollBack().
+
+.. warning::
+
+   This method needs to query the underlying data provider to fetch the feature
+with matching QgsFeature.id() on every call. Depending on the underlying data source this
+can be slow to execute. Consider using the more efficient changeAttributeValue() or
+changeGeometry() methods instead.
+
+
+.. seealso:: :py:func:`startEditing()`
+
+.. seealso:: :py:func:`commitChanges()`
+
+.. seealso:: :py:func:`changeGeometry()`
+
+.. seealso:: :py:func:`changeAttributeValue()`
 %End
 
     bool insertVertex( double x, double y, QgsFeatureId atFeatureId, int beforeVertex );
@@ -1014,6 +1036,13 @@ an existing feature.
 Insert a new vertex before the given vertex number,
 in the given ring, item (first number is index 0), and feature
 Not meaningful for Point geometries
+
+.. note::
+
+   Calls to insertVertex() are only valid for layers in which edits have been enabled
+by a call to startEditing(). Changes made to features using this method are not committed
+to the underlying data provider until a commitChanges() call is made. Any uncommitted
+changes can be discarded by calling rollBack().
 %End
 
     bool insertVertex( const QgsPoint &point, QgsFeatureId atFeatureId, int beforeVertex );
@@ -1021,6 +1050,13 @@ Not meaningful for Point geometries
 Insert a new vertex before the given vertex number,
 in the given ring, item (first number is index 0), and feature
 Not meaningful for Point geometries
+
+.. note::
+
+   Calls to insertVertex() are only valid for layers in which edits have been enabled
+by a call to startEditing(). Changes made to features using this method are not committed
+to the underlying data provider until a commitChanges() call is made. Any uncommitted
+changes can be discarded by calling rollBack().
 %End
 
     bool moveVertex( double x, double y, QgsFeatureId atFeatureId, int atVertex );
@@ -1028,6 +1064,13 @@ Not meaningful for Point geometries
 Moves the vertex at the given position number,
 ring and item (first number is index 0), and feature
 to the given coordinates
+
+.. note::
+
+   Calls to moveVertex() are only valid for layers in which edits have been enabled
+by a call to startEditing(). Changes made to features using this method are not committed
+to the underlying data provider until a commitChanges() call is made. Any uncommitted
+changes can be discarded by calling rollBack().
 %End
 
     bool moveVertex( const QgsPoint &p, QgsFeatureId atFeatureId, int atVertex ) /PyName=moveVertexV2/;
@@ -1039,6 +1082,13 @@ to the given coordinates
 .. note::
 
    available in Python as moveVertexV2
+
+.. note::
+
+   Calls to moveVertex() are only valid for layers in which edits have been enabled
+by a call to startEditing(). Changes made to features using this method are not committed
+to the underlying data provider until a commitChanges() call is made. Any uncommitted
+changes can be discarded by calling rollBack().
 %End
 
     EditResult deleteVertex( QgsFeatureId featureId, int vertex );
@@ -1049,6 +1099,13 @@ Deletes a vertex from a feature.
 :param vertex: index of vertex to delete
 
 .. versionadded:: 2.14
+
+.. note::
+
+   Calls to deleteVertex() are only valid for layers in which edits have been enabled
+by a call to startEditing(). Changes made to features using this method are not committed
+to the underlying data provider until a commitChanges() call is made. Any uncommitted
+changes can be discarded by calling rollBack().
 %End
 
     bool deleteSelectedFeatures( int *deletedCount = 0 );
@@ -1073,6 +1130,13 @@ Adds a ring to polygon/multipolygon features
 - AddRingNotClosed
 - AddRingNotValid
 - AddRingCrossesExistingRings
+
+.. note::
+
+   Calls to addRing() are only valid for layers in which edits have been enabled
+by a call to startEditing(). Changes made to features using this method are not committed
+to the underlying data provider until a commitChanges() call is made. Any uncommitted
+changes can be discarded by calling rollBack().
 %End
 
     QgsGeometry::OperationResult addRing( QgsCurve *ring /Transfer/, QgsFeatureId *featureId = 0 ) /PyName=addCurvedRing/;
@@ -1094,6 +1158,13 @@ Adds a ring to polygon/multipolygon features (takes ownership)
 .. note::
 
    available in Python as addCurvedRing
+
+.. note::
+
+   Calls to addRing() are only valid for layers in which edits have been enabled
+by a call to startEditing(). Changes made to features using this method are not committed
+to the underlying data provider until a commitChanges() call is made. Any uncommitted
+changes can be discarded by calling rollBack().
 %End
 
     QgsGeometry::OperationResult addPart( const QList<QgsPointXY> &ring );
@@ -1109,6 +1180,13 @@ Adds a new part polygon to a multipart feature
 - AddPartNotMultiGeometry
 - InvalidBaseGeometry
 - InvalidInputGeometryType
+
+.. note::
+
+   Calls to addPart() are only valid for layers in which edits have been enabled
+by a call to startEditing(). Changes made to features using this method are not committed
+to the underlying data provider until a commitChanges() call is made. Any uncommitted
+changes can be discarded by calling rollBack().
 %End
 
     QgsGeometry::OperationResult addPart( const QgsPointSequence &ring ) /PyName=addPartV2/;
@@ -1128,6 +1206,13 @@ Adds a new part polygon to a multipart feature
 .. note::
 
    available in Python bindings as addPartV2
+
+.. note::
+
+   Calls to addPart() are only valid for layers in which edits have been enabled
+by a call to startEditing(). Changes made to features using this method are not committed
+to the underlying data provider until a commitChanges() call is made. Any uncommitted
+changes can be discarded by calling rollBack().
 %End
 
     QgsGeometry::OperationResult addPart( QgsCurve *ring /Transfer/ ) /PyName=addCurvedPart/;
@@ -1136,6 +1221,13 @@ Adds a new part polygon to a multipart feature
 .. note::
 
    available in Python as addCurvedPart
+
+.. note::
+
+   Calls to addPart() are only valid for layers in which edits have been enabled
+by a call to startEditing(). Changes made to features using this method are not committed
+to the underlying data provider until a commitChanges() call is made. Any uncommitted
+changes can be discarded by calling rollBack().
 %End
 
     int translateFeature( QgsFeatureId featureId, double dx, double dy );
@@ -1147,6 +1239,13 @@ Translates feature by dx, dy
 :param dy: translation of y-coordinate
 
 :return: 0 in case of success
+
+.. note::
+
+   Calls to translateFeature() are only valid for layers in which edits have been enabled
+by a call to startEditing(). Changes made to features using this method are not committed
+to the underlying data provider until a commitChanges() call is made. Any uncommitted
+changes can be discarded by calling rollBack().
 %End
 
     QgsGeometry::OperationResult splitParts( const QVector<QgsPointXY> &splitLine, bool topologicalEditing = false );
@@ -1164,6 +1263,13 @@ Splits parts cut by the given line
 - InvalidBaseGeometry
 - GeometryEngineError
 - SplitCannotSplitPoint
+
+.. note::
+
+   Calls to splitParts() are only valid for layers in which edits have been enabled
+by a call to startEditing(). Changes made to features using this method are not committed
+to the underlying data provider until a commitChanges() call is made. Any uncommitted
+changes can be discarded by calling rollBack().
 %End
 
     QgsGeometry::OperationResult splitFeatures( const QVector<QgsPointXY> &splitLine, bool topologicalEditing = false );
@@ -1181,6 +1287,13 @@ Splits features cut by the given line
 - InvalidBaseGeometry
 - GeometryEngineError
 - SplitCannotSplitPoint
+
+.. note::
+
+   Calls to splitFeatures() are only valid for layers in which edits have been enabled
+by a call to startEditing(). Changes made to features using this method are not committed
+to the underlying data provider until a commitChanges() call is made. Any uncommitted
+changes can be discarded by calling rollBack().
 %End
 
     int addTopologicalPoints( const QgsGeometry &geom );
@@ -1194,6 +1307,13 @@ Adds topological points for every vertex of the geometry.
 .. note::
 
    geom is not going to be modified by the function
+
+.. note::
+
+   Calls to addTopologicalPoints() are only valid for layers in which edits have been enabled
+by a call to startEditing(). Changes made to features using this method are not committed
+to the underlying data provider until a commitChanges() call is made. Any uncommitted
+changes can be discarded by calling rollBack().
 %End
 
     int addTopologicalPoints( const QgsPointXY &p );
@@ -1206,6 +1326,13 @@ editing.
 :param p: position of the vertex
 
 :return: 0 in case of success
+
+.. note::
+
+   Calls to addTopologicalPoints() are only valid for layers in which edits have been enabled
+by a call to startEditing(). Changes made to features using this method are not committed
+to the underlying data provider until a commitChanges() call is made. Any uncommitted
+changes can be discarded by calling rollBack().
 %End
 
 
@@ -1327,29 +1454,81 @@ Make layer read-only (editing disabled) or not
 :return: false if the layer is in editing yet
 %End
 
-    bool changeGeometry( QgsFeatureId fid, const QgsGeometry &geom, bool skipDefaultValue = false );
+    bool changeGeometry( QgsFeatureId fid, const QgsGeometry &geometry, bool skipDefaultValue = false );
 %Docstring
-Change feature's geometry
+Changes a feature's ``geometry`` within the layer's edit buffer
+(but does not immediately commit the changes). The ``fid`` argument
+specifies the ID of the feature to be changed.
+
+If ``skipDefaultValue`` is set to true, default field values will not
+be updated. This can be used to override default field value expressions.
+
+Returns true if the feature's geometry was successfully changed.
+
+.. note::
+
+   Calls to changeGeometry() are only valid for layers in which edits have been enabled
+by a call to startEditing(). Changes made to features using this method are not committed
+to the underlying data provider until a commitChanges() call is made. Any uncommitted
+changes can be discarded by calling rollBack().
+
+.. seealso:: :py:func:`startEditing()`
+
+.. seealso:: :py:func:`commitChanges()`
+
+.. seealso:: :py:func:`changeAttributeValue()`
+
+.. seealso:: :py:func:`updateFeature()`
 %End
 
     bool changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant &oldValue = QVariant(), bool skipDefaultValues = false );
 %Docstring
-Changes an attribute value (but does not commit it)
+Changes an attribute value for a feature (but does not immediately commit the changes).
+The ``fid`` argument specifies the ID of the feature to be changed.
 
-:param fid:   The feature id of the feature to be changed
-:param field: The index of the field to be updated
-:param newValue: The value which will be assigned to the field
-:param oldValue: The previous value to restore on undo (will otherwise be retrieved)
-:param skipDefaultValues: If this is set to true, default values will not
-be updated. This can be used to override default values. Defaults to false.
+The ``field`` argument must specify a valid field index for the layer (where an index of 0
+corresponds to the first field).
 
-:return: true in case of success
+The new value to be assigned to the field is given by ``newValue``.
+
+If a valid QVariant is specified for ``oldValue``, it will be used as the field value in the
+case of an undo operation corresponding to this attribute value change. If an invalid
+QVariant is used (the default behavior), then the feature's current value will be automatically
+retrieved and used. Note that this involves a feature request to the underlying data provider,
+so it is more efficient to explicitly pass an ``oldValue`` if it is already available.
+
+If ``skipDefaultValue`` is set to true, default field values will not
+be updated. This can be used to override default field value expressions.
+
+Returns true if the feature's attribute was successfully changed.
+
+.. note::
+
+   Calls to changeAttributeValue() are only valid for layers in which edits have been enabled
+by a call to startEditing(). Changes made to features using this method are not committed
+to the underlying data provider until a commitChanges() call is made. Any uncommitted
+changes can be discarded by calling rollBack().
+
+.. seealso:: :py:func:`startEditing()`
+
+.. seealso:: :py:func:`commitChanges()`
+
+.. seealso:: :py:func:`changeGeometry()`
+
+.. seealso:: :py:func:`updateFeature()`
 %End
 
     bool addAttribute( const QgsField &field );
 %Docstring
 Add an attribute field (but does not commit it)
 returns true if the field was added
+
+.. note::
+
+   Calls to addAttribute() are only valid for layers in which edits have been enabled
+by a call to startEditing(). Changes made to features using this method are not committed
+to the underlying data provider until a commitChanges() call is made. Any uncommitted
+changes can be discarded by calling rollBack().
 %End
 
     void setFieldAlias( int index, const QString &aliasString );
@@ -1374,6 +1553,13 @@ Renames an attribute field  (but does not commit it).
 :param newName: new name of field
 
 .. versionadded:: 2.16
+
+.. note::
+
+   Calls to renameAttribute() are only valid for layers in which edits have been enabled
+by a call to startEditing(). Changes made to features using this method are not committed
+to the underlying data provider until a commitChanges() call is made. Any uncommitted
+changes can be discarded by calling rollBack().
 %End
 
     QString attributeAlias( int index ) const;
@@ -1416,7 +1602,14 @@ A set of attributes that are not advertised in WFS requests with QGIS server.
 
     virtual bool deleteAttribute( int attr );
 %Docstring
-Delete an attribute field (but does not commit it)
+Deletes an attribute field (but does not commit it).
+
+.. note::
+
+   Calls to deleteAttribute() are only valid for layers in which edits have been enabled
+by a call to startEditing(). Changes made to features using this method are not committed
+to the underlying data provider until a commitChanges() call is made. Any uncommitted
+changes can be discarded by calling rollBack().
 %End
 
     bool deleteAttributes( QList<int> attrs );
@@ -1433,7 +1626,14 @@ Deletes a list of attribute fields (but does not commit it)
 
     bool deleteFeature( QgsFeatureId fid );
 %Docstring
-Delete a feature from the layer (but does not commit it)
+Deletes a feature from the layer (but does not commit it).
+
+.. note::
+
+   Calls to deleteFeature() are only valid for layers in which edits have been enabled
+by a call to startEditing(). Changes made to features using this method are not committed
+to the underlying data provider until a commitChanges() call is made. Any uncommitted
+changes can be discarded by calling rollBack().
 %End
 
     bool deleteFeatures( const QgsFeatureIds &fids );
@@ -1444,25 +1644,37 @@ Deletes a set of features from the layer (but does not commit it)
 
 :return: false if the layer is not in edit mode or does not support deleting
 in case of an active transaction depends on the provider implementation
+
+.. note::
+
+   Calls to deleteFeatures() are only valid for layers in which edits have been enabled
+by a call to startEditing(). Changes made to features using this method are not committed
+to the underlying data provider until a commitChanges() call is made. Any uncommitted
+changes can be discarded by calling rollBack().
 %End
 
     bool commitChanges();
 %Docstring
-Attempts to commit any changes to disk.  Returns the result of the attempt.
-If a commit fails, the in-memory changes are left alone.
+Attempts to commit to the underlying data provider any buffered changes made since the
+last to call to startEditing().
 
-This allows editing to continue if the commit failed on e.g. a
-disallowed value in a Postgres database - the user can re-edit and try
-again.
+Returns the result of the attempt. If a commit fails (i.e. false is returned), the
+in-memory changes are left untouched and are not discarded. This allows editing to
+continue if the commit failed on e.g. a disallowed value in a Postgres
+database - the user can re-edit and try again.
 
 The commits occur in distinct stages,
 (add attributes, add features, change attribute values, change
 geometries, delete features, delete attributes)
-so if a stage fails, it's difficult to roll back cleanly.
-Therefore any error message also includes which stage failed so
+so if a stage fails, it can be difficult to roll back cleanly.
+Therefore any error message returned by commitErrors() also includes which stage failed so
 that the user has some chance of repairing the damage cleanly.
 
+.. seealso:: :py:func:`startEditing()`
+
 .. seealso:: :py:func:`commitErrors()`
+
+.. seealso:: :py:func:`rollBack()`
 %End
 
     QStringList commitErrors() const;
@@ -1475,9 +1687,14 @@ to commit changes to the layer.
 
     bool rollBack( bool deleteBuffer = true );
 %Docstring
-Stop editing and discard the edits
+Stops a current editing operation and discards any uncommitted edits.
 
-:param deleteBuffer: whether to delete editing buffer
+If ``deleteBuffer`` is true the editing buffer will be completely deleted (the default
+behavior).
+
+.. seealso:: :py:func:`startEditing()`
+
+.. seealso:: :py:func:`commitChanges()`
 %End
 
     QList<QgsRelation> referencingRelations( int idx ) const;
@@ -2010,10 +2227,19 @@ added/deleted or the layer has been subsetted.
 
     bool startEditing();
 %Docstring
-Make layer editable.
+Makes the layer editable.
+
 This starts an edit session on this layer. Changes made in this edit session will not
-be made persistent until commitChanges() is called and can be reverted by calling
+be made persistent until commitChanges() is called, and can be reverted by calling
 rollBack().
+
+Returns true if the layer was successfully made editable, or false if the operation
+failed (e.g. due to an underlying read-only data source, or lack of edit support
+by the backend data provider).
+
+.. seealso:: :py:func:`commitChanges()`
+
+.. seealso:: :py:func:`rollBack()`
 %End
 
   signals:
