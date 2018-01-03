@@ -438,7 +438,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
 
         # bbox
         # CRS is WGS84 with axis order longitude, latitude
-        # defined by 'urn:ogc:def:crs:OGC:1.3:CRS84'        
+        # defined by 'urn:ogc:def:crs:OGC:1.3:CRS84'
         minx = self.leWest.text()
         miny = self.leSouth.text()
         maxx = self.leEast.text()
