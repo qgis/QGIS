@@ -5,13 +5,13 @@
   <evaluateDefaultValues active="0"/>
   <layer-tree-group expanded="1" checked="Qt::Checked" name="">
     <customproperties/>
-    <layer-tree-layer expanded="1" providerKey="ogr" checked="Qt::Checked" id="lines20171212162314640" source="C:/dev/QGIS/tests/testdata/lines.shp" name="lines">
+    <layer-tree-layer expanded="1" providerKey="ogr" checked="Qt::Checked" id="lines20171212162314640" source="../lines.shp" name="lines">
       <customproperties/>
     </layer-tree-layer>
-    <layer-tree-layer expanded="1" providerKey="ogr" checked="Qt::Checked" id="points20171212162310546" source="C:/dev/QGIS/tests/testdata/points.shp" name="points">
+    <layer-tree-layer expanded="1" providerKey="ogr" checked="Qt::Checked" id="points20171212162310546" source="../points.shp" name="points">
       <customproperties/>
     </layer-tree-layer>
-    <layer-tree-layer expanded="1" providerKey="ogr" checked="Qt::Checked" id="polys20171212162309844" source="C:/dev/QGIS/tests/testdata/polys.shp" name="polys">
+    <layer-tree-layer expanded="1" providerKey="ogr" checked="Qt::Checked" id="polys20171212162309844" source="../polys.shp" name="polys">
       <customproperties/>
     </layer-tree-layer>
   </layer-tree-group>
@@ -388,10 +388,10 @@
         </styles>
         <layer-tree-group expanded="1" checked="Qt::Checked" name="">
           <customproperties/>
-          <layer-tree-layer expanded="1" providerKey="ogr" checked="Qt::Checked" id="points20171212162310546" source="C:/dev/QGIS/tests/testdata/points.shp" name="points">
+          <layer-tree-layer expanded="1" providerKey="ogr" checked="Qt::Checked" id="points20171212162310546" source="../points.shp" name="points">
             <customproperties/>
           </layer-tree-layer>
-          <layer-tree-layer expanded="1" providerKey="ogr" checked="Qt::Checked" id="polys20171212162309844" source="C:/dev/QGIS/tests/testdata/polys.shp" name="polys">
+          <layer-tree-layer expanded="1" providerKey="ogr" checked="Qt::Checked" id="polys20171212162309844" source="../polys.shp" name="polys">
             <customproperties/>
           </layer-tree-layer>
         </layer-tree-group>
@@ -529,7 +529,7 @@
         </ComposerFrame>
         <customproperties/>
       </ComposerHtml>
-      <ComposerAttributeTableV2 vectorLayerName="points" source="0" showGrid="1" maxFeatures="30" resizeMode="0" filterFeatures="false" featureFilter="" emptyTableMode="1" wrapString="" wrapBehaviour="0" headerMode="1" backgroundColor="240,33,33,255" showEmptyRows="0" emptyTableMessage="" showOnlyVisibleFeatures="1" vectorLayer="points20171212162310546" vectorLayerSource="C:/dev/QGIS/tests/testdata/points.shp" composerMap="0" headerHAlignment="2" contentFontColor="115,115,115,255" headerFontColor="194,143,12,255" cellMargin="1.2" filterToAtlasIntersection="0" relationId="" gridStrokeWidth="0.7" gridColor="245,57,220,255" showUniqueRowsOnly="1" vectorLayerProvider="ogr">
+      <ComposerAttributeTableV2 vectorLayerName="points" source="0" showGrid="1" maxFeatures="30" resizeMode="0" filterFeatures="false" featureFilter="" emptyTableMode="1" wrapString="" wrapBehaviour="0" headerMode="1" backgroundColor="240,33,33,255" showEmptyRows="0" emptyTableMessage="" showOnlyVisibleFeatures="1" vectorLayer="points20171212162310546" vectorLayerSource="../points.shp" composerMap="0" headerHAlignment="2" contentFontColor="115,115,115,255" headerFontColor="194,143,12,255" cellMargin="1.2" filterToAtlasIntersection="0" relationId="" gridStrokeWidth="0.7" gridColor="245,57,220,255" showUniqueRowsOnly="1" vectorLayerProvider="ogr">
         <headerFontProperties description="MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0" style=""/>
         <contentFontProperties description="MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0" style=""/>
         <displayColumns>

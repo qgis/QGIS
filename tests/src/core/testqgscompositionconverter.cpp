@@ -26,6 +26,8 @@
 #include "qgsmultirenderchecker.h"
 #include "qgssettings.h"
 
+#include "qgsmultibandcolorrenderer.h"
+#include "qgsrasterlayer.h"
 
 #include "qgslayoutpagecollection.h"
 #include "qgslayoutitemlabel.h"
@@ -113,6 +115,8 @@ class TestQgsCompositionConverter: public QObject
 
 void TestQgsCompositionConverter::initTestCase()
 {
+  QgsApplication::init();
+  QgsApplication::initQgis();
   mReport = QStringLiteral( "<h1>Layout Tests</h1>\n" );
   QgsSettings settings;
   settings.setValue( QStringLiteral( "svg/searchPathsForSVG" ), QStringLiteral( TEST_DATA_DIR ) ) ;
@@ -337,9 +341,18 @@ void TestQgsCompositionConverter::importComposerTemplateMap()
   QgsLayoutItemMap *item = items.at( 0 );
   QVERIFY( item->isVisible() );
 
+  item->setLayers( project.mapLayers().values() );
+
+  for ( auto const &l : project.mapLayers().values() )
+  {
+    QVERIFY( l->isValid() );
+  }
+
   QgsLayoutItemMap *item1 = items.at( 1 );
   QVERIFY( item1->isVisible() );
   QCOMPARE( item1->opacity(), 0.78 );
+  item1->setLayers( project.mapLayers().values() );
+  item1->setExtent( QgsRectangle( -126.5731570061082038, -4.69162199770811128,  -88.56641716083402116, 69.08616711370645191 ) );
 
   // Check map ids
   QStringList mapUuids;
@@ -369,6 +382,7 @@ void TestQgsCompositionConverter::importComposerTemplateMap()
     // We have at least one item linked to a map for this test
     QVERIFY( count > 0 );
   }
+
 
   checkRenderedImage( layout.get(), QTest::currentTestFunction(), 0 );
 
@@ -437,6 +451,7 @@ void TestQgsCompositionConverter::importComposerTemplate()
 
   QVERIFY( layout.get() );
   QCOMPARE( layout->pageCollection()->pageCount(), 2 );
+  QCOMPARE( layout->name(), QStringLiteral( "composer title" ) );
 
   // Check map ids
   QStringList mapUuids;
