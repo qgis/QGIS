@@ -6,6 +6,6 @@
   "arguments": [ {"arg":"value1", "syntaxOnly": true},
                  {"arg":"value2", "syntaxOnly": true},
                  {"arg":"value", "descOnly": true, "description":"a number"}],
-  "examples": [ { "expression":"min(20.5,10,6.2)", "returns":"6.2"}
-  ]
+  "examples": [ { "expression":"min(20.5,10,6.2)", "returns":"6.2"},
+                { "expression":"min(2,-10.3,NULL)", "returns":"-10.3"}]
 }
