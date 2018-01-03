@@ -419,7 +419,7 @@ void TestQgsCompositionConverter::importComposerTemplateScaleBar()
   QgsLayoutItemScaleBar *item = items.at( 0 );
   QVERIFY( item->isVisible() );
 
-  QCOMPARE( item->map(), nullptr );
+  QVERIFY( ! item->map() );
 
   checkRenderedImage( layout.get(), QTest::currentTestFunction(), 0 );
 
