@@ -132,7 +132,7 @@ class APP_EXPORT QgsClipboard : public QObject
     /**
      * Source fields
      */
-    QgsFields fields() const { return !mUseSystemClipboard ? mFeatureFields : retrieveFields(); }
+    QgsFields fields() const;
 
   private slots:
 
@@ -179,6 +179,9 @@ class APP_EXPORT QgsClipboard : public QObject
     QgsFields mFeatureFields;
     QgsCoordinateReferenceSystem mCRS;
     QPointer<QgsVectorLayer> mSrcLayer;
+
+    //! True if next system clipboard change should be ignored
+    bool mIgnoreNextSystemClipboardChange = false;
 
     //! True when the data from the system clipboard should be read
     bool mUseSystemClipboard = false;
