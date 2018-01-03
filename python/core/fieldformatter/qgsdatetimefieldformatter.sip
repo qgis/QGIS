@@ -21,9 +21,11 @@ the field configuration.
 #include "qgsdatetimefieldformatter.h"
 %End
   public:
-    static const QString DEFAULT_DATE_FORMAT;
-    static const QString DEFAULT_TIME_FORMAT;
-    static const QString DEFAULT_DATETIME_FORMAT;
+    static const QString DATE_FORMAT;
+    static const QString TIME_FORMAT;
+    static const QString DATETIME_FORMAT;
+    static const QString QT_ISO_FORMAT;
+    static const QString DISPLAY_FOR_ISO_FORMAT;
 
     QgsDateTimeFieldFormatter();
 %Docstring
