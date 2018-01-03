@@ -189,17 +189,22 @@ bool QgsLayoutManager::readXml( const QDomElement &element, const QDomDocument &
   QDomNodeList composerNodes = element.elementsByTagName( QStringLiteral( "Composer" ) );
   for ( int i = 0; i < composerNodes.size(); ++i )
   {
+    // This legacy title is the Composer "title" (that can be overridden by the Composition "name")
+    QString legacyTitle = composerNodes.at( i ).toElement().attribute( QStringLiteral( "title" ) );
     // Convert compositions to layouts
     QDomNodeList compositionNodes = composerNodes.at( i ).toElement().elementsByTagName( QStringLiteral( "Composition" ) );
     for ( int j = 0; j < compositionNodes.size(); ++j )
     {
       std::unique_ptr< QgsLayout > l( QgsCompositionConverter::createLayoutFromCompositionXml( compositionNodes.at( j ).toElement(), mProject ) );
       if ( l )
-        addLayout( l.release() );
+      {
+        if ( l->name().isEmpty() )
+          l->setName( legacyTitle );
+        result = result && addLayout( l.release() );
+      }
     }
 
-    // legacy import
-    QString legacyTitle = composerNodes.at( i ).toElement().attribute( QStringLiteral( "title" ) );
+    // legacy import (to be removed!)
     QgsComposition *c = createCompositionFromXml( composerNodes.at( i ).toElement(), doc );
     if ( !c )
     {

@@ -29,6 +29,7 @@
 #include "qgsmultibandcolorrenderer.h"
 #include "qgsrasterlayer.h"
 
+#include "qgslayoutmanager.h"
 #include "qgslayoutpagecollection.h"
 #include "qgslayoutitemlabel.h"
 #include "qgslayoutitemshape.h"
@@ -102,6 +103,12 @@ class TestQgsCompositionConverter: public QObject
      * Test import multiple elements from a composer template
      */
     void importComposerTemplate();
+
+    /**
+     * Test automatic conversion from a composer template
+     */
+    void convertComposerTemplate();
+
 
   private:
 
@@ -438,6 +445,21 @@ void TestQgsCompositionConverter::importComposerTemplateScaleBar()
   checkRenderedImage( layout.get(), QTest::currentTestFunction(), 0 );
 
   qDeleteAll( items );
+
+}
+
+
+void TestQgsCompositionConverter::convertComposerTemplate()
+{
+
+  QgsProject project;
+  project.read( QStringLiteral( TEST_DATA_DIR ) + "/layouts/sample_project.qgs" );
+
+  QgsLayout *layout = project.layoutManager()->layouts().first();
+
+  QVERIFY( layout );
+  QCOMPARE( layout->pageCollection()->pageCount(), 2 );
+  QCOMPARE( layout->name(), QStringLiteral( "composer title" ) );
 
 }
 
