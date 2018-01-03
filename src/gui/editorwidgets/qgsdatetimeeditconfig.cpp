@@ -24,11 +24,11 @@ QgsDateTimeEditConfig::QgsDateTimeEditConfig( QgsVectorLayer *vl, int fieldIdx, 
   setupUi( this );
 
   mFieldFormatComboBox->clear();
-  mFieldFormatComboBox->addItem( tr( "Date" ), QgsDateTimeFieldFormatter::DEFAULT_DATE_FORMAT );
-  mFieldFormatComboBox->addItem( tr( "Time" ), QgsDateTimeFieldFormatter::DEFAULT_TIME_FORMAT );
-  mFieldFormatComboBox->addItem( tr( "Date time" ), QgsDateTimeFieldFormatter::DEFAULT_DATETIME_FORMAT );
-  mFieldFormatComboBox->addItem( tr( "ISO date time" ), QgsDateTimeFieldFormatter::DEFAULT_ISO_FORMAT );
-  mFieldFormatComboBox->addItem( tr( "Custom" ), "" );
+  mFieldFormatComboBox->addItem( tr( "Date" ), QgsDateTimeFieldFormatter::DATE_FORMAT );
+  mFieldFormatComboBox->addItem( tr( "Time" ), QgsDateTimeFieldFormatter::TIME_FORMAT );
+  mFieldFormatComboBox->addItem( tr( "Date time" ), QgsDateTimeFieldFormatter::DATETIME_FORMAT );
+  mFieldFormatComboBox->addItem( tr( "ISO date time" ), QgsDateTimeFieldFormatter::QT_ISO_FORMAT );
+  mFieldFormatComboBox->addItem( tr( "Custom" ), QString() );
 
   mDemoDateTimeEdit->setDateTime( QDateTime::currentDateTime() );
 
@@ -84,9 +84,9 @@ void QgsDateTimeEditConfig::updateDisplayFormat( const QString &fieldFormat )
   if ( mDisplayFormatComboBox->currentIndex() == 0 )
   {
     // i.e. display format is default
-    if ( mFieldFormatComboBox->currentData() == QgsDateTimeFieldFormatter::DEFAULT_ISO_FORMAT )
+    if ( mFieldFormatComboBox->currentData() == QgsDateTimeFieldFormatter::QT_ISO_FORMAT )
     {
-      mDisplayFormatEdit->setText( QgsDateTimeFieldFormatter::DEFAULT_ISO_DISPLAY_FORMAT );
+      mDisplayFormatEdit->setText( QgsDateTimeFieldFormatter::DISPLAY_FOR_ISO_FORMAT );
     }
     else
     {
@@ -123,7 +123,7 @@ QVariantMap QgsDateTimeEditConfig::config()
 {
   QVariantMap myConfig;
 
-  myConfig.insert( QStringLiteral( "field_iso_format" ), mFieldFormatEdit->text() == QgsDateTimeFieldFormatter::DEFAULT_ISO_FORMAT );
+  myConfig.insert( QStringLiteral( "field_iso_format" ), mFieldFormatEdit->text() == QgsDateTimeFieldFormatter::QT_ISO_FORMAT );
   myConfig.insert( QStringLiteral( "field_format" ), mFieldFormatEdit->text() );
   myConfig.insert( QStringLiteral( "display_format" ), mDisplayFormatEdit->text() );
   myConfig.insert( QStringLiteral( "calendar_popup" ), mCalendarPopupCheckBox->isChecked() );

@@ -19,13 +19,13 @@
 #include "qgsfield.h"
 #include "qgsvectorlayer.h"
 
-const QString QgsDateTimeFieldFormatter::DEFAULT_DATE_FORMAT = QStringLiteral( "yyyy-MM-dd" );
-const QString QgsDateTimeFieldFormatter::DEFAULT_TIME_FORMAT = QStringLiteral( "HH:mm:ss" );
-const QString QgsDateTimeFieldFormatter::DEFAULT_DATETIME_FORMAT = QStringLiteral( "yyyy-MM-dd HH:mm:ss" );
+const QString QgsDateTimeFieldFormatter::DATE_FORMAT = QStringLiteral( "yyyy-MM-dd" );
+const QString QgsDateTimeFieldFormatter::TIME_FORMAT = QStringLiteral( "HH:mm:ss" );
+const QString QgsDateTimeFieldFormatter::DATETIME_FORMAT = QStringLiteral( "yyyy-MM-dd HH:mm:ss" );
 // we need to use Qt::ISODate rather than a string format definition in QDate::fromString
-const QString QgsDateTimeFieldFormatter::DEFAULT_ISO_FORMAT = QStringLiteral( "Qt ISO Date" );
+const QString QgsDateTimeFieldFormatter::QT_ISO_FORMAT = QStringLiteral( "Qt ISO Date" );
 // but QDateTimeEdit::setDisplayFormat only accepts string formats, so use with time zone by default
-const QString QgsDateTimeFieldFormatter::DEFAULT_ISO_DISPLAY_FORMAT = QStringLiteral( "yyyy-MM-dd HH:mm:ss+t" );
+const QString QgsDateTimeFieldFormatter::DISPLAY_FOR_ISO_FORMAT = QStringLiteral( "yyyy-MM-dd HH:mm:ss+t" );
 
 
 QString QgsDateTimeFieldFormatter::id() const
@@ -76,12 +76,12 @@ QString QgsDateTimeFieldFormatter::defaultFormat( QVariant::Type type )
   switch ( type )
   {
     case QVariant::DateTime:
-      return QgsDateTimeFieldFormatter::DEFAULT_DATETIME_FORMAT;
+      return QgsDateTimeFieldFormatter::DATETIME_FORMAT;
       break;
     case QVariant::Time:
-      return QgsDateTimeFieldFormatter::DEFAULT_TIME_FORMAT;
+      return QgsDateTimeFieldFormatter::TIME_FORMAT;
       break;
     default:
-      return QgsDateTimeFieldFormatter::DEFAULT_DATE_FORMAT;
+      return QgsDateTimeFieldFormatter::DATE_FORMAT;
   }
 }
