@@ -35,7 +35,7 @@
 #include <QAbstractItemModel>
 
 #include "qgsfilterlineedit.h"
-
+#include "qgsmessagebaritem.h"
 #include "qgslogger.h"
 
 QgsOptionsDialogBase::QgsOptionsDialogBase( const QString &settingsKey, QWidget *parent, Qt::WindowFlags fl, QgsSettings *settings )
@@ -265,6 +265,10 @@ void QgsOptionsDialogBase::registerTextSearchWidgets()
   {
     Q_FOREACH ( QWidget *w, mOptStackedWidget->widget( i )->findChildren<QWidget *>() )
     {
+      // do not register message bar content, items disappear and causes QGIS to crash
+      if ( dynamic_cast< QgsMessageBarItem * >( w ) || dynamic_cast< QgsMessageBarItem * >( w->parentWidget() ) )
+        continue;
+
       QgsSearchHighlightOptionWidget *shw = new QgsSearchHighlightOptionWidget( w );
       if ( shw->isValid() )
       {
