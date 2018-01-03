@@ -26,7 +26,7 @@ from qgis.PyQt.QtWidgets import QApplication
 
 from qgis.gui import QgsMapCanvas, QgsMessageBar
 from qgis.core import QgsVectorLayer, QgsProject, QgsSettings
-from qgis.utils import OverrideCursor
+from qgis.utils import OverrideCursor, iface
 
 from .db_plugins.plugin import Table
 
@@ -119,11 +119,11 @@ class LayerPreview(QgsMapCanvas):
 
             # remove old layer (if any) and set new
             if self.currentLayer:
-                QgsProject.instance().removeMapLayers([self.currentLayer.id()])
+                iface.activeProject().removeMapLayers([self.currentLayer.id()])
 
             if vl:
                 self.setLayers([vl])
-                QgsProject.instance().addMapLayers([vl], False)
+                iface.activeProject().addMapLayers([vl], False)
                 self.zoomToFullExtent()
             else:
                 self.setLayers([])

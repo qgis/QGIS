@@ -36,6 +36,7 @@ from qgis.testing import start_app, unittest
 
 app = start_app()
 
+project_instance = QgsProject()
 
 class TestQgsMapCanvas(unittest.TestCase):
 
@@ -249,8 +250,8 @@ class TestQgsMapCanvas(unittest.TestCase):
         record2.usingCurrentStyle = True
         theme2.setLayerRecords([record2])
 
-        QgsProject.instance().mapThemeCollection().insert('theme1', theme1)
-        QgsProject.instance().mapThemeCollection().insert('theme2', theme2)
+        project_instance.mapThemeCollection().insert('theme1', theme1)
+        project_instance.mapThemeCollection().insert('theme2', theme2)
 
         canvas.setTheme('theme2')
         canvas.refresh()
@@ -286,7 +287,7 @@ class TestQgsMapCanvas(unittest.TestCase):
         # add layer 2 to theme1
         record3 = QgsMapThemeCollection.MapThemeLayerRecord(layer2)
         theme1.setLayerRecords([record3])
-        QgsProject.instance().mapThemeCollection().update('theme1', theme1)
+        project_instance.mapThemeCollection().update('theme1', theme1)
 
         canvas.refresh()
         canvas.waitWhileRendering()
@@ -298,7 +299,7 @@ class TestQgsMapCanvas(unittest.TestCase):
         record3.currentStyle = 'style4'
         record3.usingCurrentStyle = True
         theme1.setLayerRecords([record3])
-        QgsProject.instance().mapThemeCollection().update('theme1', theme1)
+        project_instance.mapThemeCollection().update('theme1', theme1)
 
         canvas.refresh()
         canvas.waitWhileRendering()

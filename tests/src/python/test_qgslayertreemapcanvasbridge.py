@@ -40,7 +40,7 @@ class TestQgsLayerTreeMapCanvasBridge(unittest.TestCase):
     def testLayerOrderUpdatedThroughBridge(self):
         """ test that project layer order is updated when layer tree changes """
 
-        prj = QgsProject.instance()
+        prj = QgsProject()
         prj.clear()
         layer = QgsVectorLayer("Point?field=fldtxt:string",
                                "layer1", "memory")
@@ -86,7 +86,7 @@ class TestQgsLayerTreeMapCanvasBridge(unittest.TestCase):
     def testCustomLayerOrderUpdatedFromProject(self):
         """ test that setting project layer order is reflected in custom layer order panel """
 
-        prj = QgsProject.instance()
+        prj = QgsProject()
         prj.clear()
         layer = QgsVectorLayer("Point?field=fldtxt:string",
                                "layer1", "memory")

@@ -34,10 +34,9 @@ from qgis.core import (QgsDataSourceUri,
                        QgsProviderRegistry,
                        QgsCoordinateReferenceSystem,
                        QgsVectorLayerExporter,
-                       QgsProject,
                        QgsSettings)
 from qgis.gui import QgsMessageViewer
-from qgis.utils import OverrideCursor
+from qgis.utils import OverrideCursor, iface
 
 from .ui.ui_DlgImportVector import Ui_DbManagerDlgImportVector as Ui_Dialog
 
@@ -125,7 +124,7 @@ class DlgImportVector(QDialog, Ui_Dialog):
 
     def populateLayers(self):
         self.cboInputLayer.clear()
-        for nodeLayer in QgsProject.instance().layerTreeRoot().findLayers():
+        for nodeLayer in iface.activeProject().layerTreeRoot().findLayers():
             layer = nodeLayer.layer()
             # TODO: add import raster support!
             if layer.type() == QgsMapLayer.VectorLayer:
@@ -190,7 +189,7 @@ class DlgImportVector(QDialog, Ui_Dialog):
 
         else:
             layerId = self.cboInputLayer.itemData(index)
-            self.inLayer = QgsProject.instance().mapLayer(layerId)
+            self.inLayer = iface.activeProject().mapLayer(layerId)
             self.inLayerMustBeDestroyed = False
 
         self.checkSupports()

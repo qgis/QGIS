@@ -43,6 +43,7 @@ from utilities import unitTestDataPath
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
+project_instance = QgsProject()
 
 class TestQgsNullSymbolRenderer(unittest.TestCase):
 
@@ -50,7 +51,7 @@ class TestQgsNullSymbolRenderer(unittest.TestCase):
         self.iface = get_iface()
         myShpFile = os.path.join(TEST_DATA_DIR, 'polys.shp')
         self.layer = QgsVectorLayer(myShpFile, 'Polys', 'ogr')
-        QgsProject.instance().addMapLayer(self.layer)
+        project_instance.addMapLayer(self.layer)
 
         self.renderer = QgsNullSymbolRenderer()
         self.layer.setRenderer(self.renderer)
@@ -63,7 +64,7 @@ class TestQgsNullSymbolRenderer(unittest.TestCase):
         self.mapsettings.setLayers(rendered_layers)
 
     def tearDown(self):
-        QgsProject.instance().removeAllMapLayers()
+        project_instance.removeAllMapLayers()
 
     def testRender(self):
         # test no features are rendered

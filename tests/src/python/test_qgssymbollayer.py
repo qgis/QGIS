@@ -81,6 +81,7 @@ start_app()
 
 TEST_DATA_DIR = unitTestDataPath()
 
+project_instance = QgsProject()
 
 class TestQgsSymbolLayer(unittest.TestCase):
 
@@ -405,7 +406,7 @@ class TestQgsSymbolLayer(unittest.TestCase):
 
         polys_shp = os.path.join(TEST_DATA_DIR, 'polys.shp')
         polys_layer = QgsVectorLayer(polys_shp, 'Polygons', 'ogr')
-        QgsProject.instance().addMapLayer(polys_layer)
+        project_instance.addMapLayer(polys_layer)
 
         layer = QgsSimpleFillSymbolLayer()
         layer.setDataDefinedProperty(QgsSymbolLayer.PropertyLayerEnabled, QgsProperty.fromExpression("Name='Lake'"))
@@ -427,7 +428,7 @@ class TestQgsSymbolLayer(unittest.TestCase):
         renderchecker.setControlPathPrefix('symbol_layer')
         renderchecker.setControlName('expected_filllayer_ddenabled')
         self.assertTrue(renderchecker.runTest('filllayer_ddenabled'))
-        QgsProject.instance().removeMapLayer(polys_layer)
+        project_instance.removeMapLayer(polys_layer)
 
     def testRenderLineLayerDisabled(self):
         """ test that rendering a line symbol with disabled layer works"""
@@ -470,7 +471,7 @@ class TestQgsSymbolLayer(unittest.TestCase):
 
         lines_shp = os.path.join(TEST_DATA_DIR, 'lines.shp')
         lines_layer = QgsVectorLayer(lines_shp, 'Lines', 'ogr')
-        QgsProject.instance().addMapLayer(lines_layer)
+        project_instance.addMapLayer(lines_layer)
 
         layer = QgsSimpleLineSymbolLayer()
         layer.setDataDefinedProperty(QgsSymbolLayer.PropertyLayerEnabled, QgsProperty.fromExpression("Name='Highway'"))
@@ -492,7 +493,7 @@ class TestQgsSymbolLayer(unittest.TestCase):
         renderchecker.setControlPathPrefix('symbol_layer')
         renderchecker.setControlName('expected_linelayer_ddenabled')
         self.assertTrue(renderchecker.runTest('linelayer_ddenabled'))
-        QgsProject.instance().removeMapLayer(lines_layer)
+        project_instance.removeMapLayer(lines_layer)
 
     def testRenderMarkerLayerDisabled(self):
         """ test that rendering a marker symbol with disabled layer works"""
@@ -533,7 +534,7 @@ class TestQgsSymbolLayer(unittest.TestCase):
 
         points_shp = os.path.join(TEST_DATA_DIR, 'points.shp')
         points_layer = QgsVectorLayer(points_shp, 'Points', 'ogr')
-        QgsProject.instance().addMapLayer(points_layer)
+        project_instance.addMapLayer(points_layer)
 
         layer = QgsSimpleMarkerSymbolLayer()
         layer.setDataDefinedProperty(QgsSymbolLayer.PropertyLayerEnabled, QgsProperty.fromExpression("Class='Biplane'"))
@@ -556,7 +557,7 @@ class TestQgsSymbolLayer(unittest.TestCase):
         renderchecker.setControlPathPrefix('symbol_layer')
         renderchecker.setControlName('expected_markerlayer_ddenabled')
         self.assertTrue(renderchecker.runTest('markerlayer_ddenabled'))
-        QgsProject.instance().removeMapLayer(points_layer)
+        project_instance.removeMapLayer(points_layer)
 
     def testQgsSimpleFillSymbolLayer(self):
         """Create a new style from a .sld file and match test.

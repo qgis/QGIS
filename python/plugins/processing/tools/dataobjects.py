@@ -68,7 +68,7 @@ def createContext(feedback=None):
     Creates a default processing context
     """
     context = QgsProcessingContext()
-    context.setProject(QgsProject.instance())
+    context.setProject(iface.activeProject())
     context.setFeedback(feedback)
 
     invalid_features_method = ProcessingConfig.getSetting(ProcessingConfig.FILTER_INVALID_GEOMETRIES)
@@ -87,7 +87,7 @@ def createContext(feedback=None):
 def createExpressionContext():
     context = QgsExpressionContext()
     context.appendScope(QgsExpressionContextUtils.globalScope())
-    context.appendScope(QgsExpressionContextUtils.projectScope(QgsProject.instance()))
+    context.appendScope(QgsExpressionContextUtils.projectScope(iface.activeProject()))
 
     if iface and iface.mapCanvas():
         context.appendScope(QgsExpressionContextUtils.mapSettingsScope(iface.mapCanvas().mapSettings()))
@@ -127,7 +127,7 @@ def load(fileName, name=None, crs=None, style=None, isRaster=False):
             if style is None:
                 style = ProcessingConfig.getSetting(ProcessingConfig.RASTER_STYLE)
             qgslayer.loadNamedStyle(style)
-            QgsProject.instance().addMapLayers([qgslayer])
+            iface.activeProject().addMapLayers([qgslayer])
         else:
             if prjSetting:
                 settings.setValue('/Projections/defaultBehavior', prjSetting)
@@ -146,7 +146,7 @@ def load(fileName, name=None, crs=None, style=None, isRaster=False):
                 else:
                     style = ProcessingConfig.getSetting(ProcessingConfig.VECTOR_POLYGON_STYLE)
             qgslayer.loadNamedStyle(style)
-            QgsProject.instance().addMapLayers([qgslayer])
+            iface.activeProject().addMapLayers([qgslayer])
 
     if prjSetting:
         settings.setValue('/Projections/defaultBehavior', prjSetting)

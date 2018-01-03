@@ -68,6 +68,7 @@ if not PDFUTIL:
 class OutputKind():
     Img, Svg, Pdf = list(range(3))
 
+project_instance = QgsProject()
 
 # noinspection PyShadowingNames
 class TestComposerBase(TestQgsPalLabeling):
@@ -105,7 +106,7 @@ class TestComposerBase(TestQgsPalLabeling):
 
     def _set_up_composition(self, width, height, dpi, engine_settings):
         # set up composition and add map
-        self._c = QgsComposition(QgsProject.instance())
+        self._c = QgsComposition(project_instance)
         """:type: QgsComposition"""
         # self._c.setUseAdvancedEffects(False)
         self._c.setPrintResolution(dpi)
@@ -129,7 +130,7 @@ class TestComposerBase(TestQgsPalLabeling):
         # self._cmap.updateCachedImage()
         self._c.setPlotStyle(QgsComposition.Print)
         # composition takes labeling engine settings from project
-        QgsProject.instance().setLabelingEngineSettings(engine_settings)
+        project_instance.setLabelingEngineSettings(engine_settings)
 
     # noinspection PyUnusedLocal
     def _get_composer_image(self, width, height, dpi):
@@ -169,7 +170,7 @@ class TestComposerBase(TestQgsPalLabeling):
 
         svg_g = QSvgGenerator()
         # noinspection PyArgumentList
-        svg_g.setTitle(QgsProject.instance().title())
+        svg_g.setTitle(project_instance.title())
         svg_g.setFileName(svgpath)
         svg_g.setSize(QSize(width, height))
         svg_g.setViewBox(QRect(0, 0, width, height))

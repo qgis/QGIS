@@ -41,6 +41,7 @@ from utilities import unitTestDataPath
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
+project_instance = QgsProject()
 
 class TestQgsHighlight(unittest.TestCase):
 
@@ -52,13 +53,13 @@ class TestQgsHighlight(unittest.TestCase):
         self.iface.mapCanvas().resizeEvent(QResizeEvent(QSize(400, 400), self.iface.mapCanvas().size()))
 
     def tearDown(self):
-        QgsProject.instance().removeAllMapLayers()
+        project_instance.removeAllMapLayers()
 
     def runTestForLayer(self, layer, testname):
         tempdir = tempfile.mkdtemp()
 
         layer = QgsVectorLayer(layer, 'Layer', 'ogr')
-        QgsProject.instance().addMapLayer(layer)
+        project_instance.addMapLayer(layer)
         self.iface.mapCanvas().setExtent(layer.extent())
 
         geom = next(layer.getFeatures()).geometry()

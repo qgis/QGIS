@@ -10,7 +10,9 @@ from qgis.PyQt.QtWidgets import (QLineEdit, QPushButton, QLabel,
 
 from qgis.core import (QgsProcessingUtils,
                        QgsProcessingParameterDefinition,
-                       QgsProject)
+                       QgsProcessingParameterRasterLayer,
+                       QgsProcessingOutputRasterLayer)
+from qgis.utils import iface
 
 from processing.gui.wrappers import WidgetWrapper, DIALOG_STANDARD, DIALOG_BATCH
 from processing.gui.BatchInputSelectionPanel import BatchInputSelectionPanel
@@ -176,7 +178,7 @@ class ExpressionWidgetWrapper(WidgetWrapper):
 
     def createWidget(self):
         if self.dialogType == DIALOG_STANDARD:
-            layers = QgsProcessingUtils.compatibleRasterLayers(QgsProject.instance(), False)
+            layers = QgsProcessingUtils.compatibleRasterLayers(iface.activeProject(), False)
             options = {}
             for lyr in layers:
                 for n in range(lyr.bandCount()):
@@ -191,7 +193,7 @@ class ExpressionWidgetWrapper(WidgetWrapper):
             return self._panel(options)
 
     def refresh(self):
-        layers = QgsProcessingUtils.compatibleRasterLayers(QgsProject.instance())
+        layers = QgsProcessingUtils.compatibleRasterLayers(iface.activeProject())
         options = {}
         for lyr in layers:
             for n in range(lyr.bandCount()):
@@ -235,11 +237,11 @@ class LayersListWidgetWrapper(WidgetWrapper):
                 return self.param.setValue(self.widget.selectedoptions)
             else:
                 if self.param.datatype == dataobjects.TYPE_RASTER:
-                    options = QgsProcessingUtils.compatibleRasterLayers(QgsProject.instance(), False)
+                    options = QgsProcessingUtils.compatibleRasterLayers(iface.activeProject(), False)
                 elif self.param.datatype == dataobjects.TYPE_VECTOR_ANY:
-                    options = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance(), [], False)
+                    options = QgsProcessingUtils.compatibleVectorLayers(iface.activeProject(), [], False)
                 else:
-                    options = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance(), [self.param.datatype], False)
+                    options = QgsProcessingUtils.compatibleVectorLayers(iface.activeProject(), [self.param.datatype], False)
                 return [options[i] for i in self.widget.selectedoptions]
         elif self.dialogType == DIALOG_BATCH:
             return self.widget.getText()

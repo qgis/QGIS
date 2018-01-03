@@ -25,6 +25,7 @@ from qgis.PyQt.QtWidgets import QWidget, QTreeView, QMenu, QLabel
 
 from qgis.core import QgsProject, QgsMessageLog
 from qgis.gui import QgsMessageBar, QgsMessageBarItem
+from qgis.utils import iface
 
 from .db_model import DBModel, PluginItem
 from .db_plugins.plugin import DBPlugin, Schema, Table
@@ -161,7 +162,7 @@ class DBTree(QTreeView):
         table = self.currentTable()
         if table is not None:
             layer = table.toMapLayer()
-            layers = QgsProject.instance().addMapLayers([layer])
+            layers = iface.activeProject().addMapLayers([layer])
             if len(layers) != 1:
                 QgsMessageLog.logMessage(
                     self.tr("%1 is an invalid layer - not loaded").replace("%1", layer.publicSource()))

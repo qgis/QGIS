@@ -24,6 +24,7 @@ from qgis.PyQt.QtGui import QImage
 from time import sleep
 start_app()
 
+project_instance = QgsProject()
 
 class TestQgsMapRendererCache(unittest.TestCase):
 
@@ -101,7 +102,7 @@ class TestQgsMapRendererCache(unittest.TestCase):
         """ test requesting repaint with a single dependent layer """
         layer = QgsVectorLayer("Point?field=fldtxt:string",
                                "layer", "memory")
-        QgsProject.instance().addMapLayers([layer])
+        project_instance.addMapLayers([layer])
         self.assertTrue(layer.isValid())
 
         # add image to cache
@@ -116,7 +117,7 @@ class TestQgsMapRendererCache(unittest.TestCase):
         # cache image should be cleared
         self.assertTrue(cache.cacheImage('xxx').isNull())
         self.assertFalse(cache.hasCacheImage('xxx'))
-        QgsProject.instance().removeMapLayer(layer.id())
+        project_instance.removeMapLayer(layer.id())
 
         # test that cache is also cleared on deferred update
         layer = QgsVectorLayer("Point?field=fldtxt:string",
@@ -131,7 +132,7 @@ class TestQgsMapRendererCache(unittest.TestCase):
                                 "layer1", "memory")
         layer2 = QgsVectorLayer("Point?field=fldtxt:string",
                                 "layer2", "memory")
-        QgsProject.instance().addMapLayers([layer1, layer2])
+        project_instance.addMapLayers([layer1, layer2])
         self.assertTrue(layer1.isValid())
         self.assertTrue(layer2.isValid())
 

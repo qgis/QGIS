@@ -39,8 +39,9 @@ from qgis.core import (QgsProcessingParameterDefinition,
                        QgsProcessingOutputRasterLayer,
                        QgsProcessingParameterRasterDestination,
                        QgsProcessingParameterFeatureSink,
-                       QgsProcessingParameterVectorDestination,
-                       QgsProject)
+                       QgsProcessingParameterVectorDestination)
+from qgis.utils import iface
+
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import QCoreApplication, Qt
 from qgis.PyQt.QtWidgets import (QWidget, QHBoxLayout, QToolButton,
@@ -81,8 +82,8 @@ class ParametersPanel(BASE, WIDGET):
 
         self.initWidgets()
 
-        QgsProject.instance().layerWasAdded.connect(self.layerRegistryChanged)
-        QgsProject.instance().layersWillBeRemoved.connect(self.layerRegistryChanged)
+        iface.activeProject().layerWasAdded.connect(self.layerRegistryChanged)
+        iface.activeProject().layersWillBeRemoved.connect(self.layerRegistryChanged)
 
     def layerRegistryChanged(self, layers):
         for wrapper in list(self.wrappers.values()):

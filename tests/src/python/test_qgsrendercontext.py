@@ -66,7 +66,8 @@ class TestQgsRenderContext(unittest.TestCase):
         length_wsg84_mapunits = 0.00001473026350140572
         meters_test = 2.40
         da_wsg84 = QgsDistanceArea()
-        da_wsg84.setSourceCrs(crs_wsg84, QgsProject.instance().transformContext())
+        p = QgsProject()
+        da_wsg84.setSourceCrs(crs_wsg84, p)
         if (da_wsg84.sourceCrs().isGeographic()):
             da_wsg84.setEllipsoid(da_wsg84.sourceCrs().ellipsoidAcronym())
         length_meter_mapunits = da_wsg84.measureLineProjected(point_berlin_wsg84, 1.0, (math.pi / 2))

@@ -51,6 +51,7 @@ from utilities import unitTestDataPath
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
+project_instance = QgsProject()
 
 class TestQgsGeometryGeneratorSymbolLayerV2(unittest.TestCase):
 
@@ -63,9 +64,9 @@ class TestQgsGeometryGeneratorSymbolLayerV2(unittest.TestCase):
         self.polys_layer = QgsVectorLayer(polys_shp, 'Polygons', 'ogr')
         self.points_layer = QgsVectorLayer(points_shp, 'Points', 'ogr')
         self.lines_layer = QgsVectorLayer(lines_shp, 'Lines', 'ogr')
-        QgsProject.instance().addMapLayer(self.polys_layer)
-        QgsProject.instance().addMapLayer(self.lines_layer)
-        QgsProject.instance().addMapLayer(self.points_layer)
+        project_instance.addMapLayer(self.polys_layer)
+        project_instance.addMapLayer(self.lines_layer)
+        project_instance.addMapLayer(self.points_layer)
 
         # Create style
         sym1 = QgsFillSymbol.createSimple({'color': '#fdbf6f'})
@@ -82,7 +83,7 @@ class TestQgsGeometryGeneratorSymbolLayerV2(unittest.TestCase):
         self.mapsettings.setExtent(QgsRectangle(-133, 22, -70, 52))
 
     def tearDown(self):
-        QgsProject.instance().removeAllMapLayers()
+        project_instance.removeAllMapLayers()
 
     def test_marker(self):
         sym = self.polys_layer.renderer().symbol()

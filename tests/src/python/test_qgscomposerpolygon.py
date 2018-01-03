@@ -40,7 +40,8 @@ class TestQgsComposerPolygon(unittest.TestCase):
         unittest.TestCase.__init__(self, methodName)
 
         # create composition
-        self.mComposition = QgsComposition(QgsProject.instance())
+        self.project = QgsProject()
+        self.mComposition = QgsComposition(self.project)
         self.mComposition.setPaperSize(297, 210)
 
         # create

@@ -57,9 +57,9 @@ class DBManagerPlugin(object):
         self.layerAction.setObjectName("dbManagerUpdateSqlLayer")
         self.layerAction.triggered.connect(self.onUpdateSqlLayer)
         self.iface.addCustomActionForLayerType(self.layerAction, "", QgsMapLayer.VectorLayer, False)
-        for l in list(QgsProject.instance().mapLayers().values()):
+        for l in list(self.iface.activeProject().mapLayers().values()):
             self.onLayerWasAdded(l)
-        QgsProject.instance().layerWasAdded.connect(self.onLayerWasAdded)
+        self.iface.activeProject().layerWasAdded.connect(self.onLayerWasAdded)
 
     def unload(self):
         # Remove the plugin menu item and icon
@@ -73,7 +73,7 @@ class DBManagerPlugin(object):
             self.iface.removeToolBarIcon(self.action)
 
         self.iface.removeCustomActionForLayerType(self.layerAction)
-        QgsProject.instance().layerWasAdded.disconnect(self.onLayerWasAdded)
+        self.iface.activeProject().layerWasAdded.disconnect(self.onLayerWasAdded)
 
         if self.dlg is not None:
             self.dlg.close()

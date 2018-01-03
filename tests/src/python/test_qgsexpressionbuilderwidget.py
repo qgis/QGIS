@@ -26,6 +26,7 @@ from qgis.core import (QgsExpressionContext,
                        QgsGeometry)
 start_app()
 
+project_instance = QgsProject()
 
 def createReferencingLayer():
     layer = QgsVectorLayer("Point?field=fldtxt:string&field=foreignkey:integer",
@@ -67,7 +68,7 @@ class TestQgsExpressionBuilderWidget(unittest.TestCase):
     def setUp(self):
         self.referencedLayer = createReferencedLayer()
         self.referencingLayer = createReferencingLayer()
-        QgsProject.instance().addMapLayers([self.referencedLayer, self.referencingLayer])
+        project_instance.addMapLayers([self.referencedLayer, self.referencingLayer])
 
     def testFunctionPresent(self):
         """ check through widget model to ensure it is initially populated with functions """
@@ -108,7 +109,7 @@ class TestQgsExpressionBuilderWidget(unittest.TestCase):
 
     def testLayers(self):
         """ check that layers are shown in widget model"""
-        p = QgsProject.instance()
+        p = project_instance
         layer = QgsVectorLayer("Point", "layer1", "memory")
         layer2 = QgsVectorLayer("Point", "layer2", "memory")
         p.addMapLayers([layer, layer2])
@@ -137,7 +138,7 @@ class TestQgsExpressionBuilderWidget(unittest.TestCase):
 
     def testRelations(self):
         """ check that layers are shown in widget model"""
-        p = QgsProject.instance()
+        p = project_instance
 
         # not valid, but doesn't matter for test....
         rel = QgsRelation()

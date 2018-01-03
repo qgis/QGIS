@@ -112,7 +112,7 @@ class TestQgsPalLabeling(unittest.TestCase):
 
         # initialize class MapRegistry, Canvas, MapRenderer, Map and PAL
         # noinspection PyArgumentList
-        cls._MapRegistry = QgsProject.instance()
+        cls._MapRegistry = QgsProject()
 
         cls._MapSettings = cls.getBaseMapSettings()
         osize = cls._MapSettings.outputSize()

@@ -64,6 +64,9 @@ def processingTestDataPath():
 
 class AlgorithmsTest(object):
 
+    def __init__(self):
+        self.project = QgsProject()
+
     def test_algorithms(self):
         """
         This is the main test function. All others will be executed based on the definitions in testdata/algorithm_tests.yaml
@@ -83,7 +86,7 @@ class AlgorithmsTest(object):
         :param defs: A python dict containing a test algorithm definition
         """
         self.vector_layer_params = {}
-        QgsProject.instance().removeAllMapLayers()
+        self.project.removeAllMapLayers()
 
         params = self.load_params(defs['params'])
 
@@ -114,7 +117,7 @@ class AlgorithmsTest(object):
 
         # ignore user setting for invalid geometry handling
         context = QgsProcessingContext()
-        context.setProject(QgsProject.instance())
+        context.setProject(self.project)
 
         if 'skipInvalid' in defs and defs['skipInvalid']:
             context.setInvalidGeometryCheck(QgsFeatureRequest.GeometrySkipInvalid)
@@ -241,7 +244,7 @@ class AlgorithmsTest(object):
             lyr = QgsRasterLayer(filepath, param['name'], 'gdal', options)
 
         self.assertTrue(lyr.isValid(), 'Could not load layer "{}" from param {}'.format(filepath, param))
-        QgsProject.instance().addMapLayer(lyr)
+        self.project.addMapLayer(lyr)
         return lyr
 
     def filepath_from_param(self, param):

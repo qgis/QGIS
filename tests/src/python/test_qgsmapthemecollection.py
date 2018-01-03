@@ -101,7 +101,7 @@ class TestQgsMapThemeCollection(unittest.TestCase):
 
     def testMasterLayerOrder(self):
         """ test master layer order"""
-        prj = QgsProject.instance()
+        prj = QgsProject()
         prj.clear()
         layer = QgsVectorLayer("Point?field=fldtxt:string",
                                "layer1", "memory")
@@ -173,7 +173,7 @@ class TestQgsMapThemeCollection(unittest.TestCase):
 
     def testMasterVisibleLayers(self):
         """ test master visible layers"""
-        prj = QgsProject.instance()
+        prj = QgsProject()
         prj.clear()
         layer = QgsVectorLayer("Point?field=fldtxt:string",
                                "layer1", "memory")

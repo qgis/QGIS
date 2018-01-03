@@ -57,7 +57,7 @@ class ExtentSelectionPanel(BASE, WIDGET):
 
         self.dialog = dialog
         self.param = param
-        self.crs = QgsProject.instance().crs()
+        self.crs = iface.activeProject().crs()
 
         if self.param.flags() & QgsProcessingParameterDefinition.FlagOptional:
             if hasattr(self.leText, 'setPlaceholderText'):
@@ -122,7 +122,7 @@ class ExtentSelectionPanel(BASE, WIDGET):
         extentsDict[CANVAS_KEY] = {"extent": iface.mapCanvas().extent(),
                                    "authid": iface.mapCanvas().mapSettings().destinationCrs().authid()}
         extents = [CANVAS_KEY]
-        layers = QgsProcessingUtils.compatibleLayers(QgsProject.instance())
+        layers = QgsProcessingUtils.compatibleLayers(iface.activeProject())
         for layer in layers:
             authid = layer.crs().authid()
             if ProcessingConfig.getSetting(ProcessingConfig.SHOW_CRS_DEF) \
@@ -153,7 +153,7 @@ class ExtentSelectionPanel(BASE, WIDGET):
         try:
             self.crs = r.crs()
         except:
-            self.crs = QgsProject.instance().crs()
+            self.crs = iface.activeProject().crs()
         if self.crs.isValid():
             s += ' [' + self.crs.authid() + ']'
 

@@ -31,6 +31,7 @@ from utilities import unitTestDataPath
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
+project_instance = QgsProject()
 
 class TestQgsFeatureIterator(unittest.TestCase):
 
@@ -178,7 +179,7 @@ class TestQgsFeatureIterator(unittest.TestCase):
         self.assertTrue(pr.addFeatures([f]))
         layer.addExpressionField('"fldint"*2', QgsField('exp1', QVariant.LongLong))
 
-        QgsProject.instance().addMapLayers([layer, joinLayer])
+        project_instance.addMapLayers([layer, joinLayer])
 
         join = QgsVectorLayerJoinInfo()
         join.setTargetFieldName("exp1")
@@ -198,7 +199,7 @@ class TestQgsFeatureIterator(unittest.TestCase):
         self.assertEqual(attrs[4], 246)
         self.assertFalse(fi.nextFeature(f))
 
-        QgsProject.instance().removeMapLayers([layer.id(), joinLayer.id()])
+        project_instance.removeMapLayers([layer.id(), joinLayer.id()])
 
     def test_JoinUsingExpression2(self):
         """ test joining a layer using a virtual field (the other way!) """
@@ -220,7 +221,7 @@ class TestQgsFeatureIterator(unittest.TestCase):
         f.setAttributes(["test", 123])
         self.assertTrue(pr.addFeatures([f]))
 
-        QgsProject.instance().addMapLayers([layer, joinLayer])
+        project_instance.addMapLayers([layer, joinLayer])
 
         join = QgsVectorLayerJoinInfo()
         join.setTargetFieldName("fldint")
@@ -240,7 +241,7 @@ class TestQgsFeatureIterator(unittest.TestCase):
         self.assertEqual(attrs[4], 321)
         self.assertFalse(fi.nextFeature(f))
 
-        QgsProject.instance().removeMapLayers([layer.id(), joinLayer.id()])
+        project_instance.removeMapLayers([layer.id(), joinLayer.id()])
 
     def test_JoinUsingFeatureRequestExpression(self):
         """ test requesting features using a filter expression which requires joined columns """
@@ -263,7 +264,7 @@ class TestQgsFeatureIterator(unittest.TestCase):
         f2.setAttributes(["test", 124])
         self.assertTrue(pr.addFeatures([f1, f2]))
 
-        QgsProject.instance().addMapLayers([layer, joinLayer])
+        project_instance.addMapLayers([layer, joinLayer])
 
         join = QgsVectorLayerJoinInfo()
         join.setTargetFieldName("fldint")
@@ -278,7 +279,7 @@ class TestQgsFeatureIterator(unittest.TestCase):
         self.assertEqual(f['fldint'], 124)
         self.assertEqual(f['joinlayer_z'], 654)
 
-        QgsProject.instance().removeMapLayers([layer.id(), joinLayer.id()])
+        project_instance.removeMapLayers([layer.id(), joinLayer.id()])
 
     def test_invalidGeometryFilter(self):
         layer = QgsVectorLayer(

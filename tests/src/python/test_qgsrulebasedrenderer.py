@@ -50,6 +50,7 @@ from utilities import unitTestDataPath
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
+project_instance = QgsProject()
 
 class TestQgsRulebasedRenderer(unittest.TestCase):
 
@@ -57,7 +58,7 @@ class TestQgsRulebasedRenderer(unittest.TestCase):
         self.iface = get_iface()
         myShpFile = os.path.join(TEST_DATA_DIR, 'rectangles.shp')
         layer = QgsVectorLayer(myShpFile, 'Points', 'ogr')
-        QgsProject.instance().addMapLayer(layer)
+        project_instance.addMapLayer(layer)
 
         # Create rulebased style
         sym1 = QgsFillSymbol.createSimple({'color': '#fdbf6f'})
@@ -84,7 +85,7 @@ class TestQgsRulebasedRenderer(unittest.TestCase):
         self.mapsettings.setLayers(rendered_layers)
 
     def tearDown(self):
-        QgsProject.instance().removeAllMapLayers()
+        project_instance.removeAllMapLayers()
 
     def testElse(self):
         # Setup rendering check

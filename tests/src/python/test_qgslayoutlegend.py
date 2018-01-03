@@ -39,6 +39,7 @@ from test_qgslayoutitem import LayoutItemTestCase
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
+project_instance = QgsProject()
 
 class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
 
@@ -51,7 +52,7 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
 
         point_path = os.path.join(TEST_DATA_DIR, 'points.shp')
         point_layer = QgsVectorLayer(point_path, 'points', 'ogr')
-        QgsProject.instance().addMapLayers([point_layer])
+        project_instance.addMapLayers([point_layer])
 
         marker_symbol = QgsMarkerSymbol.createSimple({'color': '#ff0000', 'outline_style': 'no', 'size': '5', 'size_unit': 'MapUnit'})
 
@@ -59,7 +60,7 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
 
         s = QgsMapSettings()
         s.setLayers([point_layer])
-        layout = QgsLayout(QgsProject.instance())
+        layout = QgsLayout(project_instance)
         layout.initializeDefaults()
 
         map = QgsLayoutItemMap(layout)
@@ -84,18 +85,18 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         result, message = checker.testLayout()
         self.assertTrue(result, message)
 
-        QgsProject.instance().removeMapLayers([point_layer.id()])
+        project_instance.removeMapLayers([point_layer.id()])
 
     def testResizeWithMapContent(self):
         """Test test legend resizes to match map content"""
 
         point_path = os.path.join(TEST_DATA_DIR, 'points.shp')
         point_layer = QgsVectorLayer(point_path, 'points', 'ogr')
-        QgsProject.instance().addMapLayers([point_layer])
+        project_instance.addMapLayers([point_layer])
 
         s = QgsMapSettings()
         s.setLayers([point_layer])
-        layout = QgsLayout(QgsProject.instance())
+        layout = QgsLayout(project_instance)
         layout.initializeDefaults()
 
         map = QgsLayoutItemMap(layout)
@@ -123,18 +124,18 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         result, message = checker.testLayout()
         self.assertTrue(result, message)
 
-        QgsProject.instance().removeMapLayers([point_layer.id()])
+        project_instance.removeMapLayers([point_layer.id()])
 
     def testResizeDisabled(self):
         """Test that test legend does not resize if auto size is disabled"""
 
         point_path = os.path.join(TEST_DATA_DIR, 'points.shp')
         point_layer = QgsVectorLayer(point_path, 'points', 'ogr')
-        QgsProject.instance().addMapLayers([point_layer])
+        project_instance.addMapLayers([point_layer])
 
         s = QgsMapSettings()
         s.setLayers([point_layer])
-        layout = QgsLayout(QgsProject.instance())
+        layout = QgsLayout(project_instance)
         layout.initializeDefaults()
 
         map = QgsLayoutItemMap(layout)
@@ -166,18 +167,18 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         result, message = checker.testLayout()
         self.assertTrue(result, message)
 
-        QgsProject.instance().removeMapLayers([point_layer.id()])
+        project_instance.removeMapLayers([point_layer.id()])
 
     def testResizeDisabledCrop(self):
         """Test that if legend resizing is disabled, and legend is too small, then content is cropped"""
 
         point_path = os.path.join(TEST_DATA_DIR, 'points.shp')
         point_layer = QgsVectorLayer(point_path, 'points', 'ogr')
-        QgsProject.instance().addMapLayers([point_layer])
+        project_instance.addMapLayers([point_layer])
 
         s = QgsMapSettings()
         s.setLayers([point_layer])
-        layout = QgsLayout(QgsProject.instance())
+        layout = QgsLayout(project_instance)
         layout.initializeDefaults()
 
         map = QgsLayoutItemMap(layout)
@@ -209,10 +210,10 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         result, message = checker.testLayout()
         self.assertTrue(result, message)
 
-        QgsProject.instance().removeMapLayers([point_layer.id()])
+        project_instance.removeMapLayers([point_layer.id()])
 
     def testDataDefinedTitle(self):
-        layout = QgsLayout(QgsProject.instance())
+        layout = QgsLayout(project_instance)
         layout.initializeDefaults()
 
         legend = QgsLayoutItemLegend(layout)
@@ -228,7 +229,7 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         self.assertEqual(legend.legendSettings().title(), 'new')
 
     def testDataDefinedColumnCount(self):
-        layout = QgsLayout(QgsProject.instance())
+        layout = QgsLayout(project_instance)
         layout.initializeDefaults()
 
         legend = QgsLayoutItemLegend(layout)

@@ -55,13 +55,14 @@ from utilities import unitTestDataPath
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
+project_instance = QgsProject()
 
 class TestQgsPointDisplacementRenderer(unittest.TestCase):
 
     def setUp(self):
         myShpFile = os.path.join(TEST_DATA_DIR, 'points.shp')
         self.layer = QgsVectorLayer(myShpFile, 'Points', 'ogr')
-        QgsProject.instance().addMapLayer(self.layer)
+        project_instance.addMapLayer(self.layer)
 
         self.renderer = QgsPointDisplacementRenderer()
         sym1 = QgsMarkerSymbol.createSimple({'color': '#ff00ff', 'size': '3', 'outline_style': 'no'})
@@ -81,7 +82,7 @@ class TestQgsPointDisplacementRenderer(unittest.TestCase):
         self.mapsettings.setLayers(rendered_layers)
 
     def tearDown(self):
-        QgsProject.instance().removeAllMapLayers()
+        project_instance.removeAllMapLayers()
 
     def _setProperties(self, r):
         """ set properties for a renderer for testing with _checkProperties"""

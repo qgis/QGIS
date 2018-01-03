@@ -41,6 +41,7 @@ from qgis.core import (QgsMapLayer,
                        QgsProcessingParameterDefinition,
                        QgsProcessingParameterVectorLayer,
                        QgsProcessingParameterFeatureSource)
+from qgis.utils import iface
 
 from processing.gui.MultipleInputDialog import MultipleInputDialog
 
@@ -103,9 +104,9 @@ class BatchInputSelectionPanel(QWidget):
         if (isinstance(self.param, QgsProcessingParameterRasterLayer) or
                 (isinstance(self.param, QgsProcessingParameterMultipleLayers) and
                  self.param.layerType() == QgsProcessing.TypeRaster)):
-            layers = QgsProcessingUtils.compatibleRasterLayers(QgsProject.instance())
+            layers = QgsProcessingUtils.compatibleRasterLayers(iface.activeProject())
         elif isinstance(self.param, QgsProcessingParameterVectorLayer):
-            layers = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance())
+            layers = QgsProcessingUtils.compatibleVectorLayers(iface.activeProject())
         else:
             datatypes = [QgsProcessing.TypeVectorAnyGeometry]
             if isinstance(self.param, QgsProcessingParameterFeatureSource):
@@ -114,9 +115,9 @@ class BatchInputSelectionPanel(QWidget):
                 datatypes = [self.param.layerType()]
 
             if QgsProcessing.TypeVectorAnyGeometry not in datatypes:
-                layers = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance(), datatypes)
+                layers = QgsProcessingUtils.compatibleVectorLayers(iface.activeProject(), datatypes)
             else:
-                layers = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance())
+                layers = QgsProcessingUtils.compatibleVectorLayers(iface.activeProject())
 
         dlg = MultipleInputDialog([layer.name() for layer in layers])
         dlg.exec_()

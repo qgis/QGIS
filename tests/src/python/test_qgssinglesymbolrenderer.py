@@ -43,6 +43,7 @@ from utilities import unitTestDataPath
 
 TEST_DATA_DIR = unitTestDataPath()
 
+project_instance = QgsProject()
 
 class TestQgsSingleSymbolRenderer(unittest.TestCase):
 
@@ -50,7 +51,7 @@ class TestQgsSingleSymbolRenderer(unittest.TestCase):
         self.iface = get_iface()
         myShpFile = os.path.join(TEST_DATA_DIR, 'polys_overlapping.shp')
         layer = QgsVectorLayer(myShpFile, 'Polys', 'ogr')
-        QgsProject.instance().addMapLayer(layer)
+        project_instance.addMapLayer(layer)
 
         # Create rulebased style
         sym1 = QgsFillSymbol.createSimple({'color': '#fdbf6f'})

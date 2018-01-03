@@ -39,6 +39,7 @@ from qgis.core import (
     QgsOfflineEditing,
 )
 
+project_instance = QgsProject()
 
 # Tet features, fields: [id, name, geometry]
 # "id" is used as a pk to retriev features by attribute
@@ -75,7 +76,7 @@ class OfflineTestBase(object):
         layer.addFeatures(features)
         assert layer.commitChanges()
         # Add the online layer
-        self.registry = QgsProject.instance()
+        self.registry = project_instance
         self.registry.removeAllMapLayers()
         assert self.registry.addMapLayer(self._getOnlineLayer('test_point')) is not None
 

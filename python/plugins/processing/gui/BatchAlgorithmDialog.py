@@ -43,7 +43,7 @@ from qgis.core import (QgsProcessingParameterDefinition,
 
 from qgis.gui import (QgsMessageBar,
                       QgsProcessingAlgorithmDialogBase)
-from qgis.utils import OverrideCursor
+from qgis.utils import OverrideCursor, iface
 
 from processing.gui.BatchPanel import BatchPanel
 from processing.gui.AlgorithmDialogBase import AlgorithmDialogBase
@@ -76,7 +76,7 @@ class BatchAlgorithmDialog(QgsProcessingAlgorithmDialogBase):
         feedback = self.createFeedback()
 
         load_layers = self.mainWidget().checkLoadLayersOnCompletion.isChecked()
-        project = QgsProject.instance() if load_layers else None
+        project = iface.activeProject() if load_layers else None
 
         for row in range(self.mainWidget().tblParameters.rowCount()):
             col = 0

@@ -28,6 +28,7 @@ from qgscompositionchecker import QgsCompositionChecker
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
+project_instance = QgsProject()
 
 class TestQgsComposerEffects(unittest.TestCase):
 
@@ -37,7 +38,7 @@ class TestQgsComposerEffects(unittest.TestCase):
 
         # create composition
         self.mMapSettings = QgsMapSettings()
-        self.mComposition = QgsComposition(QgsProject.instance())
+        self.mComposition = QgsComposition(project_instance)
         self.mComposition.setPaperSize(297, 210)
 
         self.mComposerRect1 = QgsComposerShape(20, 20, 150, 100, self.mComposition)

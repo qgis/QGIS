@@ -32,6 +32,7 @@ from qgis.core import (
 
 from utilities import compareWkt
 
+project_instance = QgsProject()
 
 class FeatureSourceTestCase(object):
 
@@ -518,7 +519,7 @@ class FeatureSourceTestCase(object):
             self.assertEqual(request.acceptFeature(f), f['pk'] in expected)
 
     def testGetFeaturesDestinationCrs(self):
-        request = QgsFeatureRequest().setDestinationCrs(QgsCoordinateReferenceSystem('epsg:3785'), QgsProject.instance().transformContext())
+        request = QgsFeatureRequest().setDestinationCrs(QgsCoordinateReferenceSystem('epsg:3785'), project_instance.transformContext())
         features = {f['pk']: f for f in self.source.getFeatures(request)}
         # test that features have been reprojected
         self.assertAlmostEqual(features[1].geometry().constGet().x(), -7829322, -5)
@@ -533,7 +534,7 @@ class FeatureSourceTestCase(object):
 
         # when destination crs is set, filter rect should be in destination crs
         rect = QgsRectangle(-7650000, 10500000, -7200000, 15000000)
-        request = QgsFeatureRequest().setDestinationCrs(QgsCoordinateReferenceSystem('epsg:3785'), QgsProject.instance().transformContext()).setFilterRect(rect)
+        request = QgsFeatureRequest().setDestinationCrs(QgsCoordinateReferenceSystem('epsg:3785'), project_instance.transformContext()).setFilterRect(rect)
         features = {f['pk']: f for f in self.source.getFeatures(request)}
         self.assertEqual(set(features.keys()), {2, 4})
         # test that features have been reprojected
@@ -544,7 +545,7 @@ class FeatureSourceTestCase(object):
 
         # bad rect for transform
         rect = QgsRectangle(-99999999999, 99999999999, -99999999998, 99999999998)
-        request = QgsFeatureRequest().setDestinationCrs(QgsCoordinateReferenceSystem('epsg:28356'), QgsProject.instance().transformContext()).setFilterRect(rect)
+        request = QgsFeatureRequest().setDestinationCrs(QgsCoordinateReferenceSystem('epsg:28356'), project_instance.transformContext()).setFilterRect(rect)
         features = [f for f in self.source.getFeatures(request)]
         self.assertFalse(features)
 

@@ -106,7 +106,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                 if not param.flags() & QgsProcessingParameterDefinition.FlagHidden and \
                         isinstance(param, (QgsProcessingParameterRasterDestination, QgsProcessingParameterFeatureSink, QgsProcessingParameterVectorDestination)):
                     if self.mainWidget().checkBoxes[param.name()].isChecked():
-                        dest_project = QgsProject.instance()
+                        dest_project = iface.activeProject()
 
                 value = self.mainWidget().outputWidgets[param.name()].getValue()
                 if value and isinstance(value, QgsProcessingOutputLayerDefinition):
@@ -121,7 +121,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
         hasExtent = False
         context = dataobjects.createContext()
         projectCRS = iface.mapCanvas().mapSettings().destinationCrs()
-        layers = QgsProcessingUtils.compatibleLayers(QgsProject.instance())
+        layers = QgsProcessingUtils.compatibleLayers(iface.activeProject())
         for param in self.algorithm().parameterDefinitions():
             if isinstance(param, (ParameterRaster, ParameterVector, ParameterMultipleInput)):
                 if param.value:

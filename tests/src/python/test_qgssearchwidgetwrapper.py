@@ -31,6 +31,7 @@ from qgis.testing import start_app, unittest
 
 start_app()
 
+project_instance = QgsProject()
 
 class PyQgsSearchWidgetWrapper(unittest.TestCase):
 
@@ -183,7 +184,7 @@ class PyQgsValueRelationSearchWidgetWrapper(unittest.TestCase):
         f3 = QgsFeature(parent_layer.fields(), 3)
         f3.setAttributes(['c', 3, 'value c'])
         parent_layer.dataProvider().addFeatures([f1, f2, f3])
-        QgsProject.instance().addMapLayers([layer, parent_layer])
+        project_instance.addMapLayers([layer, parent_layer])
 
         config = {"Layer": parent_layer.id(),
                   "Key": 'stringkey',

@@ -46,7 +46,8 @@ class TestQgsLayoutPolygon(unittest.TestCase, LayoutItemTestCase):
         unittest.TestCase.__init__(self, methodName)
 
         # create composition
-        self.layout = QgsLayout(QgsProject.instance())
+        self.project = QgsProject()
+        self.layout = QgsLayout(self.project)
         self.layout.initializeDefaults()
 
         # create

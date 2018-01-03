@@ -31,6 +31,7 @@ from pprint import pprint
 
 start_app()
 
+project_instance = QgsProject()
 
 class TestQgsDistanceArea(unittest.TestCase):
 
@@ -40,7 +41,7 @@ class TestQgsDistanceArea(unittest.TestCase):
 
         # try setting using a CRS object
         crs = QgsCoordinateReferenceSystem(3111, QgsCoordinateReferenceSystem.EpsgCrsId)
-        da.setSourceCrs(crs, QgsProject.instance().transformContext())
+        da.setSourceCrs(crs, project_instance.transformContext())
         self.assertEqual(da.sourceCrs().srsid(), crs.srsid())
 
     def testMeasureLine(self):
@@ -64,12 +65,12 @@ class TestQgsDistanceArea(unittest.TestCase):
         da_3068 = QgsDistanceArea()
         da_wsg84 = QgsDistanceArea()
 
-        da_3068.setSourceCrs(QgsCoordinateReferenceSystem.fromOgcWmsCrs('EPSG:3068'), QgsProject.instance().transformContext())
+        da_3068.setSourceCrs(QgsCoordinateReferenceSystem.fromOgcWmsCrs('EPSG:3068'), project_instance.transformContext())
         if (da_3068.sourceCrs().isGeographic()):
             da_3068.setEllipsoid(da_3068.sourceCrs().ellipsoidAcronym())
         print(("setting [{}] srid [{}] description [{}]".format(u'Soldner Berlin', da_3068.sourceCrs().authid(), da_3068.sourceCrs().description())))
         self.assertEqual(da_3068.sourceCrs().authid(), 'EPSG:3068')
-        da_wsg84.setSourceCrs(QgsCoordinateReferenceSystem.fromOgcWmsCrs('EPSG:4326'), QgsProject.instance().transformContext())
+        da_wsg84.setSourceCrs(QgsCoordinateReferenceSystem.fromOgcWmsCrs('EPSG:4326'), project_instance.transformContext())
         if (da_wsg84.sourceCrs().isGeographic()):
             da_wsg84.setEllipsoid(da_wsg84.sourceCrs().ellipsoidAcronym())
         self.assertEqual(da_wsg84.sourceCrs().authid(), 'EPSG:4326')
@@ -132,38 +133,38 @@ class TestQgsDistanceArea(unittest.TestCase):
         # +-+ +
         # checking returned length_mapunits/projected_points of diffferent world points with results from SpatiaLite ST_Project
         da_3068 = QgsDistanceArea()
-        da_3068.setSourceCrs(QgsCoordinateReferenceSystem.fromOgcWmsCrs('EPSG:3068'), QgsProject.instance().transformContext())
+        da_3068.setSourceCrs(QgsCoordinateReferenceSystem.fromOgcWmsCrs('EPSG:3068'), project_instance.transformContext())
         if (da_3068.sourceCrs().isGeographic()):
             da_3068.setEllipsoid(da_3068.sourceCrs().ellipsoidAcronym())
         self.assertEqual(da_3068.sourceCrs().authid(), 'EPSG:3068')
         print(("setting [{}] srid [{}] description [{}] isGeographic[{}] lengthUnits[{}] projectionAcronym[{}] ellipsoidAcronym[{}]".format(u'EPSG:3068', da_3068.sourceCrs().authid(), da_3068.sourceCrs().description(), da_3068.sourceCrs().isGeographic(), QgsUnitTypes.toString(da_3068.lengthUnits()), da_3068.sourceCrs().projectionAcronym(), da_3068.sourceCrs().ellipsoidAcronym())))
         da_wsg84 = QgsDistanceArea()
-        da_wsg84.setSourceCrs(QgsCoordinateReferenceSystem.fromOgcWmsCrs('EPSG:4326'), QgsProject.instance().transformContext())
+        da_wsg84.setSourceCrs(QgsCoordinateReferenceSystem.fromOgcWmsCrs('EPSG:4326'), project_instance.transformContext())
         if (da_wsg84.sourceCrs().isGeographic()):
             da_wsg84.setEllipsoid(da_wsg84.sourceCrs().ellipsoidAcronym())
         self.assertEqual(da_wsg84.sourceCrs().authid(), 'EPSG:4326')
         print(("setting [{}] srid [{}] description [{}] isGeographic[{}] lengthUnits[{}] projectionAcronym[{}] ellipsoidAcronym[{}] ellipsoid[{}]".format(u'EPSG:4326', da_wsg84.sourceCrs().authid(), da_wsg84.sourceCrs().description(), da_wsg84.sourceCrs().isGeographic(), QgsUnitTypes.toString(da_wsg84.lengthUnits()), da_wsg84.sourceCrs().projectionAcronym(), da_wsg84.sourceCrs().ellipsoidAcronym(), da_wsg84.ellipsoid())))
         da_4314 = QgsDistanceArea()
-        da_4314.setSourceCrs(QgsCoordinateReferenceSystem.fromOgcWmsCrs('EPSG:4314'), QgsProject.instance().transformContext())
+        da_4314.setSourceCrs(QgsCoordinateReferenceSystem.fromOgcWmsCrs('EPSG:4314'), project_instance.transformContext())
         if (da_4314.sourceCrs().isGeographic()):
             da_4314.setEllipsoid(da_4314.sourceCrs().ellipsoidAcronym())
         self.assertEqual(da_4314.sourceCrs().authid(), 'EPSG:4314')
         print(("setting [{}] srid [{}] description [{}] isGeographic[{}] lengthUnits[{}] projectionAcronym[{}] ellipsoidAcronym[{}]".format(u'EPSG:4314', da_4314.sourceCrs().authid(), da_4314.sourceCrs().description(), da_4314.sourceCrs().isGeographic(), QgsUnitTypes.toString(da_4314.lengthUnits()), da_4314.sourceCrs().projectionAcronym(), da_4314.sourceCrs().ellipsoidAcronym())))
         da_4805 = QgsDistanceArea()
-        da_4805.setSourceCrs(QgsCoordinateReferenceSystem.fromOgcWmsCrs('EPSG:4805'), QgsProject.instance().transformContext())
+        da_4805.setSourceCrs(QgsCoordinateReferenceSystem.fromOgcWmsCrs('EPSG:4805'), project_instance.transformContext())
         if (da_4805.sourceCrs().isGeographic()):
             da_4805.setEllipsoid(da_4805.sourceCrs().ellipsoidAcronym())
         self.assertEqual(da_4805.sourceCrs().authid(), 'EPSG:4805')
         print(("setting [{}] srid [{}] description [{}] isGeographic[{}] lengthUnits[{}] projectionAcronym[{}] ellipsoidAcronym[{}]".format(u'EPSG:4805', da_4805.sourceCrs().authid(), da_4805.sourceCrs().description(), da_4805.sourceCrs().isGeographic(), QgsUnitTypes.toString(da_4805.lengthUnits()), da_4805.sourceCrs().projectionAcronym(), da_4805.sourceCrs().ellipsoidAcronym())))
         # EPSG:5665 unknown, why?
         da_5665 = QgsDistanceArea()
-        da_5665.setSourceCrs(QgsCoordinateReferenceSystem.fromOgcWmsCrs('EPSG:5665'), QgsProject.instance().transformContext())
+        da_5665.setSourceCrs(QgsCoordinateReferenceSystem.fromOgcWmsCrs('EPSG:5665'), project_instance.transformContext())
         if (da_5665.sourceCrs().isGeographic()):
             da_5665.setEllipsoid(da_5665.sourceCrs().ellipsoidAcronym())
         print(("setting [{}] srid [{}] description [{}] isGeographic[{}] lengthUnits[{}] projectionAcronym[{}] ellipsoidAcronym[{}]".format(u'EPSG:5665', da_5665.sourceCrs().authid(), da_5665.sourceCrs().description(), da_5665.sourceCrs().isGeographic(), QgsUnitTypes.toString(da_5665.lengthUnits()), da_5665.sourceCrs().projectionAcronym(), da_5665.sourceCrs().ellipsoidAcronym())))
         #self.assertEqual(da_5665.sourceCrs().authid(), 'EPSG:5665')
         da_25833 = QgsDistanceArea()
-        da_25833.setSourceCrs(QgsCoordinateReferenceSystem.fromOgcWmsCrs('EPSG:25833'), QgsProject.instance().transformContext())
+        da_25833.setSourceCrs(QgsCoordinateReferenceSystem.fromOgcWmsCrs('EPSG:25833'), project_instance.transformContext())
         if (da_25833.sourceCrs().isGeographic()):
             da_25833.setEllipsoid(da_25833.sourceCrs().ellipsoidAcronym())
         print(("setting [{}] srid [{}] description [{}] isGeographic[{}] lengthUnits[{}] projectionAcronym[{}] ellipsoidAcronym[{}]".format(u'EPSG:25833', da_25833.sourceCrs().authid(), da_25833.sourceCrs().description(), da_25833.sourceCrs().isGeographic(), QgsUnitTypes.toString(da_25833.lengthUnits()), da_25833.sourceCrs().projectionAcronym(), da_25833.sourceCrs().ellipsoidAcronym())))
@@ -470,7 +471,7 @@ class TestQgsDistanceArea(unittest.TestCase):
         """
 
         da = QgsDistanceArea()
-        da.setSourceCrs(QgsCoordinateReferenceSystem.fromSrsId(3452), QgsProject.instance().transformContext())
+        da.setSourceCrs(QgsCoordinateReferenceSystem.fromSrsId(3452), project_instance.transformContext())
         da.setEllipsoid("NONE")
 
         # We check both the measured length AND the units, in case the logic regarding
@@ -496,7 +497,7 @@ class TestQgsDistanceArea(unittest.TestCase):
         self.assertAlmostEqual(distance, 133.669, delta=0.01)
 
         # now try with a source CRS which is in feet
-        da.setSourceCrs(QgsCoordinateReferenceSystem.fromSrsId(27469), QgsProject.instance().transformContext())
+        da.setSourceCrs(QgsCoordinateReferenceSystem.fromSrsId(27469), project_instance.transformContext())
         da.setEllipsoid("NONE")
         # measurement should be in feet
         distance = da.measureLine(QgsPointXY(1, 1), QgsPointXY(2, 3))
@@ -527,7 +528,7 @@ class TestQgsDistanceArea(unittest.TestCase):
         """
 
         da = QgsDistanceArea()
-        da.setSourceCrs(QgsCoordinateReferenceSystem.fromSrsId(3452), QgsProject.instance().transformContext())
+        da.setSourceCrs(QgsCoordinateReferenceSystem.fromSrsId(3452), project_instance.transformContext())
         da.setEllipsoid("NONE")
 
         polygon = QgsGeometry.fromPolygonXY(
@@ -564,7 +565,7 @@ class TestQgsDistanceArea(unittest.TestCase):
                 QgsPointXY(1850000, 4423000), QgsPointXY(1851000, 4423000), QgsPointXY(1851000, 4424000), QgsPointXY(1852000, 4424000), QgsPointXY(1852000, 4425000), QgsPointXY(1851000, 4425000), QgsPointXY(1850000, 4423000)
             ]]
         )
-        da.setSourceCrs(QgsCoordinateReferenceSystem.fromSrsId(27469), QgsProject.instance().transformContext())
+        da.setSourceCrs(QgsCoordinateReferenceSystem.fromSrsId(27469), project_instance.transformContext())
         da.setEllipsoid("NONE")
         # measurement should be in square feet
         area = da.measureArea(polygon)

@@ -32,6 +32,7 @@ from qgscompositionchecker import QgsCompositionChecker
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
+project_instance = QgsProject()
 
 class TestQgsComposerMap(unittest.TestCase):
 
@@ -43,7 +44,7 @@ class TestQgsComposerMap(unittest.TestCase):
         self.mMapSettings = QgsMapSettings()
         crs = QgsCoordinateReferenceSystem(32633)
         self.mMapSettings.setDestinationCrs(crs)
-        self.mComposition = QgsComposition(QgsProject.instance())
+        self.mComposition = QgsComposition(project_instance)
         self.mComposition.setPaperSize(297, 210)
         self.mComposerMap = QgsComposerMap(self.mComposition, 20, 20, 200, 100)
         self.mComposerMap.setFrameEnabled(True)

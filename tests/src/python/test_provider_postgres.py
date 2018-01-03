@@ -50,6 +50,7 @@ from providertestbase import ProviderTestCase
 QGISAPP = start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
+project_instance = QgsProject()
 
 class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
 
@@ -313,7 +314,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         """
         vl = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'gid\' table="qgis_test"."constraints" sql=', 'test1', 'postgres')
         self.assertTrue(vl.isValid())
-        QgsProject.instance().addMapLayer(vl)
+        project_instance.addMapLayer(vl)
         tg = QgsTransactionGroup()
         tg.addLayer(vl)
         vl.startEditing()

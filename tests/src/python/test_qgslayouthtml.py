@@ -40,7 +40,8 @@ class TestQgsLayoutHtml(unittest.TestCase):
     def setUp(self):
         """Run before each test."""
         self.iface = get_iface()
-        self.layout = QgsLayout(QgsProject.instance())
+        self.project = QgsProject()
+        self.layout = QgsLayout(self.project)
         self.layout.initializeDefaults()
 
     def tearDown(self):

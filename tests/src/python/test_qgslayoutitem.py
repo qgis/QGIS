@@ -32,6 +32,7 @@ from qgis.PyQt.QtTest import QSignalSpy
 
 start_app()
 
+project_instance = QgsProject()
 
 class LayoutItemTestCase(object):
 
@@ -47,7 +48,7 @@ class LayoutItemTestCase(object):
             return self.createItem(layout)
 
     def testRequiresRasterization(self):
-        l = QgsLayout(QgsProject.instance())
+        l = QgsLayout(project_instance)
         item = self.make_item(l)
         self.assertFalse(item.requiresRasterization())
         item.setBlendMode(QPainter.CompositionMode_SourceIn)
@@ -57,7 +58,7 @@ class LayoutItemTestCase(object):
 class TestQgsLayoutItem(unittest.TestCase):
 
     def testDataDefinedFrameColor(self):
-        layout = QgsLayout(QgsProject.instance())
+        layout = QgsLayout(project_instance)
 
         item = QgsLayoutItemMap(layout)
         item.setFrameEnabled(True)
@@ -72,7 +73,7 @@ class TestQgsLayoutItem(unittest.TestCase):
         self.assertEqual(item.pen().color().name(), QColor(0, 0, 255).name())
 
     def testFrameWidth(self):
-        layout = QgsLayout(QgsProject.instance())
+        layout = QgsLayout(project_instance)
 
         item = QgsLayoutItemMap(layout)
         item.setFrameEnabled(True)
@@ -86,7 +87,7 @@ class TestQgsLayoutItem(unittest.TestCase):
         self.assertEqual(item.pen().width(), 100.0)
 
     def testDataDefinedBackgroundColor(self):
-        layout = QgsLayout(QgsProject.instance())
+        layout = QgsLayout(project_instance)
 
         item = QgsLayoutItemMap(layout)
 
@@ -103,7 +104,7 @@ class TestQgsLayoutItem(unittest.TestCase):
         """
         Ensure that items are selectable
         """
-        layout = QgsLayout(QgsProject.instance())
+        layout = QgsLayout(project_instance)
         item = QgsLayoutItemMap(layout)
         item.setSelected(True)
         self.assertTrue(item.isSelected())
@@ -111,7 +112,7 @@ class TestQgsLayoutItem(unittest.TestCase):
         self.assertFalse(item.isSelected())
 
     def testLocked(self):
-        layout = QgsLayout(QgsProject.instance())
+        layout = QgsLayout(project_instance)
         item = QgsLayoutItemMap(layout)
 
         lock_changed_spy = QSignalSpy(item.lockChanged)
@@ -128,7 +129,7 @@ class TestQgsLayoutItem(unittest.TestCase):
         self.assertEqual(len(lock_changed_spy), 2)
 
     def testFrameBleed(self):
-        layout = QgsLayout(QgsProject.instance())
+        layout = QgsLayout(project_instance)
         item = QgsLayoutItemMap(layout)
         item.setFrameEnabled(False)
         self.assertEqual(item.estimatedFrameBleed(), 0)
@@ -143,7 +144,7 @@ class TestQgsLayoutItem(unittest.TestCase):
         self.assertEqual(item.estimatedFrameBleed(), 50)  # only half bleeds out!
 
     def testRectWithFrame(self):
-        layout = QgsLayout(QgsProject.instance())
+        layout = QgsLayout(project_instance)
         item = QgsLayoutItemMap(layout)
         item.attemptMove(QgsLayoutPoint(6, 10, QgsUnitTypes.LayoutMillimeters))
         item.attemptResize(QgsLayoutSize(18, 12, QgsUnitTypes.LayoutMillimeters))
@@ -159,7 +160,7 @@ class TestQgsLayoutItem(unittest.TestCase):
         self.assertEqual(item.rectWithFrame(), QRectF(-50.0, -50.0, 118.0, 112.0))
 
     def testDisplayName(self):
-        layout = QgsLayout(QgsProject.instance())
+        layout = QgsLayout(project_instance)
         item = QgsLayoutItemShape(layout)
         self.assertEqual(item.displayName(), '<Rectangle>')
         item.setId('a')

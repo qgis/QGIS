@@ -21,6 +21,7 @@ from qgis.testing import start_app, unittest
 
 start_app()
 
+project = QgsProject()
 
 def create_layer(name):
     layer = QgsVectorLayer("Point?crs=EPSG:3111&field=fldtxt:string&field=fldint:integer",
@@ -61,33 +62,33 @@ class TestQgsMapLayerModel(unittest.TestCase):
         self.assertEqual(m.rowCount(QModelIndex()), 0)
 
         l1 = create_layer('l1')
-        QgsProject.instance().addMapLayer(l1)
+        project.addMapLayer(l1)
         self.assertEqual(m.rowCount(QModelIndex()), 1)
         self.assertEqual(m.layerFromIndex(m.index(0, 0)), l1)
         l2 = create_layer('l2')
-        QgsProject.instance().addMapLayer(l2)
+        project.addMapLayer(l2)
         self.assertEqual(m.rowCount(QModelIndex()), 2)
         self.assertEqual(m.layerFromIndex(m.index(0, 0)), l1)
         self.assertEqual(m.layerFromIndex(m.index(1, 0)), l2)
-        QgsProject.instance().removeMapLayer(l1)
+        project.removeMapLayer(l1)
         self.assertEqual(m.rowCount(QModelIndex()), 1)
         self.assertEqual(m.layerFromIndex(m.index(0, 0)), l2)
-        QgsProject.instance().removeMapLayer(l2)
+        project.removeMapLayer(l2)
         self.assertEqual(m.rowCount(QModelIndex()), 0)
 
         # try creating a model when layers already exist in registry
         l1 = create_layer('l1')
         l2 = create_layer('l2')
-        QgsProject.instance().addMapLayers([l1, l2])
+        project.addMapLayers([l1, l2])
         m = QgsMapLayerModel()
         self.assertEqual(m.rowCount(QModelIndex()), 2)
-        QgsProject.instance().removeMapLayers([l1.id(), l2.id()])
+        project.removeMapLayers([l1.id(), l2.id()])
         self.assertEqual(m.rowCount(QModelIndex()), 0)
 
     def testCheckAll(self):
         l1 = create_layer('l1')
         l2 = create_layer('l2')
-        QgsProject.instance().addMapLayers([l1, l2])
+        project.addMapLayers([l1, l2])
         m = QgsMapLayerModel()
         m.setItemsCheckable(True)
         self.assertFalse(m.layersChecked())
@@ -101,12 +102,12 @@ class TestQgsMapLayerModel(unittest.TestCase):
         self.assertFalse(m.layersChecked())
         self.assertEqual(set(m.layersChecked(Qt.Unchecked)), set([l1, l2]))
 
-        QgsProject.instance().removeMapLayers([l1.id(), l2.id()])
+        project.removeMapLayers([l1.id(), l2.id()])
 
     def testAllowEmpty(self):
         l1 = create_layer('l1')
         l2 = create_layer('l2')
-        QgsProject.instance().addMapLayers([l1, l2])
+        project.addMapLayers([l1, l2])
         m = QgsMapLayerModel()
         self.assertEqual(m.rowCount(QModelIndex()), 2)
 
@@ -120,19 +121,19 @@ class TestQgsMapLayerModel(unittest.TestCase):
         # add layers after allow empty is true
         m.setAllowEmptyLayer(True)
         l3 = create_layer('l3')
-        QgsProject.instance().addMapLayers([l3])
+        project.addMapLayers([l3])
         self.assertEqual(m.rowCount(QModelIndex()), 4)
         self.assertFalse(m.data(m.index(0, 0), Qt.DisplayRole))
         self.assertEqual(m.data(m.index(1, 0), Qt.DisplayRole), 'l1')
         self.assertEqual(m.data(m.index(2, 0), Qt.DisplayRole), 'l2')
         self.assertEqual(m.data(m.index(3, 0), Qt.DisplayRole), 'l3')
 
-        QgsProject.instance().removeMapLayers([l1.id(), l2.id(), l3.id()])
+        project.removeMapLayers([l1.id(), l2.id(), l3.id()])
 
     def testAdditionalItems(self):
         l1 = create_layer('l1')
         l2 = create_layer('l2')
-        QgsProject.instance().addMapLayers([l1, l2])
+        project.addMapLayers([l1, l2])
         m = QgsMapLayerModel()
         self.assertEqual(m.rowCount(QModelIndex()), 2)
 
@@ -151,7 +152,7 @@ class TestQgsMapLayerModel(unittest.TestCase):
         self.assertEqual(m.data(m.index(3, 0), Qt.DisplayRole), 'a')
         self.assertEqual(m.data(m.index(4, 0), Qt.DisplayRole), 'b')
 
-        QgsProject.instance().removeMapLayers([l1.id(), l2.id()])
+        project.removeMapLayers([l1.id(), l2.id()])
 
         self.assertEqual(m.rowCount(QModelIndex()), 3)
         self.assertFalse(m.data(m.index(0, 0), Qt.DisplayRole))
@@ -161,7 +162,7 @@ class TestQgsMapLayerModel(unittest.TestCase):
     def testIndexFromLayer(self):
         l1 = create_layer('l1')
         l2 = create_layer('l2')
-        QgsProject.instance().addMapLayers([l1, l2])
+        project.addMapLayers([l1, l2])
         m = QgsMapLayerModel()
         l3 = create_layer('l3')  # not in registry
 
@@ -175,12 +176,12 @@ class TestQgsMapLayerModel(unittest.TestCase):
         self.assertEqual(m.indexFromLayer(l1).row(), 1)
         self.assertEqual(m.indexFromLayer(l2).row(), 2)
 
-        QgsProject.instance().removeMapLayers([l1.id(), l2.id()])
+        project.removeMapLayers([l1.id(), l2.id()])
 
     def testDisplayRole(self):
         l1 = create_layer('l1')
         l2 = create_layer('l2')
-        QgsProject.instance().addMapLayers([l1, l2])
+        project.addMapLayers([l1, l2])
         m = QgsMapLayerModel()
         self.assertEqual(m.data(m.index(0, 0), Qt.DisplayRole), 'l1')
         self.assertEqual(m.data(m.index(1, 0), Qt.DisplayRole), 'l2')
@@ -189,12 +190,12 @@ class TestQgsMapLayerModel(unittest.TestCase):
         self.assertEqual(m.data(m.index(1, 0), Qt.DisplayRole), 'l1')
         self.assertEqual(m.data(m.index(2, 0), Qt.DisplayRole), 'l2')
 
-        QgsProject.instance().removeMapLayers([l1.id(), l2.id()])
+        project.removeMapLayers([l1.id(), l2.id()])
 
     def testDisplayRoleShowCrs(self):
         l1 = create_layer('l1')
         l2 = create_layer('l2')
-        QgsProject.instance().addMapLayers([l1, l2])
+        project.addMapLayers([l1, l2])
         m = QgsMapLayerModel()
         m.setShowCrs(True)
         self.assertEqual(m.data(m.index(0, 0), Qt.DisplayRole), 'l1 [EPSG:3111]')
@@ -207,12 +208,12 @@ class TestQgsMapLayerModel(unittest.TestCase):
         m.setAdditionalItems(['a'])
         self.assertEqual(m.data(m.index(3, 0), Qt.DisplayRole), 'a')
 
-        QgsProject.instance().removeMapLayers([l1.id(), l2.id()])
+        project.removeMapLayers([l1.id(), l2.id()])
 
     def testLayerIdRole(self):
         l1 = create_layer('l1')
         l2 = create_layer('l2')
-        QgsProject.instance().addMapLayers([l1, l2])
+        project.addMapLayers([l1, l2])
         m = QgsMapLayerModel()
         self.assertEqual(m.data(m.index(0, 0), QgsMapLayerModel.LayerIdRole), l1.id())
         self.assertEqual(m.data(m.index(1, 0), QgsMapLayerModel.LayerIdRole), l2.id())
@@ -224,12 +225,12 @@ class TestQgsMapLayerModel(unittest.TestCase):
         m.setAdditionalItems(['a'])
         self.assertFalse(m.data(m.index(3, 0), QgsMapLayerModel.LayerIdRole))
 
-        QgsProject.instance().removeMapLayers([l1.id(), l2.id()])
+        project.removeMapLayers([l1.id(), l2.id()])
 
     def testLayerRole(self):
         l1 = create_layer('l1')
         l2 = create_layer('l2')
-        QgsProject.instance().addMapLayers([l1, l2])
+        project.addMapLayers([l1, l2])
         m = QgsMapLayerModel()
         self.assertEqual(m.data(m.index(0, 0), QgsMapLayerModel.LayerRole), l1)
         self.assertEqual(m.data(m.index(1, 0), QgsMapLayerModel.LayerRole), l2)
@@ -241,12 +242,12 @@ class TestQgsMapLayerModel(unittest.TestCase):
         m.setAdditionalItems(['a'])
         self.assertFalse(m.data(m.index(3, 0), QgsMapLayerModel.LayerRole))
 
-        QgsProject.instance().removeMapLayers([l1.id(), l2.id()])
+        project.removeMapLayers([l1.id(), l2.id()])
 
     def testIsEmptyRole(self):
         l1 = create_layer('l1')
         l2 = create_layer('l2')
-        QgsProject.instance().addMapLayers([l1, l2])
+        project.addMapLayers([l1, l2])
         m = QgsMapLayerModel()
         self.assertFalse(m.data(m.index(0, 0), QgsMapLayerModel.EmptyRole))
         self.assertFalse(m.data(m.index(1, 0), QgsMapLayerModel.EmptyRole))
@@ -258,12 +259,12 @@ class TestQgsMapLayerModel(unittest.TestCase):
         m.setAdditionalItems(['a'])
         self.assertFalse(m.data(m.index(3, 0), QgsMapLayerModel.EmptyRole))
 
-        QgsProject.instance().removeMapLayers([l1.id(), l2.id()])
+        project.removeMapLayers([l1.id(), l2.id()])
 
     def testIsAdditionalRole(self):
         l1 = create_layer('l1')
         l2 = create_layer('l2')
-        QgsProject.instance().addMapLayers([l1, l2])
+        project.addMapLayers([l1, l2])
         m = QgsMapLayerModel()
         self.assertFalse(m.data(m.index(0, 0), QgsMapLayerModel.AdditionalRole))
         self.assertFalse(m.data(m.index(1, 0), QgsMapLayerModel.AdditionalRole))
@@ -278,12 +279,12 @@ class TestQgsMapLayerModel(unittest.TestCase):
         self.assertFalse(m.data(m.index(2, 0), QgsMapLayerModel.AdditionalRole))
         self.assertTrue(m.data(m.index(3, 0), QgsMapLayerModel.AdditionalRole))
 
-        QgsProject.instance().removeMapLayers([l1.id(), l2.id()])
+        project.removeMapLayers([l1.id(), l2.id()])
 
     def testCheckStateRole(self):
         l1 = create_layer('l1')
         l2 = create_layer('l2')
-        QgsProject.instance().addMapLayers([l1, l2])
+        project.addMapLayers([l1, l2])
         m = QgsMapLayerModel()
 
         # not checkable
@@ -308,12 +309,12 @@ class TestQgsMapLayerModel(unittest.TestCase):
         m.setAdditionalItems(['a'])
         self.assertFalse(m.data(m.index(3, 0), Qt.CheckStateRole))
 
-        QgsProject.instance().removeMapLayers([l1.id(), l2.id()])
+        project.removeMapLayers([l1.id(), l2.id()])
 
     def testFlags(self):
         l1 = create_layer('l1')
         l2 = create_layer('l2')
-        QgsProject.instance().addMapLayers([l1, l2])
+        project.addMapLayers([l1, l2])
         m = QgsMapLayerModel()
 
         # not checkable
@@ -337,12 +338,12 @@ class TestQgsMapLayerModel(unittest.TestCase):
         m.setAdditionalItems(['a'])
         self.assertFalse(m.flags(m.index(3, 0)) & Qt.ItemIsUserCheckable)
 
-        QgsProject.instance().removeMapLayers([l1.id(), l2.id()])
+        project.removeMapLayers([l1.id(), l2.id()])
 
     def testSetData(self):
         l1 = create_layer('l1')
         l2 = create_layer('l2')
-        QgsProject.instance().addMapLayers([l1, l2])
+        project.addMapLayers([l1, l2])
         m = QgsMapLayerModel()
 
         # set checked
@@ -361,7 +362,7 @@ class TestQgsMapLayerModel(unittest.TestCase):
         m.setAdditionalItems(['a'])
         self.assertFalse(m.setData(m.index(3, 0), True, Qt.CheckStateRole))
 
-        QgsProject.instance().removeMapLayers([l1.id(), l2.id()])
+        project.removeMapLayers([l1.id(), l2.id()])
 
 
 if __name__ == '__main__':

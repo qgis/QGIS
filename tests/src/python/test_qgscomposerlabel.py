@@ -32,13 +32,14 @@ class TestQgsComposerLabel(unittest.TestCase):
         vectorFileInfo = QFileInfo(TEST_DATA_DIR + "/france_parts.shp")
         mVectorLayer = QgsVectorLayer(vectorFileInfo.filePath(), vectorFileInfo.completeBaseName(), "ogr")
 
-        QgsProject.instance().addMapLayers([mVectorLayer])
+        self.project = QgsProject()
+        self.project.addMapLayers([mVectorLayer])
 
         # create composition with composer map
         mapSettings = QgsMapSettings()
         mapSettings.setLayers([mVectorLayer])
 
-        mComposition = QgsComposition(QgsProject.instance())
+        mComposition = QgsComposition(self.project)
         mComposition.setPaperSize(297, 210)
 
         mLabel = QgsComposerLabel(mComposition)

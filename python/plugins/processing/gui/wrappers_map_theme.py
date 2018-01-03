@@ -18,7 +18,7 @@
 """
 
 
-from qgis.core import QgsProject
+from qgis.utils import iface
 
 from qgis.PyQt.QtWidgets import QComboBox
 
@@ -43,7 +43,7 @@ class MapThemeWrapper(BasicWidgetWrapper):
         return self._combo
 
     def items(self):
-        return QgsProject.instance().mapThemeCollection().mapThemes()
+        return iface.activeProject().mapThemeCollection().mapThemes()
 
     def setValue(self, value):
         self.setComboValue(value, self._combo)
