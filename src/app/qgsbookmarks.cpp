@@ -397,9 +397,9 @@ void QgsBookmarks::exportToXml()
         // If it's the EPSG code, convert it to internal srid
         if ( header == QStringLiteral( "sr_id" ) )
         {
-          QgsCoordinateReferenceSystem crs;
-          if ( crs.createFromOgcWmsCrs( value ) )
-            value = QString::number( crs.srsid( ) );
+          QgsCoordinateReferenceSystem crs = QgsCRSCache::instance()->crsByOgcWmsCrs( value );
+          if ( crs.isValid() )
+            value = QString::number( crs.srsid() );
           else
             value = QString();
         }
