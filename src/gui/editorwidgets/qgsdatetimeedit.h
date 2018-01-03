@@ -59,18 +59,23 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
 
   protected:
     virtual void resizeEvent( QResizeEvent* event ) override;
-
     void mousePressEvent( QMouseEvent*event ) override;
+    void focusOutEvent( QFocusEvent *event ) override;
+    void wheelEvent( QWheelEvent *event ) override;
+    void showEvent( QShowEvent *event ) override;
 
 
   private slots:
-    void changed( const QDateTime & dateTime );
-
-    void calendarSelectionChanged();
+    void changed( const QDateTime &dateTime );
 
   private:
     int spinButtonWidth() const;
     int frameWidth() const;
+
+    void displayNull( bool updateCalendar = false );
+
+    //! reset the value to current date time
+    void resetBeforeChange( int delta );
 
     bool mAllowNull;
     bool mIsNull;

@@ -47,12 +47,8 @@ QgsDateTimeEdit::QgsDateTimeEdit( QWidget *parent )
 
   connect( this, SIGNAL( dateTimeChanged( QDateTime ) ), this, SLOT( changed( QDateTime ) ) );
 
-  // set this by defaut to properly connect the calendar widget
+  // enable calendar widget by default so it's already created
   setCalendarPopup( true );
-  // when clearing the widget, date of the QDateTimeEdit will be set to minimum date
-  // hence when the calendar popups, on selection changed if it set to the minimum date,
-  // the page of the current date will be shown
-  connect( calendarWidget(), SIGNAL( selectionChanged() ), this, SLOT( calendarSelectionChanged() ) );
 
   // init with current time so mIsNull is properly initialized
   QDateTimeEdit::setDateTime( QDateTime::currentDateTime() );
@@ -68,12 +64,17 @@ void QgsDateTimeEdit::setAllowNull( bool allowNull )
 
 void QgsDateTimeEdit::clear()
 {
-  QDateTimeEdit::blockSignals( true );
-  setSpecialValueText( QSettings().value( "qgis/nullValue", "NULL" ).toString() );
-  QDateTimeEdit::setDateTime( minimumDateTime() );
-  QDateTimeEdit::blockSignals( false );
-  changed( QDateTime() );
-  emit dateTimeChanged( QDateTime() );
+  if ( mAllowNull )
+  {
+    displayNull();
+
+    changed( QDateTime() );
+
+    // avoid slot double activation
+    disconnect( this, SIGNAL( dateTimeChanged() ), this, SLOT( changed() ) );
+    emit dateTimeChanged( QDateTime() );
+    connect( this, SIGNAL( dateTimeChanged() ), this, SLOT( changed() ) );
+  }
 }
 
 void QgsDateTimeEdit::setEmpty()
@@ -82,13 +83,15 @@ void QgsDateTimeEdit::setEmpty()
   mIsEmpty = true;
 }
 
-void QgsDateTimeEdit::mousePressEvent( QMouseEvent* event )
+void QgsDateTimeEdit::mousePressEvent( QMouseEvent *event )
 {
-  const QRect lerect = rect().adjusted( 0, 0, -spinButtonWidth(), 0 );
-  if ( mAllowNull && mIsNull && lerect.contains( event->pos() ) )
-    return;
+  // catch mouse press on the button
+  // in non-calendar mode: modifiy the date  so it leads to showing current date (don't bother about time)
+  // in calendar mode: be sure NULL is displayed when needed and show page of current date in calendar widget
 
-  if ( mIsNull && !calendarPopup() )
+  bool updateCalendar = false;
+
+  if ( mIsNull )
   {
     QStyleOptionSpinBox opt;
     this->initStyleOption( &opt );
@@ -96,20 +99,72 @@ void QgsDateTimeEdit::mousePressEvent( QMouseEvent* event )
     const QRect buttonDownRect = style()->subControlRect( QStyle::CC_SpinBox, &opt, QStyle::SC_SpinBoxDown );
     if ( buttonUpRect.contains( event->pos() ) || buttonDownRect.contains( event->pos() ) )
     {
-      blockSignals( true );
-      QDateTimeEdit::setDateTime( QDateTime::currentDateTime() );
-      blockSignals( false );
+      if ( calendarPopup() && calendarWidget() )
+      {
+        // ensure the line edit still displays NULL
+        displayNull( true );
+        updateCalendar = true;
+      }
+      else
+      {
+        blockSignals( true );
+        resetBeforeChange( buttonUpRect.contains( event->pos() ) ? -1 : 1 );
+        blockSignals( false );
+      }
     }
   }
 
   QDateTimeEdit::mousePressEvent( event );
+
+  if ( updateCalendar )
+  {
+    // set calendar page to current date to avoid going to minimal date page when value is null
+    calendarWidget()->setCurrentPage( QDate::currentDate().year(), QDate::currentDate().month() );
+  }
 }
 
-void QgsDateTimeEdit::changed( const QDateTime & dateTime )
+void QgsDateTimeEdit::focusOutEvent( QFocusEvent *event )
+{
+  if ( mAllowNull && mIsNull )
+  {
+    if ( lineEdit()->text() != QSettings().value( "qgis/nullValue", "NULL" ).toString() )
+    {
+      displayNull();
+    }
+    QWidget::focusOutEvent( event );
+    emit editingFinished();
+  }
+  else
+  {
+    QDateTimeEdit::focusOutEvent( event );
+  }
+}
+
+void QgsDateTimeEdit::wheelEvent( QWheelEvent *event )
+{
+  // dateTime might have been set to minimum in calendar mode
+  if ( mAllowNull && mIsNull )
+  {
+    resetBeforeChange( -event->delta() );
+  }
+  QDateTimeEdit::wheelEvent( event );
+}
+
+void QgsDateTimeEdit::showEvent( QShowEvent *event )
+{
+  QDateTimeEdit::showEvent( event );
+  if ( mAllowNull && mIsNull &&
+       lineEdit()->text() != QSettings().value( "qgis/nullValue", "NULL" ).toString() )
+  {
+    displayNull();
+  }
+}
+
+void QgsDateTimeEdit::changed( const QDateTime &dateTime )
 {
   mIsEmpty = false;
-  bool isNull = dateTime.isNull() || dateTime == minimumDateTime();
-  if ( mIsNull != isNull )
+  bool isNull = dateTime.isNull();
+  if ( isNull != mIsNull )
   {
     mIsNull = isNull;
     if ( mIsNull )
@@ -128,12 +183,45 @@ void QgsDateTimeEdit::changed( const QDateTime & dateTime )
   mClearButton->setVisible( mAllowNull && !mIsNull );
 }
 
-void QgsDateTimeEdit::calendarSelectionChanged()
+void QgsDateTimeEdit::displayNull( bool updateCalendar )
 {
-  if ( mAllowNull && calendarWidget() && calendarWidget()->selectedDate() == minimumDate() )
+  blockSignals( true );
+  if ( updateCalendar )
   {
-    calendarWidget()->setCurrentPage( QDate::currentDate().year(), QDate::currentDate().month() );
+    // set current time to minimum date time to avoid having
+    // a date selected in calendar widget
+    QDateTimeEdit::setDateTime( minimumDateTime() );
   }
+  lineEdit()->setText( QSettings().value( "qgis/nullValue", "NULL" ).toString() );
+  blockSignals( false );
+}
+
+void QgsDateTimeEdit::resetBeforeChange( int delta )
+{
+  QDateTime dt = QDateTime::currentDateTime();
+  switch ( currentSection() )
+  {
+    case QDateTimeEdit::DaySection:
+      dt = dt.addDays( delta );
+      break;
+    case QDateTimeEdit::MonthSection:
+      dt = dt.addMonths( delta );
+      break;
+    case QDateTimeEdit::YearSection:
+      dt = dt.addYears( delta );
+      break;
+    default:
+      break;
+  }
+  if ( dt < minimumDateTime() )
+  {
+    dt = minimumDateTime();
+  }
+  else if ( dt > maximumDateTime() )
+  {
+    dt = maximumDateTime();
+  }
+  QDateTimeEdit::setDateTime( dt );
 }
 
 int QgsDateTimeEdit::spinButtonWidth() const
@@ -146,7 +234,9 @@ int QgsDateTimeEdit::frameWidth() const
   return style()->pixelMetric( QStyle::PM_DefaultFrameWidth );
 }
 
-void QgsDateTimeEdit::setDateTime( const QDateTime& dateTime )
+
+
+void QgsDateTimeEdit::setDateTime( const QDateTime &dateTime )
 {
   mIsEmpty = false;
 
@@ -158,7 +248,6 @@ void QgsDateTimeEdit::setDateTime( const QDateTime& dateTime )
   else
   {
     QDateTimeEdit::setDateTime( dateTime );
-    mIsNull = false;
     changed( dateTime );
   }
 }
