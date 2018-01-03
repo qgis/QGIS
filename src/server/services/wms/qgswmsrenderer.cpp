@@ -2806,11 +2806,14 @@ namespace QgsWms
   void QgsRenderer::annotationsRendering( QPainter *painter ) const
   {
     const QgsAnnotationManager *annotationManager = mProject->annotationManager();
-    QList< QgsAnnotation * > annotations = annotationManager->annotations();
+    const QList< QgsAnnotation * > annotations = annotationManager->annotations();
 
     QgsRenderContext renderContext = QgsRenderContext::fromQPainter( painter );
-    Q_FOREACH ( QgsAnnotation *annotation, annotations )
+    for ( QgsAnnotation *annotation : annotations )
     {
+      if ( !annotation || !annotation->isVisible() )
+        continue;
+
       annotation->render( renderContext );
     }
   }
