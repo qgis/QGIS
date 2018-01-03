@@ -149,6 +149,7 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
   mJoinBuffer = new QgsVectorLayerJoinBuffer( this );
   connect( mJoinBuffer, &QgsVectorLayerJoinBuffer::joinedFieldsChanged, this, &QgsVectorLayer::onJoinedFieldsChanged );
 
+  mExpressionFieldBuffer = new QgsExpressionFieldBuffer();
   // if we're given a provider type, try to create and bind one to this layer
   if ( !vectorLayerPath.isEmpty() && !mProviderKey.isEmpty() )
   {
@@ -1555,7 +1556,6 @@ bool QgsVectorLayer::setDataProvider( QString const &provider )
   // get and store the feature type
   mWkbType = mDataProvider->wkbType();
 
-  mExpressionFieldBuffer = new QgsExpressionFieldBuffer();
   updateFields();
 
   if ( mProviderKey == QLatin1String( "postgres" ) )

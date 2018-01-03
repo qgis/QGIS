@@ -39,10 +39,7 @@ QgsVectorLayerFeatureSource::QgsVectorLayerFeatureSource( const QgsVectorLayer *
 
   mJoinBuffer = layer->mJoinBuffer->clone();
 
-  if ( layer->mExpressionFieldBuffer )
-  {
-    mExpressionFieldBuffer = new QgsExpressionFieldBuffer( *layer->mExpressionFieldBuffer );
-  }
+  mExpressionFieldBuffer = new QgsExpressionFieldBuffer( *layer->mExpressionFieldBuffer );
   mCrs = layer->crs();
 
   mHasEditBuffer = layer->editBuffer();
