@@ -286,8 +286,10 @@ namespace QgsWms
 
       const QgsServerRequest::Parameters &mParameters;
 
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
       //! The access control helper
       QgsAccessControl *mAccessControl = nullptr;
+#endif
       QgsFeatureFilter mFeatureFilter;
 
       const QgsServerSettings &mSettings;

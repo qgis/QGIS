@@ -35,9 +35,7 @@ class SERVER_EXPORT QgsOWSServerFilterRestorer
 {
   public:
 
-    QgsOWSServerFilterRestorer( const QgsAccessControl *accessControl )
-      : mAccessControl( accessControl )
-    {}
+    QgsOWSServerFilterRestorer() = default;
 
     //! Destructor. When object is destroyed all original layer filters will be restored.
     ~QgsOWSServerFilterRestorer()
@@ -72,7 +70,6 @@ class SERVER_EXPORT QgsOWSServerFilterRestorer
     static void applyAccessControlLayerFilters( const QgsAccessControl *accessControl, QgsMapLayer *mapLayer );
 
   private:
-    const QgsAccessControl *mAccessControl = nullptr;
     QHash<QgsMapLayer *, QString> mOriginalLayerFilters;
 
 };
