@@ -21,6 +21,9 @@
 #define QGSDATETIMEEDIT_DATEFORMAT "yyyy-MM-dd"
 #define QGSDATETIMEEDIT_TIMEFORMAT "HH:mm:ss"
 #define QGSDATETIMEEDIT_DATETIMEFORMAT "yyyy-MM-dd HH:mm:ss"
+#define QGSDATETIMEEDIT_ISODATETIMEFORMAT "Qt ISO Date"
+#define QGSDATETIMEEDIT_ISODISPLAYFORMAT "yyyy-MM-dd HH:mm:ss+t"
+
 
 /** \ingroup gui
  * \class QgsDateTimeEditFactory

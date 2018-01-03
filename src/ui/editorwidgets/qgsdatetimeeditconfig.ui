@@ -24,8 +24,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>468</width>
-        <height>1033</height>
+        <width>478</width>
+        <height>971</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout_5">
@@ -80,26 +80,6 @@
           <height>0</height>
          </size>
         </property>
-        <item>
-         <property name="text">
-          <string>Date</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Time</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Date &amp; time</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Custom format</string>
-         </property>
-        </item>
        </widget>
       </item>
       <item row="0" column="1">
@@ -249,6 +229,9 @@
   </layout>
  </widget>
  <resources>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
  </resources>
  <connections/>
