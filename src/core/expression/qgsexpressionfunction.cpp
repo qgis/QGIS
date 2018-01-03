@@ -415,38 +415,50 @@ static QVariant fcnExpScale( const QVariantList &values, const QgsExpressionCont
 
 static QVariant fcnMax( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  //initially set max as first value
-  double maxVal = QgsExpressionUtils::getDoubleValue( values.at( 0 ), parent );
-
-  //check against all other values
-  for ( int i = 1; i < values.length(); ++i )
+  QVariant result( QVariant::Double );
+  double maxVal = std::numeric_limits<double>::quiet_NaN();
+  for ( const QVariant &val : values )
   {
-    double testVal = QgsExpressionUtils::getDoubleValue( values[i], parent );
-    if ( testVal > maxVal )
+    double testVal = val.isNull() ? std::numeric_limits<double>::quiet_NaN() : QgsExpressionUtils::getDoubleValue( val, parent );
+    if ( std::isnan( maxVal ) )
     {
       maxVal = testVal;
     }
+    else if ( !std::isnan( testVal ) )
+    {
+      maxVal = std::max( maxVal, testVal );
+    }
   }
 
-  return QVariant( maxVal );
+  if ( !std::isnan( maxVal ) )
+  {
+    result = QVariant( maxVal );
+  }
+  return result;
 }
 
 static QVariant fcnMin( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  //initially set min as first value
-  double minVal = QgsExpressionUtils::getDoubleValue( values.at( 0 ), parent );
-
-  //check against all other values
-  for ( int i = 1; i < values.length(); ++i )
+  QVariant result( QVariant::Double );
+  double minVal = std::numeric_limits<double>::quiet_NaN();
+  for ( const QVariant &val : values )
   {
-    double testVal = QgsExpressionUtils::getDoubleValue( values[i], parent );
-    if ( testVal < minVal )
+    double testVal = val.isNull() ? std::numeric_limits<double>::quiet_NaN() : QgsExpressionUtils::getDoubleValue( val, parent );
+    if ( std::isnan( minVal ) )
     {
       minVal = testVal;
     }
+    else if ( !std::isnan( testVal ) )
+    {
+      minVal = std::min( minVal, testVal );
+    }
   }
 
-  return QVariant( minVal );
+  if ( !std::isnan( minVal ) )
+  {
+    result = QVariant( minVal );
+  }
+  return result;
 }
 
 static QVariant fcnAggregate( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
@@ -3937,8 +3949,8 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
     sFunctions << randfFunc;
 
     sFunctions
-        << new QgsStaticExpressionFunction( QStringLiteral( "max" ), -1, fcnMax, QStringLiteral( "Math" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "min" ), -1, fcnMin, QStringLiteral( "Math" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "max" ), -1, fcnMax, QStringLiteral( "Math" ), QString(), false, QSet<QString>(), false, QStringList(), /* handlesNull = */ true )
+        << new QgsStaticExpressionFunction( QStringLiteral( "min" ), -1, fcnMin, QStringLiteral( "Math" ), QString(), false, QSet<QString>(), false, QStringList(), /* handlesNull = */ true )
         << new QgsStaticExpressionFunction( QStringLiteral( "clamp" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "min" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "max" ) ), fcnClamp, QStringLiteral( "Math" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "scale_linear" ), 5, fcnLinearScale, QStringLiteral( "Math" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "scale_exp" ), 6, fcnExpScale, QStringLiteral( "Math" ) )
