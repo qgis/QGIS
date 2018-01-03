@@ -21,6 +21,13 @@ QgsDateTimeEditConfig::QgsDateTimeEditConfig( QgsVectorLayer* vl, int fieldIdx, 
 {
   setupUi( this );
 
+  mFieldFormatComboBox->clear();
+  mFieldFormatComboBox->addItem( tr( "Date" ), QGSDATETIMEEDIT_DATEFORMAT );
+  mFieldFormatComboBox->addItem( tr( "Time" ), QGSDATETIMEEDIT_TIMEFORMAT );
+  mFieldFormatComboBox->addItem( tr( "Date time" ), QGSDATETIMEEDIT_DATETIMEFORMAT );
+  mFieldFormatComboBox->addItem( tr( "ISO date time" ), QGSDATETIMEEDIT_ISODATETIMEFORMAT );
+  mFieldFormatComboBox->addItem( tr( "Custom" ), QString() );
+
   mDemoDateTimeEdit->setDateTime( QDateTime::currentDateTime() );
 
   connect( mDisplayFormatEdit, SIGNAL( textChanged( QString ) ), this, SLOT( updateDemoWidget() ) );
@@ -53,46 +60,50 @@ void QgsDateTimeEditConfig::updateDemoWidget()
 
 void QgsDateTimeEditConfig::updateFieldFormat( int idx )
 {
-  if ( idx == 0 )
+  const QString format = mFieldFormatComboBox->itemData( idx ).toString();
+  bool custom = format.isEmpty();
+  if ( !custom )
   {
-    mFieldFormatEdit->setText( QGSDATETIMEEDIT_DATEFORMAT );
-  }
-  else if ( idx == 1 )
-  {
-    mFieldFormatEdit->setText( QGSDATETIMEEDIT_TIMEFORMAT );
-  }
-  else if ( idx == 2 )
-  {
-    mFieldFormatEdit->setText( QGSDATETIMEEDIT_DATETIMEFORMAT );
+    mFieldFormatEdit->setText( format );
   }
 
-  mFieldFormatEdit->setVisible( idx == 3 );
-  mFieldHelpToolButton->setVisible( idx == 3 );
+  mFieldFormatEdit->setEnabled( custom );
+  mFieldHelpToolButton->setVisible( custom );
   if ( mFieldHelpToolButton->isHidden() && mDisplayHelpToolButton->isHidden() )
   {
     mHelpScrollArea->setVisible( false );
   }
 }
+
 
 
 void QgsDateTimeEditConfig::updateDisplayFormat( const QString& fieldFormat )
 {
   if ( mDisplayFormatComboBox->currentIndex() == 0 )
   {
-    mDisplayFormatEdit->setText( fieldFormat );
+    // i.e. display format is default
+    if ( mFieldFormatComboBox->itemData( mFieldFormatComboBox->currentIndex() ) == QGSDATETIMEEDIT_ISODATETIMEFORMAT )
+    {
+      mDisplayFormatEdit->setText( QGSDATETIMEEDIT_ISODISPLAYFORMAT );
+    }
+    else
+    {
+      mDisplayFormatEdit->setText( fieldFormat );
+    }
   }
 }
 
 
 void QgsDateTimeEditConfig::displayFormatChanged( int idx )
 {
-  mDisplayFormatEdit->setEnabled( idx == 1 );
-  mDisplayHelpToolButton->setVisible( idx == 1 );
+  const bool custom = idx == 1;
+  mDisplayFormatEdit->setEnabled( custom );
+  mDisplayHelpToolButton->setVisible( custom );
   if ( mFieldHelpToolButton->isHidden() && mDisplayHelpToolButton->isHidden() )
   {
     mHelpScrollArea->setVisible( false );
   }
-  if ( idx == 0 )
+  if ( !custom )
   {
     mDisplayFormatEdit->setText( mFieldFormatEdit->text() );
   }
@@ -110,6 +121,7 @@ QgsEditorWidgetConfig QgsDateTimeEditConfig::config()
 {
   QgsEditorWidgetConfig myConfig;
 
+  myConfig.insert( "field_iso_format", mFieldFormatEdit->text() == QGSDATETIMEEDIT_ISODATETIMEFORMAT );
   myConfig.insert( "field_format", mFieldFormatEdit->text() );
   myConfig.insert( "display_format", mDisplayFormatEdit->text() );
   myConfig.insert( "calendar_popup", mCalendarPopupCheckBox->isChecked() );
@@ -126,14 +138,15 @@ void QgsDateTimeEditConfig::setConfig( const QgsEditorWidgetConfig &config )
     const QString fieldFormat = config[ "field_format" ].toString();
     mFieldFormatEdit->setText( fieldFormat );
 
-    if ( fieldFormat == QGSDATETIMEEDIT_DATEFORMAT )
-      mFieldFormatComboBox->setCurrentIndex( 0 );
-    else if ( fieldFormat == QGSDATETIMEEDIT_TIMEFORMAT )
-      mFieldFormatComboBox->setCurrentIndex( 1 );
-    else if ( fieldFormat == QGSDATETIMEEDIT_DATETIMEFORMAT )
-      mFieldFormatComboBox->setCurrentIndex( 2 );
+    const int idx = mFieldFormatComboBox->findData( fieldFormat );
+    if ( idx >= 0 )
+    {
+      mFieldFormatComboBox->setCurrentIndex( idx );
+    }
     else
-      mFieldFormatComboBox->setCurrentIndex( 3 );
+    {
+      mFieldFormatComboBox->setCurrentIndex( 4 );
+    }
   }
 
   if ( config.contains( "display_format" ) )
