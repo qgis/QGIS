@@ -1,12 +1,13 @@
 {
   "name": "max",
   "type": "function",
-  "description": "Returns the largest value in a set of values.",
+  "description": "Returns the largest value in a set of values. If an input value is NULL then the result will be NULL.",
   "variableLenArguments": true,
   "arguments": [
 	{"arg":"value1", "syntaxOnly": true},
 	{"arg":"value2", "syntaxOnly": true},
 	{"arg":"value", "descOnly": true, "description":"a number"}],
-  "examples": [ { "expression":"max(2,10.2,5.5)", "returns":"10.2"}
+  "examples": [ { "expression":"max(2, 10.2, 5.5)", "returns":"10.2"},
+                { "expression":"max(2, 10.2, NULL)", "returns":"NULL"}
   ]
 }
