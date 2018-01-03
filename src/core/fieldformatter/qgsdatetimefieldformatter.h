@@ -34,6 +34,7 @@ class CORE_EXPORT QgsDateTimeFieldFormatter : public QgsFieldFormatter
     static const QString DEFAULT_TIME_FORMAT;
     static const QString DEFAULT_DATETIME_FORMAT;
     static const QString DEFAULT_ISO_FORMAT;
+    static const QString DEFAULT_ISO_DISPLAY_FORMAT;
 
     /**
       * Default constructor of field formatter for a date time field.

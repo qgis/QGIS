@@ -23,6 +23,13 @@ QgsDateTimeEditConfig::QgsDateTimeEditConfig( QgsVectorLayer *vl, int fieldIdx, 
 {
   setupUi( this );
 
+  mFieldFormatComboBox->clear();
+  mFieldFormatComboBox->addItem( tr( "Date" ), QgsDateTimeFieldFormatter::DEFAULT_DATE_FORMAT );
+  mFieldFormatComboBox->addItem( tr( "Time" ), QgsDateTimeFieldFormatter::DEFAULT_TIME_FORMAT );
+  mFieldFormatComboBox->addItem( tr( "Date time" ), QgsDateTimeFieldFormatter::DEFAULT_DATETIME_FORMAT );
+  mFieldFormatComboBox->addItem( tr( "ISO date time" ), QgsDateTimeFieldFormatter::DEFAULT_ISO_FORMAT );
+  mFieldFormatComboBox->addItem( tr( "Custom" ), "" );
+
   mDemoDateTimeEdit->setDateTime( QDateTime::currentDateTime() );
 
   connect( mDisplayFormatEdit, &QLineEdit::textChanged, this, &QgsDateTimeEditConfig::updateDemoWidget );
@@ -55,25 +62,16 @@ void QgsDateTimeEditConfig::updateDemoWidget()
 
 void QgsDateTimeEditConfig::updateFieldFormat( int idx )
 {
-  if ( idx == 0 )
+  Q_UNUSED( idx );
+  const QString format = mFieldFormatComboBox->currentData().toString();
+  bool custom = format.isEmpty();
+  if ( !custom )
   {
-    mFieldFormatEdit->setText( QgsDateTimeFieldFormatter::DEFAULT_DATE_FORMAT );
-  }
-  else if ( idx == 1 )
-  {
-    mFieldFormatEdit->setText( QgsDateTimeFieldFormatter::DEFAULT_TIME_FORMAT );
-  }
-  else if ( idx == 2 )
-  {
-    mFieldFormatEdit->setText( QgsDateTimeFieldFormatter::DEFAULT_DATETIME_FORMAT );
-  }
-  else if ( idx == 3 )
-  {
-    mFieldFormatEdit->setText( QgsDateTimeFieldFormatter::DEFAULT_ISO_FORMAT );
+    mFieldFormatEdit->setText( format );
   }
 
-  mFieldFormatEdit->setEnabled( idx == 4 );
-  mFieldHelpToolButton->setVisible( idx == 4 );
+  mFieldFormatEdit->setEnabled( custom );
+  mFieldHelpToolButton->setVisible( custom );
   if ( mFieldHelpToolButton->isHidden() && mDisplayHelpToolButton->isHidden() )
   {
     mHelpScrollArea->setVisible( false );
@@ -85,20 +83,29 @@ void QgsDateTimeEditConfig::updateDisplayFormat( const QString &fieldFormat )
 {
   if ( mDisplayFormatComboBox->currentIndex() == 0 )
   {
-    mDisplayFormatEdit->setText( fieldFormat );
+    // i.e. display format is default
+    if ( mFieldFormatComboBox->currentData() == QgsDateTimeFieldFormatter::DEFAULT_ISO_FORMAT )
+    {
+      mDisplayFormatEdit->setText( QgsDateTimeFieldFormatter::DEFAULT_ISO_DISPLAY_FORMAT );
+    }
+    else
+    {
+      mDisplayFormatEdit->setText( fieldFormat );
+    }
   }
 }
 
 
 void QgsDateTimeEditConfig::displayFormatChanged( int idx )
 {
-  mDisplayFormatEdit->setEnabled( idx == 1 );
-  mDisplayHelpToolButton->setVisible( idx == 1 );
+  const bool custom = idx == 1;
+  mDisplayFormatEdit->setEnabled( custom );
+  mDisplayHelpToolButton->setVisible( custom );
   if ( mFieldHelpToolButton->isHidden() && mDisplayHelpToolButton->isHidden() )
   {
     mHelpScrollArea->setVisible( false );
   }
-  if ( idx == 0 )
+  if ( !custom )
   {
     mDisplayFormatEdit->setText( mFieldFormatEdit->text() );
   }
@@ -116,6 +123,7 @@ QVariantMap QgsDateTimeEditConfig::config()
 {
   QVariantMap myConfig;
 
+  myConfig.insert( QStringLiteral( "field_iso_format" ), mFieldFormatEdit->text() == QgsDateTimeFieldFormatter::DEFAULT_ISO_FORMAT );
   myConfig.insert( QStringLiteral( "field_format" ), mFieldFormatEdit->text() );
   myConfig.insert( QStringLiteral( "display_format" ), mDisplayFormatEdit->text() );
   myConfig.insert( QStringLiteral( "calendar_popup" ), mCalendarPopupCheckBox->isChecked() );
@@ -130,16 +138,15 @@ void QgsDateTimeEditConfig::setConfig( const QVariantMap &config )
   const QString fieldFormat = config.value( QStringLiteral( "field_format" ), QgsDateTimeFieldFormatter::defaultFormat( fieldDef.type() ) ).toString();
   mFieldFormatEdit->setText( fieldFormat );
 
-  if ( fieldFormat == QgsDateTimeFieldFormatter::DEFAULT_DATE_FORMAT )
-    mFieldFormatComboBox->setCurrentIndex( 0 );
-  else if ( fieldFormat == QgsDateTimeFieldFormatter::DEFAULT_TIME_FORMAT )
-    mFieldFormatComboBox->setCurrentIndex( 1 );
-  else if ( fieldFormat == QgsDateTimeFieldFormatter::DEFAULT_DATETIME_FORMAT )
-    mFieldFormatComboBox->setCurrentIndex( 2 );
-  else if ( fieldFormat == QgsDateTimeFieldFormatter::DEFAULT_ISO_FORMAT )
-    mFieldFormatComboBox->setCurrentIndex( 3 );
+  const int idx = mFieldFormatComboBox->findData( fieldFormat );
+  if ( idx >= 0 )
+  {
+    mFieldFormatComboBox->setCurrentIndex( idx );
+  }
   else
+  {
     mFieldFormatComboBox->setCurrentIndex( 4 );
+  }
 
   QString displayFormat = config.value( QStringLiteral( "display_format" ), QgsDateTimeFieldFormatter::defaultFormat( fieldDef.type() ) ).toString();
   mDisplayFormatEdit->setText( displayFormat );

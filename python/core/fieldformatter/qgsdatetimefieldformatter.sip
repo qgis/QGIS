@@ -25,6 +25,7 @@ the field configuration.
     static const QString DEFAULT_TIME_FORMAT;
     static const QString DEFAULT_DATETIME_FORMAT;
     static const QString DEFAULT_ISO_FORMAT;
+    static const QString DEFAULT_ISO_DISPLAY_FORMAT;
 
     QgsDateTimeFieldFormatter();
 %Docstring
