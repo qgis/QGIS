@@ -36,8 +36,13 @@ class QgsDateTimeEdit : QDateTimeEdit
     void setEmpty();
 
   protected:
-    virtual void resizeEvent( QResizeEvent* event );
-    void mousePressEvent( QMouseEvent*event );
-    virtual void fixup(QString & input) const;
-    virtual QValidator::State validate(QString &text, int &pos) const;
+    virtual void resizeEvent( QResizeEvent *event );
+
+    virtual void mousePressEvent( QMouseEvent *event );
+
+    virtual void focusOutEvent( QFocusEvent *event );
+
+    virtual void wheelEvent( QWheelEvent *event );
+
+    virtual void showEvent( QShowEvent *event );
 };
