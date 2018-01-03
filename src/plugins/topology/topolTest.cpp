@@ -1006,65 +1006,15 @@ ErrorList topolTest::checkSegmentLength( double tolerance, QgsVectorLayer *layer
 
 
     // switching by type here, because layer can contain both single and multi version geometries
-    switch ( g1.wkbType() )
+    switch ( QgsWkbTypes::geometryType( g1.wkbType() ) )
     {
-      case QgsWkbTypes::LineString:
-      case QgsWkbTypes::LineString25D:
-        ls = g1.asPolyline();
-
-
-        for ( int i = 1; i < ls.size(); ++i )
+      case QgsWkbTypes::LineGeometry:
+      {
+        if ( !QgsWkbTypes::isMultiType( g1.wkbType() ) )
         {
-          distance = std::sqrt( ls[i - 1].sqrDist( ls[i] ) );
-          if ( distance < tolerance )
-          {
-            fls.clear();
-            fls << *it << *it;
-            segm.clear();
-            segm << ls[i - 1] << ls[i];
-            QgsGeometry conflict = QgsGeometry::fromPolylineXY( segm );
-            err = new TopolErrorShort( g1.boundingBox(), conflict, fls );
-            //err = new TopolErrorShort(g1->boundingBox(), QgsGeometry::fromPolyline(segm), fls);
-            errorList << err;
-            //break on getting the first error
-            break;
-          }
-        }
-        break;
+          ls = g1.asPolyline();
 
-      case QgsWkbTypes::Polygon:
-      case QgsWkbTypes::Polygon25D:
-        pol = g1.asPolygon();
 
-        for ( int i = 0; i < pol.size(); ++i )
-        {
-          for ( int j = 1; j < pol[i].size(); ++j )
-          {
-            distance = std::sqrt( pol[i][j - 1].sqrDist( pol[i][j] ) );
-            if ( distance < tolerance )
-            {
-              fls.clear();
-              fls << *it << *it;
-              segm.clear();
-              segm << pol[i][j - 1] << pol[i][j];
-              QgsGeometry conflict = QgsGeometry::fromPolylineXY( segm );
-              err = new TopolErrorShort( g1.boundingBox(), conflict, fls );
-              errorList << err;
-              //break on getting the first error
-              break;
-            }
-          }
-        }
-
-        break;
-
-      case QgsWkbTypes::MultiLineString:
-      case QgsWkbTypes::MultiLineString25D:
-        mls = g1.asMultiPolyline();
-
-        for ( int k = 0; k < mls.size(); ++k )
-        {
-          QgsPolylineXY &ls = mls[k];
           for ( int i = 1; i < ls.size(); ++i )
           {
             distance = std::sqrt( ls[i - 1].sqrDist( ls[i] ) );
@@ -1076,26 +1026,53 @@ ErrorList topolTest::checkSegmentLength( double tolerance, QgsVectorLayer *layer
               segm << ls[i - 1] << ls[i];
               QgsGeometry conflict = QgsGeometry::fromPolylineXY( segm );
               err = new TopolErrorShort( g1.boundingBox(), conflict, fls );
+              //err = new TopolErrorShort(g1->boundingBox(), QgsGeometry::fromPolyline(segm), fls);
               errorList << err;
               //break on getting the first error
               break;
             }
           }
         }
-        break;
-
-      case QgsWkbTypes::MultiPolygon:
-      case QgsWkbTypes::MultiPolygon25D:
-        mpol = g1.asMultiPolygon();
-
-        for ( int k = 0; k < mpol.size(); ++k )
+        else
         {
-          QgsPolygonXY &pol = mpol[k];
+          mls = g1.asMultiPolyline();
+
+          for ( int k = 0; k < mls.size(); ++k )
+          {
+            QgsPolylineXY &ls = mls[k];
+            for ( int i = 1; i < ls.size(); ++i )
+            {
+              distance = std::sqrt( ls[i - 1].sqrDist( ls[i] ) );
+              if ( distance < tolerance )
+              {
+                fls.clear();
+                fls << *it << *it;
+                segm.clear();
+                segm << ls[i - 1] << ls[i];
+                QgsGeometry conflict = QgsGeometry::fromPolylineXY( segm );
+                err = new TopolErrorShort( g1.boundingBox(), conflict, fls );
+                errorList << err;
+                //break on getting the first error
+                break;
+              }
+            }
+          }
+        }
+        break;
+      }
+
+      case QgsWkbTypes::PolygonGeometry:
+      {
+        if ( !QgsWkbTypes::isMultiType( g1.wkbType() ) )
+        {
+
+          pol = g1.asPolygon();
+
           for ( int i = 0; i < pol.size(); ++i )
           {
             for ( int j = 1; j < pol[i].size(); ++j )
             {
-              distance = pol[i][j - 1].sqrDist( pol[i][j] );
+              distance = std::sqrt( pol[i][j - 1].sqrDist( pol[i][j] ) );
               if ( distance < tolerance )
               {
                 fls.clear();
@@ -1111,9 +1088,40 @@ ErrorList topolTest::checkSegmentLength( double tolerance, QgsVectorLayer *layer
             }
           }
         }
-        break;
+        else
+        {
+          mpol = g1.asMultiPolygon();
 
-      default:
+          for ( int k = 0; k < mpol.size(); ++k )
+          {
+            QgsPolygonXY &pol = mpol[k];
+            for ( int i = 0; i < pol.size(); ++i )
+            {
+              for ( int j = 1; j < pol[i].size(); ++j )
+              {
+                distance = pol[i][j - 1].sqrDist( pol[i][j] );
+                if ( distance < tolerance )
+                {
+                  fls.clear();
+                  fls << *it << *it;
+                  segm.clear();
+                  segm << pol[i][j - 1] << pol[i][j];
+                  QgsGeometry conflict = QgsGeometry::fromPolylineXY( segm );
+                  err = new TopolErrorShort( g1.boundingBox(), conflict, fls );
+                  errorList << err;
+                  //break on getting the first error
+                  break;
+                }
+              }
+            }
+          }
+        }
+        break;
+      }
+
+      case QgsWkbTypes::PointGeometry:
+      case QgsWkbTypes::UnknownGeometry:
+      case QgsWkbTypes::NullGeometry:
         continue;
     }
   }
