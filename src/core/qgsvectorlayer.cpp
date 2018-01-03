@@ -974,13 +974,16 @@ bool QgsVectorLayer::addFeature( QgsFeature &feature, Flags )
 
 bool QgsVectorLayer::updateFeature( const QgsFeature &updatedFeature, bool skipDefaultValues )
 {
-  bool hasChanged = false;
-  bool hasError = false;
+  if ( !mEditBuffer || !mDataProvider )
+  {
+    return false;
+  }
 
   QgsFeature currentFeature = getFeature( updatedFeature.id() );
   if ( currentFeature.isValid() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "feature %1 could not be retrieved" ).arg( updatedFeature.id() ), 3 );
+    bool hasChanged = false;
+    bool hasError = false;
 
     if ( updatedFeature.hasGeometry() && currentFeature.hasGeometry() && !updatedFeature.geometry().isGeosEqual( currentFeature.geometry() ) )
     {
@@ -1012,12 +1015,16 @@ bool QgsVectorLayer::updateFeature( const QgsFeature &updatedFeature, bool skipD
         }
       }
     }
+    if ( hasChanged && !mDefaultValueOnUpdateFields.isEmpty() && !skipDefaultValues )
+      updateDefaultValues( updatedFeature.id(), updatedFeature );
+
+    return !hasError;
   }
-
-  if ( hasChanged && !mDefaultValueOnUpdateFields.isEmpty() && !skipDefaultValues )
-    updateDefaultValues( updatedFeature.id(), updatedFeature );
-
-  return !hasError;
+  else
+  {
+    QgsDebugMsgLevel( QStringLiteral( "feature %1 could not be retrieved" ).arg( updatedFeature.id() ), 3 );
+    return false;
+  }
 }
 
 

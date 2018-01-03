@@ -721,6 +721,31 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         # print "COMMIT ERRORS:"
         # for item in list(layer.commitErrors()): print item
 
+    # updateFeature
+
+    def testUpdateFeature(self):
+        layer = createLayerWithFivePoints()
+        features = [f for f in layer.getFeatures()]
+
+        # try to change feature without editing mode
+        self.assertFalse(layer.updateFeature(features[0]))
+
+        layer.startEditing()
+
+        # no matching feature
+        f = QgsFeature(1123)
+        self.assertFalse(layer.updateFeature(f))
+
+        # change geometry and attributes
+        f = features[0]
+        f.setAttributes(['new',321])
+        f.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(-200, -200)))
+        self.assertTrue(layer.updateFeature(f))
+
+        new_feature = next(layer.getFeatures(QgsFeatureRequest(f.id())))
+        self.assertEqual(new_feature.attributes(), ['new',321])
+        self.assertEqual(new_feature.geometry().asPoint(), QgsPointXY(-200, -200))
+
     # ADD ATTRIBUTE
 
     def test_AddAttribute(self):
