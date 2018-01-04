@@ -2002,7 +2002,8 @@ QgsPointLocator        {#qgis_api_break_3_0_QgsPointLocator}
 ---------------
 
 - The constructor now takes a reference rather than a pointer to a CRS.  This has no effect on PyQGIS code, but c++
-plugins calling this method will need to be updated.
+plugins calling this method will need to be updated. The constructor now requires a QgsCoordinateTransformContext argument
+when a destination crs is specified.
 - The destCRS parameter in the constructor has been renamed to destinationCrs.
 - destCRS() has been renamed to destinationCrs()
 - destinationCrs() now returns a copy instead of a reference to the CRS. This has no effect on PyQGIS code, but c++
