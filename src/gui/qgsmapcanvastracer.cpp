@@ -39,6 +39,7 @@ QgsMapCanvasTracer::QgsMapCanvasTracer( QgsMapCanvas *canvas, QgsMessageBar *mes
 
   // when things change we just invalidate the graph - and set up new parameters again only when necessary
   connect( canvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsMapCanvasTracer::invalidateGraph );
+  connect( canvas, &QgsMapCanvas::transformContextChanged, this, &QgsMapCanvasTracer::invalidateGraph );
   connect( canvas, &QgsMapCanvas::layersChanged, this, &QgsMapCanvasTracer::invalidateGraph );
   connect( canvas, &QgsMapCanvas::extentsChanged, this, &QgsMapCanvasTracer::invalidateGraph );
   connect( canvas, &QgsMapCanvas::currentLayerChanged, this, &QgsMapCanvasTracer::onCurrentLayerChanged );
@@ -96,7 +97,7 @@ void QgsMapCanvasTracer::reportError( QgsTracer::PathError err, bool addingVerte
 
 void QgsMapCanvasTracer::configure()
 {
-  setDestinationCrs( mCanvas->mapSettings().destinationCrs() );
+  setDestinationCrs( mCanvas->mapSettings().destinationCrs(), mCanvas->mapSettings().transformContext() );
   setExtent( mCanvas->extent() );
 
   QList<QgsVectorLayer *> layers;

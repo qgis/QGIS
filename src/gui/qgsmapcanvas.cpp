@@ -144,6 +144,7 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
            this, [ = ]
   {
     mSettings.setTransformContext( QgsProject::instance()->transformContext() );
+    emit transformContextChanged();
     refresh();
   } );
 

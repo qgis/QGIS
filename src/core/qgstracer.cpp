@@ -473,36 +473,19 @@ bool QgsTracer::initGraph()
 
   t1.start();
   int featuresCounted = 0;
-  Q_FOREACH ( QgsVectorLayer *vl, mLayers )
+  for ( QgsVectorLayer *vl : qgis::as_const( mLayers ) )
   {
-    Q_NOWARN_DEPRECATED_PUSH
-    QgsCoordinateTransform ct( vl->crs(), mCRS );
-    Q_NOWARN_DEPRECATED_POP
-
     QgsFeatureRequest request;
     request.setSubsetOfAttributes( QgsAttributeList() );
+    request.setDestinationCrs( mCRS, mTransformContext );
     if ( !mExtent.isEmpty() )
-      request.setFilterRect( ct.transformBoundingBox( mExtent, QgsCoordinateTransform::ReverseTransform ) );
+      request.setFilterRect( mExtent );
 
     QgsFeatureIterator fi = vl->getFeatures( request );
     while ( fi.nextFeature( f ) )
     {
       if ( !f.hasGeometry() )
         continue;
-
-      if ( !ct.isShortCircuited() )
-      {
-        try
-        {
-          QgsGeometry transformedGeom = f.geometry();
-          transformedGeom.transform( ct );
-          f.setGeometry( transformedGeom );
-        }
-        catch ( QgsCsException & )
-        {
-          continue; // ignore if the transform failed
-        }
-      }
 
       extractLinework( f.geometry(), mpl );
 
@@ -596,12 +579,10 @@ void QgsTracer::setLayers( const QList<QgsVectorLayer *> &layers )
   invalidateGraph();
 }
 
-void QgsTracer::setDestinationCrs( const QgsCoordinateReferenceSystem &crs )
+void QgsTracer::setDestinationCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context )
 {
-  if ( mCRS == crs )
-    return;
-
   mCRS = crs;
+  mTransformContext = context;
   invalidateGraph();
 }
 
