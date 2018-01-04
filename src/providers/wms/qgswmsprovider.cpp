@@ -710,7 +710,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle const &viewExtent, int pixelWidth, in
     int col0, col1, row0, row1;
     tm->viewExtentIntersection( viewExtent, tml, col0, row0, col1, row1 );
 
-#if QGISDEBUG
+#ifdef QGISDEBUG
     int n = ( col1 - col0 + 1 ) * ( row1 - row0 + 1 );
     QgsDebugMsg( QString( "tile number: %1x%2 = %3" ).arg( col1 - col0 + 1 ).arg( row1 - row0 + 1 ).arg( n ) );
     if ( n > 256 )

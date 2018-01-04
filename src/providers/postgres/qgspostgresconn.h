@@ -27,6 +27,7 @@
 #include "qgis.h"
 #include "qgsdatasourceuri.h"
 #include "qgswkbtypes.h"
+#include "qgsconfig.h"
 
 extern "C"
 {

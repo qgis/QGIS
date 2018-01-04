@@ -19,6 +19,7 @@
 
 #include <QExplicitlySharedDataPointer>
 
+#include "qgsconfig.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgscoordinatereferencesystem.h"
