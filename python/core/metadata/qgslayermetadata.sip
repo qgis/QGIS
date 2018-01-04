@@ -155,7 +155,7 @@ City or locality name.
 
       QString administrativeArea;
 %Docstring
-Administrative area (state, provice/territory, etc.).
+Administrative area (state, province/territory, etc.).
 %End
 
       QString postalCode;

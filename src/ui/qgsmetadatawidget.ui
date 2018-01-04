@@ -1169,7 +1169,7 @@
                  <string>Administrative Area</string>
                 </property>
                 <property name="toolTip">
-                 <string>Administrative area (state, provice/territory, etc.)</string>
+                 <string>Administrative area (state, province/territory, etc.)</string>
                 </property>
                </column>
                <column>
