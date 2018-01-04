@@ -85,8 +85,10 @@ Construct a QgsPoint from a QPointF
 %End
 
 
-    bool operator==( const QgsPoint &pt ) const;
-    bool operator!=( const QgsPoint &pt ) const;
+    virtual bool operator==( const QgsAbstractGeometry &other ) const;
+
+    virtual bool operator!=( const QgsAbstractGeometry &other ) const;
+
 
     double x() const;
 %Docstring

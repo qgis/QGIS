@@ -27,6 +27,11 @@ class QgsGeometryCollection: QgsAbstractGeometry
     QgsGeometryCollection( const QgsGeometryCollection &c );
     ~QgsGeometryCollection();
 
+    virtual bool operator==( const QgsAbstractGeometry &other ) const;
+
+    virtual bool operator!=( const QgsAbstractGeometry &other ) const;
+
+
     virtual QgsGeometryCollection *clone() const /Factory/;
 
 

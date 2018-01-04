@@ -28,8 +28,12 @@ class QgsCurve: QgsAbstractGeometry
 Constructor for QgsCurve.
 %End
 
-    virtual bool operator==( const QgsCurve &other ) const = 0;
-    virtual bool operator!=( const QgsCurve &other ) const = 0;
+    virtual bool equals( const QgsCurve &other ) const = 0;
+
+    virtual bool operator==( const QgsAbstractGeometry &other ) const;
+
+    virtual bool operator!=( const QgsAbstractGeometry &other ) const;
+
 
     virtual QgsCurve *clone() const = 0 /Factory/;
 

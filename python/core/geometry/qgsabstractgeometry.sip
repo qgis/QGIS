@@ -72,6 +72,9 @@ Constructor for QgsAbstractGeometry.
     virtual ~QgsAbstractGeometry();
     QgsAbstractGeometry( const QgsAbstractGeometry &geom );
 
+    virtual bool operator==( const QgsAbstractGeometry &other ) const = 0;
+    virtual bool operator!=( const QgsAbstractGeometry &other ) const = 0;
+
     virtual QgsAbstractGeometry *clone() const = 0 /Factory/;
 %Docstring
 Clones the geometry by performing a deep copy

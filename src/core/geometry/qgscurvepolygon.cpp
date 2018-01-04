@@ -90,40 +90,44 @@ QgsCurvePolygon &QgsCurvePolygon::operator=( const QgsCurvePolygon &p )
   return *this;
 }
 
-bool QgsCurvePolygon::operator==( const QgsCurvePolygon &other ) const
+bool QgsCurvePolygon::operator==( const QgsAbstractGeometry &other ) const
 {
+  const QgsCurvePolygon *otherPolygon = qgsgeometry_cast< const QgsCurvePolygon * >( &other );
+  if ( !otherPolygon )
+    return false;
+
   //run cheap checks first
-  if ( mWkbType != other.mWkbType )
+  if ( mWkbType != otherPolygon->mWkbType )
     return false;
 
-  if ( ( !mExteriorRing && other.mExteriorRing ) || ( mExteriorRing && !other.mExteriorRing ) )
+  if ( ( !mExteriorRing && otherPolygon->mExteriorRing ) || ( mExteriorRing && !otherPolygon->mExteriorRing ) )
     return false;
 
-  if ( mInteriorRings.count() != other.mInteriorRings.count() )
+  if ( mInteriorRings.count() != otherPolygon->mInteriorRings.count() )
     return false;
 
   // compare rings
-  if ( mExteriorRing && other.mExteriorRing )
+  if ( mExteriorRing && otherPolygon->mExteriorRing )
   {
-    if ( *mExteriorRing != *other.mExteriorRing )
+    if ( *mExteriorRing != *otherPolygon->mExteriorRing )
       return false;
   }
 
   for ( int i = 0; i < mInteriorRings.count(); ++i )
   {
-    if ( ( !mInteriorRings.at( i ) && other.mInteriorRings.at( i ) ) ||
-         ( mInteriorRings.at( i ) && !other.mInteriorRings.at( i ) ) )
+    if ( ( !mInteriorRings.at( i ) && otherPolygon->mInteriorRings.at( i ) ) ||
+         ( mInteriorRings.at( i ) && !otherPolygon->mInteriorRings.at( i ) ) )
       return false;
 
-    if ( mInteriorRings.at( i ) && other.mInteriorRings.at( i ) &&
-         *mInteriorRings.at( i ) != *other.mInteriorRings.at( i ) )
+    if ( mInteriorRings.at( i ) && otherPolygon->mInteriorRings.at( i ) &&
+         *mInteriorRings.at( i ) != *otherPolygon->mInteriorRings.at( i ) )
       return false;
   }
 
   return true;
 }
 
-bool QgsCurvePolygon::operator!=( const QgsCurvePolygon &other ) const
+bool QgsCurvePolygon::operator!=( const QgsAbstractGeometry &other ) const
 {
   return !operator==( other );
 }

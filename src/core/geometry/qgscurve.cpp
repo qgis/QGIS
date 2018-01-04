@@ -22,6 +22,20 @@
 #include "qgspoint.h"
 #include "qgsmultipoint.h"
 
+bool QgsCurve::operator==( const QgsAbstractGeometry &other ) const
+{
+  const QgsCurve *otherCurve = qgsgeometry_cast< const QgsCurve * >( &other );
+  if ( !otherCurve )
+    return false;
+
+  return equals( *otherCurve );
+}
+
+bool QgsCurve::operator!=( const QgsAbstractGeometry &other ) const
+{
+  return !operator==( other );
+}
+
 bool QgsCurve::isClosed() const
 {
   if ( numPoints() == 0 )

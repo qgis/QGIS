@@ -91,22 +91,26 @@ QgsPoint::QgsPoint( QgsWkbTypes::Type wkbType, double x, double y, double z, dou
  * See details in QEP #17
  ****************************************************************************/
 
-bool QgsPoint::operator==( const QgsPoint &pt ) const
+bool QgsPoint::operator==( const QgsAbstractGeometry &other ) const
 {
+  const QgsPoint *pt = qgsgeometry_cast< const QgsPoint * >( &other );
+  if ( !pt )
+    return false;
+
   const QgsWkbTypes::Type type = wkbType();
 
-  bool equal = pt.wkbType() == type;
-  equal &= qgsDoubleNear( pt.x(), mX, 1E-8 );
-  equal &= qgsDoubleNear( pt.y(), mY, 1E-8 );
+  bool equal = pt->wkbType() == type;
+  equal &= qgsDoubleNear( pt->x(), mX, 1E-8 );
+  equal &= qgsDoubleNear( pt->y(), mY, 1E-8 );
   if ( QgsWkbTypes::hasZ( type ) )
-    equal &= qgsDoubleNear( pt.z(), mZ, 1E-8 ) || ( std::isnan( pt.z() ) && std::isnan( mZ ) );
+    equal &= qgsDoubleNear( pt->z(), mZ, 1E-8 ) || ( std::isnan( pt->z() ) && std::isnan( mZ ) );
   if ( QgsWkbTypes::hasM( type ) )
-    equal &= qgsDoubleNear( pt.m(), mM, 1E-8 ) || ( std::isnan( pt.m() ) && std::isnan( mM ) );
+    equal &= qgsDoubleNear( pt->m(), mM, 1E-8 ) || ( std::isnan( pt->m() ) && std::isnan( mM ) );
 
   return equal;
 }
 
-bool QgsPoint::operator!=( const QgsPoint &pt ) const
+bool QgsPoint::operator!=( const QgsAbstractGeometry &pt ) const
 {
   return !operator==( pt );
 }
