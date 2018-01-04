@@ -266,7 +266,7 @@ void QgsOptionsDialogBase::registerTextSearchWidgets()
     Q_FOREACH ( QWidget *w, mOptStackedWidget->widget( i )->findChildren<QWidget *>() )
     {
       // do not register message bar content, items disappear and causes QGIS to crash
-      if ( dynamic_cast< QgsMessageBarItem * >( w ) || dynamic_cast< QgsMessageBarItem * >( w->parentWidget() ) )
+      if ( qobject_cast< QgsMessageBarItem * >( w ) || qobject_cast< QgsMessageBarItem * >( w->parentWidget() ) )
         continue;
 
       QgsSearchHighlightOptionWidget *shw = new QgsSearchHighlightOptionWidget( w );
@@ -475,7 +475,7 @@ bool QgsSearchHighlightOptionWidget::searchHighlight( const QString &searchText 
 
 void QgsSearchHighlightOptionWidget::reset()
 {
-  if ( mValid && mChangedStyle )
+  if ( mWidget && mValid && mChangedStyle )
   {
     QString ss = mWidget->styleSheet();
     ss.remove( mStyleSheet );
@@ -486,5 +486,6 @@ void QgsSearchHighlightOptionWidget::reset()
 
 void QgsSearchHighlightOptionWidget::widgetDestroyed()
 {
+  mWidget = nullptr;
   mValid = false;
 }
