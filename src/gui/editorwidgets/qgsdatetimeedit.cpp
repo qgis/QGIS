@@ -61,11 +61,6 @@ void QgsDateTimeEdit::clear()
     displayNull();
 
     changed( QDateTime() );
-
-    // avoid slot double activation
-    disconnect( this, &QDateTimeEdit::dateTimeChanged, this, &QgsDateTimeEdit::changed );
-    emit dateTimeChanged( QDateTime() );
-    connect( this, &QDateTimeEdit::dateTimeChanged, this, &QgsDateTimeEdit::changed );
   }
 }
 
@@ -174,6 +169,8 @@ void QgsDateTimeEdit::changed( const QDateTime &dateTime )
   }
 
   mClearAction->setVisible( mAllowNull && !mIsNull );
+
+  emit QgsDateTimeEdit::dateTimeChanged( dateTime );
 }
 
 void QgsDateTimeEdit::displayNull( bool updateCalendar )

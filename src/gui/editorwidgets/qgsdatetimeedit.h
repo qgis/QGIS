@@ -62,6 +62,9 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
      */
     void setEmpty();
 
+  signals:
+    void dateTimeChanged( const QDateTime &date );
+
   protected:
     void mousePressEvent( QMouseEvent *event ) override;
     void focusOutEvent( QFocusEvent *event ) override;

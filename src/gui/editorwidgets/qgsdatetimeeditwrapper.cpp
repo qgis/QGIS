@@ -93,7 +93,7 @@ void QgsDateTimeEditWrapper::initWidget( QWidget *editor )
 
   if ( mQgsDateTimeEdit )
   {
-    connect( mQgsDateTimeEdit, &QDateTimeEdit::dateTimeChanged, this, &QgsDateTimeEditWrapper::dateTimeChanged );
+    connect( mQgsDateTimeEdit, &QgsDateTimeEdit::dateTimeChanged, this, &QgsDateTimeEditWrapper::dateTimeChanged );
   }
   else
   {

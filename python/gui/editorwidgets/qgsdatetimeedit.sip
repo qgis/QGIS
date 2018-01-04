@@ -65,6 +65,9 @@ Resets the widget to show no value (ie, an "unknown" state).
 .. versionadded:: 2.16
 %End
 
+  signals:
+    void dateTimeChanged( const QDateTime &date );
+
   protected:
     virtual void mousePressEvent( QMouseEvent *event );
 
