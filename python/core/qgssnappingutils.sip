@@ -183,6 +183,11 @@ Called when starting to index - can be overridden and e.g. progress dialog can b
 Called when finished indexing a layer. When index == count the indexing is complete
 %End
 
+    void clearAllLocators();
+%Docstring
+Deletes all existing locators (e.g. when destination CRS has changed and we need to reindex)
+%End
+
 };
 
 

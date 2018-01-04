@@ -29,12 +29,20 @@ QgsMapCanvasSnappingUtils::QgsMapCanvasSnappingUtils( QgsMapCanvas *canvas, QObj
   connect( canvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsMapCanvasSnappingUtils::canvasMapSettingsChanged );
   connect( canvas, &QgsMapCanvas::layersChanged, this, &QgsMapCanvasSnappingUtils::canvasMapSettingsChanged );
   connect( canvas, &QgsMapCanvas::currentLayerChanged, this, &QgsMapCanvasSnappingUtils::canvasCurrentLayerChanged );
+  connect( canvas, &QgsMapCanvas::transformContextChanged, this, &QgsMapCanvasSnappingUtils::canvasTransformContextChanged );
   canvasMapSettingsChanged();
   canvasCurrentLayerChanged();
 }
 
 void QgsMapCanvasSnappingUtils::canvasMapSettingsChanged()
 {
+  setMapSettings( mCanvas->mapSettings() );
+}
+
+void QgsMapCanvasSnappingUtils::canvasTransformContextChanged()
+{
+  // can't trust any of our previous locators, as we don't know exactly how datum transform changes would affect these
+  clearAllLocators();
   setMapSettings( mCanvas->mapSettings() );
 }
 
