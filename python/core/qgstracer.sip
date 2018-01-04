@@ -43,11 +43,16 @@ Set layers used for tracing
 
     QgsCoordinateReferenceSystem destinationCrs() const;
 %Docstring
-Get CRS used for tracing
+Returns the CRS used for tracing.
+
+.. seealso:: :py:func:`setDestinationCrs()`
 %End
-    void setDestinationCrs( const QgsCoordinateReferenceSystem &crs );
+
+    void setDestinationCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context );
 %Docstring
-Set CRS used for tracing
+Sets the ``crs`` and transform ``context`` used for tracing.
+
+.. seealso:: :py:func:`destinationCrs()`
 %End
 
     QgsRectangle extent() const;

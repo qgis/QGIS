@@ -2133,6 +2133,12 @@ loadDefaultStyle argument.
 signals now accept a QgsRasterBlockFeedback argument for reporting progress updates.
 
 
+QgsRasterLayerSaveAsDialog        {#qgis_api_break_3_0_QgsRasterLayerSaveAsDialog}
+--------------------------
+
+- The currentExtent and currentCrs arguments have been dropped from the constructor. Use setMapCanvas() instead.
+
+
 QgsRasterProjector        {#qgis_api_break_3_0_QgsRasterProjector}
 ------------------
 
@@ -2524,6 +2530,8 @@ QgsTracer        {#qgis_api_break_3_0_QgsTracer}
 ---------
 
 - hasCrsTransformEnabled() and setCrsTransformEnabled() were removed. CRS transformation is now always enabled when required.
+- setDestinationCrs() now requires a QgsCoordinateTransformContext argument.
+
 
 QgsTransaction        {#qgis_api_break_3_0_QgsTransaction}
 --------------

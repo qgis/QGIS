@@ -900,6 +900,13 @@ Emitted when map CRS has changed
 .. versionadded:: 2.4
 %End
 
+    void transformContextChanged();
+%Docstring
+Emitted when the canvas transform context is changed.
+
+.. versionadded:: 3.0
+%End
+
     void currentLayerChanged( QgsMapLayer *layer );
 %Docstring
 Emitted when the current layer is changed
