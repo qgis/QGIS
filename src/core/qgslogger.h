@@ -25,6 +25,7 @@
 #include <QTime>
 
 #include "qgis_core.h"
+#include "qgsconfig.h"
 
 class QFile;
 
