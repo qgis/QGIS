@@ -83,8 +83,7 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
 
     QLineEdit* mNullLabel;
     QToolButton* mClearButton;
-    QString mOriginalStyleSheet = QString();
-
+    QString mOriginalStyleSheet;
 };
 
 #endif // QGSDATETIMEEDIT_H
