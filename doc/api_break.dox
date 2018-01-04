@@ -1354,6 +1354,8 @@ maintains Z or M dimensions from the input points and is more efficient.
 - exportToWkt() was renamed to asWkt()
 - exportToGeoJSON() was renamed to asJson()
 - closestSegmentWithContext() now returns an extra value, indicating whether the point is to the left of the geometry
+- equals() now performs a fast, strict equality check, where geometries are considered equal only if they have the
+exact same type, vertices and order. The slower topological test can be performed by calling isGeosEqual instead.
 
 
 QgsGeometryAnalyzer        {#qgis_api_break_3_0_QgsGeometryAnalyzer}

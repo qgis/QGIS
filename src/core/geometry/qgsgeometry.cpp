@@ -1147,9 +1147,12 @@ bool QgsGeometry::equals( const QgsGeometry &geometry ) const
     return false;
   }
 
-  QgsGeos geos( d->geometry.get() );
-  mLastError.clear();
-  return geos.isEqual( geometry.d->geometry.get(), &mLastError );
+  // fast check - are they shared copies of the same underlying geometry?
+  if ( d == geometry.d )
+    return true;
+
+  // slower check - actually test the geometries
+  return *d->geometry.get() == *geometry.d->geometry.get();
 }
 
 bool QgsGeometry::touches( const QgsGeometry &geometry ) const
