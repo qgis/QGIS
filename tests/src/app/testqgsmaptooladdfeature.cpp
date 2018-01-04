@@ -23,6 +23,7 @@
 #include "qgsmaptooladdfeature.h"
 #include "qgsmapcanvastracer.h"
 #include "qgsproject.h"
+#include "qgssettings.h"
 #include "qgsvectorlayer.h"
 
 
@@ -81,6 +82,7 @@ class TestQgsMapToolAddFeature : public QObject
     void testNoTracing();
     void testTracing();
     void testTracingWithOffset();
+    void testZ();
 
   private:
     QPoint mapToScreen( double mapX, double mapY )
@@ -129,6 +131,7 @@ class TestQgsMapToolAddFeature : public QObject
     QAction *mEnableTracingAction = nullptr;
     QgsMapToolAddFeature *mCaptureTool = nullptr;
     QgsVectorLayer *mLayerLine = nullptr;
+    QgsVectorLayer *mLayerLineZ = nullptr;
     QgsFeatureId mFidLineF1 = 0;
 };
 
@@ -172,6 +175,20 @@ void TestQgsMapToolAddFeature::initTestCase()
   // just one added feature
   QCOMPARE( mLayerLine->undoStack()->index(), 1 );
 
+  // make testing layers
+  mLayerLineZ = new QgsVectorLayer( QStringLiteral( "LineStringZ?crs=EPSG:27700" ), QStringLiteral( "layer line Z" ), QStringLiteral( "memory" ) );
+  QVERIFY( mLayerLineZ->isValid() );
+  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerLineZ );
+
+  QgsPolyline line2;
+  line2 << QgsPoint( 1, 1, 0 ) << QgsPoint( 2, 1, 1 ) << QgsPoint( 3, 2, 2 ) << QgsPoint( 1, 2, 3 ) << QgsPoint( 1, 1, 0 );
+  QgsFeature lineF2;
+  lineF2.setGeometry( QgsGeometry::fromPolyline( line2 ) );
+
+  mLayerLineZ->startEditing();
+  mLayerLineZ->addFeature( lineF2 );
+  QCOMPARE( mLayerLineZ->featureCount(), ( long )1 );
+
   mCanvas->setFrameStyle( QFrame::NoFrame );
   mCanvas->resize( 512, 512 );
   mCanvas->setExtent( QgsRectangle( 0, 0, 8, 8 ) );
@@ -180,7 +197,7 @@ void TestQgsMapToolAddFeature::initTestCase()
   QCOMPARE( mCanvas->mapSettings().outputSize(), QSize( 512, 512 ) );
   QCOMPARE( mCanvas->mapSettings().visibleExtent(), QgsRectangle( 0, 0, 8, 8 ) );
 
-  mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerLine ); //<< mLayerPolygon << mLayerPoint );
+  mCanvas->setLayers( QList<QgsMapLayer *>() << mLayerLine << mLayerLineZ ); //<< mLayerPolygon << mLayerPoint );
 
   mCanvas->setSnappingUtils( new QgsMapCanvasSnappingUtils( mCanvas, this ) );
 
@@ -344,6 +361,45 @@ void TestQgsMapToolAddFeature::testTracingWithOffset()
 
 
   mEnableTracingAction->setChecked( false );
+}
+
+void TestQgsMapToolAddFeature::testZ()
+{
+  mCanvas->setCurrentLayer( mLayerLineZ );
+
+  // test with default Z value = 333
+  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 333 );
+
+  QSet<QgsFeatureId> oldFids = _existingFeatureIds( mLayerLineZ );
+  mouseClick( 4, 0, Qt::LeftButton );
+  mouseClick( 5, 0, Qt::LeftButton );
+  mouseClick( 5, 1, Qt::LeftButton );
+  mouseClick( 4, 1, Qt::LeftButton );
+  mouseClick( 4, 1, Qt::RightButton );
+  QgsFeatureId newFid = _newFeatureId( mLayerLineZ, oldFids );
+
+  QString wkt = "LineStringZ (4 0 333, 5 0 333, 5 1 333, 4 1 333)";
+  QCOMPARE( mLayerLineZ->getFeature( newFid ).geometry(), QgsGeometry::fromWkt( wkt ) );
+
+  mLayerLine->undoStack()->undo();
+
+  // test with default Z value = 222
+  QgsSettings().setValue( QStringLiteral( "/qgis/digitizing/default_z_value" ), 222 );
+
+  oldFids = _existingFeatureIds( mLayerLineZ );
+  mouseClick( 4, 0, Qt::LeftButton );
+  mouseClick( 5, 0, Qt::LeftButton );
+  mouseClick( 5, 1, Qt::LeftButton );
+  mouseClick( 4, 1, Qt::LeftButton );
+  mouseClick( 4, 1, Qt::RightButton );
+  newFid = _newFeatureId( mLayerLineZ, oldFids );
+
+  wkt = "LineStringZ (4 0 222, 5 0 222, 5 1 222, 4 1 222)";
+  QCOMPARE( mLayerLineZ->getFeature( newFid ).geometry(), QgsGeometry::fromWkt( wkt ) );
+
+  mLayerLine->undoStack()->undo();
+
+  mCanvas->setCurrentLayer( mLayerLine );
 }
 
 
