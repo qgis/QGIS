@@ -92,7 +92,7 @@ QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget *parent, Qt:
   connect( cbxPointIsComma, &QAbstractButton::toggled, this, &QgsDelimitedTextSourceSelect::updateFieldsAndEnable );
   connect( cbxXyDms, &QAbstractButton::toggled, this, &QgsDelimitedTextSourceSelect::updateFieldsAndEnable );
 
-  mFileWidget->setDialogTitle( tr( "Choose a Delimited Text File to Ppen" ) );
+  mFileWidget->setDialogTitle( tr( "Choose a Delimited Text File to Open" ) );
   mFileWidget->setFilter( tr( "Text files" ) + " (*.txt *.csv *.dat *.wkt);;" + tr( "All files" ) + " (* *.*)" );
   mFileWidget->setSelectedFilter( settings.value( mPluginKey + "/file_filter", "" ).toString() );
   connect( mFileWidget, &QgsFileWidget::fileChanged, this, [ = ]() { updateFileName(); } );
