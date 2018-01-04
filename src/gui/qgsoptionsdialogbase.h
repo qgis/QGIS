@@ -62,7 +62,7 @@ class GUI_EXPORT QgsSearchHighlightOptionWidget : public QObject
     /**
      * Returns if it valid: if the widget type is handled and if the widget is not still available
      */
-    bool isValid() {return mValid;}
+    bool isValid() { return mWidget && mValid; }
 
     /**
      * search for a text pattern and highlight the widget if the text is found
@@ -78,13 +78,13 @@ class GUI_EXPORT QgsSearchHighlightOptionWidget : public QObject
     /**
      * return the widget
      */
-    QWidget *widget() {return mWidget;}
+    QWidget *widget() { return mWidget; }
 
   private slots:
     void widgetDestroyed();
 
   private:
-    QWidget *mWidget = nullptr;
+    QPointer< QWidget > mWidget;
     QString mStyleSheet;
     bool mValid = true;
     bool mChangedStyle = false;
