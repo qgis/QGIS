@@ -178,6 +178,7 @@ QVariant QgsDateTimeEditWrapper::value() const
       }
       break;
   }
+  return QVariant();
 }
 
 void QgsDateTimeEditWrapper::setValue( const QVariant &value )
