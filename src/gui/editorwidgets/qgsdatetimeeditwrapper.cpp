@@ -114,15 +114,28 @@ void QgsDateTimeEditWrapper::showIndeterminateState()
 
 void QgsDateTimeEditWrapper::dateTimeChanged( const QDateTime &dateTime )
 {
-  const bool fieldIsoFormat = config( QStringLiteral( "field_iso_format" ), false ).toBool();
-  const QString fieldFormat = config( QStringLiteral( "field_format" ), QgsDateTimeFieldFormatter::defaultFormat( field().type() ) ).toString();
-  if ( fieldIsoFormat )
+  switch ( field().type() )
   {
-    emit valueChanged( dateTime.toString( Qt::ISODate ) );
-  }
-  else
-  {
-    emit valueChanged( dateTime.toString( fieldFormat ) );
+    case QVariant::DateTime:
+      emit valueChanged( dateTime );
+      break;
+    case QVariant::Date:
+      emit valueChanged( dateTime.date() );
+      break;
+    case QVariant::Time:
+      emit valueChanged( dateTime.time() );
+    default:
+      const bool fieldIsoFormat = config( QStringLiteral( "field_iso_format" ), false ).toBool();
+      const QString fieldFormat = config( QStringLiteral( "field_format" ), QgsDateTimeFieldFormatter::defaultFormat( field().type() ) ).toString();
+      if ( fieldIsoFormat )
+      {
+        emit valueChanged( dateTime.toString( Qt::ISODate ) );
+      }
+      else
+      {
+        emit valueChanged( dateTime.toString( fieldFormat ) );
+      }
+      break;
   }
 }
 
@@ -131,37 +144,39 @@ QVariant QgsDateTimeEditWrapper::value() const
   if ( !mQDateTimeEdit )
     return QVariant( field().type() );
 
-  if ( field().type() == QVariant::DateTime )
-  {
-    if ( mQgsDateTimeEdit )
-    {
-      return mQgsDateTimeEdit->dateTime();
-    }
-    else
-    {
-      return mQDateTimeEdit->dateTime();
-    }
-  }
-
-  const bool fieldIsoFormat = config( QStringLiteral( "field_iso_format" ), false ).toBool();
-  const QString fieldFormat = config( QStringLiteral( "field_format" ), QgsDateTimeFieldFormatter::defaultFormat( field().type() ) ).toString();
-
-  QDateTime date;
+  QDateTime dateTime;
   if ( mQgsDateTimeEdit )
   {
-    date = mQgsDateTimeEdit->dateTime();
+    dateTime = mQgsDateTimeEdit->dateTime();
   }
   else
   {
-    date = mQDateTimeEdit->dateTime();
+    dateTime = mQDateTimeEdit->dateTime();
   }
-  if ( fieldIsoFormat )
+
+  switch ( field().type() )
   {
-    return date.toString( Qt::ISODate );
-  }
-  else
-  {
-    return date.toString( fieldFormat );
+    case QVariant::DateTime:
+      return dateTime;
+      break;
+    case QVariant::Date:
+      return dateTime.date();
+      break;
+    case QVariant::Time:
+      return dateTime.time();
+      break;
+    default:
+      const bool fieldIsoFormat = config( QStringLiteral( "field_iso_format" ), false ).toBool();
+      const QString fieldFormat = config( QStringLiteral( "field_format" ), QgsDateTimeFieldFormatter::defaultFormat( field().type() ) ).toString();
+      if ( fieldIsoFormat )
+      {
+        return dateTime.toString( Qt::ISODate );
+      }
+      else
+      {
+        return dateTime.toString( fieldFormat );
+      }
+      break;
   }
 }
 
@@ -170,33 +185,35 @@ void QgsDateTimeEditWrapper::setValue( const QVariant &value )
   if ( !mQDateTimeEdit )
     return;
 
-  const bool fieldIsoFormat = config( QStringLiteral( "field_iso_format" ), false ).toBool();
-  const QString fieldFormat = config( QStringLiteral( "field_format" ), QgsDateTimeFieldFormatter::defaultFormat( field().type() ) ).toString();
-
-  QDateTime date;
-  if ( field().type() == QVariant::DateTime )
+  QDateTime dateTime;
+  switch ( field().type() )
   {
-    date = value.toDateTime();
-  }
-  else
-  {
-    if ( fieldIsoFormat )
-    {
-      date = QDateTime::fromString( value.toString(), Qt::ISODate );
-    }
-    else
-    {
-      date = QDateTime::fromString( value.toString(), fieldFormat );
-    }
+    case QVariant::DateTime:
+    case QVariant::Date:
+    case QVariant::Time:
+      dateTime = value.toDateTime();
+      break;
+    default:
+      const bool fieldIsoFormat = config( QStringLiteral( "field_iso_format" ), false ).toBool();
+      const QString fieldFormat = config( QStringLiteral( "field_format" ), QgsDateTimeFieldFormatter::defaultFormat( field().type() ) ).toString();
+      if ( fieldIsoFormat )
+      {
+        dateTime = QDateTime::fromString( value.toString(), Qt::ISODate );
+      }
+      else
+      {
+        dateTime = QDateTime::fromString( value.toString(), fieldFormat );
+      }
+      break;
   }
 
   if ( mQgsDateTimeEdit )
   {
-    mQgsDateTimeEdit->setDateTime( date );
+    mQgsDateTimeEdit->setDateTime( dateTime );
   }
   else
   {
-    mQDateTimeEdit->setDateTime( date );
+    mQDateTimeEdit->setDateTime( dateTime );
   }
 }
 
