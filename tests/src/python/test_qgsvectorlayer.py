@@ -746,6 +746,29 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         self.assertEqual(new_feature.attributes(), ['new',321])
         self.assertEqual(new_feature.geometry().asPoint(), QgsPointXY(-200, -200))
 
+        # add feature with no geometry
+        f6 = QgsFeature()
+        f6.setAttributes(["test6", 555])
+        self.assertTrue(layer.dataProvider().addFeatures([f6]))
+        features = [f for f in layer.getFeatures()]
+
+        # update feature with no geometry -> have geometry
+        f = features[-1]
+        f.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(-350, -250)))
+        self.assertTrue(layer.updateFeature(f))
+        new_feature = next(layer.getFeatures(QgsFeatureRequest(f.id())))
+        self.assertEqual(new_feature.attributes(), ['test6', 555])
+        self.assertTrue(new_feature.hasGeometry())
+        self.assertEqual(new_feature.geometry().asPoint(), QgsPointXY(-350, -250))
+
+        # update feature from geometry -> no geometry
+        f = features[1]
+        f.clearGeometry()
+        self.assertTrue(layer.updateFeature(f))
+        new_feature = next(layer.getFeatures(QgsFeatureRequest(f.id())))
+        self.assertEqual(new_feature.attributes(), ['test2', 457])
+        self.assertFalse(new_feature.hasGeometry())
+
     # ADD ATTRIBUTE
 
     def test_AddAttribute(self):
