@@ -675,7 +675,7 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   addDockWidget( Qt::RightDockWidgetArea, mUndoDock );
   addDockWidget( Qt::RightDockWidgetArea, mItemsDock );
   addDockWidget( Qt::RightDockWidgetArea, mAtlasDock );
-  addDockWidget( Qt::RightDockWidgetArea, mReportDock );
+  addDockWidget( Qt::LeftDockWidgetArea, mReportDock );
 
   createLayoutPropertiesWidget();
 
@@ -913,6 +913,13 @@ void QgsLayoutDesignerDialog::open()
   if ( mView )
   {
     mView->zoomFull(); // zoomFull() does not work properly until we have called show()
+  }
+
+  if ( mMasterLayout && mMasterLayout->layoutType() == QgsMasterLayoutInterface::Report )
+  {
+    mReportDock->show();
+    mReportDock->raise();
+    mReportDock->setUserVisible( true );
   }
 }
 
@@ -1990,12 +1997,7 @@ void QgsLayoutDesignerDialog::showAtlasSettings()
   if ( !mAtlasDock )
     return;
 
-  if ( !mAtlasDock->isVisible() )
-  {
-    mAtlasDock->show();
-  }
-
-  mAtlasDock->raise();
+  mAtlasDock->setUserVisible( true );
 }
 
 void QgsLayoutDesignerDialog::atlasPreviewTriggered( bool checked )
@@ -3277,12 +3279,7 @@ void QgsLayoutDesignerDialog::showReportSettings()
   if ( !mReportDock )
     return;
 
-  if ( !mReportDock->isVisible() )
-  {
-    mReportDock->show();
-  }
-
-  mReportDock->raise();
+  mReportDock->setUserVisible( true );
 }
 
 void QgsLayoutDesignerDialog::pageSetup()
@@ -3435,11 +3432,7 @@ void QgsLayoutDesignerDialog::createReportWidget()
   QgsReportOrganizerWidget *reportWidget = new QgsReportOrganizerWidget( mReportDock, this, report );
   reportWidget->setMessageBar( mMessageBar );
   mReportDock->setWidget( reportWidget );
-  mReportDock->show();
-  mReportDock->raise();
-
   mReportToolbar->show();
-
   mPanelsMenu->addAction( mReportDock->toggleViewAction() );
 }
 
