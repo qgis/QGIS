@@ -693,7 +693,6 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   tabifyDockWidget( mGeneralDock, mItemDock );
   tabifyDockWidget( mItemDock, mItemsDock );
   tabifyDockWidget( mItemDock, mAtlasDock );
-  tabifyDockWidget( mItemDock, mReportDock );
 
   toggleActions( false );
 
