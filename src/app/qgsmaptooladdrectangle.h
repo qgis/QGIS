@@ -19,10 +19,11 @@
 #include "qgspolygon.h"
 #include "qgsmaptoolcapture.h"
 #include "qgsbox3d.h"
+#include "qgis_app.h"
 
 class QgsPolygon;
 
-class QgsMapToolAddRectangle: public QgsMapToolCapture
+class APP_EXPORT QgsMapToolAddRectangle: public QgsMapToolCapture
 {
     Q_OBJECT
 
