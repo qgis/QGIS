@@ -4050,12 +4050,15 @@ void QgsOgrProvider::open( OpenMode mode )
     }
   }
 
-  // Connect
+  // Updates capabilities when the subset string changes, it needs to be
+  // asynchronous because if called directly if will recurse
   if ( mode == OpenModeInitial )
-    connect( this, &QgsOgrProvider::capabilitiesNeedUpdate, this, [ =  ]
   {
-    computeCapabilities();
-  } );
+    connect( this, &QgsOgrProvider::capabilitiesNeedUpdate, this, [ =  ]
+    {
+      computeCapabilities();
+    } );
+  }
 
   // For debug/testing purposes
   if ( !mValid )
