@@ -412,7 +412,7 @@ ErrorList topolTest::checkDuplicates( double tolerance, QgsVectorLayer *layer1, 
         continue;
       }
 
-      if ( g1.equals( g2 ) )
+      if ( g1.isGeosEqual( g2 ) )
       {
         duplicate = true;
         duplicateIds.append( mFeatureMap2[*cit].feature.id() );
