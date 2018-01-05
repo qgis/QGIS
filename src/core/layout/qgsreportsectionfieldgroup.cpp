@@ -30,6 +30,11 @@ QString QgsReportSectionFieldGroup::description() const
   return QObject::tr( "Group: %1" ).arg( mField );
 }
 
+QIcon QgsReportSectionFieldGroup::icon() const
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldText.svg" ) );
+}
+
 QgsReportSectionFieldGroup *QgsReportSectionFieldGroup::clone() const
 {
   std::unique_ptr< QgsReportSectionFieldGroup > copy = qgis::make_unique< QgsReportSectionFieldGroup >( nullptr );

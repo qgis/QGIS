@@ -58,6 +58,34 @@ QVariant QgsReportSectionModel::data( const QModelIndex &index, int role ) const
       break;
     }
 
+    case Qt::DecorationRole:
+      switch ( index.column() )
+      {
+        case 0:
+        {
+          QIcon icon = section->icon();
+
+          if ( section == mEditedSection )
+          {
+            QPixmap pixmap( icon.pixmap( 16, 16 ) );
+
+            QPainter painter( &pixmap );
+            painter.drawPixmap( 0, 0, 16, 16, QgsApplication::getThemePixmap( "/mActionToggleEditing.svg" ) );
+            painter.end();
+
+            return QIcon( pixmap );
+          }
+          else
+          {
+            return icon;
+          }
+        }
+
+        default:
+          return QVariant();
+      }
+      break;
+
     case Qt::TextAlignmentRole:
     {
       return ( index.column() == 2 || index.column() == 3 ) ? Qt::AlignRight : Qt::AlignLeft;
@@ -209,6 +237,26 @@ QModelIndex QgsReportSectionModel::indexForSection( QgsAbstractReportSection *se
   };
 
   return findIndex( QModelIndex(), section );
+}
+
+void QgsReportSectionModel::setEditedSection( QgsAbstractReportSection *section )
+{
+  QModelIndex oldSection;
+  if ( mEditedSection )
+  {
+    oldSection = indexForSection( mEditedSection );
+  }
+
+  mEditedSection = section;
+  if ( oldSection.isValid() )
+    emit dataChanged( oldSection, oldSection, QVector<int>() << Qt::DecorationRole );
+
+  if ( mEditedSection )
+  {
+    QModelIndex newSection = indexForSection( mEditedSection );
+    emit dataChanged( newSection, newSection, QVector<int>() << Qt::DecorationRole );
+  }
+
 }
 
 bool QgsReportSectionModel::removeRows( int row, int count, const QModelIndex &parent )

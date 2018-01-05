@@ -18,9 +18,11 @@
 #include "qgsreportsectionfieldgroup.h"
 #include "qgslayout.h"
 #include "qgslayoutdesignerdialog.h"
+#include "qgsreportorganizerwidget.h"
 
-QgsReportSectionFieldGroupWidget::QgsReportSectionFieldGroupWidget( QWidget *parent, QgsLayoutDesignerDialog *designer, QgsReportSectionFieldGroup *section )
+QgsReportSectionFieldGroupWidget::QgsReportSectionFieldGroupWidget( QgsReportOrganizerWidget *parent, QgsLayoutDesignerDialog *designer, QgsReportSectionFieldGroup *section )
   : QWidget( parent )
+  , mOrganizer( parent )
   , mSection( section )
   , mDesigner( designer )
 {
@@ -72,6 +74,7 @@ void QgsReportSectionFieldGroupWidget::editHeader()
     mSection->header()->reportContext().setLayer( mSection->layer() );
     mDesigner->setCurrentLayout( mSection->header() );
     mDesigner->setSectionTitle( tr( "%1 Header" ).arg( mSection->description() ) );
+    mOrganizer->setEditedSection( mSection );
   }
 }
 
@@ -89,6 +92,7 @@ void QgsReportSectionFieldGroupWidget::editFooter()
     mSection->footer()->reportContext().setLayer( mSection->layer() );
     mDesigner->setCurrentLayout( mSection->footer() );
     mDesigner->setSectionTitle( tr( "%1 Footer" ).arg( mSection->description() ) );
+    mOrganizer->setEditedSection( mSection );
   }
 }
 
@@ -111,6 +115,7 @@ void QgsReportSectionFieldGroupWidget::editBody()
     mSection->body()->reportContext().setLayer( mSection->layer() );
     mDesigner->setCurrentLayout( mSection->body() );
     mDesigner->setSectionTitle( tr( "%1 Body" ).arg( mSection->description() ) );
+    mOrganizer->setEditedSection( mSection );
   }
 }
 

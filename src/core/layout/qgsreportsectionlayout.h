@@ -43,6 +43,7 @@ class CORE_EXPORT QgsReportSectionLayout : public QgsAbstractReportSection
 
     QString type() const override { return QStringLiteral( "SectionLayout" ); }
     QString description() const override { return QObject::tr( "Section" ); }
+    QIcon icon() const override;
 
     /**
      * Returns the body layout for the section.

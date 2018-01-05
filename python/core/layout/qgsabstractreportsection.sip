@@ -86,6 +86,11 @@ Returns the section subclass type.
 Returns a user-visible, translated description of the section.
 %End
 
+    virtual QIcon icon() const = 0;
+%Docstring
+Returns an icon representing the section.
+%End
+
     virtual QgsAbstractReportSection *clone() const = 0 /Factory/;
 %Docstring
 Clones the report section. Ownership of the returned section is

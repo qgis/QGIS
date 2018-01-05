@@ -46,6 +46,7 @@ class CORE_EXPORT QgsReportSectionFieldGroup : public QgsAbstractReportSection
 
     QString type() const override { return QStringLiteral( "SectionFieldGroup" ); }
     QString description() const override;
+    QIcon icon() const override;
 
     /**
      * Returns the body layout for the section.

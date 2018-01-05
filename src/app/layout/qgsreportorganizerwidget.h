@@ -25,6 +25,7 @@ class QgsReportSectionModel;
 class QgsReport;
 class QgsMessageBar;
 class QgsLayoutDesignerDialog ;
+class QgsAbstractReportSection;
 
 class QgsReportOrganizerWidget: public QgsPanelWidget, private Ui::QgsReportOrganizerBase
 {
@@ -33,6 +34,7 @@ class QgsReportOrganizerWidget: public QgsPanelWidget, private Ui::QgsReportOrga
     QgsReportOrganizerWidget( QWidget *parent, QgsLayoutDesignerDialog *designer, QgsReport *report );
 
     void setMessageBar( QgsMessageBar *bar );
+    void setEditedSection( QgsAbstractReportSection *section );
 
   private slots:
 

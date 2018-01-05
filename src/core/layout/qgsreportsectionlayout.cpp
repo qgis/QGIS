@@ -23,6 +23,11 @@ QgsReportSectionLayout::QgsReportSectionLayout( QgsAbstractReportSection *parent
   : QgsAbstractReportSection( parent )
 {}
 
+QIcon QgsReportSectionLayout::icon() const
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "/mActionNewComposer.svg" ) );
+}
+
 QgsReportSectionLayout *QgsReportSectionLayout::clone() const
 {
   std::unique_ptr< QgsReportSectionLayout > copy = qgis::make_unique< QgsReportSectionLayout >( nullptr );

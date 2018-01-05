@@ -97,6 +97,11 @@ class CORE_EXPORT QgsAbstractReportSection : public QgsAbstractLayoutIterator
     virtual QString description() const = 0;
 
     /**
+     * Returns an icon representing the section.
+     */
+    virtual QIcon icon() const = 0;
+
+    /**
      * Clones the report section. Ownership of the returned section is
      * transferred to the caller.
      *

@@ -18,9 +18,11 @@
 #include "qgsreport.h"
 #include "qgslayout.h"
 #include "qgslayoutdesignerdialog.h"
+#include "qgsreportorganizerwidget.h"
 
-QgsReportSectionWidget::QgsReportSectionWidget( QWidget *parent, QgsLayoutDesignerDialog *designer, QgsReport *section )
+QgsReportSectionWidget::QgsReportSectionWidget( QgsReportOrganizerWidget *parent, QgsLayoutDesignerDialog *designer, QgsReport *section )
   : QWidget( parent )
+  , mOrganizer( parent )
   , mSection( section )
   , mDesigner( designer )
 {
@@ -59,6 +61,7 @@ void QgsReportSectionWidget::editHeader()
   {
     mDesigner->setCurrentLayout( mSection->header() );
     mDesigner->setSectionTitle( tr( "Report Header" ) );
+    mOrganizer->setEditedSection( mSection );
   }
 }
 
@@ -75,6 +78,7 @@ void QgsReportSectionWidget::editFooter()
   {
     mDesigner->setCurrentLayout( mSection->footer() );
     mDesigner->setSectionTitle( tr( "Report Footer" ) );
+    mOrganizer->setEditedSection( mSection );
   }
 }
 

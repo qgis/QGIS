@@ -21,12 +21,13 @@
 
 class QgsLayoutDesignerDialog;
 class QgsReportSectionLayout;
+class QgsReportOrganizerWidget;
 
 class QgsReportLayoutSectionWidget: public QWidget, private Ui::QgsReportWidgetLayoutSectionBase
 {
     Q_OBJECT
   public:
-    QgsReportLayoutSectionWidget( QWidget *parent, QgsLayoutDesignerDialog *designer, QgsReportSectionLayout *section );
+    QgsReportLayoutSectionWidget( QgsReportOrganizerWidget *parent, QgsLayoutDesignerDialog *designer, QgsReportSectionLayout *section );
 
   private slots:
 
@@ -39,6 +40,7 @@ class QgsReportLayoutSectionWidget: public QWidget, private Ui::QgsReportWidgetL
 
   private:
 
+    QgsReportOrganizerWidget *mOrganizer = nullptr;
     QgsReportSectionLayout *mSection = nullptr;
     QgsLayoutDesignerDialog *mDesigner = nullptr;
 

@@ -59,8 +59,11 @@ class QgsReportSectionModel : public QAbstractItemModel
 
     QModelIndex indexForSection( QgsAbstractReportSection *section ) const;
 
+    void setEditedSection( QgsAbstractReportSection *section );
+
   private:
     QgsReport *mReport = nullptr;
+    QgsAbstractReportSection *mEditedSection = nullptr;
 };
 
 #endif // QGSREPORTSECTIONMODEL_H

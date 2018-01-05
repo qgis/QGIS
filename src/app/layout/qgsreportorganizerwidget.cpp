@@ -74,6 +74,11 @@ void QgsReportOrganizerWidget::setMessageBar( QgsMessageBar *bar )
   mMessageBar = bar;
 }
 
+void QgsReportOrganizerWidget::setEditedSection( QgsAbstractReportSection *section )
+{
+  mSectionModel->setEditedSection( section );
+}
+
 void QgsReportOrganizerWidget::addLayoutSection()
 {
   std::unique_ptr< QgsReportSectionLayout > section = qgis::make_unique< QgsReportSectionLayout >();

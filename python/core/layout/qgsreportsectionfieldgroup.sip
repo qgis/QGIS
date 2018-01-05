@@ -37,6 +37,8 @@ Note that ownership is not transferred to ``parent``.
     virtual QString type() const;
     virtual QString description() const;
 
+    virtual QIcon icon() const;
+
 
     QgsLayout *body();
 %Docstring
