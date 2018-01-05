@@ -29,6 +29,11 @@ Constructor for QgsCurve.
 %End
 
     virtual bool equals( const QgsCurve &other ) const = 0;
+%Docstring
+Checks whether this curve exactly equals another curve.
+
+.. versionadded:: 3.0
+%End
 
     virtual bool operator==( const QgsAbstractGeometry &other ) const;
 
