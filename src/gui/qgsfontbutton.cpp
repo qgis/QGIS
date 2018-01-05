@@ -105,6 +105,7 @@ void QgsFontButton::showSettingsDialog()
 
   // reactivate button's window
   activateWindow();
+  raise();
 }
 
 QgsMapCanvas *QgsFontButton::mapCanvas() const
