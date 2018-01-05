@@ -66,6 +66,7 @@ QgsReportOrganizerWidget::QgsReportOrganizerWidget( QWidget *parent, QgsLayoutDe
 
   mButtonAddSection->setMenu( addMenu );
   connect( mButtonRemoveSection, &QPushButton::clicked, this, &QgsReportOrganizerWidget::removeSection );
+  mButtonRemoveSection->setEnabled( false ); //disable until section clicked
 }
 
 void QgsReportOrganizerWidget::setMessageBar( QgsMessageBar *bar )
@@ -111,6 +112,9 @@ void QgsReportOrganizerWidget::selectionChanged( const QModelIndex &current, con
   QgsAbstractReportSection *parent = mSectionModel->sectionForIndex( current );
   if ( !parent )
     parent = mReport;
+
+  // report cannot be deleted
+  mButtonRemoveSection->setEnabled( parent != mReport );
 
   delete mConfigWidget;
   if ( QgsReportSectionLayout *section = dynamic_cast< QgsReportSectionLayout * >( parent ) )
