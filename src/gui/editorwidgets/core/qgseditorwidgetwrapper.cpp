@@ -72,32 +72,32 @@ void QgsEditorWidgetWrapper::setFeature( const QgsFeature &feature )
   setValue( feature.attribute( mFieldIdx ) );
 }
 
-void QgsEditorWidgetWrapper::valueChanged( const QString &value )
+void QgsEditorWidgetWrapper::emitValueChanged( const QString &value )
 {
   emit valueChanged( QVariant( value ) );
 }
 
-void QgsEditorWidgetWrapper::valueChanged( int value )
+void QgsEditorWidgetWrapper::emitValueChanged( int value )
 {
   emit valueChanged( QVariant( value ) );
 }
 
-void QgsEditorWidgetWrapper::valueChanged( double value )
+void QgsEditorWidgetWrapper::emitValueChanged( double value )
 {
   emit valueChanged( QVariant( value ) );
 }
 
-void QgsEditorWidgetWrapper::valueChanged( bool value )
+void QgsEditorWidgetWrapper::emitValueChanged( bool value )
 {
   emit valueChanged( QVariant( value ) );
 }
 
-void QgsEditorWidgetWrapper::valueChanged( qlonglong value )
+void QgsEditorWidgetWrapper::emitValueChanged( qlonglong value )
 {
   emit valueChanged( QVariant( value ) );
 }
 
-void QgsEditorWidgetWrapper::valueChanged()
+void QgsEditorWidgetWrapper::emitValueChanged()
 {
   emit valueChanged( value() );
 }

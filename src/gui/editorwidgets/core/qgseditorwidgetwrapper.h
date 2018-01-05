@@ -17,13 +17,13 @@
 #define QGSEDITORWIDGETWRAPPER_H
 
 #include <QObject>
-#include "qgis.h"
 #include <QMap>
 #include <QVariant>
 
 class QgsVectorLayer;
 class QgsField;
 
+#include "qgis.h"
 #include "qgswidgetwrapper.h"
 #include "qgis_gui.h"
 
@@ -262,7 +262,7 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      *
      * \param value The value
      */
-    void valueChanged( const QString &value );
+    void emitValueChanged( const QString &value );
 
     /**
      * If you emit to this slot in your implementation, an appropriate change notification
@@ -272,9 +272,9 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      * \note Python name valueChangedInt
      */
 #ifndef SIP_RUN
-    void valueChanged( int value );
+    void emitValueChanged( int value );
 #else
-    void valueChanged( int value ) SIP_PYNAME( valueChangedInt );
+    void emitValueChanged( int value ) SIP_PYNAME( emitValueChangedInt );
 #endif
 
     /**
@@ -285,9 +285,9 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      * \note Python name valueChangedDouble
      */
 #ifndef SIP_RUN
-    void valueChanged( double value );
+    void emitValueChanged( double value );
 #else
-    void valueChanged( double value ) SIP_PYNAME( valueChangedDouble );
+    void emitValueChanged( double value ) SIP_PYNAME( emitValueChangedDouble );
 #endif
 
     /**
@@ -298,9 +298,9 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      * \note Python name valueChangedBool
      */
 #ifndef SIP_RUN
-    void valueChanged( bool value );
+    void emitValueChanged( bool value );
 #else
-    void valueChanged( bool value ) SIP_PYNAME( valueChangedBool );
+    void emitValueChanged( bool value ) SIP_PYNAME( emitValueChangedBool );
 #endif
 
     /**
@@ -309,12 +309,12 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      *
      * \param value The value
      */
-    void valueChanged( qlonglong value );
+    void emitValueChanged( qlonglong value );
 
     /**
      * Will call the value() method to determine the emitted value
      */
-    void valueChanged();
+    void emitValueChanged();
 
   protected:
 

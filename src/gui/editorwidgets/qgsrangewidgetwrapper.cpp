@@ -120,7 +120,7 @@ void QgsRangeWidgetWrapper::initWidget( QWidget *editor )
       mDoubleSpinBox->setSuffix( config( QStringLiteral( "Suffix" ) ).toString() );
 
     connect( mDoubleSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ),
-             this, static_cast < void ( QgsEditorWidgetWrapper::* )( double ) > ( &QgsEditorWidgetWrapper::valueChanged ) );
+             this, static_cast < void ( QgsEditorWidgetWrapper::* )( double ) > ( &QgsEditorWidgetWrapper::emitValueChanged ) );
   }
   else if ( mIntSpinBox )
   {
@@ -159,9 +159,9 @@ bool QgsRangeWidgetWrapper::valid() const
 void QgsRangeWidgetWrapper::valueChangedVariant( const QVariant &v )
 {
   if ( v.type() == QVariant::Int )
-    valueChanged( v.toInt() );
+    emitValueChanged( v.toInt() );
   if ( v.type() == QVariant::Double )
-    valueChanged( v.toDouble() );
+    emitValueChanged( v.toDouble() );
 }
 
 QVariant QgsRangeWidgetWrapper::value() const

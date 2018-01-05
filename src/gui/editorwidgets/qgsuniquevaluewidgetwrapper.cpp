@@ -89,13 +89,13 @@ void QgsUniqueValuesWidgetWrapper::initWidget( QWidget *editor )
     mLineEdit->setCompleter( c );
 
     connect( mLineEdit, &QLineEdit::textChanged, this,
-             static_cast<void ( QgsEditorWidgetWrapper::* )( const QString & )>( &QgsEditorWidgetWrapper::valueChanged ) );
+             static_cast<void ( QgsEditorWidgetWrapper::* )( const QString & )>( &QgsEditorWidgetWrapper::emitValueChanged ) );
   }
 
   if ( mComboBox )
   {
     connect( mComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ),
-             this, static_cast<void ( QgsEditorWidgetWrapper::* )()>( &QgsEditorWidgetWrapper::valueChanged ) );
+             this, static_cast<void ( QgsEditorWidgetWrapper::* )()>( &QgsEditorWidgetWrapper::emitValueChanged ) );
   }
 }
 
