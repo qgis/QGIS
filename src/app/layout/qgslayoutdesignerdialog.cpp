@@ -370,6 +370,14 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   QShortcut *backSpace = new QShortcut( QKeySequence( QStringLiteral( "Backspace" ) ), this );
   connect( backSpace, &QShortcut::activated, mActionDeleteSelection, &QAction::trigger );
 
+#ifdef Q_OS_MAC
+  // OSX has issues with QShortcut when certain children are focused
+  ctrlEquals->setParent( mView );
+  ctrlEquals->setContext( Qt::WidgetWithChildrenShortcut );
+  backspace->setParent( mView );
+  backspace->setContext( Qt::WidgetWithChildrenShortcut );
+#endif
+
   mActionPreviewModeOff->setChecked( true );
   connect( mActionPreviewModeOff, &QAction::triggered, this, [ = ]
   {
