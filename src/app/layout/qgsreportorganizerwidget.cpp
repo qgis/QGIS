@@ -39,7 +39,7 @@ QgsReportOrganizerWidget::QgsReportOrganizerWidget( QWidget *parent, QgsLayoutDe
   setupUi( this );
   setPanelTitle( tr( "Report" ) );
 
-  mSectionModel = new QgsReportSectionModel( mReport, mViewSections );
+  mSectionModel = new QgsReportSectionModel( mReport, this );
   mViewSections->setModel( mSectionModel );
   mViewSections->expandAll();
 
