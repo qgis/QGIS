@@ -1176,6 +1176,8 @@ QgsEditorWidgetWrapper        {#qgis_api_break_3_0_QgsEditorWidgetWrapper}
 
 - constraintStatusChanged now reports a QgsEditorWidgetWrapper::ConstraintResult instead of the previous boolean value for the constraint status
 - The boolean constraintValid argument for updateConstraintWidgetStatus has been changed to a QgsEditorWidgetWrapper::ConstraintResult value
+- All `valueChanged( value )` slots have been removed. Use `emit valueChanged( value )` instead.
+- The `valueChanged()` slot has been renamed to `emitValueChanged()`.
 
 
 QgsExpression        {#qgis_api_break_3_0_QgsExpression}
