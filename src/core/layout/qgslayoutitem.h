@@ -886,6 +886,8 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     */
     virtual void rotateItem( const double angle, const QPointF &transformOrigin );
 
+    QgsExpressionContext createExpressionContext() const override;
+
   signals:
 
     /**

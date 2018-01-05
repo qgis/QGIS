@@ -530,7 +530,7 @@ void TestQgsLayoutMultiFrame::registry()
 
   QSignalSpy spyTypeAdded( &registry, &QgsLayoutItemRegistry::multiFrameTypeAdded );
 
-  QgsLayoutMultiFrameMetadata *metadata = new QgsLayoutMultiFrameMetadata( QgsLayoutItemRegistry::PluginItem + 1, QStringLiteral( "TestMultiFrame" ), QIcon(), create, resolve );
+  QgsLayoutMultiFrameMetadata *metadata = new QgsLayoutMultiFrameMetadata( QgsLayoutItemRegistry::PluginItem + 1, QStringLiteral( "TestMultiFrame" ), create, resolve );
   QVERIFY( registry.addLayoutMultiFrameType( metadata ) );
   QCOMPARE( spyTypeAdded.count(), 1 );
   QCOMPARE( spyTypeAdded.value( 0 ).at( 0 ).toInt(), QgsLayoutItemRegistry::PluginItem + 1 );

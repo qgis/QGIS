@@ -26,6 +26,8 @@
 #include "qgslayoutitempolyline.h"
 #include "qgslayoutitemhtml.h"
 #include "qgslayoutframe.h"
+#include "qgsprintlayout.h"
+#include "qgslayoutatlas.h"
 
 class TestQgsLayout: public QObject
 {
@@ -47,12 +49,14 @@ class TestQgsLayout: public QObject
     void addItem();
     void layoutItems();
     void layoutItemByUuid();
+    void layoutItemById();
     void undoRedoOccurred();
     void itemsOnPage(); //test fetching matching items on a set page
     void shouldExportPage();
     void pageIsEmpty();
     void clear();
     void georeference();
+    void clone();
 
   private:
     QString mReport;
@@ -110,8 +114,8 @@ void TestQgsLayout::units()
 
   //check with dpi conversion
   layout.setUnits( QgsUnitTypes::LayoutInches );
-  layout.context().setDpi( 96.0 );
-  QCOMPARE( layout.context().dpi(), 96.0 );
+  layout.renderContext().setDpi( 96.0 );
+  QCOMPARE( layout.renderContext().dpi(), 96.0 );
   QCOMPARE( layout.convertToLayoutUnits( QgsLayoutMeasurement( 96, QgsUnitTypes::LayoutPixels ) ), 1.0 );
   QCOMPARE( layout.convertToLayoutUnits( QgsLayoutSize( 96, 96, QgsUnitTypes::LayoutPixels ) ), QSizeF( 1.0, 1.0 ) );
   QCOMPARE( layout.convertToLayoutUnits( QgsLayoutPoint( 96, 96, QgsUnitTypes::LayoutPixels ) ), QPointF( 1.0, 1.0 ) );
@@ -147,7 +151,7 @@ void TestQgsLayout::units()
 void TestQgsLayout::name()
 {
   QgsProject p;
-  QgsLayout layout( &p );
+  QgsPrintLayout layout( &p );
   QString layoutName = QStringLiteral( "test name" );
   layout.setName( layoutName );
   QCOMPARE( layout.name(), layoutName );
@@ -199,7 +203,7 @@ void TestQgsLayout::variablesEdited()
 void TestQgsLayout::scope()
 {
   QgsProject p;
-  QgsLayout l( &p );
+  QgsPrintLayout l( &p );
 
   // no crash
   std::unique_ptr< QgsExpressionContextScope > scope( QgsExpressionContextUtils::layoutScope( nullptr ) );
@@ -399,7 +403,6 @@ void TestQgsLayout::layoutItemByUuid()
 {
   QgsProject p;
   QgsLayout l( &p );
-  l.pageCollection()->deletePage( 0 );
 
   QgsLayoutItemShape *shape1 = new QgsLayoutItemShape( &l );
   l.addLayoutItem( shape1 );
@@ -414,6 +417,28 @@ void TestQgsLayout::layoutItemByUuid()
   QCOMPARE( l.itemByUuid( shape1->uuid() ), shape1 );
   QCOMPARE( l.itemByUuid( shape2->uuid() ), shape2 );
   QCOMPARE( l.itemByUuid( map1->uuid() ), map1 );
+}
+
+void TestQgsLayout::layoutItemById()
+{
+  QgsProject p;
+  QgsLayout l( &p );
+
+  QgsLayoutItemShape *shape1 = new QgsLayoutItemShape( &l );
+  l.addLayoutItem( shape1 );
+  shape1->setId( QStringLiteral( "shape" ) );
+
+  QgsLayoutItemShape *shape2 = new QgsLayoutItemShape( &l );
+  l.addLayoutItem( shape2 );
+  shape2->setId( QStringLiteral( "shape" ) );
+
+  QgsLayoutItemMap *map1 = new QgsLayoutItemMap( &l );
+  l.addLayoutItem( map1 );
+  map1->setId( QStringLiteral( "map" ) );
+
+  QVERIFY( !l.itemById( QStringLiteral( "xxx" ) ) );
+  QVERIFY( l.itemById( QStringLiteral( "shape" ) ) == shape1 || l.itemById( QStringLiteral( "shape" ) ) == shape2 );
+  QCOMPARE( l.itemById( map1->id() ), map1 );
 }
 
 void TestQgsLayout::undoRedoOccurred()
@@ -613,7 +638,7 @@ void TestQgsLayout::shouldExportPage()
   QgsLayoutItemPage *page2 = new QgsLayoutItemPage( &l );
   page2->setPageSize( "A4" );
   l.pageCollection()->addPage( page2 );
-  l.context().mIsPreviewRender = false;
+  l.renderContext().mIsPreviewRender = false;
 
   QgsLayoutItemHtml *htmlItem = new QgsLayoutItemHtml( &l );
   //frame on page 1
@@ -820,6 +845,44 @@ void TestQgsLayout::georeference()
   QGSCOMPARENEAR( t[4], 0.14969, 0.0001 );
   QGSCOMPARENEAR( t[5], -0.14969, 0.0001 );
   t.reset();
+}
+
+void TestQgsLayout::clone()
+{
+  QgsProject proj;
+  QgsLayout l( &proj );
+  QgsLayoutItemPage *page = new QgsLayoutItemPage( &l );
+  page->setPageSize( "A4" );
+  l.pageCollection()->addPage( page );
+  QgsLayoutItemPage *page2 = new QgsLayoutItemPage( &l );
+  page2->setPageSize( "A4" );
+  l.pageCollection()->addPage( page2 );
+  QgsLayoutItemPage *page3 = new QgsLayoutItemPage( &l );
+  page3->setPageSize( "A4" );
+  l.pageCollection()->addPage( page3 );
+
+  //add some items to the composition
+  QgsLayoutItemShape *label1 = new QgsLayoutItemShape( &l );
+  l.addLayoutItem( label1 );
+  QgsLayoutItemShape *label2 = new QgsLayoutItemShape( &l );
+  l.addLayoutItem( label2 );
+  QgsLayoutItemShape *label3 = new QgsLayoutItemShape( &l );
+  l.addLayoutItem( label3 );
+
+  // clone and check a few poperties
+  std::unique_ptr< QgsLayout > cloned( l.clone() );
+  QVERIFY( cloned.get() );
+  QCOMPARE( cloned->pageCollection()->pageCount(), 3 );
+  QList< QgsLayoutItem * > items;
+  cloned->layoutItems( items );
+  QCOMPARE( items.count(), 6 ); // 3 pages + 3 items
+
+  // clone a print layout
+  QgsPrintLayout pl( &proj );
+  pl.atlas()->setPageNameExpression( QStringLiteral( "not a real expression" ) );
+  std::unique_ptr< QgsPrintLayout > plClone( pl.clone() );
+  QVERIFY( plClone.get() );
+  QCOMPARE( plClone->atlas()->pageNameExpression(), QStringLiteral( "not a real expression" ) );
 }
 
 

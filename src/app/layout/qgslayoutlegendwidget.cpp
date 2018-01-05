@@ -35,6 +35,7 @@
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 #include "qgslayoutitemlegend.h"
+#include "qgslayoutatlas.h"
 
 #include <QMessageBox>
 #include <QInputDialog>
@@ -136,11 +137,12 @@ QgsLayoutLegendWidget::QgsLayoutLegendWidget( QgsLayoutItemLegend *legend )
   mItemTreeView->setMenuProvider( new QgsLayoutLegendMenuProvider( mItemTreeView, this ) );
   connect( legend, &QgsLayoutObject::changed, this, &QgsLayoutLegendWidget::setGuiElements );
 
-#if 0 //TODO
   // connect atlas state to the filter legend by atlas checkbox
-  connect( &legend->composition()->atlasComposition(), &QgsAtlasComposition::toggled, this, &QgsLayoutLegendWidget::updateFilterLegendByAtlasButton );
-  connect( &legend->composition()->atlasComposition(), &QgsAtlasComposition::coverageLayerChanged, this, &QgsLayoutLegendWidget::updateFilterLegendByAtlasButton );
-#endif
+  if ( layoutAtlas() )
+  {
+    connect( layoutAtlas(), &QgsLayoutAtlas::toggled, this, &QgsLayoutLegendWidget::updateFilterLegendByAtlasButton );
+  }
+  connect( &legend->layout()->reportContext(), &QgsLayoutReportContext::layerChanged, this, &QgsLayoutLegendWidget::updateFilterLegendByAtlasButton );
 
   registerDataDefinedButton( mLegendTitleDDBtn, QgsLayoutObject::LegendTitle );
   registerDataDefinedButton( mColumnsDDBtn, QgsLayoutObject::LegendColumnCount );
@@ -900,14 +902,9 @@ void QgsLayoutLegendWidget::mFilterLegendByAtlasCheckBox_toggled( bool toggled )
   Q_UNUSED( toggled );
   if ( mLegend )
   {
-#if 0 //TODO
     mLegend->setLegendFilterOutAtlas( toggled );
     // force update of legend when in preview mode
-    if ( mLegend->composition()->atlasMode() == QgsComposition::PreviewAtlas )
-    {
-      mLegend->composition()->atlasComposition().refreshFeature();
-    }
-#endif
+    mLegend->refresh();
   }
 }
 
@@ -923,6 +920,12 @@ void QgsLayoutLegendWidget::updateLegend()
     mLegend->updateFilterByMap();
     mLegend->endCommand();
   }
+}
+
+void QgsLayoutLegendWidget::setReportTypeString( const QString &string )
+{
+  mFilterLegendByAtlasCheckBox->setText( tr( "Only show items inside current %1 feature" ).arg( string ) );
+  mFilterLegendByAtlasCheckBox->setToolTip( tr( "Filter out legend elements that lie outside the current %1 feature." ).arg( string ) );
 }
 
 bool QgsLayoutLegendWidget::setNewItem( QgsLayoutItem *item )
@@ -1034,10 +1037,10 @@ void QgsLayoutLegendWidget::setCurrentNodeStyleFromAction()
 
 void QgsLayoutLegendWidget::updateFilterLegendByAtlasButton()
 {
-#if 0 //TODO
-  const QgsAtlasComposition &atlas = mLegend->composition()->atlasComposition();
-  mFilterLegendByAtlasCheckBox->setEnabled( atlas.enabled() && atlas.coverageLayer() && atlas.coverageLayer()->geometryType() == QgsWkbTypes::PolygonGeometry );
-#endif
+  if ( QgsLayoutAtlas *atlas = layoutAtlas() )
+  {
+    mFilterLegendByAtlasCheckBox->setEnabled( atlas->enabled() && mLegend->layout()->reportContext().layer() && mLegend->layout()->reportContext().layer()->geometryType() == QgsWkbTypes::PolygonGeometry );
+  }
 }
 
 void QgsLayoutLegendWidget::mItemTreeView_doubleClicked( const QModelIndex &idx )

@@ -244,7 +244,7 @@ void TestQgsLayoutPage::hiddenPages()
   simpleFill->setStrokeColor( Qt::transparent );
   l.pageCollection()->setPageStyleSymbol( fillSymbol.get() );
 
-  l.context().setPagesVisible( false );
+  l.renderContext().setPagesVisible( false );
 
   QgsLayoutChecker checker( QStringLiteral( "composerpaper_hidden" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "composer_paper" ) );

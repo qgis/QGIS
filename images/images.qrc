@@ -636,6 +636,7 @@
         <file>themes/default/mIconPythonFile.svg</file>
         <file>themes/default/mIconQptFile.svg</file>
         <file>themes/default/mActionNewPage.svg</file>
+        <file>themes/default/mActionExport.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

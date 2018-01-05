@@ -289,7 +289,7 @@ void QgsLayoutTable::render( QgsRenderContext &context, const QRectF &, const in
     return;
   }
 
-  if ( !mLayout->context().isPreviewRender() )
+  if ( !mLayout->renderContext().isPreviewRender() )
   {
     //exporting composition, so force an attribute refresh
     //we do this in case vector layer has changed via an external source (e.g., another database user)

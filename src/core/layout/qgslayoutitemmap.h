@@ -422,15 +422,6 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
     //! True if a draw is already in progress
     bool isDrawing() const {return mDrawing;}
 
-#if 0 //TODO
-
-    /**
-     * Sets new Extent for the current atlas preview and changes width, height (and implicitly also scale).
-      Atlas preview extents are only temporary, and are regenerated whenever the atlas feature changes
-     */
-    void setNewAtlasFeatureExtent( const QgsRectangle &extent );
-#endif
-
     // In case of annotations, the bounding rectangle can be larger than the map item rectangle
     QRectF boundingRect() const override;
 
@@ -471,6 +462,8 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
     void layerStyleOverridesChanged();
 
   public slots:
+
+    void refresh() override;
 
     void invalidateCache() override;
 
@@ -655,6 +648,10 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
      * \param context expression context for evaluating data defined map parameters
      */
     void refreshMapExtents( const QgsExpressionContext *context = nullptr );
+
+    void updateAtlasFeature();
+
+    QgsRectangle computeAtlasRectangle();
 
     friend class QgsLayoutItemMapGrid;
     friend class QgsLayoutItemMapOverview;

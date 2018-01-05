@@ -1,5 +1,5 @@
 /***************************************************************************
-                             qgslayoutcontext.cpp
+                             qgslayoutrendercontext.cpp
                              --------------------
     begin                : July 2017
     copyright            : (C) 2017 by Nyall Dawson
@@ -14,15 +14,17 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgslayoutcontext.h"
+#include "qgslayoutrendercontext.h"
 #include "qgsfeature.h"
+#include "qgslayout.h"
 
-
-QgsLayoutContext::QgsLayoutContext()
-  : mFlags( FlagAntialiasing | FlagUseAdvancedEffects )
+QgsLayoutRenderContext::QgsLayoutRenderContext( QgsLayout *layout )
+  : QObject( layout )
+  , mFlags( FlagAntialiasing | FlagUseAdvancedEffects )
+  , mLayout( layout )
 {}
 
-void QgsLayoutContext::setFlags( const QgsLayoutContext::Flags flags )
+void QgsLayoutRenderContext::setFlags( const QgsLayoutRenderContext::Flags flags )
 {
   if ( flags == mFlags )
     return;
@@ -31,7 +33,7 @@ void QgsLayoutContext::setFlags( const QgsLayoutContext::Flags flags )
   emit flagsChanged( mFlags );
 }
 
-void QgsLayoutContext::setFlag( const QgsLayoutContext::Flag flag, const bool on )
+void QgsLayoutRenderContext::setFlag( const QgsLayoutRenderContext::Flag flag, const bool on )
 {
   Flags newFlags = mFlags;
   if ( on )
@@ -46,17 +48,17 @@ void QgsLayoutContext::setFlag( const QgsLayoutContext::Flag flag, const bool on
   emit flagsChanged( mFlags );
 }
 
-QgsLayoutContext::Flags QgsLayoutContext::flags() const
+QgsLayoutRenderContext::Flags QgsLayoutRenderContext::flags() const
 {
   return mFlags;
 }
 
-bool QgsLayoutContext::testFlag( const QgsLayoutContext::Flag flag ) const
+bool QgsLayoutRenderContext::testFlag( const QgsLayoutRenderContext::Flag flag ) const
 {
   return mFlags.testFlag( flag );
 }
 
-QgsRenderContext::Flags QgsLayoutContext::renderContextFlags() const
+QgsRenderContext::Flags QgsLayoutRenderContext::renderContextFlags() const
 {
   QgsRenderContext::Flags flags = nullptr;
   if ( mFlags & FlagAntialiasing )
@@ -69,47 +71,41 @@ QgsRenderContext::Flags QgsLayoutContext::renderContextFlags() const
   return flags;
 }
 
-QgsVectorLayer *QgsLayoutContext::layer() const
+void QgsLayoutRenderContext::setDpi( double dpi )
 {
-  return mLayer;
-}
+  if ( dpi == mMeasurementConverter.dpi() )
+    return;
 
-void QgsLayoutContext::setLayer( QgsVectorLayer *layer )
-{
-  mLayer = layer;
-}
-
-void QgsLayoutContext::setDpi( double dpi )
-{
   mMeasurementConverter.setDpi( dpi );
+  emit dpiChanged();
 }
 
-double QgsLayoutContext::dpi() const
+double QgsLayoutRenderContext::dpi() const
 {
   return mMeasurementConverter.dpi();
 }
 
-bool QgsLayoutContext::gridVisible() const
+bool QgsLayoutRenderContext::gridVisible() const
 {
   return mGridVisible;
 }
 
-void QgsLayoutContext::setGridVisible( bool visible )
+void QgsLayoutRenderContext::setGridVisible( bool visible )
 {
   mGridVisible = visible;
 }
 
-bool QgsLayoutContext::boundingBoxesVisible() const
+bool QgsLayoutRenderContext::boundingBoxesVisible() const
 {
   return mBoundingBoxesVisible;
 }
 
-void QgsLayoutContext::setBoundingBoxesVisible( bool visible )
+void QgsLayoutRenderContext::setBoundingBoxesVisible( bool visible )
 {
   mBoundingBoxesVisible = visible;
 }
 
-void QgsLayoutContext::setPagesVisible( bool visible )
+void QgsLayoutRenderContext::setPagesVisible( bool visible )
 {
   mPagesVisible = visible;
 }

@@ -364,9 +364,10 @@ SET(QGIS_CORE_SRCS
   dxf/qgsdxfpaintengine.cpp
   dxf/qgsdxfpallabeling.cpp
 
+  layout/qgsabstractreportsection.cpp
   layout/qgslayout.cpp
   layout/qgslayoutaligner.cpp
-  layout/qgslayoutcontext.cpp
+  layout/qgslayoutatlas.cpp
   layout/qgslayouteffect.cpp
   layout/qgslayoutexporter.cpp
   layout/qgslayoutgridsettings.cpp
@@ -400,6 +401,8 @@ SET(QGIS_CORE_SRCS
   layout/qgslayoutmultiframeundocommand.cpp
   layout/qgslayoutobject.cpp
   layout/qgslayoutpagecollection.cpp
+  layout/qgslayoutrendercontext.cpp
+  layout/qgslayoutreportcontext.cpp
   layout/qgslayoutserializableobject.cpp
   layout/qgslayoutsnapper.cpp
   layout/qgslayouttable.cpp
@@ -411,6 +414,10 @@ SET(QGIS_CORE_SRCS
   layout/qgslayoutpoint.cpp
   layout/qgslayoutserializableobject.cpp
   layout/qgslayoutsize.cpp
+  layout/qgsprintlayout.cpp
+  layout/qgsreport.cpp
+  layout/qgsreportsectionfieldgroup.cpp
+  layout/qgsreportsectionlayout.cpp
 
   pal/costcalculator.cpp
   pal/feature.cpp
@@ -737,7 +744,7 @@ SET(QGIS_CORE_MOC_HDRS
   gps/qgsgpsdconnection.h
 
   layout/qgslayout.h
-  layout/qgslayoutcontext.h
+  layout/qgslayoutatlas.h
   layout/qgslayouteffect.h
   layout/qgslayoutguidecollection.h
   layout/qgslayoutframe.h
@@ -765,9 +772,13 @@ SET(QGIS_CORE_MOC_HDRS
   layout/qgslayoutmultiframe.h
   layout/qgslayoutpagecollection.h
   layout/qgslayoutobject.h
+  layout/qgslayoutrendercontext.h
+  layout/qgslayoutreportcontext.h
   layout/qgslayouttable.h
   layout/qgslayouttablecolumn.h
   layout/qgslayoutundostack.h
+  layout/qgsprintlayout.h
+  layout/qgsreport.h
 
   symbology/qgscptcityarchive.h
   symbology/qgssvgcache.h
@@ -1022,6 +1033,9 @@ SET(QGIS_CORE_HDRS
   composer/qgscomposertexttable.h
   composer/qgspaperitem.h
 
+  layout/qgsabstractlayoutiterator.h
+  layout/qgsabstractreportsection.h
+  layout/qgsmasterlayoutinterface.h
   layout/qgslayoutaligner.h
   layout/qgslayoutexporter.h
   layout/qgslayoutgridsettings.h
@@ -1036,6 +1050,8 @@ SET(QGIS_CORE_HDRS
   layout/qgslayoutsnapper.h
   layout/qgslayoutundocommand.h
   layout/qgslayoututils.h
+  layout/qgsreportsectionfieldgroup.h
+  layout/qgsreportsectionlayout.h
 
   metadata/qgslayermetadata.h
   metadata/qgslayermetadatavalidator.h

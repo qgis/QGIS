@@ -50,6 +50,10 @@ Updates a data defined button to reflect the item's current properties.
 Returns the current layout context coverage layer (if set).
 %End
 
+    QgsLayoutAtlas *layoutAtlas() const;
+%Docstring
+Returns the atlas for the layout, if available
+%End
 
 };
 
@@ -88,6 +92,14 @@ If false is returned, then the widget could not be successfully updated
 to show the properties of ``item``.
 %End
 
+    virtual void setReportTypeString( const QString &string );
+%Docstring
+Sets the ``string`` to use to describe the current report type (e.g.
+"atlas" or "report").
+Subclasses which display this text to users should override this
+and update their widget labels accordingly.
+%End
+
   protected:
 
     void registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsLayoutObject::DataDefinedProperty property );
@@ -117,7 +129,10 @@ Implementations must return true if the item was accepted and
 the widget was updated.
 %End
 
-
+    QgsLayoutAtlas *layoutAtlas() const;
+%Docstring
+Returns the atlas for the layout (if available)
+%End
 
 };
 

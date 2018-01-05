@@ -16,7 +16,8 @@
 
 #include "qgslayoutitemmap.h"
 #include "qgslayout.h"
-#include "qgslayoutcontext.h"
+#include "qgslayoutrendercontext.h"
+#include "qgslayoutreportcontext.h"
 #include "qgslayoututils.h"
 #include "qgslayoutmodel.h"
 #include "qgsmapthemecollection.h"
@@ -121,6 +122,14 @@ QString QgsLayoutItemMap::displayName() const
 QgsLayoutItemMap *QgsLayoutItemMap::create( QgsLayout *layout )
 {
   return new QgsLayoutItemMap( layout );
+}
+
+void QgsLayoutItemMap::refresh()
+{
+  QgsLayoutItem::refresh();
+  invalidateCache();
+
+  updateAtlasFeature();
 }
 
 double QgsLayoutItemMap::scale() const
@@ -504,10 +513,6 @@ void QgsLayoutItemMap::draw( QgsRenderContext &, const QStyleOptionGraphicsItem 
 
 bool QgsLayoutItemMap::writePropertiesToElement( QDomElement &composerMapElem, QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
-#if 0 //TODO - is this needed?
-  composerMapElem.setAttribute( QStringLiteral( "id" ), mId );
-#endif
-
   if ( mKeepLayerSet )
   {
     composerMapElem.setAttribute( QStringLiteral( "keepLayerSet" ), QStringLiteral( "true" ) );
@@ -608,14 +613,6 @@ bool QgsLayoutItemMap::writePropertiesToElement( QDomElement &composerMapElem, Q
 bool QgsLayoutItemMap::readPropertiesFromElement( const QDomElement &itemElem, const QDomDocument &doc, const QgsReadWriteContext &context )
 {
   mUpdatesEnabled = false;
-#if 0 //TODO
-  QString idRead = itemElem.attribute( QStringLiteral( "id" ), QStringLiteral( "not found" ) );
-  if ( idRead != QLatin1String( "not found" ) )
-  {
-    mId = idRead.toInt();
-    updateToolTip();
-  }
-#endif
 
   //extent
   QDomNodeList extentNodeList = itemElem.elementsByTagName( QStringLiteral( "Extent" ) );
@@ -763,7 +760,7 @@ void QgsLayoutItemMap::paint( QPainter *painter, const QStyleOptionGraphicsItem 
 
   //TODO - try to reduce the amount of duplicate code here!
 
-  if ( mLayout->context().isPreviewRender() )
+  if ( mLayout->renderContext().isPreviewRender() )
   {
     painter->save();
     painter->setClipRect( thisPaintRect );
@@ -837,7 +834,7 @@ void QgsLayoutItemMap::paint( QPainter *painter, const QStyleOptionGraphicsItem 
     QgsRectangle cExtent = extent();
     QSizeF size( cExtent.width() * mapUnitsToLayoutUnits(), cExtent.height() * mapUnitsToLayoutUnits() );
 
-    if ( containsAdvancedEffects() && ( !mLayout || !( mLayout->context().flags() & QgsLayoutContext::FlagForceVectorOutput ) ) )
+    if ( containsAdvancedEffects() && ( !mLayout || !( mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagForceVectorOutput ) ) )
     {
       // rasterize
       double destinationDpi = style->matrix.m11() * 25.4;
@@ -1063,9 +1060,9 @@ QgsMapSettings QgsLayoutItemMap::mapSettings( const QgsRectangle &extent, QSizeF
 
   //set layers to render
   QList<QgsMapLayer *> layers = layersToRender( &expressionContext );
-  if ( mLayout && -1 != mLayout->context().currentExportLayer() )
+  if ( mLayout && -1 != mLayout->renderContext().currentExportLayer() )
   {
-    const int layerIdx = mLayout->context().currentExportLayer() - ( hasBackground() ? 1 : 0 );
+    const int layerIdx = mLayout->renderContext().currentExportLayer() - ( hasBackground() ? 1 : 0 );
     if ( layerIdx >= 0 && layerIdx < layers.length() )
     {
       // exporting with separate layers (e.g., to svg layers), so we only want to render a single map layer
@@ -1082,7 +1079,7 @@ QgsMapSettings QgsLayoutItemMap::mapSettings( const QgsRectangle &extent, QSizeF
   jobMapSettings.setLayers( layers );
   jobMapSettings.setLayerStyleOverrides( layerStyleOverridesToRender( expressionContext ) );
 
-  if ( !mLayout->context().isPreviewRender() )
+  if ( !mLayout->renderContext().isPreviewRender() )
   {
     //if outputting layout, disable optimisations like layer simplification
     jobMapSettings.setFlag( QgsMapSettings::UseRenderingOptimization, false );
@@ -1092,10 +1089,10 @@ QgsMapSettings QgsLayoutItemMap::mapSettings( const QgsRectangle &extent, QSizeF
 
   // layout-specific overrides of flags
   jobMapSettings.setFlag( QgsMapSettings::ForceVectorOutput, true ); // force vector output (no caching of marker images etc.)
-  jobMapSettings.setFlag( QgsMapSettings::Antialiasing, mLayout->context().flags() & QgsLayoutContext::FlagAntialiasing );
+  jobMapSettings.setFlag( QgsMapSettings::Antialiasing, mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagAntialiasing );
   jobMapSettings.setFlag( QgsMapSettings::DrawEditingInfo, false );
   jobMapSettings.setFlag( QgsMapSettings::DrawSelection, false );
-  jobMapSettings.setFlag( QgsMapSettings::UseAdvancedEffects, mLayout->context().flags() & QgsLayoutContext::FlagUseAdvancedEffects );
+  jobMapSettings.setFlag( QgsMapSettings::UseAdvancedEffects, mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagUseAdvancedEffects );
   jobMapSettings.setTransformContext( mLayout->project()->transformContext() );
 
   jobMapSettings.setLabelingEngineSettings( mLayout->project()->labelingEngineSettings() );
@@ -1412,22 +1409,17 @@ QList<QgsMapLayer *> QgsLayoutItemMap::layersToRender( const QgsExpressionContex
     }
   }
 
-#if 0 //TODO
   //remove atlas coverage layer if required
-  //TODO - move setting for hiding coverage layer to map item properties
-  if ( mLayout->atlasMode() != QgsComposition::AtlasOff )
+  if ( mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagHideCoverageLayer )
   {
-    if ( mComposition->atlasComposition().hideCoverage() )
+    //hiding coverage layer
+    int removeAt = renderLayers.indexOf( mLayout->reportContext().layer() );
+    if ( removeAt != -1 )
     {
-      //hiding coverage layer
-      int removeAt = renderLayers.indexOf( mComposition->atlasComposition().coverageLayer() );
-      if ( removeAt != -1 )
-      {
-        renderLayers.removeAt( removeAt );
-      }
+      renderLayers.removeAt( removeAt );
     }
   }
-#endif
+
   return renderLayers;
 }
 
@@ -1597,7 +1589,6 @@ QPointF QgsLayoutItemMap::layoutMapPosForItem( const QgsAnnotation *annotation )
   if ( annotationCrs != crs() )
   {
     //need to reproject
-    // todo datum nyall set context
     QgsCoordinateTransform t( annotationCrs, crs(), mLayout->project() );
     double z = 0.0;
     try
@@ -1640,7 +1631,7 @@ void QgsLayoutItemMap::drawMapBackground( QPainter *p )
 
 bool QgsLayoutItemMap::shouldDrawPart( QgsLayoutItemMap::PartType part ) const
 {
-  int currentExportLayer = mLayout->context().currentExportLayer();
+  int currentExportLayer = mLayout->renderContext().currentExportLayer();
 
   if ( -1 == currentExportLayer )
   {
@@ -1815,5 +1806,148 @@ void QgsLayoutItemMap::refreshMapExtents( const QgsExpressionContext *context )
   {
     mEvaluatedMapRotation = mapRotation;
     emit mapRotationChanged( mapRotation );
+  }
+}
+
+void QgsLayoutItemMap::updateAtlasFeature()
+{
+  if ( !atlasDriven() || !mLayout->reportContext().layer() )
+    return; // nothing to do
+
+  QgsRectangle bounds = computeAtlasRectangle();
+  if ( bounds.isNull() )
+    return;
+
+  double xa1 = bounds.xMinimum();
+  double xa2 = bounds.xMaximum();
+  double ya1 = bounds.yMinimum();
+  double ya2 = bounds.yMaximum();
+  QgsRectangle newExtent = bounds;
+  QgsRectangle originalExtent = mExtent;
+
+  //sanity check - only allow fixed scale mode for point layers
+  bool isPointLayer = QgsWkbTypes::geometryType( mLayout->reportContext().layer()->wkbType() ) == QgsWkbTypes::PointGeometry;
+
+  if ( mAtlasScalingMode == Fixed || mAtlasScalingMode == Predefined || isPointLayer )
+  {
+    QgsScaleCalculator calc;
+    calc.setMapUnits( crs().mapUnits() );
+    calc.setDpi( 25.4 );
+    double originalScale = calc.calculate( originalExtent, rect().width() );
+    double geomCenterX = ( xa1 + xa2 ) / 2.0;
+    double geomCenterY = ( ya1 + ya2 ) / 2.0;
+
+    if ( mAtlasScalingMode == Fixed || isPointLayer )
+    {
+      // only translate, keep the original scale (i.e. width x height)
+      double xMin = geomCenterX - originalExtent.width() / 2.0;
+      double yMin = geomCenterY - originalExtent.height() / 2.0;
+      newExtent = QgsRectangle( xMin,
+                                yMin,
+                                xMin + originalExtent.width(),
+                                yMin + originalExtent.height() );
+
+      //scale newExtent to match original scale of map
+      //this is required for geographic coordinate systems, where the scale varies by extent
+      double newScale = calc.calculate( newExtent, rect().width() );
+      newExtent.scale( originalScale / newScale );
+    }
+    else if ( mAtlasScalingMode == Predefined )
+    {
+      // choose one of the predefined scales
+      double newWidth = originalExtent.width();
+      double newHeight = originalExtent.height();
+      QVector<qreal> scales = mLayout->reportContext().predefinedScales();
+      for ( int i = 0; i < scales.size(); i++ )
+      {
+        double ratio = scales[i] / originalScale;
+        newWidth = originalExtent.width() * ratio;
+        newHeight = originalExtent.height() * ratio;
+
+        // compute new extent, centered on feature
+        double xMin = geomCenterX - newWidth / 2.0;
+        double yMin = geomCenterY - newHeight / 2.0;
+        newExtent = QgsRectangle( xMin,
+                                  yMin,
+                                  xMin + newWidth,
+                                  yMin + newHeight );
+
+        //scale newExtent to match desired map scale
+        //this is required for geographic coordinate systems, where the scale varies by extent
+        double newScale = calc.calculate( newExtent, rect().width() );
+        newExtent.scale( scales[i] / newScale );
+
+        if ( ( newExtent.width() >= bounds.width() ) && ( newExtent.height() >= bounds.height() ) )
+        {
+          // this is the smallest extent that embeds the feature, stop here
+          break;
+        }
+      }
+    }
+  }
+  else if ( mAtlasScalingMode == Auto )
+  {
+    // auto scale
+
+    double geomRatio = bounds.width() / bounds.height();
+    double mapRatio = originalExtent.width() / originalExtent.height();
+
+    // geometry height is too big
+    if ( geomRatio < mapRatio )
+    {
+      // extent the bbox's width
+      double adjWidth = ( mapRatio * bounds.height() - bounds.width() ) / 2.0;
+      xa1 -= adjWidth;
+      xa2 += adjWidth;
+    }
+    // geometry width is too big
+    else if ( geomRatio > mapRatio )
+    {
+      // extent the bbox's height
+      double adjHeight = ( bounds.width() / mapRatio - bounds.height() ) / 2.0;
+      ya1 -= adjHeight;
+      ya2 += adjHeight;
+    }
+    newExtent = QgsRectangle( xa1, ya1, xa2, ya2 );
+
+    if ( mAtlasMargin > 0.0 )
+    {
+      newExtent.scale( 1 + mAtlasMargin );
+    }
+  }
+
+  // set the new extent (and render)
+  setExtent( newExtent );
+  emit preparedForAtlas();
+}
+
+QgsRectangle QgsLayoutItemMap::computeAtlasRectangle()
+{
+  // QgsGeometry::boundingBox is expressed in the geometry"s native CRS
+  // We have to transform the geometry to the destination CRS and ask for the bounding box
+  // Note: we cannot directly take the transformation of the bounding box, since transformations are not linear
+  QgsGeometry g = mLayout->reportContext().currentGeometry( crs() );
+  // Rotating the geometry, so the bounding box is correct wrt map rotation
+  if ( mEvaluatedMapRotation != 0.0 )
+  {
+    QgsPointXY prevCenter = g.boundingBox().center();
+    g.rotate( mEvaluatedMapRotation, g.boundingBox().center() );
+    // Rotation center will be still the bounding box center of an unrotated geometry.
+    // Which means, if the center of bbox moves after rotation, the viewport will
+    // also be offset, and part of the geometry will fall out of bounds.
+    // Here we compensate for that roughly: by extending the rotated bounds
+    // so that its center is the same as the original.
+    QgsRectangle bounds = g.boundingBox();
+    double dx = std::max( std::abs( prevCenter.x() - bounds.xMinimum() ),
+                          std::abs( prevCenter.x() - bounds.xMaximum() ) );
+    double dy = std::max( std::abs( prevCenter.y() - bounds.yMinimum() ),
+                          std::abs( prevCenter.y() - bounds.yMaximum() ) );
+    QgsPointXY center = g.boundingBox().center();
+    return QgsRectangle( center.x() - dx, center.y() - dy,
+                         center.x() + dx, center.y() + dy );
+  }
+  else
+  {
+    return g.boundingBox();
   }
 }

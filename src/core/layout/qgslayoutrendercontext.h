@@ -1,5 +1,5 @@
 /***************************************************************************
-                             qgslayoutcontext.h
+                             qgslayoutrendercontext.h
                              -------------------
     begin                : July 2017
     copyright            : (C) 2017 by Nyall Dawson
@@ -13,25 +13,23 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSLAYOUTCONTEXT_H
-#define QGSLAYOUTCONTEXT_H
+#ifndef QGSLAYOUTRENDERCONTEXT_H
+#define QGSLAYOUTRENDERCONTEXT_H
 
 #include "qgis_core.h"
-#include "qgsfeature.h"
-#include "qgsvectorlayer.h"
 #include "qgslayoutmeasurementconverter.h"
+#include "qgsrendercontext.h"
 #include <QtGlobal>
 
-class QgsFeature;
-class QgsVectorLayer;
+class QgsLayout;
 
 /**
  * \ingroup core
- * \class QgsLayoutContext
- * \brief Stores information relating to the current context and rendering settings for a layout.
+ * \class QgsLayoutRenderContext
+ * \brief Stores information relating to the current rendering settings for a layout.
  * \since QGIS 3.0
  */
-class CORE_EXPORT QgsLayoutContext : public QObject
+class CORE_EXPORT QgsLayoutRenderContext : public QObject
 {
 
     Q_OBJECT
@@ -46,10 +44,14 @@ class CORE_EXPORT QgsLayoutContext : public QObject
       FlagAntialiasing = 1 << 3, //!< Use antialiasing when drawing items.
       FlagUseAdvancedEffects = 1 << 4, //!< Enable advanced effects such as blend modes.
       FlagForceVectorOutput = 1 << 5, //!< Force output in vector format where possible, even if items require rasterization to keep their correct appearance.
+      FlagHideCoverageLayer = 1 << 6, //!< Hide coverage layer in outputs
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
-    QgsLayoutContext();
+    /**
+     * Constructor for QgsLayoutRenderContext.
+     */
+    QgsLayoutRenderContext( QgsLayout *layout SIP_TRANSFERTHIS );
 
     /**
      * Sets the combination of \a flags that will be used for rendering the layout.
@@ -57,7 +59,7 @@ class CORE_EXPORT QgsLayoutContext : public QObject
      * \see flags()
      * \see testFlag()
      */
-    void setFlags( const QgsLayoutContext::Flags flags );
+    void setFlags( const QgsLayoutRenderContext::Flags flags );
 
     /**
      * Enables or disables a particular rendering \a flag for the layout. Other existing
@@ -66,7 +68,7 @@ class CORE_EXPORT QgsLayoutContext : public QObject
      * \see flags()
      * \see testFlag()
      */
-    void setFlag( const QgsLayoutContext::Flag flag, const bool on = true );
+    void setFlag( const QgsLayoutRenderContext::Flag flag, const bool on = true );
 
     /**
      * Returns the current combination of flags used for rendering the layout.
@@ -74,7 +76,7 @@ class CORE_EXPORT QgsLayoutContext : public QObject
      * \see setFlag()
      * \see testFlag()
      */
-    QgsLayoutContext::Flags flags() const;
+    QgsLayoutRenderContext::Flags flags() const;
 
     /**
      * Check whether a particular rendering \a flag is enabled for the layout.
@@ -88,34 +90,6 @@ class CORE_EXPORT QgsLayoutContext : public QObject
      * Returns the combination of render context flags matched to the layout context's settings.
      */
     QgsRenderContext::Flags renderContextFlags() const;
-
-    /**
-     * Sets the current \a feature for evaluating the layout. This feature may
-     * be used for altering an item's content and appearance for a report
-     * or atlas layout.
-     * \see feature()
-     */
-    void setFeature( const QgsFeature &feature ) { mFeature = feature; }
-
-    /**
-     * Returns the current feature for evaluating the layout. This feature may
-     * be used for altering an item's content and appearance for a report
-     * or atlas layout.
-     * \see setFeature()
-     */
-    QgsFeature feature() const { return mFeature; }
-
-    /**
-     * Returns the vector layer associated with the layout's context.
-     * \see setLayer()
-     */
-    QgsVectorLayer *layer() const;
-
-    /**
-     * Sets the vector \a layer associated with the layout's context.
-     * \see layer()
-     */
-    void setLayer( QgsVectorLayer *layer );
 
     /**
      * Sets the \a dpi for outputting the layout. This also sets the
@@ -217,16 +191,20 @@ class CORE_EXPORT QgsLayoutContext : public QObject
      * Emitted whenever the context's \a flags change.
      * \see setFlags()
      */
-    void flagsChanged( QgsLayoutContext::Flags flags );
+    void flagsChanged( QgsLayoutRenderContext::Flags flags );
+
+    /**
+     * Emitted when the context's DPI is changed.
+     */
+    void dpiChanged();
 
   private:
 
     Flags mFlags = nullptr;
 
-    int mCurrentExportLayer = -1;
+    QgsLayout *mLayout = nullptr;
 
-    QgsFeature mFeature;
-    QPointer< QgsVectorLayer > mLayer;
+    int mCurrentExportLayer = -1;
 
     QgsLayoutMeasurementConverter mMeasurementConverter;
 
@@ -239,12 +217,11 @@ class CORE_EXPORT QgsLayoutContext : public QObject
     friend class TestQgsLayout;
     friend class LayoutContextPreviewSettingRestorer;
 
-
 };
 
-Q_DECLARE_METATYPE( QgsLayoutContext::Flags )
+Q_DECLARE_METATYPE( QgsLayoutRenderContext::Flags )
 
-#endif //QGSLAYOUTCONTEXT_H
+#endif //QGSLAYOUTRENDERCONTEXT_H
 
 
 

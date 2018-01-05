@@ -37,6 +37,8 @@ class QgsLayoutMapWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutM
   public:
     explicit QgsLayoutMapWidget( QgsLayoutItemMap *item );
 
+    void setReportTypeString( const QString &string ) override;
+
   public slots:
     void mScaleLineEdit_editingFinished();
     void mSetToMapCanvasExtentButton_clicked();

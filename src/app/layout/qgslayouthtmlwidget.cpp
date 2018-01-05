@@ -352,14 +352,11 @@ void QgsLayoutHtmlWidget::mInsertExpressionButton_clicked()
     mHtmlEditor->getCursorPosition( &line, &index );
   }
 
-#if 0 //TODO
   // use the atlas coverage layer, if any
-  QgsVectorLayer *coverageLayer = atlasCoverageLayer();
-#endif
-  QgsVectorLayer *coverageLayer = nullptr;
+  QgsVectorLayer *layer = coverageLayer();
 
   QgsExpressionContext context = mHtml->createExpressionContext();
-  QgsExpressionBuilderDialog exprDlg( coverageLayer, selText, this, QStringLiteral( "generic" ), context );
+  QgsExpressionBuilderDialog exprDlg( layer, selText, this, QStringLiteral( "generic" ), context );
   exprDlg.setWindowTitle( tr( "Insert Expression" ) );
   if ( exprDlg.exec() == QDialog::Accepted )
   {

@@ -40,7 +40,6 @@ QgsLayoutItemLegend::QgsLayoutItemLegend( QgsLayout *layout )
 {
 #if 0 //TODO
   connect( &layout->atlasComposition(), &QgsAtlasComposition::renderEnded, this, &QgsLayoutItemLegend::onAtlasEnded );
-  connect( &layout->atlasComposition(), &QgsAtlasComposition::featureChanged, this, &QgsLayoutItemLegend::onAtlasFeature );
 #endif
 
   // Connect to the main layertreeroot.
@@ -79,7 +78,7 @@ void QgsLayoutItemLegend::paint( QPainter *painter, const QStyleOptionGraphicsIt
 
   if ( mLayout )
   {
-    mSettings.setUseAdvancedEffects( mLayout->context().flags() & QgsLayoutContext::FlagUseAdvancedEffects );
+    mSettings.setUseAdvancedEffects( mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagUseAdvancedEffects );
     mSettings.setDpi( dpi );
   }
   if ( mMap && mLayout )
@@ -137,6 +136,12 @@ void QgsLayoutItemLegend::finalizeRestoreFromXml()
   {
     setMap( qobject_cast< QgsLayoutItemMap * >( mLayout->itemByUuid( mMapUuid, true ) ) );
   }
+}
+
+void QgsLayoutItemLegend::refresh()
+{
+  QgsLayoutItem::refresh();
+  onAtlasFeature();
 }
 
 void QgsLayoutItemLegend::draw( QgsRenderContext &context, const QStyleOptionGraphicsItem * )
@@ -621,7 +626,7 @@ QString QgsLayoutItemLegend::displayName() const
   QString text = mSettings.title();
   if ( text.isEmpty() )
   {
-    return tr( "<legend>" );
+    return tr( "<Legend>" );
   }
   if ( text.length() > 25 )
   {
@@ -749,7 +754,7 @@ void QgsLayoutItemLegend::doUpdateFilterByMap()
 
   if ( mMap && ( mLegendFilterByMap || filterByExpression || mInAtlas ) )
   {
-    int dpi = mLayout->context().dpi();
+    int dpi = mLayout->renderContext().dpi();
 
     QgsRectangle requestRectangle = mMap->requestedExtent();
 
@@ -761,9 +766,7 @@ void QgsLayoutItemLegend::doUpdateFilterByMap()
     QgsGeometry filterPolygon;
     if ( mInAtlas )
     {
-#if 0 //TODO
-      filterPolygon = composition()->atlasComposition().currentGeometry( mMap->crs() );
-#endif
+      filterPolygon = mLayout->reportContext().currentGeometry( mMap->crs() );
     }
     mLegendModel->setLegendFilter( &ms, /* useExtent */ mInAtlas || mLegendFilterByMap, filterPolygon, /* useExpressions */ true );
   }
@@ -783,9 +786,9 @@ bool QgsLayoutItemLegend::legendFilterOutAtlas() const
   return mFilterOutAtlas;
 }
 
-void QgsLayoutItemLegend::onAtlasFeature( QgsFeature *feat )
+void QgsLayoutItemLegend::onAtlasFeature()
 {
-  if ( !feat )
+  if ( !mLayout->reportContext().feature().isValid() )
     return;
   mInAtlas = mFilterOutAtlas;
   updateFilterByMap();

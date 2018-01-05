@@ -59,6 +59,7 @@ A None is returned if an invalid page number is specified.
 .. seealso:: :py:func:`pages()`
 %End
 
+
     int pageNumber( QgsLayoutItemPage *page ) const;
 %Docstring
 Returns the page number for the specified ``page``, or -1 if the page

@@ -33,7 +33,7 @@ QgsRenderContext QgsPointMarkerItem::renderContext( QPainter *painter )
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
           << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-          << QgsExpressionContextUtils::atlasScope( nullptr );
+          << QgsExpressionContextUtils::compositionAtlasScope( nullptr );
   if ( mMapCanvas )
   {
     context << QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() )

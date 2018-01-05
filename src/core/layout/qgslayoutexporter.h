@@ -18,7 +18,8 @@
 
 #include "qgis_core.h"
 #include "qgsmargins.h"
-#include "qgslayoutcontext.h"
+#include "qgslayoutrendercontext.h"
+#include "qgslayoutreportcontext.h"
 #include <QPointer>
 #include <QSize>
 #include <QRectF>
@@ -27,6 +28,7 @@
 class QgsLayout;
 class QPainter;
 class QgsLayoutItemMap;
+class QgsAbstractLayoutIterator;
 
 /**
  * \ingroup core
@@ -129,10 +131,12 @@ class CORE_EXPORT QgsLayoutExporter
     enum ExportResult
     {
       Success, //!< Export was successful
+      Canceled, //!< Export was canceled
       MemoryError, //!< Unable to allocate memory required to export
       FileError, //!< Could not write to destination file, likely due to a lock held by another application
       PrintError, //!< Could not start printing to destination device
       SvgLayerError, //!< Could not create layered SVG file
+      IteratorError, //!< Error iterating over layout
     };
 
     //! Contains settings relating to exporting layouts to raster images
@@ -140,7 +144,7 @@ class CORE_EXPORT QgsLayoutExporter
     {
       //! Constructor for ImageExportSettings
       ImageExportSettings()
-        : flags( QgsLayoutContext::FlagAntialiasing | QgsLayoutContext::FlagUseAdvancedEffects )
+        : flags( QgsLayoutRenderContext::FlagAntialiasing | QgsLayoutRenderContext::FlagUseAdvancedEffects )
       {}
 
       //! Resolution to export layout at. If dpi <= 0 the default layout dpi will be used.
@@ -190,7 +194,7 @@ class CORE_EXPORT QgsLayoutExporter
       /**
        * Layout context flags, which control how the export will be created.
        */
-      QgsLayoutContext::Flags flags = 0;
+      QgsLayoutRenderContext::Flags flags = 0;
 
     };
 
@@ -206,12 +210,28 @@ class CORE_EXPORT QgsLayoutExporter
      */
     ExportResult exportToImage( const QString &filePath, const QgsLayoutExporter::ImageExportSettings &settings );
 
+
+    /**
+     * Exports a layout \a iterator to raster images, with the specified export \a settings.
+     *
+     * The \a baseFilePath argument gives a base file path, which is modified by the
+     * iterator to obtain file paths for each iterator feature.
+     *
+     * Returns a result code indicating whether the export was successful or an
+     * error was encountered. If an error was obtained then \a error will be set
+     * to the error description.
+     */
+    static ExportResult exportToImage( QgsAbstractLayoutIterator *iterator, const QString &baseFilePath,
+                                       const QString &extension, const QgsLayoutExporter::ImageExportSettings &settings,
+                                       QString &error SIP_OUT, QgsFeedback *feedback = nullptr );
+
+
     //! Contains settings relating to exporting layouts to PDF
     struct PdfExportSettings
     {
       //! Constructor for PdfExportSettings
       PdfExportSettings()
-        : flags( QgsLayoutContext::FlagAntialiasing | QgsLayoutContext::FlagUseAdvancedEffects )
+        : flags( QgsLayoutRenderContext::FlagAntialiasing | QgsLayoutRenderContext::FlagUseAdvancedEffects )
       {}
 
       //! Resolution to export layout at. If dpi <= 0 the default layout dpi will be used.
@@ -236,7 +256,7 @@ class CORE_EXPORT QgsLayoutExporter
       /**
        * Layout context flags, which control how the export will be created.
        */
-      QgsLayoutContext::Flags flags = 0;
+      QgsLayoutRenderContext::Flags flags = 0;
 
     };
 
@@ -248,13 +268,89 @@ class CORE_EXPORT QgsLayoutExporter
      */
     ExportResult exportToPdf( const QString &filePath, const QgsLayoutExporter::PdfExportSettings &settings );
 
+    /**
+     * Exports a layout \a iterator to a single PDF file, with the specified export \a settings.
+     *
+     * The \a fileName argument gives the destination file name for the output PDF.
+     *
+     * Returns a result code indicating whether the export was successful or an
+     * error was encountered. If an error was obtained then \a error will be set
+     * to the error description.
+     *
+     * \see exportToPdfs()
+     */
+    static ExportResult exportToPdf( QgsAbstractLayoutIterator *iterator, const QString &fileName,
+                                     const QgsLayoutExporter::PdfExportSettings &settings,
+                                     QString &error SIP_OUT, QgsFeedback *feedback = nullptr );
+
+    /**
+     * Exports a layout \a iterator to multiple PDF files, with the specified export \a settings.
+     *
+     * The \a baseFilePath argument gives a base file path, which is modified by the
+     * iterator to obtain file paths for each iterator feature.
+     *
+     * Returns a result code indicating whether the export was successful or an
+     * error was encountered. If an error was obtained then \a error will be set
+     * to the error description.
+     *
+     * \see exportToPdf()
+     */
+    static ExportResult exportToPdfs( QgsAbstractLayoutIterator *iterator, const QString &baseFilePath,
+                                      const QgsLayoutExporter::PdfExportSettings &settings,
+                                      QString &error SIP_OUT, QgsFeedback *feedback = nullptr );
+
+
+    //! Contains settings relating to printing layouts
+    struct PrintExportSettings
+    {
+      //! Constructor for PrintExportSettings
+      PrintExportSettings()
+        : flags( QgsLayoutRenderContext::FlagAntialiasing | QgsLayoutRenderContext::FlagUseAdvancedEffects )
+      {}
+
+      //! Resolution to export layout at. If dpi <= 0 the default layout dpi will be used.
+      double dpi = -1;
+
+      /**
+       * Set to true to force whole layout to be rasterized while exporting.
+       *
+       * This option is mutually exclusive with forceVectorOutput.
+       */
+      bool rasterizeWholeImage = false;
+
+      /**
+       * Layout context flags, which control how the export will be created.
+       */
+      QgsLayoutRenderContext::Flags flags = 0;
+
+    };
+
+    /**
+     * Prints the layout to a \a printer, using the specified export \a settings.
+     *
+     * Returns a result code indicating whether the export was successful or an
+     * error was encountered.
+     */
+    ExportResult print( QPrinter &printer, const QgsLayoutExporter::PrintExportSettings &settings );
+
+    /**
+     * Exports a layout \a iterator to a \a printer, with the specified export \a settings.
+     *
+     * Returns a result code indicating whether the export was successful or an
+     * error was encountered. If an error was obtained then \a error will be set
+     * to the error description.
+     */
+    static ExportResult print( QgsAbstractLayoutIterator *iterator, QPrinter &printer,
+                               const QgsLayoutExporter::PrintExportSettings &settings,
+                               QString &error SIP_OUT, QgsFeedback *feedback = nullptr );
+
 
     //! Contains settings relating to exporting layouts to SVG
     struct SvgExportSettings
     {
       //! Constructor for SvgExportSettings
       SvgExportSettings()
-        : flags( QgsLayoutContext::FlagAntialiasing | QgsLayoutContext::FlagUseAdvancedEffects )
+        : flags( QgsLayoutRenderContext::FlagAntialiasing | QgsLayoutRenderContext::FlagUseAdvancedEffects )
       {}
 
       //! Resolution to export layout at. If dpi <= 0 the default layout dpi will be used.
@@ -291,7 +387,7 @@ class CORE_EXPORT QgsLayoutExporter
       /**
        * Layout context flags, which control how the export will be created.
        */
-      QgsLayoutContext::Flags flags = 0;
+      QgsLayoutRenderContext::Flags flags = 0;
 
     };
 
@@ -302,6 +398,21 @@ class CORE_EXPORT QgsLayoutExporter
      * error was encountered.
      */
     ExportResult exportToSvg( const QString &filePath, const QgsLayoutExporter::SvgExportSettings &settings );
+
+    /**
+     * Exports a layout \a iterator to SVG files, with the specified export \a settings.
+     *
+     * The \a baseFilePath argument gives a base file path, which is modified by the
+     * iterator to obtain file paths for each iterator feature.
+     *
+     * Returns a result code indicating whether the export was successful or an
+     * error was encountered. If an error was obtained then \a error will be set
+     * to the error description.
+     */
+    static ExportResult exportToSvg( QgsAbstractLayoutIterator *iterator, const QString &baseFilePath,
+                                     const QgsLayoutExporter::SvgExportSettings &settings,
+                                     QString &error SIP_OUT, QgsFeedback *feedback = nullptr );
+
 
     /**
      * Returns the file name corresponding to the last error encountered during
@@ -385,9 +496,9 @@ class CORE_EXPORT QgsLayoutExporter
     /**
      * Prepare a \a printer for printing a layout as a PDF, to the destination \a filePath.
      */
-    void preparePrintAsPdf( QPrinter &printer, const QString &filePath );
+    static void preparePrintAsPdf( QgsLayout *layout, QPrinter &printer, const QString &filePath );
 
-    void preparePrint( QPrinter &printer, bool setFirstPageSize = false );
+    static void preparePrint( QgsLayout *layout, QPrinter &printer, bool setFirstPageSize = false );
 
     /**
      * Convenience function that prepares the printer and prints.
@@ -404,7 +515,7 @@ class CORE_EXPORT QgsLayoutExporter
      */
     ExportResult printPrivate( QPrinter &printer, QPainter &painter, bool startNewPage = false, double dpi = -1, bool rasterize = false );
 
-    void updatePrinterPageSize( QPrinter &printer, int page );
+    static void updatePrinterPageSize( QgsLayout *layout, QPrinter &printer, int page );
 
     ExportResult renderToLayeredSvg( const SvgExportSettings &settings, double width, double height, int page, QRectF bounds,
                                      const QString &filename, int svgLayerId, const QString &layerName,

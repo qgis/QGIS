@@ -56,6 +56,12 @@ called on the new layout.
 
     ~QgsLayout();
 
+    QgsLayout *clone() const /Factory/;
+%Docstring
+Creates a clone of the layout. Ownership of the return layout
+is transferred to the caller.
+%End
+
     void initializeDefaults();
 %Docstring
 Initializes an empty layout, e.g. by adding a default page to the layout. This should be called after creating
@@ -78,20 +84,6 @@ relations and various other bits. It is never null.
     QgsLayoutModel *itemsModel();
 %Docstring
 Returns the items model attached to the layout.
-%End
-
-    QString name() const;
-%Docstring
-Returns the layout's name.
-
-.. seealso:: :py:func:`setName()`
-%End
-
-    void setName( const QString &name );
-%Docstring
-Sets the layout's name.
-
-.. seealso:: :py:func:`name()`
 %End
 
 
@@ -191,6 +183,17 @@ If ``includeTemplateUuids`` is true, then item's :py:func:`QgsLayoutItem.templat
 will also be tested when trying to match the uuid.
 
 .. seealso:: :py:func:`multiFrameByUuid()`
+
+.. seealso:: :py:func:`itemById()`
+%End
+
+    QgsLayoutItem *itemById( const QString &id ) const;
+%Docstring
+Returns a layout item given its ``id``.
+Since item IDs are not necessarely unique, this function returns the first matching
+item found.
+
+.. seealso:: :py:func:`itemByUuid()`
 %End
 
     QgsLayoutMultiFrame *multiFrameByUuid( const QString &uuid ) const;
@@ -298,10 +301,17 @@ Converts a ``point`` from the layout's native units to a specified target ``unit
 .. seealso:: :py:func:`units()`
 %End
 
-    QgsLayoutContext &context();
+    QgsLayoutRenderContext &renderContext();
 %Docstring
-Returns a reference to the layout's context, which stores information relating to the
-current context and rendering settings for the layout.
+Returns a reference to the layout's render context, which stores information relating to the
+current rendering settings for the layout.
+%End
+
+
+    QgsLayoutReportContext &reportContext();
+%Docstring
+Returns a reference to the layout's report context, which stores information relating to the
+current reporting context for the layout.
 %End
 
 
@@ -500,14 +510,14 @@ If ``ok`` is specified, it will be set to true if the load was successful.
 Returns a list of loaded items.
 %End
 
-    QDomElement writeXml( QDomDocument &document, const QgsReadWriteContext &context ) const;
+    virtual QDomElement writeXml( QDomDocument &document, const QgsReadWriteContext &context ) const;
 %Docstring
 Returns the layout's state encapsulated in a DOM element.
 
 .. seealso:: :py:func:`readXml()`
 %End
 
-    bool readXml( const QDomElement &layoutElement, const QDomDocument &document, const QgsReadWriteContext &context );
+    virtual bool readXml( const QDomElement &layoutElement, const QDomDocument &document, const QgsReadWriteContext &context );
 %Docstring
 Sets the collection's state from a DOM element. ``layoutElement`` is the DOM node corresponding to the layout.
 
@@ -600,13 +610,6 @@ If None, no item is selected.
 %Docstring
 Is emitted when the layout has been refreshed and items should also be refreshed
 and updated.
-%End
-
-    void nameChanged( const QString &name );
-%Docstring
-Emitted when the layout's name is changed.
-
-.. seealso:: :py:func:`setName()`
 %End
 
 };

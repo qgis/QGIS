@@ -276,4 +276,22 @@ class CORE_EXPORT QgsLayoutItemHtml: public QgsLayoutMultiFrame
     void refreshExpressionContext();
 };
 
+///@cond PRIVATE
+#ifndef SIP_RUN
+class JavascriptExecutorLoop : public QEventLoop
+{
+    Q_OBJECT
+  public slots:
+
+    void done();
+    void execIfNotDone();
+
+  private:
+
+    bool mDone = false;
+
+};
+#endif
+///@endcond
+
 #endif // QGSLAYOUTITEMHTML_H

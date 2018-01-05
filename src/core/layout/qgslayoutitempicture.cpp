@@ -18,7 +18,8 @@
 #include "qgslayoutitempicture.h"
 #include "qgslayoutitemregistry.h"
 #include "qgslayout.h"
-#include "qgslayoutcontext.h"
+#include "qgslayoutrendercontext.h"
+#include "qgslayoutreportcontext.h"
 #include "qgslayoutitemmap.h"
 #include "qgslayoututils.h"
 #include "qgsproject.h"
@@ -54,14 +55,12 @@ QgsLayoutItemPicture::QgsLayoutItemPicture( QgsLayout *layout )
 
   //connect some signals
 
-#if 0 //TODO
   //connect to atlas feature changing
   //to update the picture source expression
-  connect( &mComposition->atlasComposition(), &QgsAtlasComposition::featureChanged, this, [ = ] { refreshPicture(); } );
+  connect( &layout->reportContext(), &QgsLayoutReportContext::changed, this, [ = ] { refreshPicture(); } );
 
   //connect to layout print resolution changing
-  connect( layout->context(), &QgsLayoutContext::printResolutionChanged, this, &QgsLayoutItemPicture::recalculateSize );
-#endif
+  connect( &layout->renderContext(), &QgsLayoutRenderContext::dpiChanged, this, &QgsLayoutItemPicture::recalculateSize );
 
   connect( this, &QgsLayoutItem::sizePositionChanged, this, &QgsLayoutItemPicture::shapeChanged );
 }
@@ -119,8 +118,8 @@ void QgsLayoutItemPicture::draw( QgsRenderContext &context, const QStyleOptionGr
     {
       boundRectWidthMM = rect().width();
       boundRectHeightMM = rect().height();
-      imageRect = QRect( 0, 0, mLayout->convertFromLayoutUnits( rect().width(), QgsUnitTypes::LayoutMillimeters ).length() * mLayout->context().dpi() / 25.4,
-                         mLayout->convertFromLayoutUnits( rect().height(), QgsUnitTypes::LayoutMillimeters ).length() * mLayout->context().dpi() / 25.4 );
+      imageRect = QRect( 0, 0, mLayout->convertFromLayoutUnits( rect().width(), QgsUnitTypes::LayoutMillimeters ).length() * mLayout->renderContext().dpi() / 25.4,
+                         mLayout->convertFromLayoutUnits( rect().height(), QgsUnitTypes::LayoutMillimeters ).length() * mLayout->renderContext().dpi() / 25.4 );
     }
 
     //zoom mode - calculate anchor point and rotation
@@ -248,8 +247,8 @@ QSizeF QgsLayoutItemPicture::applyItemSizeConstraint( const QSizeF &targetSize )
       if ( !( currentPictureSize.isEmpty() ) )
       {
         QgsLayoutSize sizeMM = mLayout->convertFromLayoutUnits( currentPictureSize, QgsUnitTypes::LayoutMillimeters );
-        newSize.setWidth( sizeMM.width() * 25.4 / mLayout->context().dpi() );
-        newSize.setHeight( sizeMM.height() * 25.4 / mLayout->context().dpi() );
+        newSize.setWidth( sizeMM.width() * 25.4 / mLayout->renderContext().dpi() );
+        newSize.setHeight( sizeMM.height() * 25.4 / mLayout->renderContext().dpi() );
       }
     }
 
@@ -278,12 +277,12 @@ QSizeF QgsLayoutItemPicture::applyItemSizeConstraint( const QSizeF &targetSize )
 
 QRect QgsLayoutItemPicture::clippedImageRect( double &boundRectWidthMM, double &boundRectHeightMM, QSize imageRectPixels )
 {
-  int boundRectWidthPixels = boundRectWidthMM * mLayout->context().dpi() / 25.4;
-  int boundRectHeightPixels = boundRectHeightMM * mLayout->context().dpi() / 25.4;
+  int boundRectWidthPixels = boundRectWidthMM * mLayout->renderContext().dpi() / 25.4;
+  int boundRectHeightPixels = boundRectHeightMM * mLayout->renderContext().dpi() / 25.4;
 
   //update boundRectWidth/Height so that they exactly match pixel bounds
-  boundRectWidthMM = boundRectWidthPixels * 25.4 / mLayout->context().dpi();
-  boundRectHeightMM = boundRectHeightPixels * 25.4 / mLayout->context().dpi();
+  boundRectWidthMM = boundRectWidthPixels * 25.4 / mLayout->renderContext().dpi();
+  boundRectHeightMM = boundRectHeightPixels * 25.4 / mLayout->renderContext().dpi();
 
   //calculate part of image which fits in bounds
   int leftClip = 0;

@@ -45,7 +45,7 @@ QgsLayoutPagePropertiesWidget::QgsLayoutPagePropertiesWidget( QWidget *parent, Q
 
   mSizeUnitsComboBox->linkToWidget( mWidthSpin );
   mSizeUnitsComboBox->linkToWidget( mHeightSpin );
-  mSizeUnitsComboBox->setConverter( &mPage->layout()->context().measurementConverter() );
+  mSizeUnitsComboBox->setConverter( &mPage->layout()->renderContext().measurementConverter() );
 
   mLockAspectRatio->setWidthSpinBox( mWidthSpin );
   mLockAspectRatio->setHeightSpinBox( mHeightSpin );
@@ -75,6 +75,13 @@ QgsLayoutPagePropertiesWidget::QgsLayoutPagePropertiesWidget( QWidget *parent, Q
   connect( mOrientationDDBtn, &QgsPropertyOverrideButton::changed, this, &QgsLayoutPagePropertiesWidget::refreshLayout );
 
   mExcludePageDDBtn->registerEnabledWidget( mExcludePageCheckBox, false );
+
+  mSymbolButton->registerExpressionContextGenerator( mPage );
+  mSymbolButton->setLayer( coverageLayer() );
+  if ( mPage->layout() )
+  {
+    connect( &mPage->layout()->reportContext(), &QgsLayoutReportContext::layerChanged, mSymbolButton, &QgsSymbolButton::setLayer );
+  }
 
   showCurrentPageSize();
 }
@@ -158,6 +165,8 @@ void QgsLayoutPagePropertiesWidget::updatePageSize()
   mPage->layout()->pageCollection()->reflow();
   mPage->layout()->pageCollection()->endPageSizeChange();
   mPage->layout()->undoStack()->endMacro();
+
+  emit pageOrientationChanged();
 }
 
 void QgsLayoutPagePropertiesWidget::setToCustomSize()

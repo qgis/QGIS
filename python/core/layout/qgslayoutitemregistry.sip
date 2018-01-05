@@ -42,11 +42,6 @@ and ``visibleName``.
 Returns the unique item type code for the layout item class.
 %End
 
-    virtual QIcon icon() const;
-%Docstring
-Returns an icon representing the layout item type.
-%End
-
     QString visibleName() const;
 %Docstring
 Returns a translated, user visible name for the layout item class.

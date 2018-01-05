@@ -62,6 +62,7 @@ class QgsGeometry;
 class QgsLayerTreeMapCanvasBridge;
 class QgsLayerTreeView;
 class QgsLayout;
+class QgsMasterLayoutInterface;
 class QgsLayoutCustomDropHandler;
 class QgsLayoutDesignerDialog;
 class QgsLayoutDesignerInterface;
@@ -80,6 +81,7 @@ class QgsPluginLayer;
 class QgsPluginLayer;
 class QgsPluginManager;
 class QgsPointXY;
+class QgsPrintLayout;
 class QgsProviderRegistry;
 class QgsPythonUtils;
 class QgsRasterLayer;
@@ -153,6 +155,7 @@ class QgsLayoutQptDropHandler;
 #include "qgsmaplayeractionregistry.h"
 #include "qgsoptionswidgetfactory.h"
 #include "qgsattributetablefiltermodel.h"
+#include "qgsmasterlayoutinterface.h"
 #include "ui_qgisapp.h"
 #include "qgis_app.h"
 
@@ -374,7 +377,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      *
      * \returns true if user did not cancel the dialog.
      */
-    bool uniqueLayoutTitle( QWidget *parent, QString &title, bool acceptEmpty, const QString &currentTitle = QString() );
+    bool uniqueLayoutTitle( QWidget *parent, QString &title, bool acceptEmpty, QgsMasterLayoutInterface::Type type, const QString &currentTitle = QString() );
 
 
     //! Creates a new composer and returns a pointer to it
@@ -388,11 +391,14 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Creates a new layout and returns a pointer to it
     QgsLayoutDesignerDialog *createNewLayout( QString title = QString() );
 
+    //! Creates a new report and returns a pointer to it
+    QgsLayoutDesignerDialog *createNewReport( QString title = QString() );
+
     /**
      * Opens a layout designer dialog for an existing \a layout.
      * If a designer already exists for this layout then it will be activated.
      */
-    QgsLayoutDesignerDialog *openLayoutDesignerDialog( QgsLayout *layout );
+    QgsLayoutDesignerDialog *openLayoutDesignerDialog( QgsMasterLayoutInterface *layout );
 
     //! Deletes a composer and removes entry from Set
     void deleteComposer( QgsComposer *c );
@@ -408,7 +414,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * If \a title is set, it will be used as the title for the new layout. If it is not set,
      * and auto-generated title will be used instead.
      */
-    QgsLayoutDesignerDialog *duplicateLayout( QgsLayout *layout, const QString &title = QString() );
+    QgsLayoutDesignerDialog *duplicateLayout( QgsMasterLayoutInterface *layout, const QString &title = QString() );
 
     //! Overloaded function used to sort menu entries alphabetically
     QMenu *createPopupMenu() override;
@@ -1779,9 +1785,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     void setupLayoutManagerConnections();
 
-    void setupAtlasMapLayerAction( QgsComposition *composition, bool enableAction );
+    void setupAtlasMapLayerAction( QgsPrintLayout *layout, bool enableAction );
 
-    void setCompositionAtlasFeature( QgsComposition *composition, QgsMapLayer *layer, const QgsFeature &feat );
+    void setLayoutAtlasFeature( QgsPrintLayout *layout, QgsMapLayer *layer, const QgsFeature &feat );
 
     void saveAsVectorFileGeneral( QgsVectorLayer *vlayer = nullptr, bool symbologyOption = true );
 
@@ -2186,7 +2192,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     QStackedWidget *mCentralContainer = nullptr;
 
-    QHash< QgsComposition *, QgsMapLayerAction * > mAtlasFeatureActions;
+    QHash< QgsPrintLayout *, QgsMapLayerAction * > mAtlasFeatureActions;
 
     int mProjOpen = 0;
 

@@ -23,6 +23,9 @@
 #include "qgsmultirenderchecker.h"
 #include "qgsfontutils.h"
 #include "qgsproject.h"
+#include "qgsprintlayout.h"
+#include "qgslayoutatlas.h"
+#include "qgslayoutpagecollection.h"
 
 #include <QObject>
 #include "qgstest.h"
@@ -43,9 +46,10 @@ class TestQgsLayoutLabel : public QObject
     // test simple expression evaluation
     void evaluation();
     // test expression evaluation when a feature is set
-    void feature_evaluation();
+    void featureEvaluationUsingAtlas();
+    void featureEvaluationUsingContext();
     // test page expressions
-    void page_evaluation();
+    void pageEvaluation();
     void marginMethods(); //tests getting/setting margins
     void render();
     void renderAsHtml();
@@ -98,9 +102,7 @@ void TestQgsLayoutLabel::evaluation()
   QgsLayout l( QgsProject::instance() );
   l.initializeDefaults();
 
-#if 0 //TODO
-  l.atlasComposition().setCoverageLayer( mVectorLayer );
-#endif
+  l.reportContext().setLayer( mVectorLayer );
 
   QgsLayoutItemLabel *label = new QgsLayoutItemLabel( &l );
   label->setMargin( 1 );
@@ -143,66 +145,93 @@ void TestQgsLayoutLabel::evaluation()
   }
 }
 
-void TestQgsLayoutLabel::feature_evaluation()
+void TestQgsLayoutLabel::featureEvaluationUsingAtlas()
 {
-  QgsLayout l( QgsProject::instance() );
+  QgsPrintLayout l( QgsProject::instance() );
   l.initializeDefaults();
-#if 0 //TODO
-  l.atlasComposition().setCoverageLayer( mVectorLayer );
-#endif
 
   QgsLayoutItemLabel *label = new QgsLayoutItemLabel( &l );
   label->setMargin( 1 );
   l.addLayoutItem( label );
 
-#if 0 //TODO
-  l.atlasComposition().setEnabled( true );
-  l.setAtlasMode( QgsComposition::ExportAtlas );
-  l.atlasComposition().updateFeatures();
-  l.atlasComposition().prepareForFeature( 0 );
-
+  l.atlas()->setEnabled( true );
+  l.atlas()->setCoverageLayer( mVectorLayer );
+  QVERIFY( l.atlas()->beginRender() );
+  l.atlas()->seekTo( 0 );
   {
     // evaluation with a feature
     label->setText( QStringLiteral( "[%\"NAME_1\"||'_ok'%]" ) );
-    QString evaluated = label->displayText();
+    QString evaluated = label->currentText();
     QString expected = QStringLiteral( "Basse-Normandie_ok" );
     QCOMPARE( evaluated, expected );
   }
-  mComposition->atlasComposition().prepareForFeature( 1 );
+  l.atlas()->seekTo( 1 );
   {
     // evaluation with a feature
     label->setText( QStringLiteral( "[%\"NAME_1\"||'_ok'%]" ) );
-    QString evaluated = label->displayText();
+    QString evaluated = label->currentText();
     QString expected = QStringLiteral( "Bretagne_ok" );
     QCOMPARE( evaluated, expected );
   }
-  mComposition->atlasComposition().setEnabled( false );
-#endif
 }
 
-void TestQgsLayoutLabel::page_evaluation()
+void TestQgsLayoutLabel::featureEvaluationUsingContext()
 {
-#if 0 //TODO
+  // just using context, no atlas
   QgsLayout l( QgsProject::instance() );
   l.initializeDefaults();
-  mComposition->atlasComposition().setCoverageLayer( mVectorLayer );
 
   QgsLayoutItemLabel *label = new QgsLayoutItemLabel( &l );
   label->setMargin( 1 );
   l.addLayoutItem( label );
 
-  mComposition->setNumPages( 2 );
+  QgsFeature f;
+  QgsFeatureIterator it = mVectorLayer->getFeatures();
+
+  l.reportContext().setLayer( mVectorLayer );
+  it.nextFeature( f );
+  l.reportContext().setFeature( f );
+  {
+    // evaluation with a feature
+    label->setText( QStringLiteral( "[%\"NAME_1\"||'_ok'%]" ) );
+    QString evaluated = label->currentText();
+    QString expected = QStringLiteral( "Basse-Normandie_ok" );
+    QCOMPARE( evaluated, expected );
+  }
+  it.nextFeature( f );
+  l.reportContext().setFeature( f );
+  {
+    // evaluation with a feature
+    label->setText( QStringLiteral( "[%\"NAME_1\"||'_ok'%]" ) );
+    QString evaluated = label->currentText();
+    QString expected = QStringLiteral( "Bretagne_ok" );
+    QCOMPARE( evaluated, expected );
+  }
+}
+
+void TestQgsLayoutLabel::pageEvaluation()
+{
+  QgsLayout l( QgsProject::instance() );
+  l.initializeDefaults();
+  QgsLayoutItemPage *page2 = new QgsLayoutItemPage( &l );
+  page2->setPageSize( "A4", QgsLayoutItemPage::Landscape );
+  l.pageCollection()->addPage( page2 );
+  l.reportContext().setLayer( mVectorLayer );
+
+  QgsLayoutItemLabel *label = new QgsLayoutItemLabel( &l );
+  label->setMargin( 1 );
+  l.addLayoutItem( label );
+
   {
     label->setText( QStringLiteral( "[%@layout_page||'/'||@layout_numpages%]" ) );
-    QString evaluated = label->displayText();
+    QString evaluated = label->currentText();
     QString expected = QStringLiteral( "1/2" );
     QCOMPARE( evaluated, expected );
 
     // move to the second page and re-evaluate
-    label->setItemPosition( 0, 320 );
-    QCOMPARE( label->displayText(), QString( "2/2" ) );
+    label->attemptMove( QgsLayoutPoint( 0, 320 ) );
+    QCOMPARE( label->currentText(), QString( "2/2" ) );
   }
-#endif
 }
 
 void TestQgsLayoutLabel::marginMethods()

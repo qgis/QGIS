@@ -70,7 +70,7 @@ QgsLayoutPropertiesWidget::QgsLayoutPropertiesWidget( QWidget *parent, QgsLayout
   mLeftMarginSpinBox->setValue( leftMargin );
   mMarginUnitsComboBox->linkToWidget( mLeftMarginSpinBox );
   mMarginUnitsComboBox->setUnit( marginUnit );
-  mMarginUnitsComboBox->setConverter( &mLayout->context().measurementConverter() );
+  mMarginUnitsComboBox->setConverter( &mLayout->renderContext().measurementConverter() );
 
   connect( mTopMarginSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutPropertiesWidget::resizeMarginsChanged );
   connect( mRightMarginSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutPropertiesWidget::resizeMarginsChanged );
@@ -90,7 +90,7 @@ QgsLayoutPropertiesWidget::QgsLayoutPropertiesWidget( QWidget *parent, QgsLayout
 void QgsLayoutPropertiesWidget::updateGui()
 {
   whileBlocking( mReferenceMapComboBox )->setItem( mLayout->referenceMap() );
-  whileBlocking( mResolutionSpinBox )->setValue( mLayout->context().dpi() );
+  whileBlocking( mResolutionSpinBox )->setValue( mLayout->renderContext().dpi() );
 
   bool rasterize = mLayout->customProperty( QStringLiteral( "rasterize" ), false ).toBool();
   whileBlocking( mRasterizeCheckBox )->setChecked( rasterize );
@@ -199,7 +199,7 @@ void QgsLayoutPropertiesWidget::referenceMapChanged( QgsLayoutItem *item )
 void QgsLayoutPropertiesWidget::dpiChanged( int value )
 {
   mLayout->undoStack()->beginCommand( mLayout, tr( "Set Default DPI" ), QgsLayout::UndoLayoutDpi );
-  mLayout->context().setDpi( value );
+  mLayout->renderContext().setDpi( value );
   mLayout->undoStack()->endCommand();
 }
 

@@ -24,6 +24,7 @@ from qgis.core import (QgsUnitTypes,
                        QgsLayoutGuide,
                        QgsLayoutObject,
                        QgsProject,
+                       QgsPrintLayout,
                        QgsLayoutItemGroup,
                        QgsLayoutItem,
                        QgsProperty,
@@ -58,7 +59,7 @@ class TestQgsLayout(unittest.TestCase):
 
     def testReadWriteXml(self):
         p = QgsProject()
-        l = QgsLayout(p)
+        l = QgsPrintLayout(p)
         l.setName('my layout')
         l.setUnits(QgsUnitTypes.LayoutInches)
         collection = l.pageCollection()
@@ -91,7 +92,7 @@ class TestQgsLayout(unittest.TestCase):
         doc = QDomDocument("testdoc")
         elem = l.writeXml(doc, QgsReadWriteContext())
 
-        l2 = QgsLayout(p)
+        l2 = QgsPrintLayout(p)
         self.assertTrue(l2.readXml(elem, doc, QgsReadWriteContext()))
         self.assertEqual(l2.name(), 'my layout')
         self.assertEqual(l2.units(), QgsUnitTypes.LayoutInches)

@@ -696,6 +696,7 @@ void QgsMapCanvas::stopRendering()
     mJob->cancelWithoutBlocking();
     mJob = nullptr;
   }
+  stopPreviewJobs();
 }
 
 //the format defaults to "PNG" if not specified

@@ -265,7 +265,6 @@ Returns the delta (in layout coordinates) by which to move items
 for the given key ``event``.
 %End
 
-
   public slots:
 
     void zoomFull();

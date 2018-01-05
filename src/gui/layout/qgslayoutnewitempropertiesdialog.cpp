@@ -176,7 +176,7 @@ void QgsLayoutItemPropertiesDialog::setReferencePoint( QgsLayoutItem::ReferenceP
 
 void QgsLayoutItemPropertiesDialog::setLayout( QgsLayout *layout )
 {
-  mSizeUnitsComboBox->setConverter( &layout->context().measurementConverter() );
-  mPosUnitsComboBox->setConverter( &layout->context().measurementConverter() );
+  mSizeUnitsComboBox->setConverter( &layout->renderContext().measurementConverter() );
+  mPosUnitsComboBox->setConverter( &layout->renderContext().measurementConverter() );
   mLayout = layout;
 }

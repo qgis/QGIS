@@ -636,7 +636,7 @@ Opens the layout manager dialog.
 .. versionadded:: 3.0
 %End
 
-    virtual QgsLayoutDesignerInterface *openLayoutDesigner( QgsLayout *layout ) = 0;
+    virtual QgsLayoutDesignerInterface *openLayoutDesigner( QgsMasterLayoutInterface *layout ) = 0;
 %Docstring
 Opens a new layout designer dialog for the specified ``layout``, or
 brings an already open designer window to the foreground if one

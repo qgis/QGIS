@@ -723,7 +723,7 @@ QgsExpressionContext QgsAtlasComposition::createExpressionContext()
     expressionContext << QgsExpressionContextUtils::projectScope( mComposition->project() )
                       << QgsExpressionContextUtils::compositionScope( mComposition );
 
-  expressionContext.appendScope( QgsExpressionContextUtils::atlasScope( this ) );
+  expressionContext.appendScope( QgsExpressionContextUtils::compositionAtlasScope( this ) );
   if ( mCoverageLayer )
     expressionContext.lastScope()->setFields( mCoverageLayer->fields() );
   if ( mComposition && mComposition->atlasMode() != QgsComposition::AtlasOff )

@@ -3284,7 +3284,7 @@ QgsExpressionContext QgsComposition::createExpressionContext() const
   context.appendScope( QgsExpressionContextUtils::compositionScope( this ) );
   if ( mAtlasComposition.enabled() )
   {
-    context.appendScope( QgsExpressionContextUtils::atlasScope( &mAtlasComposition ) );
+    context.appendScope( QgsExpressionContextUtils::compositionAtlasScope( &mAtlasComposition ) );
   }
   return context;
 }

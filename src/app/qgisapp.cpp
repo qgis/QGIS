@@ -206,6 +206,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgslayertreeview.h"
 #include "qgslayertreeviewdefaultactions.h"
 #include "qgslayout.h"
+#include "qgslayoutatlas.h"
 #include "qgslayoutcustomdrophandler.h"
 #include "qgslayoutdesignerdialog.h"
 #include "qgslayoutmanager.h"
@@ -246,6 +247,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgspointxy.h"
 #include "qgsruntimeprofiler.h"
 #include "qgshandlebadlayers.h"
+#include "qgsprintlayout.h"
 #include "qgsprocessingregistry.h"
 #include "qgsproject.h"
 #include "qgsprojectlayergroupdialog.h"
@@ -266,6 +268,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsrasterprojector.h"
 #include "qgsreadwritecontext.h"
 #include "qgsrectangle.h"
+#include "qgsreport.h"
 #include "qgsscalevisibilitydialog.h"
 #include "qgsgroupwmsdatadialog.h"
 #include "qgsselectbyformdialog.h"
@@ -6000,7 +6003,7 @@ void QgisApp::newPrintComposer()
 void QgisApp::newPrintLayout()
 {
   QString title;
-  if ( !uniqueLayoutTitle( this, title, true ) )
+  if ( !uniqueLayoutTitle( this, title, true, QgsMasterLayoutInterface::PrintLayout ) )
   {
     return;
   }
@@ -7333,7 +7336,7 @@ bool QgisApp::uniqueComposerTitle( QWidget *parent, QString &composerTitle, bool
   return true;
 }
 
-bool QgisApp::uniqueLayoutTitle( QWidget *parent, QString &title, bool acceptEmpty, const QString &currentTitle )
+bool QgisApp::uniqueLayoutTitle( QWidget *parent, QString &title, bool acceptEmpty, QgsMasterLayoutInterface::Type type, const QString &currentTitle )
 {
   if ( !parent )
   {
@@ -7342,24 +7345,36 @@ bool QgisApp::uniqueLayoutTitle( QWidget *parent, QString &title, bool acceptEmp
   bool ok = false;
   bool titleValid = false;
   QString newTitle = QString( currentTitle );
-  QString chooseMsg = tr( "Create unique print layout title" );
+
+  QString typeString;
+  switch ( type )
+  {
+    case QgsMasterLayoutInterface::PrintLayout:
+      typeString = tr( "print layout" );
+      break;
+    case QgsMasterLayoutInterface::Report:
+      typeString = tr( "report" );
+      break;
+  }
+
+  QString chooseMsg = tr( "Enter a unique %1 title" ).arg( typeString );
   if ( acceptEmpty )
   {
-    chooseMsg += '\n' + tr( "(title generated if left empty)" );
+    chooseMsg += '\n' + tr( "(a title will be automatically generated if left empty)" );
   }
   QString titleMsg = chooseMsg;
 
   QStringList layoutNames;
   layoutNames << newTitle;
-  const QList< QgsLayout * > layouts = QgsProject::instance()->layoutManager()->layouts();
-  for ( QgsLayout *l : layouts )
+  const QList< QgsMasterLayoutInterface * > layouts = QgsProject::instance()->layoutManager()->layouts();
+  for ( QgsMasterLayoutInterface *l : layouts )
   {
     layoutNames << l->name();
   }
   while ( !titleValid )
   {
     newTitle = QInputDialog::getText( parent,
-                                      tr( "Layout title" ),
+                                      tr( "Create %1 title" ).arg( typeString ),
                                       titleMsg,
                                       QLineEdit::Normal,
                                       newTitle,
@@ -7378,7 +7393,7 @@ bool QgisApp::uniqueLayoutTitle( QWidget *parent, QString &title, bool acceptEmp
       else
       {
         titleValid = true;
-        newTitle = QgsProject::instance()->layoutManager()->generateUniqueTitle();
+        newTitle = QgsProject::instance()->layoutManager()->generateUniqueTitle( type );
       }
     }
     else if ( layoutNames.indexOf( newTitle, 1 ) >= 0 )
@@ -7447,22 +7462,36 @@ QgsLayoutDesignerDialog *QgisApp::createNewLayout( QString title )
 {
   if ( title.isEmpty() )
   {
-    title = QgsProject::instance()->layoutManager()->generateUniqueTitle();
+    title = QgsProject::instance()->layoutManager()->generateUniqueTitle( QgsMasterLayoutInterface::PrintLayout );
   }
   //create new layout object
-  QgsLayout *layout = new QgsLayout( QgsProject::instance() );
+  QgsPrintLayout *layout = new QgsPrintLayout( QgsProject::instance() );
   layout->setName( title );
   layout->initializeDefaults();
   QgsProject::instance()->layoutManager()->addLayout( layout );
   return openLayoutDesignerDialog( layout );
 }
 
-QgsLayoutDesignerDialog *QgisApp::openLayoutDesignerDialog( QgsLayout *layout )
+QgsLayoutDesignerDialog *QgisApp::createNewReport( QString title )
+{
+  if ( title.isEmpty() )
+  {
+    title = QgsProject::instance()->layoutManager()->generateUniqueTitle( QgsMasterLayoutInterface::Report );
+  }
+  //create new report
+  std::unique_ptr< QgsReport > report = qgis::make_unique< QgsReport >( QgsProject::instance() );
+  report->setName( title );
+  QgsMasterLayoutInterface *layout = report.get();
+  QgsProject::instance()->layoutManager()->addLayout( report.release() );
+  return openLayoutDesignerDialog( layout );
+}
+
+QgsLayoutDesignerDialog *QgisApp::openLayoutDesignerDialog( QgsMasterLayoutInterface *layout )
 {
   // maybe a designer already open for this layout
   Q_FOREACH ( QgsLayoutDesignerDialog *designer, mLayoutDesignerDialogs )
   {
-    if ( designer->currentLayout() == layout )
+    if ( designer->masterLayout() == layout )
     {
       designer->show();
       designer->activate();
@@ -7473,7 +7502,7 @@ QgsLayoutDesignerDialog *QgisApp::openLayoutDesignerDialog( QgsLayout *layout )
 
   //nope, so make a new one
   QgsLayoutDesignerDialog *newDesigner = new QgsLayoutDesignerDialog( this );
-  newDesigner->setCurrentLayout( layout );
+  newDesigner->setMasterLayout( layout );
   connect( newDesigner, &QgsLayoutDesignerDialog::aboutToClose, this, [this, newDesigner]
   {
     emit layoutDesignerWillBeClosed( newDesigner->iface() );
@@ -7486,9 +7515,6 @@ QgsLayoutDesignerDialog *QgisApp::openLayoutDesignerDialog( QgsLayout *layout )
 
   newDesigner->open();
   emit layoutDesignerOpened( newDesigner->iface() );
-#if 0 //TODO
-  connect( newDesigner, &QgsLayoutDesignerDialog::atlasPreviewFeatureChanged, this, &QgisApp::refreshMapCanvas );
-#endif
 
   return newDesigner;
 }
@@ -7521,7 +7547,7 @@ QgsComposer *QgisApp::duplicateComposer( QgsComposer *currentComposer, QString t
   return newComposer;
 }
 
-QgsLayoutDesignerDialog *QgisApp::duplicateLayout( QgsLayout *layout, const QString &t )
+QgsLayoutDesignerDialog *QgisApp::duplicateLayout( QgsMasterLayoutInterface *layout, const QString &t )
 {
   QString title = t;
   if ( title.isEmpty() )
@@ -7530,7 +7556,7 @@ QgsLayoutDesignerDialog *QgisApp::duplicateLayout( QgsLayout *layout, const QStr
     title = tr( "%1 copy" ).arg( layout->name() );
   }
 
-  QgsLayout *newLayout = QgsProject::instance()->layoutManager()->duplicateLayout( layout, title );
+  QgsMasterLayoutInterface *newLayout = QgsProject::instance()->layoutManager()->duplicateLayout( layout, title );
   QgsLayoutDesignerDialog *dlg = openLayoutDesignerDialog( newLayout );
   dlg->activate();
   return dlg;
@@ -7562,81 +7588,88 @@ void QgisApp::deleteLayoutDesigners()
 void QgisApp::setupLayoutManagerConnections()
 {
   QgsLayoutManager *manager = QgsProject::instance()->layoutManager();
-  connect( manager, &QgsLayoutManager::compositionAdded, this, [ = ]( const QString & name )
+  connect( manager, &QgsLayoutManager::layoutAdded, this, [ = ]( const QString & name )
   {
-    QgsComposition *c = QgsProject::instance()->layoutManager()->compositionByName( name );
-    if ( !c )
+    QgsMasterLayoutInterface *l = QgsProject::instance()->layoutManager()->layoutByName( name );
+    if ( !l )
+      return;
+    QgsPrintLayout *pl = dynamic_cast< QgsPrintLayout *>( l );
+    if ( !pl )
       return;
 
-    mAtlasFeatureActions.insert( c, nullptr );
-    connect( c, &QgsComposition::nameChanged, this, [this, c]( const QString & name )
+    mAtlasFeatureActions.insert( pl, nullptr );
+    connect( pl, &QgsPrintLayout::nameChanged, this, [this, pl]( const QString & name )
     {
-      QgsMapLayerAction *action = mAtlasFeatureActions.value( c );
+      QgsMapLayerAction *action = mAtlasFeatureActions.value( pl );
       if ( action )
       {
         action->setText( QString( tr( "Set as atlas feature for %1" ) ).arg( name ) );
       }
     } );
 
-    connect( &c->atlasComposition(), &QgsAtlasComposition::coverageLayerChanged, this, [this, c]( QgsVectorLayer * coverageLayer )
+    connect( pl->atlas(), &QgsLayoutAtlas::coverageLayerChanged, this, [this, pl]( QgsVectorLayer * coverageLayer )
     {
-      setupAtlasMapLayerAction( c, static_cast< bool >( coverageLayer ) );
+      setupAtlasMapLayerAction( pl, static_cast< bool >( coverageLayer ) );
     } );
 
-    connect( &c->atlasComposition(), &QgsAtlasComposition::toggled, this, [this, c]( bool enabled )
+    connect( pl->atlas(), &QgsLayoutAtlas::toggled, this, [this, pl]( bool enabled )
     {
-      setupAtlasMapLayerAction( c, enabled );
+      setupAtlasMapLayerAction( pl, enabled );
     } );
 
-    setupAtlasMapLayerAction( c, c->atlasComposition().enabled() && c->atlasComposition().coverageLayer() );
+    setupAtlasMapLayerAction( pl, pl->atlas()->enabled() && pl->atlas()->coverageLayer() );
   } );
 
-  connect( manager, &QgsLayoutManager::compositionAboutToBeRemoved, this, [ = ]( const QString & name )
+  connect( manager, &QgsLayoutManager::layoutAboutToBeRemoved, this, [ = ]( const QString & name )
   {
-    QgsComposition *c = QgsProject::instance()->layoutManager()->compositionByName( name );
-    if ( c )
+    QgsMasterLayoutInterface *l = QgsProject::instance()->layoutManager()->layoutByName( name );
+    if ( l )
     {
-      QgsMapLayerAction *action = mAtlasFeatureActions.value( c );
-      if ( action )
+      QgsPrintLayout *pl = dynamic_cast< QgsPrintLayout * >( l );
+      if ( pl )
       {
-        QgsGui::mapLayerActionRegistry()->removeMapLayerAction( action );
-        delete action;
-        mAtlasFeatureActions.remove( c );
+        QgsMapLayerAction *action = mAtlasFeatureActions.value( pl );
+        if ( action )
+        {
+          QgsGui::mapLayerActionRegistry()->removeMapLayerAction( action );
+          delete action;
+          mAtlasFeatureActions.remove( pl );
+        }
       }
     }
   } );
 }
 
-void QgisApp::setupAtlasMapLayerAction( QgsComposition *composition, bool enableAction )
+void QgisApp::setupAtlasMapLayerAction( QgsPrintLayout *layout, bool enableAction )
 {
-  QgsMapLayerAction *action = mAtlasFeatureActions.value( composition );
+  QgsMapLayerAction *action = mAtlasFeatureActions.value( layout );
   if ( action )
   {
     QgsGui::mapLayerActionRegistry()->removeMapLayerAction( action );
     delete action;
     action = nullptr;
-    mAtlasFeatureActions.remove( composition );
+    mAtlasFeatureActions.remove( layout );
   }
 
   if ( enableAction )
   {
-    action = new QgsMapLayerAction( QString( tr( "Set as atlas feature for %1" ) ).arg( composition->name() ),
-                                    this, composition->atlasComposition().coverageLayer(), QgsMapLayerAction::SingleFeature,
+    action = new QgsMapLayerAction( QString( tr( "Set as atlas feature for %1" ) ).arg( layout->name() ),
+                                    this, layout->atlas()->coverageLayer(), QgsMapLayerAction::SingleFeature,
                                     QgsApplication::getThemeIcon( QStringLiteral( "/mIconAtlas.svg" ) ) );
-    mAtlasFeatureActions.insert( composition, action );
+    mAtlasFeatureActions.insert( layout, action );
     QgsGui::mapLayerActionRegistry()->addMapLayerAction( action );
-    connect( action, &QgsMapLayerAction::triggeredForFeature, this, [this, composition]( QgsMapLayer * layer, const QgsFeature & feat )
+    connect( action, &QgsMapLayerAction::triggeredForFeature, this, [this, layout]( QgsMapLayer * layer, const QgsFeature & feat )
     {
-      setCompositionAtlasFeature( composition, layer, feat );
+      setLayoutAtlasFeature( layout, layer, feat );
     }
            );
   }
 }
 
-void QgisApp::setCompositionAtlasFeature( QgsComposition *composition, QgsMapLayer *layer, const QgsFeature &feat )
+void QgisApp::setLayoutAtlasFeature( QgsPrintLayout *layout, QgsMapLayer *layer, const QgsFeature &feat )
 {
-  QgsComposer *composer = openComposer( composition );
-  composer->setAtlasFeature( layer, feat );
+  QgsLayoutDesignerDialog *designer = openLayoutDesignerDialog( layout );
+  designer->setAtlasFeature( layer, feat );
 }
 
 void QgisApp::composerMenuAboutToShow()
@@ -10602,7 +10635,12 @@ void QgisApp::closeProject()
 
   deletePrintComposers();
   deleteLayoutDesigners();
+
+  // ensure layout widgets are fully deleted
+  QgsApplication::sendPostedEvents( nullptr, QEvent::DeferredDelete );
+
   removeAnnotationItems();
+
   // clear out any stuff from project
   mMapCanvas->freeze( true );
   mMapCanvas->setLayers( QList<QgsMapLayer *>() );

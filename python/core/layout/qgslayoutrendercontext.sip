@@ -1,23 +1,23 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/layout/qgslayoutcontext.h                                   *
+ * src/core/layout/qgslayoutrendercontext.h                             *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
 
 
 
-class QgsLayoutContext : QObject
+class QgsLayoutRenderContext : QObject
 {
 %Docstring
- Stores information relating to the current context and rendering settings for a layout.
+ Stores information relating to the current rendering settings for a layout.
 
 .. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
-#include "qgslayoutcontext.h"
+#include "qgslayoutrendercontext.h"
 %End
   public:
 
@@ -28,13 +28,17 @@ class QgsLayoutContext : QObject
       FlagAntialiasing,
       FlagUseAdvancedEffects,
       FlagForceVectorOutput,
+      FlagHideCoverageLayer,
     };
-    typedef QFlags<QgsLayoutContext::Flag> Flags;
+    typedef QFlags<QgsLayoutRenderContext::Flag> Flags;
 
 
-    QgsLayoutContext();
+    QgsLayoutRenderContext( QgsLayout *layout /TransferThis/ );
+%Docstring
+Constructor for QgsLayoutRenderContext.
+%End
 
-    void setFlags( const QgsLayoutContext::Flags flags );
+    void setFlags( const QgsLayoutRenderContext::Flags flags );
 %Docstring
 Sets the combination of ``flags`` that will be used for rendering the layout.
 
@@ -45,7 +49,7 @@ Sets the combination of ``flags`` that will be used for rendering the layout.
 .. seealso:: :py:func:`testFlag()`
 %End
 
-    void setFlag( const QgsLayoutContext::Flag flag, const bool on = true );
+    void setFlag( const QgsLayoutRenderContext::Flag flag, const bool on = true );
 %Docstring
 Enables or disables a particular rendering ``flag`` for the layout. Other existing
 flags are not affected.
@@ -57,7 +61,7 @@ flags are not affected.
 .. seealso:: :py:func:`testFlag()`
 %End
 
-    QgsLayoutContext::Flags flags() const;
+    QgsLayoutRenderContext::Flags flags() const;
 %Docstring
 Returns the current combination of flags used for rendering the layout.
 
@@ -82,38 +86,6 @@ Check whether a particular rendering ``flag`` is enabled for the layout.
     QgsRenderContext::Flags renderContextFlags() const;
 %Docstring
 Returns the combination of render context flags matched to the layout context's settings.
-%End
-
-    void setFeature( const QgsFeature &feature );
-%Docstring
-Sets the current ``feature`` for evaluating the layout. This feature may
-be used for altering an item's content and appearance for a report
-or atlas layout.
-
-.. seealso:: :py:func:`feature()`
-%End
-
-    QgsFeature feature() const;
-%Docstring
-Returns the current feature for evaluating the layout. This feature may
-be used for altering an item's content and appearance for a report
-or atlas layout.
-
-.. seealso:: :py:func:`setFeature()`
-%End
-
-    QgsVectorLayer *layer() const;
-%Docstring
-Returns the vector layer associated with the layout's context.
-
-.. seealso:: :py:func:`setLayer()`
-%End
-
-    void setLayer( QgsVectorLayer *layer );
-%Docstring
-Sets the vector ``layer`` associated with the layout's context.
-
-.. seealso:: :py:func:`layer()`
 %End
 
     void setDpi( double dpi );
@@ -215,11 +187,16 @@ If ``layer`` is -1, all item layers should be rendered.
 
   signals:
 
-    void flagsChanged( QgsLayoutContext::Flags flags );
+    void flagsChanged( QgsLayoutRenderContext::Flags flags );
 %Docstring
 Emitted whenever the context's ``flags`` change.
 
 .. seealso:: :py:func:`setFlags()`
+%End
+
+    void dpiChanged();
+%Docstring
+Emitted when the context's DPI is changed.
 %End
 
 };
@@ -231,7 +208,7 @@ Emitted whenever the context's ``flags`` change.
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/layout/qgslayoutcontext.h                                   *
+ * src/core/layout/qgslayoutrendercontext.h                             *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

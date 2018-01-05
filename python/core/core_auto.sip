@@ -161,6 +161,9 @@
 %Include composer/qgscomposermultiframecommand.sip
 %Include composer/qgscomposertexttable.sip
 %Include composer/qgspaperitem.sip
+%Include layout/qgsabstractlayoutiterator.sip
+%Include layout/qgsabstractreportsection.sip
+%Include layout/qgsmasterlayoutinterface.sip
 %Include layout/qgslayoutaligner.sip
 %Include layout/qgslayoutexporter.sip
 %Include layout/qgslayoutgridsettings.sip
@@ -173,6 +176,8 @@
 %Include layout/qgslayoutsnapper.sip
 %Include layout/qgslayoutundocommand.sip
 %Include layout/qgslayoututils.sip
+%Include layout/qgsreportsectionfieldgroup.sip
+%Include layout/qgsreportsectionlayout.sip
 %Include metadata/qgslayermetadata.sip
 %Include metadata/qgslayermetadatavalidator.sip
 %Include metadata/qgslayermetadataformatter.sip
@@ -406,7 +411,7 @@
 %Include gps/qgsnmeaconnection.sip
 %Include gps/qgsgpsdconnection.sip
 %Include layout/qgslayout.sip
-%Include layout/qgslayoutcontext.sip
+%Include layout/qgslayoutatlas.sip
 %Include layout/qgslayouteffect.sip
 %Include layout/qgslayoutguidecollection.sip
 %Include layout/qgslayoutframe.sip
@@ -433,9 +438,13 @@
 %Include layout/qgslayoutmultiframe.sip
 %Include layout/qgslayoutpagecollection.sip
 %Include layout/qgslayoutobject.sip
+%Include layout/qgslayoutrendercontext.sip
+%Include layout/qgslayoutreportcontext.sip
 %Include layout/qgslayouttable.sip
 %Include layout/qgslayouttablecolumn.sip
 %Include layout/qgslayoutundostack.sip
+%Include layout/qgsprintlayout.sip
+%Include layout/qgsreport.sip
 %Include symbology/qgscptcityarchive.sip
 %Include symbology/qgssvgcache.sip
 %Include symbology/qgsstyle.sip

@@ -30,6 +30,8 @@
 
 QgsLayout::QgsLayout( QgsProject *project )
   : mProject( project )
+  , mRenderContext( new QgsLayoutRenderContext( this ) )
+  , mReportContext( new QgsLayoutReportContext( this ) )
   , mSnapper( QgsLayoutSnapper( this ) )
   , mGridSettings( this )
   , mPageCollection( new QgsLayoutPageCollection( this ) )
@@ -73,6 +75,25 @@ QgsLayout::~QgsLayout()
   mItemsModel.reset(); // manually delete, so we can control order of destruction
 }
 
+QgsLayout *QgsLayout::clone() const
+{
+  QDomDocument currentDoc;
+
+  QgsReadWriteContext context;
+  QDomElement elem = writeXml( currentDoc, context );
+  currentDoc.appendChild( elem );
+
+  std::unique_ptr< QgsLayout > newLayout = qgis::make_unique< QgsLayout >( mProject );
+  bool ok = false;
+  newLayout->loadFromTemplate( currentDoc, context, true, &ok );
+  if ( !ok )
+  {
+    return nullptr;
+  }
+
+  return newLayout.release();
+}
+
 void QgsLayout::initializeDefaults()
 {
   // default to a A4 landscape page
@@ -111,12 +132,6 @@ QgsProject *QgsLayout::project() const
 QgsLayoutModel *QgsLayout::itemsModel()
 {
   return mItemsModel.get();
-}
-
-void QgsLayout::setName( const QString &name )
-{
-  mName = name;
-  emit nameChanged( name );
 }
 
 QList<QgsLayoutItem *> QgsLayout::selectedLayoutItems( const bool includeLockedItems )
@@ -230,6 +245,20 @@ QgsLayoutItem *QgsLayout::itemByUuid( const QString &uuid, bool includeTemplateU
   return nullptr;
 }
 
+QgsLayoutItem *QgsLayout::itemById( const QString &id ) const
+{
+  const QList<QGraphicsItem *> itemList = items();
+  for ( QGraphicsItem *item : itemList )
+  {
+    QgsLayoutItem *layoutItem = dynamic_cast<QgsLayoutItem *>( item );
+    if ( layoutItem && layoutItem->id() == id )
+    {
+      return layoutItem;
+    }
+  }
+  return nullptr;
+}
+
 QgsLayoutMultiFrame *QgsLayout::multiFrameByUuid( const QString &uuid ) const
 {
   for ( QgsLayoutMultiFrame *mf : mMultiFrames )
@@ -281,32 +310,52 @@ QgsLayoutItem *QgsLayout::layoutItemAt( QPointF position, const QgsLayoutItem *b
 
 double QgsLayout::convertToLayoutUnits( const QgsLayoutMeasurement &measurement ) const
 {
-  return mContext.measurementConverter().convert( measurement, mUnits ).length();
+  return mRenderContext->measurementConverter().convert( measurement, mUnits ).length();
 }
 
 QSizeF QgsLayout::convertToLayoutUnits( const QgsLayoutSize &size ) const
 {
-  return mContext.measurementConverter().convert( size, mUnits ).toQSizeF();
+  return mRenderContext->measurementConverter().convert( size, mUnits ).toQSizeF();
 }
 
 QPointF QgsLayout::convertToLayoutUnits( const QgsLayoutPoint &point ) const
 {
-  return mContext.measurementConverter().convert( point, mUnits ).toQPointF();
+  return mRenderContext->measurementConverter().convert( point, mUnits ).toQPointF();
 }
 
 QgsLayoutMeasurement QgsLayout::convertFromLayoutUnits( const double length, const QgsUnitTypes::LayoutUnit unit ) const
 {
-  return mContext.measurementConverter().convert( QgsLayoutMeasurement( length, mUnits ), unit );
+  return mRenderContext->measurementConverter().convert( QgsLayoutMeasurement( length, mUnits ), unit );
 }
 
 QgsLayoutSize QgsLayout::convertFromLayoutUnits( const QSizeF &size, const QgsUnitTypes::LayoutUnit unit ) const
 {
-  return mContext.measurementConverter().convert( QgsLayoutSize( size.width(), size.height(), mUnits ), unit );
+  return mRenderContext->measurementConverter().convert( QgsLayoutSize( size.width(), size.height(), mUnits ), unit );
 }
 
 QgsLayoutPoint QgsLayout::convertFromLayoutUnits( const QPointF &point, const QgsUnitTypes::LayoutUnit unit ) const
 {
-  return mContext.measurementConverter().convert( QgsLayoutPoint( point.x(), point.y(), mUnits ), unit );
+  return mRenderContext->measurementConverter().convert( QgsLayoutPoint( point.x(), point.y(), mUnits ), unit );
+}
+
+QgsLayoutRenderContext &QgsLayout::renderContext()
+{
+  return *mRenderContext;
+}
+
+const QgsLayoutRenderContext &QgsLayout::renderContext() const
+{
+  return *mRenderContext;
+}
+
+QgsLayoutReportContext &QgsLayout::reportContext()
+{
+  return *mReportContext;
+}
+
+const QgsLayoutReportContext &QgsLayout::reportContext() const
+{
+  return *mReportContext;
 }
 
 QgsLayoutGuideCollection &QgsLayout::guides()
@@ -325,12 +374,6 @@ QgsExpressionContext QgsLayout::createExpressionContext() const
   context.appendScope( QgsExpressionContextUtils::globalScope() );
   context.appendScope( QgsExpressionContextUtils::projectScope( mProject ) );
   context.appendScope( QgsExpressionContextUtils::layoutScope( this ) );
-#if 0 //TODO
-  if ( mAtlasComposition.enabled() )
-  {
-    context.appendScope( QgsExpressionContextUtils::atlasScope( &mAtlasComposition ) );
-  }
-#endif
   return context;
 }
 
@@ -712,10 +755,9 @@ void QgsLayout::refresh()
 void QgsLayout::writeXmlLayoutSettings( QDomElement &element, QDomDocument &document, const QgsReadWriteContext & ) const
 {
   mCustomProperties.writeXml( element, document );
-  element.setAttribute( QStringLiteral( "name" ), mName );
   element.setAttribute( QStringLiteral( "units" ), QgsUnitTypes::encodeUnit( mUnits ) );
   element.setAttribute( QStringLiteral( "worldFileMap" ), mWorldFileMapId );
-  element.setAttribute( QStringLiteral( "printResolution" ), mContext.dpi() );
+  element.setAttribute( QStringLiteral( "printResolution" ), mRenderContext->dpi() );
 }
 
 QDomElement QgsLayout::writeXml( QDomDocument &document, const QgsReadWriteContext &context ) const
@@ -756,10 +798,9 @@ QDomElement QgsLayout::writeXml( QDomDocument &document, const QgsReadWriteConte
 bool QgsLayout::readXmlLayoutSettings( const QDomElement &layoutElement, const QDomDocument &, const QgsReadWriteContext & )
 {
   mCustomProperties.readXml( layoutElement );
-  setName( layoutElement.attribute( QStringLiteral( "name" ) ) );
   setUnits( QgsUnitTypes::decodeLayoutUnit( layoutElement.attribute( QStringLiteral( "units" ) ) ) );
   mWorldFileMapId = layoutElement.attribute( QStringLiteral( "worldFileMap" ) );
-  mContext.setDpi( layoutElement.attribute( QStringLiteral( "printResolution" ), "300" ).toDouble() );
+  mRenderContext->setDpi( layoutElement.attribute( QStringLiteral( "printResolution" ), "300" ).toDouble() );
   emit changed();
 
   return true;
