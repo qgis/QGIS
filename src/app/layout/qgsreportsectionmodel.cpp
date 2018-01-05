@@ -237,7 +237,7 @@ void QgsReportSectionModel::addSection( const QModelIndex &parent, std::unique_p
 {
   QgsAbstractReportSection *parentSection = sectionForIndex( parent );
   if ( !parentSection )
-    return;
+    parentSection = mReport;
 
   beginInsertRows( parent, parentSection->childCount(), parentSection->childCount() );
   parentSection->appendChild( section.release() );
