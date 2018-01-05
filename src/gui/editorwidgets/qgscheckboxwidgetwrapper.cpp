@@ -64,9 +64,9 @@ void QgsCheckboxWidgetWrapper::initWidget( QWidget *editor )
   mGroupBox = qobject_cast<QGroupBox *>( editor );
 
   if ( mCheckBox )
-    connect( mCheckBox, &QAbstractButton::toggled, this, static_cast<void ( QgsEditorWidgetWrapper::* )( bool )>( &QgsEditorWidgetWrapper::valueChanged ) );
+    connect( mCheckBox, &QAbstractButton::toggled, this, static_cast<void ( QgsEditorWidgetWrapper::* )( bool )>( &QgsEditorWidgetWrapper::emitValueChanged ) );
   if ( mGroupBox )
-    connect( mGroupBox, &QGroupBox::toggled, this, static_cast<void ( QgsEditorWidgetWrapper::* )( bool )>( &QgsEditorWidgetWrapper::valueChanged ) );
+    connect( mGroupBox, &QGroupBox::toggled, this, static_cast<void ( QgsEditorWidgetWrapper::* )( bool )>( &QgsEditorWidgetWrapper::emitValueChanged ) );
 }
 
 bool QgsCheckboxWidgetWrapper::valid() const

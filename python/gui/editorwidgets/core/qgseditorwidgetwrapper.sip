@@ -258,7 +258,7 @@ to reflect the new value.
 :param value: The new value of the attribute
 %End
 
-    void valueChanged( const QString &value );
+    void emitValueChanged( const QString &value );
 %Docstring
 If you emit to this slot in your implementation, an appropriate change notification
 will be broadcasted. Helper for string type widgets.
@@ -266,7 +266,7 @@ will be broadcasted. Helper for string type widgets.
 :param value: The value
 %End
 
-    void valueChanged( int value ) /PyName=valueChangedInt/;
+    void emitValueChanged( int value ) /PyName=emitValueChangedInt/;
 %Docstring
 If you emit to this slot in your implementation, an appropriate change notification
 will be broadcasted. Helper for int type widgets.
@@ -278,7 +278,7 @@ will be broadcasted. Helper for int type widgets.
    Python name valueChangedInt
 %End
 
-    void valueChanged( double value ) /PyName=valueChangedDouble/;
+    void emitValueChanged( double value ) /PyName=emitValueChangedDouble/;
 %Docstring
 If you emit to this slot in your implementation, an appropriate change notification
 will be broadcasted. Helper for double type widgets.
@@ -290,7 +290,7 @@ will be broadcasted. Helper for double type widgets.
    Python name valueChangedDouble
 %End
 
-    void valueChanged( bool value ) /PyName=valueChangedBool/;
+    void emitValueChanged( bool value ) /PyName=emitValueChangedBool/;
 %Docstring
 If you emit to this slot in your implementation, an appropriate change notification
 will be broadcasted. Helper for bool type widgets.
@@ -302,7 +302,7 @@ will be broadcasted. Helper for bool type widgets.
    Python name valueChangedBool
 %End
 
-    void valueChanged( qlonglong value );
+    void emitValueChanged( qlonglong value );
 %Docstring
 If you emit to this slot in your implementation, an appropriate change notification
 will be broadcasted. Helper for longlong type widgets.
@@ -310,7 +310,7 @@ will be broadcasted. Helper for longlong type widgets.
 :param value: The value
 %End
 
-    void valueChanged();
+    void emitValueChanged();
 %Docstring
 Will call the value() method to determine the emitted value
 %End

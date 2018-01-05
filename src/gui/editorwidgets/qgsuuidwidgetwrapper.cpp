@@ -62,7 +62,7 @@ void QgsUuidWidgetWrapper::setValue( const QVariant &value )
     if ( mLabel )
       mLabel->setText( QUuid::createUuid().toString() );
 
-    valueChanged();
+    emitValueChanged();
   }
   else
   {
