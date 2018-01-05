@@ -94,6 +94,7 @@ void QgsLayoutAtlasWidget::changeCoverageLayer( QgsMapLayer *layer )
   QgsVectorLayer *vl = dynamic_cast<QgsVectorLayer *>( layer );
 
   mLayout->undoStack()->beginCommand( mAtlas, tr( "Change Atlas Layer" ) );
+  mLayout->reportContext().setLayer( vl );
   if ( !vl )
   {
     mAtlas->setCoverageLayer( nullptr );
