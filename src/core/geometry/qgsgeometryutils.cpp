@@ -254,17 +254,16 @@ bool QgsGeometryUtils::lineIntersection( const QgsPoint &p1, QgsVector v1, const
   {
     z = p1.z();
   }
-  else if ( q1.is3D() )
+  else if ( p2.is3D() )
   {
-    z = q1.z();
+    z = p2.z();
   }
 
   if ( ! std::isnan( z ) )
   {
-    inter.convertTo( QgsWkbTypes::addZ( inter.wkbType() ) );
-    inter.setZ( z );
+    intersection.convertTo( QgsWkbTypes::addZ( intersection.wkbType() ) );
+    intersection.setZ( z );
   }
-
 
   return true;
 }

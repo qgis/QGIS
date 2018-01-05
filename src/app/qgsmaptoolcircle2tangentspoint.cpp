@@ -175,16 +175,16 @@ void QgsMapToolCircle2TangentsPoint::getPossibleCenter( )
     QgsPoint inter;
     QgsGeometryUtils::segmentIntersection( QgsPoint( line1m.asPolyline().at( 0 ) ), QgsPoint( line1m.asPolyline().at( 1 ) ),
                                            QgsPoint( line2m.asPolyline().at( 0 ) ), QgsPoint( line2m.asPolyline().at( 1 ) ), inter, isIntersect );
-    mCenters.append( QgsPointXY( inter ) );
+    mCenters.append( QgsPoint( inter ) );
     QgsGeometryUtils::segmentIntersection( QgsPoint( line1m.asPolyline().at( 0 ) ), QgsPoint( line1m.asPolyline().at( 1 ) ),
                                            QgsPoint( line2p.asPolyline().at( 0 ) ), QgsPoint( line2p.asPolyline().at( 1 ) ), inter, isIntersect );
-    mCenters.append( QgsPointXY( inter ) );
+    mCenters.append( QgsPoint( inter ) );
     QgsGeometryUtils::segmentIntersection( QgsPoint( line1p.asPolyline().at( 0 ) ), QgsPoint( line1p.asPolyline().at( 1 ) ),
                                            QgsPoint( line2m.asPolyline().at( 0 ) ), QgsPoint( line2m.asPolyline().at( 1 ) ), inter, isIntersect );
-    mCenters.append( QgsPointXY( inter ) );
+    mCenters.append( QgsPoint( inter ) );
     QgsGeometryUtils::segmentIntersection( QgsPoint( line1p.asPolyline().at( 0 ) ), QgsPoint( line1p.asPolyline().at( 1 ) ),
                                            QgsPoint( line2p.asPolyline().at( 0 ) ), QgsPoint( line2p.asPolyline().at( 1 ) ), inter, isIntersect );
-    mCenters.append( QgsPointXY( inter ) );
+    mCenters.append( QgsPoint( inter ) );
   }
 }
 
