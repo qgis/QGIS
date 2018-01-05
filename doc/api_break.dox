@@ -1174,6 +1174,7 @@ or QgsField.constraintExpression()/QgsField.constraintDescription() instead.
 QgsEditorWidgetWrapper        {#qgis_api_break_3_0_QgsEditorWidgetWrapper}
 ----------------------
 
+- valueChanged() slots (string, int, double, etc.) and their Python counterparts have all been renamed to emitValueChanged() and corresponding counterparts for Python.
 - constraintStatusChanged now reports a QgsEditorWidgetWrapper::ConstraintResult instead of the previous boolean value for the constraint status
 - The boolean constraintValid argument for updateConstraintWidgetStatus has been changed to a QgsEditorWidgetWrapper::ConstraintResult value
 
