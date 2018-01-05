@@ -12,6 +12,13 @@ class QgsDateTimeEdit : QDateTimeEdit
 {
 %Docstring
  The QgsDateTimeEdit class is a QDateTimeEdit with the capability of setting/reading null date/times.
+
+.. warning::
+
+   You should use the signal valueChanged of this subclass
+rather than QDateTimeEdit.dateTimeChanged. If you consequently connect parent's
+dateTimeChanged signal and call dateTime() afterwards there is no warranty to
+have a proper NULL value handling.
 %End
 
 %TypeHeaderCode
@@ -63,6 +70,14 @@ Set the current date as NULL
 Resets the widget to show no value (ie, an "unknown" state).
 
 .. versionadded:: 2.16
+%End
+
+  signals:
+
+    void valueChanged( const QDateTime &date );
+%Docstring
+signal emitted whenever the value changes.
+@param date the new date/time value.
 %End
 
   protected:

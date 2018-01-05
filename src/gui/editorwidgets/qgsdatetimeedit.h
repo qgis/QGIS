@@ -23,6 +23,11 @@
 /**
  * \ingroup gui
  * \brief The QgsDateTimeEdit class is a QDateTimeEdit with the capability of setting/reading null date/times.
+ *
+ * \warning You should use the signal valueChanged of this subclass
+ * rather than QDateTimeEdit::dateTimeChanged. If you consequently connect parent's
+ * dateTimeChanged signal and call dateTime() afterwards there is no warranty to
+ * have a proper NULL value handling.
  */
 class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
 {
@@ -61,6 +66,14 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
      * \since QGIS 2.16
      */
     void setEmpty();
+
+  signals:
+
+    /**
+     * signal emitted whenever the value changes.
+     * @param date the new date/time value.
+     */
+    void valueChanged( const QDateTime &date );
 
   protected:
     void mousePressEvent( QMouseEvent *event ) override;
