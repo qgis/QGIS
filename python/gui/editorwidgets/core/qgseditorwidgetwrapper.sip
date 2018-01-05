@@ -258,59 +258,7 @@ to reflect the new value.
 :param value: The new value of the attribute
 %End
 
-    void valueChanged( const QString &value );
-%Docstring
-If you emit to this slot in your implementation, an appropriate change notification
-will be broadcasted. Helper for string type widgets.
-
-:param value: The value
-%End
-
-    void valueChanged( int value ) /PyName=valueChangedInt/;
-%Docstring
-If you emit to this slot in your implementation, an appropriate change notification
-will be broadcasted. Helper for int type widgets.
-
-:param value: The value
-
-.. note::
-
-   Python name valueChangedInt
-%End
-
-    void valueChanged( double value ) /PyName=valueChangedDouble/;
-%Docstring
-If you emit to this slot in your implementation, an appropriate change notification
-will be broadcasted. Helper for double type widgets.
-
-:param value: The value
-
-.. note::
-
-   Python name valueChangedDouble
-%End
-
-    void valueChanged( bool value ) /PyName=valueChangedBool/;
-%Docstring
-If you emit to this slot in your implementation, an appropriate change notification
-will be broadcasted. Helper for bool type widgets.
-
-:param value: The value
-
-.. note::
-
-   Python name valueChangedBool
-%End
-
-    void valueChanged( qlonglong value );
-%Docstring
-If you emit to this slot in your implementation, an appropriate change notification
-will be broadcasted. Helper for longlong type widgets.
-
-:param value: The value
-%End
-
-    void valueChanged();
+    void emitValueChanged();
 %Docstring
 Will call the value() method to determine the emitted value
 %End
