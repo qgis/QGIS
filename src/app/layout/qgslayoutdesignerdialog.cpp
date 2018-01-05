@@ -659,9 +659,11 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
 
   mAtlasDock = new QgsDockWidget( tr( "Atlas" ), this );
   mAtlasDock->setObjectName( QStringLiteral( "AtlasDock" ) );
+  connect( mAtlasDock, &QDockWidget::visibilityChanged, mActionAtlasSettings, &QAction::setChecked );
 
   mReportDock = new QgsDockWidget( tr( "Report" ), this );
   mReportDock->setObjectName( QStringLiteral( "ReportDock" ) );
+  connect( mReportDock, &QDockWidget::visibilityChanged, mActionReportSettings, &QAction::setChecked );
 
   const QList<QDockWidget *> docks = findChildren<QDockWidget *>();
   for ( QDockWidget *dock : docks )
@@ -1992,12 +1994,12 @@ void QgsLayoutDesignerDialog::exportToSvg()
   QApplication::restoreOverrideCursor();
 }
 
-void QgsLayoutDesignerDialog::showAtlasSettings()
+void QgsLayoutDesignerDialog::showAtlasSettings( bool checked )
 {
   if ( !mAtlasDock )
     return;
 
-  mAtlasDock->setUserVisible( true );
+  mAtlasDock->setUserVisible( checked );
 }
 
 void QgsLayoutDesignerDialog::atlasPreviewTriggered( bool checked )
@@ -3274,12 +3276,12 @@ void QgsLayoutDesignerDialog::printReport()
   QApplication::restoreOverrideCursor();
 }
 
-void QgsLayoutDesignerDialog::showReportSettings()
+void QgsLayoutDesignerDialog::showReportSettings( bool checked )
 {
   if ( !mReportDock )
     return;
 
-  mReportDock->setUserVisible( true );
+  mReportDock->setUserVisible( checked );
 }
 
 void QgsLayoutDesignerDialog::pageSetup()

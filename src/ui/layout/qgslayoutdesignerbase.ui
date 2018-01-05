@@ -99,7 +99,7 @@
      <x>0</x>
      <y>0</y>
      <width>2180</width>
-     <height>42</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="mLayoutMenu">
@@ -1369,6 +1369,9 @@
    </property>
   </action>
   <action name="mActionAtlasSettings">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="icon">
     <iconset resource="../../../images/images.qrc">
      <normaloff>:/images/themes/default/mActionAtlasSettings.svg</normaloff>:/images/themes/default/mActionAtlasSettings.svg</iconset>
@@ -1429,6 +1432,9 @@
    </property>
   </action>
   <action name="mActionReportSettings">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="icon">
     <iconset resource="../../../images/images.qrc">
      <normaloff>:/images/themes/default/mActionAtlasSettings.svg</normaloff>:/images/themes/default/mActionAtlasSettings.svg</iconset>
@@ -1483,6 +1489,7 @@
   </action>
  </widget>
  <resources>
+  <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
