@@ -542,17 +542,17 @@ QCursor QgsApplication::getThemeCursor( const Cursor &cursor )
   Q_ASSERT( ! name.isEmpty( ) );
 
   QIcon icon = getThemeIcon( QStringLiteral( "cursors" ) + QDir::separator() + name );
-  QCursor _cursor;
+  QCursor cursorIcon;
   // Check if an icon exists for this cursor (the O.S. default cursor will be used if it does not)
   if ( ! icon.isNull( ) )
   {
     // Apply scaling
-    float scale( ( float ) app->fontMetrics().height() / 32 * 1.5 ) ; // Make them bigger to match 24x24
-    _cursor = QCursor( icon.pixmap( std::ceil( scale * 32 ), std::ceil( scale * 32 ) ), std::ceil( scale * activeX ), std::ceil( scale * activeY ) );
+    float scale = app->fontMetrics().height() / 32.0;
+    cursorIcon = QCursor( icon.pixmap( std::ceil( scale * 32 ), std::ceil( scale * 32 ) ), std::ceil( scale * activeX ), std::ceil( scale * activeY ) );
   }
   if ( app )
-    app->mCursorCache.insert( cursor, _cursor );
-  return _cursor;
+    app->mCursorCache.insert( cursor, cursorIcon );
+  return cursorIcon;
 }
 
 // TODO: add some caching mechanism ?
