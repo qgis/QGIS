@@ -318,6 +318,25 @@ class PyQgsOGRProvider(unittest.TestCase):
         self.assertEqual(gdal.GetConfigOption("GDAL_HTTP_PROXY"), "myproxyhostname.com")
         self.assertEqual(gdal.GetConfigOption("GDAL_HTTP_PROXYUSERPWD"), "username")
 
+    def testSubSetStringEditable(self):
+        """Test that a shapefile is editable after setting a subset"""
+        vl = QgsVectorLayer(TEST_DATA_DIR + '/' + 'lines.shp', 'subset_test', 'ogr')
+        self.assertTrue(vl.isValid())
+        self.assertTrue(vl.dataProvider().capabilities() & QgsVectorDataProvider.DeleteFeatures)
+
+        vl = QgsVectorLayer(TEST_DATA_DIR + '/' + 'lines.shp', 'subset_test', 'ogr')
+        vl.setSubsetString('')
+        self.assertTrue(vl.isValid())
+        self.assertTrue(vl.dataProvider().capabilities() & QgsVectorDataProvider.DeleteFeatures)
+
+        vl = QgsVectorLayer(TEST_DATA_DIR + '/' + 'lines.shp', 'subset_test', 'ogr')
+        vl.setSubsetString('"Name" = \'Arterial\'')
+        self.assertTrue(vl.isValid())
+        self.assertFalse(vl.dataProvider().capabilities() & QgsVectorDataProvider.DeleteFeatures)
+
+        vl.setSubsetString('')
+        self.assertTrue(vl.dataProvider().capabilities() & QgsVectorDataProvider.DeleteFeatures)
+
 
 if __name__ == '__main__':
     unittest.main()
