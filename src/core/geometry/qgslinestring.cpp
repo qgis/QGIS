@@ -136,7 +136,7 @@ QgsLineString::QgsLineString( const QVector<QgsPointXY> &points )
   }
 }
 
-bool QgsLineString::operator==( const QgsCurve &other ) const
+bool QgsLineString::equals( const QgsCurve &other ) const
 {
   const QgsLineString *otherLine = qgsgeometry_cast< const QgsLineString * >( &other );
   if ( !otherLine )
@@ -162,11 +162,6 @@ bool QgsLineString::operator==( const QgsCurve &other ) const
   }
 
   return true;
-}
-
-bool QgsLineString::operator!=( const QgsCurve &other ) const
-{
-  return !operator==( other );
 }
 
 QgsLineString *QgsLineString::clone() const

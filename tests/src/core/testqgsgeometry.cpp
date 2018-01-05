@@ -80,7 +80,9 @@ class TestQgsGeometry : public QObject
     void asVariant(); //test conversion to and from a QVariant
     void isEmpty();
     void operatorBool();
+    void equality();
     void vertexIterator();
+
 
     // geometry types
     void point(); //test QgsPointV2
@@ -431,6 +433,43 @@ void TestQgsGeometry::operatorBool()
   QVERIFY( !geom );
 }
 
+void TestQgsGeometry::equality()
+{
+  // null geometries
+  QVERIFY( !QgsGeometry().equals( QgsGeometry() ) );
+
+  // compare to null
+  QgsGeometry g1( qgis::make_unique< QgsPoint >( 1.0, 2.0 ) );
+  QVERIFY( !g1.equals( QgsGeometry() ) );
+  QVERIFY( !QgsGeometry().equals( g1 ) );
+
+  // compare implicitly shared copies
+  QgsGeometry g2( g1 );
+  QVERIFY( g2.equals( g1 ) );
+  QVERIFY( g1.equals( g2 ) );
+  QVERIFY( g1.equals( g1 ) );
+
+  // equal geometry, but different internal data
+  g2 = QgsGeometry::fromWkt( "Point( 1.0 2.0 )" );
+  QVERIFY( g2.equals( g1 ) );
+  QVERIFY( g1.equals( g2 ) );
+
+  // different dimensionality
+  g2 = QgsGeometry::fromWkt( "PointM( 1.0 2.0 3.0)" );
+  QVERIFY( !g2.equals( g1 ) );
+  QVERIFY( !g1.equals( g2 ) );
+
+  // different type
+  g2 = QgsGeometry::fromWkt( "LineString( 1.0 2.0, 3.0 4.0 )" );
+  QVERIFY( !g2.equals( g1 ) );
+  QVERIFY( !g1.equals( g2 ) );
+
+  // different direction
+  g1 = QgsGeometry::fromWkt( "LineString( 3.0 4.0, 1.0 2.0 )" );
+  QVERIFY( !g2.equals( g1 ) );
+  QVERIFY( !g1.equals( g2 ) );
+}
+
 void TestQgsGeometry::vertexIterator()
 {
   QgsGeometry geom;
@@ -578,6 +617,10 @@ void TestQgsGeometry::point()
   //test inequality operator
   QVERIFY( !( QgsPoint( QgsWkbTypes::Point, 2 / 3.0, 1 / 3.0 ) != QgsPoint( QgsWkbTypes::Point, 2 / 3.0, 1 / 3.0 ) ) );
   QVERIFY( QgsPoint( QgsWkbTypes::Point, 2 / 3.0, 1 / 3.0 ) != QgsPoint( QgsWkbTypes::PointZ, 2 / 3.0, 1 / 3.0 ) );
+
+  QgsLineString nonPoint;
+  QVERIFY( p8 != nonPoint );
+  QVERIFY( !( p8 == nonPoint ) );
 
   //test setters and getters
   //x
@@ -3044,6 +3087,10 @@ void TestQgsGeometry::lineString()
   QVERIFY( e5 != e6 );
 
   QVERIFY( e6 != QgsCircularString() );
+  QgsPoint p1;
+  QVERIFY( !( e6 == p1 ) );
+  QVERIFY( e6 != p1 );
+  QVERIFY( e6 == e6 );
 
   //close/isClosed
   QgsLineString l11;
@@ -4242,7 +4289,6 @@ void TestQgsGeometry::lineString()
                       << QgsPoint( 11, 12, 4 ) << QgsPoint( 111, 12, 5 ) << QgsPoint( 111.01, 11.99, 6 ) );
   QVERIFY( !nodeLine.removeDuplicateNodes( 0.02, true ) );
   QCOMPARE( nodeLine.asWkt( 2 ), QStringLiteral( "LineStringZ (11 2 1, 11.01 1.99 2, 11.02 2.01 3, 11 12 4, 111 12 5, 111.01 11.99 6)" ) );
-
 }
 
 void TestQgsGeometry::polygon()
@@ -4743,6 +4789,10 @@ void TestQgsGeometry::polygon()
   p10b.addInteriorRing( p10.interiorRing( 0 )->clone() );
   QVERIFY( p10 == p10b );
   QVERIFY( !( p10 != p10b ) );
+
+  QgsLineString nonPolygon;
+  QVERIFY( p10 != nonPolygon );
+  QVERIFY( !( p10 == nonPolygon ) );
 
   //clone
 
@@ -13936,6 +13986,28 @@ void TestQgsGeometry::geometryCollection()
   QCOMPARE( c15.numGeometries(), 2 );
   QCOMPARE( *static_cast< const QgsLineString * >( c15.geometryN( 0 ) ), part );
   QCOMPARE( *static_cast< const QgsLineString * >( c15.geometryN( 1 ) ), part2 );
+
+  //equality
+  QgsGeometryCollection emptyCollection;
+  QVERIFY( !( emptyCollection == c15 ) );
+  QVERIFY( emptyCollection != c15 );
+  QgsPoint notCollection;
+  QVERIFY( !( emptyCollection == notCollection ) );
+  QVERIFY( emptyCollection != notCollection );
+  QgsMultiPoint mp;
+  QgsMultiLineString ml;
+  QVERIFY( mp != ml );
+  QgsMultiLineString ml2;
+  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZ, 0, 0, 1 )
+                  << QgsPoint( QgsWkbTypes::PointZ, 0, 10, 2 ) << QgsPoint( QgsWkbTypes::PointZ, 10, 10, 3 )
+                  << QgsPoint( QgsWkbTypes::PointZ, 10, 0, 4 ) << QgsPoint( QgsWkbTypes::PointZ, 0, 0, 1 ) );
+  ml.addGeometry( part.clone() );
+  QVERIFY( ml != ml2 );
+  part.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZ, 1, 1, 1 )
+                  << QgsPoint( QgsWkbTypes::PointZ, 0, 10, 2 ) << QgsPoint( QgsWkbTypes::PointZ, 10, 10, 3 )
+                  << QgsPoint( QgsWkbTypes::PointZ, 10, 0, 4 ) << QgsPoint( QgsWkbTypes::PointZ, 0, 0, 1 ) );
+  ml2.addGeometry( part.clone() );
+  QVERIFY( ml != ml2 );
 
   //toCurveType
   std::unique_ptr< QgsGeometryCollection > curveType( c12.toCurveType() );

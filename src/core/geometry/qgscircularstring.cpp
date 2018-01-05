@@ -33,7 +33,7 @@ QgsCircularString::QgsCircularString()
   mWkbType = QgsWkbTypes::CircularString;
 }
 
-bool QgsCircularString::operator==( const QgsCurve &other ) const
+bool QgsCircularString::equals( const QgsCurve &other ) const
 {
   const QgsCircularString *otherLine = dynamic_cast< const QgsCircularString * >( &other );
   if ( !otherLine )
@@ -59,11 +59,6 @@ bool QgsCircularString::operator==( const QgsCurve &other ) const
   }
 
   return true;
-}
-
-bool QgsCircularString::operator!=( const QgsCurve &other ) const
-{
-  return !operator==( other );
 }
 
 QgsCircularString *QgsCircularString::createEmptyWithSameType() const

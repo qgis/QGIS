@@ -25,8 +25,10 @@ class QgsCurvePolygon: QgsSurface
     QgsCurvePolygon();
     QgsCurvePolygon( const QgsCurvePolygon &p );
 
-    bool operator==( const QgsCurvePolygon &other ) const;
-    bool operator!=( const QgsCurvePolygon &other ) const;
+    virtual bool operator==( const QgsAbstractGeometry &other ) const;
+
+    virtual bool operator!=( const QgsAbstractGeometry &other ) const;
+
 
     ~QgsCurvePolygon();
 

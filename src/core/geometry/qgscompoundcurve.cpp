@@ -35,7 +35,7 @@ QgsCompoundCurve::~QgsCompoundCurve()
   clear();
 }
 
-bool QgsCompoundCurve::operator==( const QgsCurve &other ) const
+bool QgsCompoundCurve::equals( const QgsCurve &other ) const
 {
   const QgsCompoundCurve *otherCurve = qgsgeometry_cast< const QgsCompoundCurve * >( &other );
   if ( !otherCurve )
@@ -54,11 +54,6 @@ bool QgsCompoundCurve::operator==( const QgsCurve &other ) const
   }
 
   return true;
-}
-
-bool QgsCompoundCurve::operator!=( const QgsCurve &other ) const
-{
-  return !operator==( other );
 }
 
 QgsCompoundCurve *QgsCompoundCurve::createEmptyWithSameType() const

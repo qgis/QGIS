@@ -57,9 +57,7 @@ or repeatedly calling addVertex()
 .. versionadded:: 3.0
 %End
 
-    virtual bool operator==( const QgsCurve &other ) const;
-
-    virtual bool operator!=( const QgsCurve &other ) const;
+    virtual bool equals( const QgsCurve &other ) const;
 
 
     QgsPoint pointN( int i ) const;
