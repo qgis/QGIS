@@ -2,8 +2,10 @@
      testqgsmaptoolutils.h
      ---------------------
     Date                 : January 2018
-    Copyright            : (C) 2018 by Paul Blottiere
-    Email                : paul.blottiere@oslandia.com
+    Copyright            : (C) 2017 by Martin Dobias
+                           (C) 2018 by Paul Blottiere
+    Email                : wonder dot sk at gmail dot com
+                           paul.blottiere@oslandia.com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
