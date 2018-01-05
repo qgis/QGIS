@@ -120,7 +120,7 @@ void QgsRangeWidgetWrapper::initWidget( QWidget *editor )
       mDoubleSpinBox->setSuffix( config( QStringLiteral( "Suffix" ) ).toString() );
 
     connect( mDoubleSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ),
-             this, static_cast < void ( QgsEditorWidgetWrapper::* )( double ) > ( &QgsEditorWidgetWrapper::valueChanged ) );
+    this, [ = ]( double value ) { emit valueChanged( value ); } );
   }
   else if ( mIntSpinBox )
   {
