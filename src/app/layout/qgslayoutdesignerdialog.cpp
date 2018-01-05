@@ -733,16 +733,16 @@ void QgsLayoutDesignerDialog::setMasterLayout( QgsMasterLayoutInterface *layout 
   if ( obj )
     connect( obj, &QObject::destroyed, this, &QgsLayoutDesignerDialog::close );
 
-  setWindowTitle( mMasterLayout->name() );
+  setTitle( mMasterLayout->name() );
 
   if ( QgsPrintLayout *l = dynamic_cast< QgsPrintLayout * >( layout ) )
   {
-    connect( l, &QgsPrintLayout::nameChanged, this, &QgsLayoutDesignerDialog::setWindowTitle );
+    connect( l, &QgsPrintLayout::nameChanged, this, &QgsLayoutDesignerDialog::setTitle );
     setCurrentLayout( l );
   }
   else if ( QgsReport *r = dynamic_cast< QgsReport * >( layout ) )
   {
-    connect( r, &QgsReport::nameChanged, this, &QgsLayoutDesignerDialog::setWindowTitle );
+    connect( r, &QgsReport::nameChanged, this, &QgsLayoutDesignerDialog::setTitle );
   }
 
   if ( dynamic_cast< QgsPrintLayout * >( layout ) )
@@ -1203,6 +1203,12 @@ void QgsLayoutDesignerDialog::dragEnterEvent( QDragEnterEvent *event )
   {
     event->acceptProposedAction();
   }
+}
+
+void QgsLayoutDesignerDialog::setTitle( const QString &title )
+{
+  mTitle = title;
+  updateWindowTitle();
 }
 
 void QgsLayoutDesignerDialog::itemTypeAdded( int id )
@@ -3995,6 +4001,14 @@ void QgsLayoutDesignerDialog::updateActionNames( QgsMasterLayoutInterface::Type 
   }
 }
 
+void QgsLayoutDesignerDialog::updateWindowTitle()
+{
+  if ( mSectionTitle.isEmpty() )
+    setWindowTitle( mTitle );
+  else
+    setWindowTitle( QStringLiteral( "%1 - %2" ).arg( mTitle, mSectionTitle ) );
+}
+
 void QgsLayoutDesignerDialog::selectItems( const QList<QgsLayoutItem *> items )
 {
   for ( QGraphicsItem *item : items )
@@ -4043,6 +4057,12 @@ void QgsLayoutDesignerDialog::setAtlasFeature( QgsMapLayer *layer, const QgsFeat
 
   //bring layout window to foreground
   activate();
+}
+
+void QgsLayoutDesignerDialog::setSectionTitle( const QString &title )
+{
+  mSectionTitle = title;
+  updateWindowTitle();
 }
 
 

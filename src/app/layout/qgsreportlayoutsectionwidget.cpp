@@ -61,6 +61,7 @@ void QgsReportLayoutSectionWidget::editHeader()
   if ( mSection->header() )
   {
     mDesigner->setCurrentLayout( mSection->header() );
+    mDesigner->setSectionTitle( tr( "%1 Header" ).arg( mSection->description() ) );
   }
 }
 
@@ -76,6 +77,7 @@ void QgsReportLayoutSectionWidget::editFooter()
   if ( mSection->footer() )
   {
     mDesigner->setCurrentLayout( mSection->footer() );
+    mDesigner->setSectionTitle( tr( "%1 Footer" ).arg( mSection->description() ) );
   }
 }
 
@@ -94,4 +96,5 @@ void QgsReportLayoutSectionWidget::editBody()
   }
 
   mDesigner->setCurrentLayout( mSection->body() );
+  mDesigner->setSectionTitle( tr( "%1 Body" ).arg( mSection->description() ) );
 }

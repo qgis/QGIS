@@ -144,6 +144,12 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
      */
     void setAtlasFeature( QgsMapLayer *layer, const QgsFeature &feat );
 
+    /**
+     * Sets a section \a title, to use to update the dialog title to display
+     * the currently edited section.
+     */
+    void setSectionTitle( const QString &title );
+
   public slots:
 
     /**
@@ -279,6 +285,8 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     void dragEnterEvent( QDragEnterEvent *event ) override;
 
   private slots:
+
+    void setTitle( const QString &title );
 
     void itemTypeAdded( int id );
     void statusZoomCombo_currentIndexChanged( int index );
@@ -419,6 +427,9 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     std::unique_ptr< QPrinter > mPrinter;
     bool mSetPageOrientation = false;
 
+    QString mTitle;
+    QString mSectionTitle;
+
     //! Save window state
     void saveWindowState();
 
@@ -480,6 +491,7 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     QPrinter *printer();
     QString reportTypeString();
     void updateActionNames( QgsMasterLayoutInterface::Type type );
+    void updateWindowTitle();
 };
 
 #endif // QGSLAYOUTDESIGNERDIALOG_H
