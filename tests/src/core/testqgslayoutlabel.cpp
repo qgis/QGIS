@@ -46,10 +46,10 @@ class TestQgsLayoutLabel : public QObject
     // test simple expression evaluation
     void evaluation();
     // test expression evaluation when a feature is set
-    void feature_evaluation();
-    void feature_evaluation2();
+    void featureEvaluationUsingAtlas();
+    void featureEvaluationUsingContext();
     // test page expressions
-    void page_evaluation();
+    void pageEvaluation();
     void marginMethods(); //tests getting/setting margins
     void render();
     void renderAsHtml();
@@ -145,7 +145,7 @@ void TestQgsLayoutLabel::evaluation()
   }
 }
 
-void TestQgsLayoutLabel::feature_evaluation()
+void TestQgsLayoutLabel::featureEvaluationUsingAtlas()
 {
   QgsPrintLayout l( QgsProject::instance() );
   l.initializeDefaults();
@@ -175,7 +175,7 @@ void TestQgsLayoutLabel::feature_evaluation()
   }
 }
 
-void TestQgsLayoutLabel::feature_evaluation2()
+void TestQgsLayoutLabel::featureEvaluationUsingContext()
 {
   // just using context, no atlas
   QgsLayout l( QgsProject::instance() );
@@ -209,7 +209,7 @@ void TestQgsLayoutLabel::feature_evaluation2()
   }
 }
 
-void TestQgsLayoutLabel::page_evaluation()
+void TestQgsLayoutLabel::pageEvaluation()
 {
   QgsLayout l( QgsProject::instance() );
   l.initializeDefaults();
