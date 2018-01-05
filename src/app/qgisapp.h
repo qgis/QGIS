@@ -391,6 +391,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Creates a new layout and returns a pointer to it
     QgsLayoutDesignerDialog *createNewLayout( QString title = QString() );
 
+    //! Creates a new report and returns a pointer to it
+    QgsLayoutDesignerDialog *createNewReport( QString title = QString() );
+
     /**
      * Opens a layout designer dialog for an existing \a layout.
      * If a designer already exists for this layout then it will be activated.

@@ -776,6 +776,8 @@ void QgsLayoutDesignerDialog::setMasterLayout( QgsMasterLayoutInterface *layout 
     mMenuReport = nullptr;
     mReportToolbar->hide();
   }
+
+  updateActionNames( mMasterLayout->layoutType() );
 }
 
 QgsMasterLayoutInterface *QgsLayoutDesignerDialog::masterLayout()
@@ -1554,11 +1556,21 @@ void QgsLayoutDesignerDialog::saveProject()
 void QgsLayoutDesignerDialog::newLayout()
 {
   QString title;
-  if ( !QgisApp::instance()->uniqueLayoutTitle( this, title, true, QgsMasterLayoutInterface::PrintLayout ) )
+  if ( !QgisApp::instance()->uniqueLayoutTitle( this, title, true, mMasterLayout->layoutType() ) )
   {
     return;
   }
-  QgisApp::instance()->createNewLayout( title );
+
+  switch ( mMasterLayout->layoutType() )
+  {
+    case QgsMasterLayoutInterface::PrintLayout:
+      QgisApp::instance()->createNewLayout( title );
+      break;
+
+    case QgsMasterLayoutInterface::Report:
+      QgisApp::instance()->createNewReport( title );
+      break;
+  }
 }
 
 void QgsLayoutDesignerDialog::showManager()
@@ -3901,7 +3913,6 @@ void QgsLayoutDesignerDialog::toggleActions( bool layoutAvailable )
   mActionPasteInPlace->setEnabled( layoutAvailable );
   mActionSaveAsTemplate->setEnabled( layoutAvailable );
   mActionLoadFromTemplate->setEnabled( layoutAvailable );
-  mActionDuplicateLayout->setEnabled( layoutAvailable );
   mActionExportAsImage->setEnabled( layoutAvailable );
   mActionExportAsPDF->setEnabled( layoutAvailable );
   mActionExportAsSVG->setEnabled( layoutAvailable );
@@ -3962,6 +3973,26 @@ QString QgsLayoutDesignerDialog::reportTypeString()
     return tr( "atlas" );
   else
     return tr( "report" );
+}
+
+void QgsLayoutDesignerDialog::updateActionNames( QgsMasterLayoutInterface::Type type )
+{
+  switch ( type )
+  {
+    case QgsMasterLayoutInterface::PrintLayout:
+      mActionDuplicateLayout->setText( tr( "&Duplicate Layout…" ) );
+      mActionRemoveLayout->setText( tr( "Delete Layout…" ) );
+      mActionRenameLayout->setText( tr( "Rename Layout…" ) );
+      mActionNewLayout->setText( tr( "New Layout…" ) );
+      break;
+
+    case QgsMasterLayoutInterface::Report:
+      mActionDuplicateLayout->setText( tr( "&Duplicate Report…" ) );
+      mActionRemoveLayout->setText( tr( "Delete Report…" ) );
+      mActionRenameLayout->setText( tr( "Rename Report…" ) );
+      mActionNewLayout->setText( tr( "New Report…" ) );
+      break;
+  }
 }
 
 void QgsLayoutDesignerDialog::selectItems( const QList<QgsLayoutItem *> items )
