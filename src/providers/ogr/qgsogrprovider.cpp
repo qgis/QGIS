@@ -607,7 +607,7 @@ bool QgsOgrProvider::setSubsetString( const QString &theSQL, bool updateFeatureC
   invalidateCachedExtent( false );
 
   // Changing the filter may change capabilities
-  computeCapabilities();
+  emit capabilitiesNeedUpdate();
 
   emit dataChanged();
 
@@ -2186,10 +2186,19 @@ QgsVectorDataProvider::Capabilities QgsOgrProvider::capabilities() const
 void QgsOgrProvider::computeCapabilities()
 {
   QgsVectorDataProvider::Capabilities ability = nullptr;
+  bool updateModeActivated = false;
 
   // collect abilities reported by OGR
   if ( mOgrLayer )
   {
+
+    // We want the layer in rw mode or capabilities will be wrong
+    // If mUpdateModeStackDepth > 0, it means that an updateMode is already active and that we have write access
+    if ( mUpdateModeStackDepth == 0 )
+    {
+      updateModeActivated = _enterUpdateMode( true );
+    }
+
     // Whilst the OGR documentation (e.g. at
     // http://www.gdal.org/ogr/classOGRLayer.html#a17) states "The capability
     // codes that can be tested are represented as strings, but #defined
@@ -2317,6 +2326,9 @@ void QgsOgrProvider::computeCapabilities()
       ability |= CircularGeometries;
     }
   }
+
+  if ( updateModeActivated )
+    leaveUpdateMode();
 
   mCapabilities = ability;
 }
@@ -4037,6 +4049,13 @@ void QgsOgrProvider::open( OpenMode mode )
       }
     }
   }
+
+  // Connect
+  if ( mode == OpenModeInitial )
+    connect( this, &QgsOgrProvider::capabilitiesNeedUpdate, this, [ =  ]
+  {
+    computeCapabilities();
+  } );
 
   // For debug/testing purposes
   if ( !mValid )

@@ -309,6 +309,11 @@ class QgsOgrProvider : public QgsVectorDataProvider
     void setupProxy();
 #endif
 
+  signals:
+
+    //! Emitted when capabilities need to be re-computed
+    void capabilitiesNeedUpdate( );
+
 };
 
 /**
