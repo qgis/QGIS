@@ -61,6 +61,15 @@ void QgsDateTimeEdit::clear()
     displayNull();
 
     changed( QDateTime() );
+
+    // emit signal of QDateTime::dateTimeChanged with an invalid date
+    // anyway, using parent's signal should be avoided
+    // If you consequently connect parent's dateTimeChanged signal
+    // and call dateTime() afterwards there is no warranty to
+    // have a proper NULL value handling
+    disconnect( this, &QDateTimeEdit::dateTimeChanged, this, &QgsDateTimeEdit::changed );
+    emit dateTimeChanged( QDateTime() );
+    connect( this, &QDateTimeEdit::dateTimeChanged, this, &QgsDateTimeEdit::changed );
   }
 }
 
@@ -170,7 +179,7 @@ void QgsDateTimeEdit::changed( const QDateTime &dateTime )
 
   mClearAction->setVisible( mAllowNull && !mIsNull );
 
-  emit QgsDateTimeEdit::dateTimeChanged( dateTime );
+  emit QgsDateTimeEdit::valueChanged( dateTime );
 }
 
 void QgsDateTimeEdit::displayNull( bool updateCalendar )

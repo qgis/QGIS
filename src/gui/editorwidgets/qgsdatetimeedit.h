@@ -24,8 +24,8 @@
  * \ingroup gui
  * \brief The QgsDateTimeEdit class is a QDateTimeEdit with the capability of setting/reading null date/times.
  *
- * \warning You should use the signal dateTimeChanged of this subclass QgsDateTimeEdit
- * rather than parent's one (QDateTimeEdit). If you consequently connect parent's
+ * \warning You should use the signal valueChanged of this subclass
+ * rather than QDateTimeEdit::dateTimeChanged. If you consequently connect parent's
  * dateTimeChanged signal and call dateTime() afterwards there is no warranty to
  * have a proper NULL value handling.
  */
@@ -70,11 +70,10 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
   signals:
 
     /**
-     * reimplements QDateTimeEdit::dateTimeChanged signal
-     * to properly handles NULL values.
+     * signal emitted whenever the value changes.
      * @param date the new date/time value.
      */
-    void dateTimeChanged( const QDateTime &date );
+    void valueChanged( const QDateTime &date );
 
   protected:
     void mousePressEvent( QMouseEvent *event ) override;

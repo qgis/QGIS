@@ -15,8 +15,8 @@ class QgsDateTimeEdit : QDateTimeEdit
 
 .. warning::
 
-   You should use the signal dateTimeChanged of this subclass QgsDateTimeEdit
-rather than parent's one (QDateTimeEdit). If you consequently connect parent's
+   You should use the signal valueChanged of this subclass
+rather than QDateTimeEdit.dateTimeChanged. If you consequently connect parent's
 dateTimeChanged signal and call dateTime() afterwards there is no warranty to
 have a proper NULL value handling.
 %End
@@ -74,10 +74,9 @@ Resets the widget to show no value (ie, an "unknown" state).
 
   signals:
 
-    void dateTimeChanged( const QDateTime &date );
+    void valueChanged( const QDateTime &date );
 %Docstring
-reimplements QDateTimeEdit.dateTimeChanged signal
-to properly handles NULL values.
+signal emitted whenever the value changes.
 @param date the new date/time value.
 %End
 
