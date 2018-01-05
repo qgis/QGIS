@@ -410,6 +410,16 @@ class CORE_EXPORT QgsGeometryUtils
      */
     static QgsLineString perpendicularSegment( const QgsPoint &p, const QgsPoint &s1, const QgsPoint &s2 );
 
+    /**
+     * A Z dimension is added to \a point if one of the point in the list
+     * \a points is in 3D. Moreover, the Z value of \a point is updated with.
+     *
+     * \param points List of points in which a 3D point is searched.
+     * \param point The point to update with Z dimension and value.
+     * \returns true if the point is updated, false otherwise
+     */
+    static bool setZValueFromPoints( const QgsPointSequence &points, QgsPoint &point );
+
     //! \note not available in Python bindings
     enum ComponentType SIP_SKIP
     {

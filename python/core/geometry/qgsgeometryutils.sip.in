@@ -388,6 +388,17 @@ Return the coefficients (a, b, c for equation "ax + by + c = 0") of a line defin
 :return: A line (segment) from p to perpendicular point on segment [s1, s2]
 %End
 
+    static bool setZValueFromPoints( const QgsPointSequence &points, QgsPoint &point );
+%Docstring
+A Z dimension is added to ``point`` if one of the point in the list
+``points`` is in 3D. Moreover, the Z value of ``point`` is updated with.
+
+:param points: List of points in which a 3D point is searched.
+:param point: The point to update with Z dimension and value.
+
+:return: true if the point is updated, false otherwise
+%End
+
 
 };
 

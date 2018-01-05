@@ -40,6 +40,8 @@ QgsCircle QgsCircle::from2Points( const QgsPoint &pt1, const QgsPoint &pt2 )
   double azimuth = QgsGeometryUtils::lineAngle( pt1.x(), pt1.y(), pt2.x(), pt2.y() ) * 180.0 / M_PI;
   double radius = pt1.distance( pt2 ) / 2.0;
 
+  QgsGeometryUtils::setZValueFromPoints( QgsPointSequence() << pt1 << pt2, center );
+
   return QgsCircle( center, radius, azimuth );
 }
 
@@ -138,26 +140,8 @@ QgsCircle QgsCircle::from3Points( const QgsPoint &pt1, const QgsPoint &pt2, cons
   double aSlope = yDelta_a / xDelta_a;
   double bSlope = yDelta_b / xDelta_b;
 
-  // set z cooridnate for center
-  double z = std::numeric_limits<double>::quiet_NaN();
-  if ( p1.is3D() )
-  {
-    z = p1.z();
-  }
-  else if ( p2.is3D() )
-  {
-    z = p2.z();
-  }
-  else if ( p3.is3D() )
-  {
-    z = p3.z();
-  }
-
-  if ( ! std::isnan( z ) )
-  {
-    center.convertTo( QgsWkbTypes::addZ( center.wkbType() ) );
-    center.setZ( z );
-  }
+  // set z coordinate for center
+  QgsGeometryUtils::setZValueFromPoints( QgsPointSequence() << p1 << p2 << p3, center );
 
   if ( ( std::fabs( xDelta_a ) <= epsilon ) && ( std::fabs( yDelta_b ) <= epsilon ) )
   {
@@ -197,7 +181,11 @@ QgsCircle QgsCircle::fromCenterDiameter( const QgsPoint &center, double diameter
 QgsCircle QgsCircle::fromCenterPoint( const QgsPoint &center, const QgsPoint &pt1 )
 {
   double azimuth = QgsGeometryUtils::lineAngle( center.x(), center.y(), pt1.x(), pt1.y() ) * 180.0 / M_PI;
-  return QgsCircle( center, center.distance( pt1 ), azimuth );
+
+  QgsPoint centerPt( center );
+  QgsGeometryUtils::setZValueFromPoints( QgsPointSequence() << pt1, centerPt );
+
+  return QgsCircle( centerPt, centerPt.distance( pt1 ), azimuth );
 }
 
 QgsCircle QgsCircle::from3Tangents( const QgsPoint &pt1_tg1, const QgsPoint &pt2_tg1, const QgsPoint &pt1_tg2, const QgsPoint &pt2_tg2, const QgsPoint &pt1_tg3, const QgsPoint &pt2_tg3, double epsilon )
@@ -242,7 +230,10 @@ QgsCircle QgsCircle::fromExtent( const QgsPoint &pt1, const QgsPoint &pt2 )
     return QgsCircle();
   }
 
-  return QgsCircle( QgsGeometryUtils::midpoint( pt1, pt2 ), delta_x / 2.0, 0 );
+  QgsPoint center = QgsGeometryUtils::midpoint( pt1, pt2 );
+  QgsGeometryUtils::setZValueFromPoints( QgsPointSequence() << pt1 << pt2, center );
+
+  return QgsCircle( center, delta_x / 2.0, 0 );
 }
 
 double QgsCircle::area() const

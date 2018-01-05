@@ -248,22 +248,8 @@ bool QgsGeometryUtils::lineIntersection( const QgsPoint &p1, QgsVector v1, const
 
   intersection = QgsPoint( p1.x() + v1.x() * k, p1.y() + v1.y() * k );
 
-  // z support for inter point
-  double z = std::numeric_limits<double>::quiet_NaN();
-  if ( p1.is3D() )
-  {
-    z = p1.z();
-  }
-  else if ( p2.is3D() )
-  {
-    z = p2.z();
-  }
-
-  if ( ! std::isnan( z ) )
-  {
-    intersection.convertTo( QgsWkbTypes::addZ( intersection.wkbType() ) );
-    intersection.setZ( z );
-  }
+  // z support for intersection point
+  QgsGeometryUtils::setZValueFromPoints( QgsPointSequence() << p1 << p2, intersection );
 
   return true;
 }
@@ -623,26 +609,7 @@ bool QgsGeometryUtils::segmentMidPoint( const QgsPoint &p1, const QgsPoint &p2, 
   result = possibleMidPoints.at( minDistIndex );
 
   // add z support if necessary
-  double z = std::numeric_limits<double>::quiet_NaN();
-
-  if ( p1.is3D() && p2.is3D() )
-  {
-    z = ( p1.z() + p2.z() ) / 2.;
-  }
-  else if ( p1.is3D() && !p2.is3D() )
-  {
-    z = p1.z();
-  }
-  else if ( !p1.is3D() && p2.is3D() )
-  {
-    z = p2.z();
-  }
-
-  if ( ! std::isnan( z ) )
-  {
-    result.convertTo( QgsWkbTypes::addZ( result.wkbType() ) );
-    result.setZ( z );
-  }
+  QgsGeometryUtils::setZValueFromPoints( QgsPointSequence() << p1 << p2, result );
 
   return true;
 }
@@ -1204,4 +1171,22 @@ double QgsGeometryUtils::averageAngle( double a1, double a2 )
     resultAngle = a1 - counterClockwiseDiff / 2.0;
   }
   return normalizedAngle( resultAngle );
+}
+
+bool QgsGeometryUtils::setZValueFromPoints( const QgsPointSequence &points, QgsPoint &point )
+{
+  bool rc = false;
+
+  for ( const QgsPoint &pt : points )
+  {
+    if ( pt.is3D() )
+    {
+      point.convertTo( QgsWkbTypes::addZ( point.wkbType() ) );
+      point.setZ( pt.z() );
+      rc = true;
+      break;
+    }
+  }
+
+  return rc;
 }
