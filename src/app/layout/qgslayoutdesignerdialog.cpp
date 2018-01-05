@@ -4063,6 +4063,7 @@ void QgsLayoutDesignerDialog::setSectionTitle( const QString &title )
 {
   mSectionTitle = title;
   updateWindowTitle();
+  mView->setSectionLabel( title );
 }
 
 
