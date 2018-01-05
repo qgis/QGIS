@@ -52,15 +52,15 @@ QgsLayoutManagerDialog::QgsLayoutManagerDialog( QWidget *parent, Qt::WindowFlags
   mTemplateFileWidget->setDialogTitle( tr( "Select a Template" ) );
   mTemplateFileWidget->lineEdit()->setShowClearButton( false );
   QgsSettings settings;
-  mTemplateFileWidget->setDefaultRoot( settings.value( QStringLiteral( "UI/lastComposerTemplateDir" ), QString() ).toString() );
-  mTemplateFileWidget->setFilePath( settings.value( QStringLiteral( "UI/ComposerManager/templatePath" ), QString() ).toString() );
+  mTemplateFileWidget->setDefaultRoot( settings.value( QStringLiteral( "lastComposerTemplateDir" ), QString(), QgsSettings::App ).toString() );
+  mTemplateFileWidget->setFilePath( settings.value( QStringLiteral( "ComposerManager/templatePath" ), QString(), QgsSettings::App ).toString() );
 
   connect( mTemplateFileWidget, &QgsFileWidget::fileChanged, this, [ = ]
   {
     QgsSettings settings;
-    settings.setValue( QStringLiteral( "UI/ComposerManager/templatePath" ), mTemplateFileWidget->filePath() );
+    settings.setValue( QStringLiteral( "ComposerManager/templatePath" ), mTemplateFileWidget->filePath(), QgsSettings::App );
     QFileInfo tmplFileInfo( mTemplateFileWidget->filePath() );
-    settings.setValue( QStringLiteral( "UI/lastComposerTemplateDir" ), tmplFileInfo.absolutePath() );
+    settings.setValue( QStringLiteral( "lastComposerTemplateDir" ), tmplFileInfo.absolutePath(), QgsSettings::App );
   } );
 
   mModel = new QgsLayoutManagerModel( QgsProject::instance()->layoutManager(),
