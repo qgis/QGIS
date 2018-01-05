@@ -355,7 +355,7 @@ QString QgsLayoutManager::generateUniqueComposerTitle() const
   return name;
 }
 
-QString QgsLayoutManager::generateUniqueTitle() const
+QString QgsLayoutManager::generateUniqueTitle( QgsMasterLayoutInterface::Type type ) const
 {
   QStringList names;
   for ( QgsMasterLayoutInterface *l : mLayouts )
@@ -366,7 +366,15 @@ QString QgsLayoutManager::generateUniqueTitle() const
   int id = 1;
   while ( name.isEmpty() || names.contains( name ) )
   {
-    name = tr( "Layout %1" ).arg( id );
+    switch ( type )
+    {
+      case QgsMasterLayoutInterface::PrintLayout:
+        name = tr( "Layout %1" ).arg( id );
+        break;
+      case QgsMasterLayoutInterface::Report:
+        name = tr( "Report %1" ).arg( id );
+        break;
+    }
     id++;
   }
   return name;

@@ -7392,7 +7392,7 @@ bool QgisApp::uniqueLayoutTitle( QWidget *parent, QString &title, bool acceptEmp
       else
       {
         titleValid = true;
-        newTitle = QgsProject::instance()->layoutManager()->generateUniqueTitle();
+        newTitle = QgsProject::instance()->layoutManager()->generateUniqueTitle( type );
       }
     }
     else if ( layoutNames.indexOf( newTitle, 1 ) >= 0 )
@@ -7461,7 +7461,7 @@ QgsLayoutDesignerDialog *QgisApp::createNewLayout( QString title )
 {
   if ( title.isEmpty() )
   {
-    title = QgsProject::instance()->layoutManager()->generateUniqueTitle();
+    title = QgsProject::instance()->layoutManager()->generateUniqueTitle( QgsMasterLayoutInterface::PrintLayout );
   }
   //create new layout object
   QgsPrintLayout *layout = new QgsPrintLayout( QgsProject::instance() );

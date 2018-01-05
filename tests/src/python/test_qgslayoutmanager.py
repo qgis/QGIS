@@ -19,7 +19,9 @@ from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (QgsComposition,
                        QgsPrintLayout,
                        QgsLayoutManager,
-                       QgsProject)
+                       QgsProject,
+                       QgsReport,
+                       QgsMasterLayoutInterface)
 
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
@@ -375,20 +377,29 @@ class TestQgsLayoutManager(unittest.TestCase):
     def testGenerateUniqueTitle(self):
         project = QgsProject()
         manager = QgsLayoutManager(project)
-        self.assertEqual(manager.generateUniqueTitle(), 'Layout 1')
+        self.assertEqual(manager.generateUniqueTitle(QgsMasterLayoutInterface.PrintLayout), 'Layout 1')
+        self.assertEqual(manager.generateUniqueTitle(QgsMasterLayoutInterface.Report), 'Report 1')
 
         layout = QgsPrintLayout(project)
         layout.setName(manager.generateUniqueTitle())
         manager.addLayout(layout)
 
         self.assertEqual(manager.generateUniqueTitle(), 'Layout 2')
+        self.assertEqual(manager.generateUniqueTitle(QgsMasterLayoutInterface.Report), 'Report 1')
         layout2 = QgsPrintLayout(project)
         layout2.setName(manager.generateUniqueTitle())
         manager.addLayout(layout2)
 
         self.assertEqual(manager.generateUniqueTitle(), 'Layout 3')
+
+        report1 = QgsReport(project)
+        report1.setName(manager.generateUniqueTitle(QgsMasterLayoutInterface.Report))
+        manager.addLayout(report1)
+        self.assertEqual(manager.generateUniqueTitle(QgsMasterLayoutInterface.Report), 'Report 2')
+
         manager.clear()
         self.assertEqual(manager.generateUniqueTitle(), 'Layout 1')
+        self.assertEqual(manager.generateUniqueTitle(QgsMasterLayoutInterface.Report), 'Report 1')
 
     def testRenameSignalCompositions(self):
         project = QgsProject()

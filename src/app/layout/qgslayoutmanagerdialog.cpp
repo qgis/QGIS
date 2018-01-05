@@ -249,7 +249,7 @@ void QgsLayoutManagerDialog::mAddButton_clicked()
 
   if ( title.isEmpty() )
   {
-    title = QgsProject::instance()->layoutManager()->generateUniqueTitle();
+    title = QgsProject::instance()->layoutManager()->generateUniqueTitle( QgsMasterLayoutInterface::PrintLayout );
   }
 
   std::unique_ptr< QgsPrintLayout > layout = qgis::make_unique< QgsPrintLayout >( QgsProject::instance() );
@@ -302,7 +302,7 @@ void QgsLayoutManagerDialog::createReport()
 
   if ( title.isEmpty() )
   {
-    title = QgsProject::instance()->layoutManager()->generateUniqueTitle();
+    title = QgsProject::instance()->layoutManager()->generateUniqueTitle( QgsMasterLayoutInterface::Report );
   }
 
   std::unique_ptr< QgsReport > report = qgis::make_unique< QgsReport >( QgsProject::instance() );

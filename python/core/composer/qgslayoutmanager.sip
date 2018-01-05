@@ -161,9 +161,9 @@ Generates a unique title for a new composition, which does not
 clash with any already contained by the manager.
 %End
 
-    QString generateUniqueTitle() const;
+    QString generateUniqueTitle( QgsMasterLayoutInterface::Type type = QgsMasterLayoutInterface::PrintLayout ) const;
 %Docstring
-Generates a unique title for a new layout, which does not
+Generates a unique title for a new layout of the specified ``type``, which does not
 clash with any already contained by the manager.
 %End
 

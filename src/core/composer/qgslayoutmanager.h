@@ -161,10 +161,10 @@ class CORE_EXPORT QgsLayoutManager : public QObject
     QString generateUniqueComposerTitle() const;
 
     /**
-     * Generates a unique title for a new layout, which does not
+     * Generates a unique title for a new layout of the specified \a type, which does not
      * clash with any already contained by the manager.
      */
-    QString generateUniqueTitle() const;
+    QString generateUniqueTitle( QgsMasterLayoutInterface::Type type = QgsMasterLayoutInterface::PrintLayout ) const;
 
   signals:
 
