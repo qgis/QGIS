@@ -155,6 +155,7 @@ class QgsLayoutQptDropHandler;
 #include "qgsmaplayeractionregistry.h"
 #include "qgsoptionswidgetfactory.h"
 #include "qgsattributetablefiltermodel.h"
+#include "qgsmasterlayoutinterface.h"
 #include "ui_qgisapp.h"
 #include "qgis_app.h"
 
@@ -376,7 +377,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      *
      * \returns true if user did not cancel the dialog.
      */
-    bool uniqueLayoutTitle( QWidget *parent, QString &title, bool acceptEmpty, const QString &currentTitle = QString() );
+    bool uniqueLayoutTitle( QWidget *parent, QString &title, bool acceptEmpty, QgsMasterLayoutInterface::Type type, const QString &currentTitle = QString() );
 
 
     //! Creates a new composer and returns a pointer to it

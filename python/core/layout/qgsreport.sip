@@ -38,6 +38,8 @@ Constructor for QgsReport, associated with the specified
 Note that ownership is not transferred to ``project``.
 %End
 
+    virtual QgsMasterLayoutInterface::Type layoutType() const;
+
     virtual QString type() const;
     virtual QString description() const;
     virtual QIcon icon() const;

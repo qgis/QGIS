@@ -1515,7 +1515,7 @@ void QgsLayoutDesignerDialog::addItemsFromTemplate()
 void QgsLayoutDesignerDialog::duplicate()
 {
   QString newTitle;
-  if ( !QgisApp::instance()->uniqueLayoutTitle( this, newTitle, false, tr( "%1 copy" ).arg( masterLayout()->name() ) ) )
+  if ( !QgisApp::instance()->uniqueLayoutTitle( this, newTitle, false, masterLayout()->layoutType(), tr( "%1 copy" ).arg( masterLayout()->name() ) ) )
   {
     return;
   }
@@ -1546,7 +1546,7 @@ void QgsLayoutDesignerDialog::saveProject()
 void QgsLayoutDesignerDialog::newLayout()
 {
   QString title;
-  if ( !QgisApp::instance()->uniqueLayoutTitle( this, title, true ) )
+  if ( !QgisApp::instance()->uniqueLayoutTitle( this, title, true, QgsMasterLayoutInterface::PrintLayout ) )
   {
     return;
   }
@@ -1568,7 +1568,7 @@ void QgsLayoutDesignerDialog::renameLayout()
 {
   QString currentTitle = masterLayout()->name();
   QString newTitle;
-  if ( !QgisApp::instance()->uniqueLayoutTitle( this, newTitle, false, currentTitle ) )
+  if ( !QgisApp::instance()->uniqueLayoutTitle( this, newTitle, false, masterLayout()->layoutType(), currentTitle ) )
   {
     return;
   }

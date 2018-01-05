@@ -242,7 +242,7 @@ void QgsLayoutManagerDialog::mAddButton_clicked()
   }
 
   QString title;
-  if ( !QgisApp::instance()->uniqueLayoutTitle( this, title, true, storedTitle ) )
+  if ( !QgisApp::instance()->uniqueLayoutTitle( this, title, true, QgsMasterLayoutInterface::PrintLayout, storedTitle ) )
   {
     return;
   }
@@ -295,7 +295,7 @@ void QgsLayoutManagerDialog::mTemplatesUserDirBtn_pressed()
 void QgsLayoutManagerDialog::createReport()
 {
   QString title;
-  if ( !QgisApp::instance()->uniqueLayoutTitle( this, title, true ) )
+  if ( !QgisApp::instance()->uniqueLayoutTitle( this, title, true, QgsMasterLayoutInterface::Report ) )
   {
     return;
   }
@@ -427,7 +427,7 @@ void QgsLayoutManagerDialog::duplicateClicked()
   QString currentTitle = currentLayout->name();
 
   QString newTitle;
-  if ( !QgisApp::instance()->uniqueLayoutTitle( this, newTitle, false, tr( "%1 copy" ).arg( currentTitle ) ) )
+  if ( !QgisApp::instance()->uniqueLayoutTitle( this, newTitle, false, currentLayout->layoutType(), tr( "%1 copy" ).arg( currentTitle ) ) )
   {
     return;
   }
@@ -467,7 +467,7 @@ void QgsLayoutManagerDialog::renameClicked()
 
   QString currentTitle = currentLayout->name();
   QString newTitle;
-  if ( !QgisApp::instance()->uniqueLayoutTitle( this, newTitle, false, currentTitle ) )
+  if ( !QgisApp::instance()->uniqueLayoutTitle( this, newTitle, false, currentLayout->layoutType(), currentTitle ) )
   {
     return;
   }

@@ -61,5 +61,9 @@ bool QgsReport::readLayoutXml( const QDomElement &layoutElement, const QDomDocum
   return true;
 }
 
-///@endcond
+QgsMasterLayoutInterface::Type QgsReport::layoutType() const
+{
+  return QgsMasterLayoutInterface::Report;
+}
 
+///@endcond

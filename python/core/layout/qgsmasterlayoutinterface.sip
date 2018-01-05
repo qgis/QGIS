@@ -20,12 +20,23 @@ class QgsMasterLayoutInterface
 %End
   public:
 
+    enum Type
+    {
+      PrintLayout,
+      Report,
+    };
+
     virtual ~QgsMasterLayoutInterface();
 
     virtual QgsMasterLayoutInterface *clone() const = 0 /Factory/;
 %Docstring
 Creates a clone of the layout. Ownership of the returned layout
 is transferred to the caller.
+%End
+
+    virtual QgsMasterLayoutInterface::Type layoutType() const = 0;
+%Docstring
+Returns the master layout type.
 %End
 
     virtual QString name() const = 0;

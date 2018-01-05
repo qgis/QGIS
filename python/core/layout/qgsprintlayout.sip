@@ -30,6 +30,8 @@ Constructor for QgsPrintLayout.
 
     virtual QgsProject *layoutProject() const;
 
+    virtual QgsMasterLayoutInterface::Type layoutType() const;
+
     virtual QIcon icon() const;
 
 

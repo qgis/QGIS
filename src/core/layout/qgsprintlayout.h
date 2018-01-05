@@ -41,6 +41,7 @@ class CORE_EXPORT QgsPrintLayout : public QgsLayout, public QgsMasterLayoutInter
 
     QgsPrintLayout *clone() const override SIP_FACTORY;
     QgsProject *layoutProject() const override;
+    QgsMasterLayoutInterface::Type layoutType() const override;
     QIcon icon() const override;
 
     /**

@@ -32,6 +32,13 @@ class CORE_EXPORT QgsMasterLayoutInterface
 
   public:
 
+    //! Master layout type
+    enum Type
+    {
+      PrintLayout = 0, //!< Individual print layout (QgsPrintLayout)
+      Report = 1, //!< Report (QgsReport)
+    };
+
     virtual ~QgsMasterLayoutInterface() = default;
 
     /**
@@ -39,6 +46,11 @@ class CORE_EXPORT QgsMasterLayoutInterface
      * is transferred to the caller.
      */
     virtual QgsMasterLayoutInterface *clone() const = 0 SIP_FACTORY;
+
+    /**
+     * Returns the master layout type.
+     */
+    virtual QgsMasterLayoutInterface::Type layoutType() const = 0;
 
     /**
      * Returns the layout's name.
