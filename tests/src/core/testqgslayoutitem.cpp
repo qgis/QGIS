@@ -1842,6 +1842,36 @@ void TestQgsLayoutItem::blendMode()
   item->refreshDataDefinedProperty();
   QCOMPARE( item->blendMode(), QPainter::CompositionMode_Darken ); // should not change
   QCOMPARE( item->mEffect->compositionMode(), QPainter::CompositionMode_Lighten );
+
+  QgsLayout l2( QgsProject::instance() );
+  l2.initializeDefaults();
+  QgsLayoutItemShape *mComposerRect1 = new QgsLayoutItemShape( &l2 );
+  mComposerRect1->attemptSetSceneRect( QRectF( 20, 20, 150, 100 ) );
+  mComposerRect1->setShapeType( QgsLayoutItemShape::Rectangle );
+  QgsSimpleFillSymbolLayer *simpleFill = new QgsSimpleFillSymbolLayer();
+  QgsFillSymbol *fillSymbol = new QgsFillSymbol();
+  fillSymbol->changeSymbolLayer( 0, simpleFill );
+  simpleFill->setColor( QColor( 255, 150, 0 ) );
+  mComposerRect1->setSymbol( fillSymbol );
+  delete fillSymbol;
+
+  l2.addLayoutItem( mComposerRect1 );
+  QgsLayoutItemShape *mComposerRect2 = new QgsLayoutItemShape( &l2 );
+  mComposerRect2->attemptSetSceneRect( QRectF( 50, 50, 150, 100 ) );
+  mComposerRect2->setShapeType( QgsLayoutItemShape::Rectangle );
+  l2.addLayoutItem( mComposerRect2 );
+  QgsSimpleFillSymbolLayer *simpleFill2 = new QgsSimpleFillSymbolLayer();
+  QgsFillSymbol *fillSymbol2 = new QgsFillSymbol();
+  fillSymbol2->changeSymbolLayer( 0, simpleFill2 );
+  simpleFill2->setColor( QColor( 0, 100, 150 ) );
+  mComposerRect2->setSymbol( fillSymbol2 );
+  delete fillSymbol2;
+
+  mComposerRect2->setBlendMode( QPainter::CompositionMode_Multiply );
+
+  QgsLayoutChecker checker( QStringLiteral( "composereffects_blend" ), &l2 );
+  checker.setControlPathPrefix( QStringLiteral( "composer_effects" ) );
+  QVERIFY( checker.testLayout( mReport ) );
 }
 
 void TestQgsLayoutItem::opacity()
@@ -1860,6 +1890,37 @@ void TestQgsLayoutItem::opacity()
   item->refreshDataDefinedProperty();
   QCOMPARE( item->itemOpacity(), 0.75 ); // should not change
   QCOMPARE( item->opacity(), 0.35 );
+
+
+  QgsLayout l2( QgsProject::instance() );
+  l2.initializeDefaults();
+  QgsLayoutItemShape *mComposerRect1 = new QgsLayoutItemShape( &l2 );
+  mComposerRect1->attemptSetSceneRect( QRectF( 20, 20, 150, 100 ) );
+  mComposerRect1->setShapeType( QgsLayoutItemShape::Rectangle );
+  QgsSimpleFillSymbolLayer *simpleFill = new QgsSimpleFillSymbolLayer();
+  QgsFillSymbol *fillSymbol = new QgsFillSymbol();
+  fillSymbol->changeSymbolLayer( 0, simpleFill );
+  simpleFill->setColor( QColor( 255, 150, 0 ) );
+  mComposerRect1->setSymbol( fillSymbol );
+  delete fillSymbol;
+
+  l2.addLayoutItem( mComposerRect1 );
+  QgsLayoutItemShape *mComposerRect2 = new QgsLayoutItemShape( &l2 );
+  mComposerRect2->attemptSetSceneRect( QRectF( 50, 50, 150, 100 ) );
+  mComposerRect2->setShapeType( QgsLayoutItemShape::Rectangle );
+  l2.addLayoutItem( mComposerRect2 );
+  QgsSimpleFillSymbolLayer *simpleFill2 = new QgsSimpleFillSymbolLayer();
+  QgsFillSymbol *fillSymbol2 = new QgsFillSymbol();
+  fillSymbol2->changeSymbolLayer( 0, simpleFill2 );
+  simpleFill2->setColor( QColor( 0, 100, 150 ) );
+  mComposerRect2->setSymbol( fillSymbol2 );
+  delete fillSymbol2;
+
+  mComposerRect2->setItemOpacity( 0.5 );
+
+  QgsLayoutChecker checker( QStringLiteral( "composereffects_transparency" ), &l2 );
+  checker.setControlPathPrefix( QStringLiteral( "composer_effects" ) );
+  QVERIFY( checker.testLayout( mReport ) );
 }
 
 void TestQgsLayoutItem::excludeFromExports()

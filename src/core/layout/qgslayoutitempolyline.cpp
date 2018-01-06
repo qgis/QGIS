@@ -199,6 +199,9 @@ void QgsLayoutItemPolyline::updateMarkerSvgSizes()
 
 void QgsLayoutItemPolyline::drawArrowHead( QPainter *p, const double x, const double y, const double angle, const double arrowHeadWidth )
 {
+  if ( !p )
+    return;
+
   double angleRad = angle / 180.0 * M_PI;
   QPointF middlePoint( x, y );
   //rotate both arrow points

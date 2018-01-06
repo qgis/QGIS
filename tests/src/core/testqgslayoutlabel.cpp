@@ -54,6 +54,7 @@ class TestQgsLayoutLabel : public QObject
     void render();
     void renderAsHtml();
     void renderAsHtmlRelative();
+    void labelRotation();
 
   private:
     QgsVectorLayer *mVectorLayer = nullptr;
@@ -313,6 +314,26 @@ void TestQgsLayoutLabel::renderAsHtmlRelative()
 
   QgsLayoutChecker checker( QStringLiteral( "composerlabel_renderhtmlrelative" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "composer_label" ) );
+  QVERIFY( checker.testLayout( mReport, 0, 0 ) );
+}
+
+void TestQgsLayoutLabel::labelRotation()
+{
+  QgsLayout l( QgsProject::instance() );
+  l.initializeDefaults();
+  QgsLayoutItemLabel *label = new QgsLayoutItemLabel( &l );
+  label->setMargin( 1 );
+  l.addLayoutItem( label );
+  label->setText( QStringLiteral( "test label" ) );
+  label->setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ), 30 ) );
+  label->attemptMove( QgsLayoutPoint( 70, 70 ) );
+  label->adjustSizeToText();
+  label->setBackgroundColor( QColor::fromRgb( 255, 150, 0 ) );
+  label->setBackgroundEnabled( true );
+  label->setItemRotation( 135 );
+
+  QgsLayoutChecker checker( QStringLiteral( "layoutrotation_label" ), &l );
+  checker.setControlPathPrefix( QStringLiteral( "composer_items" ) );
   QVERIFY( checker.testLayout( mReport, 0, 0 ) );
 }
 

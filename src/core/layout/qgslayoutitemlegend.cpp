@@ -38,7 +38,7 @@ QgsLayoutItemLegend::QgsLayoutItemLegend( QgsLayout *layout )
   : QgsLayoutItem( layout )
   , mLegendModel( new QgsLegendModel( layout->project()->layerTreeRoot() ) )
 {
-#if 0 //TODO
+#if 0 //no longer required?
   connect( &layout->atlasComposition(), &QgsAtlasComposition::renderEnded, this, &QgsLayoutItemLegend::onAtlasEnded );
 #endif
 
