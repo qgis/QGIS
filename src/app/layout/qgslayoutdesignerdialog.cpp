@@ -2073,6 +2073,7 @@ void QgsLayoutDesignerDialog::atlasPreviewTriggered( bool checked )
   else
   {
     atlas->endRender();
+    mView->setSectionLabel( QString() );
   }
 }
 
@@ -3827,6 +3828,8 @@ void QgsLayoutDesignerDialog::atlasFeatureChanged( const QgsFeature &feature )
   mapCanvas->expressionContextScope().addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_geometry" ), QVariant::fromValue( feature.geometry() ), true ) );
   mapCanvas->stopRendering();
   mapCanvas->refreshAllLayers();
+
+  mView->setSectionLabel( atlas->nameForPage( atlas->currentFeatureNumber() ) );
 }
 
 void QgsLayoutDesignerDialog::loadAtlasPredefinedScalesFromProject()
