@@ -423,7 +423,6 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         self.assertTrue(vl.deleteFeature(1234567890123))
         self.assertTrue(vl.commitChanges())
 
-
     def testSubSetStringEditable_bug17795(self):
         """Test that a layer is not editable after setting a subset and it's reverted to editable after the filter is removed"""
 
@@ -443,6 +442,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         vl.setSubsetString('"category" = \'one\'')
         self.assertTrue(vl.isValid())
         self.assertFalse(vl.dataProvider().capabilities() & isEditable)
+
 
 if __name__ == '__main__':
     unittest.main()

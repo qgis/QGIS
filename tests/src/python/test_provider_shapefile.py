@@ -481,7 +481,6 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(ds.GetLayer(0).GetFeatureCount(), original_feature_count - 1)
         ds = None
 
-
     def testSubSetStringEditable_bug17795(self):
         """Test that a layer is not editable after setting a subset and it's reverted to editable after the filter is removed"""
 
