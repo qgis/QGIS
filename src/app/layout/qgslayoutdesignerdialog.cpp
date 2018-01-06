@@ -2635,16 +2635,7 @@ void QgsLayoutDesignerDialog::exportAtlasToPdf()
   {
     QString lastUsedFile = settings.value( QStringLiteral( "lastSaveAsPdfFile" ), QStringLiteral( "qgis.pdf" ), QgsSettings::App ).toString();
     QFileInfo file( lastUsedFile );
-
-    QgsLayoutAtlas *printAtlas = atlas();
-    if ( printAtlas && printAtlas->enabled() && mActionAtlasPreview->isChecked() )
-    {
-      outputFileName = QDir( file.path() ).filePath( QgsFileUtils::stringToSafeFilename( printAtlas->currentFilename() ) + QStringLiteral( ".pdf" ) );
-    }
-    else
-    {
-      outputFileName = file.path() + '/' + QgsFileUtils::stringToSafeFilename( mMasterLayout->name() ) + QStringLiteral( ".pdf" );
-    }
+    outputFileName = file.path() + '/' + QgsFileUtils::stringToSafeFilename( mMasterLayout->name() ) + QStringLiteral( ".pdf" );
 
 #ifdef Q_OS_MAC
     QgisApp::instance()->activateWindow();
