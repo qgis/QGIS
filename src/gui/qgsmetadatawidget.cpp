@@ -820,6 +820,12 @@ void QgsMetadataWidget::acceptMetadata()
   mLayer->setMetadata( mMetadata );
 }
 
+void QgsMetadataWidget::setMetadata( const QgsLayerMetadata &metadata )
+{
+  mMetadata = metadata;
+  setPropertiesFromLayer();
+}
+
 void QgsMetadataWidget::syncFromCategoriesTabToKeywordsTab() const
 {
   if ( mCategoriesModel->rowCount() > 0 )
