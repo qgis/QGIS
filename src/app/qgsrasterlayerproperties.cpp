@@ -106,8 +106,8 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
 
   mBtnStyle = new QPushButton( tr( "Style" ) );
   QMenu *menuStyle = new QMenu( this );
-  menuStyle->addAction( tr( "Load Style..." ), this, SLOT( loadStyle_clicked() ) );
-  menuStyle->addAction( tr( "Save Style..." ), this, SLOT( saveStyleAs_clicked() ) );
+  menuStyle->addAction( tr( "Load Style…" ), this, SLOT( loadStyle_clicked() ) );
+  menuStyle->addAction( tr( "Save Style…" ), this, SLOT( saveStyleAs_clicked() ) );
   menuStyle->addSeparator();
   menuStyle->addAction( tr( "Save as Default" ), this, SLOT( saveDefaultStyle_clicked() ) );
   menuStyle->addAction( tr( "Restore Default" ), this, SLOT( loadDefaultStyle_clicked() ) );
@@ -117,8 +117,8 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
 
   mBtnMetadata = new QPushButton( tr( "Metadata" ), this );
   QMenu *menuMetadata = new QMenu( this );
-  mActionLoadMetadata = menuMetadata->addAction( tr( "Load Metadata" ), this, SLOT( loadMetadata() ) );
-  mActionSaveMetadataAs = menuMetadata->addAction( tr( "Save Metadata" ), this, SLOT( saveMetadataAs() ) );
+  mActionLoadMetadata = menuMetadata->addAction( tr( "Load Metadata…" ), this, SLOT( loadMetadata() ) );
+  mActionSaveMetadataAs = menuMetadata->addAction( tr( "Save Metadata…" ), this, SLOT( saveMetadataAs() ) );
   menuMetadata->addSeparator();
   menuMetadata->addAction( tr( "Save as Default" ), this, SLOT( saveDefaultMetadata() ) );
   menuMetadata->addAction( tr( "Restore Default" ), this, SLOT( loadDefaultMetadata() ) );

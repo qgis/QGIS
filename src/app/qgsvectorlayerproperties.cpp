@@ -124,8 +124,8 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
 
   mBtnMetadata = new QPushButton( tr( "Metadata" ), this );
   QMenu *menuMetadata = new QMenu( this );
-  mActionLoadMetadata = menuMetadata->addAction( tr( "Load Metadata" ), this, SLOT( loadMetadata() ) );
-  mActionSaveMetadataAs = menuMetadata->addAction( tr( "Save Metadata" ), this, SLOT( saveMetadataAs() ) );
+  mActionLoadMetadata = menuMetadata->addAction( tr( "Load Metadata…" ), this, SLOT( loadMetadata() ) );
+  mActionSaveMetadataAs = menuMetadata->addAction( tr( "Save Metadata…" ), this, SLOT( saveMetadataAs() ) );
   menuMetadata->addSeparator();
   menuMetadata->addAction( tr( "Save as Default" ), this, SLOT( saveDefaultMetadata() ) );
   menuMetadata->addAction( tr( "Restore Default" ), this, SLOT( loadDefaultMetadata() ) );
@@ -182,15 +182,15 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
 
   // Create the menu for the save style button to choose the output format
   mSaveAsMenu = new QMenu( this );
-  mSaveAsMenu->addAction( tr( "QGIS Layer Style File..." ) );
-  mSaveAsMenu->addAction( tr( "SLD File..." ) );
+  mSaveAsMenu->addAction( tr( "QGIS Layer Style File…" ) );
+  mSaveAsMenu->addAction( tr( "SLD File…" ) );
 
   //Only if the provider support loading & saving styles to db add new choices
   if ( mLayer->dataProvider()->isSaveAndLoadStyleToDatabaseSupported() )
   {
     //for loading
     mLoadStyleMenu = new QMenu( this );
-    mLoadStyleMenu->addAction( tr( "Load from file..." ) );
+    mLoadStyleMenu->addAction( tr( "Load from file…" ) );
     mLoadStyleMenu->addAction( tr( "Database styles manager" ) );
     //mActionLoadStyle->setContextMenuPolicy( Qt::PreventContextMenu );
     mActionLoadStyle->setMenu( mLoadStyleMenu );
