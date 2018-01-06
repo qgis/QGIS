@@ -28,6 +28,11 @@
 #include "qgslayoutframe.h"
 #include "qgsprintlayout.h"
 #include "qgslayoutatlas.h"
+#include "qgsreadwritecontext.h"
+#include "qgslayoutitemlegend.h"
+#include "qgslayertree.h"
+#include "qgslayoutitemattributetable.h"
+#include "qgsrasterlayer.h"
 
 class TestQgsLayout: public QObject
 {
@@ -42,6 +47,7 @@ class TestQgsLayout: public QObject
     void units();
     void name();
     void customProperties();
+    void writeRetrieveCustomProperties();
     void variablesEdited();
     void scope();
     void referenceMap();
@@ -57,6 +63,12 @@ class TestQgsLayout: public QObject
     void clear();
     void georeference();
     void clone();
+    void legendRestoredFromTemplate();
+    void legendRestoredFromTemplateAutoUpdate();
+    // void attributeTableRestoredFromTemplate();
+    void mapLayersRestoredFromTemplate();
+    void mapLayersStyleOverrideRestoredFromTemplate();
+    void atlasLayerRestoredFromTemplate();
 
   private:
     QString mReport;
@@ -65,6 +77,9 @@ class TestQgsLayout: public QObject
 
 void TestQgsLayout::initTestCase()
 {
+  QgsApplication::init();
+  QgsApplication::initQgis();
+
   mReport = QStringLiteral( "<h1>Layout Tests</h1>\n" );
 }
 
@@ -78,6 +93,7 @@ void TestQgsLayout::cleanupTestCase()
     myQTextStream << mReport;
     myFile.close();
   }
+  QgsApplication::exitQgis();
 }
 
 void TestQgsLayout::init()
@@ -184,6 +200,33 @@ void TestQgsLayout::customProperties()
   QVERIFY( keys.contains( "testprop2" ) );
 
   delete layout;
+}
+
+void TestQgsLayout::writeRetrieveCustomProperties()
+{
+  QgsLayout layout( QgsProject::instance() );
+  layout.setCustomProperty( QStringLiteral( "testprop" ), "testval" );
+  layout.setCustomProperty( QStringLiteral( "testprop2" ), 5 );
+
+  //test writing composition with custom properties
+  QDomImplementation DomImplementation;
+  QDomDocumentType documentType =
+    DomImplementation.createDocumentType(
+      QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" ) );
+  QDomDocument doc( documentType );
+  QDomElement layoutNode = layout.writeXml( doc, QgsReadWriteContext() );
+  QVERIFY( !layoutNode.isNull() );
+
+  //test reading node containing custom properties
+  QgsLayout readLayout( QgsProject::instance() );
+  QVERIFY( readLayout.readXml( layoutNode, doc, QgsReadWriteContext() ) );
+
+  //test retrieved custom properties
+  QCOMPARE( readLayout.customProperties().length(), 2 );
+  QVERIFY( readLayout.customProperties().contains( QString( "testprop" ) ) );
+  QVERIFY( readLayout.customProperties().contains( QString( "testprop2" ) ) );
+  QCOMPARE( readLayout.customProperty( "testprop" ).toString(), QString( "testval" ) );
+  QCOMPARE( readLayout.customProperty( "testprop2" ).toInt(), 5 );
 }
 
 void TestQgsLayout::variablesEdited()
@@ -883,6 +926,344 @@ void TestQgsLayout::clone()
   std::unique_ptr< QgsPrintLayout > plClone( pl.clone() );
   QVERIFY( plClone.get() );
   QCOMPARE( plClone->atlas()->pageNameExpression(), QStringLiteral( "not a real expression" ) );
+}
+
+
+void TestQgsLayout::legendRestoredFromTemplate()
+{
+  // load a layer
+
+  QFileInfo vectorFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/points.shp" );
+  QgsVectorLayer *layer = new QgsVectorLayer( vectorFileInfo.filePath(),
+      vectorFileInfo.completeBaseName(),
+      QStringLiteral( "ogr" ) );
+  QVERIFY( layer->isValid() );
+  QgsProject p;
+  p.addMapLayer( layer );
+
+  // create layout
+  QgsLayout c( &p );
+  // add a legend
+  QgsLayoutItemLegend *legend = new QgsLayoutItemLegend( &c );
+  c.addLayoutItem( legend );
+  legend->setAutoUpdateModel( false );
+
+  QgsLegendModel *model = legend->model();
+  QgsLayerTreeNode *node = model->rootGroup()->children().at( 0 );
+  // make sure we've got right node
+  QgsLayerTreeLayer *layerNode = dynamic_cast< QgsLayerTreeLayer * >( node );
+  QVERIFY( layerNode );
+  QCOMPARE( layerNode->layer(), layer );
+
+  // got it!
+  layerNode->setCustomProperty( QStringLiteral( "legend/title-label" ), QStringLiteral( "new title!" ) );
+  // make sure new title stuck
+  QCOMPARE( model->data( model->node2index( layerNode ), Qt::DisplayRole ).toString(), QString( "new title!" ) );
+
+  // save composition to template
+  QDomDocument doc;
+  doc.appendChild( c.writeXml( doc, QgsReadWriteContext() ) );
+
+  // make a new composition from template
+  QgsLayout c2( &p );
+  c2.loadFromTemplate( doc, QgsReadWriteContext() );
+  // get legend from new composition
+  QList< QgsLayoutItemLegend * > legends2;
+  c2.layoutItems( legends2 );
+  QgsLayoutItemLegend *legend2 = legends2.at( 0 );
+  QVERIFY( legend2 );
+
+  QgsLegendModel *model2 = legend2->model();
+  QgsLayerTreeNode *node2 = model2->rootGroup()->children().at( 0 );
+  QgsLayerTreeLayer *layerNode2 = dynamic_cast< QgsLayerTreeLayer * >( node2 );
+  QVERIFY( layerNode2 );
+  QCOMPARE( layerNode2->layer(), layer );
+  QCOMPARE( model2->data( model->node2index( layerNode2 ), Qt::DisplayRole ).toString(), QString( "new title!" ) );
+
+  QString oldId = layer->id();
+  // new test
+  // remove existing layer
+  p.removeMapLayer( layer );
+
+  // reload it, with a new id
+  QgsVectorLayer *layer2 = new QgsVectorLayer( vectorFileInfo.filePath(),
+      vectorFileInfo.completeBaseName(),
+      QStringLiteral( "ogr" ) );
+  p.addMapLayer( layer2 );
+  QVERIFY( oldId != layer2->id() );
+
+  // load composition from template
+  QgsLayout c3( &p );
+  c3.loadFromTemplate( doc, QgsReadWriteContext() );
+  // get legend from new composition
+  QList< QgsLayoutItemLegend * > legends3;
+  c3.layoutItems( legends3 );
+  QgsLayoutItemLegend *legend3 = legends3.at( 0 );
+  QVERIFY( legend3 );
+
+  //make sure customisation remains intact
+  QgsLegendModel *model3 = legend3->model();
+  QgsLayerTreeNode *node3 = model3->rootGroup()->children().at( 0 );
+  QgsLayerTreeLayer *layerNode3 = dynamic_cast< QgsLayerTreeLayer * >( node3 );
+  QVERIFY( layerNode3 );
+  QCOMPARE( layerNode3->layer(), layer2 );
+  QCOMPARE( model3->data( model->node2index( layerNode3 ), Qt::DisplayRole ).toString(), QString( "new title!" ) );
+}
+
+void TestQgsLayout::legendRestoredFromTemplateAutoUpdate()
+{
+  // load a layer
+
+  QFileInfo vectorFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/points.shp" );
+  QgsVectorLayer *layer = new QgsVectorLayer( vectorFileInfo.filePath(),
+      vectorFileInfo.completeBaseName(),
+      QStringLiteral( "ogr" ) );
+  QgsProject p;
+  p.addMapLayer( layer );
+
+  // create composition
+  QgsLayout c( &p );
+  // add a legend
+  QgsLayoutItemLegend *legend = new QgsLayoutItemLegend( &c );
+  c.addLayoutItem( legend );
+  legend->setAutoUpdateModel( true );
+
+  QgsLegendModel *model = legend->model();
+  QgsLayerTreeNode *node = model->rootGroup()->children().at( 0 );
+  // make sure we've got right node
+  QgsLayerTreeLayer *layerNode = dynamic_cast< QgsLayerTreeLayer * >( node );
+  QVERIFY( layerNode );
+  QCOMPARE( layerNode->layer(), layer );
+  QCOMPARE( model->data( model->node2index( layerNode ), Qt::DisplayRole ).toString(), QString( "points" ) );
+
+  // save composition to template
+  QDomDocument doc;
+  doc.appendChild( c.writeXml( doc, QgsReadWriteContext() ) );
+
+  //new project
+  QgsVectorLayer *layer2 = new QgsVectorLayer( vectorFileInfo.filePath(),
+      vectorFileInfo.completeBaseName(),
+      QStringLiteral( "ogr" ) );
+  QgsProject p2;
+  p2.addMapLayer( layer2 );
+
+  // make a new composition from template
+  QgsLayout c2( &p2 );
+  c2.loadFromTemplate( doc, QgsReadWriteContext() );
+  // get legend from new composition
+  QList< QgsLayoutItemLegend * > legends2;
+  c2.layoutItems( legends2 );
+  QgsLayoutItemLegend *legend2 = legends2.at( 0 );
+  QVERIFY( legend2 );
+
+  QgsLegendModel *model2 = legend2->model();
+  QgsLayerTreeNode *node2 = model2->rootGroup()->children().at( 0 );
+  QgsLayerTreeLayer *layerNode2 = dynamic_cast< QgsLayerTreeLayer * >( node2 );
+  QVERIFY( layerNode2 );
+  QCOMPARE( layerNode2->layer(), layer2 );
+  QCOMPARE( model2->data( model->node2index( layerNode2 ), Qt::DisplayRole ).toString(), QString( "points" ) );
+}
+
+#if 0 //TODO
+void TestQgsLayout::attributeTableRestoredFromTemplate()
+{
+  // load some layers
+  QFileInfo vectorFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/points.shp" );
+  QgsVectorLayer *layer = new QgsVectorLayer( vectorFileInfo.filePath(),
+      vectorFileInfo.completeBaseName(),
+      QStringLiteral( "ogr" ) );
+  QgsVectorLayer *layer2 = new QgsVectorLayer( QStringLiteral( "Point" ), QStringLiteral( "memory" ), QStringLiteral( "memory" ) );
+  QgsProject p;
+  p.addMapLayer( layer2 );
+  p.addMapLayer( layer );
+
+  // create composition
+  QgsLayout c( &p );
+  // add an attribute table
+  QgsLayoutItemAttributeTable *table = new QgsLayoutItemAttributeTable( &c );
+  c.addMultiFrame( table );
+  table->setVectorLayer( layer );
+  QgsLayoutFrame *frame = new QgsLayoutFrame( &c, table );
+  frame->attemptSetSceneRect( QRectF( 1, 1, 10, 10 ) );
+  c.addLayoutItem( frame );
+  table->addFrame( frame );
+
+  // save composition to template
+  QDomDocument doc;
+  doc.appendChild( c.writeXml( doc, QgsReadWriteContext() ) );
+
+  // new project
+  QgsProject p2;
+  QgsVectorLayer *layer3 = new QgsVectorLayer( vectorFileInfo.filePath(),
+      vectorFileInfo.completeBaseName(),
+      QStringLiteral( "ogr" ) );
+  QgsVectorLayer *layer4 = new QgsVectorLayer( QStringLiteral( "Point" ), QStringLiteral( "memory" ), QStringLiteral( "memory" ) );
+  p2.addMapLayer( layer4 );
+  p2.addMapLayer( layer3 );
+
+  // make a new composition from template
+  QgsLayout c2( &p2 );
+  c2.loadFromTemplate( doc, QgsReadWriteContext() );
+  // get table from new composition
+  QList< QgsLayoutFrame * > frames2;
+  c2.layoutItems( frames2 );
+  QgsLayoutItemAttributeTable *table2 = static_cast< QgsLayoutItemAttributeTable *>( frames2.at( 0 )->multiFrame() );
+  QVERIFY( table2 );
+
+  QCOMPARE( table2->vectorLayer(), layer3 );
+}
+#endif
+
+void TestQgsLayout::mapLayersRestoredFromTemplate()
+{
+  // load some layers
+  QFileInfo vectorFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/points.shp" );
+  QgsVectorLayer *layer = new QgsVectorLayer( vectorFileInfo.filePath(),
+      vectorFileInfo.completeBaseName(),
+      QStringLiteral( "ogr" ) );
+  QFileInfo vectorFileInfo2( QStringLiteral( TEST_DATA_DIR ) + "/polys.shp" );
+  QgsVectorLayer *layer2 = new QgsVectorLayer( vectorFileInfo2.filePath(),
+      vectorFileInfo2.completeBaseName(),
+      QStringLiteral( "ogr" ) );
+  QFileInfo rasterFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" );
+  QgsRasterLayer *rl = new QgsRasterLayer( rasterFileInfo.filePath(),
+      rasterFileInfo.completeBaseName() );
+
+  QgsProject p;
+  p.addMapLayer( layer2 );
+  p.addMapLayer( layer );
+  p.addMapLayer( rl );
+
+  // create composition
+  QgsLayout c( &p );
+  // add a map
+  QgsLayoutItemMap *map = new QgsLayoutItemMap( &c );
+  map->attemptSetSceneRect( QRectF( 1, 1, 10, 10 ) );
+  c.addLayoutItem( map );
+  map->setLayers( QList<QgsMapLayer *>() << layer << layer2 << rl );
+
+  // save composition to template
+  QDomDocument doc;
+  doc.appendChild( c.writeXml( doc, QgsReadWriteContext() ) );
+
+  // new project
+  QgsProject p2;
+  QgsVectorLayer *layer3 = new QgsVectorLayer( vectorFileInfo.filePath(),
+      vectorFileInfo.completeBaseName(),
+      QStringLiteral( "ogr" ) );
+  QgsVectorLayer *layer4 = new QgsVectorLayer( vectorFileInfo2.filePath(),
+      vectorFileInfo2.completeBaseName(),
+      QStringLiteral( "ogr" ) );
+  QgsRasterLayer *rl5 = new QgsRasterLayer( rasterFileInfo.filePath(),
+      rasterFileInfo.completeBaseName() );
+  p2.addMapLayer( layer4 );
+  p2.addMapLayer( layer3 );
+  p2.addMapLayer( rl5 );
+
+  // make a new composition from template
+  QgsLayout c2( &p2 );
+  c2.loadFromTemplate( doc, QgsReadWriteContext() );
+  // get map from new composition
+  QList< QgsLayoutItemMap * > maps;
+  c2.layoutItems( maps );
+  QgsLayoutItemMap *map2 = static_cast< QgsLayoutItemMap *>( maps.at( 0 ) );
+  QVERIFY( map2 );
+
+  QCOMPARE( map2->layers(), QList<QgsMapLayer *>() << layer3 << layer4 << rl5 );
+}
+
+void TestQgsLayout::mapLayersStyleOverrideRestoredFromTemplate()
+{
+  // load some layers
+  QFileInfo vectorFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/points.shp" );
+  QgsVectorLayer *layer = new QgsVectorLayer( vectorFileInfo.filePath(),
+      vectorFileInfo.completeBaseName(),
+      QStringLiteral( "ogr" ) );
+  QFileInfo vectorFileInfo2( QStringLiteral( TEST_DATA_DIR ) + "/polys.shp" );
+  QgsVectorLayer *layer2 = new QgsVectorLayer( vectorFileInfo2.filePath(),
+      vectorFileInfo2.completeBaseName(),
+      QStringLiteral( "ogr" ) );
+  QgsProject p;
+  p.addMapLayer( layer2 );
+  p.addMapLayer( layer );
+
+  // create composition
+  QgsLayout c( &p );
+  // add a map
+  QgsLayoutItemMap *map = new QgsLayoutItemMap( &c );
+  map->attemptSetSceneRect( QRectF( 1, 1, 10, 10 ) );
+  c.addLayoutItem( map );
+  map->setKeepLayerStyles( true );
+  QgsStringMap styles;
+  // just close your eyes and pretend these are real styles
+  styles.insert( layer->id(), QStringLiteral( "<b>xxxxx</b>" ) );
+  styles.insert( layer2->id(), QStringLiteral( "<blink>yyyyy</blink>" ) );
+  map->setLayerStyleOverrides( styles );
+
+  // save composition to template
+  QDomDocument doc;
+  doc.appendChild( c.writeXml( doc, QgsReadWriteContext() ) );
+
+  // new project
+  QgsProject p2;
+  QgsVectorLayer *layer3 = new QgsVectorLayer( vectorFileInfo.filePath(),
+      vectorFileInfo.completeBaseName(),
+      QStringLiteral( "ogr" ) );
+  QgsVectorLayer *layer4 = new QgsVectorLayer( vectorFileInfo2.filePath(),
+      vectorFileInfo2.completeBaseName(),
+      QStringLiteral( "ogr" ) );
+  p2.addMapLayer( layer4 );
+  p2.addMapLayer( layer3 );
+
+  // make a new composition from template
+  QgsLayout c2( &p2 );
+  c2.loadFromTemplate( doc, QgsReadWriteContext() );
+  // get map from new composition
+  QList< QgsLayoutItemMap * > maps;
+  c2.layoutItems( maps );
+  QgsLayoutItemMap *map2 = static_cast< QgsLayoutItemMap *>( maps.at( 0 ) );
+  QVERIFY( map2 );
+  QVERIFY( map2->keepLayerStyles() );
+
+  QgsStringMap restoredStyles = map2->layerStyleOverrides();
+  QVERIFY( restoredStyles.contains( layer3->id() ) );
+  QCOMPARE( restoredStyles.value( layer3->id() ).trimmed(), QStringLiteral( "<b>xxxxx</b>" ) );
+  QVERIFY( restoredStyles.contains( layer4->id() ) );
+  QCOMPARE( restoredStyles.value( layer4->id() ).trimmed(), QStringLiteral( "<blink>yyyyy</blink>" ) );
+}
+
+void TestQgsLayout::atlasLayerRestoredFromTemplate()
+{
+  // load some layers
+  QFileInfo vectorFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/points.shp" );
+  QgsVectorLayer *layer = new QgsVectorLayer( vectorFileInfo.filePath(),
+      vectorFileInfo.completeBaseName(),
+      QStringLiteral( "ogr" ) );
+  QgsProject p;
+  p.addMapLayer( layer );
+
+  // create composition
+  QgsPrintLayout c( &p );
+  // set atlas layer
+  c.atlas()->setEnabled( true );
+  c.atlas()->setCoverageLayer( layer );
+
+  // save composition to template
+  QDomDocument doc;
+  doc.appendChild( c.writeXml( doc, QgsReadWriteContext() ) );
+
+  // new project
+  QgsProject p2;
+  QgsVectorLayer *layer2 = new QgsVectorLayer( vectorFileInfo.filePath(),
+      vectorFileInfo.completeBaseName(),
+      QStringLiteral( "ogr" ) );
+  p2.addMapLayer( layer2 );
+
+  // make a new composition from template
+  QgsPrintLayout c2( &p2 );
+  c2.loadFromTemplate( doc, QgsReadWriteContext() );
+  // check atlas layer
+  QCOMPARE( c2.atlas()->coverageLayer(), layer2 );
 }
 
 

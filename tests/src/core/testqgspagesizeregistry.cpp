@@ -145,6 +145,20 @@ void TestQgsPageSizeRegistry::decodePageSize()
   QCOMPARE( result.name, QString( "A3" ) );
   QCOMPARE( result.size, QgsLayoutSize( 297.0, 420.0 ) );
 
+  //good strings
+  QVERIFY( registry->decodePageSize( QStringLiteral( "a4" ), result ) );
+  QCOMPARE( result.size.width(), 210.0 );
+  QCOMPARE( result.size.height(), 297.0 );
+  QVERIFY( registry->decodePageSize( QStringLiteral( "B0" ),  result ) );
+  QCOMPARE( result.size.width(), 1000.0 );
+  QCOMPARE( result.size.height(), 1414.0 );
+  QVERIFY( registry->decodePageSize( QStringLiteral( "letter" ),  result ) );
+  QCOMPARE( result.size.width(), 215.9 );
+  QCOMPARE( result.size.height(), 279.4 );
+  QVERIFY( registry->decodePageSize( QStringLiteral( "LEGAL" ),  result ) );
+  QCOMPARE( result.size.width(), 215.9 );
+  QCOMPARE( result.size.height(), 355.6 );
+
   //test with bad string
   QgsPageSize result2( QStringLiteral( "nomatch" ), QgsLayoutSize( 10.0, 20.0 ) );
   QgsPageSize expected( result2 ); //for a bad match, expect page size to be unchanged

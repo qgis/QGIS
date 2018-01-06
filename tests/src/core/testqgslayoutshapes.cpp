@@ -49,6 +49,7 @@ class TestQgsLayoutShapes : public QObject
     void symbol(); //test is styling shapes via symbol is working
     void readWriteXml();
     void bounds();
+    void shapeRotation();
 
   private:
 
@@ -285,6 +286,32 @@ void TestQgsLayoutShapes::bounds()
   QCOMPARE( bounds.right(), 153.0 );
   QCOMPARE( bounds.top(), -3.0 );
   QCOMPARE( bounds.bottom(), 103.0 );
+}
+
+void TestQgsLayoutShapes::shapeRotation()
+{
+  QgsProject p;
+  QgsLayout l( &p );
+  l.initializeDefaults();
+
+  QgsLayoutItemShape *shape = new QgsLayoutItemShape( &l );
+  shape->attemptSetSceneRect( QRectF( 70, 70, 150, 100 ) );
+  shape->setItemRotation( 45 );
+
+  //setup simple fill
+  QgsSimpleFillSymbolLayer *simpleFill = new QgsSimpleFillSymbolLayer();
+  QgsFillSymbol *fillSymbol = new QgsFillSymbol();
+  fillSymbol->changeSymbolLayer( 0, simpleFill );
+  simpleFill->setColor( QColor( 255, 150, 0 ) );
+  //simpleFill->setStrokeColor( Qt::yellow );
+  //simpleFill->setStrokeWidth( 6 );
+  shape->setSymbol( fillSymbol );
+  delete fillSymbol;
+
+  l.addLayoutItem( shape );
+  QgsLayoutChecker checker( QStringLiteral( "composerrotation_shape" ), &l );
+  checker.setControlPathPrefix( QStringLiteral( "composer_items" ) );
+  QVERIFY( checker.testLayout( mReport ) );
 }
 
 QGSTEST_MAIN( TestQgsLayoutShapes )

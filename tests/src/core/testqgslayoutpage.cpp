@@ -42,6 +42,7 @@ class TestQgsLayoutPage : public QObject
     void pageSize();
     void decodePageOrientation();
     void grid();
+    void defaultPaper();
     void transparentPaper(); //test totally transparent paper style
     void borderedPaper(); //test page with border
     void markerLinePaper(); //test page with marker line borde
@@ -168,6 +169,19 @@ void TestQgsLayoutPage::grid()
   QCOMPARE( page->mGrid->pos().x(), 0.0 );
   QCOMPARE( page->mGrid->pos().y(), 0.0 );
 
+}
+
+void TestQgsLayoutPage::defaultPaper()
+{
+  QgsProject p;
+  QgsLayout l( &p );
+  std::unique_ptr< QgsLayoutItemPage > page( new QgsLayoutItemPage( &l ) );
+  page->setPageSize( QgsLayoutSize( 297, 210, QgsUnitTypes::LayoutMillimeters ) );
+  l.pageCollection()->addPage( page.release() );
+
+  QgsLayoutChecker checker( QStringLiteral( "composerpaper_default" ), &l );
+  checker.setControlPathPrefix( QStringLiteral( "composer_paper" ) );
+  QVERIFY( checker.testLayout( mReport ) );
 }
 
 void TestQgsLayoutPage::transparentPaper()

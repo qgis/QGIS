@@ -73,7 +73,6 @@ ENDMACRO (ADD_QGIS_TEST)
 SET(TESTS
  testqgs25drenderer.cpp
  testqgsapplication.cpp
- testqgsatlascomposition.cpp
  testqgsauthcrypto.cpp
  testqgsauthcertutils.cpp
  testqgsauthconfig.cpp
@@ -83,23 +82,8 @@ SET(TESTS
  testqgsclipper.cpp
  testqgscolorscheme.cpp
  testqgscolorschemeregistry.cpp
- testqgscomposerdd.cpp
  testqgscomposereffects.cpp
- testqgscomposergroup.cpp
- testqgscomposerlabel.cpp
- testqgscomposermapgrid.cpp
- testqgscomposermapoverview.cpp
- testqgscomposermap.cpp
- testqgscomposermodel.cpp
  testqgscomposermultiframe.cpp
- testqgscomposerobject.cpp
- testqgscomposerpaper.cpp
- testqgscomposerpicture.cpp
- testqgscomposerrotation.cpp
- testqgscomposerscalebar.cpp
- testqgscomposershapes.cpp
- testqgscomposertablev2.cpp
- testqgscomposerutils.cpp
  testqgsconnectionpool.cpp
  testcontrastenhancements.cpp
  testqgscoordinatereferencesystem.cpp
@@ -148,6 +132,7 @@ SET(TESTS
  testqgslayoutobject.cpp
  testqgslayoutpage.cpp
  testqgslayoutpicture.cpp
+ testqgslayoutpolyline.cpp
  testqgslayoutscalebar.cpp
  testqgslayoutshapes.cpp
  testqgslayouttable.cpp
@@ -208,7 +193,6 @@ SET(TESTS
 
 IF(WITH_QTWEBKIT)
   SET(TESTS ${TESTS}
-      testqgscomposerhtml.cpp
       testqgscomposition.cpp
         )
 ENDIF(WITH_QTWEBKIT)
