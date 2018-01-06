@@ -82,7 +82,6 @@ SET(TESTS
  testqgsclipper.cpp
  testqgscolorscheme.cpp
  testqgscolorschemeregistry.cpp
- testqgscomposereffects.cpp
  testqgscomposermultiframe.cpp
  testqgsconnectionpool.cpp
  testcontrastenhancements.cpp
