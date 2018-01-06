@@ -2073,6 +2073,7 @@ void QgsLayoutDesignerDialog::atlasPreviewTriggered( bool checked )
   else
   {
     atlas->endRender();
+    mView->setSectionLabel( QString() );
   }
 }
 
@@ -2634,16 +2635,7 @@ void QgsLayoutDesignerDialog::exportAtlasToPdf()
   {
     QString lastUsedFile = settings.value( QStringLiteral( "lastSaveAsPdfFile" ), QStringLiteral( "qgis.pdf" ), QgsSettings::App ).toString();
     QFileInfo file( lastUsedFile );
-
-    QgsLayoutAtlas *printAtlas = atlas();
-    if ( printAtlas && printAtlas->enabled() && mActionAtlasPreview->isChecked() )
-    {
-      outputFileName = QDir( file.path() ).filePath( QgsFileUtils::stringToSafeFilename( printAtlas->currentFilename() ) + QStringLiteral( ".pdf" ) );
-    }
-    else
-    {
-      outputFileName = file.path() + '/' + QgsFileUtils::stringToSafeFilename( mMasterLayout->name() ) + QStringLiteral( ".pdf" );
-    }
+    outputFileName = file.path() + '/' + QgsFileUtils::stringToSafeFilename( mMasterLayout->name() ) + QStringLiteral( ".pdf" );
 
 #ifdef Q_OS_MAC
     QgisApp::instance()->activateWindow();
@@ -3827,6 +3819,8 @@ void QgsLayoutDesignerDialog::atlasFeatureChanged( const QgsFeature &feature )
   mapCanvas->expressionContextScope().addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "atlas_geometry" ), QVariant::fromValue( feature.geometry() ), true ) );
   mapCanvas->stopRendering();
   mapCanvas->refreshAllLayers();
+
+  mView->setSectionLabel( atlas->nameForPage( atlas->currentFeatureNumber() ) );
 }
 
 void QgsLayoutDesignerDialog::loadAtlasPredefinedScalesFromProject()
@@ -4063,6 +4057,7 @@ void QgsLayoutDesignerDialog::setSectionTitle( const QString &title )
 {
   mSectionTitle = title;
   updateWindowTitle();
+  mView->setSectionLabel( title );
 }
 
 

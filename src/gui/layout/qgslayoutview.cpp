@@ -33,6 +33,7 @@
 #include "qgslayoutitemgroup.h"
 #include "qgslayoutpagecollection.h"
 #include "qgslayoutundostack.h"
+#include "qgslayoutreportsectionlabel.h"
 #include <memory>
 #include <QDesktopWidget>
 #include <QMenu>
@@ -96,6 +97,9 @@ void QgsLayoutView::setCurrentLayout( QgsLayout *layout )
   mVerticalSnapLine = createSnapLine();
   mVerticalSnapLine->hide();
   layout->addItem( mVerticalSnapLine );
+
+  delete mSectionLabel;
+  mSectionLabel = nullptr;
 
   if ( mHorizontalRuler )
   {
@@ -478,6 +482,21 @@ void QgsLayoutView::setPaintingEnabled( bool enabled )
   mPaintingEnabled = enabled;
   if ( enabled )
     update();
+}
+
+void QgsLayoutView::setSectionLabel( const QString &label )
+{
+  if ( !currentLayout() )
+    return;
+
+  if ( !mSectionLabel )
+  {
+    mSectionLabel = new QgsLayoutReportSectionLabel( currentLayout(), this );
+    currentLayout()->addItem( mSectionLabel );
+    mSectionLabel->setRect( 0, -200, 1000, 200 );
+    mSectionLabel->setZValue( -1 );
+  }
+  mSectionLabel->setLabel( label );
 }
 
 void QgsLayoutView::zoomFull()

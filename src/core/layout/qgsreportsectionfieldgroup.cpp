@@ -27,7 +27,10 @@ QgsReportSectionFieldGroup::QgsReportSectionFieldGroup( QgsAbstractReportSection
 
 QString QgsReportSectionFieldGroup::description() const
 {
-  return QObject::tr( "Group: %1" ).arg( mField );
+  if ( mCoverageLayer.get() )
+    return QObject::tr( "Group: %1 - %2" ).arg( mCoverageLayer->name(), mField );
+  else
+    return QObject::tr( "Group" );
 }
 
 QIcon QgsReportSectionFieldGroup::icon() const
