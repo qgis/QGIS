@@ -504,7 +504,7 @@ QgsAbstractFeatureSource* QgsOgrProvider::featureSource() const
 bool QgsOgrProvider::setSubsetString( const QString& theSQL, bool updateFeatureCount )
 {
   // Always update capabilities
-  return _setSubsetString( theSQL, updateFeatureCount, true);
+  return _setSubsetString( theSQL, updateFeatureCount, true );
 }
 
 QString QgsOgrProvider::subsetString()
@@ -1559,7 +1559,7 @@ bool QgsOgrProvider::commitTransaction()
   return true;
 }
 
-bool QgsOgrProvider::_setSubsetString(const QString &theSQL, bool updateFeatureCount, bool updateCapabilities)
+bool QgsOgrProvider::_setSubsetString( const QString &theSQL, bool updateFeatureCount, bool updateCapabilities )
 {
   QgsCPLErrorHandler handler;
 
