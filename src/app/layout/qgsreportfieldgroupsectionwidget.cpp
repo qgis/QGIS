@@ -73,7 +73,7 @@ void QgsReportSectionFieldGroupWidget::editHeader()
   {
     mSection->header()->reportContext().setLayer( mSection->layer() );
     mDesigner->setCurrentLayout( mSection->header() );
-    mDesigner->setSectionTitle( tr( "%1 Header" ).arg( mSection->description() ) );
+    mDesigner->setSectionTitle( tr( "Header: %1" ).arg( mSection->description() ) );
     mOrganizer->setEditedSection( mSection );
   }
 }
@@ -91,7 +91,7 @@ void QgsReportSectionFieldGroupWidget::editFooter()
   {
     mSection->footer()->reportContext().setLayer( mSection->layer() );
     mDesigner->setCurrentLayout( mSection->footer() );
-    mDesigner->setSectionTitle( tr( "%1 Footer" ).arg( mSection->description() ) );
+    mDesigner->setSectionTitle( tr( "Footer: %1" ).arg( mSection->description() ) );
     mOrganizer->setEditedSection( mSection );
   }
 }
@@ -114,7 +114,7 @@ void QgsReportSectionFieldGroupWidget::editBody()
   {
     mSection->body()->reportContext().setLayer( mSection->layer() );
     mDesigner->setCurrentLayout( mSection->body() );
-    mDesigner->setSectionTitle( tr( "%1 Body" ).arg( mSection->description() ) );
+    mDesigner->setSectionTitle( tr( "Body: %1" ).arg( mSection->description() ) );
     mOrganizer->setEditedSection( mSection );
   }
 }
