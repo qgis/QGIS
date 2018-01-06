@@ -39,6 +39,9 @@ from qgis.core import (QgsFeature,
 from qgis.PyQt.QtCore import QCoreApplication, QVariant
 from qgis.testing import start_app, unittest
 from qgis.utils import spatialite_connect
+from utilities import unitTestDataPath
+
+TEST_DATA_DIR = unitTestDataPath()
 
 
 def GDAL_COMPUTE_VERSION(maj, min, rev):
@@ -833,6 +836,29 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         self.assertTrue(vl.isValid())
         self.assertTrue(vl.dataProvider().capabilities() & QgsVectorDataProvider.CreateSpatialIndex)
         self.assertTrue(vl.dataProvider().createSpatialIndex())
+
+    def testSubSetStringEditable_bug17795(self):
+        """Test that a layer is not editable after setting a subset and it's reverted to editable after the filter is removed"""
+
+        isEditable = QgsVectorDataProvider.ChangeAttributeValues
+        testPath = TEST_DATA_DIR + '/' + 'provider/bug_17795.gpkg|layername=bug_17795'
+
+        vl = QgsVectorLayer(testPath, 'subset_test', 'ogr')
+        self.assertTrue(vl.isValid())
+        self.assertTrue(vl.dataProvider().capabilities() & isEditable)
+
+        vl = QgsVectorLayer(testPath, 'subset_test', 'ogr')
+        vl.setSubsetString('')
+        self.assertTrue(vl.isValid())
+        self.assertTrue(vl.dataProvider().capabilities() & isEditable)
+
+        vl = QgsVectorLayer(testPath, 'subset_test', 'ogr')
+        vl.setSubsetString('"category" = \'one\'')
+        self.assertTrue(vl.isValid())
+        self.assertFalse(vl.dataProvider().capabilities() & isEditable)
+
+        vl.setSubsetString('')
+        self.assertTrue(vl.dataProvider().capabilities() & isEditable)
 
 
 if __name__ == '__main__':
