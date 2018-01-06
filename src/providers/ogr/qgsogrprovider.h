@@ -312,6 +312,9 @@ class QgsOgrProvider : public QgsVectorDataProvider
     //! Commits a transaction
     bool commitTransaction();
 
+    //! Does the real job of settings the subset string and adds an argument to disable update capabilities
+    bool _setSubsetString( const QString &theSQL, bool updateFeatureCount = true, bool updateCapabilities = true );
+
     QgsFields mAttributeFields;
     bool mFirstFieldIsFid;
     OGRDataSourceH ogrDataSource;

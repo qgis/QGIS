@@ -21,9 +21,13 @@ import glob
 from osgeo import gdal, ogr
 
 from qgis.PyQt.QtCore import QCoreApplication, QSettings
-from qgis.core import QgsVectorLayer, QgsVectorLayerImport, QgsFeature, QgsGeometry, QgsFeatureRequest, QgsRectangle
+from qgis.core import QgsVectorLayer, QgsVectorLayerImport, QgsFeature, QgsGeometry, QgsFeatureRequest, QgsRectangle, QgsVectorDataProvider
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
+
+from utilities import unitTestDataPath
+
+TEST_DATA_DIR = unitTestDataPath()
 
 start_app()
 
@@ -419,6 +423,26 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         self.assertTrue(vl.deleteFeature(1234567890123))
         self.assertTrue(vl.commitChanges())
 
+
+    def testSubSetStringEditable_bug17795(self):
+        """Test that a layer is not editable after setting a subset and it's reverted to editable after the filter is removed"""
+
+        isEditable = QgsVectorDataProvider.ChangeAttributeValues
+        testPath = TEST_DATA_DIR + '/' + 'provider/bug_17795.gpkg|layername=bug_17795'
+
+        vl = QgsVectorLayer(testPath, 'subset_test', 'ogr')
+        self.assertTrue(vl.isValid())
+        self.assertTrue(vl.dataProvider().capabilities() & isEditable)
+
+        vl = QgsVectorLayer(testPath, 'subset_test', 'ogr')
+        vl.setSubsetString('')
+        self.assertTrue(vl.isValid())
+        self.assertTrue(vl.dataProvider().capabilities() & isEditable)
+
+        vl = QgsVectorLayer(testPath, 'subset_test', 'ogr')
+        vl.setSubsetString('"category" = \'one\'')
+        self.assertTrue(vl.isValid())
+        self.assertFalse(vl.dataProvider().capabilities() & isEditable)
 
 if __name__ == '__main__':
     unittest.main()

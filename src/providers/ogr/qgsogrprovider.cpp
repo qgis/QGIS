@@ -503,89 +503,8 @@ QgsAbstractFeatureSource* QgsOgrProvider::featureSource() const
 
 bool QgsOgrProvider::setSubsetString( const QString& theSQL, bool updateFeatureCount )
 {
-  QgsCPLErrorHandler handler;
-
-  if ( !ogrDataSource )
-    return false;
-
-  if ( theSQL == mSubsetString && mFeaturesCounted >= 0 )
-    return true;
-
-  OGRLayerH prevLayer = ogrLayer;
-  QString prevSubsetString = mSubsetString;
-  mSubsetString = theSQL;
-
-  if ( !mSubsetString.isEmpty() )
-  {
-
-    ogrLayer = setSubsetString( ogrOrigLayer, ogrDataSource );
-    if ( !ogrLayer )
-    {
-      pushError( tr( "OGR[%1] error %2: %3" ).arg( CPLGetLastErrorType() ).arg( CPLGetLastErrorNo() ).arg( CPLGetLastErrorMsg() ) );
-      ogrLayer = prevLayer;
-      mSubsetString = prevSubsetString;
-      return false;
-    }
-  }
-  else
-  {
-    ogrLayer = ogrOrigLayer;
-  }
-
-  if ( prevLayer != ogrOrigLayer )
-  {
-    OGR_DS_ReleaseResultSet( ogrDataSource, prevLayer );
-  }
-
-  QString uri = mFilePath;
-  if ( !mLayerName.isNull() )
-  {
-    uri += QString( "|layername=%1" ).arg( mLayerName );
-  }
-  else if ( mLayerIndex >= 0 )
-  {
-    uri += QString( "|layerid=%1" ).arg( mLayerIndex );
-  }
-
-  if ( !mSubsetString.isEmpty() )
-  {
-    uri += QString( "|subset=%1" ).arg( mSubsetString );
-  }
-
-  if ( mOgrGeometryTypeFilter != wkbUnknown )
-  {
-    uri += QString( "|geometrytype=%1" ).arg( ogrWkbGeometryTypeName( mOgrGeometryTypeFilter ) );
-  }
-
-  if ( uri != dataSourceUri() )
-  {
-    QgsOgrConnPool::instance()->unref( dataSourceUri() );
-    setDataSourceUri( uri );
-    QgsOgrConnPool::instance()->ref( dataSourceUri() );
-  }
-
-  OGR_L_ResetReading( ogrLayer );
-
-  // getting the total number of features in the layer
-  // TODO: This can be expensive, do we really need it!
-  if ( updateFeatureCount )
-  {
-    recalculateFeatureCount();
-  }
-
-  // check the validity of the layer
-  QgsDebugMsg( "checking validity" );
-  loadFields();
-  QgsDebugMsg( "Done checking validity" );
-
-  invalidateCachedExtent( false );
-
-  // Changing the filter may change capabilities
-  computeCapabilities();
-
-  emit dataChanged();
-
-  return true;
+  // Always update capabilities
+  return _setSubsetString( theSQL, updateFeatureCount, true);
 }
 
 QString QgsOgrProvider::subsetString()
@@ -1640,6 +1559,94 @@ bool QgsOgrProvider::commitTransaction()
   return true;
 }
 
+bool QgsOgrProvider::_setSubsetString(const QString &theSQL, bool updateFeatureCount, bool updateCapabilities)
+{
+  QgsCPLErrorHandler handler;
+
+  if ( !ogrDataSource )
+    return false;
+
+  if ( theSQL == mSubsetString && mFeaturesCounted >= 0 )
+    return true;
+
+  OGRLayerH prevLayer = ogrLayer;
+  QString prevSubsetString = mSubsetString;
+  mSubsetString = theSQL;
+
+  if ( !mSubsetString.isEmpty() )
+  {
+
+    ogrLayer = setSubsetString( ogrOrigLayer, ogrDataSource );
+    if ( !ogrLayer )
+    {
+      pushError( tr( "OGR[%1] error %2: %3" ).arg( CPLGetLastErrorType() ).arg( CPLGetLastErrorNo() ).arg( CPLGetLastErrorMsg() ) );
+      ogrLayer = prevLayer;
+      mSubsetString = prevSubsetString;
+      return false;
+    }
+  }
+  else
+  {
+    ogrLayer = ogrOrigLayer;
+  }
+
+  if ( prevLayer != ogrOrigLayer )
+  {
+    OGR_DS_ReleaseResultSet( ogrDataSource, prevLayer );
+  }
+
+  QString uri = mFilePath;
+  if ( !mLayerName.isNull() )
+  {
+    uri += QString( "|layername=%1" ).arg( mLayerName );
+  }
+  else if ( mLayerIndex >= 0 )
+  {
+    uri += QString( "|layerid=%1" ).arg( mLayerIndex );
+  }
+
+  if ( !mSubsetString.isEmpty() )
+  {
+    uri += QString( "|subset=%1" ).arg( mSubsetString );
+  }
+
+  if ( mOgrGeometryTypeFilter != wkbUnknown )
+  {
+    uri += QString( "|geometrytype=%1" ).arg( ogrWkbGeometryTypeName( mOgrGeometryTypeFilter ) );
+  }
+
+  if ( uri != dataSourceUri() )
+  {
+    QgsOgrConnPool::instance()->unref( dataSourceUri() );
+    setDataSourceUri( uri );
+    QgsOgrConnPool::instance()->ref( dataSourceUri() );
+  }
+
+  OGR_L_ResetReading( ogrLayer );
+
+  // getting the total number of features in the layer
+  // TODO: This can be expensive, do we really need it!
+  if ( updateFeatureCount )
+  {
+    recalculateFeatureCount();
+  }
+
+  // check the validity of the layer
+  QgsDebugMsg( "checking validity" );
+  loadFields();
+  QgsDebugMsg( "Done checking validity" );
+
+  invalidateCachedExtent( false );
+
+  // Changing the filter may change capabilities
+  if ( updateCapabilities )
+    computeCapabilities();
+
+  emit dataChanged();
+
+  return true;
+}
+
 
 bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_map )
 {
@@ -2008,10 +2015,18 @@ int QgsOgrProvider::capabilities() const
 void QgsOgrProvider::computeCapabilities()
 {
   int ability = 0;
+  bool updateModeActivated = false;
 
   // collect abilities reported by OGR
   if ( ogrLayer )
   {
+    // We want the layer in rw mode or capabilities will be wrong
+    // If mUpdateModeStackDepth > 0, it means that an updateMode is already active and that we have write access
+    if ( mUpdateModeStackDepth == 0 )
+    {
+      updateModeActivated = enterUpdateMode( );
+    }
+
     // Whilst the OGR documentation (e.g. at
     // http://www.gdal.org/ogr/classOGRLayer.html#a17) states "The capability
     // codes that can be tested are represented as strings, but #defined
@@ -2137,6 +2152,10 @@ void QgsOgrProvider::computeCapabilities()
       ability |= CircularGeometries;
     }
   }
+
+  if ( updateModeActivated )
+    leaveUpdateMode();
+
 
   mCapabilities = ability;
 }
@@ -3620,7 +3639,8 @@ void QgsOgrProvider::open( OpenMode mode )
       mSubsetString = "";
       // Block signals to avoid endless recusion reloadData -> emit dataChanged -> reloadData
       blockSignals( true );
-      mValid = setSubsetString( origSubsetString );
+      // Do not update capabilities: it will be done later
+      mValid = _setSubsetString( origSubsetString, true, false );
       blockSignals( false );
       if ( mValid )
       {
@@ -3696,7 +3716,8 @@ void QgsOgrProvider::open( OpenMode mode )
       {
         int featuresCountedBackup = mFeaturesCounted;
         mFeaturesCounted = -1;
-        mValid = setSubsetString( mSubsetString, false );
+        // Do not update capabilities here
+        mValid = _setSubsetString( mSubsetString, false, false );
         mFeaturesCounted = featuresCountedBackup;
       }
     }
