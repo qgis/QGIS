@@ -60,6 +60,12 @@ void QgsLayoutReportSectionLabel::paint( QPainter *painter, const QStyleOptionGr
   QRectF r = rect();
   QRectF scaledRect( r.left() / scaleValue, r.top() / scaleValue, r.width() / scaleValue, r.height() / scaleValue );
 
+  if ( scaledRect.width() < s.width() + 2 * margin || scaledRect.height() < s.height() + 2 * margin )
+  {
+    // zoomed out too far to fully draw label inside item rect
+    return;
+  }
+
   QRectF textRect = QRectF( scaledRect.left() + margin, scaledRect.top() + margin, scaledRect.width() - 2 * margin, scaledRect.height() - 2 * margin );
   QRectF boxRect = QRectF( scaledRect.left(), scaledRect.bottom() - ( s.height() + 2 * margin ), s.width() + 2 * margin, s.height() + 2 * margin );
 
