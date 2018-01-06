@@ -210,6 +210,9 @@ class QgsOgrProvider : public QgsVectorDataProvider
     //! Commits a transaction
     bool commitTransaction();
 
+    //! Does the real job of settings the subset string and adds an argument to disable update capabilities
+    bool _setSubsetString( const QString &theSQL, bool updateFeatureCount = true, bool updateCapabilities = true );
+
     void addSubLayerDetailsToSubLayerList( int i, QgsOgrLayer *layer ) const;
 
     QgsFields mAttributeFields;
@@ -308,11 +311,6 @@ class QgsOgrProvider : public QgsVectorDataProvider
 #ifndef QT_NO_NETWORKPROXY
     void setupProxy();
 #endif
-
-  signals:
-
-    //! Emitted when capabilities need to be re-computed
-    void capabilitiesNeedUpdate( );
 
 };
 
