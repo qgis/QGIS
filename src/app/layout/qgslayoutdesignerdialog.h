@@ -340,6 +340,9 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     //! Sets the printer page orientation when the page orientation changes
     void pageOrientationChanged();
 
+    //! Populate layouts menu from main app's
+    void populateLayoutsMenu();
+
   private:
 
     static bool sInitializedRegistry;

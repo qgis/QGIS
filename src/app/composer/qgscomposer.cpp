@@ -3570,7 +3570,7 @@ void QgsComposer::mActionPageSetup_triggered()
 
 void QgsComposer::populatePrintComposersMenu()
 {
-  mQgis->populateComposerMenu( mPrintComposersMenu );
+  mQgis->populateLayoutsMenu( mPrintComposersMenu );
 }
 
 void QgsComposer::populateWindowMenu()
