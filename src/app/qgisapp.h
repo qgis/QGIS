@@ -1257,6 +1257,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Create a new print layout
     void newPrintLayout();
 
+    //! Create a new report
+    void newReport();
+
     //! Slot to handle display of layouts menu, e.g. sorting
     void layoutsMenuAboutToShow();
 
