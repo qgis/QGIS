@@ -226,7 +226,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     void openLayerDefinition( const QString &filename );
 
-    //! Open a composer template file and create a new composition
+    /**
+     * Opens a layout template file and creates a new layout designer window for it.
+     */
     void openTemplate( const QString &fileName );
 
     /**
@@ -296,10 +298,10 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     void setIconSizes( int size );
 
-    //! Get stylesheet builder object for app and print composers
+    //! Get stylesheet builder object for app and layout designers
     QgisAppStyleSheet *styleSheetBuilder();
 
-    //! Populates a menu with actions for opening print composers
+    //! Populates a menu with actions for opening layout designers
     void populateComposerMenu( QMenu *menu );
 
     //! Setup the toolbar popup menus for a given theme
@@ -350,21 +352,10 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * windows which are hidden rather than deleted when closed. */
     void removeWindow( QAction *action );
 
-    //! Returns the print composers
-    QSet<QgsComposer *> printComposers() const {return mPrintComposers;}
-
     /**
      * Returns the active layout designers.
      */
     QSet<QgsLayoutDesignerDialog *> layoutDesigners() const { return mLayoutDesignerDialogs; }
-
-    /**
-     * Get a unique title from user for new and duplicate composers
-     * \param acceptEmpty whether to accept empty titles (one will be generated)
-     * \param currentTitle base name for initial title choice
-     * \returns QString() if user cancels input dialog
-     */
-    bool uniqueComposerTitle( QWidget *parent, QString &composerTitle, bool acceptEmpty, const QString &currentTitle = QString() );
 
     /**
      * Gets a unique title from user for new and duplicate layouts.
@@ -379,17 +370,19 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      */
     bool uniqueLayoutTitle( QWidget *parent, QString &title, bool acceptEmpty, QgsMasterLayoutInterface::Type type, const QString &currentTitle = QString() );
 
-
-    //! Creates a new composer and returns a pointer to it
-    QgsComposer *createNewComposer( QString title = QString() );
-
     /**
      * Opens a composer window for an existing \a composition.
      */
     QgsComposer *openComposer( QgsComposition *composition );
 
-    //! Creates a new layout and returns a pointer to it
-    QgsLayoutDesignerDialog *createNewLayout( QString title = QString() );
+    /**
+     * Creates a new print layout, opens a designer for it and returns a pointer to
+     * designer dialog.
+     *
+     * If \a title is specified it will be used as the name for the new print layout,
+     * otherwise the user will be prompted to enter a name for the layout.
+     */
+    QgsLayoutDesignerDialog *createNewPrintLayout( const QString &title = QString() );
 
     //! Creates a new report and returns a pointer to it
     QgsLayoutDesignerDialog *createNewReport( QString title = QString() );
@@ -399,14 +392,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * If a designer already exists for this layout then it will be activated.
      */
     QgsLayoutDesignerDialog *openLayoutDesignerDialog( QgsMasterLayoutInterface *layout );
-
-    //! Deletes a composer and removes entry from Set
-    void deleteComposer( QgsComposer *c );
-
-    /**
-     * Duplicates a composer and adds it to Set
-     */
-    QgsComposer *duplicateComposer( QgsComposer *currentComposer, QString title = QString() );
 
     /**
      * Duplicates a \a layout and adds it to the current project.
@@ -447,8 +432,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionSaveMapAsImage() { return mActionSaveMapAsImage; }
     QAction *actionSaveMapAsPdf() { return mActionSaveMapAsPdf; }
     QAction *actionProjectProperties() { return mActionProjectProperties; }
+    QAction *actionShowLayoutManager() { return mActionShowLayoutManager; }
     QAction *actionShowComposerManager() { return mActionShowComposerManager; }
-    QAction *actionNewPrintComposer() { return mActionNewPrintComposer; }
+    QAction *actionNewPrintLayout() { return mActionNewPrintLayout; }
     QAction *actionExit() { return mActionExit; }
 
     QAction *actionCutFeatures() { return mActionCutFeatures; }
@@ -1270,8 +1256,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void newSpatialiteLayer();
     //! Create a new empty GeoPackage layer
     void newGeoPackageLayer();
-    //! Print the current map view frame
-    void newPrintComposer();
+
     //! Create a new print layout
     void newPrintLayout();
 
@@ -1662,22 +1647,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * Signal emitted when the current theme is changed so plugins
      * can change there tool button icons. */
     void currentThemeChanged( const QString & );
-
-    /**
-     * This signal is emitted when a new composer window is opened
-     */
-    void composerOpened( QgsComposerInterface *composer );
-
-    /**
-     * This signal is emitted before a composer window is going to be closed
-     * and deleted.
-     */
-    void composerWillBeClosed( QgsComposerInterface *composer );
-
-    /**
-     * This signal is emitted when a composer window has been closed.
-     */
-    void composerClosed( QgsComposerInterface *composer );
 
     /**
      * This signal is emitted when a new layout \a designer has been opened.

@@ -1856,7 +1856,6 @@ void QgisApp::createActions()
   connect( mActionSaveMapAsPdf, &QAction::triggered, this, [ = ] { saveMapAsPdf(); } );
   connect( mActionNewMapCanvas, &QAction::triggered, this, &QgisApp::newMapCanvas );
   connect( mActionNew3DMapCanvas, &QAction::triggered, this, &QgisApp::new3DMapCanvas );
-  connect( mActionNewPrintComposer, &QAction::triggered, this, &QgisApp::newPrintComposer );
   connect( mActionNewPrintLayout, &QAction::triggered, this, &QgisApp::newPrintLayout );
   connect( mActionShowComposerManager, &QAction::triggered, this, &QgisApp::showComposerManager );
   connect( mActionShowLayoutManager, &QAction::triggered, this, &QgisApp::showLayoutManager );
@@ -2998,7 +2997,6 @@ void QgisApp::setTheme( const QString &themeName )
   mActionOpenProject->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFileOpen.svg" ) ) );
   mActionSaveProject->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFileSave.svg" ) ) );
   mActionSaveProjectAs->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFileSaveAs.svg" ) ) );
-  mActionNewPrintComposer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionNewComposer.svg" ) ) );
   mActionShowComposerManager->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionComposerManager.svg" ) ) );
   mActionSaveMapAsImage->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSaveMapAsImage.svg" ) ) );
   mActionSaveMapAsPdf->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSaveAsPDF.svg" ) ) );
@@ -5817,15 +5815,15 @@ void QgisApp::openTemplate( const QString &fileName )
   }
 
   QString title;
-  if ( !uniqueComposerTitle( this, title, true ) )
+  if ( !uniqueLayoutTitle( this, title, true, QgsMasterLayoutInterface::PrintLayout ) )
   {
     return;
   }
 
-  QgsComposer *newComposer = createNewComposer( title );
-  if ( !newComposer )
+  QgsLayoutDesignerDialog *designer = createNewPrintLayout( title );
+  if ( !designer )
   {
-    messageBar()->pushMessage( tr( "Load template" ), tr( "Could not create composer" ), QgsMessageBar::WARNING );
+    messageBar()->pushMessage( tr( "Load template" ), tr( "Could not create print layout" ), QgsMessageBar::WARNING );
     return;
   }
 
@@ -5833,15 +5831,13 @@ void QgisApp::openTemplate( const QString &fileName )
   QDomDocument templateDoc;
   if ( templateDoc.setContent( &templateFile, false ) )
   {
-    loadedOk = newComposer->loadFromTemplate( templateDoc, true );
-    newComposer->activate();
+    designer->currentLayout()->loadFromTemplate( templateDoc, QgsReadWriteContext(), true, &loadedOk );
+    designer->activate();
   }
 
   if ( !loadedOk )
   {
-    newComposer->close();
-    deleteComposer( newComposer );
-    newComposer = nullptr;
+    designer->close();
     messageBar()->pushMessage( tr( "Load template" ), tr( "Could not load template file" ), QgsMessageBar::WARNING );
   }
 }
@@ -5992,17 +5988,6 @@ void QgisApp::openFile( const QString &fileName )
   }
 }
 
-
-void QgisApp::newPrintComposer()
-{
-  QString title;
-  if ( !uniqueComposerTitle( this, title, true ) )
-  {
-    return;
-  }
-  createNewComposer( title );
-}
-
 void QgisApp::newPrintLayout()
 {
   QString title;
@@ -6010,7 +5995,7 @@ void QgisApp::newPrintLayout()
   {
     return;
   }
-  createNewLayout( title );
+  createNewPrintLayout( title );
 }
 
 void QgisApp::showComposerManager()
@@ -7275,70 +7260,6 @@ QgsGeometry QgisApp::unionGeometries( const QgsVectorLayer *vl, QgsFeatureList &
   return unionGeom;
 }
 
-bool QgisApp::uniqueComposerTitle( QWidget *parent, QString &composerTitle, bool acceptEmpty, const QString &currentName )
-{
-  if ( !parent )
-  {
-    parent = this;
-  }
-  bool ok = false;
-  bool titleValid = false;
-  QString newTitle = QString( currentName );
-  QString chooseMsg = tr( "Create unique print composer title" );
-  if ( acceptEmpty )
-  {
-    chooseMsg += '\n' + tr( "(title generated if left empty)" );
-  }
-  QString titleMsg = chooseMsg;
-
-  QStringList cNames;
-  cNames << newTitle;
-  Q_FOREACH ( QgsComposition *c, QgsProject::instance()->layoutManager()->compositions() )
-  {
-    cNames << c->name();
-  }
-
-  while ( !titleValid )
-  {
-    newTitle = QInputDialog::getText( parent,
-                                      tr( "Composer title" ),
-                                      titleMsg,
-                                      QLineEdit::Normal,
-                                      newTitle,
-                                      &ok );
-    if ( !ok )
-    {
-      return false;
-    }
-
-    if ( newTitle.isEmpty() )
-    {
-      if ( !acceptEmpty )
-      {
-        titleMsg = chooseMsg + "\n\n" + tr( "Title can not be empty!" );
-      }
-      else
-      {
-        titleValid = true;
-        newTitle = QgsProject::instance()->layoutManager()->generateUniqueComposerTitle();
-      }
-    }
-    else if ( cNames.indexOf( newTitle, 1 ) >= 0 )
-    {
-      cNames[0] = QString(); // clear non-unique name
-      titleMsg = chooseMsg + "\n\n" + tr( "Title already exists!" );
-    }
-    else
-    {
-      titleValid = true;
-    }
-  }
-
-  composerTitle = newTitle;
-
-  return true;
-}
-
 bool QgisApp::uniqueLayoutTitle( QWidget *parent, QString &title, bool acceptEmpty, QgsMasterLayoutInterface::Type type, const QString &currentTitle )
 {
   if ( !parent )
@@ -7415,19 +7336,6 @@ bool QgisApp::uniqueLayoutTitle( QWidget *parent, QString &title, bool acceptEmp
   return true;
 }
 
-QgsComposer *QgisApp::createNewComposer( QString title )
-{
-  if ( title.isEmpty() )
-  {
-    title = QgsProject::instance()->layoutManager()->generateUniqueComposerTitle();
-  }
-  //create new composition object
-  QgsComposition *composition = new QgsComposition( QgsProject::instance() );
-  composition->setName( title );
-  QgsProject::instance()->layoutManager()->addComposition( composition );
-  return openComposer( composition );
-}
-
 QgsComposer *QgisApp::openComposer( QgsComposition *composition )
 {
   // maybe a composer already open for this composition
@@ -7446,23 +7354,21 @@ QgsComposer *QgisApp::openComposer( QgsComposition *composition )
   QgsComposer *newComposerObject = new QgsComposer( composition );
   connect( newComposerObject, &QgsComposer::aboutToClose, this, [this, newComposerObject]
   {
-    emit composerWillBeClosed( newComposerObject->iface() );
     mPrintComposers.remove( newComposerObject );
-    emit composerClosed( newComposerObject->iface() );
   } );
 
   //add it to the map of existing print composers
   mPrintComposers.insert( newComposerObject );
 
   newComposerObject->open();
-  emit composerOpened( newComposerObject->iface() );
   connect( newComposerObject, &QgsComposer::atlasPreviewFeatureChanged, this, &QgisApp::refreshMapCanvas );
 
   return newComposerObject;
 }
 
-QgsLayoutDesignerDialog *QgisApp::createNewLayout( QString title )
+QgsLayoutDesignerDialog *QgisApp::createNewPrintLayout( const QString &t )
 {
+  QString title = t;
   if ( title.isEmpty() )
   {
     title = QgsProject::instance()->layoutManager()->generateUniqueTitle( QgsMasterLayoutInterface::PrintLayout );
@@ -7522,34 +7428,6 @@ QgsLayoutDesignerDialog *QgisApp::openLayoutDesignerDialog( QgsMasterLayoutInter
   return newDesigner;
 }
 
-void QgisApp::deleteComposer( QgsComposer *c )
-{
-  emit composerWillBeClosed( c->iface() );
-  mPrintComposers.remove( c );
-  emit composerClosed( c->iface() );
-  delete c;
-}
-
-QgsComposer *QgisApp::duplicateComposer( QgsComposer *currentComposer, QString title )
-{
-  if ( title.isEmpty() )
-  {
-    // TODO: inject a bit of randomness in auto-titles?
-    title = currentComposer->composition()->name() + tr( " copy" );
-  }
-
-  QgsComposition *newComposition = QgsProject::instance()->layoutManager()->duplicateComposition( currentComposer->composition()->name(),
-                                   title );
-  QgsComposer *newComposer = openComposer( newComposition );
-  if ( !newComposer )
-  {
-    QgsDebugMsg( "could not create new composer" );
-    return newComposer;
-  }
-  newComposer->activate();
-  return newComposer;
-}
-
 QgsLayoutDesignerDialog *QgisApp::duplicateLayout( QgsMasterLayoutInterface *layout, const QString &t )
 {
   QString title = t;
@@ -7571,9 +7449,7 @@ void QgisApp::deletePrintComposers()
   while ( it != mPrintComposers.end() )
   {
     QgsComposer *c = ( *it );
-    emit composerWillBeClosed( c->iface() );
     it = mPrintComposers.erase( it );
-    emit composerClosed( c->iface() );
     delete ( c );
   }
 }
@@ -7707,9 +7583,7 @@ void QgisApp::compositionAboutToBeRemoved( const QString &name )
   {
     if ( composer->composition()->name() == name )
     {
-      emit composerWillBeClosed( composer->iface() );
       mPrintComposers.remove( composer );
-      emit composerClosed( composer->iface() );
       delete composer;
       return;
     }

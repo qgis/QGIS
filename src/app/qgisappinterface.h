@@ -232,10 +232,6 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     //! Adds a widget to the user input tool bar.
     void addUserInputWidget( QWidget *widget ) override;
 
-    QList<QgsComposerInterface *> openComposers() override;
-    QgsComposerInterface *openComposer( QgsComposition *composition ) override;
-    void closeComposer( QgsComposition *composition ) override;
-
     void showLayoutManager() override;
     QList<QgsLayoutDesignerInterface *> openLayoutDesigners() override;
     QgsLayoutDesignerInterface *openLayoutDesigner( QgsMasterLayoutInterface *layout ) override;
@@ -390,8 +386,8 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QAction *actionSaveProjectAs() override;
     QAction *actionSaveMapAsImage() override;
     QAction *actionProjectProperties() override;
-    QAction *actionPrintComposer() override;
-    QAction *actionShowComposerManager() override;
+    QAction *actionCreatePrintLayout() override;
+    QAction *actionShowLayoutManager() override;
     QAction *actionExit() override;
 
     //! Edit menu actions

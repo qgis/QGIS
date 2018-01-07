@@ -133,8 +133,6 @@ QgsComposer::QgsComposer( QgsComposition *composition )
   connect( mActionAddAttributeTable, &QAction::triggered, this, &QgsComposer::mActionAddAttributeTable_triggered );
   connect( mActionAddHtml, &QAction::triggered, this, &QgsComposer::mActionAddHtml_triggered );
   connect( mActionSaveProject, &QAction::triggered, this, &QgsComposer::mActionSaveProject_triggered );
-  connect( mActionNewComposer, &QAction::triggered, this, &QgsComposer::mActionNewComposer_triggered );
-  connect( mActionDuplicateComposer, &QAction::triggered, this, &QgsComposer::mActionDuplicateComposer_triggered );
   connect( mActionComposerManager, &QAction::triggered, this, &QgsComposer::mActionComposerManager_triggered );
   connect( mActionSaveAsTemplate, &QAction::triggered, this, &QgsComposer::mActionSaveAsTemplate_triggered );
   connect( mActionLoadFromTemplate, &QAction::triggered, this, &QgsComposer::mActionLoadFromTemplate_triggered );
@@ -302,8 +300,6 @@ QgsComposer::QgsComposer( QgsComposition *composition )
   QMenu *composerMenu = menuBar()->addMenu( tr( "&Composer" ) );
   composerMenu->addAction( mActionSaveProject );
   composerMenu->addSeparator();
-  composerMenu->addAction( mActionNewComposer );
-  composerMenu->addAction( mActionDuplicateComposer );
   composerMenu->addAction( mActionComposerManager );
 
   mPrintComposersMenu = new QMenu( tr( "Print &Composers" ), this );
@@ -760,8 +756,6 @@ void QgsComposer::setupTheme()
   //missing from active theme
   mActionQuit->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFileExit.png" ) ) );
   mActionSaveProject->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFileSave.svg" ) ) );
-  mActionNewComposer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionNewComposer.svg" ) ) );
-  mActionDuplicateComposer->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDuplicateComposer.svg" ) ) );
   mActionComposerManager->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionComposerManager.svg" ) ) );
   mActionLoadFromTemplate->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFileOpen.svg" ) ) );
   mActionSaveAsTemplate->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFileSaveAs.svg" ) ) );
@@ -3014,42 +3008,6 @@ void QgsComposer::mActionAddArrow_triggered()
 void QgsComposer::mActionSaveProject_triggered()
 {
   mQgis->actionSaveProject()->trigger();
-}
-
-void QgsComposer::mActionNewComposer_triggered()
-{
-  QString title;
-  if ( !mQgis->uniqueComposerTitle( this, title, true ) )
-  {
-    return;
-  }
-  mQgis->createNewComposer( title );
-}
-
-void QgsComposer::mActionDuplicateComposer_triggered()
-{
-  QString newTitle;
-  if ( !mQgis->uniqueComposerTitle( this, newTitle, false, mComposition->name() + tr( " copy" ) ) )
-  {
-    return;
-  }
-
-  // provide feedback, since loading of template into duplicate composer will be hidden
-  QDialog *dlg = new QgsBusyIndicatorDialog( tr( "Duplicating composer..." ) );
-  dlg->setStyleSheet( mQgis->styleSheet() );
-  dlg->show();
-
-  QgsComposer *newComposer = mQgis->duplicateComposer( this, newTitle );
-
-  dlg->close();
-  delete dlg;
-  dlg = nullptr;
-
-  if ( !newComposer )
-  {
-    QMessageBox::warning( this, tr( "Duplicate Composer" ),
-                          tr( "Composer duplication failed." ) );
-  }
 }
 
 void QgsComposer::mActionComposerManager_triggered()

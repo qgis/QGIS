@@ -61,8 +61,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>116</width>
-          <height>76</height>
+          <width>118</width>
+          <height>78</height>
          </rect>
         </property>
        </widget>
@@ -84,8 +84,6 @@
    </attribute>
    <addaction name="mActionSaveProject"/>
    <addaction name="separator"/>
-   <addaction name="mActionNewComposer"/>
-   <addaction name="mActionDuplicateComposer"/>
    <addaction name="mActionComposerManager"/>
    <addaction name="mActionLoadFromTemplate"/>
    <addaction name="mActionSaveAsTemplate"/>
@@ -727,17 +725,6 @@
     <string>Composer manager</string>
    </property>
   </action>
-  <action name="mActionNewComposer">
-   <property name="text">
-    <string>&amp;New Composer...</string>
-   </property>
-   <property name="toolTip">
-    <string>New composer</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+N</string>
-   </property>
-  </action>
   <action name="mActionSaveProject">
    <property name="text">
     <string>&amp;Save Project</string>
@@ -747,14 +734,6 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+S</string>
-   </property>
-  </action>
-  <action name="mActionDuplicateComposer">
-   <property name="text">
-    <string>&amp;Duplicate Composer...</string>
-   </property>
-   <property name="toolTip">
-    <string>Duplicate composer</string>
    </property>
   </action>
   <action name="mActionLockItems">
@@ -1118,6 +1097,33 @@
   </customwidget>
  </customwidgets>
  <resources>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
  </resources>
  <connections/>

@@ -27,7 +27,6 @@ class QWidget;
 
 class QgsAdvancedDigitizingDockWidget;
 class QgsAttributeDialog;
-class QgsComposerInterface;
 class QgsCustomDropHandler;
 class QgsLayoutCustomDropHandler;
 class QgsFeature;
@@ -167,12 +166,6 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QgsMessageBar *messageBar() = 0;
 
     /**
-     * Returns all currently open composer windows.
-     * \since QGIS 3.0
-     */
-    virtual QList<QgsComposerInterface *> openComposers() = 0;
-
-    /**
      * Returns all currently open layout designers.
      * \since QGIS 3.0
      */
@@ -235,8 +228,12 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QAction *actionSaveProjectAs() = 0;
     virtual QAction *actionSaveMapAsImage() = 0;
     virtual QAction *actionProjectProperties() = 0;
-    virtual QAction *actionPrintComposer() = 0;
-    virtual QAction *actionShowComposerManager() = 0;
+
+    //! Create new print layout action
+    virtual QAction *actionCreatePrintLayout() = 0;
+
+    //! Show layout manager action
+    virtual QAction *actionShowLayoutManager() = 0;
     virtual QAction *actionExit() = 0;
 
     // Edit menu actions
@@ -532,23 +529,6 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void addUserInputWidget( QWidget *widget ) = 0;
 
     /**
-     * Opens a new composer window for the specified \a composition, or
-     * brings an already open composer window to the foreground if one
-     * is already created for the composition.
-     * \since QGIS 3.0
-     * \see closeComposer()
-     */
-    virtual QgsComposerInterface *openComposer( QgsComposition *composition ) = 0;
-
-    /**
-     * Closes an open composer window showing the specified \a composition.
-     * The composition remains unaffected.
-     * \since QGIS 3.0
-     * \see openComposer()
-     */
-    virtual void closeComposer( QgsComposition *composition ) = 0;
-
-    /**
      * Opens the layout manager dialog.
      * \since QGIS 3.0
      */
@@ -559,7 +539,6 @@ class GUI_EXPORT QgisInterface : public QObject
      * brings an already open designer window to the foreground if one
      * is already created for the layout.
      * \since QGIS 3.0
-     * \see closeComposer()
      */
     virtual QgsLayoutDesignerInterface *openLayoutDesigner( QgsMasterLayoutInterface *layout ) = 0;
 
@@ -794,30 +773,6 @@ class GUI_EXPORT QgisInterface : public QObject
      * \since QGIS 3.0
     */
     void currentThemeChanged( const QString &theme );
-
-    /**
-     * This signal is emitted when a new composer window has been opened.
-     * \since QGIS 3.0
-     * \see composerWillBeClosed()
-     */
-    void composerOpened( QgsComposerInterface *composer );
-
-    /**
-     * This signal is emitted before a composer window is going to be closed
-     * and deleted.
-     * \since QGIS 3.0
-     * \see composerClosed()
-     * \see composerOpened()
-     */
-    void composerWillBeClosed( QgsComposerInterface *composer );
-
-    /**
-     * This signal is emitted after a composer window is closed.
-     * \since QGIS 3.0
-     * \see composerWillBeClosed()
-     * \see composerOpened()
-     */
-    void composerClosed( QgsComposerInterface *composer );
 
     /**
      * This signal is emitted when a new layout \a designer has been opened.
