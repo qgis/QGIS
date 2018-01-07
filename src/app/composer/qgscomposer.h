@@ -230,12 +230,6 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Save parent project
     void mActionSaveProject_triggered();
 
-    //! Create new composer
-    void mActionNewComposer_triggered();
-
-    //! Duplicate current composer
-    void mActionDuplicateComposer_triggered();
-
     //! Show composer manager
 
     void mActionComposerManager_triggered();

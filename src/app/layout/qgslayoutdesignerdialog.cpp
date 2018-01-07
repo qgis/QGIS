@@ -1570,7 +1570,7 @@ void QgsLayoutDesignerDialog::newLayout()
   switch ( mMasterLayout->layoutType() )
   {
     case QgsMasterLayoutInterface::PrintLayout:
-      QgisApp::instance()->createNewLayout( title );
+      QgisApp::instance()->createNewPrintLayout( title );
       break;
 
     case QgsMasterLayoutInterface::Report:

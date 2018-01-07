@@ -58,7 +58,6 @@
     <addaction name="separator"/>
     <addaction name="mActionProjectProperties"/>
     <addaction name="separator"/>
-    <addaction name="mActionNewPrintComposer"/>
     <addaction name="mActionShowComposerManager"/>
     <addaction name="mPrintComposersMenu"/>
     <addaction name="separator"/>
@@ -368,7 +367,6 @@
    <addaction name="mActionOpenProject"/>
    <addaction name="mActionSaveProject"/>
    <addaction name="mActionSaveProjectAs"/>
-   <addaction name="mActionNewPrintComposer"/>
    <addaction name="mActionShowComposerManager"/>
    <addaction name="mActionNewPrintLayout"/>
    <addaction name="mActionShowLayoutManager"/>
@@ -737,18 +735,6 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+M</string>
-   </property>
-  </action>
-  <action name="mActionNewPrintComposer">
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionNewComposer.svg</normaloff>:/images/themes/default/mActionNewComposer.svg</iconset>
-   </property>
-   <property name="text">
-    <string>New &amp;Print Composer</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+P</string>
    </property>
   </action>
   <action name="mActionShowComposerManager">
