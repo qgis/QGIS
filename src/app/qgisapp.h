@@ -46,10 +46,8 @@ class QgsAuthManager;
 class QgsBookmarks;
 class QgsClipboard;
 class QgsComposer;
-class QgsComposerInterface;
 class QgsComposition;
 class QgsComposerManager;
-class QgsComposerView;
 class QgsContrastEnhancement;
 class QgsCoordinateReferenceSystem;
 class QgsCustomDropHandler;
@@ -302,7 +300,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgisAppStyleSheet *styleSheetBuilder();
 
     //! Populates a menu with actions for opening layout designers
-    void populateComposerMenu( QMenu *menu );
+    void populateLayoutsMenu( QMenu *menu );
 
     //! Setup the toolbar popup menus for a given theme
     void setupToolbarPopups( QString themeName );
@@ -574,7 +572,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QMenu *firstRightStandardMenu() { return mHelpMenu; }
     QMenu *windowMenu() { return nullptr; }
 #endif
-    QMenu *printComposersMenu() {return mPrintComposersMenu;}
     QMenu *helpMenu() { return mHelpMenu; }
 
     //! Toolbars
@@ -1260,6 +1257,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Create a new print layout
     void newPrintLayout();
 
+    //! Slot to handle display of layouts menu, e.g. sorting
+    void layoutsMenuAboutToShow();
+
     void showComposerManager();
     //! Add all loaded layers into the overview - overrides qgisappbase method
     void addAllToOverview();
@@ -1528,8 +1528,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     void showStyleManager();
 
-    //! Slot to handle display of composers menu, e.g. sorting
-    void composerMenuAboutToShow();
     void compositionAboutToBeRemoved( const QString &name );
 
     //! Toggles whether to show pinned labels
@@ -2037,7 +2035,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Print composers of this project, accessible by id string
     QSet<QgsComposer *> mPrintComposers;
 
-    //! Print composers of this project, accessible by id string
+    //! Currently open layout designer dialogs
     QSet<QgsLayoutDesignerDialog *> mLayoutDesignerDialogs;
 
     //! QGIS-internal vector feature clipboard

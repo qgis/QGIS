@@ -106,12 +106,18 @@
     <property name="title">
      <string>&amp;Layout</string>
     </property>
+    <widget class="QMenu" name="mLayoutsMenu">
+     <property name="title">
+      <string>Layouts</string>
+     </property>
+    </widget>
     <addaction name="mActionSaveProject"/>
     <addaction name="separator"/>
     <addaction name="mActionNewLayout"/>
     <addaction name="mActionDuplicateLayout"/>
     <addaction name="mActionRemoveLayout"/>
     <addaction name="mActionLayoutManager"/>
+    <addaction name="mLayoutsMenu"/>
     <addaction name="separator"/>
     <addaction name="mActionLayoutProperties"/>
     <addaction name="mActionRenameLayout"/>
@@ -1485,6 +1491,11 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+P</string>
+   </property>
+  </action>
+  <action name="actiondsfg">
+   <property name="text">
+    <string>dsfg</string>
    </property>
   </action>
  </widget>

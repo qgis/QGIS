@@ -709,6 +709,9 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   mActionExportAtlasAsSVG->setEnabled( false );
   mActionExportAtlasAsPDF->setEnabled( false );
 
+  mLayoutsMenu->setObjectName( QStringLiteral( "mLayoutsMenu" ) );
+  connect( mLayoutsMenu, &QMenu::aboutToShow, this, &QgsLayoutDesignerDialog::populateLayoutsMenu );
+
   restoreWindowState();
 
   //listen out to status bar updates from the view
@@ -3310,6 +3313,11 @@ void QgsLayoutDesignerDialog::pageSetup()
 void QgsLayoutDesignerDialog::pageOrientationChanged()
 {
   mSetPageOrientation = false;
+}
+
+void QgsLayoutDesignerDialog::populateLayoutsMenu()
+{
+  QgisApp::instance()->populateLayoutsMenu( mLayoutsMenu );
 }
 
 void QgsLayoutDesignerDialog::paste()
