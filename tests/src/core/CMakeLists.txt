@@ -192,7 +192,6 @@ SET(TESTS
 
 IF(WITH_QTWEBKIT)
   SET(TESTS ${TESTS}
-      testqgscomposition.cpp
         )
 ENDIF(WITH_QTWEBKIT)
 
