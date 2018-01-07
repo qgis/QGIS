@@ -52,6 +52,8 @@ class CORE_EXPORT QgsLayoutFrame: public QgsLayoutItem
     //Overridden to allow multiframe to set display name
     QString displayName() const override;
 
+    void cleanup() override;
+
     /**
      * Sets the visible part of the multiframe's content which is visible within
      * this frame (relative to the total multiframe extent in layout units).

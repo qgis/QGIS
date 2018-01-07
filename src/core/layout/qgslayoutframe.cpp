@@ -192,6 +192,14 @@ QString QgsLayoutFrame::displayName() const
   return tr( "<Frame>" );
 }
 
+void QgsLayoutFrame::cleanup()
+{
+  if ( mMultiFrame )
+    mMultiFrame->handleFrameRemoval( this );
+
+  QgsLayoutItem::cleanup();
+}
+
 void QgsLayoutFrame::draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle )
 {
   if ( mMultiFrame )

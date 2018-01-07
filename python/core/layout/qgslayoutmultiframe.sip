@@ -383,20 +383,6 @@ in finalizeRestoreFromXml(), not readPropertiesFromElement().
 
 
 
-  protected slots:
-
-    void handlePageChange();
-%Docstring
-Adapts to changed number of layout pages if resize type is RepeatOnEveryPage.
-%End
-
-    void handleFrameRemoval();
-%Docstring
-Called when a frame is removed. Updates frame list and recalculates
-content of remaining frames.
-%End
-
-
 };
 
 

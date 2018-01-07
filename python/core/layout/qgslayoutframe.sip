@@ -43,6 +43,9 @@ Creates a new QgsLayoutFrame belonging to the specified ``layout``.
     virtual QString displayName() const;
 
 
+    virtual void cleanup();
+
+
     void setContentSection( const QRectF &section );
 %Docstring
 Sets the visible part of the multiframe's content which is visible within
