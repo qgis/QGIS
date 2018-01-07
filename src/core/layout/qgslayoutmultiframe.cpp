@@ -60,7 +60,10 @@ void QgsLayoutMultiFrame::addFrame( QgsLayoutFrame *frame, bool recalcFrameSizes
   mFrameItems.push_back( frame );
   frame->mMultiFrame = this;
   connect( frame, &QgsLayoutItem::sizePositionChanged, this, &QgsLayoutMultiFrame::recalculateFrameSizes );
-  connect( frame, &QgsLayoutFrame::destroyed, this, &QgsLayoutMultiFrame::handleFrameRemoval );
+  connect( frame, &QgsLayoutFrame::destroyed, this, [this, frame ]
+  {
+    handleFrameRemoval( frame );
+  } );
   if ( mLayout )
   {
     mLayout->addLayoutItem( frame );
@@ -306,12 +309,11 @@ void QgsLayoutMultiFrame::refresh()
   refreshDataDefinedProperty();
 }
 
-void QgsLayoutMultiFrame::handleFrameRemoval()
+void QgsLayoutMultiFrame::handleFrameRemoval( QgsLayoutFrame *frame )
 {
   if ( mBlockUpdates )
     return;
 
-  QgsLayoutFrame *frame = qobject_cast<QgsLayoutFrame *>( sender() );
   if ( !frame )
   {
     return;

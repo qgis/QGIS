@@ -47,6 +47,7 @@ class TestQgsLayoutMultiFrame : public QObject
     void undoRedoRemovedFrame(); //test that undo doesn't crash with removed frames
     void undoRedoRemovedFrame2();
     void registry();
+    void deleteFrame();
 
   private:
     QgsLayout *mLayout = nullptr;
@@ -554,6 +555,29 @@ void TestQgsLayoutMultiFrame::registry()
   QCOMPARE( props.size(), 1 );
   registry.resolvePaths( QgsLayoutItemRegistry::PluginItem + 1, props, QgsPathResolver(), true );
   QVERIFY( props.isEmpty() );
+}
+
+void TestQgsLayoutMultiFrame::deleteFrame()
+{
+  QgsLayout l( QgsProject::instance() );
+  l.initializeDefaults();
+
+  QgsLayoutItemHtml *htmlItem = new QgsLayoutItemHtml( &l );
+  QgsLayoutFrame *frame1 = new QgsLayoutFrame( &l, htmlItem );
+  frame1->attemptSetSceneRect( QRectF( 0, 0, 100, 200 ) );
+  htmlItem->addFrame( frame1 );
+  QgsLayoutFrame *frame2 = new QgsLayoutFrame( &l, htmlItem );
+  frame2->attemptSetSceneRect( QRectF( 0, 0, 100, 200 ) );
+  htmlItem->addFrame( frame2 );
+
+  QCOMPARE( htmlItem->frameCount(), 2 );
+  QCOMPARE( htmlItem->frames(), QList< QgsLayoutFrame * >() << frame1 << frame2 );
+  l.removeLayoutItem( frame1 );
+  QCOMPARE( htmlItem->frameCount(), 1 );
+  QCOMPARE( htmlItem->frames(), QList< QgsLayoutFrame * >() << frame2 );
+  l.removeLayoutItem( frame2 );
+  QCOMPARE( htmlItem->frameCount(), 0 );
+  QVERIFY( htmlItem->frames().empty() );
 }
 
 QGSTEST_MAIN( TestQgsLayoutMultiFrame )
