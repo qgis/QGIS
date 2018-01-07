@@ -45,47 +45,6 @@ class TestQgsComposition(unittest.TestCase):
         """Run after each test."""
         pass
 
-    def testSubstitutionMap(self):
-        """Test that we can use degree symbols in substitutions.
-        """
-        # Create a point and convert it to text containing a degree symbol.
-        myPoint = QgsPointXY(12.3, -33.33)
-        myCoordinates = QgsCoordinateFormatter.format(myPoint, QgsCoordinateFormatter.FormatDegreesMinutesSeconds, 2)
-        myTokens = myCoordinates.split(',')
-        myLongitude = myTokens[0]
-        myLatitude = myTokens[1]
-        myText = 'Latitude: %s, Longitude: %s' % (myLatitude, myLongitude)
-
-        # Load the composition with the substitutions
-        myComposition = QgsComposition(QgsProject.instance())
-        mySubstitutionMap = {'replace-me': myText}
-        myFile = os.path.join(TEST_DATA_DIR, 'template-for-substitution.qpt')
-        with open(myFile) as f:
-            myTemplateContent = f.read()
-        myDocument = QDomDocument()
-        myDocument.setContent(myTemplateContent)
-        myComposition.loadFromTemplate(myDocument, mySubstitutionMap)
-
-        # We should be able to get map0
-        myMap = myComposition.getComposerMapById(0)
-        myMessage = ('Map 0 could not be found in template %s', myFile)
-        assert myMap is not None, myMessage
-
-    def testNoSubstitutionMap(self):
-        """Test that we can get a map if we use no text substitutions."""
-        myComposition = QgsComposition(QgsProject.instance())
-        myFile = os.path.join(TEST_DATA_DIR, 'template-for-substitution.qpt')
-        with open(myFile) as f:
-            myTemplateContent = f.read()
-        myDocument = QDomDocument()
-        myDocument.setContent(myTemplateContent)
-        myComposition.loadFromTemplate(myDocument)
-
-        # We should be able to get map0
-        myMap = myComposition.getComposerMapById(0)
-        myMessage = ('Map 0 could not be found in template %s', myFile)
-        assert myMap is not None, myMessage
-
     def testPrintMapFromTemplate(self):
         """Test that we can get a map to render in the template."""
         myPath = os.path.join(TEST_DATA_DIR, 'landsat.tif')
@@ -134,22 +93,6 @@ class TestQgsComposition(unittest.TestCase):
                      ' for %s' %
                      (myExpectedFileSize, myFileSize, myImagePath))
         assert myFileSize > myExpectedFileSize, myMessage
-
-    def testSaveRestore(self):
-        # test that properties are restored correctly from XML
-        composition = QgsComposition(QgsProject.instance())
-        composition.setName('test composition')
-
-        doc = QDomDocument("testdoc")
-        elem = doc.createElement("qgis")
-        doc.appendChild(elem)
-        elem = doc.createElement("composer")
-        self.assertTrue(composition.writeXml(elem, doc))
-
-        composition2 = QgsComposition(QgsProject.instance())
-        self.assertTrue(composition2.readXml(elem, doc))
-
-        self.assertEqual(composition.name(), 'test composition')
 
 
 if __name__ == '__main__':
