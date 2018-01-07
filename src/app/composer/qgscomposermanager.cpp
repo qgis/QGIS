@@ -218,14 +218,7 @@ Qt::ItemFlags QgsComposerManagerModel::flags( const QModelIndex &index ) const
 {
   Qt::ItemFlags flags = QAbstractListModel::flags( index );
 
-  if ( index.isValid() )
-  {
-    return flags | Qt::ItemIsEditable;
-  }
-  else
-  {
-    return flags;
-  }
+  return flags;
 }
 
 QgsComposition *QgsComposerManagerModel::compositionFromIndex( const QModelIndex &index ) const

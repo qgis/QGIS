@@ -58,8 +58,11 @@
     <addaction name="separator"/>
     <addaction name="mActionProjectProperties"/>
     <addaction name="separator"/>
-    <addaction name="mActionShowComposerManager"/>
+    <addaction name="mActionNewPrintLayout"/>
+    <addaction name="mActionNewReport"/>
+    <addaction name="mActionShowLayoutManager"/>
     <addaction name="mLayoutsMenu"/>
+    <addaction name="mActionShowComposerManager"/>
     <addaction name="separator"/>
     <addaction name="mActionExit"/>
    </widget>
@@ -367,7 +370,6 @@
    <addaction name="mActionOpenProject"/>
    <addaction name="mActionSaveProject"/>
    <addaction name="mActionSaveProjectAs"/>
-   <addaction name="mActionShowComposerManager"/>
    <addaction name="mActionNewPrintLayout"/>
    <addaction name="mActionShowLayoutManager"/>
   </widget>
@@ -2947,6 +2949,18 @@ Acts on currently active editable layer</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+P</string>
+   </property>
+  </action>
+  <action name="mActionNewReport">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionNewComposer.svg</normaloff>:/images/themes/default/mActionNewComposer.svg</iconset>
+   </property>
+   <property name="text">
+    <string>New &amp;Report</string>
+   </property>
+   <property name="toolTip">
+    <string>New Report</string>
    </property>
   </action>
  </widget>

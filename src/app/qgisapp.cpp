@@ -1857,6 +1857,7 @@ void QgisApp::createActions()
   connect( mActionNewMapCanvas, &QAction::triggered, this, &QgisApp::newMapCanvas );
   connect( mActionNew3DMapCanvas, &QAction::triggered, this, &QgisApp::new3DMapCanvas );
   connect( mActionNewPrintLayout, &QAction::triggered, this, &QgisApp::newPrintLayout );
+  connect( mActionNewReport, &QAction::triggered, this, &QgisApp::newReport );
   connect( mActionShowComposerManager, &QAction::triggered, this, &QgisApp::showComposerManager );
   connect( mActionShowLayoutManager, &QAction::triggered, this, &QgisApp::showLayoutManager );
   connect( mActionExit, &QAction::triggered, this, &QgisApp::fileExit );
@@ -5980,6 +5981,16 @@ void QgisApp::newPrintLayout()
     return;
   }
   createNewPrintLayout( title );
+}
+
+void QgisApp::newReport()
+{
+  QString title;
+  if ( !uniqueLayoutTitle( this, title, true, QgsMasterLayoutInterface::Report ) )
+  {
+    return;
+  }
+  createNewReport( title );
 }
 
 void QgisApp::showComposerManager()
