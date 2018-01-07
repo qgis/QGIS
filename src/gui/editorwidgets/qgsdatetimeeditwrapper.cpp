@@ -124,6 +124,7 @@ void QgsDateTimeEditWrapper::dateTimeChanged( const QDateTime &dateTime )
       break;
     case QVariant::Time:
       emit valueChanged( dateTime.time() );
+      break;
     default:
       const bool fieldIsoFormat = config( QStringLiteral( "field_iso_format" ), false ).toBool();
       const QString fieldFormat = config( QStringLiteral( "field_format" ), QgsDateTimeFieldFormatter::defaultFormat( field().type() ) ).toString();
