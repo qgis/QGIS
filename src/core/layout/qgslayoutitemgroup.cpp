@@ -260,18 +260,12 @@ bool QgsLayoutItemGroup::readPropertiesFromElement( const QDomElement &itemEleme
 
 void QgsLayoutItemGroup::finalizeRestoreFromXml()
 {
-  QList<QgsLayoutItem *> items;
-  mLayout->layoutItems( items );
-
   for ( const QString &uuid : qgis::as_const( mItemUuids ) )
   {
-    for ( QgsLayoutItem *item : qgis::as_const( items ) )
+    QgsLayoutItem *item = mLayout->itemByUuid( uuid, true );
+    if ( item )
     {
-      if ( item && ( item->mUuid == uuid /* TODO || item->mTemplateUuid == uuid */ ) )
-      {
-        addItem( item );
-        break;
-      }
+      addItem( item );
     }
   }
 

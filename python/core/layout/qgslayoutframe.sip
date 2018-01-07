@@ -37,8 +37,6 @@ Creates a new QgsLayoutFrame belonging to the specified ``layout``.
 
     virtual QIcon icon() const;
 
-    virtual QString uuid() const;
-
 
     virtual QString displayName() const;
 
@@ -126,6 +124,10 @@ Returns whether the frame is empty.
     virtual void drawFrame( QgsRenderContext &context );
 
     virtual void drawBackground( QgsRenderContext &context );
+
+    virtual bool writePropertiesToElement( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const;
+
+    virtual bool readPropertiesFromElement( const QDomElement &itemElement, const QDomDocument &document, const QgsReadWriteContext &context );
 
 
 };

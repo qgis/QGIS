@@ -392,6 +392,8 @@ class CORE_EXPORT QgsLayoutMultiFrame: public QgsLayoutObject, public QgsLayoutU
     bool mBlockUpdates = false;
     bool mBlockUndoCommands = false;
 
+    QList< QString > mFrameUuids;
+
     //! Unique id
     QString mUuid;
     friend class QgsLayoutFrame;

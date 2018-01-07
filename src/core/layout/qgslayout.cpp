@@ -777,8 +777,7 @@ QDomElement QgsLayout::writeXml( QDomDocument &document, const QgsReadWriteConte
   {
     if ( const QgsLayoutItem *item = dynamic_cast< const QgsLayoutItem *>( graphicsItem ) )
     {
-      if ( item->type() == QgsLayoutItemRegistry::LayoutPage
-           || item->type() == QgsLayoutItemRegistry::LayoutFrame )
+      if ( item->type() == QgsLayoutItemRegistry::LayoutPage )
         continue;
 
       item->writeXml( element, document, context );
@@ -937,42 +936,6 @@ QList< QgsLayoutItem * > QgsLayout::addItemsFromXml( const QDomElement &parentEl
       pageNumber = mPageCollection->pageNumberForPoint( *position );
     }
   }
-
-  const QDomNodeList layoutItemList = parentElement.childNodes();
-  for ( int i = 0; i < layoutItemList.size(); ++i )
-  {
-    const QDomElement currentItemElem = layoutItemList.at( i ).toElement();
-    if ( currentItemElem.nodeName() != QStringLiteral( "LayoutItem" ) )
-      continue;
-
-    const int itemType = currentItemElem.attribute( QStringLiteral( "type" ) ).toInt();
-    std::unique_ptr< QgsLayoutItem > item( QgsApplication::layoutItemRegistry()->createItem( itemType, this ) );
-    if ( !item )
-    {
-      // e.g. plugin based item which is no longer available
-      continue;
-    }
-
-    item->readXml( currentItemElem, document, context );
-    if ( position )
-    {
-      if ( pasteInPlace )
-      {
-        QgsLayoutPoint posOnPage = QgsLayoutPoint::decodePoint( currentItemElem.attribute( QStringLiteral( "positionOnPage" ) ) );
-        item->attemptMove( posOnPage, true, false, pageNumber );
-      }
-      else
-      {
-        item->attemptMoveBy( pasteShiftPos.x(), pasteShiftPos.y() );
-      }
-    }
-
-    QgsLayoutItem *layoutItem = item.get();
-    addLayoutItem( item.release() );
-    layoutItem->setZValue( layoutItem->zValue() + zOrderOffset );
-    newItems << layoutItem;
-  }
-
   // multiframes
 
   //TODO - fix this. pasting multiframe frame items has no effect
@@ -1008,6 +971,40 @@ QList< QgsLayoutItem * > QgsLayout::addItemsFromXml( const QDomElement &parentEl
     newMultiFrames << m;
   }
 
+  const QDomNodeList layoutItemList = parentElement.childNodes();
+  for ( int i = 0; i < layoutItemList.size(); ++i )
+  {
+    const QDomElement currentItemElem = layoutItemList.at( i ).toElement();
+    if ( currentItemElem.nodeName() != QStringLiteral( "LayoutItem" ) )
+      continue;
+
+    const int itemType = currentItemElem.attribute( QStringLiteral( "type" ) ).toInt();
+    std::unique_ptr< QgsLayoutItem > item( QgsApplication::layoutItemRegistry()->createItem( itemType, this ) );
+    if ( !item )
+    {
+      // e.g. plugin based item which is no longer available
+      continue;
+    }
+
+    item->readXml( currentItemElem, document, context );
+    if ( position )
+    {
+      if ( pasteInPlace )
+      {
+        QgsLayoutPoint posOnPage = QgsLayoutPoint::decodePoint( currentItemElem.attribute( QStringLiteral( "positionOnPage" ) ) );
+        item->attemptMove( posOnPage, true, false, pageNumber );
+      }
+      else
+      {
+        item->attemptMoveBy( pasteShiftPos.x(), pasteShiftPos.y() );
+      }
+    }
+
+    QgsLayoutItem *layoutItem = item.get();
+    addLayoutItem( item.release() );
+    layoutItem->setZValue( layoutItem->zValue() + zOrderOffset );
+    newItems << layoutItem;
+  }
 
   // we now allow items to "post-process", e.g. if they need to setup connections
   // to other items in the layout, which may not have existed at the time the
