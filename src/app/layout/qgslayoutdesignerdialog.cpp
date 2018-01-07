@@ -3261,7 +3261,7 @@ void QgsLayoutDesignerDialog::printReport()
 
     case QgsLayoutExporter::MemoryError:
       QMessageBox::warning( this, tr( "Memory Allocation Error" ),
-                            tr( "Printing the report"
+                            tr( "Printing the report "
                                 "resulted in a memory overflow.\n\n"
                                 "Please try a lower resolution or a smaller paper size." ),
                             QMessageBox::Ok, QMessageBox::Ok );
