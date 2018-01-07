@@ -430,7 +430,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                             paramName, parameters, context)
                     else:
                         self.loadVectorLayerFromParameter(
-                            paramName, parameters, context)
+                            paramName, parameters, context, None)
             # For multiple inputs, process each layer
             elif isinstance(param, QgsProcessingParameterMultipleLayers):
                 layers = self.parameterAsLayerList(parameters, paramName, context)
@@ -441,7 +441,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                         self.loadRasterLayer(layerName, layer)
                     # Add a vector layer
                     elif layer.type() == QgsMapLayer.VectorLayer:
-                        self.loadVectorLayer(layerName, layer)
+                        self.loadVectorLayer(layerName, layer, None)
 
         self.postInputs()
 
