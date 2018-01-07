@@ -65,7 +65,7 @@ class TestQgsLayout: public QObject
     void clone();
     void legendRestoredFromTemplate();
     void legendRestoredFromTemplateAutoUpdate();
-    // void attributeTableRestoredFromTemplate();
+    void attributeTableRestoredFromTemplate();
     void mapLayersRestoredFromTemplate();
     void mapLayersStyleOverrideRestoredFromTemplate();
     void atlasLayerRestoredFromTemplate();
@@ -1064,7 +1064,6 @@ void TestQgsLayout::legendRestoredFromTemplateAutoUpdate()
   QCOMPARE( model2->data( model->node2index( layerNode2 ), Qt::DisplayRole ).toString(), QString( "points" ) );
 }
 
-#if 0 //TODO
 void TestQgsLayout::attributeTableRestoredFromTemplate()
 {
   // load some layers
@@ -1112,7 +1111,6 @@ void TestQgsLayout::attributeTableRestoredFromTemplate()
 
   QCOMPARE( table2->vectorLayer(), layer3 );
 }
-#endif
 
 void TestQgsLayout::mapLayersRestoredFromTemplate()
 {

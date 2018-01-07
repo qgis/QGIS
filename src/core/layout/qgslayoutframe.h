@@ -47,7 +47,6 @@ class CORE_EXPORT QgsLayoutFrame: public QgsLayoutItem
 
     int type() const override;
     QIcon icon() const override;
-    QString uuid() const override;
 
     //Overridden to allow multiframe to set display name
     QString displayName() const override;
@@ -72,8 +71,6 @@ class CORE_EXPORT QgsLayoutFrame: public QgsLayoutItem
 #if 0 //TODO
     void beginItemCommand( const QString &text ) override;
     void endItemCommand() override;
-    bool writeXml( QDomElement &elem, QDomDocument &doc ) const override;
-    bool readXml( const QDomElement &itemElem, const QDomDocument &doc ) override;
 #endif
 
     /**
@@ -124,6 +121,8 @@ class CORE_EXPORT QgsLayoutFrame: public QgsLayoutItem
     void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = nullptr ) override;
     void drawFrame( QgsRenderContext &context ) override;
     void drawBackground( QgsRenderContext &context ) override;
+    bool writePropertiesToElement( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const override;
+    bool readPropertiesFromElement( const QDomElement &itemElement, const QDomDocument &document, const QgsReadWriteContext &context ) override;
 
   private:
     QgsLayoutFrame() = delete;
