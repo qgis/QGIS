@@ -336,18 +336,18 @@ Sets the scalebar ``height`` (in millimeters).
 .. seealso:: :py:func:`height()`
 %End
 
-    void setMap( QgsLayoutItemMap *map );
+    void setLinkedMap( QgsLayoutItemMap *map );
 %Docstring
 Sets the ``map`` item linked to the scalebar.
 
-.. seealso:: :py:func:`map()`
+.. seealso:: :py:func:`linkedMap()`
 %End
 
-    QgsLayoutItemMap *map() const;
+    QgsLayoutItemMap *linkedMap() const;
 %Docstring
 Returns the map item linked to the scalebar.
 
-.. seealso:: :py:func:`setMap()`
+.. seealso:: :py:func:`setLinkedMap()`
 %End
 
     double labelBarSpace() const;

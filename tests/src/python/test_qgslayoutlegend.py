@@ -76,7 +76,7 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         legend.setBackgroundColor(QColor(200, 200, 200))
         legend.setTitle('')
         layout.addLayoutItem(legend)
-        legend.setMap(map)
+        legend.setLinkedMap(map)
 
         checker = QgsLayoutChecker(
             'composer_legend_mapunits', layout)
@@ -113,7 +113,7 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         legend.setTitle('')
         legend.setLegendFilterByMapEnabled(True)
         layout.addLayoutItem(legend)
-        legend.setMap(map)
+        legend.setLinkedMap(map)
 
         map.setExtent(QgsRectangle(-102.51, 41.16, -102.36, 41.30))
 
@@ -156,7 +156,7 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         legend.setResizeToContents(False)
 
         layout.addLayoutItem(legend)
-        legend.setMap(map)
+        legend.setLinkedMap(map)
 
         map.setExtent(QgsRectangle(-102.51, 41.16, -102.36, 41.30))
 
@@ -199,7 +199,7 @@ class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
         legend.setResizeToContents(False)
 
         layout.addLayoutItem(legend)
-        legend.setMap(map)
+        legend.setLinkedMap(map)
 
         map.setExtent(QgsRectangle(-102.51, 41.16, -102.36, 41.30))
 

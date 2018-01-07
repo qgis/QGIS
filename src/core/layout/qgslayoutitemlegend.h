@@ -131,14 +131,6 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
      */
     bool legendFilterByMapEnabled() const { return mLegendFilterByMap; }
 
-#if 0//TODO
-
-    /**
-     * Update() overloading. Use it rather than update()
-     */
-    virtual void updateItem() override;
-#endif
-
     /**
      * When set to true, during an atlas rendering, it will filter out legend elements
      * where features are outside the current atlas feature.
@@ -414,15 +406,15 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
 
     /**
      * Sets the \a map to associate with the legend.
-     * \see map()
+     * \see linkedMap()
      */
-    void setMap( QgsLayoutItemMap *map );
+    void setLinkedMap( QgsLayoutItemMap *map );
 
     /**
      * Returns the associated map.
-     * \see setMap()
+     * \see setLinkedMap()
      */
-    QgsLayoutItemMap *map() const { return mMap; }
+    QgsLayoutItemMap *linkedMap() const { return mMap; }
 
     /**
      * Updates the model and all legend entries.

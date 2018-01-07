@@ -606,7 +606,7 @@ void QgsLayoutItemPropertiesWidget::setValuesForGuiNonPositionElements()
   mStrokeWidthSpinBox->setValue( mItem->frameStrokeWidth().length() );
   mFrameJoinStyleCombo->setPenJoinStyle( mItem->frameJoinStyle() );
   mItemIdLineEdit->setText( mItem->id() );
-  mFrameGroupBox->setChecked( mItem->hasFrame() );
+  mFrameGroupBox->setChecked( mItem->frameEnabled() );
   mBackgroundGroupBox->setChecked( mItem->hasBackground() );
   mBlendModeCombo->setBlendMode( mItem->blendMode() );
   mOpacityWidget->setOpacity( mItem->itemOpacity() );

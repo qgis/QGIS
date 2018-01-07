@@ -106,7 +106,7 @@ void QgsLayoutItemLabel::draw( QgsRenderContext &context, const QStyleOptionGrap
   // painter is scaled to dots, so scale back to layout units
   painter->scale( context.scaleFactor(), context.scaleFactor() );
 
-  double penWidth = hasFrame() ? ( pen().widthF() / 2.0 ) : 0;
+  double penWidth = frameEnabled() ? ( pen().widthF() / 2.0 ) : 0;
   double xPenAdjust = mMarginX < 0 ? -penWidth : penWidth;
   double yPenAdjust = mMarginY < 0 ? -penWidth : penWidth;
   QRectF painterRect( xPenAdjust + mMarginX, yPenAdjust + mMarginY, rect().width() - 2 * xPenAdjust - 2 * mMarginX, rect().height() - 2 * yPenAdjust - 2 * mMarginY );
@@ -332,7 +332,7 @@ QSizeF QgsLayoutItemLabel::sizeForText() const
   double textWidth = QgsLayoutUtils::textWidthMM( mFont, currentText() );
   double fontHeight = QgsLayoutUtils::fontHeightMM( mFont );
 
-  double penWidth = hasFrame() ? ( pen().widthF() / 2.0 ) : 0;
+  double penWidth = frameEnabled() ? ( pen().widthF() / 2.0 ) : 0;
 
   double width = textWidth + 2 * mMarginX + 2 * penWidth + 1;
   double height = fontHeight + 2 * mMarginY + 2 * penWidth;
@@ -456,7 +456,7 @@ QString QgsLayoutItemLabel::displayName() const
 QRectF QgsLayoutItemLabel::boundingRect() const
 {
   QRectF rectangle = rect();
-  double penWidth = hasFrame() ? ( pen().widthF() / 2.0 ) : 0;
+  double penWidth = frameEnabled() ? ( pen().widthF() / 2.0 ) : 0;
   rectangle.adjust( -penWidth, -penWidth, penWidth, penWidth );
 
   if ( mMarginX < 0 )

@@ -634,7 +634,7 @@ map item after restoration from XML.
     virtual QgsAbstractLayoutUndoCommand *createCommand( const QString &text, int id, QUndoCommand *parent = 0 ) /Factory/;
 
 
-    bool hasFrame() const;
+    bool frameEnabled() const;
 %Docstring
 Returns true if the item includes a frame.
 
@@ -651,7 +651,7 @@ Returns true if the item includes a frame.
 %Docstring
 Sets whether this item has a frame drawn around it or not.
 
-.. seealso:: :py:func:`hasFrame()`
+.. seealso:: :py:func:`frameEnabled()`
 
 .. seealso:: :py:func:`setFrameStrokeWidth()`
 
@@ -675,9 +675,9 @@ Sets the frame stroke ``color``.
 
     QColor frameStrokeColor() const;
 %Docstring
-Returns the frame's stroke color. This is only used if hasFrame() returns true.
+Returns the frame's stroke color. This is only used if frameEnabled() returns true.
 
-.. seealso:: :py:func:`hasFrame()`
+.. seealso:: :py:func:`frameEnabled()`
 
 .. seealso:: :py:func:`setFrameStrokeColor()`
 
@@ -701,9 +701,9 @@ Sets the frame stroke ``width``.
 
     QgsLayoutMeasurement frameStrokeWidth() const;
 %Docstring
-Returns the frame's stroke width. This is only used if hasFrame() returns true.
+Returns the frame's stroke width. This is only used if frameEnabled() returns true.
 
-.. seealso:: :py:func:`hasFrame()`
+.. seealso:: :py:func:`frameEnabled()`
 
 .. seealso:: :py:func:`setFrameStrokeWidth()`
 
@@ -716,7 +716,7 @@ Returns the frame's stroke width. This is only used if hasFrame() returns true.
 %Docstring
 Returns the join style used for drawing the item's frame.
 
-.. seealso:: :py:func:`hasFrame()`
+.. seealso:: :py:func:`frameEnabled()`
 
 .. seealso:: :py:func:`setFrameJoinStyle()`
 

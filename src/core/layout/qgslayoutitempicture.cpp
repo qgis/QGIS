@@ -605,30 +605,20 @@ void QgsLayoutItemPicture::setPictureRotation( double rotation )
   emit pictureRotationChanged( mPictureRotation );
 }
 
-void QgsLayoutItemPicture::setRotationMap( const QString &mapUuid )
+void QgsLayoutItemPicture::setLinkedMap( QgsLayoutItemMap *map )
 {
-  if ( !mLayout )
-  {
-    return;
-  }
-
   if ( mRotationMap )
   {
     disconnect( mRotationMap, &QgsLayoutItemMap::mapRotationChanged, this, &QgsLayoutItemPicture::updateMapRotation );
     disconnect( mRotationMap, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemPicture::updateMapRotation );
   }
 
-  if ( mapUuid.isEmpty() ) //disable rotation from map
+  if ( !map ) //disable rotation from map
   {
     mRotationMap = nullptr;
   }
   else
   {
-    QgsLayoutItemMap *map = qobject_cast< QgsLayoutItemMap * >( mLayout->itemByUuid( mapUuid ) );
-    if ( !map )
-    {
-      return;
-    }
     mPictureRotation = map->mapRotation();
     connect( map, &QgsLayoutItemMap::mapRotationChanged, this, &QgsLayoutItemPicture::updateMapRotation );
     connect( map, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemPicture::updateMapRotation );
@@ -791,14 +781,9 @@ bool QgsLayoutItemPicture::readPropertiesFromElement( const QDomElement &itemEle
   return true;
 }
 
-QString QgsLayoutItemPicture::rotationMap() const
+QgsLayoutItemMap *QgsLayoutItemPicture::linkedMap() const
 {
-  return mRotationMap ? mRotationMap->uuid() : QString();
-}
-
-bool QgsLayoutItemPicture::useRotationMap() const
-{
-  return mRotationMap.data();
+  return mRotationMap;
 }
 
 void QgsLayoutItemPicture::setNorthMode( QgsLayoutItemPicture::NorthMode mode )

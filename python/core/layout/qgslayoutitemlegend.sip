@@ -127,7 +127,6 @@ Find out whether legend items are filtered to show just the ones visible in the 
 .. seealso:: :py:func:`setLegendFilterByMapEnabled()`
 %End
 
-
     void setLegendFilterOutAtlas( bool doFilter );
 %Docstring
 When set to true, during an atlas rendering, it will filter out legend elements
@@ -452,18 +451,18 @@ only drawn if drawRasterStroke() is true.
 .. seealso:: :py:func:`setRasterStrokeColor()`
 %End
 
-    void setMap( QgsLayoutItemMap *map );
+    void setLinkedMap( QgsLayoutItemMap *map );
 %Docstring
 Sets the ``map`` to associate with the legend.
 
-.. seealso:: :py:func:`map()`
+.. seealso:: :py:func:`linkedMap()`
 %End
 
-    QgsLayoutItemMap *map() const;
+    QgsLayoutItemMap *linkedMap() const;
 %Docstring
 Returns the associated map.
 
-.. seealso:: :py:func:`setMap()`
+.. seealso:: :py:func:`setLinkedMap()`
 %End
 
     void updateLegend();
