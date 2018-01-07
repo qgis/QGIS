@@ -68,6 +68,12 @@ class CheckValidity(QgisAlgorithm):
     def group(self):
         return self.tr('Vector geometry')
 
+    def groupId(self):
+        return 'vectorgeometry'
+
+    def tags(self):
+        return self.tr('valid,invalid,detect').split(',')
+
     def __init__(self):
         super().__init__()
 
@@ -79,7 +85,7 @@ class CheckValidity(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT_LAYER,
                                                               self.tr('Input layer')))
         self.addParameter(QgsProcessingParameterEnum(self.METHOD,
-                                                     self.tr('Method'), self.methods))
+                                                     self.tr('Method'), self.methods, defaultValue=2))
         self.parameterDefinition(self.METHOD).setMetadata({
             'widget_wrapper': {
                 'class': 'processing.gui.wrappers.EnumWidgetWrapper',
@@ -152,7 +158,7 @@ class CheckValidity(QgisAlgorithm):
                     reasons = []
                     for error in errors:
                         errFeat = QgsFeature()
-                        error_geom = QgsGeometry.fromPoint(error.where())
+                        error_geom = QgsGeometry.fromPointXY(error.where())
                         errFeat.setGeometry(error_geom)
                         errFeat.setAttributes([error.what()])
                         if error_output_sink:

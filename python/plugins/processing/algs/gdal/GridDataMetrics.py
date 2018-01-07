@@ -149,8 +149,11 @@ class GridDataMetrics(GdalAlgorithm):
     def group(self):
         return self.tr('Raster analysis')
 
-    def getConsoleCommands(self, parameters, context, feedback):
-        ogrLayer, layerName = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback)
+    def groupId(self):
+        return 'rasteranalysis'
+
+    def getConsoleCommands(self, parameters, context, feedback, executing=True):
+        ogrLayer, layerName = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback, executing)
 
         arguments = ['-l']
         arguments.append(layerName)

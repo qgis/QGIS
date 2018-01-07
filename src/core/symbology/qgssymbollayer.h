@@ -660,7 +660,7 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
      */
     VerticalAnchorPoint verticalAnchorPoint() const { return mVerticalAnchorPoint; }
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const override;
+    void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const override;
 
     /**
      * Writes the symbol layer definition as a SLD XML element.
@@ -812,7 +812,7 @@ class CORE_EXPORT QgsLineSymbolLayer : public QgsSymbolLayer
 
     void drawPreviewIcon( QgsSymbolRenderContext &context, QSize size ) override;
 
-    virtual double dxfWidth( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const override;
+    double dxfWidth( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const override;
 
   protected:
     QgsLineSymbolLayer( bool locked = false );

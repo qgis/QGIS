@@ -24,6 +24,7 @@
 #include <QSslCertificate>
 #include <QSslError>
 
+#include "qgsauthconfig.h"
 #include "qgis_core.h"
 
 class QgsAuthConfigSslServer;
@@ -104,11 +105,31 @@ class CORE_EXPORT QgsAuthCertUtils
      */
     static QMap< QString, QList<QgsAuthConfigSslServer> > sslConfigsGroupedByOrg( const QList<QgsAuthConfigSslServer> &configs ) SIP_SKIP;
 
+    /**
+     * Return data from a local file via a read-only operation
+     * \param path Path to file to read
+     * \returns All data contained in file or empty contents if file does not exist
+     */
+    static QByteArray fileData( const QString &path );
+
     //! Return list of concatenated certs from a PEM or DER formatted file
     static QList<QSslCertificate> certsFromFile( const QString &certspath );
 
+    //! Return list of concatenated CAs from a PEM or DER formatted file
+    static QList<QSslCertificate> casFromFile( const QString &certspath );
+
     //! Return first cert from a PEM or DER formatted file
     static QSslCertificate certFromFile( const QString &certpath );
+
+    /**
+     * \brief casMerge merges two certificate bundles in a single one removing duplicates, the certificates
+     * from the \a bundle2 are appended to \a bundle1 if not already there
+     * \param bundle1 first bundle
+     * \param bundle2 second bundle
+     * \return a list of unique certificates
+     */
+    static QList<QSslCertificate> casMerge( const QList<QSslCertificate> &bundle1,
+                                            const QList<QSslCertificate> &bundle2 );
 
     /**
      * Return non-encrypted key from a PEM or DER formatted file
@@ -122,6 +143,14 @@ class CORE_EXPORT QgsAuthCertUtils
 
     //! Return list of concatenated certs from a PEM Base64 text block
     static QList<QSslCertificate> certsFromString( const QString &pemtext );
+
+
+    /**
+     * \brief casRemoveSelfSigned remove self-signed CA certificates from \a caList
+     * \param caList list of CA certificates
+     * \return a list of non self-signed certificates
+     */
+    static QList<QSslCertificate> casRemoveSelfSigned( const QList<QSslCertificate> &caList );
 
     /**
      * Return list of certificate, private key and algorithm (as PEM text) from file path components
@@ -137,6 +166,31 @@ class CORE_EXPORT QgsAuthCertUtils
                                            bool reencrypt = true );
 
     /**
+     * Determine if the PEM-encoded text of a key is PKCS#8 format
+     * \param keyPemTxt PEM-encoded text
+     * \returns True if PKCS#8, otherwise false
+     */
+    static bool pemIsPkcs8( const QString &keyPemTxt );
+
+#ifdef Q_OS_MAC
+
+    /**
+     * Extract the PrivateKey ASN.1 element of a DER-encoded PKCS#8 private key
+     * \param pkcs8Der PKCS#8 DER-encoded private key data
+     * \returns DER-encoded private key on success or an empty QByteArray upon failure
+     * \note On some platforms, e.g. macOS, where the default SSL backend is not OpenSSL, a QSslKey
+     * can not be created using PKCS#8-formatted data. However, PKCS#8 private key ASN.1 structures
+     * contain the key data inside a wrapper describing the algorithm used, e.g. RSA, DSA, ECC etc.
+     * Extracted PrivateKey ASN.1 data can be used to create a compatible QSslKey,
+     * e.g. 'traditional' SSLeay RSA-specific PKCS#1.
+     * By default OpenSSL 1.0.0+ returns private keys as PKCS#8, previously it was PKCS#1.
+     * \note This function requires 'libtasn1' development files and library, which is used
+     * to parse and extract the PrivateKey element from an ASN.1 PKCS#8 structure.
+     */
+    static QByteArray pkcs8PrivateKey( QByteArray &pkcs8Der ) SIP_SKIP;
+#endif
+
+    /**
      * Return list of certificate, private key and algorithm (as PEM text) for a PKCS#12 bundle
      * \param bundlepath File path to the PKCS bundle
      * \param bundlepass Passphrase for bundle
@@ -146,6 +200,23 @@ class CORE_EXPORT QgsAuthCertUtils
     static QStringList pkcs12BundleToPem( const QString &bundlepath,
                                           const QString &bundlepass = QString(),
                                           bool reencrypt = true );
+
+    /**
+     * Return list of CA certificates (as QSslCertificate) for a PKCS#12 bundle
+     * \param bundlepath File path to the PKCS bundle
+     * \param bundlepass Passphrase for bundle
+     * \returns list of certificate
+     */
+    static QList<QSslCertificate> pkcs12BundleCas( const QString &bundlepath,
+        const QString &bundlepass = QString() );
+
+
+    /**
+     * \brief certsToPemText dump a list of QSslCertificates to PEM text
+     * \param certs list of certs
+     * \return a byte array of concatenated certificates as PEM text
+     */
+    static QByteArray certsToPemText( const QList<QSslCertificate> &certs );
 
     /**
      * Write a temporary file for a PEM text of cert/key/CAs bundle component
@@ -258,8 +329,52 @@ class CORE_EXPORT QgsAuthCertUtils
      */
     static QList<QPair<QSslError::SslError, QString> > sslErrorEnumStrings() SIP_SKIP;
 
+    /**
+     * \brief certIsCurrent checks if \a cert is viable for its not before and not after dates
+     * \param cert certificate to be checked
+     */
+    static bool certIsCurrent( const QSslCertificate &cert );
+
+    /**
+     * \brief certViabilityErrors checks basic characteristics (validity dates, blacklisting, etc.) of given \a cert
+     * \param cert certificate to be checked
+     * \return list of QSslError (will return NO ERRORS if a null QSslCertificate is passed)
+     */
+    static QList<QSslError> certViabilityErrors( const QSslCertificate &cert );
+
+    /**
+     * \brief certIsViable checks for viability errors of \a cert and whether it is NULL
+     * \param cert certificate to be checked
+     * \return false if cert is NULL or has viability errors
+     */
+    static bool certIsViable( const QSslCertificate &cert );
+
+    /**
+     * \brief validateCertChain validates the given \a certificateChain
+     * \param certificateChain list of certificates to be checked, with leaf first and with optional root CA last
+     * \param hostName (optional) name of the host to be verified
+     * \param trustRootCa if true the CA will be added to the trusted CAs for this validation check
+     * \return list of QSslError, if the list is empty then the cert chain is valid
+     */
+    static QList<QSslError> validateCertChain( const QList<QSslCertificate> &certificateChain,
+        const QString &hostName = QString(),
+        bool trustRootCa = false ) ;
+
+    /**
+     * \brief validatePKIBundle validate the PKI bundle by checking the certificate chain, the
+     * expiration and effective dates, optionally trusts the root CA
+     * \param bundle
+     * \param useIntermediates if true the intermediate certs are also checked
+     * \param trustRootCa if true the CA will be added to the trusted CAs for this validation check (if useIntermediates is false)
+     * this option is ignored and set to false
+     * \return a list of error strings, if the list is empty then the PKI bundle is valid
+     */
+    static QStringList validatePKIBundle( QgsPkiBundle &bundle, bool useIntermediates = true, bool trustRootCa = false );
+
   private:
     static void appendDirSegment_( QStringList &dirname, const QString &segment, QString value );
+
+    static QSsl::EncodingFormat sniffEncoding( const QByteArray &payload );
 };
 
 #endif // QGSAUTHCERTUTILS_H

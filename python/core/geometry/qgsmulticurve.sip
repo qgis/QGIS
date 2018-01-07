@@ -12,6 +12,7 @@ class QgsMultiCurve: QgsGeometryCollection
 {
 %Docstring
  Multi curve geometry collection.
+
 .. versionadded:: 2.10
 %End
 
@@ -30,11 +31,11 @@ class QgsMultiCurve: QgsGeometryCollection
 
     virtual bool fromWkt( const QString &wkt );
 
-    virtual QDomElement asGML2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const;
+    virtual QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const;
 
-    virtual QDomElement asGML3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const;
+    virtual QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const;
 
-    virtual QString asJSON( int precision = 17 ) const;
+    virtual QString asJson( int precision = 17 ) const;
 
     virtual bool addGeometry( QgsAbstractGeometry *g /Transfer/ );
 
@@ -43,13 +44,18 @@ class QgsMultiCurve: QgsGeometryCollection
 
     QgsMultiCurve *reversed() const /Factory/;
 %Docstring
- Returns a copy of the multi curve, where each component curve has had its line direction reversed.
+Returns a copy of the multi curve, where each component curve has had its line direction reversed.
+
 .. versionadded:: 2.14
- :rtype: QgsMultiCurve
 %End
 
     virtual QgsAbstractGeometry *boundary() const /Factory/;
 
+
+
+  protected:
+
+    virtual QgsMultiCurve *createEmptyWithSameType() const /Factory/;
 
 
 };

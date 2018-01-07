@@ -116,10 +116,13 @@ class ClipRasterByMask(GdalAlgorithm):
     def group(self):
         return self.tr('Raster extraction')
 
-    def getConsoleCommands(self, parameters, context, feedback):
+    def groupId(self):
+        return 'rasterextraction'
+
+    def getConsoleCommands(self, parameters, context, feedback, executing=True):
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
 
-        maskLayer, maskLayerName = self.getOgrCompatibleSource(self.MASK, parameters, context, feedback)
+        maskLayer, maskLayerName = self.getOgrCompatibleSource(self.MASK, parameters, context, feedback, executing)
 
         nodata = self.parameterAsDouble(parameters, self.NODATA, context)
         options = self.parameterAsString(parameters, self.OPTIONS, context)

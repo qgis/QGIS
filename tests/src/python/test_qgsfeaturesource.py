@@ -33,19 +33,19 @@ def createLayerWithFivePoints():
     pr = layer.dataProvider()
     f = QgsFeature()
     f.setAttributes([1, "test", 1])
-    f.setGeometry(QgsGeometry.fromPoint(QgsPointXY(1, 2)))
+    f.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(1, 2)))
     f2 = QgsFeature()
     f2.setAttributes([2, "test2", 3])
-    f2.setGeometry(QgsGeometry.fromPoint(QgsPointXY(2, 2)))
+    f2.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(2, 2)))
     f3 = QgsFeature()
     f3.setAttributes([3, "test2", 3])
-    f3.setGeometry(QgsGeometry.fromPoint(QgsPointXY(3, 2)))
+    f3.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(3, 2)))
     f4 = QgsFeature()
     f4.setAttributes([4, "test3", 3])
-    f4.setGeometry(QgsGeometry.fromPoint(QgsPointXY(4, 3)))
+    f4.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(4, 3)))
     f5 = QgsFeature()
     f5.setAttributes([5, "test4", 4])
-    f5.setGeometry(QgsGeometry.fromPoint(QgsPointXY(0, 0)))
+    f5.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(0, 0)))
     assert pr.addFeatures([f, f2, f3, f4, f5])
     assert layer.featureCount() == 5
     return layer
@@ -107,7 +107,7 @@ class TestQgsFeatureSource(unittest.TestCase):
         new_features = {f[0]: f for f in new_layer.getFeatures()}
         for id, f in original_features.items():
             self.assertEqual(new_features[id].attributes(), f.attributes())
-            self.assertEqual(new_features[id].geometry().exportToWkt(), f.geometry().exportToWkt())
+            self.assertEqual(new_features[id].geometry().asWkt(), f.geometry().asWkt())
 
         # materialize with no geometry
         request = QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry)
@@ -136,7 +136,7 @@ class TestQgsFeatureSource(unittest.TestCase):
                              5: 'Point (0 -0)'}
         for id, f in original_features.items():
             self.assertEqual(new_features[id].attributes(), f.attributes())
-            self.assertEqual(new_features[id].geometry().exportToWkt(0), expected_geometry[id])
+            self.assertEqual(new_features[id].geometry().asWkt(0), expected_geometry[id])
 
         # materialize with attribute subset
         request = QgsFeatureRequest().setSubsetOfAttributes([0, 2])

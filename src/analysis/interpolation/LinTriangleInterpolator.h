@@ -32,14 +32,12 @@ class ANALYSIS_EXPORT LinTriangleInterpolator : public TriangleInterpolator
 {
   public:
     //! Default constructor
-    LinTriangleInterpolator();
+    LinTriangleInterpolator() = default;
     //! Constructor with reference to a DualEdgeTriangulation object
     LinTriangleInterpolator( DualEdgeTriangulation *tin );
-    virtual ~LinTriangleInterpolator();
     //! Calculates the normal vector and assigns it to vec
-    virtual bool calcNormVec( double x, double y, Vector3D *result SIP_OUT ) override;
-    //! Performs a linear interpolation in a triangle and assigns the x-,y- and z-coordinates to point
-    virtual bool calcPoint( double x, double y, QgsPoint *result SIP_OUT ) override;
+    bool calcNormVec( double x, double y, Vector3D *result SIP_OUT ) override;
+    bool calcPoint( double x, double y, QgsPoint &result SIP_OUT ) override;
     //! Returns a pointer to the current Triangulation object
     virtual DualEdgeTriangulation *getTriangulation() const;
     //! Sets a Triangulation
@@ -56,17 +54,7 @@ class ANALYSIS_EXPORT LinTriangleInterpolator : public TriangleInterpolator
 
 #ifndef SIP_RUN
 
-inline LinTriangleInterpolator::LinTriangleInterpolator()
-{
-
-}
-
 inline LinTriangleInterpolator::LinTriangleInterpolator( DualEdgeTriangulation *tin ): mTIN( tin )
-{
-
-}
-
-inline LinTriangleInterpolator::~LinTriangleInterpolator()
 {
 
 }

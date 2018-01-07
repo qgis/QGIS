@@ -289,9 +289,11 @@ void QgsAttributeTableModel::attributeValueChanged( QgsFeatureId fid, int idx, c
   {
     if ( mSortFieldIndex == -1 )
     {
-      loadFeatureAtId( fid );
-      mExpressionContext.setFeature( mFeat );
-      mSortCache[fid] = mSortCacheExpression.evaluate( &mExpressionContext );
+      if ( loadFeatureAtId( fid ) )
+      {
+        mExpressionContext.setFeature( mFeat );
+        mSortCache[fid] = mSortCacheExpression.evaluate( &mExpressionContext );
+      }
     }
     else
     {
@@ -596,6 +598,7 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
   if ( !index.isValid() ||
        ( role != Qt::TextAlignmentRole
          && role != Qt::DisplayRole
+         && role != Qt::ToolTipRole
          && role != Qt::EditRole
          && role != SortRole
          && role != FeatureIdRole
@@ -647,6 +650,7 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
   switch ( role )
   {
     case Qt::DisplayRole:
+    case Qt::ToolTipRole:
       return mFieldFormatters.at( index.column() )->representValue( layer(), fieldId, mWidgetConfigs.at( index.column() ),
              mAttributeWidgetCaches.at( index.column() ), val );
 

@@ -18,14 +18,8 @@ class QgsLUDialog: QDialog
   public:
     QgsLUDialog( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
     QString lowerValue() const;
-%Docstring
- :rtype: str
-%End
     void setLowerValue( const QString &val );
     QString upperValue() const;
-%Docstring
- :rtype: str
-%End
     void setUpperValue( const QString &val );
 };
 

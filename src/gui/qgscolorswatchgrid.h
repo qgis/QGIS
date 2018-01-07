@@ -44,10 +44,10 @@ class GUI_EXPORT QgsColorSwatchGrid : public QWidget
     QgsColorSwatchGrid( QgsColorScheme *scheme, const QString &context = QString(), QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     //Reimplemented to set fixed size on widget
-    virtual QSize minimumSizeHint() const override;
+    QSize minimumSizeHint() const override;
 
     //Reimplemented to set fixed size on widget
-    virtual QSize sizeHint() const override;
+    QSize sizeHint() const override;
 
     /**
      * Get the current context for the grid

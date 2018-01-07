@@ -11,10 +11,10 @@ class QgsVectorLayerFeatureCounter : QgsTask
 {
 %Docstring
 
- Counts the features in a QgsVectorLayer in task.
- You should most likely not use this directly and instead call
- QgsVectorLayer.countSymbolFeatures() and connect to the signal
- QgsVectorLayer.symbolFeatureCountMapChanged().
+Counts the features in a QgsVectorLayer in task.
+You should most likely not use this directly and instead call
+QgsVectorLayer.countSymbolFeatures() and connect to the signal
+QgsVectorLayer.symbolFeatureCountMapChanged().
 
 .. versionadded:: 3.0
 %End
@@ -26,24 +26,24 @@ class QgsVectorLayerFeatureCounter : QgsTask
 
     QgsVectorLayerFeatureCounter( QgsVectorLayer *layer, const QgsExpressionContext &context = QgsExpressionContext() );
 %Docstring
- Create a new feature counter for ``layer``.
+Create a new feature counter for ``layer``.
 %End
 
     virtual bool run();
 
 
+
     long featureCount( const QString &legendKey ) const;
 %Docstring
- Get the feature count for a particular ``legendKey``.
- If the key has not been found, -1 will be returned.
- :rtype: long
+Get the feature count for a particular ``legendKey``.
+If the key has not been found, -1 will be returned.
 %End
 
   signals:
 
     void symbolsCounted();
 %Docstring
- Emitted when the symbols have been counted.
+Emitted when the symbols have been counted.
 %End
 
 };

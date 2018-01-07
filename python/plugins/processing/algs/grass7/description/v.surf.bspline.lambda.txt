@@ -1,12 +1,12 @@
 v.surf.bspline
 v.surf.bspline.lambda - Bicubic or bilinear spline interpolation with Tykhonov regularization.
 Vector (v.*)
-ParameterVector|input|Input points layer|-1|False
-ParameterNumber|ew_step|Length of each spline step in the east-west direction|None|None|4
-ParameterNumber|ns_step|Length of each spline step in the north-south direction|None|None|4
-ParameterSelection|method|Spline interpolation algorithm|bilinear;bicubic
-ParameterTableField|column|Attribute table column with values to interpolate|input|-1|False
-ParameterBoolean|-c|Find the best Tykhonov regularizing parameter using a "leave-one-out" cross validation method|True
-ParameterBoolean|-e|Estimate point density and distance|False
-ParameterSelection|layer|layer|1;0
-OutputHTML|html|Lambda or Point Density and Distance
+QgsProcessingParameterVectorLayer|input|Input points layer|-1|None|False
+QgsProcessingParameterNumber|ew_step|Length of each spline step in the east-west direction|QgsProcessingParameterNumber.Double|4|False|None|None
+QgsProcessingParameterNumber|ns_step|Length of each spline step in the north-south direction|QgsProcessingParameterNumber.Double|4|False|None|None
+QgsProcessingParameterEnum|method|Spline interpolation algorithm|bilinear;bicubic
+QgsProcessingParameterField|column|Attribute table column with values to interpolate|None|input|-1|False|False
+QgsProcessingParameterBoolean|-c|Find the best Tykhonov regularizing parameter using a "leave-one-out" cross validation method|True
+QgsProcessingParameterBoolean|-e|Estimate point density and distance|False
+QgsProcessingParameterEnum|layer|layer|1;0
+QgsProcessingParameterFileDestination|html|Lambda or Point Density and Distance|Html files (*.html)|report.html|False

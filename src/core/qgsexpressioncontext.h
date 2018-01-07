@@ -92,18 +92,18 @@ class CORE_EXPORT QgsScopedExpressionFunction : public QgsExpressionFunction
       , mReferencedColumns( referencedColumns )
     {}
 
-    virtual QVariant func( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction *node ) override = 0;
+    QVariant func( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction *node ) override = 0;
 
     /**
      * Returns a clone of the function.
      */
     virtual QgsScopedExpressionFunction *clone() const = 0 SIP_FACTORY;
 
-    virtual bool usesGeometry( const QgsExpressionNodeFunction *node ) const override;
+    bool usesGeometry( const QgsExpressionNodeFunction *node ) const override;
 
-    virtual QSet<QString> referencedColumns( const QgsExpressionNodeFunction *node ) const override;
+    QSet<QString> referencedColumns( const QgsExpressionNodeFunction *node ) const override;
 
-    virtual bool isStatic( const QgsExpressionNodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) const override;
+    bool isStatic( const QgsExpressionNodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) const override;
 
   private:
     bool mUsesGeometry;
@@ -374,7 +374,8 @@ class CORE_EXPORT QgsExpressionContext
 {
   public:
 
-    QgsExpressionContext() {}
+    //! Constructor for QgsExpressionContext
+    QgsExpressionContext() = default;
 
     /**
      * Initializes the context with given list of scopes.
@@ -579,6 +580,16 @@ class CORE_EXPORT QgsExpressionContext
      * Removes the last scope from the expression context and return it.
      */
     QgsExpressionContextScope *popScope();
+
+    /**
+     * Return all scopes from this context and remove them, leaving this context without
+     * any context.
+     * Ownership is transferred to the caller.
+     *
+     * \since QGIS 3.0
+     * \note Not available in Python
+     */
+    QList<QgsExpressionContextScope *> takeScopes() SIP_SKIP;
 
     /**
      * Appends a scope to the end of the context. This scope will override

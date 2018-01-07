@@ -34,7 +34,7 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
   public:
 
     //! Constructor
-    QgsMeasureDialog( QgsMeasureTool *tool, Qt::WindowFlags f = 0 );
+    QgsMeasureDialog( QgsMeasureTool *tool, Qt::WindowFlags f = nullptr );
 
     //! Save position
     void saveWindowLocation();
@@ -52,7 +52,7 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     void removeLastPoint();
 
   public slots:
-    virtual void reject() override;
+    void reject() override;
 
     //! Reset and start new
     void restart();

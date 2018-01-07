@@ -76,7 +76,7 @@ class GUI_EXPORT QgsTabWidget : public QTabWidget
      *
      * \since QGIS 3.0
      */
-    virtual void tabInserted( int index ) override;
+    void tabInserted( int index ) override;
 
     /**
      * Is called internally whenever a tab has been removed.
@@ -85,7 +85,7 @@ class GUI_EXPORT QgsTabWidget : public QTabWidget
      *
      * \since QGIS 3.0
      */
-    virtual void tabRemoved( int index ) override;
+    void tabRemoved( int index ) override;
 
   private:
     void synchronizeIndexes();
@@ -97,8 +97,8 @@ class GUI_EXPORT QgsTabWidget : public QTabWidget
         , label( lbl )
       {}
 
-      TabInformation()
-      {}
+      //! Constructor for TabInformation
+      TabInformation() = default;
 
       bool operator ==( const TabInformation &other );
 

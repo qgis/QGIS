@@ -20,7 +20,7 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgslinestring.h"
 #include "qgsgeometry.h"
 
-#include <QList>
+#include <QVector>
 
 class QgsAbstractGeometry;
 
@@ -96,7 +96,14 @@ class CORE_EXPORT QgsGeometryEngine
      *
      * \since QGIS 3.0 \a geom is a pointer
      */
-    virtual QgsAbstractGeometry *combine( const QList< QgsGeometry > &geometries, QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
+    virtual QgsAbstractGeometry *combine( const QVector<QgsAbstractGeometry *> &geomList, QString *errorMsg ) const = 0 SIP_FACTORY;
+
+    /**
+     * Calculate the combination of this and \a geometries.
+     *
+     * \since QGIS 3.0 \a geom is a pointer
+     */
+    virtual QgsAbstractGeometry *combine( const QVector< QgsGeometry > &geometries, QString *errorMsg = nullptr ) const = 0 SIP_FACTORY;
 
     /**
      * Calculate the symmetric difference of this and \a geom.
@@ -237,7 +244,7 @@ class CORE_EXPORT QgsGeometryEngine
      * \returns 0 in case of success, 1 if geometry has not been split, error else
     */
     virtual QgsGeometryEngine::EngineOperationResult splitGeometry( const QgsLineString &splitLine,
-        QList<QgsGeometry > &newGeometries SIP_OUT,
+        QVector<QgsGeometry > &newGeometries SIP_OUT,
         bool topological,
         QgsPointSequence &topologyTestPoints, QString *errorMsg = nullptr ) const
     {

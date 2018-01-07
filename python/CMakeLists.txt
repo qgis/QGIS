@@ -148,6 +148,7 @@ IF (WITH_GUI)
     ${CMAKE_SOURCE_DIR}/src/gui/layertree
     ${CMAKE_SOURCE_DIR}/src/gui/layout
     ${CMAKE_SOURCE_DIR}/src/gui/locator
+    ${CMAKE_SOURCE_DIR}/src/gui/processing
 
     ${CMAKE_BINARY_DIR}/src/gui
   )
@@ -224,11 +225,13 @@ ENDIF (WITH_SERVER AND WITH_SERVER_PLUGINS)
 
 # additional analysis includes
 INCLUDE_DIRECTORIES(BEFORE
+  ../src/analysis/processing
   ../src/analysis/vector
   ../src/analysis/raster
   ../src/analysis/network
   ../src/analysis/interpolation
   ../src/analysis/openstreetmap
+  ${CMAKE_BINARY_DIR}/src/analysis/processing
   ${CMAKE_BINARY_DIR}/src/analysis/vector
   ${CMAKE_BINARY_DIR}/src/analysis/raster
   ${CMAKE_BINARY_DIR}/src/analysis/network

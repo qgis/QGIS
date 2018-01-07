@@ -1,12 +1,12 @@
 v.generalize
 v.generalize.displacement - Vector based displacement generalization.
 Vector (v.*)
-ParameterVector|input|Input layer|-1|False
+QgsProcessingParameterVectorLayer|input|Input layer|-1|None|False
 Hardcoded|method=displacement
-ParameterNumber|threshold|Maximal tolerance value|None|None|1.0
-ParameterNumber|alpha|Snakes alpha parameter|None|None|1.0
-ParameterNumber|beta|Snakes beta parameter|None|None|1.0
-ParameterNumber|iterations|Number of iterations|None|None|1
-ParameterBoolean|-t|Do not copy attributes|False
-ParameterBoolean|-l|Disable loop support|True
-OutputVector|output|Displaced
+QgsProcessingParameterNumber|threshold|Maximal tolerance value|QgsProcessingParameterNumber.Double|1.0|False|None|None
+QgsProcessingParameterNumber|alpha|Snakes alpha parameter|QgsProcessingParameterNumber.Double|1.0|False|None|None
+QgsProcessingParameterNumber|beta|Snakes beta parameter|QgsProcessingParameterNumber.Double|1.0|False|None|None
+QgsProcessingParameterNumber|iterations|Number of iterations|QgsProcessingParameterNumber.Double|1|False|None|None
+QgsProcessingParameterBoolean|-t|Do not copy attributes|False
+QgsProcessingParameterBoolean|-l|Disable loop support|True
+QgsProcessingParameterVectorDestination|output|Displaced

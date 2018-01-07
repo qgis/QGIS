@@ -13,8 +13,9 @@
 class QgsDatabaseFilterProxyModel: QSortFilterProxyModel
 {
 %Docstring
- A class that implements a custom filter and can be used
- as a proxy for QgsDbTableModel
+A class that implements a custom filter and can be used
+as a proxy for QgsDbTableModel
+
 .. versionadded:: 3.0
 %End
 
@@ -25,7 +26,7 @@ class QgsDatabaseFilterProxyModel: QSortFilterProxyModel
 
     QgsDatabaseFilterProxyModel( QObject *parent /TransferThis/ = 0 );
 %Docstring
- Constructor for QgsDatabaseFilterProxyModel.
+Constructor for QgsDatabaseFilterProxyModel.
 %End
 
     void _setFilterWildcard( const QString &pattern );
@@ -40,6 +41,7 @@ Calls QSortFilterProxyModel.setFilterRegExp and triggers update
 
   protected:
     virtual bool filterAcceptsRow( int row, const QModelIndex &source_parent ) const;
+
 };
 
 /************************************************************************

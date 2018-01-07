@@ -55,7 +55,7 @@ class CORE_EXPORT QgsGroupUngroupItemsCommand: public QObject, public QUndoComma
      *
      */
     QgsGroupUngroupItemsCommand( State s, QgsComposerItemGroup *item, QgsComposition *c, const QString &text, QUndoCommand *parent = nullptr );
-    ~QgsGroupUngroupItemsCommand();
+    ~QgsGroupUngroupItemsCommand() override;
 
     void redo() override;
     void undo() override;

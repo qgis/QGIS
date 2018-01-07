@@ -1,6 +1,6 @@
 Symmetrical Difference
 shapes_polygons
-ParameterVector|A|Layer A|-1|False
-ParameterVector|B|Layer B|-1|False
-OutputVector|RESULT|Symmetrical Difference
-ParameterBoolean|SPLIT|Split Parts|True
+QgsProcessingParameterFeatureSource|A|Layer A|-1|None|False
+QgsProcessingParameterFeatureSource|B|Layer B|-1|None|False
+QgsProcessingParameterVectorDestination|RESULT|Symmetrical Difference
+QgsProcessingParameterBoolean|SPLIT|Split Parts|True

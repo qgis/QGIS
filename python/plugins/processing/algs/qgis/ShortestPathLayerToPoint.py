@@ -37,9 +37,8 @@ from qgis.core import (QgsWkbTypes,
                        QgsFeatureRequest,
                        QgsFeatureSink,
                        QgsGeometry,
-                       QgsFields,
                        QgsField,
-                       QgsMessageLog,
+                       QgsPointXY,
                        QgsProcessing,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterPoint,
@@ -83,14 +82,17 @@ class ShortestPathLayerToPoint(QgisAlgorithm):
     def group(self):
         return self.tr('Network analysis')
 
+    def groupId(self):
+        return 'networkanalysis'
+
     def __init__(self):
         super().__init__()
 
     def initAlgorithm(self, config=None):
         self.DIRECTIONS = OrderedDict([
             (self.tr('Forward direction'), QgsVectorLayerDirector.DirectionForward),
-            (self.tr('Backward direction'), QgsVectorLayerDirector.DirectionForward),
-            (self.tr('Both directions'), QgsVectorLayerDirector.DirectionForward)])
+            (self.tr('Backward direction'), QgsVectorLayerDirector.DirectionBackward),
+            (self.tr('Both directions'), QgsVectorLayerDirector.DirectionBoth)])
 
         self.STRATEGIES = [self.tr('Shortest'),
                            self.tr('Fastest')
@@ -171,7 +173,7 @@ class ShortestPathLayerToPoint(QgisAlgorithm):
         defaultSpeed = self.parameterAsDouble(parameters, self.DEFAULT_SPEED, context)
         tolerance = self.parameterAsDouble(parameters, self.TOLERANCE, context)
 
-        fields = QgsFields()
+        fields = startPoints.fields()
         fields.append(QgsField('start', QVariant.String, '', 254, 0))
         fields.append(QgsField('end', QVariant.String, '', 254, 0))
         fields.append(QgsField('cost', QVariant.Double, '', 20, 7))
@@ -213,17 +215,25 @@ class ShortestPathLayerToPoint(QgisAlgorithm):
 
         feedback.pushInfo(self.tr('Loading start points...'))
         request = QgsFeatureRequest()
-        request.setFlags(request.flags() ^ QgsFeatureRequest.SubsetOfAttributes)
         request.setDestinationCrs(network.sourceCrs())
         features = startPoints.getFeatures(request)
         total = 100.0 / startPoints.featureCount() if startPoints.featureCount() else 0
 
         points = [endPoint]
+        source_attributes = {}
+        i = 1
         for current, f in enumerate(features):
             if feedback.isCanceled():
                 break
 
-            points.append(f.geometry().asPoint())
+            if not f.hasGeometry():
+                continue
+
+            for p in f.geometry().vertices():
+                points.append(QgsPointXY(p))
+                source_attributes[i] = f.attributes()
+                i += 1
+
             feedback.setProgress(int(current * total))
 
         feedback.pushInfo(self.tr('Building graph...'))
@@ -233,41 +243,43 @@ class ShortestPathLayerToPoint(QgisAlgorithm):
         graph = builder.graph()
 
         idxEnd = graph.findVertex(snappedPoints[0])
-        route = []
 
         nPoints = len(snappedPoints)
         total = 100.0 / nPoints if nPoints else 1
-        for i in range(1, nPoints + 1):
+        for i in range(1, nPoints):
             if feedback.isCanceled():
                 break
 
             idxStart = graph.findVertex(snappedPoints[i])
-            tree, cost = QgsGraphAnalyzer.dijkstra(graph, idxStart, 0)
+
+            tree, costs = QgsGraphAnalyzer.dijkstra(graph, idxStart, 0)
 
             if tree[idxEnd] == -1:
                 msg = self.tr('There is no route from start point ({}) to end point ({}).'.format(points[i].toString(), endPoint.toString()))
-                feedback.setProgressText(msg)
-                QgsMessageLog.logMessage(msg, self.tr('Processing'), QgsMessageLog.WARNING)
+                feedback.reportError(msg)
+                # add feature with no geometry
+                feat.clearGeometry()
+                attrs = source_attributes[i]
+                attrs.append(points[i].toString())
+                feat.setAttributes(attrs)
+                sink.addFeature(feat, QgsFeatureSink.FastInsert)
                 continue
 
-            cost = 0.0
+            route = [graph.vertex(idxEnd).point()]
+            cost = costs[idxEnd]
             current = idxEnd
             while current != idxStart:
-                cost += graph.edge(tree[current]).cost(0)
-                route.append(graph.vertex(graph.edge(tree[current]).inVertex()).point())
-                current = graph.edge(tree[current]).outVertex()
+                current = graph.edge(tree[current]).fromVertex()
+                route.append(graph.vertex(current).point())
 
-            route.append(snappedPoints[i])
             route.reverse()
 
-            geom = QgsGeometry.fromPolyline(route)
+            geom = QgsGeometry.fromPolylineXY(route)
             feat.setGeometry(geom)
-            feat['start'] = points[i].toString()
-            feat['end'] = endPoint.toString()
-            feat['cost'] = cost / multiplier
+            attrs = source_attributes[i]
+            attrs.extend([points[i].toString(), endPoint.toString(), cost / multiplier])
+            feat.setAttributes(attrs)
             sink.addFeature(feat, QgsFeatureSink.FastInsert)
-
-            route[:] = []
 
             feedback.setProgress(int(i * total))
 

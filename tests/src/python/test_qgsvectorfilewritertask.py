@@ -58,7 +58,7 @@ class TestQgsVectorFileWriterTask(unittest.TestCase):
         self.assertIsNotNone(provider)
 
         ft = QgsFeature()
-        ft.setGeometry(QgsGeometry.fromPoint(QgsPointXY(10, 10)))
+        ft.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(10, 10)))
         ft.setAttributes(['Johny', 20, 0.3])
         provider.addFeatures([ft])
         return layer

@@ -92,7 +92,7 @@ void QgsOracleNewConnection::accept()
 
   if ( chkStorePassword->isChecked() &&
        QMessageBox::question( this,
-                              tr( "Saving passwords" ),
+                              tr( "Saving Passwords" ),
                               tr( "WARNING: You have opted to save your password. It will be stored in plain text in your project files and in your home directory on Unix-like systems, or in your user profile on Windows. If you do not want this to happen, please press the Cancel button.\n" ),
                               QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
   {
@@ -104,7 +104,7 @@ void QgsOracleNewConnection::accept()
        ( settings.contains( baseKey + txtName->text() + "/service" ) ||
          settings.contains( baseKey + txtName->text() + "/host" ) ) &&
        QMessageBox::question( this,
-                              tr( "Save connection" ),
+                              tr( "Save Connection" ),
                               tr( "Should the existing connection %1 be overwritten?" ).arg( txtName->text() ),
                               QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
   {
@@ -152,7 +152,7 @@ void QgsOracleNewConnection::on_btnConnect_clicked()
   if ( conn )
   {
     // Database successfully opened; we can now issue SQL commands.
-    bar->pushMessage( tr( "Connection to %1 was successful" ).arg( txtDatabase->text() ),
+    bar->pushMessage( tr( "Connection to %1 was successful." ).arg( txtDatabase->text() ),
                       QgsMessageBar::INFO );
     // free connection resources
     QgsOracleConnPool::instance()->releaseConnection( conn );

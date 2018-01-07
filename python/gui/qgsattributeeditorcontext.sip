@@ -14,9 +14,9 @@
 class QgsAttributeEditorContext
 {
 %Docstring
- This class contains context information for attribute editor widgets.
- It will be passed to embedded widgets whenever this occurs (e.g. when
- showing an embedded form due to relations)
+This class contains context information for attribute editor widgets.
+It will be passed to embedded widgets whenever this occurs (e.g. when
+showing an embedded form due to relations)
 %End
 
 %TypeHeaderCode
@@ -39,6 +39,9 @@ class QgsAttributeEditorContext
     };
 
     QgsAttributeEditorContext();
+%Docstring
+Constructor for QgsAttributeEditorContext
+%End
 
     QgsAttributeEditorContext( const QgsAttributeEditorContext &parentContext, FormMode formMode );
 
@@ -47,62 +50,54 @@ class QgsAttributeEditorContext
     void setDistanceArea( const QgsDistanceArea &distanceArea );
 
     const QgsDistanceArea &distanceArea() const;
-%Docstring
- :rtype: QgsDistanceArea
-%End
 
     void setVectorLayerTools( QgsVectorLayerTools *vlTools );
     const QgsVectorLayerTools *vectorLayerTools() const;
-%Docstring
- :rtype: QgsVectorLayerTools
-%End
 
     void setRelation( const QgsRelation &relation, RelationMode mode );
     const QgsRelation &relation() const;
-%Docstring
- :rtype: QgsRelation
-%End
     RelationMode relationMode() const;
-%Docstring
- :rtype: RelationMode
-%End
 
     FormMode formMode() const;
 %Docstring
- Returns the form mode.
-.. seealso:: setFormMode()
- :rtype: FormMode
+Returns the form mode.
+
+.. seealso:: :py:func:`setFormMode()`
 %End
 
     void setFormMode( FormMode mode );
 %Docstring
- Sets the form mode.
- \param mode form mode
-.. seealso:: formMode()
+Sets the form mode.
+
+:param mode: form mode
+
+.. seealso:: :py:func:`formMode()`
+
 .. versionadded:: 2.16
 %End
 
     bool allowCustomUi() const;
 %Docstring
- Returns true if the attribute editor should permit use of custom UI forms.
-.. seealso:: setAllowCustomUi()
+Returns true if the attribute editor should permit use of custom UI forms.
+
+.. seealso:: :py:func:`setAllowCustomUi()`
+
 .. versionadded:: 2.16
- :rtype: bool
 %End
 
     void setAllowCustomUi( bool allow );
 %Docstring
- Sets whether the attribute editor should permit use of custom UI forms.
- \param allow set to true to allow custom UI forms, or false to disable them and use default generated
- QGIS forms
-.. seealso:: allowCustomUi()
+Sets whether the attribute editor should permit use of custom UI forms.
+
+:param allow: set to true to allow custom UI forms, or false to disable them and use default generated
+QGIS forms
+
+.. seealso:: :py:func:`allowCustomUi()`
+
 .. versionadded:: 2.16
 %End
 
     const QgsAttributeEditorContext *parentContext() const;
-%Docstring
- :rtype: QgsAttributeEditorContext
-%End
 
 };
 

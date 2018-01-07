@@ -1,5 +1,5 @@
 Aggregation Index
 grid_analysis
-ParameterRaster|INPUT|Input Grid|False
-ParameterNumber|MAXNUMCLASS|Max. Number of Classes|None|None|5
+QgsProcessingParameterRasterLayer|INPUT|Input Grid|None|False
+QgsProcessingParameterNumber|MAXNUMCLASS|Max. Number of Classes|QgsProcessingParameterNumber.Integer|5|False|None|None
 OutputTable|RESULT|Result

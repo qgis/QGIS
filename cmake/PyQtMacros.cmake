@@ -87,8 +87,13 @@ MACRO (PYQT_ADD_RESOURCES outfiles )
       ENDIF(NOT _ABS_PATH_INDICATOR)
       SET(_RC_DEPENDS ${_RC_DEPENDS} "${_RC_FILE}")
     ENDFOREACH(_RC_FILE)
+    SET(_name_opt)
+    IF(PYQT5_VERSION_STR VERSION_LESS 5.9.1)
+      # option removed in PyQt5 >= 5.9.1
+      SET(_name_opt -name ${outfile})
+    ENDIF()
     ADD_CUSTOM_COMMAND(OUTPUT ${outfile}
-      COMMAND ${PYRCC_PROGRAM} -name ${outfile} -o ${outfile} ${infile}
+      COMMAND ${PYRCC_PROGRAM} ${_name_opt} -o ${outfile} ${infile}
       MAIN_DEPENDENCY ${infile}
       DEPENDS ${_RC_DEPENDS})
     SET(${outfiles} ${${outfiles}} ${outfile})

@@ -51,8 +51,10 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     Q_PROPERTY( QgsSnappingConfig config READ config WRITE setConfig NOTIFY configChanged )
 
   public:
-    QgsSnappingUtils( QObject *parent SIP_TRANSFERTHIS = 0 );
-    ~QgsSnappingUtils();
+
+    //! Constructor for QgsSnappingUtils
+    QgsSnappingUtils( QObject *parent SIP_TRANSFERTHIS = nullptr );
+    ~QgsSnappingUtils() override;
 
     // main actions
 

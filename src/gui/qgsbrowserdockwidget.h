@@ -51,9 +51,9 @@ class GUI_EXPORT QgsBrowserDockWidget : public QgsDockWidget, private Ui::QgsBro
       * \param parent parent widget
       */
     explicit QgsBrowserDockWidget( const QString &name, QgsBrowserModel *browserModel, QWidget *parent SIP_TRANSFERTHIS = nullptr );
-    ~QgsBrowserDockWidget();
+    ~QgsBrowserDockWidget() override;
     //! Add directory to favorites
-    void addFavoriteDirectory( const QString &favDir );
+    void addFavoriteDirectory( const QString &favDir, const QString &name = QString() );
 
   public slots:
     //! Add layer at index
@@ -112,6 +112,7 @@ class GUI_EXPORT QgsBrowserDockWidget : public QgsDockWidget, private Ui::QgsBro
 
   private slots:
     void itemDoubleClicked( const QModelIndex &index );
+    void renameFavorite();
 
   private:
     //! Refresh the model

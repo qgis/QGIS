@@ -1,0 +1,18 @@
+r.out.vtk
+Converts raster maps into the VTK-ASCII format
+Raster (r.*)
+QgsProcessingParameterMultipleLayers|input|Input raster|3|None|False
+QgsProcessingParameterRasterLayer|elevation|Input elevation raster map|None|True
+QgsProcessingParameterNumber|null|Value to represent no data cell|QgsProcessingParameterNumber.Double|-9999.99|True|None|None
+QgsProcessingParameterNumber|z|Constant elevation (if no elevation map is specified)|QgsProcessingParameterNumber.Double|0.0|True|None|None
+QgsProcessingParameterMultipleLayers|rgbmaps|Three (r,g,b) raster maps to create RGB values|3|None|True
+QgsProcessingParameterMultipleLayers|vectormaps|Three (x,y,z) raster maps to create vector values|3|None|True
+QgsProcessingParameterNumber|zscale|Scale factor for elevation|QgsProcessingParameterNumber.Double|1.0|True|None|None
+QgsProcessingParameterNumber|precision|Number of significant digits|QgsProcessingParameterNumber.Integer|12|False|0|20
+*QgsProcessingParameterBoolean|-p|Create VTK point data instead of VTK cell data|False|True
+*QgsProcessingParameterBoolean|-s|Use structured grid for elevation (not recommended)|False|True
+*QgsProcessingParameterBoolean|-t|Use polydata-trianglestrips for elevation grid creation|False|True
+*QgsProcessingParameterBoolean|-v|Use polydata-vertices for elevation grid creation|False|True
+*QgsProcessingParameterBoolean|-o|Scale factor affects the origin (if no elevation map is given)|False|True
+*QgsProcessingParameterBoolean|-c|Correct the coordinates to match the VTK-OpenGL precision|False|True
+QgsProcessingParameterFileDestination|output|VTK File|Vtk files (*.vtk)|None|False

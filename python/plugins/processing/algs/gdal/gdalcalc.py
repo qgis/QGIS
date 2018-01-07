@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
 
 __author__ = 'Giovanni Manghi'
 __date__ = 'January 2015'
@@ -27,14 +26,9 @@ __copyright__ = '(C) 2015, Giovanni Manghi'
 __revision__ = '$Format:%H$'
 
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
-from processing.core.parameters import ParameterString
-from processing.core.parameters import ParameterRaster
-from processing.core.parameters import ParameterSelection
-from processing.core.outputs import OutputRaster
+from processing.algs.gdal.GdalUtils import GdalUtils
 
 from processing.tools.system import isWindows
-
-from processing.algs.gdal.GdalUtils import GdalUtils
 
 
 class gdalcalc(GdalAlgorithm):
@@ -108,7 +102,10 @@ class gdalcalc(GdalAlgorithm):
     def group(self):
         return self.tr('Raster miscellaneous')
 
-    def getConsoleCommands(self, parameters, context, feedback):
+    def groupId(self):
+        return 'rastermiscellaneous'
+
+    def getConsoleCommands(self, parameters, context, feedback, executing=True):
         out = self.getOutputValue(self.OUTPUT)
         extra = self.getParameterValue(self.EXTRA)
         if extra is not None:

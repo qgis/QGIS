@@ -303,7 +303,7 @@ void TestQgsLayerTree::testShowHideAllSymbolNodes()
   QgsLayerTree *root = new QgsLayerTree();
   QgsLayerTreeLayer *n = new QgsLayerTreeLayer( vl );
   root->addChildNode( n );
-  QgsLayerTreeModel *m = new QgsLayerTreeModel( root, 0 );
+  QgsLayerTreeModel *m = new QgsLayerTreeModel( root, nullptr );
   m->refreshLayerLegend( n );
 
   //test that all nodes are initially checked
@@ -351,7 +351,7 @@ void TestQgsLayerTree::testFindLegendNode()
 
   //create legend with symbology nodes for categorized renderer
   QgsLayerTree *root = new QgsLayerTree();
-  QgsLayerTreeModel *m = new QgsLayerTreeModel( root, 0 );
+  QgsLayerTreeModel *m = new QgsLayerTreeModel( root, nullptr );
   QVERIFY( !m->findLegendNode( QString( "id" ), QString( "rule" ) ) );
   QgsLayerTreeLayer *n = new QgsLayerTreeLayer( vl );
   root->addChildNode( n );
@@ -408,7 +408,7 @@ void TestQgsLayerTree::testLegendSymbolGraduated()
 void TestQgsLayerTree::testLegendSymbolRuleBased()
 {
   //test retrieving/setting a rule based renderer's symbol through the legend node
-  QgsRuleBasedRenderer::Rule *root = new QgsRuleBasedRenderer::Rule( 0 );
+  QgsRuleBasedRenderer::Rule *root = new QgsRuleBasedRenderer::Rule( nullptr );
   QgsStringMap props;
   props.insert( QStringLiteral( "color" ), QStringLiteral( "#ff0000" ) );
   root->appendChild( new QgsRuleBasedRenderer::Rule( QgsMarkerSymbol::createSimple( props ), 0, 0, QStringLiteral( "\"col1\"=1" ) ) );
@@ -484,7 +484,7 @@ void TestQgsLayerTree::testRendererLegend( QgsFeatureRenderer *renderer )
   QgsLayerTree *root = new QgsLayerTree();
   QgsLayerTreeLayer *n = new QgsLayerTreeLayer( vl );
   root->addChildNode( n );
-  QgsLayerTreeModel *m = new QgsLayerTreeModel( root, 0 );
+  QgsLayerTreeModel *m = new QgsLayerTreeModel( root, nullptr );
   m->refreshLayerLegend( n );
 
   //test initial symbol

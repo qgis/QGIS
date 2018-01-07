@@ -18,14 +18,15 @@ class QgsRuntimeProfiler
 
     QgsRuntimeProfiler();
 %Docstring
- Constructor to create a new runtime profiler.
+Constructor to create a new runtime profiler.
 %End
 
     void beginGroup( const QString &name );
 %Docstring
  Begin the group for the profiler. Groups will append {GroupName}/ to the
- front of the profile tag set using start.
- \param name The name of the group.
+front of the profile tag set using start.
+
+:param name: The name of the group.
 %End
 
     void endGroup();
@@ -36,8 +37,9 @@ class QgsRuntimeProfiler
     void start( const QString &name );
 %Docstring
  Start a profile event with the given name.
- \param name The name of the profile event. Will have the name of
- the active group appended after ending.
+
+:param name: The name of the profile event. Will have the name of
+the active group appended after ending.
 %End
 
     void end();
@@ -54,8 +56,8 @@ class QgsRuntimeProfiler
     double totalTime();
 %Docstring
  The current total time collected in the profiler.
- :return: The current total time collected in the profiler.
- :rtype: float
+
+:return: The current total time collected in the profiler.
 %End
 
 };

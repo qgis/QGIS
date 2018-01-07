@@ -41,7 +41,7 @@ class QgsGrassMapcalc: public QMainWindow, private Ui::QgsGrassMapcalcBase,
     QgsGrassMapcalc(
       QgsGrassTools *tools, QgsGrassModule *module,
       QgisInterface *iface,
-      QWidget *parent = 0, Qt::WindowFlags f = 0 );
+      QWidget *parent = nullptr, Qt::WindowFlags f = nullptr );
 
     // Current tool
     enum Tool
@@ -323,7 +323,7 @@ class QgsGrassMapcalcObject: public QGraphicsRectItem, public QgsGrassMapcalcIte
     };
 
     explicit QgsGrassMapcalcObject( int type );
-    ~QgsGrassMapcalcObject();
+    ~QgsGrassMapcalcObject() override;
 
     // Set map name, constant value or function/operator
     void setValue( QString val, QString lab = "" );
@@ -353,10 +353,10 @@ class QgsGrassMapcalcObject: public QGraphicsRectItem, public QgsGrassMapcalcIte
 
     // Set socket's connector
     void setConnector( int direction, int socket,
-                       QgsGrassMapcalcConnector *connector = 0, int end = 0 );
+                       QgsGrassMapcalcConnector *connector = nullptr, int end = 0 );
 
     // Object type
-    virtual int type() const override;
+    int type() const override;
 
     // Value
     QString value() { return mValue; }
@@ -448,7 +448,7 @@ class QgsGrassMapcalcConnector: public QGraphicsLineItem, public QgsGrassMapcalc
 {
   public:
     explicit QgsGrassMapcalcConnector( QGraphicsScene * );
-    ~QgsGrassMapcalcConnector();
+    ~QgsGrassMapcalcConnector() override;
 
     void paint( QPainter *painter,
                 const QStyleOptionGraphicsItem *option, QWidget *widget ) override;
@@ -476,7 +476,7 @@ class QgsGrassMapcalcConnector: public QGraphicsLineItem, public QgsGrassMapcalc
     // If this end of connector was connected to an object
     // the connection is also deleted from object
     // If object is NULL the old connection is deleted.
-    void setSocket( int end, QgsGrassMapcalcObject *object = 0,
+    void setSocket( int end, QgsGrassMapcalcObject *object = nullptr,
                     int direction = QgsGrassMapcalcObject::None,
                     int socket = 0
                   );
@@ -504,7 +504,7 @@ class QgsGrassMapcalcConnector: public QGraphicsLineItem, public QgsGrassMapcalc
     std::vector<QPoint> mPoints;
 
     // Selected end, -1 for whole connector
-    int mSelectedEnd;
+    int mSelectedEnd = -1;
 
     // Connected objects
     std::vector<QgsGrassMapcalcObject *> mSocketObjects;
@@ -518,7 +518,7 @@ class QgsGrassMapcalcView: public QGraphicsView
     Q_OBJECT
 
   public:
-    QgsGrassMapcalcView( QgsGrassMapcalc *mapcalc, QWidget *parent = 0, Qt::WindowFlags f = 0 );
+    QgsGrassMapcalcView( QgsGrassMapcalc *mapcalc, QWidget *parent = nullptr, Qt::WindowFlags f = nullptr );
 
   protected:
     void mousePressEvent( QMouseEvent *e ) override;

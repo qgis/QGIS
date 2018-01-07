@@ -82,6 +82,30 @@ AltitudeBinding Qgs3DUtils::altBindingFromString( const QString &str )
     return AltBindCentroid;
 }
 
+QString Qgs3DUtils::cullingModeToString( Qt3DRender::QCullFace::CullingMode mode )
+{
+  switch ( mode )
+  {
+    case Qt3DRender::QCullFace::NoCulling: return QStringLiteral( "no-culling" );
+    case Qt3DRender::QCullFace::Front: return QStringLiteral( "front" );
+    case Qt3DRender::QCullFace::Back: return QStringLiteral( "back" );
+    case Qt3DRender::QCullFace::FrontAndBack: return QStringLiteral( "front-and-back" );
+  }
+  return QString();
+}
+
+Qt3DRender::QCullFace::CullingMode Qgs3DUtils::cullingModeFromString( const QString &str )
+{
+  if ( str == QStringLiteral( "front" ) )
+    return Qt3DRender::QCullFace::Front;
+  else if ( str == QStringLiteral( "back" ) )
+    return Qt3DRender::QCullFace::Back;
+  else if ( str == QStringLiteral( "front-and-back" ) )
+    return Qt3DRender::QCullFace::FrontAndBack;
+  else
+    return Qt3DRender::QCullFace::NoCulling;
+}
+
 
 void Qgs3DUtils::clampAltitudes( QgsLineString *lineString, AltitudeClamping altClamp, AltitudeBinding altBind, const QgsPoint &centroid, float height, const Qgs3DMapSettings &map )
 {
@@ -113,7 +137,7 @@ void Qgs3DUtils::clampAltitudes( QgsLineString *lineString, AltitudeClamping alt
 }
 
 
-bool Qgs3DUtils::clampAltitudes( QgsPolygonV2 *polygon, AltitudeClamping altClamp, AltitudeBinding altBind, float height, const Qgs3DMapSettings &map )
+bool Qgs3DUtils::clampAltitudes( QgsPolygon *polygon, AltitudeClamping altClamp, AltitudeBinding altBind, float height, const Qgs3DMapSettings &map )
 {
   if ( !polygon->is3D() )
     polygon->addZValue( 0 );
@@ -161,7 +185,7 @@ QMatrix4x4 Qgs3DUtils::stringToMatrix4x4( const QString &str )
   return m;
 }
 
-QList<QVector3D> Qgs3DUtils::positions( const Qgs3DMapSettings &map, QgsVectorLayer *layer, const QgsFeatureRequest &request )
+QList<QVector3D> Qgs3DUtils::positions( const Qgs3DMapSettings &map, QgsVectorLayer *layer, const QgsFeatureRequest &request, AltitudeClamping altClamp )
 {
   QList<QVector3D> positions;
   QgsFeature f;
@@ -171,16 +195,32 @@ QList<QVector3D> Qgs3DUtils::positions( const Qgs3DMapSettings &map, QgsVectorLa
     if ( f.geometry().isNull() )
       continue;
 
-    const QgsAbstractGeometry *g = f.geometry().geometry();
-    if ( const QgsPoint *pt = qgsgeometry_cast< const QgsPoint *>( g ) )
+    const QgsAbstractGeometry *g = f.geometry().constGet();
+    for ( auto it = g->vertices_begin(); it != g->vertices_end(); ++it )
     {
-      // TODO: use Z coordinates if the point is 3D
-      float h = map.terrainGenerator()->heightAt( pt->x(), pt->y(), map ) * map.terrainVerticalScale();
-      positions.append( QVector3D( pt->x() - map.originX(), h, -( pt->y() - map.originY() ) ) );
+      QgsPoint pt = *it;
+      float geomZ = 0;
+      if ( pt.is3D() )
+      {
+        geomZ = pt.z();
+      }
+      float terrainZ = map.terrainGenerator()->heightAt( pt.x(), pt.y(), map ) * map.terrainVerticalScale();
+      float h;
+      switch ( altClamp )
+      {
+        case AltClampAbsolute:
+          h = geomZ;
+          break;
+        case AltClampTerrain:
+          h = terrainZ;
+          break;
+        case AltClampRelative:
+          h = terrainZ + geomZ;
+          break;
+      }
+      positions.append( QVector3D( pt.x() - map.origin().x(), h, -( pt.y() - map.origin().y() ) ) );
       //qDebug() << positions.last();
     }
-    else
-      qDebug() << "not a point";
   }
 
   return positions;
@@ -237,5 +277,41 @@ bool Qgs3DUtils::isCullable( const QgsAABB &bbox, const QMatrix4x4 &viewProjecti
     out = out & outcode( pc );
   }
   return out;
+}
+
+QgsVector3D Qgs3DUtils::mapToWorldCoordinates( const QgsVector3D &mapCoords, const QgsVector3D &origin )
+{
+  return QgsVector3D( mapCoords.x() - origin.x(),
+                      mapCoords.z() - origin.z(),
+                      -( mapCoords.y() - origin.y() ) );
+
+}
+
+QgsVector3D Qgs3DUtils::worldToMapCoordinates( const QgsVector3D &worldCoords, const QgsVector3D &origin )
+{
+  return QgsVector3D( worldCoords.x() + origin.x(),
+                      -worldCoords.z() + origin.y(),
+                      worldCoords.y() + origin.z() );
+}
+
+QgsVector3D Qgs3DUtils::transformWorldCoordinates( const QgsVector3D &worldPoint1, const QgsVector3D &origin1, const QgsCoordinateReferenceSystem &crs1, const QgsVector3D &origin2, const QgsCoordinateReferenceSystem &crs2, const QgsCoordinateTransformContext &context )
+{
+  QgsVector3D mapPoint1 = worldToMapCoordinates( worldPoint1, origin1 );
+  QgsVector3D mapPoint2 = mapPoint1;
+  if ( crs1 != crs2 )
+  {
+    // reproject if necessary
+    QgsCoordinateTransform ct( crs1, crs2, context );
+    try
+    {
+      QgsPointXY pt = ct.transform( QgsPointXY( mapPoint1.x(), mapPoint1.y() ) );
+      mapPoint2.set( pt.x(), pt.y(), mapPoint1.z() );
+    }
+    catch ( const QgsCsException & )
+    {
+      // bad luck, can't reproject for some reason
+    }
+  }
+  return mapToWorldCoordinates( mapPoint2, origin2 );
 }
 

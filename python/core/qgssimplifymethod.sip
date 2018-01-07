@@ -12,7 +12,8 @@
 class QgsSimplifyMethod
 {
 %Docstring
- This class contains information about how to simplify geometries fetched from a QgsFeatureIterator
+This class contains information about how to simplify geometries fetched from a QgsFeatureIterator
+
 .. versionadded:: 2.2
 %End
 
@@ -39,7 +40,6 @@ Sets the simplification type
     MethodType methodType() const;
 %Docstring
 Gets the simplification type
- :rtype: MethodType
 %End
 
     void setTolerance( double tolerance );
@@ -49,7 +49,6 @@ Sets the tolerance of simplification in map units. Represents the maximum distan
     double tolerance() const;
 %Docstring
 Gets the tolerance of simplification in map units. Represents the maximum distance in map units between two coordinates which can be considered equal.
- :rtype: float
 %End
 
     void setThreshold( float threshold );
@@ -59,7 +58,6 @@ Sets the simplification threshold in pixels. Represents the maximum distance in 
     float threshold() const;
 %Docstring
 Gets the simplification threshold in pixels. Represents the maximum distance in pixels between two coordinates which can be considered equal.
- :rtype: float
 %End
 
     void setForceLocalOptimization( bool localOptimization );
@@ -69,13 +67,11 @@ Sets whether the simplification executes after fetch the geometries from provide
     bool forceLocalOptimization() const;
 %Docstring
 Gets whether the simplification executes after fetch the geometries from provider, otherwise it executes, when supported, in provider before fetch the geometries
- :rtype: bool
 %End
 
     static QgsAbstractGeometrySimplifier *createGeometrySimplifier( const QgsSimplifyMethod &simplifyMethod );
 %Docstring
 Creates a geometry simplifier according to specified method
- :rtype: QgsAbstractGeometrySimplifier
 %End
 
   protected:

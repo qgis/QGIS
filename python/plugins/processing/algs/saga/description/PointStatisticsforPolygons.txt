@@ -1,14 +1,14 @@
 Point Statistics for Polygons
 shapes_polygons
-ParameterVector|POINTS|Points|0|False
-ParameterVector|POLYGONS|Polygons|2|False
-ParameterTableField|FIELDS|Attribute Table field|POINTS|-1|False
-ParameterSelection|FIELD_NAME|Field Naming Choice|[0] variable type + original name;[1] original name + variable type;[2] original name;[3] variable type
-ParameterBoolean|SUM             |Sum|True
-ParameterBoolean|AVG             |Mean|True
-ParameterBoolean|VAR             |Variance|True
-ParameterBoolean|DEV             |Deviation|True
-ParameterBoolean|MIN             |Minimum|True
-ParameterBoolean|MAX             |Maximum|True
-ParameterBoolean|NUM             |Count|True
-OutputVector|STATISTICS|Statistics
+QgsProcessingParameterFeatureSource|POINTS|Points|0|None|False
+QgsProcessingParameterFeatureSource|POLYGONS|Polygons|2|None|False
+QgsProcessingParameterField|FIELDS|Attribute Table field|None|POINTS|-1|False|False
+QgsProcessingParameterEnum|FIELD_NAME|Field Naming Choice|[0] variable type + original name;[1] original name + variable type;[2] original name;[3] variable type
+QgsProcessingParameterBoolean|SUM             |Sum|True
+QgsProcessingParameterBoolean|AVG             |Mean|True
+QgsProcessingParameterBoolean|VAR             |Variance|True
+QgsProcessingParameterBoolean|DEV             |Deviation|True
+QgsProcessingParameterBoolean|MIN             |Minimum|True
+QgsProcessingParameterBoolean|MAX             |Maximum|True
+QgsProcessingParameterBoolean|NUM             |Count|True
+QgsProcessingParameterVectorDestination|STATISTICS|Statistics

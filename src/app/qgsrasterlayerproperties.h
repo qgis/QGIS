@@ -53,7 +53,7 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
      */
     QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *canvas, QWidget *parent = nullptr, Qt::WindowFlags = QgsGuiUtils::ModalDialogFlags );
 
-    ~QgsRasterLayerProperties();
+    ~QgsRasterLayerProperties() override;
 
     //! Synchronize state with associated raster layer
     void sync();
@@ -79,7 +79,7 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     //! \brief slot executed when user wishes to export transparency values
     void pbnExportTransparentPixelValues_clicked();
     //! \brief auto slot executed when the active page in the main widget stack is changed
-    void mOptionsStackedWidget_CurrentChanged( int indx );
+    void optionsStackedWidget_CurrentChanged( int index ) override;
     //! \brief slow executed when user wishes to import transparency values
     void pbnImportTransparentPixelValues_clicked();
     //! \brief slot executed when user presses "Remove Selected Row" button on the transparency page

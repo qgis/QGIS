@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
 
 __author__ = 'Alexander Bruy'
 __date__ = 'April 2014'
@@ -66,6 +65,9 @@ class RandomPointsExtent(QgisAlgorithm):
 
     def group(self):
         return self.tr('Vector creation')
+
+    def groupId(self):
+        return 'vectorcreation'
 
     def __init__(self):
         super().__init__()
@@ -125,7 +127,7 @@ class RandomPointsExtent(QgisAlgorithm):
             ry = bbox.yMinimum() + bbox.height() * random.random()
 
             p = QgsPointXY(rx, ry)
-            geom = QgsGeometry.fromPoint(p)
+            geom = QgsGeometry.fromPointXY(p)
             if geom.within(extent) and \
                     vector.checkMinDistance(p, index, minDistance, points):
                 f = QgsFeature(nPoints)

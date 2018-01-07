@@ -90,8 +90,8 @@ QgsDwgImportDialog::QgsDwgImportDialog( QWidget *parent, Qt::WindowFlags f )
   QgsCoordinateReferenceSystem crs( crsid, QgsCoordinateReferenceSystem::InternalCrsId );
   mCrsSelector->setCrs( crs );
   mCrsSelector->setLayerCrs( crs );
-  mCrsSelector->dialog()->setMessage( tr( "Select the coordinate reference system for the dxf file. "
-                                          "The data points will be transformed from the layer coordinate reference system." ) );
+  mCrsSelector->setMessage( tr( "Select the coordinate reference system for the dxf file. "
+                                "The data points will be transformed from the layer coordinate reference system." ) );
 
   pbLoadDatabase_clicked();
   updateUI();
@@ -167,7 +167,9 @@ void QgsDwgImportDialog::pbLoadDatabase_clicked()
 
   bool lblVisible = false;
 
-  std::unique_ptr<QgsVectorLayer> d( new QgsVectorLayer( QStringLiteral( "%1|layername=drawing" ).arg( leDatabase->text() ), QStringLiteral( "layers" ), QStringLiteral( "ogr" ), false ) );
+  QgsVectorLayer::LayerOptions options;
+  options.loadDefaultStyle = false;
+  std::unique_ptr<QgsVectorLayer> d( new QgsVectorLayer( QStringLiteral( "%1|layername=drawing" ).arg( leDatabase->text() ), QStringLiteral( "layers" ), QStringLiteral( "ogr" ), options ) );
   if ( d && d->isValid() )
   {
     int idxPath = d->fields().lookupField( QStringLiteral( "path" ) );
@@ -202,7 +204,7 @@ void QgsDwgImportDialog::pbLoadDatabase_clicked()
 
   lblMessage->setVisible( lblVisible );
 
-  std::unique_ptr<QgsVectorLayer> l( new QgsVectorLayer( QStringLiteral( "%1|layername=layers" ).arg( leDatabase->text() ), QStringLiteral( "layers" ), QStringLiteral( "ogr" ), false ) );
+  std::unique_ptr<QgsVectorLayer> l( new QgsVectorLayer( QStringLiteral( "%1|layername=layers" ).arg( leDatabase->text() ), QStringLiteral( "layers" ), QStringLiteral( "ogr" ), options ) );
   if ( l && l->isValid() )
   {
     int idxName = l->fields().lookupField( QStringLiteral( "name" ) );
@@ -278,7 +280,9 @@ void QgsDwgImportDialog::pbImportDrawing_clicked()
 
 QgsVectorLayer *QgsDwgImportDialog::layer( QgsLayerTreeGroup *layerGroup, const QString &layerFilter, const QString &table )
 {
-  QgsVectorLayer *l = new QgsVectorLayer( QStringLiteral( "%1|layername=%2" ).arg( leDatabase->text(), table ), table, QStringLiteral( "ogr" ), false );
+  QgsVectorLayer::LayerOptions options;
+  options.loadDefaultStyle = false;
+  QgsVectorLayer *l = new QgsVectorLayer( QStringLiteral( "%1|layername=%2" ).arg( leDatabase->text(), table ), table, QStringLiteral( "ogr" ), options );
   l->setSubsetString( QStringLiteral( "%1space=0 AND block=-1" ).arg( layerFilter ) );
 
   if ( l->featureCount() == 0 )

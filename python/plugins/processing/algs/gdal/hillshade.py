@@ -120,7 +120,10 @@ class hillshade(GdalAlgorithm):
     def group(self):
         return self.tr('Raster analysis')
 
-    def getConsoleCommands(self, parameters, context, feedback):
+    def groupId(self):
+        return 'rasteranalysis'
+
+    def getConsoleCommands(self, parameters, context, feedback, executing=True):
         arguments = ['hillshade']
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
         arguments.append(inLayer.source())

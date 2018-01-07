@@ -236,29 +236,7 @@ QStringList QgsRasterDataProvider::cStringList2Q_( char **stringList )
 
 } // cStringList2Q_
 
-QString QgsRasterDataProvider::makeTableCell( QString const &value )
-{
-  return "<p>\n" + value + "</p>\n";
-} // makeTableCell_
-
-// convenience function for building metadata() HTML table cells
-QString QgsRasterDataProvider::makeTableCells( QStringList const &values )
-{
-  QString s( QStringLiteral( "<tr>" ) );
-
-  for ( QStringList::const_iterator i = values.begin();
-        i != values.end();
-        ++i )
-  {
-    s += QgsRasterDataProvider::makeTableCell( *i );
-  }
-
-  s += QLatin1String( "</tr>" );
-
-  return s;
-} // makeTableCell_
-
-QString QgsRasterDataProvider::metadata()
+QString QgsRasterDataProvider::htmlMetadata()
 {
   QString s;
   return s;

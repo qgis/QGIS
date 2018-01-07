@@ -11,10 +11,12 @@
 class QgsSubstitutionListWidget : QgsPanelWidget
 {
 %Docstring
- A widget which allows users to specify a list of substitutions to apply to a string, with
- options for exporting and importing substitution lists.
+A widget which allows users to specify a list of substitutions to apply to a string, with
+options for exporting and importing substitution lists.
+
 .. versionadded:: 3.0
-.. seealso:: QgsSubstitutionListDialog
+
+.. seealso:: :py:class:`QgsSubstitutionListDialog`
 %End
 
 %TypeHeaderCode
@@ -24,22 +26,25 @@ class QgsSubstitutionListWidget : QgsPanelWidget
 
     QgsSubstitutionListWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
- Constructor for QgsSubstitutionListWidget.
- \param parent parent widget
+Constructor for QgsSubstitutionListWidget.
+
+:param parent: parent widget
 %End
 
     void setSubstitutions( const QgsStringReplacementCollection &substitutions );
 %Docstring
- Sets the list of substitutions to show in the widget.
- \param substitutions substitution list
-.. seealso:: substitutions()
+Sets the list of substitutions to show in the widget.
+
+:param substitutions: substitution list
+
+.. seealso:: :py:func:`substitutions()`
 %End
 
     QgsStringReplacementCollection substitutions() const;
 %Docstring
- Returns the list of substitutions currently defined by the widget.
-.. seealso:: setSubstitutions()
- :rtype: QgsStringReplacementCollection
+Returns the list of substitutions currently defined by the widget.
+
+.. seealso:: :py:func:`setSubstitutions()`
 %End
 
   signals:
@@ -54,10 +59,12 @@ Emitted when the substitution definitions change.
 class QgsSubstitutionListDialog : QDialog
 {
 %Docstring
- A dialog which allows users to specify a list of substitutions to apply to a string, with
- options for exporting and importing substitution lists.
+A dialog which allows users to specify a list of substitutions to apply to a string, with
+options for exporting and importing substitution lists.
+
 .. versionadded:: 3.0
-.. seealso:: QgsSubstitutionListWidget
+
+.. seealso:: :py:class:`QgsSubstitutionListWidget`
 %End
 
 %TypeHeaderCode
@@ -67,22 +74,25 @@ class QgsSubstitutionListDialog : QDialog
 
     QgsSubstitutionListDialog( QWidget *parent /TransferThis/ = 0 );
 %Docstring
- Constructor for QgsSubstitutionListDialog.
- \param parent parent widget
+Constructor for QgsSubstitutionListDialog.
+
+:param parent: parent widget
 %End
 
     void setSubstitutions( const QgsStringReplacementCollection &substitutions );
 %Docstring
- Sets the list of substitutions to show in the dialog.
- \param substitutions substitution list
-.. seealso:: substitutions()
+Sets the list of substitutions to show in the dialog.
+
+:param substitutions: substitution list
+
+.. seealso:: :py:func:`substitutions()`
 %End
 
     QgsStringReplacementCollection substitutions() const;
 %Docstring
- Returns the list of substitutions currently defined by the dialog.
-.. seealso:: setSubstitutions()
- :rtype: QgsStringReplacementCollection
+Returns the list of substitutions currently defined by the dialog.
+
+.. seealso:: :py:func:`setSubstitutions()`
 %End
 
 

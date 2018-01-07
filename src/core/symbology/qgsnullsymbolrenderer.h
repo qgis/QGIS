@@ -34,18 +34,17 @@ class CORE_EXPORT QgsNullSymbolRenderer : public QgsFeatureRenderer
 
     QgsNullSymbolRenderer();
 
-    virtual QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
-    virtual QgsSymbol *originalSymbolForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
+    QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
+    QgsSymbol *originalSymbolForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
 
-    virtual bool renderFeature( QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) override;
-    virtual void startRender( QgsRenderContext &context, const QgsFields &fields ) override;
-    virtual void stopRender( QgsRenderContext &context ) override;
-    virtual bool willRenderFeature( QgsFeature &feat, QgsRenderContext &context ) override;
+    bool renderFeature( QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) override;
+    void stopRender( QgsRenderContext &context ) override;
+    bool willRenderFeature( QgsFeature &feat, QgsRenderContext &context ) override;
 
-    virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
-    virtual QString dump() const override;
-    virtual QgsFeatureRenderer *clone() const override SIP_FACTORY;
-    virtual QgsSymbolList symbols( QgsRenderContext &context ) override;
+    QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
+    QString dump() const override;
+    QgsFeatureRenderer *clone() const override SIP_FACTORY;
+    QgsSymbolList symbols( QgsRenderContext &context ) override;
 
     /**
      * Creates a null renderer from XML element.
@@ -55,7 +54,7 @@ class CORE_EXPORT QgsNullSymbolRenderer : public QgsFeatureRenderer
      */
     static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
 
-    virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) override;
+    QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) override;
 
     /**
      * Creates a QgsNullSymbolRenderer from an existing renderer.

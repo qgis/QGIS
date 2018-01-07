@@ -8,10 +8,11 @@
 
 
 
+
 class QgsComposerItemGroup: QgsComposerItem
 {
 %Docstring
- A container for grouping several QgsComposerItems
+A container for grouping several QgsComposerItems
 %End
 
 %TypeHeaderCode
@@ -24,13 +25,12 @@ class QgsComposerItemGroup: QgsComposerItem
     virtual int type() const;
 %Docstring
 Return correct graphics item type.
- :rtype: int
 %End
 
     virtual void addItem( QgsComposerItem *item );
 
 %Docstring
- Adds an item to the group. All the group members are deleted
+Adds an item to the group. All the group members are deleted
 if the group is deleted*
 %End
     virtual void removeItems();
@@ -47,34 +47,32 @@ Draw stroke and ev. selection handles
     virtual void setSceneRect( const QRectF &rectangle );
 
 %Docstring
- Sets this items bound in scene coordinates such that 1 item size units
+Sets this items bound in scene coordinates such that 1 item size units
 corresponds to 1 scene size unit*
 %End
 
     virtual void setVisibility( const bool visible );
 
+
     virtual bool writeXml( QDomElement &elem, QDomDocument &doc ) const;
 
 %Docstring
- Stores state in Dom node
- \param elem is Dom element corresponding to 'Composer' tag
- \param doc is the Dom document
- :rtype: bool
+Stores state in Dom node
+
+:param elem: is Dom element corresponding to 'Composer' tag
+:param doc: is the Dom document
 %End
 
     virtual bool readXml( const QDomElement &itemElem, const QDomDocument &doc );
 
 %Docstring
- Sets state from Dom document
- \param itemElem is Dom node corresponding to item tag
- \param doc is the Dom document
- :rtype: bool
+Sets state from Dom document
+
+:param itemElem: is Dom node corresponding to item tag
+:param doc: is the Dom document
 %End
 
     QSet<QgsComposerItem *> items();
-%Docstring
- :rtype: set of QgsComposerItem
-%End
 
   signals:
     void childItemDeleted( QgsComposerItem *item );

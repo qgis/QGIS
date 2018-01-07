@@ -120,6 +120,8 @@ void QgsChunkedEntity::update( const SceneState &state )
   QElapsedTimer t;
   t.start();
 
+  int oldJobsCount = pendingJobsCount();
+
   QSet<QgsChunkNode *> activeBefore = QSet<QgsChunkNode *>::fromList( mActiveNodes );
   mActiveNodes.clear();
   mFrustumCulled = 0;
@@ -170,6 +172,9 @@ void QgsChunkedEntity::update( const SceneState &state )
 
   mNeedsUpdate = false;  // just updated
 
+  if ( pendingJobsCount() != oldJobsCount )
+    emit pendingJobsCountChanged();
+
   qDebug() << "update: active " << mActiveNodes.count() << " enabled " << enabled << " disabled " << disabled << " | culled " << mFrustumCulled << " | loading " << mChunkLoaderQueue->count() << " loaded " << mReplacementQueue->count() << " | unloaded " << unloaded << " elapsed " << t.elapsed() << "ms";
 }
 
@@ -213,6 +218,11 @@ void QgsChunkedEntity::updateNodes( const QList<QgsChunkNode *> &nodes, QgsChunk
   // trigger update
   if ( !mActiveJob )
     startJob();
+}
+
+int QgsChunkedEntity::pendingJobsCount() const
+{
+  return mChunkLoaderQueue->count() + ( mActiveJob ? 1 : 0 );
 }
 
 
@@ -306,6 +316,8 @@ void QgsChunkedEntity::requestResidency( QgsChunkNode *node )
 
 void QgsChunkedEntity::onActiveJobFinished()
 {
+  int oldJobsCount = pendingJobsCount();
+
   QgsChunkQueueJob *job = qobject_cast<QgsChunkQueueJob *>( sender() );
   Q_ASSERT( job );
   Q_ASSERT( job == mActiveJob );
@@ -340,6 +352,9 @@ void QgsChunkedEntity::onActiveJobFinished()
 
   // start another job - if any
   startJob();
+
+  if ( pendingJobsCount() != oldJobsCount )
+    emit pendingJobsCountChanged();
 }
 
 void QgsChunkedEntity::startJob()

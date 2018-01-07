@@ -96,7 +96,7 @@ void QgsGrassOptions::mGisbaseBrowseButton_clicked()
   // For Mac, GISBASE folder may be inside GRASS bundle. Use Qt file dialog
   // since Mac native dialog doesn't allow user to browse inside bundles.
   gisbase = QFileDialog::getExistingDirectory(
-              0, QObject::tr( "Choose GRASS installation path (GISBASE)" ), gisbase,
+              nullptr, QObject::tr( "Choose GRASS installation path (GISBASE)" ), gisbase,
               QFileDialog::DontUseNativeDialog );
   if ( !gisbase.isEmpty() )gisbaseChanged();
   {

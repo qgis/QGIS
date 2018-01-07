@@ -46,6 +46,9 @@ class PointOnSurface(QgisFeatureBasedAlgorithm):
     def group(self):
         return self.tr('Vector geometry')
 
+    def groupId(self):
+        return 'vectorgeometry'
+
     def __init__(self):
         super().__init__()
 
@@ -64,7 +67,7 @@ class PointOnSurface(QgisFeatureBasedAlgorithm):
     def outputWkbType(self, input_wkb_type):
         return QgsWkbTypes.Point
 
-    def processFeature(self, feature, feedback):
+    def processFeature(self, feature, context, feedback):
         input_geometry = feature.geometry()
         if input_geometry:
             output_geometry = input_geometry.pointOnSurface()

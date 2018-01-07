@@ -1,13 +1,13 @@
 v.net.salesman
 Creates a cycle connecting given nodes (Traveling salesman problem)
 Vector (v.*)
-ParameterVector|input|Input vector line layer (arcs)|1|False
-ParameterVector|points|Centers point layer (nodes)|0|False
-ParameterNumber|threshold|Threshold for connecting centers to the network (in map unit)|0.0|None|50.0|False
-*ParameterSelection|arc_type|Arc type|line;boundary;line,boundary|2
-*ParameterString|center_cats|Category values|1-100000|False|False
-*ParameterTableField|arc_column|Arc forward/both direction(s) cost column (number)|input|0|True
-*ParameterTableField|arc_backward_column|Arc backward direction cost column (number)|input|0|True
-*ParameterBoolean|-g|Use geodesic calculation for longitude-latitude locations|False|True
-OutputVector|output|Network_Salesman
+QgsProcessingParameterVectorLayer|input|Input vector line layer (arcs)|1|None|False
+QgsProcessingParameterVectorLayer|points|Centers point layer (nodes)|0|None|False
+QgsProcessingParameterNumber|threshold|Threshold for connecting centers to the network (in map unit)|QgsProcessingParameterNumber.Double|50.0|False|0.0|None
+*QgsProcessingParameterEnum|arc_type|Arc type|line;boundary;line,boundary|False|2
+*QgsProcessingParameterString|center_cats|Category values|1-100000|False|False
+*QgsProcessingParameterField|arc_column|Arc forward/both direction(s) cost column (number)|None|input|0|False|True
+*QgsProcessingParameterField|arc_backward_column|Arc backward direction cost column (number)|None|input|0|False|True
+*QgsProcessingParameterBoolean|-g|Use geodesic calculation for longitude-latitude locations|False|True
+QgsProcessingParameterVectorDestination|output|Network_Salesman
 OutputTable|sequence|Salesman_Nodes_Sequence

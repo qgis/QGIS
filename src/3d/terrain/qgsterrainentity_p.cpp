@@ -39,7 +39,7 @@ class TerrainMapUpdateJobFactory : public QgsChunkQueueJobFactory
     {
     }
 
-    virtual QgsChunkQueueJob *createJob( QgsChunkNode *chunk )
+    QgsChunkQueueJob *createJob( QgsChunkNode *chunk ) override
     {
       return new TerrainMapUpdateJob( mTextureGenerator, chunk );
     }
@@ -57,7 +57,6 @@ QgsTerrainEntity::QgsTerrainEntity( int maxLevel, const Qgs3DMapSettings &map, Q
                       map.terrainGenerator()->rootChunkError( map ),
                       map.maxTerrainScreenError(), maxLevel, map.terrainGenerator(), parent )
   , mMap( map )
-  , mTerrainPicker( nullptr )
 {
   map.terrainGenerator()->setTerrain( this );
 
@@ -69,7 +68,7 @@ QgsTerrainEntity::QgsTerrainEntity( int maxLevel, const Qgs3DMapSettings &map, Q
 
   connectToLayersRepaintRequest();
 
-  mTerrainToMapTransform = new QgsCoordinateTransform( map.terrainGenerator()->crs(), map.crs() );
+  mTerrainToMapTransform = new QgsCoordinateTransform( map.terrainGenerator()->crs(), map.crs(), map.transformContext() );
 
   mTextureGenerator = new QgsTerrainTextureGenerator( map );
 

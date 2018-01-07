@@ -50,10 +50,10 @@ class QgsGrassModule : public QWidget, private  Ui::QgsGrassModuleBase
 
     //! Constructor
     QgsGrassModule( QgsGrassTools *tools, QString moduleName, QgisInterface *iface,
-                    bool direct, QWidget *parent = 0, Qt::WindowFlags f = 0 );
+                    bool direct, QWidget *parent = nullptr, Qt::WindowFlags f = nullptr );
 
 
-    ~QgsGrassModule();
+    ~QgsGrassModule() override;
 
     QString translate( QString string );
 

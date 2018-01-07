@@ -29,7 +29,7 @@
 class QgsGPSDevice : public QgsBabelFormat
 {
   public:
-    QgsGPSDevice() { }
+    QgsGPSDevice() = default;
 
     QgsGPSDevice( const QString &wptDlCmd, const QString &wptUlCmd,
                   const QString &rteDlCmd, const QString &rteUlCmd,

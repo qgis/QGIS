@@ -39,7 +39,7 @@ class GUI_EXPORT QgsDockWidget : public QDockWidget
      * \param parent parent widget
      * \param flags window flags
      */
-    explicit QgsDockWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags flags = 0 );
+    explicit QgsDockWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags flags = nullptr );
 
     /**
      * Constructor for QgsDockWidget.
@@ -47,7 +47,7 @@ class GUI_EXPORT QgsDockWidget : public QDockWidget
      * \param parent parent widget
      * \param flags window flags
      */
-    explicit QgsDockWidget( const QString &title, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags flags = 0 );
+    explicit QgsDockWidget( const QString &title, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags flags = nullptr );
 
     /**
      * Returns true if the dock is both opened and raised to the front (ie not hidden by
@@ -75,8 +75,8 @@ class GUI_EXPORT QgsDockWidget : public QDockWidget
 
   protected:
 
-    virtual void closeEvent( QCloseEvent * ) override;
-    virtual void showEvent( QShowEvent *event ) override;
+    void closeEvent( QCloseEvent * ) override;
+    void showEvent( QShowEvent *event ) override;
 
   signals:
 

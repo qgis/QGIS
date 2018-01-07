@@ -26,18 +26,29 @@ Tree model for the rules:
 #include "qgsrulebasedrendererwidget.h"
 %End
   public:
-    QgsRuleBasedRendererModel( QgsRuleBasedRenderer *r );
+
+    QgsRuleBasedRendererModel( QgsRuleBasedRenderer *renderer, QObject *parent );
+%Docstring
+Constructor for QgsRuleBasedRendererModel, for the specified ``renderer``.
+%End
 
     virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
+
     virtual QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const;
-    virtual QVariant headerData( int section, Qt::Orientation orientation,
-                                 int role = Qt::DisplayRole ) const;
+
+     virtual QVariant headerData( int section, Qt::Orientation orientation,
+                         int role = Qt::DisplayRole ) const;
     virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const;
+
     virtual int columnCount( const QModelIndex & = QModelIndex() ) const;
+
     virtual QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const;
+
     virtual QModelIndex parent( const QModelIndex &index ) const;
 
+
     virtual bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole );
+
 
     virtual Qt::DropActions supportedDropActions() const;
 
@@ -53,9 +64,6 @@ Tree model for the rules:
 
 
     QgsRuleBasedRenderer::Rule *ruleForIndex( const QModelIndex &index ) const;
-%Docstring
- :rtype: QgsRuleBasedRenderer.Rule
-%End
 
     void insertRule( const QModelIndex &parent, int before, QgsRuleBasedRenderer::Rule *newrule );
     void updateRule( const QModelIndex &parent, int row );
@@ -82,14 +90,12 @@ class QgsRuleBasedRendererWidget : QgsRendererWidget
   public:
 
     static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer ) /Factory/;
-%Docstring
- :rtype: QgsRendererWidget
-%End
 
     QgsRuleBasedRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );
     ~QgsRuleBasedRendererWidget();
 
     virtual QgsFeatureRenderer *renderer();
+
 
   public slots:
 
@@ -125,16 +131,10 @@ Opens the dialog for refining a rule using ranges
     void refineRuleScalesGui( const QModelIndexList &index );
 
     QgsRuleBasedRenderer::Rule *currentRule();
-%Docstring
- :rtype: QgsRuleBasedRenderer.Rule
-%End
 
     virtual QList<QgsSymbol *> selectedSymbols();
 
     QgsRuleBasedRenderer::RuleList selectedRules();
-%Docstring
- :rtype: QgsRuleBasedRenderer.RuleList
-%End
     virtual void refreshSymbolView();
 
     virtual void keyPressEvent( QKeyEvent *event );
@@ -168,42 +168,45 @@ class QgsRendererRulePropsWidget : QgsPanelWidget
                                 QWidget *parent /TransferThis/ = 0,
                                 const QgsSymbolWidgetContext &context = QgsSymbolWidgetContext() );
 %Docstring
- Widget to edit the details of a rule based renderer rule.
- \param rule The rule to edit.
- \param layer The layer used to pull layer related information.
- \param style The active QGIS style.
- \param parent The parent widget.
- \param context the symbol widget context
+Widget to edit the details of a rule based renderer rule.
+
+:param rule: The rule to edit.
+:param layer: The layer used to pull layer related information.
+:param style: The active QGIS style.
+:param parent: The parent widget.
+:param context: the symbol widget context
 %End
 
     QgsRuleBasedRenderer::Rule *rule();
 %Docstring
- Return the current set rule.
- :return: The current rule.
- :rtype: QgsRuleBasedRenderer.Rule
+Return the current set rule.
+
+:return: The current rule.
 %End
 
   public slots:
 
     void testFilter();
 %Docstring
- Test the filter that is set in the widget
+Test the filter that is set in the widget
 %End
 
     void buildExpression();
 %Docstring
- Open the expression builder widget to check if the
+Open the expression builder widget to check if the
 %End
 
     void apply();
 %Docstring
- Apply any changes from the widget to the set rule.
+Apply any changes from the widget to the set rule.
 %End
 
     virtual void setDockMode( bool dockMode );
+
 %Docstring
- Set the widget in dock mode.
- \param dockMode True for dock mode.
+Set the widget in dock mode.
+
+:param dockMode: True for dock mode.
 %End
 
   protected:
@@ -221,20 +224,18 @@ class QgsRendererRulePropsDialog : QDialog
 
     QgsRendererRulePropsDialog( QgsRuleBasedRenderer::Rule *rule, QgsVectorLayer *layer, QgsStyle *style, QWidget *parent /TransferThis/ = 0, const QgsSymbolWidgetContext &context = QgsSymbolWidgetContext() );
 %Docstring
- Constructor for QgsRendererRulePropsDialog
- \param rule associated rule based renderer rule
- \param layer source vector layer
- \param style style collection
- \param parent parent widget
- \param context symbol widget context
+Constructor for QgsRendererRulePropsDialog
+
+:param rule: associated rule based renderer rule
+:param layer: source vector layer
+:param style: style collection
+:param parent: parent widget
+:param context: symbol widget context
 %End
 
     ~QgsRendererRulePropsDialog();
 
     QgsRuleBasedRenderer::Rule *rule();
-%Docstring
- :rtype: QgsRuleBasedRenderer.Rule
-%End
 
   public slots:
     void testFilter();

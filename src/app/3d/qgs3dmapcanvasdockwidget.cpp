@@ -18,18 +18,21 @@
 #include "qgisapp.h"
 #include "qgs3dmapcanvas.h"
 #include "qgs3dmapconfigwidget.h"
+#include "qgs3dmapscene.h"
+#include "qgscameracontroller.h"
 #include "qgsmapcanvas.h"
 
 #include "qgs3dmapsettings.h"
+#include "qgs3dutils.h"
 
 #include <QBoxLayout>
 #include <QDialog>
 #include <QDialogButtonBox>
+#include <QProgressBar>
 #include <QToolBar>
 
 Qgs3DMapCanvasDockWidget::Qgs3DMapCanvasDockWidget( QWidget *parent )
   : QgsDockWidget( parent )
-  , mMainCanvas( nullptr )
 {
   setAttribute( Qt::WA_DeleteOnClose );  // removes the dock widget from main window when
 
@@ -37,24 +40,45 @@ Qgs3DMapCanvasDockWidget::Qgs3DMapCanvasDockWidget( QWidget *parent )
 
   QToolBar *toolBar = new QToolBar( contentsWidget );
   toolBar->setIconSize( QgisApp::instance()->iconSize( true ) );
-  toolBar->addAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionZoomFullExtent.svg" ) ), "Reset view", this, &Qgs3DMapCanvasDockWidget::resetView );
-  toolBar->addAction( QgsApplication::getThemeIcon( QStringLiteral( "mIconProperties.svg" ) ), "Configure", this, &Qgs3DMapCanvasDockWidget::configure );
+  toolBar->addAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionZoomFullExtent.svg" ) ),
+                      tr( "Zoom Full" ), this, &Qgs3DMapCanvasDockWidget::resetView );
+  toolBar->addAction( QgsApplication::getThemeIcon( QStringLiteral( "mIconProperties.svg" ) ),
+                      tr( "Configure" ), this, &Qgs3DMapCanvasDockWidget::configure );
 
   mCanvas = new Qgs3DMapCanvas( contentsWidget );
   mCanvas->setMinimumSize( QSize( 200, 200 ) );
+  mCanvas->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
 
-  QVBoxLayout *layout = new QVBoxLayout( contentsWidget );
+  mLabelPendingJobs = new QLabel( this );
+  mProgressPendingJobs = new QProgressBar( this );
+  mProgressPendingJobs->setRange( 0, 0 );
+
+  QHBoxLayout *topLayout = new QHBoxLayout;
+  topLayout->setContentsMargins( 0, 0, 0, 0 );
+  topLayout->setSpacing( style()->pixelMetric( QStyle::PM_LayoutHorizontalSpacing ) );
+  topLayout->addWidget( toolBar );
+  topLayout->addStretch( 1 );
+  topLayout->addWidget( mLabelPendingJobs );
+  topLayout->addWidget( mProgressPendingJobs );
+
+  QVBoxLayout *layout = new QVBoxLayout;
   layout->setContentsMargins( 0, 0, 0, 0 );
   layout->setSpacing( 0 );
-  layout->addWidget( toolBar );
-  layout->addWidget( mCanvas, 1 );
+  layout->addLayout( topLayout );
+  layout->addWidget( mCanvas );
+
+  contentsWidget->setLayout( layout );
 
   setWidget( contentsWidget );
+
+  onTerrainPendingJobsCountChanged();
 }
 
-void Qgs3DMapCanvasDockWidget::setMap( Qgs3DMapSettings *map )
+void Qgs3DMapCanvasDockWidget::setMapSettings( Qgs3DMapSettings *map )
 {
   mCanvas->setMap( map );
+
+  connect( mCanvas->scene(), &Qgs3DMapScene::terrainPendingJobsCountChanged, this, &Qgs3DMapCanvasDockWidget::onTerrainPendingJobsCountChanged );
 }
 
 void Qgs3DMapCanvasDockWidget::setMainCanvas( QgsMapCanvas *canvas )
@@ -73,7 +97,8 @@ void Qgs3DMapCanvasDockWidget::resetView()
 void Qgs3DMapCanvasDockWidget::configure()
 {
   QDialog dlg;
-  Qgs3DMapConfigWidget *w = new Qgs3DMapConfigWidget( mCanvas->map(), mMainCanvas, &dlg );
+  Qgs3DMapSettings *map = mCanvas->map();
+  Qgs3DMapConfigWidget *w = new Qgs3DMapConfigWidget( map, mMainCanvas, &dlg );
   QDialogButtonBox *buttons = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, &dlg );
   connect( buttons, &QDialogButtonBox::accepted, &dlg, &QDialog::accept );
   connect( buttons, &QDialogButtonBox::rejected, &dlg, &QDialog::reject );
@@ -84,8 +109,23 @@ void Qgs3DMapCanvasDockWidget::configure()
   if ( !dlg.exec() )
     return;
 
+  QgsVector3D oldOrigin = map->origin();
+  QgsCoordinateReferenceSystem oldCrs = map->crs();
+  QgsVector3D oldLookingAt = mCanvas->cameraController()->lookingAtPoint();
+
   // update map
   w->apply();
+
+  QgsVector3D p = Qgs3DUtils::transformWorldCoordinates(
+                    oldLookingAt,
+                    oldOrigin, oldCrs,
+                    map->origin(), map->crs(), QgsProject::instance()->transformContext() );
+
+  if ( p != oldLookingAt )
+  {
+    // apply() call has moved origin of the world so let's move camera so we look still at the same place
+    mCanvas->cameraController()->setLookingAtPoint( p );
+  }
 }
 
 void Qgs3DMapCanvasDockWidget::onMainCanvasLayersChanged()
@@ -96,4 +136,13 @@ void Qgs3DMapCanvasDockWidget::onMainCanvasLayersChanged()
 void Qgs3DMapCanvasDockWidget::onMainCanvasColorChanged()
 {
   mCanvas->map()->setBackgroundColor( mMainCanvas->canvasColor() );
+}
+
+void Qgs3DMapCanvasDockWidget::onTerrainPendingJobsCountChanged()
+{
+  int count = mCanvas->scene() ? mCanvas->scene()->terrainPendingJobsCount() : 0;
+  mProgressPendingJobs->setVisible( count );
+  mLabelPendingJobs->setVisible( count );
+  if ( count )
+    mLabelPendingJobs->setText( tr( "Loading %1 tiles" ).arg( count ) );
 }

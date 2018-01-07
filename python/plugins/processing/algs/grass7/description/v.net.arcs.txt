@@ -1,7 +1,7 @@
 v.net
 v.net.arcs - Creates arcs from a file of points
 Vector (v.*)
-ParameterVector|points|Input vector point layer (nodes)|0|False
-ParameterFile|file|Name of input arcs file|False|False
+QgsProcessingParameterVectorLayer|points|Input vector point layer (nodes)|0|None|False
+QgsProcessingParameterFile|file|Name of input arcs file|0|txt|None|False
 Hardcoded|operation=arcs
-OutputVector|output|Arcs
+QgsProcessingParameterVectorDestination|output|Arcs

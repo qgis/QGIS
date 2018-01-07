@@ -272,6 +272,7 @@ bool QgsComposerNodesItem::moveNode( const int index, QPointF pt )
 bool QgsComposerNodesItem::readXml( const QDomElement &itemElem,
                                     const QDomDocument &doc )
 {
+
   // restore general composer item properties
   const QDomNodeList composerItemList = itemElem.elementsByTagName( QStringLiteral( "ComposerItem" ) );
   if ( !composerItemList.isEmpty() )

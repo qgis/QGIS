@@ -23,6 +23,7 @@
 #include "qgsrastermatrix.h"
 #include "qgsrasterprojector.h"
 #include "qgsfeedback.h"
+#include "qgsogrutils.h"
 
 #include <QFile>
 
@@ -110,9 +111,9 @@ int QgsRasterCalculator::processCalculation( QgsFeedback *feedback )
     return static_cast< int >( CreateOutputError );
   }
 
-  GDALDatasetH outputDataset = openOutputFile( outputDriver );
-  GDALSetProjection( outputDataset, mOutputCrs.toWkt().toLocal8Bit().data() );
-  GDALRasterBandH outputRasterBand = GDALGetRasterBand( outputDataset, 1 );
+  gdal::dataset_unique_ptr outputDataset( openOutputFile( outputDriver ) );
+  GDALSetProjection( outputDataset.get(), mOutputCrs.toWkt().toLocal8Bit().data() );
+  GDALRasterBandH outputRasterBand = GDALGetRasterBand( outputDataset.get(), 1 );
 
   float outputNodataValue = -FLT_MAX;
   GDALSetRasterNoDataValue( outputRasterBand, outputNodataValue );
@@ -167,11 +168,9 @@ int QgsRasterCalculator::processCalculation( QgsFeedback *feedback )
   if ( feedback && feedback->isCanceled() )
   {
     //delete the dataset without closing (because it is faster)
-    GDALDeleteDataset( outputDriver, mOutputFile.toUtf8().constData() );
+    gdal::fast_delete_and_close( outputDataset, outputDriver, mOutputFile );
     return static_cast< int >( Canceled );
   }
-  GDALClose( outputDataset );
-
   return static_cast< int >( Success );
 }
 
@@ -196,20 +195,20 @@ GDALDriverH QgsRasterCalculator::openOutputDriver()
   return outputDriver;
 }
 
-GDALDatasetH QgsRasterCalculator::openOutputFile( GDALDriverH outputDriver )
+gdal::dataset_unique_ptr QgsRasterCalculator::openOutputFile( GDALDriverH outputDriver )
 {
   //open output file
   char **papszOptions = nullptr;
-  GDALDatasetH outputDataset = GDALCreate( outputDriver, mOutputFile.toUtf8().constData(), mNumOutputColumns, mNumOutputRows, 1, GDT_Float32, papszOptions );
+  gdal::dataset_unique_ptr outputDataset( GDALCreate( outputDriver, mOutputFile.toUtf8().constData(), mNumOutputColumns, mNumOutputRows, 1, GDT_Float32, papszOptions ) );
   if ( !outputDataset )
   {
-    return outputDataset;
+    return nullptr;
   }
 
   //assign georef information
   double geotransform[6];
   outputGeoTransform( geotransform );
-  GDALSetGeoTransform( outputDataset, geotransform );
+  GDALSetGeoTransform( outputDataset.get(), geotransform );
 
   return outputDataset;
 }

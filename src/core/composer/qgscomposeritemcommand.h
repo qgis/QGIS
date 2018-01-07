@@ -34,7 +34,8 @@ class QgsComposerMultiFrame;
 class CORE_EXPORT QgsComposerItemCommand: public QUndoCommand
 {
   public:
-    QgsComposerItemCommand( QgsComposerItem *item, const QString &text, QUndoCommand *parent SIP_TRANSFERTHIS = 0 );
+    //! Constructor for QgsComposerItemCommand
+    QgsComposerItemCommand( QgsComposerItem *item, const QString &text, QUndoCommand *parent SIP_TRANSFERTHIS = nullptr );
 
     //! Reverses the command
     void undo() override;

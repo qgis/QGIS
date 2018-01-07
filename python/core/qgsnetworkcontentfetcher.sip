@@ -18,6 +18,7 @@ class QgsNetworkContentFetcher : QObject
  HTTP network content fetcher. A simple method for fetching remote HTTP content
 and converting the content to standard formats. Url redirects are automatically
 handled.
+
 .. versionadded:: 2.5
 %End
 
@@ -28,37 +29,38 @@ handled.
 
     QgsNetworkContentFetcher();
 %Docstring
- Constructor for QgsNetworkContentFetcher.
+Constructor for QgsNetworkContentFetcher.
 %End
 
-    virtual ~QgsNetworkContentFetcher();
+    ~QgsNetworkContentFetcher();
 
     void fetchContent( const QUrl &url );
 %Docstring
- Fetches content from a remote URL and handles redirects. The finished()
- signal will be emitted when content has been fetched.
- \param url URL to fetch
+Fetches content from a remote URL and handles redirects. The finished()
+signal will be emitted when content has been fetched.
+
+:param url: URL to fetch
 %End
 
     QNetworkReply *reply();
 %Docstring
- Returns a reference to the network reply
- :return: QNetworkReply for fetched URL content
- :rtype: QNetworkReply
+Returns a reference to the network reply
+
+:return: QNetworkReply for fetched URL content
 %End
 
     QString contentAsString() const;
 %Docstring
- Returns the fetched content as a string
- :return: string containing network content
- :rtype: str
+Returns the fetched content as a string
+
+:return: string containing network content
 %End
 
   signals:
 
     void finished();
 %Docstring
- Emitted when content has loaded
+Emitted when content has loaded
 %End
 
 };

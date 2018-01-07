@@ -21,7 +21,7 @@
 #include <QString>
 #include "gdal.h"
 #include "qgis_analysis.h"
-
+#include "qgsogrutils.h"
 class QgsFeedback;
 
 /**
@@ -68,7 +68,7 @@ class ANALYSIS_EXPORT QgsNineCellFilter
     QgsNineCellFilter() = delete;
 
     //! Opens the input file and returns the dataset handle and the number of pixels in x-/y- direction
-    GDALDatasetH openInputFile( int &nCellsX, int &nCellsY );
+    gdal::dataset_unique_ptr openInputFile( int &nCellsX, int &nCellsY );
 
     /**
      * Opens the output driver and tests if it supports the creation of a new dataset
@@ -78,7 +78,7 @@ class ANALYSIS_EXPORT QgsNineCellFilter
     /**
      * Opens the output file and sets the same geotransform and CRS as the input data
       \returns the output dataset or nullptr in case of error*/
-    GDALDatasetH openOutputFile( GDALDatasetH inputDataset, GDALDriverH outputDriver );
+    gdal::dataset_unique_ptr openOutputFile( GDALDatasetH inputDataset, GDALDriverH outputDriver );
 
   protected:
 

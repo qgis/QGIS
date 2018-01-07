@@ -148,7 +148,7 @@ void QgsSpatiaLiteSourceSelect::updateStatistics()
     subKey.truncate( idx );
 
   QString msg = tr( "Are you sure you want to update the internal statistics for DB: %1?\n\n"
-                    "This could take a long time (depending on the DB size),\n"
+                    "This could take a long time (depending on the DB size), "
                     "but implies better performance thereafter." ).arg( subKey );
   QMessageBox::StandardButton result =
     QMessageBox::information( this, tr( "Confirm Update Statistics" ), msg, QMessageBox::Ok | QMessageBox::Cancel );
@@ -463,11 +463,11 @@ void QgsSpatiaLiteSourceSelect::btnConnect_clicked()
         break;
       case QgsSpatiaLiteConnection::FailedToCheckMetadata:
         QMessageBox::critical( this, tr( "SpatiaLite metadata check failed" ),
-                               tr( "Failure getting table metadata ... is this really a SpatialLite database? %1\n\n%2" ).arg( mSqlitePath, errCause ) );
+                               tr( "Failure getting table metadata... is %1 really a SpatiaLite database?\n\n%2" ).arg( mSqlitePath, errCause ) );
         break;
       default:
         QMessageBox::critical( this, tr( "SpatiaLite Error" ),
-                               tr( "Unexpected error when working with: %1\n\n%2" ).arg( mSqlitePath, errCause ) );
+                               tr( "Unexpected error when working with %1\n\n%2" ).arg( mSqlitePath, errCause ) );
     }
     mSqlitePath = QString();
     return;

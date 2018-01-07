@@ -28,15 +28,16 @@ __revision__ = '$Format:%H$'
 from os import path
 
 
-def checkParameterValuesBeforeExecuting(alg):
+def checkParameterValuesBeforeExecuting(alg, parameters, context):
     """ Verify if we have the right parameters """
-    if alg.getParameterValue('expression') and alg.getParameterValue('file'):
+    if (alg.parameterAsString(parameters, 'expression', context)
+            and alg.parameterAsString(parameters, 'file', context)):
         return alg.tr("You need to set either inline expression or a rules file!")
 
     return None
 
 
-def processInputs(alg):
+def processInputs(alg, parameters, context):
     # We need to use the same raster names than in QGIS
     if alg.getParameterValue('maps'):
         rasters = alg.getParameterValue('maps').split(',')
@@ -71,7 +72,7 @@ def processInputs(alg):
     alg.commands.append(command)
 
 
-def processCommand(alg, parameters):
+def processCommand(alg, parameters, context):
     # Remove output for command
     output_dir = alg.getOutputFromName('output_dir')
     maps = alg.getParameterFromName('maps')
@@ -80,15 +81,3 @@ def processCommand(alg, parameters):
     alg.processCommand()
     alg.addOutput(output_dir)
     alg.addParameter(maps)
-
-
-def processOutputs(alg):
-    # Export everything into Output Directory with shell commands
-    outputDir = alg.getOutputValue('output_dir')
-
-    # Get the list of rasters matching the basename
-    commands = ["for r in $(g.list type=rast); do"]
-    commands.append("  r.out.gdal input=${{r}} output={}/${{r}}.tif createopt=\"TFW=YES,COMPRESS=LZW\" --overwrite".format(outputDir))
-    commands.append("done")
-    alg.commands.extend(commands)
-    alg.outputCommands.extend(commands)

@@ -147,7 +147,7 @@ class CORE_EXPORT QgsFieldConstraints
   private:
 
     //! Constraints
-    Constraints mConstraints;
+    Constraints mConstraints = nullptr;
 
     //! Origin of field constraints
     QHash< Constraint, ConstraintOrigin > mConstraintOrigins;

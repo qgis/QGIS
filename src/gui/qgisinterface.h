@@ -29,6 +29,7 @@ class QgsAdvancedDigitizingDockWidget;
 class QgsAttributeDialog;
 class QgsComposerInterface;
 class QgsCustomDropHandler;
+class QgsLayoutCustomDropHandler;
 class QgsFeature;
 class QgsLayerTreeMapCanvasBridge;
 class QgsLayerTreeView;
@@ -422,6 +423,18 @@ class GUI_EXPORT QgisInterface : public QObject
      */
     virtual bool setActiveLayer( QgsMapLayer * ) = 0;
 
+    /**
+     * Copy selected features from the layer to clipboard
+     * \since QGIS 3.0
+     */
+    virtual void copySelectionToClipboard( QgsMapLayer * ) = 0;
+
+    /**
+     * Paste features from clipboard to the layer
+     * \since QGIS 3.0
+     */
+    virtual void pasteFromClipboard( QgsMapLayer * ) = 0;
+
     //! Add an icon to the plugins toolbar
     virtual int addToolBarIcon( QAction *qAction ) = 0;
 
@@ -533,6 +546,12 @@ class GUI_EXPORT QgisInterface : public QObject
      * \see openComposer()
      */
     virtual void closeComposer( QgsComposition *composition ) = 0;
+
+    /**
+     * Opens the layout manager dialog.
+     * \since QGIS 3.0
+     */
+    virtual void showLayoutManager() = 0;
 
     /**
      * Opens a new layout designer dialog for the specified \a layout, or
@@ -667,6 +686,20 @@ class GUI_EXPORT QgisInterface : public QObject
      * \see registerCustomDropHandler() */
     virtual void unregisterCustomDropHandler( QgsCustomDropHandler *handler ) = 0;
 
+    /**
+     * Register a new custom drop \a handler for layout windows.
+     * \since QGIS 3.0
+     * \note Ownership of the factory is not transferred, and the factory must
+     *       be unregistered when plugin is unloaded.
+     * \see unregisterCustomLayoutDropHandler() */
+    virtual void registerCustomLayoutDropHandler( QgsLayoutCustomDropHandler *handler ) = 0;
+
+    /**
+     * Unregister a previously registered custom drop \a handler for layout windows.
+     * \since QGIS 3.0
+     * \see registerCustomLayoutDropHandler() */
+    virtual void unregisterCustomLayoutDropHandler( QgsLayoutCustomDropHandler *handler ) = 0;
+
     // @todo is this deprecated in favour of QgsContextHelp?
 
     /**
@@ -737,6 +770,14 @@ class GUI_EXPORT QgisInterface : public QObject
      * \since QGIS 3.0
      */
     virtual void deregisterLocatorFilter( QgsLocatorFilter *filter ) = 0;
+
+    /**
+      * Checks available datum transforms and ask user if several are available and none
+      * is chosen. Dialog is shown only if global option is set accordingly.
+      * \returns true if a datum transform has been specifically chosen by user or only one is available.
+      * \since 3.0
+      */
+    virtual bool askForDatumTransform( QgsCoordinateReferenceSystem sourceCrs, QgsCoordinateReferenceSystem destinationCrs ) = 0;
 
   signals:
 

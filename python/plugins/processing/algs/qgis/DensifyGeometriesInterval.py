@@ -17,7 +17,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import range
 
 __author__ = 'Anita Graser'
 __date__ = 'Dec 2012'
@@ -40,6 +39,9 @@ class DensifyGeometriesInterval(QgisFeatureBasedAlgorithm):
     def group(self):
         return self.tr('Vector geometry')
 
+    def groupId(self):
+        return 'vectorgeometry'
+
     def __init__(self):
         super().__init__()
         self.interval = None
@@ -53,7 +55,7 @@ class DensifyGeometriesInterval(QgisFeatureBasedAlgorithm):
         return 'densifygeometriesgivenaninterval'
 
     def displayName(self):
-        return self.tr('Densify geometries given an interval')
+        return self.tr('Densify by interval')
 
     def outputName(self):
         return self.tr('Densified')
@@ -65,7 +67,7 @@ class DensifyGeometriesInterval(QgisFeatureBasedAlgorithm):
         interval = self.parameterAsDouble(parameters, self.INTERVAL, context)
         return True
 
-    def processFeature(self, feature, feedback):
+    def processFeature(self, feature, context, feedback):
         if feature.hasGeometry():
             new_geometry = feature.geometry().densifyByDistance(float(interval))
             feature.setGeometry(new_geometry)

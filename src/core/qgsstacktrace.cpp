@@ -28,7 +28,7 @@
 
 ///@cond PRIVATE
 
-#ifdef Q_OS_WIN
+#ifdef _MSC_VER
 QVector<QgsStackTrace::StackLine> QgsStackTrace::trace( _EXCEPTION_POINTERS *ExceptionInfo )
 {
   QgsStackLines stack;
@@ -145,7 +145,7 @@ void QgsStackTrace::setSymbolPath( QString symbolPaths )
   mSymbolPaths = symbolPaths;
 }
 
-#endif // Q_OS_WIN
+#endif // _MSC_VER
 
 #ifdef Q_OS_LINUX
 QVector<QgsStackTrace::StackLine> QgsStackTrace::trace( unsigned int maxFrames )

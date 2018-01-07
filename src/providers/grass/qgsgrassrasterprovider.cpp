@@ -25,6 +25,7 @@
 
 #include "qgsapplication.h"
 #include "qgscoordinatetransform.h"
+#include "qgshtmlutils.h"
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsrasterbandstats.h"
@@ -502,7 +503,7 @@ int QgsGrassRasterProvider::colorInterpretation( int bandNo ) const
   return QgsRaster::GrayIndex;
 }
 
-QString QgsGrassRasterProvider::metadata()
+QString QgsGrassRasterProvider::htmlMetadata()
 {
   QString myMetadata;
   QStringList myList;
@@ -516,9 +517,7 @@ QString QgsGrassRasterProvider::metadata()
   {
     myList.append( i.key() + " : " + i.value() );
   }
-  myMetadata += QgsRasterDataProvider::makeTableCells( myList );
-
-
+  myMetadata += QgsHtmlUtils::buildBulletList( myList );
   return myMetadata;
 }
 
@@ -646,7 +645,7 @@ void QgsGrassRasterValue::stop()
     mProcess->waitForFinished();
     QgsDebugMsg( "process finished" );
     delete mProcess;
-    mProcess = 0;
+    mProcess = nullptr;
   }
 }
 
@@ -675,7 +674,7 @@ double QgsGrassRasterValue::value( double x, double y, bool *ok )
 
   // TODO: use doubles instead of strings
 
-  QStringList list = str.trimmed().split( QStringLiteral( ":" ) );
+  QStringList list = str.trimmed().split( ':' );
   if ( list.size() == 2 )
   {
     if ( list[1] == QLatin1String( "error" ) ) return value;

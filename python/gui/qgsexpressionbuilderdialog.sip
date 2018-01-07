@@ -12,8 +12,8 @@
 class QgsExpressionBuilderDialog : QDialog
 {
 %Docstring
- A generic dialog for building expression strings
- @remarks This class also shows an example on how to use QgsExpressionBuilderWidget
+A generic dialog for building expression strings
+@remarks This class also shows an example on how to use QgsExpressionBuilderWidget
 %End
 
 %TypeHeaderCode
@@ -29,31 +29,31 @@ class QgsExpressionBuilderDialog : QDialog
     QgsExpressionBuilderWidget *expressionBuilder();
 %Docstring
 The builder widget that is used by the dialog
- :rtype: QgsExpressionBuilderWidget
 %End
 
     void setExpressionText( const QString &text );
 
     QString expressionText();
-%Docstring
- :rtype: str
-%End
 
     QgsExpressionContext expressionContext() const;
 %Docstring
- Returns the expression context for the dialog. The context is used for the expression
- preview result and for populating the list of available functions and variables.
-.. seealso:: setExpressionContext
+Returns the expression context for the dialog. The context is used for the expression
+preview result and for populating the list of available functions and variables.
+
+.. seealso:: :py:func:`setExpressionContext`
+
 .. versionadded:: 2.12
- :rtype: QgsExpressionContext
 %End
 
     void setExpressionContext( const QgsExpressionContext &context );
 %Docstring
- Sets the expression context for the dialog. The context is used for the expression
- preview result and for populating the list of available functions and variables.
- \param context expression context
-.. seealso:: expressionContext
+Sets the expression context for the dialog. The context is used for the expression
+preview result and for populating the list of available functions and variables.
+
+:param context: expression context
+
+.. seealso:: :py:func:`expressionContext`
+
 .. versionadded:: 2.12
 %End
 
@@ -62,17 +62,45 @@ The builder widget that is used by the dialog
 Sets geometry calculator used in distance/area calculations.
 %End
 
+    bool allowEvalErrors() const;
+%Docstring
+Allow accepting invalid expressions. This can be useful when we are not able to
+provide an expression context of which we are sure it's completely populated.
+
+.. versionadded:: 3.0
+%End
+
+    void setAllowEvalErrors( bool allowEvalErrors );
+%Docstring
+Allow accepting expressions with evaluation errors. This can be useful when we are not able to
+provide an expression context of which we are sure it's completely populated.
+
+.. versionadded:: 3.0
+%End
+
+  signals:
+
+    void allowEvalErrorsChanged();
+%Docstring
+Allow accepting expressions with evaluation errors. This can be useful when we are not able to
+provide an expression context of which we are sure it's completely populated.
+
+.. versionadded:: 3.0
+%End
+
   protected:
 
     virtual void done( int r );
-%Docstring
- Is called when the dialog get accepted or rejected
- Used to save geometry
 
- \param r result value (unused)
+%Docstring
+Is called when the dialog get accepted or rejected
+Used to save geometry
+
+:param r: result value (unused)
 %End
 
     virtual void accept();
+
 
 };
 

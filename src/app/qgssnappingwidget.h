@@ -58,7 +58,7 @@ class APP_EXPORT QgsSnappingWidget : public QWidget
     QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas, QWidget *parent = nullptr );
 
 
-    virtual ~QgsSnappingWidget();
+    ~QgsSnappingWidget() override;
 
     /**
      * The snapping configuration is what is managed by this widget.

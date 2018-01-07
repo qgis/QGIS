@@ -21,23 +21,14 @@ class QgsAttributeFormInterface
     virtual ~QgsAttributeFormInterface();
 
     virtual bool acceptChanges( const QgsFeature &feature );
-%Docstring
- :rtype: bool
-%End
 
     virtual void initForm();
 
     virtual void featureChanged();
 
     QgsAttributeForm *form();
-%Docstring
- :rtype: QgsAttributeForm
-%End
 
     const QgsFeature &feature();
-%Docstring
- :rtype: QgsFeature
-%End
 
 };
 

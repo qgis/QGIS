@@ -31,12 +31,13 @@ class QgsRasterTransparencyWidget : QgsMapLayerConfigWidget
 
     void syncToLayer();
 %Docstring
- Sync the widget state to the layer set for the widget.
+Sync the widget state to the layer set for the widget.
 %End
 
-    void apply();
+    virtual void apply();
+
 %Docstring
- Apply any changes on the widget to the set layer.
+Apply any changes on the widget to the set layer.
 %End
 
 };

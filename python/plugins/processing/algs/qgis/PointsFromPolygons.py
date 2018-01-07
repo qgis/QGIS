@@ -16,8 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
-from builtins import range
 
 __author__ = 'Alexander Bruy'
 __date__ = 'August 2013'
@@ -44,7 +42,6 @@ from qgis.core import (QgsFeatureRequest,
 from qgis.PyQt.QtCore import QVariant
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.tools import raster
-from processing.tools.dataobjects import exportRasterLayer
 
 
 class PointsFromPolygons(QgisAlgorithm):
@@ -55,6 +52,9 @@ class PointsFromPolygons(QgisAlgorithm):
 
     def group(self):
         return self.tr('Vector creation')
+
+    def groupId(self):
+        return 'vectorcreation'
 
     def __init__(self):
         super().__init__()
@@ -76,7 +76,7 @@ class PointsFromPolygons(QgisAlgorithm):
         source = self.parameterAsSource(parameters, self.INPUT_VECTOR, context)
 
         raster_layer = self.parameterAsRasterLayer(parameters, self.INPUT_RASTER, context)
-        rasterPath = exportRasterLayer(raster_layer)
+        rasterPath = raster_layer.source()
 
         rasterDS = gdal.Open(rasterPath, gdal.GA_ReadOnly)
         geoTransform = rasterDS.GetGeoTransform()
@@ -117,7 +117,7 @@ class PointsFromPolygons(QgisAlgorithm):
             (endRow, endColumn) = raster.mapToPixel(xMax, yMin, geoTransform)
 
             # use prepared geometries for faster intersection tests
-            engine = QgsGeometry.createGeometryEngine(geom.geometry())
+            engine = QgsGeometry.createGeometryEngine(geom.constGet())
             engine.prepareGeometry()
 
             for row in range(startRow, endRow + 1):

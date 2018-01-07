@@ -50,10 +50,10 @@ class CORE_EXPORT QgsPaperItem : public QgsComposerItem
   public:
     QgsPaperItem( QgsComposition *c SIP_TRANSFERTHIS );
     QgsPaperItem( qreal x, qreal y, qreal width, qreal height, QgsComposition *composition SIP_TRANSFERTHIS );
-    ~QgsPaperItem();
+    ~QgsPaperItem() override;
 
     //! Return correct graphics item type.
-    virtual int type() const override { return ComposerPaper; }
+    int type() const override { return ComposerPaper; }
 
     //! \brief Reimplementation of QCanvasItem::paint
     void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget ) override;
@@ -72,7 +72,7 @@ class CORE_EXPORT QgsPaperItem : public QgsComposerItem
      */
     bool readXml( const QDomElement &itemElem, const QDomDocument &doc ) override;
 
-    virtual void setSceneRect( const QRectF &rectangle ) override;
+    void setSceneRect( const QRectF &rectangle ) override;
 
   private:
     QgsPaperItem();

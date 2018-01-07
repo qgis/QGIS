@@ -27,17 +27,18 @@ In order to be readable from project files, they should set these attributes in 
     ~QgsPluginLayer();
 
     virtual QgsPluginLayer *clone() const = 0;
+
 %Docstring
- Returns a new instance equivalent to this one.
- :return: a new layer instance
+Returns a new instance equivalent to this one.
+
+:return: a new layer instance
+
 .. versionadded:: 3.0
- :rtype: QgsPluginLayer
 %End
 
     QString pluginLayerType();
 %Docstring
 Return plugin layer type (the same as used in QgsPluginLayerRegistry)
- :rtype: str
 %End
 
     virtual void setExtent( const QgsRectangle &extent );
@@ -48,7 +49,8 @@ Set extent of the layer
 
     void setSource( const QString &source );
 %Docstring
- Set source string. This is used for example in layer tree to show tooltip.
+Set source string. This is used for example in layer tree to show tooltip.
+
 .. versionadded:: 2.16
 %End
 

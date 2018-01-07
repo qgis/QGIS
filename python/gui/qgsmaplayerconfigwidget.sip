@@ -13,6 +13,7 @@ class QgsMapLayerConfigWidget : QgsPanelWidget
 {
 %Docstring
  A panel widget that can be shown in the map style dock
+
 .. versionadded:: 2.16
 %End
 
@@ -24,13 +25,15 @@ class QgsMapLayerConfigWidget : QgsPanelWidget
     QgsMapLayerConfigWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent = 0 );
 %Docstring
  A panel widget that can be shown in the map style dock
- \param layer The layer active in the dock.
- \param canvas The canvas object.
- \param parent The parent of the widget.
+
+:param layer: The layer active in the dock.
+:param canvas: The canvas object.
+:param parent: The parent of the widget.
+
 .. note::
 
    The widget is created each time the panel is selected in the dock.
- Keep the loading light as possible for speed in the UI.
+Keep the loading light as possible for speed in the UI.
 %End
 
   public slots:
@@ -38,7 +41,7 @@ class QgsMapLayerConfigWidget : QgsPanelWidget
     virtual void apply() = 0;
 %Docstring
  Called when changes to the layer need to be made.
- Will be called when live update is enabled.
+Will be called when live update is enabled.
 %End
 
   protected:

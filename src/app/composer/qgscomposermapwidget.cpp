@@ -314,7 +314,7 @@ void QgsComposerMapWidget::mapCrsChanged( const QgsCoordinateReferenceSystem &cr
   QgsRectangle newExtent;
   try
   {
-    QgsCoordinateTransform xForm( oldCrs, crs.isValid() ? crs : QgsProject::instance()->crs() );
+    QgsCoordinateTransform xForm( oldCrs, crs.isValid() ? crs : QgsProject::instance()->crs(), QgsProject::instance() );
     QgsRectangle prevExtent = *mComposerMap->currentMapExtent();
     newExtent = xForm.transformBoundingBox( prevExtent );
     updateExtent = true;
@@ -513,7 +513,7 @@ void QgsComposerMapWidget::mSetToMapCanvasExtentButton_clicked()
     try
     {
       QgsCoordinateTransform xForm( QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs(),
-                                    mComposerMap->crs() );
+                                    mComposerMap->crs(), QgsProject::instance() );
       newExtent = xForm.transformBoundingBox( newExtent );
     }
     catch ( QgsCsException & )
@@ -546,7 +546,7 @@ void QgsComposerMapWidget::mViewExtentInCanvasButton_clicked()
       try
       {
         QgsCoordinateTransform xForm( mComposerMap->crs(),
-                                      QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs() );
+                                      QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs(), QgsProject::instance() );
         currentMapExtent = xForm.transformBoundingBox( currentMapExtent );
       }
       catch ( QgsCsException & )

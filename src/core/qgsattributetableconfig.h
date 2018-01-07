@@ -52,8 +52,7 @@ class CORE_EXPORT QgsAttributeTableConfig
     struct ColumnConfig
     {
       //! Constructor for ColumnConfig
-      ColumnConfig()
-      {}
+      ColumnConfig() = default;
 
       bool operator== ( const QgsAttributeTableConfig::ColumnConfig &other ) const SIP_SKIP;
 

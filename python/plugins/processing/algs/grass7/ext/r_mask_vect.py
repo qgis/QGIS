@@ -28,9 +28,9 @@ __revision__ = '$Format:%H$'
 from . import r_mask
 
 
-def processCommand(alg, parameters):
-    r_mask.processCommand(alg)
+def processCommand(alg, parameters, context):
+    r_mask.processCommand(alg, parameters, context)
 
 
-def processOutputs(alg):
-    r_mask.processOutputs(alg)
+def processOutputs(alg, parameters, context):
+    r_mask.processOutputs(alg, parameters, context)

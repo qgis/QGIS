@@ -13,10 +13,10 @@
 class QgsLocatorModel : QAbstractTableModel
 {
 %Docstring
- An abstract list model for displaying the results of locator searches.
+An abstract list model for displaying the results of locator searches.
 
- Note that this class should generally be used with a QgsLocatorProxyModel
- in order to ensure correct sorting of results by priority and match level.
+Note that this class should generally be used with a QgsLocatorProxyModel
+in order to ensure correct sorting of results by priority and match level.
 
 .. versionadded:: 3.0
 %End
@@ -37,21 +37,23 @@ class QgsLocatorModel : QAbstractTableModel
 
     QgsLocatorModel( QObject *parent /TransferThis/ = 0 );
 %Docstring
- Constructor for QgsLocatorModel.
+Constructor for QgsLocatorModel.
 %End
 
     void clear();
 %Docstring
- Resets the model and clears all existing results.
-.. seealso:: deferredClear()
+Resets the model and clears all existing results.
+
+.. seealso:: :py:func:`deferredClear()`
 %End
 
     void deferredClear();
 %Docstring
- Resets the model and clears all existing results after a short delay, or whenever the next result is added to the model
- (whichever occurs first). Using deferredClear() instead of clear() can avoid the visually distracting frequent clears
- which may occur if the model is being updated quickly multiple times as a result of users typing in a search query.
-.. seealso:: deferredClear()
+Resets the model and clears all existing results after a short delay, or whenever the next result is added to the model
+(whichever occurs first). Using deferredClear() instead of clear() can avoid the visually distracting frequent clears
+which may occur if the model is being updated quickly multiple times as a result of users typing in a search query.
+
+.. seealso:: :py:func:`deferredClear()`
 %End
 
     virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const;
@@ -67,7 +69,7 @@ class QgsLocatorModel : QAbstractTableModel
 
     void addResult( const QgsLocatorResult &result );
 %Docstring
- Adds a new ``result`` to the model.
+Adds a new ``result`` to the model.
 %End
 
 };
@@ -75,18 +77,18 @@ class QgsLocatorModel : QAbstractTableModel
 class QgsLocatorAutomaticModel : QgsLocatorModel
 {
 %Docstring
- A QgsLocatorModel which has is associated directly with a
- QgsLocator, and is automatically populated with results
- from locator searches.
+A QgsLocatorModel which has is associated directly with a
+QgsLocator, and is automatically populated with results
+from locator searches.
 
- Use this QgsLocatorModel subclass when you want the connections
- between a QgsLocator and the model to be automatically created
- for you. If more flexibility in model behavior is required,
- use the base QgsLocatorModel class instead and setup the
- connections manually.
+Use this QgsLocatorModel subclass when you want the connections
+between a QgsLocator and the model to be automatically created
+for you. If more flexibility in model behavior is required,
+use the base QgsLocatorModel class instead and setup the
+connections manually.
 
- Note that this class should generally be used with a QgsLocatorProxyModel
- in order to ensure correct sorting of results by priority and match level.
+Note that this class should generally be used with a QgsLocatorProxyModel
+in order to ensure correct sorting of results by priority and match level.
 
 .. versionadded:: 3.0
 %End
@@ -98,34 +100,32 @@ class QgsLocatorAutomaticModel : QgsLocatorModel
 
     explicit QgsLocatorAutomaticModel( QgsLocator *locator /TransferThis/ );
 %Docstring
- Constructor for QgsLocatorAutomaticModel, linked with the specified ``locator``.
+Constructor for QgsLocatorAutomaticModel, linked with the specified ``locator``.
 
- The ``locator`` is used as the model's parent.
+The ``locator`` is used as the model's parent.
 %End
 
     QgsLocator *locator();
 %Docstring
- Returns a pointer to the locator utilized by this model.
- :rtype: QgsLocator
+Returns a pointer to the locator utilized by this model.
 %End
 
     void search( const QString &string );
 %Docstring
- Enqueues a search for a specified ``string`` within the model.
+Enqueues a search for a specified ``string`` within the model.
 
- Note that the search may not begin immediately if an existing search request
- is still running. In this case the existing search must be completely
- terminated before the new search can begin. The model handles this
- situation automatically, and will trigger a search for the new
- search string as soon as possible.
+Note that the search may not begin immediately if an existing search request
+is still running. In this case the existing search must be completely
+terminated before the new search can begin. The model handles this
+situation automatically, and will trigger a search for the new
+search string as soon as possible.
 %End
 
     virtual QgsLocatorContext createContext();
 %Docstring
- Returns a new locator context for searches. The default implementation
- returns a default constructed QgsLocatorContext. Subclasses can override
- this method to implement custom context creation logic.
- :rtype: QgsLocatorContext
+Returns a new locator context for searches. The default implementation
+returns a default constructed QgsLocatorContext. Subclasses can override
+this method to implement custom context creation logic.
 %End
 
 };
@@ -133,8 +133,9 @@ class QgsLocatorAutomaticModel : QgsLocatorModel
 class QgsLocatorProxyModel : QSortFilterProxyModel
 {
 %Docstring
- A sort proxy model for QgsLocatorModel, which automatically sorts
- results by precedence.
+A sort proxy model for QgsLocatorModel, which automatically sorts
+results by precedence.
+
 .. versionadded:: 3.0
 %End
 
@@ -145,7 +146,7 @@ class QgsLocatorProxyModel : QSortFilterProxyModel
 
     explicit QgsLocatorProxyModel( QObject *parent /TransferThis/ = 0 );
 %Docstring
- Constructor for QgsLocatorProxyModel, with the specified ``parent`` object.
+Constructor for QgsLocatorProxyModel, with the specified ``parent`` object.
 %End
     virtual bool lessThan( const QModelIndex &left, const QModelIndex &right ) const;
 

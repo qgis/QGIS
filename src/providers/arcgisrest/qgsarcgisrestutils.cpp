@@ -120,7 +120,7 @@ static QgsCircularString *parseCircularString( const QVariantMap &curveData, Qgs
   QVariantList coordsList = curveData[QStringLiteral( "c" )].toList();
   if ( coordsList.isEmpty() )
     return nullptr;
-  QList<QgsPoint> points;
+  QVector<QgsPoint> points;
   points.append( startPoint );
   foreach ( const QVariant &coordData, coordsList )
   {
@@ -201,7 +201,7 @@ static QgsAbstractGeometry *parseEsriGeometryMultiPoint( const QVariantMap &geom
   if ( coordsList.isEmpty() )
     return nullptr;
 
-  QgsMultiPointV2 *multiPoint = new QgsMultiPointV2();
+  QgsMultiPoint *multiPoint = new QgsMultiPoint();
   Q_FOREACH ( const QVariant &coordData, coordsList )
   {
     QVariantList coordList = coordData.toList();
@@ -287,7 +287,7 @@ static QgsAbstractGeometry *parseEsriEnvelope( const QVariantMap &geometryData )
   ext->addVertex( QgsPoint( xmax, ymax ) );
   ext->addVertex( QgsPoint( xmin, ymax ) );
   ext->addVertex( QgsPoint( xmin, ymin ) );
-  QgsPolygonV2 *poly = new QgsPolygonV2();
+  QgsPolygon *poly = new QgsPolygon();
   poly->setExteriorRing( ext );
   return poly;
 }
@@ -388,7 +388,7 @@ QVariantMap QgsArcGisRestUtils::getObjects( const QString &layerurl, const QList
   QUrl queryUrl( layerurl + "/query" );
   queryUrl.addQueryItem( QStringLiteral( "f" ), QStringLiteral( "json" ) );
   queryUrl.addQueryItem( QStringLiteral( "objectIds" ), ids.join( QStringLiteral( "," ) ) );
-  QString wkid = crs.indexOf( QLatin1String( ":" ) ) >= 0 ? crs.split( QStringLiteral( ":" ) )[1] : QLatin1String( "" );
+  QString wkid = crs.indexOf( QLatin1String( ":" ) ) >= 0 ? crs.split( ':' )[1] : QLatin1String( "" );
   queryUrl.addQueryItem( QStringLiteral( "inSR" ), wkid );
   queryUrl.addQueryItem( QStringLiteral( "outSR" ), wkid );
   QString outFields = fetchAttributes.join( QStringLiteral( "," ) );
@@ -420,7 +420,7 @@ QByteArray QgsArcGisRestUtils::queryService( const QUrl &url, QString &errorTitl
   QEventLoop loop;
 
   QNetworkRequest request( url );
-  QNetworkReply *reply = 0;
+  QNetworkReply *reply = nullptr;
   QgsNetworkAccessManager *nam = QgsNetworkAccessManager::instance();
 
   // Request data, handling redirects

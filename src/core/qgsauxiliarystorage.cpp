@@ -17,13 +17,14 @@
 
 #include "qgsauxiliarystorage.h"
 #include "qgslogger.h"
-#include "qgsslconnect.h"
+#include "qgsspatialiteutils.h"
 #include "qgsproject.h"
 #include "qgsvectorlayerlabeling.h"
 #include "qgsdiagramrenderer.h"
 #include "qgsmemoryproviderutils.h"
 #include "qgssymbollayer.h"
 
+#include <sqlite3.h>
 #include <QFile>
 
 const QString AS_JOINFIELD = "ASPK";
@@ -381,7 +382,7 @@ QgsField QgsAuxiliaryLayer::createAuxiliaryField( const QgsPropertyDefinition &d
 
   if ( !def.name().isEmpty() || !def.comment().isEmpty() )
   {
-    QVariant::Type type;
+    QVariant::Type type = QVariant::Invalid;
     QString typeName;
     int len( 0 ), precision( 0 );
     switch ( def.dataType() )
@@ -509,8 +510,7 @@ QgsAuxiliaryStorage::QgsAuxiliaryStorage( const QgsProject &project, bool copy )
     mFileName = asFileName;
   }
 
-  sqlite3 *handler = open( mFileName );
-  close( handler );
+  open( mFileName );
 }
 
 QgsAuxiliaryStorage::QgsAuxiliaryStorage( const QString &filename, bool copy )
@@ -519,8 +519,7 @@ QgsAuxiliaryStorage::QgsAuxiliaryStorage( const QString &filename, bool copy )
 {
   initTmpFileName();
 
-  sqlite3 *handler = open( filename );
-  close( handler );
+  open( filename );
 }
 
 QgsAuxiliaryStorage::~QgsAuxiliaryStorage()
@@ -568,20 +567,19 @@ QgsAuxiliaryLayer *QgsAuxiliaryStorage::createAuxiliaryLayer( const QgsField &fi
   if ( mValid && layer )
   {
     const QString table( layer->id() );
-    sqlite3 *handler = openDB( currentFileName() );
+    spatialite_database_unique_ptr database;
+    database = openDB( currentFileName() );
 
-    if ( !tableExists( table, handler ) )
+    if ( !tableExists( table, database.get() ) )
     {
-      if ( !createTable( field.typeName(), table, handler ) )
+      if ( !createTable( field.typeName(), table, database.get() ) )
       {
-        close( handler );
         return alayer;
       }
     }
 
     alayer = new QgsAuxiliaryLayer( field.name(), currentFileName(), table, layer );
     alayer->startEditing();
-    close( handler );
   }
 
   return alayer;
@@ -594,17 +592,16 @@ bool QgsAuxiliaryStorage::deleteTable( const QgsDataSourceUri &ogrUri )
 
   if ( !uri.database().isEmpty() && !uri.table().isEmpty() )
   {
-    sqlite3 *handler = openDB( uri.database() );
+    spatialite_database_unique_ptr database;
+    database = openDB( uri.database() );
 
-    if ( handler )
+    if ( database )
     {
       QString sql = QString( "DROP TABLE %1" ).arg( uri.table() );
-      rc = exec( sql, handler );
+      rc = exec( sql, database.get() );
 
-      sql = QString( "VACUUM" );
-      rc = exec( sql, handler );
-
-      close( handler );
+      sql = QStringLiteral( "VACUUM" );
+      rc = exec( sql, database.get() );
     }
   }
 
@@ -618,14 +615,13 @@ bool QgsAuxiliaryStorage::duplicateTable( const QgsDataSourceUri &ogrUri, const 
 
   if ( !uri.table().isEmpty() && !uri.database().isEmpty() )
   {
-    sqlite3 *handler = openDB( uri.database() );
+    spatialite_database_unique_ptr database;
+    database = openDB( uri.database() );
 
-    if ( handler )
+    if ( database )
     {
-      QString sql = QString( "CREATE TABLE %1 AS SELECT * FROM %2" ).arg( newTable, uri.table() );
-      rc = exec( sql, handler );
-
-      close( handler );
+      QString sql = QStringLiteral( "CREATE TABLE %1 AS SELECT * FROM %2" ).arg( newTable, uri.table() );
+      rc = exec( sql, database.get() );
     }
   }
 
@@ -675,23 +671,9 @@ void QgsAuxiliaryStorage::debugMsg( const QString &sql, sqlite3 *handler )
   QgsDebugMsg( errMsg );
 }
 
-sqlite3 *QgsAuxiliaryStorage::openDB( const QString &filename )
-{
-  sqlite3 *handler = nullptr;
-
-  bool rc = QgsSLConnect::sqlite3_open_v2( filename.toUtf8().constData(), &handler, SQLITE_OPEN_READWRITE, nullptr );
-  if ( rc )
-  {
-    debugMsg( "sqlite3_open_v2", handler );
-    return nullptr;
-  }
-
-  return handler;
-}
-
 bool QgsAuxiliaryStorage::createTable( const QString &type, const QString &table, sqlite3 *handler )
 {
-  const QString sql = QString( "CREATE TABLE IF NOT EXISTS '%1' ( '%2' %3  )" ).arg( table ).arg( AS_JOINFIELD ).arg( type );
+  const QString sql = QStringLiteral( "CREATE TABLE IF NOT EXISTS '%1' ( '%2' %3  )" ).arg( table ).arg( AS_JOINFIELD ).arg( type );
 
   if ( !exec( sql, handler ) )
     return false;
@@ -699,29 +681,39 @@ bool QgsAuxiliaryStorage::createTable( const QString &type, const QString &table
   return true;
 }
 
-sqlite3 *QgsAuxiliaryStorage::createDB( const QString &filename )
+spatialite_database_unique_ptr QgsAuxiliaryStorage::createDB( const QString &filename )
 {
-  sqlite3 *handler = nullptr;
-  int rc;
+  spatialite_database_unique_ptr database;
 
-  // open/create database
-  rc = QgsSLConnect::sqlite3_open_v2( filename.toUtf8().constData(), &handler, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, nullptr );
+  int rc;
+  rc = database.open_v2( filename, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, nullptr );
   if ( rc )
   {
-    debugMsg( "sqlite3_open_v2", handler );
-    return handler;
+    debugMsg( QStringLiteral( "sqlite3_open_v2" ), database.get() );
+  }
+  else
+    // activating Foreign Key constraints
+    exec( QStringLiteral( "PRAGMA foreign_keys = 1" ), database.get() );
+
+  return database;
+}
+
+spatialite_database_unique_ptr QgsAuxiliaryStorage::openDB( const QString &filename )
+{
+  spatialite_database_unique_ptr database;
+  int rc = database.open_v2( filename, SQLITE_OPEN_READWRITE, nullptr );
+
+  if ( rc )
+  {
+    debugMsg( "sqlite3_open_v2", database.get() );
   }
 
-  // activating Foreign Key constraints
-  if ( !exec( "PRAGMA foreign_keys = 1", handler ) )
-    return handler;
-
-  return handler;
+  return database;
 }
 
 bool QgsAuxiliaryStorage::tableExists( const QString &table, sqlite3 *handler )
 {
-  const QString sql = QString( "SELECT 1 FROM sqlite_master WHERE type='table' AND name='%1'" ).arg( table );
+  const QString sql = QStringLiteral( "SELECT 1 FROM sqlite_master WHERE type='table' AND name='%1'" ).arg( table );
   int rows = 0;
   int columns = 0;
   char **results = nullptr;
@@ -739,13 +731,13 @@ bool QgsAuxiliaryStorage::tableExists( const QString &table, sqlite3 *handler )
   return false;
 }
 
-sqlite3 *QgsAuxiliaryStorage::open( const QString &filename )
+spatialite_database_unique_ptr QgsAuxiliaryStorage::open( const QString &filename )
 {
-  sqlite3 *handler = nullptr;
+  spatialite_database_unique_ptr database;
 
   if ( filename.isEmpty() )
   {
-    if ( ( handler = createDB( currentFileName() ) ) )
+    if ( ( database = createDB( currentFileName() ) ) )
       mValid = true;
   }
   else if ( QFile::exists( filename ) )
@@ -753,37 +745,28 @@ sqlite3 *QgsAuxiliaryStorage::open( const QString &filename )
     if ( mCopy )
       QFile::copy( filename, mTmpFileName );
 
-    if ( ( handler = openDB( currentFileName() ) ) )
+    if ( ( database = openDB( currentFileName() ) ) )
       mValid = true;
   }
   else
   {
-    if ( ( handler = createDB( currentFileName() ) ) )
+    if ( ( database = createDB( currentFileName() ) ) )
       mValid = true;
   }
 
-  return handler;
+  return database;
 }
 
-sqlite3 *QgsAuxiliaryStorage::open( const QgsProject &project )
+spatialite_database_unique_ptr QgsAuxiliaryStorage::open( const QgsProject &project )
 {
   return open( filenameForProject( project ) );
-}
-
-void QgsAuxiliaryStorage::close( sqlite3 *handler )
-{
-  if ( handler )
-  {
-    QgsSLConnect::sqlite3_close_v2( handler );
-    handler = nullptr;
-  }
 }
 
 QString QgsAuxiliaryStorage::filenameForProject( const QgsProject &project )
 {
   const QFileInfo info = project.fileInfo();
   const QString path = info.path() + QDir::separator() + info.baseName();
-  return path + "." + QgsAuxiliaryStorage::extension();
+  return path + '.' + QgsAuxiliaryStorage::extension();
 }
 
 void QgsAuxiliaryStorage::initTmpFileName()
@@ -820,7 +803,7 @@ QgsDataSourceUri QgsAuxiliaryStorage::parseOgrUri( const QgsDataSourceUri &uri )
   if ( tableParts.count() < 1 )
     return newUri;
 
-  const QString tableName = tableParts[0].replace( "layername=", "" );
+  const QString tableName = tableParts[0].replace( QStringLiteral( "layername=" ), QStringLiteral( "" ) );
 
   newUri.setDataSource( QString(), tableName, QString() );
   newUri.setDatabase( databasePath );

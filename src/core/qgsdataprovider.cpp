@@ -15,6 +15,7 @@
 
 #include "qgsdataprovider.h"
 
+QString QgsDataProvider::SUBLAYER_SEPARATOR = QString( "!!::!!" );
 
 void QgsDataProvider::setProviderProperty( QgsDataProvider::ProviderProperty property, const QVariant &value )
 {
@@ -41,3 +42,7 @@ void QgsDataProvider::setListening( bool isListening )
   Q_UNUSED( isListening );
 }
 
+bool QgsDataProvider::renderInPreview( const PreviewContext &context )
+{
+  return context.lastRenderingTimeMs <= context.maxRenderingTimeMs;
+}

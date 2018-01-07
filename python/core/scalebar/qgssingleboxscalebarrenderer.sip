@@ -11,8 +11,9 @@
 class QgsSingleBoxScaleBarRenderer: QgsScaleBarRenderer
 {
 %Docstring
- Scalebar style that draws a single box with alternating
- color for the segments.
+Scalebar style that draws a single box with alternating
+color for the segments.
+
 .. versionadded:: 3.0
 %End
 
@@ -23,7 +24,7 @@ class QgsSingleBoxScaleBarRenderer: QgsScaleBarRenderer
 
     QgsSingleBoxScaleBarRenderer();
 %Docstring
- Constructor for QgsSingleBoxScaleBarRenderer.
+Constructor for QgsSingleBoxScaleBarRenderer.
 %End
 
     virtual QString name() const;

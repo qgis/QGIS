@@ -1,8 +1,8 @@
 Categorical Coincidence
 statistics_grid
-ParameterMultipleInput|GRIDS|Grids|3|False
-OutputRaster|CATEGORIES|Number of Categories
-OutputRaster|COINCIDENCE|Coincidence
-OutputRaster|MAJ_COUNT|Dominance of Majority
-OutputRaster|MAJ_VALUE|Value of Majority
-ParameterNumber|RADIUS|Radius [Cells]| 0|None| 0
+QgsProcessingParameterMultipleLayers|GRIDS|Grids|3|None|False
+QgsProcessingParameterRasterDestination|CATEGORIES|Number of Categories
+QgsProcessingParameterRasterDestination|COINCIDENCE|Coincidence
+QgsProcessingParameterRasterDestination|MAJ_COUNT|Dominance of Majority
+QgsProcessingParameterRasterDestination|MAJ_VALUE|Value of Majority
+QgsProcessingParameterNumber|RADIUS|Radius [Cells]|QgsProcessingParameterNumber.Integer|0|False| 0|None

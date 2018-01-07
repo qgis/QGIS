@@ -69,7 +69,8 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
 
     struct IdentifyResult
     {
-      IdentifyResult() {}
+      //! Constructor for IdentifyResult
+      IdentifyResult() = default;
 
       IdentifyResult( QgsMapLayer *layer, const QgsFeature &feature, const QMap< QString, QString > &derivedAttributes )
         : mLayer( layer ), mFeature( feature ), mDerivedAttributes( derivedAttributes ) {}
@@ -92,14 +93,14 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     //! constructor
     QgsMapToolIdentify( QgsMapCanvas *canvas );
 
-    virtual ~QgsMapToolIdentify();
+    ~QgsMapToolIdentify() override;
 
-    virtual Flags flags() const override { return QgsMapTool::AllowZoomRect; }
-    virtual void canvasMoveEvent( QgsMapMouseEvent *e ) override;
-    virtual void canvasPressEvent( QgsMapMouseEvent *e ) override;
-    virtual void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
-    virtual void activate() override;
-    virtual void deactivate() override;
+    Flags flags() const override { return QgsMapTool::AllowZoomRect; }
+    void canvasMoveEvent( QgsMapMouseEvent *e ) override;
+    void canvasPressEvent( QgsMapMouseEvent *e ) override;
+    void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
+    void activate() override;
+    void deactivate() override;
 
     /**
      * Performs the identification.
@@ -193,11 +194,6 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
      * Adds details of the closest vertex to derived attributes
      */
     void closestVertexAttributes( const QgsAbstractGeometry &geometry, QgsVertexId vId, QgsMapLayer *layer, QMap< QString, QString > &derivedAttributes );
-
-    /**
-     * Adds details of the closest point to derived attributes
-     */
-    void closestPointAttributes( const QgsAbstractGeometry &geometry, QgsMapLayer *layer, const QgsPointXY &layerPoint, QMap< QString, QString > &derivedAttributes );
 
     QString formatCoordinate( const QgsPointXY &canvasPoint ) const;
     QString formatXCoordinate( const QgsPointXY &canvasPoint ) const;

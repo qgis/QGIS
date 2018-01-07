@@ -81,14 +81,17 @@ class ServiceAreaFromPoint(QgisAlgorithm):
     def group(self):
         return self.tr('Network analysis')
 
+    def groupId(self):
+        return 'networkanalysis'
+
     def __init__(self):
         super().__init__()
 
     def initAlgorithm(self, config=None):
         self.DIRECTIONS = OrderedDict([
             (self.tr('Forward direction'), QgsVectorLayerDirector.DirectionForward),
-            (self.tr('Backward direction'), QgsVectorLayerDirector.DirectionForward),
-            (self.tr('Both directions'), QgsVectorLayerDirector.DirectionForward)])
+            (self.tr('Backward direction'), QgsVectorLayerDirector.DirectionBackward),
+            (self.tr('Both directions'), QgsVectorLayerDirector.DirectionBoth)])
 
         self.STRATEGIES = [self.tr('Shortest'),
                            self.tr('Fastest')
@@ -208,15 +211,15 @@ class ServiceAreaFromPoint(QgisAlgorithm):
         vertices = []
         for i, v in enumerate(cost):
             if v > travelCost and tree[i] != -1:
-                vertexId = graph.edge(tree[i]).outVertex()
+                vertexId = graph.edge(tree[i]).fromVertex()
                 if cost[vertexId] <= travelCost:
                     vertices.append(i)
 
         upperBoundary = []
         lowerBoundary = []
         for i in vertices:
-            upperBoundary.append(graph.vertex(graph.edge(tree[i]).inVertex()).point())
-            lowerBoundary.append(graph.vertex(graph.edge(tree[i]).outVertex()).point())
+            upperBoundary.append(graph.vertex(graph.edge(tree[i]).toVertex()).point())
+            lowerBoundary.append(graph.vertex(graph.edge(tree[i]).fromVertex()).point())
 
         feedback.pushInfo(self.tr('Writing results...'))
 
@@ -227,8 +230,8 @@ class ServiceAreaFromPoint(QgisAlgorithm):
         feat = QgsFeature()
         feat.setFields(fields)
 
-        geomUpper = QgsGeometry.fromMultiPoint(upperBoundary)
-        geomLower = QgsGeometry.fromMultiPoint(lowerBoundary)
+        geomUpper = QgsGeometry.fromMultiPointXY(upperBoundary)
+        geomLower = QgsGeometry.fromMultiPointXY(lowerBoundary)
 
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                fields, QgsWkbTypes.MultiPoint, network.sourceCrs())
@@ -245,7 +248,7 @@ class ServiceAreaFromPoint(QgisAlgorithm):
 
         upperBoundary.append(startPoint)
         lowerBoundary.append(startPoint)
-        geomUpper = QgsGeometry.fromMultiPoint(upperBoundary)
-        geomLower = QgsGeometry.fromMultiPoint(lowerBoundary)
+        geomUpper = QgsGeometry.fromMultiPointXY(upperBoundary)
+        geomLower = QgsGeometry.fromMultiPointXY(lowerBoundary)
 
         return {self.OUTPUT: dest_id}

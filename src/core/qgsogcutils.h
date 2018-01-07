@@ -212,7 +212,7 @@ class CORE_EXPORT QgsOgcUtils
     {
       public:
         //! Constructor
-        LayerProperties() {}
+        LayerProperties() = default;
 
         //! Layer name
         QString mName;
@@ -271,7 +271,7 @@ class CORE_EXPORT QgsOgcUtils
        \param coords list where the found coordinates are appended
        \param elem the \verbatim <gml:coordinates> \endverbatim element
        \returns boolean for success*/
-    static bool readGMLCoordinates( QgsPolyline &coords, const QDomElement &elem );
+    static bool readGMLCoordinates( QgsPolylineXY &coords, const QDomElement &elem );
 
     /**
      * Reads the \verbatim <gml:pos> \endverbatim or \verbatim <gml:posList> \endverbatim
@@ -280,7 +280,7 @@ class CORE_EXPORT QgsOgcUtils
        \param elem the \verbatim <gml:pos> \endverbatim or
                     \verbatim <gml:posList> \endverbatim element
        \returns boolean for success*/
-    static bool readGMLPositions( QgsPolyline &coords, const QDomElement &elem );
+    static bool readGMLPositions( QgsPolylineXY &coords, const QDomElement &elem );
 
 
     /**
@@ -288,14 +288,14 @@ class CORE_EXPORT QgsOgcUtils
       \param points list of data points
       \param doc the GML document
       \returns QDomElement */
-    static QDomElement createGMLCoordinates( const QgsPolyline &points, QDomDocument &doc );
+    static QDomElement createGMLCoordinates( const QgsPolylineXY &points, QDomDocument &doc );
 
     /**
      * Create a GML pos or posList element from a point list.
       \param points list of data points
       \param doc the GML document
       \returns QDomElement */
-    static QDomElement createGMLPositions( const QgsPolyline &points, QDomDocument &doc );
+    static QDomElement createGMLPositions( const QgsPolylineXY &points, QDomDocument &doc );
 
     //! handle a generic sub-expression
     static QgsExpressionNode *nodeFromOgcFilter( QDomElement &element, QString &errorMessage );

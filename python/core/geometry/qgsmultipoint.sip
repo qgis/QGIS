@@ -8,10 +8,11 @@
 
 
 
-class QgsMultiPointV2: QgsGeometryCollection
+class QgsMultiPoint: QgsGeometryCollection
 {
 %Docstring
  Multi point geometry collection.
+
 .. versionadded:: 2.10
 %End
 
@@ -19,23 +20,23 @@ class QgsMultiPointV2: QgsGeometryCollection
 #include "qgsmultipoint.h"
 %End
   public:
-    QgsMultiPointV2();
+    QgsMultiPoint();
 
     virtual QString geometryType() const;
 
-    virtual QgsMultiPointV2 *clone() const /Factory/;
+    virtual QgsMultiPoint *clone() const /Factory/;
 
-    virtual QgsMultiPointV2 *toCurveType() const /Factory/;
+    virtual QgsMultiPoint *toCurveType() const /Factory/;
 
     virtual bool fromWkt( const QString &wkt );
 
     virtual void clear();
 
-    virtual QDomElement asGML2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const;
+    virtual QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const;
 
-    virtual QDomElement asGML3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const;
+    virtual QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const;
 
-    virtual QString asJSON( int precision = 17 ) const;
+    virtual QString asJson( int precision = 17 ) const;
 
     virtual int nCoordinates() const;
 
@@ -45,8 +46,13 @@ class QgsMultiPointV2: QgsGeometryCollection
 
     virtual QgsAbstractGeometry *boundary() const /Factory/;
 
+    virtual int vertexNumberFromVertexId( QgsVertexId id ) const;
+
+    virtual double segmentLength( QgsVertexId startVertex ) const;
+
 
   protected:
+    virtual QgsMultiPoint *createEmptyWithSameType() const /Factory/;
 
     virtual bool wktOmitChildType() const;
 

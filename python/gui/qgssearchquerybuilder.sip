@@ -30,7 +30,6 @@ Constructor - takes pointer to vector layer as a parameter
     QString searchString();
 %Docstring
 returns newly created search string
- :rtype: str
 %End
 
     void setSearchString( const QString &searchString );

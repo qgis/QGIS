@@ -12,7 +12,8 @@
 class QgsLabelingEngineSettings
 {
 %Docstring
- Stores global configuration for labeling engine
+Stores global configuration for labeling engine
+
 .. versionadded:: 3.0
 %End
 
@@ -54,12 +55,10 @@ Set flags of the labeling engine
     Flags flags() const;
 %Docstring
 Get flags of the labeling engine
- :rtype: Flags
 %End
     bool testFlag( Flag f ) const;
 %Docstring
 Test whether a particular flag is enabled
- :rtype: bool
 %End
     void setFlag( Flag f, bool enabled = true );
 %Docstring
@@ -82,7 +81,6 @@ Set which search method to use for removal collisions between labels
     Search searchMethod() const;
 %Docstring
 Which search method to use for removal collisions between labels
- :rtype: Search
 %End
 
     void readSettingsFromProject( QgsProject *project );

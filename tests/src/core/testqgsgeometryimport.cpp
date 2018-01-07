@@ -54,7 +54,7 @@ class TestQgsGeometryImport: public QObject
     void delimiters();
 
   private:
-    bool compareLineStrings( const QgsPolyline &polyline, QVariantList &line );
+    bool compareLineStrings( const QgsPolylineXY &polyline, QVariantList &line );
 };
 
 void TestQgsGeometryImport::initTestCase()
@@ -161,7 +161,7 @@ void TestQgsGeometryImport::linestringWkt()
   QgsGeometry geom = QgsGeometry::fromWkt( wktString );
   QCOMPARE( geom.wkbType(), QgsWkbTypes::LineString );
 
-  QgsPolyline polyLine = geom.asPolyline();
+  QgsPolylineXY polyLine = geom.asPolyline();
   QVERIFY( compareLineStrings( polyLine, line ) );
 }
 
@@ -193,7 +193,7 @@ void TestQgsGeometryImport::linestringWkb()
   geom.fromWkb( geomPtr, wkbSize );
 
   QVERIFY( geom.wkbType() == QgsWkbTypes::LineString );
-  QgsPolyline polyline = geom.asPolyline();
+  QgsPolylineXY polyline = geom.asPolyline();
   QVERIFY( compareLineStrings( polyline, line ) );
 }
 
@@ -222,12 +222,12 @@ void TestQgsGeometryImport::linestringGeos()
   geom.fromGeos( geosLine );
   QVERIFY( geom.wkbType() == QgsWkbTypes::LineString );
 
-  QgsPolyline polyline = geom.asPolyline();
+  QgsPolylineXY polyline = geom.asPolyline();
   QVERIFY( compareLineStrings( polyline, line ) );
 }
 
 
-bool TestQgsGeometryImport::compareLineStrings( const QgsPolyline &polyline, QVariantList &line )
+bool TestQgsGeometryImport::compareLineStrings( const QgsPolylineXY &polyline, QVariantList &line )
 {
   bool sizeEqual = ( polyline.size() == line.size() );
   if ( !sizeEqual )
@@ -272,7 +272,7 @@ void TestQgsGeometryImport::delimiters()
   QFETCH( QString, expected );
 
   QgsGeometry gInput = QgsGeometry::fromWkt( input );
-  QCOMPARE( gInput.exportToWkt(), expected );
+  QCOMPARE( gInput.asWkt(), expected );
 }
 
 QGSTEST_MAIN( TestQgsGeometryImport )

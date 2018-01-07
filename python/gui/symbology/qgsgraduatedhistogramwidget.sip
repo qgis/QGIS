@@ -14,7 +14,7 @@ class QgsGraduatedHistogramWidget : QgsHistogramWidget
 {
 %Docstring
  Graphical histogram for displaying distribution of field values and
- editing range breaks for a QgsGraduatedSymbolRenderer renderer.
+editing range breaks for a QgsGraduatedSymbolRenderer renderer.
 
 .. versionadded:: 2.9
 %End
@@ -26,29 +26,33 @@ class QgsGraduatedHistogramWidget : QgsHistogramWidget
 
     QgsGraduatedHistogramWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
- QgsGraduatedHistogramWidget constructor
- \param parent parent widget
+QgsGraduatedHistogramWidget constructor
+
+:param parent: parent widget
 %End
 
     void setRenderer( QgsGraduatedSymbolRenderer *renderer );
 %Docstring
- Sets the QgsGraduatedSymbolRenderer renderer associated with the histogram.
- The histogram will fetch the ranges from the renderer before every refresh.
- \param renderer associated QgsGraduatedSymbolRenderer
+Sets the QgsGraduatedSymbolRenderer renderer associated with the histogram.
+The histogram will fetch the ranges from the renderer before every refresh.
+
+:param renderer: associated QgsGraduatedSymbolRenderer
 %End
 
   signals:
 
     void rangesModified( bool rangesAdded );
 %Docstring
- Emitted when the user modifies the graduated ranges using the histogram widget.
- \param rangesAdded true if the user has added ranges, false if the user has just
- modified existing range breaks
+Emitted when the user modifies the graduated ranges using the histogram widget.
+
+:param rangesAdded: true if the user has added ranges, false if the user has just
+modified existing range breaks
 %End
 
   protected:
 
     virtual void drawHistogram();
+
 
 };
 

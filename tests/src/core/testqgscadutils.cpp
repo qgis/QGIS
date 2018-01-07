@@ -30,11 +30,7 @@ class TestQgsCadUtils : public QObject
 {
     Q_OBJECT
   public:
-    TestQgsCadUtils()
-    {}
-    ~TestQgsCadUtils()
-    {
-    }
+    TestQgsCadUtils() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -77,12 +73,12 @@ void TestQgsCadUtils::initTestCase()
   mLayerPolygon = new QgsVectorLayer( "Polygon?crs=EPSG:27700", "layer polygon", "memory" );
   QVERIFY( mLayerPolygon->isValid() );
 
-  QgsPolygon polygon1;
-  QgsPolyline polygon1exterior;
+  QgsPolygonXY polygon1;
+  QgsPolylineXY polygon1exterior;
   polygon1exterior << QgsPointXY( 10, 10 ) << QgsPointXY( 30, 10 ) << QgsPointXY( 10, 20 ) << QgsPointXY( 10, 10 );
   polygon1 << polygon1exterior;
   QgsFeature polygonF1;
-  polygonF1.setGeometry( QgsGeometry::fromPolygon( polygon1 ) );
+  polygonF1.setGeometry( QgsGeometry::fromPolygonXY( polygon1 ) );
 
   mLayerPolygon->startEditing();
   mLayerPolygon->addFeature( polygonF1 );

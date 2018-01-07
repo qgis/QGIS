@@ -38,6 +38,8 @@ const int PLUGMAN_TAB_NOT_INSTALLED = 2;
 const int PLUGMAN_TAB_UPGRADEABLE = 3;
 const int PLUGMAN_TAB_NEW = 4;
 const int PLUGMAN_TAB_INVALID = 5;
+const int PLUGMAN_TAB_INSTALL_FROM_ZIP = 6;
+const int PLUGMAN_TAB_SETTINGS = 7;
 
 /**
  * \brief Plugin manager for browsing, (un)installing and (un)loading plugins
@@ -49,7 +51,7 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     //! Constructor; set pluginsAreEnabled to false in --noplugins mode
     QgsPluginManager( QWidget *parent = nullptr, bool pluginsAreEnabled = true, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
-    ~QgsPluginManager();
+    ~QgsPluginManager() override;
 
     //! Save pointer to Python utils and enable Python support
     void setPythonUtils( QgsPythonUtils *pythonUtils );
@@ -130,6 +132,18 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     //! Uninstall selected plugin
     void buttonUninstall_clicked();
 
+    /**
+     * Enable the Install button if selected path is valid
+     * \since QGIS 3.0
+     */
+    void mZipFileWidget_fileChanged( const QString &filePath );
+
+    /**
+     * Install plugin from ZIP file
+     * \since QGIS 3.0
+     */
+    void buttonInstallFromZip_clicked();
+
     //! Enable/disable buttons according to selected repository
     void treeRepositories_itemSelectionChanged();
 
@@ -158,7 +172,7 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     void showHelp();
 
     //! Reimplement QgsOptionsDialogBase method to prevent modifying the tab list by signals from the stacked widget
-    void optionsStackedWidget_CurrentChanged( int indx ) { Q_UNUSED( indx ) }
+    void optionsStackedWidget_CurrentChanged( int index ) override { Q_UNUSED( index ) };
 
     //! Only show plugins from selected repository (e.g. for inspection)
     void setRepositoryFilter();

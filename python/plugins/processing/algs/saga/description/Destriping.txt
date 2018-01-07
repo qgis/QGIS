@@ -1,9 +1,9 @@
 Destriping
 contrib_perego
-ParameterRaster|INPUT|Input|False
-OutputRaster|RESULT3|Destriped Grid
-OutputRaster|RESULT1|Low-pass 1
-OutputRaster|RESULT2|Low-pass 2
-ParameterNumber|ANG|Angle (in degrees)|None|None| 0.000000
-ParameterNumber|R|Radius|None|None| 10.000000
-ParameterNumber|D|Stripes distance|None|None| 2.000000
+QgsProcessingParameterRasterLayer|INPUT|Input|None|False
+QgsProcessingParameterRasterDestination|RESULT3|Destriped Grid
+QgsProcessingParameterRasterDestination|RESULT1|Low-pass 1
+QgsProcessingParameterRasterDestination|RESULT2|Low-pass 2
+QgsProcessingParameterNumber|ANG|Angle (in degrees)|QgsProcessingParameterNumber.Double|0.000000|False|None|None
+QgsProcessingParameterNumber|R|Radius|QgsProcessingParameterNumber.Double|10.000000|False|None|None
+QgsProcessingParameterNumber|D|Stripes distance|QgsProcessingParameterNumber.Double|2.000000|False|None|None

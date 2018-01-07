@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import next
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -61,6 +60,9 @@ class Delaunay(QgisAlgorithm):
 
     def group(self):
         return self.tr('Vector geometry')
+
+    def groupId(self):
+        return 'vectorgeometry'
 
     def __init__(self):
         super().__init__()
@@ -148,7 +150,7 @@ class Delaunay(QgisAlgorithm):
                     attrs.append(ids[index])
                 step += 1
             feat.setAttributes(attrs)
-            geometry = QgsGeometry().fromPolygon([polygon])
+            geometry = QgsGeometry().fromPolygonXY([polygon])
             feat.setGeometry(geometry)
             sink.addFeature(feat, QgsFeatureSink.FastInsert)
             feedback.setProgress(int(current * total))

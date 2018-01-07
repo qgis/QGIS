@@ -66,6 +66,8 @@ SET_TARGET_PROPERTIES(qgis_wcsprovidertest PROPERTIES
 
 ADD_QGIS_TEST(gdalprovidertest testqgsgdalprovider.cpp)
 
+ADD_QGIS_TEST(ogrprovidertest testqgsogrprovider.cpp)
+
 ADD_QGIS_TEST(wmscapabilititestest
               testqgswmscapabilities.cpp)
 TARGET_LINK_LIBRARIES(qgis_wmscapabilititestest wmsprovider_a)
@@ -102,9 +104,6 @@ IF(UNIX AND NOT ANDROID AND CMAKE_BUILD_TYPE MATCHES Debug)
     ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/core/raster
     ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/providers/wcs
   )
-  INCLUDE_DIRECTORIES(SYSTEM
-    ${QT_QTSCRIPT_INCLUDE_DIR}
-  )
 
   TARGET_LINK_LIBRARIES(qgis_wcstest
     ${QT_QTCORE_LIBRARY}
@@ -112,7 +111,6 @@ IF(UNIX AND NOT ANDROID AND CMAKE_BUILD_TYPE MATCHES Debug)
     ${QT_QTSVG_LIBRARY}
     ${QT_QTXML_LIBRARY}
     ${OPTIONAL_QTWEBKIT}
-    ${QT_QTSCRIPT_LIBRARY}
     qgis_core
   )
 

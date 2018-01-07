@@ -113,9 +113,9 @@ class QgsAttributeSelectionDialog: public QDialog, private Ui::QgsAttributeSelec
 {
     Q_OBJECT
   public:
-    QgsAttributeSelectionDialog( QgsComposerAttributeTableV2 *table, QgsVectorLayer *vLayer, QWidget *parent = nullptr, Qt::WindowFlags f = 0 );
+    QgsAttributeSelectionDialog( QgsComposerAttributeTableV2 *table, QgsVectorLayer *vLayer, QWidget *parent = nullptr, Qt::WindowFlags f = nullptr );
 
-    ~QgsAttributeSelectionDialog();
+    ~QgsAttributeSelectionDialog() override;
 
   private slots:
     void mRemoveColumnPushButton_clicked();
@@ -123,6 +123,7 @@ class QgsAttributeSelectionDialog: public QDialog, private Ui::QgsAttributeSelec
     void mColumnUpPushButton_clicked();
     void mColumnDownPushButton_clicked();
     void mResetColumnsPushButton_clicked();
+    void mClearColumnsPushButton_clicked();
     void mAddSortColumnPushButton_clicked();
     void mRemoveSortColumnPushButton_clicked();
     void mSortColumnUpPushButton_clicked();

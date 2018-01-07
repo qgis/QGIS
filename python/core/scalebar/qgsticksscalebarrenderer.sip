@@ -11,7 +11,8 @@
 class QgsTicksScaleBarRenderer: QgsScaleBarRenderer
 {
 %Docstring
- A scale bar that draws segments using short ticks.
+A scale bar that draws segments using short ticks.
+
 .. versionadded:: 3.0
 %End
 
@@ -29,7 +30,7 @@ class QgsTicksScaleBarRenderer: QgsScaleBarRenderer
 
     QgsTicksScaleBarRenderer();
 %Docstring
- Constructor for QgsTicksScaleBarRenderer.
+Constructor for QgsTicksScaleBarRenderer.
 %End
 
     virtual QString name() const;
@@ -41,15 +42,16 @@ class QgsTicksScaleBarRenderer: QgsScaleBarRenderer
 
     void setTickPosition( TickPosition position );
 %Docstring
- Sets the ``position`` for tick marks in the scalebar.
-.. seealso:: tickPosition()
+Sets the ``position`` for tick marks in the scalebar.
+
+.. seealso:: :py:func:`tickPosition()`
 %End
 
     TickPosition tickPosition() const;
 %Docstring
- Returns the position for tick marks in the scalebar.
-.. seealso:: setTickPosition()
- :rtype: TickPosition
+Returns the position for tick marks in the scalebar.
+
+.. seealso:: :py:func:`setTickPosition()`
 %End
 
 };

@@ -28,7 +28,7 @@ class QgsAlignRasterDialog : public QDialog, private Ui::QgsAlignRasterDialog
     Q_OBJECT
   public:
     explicit QgsAlignRasterDialog( QWidget *parent = nullptr );
-    ~QgsAlignRasterDialog();
+    ~QgsAlignRasterDialog() override;
 
   signals:
 

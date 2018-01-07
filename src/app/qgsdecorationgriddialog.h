@@ -32,7 +32,7 @@ class APP_EXPORT QgsDecorationGridDialog : public QDialog, private Ui::QgsDecora
 
   public:
     QgsDecorationGridDialog( QgsDecorationGrid &decoGrid, QWidget *parent = nullptr );
-    ~QgsDecorationGridDialog();
+    ~QgsDecorationGridDialog() override;
 
   private slots:
     void apply();

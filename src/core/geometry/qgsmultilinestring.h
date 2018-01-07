@@ -35,9 +35,9 @@ class CORE_EXPORT QgsMultiLineString: public QgsMultiCurve
     QgsMultiLineString *clone() const override SIP_FACTORY;
     void clear() override;
     bool fromWkt( const QString &wkt ) override;
-    QDomElement asGML2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
-    QDomElement asGML3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
-    QString asJSON( int precision = 17 ) const override;
+    QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
+    QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
+    QString asJson( int precision = 17 ) const override;
     bool addGeometry( QgsAbstractGeometry *g SIP_TRANSFER ) override;
     bool insertGeometry( QgsAbstractGeometry *g SIP_TRANSFER, int index ) override;
 
@@ -63,7 +63,7 @@ class CORE_EXPORT QgsMultiLineString: public QgsMultiCurve
     }
 #endif
   protected:
-
+    QgsMultiLineString *createEmptyWithSameType() const override SIP_FACTORY;
     bool wktOmitChildType() const override;
 };
 

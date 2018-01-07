@@ -35,7 +35,7 @@ class APP_EXPORT QgsMapToolRotatePointSymbols: public QgsMapToolPointSymbol
 
   public:
     QgsMapToolRotatePointSymbols( QgsMapCanvas *canvas );
-    ~QgsMapToolRotatePointSymbols();
+    ~QgsMapToolRotatePointSymbols() override;
 
     void canvasPressEvent( QgsMapMouseEvent *e ) override;
     void canvasMoveEvent( QgsMapMouseEvent *e ) override;
@@ -48,9 +48,9 @@ class APP_EXPORT QgsMapToolRotatePointSymbols: public QgsMapToolPointSymbol
 
   protected:
 
-    virtual void canvasPressOnFeature( QgsMapMouseEvent *e, const QgsFeature &feature, const QgsPointXY &snappedPoint ) override;
-    virtual bool checkSymbolCompatibility( QgsMarkerSymbol *markerSymbol, QgsRenderContext &context ) override;
-    virtual void noCompatibleSymbols() override;
+    void canvasPressOnFeature( QgsMapMouseEvent *e, const QgsFeature &feature, const QgsPointXY &snappedPoint ) override;
+    bool checkSymbolCompatibility( QgsMarkerSymbol *markerSymbol, QgsRenderContext &context ) override;
+    void noCompatibleSymbols() override;
 
   private:
 

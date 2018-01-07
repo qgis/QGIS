@@ -58,7 +58,7 @@ bool QgsValueMapSearchWidgetWrapper::applyDirectly()
   return true;
 }
 
-QString QgsValueMapSearchWidgetWrapper::expression()
+QString QgsValueMapSearchWidgetWrapper::expression() const
 {
   return mExpression;
 }
@@ -88,7 +88,7 @@ QString QgsValueMapSearchWidgetWrapper::createExpression( QgsSearchWidgetWrapper
   flags &= supportedFlags();
 
   QVariant::Type fldType = layer()->fields().at( mFieldIdx ).type();
-  QString fieldName = QgsExpression::quotedColumnRef( layer()->fields().at( mFieldIdx ).name() );
+  QString fieldName = createFieldIdentifier();
 
   if ( flags & IsNull )
     return fieldName + " IS NULL";
@@ -143,7 +143,7 @@ void QgsValueMapSearchWidgetWrapper::initWidget( QWidget *editor )
   {
     const QVariantMap cfg = config();
     QVariantMap::ConstIterator it = cfg.constBegin();
-    mComboBox->addItem( tr( "Please select" ), "" );
+    mComboBox->addItem( tr( "Please select" ), QString() );
 
     while ( it != cfg.constEnd() )
     {
@@ -155,8 +155,9 @@ void QgsValueMapSearchWidgetWrapper::initWidget( QWidget *editor )
   }
 }
 
-void QgsValueMapSearchWidgetWrapper::setExpression( QString exp )
+void QgsValueMapSearchWidgetWrapper::setExpression( const QString &expression )
 {
+  QString exp = expression;
   QString fieldName = layer()->fields().at( mFieldIdx ).name();
   QString str;
 

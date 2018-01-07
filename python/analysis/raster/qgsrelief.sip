@@ -13,7 +13,7 @@
 class QgsRelief
 {
 %Docstring
- Produces colored relief rasters from DEM*
+Produces colored relief rasters from DEM*
 %End
 
 %TypeHeaderCode
@@ -34,37 +34,31 @@ class QgsRelief
 
     int processRaster( QgsFeedback *feedback = 0 );
 %Docstring
- Starts the calculation, reads from mInputFile and stores the result in mOutputFile
-\param feedback feedback object that receives update and that is checked for cancelation.
+Starts the calculation, reads from mInputFile and stores the result in mOutputFile
+
+:param feedback: feedback object that receives update and that is checked for cancelation.
+
 :return: 0 in case of success*
- :rtype: int
 %End
 
     double zFactor() const;
-%Docstring
- :rtype: float
-%End
     void setZFactor( double factor );
 
     void clearReliefColors();
     void addReliefColorClass( const QgsRelief::ReliefColor &color );
     QList< QgsRelief::ReliefColor > reliefColors() const;
-%Docstring
- :rtype: list of QgsRelief.ReliefColor
-%End
     void setReliefColors( const QList< QgsRelief::ReliefColor > &c );
 
     QList< QgsRelief::ReliefColor > calculateOptimizedReliefClasses();
 %Docstring
- Calculates class breaks according with the method of Buenzli (2011) using an iterative algorithm for segmented regression
+Calculates class breaks according with the method of Buenzli (2011) using an iterative algorithm for segmented regression
+
 :return: true in case of success*
- :rtype: list of QgsRelief.ReliefColor
 %End
 
     bool exportFrequencyDistributionToCsv( const QString &file );
 %Docstring
 Write frequency of elevation values to file for manual inspection
- :rtype: bool
 %End
 
   private:

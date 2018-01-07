@@ -134,11 +134,11 @@ class QgsLocatorFilterFilter : public QgsLocatorFilter
 
     QgsLocatorFilterFilter( QgsLocatorWidget *widget, QObject *parent = nullptr );
 
-    virtual QString name() const override { return QStringLiteral( "filters" );}
-    virtual QString displayName() const override { return QString(); }
-    virtual Priority priority() const override { return static_cast< QgsLocatorFilter::Priority>( -1 ); /** shh, we cheat!**/ }
-    virtual void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;
-    virtual void triggerResult( const QgsLocatorResult &result ) override;
+    QString name() const override { return QStringLiteral( "filters" );}
+    QString displayName() const override { return QString(); }
+    Priority priority() const override { return static_cast< QgsLocatorFilter::Priority>( -1 ); /** shh, we cheat!**/ }
+    void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;
+    void triggerResult( const QgsLocatorResult &result ) override;
 
   private:
 

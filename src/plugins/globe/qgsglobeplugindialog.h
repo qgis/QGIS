@@ -25,7 +25,7 @@ class QgsGlobePluginDialog: public QDialog, private Ui::QgsGlobePluginDialogGuiB
 {
     Q_OBJECT
   public:
-    QgsGlobePluginDialog( QWidget *parent = 0, Qt::WFlags fl = 0 );
+    QgsGlobePluginDialog( QWidget *parent = nullptr, Qt::WFlags fl = 0 );
 
     struct LayerDataSource
     {

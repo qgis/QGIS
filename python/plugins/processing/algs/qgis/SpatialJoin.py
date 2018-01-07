@@ -16,9 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
-from builtins import zip
-from builtins import range
 
 __author__ = 'Joshua Arnott'
 __date__ = 'October 2013'
@@ -64,6 +61,9 @@ class SpatialJoin(QgisAlgorithm):
 
     def group(self):
         return self.tr('Vector general')
+
+    def groupId(self):
+        return 'vectorgeneral'
 
     def __init__(self):
         super().__init__()
@@ -195,11 +195,11 @@ class SpatialJoin(QgisAlgorithm):
                     join_attributes.append(f.attributes()[a])
 
                 if engine is None:
-                    engine = QgsGeometry.createGeometryEngine(f.geometry().geometry())
+                    engine = QgsGeometry.createGeometryEngine(f.geometry().constGet())
                     engine.prepareGeometry()
 
                 for predicate in predicates:
-                    if getattr(engine, predicate)(test_feat.geometry().geometry()):
+                    if getattr(engine, predicate)(test_feat.geometry().constGet()):
                         added_set.add(test_feat.id())
 
                         # join attributes and add

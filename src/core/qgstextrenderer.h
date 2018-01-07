@@ -1385,9 +1385,6 @@ class CORE_EXPORT QgsTextRenderer
 
     struct Component
     {
-      Component()
-      {}
-
       //! Component text
       QString text;
       //! Current origin point for painting (generally current painter rotation point)
@@ -1452,9 +1449,9 @@ class CORE_EXPORT QgsTextRenderer
     static QgsTextFormat updateShadowPosition( const QgsTextFormat &format );
 
     static double textWidth( const QgsRenderContext &context, const QgsTextFormat &format, const QStringList &textLines,
-                             QFontMetricsF *fm = 0 );
+                             QFontMetricsF *fm = nullptr );
     static double textHeight( const QgsRenderContext &context, const QgsTextFormat &format, const QStringList &textLines, DrawMode mode,
-                              QFontMetricsF *fm = 0 );
+                              QFontMetricsF *fm = nullptr );
 
 
 };

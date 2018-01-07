@@ -1,11 +1,11 @@
 K-Means Clustering for Grids
 imagery_classification
-ParameterMultipleInput|GRIDS|Grids|3.0|False
-ParameterSelection|METHOD|Method|[0] Iterative Minimum Distance (Forgy 1965);[1] Hill-Climbing (Rubin 1967);[2] Combined Minimum Distance / Hillclimbing
-ParameterNumber|NCLUSTER|Clusters|2|None|10
-ParameterNumber|MAXITER|Maximum Iterations|0|None|0
-ParameterBoolean|NORMALISE|Normalise|True
-ParameterBoolean|OLDVERSION|Old Version|False
-ParameterBoolean|UPDATEVIEW|Update View|False
-OutputRaster|CLUSTER|Clusters
+QgsProcessingParameterMultipleLayers|GRIDS|Grids|3|None|False
+QgsProcessingParameterEnum|METHOD|Method|[0] Iterative Minimum Distance (Forgy 1965);[1] Hill-Climbing (Rubin 1967);[2] Combined Minimum Distance / Hillclimbing
+QgsProcessingParameterNumber|NCLUSTER|Clusters|QgsProcessingParameterNumber.Integer|10|False|2|None
+QgsProcessingParameterNumber|MAXITER|Maximum Iterations|QgsProcessingParameterNumber.Integer|0|False|0|None
+QgsProcessingParameterBoolean|NORMALISE|Normalise|True
+QgsProcessingParameterBoolean|OLDVERSION|Old Version|False
+QgsProcessingParameterBoolean|UPDATEVIEW|Update View|False
+QgsProcessingParameterRasterDestination|CLUSTER|Clusters
 OutputTable|STATISTICS|Statistics

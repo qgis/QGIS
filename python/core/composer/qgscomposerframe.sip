@@ -12,7 +12,7 @@
 class QgsComposerFrame: QgsComposerItem
 {
 %Docstring
- Frame item for a composer multiframe item.
+Frame item for a composer multiframe item.
 %End
 
 %TypeHeaderCode
@@ -23,20 +23,23 @@ class QgsComposerFrame: QgsComposerItem
 
     void setContentSection( const QRectF &section );
 %Docstring
- Sets the visible part of the multiframe's content which is visible within
- this frame (relative to the total multiframe extent in mm).
- \param section visible portion of content
-.. seealso:: extent
+Sets the visible part of the multiframe's content which is visible within
+this frame (relative to the total multiframe extent in mm).
+
+:param section: visible portion of content
+
+.. seealso:: :py:func:`extent`
 %End
 
     QgsComposerMultiFrame *multiFrame() const;
 %Docstring
- Returns the parent multiframe for the frame.
- :return: parent multiframe
- :rtype: QgsComposerMultiFrame
+Returns the parent multiframe for the frame.
+
+:return: parent multiframe
 %End
 
     virtual QString displayName() const;
+
 
     virtual void setSceneRect( const QRectF &rectangle );
 
@@ -55,58 +58,73 @@ class QgsComposerFrame: QgsComposerItem
 
     QRectF extent() const;
 %Docstring
- Returns the visible portion of the multi frame's content which
- is shown in this frame.
- :return: extent of visible portion
+Returns the visible portion of the multi frame's content which
+is shown in this frame.
+
+:return: extent of visible portion
+
 .. versionadded:: 2.5
-.. seealso:: setContentSection
- :rtype: QRectF
+
+.. seealso:: :py:func:`setContentSection`
 %End
 
     bool hidePageIfEmpty() const;
 %Docstring
- Returns whether the page should be hidden (ie, not included in composer exports) if this frame is empty
- :return: true if page should be hidden if frame is empty
+Returns whether the page should be hidden (ie, not included in composer exports) if this frame is empty
+
+:return: true if page should be hidden if frame is empty
+
 .. versionadded:: 2.5
-.. seealso:: setHidePageIfEmpty
- :rtype: bool
+
+.. seealso:: :py:func:`setHidePageIfEmpty`
 %End
 
     void setHidePageIfEmpty( const bool hidePageIfEmpty );
 %Docstring
- Sets whether the page should be hidden (ie, not included in composer exports) if this frame is empty
- \param hidePageIfEmpty set to true if page should be hidden if frame is empty
+Sets whether the page should be hidden (ie, not included in composer exports) if this frame is empty
+
+:param hidePageIfEmpty: set to true if page should be hidden if frame is empty
+
 .. versionadded:: 2.5
-.. seealso:: hidePageIfEmpty
+
+.. seealso:: :py:func:`hidePageIfEmpty`
 %End
 
     bool hideBackgroundIfEmpty() const;
 %Docstring
- Returns whether the background and frame stroke should be hidden if this frame is empty
- :return: true if background and stroke should be hidden if frame is empty
+Returns whether the background and frame stroke should be hidden if this frame is empty
+
+:return: true if background and stroke should be hidden if frame is empty
+
 .. versionadded:: 2.5
-.. seealso:: setHideBackgroundIfEmpty
- :rtype: bool
+
+.. seealso:: :py:func:`setHideBackgroundIfEmpty`
 %End
 
     void setHideBackgroundIfEmpty( const bool hideBackgroundIfEmpty );
 %Docstring
- Sets whether the background and frame stroke should be hidden if this frame is empty
- \param hideBackgroundIfEmpty set to true if background and stroke should be hidden if frame is empty
+Sets whether the background and frame stroke should be hidden if this frame is empty
+
+:param hideBackgroundIfEmpty: set to true if background and stroke should be hidden if frame is empty
+
 .. versionadded:: 2.5
-.. seealso:: hideBackgroundIfEmpty
+
+.. seealso:: :py:func:`hideBackgroundIfEmpty`
 %End
 
     bool isEmpty() const;
 %Docstring
- Returns whether the frame is empty
- :return: true if frame is empty
+Returns whether the frame is empty
+
+:return: true if frame is empty
+
 .. versionadded:: 2.5
-.. seealso:: hidePageIfEmpty
- :rtype: bool
+
+.. seealso:: :py:func:`hidePageIfEmpty`
 %End
 
     virtual QgsExpressionContext createExpressionContext() const;
+
 
 };
 

@@ -13,7 +13,8 @@
 class QgsBearingUtils
 {
 %Docstring
- Utilities for calculating bearings and directions.
+Utilities for calculating bearings and directions.
+
 .. versionadded:: 2.18
 %End
 
@@ -25,10 +26,9 @@ class QgsBearingUtils
     static double bearingTrueNorth( const QgsCoordinateReferenceSystem &crs,
                                     const QgsPointXY &point );
 %Docstring
- Returns the direction to true north from a specified point and for a specified
- coordinate reference system. The returned value is in degrees clockwise from
- vertical. An exception will be thrown if the bearing could not be calculated.
- :rtype: float
+Returns the direction to true north from a specified point and for a specified
+coordinate reference system. The returned value is in degrees clockwise from
+vertical. An exception will be thrown if the bearing could not be calculated.
 %End
 
 };

@@ -24,6 +24,7 @@
 #include <QSslKey>
 
 #include "qgsapplication.h"
+#include "qgsauthcertutils.h"
 #include "qgsauthmanager.h"
 #include "qgsauthguiutils.h"
 #include "qgslogger.h"
@@ -36,6 +37,11 @@ QgsAuthPkiPathsEdit::QgsAuthPkiPathsEdit( QWidget *parent )
   connect( chkPkiPathsPassShow, &QCheckBox::stateChanged, this, &QgsAuthPkiPathsEdit::chkPkiPathsPassShow_stateChanged );
   connect( btnPkiPathsCert, &QToolButton::clicked, this, &QgsAuthPkiPathsEdit::btnPkiPathsCert_clicked );
   connect( btnPkiPathsKey, &QToolButton::clicked, this, &QgsAuthPkiPathsEdit::btnPkiPathsKey_clicked );
+  connect( cbAddCas, &QCheckBox::stateChanged, this, [ = ]( int state ) {  cbAddRootCa->setEnabled( state == Qt::Checked ); } );
+  lblCas->hide();
+  twCas->hide();
+  cbAddCas->hide();
+  cbAddRootCa->hide();
 }
 
 bool QgsAuthPkiPathsEdit::validateConfig()
@@ -57,34 +63,7 @@ bool QgsAuthPkiPathsEdit::validateConfig()
   }
 
   // check for issue date validity, then notify status
-  QSslCertificate cert;
-  QFile file( certpath );
-  QFileInfo fileinfo( file );
-  QString ext( fileinfo.fileName().remove( fileinfo.completeBaseName() ).toLower() );
-  if ( ext.isEmpty() )
-  {
-    writePkiMessage( lePkiPathsMsg, tr( "Certificate file has no extension" ), Invalid );
-    return validityChange( false );
-  }
-
-  QFile::OpenMode openflags( QIODevice::ReadOnly );
-  QSsl::EncodingFormat encformat( QSsl::Der );
-  if ( ext == QLatin1String( ".pem" ) )
-  {
-    openflags |= QIODevice::Text;
-    encformat = QSsl::Pem;
-  }
-
-  if ( file.open( openflags ) )
-  {
-    cert = QSslCertificate( file.readAll(), encformat );
-    file.close();
-  }
-  else
-  {
-    writePkiMessage( lePkiPathsMsg, tr( "Failed to read certificate file" ), Invalid );
-    return validityChange( false );
-  }
+  QSslCertificate cert( QgsAuthCertUtils::certFromFile( certpath ) );
 
   if ( cert.isNull() )
   {
@@ -92,15 +71,21 @@ bool QgsAuthPkiPathsEdit::validateConfig()
     return validityChange( false );
   }
 
-  bool certvalid = cert.isValid();
   QDateTime startdate( cert.effectiveDate() );
   QDateTime enddate( cert.expiryDate() );
 
   writePkiMessage( lePkiPathsMsg,
                    tr( "%1 thru %2" ).arg( startdate.toString(), enddate.toString() ),
-                   ( certvalid ? Valid : Invalid ) );
+                   ( QgsAuthCertUtils::certIsCurrent( cert ) ? Valid : Invalid ) );
 
-  return validityChange( certvalid );
+  bool certviable = QgsAuthCertUtils::certIsViable( cert );
+  bool showCas( certviable && populateCas() );
+  lblCas->setVisible( showCas );
+  twCas->setVisible( showCas );
+  cbAddCas->setVisible( showCas );
+  cbAddRootCa->setVisible( showCas );
+
+  return validityChange( certviable );
 }
 
 QgsStringMap QgsAuthPkiPathsEdit::configMap() const
@@ -109,6 +94,8 @@ QgsStringMap QgsAuthPkiPathsEdit::configMap() const
   config.insert( QStringLiteral( "certpath" ), lePkiPathsCert->text() );
   config.insert( QStringLiteral( "keypath" ), lePkiPathsKey->text() );
   config.insert( QStringLiteral( "keypass" ), lePkiPathsKeyPass->text() );
+  config.insert( QStringLiteral( "addcas" ), cbAddCas->isChecked() ? QStringLiteral( "true" ) :  QStringLiteral( "false" ) );
+  config.insert( QStringLiteral( "addrootca" ), cbAddRootCa->isChecked() ? QStringLiteral( "true" ) :  QStringLiteral( "false" ) );
 
   return config;
 }
@@ -121,6 +108,8 @@ void QgsAuthPkiPathsEdit::loadConfig( const QgsStringMap &configmap )
   lePkiPathsCert->setText( configmap.value( QStringLiteral( "certpath" ) ) );
   lePkiPathsKey->setText( configmap.value( QStringLiteral( "keypath" ) ) );
   lePkiPathsKeyPass->setText( configmap.value( QStringLiteral( "keypass" ) ) );
+  cbAddCas->setChecked( configmap.value( QStringLiteral( "addcas" ), QStringLiteral( "false " ) ) == QStringLiteral( "true" ) );
+  cbAddRootCa->setChecked( configmap.value( QStringLiteral( "addrootca" ), QStringLiteral( "false " ) ) == QStringLiteral( "true" ) );
 
   validateConfig();
 }
@@ -196,7 +185,7 @@ void QgsAuthPkiPathsEdit::chkPkiPathsPassShow_stateChanged( int state )
 void QgsAuthPkiPathsEdit::btnPkiPathsCert_clicked()
 {
   const QString &fn = QgsAuthGuiUtils::getOpenFileName( this, tr( "Open Client Certificate File" ),
-                      tr( "PEM (*.pem);;DER (*.der)" ) );
+                      tr( "All files (*.*);;PEM (*.pem);;DER (*.der)" ) );
   if ( !fn.isEmpty() )
   {
     lePkiPathsCert->setText( fn );
@@ -207,7 +196,7 @@ void QgsAuthPkiPathsEdit::btnPkiPathsCert_clicked()
 void QgsAuthPkiPathsEdit::btnPkiPathsKey_clicked()
 {
   const QString &fn = QgsAuthGuiUtils::getOpenFileName( this, tr( "Open Private Key File" ),
-                      tr( "PEM (*.pem);;DER (*.der)" ) );
+                      tr( "All files (*.*);;PEM (*.pem);;DER (*.der)" ) );
   if ( !fn.isEmpty() )
   {
     lePkiPathsKey->setText( fn );
@@ -223,4 +212,40 @@ bool QgsAuthPkiPathsEdit::validityChange( bool curvalid )
     emit validityChanged( curvalid );
   }
   return curvalid;
+}
+
+
+bool QgsAuthPkiPathsEdit::populateCas()
+{
+  twCas->clear();
+  const QList<QSslCertificate> cas( QgsAuthCertUtils::casFromFile( lePkiPathsCert->text() ) );
+  if ( cas.isEmpty() )
+  {
+    return false;
+  }
+
+  QTreeWidgetItem *prevItem( nullptr );
+  QList<QSslCertificate>::const_iterator it( cas.constEnd() );
+  while ( it != cas.constBegin() )
+  {
+    --it;
+    const QSslCertificate cert = static_cast<QSslCertificate>( *it );
+    QTreeWidgetItem *item;
+
+    if ( prevItem && cert.issuerInfo( QSslCertificate::SubjectInfo::CommonName ).contains( prevItem->text( 0 ) ) )
+    {
+      item = new QTreeWidgetItem( QStringList( cert.subjectInfo( QSslCertificate::SubjectInfo::CommonName ) ) );
+      prevItem->addChild( item );
+    }
+    else
+    {
+      item = new QTreeWidgetItem( twCas, QStringList( cert.subjectInfo( QSslCertificate::SubjectInfo::CommonName ) ) );
+    }
+    item->setIcon( 0, QgsApplication::getThemeIcon( QStringLiteral( "/mIconCertificate.svg" ) ) );
+    item->setToolTip( 0, tr( "<ul><li>Serial #: %1</li><li>Expiry date: %2</li></ul>" ).arg( cert.serialNumber( ), cert.expiryDate().toString( Qt::TextDate ) ) );
+    prevItem = item;
+  }
+  twCas->expandAll();
+
+  return true;
 }

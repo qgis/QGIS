@@ -16,9 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import next
-from builtins import str
-from builtins import range
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -70,6 +67,9 @@ class PointDistance(QgisAlgorithm):
 
     def group(self):
         return self.tr('Vector analysis')
+
+    def groupId(self):
+        return 'vectoranalysis'
 
     def __init__(self):
         super().__init__()
@@ -207,13 +207,14 @@ class PointDistance(QgisAlgorithm):
 
     def regularMatrix(self, parameters, context, source, inField, target_source, targetField,
                       nPoints, feedback):
-
-        index = QgsSpatialIndex(target_source.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([]).setDestinationCrs(source.sourceCrs())), feedback)
-        inIdx = source.fields().lookupField(inField)
-
         distArea = QgsDistanceArea()
         distArea.setSourceCrs(source.sourceCrs())
         distArea.setEllipsoid(context.project().ellipsoid())
+
+        inIdx = source.fields().lookupField(inField)
+        targetIdx = target_source.fields().lookupField(targetField)
+
+        index = QgsSpatialIndex(target_source.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([]).setDestinationCrs(source.sourceCrs())), feedback)
 
         first = True
         sink = None
@@ -225,27 +226,28 @@ class PointDistance(QgisAlgorithm):
                 break
 
             inGeom = inFeat.geometry()
-            inID = str(inFeat.attributes()[inIdx])
-            featList = index.nearestNeighbor(inGeom.asPoint(), nPoints)
             if first:
+                featList = index.nearestNeighbor(inGeom.asPoint(), nPoints)
                 first = False
                 fields = QgsFields()
                 input_id_field = source.fields()[inIdx]
                 input_id_field.setName('ID')
                 fields.append(input_id_field)
-                for i in range(len(featList)):
-                    fields.append(QgsField('DIST_{0}'.format(i + 1), QVariant.Double))
+                for f in target_source.getFeatures(QgsFeatureRequest().setFilterFids(featList).setSubsetOfAttributes([targetIdx]).setDestinationCrs(source.sourceCrs())):
+                    fields.append(QgsField(str(f[targetField]), QVariant.Double))
+
                 (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                        fields, source.wkbType(), source.sourceCrs())
 
-            data = [inID]
+            data = [inFeat[inField]]
             for target in target_source.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([]).setFilterFids(featList).setDestinationCrs(source.sourceCrs())):
                 if feedback.isCanceled():
                     break
                 outGeom = target.geometry()
                 dist = distArea.measureLine(inGeom.asPoint(),
                                             outGeom.asPoint())
-                data.append(float(dist))
+                data.append(dist)
+
             out_feature = QgsFeature()
             out_feature.setGeometry(inGeom)
             out_feature.setAttributes(data)

@@ -35,9 +35,9 @@ class CORE_EXPORT QgsMultiCurve: public QgsGeometryCollection
     void clear() override;
     QgsMultiCurve *toCurveType() const override SIP_FACTORY;
     bool fromWkt( const QString &wkt ) override;
-    QDomElement asGML2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
-    QDomElement asGML3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
-    QString asJSON( int precision = 17 ) const override;
+    QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
+    QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
+    QString asJson( int precision = 17 ) const override;
     bool addGeometry( QgsAbstractGeometry *g SIP_TRANSFER ) override;
     bool insertGeometry( QgsAbstractGeometry *g SIP_TRANSFER, int index ) override;
 
@@ -70,6 +70,10 @@ class CORE_EXPORT QgsMultiCurve: public QgsGeometryCollection
       return nullptr;
     }
 #endif
+
+  protected:
+
+    QgsMultiCurve *createEmptyWithSameType() const override SIP_FACTORY;
 
 };
 

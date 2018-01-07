@@ -43,7 +43,7 @@ def processCommand(alg, parameters):
     new_parameters[param.name()] = sequenceFile
 
     # Let's do the incorporation and command generation
-    incorporatePoints(alg, new_parameters)
+    incorporatePoints(alg, new_parameters, context)
 
     # then we delete the input parameter and add the old output
     alg.addOutput(sequence)

@@ -96,7 +96,7 @@
        <string>Console</string>
       </property>
       <property name="toolTip">
-       <string>General</string>
+       <string>Console settings</string>
       </property>
       <property name="icon">
        <iconset>
@@ -108,7 +108,7 @@
        <string>Editor</string>
       </property>
       <property name="toolTip">
-       <string>System</string>
+       <string>Editor settings</string>
       </property>
       <property name="icon">
        <iconset>
@@ -120,7 +120,7 @@
        <string>APIs</string>
       </property>
       <property name="toolTip">
-       <string>Data sources</string>
+       <string> APIs file settings for autocompletion</string>
       </property>
       <property name="icon">
        <iconset>

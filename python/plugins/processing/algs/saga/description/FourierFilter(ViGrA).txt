@@ -1,9 +1,9 @@
 Fourier Filter (ViGrA)
 imagery_vigra
-ParameterRaster|INPUT|Input|False
-OutputRaster|OUTPUT|Output
-ParameterNumber|SCALE|Size of smoothing filter| 0.000000|None| 2.000000
-ParameterNumber|POWER|Power|None|None| 0.500000
-ParameterNumber|RANGE_MIN|Range (Min)|None|None|None
-ParameterNumber|RANGE_MAX|Range (Max)|None|None|None
-ParameterSelection|FILTER|Filter|[0] gaussian;[1] power of distance;[2] include range;[3] exclude range| 0
+QgsProcessingParameterRasterLayer|INPUT|Input|None|False
+QgsProcessingParameterRasterDestination|OUTPUT|Output
+QgsProcessingParameterNumber|SCALE|Size of smoothing filter|QgsProcessingParameterNumber.Double|2.000000|False| 0.000000|None
+QgsProcessingParameterNumber|POWER|Power|QgsProcessingParameterNumber.Double|0.500000|False|None|None
+QgsProcessingParameterNumber|RANGE_MIN|Range (Min)|QgsProcessingParameterNumber.Integer|None|False|None|None
+QgsProcessingParameterNumber|RANGE_MAX|Range (Max)|QgsProcessingParameterNumber.Integer|None|False|None|None
+QgsProcessingParameterEnum|FILTER|Filter|[0] gaussian;[1] power of distance;[2] include range;[3] exclude range|False|0

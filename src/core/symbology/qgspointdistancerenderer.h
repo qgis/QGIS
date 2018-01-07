@@ -83,27 +83,27 @@ class CORE_EXPORT QgsPointDistanceRenderer: public QgsFeatureRenderer
      */
     QgsPointDistanceRenderer( const QString &rendererName, const QString &labelAttributeName = QString() );
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const override;
+    void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const override;
     bool renderFeature( QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) override;
-    virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
-    virtual QgsFeatureRenderer::Capabilities capabilities() override;
-    virtual QgsSymbolList symbols( QgsRenderContext &context ) override;
-    virtual QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
-    virtual QgsSymbol *originalSymbolForFeature( QgsFeature &feat, QgsRenderContext &context ) override;
-    virtual QgsSymbolList symbolsForFeature( QgsFeature &feat, QgsRenderContext &context ) override;
-    virtual QgsSymbolList originalSymbolsForFeature( QgsFeature &feat, QgsRenderContext &context ) override;
-    virtual QSet< QString > legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
-    virtual bool willRenderFeature( QgsFeature &feat, QgsRenderContext &context ) override;
-    virtual void startRender( QgsRenderContext &context, const QgsFields &fields ) override;
+    QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
+    QgsFeatureRenderer::Capabilities capabilities() override;
+    QgsSymbolList symbols( QgsRenderContext &context ) override;
+    QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
+    QgsSymbol *originalSymbolForFeature( QgsFeature &feat, QgsRenderContext &context ) override;
+    QgsSymbolList symbolsForFeature( QgsFeature &feat, QgsRenderContext &context ) override;
+    QgsSymbolList originalSymbolsForFeature( QgsFeature &feat, QgsRenderContext &context ) override;
+    QSet< QString > legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
+    bool willRenderFeature( QgsFeature &feat, QgsRenderContext &context ) override;
+    void startRender( QgsRenderContext &context, const QgsFields &fields ) override;
     void stopRender( QgsRenderContext &context ) override;
-    virtual QgsLegendSymbolList legendSymbolItems() const override;
+    QgsLegendSymbolList legendSymbolItems() const override;
     void setEmbeddedRenderer( QgsFeatureRenderer *r SIP_TRANSFER ) override;
     const QgsFeatureRenderer *embeddedRenderer() const override;
     void setLegendSymbolItem( const QString &key, QgsSymbol *symbol SIP_TRANSFER ) override;
     bool legendSymbolItemsCheckable() const override;
     bool legendSymbolItemChecked( const QString &key ) override;
     void checkLegendSymbolItem( const QString &key, bool state ) override;
-    virtual QString filter( const QgsFields &fields = QgsFields() ) override;
+    QString filter( const QgsFields &fields = QgsFields() ) override;
 
     /**
      * Sets the attribute name for labeling points.

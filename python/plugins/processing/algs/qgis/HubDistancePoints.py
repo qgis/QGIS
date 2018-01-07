@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import next
 
 __author__ = 'Michael Minn'
 __date__ = 'May 2010'
@@ -62,6 +61,9 @@ class HubDistancePoints(QgisAlgorithm):
 
     def group(self):
         return self.tr('Vector analysis')
+
+    def groupId(self):
+        return 'vectoranalysis'
 
     def __init__(self):
         super().__init__()
@@ -144,7 +146,7 @@ class HubDistancePoints(QgisAlgorithm):
             feat = QgsFeature()
             feat.setAttributes(attributes)
 
-            feat.setGeometry(QgsGeometry.fromPoint(src))
+            feat.setGeometry(QgsGeometry.fromPointXY(src))
 
             sink.addFeature(feat, QgsFeatureSink.FastInsert)
             feedback.setProgress(int(current * total))

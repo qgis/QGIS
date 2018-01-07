@@ -20,130 +20,131 @@ class QgsMargins
 
     QgsMargins();
 %Docstring
- Constructs a margins object with all margins set to 0.
+Constructs a margins object with all margins set to 0.
 %End
 
     QgsMargins( double left, double top, double right, double bottom );
 %Docstring
- Constructs margins with the given ``left``, ``top``, ``right``, ``bottom``
-.. seealso:: setLeft()
-.. seealso:: setRight()
-.. seealso:: setTop()
-.. seealso:: setBottom()
+Constructs margins with the given ``left``, ``top``, ``right``, ``bottom``
+
+.. seealso:: :py:func:`setLeft()`
+
+.. seealso:: :py:func:`setRight()`
+
+.. seealso:: :py:func:`setTop()`
+
+.. seealso:: :py:func:`setBottom()`
 %End
 
     bool isNull() const;
 %Docstring
- Returns \c true if all margins are is 0; otherwise returns false.
- :rtype: bool
+Returns \c true if all margins are is 0; otherwise returns false.
 %End
 
     double left() const;
 %Docstring
- Returns the left margin.
-.. seealso:: setLeft()
- :rtype: float
+Returns the left margin.
+
+.. seealso:: :py:func:`setLeft()`
 %End
 
     double top() const;
 %Docstring
- Returns the top margin.
-.. seealso:: setTop()
- :rtype: float
+Returns the top margin.
+
+.. seealso:: :py:func:`setTop()`
 %End
 
     double right() const;
 %Docstring
- Returns the right margin.
-.. seealso:: setRight()
- :rtype: float
+Returns the right margin.
+
+.. seealso:: :py:func:`setRight()`
 %End
 
     double bottom() const;
 %Docstring
- Returns the bottom margin.
-.. seealso:: setBottom()
- :rtype: float
+Returns the bottom margin.
+
+.. seealso:: :py:func:`setBottom()`
 %End
 
     void setLeft( double left );
 %Docstring
- Sets the left margin to ``left``.
-.. seealso:: left()
+Sets the left margin to ``left``.
+
+.. seealso:: :py:func:`left()`
 %End
 
     void setTop( double top );
 %Docstring
- Sets the top margin to ``top``.
-.. seealso:: top()
+Sets the top margin to ``top``.
+
+.. seealso:: :py:func:`top()`
 %End
 
     void setRight( double right );
 %Docstring
- Sets the right margin to ``right``.
-.. seealso:: right()
+Sets the right margin to ``right``.
+
+.. seealso:: :py:func:`right()`
 %End
 
     void setBottom( double bottom );
 %Docstring
- Sets the bottom margin to ``bottom``.
-.. seealso:: bottom()
+Sets the bottom margin to ``bottom``.
+
+.. seealso:: :py:func:`bottom()`
 %End
 
     QgsMargins &operator+=( const QgsMargins &margins );
 %Docstring
- Add each component of ``margins`` to the respective component of this object
- and returns a reference to it.
- :rtype: QgsMargins
+Add each component of ``margins`` to the respective component of this object
+and returns a reference to it.
 %End
 
     QgsMargins &operator-=( const QgsMargins &margins );
 %Docstring
- Subtract each component of ``margins`` from the respective component of this object
- and returns a reference to it.
- :rtype: QgsMargins
+Subtract each component of ``margins`` from the respective component of this object
+and returns a reference to it.
 %End
 
     QgsMargins &operator+=( double addend );
 %Docstring
- Adds the ``addend`` to each component of this object and returns a reference to it.
- :rtype: QgsMargins
+Adds the ``addend`` to each component of this object and returns a reference to it.
 %End
 
     QgsMargins &operator-=( double subtrahend );
 %Docstring
- Subtracts the ``subtrahend`` from each component of this object
- and returns a reference to it.
- :rtype: QgsMargins
+Subtracts the ``subtrahend`` from each component of this object
+and returns a reference to it.
 %End
 
     QgsMargins &operator*=( double factor );
 %Docstring
- Multiplies each component of this object by ``factor``
- and returns a reference to it.
- :rtype: QgsMargins
+Multiplies each component of this object by ``factor``
+and returns a reference to it.
 %End
 
     QgsMargins &operator/=( double divisor );
 %Docstring
- Multiplies each component of this object by ``factor``
- and returns a reference to it.
- :rtype: QgsMargins
+Multiplies each component of this object by ``factor``
+and returns a reference to it.
 %End
 
     QString toString() const;
 %Docstring
- Returns the margins encoded to a string.
-.. seealso:: fromString()
- :rtype: str
+Returns the margins encoded to a string.
+
+.. seealso:: :py:func:`fromString()`
 %End
 
     static QgsMargins fromString( const QString &string );
 %Docstring
- Returns a QgsMargins object decoded from a string, or a null QgsMargins
- if the string could not be interpreted as margins.
-.. seealso:: toString()
- :rtype: QgsMargins
+Returns a QgsMargins object decoded from a string, or a null QgsMargins
+if the string could not be interpreted as margins.
+
+.. seealso:: :py:func:`toString()`
 %End
 
 };

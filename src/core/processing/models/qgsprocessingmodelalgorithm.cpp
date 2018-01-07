@@ -26,9 +26,10 @@
 
 ///@cond NOT_STABLE
 
-QgsProcessingModelAlgorithm::QgsProcessingModelAlgorithm( const QString &name, const QString &group )
+QgsProcessingModelAlgorithm::QgsProcessingModelAlgorithm( const QString &name, const QString &group, const QString &groupId )
   : mModelName( name.isEmpty() ? QObject::tr( "model" ) : name )
   , mModelGroup( group )
+  , mModelGroupId( groupId )
 {}
 
 void QgsProcessingModelAlgorithm::initAlgorithm( const QVariantMap & )
@@ -48,6 +49,11 @@ QString QgsProcessingModelAlgorithm::displayName() const
 QString QgsProcessingModelAlgorithm::group() const
 {
   return mModelGroup;
+}
+
+QString QgsProcessingModelAlgorithm::groupId() const
+{
+  return mModelGroupId;
 }
 
 QIcon QgsProcessingModelAlgorithm::icon() const
@@ -213,7 +219,7 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
   QTime totalTime;
   totalTime.start();
 
-  QgsProcessingModelFeedback modelFeedback( toExecute.count(), feedback );
+  QgsProcessingMultiStepFeedback modelFeedback( toExecute.count(), feedback );
   QgsExpressionContext baseContext = createExpressionContext( parameters, context );
 
   QVariantMap childResults;
@@ -466,7 +472,8 @@ QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> QgsProcessingMode
                                       << QgsProcessingParameterVectorLayer::typeName()
                                       << QgsProcessingParameterRasterLayer::typeName(),
                                       QStringList() << QgsProcessingOutputVectorLayer::typeName()
-                                      << QgsProcessingOutputRasterLayer::typeName() );
+                                      << QgsProcessingOutputRasterLayer::typeName()
+                                      << QgsProcessingOutputMapLayer::typeName() );
 
   Q_FOREACH ( const QgsProcessingModelChildParameterSource &source, sources )
   {
@@ -1145,66 +1152,6 @@ QgsProcessingAlgorithm *QgsProcessingModelAlgorithm::createInstance() const
   alg->setSourceFilePath( sourceFilePath() );
   return alg;
 }
-
-
-
-
-//
-// QgsProcessingModelFeedback
-//
-
-QgsProcessingModelFeedback::QgsProcessingModelFeedback( int childAlgorithmCount, QgsProcessingFeedback *feedback )
-  : mChildSteps( childAlgorithmCount )
-  , mFeedback( feedback )
-{
-  connect( mFeedback, &QgsFeedback::canceled, this, &QgsFeedback::cancel, Qt::DirectConnection );
-  connect( this, &QgsFeedback::progressChanged, this, &QgsProcessingModelFeedback::updateOverallProgress );
-}
-
-void QgsProcessingModelFeedback::setCurrentStep( int step )
-{
-  mCurrentStep = step;
-  mFeedback->setProgress( 100.0 * static_cast< double >( mCurrentStep ) / mChildSteps );
-}
-
-void QgsProcessingModelFeedback::setProgressText( const QString &text )
-{
-  mFeedback->setProgressText( text );
-}
-
-void QgsProcessingModelFeedback::reportError( const QString &error )
-{
-  mFeedback->reportError( error );
-}
-
-void QgsProcessingModelFeedback::pushInfo( const QString &info )
-{
-  mFeedback->pushInfo( info );
-}
-
-void QgsProcessingModelFeedback::pushCommandInfo( const QString &info )
-{
-  mFeedback->pushCommandInfo( info );
-}
-
-void QgsProcessingModelFeedback::pushDebugInfo( const QString &info )
-{
-  mFeedback->pushDebugInfo( info );
-}
-
-void QgsProcessingModelFeedback::pushConsoleInfo( const QString &info )
-{
-  mFeedback->pushConsoleInfo( info );
-}
-
-void QgsProcessingModelFeedback::updateOverallProgress( double progress )
-{
-  double baseProgress = 100.0 * static_cast< double >( mCurrentStep ) / mChildSteps;
-  double currentAlgorithmProgress = progress / mChildSteps;
-  mFeedback->setProgress( baseProgress + currentAlgorithmProgress );
-}
-
-
 
 ///@endcond
 

@@ -30,6 +30,7 @@
 #include "qgsauthcertutils.h"
 #include "qgsauthmanager.h"
 #include "qgslogger.h"
+#include "qgsapplication.h"
 
 
 static const QString AUTH_METHOD_KEY = QStringLiteral( "PKI-Paths" );
@@ -52,7 +53,7 @@ QgsAuthPkiPathsMethod::QgsAuthPkiPathsMethod()
 
 QgsAuthPkiPathsMethod::~QgsAuthPkiPathsMethod()
 {
-  QMutexLocker locker( &mConfigMutex );
+  QMutexLocker locker( &mMutex );
   qDeleteAll( sPkiConfigBundleCache );
   sPkiConfigBundleCache.clear();
 }
@@ -76,6 +77,7 @@ bool QgsAuthPkiPathsMethod::updateNetworkRequest( QNetworkRequest &request, cons
     const QString &dataprovider )
 {
   Q_UNUSED( dataprovider )
+  QMutexLocker locker( &mMutex );
 
   // TODO: is this too restrictive, to intercept only HTTPS connections?
   if ( request.url().scheme().toLower() != QLatin1String( "https" ) )
@@ -98,18 +100,32 @@ bool QgsAuthPkiPathsMethod::updateNetworkRequest( QNetworkRequest &request, cons
   QSslConfiguration sslConfig = request.sslConfiguration();
   //QSslConfiguration sslConfig( QSslConfiguration::defaultConfiguration() );
 
-  sslConfig.setLocalCertificate( pkibundle->clientCert() );
   sslConfig.setPrivateKey( pkibundle->clientCertKey() );
+  sslConfig.setLocalCertificate( pkibundle->clientCert() );
 
+  // add extra CAs from the bundle
+  if ( pkibundle->config().config( QStringLiteral( "addcas" ), QStringLiteral( "false" ) ) ==  QStringLiteral( "true" ) )
+  {
+    if ( pkibundle->config().config( QStringLiteral( "addrootca" ), QStringLiteral( "false" ) ) ==  QStringLiteral( "true" ) )
+    {
+      sslConfig.setCaCertificates( pkibundle->caChain() );
+    }
+    else
+    {
+      sslConfig.setCaCertificates( QgsAuthCertUtils::casRemoveSelfSigned( pkibundle->caChain() ) );
+    }
+  }
   request.setSslConfiguration( sslConfig );
 
   return true;
 }
 
+
 bool QgsAuthPkiPathsMethod::updateDataSourceUriItems( QStringList &connectionItems, const QString &authcfg,
     const QString &dataprovider )
 {
   Q_UNUSED( dataprovider )
+  QMutexLocker locker( &mMutex );
 
   QgsDebugMsg( QString( "Update URI items for authcfg: %1" ).arg( authcfg ) );
 
@@ -141,10 +157,29 @@ bool QgsAuthPkiPathsMethod::updateDataSourceUriItems( QStringList &connectionIte
     return false;
   }
 
+  // add extra CAs from the bundle
+  QList<QSslCertificate> cas;
+  if ( pkibundle->config().config( QStringLiteral( "addcas" ), QStringLiteral( "false" ) ) ==  QStringLiteral( "true" ) )
+  {
+    if ( pkibundle->config().config( QStringLiteral( "addrootca" ), QStringLiteral( "false" ) ) ==  QStringLiteral( "true" ) )
+    {
+      cas = QgsAuthCertUtils::casMerge( QgsApplication::authManager()->trustedCaCerts(), pkibundle->caChain() );
+    }
+    else
+    {
+      cas = QgsAuthCertUtils::casMerge( QgsApplication::authManager()->trustedCaCerts(),
+                                        QgsAuthCertUtils::casRemoveSelfSigned( pkibundle->caChain() ) );
+    }
+  }
+  else
+  {
+    cas = QgsApplication::authManager()->trustedCaCerts();
+  }
+
   // save CAs to temp file
   QString caFilePath = QgsAuthCertUtils::pemTextToTempFile(
                          pkiTempFileBase.arg( QUuid::createUuid().toString() ),
-                         QgsAuthManager::instance()->getTrustedCaCertsPemText() );
+                         QgsAuthCertUtils::certsToPemText( cas ) );
   if ( caFilePath.isEmpty() )
   {
     return false;
@@ -204,11 +239,13 @@ bool QgsAuthPkiPathsMethod::updateDataSourceUriItems( QStringList &connectionIte
 
 void QgsAuthPkiPathsMethod::clearCachedConfig( const QString &authcfg )
 {
+  QMutexLocker locker( &mMutex );
   removePkiConfigBundle( authcfg );
 }
 
 void QgsAuthPkiPathsMethod::updateMethodConfig( QgsAuthMethodConfig &mconfig )
 {
+  QMutexLocker locker( &mMutex );
   if ( mconfig.hasConfig( QStringLiteral( "oldconfigstyle" ) ) )
   {
     QgsDebugMsg( "Updating old style auth method config" );
@@ -225,7 +262,7 @@ void QgsAuthPkiPathsMethod::updateMethodConfig( QgsAuthMethodConfig &mconfig )
 
 QgsPkiConfigBundle *QgsAuthPkiPathsMethod::getPkiConfigBundle( const QString &authcfg )
 {
-  QMutexLocker locker( &mConfigMutex );
+  QMutexLocker locker( &mMutex );
   QgsPkiConfigBundle *bundle = nullptr;
 
   // check if it is cached
@@ -242,7 +279,7 @@ QgsPkiConfigBundle *QgsAuthPkiPathsMethod::getPkiConfigBundle( const QString &au
   // else build PKI bundle
   QgsAuthMethodConfig mconfig;
 
-  if ( !QgsAuthManager::instance()->loadAuthenticationConfig( authcfg, mconfig, true ) )
+  if ( !QgsApplication::authManager()->loadAuthenticationConfig( authcfg, mconfig, true ) )
   {
     QgsDebugMsg( QString( "PKI bundle for authcfg %1: FAILED to retrieve config" ).arg( authcfg ) );
     return bundle;
@@ -251,9 +288,9 @@ QgsPkiConfigBundle *QgsAuthPkiPathsMethod::getPkiConfigBundle( const QString &au
   // init client cert
   // Note: if this is not valid, no sense continuing
   QSslCertificate clientcert( QgsAuthCertUtils::certFromFile( mconfig.config( QStringLiteral( "certpath" ) ) ) );
-  if ( !clientcert.isValid() )
+  if ( !QgsAuthCertUtils::certIsViable( clientcert ) )
   {
-    QgsDebugMsg( QString( "PKI bundle for authcfg %1: insert FAILED, client cert is not valid" ).arg( authcfg ) );
+    QgsDebugMsg( QString( "PKI bundle for authcfg %1: insert FAILED, client cert is not viable" ).arg( authcfg ) );
     return bundle;
   }
 
@@ -266,9 +303,8 @@ QgsPkiConfigBundle *QgsAuthPkiPathsMethod::getPkiConfigBundle( const QString &au
     return bundle;
   }
 
-  bundle = new QgsPkiConfigBundle( mconfig, clientcert, clientkey );
+  bundle = new QgsPkiConfigBundle( mconfig, clientcert, clientkey, QgsAuthCertUtils::casFromFile( mconfig.config( QStringLiteral( "certpath" ) ) ) );
 
-  locker.unlock();
   // cache bundle
   putPkiConfigBundle( authcfg, bundle );
 
@@ -277,14 +313,14 @@ QgsPkiConfigBundle *QgsAuthPkiPathsMethod::getPkiConfigBundle( const QString &au
 
 void QgsAuthPkiPathsMethod::putPkiConfigBundle( const QString &authcfg, QgsPkiConfigBundle *pkibundle )
 {
-  QMutexLocker locker( &mConfigMutex );
+  QMutexLocker locker( &mMutex );
   QgsDebugMsg( QString( "Putting PKI bundle for authcfg %1" ).arg( authcfg ) );
   sPkiConfigBundleCache.insert( authcfg, pkibundle );
 }
 
 void QgsAuthPkiPathsMethod::removePkiConfigBundle( const QString &authcfg )
 {
-  QMutexLocker locker( &mConfigMutex );
+  QMutexLocker locker( &mMutex );
   if ( sPkiConfigBundleCache.contains( authcfg ) )
   {
     QgsPkiConfigBundle *pkibundle = sPkiConfigBundleCache.take( authcfg );

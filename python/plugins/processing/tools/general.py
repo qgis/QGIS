@@ -26,10 +26,7 @@ __copyright__ = '(C) 2013, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-try:
-    import configparser
-except ImportError:
-    import configparser as configparser
+import configparser
 
 from qgis.core import (QgsApplication,
                        QgsProcessingAlgorithm,
@@ -40,7 +37,6 @@ from qgis.core import (QgsApplication,
                        QgsProcessingOutputLayerDefinition,
                        QgsProject)
 from processing.core.Processing import Processing
-from processing.core.parameters import ParameterSelection
 from processing.gui.Postprocessing import handleAlgorithmResults
 
 

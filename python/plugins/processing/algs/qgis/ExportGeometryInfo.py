@@ -62,6 +62,9 @@ class ExportGeometryInfo(QgisAlgorithm):
     def group(self):
         return self.tr('Vector geometry')
 
+    def groupId(self):
+        return 'vectorgeometry'
+
     def __init__(self):
         super().__init__()
         self.export_z = False
@@ -123,7 +126,7 @@ class ExportGeometryInfo(QgisAlgorithm):
             self.distance_area.setSourceCrs(source.sourceCrs())
             self.distance_area.setEllipsoid(context.project().ellipsoid())
         elif method == 1:
-            coordTransform = QgsCoordinateTransform(source.sourceCrs(), context.project().crs())
+            coordTransform = QgsCoordinateTransform(source.sourceCrs(), context.project().crs(), context.project())
 
         features = source.getFeatures()
         total = 100.0 / source.featureCount() if source.featureCount() else 0
@@ -155,7 +158,7 @@ class ExportGeometryInfo(QgisAlgorithm):
     def point_attributes(self, geometry):
         pt = None
         if not geometry.isMultipart():
-            pt = geometry.geometry()
+            pt = geometry.constGet()
         else:
             if geometry.numGeometries() > 0:
                 pt = geometry.geometryN(0)

@@ -84,7 +84,7 @@ void TestQgsRasterSubLayer::initTestCase()
   GDALAllRegister();
   QString format = QStringLiteral( "netCDF" );
   GDALDriverH myGdalDriver = GDALGetDriverByName( format.toLocal8Bit().constData() );
-  mHasNetCDF = myGdalDriver != 0;
+  mHasNetCDF = myGdalDriver != nullptr;
 
   mFileName = mTestDataDir + "landsat2.nc";
 
@@ -96,8 +96,8 @@ void TestQgsRasterSubLayer::initTestCase()
     QFileInfo myRasterFileInfo( mFileName );
     mpRasterLayer = new QgsRasterLayer( myRasterFileInfo.filePath(),
                                         myRasterFileInfo.completeBaseName() );
-    qDebug() << "raster metadata: " << mpRasterLayer->dataProvider()->metadata();
-    mReport += "raster metadata: " + mpRasterLayer->dataProvider()->metadata();
+    qDebug() << "raster metadata: " << mpRasterLayer->dataProvider()->htmlMetadata();
+    mReport += "raster metadata: " + mpRasterLayer->dataProvider()->htmlMetadata();
   }
   else
   {
@@ -143,7 +143,7 @@ void TestQgsRasterSubLayer::subLayersList()
     qDebug() << "sublayers: " << sublayers.join( QStringLiteral( "," ) );
     mReport += QStringLiteral( "sublayers:<br>%1<br>\n" ).arg( sublayers.join( QStringLiteral( "<br>" ) ) );
     mReport += QStringLiteral( "expected:<br>%1<br>\n" ).arg( expected.join( QStringLiteral( "<br>" ) ) );
-    QVERIFY( sublayers == expected );
+    QCOMPARE( sublayers, expected );
     mReport += QLatin1String( "<p>Passed</p>" );
   }
 }

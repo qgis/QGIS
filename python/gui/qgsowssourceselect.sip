@@ -16,11 +16,11 @@ class QgsOWSSourceSelect : QgsAbstractDataSourceWidget, protected Ui::QgsOWSSour
 %Docstring
   Dialog to create connections and add layers WCS etc.
 
- This dialog allows the user to define and save connection information
- for WMS servers, etc.
+This dialog allows the user to define and save connection information
+for WMS servers, etc.
 
- The user can then connect and add
- layers from the WCS server to the map canvas.
+The user can then connect and add
+layers from the WCS server to the map canvas.
 %End
 
 %TypeHeaderCode
@@ -63,27 +63,24 @@ Set status message to theMessage
 
     virtual QList<QgsOWSSourceSelect::SupportedFormat> providerFormats();
 %Docstring
- List of image formats (encodings) supported by provider
- :return: list of format/label pairs
- :rtype: list of QgsOWSSourceSelect.SupportedFormat
+List of image formats (encodings) supported by provider
+
+:return: list of format/label pairs
 %End
 
     virtual QStringList selectedLayersFormats();
 %Docstring
 List of formats supported for currently selected layer item(s)
- :rtype: list of str
 %End
 
     virtual QStringList selectedLayersCrses();
 %Docstring
 Server CRS supported for currently selected layer item(s)
- :rtype: list of str
 %End
 
     virtual QStringList selectedLayersTimes();
 %Docstring
 List of times (temporalDomain timePosition/timePeriod for currently selected layer item(s)
- :rtype: list of str
 %End
 
 
@@ -125,13 +122,11 @@ Clear times
     QString connName();
 %Docstring
 Connection name
- :rtype: str
 %End
 
     QString connectionInfo();
 %Docstring
 Connection info (uri)
- :rtype: str
 %End
 
     void setConnectionListPosition();
@@ -149,14 +144,13 @@ Add a few example servers to the list.
 %Docstring
  Populate the layer list.
 
- \retval false if the layers could not be retrieved or parsed
+\retval false if the layers could not be retrieved or parsed
 %End
 
 
     QString descriptionForAuthId( const QString &authId );
 %Docstring
 Returns a textual description for the authority id
- :rtype: str
 %End
 
 
@@ -172,25 +166,21 @@ layer name derived from latest layer selection (updated as long it's not edited 
     QString selectedFormat();
 %Docstring
 Returns currently selected format
- :rtype: str
 %End
 
     QString selectedCrs();
 %Docstring
 Returns currently selected Crs
- :rtype: str
 %End
 
     QString selectedTime();
 %Docstring
 Returns currently selected time
- :rtype: str
 %End
 
     QNetworkRequest::CacheLoadControl selectedCacheLoadControl();
 %Docstring
 Returns currently selected cache load control
- :rtype: QNetworkRequest.CacheLoadControl
 %End
 
 

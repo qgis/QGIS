@@ -114,7 +114,7 @@ void QgsPgNewConnection::accept()
 
   if ( !hasAuthConfigID && mAuthSettings->storePasswordIsChecked( ) &&
        QMessageBox::question( this,
-                              tr( "Saving passwords" ),
+                              tr( "Saving Passwords" ),
                               trUtf8( "WARNING: You have opted to save your password. It will be stored in unsecured plain text in your project files and in your home directory (Unix-like OS) or user profile (Windows). If you want to avoid this, press Cancel and either:\n\na) Don't save a password in the connection settings — it will be requested interactively when needed;\nb) Use the Configuration tab to add your credentials in an HTTP Basic Authentication method and store them in an encrypted database." ),
                               QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
   {
@@ -126,7 +126,7 @@ void QgsPgNewConnection::accept()
        ( settings.contains( baseKey + txtName->text() + "/service" ) ||
          settings.contains( baseKey + txtName->text() + "/host" ) ) &&
        QMessageBox::question( this,
-                              tr( "Save connection" ),
+                              tr( "Save Connection" ),
                               tr( "Should the existing connection %1 be overwritten?" ).arg( txtName->text() ),
                               QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
   {
@@ -201,7 +201,7 @@ void QgsPgNewConnection::testConnection()
   if ( conn )
   {
     // Database successfully opened; we can now issue SQL commands.
-    bar->pushMessage( tr( "Connection to %1 was successful" ).arg( txtDatabase->text() ),
+    bar->pushMessage( tr( "Connection to %1 was successful." ).arg( txtDatabase->text() ),
                       QgsMessageBar::INFO );
 
     // free pg connection resources

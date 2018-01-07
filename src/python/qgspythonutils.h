@@ -45,7 +45,7 @@ class PYTHON_EXPORT QgsPythonUtils
 {
   public:
 
-    virtual ~QgsPythonUtils() {}
+    virtual ~QgsPythonUtils() = default;
 
     //! returns true if Python support is ready to use (must be inited first)
     virtual bool isEnabled() = 0;

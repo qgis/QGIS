@@ -13,7 +13,7 @@
 class QgsExpressionFieldBuffer
 {
 %Docstring
- Buffers information about expression fields for a vector layer.
+Buffers information about expression fields for a vector layer.
 
 .. versionadded:: 2.6
 %End
@@ -32,65 +32,62 @@ class QgsExpressionFieldBuffer
 
     QgsExpressionFieldBuffer();
 %Docstring
- Constructor for QgsExpressionFieldBuffer.
+Constructor for QgsExpressionFieldBuffer.
 %End
 
     void addExpression( const QString &exp, const QgsField &fld );
 %Docstring
- Add an expression to the buffer
+Add an expression to the buffer
 
- \param exp expression to add
- \param fld field to add
+:param exp: expression to add
+:param fld: field to add
 %End
 
     void removeExpression( int index );
 %Docstring
- Remove an expression from the buffer
+Remove an expression from the buffer
 
- \param index index of expression to remove
+:param index: index of expression to remove
 %End
 
     void renameExpression( int index, const QString &name );
 %Docstring
- Renames an expression field at a given index
+Renames an expression field at a given index
 
- \param index The index of the expression to change
- \param name   New name for field
+:param index: The index of the expression to change
+:param name:   New name for field
 
 .. versionadded:: 3.0
 %End
 
     void updateExpression( int index, const QString &exp );
 %Docstring
- Changes the expression at a given index
+Changes the expression at a given index
 
- \param index The index of the expression to change
- \param exp   The new expression to set
+:param index: The index of the expression to change
+:param exp:   The new expression to set
 
 .. versionadded:: 2.9
 %End
 
     void writeXml( QDomNode &layer_node, QDomDocument &document ) const;
 %Docstring
- Saves expressions to xml under the layer node
+Saves expressions to xml under the layer node
 %End
 
     void readXml( const QDomNode &layer_node );
 %Docstring
- Reads expressions from project file
+Reads expressions from project file
 %End
 
     void updateFields( QgsFields &flds );
 %Docstring
- Adds fields with the expressions buffered in this object to a QgsFields object
+Adds fields with the expressions buffered in this object to a QgsFields object
 
- \param flds The fields to be updated
+:param flds: The fields to be updated
 %End
 
     QList<QgsExpressionFieldBuffer::ExpressionField> expressions() const;
-%Docstring
- :rtype: list of QgsExpressionFieldBuffer.ExpressionField
-%End
 
 };
 

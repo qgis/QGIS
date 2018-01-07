@@ -48,6 +48,17 @@ class CORE_EXPORT QgsRelation
 
   public:
 
+    /**
+     * enum for the relation strength
+     * Association, Composition
+     */
+    enum RelationStrength
+    {
+      Association, //!< Loose relation, related elements are not part of the parent and a parent copy will not copy any children.
+      Composition  //!< Fix relation, related elements are part of the parent and a parent copy will copy any children or delete of parent will delete children
+
+    };
+
 #ifndef SIP_RUN
 
     /**
@@ -62,7 +73,7 @@ class CORE_EXPORT QgsRelation
     {
       public:
         //! Default constructor: NULL strings
-        FieldPair() {}
+        FieldPair() = default;
 
         //! Constructor which takes two fields
         FieldPair( const QString &referencingField, const QString &referencedField )
@@ -108,6 +119,12 @@ class CORE_EXPORT QgsRelation
      * Set a name for this relation
      */
     void setName( const QString &name );
+
+    /**
+     * Set a strength for this relation
+     * \since QGIS 3.0
+     */
+    void setStrength( const RelationStrength &strength );
 
     /**
      * Set the referencing (child) layer id. This layer will be searched in the registry.
@@ -213,6 +230,14 @@ class CORE_EXPORT QgsRelation
      * \returns A name
      */
     QString name() const;
+
+    /**
+     * Returns the relation strength as a string
+     *
+     * \returns strength
+     * \since QGIS 3.0
+     */
+    RelationStrength strength() const;
 
     /**
      * A (project-wide) unique id for this relation
@@ -345,6 +370,8 @@ class CORE_EXPORT QgsRelation
     //! The parent layer
     QgsVectorLayer *mReferencedLayer = nullptr;
 
+    RelationStrength mRelationStrength = Association;
+
     /**
      * A list of fields which define the relation.
      *  In most cases there will be only one value, but multiple values
@@ -357,5 +384,6 @@ class CORE_EXPORT QgsRelation
 
 // Register QgsRelation for usage with QVariant
 Q_DECLARE_METATYPE( QgsRelation )
+Q_DECLARE_METATYPE( QgsRelation::RelationStrength )
 
 #endif // QGSRELATION_H

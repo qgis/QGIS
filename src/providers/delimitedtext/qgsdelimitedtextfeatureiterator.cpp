@@ -41,7 +41,9 @@ QgsDelimitedTextFeatureIterator::QgsDelimitedTextFeatureIterator( QgsDelimitedTe
 
   if ( mRequest.destinationCrs().isValid() && mRequest.destinationCrs() != mSource->mCrs )
   {
+    Q_NOWARN_DEPRECATED_PUSH
     mTransform = QgsCoordinateTransform( mSource->mCrs, mRequest.destinationCrs() );
+    Q_NOWARN_DEPRECATED_POP
   }
   try
   {
@@ -50,7 +52,7 @@ QgsDelimitedTextFeatureIterator::QgsDelimitedTextFeatureIterator( QgsDelimitedTe
   catch ( QgsCsException & )
   {
     // can't reproject mFilterRect
-    mClosed = true;
+    close();
     return;
   }
 
@@ -436,7 +438,7 @@ QgsGeometry QgsDelimitedTextFeatureIterator::loadGeometryXY( const QStringList &
 
   if ( ok && wantGeometry( pt ) )
   {
-    return QgsGeometry::fromPoint( pt );
+    return QgsGeometry::fromPointXY( pt );
   }
   return QgsGeometry();
 }
@@ -536,7 +538,6 @@ QgsDelimitedTextFeatureSource::QgsDelimitedTextFeatureSource( const QgsDelimited
 
 QgsDelimitedTextFeatureSource::~QgsDelimitedTextFeatureSource()
 {
-  delete mSubsetExpression;
 }
 
 QgsFeatureIterator QgsDelimitedTextFeatureSource::getFeatures( const QgsFeatureRequest &request )

@@ -60,14 +60,38 @@ for my $dist (@dists) {
 		last if /^\S/;
 		$deps .= $_;
 	}
+
+	while(<F>) {
+		chop;
+		last if /^Package: python-qgis/;
+	}
+
+	while(<F>) {
+		chop;
+		last if /^Depends:/;
+	}
+
+	s/^Depends:\s*//;
+	$deps .= ",$_";
+
+	while(<F>) {
+		chop;
+		last if /^\S/;
+		$deps .= $_;
+	}
+
 	close F;
+
 	system("git checkout debian/control" )==0 or die "git checkout failed: $!";
+
+	$deps .= ",cmake-curses-gui,ccache,expect,qt5-default";
 
 	my @deps;
 	my %deps;
 	foreach my $p (split /,/, $deps) {
 		$p =~ s/^\s+//;
 		$p =~ s/\s+.*$//;
+		next if $p =~ /\$|qgis/;
 		next if $p =~ /^(debhelper|subversion|python-central)$/;
 		push @deps, $p if not exists $deps{$p};
 		$deps{$p} = 1;
@@ -84,9 +108,7 @@ for my $dist (@dists) {
 		}
 	}
 
-	push @dep, $dep;
-	push @dep, "cmake-curses-gui";
-	push @dep, "expect";  # for unbuffer
+	push @dep, $dep if $dep ne "";
 
 	print O "| $dist | ``apt-get install" . join( " ", @dep ) . "`` |\n";
 }

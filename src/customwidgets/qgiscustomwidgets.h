@@ -29,9 +29,9 @@ class QgisCustomWidgets : public QObject, public QDesignerCustomWidgetCollection
     Q_INTERFACES( QDesignerCustomWidgetCollectionInterface )
 
   public:
-    explicit QgisCustomWidgets( QObject *parent = 0 );
+    explicit QgisCustomWidgets( QObject *parent = nullptr );
 
-    virtual QList<QDesignerCustomWidgetInterface *> customWidgets() const override;
+    QList<QDesignerCustomWidgetInterface *> customWidgets() const override;
 
     static QString groupName() { return tr( "QGIS custom widgets" ); }
 

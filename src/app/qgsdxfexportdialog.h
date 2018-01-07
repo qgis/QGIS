@@ -77,8 +77,8 @@ class QgsDxfExportDialog : public QDialog, private Ui::QgsDxfExportDialogBase
 {
     Q_OBJECT
   public:
-    QgsDxfExportDialog( QWidget *parent = nullptr, Qt::WindowFlags f = 0 );
-    ~QgsDxfExportDialog();
+    QgsDxfExportDialog( QWidget *parent = nullptr, Qt::WindowFlags f = nullptr );
+    ~QgsDxfExportDialog() override;
 
     QList< QPair<QgsVectorLayer *, int> > layers() const;
 
@@ -88,6 +88,7 @@ class QgsDxfExportDialog : public QDialog, private Ui::QgsDxfExportDialogBase
     bool exportMapExtent() const;
     bool layerTitleAsName() const;
     bool force2d() const;
+    bool useMText() const;
     QString mapTheme() const;
     QString encoding() const;
     QgsCoordinateReferenceSystem crs() const;

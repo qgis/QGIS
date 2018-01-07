@@ -28,6 +28,9 @@
 
 #include <sqlite3.h>
 
+#include "qgssqliteutils.h"
+
+#include "qgssqliteutils.h"
 #include "qgs3drendererregistry.h"
 #include "qgsabstract3drenderer.h"
 #include "qgsapplication.h"
@@ -49,18 +52,17 @@
 #include "qgsvectordataprovider.h"
 #include "qgsxmlutils.h"
 #include "qgssettings.h" // TODO: get rid of it [MD]
-
+#include "qgsstringutils.h"
 
 QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
                           const QString &lyrname,
                           const QString &source )
   : mDataSource( source )
-  , mLayerOrigName( lyrname ) // store the original name
   , mLayerType( type )
   , mStyleManager( new QgsMapLayerStyleManager( this ) )
 {
   // Set the display name = internal name
-  mLayerName = capitalizeLayerName( mLayerOrigName );
+  mLayerName = lyrname;
 
   //mShortName.replace( QRegExp( "[\\W]" ), "_" );
 
@@ -137,12 +139,10 @@ QString QgsMapLayer::id() const
 
 void QgsMapLayer::setName( const QString &name )
 {
-  QString newName = capitalizeLayerName( name );
-  if ( name == mLayerOrigName && newName == mLayerName )
+  if ( name == mLayerName )
     return;
 
-  mLayerOrigName = name; // store the new original name
-  mLayerName = newName;
+  mLayerName = name;
 
   emit nameChanged();
 }
@@ -161,11 +161,6 @@ QgsDataProvider *QgsMapLayer::dataProvider()
 const QgsDataProvider *QgsMapLayer::dataProvider() const
 {
   return nullptr;
-}
-
-QString QgsMapLayer::originalName() const
-{
-  return mLayerOrigName;
 }
 
 QString QgsMapLayer::publicSource() const
@@ -220,7 +215,7 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, const QgsReadWr
   // if the layer needs authentication, ensure the master password is set
   QRegExp rx( "authcfg=([a-z]|[A-Z]|[0-9]){7}" );
   if ( ( rx.indexIn( mDataSource ) != -1 )
-       && !QgsAuthManager::instance()->setMasterPassword( true ) )
+       && !QgsApplication::authManager()->setMasterPassword( true ) )
   {
     return false;
   }
@@ -471,7 +466,7 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, const QgsReadWr
     setMinimumScale( layerElement.attribute( QStringLiteral( "minScale" ) ).toDouble() );
   }
 
-  setAutoRefreshInterval( layerElement.attribute( QStringLiteral( "autoRefreshTime" ), 0 ).toInt() );
+  setAutoRefreshInterval( layerElement.attribute( QStringLiteral( "autoRefreshTime" ), QStringLiteral( "0" ) ).toInt() );
   setAutoRefreshEnabled( layerElement.attribute( QStringLiteral( "autoRefreshEnabled" ), QStringLiteral( "0" ) ).toInt() );
   setRefreshOnNofifyMessage( layerElement.attribute( QStringLiteral( "refreshOnNotifyMessage" ), QString() ) );
   setRefreshOnNotifyEnabled( layerElement.attribute( QStringLiteral( "refreshOnNotifyEnabled" ), QStringLiteral( "0" ) ).toInt() );
@@ -551,19 +546,6 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, const QgsReadWr
   // mMetadata.readFromLayer( this );
   QDomElement metadataElem = layerElement.firstChildElement( QStringLiteral( "resourceMetadata" ) );
   mMetadata.readMetadataXml( metadataElem );
-
-  QgsAbstract3DRenderer *r3D = nullptr;
-  QDomElement renderer3DElem = layerElement.firstChildElement( QStringLiteral( "renderer-3d" ) );
-  if ( !renderer3DElem.isNull() )
-  {
-    QString type3D = renderer3DElem.attribute( QStringLiteral( "type" ) );
-    Qgs3DRendererAbstractMetadata *meta3D = QgsApplication::renderer3DRegistry()->rendererMetadata( type3D );
-    if ( meta3D )
-    {
-      r3D = meta3D->createRenderer( renderer3DElem, context );
-    }
-  }
-  setRenderer3D( r3D );
 
   return true;
 } // bool QgsMapLayer::readLayerXML
@@ -721,7 +703,7 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
 
   // layer name
   QDomElement layerName = document.createElement( QStringLiteral( "layername" ) );
-  QDomText layerNameText = document.createTextNode( originalName() );
+  QDomText layerNameText = document.createTextNode( name() );
   layerName.appendChild( layerNameText );
   layerElement.appendChild( layerName );
 
@@ -836,14 +818,6 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
   QDomElement myMetadataElem = document.createElement( QStringLiteral( "resourceMetadata" ) );
   mMetadata.writeMetadataXml( myMetadataElem, document );
   layerElement.appendChild( myMetadataElem );
-
-  if ( m3DRenderer )
-  {
-    QDomElement renderer3DElem = document.createElement( QStringLiteral( "renderer-3d" ) );
-    renderer3DElem.setAttribute( QStringLiteral( "type" ), m3DRenderer->type() );
-    m3DRenderer->writeXml( renderer3DElem, context );
-    layerElement.appendChild( renderer3DElem );
-  }
 
   // now append layer node to map layer node
 
@@ -1027,18 +1001,11 @@ void QgsMapLayer::setCrs( const QgsCoordinateReferenceSystem &srs, bool emitSign
     emit crsChanged();
 }
 
-QString QgsMapLayer::capitalizeLayerName( const QString &name )
+QString QgsMapLayer::formatLayerName( const QString &name )
 {
-  // Capitalize the first letter of the layer name if requested
-  QgsSettings settings;
-  bool capitalizeLayerName =
-    settings.value( QStringLiteral( "qgis/capitalizeLayerName" ), QVariant( false ) ).toBool();
-
   QString layerName( name );
-
-  if ( capitalizeLayerName && !layerName.isEmpty() )
-    layerName = layerName.at( 0 ).toUpper() + layerName.mid( 1 );
-
+  layerName.replace( '_', ' ' );
+  layerName = QgsStringUtils::capitalize( layerName, QgsStringUtils::ForceFirstLetterToCapital );
   return layerName;
 }
 
@@ -1106,9 +1073,9 @@ bool QgsMapLayer::loadNamedStyleFromDatabase( const QString &db, const QString &
   bool resultFlag = false;
 
   // read from database
-  sqlite3 *myDatabase = nullptr;
-  sqlite3_stmt *myPreparedStatement = nullptr;
-  const char *myTail = nullptr;
+  sqlite3_database_unique_ptr database;
+  sqlite3_statement_unique_ptr statement;
+
   int myResult;
 
   QgsDebugMsgLevel( QString( "Trying to load style for \"%1\" from \"%2\"" ).arg( uri, db ), 4 );
@@ -1116,30 +1083,25 @@ bool QgsMapLayer::loadNamedStyleFromDatabase( const QString &db, const QString &
   if ( db.isEmpty() || !QFile( db ).exists() )
     return false;
 
-  myResult = sqlite3_open_v2( db.toUtf8().data(), &myDatabase, SQLITE_OPEN_READONLY, nullptr );
+  myResult = database.open_v2( db, SQLITE_OPEN_READONLY, nullptr );
   if ( myResult != SQLITE_OK )
   {
     return false;
   }
 
   QString mySql = QStringLiteral( "select qml from tbl_styles where style=?" );
-  myResult = sqlite3_prepare( myDatabase, mySql.toUtf8().data(), mySql.toUtf8().length(), &myPreparedStatement, &myTail );
+  statement = database.prepare( mySql, myResult );
   if ( myResult == SQLITE_OK )
   {
     QByteArray param = uri.toUtf8();
 
-    if ( sqlite3_bind_text( myPreparedStatement, 1, param.data(), param.length(), SQLITE_STATIC ) == SQLITE_OK &&
-         sqlite3_step( myPreparedStatement ) == SQLITE_ROW )
+    if ( sqlite3_bind_text( statement.get(), 1, param.data(), param.length(), SQLITE_STATIC ) == SQLITE_OK &&
+         sqlite3_step( statement.get() ) == SQLITE_ROW )
     {
-      qml = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( myPreparedStatement, 0 ) ) );
+      qml = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( statement.get(), 0 ) ) );
       resultFlag = true;
     }
-
-    sqlite3_finalize( myPreparedStatement );
   }
-
-  sqlite3_close( myDatabase );
-
   return resultFlag;
 }
 
@@ -1361,12 +1323,10 @@ QString QgsMapLayer::saveNamedStyle( const QString &uri, bool &resultFlag )
     QString qml = myDocument.toString();
 
     // read from database
-    sqlite3 *myDatabase = nullptr;
-    sqlite3_stmt *myPreparedStatement = nullptr;
-    const char *myTail = nullptr;
-    int myResult;
+    sqlite3_database_unique_ptr database;
+    sqlite3_statement_unique_ptr statement;
 
-    myResult = sqlite3_open( QDir( QgsApplication::qgisSettingsDirPath() ).absoluteFilePath( QStringLiteral( "qgis.qmldb" ) ).toUtf8().data(), &myDatabase );
+    int myResult = database.open( QDir( QgsApplication::qgisSettingsDirPath() ).absoluteFilePath( QStringLiteral( "qgis.qmldb" ) ) );
     if ( myResult != SQLITE_OK )
     {
       return tr( "User database could not be opened." );
@@ -1376,44 +1336,39 @@ QString QgsMapLayer::saveNamedStyle( const QString &uri, bool &resultFlag )
     QByteArray param1 = qml.toUtf8();
 
     QString mySql = QStringLiteral( "create table if not exists tbl_styles(style varchar primary key,qml varchar)" );
-    myResult = sqlite3_prepare( myDatabase, mySql.toUtf8().data(), mySql.toUtf8().length(), &myPreparedStatement, &myTail );
+    statement = database.prepare( mySql, myResult );
     if ( myResult == SQLITE_OK )
     {
-      if ( sqlite3_step( myPreparedStatement ) != SQLITE_DONE )
+      if ( sqlite3_step( statement.get() ) != SQLITE_DONE )
       {
-        sqlite3_finalize( myPreparedStatement );
-        sqlite3_close( myDatabase );
         resultFlag = false;
         return tr( "The style table could not be created." );
       }
     }
 
-    sqlite3_finalize( myPreparedStatement );
-
     mySql = QStringLiteral( "insert into tbl_styles(style,qml) values (?,?)" );
-    myResult = sqlite3_prepare( myDatabase, mySql.toUtf8().data(), mySql.toUtf8().length(), &myPreparedStatement, &myTail );
+    statement = database.prepare( mySql, myResult );
     if ( myResult == SQLITE_OK )
     {
-      if ( sqlite3_bind_text( myPreparedStatement, 1, param0.data(), param0.length(), SQLITE_STATIC ) == SQLITE_OK &&
-           sqlite3_bind_text( myPreparedStatement, 2, param1.data(), param1.length(), SQLITE_STATIC ) == SQLITE_OK &&
-           sqlite3_step( myPreparedStatement ) == SQLITE_DONE )
+      if ( sqlite3_bind_text( statement.get(), 1, param0.data(), param0.length(), SQLITE_STATIC ) == SQLITE_OK &&
+           sqlite3_bind_text( statement.get(), 2, param1.data(), param1.length(), SQLITE_STATIC ) == SQLITE_OK &&
+           sqlite3_step( statement.get() ) == SQLITE_DONE )
       {
         resultFlag = true;
         myErrorMessage = tr( "The style %1 was saved to database" ).arg( uri );
       }
     }
 
-    sqlite3_finalize( myPreparedStatement );
-
     if ( !resultFlag )
     {
       QString mySql = QStringLiteral( "update tbl_styles set qml=? where style=?" );
-      myResult = sqlite3_prepare( myDatabase, mySql.toUtf8().data(), mySql.toUtf8().length(), &myPreparedStatement, &myTail );
+      statement = database.prepare( mySql, myResult );
+
       if ( myResult == SQLITE_OK )
       {
-        if ( sqlite3_bind_text( myPreparedStatement, 2, param0.data(), param0.length(), SQLITE_STATIC ) == SQLITE_OK &&
-             sqlite3_bind_text( myPreparedStatement, 1, param1.data(), param1.length(), SQLITE_STATIC ) == SQLITE_OK &&
-             sqlite3_step( myPreparedStatement ) == SQLITE_DONE )
+        if ( sqlite3_bind_text( statement.get(), 2, param0.data(), param0.length(), SQLITE_STATIC ) == SQLITE_OK &&
+             sqlite3_bind_text( statement.get(), 1, param1.data(), param1.length(), SQLITE_STATIC ) == SQLITE_OK &&
+             sqlite3_step( statement.get() ) == SQLITE_DONE )
         {
           resultFlag = true;
           myErrorMessage = tr( "The style %1 was updated in the database." ).arg( uri );
@@ -1429,11 +1384,7 @@ QString QgsMapLayer::saveNamedStyle( const QString &uri, bool &resultFlag )
         resultFlag = false;
         myErrorMessage = tr( "The style %1 could not be inserted into database." ).arg( uri );
       }
-
-      sqlite3_finalize( myPreparedStatement );
     }
-
-    sqlite3_close( myDatabase );
   }
 
   return myErrorMessage;
@@ -1622,6 +1573,35 @@ bool QgsMapLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &errorM
   Q_UNUSED( errorMessage );
   Q_UNUSED( context );
   return false;
+}
+
+
+void QgsMapLayer::writeCommonStyle( QDomElement &layerElement, QDomDocument &document, const QgsReadWriteContext &context ) const
+{
+  if ( m3DRenderer )
+  {
+    QDomElement renderer3DElem = document.createElement( QStringLiteral( "renderer-3d" ) );
+    renderer3DElem.setAttribute( QStringLiteral( "type" ), m3DRenderer->type() );
+    m3DRenderer->writeXml( renderer3DElem, context );
+    layerElement.appendChild( renderer3DElem );
+  }
+}
+
+
+void QgsMapLayer::readCommonStyle( const QDomElement &layerElement, const QgsReadWriteContext &context )
+{
+  QgsAbstract3DRenderer *r3D = nullptr;
+  QDomElement renderer3DElem = layerElement.firstChildElement( QStringLiteral( "renderer-3d" ) );
+  if ( !renderer3DElem.isNull() )
+  {
+    QString type3D = renderer3DElem.attribute( QStringLiteral( "type" ) );
+    Qgs3DRendererAbstractMetadata *meta3D = QgsApplication::renderer3DRegistry()->rendererMetadata( type3D );
+    if ( meta3D )
+    {
+      r3D = meta3D->createRenderer( renderer3DElem, context );
+    }
+  }
+  setRenderer3D( r3D );
 }
 
 

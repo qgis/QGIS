@@ -106,12 +106,15 @@ class Dissolve(GdalAlgorithm):
     def group(self):
         return self.tr('Vector geoprocessing')
 
+    def groupId(self):
+        return 'vectorgeoprocessing'
+
     def commandName(self):
         return 'ogr2ogr'
 
-    def getConsoleCommands(self, parameters, context, feedback):
+    def getConsoleCommands(self, parameters, context, feedback, executing=True):
         fields = self.parameterAsSource(parameters, self.INPUT, context).fields()
-        ogrLayer, layerName = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback)
+        ogrLayer, layerName = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback, executing)
         geometry = self.parameterAsString(parameters, self.GEOMETRY, context)
         fieldName = self.parameterAsString(parameters, self.FIELD, context)
 
@@ -126,6 +129,11 @@ class Dissolve(GdalAlgorithm):
                 continue
 
             other_fields.append(f.name())
+
+        if other_fields:
+            other_fields = ', {}'.format(','.join(other_fields))
+        else:
+            other_fields = ''
 
         arguments = []
         arguments.append(output)
@@ -148,12 +156,12 @@ class Dissolve(GdalAlgorithm):
         params = ','.join(tokens)
         if params:
             if self.parameterAsBool(parameters, self.KEEP_ATTRIBUTES, context):
-                sql = "SELECT ST_Union({}) AS {}, {}, {} FROM {} GROUP BY {}".format(geometry, geometry, ','.join(other_fields), params, layerName, fieldName)
+                sql = "SELECT ST_Union({}) AS {}{}, {} FROM {} GROUP BY {}".format(geometry, geometry, other_fields, params, layerName, fieldName)
             else:
                 sql = "SELECT ST_Union({}) AS {}, {}, {} FROM {} GROUP BY {}".format(geometry, geometry, fieldName, params, layerName, fieldName)
         else:
             if self.parameterAsBool(parameters, self.KEEP_ATTRIBUTES, context):
-                sql = "SELECT ST_Union({}) AS {}, {} FROM {} GROUP BY {}".format(geometry, geometry, ','.join(other_fields), layerName, fieldName)
+                sql = "SELECT ST_Union({}) AS {}{} FROM {} GROUP BY {}".format(geometry, geometry, other_fields, layerName, fieldName)
             else:
                 sql = "SELECT ST_Union({}) AS {}, {} FROM {} GROUP BY {}".format(geometry, geometry, fieldName, layerName, fieldName)
 

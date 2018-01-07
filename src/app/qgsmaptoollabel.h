@@ -36,7 +36,7 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapTool
 
   public:
     QgsMapToolLabel( QgsMapCanvas *canvas );
-    ~QgsMapToolLabel();
+    ~QgsMapToolLabel() override;
 
     /**
      * Returns true if label move can be applied to a layer
@@ -85,7 +85,7 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapTool
 
     struct LabelDetails
     {
-      LabelDetails() {}
+      LabelDetails() = default;
       explicit LabelDetails( const QgsLabelPosition &p );
       bool valid = false;
       QgsLabelPosition pos;

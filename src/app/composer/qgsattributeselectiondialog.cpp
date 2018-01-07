@@ -280,6 +280,7 @@ QgsAttributeSelectionDialog::QgsAttributeSelectionDialog( QgsComposerAttributeTa
   connect( mColumnUpPushButton, &QPushButton::clicked, this, &QgsAttributeSelectionDialog::mColumnUpPushButton_clicked );
   connect( mColumnDownPushButton, &QPushButton::clicked, this, &QgsAttributeSelectionDialog::mColumnDownPushButton_clicked );
   connect( mResetColumnsPushButton, &QPushButton::clicked, this, &QgsAttributeSelectionDialog::mResetColumnsPushButton_clicked );
+  connect( mClearColumnsPushButton, &QPushButton::clicked, this, &QgsAttributeSelectionDialog::mClearColumnsPushButton_clicked );
   connect( mAddSortColumnPushButton, &QPushButton::clicked, this, &QgsAttributeSelectionDialog::mAddSortColumnPushButton_clicked );
   connect( mRemoveSortColumnPushButton, &QPushButton::clicked, this, &QgsAttributeSelectionDialog::mRemoveSortColumnPushButton_clicked );
   connect( mSortColumnUpPushButton, &QPushButton::clicked, this, &QgsAttributeSelectionDialog::mSortColumnUpPushButton_clicked );
@@ -330,13 +331,12 @@ QgsAttributeSelectionDialog::~QgsAttributeSelectionDialog()
 
 void QgsAttributeSelectionDialog::mRemoveColumnPushButton_clicked()
 {
-  //remove selected row from model
-  QItemSelection viewSelection( mColumnsTableView->selectionModel()->selection() );
-  if ( viewSelection.length() > 0 )
-  {
-    int selectedRow = viewSelection.indexes().at( 0 ).row();
-    mColumnModel->removeRow( selectedRow );
-  }
+  //remove selected rows from model
+  QModelIndexList indexes =  mColumnsTableView->selectionModel()->selectedRows();
+  int count = indexes.count();
+
+  for ( int i = count; i > 0; --i )
+    mColumnModel->removeRow( indexes.at( i - 1 ).row(), QModelIndex() );
 }
 
 void QgsAttributeSelectionDialog::mAddColumnPushButton_clicked()
@@ -348,29 +348,36 @@ void QgsAttributeSelectionDialog::mAddColumnPushButton_clicked()
 void QgsAttributeSelectionDialog::mColumnUpPushButton_clicked()
 {
   //move selected row up
-  QItemSelection viewSelection( mColumnsTableView->selectionModel()->selection() );
-  if ( !viewSelection.empty() )
-  {
-    int selectedRow = viewSelection.indexes().at( 0 ).row();
-    mColumnModel->moveRow( selectedRow, QgsComposerAttributeTableColumnModelV2::ShiftUp );
-  }
+
+  QModelIndexList indexes =  mColumnsTableView->selectionModel()->selectedRows();
+  int count = indexes.count();
+
+  std::reverse( indexes.begin(), indexes.end() );
+  for ( int i = count; i > 0; --i )
+    mColumnModel->moveRow( indexes.at( i - 1 ).row(), QgsComposerAttributeTableColumnModelV2::ShiftUp );
 }
 
 void QgsAttributeSelectionDialog::mColumnDownPushButton_clicked()
 {
   //move selected row down
-  QItemSelection viewSelection( mColumnsTableView->selectionModel()->selection() );
-  if ( !viewSelection.empty() )
-  {
-    int selectedRow = viewSelection.indexes().at( 0 ).row();
-    mColumnModel->moveRow( selectedRow, QgsComposerAttributeTableColumnModelV2::ShiftDown );
-  }
+  QModelIndexList indexes =  mColumnsTableView->selectionModel()->selectedRows();
+  int count = indexes.count();
+
+  for ( int i = count; i > 0; --i )
+    mColumnModel->moveRow( indexes.at( i - 1 ).row(), QgsComposerAttributeTableColumnModelV2::ShiftDown );
 }
 
 void QgsAttributeSelectionDialog::mResetColumnsPushButton_clicked()
 {
   //reset columns to match vector layer's fields
   mColumnModel->resetToLayer();
+  mSortColumnComboBox->setCurrentIndex( 0 );
+}
+
+void QgsAttributeSelectionDialog::mClearColumnsPushButton_clicked()
+{
+  //remove all columns
+  mColumnModel->removeRows( 0, mColumnModel->rowCount() );
   mSortColumnComboBox->setCurrentIndex( 0 );
 }
 

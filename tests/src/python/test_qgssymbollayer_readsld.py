@@ -58,7 +58,7 @@ def createLayerWithOneLine():
     linelayer = QgsVectorLayer("LineString?crs=epsg:4326&field=gid:int&field=name:string", "simple_line", "memory")
     one = QgsFeature(linelayer.dataProvider().fields(), 0)
     one.setAttributes([1, 'one'])
-    one.setGeometry(QgsGeometry.fromPolyline([QgsPointXY(-7, 38), QgsPointXY(-8, 42)]))
+    one.setGeometry(QgsGeometry.fromPolylineXY([QgsPointXY(-7, 38), QgsPointXY(-8, 42)]))
     linelayer.dataProvider().addFeatures([one])
     return linelayer
 
@@ -69,7 +69,7 @@ def createLayerWithOnePoint():
     pr = layer.dataProvider()
     f = QgsFeature()
     f.setAttributes(["test", 123])
-    f.setGeometry(QgsGeometry.fromPoint(QgsPointXY(100, 200)))
+    f.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(100, 200)))
     assert pr.addFeatures([f])
     assert layer.pendingFeatureCount() == 1
     return layer
@@ -80,7 +80,7 @@ def createLayerWithOnePolygon():
     assert layer.isValid()
     f1 = QgsFeature(layer.dataProvider().fields(), 1)
     f1.setAttribute("pk", 1)
-    f1.setGeometry(QgsGeometry.fromPolygon([[QgsPointXY(2484588, 2425722), QgsPointXY(2482767, 2398853), QgsPointXY(2520109, 2397715), QgsPointXY(2520792, 2425494), QgsPointXY(2484588, 2425722)]]))
+    f1.setGeometry(QgsGeometry.fromPolygonXY([[QgsPointXY(2484588, 2425722), QgsPointXY(2482767, 2398853), QgsPointXY(2520109, 2397715), QgsPointXY(2520792, 2425494), QgsPointXY(2484588, 2425722)]]))
     assert layer.dataProvider().addFeatures([f1])
     return layer
 

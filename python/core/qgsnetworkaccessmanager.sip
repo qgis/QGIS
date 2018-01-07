@@ -14,17 +14,18 @@ class QgsNetworkAccessManager : QNetworkAccessManager
 {
 %Docstring
  network access manager for QGIS
+
 .. versionadded:: 1.5
 
- This class implements the QGIS network access manager.  It's a singleton
- that can be used across QGIS.
+This class implements the QGIS network access manager.  It's a singleton
+that can be used across QGIS.
 
- Plugins can insert proxy factories and thereby redirect requests to
- individual proxies.
+Plugins can insert proxy factories and thereby redirect requests to
+individual proxies.
 
- If no proxy factories are there or none returns a proxy for an URL a
- fallback proxy can be set.  There's also a exclude list that defines URLs
- that the fallback proxy should not be used for, then no proxy will be used.
+If no proxy factories are there or none returns a proxy for an URL a
+fallback proxy can be set.  There's also a exclude list that defines URLs
+that the fallback proxy should not be used for, then no proxy will be used.
 %End
 
 %TypeHeaderCode
@@ -32,9 +33,6 @@ class QgsNetworkAccessManager : QNetworkAccessManager
 %End
   public:
     static QgsNetworkAccessManager *instance();
-%Docstring
- :rtype: QgsNetworkAccessManager
-%End
 
     QgsNetworkAccessManager( QObject *parent = 0 );
 
@@ -51,19 +49,16 @@ remove a factory from the proxy factories list
     const QList<QNetworkProxyFactory *> proxyFactories() const;
 %Docstring
 retrieve proxy factory list
- :rtype: list of QNetworkProxyFactory
 %End
 
     const QNetworkProxy &fallbackProxy() const;
 %Docstring
 retrieve fall back proxy (for urls that no factory returned proxies for)
- :rtype: QNetworkProxy
 %End
 
     QStringList excludeList() const;
 %Docstring
 retrieve exclude list (urls shouldn't use the fallback proxy)
- :rtype: list of str
 %End
 
     void setFallbackProxyAndExcludes( const QNetworkProxy &proxy, const QStringList &excludes );
@@ -74,13 +69,11 @@ set fallback proxy and URL that shouldn't use it.
     static QString cacheLoadControlName( QNetworkRequest::CacheLoadControl control );
 %Docstring
 Get name for QNetworkRequest.CacheLoadControl
- :rtype: str
 %End
 
     static QNetworkRequest::CacheLoadControl cacheLoadControlFromName( const QString &name );
 %Docstring
 Get QNetworkRequest.CacheLoadControl from name
- :rtype: QNetworkRequest.CacheLoadControl
 %End
 
     void setupDefaultProxyAndCache();
@@ -91,7 +84,6 @@ Setup the NAM according to the user's settings
     bool useSystemProxy() const;
 %Docstring
 return whether the system proxy should be used
- :rtype: bool
 %End
 
   signals:
@@ -101,6 +93,7 @@ return whether the system proxy should be used
 
   protected:
     virtual QNetworkReply *createRequest( QNetworkAccessManager::Operation op, const QNetworkRequest &req, QIODevice *outgoingData = 0 );
+
 
 };
 

@@ -32,7 +32,7 @@ extern "C"
 class QgsScopedSqlite
 {
   public:
-    QgsScopedSqlite() {}
+    QgsScopedSqlite() = default;
 
     explicit QgsScopedSqlite( const QString &path, bool withExtension = true );
 

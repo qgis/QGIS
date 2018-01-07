@@ -340,7 +340,9 @@ void QgsProjectFileTransform::transform0110to1000()
       QString providerKey = providerNode.toElement().text();
 
       //create the layer to get the provider for int->fieldName conversion
-      QgsVectorLayer *layer = new QgsVectorLayer( dataSource, QLatin1String( "" ), providerKey, false );
+      QgsVectorLayer::LayerOptions options;
+      options.loadDefaultStyle = false;
+      QgsVectorLayer *layer = new QgsVectorLayer( dataSource, QLatin1String( "" ), providerKey, options );
       if ( !layer->isValid() )
       {
         delete layer;

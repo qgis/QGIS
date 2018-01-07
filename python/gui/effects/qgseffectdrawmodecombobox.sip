@@ -26,15 +26,16 @@ class QgsEffectDrawModeComboBox : QComboBox
 
     QgsPaintEffect::DrawMode drawMode() const;
 %Docstring
- Returns the currently selected draw mode for the combo box
- :return: current draw mode
- :rtype: QgsPaintEffect.DrawMode
+Returns the currently selected draw mode for the combo box
+
+:return: current draw mode
 %End
 
     void setDrawMode( QgsPaintEffect::DrawMode drawMode );
 %Docstring
- Sets the currently selected draw mode for the combo box
- \param drawMode selected draw mode
+Sets the currently selected draw mode for the combo box
+
+:param drawMode: selected draw mode
 %End
 
 };

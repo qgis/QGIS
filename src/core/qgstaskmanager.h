@@ -81,7 +81,7 @@ class CORE_EXPORT QgsTask : public QObject
      */
     QgsTask( const QString &description = QString(), const Flags &flags = AllFlags );
 
-    ~QgsTask();
+    ~QgsTask() override;
 
     /**
      * Returns the flags associated with the task.
@@ -368,9 +368,9 @@ class CORE_EXPORT QgsTaskManager : public QObject
      * Constructor for QgsTaskManager.
      * \param parent parent QObject
      */
-    QgsTaskManager( QObject *parent SIP_TRANSFERTHIS = 0 );
+    QgsTaskManager( QObject *parent SIP_TRANSFERTHIS = nullptr );
 
-    virtual ~QgsTaskManager();
+    ~QgsTaskManager() override;
 
     /**
      * Definition of a task for inclusion in the manager.

@@ -194,7 +194,7 @@ class QgsPointLocator_VisitorArea : public IVisitor
     QgsPointLocator_VisitorArea( QgsPointLocator *pl, const QgsPointXY &origPt, QgsPointLocator::MatchList &list )
       : mLocator( pl )
       , mList( list )
-      , mGeomPt( QgsGeometry::fromPoint( origPt ) )
+      , mGeomPt( QgsGeometry::fromPointXY( origPt ) )
     {}
 
     void visitNode( const INode &n ) override { Q_UNUSED( n ); }
@@ -331,7 +331,7 @@ static QgsPointLocator::MatchList _geometrySegmentsInRect( QgsGeometry *geom, co
   // we need iterator for segments...
 
   QgsPointLocator::MatchList lst;
-  QByteArray wkb( geom->exportToWkb() );
+  QByteArray wkb( geom->asWkb() );
   if ( wkb.isEmpty() )
     return lst;
 
@@ -626,7 +626,9 @@ QgsPointLocator::QgsPointLocator( QgsVectorLayer *layer, const QgsCoordinateRefe
 {
   if ( destCRS.isValid() )
   {
+    Q_NOWARN_DEPRECATED_PUSH
     mTransform = QgsCoordinateTransform( layer->crs(), destCRS );
+    Q_NOWARN_DEPRECATED_POP
   }
 
   setExtent( extent );

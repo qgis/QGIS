@@ -16,7 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
+
 
 __author__ = 'Alexander Bruy'
 __date__ = 'September 2013'
@@ -29,14 +29,6 @@ __revision__ = '$Format:%H$'
 import os
 
 from qgis.PyQt.QtGui import QIcon
-
-from processing.core.parameters import (ParameterVector,
-                                        ParameterExtent,
-                                        ParameterTableField,
-                                        ParameterSelection,
-                                        ParameterNumber,
-                                        ParameterString)
-from processing.core.outputs import OutputRaster
 
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
@@ -102,7 +94,10 @@ class rasterize(GdalAlgorithm):
     def group(self):
         return self.tr('Vector conversion')
 
-    def getConsoleCommands(self, parameters, context, feedback):
+    def groupId(self):
+        return 'vectorconversion'
+
+    def getConsoleCommands(self, parameters, context, feedback, executing=True):
         inLayer = self.getParameterValue(self.INPUT)
         noData = self.getParameterValue(self.NO_DATA)
         rastext = str(self.getParameterValue(self.RAST_EXT))

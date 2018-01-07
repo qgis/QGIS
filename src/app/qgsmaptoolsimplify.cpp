@@ -142,7 +142,7 @@ int QgsMapToolSimplify::vertexCount( const QgsGeometry &g ) const
       int count = 0;
       if ( g.isMultipart() )
       {
-        Q_FOREACH ( const QgsPolyline &polyline, g.asMultiPolyline() )
+        Q_FOREACH ( const QgsPolylineXY &polyline, g.asMultiPolyline() )
           count += polyline.count();
       }
       else
@@ -154,13 +154,13 @@ int QgsMapToolSimplify::vertexCount( const QgsGeometry &g ) const
       int count = 0;
       if ( g.isMultipart() )
       {
-        Q_FOREACH ( const QgsPolygon &polygon, g.asMultiPolygon() )
-          Q_FOREACH ( const QgsPolyline &ring, polygon )
+        Q_FOREACH ( const QgsPolygonXY &polygon, g.asMultiPolygon() )
+          Q_FOREACH ( const QgsPolylineXY &ring, polygon )
             count += ring.count();
       }
       else
       {
-        Q_FOREACH ( const QgsPolyline &ring, g.asPolygon() )
+        Q_FOREACH ( const QgsPolylineXY &ring, g.asPolygon() )
           count += ring.count();
       }
       return count;
@@ -298,7 +298,7 @@ void QgsMapToolSimplify::selectOneFeature( QPoint canvasPoint )
                                           layerCoords.x() + r, layerCoords.y() + r );
   QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setFilterRect( selectRect ).setSubsetOfAttributes( QgsAttributeList() ) );
 
-  QgsGeometry geometry = QgsGeometry::fromPoint( layerCoords );
+  QgsGeometry geometry = QgsGeometry::fromPointXY( layerCoords );
   double minDistance = DBL_MAX;
   double currentDistance;
   QgsFeature minDistanceFeature;

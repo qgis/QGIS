@@ -59,7 +59,7 @@ QgsCustomizationDialog::QgsCustomizationDialog( QWidget * parent, QSettings * se
 
   init();
   QStringList myHeaders;
-  myHeaders << tr( "Object name" ) << tr( "Label" ) << tr( "Description" );
+  myHeaders << tr( "Object name" ) << tr( "Label" );
   treeWidget->setHeaderLabels( myHeaders );
 
   mLastDirSettingsName  = QStringLiteral( "/UI/lastCustomizationDir" );
@@ -354,7 +354,6 @@ QTreeWidgetItem *QgsCustomizationDialog::readWidgetsXmlNode( const QDomNode &nod
   QStringList data( name );
 
   data << myElement.attribute( QStringLiteral( "label" ), name );
-  data << myElement.attribute( QStringLiteral( "description" ), QLatin1String( "" ) );
 
   QTreeWidgetItem *myItem = new QTreeWidgetItem( data );
 

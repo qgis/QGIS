@@ -43,7 +43,7 @@ class GUI_EXPORT QgsFocusWatcher : public QObject
      */
     explicit QgsFocusWatcher( QObject *parent SIP_TRANSFERTHIS );
 
-    virtual bool eventFilter( QObject *obj, QEvent *event ) override;
+    bool eventFilter( QObject *obj, QEvent *event ) override;
 
   signals:
 

@@ -33,7 +33,7 @@ class _3D_EXPORT QgsTilingScheme
 {
   public:
     //! Creates invalid tiling scheme
-    QgsTilingScheme();
+    QgsTilingScheme() = default;
 
     //! Creates tiling scheme where level 0 tile is centered at the full extent and the full extent completely fits into the level 0 tile
     QgsTilingScheme( const QgsRectangle &fullExtent, const QgsCoordinateReferenceSystem &crs );
@@ -54,7 +54,7 @@ class _3D_EXPORT QgsTilingScheme
 
   private:
     QgsPointXY mMapOrigin; //!< Origin point in map coordinates: (0,0) in the tiling scheme
-    double mBaseTileSide;  //!< Length of tile side at zoom level 0 in map coordinates
+    double mBaseTileSide = 0;  //!< Length of tile side at zoom level 0 in map coordinates
     QgsCoordinateReferenceSystem mCrs;  //!< CRS of the coordinates
 
 };

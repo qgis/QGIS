@@ -30,7 +30,7 @@ class QgsAuthIdentCertMethod : public QgsAuthMethod
 
   public:
     explicit QgsAuthIdentCertMethod();
-    ~QgsAuthIdentCertMethod();
+    ~QgsAuthIdentCertMethod() override;
 
     // QgsAuthMethod interface
     QString key() const override;
@@ -59,7 +59,6 @@ class QgsAuthIdentCertMethod : public QgsAuthMethod
 
     static QMap<QString, QgsPkiConfigBundle *> sPkiConfigBundleCache;
 
-    QMutex mConfigMutex;
 };
 
 #endif // QGSAUTHIDENTCERTMETHOD_H

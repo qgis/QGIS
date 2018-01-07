@@ -33,7 +33,7 @@ class GUI_EXPORT QgsEncodingFileDialog: public QFileDialog
   public:
 
     /**
-     * @brief QgsEncodingFileDialog constructor for QgsEncodingFileDialog
+     * Constructor for QgsEncodingFileDialog
      */
     QgsEncodingFileDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr,
                            const QString &caption = QString(), const QString &directory = QString(),
@@ -60,5 +60,46 @@ class GUI_EXPORT QgsEncodingFileDialog: public QFileDialog
     /* Set if user clicked 'Cancel All' */
     bool mCancelAll;
 };
+
+/**
+ * \ingroup gui
+ * A dialog which presents the user with a choice of file encodings.
+ * \since QGIS 3.0
+ **/
+class GUI_EXPORT QgsEncodingSelectionDialog: public QDialog
+{
+    Q_OBJECT
+
+  public:
+
+    /**
+     * Constructor for QgsEncodingSelectionDialog.
+     *
+     * If \a caption is set, it will be used as the caption within the dialog.
+     *
+     * The \a encoding argument can be used to specify the encoding initially selected in the dialog.
+     */
+    QgsEncodingSelectionDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr,
+                                const QString &caption = QString(), const QString &encoding = QString(),
+                                Qt::WindowFlags flags = Qt::WindowFlags() );
+
+    /**
+     * Returns the encoding selected within the dialog.
+     * \see setEncoding()
+     */
+    QString encoding() const;
+
+    /**
+     * Sets the \a encoding selected within the dialog.
+     * see encoding()
+     */
+    void setEncoding( const QString &encoding );
+
+  private:
+
+    QComboBox *mEncodingComboBox = nullptr;
+
+};
+
 
 #endif

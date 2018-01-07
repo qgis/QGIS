@@ -25,6 +25,7 @@
 #include "qgsauthguiutils.h"
 #include "qgsauthmanager.h"
 #include "qgslogger.h"
+#include "qgsapplication.h"
 
 
 static void setItemBold_( QTreeWidgetItem *item )
@@ -46,12 +47,12 @@ QgsAuthSslConfigWidget::QgsAuthSslConfigWidget( QWidget *parent,
   , mCert( nullptr )
   , mConnectionCAs( connectionCAs )
 {
-  if ( QgsAuthManager::instance()->isDisabled() )
+  if ( QgsApplication::authManager()->isDisabled() )
   {
     mDisabled = true;
     mAuthNotifyLayout = new QVBoxLayout;
     this->setLayout( mAuthNotifyLayout );
-    mAuthNotify = new QLabel( QgsAuthManager::instance()->disabledMessage(), this );
+    mAuthNotify = new QLabel( QgsApplication::authManager()->disabledMessage(), this );
     mAuthNotifyLayout->addWidget( mAuthNotify );
   }
   else
@@ -249,7 +250,7 @@ void QgsAuthSslConfigWidget::setSslCertificate( const QSslCertificate &cert, con
 
   QString sha( QgsAuthCertUtils::shaHexForCert( cert ) );
   QgsAuthConfigSslServer config(
-    QgsAuthManager::instance()->getSslCertCustomConfig( sha, hostport.isEmpty() ? sslHost() : hostport ) );
+    QgsApplication::authManager()->sslCertCustomConfig( sha, hostport.isEmpty() ? sslHost() : hostport ) );
 
   emit certFoundInAuthDatabase( !config.isNull() );
 
@@ -306,7 +307,7 @@ void QgsAuthSslConfigWidget::saveSslCertConfig()
   {
     return;
   }
-  if ( !QgsAuthManager::instance()->storeSslCertCustomConfig( sslCustomConfig() ) )
+  if ( !QgsApplication::authManager()->storeSslCertCustomConfig( sslCustomConfig() ) )
   {
     QgsDebugMsg( "SSL custom config FAILED to store in authentication database" );
   }

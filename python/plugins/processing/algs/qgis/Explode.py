@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import range
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -44,6 +43,9 @@ class Explode(QgisAlgorithm):
 
     def group(self):
         return self.tr('Vector geometry')
+
+    def groupId(self):
+        return 'vectorgeometry'
 
     def __init__(self):
         super().__init__()
@@ -89,11 +91,11 @@ class Explode(QgisAlgorithm):
     def extractAsSingleSegments(self, geom):
         segments = []
         if geom.isMultipart():
-            for part in range(geom.geometry().numGeometries()):
-                segments.extend(self.getPolylineAsSingleSegments(geom.geometry().geometryN(part)))
+            for part in range(geom.constGet().numGeometries()):
+                segments.extend(self.getPolylineAsSingleSegments(geom.constGet().geometryN(part)))
         else:
             segments.extend(self.getPolylineAsSingleSegments(
-                geom.geometry()))
+                geom.constGet()))
         return segments
 
     def getPolylineAsSingleSegments(self, polyline):

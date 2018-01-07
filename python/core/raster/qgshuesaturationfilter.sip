@@ -13,7 +13,7 @@
 class QgsHueSaturationFilter : QgsRasterInterface
 {
 %Docstring
- Color and saturation filter pipe for rasters.
+Color and saturation filter pipe for rasters.
 %End
 
 %TypeHeaderCode
@@ -48,31 +48,16 @@ class QgsHueSaturationFilter : QgsRasterInterface
 
     void setSaturation( int saturation );
     int saturation() const;
-%Docstring
- :rtype: int
-%End
 
     void setGrayscaleMode( QgsHueSaturationFilter::GrayscaleMode grayscaleMode );
     QgsHueSaturationFilter::GrayscaleMode grayscaleMode() const;
-%Docstring
- :rtype: QgsHueSaturationFilter.GrayscaleMode
-%End
 
     void setColorizeOn( bool colorizeOn );
     bool colorizeOn() const;
-%Docstring
- :rtype: bool
-%End
     void setColorizeColor( const QColor &colorizeColor );
     QColor colorizeColor() const;
-%Docstring
- :rtype: QColor
-%End
     void setColorizeStrength( int colorizeStrength );
     int colorizeStrength() const;
-%Docstring
- :rtype: int
-%End
 
     virtual void writeXml( QDomDocument &doc, QDomElement &parentElem ) const;
 

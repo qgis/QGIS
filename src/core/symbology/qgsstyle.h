@@ -24,6 +24,7 @@
 
 #include <sqlite3.h>
 
+#include "qgssqliteutils.h"
 #include "qgssymbollayerutils.h" // QgsStringMap
 
 class QgsSymbol;
@@ -82,7 +83,7 @@ class CORE_EXPORT QgsStyle : public QObject
      * Constructor for QgsStyle.
      */
     QgsStyle() = default;
-    ~QgsStyle();
+    ~QgsStyle() override;
 
     /**
      * Enum for Entities involved in a style
@@ -423,7 +424,7 @@ class CORE_EXPORT QgsStyle : public QObject
     QString mErrorString;
     QString mFileName;
 
-    sqlite3 *mCurrentDB = nullptr;
+    sqlite3_database_unique_ptr mCurrentDB;
 
     static QgsStyle *sDefaultStyle;
 

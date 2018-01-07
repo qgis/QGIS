@@ -17,10 +17,12 @@
 #define QGS3DUTILS_H
 
 class QgsLineString;
-class QgsPolygonV2;
+class QgsPolygon;
 
 #include "qgs3dmapsettings.h"
 #include "qgsaabb.h"
+
+#include <Qt3DRender/QCullFace>
 
 //! how to handle altitude of vector features
 enum AltitudeClamping
@@ -64,10 +66,15 @@ class _3D_EXPORT Qgs3DUtils
     //! Converts a string to a value from AltitudeBinding enum
     static AltitudeBinding altBindingFromString( const QString &str );
 
+    //! Converts a value from CullingMode enum to a string
+    static QString cullingModeToString( Qt3DRender::QCullFace::CullingMode mode );
+    //! Converts a string to a value from CullingMode enum
+    static Qt3DRender::QCullFace::CullingMode cullingModeFromString( const QString &str );
+
     //! Clamps altitude of vertices of a linestring according to the settings
     static void clampAltitudes( QgsLineString *lineString, AltitudeClamping altClamp, AltitudeBinding altBind, const QgsPoint &centroid, float height, const Qgs3DMapSettings &map );
     //! Clamps altitude of vertices of a polygon according to the settings
-    static bool clampAltitudes( QgsPolygonV2 *polygon, AltitudeClamping altClamp, AltitudeBinding altBind, float height, const Qgs3DMapSettings &map );
+    static bool clampAltitudes( QgsPolygon *polygon, AltitudeClamping altClamp, AltitudeBinding altBind, float height, const Qgs3DMapSettings &map );
 
     //! Converts a 4x4 transform matrix to a string
     static QString matrix4x4toString( const QMatrix4x4 &m );
@@ -75,15 +82,24 @@ class _3D_EXPORT Qgs3DUtils
     static QMatrix4x4 stringToMatrix4x4( const QString &str );
 
     /**
-     * Calculates (x,y,z) position of point in the Point vector layers
+     * Calculates (x,y,z) positions of a (multi)point in the Point vector layers
      */
-    static QList<QVector3D> positions( const Qgs3DMapSettings &map, QgsVectorLayer *layer, const QgsFeatureRequest &req );
+    static QList<QVector3D> positions( const Qgs3DMapSettings &map, QgsVectorLayer *layer, const QgsFeatureRequest &req, AltitudeClamping altClamp );
 
     /**
         Returns true if bbox is completely outside the current viewing volume.
         This is used to perform object culling checks.
     */
     static bool isCullable( const QgsAABB &bbox, const QMatrix4x4 &viewProjectionMatrix );
+
+    //! Converts map coordinates to 3D world coordinates (applies offset and turns (x,y,z) into (x,-z,y))
+    static QgsVector3D mapToWorldCoordinates( const QgsVector3D &mapCoords, const QgsVector3D &origin );
+    //! Converts 3D world coordinates to map coordinates (applies offset and turns (x,y,z) into (x,-z,y))
+    static QgsVector3D worldToMapCoordinates( const QgsVector3D &worldCoords, const QgsVector3D &origin );
+
+    //! Transforms a world point from (origin1, crs1) to (origin2, crs2)
+    static QgsVector3D transformWorldCoordinates( const QgsVector3D &worldPoint1, const QgsVector3D &origin1, const QgsCoordinateReferenceSystem &crs1, const QgsVector3D &origin2, const QgsCoordinateReferenceSystem &crs2,
+        const QgsCoordinateTransformContext &context );
 };
 
 #endif // QGS3DUTILS_H

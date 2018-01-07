@@ -47,9 +47,8 @@ class QgsTerrainTextureImage : public Qt3DRender::QAbstractTextureImage
   public:
     //! Constructs the object with given image and map extent
     QgsTerrainTextureImage( const QImage &image, const QgsRectangle &extent, const QString &debugText, Qt3DCore::QNode *parent = nullptr );
-    ~QgsTerrainTextureImage();
 
-    virtual Qt3DRender::QTextureImageDataGeneratorPtr dataGenerator() const override;
+    Qt3DRender::QTextureImageDataGeneratorPtr dataGenerator() const override;
 
     //! Clears the current map image and emits signal that data generator has changed
     void invalidate();
@@ -65,8 +64,7 @@ class QgsTerrainTextureImage : public Qt3DRender::QAbstractTextureImage
     QgsRectangle mExtent;
     QString mDebugText;
     QImage mImage;
-    int mVersion;
-    int mJobId;
+    int mVersion = 1;
 };
 
 /// @endcond

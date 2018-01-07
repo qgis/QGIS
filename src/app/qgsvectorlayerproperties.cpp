@@ -30,7 +30,8 @@
 #include "qgsdiagramrenderer.h"
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsfieldcalculator.h"
-#include "qgsfieldsproperties.h"
+#include "qgssourcefieldsproperties.h"
+#include "qgsattributesformproperties.h"
 #include "qgslabelingwidget.h"
 #include "qgsprojectionselectiondialog.h"
 #include "qgslogger.h"
@@ -78,6 +79,11 @@
 #include "qgsrendererpropertiesdialog.h"
 #include "qgsstyle.h"
 
+#ifdef HAVE_3D
+#include "qgsvectorlayer3drendererwidget.h"
+#endif
+
+
 QgsVectorLayerProperties::QgsVectorLayerProperties(
   QgsVectorLayer *lyr,
   QWidget *parent,
@@ -121,8 +127,6 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   connect( buttonBox->button( QDialogButtonBox::Apply ), &QAbstractButton::clicked, this, &QgsVectorLayerProperties::apply );
   connect( this, &QDialog::accepted, this, &QgsVectorLayerProperties::apply );
   connect( this, &QDialog::rejected, this, &QgsVectorLayerProperties::onCancel );
-
-  connect( mOptionsStackedWidget, &QStackedWidget::currentChanged, this, &QgsVectorLayerProperties::mOptionsStackedWidget_CurrentChanged );
 
   mContext << QgsExpressionContextUtils::globalScope()
            << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
@@ -198,15 +202,30 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   connect( mSaveAsMenu, &QMenu::triggered,
            this, &QgsVectorLayerProperties::saveStyleAsMenuTriggered );
 
-  mFieldsPropertiesDialog = new QgsFieldsProperties( mLayer, mFieldsFrame );
-  mFieldsPropertiesDialog->layout()->setMargin( 0 );
-  mFieldsFrame->setLayout( new QVBoxLayout( mFieldsFrame ) );
-  mFieldsFrame->layout()->setMargin( 0 );
-  mFieldsFrame->layout()->addWidget( mFieldsPropertiesDialog );
+  mSourceFieldsPropertiesDialog = new QgsSourceFieldsProperties( mLayer, mSourceFieldsFrame );
+  mSourceFieldsPropertiesDialog->layout()->setMargin( 0 );
+  mSourceFieldsFrame->setLayout( new QVBoxLayout( mSourceFieldsFrame ) );
+  mSourceFieldsFrame->layout()->setMargin( 0 );
+  mSourceFieldsFrame->layout()->addWidget( mSourceFieldsPropertiesDialog );
 
-  connect( mFieldsPropertiesDialog, &QgsFieldsProperties::toggleEditing, this, static_cast<void ( QgsVectorLayerProperties::* )()>( &QgsVectorLayerProperties::toggleEditing ) );
+  connect( mSourceFieldsPropertiesDialog, &QgsSourceFieldsProperties::toggleEditing, this, static_cast<void ( QgsVectorLayerProperties::* )()>( &QgsVectorLayerProperties::toggleEditing ) );
   connect( this, static_cast<void ( QgsVectorLayerProperties::* )( QgsMapLayer * )>( &QgsVectorLayerProperties::toggleEditing ),
   QgisApp::instance(), [ = ]( QgsMapLayer * layer ) { QgisApp::instance()->toggleEditing( layer ); } );
+
+  mAttributesFormPropertiesDialog = new QgsAttributesFormProperties( mLayer, mAttributesFormFrame );
+  mAttributesFormPropertiesDialog->layout()->setMargin( 0 );
+  mAttributesFormFrame->setLayout( new QVBoxLayout( mAttributesFormFrame ) );
+  mAttributesFormFrame->layout()->setMargin( 0 );
+  mAttributesFormFrame->layout()->addWidget( mAttributesFormPropertiesDialog );
+
+#ifdef HAVE_3D
+  mVector3DWidget = new QgsVectorLayer3DRendererWidget( mLayer, QgisApp::instance()->mapCanvas(), mOptsPage_3DView );
+
+  mOptsPage_3DView->setLayout( new QVBoxLayout( mOptsPage_3DView ) );
+  mOptsPage_3DView->layout()->addWidget( mVector3DWidget );
+#else
+  delete mOptsPage_3DView;  // removes both the "3d view" list item and its page
+#endif
 
   syncToLayer();
 
@@ -416,9 +435,9 @@ void QgsVectorLayerProperties::insertFieldOrExpression()
 {
   // Convert the selected field to an expression and
   // insert it into the action at the cursor position
-  QString expression = QStringLiteral( "[% \"" );
+  QString expression = QStringLiteral( "[% " );
   expression += mMapTipExpressionFieldWidget->asExpression();
-  expression += QLatin1String( "\" %]" );
+  expression += QLatin1String( " %]" );
 
   mMapTipWidget->insertText( expression );
 }
@@ -427,7 +446,7 @@ void QgsVectorLayerProperties::insertFieldOrExpression()
 void QgsVectorLayerProperties::syncToLayer()
 {
   // populate the general information
-  mLayerOrigNameLineEdit->setText( mLayer->originalName() );
+  mLayerOrigNameLineEdit->setText( mLayer->name() );
   txtDisplayName->setText( mLayer->name() );
   pbnQueryBuilder->setWhatsThis( tr( "This button opens the query "
                                      "builder and allows you to create a subset of features to display on "
@@ -516,17 +535,17 @@ void QgsVectorLayerProperties::syncToLayer()
   if ( labelingDialog )
     labelingDialog->adaptToLayer();
 
-  mFieldsPropertiesDialog->init();
+  mSourceFieldsPropertiesDialog->init();
+  mAttributesFormPropertiesDialog->init();
 
   // set initial state for variable editor
   updateVariableEditor();
 
-  // updates the init python code and ui
-  updateFieldsPropertiesDialog();
+#ifdef HAVE_3D
+  mVector3DWidget->setLayer( mLayer );
+#endif
 
 } // syncToLayer()
-
-
 
 void QgsVectorLayerProperties::apply()
 {
@@ -596,8 +615,8 @@ void QgsVectorLayerProperties::apply()
 
   mLayer->setName( mLayerOrigNameLineEdit->text() );
 
-  // Apply fields settings
-  mFieldsPropertiesDialog->apply();
+  mAttributesFormPropertiesDialog->apply();
+  mSourceFieldsPropertiesDialog->apply();
 
   if ( mLayer->renderer() )
   {
@@ -711,6 +730,10 @@ void QgsVectorLayerProperties::apply()
     QMessageBox::warning( nullptr, tr( "Dependency cycle" ), tr( "This configuration introduces a cycle in data dependencies and will be ignored" ) );
   }
 
+#ifdef HAVE_3D
+  mVector3DWidget->apply();
+#endif
+
   // update symbology
   emit refreshLegend( mLayer->id() );
 
@@ -803,11 +826,12 @@ QString QgsVectorLayerProperties::htmlMetadata()
 
 void QgsVectorLayerProperties::mLayerOrigNameLineEdit_textEdited( const QString &text )
 {
-  txtDisplayName->setText( mLayer->capitalizeLayerName( text ) );
+  txtDisplayName->setText( mLayer->formatLayerName( text ) );
 }
 
 void QgsVectorLayerProperties::mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem &crs )
 {
+  QgisApp::instance()->askUserForDatumTransform( crs, QgsProject::instance()->crs() );
   mLayer->setCrs( crs );
   mMetadataFilled = false;
 }
@@ -1128,7 +1152,7 @@ void QgsVectorLayerProperties::showListOfStylesFromDatabase()
   int sectionLimit = mLayer->listStylesInDatabase( ids, names, descriptions, errorMsg );
   if ( !errorMsg.isNull() )
   {
-    QMessageBox::warning( this, tr( "Error occurred retrieving styles from database" ), errorMsg );
+    QMessageBox::warning( this, tr( "Error occurred while retrieving styles from database" ), errorMsg );
     return;
   }
 
@@ -1143,7 +1167,7 @@ void QgsVectorLayerProperties::showListOfStylesFromDatabase()
     QString qmlStyle = mLayer->getStyleFromDatabase( selectedStyleId, errorMsg );
     if ( !errorMsg.isNull() )
     {
-      QMessageBox::warning( this, tr( "Error occurred retrieving styles from database" ), errorMsg );
+      QMessageBox::warning( this, tr( "Error occurred while retrieving styles from database" ), errorMsg );
       return;
     }
 
@@ -1156,7 +1180,7 @@ void QgsVectorLayerProperties::showListOfStylesFromDatabase()
     }
     else
     {
-      QMessageBox::warning( this, tr( "Error occurred retrieving styles from database" ),
+      QMessageBox::warning( this, tr( "Error occurred while retrieving styles from database" ),
                             tr( "The retrieved style is not a valid named style. Error message: %1" )
                             .arg( errorMsg ) );
     }
@@ -1192,7 +1216,8 @@ void QgsVectorLayerProperties::mButtonAddJoin_clicked()
     mLayer->addJoin( info );
     addJoinToTreeWidget( info );
     setPbnQueryBuilderEnabled();
-    mFieldsPropertiesDialog->init();
+    mSourceFieldsPropertiesDialog->init();
+    mAttributesFormPropertiesDialog->init();
   }
 }
 
@@ -1261,7 +1286,8 @@ void QgsVectorLayerProperties::mJoinTreeWidget_itemDoubleClicked( QTreeWidgetIte
     addJoinToTreeWidget( info, idx );
 
     setPbnQueryBuilderEnabled();
-    mFieldsPropertiesDialog->init();
+    mSourceFieldsPropertiesDialog->init();
+    mAttributesFormPropertiesDialog->init();
   }
 }
 
@@ -1388,7 +1414,8 @@ void QgsVectorLayerProperties::mButtonRemoveJoin_clicked()
   mLayer->removeJoin( currentJoinItem->data( 0, Qt::UserRole ).toString() );
   mJoinTreeWidget->takeTopLevelItem( mJoinTreeWidget->indexOfTopLevelItem( currentJoinItem ) );
   setPbnQueryBuilderEnabled();
-  mFieldsPropertiesDialog->init();
+  mSourceFieldsPropertiesDialog->init();
+  mAttributesFormPropertiesDialog->init();
 }
 
 
@@ -1447,9 +1474,11 @@ void QgsVectorLayerProperties::pbnUpdateExtents_clicked()
   mMetadataFilled = false;
 }
 
-void QgsVectorLayerProperties::mOptionsStackedWidget_CurrentChanged( int indx )
+void QgsVectorLayerProperties::optionsStackedWidget_CurrentChanged( int index )
 {
-  if ( indx != mOptStackedWidget->indexOf( mOptsPage_Information ) || mMetadataFilled )
+  QgsOptionsDialogBase::optionsStackedWidget_CurrentChanged( index );
+
+  if ( index != mOptStackedWidget->indexOf( mOptsPage_Information ) || mMetadataFilled )
     return;
 
   //set the metadata contents (which can be expensive)
@@ -1481,15 +1510,16 @@ void QgsVectorLayerProperties::updateVariableEditor()
   mVariableEditor->setEditableScopeIndex( 2 );
 }
 
-void QgsVectorLayerProperties::updateFieldsPropertiesDialog()
-{
-  QgsEditFormConfig cfg = mLayer->editFormConfig();
-  mFieldsPropertiesDialog->setEditFormInit( cfg.uiForm(), cfg.initFunction(), cfg.initCode(), cfg.initFilePath(), cfg.initCodeSource() );
-}
-
 void QgsVectorLayerProperties::showHelp()
 {
-  QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html" ) );
+  if ( mOptionsListWidget->currentIndex().data().toString() == "Form" )
+  {
+    QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#configure-the-field-behavior" ) );
+  }
+  else
+  {
+    QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html" ) );
+  }
 }
 
 void QgsVectorLayerProperties::updateAuxiliaryStoragePage( bool reset )
@@ -1581,9 +1611,9 @@ void QgsVectorLayerProperties::onAuxiliaryLayerClear()
   if ( !alayer )
     return;
 
-  const QString msg = tr( "Are you sure you want to clear auxiliary data for %1" ).arg( mLayer->name() );
+  const QString msg = tr( "Are you sure you want to clear auxiliary data for %1?" ).arg( mLayer->name() );
   QMessageBox::StandardButton reply;
-  reply = QMessageBox::question( this, "Clear auxiliary data", msg, QMessageBox::Yes | QMessageBox::No );
+  reply = QMessageBox::question( this, "Clear Auxiliary Data", msg, QMessageBox::Yes | QMessageBox::No );
 
   if ( reply == QMessageBox::Yes )
   {
@@ -1601,9 +1631,9 @@ void QgsVectorLayerProperties::onAuxiliaryLayerDelete()
   if ( !alayer )
     return;
 
-  const QString msg = tr( "Are you sure you want to delete auxiliary storage for %1" ).arg( mLayer->name() );
+  const QString msg = tr( "Are you sure you want to delete auxiliary storage for %1?" ).arg( mLayer->name() );
   QMessageBox::StandardButton reply;
-  reply = QMessageBox::question( this, "Delete auxiliary storage", msg, QMessageBox::Yes | QMessageBox::No );
+  reply = QMessageBox::question( this, "Delete Auxiliary Storage", msg, QMessageBox::Yes | QMessageBox::No );
 
   if ( reply == QMessageBox::Yes )
   {
@@ -1662,10 +1692,10 @@ void QgsVectorLayerProperties::onAuxiliaryLayerDeleteField()
     return;
 
   // should be only 1 field
-  const QString msg = tr( "Are you sure you want to delete auxiliary field %1 for %2" ).arg( item->text( 1 ), item->text( 0 ) );
+  const QString msg = tr( "Are you sure you want to delete auxiliary field %1 for %2?" ).arg( item->text( 1 ), item->text( 0 ) );
 
   QMessageBox::StandardButton reply;
-  reply = QMessageBox::question( this, "Delete auxiliary field", msg, QMessageBox::Yes | QMessageBox::No );
+  reply = QMessageBox::question( this, "Delete Auxiliary Field", msg, QMessageBox::Yes | QMessageBox::No );
 
   if ( reply == QMessageBox::Yes )
   {
@@ -1710,6 +1740,6 @@ void QgsVectorLayerProperties::deleteAuxiliaryField( int index )
     }
 
     updateAuxiliaryStoragePage( true );
-    mFieldsPropertiesDialog->init();
+    mSourceFieldsPropertiesDialog->init();
   }
 }

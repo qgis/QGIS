@@ -60,10 +60,10 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     QgsComposerMap( QgsComposition *composition SIP_TRANSFERTHIS, int x, int y, int width, int height );
     //! Constructor. Settings are read from project.
     QgsComposerMap( QgsComposition *composition SIP_TRANSFERTHIS );
-    virtual ~QgsComposerMap();
+    ~QgsComposerMap() override;
 
     //! Return correct graphics item type.
-    virtual int type() const override { return ComposerMap; }
+    int type() const override { return ComposerMap; }
 
     /**
      * Scaling modes used for the serial rendering (atlas)
@@ -128,7 +128,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      * \param mode zoom mode
      * \since QGIS 2.5
      */
-    virtual void zoomContent( const double factor, const QPointF point, const ZoomMode mode = QgsComposerItem::Zoom ) override;
+    void zoomContent( const double factor, const QPointF point, const ZoomMode mode = QgsComposerItem::Zoom ) override;
 
     //! Sets new scene rectangle bounds and recalculates hight and extent
     void setSceneRect( const QRectF &rectangle ) override;
@@ -356,7 +356,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     QRectF boundingRect() const override;
 
     /* reimplement setFrameStrokeWidth, so that updateBoundingRect() is called after setting the frame width */
-    virtual void setFrameStrokeWidth( const double strokeWidth ) override;
+    void setFrameStrokeWidth( const double strokeWidth ) override;
 
     /**
      * Sets the \a rotation for the map - this does not affect the composer item shape, only the
@@ -472,7 +472,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     QPolygonF visibleExtentPolygon() const;
 
     //overridden to show "Map 1" type names
-    virtual QString displayName() const override;
+    QString displayName() const override;
 
     //! Returns extent that considers rotation and shift with mOffsetX / mOffsetY
     QPolygonF transformedMapPolygon() const;
@@ -485,7 +485,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      * \since QGIS 2.6 */
     void requestedExtent( QgsRectangle &extent ) const;
 
-    virtual QgsExpressionContext createExpressionContext() const override;
+    QgsExpressionContext createExpressionContext() const override;
 
   signals:
     void extentChanged();
@@ -514,7 +514,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     //! Updates the bounding rect of this item. Call this function before doing any changes related to annotation out of the map rectangle
     void updateBoundingRect();
 
-    virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext *context = nullptr ) override;
+    void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext *context = nullptr ) override;
 
   private slots:
     void layersAboutToBeRemoved( QList<QgsMapLayer *> layers );

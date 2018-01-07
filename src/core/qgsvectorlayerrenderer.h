@@ -71,9 +71,9 @@ class QgsVectorLayerRenderer : public QgsMapLayerRenderer
 {
   public:
     QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRenderContext &context );
-    ~QgsVectorLayerRenderer();
+    ~QgsVectorLayerRenderer() override;
 
-    virtual bool render() override;
+    bool render() override;
 
   private:
 

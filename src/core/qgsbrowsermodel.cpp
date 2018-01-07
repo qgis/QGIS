@@ -31,7 +31,8 @@
 #include "qgssettings.h"
 
 QgsBrowserWatcher::QgsBrowserWatcher( QgsDataItem *item )
-  : mItem( item )
+  : QFutureWatcher( nullptr )
+  , mItem( item )
 {
 }
 
@@ -68,7 +69,7 @@ void QgsBrowserModel::updateProjectHome()
     endRemoveRows();
   }
   delete mProjectHome;
-  mProjectHome = home.isNull() ? nullptr : new QgsDirectoryItem( nullptr, tr( "Project home" ), home, "project:" + home );
+  mProjectHome = home.isNull() ? nullptr : new QgsProjectHomeItem( nullptr, tr( "Project Home" ), home, "project:" + home );
   if ( mProjectHome )
   {
     connectItem( mProjectHome );
@@ -83,8 +84,9 @@ void QgsBrowserModel::addRootItems()
 {
   updateProjectHome();
 
-  // give the home directory a prominent second place
+  // give the home directory a prominent third place
   QgsDirectoryItem *item = new QgsDirectoryItem( nullptr, tr( "Home" ), QDir::homePath(), "home:" + QDir::homePath() );
+  item->setSortKey( QStringLiteral( " 2" ) );
   QStyle *style = QApplication::style();
   QIcon homeIcon( style->standardPixmap( QStyle::SP_DirHomeIcon ) );
   item->setIcon( homeIcon );
@@ -108,6 +110,7 @@ void QgsBrowserModel::addRootItems()
       continue;
 
     QgsDirectoryItem *item = new QgsDirectoryItem( nullptr, path, path );
+    item->setSortKey( QStringLiteral( " 3 %1" ).arg( path ) );
 
     connectItem( item );
     mRootItems << item;
@@ -210,6 +213,10 @@ QVariant QgsBrowserModel::data( const QModelIndex &index, int role ) const
   else if ( role == Qt::DisplayRole )
   {
     return item->name();
+  }
+  else if ( role == QgsBrowserModel::SortRole )
+  {
+    return item->sortKey();
   }
   else if ( role == Qt::ToolTipRole )
   {
@@ -539,10 +546,10 @@ void QgsBrowserModel::refresh( const QModelIndex &index )
   item->refresh();
 }
 
-void QgsBrowserModel::addFavoriteDirectory( const QString &directory )
+void QgsBrowserModel::addFavoriteDirectory( const QString &directory, const QString &name )
 {
   Q_ASSERT( mFavorites );
-  mFavorites->addDirectory( directory );
+  mFavorites->addDirectory( directory, name );
 }
 
 void QgsBrowserModel::removeFavorite( const QModelIndex &index )

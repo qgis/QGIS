@@ -20,14 +20,18 @@
 #include "qgsgeonodeconnection.h"
 #include "qgsgeonoderequest.h"
 
+/* For now we are hiding away authentication options since
+   there is no support yet for authentication in GeoNode's API.
+   We will re-enable this when this limitation changes.
+   See https://github.com/GeoNode/geonode/issues/3442 TS */
+
 QgsGeoNodeNewConnection::QgsGeoNodeNewConnection( QWidget *parent, const QString &connName, Qt::WindowFlags fl )
   : QgsNewHttpConnection( parent, QgsNewHttpConnection::ConnectionWfs | QgsNewHttpConnection::ConnectionWms,
-                          QgsGeoNodeConnectionUtils::pathGeoNodeConnection() + '/', connName, QgsNewHttpConnection::FlagShowTestConnection, fl )
+                          QgsGeoNodeConnectionUtils::pathGeoNodeConnection() + '/', connName,
+                          QgsNewHttpConnection::FlagShowTestConnection | QgsNewHttpConnection::FlagHideAuthenticationGroup, fl )
 {
   setWindowTitle( tr( "Create a New GeoNode Connection" ) );
-
   updateServiceSpecificSettings();
-
   connect( testConnectButton(), &QPushButton::clicked, this, &QgsGeoNodeNewConnection::testConnection );
 }
 

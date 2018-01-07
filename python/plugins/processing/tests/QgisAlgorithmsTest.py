@@ -30,9 +30,11 @@ import AlgorithmsTestBase
 import nose2
 import shutil
 
-from qgis.core import (QgsProcessingAlgorithm,
+from qgis.core import (QgsApplication,
+                       QgsProcessingAlgorithm,
                        QgsProcessingFeedback,
                        QgsProcessingException)
+from qgis.analysis import (QgsNativeAlgorithms)
 from qgis.testing import start_app, unittest
 from processing.tools.dataobjects import createContext
 
@@ -48,7 +50,7 @@ class TestAlg(QgsProcessingAlgorithm):
     def displayName(self):
         return 'testalg'
 
-    def initAlgorithm(self):
+    def initAlgorithm(self, config=None):
         pass
 
     def createInstance(self):
@@ -64,6 +66,7 @@ class TestQgisAlgorithms(unittest.TestCase, AlgorithmsTestBase.AlgorithmsTest):
     @classmethod
     def setUpClass(cls):
         start_app()
+        QgsApplication.processingRegistry().addProvider(QgsNativeAlgorithms())
         from processing.core.Processing import Processing
         Processing.initialize()
         cls.cleanup_paths = []

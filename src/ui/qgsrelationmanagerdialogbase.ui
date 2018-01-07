@@ -58,6 +58,11 @@
        <string>Id</string>
       </property>
      </column>
+     <column>
+      <property name="text">
+       <string>Strength</string>
+      </property>
+     </column>
     </widget>
    </item>
    <item>

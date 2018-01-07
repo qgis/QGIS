@@ -23,7 +23,7 @@
 #include "qgssurface.h"
 #include <memory>
 
-class QgsPolygonV2;
+class QgsPolygon;
 
 /**
  * \ingroup core
@@ -41,7 +41,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     bool operator==( const QgsCurvePolygon &other ) const;
     bool operator!=( const QgsCurvePolygon &other ) const;
 
-    ~QgsCurvePolygon();
+    ~QgsCurvePolygon() override;
 
     QString geometryType() const override;
     int dimension() const override;
@@ -53,15 +53,17 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
 
     QByteArray asWkb() const override;
     QString asWkt( int precision = 17 ) const override;
-    QDomElement asGML2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
-    QDomElement asGML3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
-    QString asJSON( int precision = 17 ) const override;
+    QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
+    QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
+    QString asJson( int precision = 17 ) const override;
 
     //surface interface
     double area() const override;
     double perimeter() const override;
-    QgsPolygonV2 *surfaceToPolygon() const override SIP_FACTORY;
+    QgsPolygon *surfaceToPolygon() const override SIP_FACTORY;
     QgsAbstractGeometry *boundary() const override SIP_FACTORY;
+    QgsCurvePolygon *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const override SIP_FACTORY;
+    bool removeDuplicateNodes( double epsilon = 4 * DBL_EPSILON, bool useZValues = false ) override;
 
     //curve polygon interface
     int numInteriorRings() const;
@@ -73,7 +75,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
      * of the curve.
      * \param tolerance segmentation tolerance
      * \param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
-    virtual QgsPolygonV2 *toPolygon( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const SIP_FACTORY;
+    virtual QgsPolygon *toPolygon( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const SIP_FACTORY;
 
     /**
      * Sets the exterior ring of the polygon. The CurvePolygon type will be updated to match the dimensionality
@@ -86,7 +88,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     virtual void setExteriorRing( QgsCurve *ring SIP_TRANSFER );
 
     //! Sets all interior rings (takes ownership)
-    void setInteriorRings( const QList<QgsCurve *> &rings SIP_TRANSFER );
+    void setInteriorRings( const QVector<QgsCurve *> &rings SIP_TRANSFER );
     //! Adds an interior ring to the geometry (takes ownership)
     virtual void addInteriorRing( QgsCurve *ring SIP_TRANSFER );
 
@@ -110,7 +112,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     void draw( QPainter &p ) const override;
     void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform,
                     bool transformZ = false ) override;
-    void transform( const QTransform &t ) override;
+    void transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0, double mTranslate = 0.0, double mScale = 1.0 ) override;
 
     bool insertVertex( QgsVertexId position, const QgsPoint &vertex ) override;
     bool moveVertex( QgsVertexId position, const QgsPoint &newPos ) override;
@@ -118,11 +120,12 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
 
     QgsCoordinateSequence coordinateSequence() const override;
     int nCoordinates() const override;
+    int vertexNumberFromVertexId( QgsVertexId id ) const override;
     bool isEmpty() const override;
-    double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt SIP_OUT, QgsVertexId &vertexAfter SIP_OUT, bool *leftOf SIP_OUT = nullptr, double epsilon = 4 * DBL_EPSILON ) const override;
+    double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt SIP_OUT, QgsVertexId &vertexAfter SIP_OUT, int *leftOf SIP_OUT = nullptr, double epsilon = 4 * DBL_EPSILON ) const override;
 
     bool nextVertex( QgsVertexId &id, QgsPoint &vertex SIP_OUT ) const override;
-
+    void adjacentVertices( QgsVertexId vertex, QgsVertexId &previousVertex SIP_OUT, QgsVertexId &nextVertex SIP_OUT ) const override;
     bool hasCurvedSegments() const override;
 
     /**
@@ -133,8 +136,8 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
 
     /**
      * Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.
-     *  \param vertex the vertex id
-     *  \returns rotation in radians, clockwise from north
+     * \param vertex the vertex id
+     * \returns rotation in radians, clockwise from north
      */
     double vertexAngle( QgsVertexId vertex ) const override;
 
@@ -142,6 +145,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     int ringCount( int part = 0 ) const override;
     int partCount() const override;
     QgsPoint vertexAt( QgsVertexId id ) const override;
+    double segmentLength( QgsVertexId startVertex ) const override;
 
     bool addZValue( double zValue = 0 ) override;
     bool addMValue( double mValue = 0 ) override;
@@ -172,13 +176,14 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     }
 #endif
   protected:
-    virtual int childCount() const override;
-    virtual QgsAbstractGeometry *childGeometry( int index ) const override;
+    QgsCurvePolygon *createEmptyWithSameType() const override SIP_FACTORY;
+    int childCount() const override;
+    QgsAbstractGeometry *childGeometry( int index ) const override;
 
   protected:
 
     std::unique_ptr< QgsCurve > mExteriorRing;
-    QList<QgsCurve *> mInteriorRings;
+    QVector<QgsCurve *> mInteriorRings;
 
     QgsRectangle calculateBoundingBox() const override;
 };

@@ -46,7 +46,7 @@ struct QgsGPSInformation
 class QgsGPSConnection : QObject
 {
 %Docstring
- Abstract base class for connection to a GPS device*
+Abstract base class for connection to a GPS device*
 %End
 
 %TypeHeaderCode
@@ -74,19 +74,18 @@ class QgsGPSConnection : QObject
 
     QgsGPSConnection( QIODevice *dev /Transfer/ );
 %Docstring
- Constructor
-\param dev input device for the connection (e.g. serial device). The class takes ownership of the object
+Constructor
+
+:param dev: input device for the connection (e.g. serial device). The class takes ownership of the object
 %End
-    virtual ~QgsGPSConnection();
+    ~QgsGPSConnection();
     bool connect();
 %Docstring
 Opens connection to device
- :rtype: bool
 %End
     bool close();
 %Docstring
 Closes connection to device
- :rtype: bool
 %End
 
     void setSource( QIODevice *source /Transfer/ );
@@ -97,13 +96,11 @@ Sets the GPS source. The class takes ownership of the device class
     Status status() const;
 %Docstring
 Returns the status. Possible state are not connected, connected, data received
- :rtype: Status
 %End
 
     QgsGPSInformation currentGPSInformation() const;
 %Docstring
 Returns the current gps information (lat, lon, etc.)
- :rtype: QgsGPSInformation
 %End
 
   signals:

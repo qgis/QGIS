@@ -69,7 +69,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      * or repeatedly calling addVertex()
      * \since QGIS 3.0
      */
-    QgsLineString( const QList<QgsPointXY> &points );
+    QgsLineString( const QVector<QgsPointXY> &points );
 
     bool operator==( const QgsCurve &other ) const override;
     bool operator!=( const QgsCurve &other ) const override;
@@ -179,15 +179,17 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     QgsLineString *clone() const override SIP_FACTORY;
     void clear() override;
     bool isEmpty() const override;
+    QgsLineString *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const override SIP_FACTORY;
+    bool removeDuplicateNodes( double epsilon = 4 * DBL_EPSILON, bool useZValues = false ) override;
 
     bool fromWkb( QgsConstWkbPtr &wkb ) override;
     bool fromWkt( const QString &wkt ) override;
 
     QByteArray asWkb() const override;
     QString asWkt( int precision = 17 ) const override;
-    QDomElement asGML2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
-    QDomElement asGML3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
-    QString asJSON( int precision = 17 ) const override;
+    QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
+    QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
+    QString asJson( int precision = 17 ) const override;
 
     //curve interface
     double length() const override;
@@ -209,7 +211,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 
     void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform,
                     bool transformZ = false ) override;
-    void transform( const QTransform &t ) override;
+    void transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0, double mTranslate = 0.0, double mScale = 1.0 ) override;
 
     void addToPainterPath( QPainterPath &path ) const override;
     void drawAsPolygon( QPainter &p ) const override;
@@ -220,14 +222,14 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 
     QgsLineString *reversed() const override SIP_FACTORY;
 
-    double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt SIP_OUT, QgsVertexId &vertexAfter SIP_OUT, bool *leftOf SIP_OUT = nullptr, double epsilon = 4 * DBL_EPSILON ) const override;
+    double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt SIP_OUT, QgsVertexId &vertexAfter SIP_OUT, int *leftOf SIP_OUT = nullptr, double epsilon = 4 * DBL_EPSILON ) const override;
     bool pointAt( int node, QgsPoint &point, QgsVertexId::VertexType &type ) const override;
 
     QgsPoint centroid() const override;
 
     void sumUpArea( double &sum SIP_OUT ) const override;
     double vertexAngle( QgsVertexId vertex ) const override;
-
+    double segmentLength( QgsVertexId startVertex ) const override;
     bool addZValue( double zValue = 0 ) override;
     bool addMValue( double mValue = 0 ) override;
 
@@ -253,7 +255,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     }
 #endif
   protected:
-
+    QgsLineString *createEmptyWithSameType() const override SIP_FACTORY;
     QgsRectangle calculateBoundingBox() const override;
 
   private:
@@ -271,7 +273,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      */
     void fromWkbPoints( QgsWkbTypes::Type type, const QgsConstWkbPtr &wkb );
 
-    friend class QgsPolygonV2;
+    friend class QgsPolygon;
     friend class QgsTriangle;
 
 };

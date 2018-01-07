@@ -39,7 +39,9 @@ class GUI_EXPORT QgsUserInputDockWidget : public QgsDockWidget
 {
     Q_OBJECT
   public:
-    QgsUserInputDockWidget( QWidget *parent SIP_TRANSFERTHIS = 0 );
+
+    //! Constructor for QgsUserInputDockWidget
+    QgsUserInputDockWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Add a widget to be displayed in the dock.

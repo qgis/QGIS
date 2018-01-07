@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'November 2012'
@@ -27,12 +26,6 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 from qgis.core import QgsSettings
-
-from processing.core.parameters import ParameterString
-from processing.core.parameters import ParameterTable
-from processing.core.parameters import ParameterSelection
-from processing.core.parameters import ParameterBoolean
-from processing.core.parameters import ParameterTableField
 
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
@@ -67,7 +60,6 @@ class Ogr2OgrTableToPostGisList(GdalAlgorithm):
 
     def __init__(self):
         GdalAlgorithm.__init__(self)
-        self.processing = False
 
     def dbConnectionNames(self):
         settings = QgsSettings()
@@ -127,15 +119,13 @@ class Ogr2OgrTableToPostGisList(GdalAlgorithm):
     def group(self):
         return self.tr('Vector miscellaneous')
 
-    def processAlgorithm(self, parameters, context, feedback):
-        self.processing = True
-        GdalAlgorithm.processAlgorithm(parameters, self, context)
-        self.processing = False
+    def groupId(self):
+        return 'vectormiscellaneous'
 
-    def getConsoleCommands(self, parameters, context, feedback):
+    def getConsoleCommands(self, parameters, context, feedback, executing=True):
         connection = self.DB_CONNECTIONS[self.getParameterValue(self.DATABASE)]
         uri = uri_from_name(connection)
-        if self.processing:
+        if executing:
             # to get credentials input when needed
             uri = GeoDB(uri=uri).uri
 
@@ -169,7 +159,7 @@ class Ogr2OgrTableToPostGisList(GdalAlgorithm):
         arguments.append('-f')
         arguments.append('PostgreSQL')
         arguments.append('PG:"')
-        for token in uri.connectionInfo(self.processing).split(' '):
+        for token in uri.connectionInfo(executing).split(' '):
             arguments.append(token)
         arguments.append('active_schema={}'.format(schema or 'public'))
         arguments.append('"')

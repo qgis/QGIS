@@ -39,7 +39,6 @@
 #include "qgsvectorlayer.h"
 #include "qgsunittypes.h"
 #include "qgstextlabelfeature.h"
-#include "qgscrscache.h"
 #include "qgslogger.h"
 #include "qgsmaplayerstylemanager.h"
 
@@ -389,6 +388,16 @@ void QgsDxfExport::setMapSettings( const QgsMapSettings &settings )
   mMapSettings = settings;
 }
 
+void QgsDxfExport::setFlags( QgsDxfExport::Flags flags )
+{
+  mFlags = flags;
+}
+
+QgsDxfExport::Flags QgsDxfExport::flags() const
+{
+  return mFlags;
+}
+
 void QgsDxfExport::addLayers( const QList< QPair< QgsVectorLayer *, int > > &layers )
 {
   QList<QgsMapLayer *> layerList;
@@ -491,7 +500,7 @@ int QgsDxfExport::writeToFile( QIODevice *d, const QString &encoding )
     return 1;
   }
 
-  if ( !d->isOpen() && !d->open( QIODevice::WriteOnly ) )
+  if ( !d->isOpen() && !d->open( QIODevice::WriteOnly | QIODevice::Truncate ) )
   {
     return 2;
   }
@@ -512,6 +521,9 @@ int QgsDxfExport::writeToFile( QIODevice *d, const QString &encoding )
         continue;
 
       QgsRectangle layerExtent = vl->extent();
+      if ( layerExtent.isEmpty() )
+        continue;
+
       layerExtent = mMapSettings.layerToMapCoordinates( vl, layerExtent );
 
       if ( mExtent.isEmpty() )
@@ -978,14 +990,15 @@ void QgsDxfExport::writeEntities()
       QgsDebugMsg( QString( "%1: not override style" ).arg( vl->id() ) );
     }
 
-    QgsSymbolRenderContext sctx( ctx, QgsUnitTypes::RenderMillimeters, 1.0, false, 0, nullptr );
-    QgsFeatureRenderer *renderer = vl->renderer();
-    if ( !renderer )
+    QgsSymbolRenderContext sctx( ctx, QgsUnitTypes::RenderMillimeters, 1.0, false, nullptr, nullptr );
+    if ( !vl->renderer() )
     {
       if ( hasStyleOverride )
         vl->styleManager()->restoreOverrideStyle();
       continue;
     }
+
+    std::unique_ptr< QgsFeatureRenderer > renderer( vl->renderer()->clone() );
     renderer->startRender( ctx, vl->fields() );
 
     QSet<QString> attributes = renderer->usedAttributes( ctx );
@@ -1011,9 +1024,10 @@ void QgsDxfExport::writeEntities()
         rblp = nullptr;
       }
     }
-    else
+    else if ( labeling )
     {
-      lp = new QgsDxfLabelProvider( vl, QString(), this, nullptr );
+      QgsPalLayerSettings settings = labeling->settings();
+      lp = new QgsDxfLabelProvider( vl, QString(), this, &settings );
       engine.addProvider( lp );
 
       if ( !lp->prepare( ctx, attributes ) )
@@ -1114,17 +1128,17 @@ void QgsDxfExport::writeEntitiesSymbolLevels( QgsVectorLayer *layer )
     return;
   }
 
-  QgsFeatureRenderer *renderer = layer->renderer();
-  if ( !renderer )
+  if ( !layer->renderer() )
   {
     // TODO return error
     return;
   }
+  std::unique_ptr< QgsFeatureRenderer > renderer( layer->renderer()->clone() );
   QHash< QgsSymbol *, QList<QgsFeature> > features;
 
   QgsRenderContext ctx = renderContext();
   ctx.expressionContext().appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
-  QgsSymbolRenderContext sctx( ctx, QgsUnitTypes::RenderMillimeters, 1.0, false, 0, nullptr );
+  QgsSymbolRenderContext sctx( ctx, QgsUnitTypes::RenderMillimeters, 1.0, false, nullptr, nullptr );
   renderer->startRender( ctx, layer->fields() );
 
   // get iterator
@@ -3628,6 +3642,7 @@ void QgsDxfExport::writeText( const QString &layer, const QString &text, const Q
   writeGroup( 1, text );
   writeGroup( 50, angle );
   writeGroup( 7, QStringLiteral( "STANDARD" ) ); // so far only support for standard font
+  writeGroup( 100, QStringLiteral( "AcDbText" ) );
 }
 
 void QgsDxfExport::writeMText( const QString &layer, const QString &text, const QgsPoint &pt, double width, double angle, const QColor &color )
@@ -3677,7 +3692,7 @@ void QgsDxfExport::addFeature( QgsSymbolRenderContext &ctx, const QgsCoordinateT
   if ( !fet->hasGeometry() )
     return;
 
-  std::unique_ptr<QgsAbstractGeometry> geom( fet->geometry().geometry()->clone() );
+  std::unique_ptr<QgsAbstractGeometry> geom( fet->geometry().constGet()->clone() );
   if ( ct.isValid() )
   {
     geom->transform( ct );
@@ -4395,30 +4410,36 @@ void QgsDxfExport::drawLabel( const QString &layerId, QgsRenderContext &context,
     }
   }
 
-  txt = txt.replace( wrapchr, QLatin1String( "\\P" ) );
-
-  if ( tmpLyr.format().font().underline() )
+  if ( mFlags & FlagNoMText )
   {
-    txt.prepend( "\\L" ).append( "\\l" );
+    writeText( dxfLayer, txt, QgsPoint( label->getX(), label->getY() ), label->getHeight(), label->getAlpha() * 180.0 / M_PI, tmpLyr.format().color() );
   }
-
-  if ( tmpLyr.format().font().overline() )
+  else
   {
-    txt.prepend( "\\O" ).append( "\\o" );
+    txt = txt.replace( wrapchr, QLatin1String( "\\P" ) );
+
+    if ( tmpLyr.format().font().underline() )
+    {
+      txt.prepend( "\\L" ).append( "\\l" );
+    }
+
+    if ( tmpLyr.format().font().overline() )
+    {
+      txt.prepend( "\\O" ).append( "\\o" );
+    }
+
+    if ( tmpLyr.format().font().strikeOut() )
+    {
+      txt.prepend( "\\K" ).append( "\\k" );
+    }
+
+    txt.prepend( QStringLiteral( "\\f%1|i%2|b%3;\\H%4;" )
+                 .arg( tmpLyr.format().font().family() )
+                 .arg( tmpLyr.format().font().italic() ? 1 : 0 )
+                 .arg( tmpLyr.format().font().bold() ? 1 : 0 )
+                 .arg( label->getHeight() / ( 1 + txt.count( QStringLiteral( "\\P" ) ) ) * 0.75 ) );
+    writeMText( dxfLayer, txt, QgsPoint( label->getX(), label->getY() ), label->getWidth(), label->getAlpha() * 180.0 / M_PI, tmpLyr.format().color() );
   }
-
-  if ( tmpLyr.format().font().strikeOut() )
-  {
-    txt.prepend( "\\K" ).append( "\\k" );
-  }
-
-  txt.prepend( QStringLiteral( "\\f%1|i%2|b%3;\\H%4;" )
-               .arg( tmpLyr.format().font().family() )
-               .arg( tmpLyr.format().font().italic() ? 1 : 0 )
-               .arg( tmpLyr.format().font().bold() ? 1 : 0 )
-               .arg( label->getHeight() / ( 1 + txt.count( QStringLiteral( "\\P" ) ) ) * 0.75 ) );
-
-  writeMText( dxfLayer, txt, QgsPoint( label->getX(), label->getY() ), label->getWidth(), label->getAlpha() * 180.0 / M_PI, tmpLyr.format().color() );
 }
 
 

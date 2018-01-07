@@ -33,13 +33,23 @@ class QgsFeedback;
 class ANALYSIS_EXPORT QgsGridFileWriter
 {
   public:
-    QgsGridFileWriter( QgsInterpolator *i, const QString &outputPath, const QgsRectangle &extent, int nCols, int nRows, double cellSizeX, double cellSizeY );
+
+    /**
+     * Constructor for QgsGridFileWriter, for the specified \a interpolator.
+     *
+     * The \a outputPath argument is used to set the output file path.
+     *
+     * The \a extent and \a nCols, \a nRows arguments dictate the extent and size of the output raster.
+     */
+    QgsGridFileWriter( QgsInterpolator *interpolator, const QString &outputPath, const QgsRectangle &extent, int nCols, int nRows );
 
     /**
      * Writes the grid file.
-     \param feedback optional feedback object for progress reports and cancelation support
-    \returns 0 in case of success*/
-
+     *
+     * An optional \a feedback object can be set for progress reports and cancelation support
+     *
+     * \returns 0 in case of success
+    */
     int writeFile( QgsFeedback *feedback = nullptr );
 
   private:

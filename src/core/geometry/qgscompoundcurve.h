@@ -34,31 +34,31 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
     QgsCompoundCurve();
     QgsCompoundCurve( const QgsCompoundCurve &curve );
     QgsCompoundCurve &operator=( const QgsCompoundCurve &curve );
-    ~QgsCompoundCurve();
+    ~QgsCompoundCurve() override;
 
-    virtual bool operator==( const QgsCurve &other ) const override;
-    virtual bool operator!=( const QgsCurve &other ) const override;
+    bool operator==( const QgsCurve &other ) const override;
+    bool operator!=( const QgsCurve &other ) const override;
 
-    virtual QString geometryType() const override;
-    virtual int dimension() const override;
-    virtual QgsCompoundCurve *clone() const override SIP_FACTORY;
-    virtual void clear() override;
+    QString geometryType() const override;
+    int dimension() const override;
+    QgsCompoundCurve *clone() const override SIP_FACTORY;
+    void clear() override;
 
-    virtual bool fromWkb( QgsConstWkbPtr &wkb ) override;
-    virtual bool fromWkt( const QString &wkt ) override;
+    bool fromWkb( QgsConstWkbPtr &wkb ) override;
+    bool fromWkt( const QString &wkt ) override;
 
     QByteArray asWkb() const override;
     QString asWkt( int precision = 17 ) const override;
-    QDomElement asGML2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
-    QDomElement asGML3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
-    QString asJSON( int precision = 17 ) const override;
+    QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
+    QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
+    QString asJson( int precision = 17 ) const override;
 
     //curve interface
-    virtual double length() const override;
-    virtual QgsPoint startPoint() const override;
-    virtual QgsPoint endPoint() const override;
-    virtual void points( QgsPointSequence &pts SIP_OUT ) const override;
-    virtual int numPoints() const override;
+    double length() const override;
+    QgsPoint startPoint() const override;
+    QgsPoint endPoint() const override;
+    void points( QgsPointSequence &pts SIP_OUT ) const override;
+    int numPoints() const override;
     bool isEmpty() const override;
 
     /**
@@ -66,7 +66,10 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
      * of the curve.
      * \param tolerance segmentation tolerance
      * \param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
-    virtual QgsLineString *curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const override SIP_FACTORY;
+    QgsLineString *curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const override SIP_FACTORY;
+
+    QgsCompoundCurve *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const override SIP_FACTORY;
+    bool removeDuplicateNodes( double epsilon = 4 * DBL_EPSILON, bool useZValues = false ) override;
 
     /**
      * Returns the number of curves in the geometry.
@@ -97,40 +100,29 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
     void draw( QPainter &p ) const override;
     void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform,
                     bool transformZ = false ) override;
-    void transform( const QTransform &t ) override;
+    void transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0, double mTranslate = 0.0, double mScale = 1.0 ) override;
     void addToPainterPath( QPainterPath &path ) const override;
     void drawAsPolygon( QPainter &p ) const override;
-
-    virtual bool insertVertex( QgsVertexId position, const QgsPoint &vertex ) override;
-    virtual bool moveVertex( QgsVertexId position, const QgsPoint &newPos ) override;
-    virtual bool deleteVertex( QgsVertexId position ) override;
-
-    virtual double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt SIP_OUT,
-                                   QgsVertexId &vertexAfter SIP_OUT, bool *leftOf SIP_OUT = nullptr,
-                                   double epsilon = 4 * DBL_EPSILON ) const override;
-
+    bool insertVertex( QgsVertexId position, const QgsPoint &vertex ) override;
+    bool moveVertex( QgsVertexId position, const QgsPoint &newPos ) override;
+    bool deleteVertex( QgsVertexId position ) override;
+    double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt SIP_OUT, QgsVertexId &vertexAfter SIP_OUT, int *leftOf SIP_OUT = nullptr, double epsilon = 4 * DBL_EPSILON ) const override;
     bool pointAt( int node, QgsPoint &point, QgsVertexId::VertexType &type ) const override;
-
     void sumUpArea( double &sum SIP_OUT ) const override;
 
     //! Appends first point if not already closed.
     void close();
 
     bool hasCurvedSegments() const override;
-
-    /**
-     * Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.
-        \param vertex the vertex id
-        \returns rotation in radians, clockwise from north*/
     double vertexAngle( QgsVertexId vertex ) const override;
+    double segmentLength( QgsVertexId startVertex ) const override;
+    QgsCompoundCurve *reversed() const override SIP_FACTORY;
 
-    virtual QgsCompoundCurve *reversed() const override SIP_FACTORY;
+    bool addZValue( double zValue = 0 ) override;
+    bool addMValue( double mValue = 0 ) override;
 
-    virtual bool addZValue( double zValue = 0 ) override;
-    virtual bool addMValue( double mValue = 0 ) override;
-
-    virtual bool dropZValue() override;
-    virtual bool dropMValue() override;
+    bool dropZValue() override;
+    bool dropMValue() override;
 
     double xAt( int index ) const override;
     double yAt( int index ) const override;
@@ -153,15 +145,16 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
 
   protected:
 
-    virtual QgsRectangle calculateBoundingBox() const override;
+    QgsRectangle calculateBoundingBox() const override;
+    QgsCompoundCurve *createEmptyWithSameType() const override SIP_FACTORY;
 
   private:
-    QList< QgsCurve * > mCurves;
+    QVector< QgsCurve * > mCurves;
 
     /**
      * Turns a vertex id for the compound curve into one or more ids for the subcurves
         \returns the index of the subcurve or -1 in case of error*/
-    QList< QPair<int, QgsVertexId> > curveVertexId( QgsVertexId id ) const;
+    QVector< QPair<int, QgsVertexId> > curveVertexId( QgsVertexId id ) const;
 
 };
 

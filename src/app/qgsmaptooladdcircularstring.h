@@ -25,7 +25,7 @@ class QgsMapToolAddCircularString: public QgsMapToolCapture
     Q_OBJECT
   public:
     QgsMapToolAddCircularString( QgsMapToolCapture *parentTool, QgsMapCanvas *canvas, CaptureMode mode = CaptureLine );
-    ~QgsMapToolAddCircularString();
+    ~QgsMapToolAddCircularString() override;
 
     void keyPressEvent( QKeyEvent *e ) override;
     void keyReleaseEvent( QKeyEvent *e ) override;
@@ -34,8 +34,8 @@ class QgsMapToolAddCircularString: public QgsMapToolCapture
 
     void activate() override;
 
-  private slots:
-    void setParentTool( QgsMapTool *newTool, QgsMapTool *oldTool );
+    /*private slots:
+      void setParentTool( QgsMapTool *newTool, QgsMapTool *oldTool );*/
 
   protected:
 

@@ -44,7 +44,7 @@
 
 /**
  * This structure is placed in an array with one member per point.
- * It has links into the minheap rtee and kepps track of eliminated points.
+ * It has links into the minheap rtee and keeps track of eliminated points.
  */
 struct areanode
 {
@@ -68,7 +68,7 @@ struct MINHEAP
 };
 
 /**
- * Structure to hold pointarray and it's arealist.
+ * Structure to hold point array and its arealist.
  */
 struct EFFECTIVE_AREAS
 {

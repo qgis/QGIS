@@ -14,7 +14,8 @@
 class QgsDateTimeSearchWidgetWrapper : QgsSearchWidgetWrapper
 {
 %Docstring
- Wraps a date/time edit widget for searching.
+Wraps a date/time edit widget for searching.
+
 .. versionadded:: 2.16
 %End
 
@@ -25,22 +26,22 @@ class QgsDateTimeSearchWidgetWrapper : QgsSearchWidgetWrapper
 
     explicit QgsDateTimeSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent /TransferThis/ = 0 );
 %Docstring
- Constructor for QgsDateTimeSearchWidgetWrapper.
- \param vl associated vector layer
- \param fieldIdx index of associated field
- \param parent parent widget
+Constructor for QgsDateTimeSearchWidgetWrapper.
+
+:param vl: associated vector layer
+:param fieldIdx: index of associated field
+:param parent: parent widget
 %End
 
     QVariant value() const;
 %Docstring
- Returns a variant representing the current state of the widget, respecting
- the editor widget's configured field format for date/time values.
- :rtype: QVariant
+Returns a variant representing the current state of the widget, respecting
+the editor widget's configured field format for date/time values.
 %End
 
     virtual bool applyDirectly();
 
-    virtual QString expression();
+    virtual QString expression() const;
 
     virtual bool valid() const;
 
@@ -50,10 +51,13 @@ class QgsDateTimeSearchWidgetWrapper : QgsSearchWidgetWrapper
 
     virtual QString createExpression( QgsSearchWidgetWrapper::FilterFlags flags ) const;
 
+
   public slots:
 
     virtual void clearWidget();
+
     virtual void setEnabled( bool enabled );
+
 
   protected:
     virtual QWidget *createWidget( QWidget *parent );
@@ -62,7 +66,7 @@ class QgsDateTimeSearchWidgetWrapper : QgsSearchWidgetWrapper
 
 
   protected slots:
-    virtual void setExpression( QString exp );
+    virtual void setExpression( const QString &exp );
 
 
 };

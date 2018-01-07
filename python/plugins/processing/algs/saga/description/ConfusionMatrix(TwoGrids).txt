@@ -1,18 +1,18 @@
 Confusion Matrix (Two Grids)
 imagery_classification
-ParameterRaster|ONE|Classification 1|False
-ParameterTable|ONE_LUT|Look-up Table|True
-ParameterTable|ONE_LUT_MIN|Value|False
-ParameterTable|ONE_LUT_MAX|Value (Maximum)|False
-ParameterTable|ONE_LUT_NAM|Name|False
-ParameterRaster|TWO|Classification 2|False
-ParameterTable|TWO_LUT|Look-up Table|True
-ParameterTable|TWO_LUT_MIN|Value|False
-ParameterTable|TWO_LUT_MAX|Value (Maximum)|False
-ParameterTable|TWO_LUT_NAM|Name|False
-OutputRaster|COMBINED|Combined Classes
-ParameterBoolean|NOCHANGE|Report Unchanged Classes|True
-ParameterTable|CONFUSION|Confusion Matrix|False
-ParameterSelection|OUTPUT|Output as...|[0] cells;[1] percent;[2] area| 0
-ParameterTable|CLASSES|Class Values|False
-ParameterTable|SUMMARY|Summary|False
+QgsProcessingParameterRasterLayer|ONE|Classification 1|None|False
+QgsProcessingParameterFeatureSource|ONE_LUT|Look-up Table|5|None|True
+QgsProcessingParameterFeatureSource|ONE_LUT_MIN|Value|5|None|False
+QgsProcessingParameterFeatureSource|ONE_LUT_MAX|Value (Maximum)|5|None|False
+QgsProcessingParameterFeatureSource|ONE_LUT_NAM|Name|5|None|False
+QgsProcessingParameterRasterLayer|TWO|Classification 2|None|False
+QgsProcessingParameterFeatureSource|TWO_LUT|Look-up Table|5|None|True
+QgsProcessingParameterFeatureSource|TWO_LUT_MIN|Value|5|None|False
+QgsProcessingParameterFeatureSource|TWO_LUT_MAX|Value (Maximum)|5|None|False
+QgsProcessingParameterFeatureSource|TWO_LUT_NAM|Name|5|None|False
+QgsProcessingParameterRasterDestination|COMBINED|Combined Classes
+QgsProcessingParameterBoolean|NOCHANGE|Report Unchanged Classes|True
+QgsProcessingParameterFeatureSource|CONFUSION|Confusion Matrix|5|None|False
+QgsProcessingParameterEnum|OUTPUT|Output as...|[0] cells;[1] percent;[2] area|False|0
+QgsProcessingParameterFeatureSource|CLASSES|Class Values|5|None|False
+QgsProcessingParameterFeatureSource|SUMMARY|Summary|5|None|False

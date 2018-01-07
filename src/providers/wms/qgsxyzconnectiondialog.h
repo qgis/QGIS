@@ -28,7 +28,7 @@ class QgsXyzConnectionDialog : public QDialog, public Ui::QgsXyzConnectionDialog
 {
     Q_OBJECT
   public:
-    explicit QgsXyzConnectionDialog( QWidget *parent = 0 );
+    explicit QgsXyzConnectionDialog( QWidget *parent = nullptr );
 
     void setConnection( const QgsXyzConnection &conn );
 

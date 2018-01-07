@@ -13,7 +13,7 @@
 class QgsRasterResampleFilter : QgsRasterInterface
 {
 %Docstring
- Resample filter pipe for rasters.
+Resample filter pipe for rasters.
 %End
 
 %TypeHeaderCode
@@ -42,24 +42,15 @@ class QgsRasterResampleFilter : QgsRasterInterface
 Set resampler for zoomed in scales. Takes ownership of the object
 %End
     const QgsRasterResampler *zoomedInResampler() const;
-%Docstring
- :rtype: QgsRasterResampler
-%End
 
     void setZoomedOutResampler( QgsRasterResampler *r /Transfer/ );
 %Docstring
 Set resampler for zoomed out scales. Takes ownership of the object
 %End
     const QgsRasterResampler *zoomedOutResampler() const;
-%Docstring
- :rtype: QgsRasterResampler
-%End
 
     void setMaxOversampling( double os );
     double maxOversampling() const;
-%Docstring
- :rtype: float
-%End
 
     virtual void writeXml( QDomDocument &doc, QDomElement &parentElem ) const;
 

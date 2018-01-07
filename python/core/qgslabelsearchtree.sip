@@ -13,7 +13,7 @@
 class QgsLabelSearchTree
 {
 %Docstring
- A class to query the labeling structure at a given point (small wraper around pal RTree class)
+A class to query the labeling structure at a given point (small wraper around pal RTree class)
 %End
 
 %TypeHeaderCode
@@ -23,7 +23,7 @@ class QgsLabelSearchTree
 
     QgsLabelSearchTree();
 %Docstring
- Constructor for QgsLabelSearchTree.
+Constructor for QgsLabelSearchTree.
 %End
     ~QgsLabelSearchTree();
 
@@ -41,9 +41,6 @@ Removes and deletes all the entries
     QgsLabelSearchTree( const QgsLabelSearchTree &rh );
     //! QgsLabelSearchTree cannot be copied.
     QgsLabelSearchTree &operator=( const QgsLabelSearchTree & );
-%Docstring
- :rtype: QgsLabelSearchTree
-%End
 };
 
 /************************************************************************

@@ -28,7 +28,7 @@ class CUSTOMWIDGETS_EXPORT %CLASSMIXEDCASE%Plugin : public QObject, public QDesi
     Q_INTERFACES( QDesignerCustomWidgetInterface )
 
   public:
-    explicit %CLASSMIXEDCASE%Plugin( QObject *parent = 0 );
+    explicit %CLASSMIXEDCASE%Plugin( QObject *parent = nullptr );
 
   private:
     bool mInitialized;

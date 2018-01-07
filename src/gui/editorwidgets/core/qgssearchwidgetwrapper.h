@@ -79,14 +79,8 @@ class QgsField;
 
 /**
  * \ingroup gui
- * Manages an editor widget
- * Widget and wrapper share the same parent
  *
- * A wrapper controls one attribute editor widget and is able to create a default
- * widget or use a pre-existent widget. It is able to set the widget to the value implied
- * by a field of a vector layer, or return the value it currently holds. Every time it is changed
- * it has to emit a valueChanged signal. If it fails to do so, there is no guarantee that the
- * changed status of the widget will be saved.
+ * Shows a search widget on a filter form.
  */
 class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
 {
@@ -145,7 +139,7 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
      * \param fieldIdx  The field which will be controlled
      * \param parent    A parent widget for this widget wrapper and the created widget.
      */
-    explicit QgsSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent SIP_TRANSFERTHIS = 0 );
+    explicit QgsSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Returns filter flags supported by the search widget.
@@ -170,7 +164,7 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
      *
      * \returns The current value the widget represents
      */
-    virtual QString expression() = 0;
+    virtual QString expression() const = 0;
 
     /**
      * If this is true, then this search widget should take effect directly
@@ -188,6 +182,31 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
     // TODO QGIS 3.0 - make pure virtual
     virtual QString createExpression( FilterFlags flags ) const { Q_UNUSED( flags ); return QStringLiteral( "TRUE" ); }
 
+    /**
+     * Get a field name or expression to use as field comparison.
+     * If in SearchMode returns a quoted field identifier.
+     * If in AggregateSearchMode returns an appropriate aggregate expression.
+     *
+     * \since QGIS 3.0
+     */
+    QString createFieldIdentifier() const;
+
+    /**
+     * If in AggregateSearch mode, which aggregate should be used to construct
+     * the filter expression. Is a Null String if none.
+     *
+     * \since QGIS 3.0
+     */
+    QString aggregate() const;
+
+    /**
+     * If in AggregateSearch mode, which aggregate should be used to construct
+     * the filter expression. Is a Null String if none.
+     *
+     * \since QGIS 3.0
+     */
+    void setAggregate( const QString &aggregate );
+
   public slots:
 
     /**
@@ -200,7 +219,7 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
      * Toggles whether the search widget is enabled or disabled.
      * \param enabled set to true to enable widget
      */
-    virtual void setEnabled( bool enabled ) override { Q_UNUSED( enabled ); }
+    void setEnabled( bool enabled ) override { Q_UNUSED( enabled ); }
 
   signals:
 
@@ -225,7 +244,11 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
 
   protected slots:
 
-    virtual void setExpression( QString value ) = 0;
+    /**
+     * Set the \a expression which is currently used as filter for this widget.
+     */
+    virtual void setExpression( const QString &expression ) = 0;
+
     void setFeature( const QgsFeature &feature ) override;
 
   protected:
@@ -235,6 +258,9 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
     QString mExpression;
     int mFieldIdx;
 
+  private:
+    QString mAggregate;
+    QgsRelation mAggregateRelation;
 };
 // We'll use this class inside a QVariant in the widgets properties
 Q_DECLARE_METATYPE( QgsSearchWidgetWrapper * )

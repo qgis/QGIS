@@ -76,6 +76,31 @@ QMenu *QgsLayoutAppMenuProvider::createContextMenu( QWidget *parent, QgsLayout *
 
     if ( addedGroupAction )
       menu->addSeparator();
+
+    QAction *copyAction = new QAction( tr( "Copy" ), menu );
+    connect( copyAction, &QAction::triggered, this, [this]()
+    {
+      mDesigner->view()->copySelectedItems( QgsLayoutView::ClipboardCopy );
+    } );
+    menu->addAction( copyAction );
+    QAction *cutAction = new QAction( tr( "Cut" ), menu );
+    connect( cutAction, &QAction::triggered, this, [this]()
+    {
+      mDesigner->view()->copySelectedItems( QgsLayoutView::ClipboardCut );
+    } );
+    menu->addAction( cutAction );
+    menu->addSeparator();
+  }
+  else if ( mDesigner->view()->hasItemsInClipboard() )
+  {
+    QAction *pasteAction = new QAction( tr( "Paste" ), menu );
+    connect( pasteAction, &QAction::triggered, this, [this, menu]()
+    {
+      QPointF pt = mDesigner->view()->mapToScene( mDesigner->view()->mapFromGlobal( menu->pos() ) );
+      mDesigner->view()->pasteItems( pt );
+    } );
+    menu->addAction( pasteAction );
+    menu->addSeparator();
   }
 
   // is a page under the mouse?
@@ -99,6 +124,19 @@ QMenu *QgsLayoutAppMenuProvider::createContextMenu( QWidget *parent, QgsLayout *
       }
     } );
     menu->addAction( removePageAction );
+
+    menu->addSeparator();
+  }
+
+  if ( !selectedItems.empty() )
+  {
+    QAction *itemPropertiesAction = new QAction( tr( "Item Properties…" ), menu );
+    QgsLayoutItem *item = selectedItems.at( 0 );
+    connect( itemPropertiesAction, &QAction::triggered, this, [this, item]()
+    {
+      mDesigner->showItemOptions( item, true );
+    } );
+    menu->addAction( itemPropertiesAction );
   }
 
   return menu;

@@ -53,13 +53,13 @@ class CORE_EXPORT QgsComposerAttributeTableColumnModelV2: public QAbstractTableM
      * \param composerTable QgsComposerAttributeTable the model is attached to
      * \param parent optional parent
      */
-    QgsComposerAttributeTableColumnModelV2( QgsComposerAttributeTableV2 *composerTable, QObject *parent SIP_TRANSFERTHIS = 0 );
+    QgsComposerAttributeTableColumnModelV2( QgsComposerAttributeTableV2 *composerTable, QObject *parent SIP_TRANSFERTHIS = nullptr );
 
-    virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
+    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
     int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
-    virtual QVariant data( const QModelIndex &index, int role ) const override;
+    QVariant data( const QModelIndex &index, int role ) const override;
     QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
-    virtual bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
+    bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
     bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
     bool insertRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
@@ -163,14 +163,14 @@ class CORE_EXPORT QgsComposerTableSortColumnsProxyModelV2: public QSortFilterPro
      * \param filterType filter for columns, controls whether sorted or unsorted columns are shown
      * \param parent optional parent
      */
-    QgsComposerTableSortColumnsProxyModelV2( QgsComposerAttributeTableV2 *composerTable, ColumnFilterType filterType, QObject *parent SIP_TRANSFERTHIS = 0 );
+    QgsComposerTableSortColumnsProxyModelV2( QgsComposerAttributeTableV2 *composerTable, ColumnFilterType filterType, QObject *parent SIP_TRANSFERTHIS = nullptr );
 
     bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
     int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
-    virtual QVariant data( const QModelIndex &index, int role ) const override;
+    QVariant data( const QModelIndex &index, int role ) const override;
     QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
-    virtual bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
+    bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
 
     /**
      * Returns the QgsComposerTableColumn corresponding to a row in the proxy model.

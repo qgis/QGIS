@@ -27,14 +27,14 @@ namespace QgsWms
   QgsMapRendererJobProxy::QgsMapRendererJobProxy(
     bool parallelRendering
     , int maxThreads
-    , QgsAccessControl *accessControl
+    , QgsFeatureFilterProvider *featureFilterProvider
   )
     :
     mParallelRendering( parallelRendering )
-    , mAccessControl( accessControl )
+    , mFeatureFilterProvider( featureFilterProvider )
   {
 #ifndef HAVE_SERVER_PYTHON_PLUGINS
-    Q_UNUSED( mAccessControl );
+    Q_UNUSED( mFeatureFilterProvider );
 #endif
     if ( mParallelRendering )
     {
@@ -53,7 +53,7 @@ namespace QgsWms
     {
       QgsMapRendererParallelJob renderJob( mapSettings );
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-      renderJob.setFeatureFilterProvider( mAccessControl );
+      renderJob.setFeatureFilterProvider( mFeatureFilterProvider );
 #endif
       renderJob.start();
       renderJob.waitForFinished();
@@ -65,7 +65,7 @@ namespace QgsWms
       mPainter.reset( new QPainter( image ) );
       QgsMapRendererCustomPainterJob renderJob( mapSettings, mPainter.get() );
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-      renderJob.setFeatureFilterProvider( mAccessControl );
+      renderJob.setFeatureFilterProvider( mFeatureFilterProvider );
 #endif
       renderJob.renderSynchronously();
     }

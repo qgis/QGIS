@@ -14,11 +14,11 @@
 class QgsGPSConnectionRegistry
 {
 %Docstring
- A class to register / unregister existing GPS connections such that the information
- is available to all classes and plugins.
+A class to register / unregister existing GPS connections such that the information
+is available to all classes and plugins.
 
- QgsGPSConnectionRegistry is not usually directly created, but rather accessed through
- QgsApplication.gpsConnectionRegistry().
+QgsGPSConnectionRegistry is not usually directly created, but rather accessed through
+QgsApplication.gpsConnectionRegistry().
 %End
 
 %TypeHeaderCode
@@ -28,7 +28,7 @@ class QgsGPSConnectionRegistry
 
     QgsGPSConnectionRegistry();
 %Docstring
- Constructor for QgsGPSConnectionRegistry.
+Constructor for QgsGPSConnectionRegistry.
 %End
     ~QgsGPSConnectionRegistry();
 
@@ -43,9 +43,6 @@ Unregisters connection. The registry does no longer own the connection
 %End
 
     QList< QgsGPSConnection *> connectionList() const;
-%Docstring
- :rtype: list of QgsGPSConnection
-%End
 
   private:
     QgsGPSConnectionRegistry( const QgsGPSConnectionRegistry &rh );

@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import range
 
 __author__ = 'Nyall Dawson'
 __date__ = 'September 2017'
@@ -70,6 +69,9 @@ class SpatialJoinSummary(QgisAlgorithm):
 
     def group(self):
         return self.tr('Vector general')
+
+    def groupId(self):
+        return 'vectorgeneral'
 
     def __init__(self):
         super().__init__()
@@ -260,7 +262,7 @@ class SpatialJoinSummary(QgisAlgorithm):
         total = 100.0 / source.featureCount() if source.featureCount() else 0
 
         # bounding box transform
-        bbox_transform = QgsCoordinateTransform(source.sourceCrs(), join_source.sourceCrs())
+        bbox_transform = QgsCoordinateTransform(source.sourceCrs(), join_source.sourceCrs(), context.project())
 
         for current, f in enumerate(features):
             if feedback.isCanceled():
@@ -286,11 +288,11 @@ class SpatialJoinSummary(QgisAlgorithm):
                     join_attributes.append(test_feat.attributes()[a])
 
                 if engine is None:
-                    engine = QgsGeometry.createGeometryEngine(f.geometry().geometry())
+                    engine = QgsGeometry.createGeometryEngine(f.geometry().constGet())
                     engine.prepareGeometry()
 
                 for predicate in predicates:
-                    if getattr(engine, predicate)(test_feat.geometry().geometry()):
+                    if getattr(engine, predicate)(test_feat.geometry().constGet()):
                         values.append(join_attributes)
                         break
 

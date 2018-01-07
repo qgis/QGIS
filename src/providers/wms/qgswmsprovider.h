@@ -53,7 +53,7 @@ class QgsWmsLegendDownloadHandler : public QgsImageFetcher
   public:
 
     QgsWmsLegendDownloadHandler( QgsNetworkAccessManager &networkAccessManager, const QgsWmsSettings &settings, const QUrl &url );
-    ~QgsWmsLegendDownloadHandler();
+    ~QgsWmsLegendDownloadHandler() override;
 
     // Make sure to connect to "finish" before starting
     void start() override;
@@ -86,8 +86,8 @@ class QgsCachedImageFetcher: public QgsImageFetcher
     Q_OBJECT
   public:
     explicit QgsCachedImageFetcher( const QImage &img );
-    virtual ~QgsCachedImageFetcher() = default;
-    virtual void start() override;
+
+    void start() override;
   private:
     const QImage _img; // copy is intentional
   private slots:
@@ -122,23 +122,23 @@ class QgsWmsProvider : public QgsRasterDataProvider
      * \param   capabilities   Optionally existing parsed capabilities for the given URI
      *
      */
-    QgsWmsProvider( const QString &uri = QString(), const QgsWmsCapabilities *capabilities = 0 );
+    QgsWmsProvider( const QString &uri = QString(), const QgsWmsCapabilities *capabilities = nullptr );
 
 
-    virtual ~QgsWmsProvider();
+    ~QgsWmsProvider() override;
 
     QgsWmsProvider *clone() const override;
 
-    virtual QgsCoordinateReferenceSystem crs() const override;
+    QgsCoordinateReferenceSystem crs() const override;
 
     /**
      * Reorder the list of WMS layer names to be rendered by this server
      * (in order from bottom to top)
      * \note   layers must have been previously added.
      */
-    virtual void setLayerOrder( QStringList const &layers ) override;
+    void setLayerOrder( QStringList const &layers ) override;
 
-    virtual void setSubLayerVisibility( const QString &name, bool vis ) override;
+    void setSubLayerVisibility( const QString &name, bool vis ) override;
 
     /**
      * Set the name of the connection for use in authentication where required
@@ -148,7 +148,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
     void readBlock( int bandNo, QgsRectangle  const &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback = nullptr ) override;
     //void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, QgsCoordinateReferenceSystem srcCRS, QgsCoordinateReferenceSystem destCRS, void *data );
 
-    virtual QgsRectangle extent() const override;
+    QgsRectangle extent() const override;
 
     bool isValid() const override;
 
@@ -190,7 +190,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
     bool supportsLegendGraphic() const override { return true; }
 
     QImage getLegendGraphic( double scale = 0.0, bool forceRefresh = false, const QgsRectangle *visibleExtent = nullptr ) override;
-    virtual QgsImageFetcher *getLegendGraphicFetcher( const QgsMapSettings *mapSettings ) override;
+    QgsImageFetcher *getLegendGraphicFetcher( const QgsMapSettings *mapSettings ) override;
 
     // TODO: Get the WMS connection
 
@@ -200,14 +200,15 @@ class QgsWmsProvider : public QgsRasterDataProvider
     Qgis::DataType dataType( int bandNo ) const override;
     Qgis::DataType sourceDataType( int bandNo ) const override;
     int bandCount() const override;
-    QString metadata() override;
+    QString htmlMetadata() override;
     QgsRasterIdentifyResult identify( const QgsPointXY &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 ) override;
     QString lastErrorTitle() override;
     QString lastError() override;
     QString lastErrorFormat() override;
     QString name() const override;
     QString description() const override;
-    virtual void reloadData() override;
+    void reloadData() override;
+    bool renderInPreview( const QgsDataProvider::PreviewContext &context ) override;
 
     static QVector<QgsWmsSupportedFormat> supportedFormats();
 
@@ -468,7 +469,7 @@ class QgsWmsImageDownloadHandler : public QObject
     Q_OBJECT
   public:
     QgsWmsImageDownloadHandler( const QString &providerUri, const QUrl &url, const QgsWmsAuthorization &auth, QImage *image, QgsRasterBlockFeedback *feedback );
-    ~QgsWmsImageDownloadHandler();
+    ~QgsWmsImageDownloadHandler() override;
 
     void downloadBlocking();
 
@@ -498,7 +499,7 @@ class QgsWmsTiledImageDownloadHandler : public QObject
   public:
 
     QgsWmsTiledImageDownloadHandler( const QString &providerUri, const QgsWmsAuthorization &auth, int reqNo, const QgsWmsProvider::TileRequests &requests, QImage *image, const QgsRectangle &viewExtent, bool smoothPixmapTransform, QgsRasterBlockFeedback *feedback );
-    ~QgsWmsTiledImageDownloadHandler();
+    ~QgsWmsTiledImageDownloadHandler() override;
 
     void downloadBlocking();
 

@@ -159,7 +159,7 @@ class CORE_EXPORT QgsRegularPolygon
     /**
      * Returns as a polygon.
      */
-    QgsPolygonV2 *toPolygon() const SIP_FACTORY;
+    QgsPolygon *toPolygon() const SIP_FACTORY;
 
     /**
      * Returns as a linestring.
@@ -176,7 +176,7 @@ class CORE_EXPORT QgsRegularPolygon
      * Returns a triangulation (vertices from sides to the center) of the regular polygon.
      * An empty list is returned if the regular polygon is empty.
      */
-    QList<QgsTriangle> triangulate() const;
+    QVector<QgsTriangle> triangulate() const;
 
     /**
      * Returns the inscribed circle

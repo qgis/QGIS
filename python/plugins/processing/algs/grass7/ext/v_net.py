@@ -33,7 +33,7 @@ import os
 from copy import deepcopy
 
 
-def incorporatePoints(alg, parameters, pointLayerName=u'points', networkLayerName=u'input'):
+def incorporatePoints(alg, parameters, context, pointLayerName=u'points', networkLayerName=u'input'):
     """
     incorporate points with lines to form a GRASS network
     """
@@ -65,32 +65,27 @@ def incorporatePoints(alg, parameters, pointLayerName=u'points', networkLayerNam
     command = u"v.db.connect -o map={} table={} layer=2".format(intLayer, pointLayer)
     alg.commands.append(command)
 
-    alg.processCommand(new_parameters)
+    alg.processCommand(new_parameters, context)
 
 
-def variableOutput(alg, params, nocats=True):
+def variableOutput(alg, layers, parameters, context, nocats=True):
     """ Handle variable data output for v.net modules:
-    params is like:
-    { u"output": [u"point", 1], # One output of type point from layer 1
-      u"output2": [u"line", 1], # One output of type line from layer 1
-      u"output3: [u"point", 2] # one output of type point from layer 2
+    :param layers:
+    layers is like:
+    { 'output': ['point', 1], # One output of type point from layer 1
+      'output2': ['line', 1], # One output of type line from layer 1
+      'output3': ['point', 2] # one output of type point from layer 2
     }
-
+    :param parameters:
+    :param context:
+    :param nocats: do not add categories.
     """
-
-    # Build the v.out.ogr commands
-    for outputName, typeList in list(params.items()):
+    for outputName, typeList in list(layers.items()):
         if not isinstance(typeList, list):
             continue
 
-        out = alg.getOutputValue(outputName)
-        command = u"v.out.ogr {} type={} layer={} -s -e input={} output=\"{}\" format=ESRI_Shapefile output_layer={} --overwrite".format(
-            u"" if typeList[0] == u"line" and nocats else u"-c",
-            typeList[0],
-            typeList[1],
-            alg.exportedLayers[out],
-            os.path.dirname(out),
-            os.path.basename(out)[:-4]
-        )
-        alg.commands.append(command)
-        alg.outputCommands.append(command)
+        fileName = alg.parameterAsOutputLayer(parameters, outputName, context)
+        grassName = '{}{}'.format(outputName, alg.uniqueSuffix)
+        alg.exportVectorLayer(
+            grassName, fileName, typeList[0], typeList[1],
+            False if typeList[0] == u"line" and nocats else nocats)

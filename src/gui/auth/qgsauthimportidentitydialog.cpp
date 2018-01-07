@@ -27,26 +27,7 @@
 #include "qgsauthguiutils.h"
 #include "qgsauthmanager.h"
 #include "qgslogger.h"
-
-
-static QByteArray fileData_( const QString &path, bool astext = false )
-{
-  QByteArray data;
-  QFile file( path );
-  if ( file.exists() )
-  {
-    QFile::OpenMode openflags( QIODevice::ReadOnly );
-    if ( astext )
-      openflags |= QIODevice::Text;
-    bool ret = file.open( openflags );
-    if ( ret )
-    {
-      data = file.readAll();
-    }
-    file.close();
-  }
-  return data;
-}
+#include "qgsapplication.h"
 
 
 QgsAuthImportIdentityDialog::QgsAuthImportIdentityDialog( QgsAuthImportIdentityDialog::IdentityType identitytype,
@@ -57,12 +38,12 @@ QgsAuthImportIdentityDialog::QgsAuthImportIdentityDialog( QgsAuthImportIdentityD
   , mDisabled( false )
 
 {
-  if ( QgsAuthManager::instance()->isDisabled() )
+  if ( QgsApplication::authManager()->isDisabled() )
   {
     mDisabled = true;
     mAuthNotifyLayout = new QVBoxLayout;
     this->setLayout( mAuthNotifyLayout );
-    mAuthNotify = new QLabel( QgsAuthManager::instance()->disabledMessage(), this );
+    mAuthNotify = new QLabel( QgsApplication::authManager()->disabledMessage(), this );
     mAuthNotifyLayout->addWidget( mAuthNotify );
   }
   else
@@ -211,7 +192,7 @@ void QgsAuthImportIdentityDialog::chkPkiPathsPassShow_stateChanged( int state )
 
 void QgsAuthImportIdentityDialog::btnPkiPathsCert_clicked()
 {
-  const QString &fn = getOpenFileName( tr( "Open Client Certificate File" ),  tr( "PEM (*.pem);;DER (*.der)" ) );
+  const QString &fn = getOpenFileName( tr( "Open Client Certificate File" ),  tr( "All files (*.*);;PEM (*.pem);;DER (*.der)" ) );
   if ( !fn.isEmpty() )
   {
     lePkiPathsCert->setText( fn );
@@ -221,7 +202,7 @@ void QgsAuthImportIdentityDialog::btnPkiPathsCert_clicked()
 
 void QgsAuthImportIdentityDialog::btnPkiPathsKey_clicked()
 {
-  const QString &fn = getOpenFileName( tr( "Open Private Key File" ),  tr( "PEM (*.pem);;DER (*.der)" ) );
+  const QString &fn = getOpenFileName( tr( "Open Private Key File" ),  tr( "All files (*.*);;PEM (*.pem);;DER (*.der)" ) );
   if ( !fn.isEmpty() )
   {
     lePkiPathsKey->setText( fn );
@@ -296,35 +277,18 @@ bool QgsAuthImportIdentityDialog::validatePkiPaths()
     ca_certs = certs;
   }
 
-  isvalid = clientcert.isValid();
+  isvalid = QgsAuthCertUtils::certIsViable( clientcert );
+
   QDateTime startdate( clientcert.effectiveDate() );
   QDateTime enddate( clientcert.expiryDate() );
 
   writeValidation( tr( "%1 thru %2" ).arg( startdate.toString(), enddate.toString() ),
-                   ( isvalid ? Valid : Invalid ) );
+                   ( QgsAuthCertUtils::certIsCurrent( clientcert ) ? Valid : Invalid ) );
   //TODO: set enabled on cert info button, relative to cert validity
 
   // check for valid private key and that any supplied password works
-  bool keypem = keypath.endsWith( QLatin1String( ".pem" ), Qt::CaseInsensitive );
-  QByteArray keydata( fileData_( keypath, keypem ) );
-
-  QSslKey clientkey;
-  QString keypass = lePkiPathsKeyPass->text();
-  clientkey = QSslKey( keydata,
-                       QSsl::Rsa,
-                       keypem ? QSsl::Pem : QSsl::Der,
-                       QSsl::PrivateKey,
-                       !keypass.isEmpty() ? keypass.toUtf8() : QByteArray() );
-  if ( clientkey.isNull() )
-  {
-    // try DSA algorithm, since Qt can't seem to determine it otherwise
-    clientkey = QSslKey( keydata,
-                         QSsl::Dsa,
-                         keypem ? QSsl::Pem : QSsl::Der,
-                         QSsl::PrivateKey,
-                         !keypass.isEmpty() ? keypass.toUtf8() : QByteArray() );
-  }
-
+  QString keypass( lePkiPathsKeyPass->text() );
+  QSslKey clientkey( QgsAuthCertUtils::keyFromFile( keypath, keypass ) );
   if ( clientkey.isNull() )
   {
     writeValidation( tr( "Failed to load client private key from file" ), Invalid, true );

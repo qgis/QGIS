@@ -55,7 +55,7 @@ class GUI_EXPORT QgsDataDefinedSizeLegendWidget : public QgsPanelWidget, private
      * when the symbol is given from outside rather than being set inside QgsDataDefinedSizeLegend.
      */
     explicit QgsDataDefinedSizeLegendWidget( const QgsDataDefinedSizeLegend *ddsLegend, const QgsProperty &ddSize, QgsMarkerSymbol *overrideSymbol SIP_TRANSFER, QgsMapCanvas *canvas = nullptr, QWidget *parent SIP_TRANSFERTHIS = nullptr );
-    ~QgsDataDefinedSizeLegendWidget();
+    ~QgsDataDefinedSizeLegendWidget() override;
 
     //! Returns configuration as set up in the dialog (may be null). Ownership is passed to the caller.
     QgsDataDefinedSizeLegend *dataDefinedSizeLegend() const SIP_FACTORY;
@@ -95,7 +95,7 @@ class SizeClassDelegate : public QStyledItemDelegate
     {
     }
 
-    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &, const QModelIndex & ) const
+    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &, const QModelIndex & ) const override
     {
       QLineEdit *lineEdit = new QLineEdit( parent );
       QDoubleValidator *validator = new QDoubleValidator( 0, 1e6, 1, lineEdit );

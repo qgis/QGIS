@@ -1,11 +1,10 @@
 v.class
 Classifies attribute data, e.g. for thematic mapping.
 Vector (v.*)
-ParameterVector|map|Input vector layer|-1|False
-ParameterTableField|column|Column name or expression|map|-1|False
-ParameterString|where|WHERE conditions of SQL statement without 'where' keyword|
-ParameterSelection|algorithm|Algorithm to use for classification|int;std;qua;equ;dis
-ParameterNumber|nbclasses|Number of classes to define|2.0|None|3
-ParameterBoolean|-g|Print only class breaks (without min and max)|True
-OutputHTML|html|Classification
-
+QgsProcessingParameterVectorLayer|map|Input vector layer|-1|None|False
+QgsProcessingParameterField|column|Column name or expression|None|map|-1|False|False
+QgsProcessingParameterString|where|WHERE conditions of SQL statement without 'where' keyword|
+QgsProcessingParameterEnum|algorithm|Algorithm to use for classification|int;std;qua;equ;dis
+QgsProcessingParameterNumber|nbclasses|Number of classes to define|QgsProcessingParameterNumber.Double|3|False|None|2.0
+QgsProcessingParameterBoolean|-g|Print only class breaks (without min and max)|True
+QgsProcessingParameterFileDestination|html|Classification|Html files (*.html)|report.html|False

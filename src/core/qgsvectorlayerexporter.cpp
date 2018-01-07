@@ -332,7 +332,11 @@ QgsVectorLayerExporter::exportLayer( QgsVectorLayer *layer,
 
   // Create our transform
   if ( destCRS.isValid() )
+  {
+    Q_NOWARN_DEPRECATED_PUSH
     ct = QgsCoordinateTransform( layer->crs(), destCRS );
+    Q_NOWARN_DEPRECATED_POP
+  }
 
   // Check for failure
   if ( !ct.isValid() )

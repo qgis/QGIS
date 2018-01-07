@@ -120,10 +120,10 @@ class TestQgsRuleBasedRenderer: public QObject
 
     void test_clone_ruleKey()
     {
-      RRule *rootRule = new RRule( 0 );
-      RRule *sub1Rule = new RRule( 0, 0, 0, QStringLiteral( "fld > 1" ) );
-      RRule *sub2Rule = new RRule( 0, 0, 0, QStringLiteral( "fld > 2" ) );
-      RRule *sub3Rule = new RRule( 0, 0, 0, QStringLiteral( "fld > 3" ) );
+      RRule *rootRule = new RRule( nullptr );
+      RRule *sub1Rule = new RRule( nullptr, 0, 0, QStringLiteral( "fld > 1" ) );
+      RRule *sub2Rule = new RRule( nullptr, 0, 0, QStringLiteral( "fld > 2" ) );
+      RRule *sub3Rule = new RRule( nullptr, 0, 0, QStringLiteral( "fld > 3" ) );
       rootRule->appendChild( sub1Rule );
       sub1Rule->appendChild( sub2Rule );
       sub2Rule->appendChild( sub3Rule );

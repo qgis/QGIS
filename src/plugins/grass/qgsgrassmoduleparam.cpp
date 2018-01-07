@@ -436,7 +436,7 @@ QgsGrassModuleOption::QgsGrassModuleOption( QgsGrassModule *module, QString key,
         {
           QDomElement e = n.toElement();
           QString val = e.text().trimmed();
-          minMax = val.split( QStringLiteral( "-" ) );
+          minMax = val.split( '-' );
           if ( minMax.size() == 2 )
           {
             mHaveLimits = true;
@@ -902,7 +902,7 @@ void QgsGrassModuleGdalInput::updateQgisLayers()
       }
       else if ( vector->providerType() == QLatin1String( "ogr" ) )
       {
-        QStringList items = provider->dataSourceUri().split( QStringLiteral( "|" ) );
+        QStringList items = provider->dataSourceUri().split( '|' );
 
         if ( items.size() > 1 )
         {
@@ -913,7 +913,7 @@ void QgsGrassModuleGdalInput::updateQgisLayers()
 
           for ( int i = 1; i < items.size(); i++ )
           {
-            QStringList args = items[i].split( QStringLiteral( "=" ) );
+            QStringList args = items[i].split( '=' );
 
             if ( args.size() != 2 )
               continue;
@@ -1111,7 +1111,7 @@ void QgsGrassModuleVectorField::updateFields()
     QString current = comboBox->currentText();
     comboBox->clear();
 
-    if ( mLayerInput == 0 )
+    if ( mLayerInput == nullptr )
     {
       continue;
     }
@@ -1219,7 +1219,7 @@ void QgsGrassModuleSelection::onLayerChanged()
     {
       QString uri = vectorLayer->dataProvider()->dataSourceUri();
       QgsDebugMsg( "uri = " + uri );
-      QString layerCode = uri.split( QStringLiteral( "/" ) ).last();
+      QString layerCode = uri.split( '/' ).last();
       if ( mLayerInput->currentLayerCodes().contains( layerCode ) )
       {
         // Qt::UserRole+1 may be also uri (AddLayer) but hardly matching layer id
@@ -1293,7 +1293,7 @@ QgsVectorLayer *QgsGrassModuleSelection::currentSelectionLayer()
   QString id = currentSelectionLayerId();
   if ( id.isEmpty() )
   {
-    return 0;
+    return nullptr;
   }
   QgsMapLayer *layer = QgsProject::instance()->mapLayer( id );
   return qobject_cast<QgsVectorLayer *>( layer );
@@ -1464,13 +1464,13 @@ void QgsGrassModuleFile::browse()
 
   if ( mType == Multiple )
   {
-    QString path = mLineEdit->text().split( QStringLiteral( "," ) ).first();
+    QString path = mLineEdit->text().split( ',' ).first();
     if ( path.isEmpty() )
       path = lastDir;
     else
       path = QFileInfo( path ).absolutePath();
 
-    QStringList files = QFileDialog::getOpenFileNames( this, 0, path, mFilters );
+    QStringList files = QFileDialog::getOpenFileNames( this, nullptr, path, mFilters );
     if ( files.isEmpty() )
       return;
 
@@ -1485,11 +1485,11 @@ void QgsGrassModuleFile::browse()
       selectedFile = lastDir;
 
     if ( mType == New )
-      selectedFile = QFileDialog::getSaveFileName( this, 0, selectedFile, mFilters );
+      selectedFile = QFileDialog::getSaveFileName( this, nullptr, selectedFile, mFilters );
     else if ( mType == Directory )
-      selectedFile = QFileDialog::getExistingDirectory( this, 0, selectedFile );
+      selectedFile = QFileDialog::getExistingDirectory( this, nullptr, selectedFile );
     else
-      selectedFile = QFileDialog::getOpenFileName( this, 0, selectedFile, mFilters );
+      selectedFile = QFileDialog::getOpenFileName( this, nullptr, selectedFile, mFilters );
 
     lastDir = QFileInfo( selectedFile ).absolutePath();
 

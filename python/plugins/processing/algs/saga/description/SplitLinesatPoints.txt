@@ -1,7 +1,7 @@
 Split Lines at Points
 shapes_lines
-ParameterVector|LINES|Lines|1|False
-ParameterVector|SPLIT|Split Features|0|False
-OutputVector|INTERSECT|Intersection
-ParameterSelection|OUTPUT|Output|[0] polylines;[1] separate lines| 1
-ParameterNumber|EPSILON|Epsilon|None|None| 0.000000
+QgsProcessingParameterFeatureSource|LINES|Lines|1|None|False
+QgsProcessingParameterFeatureSource|SPLIT|Split Features|0|None|False
+QgsProcessingParameterVectorDestination|INTERSECT|Intersection
+QgsProcessingParameterEnum|OUTPUT|Output|[0] polylines;[1] separate lines|False|1
+QgsProcessingParameterNumber|EPSILON|Epsilon|QgsProcessingParameterNumber.Double|0.000000|False|None|None

@@ -14,7 +14,8 @@
 class QgsPointClusterRendererWidget: QgsRendererWidget, QgsExpressionContextGenerator
 {
 %Docstring
- A widget which allows configuration of the properties for a QgsPointClusterRenderer.
+A widget which allows configuration of the properties for a QgsPointClusterRenderer.
+
 .. versionadded:: 3.0
 %End
 
@@ -25,20 +26,22 @@ class QgsPointClusterRendererWidget: QgsRendererWidget, QgsExpressionContextGene
 
     static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer ) /Factory/;
 %Docstring
- Returns a new QgsPointClusterRendererWidget.
- \param layer associated vector layer
- \param style style collection
- \param renderer source QgsPointClusterRenderer renderer
- :return: new QgsRendererWidget
- :rtype: QgsRendererWidget
+Returns a new QgsPointClusterRendererWidget.
+
+:param layer: associated vector layer
+:param style: style collection
+:param renderer: source QgsPointClusterRenderer renderer
+
+:return: new QgsRendererWidget
 %End
 
     QgsPointClusterRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );
 %Docstring
- Constructor for QgsPointClusterRendererWidget.
- \param layer associated vector layer
- \param style style collection
- \param renderer source QgsPointClusterRenderer renderer
+Constructor for QgsPointClusterRendererWidget.
+
+:param layer: associated vector layer
+:param style: style collection
+:param renderer: source QgsPointClusterRenderer renderer
 %End
 
     ~QgsPointClusterRendererWidget();

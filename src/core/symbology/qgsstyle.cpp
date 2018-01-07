@@ -32,6 +32,7 @@
 #include <QByteArray>
 
 #include <sqlite3.h>
+#include "qgssqliteutils.h"
 
 #define STYLE_CURRENT_VERSION  "1"
 
@@ -75,8 +76,6 @@ void QgsStyle::clear()
 
   mSymbols.clear();
   mColorRamps.clear();
-  if ( mCurrentDB )
-    sqlite3_close( mCurrentDB );
 }
 
 bool QgsStyle::addSymbol( const QString &name, QgsSymbol *symbol, bool update )
@@ -278,11 +277,10 @@ QStringList QgsStyle::colorRampNames()
 
 bool QgsStyle::openDatabase( const QString &filename )
 {
-  int rc = sqlite3_open( filename.toUtf8(), &mCurrentDB );
+  int rc = mCurrentDB.open( filename );
   if ( rc )
   {
-    mErrorString = "Couldn't open the style database: " + QString( sqlite3_errmsg( mCurrentDB ) );
-    sqlite3_close( mCurrentDB );
+    mErrorString = QStringLiteral( "Couldn't open the style database: %1" ).arg( mCurrentDB.errorMessage() );
     return false;
   }
 
@@ -362,19 +360,21 @@ bool QgsStyle::load( const QString &filename )
   // Make sure there are no Null fields in parenting symbols and groups
   char *query = sqlite3_mprintf( "UPDATE symbol SET favorite=0 WHERE favorite IS NULL;"
                                  "UPDATE colorramp SET favorite=0 WHERE favorite IS NULL;"
-                                 "UPDATE symgroup SET parent=0 WHERE parent IS NULL;" );
+                               );
   runEmptyQuery( query );
 
   // First create all the main symbols
   query = sqlite3_mprintf( "SELECT * FROM symbol" );
 
-  sqlite3_stmt *ppStmt = nullptr;
-  int nError = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, nullptr );
-  while ( nError == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
+  sqlite3_statement_unique_ptr statement;
+  int rc;
+  statement = mCurrentDB.prepare( query, rc );
+
+  while ( rc == SQLITE_OK && sqlite3_step( statement.get() ) == SQLITE_ROW )
   {
     QDomDocument doc;
-    QString symbol_name = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( ppStmt, SymbolName ) ) );
-    QString xmlstring = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( ppStmt, SymbolXML ) ) );
+    QString symbol_name = statement.columnAsText( SymbolName );
+    QString xmlstring = statement.columnAsText( SymbolXML );
     if ( !doc.setContent( xmlstring ) )
     {
       QgsDebugMsg( "Cannot open symbol " + symbol_name );
@@ -387,15 +387,13 @@ bool QgsStyle::load( const QString &filename )
       mSymbols.insert( symbol_name, symbol );
   }
 
-  sqlite3_finalize( ppStmt );
-
   query = sqlite3_mprintf( "SELECT * FROM colorramp" );
-  nError = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, nullptr );
-  while ( nError == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
+  statement = mCurrentDB.prepare( query, rc );
+  while ( rc == SQLITE_OK && sqlite3_step( statement.get() ) == SQLITE_ROW )
   {
     QDomDocument doc;
-    QString ramp_name = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( ppStmt, ColorrampName ) ) );
-    QString xmlstring = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( ppStmt, ColorrampXML ) ) );
+    QString ramp_name = statement.columnAsText( ColorrampName );
+    QString xmlstring = statement.columnAsText( ColorrampXML );
     if ( !doc.setContent( xmlstring ) )
     {
       QgsDebugMsg( "Cannot open symbol " + ramp_name );
@@ -506,14 +504,14 @@ bool QgsStyle::renameColorRamp( const QString &oldName, const QString &newName )
   mColorRamps.insert( newName, ramp );
 
   int rampid = 0;
-  sqlite3_stmt *ppStmt = nullptr;
+  sqlite3_statement_unique_ptr statement;
   char *query = sqlite3_mprintf( "SELECT id FROM colorramp WHERE name='%q'", oldName.toUtf8().constData() );
-  int nErr = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, nullptr );
-  if ( nErr == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
+  int nErr;
+  statement = mCurrentDB.prepare( query, nErr );
+  if ( nErr == SQLITE_OK && sqlite3_step( statement.get() ) == SQLITE_ROW )
   {
-    rampid = sqlite3_column_int( ppStmt, 0 );
+    rampid = sqlite3_column_int( statement.get(), 0 );
   }
-  sqlite3_finalize( ppStmt );
   rename( ColorrampEntity, rampid, newName );
 
   return true;
@@ -542,16 +540,15 @@ QStringList QgsStyle::symbolsOfFavorite( StyleEntity type ) const
     return QStringList();
   }
 
-  sqlite3_stmt *ppStmt = nullptr;
-  int nErr = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, nullptr );
+  int nErr;
+  sqlite3_statement_unique_ptr statement;
+  statement = mCurrentDB.prepare( query, nErr );
 
   QStringList symbols;
-  while ( nErr == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
+  while ( nErr == SQLITE_OK && sqlite3_step( statement.get() ) == SQLITE_ROW )
   {
-    symbols << QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( ppStmt, 0 ) ) );
+    symbols << statement.columnAsText( 0 );
   }
-
-  sqlite3_finalize( ppStmt );
 
   return symbols;
 }
@@ -579,28 +576,28 @@ QStringList QgsStyle::symbolsWithTag( StyleEntity type, int tagid ) const
     return QStringList();
   }
 
-  sqlite3_stmt *ppStmt = nullptr;
-  int nErr = sqlite3_prepare_v2( mCurrentDB, subquery, -1, &ppStmt, nullptr );
+  int nErr;
+  sqlite3_statement_unique_ptr statement;
+  statement = mCurrentDB.prepare( subquery, nErr );
 
   // get the symbol <-> tag connection from table 'tagmap'/'ctagmap'
   QStringList symbols;
-  while ( nErr == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
+  while ( nErr == SQLITE_OK && sqlite3_step( statement.get() ) == SQLITE_ROW )
   {
-    int id = sqlite3_column_int( ppStmt, 0 );
+    int id = sqlite3_column_int( statement.get(), 0 );
 
     char *query = type == SymbolEntity
                   ? sqlite3_mprintf( "SELECT name FROM symbol WHERE id=%d", id )
                   : sqlite3_mprintf( "SELECT name FROM colorramp WHERE id=%d", id );
 
-    sqlite3_stmt *ppStmt2 = nullptr;
-    int sErr = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt2, nullptr );
-    while ( sErr == SQLITE_OK && sqlite3_step( ppStmt2 ) == SQLITE_ROW )
+    int rc;
+    sqlite3_statement_unique_ptr statement2;
+    statement2 = mCurrentDB.prepare( query, rc );
+    while ( rc == SQLITE_OK && sqlite3_step( statement2.get() ) == SQLITE_ROW )
     {
-      symbols << QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( ppStmt2, 0 ) ) );
+      symbols << QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( statement2.get(), 0 ) ) );
     }
-    sqlite3_finalize( ppStmt2 );
   }
-  sqlite3_finalize( ppStmt );
 
   return symbols;
 }
@@ -609,20 +606,20 @@ int QgsStyle::addTag( const QString &tagname )
 {
   if ( !mCurrentDB )
     return 0;
-  sqlite3_stmt *ppStmt = nullptr;
+  sqlite3_statement_unique_ptr statement;
 
   char *query = sqlite3_mprintf( "INSERT INTO tag VALUES (NULL, '%q')", tagname.toUtf8().constData() );
-  int nErr = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, nullptr );
+  int nErr;
+  statement = mCurrentDB.prepare( query, nErr );
   if ( nErr == SQLITE_OK )
-    ( void )sqlite3_step( ppStmt );
-  sqlite3_finalize( ppStmt );
+    ( void )sqlite3_step( statement.get() );
 
   QgsSettings settings;
   settings.setValue( QStringLiteral( "qgis/symbolsListGroupsIndex" ), 0 );
 
   emit groupsModified();
 
-  return static_cast< int >( sqlite3_last_insert_rowid( mCurrentDB ) );
+  return static_cast< int >( sqlite3_last_insert_rowid( mCurrentDB.get() ) );
 }
 
 QStringList QgsStyle::tags() const
@@ -630,18 +627,17 @@ QStringList QgsStyle::tags() const
   if ( !mCurrentDB )
     return QStringList();
 
-  sqlite3_stmt *ppStmt = nullptr;
+  sqlite3_statement_unique_ptr statement;
 
   char *query = sqlite3_mprintf( "SELECT name FROM tag" );
-  int nError = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, nullptr );
+  int nError;
+  statement = mCurrentDB.prepare( query, nError );
 
   QStringList tagList;
-  while ( nError == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
+  while ( nError == SQLITE_OK && sqlite3_step( statement.get() ) == SQLITE_ROW )
   {
-    tagList << QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( ppStmt, 0 ) ) );
+    tagList << statement.columnAsText( 0 );
   }
-
-  sqlite3_finalize( ppStmt );
 
   return tagList;
 }
@@ -730,7 +726,7 @@ bool QgsStyle::runEmptyQuery( char *query, bool freeQuery )
     return false;
 
   char *zErr = nullptr;
-  int nErr = sqlite3_exec( mCurrentDB, query, nullptr, nullptr, &zErr );
+  int nErr = sqlite3_exec( mCurrentDB.get(), query, nullptr, nullptr, &zErr );
 
   if ( freeQuery )
   {
@@ -801,29 +797,24 @@ QStringList QgsStyle::findSymbols( StyleEntity type, const QString &qword )
   char *query = sqlite3_mprintf( "SELECT name FROM %q WHERE name LIKE '%%%q%%'",
                                  item.toUtf8().constData(), qword.toUtf8().constData() );
 
-  sqlite3_stmt *ppStmt = nullptr;
-  int nErr = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, nullptr );
+  sqlite3_statement_unique_ptr statement;
+  int nErr; statement = mCurrentDB.prepare( query, nErr );
 
   QSet< QString > symbols;
-  while ( nErr == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
+  while ( nErr == SQLITE_OK && sqlite3_step( statement.get() ) == SQLITE_ROW )
   {
-    symbols << QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( ppStmt, 0 ) ) );
+    symbols << statement.columnAsText( 0 );
   }
-
-  sqlite3_finalize( ppStmt );
 
   // next add symbols with matching tags
   query = sqlite3_mprintf( "SELECT id FROM tag WHERE name LIKE '%%%q%%'", qword.toUtf8().constData() );
-  nErr = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, nullptr );
+  statement = mCurrentDB.prepare( query, nErr );
 
   QStringList tagids;
-  while ( nErr == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
+  while ( nErr == SQLITE_OK && sqlite3_step( statement.get() ) == SQLITE_ROW )
   {
-    tagids << QString::fromUtf8( ( const char * ) sqlite3_column_text( ppStmt, 0 ) );
+    tagids << QString::fromUtf8( ( const char * ) sqlite3_column_text( statement.get(), 0 ) );
   }
-
-  sqlite3_finalize( ppStmt );
-
 
   QString dummy = tagids.join( QStringLiteral( ", " ) );
 
@@ -837,27 +828,22 @@ QStringList QgsStyle::findSymbols( StyleEntity type, const QString &qword )
     query = sqlite3_mprintf( "SELECT colorramp_id FROM ctagmap WHERE tag_id IN (%q)",
                              dummy.toUtf8().constData() );
   }
-  nErr = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, nullptr );
+  statement = mCurrentDB.prepare( query, nErr );
 
   QStringList symbolids;
-  while ( nErr == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
+  while ( nErr == SQLITE_OK && sqlite3_step( statement.get() ) == SQLITE_ROW )
   {
-    symbolids << QString::fromUtf8( ( const char * ) sqlite3_column_text( ppStmt, 0 ) );
+    symbolids << QString::fromUtf8( ( const char * ) sqlite3_column_text( statement.get(), 0 ) );
   }
-
-  sqlite3_finalize( ppStmt );
-
 
   dummy = symbolids.join( QStringLiteral( ", " ) );
   query = sqlite3_mprintf( "SELECT name FROM %q  WHERE id IN (%q)",
                            item.toUtf8().constData(), dummy.toUtf8().constData() );
-  nErr = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, nullptr );
-  while ( nErr == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
+  statement = mCurrentDB.prepare( query, nErr );
+  while ( nErr == SQLITE_OK && sqlite3_step( statement.get() ) == SQLITE_ROW )
   {
-    symbols << QString::fromUtf8( ( const char * ) sqlite3_column_text( ppStmt, 0 ) );
+    symbols << QString::fromUtf8( ( const char * ) sqlite3_column_text( statement.get(), 0 ) );
   }
-
-  sqlite3_finalize( ppStmt );
 
   return symbols.toList();
 }
@@ -886,20 +872,18 @@ bool QgsStyle::tagSymbol( StyleEntity type, const QString &symbol, const QString
       // sql: gets the id of the tag if present or insert the tag and get the id of the tag
       char *query = sqlite3_mprintf( "SELECT id FROM tag WHERE LOWER(name)='%q'", tag.toUtf8().toLower().constData() );
 
-      sqlite3_stmt *ppStmt = nullptr;
-      int nErr = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, nullptr );
+      sqlite3_statement_unique_ptr statement;
+      int nErr; statement = mCurrentDB.prepare( query, nErr );
 
       int tagid;
-      if ( nErr == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
+      if ( nErr == SQLITE_OK && sqlite3_step( statement.get() ) == SQLITE_ROW )
       {
-        tagid = sqlite3_column_int( ppStmt, 0 );
+        tagid = sqlite3_column_int( statement.get(), 0 );
       }
       else
       {
         tagid = addTag( tag );
       }
-
-      sqlite3_finalize( ppStmt );
 
       // Now map the tag to the symbol if it's not already tagged
       if ( !symbolHasTag( type, symbol, tag ) )
@@ -909,7 +893,7 @@ bool QgsStyle::tagSymbol( StyleEntity type, const QString &symbol, const QString
                 : sqlite3_mprintf( "INSERT INTO ctagmap VALUES (%d,%d)", tagid, symbolid );
 
         char *zErr = nullptr;
-        nErr = sqlite3_exec( mCurrentDB, query, nullptr, nullptr, &zErr );
+        nErr = sqlite3_exec( mCurrentDB.get(), query, nullptr, nullptr, &zErr );
         if ( nErr )
         {
           QgsDebugMsg( zErr );
@@ -932,36 +916,31 @@ bool QgsStyle::detagSymbol( StyleEntity type, const QString &symbol, const QStri
   char *query = type == SymbolEntity
                 ? sqlite3_mprintf( "SELECT id FROM symbol WHERE name='%q'", symbol.toUtf8().constData() )
                 : sqlite3_mprintf( "SELECT id FROM colorramp WHERE name='%q'", symbol.toUtf8().constData() );
-  sqlite3_stmt *ppStmt = nullptr;
-  int nErr = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, nullptr );
+  sqlite3_statement_unique_ptr statement;
+  int nErr; statement = mCurrentDB.prepare( query, nErr );
 
   int symbolid = 0;
-  if ( nErr == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
+  if ( nErr == SQLITE_OK && sqlite3_step( statement.get() ) == SQLITE_ROW )
   {
-    symbolid = sqlite3_column_int( ppStmt, 0 );
+    symbolid = sqlite3_column_int( statement.get(), 0 );
   }
   else
   {
-    sqlite3_finalize( ppStmt );
     return false;
   }
-
-  sqlite3_finalize( ppStmt );
 
   Q_FOREACH ( const QString &tag, tags )
   {
     query = sqlite3_mprintf( "SELECT id FROM tag WHERE name='%q'", tag.toUtf8().constData() );
 
-    sqlite3_stmt *ppStmt2 = nullptr;
-    nErr = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt2, nullptr );
+    sqlite3_statement_unique_ptr statement2;
+    statement2 = mCurrentDB.prepare( query, nErr );
 
     int tagid = 0;
-    if ( nErr == SQLITE_OK && sqlite3_step( ppStmt2 ) == SQLITE_ROW )
+    if ( nErr == SQLITE_OK && sqlite3_step( statement2.get() ) == SQLITE_ROW )
     {
-      tagid = sqlite3_column_int( ppStmt2, 0 );
+      tagid = sqlite3_column_int( statement2.get(), 0 );
     }
-
-    sqlite3_finalize( ppStmt2 );
 
     if ( tagid )
     {
@@ -990,21 +969,19 @@ bool QgsStyle::detagSymbol( StyleEntity type, const QString &symbol )
   char *query = type == SymbolEntity
                 ? sqlite3_mprintf( "SELECT id FROM symbol WHERE name='%q'", symbol.toUtf8().constData() )
                 : sqlite3_mprintf( "SELECT id FROM colorramp WHERE name='%q'", symbol.toUtf8().constData() );
-  sqlite3_stmt *ppStmt = nullptr;
-  int nErr = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, nullptr );
+  sqlite3_statement_unique_ptr statement;
+  int nErr;
+  statement = mCurrentDB.prepare( query, nErr );
 
   int symbolid = 0;
-  if ( nErr == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
+  if ( nErr == SQLITE_OK && sqlite3_step( statement.get() ) == SQLITE_ROW )
   {
-    symbolid = sqlite3_column_int( ppStmt, 0 );
+    symbolid = sqlite3_column_int( statement.get(), 0 );
   }
   else
   {
-    sqlite3_finalize( ppStmt );
     return false;
   }
-
-  sqlite3_finalize( ppStmt );
 
   // remove all tags
   query = type == SymbolEntity
@@ -1035,24 +1012,22 @@ QStringList QgsStyle::tagsOfSymbol( StyleEntity type, const QString &symbol )
                 ? sqlite3_mprintf( "SELECT tag_id FROM tagmap WHERE symbol_id=%d", symbolid )
                 : sqlite3_mprintf( "SELECT tag_id FROM ctagmap WHERE colorramp_id=%d", symbolid );
 
-  sqlite3_stmt *ppStmt = nullptr;
-  int nErr = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, nullptr );
+  sqlite3_statement_unique_ptr statement;
+  int nErr; statement = mCurrentDB.prepare( query, nErr );
 
   QStringList tagList;
-  while ( nErr == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
+  while ( nErr == SQLITE_OK && sqlite3_step( statement.get() ) == SQLITE_ROW )
   {
-    char *subquery = sqlite3_mprintf( "SELECT name FROM tag WHERE id=%d", sqlite3_column_int( ppStmt, 0 ) );
+    char *subquery = sqlite3_mprintf( "SELECT name FROM tag WHERE id=%d", sqlite3_column_int( statement.get(), 0 ) );
 
-    sqlite3_stmt *ppStmt2 = nullptr;
-    int pErr = sqlite3_prepare_v2( mCurrentDB, subquery, -1, &ppStmt2, nullptr );
-    if ( pErr == SQLITE_OK && sqlite3_step( ppStmt2 ) == SQLITE_ROW )
+    sqlite3_statement_unique_ptr statement2;
+    int pErr;
+    statement2 = mCurrentDB.prepare( subquery, pErr );
+    if ( pErr == SQLITE_OK && sqlite3_step( statement2.get() ) == SQLITE_ROW )
     {
-      tagList << QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( ppStmt2, 0 ) ) );
+      tagList << QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( statement2.get(), 0 ) ) );
     }
-    sqlite3_finalize( ppStmt2 );
   }
-
-  sqlite3_finalize( ppStmt );
 
   return tagList;
 }
@@ -1081,10 +1056,10 @@ bool QgsStyle::symbolHasTag( StyleEntity type, const QString &symbol, const QStr
                 ? sqlite3_mprintf( "SELECT tag_id FROM tagmap WHERE tag_id=%d AND symbol_id=%d", tagid, symbolid )
                 : sqlite3_mprintf( "SELECT tag_id FROM ctagmap WHERE tag_id=%d AND colorramp_id=%d", tagid, symbolid );
 
-  sqlite3_stmt *ppStmt = nullptr;
-  int nErr = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, nullptr );
+  sqlite3_statement_unique_ptr statement;
+  int nErr; statement = mCurrentDB.prepare( query, nErr );
 
-  return ( nErr == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW );
+  return ( nErr == SQLITE_OK && sqlite3_step( statement.get() ) == SQLITE_ROW );
 }
 
 QString QgsStyle::tag( int id ) const
@@ -1092,18 +1067,17 @@ QString QgsStyle::tag( int id ) const
   if ( !mCurrentDB )
     return QString();
 
-  sqlite3_stmt *ppStmt = nullptr;
+  sqlite3_statement_unique_ptr statement;
 
   char *query = sqlite3_mprintf( "SELECT name FROM tag WHERE id=%d", id );
-  int nError = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, nullptr );
+  int nError;
+  statement = mCurrentDB.prepare( query, nError );
 
   QString tag;
-  if ( nError == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
+  if ( nError == SQLITE_OK && sqlite3_step( statement.get() ) == SQLITE_ROW )
   {
-    tag = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( ppStmt, 0 ) ) );
+    tag = statement.columnAsText( 0 );
   }
-
-  sqlite3_finalize( ppStmt );
 
   return tag;
 }
@@ -1112,16 +1086,14 @@ int QgsStyle::getId( const QString &table, const QString &name )
 {
   char *query = sqlite3_mprintf( "SELECT id FROM %q WHERE LOWER(name)='%q'", table.toUtf8().constData(), name.toUtf8().toLower().constData() );
 
-  sqlite3_stmt *ppStmt = nullptr;
-  int nErr = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, nullptr );
+  sqlite3_statement_unique_ptr statement;
+  int nErr; statement = mCurrentDB.prepare( query, nErr );
 
   int id = 0;
-  if ( nErr == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
+  if ( nErr == SQLITE_OK && sqlite3_step( statement.get() ) == SQLITE_ROW )
   {
-    id = sqlite3_column_int( ppStmt, 0 );
+    id = sqlite3_column_int( statement.get(), 0 );
   }
-
-  sqlite3_finalize( ppStmt );
 
   return id;
 }
@@ -1130,16 +1102,14 @@ QString QgsStyle::getName( const QString &table, int id ) const
 {
   char *query = sqlite3_mprintf( "SELECT name FROM %q WHERE id='%q'", table.toUtf8().constData(), QString::number( id ).toUtf8().constData() );
 
-  sqlite3_stmt *ppStmt = nullptr;
-  int nErr = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, nullptr );
+  sqlite3_statement_unique_ptr statement;
+  int nErr; statement = mCurrentDB.prepare( query, nErr );
 
   QString name;
-  if ( nErr == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
+  if ( nErr == SQLITE_OK && sqlite3_step( statement.get() ) == SQLITE_ROW )
   {
-    name = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( ppStmt, 0 ) ) );
+    name = statement.columnAsText( 0 );
   }
-
-  sqlite3_finalize( ppStmt );
 
   return name;
 }
@@ -1199,7 +1169,7 @@ int QgsStyle::addSmartgroup( const QString &name, const QString &op, const QgsSm
     settings.setValue( QStringLiteral( "qgis/symbolsListGroupsIndex" ), 0 );
 
     emit groupsModified();
-    return static_cast< int >( sqlite3_last_insert_rowid( mCurrentDB ) );
+    return static_cast< int >( sqlite3_last_insert_rowid( mCurrentDB.get() ) );
   }
   else
   {
@@ -1219,17 +1189,16 @@ QgsSymbolGroupMap QgsStyle::smartgroupsListMap()
   char *query = sqlite3_mprintf( "SELECT * FROM smartgroup" );
 
   // Now run the query and retrieve the group names
-  sqlite3_stmt *ppStmt = nullptr;
-  int nError = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, nullptr );
+  sqlite3_statement_unique_ptr statement;
+  int nError;
+  statement = mCurrentDB.prepare( query, nError );
 
   QgsSymbolGroupMap groupNames;
-  while ( nError == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
+  while ( nError == SQLITE_OK && sqlite3_step( statement.get() ) == SQLITE_ROW )
   {
-    QString group = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( ppStmt, SmartgroupName ) ) );
-    groupNames.insert( sqlite3_column_int( ppStmt, SmartgroupId ), group );
+    QString group = statement.columnAsText( SmartgroupName );
+    groupNames.insert( sqlite3_column_int( statement.get(), SmartgroupId ), group );
   }
-
-  sqlite3_finalize( ppStmt );
 
   return groupNames;
 }
@@ -1245,16 +1214,15 @@ QStringList QgsStyle::smartgroupNames()
   char *query = sqlite3_mprintf( "SELECT name FROM smartgroup" );
 
   // Now run the query and retrieve the group names
-  sqlite3_stmt *ppStmt = nullptr;
-  int nError = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, nullptr );
+  sqlite3_statement_unique_ptr statement;
+  int nError;
+  statement = mCurrentDB.prepare( query, nError );
 
   QStringList groups;
-  while ( nError == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
+  while ( nError == SQLITE_OK && sqlite3_step( statement.get() ) == SQLITE_ROW )
   {
-    groups << QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( ppStmt, 0 ) ) );
+    groups << statement.columnAsText( 0 );
   }
-
-  sqlite3_finalize( ppStmt );
 
   return groups;
 }
@@ -1265,17 +1233,16 @@ QStringList QgsStyle::symbolsOfSmartgroup( StyleEntity type, int id )
 
   char *query = sqlite3_mprintf( "SELECT xml FROM smartgroup WHERE id=%d", id );
 
-  sqlite3_stmt *ppStmt = nullptr;
-  int nErr = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, nullptr );
-  if ( !( nErr == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW ) )
+  sqlite3_statement_unique_ptr statement;
+  int nErr; statement = mCurrentDB.prepare( query, nErr );
+  if ( !( nErr == SQLITE_OK && sqlite3_step( statement.get() ) == SQLITE_ROW ) )
   {
-    sqlite3_finalize( ppStmt );
     return QStringList();
   }
   else
   {
     QDomDocument doc;
-    QString xmlstr = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( ppStmt, 0 ) ) );
+    QString xmlstr = statement.columnAsText( 0 );
     if ( !doc.setContent( xmlstr ) )
     {
       QgsDebugMsg( QString( "Cannot open smartgroup id: %1" ).arg( id ) );
@@ -1353,8 +1320,6 @@ QStringList QgsStyle::symbolsOfSmartgroup( StyleEntity type, int id )
     } // DOM loop ends here
   }
 
-  sqlite3_finalize( ppStmt );
-
   return symbols;
 }
 
@@ -1370,12 +1335,13 @@ QgsSmartConditionMap QgsStyle::smartgroup( int id )
 
   char *query = sqlite3_mprintf( "SELECT xml FROM smartgroup WHERE id=%d", id );
 
-  sqlite3_stmt *ppStmt = nullptr;
-  int nError = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, nullptr );
-  if ( nError == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
+  sqlite3_statement_unique_ptr statement;
+  int nError;
+  statement = mCurrentDB.prepare( query, nError );
+  if ( nError == SQLITE_OK && sqlite3_step( statement.get() ) == SQLITE_ROW )
   {
     QDomDocument doc;
-    QString xmlstr = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( ppStmt, 0 ) ) );
+    QString xmlstr = statement.columnAsText( 0 );
     if ( !doc.setContent( xmlstr ) )
     {
       QgsDebugMsg( QString( "Cannot open smartgroup id: %1" ).arg( id ) );
@@ -1394,8 +1360,6 @@ QgsSmartConditionMap QgsStyle::smartgroup( int id )
     }
   }
 
-  sqlite3_finalize( ppStmt );
-
   return condition;
 }
 
@@ -1411,12 +1375,13 @@ QString QgsStyle::smartgroupOperator( int id )
 
   char *query = sqlite3_mprintf( "SELECT xml FROM smartgroup WHERE id=%d", id );
 
-  sqlite3_stmt *ppStmt = nullptr;
-  int nError = sqlite3_prepare_v2( mCurrentDB, query, -1, &ppStmt, nullptr );
-  if ( nError == SQLITE_OK && sqlite3_step( ppStmt ) == SQLITE_ROW )
+  int nError;
+  sqlite3_statement_unique_ptr statement;
+  statement = mCurrentDB.prepare( query, nError );
+  if ( nError == SQLITE_OK && sqlite3_step( statement.get() ) == SQLITE_ROW )
   {
     QDomDocument doc;
-    QString xmlstr = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( ppStmt, 0 ) ) );
+    QString xmlstr = statement.columnAsText( 0 );
     if ( !doc.setContent( xmlstr ) )
     {
       QgsDebugMsg( QString( "Cannot open smartgroup id: %1" ).arg( id ) );
@@ -1424,8 +1389,6 @@ QString QgsStyle::smartgroupOperator( int id )
     QDomElement smartEl = doc.documentElement();
     op = smartEl.attribute( QStringLiteral( "operator" ) );
   }
-
-  sqlite3_finalize( ppStmt );
 
   return op;
 }

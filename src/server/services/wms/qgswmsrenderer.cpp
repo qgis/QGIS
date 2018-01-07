@@ -67,7 +67,7 @@
 #include "qgslayerrestorer.h"
 #include "qgsdxfexport.h"
 #include "qgssymbollayerutils.h"
-
+#include "qgslayoutitemlegend.h"
 
 #include <QImage>
 #include <QPainter>
@@ -89,6 +89,8 @@
 #include "qgscomposerpicture.h"
 #include "qgscomposerscalebar.h"
 #include "qgscomposershape.h"
+#include "qgsfeaturefilterprovidergroup.h"
+#include "qgsogcutils.h"
 #include <QBuffer>
 #include <QPrinter>
 #include <QSvgGenerator>
@@ -130,6 +132,11 @@ namespace QgsWms
 
     initRestrictedLayers();
     initNicknameLayers();
+  }
+
+  QgsRenderer::~QgsRenderer()
+  {
+    removeTemporaryLayers();
   }
 
 
@@ -250,7 +257,7 @@ namespace QgsWms
 
   void QgsRenderer::runHitTestLayer( QgsVectorLayer *vl, SymbolSet &usedSymbols, QgsRenderContext &context ) const
   {
-    QgsFeatureRenderer *r = vl->renderer();
+    std::unique_ptr< QgsFeatureRenderer > r( vl->renderer()->clone() );
     bool moreSymbolsPerFeature = r->capabilities() & QgsFeatureRenderer::MoreSymbolsPerFeature;
     r->startRender( context, vl->pendingFields() );
     QgsFeature f;
@@ -287,7 +294,7 @@ namespace QgsWms
     QList<QgsWmsParametersLayer> params = mWmsParameters.layersParameters();
 
     // create the output image
-    std::unique_ptr<QImage> image( createImage() );
+    std::unique_ptr<QImage> image( new QImage() );
 
     // configure map settings (background, DPI, ...)
     QgsMapSettings mapSettings;
@@ -312,7 +319,7 @@ namespace QgsWms
     removeUnwantedLayers( layers );
 
     // configure each layer with opacity, selection filter, ...
-    bool updateMapExtent = mWmsParameters.bbox().isEmpty() ? true : false;
+    bool updateMapExtent = mWmsParameters.bbox().isEmpty();
     Q_FOREACH ( QgsMapLayer *layer, layers )
     {
       Q_FOREACH ( QgsWmsParametersLayer param, params )
@@ -715,7 +722,7 @@ namespace QgsWms
     removeUnwantedLayers( layers );
 
     // configure each layer with opacity, selection filter, ...
-    bool updateMapExtent = mWmsParameters.bbox().isEmpty() ? true : false;
+    bool updateMapExtent = mWmsParameters.bbox().isEmpty();
     Q_FOREACH ( QgsMapLayer *layer, layers )
     {
       Q_FOREACH ( QgsWmsParametersLayer param, params )
@@ -755,7 +762,7 @@ namespace QgsWms
     mapSettings.setLayers( layers );
 
     // rendering step for layers
-    painter.reset( layersRendering( mapSettings, *image.get(), hitTest ) );
+    painter.reset( layersRendering( mapSettings, *image, hitTest ) );
 
     // rendering step for annotations
     annotationsRendering( painter.get() );
@@ -909,26 +916,15 @@ namespace QgsWms
     QStringList queryLayers = mWmsParameters.queryLayersNickname();
     if ( queryLayers.isEmpty() )
     {
-      throw QgsBadRequestException( QStringLiteral( "ParameterMissing" ),
-                                    QStringLiteral( "QUERY_LAYERS parameter is required for GetFeatureInfo" ) );
+      QString msg = QObject::tr( "QUERY_LAYERS parameter is required for GetFeatureInfo" );
+      throw QgsBadRequestException( QStringLiteral( "LayerNotQueryable" ), msg );
     }
 
     // The I/J parameters are Mandatory if they are not replaced by X/Y or FILTER or FILTER_GEOM
-    bool ijDefined = false;
-    if ( !mWmsParameters.i().isEmpty() && !mWmsParameters.j().isEmpty() )
-      ijDefined = true;
-
-    bool xyDefined = false;
-    if ( !mWmsParameters.x().isEmpty() && !mWmsParameters.y().isEmpty() )
-      xyDefined = true;
-
-    bool filtersDefined = false;
-    if ( !mWmsParameters.filters().isEmpty() )
-      filtersDefined = true;
-
-    bool filterGeomDefined = false;
-    if ( !mWmsParameters.filterGeom().isEmpty() )
-      filterGeomDefined = true;
+    const bool ijDefined = !mWmsParameters.i().isEmpty() && !mWmsParameters.j().isEmpty();
+    const bool xyDefined = !mWmsParameters.x().isEmpty() && !mWmsParameters.y().isEmpty();
+    const bool filtersDefined = !mWmsParameters.filters().isEmpty();
+    const bool filterGeomDefined = !mWmsParameters.filterGeom().isEmpty();
 
     if ( !ijDefined && !xyDefined && !filtersDefined && !filterGeomDefined )
     {
@@ -950,6 +946,16 @@ namespace QgsWms
       layers = sldStylizedLayers( sld );
     else
       layers = stylizedLayers( params );
+
+    // add QUERY_LAYERS to list of available layers for more flexibility
+    for ( const QString &queryLayer : queryLayers )
+    {
+      if ( mNicknameLayers.contains( queryLayer )
+           && !layers.contains( mNicknameLayers[queryLayer] ) )
+      {
+        layers.append( mNicknameLayers[queryLayer] );
+      }
+    }
 
     // create the mapSettings and the output image
     QgsMapSettings mapSettings;
@@ -1099,7 +1105,6 @@ namespace QgsWms
       throw QgsException( QStringLiteral( "configureMapSettings: no paint device" ) );
     }
 
-    mapSettings.datumTransformStore().clear();
     mapSettings.setOutputSize( QSize( paintDevice->width(), paintDevice->height() ) );
     mapSettings.setOutputDpi( paintDevice->logicalDpiX() );
 
@@ -1304,29 +1309,33 @@ namespace QgsWms
           }
           else
           {
+            QgsRasterLayer *rasterLayer = qobject_cast<QgsRasterLayer *>( layer );
+            if ( !rasterLayer )
+            {
+              break;
+            }
+            if ( !infoPoint )
+            {
+              break;
+            }
+            QgsPointXY layerInfoPoint = mapSettings.mapToLayerCoordinates( layer, *( infoPoint.get() ) );
+            if ( !rasterLayer->extent().contains( layerInfoPoint ) )
+            {
+              break;
+            }
             if ( infoFormat == QgsWmsParameters::Format::GML )
             {
               layerElement = result.createElement( QStringLiteral( "gml:featureMember" )/*wfs:FeatureMember*/ );
               getFeatureInfoElement.appendChild( layerElement );
             }
 
-            QgsRasterLayer *rasterLayer = qobject_cast<QgsRasterLayer *>( layer );
-            if ( rasterLayer )
-            {
-              if ( !infoPoint )
-              {
-                break;
-              }
-              QgsPointXY layerInfoPoint = mapSettings.mapToLayerCoordinates( layer, *( infoPoint.get() ) );
-              ( void )featureInfoFromRasterLayer( rasterLayer, mapSettings, &layerInfoPoint, result, layerElement, version );
-              break;
-            }
+            ( void )featureInfoFromRasterLayer( rasterLayer, mapSettings, &layerInfoPoint, result, layerElement, version );
           }
           break;
         }
       }
 
-      if ( !validLayer )
+      if ( !validLayer && !mNicknameLayers.contains( queryLayer ) )
       {
         QString msg = QObject::tr( "Layer '%1' not found" ).arg( queryLayer );
         throw QgsBadRequestException( QStringLiteral( "LayerNotDefined" ), msg );
@@ -1421,7 +1430,7 @@ namespace QgsWms
     int featureCounter = 0;
     layer->updateFields();
     const QgsFields &fields = layer->pendingFields();
-    bool addWktGeometry = QgsServerProjectUtils::wmsFeatureInfoAddWktGeometry( *mProject );
+    bool addWktGeometry = ( QgsServerProjectUtils::wmsFeatureInfoAddWktGeometry( *mProject ) && mWmsParameters.withGeometry() );
     bool segmentizeWktGeometry = QgsServerProjectUtils::wmsFeatureInfoSegmentizeWktGeometry( *mProject );
     const QSet<QString> &excludedAttributes = layer->excludeAttributesWms();
 
@@ -1440,7 +1449,7 @@ namespace QgsWms
 
     if ( filterGeom )
     {
-      fReq.setFilterExpression( QString( "intersects( $geometry, geom_from_wkt('%1') )" ).arg( filterGeom->exportToWkt() ) );
+      fReq.setFilterExpression( QString( "intersects( $geometry, geom_from_wkt('%1') )" ).arg( filterGeom->asWkt() ) );
     }
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
@@ -1457,7 +1466,7 @@ namespace QgsWms
 #endif
 
     QgsFeatureIterator fit = layer->getFeatures( fReq );
-    QgsFeatureRenderer *r2 = layer->renderer();
+    std::unique_ptr< QgsFeatureRenderer > r2( layer->renderer() ? layer->renderer()->clone() : nullptr );
     if ( r2 )
     {
       r2->startRender( renderContext, layer->pendingFields() );
@@ -1573,7 +1582,7 @@ namespace QgsWms
 
         //add maptip attribute based on html/expression (in case there is no maptip attribute)
         QString mapTip = layer->mapTipTemplate();
-        if ( !mapTip.isEmpty() )
+        if ( !mapTip.isEmpty() && mWmsParameters.withMapTip() )
         {
           QDomElement maptipElem = infoDocument.createElement( QStringLiteral( "Attribute" ) );
           maptipElem.setAttribute( QStringLiteral( "name" ), QStringLiteral( "maptip" ) );
@@ -1608,19 +1617,19 @@ namespace QgsWms
 
             if ( segmentizeWktGeometry )
             {
-              QgsAbstractGeometry *abstractGeom = geom.geometry();
+              const QgsAbstractGeometry *abstractGeom = geom.constGet();
               if ( abstractGeom )
               {
                 if ( QgsWkbTypes::isCurvedType( abstractGeom->wkbType() ) )
                 {
                   QgsAbstractGeometry *segmentizedGeom = abstractGeom->segmentize();
-                  geom.setGeometry( segmentizedGeom );
+                  geom.set( segmentizedGeom );
                 }
               }
             }
             QDomElement geometryElement = infoDocument.createElement( QStringLiteral( "Attribute" ) );
             geometryElement.setAttribute( QStringLiteral( "name" ), QStringLiteral( "geometry" ) );
-            geometryElement.setAttribute( QStringLiteral( "value" ), geom.exportToWkt( getWMSPrecision() ) );
+            geometryElement.setAttribute( QStringLiteral( "value" ), geom.asWkt( getWMSPrecision() ) );
             geometryElement.setAttribute( QStringLiteral( "type" ), QStringLiteral( "derived" ) );
             featureElement.appendChild( geometryElement );
           }
@@ -2205,7 +2214,7 @@ namespace QgsWms
         continue;
       }
 
-      QDomElement fieldElem = doc.createElement( "qgs:" + attributeName.replace( QStringLiteral( " " ), QStringLiteral( "_" ) ) );
+      QDomElement fieldElem = doc.createElement( "qgs:" + attributeName.replace( ' ', '_' ) );
       QString fieldTextString = featureAttributes.at( i ).toString();
       if ( layer )
       {
@@ -2221,7 +2230,7 @@ namespace QgsWms
     {
       QString mapTip = layer->mapTipTemplate();
 
-      if ( !mapTip.isEmpty() )
+      if ( !mapTip.isEmpty() && mWmsParameters.withMapTip() )
       {
         QString fieldTextString = QgsExpression::replaceExpressionText( mapTip, &expressionContext );
         QDomElement fieldElem = doc.createElement( QStringLiteral( "qgs:maptip" ) );
@@ -2557,6 +2566,7 @@ namespace QgsWms
       }
     }
 
+    mTemporaryLayers.append( highlightLayers );
     return highlightLayers;
   }
 
@@ -2602,7 +2612,7 @@ namespace QgsWms
     return layers;
   }
 
-  QList<QgsMapLayer *> QgsRenderer::stylizedLayers( const QList<QgsWmsParametersLayer> &params ) const
+  QList<QgsMapLayer *> QgsRenderer::stylizedLayers( const QList<QgsWmsParametersLayer> &params )
   {
     QList<QgsMapLayer *> layers;
 
@@ -2610,7 +2620,19 @@ namespace QgsWms
     {
       QString nickname = param.mNickname;
       QString style = param.mStyle;
-      if ( mNicknameLayers.contains( nickname ) && !mRestrictedLayers.contains( nickname ) )
+      if ( nickname.startsWith( "EXTERNAL_WMS:" ) )
+      {
+        QString externalLayerId = nickname;
+        externalLayerId.remove( 0, 13 );
+        QgsMapLayer *externalWMSLayer = createExternalWMSLayer( externalLayerId );
+        if ( externalWMSLayer )
+        {
+          layers.append( externalWMSLayer );
+          mNicknameLayers[nickname] = externalWMSLayer; //might be used later in GetPrint request
+          mTemporaryLayers.append( externalWMSLayer );
+        }
+      }
+      else if ( mNicknameLayers.contains( nickname ) && !mRestrictedLayers.contains( nickname ) )
       {
         if ( !style.isEmpty() )
         {
@@ -2633,6 +2655,25 @@ namespace QgsWms
     return layers;
   }
 
+  QgsMapLayer *QgsRenderer::createExternalWMSLayer( const QString &externalLayerId ) const
+  {
+    QString wmsUri = mWmsParameters.externalWMSUri( externalLayerId.toUpper() );
+    QgsMapLayer *wmsLayer = new QgsRasterLayer( wmsUri, externalLayerId, QStringLiteral( "wms" ) );
+    if ( !wmsLayer->isValid() )
+    {
+      delete wmsLayer;
+      return nullptr;
+    }
+
+    return wmsLayer;
+  }
+
+  void QgsRenderer::removeTemporaryLayers()
+  {
+    qDeleteAll( mTemporaryLayers );
+    mTemporaryLayers.clear();
+  }
+
   QPainter *QgsRenderer::layersRendering( const QgsMapSettings &mapSettings, QImage &image, HitTest *hitTest ) const
   {
     QPainter *painter = nullptr;
@@ -2643,10 +2684,13 @@ namespace QgsWms
     }
     else
     {
+      QgsFeatureFilterProviderGroup filters;
+      filters.addProvider( &mFeatureFilter );
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
       mAccessControl->resolveFilterFeatures( mapSettings.layers() );
+      filters.addProvider( mAccessControl );
 #endif
-      QgsMapRendererJobProxy renderJob( mSettings.parallelRendering(), mSettings.maxThreads(), mAccessControl );
+      QgsMapRendererJobProxy renderJob( mSettings.parallelRendering(), mSettings.maxThreads(), &filters );
       renderJob.render( mapSettings, &image );
       painter = renderJob.takePainter();
     }
@@ -2672,34 +2716,53 @@ namespace QgsWms
     }
   }
 
-  void QgsRenderer::setLayerFilter( QgsMapLayer *layer, const QStringList &filters ) const
+  void QgsRenderer::setLayerFilter( QgsMapLayer *layer, const QStringList &filters )
   {
     if ( layer->type() == QgsMapLayer::VectorLayer )
     {
       QgsVectorLayer *filteredLayer = qobject_cast<QgsVectorLayer *>( layer );
       Q_FOREACH ( QString filter, filters )
       {
-        if ( !testFilterStringSafety( filter ) )
+        if ( filter.startsWith( QStringLiteral( "<" ) ) && filter.endsWith( QStringLiteral( "Filter>" ) ) )
         {
-          throw QgsBadRequestException( QStringLiteral( "Filter string rejected" ),
-                                        QStringLiteral( "The filter string %1"
-                                            " has been rejected because of security reasons."
-                                            " Note: Text strings have to be enclosed in single or double quotes."
-                                            " A space between each word / special character is mandatory."
-                                            " Allowed Keywords and special characters are "
-                                            " AND,OR,IN,<,>=,>,>=,!=,',',(,),DMETAPHONE,SOUNDEX."
-                                            " Not allowed are semicolons in the filter expression." ).arg( filter ) );
+          // OGC filter
+          QDomDocument filterXml;
+          QString errorMsg;
+          if ( !filterXml.setContent( filter, true, &errorMsg ) )
+          {
+            throw QgsBadRequestException( QStringLiteral( "Filter string rejected" ),
+                                          QStringLiteral( "error message: %1. The XML string was: %2" ).arg( errorMsg, filter ) );
+          }
+          QDomElement filterElem = filterXml.firstChildElement();
+          QScopedPointer<QgsExpression> expression( QgsOgcUtils::expressionFromOgcFilter( filterElem ) );
+          mFeatureFilter.setFilter( filteredLayer, *expression );
         }
+        else
+        {
+          // QGIS (SQL) filter
+          if ( !testFilterStringSafety( filter ) )
+          {
+            throw QgsBadRequestException( QStringLiteral( "Filter string rejected" ),
+                                          QStringLiteral( "The filter string %1"
+                                              " has been rejected because of security reasons."
+                                              " Note: Text strings have to be enclosed in single or double quotes."
+                                              " A space between each word / special character is mandatory."
+                                              " Allowed Keywords and special characters are "
+                                              " AND,OR,IN,<,>=,>,>=,!=,',',(,),DMETAPHONE,SOUNDEX."
+                                              " Not allowed are semicolons in the filter expression." ).arg(
+                                            filter ) );
+          }
 
-        QString newSubsetString = filter;
-        if ( !filteredLayer->subsetString().isEmpty() )
-        {
-          newSubsetString.prepend( ") AND (" );
-          newSubsetString.append( ")" );
-          newSubsetString.prepend( filteredLayer->subsetString() );
-          newSubsetString.prepend( "(" );
+          QString newSubsetString = filter;
+          if ( !filteredLayer->subsetString().isEmpty() )
+          {
+            newSubsetString.prepend( ") AND (" );
+            newSubsetString.append( ")" );
+            newSubsetString.prepend( filteredLayer->subsetString() );
+            newSubsetString.prepend( "(" );
+          }
+          filteredLayer->setSubsetString( newSubsetString );
         }
-        filteredLayer->setSubsetString( newSubsetString );
       }
     }
   }

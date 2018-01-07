@@ -22,28 +22,35 @@
 #include "qgsmultilinestring.h"
 #include "qgswkbptr.h"
 
-QgsPolygonV2::QgsPolygonV2()
+QgsPolygon::QgsPolygon()
 {
   mWkbType = QgsWkbTypes::Polygon;
 }
 
-QString QgsPolygonV2::geometryType() const
+QString QgsPolygon::geometryType() const
 {
   return QStringLiteral( "Polygon" );
 }
 
-QgsPolygonV2 *QgsPolygonV2::clone() const
+QgsPolygon *QgsPolygon::createEmptyWithSameType() const
 {
-  return new QgsPolygonV2( *this );
+  auto result = qgis::make_unique< QgsPolygon >();
+  result->mWkbType = mWkbType;
+  return result.release();
 }
 
-void QgsPolygonV2::clear()
+QgsPolygon *QgsPolygon::clone() const
+{
+  return new QgsPolygon( *this );
+}
+
+void QgsPolygon::clear()
 {
   QgsCurvePolygon::clear();
   mWkbType = QgsWkbTypes::Polygon;
 }
 
-bool QgsPolygonV2::fromWkb( QgsConstWkbPtr &wkbPtr )
+bool QgsPolygon::fromWkb( QgsConstWkbPtr &wkbPtr )
 {
   clear();
   if ( !wkbPtr )
@@ -102,7 +109,7 @@ bool QgsPolygonV2::fromWkb( QgsConstWkbPtr &wkbPtr )
   return true;
 }
 
-QByteArray QgsPolygonV2::asWkb() const
+QByteArray QgsPolygon::asWkb() const
 {
   int binarySize = sizeof( char ) + sizeof( quint32 ) + sizeof( quint32 );
 
@@ -138,7 +145,7 @@ QByteArray QgsPolygonV2::asWkb() const
   return wkbArray;
 }
 
-void QgsPolygonV2::addInteriorRing( QgsCurve *ring )
+void QgsPolygon::addInteriorRing( QgsCurve *ring )
 {
   if ( !ring )
     return;
@@ -169,7 +176,7 @@ void QgsPolygonV2::addInteriorRing( QgsCurve *ring )
   clearCache();
 }
 
-void QgsPolygonV2::setExteriorRing( QgsCurve *ring )
+void QgsPolygon::setExteriorRing( QgsCurve *ring )
 {
   if ( !ring )
   {
@@ -204,7 +211,7 @@ void QgsPolygonV2::setExteriorRing( QgsCurve *ring )
   clearCache();
 }
 
-QgsAbstractGeometry *QgsPolygonV2::boundary() const
+QgsAbstractGeometry *QgsPolygon::boundary() const
 {
   if ( !mExteriorRing )
     return nullptr;
@@ -226,7 +233,7 @@ QgsAbstractGeometry *QgsPolygonV2::boundary() const
   }
 }
 
-double QgsPolygonV2::pointDistanceToBoundary( double x, double y ) const
+double QgsPolygon::pointDistanceToBoundary( double x, double y ) const
 {
   if ( !mExteriorRing )
     return std::numeric_limits< double >::quiet_NaN();
@@ -260,12 +267,12 @@ double QgsPolygonV2::pointDistanceToBoundary( double x, double y ) const
   return ( inside ? 1 : -1 ) * std::sqrt( minimumDistance );
 }
 
-QgsPolygonV2 *QgsPolygonV2::surfaceToPolygon() const
+QgsPolygon *QgsPolygon::surfaceToPolygon() const
 {
   return clone();
 }
 
-QgsCurvePolygon *QgsPolygonV2::toCurveType() const
+QgsCurvePolygon *QgsPolygon::toCurveType() const
 {
   QgsCurvePolygon *curvePolygon = new QgsCurvePolygon();
   curvePolygon->setExteriorRing( mExteriorRing->clone() );

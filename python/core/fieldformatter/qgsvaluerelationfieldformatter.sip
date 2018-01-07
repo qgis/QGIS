@@ -11,9 +11,9 @@
 class QgsValueRelationFieldFormatter : QgsFieldFormatter
 {
 %Docstring
- Field formatter for a value relation field.
- A value relation field formatter looks up the values from
- features on another layer.
+Field formatter for a value relation field.
+A value relation field formatter looks up the values from
+features on another layer.
 
 .. versionadded:: 3.0
 %End
@@ -25,8 +25,14 @@ class QgsValueRelationFieldFormatter : QgsFieldFormatter
     struct ValueRelationItem
     {
       ValueRelationItem( const QVariant &key, const QString &value );
+%Docstring
+Constructor for ValueRelationItem
+%End
 
       ValueRelationItem();
+%Docstring
+Constructor for ValueRelationItem
+%End
 
       QVariant key;
       QString value;
@@ -36,7 +42,7 @@ class QgsValueRelationFieldFormatter : QgsFieldFormatter
 
     QgsValueRelationFieldFormatter();
 %Docstring
- Constructor for QgsValueRelationFieldFormatter.
+Constructor for QgsValueRelationFieldFormatter.
 %End
 
     virtual QString id() const;
@@ -52,12 +58,11 @@ class QgsValueRelationFieldFormatter : QgsFieldFormatter
 
     static QgsValueRelationFieldFormatter::ValueRelationCache createCache( const QVariantMap &config );
 %Docstring
- Create a cache for a value relation field.
- This can be used to keep the value map in the local memory
- if doing multiple lookups in a loop.
+Create a cache for a value relation field.
+This can be used to keep the value map in the local memory
+if doing multiple lookups in a loop.
 
 .. versionadded:: 3.0
- :rtype: QgsValueRelationFieldFormatter.ValueRelationCache
 %End
 };
 

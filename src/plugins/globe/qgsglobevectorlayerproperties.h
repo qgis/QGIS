@@ -41,7 +41,7 @@ class QgsGlobeVectorLayerConfig : public QObject
       RenderingModeModelAdvanced
     };
 
-    QgsGlobeVectorLayerConfig( QObject *parent = 0 )
+    QgsGlobeVectorLayerConfig( QObject *parent = nullptr )
       : QObject( parent )
       , renderingMode( RenderingModeRasterized )
       , altitudeClamping( osgEarth::Symbology::AltitudeSymbol::CLAMP_TO_TERRAIN )
@@ -89,7 +89,7 @@ class QgsGlobeVectorLayerPropertiesPage : public QgsMapLayerConfigWidget, privat
     Q_OBJECT
 
   public:
-    explicit QgsGlobeVectorLayerPropertiesPage( QgsVectorLayer *layer, QgsMapCanvas *canvas, QWidget *parent = 0 );
+    explicit QgsGlobeVectorLayerPropertiesPage( QgsVectorLayer *layer, QgsMapCanvas *canvas, QWidget *parent = nullptr );
 
   public slots:
     virtual void apply();
@@ -111,7 +111,7 @@ class QgsGlobeLayerPropertiesFactory : public QObject, public QgsMapLayerConfigW
 {
     Q_OBJECT
   public:
-    explicit QgsGlobeLayerPropertiesFactory( QObject *parent = 0 );
+    explicit QgsGlobeLayerPropertiesFactory( QObject *parent = nullptr );
     QgsMapLayerConfigWidget *createWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, bool dockWidget, QWidget *parent ) const override;
 
     QIcon icon() const override;

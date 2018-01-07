@@ -38,7 +38,7 @@ class APP_EXPORT QgsStatusBarScaleWidget : public QWidget
 {
     Q_OBJECT
   public:
-    explicit QgsStatusBarScaleWidget( QgsMapCanvas *canvas, QWidget *parent = 0 );
+    explicit QgsStatusBarScaleWidget( QgsMapCanvas *canvas, QWidget *parent = nullptr );
 
     /**
      * Set the selected \a scale from double.

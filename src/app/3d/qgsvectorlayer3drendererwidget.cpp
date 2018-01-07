@@ -57,10 +57,6 @@ QgsVectorLayer3DRendererWidget::QgsVectorLayer3DRendererWidget( QgsVectorLayer *
   connect( widgetPolygon, &QgsPolygon3DSymbolWidget::changed, this, &QgsVectorLayer3DRendererWidget::widgetChanged );
 }
 
-QgsVectorLayer3DRendererWidget::~QgsVectorLayer3DRendererWidget()
-{
-}
-
 void QgsVectorLayer3DRendererWidget::setLayer( QgsVectorLayer *layer )
 {
   mLayer = layer;

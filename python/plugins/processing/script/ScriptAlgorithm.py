@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -40,7 +39,6 @@ from qgis.core import (QgsExpressionContextUtils,
 
 from qgis.PyQt.QtCore import (QCoreApplication)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.gui.Help2Html import getHtmlFromHelpFile
 from processing.core.parameters import getParameterFromString
 from processing.core.outputs import getOutputFromString
@@ -64,6 +62,7 @@ class ScriptAlgorithm(QgsProcessingAlgorithm):
         self._name = ''
         self._display_name = ''
         self._group = ''
+        self._groupId = ''
         self._flags = None
 
         self.script = script
@@ -113,6 +112,7 @@ class ScriptAlgorithm(QgsProcessingAlgorithm):
         self._name = filename[:filename.rfind('.')].replace('_', ' ')
         self._display_name = self._name
         self._group = self.tr('User scripts', 'ScriptAlgorithm')
+        self._groupId = 'userscripts'
         with open(self.descriptionFile) as lines:
             line = lines.readline()
             while line != '':
@@ -132,6 +132,7 @@ class ScriptAlgorithm(QgsProcessingAlgorithm):
         self._name = '[Unnamed algorithm]'
         self._display_name = self.tr('[Unnamed algorithm]', 'ScriptAlgorithm')
         self._group = self.tr('User scripts', 'ScriptAlgorithm')
+        self._groupId = 'userscripts'
         for line in lines:
             if line.startswith('##'):
                 try:
@@ -165,6 +166,8 @@ class ScriptAlgorithm(QgsProcessingAlgorithm):
         desc = self.createDescriptiveName(tokens[0])
         if tokens[1].lower().strip() == 'group':
             self._group = tokens[0]
+            validChars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:'
+            self._groupId = ''.join(c for c in tokens[0].lower() if c in validChars)
             return
         if tokens[1].lower().strip() == 'name':
             self._name = self._display_name = tokens[0]

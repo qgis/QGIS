@@ -20,7 +20,6 @@
 #include "qgsmapcanvas.h"
 #include "qgsmaptopixel.h"
 #include "qgsvectorlayer.h"
-#include "qgscursors.h"
 #include "qgsgeometry.h"
 #include "qgspointxy.h"
 #include "qgis.h"
@@ -34,8 +33,7 @@ QgsMapToolSelectFeatures::QgsMapToolSelectFeatures( QgsMapCanvas *canvas )
   , mDragging( false )
 {
   mToolName = tr( "Select features" );
-  QPixmap mySelectQPixmap = QPixmap( ( const char ** ) select_cursor );
-  mCursor = QCursor( mySelectQPixmap, 1, 1 );
+  setCursor( QgsApplication::getThemeCursor( QgsApplication::Cursor::Select ) );
   mRubberBand = nullptr;
   mFillColor = QColor( 254, 178, 76, 63 );
   mStrokeColor = QColor( 254, 58, 29, 100 );

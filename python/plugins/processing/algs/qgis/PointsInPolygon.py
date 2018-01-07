@@ -61,6 +61,9 @@ class PointsInPolygon(QgisAlgorithm):
     def group(self):
         return self.tr('Vector analysis')
 
+    def groupId(self):
+        return 'vectoranalysis'
+
     def __init__(self):
         super().__init__()
 
@@ -129,7 +132,7 @@ class PointsInPolygon(QgisAlgorithm):
             output_feature = QgsFeature()
             if polygon_feature.hasGeometry():
                 geom = polygon_feature.geometry()
-                engine = QgsGeometry.createGeometryEngine(geom.geometry())
+                engine = QgsGeometry.createGeometryEngine(geom.constGet())
                 engine.prepareGeometry()
 
                 count = 0
@@ -143,7 +146,7 @@ class PointsInPolygon(QgisAlgorithm):
                         if feedback.isCanceled():
                             break
 
-                        if engine.contains(point_feature.geometry().geometry()):
+                        if engine.contains(point_feature.geometry().constGet()):
                             if weight_field_index >= 0:
                                 weight = point_feature.attributes()[weight_field_index]
                                 try:

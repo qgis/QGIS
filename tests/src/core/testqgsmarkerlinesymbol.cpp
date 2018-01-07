@@ -49,7 +49,7 @@ class TestQgsMarkerLineSymbol : public QObject
       mTestDataDir = QStringLiteral( TEST_DATA_DIR ) + '/';
     }
 
-    ~TestQgsMarkerLineSymbol();
+    ~TestQgsMarkerLineSymbol() override;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.

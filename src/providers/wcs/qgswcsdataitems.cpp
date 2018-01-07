@@ -31,7 +31,7 @@ QgsWCSConnectionItem::QgsWCSConnectionItem( QgsDataItem *parent, QString name, Q
   : QgsDataCollectionItem( parent, name, path )
   , mUri( uri )
 {
-  mIconName = QStringLiteral( "mIconWcs.svg" );
+  mIconName = QStringLiteral( "mIconConnect.png" );
   mCapabilities |= Collapse;
 }
 
@@ -248,7 +248,7 @@ QList<QAction *> QgsWCSRootItem::actions( QWidget *parent )
 
 QWidget *QgsWCSRootItem::paramWidget()
 {
-  QgsWCSSourceSelect *select = new QgsWCSSourceSelect( nullptr, 0, QgsProviderRegistry::WidgetMode::Manager );
+  QgsWCSSourceSelect *select = new QgsWCSSourceSelect( nullptr, nullptr, QgsProviderRegistry::WidgetMode::Manager );
   connect( select, &QgsOWSSourceSelect::connectionsChanged, this, &QgsWCSRootItem::onConnectionsChanged );
   return select;
 }

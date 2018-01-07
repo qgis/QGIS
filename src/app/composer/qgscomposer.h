@@ -96,7 +96,7 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     };
 
     QgsComposer( QgsComposition *composition );
-    ~QgsComposer();
+    ~QgsComposer() override;
 
     QgsComposerInterface *iface();
 
@@ -139,12 +139,12 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
   protected:
     //! Move event
-    virtual void moveEvent( QMoveEvent * ) override;
+    void moveEvent( QMoveEvent * ) override;
 
-    virtual void closeEvent( QCloseEvent * ) override;
+    void closeEvent( QCloseEvent * ) override;
 
     //! Resize event
-    virtual void resizeEvent( QResizeEvent * ) override;
+    void resizeEvent( QResizeEvent * ) override;
 
   signals:
     //! Is emitted every time the view zoom has changed
@@ -489,10 +489,10 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     QgsPanelWidget *createItemWidget( QgsComposerItem *item );
 
     /*Saves image to file, possibly using format specific options (e.g. LZW compression for tiff)
-        @param img the image to save
-        @param imageFileName output file path
-        @param imageFormat format string
-        @param return true in case of success*/
+        \param img the image to save
+        \param imageFileName output file path
+        \param imageFormat format string
+        \param return true in case of success*/
     static bool saveImage( const QImage &img, const QString &imageFilename, const QString &imageFormat );
 
     QgsAppComposerInterface *mInterface = nullptr;

@@ -1,8 +1,8 @@
 Generate Shapes
 shapes_tools
-ParameterTable|INPUT|Input|False
-ParameterTable|FIELD_ID|ID|False
-ParameterTable|FIELD_X|X|False
-ParameterTable|FIELD_Y|Y|False
-ParameterSelection|SHAPE_TYPE|Shape Type|[0] Point(s);[1] Line(s);[2] Polygon(s)| 0
-OutputVector|OUTPUT|Output
+QgsProcessingParameterFeatureSource|INPUT|Input|5|None|False
+QgsProcessingParameterFeatureSource|FIELD_ID|ID|5|None|False
+QgsProcessingParameterFeatureSource|FIELD_X|X|5|None|False
+QgsProcessingParameterFeatureSource|FIELD_Y|Y|5|None|False
+QgsProcessingParameterEnum|SHAPE_TYPE|Shape Type|[0] Point(s);[1] Line(s);[2] Polygon(s)|False|0
+QgsProcessingParameterVectorDestination|OUTPUT|Output

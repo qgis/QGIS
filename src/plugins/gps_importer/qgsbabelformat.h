@@ -27,7 +27,7 @@ class QgsBabelFormat
 {
   public:
     explicit QgsBabelFormat( const QString &name = "" );
-    virtual ~QgsBabelFormat() { }
+    virtual ~QgsBabelFormat() = default;
 
     QString name() const;
     virtual QStringList importCommand( const QString &babel,

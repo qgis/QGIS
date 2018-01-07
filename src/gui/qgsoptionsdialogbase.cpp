@@ -356,24 +356,24 @@ void QgsOptionsDialogBase::updateOptionsListVerticalTabs()
     mOptListWidget->setWordWrap( true );
 }
 
-void QgsOptionsDialogBase::optionsStackedWidget_CurrentChanged( int indx )
+void QgsOptionsDialogBase::optionsStackedWidget_CurrentChanged( int index )
 {
   mOptListWidget->blockSignals( true );
-  mOptListWidget->setCurrentRow( indx );
+  mOptListWidget->setCurrentRow( index );
   mOptListWidget->blockSignals( false );
 
   updateWindowTitle();
 }
 
-void QgsOptionsDialogBase::optionsStackedWidget_WidgetRemoved( int indx )
+void QgsOptionsDialogBase::optionsStackedWidget_WidgetRemoved( int index )
 {
   // will need to take item first, if widgets are set for item in future
-  delete mOptListWidget->item( indx );
+  delete mOptListWidget->item( index );
 
   QList<QPair< QgsSearchHighlightOptionWidget *, int > >::iterator it = mRegisteredSearchWidgets.begin();
   while ( it != mRegisteredSearchWidgets.end() )
   {
-    if ( ( *it ).second == indx )
+    if ( ( *it ).second == index )
       it = mRegisteredSearchWidgets.erase( it );
     else
       ++it;

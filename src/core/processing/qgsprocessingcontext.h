@@ -373,7 +373,7 @@ class CORE_EXPORT QgsProcessingContext
 
   private:
 
-    QgsProcessingContext::Flags mFlags = 0;
+    QgsProcessingContext::Flags mFlags = nullptr;
     QPointer< QgsProject > mProject;
     //! Temporary project owned by the context, used for storing temporarily loaded map layers
     QgsMapLayerStore tempLayerStore;

@@ -27,7 +27,7 @@ email                : marco.hugentobler at sourcepole dot com
 class QgsMapToPixel;
 class QgsCurve;
 class QgsMultiCurve;
-class QgsMultiPointV2;
+class QgsMultiPoint;
 class QgsPoint;
 struct QgsVertexId;
 class QgsVertexIterator;
@@ -35,13 +35,13 @@ class QPainter;
 class QDomDocument;
 class QDomElement;
 
-typedef QList< QgsPoint > QgsPointSequence;
+typedef QVector< QgsPoint > QgsPointSequence;
 #ifndef SIP_RUN
-typedef QList< QgsPointSequence > QgsRingSequence;
-typedef QList< QgsRingSequence > QgsCoordinateSequence;
+typedef QVector< QgsPointSequence > QgsRingSequence;
+typedef QVector< QgsRingSequence > QgsCoordinateSequence;
 #else
-typedef QList< QList< QgsPoint > > QgsRingSequence;
-typedef QList< QList< QList< QgsPoint > > > QgsCoordinateSequence;
+typedef QVector< QVector< QgsPoint > > QgsRingSequence;
+typedef QVector< QVector< QVector< QgsPoint > > > QgsCoordinateSequence;
 #endif
 
 /**
@@ -65,16 +65,16 @@ class CORE_EXPORT QgsAbstractGeometry
       sipType = sipType_QgsCompoundCurve;
     else if ( qgsgeometry_cast<QgsTriangle *>( sipCpp ) != nullptr )
       sipType = sipType_QgsTriangle;
-    else if ( qgsgeometry_cast<QgsPolygonV2 *>( sipCpp ) != nullptr )
-      sipType = sipType_QgsPolygonV2;
+    else if ( qgsgeometry_cast<QgsPolygon *>( sipCpp ) != nullptr )
+      sipType = sipType_QgsPolygon;
     else if ( qgsgeometry_cast<QgsCurvePolygon *>( sipCpp ) != nullptr )
       sipType = sipType_QgsCurvePolygon;
-    else if ( qgsgeometry_cast<QgsMultiPointV2 *>( sipCpp ) != nullptr )
-      sipType = sipType_QgsMultiPointV2;
+    else if ( qgsgeometry_cast<QgsMultiPoint *>( sipCpp ) != nullptr )
+      sipType = sipType_QgsMultiPoint;
     else if ( qgsgeometry_cast<QgsMultiLineString *>( sipCpp ) != nullptr )
       sipType = sipType_QgsMultiLineString;
-    else if ( qgsgeometry_cast<QgsMultiPolygonV2 *>( sipCpp ) != nullptr )
-      sipType = sipType_QgsMultiPolygonV2;
+    else if ( qgsgeometry_cast<QgsMultiPolygon *>( sipCpp ) != nullptr )
+      sipType = sipType_QgsMultiPolygon;
     else if ( qgsgeometry_cast<QgsMultiSurface *>( sipCpp ) != nullptr )
       sipType = sipType_QgsMultiSurface;
     else if ( qgsgeometry_cast<QgsMultiCurve *>( sipCpp ) != nullptr )
@@ -196,7 +196,7 @@ class CORE_EXPORT QgsAbstractGeometry
      * \see asWkt
      * \see asGML2
      * \see asGML3
-     * \see asJSON
+     * \see asJson()
      * \since QGIS 3.0
      */
     virtual QByteArray asWkb() const = 0;
@@ -204,10 +204,10 @@ class CORE_EXPORT QgsAbstractGeometry
     /**
      * Returns a WKT representation of the geometry.
      * \param precision number of decimal places for coordinates
-     * \see asWkb
-     * \see asGML2
-     * \see asGML3
-     * \see asJSON
+     * \see asWkb()
+     * \see asGml2()
+     * \see asGml3()
+     * \see asJson()
      */
     virtual QString asWkt( int precision = 17 ) const = 0;
 
@@ -216,34 +216,34 @@ class CORE_EXPORT QgsAbstractGeometry
      * \param doc DOM document
      * \param precision number of decimal places for coordinates
      * \param ns XML namespace
-     * \see asWkb
-     * \see asWkt
-     * \see asGML3
-     * \see asJSON
+     * \see asWkb()
+     * \see asWkt()
+     * \see asGml3()
+     * \see asJson()
      */
-    virtual QDomElement asGML2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const = 0;
+    virtual QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const = 0;
 
     /**
      * Returns a GML3 representation of the geometry.
      * \param doc DOM document
      * \param precision number of decimal places for coordinates
      * \param ns XML namespace
-     * \see asWkb
-     * \see asWkt
-     * \see asGML2
-     * \see asJSON
+     * \see asWkb()
+     * \see asWkt()
+     * \see asGml2()
+     * \see asJson()
      */
-    virtual QDomElement asGML3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const = 0;
+    virtual QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const = 0;
 
     /**
      * Returns a GeoJSON representation of the geometry.
      * \param precision number of decimal places for coordinates
-     * \see asWkb
-     * \see asWkt
-     * \see asGML2
-     * \see asGML3
+     * \see asWkb()
+     * \see asWkt()
+     * \see asGml2()
+     * \see asGml3()
      */
-    virtual QString asJSON( int precision = 17 ) const = 0;
+    virtual QString asJson( int precision = 17 ) const = 0;
 
     //render pipeline
 
@@ -262,16 +262,31 @@ class CORE_EXPORT QgsAbstractGeometry
                             bool transformZ = false ) = 0;
 
     /**
-     * Transforms the geometry using a QTransform object
-     * \param t QTransform transformation
+     * Transforms the x and y components of the geometry using a QTransform object \a t.
+     *
+     * Optionally, the geometry's z values can be scaled via \a zScale and translated via \a zTranslate.
+     * Similarly, m-values can be scaled via \a mScale and translated via \a mTranslate.
      */
-    virtual void transform( const QTransform &t ) = 0;
+    virtual void transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0,
+                            double mTranslate = 0.0, double mScale = 1.0 ) = 0;
 
     /**
      * Draws the geometry using the specified QPainter.
      * \param p destination QPainter
      */
     virtual void draw( QPainter &p ) const = 0;
+
+    /**
+     * Returns the vertex number corresponding to a vertex \a id.
+     *
+     * The vertex numbers start at 0, so a return value of 0 corresponds
+     * to the first vertex.
+     *
+     * Returns -1 if a corresponding vertex could not be found.
+     *
+     * \since QGIS 3.0
+     */
+    virtual int vertexNumberFromVertexId( QgsVertexId id ) const = 0;
 
     /**
      * Returns next vertex id and coordinates
@@ -281,6 +296,12 @@ class CORE_EXPORT QgsAbstractGeometry
      * \returns false if at end
      */
     virtual bool nextVertex( QgsVertexId &id, QgsPoint &vertex SIP_OUT ) const = 0;
+
+    /**
+     * Returns the vertices adjacent to a specified \a vertex within a geometry.
+     * \since QGIS 3.0
+     */
+    virtual void adjacentVertices( QgsVertexId vertex, QgsVertexId &previousVertex SIP_OUT, QgsVertexId &nextVertex SIP_OUT ) const = 0;
 
     /**
      * Retrieves the sequence of geometries, rings and nodes.
@@ -303,14 +324,16 @@ class CORE_EXPORT QgsAbstractGeometry
      * \param pt specifies the point to find closest segment to
      * \param segmentPt storage for the closest point within the geometry
      * \param vertexAfter storage for the ID of the vertex at the end of the closest segment
-     * \param leftOf returns whether the point lies on the left side of the nearest segment (true if point is to left of segment,
+     * \param leftOf indicates whether the point lies on the left side of the geometry (-1 if point is to the left
+     * of the geometry, +1 if the point is to the right of the geometry, or 0 for cases where left/right could not
+     * be determined, e.g. point exactly on a line)
      * false if point is to right of segment)
      * \param epsilon epsilon for segment snapping
      * \returns squared distance to closest segment or negative value on error
      */
     virtual double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt SIP_OUT,
                                    QgsVertexId &vertexAfter SIP_OUT,
-                                   bool *leftOf SIP_OUT = nullptr, double epsilon = 4 * DBL_EPSILON ) const = 0;
+                                   int *leftOf SIP_OUT = nullptr, double epsilon = 4 * DBL_EPSILON ) const = 0;
 
     //low-level editing
 
@@ -364,6 +387,12 @@ class CORE_EXPORT QgsAbstractGeometry
      */
     virtual double area() const;
 
+    /**
+     * Returns the length of the segment of the geometry which begins at \a startVertex.
+     * \since QGIS 3.0
+     */
+    virtual double segmentLength( QgsVertexId startVertex ) const = 0;
+
     //! Returns the centroid of the geometry
     virtual QgsPoint centroid() const;
 
@@ -387,11 +416,54 @@ class CORE_EXPORT QgsAbstractGeometry
 
     /**
      * Returns the geometry converted to the more generic curve type.
-     * E.g. QgsLineString -> QgsCompoundCurve, QgsPolygonV2 -> QgsCurvePolygon,
-     * QgsMultiLineString -> QgsMultiCurve, QgsMultiPolygonV2 -> QgsMultiSurface
+     * E.g. QgsLineString -> QgsCompoundCurve, QgsPolygon -> QgsCurvePolygon,
+     * QgsMultiLineString -> QgsMultiCurve, QgsMultiPolygon -> QgsMultiSurface
      * \returns the converted geometry. Caller takes ownership
     */
     virtual QgsAbstractGeometry *toCurveType() const = 0 SIP_FACTORY;
+
+    /**
+     * Makes a new geometry with all the points or vertices snapped to the closest point of the grid.
+     * Ownership is transferred to the caller.
+     *
+     * If the gridified geometry could not be calculated a nullptr will be returned.
+     * It may generate an invalid geometry (in some corner cases).
+     * It can also be thought as rounding the edges and it may be useful for removing errors.
+     * Example:
+     * \code
+     * geometry->snappedToGrid(1, 1);
+     * \endcode
+     * In this case we use a 2D grid of 1x1 to gridify.
+     * In this case, it can be thought like rounding the x and y of all the points/vertices to full units (remove all decimals).
+     * \param hSpacing Horizontal spacing of the grid (x axis). 0 to disable.
+     * \param vSpacing Vertical spacing of the grid (y axis). 0 to disable.
+     * \param dSpacing Depth spacing of the grid (z axis). 0 (default) to disable.
+     * \param mSpacing Custom dimension spacing of the grid (m axis). 0 (default) to disable.
+     * \since 3.0
+     */
+    virtual QgsAbstractGeometry *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const = 0 SIP_FACTORY;
+
+    /**
+     * Removes duplicate nodes from the geometry, wherever removing the nodes does not result in a
+     * degenerate geometry.
+     *
+     * The \a epsilon parameter specifies the tolerance for coordinates when determining that
+     * vertices are identical.
+     *
+     * By default, z values are not considered when detecting duplicate nodes. E.g. two nodes
+     * with the same x and y coordinate but different z values will still be considered
+     * duplicate and one will be removed. If \a useZValues is true, then the z values are
+     * also tested and nodes with the same x and y but different z will be maintained.
+     *
+     * Note that duplicate nodes are not tested between different parts of a multipart geometry. E.g.
+     * a multipoint geometry with overlapping points will not be changed by this method.
+     *
+     * The function will return true if nodes were removed, or false if no duplicate nodes
+     * were found.
+     *
+     * \since QGIS 3.0
+     */
+    virtual bool removeDuplicateNodes( double epsilon = 4 * DBL_EPSILON, bool useZValues = false ) = 0;
 
     /**
      * Returns approximate angle at a vertex. This is usually the average angle between adjacent
@@ -482,18 +554,18 @@ class CORE_EXPORT QgsAbstractGeometry
          */
         struct Level
         {
-          const QgsAbstractGeometry *g;  //!< Current geometry
-          int index;               //!< Ptr in the current geometry
+          const QgsAbstractGeometry *g = nullptr;  //!< Current geometry
+          int index = 0;               //!< Ptr in the current geometry
         };
 
         Level levels[3];  //!< Stack of levels - three levels should be sufficient (e.g. part index, ring index, vertex index)
-        int depth;        //!< At what depth level are we right now
+        int depth = -1;        //!< At what depth level are we right now
 
         void digDown();   //!< Prepare the stack of levels so that it points to a leaf child geometry
 
       public:
         //! Create invalid iterator
-        vertex_iterator() : depth( -1 ) {}
+        vertex_iterator() = default;
 
         //! Create vertex iterator for a geometry
         vertex_iterator( const QgsAbstractGeometry *g, int index );
@@ -545,6 +617,15 @@ class CORE_EXPORT QgsAbstractGeometry
   protected:
 
     /**
+     * Creates a new geometry with the same class and same WKB type as the original and transfers ownership.
+     * To create it, the geometry is default constructed and then the WKB is changed.
+     * \see clone()
+     * \since 3.0
+     * \note Not available in Python bindings
+     */
+    virtual QgsAbstractGeometry *createEmptyWithSameType() const = 0 SIP_FACTORY;
+
+    /**
      * Returns whether the geometry has any child geometries (false for point / curve, true otherwise)
      * \note used for vertex_iterator implementation
      * \since QGIS 3.0
@@ -591,6 +672,7 @@ class CORE_EXPORT QgsAbstractGeometry
      */
     virtual void clearCache() const;
 
+    friend class TestQgsGeometry;
 };
 
 
@@ -654,11 +736,13 @@ struct CORE_EXPORT QgsVertexId
 };
 
 #ifndef SIP_RUN
+
 template <class T>
 inline T qgsgeometry_cast( const QgsAbstractGeometry *geom )
 {
   return const_cast<T>( reinterpret_cast<T>( 0 )->cast( geom ) );
 }
+
 #endif
 
 // clazy:excludeall=qstring-allocations
@@ -671,7 +755,8 @@ inline T qgsgeometry_cast( const QgsAbstractGeometry *geom )
 class CORE_EXPORT QgsVertexIterator
 {
   public:
-    QgsVertexIterator(): g( nullptr ) {}
+    //! Constructor for QgsVertexIterator
+    QgsVertexIterator() = default;
 
     //! Constructs iterator for the given geometry
     QgsVertexIterator( const QgsAbstractGeometry *geometry )
@@ -706,8 +791,9 @@ class CORE_EXPORT QgsVertexIterator
 #endif
 
   private:
-    const QgsAbstractGeometry *g;
+    const QgsAbstractGeometry *g = nullptr;
     QgsAbstractGeometry::vertex_iterator i, n;
+
 };
 
 #endif //QGSABSTRACTGEOMETRYV2

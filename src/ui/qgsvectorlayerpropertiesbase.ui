@@ -23,8 +23,8 @@
    <iconset resource="../../images/images.qrc">
     <normaloff>:/images/icons/qgis-icon-16x16.png</normaloff>:/images/icons/qgis-icon-16x16.png</iconset>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
-   <item>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
     <widget class="QSplitter" name="mOptionsSplitter">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -155,14 +155,38 @@
          </item>
          <item>
           <property name="text">
-           <string>Fields</string>
+           <string>3D View</string>
           </property>
           <property name="toolTip">
-           <string>Fields</string>
+           <string>3D View</string>
           </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/propertyicons/attributes.png</normaloff>:/images/themes/default/propertyicons/attributes.png</iconset>
+            <normaloff>:/images/themes/default/3d.svg</normaloff>:/images/themes/default/3d.svg</iconset>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Source Fields</string>
+          </property>
+          <property name="toolTip">
+           <string>Source Fields</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../images/images.qrc">
+            <normaloff>:/images/themes/default/mSourceFields.svg</normaloff>:/images/themes/default/mSourceFields.svg</iconset>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Attributes Form</string>
+          </property>
+          <property name="toolTip">
+           <string>Form</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../images/images.qrc">
+            <normaloff>:/images/themes/default/mActionFormView.svg</normaloff>:/images/themes/default/mActionFormView.svg</iconset>
           </property>
          </item>
          <item>
@@ -321,7 +345,7 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>2</number>
+          <number>5</number>
          </property>
          <widget class="QWidget" name="mOptsPage_Information">
           <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -397,8 +421,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>644</width>
-                <height>522</height>
+                <width>662</width>
+                <height>534</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -415,11 +439,11 @@
                 <number>0</number>
                </property>
                <item>
-                <widget class="QgsCollapsibleGroupBox" name="groupBox_6">
+                <widget class="QgsCollapsibleGroupBox" name="groupBox_60">
                  <property name="title">
                   <string>Settings</string>
                  </property>
-                 <layout class="QVBoxLayout" name="verticalLayout_26">
+                 <layout class="QVBoxLayout" name="verticalLayout_260">
                   <item>
                    <layout class="QHBoxLayout" name="horizontalLayout_13">
                     <item>
@@ -647,6 +671,18 @@ border-radius: 2px;</string>
          </widget>
          <widget class="QWidget" name="mOptsPage_Metadata">
           <layout class="QVBoxLayout" name="verticalLayout_27">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
            <item>
             <widget class="QFrame" name="metadataFrame">
              <property name="frameShape">
@@ -686,8 +722,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>644</width>
-                <height>522</height>
+                <width>662</width>
+                <height>534</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_18">
@@ -760,8 +796,9 @@ border-radius: 2px;</string>
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="mOptsPage_Fields">
-          <layout class="QVBoxLayout" name="verticalLayout_15">
+         <widget class="QWidget" name="mOptsPage_3DView"/>
+         <widget class="QWidget" name="mOptsPage_SourceFields">
+          <layout class="QVBoxLayout" name="verticalLayout_29">
            <property name="leftMargin">
             <number>0</number>
            </property>
@@ -775,47 +812,39 @@ border-radius: 2px;</string>
             <number>0</number>
            </property>
            <item>
-            <widget class="QgsScrollArea" name="scrollArea_5">
+            <widget class="QFrame" name="mSourceFieldsFrame">
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
              </property>
-             <property name="widgetResizable">
-              <bool>true</bool>
+             <property name="frameShadow">
+              <enum>QFrame::Raised</enum>
              </property>
-             <widget class="QWidget" name="scrollAreaWidgetContents_5">
-              <property name="geometry">
-               <rect>
-                <x>0</x>
-                <y>0</y>
-                <width>644</width>
-                <height>522</height>
-               </rect>
-              </property>
-              <layout class="QVBoxLayout" name="verticalLayout_20">
-               <property name="leftMargin">
-                <number>0</number>
-               </property>
-               <property name="topMargin">
-                <number>0</number>
-               </property>
-               <property name="rightMargin">
-                <number>0</number>
-               </property>
-               <property name="bottomMargin">
-                <number>0</number>
-               </property>
-               <item>
-                <widget class="QFrame" name="mFieldsFrame">
-                 <property name="frameShape">
-                  <enum>QFrame::NoFrame</enum>
-                 </property>
-                 <property name="frameShadow">
-                  <enum>QFrame::Plain</enum>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </widget>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="mOptsPage_AttributesForm">
+          <layout class="QVBoxLayout" name="verticalLayout">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QFrame" name="mAttributesFormFrame">
+             <property name="frameShape">
+              <enum>QFrame::NoFrame</enum>
+             </property>
+             <property name="frameShadow">
+              <enum>QFrame::Raised</enum>
+             </property>
             </widget>
            </item>
           </layout>
@@ -847,8 +876,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>673</width>
-                <height>507</height>
+                <width>725</width>
+                <height>394</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_32">
@@ -1271,8 +1300,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>100</width>
-                <height>30</height>
+                <width>662</width>
+                <height>534</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_21">
@@ -1337,8 +1366,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>199</width>
-                <height>123</height>
+                <width>662</width>
+                <height>534</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_23">
@@ -1381,6 +1410,9 @@ border-radius: 2px;</string>
                 <layout class="QHBoxLayout" name="horizontalLayout">
                  <item>
                   <widget class="QPushButton" name="mButtonAddJoin">
+                   <property name="toolTip">
+                    <string>Add new join</string>
+                   </property>
                    <property name="text">
                     <string/>
                    </property>
@@ -1392,6 +1424,9 @@ border-radius: 2px;</string>
                  </item>
                  <item>
                   <widget class="QPushButton" name="mButtonRemoveJoin">
+                   <property name="toolTip">
+                    <string>Remove selected join</string>
+                   </property>
                    <property name="text">
                     <string/>
                    </property>
@@ -1403,6 +1438,9 @@ border-radius: 2px;</string>
                  </item>
                  <item>
                   <widget class="QPushButton" name="mButtonEditJoin">
+                   <property name="toolTip">
+                    <string>Edit selected join</string>
+                   </property>
                    <property name="text">
                     <string/>
                    </property>
@@ -1526,7 +1564,7 @@ border-radius: 2px;</string>
           </layout>
          </widget>
          <widget class="QWidget" name="mOptsPage_DataDependencies">
-          <layout class="QVBoxLayout" name="verticalLayout_29">
+          <layout class="QVBoxLayout" name="verticalLayout_30">
            <property name="leftMargin">
             <number>0</number>
            </property>
@@ -1572,19 +1610,6 @@ border-radius: 2px;</string>
                 </property>
                </widget>
               </item>
-              <item>
-               <spacer name="verticalSpacer_4">
-                <property name="orientation">
-                 <enum>Qt::Vertical</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>20</width>
-                  <height>40</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
              </layout>
             </widget>
            </item>
@@ -1617,8 +1642,8 @@ border-radius: 2px;</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>359</width>
-                <height>527</height>
+                <width>648</width>
+                <height>608</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -2005,235 +2030,267 @@ border-radius: 2px;</string>
           </layout>
          </widget>
          <widget class="QWidget" name="mOptsPage_AuxiliaryStorage">
-          <widget class="QWidget" name="mAuxiliaryStorageScrollArea" native="true">
-           <property name="geometry">
-            <rect>
-             <x>0</x>
-             <y>0</y>
-             <width>671</width>
-             <height>551</height>
-            </rect>
+          <layout class="QVBoxLayout" name="verticalLayout_15">
+           <property name="leftMargin">
+            <number>0</number>
            </property>
-           <layout class="QGridLayout" name="gridLayout">
-            <item row="1" column="0">
-             <widget class="QgsCollapsibleGroupBox" name="mAuxiliaryStorageInformationGrpBox">
-              <property name="title">
-               <string>Information</string>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QWidget" name="mAuxiliaryStorageScrollArea" native="true">
+             <layout class="QGridLayout" name="gridLayout_2000">
+              <property name="leftMargin">
+               <number>0</number>
               </property>
-              <property name="flat">
-               <bool>false</bool>
+              <property name="topMargin">
+               <number>0</number>
               </property>
-              <property name="checkable">
-               <bool>false</bool>
+              <property name="rightMargin">
+               <number>0</number>
               </property>
-              <property name="syncGroup">
-               <string notr="true">vectormeta</string>
-              </property>
-              <layout class="QGridLayout" name="gridLayout_11">
-               <property name="sizeConstraint">
-                <enum>QLayout::SetDefaultConstraint</enum>
-               </property>
-               <item row="2" column="1">
-                <widget class="QLineEdit" name="mAuxiliaryStorageFeaturesLineEdit">
-                 <property name="enabled">
-                  <bool>false</bool>
-                 </property>
-                 <property name="readOnly">
-                  <bool>true</bool>
-                 </property>
-                </widget>
-               </item>
-               <item row="3" column="0">
-                <widget class="QLabel" name="mAuxiliaryStorageFieldsLabel">
-                 <property name="text">
-                  <string>Fields</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="2" column="0">
-                <widget class="QLabel" name="mAuxiliaryStorageFeaturesLabel">
-                 <property name="text">
-                  <string>Features</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="3" column="1">
-                <widget class="QLineEdit" name="mAuxiliaryStorageFieldsLineEdit">
-                 <property name="enabled">
-                  <bool>false</bool>
-                 </property>
-                 <property name="toolTip">
-                  <string>A name used to identify the layer. The short name is a text string used for machine-to-machine communication.</string>
-                 </property>
-                 <property name="inputMask">
-                  <string/>
-                 </property>
-                 <property name="text">
-                  <string/>
-                 </property>
-                 <property name="readOnly">
-                  <bool>true</bool>
-                 </property>
-                 <property name="placeholderText">
-                  <string/>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="0">
-                <widget class="QLabel" name="mAuxiliaryStorageKeyLabel">
-                 <property name="text">
-                  <string>Key</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="1">
-                <widget class="QLineEdit" name="mAuxiliaryStorageKeyLineEdit">
-                 <property name="enabled">
-                  <bool>false</bool>
-                 </property>
-                 <property name="readOnly">
-                  <bool>true</bool>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </widget>
-            </item>
-            <item row="3" column="0">
-             <layout class="QHBoxLayout" name="horizontalLayout_6">
               <property name="bottomMargin">
                <number>0</number>
               </property>
-              <item>
-               <widget class="QPushButton" name="mAuxiliaryStorageActions">
-                <property name="text">
-                 <string>Auxiliary Layer</string>
+              <item row="1" column="0">
+               <widget class="QgsCollapsibleGroupBox" name="mAuxiliaryStorageInformationGrpBox">
+                <property name="title">
+                 <string>Information</string>
                 </property>
-               </widget>
-              </item>
-              <item>
-               <spacer name="horizontalSpacer_8">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
+                <property name="flat">
+                 <bool>false</bool>
                 </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
+                <property name="checkable">
+                 <bool>false</bool>
                 </property>
-               </spacer>
-              </item>
-             </layout>
-            </item>
-            <item row="2" column="0">
-             <widget class="QgsCollapsibleGroupBox" name="mAuxiliaryStorageFieldsGrpBox">
-              <property name="title">
-               <string>Fields</string>
-              </property>
-              <layout class="QGridLayout" name="gridLayout_3">
-               <item row="3" column="0" rowspan="3">
-                <layout class="QHBoxLayout" name="horizontalLayout_5">
+                <property name="syncGroup" stdset="0">
+                 <string notr="true">vectormeta</string>
+                </property>
+                <layout class="QGridLayout" name="gridLayout_11">
                  <property name="sizeConstraint">
                   <enum>QLayout::SetDefaultConstraint</enum>
                  </property>
-                 <property name="bottomMargin">
-                  <number>0</number>
-                 </property>
-                 <item>
-                  <spacer name="horizontalSpacer_3">
-                   <property name="orientation">
-                    <enum>Qt::Horizontal</enum>
+                 <item row="2" column="1">
+                  <widget class="QLineEdit" name="mAuxiliaryStorageFeaturesLineEdit">
+                   <property name="enabled">
+                    <bool>false</bool>
                    </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>40</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                  </spacer>
-                 </item>
-                 <item>
-                  <widget class="QPushButton" name="mAuxiliaryStorageFieldsAddBtn">
-                   <property name="text">
-                    <string/>
-                   </property>
-                   <property name="icon">
-                    <iconset resource="../../images/images.qrc">
-                     <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
+                   <property name="readOnly">
+                    <bool>true</bool>
                    </property>
                   </widget>
                  </item>
-                 <item>
-                  <widget class="QPushButton" name="mAuxiliaryStorageFieldsDeleteBtn">
+                 <item row="3" column="0">
+                  <widget class="QLabel" name="mAuxiliaryStorageFieldsLabel">
                    <property name="text">
-                    <string/>
-                   </property>
-                   <property name="icon">
-                    <iconset resource="../../images/images.qrc">
-                     <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
+                    <string>Fields</string>
                    </property>
                   </widget>
                  </item>
-                 <item>
-                  <spacer name="horizontalSpacer_7">
-                   <property name="orientation">
-                    <enum>Qt::Horizontal</enum>
+                 <item row="2" column="0">
+                  <widget class="QLabel" name="mAuxiliaryStorageFeaturesLabel">
+                   <property name="text">
+                    <string>Features</string>
                    </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>40</width>
-                     <height>20</height>
-                    </size>
+                  </widget>
+                 </item>
+                 <item row="3" column="1">
+                  <widget class="QLineEdit" name="mAuxiliaryStorageFieldsLineEdit">
+                   <property name="enabled">
+                    <bool>false</bool>
                    </property>
-                  </spacer>
+                   <property name="toolTip">
+                    <string>A name used to identify the layer. The short name is a text string used for machine-to-machine communication.</string>
+                   </property>
+                   <property name="inputMask">
+                    <string/>
+                   </property>
+                   <property name="text">
+                    <string/>
+                   </property>
+                   <property name="readOnly">
+                    <bool>true</bool>
+                   </property>
+                   <property name="placeholderText">
+                    <string/>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QLabel" name="mAuxiliaryStorageKeyLabel">
+                   <property name="text">
+                    <string>Key</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="1">
+                  <widget class="QLineEdit" name="mAuxiliaryStorageKeyLineEdit">
+                   <property name="enabled">
+                    <bool>false</bool>
+                   </property>
+                   <property name="readOnly">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
                  </item>
                 </layout>
-               </item>
-               <item row="0" column="0">
-                <widget class="QTreeWidget" name="mAuxiliaryStorageFieldsTree">
-                 <column>
+               </widget>
+              </item>
+              <item row="3" column="0">
+               <layout class="QHBoxLayout" name="horizontalLayout_6">
+                <property name="bottomMargin">
+                 <number>0</number>
+                </property>
+                <item>
+                 <widget class="QPushButton" name="mAuxiliaryStorageActions">
                   <property name="text">
-                   <string>Target</string>
+                   <string>Auxiliary Layer</string>
                   </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Property</string>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_8">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
                   </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Name</string>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
                   </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Type</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
-                   <string>Full Name</string>
-                  </property>
-                 </column>
-                </widget>
-               </item>
-              </layout>
-             </widget>
-            </item>
-            <item row="0" column="0">
-             <widget class="QLabel" name="label_1">
-              <property name="text">
-               <string>Auxiliary storage tables can contain additional data that should only belong to the project file. For instance, specific location or rotation for labels. Auxiliary data are saved in qgd files. New fields can be added from any data-defined widget when needed. Be aware that this information will NOT be saved in you datasource but only in the project file.</string>
-              </property>
-              <property name="wordWrap">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </widget>
+                 </spacer>
+                </item>
+               </layout>
+              </item>
+              <item row="2" column="0">
+               <widget class="QgsCollapsibleGroupBox" name="mAuxiliaryStorageFieldsGrpBox">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="title">
+                 <string>Fields</string>
+                </property>
+                <layout class="QGridLayout" name="gridLayout_3">
+                 <item row="3" column="0" rowspan="3">
+                  <layout class="QHBoxLayout" name="horizontalLayout_5">
+                   <property name="sizeConstraint">
+                    <enum>QLayout::SetDefaultConstraint</enum>
+                   </property>
+                   <property name="bottomMargin">
+                    <number>0</number>
+                   </property>
+                   <item>
+                    <spacer name="horizontalSpacer_3">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="mAuxiliaryStorageFieldsAddBtn">
+                     <property name="toolTip">
+                      <string>Add new field</string>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                     <property name="icon">
+                      <iconset resource="../../images/images.qrc">
+                       <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="mAuxiliaryStorageFieldsDeleteBtn">
+                     <property name="toolTip">
+                      <string>Remove selected field</string>
+                     </property>
+                     <property name="text">
+                      <string/>
+                     </property>
+                     <property name="icon">
+                      <iconset resource="../../images/images.qrc">
+                       <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <spacer name="horizontalSpacer_7">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                  </layout>
+                 </item>
+                 <item row="0" column="0">
+                  <widget class="QTreeWidget" name="mAuxiliaryStorageFieldsTree">
+                   <column>
+                    <property name="text">
+                     <string>Target</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Property</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Name</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Type</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>Full Name</string>
+                    </property>
+                   </column>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_1">
+                <property name="text">
+                 <string>Auxiliary storage tables can contain additional data that should only belong to the project file. For instance, specific location or rotation for labels. Auxiliary data are saved in qgd files. New fields can be added from any data-defined widget when needed. Be aware that this information will NOT be saved in the data source but only in the project file.</string>
+                </property>
+                <property name="wordWrap">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+          </layout>
          </widget>
         </widget>
        </item>
@@ -2241,7 +2298,7 @@ border-radius: 2px;</string>
      </widget>
     </widget>
    </item>
-   <item>
+   <item row="1" column="0">
     <widget class="QFrame" name="mButtonBoxFrame">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
@@ -2297,6 +2354,18 @@ border-radius: 2px;</string>
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsLayerTreeView</class>
+   <extends>QTreeView</extends>
+   <header>qgslayertreeview.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsFilterLineEdit</class>
    <extends>QLineEdit</extends>
    <header>qgsfilterlineedit.h</header>
@@ -2313,21 +2382,9 @@ border-radius: 2px;</string>
    <header>qgsscalerangewidget.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsScrollArea</class>
-   <extends>QScrollArea</extends>
-   <header>qgsscrollarea.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsLayerTreeEmbeddedConfigWidget</class>
    <extends>QWidget</extends>
    <header>qgslayertreeembeddedconfigwidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsLayerTreeView</class>
-   <extends>QTreeView</extends>
-   <header>qgslayertreeview.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -2374,7 +2431,6 @@ border-radius: 2px;</string>
   <tabstop>txtSubsetSQL</tabstop>
   <tabstop>pbnQueryBuilder</tabstop>
   <tabstop>scrollArea_3</tabstop>
-  <tabstop>scrollArea_5</tabstop>
   <tabstop>scrollArea_19</tabstop>
   <tabstop>mScaleVisibilityGroupBox</tabstop>
   <tabstop>mScaleRangeWidget</tabstop>

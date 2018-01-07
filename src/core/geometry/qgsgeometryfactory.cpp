@@ -91,7 +91,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryFactory::geomFromWkt( const QStr
   }
   else if ( trimmed.startsWith( QLatin1String( "Polygon" ), Qt::CaseInsensitive ) )
   {
-    geom = qgis::make_unique< QgsPolygonV2 >();
+    geom = qgis::make_unique< QgsPolygon >();
   }
   else if ( trimmed.startsWith( QLatin1String( "CurvePolygon" ), Qt::CaseInsensitive ) )
   {
@@ -99,7 +99,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryFactory::geomFromWkt( const QStr
   }
   else if ( trimmed.startsWith( QLatin1String( "MultiPoint" ), Qt::CaseInsensitive ) )
   {
-    geom = qgis::make_unique< QgsMultiPointV2 >();
+    geom = qgis::make_unique< QgsMultiPoint >();
   }
   else if ( trimmed.startsWith( QLatin1String( "MultiCurve" ), Qt::CaseInsensitive ) )
   {
@@ -115,7 +115,7 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryFactory::geomFromWkt( const QStr
   }
   else if ( trimmed.startsWith( QLatin1String( "MultiPolygon" ), Qt::CaseInsensitive ) )
   {
-    geom = qgis::make_unique< QgsMultiPolygonV2 >();
+    geom = qgis::make_unique< QgsMultiPolygon >();
   }
   else if ( trimmed.startsWith( QLatin1String( "GeometryCollection" ), Qt::CaseInsensitive ) )
   {
@@ -132,15 +132,15 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryFactory::geomFromWkt( const QStr
   return geom;
 }
 
-std::unique_ptr< QgsAbstractGeometry > QgsGeometryFactory::fromPoint( const QgsPointXY &point )
+std::unique_ptr< QgsAbstractGeometry > QgsGeometryFactory::fromPointXY( const QgsPointXY &point )
 {
   return qgis::make_unique< QgsPoint >( point.x(), point.y() );
 }
 
-std::unique_ptr<QgsMultiPointV2> QgsGeometryFactory::fromMultiPoint( const QgsMultiPoint &multipoint )
+std::unique_ptr<QgsMultiPoint> QgsGeometryFactory::fromMultiPointXY( const QgsMultiPointXY &multipoint )
 {
-  std::unique_ptr< QgsMultiPointV2 > mp = qgis::make_unique< QgsMultiPointV2 >();
-  QgsMultiPoint::const_iterator ptIt = multipoint.constBegin();
+  std::unique_ptr< QgsMultiPoint > mp = qgis::make_unique< QgsMultiPoint >();
+  QgsMultiPointXY::const_iterator ptIt = multipoint.constBegin();
   for ( ; ptIt != multipoint.constEnd(); ++ptIt )
   {
     QgsPoint *pt = new QgsPoint( ptIt->x(), ptIt->y() );
@@ -149,26 +149,26 @@ std::unique_ptr<QgsMultiPointV2> QgsGeometryFactory::fromMultiPoint( const QgsMu
   return mp;
 }
 
-std::unique_ptr<QgsAbstractGeometry> QgsGeometryFactory::fromPolyline( const QgsPolyline &polyline )
+std::unique_ptr<QgsAbstractGeometry> QgsGeometryFactory::fromPolylineXY( const QgsPolylineXY &polyline )
 {
   return linestringFromPolyline( polyline );
 }
 
-std::unique_ptr<QgsMultiLineString> QgsGeometryFactory::fromMultiPolyline( const QgsMultiPolyline &multiline )
+std::unique_ptr<QgsMultiLineString> QgsGeometryFactory::fromMultiPolylineXY( const QgsMultiPolylineXY &multiline )
 {
   std::unique_ptr< QgsMultiLineString > mLine = qgis::make_unique< QgsMultiLineString >();
   for ( int i = 0; i < multiline.size(); ++i )
   {
-    mLine->addGeometry( fromPolyline( multiline.at( i ) ).release() );
+    mLine->addGeometry( fromPolylineXY( multiline.at( i ) ).release() );
   }
   return mLine;
 }
 
-std::unique_ptr<QgsPolygonV2> QgsGeometryFactory::fromPolygon( const QgsPolygon &polygon )
+std::unique_ptr<QgsPolygon> QgsGeometryFactory::fromPolygonXY( const QgsPolygonXY &polygon )
 {
-  std::unique_ptr< QgsPolygonV2 > poly = qgis::make_unique< QgsPolygonV2 >();
+  std::unique_ptr< QgsPolygon > poly = qgis::make_unique< QgsPolygon >();
 
-  QList<QgsCurve *> holes;
+  QVector<QgsCurve *> holes;
   for ( int i = 0; i < polygon.size(); ++i )
   {
     std::unique_ptr< QgsLineString > l = linestringFromPolyline( polygon.at( i ) );
@@ -187,23 +187,23 @@ std::unique_ptr<QgsPolygonV2> QgsGeometryFactory::fromPolygon( const QgsPolygon 
   return poly;
 }
 
-std::unique_ptr< QgsMultiPolygonV2 > QgsGeometryFactory::fromMultiPolygon( const QgsMultiPolygon &multipoly )
+std::unique_ptr< QgsMultiPolygon > QgsGeometryFactory::fromMultiPolygonXY( const QgsMultiPolygonXY &multipoly )
 {
-  std::unique_ptr< QgsMultiPolygonV2 > mp = qgis::make_unique< QgsMultiPolygonV2 >();
+  std::unique_ptr< QgsMultiPolygon > mp = qgis::make_unique< QgsMultiPolygon >();
   for ( int i = 0; i < multipoly.size(); ++i )
   {
-    mp->addGeometry( fromPolygon( multipoly.at( i ) ).release() );
+    mp->addGeometry( fromPolygonXY( multipoly.at( i ) ).release() );
   }
   return mp;
 }
 
-std::unique_ptr<QgsLineString> QgsGeometryFactory::linestringFromPolyline( const QgsPolyline &polyline )
+std::unique_ptr<QgsLineString> QgsGeometryFactory::linestringFromPolyline( const QgsPolylineXY &polyline )
 {
   QVector< double > x;
   x.reserve( polyline.size() );
   QVector< double > y;
   y.reserve( polyline.size() );
-  QgsPolyline::const_iterator it = polyline.constBegin();
+  QgsPolylineXY::const_iterator it = polyline.constBegin();
   for ( ; it != polyline.constEnd(); ++it )
   {
     x << it->x();
@@ -227,15 +227,15 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeometryFactory::geomFromWkbType( QgsWkb
     case QgsWkbTypes::CompoundCurve:
       return qgis::make_unique< QgsCompoundCurve >();
     case QgsWkbTypes::Polygon:
-      return qgis::make_unique< QgsPolygonV2 >();
+      return qgis::make_unique< QgsPolygon >();
     case QgsWkbTypes::CurvePolygon:
       return qgis::make_unique< QgsCurvePolygon >();
     case QgsWkbTypes::MultiLineString:
       return qgis::make_unique< QgsMultiLineString >();
     case QgsWkbTypes::MultiPolygon:
-      return qgis::make_unique< QgsMultiPolygonV2 >();
+      return qgis::make_unique< QgsMultiPolygon >();
     case QgsWkbTypes::MultiPoint:
-      return qgis::make_unique< QgsMultiPointV2 >();
+      return qgis::make_unique< QgsMultiPoint >();
     case QgsWkbTypes::MultiCurve:
       return qgis::make_unique< QgsMultiCurve >();
     case QgsWkbTypes::MultiSurface:
@@ -256,7 +256,7 @@ std::unique_ptr<QgsGeometryCollection> QgsGeometryFactory::createCollectionOfTyp
   switch ( type )
   {
     case QgsWkbTypes::MultiPoint:
-      collect = qgis::make_unique< QgsMultiPointV2 >();
+      collect = qgis::make_unique< QgsMultiPoint >();
       break;
     case QgsWkbTypes::MultiLineString:
       collect = qgis::make_unique< QgsMultiLineString >();
@@ -265,7 +265,7 @@ std::unique_ptr<QgsGeometryCollection> QgsGeometryFactory::createCollectionOfTyp
       collect = qgis::make_unique< QgsMultiCurve >();
       break;
     case QgsWkbTypes::MultiPolygon:
-      collect = qgis::make_unique< QgsMultiPolygonV2 >();
+      collect = qgis::make_unique< QgsMultiPolygon >();
       break;
     case QgsWkbTypes::MultiSurface:
       collect = qgis::make_unique< QgsMultiSurface >();

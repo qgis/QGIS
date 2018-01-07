@@ -46,6 +46,9 @@ class GeometryByExpression(QgisFeatureBasedAlgorithm):
     def group(self):
         return self.tr('Vector geometry')
 
+    def groupId(self):
+        return 'vectorgeometry'
+
     def __init__(self):
         super().__init__()
         self.geometry_types = [self.tr('Polygon'),
@@ -94,18 +97,14 @@ class GeometryByExpression(QgisFeatureBasedAlgorithm):
             return False
 
         self.expression_context = self.createExpressionContext(parameters, context)
-
-        if not self.expression.prepare(self.expression_context):
-            feedback.reportErro(
-                self.tr('Evaluation error: {0}').format(self.expression.evalErrorString()))
-            return False
+        self.expression.prepare(self.expression_context)
 
         return True
 
     def outputWkbType(self, input_wkb_type):
         return self.wkb_type
 
-    def processFeature(self, feature, feedback):
+    def processFeature(self, feature, context, feedback):
         self.expression_context.setFeature(feature)
         value = self.expression.evaluate(self.expression_context)
         if self.expression.hasEvalError():

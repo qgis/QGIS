@@ -28,15 +28,15 @@ class QgsOgrExpressionCompiler : public QgsSqlExpressionCompiler
 
     explicit QgsOgrExpressionCompiler( QgsOgrFeatureSource *source );
 
-    virtual Result compile( const QgsExpression *exp ) override;
+    Result compile( const QgsExpression *exp ) override;
 
   protected:
 
-    virtual Result compileNode( const QgsExpressionNode *node, QString &str ) override;
-    virtual QString quotedIdentifier( const QString &identifier ) override;
-    virtual QString quotedValue( const QVariant &value, bool &ok ) override;
-    virtual QString castToReal( const QString &value ) const override;
-    virtual QString castToInt( const QString &value ) const override;
+    Result compileNode( const QgsExpressionNode *node, QString &str ) override;
+    QString quotedIdentifier( const QString &identifier ) override;
+    QString quotedValue( const QVariant &value, bool &ok ) override;
+    QString castToReal( const QString &value ) const override;
+    QString castToInt( const QString &value ) const override;
 
   private:
 

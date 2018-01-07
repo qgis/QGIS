@@ -317,7 +317,7 @@ uint qHash( const QgsFeature &key, uint seed )
     hash ^= qHash( attr.toString() );
   }
 
-  hash ^= qHash( key.geometry().exportToWkt() );
+  hash ^= qHash( key.geometry().asWkt() );
   hash ^= qHash( key.id() );
 
   return hash;

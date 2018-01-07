@@ -18,10 +18,11 @@
 
 #include "qgis_3d.h"
 
-class QgsPolygonV2;
+class QgsPolygon;
+class QgsMultiPolygon;
 
 #include <QVector>
-
+#include <memory>
 
 /**
  * \ingroup 3d
@@ -38,19 +39,25 @@ class _3D_EXPORT QgsTessellator
 {
   public:
     //! Creates tessellator with a specified origin point of the world (in map coordinates)
-    QgsTessellator( double originX, double originY, bool addNormals );
+    QgsTessellator( double originX, double originY, bool addNormals, bool invertNormals = false );
 
     //! Tessellates a triangle and adds its vertex entries to the output data array
-    void addPolygon( const QgsPolygonV2 &polygon, float extrusionHeight );
+    void addPolygon( const QgsPolygon &polygon, float extrusionHeight );
 
     //! Returns array of triangle vertex data
     QVector<float> data() const { return mData; }
     //! Returns size of one vertex entry in bytes
     int stride() const { return mStride; }
 
+    /**
+     * Returns the triangulation as a multipolygon geometry.
+     */
+    std::unique_ptr< QgsMultiPolygon > asMultiPolygon() const;
+
   private:
     double mOriginX, mOriginY;
     bool mAddNormals;
+    bool mInvertNormals;
     QVector<float> mData;
     int mStride;
 };

@@ -159,7 +159,7 @@ class CORE_EXPORT QgsComposerMapOverview : public QgsComposerMapItem
      */
     QgsComposerMapOverview( const QString &name, QgsComposerMap *map );
 
-    virtual ~QgsComposerMapOverview();
+    ~QgsComposerMapOverview() override;
 
     /**
      * Draws an overview

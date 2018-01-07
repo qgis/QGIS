@@ -23,68 +23,62 @@ class QgsVectorLayerEditBuffer : QObject
     virtual bool isModified() const;
 %Docstring
 Returns true if the provider has been modified since the last commit
- :rtype: bool
 %End
 
 
     virtual bool addFeature( QgsFeature &f );
 %Docstring
- Adds a feature
-\param f feature to add
+Adds a feature
+
+:param f: feature to add
+
 :return: True in case of success and False in case of error
- :rtype: bool
 %End
 
     virtual bool addFeatures( QgsFeatureList &features );
 %Docstring
 Insert a copy of the given features into the layer  (but does not commit it)
- :rtype: bool
 %End
 
     virtual bool deleteFeature( QgsFeatureId fid );
 %Docstring
 Delete a feature from the layer (but does not commit it)
- :rtype: bool
 %End
 
     virtual bool deleteFeatures( const QgsFeatureIds &fid );
 %Docstring
 Deletes a set of features from the layer (but does not commit it)
- :rtype: bool
 %End
 
     virtual bool changeGeometry( QgsFeatureId fid, const QgsGeometry &geom );
 %Docstring
 Change feature's geometry
- :rtype: bool
 %End
 
     virtual bool changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant &oldValue = QVariant() );
 %Docstring
 Changed an attribute value (but does not commit it)
- :rtype: bool
 %End
 
     virtual bool addAttribute( const QgsField &field );
 %Docstring
- Add an attribute field (but does not commit it)
+Add an attribute field (but does not commit it)
 returns true if the field was added *
- :rtype: bool
 %End
 
     virtual bool deleteAttribute( int attr );
 %Docstring
 Delete an attribute field (but does not commit it)
- :rtype: bool
 %End
 
     virtual bool renameAttribute( int attr, const QString &newName );
 %Docstring
- Renames an attribute field (but does not commit it)
- \param attr attribute index
- \param newName new name of field
+Renames an attribute field (but does not commit it)
+
+:param attr: attribute index
+:param newName: new name of field
+
 .. versionadded:: 2.16
- :rtype: bool
 %End
 
     virtual bool commitChanges( QStringList &commitErrors );
@@ -102,7 +96,6 @@ geometries, delete features, delete attributes)
 so if a stage fails, it's difficult to roll back cleanly.
 Therefore any error message also includes which stage failed so
 that the user has some chance of repairing the damage cleanly.
- :rtype: bool
 %End
 
     virtual void rollBack();
@@ -112,88 +105,97 @@ Stop editing and discard the edits
 
     QgsFeatureMap addedFeatures() const;
 %Docstring
- Returns a map of new features which are not committed.
-.. seealso:: isFeatureAdded()
- :rtype: QgsFeatureMap
+Returns a map of new features which are not committed.
+
+.. seealso:: :py:func:`isFeatureAdded()`
 %End
 
     bool isFeatureAdded( QgsFeatureId id ) const;
 %Docstring
- Returns true if the specified feature ID has been added but not committed.
- \param id feature ID
+Returns true if the specified feature ID has been added but not committed.
+
+:param id: feature ID
+
 .. versionadded:: 3.0
-.. seealso:: addedFeatures()
- :rtype: bool
+
+.. seealso:: :py:func:`addedFeatures()`
 %End
 
     QgsChangedAttributesMap changedAttributeValues() const;
 %Docstring
- Returns a map of features with changed attributes values which are not committed.
-.. seealso:: isFeatureAttributesChanged()
- :rtype: QgsChangedAttributesMap
+Returns a map of features with changed attributes values which are not committed.
+
+.. seealso:: :py:func:`isFeatureAttributesChanged()`
 %End
 
     bool isFeatureAttributesChanged( QgsFeatureId id ) const;
 %Docstring
- Returns true if the specified feature ID has had an attribute changed but not committed.
- \param id feature ID
+Returns true if the specified feature ID has had an attribute changed but not committed.
+
+:param id: feature ID
+
 .. versionadded:: 3.0
-.. seealso:: changedAttributeValues()
- :rtype: bool
+
+.. seealso:: :py:func:`changedAttributeValues()`
 %End
 
     QgsAttributeList deletedAttributeIds() const;
 %Docstring
- Returns a list of deleted attributes fields which are not committed. The list is kept sorted.
-.. seealso:: isAttributeDeleted()
- :rtype: QgsAttributeList
+Returns a list of deleted attributes fields which are not committed. The list is kept sorted.
+
+.. seealso:: :py:func:`isAttributeDeleted()`
 %End
 
     bool isAttributeDeleted( int index ) const;
 %Docstring
- Returns true if the specified attribute has been deleted but not committed.
- \param index attribute index
+Returns true if the specified attribute has been deleted but not committed.
+
+:param index: attribute index
+
 .. versionadded:: 3.0
-.. seealso:: deletedAttributeIds()
- :rtype: bool
+
+.. seealso:: :py:func:`deletedAttributeIds()`
 %End
 
     QList<QgsField> addedAttributes() const;
 %Docstring
- Returns a list of added attributes fields which are not committed.
- :rtype: list of QgsField
+Returns a list of added attributes fields which are not committed.
 %End
 
     QgsGeometryMap changedGeometries() const;
 %Docstring
- Returns a map of features with changed geometries which are not committed.
-.. seealso:: hasFeatureGeometryChange()
- :rtype: QgsGeometryMap
+Returns a map of features with changed geometries which are not committed.
+
+.. seealso:: :py:func:`hasFeatureGeometryChange()`
 %End
 
     bool isFeatureGeometryChanged( QgsFeatureId id ) const;
 %Docstring
- Returns true if the specified feature ID has had its geometry changed but not committed.
- \param id feature ID
+Returns true if the specified feature ID has had its geometry changed but not committed.
+
+:param id: feature ID
+
 .. versionadded:: 3.0
-.. seealso:: changedGeometries()
- :rtype: bool
+
+.. seealso:: :py:func:`changedGeometries()`
 %End
 
     QgsFeatureIds deletedFeatureIds() const;
 %Docstring
- Returns a list of deleted feature IDs which are not committed.
-.. seealso:: isFeatureDeleted()
- :rtype: QgsFeatureIds
+Returns a list of deleted feature IDs which are not committed.
+
+.. seealso:: :py:func:`isFeatureDeleted()`
 %End
 
     bool isFeatureDeleted( QgsFeatureId id ) const;
 %Docstring
- Returns true if the specified feature ID has been deleted but not committed.
- \param id feature ID
+Returns true if the specified feature ID has been deleted but not committed.
+
+:param id: feature ID
+
 .. versionadded:: 3.0
-.. seealso:: deletedFeatureIds()
- :rtype: bool
+
+.. seealso:: :py:func:`deletedFeatureIds()`
 %End
 
 
@@ -211,9 +213,10 @@ This signal is emitted when modifications has been done on layer
 
     void geometryChanged( QgsFeatureId fid, const QgsGeometry &geom );
 %Docstring
- Emitted when a feature's geometry is changed.
- \param fid feature ID
- \param geom new feature geometry
+Emitted when a feature's geometry is changed.
+
+:param fid: feature ID
+:param geom: new feature geometry
 %End
 
     void attributeValueChanged( QgsFeatureId fid, int idx, const QVariant & );
@@ -222,9 +225,11 @@ This signal is emitted when modifications has been done on layer
 
     void attributeRenamed( int idx, const QString &newName );
 %Docstring
- Emitted when an attribute has been renamed
- \param idx attribute index
- \param newName new attribute name
+Emitted when an attribute has been renamed
+
+:param idx: attribute index
+:param newName: new attribute name
+
 .. versionadded:: 2.16
 %End
 
@@ -236,9 +241,11 @@ Signals emitted after committing changes
 
     void committedAttributesRenamed( const QString &layerId, const QgsFieldNameMap &renamedAttributes );
 %Docstring
- Emitted after committing an attribute rename
- \param layerId ID of layer
- \param renamedAttributes map of field index to new name
+Emitted after committing an attribute rename
+
+:param layerId: ID of layer
+:param renamedAttributes: map of field index to new name
+
 .. versionadded:: 2.16
 %End
     void committedFeaturesAdded( const QString &layerId, const QgsFeatureList &addedFeatures );
@@ -249,6 +256,9 @@ Signals emitted after committing changes
   protected:
 
     QgsVectorLayerEditBuffer();
+%Docstring
+Constructor for QgsVectorLayerEditBuffer
+%End
 
     void updateFields( QgsFields &fields );
 

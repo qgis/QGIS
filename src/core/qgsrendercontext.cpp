@@ -95,6 +95,23 @@ QgsRenderContext QgsRenderContext::fromQPainter( QPainter *painter )
   return context;
 }
 
+QgsCoordinateTransformContext QgsRenderContext::transformContext() const
+{
+#ifdef QGISDEBUG
+  if ( !mHasTransformContext )
+    qWarning( "No QgsCoordinateTransformContext context set for transform" );
+#endif
+  return mTransformContext;
+}
+
+void QgsRenderContext::setTransformContext( const QgsCoordinateTransformContext &context )
+{
+  mTransformContext = context;
+#ifdef QGISDEBUG
+  mHasTransformContext = true;
+#endif
+}
+
 void QgsRenderContext::setFlags( QgsRenderContext::Flags flags )
 {
   mFlags = flags;
@@ -134,6 +151,7 @@ QgsRenderContext QgsRenderContext::fromMapSettings( const QgsMapSettings &mapSet
   ctx.setFlag( RenderMapTile, mapSettings.testFlag( QgsMapSettings::RenderMapTile ) );
   ctx.setFlag( Antialiasing, mapSettings.testFlag( QgsMapSettings::Antialiasing ) );
   ctx.setFlag( RenderPartialOutput, mapSettings.testFlag( QgsMapSettings::RenderPartialOutput ) );
+  ctx.setFlag( RenderPreviewJob, mapSettings.testFlag( QgsMapSettings::RenderPreviewJob ) );
   ctx.setScaleFactor( mapSettings.outputDpi() / 25.4 ); // = pixels per mm
   ctx.setRendererScale( mapSettings.scale() );
   ctx.setExpressionContext( mapSettings.expressionContext() );
@@ -141,6 +159,7 @@ QgsRenderContext QgsRenderContext::fromMapSettings( const QgsMapSettings &mapSet
   ctx.setSegmentationToleranceType( mapSettings.segmentationToleranceType() );
   ctx.mDistanceArea.setSourceCrs( mapSettings.destinationCrs() );
   ctx.mDistanceArea.setEllipsoid( mapSettings.ellipsoid() );
+  ctx.setTransformContext( mapSettings.transformContext() );
   //this flag is only for stopping during the current rendering progress,
   //so must be false at every new render operation
   ctx.setRenderingStopped( false );

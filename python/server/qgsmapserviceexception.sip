@@ -16,13 +16,13 @@ class QgsMapServiceException : QgsOgcServiceException
 %Docstring
  Exception class for WMS service exceptions (for compatibility only).
 
- \deprecated Use QsgServerException
+\deprecated Use QsgServerException
 
- The most important codes are:
-  * "InvalidFormat"
-  * "Invalid CRS"
-  * "LayerNotDefined" / "StyleNotDefined"
-  * "OperationNotSupported"
+The most important codes are:
+* "InvalidFormat"
+* "Invalid CRS"
+* "LayerNotDefined" / "StyleNotDefined"
+* "OperationNotSupported"
 %End
 
 %TypeHeaderCode

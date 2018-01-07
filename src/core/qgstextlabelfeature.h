@@ -32,7 +32,7 @@ class QgsTextLabelFeature : public QgsLabelFeature
     QgsTextLabelFeature( QgsFeatureId id, GEOSGeometry *geometry, QSizeF size );
 
     //! Clean up
-    ~QgsTextLabelFeature();
+    ~QgsTextLabelFeature() override;
 
     /**
      * Returns the text component corresponding to a specified label part

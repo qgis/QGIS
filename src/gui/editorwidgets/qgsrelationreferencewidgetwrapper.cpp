@@ -35,7 +35,7 @@ QWidget *QgsRelationReferenceWidgetWrapper::createWidget( QWidget *parent )
 
 void QgsRelationReferenceWidgetWrapper::initWidget( QWidget *editor )
 {
-  QgsRelationReferenceWidget *w = dynamic_cast<QgsRelationReferenceWidget *>( editor );
+  QgsRelationReferenceWidget *w = qobject_cast<QgsRelationReferenceWidget *>( editor );
   if ( !w )
   {
     w = new QgsRelationReferenceWidget( editor );
@@ -43,7 +43,9 @@ void QgsRelationReferenceWidgetWrapper::initWidget( QWidget *editor )
 
   mWidget = w;
 
-  mWidget->setEditorContext( context(), mCanvas, mMessageBar );
+  const QgsAttributeEditorContext *ctx = &context();
+
+  mWidget->setEditorContext( *ctx, mCanvas, mMessageBar );
 
   bool showForm = config( QStringLiteral( "ShowForm" ), false ).toBool();
   bool mapIdent = config( QStringLiteral( "MapIdentification" ), false ).toBool();
@@ -64,19 +66,22 @@ void QgsRelationReferenceWidgetWrapper::initWidget( QWidget *editor )
   mWidget->setAllowAddFeatures( config( QStringLiteral( "AllowAddFeatures" ), false ).toBool() );
 
   const QVariant relationName = config( QStringLiteral( "Relation" ) );
-  QgsRelation relation = relationName.isValid() ?
-                         QgsProject::instance()->relationManager()->relation( relationName.toString() ) :
-                         layer()->referencingRelations( fieldIdx() )[0];
+
+  QgsRelation relation; // invalid relation by default
+  if ( relationName.isValid() )
+    relation = QgsProject::instance()->relationManager()->relation( relationName.toString() );
+  else if ( ! layer()->referencingRelations( fieldIdx() ).isEmpty() )
+    relation = layer()->referencingRelations( fieldIdx() )[0];
 
   // If this widget is already embedded by the same relation, reduce functionality
-  const QgsAttributeEditorContext *ctx = &context();
   do
   {
     if ( ctx->relation().name() == relation.name() )
     {
       mWidget->setEmbedForm( false );
-      mWidget->setReadOnlySelector( false );
+      mWidget->setReadOnlySelector( true );
       mWidget->setAllowMapIdentification( false );
+      mWidget->setOpenFormButtonVisible( false );
       break;
     }
     ctx = ctx->parentContext();
@@ -145,23 +150,30 @@ void QgsRelationReferenceWidgetWrapper::foreignKeyChanged( QVariant value )
   emit valueChanged( value );
 }
 
-void QgsRelationReferenceWidgetWrapper::updateConstraintWidgetStatus( ConstraintResult status )
+void QgsRelationReferenceWidgetWrapper::updateConstraintWidgetStatus()
 {
   if ( mWidget )
   {
-    switch ( status )
+    if ( !constraintResultVisible() )
     {
-      case ConstraintResultPass:
-        mWidget->setStyleSheet( QString() );
-        break;
+      widget()->setStyleSheet( QString() );
+    }
+    else
+    {
+      switch ( constraintResult() )
+      {
+        case ConstraintResultPass:
+          mWidget->setStyleSheet( QString() );
+          break;
 
-      case ConstraintResultFailHard:
-        mWidget->setStyleSheet( QStringLiteral( ".QComboBox { background-color: #dd7777; }" ) );
-        break;
+        case ConstraintResultFailHard:
+          mWidget->setStyleSheet( QStringLiteral( ".QComboBox { background-color: #dd7777; }" ) );
+          break;
 
-      case ConstraintResultFailSoft:
-        mWidget->setStyleSheet( QStringLiteral( ".QComboBox { background-color: #ffd85d; }" ) );
-        break;
+        case ConstraintResultFailSoft:
+          mWidget->setStyleSheet( QStringLiteral( ".QComboBox { background-color: #ffd85d; }" ) );
+          break;
+      }
     }
   }
 }

@@ -215,7 +215,7 @@
       <item row="3" column="0">
        <widget class="QLabel" name="mCircleRadiusLabel">
         <property name="text">
-         <string>Ring size adjustment</string>
+         <string>Size adjustment</string>
         </property>
        </widget>
       </item>

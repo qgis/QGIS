@@ -61,6 +61,9 @@ class SumLines(QgisAlgorithm):
     def group(self):
         return self.tr('Vector analysis')
 
+    def groupId(self):
+        return 'vectoranalysis'
+
     def __init__(self):
         super().__init__()
 
@@ -124,7 +127,7 @@ class SumLines(QgisAlgorithm):
                 if len(lines) > 0:
                     has_intersections = True
                     # use prepared geometries for faster intersection tests
-                    engine = QgsGeometry.createGeometryEngine(poly_geom.geometry())
+                    engine = QgsGeometry.createGeometryEngine(poly_geom.constGet())
                     engine.prepareGeometry()
 
                 if has_intersections:
@@ -133,7 +136,7 @@ class SumLines(QgisAlgorithm):
                         if feedback.isCanceled():
                             break
 
-                        if engine.intersects(line_feature.geometry().geometry()):
+                        if engine.intersects(line_feature.geometry().constGet()):
                             outGeom = poly_geom.intersection(line_feature.geometry())
                             length += distArea.measureLength(outGeom)
                             count += 1

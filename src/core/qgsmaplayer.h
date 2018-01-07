@@ -106,7 +106,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     QgsMapLayer( QgsMapLayer::LayerType type = VectorLayer, const QString &name = QString(), const QString &source = QString() );
 
-    virtual ~QgsMapLayer();
+    ~QgsMapLayer() override;
 
     //! QgsMapLayer cannot be copied
     QgsMapLayer( QgsMapLayer const & ) = delete;
@@ -138,7 +138,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /**
      * Returns the display name of the layer.
-     * \returns the layer name
      * \see setName()
      */
     QString name() const;
@@ -153,11 +152,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \note not available in Python bindings
      */
     virtual const QgsDataProvider *dataProvider() const SIP_SKIP;
-
-    /**
-     * Returns the original name of the layer.
-     */
-    QString originalName() const;
 
     /**
      * Sets the short name of the layer
@@ -524,8 +518,12 @@ class CORE_EXPORT QgsMapLayer : public QObject
     //! Sets layer's spatial reference system
     void setCrs( const QgsCoordinateReferenceSystem &srs, bool emitSignal = true );
 
-    //! A convenience function to (un)capitalize the layer name
-    static QString capitalizeLayerName( const QString &name );
+    /**
+     * A convenience function to capitalize and format a layer \a name.
+     *
+     * \since QGIS 3.0
+     */
+    static QString formatLayerName( const QString &name );
 
     /**
      * Retrieve the style URI for this layer
@@ -1097,6 +1095,18 @@ class CORE_EXPORT QgsMapLayer : public QObject
     //! Write style manager's configuration (if exists). To be called by subclasses.
     void writeStyleManager( QDomNode &layerNode, QDomDocument &doc ) const;
 
+    /**
+     * Write style data common to all layer types
+     * \since QGIS 3.0
+     */
+    void writeCommonStyle( QDomElement &layerElement, QDomDocument &document, const QgsReadWriteContext &context ) const;
+
+    /**
+     * Read style data common to all layer types
+     * \since QGIS 3.0
+     */
+    void readCommonStyle( const QDomElement &layerElement, const QgsReadWriteContext &context );
+
 #ifndef SIP_RUN
 #if 0
     //! Debugging member - invoked when a connect() is made to this object
@@ -1120,11 +1130,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     //! Name of the layer - used for display
     QString mLayerName;
-
-    /**
-     * Original name of the layer
-     */
-    QString mLayerOrigName;
 
     QString mShortName;
     QString mTitle;

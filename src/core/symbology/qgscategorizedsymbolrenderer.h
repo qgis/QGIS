@@ -86,17 +86,17 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
 
     QgsCategorizedSymbolRenderer( const QString &attrName = QString(), const QgsCategoryList &categories = QgsCategoryList() );
 
-    virtual QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
-    virtual QgsSymbol *originalSymbolForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
-    virtual void startRender( QgsRenderContext &context, const QgsFields &fields ) override;
-    virtual void stopRender( QgsRenderContext &context ) override;
-    virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
-    virtual QString dump() const override;
-    virtual QgsCategorizedSymbolRenderer *clone() const override SIP_FACTORY;
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const override;
-    virtual QgsFeatureRenderer::Capabilities capabilities() override { return SymbolLevels | Filter; }
-    virtual QString filter( const QgsFields &fields = QgsFields() ) override;
-    virtual QgsSymbolList symbols( QgsRenderContext &context ) override;
+    QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
+    QgsSymbol *originalSymbolForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
+    void startRender( QgsRenderContext &context, const QgsFields &fields ) override;
+    void stopRender( QgsRenderContext &context ) override;
+    QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
+    QString dump() const override;
+    QgsCategorizedSymbolRenderer *clone() const override SIP_FACTORY;
+    void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const override;
+    QgsFeatureRenderer::Capabilities capabilities() override { return SymbolLevels | Filter; }
+    QString filter( const QgsFields &fields = QgsFields() ) override;
+    QgsSymbolList symbols( QgsRenderContext &context ) override;
 
     /**
      * Update all the symbols but leave categories and colors. This method also sets the source
@@ -140,9 +140,9 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
     //! create renderer from XML element
     static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
 
-    virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) override;
+    QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) override;
     QgsLegendSymbolList legendSymbolItems() const override;
-    virtual QSet< QString > legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
+    QSet< QString > legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
 
     /**
      * Returns the renderer's source symbol, which is the base symbol used for the each categories' symbol before applying
@@ -183,16 +183,16 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
       */
     void updateColorRamp( QgsColorRamp *ramp SIP_TRANSFER );
 
-    virtual bool legendSymbolItemsCheckable() const override;
-    virtual bool legendSymbolItemChecked( const QString &key ) override;
-    virtual void setLegendSymbolItem( const QString &key, QgsSymbol *symbol SIP_TRANSFER ) override;
-    virtual void checkLegendSymbolItem( const QString &key, bool state = true ) override;
-    virtual QString legendClassificationAttribute() const override { return classAttribute(); }
+    bool legendSymbolItemsCheckable() const override;
+    bool legendSymbolItemChecked( const QString &key ) override;
+    void setLegendSymbolItem( const QString &key, QgsSymbol *symbol SIP_TRANSFER ) override;
+    void checkLegendSymbolItem( const QString &key, bool state = true ) override;
+    QString legendClassificationAttribute() const override { return classAttribute(); }
 
     /**
      * creates a QgsCategorizedSymbolRenderer from an existing renderer.
-     * \since QGIS 2.5
      * \returns a new renderer if the conversion was possible, otherwise 0.
+     * \since QGIS 2.5
      */
     static QgsCategorizedSymbolRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) SIP_FACTORY;
 

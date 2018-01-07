@@ -40,7 +40,6 @@ QgsGrassVectorMapLayer::QgsGrassVectorMapLayer( QgsGrassVectorMap *map, int fiel
   : mField( field )
   , mValid( false )
   , mMap( map )
-  , mFieldInfo( 0 )
   , mHasTable( false )
   , mKeyColumn( -1 )
   , mUsers( 0 )
@@ -57,7 +56,7 @@ void QgsGrassVectorMapLayer::clear()
   mKeyColumn = -1;
   mValid = false;
   G_free( mFieldInfo );
-  mFieldInfo = 0;
+  mFieldInfo = nullptr;
 }
 
 int QgsGrassVectorMapLayer::cidxFieldIndex()
@@ -411,7 +410,7 @@ QString QgsGrassVectorMapLayer::quotedValue( const QVariant &value )
 
 dbDriver *QgsGrassVectorMapLayer::openDriver( QString &error )
 {
-  dbDriver *driver = 0;
+  dbDriver *driver = nullptr;
 
   if ( !mFieldInfo )
   {
@@ -485,7 +484,7 @@ void QgsGrassVectorMapLayer::closeEdit()
     QgsDebugMsg( "close driver" );
     db_close_database_shutdown_driver( mDriver );
     QgsDebugMsg( "driver closed" );
-    mDriver = 0;
+    mDriver = nullptr;
   }
 }
 
@@ -548,8 +547,7 @@ void QgsGrassVectorMapLayer::executeSql( const QString &sql, QString &error )
     QgsDebugMsg( error );
   }
 
-  db_free_string( &dbstr );  //if ( index < 0 || index > )
-  return;
+  db_free_string( &dbstr );
 }
 
 void QgsGrassVectorMapLayer::createTable( const QgsFields &fields, QString &error )
@@ -572,11 +570,11 @@ void QgsGrassVectorMapLayer::createTable( const QgsFields &fields, QString &erro
   int nLinks = Vect_get_num_dblinks( mMap->map() );
   if ( nLinks == 0 )
   {
-    mFieldInfo = Vect_default_field_info( mMap->map(), mField, 0, GV_1TABLE );
+    mFieldInfo = Vect_default_field_info( mMap->map(), mField, nullptr, GV_1TABLE );
   }
   else
   {
-    mFieldInfo = Vect_default_field_info( mMap->map(), mField, 0, GV_MTABLE );
+    mFieldInfo = Vect_default_field_info( mMap->map(), mField, nullptr, GV_MTABLE );
   }
   if ( !mFieldInfo )
   {
@@ -589,7 +587,7 @@ void QgsGrassVectorMapLayer::createTable( const QgsFields &fields, QString &erro
   if ( !error.isEmpty() )
   {
     QgsDebugMsg( error );
-    mFieldInfo = 0;
+    mFieldInfo = nullptr;
     return;
   }
 
@@ -612,13 +610,13 @@ void QgsGrassVectorMapLayer::createTable( const QgsFields &fields, QString &erro
     error = QString( e.what() );
     QgsDebugMsg( error );
     db_close_database_shutdown_driver( mDriver );
-    mFieldInfo = 0;
+    mFieldInfo = nullptr;
     return;
   }
 
   if ( mFieldInfo )
   {
-    int ret = Vect_map_add_dblink( mMap->map(), mField, 0, mFieldInfo->table, mFieldInfo->key,
+    int ret = Vect_map_add_dblink( mMap->map(), mField, nullptr, mFieldInfo->table, mFieldInfo->key,
                                    mFieldInfo->database, mFieldInfo->driver );
 
     if ( ret == -1 )
@@ -636,7 +634,7 @@ void QgsGrassVectorMapLayer::createTable( const QgsFields &fields, QString &erro
         QgsDebugMsg( error );
       }
       db_close_database_shutdown_driver( mDriver );
-      mFieldInfo = 0;
+      mFieldInfo = nullptr;
     }
   }
 

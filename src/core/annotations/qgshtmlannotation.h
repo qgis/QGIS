@@ -42,8 +42,6 @@ class CORE_EXPORT QgsHtmlAnnotation: public QgsAnnotation
      */
     QgsHtmlAnnotation( QObject *parent SIP_TRANSFERTHIS = nullptr );
 
-    ~QgsHtmlAnnotation() = default;
-
     QgsHtmlAnnotation *clone() const override SIP_FACTORY;
 
     QSizeF minimumFrameSize() const override;
@@ -60,8 +58,8 @@ class CORE_EXPORT QgsHtmlAnnotation: public QgsAnnotation
      */
     QString sourceFile() const { return mHtmlFile; }
 
-    virtual void writeXml( QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context ) const override;
-    virtual void readXml( const QDomElement &itemElem, const QgsReadWriteContext &context ) override;
+    void writeXml( QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context ) const override;
+    void readXml( const QDomElement &itemElem, const QgsReadWriteContext &context ) override;
 
     void setAssociatedFeature( const QgsFeature &feature ) override;
 

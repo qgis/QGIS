@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
 
 __author__ = 'Mathieu Pellerin'
 __date__ = 'October 2016'
@@ -43,6 +42,9 @@ class SpatialiteExecuteSQL(QgisAlgorithm):
     def group(self):
         return self.tr('Database')
 
+    def groupId(self):
+        return 'database'
+
     def __init__(self):
         super().__init__()
 
@@ -61,7 +63,9 @@ class SpatialiteExecuteSQL(QgisAlgorithm):
         databaseuri = database.dataProvider().dataSourceUri()
         uri = QgsDataSourceUri(databaseuri)
         if uri.database() is '':
-            if '|layerid' in databaseuri:
+            if '|layername' in databaseuri:
+                databaseuri = databaseuri[:databaseuri.find('|layername')]
+            elif '|layerid' in databaseuri:
                 databaseuri = databaseuri[:databaseuri.find('|layerid')]
             uri = QgsDataSourceUri('dbname=\'%s\'' % (databaseuri))
         db = spatialite.GeoDB(uri)

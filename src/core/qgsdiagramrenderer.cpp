@@ -539,10 +539,6 @@ void QgsDiagramRenderer::_writeXml( QDomElement &rendererElem, QDomDocument &doc
   rendererElem.setAttribute( QStringLiteral( "attributeLegend" ), mShowAttributeLegend );
 }
 
-QgsSingleCategoryDiagramRenderer::QgsSingleCategoryDiagramRenderer(): QgsDiagramRenderer()
-{
-}
-
 QgsSingleCategoryDiagramRenderer *QgsSingleCategoryDiagramRenderer::clone() const
 {
   return new QgsSingleCategoryDiagramRenderer( *this );
@@ -589,7 +585,6 @@ void QgsSingleCategoryDiagramRenderer::writeXml( QDomElement &layerElem, QDomDoc
 
 
 QgsLinearlyInterpolatedDiagramRenderer::QgsLinearlyInterpolatedDiagramRenderer()
-  : QgsDiagramRenderer()
 {
   mInterpolationSettings.classificationAttributeIsExpression = false;
 }

@@ -101,6 +101,11 @@ QModelIndex QgsMapLayerModel::indexFromLayer( QgsMapLayer *layer ) const
   return index( r, 0 );
 }
 
+QgsMapLayer *QgsMapLayerModel::layerFromIndex( const QModelIndex &index ) const
+{
+  return static_cast<QgsMapLayer *>( index.internalPointer() );
+}
+
 void QgsMapLayerModel::setAdditionalItems( const QStringList &items )
 {
   if ( items == mAdditionalItems )
@@ -149,17 +154,20 @@ void QgsMapLayerModel::removeLayers( const QStringList &layerIds )
 
 void QgsMapLayerModel::addLayers( const QList<QgsMapLayer *> &layers )
 {
-  int offset = 0;
-  if ( mAllowEmpty )
-    offset++;
-
-  beginInsertRows( QModelIndex(), mLayers.count() + offset, mLayers.count() + layers.count() - 1  + offset );
-  Q_FOREACH ( QgsMapLayer *layer, layers )
+  if ( !layers.empty( ) )
   {
-    mLayers.append( layer );
-    mLayersChecked.insert( layer->id(), Qt::Unchecked );
+    int offset = 0;
+    if ( mAllowEmpty )
+      offset++;
+
+    beginInsertRows( QModelIndex(), mLayers.count() + offset, mLayers.count() + layers.count() - 1  + offset );
+    Q_FOREACH ( QgsMapLayer *layer, layers )
+    {
+      mLayers.append( layer );
+      mLayersChecked.insert( layer->id(), Qt::Unchecked );
+    }
+    endInsertRows();
   }
-  endInsertRows();
 }
 
 QModelIndex QgsMapLayerModel::index( int row, int column, const QModelIndex &parent ) const
@@ -283,8 +291,12 @@ QVariant QgsMapLayerModel::data( const QModelIndex &index, int role ) const
           title = layer->name();
         title = "<b>" + title + "</b>";
         if ( layer->crs().isValid() )
-          title = tr( "%1 (%2)" ).arg( title, layer->crs().authid() );
-
+        {
+          if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer ) )
+            title = tr( "%1 (%2 - %3)" ).arg( title, QgsWkbTypes::displayString( vl->wkbType() ), layer->crs().authid() );
+          else
+            title = tr( "%1 (%2) " ).arg( title, layer->crs().authid() );
+        }
         parts << title;
 
         if ( !layer->abstract().isEmpty() )
@@ -324,7 +336,7 @@ Qt::ItemFlags QgsMapLayerModel::flags( const QModelIndex &index ) const
 {
   if ( !index.isValid() )
   {
-    return 0;
+    return nullptr;
   }
 
   bool isEmpty = index.row() == 0 && mAllowEmpty;

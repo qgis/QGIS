@@ -10,9 +10,9 @@
 class QgsDateTimeFieldFormatter : QgsFieldFormatter
 {
 %Docstring
- Field formatter for a date time field.
- This represents a date, time or datetime value based on
- the field configuration.
+Field formatter for a date time field.
+This represents a date, time or datetime value based on
+the field configuration.
 
 .. versionadded:: 3.0
 %End
@@ -27,22 +27,23 @@ class QgsDateTimeFieldFormatter : QgsFieldFormatter
 
     QgsDateTimeFieldFormatter();
 %Docstring
- Default constructor of field formatter for a date time field.
+Default constructor of field formatter for a date time field.
 %End
 
     virtual QString id() const;
 
+
     virtual QString representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const;
+
 
     static QString defaultFormat( QVariant::Type type );
 %Docstring
- Get the default format in function of the type.
- The type is expected to be one of
+Get the default format in function of the type.
+The type is expected to be one of
 
- - QVariant.DateTime
- - QVariant.Date
- - QVariant.Time
- :rtype: str
+- QVariant.DateTime
+- QVariant.Date
+- QVariant.Time
 %End
 };
 

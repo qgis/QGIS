@@ -32,36 +32,36 @@ class CORE_EXPORT QgsSingleSymbolRenderer : public QgsFeatureRenderer
 
     QgsSingleSymbolRenderer( QgsSymbol *symbol SIP_TRANSFER );
 
-    virtual QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
-    virtual QgsSymbol *originalSymbolForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
-    virtual void startRender( QgsRenderContext &context, const QgsFields &fields ) override;
-    virtual void stopRender( QgsRenderContext &context ) override;
-    virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
+    QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
+    QgsSymbol *originalSymbolForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
+    void startRender( QgsRenderContext &context, const QgsFields &fields ) override;
+    void stopRender( QgsRenderContext &context ) override;
+    QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
 
     QgsSymbol *symbol() const;
     void setSymbol( QgsSymbol *s SIP_TRANSFER );
 
-    virtual QString dump() const override;
+    QString dump() const override;
 
-    virtual QgsSingleSymbolRenderer *clone() const override SIP_FACTORY;
+    QgsSingleSymbolRenderer *clone() const override SIP_FACTORY;
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const override;
+    void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const override;
     static QgsFeatureRenderer *createFromSld( QDomElement &element, QgsWkbTypes::GeometryType geomType );
 
-    virtual QgsFeatureRenderer::Capabilities capabilities() override { return SymbolLevels; }
-    virtual QgsSymbolList symbols( QgsRenderContext &context ) override;
+    QgsFeatureRenderer::Capabilities capabilities() override { return SymbolLevels; }
+    QgsSymbolList symbols( QgsRenderContext &context ) override;
 
     //! create renderer from XML element
     static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
-    virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) override;
-    virtual QgsLegendSymbolList legendSymbolItems() const override;
-    virtual QSet< QString > legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
-    virtual void setLegendSymbolItem( const QString &key, QgsSymbol *symbol SIP_TRANSFER ) override;
+    QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) override;
+    QgsLegendSymbolList legendSymbolItems() const override;
+    QSet< QString > legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
+    void setLegendSymbolItem( const QString &key, QgsSymbol *symbol SIP_TRANSFER ) override;
 
     /**
      * creates a QgsSingleSymbolRenderer from an existing renderer.
-     * \since QGIS 2.5
      * \returns a new renderer if the conversion was possible, otherwise 0.
+     * \since QGIS 2.5
      */
     static QgsSingleSymbolRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) SIP_FACTORY;
 

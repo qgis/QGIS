@@ -13,7 +13,7 @@
 class QgsRasterDrawer
 {
 %Docstring
- The drawing pipe for raster layers.
+The drawing pipe for raster layers.
 %End
 
 %TypeHeaderCode
@@ -24,11 +24,12 @@ class QgsRasterDrawer
 
     void draw( QPainter *p, QgsRasterViewPort *viewPort, const QgsMapToPixel *qgsMapToPixel, QgsRasterBlockFeedback *feedback = 0 );
 %Docstring
- Draws raster data.
- \param p destination QPainter
- \param viewPort viewport to render
- \param qgsMapToPixel map to pixel converter
- \param feedback optional raster feedback object for cancelation/preview. Added in QGIS 3.0.
+Draws raster data.
+
+:param p: destination QPainter
+:param viewPort: viewport to render
+:param qgsMapToPixel: map to pixel converter
+:param feedback: optional raster feedback object for cancelation/preview. Added in QGIS 3.0.
 %End
 
   protected:

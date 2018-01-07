@@ -39,7 +39,7 @@ namespace QTest
   // pretty printing of geometries in comparison tests
   template<> char *toString( const QgsGeometry &geom )
   {
-    QByteArray ba = geom.exportToWkt().toAscii();
+    QByteArray ba = geom.asWkt().toAscii();
     return qstrdup( ba.data() );
   }
 }
@@ -159,10 +159,10 @@ void TestQgsMapToolAddFeature::initTestCase()
   QVERIFY( mLayerLine->isValid() );
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mLayerLine );
 
-  QgsPolyline line1;
+  QgsPolylineXY line1;
   line1 << QgsPointXY( 1, 1 ) << QgsPointXY( 2, 1 ) << QgsPointXY( 3, 2 ) << QgsPointXY( 1, 2 ) << QgsPointXY( 1, 1 );
   QgsFeature lineF1;
-  lineF1.setGeometry( QgsGeometry::fromPolyline( line1 ) );
+  lineF1.setGeometry( QgsGeometry::fromPolylineXY( line1 ) );
 
   mLayerLine->startEditing();
   mLayerLine->addFeature( lineF1 );
@@ -288,7 +288,7 @@ void TestQgsMapToolAddFeature::testTracingWithOffset()
   QCOMPARE( mLayerLine->undoStack()->index(), 2 );
 
   QgsGeometry g = mLayerLine->getFeature( newFid ).geometry();
-  QgsPolyline poly = g.asPolyline();
+  QgsPolylineXY poly = g.asPolyline();
   QCOMPARE( poly.count(), 3 );
   QCOMPARE( poly[0], QgsPointXY( 2, 0.9 ) );
   QCOMPARE( poly[1], QgsPointXY( 0.9, 0.9 ) );
@@ -309,7 +309,7 @@ void TestQgsMapToolAddFeature::testTracingWithOffset()
   QgsFeatureId newFid2 = _newFeatureId( mLayerLine, oldFids );
 
   QgsGeometry g2 = mLayerLine->getFeature( newFid2 ).geometry();
-  QgsPolyline poly2 = g2.asPolyline();
+  QgsPolylineXY poly2 = g2.asPolyline();
   QCOMPARE( poly2.count(), 3 );
   QCOMPARE( poly2[0], QgsPointXY( 2, 1.1 ) );
   QCOMPARE( poly2[1], QgsPointXY( 1.1, 1.1 ) );
@@ -329,7 +329,7 @@ void TestQgsMapToolAddFeature::testTracingWithOffset()
 
   QCOMPARE( mLayerLine->undoStack()->index(), 2 );
   QgsGeometry g3 = mLayerLine->getFeature( newFid3 ).geometry();
-  QgsPolyline poly3 = g3.asPolyline();
+  QgsPolylineXY poly3 = g3.asPolyline();
   QCOMPARE( poly3.count(), 5 );
   QCOMPARE( poly3[0], QgsPointXY( 3, 0 ) );
   QCOMPARE( poly3[1], QgsPointXY( 2, 1.1 ) );

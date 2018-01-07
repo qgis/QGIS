@@ -16,8 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
-from builtins import object
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -32,7 +30,7 @@ from processing.tools.system import userFolder, mkdir
 from processing.core.ProcessingConfig import ProcessingConfig
 
 
-class ModelerUtils(object):
+class ModelerUtils:
 
     MODELS_FOLDER = 'MODELS_FOLDER'
 

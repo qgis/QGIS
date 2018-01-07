@@ -49,7 +49,7 @@ namespace MathUtils
   //! Tests, whether 'point' is inside the diametral circle through 'p1' and 'p2'
   bool ANALYSIS_EXPORT inDiametral( QgsPoint *p1, QgsPoint *p2, QgsPoint *point );
   //! Returns whether 'thepoint' is left or right of the line from 'p1' to 'p2'. Negativ values mean left and positiv values right. There may be numerical instabilities, so a threshold may be useful
-  double ANALYSIS_EXPORT leftOf( QgsPoint *thepoint, QgsPoint *p1, QgsPoint *p2 );
+  double ANALYSIS_EXPORT leftOf( const QgsPoint &thepoint, const QgsPoint *p1, const QgsPoint *p2 );
   //! Returns true, if line1 (p1 to p2) and line2 (p3 to p4) intersect. If the lines have an endpoint in common, false is returned
   bool ANALYSIS_EXPORT lineIntersection( QgsPoint *p1, QgsPoint *p2, QgsPoint *p3, QgsPoint *p4 );
   //! Returns true, if line1 (p1 to p2) and line2 (p3 to p4) intersect. If the lines have an endpoint in common, false is returned. The intersecting point is stored in 'intersection_point.

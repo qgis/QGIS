@@ -39,7 +39,7 @@ class GUI_EXPORT QgsNewOgrConnection : public QDialog, private Ui::QgsNewOgrConn
     //! Constructor
     QgsNewOgrConnection( QWidget *parent = nullptr, const QString &connType = QString(), const QString &connName = QString(), Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
-    ~QgsNewOgrConnection();
+    ~QgsNewOgrConnection() override;
     //! Tests the connection using the parameters supplied
     void testConnection();
     void showHelp();

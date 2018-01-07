@@ -1,10 +1,10 @@
 v.out.ascii
 Exports a vector map to a GRASS ASCII vector representation.
 Vector (v.*)
-ParameterVector|input|Name of input vector map|-1|False
-ParameterSelection|format|Output format|point;standard;wkt|False
-ParameterSelection|separator|Field separator|pipe;comma;space;tab;newline|False
-ParameterNumber|precision|Number of significant digits (floating point only)|0|32|8|True
-*ParameterBoolean|-o|Create old (version 4) ASCII file|False
-*ParameterBoolean|-c|Include column names in output (points mode)|False
-OutputFile|output|Name for output ASCII file or ASCII vector name if '-o' is defined
+QgsProcessingParameterVectorLayer|input|Name of input vector map|-1|None|False
+QgsProcessingParameterEnum|format|Output format|point;standard;wkt|False|0|False
+QgsProcessingParameterEnum|separator|Field separator|pipe;comma;space;tab;newline|False|0|False
+QgsProcessingParameterNumber|precision|Number of significant digits (floating point only)|QgsProcessingParameterNumber.Integer|8|True|0|32
+*QgsProcessingParameterBoolean|-o|Create old (version 4) ASCII file|False
+*QgsProcessingParameterBoolean|-c|Include column names in output (points mode)|False
+QgsProcessingParameterFileDestination|output|Name for output ASCII file or ASCII vector name if '-o' is defined|Txt files (*.txt)|None|False

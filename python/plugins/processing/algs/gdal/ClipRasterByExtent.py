@@ -99,13 +99,16 @@ class ClipRasterByExtent(GdalAlgorithm):
     def group(self):
         return self.tr('Raster extraction')
 
+    def groupId(self):
+        return 'rasterextraction'
+
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'raster-clip.png'))
 
     def commandName(self):
         return "gdal_translate"
 
-    def getConsoleCommands(self, parameters, context, feedback):
+    def getConsoleCommands(self, parameters, context, feedback, executing=True):
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
         bbox = self.parameterAsExtent(parameters, self.EXTENT, context, inLayer.crs())
         nodata = self.parameterAsDouble(parameters, self.NODATA, context)

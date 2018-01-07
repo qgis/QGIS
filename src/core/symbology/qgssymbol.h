@@ -49,7 +49,7 @@ class QgsFillSymbolLayer;
 class QgsSymbolRenderContext;
 class QgsFeatureRenderer;
 class QgsCurve;
-class QgsPolygonV2;
+class QgsPolygon;
 class QgsExpressionContext;
 
 typedef QList<QgsSymbolLayer *> QgsSymbolLayerList;
@@ -363,9 +363,9 @@ class CORE_EXPORT QgsSymbol
     static QPolygonF _getPolygonRing( QgsRenderContext &context, const QgsCurve &curve, bool clipToExtent );
 
     /**
-     * Creates a polygon in screen coordinates from a QgsPolygon in map coordinates
+     * Creates a polygon in screen coordinates from a QgsPolygonXYin map coordinates
      */
-    static void _getPolygon( QPolygonF &pts, QList<QPolygonF> &holes, QgsRenderContext &context, const QgsPolygonV2 &polygon, bool clipToExtent = true );
+    static void _getPolygon( QPolygonF &pts, QList<QPolygonF> &holes, QgsRenderContext &context, const QgsPolygon &polygon, bool clipToExtent = true );
 
     /**
      * Retrieve a cloned list of all layers that make up this symbol.
@@ -396,10 +396,10 @@ class CORE_EXPORT QgsSymbol
     //! Symbol opacity (in the range 0 - 1)
     qreal mOpacity = 1.0;
 
-    RenderHints mRenderHints;
-    bool mClipFeaturesToExtent;
+    RenderHints mRenderHints = nullptr;
+    bool mClipFeaturesToExtent = true;
 
-    const QgsVectorLayer *mLayer; //current vectorlayer
+    const QgsVectorLayer *mLayer = nullptr; //current vectorlayer
 
   private:
 #ifdef SIP_RUN
@@ -442,7 +442,10 @@ class CORE_EXPORT QgsSymbolRenderContext
      * \param fields
      * \param mapUnitScale
      */
-    QgsSymbolRenderContext( QgsRenderContext &c, QgsUnitTypes::RenderUnit u, qreal opacity = 1.0, bool selected = false, QgsSymbol::RenderHints renderHints = 0, const QgsFeature *f = nullptr, const QgsFields &fields = QgsFields(), const QgsMapUnitScale &mapUnitScale = QgsMapUnitScale() );
+    QgsSymbolRenderContext( QgsRenderContext &c, QgsUnitTypes::RenderUnit u, qreal opacity = 1.0, bool selected = false, QgsSymbol::RenderHints renderHints = nullptr, const QgsFeature *f = nullptr, const QgsFields &fields = QgsFields(), const QgsMapUnitScale &mapUnitScale = QgsMapUnitScale() );
+
+    //! QgsSymbolRenderContext cannot be copied.
+    QgsSymbolRenderContext( const QgsSymbolRenderContext &rh ) = delete;
 
     QgsRenderContext &renderContext() { return mRenderContext; }
     const QgsRenderContext &renderContext() const { return mRenderContext; } SIP_SKIP
@@ -569,7 +572,10 @@ class CORE_EXPORT QgsSymbolRenderContext
     void setExpressionContextScope( QgsExpressionContextScope *contextScope SIP_TRANSFER );
 
   private:
+
+#ifdef SIP_RUN
     QgsSymbolRenderContext( const QgsSymbolRenderContext &rh ) SIP_FORCE;
+#endif
 
     QgsRenderContext &mRenderContext;
     std::unique_ptr< QgsExpressionContextScope > mExpressionContextScope;
@@ -742,7 +748,7 @@ class CORE_EXPORT QgsMarkerSymbol : public QgsSymbol
     */
     QRectF bounds( QPointF point, QgsRenderContext &context, const QgsFeature &feature = QgsFeature() ) const;
 
-    virtual QgsMarkerSymbol *clone() const override SIP_FACTORY;
+    QgsMarkerSymbol *clone() const override SIP_FACTORY;
 
   private:
 
@@ -788,7 +794,7 @@ class CORE_EXPORT QgsLineSymbol : public QgsSymbol
 
     void renderPolyline( const QPolygonF &points, const QgsFeature *f, QgsRenderContext &context, int layer = -1, bool selected = false );
 
-    virtual QgsLineSymbol *clone() const override SIP_FACTORY;
+    QgsLineSymbol *clone() const override SIP_FACTORY;
 
   private:
 
@@ -815,7 +821,7 @@ class CORE_EXPORT QgsFillSymbol : public QgsSymbol
     void setAngle( double angle );
     void renderPolygon( const QPolygonF &points, QList<QPolygonF> *rings, const QgsFeature *f, QgsRenderContext &context, int layer = -1, bool selected = false );
 
-    virtual QgsFillSymbol *clone() const override SIP_FACTORY;
+    QgsFillSymbol *clone() const override SIP_FACTORY;
 
   private:
 

@@ -104,6 +104,11 @@ void QgsMapTool::deactivate()
   emit deactivated();
 }
 
+void QgsMapTool::clean()
+{
+
+}
+
 void QgsMapTool::setAction( QAction *action )
 {
   if ( mAction )

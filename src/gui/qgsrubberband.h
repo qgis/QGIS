@@ -307,7 +307,7 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
      */
     QgsGeometry asGeometry() const;
 
-    virtual void updatePosition() override;
+    void updatePosition() override;
 
   protected:
 
@@ -315,7 +315,7 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
      * Paints the rubber band in response to an update event.
      *  \param p The QPainter object
      */
-    virtual void paint( QPainter *p ) override;
+    void paint( QPainter *p ) override;
 
     /**
      * Draws shape of the rubber band.
@@ -348,7 +348,7 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
 
     QgsRubberBand();
 
-    static QgsPolyline getPolyline( const QList<QgsPointXY> &points );
+    static QgsPolylineXY getPolyline( const QList<QgsPointXY> &points );
 
 };
 

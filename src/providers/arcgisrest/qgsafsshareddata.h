@@ -17,6 +17,7 @@
 #define QGSAFSSHAREDDATA_H
 
 #include <QObject>
+#include <QMutex>
 #include "qgsfields.h"
 #include "qgsfeature.h"
 #include "qgsdatasourceuri.h"
@@ -33,11 +34,13 @@ class QgsAfsSharedData : public QObject
     const QgsFields &fields() const { return mFields; }
     QgsRectangle extent() const { return mExtent; }
     QgsCoordinateReferenceSystem crs() const { return mSourceCRS; }
+    void clearCache();
 
     bool getFeature( QgsFeatureId id, QgsFeature &f, bool fetchGeometry, const QList<int> &fetchAttributes, const QgsRectangle &filterRect = QgsRectangle() );
 
   private:
     friend class QgsAfsProvider;
+    QMutex mMutex;
     QgsDataSourceUri mDataSource;
     QgsRectangle mExtent;
     QgsWkbTypes::Type mGeometryType = QgsWkbTypes::Unknown;

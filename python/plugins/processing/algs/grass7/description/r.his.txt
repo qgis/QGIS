@@ -1,10 +1,11 @@
 r.his
 Generates red, green and blue raster layers combining hue, intensity and saturation (HIS) values from user-specified input raster layers.
 Raster (r.*)
-ParameterRaster|hue|Hue|False
-ParameterRaster|intensity|Intensity|False
-ParameterRaster|saturation|Saturation|False
-ParameterBoolean|-c|Use colors from color tables for NULL values|False
-OutputRaster|red|Red
-OutputRaster|green|Green
-OutputRaster|blue|Blue
+QgsProcessingParameterRasterLayer|hue|Hue|None|False
+QgsProcessingParameterRasterLayer|intensity|Intensity|None|False
+QgsProcessingParameterRasterLayer|saturation|Saturation|None|False
+QgsProcessingParameterString|bgcolor|Color to use instead of NULL values. Either a standard color name, R:G:B triplet, or "none"|'none'|False|True
+QgsProcessingParameterBoolean|-c|Use colors from color tables for NULL values|False
+QgsProcessingParameterRasterDestination|red|Red
+QgsProcessingParameterRasterDestination|green|Green
+QgsProcessingParameterRasterDestination|blue|Blue

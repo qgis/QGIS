@@ -66,8 +66,8 @@ class GUI_EXPORT QgsFontButton : public QToolButton
      */
     QgsFontButton( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QString &dialogTitle = QString() );
 
-    virtual QSize minimumSizeHint() const override;
-    virtual QSize sizeHint() const override;
+    QSize minimumSizeHint() const override;
+    QSize sizeHint() const override;
 
     /**
      * Returns the current button mode.

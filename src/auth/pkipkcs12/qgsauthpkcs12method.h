@@ -30,7 +30,7 @@ class QgsAuthPkcs12Method : public QgsAuthMethod
 
   public:
     explicit QgsAuthPkcs12Method();
-    ~QgsAuthPkcs12Method();
+    ~QgsAuthPkcs12Method() override;
 
     // QgsAuthMethod interface
     QString key() const override;
@@ -60,7 +60,6 @@ class QgsAuthPkcs12Method : public QgsAuthMethod
 
     static QMap<QString, QgsPkiConfigBundle *> sPkiConfigBundleCache;
 
-    QMutex mConfigMutex;
 };
 
 #endif // QGSAUTHPKCS12METHOD_H

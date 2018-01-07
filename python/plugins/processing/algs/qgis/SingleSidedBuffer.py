@@ -45,6 +45,9 @@ class SingleSidedBuffer(QgisFeatureBasedAlgorithm):
     def group(self):
         return self.tr('Vector geometry')
 
+    def groupId(self):
+        return 'vectorgeometry'
+
     def __init__(self):
         super().__init__()
         self.distance = None
@@ -60,7 +63,8 @@ class SingleSidedBuffer(QgisFeatureBasedAlgorithm):
 
     def initParameters(self, config=None):
         self.addParameter(QgsProcessingParameterNumber(self.DISTANCE,
-                                                       self.tr('Distance'), defaultValue=10.0))
+                                                       self.tr('Distance'), QgsProcessingParameterNumber.Double,
+                                                       defaultValue=10.0))
         self.addParameter(QgsProcessingParameterEnum(
             self.SIDE,
             self.tr('Side'),
@@ -75,7 +79,8 @@ class SingleSidedBuffer(QgisFeatureBasedAlgorithm):
             self.tr('Join style'),
             options=self.join_styles))
         self.addParameter(QgsProcessingParameterNumber(self.MITER_LIMIT,
-                                                       self.tr('Miter limit'), minValue=1, defaultValue=2))
+                                                       self.tr('Miter limit'), QgsProcessingParameterNumber.Double,
+                                                       minValue=1, defaultValue=2))
 
     def name(self):
         return 'singlesidedbuffer'
@@ -84,7 +89,7 @@ class SingleSidedBuffer(QgisFeatureBasedAlgorithm):
         return self.tr('Single sided buffer')
 
     def outputName(self):
-        return self.tr('Buffers')
+        return self.tr('Buffer')
 
     def inputLayerTypes(self):
         return [QgsProcessing.TypeVectorLine]
@@ -106,7 +111,7 @@ class SingleSidedBuffer(QgisFeatureBasedAlgorithm):
         self.miter_limit = self.parameterAsDouble(parameters, self.MITER_LIMIT, context)
         return True
 
-    def processFeature(self, feature, feedback):
+    def processFeature(self, feature, context, feedback):
         input_geometry = feature.geometry()
         if input_geometry:
             output_geometry = input_geometry.singleSidedBuffer(self.distance, self.segments,

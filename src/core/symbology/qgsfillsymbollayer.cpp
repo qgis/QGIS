@@ -1930,12 +1930,12 @@ void QgsSVGFillSymbolLayer::applyPattern( QBrush &brush, const QString &svgFileP
   {
     bool fitsInCache = true;
     double strokeWidth = context.renderContext().convertToPainterUnits( svgStrokeWidth, svgStrokeWidthUnit, svgStrokeWidthMapUnitScale );
-    const QImage &patternImage = QgsApplication::svgCache()->svgAsImage( svgFilePath, size, svgFillColor, svgStrokeColor, strokeWidth,
-                                 context.renderContext().scaleFactor(), fitsInCache );
+    QImage patternImage = QgsApplication::svgCache()->svgAsImage( svgFilePath, size, svgFillColor, svgStrokeColor, strokeWidth,
+                          context.renderContext().scaleFactor(), fitsInCache );
     if ( !fitsInCache )
     {
-      const QPicture &patternPict = QgsApplication::svgCache()->svgAsPicture( svgFilePath, size, svgFillColor, svgStrokeColor, strokeWidth,
-                                    context.renderContext().scaleFactor() );
+      QPicture patternPict = QgsApplication::svgCache()->svgAsPicture( svgFilePath, size, svgFillColor, svgStrokeColor, strokeWidth,
+                             context.renderContext().scaleFactor() );
       double hwRatio = 1.0;
       if ( patternPict.width() > 0 )
       {
@@ -3415,8 +3415,8 @@ void QgsCentroidFillSymbolLayer::renderPolygon( const QPolygonF &points, QList<Q
 
         if ( context.geometryPartCount() > 1 )
         {
-          QgsGeometry geom = feature->geometry();
-          const QgsGeometryCollection *geomCollection = static_cast<const QgsGeometryCollection *>( geom.geometry() );
+          const QgsGeometry geom = feature->geometry();
+          const QgsGeometryCollection *geomCollection = static_cast<const QgsGeometryCollection *>( geom.constGet() );
 
           double area = 0;
           double areaBiggest = 0;
@@ -3433,8 +3433,6 @@ void QgsCentroidFillSymbolLayer::renderPolygon( const QPolygonF &points, QList<Q
       }
     }
   }
-
-  QgsDebugMsg( QString( "num: %1, count: %2" ).arg( context.geometryPartNum() ).arg( context.geometryPartCount() ) );
 
   if ( mPointOnAllParts || ( context.geometryPartNum() == mBiggestPartIndex ) )
   {

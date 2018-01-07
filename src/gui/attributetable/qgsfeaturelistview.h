@@ -53,7 +53,7 @@ class GUI_EXPORT QgsFeatureListView : public QListView
      *
      * \param parent   owner
      */
-    explicit QgsFeatureListView( QWidget *parent SIP_TRANSFERTHIS = 0 );
+    explicit QgsFeatureListView( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Returns the layer cache
@@ -122,11 +122,11 @@ class GUI_EXPORT QgsFeatureListView : public QListView
     void setFeatureSelectionManager( QgsIFeatureSelectionManager *featureSelectionManager SIP_TRANSFER );
 
   protected:
-    virtual void mouseMoveEvent( QMouseEvent *event ) override;
-    virtual void mousePressEvent( QMouseEvent *event ) override;
-    virtual void mouseReleaseEvent( QMouseEvent *event ) override;
-    virtual void keyPressEvent( QKeyEvent *event ) override;
-    virtual void contextMenuEvent( QContextMenuEvent *event ) override;
+    void mouseMoveEvent( QMouseEvent *event ) override;
+    void mousePressEvent( QMouseEvent *event ) override;
+    void mouseReleaseEvent( QMouseEvent *event ) override;
+    void keyPressEvent( QKeyEvent *event ) override;
+    void contextMenuEvent( QContextMenuEvent *event ) override;
 
   signals:
 
@@ -166,7 +166,7 @@ class GUI_EXPORT QgsFeatureListView : public QListView
     /**
      * Select all currently visible features
      */
-    virtual void selectAll() override;
+    void selectAll() override;
 
     void repaintRequested( const QModelIndexList &indexes );
     void repaintRequested();
@@ -174,8 +174,14 @@ class GUI_EXPORT QgsFeatureListView : public QListView
   private slots:
     void editSelectionChanged( const QItemSelection &deselected, const QItemSelection &selected );
 
+    /**
+     * Make sure, there is an edit selection. If there is none, choose the first item.
+     */
+    void ensureEditSelection();
+
   private:
     void selectRow( const QModelIndex &index, bool anchor );
+
 
     QgsFeatureListModel *mModel = nullptr;
     QItemSelectionModel *mCurrentEditSelectionModel = nullptr;

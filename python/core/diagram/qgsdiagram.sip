@@ -12,7 +12,7 @@
 class QgsDiagram
 {
 %Docstring
- Base class for all diagram types*
+Base class for all diagram types*
 %End
 
 %TypeHeaderCode
@@ -24,20 +24,21 @@ class QgsDiagram
 
     virtual QgsDiagram *clone() const = 0 /Factory/;
 %Docstring
- Returns an instance that is equivalent to this one
+Returns an instance that is equivalent to this one
+
 .. versionadded:: 2.4
- :rtype: QgsDiagram
 %End
 
     void clearCache();
 
     QgsExpression *getExpression( const QString &expression, const QgsExpressionContext &context );
 %Docstring
- Returns a prepared expression for the specified context.
- \param expression expression string
- \param context expression context
+Returns a prepared expression for the specified context.
+
+:param expression: expression string
+:param context: expression context
+
 .. versionadded:: 2.12
- :rtype: QgsExpression
 %End
 
     virtual void renderDiagram( const QgsFeature &feature, QgsRenderContext &c, const QgsDiagramSettings &s, QPointF position ) = 0;
@@ -47,86 +48,86 @@ Draws the diagram at the given position (in pixel coordinates)
 
     virtual QString diagramName() const = 0;
 %Docstring
- Get a descriptive name for this diagram type.
- :rtype: str
+Get a descriptive name for this diagram type.
 %End
     virtual QSizeF diagramSize( const QgsAttributes &attributes, const QgsRenderContext &c, const QgsDiagramSettings &s ) = 0;
 %Docstring
 Returns the size in map units the diagram will use to render.
- :rtype: QSizeF
 %End
     virtual QSizeF diagramSize( const QgsFeature &feature, const QgsRenderContext &c, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &is ) = 0;
 %Docstring
 Returns the size in map units the diagram will use to render. Interpolate size
- :rtype: QSizeF
 %End
 
     virtual double legendSize( double value, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &is ) const = 0;
 %Docstring
- Returns the size of the legend item for the diagram corresponding to a specified value.
- \param value value to return legend item size for
- \param s diagram settings
- \param is interpolation settings
+Returns the size of the legend item for the diagram corresponding to a specified value.
+
+:param value: value to return legend item size for
+:param s: diagram settings
+:param is: interpolation settings
+
 .. versionadded:: 2.16
- :rtype: float
 %End
 
   protected:
 
     QgsDiagram();
 %Docstring
- Constructor for QgsDiagram.
+Constructor for QgsDiagram.
 %End
     QgsDiagram( const QgsDiagram &other );
 
     void setPenWidth( QPen &pen, const QgsDiagramSettings &s, const QgsRenderContext &c );
 %Docstring
- Changes the pen width to match the current settings and rendering context
-  \param pen The pen to modify
-  \param s   The settings that specify the pen width
-  \param c   The rendering specifying the proper scale units for pixel conversion
+Changes the pen width to match the current settings and rendering context
+
+:param pen: The pen to modify
+:param s:   The settings that specify the pen width
+:param c:   The rendering specifying the proper scale units for pixel conversion
 %End
 
     QSizeF sizePainterUnits( QSizeF size, const QgsDiagramSettings &s, const QgsRenderContext &c );
 %Docstring
- Calculates a size to match the current settings and rendering context
-  \param size The size to convert
-  \param s    The settings that specify the size type
-  \param c    The rendering specifying the proper scale units for pixel conversion
+Calculates a size to match the current settings and rendering context
 
-  :return: The converted size for rendering
- :rtype: QSizeF
+:param size: The size to convert
+:param s:    The settings that specify the size type
+:param c:    The rendering specifying the proper scale units for pixel conversion
+
+:return: The converted size for rendering
 %End
 
     double sizePainterUnits( double l, const QgsDiagramSettings &s, const QgsRenderContext &c );
 %Docstring
- Calculates a length to match the current settings and rendering context
-  \param l    The length to convert
-  \param s    Unused
-  \param c    The rendering specifying the proper scale units for pixel conversion
+Calculates a length to match the current settings and rendering context
 
-  :return: The converted length for rendering
- :rtype: float
+:param l:    The length to convert
+:param s:    Unused
+:param c:    The rendering specifying the proper scale units for pixel conversion
+
+:return: The converted length for rendering
 %End
 
     QFont scaledFont( const QgsDiagramSettings &s, const QgsRenderContext &c );
 %Docstring
- Calculates a size to match the current settings and rendering context
-  \param s    The settings that contain the font size and size type
-  \param c    The rendering specifying the proper scale units for pixel conversion
+Calculates a size to match the current settings and rendering context
 
-  :return: The properly scaled font for rendering
- :rtype: QFont
+:param s:    The settings that contain the font size and size type
+:param c:    The rendering specifying the proper scale units for pixel conversion
+
+:return: The properly scaled font for rendering
 %End
 
     QSizeF sizeForValue( double value, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &is ) const;
 %Docstring
- Returns the scaled size of a diagram for a value, respecting the specified diagram interpolation settings.
- \param value value to calculate corresponding circular size for
- \param s diagram settings
- \param is interpolation settings
+Returns the scaled size of a diagram for a value, respecting the specified diagram interpolation settings.
+
+:param value: value to calculate corresponding circular size for
+:param s: diagram settings
+:param is: interpolation settings
+
 .. versionadded:: 2.16
- :rtype: QSizeF
 %End
 
 };

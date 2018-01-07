@@ -22,6 +22,7 @@
 #include "qgswelcomepageitemsmodel.h"
 
 class QgsVersionInfo;
+class QListView;
 
 class QgsWelcomePage : public QWidget
 {
@@ -30,18 +31,25 @@ class QgsWelcomePage : public QWidget
   public:
     explicit QgsWelcomePage( bool skipVersionCheck = false, QWidget *parent = nullptr );
 
-    ~QgsWelcomePage();
+    ~QgsWelcomePage() override;
 
     void setRecentProjects( const QList<QgsWelcomePageItemsModel::RecentProjectData> &recentProjects );
+
+  signals:
+    void projectRemoved( int row );
+    void projectPinned( int row );
+    void projectUnpinned( int row );
 
   private slots:
     void itemActivated( const QModelIndex &index );
     void versionInfoReceived();
+    void showContextMenuForProjects( QPoint point );
 
   private:
     QgsWelcomePageItemsModel *mModel = nullptr;
     QLabel *mVersionInformation = nullptr;
     QgsVersionInfo *mVersionInfo = nullptr;
+    QListView *mRecentProjectsListView = nullptr;
 };
 
 #endif // QGSWELCOMEDIALOG_H

@@ -37,7 +37,7 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     QgsGeometryCollection();
     QgsGeometryCollection( const QgsGeometryCollection &c );
     QgsGeometryCollection &operator=( const QgsGeometryCollection &c );
-    virtual ~QgsGeometryCollection();
+    ~QgsGeometryCollection() override;
 
     QgsGeometryCollection *clone() const override SIP_FACTORY;
 
@@ -64,7 +64,11 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     int dimension() const override;
     QString geometryType() const override;
     void clear() override;
+    QgsGeometryCollection *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const override SIP_FACTORY;
+    bool removeDuplicateNodes( double epsilon = 4 * DBL_EPSILON, bool useZValues = false ) override;
     QgsAbstractGeometry *boundary() const override SIP_FACTORY;
+    void adjacentVertices( QgsVertexId vertex, QgsVertexId &previousVertex SIP_OUT, QgsVertexId &nextVertex SIP_OUT ) const override;
+    int vertexNumberFromVertexId( QgsVertexId id ) const override;
 
     //! Adds a geometry and takes ownership. Returns true in case of success.
     virtual bool addGeometry( QgsAbstractGeometry *g SIP_TRANSFER );
@@ -85,7 +89,7 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
 
     void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform,
                     bool transformZ = false ) override;
-    void transform( const QTransform &t ) override;
+    void transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0, double mTranslate = 0.0, double mScale = 1.0 ) override;
 
     void draw( QPainter &p ) const override;
 
@@ -93,16 +97,16 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     bool fromWkt( const QString &wkt ) override;
     QByteArray asWkb() const override;
     QString asWkt( int precision = 17 ) const override;
-    QDomElement asGML2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
-    QDomElement asGML3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
-    QString asJSON( int precision = 17 ) const override;
+    QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
+    QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
+    QString asJson( int precision = 17 ) const override;
 
     QgsRectangle boundingBox() const override;
 
     QgsCoordinateSequence coordinateSequence() const override;
     int nCoordinates() const override;
 
-    double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt SIP_OUT, QgsVertexId &vertexAfter SIP_OUT, bool *leftOf SIP_OUT = nullptr, double epsilon = 4 * DBL_EPSILON ) const override;
+    double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt SIP_OUT, QgsVertexId &vertexAfter SIP_OUT, int *leftOf SIP_OUT = nullptr, double epsilon = 4 * DBL_EPSILON ) const override;
     bool nextVertex( QgsVertexId &id, QgsPoint &vertex SIP_OUT ) const override;
 
     //low-level editing
@@ -122,13 +126,8 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
      * \param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
     QgsAbstractGeometry *segmentize( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const override SIP_FACTORY;
 
-    /**
-     * Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.
-     * \param vertex the vertex id
-     * \returns rotation in radians, clockwise from north
-     */
     double vertexAngle( QgsVertexId vertex ) const override;
-
+    double segmentLength( QgsVertexId startVertex ) const override;
     int vertexCount( int part = 0, int ring = 0 ) const override;
     int ringCount( int part = 0 ) const override;
     int partCount() const override;
@@ -158,8 +157,9 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
 #endif
 
   protected:
-    virtual int childCount() const override;
-    virtual QgsAbstractGeometry *childGeometry( int index ) const override;
+    QgsGeometryCollection *createEmptyWithSameType() const override SIP_FACTORY;
+    int childCount() const override;
+    QgsAbstractGeometry *childGeometry( int index ) const override;
 
   protected:
     QVector< QgsAbstractGeometry * > mGeometries;
@@ -173,7 +173,7 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     /**
      * Reads a collection from a WKT string.
      */
-    bool fromCollectionWkt( const QString &wkt, const QList<QgsAbstractGeometry *> &subtypes, const QString &defaultChildWkbType = QString() );
+    bool fromCollectionWkt( const QString &wkt, const QVector<QgsAbstractGeometry *> &subtypes, const QString &defaultChildWkbType = QString() );
 
     QgsRectangle calculateBoundingBox() const override;
     void clearCache() const override;
@@ -181,7 +181,6 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
   private:
 
     mutable QgsRectangle mBoundingBox;
-    mutable QgsCoordinateSequence mCoordinateSequence;
 };
 
 // clazy:excludeall=qstring-allocations

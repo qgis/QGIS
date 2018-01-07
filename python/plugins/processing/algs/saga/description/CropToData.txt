@@ -1,4 +1,4 @@
 Crop to Data
 grid_tools
-ParameterRaster|INPUT|Input layer|False
-OutputRaster|OUTPUT|Cropped
+QgsProcessingParameterRasterLayer|INPUT|Input layer|None|False
+QgsProcessingParameterRasterDestination|OUTPUT|Cropped

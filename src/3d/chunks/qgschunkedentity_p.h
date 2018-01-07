@@ -54,7 +54,7 @@ class QgsChunkedEntity : public Qt3DCore::QEntity
   public:
     //! Constructs a chunked entity
     QgsChunkedEntity( const QgsAABB &rootBbox, float rootError, float mTau, int mMaxLevel, QgsChunkLoaderFactory *loaderFactory, Qt3DCore::QNode *parent = nullptr );
-    ~QgsChunkedEntity();
+    ~QgsChunkedEntity() override;
 
     //! Records some bits about the scene (context for update() method)
     struct SceneState
@@ -82,6 +82,9 @@ class QgsChunkedEntity : public Qt3DCore::QEntity
     //! Returns the root node of the whole quadtree hierarchy of nodes
     QgsChunkNode *rootNode() const { return mRootNode; }
 
+    //! Returns number of jobs pending for this entity until it is fully loaded/updated in the current view
+    int pendingJobsCount() const;
+
   protected:
     //! Cancels the background job that is currently in progress
     void cancelActiveJob();
@@ -99,11 +102,15 @@ class QgsChunkedEntity : public Qt3DCore::QEntity
   private slots:
     void onActiveJobFinished();
 
+  signals:
+    //! Emitted when the number of pending jobs changes (some jobs have finished or some jobs have been just created)
+    void pendingJobsCountChanged();
+
   protected:
     //! root node of the quadtree hierarchy
     QgsChunkNode *mRootNode = nullptr;
     //! A chunk has been loaded recently? let's display it!
-    bool mNeedsUpdate;
+    bool mNeedsUpdate = false;
     //! max. allowed screen space error
     float mTau;
     //! maximum allowed depth of quad tree
@@ -117,14 +124,14 @@ class QgsChunkedEntity : public Qt3DCore::QEntity
     //! list of nodes that are being currently used for rendering
     QList<QgsChunkNode *> mActiveNodes;
     //! number of nodes omitted during frustum culling - for the curious ones
-    int mFrustumCulled;
+    int mFrustumCulled = 0;
 
     // TODO: max. length for loading queue
 
     QTime mCurrentTime;
 
     //! max. length for replacement queue
-    int mMaxLoadedChunks;
+    int mMaxLoadedChunks = 512;
 
     //! Entity that shows bounding boxes of active chunks (null if not enabled)
     QgsChunkBoundsEntity *mBboxesEntity = nullptr;

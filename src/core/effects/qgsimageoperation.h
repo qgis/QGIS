@@ -114,8 +114,6 @@ class CORE_EXPORT QgsImageOperation
     //! Struct for storing properties of a distance transform operation
     struct DistanceTransformProperties
     {
-      DistanceTransformProperties()
-      { }
 
       /**
        * Set to true to perform the distance transform on transparent pixels

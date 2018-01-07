@@ -17,7 +17,7 @@
 class QgsVertexMarker : QgsMapCanvasItem
 {
 %Docstring
- A class for marking vertices of features using e.g. circles or 'x'.
+A class for marking vertices of features using e.g. circles or 'x'.
 %End
 
 %TypeHeaderCode
@@ -37,7 +37,8 @@ class QgsVertexMarker : QgsMapCanvasItem
       ICON_CROSS,
       ICON_X,
       ICON_BOX,
-      ICON_CIRCLE
+      ICON_CIRCLE,
+      ICON_DOUBLE_TRIANGLE,
     };
 
     QgsVertexMarker( QgsMapCanvas *mapCanvas /TransferThis/ );
@@ -50,37 +51,46 @@ class QgsVertexMarker : QgsMapCanvasItem
 
     void setColor( const QColor &color );
 %Docstring
- Sets the stroke ``color`` for the marker.
-.. seealso:: color()
-.. seealso:: setFillColor()
+Sets the stroke ``color`` for the marker.
+
+.. seealso:: :py:func:`color()`
+
+.. seealso:: :py:func:`setFillColor()`
 %End
 
     QColor color() const;
 %Docstring
- Returns the stroke color for the marker.
-.. seealso:: setColor()
-.. seealso:: fillColor()
+Returns the stroke color for the marker.
+
+.. seealso:: :py:func:`setColor()`
+
+.. seealso:: :py:func:`fillColor()`
+
 .. versionadded:: 3.0
- :rtype: QColor
 %End
 
     void setFillColor( const QColor &color );
 %Docstring
- Sets the fill ``color`` for the marker. This setting only
- applies to some icon types.
+Sets the fill ``color`` for the marker. This setting only
+applies to some icon types.
+
 .. versionadded:: 3.0
-.. seealso:: fillColor()
-.. seealso:: setColor()
+
+.. seealso:: :py:func:`fillColor()`
+
+.. seealso:: :py:func:`setColor()`
 %End
 
     QColor fillColor() const;
 %Docstring
- Returns the fill ``color`` for the marker. This setting only
- applies to some icon types.
+Returns the fill ``color`` for the marker. This setting only
+applies to some icon types.
+
 .. versionadded:: 3.0
-.. seealso:: setFillColor()
-.. seealso:: color()
- :rtype: QColor
+
+.. seealso:: :py:func:`setFillColor()`
+
+.. seealso:: :py:func:`color()`
 %End
 
     void setPenWidth( int width );
@@ -92,6 +102,7 @@ class QgsVertexMarker : QgsMapCanvasItem
 
 
     virtual void updatePosition();
+
 
 };
 

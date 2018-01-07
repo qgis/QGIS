@@ -14,6 +14,9 @@ __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 import sip
+import tempfile
+import shutil
+import os
 
 from qgis.core import (QgsUnitTypes,
                        QgsLayout,
@@ -21,12 +24,15 @@ from qgis.core import (QgsUnitTypes,
                        QgsLayoutGuide,
                        QgsLayoutObject,
                        QgsProject,
+                       QgsLayoutItemGroup,
+                       QgsLayoutItem,
                        QgsProperty,
                        QgsLayoutPageCollection,
                        QgsLayoutMeasurement,
                        QgsFillSymbol,
                        QgsReadWriteContext,
                        QgsLayoutItemMap,
+                       QgsLayoutItemLabel,
                        QgsLayoutSize,
                        QgsLayoutPoint)
 from qgis.PyQt.QtCore import Qt, QCoreApplication, QEvent, QPointF, QRectF
@@ -39,6 +45,16 @@ start_app()
 
 
 class TestQgsLayout(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        """Run before all tests"""
+        cls.basetestpath = tempfile.mkdtemp()
+
+    @classmethod
+    def tearDownClass(cls):
+        """Run after all tests"""
+        shutil.rmtree(cls.basetestpath, True)
 
     def testReadWriteXml(self):
         p = QgsProject()
@@ -62,6 +78,14 @@ class TestQgsLayout(unittest.TestCase):
         snapper = l.snapper()
         snapper.setSnapTolerance(7)
 
+        # add some items
+        item1 = QgsLayoutItemMap(l)
+        item1.setId('xxyyxx')
+        l.addItem(item1)
+        item2 = QgsLayoutItemMap(l)
+        item2.setId('zzyyzz')
+        l.addItem(item2)
+
         doc = QDomDocument("testdoc")
         elem = l.writeXml(doc, QgsReadWriteContext())
 
@@ -80,6 +104,198 @@ class TestQgsLayout(unittest.TestCase):
         self.assertEqual(l2.guides().guidesOnPage(0)[0].position().length(), 5.0)
         self.assertEqual(l2.guides().guidesOnPage(0)[0].position().units(), QgsUnitTypes.LayoutCentimeters)
         self.assertEqual(l2.snapper().snapTolerance(), 7)
+
+        # check restored items
+        new_item1 = l2.itemByUuid(item1.uuid())
+        self.assertTrue(new_item1)
+        self.assertEqual(new_item1.id(), 'xxyyxx')
+        new_item2 = l2.itemByUuid(item2.uuid())
+        self.assertTrue(new_item2)
+        self.assertEqual(new_item2.id(), 'zzyyzz')
+
+    def testAddItemsFromXml(self):
+        p = QgsProject()
+        l = QgsLayout(p)
+
+        # add some items
+        item1 = QgsLayoutItemLabel(l)
+        item1.setId('xxyyxx')
+        item1.attemptMove(QgsLayoutPoint(4, 8, QgsUnitTypes.LayoutMillimeters))
+        item1.attemptResize(QgsLayoutSize(18, 12, QgsUnitTypes.LayoutMillimeters))
+        l.addItem(item1)
+        item2 = QgsLayoutItemLabel(l)
+        item2.setId('zzyyzz')
+        item2.attemptMove(QgsLayoutPoint(1.4, 1.8, QgsUnitTypes.LayoutCentimeters))
+        item2.attemptResize(QgsLayoutSize(2.8, 2.2, QgsUnitTypes.LayoutCentimeters))
+        l.addItem(item2)
+
+        doc = QDomDocument("testdoc")
+        # store in xml
+        elem = l.writeXml(doc, QgsReadWriteContext())
+
+        l2 = QgsLayout(p)
+        new_items = l2.addItemsFromXml(elem, doc, QgsReadWriteContext())
+        self.assertEqual(len(new_items), 2)
+        items = l2.items()
+        self.assertTrue([i for i in items if i.id() == 'xxyyxx'])
+        self.assertTrue([i for i in items if i.id() == 'zzyyzz'])
+        self.assertTrue(new_items[0] in l2.items())
+        self.assertTrue(new_items[1] in l2.items())
+        new_item1 = [i for i in items if i.id() == 'xxyyxx'][0]
+        new_item2 = [i for i in items if i.id() == 'zzyyzz'][0]
+        self.assertEqual(new_item1.positionWithUnits(), QgsLayoutPoint(4, 8, QgsUnitTypes.LayoutMillimeters))
+        self.assertEqual(new_item1.sizeWithUnits(), QgsLayoutSize(18, 12, QgsUnitTypes.LayoutMillimeters))
+        self.assertEqual(new_item2.positionWithUnits(), QgsLayoutPoint(1.4, 1.8, QgsUnitTypes.LayoutCentimeters))
+        self.assertEqual(new_item2.sizeWithUnits(), QgsLayoutSize(2.8, 2.2, QgsUnitTypes.LayoutCentimeters))
+
+        # test with a group
+        group = QgsLayoutItemGroup(l)
+        group.addItem(item1)
+        group.addItem(item2)
+        l.addLayoutItem(group)
+        elem = l.writeXml(doc, QgsReadWriteContext())
+
+        l3 = QgsLayout(p)
+        new_items = l3.addItemsFromXml(elem, doc, QgsReadWriteContext())
+        self.assertEqual(len(new_items), 3)
+        items = l3.items()
+        self.assertTrue([i for i in items if i.id() == 'xxyyxx'])
+        self.assertTrue([i for i in items if i.id() == 'zzyyzz'])
+        self.assertTrue(new_items[0] in l3.items())
+        self.assertTrue(new_items[1] in l3.items())
+        self.assertTrue(new_items[2] in l3.items())
+
+        # f*** you sip, I'll just manually cast
+        new_group = sip.cast(l3.itemByUuid(group.uuid()), QgsLayoutItemGroup)
+        self.assertIsNotNone(new_group)
+        other_items = [i for i in new_items if i.type() != new_group.type()]
+        self.assertCountEqual(new_group.items(), other_items)
+
+        # test restoring at set position
+        l3 = QgsLayout(p)
+        new_items = l3.addItemsFromXml(elem, doc, QgsReadWriteContext(), QPointF(10, 30))
+        self.assertEqual(len(new_items), 3)
+        items = l3.items()
+        new_item1 = [i for i in items if i.id() == 'xxyyxx'][0]
+        new_item2 = [i for i in items if i.id() == 'zzyyzz'][0]
+        self.assertEqual(new_item1.positionWithUnits(), QgsLayoutPoint(10, 30, QgsUnitTypes.LayoutMillimeters))
+        self.assertEqual(new_item1.sizeWithUnits(), QgsLayoutSize(18, 12, QgsUnitTypes.LayoutMillimeters))
+        self.assertEqual(new_item2.positionWithUnits(), QgsLayoutPoint(2.0, 4.0, QgsUnitTypes.LayoutCentimeters))
+        self.assertEqual(new_item2.sizeWithUnits(), QgsLayoutSize(2.8, 2.2, QgsUnitTypes.LayoutCentimeters))
+
+        # paste in place
+        l4 = QgsLayout(p)
+        page = QgsLayoutItemPage(l)
+        page.setPageSize('A3')
+        l4.pageCollection().addPage(page)
+        page = QgsLayoutItemPage(l)
+        page.setPageSize('A6')
+        l4.pageCollection().addPage(page)
+
+        new_items = l4.addItemsFromXml(elem, doc, QgsReadWriteContext(), QPointF(10, 30), True)
+        self.assertEqual(len(new_items), 3)
+        new_item1 = [i for i in new_items if i.id() == 'xxyyxx'][0]
+        new_item2 = [i for i in new_items if i.id() == 'zzyyzz'][0]
+        self.assertEqual(new_item1.pagePositionWithUnits(), QgsLayoutPoint(4, 8, QgsUnitTypes.LayoutMillimeters))
+        self.assertEqual(new_item1.sizeWithUnits(), QgsLayoutSize(18, 12, QgsUnitTypes.LayoutMillimeters))
+        self.assertEqual(new_item1.page(), 0)
+        self.assertEqual(new_item2.pagePositionWithUnits(), QgsLayoutPoint(1.4, 1.8, QgsUnitTypes.LayoutCentimeters))
+        self.assertEqual(new_item2.sizeWithUnits(), QgsLayoutSize(2.8, 2.2, QgsUnitTypes.LayoutCentimeters))
+        self.assertEqual(new_item2.page(), 0)
+
+        # paste in place, page 2
+        new_items = l4.addItemsFromXml(elem, doc, QgsReadWriteContext(), QPointF(10, 550), True)
+        self.assertEqual(len(new_items), 3)
+        new_item1 = [i for i in new_items if i.id() == 'xxyyxx'][0]
+        new_item2 = [i for i in new_items if i.id() == 'zzyyzz'][0]
+        self.assertEqual(new_item1.pagePositionWithUnits(), QgsLayoutPoint(4, 8, QgsUnitTypes.LayoutMillimeters))
+        self.assertEqual(new_item1.page(), 1)
+        self.assertEqual(new_item1.sizeWithUnits(), QgsLayoutSize(18, 12, QgsUnitTypes.LayoutMillimeters))
+        self.assertEqual(new_item2.pagePositionWithUnits(), QgsLayoutPoint(1.4, 1.8, QgsUnitTypes.LayoutCentimeters))
+        self.assertEqual(new_item2.page(), 1)
+        self.assertEqual(new_item2.sizeWithUnits(), QgsLayoutSize(2.8, 2.2, QgsUnitTypes.LayoutCentimeters))
+
+        #TODO - test restoring multiframe
+
+    def testSaveLoadTemplate(self):
+        tmpfile = os.path.join(self.basetestpath, 'testTemplate.qpt')
+
+        p = QgsProject()
+        l = QgsLayout(p)
+        l.initializeDefaults()
+
+        # add some items
+        item1 = QgsLayoutItemLabel(l)
+        item1.setId('xxyyxx')
+        item1.attemptMove(QgsLayoutPoint(4, 8, QgsUnitTypes.LayoutMillimeters))
+        item1.attemptResize(QgsLayoutSize(18, 12, QgsUnitTypes.LayoutMillimeters))
+        l.addItem(item1)
+        item2 = QgsLayoutItemLabel(l)
+        item2.setId('zzyyzz')
+        item2.attemptMove(QgsLayoutPoint(1.4, 1.8, QgsUnitTypes.LayoutCentimeters))
+        item2.attemptResize(QgsLayoutSize(2.8, 2.2, QgsUnitTypes.LayoutCentimeters))
+        l.addItem(item2)
+
+        uuids = {item1.uuid(), item2.uuid()}
+        original_uuids = {item1.uuid(), item2.uuid()}
+
+        self.assertTrue(l.saveAsTemplate(tmpfile, QgsReadWriteContext()))
+
+        l2 = QgsLayout(p)
+        with open(tmpfile) as f:
+            template_content = f.read()
+        doc = QDomDocument()
+        doc.setContent(template_content)
+
+        # adding to existing items
+        new_items, ok = l2.loadFromTemplate(doc, QgsReadWriteContext(), False)
+        self.assertTrue(ok)
+        self.assertEqual(len(new_items), 2)
+        items = l2.items()
+        self.assertTrue([i for i in items if i.id() == 'xxyyxx'])
+        self.assertTrue([i for i in items if i.id() == 'zzyyzz'])
+        self.assertTrue(new_items[0] in l2.items())
+        self.assertTrue(new_items[1] in l2.items())
+        # double check that new items have a unique uid
+        self.assertNotIn(new_items[0].uuid(), uuids)
+        self.assertIn(new_items[0].templateUuid(), original_uuids)
+        uuids.add(new_items[0].uuid())
+        self.assertNotIn(new_items[1].uuid(), uuids)
+        self.assertIn(new_items[1].templateUuid(), original_uuids)
+        uuids.add(new_items[1].uuid())
+
+        # adding to existing items
+        new_items2, ok = l2.loadFromTemplate(doc, QgsReadWriteContext(), False)
+        self.assertTrue(ok)
+        self.assertEqual(len(new_items2), 2)
+        items = l2.items()
+        self.assertEqual(len(items), 4)
+        self.assertTrue([i for i in items if i.id() == 'xxyyxx'])
+        self.assertTrue([i for i in items if i.id() == 'zzyyzz'])
+        self.assertTrue(new_items[0] in l2.items())
+        self.assertTrue(new_items[1] in l2.items())
+        self.assertTrue(new_items2[0] in l2.items())
+        self.assertTrue(new_items2[1] in l2.items())
+        self.assertNotIn(new_items2[0].uuid(), uuids)
+        self.assertIn(new_items2[0].templateUuid(), original_uuids)
+        uuids.add(new_items[0].uuid())
+        self.assertNotIn(new_items2[1].uuid(), uuids)
+        self.assertIn(new_items2[1].templateUuid(), original_uuids)
+        uuids.add(new_items[1].uuid())
+
+        # clearing existing items
+        new_items3, ok = l2.loadFromTemplate(doc, QgsReadWriteContext(), True)
+        self.assertTrue(ok)
+        self.assertEqual(len(new_items3), 3) # includes page
+        items = l2.items()
+        self.assertTrue([i for i in items if isinstance(i, QgsLayoutItem) and i.id() == 'xxyyxx'])
+        self.assertTrue([i for i in items if isinstance(i, QgsLayoutItem) and i.id() == 'zzyyzz'])
+        self.assertTrue(new_items3[0] in l2.items())
+        self.assertTrue(new_items3[1] in l2.items())
+        self.assertIn(new_items3[0].templateUuid(), original_uuids)
+        self.assertIn(new_items3[1].templateUuid(), original_uuids)
+        self.assertEqual(l2.itemByUuid(new_items3[0].templateUuid(), True), new_items3[0])
+        self.assertEqual(l2.itemByUuid(new_items3[1].templateUuid(), True), new_items3[1])
 
     def testSelectedItems(self):
         p = QgsProject()

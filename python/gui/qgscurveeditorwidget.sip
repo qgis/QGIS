@@ -14,7 +14,8 @@
 class QgsCurveEditorWidget : QWidget
 {
 %Docstring
- A widget for manipulating QgsCurveTransform curves.
+A widget for manipulating QgsCurveTransform curves.
+
 .. versionadded:: 3.0
 %End
 
@@ -25,63 +26,72 @@ class QgsCurveEditorWidget : QWidget
 
     QgsCurveEditorWidget( QWidget *parent /TransferThis/ = 0, const QgsCurveTransform &curve = QgsCurveTransform() );
 %Docstring
- Constructor for QgsCurveEditorWidget.
+Constructor for QgsCurveEditorWidget.
 %End
 
     ~QgsCurveEditorWidget();
 
     QgsCurveTransform curve() const;
 %Docstring
- Returns a curve representing the current curve from the widget.
-.. seealso:: setCurve()
- :rtype: QgsCurveTransform
+Returns a curve representing the current curve from the widget.
+
+.. seealso:: :py:func:`setCurve()`
 %End
 
     void setCurve( const QgsCurveTransform &curve );
 %Docstring
- Sets the ``curve`` to show in the widget.
-.. seealso:: curve()
+Sets the ``curve`` to show in the widget.
+
+.. seealso:: :py:func:`curve()`
 %End
 
     void setHistogramSource( const QgsVectorLayer *layer, const QString &expression );
 %Docstring
- Sets a ``layer`` and ``expression`` source for values to show in a histogram
- behind the curve. The histogram is generated in a background thread to keep
- the widget responsive.
-.. seealso:: minHistogramValueRange()
-.. seealso:: maxHistogramValueRange()
+Sets a ``layer`` and ``expression`` source for values to show in a histogram
+behind the curve. The histogram is generated in a background thread to keep
+the widget responsive.
+
+.. seealso:: :py:func:`minHistogramValueRange()`
+
+.. seealso:: :py:func:`maxHistogramValueRange()`
 %End
 
     double minHistogramValueRange() const;
 %Docstring
- Returns the minimum expected value for the range of values shown in the histogram.
-.. seealso:: maxHistogramValueRange()
-.. seealso:: setMinHistogramValueRange()
- :rtype: float
+Returns the minimum expected value for the range of values shown in the histogram.
+
+.. seealso:: :py:func:`maxHistogramValueRange()`
+
+.. seealso:: :py:func:`setMinHistogramValueRange()`
 %End
 
     double maxHistogramValueRange() const;
 %Docstring
- Returns the maximum expected value for the range of values shown in the histogram.
-.. seealso:: minHistogramValueRange()
-.. seealso:: setMaxHistogramValueRange()
- :rtype: float
+Returns the maximum expected value for the range of values shown in the histogram.
+
+.. seealso:: :py:func:`minHistogramValueRange()`
+
+.. seealso:: :py:func:`setMaxHistogramValueRange()`
 %End
 
   public slots:
 
     void setMinHistogramValueRange( double minValueRange );
 %Docstring
- Sets the minimum expected value for the range of values shown in the histogram.
-.. seealso:: setMaxHistogramValueRange()
-.. seealso:: minHistogramValueRange()
+Sets the minimum expected value for the range of values shown in the histogram.
+
+.. seealso:: :py:func:`setMaxHistogramValueRange()`
+
+.. seealso:: :py:func:`minHistogramValueRange()`
 %End
 
     void setMaxHistogramValueRange( double maxValueRange );
 %Docstring
- Sets the maximum expected value for the range of values shown in the histogram.
-.. seealso:: setMinHistogramValueRange()
-.. seealso:: maxHistogramValueRange()
+Sets the maximum expected value for the range of values shown in the histogram.
+
+.. seealso:: :py:func:`setMinHistogramValueRange()`
+
+.. seealso:: :py:func:`maxHistogramValueRange()`
 %End
 
   signals:
@@ -94,6 +104,7 @@ Emitted when the widget curve changes
   protected:
 
     virtual void keyPressEvent( QKeyEvent *event );
+
 
 };
 

@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -28,11 +27,12 @@ __revision__ = '$Format:%H$'
 
 import codecs
 import sys
+import operator
 import os
 import math
 
 from qgis.PyQt import uic
-from qgis.PyQt.QtCore import Qt, QRectF, QMimeData, QPoint, QPointF, QByteArray, QSize, QSizeF, pyqtSignal
+from qgis.PyQt.QtCore import Qt, QCoreApplication, QRectF, QMimeData, QPoint, QPointF, QByteArray, QSize, QSizeF, pyqtSignal
 from qgis.PyQt.QtWidgets import QGraphicsView, QTreeWidget, QMessageBox, QFileDialog, QTreeWidgetItem, QSizePolicy, QMainWindow, QShortcut
 from qgis.PyQt.QtGui import QIcon, QImage, QPainter, QKeySequence
 from qgis.PyQt.QtSvg import QSvgGenerator
@@ -63,6 +63,13 @@ WIDGET, BASE = uic.loadUiType(
 
 
 class ModelerDialog(BASE, WIDGET):
+    ALG_ITEM = 'ALG_ITEM'
+    PROVIDER_ITEM = 'PROVIDER_ITEM'
+    GROUP_ITEM = 'GROUP_ITEM'
+
+    NAME_ROLE = Qt.UserRole
+    TAG_ROLE = Qt.UserRole + 1
+    TYPE_ROLE = Qt.UserRole + 2
 
     CANVAS_SIZE = 4000
 
@@ -240,7 +247,7 @@ class ModelerDialog(BASE, WIDGET):
 
         # Connect signals and slots
         self.inputsTree.doubleClicked.connect(self.addInput)
-        self.searchBox.textChanged.connect(self.fillAlgorithmTree)
+        self.searchBox.textChanged.connect(self.textChanged)
         self.algorithmTree.doubleClicked.connect(self.addAlgorithm)
 
         # Ctrl+= should also trigger a zoom in action
@@ -273,7 +280,7 @@ class ModelerDialog(BASE, WIDGET):
             self.model.setProvider(QgsApplication.processingRegistry().providerById('model'))
 
         self.fillInputsTree()
-        self.fillAlgorithmTree()
+        self.fillTreeUsingProviders()
 
         self.view.centerOn(0, 0)
         self.help = None
@@ -287,8 +294,8 @@ class ModelerDialog(BASE, WIDGET):
 
         if self.hasChanged:
             ret = QMessageBox.question(
-                self, self.tr('Save?'),
-                self.tr('There are unsaved changes in this model, do you want to keep those?'),
+                self, self.tr('Save Model?'),
+                self.tr('There are unsaved changes in this model. Do you want to keep those?'),
                 QMessageBox.Save | QMessageBox.Cancel | QMessageBox.Discard, QMessageBox.Cancel)
 
             if ret == QMessageBox.Save:
@@ -564,6 +571,49 @@ class ModelerDialog(BASE, WIDGET):
             newX = MARGIN + BOX_WIDTH / 2
         return QPointF(newX, MARGIN + BOX_HEIGHT / 2)
 
+    def textChanged(self):
+        text = self.searchBox.text().strip(' ').lower()
+        for item in list(self.disabledProviderItems.values()):
+            item.setHidden(True)
+        self._filterItem(self.algorithmTree.invisibleRootItem(), [t for t in text.split(' ') if t])
+        if text:
+            self.algorithmTree.expandAll()
+            self.disabledWithMatchingAlgs = []
+            for provider in QgsApplication.processingRegistry().providers():
+                if not provider.isActive():
+                    for alg in provider.algorithms():
+                        if text in alg.name():
+                            self.disabledWithMatchingAlgs.append(provider.id())
+                            break
+        else:
+            self.algorithmTree.collapseAll()
+
+    def _filterItem(self, item, text):
+        if (item.childCount() > 0):
+            show = False
+            for i in range(item.childCount()):
+                child = item.child(i)
+                showChild = self._filterItem(child, text)
+                show = (showChild or show) and item not in list(self.disabledProviderItems.values())
+            item.setHidden(not show)
+            return show
+        elif isinstance(item, (TreeAlgorithmItem, TreeActionItem)):
+            # hide if every part of text is not contained somewhere in either the item text or item user role
+            item_text = [item.text(0).lower(), item.data(0, ModelerDialog.NAME_ROLE).lower()]
+            if isinstance(item, TreeAlgorithmItem):
+                item_text.append(item.alg.id())
+                item_text.extend(item.data(0, ModelerDialog.TAG_ROLE))
+
+            hide = bool(text) and not all(
+                any(part in t for t in item_text)
+                for part in text)
+
+            item.setHidden(hide)
+            return not hide
+        else:
+            item.setHidden(True)
+            return False
+
     def fillInputsTree(self):
         icon = QIcon(os.path.join(pluginPath, 'images', 'input.svg'))
         parametersItem = QTreeWidgetItem()
@@ -620,79 +670,94 @@ class ModelerDialog(BASE, WIDGET):
             newY = MARGIN * 2 + BOX_HEIGHT + BOX_HEIGHT / 2
         return QPointF(newX, newY)
 
-    def fillAlgorithmTree(self):
-        self.fillAlgorithmTreeUsingProviders()
-        self.algorithmTree.sortItems(0, Qt.AscendingOrder)
-
-        text = str(self.searchBox.text())
-        if text != '':
-            self.algorithmTree.expandAll()
-
-    def fillAlgorithmTreeUsingProviders(self):
+    def fillTreeUsingProviders(self):
         self.algorithmTree.clear()
-        text = str(self.searchBox.text())
-        search_strings = text.split(' ')
-        qgis_groups = {}
+        self.disabledProviderItems = {}
+
+        # TODO - replace with proper model for toolbox!
+
+        # first add qgis/native providers, since they create top level groups
         for provider in QgsApplication.processingRegistry().providers():
-            if not provider.isActive():
+            if provider.id() in ('qgis', 'native', '3d'):
+                self.addAlgorithmsFromProvider(provider, self.algorithmTree.invisibleRootItem())
+            else:
                 continue
-            groups = {}
-
-            # Add algorithms
-            for alg in provider.algorithms():
-                if alg.flags() & QgsProcessingAlgorithm.FlagHideFromModeler:
-                    continue
-                if alg.id() == self.model.id():
-                    continue
-
-                item_text = [alg.displayName().lower()]
-                item_text.extend(alg.tags())
-
-                show = not search_strings or all(
-                    any(part in t for t in item_text)
-                    for part in search_strings)
-
-                if show:
-                    if alg.group() in groups:
-                        groupItem = groups[alg.group()]
-                    elif provider.id() in ('qgis', 'native') and alg.group() in qgis_groups:
-                        groupItem = qgis_groups[alg.group()]
-                    else:
-                        groupItem = QTreeWidgetItem()
-                        name = alg.group()
-                        groupItem.setText(0, name)
-                        groupItem.setToolTip(0, name)
-                        groupItem.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable)
-                        if provider.id() in ('qgis', 'native'):
-                            groupItem.setIcon(0, provider.icon())
-                            qgis_groups[alg.group()] = groupItem
-                        else:
-                            groups[alg.group()] = groupItem
-                    algItem = TreeAlgorithmItem(alg)
-                    groupItem.addChild(algItem)
-
-            if len(groups) > 0:
-                providerItem = QTreeWidgetItem()
-                providerItem.setText(0, provider.name())
-                providerItem.setToolTip(0, provider.name())
-                providerItem.setIcon(0, provider.icon())
-                providerItem.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable)
-                for groupItem in list(groups.values()):
-                    providerItem.addChild(groupItem)
-                self.algorithmTree.addTopLevelItem(providerItem)
-                providerItem.setExpanded(text != '')
-                for groupItem in list(groups.values()):
-                    if text != '':
-                        groupItem.setExpanded(True)
-
-        if len(qgis_groups) > 0:
-            for groupItem in list(qgis_groups.values()):
-                self.algorithmTree.addTopLevelItem(groupItem)
-            for groupItem in list(qgis_groups.values()):
-                if text != '':
-                    groupItem.setExpanded(True)
-
         self.algorithmTree.sortItems(0, Qt.AscendingOrder)
+
+        for provider in QgsApplication.processingRegistry().providers():
+            if provider.id() in ('qgis', 'native', '3d'):
+                # already added
+                continue
+            else:
+                providerItem = TreeProviderItem(provider, self.algorithmTree, self)
+
+                if not provider.isActive():
+                    providerItem.setHidden(True)
+                    self.disabledProviderItems[provider.id()] = providerItem
+
+                # insert non-native providers at end of tree, alphabetically
+
+                for i in range(self.algorithmTree.invisibleRootItem().childCount()):
+                    child = self.algorithmTree.invisibleRootItem().child(i)
+                    if isinstance(child, TreeProviderItem):
+                        if child.text(0) > providerItem.text(0):
+                            break
+
+                self.algorithmTree.insertTopLevelItem(i + 1, providerItem)
+
+    def addAlgorithmsFromProvider(self, provider, parent):
+        groups = {}
+        count = 0
+        algs = provider.algorithms()
+        active = provider.isActive()
+
+        # Add algorithms
+        for alg in algs:
+            if alg.flags() & QgsProcessingAlgorithm.FlagHideFromToolbox:
+                continue
+            groupItem = None
+            if alg.group() in groups:
+                groupItem = groups[alg.group()]
+            else:
+                # check if group already exists
+                for i in range(parent.childCount()):
+                    if parent.child(i).text(0) == alg.group():
+                        groupItem = parent.child(i)
+                        groups[alg.group()] = groupItem
+                        break
+
+                if not groupItem:
+                    groupItem = TreeGroupItem(alg.group())
+                    if not active:
+                        groupItem.setInactive()
+                    if provider.id() in ('qgis', 'native', '3d'):
+                        groupItem.setIcon(0, provider.icon())
+                    groups[alg.group()] = groupItem
+            algItem = TreeAlgorithmItem(alg)
+            if not active:
+                algItem.setForeground(0, Qt.darkGray)
+            groupItem.addChild(algItem)
+            count += 1
+
+        text = provider.name()
+
+        if not provider.id() in ('qgis', 'native', '3d'):
+            if not active:
+                def activateProvider():
+                    self.activateProvider(provider.id())
+
+                label = QLabel(text + "&nbsp;&nbsp;&nbsp;&nbsp;<a href='%s'>Activate</a>")
+                label.setStyleSheet("QLabel {background-color: white; color: grey;}")
+                label.linkActivated.connect(activateProvider)
+                self.algorithmTree.setItemWidget(parent, 0, label)
+            else:
+                parent.setText(0, text)
+
+        for group, groupItem in sorted(groups.items(), key=operator.itemgetter(1)):
+            parent.addChild(groupItem)
+
+        if not provider.id() in ('qgis', 'native', '3d'):
+            parent.setHidden(parent.childCount() == 0)
 
 
 class TreeAlgorithmItem(QTreeWidgetItem):
@@ -701,7 +766,61 @@ class TreeAlgorithmItem(QTreeWidgetItem):
         QTreeWidgetItem.__init__(self)
         self.alg = alg
         icon = alg.icon()
+        nameEn = alg.name()
         name = alg.displayName()
+        name = name if name != '' else nameEn
         self.setIcon(0, icon)
+        self.setToolTip(0, self.formatAlgorithmTooltip(alg))
+        self.setText(0, name)
+        self.setData(0, ModelerDialog.NAME_ROLE, nameEn)
+        self.setData(0, ModelerDialog.TAG_ROLE, alg.tags())
+        self.setData(0, ModelerDialog.TYPE_ROLE, ModelerDialog.ALG_ITEM)
+
+    def formatAlgorithmTooltip(self, alg):
+        return '<p><b>{}</b></p><p>{}</p>'.format(
+            alg.displayName(),
+            QCoreApplication.translate('Toolbox', 'Algorithm ID: ‘{}’').format('<i>{}</i>'.format(alg.id()))
+        )
+
+
+class TreeGroupItem(QTreeWidgetItem):
+
+    def __init__(self, name):
+        QTreeWidgetItem.__init__(self)
         self.setToolTip(0, name)
         self.setText(0, name)
+        self.setData(0, ModelerDialog.NAME_ROLE, name)
+        self.setData(0, ModelerDialog.TYPE_ROLE, ModelerDialog.GROUP_ITEM)
+
+    def setInactive(self):
+        self.setForeground(0, Qt.darkGray)
+
+
+class TreeActionItem(QTreeWidgetItem):
+
+    def __init__(self, action):
+        QTreeWidgetItem.__init__(self)
+        self.action = action
+        self.setText(0, action.i18n_name)
+        self.setIcon(0, action.getIcon())
+        self.setData(0, ModelerDialog.NAME_ROLE, action.name)
+
+
+class TreeProviderItem(QTreeWidgetItem):
+
+    def __init__(self, provider, tree, toolbox):
+        QTreeWidgetItem.__init__(self, None)
+        self.tree = tree
+        self.toolbox = toolbox
+        self.provider = provider
+        self.setIcon(0, self.provider.icon())
+        self.setData(0, ModelerDialog.TYPE_ROLE, ModelerDialog.PROVIDER_ITEM)
+        self.setToolTip(0, self.provider.longName())
+        self.populate()
+
+    def refresh(self):
+        self.takeChildren()
+        self.populate()
+
+    def populate(self):
+        self.toolbox.addAlgorithmsFromProvider(self.provider, self)

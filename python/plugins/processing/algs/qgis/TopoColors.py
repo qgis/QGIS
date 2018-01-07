@@ -63,6 +63,9 @@ class TopoColor(QgisAlgorithm):
     def group(self):
         return self.tr('Cartography')
 
+    def groupId(self):
+        return 'cartography'
+
     def __init__(self):
         super().__init__()
 
@@ -161,7 +164,7 @@ class TopoColor(QgisAlgorithm):
             if min_distance > 0:
                 g = g.buffer(min_distance, 5)
 
-            engine = QgsGeometry.createGeometryEngine(g.geometry())
+            engine = QgsGeometry.createGeometryEngine(g.constGet())
             engine.prepareGeometry()
 
             feature_bounds = g.boundingBox()
@@ -170,7 +173,7 @@ class TopoColor(QgisAlgorithm):
             intersections = index.intersects(feature_bounds)
             for l2 in intersections:
                 f2 = features_with_geometry[l2]
-                if engine.intersects(f2.geometry().geometry()):
+                if engine.intersects(f2.geometry().constGet()):
                     s.add_edge(f.id(), f2.id())
                     s.add_edge(f2.id(), f.id())
                     if id_graph:
@@ -247,7 +250,7 @@ class ColoringAlgorithm:
                     color_areas[feature_color] += features[feature_id].geometry().area()
                 elif balance == 2:
                     min_distances = {c: sys.float_info.max for c in available_colors}
-                    this_feature_centroid = features[feature_id].geometry().centroid().geometry()
+                    this_feature_centroid = features[feature_id].geometry().centroid().constGet()
 
                     # find features for all available colors
                     other_features = {f_id: c for (f_id, c) in feature_colors.items() if c in available_colors}
@@ -259,7 +262,7 @@ class ColoringAlgorithm:
                             break
 
                         other_geometry = features[other_feature_id].geometry()
-                        other_centroid = other_geometry.centroid().geometry()
+                        other_centroid = other_geometry.centroid().constGet()
 
                         distance = this_feature_centroid.distanceSquared(other_centroid)
                         if distance < min_distances[c]:

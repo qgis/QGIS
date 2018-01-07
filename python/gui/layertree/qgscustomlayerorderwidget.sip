@@ -13,13 +13,14 @@
 class QgsCustomLayerOrderWidget : QWidget
 {
 %Docstring
- The QgsCustomLayerOrderWidget class provides a list box where the user can define
- custom order for drawing of layers. It also features a checkbox for enabling
- or disabling the custom order. Any changes made by the user are automatically
- propagated to the assigned QgsLayerTreeMapCanvasBridge. Also, any updates
- to the layer tree cause refresh of the list.
+The QgsCustomLayerOrderWidget class provides a list box where the user can define
+custom order for drawing of layers. It also features a checkbox for enabling
+or disabling the custom order. Any changes made by the user are automatically
+propagated to the assigned QgsLayerTreeMapCanvasBridge. Also, any updates
+to the layer tree cause refresh of the list.
 
-.. seealso:: QgsLayerTreeMapCanvasBridge
+.. seealso:: :py:class:`QgsLayerTreeMapCanvasBridge`
+
 .. versionadded:: 2.4
 %End
 
@@ -27,7 +28,11 @@ class QgsCustomLayerOrderWidget : QWidget
 #include "qgscustomlayerorderwidget.h"
 %End
   public:
+
     explicit QgsCustomLayerOrderWidget( QgsLayerTreeMapCanvasBridge *bridge, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsCustomLayerOrderWidget
+%End
 
   signals:
 

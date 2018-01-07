@@ -30,19 +30,19 @@ Constructor
 
     int responseCode() const;
 %Docstring
- :return: the return HTTP response code associated with this exception
- :rtype: int
+
+:return: the return HTTP response code associated with this exception
 %End
 
     virtual QByteArray formatResponse( QString &responseFormat /Out/ ) const;
 %Docstring
- Format the exception for sending to client
+Format the exception for sending to client
 
- \param responseFormat QString to store the content type of the response format.
- :return: QByteArray the fermatted response.
+:param responseFormat: QString to store the content type of the response format.
 
- The defaolt implementation return text/xml format.
- :rtype: QByteArray
+:return: QByteArray the fermatted response.
+
+The defaolt implementation return text/xml format.
 %End
 
 };
@@ -52,8 +52,8 @@ class QgsOgcServiceException
 %Docstring
  Exception base class for service exceptions.
 
- Note that this exception is associated with a default return code 200 which may be
- not appropriate in some situations.
+Note that this exception is associated with a default return code 200 which may be
+not appropriate in some situations.
 
 .. versionadded:: 3.0
 %End
@@ -70,32 +70,31 @@ Construction
 
     QString message() const;
 %Docstring
+
 :return: message
- :rtype: str
 %End
 
     QString code()    const;
 %Docstring
+
 :return: code
- :rtype: str
 %End
 
     QString locator() const;
 %Docstring
+
 :return: locator
- :rtype: str
 %End
 
     QString version() const;
 %Docstring
 return exception version
- :rtype: str
 %End
 
     virtual QByteArray formatResponse( QString &responseFormat /Out/ ) const;
+
 %Docstring
 Overridden from QgsServerException
- :rtype: QByteArray
 %End
 
 };

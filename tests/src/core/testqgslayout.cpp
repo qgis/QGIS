@@ -41,6 +41,10 @@ class TestQgsLayout: public QObject
     void addItem();
     void layoutItems();
     void layoutItemByUuid();
+    void undoRedoOccurred();
+    void itemsOnPage(); //test fetching matching items on a set page
+    void pageIsEmpty();
+    void clear();
 
   private:
     QString mReport;
@@ -258,12 +262,12 @@ void TestQgsLayout::bounds()
   QgsLayout l( &p );
   l.initializeDefaults();
 
-  QgsLayoutItemRectangularShape *shape1 = new QgsLayoutItemRectangularShape( &l );
+  QgsLayoutItemShape *shape1 = new QgsLayoutItemShape( &l );
   shape1->attemptResize( QgsLayoutSize( 90, 50 ) );
   shape1->attemptMove( QgsLayoutPoint( 90, 50 ) );
   shape1->setItemRotation( 45 );
   l.addLayoutItem( shape1 );
-  QgsLayoutItemRectangularShape *shape2 = new QgsLayoutItemRectangularShape( &l );
+  QgsLayoutItemShape *shape2 = new QgsLayoutItemShape( &l );
   shape2->attemptResize( QgsLayoutSize( 110, 50 ) );
   shape2->attemptMove( QgsLayoutPoint( 100, 150 ) );
   l.addLayoutItem( shape2 );
@@ -299,10 +303,10 @@ void TestQgsLayout::bounds()
   QGSCOMPARENEAR( layoutBounds.top(), 0.00000, 0.01 );
 
   QRectF compositionBoundsNoPage = l.layoutBounds( true );
-  QGSCOMPARENEAR( compositionBoundsNoPage.height(), 174.497475, 0.01 );
-  QGSCOMPARENEAR( compositionBoundsNoPage.width(), 124.497475, 0.01 );
-  QGSCOMPARENEAR( compositionBoundsNoPage.left(), 85.502525, 0.01 );
-  QGSCOMPARENEAR( compositionBoundsNoPage.top(), 25.502525, 0.01 );
+  QGSCOMPARENEAR( compositionBoundsNoPage.height(), 174.859607, 0.01 );
+  QGSCOMPARENEAR( compositionBoundsNoPage.width(), 124.859607, 0.01 );
+  QGSCOMPARENEAR( compositionBoundsNoPage.left(), 85.290393, 0.01 );
+  QGSCOMPARENEAR( compositionBoundsNoPage.top(), 25.290393, 0.01 );
 
 #if 0
   QRectF page1Bounds = composition->pageItemBounds( 0, true );
@@ -331,7 +335,7 @@ void TestQgsLayout::addItem()
   QgsLayout l( &p );
   l.pageCollection()->deletePage( 0 );
 
-  QgsLayoutItemRectangularShape *shape1 = new QgsLayoutItemRectangularShape( &l );
+  QgsLayoutItemShape *shape1 = new QgsLayoutItemShape( &l );
   shape1->setFrameEnabled( false );
   shape1->attemptResize( QgsLayoutSize( 140, 70 ) );
   shape1->attemptMove( QgsLayoutPoint( 90, 50 ) );
@@ -339,29 +343,29 @@ void TestQgsLayout::addItem()
   l.addLayoutItem( shape1 );
   QVERIFY( l.items().contains( shape1 ) );
   // bounds should be updated to include item
-  QGSCOMPARENEAR( l.sceneRect().left(), 90, 0.001 );
-  QGSCOMPARENEAR( l.sceneRect().top(), 50, 0.001 );
-  QGSCOMPARENEAR( l.sceneRect().width(), 140, 0.001 );
-  QGSCOMPARENEAR( l.sceneRect().height(), 70, 0.001 );
+  QGSCOMPARENEAR( l.sceneRect().left(), 89.850, 0.001 );
+  QGSCOMPARENEAR( l.sceneRect().top(), 49.85, 0.001 );
+  QGSCOMPARENEAR( l.sceneRect().width(), 140.30, 0.001 );
+  QGSCOMPARENEAR( l.sceneRect().height(), 70.3, 0.001 );
 
-  QgsLayoutItemRectangularShape *shape2 = new QgsLayoutItemRectangularShape( &l );
+  QgsLayoutItemShape *shape2 = new QgsLayoutItemShape( &l );
   shape2->attemptResize( QgsLayoutSize( 240, 170 ) );
   shape2->attemptMove( QgsLayoutPoint( 30, 20 ) );
   shape2->setFrameEnabled( false );
 
   // don't use addLayoutItem - we want to manually trigger a bounds update
   l.addItem( shape2 );
-  QGSCOMPARENEAR( l.sceneRect().left(), 90, 0.001 );
-  QGSCOMPARENEAR( l.sceneRect().top(), 50, 0.001 );
-  QGSCOMPARENEAR( l.sceneRect().width(), 140, 0.001 );
-  QGSCOMPARENEAR( l.sceneRect().height(), 70, 0.001 );
+  QGSCOMPARENEAR( l.sceneRect().left(), 89.85, 0.001 );
+  QGSCOMPARENEAR( l.sceneRect().top(), 49.85, 0.001 );
+  QGSCOMPARENEAR( l.sceneRect().width(), 140.3, 0.001 );
+  QGSCOMPARENEAR( l.sceneRect().height(), 70.3, 0.001 );
 
   l.updateBounds();
   // bounds should be updated to include item
-  QGSCOMPARENEAR( l.sceneRect().left(), 30, 0.001 );
-  QGSCOMPARENEAR( l.sceneRect().top(), 20, 0.001 );
-  QGSCOMPARENEAR( l.sceneRect().width(), 240, 0.001 );
-  QGSCOMPARENEAR( l.sceneRect().height(), 170, 0.001 );
+  QGSCOMPARENEAR( l.sceneRect().left(), 29.85, 0.001 );
+  QGSCOMPARENEAR( l.sceneRect().top(), 19.85, 0.001 );
+  QGSCOMPARENEAR( l.sceneRect().width(), 240.3, 0.001 );
+  QGSCOMPARENEAR( l.sceneRect().height(), 170.3, 0.001 );
 }
 
 void TestQgsLayout::layoutItems()
@@ -370,10 +374,10 @@ void TestQgsLayout::layoutItems()
   QgsLayout l( &p );
   l.pageCollection()->deletePage( 0 );
 
-  QgsLayoutItemRectangularShape *shape1 = new QgsLayoutItemRectangularShape( &l );
+  QgsLayoutItemShape *shape1 = new QgsLayoutItemShape( &l );
   l.addLayoutItem( shape1 );
 
-  QgsLayoutItemRectangularShape *shape2 = new QgsLayoutItemRectangularShape( &l );
+  QgsLayoutItemShape *shape2 = new QgsLayoutItemShape( &l );
   l.addLayoutItem( shape2 );
 
   QgsLayoutItemMap *map1 = new QgsLayoutItemMap( &l );
@@ -386,7 +390,7 @@ void TestQgsLayout::layoutItems()
   QVERIFY( items.contains( shape2 ) );
   QVERIFY( items.contains( map1 ) );
 
-  QList< QgsLayoutItemRectangularShape * > shapes;
+  QList< QgsLayoutItemShape * > shapes;
   l.layoutItems( shapes );
   QCOMPARE( shapes.count(), 2 );
   QVERIFY( shapes.contains( shape1 ) );
@@ -404,10 +408,10 @@ void TestQgsLayout::layoutItemByUuid()
   QgsLayout l( &p );
   l.pageCollection()->deletePage( 0 );
 
-  QgsLayoutItemRectangularShape *shape1 = new QgsLayoutItemRectangularShape( &l );
+  QgsLayoutItemShape *shape1 = new QgsLayoutItemShape( &l );
   l.addLayoutItem( shape1 );
 
-  QgsLayoutItemRectangularShape *shape2 = new QgsLayoutItemRectangularShape( &l );
+  QgsLayoutItemShape *shape2 = new QgsLayoutItemShape( &l );
   l.addLayoutItem( shape2 );
 
   QgsLayoutItemMap *map1 = new QgsLayoutItemMap( &l );
@@ -417,6 +421,230 @@ void TestQgsLayout::layoutItemByUuid()
   QCOMPARE( l.itemByUuid( shape1->uuid() ), shape1 );
   QCOMPARE( l.itemByUuid( shape2->uuid() ), shape2 );
   QCOMPARE( l.itemByUuid( map1->uuid() ), map1 );
+}
+
+void TestQgsLayout::undoRedoOccurred()
+{
+  // test emitting undo/redo occurred signal
+  QgsProject proj;
+  QgsLayout l( &proj );
+
+  QSignalSpy spyOccurred( l.undoStack(), &QgsLayoutUndoStack::undoRedoOccurredForItems );
+
+  QgsLayoutItemShape *item = new QgsLayoutItemShape( &l );
+  l.addLayoutItem( item );
+
+  QCOMPARE( spyOccurred.count(), 0 );
+  //adds a new undo command
+  item->setId( "test" );
+  QCOMPARE( spyOccurred.count(), 0 );
+
+  QgsLayoutItemShape *item2 = new QgsLayoutItemShape( &l );
+  l.addLayoutItem( item2 );
+  item2->setId( "test2" );
+  QCOMPARE( spyOccurred.count(), 0 );
+
+  l.undoStack()->stack()->undo();
+  QCOMPARE( spyOccurred.count(), 1 );
+  QSet< QString > items = qvariant_cast< QSet< QString > >( spyOccurred.at( 0 ).at( 0 ) );
+  QCOMPARE( items, QSet< QString >() << item2->uuid() );
+
+  l.undoStack()->stack()->redo();
+  QCOMPARE( spyOccurred.count(), 2 );
+  items = qvariant_cast< QSet< QString> >( spyOccurred.at( 1 ).at( 0 ) );
+  QCOMPARE( items, QSet< QString >() << item2->uuid() );
+
+  // macro undo
+  l.undoStack()->beginMacro( QString() );
+  item->setId( "new id" );
+  item2->setId( "new id2" );
+  l.undoStack()->endMacro();
+  QCOMPARE( spyOccurred.count(), 2 );
+
+  l.undoStack()->stack()->undo();
+  QCOMPARE( spyOccurred.count(), 3 );
+  items = qvariant_cast< QSet< QString > >( spyOccurred.at( 2 ).at( 0 ) );
+  QCOMPARE( items, QSet< QString >() << item->uuid() << item2->uuid() );
+  l.undoStack()->stack()->redo();
+  QCOMPARE( spyOccurred.count(), 4 );
+  items = qvariant_cast< QSet< QString > >( spyOccurred.at( 3 ).at( 0 ) );
+  QCOMPARE( items, QSet< QString >() << item->uuid() << item2->uuid() );
+
+  // blocking undo
+  int before = l.undoStack()->stack()->count();
+  item->setId( "xxx" );
+  QCOMPARE( l.undoStack()->stack()->count(), before + 1 );
+  l.undoStack()->blockCommands( true );
+  QVERIFY( l.undoStack()->isBlocked() );
+  item->setId( "yyy" );
+  QCOMPARE( l.undoStack()->stack()->count(), before + 1 ); // no new command
+  l.undoStack()->blockCommands( true ); // second stacked command
+  QVERIFY( l.undoStack()->isBlocked() );
+  item->setId( "ZZZ" );
+  QCOMPARE( l.undoStack()->stack()->count(), before + 1 ); // no new command
+  l.undoStack()->blockCommands( false ); // one stacked command left
+  QVERIFY( l.undoStack()->isBlocked() );
+  item->setId( "sss" );
+  QCOMPARE( l.undoStack()->stack()->count(), before + 1 ); // no new command
+  l.undoStack()->blockCommands( false ); // unblocked
+  QVERIFY( !l.undoStack()->isBlocked() );
+  item->setId( "ttt" );
+  QCOMPARE( l.undoStack()->stack()->count(), before + 2 ); // new command
+  l.undoStack()->blockCommands( false ); // don't allow negative stack size
+  QVERIFY( !l.undoStack()->isBlocked() );
+  item->setId( "uuu" );
+  QCOMPARE( l.undoStack()->stack()->count(), before + 3 ); // new command
+  l.undoStack()->blockCommands( true ); // should be blocked again
+  QVERIFY( l.undoStack()->isBlocked() );
+  item->setId( "vvv" );
+  QCOMPARE( l.undoStack()->stack()->count(), before + 3 ); // no new command
+  // blocked macro
+  l.undoStack()->beginMacro( "macro" );
+  item->setId( "lll" );
+  l.undoStack()->endMacro();
+  QCOMPARE( l.undoStack()->stack()->count(), before + 3 ); // no new command
+}
+
+void TestQgsLayout::itemsOnPage()
+{
+  QgsProject proj;
+  QgsLayout l( &proj );
+  QgsLayoutItemPage *page = new QgsLayoutItemPage( &l );
+  page->setPageSize( "A4" );
+  l.pageCollection()->addPage( page );
+  QgsLayoutItemPage *page2 = new QgsLayoutItemPage( &l );
+  page2->setPageSize( "A4" );
+  l.pageCollection()->addPage( page2 );
+  QgsLayoutItemPage *page3 = new QgsLayoutItemPage( &l );
+  page3->setPageSize( "A4" );
+  l.pageCollection()->addPage( page3 );
+
+  QgsLayoutItemShape *label1 = new QgsLayoutItemShape( &l );
+  l.addLayoutItem( label1 );
+  label1->attemptMove( QgsLayoutPoint( 10, 10 ), true, false, 0 );
+  QgsLayoutItemShape *label2 = new QgsLayoutItemShape( &l );
+  l.addLayoutItem( label2 );
+  label2->attemptMove( QgsLayoutPoint( 10, 10 ), true, false, 0 );
+  QgsLayoutItemShape *label3 = new QgsLayoutItemShape( &l );
+  l.addLayoutItem( label3 );
+  label3->attemptMove( QgsLayoutPoint( 10, 10 ), true, false, 1 );
+  QgsLayoutItemShape *shape1 = new QgsLayoutItemShape( &l );
+  l.addLayoutItem( shape1 );
+  shape1->attemptMove( QgsLayoutPoint( 10, 10 ), true, false, 0 );
+  QgsLayoutItemShape *shape2 = new QgsLayoutItemShape( &l );
+  l.addLayoutItem( shape2 );
+  shape2->attemptMove( QgsLayoutPoint( 10, 10 ), true, false, 1 );
+  QgsLayoutItemShape *arrow1 = new QgsLayoutItemShape( &l );
+  l.addLayoutItem( arrow1 );
+  arrow1->attemptMove( QgsLayoutPoint( 10, 10 ), true, false, 2 );
+  QgsLayoutItemShape *arrow2 = new QgsLayoutItemShape( &l );
+  l.addLayoutItem( arrow2 );
+  arrow2->attemptMove( QgsLayoutPoint( 10, 10 ), true, false, 2 );
+
+  //fetch items - remember that these numbers include the paper item!
+  QList<QgsLayoutItem *> items = l.pageCollection()->itemsOnPage( 0 );
+  //should be 4 items on page 1
+  QCOMPARE( items.length(), 4 );
+  items = l.pageCollection()->itemsOnPage( 1 );
+  //should be 3 items on page 2
+  QCOMPARE( items.length(), 3 );
+  items = l.pageCollection()->itemsOnPage( 2 );
+  //should be 3 items on page 3
+  QCOMPARE( items.length(), 3 );
+
+  l.removeLayoutItem( label1 );
+  l.removeLayoutItem( label2 );
+  l.removeLayoutItem( label3 );
+  l.removeLayoutItem( shape1 );
+  l.removeLayoutItem( shape2 );
+  l.removeLayoutItem( arrow1 );
+  l.removeLayoutItem( arrow2 );
+
+  //check again with removed items
+  items = l.pageCollection()->itemsOnPage( 0 );
+  QCOMPARE( items.length(), 1 );
+  items = l.pageCollection()->itemsOnPage( 1 );
+  QCOMPARE( items.length(), 1 );
+  items = l.pageCollection()->itemsOnPage( 2 );
+  QCOMPARE( items.length(), 1 );
+}
+
+void TestQgsLayout::pageIsEmpty()
+{
+  QgsProject proj;
+  QgsLayout l( &proj );
+  QgsLayoutItemPage *page = new QgsLayoutItemPage( &l );
+  page->setPageSize( "A4" );
+  l.pageCollection()->addPage( page );
+  QgsLayoutItemPage *page2 = new QgsLayoutItemPage( &l );
+  page2->setPageSize( "A4" );
+  l.pageCollection()->addPage( page2 );
+  QgsLayoutItemPage *page3 = new QgsLayoutItemPage( &l );
+  page3->setPageSize( "A4" );
+  l.pageCollection()->addPage( page3 );
+
+  //add some items to the composition
+  QgsLayoutItemShape *label1 = new QgsLayoutItemShape( &l );
+  l.addLayoutItem( label1 );
+  label1->attemptMove( QgsLayoutPoint( 10, 10 ), true, false, 0 );
+  QgsLayoutItemShape *label2 = new QgsLayoutItemShape( &l );
+  l.addLayoutItem( label2 );
+  label2->attemptMove( QgsLayoutPoint( 10, 10 ), true, false, 0 );
+  QgsLayoutItemShape *label3 = new QgsLayoutItemShape( &l );
+  l.addLayoutItem( label3 );
+  label3->attemptMove( QgsLayoutPoint( 10, 10 ), true, false, 2 );
+
+  //only page 2 should be empty
+  QCOMPARE( l.pageCollection()->pageIsEmpty( 0 ), false );
+  QCOMPARE( l.pageCollection()->pageIsEmpty( 1 ), true );
+  QCOMPARE( l.pageCollection()->pageIsEmpty( 2 ), false );
+
+  //remove the items
+  l.removeLayoutItem( label1 );
+  l.removeLayoutItem( label2 );
+  l.removeLayoutItem( label3 );
+
+  //expect everything to be empty now
+  QCOMPARE( l.pageCollection()->pageIsEmpty( 0 ), true );
+  QCOMPARE( l.pageCollection()->pageIsEmpty( 1 ), true );
+  QCOMPARE( l.pageCollection()->pageIsEmpty( 2 ), true );
+}
+
+void TestQgsLayout::clear()
+{
+  QgsProject proj;
+  QgsLayout l( &proj );
+  QgsLayoutItemPage *page = new QgsLayoutItemPage( &l );
+  page->setPageSize( "A4" );
+  l.pageCollection()->addPage( page );
+  QgsLayoutItemPage *page2 = new QgsLayoutItemPage( &l );
+  page2->setPageSize( "A4" );
+  l.pageCollection()->addPage( page2 );
+  QgsLayoutItemPage *page3 = new QgsLayoutItemPage( &l );
+  page3->setPageSize( "A4" );
+  l.pageCollection()->addPage( page3 );
+
+  //add some items to the composition
+  QgsLayoutItemShape *label1 = new QgsLayoutItemShape( &l );
+  l.addLayoutItem( label1 );
+  QPointer< QgsLayoutItem > item1P = label1;
+  QgsLayoutItemShape *label2 = new QgsLayoutItemShape( &l );
+  l.addLayoutItem( label2 );
+  QPointer< QgsLayoutItem > item2P = label2;
+  QgsLayoutItemShape *label3 = new QgsLayoutItemShape( &l );
+  l.addLayoutItem( label3 );
+  QPointer< QgsLayoutItem > item3P = label3;
+
+  l.clear();
+  QgsApplication::sendPostedEvents( nullptr, QEvent::DeferredDelete );
+  QCOMPARE( l.pageCollection()->pageCount(), 0 );
+  QVERIFY( !item1P );
+  QVERIFY( !item2P );
+  QVERIFY( !item3P );
+  QList< QgsLayoutItem * > items;
+  l.layoutItems( items );
+  QVERIFY( items.empty() );
+  QCOMPARE( l.undoStack()->stack()->count(), 0 );
 }
 
 

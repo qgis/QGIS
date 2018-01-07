@@ -42,12 +42,12 @@
 QgsAuthAuthoritiesEditor::QgsAuthAuthoritiesEditor( QWidget *parent )
   : QWidget( parent )
 {
-  if ( QgsAuthManager::instance()->isDisabled() )
+  if ( QgsApplication::authManager()->isDisabled() )
   {
     mDisabled = true;
     mAuthNotifyLayout = new QVBoxLayout;
     this->setLayout( mAuthNotifyLayout );
-    mAuthNotify = new QLabel( QgsAuthManager::instance()->disabledMessage(), this );
+    mAuthNotify = new QLabel( QgsApplication::authManager()->disabledMessage(), this );
     mAuthNotifyLayout->addWidget( mAuthNotify );
   }
   else
@@ -60,10 +60,10 @@ QgsAuthAuthoritiesEditor::QgsAuthAuthoritiesEditor( QWidget *parent )
     connect( btnCaFile, &QToolButton::clicked, this, &QgsAuthAuthoritiesEditor::btnCaFile_clicked );
     connect( btnCaFileClear, &QToolButton::clicked, this, &QgsAuthAuthoritiesEditor::btnCaFileClear_clicked );
 
-    connect( QgsAuthManager::instance(), &QgsAuthManager::messageOut,
+    connect( QgsApplication::authManager(), &QgsAuthManager::messageOut,
              this, &QgsAuthAuthoritiesEditor::authMessageOut );
 
-    connect( QgsAuthManager::instance(), &QgsAuthManager::authDatabaseChanged,
+    connect( QgsApplication::authManager(), &QgsAuthManager::authDatabaseChanged,
              this, &QgsAuthAuthoritiesEditor::refreshCaCertsView );
 
     setupCaCertsTree();
@@ -76,18 +76,18 @@ QgsAuthAuthoritiesEditor::QgsAuthAuthoritiesEditor( QWidget *parent )
 
     connect( btnViewRefresh, &QAbstractButton::clicked, this, &QgsAuthAuthoritiesEditor::refreshCaCertsView );
 
-    QVariant cafileval = QgsAuthManager::instance()->getAuthSetting( QStringLiteral( "cafile" ) );
+    QVariant cafileval = QgsApplication::authManager()->authSetting( QStringLiteral( "cafile" ) );
     if ( !cafileval.isNull() )
     {
       leCaFile->setText( cafileval.toString() );
     }
 
     btnGroupByOrg->setChecked( false );
-    QVariant sortbyval = QgsAuthManager::instance()->getAuthSetting( QStringLiteral( "casortby" ), QVariant( false ) );
+    QVariant sortbyval = QgsApplication::authManager()->authSetting( QStringLiteral( "casortby" ), QVariant( false ) );
     if ( !sortbyval.isNull() )
       btnGroupByOrg->setChecked( sortbyval.toBool() );
 
-    mDefaultTrustPolicy = QgsAuthManager::instance()->defaultCertTrustPolicy();
+    mDefaultTrustPolicy = QgsApplication::authManager()->defaultCertTrustPolicy();
     populateCaCertsView();
     checkSelection();
 
@@ -154,7 +154,7 @@ void QgsAuthAuthoritiesEditor::populateCaCertsView()
 
 void QgsAuthAuthoritiesEditor::refreshCaCertsView()
 {
-//  QgsAuthManager::instance()->rebuildCaCertsCache();
+//  QgsApplication::authManager()->rebuildCaCertsCache();
   populateCaCertsView();
 }
 
@@ -172,7 +172,7 @@ void QgsAuthAuthoritiesEditor::populateDatabaseCaCerts()
 
   bool expanded = mDbCaSecItem->isExpanded();
   populateCaCertsSection( mDbCaSecItem,
-                          QgsAuthManager::instance()->getDatabaseCAs(),
+                          QgsApplication::authManager()->databaseCAs(),
                           QgsAuthAuthoritiesEditor::DbCaCert );
   mDbCaSecItem->setExpanded( expanded );
 }
@@ -183,7 +183,7 @@ void QgsAuthAuthoritiesEditor::populateFileCaCerts()
 
   bool expanded = mFileCaSecItem->isExpanded();
   populateCaCertsSection( mFileCaSecItem,
-                          QgsAuthManager::instance()->getExtraFileCAs(),
+                          QgsApplication::authManager()->extraFileCAs(),
                           QgsAuthAuthoritiesEditor::FileCaCert );
   mFileCaSecItem->setExpanded( expanded );
 }
@@ -194,7 +194,7 @@ void QgsAuthAuthoritiesEditor::populateRootCaCerts()
 
   bool expanded = mRootCaSecItem->isExpanded();
   populateCaCertsSection( mRootCaSecItem,
-                          QgsAuthManager::instance()->getSystemRootCAs(),
+                          QgsApplication::authManager()->systemRootCAs(),
                           QgsAuthAuthoritiesEditor::RootCaCert );
   mRootCaSecItem->setExpanded( expanded );
 }
@@ -326,7 +326,7 @@ void QgsAuthAuthoritiesEditor::appendCertsToItem( const QList<QSslCertificate> &
 
 void QgsAuthAuthoritiesEditor::updateCertTrustPolicyCache()
 {
-  mCertTrustCache = QgsAuthManager::instance()->getCertTrustCache();
+  mCertTrustCache = QgsApplication::authManager()->certTrustCache();
 }
 
 void QgsAuthAuthoritiesEditor::populateUtilitiesMenu()
@@ -353,7 +353,7 @@ void QgsAuthAuthoritiesEditor::showCertInfo( QTreeWidgetItem *item )
   QString digest( item->data( 0, Qt::UserRole ).toString() );
 
   QMap<QString, QPair<QgsAuthCertUtils::CaCertSource, QSslCertificate> > cacertscache(
-    QgsAuthManager::instance()->getCaCertsCache() );
+    QgsApplication::authManager()->caCertsCache() );
 
   if ( !cacertscache.contains( digest ) )
   {
@@ -369,7 +369,7 @@ void QgsAuthAuthoritiesEditor::showCertInfo( QTreeWidgetItem *item )
   dlg->exec();
   if ( dlg->trustCacheRebuilt() )
   {
-    // QgsAuthManager::instance()->rebuildTrustedCaCertsCache() already called in dlg
+    // QgsApplication::authManager()->rebuildTrustedCaCertsCache() already called in dlg
     populateCaCertsView();
   }
   dlg->deleteLater();
@@ -442,30 +442,30 @@ void QgsAuthAuthoritiesEditor::btnAddCa_clicked()
   if ( dlg->exec() )
   {
     const QList<QSslCertificate> &certs( dlg->certificatesToImport() );
-    if ( !QgsAuthManager::instance()->storeCertAuthorities( certs ) )
+    if ( !QgsApplication::authManager()->storeCertAuthorities( certs ) )
     {
       messageBar()->pushMessage( tr( "ERROR storing CA(s) in authentication database" ),
                                  QgsMessageBar::CRITICAL );
     }
 
-    QgsAuthManager::instance()->rebuildCaCertsCache();
+    QgsApplication::authManager()->rebuildCaCertsCache();
 
     if ( dlg->certTrustPolicy() != QgsAuthCertUtils::DefaultTrust )
     {
       Q_FOREACH ( const QSslCertificate &cert, certs )
       {
-        if ( !QgsAuthManager::instance()->storeCertTrustPolicy( cert, dlg->certTrustPolicy() ) )
+        if ( !QgsApplication::authManager()->storeCertTrustPolicy( cert, dlg->certTrustPolicy() ) )
         {
           authMessageOut( QObject::tr( "Could not set trust policy for imported certificates" ),
                           QObject::tr( "Authorities Manager" ),
                           QgsAuthManager::WARNING );
         }
       }
-      QgsAuthManager::instance()->rebuildCertTrustCache();
+      QgsApplication::authManager()->rebuildCertTrustCache();
       updateCertTrustPolicyCache();
     }
 
-    QgsAuthManager::instance()->rebuildTrustedCaCertsCache();
+    QgsApplication::authManager()->rebuildTrustedCaCertsCache();
     populateDatabaseCaCerts();
     mDbCaSecItem->setExpanded( true );
   }
@@ -492,7 +492,7 @@ void QgsAuthAuthoritiesEditor::btnRemoveCa_clicked()
   }
 
   QMap<QString, QSslCertificate> mappedcerts(
-    QgsAuthManager::instance()->getMappedDatabaseCAs() );
+    QgsApplication::authManager()->mappedDatabaseCAs() );
 
   if ( !mappedcerts.contains( digest ) )
   {
@@ -515,27 +515,27 @@ void QgsAuthAuthoritiesEditor::btnRemoveCa_clicked()
 
   if ( cert.isNull() )
   {
-    messageBar()->pushMessage( tr( "Certificate could not found in database for id %1:" ).arg( digest ),
+    messageBar()->pushMessage( tr( "Certificate could not be found in database for id %1:" ).arg( digest ),
                                QgsMessageBar::WARNING );
     return;
   }
 
-  if ( !QgsAuthManager::instance()->removeCertAuthority( cert ) )
+  if ( !QgsApplication::authManager()->removeCertAuthority( cert ) )
   {
     messageBar()->pushMessage( tr( "ERROR removing CA from authentication database for id %1:" ).arg( digest ),
                                QgsMessageBar::CRITICAL );
     return;
   }
 
-  if ( !QgsAuthManager::instance()->removeCertTrustPolicy( cert ) )
+  if ( !QgsApplication::authManager()->removeCertTrustPolicy( cert ) )
   {
     messageBar()->pushMessage( tr( "ERROR removing cert trust policy from authentication database for id %1:" ).arg( digest ),
                                QgsMessageBar::CRITICAL );
     return;
   }
 
-  QgsAuthManager::instance()->rebuildCaCertsCache();
-  QgsAuthManager::instance()->rebuildTrustedCaCertsCache();
+  QgsApplication::authManager()->rebuildCaCertsCache();
+  QgsApplication::authManager()->rebuildTrustedCaCertsCache();
   updateCertTrustPolicyCache();
 
   item->parent()->removeChild( item );
@@ -556,7 +556,7 @@ void QgsAuthAuthoritiesEditor::btnInfoCa_clicked()
 
 void QgsAuthAuthoritiesEditor::btnGroupByOrg_toggled( bool checked )
 {
-  if ( !QgsAuthManager::instance()->storeAuthSetting( QStringLiteral( "casortby" ), QVariant( checked ) ) )
+  if ( !QgsApplication::authManager()->storeAuthSetting( QStringLiteral( "casortby" ), QVariant( checked ) ) )
   {
     authMessageOut( QObject::tr( "Could not store sort by preference" ),
                     QObject::tr( "Authorities Manager" ),
@@ -639,15 +639,15 @@ void QgsAuthAuthoritiesEditor::editDefaultTrustPolicy()
 
 void QgsAuthAuthoritiesEditor::defaultTrustPolicyChanged( QgsAuthCertUtils::CertTrustPolicy trustpolicy )
 {
-  if ( !QgsAuthManager::instance()->setDefaultCertTrustPolicy( trustpolicy ) )
+  if ( !QgsApplication::authManager()->setDefaultCertTrustPolicy( trustpolicy ) )
   {
-    authMessageOut( QObject::tr( "Could not store default trust policy" ),
+    authMessageOut( QObject::tr( "Could not store default trust policy." ),
                     QObject::tr( "Authorities Manager" ),
                     QgsAuthManager::CRITICAL );
   }
   mDefaultTrustPolicy = trustpolicy;
-  QgsAuthManager::instance()->rebuildCertTrustCache();
-  QgsAuthManager::instance()->rebuildTrustedCaCertsCache();
+  QgsApplication::authManager()->rebuildCertTrustCache();
+  QgsApplication::authManager()->rebuildTrustedCaCertsCache();
   populateCaCertsView();
 }
 
@@ -669,39 +669,39 @@ void QgsAuthAuthoritiesEditor::btnCaFile_clicked()
     const QString &fn = dlg->certFileToImport();
     leCaFile->setText( fn );
 
-    if ( !QgsAuthManager::instance()->storeAuthSetting( QStringLiteral( "cafile" ), QVariant( fn ) ) )
+    if ( !QgsApplication::authManager()->storeAuthSetting( QStringLiteral( "cafile" ), QVariant( fn ) ) )
     {
-      authMessageOut( QObject::tr( "Could not store 'CA file path' in authentication database" ),
+      authMessageOut( QObject::tr( "Could not store 'CA file path' in authentication database." ),
                       QObject::tr( "Authorities Manager" ),
                       QgsAuthManager::WARNING );
     }
-    if ( !QgsAuthManager::instance()->storeAuthSetting( QStringLiteral( "cafileallowinvalid" ),
+    if ( !QgsApplication::authManager()->storeAuthSetting( QStringLiteral( "cafileallowinvalid" ),
          QVariant( dlg->allowInvalidCerts() ) ) )
     {
-      authMessageOut( QObject::tr( "Could not store 'CA file allow invalids' setting in authentication database" ),
+      authMessageOut( QObject::tr( "Could not store 'CA file allow invalids' setting in authentication database." ),
                       QObject::tr( "Authorities Manager" ),
                       QgsAuthManager::WARNING );
     }
 
-    QgsAuthManager::instance()->rebuildCaCertsCache();
+    QgsApplication::authManager()->rebuildCaCertsCache();
 
     if ( dlg->certTrustPolicy() != QgsAuthCertUtils::DefaultTrust )
     {
-      QList<QSslCertificate> certs( QgsAuthManager::instance()->getExtraFileCAs() );
+      QList<QSslCertificate> certs( QgsApplication::authManager()->extraFileCAs() );
       Q_FOREACH ( const QSslCertificate &cert, certs )
       {
-        if ( !QgsAuthManager::instance()->storeCertTrustPolicy( cert, dlg->certTrustPolicy() ) )
+        if ( !QgsApplication::authManager()->storeCertTrustPolicy( cert, dlg->certTrustPolicy() ) )
         {
-          authMessageOut( QObject::tr( "Could not set trust policy for imported certificates" ),
+          authMessageOut( QObject::tr( "Could not set trust policy for imported certificates." ),
                           QObject::tr( "Authorities Manager" ),
                           QgsAuthManager::WARNING );
         }
       }
-      QgsAuthManager::instance()->rebuildCertTrustCache();
+      QgsApplication::authManager()->rebuildCertTrustCache();
       updateCertTrustPolicyCache();
     }
 
-    QgsAuthManager::instance()->rebuildTrustedCaCertsCache();
+    QgsApplication::authManager()->rebuildTrustedCaCertsCache();
 
     populateFileCaCerts();
     mFileCaSecItem->setExpanded( true );
@@ -711,22 +711,22 @@ void QgsAuthAuthoritiesEditor::btnCaFile_clicked()
 
 void QgsAuthAuthoritiesEditor::btnCaFileClear_clicked()
 {
-  if ( !QgsAuthManager::instance()->removeAuthSetting( QStringLiteral( "cafile" ) ) )
+  if ( !QgsApplication::authManager()->removeAuthSetting( QStringLiteral( "cafile" ) ) )
   {
-    authMessageOut( QObject::tr( "Could not remove 'CA file path' from authentication database" ),
+    authMessageOut( QObject::tr( "Could not remove 'CA file path' from authentication database." ),
                     QObject::tr( "Authorities Manager" ),
                     QgsAuthManager::WARNING );
     return;
   }
-  if ( !QgsAuthManager::instance()->removeAuthSetting( QStringLiteral( "cafileallowinvalid" ) ) )
+  if ( !QgsApplication::authManager()->removeAuthSetting( QStringLiteral( "cafileallowinvalid" ) ) )
   {
-    authMessageOut( QObject::tr( "Could not remove 'CA file allow invalids' setting from authentication database" ),
+    authMessageOut( QObject::tr( "Could not remove 'CA file allow invalids' setting from authentication database." ),
                     QObject::tr( "Authorities Manager" ),
                     QgsAuthManager::WARNING );
     return;
   }
 
-  QgsAuthManager::instance()->rebuildCaCertsCache();
+  QgsApplication::authManager()->rebuildCaCertsCache();
 
   QString fn( leCaFile->text() );
   if ( QFile::exists( fn ) )
@@ -735,18 +735,18 @@ void QgsAuthAuthoritiesEditor::btnCaFileClear_clicked()
 
     if ( !certs.isEmpty() )
     {
-      if ( !QgsAuthManager::instance()->removeCertTrustPolicies( certs ) )
+      if ( !QgsApplication::authManager()->removeCertTrustPolicies( certs ) )
       {
-        messageBar()->pushMessage( tr( "ERROR removing cert(s) trust policy from authentication database" ),
+        messageBar()->pushMessage( tr( "ERROR removing cert(s) trust policy from authentication database." ),
                                    QgsMessageBar::CRITICAL );
         return;
       }
-      QgsAuthManager::instance()->rebuildCertTrustCache();
+      QgsApplication::authManager()->rebuildCertTrustCache();
       updateCertTrustPolicyCache();
     }
   }
 
-  QgsAuthManager::instance()->rebuildTrustedCaCertsCache();
+  QgsApplication::authManager()->rebuildTrustedCaCertsCache();
 
   leCaFile->clear();
   populateFileCaCerts();

@@ -9,10 +9,11 @@
 
 
 
-class QgsPolygonV2: QgsCurvePolygon
+class QgsPolygon: QgsCurvePolygon
 {
 %Docstring
  Polygon geometry type.
+
 .. versionadded:: 2.10
 %End
 
@@ -20,11 +21,11 @@ class QgsPolygonV2: QgsCurvePolygon
 #include "qgspolygon.h"
 %End
   public:
-    QgsPolygonV2();
+    QgsPolygon();
 
     virtual QString geometryType() const;
 
-    virtual QgsPolygonV2 *clone() const /Factory/;
+    virtual QgsPolygon *clone() const /Factory/;
 
     virtual void clear();
 
@@ -32,15 +33,15 @@ class QgsPolygonV2: QgsCurvePolygon
 
     virtual QByteArray asWkb() const;
 
-    virtual QgsPolygonV2 *surfaceToPolygon() const /Factory/;
+    virtual QgsPolygon *surfaceToPolygon() const /Factory/;
 
 
     virtual QgsCurvePolygon *toCurveType() const /Factory/;
 
 %Docstring
- Returns the geometry converted to the more generic curve type QgsCurvePolygon
+Returns the geometry converted to the more generic curve type QgsCurvePolygon
+
 :return: the converted geometry. Caller takes ownership*
- :rtype: QgsCurvePolygon
 %End
 
     virtual void addInteriorRing( QgsCurve *ring /Transfer/ );
@@ -53,12 +54,19 @@ class QgsPolygonV2: QgsCurvePolygon
 
     double pointDistanceToBoundary( double x, double y ) const;
 %Docstring
- Returns the distance from a point to the boundary of the polygon (either the
- exterior ring or any closer interior rings). The returned distance will be
- negative if the point lies outside the polygon.
+Returns the distance from a point to the boundary of the polygon (either the
+exterior ring or any closer interior rings). The returned distance will be
+negative if the point lies outside the polygon.
+
 .. versionadded:: 3.0
- :rtype: float
 %End
+
+
+  protected:
+
+    virtual QgsPolygon *createEmptyWithSameType() const /Factory/;
+
+
 
 };
 /************************************************************************

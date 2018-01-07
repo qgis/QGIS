@@ -12,7 +12,8 @@
 class QgsSnappingConfig
 {
 %Docstring
- This is a container for configuration of the snapping of the project
+This is a container for configuration of the snapping of the project
+
 .. versionadded:: 3.0
 %End
 
@@ -38,7 +39,8 @@ class QgsSnappingConfig
     class IndividualLayerSettings
 {
 %Docstring
- This is a container of advanced configuration (per layer) of the snapping of the project
+This is a container of advanced configuration (per layer) of the snapping of the project
+
 .. versionadded:: 3.0
 %End
 
@@ -50,27 +52,26 @@ class QgsSnappingConfig
         IndividualLayerSettings( bool enabled, QgsSnappingConfig::SnappingType type, double tolerance, QgsTolerance::UnitType units );
 %Docstring
  IndividualLayerSettings
- \param enabled
- \param type
- \param tolerance
- \param units
+
+:param enabled:
+:param type:
+:param tolerance:
+:param units:
 %End
 
         IndividualLayerSettings();
 %Docstring
- Constructs an invalid setting
+Constructs an invalid setting
 %End
 
         bool valid() const;
 %Docstring
 return if settings are valid
- :rtype: bool
 %End
 
         bool enabled() const;
 %Docstring
 return if snapping is enabled
- :rtype: bool
 %End
 
         void setEnabled( bool enabled );
@@ -81,7 +82,6 @@ enables the snapping
         QgsSnappingConfig::SnappingType type() const;
 %Docstring
 return the type (vertices and/or segments)
- :rtype: QgsSnappingConfig.SnappingType
 %End
 
         void setType( QgsSnappingConfig::SnappingType type );
@@ -92,7 +92,6 @@ define the type of snapping
         double tolerance() const;
 %Docstring
 return the tolerance
- :rtype: float
 %End
 
         void setTolerance( double tolerance );
@@ -103,7 +102,6 @@ set the tolerance
         QgsTolerance::UnitType units() const;
 %Docstring
 return the type of units
- :rtype: QgsTolerance.UnitType
 %End
 
         void setUnits( QgsTolerance::UnitType units );
@@ -113,7 +111,7 @@ set the type of units
 
         bool operator!= ( const QgsSnappingConfig::IndividualLayerSettings &other ) const;
 %Docstring
- Compare this configuration to other.
+Compare this configuration to other.
 %End
 
         bool operator== ( const QgsSnappingConfig::IndividualLayerSettings &other ) const;
@@ -122,7 +120,7 @@ set the type of units
 
     explicit QgsSnappingConfig( QgsProject *project = 0 );
 %Docstring
- Constructor with default parameters defined in global settings
+Constructor with default parameters defined in global settings
 %End
 
     bool operator==( const QgsSnappingConfig &other ) const;
@@ -135,7 +133,6 @@ reset to default values
     bool enabled() const;
 %Docstring
 return if snapping is enabled
- :rtype: bool
 %End
 
     void setEnabled( bool enabled );
@@ -146,7 +143,6 @@ enables the snapping
     SnappingMode mode() const;
 %Docstring
 return the mode (all layers, active layer, per layer settings)
- :rtype: SnappingMode
 %End
 
     void setMode( SnappingMode mode );
@@ -157,7 +153,6 @@ define the mode of snapping
     SnappingType type() const;
 %Docstring
 return the type (vertices and/or segments)
- :rtype: SnappingType
 %End
 
     void setType( SnappingType type );
@@ -168,7 +163,6 @@ define the type of snapping
     double tolerance() const;
 %Docstring
 return the tolerance
- :rtype: float
 %End
 
     void setTolerance( double tolerance );
@@ -179,7 +173,6 @@ set the tolerance
     QgsTolerance::UnitType units() const;
 %Docstring
 return the type of units
- :rtype: QgsTolerance.UnitType
 %End
 
     void setUnits( QgsTolerance::UnitType units );
@@ -190,7 +183,6 @@ set the type of units
     bool intersectionSnapping() const;
 %Docstring
 return if the snapping on intersection is enabled
- :rtype: bool
 %End
 
     void setIntersectionSnapping( bool enabled );
@@ -201,7 +193,6 @@ set if the snapping on intersection is enabled
     SIP_PYDICT individualLayerSettings() const;
 %Docstring
 return individual snapping settings for all layers
- :rtype: SIP_PYDICT
 %End
 %MethodCode
     // Create the dictionary.
@@ -246,7 +237,6 @@ return individual snapping settings for all layers
     QgsSnappingConfig::IndividualLayerSettings individualLayerSettings( QgsVectorLayer *vl ) const;
 %Docstring
 return individual layer snappings settings (applied if mode is AdvancedConfiguration)
- :rtype: QgsSnappingConfig.IndividualLayerSettings
 %End
 
     void setIndividualLayerSettings( QgsVectorLayer *vl, const QgsSnappingConfig::IndividualLayerSettings &individualLayerSettings );
@@ -256,60 +246,57 @@ set individual layer snappings settings (applied if mode is AdvancedConfiguratio
 
     bool operator!= ( const QgsSnappingConfig &other ) const;
 %Docstring
- Compare this configuration to other.
+Compare this configuration to other.
 %End
 
     void readProject( const QDomDocument &doc );
 %Docstring
- Reads the configuration from the specified QGIS project document.
+Reads the configuration from the specified QGIS project document.
 
 .. versionadded:: 3.0
 %End
 
     void writeProject( QDomDocument &doc );
 %Docstring
- Writes the configuration to the specified QGIS project document.
+Writes the configuration to the specified QGIS project document.
 
 .. versionadded:: 3.0
 %End
 
     bool addLayers( const QList<QgsMapLayer *> &layers );
 %Docstring
- Adds the specified layers as individual layers to the configuration
- with standard configuration.
- When implementing a long-living QgsSnappingConfig (like the one in QgsProject)
- it is best to directly feed this with information from the layer registry.
+Adds the specified layers as individual layers to the configuration
+with standard configuration.
+When implementing a long-living QgsSnappingConfig (like the one in QgsProject)
+it is best to directly feed this with information from the layer registry.
 
- :return: True if changes have been done.
+:return: True if changes have been done.
 
 .. versionadded:: 3.0
- :rtype: bool
 %End
 
 
     bool removeLayers( const QList<QgsMapLayer *> &layers );
 %Docstring
- Removes the specified layers from the individual layer configuration.
- When implementing a long-living QgsSnappingConfig (like the one in QgsProject)
- it is best to directly feed this with information from the layer registry.
+Removes the specified layers from the individual layer configuration.
+When implementing a long-living QgsSnappingConfig (like the one in QgsProject)
+it is best to directly feed this with information from the layer registry.
 
- :return: True if changes have been done.
+:return: True if changes have been done.
 
 .. versionadded:: 3.0
- :rtype: bool
 %End
 
     QgsProject *project() const;
 %Docstring
- The project from which the snapped layers should be retrieved
+The project from which the snapped layers should be retrieved
 
 .. versionadded:: 3.0
- :rtype: QgsProject
 %End
 
     void setProject( QgsProject *project );
 %Docstring
- The project from which the snapped layers should be retrieved
+The project from which the snapped layers should be retrieved
 
 .. versionadded:: 3.0
 %End

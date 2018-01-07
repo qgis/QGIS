@@ -118,7 +118,10 @@ class contour(GdalAlgorithm):
     def group(self):
         return self.tr('Raster extraction')
 
-    def getConsoleCommands(self, parameters, context, feedback):
+    def groupId(self):
+        return 'rasterextraction'
+
+    def getConsoleCommands(self, parameters, context, feedback, executing=True):
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
         fieldName = self.parameterAsString(parameters, self.FIELD_NAME, context)
         nodata = self.parameterAsDouble(parameters, self.NODATA, context)

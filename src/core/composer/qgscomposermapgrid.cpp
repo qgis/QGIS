@@ -33,7 +33,7 @@
 #include "qgsexpressioncontext.h"
 #include "qgsexception.h"
 #include "qgssettings.h"
-
+#include "qgscoordinateformatter.h"
 #include <QPainter>
 #include <QPen>
 
@@ -567,23 +567,23 @@ void QgsComposerMapGrid::calculateCrsTransformLines()
     QList< QPair< double, QPolygonF > >::const_iterator yGridIt = mTransformedYLines.constBegin();
     for ( ; yGridIt != mTransformedYLines.constEnd(); ++yGridIt )
     {
-      QgsPolyline yLine;
+      QgsPolylineXY yLine;
       for ( int i = 0; i < ( *yGridIt ).second.size(); ++i )
       {
         yLine.append( QgsPointXY( ( *yGridIt ).second.at( i ).x(), ( *yGridIt ).second.at( i ).y() ) );
       }
-      yLines << QgsGeometry::fromPolyline( yLine );
+      yLines << QgsGeometry::fromPolylineXY( yLine );
     }
     QList< QgsGeometry > xLines;
     QList< QPair< double, QPolygonF > >::const_iterator xGridIt = mTransformedXLines.constBegin();
     for ( ; xGridIt != mTransformedXLines.constEnd(); ++xGridIt )
     {
-      QgsPolyline xLine;
+      QgsPolylineXY xLine;
       for ( int i = 0; i < ( *xGridIt ).second.size(); ++i )
       {
         xLine.append( QgsPointXY( ( *xGridIt ).second.at( i ).x(), ( *xGridIt ).second.at( i ).y() ) );
       }
-      xLines << QgsGeometry::fromPolyline( xLine );
+      xLines << QgsGeometry::fromPolylineXY( xLine );
     }
 
     //now, loop through geometries and calculate intersection points
@@ -1484,49 +1484,56 @@ QString QgsComposerMapGrid::gridAnnotationString( double value, QgsComposerMapGr
     return mGridAnnotationExpression->evaluate( &expressionContext ).toString();
   }
 
-  QgsPointXY p;
-  p.setX( coord == QgsComposerMapGrid::Longitude ? value : 0 );
-  p.setY( coord == QgsComposerMapGrid::Longitude ? 0 : value );
+  QgsCoordinateFormatter::Format format = QgsCoordinateFormatter::FormatDecimalDegrees;
+  QgsCoordinateFormatter::FormatFlags flags = nullptr;
+  switch ( mGridAnnotationFormat )
+  {
+    case Decimal:
+    case DecimalWithSuffix:
+    case CustomFormat:
+      break; // already handled above
 
-  QString annotationString;
-  if ( mGridAnnotationFormat == QgsComposerMapGrid::DegreeMinute )
-  {
-    annotationString = p.toDegreesMinutes( mGridAnnotationPrecision );
-  }
-  else if ( mGridAnnotationFormat == QgsComposerMapGrid::DegreeMinuteNoSuffix )
-  {
-    annotationString = p.toDegreesMinutes( mGridAnnotationPrecision, false );
-  }
-  else if ( mGridAnnotationFormat == QgsComposerMapGrid::DegreeMinutePadded )
-  {
-    annotationString = p.toDegreesMinutes( mGridAnnotationPrecision, true, true );
-  }
-  else if ( mGridAnnotationFormat == QgsComposerMapGrid::DegreeMinuteSecond )
-  {
-    annotationString = p.toDegreesMinutesSeconds( mGridAnnotationPrecision );
-  }
-  else if ( mGridAnnotationFormat == QgsComposerMapGrid::DegreeMinuteSecondNoSuffix )
-  {
-    annotationString = p.toDegreesMinutesSeconds( mGridAnnotationPrecision, false );
-  }
-  else if ( mGridAnnotationFormat == QgsComposerMapGrid::DegreeMinuteSecondPadded )
-  {
-    annotationString = p.toDegreesMinutesSeconds( mGridAnnotationPrecision, true, true );
+    case DegreeMinute:
+      format = QgsCoordinateFormatter::FormatDegreesMinutes;
+      flags = QgsCoordinateFormatter::FlagDegreesUseStringSuffix;
+      break;
+
+    case DegreeMinuteSecond:
+      format = QgsCoordinateFormatter::FormatDegreesMinutesSeconds;
+      flags = QgsCoordinateFormatter::FlagDegreesUseStringSuffix;
+      break;
+
+    case DegreeMinuteNoSuffix:
+      format = QgsCoordinateFormatter::FormatDegreesMinutes;
+      flags = nullptr;
+      break;
+
+    case DegreeMinutePadded:
+      format = QgsCoordinateFormatter::FormatDegreesMinutes;
+      flags = QgsCoordinateFormatter::FlagDegreesUseStringSuffix | QgsCoordinateFormatter::FlagDegreesPadMinutesSeconds;
+      break;
+
+    case DegreeMinuteSecondNoSuffix:
+      format = QgsCoordinateFormatter::FormatDegreesMinutesSeconds;
+      flags = nullptr;
+      break;
+
+    case DegreeMinuteSecondPadded:
+      format = QgsCoordinateFormatter::FormatDegreesMinutesSeconds;
+      flags = QgsCoordinateFormatter::FlagDegreesUseStringSuffix | QgsCoordinateFormatter::FlagDegreesPadMinutesSeconds;
+      break;
   }
 
-  QStringList split = annotationString.split( ',' );
-  if ( coord == QgsComposerMapGrid::Longitude )
+  switch ( coord )
   {
-    return split.at( 0 );
+    case Longitude:
+      return QgsCoordinateFormatter::formatX( value, format, flags );
+
+    case Latitude:
+      return QgsCoordinateFormatter::formatY( value, format, flags );
   }
-  else
-  {
-    if ( split.size() < 2 )
-    {
-      return QLatin1String( "" );
-    }
-    return split.at( 1 );
-  }
+
+  return QString(); // no warnings
 }
 
 int QgsComposerMapGrid::xGridLines( QList< QPair< double, QLineF > > &lines ) const
@@ -2342,7 +2349,7 @@ int QgsComposerMapGrid::crsGridParams( QgsRectangle &crsRect, QgsCoordinateTrans
 
   try
   {
-    QgsCoordinateTransform tr( mComposerMap->crs(), mCRS );
+    QgsCoordinateTransform tr( mComposerMap->crs(), mCRS, mComposerMap->composition()->project() );
     QPolygonF mapPolygon = mComposerMap->transformedMapPolygon();
     QRectF mbr = mapPolygon.boundingRect();
     QgsRectangle mapBoundingRect( mbr.left(), mbr.bottom(), mbr.right(), mbr.top() );
@@ -2391,10 +2398,10 @@ QList<QPolygonF> QgsComposerMapGrid::trimLinesToMap( const QPolygonF &line, cons
   QgsGeometry rectGeom = QgsGeometry::fromRect( rect );
 
   QgsGeometry intersected = lineGeom.intersection( rectGeom );
-  QList<QgsGeometry> intersectedParts = intersected.asGeometryCollection();
+  QVector<QgsGeometry> intersectedParts = intersected.asGeometryCollection();
 
   QList<QPolygonF> trimmedLines;
-  QList<QgsGeometry>::const_iterator geomIt = intersectedParts.constBegin();
+  QVector<QgsGeometry>::const_iterator geomIt = intersectedParts.constBegin();
   for ( ; geomIt != intersectedParts.constEnd(); ++geomIt )
   {
     trimmedLines << ( *geomIt ).asQPolygonF();

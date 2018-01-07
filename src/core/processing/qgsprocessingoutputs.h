@@ -47,6 +47,8 @@ class CORE_EXPORT QgsProcessingOutputDefinition
       sipType = sipType_QgsProcessingOutputVectorLayer;
     else if ( sipCpp->type() == QgsProcessingOutputRasterLayer::typeName() )
       sipType = sipType_QgsProcessingOutputRasterLayer;
+    else if ( sipCpp->type() == QgsProcessingOutputMapLayer::typeName() )
+      sipType = sipType_QgsProcessingOutputMapLayer;
     else if ( sipCpp->type() == QgsProcessingOutputHtml::typeName() )
       sipType = sipType_QgsProcessingOutputHtml;
     else if ( sipCpp->type() == QgsProcessingOutputNumber::typeName() )
@@ -79,28 +81,28 @@ class CORE_EXPORT QgsProcessingOutputDefinition
     /**
      * Returns the name of the output. This is the internal identifier by which
      * algorithms access this output.
-     * @see setName()
+     * \see setName()
      */
     QString name() const { return mName; }
 
     /**
      * Sets the \a name of the output. This is the internal identifier by which
      * algorithms access this output.
-     * @see name()
+     * \see name()
      */
     void setName( const QString &name ) { mName = name; }
 
     /**
      * Returns the description for the output. This is the user-visible string
      * used to identify this output.
-     * @see setDescription()
+     * \see setDescription()
      */
     QString description() const { return mDescription; }
 
     /**
      * Sets the \a description for the output. This is the user-visible string
      * used to identify this output.
-     * @see description()
+     * \see description()
      */
     void setDescription( const QString &description ) { mDescription = description; }
 
@@ -116,6 +118,34 @@ class CORE_EXPORT QgsProcessingOutputDefinition
 
 //! List of processing parameters
 typedef QList< const QgsProcessingOutputDefinition * > QgsProcessingOutputDefinitions;
+
+/**
+ * \class QgsProcessingOutputMapLayer
+ * \ingroup core
+ * A map layer output for processing algorithms, where layers may be either vector or raster.
+ *
+ * If the actual layer output type is known (e.g. always vector or always raster), use
+ * QgsProcessingOutputVectorLayer or QgsProcessingOutputRasterLayer instead.
+ *
+  * \since QGIS 3.0
+ */
+class CORE_EXPORT QgsProcessingOutputMapLayer : public QgsProcessingOutputDefinition
+{
+  public:
+
+    /**
+     * Constructor for QgsProcessingOutputMapLayer.
+     */
+    QgsProcessingOutputMapLayer( const QString &name, const QString &description = QString() );
+
+    /**
+     * Returns the type name for the output class.
+     */
+    static QString typeName() { return QStringLiteral( "outputLayer" ); }
+
+    QString type() const override;
+
+};
 
 /**
  * \class QgsProcessingOutputVectorLayer

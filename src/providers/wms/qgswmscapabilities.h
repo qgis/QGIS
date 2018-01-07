@@ -25,6 +25,7 @@
 #include "qgsraster.h"
 #include "qgsrectangle.h"
 #include "qgsrasteriterator.h"
+#include "qgsapplication.h"
 
 class QNetworkReply;
 
@@ -506,7 +507,7 @@ struct QgsWmsAuthorization
   {
     if ( !mAuthCfg.isEmpty() )
     {
-      return QgsAuthManager::instance()->updateNetworkRequest( request, mAuthCfg );
+      return QgsApplication::authManager()->updateNetworkRequest( request, mAuthCfg );
     }
     else if ( !mUserName.isEmpty() || !mPassword.isEmpty() )
     {
@@ -524,7 +525,7 @@ struct QgsWmsAuthorization
   {
     if ( !mAuthCfg.isEmpty() )
     {
-      return QgsAuthManager::instance()->updateNetworkReply( reply, mAuthCfg );
+      return QgsApplication::authManager()->updateNetworkReply( reply, mAuthCfg );
     }
     return true;
   }
@@ -774,7 +775,7 @@ class QgsWmsCapabilitiesDownload : public QObject
 
     QgsWmsCapabilitiesDownload( const QString &baseUrl, const QgsWmsAuthorization &auth, bool forceRefresh, QObject *parent = nullptr );
 
-    virtual ~QgsWmsCapabilitiesDownload();
+    ~QgsWmsCapabilitiesDownload() override;
 
     bool downloadCapabilities();
 

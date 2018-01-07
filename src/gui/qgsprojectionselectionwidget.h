@@ -52,14 +52,8 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
       CrsNotSet, //!< Not set (hidden by default)
     };
 
-    explicit QgsProjectionSelectionWidget( QWidget *parent SIP_TRANSFERTHIS = 0 );
-
-    /**
-     * Returns a pointer to the projection selector dialog used by the widget.
-     * Can be used to modify how the projection selector dialog behaves.
-     * \returns projection selector dialog
-     */
-    QgsProjectionSelectionDialog *dialog() { return mDialog; }
+    //! Constructor for QgsProjectionSelectionWidget
+    explicit QgsProjectionSelectionWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Returns the currently selected CRS for the widget
@@ -88,6 +82,14 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
      * \since QGIS 3.0
      */
     void setNotSetText( const QString &text );
+
+    /**
+     * Sets a \a message to show in the dialog. If an empty string is
+     * passed, the message will be a generic
+     * 'define the CRS for this layer'.
+     * \since QGIS 3.0
+     */
+    void setMessage( const QString &text );
 
   signals:
 
@@ -132,6 +134,7 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
     QToolButton *mButton = nullptr;
     QgsProjectionSelectionDialog *mDialog = nullptr;
     QString mNotSetText;
+    QString mMessage;
 
     void addNotSetOption();
     void addProjectCrsOption();

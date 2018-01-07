@@ -43,13 +43,13 @@ class QgsGeoNodeRequest : QObject
 %End
   public:
 
-    explicit QgsGeoNodeRequest( bool forceRefresh, QObject *parent = 0 );
+    explicit QgsGeoNodeRequest( bool forceRefresh, QObject *parent = nullptr );
 %Docstring
  Constructor for QgsGeoNodeRequest.
 
  If ``forceRefresh`` is false, then cached copies of the request may be reused.
 %End
-    QgsGeoNodeRequest( const QString &baseUrl, bool forceRefresh, QObject *parent = 0 );
+    QgsGeoNodeRequest( const QString &baseUrl, bool forceRefresh, QObject *parent = nullptr );
     virtual ~QgsGeoNodeRequest();
 
     bool request( const QString &endPoint );

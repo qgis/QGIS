@@ -14,6 +14,7 @@ class QgsSQLStatement
 {
 %Docstring
 Class for parsing SQL statements.
+
 .. versionadded:: 2.16
 %End
 
@@ -24,89 +25,83 @@ Class for parsing SQL statements.
 
     QgsSQLStatement( const QString &statement );
 %Docstring
- Creates a new statement based on the provided string.
+Creates a new statement based on the provided string.
 %End
 
     QgsSQLStatement( const QgsSQLStatement &other );
 %Docstring
- Create a copy of this statement.
+Create a copy of this statement.
 %End
 
     ~QgsSQLStatement();
 %Docstring
- Create a copy of this statement.
+Create a copy of this statement.
 %End
 
     bool hasParserError() const;
 %Docstring
 Returns true if an error occurred when parsing the input statement
- :rtype: bool
 %End
     QString parserErrorString() const;
 %Docstring
 Returns parser error
- :rtype: str
 %End
 
     bool doBasicValidationChecks( QString &errorMsgOut /Out/ ) const;
 %Docstring
- Performs basic validity checks. Basically checking that columns referencing
- a table, references a specified table. Returns true if the validation is
- successful *
- :rtype: bool
+Performs basic validity checks. Basically checking that columns referencing
+a table, references a specified table. Returns true if the validation is
+successful *
 %End
 
 
     const QgsSQLStatement::Node *rootNode() const;
 %Docstring
 Returns root node of the statement. Root node is null is parsing has failed
- :rtype: QgsSQLStatement.Node
 %End
 
     QString statement() const;
 %Docstring
- Return the original, unmodified statement string.
- If there was none supplied because it was constructed by sole
- API calls, dump() will be used to create one instead.
- :rtype: str
+Return the original, unmodified statement string.
+If there was none supplied because it was constructed by sole
+API calls, dump() will be used to create one instead.
 %End
 
     QString dump() const;
 %Docstring
- Return  statement string, constructed from the internal
- abstract syntax tree. This does not contain any nice whitespace
- formatting or comments. In general it is preferable to use
- statement() instead.
- :rtype: str
+Return  statement string, constructed from the internal
+abstract syntax tree. This does not contain any nice whitespace
+formatting or comments. In general it is preferable to use
+statement() instead.
 %End
 
     static QString quotedIdentifier( QString name );
 %Docstring
- Returns a quoted column reference (in double quotes)
-.. seealso:: quotedString(), quotedIdentifierIfNeeded()
- :rtype: str
+Returns a quoted column reference (in double quotes)
+
+.. seealso:: :py:func:`quotedString()`
 %End
 
     static QString quotedIdentifierIfNeeded( const QString &name );
 %Docstring
- Returns a quoted column reference (in double quotes) if needed, or
- otherwise the original string.
-.. seealso:: quotedString(), quotedIdentifier()
- :rtype: str
+Returns a quoted column reference (in double quotes) if needed, or
+otherwise the original string.
+
+.. seealso:: :py:func:`quotedString()`
 %End
 
     static QString stripQuotedIdentifier( QString text );
 %Docstring
- Remove double quotes from an identifier.
-.. seealso:: quotedIdentifier()
- :rtype: str
+Remove double quotes from an identifier.
+
+.. seealso:: :py:func:`quotedIdentifier()`
 %End
 
     static QString quotedString( QString text );
 %Docstring
- Returns a quoted version of a string (in single quotes)
-.. seealso:: quotedIdentifier(), quotedIdentifierIfNeeded()
- :rtype: str
+Returns a quoted version of a string (in single quotes)
+
+.. seealso:: :py:func:`quotedIdentifier()`
 %End
 
     enum UnaryOperator
@@ -185,7 +180,7 @@ Returns root node of the statement. Root node is null is parsing has failed
     class Node
 {
 %Docstring
- Abstract node class *
+Abstract node class *
 %End
 
 %TypeHeaderCode
@@ -215,53 +210,50 @@ Returns root node of the statement. Root node is null is parsing has failed
 
         virtual QgsSQLStatement::NodeType nodeType() const = 0;
 %Docstring
- Abstract virtual that returns the type of this node.
+Abstract virtual that returns the type of this node.
 
- :return: The type of this node
- :rtype: QgsSQLStatement.NodeType
+:return: The type of this node
 %End
 
         virtual QString dump() const = 0;
 %Docstring
- Abstract virtual dump method
+Abstract virtual dump method
 
- :return: A statement which represents this node as string
- :rtype: str
+:return: A statement which represents this node as string
 %End
 
         virtual QgsSQLStatement::Node *clone() const = 0 /Factory/;
 %Docstring
- Generate a clone of this node.
- Make sure that the clone does not contain any information which is
- generated in prepare and context related.
- Ownership is transferred to the caller.
+Generate a clone of this node.
+Make sure that the clone does not contain any information which is
+generated in prepare and context related.
+Ownership is transferred to the caller.
 
- :return: a deep copy of this node.
- :rtype: QgsSQLStatement.Node
+:return: a deep copy of this node.
 %End
 
         virtual void accept( QgsSQLStatement::Visitor &v ) const = 0;
 %Docstring
- Support the visitor pattern.
+Support the visitor pattern.
 
- For any implementation this should look like
+For any implementation this should look like
 
- C++:
+C++:
 
-     v.visit( *this );
+v.visit( *this );
 
- Python:
+Python:
 
-     v.visit( self)
+v.visit( self)
 
- \param v A visitor that visits this node.
+:param v: A visitor that visits this node.
 %End
     };
 
     class NodeList
 {
 %Docstring
- List of nodes *
+List of nodes *
 %End
 
 %TypeHeaderCode
@@ -282,13 +274,11 @@ Takes ownership of the provided node
         QList<QgsSQLStatement::Node *> list();
 %Docstring
 Return list
- :rtype: list of QgsSQLStatement.Node
 %End
 
         int count() const;
 %Docstring
- Returns the number of nodes in the list.
- :rtype: int
+Returns the number of nodes in the list.
 %End
 
         void accept( QgsSQLStatement::Visitor &v ) const;
@@ -299,13 +289,11 @@ Accept visitor
         QgsSQLStatement::NodeList *clone() const /Factory/;
 %Docstring
 Creates a deep copy of this list. Ownership is transferred to the caller
- :rtype: QgsSQLStatement.NodeList
 %End
 
         virtual QString dump() const;
 %Docstring
 Dump list
- :rtype: str
 %End
 
       protected:
@@ -314,7 +302,7 @@ Dump list
     class NodeUnaryOperator : QgsSQLStatement::Node
 {
 %Docstring
- Unary logicial/arithmetical operator ( NOT, - ) *
+Unary logicial/arithmetical operator ( NOT, - ) *
 %End
 
 %TypeHeaderCode
@@ -330,20 +318,20 @@ Constructor
         QgsSQLStatement::UnaryOperator op() const;
 %Docstring
 Operator
- :rtype: QgsSQLStatement.UnaryOperator
 %End
 
         QgsSQLStatement::Node *operand() const;
 %Docstring
 Operand
- :rtype: QgsSQLStatement.Node
 %End
 
         virtual QgsSQLStatement::NodeType nodeType() const;
         virtual QString dump() const;
 
+
         virtual void accept( QgsSQLStatement::Visitor &v ) const;
         virtual QgsSQLStatement::Node *clone() const /Factory/;
+
 
       protected:
     };
@@ -351,7 +339,7 @@ Operand
     class NodeBinaryOperator : QgsSQLStatement::Node
 {
 %Docstring
- Binary logical/arithmetical operator (AND, OR, =, +, ...) *
+Binary logical/arithmetical operator (AND, OR, =, +, ...) *
 %End
 
 %TypeHeaderCode
@@ -367,37 +355,34 @@ Constructor
         QgsSQLStatement::BinaryOperator op() const;
 %Docstring
 Operator
- :rtype: QgsSQLStatement.BinaryOperator
 %End
 
         QgsSQLStatement::Node *opLeft() const;
 %Docstring
 Left operand
- :rtype: QgsSQLStatement.Node
 %End
 
         QgsSQLStatement::Node *opRight() const;
 %Docstring
 Right operand
- :rtype: QgsSQLStatement.Node
 %End
 
         virtual QgsSQLStatement::NodeType nodeType() const;
         virtual QString dump() const;
 
+
         virtual void accept( QgsSQLStatement::Visitor &v ) const;
         virtual QgsSQLStatement::Node *clone() const /Factory/;
+
 
         int precedence() const;
 %Docstring
 Precedence
- :rtype: int
 %End
 
         bool leftAssociative() const;
 %Docstring
 Is left associative ?
- :rtype: bool
 %End
 
       protected:
@@ -407,7 +392,7 @@ Is left associative ?
     class NodeInOperator : QgsSQLStatement::Node
 {
 %Docstring
- 'x IN (y, z)' operator *
+'x IN (y, z)' operator *
 %End
 
 %TypeHeaderCode
@@ -418,31 +403,30 @@ Is left associative ?
 %Docstring
 Constructor
 %End
-        virtual ~NodeInOperator();
+        ~NodeInOperator();
 
         QgsSQLStatement::Node *node() const;
 %Docstring
 Variable at the left of IN
- :rtype: QgsSQLStatement.Node
 %End
 
         bool isNotIn() const;
 %Docstring
 Whether this is a NOT IN operator
- :rtype: bool
 %End
 
         QgsSQLStatement::NodeList *list() const;
 %Docstring
 Values list
- :rtype: QgsSQLStatement.NodeList
 %End
 
         virtual QgsSQLStatement::NodeType nodeType() const;
         virtual QString dump() const;
 
+
         virtual void accept( QgsSQLStatement::Visitor &v ) const;
         virtual QgsSQLStatement::Node *clone() const /Factory/;
+
 
       protected:
     };
@@ -450,7 +434,7 @@ Values list
     class NodeBetweenOperator : QgsSQLStatement::Node
 {
 %Docstring
- 'X BETWEEN y and z' operator *
+'X BETWEEN y and z' operator *
 %End
 
 %TypeHeaderCode
@@ -465,32 +449,30 @@ Constructor
         QgsSQLStatement::Node *node() const;
 %Docstring
 Variable at the left of BETWEEN
- :rtype: QgsSQLStatement.Node
 %End
 
         bool isNotBetween() const;
 %Docstring
 Whether this is a NOT BETWEEN operator
- :rtype: bool
 %End
 
         QgsSQLStatement::Node *minVal() const;
 %Docstring
 Minimum bound
- :rtype: QgsSQLStatement.Node
 %End
 
         QgsSQLStatement::Node *maxVal() const;
 %Docstring
 Maximum bound
- :rtype: QgsSQLStatement.Node
 %End
 
         virtual QgsSQLStatement::NodeType nodeType() const;
         virtual QString dump() const;
 
+
         virtual void accept( QgsSQLStatement::Visitor &v ) const;
         virtual QgsSQLStatement::Node *clone() const /Factory/;
+
 
       protected:
     };
@@ -498,7 +480,7 @@ Maximum bound
     class NodeFunction : QgsSQLStatement::Node
 {
 %Docstring
- Function with a name and arguments node *
+Function with a name and arguments node *
 %End
 
 %TypeHeaderCode
@@ -509,25 +491,25 @@ Maximum bound
 %Docstring
 Constructor
 %End
-        virtual ~NodeFunction();
+        ~NodeFunction();
 
         QString name() const;
 %Docstring
 Return function name
- :rtype: str
 %End
 
         QgsSQLStatement::NodeList *args() const;
 %Docstring
 Return arguments
- :rtype: QgsSQLStatement.NodeList
 %End
 
         virtual QgsSQLStatement::NodeType nodeType() const;
         virtual QString dump() const;
 
+
         virtual void accept( QgsSQLStatement::Visitor &v ) const;
         virtual QgsSQLStatement::Node *clone() const /Factory/;
+
 
       protected:
 
@@ -536,7 +518,7 @@ Return arguments
     class NodeLiteral : QgsSQLStatement::Node
 {
 %Docstring
- Literal value (integer, integer64, double, string) *
+Literal value (integer, integer64, double, string) *
 %End
 
 %TypeHeaderCode
@@ -551,14 +533,15 @@ Constructor
         QVariant value() const;
 %Docstring
 The value of the literal.
- :rtype: QVariant
 %End
 
         virtual QgsSQLStatement::NodeType nodeType() const;
         virtual QString dump() const;
 
+
         virtual void accept( QgsSQLStatement::Visitor &v ) const;
         virtual QgsSQLStatement::Node *clone() const /Factory/;
+
 
       protected:
     };
@@ -566,7 +549,7 @@ The value of the literal.
     class NodeColumnRef : QgsSQLStatement::Node
 {
 %Docstring
- Reference to a column *
+Reference to a column *
 %End
 
 %TypeHeaderCode
@@ -590,36 +573,33 @@ Set whether this is prefixed by DISTINCT
         QString tableName() const;
 %Docstring
 The name of the table. May be empty.
- :rtype: str
 %End
 
         QString name() const;
 %Docstring
 The name of the column.
- :rtype: str
 %End
 
         bool star() const;
 %Docstring
 Whether this is the * column
- :rtype: bool
 %End
 
         bool distinct() const;
 %Docstring
 Whether this is prefixed by DISTINCT
- :rtype: bool
 %End
 
         virtual QgsSQLStatement::NodeType nodeType() const;
         virtual QString dump() const;
 
+
         virtual void accept( QgsSQLStatement::Visitor &v ) const;
         virtual QgsSQLStatement::Node *clone() const /Factory/;
+
         QgsSQLStatement::NodeColumnRef *cloneThis() const /Factory/;
 %Docstring
 Clone with same type return
- :rtype: QgsSQLStatement.NodeColumnRef
 %End
 
       protected:
@@ -628,7 +608,7 @@ Clone with same type return
     class NodeSelectedColumn : QgsSQLStatement::Node
 {
 %Docstring
- Selected column *
+Selected column *
 %End
 
 %TypeHeaderCode
@@ -639,7 +619,7 @@ Clone with same type return
 %Docstring
 Constructor
 %End
-        virtual ~NodeSelectedColumn();
+        ~NodeSelectedColumn();
 
         void setAlias( const QString &alias );
 %Docstring
@@ -649,24 +629,23 @@ Set alias name
         QgsSQLStatement::Node *column() const;
 %Docstring
 Column that is referred to
- :rtype: QgsSQLStatement.Node
 %End
 
         QString alias() const;
 %Docstring
 Alias name
- :rtype: str
 %End
 
         virtual QgsSQLStatement::NodeType nodeType() const;
         virtual QString dump() const;
 
+
         virtual void accept( QgsSQLStatement::Visitor &v ) const;
         virtual QgsSQLStatement::Node *clone() const /Factory/;
+
         QgsSQLStatement::NodeSelectedColumn *cloneThis() const /Factory/;
 %Docstring
 Clone with same type return
- :rtype: QgsSQLStatement.NodeSelectedColumn
 %End
 
       protected:
@@ -675,7 +654,7 @@ Clone with same type return
     class NodeCast : QgsSQLStatement::Node
 {
 %Docstring
- CAST operator *
+CAST operator *
 %End
 
 %TypeHeaderCode
@@ -686,25 +665,25 @@ Clone with same type return
 %Docstring
 Constructor
 %End
-        virtual ~NodeCast();
+        ~NodeCast();
 
         QgsSQLStatement::Node *node() const;
 %Docstring
 Node that is referred to
- :rtype: QgsSQLStatement.Node
 %End
 
         QString type() const;
 %Docstring
 Type
- :rtype: str
 %End
 
         virtual QgsSQLStatement::NodeType nodeType() const;
         virtual QString dump() const;
 
+
         virtual void accept( QgsSQLStatement::Visitor &v ) const;
         virtual QgsSQLStatement::Node *clone() const /Factory/;
+
 
       protected:
     };
@@ -712,7 +691,7 @@ Type
     class NodeTableDef : QgsSQLStatement::Node
 {
 %Docstring
- Table definition *
+Table definition *
 %End
 
 %TypeHeaderCode
@@ -731,24 +710,23 @@ Constructor with table name and alias
         QString name() const;
 %Docstring
 Table name
- :rtype: str
 %End
 
         QString alias() const;
 %Docstring
 Table alias
- :rtype: str
 %End
 
         virtual QgsSQLStatement::NodeType nodeType() const;
         virtual QString dump() const;
 
+
         virtual void accept( QgsSQLStatement::Visitor &v ) const;
         virtual QgsSQLStatement::Node *clone() const /Factory/;
+
         QgsSQLStatement::NodeTableDef *cloneThis() const /Factory/;
 %Docstring
 Clone with same type return
- :rtype: QgsSQLStatement.NodeTableDef
 %End
 
       protected:
@@ -757,7 +735,7 @@ Clone with same type return
     class NodeJoin : QgsSQLStatement::Node
 {
 %Docstring
- Join definition *
+Join definition *
 %End
 
 %TypeHeaderCode
@@ -772,41 +750,38 @@ Constructor with table definition, ON expression
 %Docstring
 Constructor with table definition and USING columns
 %End
-        virtual ~NodeJoin();
+        ~NodeJoin();
 
         QgsSQLStatement::NodeTableDef *tableDef() const;
 %Docstring
 Table definition
- :rtype: QgsSQLStatement.NodeTableDef
 %End
 
         QgsSQLStatement::Node *onExpr() const;
 %Docstring
 On expression. Will be None if usingColumns() is not empty
- :rtype: QgsSQLStatement.Node
 %End
 
         QList<QString> usingColumns() const;
 %Docstring
 Columns referenced by USING
- :rtype: list of str
 %End
 
         QgsSQLStatement::JoinType type() const;
 %Docstring
 Join type
- :rtype: QgsSQLStatement.JoinType
 %End
 
         virtual QgsSQLStatement::NodeType nodeType() const;
         virtual QString dump() const;
 
+
         virtual void accept( QgsSQLStatement::Visitor &v ) const;
         virtual QgsSQLStatement::Node *clone() const /Factory/;
+
         QgsSQLStatement::NodeJoin *cloneThis() const /Factory/;
 %Docstring
 Clone with same type return
- :rtype: QgsSQLStatement.NodeJoin
 %End
 
       protected:
@@ -815,7 +790,7 @@ Clone with same type return
     class NodeColumnSorted : QgsSQLStatement::Node
 {
 %Docstring
- Column in a ORDER BY *
+Column in a ORDER BY *
 %End
 
 %TypeHeaderCode
@@ -831,24 +806,23 @@ Constructor
         QgsSQLStatement::NodeColumnRef *column() const;
 %Docstring
 The name of the column.
- :rtype: QgsSQLStatement.NodeColumnRef
 %End
 
         bool ascending() const;
 %Docstring
 Whether the column is sorted in ascending order
- :rtype: bool
 %End
 
         virtual QgsSQLStatement::NodeType nodeType() const;
         virtual QString dump() const;
 
+
         virtual void accept( QgsSQLStatement::Visitor &v ) const;
         virtual QgsSQLStatement::Node *clone() const /Factory/;
+
         QgsSQLStatement::NodeColumnSorted *cloneThis() const /Factory/;
 %Docstring
 Clone with same type return
- :rtype: QgsSQLStatement.NodeColumnSorted
 %End
 
       protected:
@@ -857,7 +831,7 @@ Clone with same type return
     class NodeSelect : QgsSQLStatement::Node
 {
 %Docstring
- SELECT node *
+SELECT node *
 %End
 
 %TypeHeaderCode
@@ -868,7 +842,7 @@ Clone with same type return
 %Docstring
 Constructor
 %End
-        virtual ~NodeSelect();
+        ~NodeSelect();
 
         void setJoins( const QList<QgsSQLStatement::NodeJoin *> &joins /Transfer/ );
 %Docstring
@@ -890,39 +864,35 @@ Set order by columns
         QList<QgsSQLStatement::NodeTableDef *> tables() const;
 %Docstring
 Return the list of tables
- :rtype: list of QgsSQLStatement.NodeTableDef
 %End
         QList<QgsSQLStatement::NodeSelectedColumn *> columns() const;
 %Docstring
 Return the list of columns
- :rtype: list of QgsSQLStatement.NodeSelectedColumn
 %End
         bool distinct() const;
 %Docstring
 Return if the SELECT is DISTINCT
- :rtype: bool
 %End
         QList<QgsSQLStatement::NodeJoin *> joins() const;
 %Docstring
 Return the list of joins
- :rtype: list of QgsSQLStatement.NodeJoin
 %End
         QgsSQLStatement::Node *where() const;
 %Docstring
 Return the where clause
- :rtype: QgsSQLStatement.Node
 %End
         QList<QgsSQLStatement::NodeColumnSorted *> orderBy() const;
 %Docstring
 Return the list of order by columns
- :rtype: list of QgsSQLStatement.NodeColumnSorted
 %End
 
         virtual QgsSQLStatement::NodeType nodeType() const;
         virtual QString dump() const;
 
+
         virtual void accept( QgsSQLStatement::Visitor &v ) const;
         virtual QgsSQLStatement::Node *clone() const /Factory/;
+
 
       protected:
     };
@@ -931,7 +901,7 @@ Return the list of order by columns
     class Visitor
 {
 %Docstring
- Support for visitor pattern - algorithms dealing with the statement
+Support for visitor pattern - algorithms dealing with the statement
 may be implemented without modifying the Node classes *
 %End
 
@@ -997,7 +967,7 @@ Visit NodeCast
     class RecursiveVisitor: QgsSQLStatement::Visitor
 {
 %Docstring
- A visitor that recursively explores all children *
+A visitor that recursively explores all children *
 %End
 
 %TypeHeaderCode

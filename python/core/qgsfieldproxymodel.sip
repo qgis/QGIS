@@ -15,6 +15,7 @@ class QgsFieldProxyModel : QSortFilterProxyModel
 {
 %Docstring
  The QgsFieldProxyModel class provides an easy to use model to display the list of fields of a layer.
+
 .. versionadded:: 2.3
 %End
 
@@ -41,28 +42,28 @@ class QgsFieldProxyModel : QSortFilterProxyModel
     explicit QgsFieldProxyModel( QObject *parent /TransferThis/ = 0 );
 %Docstring
  QgsFieldProxModel creates a proxy model with a QgsFieldModel as source model.
- It can be used to filter the fields based on their types.
+It can be used to filter the fields based on their types.
 %End
 
     QgsFieldModel *sourceFieldModel();
 %Docstring
 Returns the QgsFieldModel used in this QSortFilterProxyModel
- :rtype: QgsFieldModel
 %End
 
     QgsFieldProxyModel *setFilters( QgsFieldProxyModel::Filters filters );
 %Docstring
- Set flags that affect how fields are filtered in the model.
- \param filters are Filter flags
-.. seealso:: filters()
- :rtype: QgsFieldProxyModel
+Set flags that affect how fields are filtered in the model.
+
+:param filters: are Filter flags
+
+.. seealso:: :py:func:`filters()`
 %End
 
     const Filters &filters() const;
 %Docstring
- Returns the filters controlling displayed fields.
-.. seealso:: setFilters()
- :rtype: Filters
+Returns the filters controlling displayed fields.
+
+.. seealso:: :py:func:`setFilters()`
 %End
 
   public:

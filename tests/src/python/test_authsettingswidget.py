@@ -18,7 +18,7 @@ from shutil import rmtree
 import tempfile
 import random
 
-from qgis.core import QgsAuthManager, QgsAuthMethodConfig, QgsNetworkAccessManager, QgsSettings
+from qgis.core import QgsAuthMethodConfig, QgsNetworkAccessManager, QgsSettings, QgsApplication
 from qgis.gui import QgsAuthSettingsWidget
 from qgis.testing import start_app, unittest
 
@@ -46,7 +46,7 @@ class TestAuthenticationWidget(unittest.TestCase):
         Creates an auth configuration"""
         # Enable auth
         # os.environ['QGIS_AUTH_PASSWORD_FILE'] = QGIS_AUTH_PASSWORD_FILE
-        authm = QgsAuthManager.instance()
+        authm = QgsApplication.authManager()
         assert (authm.setMasterPassword('masterpassword', True))
         cls.auth_config = QgsAuthMethodConfig('Basic')
         cls.auth_config.setName('test_auth_config')

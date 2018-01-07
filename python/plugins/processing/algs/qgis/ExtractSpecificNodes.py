@@ -29,6 +29,7 @@ import math
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 from qgis.core import (QgsWkbTypes,
+                       QgsVertexId,
                        QgsFeature,
                        QgsFeatureSink,
                        QgsGeometry,
@@ -49,6 +50,9 @@ class ExtractSpecificNodes(QgisAlgorithm):
     def group(self):
         return self.tr('Vector geometry')
 
+    def groupId(self):
+        return 'vectorgeometry'
+
     def __init__(self):
         super().__init__()
 
@@ -66,14 +70,20 @@ class ExtractSpecificNodes(QgisAlgorithm):
     def displayName(self):
         return self.tr('Extract specific nodes')
 
+    def tags(self):
+        return self.tr('points,vertex,vertices').split(',')
+
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
         fields = source.fields()
         fields.append(QgsField('node_pos', QVariant.Int))
         fields.append(QgsField('node_index', QVariant.Int))
+        fields.append(QgsField('node_part', QVariant.Int))
+        if QgsWkbTypes.geometryType(source.wkbType()) == QgsWkbTypes.PolygonGeometry:
+            fields.append(QgsField('node_part_ring', QVariant.Int))
+        fields.append(QgsField('node_part_index', QVariant.Int))
         fields.append(QgsField('distance', QVariant.Double))
         fields.append(QgsField('angle', QVariant.Double))
-        fields.append(QgsField('NUM_FIELD', QVariant.Int))
 
         wkb_type = QgsWkbTypes.Point
         if QgsWkbTypes.hasM(source.wkbType()):
@@ -104,7 +114,7 @@ class ExtractSpecificNodes(QgisAlgorithm):
             if not input_geometry:
                 sink.addFeature(f, QgsFeatureSink.FastInsert)
             else:
-                total_nodes = input_geometry.geometry().nCoordinates()
+                total_nodes = input_geometry.constGet().nCoordinates()
 
                 for node in indices:
                     if node < 0:
@@ -115,6 +125,8 @@ class ExtractSpecificNodes(QgisAlgorithm):
                     if node_index < 0 or node_index >= total_nodes:
                         continue
 
+                    (success, vertex_id) = input_geometry.vertexIdFromVertexNr(node_index)
+
                     distance = input_geometry.distanceToVertex(node_index)
                     angle = math.degrees(input_geometry.angleAtVertex(node_index))
 
@@ -122,6 +134,10 @@ class ExtractSpecificNodes(QgisAlgorithm):
                     attrs = f.attributes()
                     attrs.append(node)
                     attrs.append(node_index)
+                    attrs.append(vertex_id.part)
+                    if QgsWkbTypes.geometryType(source.wkbType()) == QgsWkbTypes.PolygonGeometry:
+                        attrs.append(vertex_id.ring)
+                    attrs.append(vertex_id.vertex)
                     attrs.append(distance)
                     attrs.append(angle)
                     output_feature.setAttributes(attrs)

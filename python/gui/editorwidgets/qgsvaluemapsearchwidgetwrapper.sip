@@ -12,19 +12,23 @@
 class QgsValueMapSearchWidgetWrapper : QgsSearchWidgetWrapper
 {
 %Docstring
- Wraps a value map search widget. This widget will offer a combobox with values from another layer
- referenced by a foreign key (a constraint may be set but is not required on data level).
- It will be used as a search widget and produces expression to look for in the layer.
+Wraps a value map search widget. This widget will offer a combobox with values from another layer
+referenced by a foreign key (a constraint may be set but is not required on data level).
+It will be used as a search widget and produces expression to look for in the layer.
 %End
 
 %TypeHeaderCode
 #include "qgsvaluemapsearchwidgetwrapper.h"
 %End
   public:
+
     explicit QgsValueMapSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsValueMapSearchWidgetWrapper
+%End
     virtual bool applyDirectly();
 
-    virtual QString expression();
+    virtual QString expression() const;
 
     virtual bool valid() const;
 
@@ -34,10 +38,13 @@ class QgsValueMapSearchWidgetWrapper : QgsSearchWidgetWrapper
 
     virtual QString createExpression( QgsSearchWidgetWrapper::FilterFlags flags ) const;
 
+
   public slots:
 
     virtual void clearWidget();
+
     virtual void setEnabled( bool enabled );
+
 
   protected:
     virtual QWidget *createWidget( QWidget *parent );
@@ -46,7 +53,7 @@ class QgsValueMapSearchWidgetWrapper : QgsSearchWidgetWrapper
 
 
   protected slots:
-    virtual void setExpression( QString exp );
+    virtual void setExpression( const QString &exp );
 
 
 };

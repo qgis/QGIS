@@ -858,7 +858,7 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module,
     {
       int mask = 0;
 
-      Q_FOREACH ( const QString &typeName, opt.split( "," ) )
+      Q_FOREACH ( const QString &typeName, opt.split( ',' ) )
       {
         mask |= QgsGrass::vectorType( typeName );
       }
@@ -1096,7 +1096,7 @@ QgsGrassVectorLayer *QgsGrassModuleInput::currentLayer()
   }
   if ( !mLayerComboBox )
   {
-    return 0;
+    return nullptr;
   }
   return mLayers.value( mLayerComboBox->currentIndex() );
 }
@@ -1147,7 +1147,7 @@ void QgsGrassModuleInput::onChanged( const QString &text )
     mLayerLabel->hide();
     mLayerComboBox->hide();
     delete mVector;
-    mVector = 0;
+    mVector = nullptr;
 
     QgsGrassObject grassObject = currentGrassObject();
     if ( QgsGrass::objectExists( grassObject ) )
@@ -1298,7 +1298,7 @@ void QgsGrassModuleInput::onActivated( const QString &text )
     if ( sender() == mComboBox->completer() )
     {
       QCompleter *completer = mComboBox->completer();
-      mComboBox->setCompleter( 0 );
+      mComboBox->setCompleter( nullptr );
       mComboBox->clearEditText();
       mComboBox->setCompleter( completer );
     }

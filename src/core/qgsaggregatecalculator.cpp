@@ -174,6 +174,234 @@ QgsAggregateCalculator::Aggregate QgsAggregateCalculator::stringToAggregate( con
   return Count;
 }
 
+QList<QgsAggregateCalculator::AggregateInfo> QgsAggregateCalculator::aggregates()
+{
+  QList< AggregateInfo > aggregates;
+  aggregates
+      << AggregateInfo
+  {
+    QStringLiteral( "count" ),
+    QCoreApplication::tr( "Count" ),
+    QSet<QVariant::Type>()
+        << QVariant::DateTime
+        << QVariant::Date
+        << QVariant::Int
+        << QVariant::UInt
+        << QVariant::LongLong
+        << QVariant::ULongLong
+        << QVariant::String
+  }
+      << AggregateInfo
+  {
+    QStringLiteral( "count_distinct" ),
+    QCoreApplication::tr( "Count Distinct" ),
+    QSet<QVariant::Type>()
+        << QVariant::DateTime
+        << QVariant::Date
+        << QVariant::UInt
+        << QVariant::Int
+        << QVariant::LongLong
+        << QVariant::ULongLong
+        << QVariant::String
+  }
+      << AggregateInfo
+  {
+    QStringLiteral( "count_missing" ),
+    QCoreApplication::tr( "Count Missing" ),
+    QSet<QVariant::Type>()
+        << QVariant::DateTime
+        << QVariant::Date
+        << QVariant::Int
+        << QVariant::UInt
+        << QVariant::LongLong
+        << QVariant::String
+  }
+      << AggregateInfo
+  {
+    QStringLiteral( "min" ),
+    QCoreApplication::tr( "Min" ),
+    QSet<QVariant::Type>()
+        << QVariant::DateTime
+        << QVariant::Date
+        << QVariant::Int
+        << QVariant::UInt
+        << QVariant::LongLong
+        << QVariant::ULongLong
+        << QVariant::Double
+        << QVariant::String
+  }
+      << AggregateInfo
+  {
+    QStringLiteral( "max" ),
+    QCoreApplication::tr( "Max" ),
+    QSet<QVariant::Type>()
+        << QVariant::DateTime
+        << QVariant::Date
+        << QVariant::Int
+        << QVariant::UInt
+        << QVariant::LongLong
+        << QVariant::ULongLong
+        << QVariant::Double
+        << QVariant::String
+  }
+      << AggregateInfo
+  {
+    QStringLiteral( "sum" ),
+    QCoreApplication::tr( "Sum" ),
+    QSet<QVariant::Type>()
+        << QVariant::Int
+        << QVariant::UInt
+        << QVariant::LongLong
+        << QVariant::ULongLong
+        << QVariant::Double
+  }
+      << AggregateInfo
+  {
+    QStringLiteral( "mean" ),
+    QCoreApplication::tr( "Mean" ),
+    QSet<QVariant::Type>()
+        << QVariant::Int
+        << QVariant::UInt
+        << QVariant::LongLong
+        << QVariant::ULongLong
+        << QVariant::Double
+  }
+      << AggregateInfo
+  {
+    QStringLiteral( "median" ),
+    QCoreApplication::tr( "Median" ),
+    QSet<QVariant::Type>()
+        << QVariant::Int
+        << QVariant::UInt
+        << QVariant::Double
+  }
+      << AggregateInfo
+  {
+    QStringLiteral( "stdev" ),
+    QCoreApplication::tr( "Stdev" ),
+    QSet<QVariant::Type>()
+        << QVariant::Int
+        << QVariant::UInt
+        << QVariant::LongLong
+        << QVariant::ULongLong
+        << QVariant::Double
+  }
+      << AggregateInfo
+  {
+    QStringLiteral( "stdevsample" ),
+    QCoreApplication::tr( "Stdev Sample" ),
+    QSet<QVariant::Type>()
+        << QVariant::Int
+        << QVariant::UInt
+        << QVariant::LongLong
+        << QVariant::ULongLong
+        << QVariant::Double
+  }
+      << AggregateInfo
+  {
+    QStringLiteral( "range" ),
+    QCoreApplication::tr( "Range" ),
+    QSet<QVariant::Type>()
+        << QVariant::Date
+        << QVariant::DateTime
+        << QVariant::Int
+        << QVariant::UInt
+        << QVariant::LongLong
+        << QVariant::ULongLong
+        << QVariant::Double
+  }
+      << AggregateInfo
+  {
+    QStringLiteral( "minority" ),
+    QCoreApplication::tr( "Minority" ),
+    QSet<QVariant::Type>()
+        << QVariant::Int
+        << QVariant::UInt
+        << QVariant::LongLong
+        << QVariant::ULongLong
+        << QVariant::Double
+  }
+      << AggregateInfo
+  {
+    QStringLiteral( "majority" ),
+    QCoreApplication::tr( "Majority" ),
+    QSet<QVariant::Type>()
+        << QVariant::Int
+        << QVariant::UInt
+        << QVariant::LongLong
+        << QVariant::ULongLong
+        << QVariant::Double
+  }
+      << AggregateInfo
+  {
+    QStringLiteral( "q1" ),
+    QCoreApplication::tr( "Q1" ),
+    QSet<QVariant::Type>()
+        << QVariant::Int
+        << QVariant::UInt
+        << QVariant::LongLong
+        << QVariant::ULongLong
+        << QVariant::Double
+  }
+      << AggregateInfo
+  {
+    QStringLiteral( "q3" ),
+    QCoreApplication::tr( "Q3" ),
+    QSet<QVariant::Type>()
+        << QVariant::Int
+        << QVariant::UInt
+        << QVariant::LongLong
+        << QVariant::ULongLong
+        << QVariant::Double
+  }
+      << AggregateInfo
+  {
+    QStringLiteral( "iqr" ),
+    QCoreApplication::tr( "InterQuartileRange" ),
+    QSet<QVariant::Type>()
+        << QVariant::Int
+        << QVariant::UInt
+        << QVariant::LongLong
+        << QVariant::ULongLong
+        << QVariant::Double
+  }
+      << AggregateInfo
+  {
+    QStringLiteral( "min_length" ),
+    QCoreApplication::tr( "Min Length" ),
+    QSet<QVariant::Type>()
+        << QVariant::String
+  }
+      << AggregateInfo
+  {
+    QStringLiteral( "max_length" ),
+    QCoreApplication::tr( "Max Length" ),
+    QSet<QVariant::Type>()
+        << QVariant::String
+  }
+      << AggregateInfo
+  {
+    QStringLiteral( "concatenate" ),
+    QCoreApplication::tr( "Concatenate" ),
+    QSet<QVariant::Type>()
+        << QVariant::String
+  }
+      << AggregateInfo
+  {
+    QStringLiteral( "collect" ),
+    QCoreApplication::tr( "Collect" ),
+    QSet<QVariant::Type>()
+  }
+      << AggregateInfo
+  {
+    QStringLiteral( "array_agg" ),
+    QCoreApplication::tr( "Array Aggregate" ),
+    QSet<QVariant::Type>()
+  };
+
+  return aggregates;
+}
+
 QVariant QgsAggregateCalculator::calculate( QgsAggregateCalculator::Aggregate aggregate, QgsFeatureIterator &fit, QVariant::Type resultType,
     int attr, QgsExpression *expression, const QString &delimiter, QgsExpressionContext *context, bool *ok )
 {
@@ -468,7 +696,7 @@ QVariant QgsAggregateCalculator::calculateGeometryAggregate( QgsFeatureIterator 
   Q_ASSERT( expression );
 
   QgsFeature f;
-  QList< QgsGeometry > geometries;
+  QVector< QgsGeometry > geometries;
   while ( fit.nextFeature( f ) )
   {
     Q_ASSERT( context );

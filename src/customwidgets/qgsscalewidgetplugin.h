@@ -29,7 +29,7 @@ class CUSTOMWIDGETS_EXPORT QgsScaleWidgetPlugin : public QObject, public QDesign
     Q_INTERFACES( QDesignerCustomWidgetInterface )
 
   public:
-    explicit QgsScaleWidgetPlugin( QObject *parent = 0 );
+    explicit QgsScaleWidgetPlugin( QObject *parent = nullptr );
 
   private:
     bool mInitialized;

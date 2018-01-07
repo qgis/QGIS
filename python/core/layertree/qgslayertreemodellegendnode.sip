@@ -15,11 +15,11 @@
 class QgsLayerTreeModelLegendNode : QObject
 {
 %Docstring
- The QgsLegendRendererItem class is abstract interface for legend items
- returned from QgsMapLayerLegend implementation.
+The QgsLegendRendererItem class is abstract interface for legend items
+returned from QgsMapLayerLegend implementation.
 
- The objects are used in QgsLayerTreeModel. Custom implementations may offer additional interactivity
- and customized look.
+The objects are used in QgsLayerTreeModel. Custom implementations may offer additional interactivity
+and customized look.
 
 .. versionadded:: 2.6
 %End
@@ -38,54 +38,40 @@ class QgsLayerTreeModelLegendNode : QObject
     QgsLayerTreeLayer *layerNode() const;
 %Docstring
 Return pointer to the parent layer node
- :rtype: QgsLayerTreeLayer
 %End
 
     QgsLayerTreeModel *model() const;
 %Docstring
 Return pointer to model owning this legend node
- :rtype: QgsLayerTreeModel
 %End
 
     virtual Qt::ItemFlags flags() const;
 %Docstring
 Return item flags associated with the item. Default implementation returns Qt.ItemIsEnabled.
- :rtype: Qt.ItemFlags
 %End
 
     virtual QVariant data( int role ) const = 0;
 %Docstring
 Return data associated with the item. Must be implemented in derived class.
- :rtype: QVariant
 %End
 
     virtual bool setData( const QVariant &value, int role );
 %Docstring
 Set some data associated with the item. Default implementation does nothing and returns false.
- :rtype: bool
 %End
 
     virtual bool isEmbeddedInParent() const;
-%Docstring
- :rtype: bool
-%End
     virtual void setEmbeddedInParent( bool embedded );
 
     virtual QString userLabel() const;
-%Docstring
- :rtype: str
-%End
     virtual void setUserLabel( const QString &userLabel );
 
     virtual bool isScaleOK( double scale ) const;
-%Docstring
- :rtype: bool
-%End
 
     virtual void invalidateMapBasedData();
 %Docstring
- Notification from model that information from associated map view has changed.
-  Default implementation does nothing. *
+Notification from model that information from associated map view has changed.
+Default implementation does nothing. *
 %End
 
     struct ItemContext
@@ -112,31 +98,32 @@ offset from the left side where label should start
 
     virtual ItemMetrics draw( const QgsLegendSettings &settings, ItemContext *ctx );
 %Docstring
- Entry point called from QgsLegendRenderer to do the rendering.
-  Default implementation calls drawSymbol() and drawSymbolText() methods.
+Entry point called from QgsLegendRenderer to do the rendering.
+Default implementation calls drawSymbol() and drawSymbolText() methods.
 
-  If ctx is null, this is just first stage when preparing layout - without actual rendering.
- :rtype: ItemMetrics
+If ctx is null, this is just first stage when preparing layout - without actual rendering.
 %End
 
     virtual QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const;
 %Docstring
- Draws symbol on the left side of the item
- \param settings Legend layout configuration
- \param ctx Context for rendering - may be null if only doing layout without actual rendering
- \param itemHeight Minimal height of the legend item - used for correct positioning when rendering
- :return: Real size of the symbol (may be bigger than "normal" symbol size from settings)
- :rtype: QSizeF
+Draws symbol on the left side of the item
+
+:param settings: Legend layout configuration
+:param ctx: Context for rendering - may be null if only doing layout without actual rendering
+:param itemHeight: Minimal height of the legend item - used for correct positioning when rendering
+
+:return: Real size of the symbol (may be bigger than "normal" symbol size from settings)
 %End
 
     virtual QSizeF drawSymbolText( const QgsLegendSettings &settings, ItemContext *ctx, QSizeF symbolSize ) const;
 %Docstring
- Draws label on the right side of the item
- \param settings Legend layout configuration
- \param ctx Context for rendering - may be null if only doing layout without actual rendering
- \param symbolSize  Real size of the associated symbol - used for correct positioning when rendering
- :return: Size of the label (may span multiple lines)
- :rtype: QSizeF
+Draws label on the right side of the item
+
+:param settings: Legend layout configuration
+:param ctx: Context for rendering - may be null if only doing layout without actual rendering
+:param symbolSize:  Real size of the associated symbol - used for correct positioning when rendering
+
+:return: Size of the label (may span multiple lines)
 %End
 
   signals:
@@ -154,7 +141,6 @@ Construct the node with pointer to its parent layer node
     QgsRenderContext *createTemporaryRenderContext() const /Factory/;
 %Docstring
 Returns a temporary context or null if legendMapViewData are not valid
- :rtype: QgsRenderContext
 %End
 
   protected:
@@ -164,8 +150,8 @@ Returns a temporary context or null if legendMapViewData are not valid
 class QgsSymbolLegendNode : QgsLayerTreeModelLegendNode
 {
 %Docstring
- Implementation of legend node interface for displaying preview of vector symbols and their labels
- and allowing interaction with the symbol / renderer.
+Implementation of legend node interface for displaying preview of vector symbols and their labels
+and allowing interaction with the symbol / renderer.
 
 .. versionadded:: 2.6
 %End
@@ -177,20 +163,25 @@ class QgsSymbolLegendNode : QgsLayerTreeModelLegendNode
 
     QgsSymbolLegendNode( QgsLayerTreeLayer *nodeLayer, const QgsLegendSymbolItem &item, QObject *parent /TransferThis/ = 0 );
 %Docstring
- Constructor for QgsSymbolLegendNode.
- \param nodeLayer layer node
- \param item the legend symbol item
- \param parent attach a parent QObject to the legend node.
+Constructor for QgsSymbolLegendNode.
+
+:param nodeLayer: layer node
+:param item: the legend symbol item
+:param parent: attach a parent QObject to the legend node.
 %End
 
     virtual Qt::ItemFlags flags() const;
+
     virtual QVariant data( int role ) const;
+
     virtual bool setData( const QVariant &value, int role );
+
 
     virtual QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const;
 
 
     virtual void setEmbeddedInParent( bool embedded );
+
 
     virtual void setUserLabel( const QString &userLabel );
 
@@ -198,50 +189,56 @@ class QgsSymbolLegendNode : QgsLayerTreeModelLegendNode
 
     virtual void invalidateMapBasedData();
 
+
     void setIconSize( QSize sz );
 %Docstring
- Set the icon size
+Set the icon size
+
 .. versionadded:: 2.10
 %End
     QSize iconSize() const;
 %Docstring
+
 .. versionadded:: 2.10
- :rtype: QSize
 %End
 
     QSize minimumIconSize() const;
 %Docstring
- Calculates the minimum icon size to prevent cropping. When evaluating
- the size for multiple icons it is more efficient to create a single
- render context in advance and use the variant which accepts a QgsRenderContext
- argument.
+Calculates the minimum icon size to prevent cropping. When evaluating
+the size for multiple icons it is more efficient to create a single
+render context in advance and use the variant which accepts a QgsRenderContext
+argument.
+
 .. versionadded:: 2.10
- :rtype: QSize
 %End
 
     QSize minimumIconSize( QgsRenderContext *context ) const;
 %Docstring
- Calculates the minimum icon size to prevent cropping. When evaluating
- the size for multiple icons it is more efficient to create a single
- render context in advance and call this method instead of minimumIconSize().
+Calculates the minimum icon size to prevent cropping. When evaluating
+the size for multiple icons it is more efficient to create a single
+render context in advance and call this method instead of minimumIconSize().
+
 .. versionadded:: 2.18
- :rtype: QSize
 %End
 
     const QgsSymbol *symbol() const;
 %Docstring
- Returns the symbol used by the legend node.
-.. seealso:: setSymbol()
+Returns the symbol used by the legend node.
+
+.. seealso:: :py:func:`setSymbol()`
+
 .. versionadded:: 2.14
- :rtype: QgsSymbol
 %End
 
     void setSymbol( QgsSymbol *symbol );
 %Docstring
- Sets the symbol to be used by the legend node. The symbol change is also propagated
- to the associated vector layer's renderer.
- \param symbol new symbol for node. Ownership is transferred.
-.. seealso:: symbol()
+Sets the symbol to be used by the legend node. The symbol change is also propagated
+to the associated vector layer's renderer.
+
+:param symbol: new symbol for node. Ownership is transferred.
+
+.. seealso:: :py:func:`symbol()`
+
 .. versionadded:: 2.14
 %End
 
@@ -249,16 +246,20 @@ class QgsSymbolLegendNode : QgsLayerTreeModelLegendNode
 
     void checkAllItems();
 %Docstring
- Checks all items belonging to the same layer as this node.
+Checks all items belonging to the same layer as this node.
+
 .. versionadded:: 2.14
-.. seealso:: uncheckAllItems()
+
+.. seealso:: :py:func:`uncheckAllItems()`
 %End
 
     void uncheckAllItems();
 %Docstring
- Unchecks all items belonging to the same layer as this node.
+Unchecks all items belonging to the same layer as this node.
+
 .. versionadded:: 2.14
-.. seealso:: checkAllItems()
+
+.. seealso:: :py:func:`checkAllItems()`
 %End
 
 };
@@ -267,7 +268,7 @@ class QgsSymbolLegendNode : QgsLayerTreeModelLegendNode
 class QgsSimpleLegendNode : QgsLayerTreeModelLegendNode
 {
 %Docstring
- Implementation of legend node interface for displaying arbitrary label with icon.
+Implementation of legend node interface for displaying arbitrary label with icon.
 
 .. versionadded:: 2.6
 %End
@@ -279,15 +280,17 @@ class QgsSimpleLegendNode : QgsLayerTreeModelLegendNode
 
     QgsSimpleLegendNode( QgsLayerTreeLayer *nodeLayer, const QString &label, const QIcon &icon = QIcon(), QObject *parent /TransferThis/ = 0, const QString &key = QString() );
 %Docstring
- Constructor for QgsSimpleLegendNode.
- \param nodeLayer layer node
- \param label label
- \param icon icon
- \param parent attach a parent QObject to the legend node.
- \param key the rule key
+Constructor for QgsSimpleLegendNode.
+
+:param nodeLayer: layer node
+:param label: label
+:param icon: icon
+:param parent: attach a parent QObject to the legend node.
+:param key: the rule key
 %End
 
     virtual QVariant data( int role ) const;
+
 
 };
 
@@ -295,7 +298,7 @@ class QgsSimpleLegendNode : QgsLayerTreeModelLegendNode
 class QgsImageLegendNode : QgsLayerTreeModelLegendNode
 {
 %Docstring
- Implementation of legend node interface for displaying arbitrary raster image
+Implementation of legend node interface for displaying arbitrary raster image
 
 .. versionadded:: 2.6
 %End
@@ -307,13 +310,15 @@ class QgsImageLegendNode : QgsLayerTreeModelLegendNode
 
     QgsImageLegendNode( QgsLayerTreeLayer *nodeLayer, const QImage &img, QObject *parent /TransferThis/ = 0 );
 %Docstring
- Constructor for QgsImageLegendNode.
- \param nodeLayer layer node
- \param img the image
- \param parent attach a parent QObject to the legend node.
+Constructor for QgsImageLegendNode.
+
+:param nodeLayer: layer node
+:param img: the image
+:param parent: attach a parent QObject to the legend node.
 %End
 
     virtual QVariant data( int role ) const;
+
 
     virtual QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const;
 
@@ -323,7 +328,7 @@ class QgsImageLegendNode : QgsLayerTreeModelLegendNode
 class QgsRasterSymbolLegendNode : QgsLayerTreeModelLegendNode
 {
 %Docstring
- Implementation of legend node interface for displaying raster legend entries
+Implementation of legend node interface for displaying raster legend entries
 
 .. versionadded:: 2.6
 %End
@@ -335,14 +340,16 @@ class QgsRasterSymbolLegendNode : QgsLayerTreeModelLegendNode
 
     QgsRasterSymbolLegendNode( QgsLayerTreeLayer *nodeLayer, const QColor &color, const QString &label, QObject *parent /TransferThis/ = 0 );
 %Docstring
- Constructor for QgsRasterSymbolLegendNode.
- \param nodeLayer layer node
- \param color color
- \param label label
- \param parent attach a parent QObject to the legend node.
+Constructor for QgsRasterSymbolLegendNode.
+
+:param nodeLayer: layer node
+:param color: color
+:param label: label
+:param parent: attach a parent QObject to the legend node.
 %End
 
     virtual QVariant data( int role ) const;
+
 
     virtual QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const;
 
@@ -353,7 +360,7 @@ class QgsRasterSymbolLegendNode : QgsLayerTreeModelLegendNode
 class QgsWmsLegendNode : QgsLayerTreeModelLegendNode
 {
 %Docstring
- Implementation of legend node interface for displaying WMS legend entries
+Implementation of legend node interface for displaying WMS legend entries
 
 .. versionadded:: 2.8
 %End
@@ -365,16 +372,20 @@ class QgsWmsLegendNode : QgsLayerTreeModelLegendNode
 
     QgsWmsLegendNode( QgsLayerTreeLayer *nodeLayer, QObject *parent /TransferThis/ = 0 );
 %Docstring
- Constructor for QgsWmsLegendNode.
- \param nodeLayer layer node
- \param parent attach a parent QObject to the legend node.
+Constructor for QgsWmsLegendNode.
+
+:param nodeLayer: layer node
+:param parent: attach a parent QObject to the legend node.
 %End
 
     virtual QVariant data( int role ) const;
 
+
     virtual QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const;
 
+
     virtual void invalidateMapBasedData();
+
 
 };
 
@@ -382,7 +393,8 @@ class QgsWmsLegendNode : QgsLayerTreeModelLegendNode
 class QgsDataDefinedSizeLegendNode : QgsLayerTreeModelLegendNode
 {
 %Docstring
- Produces legend node with a marker symbol
+Produces legend node with a marker symbol
+
 .. versionadded:: 3.0
 %End
 
@@ -397,6 +409,7 @@ Construct the node using QgsDataDefinedSizeLegend as definition of the node's ap
     ~QgsDataDefinedSizeLegendNode();
 
     virtual QVariant data( int role ) const;
+
 
     virtual ItemMetrics draw( const QgsLegendSettings &settings, ItemContext *ctx );
 

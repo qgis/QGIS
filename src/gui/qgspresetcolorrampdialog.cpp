@@ -112,10 +112,17 @@ QgsPresetColorRampDialog::QgsPresetColorRampDialog( const QgsPresetSchemeColorRa
   QVBoxLayout *vLayout = new QVBoxLayout();
   mWidget = new QgsPresetColorRampWidget( ramp );
   vLayout->addWidget( mWidget );
-  QDialogButtonBox *bbox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal );
+  QDialogButtonBox *bbox = new QDialogButtonBox( QDialogButtonBox::Cancel | QDialogButtonBox::Help | QDialogButtonBox::Ok, Qt::Horizontal );
   connect( bbox, &QDialogButtonBox::accepted, this, &QDialog::accept );
   connect( bbox, &QDialogButtonBox::rejected, this, &QDialog::reject );
+  connect( bbox, &QDialogButtonBox::helpRequested, this, &QgsPresetColorRampDialog::showHelp );
   vLayout->addWidget( bbox );
   setLayout( vLayout );
+  setWindowTitle( tr( "Color Presets Ramp" ) );
   connect( mWidget, &QgsPresetColorRampWidget::changed, this, &QgsPresetColorRampDialog::changed );
+}
+
+void QgsPresetColorRampDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "working_with_vector/style_library.html#color-ramp" ) );
 }

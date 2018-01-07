@@ -24,9 +24,9 @@
 #include "qgsexception.h"
 #include "qgsmeasuredialog.h"
 #include "qgsmeasuretool.h"
-#include "qgscursors.h"
 #include "qgsmessagelog.h"
 #include "qgssettings.h"
+#include "qgsproject.h"
 
 #include <QMessageBox>
 #include <QMouseEvent>
@@ -40,8 +40,7 @@ QgsMeasureTool::QgsMeasureTool( QgsMapCanvas *canvas, bool measureArea )
   mRubberBand = new QgsRubberBand( canvas, mMeasureArea ? QgsWkbTypes::PolygonGeometry : QgsWkbTypes::LineGeometry );
   mRubberBandPoints = new QgsRubberBand( canvas, QgsWkbTypes::PointGeometry );
 
-  QPixmap myCrossHairQPixmap = QPixmap( ( const char ** ) cross_hair_cursor );
-  mCursor = QCursor( myCrossHairQPixmap, 8, 8 );
+  setCursor( QgsApplication::getThemeCursor( QgsApplication::Cursor::CrossHair ) );
 
   mDone = true;
   // Append point we will move
@@ -63,7 +62,7 @@ QgsMeasureTool::~QgsMeasureTool()
 }
 
 
-QList<QgsPointXY> QgsMeasureTool::points()
+QVector<QgsPointXY> QgsMeasureTool::points()
 {
   return mPoints;
 }
@@ -130,12 +129,12 @@ void QgsMeasureTool::updateSettings()
   // Reproject the points to the new destination CoordinateReferenceSystem
   if ( mRubberBand->size() > 0 && mDestinationCrs != mCanvas->mapSettings().destinationCrs() && mCanvas->mapSettings().destinationCrs().isValid() )
   {
-    QList<QgsPointXY> points = mPoints;
+    QVector<QgsPointXY> points = mPoints;
     bool lastDone = mDone;
 
     mDialog->restart();
     mDone = lastDone;
-    QgsCoordinateTransform ct( mDestinationCrs, mCanvas->mapSettings().destinationCrs() );
+    QgsCoordinateTransform ct( mDestinationCrs, mCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
 
     Q_FOREACH ( const QgsPointXY &previousPoint, points )
     {

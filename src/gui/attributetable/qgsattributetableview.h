@@ -49,7 +49,9 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
     Q_OBJECT
 
   public:
-    QgsAttributeTableView( QWidget *parent SIP_TRANSFERTHIS = 0 );
+
+    //! Constructor for QgsAttributeTableView
+    QgsAttributeTableView( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     virtual void setModel( QgsAttributeTableFilterModel *filterModel );
 
@@ -69,7 +71,7 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
      *
      * \returns Returns always false, so the event gets processed
      */
-    virtual bool eventFilter( QObject *object, QEvent *event ) override;
+    bool eventFilter( QObject *object, QEvent *event ) override;
 
     /**
      * Set the attribute table config which should be used to control
@@ -152,7 +154,7 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
   public slots:
     void repaintRequested( const QModelIndexList &indexes );
     void repaintRequested();
-    virtual void selectAll() override;
+    void selectAll() override;
     virtual void selectRow( int row );
     virtual void _q_selectRow( int row );
 

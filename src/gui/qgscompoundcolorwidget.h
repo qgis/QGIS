@@ -50,9 +50,9 @@ class GUI_EXPORT QgsCompoundColorWidget : public QgsPanelWidget, private Ui::Qgs
      * \param color initial color for dialog
      * \param layout widget layout to use
      */
-    QgsCompoundColorWidget( QWidget *parent SIP_TRANSFERTHIS = 0, const QColor &color = QColor(), Layout layout = LayoutDefault );
+    QgsCompoundColorWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QColor &color = QColor(), Layout layout = LayoutDefault );
 
-    ~QgsCompoundColorWidget();
+    ~QgsCompoundColorWidget() override;
 
     /**
      * Returns the current color for the dialog
@@ -136,6 +136,8 @@ class GUI_EXPORT QgsCompoundColorWidget : public QgsPanelWidget, private Ui::Qgs
     void mActionShowInButtons_toggled( bool state );
 
   private:
+
+    static QScreen *findScreenAt( const QPoint &pos );
 
     bool mAllowAlpha = true;
 

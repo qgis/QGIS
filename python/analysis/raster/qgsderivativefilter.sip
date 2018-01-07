@@ -12,7 +12,7 @@
 class QgsDerivativeFilter : QgsNineCellFilter
 {
 %Docstring
- Adds the ability to calculate derivatives in x- and y-directions. Needs to be subclassed (e.g. for slope and aspect)*
+Adds the ability to calculate derivatives in x- and y-directions. Needs to be subclassed (e.g. for slope and aspect)*
 %End
 
 %TypeHeaderCode
@@ -20,21 +20,19 @@ class QgsDerivativeFilter : QgsNineCellFilter
 %End
   public:
     QgsDerivativeFilter( const QString &inputFile, const QString &outputFile, const QString &outputFormat );
-    virtual ~QgsDerivativeFilter();
-    virtual float processNineCellWindow( float *x11, float *x21, float *x31,
-                                         float *x12, float *x22, float *x32,
-                                         float *x13, float *x23, float *x33 ) = 0;
+
+     virtual float processNineCellWindow( float *x11, float *x21, float *x31,
+                                 float *x12, float *x22, float *x32,
+                                 float *x13, float *x23, float *x33 ) = 0;
 
   protected:
     float calcFirstDerX( float *x11, float *x21, float *x31, float *x12, float *x22, float *x32, float *x13, float *x23, float *x33 );
 %Docstring
 Calculates the first order derivative in x-direction according to Horn (1981)
- :rtype: float
 %End
     float calcFirstDerY( float *x11, float *x21, float *x31, float *x12, float *x22, float *x32, float *x13, float *x23, float *x33 );
 %Docstring
 Calculates the first order derivative in y-direction according to Horn (1981)
- :rtype: float
 %End
 };
 

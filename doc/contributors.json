@@ -325,7 +325,7 @@
       "type": "Feature",
       "properties": {
         "Name": "Mathieu Pellerin",
-        "Committer": "No",
+        "Committer": "Yes",
         "First Commit Message": "[labelling] set fill rule of qpainterpath for text/buffer rendering",
         "First Commit Date": "04-09-2015",
         "GIT Nickname": "nirvn"
@@ -417,6 +417,23 @@
         "coordinates": [
           -1.547486,
           47.199934
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Paul Blottiere",
+        "Committer": "Yes",
+        "First Commit Message": "Add polygon and polyline tools in composer",
+        "First Commit Date": "04-03-2016",
+        "GIT Nickname": "pblottiere"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -4.6445492,
+          48.3748789
         ]
       }
     },

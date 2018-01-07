@@ -392,8 +392,8 @@ class CORE_EXPORT QgsDiagramSettings
       Right
     };
 
-    QgsDiagramSettings()
-    {}
+    //! Constructor for QgsDiagramSettings
+    QgsDiagramSettings() = default;
 
     bool enabled = true;
     QFont font;
@@ -646,7 +646,9 @@ class CORE_EXPORT QgsDiagramRenderer
 class CORE_EXPORT QgsSingleCategoryDiagramRenderer : public QgsDiagramRenderer
 {
   public:
-    QgsSingleCategoryDiagramRenderer();
+
+    //! Constructor for QgsSingleCategoryDiagramRenderer
+    QgsSingleCategoryDiagramRenderer() = default;
 
     QgsSingleCategoryDiagramRenderer *clone() const override SIP_FACTORY;
 
@@ -680,7 +682,7 @@ class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer : public QgsDiagramRend
 {
   public:
     QgsLinearlyInterpolatedDiagramRenderer();
-    ~QgsLinearlyInterpolatedDiagramRenderer();
+    ~QgsLinearlyInterpolatedDiagramRenderer() override;
 
     QgsLinearlyInterpolatedDiagramRenderer *clone() const override SIP_FACTORY;
 
@@ -691,7 +693,7 @@ class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer : public QgsDiagramRend
 
     QList<QString> diagramAttributes() const override;
 
-    virtual QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext() ) const override;
+    QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext() ) const override;
 
     QString rendererName() const override { return QStringLiteral( "LinearlyInterpolated" ); }
 

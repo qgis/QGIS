@@ -429,7 +429,6 @@ bool QgsComposerArrow::writeXml( QDomElement &elem, QDomDocument &doc ) const
 
   QgsReadWriteContext context;
   context.setPathResolver( pathResolver );
-
   // absolute paths to relative
   QString startMarkerPath = QgsSymbolLayerUtils::svgSymbolPathToName( mStartMarkerFile, pathResolver );
   QString endMarkerPath = QgsSymbolLayerUtils::svgSymbolPathToName( mEndMarkerFile, pathResolver );

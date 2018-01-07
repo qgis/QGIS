@@ -18,28 +18,24 @@ class QgsGeometryGeneratorSymbolLayer : QgsSymbolLayer
     ~QgsGeometryGeneratorSymbolLayer();
 
     static QgsSymbolLayer *create( const QgsStringMap &properties ) /Factory/;
-%Docstring
- :rtype: QgsSymbolLayer
-%End
 
     virtual QString layerType() const;
 
 
     void setSymbolType( QgsSymbol::SymbolType symbolType );
 %Docstring
- Set the type of symbol which should be created.
- Should match with the return type of the expression.
+Set the type of symbol which should be created.
+Should match with the return type of the expression.
 
- \param symbolType The symbol type which shall be used below this symbol.
+:param symbolType: The symbol type which shall be used below this symbol.
 %End
 
     QgsSymbol::SymbolType symbolType() const;
 %Docstring
- Access the symbol type. This defines the type of geometry
- that is created by this generator.
+Access the symbol type. This defines the type of geometry
+that is created by this generator.
 
- :return: Symbol type
- :rtype: QgsSymbol.SymbolType
+:return: Symbol type
 %End
 
     virtual void startRender( QgsSymbolRenderContext &context );
@@ -59,40 +55,40 @@ class QgsGeometryGeneratorSymbolLayer : QgsSymbolLayer
 
     void setGeometryExpression( const QString &exp );
 %Docstring
- Set the expression to generate this geometry.
+Set the expression to generate this geometry.
 %End
 
     QString geometryExpression() const;
 %Docstring
- Get the expression to generate this geometry.
- :rtype: str
+Get the expression to generate this geometry.
 %End
 
     virtual QgsSymbol *subSymbol();
 
     virtual bool setSubSymbol( QgsSymbol *symbol /Transfer/ );
 
+
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
+
 
     virtual bool isCompatibleWithSymbol( QgsSymbol *symbol ) const;
 
 %Docstring
- Will always return true.
- This is a hybrid layer, it constructs its own geometry so it does not
- care about the geometry of its parents.
- :rtype: bool
+Will always return true.
+This is a hybrid layer, it constructs its own geometry so it does not
+care about the geometry of its parents.
 %End
 
     virtual void render( QgsSymbolRenderContext &context );
 %Docstring
- Will render this symbol layer using the context.
- In comparison to other symbols there is no geometry passed in, since
- the geometry will be created based on information from the context
- which contains a QgsRenderContext which in turn contains an expression
- context which is available to the evaluated expression.
+Will render this symbol layer using the context.
+In comparison to other symbols there is no geometry passed in, since
+the geometry will be created based on information from the context
+which contains a QgsRenderContext which in turn contains an expression
+context which is available to the evaluated expression.
 
- \param context The rendering context which will be used to render and to
-                construct a geometry.
+:param context: The rendering context which will be used to render and to
+construct a geometry.
 %End
 
     virtual void setColor( const QColor &color );

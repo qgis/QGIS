@@ -13,16 +13,17 @@
 class QgsLayoutManager : QObject
 {
 %Docstring
+
 .. versionadded:: 3.0
 
- Manages storage of a set of compositions.
+ Manages storage of a set of layouts.
 
- QgsLayoutManager handles the storage, serializing and deserializing
- of QgsCompositions. Usually this class is not constructed directly, but
- rather accessed through a QgsProject via QgsProject.layoutManager().
+QgsLayoutManager handles the storage, serializing and deserializing
+of QgsLayouts. Usually this class is not constructed directly, but
+rather accessed through a QgsProject via QgsProject.layoutManager().
 
- QgsLayoutManager retains ownership of all the compositions contained
- in the manager.
+QgsLayoutManager retains ownership of all the layouts contained
+in the manager.
 %End
 
 %TypeHeaderCode
@@ -32,88 +33,138 @@ class QgsLayoutManager : QObject
 
     explicit QgsLayoutManager( QgsProject *project /TransferThis/ = 0 );
 %Docstring
- Constructor for QgsLayoutManager. The project will become the parent object for this
- manager.
+Constructor for QgsLayoutManager. The project will become the parent object for this
+manager.
 %End
 
     ~QgsLayoutManager();
 
     bool addComposition( QgsComposition *composition /Transfer/ );
 %Docstring
- Adds a composition to the manager. Ownership of the composition is transferred to the manager.
- Returns true if the addition was successful, or false if the composition could not be added (eg
- as a result of a duplicate composition name).
-.. seealso:: removeComposition()
-.. seealso:: compositionAdded()
- :rtype: bool
+Adds a composition to the manager. Ownership of the composition is transferred to the manager.
+Returns true if the addition was successful, or false if the composition could not be added (eg
+as a result of a duplicate composition name).
+
+.. seealso:: :py:func:`removeComposition()`
+
+.. seealso:: :py:func:`compositionAdded()`
+%End
+
+    bool addLayout( QgsLayout *layout /Transfer/ );
+%Docstring
+Adds a ``layout`` to the manager. Ownership of the layout is transferred to the manager.
+Returns true if the addition was successful, or false if the layout could not be added (eg
+as a result of a duplicate layout name).
+
+.. seealso:: :py:func:`removeLayout()`
+
+.. seealso:: :py:func:`layoutAdded()`
 %End
 
     bool removeComposition( QgsComposition *composition );
 %Docstring
- Removes a composition from the manager. The composition is deleted.
- Returns true if the removal was successful, or false if the removal failed (eg as a result
- of removing a composition which is not contained in the manager).
-.. seealso:: addComposition()
-.. seealso:: compositionRemoved()
-.. seealso:: compositionAboutToBeRemoved()
-.. seealso:: clear()
- :rtype: bool
+Removes a composition from the manager. The composition is deleted.
+Returns true if the removal was successful, or false if the removal failed (eg as a result
+of removing a composition which is not contained in the manager).
+
+.. seealso:: :py:func:`addComposition()`
+
+.. seealso:: :py:func:`compositionRemoved()`
+
+.. seealso:: :py:func:`compositionAboutToBeRemoved()`
+
+.. seealso:: :py:func:`clear()`
+%End
+
+    bool removeLayout( QgsLayout *layout );
+%Docstring
+Removes a ``layout`` from the manager. The layout is deleted.
+Returns true if the removal was successful, or false if the removal failed (eg as a result
+of removing a layout which is not contained in the manager).
+
+.. seealso:: :py:func:`addLayout()`
+
+.. seealso:: :py:func:`layoutRemoved()`
+
+.. seealso:: :py:func:`layoutAboutToBeRemoved()`
+
+.. seealso:: :py:func:`clear()`
 %End
 
     void clear();
 %Docstring
- Removes and deletes all compositions from the manager.
-.. seealso:: removeComposition()
+Removes and deletes all layouts from the manager.
+
+.. seealso:: :py:func:`removeLayout()`
 %End
 
     QList< QgsComposition * > compositions() const;
 %Docstring
- Returns a list of all compositions contained in the manager.
- :rtype: list of QgsComposition
+Returns a list of all compositions contained in the manager.
+%End
+
+    QList< QgsLayout * > layouts() const;
+%Docstring
+Returns a list of all layouts contained in the manager.
 %End
 
     QgsComposition *compositionByName( const QString &name ) const;
 %Docstring
- Returns the composition with a matching name, or None if no matching compositions
- were found.
- :rtype: QgsComposition
+Returns the composition with a matching name, or None if no matching compositions
+were found.
+%End
+
+    QgsLayout *layoutByName( const QString &name ) const;
+%Docstring
+Returns the layout with a matching name, or None if no matching layouts
+were found.
 %End
 
     bool readXml( const QDomElement &element, const QDomDocument &doc );
 %Docstring
- Reads the manager's state from a DOM element, restoring all compositions
- present in the XML document.
-.. seealso:: writeXml()
- :rtype: bool
+Reads the manager's state from a DOM element, restoring all layouts
+present in the XML document.
+
+.. seealso:: :py:func:`writeXml()`
 %End
 
     QDomElement writeXml( QDomDocument &doc ) const;
 %Docstring
- Returns a DOM element representing the state of the manager.
-.. seealso:: readXml()
- :rtype: QDomElement
+Returns a DOM element representing the state of the manager.
+
+.. seealso:: :py:func:`readXml()`
 %End
 
     bool saveAsTemplate( const QString &name, QDomDocument &doc ) const;
 %Docstring
- Saves the composition with matching ``name`` in template format.
- Returns true if save was successful.
- :rtype: bool
+Saves the composition with matching ``name`` in template format.
+Returns true if save was successful.
 %End
 
     QgsComposition *duplicateComposition( const QString &name, const QString &newName );
 %Docstring
- Duplicates an existing composition from the manager. The new
- composition will automatically be stored in the manager.
- Returns new composition if duplication was successful.
- :rtype: QgsComposition
+Duplicates an existing composition from the manager. The new
+composition will automatically be stored in the manager.
+Returns new composition if duplication was successful.
+%End
+
+    QgsLayout *duplicateLayout( const QgsLayout *layout, const QString &newName );
+%Docstring
+Duplicates an existing ``layout`` from the manager. The new
+layout will automatically be stored in the manager.
+Returns new the layout if duplication was successful.
+%End
+
+    QString generateUniqueComposerTitle() const;
+%Docstring
+Generates a unique title for a new composition, which does not
+clash with any already contained by the manager.
 %End
 
     QString generateUniqueTitle() const;
 %Docstring
- Generates a unique title for a new composition, which does not
- clash with any already contained by the manager.
- :rtype: str
+Generates a unique title for a new layout, which does not
+clash with any already contained by the manager.
 %End
 
   signals:
@@ -123,9 +174,19 @@ class QgsLayoutManager : QObject
 Emitted when a composition is about to be added to the manager
 %End
 
+    void layoutAboutToBeAdded( const QString &name );
+%Docstring
+Emitted when a layout is about to be added to the manager
+%End
+
     void compositionAdded( const QString &name );
 %Docstring
 Emitted when a composition has been added to the manager
+%End
+
+    void layoutAdded( const QString &name );
+%Docstring
+Emitted when a layout has been added to the manager
 %End
 
     void compositionRemoved( const QString &name );
@@ -133,14 +194,29 @@ Emitted when a composition has been added to the manager
 Emitted when a composition was removed from the manager
 %End
 
+    void layoutRemoved( const QString &name );
+%Docstring
+Emitted when a layout was removed from the manager
+%End
+
     void compositionAboutToBeRemoved( const QString &name );
 %Docstring
 Emitted when a composition is about to be removed from the manager
 %End
 
+    void layoutAboutToBeRemoved( const QString &name );
+%Docstring
+Emitted when a layout is about to be removed from the manager
+%End
+
     void compositionRenamed( QgsComposition *composition, const QString &newName );
 %Docstring
 Emitted when a composition is renamed
+%End
+
+    void layoutRenamed( QgsLayout *layout, const QString &newName );
+%Docstring
+Emitted when a layout is renamed
 %End
 
 };

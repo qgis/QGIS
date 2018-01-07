@@ -40,6 +40,7 @@ class GUI_EXPORT QgsLayoutViewToolSelect : public QgsLayoutViewTool
      * Constructor for QgsLayoutViewToolSelect.
      */
     QgsLayoutViewToolSelect( QgsLayoutView *view SIP_TRANSFERTHIS );
+    ~QgsLayoutViewToolSelect() override;
 
     void layoutPressEvent( QgsLayoutViewMouseEvent *event ) override;
     void layoutMoveEvent( QgsLayoutViewMouseEvent *event ) override;
@@ -72,7 +73,7 @@ class GUI_EXPORT QgsLayoutViewToolSelect : public QgsLayoutViewTool
     //! Start of rubber band creation
     QPointF mRubberBandStartPos;
 
-    QgsLayoutMouseHandles *mMouseHandles = nullptr; //owned by scene
+    QPointer< QgsLayoutMouseHandles > mMouseHandles; //owned by scene
 };
 
 #endif // QGSLAYOUTVIEWTOOLSELECT_H

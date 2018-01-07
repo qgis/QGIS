@@ -82,7 +82,7 @@ void QgsComposerMapOverview::draw( QPainter *painter )
 
     // reproject extent
     QgsCoordinateTransform ct( overviewFrameMap->crs(),
-                               mComposerMap->crs() );
+                               mComposerMap->crs(), mComposition->project() );
     g = g.densifyByCount( 20 );
     try
     {

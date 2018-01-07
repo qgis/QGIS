@@ -18,17 +18,15 @@ class QgsSurface: QgsAbstractGeometry
 %End
   public:
 
-    virtual QgsPolygonV2 *surfaceToPolygon() const = 0 /Factory/;
+    virtual QgsPolygon *surfaceToPolygon() const = 0 /Factory/;
 %Docstring
- Get a polygon representation of this surface.
- Ownership is transferred to the caller.
- :rtype: QgsPolygonV2
+Get a polygon representation of this surface.
+Ownership is transferred to the caller.
 %End
 
     virtual QgsRectangle boundingBox() const;
 %Docstring
- Returns the minimal bounding box for the geometry
- :rtype: QgsRectangle
+Returns the minimal bounding box for the geometry
 %End
 
   protected:

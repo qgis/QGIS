@@ -102,6 +102,16 @@ class CORE_EXPORT QgsAbstractVectorLayerLabeling
       parent.appendChild( doc.createComment( QStringLiteral( "SE Export for %1 not implemented yet" ).arg( type() ) ) );
     }
 
+  protected:
+
+    /**
+     * Writes a TextSymbolizer element contents based on the provided labeling settings
+     * \param parent the node that will have the text symbolizer element added to it
+     * \param settings the settings getting translated to a TextSymbolizer
+     * \param props a open ended set of properties that can drive/inform the SLD encoding
+     */
+    virtual void writeTextSymbolizer( QDomNode &parent, QgsPalLayerSettings &settings, const QgsStringMap &props ) const;
+
   private:
     Q_DISABLE_COPY( QgsAbstractVectorLayerLabeling )
 
@@ -125,12 +135,12 @@ class CORE_EXPORT QgsVectorLayerSimpleLabeling : public QgsAbstractVectorLayerLa
     //! Constructs simple labeling configuration with given initial settings
     explicit QgsVectorLayerSimpleLabeling( const QgsPalLayerSettings &settings );
 
-    virtual QString type() const override;
-    virtual QgsAbstractVectorLayerLabeling *clone() const override SIP_FACTORY;
+    QString type() const override;
+    QgsAbstractVectorLayerLabeling *clone() const override SIP_FACTORY;
     //! \note not available in Python bindings
-    virtual QgsVectorLayerLabelProvider *provider( QgsVectorLayer *layer ) const override SIP_SKIP;
-    virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const override;
-    virtual QgsPalLayerSettings settings( const QString &providerId = QString() ) const override;
+    QgsVectorLayerLabelProvider *provider( QgsVectorLayer *layer ) const override SIP_SKIP;
+    QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const override;
+    QgsPalLayerSettings settings( const QString &providerId = QString() ) const override;
 
     /**
      * Set pal settings (takes ownership).
@@ -140,10 +150,10 @@ class CORE_EXPORT QgsVectorLayerSimpleLabeling : public QgsAbstractVectorLayerLa
      *
      * \since QGIS 3.0
      */
-    virtual void setSettings( QgsPalLayerSettings *settings SIP_TRANSFER, const QString &providerId = QString() ) override;
+    void setSettings( QgsPalLayerSettings *settings SIP_TRANSFER, const QString &providerId = QString() ) override;
 
     bool requiresAdvancedEffects() const override;
-    virtual void toSld( QDomNode &parent, const QgsStringMap &props ) const override;
+    void toSld( QDomNode &parent, const QgsStringMap &props ) const override;
 
     //! Create the instance from a DOM element with saved configuration
     static QgsVectorLayerSimpleLabeling *create( const QDomElement &element, const QgsReadWriteContext &context );

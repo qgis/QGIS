@@ -67,9 +67,10 @@ QSize QgsColorRampButton::sizeHint() const
 {
   //make sure height of button looks good under different platforms
 #ifdef Q_OS_WIN
-  return QSize( 120, 22 );
+  return QSize( 120, static_cast<int>( std::max( Qgis::UI_SCALE_FACTOR * fontMetrics().height( ), 22.0 ) ) );
 #else
-  return QSize( 120, 28 );
+  // Adjust height for HiDPI screens
+  return QSize( 120, static_cast<int>( std::max( Qgis::UI_SCALE_FACTOR * fontMetrics().height( ) * 1.4, 28.0 ) ) );
 #endif
 }
 

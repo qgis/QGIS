@@ -38,6 +38,7 @@ class QgsWfsCapabilities : public QgsWfsRequest
       FeatureType() = default;
 
       QString name;
+      QString nameSpace; // for some Deegree servers that requires a NAMESPACES parameter for GetFeature
       QString title;
       QString abstract;
       QList<QString> crslist; // first is default
@@ -117,8 +118,8 @@ class QgsWfsCapabilities : public QgsWfsRequest
     void capabilitiesReplyFinished();
 
   protected:
-    virtual QString errorMessageWithReason( const QString &reason ) override;
-    virtual int defaultExpirationInSec() override;
+    QString errorMessageWithReason( const QString &reason ) override;
+    int defaultExpirationInSec() override;
 
   private:
     Capabilities mCaps;

@@ -218,12 +218,20 @@ class CORE_EXPORT QgsDataProvider : public QObject
      *
      * Sub-layers are used when the provider's source can combine layers
      * it knows about in some way before it hands them off to the provider.
+     *
+     * \see SUBLAYER_SEPARATOR
      */
     virtual QStringList subLayers() const
     {
       return QStringList();  // Empty
     }
 
+    /**
+     * String sequence used for separating components of sublayers strings.
+     * \see subLayers()
+     * \since QGIS 3.0
+     */
+    static QString SUBLAYER_SEPARATOR;
 
     /**
      * Sub-layer styles for each sub-layer handled by this provider,
@@ -452,6 +460,37 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * \since QGIS 3.0
      */
     virtual void setListening( bool isListening );
+
+#ifndef SIP_RUN
+
+    /**
+     * Stores settings related to the context in which a preview job runs.
+     * \note Not available in Python bindings
+     * \since QGIS 3.0
+     */
+    struct PreviewContext
+    {
+      //! Previous rendering time for the layer, in ms
+      double lastRenderingTimeMs = -1;
+
+      //! Default maximum allowable render time, in ms
+      double maxRenderingTimeMs = MAXIMUM_LAYER_PREVIEW_TIME_MS;
+    };
+#endif
+
+    /**
+     * Returns whether the layer must be rendered in preview jobs.
+     *
+     * The \a context argument gives useful information which can be used
+     * to determine whether the layer should be rendered or not.
+     *
+     * The base implementation returns true if lastRenderingTimeMs <= maxRenderingTimeMs.
+     *
+     * \since QGIS 3.0
+     *
+     * \note not available in Python bindings
+     */
+    virtual bool renderInPreview( const QgsDataProvider::PreviewContext &context ); // SIP_SKIP
 
   signals:
 

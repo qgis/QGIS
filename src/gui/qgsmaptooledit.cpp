@@ -92,7 +92,7 @@ QgsVectorLayer *QgsMapToolEdit::currentVectorLayer()
 }
 
 
-int QgsMapToolEdit::addTopologicalPoints( const QList<QgsPointXY> &geom )
+int QgsMapToolEdit::addTopologicalPoints( const QVector<QgsPointXY> &geom )
 {
   if ( !mCanvas )
   {
@@ -107,7 +107,7 @@ int QgsMapToolEdit::addTopologicalPoints( const QList<QgsPointXY> &geom )
     return 2;
   }
 
-  QList<QgsPointXY>::const_iterator list_it = geom.constBegin();
+  QVector<QgsPointXY>::const_iterator list_it = geom.constBegin();
   for ( ; list_it != geom.constEnd(); ++list_it )
   {
     vlayer->addTopologicalPoints( *list_it );
@@ -131,6 +131,7 @@ QgsGeometryRubberBand *QgsMapToolEdit::createGeometryRubberBand( QgsWkbTypes::Ge
   color.setAlphaF( myAlpha );
   rb->setStrokeColor( color );
   rb->setFillColor( color );
+  rb->setStrokeWidth( digitizingStrokeWidth() );
   rb->show();
   return rb;
 }

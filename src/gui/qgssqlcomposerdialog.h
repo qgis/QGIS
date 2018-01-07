@@ -104,12 +104,12 @@ class GUI_EXPORT QgsSQLComposerDialog : public QDialog, private Ui::QgsSQLCompos
       //! constructor with name and min,max number of arguments
       Function( const QString &nameIn, int minArgs, int maxArgsIn ) : name( nameIn ), minArgs( minArgs ), maxArgs( maxArgsIn ) {}
       //! default constructor
-      Function() {}
+      Function() = default;
     };
 
     //! constructor
     explicit QgsSQLComposerDialog( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
-    virtual ~QgsSQLComposerDialog();
+    ~QgsSQLComposerDialog() override;
 
     //! initialize the SQL statement
     void setSql( const QString &sql );

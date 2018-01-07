@@ -28,18 +28,19 @@ __revision__ = '$Format:%H$'
 from processing.core.parameters import getParameterFromString
 
 
-def checkParameterValuesBeforeExecuting(alg):
+def checkParameterValuesBeforeExecuting(alg, parameters, context):
     """ Verify if we have the right parameters """
-    if alg.getParameterValue('inline_points') and alg.getParameterValue(u'points'):
+    if (alg.parameterAsString(parameters, 'inline_points', context)
+            and alg.parameterAsString(parameters, 'points', context)):
         return alg.tr("You need to set either an input control point file or inline control points!")
 
     return None
 
 
-def processCommand(alg, parameters):
+def processCommand(alg, parameters, context):
     # handle inline add data
-    input_txt = alg.getParameterFromName('inline_points')
-    inputParameter = alg.getParameterFromName('points')
+    input_txt = alg.parameterAsString(parameters, 'inline_points', context)
+    inputParameter = alg.parametersAsString(parameters, 'points', context)
     if input_txt.value:
         # Creates a temporary txt file
         ruleFile = alg.getTempFilename()
@@ -59,7 +60,7 @@ def processCommand(alg, parameters):
     param.value = output.value
     alg.addParameter(param)
 
-    alg.processCommand()
+    alg.processCommand(parameters, context)
     alg.parameters.remove(param)
     alg.addOutput(output)
     if input_txt.value:

@@ -13,9 +13,9 @@
 class QgsProjectVersion
 {
 %Docstring
- A class to describe the version of a project.
- Used in places where you need to check if the current version
- of QGIS is greater than the one used to create a project file.
+A class to describe the version of a project.
+Used in places where you need to check if the current version
+of QGIS is greater than the one used to create a project file.
 %End
 
 %TypeHeaderCode
@@ -25,52 +25,36 @@ class QgsProjectVersion
 
     QgsProjectVersion();
 %Docstring
- Creates a new NULL version
+Creates a new NULL version
 %End
 
     QgsProjectVersion( int major, int minor, int sub, const QString &name = "" );
     QgsProjectVersion( const QString &string );
     int majorVersion();
-%Docstring
- :rtype: int
-%End
     int minorVersion();
-%Docstring
- :rtype: int
-%End
     int subVersion();
-%Docstring
- :rtype: int
-%End
     QString text();
-%Docstring
- :rtype: str
-%End
 
     bool isNull() const;
 %Docstring
- Returns true if this is a NULL project version.
- :rtype: bool
+Returns true if this is a NULL project version.
 %End
 
     bool operator==( const QgsProjectVersion &other ) const;
 
     bool operator!=( const QgsProjectVersion &other ) const;
 %Docstring
- Boolean not equal operator
- :rtype: bool
+Boolean not equal operator
 %End
 
     bool operator>=( const QgsProjectVersion &other ) const;
 %Docstring
- Boolean >= operator
- :rtype: bool
+Boolean >= operator
 %End
 
     bool operator>( const QgsProjectVersion &other ) const;
 %Docstring
- Boolean > operator
- :rtype: bool
+Boolean > operator
 %End
 
 };

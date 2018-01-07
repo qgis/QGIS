@@ -1,14 +1,14 @@
 r.tileset
 Produces tilings of the source projection for use in the destination region and projection.
 Raster (r.*)
-ParameterString|sourceproj|Source projection|None|True|False
-ParameterString|sourcescale|Conversion factor from units to meters in source projection|1|False|True
-ParameterString|destproj|Destination projection|None|True|False
-ParameterString|destscale|Conversion factor from units to meters in destination projection|1|False|True
-ParameterNumber|maxcols|Maximum number of columns for a tile in the source projection|1|None|1024|True
-ParameterNumber|maxrows|Maximum number of rows for a tile in the source projection|1|None|1024|True
-ParameterNumber|overlap|Number of cells tiles should overlap in each direction|0|None|0|True
-ParameterString|separator|Output field separator|None|False|True
-*ParameterBoolean|-g|Produces shell script output|False
-*ParameterBoolean|-w|Produces web map server query string output|False
-OutputFile|output|Tileset
+QgsProcessingParameterCrs|sourceproj|Source projection|None|False
+QgsProcessingParameterNumber|sourcescale|Conversion factor from units to meters in source projection|QgsProcessingParameterNumber.Double|1.0|True|None|None
+QgsProcessingParameterCrs|destproj|Destination projection|None|True
+QgsProcessingParameterNumber|destscale|Conversion factor from units to meters in destination projection|QgsProcessingParameterNumber.Double|1.0|True|None|None
+QgsProcessingParameterNumber|maxcols|Maximum number of columns for a tile in the source projection|QgsProcessingParameterNumber.Integer|1024|True|1|None
+QgsProcessingParameterNumber|maxrows|Maximum number of rows for a tile in the source projection|QgsProcessingParameterNumber.Integer|1024|True|1|None
+QgsProcessingParameterNumber|overlap|Number of cells tiles should overlap in each direction|QgsProcessingParameterNumber.Integer|0|True|0|None
+QgsProcessingParameterString|separator|Output field separator|pipe|False|True
+*QgsProcessingParameterBoolean|-g|Produces shell script output|False
+*QgsProcessingParameterBoolean|-w|Produces web map server query string output|False
+QgsProcessingParameterFileDestination|output|Tileset|Txt files (*.txt)|None|False

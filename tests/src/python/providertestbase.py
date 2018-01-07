@@ -184,6 +184,14 @@ class ProviderTestCase(FeatureSourceTestCase):
         """Individual providers may need to override this depending on their subset string formats"""
         return '"cnt" > 100 and "cnt" < 400'
 
+    def getSubsetString3(self):
+        """Individual providers may need to override this depending on their subset string formats"""
+        return '"name"=\'Apple\''
+
+    def getSubsetStringNoMatching(self):
+        """Individual providers may need to override this depending on their subset string formats"""
+        return '"name"=\'AppleBearOrangePear\''
+
     def testOrderBy(self):
         try:
             self.disableCompiler()
@@ -281,9 +289,32 @@ class ProviderTestCase(FeatureSourceTestCase):
     def testExtent(self):
         reference = QgsGeometry.fromRect(
             QgsRectangle(-71.123, 66.33, -65.32, 78.3))
-        provider_extent = QgsGeometry.fromRect(self.source.extent())
+        provider_extent = self.source.extent()
+        self.assertAlmostEqual(provider_extent.xMinimum(), -71.123, 3)
+        self.assertAlmostEqual(provider_extent.xMaximum(), -65.32, 3)
+        self.assertAlmostEqual(provider_extent.yMinimum(), 66.33, 3)
+        self.assertAlmostEqual(provider_extent.yMaximum(), 78.3, 3)
 
-        self.assertTrue(QgsGeometry.compare(provider_extent.asPolygon()[0], reference.asPolygon()[0], 0.00001))
+        # with only one point
+        subset = self.getSubsetString3()
+        self.source.setSubsetString(subset)
+        count = self.source.featureCount()
+        provider_extent = self.source.extent()
+        self.source.setSubsetString(None)
+        self.assertEqual(count, 1)
+        self.assertAlmostEqual(provider_extent.xMinimum(), -68.2, 3)
+        self.assertAlmostEqual(provider_extent.xMaximum(), -68.2, 3)
+        self.assertAlmostEqual(provider_extent.yMinimum(), 70.8, 3)
+        self.assertAlmostEqual(provider_extent.yMaximum(), 70.8, 3)
+
+        # with no points
+        subset = self.getSubsetStringNoMatching()
+        self.source.setSubsetString(subset)
+        count = self.source.featureCount()
+        provider_extent = self.source.extent()
+        self.source.setSubsetString(None)
+        self.assertEqual(count, 0)
+        self.assertTrue(provider_extent.isNull())
 
     def testUnique(self):
         self.assertEqual(set(self.source.uniqueValues(1)), set([-200, 100, 200, 300, 400]))
@@ -315,14 +346,31 @@ class ProviderTestCase(FeatureSourceTestCase):
         self.assertEqual(set(values), set(['Pear', 'Apple']))
 
     def testFeatureCount(self):
-        assert self.source.featureCount() == 5, 'Got {}'.format(self.source.featureCount())
+        self.assertEqual(self.source.featureCount(), 5)
 
         #Add a subset string and test feature count
         subset = self.getSubsetString()
         self.source.setSubsetString(subset)
         count = self.source.featureCount()
         self.source.setSubsetString(None)
-        assert count == 3, 'Got {}'.format(count)
+        self.assertEqual(count, 3)
+        self.assertEqual(self.source.featureCount(), 5)
+
+        # one matching records
+        subset = self.getSubsetString3()
+        self.source.setSubsetString(subset)
+        count = self.source.featureCount()
+        self.source.setSubsetString(None)
+        self.assertEqual(count, 1)
+        self.assertEqual(self.source.featureCount(), 5)
+
+        # no matching records
+        subset = self.getSubsetStringNoMatching()
+        self.source.setSubsetString(subset)
+        count = self.source.featureCount()
+        self.source.setSubsetString(None)
+        self.assertEqual(count, 0)
+        self.assertEqual(self.source.featureCount(), 5)
 
     def testGetFeaturesNoGeometry(self):
         """ Test that no geometry is present when fetching features without geometry"""

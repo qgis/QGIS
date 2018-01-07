@@ -1,13 +1,13 @@
 r.drain
 Traces a flow through an elevation model on a raster map.
 Raster (r.*)
-ParameterRaster|input|Elevation|False
-ParameterRaster|direction|Name of input movement direction map associated with the cost surface|True
-ParameterPoint|start_coordinates|Map coordinates of starting point(s) (E,N)|0.0,0.0|True
-ParameterVector|start_points|Vector layer containing starting point(s)|0|True
-ParameterBoolean|-c|Copy input cell values on output|False
-ParameterBoolean|-a|Accumulate input values along the path|False
-ParameterBoolean|-n|Count cell numbers along the path|False
-ParameterBoolean|-d|The input raster map is a cost surface (direction surface must also be specified)|False
-OutputRaster|output|Least cost path
-OutputVector|drain|Drain
+QgsProcessingParameterRasterLayer|input|Elevation|None|False
+QgsProcessingParameterRasterLayer|direction|Name of input movement direction map associated with the cost surface|None|True
+QgsProcessingParameterPoint|start_coordinates|Map coordinates of starting point(s) (E,N)|None|True
+QgsProcessingParameterVectorLayer|start_points|Vector layer containing starting point(s)|0|None|True
+QgsProcessingParameterBoolean|-c|Copy input cell values on output|False
+QgsProcessingParameterBoolean|-a|Accumulate input values along the path|False
+QgsProcessingParameterBoolean|-n|Count cell numbers along the path|False
+QgsProcessingParameterBoolean|-d|The input raster map is a cost surface (direction surface must also be specified)|False
+QgsProcessingParameterRasterDestination|output|Least cost path
+QgsProcessingParameterVectorDestination|drain|Drain

@@ -1,0 +1,10 @@
+r.proj
+Re-projects a vector map from one location to the current location
+Raster (r.*)
+QgsProcessingParameterRasterLayer|input|Input raster to reproject|None|False
+QgsProcessingParameterCrs|crs|New coordinate reference system|None|False
+QgsProcessingParameterEnum|method|Interpolation method to use|nearest;bilinear;bicubic;lanczos;bilinear_f;bicubic_f;lanczos_f|False|0|True
+QgsProcessingParameterNumber|memory|Maximum memory to be used (in MB)|QgsProcessingParameterNumber.Integer|300|True|0|None
+QgsProcessingParameterNumber|resolution|Resolution of output raster map|QgsProcessingParameterNumber.Double|1.0|True|0.0|None
+*QgsProcessingParameterBoolean|-n|Do not perform region cropping optimization|False|True
+QgsProcessingParameterRasterDestination|output|Reprojected raster

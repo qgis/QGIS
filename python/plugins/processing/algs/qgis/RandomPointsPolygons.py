@@ -71,6 +71,9 @@ class RandomPointsPolygons(QgisAlgorithm):
     def group(self):
         return self.tr('Vector creation')
 
+    def groupId(self):
+        return 'vectorcreation'
+
     def __init__(self):
         super().__init__()
 
@@ -168,7 +171,7 @@ class RandomPointsPolygons(QgisAlgorithm):
                 ry = bbox.yMinimum() + bbox.height() * random.random()
 
                 p = QgsPointXY(rx, ry)
-                geom = QgsGeometry.fromPoint(p)
+                geom = QgsGeometry.fromPointXY(p)
                 if geom.within(fGeom) and \
                         vector.checkMinDistance(p, index, minDistance, points):
                     f = QgsFeature(nPoints)

@@ -64,7 +64,7 @@ class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox, private Ui::
     /**
      * Constructor for QgsExtentGroupBox.
      */
-    explicit QgsExtentGroupBox( QWidget *parent SIP_TRANSFERTHIS = 0 );
+    explicit QgsExtentGroupBox( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Sets the original extent and coordinate reference system for the widget. This should be called as part of initialization.
@@ -120,8 +120,16 @@ class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox, private Ui::
 
     /**
      * Returns the extent shown in the widget - in output CRS coordinates.
+     * \see outputCrs
      */
     QgsRectangle outputExtent() const;
+
+    /**
+     * Returns the current output CRS, used in the display.
+     * \see outputExtent
+     * \since QGIS 3.0
+     */
+    QgsCoordinateReferenceSystem outputCrs() const { return mOutputCrs; }
 
     /**
      * Returns the currently selected state for the widget's extent.

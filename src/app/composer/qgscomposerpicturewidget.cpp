@@ -448,7 +448,7 @@ QIcon QgsComposerPictureWidget::svgToIcon( const QString &filePath ) const
     strokeWidth = 0.6;
 
   bool fitsInCache; // should always fit in cache at these sizes (i.e. under 559 px ^ 2, or half cache size)
-  const QImage &img = QgsApplication::svgCache()->svgAsImage( filePath, 30.0, fill, stroke, strokeWidth, 3.5 /*appr. 88 dpi*/, fitsInCache );
+  QImage img = QgsApplication::svgCache()->svgAsImage( filePath, 30.0, fill, stroke, strokeWidth, 3.5 /*appr. 88 dpi*/, fitsInCache );
 
   return QIcon( QPixmap::fromImage( img ) );
 }

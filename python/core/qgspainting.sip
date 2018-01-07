@@ -11,7 +11,7 @@
 class QgsPainting
 {
 %Docstring
- Misc painting enums and functions.
+Misc painting enums and functions.
 
 .. versionadded:: 3.0
 %End
@@ -52,12 +52,10 @@ class QgsPainting
     static QPainter::CompositionMode getCompositionMode( QgsPainting::BlendMode blendMode );
 %Docstring
 Returns a QPainter.CompositionMode corresponding to a BlendMode
- :rtype: QPainter.CompositionMode
 %End
     static QgsPainting::BlendMode getBlendModeEnum( QPainter::CompositionMode blendMode );
 %Docstring
 Returns a BlendMode corresponding to a QPainter.CompositionMode
- :rtype: QgsPainting.BlendMode
 %End
 
 };

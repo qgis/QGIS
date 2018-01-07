@@ -17,6 +17,7 @@
 
 #include "qgsnewvectorlayerdialog.h"
 #include "qgsapplication.h"
+#include "qgsfilewidget.h"
 #include "qgis.h"
 #include "qgslogger.h"
 #include "qgscoordinatereferencesystem.h"
@@ -35,6 +36,7 @@ QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, Qt::WindowFla
   : QDialog( parent, fl )
 {
   setupUi( this );
+
   connect( mAddAttributeButton, &QToolButton::clicked, this, &QgsNewVectorLayerDialog::mAddAttributeButton_clicked );
   connect( mRemoveAttributeButton, &QToolButton::clicked, this, &QgsNewVectorLayerDialog::mRemoveAttributeButton_clicked );
   connect( mFileFormatComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsNewVectorLayerDialog::mFileFormatComboBox_currentIndexChanged );
@@ -46,15 +48,22 @@ QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, Qt::WindowFla
 
   mAddAttributeButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionNewAttribute.svg" ) ) );
   mRemoveAttributeButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDeleteAttribute.svg" ) ) );
-  mTypeBox->addItem( tr( "Text data" ), "String" );
-  mTypeBox->addItem( tr( "Whole number" ), "Integer" );
-  mTypeBox->addItem( tr( "Decimal number" ), "Real" );
-  mTypeBox->addItem( tr( "Date" ), "Date" );
+
+  mTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldText.svg" ) ), tr( "Text data" ), "String" );
+  mTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldInteger.svg" ) ), tr( "Whole number" ), "Integer" );
+  mTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldFloat.svg" ) ), tr( "Decimal number" ), "Real" );
+  mTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldDate.svg" ) ), tr( "Date" ), "Date" );
 
   mWidth->setValidator( new QIntValidator( 1, 255, this ) );
   mPrecision->setValidator( new QIntValidator( 0, 15, this ) );
 
-  mPointRadioButton->setChecked( true );
+  mGeometryTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconPointLayer.svg" ) ), tr( "Point" ), QgsWkbTypes::Point );
+  mGeometryTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconLineLayer.svg" ) ), tr( "Line" ), QgsWkbTypes::LineString );
+  mGeometryTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconPolygonLayer.svg" ) ), tr( "Polygon" ), QgsWkbTypes::Polygon );
+
+  mOkButton = buttonBox->button( QDialogButtonBox::Ok );
+  mOkButton->setEnabled( false );
+
   mFileFormatComboBox->addItem( tr( "ESRI Shapefile" ), "ESRI Shapefile" );
 #if 0
   // Disabled until provider properly supports editing the created file formats
@@ -76,7 +85,7 @@ QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, Qt::WindowFla
   // Use default encoding if none supplied
   QString enc = QgsSettings().value( QStringLiteral( "/UI/encoding" ), "System" ).toString();
 
-  // The specified decoding is added if not existing alread, and then set current.
+  // The specified decoding is added if not existing already, and then set current.
   // This should select it.
   int encindex = mFileEncoding->findText( enc );
   if ( encindex < 0 )
@@ -86,14 +95,24 @@ QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, Qt::WindowFla
   }
   mFileEncoding->setCurrentIndex( encindex );
 
-  mOkButton = buttonBox->button( QDialogButtonBox::Ok );
-
   mAttributeView->addTopLevelItem( new QTreeWidgetItem( QStringList() << QStringLiteral( "id" ) << QStringLiteral( "Integer" ) << QStringLiteral( "10" ) << QLatin1String( "" ) ) );
   connect( mNameEdit, &QLineEdit::textChanged, this, &QgsNewVectorLayerDialog::nameChanged );
   connect( mAttributeView, &QTreeWidget::itemSelectionChanged, this, &QgsNewVectorLayerDialog::selectionChanged );
 
   mAddAttributeButton->setEnabled( false );
   mRemoveAttributeButton->setEnabled( false );
+
+  mFileName->setStorageMode( QgsFileWidget::SaveFile );
+  mFileName->setFilter( QgsVectorFileWriter::filterForDriver( mFileFormatComboBox->currentData( Qt::UserRole ).toString() ) );
+  mFileName->setDialogTitle( tr( "Select Layer as..." ) );
+  mFileName->setDefaultRoot( settings.value( QStringLiteral( "UI/lastVectorFileFilterDir" ), QDir::homePath() ).toString() );
+  connect( mFileName, &QgsFileWidget::fileChanged, this, [ = ]
+  {
+    QgsSettings settings;
+    QFileInfo tmplFileInfo( mFileName->filePath() );
+    settings.setValue( QStringLiteral( "UI/lastVectorFileFilterDir" ), tmplFileInfo.absolutePath() );
+    checkOk();
+  } );
 }
 
 QgsNewVectorLayerDialog::~QgsNewVectorLayerDialog()
@@ -146,21 +165,14 @@ void QgsNewVectorLayerDialog::mTypeBox_currentIndexChanged( int index )
 QgsWkbTypes::Type QgsNewVectorLayerDialog::selectedType() const
 {
   QgsWkbTypes::Type wkbType = QgsWkbTypes::Unknown;
-  if ( mPointRadioButton->isChecked() )
-  {
-    wkbType = QgsWkbTypes::Point;
-  }
-  else if ( mLineRadioButton->isChecked() )
-  {
-    wkbType = QgsWkbTypes::LineString;
-  }
-  else if ( mPolygonRadioButton->isChecked() )
-  {
-    wkbType = QgsWkbTypes::Polygon;
-  }
+  wkbType = static_cast<QgsWkbTypes::Type>
+            ( mGeometryTypeBox->currentData( Qt::UserRole ).toInt() );
 
-  if ( mGeometryWithZCheckBox->isChecked() && wkbType != QgsWkbTypes::Unknown )
-    wkbType = QgsWkbTypes::to25D( wkbType );
+  if ( mGeometryWithZCheckBox->isChecked() )
+    wkbType = QgsWkbTypes::addZ( wkbType );
+
+  if ( mGeometryWithMCheckBox->isChecked() )
+    wkbType = QgsWkbTypes::addM( wkbType );
 
   return wkbType;
 }
@@ -183,20 +195,14 @@ void QgsNewVectorLayerDialog::mAddAttributeButton_clicked()
   //use userrole to avoid translated type string
   QString myType = mTypeBox->currentData( Qt::UserRole ).toString();
   mAttributeView->addTopLevelItem( new QTreeWidgetItem( QStringList() << myName << myType << myWidth << myPrecision ) );
-  if ( mAttributeView->topLevelItemCount() > 0 )
-  {
-    mOkButton->setEnabled( true );
-  }
+  checkOk();
   mNameEdit->clear();
 }
 
 void QgsNewVectorLayerDialog::mRemoveAttributeButton_clicked()
 {
   delete mAttributeView->currentItem();
-  if ( mAttributeView->topLevelItemCount() == 0 )
-  {
-    mOkButton->setEnabled( false );
-  }
+  checkOk();
 }
 
 void QgsNewVectorLayerDialog::attributes( QList< QPair<QString, QString> > &at ) const
@@ -234,6 +240,16 @@ void QgsNewVectorLayerDialog::selectionChanged()
   mRemoveAttributeButton->setDisabled( mAttributeView->selectedItems().isEmpty() );
 }
 
+QString QgsNewVectorLayerDialog::filename() const
+{
+  return mFileName->filePath();
+}
+
+void QgsNewVectorLayerDialog::checkOk()
+{
+  bool ok = ( !mFileName->filePath().isEmpty() && mAttributeView->topLevelItemCount() > 0 );
+  mOkButton->setEnabled( ok );
+}
 
 // this is static
 QString QgsNewVectorLayerDialog::runAndCreateLayer( QWidget *parent, QString *pEnc, const QgsCoordinateReferenceSystem &crs )
@@ -254,14 +270,8 @@ QString QgsNewVectorLayerDialog::runAndCreateLayer( QWidget *parent, QString *pE
   geomDialog.attributes( attributes );
 
   QgsSettings settings;
-  QString lastUsedDir = settings.value( QStringLiteral( "UI/lastVectorFileFilterDir" ), QDir::homePath() ).toString();
   QString filterString = QgsVectorFileWriter::filterForDriver( fileformat );
-  QString fileName = QFileDialog::getSaveFileName( nullptr, tr( "Save layer as..." ), lastUsedDir, filterString );
-  if ( fileName.isNull() )
-  {
-    return QLatin1String( "" );
-  }
-
+  QString fileName = geomDialog.filename();
   if ( fileformat == QLatin1String( "ESRI Shapefile" ) && !fileName.endsWith( QLatin1String( ".shp" ), Qt::CaseInsensitive ) )
     fileName += QLatin1String( ".shp" );
 

@@ -1,9 +1,10 @@
 r.grow
 Generates a raster layer with contiguous areas grown by one cell.
 Raster (r.*)
-ParameterRaster|input|input raster layer|False
-ParameterNumber|radius|Radius of buffer in raster cells|None|None|1.01
-ParameterSelection|metric|Metric|euclidean;maximum;manhattan
-ParameterNumber|old|Value to write for input cells which are non-NULL (-1 => NULL)|None|None|0
-ParameterNumber|new|Value to write for "grown" cells|None|None|1
-OutputRaster|output|Expanded
+QgsProcessingParameterRasterLayer|input|input raster layer|None|False
+QgsProcessingParameterNumber|radius|Radius of buffer in raster cells|QgsProcessingParameterNumber.Double|1.01|False|None|None
+QgsProcessingParameterEnum|metric|Metric|euclidean;maximum;manhattan|False|0|True
+QgsProcessingParameterNumber|old|Value to write for input cells which are non-NULL (-1 => NULL)|QgsProcessingParameterNumber.Integer|0|False|None|None
+QgsProcessingParameterNumber|new|Value to write for "grown" cells|QgsProcessingParameterNumber.Integer|1|False|None|None
+*QgsProcessingParameterBoolean|-m|Radius is in map units rather than cells|False
+QgsProcessingParameterRasterDestination|output|Expanded

@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -35,7 +34,9 @@ from qgis.core import (QgsCoordinateReferenceSystem,
                        QgsWkbTypes,
                        QgsFeature,
                        QgsFeatureSink,
+                       QgsFeatureRequest,
                        QgsFields,
+                       QgsProcessing,
                        QgsProcessingParameterField,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterFeatureSink,
@@ -52,7 +53,7 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 class UniqueValues(QgisAlgorithm):
 
     INPUT = 'INPUT'
-    FIELD_NAME = 'FIELD_NAME'
+    FIELDS = 'FIELDS'
     TOTAL_VALUES = 'TOTAL_VALUES'
     UNIQUE_VALUES = 'UNIQUE_VALUES'
     OUTPUT = 'OUTPUT'
@@ -64,15 +65,18 @@ class UniqueValues(QgisAlgorithm):
     def group(self):
         return self.tr('Vector analysis')
 
+    def groupId(self):
+        return 'vectoranalysis'
+
     def __init__(self):
         super().__init__()
 
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
-                                                              self.tr('Input layer')))
-        self.addParameter(QgsProcessingParameterField(self.FIELD_NAME,
-                                                      self.tr('Target field'),
-                                                      parentLayerParameterName=self.INPUT, type=QgsProcessingParameterField.Any))
+                                                              self.tr('Input layer'), types=[QgsProcessing.TypeVector]))
+        self.addParameter(QgsProcessingParameterField(self.FIELDS,
+                                                      self.tr('Target field(s)'),
+                                                      parentLayerParameterName=self.INPUT, type=QgsProcessingParameterField.Any, allowMultiple=True))
 
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Unique values'), optional=True, defaultValue=''))
 
@@ -89,23 +93,48 @@ class UniqueValues(QgisAlgorithm):
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
-        field_name = self.parameterAsString(parameters, self.FIELD_NAME, context)
-        values = source.uniqueValues(source.fields().lookupField(field_name))
+        field_names = self.parameterAsFields(parameters, self.FIELDS, context)
 
         fields = QgsFields()
-        field = source.fields()[source.fields().lookupField(field_name)]
-        field.setName('VALUES')
-        fields.append(field)
+        field_indices = []
+        for field_name in field_names:
+            field_index = source.fields().lookupField(field_name)
+            if field_index < 0:
+                feedback.reportError(self.tr('Invalid field name {}').format(field_name))
+                continue
+            field = source.fields()[field_index]
+            fields.append(field)
+            field_indices.append(field_index)
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                fields, QgsWkbTypes.NoGeometry, QgsCoordinateReferenceSystem())
+
         results = {}
+        values = set()
+        if len(field_indices) == 1:
+            # one field, can use provider optimised method
+            values = tuple([v] for v in source.uniqueValues(field_indices[0]))
+        else:
+            # have to scan whole table
+            # TODO - add this support to QgsVectorDataProvider so we can run it on
+            # the backend
+            request = QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry)
+            request.setSubsetOfAttributes(field_indices)
+            total = 100.0 / source.featureCount() if source.featureCount() else 0
+            for current, f in enumerate(source.getFeatures(request)):
+                if feedback.isCanceled():
+                    break
+
+                value = tuple(f.attribute(i) for i in field_indices)
+                values.add(value)
+                feedback.setProgress(int(current * total))
+
         if sink:
             for value in values:
                 if feedback.isCanceled():
                     break
 
                 f = QgsFeature()
-                f.setAttributes([value])
+                f.setAttributes([attr for attr in value])
                 sink.addFeature(f, QgsFeatureSink.FastInsert)
             results[self.OUTPUT] = dest_id
 
@@ -115,7 +144,7 @@ class UniqueValues(QgisAlgorithm):
             results[self.OUTPUT_HTML_FILE] = output_file
 
         results[self.TOTAL_VALUES] = len(values)
-        results[self.UNIQUE_VALUES] = ';'.join([str(v) for v in
+        results[self.UNIQUE_VALUES] = ';'.join([','.join([str(attr) for attr in v]) for v in
                                                 values])
         return results
 
@@ -128,5 +157,5 @@ class UniqueValues(QgisAlgorithm):
             f.write(self.tr('<p>Unique values:</p>'))
             f.write('<ul>')
             for s in algData:
-                f.write('<li>' + str(s) + '</li>')
+                f.write('<li>' + ','.join([str(attr) for attr in s]) + '</li>')
             f.write('</ul></body></html>')

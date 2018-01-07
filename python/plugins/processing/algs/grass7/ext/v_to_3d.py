@@ -26,11 +26,20 @@ __copyright__ = '(C) 2016, Médéric Ribreux'
 __revision__ = '$Format:%H$'
 
 
-def checkParameterValuesBeforeExecuting(alg):
+def checkParameterValuesBeforeExecuting(alg, parameters, context):
     """ Verify if we have the right parameters """
-    height = alg.getParameterValue('height')
-    column = alg.getParameterValue('column')
+    height = alg.parameterAsDouble(parameters, 'height', context)
+    column = alg.parameterAsString(parameters, 'column', context)
     if (height and column) or (not height and not column):
         return alg.tr("You need to set either a fixed height value or the height column!")
 
     return None
+
+
+def processInputs(alg, parameters, context):
+    if 'input' in alg.exportedLayers:
+        return
+
+    # We need to import all the bands and color tables of the input raster
+    alg.loadVectorLayerFromParameter('input', parameters, context, False)
+    alg.postInputs()

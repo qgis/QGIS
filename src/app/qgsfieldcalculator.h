@@ -29,7 +29,7 @@ class APP_EXPORT QgsFieldCalculator: public QDialog, private Ui::QgsFieldCalcula
     Q_OBJECT
   public:
     QgsFieldCalculator( QgsVectorLayer *vl, QWidget *parent = nullptr );
-    ~QgsFieldCalculator();
+    ~QgsFieldCalculator() override;
 
     int changedAttributeId() const { return mAttributeId; }
 

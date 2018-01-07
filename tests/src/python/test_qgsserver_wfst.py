@@ -201,8 +201,8 @@ class TestWFST(unittest.TestCase):
         """
         for f in features:
             wf = self._getFeatureByAttribute(wfs_layer, 'id', f['id'])
-            self.assertEqual(wf.geometry().exportToWkt(),
-                             f.geometry().exportToWkt())
+            self.assertEqual(wf.geometry().asWkt(),
+                             f.geometry().asWkt())
             self.assertEqual(f['name'], wf['name'])
 
     def _checkDeleteFeatures(self, layer, features):
@@ -238,15 +238,15 @@ class TestWFST(unittest.TestCase):
         wfs_layer = self._getWFSLayer(layer_name)
         feat1 = QgsFeature(wfs_layer.pendingFields())
         feat1['id'] = 11
-        feat1.setGeometry(QgsGeometry.fromPoint(QgsPointXY(9, 45)))
+        feat1.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(9, 45)))
         feat2 = QgsFeature(wfs_layer.pendingFields())
-        feat2.setGeometry(QgsGeometry.fromPoint(QgsPointXY(9.5, 45.5)))
+        feat2.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(9.5, 45.5)))
         feat2['id'] = 12
         old_features = [feat1, feat2]
         # Change feat1
         new_feat1 = QgsFeature(wfs_layer.pendingFields())
         new_feat1['id'] = 121
-        new_feat1.setGeometry(QgsGeometry.fromPoint(QgsPointXY(10, 46)))
+        new_feat1.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(10, 46)))
         new_features = [new_feat1, feat2]
         self._testLayer(wfs_layer, layer, old_features, new_features)
 
@@ -261,9 +261,9 @@ class TestWFST(unittest.TestCase):
         feat1 = QgsFeature(wfs_layer.pendingFields())
         feat1['id'] = 11
         feat1['name'] = 'name 11'
-        feat1.setGeometry(QgsGeometry.fromPoint(QgsPointXY(9, 45)))
+        feat1.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(9, 45)))
         feat2 = QgsFeature(wfs_layer.pendingFields())
-        feat2.setGeometry(QgsGeometry.fromPoint(QgsPointXY(9.5, 45.5)))
+        feat2.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(9.5, 45.5)))
         feat2['id'] = 12
         feat2['name'] = 'name 12'
         old_features = [feat1, feat2]
@@ -271,11 +271,11 @@ class TestWFST(unittest.TestCase):
         new_feat1 = QgsFeature(wfs_layer.pendingFields())
         new_feat1['id'] = 121
         new_feat1['name'] = 'name 121'
-        new_feat1.setGeometry(QgsGeometry.fromPoint(QgsPointXY(10, 46)))
+        new_feat1.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(10, 46)))
         new_feat2 = QgsFeature(wfs_layer.pendingFields())
         new_feat2['id'] = 122
         new_feat2['name'] = 'name 122'
-        new_feat2.setGeometry(QgsGeometry.fromPoint(QgsPointXY(10.5, 47)))
+        new_feat2.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(10.5, 47)))
         new_features = [new_feat1, new_feat2]
         self._testLayer(wfs_layer, layer, old_features, new_features)
 
@@ -313,9 +313,9 @@ class TestWFST(unittest.TestCase):
         feat1 = QgsFeature(wfs_layer.pendingFields())
         feat1['id'] = 11
         feat1['name'] = 'name 11'
-        feat1.setGeometry(QgsGeometry.fromPolyline([QgsPointXY(9, 45), QgsPointXY(10, 46)]))
+        feat1.setGeometry(QgsGeometry.fromPolylineXY([QgsPointXY(9, 45), QgsPointXY(10, 46)]))
         feat2 = QgsFeature(wfs_layer.pendingFields())
-        feat2.setGeometry(QgsGeometry.fromPolyline([QgsPointXY(9.5, 45.5), QgsPointXY(10.5, 46.5)]))
+        feat2.setGeometry(QgsGeometry.fromPolylineXY([QgsPointXY(9.5, 45.5), QgsPointXY(10.5, 46.5)]))
         feat2['id'] = 12
         feat2['name'] = 'name 12'
         old_features = [feat1, feat2]
@@ -323,7 +323,7 @@ class TestWFST(unittest.TestCase):
         new_feat1 = QgsFeature(wfs_layer.pendingFields())
         new_feat1['id'] = 121
         new_feat1['name'] = 'name 121'
-        new_feat1.setGeometry(QgsGeometry.fromPolyline([QgsPointXY(9.8, 45.8), QgsPointXY(10.8, 46.8)]))
+        new_feat1.setGeometry(QgsGeometry.fromPolylineXY([QgsPointXY(9.8, 45.8), QgsPointXY(10.8, 46.8)]))
         new_features = [new_feat1, feat2]
         self._testLayer(wfs_layer, layer, old_features, new_features)
 

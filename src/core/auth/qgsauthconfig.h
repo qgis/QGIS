@@ -264,33 +264,51 @@ class CORE_EXPORT QgsPkiConfigBundle
      * \param config Authentication method configuration
      * \param cert Certificate to store in bundle
      * \param certkey Private key to store in bundle
+     * \param cachain list of CA certificates
      */
     QgsPkiConfigBundle( const QgsAuthMethodConfig &config,
                         const QSslCertificate &cert,
-                        const QSslKey &certkey );
+                        const QSslKey &certkey,
+                        const QList<QSslCertificate> &cachain = QList<QSslCertificate>( ) );
 
     //! Whether the bundle is valid
     bool isValid();
 
     //! Authentication method configuration
     const QgsAuthMethodConfig config() const { return mConfig; }
+
     //! Set authentication method configuration
     void setConfig( const QgsAuthMethodConfig &config ) { mConfig = config; }
 
     //! Client certificate object
     const QSslCertificate clientCert() const { return mCert; }
+
     //! Set client certificate object
     void setClientCert( const QSslCertificate &cert ) { mCert = cert; }
 
     //! Private key object
     const QSslKey clientCertKey() const { return mCertKey; }
+
     //! Set private key object
     void setClientCertKey( const QSslKey &certkey ) { mCertKey = certkey; }
+
+    /**
+     * \brief caChain return the CA chain
+     * \return list of CA certificates
+     */
+    QList<QSslCertificate> caChain() const { return mCaChain; }
+
+    /**
+     * \brief setCaChain set the CA chain
+     * \param caChain
+     */
+    void setCaChain( const QList<QSslCertificate> &caChain ) { mCaChain = caChain; }
 
   private:
     QgsAuthMethodConfig mConfig;
     QSslCertificate mCert;
     QSslKey mCertKey;
+    QList<QSslCertificate> mCaChain;
 };
 
 

@@ -649,7 +649,7 @@ QPicture QgsSymbolLayerUtils::symbolLayerPreviewPicture( QgsSymbolLayer *layer, 
   painter.setRenderHint( QPainter::Antialiasing );
   QgsRenderContext renderContext = QgsRenderContext::fromQPainter( &painter );
   renderContext.setForceVectorOutput( true );
-  QgsSymbolRenderContext symbolContext( renderContext, units, 1.0, false, 0, nullptr, QgsFields(), scale );
+  QgsSymbolRenderContext symbolContext( renderContext, units, 1.0, false, nullptr, nullptr, QgsFields(), scale );
   layer->drawPreviewIcon( symbolContext, size );
   painter.end();
   return picture;
@@ -663,7 +663,7 @@ QIcon QgsSymbolLayerUtils::symbolLayerPreviewIcon( QgsSymbolLayer *layer, QgsUni
   painter.begin( &pixmap );
   painter.setRenderHint( QPainter::Antialiasing );
   QgsRenderContext renderContext = QgsRenderContext::fromQPainter( &painter );
-  QgsSymbolRenderContext symbolContext( renderContext, u, 1.0, false, 0, nullptr, QgsFields(), scale );
+  QgsSymbolRenderContext symbolContext( renderContext, u, 1.0, false, nullptr, nullptr, QgsFields(), scale );
   layer->drawPreviewIcon( symbolContext, size );
   painter.end();
   return QIcon( pixmap );
@@ -721,7 +721,7 @@ void QgsSymbolLayerUtils::drawStippledBackground( QPainter *painter, QRect rect 
 #include <cmath>
 #include <cfloat>
 
-static QPolygonF makeOffsetGeometry( const QgsPolyline &polyline )
+static QPolygonF makeOffsetGeometry( const QgsPolylineXY &polyline )
 {
   int i, pointCount = polyline.count();
 
@@ -735,7 +735,7 @@ static QPolygonF makeOffsetGeometry( const QgsPolyline &polyline )
 
   return resultLine;
 }
-static QList<QPolygonF> makeOffsetGeometry( const QgsPolygon &polygon )
+static QList<QPolygonF> makeOffsetGeometry( const QgsPolygonXY &polygon )
 {
   QList<QPolygonF> resultGeom;
   resultGeom.reserve( polygon.size() );
@@ -756,12 +756,12 @@ QList<QPolygonF> offsetLine( QPolygonF polyline, double dist, QgsWkbTypes::Geome
 
   unsigned int i, pointCount = polyline.count();
 
-  QgsPolyline tempPolyline( pointCount );
+  QgsPolylineXY tempPolyline( pointCount );
   QPointF *tempPtr = polyline.data();
   for ( i = 0; i < pointCount; ++i, tempPtr++ )
     tempPolyline[i] = QgsPointXY( tempPtr->rx(), tempPtr->ry() );
 
-  QgsGeometry tempGeometry = geometryType == QgsWkbTypes::PolygonGeometry ? QgsGeometry::fromPolygon( QgsPolygon() << tempPolyline ) : QgsGeometry::fromPolyline( tempPolyline );
+  QgsGeometry tempGeometry = geometryType == QgsWkbTypes::PolygonGeometry ? QgsGeometry::fromPolygonXY( QgsPolygonXY() << tempPolyline ) : QgsGeometry::fromPolylineXY( tempPolyline );
   if ( !tempGeometry.isNull() )
   {
     int quadSegments = 0; // we want miter joins, not round joins
@@ -779,7 +779,7 @@ QList<QPolygonF> offsetLine( QPolygonF polyline, double dist, QgsWkbTypes::Geome
 
       if ( QgsWkbTypes::flatType( tempGeometry.wkbType() ) == QgsWkbTypes::LineString )
       {
-        QgsPolyline line = tempGeometry.asPolyline();
+        QgsPolylineXY line = tempGeometry.asPolyline();
         // Reverse the line if offset was negative, see
         // https://issues.qgis.org/issues/13811
         if ( dist < 0 ) std::reverse( line.begin(), line.end() );
@@ -793,7 +793,7 @@ QList<QPolygonF> offsetLine( QPolygonF polyline, double dist, QgsWkbTypes::Geome
       }
       else if ( QgsWkbTypes::flatType( tempGeometry.wkbType() ) == QgsWkbTypes::MultiLineString )
       {
-        QgsMultiPolyline tempMPolyline = tempGeometry.asMultiPolyline();
+        QgsMultiPolylineXY tempMPolyline = tempGeometry.asMultiPolyline();
         resultLine.reserve( tempMPolyline.count() );
         for ( int part = 0; part < tempMPolyline.count(); ++part )
         {
@@ -803,7 +803,7 @@ QList<QPolygonF> offsetLine( QPolygonF polyline, double dist, QgsWkbTypes::Geome
       }
       else if ( QgsWkbTypes::flatType( tempGeometry.wkbType() ) == QgsWkbTypes::MultiPolygon )
       {
-        QgsMultiPolygon tempMPolygon = tempGeometry.asMultiPolygon();
+        QgsMultiPolygonXY tempMPolygon = tempGeometry.asMultiPolygon();
         resultLine.reserve( tempMPolygon.count() );
         for ( int part = 0; part < tempMPolygon.count(); ++part )
         {
@@ -3782,10 +3782,10 @@ QPointF QgsSymbolLayerUtils::polygonPointOnSurface( const QPolygonF &points )
   {
     unsigned int i, pointCount = points.count();
 
-    QgsPolyline polyline( pointCount );
+    QgsPolylineXY polyline( pointCount );
     for ( i = 0; i < pointCount; ++i ) polyline[i] = QgsPointXY( points[i].x(), points[i].y() );
 
-    QgsGeometry geom = QgsGeometry::fromPolygon( QgsPolygon() << polyline );
+    QgsGeometry geom = QgsGeometry::fromPolygonXY( QgsPolygonXY() << polyline );
     if ( !geom.isNull() )
     {
       QgsGeometry pointOnSurfaceGeom = geom.pointOnSurface();

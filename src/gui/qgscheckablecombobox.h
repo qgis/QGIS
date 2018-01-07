@@ -55,7 +55,7 @@ class QgsCheckableItemModel : public QStandardItemModel
      * (ItemIsUserCheckable).
      * \param index item index
      */
-    virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
+    Qt::ItemFlags flags( const QModelIndex &index ) const override;
 
     /**
      * Returns the data stored under the given role for the item
@@ -63,7 +63,7 @@ class QgsCheckableItemModel : public QStandardItemModel
      * \param index item index
      * \param role data role
      */
-    virtual QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const;
+    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
 
     /**
      * Sets the role data for the item at index to value.
@@ -72,7 +72,7 @@ class QgsCheckableItemModel : public QStandardItemModel
      * \param role data role
      * \returns true on success, false otherwise
      */
-    virtual bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole );
+    bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
 
   signals:
 
@@ -111,7 +111,7 @@ class QgsCheckBoxDelegate : public QStyledItemDelegate
      * \param option style option
      * \param index item index
      */
-    virtual void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
+    void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
 };
 #endif
 
@@ -200,12 +200,12 @@ class GUI_EXPORT QgsCheckableComboBox : public QComboBox
      * Hides the list of items in the combobox if it is currently
      * visible and resets the internal state.
      */
-    virtual void hidePopup() override;
+    void hidePopup() override;
 
     /**
      * Filters events to enable context menu
      */
-    virtual bool eventFilter( QObject *object, QEvent *event ) override;
+    bool eventFilter( QObject *object, QEvent *event ) override;
 
   signals:
 
@@ -228,7 +228,7 @@ class GUI_EXPORT QgsCheckableComboBox : public QComboBox
     /**
      * Handler for widget resizing
      */
-    virtual void resizeEvent( QResizeEvent *event ) override;
+    void resizeEvent( QResizeEvent *event ) override;
 
   protected slots:
 

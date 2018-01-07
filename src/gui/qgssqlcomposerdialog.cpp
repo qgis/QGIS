@@ -212,13 +212,13 @@ void QgsSQLComposerDialog::accept()
     if ( !mSQLValidatorCallback->isValid( sql(), errorMsg, warningMsg ) )
     {
       if ( errorMsg.isEmpty() )
-        errorMsg = tr( "An error occurred during evaluation of the SQL statement" );
-      QMessageBox::critical( this, tr( "SQL error" ), errorMsg );
+        errorMsg = tr( "An error occurred during evaluation of the SQL statement." );
+      QMessageBox::critical( this, tr( "SQL Error" ), errorMsg );
       return;
     }
     if ( !warningMsg.isEmpty() )
     {
-      QMessageBox::warning( this, tr( "SQL warning" ), warningMsg );
+      QMessageBox::warning( this, tr( "SQL Warning" ), warningMsg );
     }
   }
   QDialog::accept();
@@ -357,7 +357,7 @@ void QgsSQLComposerDialog::addTableNames( const QList<PairNameTitle> &listNameTi
       if ( pair.second.size() < 40 )
         entryText += " (" + pair.second + ")";
       else
-        entryText += " (" + pair.second.mid( 0, 20 ) + "…" + pair.second.mid( pair.second.size() - 20 ) + ")";
+        entryText += " (" + pair.second.mid( 0, 20 ) + QChar( 0x2026 ) + pair.second.mid( pair.second.size() - 20 ) + ")";
     }
     listCombo << entryText;
     mapTableEntryTextToName[entryText] = pair.first;

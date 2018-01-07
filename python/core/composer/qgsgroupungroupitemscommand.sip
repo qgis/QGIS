@@ -13,9 +13,9 @@
 class QgsGroupUngroupItemsCommand: QObject, QUndoCommand
 {
 %Docstring
- A composer command class for grouping / ungrouping composer items.
+A composer command class for grouping / ungrouping composer items.
 
- If mState == Ungrouped, the command owns the group item
+If mState == Ungrouped, the command owns the group item
 %End
 
 %TypeHeaderCode
@@ -31,13 +31,13 @@ class QgsGroupUngroupItemsCommand: QObject, QUndoCommand
 
     QgsGroupUngroupItemsCommand( State s, QgsComposerItemGroup *item, QgsComposition *c, const QString &text, QUndoCommand *parent = 0 );
 %Docstring
- Create a group or ungroup command
+Create a group or ungroup command
 
-.. seealso:: State)
- \param item the group item being created or ungrouped
- \param c the composition including this group
- \param text command label
- \param parent parent command, if any
+.. seealso:: State
+:param item: the group item being created or ungrouped
+:param c: the composition including this group
+:param text: command label
+:param parent: parent command, if any
 %End
     ~QgsGroupUngroupItemsCommand();
 

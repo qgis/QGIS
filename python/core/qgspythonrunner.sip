@@ -27,26 +27,23 @@ Added in QGIS v?
 
     static bool isValid();
 %Docstring
- Returns true if the runner has an instance
+Returns true if the runner has an instance
 (and thus is able to run commands) *
- :rtype: bool
 %End
 
     static bool run( const QString &command, const QString &messageOnError = QString() );
 %Docstring
 Execute a Python statement
- :rtype: bool
 %End
 
     static bool eval( const QString &command, QString &result /Out/ );
 %Docstring
 Eval a Python statement
- :rtype: bool
 %End
 
     static void setInstance( QgsPythonRunner *runner /Transfer/ );
 %Docstring
- Assign an instance of Python runner so that run() can be used.
+Assign an instance of Python runner so that run() can be used.
 This method should be called during app initialization.
 Takes ownership of the object, deletes previous instance. *
 %End
@@ -59,14 +56,8 @@ Protected constructor: can be instantiated only from children
     virtual ~QgsPythonRunner();
 
     virtual bool runCommand( QString command, QString messageOnError = QString() ) = 0;
-%Docstring
- :rtype: bool
-%End
 
     virtual bool evalCommand( QString command, QString &result ) = 0;
-%Docstring
- :rtype: bool
-%End
 
 };
 

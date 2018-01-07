@@ -172,7 +172,7 @@ class CORE_EXPORT QgsLayerTree : public QgsLayerTreeGroup
      *
      * \since QGIS 3.0
      */
-    static QgsLayerTree *readXml( QDomElement &element );
+    static QgsLayerTree *readXml( QDomElement &element, const QgsReadWriteContext &context );
 
     /**
      * Load the layer order from an XML element.
@@ -182,9 +182,9 @@ class CORE_EXPORT QgsLayerTree : public QgsLayerTreeGroup
      */
     void readLayerOrderFromXml( const QDomElement &doc );
 
-    virtual void writeXml( QDomElement &parentElement ) override;
+    void writeXml( QDomElement &parentElement, const QgsReadWriteContext &context ) override;
 
-    virtual QgsLayerTree *clone() const override SIP_FACTORY;
+    QgsLayerTree *clone() const override SIP_FACTORY;
 
     /**
      * Clear any information from this layer tree.

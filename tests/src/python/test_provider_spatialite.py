@@ -28,17 +28,18 @@ from qgis.core import (QgsVectorLayer,
                        QgsFieldConstraints,
                        QgsVectorLayerUtils,
                        QgsSettings,
-                       QgsDefaultValue)
+                       QgsDefaultValue,
+                       QgsWkbTypes)
 
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
 from providertestbase import ProviderTestCase
-from qgis.PyQt.QtCore import QVariant
+from qgis.PyQt.QtCore import QObject, QVariant
 
 from qgis.utils import spatialite_connect
 
-# Pass no_exit=True: for some reason this crashes on exit on Travis MacOSX
-start_app(sys.platform != 'darwin')
+# Pass no_exit=True: for some reason this crashes sometimes on exit on Travis
+start_app(True)
 TEST_DATA_DIR = unitTestDataPath()
 
 
@@ -62,6 +63,7 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
+        print(' ### Setup Spatialite Provider Test Class')
         # setup provider for base tests
         cls.vl = QgsVectorLayer('dbname=\'{}/provider/spatialite.db\' table="somedata" (geom) sql='.format(TEST_DATA_DIR), 'test', 'spatialite')
         assert(cls.vl.isValid())
@@ -88,6 +90,33 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         cur.execute(sql)
         sql = "INSERT INTO test_pg (id, name, geometry) "
         sql += "VALUES (1, 'toto', GeomFromText('POLYGON((0 0,1 0,1 1,0 1,0 0))', 4326))"
+        cur.execute(sql)
+
+        # table with Z dimension geometry
+        sql = "CREATE TABLE test_z (id INTEGER NOT NULL PRIMARY KEY, name TEXT NOT NULL)"
+        cur.execute(sql)
+        sql = "SELECT AddGeometryColumn('test_z', 'geometry', 4326, 'POINT', 'XYZ')"
+        cur.execute(sql)
+        sql = "INSERT INTO test_z (id, name, geometry) "
+        sql += "VALUES (1, 'toto', GeomFromText('POINT Z (0 0 1)', 4326))"
+        cur.execute(sql)
+
+        # table with M value geometry
+        sql = "CREATE TABLE test_m (id INTEGER NOT NULL PRIMARY KEY, name TEXT NOT NULL)"
+        cur.execute(sql)
+        sql = "SELECT AddGeometryColumn('test_m', 'geometry', 4326, 'POINT', 'XYM')"
+        cur.execute(sql)
+        sql = "INSERT INTO test_m (id, name, geometry) "
+        sql += "VALUES (1, 'toto', GeomFromText('POINT M (0 0 1)', 4326))"
+        cur.execute(sql)
+
+        # table with Z dimension and M value geometry
+        sql = "CREATE TABLE test_zm (id INTEGER NOT NULL PRIMARY KEY, name TEXT NOT NULL)"
+        cur.execute(sql)
+        sql = "SELECT AddGeometryColumn('test_zm', 'geometry', 4326, 'POINT', 'XYZM')"
+        cur.execute(sql)
+        sql = "INSERT INTO test_zm (id, name, geometry) "
+        sql += "VALUES (1, 'toto', GeomFromText('POINT ZM (0 0 1 1)', 4326))"
         cur.execute(sql)
 
         # table with multiple column primary key
@@ -144,6 +173,12 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         sql = "SELECT AddGeometryColumn('test_relation_b', 'Geometry', 4326, 'POLYGON', 'XY')"
         cur.execute(sql)
 
+        # table to test auto increment
+        sql = "CREATE TABLE test_autoincrement(id INTEGER PRIMARY KEY AUTOINCREMENT, num INTEGER);"
+        cur.execute(sql)
+        sql = "INSERT INTO test_autoincrement (num) VALUES (123);"
+        cur.execute(sql)
+
         # tables with constraints
         sql = "CREATE TABLE test_constraints(id INTEGER PRIMARY KEY, num INTEGER NOT NULL, desc TEXT UNIQUE, desc2 TEXT, num2 INTEGER NOT NULL UNIQUE)"
         cur.execute(sql)
@@ -160,6 +195,8 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
     @classmethod
     def tearDownClass(cls):
         """Run after all tests"""
+        print(' ### Tear Down Spatialite Provider Test Class')
+
         # for the time being, keep the file to check with qgis
         # if os.path.exists(cls.dbname) :
         #    os.remove(cls.dbname)
@@ -304,6 +341,31 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         sum_id2 = sum(f.attributes()[0] for f in l.getFeatures())
         self.assertEqual(sum_id1, 32)
         self.assertEqual(sum_id2, 32)
+
+    def test_zm(self):
+        """Test Z dimension and M value"""
+        l = QgsVectorLayer("dbname=%s table='test_z' (geometry) key='id'" % self.dbname, "test_z", "spatialite")
+        self.assertTrue(l.isValid())
+        self.assertTrue(QgsWkbTypes.hasZ(l.wkbType()))
+        feature = l.getFeature(1)
+        geom = feature.geometry().constGet()
+        self.assertEqual(geom.z(), 1.0)
+
+        l = QgsVectorLayer("dbname=%s table='test_m' (geometry) key='id'" % self.dbname, "test_m", "spatialite")
+        self.assertTrue(l.isValid())
+        self.assertTrue(QgsWkbTypes.hasM(l.wkbType()))
+        feature = l.getFeature(1)
+        geom = feature.geometry().constGet()
+        self.assertEqual(geom.m(), 1.0)
+
+        l = QgsVectorLayer("dbname=%s table='test_zm' (geometry) key='id'" % self.dbname, "test_zm", "spatialite")
+        self.assertTrue(l.isValid())
+        self.assertTrue(QgsWkbTypes.hasZ(l.wkbType()))
+        self.assertTrue(QgsWkbTypes.hasM(l.wkbType()))
+        feature = l.getFeature(1)
+        geom = feature.geometry().constGet()
+        self.assertEqual(geom.z(), 1.0)
+        self.assertEqual(geom.m(), 1.0)
 
     def test_case(self):
         """Test case sensitivity issues"""
@@ -511,6 +573,14 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         self.assertFalse(fields.at(3).constraints().constraints() & QgsFieldConstraints.ConstraintUnique)
         self.assertTrue(fields.at(4).constraints().constraints() & QgsFieldConstraints.ConstraintUnique)
         self.assertEqual(fields.at(4).constraints().constraintOrigin(QgsFieldConstraints.ConstraintUnique), QgsFieldConstraints.ConstraintOriginProvider)
+
+    def testSkipConstraintCheck(self):
+        vl = QgsVectorLayer("dbname=%s table=test_autoincrement" % self.dbname, "test_autoincrement",
+                            "spatialite")
+        self.assertTrue(vl.isValid())
+
+        self.assertTrue(vl.dataProvider().skipConstraintCheck(0, QgsFieldConstraints.ConstraintUnique, str("Autogenerate")))
+        self.assertFalse(vl.dataProvider().skipConstraintCheck(0, QgsFieldConstraints.ConstraintUnique, 123))
 
     # This test would fail. It would require turning on WAL
     def XXXXXtestLocking(self):

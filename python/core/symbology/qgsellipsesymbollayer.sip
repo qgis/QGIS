@@ -12,7 +12,7 @@
 class QgsEllipseSymbolLayer: QgsMarkerSymbolLayer
 {
 %Docstring
- A symbol layer for rendering objects with major and minor axis (e.g. ellipse, rectangle )*
+A symbol layer for rendering objects with major and minor axis (e.g. ellipse, rectangle )*
 %End
 
 %TypeHeaderCode
@@ -22,13 +22,7 @@ class QgsEllipseSymbolLayer: QgsMarkerSymbolLayer
     QgsEllipseSymbolLayer();
 
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
-%Docstring
- :rtype: QgsSymbolLayer
-%End
     static QgsSymbolLayer *createFromSld( QDomElement &element ) /Factory/;
-%Docstring
- :rtype: QgsSymbolLayer
-%End
 
     virtual void renderPoint( QPointF point, QgsSymbolRenderContext &context );
 
@@ -53,46 +47,32 @@ class QgsEllipseSymbolLayer: QgsMarkerSymbolLayer
 
     void setSymbolName( const QString &name );
     QString symbolName() const;
-%Docstring
- :rtype: str
-%End
 
     void setSymbolWidth( double w );
     double symbolWidth() const;
-%Docstring
- :rtype: float
-%End
 
     void setSymbolHeight( double h );
     double symbolHeight() const;
-%Docstring
- :rtype: float
-%End
 
     Qt::PenStyle strokeStyle() const;
-%Docstring
- :rtype: Qt.PenStyle
-%End
     void setStrokeStyle( Qt::PenStyle strokeStyle );
 
     Qt::PenJoinStyle penJoinStyle() const;
 %Docstring
- Get stroke join style.
+Get stroke join style.
+
 .. versionadded:: 2.16
- :rtype: Qt.PenJoinStyle
 %End
 
     void setPenJoinStyle( Qt::PenJoinStyle style );
 %Docstring
- Set stroke join style.
+Set stroke join style.
+
 .. versionadded:: 2.16
 %End
 
     void setStrokeWidth( double w );
     double strokeWidth() const;
-%Docstring
- :rtype: float
-%End
 
     virtual void setFillColor( const QColor &c );
     virtual QColor fillColor() const;
@@ -102,67 +82,68 @@ class QgsEllipseSymbolLayer: QgsMarkerSymbolLayer
 
     void setSymbolWidthUnit( QgsUnitTypes::RenderUnit unit );
 %Docstring
- Sets the units for the symbol's width.
- \param unit symbol units
-.. seealso:: symbolWidthUnit()
-.. seealso:: setSymbolHeightUnit()
+Sets the units for the symbol's width.
+
+:param unit: symbol units
+
+.. seealso:: :py:func:`symbolWidthUnit()`
+
+.. seealso:: :py:func:`setSymbolHeightUnit()`
 %End
 
     QgsUnitTypes::RenderUnit symbolWidthUnit() const;
 %Docstring
- Returns the units for the symbol's width.
-.. seealso:: setSymbolWidthUnit()
-.. seealso:: symbolHeightUnit()
- :rtype: QgsUnitTypes.RenderUnit
+Returns the units for the symbol's width.
+
+.. seealso:: :py:func:`setSymbolWidthUnit()`
+
+.. seealso:: :py:func:`symbolHeightUnit()`
 %End
 
     void setSymbolWidthMapUnitScale( const QgsMapUnitScale &scale );
     const QgsMapUnitScale &symbolWidthMapUnitScale() const;
-%Docstring
- :rtype: QgsMapUnitScale
-%End
 
     void setSymbolHeightUnit( QgsUnitTypes::RenderUnit unit );
 %Docstring
- Sets the units for the symbol's height.
- \param unit symbol units
-.. seealso:: symbolHeightUnit()
-.. seealso:: setSymbolWidthUnit()
+Sets the units for the symbol's height.
+
+:param unit: symbol units
+
+.. seealso:: :py:func:`symbolHeightUnit()`
+
+.. seealso:: :py:func:`setSymbolWidthUnit()`
 %End
 
     QgsUnitTypes::RenderUnit symbolHeightUnit() const;
 %Docstring
- Returns the units for the symbol's height.
-.. seealso:: setSymbolHeightUnit()
-.. seealso:: symbolWidthUnit()
- :rtype: QgsUnitTypes.RenderUnit
+Returns the units for the symbol's height.
+
+.. seealso:: :py:func:`setSymbolHeightUnit()`
+
+.. seealso:: :py:func:`symbolWidthUnit()`
 %End
 
     void setSymbolHeightMapUnitScale( const QgsMapUnitScale &scale );
     const QgsMapUnitScale &symbolHeightMapUnitScale() const;
-%Docstring
- :rtype: QgsMapUnitScale
-%End
 
     void setStrokeWidthUnit( QgsUnitTypes::RenderUnit unit );
 %Docstring
- Sets the units for the symbol's stroke width.
- \param unit symbol units
-.. seealso:: strokeWidthUnit()
+Sets the units for the symbol's stroke width.
+
+:param unit: symbol units
+
+.. seealso:: :py:func:`strokeWidthUnit()`
 %End
 
     QgsUnitTypes::RenderUnit strokeWidthUnit() const;
 %Docstring
- Returns the units for the symbol's stroke width.
-.. seealso:: setStrokeWidthUnit()
- :rtype: QgsUnitTypes.RenderUnit
+Returns the units for the symbol's stroke width.
+
+.. seealso:: :py:func:`setStrokeWidthUnit()`
 %End
 
     void setStrokeWidthMapUnitScale( const QgsMapUnitScale &scale );
     const QgsMapUnitScale &strokeWidthMapUnitScale() const;
-%Docstring
- :rtype: QgsMapUnitScale
-%End
 
     virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
 

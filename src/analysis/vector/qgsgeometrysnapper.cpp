@@ -505,17 +505,17 @@ QgsGeometry QgsGeometrySnapper::snapGeometry( const QgsGeometry &geometry, doubl
        ( mode == EndPointPreferClosest || mode == EndPointPreferNodes || mode == EndPointToEndPoint ) )
     return geometry;
 
-  QgsPoint center = qgsgeometry_cast< const QgsPoint * >( geometry.geometry() ) ? *static_cast< const QgsPoint * >( geometry.geometry() ) :
-                    QgsPoint( geometry.geometry()->boundingBox().center() );
+  QgsPoint center = qgsgeometry_cast< const QgsPoint * >( geometry.constGet() ) ? *static_cast< const QgsPoint * >( geometry.constGet() ) :
+                    QgsPoint( geometry.constGet()->boundingBox().center() );
 
   QgsSnapIndex refSnapIndex( center, 10 * snapTolerance );
   Q_FOREACH ( const QgsGeometry &geom, referenceGeometries )
   {
-    refSnapIndex.addGeometry( geom.geometry() );
+    refSnapIndex.addGeometry( geom.constGet() );
   }
 
   // Snap geometries
-  QgsAbstractGeometry *subjGeom = geometry.geometry()->clone();
+  QgsAbstractGeometry *subjGeom = geometry.constGet()->clone();
   QList < QList< QList<PointFlag> > > subjPointFlags;
 
   // Pass 1: snap vertices of subject geometry to reference vertices
@@ -550,6 +550,7 @@ QgsGeometry QgsGeometrySnapper::snapGeometry( const QgsGeometry &geometry, doubl
           switch ( mode )
           {
             case PreferNodes:
+            case PreferNodesNoExtraVertices:
             case EndPointPreferNodes:
             case EndPointToEndPoint:
             {
@@ -568,6 +569,7 @@ QgsGeometry QgsGeometrySnapper::snapGeometry( const QgsGeometry &geometry, doubl
             }
 
             case PreferClosest:
+            case PreferClosestNoExtraVertices:
             case EndPointPreferClosest:
             {
               QgsPoint nodeSnap, segmentSnap;
@@ -605,8 +607,12 @@ QgsGeometry QgsGeometrySnapper::snapGeometry( const QgsGeometry &geometry, doubl
   if ( qgsgeometry_cast< const QgsPoint * >( subjGeom ) )
     return QgsGeometry( subjGeom );
   //or for end point snapping
-  if ( mode == EndPointPreferClosest || mode == EndPointPreferNodes || mode == EndPointToEndPoint )
-    return QgsGeometry( subjGeom );
+  if ( mode == PreferClosestNoExtraVertices || mode == PreferNodesNoExtraVertices || mode == EndPointPreferClosest || mode == EndPointPreferNodes || mode == EndPointToEndPoint )
+  {
+    QgsGeometry result( subjGeom );
+    result.removeDuplicateNodes();
+    return result;
+  }
 
   // SnapIndex for subject feature
   std::unique_ptr< QgsSnapIndex > subjSnapIndex( new QgsSnapIndex( center, 10 * snapTolerance ) );
@@ -619,16 +625,16 @@ QgsGeometry QgsGeometrySnapper::snapGeometry( const QgsGeometry &geometry, doubl
   // Pass 2: add missing vertices to subject geometry
   Q_FOREACH ( const QgsGeometry &refGeom, referenceGeometries )
   {
-    for ( int iPart = 0, nParts = refGeom.geometry()->partCount(); iPart < nParts; ++iPart )
+    for ( int iPart = 0, nParts = refGeom.constGet()->partCount(); iPart < nParts; ++iPart )
     {
-      for ( int iRing = 0, nRings = refGeom.geometry()->ringCount( iPart ); iRing < nRings; ++iRing )
+      for ( int iRing = 0, nRings = refGeom.constGet()->ringCount( iPart ); iRing < nRings; ++iRing )
       {
-        for ( int iVert = 0, nVerts = polyLineSize( refGeom.geometry(), iPart, iRing ); iVert < nVerts; ++iVert )
+        for ( int iVert = 0, nVerts = polyLineSize( refGeom.constGet(), iPart, iRing ); iVert < nVerts; ++iVert )
         {
 
           QgsSnapIndex::PointSnapItem *snapPoint = nullptr;
           QgsSnapIndex::SegmentSnapItem *snapSegment = nullptr;
-          QgsPoint point = refGeom.geometry()->vertexAt( QgsVertexId( iPart, iRing, iVert ) );
+          QgsPoint point = refGeom.constGet()->vertexAt( QgsVertexId( iPart, iRing, iVert ) );
           if ( subjSnapIndex->getSnapItem( point, snapTolerance, &snapPoint, &snapSegment ) )
           {
             // Snap to segment, unless a subject point was already snapped to the reference point
@@ -703,7 +709,9 @@ QgsGeometry QgsGeometrySnapper::snapGeometry( const QgsGeometry &geometry, doubl
     }
   }
 
-  return QgsGeometry( subjGeom );
+  QgsGeometry result( subjGeom );
+  result.removeDuplicateNodes();
+  return result;
 }
 
 int QgsGeometrySnapper::polyLineSize( const QgsAbstractGeometry *geom, int iPart, int iRing )

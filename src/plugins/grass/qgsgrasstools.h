@@ -46,10 +46,10 @@ class QgsGrassTools: public QgsDockWidget, public Ui::QgsGrassToolsBase
   public:
     //! Constructor
     QgsGrassTools( QgisInterface *iface,
-                   QWidget *parent = 0, const char *name = 0, Qt::WindowFlags f = 0 );
+                   QWidget *parent = nullptr, const char *name = nullptr, Qt::WindowFlags f = nullptr );
 
 
-    ~QgsGrassTools();
+    ~QgsGrassTools() override;
 
     //! Append item to model or parent
     void appendItem( QStandardItemModel *treeModel, QStandardItem *parent, QStandardItem *item );

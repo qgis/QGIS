@@ -45,7 +45,7 @@ class GUI_EXPORT QgsExpressionSelectionDialog : public QDialog, private Ui::QgsE
      * \param startText A default expression text to be applied (Defaults to empty)
      * \param parent parent object (owner)
      */
-    QgsExpressionSelectionDialog( QgsVectorLayer *layer, const QString &startText = QString(), QWidget *parent SIP_TRANSFERTHIS = 0 );
+    QgsExpressionSelectionDialog( QgsVectorLayer *layer, const QString &startText = QString(), QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * The builder widget that is used by the dialog
@@ -100,14 +100,14 @@ class GUI_EXPORT QgsExpressionSelectionDialog : public QDialog, private Ui::QgsE
      * Saves the window geometry
      * \param closeEvent Event object. Unused.
      */
-    virtual void closeEvent( QCloseEvent *closeEvent ) override;
+    void closeEvent( QCloseEvent *closeEvent ) override;
 
     /**
      * Implementation for done (default behavior when pressing esc)
      * Calls close, so the window geometry gets saved and the object deleted.
      * \param r   Result value. Unused.
      */
-    virtual void done( int r ) override;
+    void done( int r ) override;
 
   private:
     void saveRecent();

@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "coordinatecapturemaptool.h"
-#include "qgscursors.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaptopixel.h"
 #include "qgsrubberband.h"
@@ -29,9 +28,7 @@
 CoordinateCaptureMapTool::CoordinateCaptureMapTool( QgsMapCanvas *thepCanvas )
   : QgsMapTool( thepCanvas )
 {
-  // set cursor
-  QPixmap myCursor = QPixmap( ( const char ** ) capture_point_cursor );
-  mCursor = QCursor( myCursor, 8, 8 ); //8,8 is the point in the cursor where clicks register
+  setCursor( QgsApplication::getThemeCursor( QgsApplication::Cursor::CrossHair ) );
   mpMapCanvas = thepCanvas;
   mpRubberBand = new QgsRubberBand( mpMapCanvas, QgsWkbTypes::PolygonGeometry );
   mpRubberBand->setColor( Qt::red );

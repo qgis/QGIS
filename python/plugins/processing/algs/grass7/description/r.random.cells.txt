@@ -1,6 +1,7 @@
 r.random.cells
 Generates random cell values with spatial dependence.
 Raster (r.*)
-ParameterNumber|distance|Maximum distance of spatial correlation (value(s) >= 0.0)|0.0|None|0.0
-*ParameterNumber|seed|Random seed (SEED_MIN >= value >= SEED_MAX) (default [random])|None|None|0.0
-OutputRaster|output|Random
+QgsProcessingParameterNumber|distance|Maximum distance of spatial correlation (value(s) >= 0.0)|QgsProcessingParameterNumber.Double|0.0|False|0.0|None
+QgsProcessingParameterNumber|ncells|Maximum number of cells to be created|QgsProcessingParameterNumber.Integer|1000|True|1|None
+*QgsProcessingParameterNumber|seed|Random seed (SEED_MIN >= value >= SEED_MAX) (default [random])|QgsProcessingParameterNumber.Double|0.0|False|None|None
+QgsProcessingParameterRasterDestination|output|Random

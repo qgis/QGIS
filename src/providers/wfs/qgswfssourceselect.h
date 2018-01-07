@@ -39,7 +39,7 @@ class QgsWFSItemDelegate : public QItemDelegate
   public:
     explicit QgsWFSItemDelegate( QObject *parent = nullptr ) : QItemDelegate( parent ) { }
 
-    virtual QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
+    QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
 
 };
 
@@ -65,7 +65,7 @@ class QgsWFSSourceSelect: public QgsAbstractDataSourceWidget, private Ui::QgsWFS
   public:
 
     QgsWFSSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
-    ~QgsWFSSourceSelect();
+    ~QgsWFSSourceSelect() override;
 
   private:
     QgsWFSSourceSelect(); //default constructor is forbidden

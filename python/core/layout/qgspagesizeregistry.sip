@@ -13,6 +13,7 @@ class QgsPageSize
 {
 %Docstring
  A named page size for layouts.
+
 .. versionadded:: 3.0
 %End
 
@@ -25,13 +26,13 @@ class QgsPageSize
 
     QgsPageSize( const QString &name, const QgsLayoutSize &size, const QString &displayName = QString() );
 %Docstring
- Constructor for QgsPageSize, accepting the ``name`` of the page size and
- page ``size``.
+Constructor for QgsPageSize, accepting the ``name`` of the page size and
+page ``size``.
 %End
 
     QgsPageSize( const QgsLayoutSize &size );
 %Docstring
- Constructor for QgsPageSize, accepting a page ``size``.
+Constructor for QgsPageSize, accepting a page ``size``.
 %End
 
     QString name;
@@ -51,9 +52,6 @@ Translated page name
 
     bool operator==( const QgsPageSize &other ) const;
     bool operator!=( const QgsPageSize &other ) const;
-%Docstring
- :rtype: bool
-%End
 };
 
 class QgsPageSizeRegistry
@@ -61,8 +59,8 @@ class QgsPageSizeRegistry
 %Docstring
  A registry for known page sizes.
 
- QgsPageSizeRegistry is not usually directly created, but rather accessed through
- QgsApplication.pageSizeRegistry().
+QgsPageSizeRegistry is not usually directly created, but rather accessed through
+QgsApplication.pageSizeRegistry().
 
 .. versionadded:: 3.0
 %End
@@ -74,43 +72,40 @@ class QgsPageSizeRegistry
 
     QgsPageSizeRegistry();
 %Docstring
- Creates a registry and populates it with known sizes
+Creates a registry and populates it with known sizes
 %End
 
     void add( const QgsPageSize &size );
 %Docstring
- Adds a page ``size`` to the registry.
+Adds a page ``size`` to the registry.
 %End
 
     QList< QgsPageSize > entries() const;
 %Docstring
- Returns a list of page sizes in the registry.
- :rtype: list of QgsPageSize
+Returns a list of page sizes in the registry.
 %End
 
     QList< QgsPageSize > find( const QString &name ) const;
 %Docstring
- Finds matching page sizes from the registry, using a case insensitive match
- on the page size ``name``.
- :rtype: list of QgsPageSize
+Finds matching page sizes from the registry, using a case insensitive match
+on the page size ``name``.
 %End
 
     QString find( const QgsLayoutSize &size ) const;
 %Docstring
- Finds a matching page ``size`` from the registry. Returns the page size name,
- or an empty string if no matching size could be found.
+Finds a matching page ``size`` from the registry. Returns the page size name,
+or an empty string if no matching size could be found.
 
- Orientation is ignored when matching page sizes, so a landscape A4 page will
- match to the portrait A4 size in the registry.
- :rtype: str
+Orientation is ignored when matching page sizes, so a landscape A4 page will
+match to the portrait A4 size in the registry.
 %End
 
     bool decodePageSize( const QString &string, QgsPageSize &size );
 %Docstring
- Decodes a ``string`` representing a preset page size.
- The decoded page size will be stored in the ``size`` argument.
- :return: true if string was successfully decoded
- :rtype: bool
+Decodes a ``string`` representing a preset page size.
+The decoded page size will be stored in the ``size`` argument.
+
+:return: true if string was successfully decoded
 %End
 
 };

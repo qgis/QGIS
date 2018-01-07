@@ -95,8 +95,8 @@ class CORE_EXPORT QgsMapRendererTask : public QgsTask
 
   protected:
 
-    virtual bool run() override;
-    virtual void finished( bool result ) override;
+    bool run() override;
+    void finished( bool result ) override;
 
   private:
 

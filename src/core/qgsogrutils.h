@@ -22,8 +22,132 @@
 #include "qgsfeature.h"
 
 #include <ogr_api.h>
+#include <gdal.h>
+#include <gdalwarper.h>
 #include "cpl_conv.h"
 #include "cpl_string.h"
+
+namespace gdal
+{
+
+  /**
+   * Destroys OGR data sources.
+   */
+  struct OGRDataSourceDeleter
+  {
+
+    /**
+     * Destroys an OGR data \a source, using the correct gdal calls.
+     */
+    void CORE_EXPORT operator()( void *source );
+
+  };
+
+  /**
+   * Destroys OGR geometries.
+   */
+  struct OGRGeometryDeleter
+  {
+
+    /**
+     * Destroys an OGR \a geometry, using the correct gdal calls.
+     */
+    void CORE_EXPORT operator()( void *geometry );
+
+  };
+
+  /**
+   * Destroys OGR field definition.
+   */
+  struct OGRFldDeleter
+  {
+
+    /**
+     * Destroys an OGR field \a definition, using the correct gdal calls.
+     */
+    void CORE_EXPORT operator()( void *definition );
+
+  };
+
+  /**
+   * Destroys OGR feature.
+   */
+  struct OGRFeatureDeleter
+  {
+
+    /**
+     * Destroys an OGR \a feature, using the correct gdal calls.
+     */
+    void CORE_EXPORT operator()( void *feature );
+
+  };
+
+  /**
+   * Closes and cleanups GDAL dataset.
+   */
+  struct GDALDatasetCloser
+  {
+
+    /**
+     * Destroys an gdal \a dataset, using the correct gdal calls.
+     */
+    void CORE_EXPORT operator()( void *dataset );
+
+  };
+
+  /**
+   * Closes and cleanups GDAL warp options.
+   */
+  struct GDALWarpOptionsDeleter
+  {
+
+    /**
+     * Destroys GDAL warp \a options, using the correct gdal calls.
+     */
+    void CORE_EXPORT operator()( GDALWarpOptions *options );
+
+  };
+
+  /**
+   * Scoped OGR data source.
+   */
+  using ogr_datasource_unique_ptr = std::unique_ptr< void, OGRDataSourceDeleter>;
+
+  /**
+   * Scoped OGR geometry.
+   */
+  using ogr_geometry_unique_ptr = std::unique_ptr< void, OGRGeometryDeleter>;
+
+  /**
+   * Scoped OGR field definition.
+   */
+  using ogr_field_def_unique_ptr = std::unique_ptr< void, OGRFldDeleter >;
+
+  /**
+   * Scoped OGR feature.
+   */
+  using ogr_feature_unique_ptr = std::unique_ptr< void, OGRFeatureDeleter >;
+
+  /**
+   * Scoped GDAL dataset.
+   */
+  using dataset_unique_ptr = std::unique_ptr< void, GDALDatasetCloser >;
+
+  /**
+   * Performs a fast close of an unwanted GDAL dataset handle by deleting the underlying
+   * data store. Use when the resultant dataset is no longer required, e.g. as a result
+   * of user cancelation of an operation.
+   *
+   * Requires a gdal \a dataset pointer, the corresponding gdal \a driver and underlying
+   * dataset file \a path.
+   */
+  void CORE_EXPORT fast_delete_and_close( dataset_unique_ptr &dataset, GDALDriverH driver, const QString &path );
+
+  /**
+   * Scoped GDAL warp options.
+   */
+  using warp_options_unique_ptr = std::unique_ptr< GDALWarpOptions, GDALWarpOptionsDeleter >;
+}
 
 /**
  * \ingroup core
@@ -65,7 +189,7 @@ class CORE_EXPORT QgsOgrUtils
      * \returns attribute converted to a QVariant object
      * \see readOgrFeatureAttributes()
      */
-    static QVariant getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsFields &fields, int attIndex, QTextCodec *encoding, bool *ok = 0 );
+    static QVariant getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsFields &fields, int attIndex, QTextCodec *encoding, bool *ok = nullptr );
 
     /**
      * Reads all attributes from an OGR feature into a QgsFeature.

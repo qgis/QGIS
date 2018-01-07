@@ -42,7 +42,6 @@
 Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, Qt3DExtras::QForwardRenderer *defaultFrameGraph, Qt3DRender::QRenderSettings *renderSettings, Qt3DRender::QCamera *camera, const QRect &viewportRect, Qt3DCore::QNode *parent )
   : Qt3DCore::QEntity( parent )
   , mMap( map )
-  , mTerrain( nullptr )
   , mForwardRenderer( defaultFrameGraph )
 {
 
@@ -165,6 +164,11 @@ void Qgs3DMapScene::viewZoomFull()
   QgsRectangle extent = mMap.terrainGenerator()->extent();
   float side = qMax( extent.width(), extent.height() );
   mCameraController->resetView( side );  // assuming FOV being 45 degrees
+}
+
+int Qgs3DMapScene::terrainPendingJobsCount() const
+{
+  return mTerrain ? mTerrain->pendingJobsCount() : 0;
 }
 
 QgsChunkedEntity::SceneState _sceneState( QgsCameraController *cameraController )
@@ -316,6 +320,10 @@ void Qgs3DMapScene::createTerrainDeferred()
   }
 
   mTerrainUpdateScheduled = false;
+
+  connect( mTerrain, &QgsTerrainEntity::pendingJobsCountChanged, this, &Qgs3DMapScene::terrainPendingJobsCountChanged );
+
+  emit terrainEntityChanged();
 }
 
 void Qgs3DMapScene::onBackgroundColorChanged()

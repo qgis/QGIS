@@ -52,6 +52,8 @@ namespace QgsWfs
 
     QgsFeatureRequest featureRequest;
 
+    int totalUpdated = 0;
+
     bool error;
 
     QString errorMsg;
@@ -64,6 +66,8 @@ namespace QgsWfs
     QString handle;
 
     QgsFeatureRequest featureRequest;
+
+    int totalDeleted = 0;
 
     bool error;
 

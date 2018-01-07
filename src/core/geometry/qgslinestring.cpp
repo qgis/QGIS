@@ -23,6 +23,8 @@
 #include "qgsmaptopixel.h"
 #include "qgswkbptr.h"
 
+#include <cmath>
+#include <memory>
 #include <QPainter>
 #include <limits>
 #include <QDomDocument>
@@ -122,7 +124,7 @@ QgsLineString::QgsLineString( const QVector<double> &x, const QVector<double> &y
   }
 }
 
-QgsLineString::QgsLineString( const QList<QgsPointXY> &points )
+QgsLineString::QgsLineString( const QVector<QgsPointXY> &points )
 {
   mWkbType = QgsWkbTypes::LineString;
   mX.reserve( points.size() );
@@ -185,6 +187,59 @@ void QgsLineString::clear()
 bool QgsLineString::isEmpty() const
 {
   return mX.isEmpty();
+}
+
+QgsLineString *QgsLineString::snappedToGrid( double hSpacing, double vSpacing, double dSpacing, double mSpacing ) const
+{
+  // prepare result
+  std::unique_ptr<QgsLineString> result { createEmptyWithSameType() };
+
+  bool res = snapToGridPrivate( hSpacing, vSpacing, dSpacing, mSpacing, mX, mY, mZ, mM,
+                                result->mX, result->mY, result->mZ, result->mM );
+  if ( res )
+    return result.release();
+  else
+    return nullptr;
+}
+
+bool QgsLineString::removeDuplicateNodes( double epsilon, bool useZValues )
+{
+  if ( mX.count() <= 2 )
+    return false; // don't create degenerate lines
+  bool result = false;
+  double prevX = mX.at( 0 );
+  double prevY = mY.at( 0 );
+  bool hasZ = is3D();
+  bool useZ = hasZ && useZValues;
+  double prevZ = useZ ? mZ.at( 0 ) : 0;
+  int i = 1;
+  int remaining = mX.count();
+  while ( i < remaining )
+  {
+    double currentX = mX.at( i );
+    double currentY = mY.at( i );
+    double currentZ = useZ ? mZ.at( i ) : 0;
+    if ( qgsDoubleNear( currentX, prevX, epsilon ) &&
+         qgsDoubleNear( currentY, prevY, epsilon ) &&
+         ( !useZ || qgsDoubleNear( currentZ, prevZ, epsilon ) ) )
+    {
+      result = true;
+      // remove point
+      mX.removeAt( i );
+      mY.removeAt( i );
+      if ( hasZ )
+        mZ.removeAt( i );
+      remaining--;
+    }
+    else
+    {
+      prevX = currentX;
+      prevY = currentY;
+      prevZ = currentZ;
+      i++;
+    }
+  }
+  return result;
 }
 
 bool QgsLineString::fromWkb( QgsConstWkbPtr &wkbPtr )
@@ -285,28 +340,36 @@ QString QgsLineString::asWkt( int precision ) const
   return wkt;
 }
 
-QDomElement QgsLineString::asGML2( QDomDocument &doc, int precision, const QString &ns ) const
+QDomElement QgsLineString::asGml2( QDomDocument &doc, int precision, const QString &ns ) const
 {
   QgsPointSequence pts;
   points( pts );
 
   QDomElement elemLineString = doc.createElementNS( ns, QStringLiteral( "LineString" ) );
+
+  if ( isEmpty() )
+    return elemLineString;
+
   elemLineString.appendChild( QgsGeometryUtils::pointsToGML2( pts, doc, precision, ns ) );
 
   return elemLineString;
 }
 
-QDomElement QgsLineString::asGML3( QDomDocument &doc, int precision, const QString &ns ) const
+QDomElement QgsLineString::asGml3( QDomDocument &doc, int precision, const QString &ns ) const
 {
   QgsPointSequence pts;
   points( pts );
 
   QDomElement elemLineString = doc.createElementNS( ns, QStringLiteral( "LineString" ) );
+
+  if ( isEmpty() )
+    return elemLineString;
+
   elemLineString.appendChild( QgsGeometryUtils::pointsToGML3( pts, doc, precision, ns, is3D() ) );
   return elemLineString;
 }
 
-QString QgsLineString::asJSON( int precision ) const
+QString QgsLineString::asJson( int precision ) const
 {
   QgsPointSequence pts;
   points( pts );
@@ -703,6 +766,13 @@ void QgsLineString::extend( double startDistance, double endDistance )
   }
 }
 
+QgsLineString *QgsLineString::createEmptyWithSameType() const
+{
+  auto result = qgis::make_unique< QgsLineString >();
+  result->mWkbType = mWkbType;
+  return result.release();
+}
+
 QString QgsLineString::geometryType() const
 {
   return QStringLiteral( "LineString" );
@@ -742,15 +812,25 @@ void QgsLineString::transform( const QgsCoordinateTransform &ct, QgsCoordinateTr
   clearCache();
 }
 
-void QgsLineString::transform( const QTransform &t )
+void QgsLineString::transform( const QTransform &t, double zTranslate, double zScale, double mTranslate, double mScale )
 {
   int nPoints = numPoints();
+  bool hasZ = is3D();
+  bool hasM = isMeasure();
   for ( int i = 0; i < nPoints; ++i )
   {
     qreal x, y;
     t.map( mX.at( i ), mY.at( i ), &x, &y );
     mX[i] = x;
     mY[i] = y;
+    if ( hasZ )
+    {
+      mZ[i] = mZ.at( i ) * zScale + zTranslate;
+    }
+    if ( hasM )
+    {
+      mM[i] = mM.at( i ) * mScale + mTranslate;
+    }
   }
   clearCache();
 }
@@ -860,11 +940,18 @@ void QgsLineString::addVertex( const QgsPoint &pt )
   clearCache(); //set bounding box invalid
 }
 
-double QgsLineString::closestSegment( const QgsPoint &pt, QgsPoint &segmentPt,  QgsVertexId &vertexAfter, bool *leftOf, double epsilon ) const
+double QgsLineString::closestSegment( const QgsPoint &pt, QgsPoint &segmentPt,  QgsVertexId &vertexAfter, int *leftOf, double epsilon ) const
 {
   double sqrDist = std::numeric_limits<double>::max();
+  double leftOfDist = std::numeric_limits<double>::max();
+  int prevLeftOf = 0;
+  double prevLeftOfX;
+  double prevLeftOfY;
   double testDist = 0;
   double segmentPtX, segmentPtY;
+
+  if ( leftOf )
+    *leftOf = 0;
 
   int size = mX.size();
   if ( size == 0 || size == 1 )
@@ -884,13 +971,41 @@ double QgsLineString::closestSegment( const QgsPoint &pt, QgsPoint &segmentPt,  
       sqrDist = testDist;
       segmentPt.setX( segmentPtX );
       segmentPt.setY( segmentPtY );
-      if ( leftOf )
-      {
-        *leftOf = ( QgsGeometryUtils::leftOfLine( pt.x(), pt.y(), prevX, prevY, currentX, currentY ) < 0 );
-      }
       vertexAfter.part = 0;
       vertexAfter.ring = 0;
       vertexAfter.vertex = i;
+    }
+    if ( leftOf && qgsDoubleNear( testDist, sqrDist ) )
+    {
+      int left = QgsGeometryUtils::leftOfLine( pt.x(), pt.y(), prevX, prevY, currentX, currentY );
+      // if left equals 0, the test could not be performed (e.g. point in line with segment or on segment)
+      // so don't set leftOf in this case, and hope that there's another segment that's the same distance
+      // where we can perform the check
+      if ( left != 0 )
+      {
+        if ( qgsDoubleNear( testDist, leftOfDist ) && left != prevLeftOf && prevLeftOf != 0 )
+        {
+          // we have two possible segments each with equal distance to point, but they disagree
+          // on whether or not the point is to the left of them.
+          // so we test the segments themselves and flip the result.
+          // see https://stackoverflow.com/questions/10583212/elegant-left-of-test-for-polyline
+          *leftOf = -QgsGeometryUtils::leftOfLine( currentX, currentY, prevLeftOfX, prevLeftOfY, prevX, prevY );
+        }
+        else
+        {
+          *leftOf = left;
+        }
+        prevLeftOf = *leftOf;
+        leftOfDist = testDist;
+        prevLeftOfX = prevX;
+        prevLeftOfY = prevY;
+      }
+      else if ( testDist < leftOfDist )
+      {
+        *leftOf = left;
+        leftOfDist = testDist;
+        prevLeftOf = 0;
+      }
     }
   }
   return sqrDist;
@@ -1049,6 +1164,16 @@ double QgsLineString::vertexAngle( QgsVertexId vertex ) const
     double afterY = mY.at( vertex.vertex + 1 );
     return QgsGeometryUtils::averageAngle( previousX, previousY, currentX, currentY, afterX, afterY );
   }
+}
+
+double QgsLineString::segmentLength( QgsVertexId startVertex ) const
+{
+  if ( startVertex.vertex < 0 || startVertex.vertex >= mX.count() - 1 )
+    return 0.0;
+
+  double dx = mX.at( startVertex.vertex + 1 ) - mX.at( startVertex.vertex );
+  double dy = mY.at( startVertex.vertex + 1 ) - mY.at( startVertex.vertex );
+  return std::sqrt( dx * dx + dy * dy );
 }
 
 /***************************************************************************

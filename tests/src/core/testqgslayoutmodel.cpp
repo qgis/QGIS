@@ -789,7 +789,7 @@ void TestQgsLayoutModel::proxyCrash()
   layout->addLayoutItem( item3 );
 
   // reorder items - expect no crash!
-  layout->itemsModel()->reorderItemUp( item1 );
+  ( void )layout->itemsModel()->reorderItemUp( item1 );
 }
 
 QGSTEST_MAIN( TestQgsLayoutModel )

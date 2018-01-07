@@ -50,6 +50,9 @@ class OffsetLine(QgisFeatureBasedAlgorithm):
     def group(self):
         return self.tr('Vector geometry')
 
+    def groupId(self):
+        return 'vectorgeometry'
+
     def __init__(self):
         super().__init__()
 
@@ -100,7 +103,7 @@ class OffsetLine(QgisFeatureBasedAlgorithm):
         self.miter_limit = self.parameterAsDouble(parameters, self.MITER_LIMIT, context)
         return True
 
-    def processFeature(self, feature, feedback):
+    def processFeature(self, feature, context, feedback):
         input_geometry = feature.geometry()
         if input_geometry:
             output_geometry = input_geometry.offsetCurve(self.distance, self.segments, self.join_style, self.miter_limit)

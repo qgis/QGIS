@@ -274,7 +274,7 @@ void QgsSelectedFeature::createVertexMap()
     return;
   }
 
-  const QgsAbstractGeometry *geom = mGeometry->geometry();
+  const QgsAbstractGeometry *geom = mGeometry->constGet();
   if ( !geom )
   {
     return;

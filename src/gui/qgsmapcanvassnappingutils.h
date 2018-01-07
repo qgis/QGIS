@@ -35,8 +35,8 @@ class GUI_EXPORT QgsMapCanvasSnappingUtils : public QgsSnappingUtils
     QgsMapCanvasSnappingUtils( QgsMapCanvas *canvas, QObject *parent = nullptr );
 
   protected:
-    virtual void prepareIndexStarting( int count ) override;
-    virtual void prepareIndexProgress( int index ) override;
+    void prepareIndexStarting( int count ) override;
+    void prepareIndexProgress( int index ) override;
 
   private slots:
     void canvasMapSettingsChanged();

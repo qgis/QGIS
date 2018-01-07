@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
 
 __author__ = 'Alexander Bruy'
 __date__ = 'September 2013'
@@ -31,10 +30,6 @@ import os
 from qgis.core import QgsProcessingUtils
 
 from qgis.PyQt.QtGui import QIcon
-
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterRaster
-from processing.core.parameters import ParameterTableField
 
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
@@ -72,7 +67,10 @@ class rasterize_over(GdalAlgorithm):
     def group(self):
         return self.tr('Vector conversion')
 
-    def getConsoleCommands(self, parameters, context, feedback):
+    def groupId(self):
+        return 'vectorconversion'
+
+    def getConsoleCommands(self, parameters, context, feedback, executing=True):
         context = dataobjects.createContext()
         inLayer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)
         inRasterLayer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT_RASTER), context)

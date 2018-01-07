@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
 
 __author__ = 'Nyall Dawson'
 __date__ = 'September 2017'
@@ -46,7 +45,7 @@ from qgis.core import (QgsField,
                        QgsProcessing,
                        QgsFeature,
                        QgsVertexId,
-                       QgsMultiPointV2)
+                       QgsMultiPoint)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
@@ -64,6 +63,9 @@ class MinimumBoundingGeometry(QgisAlgorithm):
 
     def group(self):
         return self.tr('Vector geometry')
+
+    def groupId(self):
+        return 'vectorgeometry'
 
     def __init__(self):
         super().__init__()
@@ -228,7 +230,7 @@ class MinimumBoundingGeometry(QgisAlgorithm):
         if class_field is not None:
             attrs.append(class_field)
 
-        multi_point = QgsMultiPointV2()
+        multi_point = QgsMultiPoint()
 
         for g in geometries:
             if feedback.isCanceled():
@@ -238,7 +240,7 @@ class MinimumBoundingGeometry(QgisAlgorithm):
             while True:
                 if feedback.isCanceled():
                     break
-                found, point = g.geometry().nextVertex(vid)
+                found, point = g.constGet().nextVertex(vid)
                 if found:
                     multi_point.addGeometry(point)
                 else:
@@ -270,8 +272,8 @@ class MinimumBoundingGeometry(QgisAlgorithm):
         elif type == 3:
             # convex hull
             output_geometry = geometry.convexHull()
-            attrs.append(output_geometry.geometry().area())
-            attrs.append(output_geometry.geometry().perimeter())
+            attrs.append(output_geometry.constGet().area())
+            attrs.append(output_geometry.constGet().perimeter())
         f = QgsFeature()
         f.setAttributes(attrs)
         f.setGeometry(output_geometry)

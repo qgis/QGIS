@@ -43,7 +43,11 @@ class GUI_EXPORT QgsRasterHistogramWidget : public QgsMapLayerConfigWidget, priv
     Q_OBJECT
 
   public:
-    QgsRasterHistogramWidget( QgsRasterLayer *lyr, QWidget *parent SIP_TRANSFERTHIS = 0 );
+
+    /**
+     * Constructor for QgsRasterHistogramWidget, for the specified raster \a layer.
+     */
+    QgsRasterHistogramWidget( QgsRasterLayer *layer, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     //! Save the histogram as an image to disk
     bool histoSaveAsImage( const QString &filename, int width = 600, int height = 600, int quality = -1 );

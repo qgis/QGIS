@@ -55,16 +55,16 @@ class GUI_EXPORT QgsRelationReferenceSearchWidgetWrapper : public QgsSearchWidge
     QVariant value() const;
 
     bool applyDirectly() override;
-    QString expression() override;
+    QString expression() const override;
     bool valid() const override;
     QgsSearchWidgetWrapper::FilterFlags supportedFlags() const override;
     QgsSearchWidgetWrapper::FilterFlags defaultFlags() const override;
-    virtual QString createExpression( QgsSearchWidgetWrapper::FilterFlags flags ) const override;
+    QString createExpression( QgsSearchWidgetWrapper::FilterFlags flags ) const override;
 
   public slots:
 
-    virtual void clearWidget() override;
-    virtual void setEnabled( bool enabled ) override;
+    void clearWidget() override;
+    void setEnabled( bool enabled ) override;
 
   protected:
     QWidget *createWidget( QWidget *parent ) override;
@@ -76,7 +76,7 @@ class GUI_EXPORT QgsRelationReferenceSearchWidgetWrapper : public QgsSearchWidge
     void onValueChanged( const QVariant &value );
 
   protected slots:
-    void setExpression( QString exp ) override;
+    void setExpression( const QString &exp ) override;
 
   private:
 

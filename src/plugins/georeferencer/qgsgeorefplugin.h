@@ -78,7 +78,7 @@ class QgsGeorefPlugin: public QObject, public QgisPlugin
 
   public slots:
     //! init the gui
-    virtual void initGui() override;
+    void initGui() override;
     //! Show the dialog box
     void run();
     //! unload the plugin

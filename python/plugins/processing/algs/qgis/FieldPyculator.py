@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
 
 __author__ = 'Victor Olaya & NextGIS'
 __date__ = 'August 2012'
@@ -56,6 +55,9 @@ class FieldsPyculator(QgisAlgorithm):
 
     def group(self):
         return self.tr('Vector table')
+
+    def groupId(self):
+        return 'vectortable'
 
     def __init__(self):
         super().__init__()

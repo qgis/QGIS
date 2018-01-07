@@ -27,7 +27,7 @@ class QgsSlotToFunction : public QObject
 {
     Q_OBJECT
   public:
-    QgsSlotToFunction() {}
+    QgsSlotToFunction() = default;
     QgsSlotToFunction( void ( *callback )( void * ), void *arg ) : mCallback( callback ), mArg( arg ) {}
   public slots:
     void onSignal() { if ( mCallback ) mCallback( mArg ); }

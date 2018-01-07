@@ -26,8 +26,8 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorfilewriter.h"
 #include "qgsproviderregistry.h"
-#include "qgsslconnect.h"
 #include "qgslogger.h"
+#include "qgsspatialiteutils.h"
 
 #include <cpl_vsi.h>
 #include <cpl_conv.h>
@@ -352,18 +352,18 @@ bool QgsWFSSharedData::createCache()
     }
   }
 
-  sqlite3 *db = nullptr;
+  spatialite_database_unique_ptr database;
   bool ret = true;
-  int rc = QgsSLConnect::sqlite3_open( mCacheDbname.toUtf8(), &db );
+  int rc = database.open( mCacheDbname );
   if ( rc == SQLITE_OK )
   {
     QString sql;
 
-    ( void )sqlite3_exec( db, "PRAGMA synchronous=OFF", nullptr, nullptr, nullptr );
+    ( void )sqlite3_exec( database.get(), "PRAGMA synchronous=OFF", nullptr, nullptr, nullptr );
     // WAL is needed to avoid reader to block writers
-    ( void )sqlite3_exec( db, "PRAGMA journal_mode=WAL", nullptr, nullptr, nullptr );
+    ( void )sqlite3_exec( database.get(), "PRAGMA journal_mode=WAL", nullptr, nullptr, nullptr );
 
-    ( void )sqlite3_exec( db, "BEGIN", nullptr, nullptr, nullptr );
+    ( void )sqlite3_exec( database.get(), "BEGIN", nullptr, nullptr, nullptr );
 
     if ( !ogrWaySuccessful )
     {
@@ -381,7 +381,7 @@ bool QgsWFSSharedData::createCache()
         sql += QStringLiteral( ", %1 %2" ).arg( quotedIdentifier( field.name() ), type );
       }
       sql += QLatin1String( ")" );
-      rc = sqlite3_exec( db, sql.toUtf8(), nullptr, nullptr, nullptr );
+      rc = sqlite3_exec( database.get(), sql.toUtf8(), nullptr, nullptr, nullptr );
       if ( rc != SQLITE_OK )
       {
         QgsDebugMsg( QString( "%1 failed" ).arg( sql ) );
@@ -389,7 +389,7 @@ bool QgsWFSSharedData::createCache()
       }
 
       sql = QStringLiteral( "SELECT AddGeometryColumn('%1','%2',0,'POLYGON',2)" ).arg( mCacheTablename, geometryFieldname );
-      rc = sqlite3_exec( db, sql.toUtf8(), nullptr, nullptr, nullptr );
+      rc = sqlite3_exec( database.get(), sql.toUtf8(), nullptr, nullptr, nullptr );
       if ( rc != SQLITE_OK )
       {
         QgsDebugMsg( QString( "%1 failed" ).arg( sql ) );
@@ -397,7 +397,7 @@ bool QgsWFSSharedData::createCache()
       }
 
       sql = QStringLiteral( "SELECT CreateSpatialIndex('%1','%2')" ).arg( mCacheTablename, geometryFieldname );
-      rc = sqlite3_exec( db, sql.toUtf8(), nullptr, nullptr, nullptr );
+      rc = sqlite3_exec( database.get(), sql.toUtf8(), nullptr, nullptr, nullptr );
       if ( rc != SQLITE_OK )
       {
         QgsDebugMsg( QString( "%1 failed" ).arg( sql ) );
@@ -408,7 +408,7 @@ bool QgsWFSSharedData::createCache()
     // We need an index on the gmlid, since we will check for duplicates, particularly
     // useful in the case we do overlapping BBOX requests
     sql = QStringLiteral( "CREATE INDEX idx_%2 ON %1(%2)" ).arg( mCacheTablename, QgsWFSConstants::FIELD_GMLID );
-    rc = sqlite3_exec( db, sql.toUtf8(), nullptr, nullptr, nullptr );
+    rc = sqlite3_exec( database.get(), sql.toUtf8(), nullptr, nullptr, nullptr );
     if ( rc != SQLITE_OK )
     {
       QgsDebugMsg( QString( "%1 failed" ).arg( sql ) );
@@ -418,7 +418,7 @@ bool QgsWFSSharedData::createCache()
     if ( mDistinctSelect )
     {
       sql = QStringLiteral( "CREATE INDEX idx_%2 ON %1(%2)" ).arg( mCacheTablename, QgsWFSConstants::FIELD_MD5 );
-      rc = sqlite3_exec( db, sql.toUtf8(), nullptr, nullptr, nullptr );
+      rc = sqlite3_exec( database.get(), sql.toUtf8(), nullptr, nullptr, nullptr );
       if ( rc != SQLITE_OK )
       {
         QgsDebugMsg( QString( "%1 failed" ).arg( sql ) );
@@ -426,9 +426,7 @@ bool QgsWFSSharedData::createCache()
       }
     }
 
-    ( void )sqlite3_exec( db, "COMMIT", nullptr, nullptr, nullptr );
-
-    QgsSLConnect::sqlite3_close( db );
+    ( void )sqlite3_exec( database.get(), "COMMIT", nullptr, nullptr, nullptr );
   }
   else
   {
@@ -540,10 +538,7 @@ int QgsWFSSharedData::registerToCache( QgsWFSFeatureIterator *iterator, const Qg
     mDownloadFinished = false;
     mComputedExtent = QgsRectangle();
     mDownloader = new QgsWFSThreadedFeatureDownloader( this );
-    QEventLoop loop;
-    connect( mDownloader, &QgsWFSThreadedFeatureDownloader::ready, &loop, &QEventLoop::quit );
-    mDownloader->start();
-    loop.exec( QEventLoop::ExcludeUserInputEvents );
+    mDownloader->startAndWait();
   }
   if ( mDownloadFinished )
     return -1;
@@ -719,7 +714,7 @@ bool QgsWFSSharedData::changeGeometryValues( const QgsGeometryMap &geometry_map 
   QgsChangedAttributesMap newChangedAttrMap;
   for ( QgsGeometryMap::const_iterator iter = geometry_map.constBegin(); iter != geometry_map.constEnd(); ++iter )
   {
-    QByteArray wkb = iter->exportToWkb();
+    QByteArray wkb = iter->asWkb();
     if ( !wkb.isEmpty() )
     {
       QgsAttributeMap newAttrMap;
@@ -855,7 +850,7 @@ void QgsWFSSharedData::serializeFeatures( QVector<QgsWFSFeatureGmlIdPair> &featu
     QgsGeometry geometry = gmlFeature.geometry();
     if ( !mGeometryAttribute.isEmpty() && !geometry.isNull() )
     {
-      QByteArray array( geometry.exportToWkb() );
+      QByteArray array( geometry.asWkb() );
 
       cachedFeature.setAttribute( hexwkbGeomIdx, QVariant( QString( array.toHex().data() ) ) );
 

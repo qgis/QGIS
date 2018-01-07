@@ -1,5 +1,5 @@
 Enumerate Table Field
 table_tools
-ParameterTable|INPUT|Input|False
-ParameterTable|FIELD|Attribute|False
-ParameterTable|OUTPUT|Output|True
+QgsProcessingParameterFeatureSource|INPUT|Input|5|None|False
+QgsProcessingParameterFeatureSource|FIELD|Attribute|5|None|False
+QgsProcessingParameterFeatureSource|OUTPUT|Output|5|None|True

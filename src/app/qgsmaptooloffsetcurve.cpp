@@ -32,11 +32,6 @@
 
 QgsMapToolOffsetCurve::QgsMapToolOffsetCurve( QgsMapCanvas *canvas )
   : QgsMapToolEdit( canvas )
-  , mOriginalGeometry( nullptr )
-  , mModifiedFeature( -1 )
-  , mGeometryModified( false )
-  , mForceCopy( false )
-  , mMultiPartGeometry( false )
 {
 }
 
@@ -45,6 +40,19 @@ QgsMapToolOffsetCurve::~QgsMapToolOffsetCurve()
   deleteRubberBandAndGeometry();
   deleteDistanceWidget();
   delete mSnapVertexMarker;
+}
+
+void QgsMapToolOffsetCurve::keyPressEvent( QKeyEvent *e )
+{
+  if ( e && e->key() == Qt::Key_Escape && !e->isAutoRepeat() )
+  {
+    deleteRubberBandAndGeometry();
+    deleteDistanceWidget();
+  }
+  else
+  {
+    QgsMapToolEdit::keyPressEvent( e );
+  }
 }
 
 
@@ -72,14 +80,10 @@ void QgsMapToolOffsetCurve::canvasReleaseEvent( QgsMapMouseEvent *e )
 
   if ( mOriginalGeometry.isNull() )
   {
+    // first click, get feature to modify
     deleteRubberBandAndGeometry();
     mGeometryModified = false;
-    mForceCopy = false;
-
-    if ( e->button() == Qt::RightButton )
-    {
-      return;
-    }
+    mCtrlWasHeldOnFeatureSelection = false;
 
     QgsSnappingUtils *snapping = mCanvas->snappingUtils();
 
@@ -88,7 +92,8 @@ void QgsMapToolOffsetCurve::canvasReleaseEvent( QgsMapMouseEvent *e )
     QgsSnappingConfig config = snapping->config();
     // setup new settings (temporary)
     QgsSettings settings;
-    config.setMode( QgsSnappingConfig::AllLayers );
+    config.setEnabled( true );
+    config.setMode( QgsSnappingConfig::ActiveLayer );
     config.setType( QgsSnappingConfig::Segment );
     config.setTolerance( settings.value( QStringLiteral( "qgis/digitizing/search_radius_vertex_edit" ), 10 ).toDouble() );
     config.setUnits( static_cast<QgsTolerance::UnitType>( settings.value( QStringLiteral( "qgis/digitizing/search_radius_vertex_edit_unit" ), QgsTolerance::Pixels ).toInt() ) );
@@ -105,12 +110,12 @@ void QgsMapToolOffsetCurve::canvasReleaseEvent( QgsMapMouseEvent *e )
       QgsFeature fet;
       if ( match.layer()->getFeatures( QgsFeatureRequest( match.featureId() ) ).nextFeature( fet ) )
       {
-        mForceCopy = ( e->modifiers() & Qt::ControlModifier ); //no geometry modification if ctrl is pressed
-        mOriginalGeometry = createOriginGeometry( match.layer(), match, fet );
+        mCtrlWasHeldOnFeatureSelection = ( e->modifiers() & Qt::ControlModifier ); //no geometry modification if ctrl is pressed
+        prepareGeometry( match.layer(), match, fet );
         mRubberBand = createRubberBand();
         if ( mRubberBand )
         {
-          mRubberBand->setToGeometry( mOriginalGeometry, layer );
+          mRubberBand->setToGeometry( mManipulatedGeometry, layer );
         }
         mModifiedFeature = fet.id();
         createDistanceWidget();
@@ -121,13 +126,15 @@ void QgsMapToolOffsetCurve::canvasReleaseEvent( QgsMapMouseEvent *e )
     {
       emit messageEmitted( tr( "Could not find a nearby feature in any vector layer." ) );
     }
-    return;
   }
-
-  applyOffset();
+  else
+  {
+    // second click - apply changes
+    applyOffset( e->modifiers() & Qt::ControlModifier );
+  }
 }
 
-void QgsMapToolOffsetCurve::applyOffset()
+void QgsMapToolOffsetCurve::applyOffset( bool forceCopy )
 {
   QgsVectorLayer *layer = currentVectorLayer();
   if ( !layer )
@@ -148,13 +155,62 @@ void QgsMapToolOffsetCurve::applyOffset()
 
   if ( mMultiPartGeometry )
   {
-    mModifiedGeometry.convertToMultiType();
+    QgsGeometry geometry;
+    int partIndex = 0;
+    QgsWkbTypes::Type geomType = mOriginalGeometry.wkbType();
+    if ( QgsWkbTypes::geometryType( geomType ) == QgsWkbTypes::LineGeometry )
+    {
+      QgsMultiPolylineXY newMultiLine;
+      QgsMultiPolylineXY multiLine = mOriginalGeometry.asMultiPolyline();
+      QgsMultiPolylineXY::const_iterator it = multiLine.constBegin();
+      for ( ; it != multiLine.constEnd(); ++it )
+      {
+        if ( partIndex == mModifiedPart )
+        {
+          newMultiLine.append( mModifiedGeometry.asPolyline() );
+        }
+        else
+        {
+          newMultiLine.append( *it );
+        }
+        partIndex++;
+      }
+      geometry = QgsGeometry::fromMultiPolylineXY( newMultiLine );
+    }
+    else
+    {
+      QgsMultiPolygonXY newMultiPoly;
+      QgsMultiPolygonXY multiPoly = mOriginalGeometry.asMultiPolygon();
+      QgsMultiPolygonXY::const_iterator multiPolyIt = multiPoly.constBegin();
+      for ( ; multiPolyIt != multiPoly.constEnd(); ++multiPolyIt )
+      {
+        if ( partIndex == mModifiedPart )
+        {
+          if ( mModifiedGeometry.isMultipart() )
+          {
+            newMultiPoly += mModifiedGeometry.asMultiPolygon();
+          }
+          else
+          {
+            newMultiPoly.append( mModifiedGeometry.asPolygon() );
+          }
+        }
+        else
+        {
+          newMultiPoly.append( *multiPolyIt );
+        }
+        partIndex++;
+      }
+      geometry = QgsGeometry::fromMultiPolygonXY( newMultiPoly );
+    }
+    geometry.convertToMultiType();
+    mModifiedGeometry = geometry;
   }
 
   layer->beginEditCommand( tr( "Offset curve" ) );
 
   bool editOk;
-  if ( mSourceLayerId == layer->id() && !mForceCopy )
+  if ( mSourceLayerId == layer->id() && !mCtrlWasHeldOnFeatureSelection && !forceCopy )
   {
     editOk = layer->changeGeometry( mModifiedFeature, mModifiedGeometry );
   }
@@ -187,7 +243,7 @@ void QgsMapToolOffsetCurve::applyOffset()
   deleteDistanceWidget();
   delete mSnapVertexMarker;
   mSnapVertexMarker = nullptr;
-  mForceCopy = false;
+  mCtrlWasHeldOnFeatureSelection = false;
   layer->triggerRepaint();
 }
 
@@ -235,79 +291,85 @@ void QgsMapToolOffsetCurve::canvasMoveEvent( QgsMapMouseEvent *e )
 
   QgsPointXY minDistPoint;
   int beforeVertex;
-  double leftOf;
+  int leftOf = 0;
   double offset = std::sqrt( mOriginalGeometry.closestSegmentWithContext( layerCoords, minDistPoint, beforeVertex, &leftOf ) );
   if ( offset == 0.0 )
   {
     return;
   }
-
+  offset = leftOf < 0 ? offset : -offset;
 
 
   if ( mDistanceWidget )
   {
     // this will also set the rubber band
-    mDistanceWidget->setValue( leftOf < 0 ? offset : -offset );
+    mDistanceWidget->setValue( offset );
     mDistanceWidget->setFocus( Qt::TabFocusReason );
   }
   else
   {
     //create offset geometry using geos
-    setOffsetForRubberBand( leftOf < 0 ? offset : -offset );
+    setOffsetForRubberBand( offset );
   }
 }
 
-QgsGeometry QgsMapToolOffsetCurve::createOriginGeometry( QgsVectorLayer *vl, const QgsPointLocator::Match &match, QgsFeature &snappedFeature )
+void QgsMapToolOffsetCurve::prepareGeometry( QgsVectorLayer *vl, const QgsPointLocator::Match &match, QgsFeature &snappedFeature )
 {
   if ( !vl )
   {
-    return QgsGeometry();
+    return;
   }
 
+  mOriginalGeometry = QgsGeometry();
+  mManipulatedGeometry = QgsGeometry();
   mMultiPartGeometry = false;
+  mModifiedPart = 0;
+
   //assign feature part by vertex number (snap to vertex) or by before vertex number (snap to segment)
-  int partVertexNr = match.vertexIndex();
-
-  if ( vl == currentVectorLayer() && !mForceCopy )
+  QgsGeometry geom = snappedFeature.geometry();
+  if ( geom.isNull() )
   {
-    //don't consider selected geometries, only the snap result
-    return convertToSingleLine( snappedFeature.geometry(), partVertexNr, mMultiPartGeometry );
+    return;
   }
-  else //snapped to a background layer
-  {
-    //if source layer is polygon / multipolygon, create a linestring from the snapped ring
-    if ( vl->geometryType() == QgsWkbTypes::PolygonGeometry )
-    {
-      //make linestring from polygon ring and return this geometry
-      return linestringFromPolygon( snappedFeature.geometry(), partVertexNr );
-    }
+  mOriginalGeometry = geom;
 
-    //for background layers, try to merge selected entries together if snapped feature is contained in selection
-    const QgsFeatureIds &selection = vl->selectedFeatureIds();
-    if ( selection.empty() || !selection.contains( match.featureId() ) )
+  QgsWkbTypes::Type geomType = geom.wkbType();
+  if ( QgsWkbTypes::geometryType( geomType ) == QgsWkbTypes::LineGeometry )
+  {
+    if ( !geom.isMultipart() )
     {
-      return convertToSingleLine( snappedFeature.geometry(), partVertexNr, mMultiPartGeometry );
+      mManipulatedGeometry = geom;
     }
     else
     {
-      //merge together if several features
-      QgsFeatureList selectedFeatures = vl->selectedFeatures();
-      QgsFeatureList::iterator selIt = selectedFeatures.begin();
-      QgsGeometry geom = selIt->geometry();
-      ++selIt;
-      for ( ; selIt != selectedFeatures.end(); ++selIt )
-      {
-        geom = geom.combine( selIt->geometry() );
-      }
+      mMultiPartGeometry = true;
 
-      //if multitype, return only the snapped to geometry
-      if ( geom.isMultipart() )
-      {
-        return convertToSingleLine( snappedFeature.geometry(),
-                                    match.vertexIndex(), mMultiPartGeometry );
-      }
+      int vertex = match.vertexIndex();
+      QgsVertexId vertexId;
+      geom.vertexIdFromVertexNr( vertex, vertexId );
+      mModifiedPart = vertexId.part;
 
-      return geom;
+      QgsMultiPolylineXY multiLine = geom.asMultiPolyline();
+      mManipulatedGeometry = QgsGeometry::fromPolylineXY( multiLine.at( mModifiedPart ) );
+    }
+  }
+  else if ( QgsWkbTypes::geometryType( geomType ) == QgsWkbTypes::PolygonGeometry )
+  {
+    if ( !geom.isMultipart() )
+    {
+      mManipulatedGeometry = geom;
+    }
+    else
+    {
+      mMultiPartGeometry = true;
+
+      int vertex = match.vertexIndex();
+      QgsVertexId vertexId;
+      geom.vertexIdFromVertexNr( vertex, vertexId );
+      mModifiedPart = vertexId.part;
+
+      QgsMultiPolygonXY multiPoly = geom.asMultiPolygon();
+      mManipulatedGeometry = QgsGeometry::fromPolygonXY( multiPoly.at( mModifiedPart ) );
     }
   }
 }
@@ -332,7 +394,7 @@ void QgsMapToolOffsetCurve::createDistanceWidget()
   mDistanceWidget->setFocus( Qt::TabFocusReason );
 
   connect( mDistanceWidget, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsMapToolOffsetCurve::placeOffsetCurveToValue );
-  connect( mDistanceWidget, &QAbstractSpinBox::editingFinished, this, &QgsMapToolOffsetCurve::applyOffset );
+  connect( mDistanceWidget, &QAbstractSpinBox::editingFinished, this, [ = ] { applyOffset(); } );
 }
 
 void QgsMapToolOffsetCurve::deleteDistanceWidget()
@@ -340,7 +402,6 @@ void QgsMapToolOffsetCurve::deleteDistanceWidget()
   if ( mDistanceWidget )
   {
     disconnect( mDistanceWidget, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsMapToolOffsetCurve::placeOffsetCurveToValue );
-    disconnect( mDistanceWidget, &QAbstractSpinBox::editingFinished, this, &QgsMapToolOffsetCurve::applyOffset );
     mDistanceWidget->releaseKeyboard();
     mDistanceWidget->deleteLater();
   }
@@ -349,6 +410,8 @@ void QgsMapToolOffsetCurve::deleteDistanceWidget()
 
 void QgsMapToolOffsetCurve::deleteRubberBandAndGeometry()
 {
+  mOriginalGeometry.set( nullptr );
+  mManipulatedGeometry.set( nullptr );
   delete mRubberBand;
   mRubberBand = nullptr;
 }
@@ -366,111 +429,35 @@ void QgsMapToolOffsetCurve::setOffsetForRubberBand( double offset )
     return;
   }
 
-  QgsGeometry geomCopy( mOriginalGeometry );
-  GEOSGeometry *geosGeom = geomCopy.exportToGeos();
-  if ( geosGeom )
+  QgsSettings s;
+  QgsGeometry::JoinStyle joinStyle = static_cast< QgsGeometry::JoinStyle >( s.value( QStringLiteral( "/qgis/digitizing/offset_join_style" ), 0 ).toInt() );
+  int quadSegments = s.value( QStringLiteral( "/qgis/digitizing/offset_quad_seg" ), 8 ).toInt();
+  double miterLimit = s.value( QStringLiteral( "/qgis/digitizing/offset_miter_limit" ), 5.0 ).toDouble();
+
+  QgsGeometry offsetGeom;
+  if ( QgsWkbTypes::geometryType( mOriginalGeometry.wkbType() ) == QgsWkbTypes::LineGeometry )
   {
-    QgsSettings s;
-    int joinStyle = s.value( QStringLiteral( "/qgis/digitizing/offset_join_style" ), 0 ).toInt();
-    int quadSegments = s.value( QStringLiteral( "/qgis/digitizing/offset_quad_seg" ), 8 ).toInt();
-    double miterLimit = s.value( QStringLiteral( "/qgis/digitizing/offset_miter_limit" ), 5.0 ).toDouble();
-
-    GEOSGeometry *offsetGeom = GEOSOffsetCurve_r( QgsGeometry::getGEOSHandler(), geosGeom, offset, quadSegments, joinStyle, miterLimit );
-    GEOSGeom_destroy_r( QgsGeometry::getGEOSHandler(), geosGeom );
-    if ( !offsetGeom )
-    {
-      deleteRubberBandAndGeometry();
-      deleteDistanceWidget();
-      delete mSnapVertexMarker;
-      mSnapVertexMarker = nullptr;
-      mForceCopy = false;
-      mGeometryModified = false;
-      deleteDistanceWidget();
-      emit messageEmitted( tr( "Creating offset geometry failed" ), QgsMessageBar::CRITICAL );
-      return;
-    }
-
-    if ( offsetGeom )
-    {
-      mModifiedGeometry.fromGeos( offsetGeom );
-      mRubberBand->setToGeometry( mModifiedGeometry, sourceLayer );
-    }
-  }
-}
-
-QgsGeometry QgsMapToolOffsetCurve::linestringFromPolygon( const QgsGeometry &featureGeom, int vertex )
-{
-  if ( featureGeom.isNull() )
-  {
-    return QgsGeometry();
-  }
-
-  QgsWkbTypes::Type geomType = featureGeom.wkbType();
-  int currentVertex = 0;
-  QgsMultiPolygon multiPoly;
-
-  if ( geomType == QgsWkbTypes::Polygon || geomType == QgsWkbTypes::Polygon25D )
-  {
-    QgsPolygon polygon = featureGeom.asPolygon();
-    multiPoly.append( polygon );
-  }
-  else if ( geomType == QgsWkbTypes::MultiPolygon || geomType == QgsWkbTypes::MultiPolygon25D )
-  {
-    //iterate all polygons / rings
-    multiPoly = featureGeom.asMultiPolygon();
+    offsetGeom = mManipulatedGeometry.offsetCurve( offset, quadSegments, joinStyle, miterLimit );
   }
   else
   {
-    return QgsGeometry();
+    offsetGeom = mManipulatedGeometry.buffer( offset, quadSegments, QgsGeometry::CapRound, joinStyle, miterLimit );
   }
 
-  QgsMultiPolygon::const_iterator multiPolyIt = multiPoly.constBegin();
-  for ( ; multiPolyIt != multiPoly.constEnd(); ++multiPolyIt )
+  if ( !offsetGeom )
   {
-    QgsPolygon::const_iterator polyIt = multiPolyIt->constBegin();
-    for ( ; polyIt != multiPolyIt->constEnd(); ++polyIt )
-    {
-      currentVertex += polyIt->size();
-      if ( vertex < currentVertex )
-      {
-        //found, return ring
-        return QgsGeometry::fromPolyline( *polyIt );
-      }
-    }
+    deleteRubberBandAndGeometry();
+    deleteDistanceWidget();
+    delete mSnapVertexMarker;
+    mSnapVertexMarker = nullptr;
+    mCtrlWasHeldOnFeatureSelection = false;
+    mGeometryModified = false;
+    deleteDistanceWidget();
+    emit messageEmitted( tr( "Creating offset geometry failed: %1" ).arg( offsetGeom.lastError() ), QgsMessageBar::CRITICAL );
   }
-
-  return QgsGeometry();
-}
-
-
-QgsGeometry QgsMapToolOffsetCurve::convertToSingleLine( const QgsGeometry &geom, int vertex, bool &isMulti )
-{
-  if ( geom.isNull() )
+  else
   {
-    return QgsGeometry();
+    mModifiedGeometry = offsetGeom;
+    mRubberBand->setToGeometry( mModifiedGeometry, sourceLayer );
   }
-
-  isMulti = false;
-  QgsWkbTypes::Type geomType = geom.wkbType();
-  if ( geomType == QgsWkbTypes::LineString || geomType == QgsWkbTypes::LineString25D )
-  {
-    return geom;
-  }
-  else if ( geomType == QgsWkbTypes::MultiLineString || geomType == QgsWkbTypes::MultiLineString25D )
-  {
-    //search vertex
-    isMulti = true;
-    int currentVertex = 0;
-    QgsMultiPolyline multiLine = geom.asMultiPolyline();
-    QgsMultiPolyline::const_iterator it = multiLine.constBegin();
-    for ( ; it != multiLine.constEnd(); ++it )
-    {
-      currentVertex += it->size();
-      if ( vertex < currentVertex )
-      {
-        return QgsGeometry::fromPolyline( *it );
-      }
-    }
-  }
-  return QgsGeometry();
 }

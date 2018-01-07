@@ -88,7 +88,7 @@ class CORE_EXPORT QgsComposerMultiFrame: public QgsComposerObject
      */
     QgsComposerMultiFrame( QgsComposition *c SIP_TRANSFERTHIS, bool createUndoCommands );
 
-    virtual ~QgsComposerMultiFrame();
+    ~QgsComposerMultiFrame() override;
 
     /**
      * Returns the total size of the multiframe's content.

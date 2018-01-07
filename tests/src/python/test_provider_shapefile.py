@@ -269,7 +269,7 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
         values = [f_iter['pk'] for f_iter in features]
         self.assertEqual(values, [200])
 
-        got_geom = [f_iter.geometry() for f_iter in features][0].geometry()
+        got_geom = [f_iter.geometry() for f_iter in features][0].constGet()
         self.assertEqual((got_geom.x(), got_geom.y()), (2.0, 49.0))
 
         self.assertTrue(vl.dataProvider().changeGeometryValues({fid: QgsGeometry.fromWkt('Point (3 50)')}))
@@ -278,7 +278,7 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
         features = [f_iter for f_iter in vl.getFeatures(QgsFeatureRequest().setFilterFid(fid))]
         values = [f_iter['pk'] for f_iter in features]
 
-        got_geom = [f_iter.geometry() for f_iter in features][0].geometry()
+        got_geom = [f_iter.geometry() for f_iter in features][0].constGet()
         self.assertEqual((got_geom.x(), got_geom.y()), (3.0, 50.0))
 
         self.assertTrue(vl.dataProvider().deleteFeatures([fid]))
@@ -567,6 +567,50 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
         ds = osgeo.ogr.Open(datasource)
         self.assertTrue(ds.GetLayer(0).GetFeatureCount(), original_feature_count - 1)
         ds = None
+
+    def testOpenWithFilter(self):
+        file_path = os.path.join(TEST_DATA_DIR, 'provider', 'shapefile.shp')
+        uri = '{}|layerid=0|subset="name" = \'Apple\''.format(file_path)
+        # ensure that no longer required ogr SQL layers are correctly cleaned up
+        # we need to run this twice for the incorrect cleanup asserts to trip,
+        # since they are triggered only when fetching an existing layer from the ogr
+        # connection pool
+        for i in range(2):
+            vl = QgsVectorLayer(uri)
+            self.assertTrue(vl.isValid(), 'Layer not valid, iteration {}'.format(i + 1))
+            self.assertEqual(vl.featureCount(), 1)
+            f = next(vl.getFeatures())
+            self.assertEqual(f['name'], 'Apple')
+            # force close of data provider
+            vl.setDataSource('', 'test', 'ogr')
+
+    def testCreateAttributeIndex(self):
+        tmpdir = tempfile.mkdtemp()
+        self.dirs_to_cleanup.append(tmpdir)
+        srcpath = os.path.join(TEST_DATA_DIR, 'provider')
+        for file in glob.glob(os.path.join(srcpath, 'shapefile.*')):
+            shutil.copy(os.path.join(srcpath, file), tmpdir)
+        datasource = os.path.join(tmpdir, 'shapefile.shp')
+
+        vl = QgsVectorLayer('{}|layerid=0'.format(datasource), 'test', 'ogr')
+        self.assertTrue(vl.isValid())
+        self.assertTrue(vl.dataProvider().capabilities() & QgsVectorDataProvider.CreateAttributeIndex)
+        self.assertFalse(vl.dataProvider().createAttributeIndex(-1))
+        self.assertFalse(vl.dataProvider().createAttributeIndex(100))
+        self.assertTrue(vl.dataProvider().createAttributeIndex(1))
+
+    def testCreateSpatialIndex(self):
+        tmpdir = tempfile.mkdtemp()
+        self.dirs_to_cleanup.append(tmpdir)
+        srcpath = os.path.join(TEST_DATA_DIR, 'provider')
+        for file in glob.glob(os.path.join(srcpath, 'shapefile.*')):
+            shutil.copy(os.path.join(srcpath, file), tmpdir)
+        datasource = os.path.join(tmpdir, 'shapefile.shp')
+
+        vl = QgsVectorLayer('{}|layerid=0'.format(datasource), 'test', 'ogr')
+        self.assertTrue(vl.isValid())
+        self.assertTrue(vl.dataProvider().capabilities() & QgsVectorDataProvider.CreateSpatialIndex)
+        self.assertTrue(vl.dataProvider().createSpatialIndex())
 
 
 if __name__ == '__main__':

@@ -43,10 +43,14 @@ QgsLayoutItemPage::QgsLayoutItemPage( QgsLayout *layout )
   mGrid->setParentItem( this );
 }
 
-QgsLayoutItemPage *QgsLayoutItemPage::create( QgsLayout *layout, const QVariantMap &settings )
+QgsLayoutItemPage *QgsLayoutItemPage::create( QgsLayout *layout )
 {
-  Q_UNUSED( settings );
   return new QgsLayoutItemPage( layout );
+}
+
+int QgsLayoutItemPage::type() const
+{
+  return QgsLayoutItemRegistry::LayoutPage;
 }
 
 void QgsLayoutItemPage::setPageSize( const QgsLayoutSize &size )
@@ -117,9 +121,9 @@ QgsLayoutItemPage::Orientation QgsLayoutItemPage::decodePageOrientation( const Q
   return Landscape;
 }
 
-void QgsLayoutItemPage::attemptResize( const QgsLayoutSize &size )
+void QgsLayoutItemPage::attemptResize( const QgsLayoutSize &size, bool includesFrame )
 {
-  QgsLayoutItem::attemptResize( size );
+  QgsLayoutItem::attemptResize( size, includesFrame );
   //update size of attached grid to reflect new page size and position
   mGrid->setRect( 0, 0, rect().width(), rect().height() );
 
@@ -178,9 +182,7 @@ void QgsLayoutItemPage::draw( QgsRenderContext &context, const QStyleOptionGraph
   QPainter *painter = context.painter();
   painter->save();
 
-#if 0 //TODO
-  if ( mComposition->plotStyle() == QgsComposition::Preview )
-#endif
+  if ( mLayout->context().isPreviewRender() )
   {
     //if in preview mode, draw page border and shadow so that it's
     //still possible to tell where pages with a transparent style begin and end
@@ -254,6 +256,9 @@ void QgsLayoutItemPageGrid::paint( QPainter *painter, const QStyleOptionGraphics
 
   //draw grid
   if ( !mLayout )
+    return;
+
+  if ( !mLayout->context().isPreviewRender() )
     return;
 
   const QgsLayoutContext &context = mLayout->context();

@@ -13,7 +13,8 @@
 class QgsProcessingModelComponent
 {
 %Docstring
- Represents a component of a model algorithm.
+Represents a component of a model algorithm.
+
 .. versionadded:: 3.0
 %End
 
@@ -24,28 +25,30 @@ class QgsProcessingModelComponent
 
     QString description() const;
 %Docstring
- Returns the friendly description text for the component.
-.. seealso:: setDescription()
- :rtype: str
+Returns the friendly description text for the component.
+
+.. seealso:: :py:func:`setDescription()`
 %End
 
     void setDescription( const QString &description );
 %Docstring
- Sets the friendly ``description`` text for the component.
-.. seealso:: description()
+Sets the friendly ``description`` text for the component.
+
+.. seealso:: :py:func:`description()`
 %End
 
     QPointF position() const;
 %Docstring
- Returns the position of the model component within the graphical modeler.
-.. seealso:: setPosition()
- :rtype: QPointF
+Returns the position of the model component within the graphical modeler.
+
+.. seealso:: :py:func:`setPosition()`
 %End
 
     void setPosition( const QPointF &position );
 %Docstring
- Sets the ``position`` of the model component within the graphical modeler.
-.. seealso:: position()
+Sets the ``position`` of the model component within the graphical modeler.
+
+.. seealso:: :py:func:`position()`
 %End
 
   protected:
@@ -63,14 +66,16 @@ Copies are protected to avoid slicing
 
     void saveCommonProperties( QVariantMap &map ) const;
 %Docstring
- Saves the component properties to a QVariantMap.
-.. seealso:: restoreCommonProperties()
+Saves the component properties to a QVariantMap.
+
+.. seealso:: :py:func:`restoreCommonProperties()`
 %End
 
     void restoreCommonProperties( const QVariantMap &map );
 %Docstring
- Restores the component properties from a QVariantMap.
-.. seealso:: saveCommonProperties()
+Restores the component properties from a QVariantMap.
+
+.. seealso:: :py:func:`saveCommonProperties()`
 %End
 
 };

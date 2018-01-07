@@ -14,7 +14,7 @@
 class QgsAuthSslConfigWidget : QWidget
 {
 %Docstring
- Widget for editing an SSL server configuration
+Widget for editing an SSL server configuration
 %End
 
 %TypeHeaderCode
@@ -27,67 +27,60 @@ class QgsAuthSslConfigWidget : QWidget
                                      const QString &hostport = QString(),
                                      const QList<QSslCertificate> &connectionCAs = QList<QSslCertificate>() );
 %Docstring
- Construct a widget for editing an SSL server certificate configuration
- \param parent Parent widget
- \param cert SSL server certificate object
- \param hostport Unique host:port to associate with the server certificate
- \param connectionCAs List of trusted Certificate Authorities objects
+Construct a widget for editing an SSL server certificate configuration
+
+:param parent: Parent widget
+:param cert: SSL server certificate object
+:param hostport: Unique host:port to associate with the server certificate
+:param connectionCAs: List of trusted Certificate Authorities objects
 %End
 
     QGroupBox *certificateGroupBox();
 %Docstring
 Access to the certificate's group box widget
- :rtype: QGroupBox
 %End
     QGroupBox *sslConfigGroupBox();
 %Docstring
 Access to the SSL configuration's group box widget
- :rtype: QGroupBox
 %End
 
     const QgsAuthConfigSslServer sslCustomConfig();
 %Docstring
 Get the SSL configuration
- :rtype: QgsAuthConfigSslServer
 %End
 
     const QSslCertificate sslCertificate();
 %Docstring
 Get the SSL server certificate
- :rtype: QSslCertificate
 %End
 
     const QString sslHost();
 %Docstring
 Get the host:port to associate with the server certificate
- :rtype: str
 %End
 
     QSsl::SslProtocol sslProtocol();
 %Docstring
 Get the SSL protocl used for connections
- :rtype: QSsl.SslProtocol
 %End
 
     const QList<QSslError::SslError> sslIgnoreErrorEnums();
 %Docstring
 Get list of the SSL errors (as enums) to be ignored for connections
- :rtype: list of QSslError.SslError
 %End
 
     QSslSocket::PeerVerifyMode sslPeerVerifyMode();
 %Docstring
 Get the client's peer verify mode for connections
- :rtype: QSslSocket.PeerVerifyMode
 %End
 
     int sslPeerVerifyDepth();
 %Docstring
- Get the client's peer verify depth for connections
+Get the client's peer verify depth for connections
+
 .. note::
 
    Value of 0 = unlimited
- :rtype: int
 %End
 
   public slots:
@@ -174,7 +167,6 @@ Parse string for host:port
     bool readyToSave();
 %Docstring
 Verify if the configuration if ready to save
- :rtype: bool
 %End
 
   signals:
@@ -204,7 +196,7 @@ Emitted when the configuration can be saved changes
 class QgsAuthSslConfigDialog : QDialog
 {
 %Docstring
- Dialog wrapper of widget for editing an SSL server configuration
+Dialog wrapper of widget for editing an SSL server configuration
 %End
 
 %TypeHeaderCode
@@ -216,16 +208,16 @@ class QgsAuthSslConfigDialog : QDialog
                                      const QSslCertificate &cert = QSslCertificate(),
                                      const QString &hostport = QString() );
 %Docstring
- Construct wrapper dialog for the SSL config widget
- \param parent Parent widget
- \param cert SSL server certificate object
- \param hostport Unique host:port to associate with the server certificate
+Construct wrapper dialog for the SSL config widget
+
+:param parent: Parent widget
+:param cert: SSL server certificate object
+:param hostport: Unique host:port to associate with the server certificate
 %End
 
     QgsAuthSslConfigWidget *sslCustomConfigWidget();
 %Docstring
 Access the embedded SSL server configuration widget
- :rtype: QgsAuthSslConfigWidget
 %End
 
   public slots:

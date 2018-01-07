@@ -186,7 +186,7 @@ qgis:extractspecificnodes: >
 
   The node indices parameter accepts a comma separated string specifying the indices of the nodes to extract. The first node corresponds to an index of 0, the second node has an index of 1, etc. Negative indices can be used to find nodes at the end of the geometry, e.g., an index of -1 corresponds to the last node, -2 corresponds to the second last node, etc.
 
-  Additional fields are added to the nodes indicating the specific node position (e.g., 0, -1, etc), the original node index, distance along the original geometry and bisector angle of node for the original geometry.
+  Additional fields are added to the nodes indicating the specific node position (e.g., 0, -1, etc), the original node index, the node’s part and its index within the part (as well as its ring for polygons), distance along the original geometry and bisector angle of node for the original geometry.
 
 qgis:fieldcalculator: >
   This algorithm computes a new vector layer with the same features of the input layer, but with an additional attribute. The values of this new attribute are computed from each feature using a mathematical formula, based on the properties and attributes of the feature.
@@ -267,7 +267,7 @@ qgis:linestopolygons: >
   The attribute table of the output layer is the same as the one from of the input line layer.
 
 qgis:listuniquevalues: >
-  This algorithm generates a report with information about the categories found in a given attribute of a vector layer.
+  This algorithm generates a report with information about the unique values found in a given attribute (or attributes) of a vector layer.
 
 qgis:meanandstandarddeviationplot:
 
@@ -509,9 +509,6 @@ qgis:snapgeometries: >
   Snapping occurs to both nodes and edges. Depending on the snapping behavior, either nodes or edges will be preferred.
 
   Vertices will be inserted or removed as required to make the geometries match the reference geometries.
-
-qgis:snappointstogrid: >
-  This algorithm modifies the position of points in a vector layer, so they fall in the coordinates of a grid.
 
 qgis:splitwithlines: >
   This algorithm splits the lines or polygons in one layer using the lines in another layer to define the breaking points. Intersection between geometries in both layers are considered as split points.

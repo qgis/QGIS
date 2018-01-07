@@ -1,9 +1,9 @@
 v.buffer
 v.buffer.distance - Creates a buffer around features of given type.
 Vector (v.*)
-ParameterVector|input|Input vector layer|-1|False
-ParameterNumber|distance|Buffer distance in map units|None|None|100.0
-ParameterNumber|tolerance|Maximum distance between theoretical arc and polygon segments as multiple of buffer|None|None|0.01
-ParameterBoolean|-s|Make outside corners straight|False
-ParameterBoolean|-c|Do not make caps at the ends of polylines|False
-OutputVector|output|Buffer
+QgsProcessingParameterVectorLayer|input|Input vector layer|-1|None|False
+QgsProcessingParameterNumber|distance|Buffer distance in map units|QgsProcessingParameterNumber.Double|100.0|False|None|None
+QgsProcessingParameterNumber|tolerance|Maximum distance between theoretical arc and polygon segments as multiple of buffer|QgsProcessingParameterNumber.Double|0.01|False|None|None
+QgsProcessingParameterBoolean|-s|Make outside corners straight|False
+QgsProcessingParameterBoolean|-c|Do not make caps at the ends of polylines|False
+QgsProcessingParameterVectorDestination|output|Buffer

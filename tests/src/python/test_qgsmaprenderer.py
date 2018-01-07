@@ -391,7 +391,7 @@ class TestQgsMapRenderer(unittest.TestCase):
         for i in range(2000):
             x = uniform(5, 25)
             y = uniform(25, 45)
-            g = QgsGeometry.fromPoint(QgsPointXY(x, y))
+            g = QgsGeometry.fromPointXY(QgsPointXY(x, y))
             f = QgsFeature()
             f.setGeometry(g)
             f.initAttributes(1)

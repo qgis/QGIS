@@ -60,14 +60,8 @@
 class QgsSearchWidgetWrapper : QgsWidgetWrapper
 {
 %Docstring
- Manages an editor widget
- Widget and wrapper share the same parent
 
- A wrapper controls one attribute editor widget and is able to create a default
- widget or use a pre-existent widget. It is able to set the widget to the value implied
- by a field of a vector layer, or return the value it currently holds. Every time it is changed
- it has to emit a valueChanged signal. If it fails to do so, there is no guarantee that the
- changed status of the widget will be saved.
+Shows a search widget on a filter form.
 %End
 
 %TypeHeaderCode
@@ -98,115 +92,149 @@ class QgsSearchWidgetWrapper : QgsWidgetWrapper
 
     static QList< QgsSearchWidgetWrapper::FilterFlag > exclusiveFilterFlags();
 %Docstring
- Returns a list of exclusive filter flags, which cannot be combined with other flags (e.g., EqualTo/NotEqualTo)
+Returns a list of exclusive filter flags, which cannot be combined with other flags (e.g., EqualTo/NotEqualTo)
+
 .. versionadded:: 2.16
-.. seealso:: nonExclusiveFilterFlags()
- :rtype: list of QgsSearchWidgetWrapper.FilterFlag
+
+.. seealso:: :py:func:`nonExclusiveFilterFlags()`
 %End
 
     static QList< QgsSearchWidgetWrapper::FilterFlag > nonExclusiveFilterFlags();
 %Docstring
- Returns a list of non-exclusive filter flags, which can be combined with other flags (e.g., CaseInsensitive)
+Returns a list of non-exclusive filter flags, which can be combined with other flags (e.g., CaseInsensitive)
+
 .. versionadded:: 2.16
-.. seealso:: exclusiveFilterFlags()
- :rtype: list of QgsSearchWidgetWrapper.FilterFlag
+
+.. seealso:: :py:func:`exclusiveFilterFlags()`
 %End
 
     static QString toString( QgsSearchWidgetWrapper::FilterFlag flag );
 %Docstring
- Returns a translated string representing a filter flag.
- \param flag flag to convert to string
+Returns a translated string representing a filter flag.
+
+:param flag: flag to convert to string
+
 .. versionadded:: 2.16
- :rtype: str
 %End
 
     explicit QgsSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent /TransferThis/ = 0 );
 %Docstring
- Create a new widget wrapper
+Create a new widget wrapper
 
- \param vl        The layer on which the field is
- \param fieldIdx  The field which will be controlled
- \param parent    A parent widget for this widget wrapper and the created widget.
+:param vl:        The layer on which the field is
+:param fieldIdx:  The field which will be controlled
+:param parent:    A parent widget for this widget wrapper and the created widget.
 %End
 
     virtual FilterFlags supportedFlags() const;
 %Docstring
- Returns filter flags supported by the search widget.
+Returns filter flags supported by the search widget.
+
 .. versionadded:: 2.16
-.. seealso:: defaultFlags()
- :rtype: FilterFlags
+
+.. seealso:: :py:func:`defaultFlags()`
 %End
 
     virtual FilterFlags defaultFlags() const;
 %Docstring
- Returns the filter flags which should be set by default for the search widget.
+Returns the filter flags which should be set by default for the search widget.
+
 .. versionadded:: 2.16
-.. seealso:: supportedFlags()
- :rtype: FilterFlags
+
+.. seealso:: :py:func:`supportedFlags()`
 %End
 
-    virtual QString expression() = 0;
+    virtual QString expression() const = 0;
 %Docstring
- Will be used to access the widget's value. Read the value from the widget and
- return it properly formatted to be saved in the attribute.
+Will be used to access the widget's value. Read the value from the widget and
+return it properly formatted to be saved in the attribute.
 
- If an invalid variant is returned this will be interpreted as no change.
- Be sure to return a NULL QVariant if it should be set to NULL.
+If an invalid variant is returned this will be interpreted as no change.
+Be sure to return a NULL QVariant if it should be set to NULL.
 
- :return: The current value the widget represents
- :rtype: str
+:return: The current value the widget represents
 %End
 
     virtual bool applyDirectly() = 0;
 %Docstring
- If this is true, then this search widget should take effect directly
- when its expression changes
- :rtype: bool
+If this is true, then this search widget should take effect directly
+when its expression changes
 %End
 
     virtual QString createExpression( FilterFlags flags ) const;
+
+    QString createFieldIdentifier() const;
 %Docstring
- :rtype: str
+Get a field name or expression to use as field comparison.
+If in SearchMode returns a quoted field identifier.
+If in AggregateSearchMode returns an appropriate aggregate expression.
+
+.. versionadded:: 3.0
+%End
+
+    QString aggregate() const;
+%Docstring
+If in AggregateSearch mode, which aggregate should be used to construct
+the filter expression. Is a Null String if none.
+
+.. versionadded:: 3.0
+%End
+
+    void setAggregate( const QString &aggregate );
+%Docstring
+If in AggregateSearch mode, which aggregate should be used to construct
+the filter expression. Is a Null String if none.
+
+.. versionadded:: 3.0
 %End
 
   public slots:
 
     virtual void clearWidget();
 %Docstring
- Clears the widget's current value and resets it back to the default state
+Clears the widget's current value and resets it back to the default state
+
 .. versionadded:: 2.16
 %End
 
     virtual void setEnabled( bool enabled );
 %Docstring
- Toggles whether the search widget is enabled or disabled.
- \param enabled set to true to enable widget
+Toggles whether the search widget is enabled or disabled.
+
+:param enabled: set to true to enable widget
 %End
 
   signals:
 
     void expressionChanged( const QString &exp );
 %Docstring
- Emitted whenever the expression changes
- \param exp The new search expression
+Emitted whenever the expression changes
+
+:param exp: The new search expression
 %End
 
     void valueChanged();
 %Docstring
- Emitted when a user changes the value of the search widget.
+Emitted when a user changes the value of the search widget.
+
 .. versionadded:: 2.16
 %End
 
     void valueCleared();
 %Docstring
- Emitted when a user changes the value of the search widget back
- to an empty, default state.
+Emitted when a user changes the value of the search widget back
+to an empty, default state.
+
 .. versionadded:: 2.16
 %End
 
   protected slots:
 
-    virtual void setExpression( QString value ) = 0;
+    virtual void setExpression( const QString &expression ) = 0;
+%Docstring
+Set the ``expression`` which is currently used as filter for this widget.
+%End
+
     virtual void setFeature( const QgsFeature &feature );
 
 

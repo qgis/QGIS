@@ -57,6 +57,9 @@ class Union(QgisAlgorithm):
     def group(self):
         return self.tr('Vector overlay')
 
+    def groupId(self):
+        return 'vectoroverlay'
+
     def __init__(self):
         super().__init__()
 
@@ -116,14 +119,14 @@ class Union(QgisAlgorithm):
                 request = QgsFeatureRequest().setFilterFids(intersects).setSubsetOfAttributes([])
                 request.setDestinationCrs(sourceA.sourceCrs())
 
-                engine = QgsGeometry.createGeometryEngine(geom.geometry())
+                engine = QgsGeometry.createGeometryEngine(geom.constGet())
                 engine.prepareGeometry()
 
                 for featB in sourceB.getFeatures(request):
                     atMapB = featB.attributes()
                     tmpGeom = featB.geometry()
 
-                    if engine.intersects(tmpGeom.geometry()):
+                    if engine.intersects(tmpGeom.constGet()):
                         int_geom = geom.intersection(tmpGeom)
                         lstIntersectingB.append(tmpGeom)
 
@@ -134,7 +137,7 @@ class Union(QgisAlgorithm):
                         else:
                             int_geom = QgsGeometry(int_geom)
 
-                        if int_geom.wkbType() == QgsWkbTypes.Unknown or QgsWkbTypes.flatType(int_geom.geometry().wkbType()) == QgsWkbTypes.GeometryCollection:
+                        if int_geom.wkbType() == QgsWkbTypes.Unknown or QgsWkbTypes.flatType(int_geom.wkbType()) == QgsWkbTypes.GeometryCollection:
                             # Intersection produced different geomety types
                             temp_list = int_geom.asGeometryCollection()
                             for i in temp_list:
@@ -168,7 +171,7 @@ class Union(QgisAlgorithm):
                     intB = QgsGeometry.unaryUnion(lstIntersectingB)
                     diff_geom = diff_geom.difference(intB)
 
-                if diff_geom.wkbType() == QgsWkbTypes.Unknown or QgsWkbTypes.flatType(diff_geom.geometry().wkbType()) == QgsWkbTypes.GeometryCollection:
+                if diff_geom.wkbType() == QgsWkbTypes.Unknown or QgsWkbTypes.flatType(diff_geom.wkbType()) == QgsWkbTypes.GeometryCollection:
                     temp_list = diff_geom.asGeometryCollection()
                     for i in temp_list:
                         if i.type() == geom.type():
@@ -211,14 +214,14 @@ class Union(QgisAlgorithm):
                 request.setDestinationCrs(sourceA.sourceCrs())
 
                 # use prepared geometries for faster intersection tests
-                engine = QgsGeometry.createGeometryEngine(diff_geom.geometry())
+                engine = QgsGeometry.createGeometryEngine(diff_geom.constGet())
                 engine.prepareGeometry()
 
                 for featB in sourceA.getFeatures(request):
                     atMapB = featB.attributes()
                     tmpGeom = featB.geometry()
 
-                    if engine.intersects(tmpGeom.geometry()):
+                    if engine.intersects(tmpGeom.constGet()):
                         add = True
                         diff_geom = QgsGeometry(diff_geom.difference(tmpGeom))
                     else:

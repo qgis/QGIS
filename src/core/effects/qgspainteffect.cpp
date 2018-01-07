@@ -226,11 +226,6 @@ QRectF QgsPaintEffect::imageBoundingRect( const QgsRenderContext &context ) cons
 // QgsDrawSourceEffect
 //
 
-QgsDrawSourceEffect::QgsDrawSourceEffect()
-  : QgsPaintEffect()
-{
-}
-
 QgsPaintEffect *QgsDrawSourceEffect::create( const QgsStringMap &map )
 {
   QgsDrawSourceEffect *effect = new QgsDrawSourceEffect();

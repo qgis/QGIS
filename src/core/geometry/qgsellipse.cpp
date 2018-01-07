@@ -210,9 +210,9 @@ QgsPointSequence QgsEllipse::points( unsigned int segments ) const
   return pts;
 }
 
-QgsPolygonV2 *QgsEllipse::toPolygon( unsigned int segments ) const
+QgsPolygon *QgsEllipse::toPolygon( unsigned int segments ) const
 {
-  std::unique_ptr<QgsPolygonV2> polygon( new QgsPolygonV2() );
+  std::unique_ptr<QgsPolygon> polygon( new QgsPolygon() );
   if ( segments < 3 )
   {
     return polygon.release();
@@ -233,6 +233,7 @@ QgsLineString *QgsEllipse::toLineString( unsigned int segments ) const
 
   QgsPointSequence pts;
   pts = points( segments );
+  pts.append( pts.at( 0 ) ); // close linestring
 
   ext->setPoints( pts );
 
@@ -277,9 +278,9 @@ QString QgsEllipse::toString( int pointPrecision, int axisPrecision, int azimuth
   return rep;
 }
 
-QgsPolygonV2 *QgsEllipse::orientedBoundingBox() const
+QgsPolygon *QgsEllipse::orientedBoundingBox() const
 {
-  std::unique_ptr<QgsPolygonV2> ombb( new QgsPolygonV2() );
+  std::unique_ptr<QgsPolygon> ombb( new QgsPolygon() );
   if ( isEmpty() )
   {
     return ombb.release();

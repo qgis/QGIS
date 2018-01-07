@@ -17,278 +17,279 @@ typedef QList<int> QgsAttributeList;
 typedef QSet<int> QgsAttributeIds;
 
 
-class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator, QgsFeatureSink, QgsFeatureSource
+class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator, QgsExpressionContextScopeGenerator, QgsFeatureSink, QgsFeatureSource
 {
 %Docstring
- Represents a vector layer which manages a vector based data sets.
-
- The QgsVectorLayer is instantiated by specifying the name of a data provider,
- such as postgres or wfs, and url defining the specific data set to connect to.
- The vector layer constructor in turn instantiates a QgsVectorDataProvider subclass
- corresponding to the provider type, and passes it the url. The data provider
- connects to the data source.
+Represents a vector layer which manages a vector based data sets.
+
+The QgsVectorLayer is instantiated by specifying the name of a data provider,
+such as postgres or wfs, and url defining the specific data set to connect to.
+The vector layer constructor in turn instantiates a QgsVectorDataProvider subclass
+corresponding to the provider type, and passes it the url. The data provider
+connects to the data source.
 
- The QgsVectorLayer provides a common interface to the different data types. It also
- manages editing transactions.
+The QgsVectorLayer provides a common interface to the different data types. It also
+manages editing transactions.
 
-  Sample usage of the QgsVectorLayer class:
+Sample usage of the QgsVectorLayer class:
 
- \code
-     QString uri = "point?crs=epsg:4326&field=id:integer";
-     QgsVectorLayer *scratchLayer = new QgsVectorLayer(uri, "Scratch point layer",  "memory");
- \endcode
+\code
+QString uri = "point?crs=epsg:4326&field=id:integer";
+QgsVectorLayer *scratchLayer = new QgsVectorLayer(uri, "Scratch point layer",  "memory");
+\endcode
 
- The main data providers supported by QGIS are listed below.
+The main data providers supported by QGIS are listed below.
 
- \section providers Vector data providers
+\section providers Vector data providers
 
- \subsection memory Memory data providerType (memory)
+\subsection memory Memory data providerType (memory)
 
- The memory data provider is used to construct in memory data, for example scratch
- data or data generated from spatial operations such as contouring. There is no
- inherent persistent storage of the data. The data source uri is constructed. The
- url specifies the geometry type ("point", "linestring", "polygon",
- "multipoint","multilinestring","multipolygon"), optionally followed by url parameters
- as follows:
+The memory data provider is used to construct in memory data, for example scratch
+data or data generated from spatial operations such as contouring. There is no
+inherent persistent storage of the data. The data source uri is constructed. The
+url specifies the geometry type ("point", "linestring", "polygon",
+"multipoint","multilinestring","multipolygon"), optionally followed by url parameters
+as follows:
 
- - crs=definition
-   Defines the coordinate reference system to use for the layer.
-   definition is any string accepted by QgsCoordinateReferenceSystem.createFromString()
+- crs=definition
+Defines the coordinate reference system to use for the layer.
+definition is any string accepted by QgsCoordinateReferenceSystem.createFromString()
 
- - index=yes
-   Specifies that the layer will be constructed with a spatial index
+- index=yes
+Specifies that the layer will be constructed with a spatial index
 
- - field=name:type(length,precision)
-   Defines an attribute of the layer. Multiple field parameters can be added
-   to the data provider definition. type is one of "integer", "double", "string".
+- field=name:type(length,precision)
+Defines an attribute of the layer. Multiple field parameters can be added
+to the data provider definition. type is one of "integer", "double", "string".
 
- An example url is "Point?crs=epsg:4326&field=id:integer&field=name:string(20)&index=yes"
+An example url is "Point?crs=epsg:4326&field=id:integer&field=name:string(20)&index=yes"
 
- \subsection ogr OGR data provider (ogr)
+\subsection ogr OGR data provider (ogr)
 
- Accesses data using the OGR drivers (http://www.gdal.org/ogr/ogr_formats.html). The url
- is the OGR connection string. A wide variety of data formats can be accessed using this
- driver, including file based formats used by many GIS systems, database formats, and
- web services. Some of these formats are also supported by custom data providers listed
- below.
-
- \subsection spatialite SpatiaLite data provider (spatialite)
-
- Access data in a SpatiaLite database. The url defines the connection parameters, table,
- geometry column, and other attributes. The url can be constructed using the
- QgsDataSourceUri class.
-
- \subsection postgres PostgreSQL data provider (postgres)
-
- Connects to a PostgreSQL database. The url defines the connection parameters, table,
- geometry column, and other attributes. The url can be constructed using the
- QgsDataSourceUri class.
-
- \subsection mssql Microsoft SQL server data provider (mssql)
-
- Connects to a Microsoft SQL server database. The url defines the connection parameters, table,
- geometry column, and other attributes. The url can be constructed using the
- QgsDataSourceUri class.
-
- \subsection wfs WFS (web feature service) data provider (wfs)
+Accesses data using the OGR drivers (http://www.gdal.org/ogr/ogr_formats.html). The url
+is the OGR connection string. A wide variety of data formats can be accessed using this
+driver, including file based formats used by many GIS systems, database formats, and
+web services. Some of these formats are also supported by custom data providers listed
+below.
+
+\subsection spatialite SpatiaLite data provider (spatialite)
+
+Access data in a SpatiaLite database. The url defines the connection parameters, table,
+geometry column, and other attributes. The url can be constructed using the
+QgsDataSourceUri class.
+
+\subsection postgres PostgreSQL data provider (postgres)
+
+Connects to a PostgreSQL database. The url defines the connection parameters, table,
+geometry column, and other attributes. The url can be constructed using the
+QgsDataSourceUri class.
+
+\subsection mssql Microsoft SQL server data provider (mssql)
+
+Connects to a Microsoft SQL server database. The url defines the connection parameters, table,
+geometry column, and other attributes. The url can be constructed using the
+QgsDataSourceUri class.
+
+\subsection wfs WFS (web feature service) data provider (wfs)
 
- Used to access data provided by a web feature service.
+Used to access data provided by a web feature service.
 
- The url can be a HTTP url to a WFS server (legacy, e.g. http://foobar/wfs?TYPENAME=xxx&SRSNAME=yyy[&FILTER=zzz]), or,
- starting with QGIS 2.16, a URI constructed using the QgsDataSourceUri class with the following parameters :
- - url=string (mandatory): HTTP url to a WFS server endpoint. e.g http://foobar/wfs
- - typename=string (mandatory): WFS typename
- - srsname=string (recommended): SRS like 'EPSG:XXXX'
- - username=string
- - password=string
- - authcfg=string
- - version=auto/1.0.0/1.1.0/2.0.0
-  -sql=string: full SELECT SQL statement with optional WHERE, ORDER BY and possibly with JOIN if supported on server
- - filter=string: QGIS expression or OGC/FES filter
- - restrictToRequestBBOX=1: to download only features in the view extent (or more generally
-   in the bounding box of the feature iterator)
- - maxNumFeatures=number
- - IgnoreAxisOrientation=1: to ignore EPSG axis order for WFS 1.1 or 2.0
- - InvertAxisOrientation=1: to invert axis order
- - hideDownloadProgressDialog=1: to hide the download progress dialog
+The url can be a HTTP url to a WFS server (legacy, e.g. http://foobar/wfs?TYPENAME=xxx&SRSNAME=yyy[&FILTER=zzz]), or,
+starting with QGIS 2.16, a URI constructed using the QgsDataSourceUri class with the following parameters :
+- url=string (mandatory): HTTP url to a WFS server endpoint. e.g http://foobar/wfs
+- typename=string (mandatory): WFS typename
+- srsname=string (recommended): SRS like 'EPSG:XXXX'
+- username=string
+- password=string
+- authcfg=string
+- version=auto/1.0.0/1.1.0/2.0.0
+-sql=string: full SELECT SQL statement with optional WHERE, ORDER BY and possibly with JOIN if supported on server
+- filter=string: QGIS expression or OGC/FES filter
+- restrictToRequestBBOX=1: to download only features in the view extent (or more generally
+in the bounding box of the feature iterator)
+- maxNumFeatures=number
+- IgnoreAxisOrientation=1: to ignore EPSG axis order for WFS 1.1 or 2.0
+- InvertAxisOrientation=1: to invert axis order
+- hideDownloadProgressDialog=1: to hide the download progress dialog
 
- The ‘FILTER’ query string parameter can be used to filter
- the WFS feature type. The ‘FILTER’ key value can either be a QGIS expression
- or an OGC XML filter. If the value is set to a QGIS expression the driver will
- turn it into OGC XML filter before passing it to the WFS server. Beware the
- QGIS expression filter only supports” =, !=, <, >, <=, >=, AND, OR, NOT, LIKE, IS NULL”
- attribute operators, “BBOX, Disjoint, Intersects, Touches, Crosses, Contains, Overlaps, Within”
- spatial binary operators and the QGIS local “geomFromWKT, geomFromGML”
- geometry constructor functions.
+The ‘FILTER’ query string parameter can be used to filter
+the WFS feature type. The ‘FILTER’ key value can either be a QGIS expression
+or an OGC XML filter. If the value is set to a QGIS expression the driver will
+turn it into OGC XML filter before passing it to the WFS server. Beware the
+QGIS expression filter only supports” =, !=, <, >, <=, >=, AND, OR, NOT, LIKE, IS NULL”
+attribute operators, “BBOX, Disjoint, Intersects, Touches, Crosses, Contains, Overlaps, Within”
+spatial binary operators and the QGIS local “geomFromWKT, geomFromGML”
+geometry constructor functions.
 
- Also note:
+Also note:
 
- - You can use various functions available in the QGIS Expression list,
-   however the function must exist server side and have the same name and arguments to work.
+- You can use various functions available in the QGIS Expression list,
+however the function must exist server side and have the same name and arguments to work.
 
- - Use the special $geometry parameter to provide the layer geometry column as input
-   into the spatial binary operators e.g intersects($geometry, geomFromWKT('POINT (5 6)'))
+- Use the special $geometry parameter to provide the layer geometry column as input
+into the spatial binary operators e.g intersects($geometry, geomFromWKT('POINT (5 6)'))
 
- \subsection delimitedtext Delimited text file data provider (delimitedtext)
+\subsection delimitedtext Delimited text file data provider (delimitedtext)
 
- Accesses data in a delimited text file, for example CSV files generated by
- spreadsheets. The contents of the file are split into columns based on specified
- delimiter characters.  Each record may be represented spatially either by an
- X and Y coordinate column, or by a WKT (well known text) formatted columns.
+Accesses data in a delimited text file, for example CSV files generated by
+spreadsheets. The contents of the file are split into columns based on specified
+delimiter characters.  Each record may be represented spatially either by an
+X and Y coordinate column, or by a WKT (well known text) formatted columns.
 
- The url defines the filename, the formatting options (how the
- text in the file is divided into data fields, and which fields contain the
- X,Y coordinates or WKT text definition.  The options are specified as url query
- items.
+The url defines the filename, the formatting options (how the
+text in the file is divided into data fields, and which fields contain the
+X,Y coordinates or WKT text definition.  The options are specified as url query
+items.
 
- At its simplest the url can just be the filename, in which case it will be loaded
- as a CSV formatted file.
+At its simplest the url can just be the filename, in which case it will be loaded
+as a CSV formatted file.
 
- The url may include the following items:
+The url may include the following items:
 
- - encoding=UTF-8
+- encoding=UTF-8
 
-   Defines the character encoding in the file.  The default is UTF-8.  To use
-   the default encoding for the operating system use "System".
+Defines the character encoding in the file.  The default is UTF-8.  To use
+the default encoding for the operating system use "System".
 
- - type=(csv|regexp|whitespace|plain)
+- type=(csv|regexp|whitespace|plain)
 
-   Defines the algorithm used to split records into columns. Records are
-   defined by new lines, except for csv format files for which quoted fields
-   may span multiple records.  The default type is csv.
+Defines the algorithm used to split records into columns. Records are
+defined by new lines, except for csv format files for which quoted fields
+may span multiple records.  The default type is csv.
 
-   -  "csv" splits the file based on three sets of characters:
-      delimiter characters, quote characters,
-      and escape characters.  Delimiter characters mark the end
-      of a field. Quote characters enclose a field which can contain
-      delimiter characters, and newlines.  Escape characters cause the
-      following character to be treated literally (including delimiter,
-      quote, and newline characters).  Escape and quote characters must
-      be different from delimiter characters. Escape characters that are
-      also quote characters are treated specially - they can only
-      escape themselves within quotes.  Elsewhere they are treated as
-      quote characters.  The defaults for delimiter, quote, and escape
-      are ',', '"', '"'.
-   -  "regexp" splits each record using a regular expression (see QRegExp
-      documentation for details).
-   -  "whitespace" splits each record based on whitespace (on or more whitespace
-      characters.  Leading whitespace in the record is ignored.
-   -  "plain" is provided for backwards compatibility.  It is equivalent to
-      CSV except that the default quote characters are single and double quotes,
-      and there is no escape characters.
+-  "csv" splits the file based on three sets of characters:
+delimiter characters, quote characters,
+and escape characters.  Delimiter characters mark the end
+of a field. Quote characters enclose a field which can contain
+delimiter characters, and newlines.  Escape characters cause the
+following character to be treated literally (including delimiter,
+quote, and newline characters).  Escape and quote characters must
+be different from delimiter characters. Escape characters that are
+also quote characters are treated specially - they can only
+escape themselves within quotes.  Elsewhere they are treated as
+quote characters.  The defaults for delimiter, quote, and escape
+are ',', '"', '"'.
+-  "regexp" splits each record using a regular expression (see QRegExp
+documentation for details).
+-  "whitespace" splits each record based on whitespace (on or more whitespace
+characters.  Leading whitespace in the record is ignored.
+-  "plain" is provided for backwards compatibility.  It is equivalent to
+CSV except that the default quote characters are single and double quotes,
+and there is no escape characters.
 
- - delimiter=characters
+- delimiter=characters
 
-   Defines the delimiter characters used for csv and plain type files, or the
-   regular expression for regexp type files.  It is a literal string of characters
-   except that "\t" may be used to represent a tab character.
+Defines the delimiter characters used for csv and plain type files, or the
+regular expression for regexp type files.  It is a literal string of characters
+except that "\t" may be used to represent a tab character.
 
- - quote=characters
+- quote=characters
 
-   Defines the characters that are used as quote characters for csv and plain type
-   files.
+Defines the characters that are used as quote characters for csv and plain type
+files.
 
- - escape=characters
+- escape=characters
 
-   Defines the characters used to escape delimiter, quote, and newline characters.
+Defines the characters used to escape delimiter, quote, and newline characters.
 
- - skipLines=n
+- skipLines=n
 
-   Defines the number of lines to ignore at the beginning of the file (default 0)
+Defines the number of lines to ignore at the beginning of the file (default 0)
 
- - useHeader=(yes|no)
+- useHeader=(yes|no)
 
-   Defines whether the first record in the file (after skipped lines) contains
-   column names (default yes)
+Defines whether the first record in the file (after skipped lines) contains
+column names (default yes)
 
- - trimFields=(yes|no)
+- trimFields=(yes|no)
 
-   If yes then leading and trailing whitespace will be removed from fields
+If yes then leading and trailing whitespace will be removed from fields
 
- - skipEmptyFields=(yes|no)
+- skipEmptyFields=(yes|no)
 
-   If yes then empty fields will be discarded (equivalent to concatenating consecutive
-   delimiters)
+If yes then empty fields will be discarded (equivalent to concatenating consecutive
+delimiters)
 
- - maxFields=#
+- maxFields=#
 
-   Specifies the maximum number of fields to load for each record.  Additional
-   fields will be discarded.  Default is 0 - load all fields.
+Specifies the maximum number of fields to load for each record.  Additional
+fields will be discarded.  Default is 0 - load all fields.
 
- - decimalPoint=c
+- decimalPoint=c
 
-   Defines a character that is used as a decimal point in the numeric columns
-   The default is '.'.
+Defines a character that is used as a decimal point in the numeric columns
+The default is '.'.
 
- - xField=column yField=column
+- xField=column yField=column
 
-   Defines the name of the columns holding the x and y coordinates for XY point geometries.
-   If the useHeader is no (ie there are no column names), then this is the column
-   number (with the first column as 1).
+Defines the name of the columns holding the x and y coordinates for XY point geometries.
+If the useHeader is no (ie there are no column names), then this is the column
+number (with the first column as 1).
 
- - xyDms=(yes|no)
+- xyDms=(yes|no)
 
-   If yes then the X and Y coordinates are interpreted as
-   degrees/minutes/seconds format (fairly permissively),
-   or degree/minutes format.
+If yes then the X and Y coordinates are interpreted as
+degrees/minutes/seconds format (fairly permissively),
+or degree/minutes format.
 
- - wktField=column
+- wktField=column
 
-   Defines the name of the columns holding the WKT geometry definition for WKT geometries.
-   If the useHeader is no (ie there are no column names), then this is the column
-   number (with the first column as 1).
+Defines the name of the columns holding the WKT geometry definition for WKT geometries.
+If the useHeader is no (ie there are no column names), then this is the column
+number (with the first column as 1).
 
- - geomType=(point|line|polygon|none)
+- geomType=(point|line|polygon|none)
 
-   Defines the geometry type for WKT type geometries.  QGIS will only display one
-   type of geometry for the layer - any others will be ignored when the file is
-   loaded.  By default the provider uses the type of the first geometry in the file.
-   Use geomType to override this type.
+Defines the geometry type for WKT type geometries.  QGIS will only display one
+type of geometry for the layer - any others will be ignored when the file is
+loaded.  By default the provider uses the type of the first geometry in the file.
+Use geomType to override this type.
 
-   geomType can also be set to none, in which case the layer is loaded without
-   geometries.
+geomType can also be set to none, in which case the layer is loaded without
+geometries.
 
- - subset=expression
+- subset=expression
 
-   Defines an expression that will identify a subset of records to display
+Defines an expression that will identify a subset of records to display
 
- - crs=crsstring
+- crs=crsstring
 
-   Defines the coordinate reference system used for the layer.  This can be
-   any string accepted by QgsCoordinateReferenceSystem.createFromString()
+Defines the coordinate reference system used for the layer.  This can be
+any string accepted by QgsCoordinateReferenceSystem.createFromString()
 
- -subsetIndex=(yes|no)
+-subsetIndex=(yes|no)
 
-   Determines whether the provider generates an index to improve the efficiency
-   of subsets.  The default is yes
+Determines whether the provider generates an index to improve the efficiency
+of subsets.  The default is yes
 
- -spatialIndex=(yes|no)
+-spatialIndex=(yes|no)
 
-   Determines whether the provider generates a spatial index.  The default is no.
+Determines whether the provider generates a spatial index.  The default is no.
 
- -watchFile=(yes|no)
+-watchFile=(yes|no)
 
-   Defines whether the file will be monitored for changes. The default is
-   to monitor for changes.
+Defines whether the file will be monitored for changes. The default is
+to monitor for changes.
 
- - quiet
+- quiet
 
-   Errors encountered loading the file will not be reported in a user dialog if
-   quiet is included (They will still be shown in the output log).
+Errors encountered loading the file will not be reported in a user dialog if
+quiet is included (They will still be shown in the output log).
 
- \subsection gpx GPX data provider (gpx)
+\subsection gpx GPX data provider (gpx)
 
- Provider reads tracks, routes, and waypoints from a GPX file.  The url
- defines the name of the file, and the type of data to retrieve from it
- ("track", "route", or "waypoint").
+Provider reads tracks, routes, and waypoints from a GPX file.  The url
+defines the name of the file, and the type of data to retrieve from it
+("track", "route", or "waypoint").
 
- An example url is "/home/user/data/holiday.gpx?type=route"
+An example url is "/home/user/data/holiday.gpx?type=route"
 
- \subsection grass Grass data provider (grass)
+\subsection grass Grass data provider (grass)
 
- Provider to display vector data in a GRASS GIS layer.
+Provider to display vector data in a GRASS GIS layer.
 
- TODO QGIS3: Remove virtual from non-inherited methods (like isModified)
+TODO QGIS3: Remove virtual from non-inherited methods (like isModified)
+
 .. seealso:: QgsVectorLayerUtils()
 %End
 
@@ -314,84 +315,100 @@ class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator, QgsFeatureSin
       RemoveFromSelection,
     };
 
-    QgsVectorLayer( const QString &path = QString(), const QString &baseName = QString(),
-                    const QString &providerLib = "ogr", bool loadDefaultStyleFlag = true,
-                    bool readExtentFromXml = false );
+    struct LayerOptions
+    {
+
+      explicit LayerOptions( bool loadDefaultStyle = true, bool readExtentFromXml = false );
 %Docstring
- Constructor - creates a vector layer
+Constructor for LayerOptions.
+%End
 
- The QgsVectorLayer is constructed by instantiating a data provider.  The provider
- interprets the supplied path (url) of the data source to connect to and access the
- data.
+      bool loadDefaultStyle;
+%Docstring
+Set to true if the default layer style should be loaded
+%End
 
- \param  path  The path or url of the parameter.  Typically this encodes
-               parameters used by the data provider as url query items.
- \param  baseName The name used to represent the layer in the legend
- \param  providerLib  The name of the data provider, e.g., "memory", "postgres"
- \param  loadDefaultStyleFlag whether to load the default style
- \param  readExtentFromXml Read extent from XML if true or let provider determine it if false
+      bool readExtentFromXml;
+%Docstring
+If true, the layer extent will be read from XML (i.e. stored in the
+project file). If false, the extent will be determined by the provider on layer load.
+%End
+
+    };
+
+    explicit QgsVectorLayer( const QString &path = QString(), const QString &baseName = QString(),
+                             const QString &providerLib = "ogr", const QgsVectorLayer::LayerOptions &options = QgsVectorLayer::LayerOptions() );
+%Docstring
+Constructor - creates a vector layer
+
+The QgsVectorLayer is constructed by instantiating a data provider.  The provider
+interprets the supplied path (url) of the data source to connect to and access the
+data.
+
+:param path:  The path or url of the parameter.  Typically this encodes
+parameters used by the data provider as url query items.
+:param baseName: The name used to represent the layer in the legend
+:param providerLib:  The name of the data provider, e.g., "memory", "postgres"
+:param options: layer load options
 %End
 
 
-    virtual ~QgsVectorLayer();
+    ~QgsVectorLayer();
 
 
     virtual QgsVectorLayer *clone() const /Factory/;
+
 %Docstring
- Returns a new instance equivalent to this one. A new provider is
-  created for the same data source and renderers for features and diagrams
-  are cloned too. Moreover, each attributes (transparency, extent, selected
-  features and so on) are identicals.
- :return: a new layer instance
+Returns a new instance equivalent to this one. A new provider is
+created for the same data source and renderers for features and diagrams
+are cloned too. Moreover, each attributes (transparency, extent, selected
+features and so on) are identicals.
+
+:return: a new layer instance
+
 .. versionadded:: 3.0
- :rtype: QgsVectorLayer
 %End
 
     QString storageType() const;
 %Docstring
- Returns the permanent storage type for this layer as a friendly name.
- This is obtained from the data provider and does not follow any standard.
- :rtype: str
+Returns the permanent storage type for this layer as a friendly name.
+This is obtained from the data provider and does not follow any standard.
 %End
 
     QString capabilitiesString() const;
 %Docstring
- Capabilities for this layer, comma separated and translated.
- :rtype: str
+Capabilities for this layer, comma separated and translated.
 %End
 
     QString dataComment() const;
 %Docstring
- Returns a description for this layer as defined in the data provider.
- :rtype: str
+Returns a description for this layer as defined in the data provider.
 %End
 
     QString displayField() const;
 %Docstring
- This is a shorthand for accessing the displayExpression if it is a simple field.
- If the displayExpression is more complex than a simple field, a null string will
- be returned.
+This is a shorthand for accessing the displayExpression if it is a simple field.
+If the displayExpression is more complex than a simple field, a null string will
+be returned.
 
-.. seealso:: displayExpression
- :rtype: str
+.. seealso:: :py:func:`displayExpression`
 %End
 
     void setDisplayExpression( const QString &displayExpression );
 %Docstring
- Set the preview expression, used to create a human readable preview string.
-  Used e.g. in the attribute table feature list. Uses QgsExpression.
+Set the preview expression, used to create a human readable preview string.
+Used e.g. in the attribute table feature list. Uses QgsExpression.
 
-  \param displayExpression The expression which will be used to preview features
-                           for this layer
+:param displayExpression: The expression which will be used to preview features
+for this layer
 %End
 
     QString displayExpression() const;
 %Docstring
-  Get the preview expression, used to create a human readable preview string.
-  Uses QgsExpression
+Get the preview expression, used to create a human readable preview string.
+Uses QgsExpression
 
-  :return: The expression which will be used to preview features for this layer
- :rtype: str
+:return: The expression which will be used to preview features for this layer
 %End
 
     virtual QgsVectorDataProvider *dataProvider();
@@ -409,162 +426,179 @@ Setup the coordinate system transformation for the layer
 
     bool addJoin( const QgsVectorLayerJoinInfo &joinInfo );
 %Docstring
- Joins another vector layer to this layer
-\param joinInfo join object containing join layer id, target and source field
+Joins another vector layer to this layer
+
+:param joinInfo: join object containing join layer id, target and source field
+
 .. note::
 
    since 2.6 returns bool indicating whether the join can be added *
- :rtype: bool
 %End
 
     bool removeJoin( const QString &joinLayerId );
 %Docstring
- Removes a vector layer join
+Removes a vector layer join
+
 :return: true if join was found and successfully removed *
- :rtype: bool
 %End
 
     QgsVectorLayerJoinBuffer *joinBuffer();
 %Docstring
- Accessor to the join buffer object
+Accessor to the join buffer object
+
 .. versionadded:: 2.14.7
- :rtype: QgsVectorLayerJoinBuffer
 %End
     const QList<QgsVectorLayerJoinInfo> vectorJoins() const;
-%Docstring
- :rtype: list of QgsVectorLayerJoinInfo
-%End
 
     virtual bool setDependencies( const QSet<QgsMapLayerDependency> &layers );
-%Docstring
- Sets the list of dependencies.
-.. seealso:: dependencies()
 
- \param layers set of QgsMapLayerDependency. Only user-defined dependencies will be added
- :return: false if a dependency cycle has been detected
+%Docstring
+Sets the list of dependencies.
+
+.. seealso:: :py:func:`dependencies()`
+
+:param layers: set of QgsMapLayerDependency. Only user-defined dependencies will be added
+
+:return: false if a dependency cycle has been detected
+
 .. versionadded:: 3.0
- :rtype: bool
 %End
 
     virtual QSet<QgsMapLayerDependency> dependencies() const;
-%Docstring
-.. seealso:: setDataDependencies)
- as well as dependencies given by the provider
 
- :return: a set of QgsMapLayerDependency
+%Docstring
+
+.. seealso:: :py:func:`setDataDependencies`
+as well as dependencies given by the provider
+
+:return: a set of QgsMapLayerDependency
+
 .. versionadded:: 3.0
- :rtype: set of QgsMapLayerDependency
 %End
 
     int addExpressionField( const QString &exp, const QgsField &fld );
 %Docstring
- Add a new field which is calculated by the expression specified
+Add a new field which is calculated by the expression specified
 
- \param exp The expression which calculates the field
- \param fld The field to calculate
+:param exp: The expression which calculates the field
+:param fld: The field to calculate
 
- :return: The index of the new field
+:return: The index of the new field
+
 
 .. versionadded:: 2.9
- :rtype: int
 %End
 
     void removeExpressionField( int index );
 %Docstring
- Remove an expression field
+Remove an expression field
 
- \param index The index of the field
+:param index: The index of the field
 
 .. versionadded:: 2.6
 %End
 
     QString expressionField( int index ) const;
 %Docstring
- Returns the expression used for a given expression field
+Returns the expression used for a given expression field
 
- \param index An index of an epxression based (virtual) field
+:param index: An index of an epxression based (virtual) field
 
- :return: The expression for the field at index
+:return: The expression for the field at index
+
 
 .. versionadded:: 2.9
- :rtype: str
 %End
 
     void updateExpressionField( int index, const QString &exp );
 %Docstring
- Changes the expression used to define an expression based (virtual) field
+Changes the expression used to define an expression based (virtual) field
 
- \param index The index of the expression to change
+:param index: The index of the expression to change
 
- \param exp The new expression to set
+:param exp: The new expression to set
 
 .. versionadded:: 2.9
 %End
 
     QgsActionManager *actions();
 %Docstring
- Get all layer actions defined on this layer.
+Get all layer actions defined on this layer.
 
- The pointer which is returned directly points to the actions object
- which is used by the layer, so any changes are immediately applied.
- :rtype: QgsActionManager
+The pointer which is returned directly points to the actions object
+which is used by the layer, so any changes are immediately applied.
 %End
 
 
     int selectedFeatureCount() const;
 %Docstring
- The number of features that are selected in this layer
+The number of features that are selected in this layer
 
- :return: See description
- :rtype: int
+:return: See description
 %End
 
     void selectByRect( QgsRectangle &rect, SelectBehavior behavior = SetSelection );
 %Docstring
- Select features found within the search rectangle (in layer's coordinates)
- \param rect search rectangle
- \param behavior selection type, allows adding to current selection, removing
- from selection, etc.
-.. seealso:: invertSelectionInRectangle(QgsRectangle & rect)
-.. seealso:: selectByExpression()
-.. seealso:: selectByIds()
+Select features found within the search rectangle (in layer's coordinates)
+
+:param rect: search rectangle
+:param behavior: selection type, allows adding to current selection, removing
+from selection, etc.
+
+.. seealso:: :py:func:`invertSelectionInRectangle`
+
+.. seealso:: :py:func:`selectByExpression()`
+
+.. seealso:: :py:func:`selectByIds()`
 %End
 
     void selectByExpression( const QString &expression, SelectBehavior behavior = SetSelection );
 %Docstring
- Select matching features using an expression.
- \param expression expression to evaluate to select features
- \param behavior selection type, allows adding to current selection, removing
- from selection, etc.
+Select matching features using an expression.
+
+:param expression: expression to evaluate to select features
+:param behavior: selection type, allows adding to current selection, removing
+from selection, etc.
+
 .. versionadded:: 2.16
-.. seealso:: selectByRect()
-.. seealso:: selectByIds()
+
+.. seealso:: :py:func:`selectByRect()`
+
+.. seealso:: :py:func:`selectByIds()`
 %End
 
     void selectByIds( const QgsFeatureIds &ids, SelectBehavior behavior = SetSelection );
 %Docstring
- Select matching features using a list of feature IDs. Will emit the
- selectionChanged() signal with the clearAndSelect flag set.
- \param ids feature IDs to select
- \param behavior selection type, allows adding to current selection, removing
- from selection, etc.
+Select matching features using a list of feature IDs. Will emit the
+selectionChanged() signal with the clearAndSelect flag set.
+
+:param ids: feature IDs to select
+:param behavior: selection type, allows adding to current selection, removing
+from selection, etc.
+
 .. versionadded:: 2.16
-.. seealso:: selectByRect()
-.. seealso:: selectByExpression()
+
+.. seealso:: :py:func:`selectByRect()`
+
+.. seealso:: :py:func:`selectByExpression()`
 %End
 
     void modifySelection( const QgsFeatureIds &selectIds, const QgsFeatureIds &deselectIds );
 %Docstring
- Modifies the current selection on this layer
+Modifies the current selection on this layer
 
- \param selectIds    Select these ids
- \param deselectIds  Deselect these ids
+:param selectIds:    Select these ids
+:param deselectIds:  Deselect these ids
 
-.. seealso::   select(QgsFeatureIds)
-.. seealso::   select(QgsFeatureId)
-.. seealso::   deselect(QgsFeatureIds)
-.. seealso::   deselect(QgsFeatureId)
-.. seealso:: selectByExpression()
+.. seealso:: :py:func:`select`
+
+.. seealso:: :py:func:`select`
+
+.. seealso:: :py:func:`deselect`
+
+.. seealso:: :py:func:`deselect`
+
+.. seealso:: :py:func:`selectByExpression()`
 %End
 
     void invertSelection();
@@ -579,67 +613,69 @@ Select all the features
 
     void invertSelectionInRectangle( QgsRectangle &rect );
 %Docstring
- Invert selection of features found within the search rectangle (in layer's coordinates)
+Invert selection of features found within the search rectangle (in layer's coordinates)
 
- \param rect  The rectangle in which the selection of features will be inverted
+:param rect:  The rectangle in which the selection of features will be inverted
 
-.. seealso::   invertSelection()
+.. seealso:: :py:func:`invertSelection()`
 %End
 
     QgsFeatureList selectedFeatures() const;
 %Docstring
- Get a copy of the user-selected features
+Get a copy of the user-selected features
 
- :return: A list of QgsFeature
+:return: A list of QgsFeature
 
-.. seealso::    selectedFeatureIds()
-.. seealso::    getSelectedFeatures() which is more memory friendly when handling large selections
- :rtype: QgsFeatureList
+.. seealso:: :py:func:`selectedFeatureIds()`
+
+.. seealso:: :py:func:`getSelectedFeatures()`
 %End
 
     QgsFeatureIterator getSelectedFeatures( QgsFeatureRequest request = QgsFeatureRequest() ) const;
 %Docstring
- Get an iterator of the selected features
+Get an iterator of the selected features
 
- \param request You may specify a request, e.g. to limit the set of requested attributes.
-                Any filter on the request will be discarded.
+:param request: You may specify a request, e.g. to limit the set of requested attributes.
+Any filter on the request will be discarded.
 
- :return: Iterator over the selected features
+:return: Iterator over the selected features
 
-.. seealso::    selectedFeatureIds()
-.. seealso::    selectedFeatures()
- :rtype: QgsFeatureIterator
+
+.. seealso:: :py:func:`selectedFeatureIds()`
+
+.. seealso:: :py:func:`selectedFeatures()`
 %End
 
     const QgsFeatureIds &selectedFeatureIds() const;
 %Docstring
- Return reference to identifiers of selected features
+Return reference to identifiers of selected features
 
- :return: A list of QgsFeatureId
-.. seealso:: selectedFeatures()
- :rtype: QgsFeatureIds
+:return: A list of QgsFeatureId
+
+.. seealso:: :py:func:`selectedFeatures()`
 %End
 
     QgsRectangle boundingBoxOfSelected() const;
 %Docstring
 Returns the bounding box of the selected features. If there is no selection, QgsRectangle(0,0,0,0) is returned
- :rtype: QgsRectangle
 %End
 
     bool labelsEnabled() const;
 %Docstring
- Returns whether the layer contains labels which are enabled and should be drawn.
- :return: true if layer contains enabled labels
+Returns whether the layer contains labels which are enabled and should be drawn.
+
+:return: true if layer contains enabled labels
+
 .. versionadded:: 2.9
- :rtype: bool
 %End
 
     bool diagramsEnabled() const;
 %Docstring
- Returns whether the layer contains diagrams which are enabled and should be drawn.
- :return: true if layer contains enabled diagrams
+Returns whether the layer contains diagrams which are enabled and should be drawn.
+
+:return: true if layer contains enabled diagrams
+
 .. versionadded:: 2.9
- :rtype: bool
 %End
 
     void setDiagramRenderer( QgsDiagramRenderer *r /Transfer/ );
@@ -647,46 +683,36 @@ Returns the bounding box of the selected features. If there is no selection, Qgs
 Sets diagram rendering object (takes ownership)
 %End
     const QgsDiagramRenderer *diagramRenderer() const;
-%Docstring
- :rtype: QgsDiagramRenderer
-%End
 
     void setDiagramLayerSettings( const QgsDiagramLayerSettings &s );
     const QgsDiagramLayerSettings *diagramLayerSettings() const;
-%Docstring
- :rtype: QgsDiagramLayerSettings
-%End
 
     QgsFeatureRenderer *renderer();
 %Docstring
 Return renderer.
- :rtype: QgsFeatureRenderer
 %End
 
 
     void setRenderer( QgsFeatureRenderer *r /Transfer/ );
 %Docstring
- Set renderer which will be invoked to represent this layer.
- Ownership is transferred.
+Set renderer which will be invoked to represent this layer.
+Ownership is transferred.
 %End
 
     QgsWkbTypes::GeometryType geometryType() const;
 %Docstring
 Returns point, line or polygon
- :rtype: QgsWkbTypes.GeometryType
 %End
 
     virtual QgsWkbTypes::Type wkbType() const;
 
 %Docstring
 Returns the WKBType or WKBUnknown in case of error
- :rtype: QgsWkbTypes.Type
 %End
 
     QString providerType() const;
 %Docstring
 Return the provider type for this layer
- :rtype: str
 %End
 
     virtual QgsCoordinateReferenceSystem sourceCrs() const;
@@ -695,26 +721,30 @@ Return the provider type for this layer
 
 
     virtual bool readXml( const QDomNode &layer_node, const QgsReadWriteContext &context );
+
 %Docstring
- Reads vector layer specific state from project file Dom node.
+Reads vector layer specific state from project file Dom node.
+
 .. note::
 
    Called by QgsMapLayer.readXml().
- :rtype: bool
 %End
 
     virtual bool writeXml( QDomNode &layer_node, QDomDocument &doc, const QgsReadWriteContext &context ) const;
+
 %Docstring
- Write vector layer specific state to project file Dom node.
+Write vector layer specific state to project file Dom node.
+
 .. note::
 
    Called by QgsMapLayer.writeXml().
- :rtype: bool
 %End
 
     virtual void resolveReferences( QgsProject *project );
+
 %Docstring
- Resolve references to other layers (kept as layer IDs after reading XML) into layer objects.
+Resolve references to other layers (kept as layer IDs after reading XML) into layer objects.
+
 .. versionadded:: 3.0
 %End
 
@@ -722,148 +752,155 @@ Return the provider type for this layer
                                       bool useAsDefault, const QString &uiFileContent,
                                       QString &msgError /Out/ );
 %Docstring
- Save named and sld style of the layer to the style table in the db.
- \param name
- \param description
- \param useAsDefault
- \param uiFileContent
- \param msgError
+Save named and sld style of the layer to the style table in the db.
+
+:param name:
+:param description:
+:param useAsDefault:
+:param uiFileContent:
+:param msgError:
 %End
 
     virtual int listStylesInDatabase( QStringList &ids /Out/, QStringList &names /Out/,
                                       QStringList &descriptions /Out/, QString &msgError /Out/ );
 %Docstring
- Lists all the style in db split into related to the layer and not related to
- \param ids the list in which will be stored the style db ids
- \param names the list in which will be stored the style names
- \param descriptions the list in which will be stored the style descriptions
- \param msgError
- :return: the number of styles related to current layer
- :rtype: int
+Lists all the style in db split into related to the layer and not related to
+
+:param ids: the list in which will be stored the style db ids
+:param names: the list in which will be stored the style names
+:param descriptions: the list in which will be stored the style descriptions
+:param msgError:
+
+:return: the number of styles related to current layer
 %End
 
     virtual QString getStyleFromDatabase( const QString &styleId, QString &msgError /Out/ );
 %Docstring
- Will return the named style corresponding to style id provided
- :rtype: str
+Will return the named style corresponding to style id provided
 %End
 
     virtual bool deleteStyleFromDatabase( const QString &styleId, QString &msgError /Out/ );
 %Docstring
- Delete a style from the database
+Delete a style from the database
+
+:param styleId: the provider's layer_styles table id of the style to delete
+:param msgError: reference to string that will be updated with any error messages
+
+:return: true in case of success
+
 .. versionadded:: 3.0
- \param styleId the provider's layer_styles table id of the style to delete
- \param msgError reference to string that will be updated with any error messages
- :return: true in case of success
- :rtype: bool
 %End
 
     virtual QString loadNamedStyle( const QString &theURI, bool &resultFlag /Out/, bool loadFromLocalDb );
 %Docstring
- Load a named style from file/local db/datasource db
- \param theURI the URI of the style or the URI of the layer
- \param resultFlag will be set to true if a named style is correctly loaded
- \param loadFromLocalDb if true forces to load from local db instead of datasource one
- :rtype: str
+Load a named style from file/local db/datasource db
+
+:param theURI: the URI of the style or the URI of the layer
+:param resultFlag: will be set to true if a named style is correctly loaded
+:param loadFromLocalDb: if true forces to load from local db instead of datasource one
 %End
 
     virtual QString loadNamedStyle( const QString &theURI, bool &resultFlag /Out/ );
+
 %Docstring
- Calls loadNamedStyle( theURI, resultFlag, false );
- Retained for backward compatibility
- :rtype: str
+Calls loadNamedStyle( theURI, resultFlag, false );
+Retained for backward compatibility
 %End
 
     bool loadAuxiliaryLayer( const QgsAuxiliaryStorage &storage, const QString &key = QString() );
 %Docstring
- Loads the auxiliary layer for this vector layer. If there's no
- corresponding table in the database, then nothing happens and false is
- returned. The key is optional because if this layer has been read from
- a XML document, then the key read in this document is used by default.
+Loads the auxiliary layer for this vector layer. If there's no
+corresponding table in the database, then nothing happens and false is
+returned. The key is optional because if this layer has been read from
+a XML document, then the key read in this document is used by default.
 
- \param storage The auxiliary storage where to look for the table
- \param key The key to use for joining.
+:param storage: The auxiliary storage where to look for the table
+:param key: The key to use for joining.
 
- :return: true if the auxiliary layer is well loaded, false otherwise
+:return: true if the auxiliary layer is well loaded, false otherwise
+
 
 .. versionadded:: 3.0
- :rtype: bool
 %End
 
     void setAuxiliaryLayer( QgsAuxiliaryLayer *layer /Transfer/ = 0 );
 %Docstring
- Sets the current auxiliary layer. The auxiliary layer is automatically
- put in editable mode and fields are updated. Moreover, a join is created
- between the current layer and the auxiliary layer. Ownership is
- transferred.
+Sets the current auxiliary layer. The auxiliary layer is automatically
+put in editable mode and fields are updated. Moreover, a join is created
+between the current layer and the auxiliary layer. Ownership is
+transferred.
 
 .. versionadded:: 3.0
 %End
 
     QgsAuxiliaryLayer *auxiliaryLayer();
 %Docstring
- Returns the current auxiliary layer.
+Returns the current auxiliary layer.
 
 .. versionadded:: 3.0
- :rtype: QgsAuxiliaryLayer
 %End
 
 
     virtual bool readSymbology( const QDomNode &layerNode, QString &errorMessage, const QgsReadWriteContext &context );
 
 %Docstring
- Read the symbology for the current layer from the Dom node supplied.
- \param layerNode node that will contain the symbology definition for this layer.
- \param errorMessage reference to string that will be updated with any error messages
- \param context reading context (used for transform from relative to absolute paths)
- :return: true in case of success.
- :rtype: bool
+Read the symbology for the current layer from the Dom node supplied.
+
+:param layerNode: node that will contain the symbology definition for this layer.
+:param errorMessage: reference to string that will be updated with any error messages
+:param context: reading context (used for transform from relative to absolute paths)
+
+:return: true in case of success.
 %End
 
     virtual bool readStyle( const QDomNode &node, QString &errorMessage, const QgsReadWriteContext &context );
 
 %Docstring
- Read the style for the current layer from the Dom node supplied.
- \param node node that will contain the style definition for this layer.
- \param errorMessage reference to string that will be updated with any error messages
- \param context reading context (used for transform from relative to absolute paths)
- :return: true in case of success.
- :rtype: bool
+Read the style for the current layer from the Dom node supplied.
+
+:param node: node that will contain the style definition for this layer.
+:param errorMessage: reference to string that will be updated with any error messages
+:param context: reading context (used for transform from relative to absolute paths)
+
+:return: true in case of success.
 %End
 
     virtual bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const;
 
 %Docstring
- Write the symbology for the layer into the docment provided.
-  \param node the node that will have the style element added to it.
-  \param doc the document that will have the QDomNode added.
-  \param errorMessage reference to string that will be updated with any error messages
-  \param context writing context (used for transform from absolute to relative paths)
-  :return: true in case of success.
- :rtype: bool
+Write the symbology for the layer into the docment provided.
+
+:param node: the node that will have the style element added to it.
+:param doc: the document that will have the QDomNode added.
+:param errorMessage: reference to string that will be updated with any error messages
+:param context: writing context (used for transform from absolute to relative paths)
+
+:return: true in case of success.
 %End
 
     virtual bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const;
 
 %Docstring
- Write just the style information for the layer into the document
-  \param node the node that will have the style element added to it.
-  \param doc the document that will have the QDomNode added.
-  \param errorMessage reference to string that will be updated with any error messages
-  \param context writing context (used for transform from absolute to relative paths)
-  :return: true in case of success.
- :rtype: bool
+Write just the style information for the layer into the document
+
+:param node: the node that will have the style element added to it.
+:param doc: the document that will have the QDomNode added.
+:param errorMessage: reference to string that will be updated with any error messages
+:param context: writing context (used for transform from absolute to relative paths)
+
+:return: true in case of success.
 %End
 
     bool writeSld( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsStringMap &props = QgsStringMap() ) const;
 %Docstring
- Writes the symbology of the layer into the document provided in SLD 1.1 format
- \param node the node that will have the style element added to it.
- \param doc the document that will have the QDomNode added.
- \param errorMessage reference to string that will be updated with any error messages
- \param props a open ended set of properties that can drive/inform the SLD encoding
- :return: true in case of success
- :rtype: bool
+Writes the symbology of the layer into the document provided in SLD 1.1 format
+
+:param node: the node that will have the style element added to it.
+:param doc: the document that will have the QDomNode added.
+:param errorMessage: reference to string that will be updated with any error messages
+:param props: a open ended set of properties that can drive/inform the SLD encoding
+
+:return: true in case of success
 %End
 
     virtual bool readSld( const QDomNode &node, QString &errorMessage );
@@ -871,90 +908,89 @@ Return the provider type for this layer
 
     long featureCount( const QString &legendKey ) const;
 %Docstring
- Number of features rendered with specified legend key. Features must be first
- calculated by countSymbolFeatures()
- :return: number of features rendered by symbol or -1 if failed or counts are not available
- :rtype: long
+Number of features rendered with specified legend key. Features must be first
+calculated by countSymbolFeatures()
+
+:return: number of features rendered by symbol or -1 if failed or counts are not available
 %End
 
     void setDataSource( const QString &dataSource, const QString &baseName, const QString &provider, bool loadDefaultStyleFlag = false );
 %Docstring
- Update the data source of the layer. The layer's renderer and legend will be preserved only
- if the geometry type of the new data source matches the current geometry type of the layer.
- \param dataSource new layer data source
- \param baseName base name of the layer
- \param provider provider string
- \param loadDefaultStyleFlag set to true to reset the layer's style to the default for the
- data source
+Update the data source of the layer. The layer's renderer and legend will be preserved only
+if the geometry type of the new data source matches the current geometry type of the layer.
+
+:param dataSource: new layer data source
+:param baseName: base name of the layer
+:param provider: provider string
+:param loadDefaultStyleFlag: set to true to reset the layer's style to the default for the
+data source
+
 .. versionadded:: 2.10
 %End
 
     QgsVectorLayerFeatureCounter *countSymbolFeatures();
 %Docstring
- Count features for symbols.
- The method will return the feature counter task. You will need to
- connect to the symbolFeatureCountMapChanged() signal to be
- notified when the freshly updated feature counts are ready.
+Count features for symbols.
+The method will return the feature counter task. You will need to
+connect to the symbolFeatureCountMapChanged() signal to be
+notified when the freshly updated feature counts are ready.
 
 .. note::
 
    If the count features for symbols has been already done a
-       None is returned. If you need to wait for the results,
-       you can call waitForFinished() on the feature counter.
+None is returned. If you need to wait for the results,
+you can call waitForFinished() on the feature counter.
 
 .. versionadded:: 3.0
- :rtype: QgsVectorLayerFeatureCounter
 %End
 
     virtual bool setSubsetString( const QString &subset );
 %Docstring
- Set the string (typically sql) used to define a subset of the layer
- \param subset The subset string. This may be the where clause of a sql statement
-               or other definition string specific to the underlying dataprovider
-               and data store.
- :return: true, when setting the subset string was successful, false otherwise
- :rtype: bool
+Set the string (typically sql) used to define a subset of the layer
+
+:param subset: The subset string. This may be the where clause of a sql statement
+or other definition string specific to the underlying dataprovider
+and data store.
+
+:return: true, when setting the subset string was successful, false otherwise
 %End
 
     virtual QString subsetString() const;
 %Docstring
- Get the string (typically sql) used to define a subset of the layer
- :return: The subset string or null QString if not implemented by the provider
- :rtype: str
+Get the string (typically sql) used to define a subset of the layer
+
+:return: The subset string or null QString if not implemented by the provider
 %End
 
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const;
 
 %Docstring
- Query the layer for features specified in request.
- \param request feature request describing parameters of features to return
- :return: iterator for matching features from provider
- :rtype: QgsFeatureIterator
+Query the layer for features specified in request.
+
+:param request: feature request describing parameters of features to return
+
+:return: iterator for matching features from provider
 %End
 
     QgsFeatureIterator getFeatures( const QString &expression );
 %Docstring
- Query the layer for features matching a given expression.
- :rtype: QgsFeatureIterator
+Query the layer for features matching a given expression.
 %End
 
     QgsFeature getFeature( QgsFeatureId fid ) const;
 %Docstring
- Query the layer for the feature with the given id.
- If there is no such feature, the returned feature will be invalid.
- :rtype: QgsFeature
+Query the layer for the feature with the given id.
+If there is no such feature, the returned feature will be invalid.
 %End
 
     QgsFeatureIterator getFeatures( const QgsFeatureIds &fids );
 %Docstring
- Query the layer for the features with the given ids.
- :rtype: QgsFeatureIterator
+Query the layer for the features with the given ids.
 %End
 
     QgsFeatureIterator getFeatures( const QgsRectangle &rectangle );
 %Docstring
- Query the layer for the features which intersect the specified rectangle.
- :rtype: QgsFeatureIterator
+Query the layer for the features which intersect the specified rectangle.
 %End
 
     virtual bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = 0 );
@@ -962,189 +998,268 @@ Return the provider type for this layer
 
     bool updateFeature( const QgsFeature &feature, bool skipDefaultValues = false );
 %Docstring
- Updates an existing feature. This method needs to query the datasource
- on every call. Consider using changeAttributeValue() or
- changeGeometry() instead. The id of the feature will be used to match
- an existing feature.
+Updates an existing feature. This method needs to query the datasource
+on every call. Consider using changeAttributeValue() or
+changeGeometry() instead. The id of the feature will be used to match
+an existing feature.
 
-  \param feature  Feature with changed geometry or attributes.
-  \param skipDefaultValues Default values will not be updated if this is true. False by default.
-  :return:   True in case of success and False in case of error
- :rtype: bool
+:param feature:  Feature with changed geometry or attributes.
+:param skipDefaultValues: Default values will not be updated if this is true. False by default.
+
+:return:   True in case of success and False in case of error
 %End
 
     bool insertVertex( double x, double y, QgsFeatureId atFeatureId, int beforeVertex );
 %Docstring
- Insert a new vertex before the given vertex number,
-  in the given ring, item (first number is index 0), and feature
-  Not meaningful for Point geometries
- :rtype: bool
+Insert a new vertex before the given vertex number,
+in the given ring, item (first number is index 0), and feature
+Not meaningful for Point geometries
 %End
 
     bool insertVertex( const QgsPoint &point, QgsFeatureId atFeatureId, int beforeVertex );
 %Docstring
- Insert a new vertex before the given vertex number,
-  in the given ring, item (first number is index 0), and feature
-  Not meaningful for Point geometries
- :rtype: bool
+Insert a new vertex before the given vertex number,
+in the given ring, item (first number is index 0), and feature
+Not meaningful for Point geometries
 %End
 
     bool moveVertex( double x, double y, QgsFeatureId atFeatureId, int atVertex );
 %Docstring
- Moves the vertex at the given position number,
-  ring and item (first number is index 0), and feature
-  to the given coordinates
- :rtype: bool
+Moves the vertex at the given position number,
+ring and item (first number is index 0), and feature
+to the given coordinates
 %End
 
     bool moveVertex( const QgsPoint &p, QgsFeatureId atFeatureId, int atVertex ) /PyName=moveVertexV2/;
 %Docstring
- Moves the vertex at the given position number,
- ring and item (first number is index 0), and feature
- to the given coordinates
+Moves the vertex at the given position number,
+ring and item (first number is index 0), and feature
+to the given coordinates
+
 .. note::
 
    available in Python as moveVertexV2
- :rtype: bool
 %End
 
     EditResult deleteVertex( QgsFeatureId featureId, int vertex );
 %Docstring
- Deletes a vertex from a feature.
- \param featureId ID of feature to remove vertex from
- \param vertex index of vertex to delete
+Deletes a vertex from a feature.
+
+:param featureId: ID of feature to remove vertex from
+:param vertex: index of vertex to delete
+
 .. versionadded:: 2.14
- :rtype: EditResult
 %End
 
     bool deleteSelectedFeatures( int *deletedCount = 0 );
 %Docstring
- Deletes the selected features
-  :return: true in case of success and false otherwise
- :rtype: bool
+Deletes the selected features
+
+:return: true in case of success and false otherwise
 %End
 
-    int addRing( const QList<QgsPointXY> &ring, QgsFeatureId *featureId = 0 );
+    QgsGeometry::OperationResult addRing( const QVector<QgsPointXY> &ring, QgsFeatureId *featureId = 0 );
 %Docstring
- :rtype: int
+Adds a ring to polygon/multipolygon features
+
+:param ring: ring to add
+:param featureId: if specified, feature ID for feature ring was added to will be stored in this parameter
+
+:return: QgsGeometry.OperationResult
+- Success
+- LayerNotEditable
+- AddRingNotInExistingFeature
+- InvalidInputGeometryType
+- AddRingNotClosed
+- AddRingNotValid
+- AddRingCrossesExistingRings
 %End
 
-    int addRing( QgsCurve *ring /Transfer/, QgsFeatureId *featureId = 0 ) /PyName=addCurvedRing/;
+    QgsGeometry::OperationResult addRing( QgsCurve *ring /Transfer/, QgsFeatureId *featureId = 0 ) /PyName=addCurvedRing/;
 %Docstring
- :rtype: int
+Adds a ring to polygon/multipolygon features (takes ownership)
+
+:param ring: ring to add
+:param featureId: if specified, feature ID for feature ring was added to will be stored in this parameter
+
+:return: QgsGeometry.OperationResult
+- Success
+- LayerNotEditable
+- AddRingNotInExistingFeature
+- InvalidInputGeometryType
+- AddRingNotClosed
+- AddRingNotValid
+- AddRingCrossesExistingRings
+
+.. note::
+
+   available in Python as addCurvedRing
 %End
 
-    int addPart( const QList<QgsPointXY> &ring );
+    QgsGeometry::OperationResult addPart( const QList<QgsPointXY> &ring );
 %Docstring
- :rtype: int
+Adds a new part polygon to a multipart feature
+
+:return: QgsGeometry.OperationResult
+- Success
+- LayerNotEditable
+- SelectionIsEmpty
+- SelectionIsGreaterThanOne
+- AddPartSelectedGeometryNotFound
+- AddPartNotMultiGeometry
+- InvalidBaseGeometry
+- InvalidInputGeometryType
 %End
 
-    int addPart( const QgsPointSequence &ring ) /PyName=addPartV2/;
+    QgsGeometry::OperationResult addPart( const QgsPointSequence &ring ) /PyName=addPartV2/;
 %Docstring
- :rtype: int
+Adds a new part polygon to a multipart feature
+
+:return: QgsGeometry.OperationResult
+- Success
+- LayerNotEditable
+- SelectionIsEmpty
+- SelectionIsGreaterThanOne
+- AddPartSelectedGeometryNotFound
+- AddPartNotMultiGeometry
+- InvalidBaseGeometry
+- InvalidInputGeometryType
+
+.. note::
+
+   available in Python bindings as addPartV2
 %End
 
-    int addPart( QgsCurve *ring /Transfer/ ) /PyName=addCurvedPart/;
+    QgsGeometry::OperationResult addPart( QgsCurve *ring /Transfer/ ) /PyName=addCurvedPart/;
 %Docstring
+
 .. note::
 
    available in Python as addCurvedPart
- :rtype: int
 %End
 
     int translateFeature( QgsFeatureId featureId, double dx, double dy );
 %Docstring
- Translates feature by dx, dy
-  \param featureId id of the feature to translate
-  \param dx translation of x-coordinate
-  \param dy translation of y-coordinate
-  :return: 0 in case of success
- :rtype: int
+Translates feature by dx, dy
+
+:param featureId: id of the feature to translate
+:param dx: translation of x-coordinate
+:param dy: translation of y-coordinate
+
+:return: 0 in case of success
 %End
 
-    int splitParts( const QList<QgsPointXY> &splitLine, bool topologicalEditing = false );
+    QgsGeometry::OperationResult splitParts( const QVector<QgsPointXY> &splitLine, bool topologicalEditing = false );
 %Docstring
- :rtype: int
+Splits parts cut by the given line
+
+:param splitLine: line that splits the layer features
+:param topologicalEditing: true if topological editing is enabled
+
+:return: QgsGeometry.OperationResult
+- Success
+- NothingHappened
+- LayerNotEditable
+- InvalidInputGeometryType
+- InvalidBaseGeometry
+- GeometryEngineError
+- SplitCannotSplitPoint
 %End
 
-    int splitFeatures( const QList<QgsPointXY> &splitLine, bool topologicalEditing = false );
+    QgsGeometry::OperationResult splitFeatures( const QVector<QgsPointXY> &splitLine, bool topologicalEditing = false );
 %Docstring
- :rtype: int
+Splits features cut by the given line
+
+:param splitLine: line that splits the layer features
+:param topologicalEditing: true if topological editing is enabled
+
+:return: QgsGeometry.OperationResult
+- Success
+- NothingHappened
+- LayerNotEditable
+- InvalidInputGeometryType
+- InvalidBaseGeometry
+- GeometryEngineError
+- SplitCannotSplitPoint
 %End
 
     int addTopologicalPoints( const QgsGeometry &geom );
 %Docstring
- Adds topological points for every vertex of the geometry.
- \param geom the geometry where each vertex is added to segments of other features
+Adds topological points for every vertex of the geometry.
+
+:param geom: the geometry where each vertex is added to segments of other features
+
+:return: 0 in case of success
+
 .. note::
 
    geom is not going to be modified by the function
- :return: 0 in case of success
- :rtype: int
 %End
 
     int addTopologicalPoints( const QgsPointXY &p );
 %Docstring
- Adds a vertex to segments which intersect point p but don't
- already have a vertex there. If a feature already has a vertex at position p,
- no additional vertex is inserted. This method is useful for topological
- editing.
- \param p position of the vertex
- :return: 0 in case of success
- :rtype: int
+Adds a vertex to segments which intersect point p but don't
+already have a vertex there. If a feature already has a vertex at position p,
+no additional vertex is inserted. This method is useful for topological
+editing.
+
+:param p: position of the vertex
+
+:return: 0 in case of success
 %End
 
 
     QgsAbstractVectorLayerLabeling *labeling();
 %Docstring
- Access to labeling configuration. May be null if labeling is not used.
+Access to labeling configuration. May be null if labeling is not used.
+
 .. versionadded:: 3.0
- :rtype: QgsAbstractVectorLayerLabeling
 %End
 
     void setLabeling( QgsAbstractVectorLayerLabeling *labeling /Transfer/ );
 %Docstring
- Set labeling configuration. Takes ownership of the object.
+Set labeling configuration. Takes ownership of the object.
+
 .. versionadded:: 3.0
 %End
 
     virtual bool isEditable() const;
+
 %Docstring
 Returns true if the provider is in editing mode
- :rtype: bool
 %End
 
     virtual bool isSpatial() const;
+
 %Docstring
 Returns true if this is a geometry layer and false in case of NoGeometry (table only) or UnknownGeometry
- :rtype: bool
 %End
 
     virtual bool isModified() const;
 %Docstring
 Returns true if the provider has been modified since the last commit
- :rtype: bool
 %End
 
     bool isAuxiliaryField( int index, int &srcIndex ) const;
 %Docstring
- Returns true if the field comes from the auxiliary layer,
- false otherwise.
+Returns true if the field comes from the auxiliary layer,
+false otherwise.
 
 .. versionadded:: 3.0
- :rtype: bool
 %End
 
     virtual void reload();
+
 %Docstring
 Synchronises with changes in the datasource
 %End
 
     virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) /Factory/;
+
 %Docstring
- Return new instance of QgsMapLayerRenderer that will be used for rendering of given context
+Return new instance of QgsMapLayerRenderer that will be used for rendering of given context
+
 .. versionadded:: 2.4
- :rtype: QgsMapLayerRenderer
 %End
 
     virtual QgsRectangle extent() const;
@@ -1154,179 +1269,163 @@ Synchronises with changes in the datasource
 
     virtual QgsFields fields() const;
 %Docstring
- Returns the list of fields of this layer.
- This also includes fields which have not yet been saved to the provider.
+Returns the list of fields of this layer.
+This also includes fields which have not yet been saved to the provider.
 
- :return: A list of fields
- :rtype: QgsFields
+:return: A list of fields
 %End
 
     QgsFields pendingFields() const;
 %Docstring
- Returns the list of fields of this layer.
- This also includes fields which have not yet been saved to the provider.
- Alias for fields()
+Returns the list of fields of this layer.
+This also includes fields which have not yet been saved to the provider.
+Alias for fields()
 
- :return: A list of fields
- :rtype: QgsFields
+:return: A list of fields
 %End
 
     QgsAttributeList pendingAllAttributesList() const;
 %Docstring
- Returns list of attribute indexes. i.e. a list from 0 ... fieldCount()
- Alias for attributeList()
- :rtype: QgsAttributeList
+Returns list of attribute indexes. i.e. a list from 0 ... fieldCount()
+Alias for attributeList()
 %End
 
     QgsAttributeList attributeList() const;
 %Docstring
- Returns list of attribute indexes. i.e. a list from 0 ... fieldCount()
- Alias for attributeList()
- :rtype: QgsAttributeList
+Returns list of attribute indexes. i.e. a list from 0 ... fieldCount()
+Alias for attributeList()
 %End
 
     QgsAttributeList pendingPkAttributesList() const;
 %Docstring
- Returns list of attributes making up the primary key
- Alias for pkAttributeList()
- :rtype: QgsAttributeList
+Returns list of attributes making up the primary key
+Alias for pkAttributeList()
 %End
 
     QgsAttributeList pkAttributeList() const;
 %Docstring
 Returns list of attributes making up the primary key
- :rtype: QgsAttributeList
 %End
 
     long pendingFeatureCount() const;
 %Docstring
- Returns feature count including changes which have not yet been committed
- Alias for featureCount()
- :rtype: long
+Returns feature count including changes which have not yet been committed
+Alias for featureCount()
 %End
 
     virtual long featureCount() const;
 
 %Docstring
- Returns feature count including changes which have not yet been committed
- If you need only the count of committed features call this method on this layer's provider.
- :rtype: long
+Returns feature count including changes which have not yet been committed
+If you need only the count of committed features call this method on this layer's provider.
 %End
 
     bool setReadOnly( bool readonly = true );
 %Docstring
- Make layer read-only (editing disabled) or not
-  :return: false if the layer is in editing yet
- :rtype: bool
+Make layer read-only (editing disabled) or not
+
+:return: false if the layer is in editing yet
 %End
 
     bool changeGeometry( QgsFeatureId fid, const QgsGeometry &geom, bool skipDefaultValue = false );
 %Docstring
 Change feature's geometry
- :rtype: bool
 %End
 
     bool changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant &oldValue = QVariant(), bool skipDefaultValues = false );
 %Docstring
- Changes an attribute value (but does not commit it)
+Changes an attribute value (but does not commit it)
 
- \param fid   The feature id of the feature to be changed
- \param field The index of the field to be updated
- \param newValue The value which will be assigned to the field
- \param oldValue The previous value to restore on undo (will otherwise be retrieved)
- \param skipDefaultValues If this is set to true, default values will not
- be updated. This can be used to override default values. Defaults to false.
+:param fid:   The feature id of the feature to be changed
+:param field: The index of the field to be updated
+:param newValue: The value which will be assigned to the field
+:param oldValue: The previous value to restore on undo (will otherwise be retrieved)
+:param skipDefaultValues: If this is set to true, default values will not
+be updated. This can be used to override default values. Defaults to false.
 
- :return: true in case of success
- :rtype: bool
+:return: true in case of success
 %End
 
     bool addAttribute( const QgsField &field );
 %Docstring
- Add an attribute field (but does not commit it)
- returns true if the field was added
- :rtype: bool
+Add an attribute field (but does not commit it)
+returns true if the field was added
 %End
 
     void setFieldAlias( int index, const QString &aliasString );
 %Docstring
- Sets an alias (a display name) for attributes to display in dialogs
+Sets an alias (a display name) for attributes to display in dialogs
 
 .. versionadded:: 3.0
 %End
 
     void removeFieldAlias( int index );
 %Docstring
- Removes an alias (a display name) for attributes to display in dialogs
+Removes an alias (a display name) for attributes to display in dialogs
 
 .. versionadded:: 3.0
 %End
 
     bool renameAttribute( int index, const QString &newName );
 %Docstring
- Renames an attribute field  (but does not commit it).
- \param index attribute index
- \param newName new name of field
+Renames an attribute field  (but does not commit it).
+
+:param index: attribute index
+:param newName: new name of field
+
 .. versionadded:: 2.16
- :rtype: bool
 %End
 
     QString attributeAlias( int index ) const;
 %Docstring
- Returns the alias of an attribute name or a null string if there is no alias.
+Returns the alias of an attribute name or a null string if there is no alias.
 
-.. seealso:: {attributeDisplayName( int attributeIndex )} which returns the field name
-      if no alias is defined.
- :rtype: str
+\see {attributeDisplayName( int attributeIndex )} which returns the field name
+if no alias is defined.
 %End
 
     QString attributeDisplayName( int index ) const;
 %Docstring
 Convenience function that returns the attribute alias if defined or the field name else
- :rtype: str
 %End
 
     QgsStringMap attributeAliases() const;
 %Docstring
 Returns a map of field name to attribute alias
- :rtype: QgsStringMap
 %End
 
     QSet<QString> excludeAttributesWms() const;
 %Docstring
- A set of attributes that are not advertised in WMS requests with QGIS server.
- :rtype: set of str
+A set of attributes that are not advertised in WMS requests with QGIS server.
 %End
 
     void setExcludeAttributesWms( const QSet<QString> &att );
 %Docstring
- A set of attributes that are not advertised in WMS requests with QGIS server.
+A set of attributes that are not advertised in WMS requests with QGIS server.
 %End
 
     QSet<QString> excludeAttributesWfs() const;
 %Docstring
- A set of attributes that are not advertised in WFS requests with QGIS server.
- :rtype: set of str
+A set of attributes that are not advertised in WFS requests with QGIS server.
 %End
 
     void setExcludeAttributesWfs( const QSet<QString> &att );
 %Docstring
- A set of attributes that are not advertised in WFS requests with QGIS server.
+A set of attributes that are not advertised in WFS requests with QGIS server.
 %End
 
     virtual bool deleteAttribute( int attr );
 %Docstring
 Delete an attribute field (but does not commit it)
- :rtype: bool
 %End
 
     bool deleteAttributes( QList<int> attrs );
 %Docstring
- Deletes a list of attribute fields (but does not commit it)
+Deletes a list of attribute fields (but does not commit it)
 
- \param  attrs the indices of the attributes to delete
- :return: true if at least one attribute has been deleted
- :rtype: bool
+\param  attrs the indices of the attributes to delete
+
+:return: true if at least one attribute has been deleted
 %End
 
     virtual bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = 0 );
@@ -1335,73 +1434,72 @@ Delete an attribute field (but does not commit it)
     bool deleteFeature( QgsFeatureId fid );
 %Docstring
 Delete a feature from the layer (but does not commit it)
- :rtype: bool
 %End
 
     bool deleteFeatures( const QgsFeatureIds &fids );
 %Docstring
- Deletes a set of features from the layer (but does not commit it)
- \param fids The feature ids to delete
+Deletes a set of features from the layer (but does not commit it)
 
- :return: false if the layer is not in edit mode or does not support deleting
-         in case of an active transaction depends on the provider implementation
- :rtype: bool
+:param fids: The feature ids to delete
+
+:return: false if the layer is not in edit mode or does not support deleting
+in case of an active transaction depends on the provider implementation
 %End
 
     bool commitChanges();
 %Docstring
- Attempts to commit any changes to disk.  Returns the result of the attempt.
- If a commit fails, the in-memory changes are left alone.
+Attempts to commit any changes to disk.  Returns the result of the attempt.
+If a commit fails, the in-memory changes are left alone.
 
- This allows editing to continue if the commit failed on e.g. a
- disallowed value in a Postgres database - the user can re-edit and try
- again.
+This allows editing to continue if the commit failed on e.g. a
+disallowed value in a Postgres database - the user can re-edit and try
+again.
 
- The commits occur in distinct stages,
- (add attributes, add features, change attribute values, change
- geometries, delete features, delete attributes)
- so if a stage fails, it's difficult to roll back cleanly.
- Therefore any error message also includes which stage failed so
- that the user has some chance of repairing the damage cleanly.
-.. seealso:: commitErrors()
- :rtype: bool
+The commits occur in distinct stages,
+(add attributes, add features, change attribute values, change
+geometries, delete features, delete attributes)
+so if a stage fails, it's difficult to roll back cleanly.
+Therefore any error message also includes which stage failed so
+that the user has some chance of repairing the damage cleanly.
+
+.. seealso:: :py:func:`commitErrors()`
 %End
 
     QStringList commitErrors() const;
 %Docstring
- Returns a list containing any error messages generated when attempting
- to commit changes to the layer.
-.. seealso:: commitChanges()
- :rtype: list of str
+Returns a list containing any error messages generated when attempting
+to commit changes to the layer.
+
+.. seealso:: :py:func:`commitChanges()`
 %End
 
     bool rollBack( bool deleteBuffer = true );
 %Docstring
- Stop editing and discard the edits
- \param deleteBuffer whether to delete editing buffer
- :rtype: bool
+Stop editing and discard the edits
+
+:param deleteBuffer: whether to delete editing buffer
 %End
 
     QList<QgsRelation> referencingRelations( int idx ) const;
 %Docstring
- Get relations, where the foreign key is on this layer
+Get relations, where the foreign key is on this layer
 
- \param idx Only get relations, where idx forms part of the foreign key
- :return: A list of relations
- :rtype: list of QgsRelation
+:param idx: Only get relations, where idx forms part of the foreign key
+
+:return: A list of relations
 %End
 
     QgsVectorLayerEditBuffer *editBuffer();
 %Docstring
 Buffer with uncommitted editing operations. Only valid after editing has been turned on.
- :rtype: QgsVectorLayerEditBuffer
 %End
 
 
     void beginEditCommand( const QString &text );
 %Docstring
- Create edit command for undo/redo operations
- \param text text which is to be displayed in undo window
+Create edit command for undo/redo operations
+
+:param text: text which is to be displayed in undo window
 %End
 
     void endEditCommand();
@@ -1428,195 +1526,227 @@ Draws a vertex symbol at (screen) coordinates x, y. (Useful to assist vertex edi
 
     void updateFields();
 %Docstring
- Will regenerate the `fields` property of this layer by obtaining all fields
- from the dataProvider, joined fields and virtual fields. It will also
- take any changes made to default values into consideration.
+Will regenerate the `fields` property of this layer by obtaining all fields
+from the dataProvider, joined fields and virtual fields. It will also
+take any changes made to default values into consideration.
 
 .. note::
 
    Unless the fields on the provider have directly been modified, there is
- no reason to call this method.
+no reason to call this method.
 %End
 
     QVariant defaultValue( int index, const QgsFeature &feature = QgsFeature(),
                            QgsExpressionContext *context = 0 ) const;
 %Docstring
- Returns the calculated default value for the specified field index. The default
- value may be taken from a client side default value expression (see setDefaultValueDefinition())
- or taken from the underlying data provider.
- \param index field index
- \param feature optional feature to use for default value evaluation. If passed,
- then properties from the feature (such as geometry) can be used when calculating
- the default value.
- \param context optional expression context to evaluate expressions again. If not
- specified, a default context will be created
- :return: calculated default value
+Returns the calculated default value for the specified field index. The default
+value may be taken from a client side default value expression (see setDefaultValueDefinition())
+or taken from the underlying data provider.
+
+:param index: field index
+:param feature: optional feature to use for default value evaluation. If passed,
+then properties from the feature (such as geometry) can be used when calculating
+the default value.
+:param context: optional expression context to evaluate expressions again. If not
+specified, a default context will be created
+
+:return: calculated default value
+
 .. versionadded:: 3.0
-.. seealso:: setDefaultValueDefinition()
- :rtype: QVariant
+
+.. seealso:: :py:func:`setDefaultValueDefinition()`
 %End
 
     void setDefaultValueDefinition( int index, const QgsDefaultValue &definition );
 %Docstring
- Sets the definition of the expression to use when calculating the default value for a field.
- \param index field index
- \param definition default value definition to use and evaluate
- when calculating default values for field. Pass
- an empty expression to clear the default.
+Sets the definition of the expression to use when calculating the default value for a field.
+
+:param index: field index
+:param definition: default value definition to use and evaluate
+when calculating default values for field. Pass
+an empty expression to clear the default.
 
 .. versionadded:: 3.0
-.. seealso:: defaultValue()
-.. seealso:: defaultValueDefinition()
+
+.. seealso:: :py:func:`defaultValue()`
+
+.. seealso:: :py:func:`defaultValueDefinition()`
 %End
 
     QgsDefaultValue defaultValueDefinition( int index ) const;
 %Docstring
- Returns the definition of the expression used when calculating the default value for a field.
- \param index field index
- :return: definition of the default value with the expression evaluated
- when calculating default values for field, or definition with an
- empty string if no default is set
+Returns the definition of the expression used when calculating the default value for a field.
+
+:param index: field index
+
+:return: definition of the default value with the expression evaluated
+when calculating default values for field, or definition with an
+empty string if no default is set
+
 .. versionadded:: 3.0
-.. seealso:: defaultValue()
-.. seealso:: setDefaultValueDefinition()
- :rtype: QgsDefaultValue
+
+.. seealso:: :py:func:`defaultValue()`
+
+.. seealso:: :py:func:`setDefaultValueDefinition()`
 %End
 
     QgsFieldConstraints::Constraints fieldConstraints( int fieldIndex ) const;
 %Docstring
- Returns any constraints which are present for a specified
- field index. These constraints may be inherited from the layer's data provider
- or may be set manually on the vector layer from within QGIS.
+Returns any constraints which are present for a specified
+field index. These constraints may be inherited from the layer's data provider
+or may be set manually on the vector layer from within QGIS.
+
 .. versionadded:: 3.0
-.. seealso:: setFieldConstraint()
- :rtype: QgsFieldConstraints.Constraints
+
+.. seealso:: :py:func:`setFieldConstraint()`
 %End
 
     QMap< QgsFieldConstraints::Constraint, QgsFieldConstraints::ConstraintStrength> fieldConstraintsAndStrength( int fieldIndex ) const;
 %Docstring
- Returns a map of constraint with their strength for a specific field of the layer.
- \param fieldIndex field index
+Returns a map of constraint with their strength for a specific field of the layer.
+
+:param fieldIndex: field index
+
 .. versionadded:: 3.0
- :rtype: QMap< QgsFieldConstraints.Constraint, QgsFieldConstraints.ConstraintStrength>
 %End
 
     void setFieldConstraint( int index, QgsFieldConstraints::Constraint constraint, QgsFieldConstraints::ConstraintStrength strength = QgsFieldConstraints::ConstraintStrengthHard );
 %Docstring
- Sets a constraint for a specified field index. Any constraints inherited from the layer's
- data provider will be kept intact and cannot be modified. Ie, calling this method only allows for new
- constraints to be added on top of the existing provider constraints.
+Sets a constraint for a specified field index. Any constraints inherited from the layer's
+data provider will be kept intact and cannot be modified. Ie, calling this method only allows for new
+constraints to be added on top of the existing provider constraints.
+
 .. versionadded:: 3.0
-.. seealso:: fieldConstraints()
-.. seealso:: removeFieldConstraint()
+
+.. seealso:: :py:func:`fieldConstraints()`
+
+.. seealso:: :py:func:`removeFieldConstraint()`
 %End
 
     void removeFieldConstraint( int index, QgsFieldConstraints::Constraint constraint );
 %Docstring
- Removes a constraint for a specified field index. Any constraints inherited from the layer's
- data provider will be kept intact and cannot be removed.
+Removes a constraint for a specified field index. Any constraints inherited from the layer's
+data provider will be kept intact and cannot be removed.
+
 .. versionadded:: 3.0
-.. seealso:: fieldConstraints()
-.. seealso:: setFieldConstraint()
+
+.. seealso:: :py:func:`fieldConstraints()`
+
+.. seealso:: :py:func:`setFieldConstraint()`
 %End
 
     QString constraintExpression( int index ) const;
 %Docstring
- Returns the constraint expression for for a specified field index, if set.
+Returns the constraint expression for for a specified field index, if set.
+
 .. versionadded:: 3.0
-.. seealso:: fieldConstraints()
-.. seealso:: constraintDescription()
-.. seealso:: setConstraintExpression()
- :rtype: str
+
+.. seealso:: :py:func:`fieldConstraints()`
+
+.. seealso:: :py:func:`constraintDescription()`
+
+.. seealso:: :py:func:`setConstraintExpression()`
 %End
 
     QString constraintDescription( int index ) const;
 %Docstring
- Returns the descriptive name for the constraint expression for a specified field index.
+Returns the descriptive name for the constraint expression for a specified field index.
+
 .. versionadded:: 3.0
-.. seealso:: constraints()
-.. seealso:: constraintExpression()
-.. seealso:: setConstraintExpression()
- :rtype: str
+
+.. seealso:: :py:func:`constraints()`
+
+.. seealso:: :py:func:`constraintExpression()`
+
+.. seealso:: :py:func:`setConstraintExpression()`
 %End
 
     void setConstraintExpression( int index, const QString &expression, const QString &description = QString() );
 %Docstring
- Set the constraint expression for the specified field index. An optional descriptive name for the constraint
- can also be set. Setting an empty expression will clear any existing expression constraint.
+Set the constraint expression for the specified field index. An optional descriptive name for the constraint
+can also be set. Setting an empty expression will clear any existing expression constraint.
+
 .. versionadded:: 3.0
-.. seealso:: constraintExpression()
-.. seealso:: constraintDescription()
-.. seealso:: constraints()
+
+.. seealso:: :py:func:`constraintExpression()`
+
+.. seealso:: :py:func:`constraintDescription()`
+
+.. seealso:: :py:func:`constraints()`
 %End
 
     void setEditorWidgetSetup( int index, const QgsEditorWidgetSetup &setup );
 %Docstring
- \copydoc editorWidgetSetup
+\copydoc editorWidgetSetup
 %End
 
     QgsEditorWidgetSetup editorWidgetSetup( int index ) const;
 %Docstring
- The editor widget setup defines which QgsFieldFormatter and editor widget will be used
- for the field at `index`.
+The editor widget setup defines which QgsFieldFormatter and editor widget will be used
+for the field at `index`.
 
 .. versionadded:: 3.0
- :rtype: QgsEditorWidgetSetup
 %End
 
     virtual QSet<QVariant> uniqueValues( int fieldIndex, int limit = -1 ) const;
 
 %Docstring
- Calculates a list of unique values contained within an attribute in the layer. Note that
- in some circumstances when unsaved changes are present for the layer then the returned list
- may contain outdated values (for instance when the attribute value in a saved feature has
- been changed inside the edit buffer then the previous saved value will be included in the
- returned list).
- \param fieldIndex column index for attribute
- \param limit maximum number of values to return (or -1 if unlimited)
-.. seealso:: minimumValue()
-.. seealso:: maximumValue()
- :rtype: set of QVariant
+Calculates a list of unique values contained within an attribute in the layer. Note that
+in some circumstances when unsaved changes are present for the layer then the returned list
+may contain outdated values (for instance when the attribute value in a saved feature has
+been changed inside the edit buffer then the previous saved value will be included in the
+returned list).
+
+:param fieldIndex: column index for attribute
+:param limit: maximum number of values to return (or -1 if unlimited)
+
+.. seealso:: :py:func:`minimumValue()`
+
+.. seealso:: :py:func:`maximumValue()`
 %End
 
     QStringList uniqueStringsMatching( int index, const QString &substring, int limit = -1,
                                        QgsFeedback *feedback = 0 ) const;
 %Docstring
- Returns unique string values of an attribute which contain a specified subset string. Subset
- matching is done in a case-insensitive manner. Note that
- in some circumstances when unsaved changes are present for the layer then the returned list
- may contain outdated values (for instance when the attribute value in a saved feature has
- been changed inside the edit buffer then the previous saved value will be included in the
- returned list).
- \param index column index for attribute
- \param substring substring to match (case insensitive)
- \param limit maxmum number of the values to return, or -1 to return all unique values
- \param feedback optional feedback object for canceling request
- :return: list of unique strings containing substring
- :rtype: list of str
+Returns unique string values of an attribute which contain a specified subset string. Subset
+matching is done in a case-insensitive manner. Note that
+in some circumstances when unsaved changes are present for the layer then the returned list
+may contain outdated values (for instance when the attribute value in a saved feature has
+been changed inside the edit buffer then the previous saved value will be included in the
+returned list).
+
+:param index: column index for attribute
+:param substring: substring to match (case insensitive)
+:param limit: maxmum number of the values to return, or -1 to return all unique values
+:param feedback: optional feedback object for canceling request
+
+:return: list of unique strings containing substring
 %End
 
     virtual QVariant minimumValue( int index ) const;
 
 %Docstring
- Returns the minimum value for an attribute column or an invalid variant in case of error.
- Note that in some circumstances when unsaved changes are present for the layer then the
- returned value may be outdated (for instance when the attribute value in a saved feature has
- been changed inside the edit buffer then the previous saved value may be returned as the minimum).
-.. seealso:: maximumValue()
-.. seealso:: uniqueValues()
- :rtype: QVariant
+Returns the minimum value for an attribute column or an invalid variant in case of error.
+Note that in some circumstances when unsaved changes are present for the layer then the
+returned value may be outdated (for instance when the attribute value in a saved feature has
+been changed inside the edit buffer then the previous saved value may be returned as the minimum).
+
+.. seealso:: :py:func:`maximumValue()`
+
+.. seealso:: :py:func:`uniqueValues()`
 %End
 
     virtual QVariant maximumValue( int index ) const;
 
 %Docstring
- Returns the maximum value for an attribute column or an invalid variant in case of error.
- Note that in some circumstances when unsaved changes are present for the layer then the
- returned value may be outdated (for instance when the attribute value in a saved feature has
- been changed inside the edit buffer then the previous saved value may be returned as the maximum).
-.. seealso:: minimumValue()
-.. seealso:: uniqueValues()
- :rtype: QVariant
+Returns the maximum value for an attribute column or an invalid variant in case of error.
+Note that in some circumstances when unsaved changes are present for the layer then the
+returned value may be outdated (for instance when the attribute value in a saved feature has
+been changed inside the edit buffer then the previous saved value may be returned as the maximum).
+
+.. seealso:: :py:func:`minimumValue()`
+
+.. seealso:: :py:func:`uniqueValues()`
 %End
 
     QVariant aggregate( QgsAggregateCalculator::Aggregate aggregate,
@@ -1625,43 +1755,51 @@ Draws a vertex symbol at (screen) coordinates x, y. (Useful to assist vertex edi
                         QgsExpressionContext *context = 0,
                         bool *ok = 0 ) const;
 %Docstring
- Calculates an aggregated value from the layer's features.
- \param aggregate aggregate to calculate
- \param fieldOrExpression source field or expression to use as basis for aggregated values.
- \param parameters parameters controlling aggregate calculation
- \param context expression context for expressions and filters
- \param ok if specified, will be set to true if aggregate calculation was successful
- :return: calculated aggregate value
+Calculates an aggregated value from the layer's features.
+
+:param aggregate: aggregate to calculate
+:param fieldOrExpression: source field or expression to use as basis for aggregated values.
+:param parameters: parameters controlling aggregate calculation
+:param context: expression context for expressions and filters
+:param ok: if specified, will be set to true if aggregate calculation was successful
+
+:return: calculated aggregate value
+
 .. versionadded:: 2.16
- :rtype: QVariant
 %End
 
     QList< QVariant > getValues( const QString &fieldOrExpression, bool &ok, bool selectedOnly = false, QgsFeedback *feedback = 0 ) const;
 %Docstring
- Fetches all values from a specified field name or expression.
- \param fieldOrExpression field name or an expression string
- \param ok will be set to false if field or expression is invalid, otherwise true
- \param selectedOnly set to true to get values from selected features only
- \param feedback optional feedback object to allow cancelation
- :return: list of fetched values
+Fetches all values from a specified field name or expression.
+
+:param fieldOrExpression: field name or an expression string
+:param ok: will be set to false if field or expression is invalid, otherwise true
+:param selectedOnly: set to true to get values from selected features only
+:param feedback: optional feedback object to allow cancelation
+
+:return: list of fetched values
+
 .. versionadded:: 2.9
-.. seealso:: getDoubleValues
- :rtype: list of QVariant
+
+.. seealso:: :py:func:`getDoubleValues`
 %End
 
     QList< double > getDoubleValues( const QString &fieldOrExpression, bool &ok, bool selectedOnly = false, int *nullCount = 0, QgsFeedback *feedback = 0 ) const;
 %Docstring
- Fetches all double values from a specified field name or expression. Null values or
- invalid expression results are skipped.
- \param fieldOrExpression field name or an expression string evaluating to a double value
- \param ok will be set to false if field or expression is invalid, otherwise true
- \param selectedOnly set to true to get values from selected features only
- \param nullCount optional pointer to integer to store number of null values encountered in
- \param feedback optional feedback object to allow cancelation
- :return: list of fetched values
+Fetches all double values from a specified field name or expression. Null values or
+invalid expression results are skipped.
+
+:param fieldOrExpression: field name or an expression string evaluating to a double value
+:param ok: will be set to false if field or expression is invalid, otherwise true
+:param selectedOnly: set to true to get values from selected features only
+:param nullCount: optional pointer to integer to store number of null values encountered in
+:param feedback: optional feedback object to allow cancelation
+
+:return: list of fetched values
+
 .. versionadded:: 2.9
-.. seealso:: getValues
- :rtype: list of float
+
+.. seealso:: :py:func:`getValues`
 %End
 
     void setFeatureBlendMode( QPainter::CompositionMode blendMode );
@@ -1671,26 +1809,30 @@ Set the blending mode used for rendering each feature
     QPainter::CompositionMode featureBlendMode() const;
 %Docstring
 Returns the current blending mode for features
- :rtype: QPainter.CompositionMode
 %End
 
     void setOpacity( double opacity );
 %Docstring
- Sets the ``opacity`` for the vector layer, where ``opacity`` is a value between 0 (totally transparent)
- and 1.0 (fully opaque).
-.. seealso:: opacity()
-.. seealso:: opacityChanged()
+Sets the ``opacity`` for the vector layer, where ``opacity`` is a value between 0 (totally transparent)
+and 1.0 (fully opaque).
+
+.. seealso:: :py:func:`opacity()`
+
+.. seealso:: :py:func:`opacityChanged()`
+
 .. versionadded:: 3.0
 %End
 
     double opacity() const;
 %Docstring
- Returns the opacity for the vector layer, where opacity is a value between 0 (totally transparent)
- and 1.0 (fully opaque).
-.. seealso:: setOpacity()
-.. seealso:: opacityChanged()
+Returns the opacity for the vector layer, where opacity is a value between 0 (totally transparent)
+and 1.0 (fully opaque).
+
+.. seealso:: :py:func:`setOpacity()`
+
+.. seealso:: :py:func:`opacityChanged()`
+
 .. versionadded:: 3.0
- :rtype: float
 %End
 
     virtual QString htmlMetadata() const;
@@ -1698,65 +1840,66 @@ Returns the current blending mode for features
 
     void setSimplifyMethod( const QgsVectorSimplifyMethod &simplifyMethod );
 %Docstring
- Set the simplification settings for fast rendering of features
+Set the simplification settings for fast rendering of features
+
 .. versionadded:: 2.2
 %End
 
     const QgsVectorSimplifyMethod &simplifyMethod() const;
 %Docstring
- Returns the simplification settings for fast rendering of features
+Returns the simplification settings for fast rendering of features
+
 .. versionadded:: 2.2
- :rtype: QgsVectorSimplifyMethod
 %End
 
     bool simplifyDrawingCanbeApplied( const QgsRenderContext &renderContext, QgsVectorSimplifyMethod::SimplifyHint simplifyHint ) const;
 %Docstring
- Returns whether the VectorLayer can apply the specified simplification hint
+Returns whether the VectorLayer can apply the specified simplification hint
+
 .. note::
 
    Do not use in 3rd party code - may be removed in future version!
+
 .. versionadded:: 2.2
- :rtype: bool
 %End
 
     QgsConditionalLayerStyles *conditionalStyles() const;
 %Docstring
  Return the conditional styles that are set for this layer. Style information is
- used to render conditional formatting in the attribute table.
- :return: Return a QgsConditionalLayerStyles object holding the conditional attribute
- style information. Style information is generic and can be used for anything.
+used to render conditional formatting in the attribute table.
+
+:return: Return a QgsConditionalLayerStyles object holding the conditional attribute
+style information. Style information is generic and can be used for anything.
+
 .. versionadded:: 2.12
- :rtype: QgsConditionalLayerStyles
 %End
 
     QgsAttributeTableConfig attributeTableConfig() const;
 %Docstring
- Get the attribute table configuration object.
- This defines the appearance of the attribute table.
- :rtype: QgsAttributeTableConfig
+Get the attribute table configuration object.
+This defines the appearance of the attribute table.
 %End
 
     void setAttributeTableConfig( const QgsAttributeTableConfig &attributeTableConfig );
 %Docstring
- Set the attribute table configuration object.
- This defines the appearance of the attribute table.
+Set the attribute table configuration object.
+This defines the appearance of the attribute table.
 %End
 
     QString mapTipTemplate() const;
 %Docstring
- The mapTip is a pretty, html representation for feature information.
+The mapTip is a pretty, html representation for feature information.
 
- It may also contain embedded expressions.
+It may also contain embedded expressions.
 
 .. versionadded:: 3.0
- :rtype: str
 %End
 
     void setMapTipTemplate( const QString &mapTipTemplate );
 %Docstring
- The mapTip is a pretty, html representation for feature information.
+The mapTip is a pretty, html representation for feature information.
 
- It may also contain embedded expressions.
+It may also contain embedded expressions.
 
 .. versionadded:: 3.0
 %End
@@ -1764,125 +1907,124 @@ Returns the current blending mode for features
     virtual QgsExpressionContext createExpressionContext() const;
 
 
+    virtual QgsExpressionContextScope *createExpressionContextScope() const /Factory/;
+
+
     QgsEditFormConfig editFormConfig() const;
 %Docstring
- Get the configuration of the form used to represent this vector layer.
- This is a writable configuration that can directly be changed in place.
+Get the configuration of the form used to represent this vector layer.
+This is a writable configuration that can directly be changed in place.
 
- :return: The configuration of this layers' form
+:return: The configuration of this layers' form
 
 .. versionadded:: 2.14
- :rtype: QgsEditFormConfig
 %End
 
     void setEditFormConfig( const QgsEditFormConfig &editFormConfig );
 %Docstring
- Get the configuration of the form used to represent this vector layer.
- This is a writable configuration that can directly be changed in place.
+Get the configuration of the form used to represent this vector layer.
+This is a writable configuration that can directly be changed in place.
 
- :return: The configuration of this layers' form
+:return: The configuration of this layers' form
 
 .. versionadded:: 3.0
 %End
 
     void setReadExtentFromXml( bool readExtentFromXml );
 %Docstring
- Flag allowing to indicate if the extent has to be read from the XML
- document when data source has no metadata or if the data provider has
- to determine it.
+Flag allowing to indicate if the extent has to be read from the XML
+document when data source has no metadata or if the data provider has
+to determine it.
 
 .. versionadded:: 3.0
 %End
 
     bool readExtentFromXml() const;
 %Docstring
- Returns true if the extent is read from the XML document when data
- source has no metadata, false if it's the data provider which determines
- it.
+Returns true if the extent is read from the XML document when data
+source has no metadata, false if it's the data provider which determines
+it.
 
 .. versionadded:: 3.0
- :rtype: bool
 %End
 
     bool isEditCommandActive() const;
 %Docstring
- Test if an edit command is active
+Test if an edit command is active
 
 .. versionadded:: 3.0
- :rtype: bool
 %End
 
   public slots:
 
     void select( QgsFeatureId featureId );
 %Docstring
- Select feature by its ID
+Select feature by its ID
 
- \param featureId  The id of the feature to select
+:param featureId:  The id of the feature to select
 
-.. seealso:: select(QgsFeatureIds)
+.. seealso:: :py:func:`select`
 %End
 
     void select( const QgsFeatureIds &featureIds );
 %Docstring
- Select features by their ID
+Select features by their ID
 
- \param featureIds The ids of the features to select
+:param featureIds: The ids of the features to select
 
-.. seealso:: select(QgsFeatureId)
+.. seealso:: :py:func:`select`
 %End
 
     void deselect( const QgsFeatureId featureId );
 %Docstring
- Deselect feature by its ID
+Deselect feature by its ID
 
- \param featureId  The id of the feature to deselect
+:param featureId:  The id of the feature to deselect
 
-.. seealso:: deselect(QgsFeatureIds)
+.. seealso:: :py:func:`deselect`
 %End
 
     void deselect( const QgsFeatureIds &featureIds );
 %Docstring
- Deselect features by their ID
+Deselect features by their ID
 
- \param featureIds The ids of the features to deselect
+:param featureIds: The ids of the features to deselect
 
-.. seealso:: deselect(QgsFeatureId)
+.. seealso:: :py:func:`deselect`
 %End
 
     void removeSelection();
 %Docstring
- Clear selection
+Clear selection
 
-.. seealso:: selectByIds()
+.. seealso:: :py:func:`selectByIds()`
 %End
 
     virtual void updateExtents( bool force = false );
 %Docstring
- Update the extents for the layer. This is necessary if features are
-  added/deleted or the layer has been subsetted.
+Update the extents for the layer. This is necessary if features are
+added/deleted or the layer has been subsetted.
 
- \param force true to update layer extent even if it's read from xml by default, false otherwise
+:param force: true to update layer extent even if it's read from xml by default, false otherwise
 %End
 
     bool startEditing();
 %Docstring
- Make layer editable.
- This starts an edit session on this layer. Changes made in this edit session will not
- be made persistent until commitChanges() is called and can be reverted by calling
- rollBack().
- :rtype: bool
+Make layer editable.
+This starts an edit session on this layer. Changes made in this edit session will not
+be made persistent until commitChanges() is called and can be reverted by calling
+rollBack().
 %End
 
   signals:
 
     void selectionChanged( const QgsFeatureIds &selected, const QgsFeatureIds &deselected, const bool clearAndSelect );
 %Docstring
- This signal is emitted when selection was changed
+This signal is emitted when selection was changed
 
- \param selected        Newly selected feature ids
- \param deselected      Ids of all features which have previously been selected but are not any more
- \param clearAndSelect  In case this is set to true, the old selection was dismissed and the new selection corresponds to selected
+:param selected:        Newly selected feature ids
+:param deselected:      Ids of all features which have previously been selected but are not any more
+:param clearAndSelect:  In case this is set to true, the old selection was dismissed and the new selection corresponds to selected
 %End
 
     void layerModified();
@@ -1922,92 +2064,92 @@ Is emitted, before changes are rolled back
 
     void attributeAdded( int idx );
 %Docstring
- Will be emitted, when a new attribute has been added to this vector layer.
- Applies only to types QgsFields.OriginEdit, QgsFields.OriginProvider and QgsFields.OriginExpression
+Will be emitted, when a new attribute has been added to this vector layer.
+Applies only to types QgsFields.OriginEdit, QgsFields.OriginProvider and QgsFields.OriginExpression
 
- \param idx The index of the new attribute
+:param idx: The index of the new attribute
 
-.. seealso:: updatedFields()
+.. seealso:: :py:func:`updatedFields()`
 %End
 
     void beforeAddingExpressionField( const QString &fieldName );
 %Docstring
- Will be emitted, when an expression field is going to be added to this vector layer.
- Applies only to types QgsFields.OriginExpression
+Will be emitted, when an expression field is going to be added to this vector layer.
+Applies only to types QgsFields.OriginExpression
 
- \param fieldName The name of the attribute to be added
+:param fieldName: The name of the attribute to be added
 %End
 
     void attributeDeleted( int idx );
 %Docstring
- Will be emitted, when an attribute has been deleted from this vector layer.
- Applies only to types QgsFields.OriginEdit, QgsFields.OriginProvider and QgsFields.OriginExpression
+Will be emitted, when an attribute has been deleted from this vector layer.
+Applies only to types QgsFields.OriginEdit, QgsFields.OriginProvider and QgsFields.OriginExpression
 
- \param idx The index of the deleted attribute
+:param idx: The index of the deleted attribute
 
-.. seealso:: updatedFields()
+.. seealso:: :py:func:`updatedFields()`
 %End
 
     void beforeRemovingExpressionField( int idx );
 %Docstring
- Will be emitted, when an expression field is going to be deleted from this vector layer.
- Applies only to types QgsFields.OriginExpression
+Will be emitted, when an expression field is going to be deleted from this vector layer.
+Applies only to types QgsFields.OriginExpression
 
- \param idx The index of the attribute to be deleted
+:param idx: The index of the attribute to be deleted
 %End
 
     void featureAdded( QgsFeatureId fid );
 %Docstring
- Emitted when a new feature has been added to the layer
+Emitted when a new feature has been added to the layer
 
- \param fid The id of the new feature
+:param fid: The id of the new feature
 %End
 
     void featureDeleted( QgsFeatureId fid );
 %Docstring
- Emitted when a feature has been deleted.
+Emitted when a feature has been deleted.
 
- If you do expensive operations in a slot connected to this, you should prefer to use
- featuresDeleted( const QgsFeatureIds& ).
+If you do expensive operations in a slot connected to this, you should prefer to use
+featuresDeleted( const QgsFeatureIds& ).
 
- \param fid The id of the feature which has been deleted
+:param fid: The id of the feature which has been deleted
 %End
 
     void featuresDeleted( const QgsFeatureIds &fids );
 %Docstring
- Emitted when features have been deleted.
+Emitted when features have been deleted.
 
- If features are deleted within an edit command, this will only be emitted once at the end
- to allow connected slots to minimize the overhead.
- If features are deleted outside of an edit command, this signal will be emitted once per feature.
+If features are deleted within an edit command, this will only be emitted once at the end
+to allow connected slots to minimize the overhead.
+If features are deleted outside of an edit command, this signal will be emitted once per feature.
 
- \param fids The feature ids that have been deleted.
+:param fids: The feature ids that have been deleted.
 %End
 
     void updatedFields();
 %Docstring
- Is emitted, whenever the fields available from this layer have been changed.
- This can be due to manually adding attributes or due to a join.
+Is emitted, whenever the fields available from this layer have been changed.
+This can be due to manually adding attributes or due to a join.
 %End
 
 
     void attributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value );
 %Docstring
- Is emitted whenever an attribute value change is done in the edit buffer.
- Note that at this point the attribute change is not yet saved to the provider.
+Is emitted whenever an attribute value change is done in the edit buffer.
+Note that at this point the attribute change is not yet saved to the provider.
 
- \param fid The id of the changed feature
- \param idx The attribute index of the changed attribute
- \param value The new value of the attribute
+:param fid: The id of the changed feature
+:param idx: The attribute index of the changed attribute
+:param value: The new value of the attribute
 %End
 
     void geometryChanged( QgsFeatureId fid, const QgsGeometry &geometry );
 %Docstring
- Is emitted whenever a geometry change is done in the edit buffer.
- Note that at this point the geometry change is not yet saved to the provider.
+Is emitted whenever a geometry change is done in the edit buffer.
+Note that at this point the geometry change is not yet saved to the provider.
 
- \param fid The id of the changed feature
- \param geometry The new geometry
+:param fid: The id of the changed feature
+:param geometry: The new geometry
 %End
 
     void committedAttributesDeleted( const QString &layerId, const QgsAttributeList &deletedAttributes );
@@ -2047,97 +2189,102 @@ Signal emitted when setFeatureBlendMode() is called
 
     void opacityChanged( double opacity );
 %Docstring
- Emitted when the layer's opacity is changed, where ``opacity`` is a value between 0 (transparent)
- and 1 (opaque).
+Emitted when the layer's opacity is changed, where ``opacity`` is a value between 0 (transparent)
+and 1 (opaque).
+
 .. versionadded:: 3.0
-.. seealso:: setOpacity()
-.. seealso:: opacity()
+
+.. seealso:: :py:func:`setOpacity()`
+
+.. seealso:: :py:func:`opacity()`
 %End
 
     void editCommandStarted( const QString &text );
 %Docstring
- Signal emitted when a new edit command has been started
+Signal emitted when a new edit command has been started
 
- \param text Description for this edit command
+:param text: Description for this edit command
 %End
 
     void editCommandEnded();
 %Docstring
- Signal emitted, when an edit command successfully ended
+Signal emitted, when an edit command successfully ended
+
 .. note::
 
    This does not mean it is also committed, only that it is written
- to the edit buffer. See beforeCommitChanges()
+to the edit buffer. See beforeCommitChanges()
 %End
 
     void editCommandDestroyed();
 %Docstring
- Signal emitted, whan an edit command is destroyed
+Signal emitted, whan an edit command is destroyed
+
 .. note::
 
    This is not a rollback, it is only related to the current edit command.
- See beforeRollBack()
+See beforeRollBack()
 %End
 
     void readCustomSymbology( const QDomElement &element, QString &errorMessage );
 %Docstring
- Signal emitted whenever the symbology (QML-file) for this layer is being read.
- If there is custom style information saved in the file, you can connect to this signal
- and update the layer style accordingly.
+Signal emitted whenever the symbology (QML-file) for this layer is being read.
+If there is custom style information saved in the file, you can connect to this signal
+and update the layer style accordingly.
 
- \param element The XML layer style element.
+:param element: The XML layer style element.
 
- \param errorMessage Write error messages into this string.
+:param errorMessage: Write error messages into this string.
 %End
 
     void writeCustomSymbology( QDomElement &element, QDomDocument &doc, QString &errorMessage ) const;
 %Docstring
- Signal emitted whenever the symbology (QML-file) for this layer is being written.
- If there is custom style information you want to save to the file, you can connect
- to this signal and update the element accordingly.
+Signal emitted whenever the symbology (QML-file) for this layer is being written.
+If there is custom style information you want to save to the file, you can connect
+to this signal and update the element accordingly.
 
- \param element  The XML element where you can add additional style information to.
- \param doc      The XML document that you can use to create new XML nodes.
- \param errorMessage Write error messages into this string.
+:param element:  The XML element where you can add additional style information to.
+:param doc:      The XML document that you can use to create new XML nodes.
+:param errorMessage: Write error messages into this string.
 %End
 
     void mapTipTemplateChanged();
 %Docstring
- Emitted when the map tip changes
+Emitted when the map tip changes
 
 .. versionadded:: 3.0
 %End
 
     void displayExpressionChanged();
 %Docstring
- Emitted when the display expression changes
+Emitted when the display expression changes
 
 .. versionadded:: 3.0
 %End
 
     void raiseError( const QString &msg );
 %Docstring
- Signals an error related to this vector layer.
+Signals an error related to this vector layer.
 %End
 
     void editFormConfigChanged();
 %Docstring
- Will be emitted whenever the edit form configuration of this layer changes.
+Will be emitted whenever the edit form configuration of this layer changes.
 
 .. versionadded:: 3.0
 %End
 
     void readOnlyChanged();
 %Docstring
- Emitted when the read only state of this layer is changed.
- Only applies to manually set readonly state, not to the edit mode.
+Emitted when the read only state of this layer is changed.
+Only applies to manually set readonly state, not to the edit mode.
 
 .. versionadded:: 3.0
 %End
 
     void symbolFeatureCountMapChanged();
 %Docstring
- Emitted when the feature count for symbols on this layer has been recalculated.
+Emitted when the feature count for symbols on this layer has been recalculated.
 
 .. versionadded:: 3.0
 %End

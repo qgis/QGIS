@@ -26,28 +26,9 @@
 #include "qgssymbollayerutils.h"
 #include "qgsrasterlayer.h"
 
-
-Qgs3DMapSettings::Qgs3DMapSettings()
-  : mOriginX( 0 )
-  , mOriginY( 0 )
-  , mOriginZ( 0 )
-  , mBackgroundColor( Qt::black )
-  , mTerrainVerticalScale( 1 )
-  , mMapTileResolution( 512 )
-  , mMaxTerrainScreenError( 3.f )
-  , mMaxTerrainGroundError( 1.f )
-  , mShowTerrainBoundingBoxes( false )
-  , mShowTerrainTileInfo( false )
-  , mShowLabels( false )
-  , mSkyboxEnabled( false )
-{
-}
-
 Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
   : QObject()
-  , mOriginX( other.mOriginX )
-  , mOriginY( other.mOriginY )
-  , mOriginZ( other.mOriginZ )
+  , mOrigin( other.mOrigin )
   , mCrs( other.mCrs )
   , mBackgroundColor( other.mBackgroundColor )
   , mTerrainVerticalScale( other.mTerrainVerticalScale )
@@ -76,9 +57,10 @@ Qgs3DMapSettings::~Qgs3DMapSettings()
 void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
   QDomElement elemOrigin = elem.firstChildElement( "origin" );
-  mOriginX = elemOrigin.attribute( "x" ).toDouble();
-  mOriginY = elemOrigin.attribute( "y" ).toDouble();
-  mOriginZ = elemOrigin.attribute( "z" ).toDouble();
+  mOrigin = QgsVector3D(
+              elemOrigin.attribute( "x" ).toDouble(),
+              elemOrigin.attribute( "y" ).toDouble(),
+              elemOrigin.attribute( "z" ).toDouble() );
 
   QDomElement elemCrs = elem.firstChildElement( "crs" );
   mCrs.readXml( elemCrs );
@@ -102,7 +84,9 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
   QString terrainGenType = elemTerrainGenerator.attribute( "type" );
   if ( terrainGenType == "dem" )
   {
-    mTerrainGenerator.reset( new QgsDemTerrainGenerator );
+    QgsDemTerrainGenerator *demTerrainGenerator = new QgsDemTerrainGenerator;
+    demTerrainGenerator->setCrs( mCrs, mTransformContext );
+    mTerrainGenerator.reset( demTerrainGenerator );
   }
   else if ( terrainGenType == "quantized-mesh" )
   {
@@ -156,9 +140,9 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
   QDomElement elem = doc.createElement( "qgis3d" );
 
   QDomElement elemOrigin = doc.createElement( "origin" );
-  elemOrigin.setAttribute( "x", QString::number( mOriginX ) );
-  elemOrigin.setAttribute( "y", QString::number( mOriginY ) );
-  elemOrigin.setAttribute( "z", QString::number( mOriginZ ) );
+  elemOrigin.setAttribute( "x", QString::number( mOrigin.x() ) );
+  elemOrigin.setAttribute( "y", QString::number( mOrigin.y() ) );
+  elemOrigin.setAttribute( "z", QString::number( mOrigin.z() ) );
   elem.appendChild( elemOrigin );
 
   QDomElement elemCrs = doc.createElement( "crs" );
@@ -227,16 +211,29 @@ void Qgs3DMapSettings::resolveReferences( const QgsProject &project )
   }
 }
 
-void Qgs3DMapSettings::setOrigin( double originX, double originY, double originZ )
+QgsVector3D Qgs3DMapSettings::mapToWorldCoordinates( const QgsVector3D &mapCoords ) const
 {
-  mOriginX = originX;
-  mOriginY = originY;
-  mOriginZ = originZ;
+  return Qgs3DUtils::mapToWorldCoordinates( mapCoords, mOrigin );
+}
+
+QgsVector3D Qgs3DMapSettings::worldToMapCoordinates( const QgsVector3D &worldCoords ) const
+{
+  return Qgs3DUtils::worldToMapCoordinates( worldCoords, mOrigin );
 }
 
 void Qgs3DMapSettings::setCrs( const QgsCoordinateReferenceSystem &crs )
 {
   mCrs = crs;
+}
+
+QgsCoordinateTransformContext Qgs3DMapSettings::transformContext() const
+{
+  return mTransformContext;
+}
+
+void Qgs3DMapSettings::setTransformContext( const QgsCoordinateTransformContext &context )
+{
+  mTransformContext = context;
 }
 
 void Qgs3DMapSettings::setBackgroundColor( const QColor &color )

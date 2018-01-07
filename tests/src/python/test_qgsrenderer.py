@@ -33,11 +33,11 @@ def createReferencingLayer():
     f1 = QgsFeature()
     f1.setFields(layer.pendingFields())
     f1.setAttributes(["test1", 123])
-    f1.setGeometry(QgsGeometry.fromPoint(QgsPointXY(100, 200)))
+    f1.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(100, 200)))
     f2 = QgsFeature()
     f2.setFields(layer.pendingFields())
     f2.setAttributes(["test2", 123])
-    f2.setGeometry(QgsGeometry.fromPoint(QgsPointXY(101, 201)))
+    f2.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(101, 201)))
     assert pr.addFeatures([f1, f2])
     return layer
 

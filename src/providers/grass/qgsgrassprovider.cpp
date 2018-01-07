@@ -275,7 +275,7 @@ QgsVectorDataProvider::Capabilities QgsGrassProvider::capabilities() const
 #ifndef Q_OS_WIN
   if ( sEditedCount > 0 && !mEditBuffer )
   {
-    return 0;
+    return nullptr;
   }
 #endif
   // for now, only one map may be edited at time
@@ -283,7 +283,7 @@ QgsVectorDataProvider::Capabilities QgsGrassProvider::capabilities() const
   {
     return AddFeatures | DeleteFeatures | ChangeGeometries | AddAttributes | DeleteAttributes | ChangeAttributeValues;
   }
-  return 0;
+  return nullptr;
 }
 
 bool QgsGrassProvider::openLayer()
@@ -361,7 +361,7 @@ void QgsGrassProvider::update()
   if ( mLayer )
   {
     mLayer->close();
-    mLayer = 0;
+    mLayer = nullptr;
   }
 
   if ( !openLayer() )
@@ -576,7 +576,7 @@ void QgsGrassProvider::freeze()
   {
     mLayer->close();
     mLayer->map()->close(); // closes all iterators, blocking
-    mLayer = 0;
+    mLayer = nullptr;
   }
 }
 
@@ -603,8 +603,8 @@ bool QgsGrassProvider::closeEdit( bool newMap, QgsVectorLayer *vectorLayer )
     return false;
   }
 
-  mEditBuffer = 0;
-  mEditLayer = 0;
+  mEditBuffer = nullptr;
+  mEditLayer = nullptr;
   // drivers must be closed in reversed order in which were opened
   // TODO: close driver order for simultaneous editing of multiple vector maps
   for ( int i = mOtherEditLayers.size() - 1; i >= 0; i-- )
@@ -710,7 +710,7 @@ bool QgsGrassProvider::nodeCoor( int node, double *x, double *y )
     return false;
   }
 
-  Vect_get_node_coor( map(), node, x, y, NULL );
+  Vect_get_node_coor( map(), node, x, y, nullptr );
   return true;
 }
 
@@ -1143,7 +1143,7 @@ void QgsGrassProvider::setPoints( struct line_pnts *points, const QgsAbstractGeo
   }
   else if ( geometry->wkbType() == QgsWkbTypes::Polygon || geometry->wkbType() == QgsWkbTypes::PolygonZ )
   {
-    const QgsPolygonV2 *polygon = dynamic_cast<const QgsPolygonV2 *>( geometry );
+    const QgsPolygon *polygon = dynamic_cast<const QgsPolygon *>( geometry );
     if ( polygon && polygon->exteriorRing() )
     {
       QgsLineString *lineString = polygon->exteriorRing()->curveToLine();
@@ -1191,7 +1191,7 @@ void QgsGrassProvider::onFeatureAdded( QgsFeatureId fid )
       type = mNewFeatureType == GV_AREA ? GV_BOUNDARY : mNewFeatureType;
     }
     // geometry
-    const QgsAbstractGeometry *geometry = 0;
+    const QgsAbstractGeometry *geometry = nullptr;
     if ( !mEditBuffer->isFeatureAdded( fid ) )
     {
 #ifdef QGISDEBUG
@@ -1206,7 +1206,7 @@ void QgsGrassProvider::onFeatureAdded( QgsFeatureId fid )
     }
     QgsFeature feature = mEditBuffer->addedFeatures().value( fid );
     QgsGeometry featureGeometry = feature.geometry();
-    geometry = featureGeometry.geometry();
+    geometry = featureGeometry.constGet();
     if ( !geometry )
     {
       QgsDebugMsg( "geometry is null" );
@@ -1222,7 +1222,7 @@ void QgsGrassProvider::onFeatureAdded( QgsFeatureId fid )
     if ( wkbType == QgsWkbTypes::Polygon )
     {
       QgsGeometry addedFeatureGeom = addedFeatures[fid].geometry();
-      const QgsPolygonV2 *polygon = dynamic_cast<const QgsPolygonV2 *>( addedFeatureGeom.geometry() );
+      const QgsPolygon *polygon = dynamic_cast<const QgsPolygon *>( addedFeatureGeom.constGet() );
       if ( polygon )
       {
         QgsLineString *lineString = polygon->exteriorRing()->curveToLine();
@@ -1407,7 +1407,7 @@ void QgsGrassProvider::onFeatureAdded( QgsFeatureId fid )
     else
     {
       QgsDebugMsg( QString( "the line does not exist -> restore old geometry" ) );
-      const QgsAbstractGeometry *geometry = 0;
+      const QgsAbstractGeometry *geometry = nullptr;
 
       // If it is not new feature, we should have the geometry in oldGeometries
       if ( mLayer->map()->oldGeometries().contains( lid ) )
@@ -1662,7 +1662,7 @@ void QgsGrassProvider::onGeometryChanged( QgsFeatureId fid, const QgsGeometry &g
     }
   }
 
-  setPoints( mPoints, geom.geometry() );
+  setPoints( mPoints, geom.constGet() );
 
   mLayer->map()->lockReadWrite();
   // Vect_rewrite_line may delete/write the line with a new id

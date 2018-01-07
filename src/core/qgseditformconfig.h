@@ -48,7 +48,8 @@ class CORE_EXPORT QgsEditFormConfig
 
     struct GroupData
     {
-      GroupData() {}
+      //! Constructor for GroupData
+      GroupData() = default;
       GroupData( const QString &name, const QList<QString> &fields )
         : mName( name )
         , mFields( fields )
@@ -59,7 +60,8 @@ class CORE_EXPORT QgsEditFormConfig
 
     struct TabData
     {
-      TabData() {}
+      //! Constructor for TabData
+      TabData() = default;
       TabData( const QString &name, const QList<QString> &fields, const QList<QgsEditFormConfig::GroupData> &groups )
         : mName( name )
         , mFields( fields )

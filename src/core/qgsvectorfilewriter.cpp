@@ -112,6 +112,23 @@ QgsVectorFileWriter::QgsVectorFileWriter( const QString &vectorFileName,
         layerName, action );
 }
 
+bool QgsVectorFileWriter::supportsFeatureStyles( const QString &driverName )
+{
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,3,0)
+  GDALDriverH gdalDriver = GDALGetDriverByName( driverName.toLocal8Bit().constData() );
+  if ( !gdalDriver )
+    return false;
+
+  char **driverMetadata = GDALGetMetadata( gdalDriver, nullptr );
+  if ( !driverMetadata )
+    return false;
+
+  return CSLFetchBoolean( driverMetadata, GDAL_DCAP_FEATURE_STYLES, false );
+#else
+  return driverName == QLatin1String( "DXF" ) || driverName == QLatin1String( "KML" ) || driverName == QLatin1String( "MapInfo File" ) || driverName == QLatin1String( "MapInfo MIF" );
+#endif
+}
+
 void QgsVectorFileWriter::init( QString vectorFileName,
                                 QString fileEncoding,
                                 const QgsFields &fields,
@@ -265,9 +282,9 @@ void QgsVectorFileWriter::init( QString vectorFileName,
 
   // create the data source
   if ( action == CreateOrOverwriteFile )
-    mDS = OGR_Dr_CreateDataSource( poDriver, vectorFileName.toUtf8().constData(), options );
+    mDS.reset( OGR_Dr_CreateDataSource( poDriver, vectorFileName.toUtf8().constData(), options ) );
   else
-    mDS = OGROpen( vectorFileName.toUtf8().constData(), TRUE, nullptr );
+    mDS.reset( OGROpen( vectorFileName.toUtf8().constData(), TRUE, nullptr ) );
 
   if ( options )
   {
@@ -281,10 +298,10 @@ void QgsVectorFileWriter::init( QString vectorFileName,
   {
     mError = ErrCreateDataSource;
     if ( action == CreateOrOverwriteFile )
-      mErrorMessage = QObject::tr( "creation of data source failed (OGR error:%1)" )
+      mErrorMessage = QObject::tr( "Creation of data source failed (OGR error: %1)" )
                       .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) );
     else
-      mErrorMessage = QObject::tr( "opening of data source in update mode failed (OGR error:%1)" )
+      mErrorMessage = QObject::tr( "Opening of data source in update mode failed (OGR error: %1)" )
                       .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) );
     return;
   }
@@ -295,16 +312,16 @@ void QgsVectorFileWriter::init( QString vectorFileName,
 
   if ( action == CreateOrOverwriteLayer )
   {
-    const int layer_count = OGR_DS_GetLayerCount( mDS );
+    const int layer_count = OGR_DS_GetLayerCount( mDS.get() );
     for ( int i = 0; i < layer_count; i++ )
     {
-      OGRLayerH hLayer = OGR_DS_GetLayer( mDS, i );
+      OGRLayerH hLayer = OGR_DS_GetLayer( mDS.get(), i );
       if ( EQUAL( OGR_L_GetName( hLayer ), layerName.toUtf8().constData() ) )
       {
-        if ( OGR_DS_DeleteLayer( mDS, i ) != OGRERR_NONE )
+        if ( OGR_DS_DeleteLayer( mDS.get(), i ) != OGRERR_NONE )
         {
           mError = ErrCreateLayer;
-          mErrorMessage = QObject::tr( "overwriting of existing layer failed (OGR error:%1)" )
+          mErrorMessage = QObject::tr( "Overwriting of existing layer failed (OGR error: %1)" )
                           .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) );
           return;
         }
@@ -373,15 +390,15 @@ void QgsVectorFileWriter::init( QString vectorFileName,
 
   if ( driverName == QLatin1String( "DGN" ) )
   {
-    mLayer = OGR_DS_GetLayerByName( mDS, "elements" );
+    mLayer = OGR_DS_GetLayerByName( mDS.get(), "elements" );
   }
   else if ( action == CreateOrOverwriteFile || action == CreateOrOverwriteLayer )
   {
-    mLayer = OGR_DS_CreateLayer( mDS, layerName.toUtf8().constData(), mOgrRef, wkbType, options );
+    mLayer = OGR_DS_CreateLayer( mDS.get(), layerName.toUtf8().constData(), mOgrRef, wkbType, options );
   }
   else
   {
-    mLayer = OGR_DS_GetLayerByName( mDS, layerName.toUtf8().constData() );
+    mLayer = OGR_DS_GetLayerByName( mDS.get(), layerName.toUtf8().constData() );
   }
 
   if ( options )
@@ -420,10 +437,10 @@ void QgsVectorFileWriter::init( QString vectorFileName,
   if ( !mLayer )
   {
     if ( action == CreateOrOverwriteFile || action == CreateOrOverwriteLayer )
-      mErrorMessage = QObject::tr( "creation of layer failed (OGR error:%1)" )
+      mErrorMessage = QObject::tr( "Creation of layer failed (OGR error: %1)" )
                       .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) );
     else
-      mErrorMessage = QObject::tr( "opening of layer failed (OGR error:%1)" )
+      mErrorMessage = QObject::tr( "Opening of layer failed (OGR error: %1)" )
                       .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) );
     mError = ErrCreateLayer;
     return;
@@ -496,6 +513,12 @@ void QgsVectorFileWriter::init( QString vectorFileName,
         ogrPrecision = 0;
         break;
 
+      case QVariant::Bool:
+        ogrType = OFTInteger;
+        ogrWidth = 1;
+        ogrPrecision = 0;
+        break;
+
       case QVariant::Double:
         ogrType = OFTReal;
         break;
@@ -530,7 +553,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
 
       default:
         //assert(0 && "invalid variant type!");
-        mErrorMessage = QObject::tr( "unsupported type for field %1" )
+        mErrorMessage = QObject::tr( "Unsupported type for field %1" )
                         .arg( attrField.name() );
         mError = ErrAttributeTypeUnsupported;
         return;
@@ -553,7 +576,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
 
       if ( i == 10 )
       {
-        mErrorMessage = QObject::tr( "no available replacement for internal fieldname ogc_fid found" ).arg( attrField.name() );
+        mErrorMessage = QObject::tr( "No available replacement for internal fieldname ogc_fid found" ).arg( attrField.name() );
         mError = ErrAttributeCreationFailed;
         return;
       }
@@ -562,15 +585,24 @@ void QgsVectorFileWriter::init( QString vectorFileName,
     }
 
     // create field definition
-    OGRFieldDefnH fld = OGR_Fld_Create( mCodec->fromUnicode( name ), ogrType );
+    gdal::ogr_field_def_unique_ptr fld( OGR_Fld_Create( mCodec->fromUnicode( name ), ogrType ) );
     if ( ogrWidth > 0 )
     {
-      OGR_Fld_SetWidth( fld, ogrWidth );
+      OGR_Fld_SetWidth( fld.get(), ogrWidth );
     }
 
     if ( ogrPrecision >= 0 )
     {
-      OGR_Fld_SetPrecision( fld, ogrPrecision );
+      OGR_Fld_SetPrecision( fld.get(), ogrPrecision );
+    }
+
+    switch ( attrField.type() )
+    {
+      case QVariant::Bool:
+        OGR_Fld_SetSubType( fld.get(), OFSTBoolean );
+        break;
+      default:
+        break;
     }
 
     // create the field
@@ -578,17 +610,15 @@ void QgsVectorFileWriter::init( QString vectorFileName,
                  " type " + QString( QVariant::typeToName( attrField.type() ) ) +
                  " width " + QString::number( ogrWidth ) +
                  " precision " + QString::number( ogrPrecision ) );
-    if ( OGR_L_CreateField( mLayer, fld, true ) != OGRERR_NONE )
+    if ( OGR_L_CreateField( mLayer, fld.get(), true ) != OGRERR_NONE )
     {
       QgsDebugMsg( "error creating field " + attrField.name() );
-      mErrorMessage = QObject::tr( "creation of field %1 failed (OGR error: %2)" )
+      mErrorMessage = QObject::tr( "Creation of field %1 failed (OGR error: %2)" )
                       .arg( attrField.name(),
                             QString::fromUtf8( CPLGetLastErrorMsg() ) );
       mError = ErrAttributeCreationFailed;
-      OGR_Fld_Destroy( fld );
       return;
     }
-    OGR_Fld_Destroy( fld );
 
     int ogrIdx = OGR_FD_GetFieldIndex( defn, mCodec->fromUnicode( name ) );
     QgsDebugMsg( QString( "returned field index for %1: %2" ).arg( name ).arg( ogrIdx ) );
@@ -600,7 +630,7 @@ void QgsVectorFileWriter::init( QString vectorFileName,
       if ( ogrIdx < 0 )
       {
         QgsDebugMsg( "error creating field " + attrField.name() );
-        mErrorMessage = QObject::tr( "created field %1 not found (OGR error: %2)" )
+        mErrorMessage = QObject::tr( "Created field %1 not found (OGR error: %2)" )
                         .arg( attrField.name(),
                               QString::fromUtf8( CPLGetLastErrorMsg() ) );
         mError = ErrAttributeCreationFailed;
@@ -630,6 +660,13 @@ void QgsVectorFileWriter::init( QString vectorFileName,
 
   if ( newFilename )
     *newFilename = vectorFileName;
+
+  // enabling transaction on databases that support it
+  mUsingTransaction = true;
+  if ( OGRERR_NONE != OGR_L_StartTransaction( mLayer ) )
+  {
+    mUsingTransaction = false;
+  }
 }
 
 OGRGeometryH QgsVectorFileWriter::createEmptyGeometry( QgsWkbTypes::Type wkbType )
@@ -685,7 +722,7 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
   datasetOptions.insert( QStringLiteral( "NB_IDS" ), new SetOption(
                            QObject::tr( "BNA records may contain from 2 to 4 identifiers per record. "
                                         "Some software packages only support a precise number of identifiers. "
-                                        "You can override the default value (2) by a precise value" ),
+                                        "You can override the default value (2) by a precise value." ),
                            QStringList()
                            << QStringLiteral( "2" )
                            << QStringLiteral( "3" )
@@ -832,7 +869,7 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
   // as we set encoding for shapefiles based on "fileEncoding" parameter passed to the writer
 #if 0
   layerOptions.insert( "ENCODING", new SetOption(
-                         QObject::tr( "set the encoding value in the DBF file. "
+                         QObject::tr( "Set the encoding value in the DBF file. "
                                       "The default value is LDID/87. It is not clear "
                                       "what other values may be appropriate." ),
                          QStringList()
@@ -957,7 +994,7 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
   datasetOptions.insert( QStringLiteral( "HEADER" ), new StringOption(
                            QObject::tr( "XML content that will be put between the <channel> element and the "
                                         "first <item> element for a RSS document, or between the xml tag and "
-                                        "the first <entry> element for an Atom document. " ),
+                                        "the first <entry> element for an Atom document." ),
                            QLatin1String( "" )  // Default value
                          ) );
 
@@ -1063,9 +1100,9 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                          ) );
 
   datasetOptions.insert( QStringLiteral( "GML3_LONGSRS" ), new BoolOption(
-                           QObject::tr( "only valid when FORMAT=GML3/GML3Degree/GML3.2) Default to YES. "
+                           QObject::tr( "Only valid when FORMAT=GML3/GML3Degree/GML3.2. Default to YES. " //needs review here
                                         "If YES, SRS with EPSG authority will be written with the "
-                                        "'urn:ogc:def:crs:EPSG::' prefix. In the case, if the SRS is a "
+                                        "'urn:ogc:def:crs:EPSG::' prefix. In the case the SRS is a "
                                         "geographic SRS without explicit AXIS order, but that the same "
                                         "SRS authority code imported with ImportFromEPSGA() should be "
                                         "treated as lat/long, then the function will take care of coordinate "
@@ -1255,7 +1292,7 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
   layerOptions.clear();
 
   datasetOptions.insert( QStringLiteral( "NameField" ), new StringOption(
-                           QObject::tr( "Allows you to specify the field to use for the KML <name> element. " ),
+                           QObject::tr( "Allows you to specify the field to use for the KML <name> element." ),
                            QStringLiteral( "Name" )  // Default value
                          ) );
 
@@ -1418,7 +1455,7 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
   layerOptions.clear();
 
   datasetOptions.insert( QStringLiteral( "UPDATES" ), new SetOption(
-                           QObject::tr( "Should update files be incorporated into the base data on the fly. " ),
+                           QObject::tr( "Should update files be incorporated into the base data on the fly." ),
                            QStringList()
                            << QStringLiteral( "APPLY" )
                            << QStringLiteral( "IGNORE" ),
@@ -1435,7 +1472,7 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
 
   datasetOptions.insert( QStringLiteral( "ADD_SOUNDG_DEPTH" ), new BoolOption(
                            QObject::tr( "Should a DEPTH attribute be added on SOUNDG features and assign the depth "
-                                        "of the sounding. This should only be enabled with SPLIT_MULTIPOINT is "
+                                        "of the sounding. This should only be enabled when SPLIT_MULTIPOINT is "
                                         "also enabled." ),
                            false  // Default value
                          ) );
@@ -1617,7 +1654,7 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
   layerOptions.insert( QStringLiteral( "COMPRESS_GEOM" ), new BoolOption(
                          QObject::tr( "If the format of the geometry BLOB is of the SpatiaLite flavor, "
                                       "this option can be used to control if the compressed format for "
-                                      "geometries (LINESTRINGs, POLYGONs) must be used" ),
+                                      "geometries (LINESTRINGs, POLYGONs) must be used." ),
                          false  // Default value
                        ) );
 
@@ -1695,14 +1732,14 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
                          ) );
 
   datasetOptions.insert( QStringLiteral( "CONFIG" ), new StringOption(
-                           QObject::tr( "path to the GCT : the GCT file describe the GeoConcept types definitions: "
+                           QObject::tr( "Path to the GCT: the GCT file describes the GeoConcept types definitions: "
                                         "In this file, every line must start with //# followed by a keyword. "
                                         "Lines starting with // are comments." ),
                            QLatin1String( "" )  // Default value
                          ) );
 
   datasetOptions.insert( QStringLiteral( "FEATURETYPE" ), new StringOption(
-                           QObject::tr( "defines the feature to be created. The TYPE corresponds to one of the Name "
+                           QObject::tr( "Defines the feature to be created. The TYPE corresponds to one of the Name "
                                         "found in the GCT file for a type section. The SUBTYPE corresponds to one of "
                                         "the Name found in the GCT file for a sub-type section within the previous "
                                         "type section." ),
@@ -1769,7 +1806,7 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
   layerOptions.insert( QStringLiteral( "OGR_XLSX_HEADERS" ), new SetOption(
                          QObject::tr( "By default, the driver will read the first lines of each sheet to detect "
                                       "if the first line might be the name of columns. If set to FORCE, the driver "
-                                      "will consider the first line will be taken as the header line. If set to "
+                                      "will consider the first line as the header line. If set to "
                                       "DISABLE, it will be considered as the first feature. Otherwise "
                                       "auto-detection will occur." ),
                          QStringList()
@@ -1809,7 +1846,7 @@ QMap<QString, QgsVectorFileWriter::MetaData> QgsVectorFileWriter::initMetaData()
   layerOptions.insert( QStringLiteral( "OGR_ODS_HEADERS" ), new SetOption(
                          QObject::tr( "By default, the driver will read the first lines of each sheet to detect "
                                       "if the first line might be the name of columns. If set to FORCE, the driver "
-                                      "will consider the first line will be taken as the header line. If set to "
+                                      "will consider the first line as the header line. If set to "
                                       "DISABLE, it will be considered as the first feature. Otherwise "
                                       "auto-detection will occur." ),
                          QStringList()
@@ -1912,7 +1949,7 @@ bool QgsVectorFileWriter::addFeatures( QgsFeatureList &features, QgsFeatureSink:
 bool QgsVectorFileWriter::addFeatureWithStyle( QgsFeature &feature, QgsFeatureRenderer *renderer, QgsUnitTypes::DistanceUnit outputUnit )
 {
   // create the feature
-  OGRFeatureH poFeature = createFeature( feature );
+  gdal::ogr_feature_unique_ptr poFeature = createFeature( feature );
   if ( !poFeature )
     return false;
 
@@ -1953,41 +1990,40 @@ bool QgsVectorFileWriter::addFeatureWithStyle( QgsFeature &feature, QgsFeatureRe
         }
         else if ( mSymbologyExport == SymbolLayerSymbology )
         {
-          OGR_F_SetStyleString( poFeature, currentStyle.toLocal8Bit().constData() );
-          if ( !writeFeature( mLayer, poFeature ) )
+          OGR_F_SetStyleString( poFeature.get(), currentStyle.toLocal8Bit().constData() );
+          if ( !writeFeature( mLayer, poFeature.get() ) )
           {
             return false;
           }
         }
       }
     }
-    OGR_F_SetStyleString( poFeature, styleString.toLocal8Bit().constData() );
+    OGR_F_SetStyleString( poFeature.get(), styleString.toLocal8Bit().constData() );
   }
 
   if ( mSymbologyExport == NoSymbology || mSymbologyExport == FeatureSymbology )
   {
-    if ( !writeFeature( mLayer, poFeature ) )
+    if ( !writeFeature( mLayer, poFeature.get() ) )
     {
       return false;
     }
   }
 
-  OGR_F_Destroy( poFeature );
   return true;
 }
 
-OGRFeatureH QgsVectorFileWriter::createFeature( const QgsFeature &feature )
+gdal::ogr_feature_unique_ptr QgsVectorFileWriter::createFeature( const QgsFeature &feature )
 {
   QgsLocaleNumC l; // Make sure the decimal delimiter is a dot
   Q_UNUSED( l );
 
-  OGRFeatureH poFeature = OGR_F_Create( OGR_L_GetLayerDefn( mLayer ) );
+  gdal::ogr_feature_unique_ptr poFeature( OGR_F_Create( OGR_L_GetLayerDefn( mLayer ) ) );
 
   qint64 fid = FID_TO_NUMBER( feature.id() );
   if ( fid > std::numeric_limits<int>::max() )
   {
     QgsDebugMsg( QString( "feature id %1 too large." ).arg( fid ) );
-    OGRErr err = OGR_F_SetFID( poFeature, static_cast<long>( fid ) );
+    OGRErr err = OGR_F_SetFID( poFeature.get(), static_cast<long>( fid ) );
     if ( err != OGRERR_NONE )
     {
       QgsDebugMsg( QString( "Failed to set feature id to %1: %2 (OGR error: %3)" )
@@ -2015,7 +2051,7 @@ OGRFeatureH QgsVectorFileWriter::createFeature( const QgsFeature &feature )
 // field to not be present at all in the output, and thus on reading to
 // have disappeared. #16812
 #ifdef OGRNullMarker
-      OGR_F_SetFieldNull( poFeature, ogrField );
+      OGR_F_SetFieldNull( poFeature.get(), ogrField );
 #endif
       continue;
     }
@@ -2029,20 +2065,23 @@ OGRFeatureH QgsVectorFileWriter::createFeature( const QgsFeature &feature )
     {
       case QVariant::Int:
       case QVariant::UInt:
-        OGR_F_SetFieldInteger( poFeature, ogrField, attrValue.toInt() );
+        OGR_F_SetFieldInteger( poFeature.get(), ogrField, attrValue.toInt() );
         break;
       case QVariant::LongLong:
       case QVariant::ULongLong:
-        OGR_F_SetFieldInteger64( poFeature, ogrField, attrValue.toLongLong() );
+        OGR_F_SetFieldInteger64( poFeature.get(), ogrField, attrValue.toLongLong() );
+        break;
+      case QVariant::Bool:
+        OGR_F_SetFieldInteger( poFeature.get(), ogrField, attrValue.toInt() );
         break;
       case QVariant::String:
-        OGR_F_SetFieldString( poFeature, ogrField, mCodec->fromUnicode( attrValue.toString() ).constData() );
+        OGR_F_SetFieldString( poFeature.get(), ogrField, mCodec->fromUnicode( attrValue.toString() ).constData() );
         break;
       case QVariant::Double:
-        OGR_F_SetFieldDouble( poFeature, ogrField, attrValue.toDouble() );
+        OGR_F_SetFieldDouble( poFeature.get(), ogrField, attrValue.toDouble() );
         break;
       case QVariant::Date:
-        OGR_F_SetFieldDateTime( poFeature, ogrField,
+        OGR_F_SetFieldDateTime( poFeature.get(), ogrField,
                                 attrValue.toDate().year(),
                                 attrValue.toDate().month(),
                                 attrValue.toDate().day(),
@@ -2051,11 +2090,11 @@ OGRFeatureH QgsVectorFileWriter::createFeature( const QgsFeature &feature )
       case QVariant::DateTime:
         if ( mOgrDriverName == QLatin1String( "ESRI Shapefile" ) )
         {
-          OGR_F_SetFieldString( poFeature, ogrField, mCodec->fromUnicode( attrValue.toDateTime().toString( QStringLiteral( "yyyy/MM/dd hh:mm:ss.zzz" ) ) ).constData() );
+          OGR_F_SetFieldString( poFeature.get(), ogrField, mCodec->fromUnicode( attrValue.toDateTime().toString( QStringLiteral( "yyyy/MM/dd hh:mm:ss.zzz" ) ) ).constData() );
         }
         else
         {
-          OGR_F_SetFieldDateTime( poFeature, ogrField,
+          OGR_F_SetFieldDateTime( poFeature.get(), ogrField,
                                   attrValue.toDateTime().date().year(),
                                   attrValue.toDateTime().date().month(),
                                   attrValue.toDateTime().date().day(),
@@ -2068,11 +2107,11 @@ OGRFeatureH QgsVectorFileWriter::createFeature( const QgsFeature &feature )
       case QVariant::Time:
         if ( mOgrDriverName == QLatin1String( "ESRI Shapefile" ) )
         {
-          OGR_F_SetFieldString( poFeature, ogrField, mCodec->fromUnicode( attrValue.toString() ).constData() );
+          OGR_F_SetFieldString( poFeature.get(), ogrField, mCodec->fromUnicode( attrValue.toString() ).constData() );
         }
         else
         {
-          OGR_F_SetFieldDateTime( poFeature, ogrField,
+          OGR_F_SetFieldDateTime( poFeature.get(), ogrField,
                                   0, 0, 0,
                                   attrValue.toTime().hour(),
                                   attrValue.toTime().minute(),
@@ -2102,13 +2141,13 @@ OGRFeatureH QgsVectorFileWriter::createFeature( const QgsFeature &feature )
       QgsGeometry geom = feature.geometry();
 
       // turn single geometry to multi geometry if needed
-      if ( QgsWkbTypes::flatType( geom.geometry()->wkbType() ) != QgsWkbTypes::flatType( mWkbType ) &&
-           QgsWkbTypes::flatType( geom.geometry()->wkbType() ) == QgsWkbTypes::flatType( QgsWkbTypes::singleType( mWkbType ) ) )
+      if ( QgsWkbTypes::flatType( geom.wkbType() ) != QgsWkbTypes::flatType( mWkbType ) &&
+           QgsWkbTypes::flatType( geom.wkbType() ) == QgsWkbTypes::flatType( QgsWkbTypes::singleType( mWkbType ) ) )
       {
         geom.convertToMultiType();
       }
 
-      if ( geom.geometry()->wkbType() != mWkbType )
+      if ( geom.wkbType() != mWkbType )
       {
         OGRGeometryH mGeom2 = nullptr;
 
@@ -2120,10 +2159,10 @@ OGRFeatureH QgsVectorFileWriter::createFeature( const QgsFeature &feature )
           //so the exported WKB has a different type to what the OGRGeometry is expecting.
           //possibly this is handled already in OGR, but it should be fixed regardless by actually converting
           //geom to the correct WKB type
-          QgsWkbTypes::Type wkbType = geom.geometry()->wkbType();
+          QgsWkbTypes::Type wkbType = geom.wkbType();
           if ( wkbType >= QgsWkbTypes::PointZ && wkbType <= QgsWkbTypes::MultiPolygonZ )
           {
-            QgsWkbTypes::Type wkbType25d = static_cast<QgsWkbTypes::Type>( geom.geometry()->wkbType() - QgsWkbTypes::PointZ + QgsWkbTypes::Point25D );
+            QgsWkbTypes::Type wkbType25d = static_cast<QgsWkbTypes::Type>( geom.wkbType() - QgsWkbTypes::PointZ + QgsWkbTypes::Point25D );
             mGeom2 = createEmptyGeometry( wkbType25d );
           }
         }
@@ -2138,7 +2177,7 @@ OGRFeatureH QgsVectorFileWriter::createFeature( const QgsFeature &feature )
           //
           // Btw. OGRGeometry must be exactly of the type of the geometry which it will receive
           // i.e. Polygons can't be imported to OGRMultiPolygon
-          mGeom2 = createEmptyGeometry( geom.geometry()->wkbType() );
+          mGeom2 = createEmptyGeometry( geom.wkbType() );
         }
 
         if ( !mGeom2 )
@@ -2147,11 +2186,10 @@ OGRFeatureH QgsVectorFileWriter::createFeature( const QgsFeature &feature )
                           .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) );
           mError = ErrFeatureWriteFailed;
           QgsMessageLog::logMessage( mErrorMessage, QObject::tr( "OGR" ) );
-          OGR_F_Destroy( poFeature );
           return nullptr;
         }
 
-        QByteArray wkb( geom.exportToWkb() );
+        QByteArray wkb( geom.asWkb() );
         OGRErr err = OGR_G_ImportFromWkb( mGeom2, reinterpret_cast<unsigned char *>( const_cast<char *>( wkb.constData() ) ), wkb.length() );
         if ( err != OGRERR_NONE )
         {
@@ -2159,16 +2197,15 @@ OGRFeatureH QgsVectorFileWriter::createFeature( const QgsFeature &feature )
                           .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) );
           mError = ErrFeatureWriteFailed;
           QgsMessageLog::logMessage( mErrorMessage, QObject::tr( "OGR" ) );
-          OGR_F_Destroy( poFeature );
           return nullptr;
         }
 
         // pass ownership to geometry
-        OGR_F_SetGeometryDirectly( poFeature, mGeom2 );
+        OGR_F_SetGeometryDirectly( poFeature.get(), mGeom2 );
       }
       else // wkb type matches
       {
-        QByteArray wkb( geom.exportToWkb() );
+        QByteArray wkb( geom.asWkb() );
         OGRGeometryH ogrGeom = createEmptyGeometry( mWkbType );
         OGRErr err = OGR_G_ImportFromWkb( ogrGeom, reinterpret_cast<unsigned char *>( const_cast<char *>( wkb.constData() ) ), wkb.length() );
         if ( err != OGRERR_NONE )
@@ -2177,17 +2214,16 @@ OGRFeatureH QgsVectorFileWriter::createFeature( const QgsFeature &feature )
                           .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) );
           mError = ErrFeatureWriteFailed;
           QgsMessageLog::logMessage( mErrorMessage, QObject::tr( "OGR" ) );
-          OGR_F_Destroy( poFeature );
           return nullptr;
         }
 
         // set geometry (ownership is passed to OGR)
-        OGR_F_SetGeometryDirectly( poFeature, ogrGeom );
+        OGR_F_SetGeometryDirectly( poFeature.get(), ogrGeom );
       }
     }
     else
     {
-      OGR_F_SetGeometry( poFeature, createEmptyGeometry( mWkbType ) );
+      OGR_F_SetGeometry( poFeature.get(), createEmptyGeometry( mWkbType ) );
     }
   }
   return poFeature;
@@ -2211,7 +2247,6 @@ bool QgsVectorFileWriter::writeFeature( OGRLayerH layer, OGRFeatureH feature )
     mErrorMessage = QObject::tr( "Feature creation error (OGR error: %1)" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) );
     mError = ErrFeatureWriteFailed;
     QgsMessageLog::logMessage( mErrorMessage, QObject::tr( "OGR" ) );
-    OGR_F_Destroy( feature );
     return false;
   }
   return true;
@@ -2219,10 +2254,15 @@ bool QgsVectorFileWriter::writeFeature( OGRLayerH layer, OGRFeatureH feature )
 
 QgsVectorFileWriter::~QgsVectorFileWriter()
 {
-  if ( mDS )
+  if ( mUsingTransaction )
   {
-    OGR_DS_Destroy( mDS );
+    if ( OGRERR_NONE != OGR_L_CommitTransaction( mLayer ) )
+    {
+      QgsDebugMsg( "Error while committing transaction on OGRLayer." );
+    }
   }
+
+  mDS.reset();
 
   if ( mOgrRef )
   {
@@ -2254,7 +2294,9 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer *layer,
   QgsCoordinateTransform ct;
   if ( destCRS.isValid() && layer )
   {
+    Q_NOWARN_DEPRECATED_PUSH
     ct = QgsCoordinateTransform( layer->crs(), destCRS );
+    Q_NOWARN_DEPRECATED_POP
   }
 
   QgsVectorFileWriter::WriterError error = writeAsVectorFormat( layer, fileName, fileEncoding, ct, driverName, onlySelected,
@@ -2306,7 +2348,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormat( QgsVe
 }
 
 QgsVectorFileWriter::SaveVectorOptions::SaveVectorOptions()
-  : driverName( QStringLiteral( "ESRI Shapefile" ) )
+  : driverName( QStringLiteral( "GPKG" ) )
 {
 }
 
@@ -2415,7 +2457,7 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer *layer,
           }
         }
 
-        if ( fet.hasGeometry() && QgsWkbTypes::isMultiType( fet.geometry().geometry()->wkbType() ) )
+        if ( fet.hasGeometry() && QgsWkbTypes::isMultiType( fet.geometry().wkbType() ) )
         {
           destWkbType = QgsWkbTypes::multiType( destWkbType );
           break;
@@ -2510,7 +2552,7 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer *layer,
       req.setFilterRect( filterRect );
     }
     filterRectGeometry = QgsGeometry::fromRect( options.filterExtent );
-    filterRectEngine.reset( QgsGeometry::createGeometryEngine( filterRectGeometry.geometry() ) );
+    filterRectEngine.reset( QgsGeometry::createGeometryEngine( filterRectGeometry.constGet() ) );
     filterRectEngine->prepareGeometry();
   }
 
@@ -2544,15 +2586,6 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer *layer,
   }
 
   writer->startRender( layer );
-
-  // enabling transaction on databases that support it
-  bool transactionsEnabled = true;
-
-  if ( OGRERR_NONE != OGR_L_StartTransaction( writer->mLayer ) )
-  {
-    QgsDebugMsg( "Error when trying to enable transactions on OGRLayer." );
-    transactionsEnabled = false;
-  }
 
   writer->resetMap( attributes );
   // Reset mFields to layer fields, and not just exported fields
@@ -2606,7 +2639,7 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer *layer,
       }
     }
 
-    if ( fet.hasGeometry() && filterRectEngine && !filterRectEngine->intersects( fet.geometry().geometry() ) )
+    if ( fet.hasGeometry() && filterRectEngine && !filterRectEngine->intersects( fet.geometry().constGet() ) )
       continue;
 
     if ( attributes.empty() && options.skipAttributeCreation )
@@ -2641,15 +2674,7 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer *layer,
     n++;
   }
 
-  if ( transactionsEnabled )
-  {
-    if ( OGRERR_NONE != OGR_L_CommitTransaction( writer->mLayer ) )
-    {
-      QgsDebugMsg( "Error while committing transaction on OGRLayer." );
-    }
-  }
-
-  writer->stopRender( layer );
+  writer->stopRender();
   delete writer;
 
   if ( errors > 0 && errorMessage && n > 0 )
@@ -2693,12 +2718,15 @@ void QgsVectorFileWriter::setSymbologyScale( double d )
   mRenderContext.setRendererScale( mSymbologyScale );
 }
 
-QMap< QString, QString> QgsVectorFileWriter::supportedFiltersAndFormats()
+QList< QgsVectorFileWriter::FilterFormatDetails > QgsVectorFileWriter::supportedFiltersAndFormats( const VectorFormatOptions options )
 {
-  QMap<QString, QString> resultMap;
+  QList< FilterFormatDetails > results;
 
   QgsApplication::registerOgrDrivers();
   int const drvCount = OGRGetDriverCount();
+
+  FilterFormatDetails shapeFormat;
+  FilterFormatDetails gpkgFormat;
 
   for ( int i = 0; i < drvCount; ++i )
   {
@@ -2706,55 +2734,102 @@ QMap< QString, QString> QgsVectorFileWriter::supportedFiltersAndFormats()
     if ( drv )
     {
       QString drvName = OGR_Dr_GetName( drv );
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,3,0)
+      GDALDriverH gdalDriver = GDALGetDriverByName( drvName.toLocal8Bit().constData() );
+      char **driverMetadata = nullptr;
+      if ( gdalDriver )
+      {
+        driverMetadata = GDALGetMetadata( gdalDriver, nullptr );
+      }
+
+      bool nonSpatialFormat = CSLFetchBoolean( driverMetadata, GDAL_DCAP_NONSPATIAL, false );
+#else
+      bool nonSpatialFormat = ( drvName == QLatin1String( "ODS" ) || drvName == QLatin1String( "XLSX" ) || drvName == QLatin1String( "XLS" ) );
+#endif
+
       if ( OGR_Dr_TestCapability( drv, "CreateDataSource" ) != 0 )
       {
+        if ( options & SkipNonSpatialFormats )
+        {
+          // skip non-spatial formats
+          if ( nonSpatialFormat )
+            continue;
+        }
+
         QString filterString = filterForDriver( drvName );
         if ( filterString.isEmpty() )
           continue;
 
-        resultMap.insert( filterString, drvName );
+        FilterFormatDetails details;
+        details.driverName = drvName;
+        details.filterString = filterString;
+
+        if ( options & SortRecommended )
+        {
+          if ( drvName == QLatin1String( "ESRI Shapefile" ) )
+          {
+            shapeFormat = details;
+            continue;
+          }
+          else if ( drvName == QLatin1String( "GPKG" ) )
+          {
+            gpkgFormat = details;
+            continue;
+          }
+        }
+
+        results << details;
       }
     }
   }
 
-  return resultMap;
+  std::sort( results.begin(), results.end(), []( const FilterFormatDetails & a, const FilterFormatDetails & b ) -> bool
+  {
+    return a.driverName < b.driverName;
+  } );
+
+  if ( options & SortRecommended )
+  {
+    if ( !shapeFormat.filterString.isEmpty() )
+    {
+      results.insert( 0, shapeFormat );
+    }
+    if ( !gpkgFormat.filterString.isEmpty() )
+    {
+      results.insert( 0, gpkgFormat );
+    }
+  }
+
+  return results;
 }
 
-QStringList QgsVectorFileWriter::supportedFormatExtensions()
+QStringList QgsVectorFileWriter::supportedFormatExtensions( const VectorFormatOptions options )
 {
-  QgsStringMap formats = supportedFiltersAndFormats();
+  const auto formats = supportedFiltersAndFormats( options );
   QStringList extensions;
 
   QRegularExpression rx( QStringLiteral( "\\*\\.([a-zA-Z0-9]*)" ) );
 
-  QgsStringMap::const_iterator formatIt = formats.constBegin();
-  for ( ; formatIt != formats.constEnd(); ++formatIt )
+  for ( const FilterFormatDetails &format : formats )
   {
-    QString ext = formatIt.key();
+    QString ext = format.filterString;
     QRegularExpressionMatch match = rx.match( ext );
     if ( !match.hasMatch() )
       continue;
 
     QString matched = match.captured( 1 );
-    if ( matched.compare( QStringLiteral( "shp" ), Qt::CaseInsensitive ) == 0 )
-      continue;
-
     extensions << matched;
   }
-
-  std::sort( extensions.begin(), extensions.end() );
-
-  // Make https://twitter.com/shapefiIe a happy little fellow
-  extensions.insert( 0, QStringLiteral( "shp" ) );
   return extensions;
 }
 
-QMap<QString, QString> QgsVectorFileWriter::ogrDriverList()
+QList< QgsVectorFileWriter::DriverDetails > QgsVectorFileWriter::ogrDriverList( const VectorFormatOptions options )
 {
-  QMap<QString, QString> resultMap;
+  QList< QgsVectorFileWriter::DriverDetails > results;
 
   QgsApplication::registerOgrDrivers();
-  int const drvCount = OGRGetDriverCount();
+  const int drvCount = OGRGetDriverCount();
 
   QStringList writableDrivers;
   for ( int i = 0; i < drvCount; ++i )
@@ -2763,6 +2838,19 @@ QMap<QString, QString> QgsVectorFileWriter::ogrDriverList()
     if ( drv )
     {
       QString drvName = OGR_Dr_GetName( drv );
+
+      if ( options & SkipNonSpatialFormats )
+      {
+        // skip non-spatial formats
+        // TODO - use GDAL metadata to determine this, when support exists in GDAL
+        if ( drvName == QLatin1String( "ODS" ) || drvName == QLatin1String( "XLSX" ) || drvName == QLatin1String( "XLS" ) )
+          continue;
+      }
+
+      if ( drvName == QLatin1String( "ESRI Shapefile" ) )
+      {
+        writableDrivers << QStringLiteral( "DBF file" );
+      }
       if ( OGR_Dr_TestCapability( drv, "CreateDataSource" ) != 0 )
       {
         // Add separate format for Mapinfo MIF (MITAB is OGR default)
@@ -2784,35 +2872,48 @@ QMap<QString, QString> QgsVectorFileWriter::ogrDriverList()
           poDriver = OGRGetDriverByName( drvName.toLocal8Bit().constData() );
           if ( poDriver )
           {
-            OGRDataSourceH ds = OGR_Dr_CreateDataSource( poDriver, QStringLiteral( "/vsimem/spatialitetest.sqlite" ).toUtf8().constData(), options );
+            gdal::ogr_datasource_unique_ptr ds( OGR_Dr_CreateDataSource( poDriver, QStringLiteral( "/vsimem/spatialitetest.sqlite" ).toUtf8().constData(), options ) );
             if ( ds )
             {
               writableDrivers << QStringLiteral( "SpatiaLite" );
               OGR_Dr_DeleteDataSource( poDriver, QStringLiteral( "/vsimem/spatialitetest.sqlite" ).toUtf8().constData() );
-              OGR_DS_Destroy( ds );
             }
           }
           CPLFree( options[0] );
-        }
-        else if ( drvName == QLatin1String( "ESRI Shapefile" ) )
-        {
-          writableDrivers << QStringLiteral( "DBF file" );
         }
         writableDrivers << drvName;
       }
     }
   }
+  std::sort( writableDrivers.begin(), writableDrivers.end() );
+  if ( options & SortRecommended )
+  {
+    // recommended order sorting, so we shift certain formats to the top
+    if ( writableDrivers.contains( QStringLiteral( "ESRI Shapefile" ) ) )
+    {
+      writableDrivers.removeAll( QStringLiteral( "ESRI Shapefile" ) );
+      writableDrivers.insert( 0, QStringLiteral( "ESRI Shapefile" ) );
+    }
+    if ( writableDrivers.contains( QStringLiteral( "GPKG" ) ) )
+    {
+      // Make https://twitter.com/shapefiIe a sad little fellow
+      writableDrivers.removeAll( QStringLiteral( "GPKG" ) );
+      writableDrivers.insert( 0, QStringLiteral( "GPKG" ) );
+    }
+  }
 
-  Q_FOREACH ( const QString &drvName, writableDrivers )
+  for ( const QString &drvName : qgis::as_const( writableDrivers ) )
   {
     MetaData metadata;
     if ( driverMetadata( drvName, metadata ) && !metadata.trLongName.isEmpty() )
     {
-      resultMap.insert( metadata.trLongName, drvName );
+      DriverDetails details;
+      details.driverName = drvName;
+      details.longName = metadata.trLongName;
+      results << details;
     }
   }
-
-  return resultMap;
+  return results;
 }
 
 QString QgsVectorFileWriter::driverForExtension( const QString &extension )
@@ -2849,17 +2950,16 @@ QString QgsVectorFileWriter::driverForExtension( const QString &extension )
   return QString();
 }
 
-QString QgsVectorFileWriter::fileFilterString()
+QString QgsVectorFileWriter::fileFilterString( const VectorFormatOptions options )
 {
   QString filterString;
-  QMap< QString, QString> driverFormatMap = supportedFiltersAndFormats();
-  QMap< QString, QString>::const_iterator it = driverFormatMap.constBegin();
-  for ( ; it != driverFormatMap.constEnd(); ++it )
+  const auto driverFormats = supportedFiltersAndFormats( options );
+  for ( const FilterFormatDetails &details : driverFormats )
   {
     if ( !filterString.isEmpty() )
       filterString += QLatin1String( ";;" );
 
-    filterString += it.key();
+    filterString += details.filterString;
   }
   return filterString;
 }
@@ -2868,9 +2968,11 @@ QString QgsVectorFileWriter::filterForDriver( const QString &driverName )
 {
   MetaData metadata;
   if ( !driverMetadata( driverName, metadata ) || metadata.trLongName.isEmpty() || metadata.glob.isEmpty() )
-    return QLatin1String( "" );
+    return QString();
 
-  return metadata.trLongName + " [OGR] (" + metadata.glob.toLower() + ' ' + metadata.glob.toUpper() + ')';
+  return QStringLiteral( "%1 (%2 %3)" ).arg( metadata.trLongName,
+         metadata.glob.toLower(),
+         metadata.glob.toUpper() );
 }
 
 QString QgsVectorFileWriter::convertCodecNameForEncodingOption( const QString &codecName )
@@ -3045,7 +3147,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::exportFeaturesSymbolLevels
       for ( ; featureIt != featureList.end(); ++featureIt )
       {
         ++nTotalFeatures;
-        OGRFeatureH ogrFeature = createFeature( *featureIt );
+        gdal::ogr_feature_unique_ptr ogrFeature = createFeature( *featureIt );
         if ( !ogrFeature )
         {
           ++nErrors;
@@ -3055,18 +3157,17 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::exportFeaturesSymbolLevels
         QString styleString = levelIt.key()->symbolLayer( llayer )->ogrFeatureStyle( mmsf, musf );
         if ( !styleString.isEmpty() )
         {
-          OGR_F_SetStyleString( ogrFeature, styleString.toLocal8Bit().constData() );
-          if ( !writeFeature( mLayer, ogrFeature ) )
+          OGR_F_SetStyleString( ogrFeature.get(), styleString.toLocal8Bit().constData() );
+          if ( !writeFeature( mLayer, ogrFeature.get() ) )
           {
             ++nErrors;
           }
         }
-        OGR_F_Destroy( ogrFeature );
       }
     }
   }
 
-  stopRender( layer );
+  stopRender();
 
   if ( nErrors > 0 && errorMessage )
   {
@@ -3112,46 +3213,44 @@ double QgsVectorFileWriter::mapUnitScaleFactor( double scale, QgsUnitTypes::Rend
 
 void QgsVectorFileWriter::startRender( QgsVectorLayer *vl )
 {
-  QgsFeatureRenderer *renderer = symbologyRenderer( vl );
-  if ( !renderer )
+  mRenderer = createSymbologyRenderer( vl );
+  if ( !mRenderer )
   {
     return;
   }
 
-  renderer->startRender( mRenderContext, vl->fields() );
+  mRenderer->startRender( mRenderContext, vl->fields() );
 }
 
-void QgsVectorFileWriter::stopRender( QgsVectorLayer *vl )
+void QgsVectorFileWriter::stopRender()
 {
-  QgsFeatureRenderer *renderer = symbologyRenderer( vl );
-  if ( !renderer )
+  if ( !mRenderer )
   {
     return;
   }
 
-  renderer->stopRender( mRenderContext );
+  mRenderer->stopRender( mRenderContext );
 }
 
-QgsFeatureRenderer *QgsVectorFileWriter::symbologyRenderer( QgsVectorLayer *vl ) const
+std::unique_ptr<QgsFeatureRenderer> QgsVectorFileWriter::createSymbologyRenderer( QgsVectorLayer *vl ) const
 {
   if ( mSymbologyExport == NoSymbology )
   {
     return nullptr;
   }
-  if ( !vl )
+  if ( !vl || !vl->renderer() )
   {
     return nullptr;
   }
 
-  return vl->renderer();
+  return std::unique_ptr< QgsFeatureRenderer >( vl->renderer()->clone() );
 }
 
 void QgsVectorFileWriter::addRendererAttributes( QgsVectorLayer *vl, QgsAttributeList &attList )
 {
-  QgsFeatureRenderer *renderer = symbologyRenderer( vl );
-  if ( renderer )
+  if ( mRenderer )
   {
-    const QSet<QString> rendererAttributes = renderer->usedAttributes( mRenderContext );
+    const QSet<QString> rendererAttributes = mRenderer->usedAttributes( mRenderContext );
     for ( const QString &attr : rendererAttributes )
     {
       int index = vl->fields().lookupField( attr );
@@ -3219,12 +3318,12 @@ QStringList QgsVectorFileWriter::concatenateOptions( const QMap<QString, QgsVect
 QgsVectorFileWriter::EditionCapabilities QgsVectorFileWriter::editionCapabilities( const QString &datasetName )
 {
   OGRSFDriverH hDriver = nullptr;
-  OGRDataSourceH hDS = OGROpen( datasetName.toUtf8().constData(), TRUE, &hDriver );
+  gdal::ogr_datasource_unique_ptr hDS( OGROpen( datasetName.toUtf8().constData(), TRUE, &hDriver ) );
   if ( !hDS )
     return nullptr;
   QString drvName = OGR_Dr_GetName( hDriver );
   QgsVectorFileWriter::EditionCapabilities caps = nullptr;
-  if ( OGR_DS_TestCapability( hDS, ODsCCreateLayer ) )
+  if ( OGR_DS_TestCapability( hDS.get(), ODsCCreateLayer ) )
   {
     // Shapefile driver returns True for a "foo.shp" dataset name,
     // creating "bar.shp" new layer, but this would be a bit confusing
@@ -3232,14 +3331,14 @@ QgsVectorFileWriter::EditionCapabilities QgsVectorFileWriter::editionCapabilitie
     if ( !( drvName == QLatin1String( "ESRI Shapefile" ) && QFile::exists( datasetName ) ) )
       caps |= CanAddNewLayer;
   }
-  if ( OGR_DS_TestCapability( hDS, ODsCDeleteLayer ) )
+  if ( OGR_DS_TestCapability( hDS.get(), ODsCDeleteLayer ) )
   {
     caps |= CanDeleteLayer;
   }
-  int layer_count = OGR_DS_GetLayerCount( hDS );
+  int layer_count = OGR_DS_GetLayerCount( hDS.get() );
   if ( layer_count )
   {
-    OGRLayerH hLayer = OGR_DS_GetLayer( hDS, 0 );
+    OGRLayerH hLayer = OGR_DS_GetLayer( hDS.get(), 0 );
     if ( hLayer )
     {
       if ( OGR_L_TestCapability( hLayer, OLCSequentialWrite ) )
@@ -3252,7 +3351,6 @@ QgsVectorFileWriter::EditionCapabilities QgsVectorFileWriter::editionCapabilitie
       }
     }
   }
-  OGR_DS_Destroy( hDS );
   return caps;
 }
 
@@ -3260,7 +3358,7 @@ bool QgsVectorFileWriter::targetLayerExists( const QString &datasetName,
     const QString &layerNameIn )
 {
   OGRSFDriverH hDriver = nullptr;
-  OGRDataSourceH hDS = OGROpen( datasetName.toUtf8().constData(), TRUE, &hDriver );
+  gdal::ogr_datasource_unique_ptr hDS( OGROpen( datasetName.toUtf8().constData(), TRUE, &hDriver ) );
   if ( !hDS )
     return false;
 
@@ -3268,9 +3366,7 @@ bool QgsVectorFileWriter::targetLayerExists( const QString &datasetName,
   if ( layerName.isEmpty() )
     layerName = QFileInfo( datasetName ).baseName();
 
-  bool ret = OGR_DS_GetLayerByName( hDS, layerName.toUtf8().constData() );
-  OGR_DS_Destroy( hDS );
-  return ret;
+  return OGR_DS_GetLayerByName( hDS.get(), layerName.toUtf8().constData() );
 }
 
 
@@ -3280,13 +3376,12 @@ bool QgsVectorFileWriter::areThereNewFieldsToCreate( const QString &datasetName,
     const QgsAttributeList &attributes )
 {
   OGRSFDriverH hDriver = nullptr;
-  OGRDataSourceH hDS = OGROpen( datasetName.toUtf8().constData(), TRUE, &hDriver );
+  gdal::ogr_datasource_unique_ptr hDS( OGROpen( datasetName.toUtf8().constData(), TRUE, &hDriver ) );
   if ( !hDS )
     return false;
-  OGRLayerH hLayer = OGR_DS_GetLayerByName( hDS, layerName.toUtf8().constData() );
+  OGRLayerH hLayer = OGR_DS_GetLayerByName( hDS.get(), layerName.toUtf8().constData() );
   if ( !hLayer )
   {
-    OGR_DS_Destroy( hDS );
     return false;
   }
   bool ret = false;
@@ -3300,7 +3395,6 @@ bool QgsVectorFileWriter::areThereNewFieldsToCreate( const QString &datasetName,
       break;
     }
   }
-  OGR_DS_Destroy( hDS );
   return ret;
 }
 

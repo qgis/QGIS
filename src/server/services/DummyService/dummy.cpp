@@ -23,16 +23,16 @@
 class SampleService: public QgsService
 {
   public:
-    QString name()    const { return "SampleService"; }
-    QString version() const { return "1.0"; }
+    QString name()    const override { return "SampleService"; }
+    QString version() const override { return "1.0"; }
 
-    bool allowMethod( QgsServerRequest::Method method ) const
+    bool allowMethod( QgsServerRequest::Method method ) const override
     {
       return method == QgsServerRequest::GetMethod;
     }
 
     void executeRequest( const QgsServerRequest &request, QgsServerResponse &response,
-                         const QgsProject *project )
+                         const QgsProject *project ) override
     {
       Q_UNUSED( project );
       Q_UNUSED( request );
@@ -45,7 +45,7 @@ class SampleService: public QgsService
 class QgsSampleModule: public QgsServiceModule
 {
   public:
-    void registerSelf( QgsServiceRegistry &registry, QgsServerInterface *serverIface )
+    void registerSelf( QgsServiceRegistry &registry, QgsServerInterface *serverIface ) override
     {
       Q_UNUSED( serverIface );
       QgsDebugMsg( "SampleModule::registerSelf called" );

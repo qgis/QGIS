@@ -201,7 +201,7 @@ void QgsValueMapConfigDlg::loadFromCSVButtonPushed()
   {
     QMessageBox::information( nullptr,
                               tr( "Error" ),
-                              tr( "Could not open file %1\nError was:%2" ).arg( fileName, f.errorString() ),
+                              tr( "Could not open file %1\nError was: %2" ).arg( fileName, f.errorString() ),
                               QMessageBox::Cancel );
     return;
   }

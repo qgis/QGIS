@@ -12,7 +12,7 @@
 class QgsAuthMethodEdit : QWidget
 {
 %Docstring
- Abstract base class for the edit widget of authentication method plugins
+Abstract base class for the edit widget of authentication method plugins
 %End
 
 %TypeHeaderCode
@@ -22,13 +22,11 @@ class QgsAuthMethodEdit : QWidget
     virtual bool validateConfig() = 0;
 %Docstring
 Validate the configuration of subclasses
- :rtype: bool
 %End
 
     virtual QgsStringMap configMap() const = 0;
 %Docstring
 The configuration key-vale map of subclasses
- :rtype: QgsStringMap
 %End
 
   signals:
@@ -41,8 +39,9 @@ Emitted when the configuration validatity changes
 
     virtual void loadConfig( const QgsStringMap &configmap ) = 0;
 %Docstring
- Load an existing config map into subclassed widget
- \param configmap
+Load an existing config map into subclassed widget
+
+:param configmap:
 %End
 
     virtual void resetConfig() = 0;
@@ -59,14 +58,16 @@ Clear GUI controls in subclassed widget
 
     explicit QgsAuthMethodEdit( QWidget *parent = 0 );
 %Docstring
- Construct widget to edit an authentication method configuration
+Construct widget to edit an authentication method configuration
+
 .. note::
 
    Non-public since this is an abstract base class
- \param parent Parent widget
+
+:param parent: Parent widget
 %End
 
-    virtual ~QgsAuthMethodEdit();
+    ~QgsAuthMethodEdit();
 };
 
 /************************************************************************

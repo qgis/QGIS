@@ -38,10 +38,14 @@ QgsPropertyOverrideButton::QgsPropertyOverrideButton( QWidget *parent,
 {
   setFocusPolicy( Qt::StrongFocus );
 
-  // set default tool button icon properties
-  setFixedSize( 30, 26 );
+  // icon size is a bit bigger than text, but minimum size of 24 so that we get pixel-aligned rendering on low-dpi screens
+  int iconSize = std::floor( std::max( Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 1.1, 24.0 ) );
+
+  // button width is 1.25 * icon size, height 1.1 * icon size. But we round to ensure even pixel sizes for equal margins
+  setFixedSize( 2 * static_cast< int >( 1.25 * iconSize / 2.0 ), 2 * static_cast< int >( iconSize * 1.1 / 2.0 ) );
   setStyleSheet( QStringLiteral( "QToolButton{ background: none; border: 1px solid rgba(0, 0, 0, 0%);} QToolButton:focus { border: 1px solid palette(highlight); }" ) );
-  setIconSize( QSize( 24, 24 ) );
+
+  setIconSize( QSize( iconSize, iconSize ) );
   setPopupMode( QToolButton::InstantPopup );
 
   connect( this, &QgsPropertyOverrideButton::activated, this, &QgsPropertyOverrideButton::updateSiblingWidgets );
@@ -85,12 +89,17 @@ QgsPropertyOverrideButton::QgsPropertyOverrideButton( QWidget *parent,
 
 void QgsPropertyOverrideButton::init( int propertyKey, const QgsProperty &property, const QgsPropertiesDefinition &definitions, const QgsVectorLayer *layer, bool auxiliaryStorageEnabled )
 {
+  init( propertyKey, property, definitions.value( propertyKey ), layer, auxiliaryStorageEnabled );
+}
+
+void QgsPropertyOverrideButton::init( int propertyKey, const QgsProperty &property, const QgsPropertyDefinition &definition, const QgsVectorLayer *layer, bool auxiliaryStorageEnabled )
+{
   mVectorLayer = layer;
   mAuxiliaryStorageEnabled = auxiliaryStorageEnabled;
   setToProperty( property );
   mPropertyKey = propertyKey;
 
-  mDefinition = definitions.value( propertyKey );
+  mDefinition = definition;
   mDataTypes = mDefinition.dataType();
 
   mInputDescription = mDefinition.helpText();
@@ -168,6 +177,9 @@ void QgsPropertyOverrideButton::updateFieldLists()
           break;
         case QVariant::Int:
           fieldType = tr( "integer" );
+          break;
+        case QVariant::LongLong:
+          fieldType = tr( "integer64" );
           break;
         case QVariant::Double:
           fieldType = tr( "double" );
@@ -437,7 +449,7 @@ void QgsPropertyOverrideButton::aboutToShowMenu()
     if ( expString.length() > 35 )
     {
       expString.truncate( 35 );
-      expString.append( "…" );
+      expString.append( QChar( 0x2026 ) );
     }
 
     expString.prepend( tr( "Current: " ) );
@@ -631,19 +643,23 @@ void QgsPropertyOverrideButton::showAssistant()
     dlg->setWindowTitle( widget->panelTitle() );
     dlg->setLayout( new QVBoxLayout() );
     dlg->layout()->addWidget( widget );
-    QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok );
+    QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Cancel | QDialogButtonBox::Help | QDialogButtonBox::Ok );
     connect( buttonBox, &QDialogButtonBox::accepted, dlg, &QDialog::accept );
+    connect( buttonBox, &QDialogButtonBox::rejected, dlg, &QDialog::reject );
+    connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsPropertyOverrideButton::showHelp );
     dlg->layout()->addWidget( buttonBox );
-    dlg->exec();
+
+    if ( dlg->exec() == QDialog::Accepted )
+    {
+      widget->updateProperty( mProperty );
+      mExpressionString = mProperty.asExpression();
+      mFieldName = mProperty.field();
+      widget->acceptPanel();
+      updateGui();
+
+      emit changed();
+    }
     settings.setValue( key, dlg->saveGeometry() );
-
-    widget->updateProperty( mProperty );
-    mExpressionString = mProperty.asExpression();
-    mFieldName = mProperty.field();
-    widget->acceptPanel();
-    updateGui();
-
-    emit changed();
   }
 }
 
@@ -708,7 +724,7 @@ void QgsPropertyOverrideButton::updateGui()
   if ( deftip.length() > 75 )
   {
     deftip.truncate( 75 );
-    deftip.append( "…" );
+    deftip.append( QChar( 0x2026 ) );
   }
 
   mFullDescription += tr( "<b>Current definition %1:</b><br>%2" ).arg( deftype, deftip );
@@ -813,4 +829,9 @@ void QgsPropertyOverrideButton::setActive( bool active )
 void QgsPropertyOverrideButton::registerExpressionContextGenerator( QgsExpressionContextGenerator *generator )
 {
   mExpressionContextGenerator = generator;
+}
+
+void QgsPropertyOverrideButton::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#data-defined" ) );
 }

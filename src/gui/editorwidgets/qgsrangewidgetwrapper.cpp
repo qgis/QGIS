@@ -141,9 +141,9 @@ void QgsRangeWidgetWrapper::initWidget( QWidget *editor )
   }
   else
   {
-    field().convertCompatible( min );
-    field().convertCompatible( max );
-    field().convertCompatible( step );
+    ( void )field().convertCompatible( min );
+    ( void )field().convertCompatible( max );
+    ( void )field().convertCompatible( step );
     if ( mQgsDial ) setupIntEditor( min, max, step, mQgsDial, this );
     else if ( mQgsSlider ) setupIntEditor( min, max, step, mQgsSlider, this );
     else if ( mDial ) setupIntEditor( min, max, step, mDial, this );

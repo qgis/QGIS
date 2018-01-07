@@ -97,8 +97,8 @@ void TestQgsOgrUtils::ogrGeometryToQgsGeometry()
 
   QgsGeometry geom = QgsOgrUtils::ogrGeometryToQgsGeometry( ogrGeom );
   QVERIFY( !geom.isNull() );
-  QCOMPARE( geom.geometry()->wkbType(), QgsWkbTypes::LineString );
-  QCOMPARE( geom.geometry()->nCoordinates(), 71 );
+  QCOMPARE( geom.constGet()->wkbType(), QgsWkbTypes::LineString );
+  QCOMPARE( geom.constGet()->nCoordinates(), 71 );
 
   OGR_F_Destroy( oFeat );
   OGR_DS_Destroy( hDS );
@@ -124,8 +124,8 @@ void TestQgsOgrUtils::readOgrFeatureGeometry()
 
   QgsOgrUtils::readOgrFeatureGeometry( oFeat, f );
   QVERIFY( f.hasGeometry() );
-  QCOMPARE( f.geometry().geometry()->wkbType(), QgsWkbTypes::LineString );
-  QCOMPARE( f.geometry().geometry()->nCoordinates(), 71 );
+  QCOMPARE( f.geometry().constGet()->wkbType(), QgsWkbTypes::LineString );
+  QCOMPARE( f.geometry().constGet()->nCoordinates(), 71 );
 
   OGR_F_Destroy( oFeat );
   OGR_DS_Destroy( hDS );
@@ -273,8 +273,8 @@ void TestQgsOgrUtils::readOgrFeature()
   QCOMPARE( f.attribute( "datetime_field" ), QVariant( QDateTime( QDate( 2005, 3, 5 ), QTime( 6, 45, 0 ) ) ) );
   QCOMPARE( f.attribute( "string_field" ), QVariant( "a string" ) );
   QVERIFY( f.hasGeometry() );
-  QCOMPARE( f.geometry().geometry()->wkbType(), QgsWkbTypes::LineString );
-  QCOMPARE( f.geometry().geometry()->nCoordinates(), 71 );
+  QCOMPARE( f.geometry().constGet()->wkbType(), QgsWkbTypes::LineString );
+  QCOMPARE( f.geometry().constGet()->nCoordinates(), 71 );
 
   OGR_F_Destroy( oFeat );
   OGR_DS_Destroy( hDS );
@@ -331,9 +331,9 @@ void TestQgsOgrUtils::stringToFeatureList()
   features = QgsOgrUtils::stringToFeatureList( QStringLiteral( "{\n\"type\": \"Feature\",\"geometry\": {\"type\": \"Point\",\"coordinates\": [125, 10]},\"properties\": {\"name\": \"Dinagat Islands\"}}" ), fields, QTextCodec::codecForName( "System" ) );
   QCOMPARE( features.length(), 1 );
   QVERIFY( features.at( 0 ).hasGeometry() && !features.at( 0 ).geometry().isNull() );
-  QCOMPARE( features.at( 0 ).geometry().geometry()->wkbType(), QgsWkbTypes::Point );
+  QCOMPARE( features.at( 0 ).geometry().constGet()->wkbType(), QgsWkbTypes::Point );
   QgsGeometry featureGeom = features.at( 0 ).geometry();
-  const QgsPoint *point = dynamic_cast< QgsPoint * >( featureGeom.geometry() );
+  const QgsPoint *point = dynamic_cast< const QgsPoint * >( featureGeom.constGet() );
   QCOMPARE( point->x(), 125.0 );
   QCOMPARE( point->y(), 10.0 );
   QCOMPARE( features.at( 0 ).attribute( "name" ).toString(), QString( "Dinagat Islands" ) );
@@ -343,16 +343,16 @@ void TestQgsOgrUtils::stringToFeatureList()
              " {\n\"type\": \"Feature\",\"geometry\": {\"type\": \"Point\",\"coordinates\": [110, 20]},\"properties\": {\"name\": \"Henry Gale Island\"}}]}", fields, QTextCodec::codecForName( "System" ) );
   QCOMPARE( features.length(), 2 );
   QVERIFY( features.at( 0 ).hasGeometry() && !features.at( 0 ).geometry().isNull() );
-  QCOMPARE( features.at( 0 ).geometry().geometry()->wkbType(), QgsWkbTypes::Point );
+  QCOMPARE( features.at( 0 ).geometry().constGet()->wkbType(), QgsWkbTypes::Point );
   featureGeom = features.at( 0 ).geometry();
-  point = dynamic_cast< QgsPoint * >( featureGeom.geometry() );
+  point = dynamic_cast< const QgsPoint * >( featureGeom.constGet() );
   QCOMPARE( point->x(), 125.0 );
   QCOMPARE( point->y(), 10.0 );
   QCOMPARE( features.at( 0 ).attribute( "name" ).toString(), QString( "Dinagat Islands" ) );
   QVERIFY( features.at( 1 ).hasGeometry() && !features.at( 1 ).geometry().isNull() );
-  QCOMPARE( features.at( 1 ).geometry().geometry()->wkbType(), QgsWkbTypes::Point );
+  QCOMPARE( features.at( 1 ).geometry().constGet()->wkbType(), QgsWkbTypes::Point );
   featureGeom = features.at( 1 ).geometry();
-  point = dynamic_cast< QgsPoint * >( featureGeom.geometry() );
+  point = dynamic_cast< const QgsPoint * >( featureGeom.constGet() );
   QCOMPARE( point->x(), 110.0 );
   QCOMPARE( point->y(), 20.0 );
   QCOMPARE( features.at( 1 ).attribute( "name" ).toString(), QString( "Henry Gale Island" ) );

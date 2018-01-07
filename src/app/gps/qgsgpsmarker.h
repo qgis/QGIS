@@ -38,7 +38,7 @@ class QgsGpsMarker : public QgsMapCanvasItem
 
     QRectF boundingRect() const override;
 
-    virtual void updatePosition() override;
+    void updatePosition() override;
 
     void setSize( int size );
 

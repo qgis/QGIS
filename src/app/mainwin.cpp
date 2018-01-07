@@ -105,7 +105,13 @@ int CALLBACK WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
     }
   }
 
+#ifdef _MSC_VER
   HINSTANCE hGetProcIDDLL = LoadLibrary( "qgis_app.dll" );
+#else
+  // MinGW
+  HINSTANCE hGetProcIDDLL = LoadLibrary( "libqgis_app.dll" );
+#endif
+
   if ( !hGetProcIDDLL )
   {
     std::cerr << "Could not load the qgis_app.dll" << std::endl;

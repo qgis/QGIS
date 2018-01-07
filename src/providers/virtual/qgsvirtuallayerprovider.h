@@ -36,16 +36,16 @@ class QgsVirtualLayerProvider: public QgsVectorDataProvider
      */
     explicit QgsVirtualLayerProvider( QString const &uri = QString() );
 
-    virtual QgsAbstractFeatureSource *featureSource() const override;
-    virtual QString storageType() const override;
-    virtual QgsCoordinateReferenceSystem crs() const override;
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) const override;
+    QgsAbstractFeatureSource *featureSource() const override;
+    QString storageType() const override;
+    QgsCoordinateReferenceSystem crs() const override;
+    QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) const override;
     QgsWkbTypes::Type wkbType() const override;
     long featureCount() const override;
-    virtual QgsRectangle extent() const override;
-    virtual QString subsetString() const override;
-    virtual bool setSubsetString( const QString &subset, bool updateFeatureCount = true ) override;
-    virtual bool supportsSubsetString() const override { return true; }
+    QgsRectangle extent() const override;
+    QString subsetString() const override;
+    bool setSubsetString( const QString &subset, bool updateFeatureCount = true ) override;
+    bool supportsSubsetString() const override { return true; }
     QgsFields fields() const override;
     bool isValid() const override;
     QgsVectorDataProvider::Capabilities capabilities() const override;
@@ -64,7 +64,7 @@ class QgsVirtualLayerProvider: public QgsVectorDataProvider
     // underlying vector layers
     struct SourceLayer
     {
-      SourceLayer() {}
+      SourceLayer() = default;
       SourceLayer( QgsVectorLayer *l, const QString &n = QString() )
         : layer( l )
         , name( n )

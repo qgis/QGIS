@@ -12,13 +12,13 @@
 class QgsEditorWidgetFactory
 {
 %Docstring
- Every attribute editor widget needs a factory, which inherits this class
+Every attribute editor widget needs a factory, which inherits this class
 
- It provides metadata for the widgets such as the name (human readable), it serializes
- the configuration to an xml structure and loads the configuration from there.
+It provides metadata for the widgets such as the name (human readable), it serializes
+the configuration to an xml structure and loads the configuration from there.
 
- It also has factory methods to create a widget wrapper for the attribute editor itself
- and another factory method to create a configuration dialog.
+It also has factory methods to create a widget wrapper for the attribute editor itself
+and another factory method to create a configuration dialog.
 %End
 
 %TypeHeaderCode
@@ -28,85 +28,80 @@ class QgsEditorWidgetFactory
 
     QgsEditorWidgetFactory( const QString &name );
 %Docstring
- Constructor
+Constructor
 
- \param name A human readable name for this widget type
+:param name: A human readable name for this widget type
 %End
 
     virtual ~QgsEditorWidgetFactory();
 
     virtual QgsEditorWidgetWrapper *create( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent ) const = 0 /Factory/;
 %Docstring
- Override this in your implementation.
- Create a new editor widget wrapper. Call QgsEditorWidgetRegistry.create()
- instead of calling this method directly.
+Override this in your implementation.
+Create a new editor widget wrapper. Call QgsEditorWidgetRegistry.create()
+instead of calling this method directly.
 
- \param vl       The vector layer on which this widget will act
- \param fieldIdx The field index on which this widget will act
- \param editor   An editor widget if already existent. If NULL is provided, a new widget will be created.
- \param parent   The parent for the wrapper class and any created widget.
+:param vl:       The vector layer on which this widget will act
+:param fieldIdx: The field index on which this widget will act
+:param editor:   An editor widget if already existent. If NULL is provided, a new widget will be created.
+:param parent:   The parent for the wrapper class and any created widget.
 
- :return:         A new widget wrapper
- :rtype: QgsEditorWidgetWrapper
+:return:         A new widget wrapper
 %End
 
     virtual QgsSearchWidgetWrapper *createSearchWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const /Factory/;
-%Docstring
- :rtype: QgsSearchWidgetWrapper
-%End
 
     QString name();
 %Docstring
- Return The human readable identifier name of this widget type
+Return The human readable identifier name of this widget type
 
- :return: a name
- :rtype: str
+:return: a name
 %End
 
     virtual QgsEditorConfigWidget *configWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const = 0 /Factory/;
 %Docstring
- Override this in your implementation.
- Create a new configuration widget for this widget type.
+Override this in your implementation.
+Create a new configuration widget for this widget type.
 
- \param vl       The layer for which the widget will be created
- \param fieldIdx The field index for which the widget will be created
- \param parent   The parent widget of the created config widget
+:param vl:       The layer for which the widget will be created
+:param fieldIdx: The field index for which the widget will be created
+:param parent:   The parent widget of the created config widget
 
- :return:         A configuration widget
- :rtype: QgsEditorConfigWidget
+:return:         A configuration widget
 %End
 
     bool supportsField( const QgsVectorLayer *vl, int fieldIdx );
 %Docstring
- Check if this editor widget type supports a certain field.
+Check if this editor widget type supports a certain field.
 
- \param vl        The layer
- \param fieldIdx  The field index
- :return:          True if the type is supported for this field
+:param vl:        The layer
+:param fieldIdx:  The field index
 
-.. seealso:: fieldScore( const QgsVectorLayer* vl, ind fieldIdx )
- :rtype: bool
+:return:          True if the type is supported for this field
+
+.. seealso:: :py:func:`fieldScore`
 %End
 
 
     virtual unsigned int fieldScore( const QgsVectorLayer *vl, int fieldIdx ) const;
 %Docstring
- This method allows disabling this editor widget type for a certain field.
- By default, it returns 5 for every fields.
- Reimplement this if you only support certain fields.
+This method allows disabling this editor widget type for a certain field.
+By default, it returns 5 for every fields.
+Reimplement this if you only support certain fields.
 
- Typical return values are:
-   * 0: not supported
-   * 5: maybe support (for example, Datetime support strings depending on their content)
-   * 10: basic support (this is what returns TextEdit for example, since it supports everything in a crude way)
-   * 20: specialized support
+Typical return values are:
+* 0: not supported
+* 5: maybe support (for example, Datetime support strings depending on their content)
+* 10: basic support (this is what returns TextEdit for example, since it supports everything in a crude way)
+* 20: specialized support
 
- \param vl
- \param fieldIdx
- :return: 0 if the field is not supported or a bigger number if it can (the widget with the biggest number will be
-      taken by default). The default implementation returns 5..
+:param vl:
+:param fieldIdx:
 
-.. seealso:: supportsField( QgsVectorLayer* vl, fieldIdx )
+:return: 0 if the field is not supported or a bigger number if it can (the widget with the biggest number will be
+taken by default). The default implementation returns 5..
+
+.. seealso:: :py:func:`supportsField`
 %End
 
 };

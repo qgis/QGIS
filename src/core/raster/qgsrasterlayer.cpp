@@ -108,7 +108,7 @@ QgsRasterLayer::QgsRasterLayer()
 QgsRasterLayer::QgsRasterLayer( const QString &uri,
                                 const QString &baseName,
                                 const QString &providerKey,
-                                bool loadDefaultStyleFlag )
+                                const LayerOptions &options )
   : QgsMapLayer( RasterLayer, baseName, uri )
     // Constant that signals property not used.
   , QSTRING_NOT_SET( QStringLiteral( "Not Set" ) )
@@ -122,7 +122,7 @@ QgsRasterLayer::QgsRasterLayer( const QString &uri,
 
   // load default style
   bool defaultLoadedFlag = false;
-  if ( mValid && loadDefaultStyleFlag )
+  if ( mValid && options.loadDefaultStyle )
   {
     loadDefaultStyle( defaultLoadedFlag );
   }
@@ -146,7 +146,7 @@ QgsRasterLayer::~QgsRasterLayer()
 
 QgsRasterLayer *QgsRasterLayer::clone() const
 {
-  QgsRasterLayer *layer = new QgsRasterLayer( source(), originalName(), mProviderKey );
+  QgsRasterLayer *layer = new QgsRasterLayer( source(), name(), mProviderKey );
   QgsMapLayer::clone( layer );
 
   // do not clone data provider which is the first element in pipe
@@ -307,17 +307,12 @@ QString QgsRasterLayer::htmlMetadata() const
   QgsLayerMetadataFormatter htmlFormatter( metadata() );
   QString myMetadata = QStringLiteral( "<html>\n<body>\n" );
 
-  // Identification section
-  myMetadata += QStringLiteral( "<h1>" ) + tr( "Identification" ) + QStringLiteral( "</h1>\n<hr>\n" );
-  myMetadata += htmlFormatter.identificationSectionHtml();
-  myMetadata += QLatin1String( "<br><br>\n" );
-
   // Begin Provider section
   myMetadata += QStringLiteral( "<h1>" ) + tr( "Information from provider" ) + QStringLiteral( "</h1>\n<hr>\n" );
   myMetadata += QLatin1String( "<table class=\"list-view\">\n" );
 
   // original name
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Original" ) + QStringLiteral( "</td><td>" ) + originalName() + QStringLiteral( "</td></tr>\n" );
+  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Original" ) + QStringLiteral( "</td><td>" ) + name() + QStringLiteral( "</td></tr>\n" );
 
   // name
   myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Name" ) + QStringLiteral( "</td><td>" ) + name() + QStringLiteral( "</td></tr>\n" );
@@ -402,8 +397,16 @@ QString QgsRasterLayer::htmlMetadata() const
   }
   myMetadata += QLatin1String( "</td></tr>\n" );
 
+  // Insert provider-specific (e.g. WMS-specific) metadata
+  myMetadata += mDataProvider->htmlMetadata();
+
   // End Provider section
   myMetadata += QLatin1String( "</table>\n<br><br>" );
+
+  // Identification section
+  myMetadata += QStringLiteral( "<h1>" ) + tr( "Identification" ) + QStringLiteral( "</h1>\n<hr>\n" );
+  myMetadata += htmlFormatter.identificationSectionHtml();
+  myMetadata += QLatin1String( "<br><br>\n" );
 
   // extent section
   myMetadata += QStringLiteral( "<h1>" ) + tr( "Extent" ) + QStringLiteral( "</h1>\n<hr>\n" );
@@ -1294,8 +1297,10 @@ QImage QgsRasterLayer::previewAsImage( QSize size, const QColor &bgColor, QImage
 bool QgsRasterLayer::readSymbology( const QDomNode &layer_node, QString &errorMessage, const QgsReadWriteContext &context )
 {
   Q_UNUSED( errorMessage );
-  Q_UNUSED( context );
   QDomElement rasterRendererElem;
+
+  QDomElement layerElement = layer_node.toElement();
+  readCommonStyle( layerElement, context );
 
   // pipe element was introduced in the end of 1.9 development when there were
   // already many project files in use so we support 1.9 backward compatibility
@@ -1536,7 +1541,9 @@ bool QgsRasterLayer::readXml( const QDomNode &layer_node, const QgsReadWriteCont
 bool QgsRasterLayer::writeSymbology( QDomNode &layer_node, QDomDocument &document, QString &errorMessage, const QgsReadWriteContext &context ) const
 {
   Q_UNUSED( errorMessage );
-  Q_UNUSED( context );
+
+  QDomElement layerElement = layer_node.toElement();
+  writeCommonStyle( layerElement, document, context );
 
   // Store pipe members (except provider) into pipe element, in future, it will be
   // possible to add custom filters into the pipe

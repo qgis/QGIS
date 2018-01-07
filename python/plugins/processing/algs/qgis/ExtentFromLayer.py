@@ -61,6 +61,9 @@ class ExtentFromLayer(QgisAlgorithm):
     def group(self):
         return self.tr('Layer tools')
 
+    def groupId(self):
+        return 'layertools'
+
     def __init__(self):
         super().__init__()
 

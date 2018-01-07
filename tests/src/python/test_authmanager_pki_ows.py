@@ -33,6 +33,7 @@ from shutil import rmtree
 
 from utilities import unitTestDataPath, waitServer
 from qgis.core import (
+    QgsApplication,
     QgsAuthManager,
     QgsAuthMethodConfig,
     QgsVectorLayer,
@@ -64,7 +65,7 @@ class TestAuthManager(unittest.TestCase):
     @classmethod
     def setUpAuth(cls):
         """Run before all tests and set up authentication"""
-        authm = QgsAuthManager.instance()
+        authm = QgsApplication.authManager()
         assert (authm.setMasterPassword('masterpassword', True))
         cls.sslrootcert_path = os.path.join(cls.certsdata_path, 'chains_subissuer-issuer-root_issuer2-root2.pem')
         cls.sslcert = os.path.join(cls.certsdata_path, 'gerardus_cert.pem')

@@ -43,10 +43,10 @@ class CORE_EXPORT QgsComposerShape: public QgsComposerItem
 
     QgsComposerShape( QgsComposition *composition SIP_TRANSFERTHIS );
     QgsComposerShape( qreal x, qreal y, qreal width, qreal height, QgsComposition *composition SIP_TRANSFERTHIS );
-    ~QgsComposerShape();
+    ~QgsComposerShape() override;
 
     //! Return correct graphics item type.
-    virtual int type() const override { return ComposerShape; }
+    int type() const override { return ComposerShape; }
 
     //! \brief Reimplementation of QCanvasItem::paint - draw on canvas
     void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget ) override;
@@ -102,18 +102,18 @@ class CORE_EXPORT QgsComposerShape: public QgsComposerItem
     void setSceneRect( const QRectF &rectangle ) override;
 
     //Overridden to return shape type
-    virtual QString displayName() const override;
+    QString displayName() const override;
 
   protected:
     /* reimplement drawFrame, since it's not a rect, but a custom shape */
-    virtual void drawFrame( QPainter *p ) override;
+    void drawFrame( QPainter *p ) override;
     /* reimplement drawBackground, since it's not a rect, but a custom shape */
-    virtual void drawBackground( QPainter *p ) override;
+    void drawBackground( QPainter *p ) override;
 
     /**
      * Reimplement estimatedFrameBleed, since frames on shapes are drawn using symbology
      * rather than the item's pen */
-    virtual double estimatedFrameBleed() const override;
+    double estimatedFrameBleed() const override;
 
   public slots:
 

@@ -13,8 +13,9 @@
 class QgsAttributeTableConfig
 {
 %Docstring
- This is a container for configuration of the attribute table.
- The configuration is specific for one vector layer.
+This is a container for configuration of the attribute table.
+The configuration is specific for one vector layer.
+
 .. versionadded:: 2.16
 %End
 
@@ -51,135 +52,138 @@ Constructor for ColumnConfig
 
     QgsAttributeTableConfig();
 %Docstring
- Constructor for QgsAttributeTableConfig.
+Constructor for QgsAttributeTableConfig.
 %End
 
     QVector<QgsAttributeTableConfig::ColumnConfig> columns() const;
 %Docstring
- Get the list with all columns and their configuration.
- The list order defines the order of appearance.
- :rtype: list of QgsAttributeTableConfig.ColumnConfig
+Get the list with all columns and their configuration.
+The list order defines the order of appearance.
 %End
 
     bool isEmpty() const;
 %Docstring
- Returns true if the configuration is empty, ie it contains no columns.
- :rtype: bool
+Returns true if the configuration is empty, ie it contains no columns.
 %End
 
     int mapVisibleColumnToIndex( int visibleColumn ) const;
 %Docstring
- Maps a visible column index to its original column index.
- \param visibleColumn index of visible column
- :return: corresponding index when hidden columns are considered
- :rtype: int
+Maps a visible column index to its original column index.
+
+:param visibleColumn: index of visible column
+
+:return: corresponding index when hidden columns are considered
 %End
 
     void setColumns( const QVector<QgsAttributeTableConfig::ColumnConfig> &columns );
 %Docstring
- Set the list of columns visible in the attribute table.
- The list order defines the order of appearance.
+Set the list of columns visible in the attribute table.
+The list order defines the order of appearance.
 %End
 
     void update( const QgsFields &fields );
 %Docstring
- Update the configuration with the given fields.
- Any field which is present in the configuration but not present in the
- parameter fields will be removed. Any field which is in the parameter
- fields but not in the configuration will be appended.
+Update the configuration with the given fields.
+Any field which is present in the configuration but not present in the
+parameter fields will be removed. Any field which is in the parameter
+fields but not in the configuration will be appended.
 %End
 
     bool actionWidgetVisible() const;
 %Docstring
- Returns true if the action widget is visible
- :rtype: bool
+Returns true if the action widget is visible
 %End
 
     void setActionWidgetVisible( bool visible );
 %Docstring
- Set if the action widget is visible
+Set if the action widget is visible
 %End
 
     ActionWidgetStyle actionWidgetStyle() const;
 %Docstring
- Get the style of the action widget
- :rtype: ActionWidgetStyle
+Get the style of the action widget
 %End
 
     void setActionWidgetStyle( ActionWidgetStyle actionWidgetStyle );
 %Docstring
- Set the style of the action widget
+Set the style of the action widget
 %End
 
     void writeXml( QDomNode &node ) const;
 %Docstring
- Serialize to XML on layer save
+Serialize to XML on layer save
 %End
 
     void readXml( const QDomNode &node );
 %Docstring
- Deserialize to XML on layer load
+Deserialize to XML on layer load
 %End
 
     QString sortExpression() const;
 %Docstring
- Get the expression used for sorting.
- :rtype: str
+Get the expression used for sorting.
 %End
 
     void setSortExpression( const QString &sortExpression );
 %Docstring
- Set the sort expression used for sorting.
+Set the sort expression used for sorting.
 %End
 
     int columnWidth( int column ) const;
 %Docstring
- Returns the width of a column, or -1 if column should use default width.
- \param column column index
-.. seealso:: setColumnWidth()
- :rtype: int
+Returns the width of a column, or -1 if column should use default width.
+
+:param column: column index
+
+.. seealso:: :py:func:`setColumnWidth()`
 %End
 
     void setColumnWidth( int column, int width );
 %Docstring
- Sets the width of a column.
- \param column column index
- \param width column width in pixels, or -1 if column should use default width
-.. seealso:: columnWidth()
+Sets the width of a column.
+
+:param column: column index
+:param width: column width in pixels, or -1 if column should use default width
+
+.. seealso:: :py:func:`columnWidth()`
 %End
 
     bool columnHidden( int column ) const;
 %Docstring
- Returns true if the specified column is hidden.
- \param column column index
-.. seealso:: setColumnHidden()
- :rtype: bool
+Returns true if the specified column is hidden.
+
+:param column: column index
+
+.. seealso:: :py:func:`setColumnHidden()`
 %End
 
     void setColumnHidden( int column, bool hidden );
 %Docstring
- Sets whether the specified column should be hidden.
- \param column column index
- \param hidden set to true to hide column
-.. seealso:: columnHidden()
+Sets whether the specified column should be hidden.
+
+:param column: column index
+:param hidden: set to true to hide column
+
+.. seealso:: :py:func:`columnHidden()`
 %End
 
     Qt::SortOrder sortOrder() const;
 %Docstring
- Get the sort order
+Get the sort order
+
 .. versionadded:: 2.16
- :rtype: Qt.SortOrder
 %End
 
     void setSortOrder( Qt::SortOrder sortOrder );
 %Docstring
- Set the sort order
+Set the sort order
+
 .. versionadded:: 2.16
 %End
 
     bool operator!= ( const QgsAttributeTableConfig &other ) const;
 %Docstring
- Compare this configuration to other.
+Compare this configuration to other.
 %End
 
 };

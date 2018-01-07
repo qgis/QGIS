@@ -62,8 +62,10 @@ class QgsGeometry;
 class QgsLayerTreeMapCanvasBridge;
 class QgsLayerTreeView;
 class QgsLayout;
+class QgsLayoutCustomDropHandler;
 class QgsLayoutDesignerDialog;
 class QgsLayoutDesignerInterface;
+class QgsLayoutManagerDialog;
 class QgsMapCanvas;
 class QgsMapCanvasDockWidget;
 class QgsMapLayer;
@@ -71,6 +73,7 @@ class QgsMapLayerConfigWidgetFactory;
 class QgsMapOverviewCanvas;
 class QgsMapTip;
 class QgsMapTool;
+class QgsMapToolAddFeature;
 class QgsMapToolAdvancedDigitizing;
 class QgsMapToolIdentifyAction;
 class QgsPluginLayer;
@@ -99,6 +102,8 @@ class QgsStatusBar;
 
 class QgsUserProfileManagerWidgetFactory;
 
+class Qgs3DMapCanvasDockWidget;
+
 class QDomDocument;
 class QNetworkReply;
 class QNetworkProxy;
@@ -125,6 +130,7 @@ class QgsLocatorWidget;
 class QgsDataSourceManagerDialog;
 class QgsBrowserModel;
 class QgsGeoCmsProviderRegistry;
+class QgsLayoutQptDropHandler;
 
 
 #include <QMainWindow>
@@ -146,7 +152,7 @@ class QgsGeoCmsProviderRegistry;
 #include "qgsrasterminmaxorigin.h"
 #include "qgsmaplayeractionregistry.h"
 #include "qgsoptionswidgetfactory.h"
-
+#include "qgsattributetablefiltermodel.h"
 #include "ui_qgisapp.h"
 #include "qgis_app.h"
 
@@ -175,7 +181,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Constructor for unit tests
     QgisApp();
 
-    ~QgisApp();
+    ~QgisApp() override;
 
     QgisApp( QgisApp const & ) = delete;
     QgisApp &operator=( QgisApp const & ) = delete;
@@ -250,15 +256,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsMapCanvas *createNewMapCanvas( const QString &name );
 
     /**
-     * Create a new map canvas dock widget with the specified unique \a name. The \a isFloating
-     * and \a dockGeometry arguments can be used to specify an initial floating state
-     * and widget geometry rect for the dock.
+     * Create a new map canvas dock widget with the specified unique \a name.
      * \note the mapCanvas() inside the dock widget will initially be frozen to avoid multiple
      * unwanted map redraws. Callers must manually unfreeze the map canvas when they have finished
      * setting the initial state of the canvas and are ready for it to begin rendering.
      */
-    QgsMapCanvasDockWidget *createNewMapCanvasDock( const QString &name, bool isFloating = false, const QRect &dockGeometry = QRect(),
-        Qt::DockWidgetArea area = Qt::RightDockWidgetArea );
+    QgsMapCanvasDockWidget *createNewMapCanvasDock( const QString &name );
 
     /**
      * Closes the additional map canvas with matching \a name.
@@ -359,6 +362,21 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * \returns QString() if user cancels input dialog
      */
     bool uniqueComposerTitle( QWidget *parent, QString &composerTitle, bool acceptEmpty, const QString &currentTitle = QString() );
+
+    /**
+     * Gets a unique title from user for new and duplicate layouts.
+     *
+     * The \a title argument will be filled with the new layout title.
+     *
+     * If \a acceptEmpty is true then empty titles will be acceptable (one will be generated).
+     *
+     * The \a currentTitle argument specifies a base name for initial title choice.
+     *
+     * \returns true if user did not cancel the dialog.
+     */
+    bool uniqueLayoutTitle( QWidget *parent, QString &title, bool acceptEmpty, const QString &currentTitle = QString() );
+
+
     //! Creates a new composer and returns a pointer to it
     QgsComposer *createNewComposer( QString title = QString() );
 
@@ -366,6 +384,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * Opens a composer window for an existing \a composition.
      */
     QgsComposer *openComposer( QgsComposition *composition );
+
+    //! Creates a new layout and returns a pointer to it
+    QgsLayoutDesignerDialog *createNewLayout( QString title = QString() );
 
     /**
      * Opens a layout designer dialog for an existing \a layout.
@@ -380,6 +401,14 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * Duplicates a composer and adds it to Set
      */
     QgsComposer *duplicateComposer( QgsComposer *currentComposer, QString title = QString() );
+
+    /**
+     * Duplicates a \a layout and adds it to the current project.
+     *
+     * If \a title is set, it will be used as the title for the new layout. If it is not set,
+     * and auto-generated title will be used instead.
+     */
+    QgsLayoutDesignerDialog *duplicateLayout( QgsLayout *layout, const QString &title = QString() );
 
     //! Overloaded function used to sort menu entries alphabetically
     QMenu *createPopupMenu() override;
@@ -644,6 +673,15 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Unregister a previously registered custom drop handler.
     void unregisterCustomDropHandler( QgsCustomDropHandler *handler );
 
+    //! Register a new custom layout drop handler.
+    void registerCustomLayoutDropHandler( QgsLayoutCustomDropHandler *handler );
+
+    //! Unregister a previously registered custom layout drop handler.
+    void unregisterCustomLayoutDropHandler( QgsLayoutCustomDropHandler *handler );
+
+    //! Returns a list of registered custom layout drop handlers.
+    QVector<QPointer<QgsLayoutCustomDropHandler >> customLayoutDropHandlers() const;
+
     //! Returns the active map layer.
     QgsMapLayer *activeLayer();
 
@@ -652,6 +690,14 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * for toolbars contained within docks is returned.
      */
     QSize iconSize( bool dockedToolbar = false ) const;
+
+    /**
+      * Checks available datum transforms and ask user if several are available and none
+      * is chosen. Dialog is shown only if global option is set accordingly.
+      * \returns true if a datum transform has been specifically chosen by user or only one is available.
+      * \since 3.0
+      */
+    bool askUserForDatumTransform( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs );
 
   public slots:
     //! save current vector layer
@@ -682,14 +728,20 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void layerProperties();
 
     //! show the attribute table for the currently selected layer
-    void attributeTable();
+    void attributeTable( QgsAttributeTableFilterModel::FilterMode filter = QgsAttributeTableFilterModel::ShowAll );
 
     void fieldCalculator();
 
     //! mark project dirty
     void markDirty();
 
-    void layersWereAdded( const QList<QgsMapLayer *> & );
+    /**
+     * \brief layersWereAdded is triggered when layers were added
+     * This method loops through the list of \a layers and connect all
+     * application signals that need to listen to layer events.
+     * \param layers list of map layers that have been added
+     */
+    void layersWereAdded( const QList<QgsMapLayer *> &layers );
 
     /* layer will be removed - changed from removingLayer to removingLayers
        in 1.8.
@@ -745,21 +797,21 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
        \param layerContainingSelection  The layer that the selection will be taken from
                                         (defaults to the active layer on the legend)
      */
-    void editCut( QgsMapLayer *layerContainingSelection = nullptr );
+    void cutSelectionToClipboard( QgsMapLayer *layerContainingSelection = nullptr );
     //! copies selected features on the active layer to the clipboard
 
     /**
        \param layerContainingSelection  The layer that the selection will be taken from
                                         (defaults to the active layer on the legend)
      */
-    void editCopy( QgsMapLayer *layerContainingSelection = nullptr );
+    void copySelectionToClipboard( QgsMapLayer *layerContainingSelection = nullptr );
     //! copies features on the clipboard to the active layer
 
     /**
        \param destinationLayer  The layer that the clipboard will be pasted to
                                 (defaults to the active layer on the legend)
      */
-    void editPaste( QgsMapLayer *destinationLayer = nullptr );
+    void pasteFromClipboard( QgsMapLayer *destinationLayer = nullptr );
     //! copies features on the clipboard to a new vector layer
     void pasteAsNewVector();
     //! copies features on the clipboard to a new memory vector layer
@@ -816,7 +868,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void legendLayerSelectionChanged();
 
     //! Watch for QFileOpenEvent.
-    virtual bool event( QEvent *event ) override;
+    bool event( QEvent *event ) override;
 
 
     /**
@@ -897,18 +949,24 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      */
     void reloadConnections();
 
+    /**
+     * Shows the layout manager dialog.
+     * \since QGIS 3.0
+     */
+    void showLayoutManager();
+
   protected:
 
     //! Handle state changes (WindowTitleChange)
-    virtual void changeEvent( QEvent *event ) override;
+    void changeEvent( QEvent *event ) override;
     //! Have some control over closing of the application
-    virtual void closeEvent( QCloseEvent *event ) override;
+    void closeEvent( QCloseEvent *event ) override;
 
-    virtual void dragEnterEvent( QDragEnterEvent *event ) override;
-    virtual void dropEvent( QDropEvent *event ) override;
+    void dragEnterEvent( QDragEnterEvent *event ) override;
+    void dropEvent( QDropEvent *event ) override;
 
     //! reimplements widget keyPress event so we can check if cancel was pressed
-    virtual void keyPressEvent( QKeyEvent *event ) override;
+    void keyPressEvent( QKeyEvent *event ) override;
 
 #ifdef ANDROID
     //! reimplements widget keyReleaseEvent event so we can check if back was pressed
@@ -1045,11 +1103,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! load Python support if possible
     void loadPythonSupport();
 
-    /**
-     * Install plugin from ZIP file
-     * \since QGIS 3.0
-     */
-    void installPluginFromZip();
     //! Find the QMenu with the given name within plugin menu (ie the user visible text on the menu item)
     QMenu *getPluginMenu( const QString &menuName );
     //! Add the action to the submenu with the given name under the plugin menu
@@ -1264,10 +1317,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void newBookmark();
     //! activates the add feature tool
     void addFeature();
-    //! activates the add circular string tool
-    void circularStringCurvePoint();
-    //! activates the circular string radius tool
-    void circularStringRadius();
     //! activates the move feature tool
     void moveFeature();
     //! activates the copy and move feature tool
@@ -1306,6 +1355,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void offsetPointSymbol();
     //! shows the snapping Options
     void snappingOptions();
+    //! activates the tool
+    void setMapTool( QgsMapTool *tool, bool clean = false );
+
 
     //! activates the rectangle selection tool
     void selectFeatures();
@@ -1563,6 +1615,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     void onFocusChanged( QWidget *oldWidget, QWidget *newWidget );
 
+    //! handle project crs changes
+    void projectCrsChanged();
+
   signals:
 
     /**
@@ -1697,6 +1752,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * \param savePreviewImage Set to false when the preview image should not be saved. E.g. project load.
      */
     void saveRecentProjectPath( const QString &projectPath, bool savePreviewImage = true );
+    //! Save recent projects list to settings
+    void saveRecentProjects();
     //! Update project menu with the current list of recently accessed projects
     void updateRecentProjectPaths();
     //! Read Well Known Binary stream from PostGIS
@@ -1715,6 +1772,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Deletes all the composer objects and clears mPrintComposers
     void deletePrintComposers();
+
+    //! Deletes all the layout designer windows
+    void deleteLayoutDesigners();
 
     void setupLayoutManagerConnections();
 
@@ -1755,6 +1815,14 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void createMapTips();
     void createDecorations();
     void init3D();
+    void initNativeProcessing();
+    void initLayouts();
+
+    //! Creates a new 3D map dock without initializing its position or contents
+    Qgs3DMapCanvasDockWidget *createNew3DMapCanvasDock( const QString &name );
+
+    //! Closes any existing 3D map docks
+    void closeAdditional3DMapCanvases();
 
     /**
      * Refresh the user profile menu.
@@ -1782,6 +1850,26 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * Applies global qgis settings to the specified canvas
      */
     void applyDefaultSettingsToCanvas( QgsMapCanvas *canvas );
+
+    /**
+     * Configures positioning of a newly created dock widget.
+     * The \a isFloating and \a dockGeometry arguments can be used to specify an initial floating state
+     * and widget geometry rect for the dock.
+     */
+    void setupDockWidget( QDockWidget *dockWidget, bool isFloating = false, const QRect &dockGeometry = QRect(),
+                          Qt::DockWidgetArea area = Qt::RightDockWidgetArea );
+
+    /**
+     * Reads dock widget's position settings from a DOM element and calls setupDockWidget()
+     * \sa writeDockWidgetSettings()
+     */
+    void readDockWidgetSettings( QDockWidget *dockWidget, const QDomElement &elem );
+
+    /**
+     * Writes dock widget's position settings to a DOM element
+     * \sa readDockWidgetSettings()
+     */
+    void writeDockWidgetSettings( QDockWidget *dockWidget, QDomElement &elem );
 
     QgsCoordinateReferenceSystem defaultCrsForNewLayers() const;
 
@@ -1838,8 +1926,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     {
       public:
 
-        Tools()
-        {}
+        Tools() = default;
 
         QgsMapTool *mZoomIn = nullptr;
         QgsMapTool *mZoomOut = nullptr;
@@ -1849,9 +1936,24 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
         QgsMapTool *mMeasureDist = nullptr;
         QgsMapTool *mMeasureArea = nullptr;
         QgsMapTool *mMeasureAngle = nullptr;
-        QgsMapTool *mAddFeature = nullptr;
+        QgsMapToolAddFeature *mAddFeature = nullptr;
         QgsMapTool *mCircularStringCurvePoint = nullptr;
         QgsMapTool *mCircularStringRadius = nullptr;
+        QgsMapTool *mCircle2Points = nullptr;
+        QgsMapTool *mCircle3Points = nullptr;
+        QgsMapTool *mCircle3Tangents = nullptr;
+        QgsMapTool *mCircle2TangentsPoint = nullptr;
+        QgsMapTool *mCircleCenterPoint = nullptr;
+        QgsMapTool *mEllipseCenter2Points = nullptr;
+        QgsMapTool *mEllipseCenterPoint = nullptr;
+        QgsMapTool *mEllipseExtent = nullptr;
+        QgsMapTool *mEllipseFoci = nullptr;
+        QgsMapTool *mRectangleCenterPoint = nullptr;
+        QgsMapTool *mRectangleExtent = nullptr;
+        QgsMapTool *mRectangle3Points = nullptr;
+        QgsMapTool *mRegularPolygon2Points = nullptr;
+        QgsMapTool *mRegularPolygonCenterPoint = nullptr;
+        QgsMapTool *mRegularPolygonCenterCorner = nullptr;
         QgsMapTool *mMoveFeature = nullptr;
         QgsMapTool *mMoveFeatureCopy = nullptr;
         QgsMapTool *mOffsetCurve = nullptr;
@@ -2028,6 +2130,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsLayerStylingWidget *mMapStyleWidget = nullptr;
 
     QgsComposerManager *mComposerManager = nullptr;
+    QPointer< QgsLayoutManagerDialog > mLayoutManagerDialog;
 
     //! Persistent tile scale slider
     QgsTileScaleWidget *mpTileScaleWidget = nullptr;
@@ -2072,6 +2175,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QList<QPointer<QgsOptionsWidgetFactory>> mOptionsWidgetFactories;
 
     QVector<QPointer<QgsCustomDropHandler>> mCustomDropHandlers;
+    QVector<QPointer<QgsLayoutCustomDropHandler>> mCustomLayoutDropHandlers;
+
+    QgsLayoutQptDropHandler *mLayoutQptDropHandler = nullptr;
 
     QDateTime mProjectLastModified;
 

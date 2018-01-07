@@ -15,10 +15,10 @@
 class QgsMapLayerStyle
 {
 %Docstring
- Stores style information (renderer, opacity, labeling, diagrams etc.) applicable to a map layer.
+Stores style information (renderer, opacity, labeling, diagrams etc.) applicable to a map layer.
 
- Stored data are considered as opaque - it is not possible to access them directly or modify them - it is
- only possible to read or write layer's current style.
+Stored data are considered as opaque - it is not possible to access them directly or modify them - it is
+only possible to read or write layer's current style.
 
 .. versionadded:: 2.8
 %End
@@ -40,7 +40,6 @@ construct style from QML definition (XML)
     bool isValid() const;
 %Docstring
 Tell whether the style is valid (i.e. there is something stored in it)
- :rtype: bool
 %End
 
     void clear();
@@ -51,7 +50,6 @@ Remove any stored style data (will get invalid)
     QString xmlData() const;
 %Docstring
 Return XML content of the style
- :rtype: str
 %End
 
     void readFromLayer( QgsMapLayer *layer );
@@ -78,23 +76,23 @@ Write style configuration (for project file writing)
 class QgsMapLayerStyleManager : QObject
 {
 %Docstring
- Management of styles for use with one map layer. Stored styles are identified by their names. The manager
- always keep track of which style of the stored ones is currently active. When the current style is changed,
- the new style is applied to the associated layer.
+Management of styles for use with one map layer. Stored styles are identified by their names. The manager
+always keep track of which style of the stored ones is currently active. When the current style is changed,
+the new style is applied to the associated layer.
 
- The class takes care of updating itself when the layer's current style configuration changes.
- When some of layer style's properties change (e.g. opacity / colors), the style manager will
- record them in the currently active style without any extra effort required.
+The class takes care of updating itself when the layer's current style configuration changes.
+When some of layer style's properties change (e.g. opacity / colors), the style manager will
+record them in the currently active style without any extra effort required.
 
- When an instance is created, it creates "default" style (with empty name) recorded from the associated map layer
- and it is set as the current style. The instance must always contain at least one style (which is the current).
+When an instance is created, it creates "default" style (with empty name) recorded from the associated map layer
+and it is set as the current style. The instance must always contain at least one style (which is the current).
 
- The style which is marked as current has no style data stored in its entry. This is to avoid duplication
- of data as all data is stored in map layer and can be retrieved easily. Also when saving, the entry for
- the current style will be saved with no data because everything is already saved by the map layer itself.
+The style which is marked as current has no style data stored in its entry. This is to avoid duplication
+of data as all data is stored in map layer and can be retrieved easily. Also when saving, the entry for
+the current style will be saved with no data because everything is already saved by the map layer itself.
 
- The class also features support for temporary change of the layer's style, ideal for short-term use of a custom
- style followed by restoration of the original style (for example, when rendering a map with a different than current style).
+The class also features support for temporary change of the layer's style, ideal for short-term use of a custom
+style followed by restoration of the original style (for example, when rendering a map with a different than current style).
 
 .. versionadded:: 2.8
 %End
@@ -111,7 +109,6 @@ Construct a style manager associated with a map layer (must not be null)
     QgsMapLayer *layer() const;
 %Docstring
 Get pointer to the associated map layer
- :rtype: QgsMapLayer
 %End
 
     void reset();
@@ -131,75 +128,71 @@ Write configuration (for project saving)
     QStringList styles() const;
 %Docstring
 Return list of all defined style names
- :rtype: list of str
 %End
 
     QMap<QString, QgsMapLayerStyle> mapLayerStyles() const;
 %Docstring
- Gets available styles for the associated map layer.
- :return: A map of map layer style by style name
+Gets available styles for the associated map layer.
+
+:return: A map of map layer style by style name
+
 .. versionadded:: 3.0
- :rtype: QMap<str, QgsMapLayerStyle>
 %End
 
     QgsMapLayerStyle style( const QString &name ) const;
 %Docstring
 Return data of a stored style - accessed by its unique name
- :rtype: QgsMapLayerStyle
 %End
 
     bool addStyle( const QString &name, const QgsMapLayerStyle &style );
 %Docstring
- Add a style with given name and data
- :return: true on success (name is unique and style is valid)
- :rtype: bool
+Add a style with given name and data
+
+:return: true on success (name is unique and style is valid)
 %End
 
     bool addStyleFromLayer( const QString &name );
 %Docstring
- Add style by cloning the current one
- :return: true on success
- :rtype: bool
+Add style by cloning the current one
+
+:return: true on success
 %End
 
     bool removeStyle( const QString &name );
 %Docstring
- Remove a stored style
- :return: true on success (style exists and it is not the last one)
- :rtype: bool
+Remove a stored style
+
+:return: true on success (style exists and it is not the last one)
 %End
 
     bool renameStyle( const QString &name, const QString &newName );
 %Docstring
- Rename a stored style to a different name
- :return: true on success (style exists and new name is unique)
- :rtype: bool
+Rename a stored style to a different name
+
+:return: true on success (style exists and new name is unique)
 %End
 
     QString currentStyle() const;
 %Docstring
 Return name of the current style
- :rtype: str
 %End
 
     bool setCurrentStyle( const QString &name );
 %Docstring
- Set a different style as the current style - will apply it to the layer
- :return: true on success
- :rtype: bool
+Set a different style as the current style - will apply it to the layer
+
+:return: true on success
 %End
 
     bool setOverrideStyle( const QString &styleDef );
 %Docstring
- Temporarily apply a different style to the layer. The argument
- can be either a style name or a full QML style definition.
- Each call must be paired with restoreOverrideStyle()
- :rtype: bool
+Temporarily apply a different style to the layer. The argument
+can be either a style name or a full QML style definition.
+Each call must be paired with restoreOverrideStyle()
 %End
     bool restoreOverrideStyle();
 %Docstring
 Restore the original store after a call to setOverrideStyle()
- :rtype: bool
 %End
 
   signals:

@@ -75,7 +75,7 @@ void QgsAuthIdentCertEdit::populateIdentityComboBox()
 {
   cmbIdentityCert->addItem( tr( "Select identity..." ), "" );
 
-  QList<QSslCertificate> certs( QgsAuthManager::instance()->getCertIdentities() );
+  QList<QSslCertificate> certs( QgsApplication::authManager()->certIdentities() );
   if ( !certs.isEmpty() )
   {
     cmbIdentityCert->setIconSize( QSize( 26, 22 ) );

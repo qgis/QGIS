@@ -19,6 +19,7 @@
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsvectorlayer.h"
+#include "qgsproject.h"
 #include <QPainter>
 
 QgsRubberBand::QgsRubberBand( QgsMapCanvas *mapCanvas, QgsWkbTypes::GeometryType geometryType )
@@ -257,102 +258,79 @@ void QgsRubberBand::addGeometry( const QgsGeometry &geometry, const QgsCoordinat
   QgsGeometry geom = geometry;
   if ( crs.isValid() )
   {
-    QgsCoordinateTransform ct( crs, ms.destinationCrs() );
+    QgsCoordinateTransform ct( crs, ms.destinationCrs(), QgsProject::instance() );
     geom.transform( ct );
   }
 
-  switch ( QgsWkbTypes::flatType( geom.wkbType() ) )
+  QgsWkbTypes::Type geomType = geom.wkbType();
+  if ( QgsWkbTypes::geometryType( geomType ) == QgsWkbTypes::PointGeometry && !QgsWkbTypes::isMultiType( geomType ) )
   {
-
-    case QgsWkbTypes::Point:
-    case QgsWkbTypes::Point25D:
+    QgsPointXY pt = geom.asPoint();
+    addPoint( pt, false, idx );
+    removeLastPoint( idx, false );
+  }
+  else if ( QgsWkbTypes::geometryType( geomType ) == QgsWkbTypes::PointGeometry && QgsWkbTypes::isMultiType( geomType ) )
+  {
+    const QgsMultiPointXY mpt = geom.asMultiPoint();
+    for ( QgsPointXY pt : mpt )
     {
-      QgsPointXY pt = geom.asPoint();
       addPoint( pt, false, idx );
       removeLastPoint( idx, false );
+      idx++;
     }
-    break;
-
-    case QgsWkbTypes::MultiPoint:
-    case QgsWkbTypes::MultiPoint25D:
+  }
+  else if ( QgsWkbTypes::geometryType( geomType ) == QgsWkbTypes::LineGeometry && !QgsWkbTypes::isMultiType( geomType ) )
+  {
+    const QgsPolylineXY line = geom.asPolyline();
+    for ( QgsPointXY pt : line )
     {
-      const QgsMultiPoint mpt = geom.asMultiPoint();
-      for ( QgsPointXY pt : mpt )
+      addPoint( pt, false, idx );
+    }
+  }
+  else if ( QgsWkbTypes::geometryType( geomType ) == QgsWkbTypes::LineGeometry && QgsWkbTypes::isMultiType( geomType ) )
+  {
+    const QgsMultiPolylineXY mline = geom.asMultiPolyline();
+    for ( const QgsPolylineXY &line : mline )
+    {
+      if ( line.isEmpty() )
       {
-        addPoint( pt, false, idx );
-        removeLastPoint( idx, false );
-        idx++;
+        continue;
       }
-    }
-    break;
-
-    case QgsWkbTypes::LineString:
-    case QgsWkbTypes::LineString25D:
-    {
-      const QgsPolyline line = geom.asPolyline();
       for ( QgsPointXY pt : line )
       {
         addPoint( pt, false, idx );
       }
+      idx++;
     }
-    break;
-
-    case QgsWkbTypes::MultiLineString:
-    case QgsWkbTypes::MultiLineString25D:
+  }
+  else if ( QgsWkbTypes::geometryType( geomType ) == QgsWkbTypes::PolygonGeometry && !QgsWkbTypes::isMultiType( geomType ) )
+  {
+    const QgsPolygonXY poly = geom.asPolygon();
+    const QgsPolylineXY line = poly.at( 0 );
+    for ( QgsPointXY pt : line )
     {
-
-      const QgsMultiPolyline mline = geom.asMultiPolyline();
-      for ( const QgsPolyline &line : mline )
-      {
-        if ( line.isEmpty() )
-        {
-          continue;
-        }
-
-        for ( QgsPointXY pt : line )
-        {
-          addPoint( pt, false, idx );
-        }
-        idx++;
-      }
+      addPoint( pt, false, idx );
     }
-    break;
-
-    case QgsWkbTypes::Polygon:
-    case QgsWkbTypes::Polygon25D:
+  }
+  else if ( QgsWkbTypes::geometryType( geomType ) == QgsWkbTypes::PolygonGeometry && QgsWkbTypes::isMultiType( geomType ) )
+  {
+    const QgsMultiPolygonXY multipoly = geom.asMultiPolygon();
+    for ( const QgsPolygonXY &poly : multipoly )
     {
-      const QgsPolygon poly = geom.asPolygon();
-      const QgsPolyline line = poly.at( 0 );
+      if ( poly.empty() )
+        continue;
+
+      const QgsPolylineXY line = poly.at( 0 );
       for ( QgsPointXY pt : line )
       {
         addPoint( pt, false, idx );
       }
+      idx++;
     }
-    break;
-
-    case QgsWkbTypes::MultiPolygon:
-    case QgsWkbTypes::MultiPolygon25D:
-    {
-
-      const QgsMultiPolygon multipoly = geom.asMultiPolygon();
-      for ( const QgsPolygon &poly : multipoly )
-      {
-        if ( poly.empty() )
-          continue;
-
-        const QgsPolyline line = poly.at( 0 );
-        for ( QgsPointXY pt : line )
-        {
-          addPoint( pt, false, idx );
-        }
-        idx++;
-      }
-    }
-    break;
-
-    case QgsWkbTypes::Unknown:
-    default:
-      return;
+  }
+  else
+  {
+    return;
   }
 
   setVisible( true );
@@ -604,26 +582,26 @@ QgsGeometry QgsRubberBand::asGeometry() const
   {
     case QgsWkbTypes::PolygonGeometry:
     {
-      QgsPolygon polygon;
+      QgsPolygonXY polygon;
       QList< QList<QgsPointXY> >::const_iterator it = mPoints.constBegin();
       for ( ; it != mPoints.constEnd(); ++it )
       {
         polygon.append( getPolyline( *it ) );
       }
-      geom = QgsGeometry::fromPolygon( polygon );
+      geom = QgsGeometry::fromPolygonXY( polygon );
       break;
     }
 
     case QgsWkbTypes::PointGeometry:
     {
-      QgsMultiPoint multiPoint;
+      QgsMultiPointXY multiPoint;
 
       QList< QList<QgsPointXY> >::const_iterator it = mPoints.constBegin();
       for ( ; it != mPoints.constEnd(); ++it )
       {
         multiPoint += getPolyline( *it );
       }
-      geom = QgsGeometry::fromMultiPoint( multiPoint );
+      geom = QgsGeometry::fromMultiPointXY( multiPoint );
       break;
     }
 
@@ -634,17 +612,17 @@ QgsGeometry QgsRubberBand::asGeometry() const
       {
         if ( mPoints.size() > 1 )
         {
-          QgsMultiPolyline multiPolyline;
+          QgsMultiPolylineXY multiPolyline;
           QList< QList<QgsPointXY> >::const_iterator it = mPoints.constBegin();
           for ( ; it != mPoints.constEnd(); ++it )
           {
             multiPolyline.append( getPolyline( *it ) );
           }
-          geom = QgsGeometry::fromMultiPolyline( multiPolyline );
+          geom = QgsGeometry::fromMultiPolylineXY( multiPolyline );
         }
         else
         {
-          geom = QgsGeometry::fromPolyline( getPolyline( mPoints.at( 0 ) ) );
+          geom = QgsGeometry::fromPolylineXY( getPolyline( mPoints.at( 0 ) ) );
         }
       }
       break;
@@ -653,9 +631,9 @@ QgsGeometry QgsRubberBand::asGeometry() const
   return geom;
 }
 
-QgsPolyline QgsRubberBand::getPolyline( const QList<QgsPointXY> &points )
+QgsPolylineXY QgsRubberBand::getPolyline( const QList<QgsPointXY> &points )
 {
-  QgsPolyline polyline;
+  QgsPolylineXY polyline;
   QList<QgsPointXY>::const_iterator iter = points.constBegin();
   for ( ; iter != points.constEnd(); ++iter )
   {

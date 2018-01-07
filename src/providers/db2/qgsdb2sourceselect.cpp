@@ -87,7 +87,7 @@ QWidget *QgsDb2SourceSelectDelegate::createEditor( QWidget *parent, const QStyle
     return le;
   }
 
-  return 0;
+  return nullptr;
 }
 
 void QgsDb2SourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
@@ -262,7 +262,7 @@ void QgsDb2SourceSelect::btnSave_clicked()
 
 void QgsDb2SourceSelect::btnLoad_clicked()
 {
-  QString fileName = QFileDialog::getOpenFileName( this, tr( "Load connections" ), QStringLiteral( "." ),
+  QString fileName = QFileDialog::getOpenFileName( this, tr( "Load Connections" ), QStringLiteral( "." ),
                      tr( "XML files (*.xml *XML)" ) );
   if ( fileName.isEmpty() )
   {
@@ -572,7 +572,7 @@ void QgsDb2SourceSelect::finishList()
 void QgsDb2SourceSelect::columnThreadFinished()
 {
   delete mColumnTypeThread;
-  mColumnTypeThread = 0;
+  mColumnTypeThread = nullptr;
   btnConnect->setText( tr( "Connect" ) );
 
   finishList();

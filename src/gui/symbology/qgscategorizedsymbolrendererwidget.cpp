@@ -58,15 +58,18 @@ void QgsCategorizedSymbolRendererModel::setRenderer( QgsCategorizedSymbolRendere
 {
   if ( mRenderer )
   {
-    beginRemoveRows( QModelIndex(), 0, mRenderer->categories().size() - 1 );
+    beginRemoveRows( QModelIndex(), 0, std::max( mRenderer->categories().size() - 1, 0 ) );
     mRenderer = nullptr;
     endRemoveRows();
   }
   if ( renderer )
   {
-    beginInsertRows( QModelIndex(), 0, renderer->categories().size() - 1 );
     mRenderer = renderer;
-    endInsertRows();
+    if ( renderer->categories().size() > 0 )
+    {
+      beginInsertRows( QModelIndex(), 0, renderer->categories().size() - 1 );
+      endInsertRows();
+    }
   }
 }
 
@@ -604,27 +607,21 @@ static void _createCategories( QgsCategoryList &cats, QList<QVariant> &values, Q
 
   int num = values.count();
 
-  bool hasNull = false;
-
   for ( int i = 0; i < num; i++ )
   {
     QVariant value = values[i];
-    if ( value.toString().isNull() )
+    QgsSymbol *newSymbol = symbol->clone();
+    if ( ! value.isNull() )
     {
-      hasNull = true;
+      cats.append( QgsRendererCategory( value, newSymbol, value.toString(), true ) );
     }
-    QgsSymbol *newSymbol = symbol->clone();
-
-    cats.append( QgsRendererCategory( value, newSymbol, value.toString(), true ) );
   }
 
-  // add null (default) value if not exists
-  if ( !hasNull )
-  {
-    QgsSymbol *newSymbol = symbol->clone();
-    cats.append( QgsRendererCategory( QVariant( "" ), newSymbol, QString(), true ) );
-  }
+  // add null (default) value
+  QgsSymbol *newSymbol = symbol->clone();
+  cats.append( QgsRendererCategory( QVariant( "" ), newSymbol, QString(), true ) );
 }
+
 
 void QgsCategorizedSymbolRendererWidget::addCategories()
 {
@@ -875,12 +872,12 @@ void QgsCategorizedSymbolRendererWidget::matchToSymbolsFromLibrary()
   int matched = matchToSymbols( QgsStyle::defaultStyle() );
   if ( matched > 0 )
   {
-    QMessageBox::information( this, tr( "Matched symbols" ),
+    QMessageBox::information( this, tr( "Matched Symbols" ),
                               tr( "Matched %1 categories to symbols." ).arg( matched ) );
   }
   else
   {
-    QMessageBox::warning( this, tr( "Matched symbols" ),
+    QMessageBox::warning( this, tr( "Matched Symbols" ),
                           tr( "No categories could be matched to symbols in library." ) );
   }
 }
@@ -926,20 +923,20 @@ void QgsCategorizedSymbolRendererWidget::matchToSymbolsFromXml()
   QgsStyle importedStyle;
   if ( !importedStyle.importXml( fileName ) )
   {
-    QMessageBox::warning( this, tr( "Matching error" ),
-                          tr( "An error occurred reading file:\n%1" ).arg( importedStyle.errorString() ) );
+    QMessageBox::warning( this, tr( "Matching Error" ),
+                          tr( "An error occurred while reading file:\n%1" ).arg( importedStyle.errorString() ) );
     return;
   }
 
   int matched = matchToSymbols( &importedStyle );
   if ( matched > 0 )
   {
-    QMessageBox::information( this, tr( "Matched symbols" ),
+    QMessageBox::information( this, tr( "Matched Symbols" ),
                               tr( "Matched %1 categories to symbols from file." ).arg( matched ) );
   }
   else
   {
-    QMessageBox::warning( this, tr( "Matched symbols" ),
+    QMessageBox::warning( this, tr( "Matched Symbols" ),
                           tr( "No categories could be matched to symbols in file." ) );
   }
 }

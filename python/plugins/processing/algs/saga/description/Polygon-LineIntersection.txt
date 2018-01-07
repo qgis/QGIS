@@ -1,5 +1,5 @@
 Polygon-Line Intersection
 shapes_polygons
-ParameterVector|POLYGONS|Polygons|2|False
-ParameterVector|LINES|Lines|1|False
-OutputVector|INTERSECT|Intersection
+QgsProcessingParameterFeatureSource|POLYGONS|Polygons|2|None|False
+QgsProcessingParameterFeatureSource|LINES|Lines|1|None|False
+QgsProcessingParameterVectorDestination|INTERSECT|Intersection

@@ -13,17 +13,19 @@ __copyright__ = 'Copyright 2017, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
-
+import sip
 from qgis.core import (QgsProject,
                        QgsLayout,
                        QgsUnitTypes,
-                       QgsLayoutItemMap,
+                       QgsLayoutItemPicture,
+                       QgsLayoutItemLabel,
                        QgsLayoutPoint,
                        QgsLayoutSize,
                        QgsLayoutAligner)
 from qgis.gui import QgsLayoutView
-from qgis.PyQt.QtCore import QRectF
+from qgis.PyQt.QtCore import QRectF, QMimeData, QByteArray
 from qgis.PyQt.QtGui import QTransform
+from qgis.PyQt.QtWidgets import QApplication
 from qgis.PyQt.QtTest import QSignalSpy
 
 from qgis.testing import start_app, unittest
@@ -83,11 +85,11 @@ class TestQgsLayoutView(unittest.TestCase):
         l = QgsLayout(p)
 
         # add some items
-        item1 = QgsLayoutItemMap(l)
+        item1 = QgsLayoutItemPicture(l)
         l.addItem(item1)
-        item2 = QgsLayoutItemMap(l)
+        item2 = QgsLayoutItemPicture(l)
         l.addItem(item2)
-        item3 = QgsLayoutItemMap(l)
+        item3 = QgsLayoutItemPicture(l)
         item3.setLocked(True)
         l.addItem(item3)
 
@@ -117,11 +119,11 @@ class TestQgsLayoutView(unittest.TestCase):
         l = QgsLayout(p)
 
         # add some items
-        item1 = QgsLayoutItemMap(l)
+        item1 = QgsLayoutItemPicture(l)
         l.addItem(item1)
-        item2 = QgsLayoutItemMap(l)
+        item2 = QgsLayoutItemPicture(l)
         l.addItem(item2)
-        item3 = QgsLayoutItemMap(l)
+        item3 = QgsLayoutItemPicture(l)
         item3.setLocked(True)
         l.addItem(item3)
 
@@ -153,11 +155,11 @@ class TestQgsLayoutView(unittest.TestCase):
         l = QgsLayout(p)
 
         # add some items
-        item1 = QgsLayoutItemMap(l)
+        item1 = QgsLayoutItemPicture(l)
         l.addItem(item1)
-        item2 = QgsLayoutItemMap(l)
+        item2 = QgsLayoutItemPicture(l)
         l.addItem(item2)
-        item3 = QgsLayoutItemMap(l)
+        item3 = QgsLayoutItemPicture(l)
         item3.setLocked(True)
         l.addItem(item3)
 
@@ -187,11 +189,11 @@ class TestQgsLayoutView(unittest.TestCase):
         l = QgsLayout(p)
 
         # add some items
-        item1 = QgsLayoutItemMap(l)
+        item1 = QgsLayoutItemPicture(l)
         l.addItem(item1)
-        item2 = QgsLayoutItemMap(l)
+        item2 = QgsLayoutItemPicture(l)
         l.addItem(item2)
-        item3 = QgsLayoutItemMap(l)
+        item3 = QgsLayoutItemPicture(l)
         item3.setLocked(True)
         l.addItem(item3)
 
@@ -262,11 +264,11 @@ class TestQgsLayoutView(unittest.TestCase):
         view.setCurrentLayout(l)
 
         # add some items
-        item1 = QgsLayoutItemMap(l)
+        item1 = QgsLayoutItemPicture(l)
         l.addItem(item1)
-        item2 = QgsLayoutItemMap(l)
+        item2 = QgsLayoutItemPicture(l)
         l.addItem(item2)
-        item3 = QgsLayoutItemMap(l)
+        item3 = QgsLayoutItemPicture(l)
         l.addItem(item3)
 
         item1.setLocked(True)
@@ -296,11 +298,11 @@ class TestQgsLayoutView(unittest.TestCase):
         l = QgsLayout(p)
 
         # add some items
-        item1 = QgsLayoutItemMap(l)
+        item1 = QgsLayoutItemPicture(l)
         l.addLayoutItem(item1)
-        item2 = QgsLayoutItemMap(l)
+        item2 = QgsLayoutItemPicture(l)
         l.addLayoutItem(item2)
-        item3 = QgsLayoutItemMap(l)
+        item3 = QgsLayoutItemPicture(l)
         l.addLayoutItem(item3)
 
         view = QgsLayoutView()
@@ -415,15 +417,15 @@ class TestQgsLayoutView(unittest.TestCase):
         l = QgsLayout(p)
 
         # add some items
-        item1 = QgsLayoutItemMap(l)
+        item1 = QgsLayoutItemPicture(l)
         item1.attemptMove(QgsLayoutPoint(4, 8, QgsUnitTypes.LayoutMillimeters))
         item1.attemptResize(QgsLayoutSize(18, 12, QgsUnitTypes.LayoutMillimeters))
         l.addItem(item1)
-        item2 = QgsLayoutItemMap(l)
+        item2 = QgsLayoutItemPicture(l)
         item2.attemptMove(QgsLayoutPoint(6, 10, QgsUnitTypes.LayoutMillimeters))
         item2.attemptResize(QgsLayoutSize(10, 9, QgsUnitTypes.LayoutMillimeters))
         l.addItem(item2)
-        item3 = QgsLayoutItemMap(l)
+        item3 = QgsLayoutItemPicture(l)
         item3.attemptMove(QgsLayoutPoint(0.8, 1.2, QgsUnitTypes.LayoutCentimeters))
         item3.attemptResize(QgsLayoutSize(1.8, 1.6, QgsUnitTypes.LayoutCentimeters))
         l.addItem(item3)
@@ -490,15 +492,15 @@ class TestQgsLayoutView(unittest.TestCase):
         l = QgsLayout(p)
 
         # add some items
-        item1 = QgsLayoutItemMap(l)
+        item1 = QgsLayoutItemPicture(l)
         item1.attemptMove(QgsLayoutPoint(4, 8, QgsUnitTypes.LayoutMillimeters))
         item1.attemptResize(QgsLayoutSize(18, 12, QgsUnitTypes.LayoutMillimeters))
         l.addItem(item1)
-        item2 = QgsLayoutItemMap(l)
+        item2 = QgsLayoutItemPicture(l)
         item2.attemptMove(QgsLayoutPoint(7, 10, QgsUnitTypes.LayoutMillimeters))
         item2.attemptResize(QgsLayoutSize(10, 9, QgsUnitTypes.LayoutMillimeters))
         l.addItem(item2)
-        item3 = QgsLayoutItemMap(l)
+        item3 = QgsLayoutItemPicture(l)
         item3.attemptMove(QgsLayoutPoint(0.8, 1.2, QgsUnitTypes.LayoutCentimeters))
         item3.attemptResize(QgsLayoutSize(1.8, 1.6, QgsUnitTypes.LayoutCentimeters))
         l.addItem(item3)
@@ -582,15 +584,15 @@ class TestQgsLayoutView(unittest.TestCase):
         l = QgsLayout(p)
 
         # add some items
-        item1 = QgsLayoutItemMap(l)
+        item1 = QgsLayoutItemPicture(l)
         item1.attemptMove(QgsLayoutPoint(4, 8, QgsUnitTypes.LayoutMillimeters))
         item1.attemptResize(QgsLayoutSize(18, 12, QgsUnitTypes.LayoutMillimeters))
         l.addItem(item1)
-        item2 = QgsLayoutItemMap(l)
+        item2 = QgsLayoutItemPicture(l)
         item2.attemptMove(QgsLayoutPoint(7, 10, QgsUnitTypes.LayoutMillimeters))
         item2.attemptResize(QgsLayoutSize(10, 9, QgsUnitTypes.LayoutMillimeters))
         l.addItem(item2)
-        item3 = QgsLayoutItemMap(l)
+        item3 = QgsLayoutItemPicture(l)
         item3.attemptMove(QgsLayoutPoint(0.8, 1.2, QgsUnitTypes.LayoutCentimeters))
         item3.attemptResize(QgsLayoutSize(1.8, 1.6, QgsUnitTypes.LayoutCentimeters))
         l.addItem(item3)
@@ -633,6 +635,117 @@ class TestQgsLayoutView(unittest.TestCase):
         self.assertEqual(item1.sizeWithUnits(), QgsLayoutSize(18, 18, QgsUnitTypes.LayoutMillimeters))
         self.assertEqual(item2.sizeWithUnits(), QgsLayoutSize(19, 19, QgsUnitTypes.LayoutMillimeters))
         self.assertEqual(item3.sizeWithUnits(), QgsLayoutSize(1.8, 1.8, QgsUnitTypes.LayoutCentimeters))
+
+    def testDeleteItems(self):
+        p = QgsProject()
+        l = QgsLayout(p)
+
+        # add some items
+        item1 = QgsLayoutItemLabel(l)
+        item1.setText('label 1')
+        l.addLayoutItem(item1)
+        item2 = QgsLayoutItemLabel(l)
+        item2.setText('label 2')
+        l.addLayoutItem(item2)
+        item3 = QgsLayoutItemLabel(l)
+        item3.setText('label 2')
+        l.addLayoutItem(item3)
+
+        view = QgsLayoutView()
+        view.setCurrentLayout(l)
+        count_before = len(l.items())
+        view.deleteSelectedItems()
+        self.assertEqual(len(l.items()), count_before)
+
+        item2.setSelected(True)
+        view.deleteSelectedItems()
+        self.assertEqual(len(l.items()), count_before - 1)
+        self.assertIn(item1, l.items())
+        self.assertIn(item3, l.items())
+        view.deleteItems([item3])
+        self.assertEqual(len(l.items()), count_before - 2)
+        self.assertIn(item1, l.items())
+
+    def testCopyPaste(self):
+        p = QgsProject()
+        l = QgsLayout(p)
+
+        # clear clipboard
+        mime_data = QMimeData()
+        mime_data.setData("text/xml", QByteArray())
+        clipboard = QApplication.clipboard()
+        clipboard.setMimeData(mime_data)
+
+        # add an item
+        item1 = QgsLayoutItemLabel(l)
+        item1.setText('label 1')
+        l.addLayoutItem(item1)
+        item1.setSelected(True)
+        item2 = QgsLayoutItemLabel(l)
+        item2.setText('label 2')
+        l.addLayoutItem(item2)
+        item2.setSelected(True)
+
+        view = QgsLayoutView()
+        view.setCurrentLayout(l)
+        self.assertFalse(view.hasItemsInClipboard())
+
+        view.copySelectedItems(QgsLayoutView.ClipboardCopy)
+        self.assertTrue(view.hasItemsInClipboard())
+
+        pasted = view.pasteItems(QgsLayoutView.PasteModeCursor)
+        self.assertEqual(len(pasted), 2)
+        self.assertIn(pasted[0], l.items())
+        self.assertIn(pasted[1], l.items())
+        self.assertIn(sip.cast(pasted[0], QgsLayoutItemLabel).text(), ('label 1', 'label 2'))
+        self.assertIn(sip.cast(pasted[1], QgsLayoutItemLabel).text(), ('label 1', 'label 2'))
+
+        # copy specific item
+        view.copyItems([item2], QgsLayoutView.ClipboardCopy)
+        l2 = QgsLayout(p)
+        view2 = QgsLayoutView()
+        view2.setCurrentLayout(l2)
+        pasted = view2.pasteItems(QgsLayoutView.PasteModeCursor)
+        self.assertEqual(len(pasted), 1)
+        self.assertIn(pasted[0], l2.items())
+        self.assertEqual(sip.cast(pasted[0], QgsLayoutItemLabel).text(), 'label 2')
+
+    def testCutPaste(self):
+        p = QgsProject()
+        l = QgsLayout(p)
+
+        # clear clipboard
+        mime_data = QMimeData()
+        mime_data.setData("text/xml", QByteArray())
+        clipboard = QApplication.clipboard()
+        clipboard.setMimeData(mime_data)
+
+        # add an item
+        item1 = QgsLayoutItemLabel(l)
+        item1.setText('label 1')
+        l.addLayoutItem(item1)
+        item1.setSelected(True)
+        item2 = QgsLayoutItemLabel(l)
+        item2.setText('label 2')
+        l.addLayoutItem(item2)
+        item2.setSelected(True)
+
+        view = QgsLayoutView()
+        view.setCurrentLayout(l)
+        self.assertFalse(view.hasItemsInClipboard())
+
+        len_before = len(l.items())
+        view.copySelectedItems(QgsLayoutView.ClipboardCut)
+        self.assertTrue(view.hasItemsInClipboard())
+        self.assertEqual(len(l.items()), len_before - 2)
+
+        pasted = view.pasteItems(QgsLayoutView.PasteModeCursor)
+        self.assertEqual(len(pasted), 2)
+        self.assertEqual(len(l.items()), len_before)
+        self.assertIn(pasted[0], l.items())
+        self.assertIn(pasted[1], l.items())
+        self.assertIn(sip.cast(pasted[0], QgsLayoutItemLabel).text(), ('label 1', 'label 2'))
+        self.assertIn(sip.cast(pasted[1], QgsLayoutItemLabel).text(), ('label 1', 'label 2'))
 
 
 if __name__ == '__main__':

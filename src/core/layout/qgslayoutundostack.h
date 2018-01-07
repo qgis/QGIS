@@ -21,6 +21,8 @@
 #include "qgis.h"
 #include "qgis_core.h"
 #include "qgslayoutundocommand.h"
+#include "qgslayoutitem.h"
+
 #include <memory>
 
 class QgsLayout;
@@ -31,8 +33,10 @@ class QUndoStack;
  * An undo stack for QgsLayouts.
  * \since QGIS 3.0
 */
-class CORE_EXPORT QgsLayoutUndoStack
+class CORE_EXPORT QgsLayoutUndoStack : public QObject
 {
+    Q_OBJECT
+
   public:
 
     /**
@@ -98,6 +102,47 @@ class CORE_EXPORT QgsLayoutUndoStack
      */
     QUndoStack *stack();
 
+    /**
+     * Notifies the stack that an undo or redo action occurred for a specified \a item.
+     */
+    void notifyUndoRedoOccurred( QgsLayoutItem *item );
+
+    /**
+     * Sets whether undo commands for the layout should be temporarily blocked.
+     *
+     * If \a blocked is true, subsequent undo commands will be blocked until a follow-up
+     * call to blockCommands( false ) is made.
+     *
+     * Note that calls to blockCommands are stacked, so two calls blocking the commands
+     * will take two calls unblocking commands in order to release the block.
+     *
+     * \see isBlocked()
+     */
+    void blockCommands( bool blocked );
+
+    /**
+     * Returns true if undo commands are currently blocked.
+     * \see blockCommands()
+     */
+    bool isBlocked() const;
+
+    /**
+     * Manually pushes a \a command to the stack, and takes ownership of the command.
+     */
+    void push( QUndoCommand *command SIP_TRANSFER );
+
+  signals:
+
+    /**
+     * Emitted when an undo or redo action has occurred, which affected a
+     * set of layout \a itemUuids.
+     */
+    void undoRedoOccurredForItems( const QSet< QString > itemUuids );
+
+  private slots:
+
+    void indexChanged();
+
   private:
 
     QgsLayout *mLayout = nullptr;
@@ -105,6 +150,10 @@ class CORE_EXPORT QgsLayoutUndoStack
     std::unique_ptr< QUndoStack > mUndoStack;
 
     std::vector< std::unique_ptr< QgsAbstractLayoutUndoCommand > > mActiveCommands;
+
+    QSet< QString > mUndoRedoOccurredItemUuids;
+
+    int mBlockedCommands = 0;
 
 #ifdef SIP_RUN
     QgsLayoutUndoStack( const QgsLayoutUndoStack &other );

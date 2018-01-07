@@ -15,7 +15,8 @@
 class QgsCptCityColorRampDialog : QDialog
 {
 %Docstring
- A dialog which allows users to modify the properties of a QgsCptCityColorRamp.
+A dialog which allows users to modify the properties of a QgsCptCityColorRamp.
+
 .. versionadded:: 3.0
 %End
 
@@ -26,35 +27,36 @@ class QgsCptCityColorRampDialog : QDialog
 
     QgsCptCityColorRampDialog( const QgsCptCityColorRamp &ramp, QWidget *parent /TransferThis/ = 0 );
 %Docstring
- Constructor for QgsCptCityColorRampDialog.
- \param ramp initial ramp to show in dialog
- \param parent parent widget
+Constructor for QgsCptCityColorRampDialog.
+
+:param ramp: initial ramp to show in dialog
+:param parent: parent widget
 %End
 
     QgsCptCityColorRamp ramp() const;
 %Docstring
- Returns a color ramp representing the current settings from the dialog.
-.. seealso:: setRamp()
- :rtype: QgsCptCityColorRamp
+Returns a color ramp representing the current settings from the dialog.
+
+.. seealso:: :py:func:`setRamp()`
 %End
 
     void setRamp( const QgsCptCityColorRamp &ramp );
 %Docstring
- Sets the color ramp to show in the dialog.
- \param ramp color ramp
-.. seealso:: ramp()
+Sets the color ramp to show in the dialog.
+
+:param ramp: color ramp
+
+.. seealso:: :py:func:`ramp()`
 %End
 
     QString selectedName() const;
 %Docstring
- Returns the name of the ramp currently selected in the dialog.
- :rtype: str
+Returns the name of the ramp currently selected in the dialog.
 %End
 
     bool saveAsGradientRamp() const;
 %Docstring
- Returns true if the ramp should be converted to a QgsGradientColorRamp.
- :rtype: bool
+Returns true if the ramp should be converted to a QgsGradientColorRamp.
 %End
 
     virtual bool eventFilter( QObject *obj, QEvent *event );

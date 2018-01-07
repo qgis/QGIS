@@ -59,7 +59,7 @@ class SERVER_EXPORT QgsAccessControl : public QgsFeatureFilterProvider
     }
 
 
-    ~QgsAccessControl()
+    ~QgsAccessControl() override
     {
       delete mPluginsAccessControls;
     }
@@ -75,13 +75,13 @@ class SERVER_EXPORT QgsAccessControl : public QgsFeatureFilterProvider
      * \param layer the layer to control
      * \param filterFeatures the request to fill
      */
-    void filterFeatures( const QgsVectorLayer *layer, QgsFeatureRequest &filterFeatures ) const;
+    void filterFeatures( const QgsVectorLayer *layer, QgsFeatureRequest &filterFeatures ) const override;
 
     /**
      * Return a clone of the object
      * \returns A clone
      */
-    QgsFeatureFilterProvider *clone() const SIP_FACTORY;
+    QgsFeatureFilterProvider *clone() const override SIP_FACTORY;
 
     /**
      * Return an additional subset string (typically SQL) filter

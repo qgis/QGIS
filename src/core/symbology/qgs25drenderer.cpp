@@ -138,11 +138,15 @@ QgsFeatureRenderer *Qgs25DRenderer::create( QDomElement &element, const QgsReadW
 
 void Qgs25DRenderer::startRender( QgsRenderContext &context, const QgsFields &fields )
 {
+  QgsFeatureRenderer::startRender( context, fields );
+
   mSymbol->startRender( context, fields );
 }
 
 void Qgs25DRenderer::stopRender( QgsRenderContext &context )
 {
+  QgsFeatureRenderer::stopRender( context );
+
   mSymbol->stopRender( context );
 }
 

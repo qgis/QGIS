@@ -97,7 +97,7 @@ namespace pal
       //! Copy constructor
       LabelPosition( const LabelPosition &other );
 
-      ~LabelPosition() { delete nextPart; }
+      ~LabelPosition() override { delete nextPart; }
 
       /**
        * \brief Is the labelposition in the bounding-box ? (intersect or inside????)

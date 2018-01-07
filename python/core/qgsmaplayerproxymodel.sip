@@ -14,6 +14,7 @@ class QgsMapLayerProxyModel : QSortFilterProxyModel
 {
 %Docstring
  The QgsMapLayerProxyModel class provides an easy to use model to display the list of layers in widgets.
+
 .. versionadded:: 2.3
 %End
 
@@ -40,26 +41,23 @@ class QgsMapLayerProxyModel : QSortFilterProxyModel
     explicit QgsMapLayerProxyModel( QObject *parent /TransferThis/ = 0 );
 %Docstring
  QgsMapLayerProxModel creates a proxy model with a QgsMapLayerModel as source model.
- It can be used to filter the layers list in a widget.
+It can be used to filter the layers list in a widget.
 %End
 
     QgsMapLayerModel *sourceLayerModel() const;
 %Docstring
  layerModel returns the QgsMapLayerModel used in this QSortFilterProxyModel
- :rtype: QgsMapLayerModel
 %End
 
     QgsMapLayerProxyModel *setFilters( QgsMapLayerProxyModel::Filters filters );
 %Docstring
  setFilters set flags that affect how layers are filtered
- \param filters are Filter flags
+
+:param filters: are Filter flags
+
 .. versionadded:: 2.3
- :rtype: QgsMapLayerProxyModel
 %End
     const Filters &filters() const;
-%Docstring
- :rtype: Filters
-%End
 
     void setExceptedLayerList( const QList<QgsMapLayer *> &exceptList );
 %Docstring
@@ -68,7 +66,6 @@ offer the possibility to except some layers to be listed
     QList<QgsMapLayer *> exceptedLayerList();
 %Docstring
 Get the list of maplayers which are excluded from the list
- :rtype: list of QgsMapLayer
 %End
 
     void setExceptedLayerIds( const QStringList &ids );
@@ -78,22 +75,24 @@ Set the list of maplayer ids which are excluded from the list
     QStringList exceptedLayerIds() const;
 %Docstring
 Get the list of maplayer ids which are excluded from the list
- :rtype: list of str
 %End
 
     void setExcludedProviders( const QStringList &providers );
 %Docstring
- Sets a list of data providers which should be excluded from the model.
+Sets a list of data providers which should be excluded from the model.
+
 .. versionadded:: 3.0
-.. seealso:: excludedProviders()
+
+.. seealso:: :py:func:`excludedProviders()`
 %End
 
     QStringList excludedProviders() const;
 %Docstring
- Returns the list of data providers which are excluded from the model.
-.. seealso:: setExcludedProviders()
+Returns the list of data providers which are excluded from the model.
+
+.. seealso:: :py:func:`setExcludedProviders()`
+
 .. versionadded:: 3.0
- :rtype: list of str
 %End
 
     virtual bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const;

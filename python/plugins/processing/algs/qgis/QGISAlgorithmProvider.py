@@ -64,7 +64,6 @@ from .Explode import Explode
 from .ExportGeometryInfo import ExportGeometryInfo
 from .ExtendLines import ExtendLines
 from .ExtentFromLayer import ExtentFromLayer
-from .ExtractNodes import ExtractNodes
 from .ExtractSpecificNodes import ExtractSpecificNodes
 from .FieldPyculator import FieldsPyculator
 from .FieldsCalculator import FieldsCalculator
@@ -73,7 +72,6 @@ from .FindProjection import FindProjection
 from .FixedDistanceBuffer import FixedDistanceBuffer
 from .GeometryConvert import GeometryConvert
 from .GeometryByExpression import GeometryByExpression
-from .Gridify import Gridify
 from .GridLine import GridLine
 from .GridPolygon import GridPolygon
 from .Heatmap import Heatmap
@@ -86,7 +84,6 @@ from .ImportIntoPostGIS import ImportIntoPostGIS
 from .ImportIntoSpatialite import ImportIntoSpatialite
 from .Intersection import Intersection
 from .LinesToPolygons import LinesToPolygons
-from .Merge import Merge
 from .MinimumBoundingGeometry import MinimumBoundingGeometry
 from .NearestNeighbourAnalysis import NearestNeighbourAnalysis
 from .OffsetLine import OffsetLine
@@ -145,7 +142,6 @@ from .SymmetricalDifference import SymmetricalDifference
 from .TextToFloat import TextToFloat
 from .TinInterpolation import TinInterpolation
 from .TopoColors import TopoColor
-from .Translate import Translate
 from .TruncateTable import TruncateTable
 from .Union import Union
 from .UniqueValues import UniqueValues
@@ -191,7 +187,6 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 ExportGeometryInfo(),
                 ExtendLines(),
                 ExtentFromLayer(),
-                ExtractNodes(),
                 ExtractSpecificNodes(),
                 FieldsCalculator(),
                 FieldsMapper(),
@@ -200,7 +195,6 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 FixedDistanceBuffer(),
                 GeometryByExpression(),
                 GeometryConvert(),
-                Gridify(),
                 GridLine(),
                 GridPolygon(),
                 Heatmap(),
@@ -213,7 +207,6 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 ImportIntoSpatialite(),
                 Intersection(),
                 LinesToPolygons(),
-                Merge(),
                 MinimumBoundingGeometry(),
                 NearestNeighbourAnalysis(),
                 OffsetLine(),
@@ -272,7 +265,6 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 TextToFloat(),
                 TinInterpolation(),
                 TopoColor(),
-                Translate(),
                 TruncateTable(),
                 Union(),
                 UniqueValues(),

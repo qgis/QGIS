@@ -130,7 +130,7 @@ class GUI_EXPORT QgsRasterFormatSaveOptionsWidget: public QWidget, private Ui::Q
     void updateControls() SIP_FORCE;
 
   protected:
-    virtual void showEvent( QShowEvent *event ) override;
+    void showEvent( QShowEvent *event ) override;
 
   signals:
     void optionsChanged();

@@ -27,12 +27,18 @@
 #include <QUrl>
 #include <QObject>
 #include <QSizeF>
+#include <QDateTime>
+#include <QElapsedTimer>
+#include <QPicture>
+#include <QImage>
 
 #include "qgis_core.h"
 
 class QDomElement;
-class QImage;
-class QPicture;
+
+#ifndef SIP_RUN
+
+///@cond PRIVATE
 
 /**
  * \ingroup core
@@ -42,7 +48,7 @@ class CORE_EXPORT QgsSvgCacheEntry
 {
   public:
 
-    QgsSvgCacheEntry();
+    QgsSvgCacheEntry() = delete;
 
     /**
      * Constructor.
@@ -56,7 +62,6 @@ class CORE_EXPORT QgsSvgCacheEntry
      */
     QgsSvgCacheEntry( const QString &path, double size, double strokeWidth, double widthScaleFactor, const QColor &fill, const QColor &stroke,
                       double fixedAspectRatio = 0 ) ;
-    ~QgsSvgCacheEntry();
 
     //! QgsSvgCacheEntry cannot be copied.
     QgsSvgCacheEntry( const QgsSvgCacheEntry &rh ) = delete;
@@ -65,6 +70,13 @@ class CORE_EXPORT QgsSvgCacheEntry
 
     //! Absolute path to SVG file
     QString path;
+
+    //! Timestamp when file was last modified
+    QDateTime fileModified;
+    //! Time since last check of file modified date
+    QElapsedTimer fileModifiedLastCheckTimer;
+    int mFileModifiedCheckTimeout = 30000;
+
     double size = 0.0; //size in pixels (cast to int for QImage)
     double strokeWidth = 0;
     double widthScaleFactor = 1.0;
@@ -78,10 +90,10 @@ class CORE_EXPORT QgsSvgCacheEntry
      */
     QSizeF viewboxSize;
 
-    QColor fill;
-    QColor stroke;
-    QImage *image = nullptr;
-    QPicture *picture = nullptr;
+    QColor fill = Qt::black;
+    QColor stroke = Qt::black;
+    std::unique_ptr< QImage > image;
+    std::unique_ptr< QPicture > picture;
     //content (with params replaced)
     QByteArray svgContent;
 
@@ -101,6 +113,9 @@ class CORE_EXPORT QgsSvgCacheEntry
 
 };
 
+///@endcond
+#endif
+
 /**
  * \ingroup core
  * A cache for images / pictures derived from svg files. This class supports parameter replacement in svg files
@@ -119,9 +134,9 @@ class CORE_EXPORT QgsSvgCache : public QObject
     /**
      * Constructor for QgsSvgCache.
      */
-    QgsSvgCache( QObject *parent SIP_TRANSFERTHIS = 0 );
+    QgsSvgCache( QObject *parent SIP_TRANSFERTHIS = nullptr );
 
-    ~QgsSvgCache();
+    ~QgsSvgCache() override;
 
     /**
      * Get SVG as QImage.
@@ -211,7 +226,10 @@ class CORE_EXPORT QgsSvgCache : public QObject
     //! Emit a signal to be caught by qgisapp and display a msg on status bar
     void statusChanged( const QString  &statusQString );
 
-  protected:
+  private slots:
+    void downloadProgress( qint64, qint64 );
+
+  private:
 
     /**
      * Creates new cache entry and returns pointer to it
@@ -239,10 +257,9 @@ class CORE_EXPORT QgsSvgCache : public QObject
     //Removes entry from the ordered list (but does not delete the entry itself)
     void takeEntryFromList( QgsSvgCacheEntry *entry );
 
-  private slots:
-    void downloadProgress( qint64, qint64 );
+    //! Minimum time (in ms) between consecutive svg file modified time checks
+    int mFileModifiedCheckTimeout = 30000;
 
-  private:
     //! Entry pointers accessible by file name
     QMultiHash< QString, QgsSvgCacheEntry * > mEntryLookup;
     //! Estimated total size of all images, pictures and svgContent
@@ -275,12 +292,24 @@ class CORE_EXPORT QgsSvgCache : public QObject
     //! For debugging
     void printEntryList();
 
+    /**
+     * Returns the target size (in pixels) and calculates the \a viewBoxSize
+     * for a cache \a entry.
+     */
+    QSize sizeForImage( const QgsSvgCacheEntry &entry, QSizeF &viewBoxSize, QSizeF &scaledSize ) const;
+
+    /**
+     * Returns a rendered image for a cached picture \a entry.
+     */
+    QImage imageFromCachedPicture( const QgsSvgCacheEntry &entry ) const;
+
     //! SVG content to be rendered if SVG file was not found.
     QByteArray mMissingSvg;
 
     //! Mutex to prevent concurrent access to the class from multiple threads at once (may corrupt the entries otherwise).
     QMutex mMutex;
 
+    friend class TestQgsSvgCache;
 };
 
 #endif // QGSSVGCACHE_H

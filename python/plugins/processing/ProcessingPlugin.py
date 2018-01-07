@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import object
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -131,10 +130,10 @@ class ProcessingModelItem(QgsDataItem):
         dlg.loadModel(self.path())
         dlg.show()
 
-    def actions(self):
-        run_model_action = QAction(QCoreApplication.translate('ProcessingPlugin', '&Run Model…'), self)
+    def actions(self, parent):
+        run_model_action = QAction(QCoreApplication.translate('ProcessingPlugin', '&Run Model…'), parent)
         run_model_action.triggered.connect(self.runModel)
-        edit_model_action = QAction(QCoreApplication.translate('ProcessingPlugin', '&Edit Model…'), self)
+        edit_model_action = QAction(QCoreApplication.translate('ProcessingPlugin', '&Edit Model…'), parent)
         edit_model_action.triggered.connect(self.editModel)
         return [run_model_action, edit_model_action]
 
@@ -160,7 +159,7 @@ class ProcessingDataItemProvider(QgsDataItemProvider):
         return None
 
 
-class ProcessingPlugin(object):
+class ProcessingPlugin:
 
     def __init__(self, iface):
         self.iface = iface

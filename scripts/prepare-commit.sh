@@ -16,7 +16,7 @@
 
 TOPLEVEL=$(git rev-parse --show-toplevel)
 
-PATH=$TOPLEVEL/scripts:$PATH
+PATH=$TOPLEVEL/scripts:$PATH:$PWD/scripts
 
 if ! tty -s && [[ "$0" =~ /pre-commit ]]; then
     exec </dev/tty
@@ -57,7 +57,8 @@ if [ -z "$MODIFIED" ]; then
   exit 0
 fi
 
-[ -x ${TOPLEVEL}/scripts/spell_check/check_spelling.sh ] && ${TOPLEVEL}/scripts/spell_check/check_spelling.sh $MODIFIED
+if [[ -n "$QGIS_CHECK_SPELLING" && -x ${TOPLEVEL}/scripts/spell_check/check_spelling.sh ]]; then ${TOPLEVEL}/scripts/spell_check/check_spelling.sh $MODIFIED; fi
+
 
 # save original changes
 REV=$(git log -n1 --pretty=%H)

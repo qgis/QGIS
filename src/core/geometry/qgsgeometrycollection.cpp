@@ -26,6 +26,7 @@ email                : marco.hugentobler at sourcepole dot com
 #include "qgspolygon.h"
 #include "qgsmultipolygon.h"
 #include "qgswkbptr.h"
+#include <memory>
 
 QgsGeometryCollection::QgsGeometryCollection()
 {
@@ -63,6 +64,13 @@ QgsGeometryCollection::~QgsGeometryCollection()
   clear();
 }
 
+QgsGeometryCollection *QgsGeometryCollection::createEmptyWithSameType() const
+{
+  auto result = qgis::make_unique< QgsGeometryCollection >();
+  result->mWkbType = mWkbType;
+  return result.release();
+}
+
 QgsGeometryCollection *QgsGeometryCollection::clone() const
 {
   return new QgsGeometryCollection( *this );
@@ -75,9 +83,76 @@ void QgsGeometryCollection::clear()
   clearCache(); //set bounding box invalid
 }
 
+QgsGeometryCollection *QgsGeometryCollection::snappedToGrid( double hSpacing, double vSpacing, double dSpacing, double mSpacing ) const
+{
+  std::unique_ptr<QgsGeometryCollection> result;
+
+  for ( auto geom : mGeometries )
+  {
+    std::unique_ptr<QgsAbstractGeometry> gridified { geom->snappedToGrid( hSpacing, vSpacing, dSpacing, mSpacing ) };
+    if ( gridified )
+    {
+      if ( !result )
+        result = std::unique_ptr<QgsGeometryCollection> { createEmptyWithSameType() };
+
+      result->mGeometries.append( gridified.release() );
+    }
+  }
+
+  return result.release();
+}
+
+bool QgsGeometryCollection::removeDuplicateNodes( double epsilon, bool useZValues )
+{
+  bool result = false;
+  for ( QgsAbstractGeometry *geom : qgis::as_const( mGeometries ) )
+  {
+    result = result || geom->removeDuplicateNodes( epsilon, useZValues );
+  }
+  return result;
+}
+
 QgsAbstractGeometry *QgsGeometryCollection::boundary() const
 {
   return nullptr;
+}
+
+void QgsGeometryCollection::adjacentVertices( QgsVertexId vertex, QgsVertexId &previousVertex, QgsVertexId &nextVertex ) const
+{
+  if ( vertex.part < 0 || vertex.part >= mGeometries.count() )
+  {
+    previousVertex = QgsVertexId();
+    nextVertex = QgsVertexId();
+    return;
+  }
+
+  mGeometries.at( vertex.part )->adjacentVertices( vertex, previousVertex, nextVertex );
+}
+
+int QgsGeometryCollection::vertexNumberFromVertexId( QgsVertexId id ) const
+{
+  if ( id.part < 0 || id.part >= mGeometries.count() )
+    return -1;
+
+  int number = 0;
+  int part = 0;
+  for ( QgsAbstractGeometry *geometry : mGeometries )
+  {
+    if ( part == id.part )
+    {
+      int partNumber =  geometry->vertexNumberFromVertexId( QgsVertexId( 0, id.ring, id.vertex ) );
+      if ( partNumber == -1 )
+        return -1;
+      return number + partNumber;
+    }
+    else
+    {
+      number += geometry->nCoordinates();
+    }
+
+    part++;
+  }
+  return -1; // should not happen
 }
 
 int QgsGeometryCollection::numGeometries() const
@@ -176,11 +251,11 @@ void QgsGeometryCollection::transform( const QgsCoordinateTransform &ct, QgsCoor
   clearCache(); //set bounding box invalid
 }
 
-void QgsGeometryCollection::transform( const QTransform &t )
+void QgsGeometryCollection::transform( const QTransform &t, double zTranslate, double zScale, double mTranslate, double mScale )
 {
   for ( QgsAbstractGeometry *g : qgis::as_const( mGeometries ) )
   {
-    g->transform( t );
+    g->transform( t, zTranslate, zScale, mTranslate, mScale );
   }
   clearCache(); //set bounding box invalid
 }
@@ -234,18 +309,18 @@ bool QgsGeometryCollection::fromWkb( QgsConstWkbPtr &wkbPtr )
 
 bool QgsGeometryCollection::fromWkt( const QString &wkt )
 {
-  return fromCollectionWkt( wkt, QList<QgsAbstractGeometry *>() << new QgsPoint << new QgsLineString << new QgsPolygonV2
+  return fromCollectionWkt( wkt, QVector<QgsAbstractGeometry *>() << new QgsPoint << new QgsLineString << new QgsPolygon
                             << new QgsCircularString << new QgsCompoundCurve
                             << new QgsCurvePolygon
-                            << new QgsMultiPointV2 << new QgsMultiLineString
-                            << new QgsMultiPolygonV2 << new QgsGeometryCollection
+                            << new QgsMultiPoint << new QgsMultiLineString
+                            << new QgsMultiPolygon << new QgsGeometryCollection
                             << new QgsMultiCurve << new QgsMultiSurface, QStringLiteral( "GeometryCollection" ) );
 }
 
 QByteArray QgsGeometryCollection::asWkb() const
 {
   int binarySize = sizeof( char ) + sizeof( quint32 ) + sizeof( quint32 );
-  QList<QByteArray> wkbForGeometries;
+  QVector<QByteArray> wkbForGeometries;
   for ( const QgsAbstractGeometry *geom : mGeometries )
   {
     if ( geom )
@@ -289,36 +364,36 @@ QString QgsGeometryCollection::asWkt( int precision ) const
   return wkt;
 }
 
-QDomElement QgsGeometryCollection::asGML2( QDomDocument &doc, int precision, const QString &ns ) const
+QDomElement QgsGeometryCollection::asGml2( QDomDocument &doc, int precision, const QString &ns ) const
 {
   QDomElement elemMultiGeometry = doc.createElementNS( ns, QStringLiteral( "MultiGeometry" ) );
   for ( const QgsAbstractGeometry *geom : mGeometries )
   {
     QDomElement elemGeometryMember = doc.createElementNS( ns, QStringLiteral( "geometryMember" ) );
-    elemGeometryMember.appendChild( geom->asGML2( doc, precision, ns ) );
+    elemGeometryMember.appendChild( geom->asGml2( doc, precision, ns ) );
     elemMultiGeometry.appendChild( elemGeometryMember );
   }
   return elemMultiGeometry;
 }
 
-QDomElement QgsGeometryCollection::asGML3( QDomDocument &doc, int precision, const QString &ns ) const
+QDomElement QgsGeometryCollection::asGml3( QDomDocument &doc, int precision, const QString &ns ) const
 {
   QDomElement elemMultiGeometry = doc.createElementNS( ns, QStringLiteral( "MultiGeometry" ) );
   for ( const QgsAbstractGeometry *geom : mGeometries )
   {
     QDomElement elemGeometryMember = doc.createElementNS( ns, QStringLiteral( "geometryMember" ) );
-    elemGeometryMember.appendChild( geom->asGML3( doc, precision, ns ) );
+    elemGeometryMember.appendChild( geom->asGml3( doc, precision, ns ) );
     elemMultiGeometry.appendChild( elemGeometryMember );
   }
   return elemMultiGeometry;
 }
 
-QString QgsGeometryCollection::asJSON( int precision ) const
+QString QgsGeometryCollection::asJson( int precision ) const
 {
   QString json = QStringLiteral( "{\"type\": \"GeometryCollection\", \"geometries\": [" );
   for ( const QgsAbstractGeometry *geom : mGeometries )
   {
-    json += geom->asJSON( precision ) + ", ";
+    json += geom->asJson( precision ) + ", ";
   }
   if ( json.endsWith( QLatin1String( ", " ) ) )
   {
@@ -356,15 +431,12 @@ QgsRectangle QgsGeometryCollection::calculateBoundingBox() const
 void QgsGeometryCollection::clearCache() const
 {
   mBoundingBox = QgsRectangle();
-  mCoordinateSequence.clear();
   QgsAbstractGeometry::clearCache();
 }
 
 QgsCoordinateSequence QgsGeometryCollection::coordinateSequence() const
 {
-  if ( !mCoordinateSequence.isEmpty() )
-    return mCoordinateSequence;
-
+  QgsCoordinateSequence sequence;
   QVector< QgsAbstractGeometry * >::const_iterator geomIt = mGeometries.constBegin();
   for ( ; geomIt != mGeometries.constEnd(); ++geomIt )
   {
@@ -373,18 +445,15 @@ QgsCoordinateSequence QgsGeometryCollection::coordinateSequence() const
     QgsCoordinateSequence::const_iterator cIt = geomCoords.constBegin();
     for ( ; cIt != geomCoords.constEnd(); ++cIt )
     {
-      mCoordinateSequence.push_back( *cIt );
+      sequence.push_back( *cIt );
     }
   }
 
-  return mCoordinateSequence;
+  return sequence;
 }
 
 int QgsGeometryCollection::nCoordinates() const
 {
-  if ( !mCoordinateSequence.isEmpty() )
-    return QgsAbstractGeometry::nCoordinates();
-
   int count = 0;
 
   QVector< QgsAbstractGeometry * >::const_iterator geomIt = mGeometries.constBegin();
@@ -396,7 +465,7 @@ int QgsGeometryCollection::nCoordinates() const
   return count;
 }
 
-double QgsGeometryCollection::closestSegment( const QgsPoint &pt, QgsPoint &segmentPt,  QgsVertexId &vertexAfter, bool *leftOf, double epsilon ) const
+double QgsGeometryCollection::closestSegment( const QgsPoint &pt, QgsPoint &segmentPt,  QgsVertexId &vertexAfter, int *leftOf, double epsilon ) const
 {
   return QgsGeometryUtils::closestSegmentFromComponents( mGeometries, QgsGeometryUtils::Part, pt, segmentPt, vertexAfter, leftOf, epsilon );
 }
@@ -523,7 +592,7 @@ double QgsGeometryCollection::perimeter() const
   return perimeter;
 }
 
-bool QgsGeometryCollection::fromCollectionWkt( const QString &wkt, const QList<QgsAbstractGeometry *> &subtypes, const QString &defaultChildWkbType )
+bool QgsGeometryCollection::fromCollectionWkt( const QString &wkt, const QVector<QgsAbstractGeometry *> &subtypes, const QString &defaultChildWkbType )
 {
   clear();
 
@@ -628,6 +697,22 @@ double QgsGeometryCollection::vertexAngle( QgsVertexId vertex ) const
   }
 
   return geom->vertexAngle( vertex );
+}
+
+double QgsGeometryCollection::segmentLength( QgsVertexId startVertex ) const
+{
+  if ( startVertex.part < 0 || startVertex.part >= mGeometries.size() )
+  {
+    return 0.0;
+  }
+
+  const QgsAbstractGeometry *geom = mGeometries[startVertex.part];
+  if ( !geom )
+  {
+    return 0.0;
+  }
+
+  return geom->segmentLength( startVertex );
 }
 
 int QgsGeometryCollection::vertexCount( int part, int ring ) const

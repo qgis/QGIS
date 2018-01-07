@@ -25,10 +25,10 @@ class QgsNewAuxiliaryLayerDialog: QDialog
 
     QgsNewAuxiliaryLayerDialog( QgsVectorLayer *layer, QWidget *parent = 0 );
 %Docstring
- Constructor.
+Constructor.
 
- \param layer The vector layer for which the auxiliary layer has to be created
- \param parent Parent window
+:param layer: The vector layer for which the auxiliary layer has to be created
+:param parent: Parent window
 %End
 
   protected:

@@ -1,17 +1,17 @@
 v.in.ascii
 v.in.ascii.points - Creates a vector map from an ASCII points file.
 Vector (v.*)
-ParameterFile|input|ASCII file to be imported|False|False
+QgsProcessingParameterFile|input|ASCII file to be imported|0|txt|None|False
 Hardcoded|format=point
-ParameterString|separator|Field separator|pipe|False|True
-ParameterString|text|Text delimiter|None|False|True
-ParameterNumber|skip|Number of header lines to skip at top of input file|0|None|0|True
-ParameterString|columns|Column definition in SQL style (example: 'x double precision, y double precision, cat int, name varchar(10)')|None|False|True
-ParameterNumber|x|Number of column used as x coordinate|0|None|1|True
-ParameterNumber|y|Number of column used as y coordinate|0|None|2|True
-ParameterNumber|z|Number of column used as z coordinate|0|None|0|True
-ParameterNumber|cat|Number of column used as category|0|None|0|True
-*ParameterBoolean|-z|Create 3D vector map|False
-*ParameterBoolean|-r|Only import points falling within current region (points mode)|False
-*ParameterBoolean|-i|Ignore broken line(s) in points mode|False
-OutputVector|output|ASCII Points
+QgsProcessingParameterString|separator|Field separator|pipe|False|True
+QgsProcessingParameterString|text|Text delimiter|None|False|True
+QgsProcessingParameterNumber|skip|Number of header lines to skip at top of input file|QgsProcessingParameterNumber.Integer|0|True|0|None
+QgsProcessingParameterString|columns|Column definition in SQL style (example: 'x double precision, y double precision, cat int, name varchar(10)')|None|False|True
+QgsProcessingParameterNumber|x|Number of column used as x coordinate|QgsProcessingParameterNumber.Integer|1|True|1|None
+QgsProcessingParameterNumber|y|Number of column used as y coordinate|QgsProcessingParameterNumber.Integer|2|True|1|None
+QgsProcessingParameterNumber|z|Number of column used as z coordinate|QgsProcessingParameterNumber.Integer|0|True|0|None
+QgsProcessingParameterNumber|cat|Number of column used as category|QgsProcessingParameterNumber.Integer|0|True|0|None
+*QgsProcessingParameterBoolean|-z|Create 3D vector map|False
+*QgsProcessingParameterBoolean|-r|Only import points falling within current region (points mode)|False
+*QgsProcessingParameterBoolean|-i|Ignore broken line(s) in points mode|False
+QgsProcessingParameterVectorDestination|output|ASCII Points

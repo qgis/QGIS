@@ -12,9 +12,10 @@
 class QgsBrowserTreeView : QTreeView
 {
 %Docstring
- The QgsBrowserTreeView class extends QTreeView with save/restore tree state functionality.
+The QgsBrowserTreeView class extends QTreeView with save/restore tree state functionality.
 
-.. seealso:: QgsBrowserModel
+.. seealso:: :py:class:`QgsBrowserModel`
+
 .. versionadded:: 2.8
 %End
 
@@ -22,9 +23,14 @@ class QgsBrowserTreeView : QTreeView
 #include "qgsbrowsertreeview.h"
 %End
   public:
+
     QgsBrowserTreeView( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsBrowserTreeView
+%End
 
     virtual void setModel( QAbstractItemModel *model );
+
     void setBrowserModel( QgsBrowserModel *model );
 %Docstring
 Set the browser model
@@ -32,20 +38,19 @@ Set the browser model
     QgsBrowserModel *browserModel();
 %Docstring
 Return the browser model
- :rtype: QgsBrowserModel
 %End
     virtual void showEvent( QShowEvent *e );
+
     virtual void hideEvent( QHideEvent *e );
 
+
     bool hasExpandedDescendant( const QModelIndex &index ) const;
-%Docstring
- :rtype: bool
-%End
 
     void setSettingsSection( const QString &section );
 
   protected slots:
     virtual void rowsInserted( const QModelIndex &parentIndex, int start, int end );
+
 
 };
 

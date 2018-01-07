@@ -20,6 +20,7 @@
 #include <QObject>
 
 #include "qgsobjectcustomproperties.h"
+#include "qgsreadwritecontext.h"
 #include "qgis.h"
 
 class QDomElement;
@@ -99,7 +100,7 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
       NodeLayer    //!< Leaf node pointing to a layer
     };
 
-    ~QgsLayerTreeNode();
+    ~QgsLayerTreeNode() override;
 
     //! Find out about type of the node. It is usually shorter to use convenience functions from QgsLayerTree namespace for that
     NodeType nodeType() const { return mNodeType; }
@@ -126,7 +127,7 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
      * Read layer tree from XML. Returns new instance.
      * Does not resolve textual references to layers. Call resolveReferences() afterwards to do it.
      */
-    static QgsLayerTreeNode *readXml( QDomElement &element ) SIP_FACTORY;
+    static QgsLayerTreeNode *readXml( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
 
     /**
      * Read layer tree from XML. Returns new instance.
@@ -136,7 +137,7 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
     static QgsLayerTreeNode *readXml( QDomElement &element, const QgsProject *project ) SIP_FACTORY;
 
     //! Write layer tree to XML
-    virtual void writeXml( QDomElement &parentElement ) = 0;
+    virtual void writeXml( QDomElement &parentElement, const QgsReadWriteContext &context ) = 0;
 
     //! Return string with layer tree structure. For debug purposes only
     virtual QString dump() const = 0;

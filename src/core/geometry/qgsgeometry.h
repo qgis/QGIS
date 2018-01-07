@@ -45,34 +45,51 @@ class QgsGeometryEngine;
 class QgsVectorLayer;
 class QgsMapToPixel;
 class QPainter;
-class QgsPolygonV2;
+class QgsPolygon;
 class QgsLineString;
 
-//! Polyline is represented as a vector of points
-typedef QVector<QgsPointXY> QgsPolyline;
+/**
+ * Polyline as represented as a vector of two-dimensional points.
+ *
+ * This type has no support for Z/M dimensions and use of QgsPolyline is encouraged instead.
+ *
+ * \note In QGIS 2.x this type was available as QgsPolyline.
+ *
+ * \since QGIS 3.0
+ */
+typedef QVector<QgsPointXY> QgsPolylineXY;
+
+/**
+ * Polyline as represented as a vector of points.
+ *
+ * This type has full support for Z/M dimensions.
+ *
+ * \since QGIS 3.0
+ */
+typedef QVector<QgsPoint> QgsPolyline;
 
 //! Polygon: first item of the list is outer ring, inner rings (if any) start from second item
 #ifndef SIP_RUN
-typedef QVector<QgsPolyline> QgsPolygon;
+typedef QVector<QgsPolylineXY> QgsPolygonXY;
 #else
-typedef QVector<QVector<QgsPointXY>> QgsPolygon;
+typedef QVector<QVector<QgsPointXY>> QgsPolygonXY;
 #endif
 
 //! A collection of QgsPoints that share a common collection of attributes
-typedef QVector<QgsPointXY> QgsMultiPoint;
+typedef QVector<QgsPointXY> QgsMultiPointXY;
 
 //! A collection of QgsPolylines that share a common collection of attributes
 #ifndef SIP_RUN
-typedef QVector<QgsPolyline> QgsMultiPolyline;
+typedef QVector<QgsPolylineXY> QgsMultiPolylineXY;
 #else
-typedef QVector<QVector<QgsPointXY>> QgsMultiPolyline;
+typedef QVector<QVector<QgsPointXY>> QgsMultiPolylineXY;
 #endif
 
 //! A collection of QgsPolygons that share a common collection of attributes
 #ifndef SIP_RUN
-typedef QVector<QgsPolygon> QgsMultiPolygon;
+typedef QVector<QgsPolygonXY> QgsMultiPolygonXY;
 #else
-typedef QVector<QVector<QVector<QgsPointXY>>> QgsMultiPolygon;
+typedef QVector<QVector<QVector<QgsPointXY>>> QgsMultiPolygonXY;
 #endif
 
 class QgsRectangle;
@@ -104,8 +121,11 @@ class CORE_EXPORT QgsGeometry
       Success = 0, //!< Operation succeeded
       NothingHappened = 1000, //!< Nothing happened, without any error
       InvalidBaseGeometry, //!< The base geometry on which the operation is done is invalid or empty
-      InvalidInput, //!< The input geometry (ring, part, split line, etc.) has not the correct geometry type
+      InvalidInputGeometryType, //!< The input geometry (ring, part, split line, etc.) has not the correct geometry type
+      SelectionIsEmpty, //!< No features were selected
+      SelectionIsGreaterThanOne, //!< More than one features were selected
       GeometryEngineError, //!< Geometry engine misses a method implemented or an error occurred in the geometry engine
+      LayerNotEditable, //!< Cannot edit layer
       /* Add part issues */
       AddPartSelectedGeometryNotFound, //!< The selected geometry cannot be found
       AddPartNotMultiGeometry, //!< The source geometry is not multi
@@ -147,18 +167,42 @@ class CORE_EXPORT QgsGeometry
     ~QgsGeometry();
 
     /**
-     * Returns the underlying geometry store.
-    * \since QGIS 2.10
-    * \see setGeometry
+     * Returns a non-modifiable (const) reference to the underlying abstract geometry primitive.
+     *
+     * This is much faster then calling the non-const get() method.
+     *
+     * \note In QGIS 2.x this method was named geometry().
+     *
+     * \since QGIS 3.0
+     * \see primitive()
+     * \see set()
     */
-    QgsAbstractGeometry *geometry() const;
+    const QgsAbstractGeometry *constGet() const;
+
+    /**
+     * Returns a modifiable (non-const) reference to the underlying abstract geometry primitive.
+     *
+     * This method can be slow to call, as it may trigger a detachment of the geometry
+     * and a deep copy. Where possible, use constGet() instead.
+     *
+     * \note In QGIS 2.x this method was named geometry().
+     *
+     * \since QGIS 3.0
+     * \see constGet()
+     * \see set()
+    */
+    QgsAbstractGeometry *get();
 
     /**
      * Sets the underlying geometry store. Ownership of geometry is transferred.
-     * \since QGIS 2.10
-     * \see geometry
+     *
+     * \note In QGIS 2.x this method was named setGeometry().
+     *
+     * \since QGIS 3.0
+     * \see get()
+     * \see constGet()
      */
-    void setGeometry( QgsAbstractGeometry *geometry SIP_TRANSFER );
+    void set( QgsAbstractGeometry *geometry SIP_TRANSFER );
 
     /**
      * Returns true if the geometry is null (ie, contains no underlying geometry
@@ -172,21 +216,44 @@ class CORE_EXPORT QgsGeometry
     //! Creates a new geometry from a WKT string
     static QgsGeometry fromWkt( const QString &wkt );
     //! Creates a new geometry from a QgsPointXY object
-    static QgsGeometry fromPoint( const QgsPointXY &point );
-    //! Creates a new geometry from a QgsMultiPoint object
-    static QgsGeometry fromMultiPoint( const QgsMultiPoint &multipoint );
-    //! Creates a new geometry from a QgsPolyline object
+    static QgsGeometry fromPointXY( const QgsPointXY &point );
+    //! Creates a new geometry from a QgsMultiPointXY object
+    static QgsGeometry fromMultiPointXY( const QgsMultiPointXY &multipoint );
+
+    /**
+     * Creates a new LineString geometry from a list of QgsPointXY points.
+     *
+     * Using fromPolyline() is preferred, as fromPolyline() is more efficient
+     * and will respect any Z or M dimensions present in the input points.
+     *
+     * \note In QGIS 2.x this method was available as fromPolyline().
+     *
+     * \since QGIS 3.0
+     * \see fromPolyline()
+     */
+    static QgsGeometry fromPolylineXY( const QgsPolylineXY &polyline );
+
+    /**
+     * Creates a new LineString geometry from a list of QgsPoint points.
+     *
+     * This method will respect any Z or M dimensions present in the input points.
+     * E.g. if input points are PointZ type, the resultant linestring will be
+     * a LineStringZ type.
+     *
+     * \since QGIS 3.0
+     */
     static QgsGeometry fromPolyline( const QgsPolyline &polyline );
-    //! Creates a new geometry from a QgsMultiPolyline object
-    static QgsGeometry fromMultiPolyline( const QgsMultiPolyline &multiline );
+
+    //! Creates a new geometry from a QgsMultiPolylineXY object
+    static QgsGeometry fromMultiPolylineXY( const QgsMultiPolylineXY &multiline );
     //! Creates a new geometry from a QgsPolygon
-    static QgsGeometry fromPolygon( const QgsPolygon &polygon );
+    static QgsGeometry fromPolygonXY( const QgsPolygonXY &polygon );
     //! Creates a new geometry from a QgsMultiPolygon
-    static QgsGeometry fromMultiPolygon( const QgsMultiPolygon &multipoly );
+    static QgsGeometry fromMultiPolygonXY( const QgsMultiPolygonXY &multipoly );
     //! Creates a new geometry from a QgsRectangle
     static QgsGeometry fromRect( const QgsRectangle &rect );
     //! Creates a new multipart geometry from a list of QgsGeometry objects
-    static QgsGeometry collectGeometry( const QList< QgsGeometry > &geometries );
+    static QgsGeometry collectGeometry( const QVector<QgsGeometry> &geometries );
 
     /**
      * Set the geometry, feeding in a geometry in GEOS format.
@@ -488,22 +555,19 @@ class CORE_EXPORT QgsGeometry
      * \param minDistPoint Receives the nearest point on the segment
      * \param afterVertex Receives index of the vertex after the closest segment. The vertex
      * before the closest segment is always afterVertex - 1
-     * \param leftOf Out: Returns if the point lies on the left of right side of the segment ( < 0 means left, > 0 means right )
+     * \param leftOf Out: Returns if the point lies on the left of left side of the geometry ( < 0 means left, > 0 means right, 0 indicates
+     * that the test was unsuccessful, e.g. for a point exactly on the line)
      * \param epsilon epsilon for segment snapping
      * \returns The squared Cartesian distance is also returned in sqrDist, negative number on error
      */
-#ifndef SIP_RUN
-    double closestSegmentWithContext( const QgsPointXY &point, QgsPointXY &minDistPoint, int &afterVertex, double *leftOf = nullptr, double epsilon = DEFAULT_SEGMENT_EPSILON ) const;
-#else
-    double closestSegmentWithContext( const QgsPointXY &point, QgsPointXY &minDistPoint SIP_OUT, int &afterVertex SIP_OUT ) const;
-#endif
+    double closestSegmentWithContext( const QgsPointXY &point, QgsPointXY &minDistPoint SIP_OUT, int &afterVertex SIP_OUT, int *leftOf SIP_OUT = nullptr, double epsilon = DEFAULT_SEGMENT_EPSILON ) const;
 
     /**
      * Adds a new ring to this geometry. This makes only sense for polygon and multipolygons.
      * \param ring The ring to be added
      * \returns OperationResult a result code: success or reason of failure
      */
-    OperationResult addRing( const QList<QgsPointXY> &ring );
+    OperationResult addRing( const QVector<QgsPointXY> &ring );
 
     /**
      * Adds a new ring to this geometry. This makes only sense for polygon and multipolygons.
@@ -518,7 +582,7 @@ class CORE_EXPORT QgsGeometry
      * \param geomType default geometry type to create if no existing geometry
      * \returns OperationResult a result code: success or reason of failure
      */
-    OperationResult addPart( const QList<QgsPointXY> &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry ) SIP_PYNAME( addPoints );
+    OperationResult addPart( const QVector<QgsPointXY> &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry ) SIP_PYNAME( addPointsXY );
 
     /**
      * Adds a new part to a the geometry.
@@ -526,7 +590,7 @@ class CORE_EXPORT QgsGeometry
      * \param geomType default geometry type to create if no existing geometry
      * \returns OperationResult a result code: success or reason of failure
      */
-    OperationResult addPart( const QgsPointSequence &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry ) SIP_PYNAME( addPointsV2 );
+    OperationResult addPart( const QgsPointSequence &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry ) SIP_PYNAME( addPoints );
 
     /**
      * Adds a new part to this geometry.
@@ -560,10 +624,10 @@ class CORE_EXPORT QgsGeometry
     QgsGeometry removeInteriorRings( double minimumAllowedArea = -1 ) const;
 
     /**
-     * Translates this geometry by dx, dy
+     * Translates this geometry by dx, dy, dz and dm.
      * \returns OperationResult a result code: success or reason of failure
      */
-    OperationResult translate( double dx, double dy );
+    OperationResult translate( double dx, double dy, double dz = 0.0, double dm = 0.0 );
 
     /**
      * Transforms this geometry as described by CoordinateTransform ct
@@ -572,10 +636,14 @@ class CORE_EXPORT QgsGeometry
     OperationResult transform( const QgsCoordinateTransform &ct );
 
     /**
-     * Transforms this geometry as described by QTransform ct
+     * Transforms the x and y components of the geometry using a QTransform object \a t.
+     *
+     * Optionally, the geometry's z values can be scaled via \a zScale and translated via \a zTranslate.
+     * Similarly, m-values can be scaled via \a mScale and translated via \a mTranslate.
+     *
      * \returns OperationResult a result code: success or reason of failure
      */
-    OperationResult transform( const QTransform &ct );
+    OperationResult transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0, double mTranslate = 0.0, double mScale = 1.0 );
 
     /**
      * Rotate this geometry around the Z axis
@@ -593,7 +661,7 @@ class CORE_EXPORT QgsGeometry
      * \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
      * \returns OperationResult a result code: success or reason of failure
      */
-    OperationResult splitGeometry( const QList<QgsPointXY> &splitLine, QList<QgsGeometry> &newGeometries SIP_OUT, bool topological, QList<QgsPointXY> &topologyTestPoints SIP_OUT );
+    OperationResult splitGeometry( const QVector<QgsPointXY> &splitLine, QVector<QgsGeometry> &newGeometries SIP_OUT, bool topological, QVector<QgsPointXY> &topologyTestPoints SIP_OUT );
 
     /**
      * Replaces a part of this geometry with another line
@@ -664,6 +732,42 @@ class CORE_EXPORT QgsGeometry
      * \since QGIS 3.0
      */
     QgsGeometry orthogonalize( double tolerance = 1.0E-8, int maxIterations = 1000, double angleThreshold = 15.0 ) const;
+
+    /**
+     * Returns a new geometry with all points or vertices snapped to the closest point of the grid.
+     *
+     * If the gridified geometry could not be calculated (or was totally collapsed) an empty geometry will be returned.
+     * Note that snapping to grid may generate an invalid geometry in some corner cases.
+     * It can also be thought as rounding the edges and it may be useful for removing errors.
+     * \param hSpacing Horizontal spacing of the grid (x axis). 0 to disable.
+     * \param vSpacing Vertical spacing of the grid (y axis). 0 to disable.
+     * \param dSpacing Depth spacing of the grid (z axis). 0 (default) to disable.
+     * \param mSpacing Custom dimension spacing of the grid (m axis). 0 (default) to disable.
+     * \since 3.0
+     */
+    QgsGeometry snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const;
+
+    /**
+     * Removes duplicate nodes from the geometry, wherever removing the nodes does not result in a
+     * degenerate geometry.
+     *
+     * The \a epsilon parameter specifies the tolerance for coordinates when determining that
+     * vertices are identical.
+     *
+     * By default, z values are not considered when detecting duplicate nodes. E.g. two nodes
+     * with the same x and y coordinate but different z values will still be considered
+     * duplicate and one will be removed. If \a useZValues is true, then the z values are
+     * also tested and nodes with the same x and y but different z will be maintained.
+     *
+     * Note that duplicate nodes are not tested between different parts of a multipart geometry. E.g.
+     * a multipoint geometry with overlapping points will not be changed by this method.
+     *
+     * The function will return true if nodes were removed, or false if no duplicate nodes
+     * were found.
+     *
+     * \since QGIS 3.0
+     */
+    bool removeDuplicateNodes( double epsilon = 4 * DBL_EPSILON, bool useZValues = false );
 
     //! Tests for intersection with a rectangle (uses GEOS)
     bool intersects( const QgsRectangle &r ) const;
@@ -1029,23 +1133,19 @@ class CORE_EXPORT QgsGeometry
      * Export the geometry to WKB
      * \since QGIS 3.0
      */
-    QByteArray exportToWkb() const;
+    QByteArray asWkb() const;
 
     /**
      * Exports the geometry to WKT
-     * \note precision parameter added in QGIS 2.4
      * \returns true in case of success and false else
+     * \note precision parameter added in QGIS 2.4
      */
-    QString exportToWkt( int precision = 17 ) const;
+    QString asWkt( int precision = 17 ) const;
 
     /**
-     * Exports the geometry to GeoJSON
-     * \returns a QString representing the geometry as GeoJSON
-     * \since QGIS 1.8
-     * \note Available in Python bindings since QGIS 1.9
-     * \note precision parameter added in QGIS 2.4
+     * Exports the geometry to a GeoJSON string.
      */
-    QString exportToGeoJSON( int precision = 17 ) const;
+    QString asJson( int precision = 17 ) const;
 
     /**
      * Try to convert the geometry to the requested type
@@ -1068,37 +1168,37 @@ class CORE_EXPORT QgsGeometry
      * Returns contents of the geometry as a polyline
      * if wkbType is WKBLineString, otherwise an empty list
      */
-    QgsPolyline asPolyline() const;
+    QgsPolylineXY asPolyline() const;
 
     /**
      * Returns contents of the geometry as a polygon
      * if wkbType is WKBPolygon, otherwise an empty list
      */
-    QgsPolygon asPolygon() const;
+    QgsPolygonXY asPolygon() const;
 
     /**
      * Returns contents of the geometry as a multi point
      * if wkbType is WKBMultiPoint, otherwise an empty list
      */
-    QgsMultiPoint asMultiPoint() const;
+    QgsMultiPointXY asMultiPoint() const;
 
     /**
      * Returns contents of the geometry as a multi linestring
      * if wkbType is WKBMultiLineString, otherwise an empty list
      */
-    QgsMultiPolyline asMultiPolyline() const;
+    QgsMultiPolylineXY asMultiPolyline() const;
 
     /**
      * Returns contents of the geometry as a multi polygon
      * if wkbType is WKBMultiPolygon, otherwise an empty list
      */
-    QgsMultiPolygon asMultiPolygon() const;
+    QgsMultiPolygonXY asMultiPolygon() const;
 
     /**
      * Return contents of the geometry as a list of geometries
      * \since QGIS 1.1
      */
-    QList<QgsGeometry> asGeometryCollection() const;
+    QVector<QgsGeometry> asGeometryCollection() const;
 
     /**
      * Returns contents of the geometry as a QPointF if wkbType is WKBPoint,
@@ -1228,14 +1328,14 @@ class CORE_EXPORT QgsGeometry
      * \since QGIS 1.5
      * \note Available in Python bindings since QGIS 1.6
      **/
-    void validateGeometry( QList<QgsGeometry::Error> &errors SIP_OUT, ValidationMethod method = ValidatorQgisInternal ) const;
+    void validateGeometry( QVector<QgsGeometry::Error> &errors SIP_OUT, ValidationMethod method = ValidatorQgisInternal ) const;
 
     /**
      * Compute the unary union on a list of \a geometries. May be faster than an iterative union on a set of geometries.
      * The returned geometry will be fully noded, i.e. a node will be created at every common intersection of the
      * input geometries. An empty geometry will be returned in the case of errors.
      */
-    static QgsGeometry unaryUnion( const QList<QgsGeometry> &geometries );
+    static QgsGeometry unaryUnion( const QVector<QgsGeometry> &geometries );
 
     /**
      * Creates a GeometryCollection geometry containing possible polygons formed from the constituent
@@ -1245,7 +1345,7 @@ class CORE_EXPORT QgsGeometry
      * An empty geometry will be returned in the case of errors.
      * \since QGIS 3.0
      */
-    static QgsGeometry polygonize( const QList< QgsGeometry> &geometries );
+    static QgsGeometry polygonize( const QVector<QgsGeometry> &geometries );
 
     /**
      * Converts the geometry to straight line segments, if it is a curved geometry type.
@@ -1277,23 +1377,29 @@ class CORE_EXPORT QgsGeometry
     void draw( QPainter &p ) const;
 
     /**
-     * Calculates the vertex ID from a vertex number
-     * \param nr vertex number
-     * \param id reference to QgsVertexId for storing result
-     * \returns true if vertex was found
+     * Calculates the vertex ID from a vertex \a number.
+     *
+     * If a matching vertex was found, it will be stored in \a id.
+     *
+     * Returns true if vertex was found.
+     *
      * \since QGIS 2.10
-     * \see vertexNrFromVertexId
+     * \see vertexNrFromVertexId()
      */
-    bool vertexIdFromVertexNr( int nr, QgsVertexId &id SIP_OUT ) const;
+    bool vertexIdFromVertexNr( int number, QgsVertexId &id SIP_OUT ) const;
 
     /**
-     * Returns the vertex number corresponding to a vertex idd
-     * \param i vertex id
-     * \returns vertex number
+     * Returns the vertex number corresponding to a vertex \a id.
+     *
+     * The vertex numbers start at 0, so a return value of 0 corresponds
+     * to the first vertex.
+     *
+     * Returns -1 if a corresponding vertex could not be found.
+     *
      * \since QGIS 2.10
-     * \see vertexIdFromVertexNr
+     * \see vertexIdFromVertexNr()
      */
-    int vertexNrFromVertexId( QgsVertexId i ) const;
+    int vertexNrFromVertexId( QgsVertexId id ) const;
 
     /**
      * Returns an error string referring to the last error encountered
@@ -1328,20 +1434,20 @@ class CORE_EXPORT QgsGeometry
     static QgsGeometry fromQPolygonF( const QPolygonF &polygon );
 
     /**
-     * Creates a QgsPolyline from a QPolygonF.
+     * Creates a QgsPolylineXY from a QPolygonF.
      * \param polygon source polygon
-     * \returns QgsPolyline
+     * \returns QgsPolylineXY
      * \see createPolygonFromQPolygonF
      */
-    static QgsPolyline createPolylineFromQPolygonF( const QPolygonF &polygon ) SIP_FACTORY;
+    static QgsPolylineXY createPolylineFromQPolygonF( const QPolygonF &polygon ) SIP_FACTORY;
 
     /**
-     * Creates a QgsPolygon from a QPolygonF.
+     * Creates a QgsPolygonXYfrom a QPolygonF.
      * \param polygon source polygon
      * \returns QgsPolygon
      * \see createPolylineFromQPolygonF
      */
-    static QgsPolygon createPolygonFromQPolygonF( const QPolygonF &polygon ) SIP_FACTORY;
+    static QgsPolygonXY createPolygonFromQPolygonF( const QPolygonF &polygon ) SIP_FACTORY;
 
 #ifndef SIP_RUN
 
@@ -1354,7 +1460,7 @@ class CORE_EXPORT QgsGeometry
      * points are equal within the specified tolerance
      * \since QGIS 2.9
      */
-    static bool compare( const QgsPolyline &p1, const QgsPolyline &p2,
+    static bool compare( const QgsPolylineXY &p1, const QgsPolylineXY &p2,
                          double epsilon = 4 * std::numeric_limits<double>::epsilon() );
 
     /**
@@ -1366,7 +1472,7 @@ class CORE_EXPORT QgsGeometry
      * number of points and all points are equal within the specified tolerance
      * \since QGIS 2.9
      */
-    static bool compare( const QgsPolygon &p1, const QgsPolygon &p2,
+    static bool compare( const QgsPolygonXY &p1, const QgsPolygonXY &p2,
                          double epsilon = 4 * std::numeric_limits<double>::epsilon() );
 
     /**
@@ -1379,13 +1485,13 @@ class CORE_EXPORT QgsGeometry
      * tolerance
      * \since QGIS 2.9
      */
-    static bool compare( const QgsMultiPolygon &p1, const QgsMultiPolygon &p2,
+    static bool compare( const QgsMultiPolygonXY &p1, const QgsMultiPolygonXY &p2,
                          double epsilon = 4 * std::numeric_limits<double>::epsilon() );
 #else
 
     /**
      * Compares two geometry objects for equality within a specified tolerance.
-     * The objects can be of type QgsPolyline, QgsPolygon or QgsMultiPolygon.
+     * The objects can be of type QgsPolylineXY, QgsPolygonXYor QgsMultiPolygon.
      * The 2 types should match.
      * \param p1 first geometry object
      * \param p2 second geometry object
@@ -1422,10 +1528,10 @@ class CORE_EXPORT QgsGeometry
                sipCanConvertToType( a0, sipType_QVector_0100QgsPointXY, SIP_NOT_NONE ) &&
                sipCanConvertToType( a1, sipType_QVector_0100QgsPointXY, SIP_NOT_NONE ) )
           {
-            QgsPolyline *p0;
-            QgsPolyline *p1;
-            p0 = reinterpret_cast<QgsPolyline *>( sipConvertToType( a0, sipType_QVector_0100QgsPointXY, 0, SIP_NOT_NONE, &state0, &sipIsErr ) );
-            p1 = reinterpret_cast<QgsPolyline *>( sipConvertToType( a1, sipType_QVector_0100QgsPointXY, 0, SIP_NOT_NONE, &state1, &sipIsErr ) );
+            QgsPolylineXY *p0;
+            QgsPolylineXY *p1;
+            p0 = reinterpret_cast<QgsPolylineXY *>( sipConvertToType( a0, sipType_QVector_0100QgsPointXY, 0, SIP_NOT_NONE, &state0, &sipIsErr ) );
+            p1 = reinterpret_cast<QgsPolylineXY *>( sipConvertToType( a1, sipType_QVector_0100QgsPointXY, 0, SIP_NOT_NONE, &state1, &sipIsErr ) );
             if ( sipIsErr )
             {
               sipReleaseType( p0, sipType_QVector_0100QgsPointXY, state0 );
@@ -1449,10 +1555,10 @@ class CORE_EXPORT QgsGeometry
                    sipCanConvertToType( a0, sipType_QVector_0600QVector_0100QgsPointXY, SIP_NOT_NONE ) &&
                    sipCanConvertToType( a1, sipType_QVector_0600QVector_0100QgsPointXY, SIP_NOT_NONE ) )
               {
-                QgsPolygon *p0;
-                QgsPolygon *p1;
-                p0 = reinterpret_cast<QgsPolygon *>( sipConvertToType( a0, sipType_QVector_0600QVector_0100QgsPointXY, 0, SIP_NOT_NONE, &state0, &sipIsErr ) );
-                p1 = reinterpret_cast<QgsPolygon *>( sipConvertToType( a1, sipType_QVector_0600QVector_0100QgsPointXY, 0, SIP_NOT_NONE, &state1, &sipIsErr ) );
+                QgsPolygonXY *p0;
+                QgsPolygonXY *p1;
+                p0 = reinterpret_cast<QgsPolygonXY *>( sipConvertToType( a0, sipType_QVector_0600QVector_0100QgsPointXY, 0, SIP_NOT_NONE, &state0, &sipIsErr ) );
+                p1 = reinterpret_cast<QgsPolygonXY *>( sipConvertToType( a1, sipType_QVector_0600QVector_0100QgsPointXY, 0, SIP_NOT_NONE, &state1, &sipIsErr ) );
                 if ( sipIsErr )
                 {
                   sipReleaseType( p0, sipType_QVector_0600QVector_0100QgsPointXY, state0 );
@@ -1476,10 +1582,10 @@ class CORE_EXPORT QgsGeometry
                        sipCanConvertToType( a0, sipType_QVector_0600QVector_0600QVector_0100QgsPointXY, SIP_NOT_NONE ) &&
                        sipCanConvertToType( a1, sipType_QVector_0600QVector_0600QVector_0100QgsPointXY, SIP_NOT_NONE ) )
                   {
-                    QgsMultiPolygon *p0;
-                    QgsMultiPolygon *p1;
-                    p0 = reinterpret_cast<QgsMultiPolygon *>( sipConvertToType( a0, sipType_QVector_0600QVector_0600QVector_0100QgsPointXY, 0, SIP_NOT_NONE, &state0, &sipIsErr ) );
-                    p1 = reinterpret_cast<QgsMultiPolygon *>( sipConvertToType( a1, sipType_QVector_0600QVector_0600QVector_0100QgsPointXY, 0, SIP_NOT_NONE, &state1, &sipIsErr ) );
+                    QgsMultiPolygonXY *p0;
+                    QgsMultiPolygonXY *p1;
+                    p0 = reinterpret_cast<QgsMultiPolygonXY *>( sipConvertToType( a0, sipType_QVector_0600QVector_0600QVector_0100QgsPointXY, 0, SIP_NOT_NONE, &state0, &sipIsErr ) );
+                    p1 = reinterpret_cast<QgsMultiPolygonXY *>( sipConvertToType( a1, sipType_QVector_0600QVector_0600QVector_0100QgsPointXY, 0, SIP_NOT_NONE, &state1, &sipIsErr ) );
                     if ( sipIsErr )
                     {
                       sipReleaseType( p0, sipType_QVector_0600QVector_0600QVector_0100QgsPointXY, state0 );
@@ -1521,18 +1627,18 @@ class CORE_EXPORT QgsGeometry
     static QgsGeometryEngine *createGeometryEngine( const QgsAbstractGeometry *geometry ) SIP_FACTORY;
 
     /**
-     * Upgrades a point list from QgsPointXY to QgsPointV2
+     * Upgrades a point list from QgsPointXY to QgsPoint
      * \param input list of QgsPointXY objects to be upgraded
-     * \param output destination for list of points converted to QgsPointV2
-     */
-    static void convertPointList( const QList<QgsPointXY> &input, QgsPointSequence &output );
-
-    /**
-     * Downgrades a point list from QgsPoint to QgsPoint
-     * \param input list of QgsPoint objects to be downgraded
      * \param output destination for list of points converted to QgsPoint
      */
-    static void convertPointList( const QgsPointSequence &input, QList<QgsPointXY> &output );
+    static void convertPointList( const QVector<QgsPointXY> &input, QgsPointSequence &output );
+
+    /**
+     * Downgrades a point list from QgsPoint to QgsPointXY
+     * \param input list of QgsPoint objects to be downgraded
+     * \param output destination for list of points converted to QgsPointXY
+     */
+    static void convertPointList( const QgsPointSequence &input, QVector<QgsPointXY> &output );
 
     //! Allows direct construction of QVariants from geometry.
     operator QVariant() const
@@ -1566,8 +1672,8 @@ class CORE_EXPORT QgsGeometry
      */
     void reset( std::unique_ptr< QgsAbstractGeometry > newGeometry );
 
-    static void convertToPolyline( const QgsPointSequence &input, QgsPolyline &output );
-    static void convertPolygon( const QgsPolygonV2 &input, QgsPolygon &output );
+    static void convertToPolyline( const QgsPointSequence &input, QgsPolylineXY &output );
+    static void convertPolygon( const QgsPolygon &input, QgsPolygonXY &output );
 
     //! Try to convert the geometry to a point
     QgsGeometry convertToPoint( bool destMultipart ) const;
@@ -1601,7 +1707,7 @@ class CORE_EXPORT QgsGeometry
      * \param minimumDistance minimum segment length to apply smoothing to
      * \param maxAngle maximum angle at node (0-180) at which smoothing will be applied
     */
-    std::unique_ptr< QgsPolygonV2 > smoothPolygon( const QgsPolygonV2 &polygon, const unsigned int iterations = 1, const double offset = 0.25,
+    std::unique_ptr< QgsPolygon > smoothPolygon( const QgsPolygon &polygon, const unsigned int iterations = 1, const double offset = 0.25,
         double minimumDistance = -1, double maxAngle = 180.0 ) const;
 
 

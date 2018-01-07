@@ -35,7 +35,6 @@ class _3D_EXPORT QgsPhongMaterialSettings
       : mAmbient( QColor::fromRgbF( 0.1f, 0.1f, 0.1f, 1.0f ) )
       , mDiffuse( QColor::fromRgbF( 0.7f, 0.7f, 0.7f, 1.0f ) )
       , mSpecular( QColor::fromRgbF( 1.0f, 1.0f, 1.0f, 1.0f ) )
-      , mShininess( 0.0f )
     {
     }
 
@@ -66,7 +65,7 @@ class _3D_EXPORT QgsPhongMaterialSettings
     QColor mAmbient;
     QColor mDiffuse;
     QColor mSpecular;
-    float mShininess;
+    float mShininess = 0.0f;
 };
 
 

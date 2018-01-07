@@ -120,12 +120,18 @@ void QgsGeometry::reset( std::unique_ptr<QgsAbstractGeometry> newGeometry )
   d->geometry = std::move( newGeometry );
 }
 
-QgsAbstractGeometry *QgsGeometry::geometry() const
+const QgsAbstractGeometry *QgsGeometry::constGet() const
 {
   return d->geometry.get();
 }
 
-void QgsGeometry::setGeometry( QgsAbstractGeometry *geometry )
+QgsAbstractGeometry *QgsGeometry::get()
+{
+  detach();
+  return d->geometry.get();
+}
+
+void QgsGeometry::set( QgsAbstractGeometry *geometry )
 {
   if ( d->geometry.get() == geometry )
   {
@@ -150,9 +156,9 @@ QgsGeometry QgsGeometry::fromWkt( const QString &wkt )
   return QgsGeometry( std::move( geom ) );
 }
 
-QgsGeometry QgsGeometry::fromPoint( const QgsPointXY &point )
+QgsGeometry QgsGeometry::fromPointXY( const QgsPointXY &point )
 {
-  std::unique_ptr< QgsAbstractGeometry > geom( QgsGeometryFactory::fromPoint( point ) );
+  std::unique_ptr< QgsAbstractGeometry > geom( QgsGeometryFactory::fromPointXY( point ) );
   if ( geom )
   {
     return QgsGeometry( geom.release() );
@@ -160,9 +166,9 @@ QgsGeometry QgsGeometry::fromPoint( const QgsPointXY &point )
   return QgsGeometry();
 }
 
-QgsGeometry QgsGeometry::fromPolyline( const QgsPolyline &polyline )
+QgsGeometry QgsGeometry::fromPolylineXY( const QgsPolylineXY &polyline )
 {
-  std::unique_ptr< QgsAbstractGeometry > geom = QgsGeometryFactory::fromPolyline( polyline );
+  std::unique_ptr< QgsAbstractGeometry > geom = QgsGeometryFactory::fromPolylineXY( polyline );
   if ( geom )
   {
     return QgsGeometry( std::move( geom ) );
@@ -170,9 +176,14 @@ QgsGeometry QgsGeometry::fromPolyline( const QgsPolyline &polyline )
   return QgsGeometry();
 }
 
-QgsGeometry QgsGeometry::fromPolygon( const QgsPolygon &polygon )
+QgsGeometry QgsGeometry::fromPolyline( const QgsPolyline &polyline )
 {
-  std::unique_ptr< QgsPolygonV2 > geom = QgsGeometryFactory::fromPolygon( polygon );
+  return QgsGeometry( qgis::make_unique< QgsLineString >( polyline ) );
+}
+
+QgsGeometry QgsGeometry::fromPolygonXY( const QgsPolygonXY &polygon )
+{
+  std::unique_ptr< QgsPolygon > geom = QgsGeometryFactory::fromPolygonXY( polygon );
   if ( geom )
   {
     return QgsGeometry( std::move( geom.release() ) );
@@ -180,9 +191,9 @@ QgsGeometry QgsGeometry::fromPolygon( const QgsPolygon &polygon )
   return QgsGeometry();
 }
 
-QgsGeometry QgsGeometry::fromMultiPoint( const QgsMultiPoint &multipoint )
+QgsGeometry QgsGeometry::fromMultiPointXY( const QgsMultiPointXY &multipoint )
 {
-  std::unique_ptr< QgsMultiPointV2 > geom = QgsGeometryFactory::fromMultiPoint( multipoint );
+  std::unique_ptr< QgsMultiPoint > geom = QgsGeometryFactory::fromMultiPointXY( multipoint );
   if ( geom )
   {
     return QgsGeometry( std::move( geom ) );
@@ -190,9 +201,9 @@ QgsGeometry QgsGeometry::fromMultiPoint( const QgsMultiPoint &multipoint )
   return QgsGeometry();
 }
 
-QgsGeometry QgsGeometry::fromMultiPolyline( const QgsMultiPolyline &multiline )
+QgsGeometry QgsGeometry::fromMultiPolylineXY( const QgsMultiPolylineXY &multiline )
 {
-  std::unique_ptr< QgsMultiLineString > geom = QgsGeometryFactory::fromMultiPolyline( multiline );
+  std::unique_ptr< QgsMultiLineString > geom = QgsGeometryFactory::fromMultiPolylineXY( multiline );
   if ( geom )
   {
     return QgsGeometry( std::move( geom ) );
@@ -200,9 +211,9 @@ QgsGeometry QgsGeometry::fromMultiPolyline( const QgsMultiPolyline &multiline )
   return QgsGeometry();
 }
 
-QgsGeometry QgsGeometry::fromMultiPolygon( const QgsMultiPolygon &multipoly )
+QgsGeometry QgsGeometry::fromMultiPolygonXY( const QgsMultiPolygonXY &multipoly )
 {
-  std::unique_ptr< QgsMultiPolygonV2 > geom = QgsGeometryFactory::fromMultiPolygon( multipoly );
+  std::unique_ptr< QgsMultiPolygon > geom = QgsGeometryFactory::fromMultiPolygonXY( multipoly );
   if ( geom )
   {
     return QgsGeometry( std::move( geom ) );
@@ -212,20 +223,20 @@ QgsGeometry QgsGeometry::fromMultiPolygon( const QgsMultiPolygon &multipoly )
 
 QgsGeometry QgsGeometry::fromRect( const QgsRectangle &rect )
 {
-  QgsPolyline ring;
+  QgsPolylineXY ring;
   ring.append( QgsPointXY( rect.xMinimum(), rect.yMinimum() ) );
   ring.append( QgsPointXY( rect.xMaximum(), rect.yMinimum() ) );
   ring.append( QgsPointXY( rect.xMaximum(), rect.yMaximum() ) );
   ring.append( QgsPointXY( rect.xMinimum(), rect.yMaximum() ) );
   ring.append( QgsPointXY( rect.xMinimum(), rect.yMinimum() ) );
 
-  QgsPolygon polygon;
+  QgsPolygonXY polygon;
   polygon.append( ring );
 
-  return fromPolygon( polygon );
+  return fromPolygonXY( polygon );
 }
 
-QgsGeometry QgsGeometry::collectGeometry( const QList< QgsGeometry > &geometries )
+QgsGeometry QgsGeometry::collectGeometry( const QVector< QgsGeometry > &geometries )
 {
   QgsGeometry collected;
 
@@ -264,7 +275,7 @@ GEOSGeometry *QgsGeometry::exportToGeos( double precision ) const
     return nullptr;
   }
 
-  return QgsGeos::asGeos( d->geometry.get(), precision );
+  return QgsGeos::asGeos( d->geometry.get(), precision ).release();
 }
 
 
@@ -334,8 +345,12 @@ QgsPointXY QgsGeometry::closestVertex( const QgsPointXY &point, int &atVertex, i
   }
   sqrDist = QgsGeometryUtils::sqrDistance2D( pt, vp );
 
+  QgsVertexId prevVertex;
+  QgsVertexId nextVertex;
+  d->geometry->adjacentVertices( id, prevVertex, nextVertex );
   atVertex = vertexNrFromVertexId( id );
-  adjacentVertices( atVertex, beforeVertex, afterVertex );
+  beforeVertex = vertexNrFromVertexId( prevVertex );
+  afterVertex = vertexNrFromVertexId( nextVertex );
   return QgsPointXY( vp.x(), vp.y() );
 }
 
@@ -368,31 +383,7 @@ double QgsGeometry::angleAtVertex( int vertex ) const
     return 0;
   }
 
-  QgsVertexId v1;
-  QgsVertexId v3;
-  QgsGeometryUtils::adjacentVertices( *d->geometry, v2, v1, v3 );
-  if ( v1.isValid() && v3.isValid() )
-  {
-    QgsPoint p1 = d->geometry->vertexAt( v1 );
-    QgsPoint p2 = d->geometry->vertexAt( v2 );
-    QgsPoint p3 = d->geometry->vertexAt( v3 );
-    double angle1 = QgsGeometryUtils::lineAngle( p1.x(), p1.y(), p2.x(), p2.y() );
-    double angle2 = QgsGeometryUtils::lineAngle( p2.x(), p2.y(), p3.x(), p3.y() );
-    return QgsGeometryUtils::averageAngle( angle1, angle2 );
-  }
-  else if ( v3.isValid() )
-  {
-    QgsPoint p1 = d->geometry->vertexAt( v2 );
-    QgsPoint p2 = d->geometry->vertexAt( v3 );
-    return QgsGeometryUtils::lineAngle( p1.x(), p1.y(), p2.x(), p2.y() );
-  }
-  else if ( v1.isValid() )
-  {
-    QgsPoint p1 = d->geometry->vertexAt( v1 );
-    QgsPoint p2 = d->geometry->vertexAt( v2 );
-    return QgsGeometryUtils::lineAngle( p1.x(), p1.y(), p2.x(), p2.y() );
-  }
-  return 0.0;
+  return d->geometry->vertexAngle( v2 );
 }
 
 void QgsGeometry::adjacentVertices( int atVertex, int &beforeVertex, int &afterVertex ) const
@@ -411,7 +402,7 @@ void QgsGeometry::adjacentVertices( int atVertex, int &beforeVertex, int &afterV
   }
 
   QgsVertexId beforeVertexId, afterVertexId;
-  QgsGeometryUtils::adjacentVertices( *( d->geometry ), id, beforeVertexId, afterVertexId );
+  d->geometry->adjacentVertices( id, beforeVertexId, afterVertexId );
   beforeVertex = vertexNrFromVertexId( beforeVertexId );
   afterVertex = vertexNrFromVertexId( afterVertexId );
 }
@@ -593,12 +584,11 @@ double QgsGeometry::closestVertexWithContext( const QgsPointXY &point, int &atVe
   return QgsGeometryUtils::sqrDistance2D( closestPoint, pt );
 }
 
-double QgsGeometry::closestSegmentWithContext(
-  const QgsPointXY &point,
-  QgsPointXY &minDistPoint,
-  int &afterVertex,
-  double *leftOf,
-  double epsilon ) const
+double QgsGeometry::closestSegmentWithContext( const QgsPointXY &point,
+    QgsPointXY &minDistPoint,
+    int &afterVertex,
+    int *leftOf,
+    double epsilon ) const
 {
   if ( !d->geometry )
   {
@@ -607,23 +597,18 @@ double QgsGeometry::closestSegmentWithContext(
 
   QgsPoint segmentPt;
   QgsVertexId vertexAfter;
-  bool leftOfBool;
 
-  double sqrDist = d->geometry->closestSegment( QgsPoint( point.x(), point.y() ), segmentPt,  vertexAfter, &leftOfBool, epsilon );
+  double sqrDist = d->geometry->closestSegment( QgsPoint( point.x(), point.y() ), segmentPt,  vertexAfter, leftOf, epsilon );
   if ( sqrDist < 0 )
     return -1;
 
   minDistPoint.setX( segmentPt.x() );
   minDistPoint.setY( segmentPt.y() );
   afterVertex = vertexNrFromVertexId( vertexAfter );
-  if ( leftOf )
-  {
-    *leftOf = leftOfBool ? 1.0 : -1.0;
-  }
   return sqrDist;
 }
 
-QgsGeometry::OperationResult QgsGeometry::addRing( const QList<QgsPointXY> &ring )
+QgsGeometry::OperationResult QgsGeometry::addRing( const QVector<QgsPointXY> &ring )
 {
   std::unique_ptr< QgsLineString > ringLine = qgis::make_unique< QgsLineString >( ring );
   return addRing( ringLine.release() );
@@ -634,7 +619,7 @@ QgsGeometry::OperationResult QgsGeometry::addRing( QgsCurve *ring )
   std::unique_ptr< QgsCurve > r( ring );
   if ( !d->geometry )
   {
-    return InvalidInput;
+    return InvalidInputGeometryType;
   }
 
   detach();
@@ -642,7 +627,7 @@ QgsGeometry::OperationResult QgsGeometry::addRing( QgsCurve *ring )
   return QgsGeometryEditUtils::addRing( d->geometry.get(), std::move( r ) );
 }
 
-QgsGeometry::OperationResult QgsGeometry::addPart( const QList<QgsPointXY> &points, QgsWkbTypes::GeometryType geomType )
+QgsGeometry::OperationResult QgsGeometry::addPart( const QVector<QgsPointXY> &points, QgsWkbTypes::GeometryType geomType )
 {
   QgsPointSequence l;
   convertPointList( points, l );
@@ -673,17 +658,17 @@ QgsGeometry::OperationResult QgsGeometry::addPart( QgsAbstractGeometry *part, Qg
     switch ( geomType )
     {
       case QgsWkbTypes::PointGeometry:
-        reset( qgis::make_unique< QgsMultiPointV2 >() );
+        reset( qgis::make_unique< QgsMultiPoint >() );
         break;
       case QgsWkbTypes::LineGeometry:
         reset( qgis::make_unique< QgsMultiLineString >() );
         break;
       case QgsWkbTypes::PolygonGeometry:
-        reset( qgis::make_unique< QgsMultiPolygonV2 >() );
+        reset( qgis::make_unique< QgsMultiPolygon >() );
         break;
       default:
         reset( nullptr );
-        return QgsGeometry::AddPartNotMultiGeometry;
+        return QgsGeometry::OperationResult::AddPartNotMultiGeometry;
     }
   }
   else
@@ -718,8 +703,8 @@ QgsGeometry QgsGeometry::removeInteriorRings( double minimumRingArea ) const
 
   if ( QgsWkbTypes::isMultiType( d->geometry->wkbType() ) )
   {
-    const QList<QgsGeometry> parts = asGeometryCollection();
-    QList<QgsGeometry> results;
+    const QVector<QgsGeometry> parts = asGeometryCollection();
+    QVector<QgsGeometry> results;
     for ( const QgsGeometry &part : parts )
     {
       QgsGeometry result = part.removeInteriorRings( minimumRingArea );
@@ -761,7 +746,7 @@ QgsGeometry::OperationResult QgsGeometry::addPart( GEOSGeometry *newPart )
   return QgsGeometryEditUtils::addPart( d->geometry.get(), std::move( geom ) );
 }
 
-QgsGeometry::OperationResult QgsGeometry::translate( double dx, double dy )
+QgsGeometry::OperationResult QgsGeometry::translate( double dx, double dy, double dz, double dm )
 {
   if ( !d->geometry )
   {
@@ -770,7 +755,7 @@ QgsGeometry::OperationResult QgsGeometry::translate( double dx, double dy )
 
   detach();
 
-  d->geometry->transform( QTransform::fromTranslate( dx, dy ) );
+  d->geometry->transform( QTransform::fromTranslate( dx, dy ), dz, 1.0, dm );
   return QgsGeometry::Success;
 }
 
@@ -790,14 +775,14 @@ QgsGeometry::OperationResult QgsGeometry::rotate( double rotation, const QgsPoin
   return QgsGeometry::Success;
 }
 
-QgsGeometry::OperationResult QgsGeometry::splitGeometry( const QList<QgsPointXY> &splitLine, QList<QgsGeometry> &newGeometries, bool topological, QList<QgsPointXY> &topologyTestPoints )
+QgsGeometry::OperationResult QgsGeometry::splitGeometry( const QVector<QgsPointXY> &splitLine, QVector<QgsGeometry> &newGeometries, bool topological, QVector<QgsPointXY> &topologyTestPoints )
 {
   if ( !d->geometry )
   {
-    return InvalidBaseGeometry;
+    return QgsGeometry::OperationResult::InvalidBaseGeometry;
   }
 
-  QList<QgsGeometry > newGeoms;
+  QVector<QgsGeometry > newGeoms;
   QgsLineString splitLineString( splitLine );
   QgsPointSequence tp;
 
@@ -817,19 +802,19 @@ QgsGeometry::OperationResult QgsGeometry::splitGeometry( const QList<QgsPointXY>
   switch ( result )
   {
     case QgsGeometryEngine::Success:
-      return QgsGeometry::Success;
+      return QgsGeometry::OperationResult::Success;
     case QgsGeometryEngine::MethodNotImplemented:
     case QgsGeometryEngine::EngineError:
     case QgsGeometryEngine::NodedGeometryError:
-      return QgsGeometry::GeometryEngineError;
+      return QgsGeometry::OperationResult::GeometryEngineError;
     case QgsGeometryEngine::InvalidBaseGeometry:
-      return QgsGeometry::InvalidBaseGeometry;
+      return QgsGeometry::OperationResult::InvalidBaseGeometry;
     case QgsGeometryEngine::InvalidInput:
-      return QgsGeometry::InvalidInput;
+      return QgsGeometry::OperationResult::InvalidInputGeometryType;
     case QgsGeometryEngine::SplitCannotSplitPoint:
-      return QgsGeometry::SplitCannotSplitPoint;
+      return QgsGeometry::OperationResult::SplitCannotSplitPoint;
     case QgsGeometryEngine::NothingHappened:
-      return QgsGeometry::NothingHappened;
+      return QgsGeometry::OperationResult::NothingHappened;
       //default: do not implement default to handle properly all cases
   }
 
@@ -866,7 +851,7 @@ QgsGeometry::OperationResult QgsGeometry::reshapeGeometry( const QgsLineString &
     case QgsGeometryEngine::InvalidBaseGeometry:
       return InvalidBaseGeometry;
     case QgsGeometryEngine::InvalidInput:
-      return InvalidInput;
+      return InvalidInputGeometryType;
     case QgsGeometryEngine::SplitCannotSplitPoint: // should not happen
       return GeometryEngineError;
     case QgsGeometryEngine::NothingHappened:
@@ -887,7 +872,7 @@ int QgsGeometry::makeDifferenceInPlace( const QgsGeometry &other )
   QgsGeos geos( d->geometry.get() );
 
   mLastError.clear();
-  std::unique_ptr< QgsAbstractGeometry > diffGeom( geos.intersection( other.geometry(), &mLastError ) );
+  std::unique_ptr< QgsAbstractGeometry > diffGeom( geos.intersection( other.constGet(), &mLastError ) );
   if ( !diffGeom )
   {
     return 1;
@@ -907,7 +892,7 @@ QgsGeometry QgsGeometry::makeDifference( const QgsGeometry &other ) const
   QgsGeos geos( d->geometry.get() );
 
   mLastError.clear();
-  std::unique_ptr< QgsAbstractGeometry > diffGeom( geos.intersection( other.geometry(), &mLastError ) );
+  std::unique_ptr< QgsAbstractGeometry > diffGeom( geos.intersection( other.constGet(), &mLastError ) );
   if ( !diffGeom )
   {
     QgsGeometry result;
@@ -947,10 +932,10 @@ QgsGeometry QgsGeometry::orientedMinimumBoundingBox( double &area, double &angle
   QgsPoint pt1;
   QgsPoint pt2;
   // get first point
-  hull.geometry()->nextVertex( vertexId, pt0 );
+  hull.constGet()->nextVertex( vertexId, pt0 );
   pt1 = pt0;
   double prevAngle = 0.0;
-  while ( hull.geometry()->nextVertex( vertexId, pt2 ) )
+  while ( hull.constGet()->nextVertex( vertexId, pt2 ) )
   {
     double currentAngle = QgsGeometryUtils::lineAngle( pt1.x(), pt1.y(), pt2.x(), pt2.y() );
     double rotateAngle = 180.0 / M_PI * ( currentAngle - prevAngle );
@@ -960,9 +945,9 @@ QgsGeometry QgsGeometry::orientedMinimumBoundingBox( double &area, double &angle
     t.rotate( rotateAngle );
     t.translate( -pt0.x(), -pt0.y() );
 
-    hull.geometry()->transform( t );
+    hull.get()->transform( t );
 
-    QgsRectangle bounds = hull.geometry()->boundingBox();
+    QgsRectangle bounds = hull.constGet()->boundingBox();
     double currentArea = bounds.width() * bounds.height();
     if ( currentArea  < area )
     {
@@ -992,7 +977,7 @@ QgsGeometry QgsGeometry::orientedMinimumBoundingBox() const
   return orientedMinimumBoundingBox( area, angle, width, height );
 }
 
-static QgsCircle __recMinimalEnclosingCircle( QgsMultiPoint points, QgsMultiPoint boundary )
+static QgsCircle __recMinimalEnclosingCircle( QgsMultiPointXY points, QgsMultiPointXY boundary )
 {
   auto l_boundary = boundary.length();
   QgsCircle circ_mec;
@@ -1055,14 +1040,14 @@ QgsGeometry QgsGeometry::minimalEnclosingCircle( QgsPointXY &center, double &rad
   if ( hull.isNull() )
     return QgsGeometry();
 
-  QgsMultiPoint P = hull.convertToPoint( true ).asMultiPoint();
-  QgsMultiPoint R;
+  QgsMultiPointXY P = hull.convertToPoint( true ).asMultiPoint();
+  QgsMultiPointXY R;
 
   QgsCircle circ = __recMinimalEnclosingCircle( P, R );
   center = QgsPointXY( circ.center() );
   radius = circ.radius();
   QgsGeometry geom;
-  geom.setGeometry( circ.toPolygon( segments ) );
+  geom.set( circ.toPolygon( segments ) );
   return geom;
 
 }
@@ -1080,6 +1065,24 @@ QgsGeometry QgsGeometry::orthogonalize( double tolerance, int maxIterations, dou
   QgsInternalGeometryEngine engine( *this );
 
   return engine.orthogonalize( tolerance, maxIterations, angleThreshold );
+}
+
+QgsGeometry QgsGeometry::snappedToGrid( double hSpacing, double vSpacing, double dSpacing, double mSpacing ) const
+{
+  if ( !d->geometry )
+  {
+    return QgsGeometry();
+  }
+  return QgsGeometry( d->geometry->snappedToGrid( hSpacing, vSpacing, dSpacing, mSpacing ) );
+}
+
+bool QgsGeometry::removeDuplicateNodes( double epsilon, bool useZValues )
+{
+  if ( !d->geometry )
+    return false;
+
+  detach();
+  return d->geometry->removeDuplicateNodes( epsilon, useZValues );
 }
 
 bool QgsGeometry::intersects( const QgsRectangle &r ) const
@@ -1197,7 +1200,7 @@ bool QgsGeometry::crosses( const QgsGeometry &geometry ) const
   return geos.crosses( geometry.d->geometry.get(), &mLastError );
 }
 
-QString QgsGeometry::exportToWkt( int precision ) const
+QString QgsGeometry::asWkt( int precision ) const
 {
   if ( !d->geometry )
   {
@@ -1206,13 +1209,13 @@ QString QgsGeometry::exportToWkt( int precision ) const
   return d->geometry->asWkt( precision );
 }
 
-QString QgsGeometry::exportToGeoJSON( int precision ) const
+QString QgsGeometry::asJson( int precision ) const
 {
   if ( !d->geometry )
   {
     return QStringLiteral( "null" );
   }
-  return d->geometry->asJSON( precision );
+  return d->geometry->asJson( precision );
 }
 
 QgsGeometry QgsGeometry::convertToType( QgsWkbTypes::GeometryType destType, bool destMultipart ) const
@@ -1293,9 +1296,9 @@ QgsPointXY QgsGeometry::asPoint() const
   return QgsPointXY( pt->x(), pt->y() );
 }
 
-QgsPolyline QgsGeometry::asPolyline() const
+QgsPolylineXY QgsGeometry::asPolyline() const
 {
-  QgsPolyline polyLine;
+  QgsPolylineXY polyLine;
   if ( !d->geometry )
   {
     return polyLine;
@@ -1335,56 +1338,56 @@ QgsPolyline QgsGeometry::asPolyline() const
   return polyLine;
 }
 
-QgsPolygon QgsGeometry::asPolygon() const
+QgsPolygonXY QgsGeometry::asPolygon() const
 {
   if ( !d->geometry )
-    return QgsPolygon();
+    return QgsPolygonXY();
 
   bool doSegmentation = ( QgsWkbTypes::flatType( d->geometry->wkbType() ) == QgsWkbTypes::CurvePolygon );
 
-  QgsPolygonV2 *p = nullptr;
-  std::unique_ptr< QgsPolygonV2 > segmentized;
+  QgsPolygon *p = nullptr;
+  std::unique_ptr< QgsPolygon > segmentized;
   if ( doSegmentation )
   {
     QgsCurvePolygon *curvePoly = qgsgeometry_cast<QgsCurvePolygon *>( d->geometry.get() );
     if ( !curvePoly )
     {
-      return QgsPolygon();
+      return QgsPolygonXY();
     }
     segmentized.reset( curvePoly->toPolygon() );
     p = segmentized.get();
   }
   else
   {
-    p = qgsgeometry_cast<QgsPolygonV2 *>( d->geometry.get() );
+    p = qgsgeometry_cast<QgsPolygon *>( d->geometry.get() );
   }
 
   if ( !p )
   {
-    return QgsPolygon();
+    return QgsPolygonXY();
   }
 
-  QgsPolygon polygon;
+  QgsPolygonXY polygon;
   convertPolygon( *p, polygon );
 
   return polygon;
 }
 
-QgsMultiPoint QgsGeometry::asMultiPoint() const
+QgsMultiPointXY QgsGeometry::asMultiPoint() const
 {
   if ( !d->geometry || QgsWkbTypes::flatType( d->geometry->wkbType() ) != QgsWkbTypes::MultiPoint )
   {
-    return QgsMultiPoint();
+    return QgsMultiPointXY();
   }
 
-  const QgsMultiPointV2 *mp = qgsgeometry_cast<QgsMultiPointV2 *>( d->geometry.get() );
+  const QgsMultiPoint *mp = qgsgeometry_cast<QgsMultiPoint *>( d->geometry.get() );
   if ( !mp )
   {
-    return QgsMultiPoint();
+    return QgsMultiPointXY();
   }
 
   int nPoints = mp->numGeometries();
-  QgsMultiPoint multiPoint( nPoints );
+  QgsMultiPointXY multiPoint( nPoints );
   for ( int i = 0; i < nPoints; ++i )
   {
     const QgsPoint *pt = static_cast<const QgsPoint *>( mp->geometryN( i ) );
@@ -1394,26 +1397,26 @@ QgsMultiPoint QgsGeometry::asMultiPoint() const
   return multiPoint;
 }
 
-QgsMultiPolyline QgsGeometry::asMultiPolyline() const
+QgsMultiPolylineXY QgsGeometry::asMultiPolyline() const
 {
   if ( !d->geometry )
   {
-    return QgsMultiPolyline();
+    return QgsMultiPolylineXY();
   }
 
   QgsGeometryCollection *geomCollection = qgsgeometry_cast<QgsGeometryCollection *>( d->geometry.get() );
   if ( !geomCollection )
   {
-    return QgsMultiPolyline();
+    return QgsMultiPolylineXY();
   }
 
   int nLines = geomCollection->numGeometries();
   if ( nLines < 1 )
   {
-    return QgsMultiPolyline();
+    return QgsMultiPolylineXY();
   }
 
-  QgsMultiPolyline mpl;
+  QgsMultiPolylineXY mpl;
   for ( int i = 0; i < nLines; ++i )
   {
     const QgsLineString *line = qgsgeometry_cast<const QgsLineString *>( geomCollection->geometryN( i ) );
@@ -1431,36 +1434,36 @@ QgsMultiPolyline QgsGeometry::asMultiPolyline() const
 
     QgsPointSequence lineCoords;
     line->points( lineCoords );
-    QgsPolyline polyLine;
+    QgsPolylineXY polyLine;
     convertToPolyline( lineCoords, polyLine );
     mpl.append( polyLine );
   }
   return mpl;
 }
 
-QgsMultiPolygon QgsGeometry::asMultiPolygon() const
+QgsMultiPolygonXY QgsGeometry::asMultiPolygon() const
 {
   if ( !d->geometry )
   {
-    return QgsMultiPolygon();
+    return QgsMultiPolygonXY();
   }
 
   QgsGeometryCollection *geomCollection = qgsgeometry_cast<QgsGeometryCollection *>( d->geometry.get() );
   if ( !geomCollection )
   {
-    return QgsMultiPolygon();
+    return QgsMultiPolygonXY();
   }
 
   int nPolygons = geomCollection->numGeometries();
   if ( nPolygons < 1 )
   {
-    return QgsMultiPolygon();
+    return QgsMultiPolygonXY();
   }
 
-  QgsMultiPolygon mp;
+  QgsMultiPolygonXY mp;
   for ( int i = 0; i < nPolygons; ++i )
   {
-    const QgsPolygonV2 *polygon = qgsgeometry_cast<const QgsPolygonV2 *>( geomCollection->geometryN( i ) );
+    const QgsPolygon *polygon = qgsgeometry_cast<const QgsPolygon *>( geomCollection->geometryN( i ) );
     if ( !polygon )
     {
       const QgsCurvePolygon *cPolygon = qgsgeometry_cast<const QgsCurvePolygon *>( geomCollection->geometryN( i ) );
@@ -1474,7 +1477,7 @@ QgsMultiPolygon QgsGeometry::asMultiPolygon() const
       }
     }
 
-    QgsPolygon poly;
+    QgsPolygonXY poly;
     convertPolygon( *polygon, poly );
     mp.append( poly );
   }
@@ -1619,8 +1622,8 @@ QgsGeometry QgsGeometry::offsetCurve( double distance, int segments, JoinStyle j
 
   if ( QgsWkbTypes::isMultiType( d->geometry->wkbType() ) )
   {
-    const QList<QgsGeometry> parts = asGeometryCollection();
-    QList<QgsGeometry> results;
+    const QVector<QgsGeometry> parts = asGeometryCollection();
+    QVector<QgsGeometry> results;
     for ( const QgsGeometry &part : parts )
     {
       QgsGeometry result = part.offsetCurve( distance, segments, joinStyle, miterLimit );
@@ -1661,8 +1664,8 @@ QgsGeometry QgsGeometry::singleSidedBuffer( double distance, int segments, Buffe
 
   if ( QgsWkbTypes::isMultiType( d->geometry->wkbType() ) )
   {
-    const QList<QgsGeometry> parts = asGeometryCollection();
-    QList<QgsGeometry> results;
+    const QVector<QgsGeometry> parts = asGeometryCollection();
+    QVector<QgsGeometry> results;
     for ( const QgsGeometry &part : parts )
     {
       QgsGeometry result = part.singleSidedBuffer( distance, segments, side, joinStyle, miterLimit );
@@ -1704,8 +1707,8 @@ QgsGeometry QgsGeometry::extendLine( double startDistance, double endDistance ) 
 
   if ( QgsWkbTypes::isMultiType( d->geometry->wkbType() ) )
   {
-    const QList<QgsGeometry> parts = asGeometryCollection();
-    QList<QgsGeometry> results;
+    const QVector<QgsGeometry> parts = asGeometryCollection();
+    QVector<QgsGeometry> results;
     for ( const QgsGeometry &part : parts )
     {
       QgsGeometry result = part.extendLine( startDistance, endDistance );
@@ -1831,7 +1834,7 @@ QgsGeometry QgsGeometry::voronoiDiagram( const QgsGeometry &extent, double toler
 
   QgsGeos geos( d->geometry.get() );
   mLastError.clear();
-  QgsGeometry result = geos.voronoiDiagram( extent.geometry(), tolerance, edgesOnly, &mLastError );
+  QgsGeometry result = geos.voronoiDiagram( extent.constGet(), tolerance, edgesOnly, &mLastError );
   result.mLastError = mLastError;
   return result;
 }
@@ -1888,7 +1891,7 @@ QgsGeometry QgsGeometry::interpolate( double distance ) const
   if ( type() == QgsWkbTypes::PolygonGeometry )
     line = QgsGeometry( d->geometry->boundary() );
 
-  QgsGeos geos( line.geometry() );
+  QgsGeos geos( line.constGet() );
   mLastError.clear();
   std::unique_ptr< QgsAbstractGeometry > result( geos.interpolate( distance, &mLastError ) );
   if ( !result )
@@ -1933,7 +1936,7 @@ double QgsGeometry::interpolateAngle( double distance ) const
 
   QgsVertexId previous;
   QgsVertexId next;
-  if ( !QgsGeometryUtils::verticesAtDistance( *segmentized.geometry(), distance, previous, next ) )
+  if ( !QgsGeometryUtils::verticesAtDistance( *segmentized.constGet(), distance, previous, next ) )
     return 0.0;
 
   if ( previous == next )
@@ -1942,33 +1945,33 @@ double QgsGeometry::interpolateAngle( double distance ) const
     QgsVertexId v2 = previous;
     QgsVertexId v1;
     QgsVertexId v3;
-    QgsGeometryUtils::adjacentVertices( *segmentized.geometry(), v2, v1, v3 );
+    segmentized.constGet()->adjacentVertices( v2, v1, v3 );
     if ( v1.isValid() && v3.isValid() )
     {
-      QgsPoint p1 = segmentized.geometry()->vertexAt( v1 );
-      QgsPoint p2 = segmentized.geometry()->vertexAt( v2 );
-      QgsPoint p3 = segmentized.geometry()->vertexAt( v3 );
+      QgsPoint p1 = segmentized.constGet()->vertexAt( v1 );
+      QgsPoint p2 = segmentized.constGet()->vertexAt( v2 );
+      QgsPoint p3 = segmentized.constGet()->vertexAt( v3 );
       double angle1 = QgsGeometryUtils::lineAngle( p1.x(), p1.y(), p2.x(), p2.y() );
       double angle2 = QgsGeometryUtils::lineAngle( p2.x(), p2.y(), p3.x(), p3.y() );
       return QgsGeometryUtils::averageAngle( angle1, angle2 );
     }
     else if ( v3.isValid() )
     {
-      QgsPoint p1 = segmentized.geometry()->vertexAt( v2 );
-      QgsPoint p2 = segmentized.geometry()->vertexAt( v3 );
+      QgsPoint p1 = segmentized.constGet()->vertexAt( v2 );
+      QgsPoint p2 = segmentized.constGet()->vertexAt( v3 );
       return QgsGeometryUtils::lineAngle( p1.x(), p1.y(), p2.x(), p2.y() );
     }
     else
     {
-      QgsPoint p1 = segmentized.geometry()->vertexAt( v1 );
-      QgsPoint p2 = segmentized.geometry()->vertexAt( v2 );
+      QgsPoint p1 = segmentized.constGet()->vertexAt( v1 );
+      QgsPoint p2 = segmentized.constGet()->vertexAt( v2 );
       return QgsGeometryUtils::lineAngle( p1.x(), p1.y(), p2.x(), p2.y() );
     }
   }
   else
   {
-    QgsPoint p1 = segmentized.geometry()->vertexAt( previous );
-    QgsPoint p2 = segmentized.geometry()->vertexAt( next );
+    QgsPoint p1 = segmentized.constGet()->vertexAt( previous );
+    QgsPoint p2 = segmentized.constGet()->vertexAt( next );
     return QgsGeometryUtils::lineAngle( p1.x(), p1.y(), p2.x(), p2.y() );
   }
 }
@@ -2081,14 +2084,14 @@ QgsGeometry QgsGeometry::extrude( double x, double y )
   return engine.extrude( x, y );
 }
 
-QByteArray QgsGeometry::exportToWkb() const
+QByteArray QgsGeometry::asWkb() const
 {
   return d->geometry ? d->geometry->asWkb() : QByteArray();
 }
 
-QList<QgsGeometry> QgsGeometry::asGeometryCollection() const
+QVector<QgsGeometry> QgsGeometry::asGeometryCollection() const
 {
-  QList<QgsGeometry> geometryList;
+  QVector<QgsGeometry> geometryList;
   if ( !d->geometry )
   {
     return geometryList;
@@ -2121,7 +2124,7 @@ QPointF QgsGeometry::asQPointF() const
 QPolygonF QgsGeometry::asQPolygonF() const
 {
   QPolygonF result;
-  QgsPolyline polyline;
+  QgsPolylineXY polyline;
   QgsWkbTypes::Type type = wkbType();
   if ( type == QgsWkbTypes::LineString || type == QgsWkbTypes::LineString25D )
   {
@@ -2129,7 +2132,7 @@ QPolygonF QgsGeometry::asQPolygonF() const
   }
   else if ( type == QgsWkbTypes::Polygon || type == QgsWkbTypes::Polygon25D )
   {
-    QgsPolygon polygon = asPolygon();
+    QgsPolygonXY polygon = asPolygon();
     if ( polygon.empty() )
       return result;
     polyline = polygon.at( 0 );
@@ -2167,7 +2170,7 @@ bool QgsGeometry::deletePart( int partNum )
 
   if ( !isMultipart() && partNum < 1 )
   {
-    setGeometry( nullptr );
+    set( nullptr );
     return true;
   }
 
@@ -2206,7 +2209,7 @@ QgsGeometry QgsGeometry::makeValid() const
 }
 
 
-void QgsGeometry::validateGeometry( QList<QgsGeometry::Error> &errors, ValidationMethod method ) const
+void QgsGeometry::validateGeometry( QVector<QgsGeometry::Error> &errors, ValidationMethod method ) const
 {
   QgsGeometryValidator::validateGeometry( *this, errors, method );
 }
@@ -2245,7 +2248,7 @@ bool QgsGeometry::isGeosEqual( const QgsGeometry &g ) const
   return geos.isEqual( g.d->geometry.get(), &mLastError );
 }
 
-QgsGeometry QgsGeometry::unaryUnion( const QList<QgsGeometry> &geometries )
+QgsGeometry QgsGeometry::unaryUnion( const QVector<QgsGeometry> &geometries )
 {
   QgsGeos geos( nullptr );
 
@@ -2256,16 +2259,16 @@ QgsGeometry QgsGeometry::unaryUnion( const QList<QgsGeometry> &geometries )
   return result;
 }
 
-QgsGeometry QgsGeometry::polygonize( const QList<QgsGeometry> &geometryList )
+QgsGeometry QgsGeometry::polygonize( const QVector<QgsGeometry> &geometryList )
 {
   QgsGeos geos( nullptr );
 
-  QList<const QgsAbstractGeometry *> geomV2List;
+  QVector<const QgsAbstractGeometry *> geomV2List;
   for ( const QgsGeometry &g : geometryList )
   {
     if ( !( g.isNull() ) )
     {
-      geomV2List.append( g.geometry() );
+      geomV2List.append( g.constGet() );
     }
   }
 
@@ -2308,7 +2311,7 @@ QgsGeometry::OperationResult QgsGeometry::transform( const QgsCoordinateTransfor
   return QgsGeometry::Success;
 }
 
-QgsGeometry::OperationResult QgsGeometry::transform( const QTransform &ct )
+QgsGeometry::OperationResult QgsGeometry::transform( const QTransform &ct, double zTranslate, double zScale, double mTranslate, double mScale )
 {
   if ( !d->geometry )
   {
@@ -2316,7 +2319,7 @@ QgsGeometry::OperationResult QgsGeometry::transform( const QTransform &ct )
   }
 
   detach();
-  d->geometry->transform( ct );
+  d->geometry->transform( ct, zTranslate, zScale, mTranslate, mScale );
   return QgsGeometry::Success;
 }
 
@@ -2475,27 +2478,7 @@ int QgsGeometry::vertexNrFromVertexId( QgsVertexId id ) const
   {
     return -1;
   }
-
-  QgsCoordinateSequence coords = d->geometry->coordinateSequence();
-
-  int vertexCount = 0;
-  for ( int part = 0; part < coords.size(); ++part )
-  {
-    const QgsRingSequence &featureCoords = coords.at( part );
-    for ( int ring = 0; ring < featureCoords.size(); ++ring )
-    {
-      const QgsPointSequence &ringCoords = featureCoords.at( ring );
-      for ( int vertex = 0; vertex < ringCoords.size(); ++vertex )
-      {
-        if ( vertex == id.vertex && ring == id.ring && part == id.part )
-        {
-          return vertexCount;
-        }
-        ++vertexCount;
-      }
-    }
-  }
-  return -1;
+  return d->geometry->vertexNumberFromVertexId( id );
 }
 
 QString QgsGeometry::lastError() const
@@ -2503,7 +2486,7 @@ QString QgsGeometry::lastError() const
   return mLastError;
 }
 
-void QgsGeometry::convertPointList( const QList<QgsPointXY> &input, QgsPointSequence &output )
+void QgsGeometry::convertPointList( const QVector<QgsPointXY> &input, QgsPointSequence &output )
 {
   output.clear();
   for ( const QgsPointXY &p : input )
@@ -2512,7 +2495,7 @@ void QgsGeometry::convertPointList( const QList<QgsPointXY> &input, QgsPointSequ
   }
 }
 
-void QgsGeometry::convertPointList( const QgsPointSequence &input, QList<QgsPointXY> &output )
+void QgsGeometry::convertPointList( const QgsPointSequence &input, QVector<QgsPointXY> &output )
 {
   output.clear();
   for ( const QgsPoint &p : input )
@@ -2526,7 +2509,7 @@ QgsGeometry::operator bool() const
   return d->geometry.get();
 }
 
-void QgsGeometry::convertToPolyline( const QgsPointSequence &input, QgsPolyline &output )
+void QgsGeometry::convertToPolyline( const QgsPointSequence &input, QgsPolylineXY &output )
 {
   output.clear();
   output.resize( input.size() );
@@ -2539,7 +2522,7 @@ void QgsGeometry::convertToPolyline( const QgsPointSequence &input, QgsPolyline 
   }
 }
 
-void QgsGeometry::convertPolygon( const QgsPolygonV2 &input, QgsPolygon &output )
+void QgsGeometry::convertPolygon( const QgsPolygon &input, QgsPolygonXY &output )
 {
   output.clear();
   QgsCoordinateSequence coords = input.coordinateSequence();
@@ -2569,24 +2552,24 @@ QgsGeometry QgsGeometry::fromQPolygonF( const QPolygonF &polygon )
 {
   if ( polygon.isClosed() )
   {
-    return QgsGeometry::fromPolygon( createPolygonFromQPolygonF( polygon ) );
+    return QgsGeometry::fromPolygonXY( createPolygonFromQPolygonF( polygon ) );
   }
   else
   {
-    return QgsGeometry::fromPolyline( createPolylineFromQPolygonF( polygon ) );
+    return QgsGeometry::fromPolylineXY( createPolylineFromQPolygonF( polygon ) );
   }
 }
 
-QgsPolygon QgsGeometry::createPolygonFromQPolygonF( const QPolygonF &polygon )
+QgsPolygonXY QgsGeometry::createPolygonFromQPolygonF( const QPolygonF &polygon )
 {
-  QgsPolygon result;
+  QgsPolygonXY result;
   result << createPolylineFromQPolygonF( polygon );
   return result;
 }
 
-QgsPolyline QgsGeometry::createPolylineFromQPolygonF( const QPolygonF &polygon )
+QgsPolylineXY QgsGeometry::createPolylineFromQPolygonF( const QPolygonF &polygon )
 {
-  QgsPolyline result;
+  QgsPolylineXY result;
   for ( const QPointF &p : polygon )
   {
     result.append( QgsPointXY( p ) );
@@ -2594,7 +2577,7 @@ QgsPolyline QgsGeometry::createPolylineFromQPolygonF( const QPolygonF &polygon )
   return result;
 }
 
-bool QgsGeometry::compare( const QgsPolyline &p1, const QgsPolyline &p2, double epsilon )
+bool QgsGeometry::compare( const QgsPolylineXY &p1, const QgsPolylineXY &p2, double epsilon )
 {
   if ( p1.count() != p2.count() )
     return false;
@@ -2607,7 +2590,7 @@ bool QgsGeometry::compare( const QgsPolyline &p1, const QgsPolyline &p2, double 
   return true;
 }
 
-bool QgsGeometry::compare( const QgsPolygon &p1, const QgsPolygon &p2, double epsilon )
+bool QgsGeometry::compare( const QgsPolygonXY &p1, const QgsPolygonXY &p2, double epsilon )
 {
   if ( p1.count() != p2.count() )
     return false;
@@ -2621,7 +2604,7 @@ bool QgsGeometry::compare( const QgsPolygon &p1, const QgsPolygon &p2, double ep
 }
 
 
-bool QgsGeometry::compare( const QgsMultiPolygon &p1, const QgsMultiPolygon &p2, double epsilon )
+bool QgsGeometry::compare( const QgsMultiPolygonXY &p1, const QgsMultiPolygonXY &p2, double epsilon )
 {
   if ( p1.count() != p2.count() )
     return false;
@@ -2670,18 +2653,18 @@ QgsGeometry QgsGeometry::smooth( const unsigned int iterations, const double off
 
     case QgsWkbTypes::Polygon:
     {
-      QgsPolygonV2 *poly = static_cast< QgsPolygonV2 * >( d->geometry.get() );
+      QgsPolygon *poly = static_cast< QgsPolygon * >( d->geometry.get() );
       return QgsGeometry( smoothPolygon( *poly, iterations, offset, minimumDistance, maxAngle ) );
     }
 
     case QgsWkbTypes::MultiPolygon:
     {
-      QgsMultiPolygonV2 *multiPoly = static_cast< QgsMultiPolygonV2 * >( d->geometry.get() );
+      QgsMultiPolygon *multiPoly = static_cast< QgsMultiPolygon * >( d->geometry.get() );
 
-      std::unique_ptr< QgsMultiPolygonV2 > resultMultiPoly = qgis::make_unique< QgsMultiPolygonV2 >();
+      std::unique_ptr< QgsMultiPolygon > resultMultiPoly = qgis::make_unique< QgsMultiPolygon >();
       for ( int i = 0; i < multiPoly->numGeometries(); ++i )
       {
-        resultMultiPoly->addGeometry( smoothPolygon( *( static_cast< QgsPolygonV2 * >( multiPoly->geometryN( i ) ) ), iterations, offset, minimumDistance, maxAngle ).release() );
+        resultMultiPoly->addGeometry( smoothPolygon( *( static_cast< QgsPolygon * >( multiPoly->geometryN( i ) ) ), iterations, offset, minimumDistance, maxAngle ).release() );
       }
       return QgsGeometry( std::move( resultMultiPoly ) );
     }
@@ -2791,11 +2774,11 @@ std::unique_ptr<QgsLineString> QgsGeometry::smoothLine( const QgsLineString &lin
   return smoothCurve( line, iterations, offset, squareDistThreshold, maxAngleRads, false );
 }
 
-std::unique_ptr<QgsPolygonV2> QgsGeometry::smoothPolygon( const QgsPolygonV2 &polygon, const unsigned int iterations, const double offset, double minimumDistance, double maxAngle ) const
+std::unique_ptr<QgsPolygon> QgsGeometry::smoothPolygon( const QgsPolygon &polygon, const unsigned int iterations, const double offset, double minimumDistance, double maxAngle ) const
 {
   double maxAngleRads = maxAngle * M_PI / 180.0;
   double squareDistThreshold = minimumDistance > 0 ? minimumDistance * minimumDistance : -1;
-  std::unique_ptr< QgsPolygonV2 > resultPoly = qgis::make_unique< QgsPolygonV2 >();
+  std::unique_ptr< QgsPolygon > resultPoly = qgis::make_unique< QgsPolygon >();
 
   resultPoly->setExteriorRing( smoothCurve( *( static_cast< const QgsLineString *>( polygon.exteriorRing() ) ), iterations, offset,
                                squareDistThreshold, maxAngleRads, true ).release() );
@@ -2825,15 +2808,15 @@ QgsGeometry QgsGeometry::convertToPoint( bool destMultipart ) const
       if ( destMultipart )
       {
         // layer is multipart => make a multipoint with a single point
-        return fromMultiPoint( QgsMultiPoint() << asPoint() );
+        return fromMultiPointXY( QgsMultiPointXY() << asPoint() );
       }
       else
       {
         // destination is singlepart => make a single part if possible
-        QgsMultiPoint multiPoint = asMultiPoint();
+        QgsMultiPointXY multiPoint = asMultiPoint();
         if ( multiPoint.count() == 1 )
         {
-          return fromPoint( multiPoint[0] );
+          return fromPointXY( multiPoint[0] );
         }
       }
       return QgsGeometry();
@@ -2848,19 +2831,19 @@ QgsGeometry QgsGeometry::convertToPoint( bool destMultipart ) const
       // input geometry is multipart
       if ( isMultipart() )
       {
-        const QgsMultiPolyline multiLine = asMultiPolyline();
-        QgsMultiPoint multiPoint;
-        for ( const QgsPolyline &l : multiLine )
+        const QgsMultiPolylineXY multiLine = asMultiPolyline();
+        QgsMultiPointXY multiPoint;
+        for ( const QgsPolylineXY &l : multiLine )
           for ( const QgsPointXY &p : l )
             multiPoint << p;
-        return fromMultiPoint( multiPoint );
+        return fromMultiPointXY( multiPoint );
       }
       // input geometry is not multipart: copy directly the line into a multipoint
       else
       {
-        QgsPolyline line = asPolyline();
+        QgsPolylineXY line = asPolyline();
         if ( !line.isEmpty() )
-          return fromMultiPoint( line );
+          return fromMultiPointXY( line );
       }
       return QgsGeometry();
     }
@@ -2874,23 +2857,23 @@ QgsGeometry QgsGeometry::convertToPoint( bool destMultipart ) const
       // input geometry is multipart: make a multipoint from multipolygon
       if ( isMultipart() )
       {
-        const QgsMultiPolygon multiPolygon = asMultiPolygon();
-        QgsMultiPoint multiPoint;
-        for ( const QgsPolygon &poly : multiPolygon )
-          for ( const QgsPolyline &line : poly )
+        const QgsMultiPolygonXY multiPolygon = asMultiPolygon();
+        QgsMultiPointXY multiPoint;
+        for ( const QgsPolygonXY &poly : multiPolygon )
+          for ( const QgsPolylineXY &line : poly )
             for ( const QgsPointXY &pt : line )
               multiPoint << pt;
-        return fromMultiPoint( multiPoint );
+        return fromMultiPointXY( multiPoint );
       }
       // input geometry is not multipart: make a multipoint from polygon
       else
       {
-        const QgsPolygon polygon = asPolygon();
-        QgsMultiPoint multiPoint;
-        for ( const QgsPolyline &line : polygon )
+        const QgsPolygonXY polygon = asPolygon();
+        QgsMultiPointXY multiPoint;
+        for ( const QgsPolylineXY &line : polygon )
           for ( const QgsPointXY &pt : line )
             multiPoint << pt;
-        return fromMultiPoint( multiPoint );
+        return fromMultiPointXY( multiPoint );
       }
     }
 
@@ -2908,14 +2891,14 @@ QgsGeometry QgsGeometry::convertToLine( bool destMultipart ) const
       if ( !isMultipart() )
         return QgsGeometry();
 
-      QgsMultiPoint multiPoint = asMultiPoint();
+      QgsMultiPointXY multiPoint = asMultiPoint();
       if ( multiPoint.count() < 2 )
         return QgsGeometry();
 
       if ( destMultipart )
-        return fromMultiPolyline( QgsMultiPolyline() << multiPoint );
+        return fromMultiPolylineXY( QgsMultiPolylineXY() << multiPoint );
       else
-        return fromPolyline( multiPoint );
+        return fromPolylineXY( multiPoint );
     }
 
     case QgsWkbTypes::LineGeometry:
@@ -2931,16 +2914,16 @@ QgsGeometry QgsGeometry::convertToLine( bool destMultipart ) const
       if ( destMultipart )
       {
         // destination is multipart => makes a multipoint with a single line
-        QgsPolyline line = asPolyline();
+        QgsPolylineXY line = asPolyline();
         if ( !line.isEmpty() )
-          return fromMultiPolyline( QgsMultiPolyline() << line );
+          return fromMultiPolylineXY( QgsMultiPolylineXY() << line );
       }
       else
       {
         // destination is singlepart => make a single part if possible
-        QgsMultiPolyline multiLine = asMultiPolyline();
+        QgsMultiPolylineXY multiLine = asMultiPolyline();
         if ( multiLine.count() == 1 )
-          return fromPolyline( multiLine[0] );
+          return fromPolylineXY( multiLine[0] );
       }
       return QgsGeometry();
     }
@@ -2950,27 +2933,27 @@ QgsGeometry QgsGeometry::convertToLine( bool destMultipart ) const
       // input geometry is multipolygon
       if ( isMultipart() )
       {
-        const QgsMultiPolygon multiPolygon = asMultiPolygon();
-        QgsMultiPolyline multiLine;
-        for ( const QgsPolygon &poly : multiPolygon )
-          for ( const QgsPolyline &line : poly )
+        const QgsMultiPolygonXY multiPolygon = asMultiPolygon();
+        QgsMultiPolylineXY multiLine;
+        for ( const QgsPolygonXY &poly : multiPolygon )
+          for ( const QgsPolylineXY &line : poly )
             multiLine << line;
 
         if ( destMultipart )
         {
           // destination is multipart
-          return fromMultiPolyline( multiLine );
+          return fromMultiPolylineXY( multiLine );
         }
         else if ( multiLine.count() == 1 )
         {
           // destination is singlepart => make a single part if possible
-          return fromPolyline( multiLine[0] );
+          return fromPolylineXY( multiLine[0] );
         }
       }
       // input geometry is single polygon
       else
       {
-        QgsPolygon polygon = asPolygon();
+        QgsPolygonXY polygon = asPolygon();
         // if polygon has rings
         if ( polygon.count() > 1 )
         {
@@ -2978,11 +2961,11 @@ QgsGeometry QgsGeometry::convertToLine( bool destMultipart ) const
           // TODO: would it be better to remove rings?
           if ( destMultipart )
           {
-            const QgsPolygon polygon = asPolygon();
-            QgsMultiPolyline multiLine;
-            for ( const QgsPolyline &line : polygon )
+            const QgsPolygonXY polygon = asPolygon();
+            QgsMultiPolylineXY multiLine;
+            for ( const QgsPolylineXY &line : polygon )
               multiLine << line;
-            return fromMultiPolyline( multiLine );
+            return fromMultiPolylineXY( multiLine );
           }
         }
         // no rings
@@ -2990,11 +2973,11 @@ QgsGeometry QgsGeometry::convertToLine( bool destMultipart ) const
         {
           if ( destMultipart )
           {
-            return fromMultiPolyline( polygon );
+            return fromMultiPolylineXY( polygon );
           }
           else
           {
-            return fromPolyline( polygon[0] );
+            return fromPolylineXY( polygon[0] );
           }
         }
       }
@@ -3015,18 +2998,18 @@ QgsGeometry QgsGeometry::convertToPolygon( bool destMultipart ) const
       if ( !isMultipart() )
         return QgsGeometry();
 
-      QgsMultiPoint multiPoint = asMultiPoint();
+      QgsMultiPointXY multiPoint = asMultiPoint();
       if ( multiPoint.count() < 3 )
         return QgsGeometry();
 
       if ( multiPoint.last() != multiPoint.first() )
         multiPoint << multiPoint.first();
 
-      QgsPolygon polygon = QgsPolygon() << multiPoint;
+      QgsPolygonXY polygon = QgsPolygonXY() << multiPoint;
       if ( destMultipart )
-        return fromMultiPolygon( QgsMultiPolygon() << polygon );
+        return fromMultiPolygonXY( QgsMultiPolygonXY() << polygon );
       else
-        return fromPolygon( polygon );
+        return fromPolygonXY( polygon );
     }
 
     case QgsWkbTypes::LineGeometry:
@@ -3034,9 +3017,9 @@ QgsGeometry QgsGeometry::convertToPolygon( bool destMultipart ) const
       // input geometry is multiline
       if ( isMultipart() )
       {
-        QgsMultiPolyline multiLine = asMultiPolyline();
-        QgsMultiPolygon multiPolygon;
-        for ( QgsMultiPolyline::iterator multiLineIt = multiLine.begin(); multiLineIt != multiLine.end(); ++multiLineIt )
+        QgsMultiPolylineXY multiLine = asMultiPolyline();
+        QgsMultiPolygonXY multiPolygon;
+        for ( QgsMultiPolylineXY::iterator multiLineIt = multiLine.begin(); multiLineIt != multiLine.end(); ++multiLineIt )
         {
           // do not create polygon for a 1 segment line
           if ( ( *multiLineIt ).count() < 3 )
@@ -3047,26 +3030,26 @@ QgsGeometry QgsGeometry::convertToPolygon( bool destMultipart ) const
           // add closing node
           if ( ( *multiLineIt ).first() != ( *multiLineIt ).last() )
             *multiLineIt << ( *multiLineIt ).first();
-          multiPolygon << ( QgsPolygon() << *multiLineIt );
+          multiPolygon << ( QgsPolygonXY() << *multiLineIt );
         }
         // check that polygons were inserted
         if ( !multiPolygon.isEmpty() )
         {
           if ( destMultipart )
           {
-            return fromMultiPolygon( multiPolygon );
+            return fromMultiPolygonXY( multiPolygon );
           }
           else if ( multiPolygon.count() == 1 )
           {
             // destination is singlepart => make a single part if possible
-            return fromPolygon( multiPolygon[0] );
+            return fromPolygonXY( multiPolygon[0] );
           }
         }
       }
       // input geometry is single line
       else
       {
-        QgsPolyline line = asPolyline();
+        QgsPolylineXY line = asPolyline();
 
         // do not create polygon for a 1 segment line
         if ( line.count() < 3 )
@@ -3081,11 +3064,11 @@ QgsGeometry QgsGeometry::convertToPolygon( bool destMultipart ) const
         // destination is multipart
         if ( destMultipart )
         {
-          return fromMultiPolygon( QgsMultiPolygon() << ( QgsPolygon() << line ) );
+          return fromMultiPolygonXY( QgsMultiPolygonXY() << ( QgsPolygonXY() << line ) );
         }
         else
         {
-          return fromPolygon( QgsPolygon() << line );
+          return fromPolygonXY( QgsPolygonXY() << line );
         }
       }
       return QgsGeometry();
@@ -3104,17 +3087,17 @@ QgsGeometry QgsGeometry::convertToPolygon( bool destMultipart ) const
       if ( destMultipart )
       {
         // destination is multipart => makes a multipoint with a single polygon
-        QgsPolygon polygon = asPolygon();
+        QgsPolygonXY polygon = asPolygon();
         if ( !polygon.isEmpty() )
-          return fromMultiPolygon( QgsMultiPolygon() << polygon );
+          return fromMultiPolygonXY( QgsMultiPolygonXY() << polygon );
       }
       else
       {
-        QgsMultiPolygon multiPolygon = asMultiPolygon();
+        QgsMultiPolygonXY multiPolygon = asMultiPolygon();
         if ( multiPolygon.count() == 1 )
         {
           // destination is singlepart => make a single part if possible
-          return fromPolygon( multiPolygon[0] );
+          return fromPolygonXY( multiPolygon[0] );
         }
       }
       return QgsGeometry();
@@ -3132,7 +3115,7 @@ QgsGeometryEngine *QgsGeometry::createGeometryEngine( const QgsAbstractGeometry 
 
 QDataStream &operator<<( QDataStream &out, const QgsGeometry &geometry )
 {
-  out << geometry.exportToWkb();
+  out << geometry.asWkb();
   return out;
 }
 
@@ -3142,7 +3125,7 @@ QDataStream &operator>>( QDataStream &in, QgsGeometry &geometry )
   in >> byteArray;
   if ( byteArray.isEmpty() )
   {
-    geometry.setGeometry( nullptr );
+    geometry.set( nullptr );
     return in;
   }
 

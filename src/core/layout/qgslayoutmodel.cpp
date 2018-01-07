@@ -500,11 +500,9 @@ void QgsLayoutModel::rebuildSceneItemList()
 ///@cond PRIVATE
 void QgsLayoutModel::addItemAtTop( QgsLayoutItem *item )
 {
-  beginInsertRows( QModelIndex(), 0, 0 );
   mItemZList.push_front( item );
   refreshItemsInScene();
   item->setZValue( mItemZList.size() );
-  endInsertRows();
 }
 
 void QgsLayoutModel::removeItem( QgsLayoutItem *item )

@@ -50,10 +50,10 @@ class CORE_EXPORT QgsTransformEffect : public QgsPaintEffect
      */
     QgsTransformEffect() = default;
 
-    virtual QString type() const override { return QStringLiteral( "transform" ); }
-    virtual QgsStringMap properties() const override;
-    virtual void readProperties( const QgsStringMap &props ) override;
-    virtual QgsTransformEffect *clone() const override SIP_FACTORY;
+    QString type() const override { return QStringLiteral( "transform" ); }
+    QgsStringMap properties() const override;
+    void readProperties( const QgsStringMap &props ) override;
+    QgsTransformEffect *clone() const override SIP_FACTORY;
 
     /**
      * Sets the transform x translation.
@@ -244,8 +244,8 @@ class CORE_EXPORT QgsTransformEffect : public QgsPaintEffect
 
   protected:
 
-    virtual void draw( QgsRenderContext &context ) override;
-    virtual QRectF boundingRect( const QRectF &rect, const QgsRenderContext &context ) const override;
+    void draw( QgsRenderContext &context ) override;
+    QRectF boundingRect( const QRectF &rect, const QgsRenderContext &context ) const override;
 
   private:
 
