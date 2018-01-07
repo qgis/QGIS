@@ -149,7 +149,7 @@ void TestQgsLayoutAtlas::init()
   mOverview = new QgsLayoutItemMap( mLayout );
   mOverview->attemptSetSceneRect( QRectF( 180, 20, 50, 50 ) );
   mOverview->setFrameEnabled( true );
-  mOverview->overview()->setFrameMap( mAtlasMap );
+  mOverview->overview()->setLinkedMap( mAtlasMap );
   mOverview->setLayers( QList<QgsMapLayer *>() << mVectorLayer );
   mLayout->addLayoutItem( mOverview );
   mOverview->setExtent( QgsRectangle( 49670.718, 6415139.086, 699672.519, 7065140.887 ) );

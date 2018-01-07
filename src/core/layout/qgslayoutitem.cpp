@@ -871,7 +871,7 @@ bool QgsLayoutItem::requiresRasterization() const
 
 double QgsLayoutItem::estimatedFrameBleed() const
 {
-  if ( !hasFrame() )
+  if ( !frameEnabled() )
   {
     return 0;
   }

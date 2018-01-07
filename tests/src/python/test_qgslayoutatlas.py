@@ -117,7 +117,7 @@ class TestQgsLayoutAtlas(unittest.TestCase):
         self.overview = QgsLayoutItemMap(self.layout)
         self.overview.attemptSetSceneRect(QRectF(180, 20, 50, 50))
         self.overview.setFrameEnabled(True)
-        self.overview.overview().setFrameMap(self.atlas_map)
+        self.overview.overview().setLinkedMap(self.atlas_map)
         self.overview.setLayers([mVectorLayer])
         self.layout.addLayoutItem(self.overview)
         nextent = QgsRectangle(49670.718, 6415139.086, 699672.519, 7065140.887)
@@ -543,7 +543,7 @@ class TestQgsLayoutAtlas(unittest.TestCase):
         legend = QgsLayoutItemLegend(self.layout)
         legend.attemptMove(QgsLayoutPoint(200, 100))
         # sets the legend filter parameter
-        legend.setMap(self.atlas_map)
+        legend.setLinkedMap(self.atlas_map)
         legend.setLegendFilterOutAtlas(True)
         self.layout.addLayoutItem(legend)
 

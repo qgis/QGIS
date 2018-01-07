@@ -156,7 +156,7 @@ void QgsLayoutItemScaleBar::setBoxContentSpace( double space )
   refreshItemSize();
 }
 
-void QgsLayoutItemScaleBar::setMap( QgsLayoutItemMap *map )
+void QgsLayoutItemScaleBar::setLinkedMap( QgsLayoutItemMap *map )
 {
   disconnectCurrentMap();
 

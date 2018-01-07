@@ -1657,7 +1657,7 @@ void TestQgsLayoutItem::writeReadXmlProperties()
   QVERIFY( copy->isLocked() );
   QCOMPARE( copy->zValue(), 55.0 );
   QVERIFY( !copy->isVisible() );
-  QVERIFY( copy->hasFrame() );
+  QVERIFY( copy->frameEnabled() );
   QCOMPARE( copy->frameStrokeColor(), QColor( 100, 150, 200 ) );
   QCOMPARE( copy->frameStrokeWidth(), QgsLayoutMeasurement( 5, QgsUnitTypes::LayoutCentimeters ) );
   QCOMPARE( copy->frameJoinStyle(), Qt::MiterJoin );

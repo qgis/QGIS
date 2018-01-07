@@ -112,7 +112,7 @@ void TestQgsLayoutScaleBar::singleBox()
   QgsLayoutItemScaleBar *scalebar = new QgsLayoutItemScaleBar( &l );
   scalebar->attemptSetSceneRect( QRectF( 20, 180, 50, 20 ) );
   l.addLayoutItem( scalebar );
-  scalebar->setMap( map );
+  scalebar->setLinkedMap( map );
   scalebar->setFont( QgsFontUtils::getStandardTestFont() );
   scalebar->setUnits( QgsUnitTypes::DistanceMeters );
   scalebar->setUnitsPerSegment( 2000 );
@@ -140,7 +140,7 @@ void TestQgsLayoutScaleBar::singleBoxAlpha()
   QgsLayoutItemScaleBar *scalebar = new QgsLayoutItemScaleBar( &l );
   scalebar->attemptSetSceneRect( QRectF( 20, 180, 50, 20 ) );
   l.addLayoutItem( scalebar );
-  scalebar->setMap( map );
+  scalebar->setLinkedMap( map );
   scalebar->setFont( QgsFontUtils::getStandardTestFont() );
   scalebar->setUnits( QgsUnitTypes::DistanceMeters );
   scalebar->setUnitsPerSegment( 2000 );
@@ -173,7 +173,7 @@ void TestQgsLayoutScaleBar::doubleBox()
   QgsLayoutItemScaleBar *scalebar = new QgsLayoutItemScaleBar( &l );
   scalebar->attemptSetSceneRect( QRectF( 20, 180, 50, 20 ) );
   l.addLayoutItem( scalebar );
-  scalebar->setMap( map );
+  scalebar->setLinkedMap( map );
   scalebar->setFont( QgsFontUtils::getStandardTestFont() );
   scalebar->setUnits( QgsUnitTypes::DistanceMeters );
   scalebar->setUnitsPerSegment( 2000 );
@@ -207,7 +207,7 @@ void TestQgsLayoutScaleBar::numeric()
   QgsLayoutItemScaleBar *scalebar = new QgsLayoutItemScaleBar( &l );
   scalebar->attemptSetSceneRect( QRectF( 20, 180, 50, 20 ) );
   l.addLayoutItem( scalebar );
-  scalebar->setMap( map );
+  scalebar->setLinkedMap( map );
   scalebar->setFont( QgsFontUtils::getStandardTestFont() );
   scalebar->setUnits( QgsUnitTypes::DistanceMeters );
   scalebar->setUnitsPerSegment( 2000 );
@@ -240,7 +240,7 @@ void TestQgsLayoutScaleBar::tick()
   QgsLayoutItemScaleBar *scalebar = new QgsLayoutItemScaleBar( &l );
   scalebar->attemptSetSceneRect( QRectF( 20, 180, 50, 20 ) );
   l.addLayoutItem( scalebar );
-  scalebar->setMap( map );
+  scalebar->setLinkedMap( map );
   scalebar->setFont( QgsFontUtils::getStandardTestFont() );
   scalebar->setUnits( QgsUnitTypes::DistanceMeters );
   scalebar->setUnitsPerSegment( 2000 );

@@ -1880,7 +1880,7 @@ QgsLayoutItemMapGrid::BorderSide QgsLayoutItemMapGrid::borderForLineCoord( QPoin
     return QgsLayoutItemMapGrid::Left;
   }
 
-  double tolerance = std::max( mMap->hasFrame() ? mMap->pen().widthF() : 0.0, 1.0 );
+  double tolerance = std::max( mMap->frameEnabled() ? mMap->pen().widthF() : 0.0, 1.0 );
 
   //check for corner coordinates
   if ( ( p.y() <= tolerance && p.x() <= tolerance ) // top left

@@ -254,7 +254,7 @@ QgsLayoutFrame *QgsLayoutMultiFrame::createNewFrame( QgsLayoutFrame *currentFram
   newFrame->setBackgroundColor( currentFrame->backgroundColor() );
   newFrame->setBackgroundEnabled( currentFrame->hasBackground() );
   newFrame->setBlendMode( currentFrame->blendMode() );
-  newFrame->setFrameEnabled( currentFrame->hasFrame() );
+  newFrame->setFrameEnabled( currentFrame->frameEnabled() );
   newFrame->setFrameStrokeColor( currentFrame->frameStrokeColor() );
   newFrame->setFrameJoinStyle( currentFrame->frameJoinStyle() );
   newFrame->setFrameStrokeWidth( currentFrame->frameStrokeWidth() );

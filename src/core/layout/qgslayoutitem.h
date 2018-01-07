@@ -612,11 +612,11 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * \see frameJoinStyle()
      * \see frameStrokeColor()
      */
-    bool hasFrame() const { return mFrame; }
+    bool frameEnabled() const { return mFrame; }
 
     /**
      * Sets whether this item has a frame drawn around it or not.
-     * \see hasFrame()
+     * \see frameEnabled()
      * \see setFrameStrokeWidth()
      * \see setFrameJoinStyle()
      * \see setFrameStrokeColor()
@@ -633,8 +633,8 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     void setFrameStrokeColor( const QColor &color );
 
     /**
-     * Returns the frame's stroke color. This is only used if hasFrame() returns true.
-     * \see hasFrame()
+     * Returns the frame's stroke color. This is only used if frameEnabled() returns true.
+     * \see frameEnabled()
      * \see setFrameStrokeColor()
      * \see frameJoinStyle()
      * \see setFrameStrokeColor()
@@ -651,8 +651,8 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     virtual void setFrameStrokeWidth( const QgsLayoutMeasurement &width );
 
     /**
-     * Returns the frame's stroke width. This is only used if hasFrame() returns true.
-     * \see hasFrame()
+     * Returns the frame's stroke width. This is only used if frameEnabled() returns true.
+     * \see frameEnabled()
      * \see setFrameStrokeWidth()
      * \see frameJoinStyle()
      * \see frameStrokeColor()
@@ -661,7 +661,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
 
     /**
      * Returns the join style used for drawing the item's frame.
-     * \see hasFrame()
+     * \see frameEnabled()
      * \see setFrameJoinStyle()
      * \see frameStrokeWidth()
      * \see frameStrokeColor()

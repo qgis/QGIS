@@ -138,31 +138,16 @@ class CORE_EXPORT QgsLayoutItemMapOverview : public QgsLayoutItemMapItem
     bool usesAdvancedEffects() const override;
 
     /**
-     * Sets overview frame map \a uuid. Set an empty \a uuid to disable
-     * the overview frame.
-     * \see frameMapUuid()
-     * \see setFrameMap()
-     */
-    void setFrameMapUuid( const QString &uuid );
-
-    /**
-     * Returns the uuid of source map, or an empty string if no map set.
-     * \see setFrameMapUuid()
-     * \see frameMap()
-     */
-    QString frameMapUuid() const { return mFrameMapId; }
-
-    /**
      * Sets the \a map to show the overview extent of.
-     * \see frameMap()
+     * \see linkedMap()
      */
-    void setFrameMap( QgsLayoutItemMap *map );
+    void setLinkedMap( QgsLayoutItemMap *map );
 
     /**
      * Returns the source map to show the overview extent of.
-     * \see setFrameMap()
+     * \see setLinkedMap()
      */
-    QgsLayoutItemMap *frameMap();
+    QgsLayoutItemMap *linkedMap();
 
     /**
      * Sets the fill \a symbol used for drawing the overview extent. Ownership
@@ -239,8 +224,7 @@ class CORE_EXPORT QgsLayoutItemMapOverview : public QgsLayoutItemMapItem
 
     QgsLayoutItemMapOverview() = delete;
 
-    //! Uuid of map which displays its extent rectangle into this composer map (overview map functionality). Empty if not present.
-    QString mFrameMapId;
+    QPointer< QgsLayoutItemMap > mFrameMap;
 
     //! Drawing style for overview farme
     std::unique_ptr< QgsFillSymbol > mFrameSymbol;

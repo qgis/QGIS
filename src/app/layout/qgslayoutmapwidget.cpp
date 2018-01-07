@@ -1470,7 +1470,7 @@ void QgsLayoutMapWidget::setOverviewItems( QgsLayoutItemMapOverview *overview )
   mOverviewCheckBox->setChecked( overview->enabled() );
 
   //overview frame
-  mOverviewFrameMapComboBox->setItem( overview->frameMap() );
+  mOverviewFrameMapComboBox->setItem( overview->linkedMap() );
 
   //overview frame blending mode
   mOverviewBlendModeComboBox->setBlendMode( overview->blendMode() );
@@ -1584,7 +1584,7 @@ void QgsLayoutMapWidget::overviewMapChanged( QgsLayoutItem *item )
     return;
 
   mMapItem->beginCommand( tr( "Change Overview Map" ) );
-  overview->setFrameMapUuid( map->uuid() );
+  overview->setLinkedMap( map );
   mMapItem->update();
   mMapItem->endCommand();
 }

@@ -134,7 +134,7 @@ void QgsLayoutItemLegend::finalizeRestoreFromXml()
 #endif
   if ( !mMapUuid.isEmpty() )
   {
-    setMap( qobject_cast< QgsLayoutItemMap * >( mLayout->itemByUuid( mMapUuid, true ) ) );
+    setLinkedMap( qobject_cast< QgsLayoutItemMap * >( mLayout->itemByUuid( mMapUuid, true ) ) );
   }
 }
 
@@ -638,7 +638,7 @@ QString QgsLayoutItemLegend::displayName() const
   }
 }
 
-void QgsLayoutItemLegend::setMap( QgsLayoutItemMap *map )
+void QgsLayoutItemLegend::setLinkedMap( QgsLayoutItemMap *map )
 {
   if ( mMap )
   {
@@ -663,7 +663,7 @@ void QgsLayoutItemLegend::setMap( QgsLayoutItemMap *map )
 
 void QgsLayoutItemLegend::invalidateCurrentMap()
 {
-  setMap( nullptr );
+  setLinkedMap( nullptr );
 }
 
 void QgsLayoutItemLegend::refreshDataDefinedProperty( const QgsLayoutObject::DataDefinedProperty property )

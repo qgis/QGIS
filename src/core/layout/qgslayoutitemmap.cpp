@@ -938,7 +938,7 @@ int QgsLayoutItemMap::numberExportLayers() const
          + layersToRender().length()
          + 1 // for grids, if they exist
          + 1 // for overviews, if they exist
-         + ( hasFrame() ? 1 : 0 );
+         + ( frameEnabled() ? 1 : 0 );
 }
 
 void QgsLayoutItemMap::setFrameStrokeWidth( const QgsLayoutMeasurement &width )
@@ -1226,7 +1226,7 @@ void QgsLayoutItemMap::invalidateCache()
 void QgsLayoutItemMap::updateBoundingRect()
 {
   QRectF rectangle = rect();
-  double frameExtension = hasFrame() ? pen().widthF() / 2.0 : 0.0;
+  double frameExtension = frameEnabled() ? pen().widthF() / 2.0 : 0.0;
 
   double topExtension = 0.0;
   double rightExtension = 0.0;
@@ -1605,7 +1605,7 @@ QPointF QgsLayoutItemMap::layoutMapPosForItem( const QgsAnnotation *annotation )
 
 void QgsLayoutItemMap::drawMapFrame( QPainter *p )
 {
-  if ( hasFrame() && p )
+  if ( frameEnabled() && p )
   {
     p->save();
     p->setPen( pen() );
@@ -1649,7 +1649,7 @@ bool QgsLayoutItemMap::shouldDrawPart( QgsLayoutItemMap::PartType part ) const
     }
   }
 
-  if ( hasFrame() )
+  if ( frameEnabled() )
   {
     --idx;
     if ( Frame == part )

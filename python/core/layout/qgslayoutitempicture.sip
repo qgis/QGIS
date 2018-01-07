@@ -93,36 +93,26 @@ in degrees clockwise.
 .. seealso:: :py:func:`rotationMap()`
 %End
 
-    void setRotationMap( const QString &uuid );
+    void setLinkedMap( QgsLayoutItemMap *map );
 %Docstring
-Sets the map object for rotation (by ``uuid``). A empty string disables the map
-rotation.  If this is set then the picture will be rotated by the same
+Sets the ``map`` object for rotation.
+
+If this is set then the picture will be rotated by the same
 amount as the specified map object. This is useful especially for
 syncing north arrows with a map item.
 
 .. seealso:: :py:func:`setPictureRotation()`
 
-.. seealso:: :py:func:`rotationMap()`
+.. seealso:: :py:func:`linkedMap()`
 %End
 
-    QString rotationMap() const;
+    QgsLayoutItemMap *linkedMap() const;
 %Docstring
-Returns the uuid of the rotation map. An empty string means map rotation is
+Returns the linked rotation map, if set. An None means map rotation is
 disabled.  If this is set then the picture is rotated by the same amount
 as the specified map object.
 
-.. seealso:: :py:func:`setRotationMap()`
-
-.. seealso:: :py:func:`useRotationMap()`
-%End
-
-    bool useRotationMap() const;
-%Docstring
-True if the picture rotation is matched to a map item.
-
-.. seealso:: :py:func:`rotationMap()`
-
-.. seealso:: :py:func:`setRotationMap()`
+.. seealso:: :py:func:`setLinkedMap()`
 %End
 
     NorthMode northMode() const;

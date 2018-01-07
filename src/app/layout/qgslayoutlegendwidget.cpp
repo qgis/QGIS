@@ -197,7 +197,7 @@ void QgsLayoutLegendWidget::setGuiElements()
   mFilterLegendByAtlasCheckBox->setChecked( mLegend->legendFilterOutAtlas() );
   mWrapCharLineEdit->setText( mLegend->wrapString() );
 
-  QgsLayoutItemMap *map = mLegend->map();
+  QgsLayoutItemMap *map = mLegend->linkedMap();
   mMapComboBox->setItem( map );
   mFontColorButton->setColor( mLegend->fontColor() );
   mTitleFontButton->setCurrentFont( mLegend->style( QgsLegendStyle::Title ).font() );
@@ -624,7 +624,7 @@ void QgsLayoutLegendWidget::composerMapChanged( QgsLayoutItem *item )
   if ( map )
   {
     mLegend->beginCommand( tr( "Change Legend Map" ) );
-    mLegend->setMap( map );
+    mLegend->setLinkedMap( map );
     mLegend->updateFilterByMap();
     mLegend->endCommand();
   }
