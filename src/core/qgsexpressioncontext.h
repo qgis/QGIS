@@ -959,8 +959,30 @@ class CORE_EXPORT QgsExpressionContextUtils
      * Creates a new scope which contains variables and functions relating to a QgsLayoutItem.
      * For instance, item size and position.
      * \since QGIS 3.0
+     * \see setLayoutItemVariable()
+     * \see setLayoutItemVariables()
      */
     static QgsExpressionContextScope *layoutItemScope( const QgsLayoutItem *item ) SIP_FACTORY;
+
+    /**
+     * Sets a layout \a item context variable, with the given \a name and \a value.
+     * This variable will be contained within scopes retrieved via
+     * layoutItemScope().
+     * \see setLayoutItemVariables()
+     * \see layoutItemScope()
+     * \since QGIS 3.0
+     */
+    static void setLayoutItemVariable( QgsLayoutItem *item, const QString &name, const QVariant &value );
+
+    /**
+     * Sets all layout item context variables for an \a item. Existing variables will be removed and replaced
+     * with the \a variables specified.
+     * \see setLayoutItemVariable()
+     * \see layoutItemScope()
+     * \since QGIS 3.0
+     */
+    static void setLayoutItemVariables( QgsLayoutItem *item, const QVariantMap &variables );
+
 
 #ifndef SIP_RUN
 

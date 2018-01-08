@@ -1027,7 +1027,37 @@ Creates a new scope which contains variables and functions relating to a :py:cla
 For instance, item size and position.
 
 .. versionadded:: 3.0
+
+.. seealso:: :py:func:`setLayoutItemVariable()`
+
+.. seealso:: :py:func:`setLayoutItemVariables()`
 %End
+
+    static void setLayoutItemVariable( QgsLayoutItem *item, const QString &name, const QVariant &value );
+%Docstring
+Sets a layout ``item`` context variable, with the given ``name`` and ``value``.
+This variable will be contained within scopes retrieved via
+layoutItemScope().
+
+.. seealso:: :py:func:`setLayoutItemVariables()`
+
+.. seealso:: :py:func:`layoutItemScope()`
+
+.. versionadded:: 3.0
+%End
+
+    static void setLayoutItemVariables( QgsLayoutItem *item, const QVariantMap &variables );
+%Docstring
+Sets all layout item context variables for an ``item``. Existing variables will be removed and replaced
+with the ``variables`` specified.
+
+.. seealso:: :py:func:`setLayoutItemVariable()`
+
+.. seealso:: :py:func:`layoutItemScope()`
+
+.. versionadded:: 3.0
+%End
+
 
 
     static QgsExpressionContext createFeatureBasedContext( const QgsFeature &feature, const QgsFields &fields );

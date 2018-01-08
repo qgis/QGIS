@@ -356,9 +356,7 @@ void QgsLayoutItemPropertiesWidget::changeItemSize()
 
 void QgsLayoutItemPropertiesWidget::variablesChanged()
 {
-#if 0 //TODO
-  QgsExpressionContextUtils::setComposerItemVariables( mItem, mVariableEditor->variablesInActiveScope() );
-#endif
+  QgsExpressionContextUtils::setLayoutItemVariables( mItem, mVariableEditor->variablesInActiveScope() );
 }
 
 QgsLayoutItem::ReferencePoint QgsLayoutItemPropertiesWidget::positionMode() const

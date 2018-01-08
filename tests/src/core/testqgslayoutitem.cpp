@@ -169,6 +169,7 @@ class TestQgsLayoutItem: public QObject
     void setSceneRect();
     void page();
     void itemVariablesFunction();
+    void variables();
 
   private:
 
@@ -1420,6 +1421,28 @@ void TestQgsLayoutItem::itemVariablesFunction()
   QgsExpression e4( QStringLiteral( "map_get( item_variables( 'map_id' ), 'map_units' )" ) );
   r = e4.evaluate( &c );
   QCOMPARE( r.toString(), QString( "degrees" ) );
+}
+
+void TestQgsLayoutItem::variables()
+{
+  QgsLayout l( QgsProject::instance() );
+
+  QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
+  std::unique_ptr< QgsExpressionContextScope > scope( QgsExpressionContextUtils::layoutItemScope( map ) );
+  int before = scope->variableCount();
+
+  QgsExpressionContextUtils::setLayoutItemVariable( map, QStringLiteral( "var" ), 5 );
+  scope.reset( QgsExpressionContextUtils::layoutItemScope( map ) );
+  QCOMPARE( scope->variableCount(), before + 1 );
+  QCOMPARE( scope->variable( QStringLiteral( "var" ) ).toInt(), 5 );
+
+  QVariantMap vars;
+  vars.insert( QStringLiteral( "var2" ), 7 );
+  QgsExpressionContextUtils::setLayoutItemVariables( map, vars );
+  scope.reset( QgsExpressionContextUtils::layoutItemScope( map ) );
+  QCOMPARE( scope->variableCount(), before + 1 );
+  QVERIFY( !scope->hasVariable( QStringLiteral( "var" ) ) );
+  QCOMPARE( scope->variable( QStringLiteral( "var2" ) ).toInt(), 7 );
 }
 
 void TestQgsLayoutItem::rotation()
