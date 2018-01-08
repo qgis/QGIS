@@ -75,7 +75,7 @@ class TestQgsLayoutMap(unittest.TestCase, LayoutItemTestCase):
         # assert pipe.set(rasterRenderer), 'Cannot set pipe renderer'
         QgsProject.instance().addMapLayers([self.raster_layer, self.vector_layer])
 
-        # create composition with composer map
+        # create layout with layout map
         self.layout = QgsLayout(QgsProject.instance())
         self.layout.initializeDefaults()
         self.map = QgsLayoutItemMap(self.layout)
@@ -166,7 +166,7 @@ class TestQgsLayoutMap(unittest.TestCase, LayoutItemTestCase):
         assert myTestResult, myMessage
 
     def testMapCrs(self):
-        # create composition with composer map
+        # create layout with layout map
         map_settings = QgsMapSettings()
         map_settings.setLayers([self.vector_layer])
         layout = QgsLayout(QgsProject.instance())
