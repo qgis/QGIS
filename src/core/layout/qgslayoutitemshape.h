@@ -50,6 +50,7 @@ class CORE_EXPORT QgsLayoutItemShape : public QgsLayoutItem
     explicit QgsLayoutItemShape( QgsLayout *layout );
 
     int type() const override;
+    QIcon icon() const override;
 
     //Overridden to return shape type
     QString displayName() const override;

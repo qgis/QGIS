@@ -4,8 +4,8 @@ Raster (r.*)
 QgsProcessingParameterRasterLayer|elevation|Elevation|None|False
 QgsProcessingParameterRasterLayer|aspect|Aspect|None|True
 QgsProcessingParameterRasterLayer|barrier|Barrier|None|True
-QgsProcessingParameterNumber|skip|Number of cells between flowlines|QgsProcessingParameterNumber.Integer|7|False|None|None
-QgsProcessingParameterNumber|bound|Maximum number of segments per flowline|QgsProcessingParameterNumber.Integer|1609|False|None|None
+QgsProcessingParameterNumber|skip|Number of cells between flowlines|QgsProcessingParameterNumber.Integer|None|True|None|None
+QgsProcessingParameterNumber|bound|Maximum number of segments per flowline|QgsProcessingParameterNumber.Integer|None|True|None|None
 QgsProcessingParameterBoolean|-u|Compute upslope flowlines instead of default downhill flowlines|False
 QgsProcessingParameterBoolean|-3|3-D lengths instead of 2-D|False
 *QgsProcessingParameterBoolean|-m|Use less memory, at a performance penalty|False

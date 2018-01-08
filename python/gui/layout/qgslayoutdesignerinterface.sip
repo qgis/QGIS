@@ -33,11 +33,17 @@ Constructor for QgsLayoutDesignerInterface.
 
     virtual QgsLayout *layout() = 0;
 %Docstring
-Returns the layout displayed in the designer.
+Returns the current layout displayed in the designer.
 
 .. seealso:: :py:func:`view()`
 %End
 
+    virtual QgsMasterLayoutInterface *masterLayout() = 0;
+%Docstring
+Returns the master layout displayed in the designer.
+
+.. seealso:: :py:func:`layout()`
+%End
 
     virtual QgsLayoutView *view() = 0;
 %Docstring

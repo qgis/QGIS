@@ -802,6 +802,12 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void destinationCrsChanged();
 
     /**
+     * Emitted when the canvas transform context is changed.
+     * \since QGIS 3.0
+     */
+    void transformContextChanged();
+
+    /**
      * Emitted when the current layer is changed
      * \since QGIS 2.8
      */

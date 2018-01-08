@@ -23,9 +23,13 @@
 class QgsComposition;
 class QgsComposerMultiFrame;
 
+#define SIP_NO_FILE
+
 /**
  * \ingroup core
  * Frame item for a composer multiframe item.
+ * \note Not available in Python bindings
+ * \deprecated Will be removed in QGIS 3.2
 */
 class CORE_EXPORT QgsComposerFrame: public QgsComposerItem
 {

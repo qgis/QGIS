@@ -188,10 +188,10 @@ void TestQgsAttributeForm::testFieldMultiConstraints()
   ww3 = qobject_cast<QgsEditorWidgetWrapper *>( form.mWidgets[3] );
 
   // no constraint so we expect an empty label
-  Q_ASSERT( constraintsLabel( &form, ww0 )->text().isEmpty() );
-  Q_ASSERT( constraintsLabel( &form, ww1 )->text().isEmpty() );
-  Q_ASSERT( constraintsLabel( &form, ww2 )->text().isEmpty() );
-  Q_ASSERT( constraintsLabel( &form, ww3 )->text().isEmpty() );
+  QVERIFY( constraintsLabel( &form, ww0 )->text().isEmpty() );
+  QVERIFY( constraintsLabel( &form, ww1 )->text().isEmpty() );
+  QVERIFY( constraintsLabel( &form, ww2 )->text().isEmpty() );
+  QVERIFY( constraintsLabel( &form, ww3 )->text().isEmpty() );
 
   // update constraint
   layer->setConstraintExpression( 0, QStringLiteral( "col0 < (col1 * col2)" ) );

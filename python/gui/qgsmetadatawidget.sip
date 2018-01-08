@@ -48,6 +48,11 @@ If the CRS is updated.
 Saves the metadata to the layer.
 %End
 
+    virtual void setMetadata( const QgsLayerMetadata &metadata );
+%Docstring
+Sets the layer's ``metadata`` store.
+%End
+
     static QMap<QString, QString> parseLanguages();
 %Docstring
 Returns a list of languages available by default in the wizard.
@@ -75,6 +80,11 @@ Returns a list of MIME types available by default in the wizard.
     static QMap<QString, QString> parseTypes();
 %Docstring
 Returns a list of types available by default in the wizard.
+%End
+
+    void setMapCanvas( QgsMapCanvas *canvas );
+%Docstring
+Sets a map ``canvas`` associated with the widget.
 %End
 
 };

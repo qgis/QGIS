@@ -141,37 +141,18 @@ Constructor for QgsLayoutItemMapOverview.
     virtual bool usesAdvancedEffects() const;
 
 
-    void setFrameMapUuid( const QString &uuid );
-%Docstring
-Sets overview frame map ``uuid``. Set an empty ``uuid`` to disable
-the overview frame.
-
-.. seealso:: :py:func:`frameMapUuid()`
-
-.. seealso:: :py:func:`setFrameMap()`
-%End
-
-    QString frameMapUuid() const;
-%Docstring
-Returns the uuid of source map, or an empty string if no map set.
-
-.. seealso:: :py:func:`setFrameMapUuid()`
-
-.. seealso:: :py:func:`frameMap()`
-%End
-
-    void setFrameMap( QgsLayoutItemMap *map );
+    void setLinkedMap( QgsLayoutItemMap *map );
 %Docstring
 Sets the ``map`` to show the overview extent of.
 
-.. seealso:: :py:func:`frameMap()`
+.. seealso:: :py:func:`linkedMap()`
 %End
 
-    QgsLayoutItemMap *frameMap();
+    QgsLayoutItemMap *linkedMap();
 %Docstring
 Returns the source map to show the overview extent of.
 
-.. seealso:: :py:func:`setFrameMap()`
+.. seealso:: :py:func:`setLinkedMap()`
 %End
 
     void setFrameSymbol( QgsFillSymbol *symbol /Transfer/ );

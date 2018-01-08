@@ -327,7 +327,7 @@ QgsExpressionContext QgsDataDefinedValueDialog::createExpressionContext() const
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
              << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-             << QgsExpressionContextUtils::atlasScope( nullptr );
+             << QgsExpressionContextUtils::compositionAtlasScope( nullptr );
   if ( mContext.mapCanvas() )
   {
     expContext << QgsExpressionContextUtils::mapSettingsScope( mContext.mapCanvas()->mapSettings() )

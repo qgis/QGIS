@@ -490,7 +490,7 @@ void QgsAdvancedDigitizingDockWidget::updateCapacity( bool updateUIwithoutChange
     mAngleConstraint->setRelative( true );
   }
 
-  // distance is alway relative
+  // distance is always relative
   mLockDistanceButton->setEnabled( relativeCoordinates );
   mDistanceLineEdit->setEnabled( relativeCoordinates );
   if ( !relativeCoordinates )

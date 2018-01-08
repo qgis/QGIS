@@ -196,7 +196,7 @@ class CORE_EXPORT QgsLayerMetadata
       QString city;
 
       /**
-       * Administrative area (state, provice/territory, etc.).
+       * Administrative area (state, province/territory, etc.).
        */
       QString administrativeArea;
 

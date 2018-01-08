@@ -131,6 +131,7 @@ class TestQgsTessellator : public QObject
     void testWalls();
     void asMultiPolygon();
     void testBadCoordinates();
+    void testIssue17745();
 
   private:
 };
@@ -287,6 +288,18 @@ void TestQgsTessellator::testBadCoordinates()
   QgsTessellator t( 0, 0, false );
   t.addPolygon( polygon, 0 );
   QVERIFY( checkTriangleOutput( t.data(), false, tc ) );
+}
+
+void TestQgsTessellator::testIssue17745()
+{
+  // this is a rectangular polygon with collinear points that would crash poly2tri if coordinates do not get rounded a bit
+
+  QgsTessellator t( 0, 0, true );
+  QgsPolygon p;
+  bool resWktRead = p.fromWkt( "Polygon((0 0, 1 1e-15, 4 0, 4 5, 1 5, 0 5, 0 0))" );
+  QVERIFY( resWktRead );
+
+  t.addPolygon( p, 0 );   // must not crash - that's all we test here
 }
 
 

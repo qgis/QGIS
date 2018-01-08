@@ -1,8 +1,0 @@
-r.mfilter.fp
-Raster map matrix filter.
-Raster (r.*)
-QgsProcessingParameterRasterLayer|input|input layer|None|False
-QgsProcessingParameterFile|filter|Filter file|0|txt|None|False
-QgsProcessingParameterNumber|repeat|Number of times to repeat the filter|QgsProcessingParameterNumber.Double|1|False|None|1
-QgsProcessingParameterBoolean|-z|Apply filter only to zero data values|False
-QgsProcessingParameterRasterDestination|output|Filtered

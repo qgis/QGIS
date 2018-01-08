@@ -60,8 +60,11 @@ void QgsLayoutMultiFrame::addFrame( QgsLayoutFrame *frame, bool recalcFrameSizes
   mFrameItems.push_back( frame );
   frame->mMultiFrame = this;
   connect( frame, &QgsLayoutItem::sizePositionChanged, this, &QgsLayoutMultiFrame::recalculateFrameSizes );
-  connect( frame, &QgsLayoutFrame::destroyed, this, &QgsLayoutMultiFrame::handleFrameRemoval );
-  if ( mLayout )
+  connect( frame, &QgsLayoutFrame::destroyed, this, [this, frame ]
+  {
+    handleFrameRemoval( frame );
+  } );
+  if ( mLayout && !frame->scene() )
   {
     mLayout->addLayoutItem( frame );
   }
@@ -254,7 +257,7 @@ QgsLayoutFrame *QgsLayoutMultiFrame::createNewFrame( QgsLayoutFrame *currentFram
   newFrame->setBackgroundColor( currentFrame->backgroundColor() );
   newFrame->setBackgroundEnabled( currentFrame->hasBackground() );
   newFrame->setBlendMode( currentFrame->blendMode() );
-  newFrame->setFrameEnabled( currentFrame->hasFrame() );
+  newFrame->setFrameEnabled( currentFrame->frameEnabled() );
   newFrame->setFrameStrokeColor( currentFrame->frameStrokeColor() );
   newFrame->setFrameJoinStyle( currentFrame->frameJoinStyle() );
   newFrame->setFrameStrokeWidth( currentFrame->frameStrokeWidth() );
@@ -298,6 +301,14 @@ void QgsLayoutMultiFrame::cancelCommand()
 
 void QgsLayoutMultiFrame::finalizeRestoreFromXml()
 {
+  for ( const QString &uuid : qgis::as_const( mFrameUuids ) )
+  {
+    QgsLayoutItem *item = mLayout->itemByUuid( uuid, true );
+    if ( QgsLayoutFrame *frame = qobject_cast< QgsLayoutFrame * >( item ) )
+    {
+      addFrame( frame );
+    }
+  }
 }
 
 void QgsLayoutMultiFrame::refresh()
@@ -306,12 +317,11 @@ void QgsLayoutMultiFrame::refresh()
   refreshDataDefinedProperty();
 }
 
-void QgsLayoutMultiFrame::handleFrameRemoval()
+void QgsLayoutMultiFrame::handleFrameRemoval( QgsLayoutFrame *frame )
 {
   if ( mBlockUpdates )
     return;
 
-  QgsLayoutFrame *frame = qobject_cast<QgsLayoutFrame *>( sender() );
   if ( !frame )
   {
     return;
@@ -464,6 +474,16 @@ bool QgsLayoutMultiFrame::writeXml( QDomElement &parentElement, QDomDocument &do
   Q_UNUSED( ignoreFrames );
 #endif
 
+  for ( QgsLayoutFrame *frame : mFrameItems )
+  {
+    if ( !frame )
+      continue;
+
+    QDomElement childItem = doc.createElement( QStringLiteral( "childFrame" ) );
+    childItem.setAttribute( QStringLiteral( "uuid" ), frame->uuid() );
+    element.appendChild( childItem );
+  }
+
   writeObjectPropertiesToElement( element, doc, context );
   writePropertiesToElement( element, doc, context );
   parentElement.appendChild( element );
@@ -508,6 +528,18 @@ bool QgsLayoutMultiFrame::readXml( const QDomElement &element, const QDomDocumen
   Q_UNUSED( ignoreFrames );
 #endif
 
+  deleteFrames();
+  mFrameUuids.clear();
+  QDomNodeList elementNodes = element.elementsByTagName( QStringLiteral( "childFrame" ) );
+  for ( int i = 0; i < elementNodes.count(); ++i )
+  {
+    QDomNode elementNode = elementNodes.at( i );
+    if ( !elementNode.isElement() )
+      continue;
+
+    QString uuid = elementNode.toElement().attribute( QStringLiteral( "uuid" ) );
+    mFrameUuids << uuid;
+  }
 
   bool result = readPropertiesFromElement( element, doc, context );
 

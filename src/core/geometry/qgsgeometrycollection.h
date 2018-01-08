@@ -39,6 +39,9 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     QgsGeometryCollection &operator=( const QgsGeometryCollection &c );
     ~QgsGeometryCollection() override;
 
+    bool operator==( const QgsAbstractGeometry &other ) const override;
+    bool operator!=( const QgsAbstractGeometry &other ) const override;
+
     QgsGeometryCollection *clone() const override SIP_FACTORY;
 
     /**

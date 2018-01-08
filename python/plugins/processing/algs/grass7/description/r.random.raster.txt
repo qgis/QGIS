@@ -1,6 +1,0 @@
-r.random.raster
-Create random raster
-Raster (r.*)
-QgsProcessingParameterRasterLayer|raster|Name of input raster map|None|False
-QgsProcessingParameterNumber|value|The number of points to allocate |QgsProcessingParameterNumber.Double|1|False|None|None
-QgsProcessingParameterRasterDestination|output|Random

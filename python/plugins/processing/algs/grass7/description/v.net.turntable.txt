@@ -1,0 +1,9 @@
+v.net
+v.net.turntable - Creates turn tables layers for each network arcs
+Vector (v.*)
+QgsProcessingParameterVectorLayer|input|Input vector line layer (arcs)|1|None|False
+QgsProcessingParameterVectorLayer|points|Input vector point layer (nodes)|0|None|False
+Hardcoded|operation=turntable
+Hardcoded|turn_layer=3
+Hardcoded|turn_cat_layer=4
+QgsProcessingParameterVectorDestination|output|Turn Table

@@ -31,14 +31,23 @@ static void _heightMapMinMax( const QByteArray &heightMap, float &zMin, float &z
 {
   const float *zBits = ( const float * ) heightMap.constData();
   int zCount = heightMap.count() / sizeof( float );
-  zMin = zBits[0];
-  zMax = zBits[0];
+  bool first = true;
   for ( int i = 0; i < zCount; ++i )
   {
     float z = zBits[i];
+    if ( std::isnan( z ) )
+      continue;
+    if ( first )
+    {
+      zMin = zMax = z;
+      first = false;
+    }
     zMin = qMin( zMin, z );
     zMax = qMax( zMax, z );
   }
+
+  if ( first )
+    zMin = zMax = std::numeric_limits<float>::quiet_NaN();
 }
 
 
@@ -59,6 +68,15 @@ QgsDemTerrainTileLoader::QgsDemTerrainTileLoader( QgsTerrainEntity *terrain, Qgs
 
 Qt3DCore::QEntity *QgsDemTerrainTileLoader::createEntity( Qt3DCore::QEntity *parent )
 {
+  float zMin, zMax;
+  _heightMapMinMax( mHeightMap, zMin, zMax );
+
+  if ( std::isnan( zMin ) || std::isnan( zMax ) )
+  {
+    // no data available for this tile
+    return nullptr;
+  }
+
   QgsTerrainTileEntity *entity = new QgsTerrainTileEntity;
 
   // create geometry renderer
@@ -76,9 +94,6 @@ Qt3DCore::QEntity *QgsDemTerrainTileLoader::createEntity( Qt3DCore::QEntity *par
   Qt3DCore::QTransform *transform = nullptr;
   transform = new Qt3DCore::QTransform();
   entity->addComponent( transform );
-
-  float zMin, zMax;
-  _heightMapMinMax( mHeightMap, zMin, zMax );
 
   const Qgs3DMapSettings &map = terrain()->map3D();
   QgsRectangle extent = map.terrainGenerator()->tilingScheme().tileToExtent( mNode->tileX(), mNode->tileY(), mNode->tileZ() ); //node->extent;
@@ -156,6 +171,20 @@ static QByteArray _readDtmData( QgsRasterDataProvider *provider, const QgsRectan
     block->convert( Qgis::Float32 ); // currently we expect just floats
     data = block->data();
     data.detach();  // this should make a deep copy
+
+    if ( block->hasNoData() )
+    {
+      // turn all no-data values into NaN in the output array
+      float *floatData = reinterpret_cast<float *>( data.data() );
+      Q_ASSERT( data.count() % sizeof( float ) == 0 );
+      int count = data.count() / sizeof( float );
+      for ( int i = 0; i < count; ++i )
+      {
+        if ( block->isNoData( i ) )
+          floatData[i] = std::numeric_limits<float>::quiet_NaN();
+      }
+    }
+
     delete block;
   }
   return data;

@@ -29,9 +29,13 @@ class QgsComposerTableColumn;
 
 //QgsComposerAttributeTableColumnModelV2
 
+#define SIP_NO_FILE
+
 /**
  * \ingroup core
  * A model for displaying columns shown in a QgsComposerAttributeTableV2
+ * \note Not available in Python bindings
+ * \deprecated Will be removed in QGIS 3.2
 */
 class CORE_EXPORT QgsComposerAttributeTableColumnModelV2: public QAbstractTableModel
 {

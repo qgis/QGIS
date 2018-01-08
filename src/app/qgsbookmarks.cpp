@@ -107,8 +107,9 @@ QgsBookmarks::QgsBookmarks( QWidget *parent )
   mProjectModel = new QgsProjectBookmarksTableModel( this );
   mMergedModel = new QgsMergedBookmarksTableModel( *mQgisModel, *mProjectModel, lstBookmarks, this );
 
-  mProxyModel = new QgsBookmarksProxyModel( this );
+  mProxyModel = new QgsBookmarksProxyModel( );
   mProxyModel->setSourceModel( mMergedModel );
+  mProxyModel->setSortCaseSensitivity( Qt::CaseInsensitive );
 
   lstBookmarks->setModel( mProxyModel );
   lstBookmarks->setItemDelegate( new QgsDoubleSpinBoxBookmarksDelegate( this ) );
@@ -135,6 +136,7 @@ QgsBookmarks::QgsBookmarks( QWidget *parent )
 QgsBookmarks::~QgsBookmarks()
 {
   delete mQgisModel;
+  delete mProxyModel;
   QSqlDatabase::removeDatabase( QStringLiteral( "bookmarks" ) );
   saveWindowLocation();
 }

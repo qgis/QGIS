@@ -67,11 +67,13 @@ void TestQgsValueRelationWidgetWrapper::testScrollBarUnlocked()
   QgsProject::instance()->addMapLayer( &vl1, false, false );
 
   // build a value relation widget wrapper
-  QListWidget lw;
-  QWidget editor;
-  QgsValueRelationWidgetWrapper w( &vl1, 0, &editor, nullptr );
+  QgsValueRelationWidgetWrapper w( &vl1, 0, nullptr, nullptr );
+
+  QVariantMap config;
+  config.insert( QStringLiteral( "AllowMulti" ), true );
+  w.setConfig( config );
+  w.widget();
   w.setEnabled( true );
-  w.initWidget( &lw );
 
   // add an item virtually
   QListWidgetItem item;

@@ -187,7 +187,7 @@ void QgsLayoutScaleBarWidget::setGuiElements()
   mFontButton->setCurrentFont( mScalebar->font() );
 
   //map combo box
-  mMapItemComboBox->setItem( mScalebar->map() );
+  mMapItemComboBox->setItem( mScalebar->linkedMap() );
 
   //style...
   QString style = mScalebar->style();
@@ -674,7 +674,7 @@ void QgsLayoutScaleBarWidget::mapChanged( QgsLayoutItem *item )
   //set it to scale bar
   mScalebar->beginCommand( tr( "Set Scalebar Map" ) );
   disconnectUpdateSignal();
-  mScalebar->setMap( map );
+  mScalebar->setLinkedMap( map );
   mScalebar->update();
   connectUpdateSignal();
   mScalebar->endCommand();

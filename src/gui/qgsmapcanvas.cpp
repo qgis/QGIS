@@ -144,6 +144,7 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
            this, [ = ]
   {
     mSettings.setTransformContext( QgsProject::instance()->transformContext() );
+    emit transformContextChanged();
     refresh();
   } );
 
@@ -694,6 +695,7 @@ void QgsMapCanvas::stopRendering()
     mJob->cancelWithoutBlocking();
     mJob = nullptr;
   }
+  stopPreviewJobs();
 }
 
 //the format defaults to "PNG" if not specified

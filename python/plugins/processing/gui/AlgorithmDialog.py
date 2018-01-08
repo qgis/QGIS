@@ -80,6 +80,9 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
         dlg.show()
         dlg.exec_()
 
+    def setParameters(self, parameters):
+        self.mainWidget().setParameters(parameters)
+
     def getParameterValues(self):
         parameters = {}
 
@@ -273,6 +276,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                 return
 
         self.setExecuted(True)
+        self.setResults(result)
         self.setInfo(self.tr('Algorithm \'{0}\' finished').format(self.algorithm().displayName()), escapeHtml=False)
 
         if not keepOpen:

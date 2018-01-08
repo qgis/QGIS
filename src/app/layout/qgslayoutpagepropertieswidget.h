@@ -23,6 +23,7 @@
 #include "qgslayoutpoint.h"
 #include "qgslayoutitemwidget.h"
 #include "qgslayoutmeasurementconverter.h"
+#include "qgslayoutpagecollection.h"
 
 class QgsLayoutItem;
 class QgsLayoutItemPage;
@@ -40,6 +41,11 @@ class QgsLayoutPagePropertiesWidget : public QgsLayoutItemBaseWidget, private Ui
      * Constructor for QgsLayoutPagePropertiesWidget.
      */
     QgsLayoutPagePropertiesWidget( QWidget *parent, QgsLayoutItem *page );
+
+  signals:
+
+    //! Is emitted when page orientation changes
+    void pageOrientationChanged();
 
   private slots:
 

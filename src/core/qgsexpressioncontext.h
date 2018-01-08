@@ -40,6 +40,8 @@ class QgsProject;
 class QgsSymbol;
 class QgsProcessingAlgorithm;
 class QgsProcessingContext;
+class QgsLayoutAtlas;
+class QgsLayoutItem;
 
 /**
  * \ingroup core
@@ -863,6 +865,8 @@ class CORE_EXPORT QgsExpressionContextUtils
      */
     static QgsExpressionContextScope *updateSymbolScope( const QgsSymbol *symbol, QgsExpressionContextScope *symbolScope = nullptr );
 
+#ifndef SIP_RUN
+
     /**
      * Creates a new scope which contains variables and functions relating to a QgsComposition.
      * For instance, number of pages and page sizes.
@@ -890,6 +894,8 @@ class CORE_EXPORT QgsExpressionContextUtils
      * \see compositionScope()
      */
     static void setCompositionVariables( QgsComposition *composition, const QVariantMap &variables );
+
+#endif
 
     /**
      * Creates a new scope which contains variables and functions relating to a QgsLayout \a layout.
@@ -921,12 +927,25 @@ class CORE_EXPORT QgsExpressionContextUtils
      */
     static void setLayoutVariables( QgsLayout *layout, const QVariantMap &variables );
 
+#ifndef SIP_RUN
+
     /**
      * Creates a new scope which contains variables and functions relating to a QgsAtlasComposition.
      * For instance, current page name and number.
      * \param atlas source atlas. If null, a set of default atlas variables will be added to the scope.
      */
-    static QgsExpressionContextScope *atlasScope( const QgsAtlasComposition *atlas ) SIP_FACTORY;
+    static QgsExpressionContextScope *compositionAtlasScope( const QgsAtlasComposition *atlas ) SIP_FACTORY;
+
+#endif
+
+    /**
+     * Creates a new scope which contains variables and functions relating to a QgsLayoutAtlas.
+     * For instance, current page name and number.
+     * \param atlas source atlas. If null, a set of default atlas variables will be added to the scope.
+     */
+    static QgsExpressionContextScope *atlasScope( QgsLayoutAtlas *atlas ) SIP_FACTORY;
+
+#ifndef SIP_RUN
 
     /**
      * Creates a new scope which contains variables and functions relating to a QgsComposerItem.
@@ -934,6 +953,38 @@ class CORE_EXPORT QgsExpressionContextUtils
      * \param composerItem source composer item
      */
     static QgsExpressionContextScope *composerItemScope( const QgsComposerItem *composerItem ) SIP_FACTORY;
+#endif
+
+    /**
+     * Creates a new scope which contains variables and functions relating to a QgsLayoutItem.
+     * For instance, item size and position.
+     * \since QGIS 3.0
+     * \see setLayoutItemVariable()
+     * \see setLayoutItemVariables()
+     */
+    static QgsExpressionContextScope *layoutItemScope( const QgsLayoutItem *item ) SIP_FACTORY;
+
+    /**
+     * Sets a layout \a item context variable, with the given \a name and \a value.
+     * This variable will be contained within scopes retrieved via
+     * layoutItemScope().
+     * \see setLayoutItemVariables()
+     * \see layoutItemScope()
+     * \since QGIS 3.0
+     */
+    static void setLayoutItemVariable( QgsLayoutItem *item, const QString &name, const QVariant &value );
+
+    /**
+     * Sets all layout item context variables for an \a item. Existing variables will be removed and replaced
+     * with the \a variables specified.
+     * \see setLayoutItemVariable()
+     * \see layoutItemScope()
+     * \since QGIS 3.0
+     */
+    static void setLayoutItemVariables( QgsLayoutItem *item, const QVariantMap &variables );
+
+
+#ifndef SIP_RUN
 
     /**
      * Sets a composer item context variable. This variable will be contained within scopes retrieved via
@@ -955,6 +1006,8 @@ class CORE_EXPORT QgsExpressionContextUtils
      * \see composerItemScope()
      */
     static void setComposerItemVariables( QgsComposerItem *composerItem, const QVariantMap &variables );
+
+#endif
 
     /**
      * Helper function for creating an expression context which contains just a feature and fields

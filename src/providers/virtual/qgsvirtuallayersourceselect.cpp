@@ -374,13 +374,18 @@ void QgsVirtualLayerSourceSelect::addButtonClicked()
       }
     }
   }
-  if ( replace )
+  // This check is to prevent a crash, a proper implementation should handle
+  // the Add button state when a virtual layer definition is available
+  if ( ! def.toString().isEmpty() )
   {
-    emit replaceVectorLayer( id, def.toString(), layerName, QStringLiteral( "virtual" ) );
-  }
-  else
-  {
-    emit addVectorLayer( def.toString(), layerName );
+    if ( replace )
+    {
+      emit replaceVectorLayer( id, def.toString(), layerName, QStringLiteral( "virtual" ) );
+    }
+    else
+    {
+      emit addVectorLayer( def.toString(), layerName );
+    }
   }
   if ( widgetMode() == QgsProviderRegistry::WidgetMode::None )
   {

@@ -4,9 +4,10 @@ Vector (v.*)
 QgsProcessingParameterVectorLayer|map|Input vector map |-1|None|False
 QgsProcessingParameterNumber|layer|Layer Number|QgsProcessingParameterNumber.Double|1|False|None|1
 QgsProcessingParameterString|columns|Name of attribute column(s), comma separated|None|False|True
-QgsProcessingParameterBoolean|-c|Do not include column names in output|False
+*QgsProcessingParameterBoolean|-c|Do not include column names in output|False
 QgsProcessingParameterString|separator|Output field separator|,|False|True
-*QgsProcessingParameterString|where|WHERE conditions of SQL statement without 'where' keyword|None|False|True
+*QgsProcessingParameterString|where|WHERE conditions of SQL statement without 'where' keyword|None|True|True
+*QgsProcessingParameterString|group|GROUP BY conditions of SQL statement without 'group by' keyword|None|True|True
 *QgsProcessingParameterString|vertical_separator|Output vertical record separator|None|False|True
 *QgsProcessingParameterString|null_value|Null value indicator|None|False|True
 *QgsProcessingParameterBoolean|-v|Vertical output (instead of horizontal)|False

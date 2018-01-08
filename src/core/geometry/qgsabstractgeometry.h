@@ -110,6 +110,9 @@ class CORE_EXPORT QgsAbstractGeometry
     QgsAbstractGeometry( const QgsAbstractGeometry &geom );
     QgsAbstractGeometry &operator=( const QgsAbstractGeometry &geom );
 
+    virtual bool operator==( const QgsAbstractGeometry &other ) const = 0;
+    virtual bool operator!=( const QgsAbstractGeometry &other ) const = 0;
+
     /**
      * Clones the geometry by performing a deep copy
      */

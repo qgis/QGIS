@@ -155,7 +155,7 @@ City or locality name.
 
       QString administrativeArea;
 %Docstring
-Administrative area (state, provice/territory, etc.).
+Administrative area (state, province/territory, etc.).
 %End
 
       QString postalCode;
@@ -508,7 +508,7 @@ CRS which is actually used to display and manipulate the layer within QGIS.
 This may be the case when a layer has an incorrect CRS within its metadata
 and a user has manually overridden the layer's CRS within QGIS.
 
-The CRS described here should either match the CRS from the layer QgsMapLayer.crs()
+The CRS described here should either match the CRS from the layer :py:func:`QgsMapLayer.crs()`
 or the CRS from the data provider.
 
 This property should also match the CRS property used in the spatial extent.
@@ -531,7 +531,7 @@ CRS which is actually used to display and manipulate the layer within QGIS.
 This may be the case when a layer has an incorrect CRS within its metadata
 and a user has manually overridden the layer's CRS within QGIS.
 
-The CRS described here should either match the CRS from the layer QgsMapLayer.crs()
+The CRS described here should either match the CRS from the layer :py:func:`QgsMapLayer.crs()`
 or the CRS from the data provider.
 
 This property should also match the CRS property used in the spatial extent.

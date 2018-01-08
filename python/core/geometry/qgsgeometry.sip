@@ -249,11 +249,44 @@ return true for isEmpty().
 Returns true if WKB of the geometry is of WKBMulti* type
 %End
 
-    bool isGeosEqual( const QgsGeometry & ) const;
+    bool equals( const QgsGeometry &geometry ) const;
 %Docstring
-Compares the geometry with another geometry using GEOS
+Test if this geometry is exactly equal to another ``geometry``.
+
+This is a strict equality check, where the underlying geometries must
+have exactly the same type, component vertices and vertex order.
+
+Calling this method is dramatically faster than the topological
+equality test performed by isGeosEqual().
+
+.. note::
+
+   Comparing two null geometries will return false.
 
 .. versionadded:: 1.5
+
+.. seealso:: :py:func:`isGeosEqual()`
+%End
+
+    bool isGeosEqual( const QgsGeometry & ) const;
+%Docstring
+Compares the geometry with another geometry using GEOS.
+
+This method performs a slow, topological check, where geometries
+are considered equal if all of the their component edges overlap. E.g.
+lines with the same vertex locations but opposite direction will be
+considered equal by this method.
+
+Consider using the much faster, stricter equality test performed
+by equals() instead.
+
+.. note::
+
+   Comparing two null geometries will return false.
+
+.. versionadded:: 1.5
+
+.. seealso:: :py:func:`equals()`
 %End
 
     bool isGeosValid() const;
@@ -748,13 +781,6 @@ Tests for if geometry is contained in another (uses GEOS)
     bool disjoint( const QgsGeometry &geometry ) const;
 %Docstring
 Tests for if geometry is disjoint of another (uses GEOS)
-
-.. versionadded:: 1.5
-%End
-
-    bool equals( const QgsGeometry &geometry ) const;
-%Docstring
-Test for if geometry equals another (uses GEOS)
 
 .. versionadded:: 1.5
 %End

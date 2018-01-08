@@ -48,6 +48,8 @@ class QgsLayoutPropertiesWidget: public QgsPanelWidget, private Ui::QgsLayoutWid
     void worldFileToggled();
     void rasterizeToggled();
     void forceVectorToggled();
+    void variablesChanged();
+    void updateVariables();
 
   private:
 

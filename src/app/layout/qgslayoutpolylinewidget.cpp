@@ -88,9 +88,12 @@ QgsLayoutPolylineWidget::QgsLayoutPolylineWidget( QgsLayoutItemPolyline *polylin
   }
   setGuiElementValues();
 
-#if 0 //TODO
-  mShapeStyleButton->setLayer( atlasCoverageLayer() );
-#endif
+  mLineStyleButton->registerExpressionContextGenerator( mPolyline );
+  mLineStyleButton->setLayer( coverageLayer() );
+  if ( mPolyline->layout() )
+  {
+    connect( &mPolyline->layout()->reportContext(), &QgsLayoutReportContext::layerChanged, mLineStyleButton, &QgsSymbolButton::setLayer );
+  }
 }
 
 bool QgsLayoutPolylineWidget::setNewItem( QgsLayoutItem *item )

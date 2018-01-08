@@ -79,7 +79,7 @@ void QgsLayoutNodesItem::draw( QgsRenderContext &context, const QStyleOptionGrap
   rescaleToFitBoundingBox();
   _draw( context );
 
-  if ( mDrawNodes && layout()->context().isPreviewRender() )
+  if ( mDrawNodes && layout()->renderContext().isPreviewRender() )
     drawNodes( context, style );
 }
 

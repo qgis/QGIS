@@ -46,10 +46,12 @@ class CORE_EXPORT QgsLayoutFrame: public QgsLayoutItem
     static QgsLayoutFrame *create( QgsLayout *layout ) SIP_FACTORY;
 
     int type() const override;
-    QString uuid() const override;
+    QIcon icon() const override;
 
     //Overridden to allow multiframe to set display name
     QString displayName() const override;
+
+    void cleanup() override;
 
     /**
      * Sets the visible part of the multiframe's content which is visible within
@@ -69,8 +71,6 @@ class CORE_EXPORT QgsLayoutFrame: public QgsLayoutItem
 #if 0 //TODO
     void beginItemCommand( const QString &text ) override;
     void endItemCommand() override;
-    bool writeXml( QDomElement &elem, QDomDocument &doc ) const override;
-    bool readXml( const QDomElement &itemElem, const QDomDocument &doc ) override;
 #endif
 
     /**
@@ -121,6 +121,8 @@ class CORE_EXPORT QgsLayoutFrame: public QgsLayoutItem
     void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = nullptr ) override;
     void drawFrame( QgsRenderContext &context ) override;
     void drawBackground( QgsRenderContext &context ) override;
+    bool writePropertiesToElement( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const override;
+    bool readPropertiesFromElement( const QDomElement &itemElement, const QDomDocument &document, const QgsReadWriteContext &context ) override;
 
   private:
     QgsLayoutFrame() = delete;

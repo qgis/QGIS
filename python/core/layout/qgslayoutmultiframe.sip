@@ -75,6 +75,11 @@ Returns the total size of the multiframe's content, in layout units.
 Returns unique multiframe type id.
 %End
 
+    virtual QIcon icon() const;
+%Docstring
+Returns the item's icon.
+%End
+
     virtual QSizeF fixedFrameSize( const int frameIndex = -1 ) const;
 %Docstring
 Returns the fixed size for a frame, if desired. If the fixed frame size changes,
@@ -376,20 +381,6 @@ in finalizeRestoreFromXml(), not readPropertiesFromElement().
 .. seealso:: :py:func:`readXml()`
 %End
 
-
-
-  protected slots:
-
-    void handlePageChange();
-%Docstring
-Adapts to changed number of layout pages if resize type is RepeatOnEveryPage.
-%End
-
-    void handleFrameRemoval();
-%Docstring
-Called when a frame is removed. Updates frame list and recalculates
-content of remaining frames.
-%End
 
 
 };

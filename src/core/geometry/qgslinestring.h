@@ -71,8 +71,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
      */
     QgsLineString( const QVector<QgsPointXY> &points );
 
-    bool operator==( const QgsCurve &other ) const override;
-    bool operator!=( const QgsCurve &other ) const override;
+    bool equals( const QgsCurve &other ) const override;
 
     /**
      * Returns the specified point from inside the line string.

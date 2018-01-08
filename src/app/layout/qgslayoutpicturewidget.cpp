@@ -314,7 +314,7 @@ void QgsLayoutPictureWidget::mRotationFromComposerMapCheckBox_stateChanged( int 
   mPicture->beginCommand( tr( "Toggle Rotation Sync" ) );
   if ( state == Qt::Unchecked )
   {
-    mPicture->setRotationMap( QString() );
+    mPicture->setLinkedMap( nullptr );
     mPictureRotationSpinBox->setEnabled( true );
     mComposerMapComboBox->setEnabled( false );
     mNorthTypeComboBox->setEnabled( false );
@@ -323,9 +323,8 @@ void QgsLayoutPictureWidget::mRotationFromComposerMapCheckBox_stateChanged( int 
   }
   else
   {
-    const QgsLayoutItemMap *map = qobject_cast< const QgsLayoutItemMap * >( mComposerMapComboBox->currentItem() );
-    QString mapId = map ? map->uuid() : QString();
-    mPicture->setRotationMap( mapId );
+    QgsLayoutItemMap *map = qobject_cast< QgsLayoutItemMap * >( mComposerMapComboBox->currentItem() );
+    mPicture->setLinkedMap( map );
     mPictureRotationSpinBox->setEnabled( false );
     mNorthTypeComboBox->setEnabled( true );
     mPictureRotationOffsetSpinBox->setEnabled( true );
@@ -355,7 +354,7 @@ void QgsLayoutPictureWidget::mapChanged( QgsLayoutItem *item )
   }
 
   mPicture->beginCommand( tr( "Change Rotation Map" ) );
-  mPicture->setRotationMap( map->uuid() );
+  mPicture->setLinkedMap( map );
   mPicture->update();
   mPicture->endCommand();
 }
@@ -387,9 +386,9 @@ void QgsLayoutPictureWidget::setGuiElementValues()
     mPictureLineEdit->setText( mPicture->picturePath() );
     mPictureRotationSpinBox->setValue( mPicture->pictureRotation() );
 
-    mComposerMapComboBox->setItem( mPicture->layout()->itemByUuid( mPicture->rotationMap() ) );
+    mComposerMapComboBox->setItem( mPicture->linkedMap() );
 
-    if ( mPicture->useRotationMap() )
+    if ( mPicture->linkedMap() )
     {
       mRotationFromComposerMapCheckBox->setCheckState( Qt::Checked );
       mPictureRotationSpinBox->setEnabled( false );

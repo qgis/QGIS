@@ -45,6 +45,21 @@ Assign "enable tracing" checkable action to the tracer.
 The action is used to determine whether tracing is currently enabled by the user
 %End
 
+    QAction *actionEnableSnapping() const;
+%Docstring
+Access to action that user may use to toggle snapping on/off. May be null if no action was associated.
+
+.. versionadded:: 3.0
+%End
+
+    void setActionEnableSnapping( QAction *action );
+%Docstring
+Assign "enable snapping" checkable action to the tracer.
+The action is used to determine whether snapping is currently enabled by the user.
+
+.. versionadded:: 3.0
+%End
+
     static QgsMapCanvasTracer *tracerForCanvas( QgsMapCanvas *canvas );
 %Docstring
 Retrieve instance of this class associated with given canvas (if any).

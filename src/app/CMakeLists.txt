@@ -181,6 +181,7 @@ SET(QGIS_APP_SRCS
 
   layout/qgslayoutaddpagesdialog.cpp
   layout/qgslayoutapputils.cpp
+  layout/qgslayoutatlaswidget.cpp
   layout/qgslayoutattributeselectiondialog.cpp
   layout/qgslayoutattributetablewidget.cpp
   layout/qgslayoutdesignerdialog.cpp
@@ -204,6 +205,11 @@ SET(QGIS_APP_SRCS
   layout/qgslayoutscalebarwidget.cpp
   layout/qgslayoutshapewidget.cpp
   layout/qgslayouttablebackgroundcolorsdialog.cpp
+  layout/qgsreportfieldgroupsectionwidget.cpp
+  layout/qgsreportlayoutsectionwidget.cpp
+  layout/qgsreportorganizerwidget.cpp
+  layout/qgsreportsectionmodel.cpp
+  layout/qgsreportsectionwidget.cpp
 
   locator/qgsinbuiltlocatorfilters.cpp
   locator/qgslocatoroptionswidget.cpp
@@ -401,6 +407,7 @@ SET (QGIS_APP_MOC_HDRS
 
   layout/qgslayoutaddpagesdialog.h
   layout/qgslayoutappmenuprovider.h
+  layout/qgslayoutatlaswidget.h
   layout/qgslayoutattributeselectiondialog.h
   layout/qgslayoutattributetablewidget.h
   layout/qgslayoutdesignerdialog.h
@@ -423,6 +430,11 @@ SET (QGIS_APP_MOC_HDRS
   layout/qgslayoutscalebarwidget.h
   layout/qgslayoutshapewidget.h
   layout/qgslayouttablebackgroundcolorsdialog.h
+  layout/qgsreportfieldgroupsectionwidget.h
+  layout/qgsreportlayoutsectionwidget.h
+  layout/qgsreportorganizerwidget.h
+  layout/qgsreportsectionmodel.h
+  layout/qgsreportsectionwidget.h
 
   locator/qgsinbuiltlocatorfilters.h
   locator/qgslocatoroptionswidget.h

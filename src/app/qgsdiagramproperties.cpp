@@ -52,7 +52,7 @@ QgsExpressionContext QgsDiagramProperties::createExpressionContext() const
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
              << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-             << QgsExpressionContextUtils::atlasScope( nullptr )
+             << QgsExpressionContextUtils::compositionAtlasScope( nullptr )
              << QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() )
              << QgsExpressionContextUtils::layerScope( mLayer );
 
@@ -931,7 +931,7 @@ QString QgsDiagramProperties::showExpressionBuilder( const QString &initialExpre
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
           << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-          << QgsExpressionContextUtils::atlasScope( nullptr )
+          << QgsExpressionContextUtils::compositionAtlasScope( nullptr )
           << QgsExpressionContextUtils::mapSettingsScope( mMapCanvas->mapSettings() )
           << QgsExpressionContextUtils::layerScope( mLayer );
 

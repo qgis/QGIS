@@ -304,6 +304,9 @@ void QgsChunkedEntity::requestResidency( QgsChunkNode *node )
   }
   else if ( node->state() == QgsChunkNode::Skeleton )
   {
+    if ( !node->hasData() )
+      return;   // no need to load (we already tried but got nothing back)
+
     // add to the loading queue
     QgsChunkListEntry *entry = new QgsChunkListEntry( node );
     node->setQueuedForLoad( entry );
@@ -332,10 +335,18 @@ void QgsChunkedEntity::onActiveJobFinished()
     // mark as loaded + create entity
     Qt3DCore::QEntity *entity = node->loader()->createEntity( this );
 
-    // load into node (should be in main thread again)
-    node->setLoaded( entity );
+    if ( entity )
+    {
+      // load into node (should be in main thread again)
+      node->setLoaded( entity );
 
-    mReplacementQueue->insertFirst( node->replacementQueueEntry() );
+      mReplacementQueue->insertFirst( node->replacementQueueEntry() );
+    }
+    else
+    {
+      node->setHasData( false );
+      node->cancelLoading();
+    }
 
     // now we need an update!
     mNeedsUpdate = true;

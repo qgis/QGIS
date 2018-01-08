@@ -1,7 +1,0 @@
-v.voronoi
-v.voronoi.skeleton - Extract skeletons for input areas.
-Vector (v.*)
-QgsProcessingParameterVectorLayer|input|Input polygon layer|2|None|False
-QgsProcessingParameterNumber|thin|Maximum dangle length of skeletons (-1 will extract the center line)|QgsProcessingParameterNumber.Double|-1|False|None|None
-Hardcoded|-s
-QgsProcessingParameterVectorDestination|output|Area skeleton

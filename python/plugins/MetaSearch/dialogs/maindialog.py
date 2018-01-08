@@ -456,6 +456,8 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         self.timeout = self.spnTimeout.value()
 
         # bbox
+        # CRS is WGS84 with axis order longitude, latitude
+        # defined by 'urn:ogc:def:crs:OGC:1.3:CRS84'
         minx = self.leWest.text()
         miny = self.leSouth.text()
         maxx = self.leEast.text()
@@ -466,7 +468,8 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         # even for a global bbox, if a spatial filter is applied, then
         # the CSW server will skip records without a bbox
         if bbox != ['-180', '-90', '180', '90']:
-            self.constraints.append(BBox(bbox))
+            self.constraints.append(BBox(bbox,
+                                         crs='urn:ogc:def:crs:OGC:1.3:CRS84'))
 
         # keywords
         if self.leKeywords.text():

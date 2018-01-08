@@ -24,9 +24,13 @@
 
 #include <QSet>
 
+#define SIP_NO_FILE
+
 /**
  * \ingroup core
  * A container for grouping several QgsComposerItems
+ * \note Not available in Python bindings
+ * \deprecated Will be removed in QGIS 3.2
  */
 class CORE_EXPORT QgsComposerItemGroup: public QgsComposerItem
 {

@@ -42,6 +42,8 @@ The caller takes responsibility for deleting the returned object.
 
     virtual int type() const;
 
+    virtual QIcon icon() const;
+
     virtual QString displayName() const;
 
 

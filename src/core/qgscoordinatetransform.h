@@ -19,6 +19,7 @@
 
 #include <QExplicitlySharedDataPointer>
 
+#include "qgsconfig.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgscoordinatereferencesystem.h"
@@ -84,6 +85,16 @@ class CORE_EXPORT QgsCoordinateTransform
      * will be applied, and is used for calculating necessary datum transforms
      * to utilize.
      *
+     * Python scripts should generally use the constructor variant which accepts
+     * a QgsProject instance instead of this constructor.
+     *
+     * \warning Do NOT use an empty/default constructed QgsCoordinateTransformContext()
+     * object when creating QgsCoordinateTransform objects. This prevents correct
+     * datum transform handling and may result in inaccurate transformations. Always
+     * ensure that the QgsCoordinateTransformContext object is correctly retrieved
+     * based on the current code context, or use the constructor variant which
+     * accepts a QgsProject argument instead.
+     *
      * \since QGIS 3.0
      */
     explicit QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source,
@@ -97,6 +108,16 @@ class CORE_EXPORT QgsCoordinateTransform
      *
      * No reference to \a project is stored or utilized outside of the constructor,
      * and it is used to retrieve the project's transform context only.
+     *
+     * Python scripts should utilize the QgsProject.instance() project
+     * instance when creating QgsCoordinateTransform. This will ensure
+     * that any datum transforms defined in the project will be
+     * correctly respected during coordinate transforms. E.g.
+     *
+     * \code{.py}
+     *   transform = QgsCoordinateTransform(QgsCoordinateReferenceSystem("EPSG:3111"),
+     *                                      QgsCoordinateReferenceSystem("EPSG:4326"), QgsProject.instance())
+     * \endcode
      *
      * \since QGIS 3.0
      */

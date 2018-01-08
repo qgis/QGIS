@@ -58,20 +58,20 @@ void QgsLayoutMouseHandles::paint( QPainter *painter, const QStyleOptionGraphics
   Q_UNUSED( itemStyle );
   Q_UNUSED( pWidget );
 
-  if ( !mLayout->context().isPreviewRender() )
+  if ( !mLayout->renderContext().isPreviewRender() )
   {
     //don't draw selection handles in layout outputs
     return;
   }
 
-  if ( mLayout->context().boundingBoxesVisible() )
+  if ( mLayout->renderContext().boundingBoxesVisible() )
   {
     //draw resize handles around bounds of entire selection
     double rectHandlerSize = rectHandlerBorderTolerance();
     drawHandles( painter, rectHandlerSize );
   }
 
-  if ( mIsResizing || mIsDragging || mLayout->context().boundingBoxesVisible() )
+  if ( mIsResizing || mIsDragging || mLayout->renderContext().boundingBoxesVisible() )
   {
     //draw dotted boxes around selected items
     drawSelectedItemBounds( painter );

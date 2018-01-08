@@ -120,10 +120,12 @@ Returns the rendered image, or a null QImage if the image does not fit into avai
     enum ExportResult
     {
       Success,
+      Canceled,
       MemoryError,
       FileError,
       PrintError,
       SvgLayerError,
+      IteratorError,
     };
 
     struct ImageExportSettings
@@ -179,7 +181,7 @@ Set to true to generate an external world file alongside
 exported images.
 %End
 
-      QgsLayoutContext::Flags flags;
+      QgsLayoutRenderContext::Flags flags;
 %Docstring
 Layout context flags, which control how the export will be created.
 %End
@@ -197,6 +199,22 @@ Returns a result code indicating whether the export was successful or an
 error was encountered. If an error code is returned, errorFile() can be called
 to determine the filename for the export which encountered the error.
 %End
+
+
+    static ExportResult exportToImage( QgsAbstractLayoutIterator *iterator, const QString &baseFilePath,
+                                       const QString &extension, const QgsLayoutExporter::ImageExportSettings &settings,
+                                       QString &error /Out/, QgsFeedback *feedback = 0 );
+%Docstring
+Exports a layout ``iterator`` to raster images, with the specified export ``settings``.
+
+The ``baseFilePath`` argument gives a base file path, which is modified by the
+iterator to obtain file paths for each iterator feature.
+
+Returns a result code indicating whether the export was successful or an
+error was encountered. If an error was obtained then ``error`` will be set
+to the error description.
+%End
+
 
     struct PdfExportSettings
     {
@@ -226,7 +244,7 @@ correct appearance in the output.
 This option is mutually exclusive with rasterizeWholeImage.
 %End
 
-      QgsLayoutContext::Flags flags;
+      QgsLayoutRenderContext::Flags flags;
 %Docstring
 Layout context flags, which control how the export will be created.
 %End
@@ -239,6 +257,83 @@ Exports the layout as a PDF to the a ``filePath``, using the specified export ``
 
 Returns a result code indicating whether the export was successful or an
 error was encountered.
+%End
+
+    static ExportResult exportToPdf( QgsAbstractLayoutIterator *iterator, const QString &fileName,
+                                     const QgsLayoutExporter::PdfExportSettings &settings,
+                                     QString &error /Out/, QgsFeedback *feedback = 0 );
+%Docstring
+Exports a layout ``iterator`` to a single PDF file, with the specified export ``settings``.
+
+The ``fileName`` argument gives the destination file name for the output PDF.
+
+Returns a result code indicating whether the export was successful or an
+error was encountered. If an error was obtained then ``error`` will be set
+to the error description.
+
+.. seealso:: :py:func:`exportToPdfs()`
+%End
+
+    static ExportResult exportToPdfs( QgsAbstractLayoutIterator *iterator, const QString &baseFilePath,
+                                      const QgsLayoutExporter::PdfExportSettings &settings,
+                                      QString &error /Out/, QgsFeedback *feedback = 0 );
+%Docstring
+Exports a layout ``iterator`` to multiple PDF files, with the specified export ``settings``.
+
+The ``baseFilePath`` argument gives a base file path, which is modified by the
+iterator to obtain file paths for each iterator feature.
+
+Returns a result code indicating whether the export was successful or an
+error was encountered. If an error was obtained then ``error`` will be set
+to the error description.
+
+.. seealso:: :py:func:`exportToPdf()`
+%End
+
+
+    struct PrintExportSettings
+    {
+      PrintExportSettings();
+%Docstring
+Constructor for PrintExportSettings
+%End
+
+      double dpi;
+%Docstring
+Resolution to export layout at. If dpi <= 0 the default layout dpi will be used.
+%End
+
+      bool rasterizeWholeImage;
+%Docstring
+Set to true to force whole layout to be rasterized while exporting.
+
+This option is mutually exclusive with forceVectorOutput.
+%End
+
+      QgsLayoutRenderContext::Flags flags;
+%Docstring
+Layout context flags, which control how the export will be created.
+%End
+
+    };
+
+    ExportResult print( QPrinter &printer, const QgsLayoutExporter::PrintExportSettings &settings );
+%Docstring
+Prints the layout to a ``printer``, using the specified export ``settings``.
+
+Returns a result code indicating whether the export was successful or an
+error was encountered.
+%End
+
+    static ExportResult print( QgsAbstractLayoutIterator *iterator, QPrinter &printer,
+                               const QgsLayoutExporter::PrintExportSettings &settings,
+                               QString &error /Out/, QgsFeedback *feedback = 0 );
+%Docstring
+Exports a layout ``iterator`` to a ``printer``, with the specified export ``settings``.
+
+Returns a result code indicating whether the export was successful or an
+error was encountered. If an error was obtained then ``error`` will be set
+to the error description.
 %End
 
 
@@ -282,7 +377,7 @@ Note that this option is considered experimental, and the generated
 SVG may differ from the expected appearance of the layout.
 %End
 
-      QgsLayoutContext::Flags flags;
+      QgsLayoutRenderContext::Flags flags;
 %Docstring
 Layout context flags, which control how the export will be created.
 %End
@@ -296,6 +391,21 @@ Exports the layout as an SVG to the a ``filePath``, using the specified export `
 Returns a result code indicating whether the export was successful or an
 error was encountered.
 %End
+
+    static ExportResult exportToSvg( QgsAbstractLayoutIterator *iterator, const QString &baseFilePath,
+                                     const QgsLayoutExporter::SvgExportSettings &settings,
+                                     QString &error /Out/, QgsFeedback *feedback = 0 );
+%Docstring
+Exports a layout ``iterator`` to SVG files, with the specified export ``settings``.
+
+The ``baseFilePath`` argument gives a base file path, which is modified by the
+iterator to obtain file paths for each iterator feature.
+
+Returns a result code indicating whether the export was successful or an
+error was encountered. If an error was obtained then ``error`` will be set
+to the error description.
+%End
+
 
     QString errorFile() const;
 %Docstring

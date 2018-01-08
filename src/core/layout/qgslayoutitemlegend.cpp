@@ -38,9 +38,8 @@ QgsLayoutItemLegend::QgsLayoutItemLegend( QgsLayout *layout )
   : QgsLayoutItem( layout )
   , mLegendModel( new QgsLegendModel( layout->project()->layerTreeRoot() ) )
 {
-#if 0 //TODO
+#if 0 //no longer required?
   connect( &layout->atlasComposition(), &QgsAtlasComposition::renderEnded, this, &QgsLayoutItemLegend::onAtlasEnded );
-  connect( &layout->atlasComposition(), &QgsAtlasComposition::featureChanged, this, &QgsLayoutItemLegend::onAtlasFeature );
 #endif
 
   // Connect to the main layertreeroot.
@@ -56,6 +55,11 @@ QgsLayoutItemLegend *QgsLayoutItemLegend::create( QgsLayout *layout )
 int QgsLayoutItemLegend::type() const
 {
   return QgsLayoutItemRegistry::LayoutLegend;
+}
+
+QIcon QgsLayoutItemLegend::icon() const
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "/mLayoutItemLegend.svg" ) );
 }
 
 void QgsLayoutItemLegend::paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget )
@@ -74,7 +78,7 @@ void QgsLayoutItemLegend::paint( QPainter *painter, const QStyleOptionGraphicsIt
 
   if ( mLayout )
   {
-    mSettings.setUseAdvancedEffects( mLayout->context().flags() & QgsLayoutContext::FlagUseAdvancedEffects );
+    mSettings.setUseAdvancedEffects( mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagUseAdvancedEffects );
     mSettings.setDpi( dpi );
   }
   if ( mMap && mLayout )
@@ -130,8 +134,14 @@ void QgsLayoutItemLegend::finalizeRestoreFromXml()
 #endif
   if ( !mMapUuid.isEmpty() )
   {
-    setMap( qobject_cast< QgsLayoutItemMap * >( mLayout->itemByUuid( mMapUuid, true ) ) );
+    setLinkedMap( qobject_cast< QgsLayoutItemMap * >( mLayout->itemByUuid( mMapUuid, true ) ) );
   }
+}
+
+void QgsLayoutItemLegend::refresh()
+{
+  QgsLayoutItem::refresh();
+  onAtlasFeature();
 }
 
 void QgsLayoutItemLegend::draw( QgsRenderContext &context, const QStyleOptionGraphicsItem * )
@@ -616,7 +626,7 @@ QString QgsLayoutItemLegend::displayName() const
   QString text = mSettings.title();
   if ( text.isEmpty() )
   {
-    return tr( "<legend>" );
+    return tr( "<Legend>" );
   }
   if ( text.length() > 25 )
   {
@@ -628,7 +638,7 @@ QString QgsLayoutItemLegend::displayName() const
   }
 }
 
-void QgsLayoutItemLegend::setMap( QgsLayoutItemMap *map )
+void QgsLayoutItemLegend::setLinkedMap( QgsLayoutItemMap *map )
 {
   if ( mMap )
   {
@@ -653,7 +663,7 @@ void QgsLayoutItemLegend::setMap( QgsLayoutItemMap *map )
 
 void QgsLayoutItemLegend::invalidateCurrentMap()
 {
-  setMap( nullptr );
+  setLinkedMap( nullptr );
 }
 
 void QgsLayoutItemLegend::refreshDataDefinedProperty( const QgsLayoutObject::DataDefinedProperty property )
@@ -744,7 +754,7 @@ void QgsLayoutItemLegend::doUpdateFilterByMap()
 
   if ( mMap && ( mLegendFilterByMap || filterByExpression || mInAtlas ) )
   {
-    int dpi = mLayout->context().dpi();
+    int dpi = mLayout->renderContext().dpi();
 
     QgsRectangle requestRectangle = mMap->requestedExtent();
 
@@ -756,9 +766,7 @@ void QgsLayoutItemLegend::doUpdateFilterByMap()
     QgsGeometry filterPolygon;
     if ( mInAtlas )
     {
-#if 0 //TODO
-      filterPolygon = composition()->atlasComposition().currentGeometry( mMap->crs() );
-#endif
+      filterPolygon = mLayout->reportContext().currentGeometry( mMap->crs() );
     }
     mLegendModel->setLegendFilter( &ms, /* useExtent */ mInAtlas || mLegendFilterByMap, filterPolygon, /* useExpressions */ true );
   }
@@ -778,9 +786,9 @@ bool QgsLayoutItemLegend::legendFilterOutAtlas() const
   return mFilterOutAtlas;
 }
 
-void QgsLayoutItemLegend::onAtlasFeature( QgsFeature *feat )
+void QgsLayoutItemLegend::onAtlasFeature()
 {
-  if ( !feat )
+  if ( !mLayout->reportContext().feature().isValid() )
     return;
   mInAtlas = mFilterOutAtlas;
   updateFilterByMap();

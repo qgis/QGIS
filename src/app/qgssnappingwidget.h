@@ -75,6 +75,11 @@ class APP_EXPORT QgsSnappingWidget : public QWidget
      */
     QAction *enableTracingAction() { return mEnableTracingAction; }
 
+    /**
+     * Returns the enable snapping action widget.
+     */
+    QAction *enableSnappingAction() { return mEnabledAction; }
+
     //! Returns spin box used to set offset for tracing
     QgsDoubleSpinBox *tracingOffsetSpinBox() { return mTracingOffsetSpinBox; }
 

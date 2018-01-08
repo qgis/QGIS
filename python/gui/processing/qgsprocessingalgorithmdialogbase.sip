@@ -69,6 +69,19 @@ Switches the dialog to the log page.
     bool wasExecuted() const;
 %Docstring
 Returns true if an algorithm was executed in the dialog.
+
+.. seealso:: :py:func:`results()`
+
+.. seealso:: :py:func:`setExecuted()`
+%End
+
+    QVariantMap results() const;
+%Docstring
+Returns the results returned by the algorithm executed.
+
+.. seealso:: :py:func:`wasExecuted()`
+
+.. seealso:: :py:func:`setResults()`
 %End
 
     QgsProcessingFeedback *createFeedback() /Factory/;
@@ -85,8 +98,6 @@ Returns the parameter values for the algorithm to run in the dialog.
   public slots:
 
     virtual void accept();
-
-    virtual void reject();
 
 
     void reportError( const QString &error );
@@ -126,9 +137,6 @@ Pushes a console info string to the dialog's log.
 
   protected:
 
-    virtual void closeEvent( QCloseEvent *e );
-
-
     QPushButton *runButton();
 %Docstring
 Returns the dialog's run button.
@@ -157,6 +165,19 @@ Clears any current progress from the dialog.
     void setExecuted( bool executed );
 %Docstring
 Sets whether the algorithm was executed through the dialog.
+
+.. seealso:: :py:func:`wasExecuted()`
+
+.. seealso:: :py:func:`setResults()`
+%End
+
+    void setResults( const QVariantMap &results );
+%Docstring
+Sets the algorithm results.
+
+.. seealso:: :py:func:`results()`
+
+.. seealso:: :py:func:`setExecuted()`
 %End
 
     void setInfo( const QString &message, bool isError = false, bool escapeHtml = true );

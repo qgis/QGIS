@@ -149,6 +149,7 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
   mJoinBuffer = new QgsVectorLayerJoinBuffer( this );
   connect( mJoinBuffer, &QgsVectorLayerJoinBuffer::joinedFieldsChanged, this, &QgsVectorLayer::onJoinedFieldsChanged );
 
+  mExpressionFieldBuffer = new QgsExpressionFieldBuffer();
   // if we're given a provider type, try to create and bind one to this layer
   if ( !vectorLayerPath.isEmpty() && !mProviderKey.isEmpty() )
   {
@@ -973,15 +974,18 @@ bool QgsVectorLayer::addFeature( QgsFeature &feature, Flags )
 
 bool QgsVectorLayer::updateFeature( const QgsFeature &updatedFeature, bool skipDefaultValues )
 {
-  bool hasChanged = false;
-  bool hasError = false;
+  if ( !mEditBuffer || !mDataProvider )
+  {
+    return false;
+  }
 
   QgsFeature currentFeature = getFeature( updatedFeature.id() );
   if ( currentFeature.isValid() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "feature %1 could not be retrieved" ).arg( updatedFeature.id() ), 3 );
+    bool hasChanged = false;
+    bool hasError = false;
 
-    if ( updatedFeature.hasGeometry() && currentFeature.hasGeometry() && !updatedFeature.geometry().isGeosEqual( currentFeature.geometry() ) )
+    if ( ( updatedFeature.hasGeometry() || currentFeature.hasGeometry() ) && !updatedFeature.geometry().equals( currentFeature.geometry() ) )
     {
       if ( changeGeometry( updatedFeature.id(), updatedFeature.geometry(), true ) )
       {
@@ -1011,12 +1015,16 @@ bool QgsVectorLayer::updateFeature( const QgsFeature &updatedFeature, bool skipD
         }
       }
     }
+    if ( hasChanged && !mDefaultValueOnUpdateFields.isEmpty() && !skipDefaultValues )
+      updateDefaultValues( updatedFeature.id(), updatedFeature );
+
+    return !hasError;
   }
-
-  if ( hasChanged && !mDefaultValueOnUpdateFields.isEmpty() && !skipDefaultValues )
-    updateDefaultValues( updatedFeature.id(), updatedFeature );
-
-  return !hasError;
+  else
+  {
+    QgsDebugMsgLevel( QStringLiteral( "feature %1 could not be retrieved" ).arg( updatedFeature.id() ), 3 );
+    return false;
+  }
 }
 
 
@@ -1555,7 +1563,6 @@ bool QgsVectorLayer::setDataProvider( QString const &provider )
   // get and store the feature type
   mWkbType = mDataProvider->wkbType();
 
-  mExpressionFieldBuffer = new QgsExpressionFieldBuffer();
   updateFields();
 
   if ( mProviderKey == QLatin1String( "postgres" ) )

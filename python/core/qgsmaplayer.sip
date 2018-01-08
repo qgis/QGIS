@@ -55,6 +55,12 @@ This is the base class for all map layer types (vector, raster).
       PluginLayer
     };
 
+    enum PropertyType
+    {
+      Style,
+      Metadata,
+    };
+
     QgsMapLayer( QgsMapLayer::LayerType type = VectorLayer, const QString &name = QString(), const QString &source = QString() );
 %Docstring
 Constructor for QgsMapLayer
@@ -80,6 +86,15 @@ is still unique.
     QgsMapLayer::LayerType type() const;
 %Docstring
 Returns the type of the layer.
+%End
+
+    static QString extensionPropertyType( PropertyType type );
+%Docstring
+Returns the extension of a Property.
+
+:return: The extension
+
+.. versionadded:: 3.0
 %End
 
     QString id() const;
@@ -544,6 +559,118 @@ Sets layer's spatial reference system
     static QString formatLayerName( const QString &name );
 %Docstring
 A convenience function to capitalize and format a layer ``name``.
+
+.. versionadded:: 3.0
+%End
+
+    virtual QString metadataUri() const;
+%Docstring
+Retrieve the metadata URI for this layer
+(either as a .qmd file on disk or as a
+record in the users style table in their personal qgis.db)
+
+:return: a QString with the metadata file name
+
+.. versionadded:: 3.0
+%End
+
+    void exportNamedMetadata( QDomDocument &doc, QString &errorMsg ) const;
+%Docstring
+Export the current metadata of this layer as named metadata in a QDomDocument
+
+:param doc: the target QDomDocument
+:param errorMsg: this QString will be initialized on error
+
+.. versionadded:: 3.0
+%End
+
+    virtual QString saveDefaultMetadata( bool &resultFlag /Out/ );
+%Docstring
+Save the current metadata of this layer as the default metadata
+(either as a .qmd file on disk or as a
+record in the users style table in their personal qgis.db)
+
+:param resultFlag: a reference to a flag that will be set to false if
+we did not manage to save the default metadata.
+
+:return: a QString with any status messages
+
+.. versionadded:: 3.0
+%End
+
+    QString saveNamedMetadata( const QString &uri, bool &resultFlag );
+%Docstring
+Save the current metadata of this layer as a named metadata
+(either as a .qmd file on disk or as a
+record in the users style table in their personal qgis.db)
+
+:param uri: the file name or other URI for the
+metadata file. First an attempt will be made to see if this
+is a file and save to that, if that fails the qgis.db metadata
+table will be used to create a metadata entry who's
+key matches the URI.
+:param resultFlag: a reference to a flag that will be set to false if
+we did not manage to save the default metadata.
+
+:return: a QString with any status messages
+
+.. versionadded:: 3.0
+%End
+
+    virtual QString loadNamedMetadata( const QString &uri, bool &resultFlag /Out/ );
+%Docstring
+Retrieve a named metadata for this layer if one
+exists (either as a .qmd file on disk or as a
+record in the users style table in their personal qgis.db)
+
+:param uri: - the file name or other URI for the
+metadata file. First an attempt will be made to see if this
+is a file and load that, if that fails the qgis.db metadata
+table will be consulted to see if there is a metadata who's
+key matches the URI.
+:param resultFlag: a reference to a flag that will be set to false if
+we did not manage to load the default metadata.
+
+:return: a QString with any status messages
+
+.. versionadded:: 3.0
+%End
+
+    QString loadDefaultMetadata( bool &resultFlag );
+%Docstring
+Retrieve the default metadata for this layer if one
+exists (either as a .qmd file on disk or as a
+record in the users metadata table in their personal qgis.db)
+
+:param resultFlag: a reference to a flag that will be set to false if
+we did not manage to load the default metadata.
+
+:return: a QString with any status messages
+
+.. versionadded:: 3.0
+%End
+
+    bool loadNamedMetadataFromDatabase( const QString &db, const QString &uri, QString &qmd );
+%Docstring
+Retrieve a named metadata for this layer from a sqlite database.
+
+:param db: path to sqlite database
+:param uri: uri for table
+:param qmd: will be set to QMD xml metadata content from database
+
+:return: true if style was successfully loaded
+
+.. versionadded:: 3.0
+%End
+
+    bool importNamedMetadata( QDomDocument &document, QString &errorMessage );
+%Docstring
+Import the metadata of this layer from a QDomDocument
+
+:param document: source QDomDocument
+:param errorMessage: this QString will be initialized on error
+
+:return: true on success
 
 .. versionadded:: 3.0
 %End

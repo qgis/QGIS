@@ -153,7 +153,7 @@ void QgsLayoutAppUtils::registerGuiForKnownItemTypes()
     }
     if ( targetMap )
     {
-      legend->setMap( targetMap );
+      legend->setLinkedMap( targetMap );
     }
 
     legend->updateLegend();
@@ -194,7 +194,7 @@ void QgsLayoutAppUtils::registerGuiForKnownItemTypes()
     }
     if ( targetMap )
     {
-      scalebar->setMap( targetMap );
+      scalebar->setLinkedMap( targetMap );
       scalebar->applyDefaultSize( scalebar->guessUnits() );
     }
   } );

@@ -140,13 +140,6 @@ Return a pointer to the main window (instance of QgisApp in case of QGIS)
 Return the message bar of the main app
 %End
 
-    virtual QList<QgsComposerInterface *> openComposers() = 0;
-%Docstring
-Returns all currently open composer windows.
-
-.. versionadded:: 3.0
-%End
-
     virtual QList<QgsLayoutDesignerInterface *> openLayoutDesigners() = 0;
 %Docstring
 Returns all currently open layout designers.
@@ -212,8 +205,16 @@ Advanced digitizing dock widget
     virtual QAction *actionSaveProjectAs() = 0;
     virtual QAction *actionSaveMapAsImage() = 0;
     virtual QAction *actionProjectProperties() = 0;
-    virtual QAction *actionPrintComposer() = 0;
-    virtual QAction *actionShowComposerManager() = 0;
+
+    virtual QAction *actionCreatePrintLayout() = 0;
+%Docstring
+Create new print layout action
+%End
+
+    virtual QAction *actionShowLayoutManager() = 0;
+%Docstring
+Show layout manager action
+%End
     virtual QAction *actionExit() = 0;
 
     virtual QAction *actionCutFeatures() = 0;
@@ -608,27 +609,6 @@ Open the message log dock widget *
 Adds a widget to the user input tool bar.
 %End
 
-    virtual QgsComposerInterface *openComposer( QgsComposition *composition ) = 0;
-%Docstring
-Opens a new composer window for the specified ``composition``, or
-brings an already open composer window to the foreground if one
-is already created for the composition.
-
-.. versionadded:: 3.0
-
-.. seealso:: :py:func:`closeComposer()`
-%End
-
-    virtual void closeComposer( QgsComposition *composition ) = 0;
-%Docstring
-Closes an open composer window showing the specified ``composition``.
-The composition remains unaffected.
-
-.. versionadded:: 3.0
-
-.. seealso:: :py:func:`openComposer()`
-%End
-
     virtual void showLayoutManager() = 0;
 %Docstring
 Opens the layout manager dialog.
@@ -636,15 +616,13 @@ Opens the layout manager dialog.
 .. versionadded:: 3.0
 %End
 
-    virtual QgsLayoutDesignerInterface *openLayoutDesigner( QgsLayout *layout ) = 0;
+    virtual QgsLayoutDesignerInterface *openLayoutDesigner( QgsMasterLayoutInterface *layout ) = 0;
 %Docstring
 Opens a new layout designer dialog for the specified ``layout``, or
 brings an already open designer window to the foreground if one
 is already created for the layout.
 
 .. versionadded:: 3.0
-
-.. seealso:: :py:func:`closeComposer()`
 %End
 
     virtual void showOptionsDialog( QWidget *parent = 0, const QString &currentPage = QString() ) = 0;
@@ -912,7 +890,10 @@ More information here: http://qt-project.org/forums/viewthread/27098
 %Docstring
 Registers a locator ``filter`` for the app's locator bar. Ownership of the filter is transferred to the
 locator.
-\warning Plugins which register filters to the locator bar must take care to correctly call
+
+.. warning::
+
+   Plugins which register filters to the locator bar must take care to correctly call
 deregisterLocatorFilter() and deregister their filters upon plugin unload to avoid crashes.
 
 .. seealso:: :py:func:`deregisterLocatorFilter()`
@@ -957,38 +938,6 @@ Signal emitted when the current ``theme`` is changed so plugins
 can change their tool button icons.
 
 .. versionadded:: 3.0
-%End
-
-    void composerOpened( QgsComposerInterface *composer );
-%Docstring
-This signal is emitted when a new composer window has been opened.
-
-.. versionadded:: 3.0
-
-.. seealso:: :py:func:`composerWillBeClosed()`
-%End
-
-    void composerWillBeClosed( QgsComposerInterface *composer );
-%Docstring
-This signal is emitted before a composer window is going to be closed
-and deleted.
-
-.. versionadded:: 3.0
-
-.. seealso:: :py:func:`composerClosed()`
-
-.. seealso:: :py:func:`composerOpened()`
-%End
-
-    void composerClosed( QgsComposerInterface *composer );
-%Docstring
-This signal is emitted after a composer window is closed.
-
-.. versionadded:: 3.0
-
-.. seealso:: :py:func:`composerWillBeClosed()`
-
-.. seealso:: :py:func:`composerOpened()`
 %End
 
     void layoutDesignerOpened( QgsLayoutDesignerInterface *designer );

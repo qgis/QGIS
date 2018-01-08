@@ -39,6 +39,8 @@ Constructor for QgsLayoutItemMap, with the specified parent ``layout``.
 
     virtual int type() const;
 
+    virtual QIcon icon() const;
+
 
     void assignFreeId();
 %Docstring
@@ -478,7 +480,6 @@ Return map settings that will be used for drawing of the map.
 True if a draw is already in progress
 %End
 
-
     virtual QRectF boundingRect() const;
 
 
@@ -529,6 +530,9 @@ associated legend items know they should update
 %End
 
   public slots:
+
+    virtual void refresh();
+
 
     virtual void invalidateCache();
 

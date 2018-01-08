@@ -28,6 +28,7 @@
 #include "qgslogger.h"
 #include "qgslayermetadatavalidator.h"
 #include "qgsapplication.h"
+#include "qgsmapcanvas.h"
 
 QgsMetadataWidget::QgsMetadataWidget( QWidget *parent, QgsMapLayer *layer )
   : QWidget( parent ),
@@ -450,8 +451,9 @@ void QgsMetadataWidget::setPropertiesFromLayer()
   if ( ! spatialExtents.isEmpty() )
   {
     // Even if it's a list, it's supposed to store the same extent in different CRS.
-    spatialExtentSelector->setCurrentExtent( spatialExtents.at( 0 ).bounds.toRectangle(), spatialExtents.at( 0 ).extentCrs );
     spatialExtentSelector->setOutputCrs( spatialExtents.at( 0 ).extentCrs );
+    spatialExtentSelector->setOriginalExtent( spatialExtents.at( 0 ).bounds.toRectangle(), spatialExtents.at( 0 ).extentCrs );
+    spatialExtentSelector->setOutputExtentFromOriginal();
     spinBoxZMaximum->setValue( spatialExtents.at( 0 ).bounds.zMaximum() );
     spinBoxZMinimum->setValue( spatialExtents.at( 0 ).bounds.zMinimum() );
   }
@@ -804,12 +806,24 @@ QMap<QString, QString> QgsMetadataWidget::parseTypes()
   return types;
 }
 
+void QgsMetadataWidget::setMapCanvas( QgsMapCanvas *canvas )
+{
+  if ( canvas )
+    spatialExtentSelector->setCurrentExtent( canvas->extent(), canvas->mapSettings().destinationCrs() );
+}
+
 void QgsMetadataWidget::acceptMetadata()
 {
   saveMetadata( mMetadata );
 
   // Save layer metadata properties
   mLayer->setMetadata( mMetadata );
+}
+
+void QgsMetadataWidget::setMetadata( const QgsLayerMetadata &metadata )
+{
+  mMetadata = metadata;
+  setPropertiesFromLayer();
 }
 
 void QgsMetadataWidget::syncFromCategoriesTabToKeywordsTab() const

@@ -65,6 +65,8 @@ The caller takes responsibility for deleting the returned object.
 
     virtual int type() const;
 
+    virtual QIcon icon() const;
+
     virtual QString displayName() const;
 
 
@@ -124,7 +126,6 @@ Find out whether legend items are filtered to show just the ones visible in the 
 
 .. seealso:: :py:func:`setLegendFilterByMapEnabled()`
 %End
-
 
     void setLegendFilterOutAtlas( bool doFilter );
 %Docstring
@@ -450,18 +451,18 @@ only drawn if drawRasterStroke() is true.
 .. seealso:: :py:func:`setRasterStrokeColor()`
 %End
 
-    void setMap( QgsLayoutItemMap *map );
+    void setLinkedMap( QgsLayoutItemMap *map );
 %Docstring
 Sets the ``map`` to associate with the legend.
 
-.. seealso:: :py:func:`map()`
+.. seealso:: :py:func:`linkedMap()`
 %End
 
-    QgsLayoutItemMap *map() const;
+    QgsLayoutItemMap *linkedMap() const;
 %Docstring
 Returns the associated map.
 
-.. seealso:: :py:func:`setMap()`
+.. seealso:: :py:func:`setLinkedMap()`
 %End
 
     void updateLegend();
@@ -487,6 +488,8 @@ Returns the legend's renderer settings object.
 
 
   public slots:
+
+    virtual void refresh();
 
     virtual void refreshDataDefinedProperty( const QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties );
 

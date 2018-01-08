@@ -44,6 +44,7 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
     QgsLayoutItemScaleBar( QgsLayout *layout );
 
     int type() const override;
+    QIcon icon() const override;
 
     /**
      * Returns a new scale bar item for the specified \a layout.
@@ -290,15 +291,15 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
 
     /**
      * Sets the \a map item linked to the scalebar.
-     * \see map()
+     * \see linkedMap()
      */
-    void setMap( QgsLayoutItemMap *map );
+    void setLinkedMap( QgsLayoutItemMap *map );
 
     /**
      * Returns the map item linked to the scalebar.
-     * \see setMap()
+     * \see setLinkedMap()
      */
-    QgsLayoutItemMap *map() const { return mMap; }
+    QgsLayoutItemMap *linkedMap() const { return mMap; }
 
     /**
      * Returns the spacing (in millimeters) between labels and the scalebar.

@@ -52,7 +52,10 @@ Destructor for QgsLocator. Destruction will block while any currently running qu
 %Docstring
 Registers a ``filter`` within the locator. Ownership of the filter is transferred to the
 locator.
-\warning Plugins which register filters to the locator must take care to correctly call
+
+.. warning::
+
+   Plugins which register filters to the locator must take care to correctly call
 deregisterFilter() and deregister their filters upon plugin unload to avoid crashes.
 
 .. seealso:: :py:func:`deregisterFilter()`

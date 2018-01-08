@@ -128,7 +128,7 @@ QgsRenderContext QgsLayoutUtils::createRenderContextForMap( QgsLayoutItemMap *ma
     if ( painter )
       context.setPainter( painter );
 
-    context.setFlags( map->layout()->context().renderContextFlags() );
+    context.setFlags( map->layout()->renderContext().renderContextFlags() );
     return context;
   }
 }
@@ -138,7 +138,7 @@ QgsRenderContext QgsLayoutUtils::createRenderContextForLayout( QgsLayout *layout
   QgsLayoutItemMap *referenceMap = layout ? layout->referenceMap() : nullptr;
   QgsRenderContext context = createRenderContextForMap( referenceMap, painter, dpi );
   if ( layout )
-    context.setFlags( layout->context().renderContextFlags() );
+    context.setFlags( layout->renderContext().renderContextFlags() );
   return context;
 }
 

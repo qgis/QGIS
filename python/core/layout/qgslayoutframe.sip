@@ -35,10 +35,13 @@ Creates a new QgsLayoutFrame belonging to the specified ``layout``.
 
     virtual int type() const;
 
-    virtual QString uuid() const;
+    virtual QIcon icon() const;
 
 
     virtual QString displayName() const;
+
+
+    virtual void cleanup();
 
 
     void setContentSection( const QRectF &section );
@@ -121,6 +124,10 @@ Returns whether the frame is empty.
     virtual void drawFrame( QgsRenderContext &context );
 
     virtual void drawBackground( QgsRenderContext &context );
+
+    virtual bool writePropertiesToElement( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const;
+
+    virtual bool readPropertiesFromElement( const QDomElement &itemElement, const QDomDocument &document, const QgsReadWriteContext &context );
 
 
 };

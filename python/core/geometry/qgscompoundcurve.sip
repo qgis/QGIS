@@ -25,9 +25,7 @@ class QgsCompoundCurve: QgsCurve
     QgsCompoundCurve( const QgsCompoundCurve &curve );
     ~QgsCompoundCurve();
 
-    virtual bool operator==( const QgsCurve &other ) const;
-
-    virtual bool operator!=( const QgsCurve &other ) const;
+    virtual bool equals( const QgsCurve &other ) const;
 
 
     virtual QString geometryType() const;

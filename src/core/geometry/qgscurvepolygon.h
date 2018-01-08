@@ -38,8 +38,8 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     QgsCurvePolygon( const QgsCurvePolygon &p );
     QgsCurvePolygon &operator=( const QgsCurvePolygon &p );
 
-    bool operator==( const QgsCurvePolygon &other ) const;
-    bool operator!=( const QgsCurvePolygon &other ) const;
+    bool operator==( const QgsAbstractGeometry &other ) const override;
+    bool operator!=( const QgsAbstractGeometry &other ) const override;
 
     ~QgsCurvePolygon() override;
 

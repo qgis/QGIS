@@ -71,8 +71,8 @@ class QgsPluginInstaller(QObject):
 
         if repositories.checkingOnStart() and repositories.timeForChecking() and repositories.allEnabled():
             # start fetching repositories
-            self.statusLabel = QLabel(self.tr("Looking for new plugins...") + " ", iface.mainWindow().statusBar())
-            iface.mainWindow().statusBar().insertPermanentWidget(0, self.statusLabel)
+            self.statusLabel = QLabel(iface.mainWindow().statusBar())
+            iface.mainWindow().statusBar().addPermanentWidget(self.statusLabel)
             self.statusLabel.linkActivated.connect(self.showPluginManagerWhenReady)
             repositories.checkingDone.connect(self.checkingDone)
             for key in repositories.allEnabled():
@@ -150,19 +150,23 @@ class QgsPluginInstaller(QObject):
         # look for news in the repositories
         plugins.markNews()
         status = ""
+        icon = ""
         # first check for news
         for key in plugins.all():
             if plugins.all()[key]["status"] == "new":
                 status = self.tr("There is a new plugin available")
+                icon = "pluginNew.svg"
                 tabIndex = 4  # PLUGMAN_TAB_NEW
         # then check for updates (and eventually overwrite status)
         for key in plugins.all():
             if plugins.all()[key]["status"] == "upgradeable":
                 status = self.tr("There is a plugin update available")
+                icon = "pluginUpgrade.svg"
                 tabIndex = 3  # PLUGMAN_TAB_UPGRADEABLE
         # finally set the notify label
         if status:
-            self.statusLabel.setText(u' <a href="%d">%s</a>  ' % (tabIndex, status))
+            self.statusLabel.setText(u'<a href="%d"><img src="qrc:/images/themes/default/%s"></a>' % (tabIndex, icon))
+            self.statusLabel.setToolTip(status)
         else:
             iface.mainWindow().statusBar().removeWidget(self.statusLabel)
             self.statusLabel = None
@@ -366,7 +370,9 @@ class QgsPluginInstaller(QObject):
 
         if infoString[0]:
             level = error and QgsMessageBar.CRITICAL or QgsMessageBar.INFO
-            msg = "<b>%s:</b>%s" % (infoString[0], infoString[1])
+            msg = "<b>%s</b>" % infoString[0]
+            if infoString[1]:
+                msg += "<b>:</b> %s" % infoString[1]
             iface.pluginManagerInterface().pushMessage(msg, level)
 
     # ----------------------------------------- #
@@ -567,6 +573,7 @@ class QgsPluginInstaller(QObject):
             loadPlugin(pluginName)
             plugins.getAllInstalled()
             plugins.rebuild()
+            self.exportPluginsToManager()
 
             if settings.contains('/PythonPlugins/' + pluginName):
                 if settings.value('/PythonPlugins/' + pluginName, False, bool):
@@ -582,5 +589,7 @@ class QgsPluginInstaller(QObject):
 
         if infoString[0]:
             level = error and QgsMessageBar.CRITICAL or QgsMessageBar.INFO
-            msg = "<b>%s:</b>%s" % (infoString[0], infoString[1])
+            msg = "<b>%s</b>" % infoString[0]
+            if infoString[1]:
+                msg += "<b>:</b> %s" % infoString[1]
             iface.pluginManagerInterface().pushMessage(msg, level)

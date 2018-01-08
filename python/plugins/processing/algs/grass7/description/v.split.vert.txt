@@ -1,6 +1,0 @@
-v.split
-v.split.vert - Split lines to shorter segments by max number of vertices.
-Vector (v.*)
-QgsProcessingParameterVectorLayer|input|Input lines layer|1|None|False
-QgsProcessingParameterNumber|vertices|Maximum number of vertices in segment|QgsProcessingParameterNumber.Double|10|False|None|None
-QgsProcessingParameterVectorDestination|output|Split by vertices

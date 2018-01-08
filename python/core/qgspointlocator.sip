@@ -30,12 +30,15 @@ Works with one layer.
   public:
 
     explicit QgsPointLocator( QgsVectorLayer *layer, const QgsCoordinateReferenceSystem &destinationCrs = QgsCoordinateReferenceSystem(),
+                              const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext(),
                               const QgsRectangle *extent = 0 );
 %Docstring
 Construct point locator for a ``layer``.
 
 If a valid QgsCoordinateReferenceSystem is passed for ``destinationCrs`` then the locator will
-do the searches on data reprojected to the given CRS.
+do the searches on data reprojected to the given CRS. For accurate reprojection it is important
+to set the correct ``transformContext`` if a ``destinationCrs`` is specified. This is usually taken
+from the current :py:func:`QgsProject.transformContext()`
 
 If ``extent`` is not null, the locator will index only a subset of the layer which falls within that extent.
 %End

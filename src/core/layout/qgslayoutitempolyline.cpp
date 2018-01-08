@@ -48,6 +48,11 @@ int QgsLayoutItemPolyline::type() const
   return QgsLayoutItemRegistry::LayoutPolyline;
 }
 
+QIcon QgsLayoutItemPolyline::icon() const
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "/mLayoutItemPolyline.svg" ) );
+}
+
 bool QgsLayoutItemPolyline::_addNode( const int indexPoint,
                                       QPointF newPoint,
                                       const double radius )
@@ -103,8 +108,8 @@ void QgsLayoutItemPolyline::refreshSymbol()
 {
   if ( layout() )
   {
-    QgsRenderContext rc = QgsLayoutUtils::createRenderContextForLayout( layout(), nullptr, layout()->context().dpi() );
-    mMaxSymbolBleed = ( 25.4 / layout()->context().dpi() ) * QgsSymbolLayerUtils::estimateMaxSymbolBleed( mPolylineStyleSymbol.get(), rc );
+    QgsRenderContext rc = QgsLayoutUtils::createRenderContextForLayout( layout(), nullptr, layout()->renderContext().dpi() );
+    mMaxSymbolBleed = ( 25.4 / layout()->renderContext().dpi() ) * QgsSymbolLayerUtils::estimateMaxSymbolBleed( mPolylineStyleSymbol.get(), rc );
   }
 
   updateSceneRect();
@@ -194,6 +199,9 @@ void QgsLayoutItemPolyline::updateMarkerSvgSizes()
 
 void QgsLayoutItemPolyline::drawArrowHead( QPainter *p, const double x, const double y, const double angle, const double arrowHeadWidth )
 {
+  if ( !p )
+    return;
+
   double angleRad = angle / 180.0 * M_PI;
   QPointF middlePoint( x, y );
   //rotate both arrow points

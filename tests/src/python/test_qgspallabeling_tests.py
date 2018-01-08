@@ -314,7 +314,7 @@ class TestLineBase(object):
 def suiteTests():
     """
     Use to define which tests are run when PAL_SUITE is set.
-    Use sp_vs_suite for comparison of server and composer outputs to canvas
+    Use sp_vs_suite for comparison of server and layout outputs to canvas
     """
     sp_suite = [
         # 'test_default_label',

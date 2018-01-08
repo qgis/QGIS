@@ -52,6 +52,11 @@ int QgsLayoutItemScaleBar::type() const
   return QgsLayoutItemRegistry::LayoutScaleBar;
 }
 
+QIcon QgsLayoutItemScaleBar::icon() const
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "/mLayoutItemScaleBar.svg" ) );
+}
+
 QgsLayoutItemScaleBar *QgsLayoutItemScaleBar::create( QgsLayout *layout )
 {
   return new QgsLayoutItemScaleBar( layout );
@@ -151,7 +156,7 @@ void QgsLayoutItemScaleBar::setBoxContentSpace( double space )
   refreshItemSize();
 }
 
-void QgsLayoutItemScaleBar::setMap( QgsLayoutItemMap *map )
+void QgsLayoutItemScaleBar::setLinkedMap( QgsLayoutItemMap *map )
 {
   disconnectCurrentMap();
 
@@ -468,7 +473,7 @@ void QgsLayoutItemScaleBar::resizeToMinimumWidth()
 
   double widthMM = mStyle->calculateBoxSize( mSettings, createScaleContext() ).width();
   QgsLayoutSize currentSize = sizeWithUnits();
-  currentSize.setWidth( mLayout->context().measurementConverter().convert( QgsLayoutMeasurement( widthMM, QgsUnitTypes::LayoutMillimeters ), currentSize.units() ).length() );
+  currentSize.setWidth( mLayout->renderContext().measurementConverter().convert( QgsLayoutMeasurement( widthMM, QgsUnitTypes::LayoutMillimeters ), currentSize.units() ).length() );
   attemptResize( currentSize );
   update();
   emit changed();

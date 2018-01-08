@@ -255,7 +255,7 @@ void QgsLabelPropertyDialog::setDataDefinedValues( QgsVectorLayer *vlayer )
   QgsExpressionContext context;
   context << QgsExpressionContextUtils::globalScope()
           << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-          << QgsExpressionContextUtils::atlasScope( nullptr )
+          << QgsExpressionContextUtils::compositionAtlasScope( nullptr )
           << QgsExpressionContextUtils::mapSettingsScope( QgisApp::instance()->mapCanvas()->mapSettings() )
           << QgsExpressionContextUtils::layerScope( vlayer );
   context.setFeature( mCurLabelFeat );

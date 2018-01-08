@@ -36,6 +36,7 @@ class QgsLayoutViewToolTemporaryMousePan;
 class QgsLayoutRuler;
 class QgsLayoutViewMenuProvider;
 class QgsLayoutViewSnapMarker;
+class QgsLayoutReportSectionLabel;
 
 /**
  * \ingroup gui
@@ -275,7 +276,13 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
      * used to temporarily halt painting while exporting layouts.
      * \note Not available in Python bindings.
      */
-    void setPaintingEnabled( bool enabled ) { mPaintingEnabled = enabled; } SIP_SKIP
+    void setPaintingEnabled( bool enabled ); SIP_SKIP
+
+    /**
+     * Sets a section \a label, to display above the first page shown in the
+     * view.
+     */
+    void setSectionLabel( const QString &label );
 
   public slots:
 
@@ -543,6 +550,7 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
     std::unique_ptr< QgsLayoutViewMenuProvider > mMenuProvider;
 
     QgsLayoutViewSnapMarker *mSnapMarker = nullptr;
+    QgsLayoutReportSectionLabel *mSectionLabel = nullptr;
 
     QGraphicsLineItem *mHorizontalSnapLine = nullptr;
     QGraphicsLineItem *mVerticalSnapLine = nullptr;

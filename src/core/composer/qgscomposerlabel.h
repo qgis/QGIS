@@ -26,9 +26,13 @@ class QgsFeature;
 class QgsDistanceArea;
 class QgsWebPage;
 
+#define SIP_NO_FILE
+
 /**
  * \ingroup core
  * A label that can be placed onto a map composition.
+ * \note Not available in Python bindings
+ * \deprecated Will be removed in QGIS 3.2
  */
 class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
 {

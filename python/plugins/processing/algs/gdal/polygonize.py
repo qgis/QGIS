@@ -79,7 +79,7 @@ class polygonize(GdalAlgorithm):
     def group(self):
         return self.tr('Raster conversion')
 
-    def group(self):
+    def groupId(self):
         return 'rasterconversion'
 
     def icon(self):

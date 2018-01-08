@@ -86,7 +86,7 @@ void TestQgsLabelingEngine::init()
 {
   QString filename = QStringLiteral( TEST_DATA_DIR ) + "/points.shp";
   vl = new QgsVectorLayer( filename, QStringLiteral( "points" ), QStringLiteral( "ogr" ) );
-  Q_ASSERT( vl->isValid() );
+  QVERIFY( vl->isValid() );
   QgsProject::instance()->addMapLayer( vl );
 }
 
@@ -179,7 +179,7 @@ void TestQgsLabelingEngine::testDiagrams()
 
   bool res;
   vl->loadNamedStyle( QStringLiteral( TEST_DATA_DIR ) + "/points_diagrams.qml", res );
-  Q_ASSERT( res );
+  QVERIFY( res );
 
   QgsLabelingEngine engine;
   engine.setMapSettings( mapSettings );
@@ -353,7 +353,7 @@ void TestQgsLabelingEngine::zOrder()
   //add a second layer
   QString filename = QStringLiteral( TEST_DATA_DIR ) + "/points.shp";
   QgsVectorLayer *vl2 = new QgsVectorLayer( filename, QStringLiteral( "points" ), QStringLiteral( "ogr" ) );
-  Q_ASSERT( vl2->isValid() );
+  QVERIFY( vl2->isValid() );
   QgsProject::instance()->addMapLayer( vl2 );
 
   QgsPalLayerSettings pls2( pls1 );

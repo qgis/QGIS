@@ -39,7 +39,7 @@
       </sizepolicy>
      </property>
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
@@ -48,14 +48,14 @@
      <property name="sizePolicy">
       <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
        <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
+       <verstretch>1</verstretch>
       </sizepolicy>
      </property>
      <property name="toolTip">
       <string>Iterate over this layer</string>
      </property>
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
      <property name="checkable">
       <bool>true</bool>

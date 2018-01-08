@@ -458,7 +458,7 @@ class FileWidgetWrapper(WidgetWrapper):
             layout = QHBoxLayout()
             layout.setMargin(0)
             layout.setContentsMargins(0, 0, 0, 0)
-            layout.setSpacing(2)
+            layout.setSpacing(6)
             layout.addWidget(self.combo)
             btn = QToolButton()
             btn.setText('…')
@@ -709,7 +709,7 @@ class MapLayerWidgetWrapper(WidgetWrapper):
             layout = QHBoxLayout()
             layout.setMargin(0)
             layout.setContentsMargins(0, 0, 0, 0)
-            layout.setSpacing(2)
+            layout.setSpacing(6)
             self.combo = QgsMapLayerComboBox()
             layout.addWidget(self.combo)
             btn = QToolButton()
@@ -751,7 +751,7 @@ class MapLayerWidgetWrapper(WidgetWrapper):
             layout = QHBoxLayout()
             layout.setMargin(0)
             layout.setContentsMargins(0, 0, 0, 0)
-            layout.setSpacing(2)
+            layout.setSpacing(6)
             layout.addWidget(self.combo)
             btn = QToolButton()
             btn.setText('…')
@@ -782,7 +782,13 @@ class MapLayerWidgetWrapper(WidgetWrapper):
 
     def setValue(self, value):
         if self.dialogType == DIALOG_STANDARD:
-            pass  # TODO
+            if self.combo.findText(value) >= 0:
+                self.combo.setCurrentIndex(self.combo.findText(value))
+            else:
+                items = self.combo.additionalItems()
+                items.append(value)
+                self.combo.setAdditionalItems(items)
+                self.combo.setCurrentIndex(self.combo.findText(value))
         elif self.dialogType == DIALOG_BATCH:
             self.widget.setText(value)
         else:
@@ -878,7 +884,7 @@ class FeatureSourceWidgetWrapper(WidgetWrapper):
             layout = QHBoxLayout()
             layout.setMargin(0)
             layout.setContentsMargins(0, 0, 0, 0)
-            layout.setSpacing(2)
+            layout.setSpacing(6)
             self.combo = QgsMapLayerComboBox()
             layout.addWidget(self.combo)
             layout.setAlignment(self.combo, Qt.AlignTop)
@@ -892,7 +898,7 @@ class FeatureSourceWidgetWrapper(WidgetWrapper):
             vl = QVBoxLayout()
             vl.setMargin(0)
             vl.setContentsMargins(0, 0, 0, 0)
-            vl.setSpacing(2)
+            vl.setSpacing(6)
             vl.addLayout(layout)
 
             self.use_selection_checkbox = QCheckBox(self.tr('Selected features only'))
@@ -985,7 +991,13 @@ class FeatureSourceWidgetWrapper(WidgetWrapper):
 
     def setValue(self, value):
         if self.dialogType == DIALOG_STANDARD:
-            pass  # TODO
+            if self.combo.findText(value) >= 0:
+                self.combo.setCurrentIndex(self.combo.findText(value))
+            else:
+                items = self.combo.additionalItems()
+                items.append(value)
+                self.combo.setAdditionalItems(items)
+                self.combo.setCurrentIndex(self.combo.findText(value))
         elif self.dialogType == DIALOG_BATCH:
             self.widget.setValue(value)
         else:
@@ -1181,7 +1193,7 @@ class VectorLayerWidgetWrapper(WidgetWrapper):
             layout = QHBoxLayout()
             layout.setMargin(0)
             layout.setContentsMargins(0, 0, 0, 0)
-            layout.setSpacing(2)
+            layout.setSpacing(6)
             self.combo = QgsMapLayerComboBox()
             layout.addWidget(self.combo)
             btn = QToolButton()
@@ -1238,7 +1250,7 @@ class VectorLayerWidgetWrapper(WidgetWrapper):
             layout = QHBoxLayout()
             layout.setMargin(0)
             layout.setContentsMargins(0, 0, 0, 0)
-            layout.setSpacing(2)
+            layout.setSpacing(6)
             layout.addWidget(self.combo)
             btn = QToolButton()
             btn.setText('…')
@@ -1262,7 +1274,13 @@ class VectorLayerWidgetWrapper(WidgetWrapper):
 
     def setValue(self, value):
         if self.dialogType == DIALOG_STANDARD:
-            pass  # TODO
+            if self.combo.findText(value) >= 0:
+                self.combo.setCurrentIndex(self.combo.findText(value))
+            else:
+                items = self.combo.additionalItems()
+                items.append(value)
+                self.combo.setAdditionalItems(items)
+                self.combo.setCurrentIndex(self.combo.findText(value))
         elif self.dialogType == DIALOG_BATCH:
             return self.widget.setText(value)
         else:

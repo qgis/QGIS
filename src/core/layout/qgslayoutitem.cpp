@@ -71,10 +71,10 @@ QgsLayoutItem::QgsLayoutItem( QgsLayout *layout, bool manageZValue )
   mEffect.reset( new QgsLayoutEffect() );
   if ( mLayout )
   {
-    mEffect->setEnabled( mLayout->context().flags() & QgsLayoutContext::FlagUseAdvancedEffects );
-    connect( &mLayout->context(), &QgsLayoutContext::flagsChanged, this, [ = ]( QgsLayoutContext::Flags flags )
+    mEffect->setEnabled( mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagUseAdvancedEffects );
+    connect( &mLayout->renderContext(), &QgsLayoutRenderContext::flagsChanged, this, [ = ]( QgsLayoutRenderContext::Flags flags )
     {
-      mEffect->setEnabled( flags & QgsLayoutContext::FlagUseAdvancedEffects );
+      mEffect->setEnabled( flags & QgsLayoutRenderContext::FlagUseAdvancedEffects );
     } );
   }
   setGraphicsEffect( mEffect.get() );
@@ -243,10 +243,10 @@ void QgsLayoutItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *it
     return;
   }
 
-  bool previewRender = !mLayout || mLayout->context().isPreviewRender();
-  double destinationDpi = previewRender ? itemStyle->matrix.m11() * 25.4 : mLayout->context().dpi();
+  bool previewRender = !mLayout || mLayout->renderContext().isPreviewRender();
+  double destinationDpi = previewRender ? itemStyle->matrix.m11() * 25.4 : mLayout->renderContext().dpi();
   bool useImageCache = false;
-  bool forceRasterOutput = containsAdvancedEffects() && ( !mLayout || !( mLayout->context().flags() & QgsLayoutContext::FlagForceVectorOutput ) );
+  bool forceRasterOutput = containsAdvancedEffects() && ( !mLayout || !( mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagForceVectorOutput ) );
 
   if ( useImageCache || forceRasterOutput )
   {
@@ -527,7 +527,7 @@ bool QgsLayoutItem::shouldBlockUndoCommands() const
 
 bool QgsLayoutItem::shouldDrawItem() const
 {
-  if ( !mLayout || mLayout->context().isPreviewRender() )
+  if ( !mLayout || mLayout->renderContext().isPreviewRender() )
   {
     //preview mode so OK to draw item
     return true;
@@ -871,7 +871,7 @@ bool QgsLayoutItem::requiresRasterization() const
 
 double QgsLayoutItem::estimatedFrameBleed() const
 {
-  if ( !hasFrame() )
+  if ( !frameEnabled() )
   {
     return 0;
   }
@@ -987,7 +987,7 @@ QgsLayoutSize QgsLayoutItem::applyDataDefinedSize( const QgsLayoutSize &size )
   double evaluatedHeight = size.height();
   if ( QgsApplication::pageSizeRegistry()->decodePageSize( pageSize, matchedSize ) )
   {
-    QgsLayoutSize convertedSize = mLayout->context().measurementConverter().convert( matchedSize.size, size.units() );
+    QgsLayoutSize convertedSize = mLayout->renderContext().measurementConverter().convert( matchedSize.size, size.units() );
     evaluatedWidth = convertedSize.width();
     evaluatedHeight = convertedSize.height();
   }
@@ -1089,6 +1089,13 @@ void QgsLayoutItem::rotateItem( const double angle, const QPointF &transformOrig
   QPointF itemTransformOrigin = mapFromScene( transformOrigin );
 
   refreshItemRotation( &itemTransformOrigin );
+}
+
+QgsExpressionContext QgsLayoutItem::createExpressionContext() const
+{
+  QgsExpressionContext context = QgsLayoutObject::createExpressionContext();
+  context.appendScope( QgsExpressionContextUtils::layoutItemScope( this ) );
+  return context;
 }
 
 
@@ -1264,12 +1271,12 @@ bool QgsLayoutItem::shouldDrawAntialiased() const
   {
     return true;
   }
-  return mLayout->context().testFlag( QgsLayoutContext::FlagAntialiasing ) && !mLayout->context().testFlag( QgsLayoutContext::FlagDebug );
+  return mLayout->renderContext().testFlag( QgsLayoutRenderContext::FlagAntialiasing ) && !mLayout->renderContext().testFlag( QgsLayoutRenderContext::FlagDebug );
 }
 
 bool QgsLayoutItem::shouldDrawDebugRect() const
 {
-  return mLayout && mLayout->context().testFlag( QgsLayoutContext::FlagDebug );
+  return mLayout && mLayout->renderContext().testFlag( QgsLayoutRenderContext::FlagDebug );
 }
 
 QSizeF QgsLayoutItem::applyMinimumSize( const QSizeF &targetSize )

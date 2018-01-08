@@ -118,6 +118,10 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     void saveDefaultStyle_clicked();
     void loadStyle_clicked();
     void saveStyleAs_clicked();
+    void loadMetadata();
+    void saveMetadataAs();
+    void saveDefaultMetadata();
+    void loadDefaultMetadata();
     void optionsStackedWidget_CurrentChanged( int index ) override;
     void pbnUpdateExtents_clicked();
 
@@ -167,6 +171,12 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
 
   private:
 
+    enum PropertyType
+    {
+      Style = 0,
+      Metadata,
+    };
+
     void saveStyleAs( StyleType styleType );
 
     //! When provider supports, it will list all the styles relative the layer in a dialog
@@ -181,6 +191,11 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     bool mMetadataFilled = false;
 
     QString mOriginalSubsetSQL;
+
+    QPushButton *mBtnStyle = nullptr;
+    QPushButton *mBtnMetadata = nullptr;
+    QAction *mActionLoadMetadata = nullptr;
+    QAction *mActionSaveMetadataAs = nullptr;
 
     QMenu *mSaveAsMenu = nullptr;
     QMenu *mLoadStyleMenu = nullptr;

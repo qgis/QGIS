@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 #include "qgslayoutattributetablewidget.h"
-#include "qgsatlascomposition.h"
+#include "qgslayoutatlas.h"
 #include "qgslayout.h"
 #include "qgslayoutframe.h"
 #include "qgslayoutattributeselectiondialog.h"
@@ -87,10 +87,7 @@ QgsLayoutAttributeTableWidget::QgsLayoutAttributeTableWidget( QgsLayoutFrame *fr
   mWrapBehaviorComboBox->addItem( tr( "Truncate text" ), QgsLayoutTable::TruncateText );
   mWrapBehaviorComboBox->addItem( tr( "Wrap text" ), QgsLayoutTable::WrapText );
 
-  bool atlasEnabled = false;
-#if 0 //TODO
-  atlasComposition() &&atlasComposition()->enabled();
-#endif
+  bool atlasEnabled = layoutAtlas() && layoutAtlas()->enabled();
   mSourceComboBox->addItem( tr( "Layer features" ), QgsLayoutItemAttributeTable::LayerAttributes );
   toggleAtlasSpecificControls( atlasEnabled );
 
@@ -126,16 +123,14 @@ QgsLayoutAttributeTableWidget::QgsLayoutAttributeTableWidget( QgsLayoutFrame *fr
   {
     connect( mTable, &QgsLayoutMultiFrame::changed, this, &QgsLayoutAttributeTableWidget::updateGuiElements );
 
-#if 0 //TODO
-    QgsAtlasComposition *atlas = atlasComposition();
-    if ( atlas )
+    // repopulate relations combo box if atlas layer changes
+    connect( &mTable->layout()->reportContext(), &QgsLayoutReportContext::layerChanged,
+             this, &QgsLayoutAttributeTableWidget::updateRelationsCombo );
+
+    if ( QgsLayoutAtlas *atlas = layoutAtlas() )
     {
-      // repopulate relations combo box if atlas layer changes
-      connect( atlas, &QgsAtlasComposition::coverageLayerChanged,
-               this, &QgsLayoutAttributeTableWidget::updateRelationsCombo );
-      connect( atlas, &QgsAtlasComposition::toggled, this, &QgsLayoutAttributeTableWidget::atlasToggled );
+      connect( atlas, &QgsLayoutAtlas::toggled, this, &QgsLayoutAttributeTableWidget::atlasToggled );
     }
-#endif
   }
 
   //embed widget for general options
@@ -148,6 +143,11 @@ QgsLayoutAttributeTableWidget::QgsLayoutAttributeTableWidget( QgsLayoutFrame *fr
 
   connect( mHeaderFontToolButton, &QgsFontButton::changed, this, &QgsLayoutAttributeTableWidget::headerFontChanged );
   connect( mContentFontToolButton, &QgsFontButton::changed, this, &QgsLayoutAttributeTableWidget::contentFontChanged );
+}
+
+void QgsLayoutAttributeTableWidget::setReportTypeString( const QString &string )
+{
+  mIntersectAtlasCheckBox->setText( tr( "Show only features intersecting %1 feature" ).arg( string ) );
 }
 
 bool QgsLayoutAttributeTableWidget::setNewItem( QgsLayoutItem *item )
@@ -486,9 +486,8 @@ void QgsLayoutAttributeTableWidget::updateGuiElements()
 
 void QgsLayoutAttributeTableWidget::atlasToggled()
 {
-#if 0 //TODO
   //display/hide atlas options in source combobox depending on atlas status
-  bool atlasEnabled = atlasComposition() && atlasComposition()->enabled();
+  bool atlasEnabled = layoutAtlas() && layoutAtlas()->enabled();
   toggleAtlasSpecificControls( atlasEnabled );
 
   if ( !mTable )
@@ -500,19 +499,18 @@ void QgsLayoutAttributeTableWidget::atlasToggled()
   {
     mTable->setFilterToAtlasFeature( false );
   }
-#endif
 }
 
 void QgsLayoutAttributeTableWidget::updateRelationsCombo()
 {
   mRelationsComboBox->blockSignals( true );
   mRelationsComboBox->clear();
-#if 0 //TODO
-  QgsVectorLayer *atlasLayer = atlasCoverageLayer();
+
+  QgsVectorLayer *atlasLayer = coverageLayer();
   if ( atlasLayer )
   {
-    QList<QgsRelation> relations = QgsProject::instance()->relationManager()->referencedRelations( atlasLayer );
-    Q_FOREACH ( const QgsRelation &relation, relations )
+    const QList<QgsRelation> relations = QgsProject::instance()->relationManager()->referencedRelations( atlasLayer );
+    for ( const QgsRelation &relation : relations )
     {
       mRelationsComboBox->addItem( relation.name(), relation.id() );
     }
@@ -521,7 +519,7 @@ void QgsLayoutAttributeTableWidget::updateRelationsCombo()
       mRelationsComboBox->setCurrentIndex( mRelationsComboBox->findData( mTable->relationId() ) );
     }
   }
-#endif
+
   mRelationsComboBox->blockSignals( false );
 }
 

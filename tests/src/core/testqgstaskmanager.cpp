@@ -83,7 +83,7 @@ class TestTerminationTask : public TestTask
     ~TestTerminationTask() override
     {
       //make sure task has been terminated by manager prior to deletion
-      Q_ASSERT( status() == QgsTask::Terminated );
+      QVERIFY( status() == QgsTask::Terminated );
     }
 
   protected:
@@ -167,7 +167,7 @@ class FinishTask : public QgsTask
 
     void finished( bool result ) override
     {
-      Q_ASSERT( QApplication::instance()->thread() == QThread::currentThread() );
+      QVERIFY( QApplication::instance()->thread() == QThread::currentThread() );
       *resultObtained = result;
     }
 };

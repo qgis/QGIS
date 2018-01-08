@@ -528,90 +528,7 @@ QgsAbstractFeatureSource *QgsOgrProvider::featureSource() const
 
 bool QgsOgrProvider::setSubsetString( const QString &theSQL, bool updateFeatureCount )
 {
-  QgsCPLErrorHandler handler;
-
-  if ( !mOgrOrigLayer )
-    return false;
-
-  if ( theSQL == mSubsetString && mFeaturesCounted != QgsVectorDataProvider::Uncounted )
-    return true;
-
-  if ( !theSQL.isEmpty() )
-  {
-    bool origFidAdded = false;
-    QMutex *mutex = nullptr;
-    OGRLayerH layer = mOgrOrigLayer->getHandleAndMutex( mutex );
-    GDALDatasetH ds = mOgrOrigLayer->getDatasetHandleAndMutex( mutex );
-    OGRLayerH subsetLayerH;
-    {
-      QMutexLocker locker( mutex );
-      subsetLayerH = QgsOgrProviderUtils::setSubsetString( layer, ds, textEncoding(), theSQL, origFidAdded );
-    }
-    if ( !subsetLayerH )
-    {
-      pushError( tr( "OGR[%1] error %2: %3" ).arg( CPLGetLastErrorType() ).arg( CPLGetLastErrorNo() ).arg( CPLGetLastErrorMsg() ) );
-      return false;
-    }
-    mOgrSqlLayer = QgsOgrProviderUtils::getSqlLayer( mOgrOrigLayer.get(), subsetLayerH, theSQL );
-    Q_ASSERT( mOgrSqlLayer.get() );
-    mOgrLayer = mOgrSqlLayer.get();
-  }
-  else
-  {
-    mOgrSqlLayer.reset();
-    mOgrLayer = mOgrOrigLayer.get();
-  }
-  mSubsetString = theSQL;
-
-  QString uri = mFilePath;
-  if ( !mLayerName.isNull() )
-  {
-    uri += QStringLiteral( "|layername=%1" ).arg( mLayerName );
-  }
-  else if ( mLayerIndex >= 0 )
-  {
-    uri += QStringLiteral( "|layerid=%1" ).arg( mLayerIndex );
-  }
-
-  if ( !mSubsetString.isEmpty() )
-  {
-    uri += QStringLiteral( "|subset=%1" ).arg( mSubsetString );
-  }
-
-  if ( mOgrGeometryTypeFilter != wkbUnknown )
-  {
-    uri += QStringLiteral( "|geometrytype=%1" ).arg( ogrWkbGeometryTypeName( mOgrGeometryTypeFilter ) );
-  }
-
-  if ( uri != dataSourceUri() )
-  {
-    QgsOgrConnPool::instance()->unref( QgsOgrProviderUtils::connectionPoolId( dataSourceUri( true ) ) );
-    setDataSourceUri( uri );
-    QgsOgrConnPool::instance()->ref( QgsOgrProviderUtils::connectionPoolId( dataSourceUri( true ) ) );
-  }
-
-  mOgrLayer->ResetReading();
-
-  // getting the total number of features in the layer
-  // TODO: This can be expensive, do we really need it!
-  if ( updateFeatureCount )
-  {
-    recalculateFeatureCount();
-  }
-
-  // check the validity of the layer
-  QgsDebugMsgLevel( "checking validity", 4 );
-  loadFields();
-  QgsDebugMsgLevel( "Done checking validity", 4 );
-
-  invalidateCachedExtent( false );
-
-  // Changing the filter may change capabilities
-  computeCapabilities();
-
-  emit dataChanged();
-
-  return true;
+  return _setSubsetString( theSQL, updateFeatureCount, true );
 }
 
 QString QgsOgrProvider::subsetString() const
@@ -1763,6 +1680,96 @@ bool QgsOgrProvider::commitTransaction()
   return true;
 }
 
+bool QgsOgrProvider::_setSubsetString( const QString &theSQL, bool updateFeatureCount, bool updateCapabilities )
+{
+  QgsCPLErrorHandler handler;
+
+  if ( !mOgrOrigLayer )
+    return false;
+
+  if ( theSQL == mSubsetString && mFeaturesCounted != QgsVectorDataProvider::Uncounted )
+    return true;
+
+  if ( !theSQL.isEmpty() )
+  {
+    bool origFidAdded = false;
+    QMutex *mutex = nullptr;
+    OGRLayerH layer = mOgrOrigLayer->getHandleAndMutex( mutex );
+    GDALDatasetH ds = mOgrOrigLayer->getDatasetHandleAndMutex( mutex );
+    OGRLayerH subsetLayerH;
+    {
+      QMutexLocker locker( mutex );
+      subsetLayerH = QgsOgrProviderUtils::setSubsetString( layer, ds, textEncoding(), theSQL, origFidAdded );
+    }
+    if ( !subsetLayerH )
+    {
+      pushError( tr( "OGR[%1] error %2: %3" ).arg( CPLGetLastErrorType() ).arg( CPLGetLastErrorNo() ).arg( CPLGetLastErrorMsg() ) );
+      return false;
+    }
+    mOgrSqlLayer = QgsOgrProviderUtils::getSqlLayer( mOgrOrigLayer.get(), subsetLayerH, theSQL );
+    Q_ASSERT( mOgrSqlLayer.get() );
+    mOgrLayer = mOgrSqlLayer.get();
+  }
+  else
+  {
+    mOgrSqlLayer.reset();
+    mOgrLayer = mOgrOrigLayer.get();
+  }
+  mSubsetString = theSQL;
+
+  QString uri = mFilePath;
+  if ( !mLayerName.isNull() )
+  {
+    uri += QStringLiteral( "|layername=%1" ).arg( mLayerName );
+  }
+  else if ( mLayerIndex >= 0 )
+  {
+    uri += QStringLiteral( "|layerid=%1" ).arg( mLayerIndex );
+  }
+
+  if ( !mSubsetString.isEmpty() )
+  {
+    uri += QStringLiteral( "|subset=%1" ).arg( mSubsetString );
+  }
+
+  if ( mOgrGeometryTypeFilter != wkbUnknown )
+  {
+    uri += QStringLiteral( "|geometrytype=%1" ).arg( ogrWkbGeometryTypeName( mOgrGeometryTypeFilter ) );
+  }
+
+  if ( uri != dataSourceUri() )
+  {
+    QgsOgrConnPool::instance()->unref( QgsOgrProviderUtils::connectionPoolId( dataSourceUri( true ) ) );
+    setDataSourceUri( uri );
+    QgsOgrConnPool::instance()->ref( QgsOgrProviderUtils::connectionPoolId( dataSourceUri( true ) ) );
+  }
+
+  mOgrLayer->ResetReading();
+
+  // getting the total number of features in the layer
+  // TODO: This can be expensive, do we really need it!
+  if ( updateFeatureCount )
+  {
+    recalculateFeatureCount();
+  }
+
+  // check the validity of the layer
+  QgsDebugMsgLevel( "checking validity", 4 );
+  loadFields();
+  QgsDebugMsgLevel( "Done checking validity", 4 );
+
+  invalidateCachedExtent( false );
+
+  // Changing the filter may change capabilities
+  if ( updateCapabilities )
+    computeCapabilities();
+
+  emit dataChanged();
+
+  return true;
+
+}
+
 
 bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_map )
 {
@@ -2186,10 +2193,19 @@ QgsVectorDataProvider::Capabilities QgsOgrProvider::capabilities() const
 void QgsOgrProvider::computeCapabilities()
 {
   QgsVectorDataProvider::Capabilities ability = nullptr;
+  bool updateModeActivated = false;
 
   // collect abilities reported by OGR
   if ( mOgrLayer )
   {
+
+    // We want the layer in rw mode or capabilities will be wrong
+    // If mUpdateModeStackDepth > 0, it means that an updateMode is already active and that we have write access
+    if ( mUpdateModeStackDepth == 0 )
+    {
+      updateModeActivated = _enterUpdateMode( true );
+    }
+
     // Whilst the OGR documentation (e.g. at
     // http://www.gdal.org/ogr/classOGRLayer.html#a17) states "The capability
     // codes that can be tested are represented as strings, but #defined
@@ -2317,6 +2333,9 @@ void QgsOgrProvider::computeCapabilities()
       ability |= CircularGeometries;
     }
   }
+
+  if ( updateModeActivated )
+    leaveUpdateMode();
 
   mCapabilities = ability;
 }
@@ -3969,7 +3988,8 @@ void QgsOgrProvider::open( OpenMode mode )
     mSubsetString.clear();
     // Block signals to avoid endless recusion reloadData -> emit dataChanged -> reloadData
     blockSignals( true );
-    mValid = setSubsetString( origSubsetString );
+    // Do not update capabilities: it will be done later
+    mValid = _setSubsetString( origSubsetString, true, false );
     blockSignals( false );
     if ( mValid )
     {
@@ -4032,7 +4052,8 @@ void QgsOgrProvider::open( OpenMode mode )
       {
         int featuresCountedBackup = mFeaturesCounted;
         mFeaturesCounted = -1;
-        mValid = setSubsetString( mSubsetString, false );
+        // Do not update capabilities here
+        mValid = _setSubsetString( mSubsetString, false, false );
         mFeaturesCounted = featuresCountedBackup;
       }
     }

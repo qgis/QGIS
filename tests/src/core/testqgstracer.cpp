@@ -313,7 +313,8 @@ void TestQgsTracer::testReprojection()
 
   QgsTracer tracer;
   tracer.setLayers( QList<QgsVectorLayer *>() << vl );
-  tracer.setDestinationCrs( dstCrs );
+  QgsCoordinateTransformContext context;
+  tracer.setDestinationCrs( dstCrs, context );
   tracer.init();
 
   QgsPolylineXY points1 = tracer.findShortestPath( p1, p2 );
@@ -338,7 +339,7 @@ void TestQgsTracer::testCurved()
 
   QgsPolylineXY points1 = tracer.findShortestPath( QgsPointXY( 0, 0 ), QgsPointXY( 10, 10 ) );
 
-  QVERIFY( points1.count() != 0 );
+  QVERIFY( !points1.isEmpty() );
 
   QgsGeometry tmpG1 = QgsGeometry::fromPolylineXY( points1 );
   double l = tmpG1.length();

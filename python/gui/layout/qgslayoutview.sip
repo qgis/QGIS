@@ -265,6 +265,11 @@ Returns the delta (in layout coordinates) by which to move items
 for the given key ``event``.
 %End
 
+    void setSectionLabel( const QString &label );
+%Docstring
+Sets a section ``label``, to display above the first page shown in the
+view.
+%End
 
   public slots:
 

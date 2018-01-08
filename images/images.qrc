@@ -249,6 +249,7 @@
         <file>themes/default/mActionLabeling.svg</file>
         <file>themes/default/mActionLocalCumulativeCutStretch.svg</file>
         <file>themes/default/mActionLocalHistogramStretch.svg</file>
+        <file>themes/default/mActionLockItems.svg</file>
         <file>themes/default/mActionLowerItems.svg</file>
         <file>themes/default/mActionMapTips.svg</file>
         <file>themes/default/mActionMeasure.svg</file>
@@ -321,6 +322,7 @@
         <file>themes/default/mActionSharingExport.svg</file>
         <file>themes/default/mActionSharingImport.svg</file>
         <file>themes/default/mActionShowAllLayers.svg</file>
+        <file>themes/default/mActionShowAllLayersGray.svg</file>
         <file>themes/default/mActionShowBookmarks.svg</file>
         <file>themes/default/mActionShowHideLabels.svg</file>
         <file>themes/default/mActionShowPinnedLabels.svg</file>
@@ -339,6 +341,7 @@
         <file>themes/default/mActionTracing.svg</file>
         <file>themes/default/mActionUndo.svg</file>
         <file>themes/default/mActionUngroupItems.svg</file>
+        <file>themes/default/mActionUnlockAll.svg</file>
         <file>themes/default/mActionSvgAnnotation.svg</file>
         <file>themes/default/mActionWhatsThis.svg</file>
         <file>themes/default/mActionZoomActual.svg</file>
@@ -434,6 +437,19 @@
         <file>themes/default/mIconWms.svg</file>
         <file>themes/default/mIconZip.png</file>
         <file>themes/default/mIconZoom.svg</file>
+        <file>themes/default/mLayoutItem.svg</file>
+        <file>themes/default/mLayoutItemShapeEllipse.svg</file>
+        <file>themes/default/mLayoutItemShapeRectangle.svg</file>
+        <file>themes/default/mLayoutItemShapeTriangle.svg</file>
+        <file>themes/default/mLayoutItemHtml.svg</file>
+        <file>themes/default/mLayoutItemPicture.svg</file>
+        <file>themes/default/mLayoutItemLabel.svg</file>
+        <file>themes/default/mLayoutItemLegend.svg</file>
+        <file>themes/default/mLayoutItemMap.svg</file>
+        <file>themes/default/mLayoutItemPolygon.svg</file>
+        <file>themes/default/mLayoutItemPolyline.svg</file>
+        <file>themes/default/mLayoutItemScaleBar.svg</file>
+        <file>themes/default/mLayoutItemTable.svg</file>
         <file>themes/default/mMessageLog.svg</file>
         <file>themes/default/mMessageLogRead.svg</file>
         <file>themes/default/north_arrow.png</file>
@@ -442,6 +458,8 @@
         <file>themes/default/pin.svg</file>
         <file>themes/default/pluginExperimental.png</file>
         <file>themes/default/pluginDeprecated.png</file>
+        <file>themes/default/pluginNew.svg</file>
+        <file>themes/default/pluginUpgrade.svg</file>
         <file>themes/default/propertyicons/action.svg</file>
         <file>themes/default/propertyicons/attributes.png</file>
         <file>themes/default/propertyicons/CRS.svg</file>
@@ -620,6 +638,7 @@
         <file>themes/default/mActionNewPage.svg</file>
         <file>themes/default/mActionDuplicateFeatureDigitized.svg</file>
         <file>themes/default/mActionDuplicateFeature.svg</file>
+        <file>themes/default/mActionExport.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

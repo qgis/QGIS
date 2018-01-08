@@ -20,6 +20,7 @@
 #include "qgis.h"
 #include "qgslayoutobject.h"
 #include "qgslayoutundocommand.h"
+#include <QIcon>
 #include <QObject>
 #include <QSizeF>
 #include <QPointF>
@@ -101,6 +102,11 @@ class CORE_EXPORT QgsLayoutMultiFrame: public QgsLayoutObject, public QgsLayoutU
      * Returns unique multiframe type id.
      */
     virtual int type() const = 0;
+
+    /**
+     * Returns the item's icon.
+     */
+    virtual QIcon icon() const { return QgsApplication::getThemeIcon( QStringLiteral( "/mLayoutItem.svg" ) ); }
 
     /**
      * Returns the fixed size for a frame, if desired. If the fixed frame size changes,
@@ -364,7 +370,7 @@ class CORE_EXPORT QgsLayoutMultiFrame: public QgsLayoutObject, public QgsLayoutU
 
     ResizeMode mResizeMode = UseExistingFrames;
 
-  protected slots:
+  private slots:
 
     /**
      * Adapts to changed number of layout pages if resize type is RepeatOnEveryPage.
@@ -375,7 +381,7 @@ class CORE_EXPORT QgsLayoutMultiFrame: public QgsLayoutObject, public QgsLayoutU
      * Called when a frame is removed. Updates frame list and recalculates
      * content of remaining frames.
      */
-    void handleFrameRemoval();
+    void handleFrameRemoval( QgsLayoutFrame *frame );
 
 
   private:
@@ -386,8 +392,11 @@ class CORE_EXPORT QgsLayoutMultiFrame: public QgsLayoutObject, public QgsLayoutU
     bool mBlockUpdates = false;
     bool mBlockUndoCommands = false;
 
+    QList< QString > mFrameUuids;
+
     //! Unique id
     QString mUuid;
+    friend class QgsLayoutFrame;
 };
 
 

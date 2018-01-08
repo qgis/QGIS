@@ -36,6 +36,8 @@ Constructor for QgsLayoutItemShape, with the specified parent ``layout``.
 
     virtual int type() const;
 
+    virtual QIcon icon() const;
+
 
     virtual QString displayName() const;
 

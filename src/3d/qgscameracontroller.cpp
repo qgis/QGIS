@@ -240,7 +240,7 @@ void QgsCameraController::frameTriggered( float dt )
   float tx = mTxAxis->value() * dt * mCameraData.dist * 1.5;
   float ty = -mTyAxis->value() * dt * mCameraData.dist * 1.5;
 
-  if ( tx || ty )
+  if ( !mShiftAction->isActive() && ( tx || ty ) )
   {
     // moving with keyboard - take into account yaw of camera
     float t = sqrt( tx * tx + ty * ty );
@@ -253,8 +253,15 @@ void QgsCameraController::frameTriggered( float dt )
 
   if ( ( mLeftMouseButtonAction->isActive() && mShiftAction->isActive() ) || mMiddleMouseButtonAction->isActive() )
   {
+    // rotate/tilt using mouse
     mCameraData.pitch += dy;
     mCameraData.yaw -= dx / 2;
+  }
+  else if ( mShiftAction->isActive() && ( mTxAxis->value() || mTyAxis->value() ) )
+  {
+    // rotate/tilt using keyboard
+    mCameraData.pitch -= mTyAxis->value();   // down key = moving camera toward terrain
+    mCameraData.yaw -= mTxAxis->value();     // right key = moving camera clockwise
   }
   else if ( mLeftMouseButtonAction->isActive() && !mShiftAction->isActive() )
   {
