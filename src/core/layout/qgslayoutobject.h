@@ -244,6 +244,7 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
     static void initPropertyDefinitions();
 
     friend class TestQgsLayoutObject;
+    friend class QgsCompositionConverter;
 };
 
 #endif //QGSLAYOUTOBJECT_H

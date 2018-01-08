@@ -18,7 +18,7 @@
 #include <QDebug>
 
 #include "qgstest.h"
-#include "qgslayout.h"
+#include "qgsprintlayout.h"
 #include "qgscompositionconverter.h"
 #include "qgsproject.h"
 #include "qgsreadwritecontext.h"
@@ -39,6 +39,8 @@
 #include "qgslayoutitemmap.h"
 #include "qgslayoutitemscalebar.h"
 #include "qgslayoutitemlegend.h"
+#include "qgslayoutatlas.h"
+#include "qgslayoutitemhtml.h"
 
 
 class TestQgsCompositionConverter: public QObject
@@ -58,6 +60,11 @@ class TestQgsCompositionConverter: public QObject
      * Test import legend from a composer template
      */
     void importComposerTemplateLegend();
+
+    /**
+     * Test import HTML from a composer template
+     */
+    void importComposerTemplateHtml();
 
     /**
      * Test import label from a composer template
@@ -105,6 +112,11 @@ class TestQgsCompositionConverter: public QObject
     void importComposerTemplate();
 
     /**
+     * Test import atlas from a composer template
+     */
+    void importComposerAtlas();
+
+    /**
      * Test automatic conversion from a composer template
      */
     void convertComposerTemplate();
@@ -114,7 +126,7 @@ class TestQgsCompositionConverter: public QObject
 
     void checkRenderedImage( QgsLayout *layout, const QString testName, const int pageNumber = 0 );
 
-    QDomElement loadComposition( const QString name );
+    QDomElement loadComposer( const QString name );
 
     QString mReport;
 
@@ -154,11 +166,11 @@ void TestQgsCompositionConverter::cleanup()
 
 void TestQgsCompositionConverter::importComposerTemplateLabel()
 {
-  QDomElement docElem( loadComposition( "2x_template_label.qpt" ) );
+  QDomElement composerElem( loadComposer( "2x_template_label.qpt" ) );
   QgsProject project;
   project.read( QStringLiteral( TEST_DATA_DIR ) + "/layouts/sample_project.qgs" );
-
-  std::unique_ptr< QgsLayout > layout( QgsCompositionConverter::createLayoutFromCompositionXml( docElem, &project ) );
+  QDomElement docElem =  composerElem.elementsByTagName( QStringLiteral( "Composition" ) ).at( 0 ).toElement();
+  std::unique_ptr< QgsPrintLayout > layout( QgsCompositionConverter::createLayoutFromCompositionXml( docElem, &project ) );
 
   QVERIFY( layout.get() );
   QCOMPARE( layout->pageCollection()->pageCount(), 1 );
@@ -187,11 +199,12 @@ void TestQgsCompositionConverter::importComposerTemplateLabel()
 
 void TestQgsCompositionConverter::importComposerTemplateShape()
 {
-  QDomElement docElem( loadComposition( "2x_template_shape.qpt" ) );
+  QDomElement composerElem( loadComposer( "2x_template_shape.qpt" ) );
   QgsProject project;
   project.read( QStringLiteral( TEST_DATA_DIR ) + "/layouts/sample_project.qgs" );
+  QDomElement docElem =  composerElem.elementsByTagName( QStringLiteral( "Composition" ) ).at( 0 ).toElement();
 
-  std::unique_ptr< QgsLayout > layout( QgsCompositionConverter::createLayoutFromCompositionXml( docElem, &project ) );
+  std::unique_ptr< QgsPrintLayout > layout( QgsCompositionConverter::createLayoutFromCompositionXml( docElem, &project ) );
 
   QVERIFY( layout.get() );
   QCOMPARE( layout->pageCollection()->pageCount(), 1 );
@@ -211,7 +224,7 @@ void TestQgsCompositionConverter::importComposerTemplateShape()
   QCOMPARE( shape->frameStrokeWidth().length(), 0.3 );
   QCOMPARE( shape->backgroundColor(), QColor( 255, 255, 255, 255 ) );
   QCOMPARE( ( int )shape->rotation(), 0 );
-  QCOMPARE( shape->hasFrame(), false );
+  QCOMPARE( shape->frameEnabled(), false );
   QCOMPARE( shape->hasBackground(), false );
 
   checkRenderedImage( layout.get(), QTest::currentTestFunction(), 0 );
@@ -221,12 +234,13 @@ void TestQgsCompositionConverter::importComposerTemplateShape()
 
 void TestQgsCompositionConverter::importComposerTemplatePicture()
 {
-  QDomElement docElem( loadComposition( "2x_template_pictures.qpt" ) );
-  QVERIFY( !docElem.isNull() );
+  QDomElement composerElem( loadComposer( "2x_template_pictures.qpt" ) );
+  QVERIFY( !composerElem.isNull() );
   QgsProject project;
   project.read( QStringLiteral( TEST_DATA_DIR ) + "/layouts/sample_project.qgs" );
+  QDomElement docElem =  composerElem.elementsByTagName( QStringLiteral( "Composition" ) ).at( 0 ).toElement();
 
-  std::unique_ptr< QgsLayout > layout( QgsCompositionConverter::createLayoutFromCompositionXml( docElem, &project ) );
+  std::unique_ptr< QgsPrintLayout > layout( QgsCompositionConverter::createLayoutFromCompositionXml( docElem, &project ) );
   QVERIFY( layout.get() );
   QCOMPARE( layout->pageCollection()->pageCount(), 1 );
 
@@ -252,12 +266,13 @@ void TestQgsCompositionConverter::importComposerTemplatePicture()
 
 void TestQgsCompositionConverter::importComposerTemplatePolygon()
 {
-  QDomElement docElem( loadComposition( "2x_template_polygon.qpt" ) );
-  QVERIFY( !docElem.isNull() );
+  QDomElement composerElem( loadComposer( "2x_template_polygon.qpt" ) );
+  QVERIFY( !composerElem.isNull() );
   QgsProject project;
   project.read( QStringLiteral( TEST_DATA_DIR ) + "/layouts/sample_project.qgs" );
+  QDomElement docElem =  composerElem.elementsByTagName( QStringLiteral( "Composition" ) ).at( 0 ).toElement();
 
-  std::unique_ptr< QgsLayout > layout( QgsCompositionConverter::createLayoutFromCompositionXml( docElem, &project ) );
+  std::unique_ptr< QgsPrintLayout > layout( QgsCompositionConverter::createLayoutFromCompositionXml( docElem, &project ) );
   QVERIFY( layout.get() );
   QCOMPARE( layout->pageCollection()->pageCount(), 1 );
 
@@ -277,12 +292,13 @@ void TestQgsCompositionConverter::importComposerTemplatePolygon()
 
 void TestQgsCompositionConverter::importComposerTemplatePolyline()
 {
-  QDomElement docElem( loadComposition( "2x_template_polyline.qpt" ) );
-  QVERIFY( !docElem.isNull() );
+  QDomElement composerElem( loadComposer( "2x_template_polyline.qpt" ) );
+  QVERIFY( !composerElem.isNull() );
   QgsProject project;
   project.read( QStringLiteral( TEST_DATA_DIR ) + "/layouts/sample_project.qgs" );
+  QDomElement docElem =  composerElem.elementsByTagName( QStringLiteral( "Composition" ) ).at( 0 ).toElement();
 
-  std::unique_ptr< QgsLayout > layout( QgsCompositionConverter::createLayoutFromCompositionXml( docElem, &project ) );
+  std::unique_ptr< QgsPrintLayout > layout( QgsCompositionConverter::createLayoutFromCompositionXml( docElem, &project ) );
   QVERIFY( layout.get() );
   QCOMPARE( layout->pageCollection()->pageCount(), 1 );
 
@@ -304,12 +320,13 @@ void TestQgsCompositionConverter::importComposerTemplatePolyline()
 
 void TestQgsCompositionConverter::importComposerTemplateArrow()
 {
-  QDomElement docElem( loadComposition( "2x_template_arrow.qpt" ) );
-  QVERIFY( !docElem.isNull() );
+  QDomElement composerElem( loadComposer( "2x_template_arrow.qpt" ) );
+  QVERIFY( !composerElem.isNull() );
   QgsProject project;
   project.read( QStringLiteral( TEST_DATA_DIR ) + "/layouts/sample_project.qgs" );
+  QDomElement docElem =  composerElem.elementsByTagName( QStringLiteral( "Composition" ) ).at( 0 ).toElement();
 
-  std::unique_ptr< QgsLayout > layout( QgsCompositionConverter::createLayoutFromCompositionXml( docElem, &project ) );
+  std::unique_ptr< QgsPrintLayout > layout( QgsCompositionConverter::createLayoutFromCompositionXml( docElem, &project ) );
   QVERIFY( layout.get() );
   QCOMPARE( layout->pageCollection()->pageCount(), 1 );
 
@@ -332,12 +349,13 @@ void TestQgsCompositionConverter::importComposerTemplateArrow()
 
 void TestQgsCompositionConverter::importComposerTemplateMap()
 {
-  QDomElement docElem( loadComposition( "2x_template_map_overview.qpt" ) );
-  QVERIFY( !docElem.isNull() );
+  QDomElement composerElem( loadComposer( "2x_template_map_overview.qpt" ) );
+  QVERIFY( !composerElem.isNull() );
   QgsProject project;
   project.read( QStringLiteral( TEST_DATA_DIR ) + "/layouts/sample_project.qgs" );
+  QDomElement docElem =  composerElem.elementsByTagName( QStringLiteral( "Composition" ) ).at( 0 ).toElement();
 
-  std::unique_ptr< QgsLayout > layout( QgsCompositionConverter::createLayoutFromCompositionXml( docElem, &project ) );
+  std::unique_ptr< QgsPrintLayout > layout( QgsCompositionConverter::createLayoutFromCompositionXml( docElem, &project ) );
   QVERIFY( layout.get() );
   QCOMPARE( layout->pageCollection()->pageCount(), 1 );
 
@@ -381,7 +399,6 @@ void TestQgsCompositionConverter::importComposerTemplateMap()
         if ( ! item->map( )->uuid().isEmpty( ) )
         {
           QVERIFY( mapUuids.contains( item->map()->uuid() ) );
-          QVERIFY( mapUuids.contains( item->frameMapUuid() ) );
           count ++;
         }
       }
@@ -399,12 +416,13 @@ void TestQgsCompositionConverter::importComposerTemplateMap()
 
 void TestQgsCompositionConverter::importComposerTemplateLegend()
 {
-  QDomElement docElem( loadComposition( "2x_template_legend.qpt" ) );
-  QVERIFY( !docElem.isNull() );
+  QDomElement composerElem( loadComposer( "2x_template_legend.qpt" ) );
+  QVERIFY( !composerElem.isNull() );
   QgsProject project;
   project.read( QStringLiteral( TEST_DATA_DIR ) + "/layouts/sample_project.qgs" );
+  QDomElement docElem =  composerElem.elementsByTagName( QStringLiteral( "Composition" ) ).at( 0 ).toElement();
 
-  std::unique_ptr< QgsLayout > layout( QgsCompositionConverter::createLayoutFromCompositionXml( docElem, &project ) );
+  std::unique_ptr< QgsPrintLayout > layout( QgsCompositionConverter::createLayoutFromCompositionXml( docElem, &project ) );
   QVERIFY( layout.get() );
   QCOMPARE( layout->pageCollection()->pageCount(), 1 );
 
@@ -422,12 +440,37 @@ void TestQgsCompositionConverter::importComposerTemplateLegend()
 
 }
 
-void TestQgsCompositionConverter::importComposerTemplateScaleBar()
+void TestQgsCompositionConverter::importComposerTemplateHtml()
 {
-  QDomElement docElem( loadComposition( "2x_template_scalebar.qpt" ) );
-  QVERIFY( !docElem.isNull() );
+  QDomElement composerElem( loadComposer( "2x_template_html.qpt" ) );
   QgsProject project;
   project.read( QStringLiteral( TEST_DATA_DIR ) + "/layouts/sample_project.qgs" );
+  QDomElement docElem =  composerElem.elementsByTagName( QStringLiteral( "Composition" ) ).at( 0 ).toElement();
+  std::unique_ptr< QgsPrintLayout > layout( QgsCompositionConverter::createLayoutFromCompositionXml( docElem, &project ) );
+
+  QVERIFY( layout.get() );
+  QCOMPARE( layout->pageCollection()->pageCount(), 7 );
+
+  QList<QgsLayoutMultiFrame *> items = layout->multiFrames();
+  QVERIFY( items.size() > 0 );
+
+  // Check the HTML
+  const QgsLayoutItemHtml *html = qobject_cast<QgsLayoutItemHtml * >( items.at( 0 ) );
+  QVERIFY( html );
+  QCOMPARE( html->contentMode(),  QgsLayoutItemHtml::ContentMode::ManualHtml );
+  QCOMPARE( html->html(),  QStringLiteral( "<div style=\"height:5000px; background-color:green; color:white;\">aaaaA</div>\t\n" ) );
+
+  checkRenderedImage( layout.get(), QTest::currentTestFunction(), 0 );
+
+}
+
+void TestQgsCompositionConverter::importComposerTemplateScaleBar()
+{
+  QDomElement composerElem( loadComposer( "2x_template_scalebar.qpt" ) );
+  QVERIFY( !composerElem.isNull() );
+  QgsProject project;
+  project.read( QStringLiteral( TEST_DATA_DIR ) + "/layouts/sample_project.qgs" );
+  QDomElement docElem =  composerElem.elementsByTagName( QStringLiteral( "Composition" ) ).at( 0 ).toElement();
 
   std::unique_ptr< QgsLayout > layout( QgsCompositionConverter::createLayoutFromCompositionXml( docElem, &project ) );
   QVERIFY( layout.get() );
@@ -440,7 +483,7 @@ void TestQgsCompositionConverter::importComposerTemplateScaleBar()
   QgsLayoutItemScaleBar *item = items.at( 0 );
   QVERIFY( item->isVisible() );
 
-  QVERIFY( ! item->map() );
+  QVERIFY( ! item->linkedMap() );
 
   checkRenderedImage( layout.get(), QTest::currentTestFunction(), 0 );
 
@@ -455,7 +498,7 @@ void TestQgsCompositionConverter::convertComposerTemplate()
   QgsProject project;
   project.read( QStringLiteral( TEST_DATA_DIR ) + "/layouts/sample_project.qgs" );
 
-  QgsLayout *layout = project.layoutManager()->layouts().first();
+  QgsPrintLayout *layout = dynamic_cast<QgsPrintLayout *>( project.layoutManager()->layouts().first() );
 
   QVERIFY( layout );
   QCOMPARE( layout->pageCollection()->pageCount(), 2 );
@@ -465,11 +508,12 @@ void TestQgsCompositionConverter::convertComposerTemplate()
 
 void TestQgsCompositionConverter::importComposerTemplate()
 {
-  QDomElement docElem( loadComposition( "2x_template.qpt" ) );
+  QDomElement composerElem( loadComposer( "2x_template.qpt" ) );
   QgsProject project;
   project.read( QStringLiteral( TEST_DATA_DIR ) + "/layouts/sample_project.qgs" );
+  QDomElement docElem =  composerElem.elementsByTagName( QStringLiteral( "Composition" ) ).at( 0 ).toElement();
 
-  std::unique_ptr< QgsLayout > layout( QgsCompositionConverter::createLayoutFromCompositionXml( docElem, &project ) );
+  std::unique_ptr< QgsPrintLayout > layout( QgsCompositionConverter::createLayoutFromCompositionXml( docElem, &project ) );
 
   QVERIFY( layout.get() );
   QCOMPARE( layout->pageCollection()->pageCount(), 2 );
@@ -491,9 +535,9 @@ void TestQgsCompositionConverter::importComposerTemplate()
     layout->layoutItems<QgsLayoutItemPicture>( items );
     for ( auto const &item : items )
     {
-      if ( ! item->rotationMap( ).isEmpty( ) )
+      if ( item->linkedMap() )
       {
-        QVERIFY( mapUuids.contains( item->rotationMap() ) );
+        QVERIFY( mapUuids.contains( item->linkedMap()->uuid() ) );
         count ++;
       }
     }
@@ -509,9 +553,9 @@ void TestQgsCompositionConverter::importComposerTemplate()
     layout->layoutItems<QgsLayoutItemLegend>( items );
     for ( auto const &item : items )
     {
-      if ( ! item->map( )->uuid().isEmpty( ) )
+      if ( item->linkedMap() )
       {
-        QVERIFY( mapUuids.contains( item->map()->uuid() ) );
+        QVERIFY( mapUuids.contains( item->linkedMap()->uuid() ) );
         count ++;
       }
     }
@@ -526,9 +570,9 @@ void TestQgsCompositionConverter::importComposerTemplate()
     layout->layoutItems<QgsLayoutItemScaleBar>( items );
     for ( auto const &item : items )
     {
-      if ( ! item->map( )->uuid().isEmpty( ) )
+      if ( item->linkedMap( ) )
       {
-        QVERIFY( mapUuids.contains( item->map()->uuid() ) );
+        QVERIFY( mapUuids.contains( item->linkedMap()->uuid() ) );
         count ++;
       }
     }
@@ -542,6 +586,26 @@ void TestQgsCompositionConverter::importComposerTemplate()
 
 }
 
+void TestQgsCompositionConverter::importComposerAtlas()
+{
+  QDomElement composerElem( loadComposer( "2x_template_atlas.qpt" ) );
+  QVERIFY( !composerElem.isNull() );
+  QVERIFY( !composerElem.attribute( QStringLiteral( "title" ) ).isEmpty() );
+  QgsProject project;
+  project.read( QStringLiteral( TEST_DATA_DIR ) + "/layouts/sample_project.qgs" );
+  QDomElement docElem = composerElem.elementsByTagName( QStringLiteral( "Composition" ) ).at( 0 ).toElement();
+
+  std::unique_ptr< QgsPrintLayout > layout( QgsCompositionConverter::createLayoutFromCompositionXml( docElem, &project ) );
+  QVERIFY( layout.get() );
+  QCOMPARE( layout->pageCollection()->pageCount(), 1 );
+  QCOMPARE( layout->name(), QStringLiteral( "composer atlas" ) );
+
+  QVERIFY( layout->atlas()->enabled() );
+
+  checkRenderedImage( layout.get(), QTest::currentTestFunction(), 0 );
+
+}
+
 void TestQgsCompositionConverter::checkRenderedImage( QgsLayout *layout, const QString testName, const int pageNumber )
 {
   QgsLayoutChecker checker( testName + "_" + QString::number( pageNumber ), layout );
@@ -552,7 +616,7 @@ void TestQgsCompositionConverter::checkRenderedImage( QgsLayout *layout, const Q
 }
 
 
-QDomElement TestQgsCompositionConverter::loadComposition( const QString name )
+QDomElement TestQgsCompositionConverter::loadComposer( const QString name )
 {
   QString templatePath( QStringLiteral( TEST_DATA_DIR ) + "/layouts/" + name );
   QDomDocument doc( "mydocument" );
@@ -560,7 +624,7 @@ QDomElement TestQgsCompositionConverter::loadComposition( const QString name )
   file.open( QIODevice::ReadOnly );
   doc.setContent( &file );
   file.close();
-  QDomNodeList nodes( doc.elementsByTagName( QStringLiteral( "Composition" ) ) );
+  QDomNodeList nodes( doc.elementsByTagName( QStringLiteral( "Composer" ) ) );
   if ( nodes.length() > 0 )
     return nodes.at( 0 ).toElement();
   else

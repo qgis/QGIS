@@ -1051,12 +1051,9 @@ SET(QGIS_CORE_HDRS
   layout/qgslayoutsnapper.h
   layout/qgslayoutundocommand.h
   layout/qgslayoututils.h
-<<<<<<< 2b8143a20674b8598fad5ee489def7ebd539cb5b
   layout/qgsreportsectionfieldgroup.h
   layout/qgsreportsectionlayout.h
-=======
   layout/qgscompositionconverter.h
->>>>>>> [layout] Converter: initial implementation
 
   metadata/qgslayermetadata.h
   metadata/qgslayermetadatavalidator.h

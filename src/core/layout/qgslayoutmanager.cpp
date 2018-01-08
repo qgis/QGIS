@@ -195,7 +195,7 @@ bool QgsLayoutManager::readXml( const QDomElement &element, const QDomDocument &
     QDomNodeList compositionNodes = composerNodes.at( i ).toElement().elementsByTagName( QStringLiteral( "Composition" ) );
     for ( int j = 0; j < compositionNodes.size(); ++j )
     {
-      std::unique_ptr< QgsLayout > l( QgsCompositionConverter::createLayoutFromCompositionXml( compositionNodes.at( j ).toElement(), mProject ) );
+      std::unique_ptr< QgsPrintLayout > l( QgsCompositionConverter::createLayoutFromCompositionXml( compositionNodes.at( j ).toElement(), mProject ) );
       if ( l )
       {
         if ( l->name().isEmpty() )

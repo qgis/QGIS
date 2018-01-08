@@ -27,8 +27,9 @@
 
 #include "qgspropertycollection.h"
 
-class QgsLayout;
+class QgsPrintLayout;
 class QgsLayoutItem;
+class QgsLayoutObject;
 class QgsReadWriteContext;
 class QgsProperty;
 class QgsPropertyCollection;
@@ -41,6 +42,7 @@ class QgsLayoutItemPolyline;
 class QgsLayoutItemMap;
 class QgsLayoutItemScaleBar;
 class QgsLayoutItemLegend;
+class QgsLayoutItemHtml;
 
 
 /**
@@ -119,28 +121,24 @@ class CORE_EXPORT QgsCompositionConverter
 
 
     /**
-     * \brief createLayoutFromCompositionXml is a factory that creates layout instances from a
-     *  QGIS 2.x XML composition \a document
-     * \param parentElement is the Composition element
-     * \param project the QGIS project
-     * \return a QgsLayout instance
+     * createLayoutFromCompositionXml is a factory that creates layout instances from a
+     *  QGIS 2.x XML composition \a parentElement and a QGIS \a project
+     * \return a QgsPrintLayout instance
      * \since QGIS 3.0
      */
-    static std::unique_ptr< QgsLayout > createLayoutFromCompositionXml( const QDomElement &parentElement,
+    static std::unique_ptr<QgsPrintLayout> createLayoutFromCompositionXml( const QDomElement &composerElement,
         QgsProject *project );
 
 
     /**
      * addItemsFromCompositionXml parse a QGIS 2.x composition XML in the \a parentElement,
      * converts the 2.x items to the new layout elements and add them to the  \a layout
-     * \param layout the lay
-     * \param parentElement
      * \param position for pasting
      * \param pasteInPlace if true element position is translated to \a position
-     * \return a list of layout items
+     * \return list of layout object items that have been added to the layout
      * \since QGIS 3.0
      */
-    static QList<QgsLayoutItem *> addItemsFromCompositionXml( QgsLayout *layout,
+    static QList<QgsLayoutObject *> addItemsFromCompositionXml( QgsPrintLayout *layout,
         const QDomElement &parentElement,
         QPointF *position = nullptr,
         bool pasteInPlace = false );
@@ -189,8 +187,15 @@ class CORE_EXPORT QgsCompositionConverter
                                const QgsProject *project,
                                const QgsStringMap &mapId2Uuid );
 
+    static bool readAtlasXml( QgsLayoutAtlas *atlasItem,
+                              const QDomElement &itemElem,
+                              const QgsProject *project );
 
-    static bool readOldComposerObjectXml( QgsLayoutItem *layoutItem, const QDomElement &itemElem );
+    static bool readHtmlXml( QgsLayoutItemHtml *layoutItem,
+                             const QDomElement &itemElem,
+                             const QgsProject *project );
+
+    static bool readOldComposerObjectXml( QgsLayoutObject *layoutItem, const QDomElement &itemElem );
 
     static void readOldDataDefinedPropertyMap( const QDomElement &itemElem,
         QgsPropertyCollection &dataDefinedProperties );
@@ -205,7 +210,7 @@ class CORE_EXPORT QgsCompositionConverter
     static bool readXml( QgsLayoutItem *layoutItem, const QDomElement &itemElem );
 
     //! Make some common import adjustments
-    static void adjustPos( QgsLayout *layout, QgsLayoutItem *layoutItem, QDomNode &itemNode, QPointF *position, bool &pasteInPlace, int zOrderOffset, QPointF &pasteShiftPos, int &pageNumber );
+    static void adjustPos( QgsPrintLayout *layout, QgsLayoutItem *layoutItem, QPointF *position, bool &pasteInPlace, int zOrderOffset, QPointF &pasteShiftPos, int &pageNumber );
 
     //! Restore general composer item properties
     static void restoreGeneralComposeItemProperties( QgsLayoutItem *layoutItem, const QDomElement &itemElem );
