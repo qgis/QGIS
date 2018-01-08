@@ -146,6 +146,7 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
     void updateButtons();
 
     void addFeature();
+    void duplicateFeature();
     void linkFeature();
     void deleteFeature();
     void unlinkFeature();
@@ -167,6 +168,7 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
     QToolButton *mToggleEditingButton = nullptr;
     QToolButton *mSaveEditsButton = nullptr;
     QToolButton *mAddFeatureButton = nullptr;
+    QToolButton *mDuplicateFeatureButton = nullptr;
     QToolButton *mDeleteFeatureButton = nullptr;
     QToolButton *mLinkFeatureButton = nullptr;
     QToolButton *mUnlinkFeatureButton = nullptr;
