@@ -85,7 +85,7 @@ class TestQgsLayoutAtlas(unittest.TestCase):
         QgsProject.instance().addMapLayers([mVectorLayer])
         self.layers = [mVectorLayer]
 
-        # create composition with composer map
+        # create layout with layout map
 
         # select epsg:2154
         crs = QgsCoordinateReferenceSystem()
@@ -576,7 +576,7 @@ class TestQgsLayoutAtlas(unittest.TestCase):
         polygonLayer.dataProvider().addFeatures([poly])
         QgsProject.instance().addMapLayer(polygonLayer)
 
-        # Recreating the composer locally
+        # Recreating the layout locally
         composition = QgsPrintLayout(QgsProject.instance())
         composition.initializeDefaults()
 

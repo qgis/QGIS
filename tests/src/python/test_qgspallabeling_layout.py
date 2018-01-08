@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-"""QGIS unit tests for QgsPalLabeling: label rendering output via composer
+"""QGIS unit tests for QgsPalLabeling: label rendering output via layout
 
-From build dir, run: ctest -R PyQgsPalLabelingComposer -V
+From build dir, run: ctest -R PyQgsPalLabelingLayout -V
 
 See <qgis-src-dir>/tests/testdata/labeling/README.rst for description.
 
@@ -28,7 +28,14 @@ from qgis.PyQt.QtGui import QImage, QColor, QPainter
 from qgis.PyQt.QtPrintSupport import QPrinter
 from qgis.PyQt.QtSvg import QSvgRenderer, QSvgGenerator
 
-from qgis.core import QgsComposition, QgsMapSettings, QgsProject, QgsComposerMap, QgsVectorLayerSimpleLabeling
+from qgis.core import (QgsLayout,
+                       QgsLayoutItemPage,
+                       QgsLayoutSize,
+                       QgsLayoutItemMap,
+                       QgsLayoutExporter,
+                       QgsMapSettings,
+                       QgsProject,
+                       QgsVectorLayerSimpleLabeling)
 
 
 from utilities import (
@@ -70,7 +77,7 @@ class OutputKind():
 
 
 # noinspection PyShadowingNames
-class TestComposerBase(TestQgsPalLabeling):
+class TestLayoutBase(TestQgsPalLabeling):
 
     layer = None
     """:type: QgsVectorLayer"""
@@ -94,7 +101,7 @@ class TestComposerBase(TestQgsPalLabeling):
 
     def setUp(self):
         """Run before each test."""
-        super(TestComposerBase, self).setUp()
+        super(TestLayoutBase, self).setUp()
         self._TestImage = ''
         # ensure per test map settings stay encapsulated
         self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
@@ -104,35 +111,37 @@ class TestComposerBase(TestQgsPalLabeling):
         self._ColorTols.clear()
 
     def _set_up_composition(self, width, height, dpi, engine_settings):
-        # set up composition and add map
-        self._c = QgsComposition(QgsProject.instance())
-        """:type: QgsComposition"""
+        # set up layout and add map
+        self._c = QgsLayout(QgsProject.instance())
+        """:type: QgsLayout"""
         # self._c.setUseAdvancedEffects(False)
-        self._c.setPrintResolution(dpi)
+        self._c.renderContext().setDpi(dpi)
         # 600 x 400 px = 211.67 x 141.11 mm @ 72 dpi
         paperw = width * 25.4 / dpi
         paperh = height * 25.4 / dpi
-        self._c.setPaperSize(paperw, paperh)
-        # NOTE: do not use QgsComposerMap(self._c, 0, 0, paperw, paperh) since
+        page = QgsLayoutItemPage(self._c)
+        page.attemptResize(QgsLayoutSize(paperw,paperh))
+        self._c.pageCollection().addPage(page)
+        # NOTE: do not use QgsLayoutItemMap(self._c, 0, 0, paperw, paperh) since
         # it only takes integers as parameters and the composition will grow
         # larger based upon union of item scene rectangles and a slight buffer
         #   see end of QgsComposition::compositionBounds()
         # add map as small graphics item first, then set its scene QRectF later
-        self._cmap = QgsComposerMap(self._c, 10, 10, 10, 10)
-        """:type: QgsComposerMap"""
+        self._cmap = QgsLayoutItemMap(self._c)
+        self._cmap.attemptSetSceneRect(QRectF(10, 10, 10, 10))
+        """:type: QgsLayoutItemMap"""
         self._cmap.setFrameEnabled(False)
         self._cmap.setLayers(self._TestMapSettings.layers())
-        self._c.addComposerMap(self._cmap)
+        self._c.addLayoutItem(self._cmap)
         # now expand map to fill page and set its extent
-        self._cmap.setSceneRect(QRectF(0, 0, paperw, paperw))
-        self._cmap.setNewExtent(self.aoiExtent())
+        self._cmap.attemptSetSceneRect(QRectF(0, 0, paperw, paperw))
+        self._cmap.setExtent(self.aoiExtent())
         # self._cmap.updateCachedImage()
-        self._c.setPlotStyle(QgsComposition.Print)
         # composition takes labeling engine settings from project
         QgsProject.instance().setLabelingEngineSettings(engine_settings)
 
     # noinspection PyUnusedLocal
-    def _get_composer_image(self, width, height, dpi):
+    def _get_layout_image(self, width, height, dpi):
         image = QImage(QSize(width, height),
                        self._TestMapSettings.outputImageFormat())
         image.fill(QColor(152, 219, 249).rgb())
@@ -144,7 +153,8 @@ class TestComposerBase(TestQgsPalLabeling):
             QPainter.Antialiasing,
             self._TestMapSettings.testFlag(QgsMapSettings.Antialiasing)
         )
-        self._c.renderPage(p, 0)
+        exporter=QgsLayoutExporter(self._c)
+        exporter.renderPage(p, 0)
         p.end()
 
         # image = self._c.printPageAsRaster(0)
@@ -161,9 +171,7 @@ class TestComposerBase(TestQgsPalLabeling):
 
         return res, filepath
 
-    def _get_composer_svg_image(self, width, height, dpi):
-        # from qgscomposer.cpp, QgsComposer::on_mActionExportAsSVG_triggered,
-        # near end of function
+    def _get_layout_svg_image(self, width, height, dpi):
         svgpath = getTempfilePath('svg')
         temp_size = os.path.getsize(svgpath)
 
@@ -176,7 +184,8 @@ class TestComposerBase(TestQgsPalLabeling):
         svg_g.setResolution(dpi)
 
         sp = QPainter(svg_g)
-        self._c.renderPage(sp, 0)
+        exporter = QgsLayoutExporter(self._c)
+        exporter.renderPage(sp, 0)
         sp.end()
 
         if temp_size == os.path.getsize(svgpath):
@@ -206,24 +215,25 @@ class TestComposerBase(TestQgsPalLabeling):
 
         return res, filepath
 
-    def _get_composer_pdf_image(self, width, height, dpi):
+    def _get_layout_pdf_image(self, width, height, dpi):
         pdfpath = getTempfilePath('pdf')
         temp_size = os.path.getsize(pdfpath)
 
         p = QPrinter()
         p.setOutputFormat(QPrinter.PdfFormat)
         p.setOutputFileName(pdfpath)
-        p.setPaperSize(QSizeF(self._c.paperWidth(), self._c.paperHeight()),
+        p.setPaperSize(QSizeF(self._c.pageCollection().page(0).sizeWithUnits().width(), self._c.pageCollection().page(0).sizeWithUnits().height()),
                        QPrinter.Millimeter)
         p.setFullPage(True)
         p.setColorMode(QPrinter.Color)
-        p.setResolution(self._c.printResolution())
+        p.setResolution(self._c.renderContext().dpi())
 
         pdf_p = QPainter(p)
         # page_mm = p.pageRect(QPrinter.Millimeter)
         # page_px = p.pageRect(QPrinter.DevicePixel)
         # self._c.render(pdf_p, page_px, page_mm)
-        self._c.renderPage(pdf_p, 0)
+        exporter = QgsLayoutExporter(self._c)
+        exporter.renderPage(pdf_p, 0)
         pdf_p.end()
 
         if temp_size == os.path.getsize(pdfpath):
@@ -254,13 +264,13 @@ class TestComposerBase(TestQgsPalLabeling):
         else:
             return False, ''
 
-        qDebug("_get_composer_pdf_image call: {0}".format(' '.join(call)))
+        qDebug("_get_layout_pdf_image call: {0}".format(' '.join(call)))
         res = False
         try:
             subprocess.check_call(call)
             res = True
         except subprocess.CalledProcessError as e:
-            qDebug("_get_composer_pdf_image failed!\n"
+            qDebug("_get_layout_pdf_image failed!\n"
                    "cmd: {0}\n"
                    "returncode: {1}\n"
                    "message: {2}".format(e.cmd, e.returncode, e.message))
@@ -271,17 +281,17 @@ class TestComposerBase(TestQgsPalLabeling):
 
         return res, filepath
 
-    def get_composer_output(self, kind):
+    def get_layout_output(self, kind):
         ms = self._TestMapSettings
         osize = ms.outputSize()
         width, height, dpi = osize.width(), osize.height(), ms.outputDpi()
         self._set_up_composition(width, height, dpi, ms.labelingEngineSettings())
         if kind == OutputKind.Svg:
-            return self._get_composer_svg_image(width, height, dpi)
+            return self._get_layout_svg_image(width, height, dpi)
         elif kind == OutputKind.Pdf:
-            return self._get_composer_pdf_image(width, height, dpi)
+            return self._get_layout_pdf_image(width, height, dpi)
         else:  # OutputKind.Img
-            return self._get_composer_image(width, height, dpi)
+            return self._get_layout_image(width, height, dpi)
 
     # noinspection PyUnusedLocal
     def checkTest(self, **kwargs):
@@ -296,8 +306,8 @@ class TestComposerBase(TestQgsPalLabeling):
             qDebug('MapSettings type: {0}'.format(settings_type))
             qDebug(mapSettingsString(ms))
 
-        res_m, self._TestImage = self.get_composer_output(self._TestKind)
-        self.assertTrue(res_m, 'Failed to retrieve/save output from composer')
+        res_m, self._TestImage = self.get_layout_output(self._TestKind)
+        self.assertTrue(res_m, 'Failed to retrieve/save output from layout')
         self.saveControlImage(self._TestImage)
         mismatch = 0
         if 'PAL_NO_MISMATCH' not in os.environ:
@@ -315,146 +325,146 @@ class TestComposerBase(TestQgsPalLabeling):
                                           imgpath=self._TestImage))
 
 
-class TestComposerPointBase(TestComposerBase):
+class TestLayoutPointBase(TestLayoutBase):
 
     @classmethod
     def setUpClass(cls):
-        TestComposerBase.setUpClass()
+        TestLayoutBase.setUpClass()
         cls.layer = TestQgsPalLabeling.loadFeatureLayer('point')
 
 
-class TestComposerImagePoint(TestComposerPointBase, TestPointBase):
+class TestLayoutImagePoint(TestLayoutPointBase, TestPointBase):
 
     def setUp(self):
         """Run before each test."""
-        super(TestComposerImagePoint, self).setUp()
+        super(TestLayoutImagePoint, self).setUp()
         self._TestKind = OutputKind.Img
         self.configTest('pal_composer', 'sp_img')
 
 
-class TestComposerImageVsCanvasPoint(TestComposerPointBase, TestPointBase):
+class TestLayoutImageVsCanvasPoint(TestLayoutPointBase, TestPointBase):
 
     def setUp(self):
         """Run before each test."""
-        super(TestComposerImageVsCanvasPoint, self).setUp()
+        super(TestLayoutImageVsCanvasPoint, self).setUp()
         self._TestKind = OutputKind.Img
         self.configTest('pal_canvas', 'sp')
 
 
-class TestComposerSvgPoint(TestComposerPointBase, TestPointBase):
+class TestLayoutSvgPoint(TestLayoutPointBase, TestPointBase):
 
     def setUp(self):
         """Run before each test."""
-        super(TestComposerSvgPoint, self).setUp()
+        super(TestLayoutSvgPoint, self).setUp()
         self._TestKind = OutputKind.Svg
         self.configTest('pal_composer', 'sp_svg')
 
 
-class TestComposerSvgVsComposerPoint(TestComposerPointBase, TestPointBase):
+class TestLayoutSvgVsLayoutPoint(TestLayoutPointBase, TestPointBase):
 
     """
-    Compare only to composer image, which is already compared to canvas point
+    Compare only to layout image, which is already compared to canvas point
     """
 
     def setUp(self):
         """Run before each test."""
-        super(TestComposerSvgVsComposerPoint, self).setUp()
+        super(TestLayoutSvgVsLayoutPoint, self).setUp()
         self._TestKind = OutputKind.Svg
         self.configTest('pal_composer', 'sp_img')
         self._ColorTol = 4
 
 
-class TestComposerPdfPoint(TestComposerPointBase, TestPointBase):
+class TestLayoutPdfPoint(TestLayoutPointBase, TestPointBase):
 
     def setUp(self):
         """Run before each test."""
-        super(TestComposerPdfPoint, self).setUp()
+        super(TestLayoutPdfPoint, self).setUp()
         self._TestKind = OutputKind.Pdf
         self.configTest('pal_composer', 'sp_pdf')
 
 
-class TestComposerPdfVsComposerPoint(TestComposerPointBase, TestPointBase):
+class TestLayoutPdfVsLayoutPoint(TestLayoutPointBase, TestPointBase):
 
     """
-    Compare only to composer image, which is already compared to canvas point
+    Compare only to layout image, which is already compared to canvas point
     """
 
     def setUp(self):
         """Run before each test."""
-        super(TestComposerPdfVsComposerPoint, self).setUp()
+        super(TestLayoutPdfVsLayoutPoint, self).setUp()
         self._TestKind = OutputKind.Pdf
         self.configTest('pal_composer', 'sp_img')
         self._Mismatch = 50
         self._ColorTol = 18
 
 
-class TestComposerLineBase(TestComposerBase):
+class TestLayoutLineBase(TestLayoutBase):
 
     @classmethod
     def setUpClass(cls):
-        TestComposerBase.setUpClass()
+        TestLayoutBase.setUpClass()
         cls.layer = TestQgsPalLabeling.loadFeatureLayer('line')
 
 
-class TestComposerImageLine(TestComposerLineBase, TestLineBase):
+class TestLayoutImageLine(TestLayoutLineBase, TestLineBase):
 
     def setUp(self):
         """Run before each test."""
-        super(TestComposerImageLine, self).setUp()
+        super(TestLayoutImageLine, self).setUp()
         self._TestKind = OutputKind.Img
         self.configTest('pal_composer_line', 'sp_img')
 
 
-class TestComposerImageVsCanvasLine(TestComposerLineBase, TestLineBase):
+class TestLayoutImageVsCanvasLine(TestLayoutLineBase, TestLineBase):
 
     def setUp(self):
         """Run before each test."""
-        super(TestComposerImageVsCanvasLine, self).setUp()
+        super(TestLayoutImageVsCanvasLine, self).setUp()
         self._TestKind = OutputKind.Img
         self.configTest('pal_canvas_line', 'sp')
 
 
-class TestComposerSvgLine(TestComposerLineBase, TestLineBase):
+class TestLayoutSvgLine(TestLayoutLineBase, TestLineBase):
 
     def setUp(self):
         """Run before each test."""
-        super(TestComposerSvgLine, self).setUp()
+        super(TestLayoutSvgLine, self).setUp()
         self._TestKind = OutputKind.Svg
         self.configTest('pal_composer_line', 'sp_svg')
 
 
-class TestComposerSvgVsComposerLine(TestComposerLineBase, TestLineBase):
+class TestLayoutSvgVsLayoutLine(TestLayoutLineBase, TestLineBase):
 
     """
-    Compare only to composer image, which is already compared to canvas line
+    Compare only to layout image, which is already compared to canvas line
     """
 
     def setUp(self):
         """Run before each test."""
-        super(TestComposerSvgVsComposerLine, self).setUp()
+        super(TestLayoutSvgVsLayoutLine, self).setUp()
         self._TestKind = OutputKind.Svg
         self.configTest('pal_composer_line', 'sp_img')
         self._ColorTol = 4
 
 
-class TestComposerPdfLine(TestComposerLineBase, TestLineBase):
+class TestLayoutPdfLine(TestLayoutLineBase, TestLineBase):
 
     def setUp(self):
         """Run before each test."""
-        super(TestComposerPdfLine, self).setUp()
+        super(TestLayoutPdfLine, self).setUp()
         self._TestKind = OutputKind.Pdf
         self.configTest('pal_composer_line', 'sp_pdf')
 
 
-class TestComposerPdfVsComposerLine(TestComposerLineBase, TestLineBase):
+class TestLayoutPdfVsLayoutLine(TestLayoutLineBase, TestLineBase):
 
     """
-    Compare only to composer image, which is already compared to canvas line
+    Compare only to layout image, which is already compared to canvas line
     """
 
     def setUp(self):
         """Run before each test."""
-        super(TestComposerPdfVsComposerLine, self).setUp()
+        super(TestLayoutPdfVsLayoutLine, self).setUp()
         self._TestKind = OutputKind.Pdf
         self.configTest('pal_composer_line', 'sp_img')
         self._Mismatch = 50
@@ -465,12 +475,12 @@ if __name__ == '__main__':
     # NOTE: unless PAL_SUITE env var is set all test class methods will be run
     # SEE: test_qgspallabeling_tests.suiteTests() to define suite
     st = suiteTests()
-    sp_i = ['TestComposerImagePoint.' + t for t in st['sp_suite']]
-    sp_ivs = ['TestComposerImageVsCanvasPoint.' + t for t in st['sp_vs_suite']]
-    sp_s = ['TestComposerSvgPoint.' + t for t in st['sp_suite']]
-    sp_svs = ['TestComposerSvgVsComposerPoint.' + t for t in st['sp_vs_suite']]
-    sp_p = ['TestComposerPdfPoint.' + t for t in st['sp_suite']]
-    sp_pvs = ['TestComposerPdfVsComposerPoint.' + t for t in st['sp_vs_suite']]
+    sp_i = ['TestLayoutImagePoint.' + t for t in st['sp_suite']]
+    sp_ivs = ['TestLayoutImageVsCanvasPoint.' + t for t in st['sp_vs_suite']]
+    sp_s = ['TestLayoutSvgPoint.' + t for t in st['sp_suite']]
+    sp_svs = ['TestLayoutSvgVsLayoutPoint.' + t for t in st['sp_vs_suite']]
+    sp_p = ['TestLayoutPdfPoint.' + t for t in st['sp_suite']]
+    sp_pvs = ['TestLayoutPdfVsLayoutPoint.' + t for t in st['sp_vs_suite']]
     suite = []
 
     # extended separately for finer control of PAL_SUITE (comment-out undesired)
