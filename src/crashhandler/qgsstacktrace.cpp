@@ -798,8 +798,6 @@ QgsStackTrace *QgsStackTrace::trace( DWORD processId, DWORD threadId, LPEXCEPTIO
         {
           if ( te.th32OwnerProcessID == processId )
           {
-            printf( "Process 0x%04x Thread 0x%04x\n",
-                    te.th32OwnerProcessID, te.th32ThreadID );
             HANDLE threadHandle = OpenThread( THREAD_ALL_ACCESS, FALSE, te.th32ThreadID );
             trace->threads.push_back( threadHandle );
             SuspendThread( threadHandle );
