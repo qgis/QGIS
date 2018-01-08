@@ -35,12 +35,6 @@ class APP_EXPORT QgsMapToolAddFeature : public QgsMapToolDigitizeFeature
      */
     bool checkGeometryType() const;
 
-    /**
-     * Check if CaptureMode matches layer type. Default is true.
-     * \since QGIS 3.0
-     */
-    void setCheckGeometryType( bool checkGeometryType );
-
   private:
 
     /**
