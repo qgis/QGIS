@@ -74,6 +74,7 @@ void QgsDualView::init( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const Qg
   mTableView->horizontalHeader()->setContextMenuPolicy( Qt::CustomContextMenu );
   connect( mTableView->horizontalHeader(), &QHeaderView::customContextMenuRequested, this, &QgsDualView::showViewHeaderMenu );
   connect( mTableView, &QgsAttributeTableView::columnResized, this, &QgsDualView::tableColumnResized );
+  connect( mFeatureList, &QgsFeatureListView::willShowContextMenu, this, &QgsDualView::widgetWillShowContextMenu );
 
   initLayerCache( !( request.flags() & QgsFeatureRequest::NoGeometry ) || !request.filterRect().isNull() );
   initModels( mapCanvas, request, loadFeatures );
@@ -401,7 +402,6 @@ void QgsDualView::insertRecentlyUsedDisplayExpression( const QString &expression
   mLastDisplayExpressionAction = previewAction;
 }
 
-
 void QgsDualView::mFeatureList_aboutToChangeEditSelection( bool &ok )
 {
   if ( mLayer->isEditable() && !mAttributeForm->save() )
@@ -543,7 +543,6 @@ void QgsDualView::viewWillShowContextMenu( QMenu *menu, const QModelIndex &atInd
     return;
   }
 
-
   QModelIndex sourceIndex = mFilterModel->mapToSource( atIndex );
 
   QAction *copyContentAction = new QAction( tr( "Copy cell content" ), this );
@@ -607,6 +606,13 @@ void QgsDualView::viewWillShowContextMenu( QMenu *menu, const QModelIndex &atInd
   menu->addAction( tr( "Open form" ), a, &QgsAttributeTableAction::featureForm );
 #endif
 }
+
+
+void QgsDualView::widgetWillShowContextMenu( QgsActionMenu *menu, const QModelIndex &atIndex )
+{
+  emit showContextMenuExternally( menu, mFilterModel->rowToId( atIndex ) );
+}
+
 
 void QgsDualView::showViewHeaderMenu( QPoint point )
 {

@@ -148,11 +148,14 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
     void addFeature();
     void duplicateFeature();
     void linkFeature();
-    void deleteFeature();
-    void unlinkFeature();
+    void deleteFeature( const QgsFeatureId featureid = QgsFeatureId() );
+    void deleteSelectedFeatures();
+    void unlinkFeature( const QgsFeatureId featureid = QgsFeatureId() );
+    void unlinkSelectedFeatures();
     void saveEdits();
     void toggleEditing( bool state );
     void onCollapsedStateChanged( bool collapsed );
+    void showContextMenu( QgsActionMenu *menu, const QgsFeatureId fid );
 
   private:
     void updateUi();
@@ -179,6 +182,20 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsCollapsibleGroupBox
 
     bool mShowLabel = true;
     bool mVisible = false;
+
+    /**
+     * Deletes the features
+     * \param featureids features to delete
+     * \since QGIS 3.00
+     */
+    void deleteFeatures( const QgsFeatureIds &featureids );
+
+    /**
+     * Unlinks the features
+     * \param featureids features to unlink
+     * \since QGIS 3.00
+     */
+    void unlinkFeatures( const QgsFeatureIds &featureids );
 };
 
 #endif // QGSRELATIONEDITOR_H

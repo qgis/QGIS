@@ -247,6 +247,14 @@ Emitted when the form changes mode.
 :param mode: new mode
 %End
 
+    void showContextMenuExternally( QgsActionMenu *menu, const QgsFeatureId fid );
+%Docstring
+Emitted when selecting context menu on the feature list to create the context menu individually
+
+:param menu: context menu
+:param fid: feature id of the selected feature
+%End
+
   protected:
     virtual void hideEvent( QHideEvent *event );
 

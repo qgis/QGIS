@@ -128,6 +128,14 @@ Is emitted, whenever the display expression is successfully changed
 %End
 
 
+    void willShowContextMenu( QgsActionMenu *menu, const QModelIndex &atIndex );
+%Docstring
+Is emitted, when the context menu is created to add the specific actions to it
+
+:param menu: is the already created context menu
+:param atIndex: is the position of the current feature in the model
+%End
+
   public slots:
 
     void setEditSelection( const QgsFeatureIds &fids );

@@ -269,6 +269,13 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      */
     void formModeChanged( QgsAttributeForm::Mode mode );
 
+    /**
+     * Emitted when selecting context menu on the feature list to create the context menu individually
+     * \param menu context menu
+     * \param fid feature id of the selected feature
+     */
+    void showContextMenuExternally( QgsActionMenu *menu, const QgsFeatureId fid );
+
   protected:
     void hideEvent( QHideEvent *event ) override;
 
@@ -288,6 +295,8 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     void previewColumnChanged( QAction *previewAction, const QString &expression );
 
     void viewWillShowContextMenu( QMenu *menu, const QModelIndex &atIndex );
+
+    void widgetWillShowContextMenu( QgsActionMenu *menu, const QModelIndex &atIndex );
 
     void showViewHeaderMenu( QPoint point );
 
