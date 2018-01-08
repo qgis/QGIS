@@ -678,6 +678,7 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
     QColor backgroundColor( int row, int column ) const;
 
     friend class TestQgsLayoutTable;
+    friend class QgsCompositionConverter;
 };
 
 #endif // QGSLAYOUTTABLE_H

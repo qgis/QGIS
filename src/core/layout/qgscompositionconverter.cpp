@@ -45,6 +45,9 @@
 #include "qgslayoutitemscalebar.h"
 #include "qgslayoutitemlegend.h"
 #include "qgslayoutitemhtml.h"
+#include "qgslayouttable.h"
+#include "qgslayoutitemattributetable.h"
+#include "qgslayouttablecolumn.h"
 #include "qgslayoutmultiframe.h"
 #include "qgslayoutframe.h"
 
@@ -299,11 +302,6 @@ QList<QgsLayoutObject *> QgsCompositionConverter::addItemsFromCompositionXml( Qg
     }
   }
 
-  /* TODO: following item types are not yet converted
-  // known multi-frame types
-  LayoutAttributeTable, //!< Attribute table
-  */
-
   QgsStringMap mapIdUiidMap;
 
   // Map (this needs to come first to build the uuid <-> ID map for map composer items
@@ -315,7 +313,6 @@ QList<QgsLayoutObject *> QgsCompositionConverter::addItemsFromCompositionXml( Qg
     adjustPos( layout, layoutItem, position, pasteInPlace, zOrderOffset, pasteShiftPos, pageNumber );
     newItems << layoutItem ;
   }
-
 
   // Label
   for ( int i = 0; i < parentElement.elementsByTagName( QStringLiteral( "ComposerLabel" ) ).size(); i++ )
@@ -403,6 +400,21 @@ QList<QgsLayoutObject *> QgsCompositionConverter::addItemsFromCompositionXml( Qg
     QDomNode itemNode( parentElement.elementsByTagName( QStringLiteral( "ComposerHtml" ) ).at( i ) );
     QgsLayoutItemHtml *layoutItem = new QgsLayoutItemHtml( layout );
     readHtmlXml( layoutItem, itemNode.toElement(), layout->project() );
+    // Adjust position for frames
+    const QList<QgsLayoutFrame *> framesList( layoutItem->frames() );
+    for ( const auto &frame : framesList )
+    {
+      adjustPos( layout, frame, position, pasteInPlace, zOrderOffset, pasteShiftPos, pageNumber );
+    }
+    newItems << layoutItem ;
+  }
+
+  // Attribute Table
+  for ( int i = 0; i < parentElement.elementsByTagName( QStringLiteral( "ComposerAttributeTableV2" ) ).size(); i++ )
+  {
+    QDomNode itemNode( parentElement.elementsByTagName( QStringLiteral( "ComposerAttributeTableV2" ) ).at( i ) );
+    QgsLayoutItemAttributeTable *layoutItem = new QgsLayoutItemAttributeTable( layout );
+    readTableXml( layoutItem, itemNode.toElement(), layout->project() );
     // Adjust position for frames
     const QList<QgsLayoutFrame *> framesList( layoutItem->frames() );
     for ( const auto &frame : framesList )
@@ -1307,6 +1319,126 @@ bool QgsCompositionConverter::readHtmlXml( QgsLayoutItemHtml *layoutItem, const 
     layoutItem->setUrl( urlString );
   }
   layoutItem->loadHtml( true );
+
+  return true;
+}
+
+bool QgsCompositionConverter::readTableXml( QgsLayoutItemAttributeTable *layoutItem, const QDomElement &itemElem, const QgsProject *project )
+{
+
+  Q_UNUSED( project );
+  readOldComposerObjectXml( layoutItem, itemElem );
+
+  //first create the frames
+  layoutItem->setResizeMode( static_cast< QgsLayoutMultiFrame::ResizeMode >( itemElem.attribute( QStringLiteral( "resizeMode" ), QStringLiteral( "0" ) ).toInt() ) );
+  QDomNodeList frameList = itemElem.elementsByTagName( QStringLiteral( "ComposerFrame" ) );
+  for ( int i = 0; i < frameList.size(); ++i )
+  {
+    QDomElement frameElem = frameList.at( i ).toElement();
+    QgsLayoutFrame *newFrame = new QgsLayoutFrame( layoutItem->layout(), layoutItem );
+    restoreGeneralComposeItemProperties( newFrame, frameElem );
+    // Read frame XML
+    double x = itemElem.attribute( QStringLiteral( "sectionX" ) ).toDouble();
+    double y = itemElem.attribute( QStringLiteral( "sectionY" ) ).toDouble();
+    double width = itemElem.attribute( QStringLiteral( "sectionWidth" ) ).toDouble();
+    double height = itemElem.attribute( QStringLiteral( "sectionHeight" ) ).toDouble();
+    newFrame->setContentSection( QRectF( x, y, width, height ) );
+    newFrame->setHidePageIfEmpty( itemElem.attribute( QStringLiteral( "hidePageIfEmpty" ), QStringLiteral( "0" ) ).toInt() );
+    newFrame->setHideBackgroundIfEmpty( itemElem.attribute( QStringLiteral( "hideBackgroundIfEmpty" ), QStringLiteral( "0" ) ).toInt() );
+    layoutItem->addFrame( newFrame, false );
+  }
+
+  layoutItem->setEmptyTableBehavior( static_cast<QgsLayoutTable::EmptyTableMode>( itemElem.attribute( QStringLiteral( "emptyTableMode" ), QStringLiteral( "0" ) ).toInt() ) );
+  layoutItem->setEmptyTableMessage( itemElem.attribute( QStringLiteral( "emptyTableMessage" ), QObject::tr( "No matching records" ) ) );
+  layoutItem->setShowEmptyRows( itemElem.attribute( QStringLiteral( "showEmptyRows" ), QStringLiteral( "0" ) ).toInt() );
+  if ( !QgsFontUtils::setFromXmlChildNode( layoutItem->mHeaderFont, itemElem, QStringLiteral( "headerFontProperties" ) ) )
+  {
+    layoutItem->mHeaderFont.fromString( itemElem.attribute( QStringLiteral( "headerFont" ), QLatin1String( "" ) ) );
+  }
+  layoutItem->setHeaderFontColor( QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "headerFontColor" ), QStringLiteral( "0,0,0,255" ) ) ) );
+  layoutItem->setHeaderHAlignment( static_cast<QgsLayoutTable::HeaderHAlignment>( itemElem.attribute( QStringLiteral( "headerHAlignment" ), QStringLiteral( "0" ) ).toInt() ) ) ;
+  layoutItem->setHeaderMode( static_cast<QgsLayoutTable::HeaderMode>( itemElem.attribute( QStringLiteral( "headerMode" ), QStringLiteral( "0" ) ).toInt() ) );
+  if ( !QgsFontUtils::setFromXmlChildNode( layoutItem->mContentFont, itemElem, QStringLiteral( "contentFontProperties" ) ) )
+  {
+    layoutItem->mContentFont.fromString( itemElem.attribute( QStringLiteral( "contentFont" ), QLatin1String( "" ) ) );
+  }
+  layoutItem->setContentFontColor( QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "contentFontColor" ), QStringLiteral( "0,0,0,255" ) ) ) );
+  layoutItem->setCellMargin( itemElem.attribute( QStringLiteral( "cellMargin" ), QStringLiteral( "1.0" ) ).toDouble() );
+  layoutItem->setGridStrokeWidth( itemElem.attribute( QStringLiteral( "gridStrokeWidth" ), QStringLiteral( "0.5" ) ).toDouble() );
+  layoutItem->setHorizontalGrid( itemElem.attribute( QStringLiteral( "horizontalGrid" ), QStringLiteral( "1" ) ).toInt() );
+  layoutItem->setVerticalGrid( itemElem.attribute( QStringLiteral( "verticalGrid" ), QStringLiteral( "1" ) ).toInt() );
+  layoutItem->setShowGrid( itemElem.attribute( QStringLiteral( "showGrid" ), QStringLiteral( "1" ) ).toInt() );
+  layoutItem->setGridColor( QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "gridColor" ), QStringLiteral( "0,0,0,255" ) ) ) );
+  layoutItem->setBackgroundColor( QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "backgroundColor" ), QStringLiteral( "255,255,255,0" ) ) ) );
+  layoutItem->setWrapBehavior( static_cast<QgsLayoutTable::WrapBehavior>( itemElem.attribute( QStringLiteral( "wrapBehavior" ), QStringLiteral( "0" ) ).toInt() ) );
+
+  //restore column specifications
+  layoutItem->mColumns.clear();
+  QDomNodeList columnsList = itemElem.elementsByTagName( QStringLiteral( "displayColumns" ) );
+  if ( !columnsList.isEmpty() )
+  {
+    QDomElement columnsElem = columnsList.at( 0 ).toElement();
+    QDomNodeList columnEntryList = columnsElem.elementsByTagName( QStringLiteral( "column" ) );
+    for ( int i = 0; i < columnEntryList.size(); ++i )
+    {
+      QDomElement columnElem = columnEntryList.at( i ).toElement();
+      QgsLayoutTableColumn *column = new QgsLayoutTableColumn;
+      column->mHAlignment = static_cast< Qt::AlignmentFlag >( columnElem.attribute( QStringLiteral( "hAlignment" ), QString::number( Qt::AlignLeft ) ).toInt() );
+      column->mVAlignment = static_cast< Qt::AlignmentFlag >( columnElem.attribute( QStringLiteral( "vAlignment" ), QString::number( Qt::AlignVCenter ) ).toInt() );
+      column->mHeading = columnElem.attribute( QStringLiteral( "heading" ), QLatin1String( "" ) );
+      column->mAttribute = columnElem.attribute( QStringLiteral( "attribute" ), QLatin1String( "" ) );
+      column->mSortByRank = columnElem.attribute( QStringLiteral( "sortByRank" ), QStringLiteral( "0" ) ).toInt();
+      column->mSortOrder = static_cast< Qt::SortOrder >( columnElem.attribute( QStringLiteral( "sortOrder" ), QString::number( Qt::AscendingOrder ) ).toInt() );
+      column->mWidth = columnElem.attribute( QStringLiteral( "width" ), QStringLiteral( "0.0" ) ).toDouble();
+
+      QDomNodeList bgColorList = columnElem.elementsByTagName( QStringLiteral( "backgroundColor" ) );
+      if ( !bgColorList.isEmpty() )
+      {
+        QDomElement bgColorElem = bgColorList.at( 0 ).toElement();
+        bool redOk, greenOk, blueOk, alphaOk;
+        int bgRed, bgGreen, bgBlue, bgAlpha;
+        bgRed = bgColorElem.attribute( QStringLiteral( "red" ) ).toDouble( &redOk );
+        bgGreen = bgColorElem.attribute( QStringLiteral( "green" ) ).toDouble( &greenOk );
+        bgBlue = bgColorElem.attribute( QStringLiteral( "blue" ) ).toDouble( &blueOk );
+        bgAlpha = bgColorElem.attribute( QStringLiteral( "alpha" ) ).toDouble( &alphaOk );
+        if ( redOk && greenOk && blueOk && alphaOk )
+        {
+          column->mBackgroundColor = QColor( bgRed, bgGreen, bgBlue, bgAlpha );
+        }
+      }
+      layoutItem->mColumns.append( column );
+    }
+  }
+
+  //restore cell styles
+  QDomNodeList stylesList = itemElem.elementsByTagName( QStringLiteral( "cellStyles" ) );
+  if ( !stylesList.isEmpty() )
+  {
+    QDomElement stylesElem = stylesList.at( 0 ).toElement();
+
+    QMap< QgsLayoutTable::CellStyleGroup, QString >::const_iterator it = layoutItem->mCellStyleNames.constBegin();
+    for ( ; it != layoutItem->mCellStyleNames.constEnd(); ++it )
+    {
+      QString styleName = it.value();
+      QDomNodeList styleList = stylesElem.elementsByTagName( styleName );
+      if ( !styleList.isEmpty() )
+      {
+        QDomElement styleElem = styleList.at( 0 ).toElement();
+        QgsLayoutTableStyle *style = layoutItem->mCellStyles.value( it.key() );
+        if ( style )
+          style->readXml( styleElem );
+      }
+    }
+  }
+
+  // look for stored layer name
+  QString layerId = itemElem.attribute( QStringLiteral( "vectorLayer" ) );
+  QString layerName = itemElem.attribute( QStringLiteral( "vectorLayerName" ) );
+  QString layerSource = itemElem.attribute( QStringLiteral( "vectorLayerSource" ) );
+  QString layerProvider = itemElem.attribute( QStringLiteral( "vectorLayerProvider" ) );
+
+  QgsVectorLayerRef layerRef( layerId, layerName, layerSource, layerProvider );
+  layoutItem->setVectorLayer( layerRef.resolveWeakly( project ) );
 
   return true;
 }

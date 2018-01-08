@@ -41,6 +41,7 @@
 #include "qgslayoutitemlegend.h"
 #include "qgslayoutatlas.h"
 #include "qgslayoutitemhtml.h"
+#include "qgslayoutitemattributetable.h"
 
 
 class TestQgsCompositionConverter: public QObject
@@ -60,6 +61,11 @@ class TestQgsCompositionConverter: public QObject
      * Test import legend from a composer template
      */
     void importComposerTemplateLegend();
+
+    /**
+     * Test import attribute table from a composer template
+     */
+    void importComposerTemplateAttributeTable();
 
     /**
      * Test import HTML from a composer template
@@ -437,6 +443,30 @@ void TestQgsCompositionConverter::importComposerTemplateLegend()
   checkRenderedImage( layout.get(), QTest::currentTestFunction(), 0 );
 
   qDeleteAll( items );
+
+}
+
+void TestQgsCompositionConverter::importComposerTemplateAttributeTable()
+{
+  QDomElement composerElem( loadComposer( "2x_template_attributetable.qpt" ) );
+  QgsProject project;
+  project.read( QStringLiteral( TEST_DATA_DIR ) + "/layouts/sample_project.qgs" );
+  QDomElement docElem =  composerElem.elementsByTagName( QStringLiteral( "Composition" ) ).at( 0 ).toElement();
+  std::unique_ptr< QgsPrintLayout > layout( QgsCompositionConverter::createLayoutFromCompositionXml( docElem, &project ) );
+
+  QVERIFY( layout.get() );
+  QCOMPARE( layout->pageCollection()->pageCount(), 1 );
+
+  QList<QgsLayoutMultiFrame *> items = layout->multiFrames();
+  QVERIFY( items.size() > 0 );
+
+  // Check the HTML
+  const QgsLayoutItemAttributeTable *table = qobject_cast<QgsLayoutItemAttributeTable * >( items.at( 0 ) );
+  QVERIFY( table );
+  QVERIFY( table->sourceLayer() );
+  QVERIFY( table->sourceLayer()->isValid() );
+
+  checkRenderedImage( layout.get(), QTest::currentTestFunction(), 0 );
 
 }
 

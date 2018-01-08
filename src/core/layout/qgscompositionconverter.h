@@ -43,6 +43,7 @@ class QgsLayoutItemMap;
 class QgsLayoutItemScaleBar;
 class QgsLayoutItemLegend;
 class QgsLayoutItemHtml;
+class QgsLayoutItemAttributeTable;
 
 
 /**
@@ -194,6 +195,10 @@ class CORE_EXPORT QgsCompositionConverter
     static bool readHtmlXml( QgsLayoutItemHtml *layoutItem,
                              const QDomElement &itemElem,
                              const QgsProject *project );
+
+    static bool readTableXml( QgsLayoutItemAttributeTable *layoutItem,
+                              const QDomElement &itemElem,
+                              const QgsProject *project );
 
     static bool readOldComposerObjectXml( QgsLayoutObject *layoutItem, const QDomElement &itemElem );
 

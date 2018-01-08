@@ -199,6 +199,8 @@ class CORE_EXPORT QgsLayoutTableColumn : public QObject
     Qt::SortOrder mSortOrder = Qt::AscendingOrder;
     double mWidth = 0.0;
 
+    friend class QgsCompositionConverter;
+
 };
 
 #endif //QGSLAYOUTTABLECOLUMN_H

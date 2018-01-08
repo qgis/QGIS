@@ -63,7 +63,7 @@ Returns the source for attributes shown in the table body.
 .. seealso:: :py:func:`setSource()`
 %End
 
-    QgsVectorLayer *sourceLayer();
+    QgsVectorLayer *sourceLayer() const;
 %Docstring
 Returns the source layer for the table, considering the table source mode. For example,
 if the table is set to atlas feature mode, then the source layer will be the
