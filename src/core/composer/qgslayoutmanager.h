@@ -141,13 +141,6 @@ class CORE_EXPORT QgsLayoutManager : public QObject
     bool saveAsTemplate( const QString &name, QDomDocument &doc ) const;
 
     /**
-     * Duplicates an existing composition from the manager. The new
-     * composition will automatically be stored in the manager.
-     * Returns new composition if duplication was successful.
-     */
-    QgsComposition *duplicateComposition( const QString &name, const QString &newName );
-
-    /**
      * Duplicates an existing \a layout from the manager. The new
      * layout will automatically be stored in the manager.
      * Returns new the layout if duplication was successful.

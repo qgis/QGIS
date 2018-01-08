@@ -141,13 +141,6 @@ Saves the composition with matching ``name`` in template format.
 Returns true if save was successful.
 %End
 
-    QgsComposition *duplicateComposition( const QString &name, const QString &newName );
-%Docstring
-Duplicates an existing composition from the manager. The new
-composition will automatically be stored in the manager.
-Returns new composition if duplication was successful.
-%End
-
     QgsMasterLayoutInterface *duplicateLayout( const QgsMasterLayoutInterface *layout, const QString &newName );
 %Docstring
 Duplicates an existing ``layout`` from the manager. The new

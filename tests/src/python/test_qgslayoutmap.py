@@ -40,7 +40,7 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsComposerMap(unittest.TestCase, LayoutItemTestCase):
+class TestQgsLayoutMap(unittest.TestCase, LayoutItemTestCase):
 
     @classmethod
     def setUpClass(cls):

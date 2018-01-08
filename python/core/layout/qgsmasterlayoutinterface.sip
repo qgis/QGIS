@@ -7,6 +7,11 @@
  ************************************************************************/
 
 
+%ModuleHeaderCode
+#include "qgsprintlayout.h"
+#include "qgsreport.h"
+%End
+
 class QgsMasterLayoutInterface
 {
 %Docstring
@@ -17,6 +22,21 @@ class QgsMasterLayoutInterface
 
 %TypeHeaderCode
 #include "qgsmasterlayoutinterface.h"
+%End
+%ConvertToSubClassCode
+    switch ( sipCpp->layoutType() )
+    {
+      case QgsMasterLayoutInterface::PrintLayout:
+        sipType = sipType_QgsPrintLayout;
+        *sipCppRet = static_cast<QgsPrintLayout *>( sipCpp );
+        break;
+      case  QgsMasterLayoutInterface::Report:
+        *sipCppRet = static_cast<QgsReport *>( sipCpp );
+        sipType = sipType_QgsReport;
+        break;
+      default:
+        sipType = NULL;
+    }
 %End
   public:
 

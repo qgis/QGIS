@@ -21,6 +21,13 @@
 #include <QString>
 #include <QIcon>
 
+#ifdef SIP_RUN
+% ModuleHeaderCode
+#include "qgsprintlayout.h"
+#include "qgsreport.h"
+% End
+#endif
+
 /**
  * \ingroup core
  * \class QgsMasterLayoutInterface
@@ -29,6 +36,24 @@
  */
 class CORE_EXPORT QgsMasterLayoutInterface
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    switch ( sipCpp->layoutType() )
+    {
+      case QgsMasterLayoutInterface::PrintLayout:
+        sipType = sipType_QgsPrintLayout;
+        *sipCppRet = static_cast<QgsPrintLayout *>( sipCpp );
+        break;
+      case  QgsMasterLayoutInterface::Report:
+        *sipCppRet = static_cast<QgsReport *>( sipCpp );
+        sipType = sipType_QgsReport;
+        break;
+      default:
+        sipType = NULL;
+    }
+    SIP_END
+#endif
 
   public:
 
