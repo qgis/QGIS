@@ -73,6 +73,7 @@ class QgsMapOverviewCanvas;
 class QgsMapTip;
 class QgsMapTool;
 class QgsMapToolAddFeature;
+class QgsMapToolDigitizeFeature;
 class QgsMapToolAdvancedDigitizing;
 class QgsMapToolIdentifyAction;
 class QgsPluginLayer;
@@ -2181,6 +2182,11 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QMetaObject::Connection mRenderProgressBarTimerConnection;
 
     QgsBrowserModel *mBrowserModel = nullptr;
+
+    void setupDuplicateFeaturesAction();
+
+    QgsFeature duplicateFeatures( QgsMapLayer *mlayer, const QgsFeature &feature );
+    QgsFeature duplicateFeatureDigitized( QgsMapLayer *mlayer, const QgsFeature &feature );
 
     friend class TestQgisAppPython;
 };
