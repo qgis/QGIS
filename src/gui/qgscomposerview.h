@@ -43,12 +43,16 @@ class QgsComposerNodesItem;
 class QgsComposerAttributeTableV2;
 class QgsMapCanvas;
 
+#define SIP_NO_FILE
+
 /**
  * \ingroup gui
  * Widget to display the composer items. Manages the composer tools and the
  * mouse/key events.
  * Creates the composer items according to the current map tools and keeps track
  * of the rubber band item.
+ * \note Not available in Python bindings
+ * \deprecated Will be removed in QGIS 3.2
  */
 class GUI_EXPORT QgsComposerView: public QGraphicsView
 {

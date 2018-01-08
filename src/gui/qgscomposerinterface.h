@@ -23,6 +23,8 @@
 class QgsComposerView;
 class QgsComposition;
 
+#define SIP_NO_FILE
+
 /**
  * \ingroup gui
  * \class QgsComposerInterface
@@ -33,6 +35,8 @@ class QgsComposition;
  * open composer dialogs.
  *
  * \since QGIS 3.0
+ * \note Not available in Python bindings
+ * \deprecated Will be removed in QGIS 3.2
  */
 class GUI_EXPORT QgsComposerInterface: public QObject
 {

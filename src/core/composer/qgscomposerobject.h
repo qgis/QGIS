@@ -31,9 +31,13 @@
 class QgsComposition;
 class QPainter;
 
+#define SIP_NO_FILE
+
 /**
  * \ingroup core
  * A base class for objects which belong to a map composition.
+ * \note Not available in Python bindings
+ * \deprecated Will be removed in QGIS 3.2
  */
 class CORE_EXPORT QgsComposerObject: public QObject, public QgsExpressionContextGenerator
 {

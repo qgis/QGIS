@@ -26,9 +26,13 @@
 class QgsComposerMap;
 class QgsExpression;
 
+#define SIP_NO_FILE
+
 /**
  * \ingroup core
- * A composer class that displays svg files or raster format (jpg, png, ...)
+ * A composer class that displays svg files or raster format (jpg, png, ...).
+ * \note Not available in Python bindings
+ * \deprecated Will be removed in QGIS 3.2
  * */
 class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
 {

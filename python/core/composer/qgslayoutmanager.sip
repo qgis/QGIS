@@ -24,6 +24,10 @@ rather accessed through a QgsProject via :py:func:`QgsProject.layoutManager()`
 
 QgsLayoutManager retains ownership of all the layouts contained
 in the manager.
+
+.. note::
+
+   Not available in Python bindings
 %End
 
 %TypeHeaderCode
@@ -39,16 +43,6 @@ manager.
 
     ~QgsLayoutManager();
 
-    bool addComposition( QgsComposition *composition /Transfer/ );
-%Docstring
-Adds a composition to the manager. Ownership of the composition is transferred to the manager.
-Returns true if the addition was successful, or false if the composition could not be added (eg
-as a result of a duplicate composition name).
-
-.. seealso:: :py:func:`removeComposition()`
-
-.. seealso:: :py:func:`compositionAdded()`
-%End
 
     bool addLayout( QgsMasterLayoutInterface *layout /Transfer/ );
 %Docstring
@@ -61,20 +55,6 @@ as a result of a duplicate layout name).
 .. seealso:: :py:func:`layoutAdded()`
 %End
 
-    bool removeComposition( QgsComposition *composition );
-%Docstring
-Removes a composition from the manager. The composition is deleted.
-Returns true if the removal was successful, or false if the removal failed (eg as a result
-of removing a composition which is not contained in the manager).
-
-.. seealso:: :py:func:`addComposition()`
-
-.. seealso:: :py:func:`compositionRemoved()`
-
-.. seealso:: :py:func:`compositionAboutToBeRemoved()`
-
-.. seealso:: :py:func:`clear()`
-%End
 
     bool removeLayout( QgsMasterLayoutInterface *layout );
 %Docstring
@@ -98,21 +78,12 @@ Removes and deletes all layouts from the manager.
 .. seealso:: :py:func:`removeLayout()`
 %End
 
-    QList< QgsComposition * > compositions() const;
-%Docstring
-Returns a list of all compositions contained in the manager.
-%End
 
     QList< QgsMasterLayoutInterface * > layouts() const;
 %Docstring
 Returns a list of all layouts contained in the manager.
 %End
 
-    QgsComposition *compositionByName( const QString &name ) const;
-%Docstring
-Returns the composition with a matching name, or None if no matching compositions
-were found.
-%End
 
     QgsMasterLayoutInterface *layoutByName( const QString &name ) const;
 %Docstring
@@ -202,10 +173,6 @@ Emitted when a composition is about to be removed from the manager
 Emitted when a layout is about to be removed from the manager
 %End
 
-    void compositionRenamed( QgsComposition *composition, const QString &newName );
-%Docstring
-Emitted when a composition is renamed
-%End
 
     void layoutRenamed( QgsMasterLayoutInterface *layout, const QString &newName );
 %Docstring

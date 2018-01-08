@@ -27,9 +27,13 @@
 
 class QgsComposerMap;
 
+#define SIP_NO_FILE
+
 /**
  * \ingroup core
  * A scale bar item that can be added to a map composition.
+ * \note Not available in Python bindings
+ * \deprecated Will be removed in QGIS 3.2
  */
 
 class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem

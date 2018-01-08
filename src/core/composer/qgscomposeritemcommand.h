@@ -27,9 +27,13 @@
 class QgsComposerItem;
 class QgsComposerMultiFrame;
 
+#define SIP_NO_FILE
+
 /**
  * \ingroup core
  * Undo command to undo/redo all composer item related changes
+ * \note Not available in Python bindings
+ * \deprecated Will be removed in QGIS 3.2
 */
 class CORE_EXPORT QgsComposerItemCommand: public QUndoCommand
 {

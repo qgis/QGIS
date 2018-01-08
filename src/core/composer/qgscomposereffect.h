@@ -23,9 +23,13 @@
 
 #include "qgis_core.h"
 
+#define SIP_NO_FILE
+
 /**
  * \ingroup core
  * \class QgsComposerEffect
+ * \note Not available in Python bindings
+ * \deprecated Will be removed in QGIS 3.2
  */
 class CORE_EXPORT QgsComposerEffect : public QGraphicsEffect
 {

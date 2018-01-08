@@ -971,40 +971,6 @@ Updates a symbol scope related to a QgsSymbol to an expression context.
 .. versionadded:: 2.14
 %End
 
-    static QgsExpressionContextScope *compositionScope( const QgsComposition *composition ) /Factory/;
-%Docstring
-Creates a new scope which contains variables and functions relating to a :py:class:`QgsComposition`.
-For instance, number of pages and page sizes.
-
-:param composition: source composition
-%End
-
-    static void setCompositionVariable( QgsComposition *composition, const QString &name, const QVariant &value );
-%Docstring
-Sets a composition context variable. This variable will be contained within scopes retrieved via
-compositionScope().
-
-:param composition: target composition
-:param name: variable name
-:param value: variable value
-
-.. seealso:: :py:func:`setCompositionVariables()`
-
-.. seealso:: :py:func:`compositionScope()`
-%End
-
-    static void setCompositionVariables( QgsComposition *composition, const QVariantMap &variables );
-%Docstring
-Sets all composition context variables. Existing composition variables will be removed and replaced
-with the variables specified.
-
-:param composition: target composition
-:param variables: new set of layer variables
-
-.. seealso:: :py:func:`setCompositionVariable()`
-
-.. seealso:: :py:func:`compositionScope()`
-%End
 
     static QgsExpressionContextScope *layoutScope( const QgsLayout *layout ) /Factory/;
 %Docstring
@@ -1045,13 +1011,6 @@ with the variables specified.
 .. versionadded:: 3.0
 %End
 
-    static QgsExpressionContextScope *compositionAtlasScope( const QgsAtlasComposition *atlas ) /Factory/;
-%Docstring
-Creates a new scope which contains variables and functions relating to a :py:class:`QgsAtlasComposition`.
-For instance, current page name and number.
-
-:param atlas: source atlas. If null, a set of default atlas variables will be added to the scope.
-%End
 
     static QgsExpressionContextScope *atlasScope( QgsLayoutAtlas *atlas ) /Factory/;
 %Docstring
@@ -1061,13 +1020,6 @@ For instance, current page name and number.
 :param atlas: source atlas. If null, a set of default atlas variables will be added to the scope.
 %End
 
-    static QgsExpressionContextScope *composerItemScope( const QgsComposerItem *composerItem ) /Factory/;
-%Docstring
-Creates a new scope which contains variables and functions relating to a :py:class:`QgsComposerItem`.
-For instance, item size and position.
-
-:param composerItem: source composer item
-%End
 
     static QgsExpressionContextScope *layoutItemScope( const QgsLayoutItem *item ) /Factory/;
 %Docstring
@@ -1077,32 +1029,6 @@ For instance, item size and position.
 .. versionadded:: 3.0
 %End
 
-    static void setComposerItemVariable( QgsComposerItem *composerItem, const QString &name, const QVariant &value );
-%Docstring
-Sets a composer item context variable. This variable will be contained within scopes retrieved via
-composerItemScope().
-
-:param composerItem: target composer item
-:param name: variable name
-:param value: variable value
-
-.. seealso:: :py:func:`setComposerItemVariables()`
-
-.. seealso:: :py:func:`composerItemScope()`
-%End
-
-    static void setComposerItemVariables( QgsComposerItem *composerItem, const QVariantMap &variables );
-%Docstring
-Sets all composition context variables. Existing compositoin variables will be removed and replaced
-with the variables specified.
-
-:param composerItem: target composer item
-:param variables: new set of layer variables
-
-.. seealso:: :py:func:`setComposerItemVariable()`
-
-.. seealso:: :py:func:`composerItemScope()`
-%End
 
     static QgsExpressionContext createFeatureBasedContext( const QgsFeature &feature, const QgsFields &fields );
 %Docstring
