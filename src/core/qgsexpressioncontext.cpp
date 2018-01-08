@@ -1339,6 +1339,41 @@ QgsExpressionContextScope *QgsExpressionContextUtils::layoutItemScope( const Qgs
   return scope;
 }
 
+void QgsExpressionContextUtils::setLayoutItemVariable( QgsLayoutItem *item, const QString &name, const QVariant &value )
+{
+  if ( !item )
+    return;
+
+  //write variable to composer item
+  QStringList variableNames = item->customProperty( QStringLiteral( "variableNames" ) ).toStringList();
+  QStringList variableValues = item->customProperty( QStringLiteral( "variableValues" ) ).toStringList();
+
+  variableNames << name;
+  variableValues << value.toString();
+
+  item->setCustomProperty( QStringLiteral( "variableNames" ), variableNames );
+  item->setCustomProperty( QStringLiteral( "variableValues" ), variableValues );
+}
+
+void QgsExpressionContextUtils::setLayoutItemVariables( QgsLayoutItem *item, const QVariantMap &variables )
+{
+  if ( !item )
+    return;
+
+  QStringList variableNames;
+  QStringList variableValues;
+
+  QVariantMap::const_iterator it = variables.constBegin();
+  for ( ; it != variables.constEnd(); ++it )
+  {
+    variableNames << it.key();
+    variableValues << it.value().toString();
+  }
+
+  item->setCustomProperty( QStringLiteral( "variableNames" ), variableNames );
+  item->setCustomProperty( QStringLiteral( "variableValues" ), variableValues );
+}
+
 void QgsExpressionContextUtils::setComposerItemVariable( QgsComposerItem *composerItem, const QString &name, const QVariant &value )
 {
   if ( !composerItem )

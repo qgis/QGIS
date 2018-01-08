@@ -84,6 +84,13 @@ QgsLayoutPropertiesWidget::QgsLayoutPropertiesWidget( QWidget *parent, QgsLayout
   mReferenceMapComboBox->setCurrentLayout( mLayout );
 
   connect( mLayout, &QgsLayout::changed, this, &QgsLayoutPropertiesWidget::updateGui );
+
+  updateVariables();
+  connect( mVariableEditor, &QgsVariableEditorWidget::scopeChanged, this, &QgsLayoutPropertiesWidget::variablesChanged );
+  // listen out for variable edits
+  connect( QgsApplication::instance(), &QgsApplication::customVariablesChanged, this, &QgsLayoutPropertiesWidget::updateVariables );
+  connect( QgsProject::instance(), &QgsProject::customVariablesChanged, this, &QgsLayoutPropertiesWidget::updateVariables );
+
   updateGui();
 }
 
@@ -226,6 +233,21 @@ void QgsLayoutPropertiesWidget::rasterizeToggled()
 void QgsLayoutPropertiesWidget::forceVectorToggled()
 {
   mLayout->setCustomProperty( QStringLiteral( "forceVector" ), mForceVectorCheckBox->isChecked() );
+}
+
+void QgsLayoutPropertiesWidget::variablesChanged()
+{
+  QgsExpressionContextUtils::setLayoutVariables( mLayout, mVariableEditor->variablesInActiveScope() );
+}
+
+void QgsLayoutPropertiesWidget::updateVariables()
+{
+  QgsExpressionContext context;
+  context << QgsExpressionContextUtils::globalScope()
+          << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+          << QgsExpressionContextUtils::layoutScope( mLayout );
+  mVariableEditor->setContext( &context );
+  mVariableEditor->setEditableScopeIndex( 2 );
 }
 
 void QgsLayoutPropertiesWidget::blockSignals( bool block )
