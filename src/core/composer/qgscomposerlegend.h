@@ -32,6 +32,7 @@ class QgsComposerMap;
 class QgsLegendRenderer;
 class QgsLegendModel;
 
+#define SIP_NO_FILE
 
 /**
  * \ingroup core

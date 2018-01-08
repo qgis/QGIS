@@ -23,12 +23,16 @@
 
 #include "qgis_core.h"
 
+#define SIP_NO_FILE
+
 class QgsComposerItem;
 class QgsComposition;
 
 /**
  * \ingroup core
  * A composer command class for adding / removing composer items. If mState == Removed, the command owns the item
+ * \note Not available in Python bindings
+ * \deprecated Will be removed in QGIS 3.2
 */
 class CORE_EXPORT QgsAddRemoveItemCommand: public QObject, public QUndoCommand
 {

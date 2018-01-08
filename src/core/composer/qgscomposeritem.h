@@ -34,9 +34,13 @@ class QgsComposition;
 class QgsExpressionContext;
 class QgsComposerEffect;
 
+#define SIP_NO_FILE
+
 /**
  * \ingroup core
  * A item that forms part of a map composition.
+ * \note Not available in Python bindings
+ * \deprecated Will be removed in QGIS 3.2
  */
 class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRectItem
 {

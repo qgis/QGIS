@@ -25,10 +25,14 @@
 
 class QgsFillSymbol;
 
+#define SIP_NO_FILE
+
 /**
  * \ingroup core
  * Composer item for polygons.
  * \since QGIS 2.16
+ * \note Not available in Python bindings
+ * \deprecated Will be removed in QGIS 3.2
  */
 
 class CORE_EXPORT QgsComposerPolygon: public QgsComposerNodesItem

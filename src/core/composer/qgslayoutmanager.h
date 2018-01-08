@@ -37,6 +37,7 @@ class QgsProject;
  *
  * QgsLayoutManager retains ownership of all the layouts contained
  * in the manager.
+ * \note Not available in Python bindings
  */
 
 class CORE_EXPORT QgsLayoutManager : public QObject
@@ -60,7 +61,7 @@ class CORE_EXPORT QgsLayoutManager : public QObject
      * \see removeComposition()
      * \see compositionAdded()
      */
-    bool addComposition( QgsComposition *composition SIP_TRANSFER );
+    bool addComposition( QgsComposition *composition SIP_TRANSFER ) SIP_SKIP;
 
     /**
      * Adds a \a layout to the manager. Ownership of the layout is transferred to the manager.
@@ -80,7 +81,7 @@ class CORE_EXPORT QgsLayoutManager : public QObject
      * \see compositionAboutToBeRemoved()
      * \see clear()
      */
-    bool removeComposition( QgsComposition *composition );
+    bool removeComposition( QgsComposition *composition ) SIP_SKIP;
 
     /**
      * Removes a \a layout from the manager. The layout is deleted.
@@ -102,7 +103,7 @@ class CORE_EXPORT QgsLayoutManager : public QObject
     /**
      * Returns a list of all compositions contained in the manager.
      */
-    QList< QgsComposition * > compositions() const;
+    QList< QgsComposition * > compositions() const SIP_SKIP;
 
     /**
      * Returns a list of all layouts contained in the manager.
@@ -113,7 +114,7 @@ class CORE_EXPORT QgsLayoutManager : public QObject
      * Returns the composition with a matching name, or nullptr if no matching compositions
      * were found.
      */
-    QgsComposition *compositionByName( const QString &name ) const;
+    QgsComposition *compositionByName( const QString &name ) const SIP_SKIP;
 
     /**
      * Returns the layout with a matching name, or nullptr if no matching layouts
@@ -186,7 +187,7 @@ class CORE_EXPORT QgsLayoutManager : public QObject
     void layoutAboutToBeRemoved( const QString &name );
 
     //! Emitted when a composition is renamed
-    void compositionRenamed( QgsComposition *composition, const QString &newName );
+    void compositionRenamed( QgsComposition *composition, const QString &newName ) SIP_SKIP;
 
     //! Emitted when a layout is renamed
     void layoutRenamed( QgsMasterLayoutInterface *layout, const QString &newName );

@@ -23,10 +23,15 @@
 #include "qgscomposeritem.h"
 #include <QGraphicsRectItem>
 
+
+#define SIP_NO_FILE
+
 /**
  * \ingroup core
  * Item representing a grid. This is drawn separately to the underlying paper item since the grid needs to be
  * drawn above all other composer items, while the paper item is drawn below all others.
+ * \note Not available in Python bindings
+ * \deprecated Will be removed in QGIS 3.2
  */
 class CORE_EXPORT QgsPaperGrid: public QGraphicsRectItem
 {

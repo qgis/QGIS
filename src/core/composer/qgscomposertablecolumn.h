@@ -25,11 +25,16 @@
 
 #include "qgis_core.h"
 
+#define SIP_NO_FILE
+
 /**
  * \ingroup core
  * Stores properties of a column in a QgsComposerTable. Some properties of a QgsComposerTableColumn
 are applicable only in certain contexts. For instance, the attribute and setAttribute methods only
-have an effect for QgsComposerAttributeTables, and have no effect for QgsComposerTextTables.*/
+have an effect for QgsComposerAttributeTables, and have no effect for QgsComposerTextTables.
+\note Not available in Python bindings
+ * \deprecated Will be removed in QGIS 3.2
+*/
 class CORE_EXPORT QgsComposerTableColumn: public QObject
 {
     Q_OBJECT
