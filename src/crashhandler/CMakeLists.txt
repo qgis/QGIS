@@ -13,7 +13,8 @@ SET_SOURCE_FILES_PROPERTIES(qgsstacktrace.cpp PROPERTIES COMPILE_FLAGS -wd4091)
 
 ADD_EXECUTABLE(qgiscrashhandler WIN32
     main.cpp
-    ${CRASH_UIS_H} 
+    ${CMAKE_BINARY_DIR}/qgsconfig.h
+    ${CRASH_UIS_H}
     ${CRASH_HDR_MOC}
     ${IMAGE_RCC_SRCS}
     qgscrashdialog.cpp
