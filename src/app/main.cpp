@@ -995,16 +995,18 @@ int main( int argc, char *argv[] )
   // TODO: use QgsSettings
   QSettings *customizationsettings = nullptr;
 
-  // Using the customizationfile option always overrides the option and config path options.
   if ( !customizationfile.isEmpty() )
   {
-    customizationsettings = new QSettings( customizationfile, QSettings::IniFormat );
+    // Using the customizationfile option always overrides the option and config path options.
     QgsCustomization::instance()->setEnabled( true );
   }
   else
   {
-    customizationsettings = new QSettings( QStringLiteral( "QGIS" ), QStringLiteral( "QGISCUSTOMIZATION2" ) );
+    // Use the default file location
+    customizationfile = profileFolder + QDir::separator() + QStringLiteral( "QGIS" ) + QDir::separator() + QStringLiteral( "QGISCUSTOMIZATION3.ini" ) ;
   }
+
+  customizationsettings = new QSettings( customizationfile, QSettings::IniFormat );
 
   // Load and set possible default customization, must be done after QgsApplication init and QgsSettings ( QCoreApplication ) init
   QgsCustomization::instance()->setSettings( customizationsettings );
