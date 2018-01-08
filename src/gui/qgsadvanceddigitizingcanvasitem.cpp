@@ -22,12 +22,12 @@
 
 QgsAdvancedDigitizingCanvasItem::QgsAdvancedDigitizingCanvasItem( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget )
   : QgsMapCanvasItem( canvas )
-  , mLockedPen( QPen( QColor( 100, 100, 255, 255 ), 1, Qt::DashLine ) )
-  , mConstruction1Pen( QPen( QColor( 100, 255, 100, 150 ), 1, Qt::DashLine ) )
-  , mConstruction2Pen( QPen( QColor( 100, 255, 100, 255 ), 1, Qt::DashLine ) )
-  , mSnapPen( QPen( QColor( 255, 175, 100, 150 ), 1 ) )
-  , mSnapLinePen( QPen( QColor( 200, 100, 50, 150 ), 1, Qt::DashLine ) )
-  , mCursorPen( QPen( QColor( 100, 255, 100, 255 ), 1 ) )
+  , mLockedPen( QPen( QColor( 0, 127, 0, 255 ), 1, Qt::DashLine ) )
+  , mConstruction1Pen( QPen( QColor( 127, 127, 127, 150 ), 1, Qt::DashLine ) )
+  , mConstruction2Pen( QPen( QColor( 127, 127, 127, 255 ), 1, Qt::DashLine ) )
+  , mSnapPen( QPen( QColor( 127, 0, 0, 150 ), 1 ) )
+  , mSnapLinePen( QPen( QColor( 127, 0, 0, 150 ), 1, Qt::DashLine ) )
+  , mCursorPen( QPen( QColor( 127, 127, 127, 255 ), 1 ) )
   , mAdvancedDigitizingDockWidget( cadDockWidget )
 {
 }
