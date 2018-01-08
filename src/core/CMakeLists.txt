@@ -356,7 +356,6 @@ SET(QGIS_CORE_SRCS
   composer/qgscomposerutils.cpp
   composer/qgscomposition.cpp
   composer/qgsgroupungroupitemscommand.cpp
-  composer/qgslayoutmanager.cpp
   composer/qgspaperitem.cpp
 
   dxf/qgsdxfexport.cpp
@@ -394,6 +393,7 @@ SET(QGIS_CORE_SRCS
   layout/qgslayoutitemshape.cpp
   layout/qgslayoutitemtexttable.cpp
   layout/qgslayoutitemundocommand.cpp
+  layout/qgslayoutmanager.cpp
   layout/qgslayoutmeasurement.cpp
   layout/qgslayoutmeasurementconverter.cpp
   layout/qgslayoutmodel.cpp
@@ -714,7 +714,6 @@ SET(QGIS_CORE_MOC_HDRS
   composer/qgscomposertexttable.h
   composer/qgscomposition.h
   composer/qgsgroupungroupitemscommand.h
-  composer/qgslayoutmanager.h
   composer/qgspaperitem.h
 
   locator/qgslocator.h
@@ -768,6 +767,7 @@ SET(QGIS_CORE_MOC_HDRS
   layout/qgslayoutitemscalebar.h
   layout/qgslayoutitemshape.h
   layout/qgslayoutitemtexttable.h
+  layout/qgslayoutmanager.h
   layout/qgslayoutmodel.h
   layout/qgslayoutmultiframe.h
   layout/qgslayoutpagecollection.h
