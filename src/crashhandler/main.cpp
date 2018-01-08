@@ -91,9 +91,11 @@ int main( int argc, char *argv[] )
   dlg.show();
   app.exec();
 
-  for(HANDLE threadHandle : stackTrace->threads) {
-      ResumeThread( threadHandle );
-      CloseHandle( threadHandle);
+
+  for ( HANDLE threadHandle : stackTrace->threads )
+  {
+    ResumeThread( threadHandle );
+    CloseHandle( threadHandle );
   }
   CloseHandle( stackTrace->process );
 
