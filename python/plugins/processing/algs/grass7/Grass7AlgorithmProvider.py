@@ -74,7 +74,7 @@ class Grass7AlgorithmProvider(QgsProcessingProvider):
             self.name(),
             Grass7Utils.GRASS_USE_VEXTERNAL,
             self.tr('For vector layers, use v.external (faster) instead of v.in.ogr'),
-            True))
+            False))
         ProcessingConfig.readSettings()
         self.refreshAlgorithms()
         return True
@@ -138,11 +138,7 @@ class Grass7AlgorithmProvider(QgsProcessingProvider):
         return False
 
     def supportedOutputVectorLayerExtensions(self):
-        # We use the same extensions than QGIS because:
-        # - QGIS is using OGR like GRASS
-        # - There are very chances than OGR version used in GRASS is
-        # different from QGIS OGR version.
-        return QgsVectorFileWriter.supportedFormatExtensions()
+        return Grass7Utils.getSupportedOutputVectorExtensions()
 
     def supportedOutputRasterLayerExtensions(self):
         return Grass7Utils.getSupportedOutputRasterExtensions()

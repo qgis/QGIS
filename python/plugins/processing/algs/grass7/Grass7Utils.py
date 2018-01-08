@@ -532,6 +532,14 @@ class Grass7Utils:
         return GdalUtils.getSupportedOutputRasterExtensions()
 
     @staticmethod
+    def getSupportedOutputVectorExtensions():
+        # We use the same extensions than GDAL/OGR because:
+        # - GRASS is also using GDAL/OGR for vector imports.
+        # - Chances that GRASS is compiled with another version of
+        # GDAL than QGIS are very limited!
+        return GdalUtils.getSupportedOutputVectorExtensions()
+
+    @staticmethod
     def getRasterFormatFromFilename(filename):
         """
         Returns Raster format name from a raster filename.
@@ -546,3 +554,19 @@ class Grass7Utils:
             if ext in exts:
                 return name
         return 'GTiff'
+
+    @staticmethod
+    def getVectorFormatFromFilename(filename):
+        """
+        Returns vector format name from a vector filename.
+        :param filename: The name with extension of the vector.
+        :return: The Gdal short format name for extension.
+        """
+        ext = os.path.splitext(filename)[1].lower()
+        ext = ext.lstrip('.')
+        supported = GdalUtils.getSupportedVectors()
+        for name in list(supported.keys()):
+            exts = supported[name]
+            if ext in exts:
+                return name.replace(" ", "_")
+        return 'ESRI_Shapefile'
