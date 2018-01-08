@@ -285,40 +285,11 @@ bool QgsLayoutManager::saveAsTemplate( const QString &name, QDomDocument &doc ) 
   return true;
 }
 
-QgsComposition *QgsLayoutManager::duplicateComposition( const QString &name, const QString &newName )
-{
-  QDomDocument currentDoc;
-  if ( !saveAsTemplate( name, currentDoc ) )
-    return nullptr;
-
-  QDomElement compositionElem = currentDoc.documentElement().firstChildElement( QStringLiteral( "Composition" ) );
-  if ( compositionElem.isNull() )
-  {
-    QgsDebugMsg( "selected composer could not be stored as temporary template" );
-    return nullptr;
-  }
-
-  QgsComposition *newComposition( new QgsComposition( mProject ) );
-  if ( !newComposition->loadFromTemplate( currentDoc, nullptr, false, true ) )
-  {
-    delete newComposition;
-    return nullptr;
-  }
-
-  newComposition->setName( newName );
-  if ( !addComposition( newComposition ) )
-  {
-    delete newComposition;
-    return nullptr;
-  }
-  else
-  {
-    return newComposition;
-  }
-}
-
 QgsMasterLayoutInterface *QgsLayoutManager::duplicateLayout( const QgsMasterLayoutInterface *layout, const QString &newName )
 {
+  if ( !layout )
+    return nullptr;
+
   std::unique_ptr< QgsMasterLayoutInterface > newLayout( layout->clone() );
   if ( !newLayout )
   {
