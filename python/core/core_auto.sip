@@ -358,7 +358,6 @@
 %Include annotations/qgshtmlannotation.sip
 %Include annotations/qgssvgannotation.sip
 %Include annotations/qgstextannotation.sip
-%Include composer/qgslayoutmanager.sip
 %Include locator/qgslocator.sip
 %Include locator/qgslocatorfilter.sip
 %Include locator/qgslocatormodel.sip
@@ -400,6 +399,7 @@
 %Include layout/qgslayoutitemscalebar.sip
 %Include layout/qgslayoutitemshape.sip
 %Include layout/qgslayoutitemtexttable.sip
+%Include layout/qgslayoutmanager.sip
 %Include layout/qgslayoutmodel.sip
 %Include layout/qgslayoutmultiframe.sip
 %Include layout/qgslayoutpagecollection.sip

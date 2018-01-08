@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/composer/qgslayoutmanager.h                                 *
+ * src/core/layout/qgslayoutmanager.h                                   *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -184,7 +184,7 @@ Emitted when a layout is renamed
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/core/composer/qgslayoutmanager.h                                 *
+ * src/core/layout/qgslayoutmanager.h                                   *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
