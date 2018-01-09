@@ -41,7 +41,7 @@ Use ``dialogTitle`` string  to define the title to show in the color ramp dialog
 %Docstring
 Return a copy of the current color ramp.
 
-.. seealso:: :py:func:`setColorRamp()`
+.. seealso:: :py:func:`setColorRamp`
 %End
 
     void setColorRampDialogTitle( const QString &title );
@@ -128,23 +128,23 @@ Sets whether a random colors option is shown in the button's drop-down menu.
 
 :param showRandom: set to true to show a random colors option
 
-.. seealso:: :py:func:`showRandom()`
+.. seealso:: :py:func:`showRandom`
 %End
 
     bool showRandomColorRamp() const;
 %Docstring
 Returns whether random colors option is shown in the button's drop-down menu.
 
-.. seealso:: :py:func:`setShowRandom()`
+.. seealso:: :py:func:`setShowRandom`
 %End
 
     bool isRandomColorRamp() const;
 %Docstring
 Returns true if the current color is null.
 
-.. seealso:: :py:func:`setShowNull()`
+.. seealso:: :py:func:`setShowNull`
 
-.. seealso:: :py:func:`showNull()`
+.. seealso:: :py:func:`showNull`
 %End
 
     void setShowNull( bool showNull );
@@ -153,27 +153,27 @@ Sets whether a set to null (clear) option is shown in the button's drop-down men
 
 :param showNull: set to true to show a null option
 
-.. seealso:: :py:func:`showNull()`
+.. seealso:: :py:func:`showNull`
 
-.. seealso:: :py:func:`isNull()`
+.. seealso:: :py:func:`isNull`
 %End
 
     bool showNull() const;
 %Docstring
 Returns whether the set to null (clear) option is shown in the button's drop-down menu.
 
-.. seealso:: :py:func:`setShowNull()`
+.. seealso:: :py:func:`setShowNull`
 
-.. seealso:: :py:func:`isNull()`
+.. seealso:: :py:func:`isNull`
 %End
 
     bool isNull() const;
 %Docstring
 Returns true if the current color is null.
 
-.. seealso:: :py:func:`setShowNull()`
+.. seealso:: :py:func:`setShowNull`
 
-.. seealso:: :py:func:`showNull()`
+.. seealso:: :py:func:`showNull`
 %End
 
     void setContext( const QString &context );
@@ -276,14 +276,14 @@ Sets color ramp to the button's default color ramp, if set.
 
 .. seealso:: :py:func:`defaultColorRamp`
 
-.. seealso:: :py:func:`setToNull()`
+.. seealso:: :py:func:`setToNull`
 %End
 
     void setToNull();
 %Docstring
 Sets color ramp to null.
 
-.. seealso:: :py:func:`setToDefaultColorRamp()`
+.. seealso:: :py:func:`setToDefaultColorRamp`
 %End
 
   signals:

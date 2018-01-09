@@ -78,7 +78,7 @@ ignored.
 
 :param values: list of variants
 
-.. seealso:: :py:func:`addValue()`
+.. seealso:: :py:func:`addValue`
 %End
 
     void addValue( const QVariant &value );
@@ -100,9 +100,9 @@ to clear the results from any previous calculations
    finalize() must be called after adding the final value and before
 retrieving calculated statistics.
 
-.. seealso:: :py:func:`calculate()`
+.. seealso:: :py:func:`calculate`
 
-.. seealso:: :py:func:`finalize()`
+.. seealso:: :py:func:`finalize`
 %End
 
     void finalize();
@@ -110,7 +110,7 @@ retrieving calculated statistics.
 Must be called after adding all datetimes with addValue() and before retrieving
 any calculated datetime statistics.
 
-.. seealso:: :py:func:`addValue()`
+.. seealso:: :py:func:`addValue`
 %End
 
     QVariant statistic( QgsDateTimeStatisticalSummary::Statistic stat ) const;

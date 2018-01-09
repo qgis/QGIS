@@ -290,7 +290,7 @@ Provider to display vector data in a GRASS GIS layer.
 
 TODO QGIS3: Remove virtual from non-inherited methods (like isModified)
 
-.. seealso:: QgsVectorLayerUtils()
+.. seealso:: :py:class:`QgsVectorLayerUtils`
 %End
 
 %TypeHeaderCode
@@ -448,7 +448,7 @@ Accessor to the join buffer object
 %Docstring
 Sets the list of dependencies.
 
-.. seealso:: :py:func:`dependencies()`
+.. seealso:: :py:func:`dependencies`
 
 :param layers: set of :py:class:`QgsMapLayerDependency`. Only user-defined dependencies will be added
 
@@ -460,8 +460,7 @@ Sets the list of dependencies.
     virtual QSet<QgsMapLayerDependency> dependencies() const;
 
 %Docstring
-
-.. seealso:: :py:func:`setDataDependencies`
+Gets the list of dependencies. This includes data dependencies set by the user (:py:func:`setDataDependencies`)
 as well as dependencies given by the provider
 
 :return: a set of :py:class:`QgsMapLayerDependency`
@@ -540,9 +539,9 @@ from selection, etc.
 
 .. seealso:: :py:func:`invertSelectionInRectangle`
 
-.. seealso:: :py:func:`selectByExpression()`
+.. seealso:: :py:func:`selectByExpression`
 
-.. seealso:: :py:func:`selectByIds()`
+.. seealso:: :py:func:`selectByIds`
 %End
 
     void selectByExpression( const QString &expression, SelectBehavior behavior = SetSelection );
@@ -555,9 +554,9 @@ from selection, etc.
 
 .. versionadded:: 2.16
 
-.. seealso:: :py:func:`selectByRect()`
+.. seealso:: :py:func:`selectByRect`
 
-.. seealso:: :py:func:`selectByIds()`
+.. seealso:: :py:func:`selectByIds`
 %End
 
     void selectByIds( const QgsFeatureIds &ids, SelectBehavior behavior = SetSelection );
@@ -571,9 +570,9 @@ from selection, etc.
 
 .. versionadded:: 2.16
 
-.. seealso:: :py:func:`selectByRect()`
+.. seealso:: :py:func:`selectByRect`
 
-.. seealso:: :py:func:`selectByExpression()`
+.. seealso:: :py:func:`selectByExpression`
 %End
 
     void modifySelection( const QgsFeatureIds &selectIds, const QgsFeatureIds &deselectIds );
@@ -591,7 +590,7 @@ Modifies the current selection on this layer
 
 .. seealso:: :py:func:`deselect`
 
-.. seealso:: :py:func:`selectByExpression()`
+.. seealso:: :py:func:`selectByExpression`
 %End
 
     void invertSelection();
@@ -610,7 +609,7 @@ Invert selection of features found within the search rectangle (in layer's coord
 
 :param rect:  The rectangle in which the selection of features will be inverted
 
-.. seealso:: :py:func:`invertSelection()`
+.. seealso:: :py:func:`invertSelection`
 %End
 
     QgsFeatureList selectedFeatures() const;
@@ -619,9 +618,9 @@ Get a copy of the user-selected features
 
 :return: A list of :py:class:`QgsFeature`
 
-.. seealso:: :py:func:`selectedFeatureIds()`
+.. seealso:: :py:func:`selectedFeatureIds`
 
-.. seealso:: :py:func:`getSelectedFeatures()`
+.. seealso:: :py:func:`getSelectedFeatures`
 %End
 
     QgsFeatureIterator getSelectedFeatures( QgsFeatureRequest request = QgsFeatureRequest() ) const;
@@ -634,9 +633,9 @@ Any filter on the request will be discarded.
 :return: Iterator over the selected features
 
 
-.. seealso:: :py:func:`selectedFeatureIds()`
+.. seealso:: :py:func:`selectedFeatureIds`
 
-.. seealso:: :py:func:`selectedFeatures()`
+.. seealso:: :py:func:`selectedFeatures`
 %End
 
     const QgsFeatureIds &selectedFeatureIds() const;
@@ -645,7 +644,7 @@ Return reference to identifiers of selected features
 
 :return: A list of :py:class:`QgsFeatureId`
 
-.. seealso:: :py:func:`selectedFeatures()`
+.. seealso:: :py:func:`selectedFeatures`
 %End
 
     QgsRectangle boundingBoxOfSelected() const;
@@ -1015,13 +1014,13 @@ can be slow to execute. Consider using the more efficient changeAttributeValue()
 changeGeometry() methods instead.
 
 
-.. seealso:: :py:func:`startEditing()`
+.. seealso:: :py:func:`startEditing`
 
-.. seealso:: :py:func:`commitChanges()`
+.. seealso:: :py:func:`commitChanges`
 
-.. seealso:: :py:func:`changeGeometry()`
+.. seealso:: :py:func:`changeGeometry`
 
-.. seealso:: :py:func:`changeAttributeValue()`
+.. seealso:: :py:func:`changeAttributeValue`
 %End
 
     bool insertVertex( double x, double y, QgsFeatureId atFeatureId, int beforeVertex );
@@ -1465,13 +1464,13 @@ by a call to startEditing(). Changes made to features using this method are not 
 to the underlying data provider until a commitChanges() call is made. Any uncommitted
 changes can be discarded by calling rollBack().
 
-.. seealso:: :py:func:`startEditing()`
+.. seealso:: :py:func:`startEditing`
 
-.. seealso:: :py:func:`commitChanges()`
+.. seealso:: :py:func:`commitChanges`
 
-.. seealso:: :py:func:`changeAttributeValue()`
+.. seealso:: :py:func:`changeAttributeValue`
 
-.. seealso:: :py:func:`updateFeature()`
+.. seealso:: :py:func:`updateFeature`
 %End
 
     bool changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant &oldValue = QVariant(), bool skipDefaultValues = false );
@@ -1502,13 +1501,13 @@ by a call to startEditing(). Changes made to features using this method are not 
 to the underlying data provider until a commitChanges() call is made. Any uncommitted
 changes can be discarded by calling rollBack().
 
-.. seealso:: :py:func:`startEditing()`
+.. seealso:: :py:func:`startEditing`
 
-.. seealso:: :py:func:`commitChanges()`
+.. seealso:: :py:func:`commitChanges`
 
-.. seealso:: :py:func:`changeGeometry()`
+.. seealso:: :py:func:`changeGeometry`
 
-.. seealso:: :py:func:`updateFeature()`
+.. seealso:: :py:func:`updateFeature`
 %End
 
     bool addAttribute( const QgsField &field );
@@ -1663,11 +1662,11 @@ so if a stage fails, it can be difficult to roll back cleanly.
 Therefore any error message returned by commitErrors() also includes which stage failed so
 that the user has some chance of repairing the damage cleanly.
 
-.. seealso:: :py:func:`startEditing()`
+.. seealso:: :py:func:`startEditing`
 
-.. seealso:: :py:func:`commitErrors()`
+.. seealso:: :py:func:`commitErrors`
 
-.. seealso:: :py:func:`rollBack()`
+.. seealso:: :py:func:`rollBack`
 %End
 
     QStringList commitErrors() const;
@@ -1675,7 +1674,7 @@ that the user has some chance of repairing the damage cleanly.
 Returns a list containing any error messages generated when attempting
 to commit changes to the layer.
 
-.. seealso:: :py:func:`commitChanges()`
+.. seealso:: :py:func:`commitChanges`
 %End
 
     bool rollBack( bool deleteBuffer = true );
@@ -1685,9 +1684,9 @@ Stops a current editing operation and discards any uncommitted edits.
 If ``deleteBuffer`` is true the editing buffer will be completely deleted (the default
 behavior).
 
-.. seealso:: :py:func:`startEditing()`
+.. seealso:: :py:func:`startEditing`
 
-.. seealso:: :py:func:`commitChanges()`
+.. seealso:: :py:func:`commitChanges`
 %End
 
     QList<QgsRelation> referencingRelations( int idx ) const;
@@ -1764,7 +1763,7 @@ specified, a default context will be created
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`setDefaultValueDefinition()`
+.. seealso:: :py:func:`setDefaultValueDefinition`
 %End
 
     void setDefaultValueDefinition( int index, const QgsDefaultValue &definition );
@@ -1778,9 +1777,9 @@ an empty expression to clear the default.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`defaultValue()`
+.. seealso:: :py:func:`defaultValue`
 
-.. seealso:: :py:func:`defaultValueDefinition()`
+.. seealso:: :py:func:`defaultValueDefinition`
 %End
 
     QgsDefaultValue defaultValueDefinition( int index ) const;
@@ -1795,9 +1794,9 @@ empty string if no default is set
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`defaultValue()`
+.. seealso:: :py:func:`defaultValue`
 
-.. seealso:: :py:func:`setDefaultValueDefinition()`
+.. seealso:: :py:func:`setDefaultValueDefinition`
 %End
 
     QgsFieldConstraints::Constraints fieldConstraints( int fieldIndex ) const;
@@ -1808,7 +1807,7 @@ or may be set manually on the vector layer from within QGIS.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`setFieldConstraint()`
+.. seealso:: :py:func:`setFieldConstraint`
 %End
 
     QMap< QgsFieldConstraints::Constraint, QgsFieldConstraints::ConstraintStrength> fieldConstraintsAndStrength( int fieldIndex ) const;
@@ -1828,9 +1827,9 @@ constraints to be added on top of the existing provider constraints.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`fieldConstraints()`
+.. seealso:: :py:func:`fieldConstraints`
 
-.. seealso:: :py:func:`removeFieldConstraint()`
+.. seealso:: :py:func:`removeFieldConstraint`
 %End
 
     void removeFieldConstraint( int index, QgsFieldConstraints::Constraint constraint );
@@ -1840,9 +1839,9 @@ data provider will be kept intact and cannot be removed.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`fieldConstraints()`
+.. seealso:: :py:func:`fieldConstraints`
 
-.. seealso:: :py:func:`setFieldConstraint()`
+.. seealso:: :py:func:`setFieldConstraint`
 %End
 
     QString constraintExpression( int index ) const;
@@ -1851,11 +1850,11 @@ Returns the constraint expression for for a specified field index, if set.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`fieldConstraints()`
+.. seealso:: :py:func:`fieldConstraints`
 
-.. seealso:: :py:func:`constraintDescription()`
+.. seealso:: :py:func:`constraintDescription`
 
-.. seealso:: :py:func:`setConstraintExpression()`
+.. seealso:: :py:func:`setConstraintExpression`
 %End
 
     QString constraintDescription( int index ) const;
@@ -1864,11 +1863,11 @@ Returns the descriptive name for the constraint expression for a specified field
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`constraints()`
+.. seealso:: :py:func:`constraints`
 
-.. seealso:: :py:func:`constraintExpression()`
+.. seealso:: :py:func:`constraintExpression`
 
-.. seealso:: :py:func:`setConstraintExpression()`
+.. seealso:: :py:func:`setConstraintExpression`
 %End
 
     void setConstraintExpression( int index, const QString &expression, const QString &description = QString() );
@@ -1878,11 +1877,11 @@ can also be set. Setting an empty expression will clear any existing expression 
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`constraintExpression()`
+.. seealso:: :py:func:`constraintExpression`
 
-.. seealso:: :py:func:`constraintDescription()`
+.. seealso:: :py:func:`constraintDescription`
 
-.. seealso:: :py:func:`constraints()`
+.. seealso:: :py:func:`constraints`
 %End
 
     void setEditorWidgetSetup( int index, const QgsEditorWidgetSetup &setup );
@@ -1910,9 +1909,9 @@ returned list).
 :param fieldIndex: column index for attribute
 :param limit: maximum number of values to return (or -1 if unlimited)
 
-.. seealso:: :py:func:`minimumValue()`
+.. seealso:: :py:func:`minimumValue`
 
-.. seealso:: :py:func:`maximumValue()`
+.. seealso:: :py:func:`maximumValue`
 %End
 
     QStringList uniqueStringsMatching( int index, const QString &substring, int limit = -1,
@@ -1941,9 +1940,9 @@ Note that in some circumstances when unsaved changes are present for the layer t
 returned value may be outdated (for instance when the attribute value in a saved feature has
 been changed inside the edit buffer then the previous saved value may be returned as the minimum).
 
-.. seealso:: :py:func:`maximumValue()`
+.. seealso:: :py:func:`maximumValue`
 
-.. seealso:: :py:func:`uniqueValues()`
+.. seealso:: :py:func:`uniqueValues`
 %End
 
     virtual QVariant maximumValue( int index ) const;
@@ -1954,9 +1953,9 @@ Note that in some circumstances when unsaved changes are present for the layer t
 returned value may be outdated (for instance when the attribute value in a saved feature has
 been changed inside the edit buffer then the previous saved value may be returned as the maximum).
 
-.. seealso:: :py:func:`minimumValue()`
+.. seealso:: :py:func:`minimumValue`
 
-.. seealso:: :py:func:`uniqueValues()`
+.. seealso:: :py:func:`uniqueValues`
 %End
 
     QVariant aggregate( QgsAggregateCalculator::Aggregate aggregate,
@@ -2026,9 +2025,9 @@ Returns the current blending mode for features
 Sets the ``opacity`` for the vector layer, where ``opacity`` is a value between 0 (totally transparent)
 and 1.0 (fully opaque).
 
-.. seealso:: :py:func:`opacity()`
+.. seealso:: :py:func:`opacity`
 
-.. seealso:: :py:func:`opacityChanged()`
+.. seealso:: :py:func:`opacityChanged`
 
 .. versionadded:: 3.0
 %End
@@ -2038,9 +2037,9 @@ and 1.0 (fully opaque).
 Returns the opacity for the vector layer, where opacity is a value between 0 (totally transparent)
 and 1.0 (fully opaque).
 
-.. seealso:: :py:func:`setOpacity()`
+.. seealso:: :py:func:`setOpacity`
 
-.. seealso:: :py:func:`opacityChanged()`
+.. seealso:: :py:func:`opacityChanged`
 
 .. versionadded:: 3.0
 %End
@@ -2207,7 +2206,7 @@ Deselect features by their ID
 %Docstring
 Clear selection
 
-.. seealso:: :py:func:`selectByIds()`
+.. seealso:: :py:func:`selectByIds`
 %End
 
     virtual void updateExtents( bool force = false );
@@ -2230,9 +2229,9 @@ Returns true if the layer was successfully made editable, or false if the operat
 failed (e.g. due to an underlying read-only data source, or lack of edit support
 by the backend data provider).
 
-.. seealso:: :py:func:`commitChanges()`
+.. seealso:: :py:func:`commitChanges`
 
-.. seealso:: :py:func:`rollBack()`
+.. seealso:: :py:func:`rollBack`
 %End
 
   signals:
@@ -2288,7 +2287,7 @@ Applies only to types QgsFields.OriginEdit, QgsFields.OriginProvider and QgsFiel
 
 :param idx: The index of the new attribute
 
-.. seealso:: :py:func:`updatedFields()`
+.. seealso:: :py:func:`updatedFields`
 %End
 
     void beforeAddingExpressionField( const QString &fieldName );
@@ -2306,7 +2305,7 @@ Applies only to types QgsFields.OriginEdit, QgsFields.OriginProvider and QgsFiel
 
 :param idx: The index of the deleted attribute
 
-.. seealso:: :py:func:`updatedFields()`
+.. seealso:: :py:func:`updatedFields`
 %End
 
     void beforeRemovingExpressionField( int idx );
@@ -2413,9 +2412,9 @@ and 1 (opaque).
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`setOpacity()`
+.. seealso:: :py:func:`setOpacity`
 
-.. seealso:: :py:func:`opacity()`
+.. seealso:: :py:func:`opacity`
 %End
 
     void editCommandStarted( const QString &text );

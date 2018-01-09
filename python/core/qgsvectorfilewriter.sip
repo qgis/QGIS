@@ -427,7 +427,7 @@ Returns a list or pairs, with format filter string as first element and OGR form
 The ``options`` argument can be used to control the sorting and filtering of
 returned formats.
 
-.. seealso:: :py:func:`supportedOutputVectorLayerExtensions()`
+.. seealso:: :py:func:`supportedOutputVectorLayerExtensions`
 %End
 
     static QStringList supportedFormatExtensions( VectorFormatOptions options = SortRecommended );
@@ -439,7 +439,7 @@ returned formats.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`supportedFiltersAndFormats()`
+.. seealso:: :py:func:`supportedFiltersAndFormats`
 %End
 
     static bool supportsFeatureStyles( const QString &driverName );
@@ -542,7 +542,7 @@ The  scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`setSymbologyScale()`
+.. seealso:: :py:func:`setSymbologyScale`
 %End
 
     void setSymbologyScale( double scale );
@@ -552,7 +552,7 @@ The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 ma
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`symbologyScale()`
+.. seealso:: :py:func:`symbologyScale`
 %End
 
     static bool driverMetadata( const QString &driverName, MetaData &driverMetadata );
@@ -565,7 +565,7 @@ Returns a list of the default dataset options for a specified driver.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`defaultLayerOptions()`
+.. seealso:: :py:func:`defaultLayerOptions`
 %End
 
     static QStringList defaultLayerOptions( const QString &driverName );
@@ -576,7 +576,7 @@ Returns a list of the default layer options for a specified driver.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`defaultDatasetOptions()`
+.. seealso:: :py:func:`defaultDatasetOptions`
 %End
 
 

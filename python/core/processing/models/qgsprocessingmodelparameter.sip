@@ -35,7 +35,7 @@ parameters from the parent model.
 Returns the associated parameter name. The parameter name should match one of the
 parameters from the parent model.
 
-.. seealso:: :py:func:`parameterName()`
+.. seealso:: :py:func:`parameterName`
 %End
 
     void setParameterName( const QString &name );
@@ -43,21 +43,21 @@ parameters from the parent model.
 Sets the associated parameter name. The parameter name should match one of the
 parameters from the parent model.
 
-.. seealso:: :py:func:`parameterName()`
+.. seealso:: :py:func:`parameterName`
 %End
 
     QVariant toVariant() const;
 %Docstring
 Saves this parameter to a QVariant.
 
-.. seealso:: :py:func:`loadVariant()`
+.. seealso:: :py:func:`loadVariant`
 %End
 
     bool loadVariant( const QVariantMap &map );
 %Docstring
 Loads this parameter from a QVariantMap.
 
-.. seealso:: :py:func:`toVariant()`
+.. seealso:: :py:func:`toVariant`
 %End
 
 };

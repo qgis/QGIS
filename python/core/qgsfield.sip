@@ -68,9 +68,9 @@ Copy constructor
 %Docstring
 Returns the name of the field.
 
-.. seealso:: :py:func:`setName()`
+.. seealso:: :py:func:`setName`
 
-.. seealso:: :py:func:`displayName()`
+.. seealso:: :py:func:`displayName`
 %End
 
     QString displayName() const;
@@ -78,9 +78,9 @@ Returns the name of the field.
 Returns the name to use when displaying this field. This will be the
 field alias if set, otherwise the field name.
 
-.. seealso:: :py:func:`name()`
+.. seealso:: :py:func:`name`
 
-.. seealso:: :py:func:`alias()`
+.. seealso:: :py:func:`alias`
 
 .. versionadded:: 3.0
 %End
@@ -191,7 +191,7 @@ empty string if no default is set
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`setDefaultValueDefinition()`
+.. seealso:: :py:func:`setDefaultValueDefinition`
 %End
 
     void setDefaultValueDefinition( const QgsDefaultValue &defaultValueDefinition );
@@ -203,7 +203,7 @@ a default constructed :py:class:`QgsDefaultValue`() to reset.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`defaultValueDefinition()`
+.. seealso:: :py:func:`defaultValueDefinition`
 %End
 
     const QgsFieldConstraints &constraints() const;
@@ -212,7 +212,7 @@ Returns constraints which are present for the field.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`setConstraints()`
+.. seealso:: :py:func:`setConstraints`
 %End
 
     void setConstraints( const QgsFieldConstraints &constraints );
@@ -221,7 +221,7 @@ Sets constraints which are present for the field.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`constraints()`
+.. seealso:: :py:func:`constraints`
 %End
 
     QString alias() const;
@@ -229,7 +229,7 @@ Sets constraints which are present for the field.
 Returns the alias for the field (the friendly displayed name of the field ),
 or an empty string if there is no alias.
 
-.. seealso:: :py:func:`setAlias()`
+.. seealso:: :py:func:`setAlias`
 
 .. versionadded:: 3.0
 %End
@@ -240,7 +240,7 @@ Sets the alias for the field (the friendly displayed name of the field ).
 
 :param alias: field alias, or empty string to remove an existing alias
 
-.. seealso:: :py:func:`alias()`
+.. seealso:: :py:func:`alias`
 
 .. versionadded:: 3.0
 %End

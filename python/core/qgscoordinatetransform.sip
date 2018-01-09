@@ -135,9 +135,9 @@ Sets the source coordinate reference system.
 
 :param crs: CRS to transform coordinates from
 
-.. seealso:: :py:func:`sourceCrs()`
+.. seealso:: :py:func:`sourceCrs`
 
-.. seealso:: :py:func:`setDestinationCrs()`
+.. seealso:: :py:func:`setDestinationCrs`
 %End
 
     void setDestinationCrs( const QgsCoordinateReferenceSystem &crs );
@@ -146,9 +146,9 @@ Sets the destination coordinate reference system.
 
 :param crs: CRS to transform coordinates to
 
-.. seealso:: :py:func:`destinationCrs()`
+.. seealso:: :py:func:`destinationCrs`
 
-.. seealso:: :py:func:`setSourceCrs()`
+.. seealso:: :py:func:`setSourceCrs`
 %End
 
     void setContext( const QgsCoordinateTransformContext &context );
@@ -164,9 +164,9 @@ calculated.
 Returns the source coordinate reference system, which the transform will
 transform coordinates from.
 
-.. seealso:: :py:func:`setSourceCrs()`
+.. seealso:: :py:func:`setSourceCrs`
 
-.. seealso:: :py:func:`destinationCrs()`
+.. seealso:: :py:func:`destinationCrs`
 %End
 
     QgsCoordinateReferenceSystem destinationCrs() const;
@@ -174,9 +174,9 @@ transform coordinates from.
 Returns the destination coordinate reference system, which the transform will
 transform coordinates to.
 
-.. seealso:: :py:func:`setDestinationCrs()`
+.. seealso:: :py:func:`setDestinationCrs`
 
-.. seealso:: :py:func:`sourceCrs()`
+.. seealso:: :py:func:`sourceCrs`
 %End
 
     QgsPointXY transform( const QgsPointXY &point, TransformDirection direction = ForwardTransform ) const;
@@ -287,11 +287,11 @@ but can be manually overwritten by a call to setSourceDatumTransformId().
 
 .. seealso:: :py:class:`QgsDatumTransform`
 
-.. seealso:: :py:func:`setSourceDatumTransformId()`
+.. seealso:: :py:func:`setSourceDatumTransformId`
 
-.. seealso:: :py:func:`destinationDatumTransformId()`
+.. seealso:: :py:func:`destinationDatumTransformId`
 
-.. seealso:: :py:func:`datumTransformInfo()`
+.. seealso:: :py:func:`datumTransformInfo`
 %End
 
     void setSourceDatumTransformId( int datumId );
@@ -304,11 +304,11 @@ Calling this method will overwrite any automatically calculated datum transform.
 
 .. seealso:: :py:class:`QgsDatumTransform`
 
-.. seealso:: :py:func:`sourceDatumTransformId()`
+.. seealso:: :py:func:`sourceDatumTransformId`
 
-.. seealso:: :py:func:`setDestinationDatumTransformId()`
+.. seealso:: :py:func:`setDestinationDatumTransformId`
 
-.. seealso:: :py:func:`datumTransformInfo()`
+.. seealso:: :py:func:`datumTransformInfo`
 %End
 
     int destinationDatumTransformId() const;
@@ -321,11 +321,11 @@ but can be manually overwritten by a call to setDestinationDatumTransformId().
 
 .. seealso:: :py:class:`QgsDatumTransform`
 
-.. seealso:: :py:func:`setDestinationDatumTransformId()`
+.. seealso:: :py:func:`setDestinationDatumTransformId`
 
-.. seealso:: :py:func:`sourceDatumTransformId()`
+.. seealso:: :py:func:`sourceDatumTransformId`
 
-.. seealso:: :py:func:`datumTransformInfo()`
+.. seealso:: :py:func:`datumTransformInfo`
 %End
 
     void setDestinationDatumTransformId( int datumId );
@@ -338,11 +338,11 @@ Calling this method will overwrite any automatically calculated datum transform.
 
 .. seealso:: :py:class:`QgsDatumTransform`
 
-.. seealso:: :py:func:`destinationDatumTransformId()`
+.. seealso:: :py:func:`destinationDatumTransformId`
 
-.. seealso:: :py:func:`setSourceDatumTransformId()`
+.. seealso:: :py:func:`setSourceDatumTransformId`
 
-.. seealso:: :py:func:`datumTransformInfo()`
+.. seealso:: :py:func:`datumTransformInfo`
 %End
 
     static void invalidateCache();

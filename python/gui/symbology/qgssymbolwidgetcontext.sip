@@ -45,14 +45,14 @@ map scale and other properties from the canvas.
 
 :param canvas: map canvas
 
-.. seealso:: :py:func:`mapCanvas()`
+.. seealso:: :py:func:`mapCanvas`
 %End
 
     QgsMapCanvas *mapCanvas() const;
 %Docstring
 Returns the map canvas associated with the widget.
 
-.. seealso:: :py:func:`setMapCanvas()`
+.. seealso:: :py:func:`setMapCanvas`
 %End
 
     void setExpressionContext( QgsExpressionContext *context );
@@ -63,9 +63,9 @@ the layer widget.
 
 :param context: expression context pointer. Ownership is not transferred.
 
-.. seealso:: :py:func:`expressionContext()`
+.. seealso:: :py:func:`expressionContext`
 
-.. seealso:: :py:func:`setAdditionalExpressionContextScopes()`
+.. seealso:: :py:func:`setAdditionalExpressionContextScopes`
 %End
 
     QgsExpressionContext *expressionContext() const;
@@ -74,7 +74,7 @@ Returns the expression context used for the widget, if set. This expression cont
 evaluating data defined symbol properties and for populating based expression widgets in
 the layer widget.
 
-.. seealso:: :py:func:`setExpressionContext()`
+.. seealso:: :py:func:`setExpressionContext`
 %End
 
     void setAdditionalExpressionContextScopes( const QList< QgsExpressionContextScope > &scopes );
@@ -83,14 +83,14 @@ Sets a list of additional expression context scopes to show as available within 
 
 :param scopes: list of additional scopes which will be added in order to the end of the default expression context
 
-.. seealso:: :py:func:`setExpressionContext()`
+.. seealso:: :py:func:`setExpressionContext`
 %End
 
     QList< QgsExpressionContextScope > additionalExpressionContextScopes() const;
 %Docstring
 Returns the list of additional expression context scopes to show as available within the layer.
 
-.. seealso:: :py:func:`setAdditionalExpressionContextScopes()`
+.. seealso:: :py:func:`setAdditionalExpressionContextScopes`
 %End
 
     QList<QgsExpressionContextScope *> globalProjectAtlasMapLayerScopes( const QgsMapLayer *layer ) const /Factory/;

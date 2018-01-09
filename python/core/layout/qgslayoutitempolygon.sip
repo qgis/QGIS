@@ -52,7 +52,7 @@ The caller takes responsibility for deleting the returned object.
 %Docstring
 Returns the fill symbol used to draw the shape.
 
-.. seealso:: :py:func:`setSymbol()`
+.. seealso:: :py:func:`setSymbol`
 %End
 
     void setSymbol( QgsFillSymbol *symbol );
@@ -60,7 +60,7 @@ Returns the fill symbol used to draw the shape.
 Sets the ``symbol`` used to draw the shape.
 Ownership of ``symbol`` is not transferred.
 
-.. seealso:: :py:func:`symbol()`
+.. seealso:: :py:func:`symbol`
 %End
 
   protected:

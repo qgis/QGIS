@@ -45,7 +45,7 @@ Returns the CRS currently selected in the widget.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`setCrs()`
+.. seealso:: :py:func:`setCrs`
 %End
 
     void setMessage( const QString &message );
@@ -60,7 +60,7 @@ passed, the message will be a generic
 Sets whether a "no/invalid" projection option should be shown. If this
 option is selected, calling crs() will return an invalid :py:class:`QgsCoordinateReferenceSystem`.
 
-.. seealso:: :py:func:`showNoProjection()`
+.. seealso:: :py:func:`showNoProjection`
 
 .. versionadded:: 3.0
 %End
@@ -72,7 +72,7 @@ option is selected, calling crs() will return an invalid :py:class:`QgsCoordinat
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`setShowNoProjection()`
+.. seealso:: :py:func:`setShowNoProjection`
 %End
 
   public slots:
@@ -83,7 +83,7 @@ Sets the initial ``crs`` to show within the dialog.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`crs()`
+.. seealso:: :py:func:`crs`
 %End
 
     void setOgcWmsCrsFilter( const QSet<QString> &crsFilter );

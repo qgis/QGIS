@@ -187,7 +187,7 @@ If no prefix is specified, WKT definition is assumed.
 
 :param definition: A String containing a coordinate reference system definition.
 
-.. seealso:: :py:func:`createFromString()`
+.. seealso:: :py:func:`createFromString`
 / // TODO QGIS 3: remove "POSTGIS" and "INTERNAL", allow PROJ4 without the prefix
 %End
 
@@ -219,7 +219,7 @@ Returns a list of all valid SRS IDs present in the CRS database. Any of the
 returned values can be safely passed to fromSrsId() to create a new, valid
 QgsCoordinateReferenceSystem object.
 
-.. seealso:: :py:func:`fromSrsId()`
+.. seealso:: :py:func:`fromSrsId`
 
 .. versionadded:: 3.0
 %End
@@ -235,7 +235,7 @@ Creates a CRS from a given OGC WMS-format Coordinate Reference System string.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`createFromOgcWmsCrs()`
+.. seealso:: :py:func:`createFromOgcWmsCrs`
 %End
 
     static QgsCoordinateReferenceSystem fromEpsgId( long epsg );
@@ -259,7 +259,7 @@ Creates a CRS from a proj4 style formatted string.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`createFromProj4()`
+.. seealso:: :py:func:`createFromProj4`
 %End
 
     static QgsCoordinateReferenceSystem fromWkt( const QString &wkt );
@@ -272,7 +272,7 @@ Creates a CRS from a WKT spatial ref sys definition string.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`createFromWkt()`
+.. seealso:: :py:func:`createFromWkt`
 %End
 
     static QgsCoordinateReferenceSystem fromSrsId( long srsId );
@@ -285,9 +285,9 @@ Creates a CRS from a specified QGIS SRS ID.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`createFromSrsId()`
+.. seealso:: :py:func:`createFromSrsId`
 
-.. seealso:: :py:func:`validSrsIds()`
+.. seealso:: :py:func:`validSrsIds`
 %End
 
 
@@ -318,7 +318,7 @@ and refer to QGIS internal CRS IDs.
 
    this method uses an internal cache. Call invalidateCache() to clear the cache.
 
-.. seealso:: :py:func:`fromOgcWmsCrs()`
+.. seealso:: :py:func:`fromOgcWmsCrs`
 /     // TODO QGIS 3: remove "QGIS" and "CUSTOM", only support "USER" (also returned by authid())
 %End
 
@@ -353,7 +353,7 @@ set up the object.
 
    this method uses an internal cache. Call invalidateCache() to clear the cache.
 
-.. seealso:: :py:func:`fromWkt()`
+.. seealso:: :py:func:`fromWkt`
 %End
 
     bool createFromSrsId( const long srsId );
@@ -371,7 +371,7 @@ user's local CRS database from home directory is used.
 
    this method uses an internal cache. Call invalidateCache() to clear the cache.
 
-.. seealso:: :py:func:`fromSrsId()`
+.. seealso:: :py:func:`fromSrsId`
 %End
 
     bool createFromProj4( const QString &projString );
@@ -404,7 +404,7 @@ a match where the parameters are in a different order
 
    this method uses an internal cache. Call invalidateCache() to clear the cache.
 
-.. seealso:: :py:func:`fromProj4()`
+.. seealso:: :py:func:`fromProj4`
 %End
 
     bool createFromString( const QString &definition );
@@ -483,7 +483,7 @@ if that involves resorting to a hard coded default of geocs:wgs84.
    It is not usually necessary to use this function, unless you
 are trying to force this CRS to be valid.
 
-.. seealso:: :py:func:`setCustomCrsValidation()`
+.. seealso:: :py:func:`setCustomCrsValidation`
 %End
 
     long findMatchingProj();
@@ -556,7 +556,7 @@ internal QGIS CRS ID with "QGIS" authority, for example "QGIS:100005"
 
 :return: the authority identifier for this CRS
 
-.. seealso:: :py:func:`description()`
+.. seealso:: :py:func:`description`
 %End
 
     QString description() const;
@@ -571,7 +571,7 @@ user.
 
    an empty string will be returned if the description is not available for the CRS
 
-.. seealso:: :py:func:`authid()`
+.. seealso:: :py:func:`authid`
 %End
 
     QString projectionAcronym() const;
@@ -584,7 +584,7 @@ Returns the projection acronym for the projection used by the CRS.
 
    an empty string will be returned if the projectionAcronym is not available for the CRS
 
-.. seealso:: :py:func:`ellipsoidAcronym()`
+.. seealso:: :py:func:`ellipsoidAcronym`
 %End
 
     QString ellipsoidAcronym() const;
@@ -597,7 +597,7 @@ Returns the ellipsoid acronym for the ellipsoid used by the CRS.
 
    an empty string will be returned if the ellipsoidAcronym is not available for the CRS
 
-.. seealso:: :py:func:`projectionAcronym()`
+.. seealso:: :py:func:`projectionAcronym`
 %End
 
     QString toWkt() const;
@@ -606,7 +606,7 @@ Returns a WKT representation of this CRS.
 
 :return: string containing WKT of the CRS
 
-.. seealso:: :py:func:`toProj4()`
+.. seealso:: :py:func:`toProj4`
 %End
 
     QString toProj4() const;
@@ -623,7 +623,7 @@ overridden with these.
 
    an empty string will be returned if the CRS could not be represented by a Proj4 string
 
-.. seealso:: :py:func:`toWkt()`
+.. seealso:: :py:func:`toWkt`
 %End
 
     bool isGeographic() const;

@@ -38,14 +38,14 @@ Sets the current ramp shown in the editor.
 
 :param ramp: color ramp
 
-.. seealso:: :py:func:`gradientRamp()`
+.. seealso:: :py:func:`gradientRamp`
 %End
 
     QgsGradientColorRamp gradientRamp() const;
 %Docstring
 Returns the current ramp created by the editor.
 
-.. seealso:: :py:func:`setGradientRamp()`
+.. seealso:: :py:func:`setGradientRamp`
 %End
 
     void selectStop( int index );
@@ -54,14 +54,14 @@ Sets the currently selected stop.
 
 :param index: index of stop, where 0 corresponds to the first stop
 
-.. seealso:: :py:func:`selectedStop()`
+.. seealso:: :py:func:`selectedStop`
 %End
 
     QgsGradientStop selectedStop() const;
 %Docstring
 Returns details about the currently selected stop.
 
-.. seealso:: :py:func:`selectStop()`
+.. seealso:: :py:func:`selectStop`
 %End
 
     virtual QSize sizeHint() const;
@@ -77,13 +77,13 @@ Sets the color for the current selected stop.
 
 :param color: new stop color
 
-.. seealso:: :py:func:`setSelectedStopOffset()`
+.. seealso:: :py:func:`setSelectedStopOffset`
 
-.. seealso:: :py:func:`setSelectedStopDetails()`
+.. seealso:: :py:func:`setSelectedStopDetails`
 
-.. seealso:: :py:func:`setColor1()`
+.. seealso:: :py:func:`setColor1`
 
-.. seealso:: :py:func:`setColor2()`
+.. seealso:: :py:func:`setColor2`
 %End
 
     void setSelectedStopOffset( double offset );
@@ -93,9 +93,9 @@ first or last stop is selected, as they cannot be repositioned.
 
 :param offset: new stop offset
 
-.. seealso:: :py:func:`setSelectedStopColor()`
+.. seealso:: :py:func:`setSelectedStopColor`
 
-.. seealso:: :py:func:`setSelectedStopDetails()`
+.. seealso:: :py:func:`setSelectedStopDetails`
 %End
 
     void setSelectedStopDetails( const QColor &color, double offset );
@@ -105,9 +105,9 @@ Sets the color and offset for the current selected stop.
 :param color: new stop color
 :param offset: new stop offset
 
-.. seealso:: :py:func:`setSelectedStopColor()`
+.. seealso:: :py:func:`setSelectedStopColor`
 
-.. seealso:: :py:func:`setSelectedStopOffset()`
+.. seealso:: :py:func:`setSelectedStopOffset`
 %End
 
     void deleteSelectedStop();
@@ -122,9 +122,9 @@ Sets the color for the first stop.
 
 :param color: new stop color
 
-.. seealso:: :py:func:`setColor2()`
+.. seealso:: :py:func:`setColor2`
 
-.. seealso:: :py:func:`setSelectedStopColor()`
+.. seealso:: :py:func:`setSelectedStopColor`
 %End
 
     void setColor2( const QColor &color );
@@ -133,9 +133,9 @@ Sets the color for the last stop.
 
 :param color: new stop color
 
-.. seealso:: :py:func:`setColor1()`
+.. seealso:: :py:func:`setColor1`
 
-.. seealso:: :py:func:`setSelectedStopColor()`
+.. seealso:: :py:func:`setSelectedStopColor`
 %End
 
   signals:

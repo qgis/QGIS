@@ -27,13 +27,13 @@ Constructs a margins object with all margins set to 0.
 %Docstring
 Constructs margins with the given ``left``, ``top``, ``right``, ``bottom``
 
-.. seealso:: :py:func:`setLeft()`
+.. seealso:: :py:func:`setLeft`
 
-.. seealso:: :py:func:`setRight()`
+.. seealso:: :py:func:`setRight`
 
-.. seealso:: :py:func:`setTop()`
+.. seealso:: :py:func:`setTop`
 
-.. seealso:: :py:func:`setBottom()`
+.. seealso:: :py:func:`setBottom`
 %End
 
     bool isNull() const;
@@ -45,56 +45,56 @@ Returns \c true if all margins are is 0; otherwise returns false.
 %Docstring
 Returns the left margin.
 
-.. seealso:: :py:func:`setLeft()`
+.. seealso:: :py:func:`setLeft`
 %End
 
     double top() const;
 %Docstring
 Returns the top margin.
 
-.. seealso:: :py:func:`setTop()`
+.. seealso:: :py:func:`setTop`
 %End
 
     double right() const;
 %Docstring
 Returns the right margin.
 
-.. seealso:: :py:func:`setRight()`
+.. seealso:: :py:func:`setRight`
 %End
 
     double bottom() const;
 %Docstring
 Returns the bottom margin.
 
-.. seealso:: :py:func:`setBottom()`
+.. seealso:: :py:func:`setBottom`
 %End
 
     void setLeft( double left );
 %Docstring
 Sets the left margin to ``left``.
 
-.. seealso:: :py:func:`left()`
+.. seealso:: :py:func:`left`
 %End
 
     void setTop( double top );
 %Docstring
 Sets the top margin to ``top``.
 
-.. seealso:: :py:func:`top()`
+.. seealso:: :py:func:`top`
 %End
 
     void setRight( double right );
 %Docstring
 Sets the right margin to ``right``.
 
-.. seealso:: :py:func:`right()`
+.. seealso:: :py:func:`right`
 %End
 
     void setBottom( double bottom );
 %Docstring
 Sets the bottom margin to ``bottom``.
 
-.. seealso:: :py:func:`bottom()`
+.. seealso:: :py:func:`bottom`
 %End
 
     QgsMargins &operator+=( const QgsMargins &margins );
@@ -113,7 +113,7 @@ Sets the bottom margin to ``bottom``.
 %Docstring
 Returns the margins encoded to a string.
 
-.. seealso:: :py:func:`fromString()`
+.. seealso:: :py:func:`fromString`
 %End
 
     static QgsMargins fromString( const QString &string );
@@ -121,7 +121,7 @@ Returns the margins encoded to a string.
 Returns a QgsMargins object decoded from a string, or a null QgsMargins
 if the string could not be interpreted as margins.
 
-.. seealso:: :py:func:`toString()`
+.. seealso:: :py:func:`toString`
 %End
 
 };

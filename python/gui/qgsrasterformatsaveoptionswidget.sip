@@ -61,7 +61,7 @@ Set output raster file name
 %Docstring
 Returns list of selected options
 
-.. seealso:: :py:func:`setOptions()`
+.. seealso:: :py:func:`setOptions`
 %End
 
     void setOptions( const QString &options );
@@ -69,7 +69,7 @@ Returns list of selected options
 Populate widget with user-defined options. String should contain
 key=value pairs separated by spaces, e.g. "TILED=YES TFW=YES"
 
-.. seealso:: :py:func:`options()`
+.. seealso:: :py:func:`options`
 
 .. versionadded:: 3.0
 %End

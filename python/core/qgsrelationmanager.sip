@@ -71,7 +71,7 @@ Get access to a relation by its id.
 
 :return: A relation. Invalid if not found.
 
-.. seealso:: :py:func:`relationsByName()`
+.. seealso:: :py:func:`relationsByName`
 %End
 
     QList<QgsRelation> relationsByName( const QString &name ) const;
@@ -84,7 +84,7 @@ Returns a list of relations with matching names.
 
 .. versionadded:: 2.16
 
-.. seealso:: :py:func:`relation()`
+.. seealso:: :py:func:`relation`
 %End
 
     void clear();

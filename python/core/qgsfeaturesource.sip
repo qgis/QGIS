@@ -75,9 +75,9 @@ If specified, the ``limit`` option can be used to limit the number of returned v
 The base class implementation uses a non-optimised approach of looping through
 all features in the source.
 
-.. seealso:: :py:func:`minimumValue()`
+.. seealso:: :py:func:`minimumValue`
 
-.. seealso:: :py:func:`maximumValue()`
+.. seealso:: :py:func:`maximumValue`
 %End
 
     virtual QVariant minimumValue( int fieldIndex ) const;
@@ -86,9 +86,9 @@ Returns the minimum value for an attribute column or an invalid variant in case 
 The base class implementation uses a non-optimised approach of looping through
 all features in the source.
 
-.. seealso:: :py:func:`maximumValue()`
+.. seealso:: :py:func:`maximumValue`
 
-.. seealso:: :py:func:`uniqueValues()`
+.. seealso:: :py:func:`uniqueValues`
 %End
 
     virtual QVariant maximumValue( int fieldIndex ) const;
@@ -97,9 +97,9 @@ Returns the maximum value for an attribute column or an invalid variant in case 
 The base class implementation uses a non-optimised approach of looping through
 all features in the source.
 
-.. seealso:: :py:func:`minimumValue()`
+.. seealso:: :py:func:`minimumValue`
 
-.. seealso:: :py:func:`uniqueValues()`
+.. seealso:: :py:func:`uniqueValues`
 %End
 
     virtual QgsRectangle sourceExtent() const;

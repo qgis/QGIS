@@ -48,18 +48,18 @@ and optionally whether or not these bounds are included in the range.
 %Docstring
 Returns the lower bound of the range.
 
-.. seealso:: :py:func:`upper()`
+.. seealso:: :py:func:`upper`
 
-.. seealso:: :py:func:`includeLower()`
+.. seealso:: :py:func:`includeLower`
 %End
 
     T upper() const;
 %Docstring
 Returns the upper bound of the range.
 
-.. seealso:: :py:func:`lower()`
+.. seealso:: :py:func:`lower`
 
-.. seealso:: :py:func:`includeUpper()`
+.. seealso:: :py:func:`includeUpper`
 %End
 
     bool includeLower() const;
@@ -67,9 +67,9 @@ Returns the upper bound of the range.
 Returns true if the lower bound is inclusive, or false if the lower
 bound is exclusive.
 
-.. seealso:: :py:func:`lower()`
+.. seealso:: :py:func:`lower`
 
-.. seealso:: :py:func:`includeUpper()`
+.. seealso:: :py:func:`includeUpper`
 %End
 
     bool includeUpper() const;
@@ -77,9 +77,9 @@ bound is exclusive.
 Returns true if the upper bound is inclusive, or false if the upper
 bound is exclusive.
 
-.. seealso:: :py:func:`upper()`
+.. seealso:: :py:func:`upper`
 
-.. seealso:: :py:func:`includeLower()`
+.. seealso:: :py:func:`includeLower`
 %End
 
     bool isEmpty() const;
@@ -87,21 +87,21 @@ bound is exclusive.
 Returns true if the range is empty, ie the lower bound equals (or exceeds) the upper bound
 and either the bounds are exclusive.
 
-.. seealso:: :py:func:`isSingleton()`
+.. seealso:: :py:func:`isSingleton`
 %End
 
     bool isSingleton() const;
 %Docstring
 Returns true if the range consists only of a single value or instant.
 
-.. seealso:: :py:func:`isEmpty()`
+.. seealso:: :py:func:`isEmpty`
 %End
 
     bool contains( const QgsRange<T> &other ) const;
 %Docstring
 Returns true if this range contains another range.
 
-.. seealso:: :py:func:`overlaps()`
+.. seealso:: :py:func:`overlaps`
 %End
 
     bool contains( T element ) const;
@@ -113,7 +113,7 @@ Returns true if this range contains a specified ``element``.
 %Docstring
 Returns true if this range overlaps another range.
 
-.. seealso:: :py:func:`contains()`
+.. seealso:: :py:func:`contains`
 %End
 
 
@@ -170,18 +170,18 @@ and optionally whether or not these bounds are included in the range.
 %Docstring
 Returns the beginning of the range.
 
-.. seealso:: :py:func:`end()`
+.. seealso:: :py:func:`end`
 
-.. seealso:: :py:func:`includeBeginning()`
+.. seealso:: :py:func:`includeBeginning`
 %End
 
     T end() const;
 %Docstring
 Returns the upper bound of the range.
 
-.. seealso:: :py:func:`begin()`
+.. seealso:: :py:func:`begin`
 
-.. seealso:: :py:func:`includeEnd()`
+.. seealso:: :py:func:`includeEnd`
 %End
 
     bool includeBeginning() const;
@@ -189,36 +189,36 @@ Returns the upper bound of the range.
 Returns true if the beginning is inclusive, or false if the beginning
 is exclusive.
 
-.. seealso:: :py:func:`begin()`
+.. seealso:: :py:func:`begin`
 
-.. seealso:: :py:func:`includeEnd()`
+.. seealso:: :py:func:`includeEnd`
 %End
 
     bool includeEnd() const;
 %Docstring
 Returns true if the end is inclusive, or false if the end is exclusive.
 
-.. seealso:: :py:func:`end()`
+.. seealso:: :py:func:`end`
 
-.. seealso:: :py:func:`includeBeginning()`
+.. seealso:: :py:func:`includeBeginning`
 %End
 
     bool isInstant() const;
 %Docstring
 Returns true if the range consists only of a single instant.
 
-.. seealso:: :py:func:`isEmpty()`
+.. seealso:: :py:func:`isEmpty`
 
-.. seealso:: :py:func:`isInfinite()`
+.. seealso:: :py:func:`isInfinite`
 %End
 
     bool isInfinite() const;
 %Docstring
 Returns true if the range consists of all possible values.
 
-.. seealso:: :py:func:`isEmpty()`
+.. seealso:: :py:func:`isEmpty`
 
-.. seealso:: :py:func:`isInstant()`
+.. seealso:: :py:func:`isInstant`
 %End
 
     bool isEmpty() const;

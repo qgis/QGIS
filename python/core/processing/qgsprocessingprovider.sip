@@ -36,14 +36,14 @@ Constructor for QgsProcessingProvider.
 %Docstring
 Returns an icon for the provider.
 
-.. seealso:: :py:func:`svgIconPath()`
+.. seealso:: :py:func:`svgIconPath`
 %End
 
     virtual QString svgIconPath() const;
 %Docstring
 Returns a path to an SVG version of the provider's icon.
 
-.. seealso:: :py:func:`icon()`
+.. seealso:: :py:func:`icon`
 %End
 
     virtual QString id() const = 0;
@@ -52,7 +52,7 @@ Returns the unique provider id, used for identifying the provider. This string
 should be a unique, short, character only string, eg "qgis" or "gdal". This
 string should not be localised.
 
-.. seealso:: :py:func:`name()`
+.. seealso:: :py:func:`name`
 %End
 
     virtual QString name() const = 0;
@@ -60,9 +60,9 @@ string should not be localised.
 Returns the provider name, which is used to describe the provider within the GUI.
 This string should be short (e.g. "Lastools") and localised.
 
-.. seealso:: :py:func:`longName()`
+.. seealso:: :py:func:`longName`
 
-.. seealso:: :py:func:`id()`
+.. seealso:: :py:func:`id`
 %End
 
     virtual QString longName() const;
@@ -73,9 +73,9 @@ This string should be localised.
 
 The default implementation returns the same string as name().
 
-.. seealso:: :py:func:`name()`
+.. seealso:: :py:func:`name`
 
-.. seealso:: :py:func:`id()`
+.. seealso:: :py:func:`id`
 %End
 
     virtual bool canBeActivated() const;
@@ -83,7 +83,7 @@ The default implementation returns the same string as name().
 Returns true if the provider can be activated, or false if it cannot be activated (e.g. due to
 missing external dependencies).
 
-.. seealso:: :py:func:`isActive()`
+.. seealso:: :py:func:`isActive`
 %End
 
     virtual bool isActive() const;
@@ -95,18 +95,18 @@ Returns true if the provider is active and able to run algorithms.
 %Docstring
 Returns a list of the raster format file extensions supported by this provider.
 
-.. seealso:: :py:func:`supportedOutputVectorLayerExtensions()`
+.. seealso:: :py:func:`supportedOutputVectorLayerExtensions`
 %End
 
     virtual QStringList supportedOutputVectorLayerExtensions() const;
 %Docstring
 Returns a list of the vector format file extensions supported by this provider.
 
-.. seealso:: :py:func:`defaultVectorFileExtension()`
+.. seealso:: :py:func:`defaultVectorFileExtension`
 
-.. seealso:: :py:func:`supportedOutputRasterLayerExtensions()`
+.. seealso:: :py:func:`supportedOutputRasterLayerExtensions`
 
-.. seealso:: :py:func:`supportsNonFileBasedOutput()`
+.. seealso:: :py:func:`supportsNonFileBasedOutput`
 %End
 
     virtual QString defaultVectorFileExtension( bool hasGeometry = true ) const;
@@ -121,9 +121,9 @@ The default implementation returns the user's default Processing vector output f
 setting, if it's supported by the provider (see supportedOutputVectorLayerExtensions()).
 Otherwise the first reported supported vector format will be used.
 
-.. seealso:: :py:func:`supportedOutputVectorLayerExtensions()`
+.. seealso:: :py:func:`supportedOutputVectorLayerExtensions`
 
-.. seealso:: :py:func:`defaultRasterFileExtension()`
+.. seealso:: :py:func:`defaultRasterFileExtension`
 %End
 
     virtual QString defaultRasterFileExtension() const;
@@ -135,9 +135,9 @@ The default implementation returns the user's default Processing raster output f
 setting, if it's supported by the provider (see supportedOutputRasterLayerExtensions()).
 Otherwise the first reported supported raster format will be used.
 
-.. seealso:: :py:func:`supportedOutputRasterLayerExtensions()`
+.. seealso:: :py:func:`supportedOutputRasterLayerExtensions`
 
-.. seealso:: :py:func:`defaultVectorFileExtension()`
+.. seealso:: :py:func:`defaultVectorFileExtension`
 %End
 
     virtual bool supportsNonFileBasedOutput() const;
@@ -145,7 +145,7 @@ Otherwise the first reported supported raster format will be used.
 Returns true if the provider supports non-file based outputs (such as memory layers
 or direct database outputs).
 
-.. seealso:: :py:func:`supportedOutputVectorLayerExtensions()`
+.. seealso:: :py:func:`supportedOutputVectorLayerExtensions`
 %End
 
     virtual bool load();
@@ -158,14 +158,14 @@ from any overloaded load() method to trigger an initial load of the provider's a
 
 :return: true if provider could be successfully loaded
 
-.. seealso:: :py:func:`unload()`
+.. seealso:: :py:func:`unload`
 %End
 
     virtual void unload();
 %Docstring
 Unloads the provider. Any tear-down steps required by the provider should be implemented here.
 
-.. seealso:: :py:func:`load()`
+.. seealso:: :py:func:`load`
 %End
 
     void refreshAlgorithms();
@@ -177,7 +177,7 @@ Refreshes the algorithms available from the provider, causing it to re-populate 
 %Docstring
 Returns a list of algorithms supplied by this provider.
 
-.. seealso:: :py:func:`algorithm()`
+.. seealso:: :py:func:`algorithm`
 %End
 
     const QgsProcessingAlgorithm *algorithm( const QString &name ) const;
@@ -185,7 +185,7 @@ Returns a list of algorithms supplied by this provider.
 Returns the matching algorithm by ``name``, or a None if no matching
 algorithm is contained by this provider.
 
-.. seealso:: :py:func:`algorithms()`
+.. seealso:: :py:func:`algorithms`
 %End
 
   signals:
@@ -195,7 +195,7 @@ algorithm is contained by this provider.
 Emitted when the provider has loaded (or refreshed) its list of available
 algorithms.
 
-.. seealso:: :py:func:`refreshAlgorithms()`
+.. seealso:: :py:func:`refreshAlgorithms`
 %End
 
   protected:

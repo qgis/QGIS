@@ -39,7 +39,7 @@ Draws the item on to a destination ``painter``.
 Stores map item state in a DOM element, where ``element`` is the DOM element
 corresponding to a 'LayoutMap' tag.
 
-.. seealso:: :py:func:`readXml()`
+.. seealso:: :py:func:`readXml`
 %End
 
     virtual bool readXml( const QDomElement &element, const QDomDocument &doc, const QgsReadWriteContext &context );
@@ -47,21 +47,21 @@ corresponding to a 'LayoutMap' tag.
 Sets the map item state from a DOM document, where ``element`` is the DOM
 node corresponding to a 'LayoutMapGrid' tag.
 
-.. seealso:: :py:func:`writeXml()`
+.. seealso:: :py:func:`writeXml`
 %End
 
     void setMap( QgsLayoutItemMap *map );
 %Docstring
 Sets the corresponding layout ``map`` for the item.
 
-.. seealso:: :py:func:`map()`
+.. seealso:: :py:func:`map`
 %End
 
     const QgsLayoutItemMap *map() const;
 %Docstring
 Returns the layout item map for the item.
 
-.. seealso:: :py:func:`setMap()`
+.. seealso:: :py:func:`setMap`
 %End
 
     QString id() const;
@@ -73,28 +73,28 @@ Returns the unique id for the map item.
 %Docstring
 Sets the friendly display ``name`` for the item.
 
-.. seealso:: :py:func:`name()`
+.. seealso:: :py:func:`name`
 %End
 
     QString name() const;
 %Docstring
 Returns the friendly display name for the item.
 
-.. seealso:: :py:func:`setName()`
+.. seealso:: :py:func:`setName`
 %End
 
     void setEnabled( bool enabled );
 %Docstring
 Controls whether the item will be drawn. Set ``enabled`` to true to enable drawing of the item.
 
-.. seealso:: :py:func:`enabled()`
+.. seealso:: :py:func:`enabled`
 %End
 
     bool enabled() const;
 %Docstring
 Returns whether the item will be drawn.
 
-.. seealso:: :py:func:`setEnabled()`
+.. seealso:: :py:func:`setEnabled`
 %End
 
     virtual bool usesAdvancedEffects() const;
@@ -147,7 +147,7 @@ Returns the number of items in the stack.
 Stores the state of the item stack in a DOM node, where ``element`` is the DOM element corresponding to a 'LayoutMap' tag.
 Returns true if write was successful.
 
-.. seealso:: :py:func:`readXml()`
+.. seealso:: :py:func:`readXml`
 %End
 
     virtual bool readXml( const QDomElement &element, const QDomDocument &doc, const QgsReadWriteContext &context ) = 0;
@@ -155,7 +155,7 @@ Returns true if write was successful.
 Sets the item stack's state from a DOM document, where ``element`` is a DOM node corresponding to a 'LayoutMap' tag.
 Returns true if read was successful.
 
-.. seealso:: :py:func:`writeXml()`
+.. seealso:: :py:func:`writeXml`
 %End
 
     void drawItems( QPainter *painter );
@@ -182,7 +182,7 @@ above any existing map items already present in the stack.
    After adding an item to the stack update()
 should be called for the QgsLayoutItemMap to prevent rendering artifacts.
 
-.. seealso:: :py:func:`removeItem()`
+.. seealso:: :py:func:`removeItem`
 %End
 
     void removeItem( const QString &itemId );
@@ -194,7 +194,7 @@ Removes an item which matching ``itemId`` from the stack and deletes the corresp
    After removing an item from the stack, update()
 should be called for the QgsLayoutItemMap to prevent rendering artifacts.
 
-.. seealso:: :py:func:`addItem()`
+.. seealso:: :py:func:`addItem`
 %End
 
     void moveItemUp( const QString &itemId );
@@ -206,7 +206,7 @@ Moves an item which matching ``itemId`` up the stack, causing it to be rendered 
    After moving an item within the stack, update() should be
 called for the QgsLayoutItemMap to redraw the map with the new item stack order.
 
-.. seealso:: :py:func:`moveItemDown()`
+.. seealso:: :py:func:`moveItemDown`
 %End
 
     void moveItemDown( const QString &itemId );
@@ -218,14 +218,14 @@ Moves an item which matching ``itemId`` up the stack, causing it to be rendered 
    After moving an item within the stack, update() should be
 called for the QgsLayoutItemMap to redraw the map with the new item stack order.
 
-.. seealso:: :py:func:`moveItemUp()`
+.. seealso:: :py:func:`moveItemUp`
 %End
 
     QgsLayoutItemMapItem *item( const QString &itemId ) const;
 %Docstring
 Returns a reference to an item which matching ``itemId`` within the stack.
 
-.. seealso:: :py:func:`constItem()`
+.. seealso:: :py:func:`constItem`
 %End
 
     QgsLayoutItemMapItem *item( int index ) const;

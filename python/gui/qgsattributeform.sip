@@ -76,7 +76,7 @@ Returns the current mode of the form.
 
 .. versionadded:: 2.16
 
-.. seealso:: :py:func:`setMode()`
+.. seealso:: :py:func:`setMode`
 %End
 
     void setMode( Mode mode );
@@ -87,7 +87,7 @@ Sets the current mode of the form.
 
 .. versionadded:: 2.16
 
-.. seealso:: :py:func:`mode()`
+.. seealso:: :py:func:`mode`
 %End
 
     void setEditCommandMessage( const QString &message );

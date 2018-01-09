@@ -53,18 +53,18 @@ A class for marking vertices of features using e.g. circles or 'x'.
 %Docstring
 Sets the stroke ``color`` for the marker.
 
-.. seealso:: :py:func:`color()`
+.. seealso:: :py:func:`color`
 
-.. seealso:: :py:func:`setFillColor()`
+.. seealso:: :py:func:`setFillColor`
 %End
 
     QColor color() const;
 %Docstring
 Returns the stroke color for the marker.
 
-.. seealso:: :py:func:`setColor()`
+.. seealso:: :py:func:`setColor`
 
-.. seealso:: :py:func:`fillColor()`
+.. seealso:: :py:func:`fillColor`
 
 .. versionadded:: 3.0
 %End
@@ -76,9 +76,9 @@ applies to some icon types.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`fillColor()`
+.. seealso:: :py:func:`fillColor`
 
-.. seealso:: :py:func:`setColor()`
+.. seealso:: :py:func:`setColor`
 %End
 
     QColor fillColor() const;
@@ -88,9 +88,9 @@ applies to some icon types.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`setFillColor()`
+.. seealso:: :py:func:`setFillColor`
 
-.. seealso:: :py:func:`color()`
+.. seealso:: :py:func:`color`
 %End
 
     void setPenWidth( int width );

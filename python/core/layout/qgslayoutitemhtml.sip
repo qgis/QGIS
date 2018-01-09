@@ -51,22 +51,22 @@ Returns a new QgsLayoutItemHtml for the specified parent ``layout``.
 %Docstring
 Sets the source ``mode`` for item's HTML content.
 
-.. seealso:: :py:func:`contentMode()`
+.. seealso:: :py:func:`contentMode`
 
-.. seealso:: :py:func:`setUrl()`
+.. seealso:: :py:func:`setUrl`
 
-.. seealso:: :py:func:`setHtml()`
+.. seealso:: :py:func:`setHtml`
 %End
 
     ContentMode contentMode() const;
 %Docstring
 Returns the source mode for item's HTML content.
 
-.. seealso:: :py:func:`setContentMode()`
+.. seealso:: :py:func:`setContentMode`
 
-.. seealso:: :py:func:`url()`
+.. seealso:: :py:func:`url`
 
-.. seealso:: :py:func:`html()`
+.. seealso:: :py:func:`html`
 %End
 
     void setUrl( const QUrl &url );
@@ -75,9 +75,9 @@ Sets the ``url`` for content to display in the item when the item is using
 the QgsLayoutItemHtml.Url mode. Content is automatically fetched and the
 HTML item refreshed after calling this function.
 
-.. seealso:: :py:func:`url()`
+.. seealso:: :py:func:`url`
 
-.. seealso:: :py:func:`contentMode()`
+.. seealso:: :py:func:`contentMode`
 %End
 
     QUrl url() const;
@@ -85,9 +85,9 @@ HTML item refreshed after calling this function.
 Returns the URL of the content displayed in the item if the item is using
 the QgsLayoutItemHtml.Url mode.
 
-.. seealso:: :py:func:`setUrl()`
+.. seealso:: :py:func:`setUrl`
 
-.. seealso:: :py:func:`contentMode()`
+.. seealso:: :py:func:`contentMode`
 %End
 
     void setHtml( const QString &html );
@@ -97,11 +97,11 @@ the QgsLayoutItemHtml.ManualHtml mode. Setting the HTML using this function
 does not automatically refresh the item's contents. Call loadHtml to trigger
 a refresh of the item after setting the HTML content.
 
-.. seealso:: :py:func:`html()`
+.. seealso:: :py:func:`html`
 
-.. seealso:: :py:func:`contentMode()`
+.. seealso:: :py:func:`contentMode`
 
-.. seealso:: :py:func:`loadHtml()`
+.. seealso:: :py:func:`loadHtml`
 %End
 
     QString html() const;
@@ -109,9 +109,9 @@ a refresh of the item after setting the HTML content.
 Returns the HTML source displayed in the item if the item is using
 the QgsLayoutItemHtml.ManualHtml mode.
 
-.. seealso:: :py:func:`setHtml()`
+.. seealso:: :py:func:`setHtml`
 
-.. seealso:: :py:func:`contentMode()`
+.. seealso:: :py:func:`contentMode`
 %End
 
     bool evaluateExpressions() const;
@@ -121,7 +121,7 @@ the HTML content. If set, any content inside [% %] tags will be
 treated as a QGIS expression and evaluated against the current atlas
 feature.
 
-.. seealso:: :py:func:`setEvaluateExpressions()`
+.. seealso:: :py:func:`setEvaluateExpressions`
 %End
 
     void setEvaluateExpressions( bool evaluateExpressions );
@@ -131,7 +131,7 @@ the HTML content. If set, any content inside [% %] tags will be
 treated as a QGIS expression and evaluated against the current atlas
 feature.
 
-.. seealso:: :py:func:`evaluateExpressions()`
+.. seealso:: :py:func:`evaluateExpressions`
 %End
 
     bool useSmartBreaks() const;
@@ -139,7 +139,7 @@ feature.
 Returns whether html item is using smart breaks. Smart breaks prevent
 the html frame contents from breaking mid-way though a line of text.
 
-.. seealso:: :py:func:`setUseSmartBreaks()`
+.. seealso:: :py:func:`setUseSmartBreaks`
 %End
 
     void setUseSmartBreaks( bool useSmartBreaks );
@@ -147,7 +147,7 @@ the html frame contents from breaking mid-way though a line of text.
 Sets whether the html item should use smart breaks. Smart breaks prevent
 the html frame contents from breaking mid-way though a line of text.
 
-.. seealso:: :py:func:`useSmartBreaks()`
+.. seealso:: :py:func:`useSmartBreaks`
 %End
 
     void setMaxBreakDistance( double distance );
@@ -159,9 +159,9 @@ a larger value will result in better choice of page break location, but more
 wasted space at the bottom of frames. This setting is only effective if
 useSmartBreaks is true.
 
-.. seealso:: :py:func:`maxBreakDistance()`
+.. seealso:: :py:func:`maxBreakDistance`
 
-.. seealso:: :py:func:`setUseSmartBreaks()`
+.. seealso:: :py:func:`setUseSmartBreaks`
 %End
 
     double maxBreakDistance() const;
@@ -171,9 +171,9 @@ in the html. This distance is the maximum amount of empty space allowed
 at the bottom of a frame after calculating the optimum break location. This setting
 is only effective if useSmartBreaks is true.
 
-.. seealso:: :py:func:`setMaxBreakDistance()`
+.. seealso:: :py:func:`setMaxBreakDistance`
 
-.. seealso:: :py:func:`useSmartBreaks()`
+.. seealso:: :py:func:`useSmartBreaks`
 %End
 
     void setUserStylesheet( const QString &stylesheet );
@@ -183,11 +183,11 @@ allow for overriding the styles specified within the HTML source. Setting the st
 using this function does not automatically refresh the item's contents. Call loadHtml
 to trigger a refresh of the item after setting the stylesheet rules.
 
-.. seealso:: :py:func:`userStylesheet()`
+.. seealso:: :py:func:`userStylesheet`
 
-.. seealso:: :py:func:`setUserStylesheetEnabled()`
+.. seealso:: :py:func:`setUserStylesheetEnabled`
 
-.. seealso:: :py:func:`loadHtml()`
+.. seealso:: :py:func:`loadHtml`
 %End
 
     QString userStylesheet() const;
@@ -195,27 +195,27 @@ to trigger a refresh of the item after setting the stylesheet rules.
 Returns the user stylesheet CSS rules used while rendering the HTML content. These
 overriding the styles specified within the HTML source.
 
-.. seealso:: :py:func:`setUserStylesheet()`
+.. seealso:: :py:func:`setUserStylesheet`
 
-.. seealso:: :py:func:`userStylesheetEnabled()`
+.. seealso:: :py:func:`userStylesheetEnabled`
 %End
 
     void setUserStylesheetEnabled( const bool enabled );
 %Docstring
 Sets whether user stylesheets are ``enabled`` for the HTML content.
 
-.. seealso:: :py:func:`userStylesheetEnabled()`
+.. seealso:: :py:func:`userStylesheetEnabled`
 
-.. seealso:: :py:func:`setUserStylesheet()`
+.. seealso:: :py:func:`setUserStylesheet`
 %End
 
     bool userStylesheetEnabled() const;
 %Docstring
 Returns whether user stylesheets are enabled for the HTML content.
 
-.. seealso:: :py:func:`setUserStylesheetEnabled()`
+.. seealso:: :py:func:`setUserStylesheetEnabled`
 
-.. seealso:: :py:func:`userStylesheet()`
+.. seealso:: :py:func:`userStylesheet`
 %End
 
     virtual QString displayName() const;

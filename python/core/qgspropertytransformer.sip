@@ -61,7 +61,7 @@ Copy constructor
 %Docstring
 Returns a list of the control points for the transform.
 
-.. seealso:: :py:func:`setControlPoints()`
+.. seealso:: :py:func:`setControlPoints`
 %End
 
     void setControlPoints( const QList< QgsPointXY > &points );
@@ -69,7 +69,7 @@ Returns a list of the control points for the transform.
 Sets the list of control points for the transform. Any existing
 points are removed.
 
-.. seealso:: :py:func:`controlPoints()`
+.. seealso:: :py:func:`controlPoints`
 %End
 
     void addControlPoint( double x, double y );
@@ -77,7 +77,7 @@ points are removed.
 Adds a control point to the transform. Behavior is undefined if duplicate
 x values exist in the control points list.
 
-.. seealso:: :py:func:`removeControlPoint()`
+.. seealso:: :py:func:`removeControlPoint`
 %End
 
     void removeControlPoint( double x, double y );
@@ -85,7 +85,7 @@ x values exist in the control points list.
 Removes a control point from the transform. This will have no effect if a
 matching control point does not exist.
 
-.. seealso:: :py:func:`addControlPoint()`
+.. seealso:: :py:func:`addControlPoint`
 %End
 
     double y( double x ) const;
@@ -107,7 +107,7 @@ Reads the curve's state from an XML element.
 :param elem: source DOM element for transform's state
 :param doc: DOM document
 
-.. seealso:: :py:func:`writeXml()`
+.. seealso:: :py:func:`writeXml`
 %End
 
     bool writeXml( QDomElement &transformElem, QDomDocument &doc ) const;
@@ -117,7 +117,7 @@ Writes the current state of the transform into an XML element
 :param transformElem: destination element for the transform's state
 :param doc: DOM document
 
-.. seealso:: :py:func:`readXml()`
+.. seealso:: :py:func:`readXml`
 %End
 
     QVariant toVariant() const;
@@ -125,7 +125,7 @@ Writes the current state of the transform into an XML element
 Saves this curve transformer to a QVariantMap, wrapped in a QVariant.
 You can use QgsXmlUtils.writeVariant to save it to an XML document.
 
-.. seealso:: :py:func:`loadVariant()`
+.. seealso:: :py:func:`loadVariant`
 %End
 
     bool loadVariant( const QVariant &transformer );
@@ -133,7 +133,7 @@ You can use QgsXmlUtils.writeVariant to save it to an XML document.
 Load this curve transformer from a QVariantMap, wrapped in a QVariant.
 You can use QgsXmlUtils.writeVariant to load it from an XML document.
 
-.. seealso:: :py:func:`toVariant()`
+.. seealso:: :py:func:`toVariant`
 %End
 
 };
@@ -207,7 +207,7 @@ Returns a clone of the transformer.
 Loads this transformer from a QVariantMap, wrapped in a QVariant.
 You can use QgsXmlUtils.readVariant to read it from an XML document.
 
-.. seealso:: :py:func:`toVariant()`
+.. seealso:: :py:func:`toVariant`
 %End
 
     virtual QVariant toVariant() const;
@@ -215,16 +215,16 @@ You can use QgsXmlUtils.readVariant to read it from an XML document.
 Saves this transformer to a QVariantMap, wrapped in a QVariant.
 You can use QgsXmlUtils.writeVariant to save it to an XML document.
 
-.. seealso:: :py:func:`loadVariant()`
+.. seealso:: :py:func:`loadVariant`
 %End
 
     double minValue() const;
 %Docstring
 Returns the minimum value expected by the transformer.
 
-.. seealso:: :py:func:`maxValue()`
+.. seealso:: :py:func:`maxValue`
 
-.. seealso:: :py:func:`setMinValue()`
+.. seealso:: :py:func:`setMinValue`
 %End
 
     void setMinValue( double min );
@@ -233,18 +233,18 @@ Sets the minimum value expected by the transformer.
 
 :param min: minimum value
 
-.. seealso:: :py:func:`setMaxValue()`
+.. seealso:: :py:func:`setMaxValue`
 
-.. seealso:: :py:func:`minValue()`
+.. seealso:: :py:func:`minValue`
 %End
 
     double maxValue() const;
 %Docstring
 Returns the maximum value expected by the transformer.
 
-.. seealso:: :py:func:`minValue()`
+.. seealso:: :py:func:`minValue`
 
-.. seealso:: :py:func:`setMaxValue()`
+.. seealso:: :py:func:`setMaxValue`
 %End
 
     void setMaxValue( double max );
@@ -253,9 +253,9 @@ Sets the maximum value expected by the transformer.
 
 :param max: maximum value
 
-.. seealso:: :py:func:`setMinValue()`
+.. seealso:: :py:func:`setMinValue`
 
-.. seealso:: :py:func:`maxValue()`
+.. seealso:: :py:func:`maxValue`
 %End
 
     QgsCurveTransform *curveTransform() const;
@@ -263,7 +263,7 @@ Sets the maximum value expected by the transformer.
 Returns the curve transform applied to input values before they are transformed
 by the individual transform subclasses.
 
-.. seealso:: :py:func:`setCurveTransform()`
+.. seealso:: :py:func:`setCurveTransform`
 %End
 
     void setCurveTransform( QgsCurveTransform *transform /Transfer/ );
@@ -272,7 +272,7 @@ Sets a curve transform to apply to input values before they are transformed
 by the individual transform subclasses. Ownership of ``transform`` is transferred
 to the property transformer.
 
-.. seealso:: :py:func:`curveTransform()`
+.. seealso:: :py:func:`curveTransform`
 %End
 
     virtual QVariant transform( const QgsExpressionContext &context, const QVariant &value ) const = 0;
@@ -386,9 +386,9 @@ Calculates the size corresponding to a specific ``input`` value.
 %Docstring
 Returns the minimum calculated size.
 
-.. seealso:: :py:func:`setMinSize()`
+.. seealso:: :py:func:`setMinSize`
 
-.. seealso:: :py:func:`maxSize()`
+.. seealso:: :py:func:`maxSize`
 %End
 
     void setMinOutputValue( double size );
@@ -397,16 +397,16 @@ Sets the minimum calculated size.
 
 :param size: minimum size
 
-.. seealso:: :py:func:`minSize()`
+.. seealso:: :py:func:`minSize`
 
-.. seealso:: :py:func:`setMaxSize()`
+.. seealso:: :py:func:`setMaxSize`
 %End
 
     double maxOutputValue() const;
 %Docstring
 Returns the maximum calculated size.
 
-.. seealso:: :py:func:`minSize()`
+.. seealso:: :py:func:`minSize`
 %End
 
     void setMaxOutputValue( double size );
@@ -415,16 +415,16 @@ Sets the maximum calculated size.
 
 :param size: maximum size
 
-.. seealso:: :py:func:`maxSize()`
+.. seealso:: :py:func:`maxSize`
 
-.. seealso:: :py:func:`setMinSize()`
+.. seealso:: :py:func:`setMinSize`
 %End
 
     double nullOutputValue() const;
 %Docstring
 Returns the size value when an expression evaluates to NULL.
 
-.. seealso:: :py:func:`setNullSize()`
+.. seealso:: :py:func:`setNullSize`
 %End
 
     void setNullOutputValue( double size );
@@ -433,16 +433,16 @@ Sets the size value for when an expression evaluates to NULL.
 
 :param size: null size
 
-.. seealso:: :py:func:`nullSize()`
+.. seealso:: :py:func:`nullSize`
 %End
 
     double exponent() const;
 %Docstring
 Returns the exponent for an exponential expression.
 
-.. seealso:: :py:func:`setExponent()`
+.. seealso:: :py:func:`setExponent`
 
-.. seealso:: :py:func:`type()`
+.. seealso:: :py:func:`type`
 %End
 
     void setExponent( double exponent );
@@ -451,7 +451,7 @@ Sets the exponent for an exponential expression.
 
 :param exponent: exponent
 
-.. seealso:: :py:func:`exponent()`
+.. seealso:: :py:func:`exponent`
 %End
 
 };
@@ -539,9 +539,9 @@ Calculates the size corresponding to a specific value.
 %Docstring
 Returns the minimum calculated size.
 
-.. seealso:: :py:func:`setMinSize()`
+.. seealso:: :py:func:`setMinSize`
 
-.. seealso:: :py:func:`maxSize()`
+.. seealso:: :py:func:`maxSize`
 %End
 
     void setMinSize( double size );
@@ -550,16 +550,16 @@ Sets the minimum calculated size.
 
 :param size: minimum size
 
-.. seealso:: :py:func:`minSize()`
+.. seealso:: :py:func:`minSize`
 
-.. seealso:: :py:func:`setMaxSize()`
+.. seealso:: :py:func:`setMaxSize`
 %End
 
     double maxSize() const;
 %Docstring
 Returns the maximum calculated size.
 
-.. seealso:: :py:func:`minSize()`
+.. seealso:: :py:func:`minSize`
 %End
 
     void setMaxSize( double size );
@@ -568,16 +568,16 @@ Sets the maximum calculated size.
 
 :param size: maximum size
 
-.. seealso:: :py:func:`maxSize()`
+.. seealso:: :py:func:`maxSize`
 
-.. seealso:: :py:func:`setMinSize()`
+.. seealso:: :py:func:`setMinSize`
 %End
 
     double nullSize() const;
 %Docstring
 Returns the size value when an expression evaluates to NULL.
 
-.. seealso:: :py:func:`setNullSize()`
+.. seealso:: :py:func:`setNullSize`
 %End
 
     void setNullSize( double size );
@@ -586,16 +586,16 @@ Sets the size value for when an expression evaluates to NULL.
 
 :param size: null size
 
-.. seealso:: :py:func:`nullSize()`
+.. seealso:: :py:func:`nullSize`
 %End
 
     double exponent() const;
 %Docstring
 Returns the exponent for an exponential expression.
 
-.. seealso:: :py:func:`setExponent()`
+.. seealso:: :py:func:`setExponent`
 
-.. seealso:: :py:func:`type()`
+.. seealso:: :py:func:`type`
 %End
 
     void setExponent( double exponent );
@@ -604,7 +604,7 @@ Sets the exponent for an exponential expression.
 
 :param exponent: exponent
 
-.. seealso:: :py:func:`exponent()`
+.. seealso:: :py:func:`exponent`
 %End
 
     ScaleType type() const;
@@ -612,7 +612,7 @@ Sets the exponent for an exponential expression.
 Returns the size transformer's scaling type (the method used to calculate
 the size from a value).
 
-.. seealso:: :py:func:`setType()`
+.. seealso:: :py:func:`setType`
 %End
 
     void setType( ScaleType type );
@@ -622,7 +622,7 @@ the size from a value).
 
 :param type: scale type
 
-.. seealso:: :py:func:`type()`
+.. seealso:: :py:func:`type`
 %End
 
 };
@@ -688,7 +688,7 @@ Returns the color ramp used for calculating property colors.
 
 :return: color ramp
 
-.. seealso:: :py:func:`setColorRamp()`
+.. seealso:: :py:func:`setColorRamp`
 %End
 
     void setColorRamp( QgsColorRamp *ramp /Transfer/ );
@@ -697,14 +697,14 @@ Sets the color ramp to use for calculating property colors.
 
 :param ramp: color ramp, ownership of ramp is transferred to the transformer.
 
-.. seealso:: :py:func:`colorRamp()`
+.. seealso:: :py:func:`colorRamp`
 %End
 
     QColor nullColor() const;
 %Docstring
 Returns the color corresponding to a null value.
 
-.. seealso:: :py:func:`setNullColor()`
+.. seealso:: :py:func:`setNullColor`
 %End
 
     void setNullColor( const QColor &color );
@@ -713,14 +713,14 @@ Sets the color corresponding to a null value.
 
 :param color: null color
 
-.. seealso:: :py:func:`nullSize()`
+.. seealso:: :py:func:`nullSize`
 %End
 
     QString rampName() const;
 %Docstring
 Returns the color ramp's name.
 
-.. seealso:: :py:func:`setRampName()`
+.. seealso:: :py:func:`setRampName`
 %End
 
     void setRampName( const QString &name );
@@ -729,7 +729,7 @@ Sets the color ramp's ``name``. The ramp name must be set to match
 a color ramp available in the style database for conversion to expression
 to work correctly.
 
-.. seealso:: :py:func:`rampName()`
+.. seealso:: :py:func:`rampName`
 %End
 
 };

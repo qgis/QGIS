@@ -66,7 +66,7 @@ Returns the rotation of the resulting map image, in degrees clockwise.
 
 .. versionadded:: 2.8
 
-.. seealso:: :py:func:`setRotation()`
+.. seealso:: :py:func:`setRotation`
 %End
 
     void setRotation( double rotation );
@@ -75,7 +75,7 @@ Sets the ``rotation`` of the resulting map image, in degrees clockwise.
 
 .. versionadded:: 2.8
 
-.. seealso:: :py:func:`rotation()`
+.. seealso:: :py:func:`rotation`
 %End
 
     double outputDpi() const;
@@ -96,7 +96,7 @@ Set the magnification factor.
 
 .. versionadded:: 2.16
 
-.. seealso:: :py:func:`magnificationFactor()`
+.. seealso:: :py:func:`magnificationFactor`
 %End
 
     double magnificationFactor() const;
@@ -105,7 +105,7 @@ Return the magnification factor.
 
 .. versionadded:: 2.16
 
-.. seealso:: :py:func:`setMagnificationFactor()`
+.. seealso:: :py:func:`setMagnificationFactor`
 %End
 
     QStringList layerIds() const;
@@ -148,7 +148,7 @@ Get custom rendering flags. Layers might honour these to alter their rendering.
 
 .. versionadded:: 2.16
 
-.. seealso:: :py:func:`setCustomRenderFlags()`
+.. seealso:: :py:func:`setCustomRenderFlags`
 %End
 
     void setCustomRenderFlags( const QString &customRenderFlags );
@@ -159,7 +159,7 @@ Sets the custom rendering flags. Layers might honour these to alter their render
 
 .. versionadded:: 2.16
 
-.. seealso:: :py:func:`customRenderFlags()`
+.. seealso:: :py:func:`customRenderFlags`
 %End
 
     void setDestinationCrs( const QgsCoordinateReferenceSystem &crs );
@@ -186,7 +186,7 @@ Calculations will only use the ellipsoid if a valid ellipsoid has been set.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`ellipsoid()`
+.. seealso:: :py:func:`ellipsoid`
 %End
 
     QString ellipsoid() const;
@@ -196,7 +196,7 @@ ellipsoid if a valid ellipsoid has been set.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`setEllipsoid()`
+.. seealso:: :py:func:`setEllipsoid`
 %End
 
     void setBackgroundColor( const QColor &color );
@@ -292,7 +292,7 @@ The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 Sets the expression context. This context is used for all expression evaluation
 associated with this map settings.
 
-.. seealso:: :py:func:`expressionContext()`
+.. seealso:: :py:func:`expressionContext`
 
 .. versionadded:: 2.12
 %End
@@ -302,7 +302,7 @@ associated with this map settings.
 Gets the expression context. This context should be used for all expression evaluation
 associated with this map settings.
 
-.. seealso:: :py:func:`setExpressionContext()`
+.. seealso:: :py:func:`setExpressionContext`
 
 .. versionadded:: 2.12
 %End
@@ -315,7 +315,7 @@ from a source to destination coordinate reference system.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`setTransformContext()`
+.. seealso:: :py:func:`setTransformContext`
 %End
 
     void setTransformContext( const QgsCoordinateTransformContext &context );
@@ -326,7 +326,7 @@ from a source to destination coordinate reference system.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`transformContext()`
+.. seealso:: :py:func:`transformContext`
 %End
 
     const QgsMapToPixel &mapToPixel() const;
@@ -370,7 +370,7 @@ Computes an *estimated* conversion factor between layer and map units: layerUnit
 %Docstring
  transform rectangle from layer's CRS to output CRS
 
-.. seealso:: :py:func:`layerExtentToOutputExtent()`
+.. seealso:: :py:func:`layerExtentToOutputExtent`
 
 :return: the transformed rectangle
 %End
@@ -386,7 +386,7 @@ Computes an *estimated* conversion factor between layer and map units: layerUnit
 %Docstring
  transform rectangle from output CRS to layer's CRS
 
-.. seealso:: :py:func:`outputExtentToLayerExtent()`
+.. seealso:: :py:func:`outputExtentToLayerExtent`
 
 :return: the transformed rectangle
 %End

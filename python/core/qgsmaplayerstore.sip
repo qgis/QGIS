@@ -54,9 +54,9 @@ Retrieve a pointer to a layer by layer ``id``.
 
 :return: matching layer, or None if no matching layer found
 
-.. seealso:: :py:func:`mapLayersByName()`
+.. seealso:: :py:func:`mapLayersByName`
 
-.. seealso:: :py:func:`mapLayers()`
+.. seealso:: :py:func:`mapLayers`
 %End
 
     QList<QgsMapLayer *> mapLayersByName( const QString &name ) const;
@@ -67,27 +67,26 @@ Retrieve a list of matching layers by layer ``name``.
 
 :return: list of matching layers
 
-.. seealso:: :py:func:`mapLayer()`
+.. seealso:: :py:func:`mapLayer`
 
-.. seealso:: :py:func:`mapLayers()`
+.. seealso:: :py:func:`mapLayers`
 %End
 
     QMap<QString, QgsMapLayer *> mapLayers() const;
 %Docstring
 Returns a map of all layers by layer ID.
 
-.. seealso:: :py:func:`mapLayer()`
+.. seealso:: :py:func:`mapLayer`
 
-.. seealso:: :py:func:`mapLayersByName()`
+.. seealso:: :py:func:`mapLayersByName`
 
-.. seealso:: :py:func:`layers()`
+.. seealso:: :py:func:`layers`
 %End
 
 
     QList<QgsMapLayer *> addMapLayers( const QList<QgsMapLayer *> &layers /Transfer/);
 
 %Docstring
-\brief
 Add a list of ``layers`` to the store. Ownership of the layers is transferred
 to the store.
 
@@ -103,13 +102,12 @@ successfully. If a layer is invalid, or already exists in the store,
 it will not be part of the returned list.
 
 
-.. seealso:: :py:func:`addMapLayer()`
+.. seealso:: :py:func:`addMapLayer`
 %End
 
     QgsMapLayer *addMapLayer( QgsMapLayer *layer /Transfer/);
 
 %Docstring
-\brief
 Add a ``layer`` to the store. Ownership of the layer is transferred to the
 store.
 
@@ -132,12 +130,11 @@ the layers yourself. Not available in Python.
 
    Use addMapLayers() if adding more than one layer at a time.
 
-.. seealso:: :py:func:`addMapLayers()`
+.. seealso:: :py:func:`addMapLayers`
 %End
 
     void removeMapLayers( const QStringList &layerIds ) /PyName=removeMapLayersById/;
 %Docstring
-\brief
 Remove a set of layers from the store by layer ID.
 
 The specified layers will be removed from the store.
@@ -145,11 +142,11 @@ These layers will also be deleted.
 
 :param layerIds: list of IDs of the layers to remove
 
-.. seealso:: :py:func:`takeMapLayer()`
+.. seealso:: :py:func:`takeMapLayer`
 
-.. seealso:: :py:func:`removeMapLayer()`
+.. seealso:: :py:func:`removeMapLayer`
 
-.. seealso:: :py:func:`removeAllMapLayers()`
+.. seealso:: :py:func:`removeAllMapLayers`
 
 .. note::
 
@@ -158,7 +155,6 @@ These layers will also be deleted.
 
     void removeMapLayers( const QList<QgsMapLayer *> &layers );
 %Docstring
-\brief
 Remove a set of ``layers`` from the store.
 
 The specified layers will be removed from the store.
@@ -166,43 +162,41 @@ These layers will also be deleted.
 
 :param layers: A list of layers to remove. Null pointers are ignored.
 
-.. seealso:: :py:func:`takeMapLayer()`
+.. seealso:: :py:func:`takeMapLayer`
 
-.. seealso:: :py:func:`removeMapLayer()`
+.. seealso:: :py:func:`removeMapLayer`
 
-.. seealso:: :py:func:`removeAllMapLayers()`
+.. seealso:: :py:func:`removeAllMapLayers`
 %End
 
     void removeMapLayer( const QString &id );
 %Docstring
-\brief
 Remove a layer from the store by layer ``id``.
 
 The specified layer will be removed from the store. The layer will also be deleted.
 
 :param id: ID of the layer to remove
 
-.. seealso:: :py:func:`takeMapLayer()`
+.. seealso:: :py:func:`takeMapLayer`
 
-.. seealso:: :py:func:`removeMapLayers()`
+.. seealso:: :py:func:`removeMapLayers`
 
-.. seealso:: :py:func:`removeAllMapLayers()`
+.. seealso:: :py:func:`removeAllMapLayers`
 %End
 
     void removeMapLayer( QgsMapLayer *layer );
 %Docstring
-\brief
 Remove a ``layer`` from the store.
 
 The specified layer will be removed from the store. The layer will also be deleted.
 
 :param layer: The layer to remove. Null pointers are ignored.
 
-.. seealso:: :py:func:`takeMapLayer()`
+.. seealso:: :py:func:`takeMapLayer`
 
-.. seealso:: :py:func:`removeMapLayers()`
+.. seealso:: :py:func:`removeMapLayers`
 
-.. seealso:: :py:func:`removeAllMapLayers()`
+.. seealso:: :py:func:`removeAllMapLayers`
 %End
 
     QgsMapLayer *takeMapLayer( QgsMapLayer *layer ) /TransferBack/;
@@ -211,7 +205,7 @@ Takes a ``layer`` from the store. If the layer was owned by the store, the
 layer will be returned without deleting it. The caller takes ownership of
 the layer and is responsible for deleting it.
 
-.. seealso:: :py:func:`removeMapLayer()`
+.. seealso:: :py:func:`removeMapLayer`
 %End
 
     void removeAllMapLayers();
@@ -223,9 +217,9 @@ Removes all registered layers. These layers will also be deleted.
    Calling this method will cause the removeAll() signal to
 be emitted.
 
-.. seealso:: :py:func:`removeMapLayer()`
+.. seealso:: :py:func:`removeMapLayer`
 
-.. seealso:: :py:func:`removeMapLayers()`
+.. seealso:: :py:func:`removeMapLayers`
 %End
 
     void transferLayersFromStore( QgsMapLayerStore *other );
@@ -243,9 +237,9 @@ Emitted when one or more layers are about to be removed from the store.
 
 :param layerIds: A list of IDs for the layers which are to be removed.
 
-.. seealso:: :py:func:`layerWillBeRemoved()`
+.. seealso:: :py:func:`layerWillBeRemoved`
 
-.. seealso:: :py:func:`layersRemoved()`
+.. seealso:: :py:func:`layersRemoved`
 %End
 
     void layersWillBeRemoved( const QList<QgsMapLayer *> &layers );
@@ -254,9 +248,9 @@ Emitted when one or more layers are about to be removed from the store.
 
 :param layers: A list of layers which are to be removed.
 
-.. seealso:: :py:func:`layerWillBeRemoved()`
+.. seealso:: :py:func:`layerWillBeRemoved`
 
-.. seealso:: :py:func:`layersRemoved()`
+.. seealso:: :py:func:`layersRemoved`
 %End
 
     void layerWillBeRemoved( const QString &layerId );
@@ -269,9 +263,9 @@ Emitted when a layer is about to be removed from the store.
 
    Consider using layersWillBeRemoved() instead.
 
-.. seealso:: :py:func:`layersWillBeRemoved()`
+.. seealso:: :py:func:`layersWillBeRemoved`
 
-.. seealso:: :py:func:`layerRemoved()`
+.. seealso:: :py:func:`layerRemoved`
 %End
 
     void layerWillBeRemoved( QgsMapLayer *layer );
@@ -284,9 +278,9 @@ Emitted when a layer is about to be removed from the store.
 
    Consider using layersWillBeRemoved() instead.
 
-.. seealso:: :py:func:`layersWillBeRemoved()`
+.. seealso:: :py:func:`layersWillBeRemoved`
 
-.. seealso:: :py:func:`layerRemoved()`
+.. seealso:: :py:func:`layerRemoved`
 %End
 
     void layersRemoved( const QStringList &layerIds );
@@ -295,7 +289,7 @@ Emitted after one or more layers were removed from the store.
 
 :param layerIds:  A list of IDs of the layers which were removed.
 
-.. seealso:: :py:func:`layersWillBeRemoved()`
+.. seealso:: :py:func:`layersWillBeRemoved`
 %End
 
     void layerRemoved( const QString &layerId );
@@ -308,7 +302,7 @@ Emitted after a layer was removed from the store.
 
    Consider using layersRemoved() instead
 
-.. seealso:: :py:func:`layerWillBeRemoved()`
+.. seealso:: :py:func:`layerWillBeRemoved`
 %End
 
     void allLayersRemoved();
@@ -325,9 +319,9 @@ Emitted when one or more layers were added to the store.
 
 :param layers: List of layers which have been added.
 
-.. seealso:: :py:func:`legendLayersAdded()`
+.. seealso:: :py:func:`legendLayersAdded`
 
-.. seealso:: :py:func:`layerWasAdded()`
+.. seealso:: :py:func:`layerWasAdded`
 %End
 
     void layerWasAdded( QgsMapLayer *layer );
@@ -338,7 +332,7 @@ Emitted when a ``layer`` was added to the store.
 
    Consider using layersAdded() instead
 
-.. seealso:: :py:func:`layersAdded()`
+.. seealso:: :py:func:`layersAdded`
 %End
 
 };

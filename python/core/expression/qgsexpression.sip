@@ -135,7 +135,7 @@ Get list of columns referenced by the expression.
 all attributes from the layer are required for evaluation of the expression.
 QgsFeatureRequest.setSubsetOfAttributes automatically handles this case.
 
-.. seealso:: :py:func:`referencedAttributeIndexes()`
+.. seealso:: :py:func:`referencedAttributeIndexes`
 %End
 
     QSet<QString> referencedVariables() const;
@@ -244,11 +244,11 @@ expression() instead.
 Return calculator used for distance and area calculations
 (used by $length, $area and $perimeter functions only)
 
-.. seealso:: :py:func:`setGeomCalculator()`
+.. seealso:: :py:func:`setGeomCalculator`
 
-.. seealso:: :py:func:`distanceUnits()`
+.. seealso:: :py:func:`distanceUnits`
 
-.. seealso:: :py:func:`areaUnits()`
+.. seealso:: :py:func:`areaUnits`
 %End
 
     void setGeomCalculator( const QgsDistanceArea *calc );
@@ -261,7 +261,7 @@ Cartesian methods (ie no ellipsoidal calculations).
 :param calc: geometry calculator. Ownership is not transferred. Set to a None to force
 Cartesian calculations.
 
-.. seealso:: :py:func:`geomCalculator()`
+.. seealso:: :py:func:`geomCalculator`
 %End
 
     QgsUnitTypes::DistanceUnit distanceUnits() const;
@@ -274,9 +274,9 @@ Returns the desired distance units for calculations involving geomCalculator(), 
 
 .. versionadded:: 2.14
 
-.. seealso:: :py:func:`setDistanceUnits()`
+.. seealso:: :py:func:`setDistanceUnits`
 
-.. seealso:: :py:func:`areaUnits()`
+.. seealso:: :py:func:`areaUnits`
 %End
 
     void setDistanceUnits( QgsUnitTypes::DistanceUnit unit );
@@ -289,9 +289,9 @@ Sets the desired distance units for calculations involving geomCalculator(), e.g
 
 .. versionadded:: 2.14
 
-.. seealso:: :py:func:`distanceUnits()`
+.. seealso:: :py:func:`distanceUnits`
 
-.. seealso:: :py:func:`setAreaUnits()`
+.. seealso:: :py:func:`setAreaUnits`
 %End
 
     QgsUnitTypes::AreaUnit areaUnits() const;
@@ -304,9 +304,9 @@ Returns the desired areal units for calculations involving geomCalculator(), e.g
 
 .. versionadded:: 2.14
 
-.. seealso:: :py:func:`setAreaUnits()`
+.. seealso:: :py:func:`setAreaUnits`
 
-.. seealso:: :py:func:`distanceUnits()`
+.. seealso:: :py:func:`distanceUnits`
 %End
 
     void setAreaUnits( QgsUnitTypes::AreaUnit unit );
@@ -319,9 +319,9 @@ Sets the desired areal units for calculations involving geomCalculator(), e.g., 
 
 .. versionadded:: 2.14
 
-.. seealso:: :py:func:`areaUnits()`
+.. seealso:: :py:func:`areaUnits`
 
-.. seealso:: :py:func:`setDistanceUnits()`
+.. seealso:: :py:func:`setDistanceUnits`
 %End
 
     static QString replaceExpressionText( const QString &action, const QgsExpressionContext *context,
@@ -425,18 +425,18 @@ Returns the number of functions defined in the parser
 %Docstring
 Returns a quoted column reference (in double quotes)
 
-.. seealso:: :py:func:`quotedString()`
+.. seealso:: :py:func:`quotedString`
 
-.. seealso:: :py:func:`quotedValue()`
+.. seealso:: :py:func:`quotedValue`
 %End
 
     static QString quotedString( QString text );
 %Docstring
 Returns a quoted version of a string (in single quotes)
 
-.. seealso:: :py:func:`quotedValue()`
+.. seealso:: :py:func:`quotedValue`
 
-.. seealso:: :py:func:`quotedColumnRef()`
+.. seealso:: :py:func:`quotedColumnRef`
 %End
 
     static QString quotedValue( const QVariant &value );
@@ -448,9 +448,9 @@ quotations where required.
 
 .. versionadded:: 2.14
 
-.. seealso:: :py:func:`quotedString()`
+.. seealso:: :py:func:`quotedString`
 
-.. seealso:: :py:func:`quotedColumnRef()`
+.. seealso:: :py:func:`quotedColumnRef`
 %End
 
     static QString quotedValue( const QVariant &value, QVariant::Type type );
@@ -463,9 +463,9 @@ quotations where required.
 
 .. versionadded:: 2.14
 
-.. seealso:: :py:func:`quotedString()`
+.. seealso:: :py:func:`quotedString`
 
-.. seealso:: :py:func:`quotedColumnRef()`
+.. seealso:: :py:func:`quotedColumnRef`
 %End
 
 
@@ -475,9 +475,9 @@ Returns the help text for a specified function.
 
 :param name: function name
 
-.. seealso:: :py:func:`variableHelpText()`
+.. seealso:: :py:func:`variableHelpText`
 
-.. seealso:: :py:func:`formatVariableHelp()`
+.. seealso:: :py:func:`formatVariableHelp`
 %End
 
     static QString variableHelpText( const QString &variableName );
@@ -488,7 +488,7 @@ Returns the help text for a specified variable.
 :param showValue: set to true to include current value of variable in help text
 :param value: current value of variable to show in help text
 
-.. seealso:: :py:func:`helpText()`
+.. seealso:: :py:func:`helpText`
 
 .. versionadded:: 2.12
 %End
@@ -501,9 +501,9 @@ Returns formatted help text for a variable.
 :param showValue: set to true to include current value of variable in help text
 :param value: current value of variable to show in help text
 
-.. seealso:: :py:func:`helpText()`
+.. seealso:: :py:func:`helpText`
 
-.. seealso:: :py:func:`variableHelpText()`
+.. seealso:: :py:func:`variableHelpText`
 
 .. versionadded:: 3.0
 %End

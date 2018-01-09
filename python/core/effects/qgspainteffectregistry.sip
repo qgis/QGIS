@@ -156,7 +156,7 @@ but are included so that they can be easily drawn just by enabling the effect.
 
 :return: default effects stack
 
-.. seealso:: :py:func:`isDefaultStack()`
+.. seealso:: :py:func:`isDefaultStack`
 %End
 
     static bool isDefaultStack( QgsPaintEffect *effect );
@@ -169,7 +169,7 @@ Tests whether a paint effect matches the default effects stack.
 
 .. versionadded:: 2.12
 
-.. seealso:: :py:func:`defaultStack()`
+.. seealso:: :py:func:`defaultStack`
 %End
 
   private:

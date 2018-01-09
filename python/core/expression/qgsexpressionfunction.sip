@@ -226,7 +226,7 @@ Returns a list of the groups the function belongs to.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`group()`
+.. seealso:: :py:func:`group`
 %End
 
     const QString helpText() const;

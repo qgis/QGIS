@@ -61,14 +61,14 @@ reflect the updated mode. For example, showing multi edit tool buttons if the mo
 
 :param mode: widget mode
 
-.. seealso:: :py:func:`mode()`
+.. seealso:: :py:func:`mode`
 %End
 
     Mode mode() const;
 %Docstring
 Returns the current mode for the widget.
 
-.. seealso:: :py:func:`setMode()`
+.. seealso:: :py:func:`setMode`
 %End
 
     QgsVectorLayer *layer();

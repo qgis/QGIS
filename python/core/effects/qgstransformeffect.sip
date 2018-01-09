@@ -211,14 +211,14 @@ Returns the y axis scaling factor.
 %Docstring
 Sets the transform ``rotation``, in degrees clockwise.
 
-.. seealso:: :py:func:`rotation()`
+.. seealso:: :py:func:`rotation`
 %End
 
     double rotation() const;
 %Docstring
 Returns the transform rotation, in degrees clockwise.
 
-.. seealso:: :py:func:`setRotation()`
+.. seealso:: :py:func:`setRotation`
 %End
 
     void setShearX( const double shearX );

@@ -65,7 +65,7 @@ Unique output type name.
 Returns the name of the output. This is the internal identifier by which
 algorithms access this output.
 
-.. seealso:: :py:func:`setName()`
+.. seealso:: :py:func:`setName`
 %End
 
     void setName( const QString &name );
@@ -73,7 +73,7 @@ algorithms access this output.
 Sets the ``name`` of the output. This is the internal identifier by which
 algorithms access this output.
 
-.. seealso:: :py:func:`name()`
+.. seealso:: :py:func:`name`
 %End
 
     QString description() const;
@@ -81,7 +81,7 @@ algorithms access this output.
 Returns the description for the output. This is the user-visible string
 used to identify this output.
 
-.. seealso:: :py:func:`setDescription()`
+.. seealso:: :py:func:`setDescription`
 %End
 
     void setDescription( const QString &description );
@@ -89,7 +89,7 @@ used to identify this output.
 Sets the ``description`` for the output. This is the user-visible string
 used to identify this output.
 
-.. seealso:: :py:func:`description()`
+.. seealso:: :py:func:`description`
 %End
 
   protected:
@@ -159,14 +159,14 @@ Returns the type name for the output class.
 %Docstring
 Returns the layer type for the output layer.
 
-.. seealso:: :py:func:`setDataType()`
+.. seealso:: :py:func:`setDataType`
 %End
 
     void setDataType( QgsProcessing::SourceType type );
 %Docstring
 Sets the layer ``type`` for the output layer.
 
-.. seealso:: :py:func:`dataType()`
+.. seealso:: :py:func:`dataType`
 %End
 
 };

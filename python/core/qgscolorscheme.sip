@@ -257,7 +257,7 @@ Adds a color to the list of recent colors.
 
 .. versionadded:: 2.14
 
-.. seealso:: :py:func:`lastUsedColor()`
+.. seealso:: :py:func:`lastUsedColor`
 %End
 
     static QColor lastUsedColor();
@@ -266,7 +266,7 @@ Returns the most recently used color.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`addRecentColor()`
+.. seealso:: :py:func:`addRecentColor`
 %End
 };
 

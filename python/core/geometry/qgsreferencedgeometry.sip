@@ -38,7 +38,7 @@ Constructor for QgsReferencedGeometryBase, with the specified ``crs``.
 Returns the associated coordinate reference system, or an invalid CRS if
 no reference system is set.
 
-.. seealso:: :py:func:`setCrs()`
+.. seealso:: :py:func:`setCrs`
 %End
 
     void setCrs( const QgsCoordinateReferenceSystem &crs );
@@ -46,7 +46,7 @@ no reference system is set.
 Sets the associated ``crs``. Set to an invalid CRS if
 no reference system is required.
 
-.. seealso:: :py:func:`crs()`
+.. seealso:: :py:func:`crs`
 %End
 
 };

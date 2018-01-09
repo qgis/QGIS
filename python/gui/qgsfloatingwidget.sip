@@ -51,7 +51,7 @@ anchor widget moves or is resized so that it maintains the same relative positio
 
 :param widget: anchor widget. Both the floating widget and the anchor widget must share some common parent.
 
-.. seealso:: :py:func:`anchorWidget()`
+.. seealso:: :py:func:`anchorWidget`
 %End
 
     QWidget *anchorWidget();
@@ -59,7 +59,7 @@ anchor widget moves or is resized so that it maintains the same relative positio
 Returns the widget that the floating widget is "anchored" tto. The floating widget will be repositioned whenever the
 anchor widget moves or is resized so that it maintains the same relative position to the anchor widget.
 
-.. seealso:: :py:func:`setAnchorWidget()`
+.. seealso:: :py:func:`setAnchorWidget`
 %End
 
     AnchorPoint anchorPoint() const;
@@ -67,7 +67,7 @@ anchor widget moves or is resized so that it maintains the same relative positio
 Returns the floating widget's anchor point, which corresponds to the point on the widget which should remain
 fixed in the same relative position whenever the widget's parent is resized or moved.
 
-.. seealso:: :py:func:`setAnchorPoint()`
+.. seealso:: :py:func:`setAnchorPoint`
 %End
 
     void setAnchorPoint( AnchorPoint point );
@@ -77,7 +77,7 @@ fixed in the same relative position whenever the widget's parent is resized or m
 
 :param point: anchor point
 
-.. seealso:: :py:func:`anchorPoint()`
+.. seealso:: :py:func:`anchorPoint`
 %End
 
     AnchorPoint anchorWidgetPoint() const;
@@ -86,7 +86,7 @@ Returns the anchor widget's anchor point, which corresponds to the point on the 
 the floating widget should "attach" to. The floating widget should remain fixed in the same relative position
 to this anchor widget whenever the widget's parent is resized or moved.
 
-.. seealso:: :py:func:`setAnchorWidgetPoint()`
+.. seealso:: :py:func:`setAnchorWidgetPoint`
 %End
 
     void setAnchorWidgetPoint( AnchorPoint point );
@@ -95,7 +95,7 @@ Returns the anchor widget's anchor point, which corresponds to the point on the 
 the floating widget should "attach" to. The floating widget should remain fixed in the same relative position
 to this anchor widget whenever the widget's parent is resized or moved.
 
-.. seealso:: :py:func:`setAnchorWidgetPoint()`
+.. seealso:: :py:func:`setAnchorWidgetPoint`
 %End
 
   signals:

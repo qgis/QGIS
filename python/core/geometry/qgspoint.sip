@@ -94,36 +94,36 @@ Construct a QgsPoint from a QPointF
 %Docstring
 Returns the point's x-coordinate.
 
-.. seealso:: :py:func:`setX()`
+.. seealso:: :py:func:`setX`
 
-.. seealso:: :py:func:`rx()`
+.. seealso:: :py:func:`rx`
 %End
 
     double y() const;
 %Docstring
 Returns the point's y-coordinate.
 
-.. seealso:: :py:func:`setY()`
+.. seealso:: :py:func:`setY`
 
-.. seealso:: :py:func:`ry()`
+.. seealso:: :py:func:`ry`
 %End
 
     double z() const;
 %Docstring
 Returns the point's z-coordinate.
 
-.. seealso:: :py:func:`setZ()`
+.. seealso:: :py:func:`setZ`
 
-.. seealso:: :py:func:`rz()`
+.. seealso:: :py:func:`rz`
 %End
 
     double m() const;
 %Docstring
 Returns the point's m value.
 
-.. seealso:: :py:func:`setM()`
+.. seealso:: :py:func:`setM`
 
-.. seealso:: :py:func:`rm()`
+.. seealso:: :py:func:`rm`
 %End
 
 
@@ -134,18 +134,18 @@ Returns the point's m value.
 %Docstring
 Sets the point's x-coordinate.
 
-.. seealso:: x()
+.. seealso:: x
 
-.. seealso:: :py:func:`rx()`
+.. seealso:: :py:func:`rx`
 %End
 
     void setY( double y );
 %Docstring
 Sets the point's y-coordinate.
 
-.. seealso:: y()
+.. seealso:: y
 
-.. seealso:: :py:func:`ry()`
+.. seealso:: :py:func:`ry`
 %End
 
     void setZ( double z );
@@ -157,9 +157,9 @@ Sets the point's z-coordinate.
    calling this will have no effect if the point does not contain a z-dimension. Use addZValue() to
 add a z value and force the point to have a z dimension.
 
-.. seealso:: z()
+.. seealso:: z
 
-.. seealso:: :py:func:`rz()`
+.. seealso:: :py:func:`rz`
 %End
 
     void setM( double m );
@@ -171,9 +171,9 @@ Sets the point's m-value.
    calling this will have no effect if the point does not contain a m-dimension. Use addMValue() to
 add a m value and force the point to have an m dimension.
 
-.. seealso:: m()
+.. seealso:: m
 
-.. seealso:: :py:func:`rm()`
+.. seealso:: :py:func:`rm`
 %End
 
     QPointF toQPointF() const;
@@ -191,7 +191,7 @@ when comparing distances.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`distanceSquared()`
+.. seealso:: :py:func:`distanceSquared`
 %End
 
     double distance( const QgsPoint &other ) const;
@@ -209,7 +209,7 @@ Returns the squared distance between this point a specified x, y coordinate. Cal
 this is faster than calling distance(), and may be useful in use cases such as comparing
 distances where the extra expense of calling distance() is not required.
 
-.. seealso:: :py:func:`distance()`
+.. seealso:: :py:func:`distance`
 
 .. versionadded:: 3.0
 %End
@@ -220,7 +220,7 @@ Returns the squared distance between this point another point. Calling
 this is faster than calling distance(), and may be useful in use cases such as comparing
 distances where the extra expense of calling distance() is not required.
 
-.. seealso:: :py:func:`distance()`
+.. seealso:: :py:func:`distance`
 
 .. versionadded:: 3.0
 %End
@@ -233,7 +233,7 @@ when comparing distances.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`distanceSquared()`
+.. seealso:: :py:func:`distanceSquared`
 %End
 
     double distance3D( const QgsPoint &other ) const;
@@ -251,7 +251,7 @@ Returns the 3D squared distance between this point a specified x, y, z coordinat
 this is faster than calling distance(), and may be useful in use cases such as comparing
 distances where the extra expense of calling distance() is not required.
 
-.. seealso:: :py:func:`distance()`
+.. seealso:: :py:func:`distance`
 
 .. versionadded:: 3.0
 %End
@@ -262,7 +262,7 @@ Returns the 3D squared distance between this point another point. Calling
 this is faster than calling distance(), and may be useful in use cases such as comparing
 distances where the extra expense of calling distance() is not required.
 
-.. seealso:: :py:func:`distance()`
+.. seealso:: :py:func:`distance`
 
 .. versionadded:: 3.0
 %End

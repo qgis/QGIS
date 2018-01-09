@@ -96,7 +96,7 @@ Returns the "test connection" button.
 %Docstring
 Returns the QSettings key for WFS related settings for the connection.
 
-.. seealso:: :py:func:`wmsSettingsKey()`
+.. seealso:: :py:func:`wmsSettingsKey`
 
 .. versionadded:: 3.0
 %End
@@ -105,7 +105,7 @@ Returns the QSettings key for WFS related settings for the connection.
 %Docstring
 Returns the QSettings key for WMS related settings for the connection.
 
-.. seealso:: :py:func:`wfsSettingsKey()`
+.. seealso:: :py:func:`wfsSettingsKey`
 
 .. versionadded:: 3.0
 %End

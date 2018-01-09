@@ -239,8 +239,7 @@ Constructor.
 
 The project filename is used to build a database path at the same
 location, but with a different extension. Then, it's the same logic as
-
-.. seealso:: :py:class:`QgsAuxiliaryStorage`
+described for :py:class:`QgsAuxiliaryStorage`(const QString &, bool copy).
 
 :param project: The project for which the auxiliary storage has to be used
 :param copy: Parameter indicating if a copy of the database has to be used

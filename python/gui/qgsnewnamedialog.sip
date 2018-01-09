@@ -47,7 +47,7 @@ input box).
 
 :param hintString: hint text
 
-.. seealso:: :py:func:`hintString()`
+.. seealso:: :py:func:`hintString`
 
 .. versionadded:: 2.12
 %End
@@ -57,7 +57,7 @@ input box).
 Returns the hint string for the dialog (the text shown above the name
 input box).
 
-.. seealso:: :py:func:`setHintString()`
+.. seealso:: :py:func:`setHintString`
 
 .. versionadded:: 2.12
 %End
@@ -70,7 +70,7 @@ then the dialog will not accept names which already exist.
 
 .. versionadded:: 2.12
 
-.. seealso:: :py:func:`overwriteEnabled()`
+.. seealso:: :py:func:`overwriteEnabled`
 %End
 
     bool overwriteEnabled() const;
@@ -79,7 +79,7 @@ Returns whether users are permitted to overwrite existing names.
 
 .. versionadded:: 2.12
 
-.. seealso:: :py:func:`setOverwriteEnabled()`
+.. seealso:: :py:func:`setOverwriteEnabled`
 %End
 
     void setConflictingNameWarning( const QString &string );
@@ -90,7 +90,7 @@ Sets the string used for warning users if a conflicting name exists.
 
 .. versionadded:: 2.12
 
-.. seealso:: :py:func:`conflictingNameWarning()`
+.. seealso:: :py:func:`conflictingNameWarning`
 %End
 
     QString conflictingNameWarning() const;
@@ -99,7 +99,7 @@ Returns the string used for warning users if a conflicting name exists.
 
 .. versionadded:: 2.12
 
-.. seealso:: :py:func:`setConflictingNameWarning()`
+.. seealso:: :py:func:`setConflictingNameWarning`
 %End
 
     QString name() const;

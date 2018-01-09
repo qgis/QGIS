@@ -85,7 +85,7 @@ required for transformations for that source or destination.
 to use for a coordinate transform. Instead, always use calculateDatumTransforms()
 to determine this.
 
-.. seealso:: :py:func:`addSourceDestinationDatumTransform()`
+.. seealso:: :py:func:`addSourceDestinationDatumTransform`
 %End
 
     bool addSourceDestinationDatumTransform( const QgsCoordinateReferenceSystem &sourceCrs,
@@ -106,9 +106,9 @@ Returns true if the new transform pair was added successfully.
    Transforms set using this method will override any specific source or destination
 transforms set by addSourceDatumTransform() or addDestinationDatumTransform().
 
-.. seealso:: :py:func:`sourceDestinationDatumTransforms()`
+.. seealso:: :py:func:`sourceDestinationDatumTransforms`
 
-.. seealso:: :py:func:`removeSourceDestinationDatumTransform()`
+.. seealso:: :py:func:`removeSourceDestinationDatumTransform`
 %End
 
     void removeSourceDestinationDatumTransform( const QgsCoordinateReferenceSystem &sourceCrs,
@@ -117,7 +117,7 @@ transforms set by addSourceDatumTransform() or addDestinationDatumTransform().
 Removes the source to destination datum transform pair for the specified ``sourceCrs`` and
 ``destinationCrs``.
 
-.. seealso:: :py:func:`addSourceDestinationDatumTransform()`
+.. seealso:: :py:func:`addSourceDestinationDatumTransform`
 %End
 
     bool hasTransform( const QgsCoordinateReferenceSystem &source,
@@ -152,14 +152,14 @@ Reads the context's state from a DOM ``element``.
 Returns false if transforms stored in the XML are not available. In this case ``missingTransforms`` will be
 filled with missing datum transform strings.
 
-.. seealso:: :py:func:`writeXml()`
+.. seealso:: :py:func:`writeXml`
 %End
 
     void writeXml( QDomElement &element, const QgsReadWriteContext &context ) const;
 %Docstring
 Writes the context's state to a DOM ``element``.
 
-.. seealso:: :py:func:`readXml()`
+.. seealso:: :py:func:`readXml`
 %End
 
 
@@ -167,14 +167,14 @@ Writes the context's state to a DOM ``element``.
 %Docstring
 Reads the context's state from application settings.
 
-.. seealso:: :py:func:`readSettings()`
+.. seealso:: :py:func:`readSettings`
 %End
 
     void writeSettings();
 %Docstring
 Write the context's state to application settings.
 
-.. seealso:: :py:func:`writeSettings()`
+.. seealso:: :py:func:`writeSettings`
 %End
 
 

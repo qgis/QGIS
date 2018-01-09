@@ -82,11 +82,11 @@ Returns style
 %Docstring
 Returns whether a stroke will be drawn around raster symbol items.
 
-.. seealso:: :py:func:`setDrawRasterStroke()`
+.. seealso:: :py:func:`setDrawRasterStroke`
 
-.. seealso:: :py:func:`rasterStrokeColor()`
+.. seealso:: :py:func:`rasterStrokeColor`
 
-.. seealso:: :py:func:`rasterStrokeWidth()`
+.. seealso:: :py:func:`rasterStrokeWidth`
 
 .. versionadded:: 2.12
 %End
@@ -97,11 +97,11 @@ Sets whether a stroke will be drawn around raster symbol items.
 
 :param enabled: set to true to draw borders
 
-.. seealso:: :py:func:`drawRasterStroke()`
+.. seealso:: :py:func:`drawRasterStroke`
 
-.. seealso:: :py:func:`setRasterStrokeColor()`
+.. seealso:: :py:func:`setRasterStrokeColor`
 
-.. seealso:: :py:func:`setRasterStrokeWidth()`
+.. seealso:: :py:func:`setRasterStrokeWidth`
 
 .. versionadded:: 2.12
 %End
@@ -111,11 +111,11 @@ Sets whether a stroke will be drawn around raster symbol items.
 Returns the stroke color for the stroke drawn around raster symbol items. The stroke is
 only drawn if drawRasterStroke() is true.
 
-.. seealso:: :py:func:`setRasterStrokeColor()`
+.. seealso:: :py:func:`setRasterStrokeColor`
 
-.. seealso:: :py:func:`drawRasterStroke()`
+.. seealso:: :py:func:`drawRasterStroke`
 
-.. seealso:: :py:func:`rasterStrokeWidth()`
+.. seealso:: :py:func:`rasterStrokeWidth`
 
 .. versionadded:: 2.12
 %End
@@ -127,11 +127,11 @@ only drawn if drawRasterStroke() is true.
 
 :param color: stroke color
 
-.. seealso:: :py:func:`rasterStrokeColor()`
+.. seealso:: :py:func:`rasterStrokeColor`
 
-.. seealso:: :py:func:`setDrawRasterStroke()`
+.. seealso:: :py:func:`setDrawRasterStroke`
 
-.. seealso:: :py:func:`setRasterStrokeWidth()`
+.. seealso:: :py:func:`setRasterStrokeWidth`
 
 .. versionadded:: 2.12
 %End
@@ -141,11 +141,11 @@ only drawn if drawRasterStroke() is true.
 Returns the stroke width (in millimeters) for the stroke drawn around raster symbol items. The stroke is
 only drawn if drawRasterStroke() is true.
 
-.. seealso:: :py:func:`setRasterStrokeWidth()`
+.. seealso:: :py:func:`setRasterStrokeWidth`
 
-.. seealso:: :py:func:`drawRasterStroke()`
+.. seealso:: :py:func:`drawRasterStroke`
 
-.. seealso:: :py:func:`rasterStrokeColor()`
+.. seealso:: :py:func:`rasterStrokeColor`
 
 .. versionadded:: 2.12
 %End
@@ -157,11 +157,11 @@ only drawn if drawRasterStroke() is true.
 
 :param width: stroke width in millimeters
 
-.. seealso:: :py:func:`rasterStrokeWidth()`
+.. seealso:: :py:func:`rasterStrokeWidth`
 
-.. seealso:: :py:func:`setDrawRasterStroke()`
+.. seealso:: :py:func:`setDrawRasterStroke`
 
-.. seealso:: :py:func:`setRasterStrokeColor()`
+.. seealso:: :py:func:`setRasterStrokeColor`
 
 .. versionadded:: 2.12
 %End
@@ -183,7 +183,7 @@ only drawn if drawRasterStroke() is true.
 Returns the legend map scale.
 The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 
-.. seealso:: :py:func:`setMapScale()`
+.. seealso:: :py:func:`setMapScale`
 %End
 
     void setMapScale( double scale );
@@ -191,7 +191,7 @@ The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 Sets the legend map ``scale``.
 The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 
-.. seealso:: :py:func:`mapScale()`
+.. seealso:: :py:func:`mapScale`
 %End
 
     int dpi() const;

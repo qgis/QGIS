@@ -86,18 +86,18 @@ Sets the units for the symbol's width.
 
 :param unit: symbol units
 
-.. seealso:: :py:func:`symbolWidthUnit()`
+.. seealso:: :py:func:`symbolWidthUnit`
 
-.. seealso:: :py:func:`setSymbolHeightUnit()`
+.. seealso:: :py:func:`setSymbolHeightUnit`
 %End
 
     QgsUnitTypes::RenderUnit symbolWidthUnit() const;
 %Docstring
 Returns the units for the symbol's width.
 
-.. seealso:: :py:func:`setSymbolWidthUnit()`
+.. seealso:: :py:func:`setSymbolWidthUnit`
 
-.. seealso:: :py:func:`symbolHeightUnit()`
+.. seealso:: :py:func:`symbolHeightUnit`
 %End
 
     void setSymbolWidthMapUnitScale( const QgsMapUnitScale &scale );
@@ -109,18 +109,18 @@ Sets the units for the symbol's height.
 
 :param unit: symbol units
 
-.. seealso:: :py:func:`symbolHeightUnit()`
+.. seealso:: :py:func:`symbolHeightUnit`
 
-.. seealso:: :py:func:`setSymbolWidthUnit()`
+.. seealso:: :py:func:`setSymbolWidthUnit`
 %End
 
     QgsUnitTypes::RenderUnit symbolHeightUnit() const;
 %Docstring
 Returns the units for the symbol's height.
 
-.. seealso:: :py:func:`setSymbolHeightUnit()`
+.. seealso:: :py:func:`setSymbolHeightUnit`
 
-.. seealso:: :py:func:`symbolWidthUnit()`
+.. seealso:: :py:func:`symbolWidthUnit`
 %End
 
     void setSymbolHeightMapUnitScale( const QgsMapUnitScale &scale );
@@ -132,14 +132,14 @@ Sets the units for the symbol's stroke width.
 
 :param unit: symbol units
 
-.. seealso:: :py:func:`strokeWidthUnit()`
+.. seealso:: :py:func:`strokeWidthUnit`
 %End
 
     QgsUnitTypes::RenderUnit strokeWidthUnit() const;
 %Docstring
 Returns the units for the symbol's stroke width.
 
-.. seealso:: :py:func:`setStrokeWidthUnit()`
+.. seealso:: :py:func:`setStrokeWidthUnit`
 %End
 
     void setStrokeWidthMapUnitScale( const QgsMapUnitScale &scale );

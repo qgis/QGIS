@@ -85,27 +85,27 @@ call run(), addFeature() and finalise() separately.
 Prepares the output file for writing and setups up the surface calculation. This must be called
 before adding features via addFeature().
 
-.. seealso:: :py:func:`addFeature()`
+.. seealso:: :py:func:`addFeature`
 
-.. seealso:: :py:func:`finalise()`
+.. seealso:: :py:func:`finalise`
 %End
 
     Result addFeature( const QgsFeature &feature );
 %Docstring
 Adds a single feature to the KDE surface. prepare() must be called before adding features.
 
-.. seealso:: :py:func:`prepare()`
+.. seealso:: :py:func:`prepare`
 
-.. seealso:: :py:func:`finalise()`
+.. seealso:: :py:func:`finalise`
 %End
 
     Result finalise();
 %Docstring
 Finalises the output file. Must be called after adding all features via addFeature().
 
-.. seealso:: :py:func:`prepare()`
+.. seealso:: :py:func:`prepare`
 
-.. seealso:: :py:func:`addFeature()`
+.. seealso:: :py:func:`addFeature`
 %End
 
   private:

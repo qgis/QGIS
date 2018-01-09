@@ -39,14 +39,14 @@ Returns the layout the object belongs to.
 %Docstring
 Stores the objects's state in a DOM element. The ``parentElement`` should refer to the parent layout's DOM element.
 
-.. seealso:: :py:func:`readXml()`
+.. seealso:: :py:func:`readXml`
 %End
 
     virtual bool readXml( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context ) = 0;
 %Docstring
 Sets the objects's state from a DOM element. ``element`` is the DOM node corresponding to the object.
 
-.. seealso:: :py:func:`writeXml()`
+.. seealso:: :py:func:`writeXml`
 %End
 
     virtual QgsAbstractLayoutUndoCommand *createCommand( const QString &text, int id, QUndoCommand *parent = 0 ) /Factory/;

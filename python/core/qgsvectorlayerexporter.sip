@@ -96,27 +96,27 @@ not available
 %Docstring
 Returns any encountered error code, or false if no error was encountered.
 
-.. seealso:: :py:func:`errorMessage()`
+.. seealso:: :py:func:`errorMessage`
 
-.. seealso:: :py:func:`errorCount()`
+.. seealso:: :py:func:`errorCount`
 %End
 
     QString errorMessage() const;
 %Docstring
 Returns any error message encountered during the export.
 
-.. seealso:: :py:func:`errorCount()`
+.. seealso:: :py:func:`errorCount`
 
-.. seealso:: :py:func:`errorCode()`
+.. seealso:: :py:func:`errorCode`
 %End
 
     int errorCount() const;
 %Docstring
 Returns the number of error messages encountered during the export.
 
-.. seealso:: :py:func:`errorMessage()`
+.. seealso:: :py:func:`errorMessage`
 
-.. seealso:: :py:func:`errorCode()`
+.. seealso:: :py:func:`errorCode`
 %End
 
     virtual bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = 0 );

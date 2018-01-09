@@ -129,14 +129,14 @@ The wkt is created without an SRID.
 %Docstring
 Returns the squared distance between this point a specified x, y coordinate.
 
-.. seealso:: :py:func:`distance()`
+.. seealso:: :py:func:`distance`
 %End
 
     double sqrDist( const QgsPointXY &other ) const;
 %Docstring
 Returns the squared distance between this point another point.
 
-.. seealso:: :py:func:`distance()`
+.. seealso:: :py:func:`distance`
 %End
 
     double distance( double x, double y ) const;
@@ -146,7 +146,7 @@ Returns the distance between this point and a specified x, y coordinate.
 :param x: x-coordniate
 :param y: y-coordinate
 
-.. seealso:: :py:func:`sqrDist()`
+.. seealso:: :py:func:`sqrDist`
 
 .. versionadded:: 2.16
 %End
@@ -157,7 +157,7 @@ Returns the distance between this point and another point.
 
 :param other: other point
 
-.. seealso:: :py:func:`sqrDist()`
+.. seealso:: :py:func:`sqrDist`
 
 .. versionadded:: 2.16
 %End

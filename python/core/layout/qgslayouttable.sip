@@ -128,21 +128,21 @@ Constructor for QgsLayoutTable, belonging to the specified ``layout``.
 %Docstring
 Sets the ``margin`` distance in mm between cell borders and their contents.
 
-.. seealso:: :py:func:`cellMargin()`
+.. seealso:: :py:func:`cellMargin`
 %End
 
     double cellMargin() const;
 %Docstring
 Returns the margin distance between cell borders and their contents in mm.
 
-.. seealso:: :py:func:`setCellMargin()`
+.. seealso:: :py:func:`setCellMargin`
 %End
 
     void setEmptyTableBehavior( const EmptyTableMode mode );
 %Docstring
 Sets the behavior ``mode`` for empty tables with no content rows.
 
-.. seealso:: :py:func:`emptyTableBehavior()`
+.. seealso:: :py:func:`emptyTableBehavior`
 %End
 
     EmptyTableMode emptyTableBehavior() const;
@@ -150,7 +150,7 @@ Sets the behavior ``mode`` for empty tables with no content rows.
 Returns the behavior mode for empty tables. This property controls
 how the table is drawn if it contains no content rows.
 
-.. seealso:: :py:func:`setEmptyTableBehavior()`
+.. seealso:: :py:func:`setEmptyTableBehavior`
 %End
 
     void setEmptyTableMessage( const QString &message );
@@ -159,9 +159,9 @@ Sets the ``message`` for empty tables with no content rows. This message
 is displayed in the table body if the empty table behavior is
 set to ShowMessage.
 
-.. seealso:: :py:func:`emptyTableMessage()`
+.. seealso:: :py:func:`emptyTableMessage`
 
-.. seealso:: :py:func:`setEmptyTableBehavior()`
+.. seealso:: :py:func:`setEmptyTableBehavior`
 %End
 
     QString emptyTableMessage() const;
@@ -170,9 +170,9 @@ Returns the message for empty tables with no content rows. This message
 is displayed in the table body if the empty table behavior is
 set to ShowMessage.
 
-.. seealso:: :py:func:`setEmptyTableMessage()`
+.. seealso:: :py:func:`setEmptyTableMessage`
 
-.. seealso:: :py:func:`emptyTableBehavior()`
+.. seealso:: :py:func:`emptyTableBehavior`
 %End
 
     void setShowEmptyRows( const bool showEmpty );
@@ -181,68 +181,68 @@ Sets whether empty rows should be drawn. Tables default to hiding empty rows.
 
 :param showEmpty: set to true to show empty rows in the table
 
-.. seealso:: :py:func:`showEmptyRows()`
+.. seealso:: :py:func:`showEmptyRows`
 %End
 
     bool showEmptyRows() const;
 %Docstring
 Returns whether empty rows are drawn in the table.
 
-.. seealso:: :py:func:`setShowEmptyRows()`
+.. seealso:: :py:func:`setShowEmptyRows`
 %End
 
     void setHeaderFont( const QFont &font );
 %Docstring
 Sets the ``font`` used to draw header text in the table.
 
-.. seealso:: :py:func:`headerFont()`
+.. seealso:: :py:func:`headerFont`
 
-.. seealso:: :py:func:`setContentFont()`
+.. seealso:: :py:func:`setContentFont`
 %End
 
     QFont headerFont() const;
 %Docstring
 Returns the font used to draw header text in the table.
 
-.. seealso:: :py:func:`setHeaderFont()`
+.. seealso:: :py:func:`setHeaderFont`
 
-.. seealso:: :py:func:`contentFont()`
+.. seealso:: :py:func:`contentFont`
 %End
 
     void setHeaderFontColor( const QColor &color );
 %Docstring
 Sets the ``color`` used to draw header text in the table.
 
-.. seealso:: :py:func:`headerFontColor()`
+.. seealso:: :py:func:`headerFontColor`
 
-.. seealso:: :py:func:`setHeaderFont()`
+.. seealso:: :py:func:`setHeaderFont`
 
-.. seealso:: :py:func:`setContentFontColor()`
+.. seealso:: :py:func:`setContentFontColor`
 %End
 
     QColor headerFontColor() const;
 %Docstring
 Returns the color used to draw header text in the table.
 
-.. seealso:: :py:func:`setHeaderFontColor()`
+.. seealso:: :py:func:`setHeaderFontColor`
 
-.. seealso:: :py:func:`headerFont()`
+.. seealso:: :py:func:`headerFont`
 
-.. seealso:: :py:func:`contentFontColor()`
+.. seealso:: :py:func:`contentFontColor`
 %End
 
     void setHeaderHAlignment( const HeaderHAlignment alignment );
 %Docstring
 Sets the horizontal ``alignment`` for table headers.
 
-.. seealso:: :py:func:`headerHAlignment()`
+.. seealso:: :py:func:`headerHAlignment`
 %End
 
     HeaderHAlignment headerHAlignment() const;
 %Docstring
 Returns the horizontal alignment for table headers.
 
-.. seealso:: :py:func:`setHeaderHAlignment()`
+.. seealso:: :py:func:`setHeaderHAlignment`
 %End
 
     void setHeaderMode( const HeaderMode mode );
@@ -250,7 +250,7 @@ Returns the horizontal alignment for table headers.
 Sets the display ``mode`` for headers in the table. This property controls
 if and where headers are shown in the table.
 
-.. seealso:: :py:func:`headerMode()`
+.. seealso:: :py:func:`headerMode`
 %End
 
     HeaderMode headerMode() const;
@@ -258,47 +258,47 @@ if and where headers are shown in the table.
 Returns the display mode for headers in the table. This property controls
 if and where headers are shown in the table.
 
-.. seealso:: :py:func:`setHeaderMode()`
+.. seealso:: :py:func:`setHeaderMode`
 %End
 
     void setContentFont( const QFont &font );
 %Docstring
 Sets the ``font`` used to draw text in table body cells.
 
-.. seealso:: :py:func:`contentFont()`
+.. seealso:: :py:func:`contentFont`
 
-.. seealso:: :py:func:`setHeaderFont()`
+.. seealso:: :py:func:`setHeaderFont`
 %End
 
     QFont contentFont() const;
 %Docstring
 Returns the font used to draw text in table body cells.
 
-.. seealso:: :py:func:`setContentFont()`
+.. seealso:: :py:func:`setContentFont`
 
-.. seealso:: :py:func:`headerFont()`
+.. seealso:: :py:func:`headerFont`
 %End
 
     void setContentFontColor( const QColor &color );
 %Docstring
 Sets the ``color`` used to draw text in table body cells.
 
-.. seealso:: :py:func:`contentFontColor()`
+.. seealso:: :py:func:`contentFontColor`
 
-.. seealso:: :py:func:`setContentFont()`
+.. seealso:: :py:func:`setContentFont`
 
-.. seealso:: :py:func:`setHeaderFontColor()`
+.. seealso:: :py:func:`setHeaderFontColor`
 %End
 
     QColor contentFontColor() const;
 %Docstring
 Returns the color used to draw text in table body cells.
 
-.. seealso:: :py:func:`setContentFontColor()`
+.. seealso:: :py:func:`setContentFontColor`
 
-.. seealso:: :py:func:`contentFont()`
+.. seealso:: :py:func:`contentFont`
 
-.. seealso:: :py:func:`headerFontColor()`
+.. seealso:: :py:func:`headerFontColor`
 %End
 
     void setShowGrid( const bool showGrid );
@@ -307,66 +307,66 @@ Sets whether grid lines should be drawn in the table
 
 :param showGrid: set to true to show grid lines
 
-.. seealso:: :py:func:`showGrid()`
+.. seealso:: :py:func:`showGrid`
 
-.. seealso:: :py:func:`setGridStrokeWidth()`
+.. seealso:: :py:func:`setGridStrokeWidth`
 
-.. seealso:: :py:func:`setGridColor()`
+.. seealso:: :py:func:`setGridColor`
 %End
 
     bool showGrid() const;
 %Docstring
 Returns whether grid lines are drawn in the table
 
-.. seealso:: :py:func:`setShowGrid()`
+.. seealso:: :py:func:`setShowGrid`
 
-.. seealso:: :py:func:`gridStrokeWidth()`
+.. seealso:: :py:func:`gridStrokeWidth`
 
-.. seealso:: :py:func:`gridColor()`
+.. seealso:: :py:func:`gridColor`
 %End
 
     void setGridStrokeWidth( const double width );
 %Docstring
 Sets the ``width`` in mm for grid lines in the table.
 
-.. seealso:: :py:func:`gridStrokeWidth()`
+.. seealso:: :py:func:`gridStrokeWidth`
 
-.. seealso:: :py:func:`setShowGrid()`
+.. seealso:: :py:func:`setShowGrid`
 
-.. seealso:: :py:func:`setGridColor()`
+.. seealso:: :py:func:`setGridColor`
 %End
 
     double gridStrokeWidth() const;
 %Docstring
 Returns the width of grid lines in the table in mm.
 
-.. seealso:: :py:func:`setGridStrokeWidth()`
+.. seealso:: :py:func:`setGridStrokeWidth`
 
-.. seealso:: :py:func:`showGrid()`
+.. seealso:: :py:func:`showGrid`
 
-.. seealso:: :py:func:`gridColor()`
+.. seealso:: :py:func:`gridColor`
 %End
 
     void setGridColor( const QColor &color );
 %Docstring
 Sets the ``color`` used for grid lines in the table.
 
-.. seealso:: :py:func:`gridColor()`
+.. seealso:: :py:func:`gridColor`
 
-.. seealso:: :py:func:`setShowGrid()`
+.. seealso:: :py:func:`setShowGrid`
 
-.. seealso:: :py:func:`setGridStrokeWidth()`
+.. seealso:: :py:func:`setGridStrokeWidth`
 %End
 
     QColor gridColor() const;
 %Docstring
 Returns the color used for grid lines in the table.
 
-.. seealso:: :py:func:`setGridColor()`
+.. seealso:: :py:func:`setGridColor`
 
-.. seealso:: :py:func:`showGrid()`
+.. seealso:: :py:func:`showGrid`
 
-.. seealso:: :py:func:`gridStrokeWidth()`
+.. seealso:: :py:func:`gridStrokeWidth`
 %End
 
     void setHorizontalGrid( const bool horizontalGrid );
@@ -375,26 +375,26 @@ Sets whether the grid's horizontal lines should be drawn in the table
 
 :param horizontalGrid: set to true to draw grid's horizontal lines
 
-.. seealso:: :py:func:`setShowGrid()`
+.. seealso:: :py:func:`setShowGrid`
 
-.. seealso:: :py:func:`setGridStrokeWidth()`
+.. seealso:: :py:func:`setGridStrokeWidth`
 
-.. seealso:: :py:func:`setGridColor()`
+.. seealso:: :py:func:`setGridColor`
 
-.. seealso:: :py:func:`setVerticalGrid()`
+.. seealso:: :py:func:`setVerticalGrid`
 %End
 
     bool horizontalGrid() const;
 %Docstring
 Returns whether the grid's horizontal lines are drawn in the table.
 
-.. seealso:: :py:func:`setShowGrid()`
+.. seealso:: :py:func:`setShowGrid`
 
-.. seealso:: :py:func:`setGridStrokeWidth()`
+.. seealso:: :py:func:`setGridStrokeWidth`
 
-.. seealso:: :py:func:`setGridColor()`
+.. seealso:: :py:func:`setGridColor`
 
-.. seealso:: :py:func:`setVerticalGrid()`
+.. seealso:: :py:func:`setVerticalGrid`
 %End
 
     void setVerticalGrid( const bool verticalGrid );
@@ -403,44 +403,44 @@ Sets whether the grid's vertical lines should be drawn in the table
 
 :param verticalGrid: set to true to draw grid's vertical lines
 
-.. seealso:: :py:func:`setShowGrid()`
+.. seealso:: :py:func:`setShowGrid`
 
-.. seealso:: :py:func:`setGridStrokeWidth()`
+.. seealso:: :py:func:`setGridStrokeWidth`
 
-.. seealso:: :py:func:`setGridColor()`
+.. seealso:: :py:func:`setGridColor`
 
-.. seealso:: :py:func:`setHorizontalGrid()`
+.. seealso:: :py:func:`setHorizontalGrid`
 %End
 
     bool verticalGrid() const;
 %Docstring
 Returns whether the grid's vertical lines are drawn in the table.
 
-.. seealso:: :py:func:`setShowGrid()`
+.. seealso:: :py:func:`setShowGrid`
 
-.. seealso:: :py:func:`setGridStrokeWidth()`
+.. seealso:: :py:func:`setGridStrokeWidth`
 
-.. seealso:: :py:func:`setGridColor()`
+.. seealso:: :py:func:`setGridColor`
 
-.. seealso:: :py:func:`setHorizontalGrid()`
+.. seealso:: :py:func:`setHorizontalGrid`
 %End
 
     void setBackgroundColor( const QColor &color );
 %Docstring
 Sets the ``color`` used for background of table.
 
-.. seealso:: :py:func:`backgroundColor()`
+.. seealso:: :py:func:`backgroundColor`
 
-.. seealso:: :py:func:`setGridColor()`
+.. seealso:: :py:func:`setGridColor`
 %End
 
     QColor backgroundColor() const;
 %Docstring
 Returns the color used for the background of the table.
 
-.. seealso:: :py:func:`setBackgroundColor()`
+.. seealso:: :py:func:`setBackgroundColor`
 
-.. seealso:: :py:func:`gridColor()`
+.. seealso:: :py:func:`gridColor`
 %End
 
     void setWrapBehavior( WrapBehavior behavior );
@@ -448,7 +448,7 @@ Returns the color used for the background of the table.
 Sets the wrap ``behavior`` for the table, which controls how text within cells is
 automatically wrapped.
 
-.. seealso:: :py:func:`wrapBehavior()`
+.. seealso:: :py:func:`wrapBehavior`
 %End
 
     WrapBehavior wrapBehavior() const;
@@ -456,14 +456,14 @@ automatically wrapped.
 Returns the wrap behavior for the table, which controls how text within cells is
 automatically wrapped.
 
-.. seealso:: :py:func:`setWrapBehavior()`
+.. seealso:: :py:func:`setWrapBehavior`
 %End
 
     QgsLayoutTableColumns &columns();
 %Docstring
 Returns a reference to the list of QgsLayoutTableColumns shown in the table
 
-.. seealso:: :py:func:`setColumns()`
+.. seealso:: :py:func:`setColumns`
 %End
 
     void setColumns( const QgsLayoutTableColumns &columns );
@@ -472,21 +472,21 @@ Replaces the columns in the table with a specified list of QgsLayoutTableColumns
 
 :param columns: list of QgsLayoutTableColumns to show in table.
 
-.. seealso:: :py:func:`columns()`
+.. seealso:: :py:func:`columns`
 %End
 
     void setCellStyle( CellStyleGroup group, const QgsLayoutTableStyle &style );
 %Docstring
 Sets the cell ``style`` for a cell ``group``.
 
-.. seealso:: :py:func:`cellStyle()`
+.. seealso:: :py:func:`cellStyle`
 %End
 
     const QgsLayoutTableStyle *cellStyle( CellStyleGroup group ) const;
 %Docstring
 Returns the cell style for a cell ``group``.
 
-.. seealso:: :py:func:`setCellStyle()`
+.. seealso:: :py:func:`setCellStyle`
 %End
 
 
@@ -529,7 +529,7 @@ Refreshes the contents shown in the table by querying for new data.
 This also causes the column widths and size of the table to change to accommodate the
 new data.
 
-.. seealso:: :py:func:`adjustFrameToSize()`
+.. seealso:: :py:func:`adjustFrameToSize`
 %End
 
     virtual void recalculateFrameSizes();
@@ -620,7 +620,7 @@ Draws the horizontal grid lines for the table.
 table, then the default row height will be used for the remaining rows.
 :param drawHeaderLines: set to true to include for the table header
 
-.. seealso:: :py:func:`drawVerticalGridLines()`
+.. seealso:: :py:func:`drawVerticalGridLines`
 %End
 
 

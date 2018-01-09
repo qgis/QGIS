@@ -52,23 +52,23 @@ Returns the index corresponding to a given fieldName.
 %Docstring
 Sets whether custom expressions are accepted and displayed in the model.
 
-.. seealso:: :py:func:`allowExpression()`
+.. seealso:: :py:func:`allowExpression`
 
-.. seealso:: :py:func:`setExpression()`
+.. seealso:: :py:func:`setExpression`
 %End
 
     bool allowExpression();
 %Docstring
 Returns true if the model allows custom expressions to be created and displayed.
 
-.. seealso:: :py:func:`setAllowExpression()`
+.. seealso:: :py:func:`setAllowExpression`
 %End
 
     void setAllowEmptyFieldName( bool allowEmpty );
 %Docstring
 Sets whether an optional empty field ("not set") option is present in the model.
 
-.. seealso:: :py:func:`allowEmptyFieldName()`
+.. seealso:: :py:func:`allowEmptyFieldName`
 
 .. versionadded:: 3.0
 %End
@@ -77,7 +77,7 @@ Sets whether an optional empty field ("not set") option is present in the model.
 %Docstring
 Returns true if the model allows the empty field ("not set") choice.
 
-.. seealso:: :py:func:`setAllowEmptyFieldName()`
+.. seealso:: :py:func:`setAllowEmptyFieldName`
 
 .. versionadded:: 3.0
 %End
@@ -92,27 +92,27 @@ expression consisting of more than direct field reference.
 %Docstring
 Sets a single expression to be added after the fields at the end of the model.
 
-.. seealso:: :py:func:`setAllowExpression()`
+.. seealso:: :py:func:`setAllowExpression`
 
-.. seealso:: :py:func:`allowExpression()`
+.. seealso:: :py:func:`allowExpression`
 
-.. seealso:: :py:func:`removeExpression()`
+.. seealso:: :py:func:`removeExpression`
 %End
 
     void removeExpression();
 %Docstring
 Removes any custom expression from the model.
 
-.. seealso:: :py:func:`setExpression()`
+.. seealso:: :py:func:`setExpression`
 
-.. seealso:: :py:func:`allowExpression()`
+.. seealso:: :py:func:`allowExpression`
 %End
 
     QgsVectorLayer *layer();
 %Docstring
 Returns the layer associated with the model.
 
-.. seealso:: :py:func:`setLayer()`
+.. seealso:: :py:func:`setLayer`
 %End
 
     virtual QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const;
@@ -132,7 +132,7 @@ Returns the layer associated with the model.
 %Docstring
 Set the layer from which fields are displayed.
 
-.. seealso:: :py:func:`layer()`
+.. seealso:: :py:func:`layer`
 %End
 
   protected slots:

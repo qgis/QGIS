@@ -116,7 +116,7 @@ Access the :py:class:`QgsVectorLayer`, you are working on
 
 :return: The layer
 
-.. seealso:: :py:func:`field()`
+.. seealso:: :py:func:`field`
 %End
 
     static QgsWidgetWrapper *fromWidget( QWidget *widget );
@@ -149,7 +149,7 @@ Returns a reference to the editor widget's property collection, used for data de
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`setDataDefinedProperties()`
+.. seealso:: :py:func:`setDataDefinedProperties`
 %End
 
     void setDataDefinedProperties( const QgsPropertyCollection &collection );
@@ -160,7 +160,7 @@ Sets the editor widget's property collection, used for data defined overrides.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`dataDefinedProperties()`
+.. seealso:: :py:func:`dataDefinedProperties`
 %End
 
   protected:

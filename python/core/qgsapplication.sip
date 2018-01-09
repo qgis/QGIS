@@ -363,7 +363,7 @@ Returns the user's operating system login account name.
 
 .. versionadded:: 2.14
 
-.. seealso:: :py:func:`userFullName()`
+.. seealso:: :py:func:`userFullName`
 %End
 
     static QString userFullName();
@@ -372,7 +372,7 @@ Returns the user's operating system login account full display name.
 
 .. versionadded:: 2.14
 
-.. seealso:: :py:func:`userLoginName()`
+.. seealso:: :py:func:`userLoginName`
 %End
 
     static QString osName();
@@ -381,7 +381,7 @@ Returns a string name of the operating system QGIS is running on.
 
 .. versionadded:: 2.14
 
-.. seealso:: :py:func:`platform()`
+.. seealso:: :py:func:`platform`
 %End
 
     static QString platform();
@@ -390,7 +390,7 @@ Returns the QGIS platform name, e.g., "desktop" or "server".
 
 .. versionadded:: 2.14
 
-.. seealso:: :py:func:`osName()`
+.. seealso:: :py:func:`osName`
 %End
 
     static QString locale();
@@ -748,7 +748,7 @@ in a widget or sending it to a web browser.
 Custom expression variables for this application.
 This does not include generated variables (like system name, user name etc.)
 
-.. seealso:: :py:func:`QgsExpressionContextUtils.globalVariables()`
+.. seealso:: :py:func:`QgsExpressionContextUtils.globalVariables`
 
 .. versionadded:: 3.0
 %End
@@ -758,7 +758,7 @@ This does not include generated variables (like system name, user name etc.)
 Custom expression variables for this application.
 Do not include generated variables (like system name, user name etc.)
 
-.. seealso:: :py:func:`QgsExpressionContextUtils.globalVariables()`
+.. seealso:: :py:func:`QgsExpressionContextUtils.globalVariables`
 
 .. versionadded:: 3.0
 %End

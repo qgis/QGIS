@@ -152,7 +152,7 @@ Return filtered list of active legend nodes attached to a particular layer node
 
    Parameter skipNodeEmbeddedInParent added in QGIS 2.18
 
-.. seealso:: :py:func:`layerOriginalLegendNodes()`
+.. seealso:: :py:func:`layerOriginalLegendNodes`
 %End
 
     QList<QgsLayerTreeModelLegendNode *> layerOriginalLegendNodes( QgsLayerTreeLayer *nodeLayer );
@@ -161,7 +161,7 @@ Return original (unfiltered) list of legend nodes attached to a particular layer
 
 .. versionadded:: 2.14
 
-.. seealso:: :py:func:`layerLegendNodes()`
+.. seealso:: :py:func:`layerLegendNodes`
 %End
 
     QgsLayerTreeModelLegendNode *legendNodeEmbeddedInParent( QgsLayerTreeLayer *nodeLayer ) const;
@@ -237,7 +237,7 @@ Setting ``scale`` <= 0 will disable the functionality.
 
 .. versionadded:: 2.6
 
-.. seealso:: :py:func:`legendFilterByScale()`
+.. seealso:: :py:func:`legendFilterByScale`
 %End
 
     double legendFilterByScale() const;
@@ -248,7 +248,7 @@ A scale <= 0 indicates that no scale filtering is being performed.
 
 .. versionadded:: 2.6
 
-.. seealso:: :py:func:`setLegendFilterByScale()`
+.. seealso:: :py:func:`setLegendFilterByScale`
 %End
 
     void setLegendFilterByMap( const QgsMapSettings *settings );

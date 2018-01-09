@@ -135,7 +135,7 @@ Returns the width of a column, or -1 if column should use default width.
 
 :param column: column index
 
-.. seealso:: :py:func:`setColumnWidth()`
+.. seealso:: :py:func:`setColumnWidth`
 %End
 
     void setColumnWidth( int column, int width );
@@ -145,7 +145,7 @@ Sets the width of a column.
 :param column: column index
 :param width: column width in pixels, or -1 if column should use default width
 
-.. seealso:: :py:func:`columnWidth()`
+.. seealso:: :py:func:`columnWidth`
 %End
 
     bool columnHidden( int column ) const;
@@ -154,7 +154,7 @@ Returns true if the specified column is hidden.
 
 :param column: column index
 
-.. seealso:: :py:func:`setColumnHidden()`
+.. seealso:: :py:func:`setColumnHidden`
 %End
 
     void setColumnHidden( int column, bool hidden );
@@ -164,7 +164,7 @@ Sets whether the specified column should be hidden.
 :param column: column index
 :param hidden: set to true to hide column
 
-.. seealso:: :py:func:`columnHidden()`
+.. seealso:: :py:func:`columnHidden`
 %End
 
     Qt::SortOrder sortOrder() const;

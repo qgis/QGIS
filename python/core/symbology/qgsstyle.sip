@@ -94,7 +94,7 @@ Returns a list of all tags in the style database
 
 .. versionadded:: 2.16
 
-.. seealso:: :py:func:`addTag()`
+.. seealso:: :py:func:`addTag`
 %End
 
     void clear();
@@ -316,7 +316,7 @@ This function creates a new on-disk permanent style database.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`createMemoryDb()`
+.. seealso:: :py:func:`createMemoryDb`
 %End
 
     bool createMemoryDatabase();
@@ -329,7 +329,7 @@ This function is used to create a temporary style database in case a permanent o
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`createDb()`
+.. seealso:: :py:func:`createDb`
 %End
 
     void createTables();
@@ -342,7 +342,7 @@ This function is used to create the tables structure in a newly-created database
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`createDB()`
+.. seealso:: :py:func:`createDB`
 %End
 
     bool load( const QString &filename );

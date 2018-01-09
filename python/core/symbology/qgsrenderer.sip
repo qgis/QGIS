@@ -113,7 +113,7 @@ be followed by a corresponding call to stopRender() after all features have been
 :param context:  Additional information passed to the renderer about the job which will be rendered
 :param fields:   The fields available for rendering
 
-.. seealso:: :py:func:`stopRender()`
+.. seealso:: :py:func:`stopRender`
 
 
 .. warning::
@@ -133,7 +133,7 @@ Calls to stopRender() must always be preceded by a call to startRender().
    This method is not thread safe. Before calling startRender() in a non-main thread,
 the renderer should instead be cloned and startRender()/stopRender() called on the clone.
 
-.. seealso:: :py:func:`startRender()`
+.. seealso:: :py:func:`startRender`
 %End
 
     virtual QString filter( const QgsFields &fields = QgsFields() );
@@ -183,9 +183,9 @@ to determine whether the feature may be labelled).
 If layer is not -1, the renderer should draw only a particula layer from symbols
 (in order to support symbol level rendering).
 
-.. seealso:: :py:func:`startRender()`
+.. seealso:: :py:func:`startRender`
 
-.. seealso:: :py:func:`stopRender()`
+.. seealso:: :py:func:`stopRender`
 %End
 
     virtual QString dump() const;
@@ -408,7 +408,7 @@ Get the order in which features shall be processed by this renderer.
 
    this property has no effect if orderByEnabled() is false
 
-.. seealso:: :py:func:`orderByEnabled()`
+.. seealso:: :py:func:`orderByEnabled`
 %End
 
     void setOrderBy( const QgsFeatureRequest::OrderBy &orderBy );
@@ -421,7 +421,7 @@ Define the order in which features shall be processed by this renderer.
 
 .. versionadded:: 2.14
 
-.. seealso:: :py:func:`setOrderByEnabled()`
+.. seealso:: :py:func:`setOrderByEnabled`
 %End
 
     bool orderByEnabled() const;
@@ -430,9 +430,9 @@ Returns whether custom ordering will be applied before features are processed by
 
 .. versionadded:: 2.14
 
-.. seealso:: :py:func:`orderBy()`
+.. seealso:: :py:func:`orderBy`
 
-.. seealso:: :py:func:`setOrderByEnabled()`
+.. seealso:: :py:func:`setOrderByEnabled`
 %End
 
     void setOrderByEnabled( bool enabled );
@@ -443,9 +443,9 @@ Sets whether custom ordering should be applied before features are processed by 
 
 .. versionadded:: 2.14
 
-.. seealso:: :py:func:`setOrderBy()`
+.. seealso:: :py:func:`setOrderBy`
 
-.. seealso:: :py:func:`orderByEnabled()`
+.. seealso:: :py:func:`orderByEnabled`
 %End
 
     virtual void setEmbeddedRenderer( QgsFeatureRenderer *subRenderer /Transfer/ );
@@ -455,7 +455,7 @@ does nothing with subrenderers, but individual derived classes can use these to 
 
 :param subRenderer: the embedded renderer. Ownership will be transferred.
 
-.. seealso:: :py:func:`embeddedRenderer()`
+.. seealso:: :py:func:`embeddedRenderer`
 
 .. versionadded:: 2.16
 %End
@@ -465,7 +465,7 @@ does nothing with subrenderers, but individual derived classes can use these to 
 Returns the current embedded renderer (subrenderer) for this feature renderer. The base class
 implementation does not use subrenderers and will always return null.
 
-.. seealso:: :py:func:`setEmbeddedRenderer()`
+.. seealso:: :py:func:`setEmbeddedRenderer`
 
 .. versionadded:: 2.16
 %End

@@ -94,7 +94,7 @@ True if the block has no data value.
 
 :return: true if the block has no data value
 
-.. seealso:: :py:func:`noDataValue()`
+.. seealso:: :py:func:`noDataValue`
 %End
 
     bool hasNoData() const;
@@ -112,7 +112,7 @@ Sets cell value that will be considered as "no data".
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`noDataValue()`
+.. seealso:: :py:func:`noDataValue`
 %End
 
     void resetNoDataValue();
@@ -122,7 +122,7 @@ it will be discarded.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`noDataValue()`
+.. seealso:: :py:func:`noDataValue`
 %End
 
     double noDataValue() const;
@@ -132,7 +132,7 @@ returned value is undefined.
 
 :return: No data value
 
-.. seealso:: :py:func:`hasNoDataValue()`
+.. seealso:: :py:func:`hasNoDataValue`
 %End
 
     static QByteArray valueBytes( Qgis::DataType dataType, double value );

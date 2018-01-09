@@ -51,7 +51,7 @@ Tests whether a symbol is visible for a specified layer.
 
 .. versionadded:: 2.12
 
-.. seealso:: :py:func:`legendKeyVisible()`
+.. seealso:: :py:func:`legendKeyVisible`
 %End
 
     bool legendKeyVisible( const QString &ruleKey, QgsVectorLayer *layer ) const;
@@ -63,7 +63,7 @@ Tests whether a given legend key is visible for a specified layer.
 
 .. versionadded:: 2.14
 
-.. seealso:: :py:func:`symbolVisible()`
+.. seealso:: :py:func:`symbolVisible`
 %End
 
 };

@@ -50,9 +50,9 @@ Tells whether the operation has been canceled already
 Sets the current progress for the feedback object. The ``progress``
 argument is in percentage and valid values range from 0-100.
 
-.. seealso:: :py:func:`progress()`
+.. seealso:: :py:func:`progress`
 
-.. seealso:: :py:func:`progressChanged()`
+.. seealso:: :py:func:`progressChanged`
 
 .. versionadded:: 3.0
 %End
@@ -63,9 +63,9 @@ Returns the current progress reported by the feedback object. Depending on how t
 feedback object is used progress reporting may not be supported. The returned value
 is in percentage and ranges from 0-100.
 
-.. seealso:: :py:func:`setProgress()`
+.. seealso:: :py:func:`setProgress`
 
-.. seealso:: :py:func:`progressChanged()`
+.. seealso:: :py:func:`progressChanged`
 
 .. versionadded:: 3.0
 %End
@@ -91,9 +91,9 @@ argument is in percentage and ranges from 0-100.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`setProgress()`
+.. seealso:: :py:func:`setProgress`
 
-.. seealso:: :py:func:`progress()`
+.. seealso:: :py:func:`progress`
 %End
 
 };

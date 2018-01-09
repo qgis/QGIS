@@ -99,7 +99,7 @@ Set the source color ``ramp``. Ownership is transferred to the renderer.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`sourceColorRamp()`
+.. seealso:: :py:func:`sourceColorRamp`
 %End
 
     QgsColorRamp *sourceColorRamp() const;
@@ -108,7 +108,7 @@ Get the source color ramp
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`setSourceColorRamp()`
+.. seealso:: :py:func:`setSourceColorRamp`
 %End
 
     static QgsPalettedRasterRenderer::ClassData colorTableToClassData( const QList<QgsColorRampShader::ColorRampItem> &table );
@@ -124,9 +124,9 @@ Converts a ``string`` containing a color table or class data to to paletted rend
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`classDataFromFile()`
+.. seealso:: :py:func:`classDataFromFile`
 
-.. seealso:: :py:func:`classDataToString()`
+.. seealso:: :py:func:`classDataToString`
 %End
 
     static QgsPalettedRasterRenderer::ClassData classDataFromFile( const QString &path );
@@ -135,7 +135,7 @@ Opens a color table file and returns corresponding paletted renderer class data.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`classDataFromString()`
+.. seealso:: :py:func:`classDataFromString`
 %End
 
     static QString classDataToString( const QgsPalettedRasterRenderer::ClassData &classes );
@@ -144,7 +144,7 @@ Converts classes to a string representation, using the .clr/gdal color table fil
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`classDataFromString()`
+.. seealso:: :py:func:`classDataFromString`
 %End
 
     static QgsPalettedRasterRenderer::ClassData classDataFromRaster( QgsRasterInterface *raster, int bandNumber, QgsColorRamp *ramp = 0,

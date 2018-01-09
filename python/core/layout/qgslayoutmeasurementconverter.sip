@@ -38,7 +38,7 @@ Constructor for QgsLayoutMeasurementConverter.
 Sets the dots per inch (``dpi``) for the measurement converter. This is used
 when converting measurements to and from pixels.
 
-.. seealso:: :py:func:`dpi()`
+.. seealso:: :py:func:`dpi`
 %End
 
     double dpi() const;
@@ -46,7 +46,7 @@ when converting measurements to and from pixels.
 Returns the Dots per inch (DPI) of the measurement converter. This is used
 when converting measurements to and from pixels.
 
-.. seealso:: :py:func:`setDpi()`
+.. seealso:: :py:func:`setDpi`
 %End
 
     QgsLayoutMeasurement convert( const QgsLayoutMeasurement &measurement, const QgsUnitTypes::LayoutUnit targetUnits ) const;

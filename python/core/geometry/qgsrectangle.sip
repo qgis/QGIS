@@ -128,18 +128,18 @@ Normalize the rectangle so it has non-negative width/height.
 %Docstring
 Returns the width of the rectangle.
 
-.. seealso:: :py:func:`height()`
+.. seealso:: :py:func:`height`
 
-.. seealso:: :py:func:`area()`
+.. seealso:: :py:func:`area`
 %End
 
     double height() const;
 %Docstring
 Returns the height of the rectangle.
 
-.. seealso:: :py:func:`width()`
+.. seealso:: :py:func:`width`
 
-.. seealso:: :py:func:`area()`
+.. seealso:: :py:func:`area`
 %End
 
     double area() const;
@@ -148,11 +148,11 @@ Returns the area of the rectangle.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`width()`
+.. seealso:: :py:func:`width`
 
-.. seealso:: :py:func:`height()`
+.. seealso:: :py:func:`height`
 
-.. seealso:: :py:func:`perimeter()`
+.. seealso:: :py:func:`perimeter`
 %End
 
     double perimeter() const;
@@ -161,7 +161,7 @@ Returns the perimeter of the rectangle.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`area()`
+.. seealso:: :py:func:`area`
 %End
 
     QgsPointXY center() const;
@@ -183,7 +183,7 @@ Scale the rectangle around its center point.
 %Docstring
 Grows the rectangle in place by the specified amount.
 
-.. seealso:: :py:func:`buffered()`
+.. seealso:: :py:func:`buffered`
 %End
 
     void include( const QgsPointXY &p );
@@ -201,7 +201,7 @@ Get rectangle enlarged by buffer.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`grow()`
+.. seealso:: :py:func:`grow`
 %End
 
     QgsRectangle intersect( const QgsRectangle *rect ) const;

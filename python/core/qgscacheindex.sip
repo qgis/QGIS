@@ -13,7 +13,6 @@
 class QgsAbstractCacheIndex
 {
 %Docstring
-\brief
 Abstract base class for cache indices
 %End
 
@@ -42,7 +41,6 @@ In this case, this method is issued. Be sure to clear all cache information in h
 
     virtual void requestCompleted( const QgsFeatureRequest &featureRequest, const QgsFeatureIds &fids );
 %Docstring
-\brief
 Implement this method to update the the indices, in case you need information contained by the request
 to properly index. (E.g. spatial index)
 Does nothing by default

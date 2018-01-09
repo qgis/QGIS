@@ -40,9 +40,9 @@ Constructor for QgsMapUnitScaleWidget.
 Returns a QgsMapUnitScale representing the settings shown in the
 widget.
 
-.. seealso:: :py:func:`setMapUnitScale()`
+.. seealso:: :py:func:`setMapUnitScale`
 
-.. seealso:: :py:func:`mapUnitScaleChanged()`
+.. seealso:: :py:func:`mapUnitScaleChanged`
 %End
 
     void setMapUnitScale( const QgsMapUnitScale &scale );
@@ -52,9 +52,9 @@ QgsMapUnitScale object.
 
 :param scale: map unit scale to show in widget
 
-.. seealso:: :py:func:`mapUnitScale()`
+.. seealso:: :py:func:`mapUnitScale`
 
-.. seealso:: :py:func:`mapUnitScaleChanged()`
+.. seealso:: :py:func:`mapUnitScaleChanged`
 %End
 
     void setMapCanvas( QgsMapCanvas *canvas );
@@ -105,7 +105,7 @@ Constructor for QgsMapUnitScaleDialog.
 Returns a QgsMapUnitScale representing the settings shown in the
 dialog.
 
-.. seealso:: :py:func:`setMapUnitScale()`
+.. seealso:: :py:func:`setMapUnitScale`
 %End
 
     void setMapUnitScale( const QgsMapUnitScale &scale );
@@ -115,7 +115,7 @@ QgsMapUnitScale object.
 
 :param scale: map unit scale to show in dialog
 
-.. seealso:: :py:func:`mapUnitScale()`
+.. seealso:: :py:func:`mapUnitScale`
 %End
 
     void setMapCanvas( QgsMapCanvas *canvas );

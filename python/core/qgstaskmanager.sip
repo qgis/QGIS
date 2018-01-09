@@ -102,7 +102,7 @@ time. Any subtasks owned by this task will also be canceled.
 Derived classes must ensure that the base class implementation is called
 from any overridden version.
 
-.. seealso:: :py:func:`isCanceled()`
+.. seealso:: :py:func:`isCanceled`
 %End
 
     void hold();
@@ -112,7 +112,7 @@ Places the task on hold. If the task in not queued
 Calling this method only has an effect for tasks which are managed
 by a QgsTaskManager.
 
-.. seealso:: :py:func:`unhold()`
+.. seealso:: :py:func:`unhold`
 %End
 
     void unhold();
@@ -121,7 +121,7 @@ Releases the task from being held. For tasks managed by a QgsTaskManager
 calling this will re-add them to the queue. If the
 task in not currently being held then calling this has no effect.
 
-.. seealso:: :py:func:`hold()`
+.. seealso:: :py:func:`hold`
 %End
 
     enum SubTaskDependency
@@ -158,7 +158,7 @@ its own set of subtasks.
 Sets a list of layers on which the task depends. The task will automatically
 be canceled if any of these layers are about to be removed.
 
-.. seealso:: :py:func:`dependentLayerIds()`
+.. seealso:: :py:func:`dependentLayerIds`
 %End
 
     QList< QgsMapLayer * > dependentLayers() const;
@@ -166,7 +166,7 @@ be canceled if any of these layers are about to be removed.
 Returns the list of layers on which the task depends. The task will automatically
 be canceled if any of these layers are about to be removed.
 
-.. seealso:: :py:func:`setDependentLayers()`
+.. seealso:: :py:func:`setDependentLayers`
 %End
 
     bool waitForFinished( unsigned long timeout = 30000 );
@@ -395,30 +395,30 @@ be canceled if any of these layers are above to be removed.
 
 :return: list of layers
 
-.. seealso:: :py:func:`tasksDependentOnLayer()`
+.. seealso:: :py:func:`tasksDependentOnLayer`
 %End
 
     QList< QgsTask * > tasksDependentOnLayer( QgsMapLayer *layer ) const;
 %Docstring
 Returns a list of tasks which depend on a layer.
 
-.. seealso:: :py:func:`dependentLayers()`
+.. seealso:: :py:func:`dependentLayers`
 %End
 
     QList< QgsTask * > activeTasks() const;
 %Docstring
 Returns a list of the active (queued or running) tasks.
 
-.. seealso:: :py:func:`countActiveTasks()`
+.. seealso:: :py:func:`countActiveTasks`
 %End
 
     int countActiveTasks() const;
 %Docstring
 Returns the number of active (queued or running) tasks.
 
-.. seealso:: :py:func:`activeTasks()`
+.. seealso:: :py:func:`activeTasks`
 
-.. seealso:: :py:func:`countActiveTasksChanged()`
+.. seealso:: :py:func:`countActiveTasksChanged`
 %End
 
   signals:
@@ -465,14 +465,14 @@ Emitted when a task is about to be deleted
 %Docstring
 Emitted when all tasks are complete
 
-.. seealso:: :py:func:`countActiveTasksChanged()`
+.. seealso:: :py:func:`countActiveTasksChanged`
 %End
 
     void countActiveTasksChanged( int count );
 %Docstring
 Emitted when the number of active tasks changes
 
-.. seealso:: :py:func:`countActiveTasks()`
+.. seealso:: :py:func:`countActiveTasks`
 %End
 
 };

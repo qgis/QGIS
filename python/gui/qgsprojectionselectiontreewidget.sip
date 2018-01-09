@@ -46,7 +46,7 @@ Returns the CRS currently selected in the widget.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`setCrs()`
+.. seealso:: :py:func:`setCrs`
 %End
 
     void setShowNoProjection( bool show );
@@ -54,7 +54,7 @@ Returns the CRS currently selected in the widget.
 Sets whether a "no/invalid" projection option should be shown. If this
 option is selected, calling crs() will return an invalid :py:class:`QgsCoordinateReferenceSystem`.
 
-.. seealso:: :py:func:`showNoProjection()`
+.. seealso:: :py:func:`showNoProjection`
 
 .. versionadded:: 3.0
 %End
@@ -63,7 +63,7 @@ option is selected, calling crs() will return an invalid :py:class:`QgsCoordinat
 %Docstring
 Sets whether to show the bounnds preview map.
 
-.. seealso:: :py:func:`showBoundsMap()`
+.. seealso:: :py:func:`showBoundsMap`
 
 .. versionadded:: 3.0
 %End
@@ -75,7 +75,7 @@ option is selected, calling crs() will return an invalid :py:class:`QgsCoordinat
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`setShowNoProjection()`
+.. seealso:: :py:func:`setShowNoProjection`
 %End
 
     bool showBoundsMap() const;
@@ -84,7 +84,7 @@ Returns whether the bounds preview map is shown.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`setShowBoundsMap()`
+.. seealso:: :py:func:`setShowBoundsMap`
 %End
 
     bool hasValidSelection() const;
@@ -103,7 +103,7 @@ Sets the initial ``crs`` to show within the dialog.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`crs()`
+.. seealso:: :py:func:`crs`
 %End
 
     void setPreviewRect( const QgsRectangle &rect );
@@ -112,7 +112,7 @@ Sets the initial "preview" rectangle for the bounds overview map.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`previewRect()`
+.. seealso:: :py:func:`previewRect`
 %End
 
     QgsRectangle previewRect() const;
@@ -121,7 +121,7 @@ The initial "preview" rectangle for the bounds overview map.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`previewRect()`
+.. seealso:: :py:func:`previewRect`
 %End
 
     void setOgcWmsCrsFilter( const QSet<QString> &crsFilter );

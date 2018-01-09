@@ -55,7 +55,7 @@ locator.
    Plugins which register filters to the locator must take care to correctly call
 deregisterFilter() and deregister their filters upon plugin unload to avoid crashes.
 
-.. seealso:: :py:func:`deregisterFilter()`
+.. seealso:: :py:func:`deregisterFilter`
 %End
 
     void deregisterFilter( QgsLocatorFilter *filter );
@@ -66,14 +66,14 @@ any currently running query is terminated.
 Plugins which register filters to the locator must take care to correctly call
 deregisterFilter() to deregister their filters upon plugin unload to avoid crashes.
 
-.. seealso:: :py:func:`registerFilter()`
+.. seealso:: :py:func:`registerFilter`
 %End
 
     QList< QgsLocatorFilter *> filters();
 %Docstring
 Returns the list of filters registered in the locator.
 
-.. seealso:: :py:func:`prefixedFilters()`
+.. seealso:: :py:func:`prefixedFilters`
 %End
 
     QMap< QString, QgsLocatorFilter *> prefixedFilters() const;
@@ -81,7 +81,7 @@ Returns the list of filters registered in the locator.
 Returns a map of prefix to filter, for all registered filters
 with valid prefixes.
 
-.. seealso:: :py:func:`filters()`
+.. seealso:: :py:func:`filters`
 %End
 
     void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback = 0 );
@@ -101,7 +101,7 @@ by the registered filters.
 Cancels any current running query, and blocks until query is completely canceled by
 all filters.
 
-.. seealso:: :py:func:`cancelWithoutBlocking()`
+.. seealso:: :py:func:`cancelWithoutBlocking`
 %End
 
     void cancelWithoutBlocking();
@@ -109,7 +109,7 @@ all filters.
 Triggers cancelation of any current running query without blocking. The query may
 take some time to cancel after calling this.
 
-.. seealso:: :py:func:`cancel()`
+.. seealso:: :py:func:`cancel`
 %End
 
     bool isRunning() const;

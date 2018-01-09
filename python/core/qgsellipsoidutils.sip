@@ -53,7 +53,7 @@ Results are cached to allow for fast retrieval of parameters.
 Returns a list of the definitions for all known ellipsoids from the
 internal ellipsoid database.
 
-.. seealso:: :py:func:`acronyms()`
+.. seealso:: :py:func:`acronyms`
 %End
 
     static QStringList acronyms();
@@ -61,7 +61,7 @@ internal ellipsoid database.
 Returns a list of all known ellipsoid acronyms from the internal
 ellipsoid database.
 
-.. seealso:: :py:func:`definitions()`
+.. seealso:: :py:func:`definitions`
 %End
 
 };

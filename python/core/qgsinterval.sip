@@ -48,7 +48,7 @@ Constructor for QgsInterval.
 %Docstring
 Returns the interval duration in years (based on an average year length)
 
-.. seealso:: :py:func:`setYears()`
+.. seealso:: :py:func:`setYears`
 %End
 
     void setYears( double years );
@@ -57,14 +57,14 @@ Sets the interval duration in years.
 
 :param years: duration in years (based on average year length)
 
-.. seealso:: :py:func:`years()`
+.. seealso:: :py:func:`years`
 %End
 
     double months() const;
 %Docstring
 Returns the interval duration in months (based on a 30 day month).
 
-.. seealso:: :py:func:`setMonths()`
+.. seealso:: :py:func:`setMonths`
 %End
 
     void setMonths( double months );
@@ -73,14 +73,14 @@ Sets the interval duration in months.
 
 :param months: duration in months (based on a 30 day month)
 
-.. seealso:: :py:func:`months()`
+.. seealso:: :py:func:`months`
 %End
 
     double weeks() const;
 %Docstring
 Returns the interval duration in weeks.
 
-.. seealso:: :py:func:`setWeeks()`
+.. seealso:: :py:func:`setWeeks`
 %End
 
     void setWeeks( double weeks );
@@ -89,14 +89,14 @@ Sets the interval duration in weeks.
 
 :param weeks: duration in weeks
 
-.. seealso:: :py:func:`weeks()`
+.. seealso:: :py:func:`weeks`
 %End
 
     double days() const;
 %Docstring
 Returns the interval duration in days.
 
-.. seealso:: :py:func:`setDays()`
+.. seealso:: :py:func:`setDays`
 %End
 
     void setDays( double days );
@@ -105,14 +105,14 @@ Sets the interval duration in days.
 
 :param days: duration in days
 
-.. seealso:: :py:func:`days()`
+.. seealso:: :py:func:`days`
 %End
 
     double hours() const;
 %Docstring
 Returns the interval duration in hours.
 
-.. seealso:: :py:func:`setHours()`
+.. seealso:: :py:func:`setHours`
 %End
 
     void setHours( double hours );
@@ -121,14 +121,14 @@ Sets the interval duration in hours.
 
 :param hours: duration in hours
 
-.. seealso:: :py:func:`hours()`
+.. seealso:: :py:func:`hours`
 %End
 
     double minutes() const;
 %Docstring
 Returns the interval duration in minutes.
 
-.. seealso:: :py:func:`setMinutes()`
+.. seealso:: :py:func:`setMinutes`
 %End
 
     void setMinutes( double minutes );
@@ -137,14 +137,14 @@ Sets the interval duration in minutes.
 
 :param minutes: duration in minutes
 
-.. seealso:: :py:func:`minutes()`
+.. seealso:: :py:func:`minutes`
 %End
 
     double seconds() const;
 %Docstring
 Returns the interval duration in seconds.
 
-.. seealso:: :py:func:`setSeconds()`
+.. seealso:: :py:func:`setSeconds`
 %End
 
     void setSeconds( double seconds );
@@ -153,14 +153,14 @@ Sets the interval duration in seconds.
 
 :param seconds: duration in seconds
 
-.. seealso:: :py:func:`seconds()`
+.. seealso:: :py:func:`seconds`
 %End
 
     bool isValid() const;
 %Docstring
 Returns true if the interval is valid.
 
-.. seealso:: :py:func:`setValid()`
+.. seealso:: :py:func:`setValid`
 %End
 
     void setValid( bool valid );
@@ -169,7 +169,7 @@ Sets whether the interval is valid.
 
 :param valid: set to true to set the interval as valid.
 
-.. seealso:: :py:func:`isValid()`
+.. seealso:: :py:func:`isValid`
 %End
 
     bool operator==( QgsInterval other ) const;

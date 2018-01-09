@@ -80,9 +80,9 @@ Calculates summary statistics for an entire list of strings at once.
 
 :param values: list of strings
 
-.. seealso:: :py:func:`calculateFromVariants()`
+.. seealso:: :py:func:`calculateFromVariants`
 
-.. seealso:: :py:func:`addString()`
+.. seealso:: :py:func:`addString`
 %End
 
     void calculateFromVariants( const QVariantList &values );
@@ -92,9 +92,9 @@ non-string variants will be ignored.
 
 :param values: list of variants
 
-.. seealso:: :py:func:`calculate()`
+.. seealso:: :py:func:`calculate`
 
-.. seealso:: :py:func:`addValue()`
+.. seealso:: :py:func:`addValue`
 %End
 
     void addString( const QString &string );
@@ -116,11 +116,11 @@ to clear the results from any previous calculations
    finalize() must be called after adding the final string and before
 retrieving calculated statistics.
 
-.. seealso:: :py:func:`calculate()`
+.. seealso:: :py:func:`calculate`
 
-.. seealso:: :py:func:`addValue()`
+.. seealso:: :py:func:`addValue`
 
-.. seealso:: :py:func:`finalize()`
+.. seealso:: :py:func:`finalize`
 %End
 
     void addValue( const QVariant &value );
@@ -142,9 +142,9 @@ to clear the results from any previous calculations
    finalize() must be called after adding the final value and before
 retrieving calculated statistics.
 
-.. seealso:: :py:func:`calculateFromVariants()`
+.. seealso:: :py:func:`calculateFromVariants`
 
-.. seealso:: :py:func:`finalize()`
+.. seealso:: :py:func:`finalize`
 %End
 
     void finalize();
@@ -152,7 +152,7 @@ retrieving calculated statistics.
 Must be called after adding all strings with addString() and before retrieving
 any calculated string statistics.
 
-.. seealso:: :py:func:`addString()`
+.. seealso:: :py:func:`addString`
 %End
 
     QVariant statistic( QgsStringStatisticalSummary::Statistic stat ) const;
@@ -173,14 +173,14 @@ Returns the calculated count of values.
 %Docstring
 Returns the number of distinct string values.
 
-.. seealso:: :py:func:`distinctValues()`
+.. seealso:: :py:func:`distinctValues`
 %End
 
     QSet< QString > distinctValues() const;
 %Docstring
 Returns the set of distinct string values.
 
-.. seealso:: :py:func:`countDistinct()`
+.. seealso:: :py:func:`countDistinct`
 %End
 
     int countMissing() const;

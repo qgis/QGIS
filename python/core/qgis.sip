@@ -156,7 +156,7 @@ Compares two QVariant values and returns whether the first is less than the seco
 Useful for sorting lists of variants, correctly handling sorting of the various
 QVariant data types (such as strings, numeric values, dates and times)
 
-.. seealso:: :py:func:`qgsVariantGreaterThan()`
+.. seealso:: :py:func:`qgsVariantGreaterThan`
 %End
 
 bool qgsVariantGreaterThan( const QVariant &lhs, const QVariant &rhs );
@@ -165,7 +165,7 @@ Compares two QVariant values and returns whether the first is greater than the s
 Useful for sorting lists of variants, correctly handling sorting of the various
 QVariant data types (such as strings, numeric values, dates and times)
 
-.. seealso:: :py:func:`qgsVariantLessThan()`
+.. seealso:: :py:func:`qgsVariantLessThan`
 %End
 
 QString qgsVsiPrefix( const QString &path );

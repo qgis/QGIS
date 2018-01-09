@@ -48,7 +48,7 @@ in the registry).
 Adding a provider to the registry automatically triggers the providers :py:func:`QgsProcessingProvider.load()`
 method to populate the provider with algorithms.
 
-.. seealso:: :py:func:`removeProvider()`
+.. seealso:: :py:func:`removeProvider`
 %End
 
     bool removeProvider( QgsProcessingProvider *provider );
@@ -56,7 +56,7 @@ method to populate the provider with algorithms.
 Removes a provider implementation from the registry (the provider object is deleted).
 Returns false if the provider could not be removed (eg provider does not exist in the registry).
 
-.. seealso:: :py:func:`addProvider()`
+.. seealso:: :py:func:`addProvider`
 %End
 
     bool removeProvider( const QString &providerId );
@@ -64,7 +64,7 @@ Returns false if the provider could not be removed (eg provider does not exist i
 Removes a provider implementation from the registry (the provider object is deleted).
 Returns false if the provider could not be removed (eg provider does not exist in the registry).
 
-.. seealso:: :py:func:`addProvider()`
+.. seealso:: :py:func:`addProvider`
 %End
 
     QgsProcessingProvider *providerById( const QString &id );
@@ -76,7 +76,7 @@ Returns a matching provider by provider ID.
 %Docstring
 Returns a list of all available algorithms from registered providers.
 
-.. seealso:: :py:func:`algorithmById()`
+.. seealso:: :py:func:`algorithmById`
 %End
 
     const QgsProcessingAlgorithm *algorithmById( const QString &id ) const;
@@ -84,9 +84,9 @@ Returns a list of all available algorithms from registered providers.
 Finds an algorithm by its ID. If no matching algorithm is found, a None
 is returned.
 
-.. seealso:: :py:func:`algorithms()`
+.. seealso:: :py:func:`algorithms`
 
-.. seealso:: :py:func:`createAlgorithmById()`
+.. seealso:: :py:func:`createAlgorithmById`
 %End
 
 
@@ -101,9 +101,9 @@ and outputs according to this configuration. This is generally used only for
 algorithms in a model, allowing them to adjust their behavior at run time
 according to some user configuration.
 
-.. seealso:: :py:func:`algorithms()`
+.. seealso:: :py:func:`algorithms`
 
-.. seealso:: :py:func:`algorithmById()`
+.. seealso:: :py:func:`algorithmById`
 %End
 
   signals:

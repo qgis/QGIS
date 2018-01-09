@@ -35,21 +35,21 @@ Constructor for QgsLayoutDesignerInterface.
 %Docstring
 Returns the current layout displayed in the designer.
 
-.. seealso:: :py:func:`view()`
+.. seealso:: :py:func:`view`
 %End
 
     virtual QgsMasterLayoutInterface *masterLayout() = 0;
 %Docstring
 Returns the master layout displayed in the designer.
 
-.. seealso:: :py:func:`layout()`
+.. seealso:: :py:func:`layout`
 %End
 
     virtual QgsLayoutView *view() = 0;
 %Docstring
 Returns the layout view utilized by the designer.
 
-.. seealso:: :py:func:`layout()`
+.. seealso:: :py:func:`layout`
 %End
 
     virtual QgsMessageBar *messageBar() = 0;

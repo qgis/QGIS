@@ -420,7 +420,7 @@ Returns a reference to the label's property collection, used for data defined ov
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`setDataDefinedProperties()`
+.. seealso:: :py:func:`setDataDefinedProperties`
 %End
 
 
@@ -432,14 +432,14 @@ Sets the label's property collection, used for data defined overrides.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`dataDefinedProperties()`
+.. seealso:: :py:func:`dataDefinedProperties`
 %End
 
     const QgsTextFormat &format() const;
 %Docstring
 Returns the label text formatting settings, e.g., font settings, buffer settings, etc.
 
-.. seealso:: :py:func:`setFormat()`
+.. seealso:: :py:func:`setFormat`
 
 .. versionadded:: 3.0
 %End
@@ -450,7 +450,7 @@ Sets the label text formatting settings, e.g., font settings, buffer settings, e
 
 :param format: label text format
 
-.. seealso:: :py:func:`format()`
+.. seealso:: :py:func:`format`
 
 .. versionadded:: 3.0
 %End

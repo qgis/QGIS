@@ -59,27 +59,27 @@ class QgsSymbolLayerUtils
 %Docstring
 Encodes a QPointF to a string.
 
-.. seealso:: :py:func:`decodePoint()`
+.. seealso:: :py:func:`decodePoint`
 
-.. seealso:: :py:func:`encodeSize()`
+.. seealso:: :py:func:`encodeSize`
 %End
 
     static QPointF decodePoint( const QString &string );
 %Docstring
 Decodes a QSizeF from a string.
 
-.. seealso:: :py:func:`encodePoint()`
+.. seealso:: :py:func:`encodePoint`
 
-.. seealso:: :py:func:`decodeSize()`
+.. seealso:: :py:func:`decodeSize`
 %End
 
     static QString encodeSize( QSizeF size );
 %Docstring
 Encodes a QSizeF to a string.
 
-.. seealso:: :py:func:`decodeSize()`
+.. seealso:: :py:func:`decodeSize`
 
-.. seealso:: :py:func:`encodePoint()`
+.. seealso:: :py:func:`encodePoint`
 
 .. versionadded:: 3.0
 %End
@@ -88,9 +88,9 @@ Encodes a QSizeF to a string.
 %Docstring
 Decodes a QSizeF from a string.
 
-.. seealso:: :py:func:`encodeSize()`
+.. seealso:: :py:func:`encodeSize`
 
-.. seealso:: :py:func:`decodePoint()`
+.. seealso:: :py:func:`decodePoint`
 
 .. versionadded:: 3.0
 %End
@@ -113,7 +113,7 @@ Encodes a render unit into an SLD unit of measure string.
 
 :return: encoded string
 
-.. seealso:: :py:func:`decodeSldUom()`
+.. seealso:: :py:func:`decodeSldUom`
 %End
 
     static QgsUnitTypes::RenderUnit decodeSldUom( const QString &str, double *scaleFactor );
@@ -125,7 +125,7 @@ Decodes a SLD unit of measure string to a render unit.
 
 :return: matching render unit
 
-.. seealso:: :py:func:`encodeSldUom()`
+.. seealso:: :py:func:`encodeSldUom`
 %End
 
     static double sizeInPixelsFromSldUom( const QString &uom, double size );
@@ -153,7 +153,7 @@ Returns an icon preview for a color ramp.
 :param size: target pixmap size
 :param padding: space between icon edge and symbol
 
-.. seealso:: :py:func:`symbolPreviewPixmap()`
+.. seealso:: :py:func:`symbolPreviewPixmap`
 %End
 
     static QPixmap symbolPreviewPixmap( QgsSymbol *symbol, QSize size, int padding = 0, QgsRenderContext *customContext = 0 );
@@ -169,7 +169,7 @@ Returns a pixmap preview for a color ramp.
 
    Parameter customContext added in QGIS 2.6
 
-.. seealso:: :py:func:`symbolPreviewIcon()`
+.. seealso:: :py:func:`symbolPreviewIcon`
 %End
 
     static QPicture symbolLayerPreviewPicture( QgsSymbolLayer *layer, QgsUnitTypes::RenderUnit units, QSize size, const QgsMapUnitScale &scale = QgsMapUnitScale() );
@@ -185,7 +185,7 @@ Draws a symbol layer preview to a QPicture
 
 .. versionadded:: 2.9
 
-.. seealso:: :py:func:`symbolLayerPreviewIcon()`
+.. seealso:: :py:func:`symbolLayerPreviewIcon`
 %End
 
     static QIcon symbolLayerPreviewIcon( QgsSymbolLayer *layer, QgsUnitTypes::RenderUnit u, QSize size, const QgsMapUnitScale &scale = QgsMapUnitScale() );
@@ -199,7 +199,7 @@ Draws a symbol layer preview to an icon.
 
 :return: icon containing symbol layer preview
 
-.. seealso:: :py:func:`symbolLayerPreviewPicture()`
+.. seealso:: :py:func:`symbolLayerPreviewPicture`
 %End
 
     static QIcon colorRampPreviewIcon( QgsColorRamp *ramp, QSize size, int padding = 0 );
@@ -210,7 +210,7 @@ Returns an icon preview for a color ramp.
 :param size: target icon size
 :param padding: space between icon edge and color ramp
 
-.. seealso:: :py:func:`colorRampPreviewPixmap()`
+.. seealso:: :py:func:`colorRampPreviewPixmap`
 %End
 
     static QPixmap colorRampPreviewPixmap( QgsColorRamp *ramp, QSize size, int padding = 0 );
@@ -221,7 +221,7 @@ Returns a pixmap preview for a color ramp.
 :param size: target pixmap size
 :param padding: space between icon edge and color ramp
 
-.. seealso:: :py:func:`colorRampPreviewIcon()`
+.. seealso:: :py:func:`colorRampPreviewIcon`
 %End
 
     static void drawStippledBackground( QPainter *painter, QRect rect );
@@ -398,7 +398,7 @@ Creates new mime data from a ``symbol``.
 This also sets the mime color data to match the symbol's color, so that copied symbols
 can be paste in places where a color is expected.
 
-.. seealso:: :py:func:`symbolFromMimeData()`
+.. seealso:: :py:func:`symbolFromMimeData`
 
 .. versionadded:: 3.0
 %End
@@ -408,7 +408,7 @@ can be paste in places where a color is expected.
 Attempts to parse ``mime`` data as a symbol. A new symbol instance will be returned
 if the data was successfully converted to a symbol.
 
-.. seealso:: :py:func:`symbolToMimeData()`
+.. seealso:: :py:func:`symbolToMimeData`
 
 .. versionadded:: 3.0
 %End
@@ -421,7 +421,7 @@ Creates a color ramp from the settings encoded in an XML element
 
 :return: new color ramp. Caller takes responsibility for deleting the returned value.
 
-.. seealso:: :py:func:`saveColorRamp()`
+.. seealso:: :py:func:`saveColorRamp`
 %End
 
     static QDomElement saveColorRamp( const QString &name, QgsColorRamp *ramp, QDomDocument &doc );
@@ -434,7 +434,7 @@ Encodes a color ramp's settings to an XML element
 
 :return: DOM element representing state of color ramp
 
-.. seealso:: :py:func:`loadColorRamp()`
+.. seealso:: :py:func:`loadColorRamp`
 %End
 
     static QVariant colorRampToVariant( const QString &name, QgsColorRamp *ramp );
@@ -450,7 +450,7 @@ You can use QgsXmlUtils.writeVariant to save it to an XML document.
 Load a color ramp from a QVariantMap, wrapped in a QVariant.
 You can use QgsXmlUtils.readVariant to load it from an XML document.
 
-.. seealso:: :py:func:`colorRampToVariant()`
+.. seealso:: :py:func:`colorRampToVariant`
 %End
 
     static QString colorToName( const QColor &color );

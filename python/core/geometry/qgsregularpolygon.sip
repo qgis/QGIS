@@ -46,8 +46,7 @@ Constructs a regular polygon by ``center`` and parameters for the first vertex. 
 :param radius: Distance from the center and the first vertex or sides (see ``ConstructionOption``).
 :param azimuth: Angle in degrees started from the North to the first vertex.
 :param numberSides: Number of sides of the regular polygon.
-
-.. seealso:: ConstructionOption
+:param circle: Option to create the polygon. see ConstructionOption
 %End
 
     QgsRegularPolygon( const QgsPoint &center, const QgsPoint &pt1, const unsigned int numberSides, const ConstructionOption circle );
@@ -81,7 +80,7 @@ A regular polygon is empty if radius equal to 0 or number of sides < 3
 %Docstring
 Returns the center point of the regular polygon.
 
-.. seealso:: :py:func:`setCenter()`
+.. seealso:: :py:func:`setCenter`
 %End
 
     double radius() const;
@@ -89,16 +88,16 @@ Returns the center point of the regular polygon.
 Returns the radius.
 This is also the radius of the circumscribing circle.
 
-.. seealso:: :py:func:`apothem()`
+.. seealso:: :py:func:`apothem`
 
-.. seealso:: :py:func:`setRadius()`
+.. seealso:: :py:func:`setRadius`
 %End
 
     QgsPoint firstVertex() const;
 %Docstring
 Returns the first vertex (corner) of the regular polygon.
 
-.. seealso:: :py:func:`setFirstVertex()`
+.. seealso:: :py:func:`setFirstVertex`
 %End
 
     double apothem() const;
@@ -106,14 +105,14 @@ Returns the first vertex (corner) of the regular polygon.
 Returns the apothem of the regular polygon.
 The apothem is the radius of the inscribed circle.
 
-.. seealso:: :py:func:`radius()`
+.. seealso:: :py:func:`radius`
 %End
 
     unsigned int numberSides() const;
 %Docstring
 Returns the number of sides of the regular polygon.
 
-.. seealso:: :py:func:`setNumberSides()`
+.. seealso:: :py:func:`setNumberSides`
 %End
 
     void setCenter( const QgsPoint &center );
@@ -121,7 +120,7 @@ Returns the number of sides of the regular polygon.
 Sets the center point.
 Radius is unchanged. The first vertex is reprojected from the new center.
 
-.. seealso:: :py:func:`center()`
+.. seealso:: :py:func:`center`
 %End
 
     void setRadius( const double radius );
@@ -129,7 +128,7 @@ Radius is unchanged. The first vertex is reprojected from the new center.
 Sets the radius.
 Center is unchanged. The first vertex is reprojected from the center with the new radius.
 
-.. seealso:: :py:func:`radius()`
+.. seealso:: :py:func:`radius`
 %End
 
     void setFirstVertex( const QgsPoint &firstVertex );
@@ -137,7 +136,7 @@ Center is unchanged. The first vertex is reprojected from the center with the ne
 Sets the first vertex.
 Radius is unchanged. The center is reprojected from the new first vertex.
 
-.. seealso:: :py:func:`firstVertex()`
+.. seealso:: :py:func:`firstVertex`
 %End
 
     void setNumberSides( const unsigned int numberSides );
@@ -145,7 +144,7 @@ Radius is unchanged. The center is reprojected from the new first vertex.
 Sets the number of sides.
 If numberSides < 3, the number of sides is unchanged.
 
-.. seealso:: :py:func:`numberSides()`
+.. seealso:: :py:func:`numberSides`
 %End
 
     QgsPointSequence points() const;

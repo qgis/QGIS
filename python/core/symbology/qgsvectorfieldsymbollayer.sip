@@ -104,14 +104,14 @@ Sets the units for the distance.
 
 :param unit: distance units
 
-.. seealso:: :py:func:`distanceUnit()`
+.. seealso:: :py:func:`distanceUnit`
 %End
 
     QgsUnitTypes::RenderUnit distanceUnit() const;
 %Docstring
 Returns the units for the distance.
 
-.. seealso:: :py:func:`setDistanceUnit()`
+.. seealso:: :py:func:`setDistanceUnit`
 %End
 
     void setDistanceMapUnitScale( const QgsMapUnitScale &scale );

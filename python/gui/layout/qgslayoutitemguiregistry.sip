@@ -89,7 +89,7 @@ Creates a configuration widget for an ``item`` of this type. Can return None if 
 Creates a rubber band for use when creating layout items of this type. Can return None if no rubber band
 should be created. The default behavior is to create a rectangular rubber band.
 
-.. seealso:: :py:func:`createNodeRubberBand()`
+.. seealso:: :py:func:`createNodeRubberBand`
 %End
 
     virtual QAbstractGraphicsShapeItem *createNodeRubberBand( QgsLayoutView *view ) /Factory/;
@@ -97,7 +97,7 @@ should be created. The default behavior is to create a rectangular rubber band.
 Creates a rubber band for use when creating layout node based items of this type. Can return None if no rubber band
 should be created. The default behavior is to return None.
 
-.. seealso:: :py:func:`createRubberBand()`
+.. seealso:: :py:func:`createRubberBand`
 %End
 
     virtual QgsLayoutItem *createItem( QgsLayout *layout ) /Factory/;
@@ -179,7 +179,7 @@ Creates a new empty item GUI registry.
 QgsLayoutItemGuiRegistry is not usually directly created, but rather accessed through
 :py:func:`QgsGui.layoutItemGuiRegistry()`
 
-.. seealso:: :py:func:`populate()`
+.. seealso:: :py:func:`populate`
 %End
 
     ~QgsLayoutItemGuiRegistry();
@@ -204,14 +204,14 @@ addLayoutItemGuiMetadata() for any item types associated with the group.
 Returns true if group was added, or false if group could not be added (e.g. due to
 duplicate id value).
 
-.. seealso:: :py:func:`itemGroup()`
+.. seealso:: :py:func:`itemGroup`
 %End
 
     const QgsLayoutItemGuiGroup &itemGroup( const QString &id );
 %Docstring
 Returns a reference to the item group with matching ``id``.
 
-.. seealso:: :py:func:`addItemGroup()`
+.. seealso:: :py:func:`addItemGroup`
 %End
 
     QgsLayoutItem *createItem( int metadataId, QgsLayout *layout ) const /Factory/;

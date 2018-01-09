@@ -62,7 +62,7 @@ QgsRasterRenderer cannot be copied. Use clone() instead.
 Sets the ``opacity`` for the renderer, where ``opacity`` is a value between 0 (totally transparent)
 and 1.0 (fully opaque).
 
-.. seealso:: :py:func:`opacity()`
+.. seealso:: :py:func:`opacity`
 %End
 
     double opacity() const;
@@ -70,7 +70,7 @@ and 1.0 (fully opaque).
 Returns the opacity for the renderer, where opacity is a value between 0 (totally transparent)
 and 1.0 (fully opaque).
 
-.. seealso:: :py:func:`setOpacity()`
+.. seealso:: :py:func:`setOpacity`
 %End
 
     void setRasterTransparency( QgsRasterTransparency *t /Transfer/ );

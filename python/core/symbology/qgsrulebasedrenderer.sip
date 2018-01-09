@@ -153,9 +153,9 @@ Returns the maximum map scale (i.e. most "zoomed in" scale) at which the rule wi
 The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 A scale of 0 indicates no maximum scale visibility.
 
-.. seealso:: :py:func:`minimumScale()`
+.. seealso:: :py:func:`minimumScale`
 
-.. seealso:: :py:func:`setMaximumScale()`
+.. seealso:: :py:func:`setMaximumScale`
 
 .. versionadded:: 3.0
 %End
@@ -166,9 +166,9 @@ Returns the minimum map scale (i.e. most "zoomed out" scale) at which the rule w
 The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 A scale of 0 indicates no minimum scale visibility.
 
-.. seealso:: :py:func:`maximumScale()`
+.. seealso:: :py:func:`maximumScale`
 
-.. seealso:: :py:func:`setMinimumScale()`
+.. seealso:: :py:func:`setMinimumScale`
 
 .. versionadded:: 3.0
 %End
@@ -227,9 +227,9 @@ Sets the minimum map ``scale`` (i.e. most "zoomed out" scale) at which the rule 
 The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 A ``scale`` of 0 indicates no minimum scale visibility.
 
-.. seealso:: :py:func:`minimumScale()`
+.. seealso:: :py:func:`minimumScale`
 
-.. seealso:: :py:func:`setMaximumScale()`
+.. seealso:: :py:func:`setMaximumScale`
 %End
 
         void setMaximumScale( double scale );
@@ -238,9 +238,9 @@ Sets the maximum map ``scale`` (i.e. most "zoomed in" scale) at which the rule w
 The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 A ``scale`` of 0 indicates no maximum scale visibility.
 
-.. seealso:: :py:func:`maximumScale()`
+.. seealso:: :py:func:`maximumScale`
 
-.. seealso:: :py:func:`setMinimumScale()`
+.. seealso:: :py:func:`setMinimumScale`
 %End
 
         void setFilterExpression( const QString &filterExp );

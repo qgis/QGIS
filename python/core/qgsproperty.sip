@@ -236,14 +236,14 @@ Returns the property type.
 %Docstring
 Returns whether the property is currently active.
 
-.. seealso:: :py:func:`setActive()`
+.. seealso:: :py:func:`setActive`
 %End
 
     void setActive( bool active );
 %Docstring
 Sets whether the property is currently active.
 
-.. seealso:: :py:func:`isActive()`
+.. seealso:: :py:func:`isActive`
 %End
 
     void setStaticValue( const QVariant &value );
@@ -251,7 +251,7 @@ Sets whether the property is currently active.
 Sets the static value for the property. Calling this will
 transform the property into an StaticProperty.
 
-.. seealso:: :py:func:`staticValue()`
+.. seealso:: :py:func:`staticValue`
 %End
 
     QVariant staticValue() const;
@@ -259,7 +259,7 @@ transform the property into an StaticProperty.
 Returns the current static value for the property. If the property
 is not a StaticProperty this will return an invalid variant.
 
-.. seealso:: :py:func:`setStaticValue()`
+.. seealso:: :py:func:`setStaticValue`
 %End
 
     void setField( const QString &field );
@@ -267,7 +267,7 @@ is not a StaticProperty this will return an invalid variant.
 Sets the field name the property references. Calling this will
 transform the property into an FieldBasedProperty.
 
-.. seealso:: :py:func:`field()`
+.. seealso:: :py:func:`field`
 %End
 
     QString field() const;
@@ -275,7 +275,7 @@ transform the property into an FieldBasedProperty.
 Returns the current field name the property references. If the property
 is not a FieldBasedProperty this will return an empty string.
 
-.. seealso:: :py:func:`setField()`
+.. seealso:: :py:func:`setField`
 %End
 
     void setExpressionString( const QString &expression );
@@ -283,7 +283,7 @@ is not a FieldBasedProperty this will return an empty string.
 Sets the expression to use for the property value. Calling this will
 transform the property into an ExpressionBasedProperty.
 
-.. seealso:: :py:func:`expressionString()`
+.. seealso:: :py:func:`expressionString`
 %End
 
     QString expressionString() const;
@@ -291,7 +291,7 @@ transform the property into an ExpressionBasedProperty.
 Returns the expression used for the property value. If the property
 is not a ExpressionBasedProperty this will return an empty string.
 
-.. seealso:: :py:func:`setExpressionString()`
+.. seealso:: :py:func:`setExpressionString`
 %End
 
     QString asExpression() const;
@@ -325,15 +325,15 @@ is able to respond to the current environment, layers and features within QGIS.
 
 :return: calculated value for property
 
-.. seealso:: :py:func:`valueAsString()`
+.. seealso:: :py:func:`valueAsString`
 
-.. seealso:: :py:func:`valueAsColor()`
+.. seealso:: :py:func:`valueAsColor`
 
-.. seealso:: :py:func:`valueAsDouble()`
+.. seealso:: :py:func:`valueAsDouble`
 
-.. seealso:: :py:func:`valueAsInt()`
+.. seealso:: :py:func:`valueAsInt`
 
-.. seealso:: :py:func:`valueAsBool()`
+.. seealso:: :py:func:`valueAsBool`
 %End
 
     QString valueAsString( const QgsExpressionContext &context, const QString &defaultString = QString(), bool *ok /Out/ = 0 ) const;
@@ -346,15 +346,15 @@ Calculates the current value of the property and interprets it as a string.
 
 :return: value parsed to string
 
-.. seealso:: :py:func:`value()`
+.. seealso:: :py:func:`value`
 
-.. seealso:: :py:func:`valueAsColor()`
+.. seealso:: :py:func:`valueAsColor`
 
-.. seealso:: :py:func:`valueAsDouble()`
+.. seealso:: :py:func:`valueAsDouble`
 
-.. seealso:: :py:func:`valueAsInt()`
+.. seealso:: :py:func:`valueAsInt`
 
-.. seealso:: :py:func:`valueAsBool()`
+.. seealso:: :py:func:`valueAsBool`
 %End
 
     QColor valueAsColor( const QgsExpressionContext &context, const QColor &defaultColor = QColor(), bool *ok /Out/ = 0 ) const;
@@ -367,15 +367,15 @@ Calculates the current value of the property and interprets it as a color.
 
 :return: value parsed to color
 
-.. seealso:: :py:func:`value()`
+.. seealso:: :py:func:`value`
 
-.. seealso:: :py:func:`valueAsString()`
+.. seealso:: :py:func:`valueAsString`
 
-.. seealso:: :py:func:`valueAsDouble()`
+.. seealso:: :py:func:`valueAsDouble`
 
-.. seealso:: :py:func:`valueAsInt()`
+.. seealso:: :py:func:`valueAsInt`
 
-.. seealso:: :py:func:`valueAsBool()`
+.. seealso:: :py:func:`valueAsBool`
 %End
 
     double valueAsDouble( const QgsExpressionContext &context, double defaultValue = 0.0, bool *ok /Out/ = 0 ) const;
@@ -388,15 +388,15 @@ Calculates the current value of the property and interprets it as a double.
 
 :return: value parsed to double
 
-.. seealso:: :py:func:`value()`
+.. seealso:: :py:func:`value`
 
-.. seealso:: :py:func:`valueAsString()`
+.. seealso:: :py:func:`valueAsString`
 
-.. seealso:: :py:func:`valueAsColor()`
+.. seealso:: :py:func:`valueAsColor`
 
-.. seealso:: :py:func:`valueAsInt()`
+.. seealso:: :py:func:`valueAsInt`
 
-.. seealso:: :py:func:`valueAsBool()`
+.. seealso:: :py:func:`valueAsBool`
 %End
 
     int valueAsInt( const QgsExpressionContext &context, int defaultValue = 0, bool *ok /Out/ = 0 ) const;
@@ -409,15 +409,15 @@ Calculates the current value of the property and interprets it as an integer.
 
 :return: value parsed to integer
 
-.. seealso:: :py:func:`value()`
+.. seealso:: :py:func:`value`
 
-.. seealso:: :py:func:`valueAsString()`
+.. seealso:: :py:func:`valueAsString`
 
-.. seealso:: :py:func:`valueAsColor()`
+.. seealso:: :py:func:`valueAsColor`
 
-.. seealso:: :py:func:`valueAsDouble()`
+.. seealso:: :py:func:`valueAsDouble`
 
-.. seealso:: :py:func:`valueAsBool()`
+.. seealso:: :py:func:`valueAsBool`
 %End
 
     bool valueAsBool( const QgsExpressionContext &context, bool defaultValue = false, bool *ok /Out/ = 0 ) const;
@@ -430,15 +430,15 @@ Calculates the current value of the property and interprets it as an boolean.
 
 :return: value parsed to boolean
 
-.. seealso:: :py:func:`value()`
+.. seealso:: :py:func:`value`
 
-.. seealso:: :py:func:`valueAsString()`
+.. seealso:: :py:func:`valueAsString`
 
-.. seealso:: :py:func:`valueAsColor()`
+.. seealso:: :py:func:`valueAsColor`
 
-.. seealso:: :py:func:`valueAsDouble()`
+.. seealso:: :py:func:`valueAsDouble`
 
-.. seealso:: :py:func:`valueAsInt()`
+.. seealso:: :py:func:`valueAsInt`
 %End
 
     QVariant toVariant() const;
@@ -446,7 +446,7 @@ Calculates the current value of the property and interprets it as an boolean.
 Saves this property to a QVariantMap, wrapped in a QVariant.
 You can use QgsXmlUtils.writeVariant to save it to an XML document.
 
-.. seealso:: :py:func:`loadVariant()`
+.. seealso:: :py:func:`loadVariant`
 %End
 
     bool loadVariant( const QVariant &property );
@@ -454,7 +454,7 @@ You can use QgsXmlUtils.writeVariant to save it to an XML document.
 Loads this property from a QVariantMap, wrapped in a QVariant.
 You can use QgsXmlUtils.readVariant to load it from an XML document.
 
-.. seealso:: :py:func:`toVariant()`
+.. seealso:: :py:func:`toVariant`
 %End
 
     void setTransformer( QgsPropertyTransformer *transformer /Transfer/ );
@@ -464,14 +464,14 @@ Sets an optional transformer to use for manipulating the calculated values for t
 :param transformer: transformer to install. Ownership is transferred to the property, and any
 existing transformer will be deleted. Set to null to remove an existing transformer.
 
-.. seealso:: :py:func:`transformer()`
+.. seealso:: :py:func:`transformer`
 %End
 
     const QgsPropertyTransformer *transformer() const;
 %Docstring
 Returns the existing transformer used for manipulating the calculated values for the property, if set.
 
-.. seealso:: :py:func:`setTransformer()`
+.. seealso:: :py:func:`setTransformer`
 %End
 
     bool convertToTransformer();

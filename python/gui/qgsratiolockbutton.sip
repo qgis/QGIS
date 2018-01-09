@@ -56,7 +56,7 @@ have their values updates when if the other spin box value is changed. I.e. chan
 width spin box will automatically update the height spin box to a value which keeps the
 same locked ratio.
 
-.. seealso:: :py:func:`setHeightSpinBox()`
+.. seealso:: :py:func:`setHeightSpinBox`
 %End
 
     void setHeightSpinBox( QDoubleSpinBox *widget );
@@ -68,7 +68,7 @@ have their values updates when if the other spin box value is changed. I.e. chan
 width spin box will automatically update the height spin box to a value which keeps the
 same locked ratio.
 
-.. seealso:: :py:func:`setWidthSpinBox()`
+.. seealso:: :py:func:`setWidthSpinBox`
 %End
 
     void resetRatio();

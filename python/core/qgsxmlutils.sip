@@ -29,7 +29,7 @@ Decodes a distance unit from a DOM element.
 
 :return: distance units
 
-.. seealso:: :py:func:`writeMapUnits()`
+.. seealso:: :py:func:`writeMapUnits`
 %End
 
     static QgsRectangle readRectangle( const QDomElement &element );
@@ -44,7 +44,7 @@ Encodes a distance unit to a DOM element.
 
 :return: element containing encoded units
 
-.. seealso:: :py:func:`readMapUnits()`
+.. seealso:: :py:func:`readMapUnits`
 %End
 
     static QDomElement writeRectangle( const QgsRectangle &rect, QDomDocument &doc );

@@ -27,28 +27,28 @@ Represents a component of a model algorithm.
 %Docstring
 Returns the friendly description text for the component.
 
-.. seealso:: :py:func:`setDescription()`
+.. seealso:: :py:func:`setDescription`
 %End
 
     void setDescription( const QString &description );
 %Docstring
 Sets the friendly ``description`` text for the component.
 
-.. seealso:: :py:func:`description()`
+.. seealso:: :py:func:`description`
 %End
 
     QPointF position() const;
 %Docstring
 Returns the position of the model component within the graphical modeler.
 
-.. seealso:: :py:func:`setPosition()`
+.. seealso:: :py:func:`setPosition`
 %End
 
     void setPosition( const QPointF &position );
 %Docstring
 Sets the ``position`` of the model component within the graphical modeler.
 
-.. seealso:: :py:func:`position()`
+.. seealso:: :py:func:`position`
 %End
 
   protected:
@@ -68,14 +68,14 @@ Copies are protected to avoid slicing
 %Docstring
 Saves the component properties to a QVariantMap.
 
-.. seealso:: :py:func:`restoreCommonProperties()`
+.. seealso:: :py:func:`restoreCommonProperties`
 %End
 
     void restoreCommonProperties( const QVariantMap &map );
 %Docstring
 Restores the component properties from a QVariantMap.
 
-.. seealso:: :py:func:`saveCommonProperties()`
+.. seealso:: :py:func:`saveCommonProperties`
 %End
 
 };

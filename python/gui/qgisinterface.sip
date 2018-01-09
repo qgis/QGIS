@@ -52,9 +52,9 @@ after this call.
 If menu argument is not empty, the action will be also added to a menu within the main window,
 creating menu with the given name if it does not exist yet.
 
-.. seealso:: :py:func:`removeCustomActionForLayerType()`
+.. seealso:: :py:func:`removeCustomActionForLayerType`
 
-.. seealso:: :py:func:`addCustomActionForLayer()`
+.. seealso:: :py:func:`addCustomActionForLayer`
 %End
 
     virtual void addCustomActionForLayer( QAction *action, QgsMapLayer *layer ) = 0;
@@ -63,14 +63,14 @@ Add action to context menu for a specific layer in the layer tree.
 It is necessary to first call addCustomActionForLayerType() with allLayers=false
 in order for this method to have any effect.
 
-.. seealso:: :py:func:`addCustomActionForLayerType()`
+.. seealso:: :py:func:`addCustomActionForLayerType`
 %End
 
     virtual bool removeCustomActionForLayerType( QAction *action ) = 0;
 %Docstring
 Remove action for layers in the layer tree previously added with addCustomActionForLayerType()
 
-.. seealso:: :py:func:`addCustomActionForLayerType()`
+.. seealso:: :py:func:`addCustomActionForLayerType`
 %End
 
     virtual QList< QgsMapCanvas * > mapCanvases() = 0;
@@ -86,7 +86,7 @@ Create a new map canvas with the specified unique ``name``.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`closeMapCanvas()`
+.. seealso:: :py:func:`closeMapCanvas`
 %End
 
     virtual void closeMapCanvas( const QString &name ) = 0;
@@ -95,7 +95,7 @@ Closes the additional map canvas with matching ``name``.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`createNewMapCanvas()`
+.. seealso:: :py:func:`createNewMapCanvas`
 %End
 
     virtual QSize iconSize( bool dockedToolbar = false ) const = 0;
@@ -758,7 +758,7 @@ Register a new tab in the vector layer properties dialog.
    Ownership of the factory is not transferred, and the factory must
 be unregistered when plugin is unloaded.
 
-.. seealso:: :py:func:`unregisterMapLayerPropertiesFactory()`
+.. seealso:: :py:func:`unregisterMapLayerPropertiesFactory`
 %End
 
     virtual void unregisterMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory *factory ) = 0;
@@ -767,7 +767,7 @@ Unregister a previously registered tab in the vector layer properties dialog.
 
 .. versionadded:: 2.16
 
-.. seealso:: :py:func:`registerMapLayerPropertiesFactory()`
+.. seealso:: :py:func:`registerMapLayerPropertiesFactory`
 %End
 
     virtual void registerOptionsWidgetFactory( QgsOptionsWidgetFactory *factory ) = 0;
@@ -781,7 +781,7 @@ Register a new tab in the options dialog.
    Ownership of the factory is not transferred, and the factory must
 be unregistered when plugin is unloaded.
 
-.. seealso:: :py:func:`unregisterOptionsWidgetFactory()`
+.. seealso:: :py:func:`unregisterOptionsWidgetFactory`
 %End
 
     virtual void unregisterOptionsWidgetFactory( QgsOptionsWidgetFactory *factory ) = 0;
@@ -790,7 +790,7 @@ Unregister a previously registered tab in the options dialog.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`registerOptionsWidgetFactory()`
+.. seealso:: :py:func:`registerOptionsWidgetFactory`
 %End
 
     virtual void registerCustomDropHandler( QgsCustomDropHandler *handler ) = 0;
@@ -804,7 +804,7 @@ Register a new custom drop handler.
    Ownership of the factory is not transferred, and the factory must
 be unregistered when plugin is unloaded.
 
-.. seealso:: :py:func:`unregisterCustomDropHandler()`
+.. seealso:: :py:func:`unregisterCustomDropHandler`
 %End
 
     virtual void unregisterCustomDropHandler( QgsCustomDropHandler *handler ) = 0;
@@ -813,7 +813,7 @@ Unregister a previously registered custom drop handler.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`registerCustomDropHandler()`
+.. seealso:: :py:func:`registerCustomDropHandler`
 %End
 
     virtual void registerCustomLayoutDropHandler( QgsLayoutCustomDropHandler *handler ) = 0;
@@ -827,7 +827,7 @@ Register a new custom drop ``handler`` for layout windows.
    Ownership of the factory is not transferred, and the factory must
 be unregistered when plugin is unloaded.
 
-.. seealso:: :py:func:`unregisterCustomLayoutDropHandler()`
+.. seealso:: :py:func:`unregisterCustomLayoutDropHandler`
 %End
 
     virtual void unregisterCustomLayoutDropHandler( QgsLayoutCustomDropHandler *handler ) = 0;
@@ -836,7 +836,7 @@ Unregister a previously registered custom drop ``handler`` for layout windows.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`registerCustomLayoutDropHandler()`
+.. seealso:: :py:func:`registerCustomLayoutDropHandler`
 %End
 
 
@@ -896,7 +896,7 @@ locator.
    Plugins which register filters to the locator bar must take care to correctly call
 deregisterLocatorFilter() and deregister their filters upon plugin unload to avoid crashes.
 
-.. seealso:: :py:func:`deregisterLocatorFilter()`
+.. seealso:: :py:func:`deregisterLocatorFilter`
 
 .. versionadded:: 3.0
 %End
@@ -909,7 +909,7 @@ any currently running query is terminated.
 Plugins which register filters to the locator bar must take care to correctly call
 deregisterLocatorFilter() to deregister their filters upon plugin unload to avoid crashes.
 
-.. seealso:: :py:func:`registerLocatorFilter()`
+.. seealso:: :py:func:`registerLocatorFilter`
 
 .. versionadded:: 3.0
 %End
@@ -946,7 +946,7 @@ This signal is emitted when a new layout ``designer`` has been opened.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`layoutDesignerWillBeClosed()`
+.. seealso:: :py:func:`layoutDesignerWillBeClosed`
 %End
 
     void layoutDesignerWillBeClosed( QgsLayoutDesignerInterface *designer );
@@ -956,9 +956,9 @@ and deleted.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`layoutDesignerClosed()`
+.. seealso:: :py:func:`layoutDesignerClosed`
 
-.. seealso:: :py:func:`layoutDesignerOpened()`
+.. seealso:: :py:func:`layoutDesignerOpened`
 %End
 
     void layoutDesignerClosed();
@@ -967,9 +967,9 @@ This signal is emitted after a layout designer window is closed.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`layoutDesignerWillBeClosed()`
+.. seealso:: :py:func:`layoutDesignerWillBeClosed`
 
-.. seealso:: :py:func:`layoutDesignerOpened()`
+.. seealso:: :py:func:`layoutDesignerOpened`
 %End
 
     void initializationCompleted();

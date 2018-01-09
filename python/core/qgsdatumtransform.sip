@@ -74,20 +74,20 @@ and ``destinationTransformId`` transforms.
 %Docstring
 Returns a list of datum transformations which are available for the given ``source`` and ``destination`` CRS.
 
-.. seealso:: :py:func:`datumTransformToProj()`
+.. seealso:: :py:func:`datumTransformToProj`
 
-.. seealso:: :py:func:`datumTransformInfo()`
+.. seealso:: :py:func:`datumTransformInfo`
 %End
 
     static QString datumTransformToProj( int datumTransformId );
 %Docstring
 Returns a proj string representing the specified ``datumTransformId`` datum transform ID.
 
-.. seealso:: :py:func:`datumTransformations()`
+.. seealso:: :py:func:`datumTransformations`
 
-.. seealso:: :py:func:`datumTransformInfo()`
+.. seealso:: :py:func:`datumTransformInfo`
 
-.. seealso:: :py:func:`projStringToDatumTransformId()`
+.. seealso:: :py:func:`projStringToDatumTransformId`
 %End
 
     static int projStringToDatumTransformId( const QString &string );
@@ -95,7 +95,7 @@ Returns a proj string representing the specified ``datumTransformId`` datum tran
 Returns the datum transform ID corresponding to a specified proj ``string``.
 Returns -1 if matching datum ID was not found.
 
-.. seealso:: :py:func:`datumTransformToProj()`
+.. seealso:: :py:func:`datumTransformToProj`
 %End
 
     static QgsDatumTransform::TransformInfo datumTransformInfo( int datumTransformId );
@@ -104,9 +104,9 @@ Returns detailed information about the specified ``datumTransformId``.
 If ``datumTransformId`` was not a valid transform ID, a TransformInfo with TransformInfo.datumTransformId of
 -1 will be returned.
 
-.. seealso:: :py:func:`datumTransformations()`
+.. seealso:: :py:func:`datumTransformations`
 
-.. seealso:: :py:func:`datumTransformToProj()`
+.. seealso:: :py:func:`datumTransformToProj`
 %End
 
 };

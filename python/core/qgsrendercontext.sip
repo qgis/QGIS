@@ -95,7 +95,7 @@ DPI of 88 will be assumed.
 %Docstring
 Returns the destination QPainter for the render operation.
 
-.. seealso:: :py:func:`setPainter()`
+.. seealso:: :py:func:`setPainter`
 %End
 
     QgsCoordinateTransform coordinateTransform() const;
@@ -119,7 +119,7 @@ from a source to destination coordinate reference system.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`setTransformContext()`
+.. seealso:: :py:func:`setTransformContext`
 %End
 
     void setTransformContext( const QgsCoordinateTransformContext &context );
@@ -130,7 +130,7 @@ from a source to destination coordinate reference system.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`transformContext()`
+.. seealso:: :py:func:`transformContext`
 %End
 
     const QgsRectangle &extent() const;
@@ -143,7 +143,7 @@ Returns the scaling factor for the render to convert painter units
 to physical sizes. This is usually equal to the number of pixels
 per millimeter.
 
-.. seealso:: :py:func:`setScaleFactor()`
+.. seealso:: :py:func:`setScaleFactor`
 %End
 
     bool renderingStopped() const;
@@ -167,7 +167,7 @@ Used to enable or disable advanced effects such as blend modes
 Returns the renderer map scale. This will match the desired scale denominator
 for the rendered map, eg 1000.0 for a 1:1000 map render.
 
-.. seealso:: :py:func:`setRendererScale()`
+.. seealso:: :py:func:`setRendererScale`
 %End
 
 
@@ -212,7 +212,7 @@ Sets the scaling factor for the render to convert painter units
 to physical sizes. This should usually be equal to the number of pixels
 per millimeter.
 
-.. seealso:: :py:func:`scaleFactor()`
+.. seealso:: :py:func:`scaleFactor`
 %End
 
     void setRendererScale( double scale );
@@ -220,7 +220,7 @@ per millimeter.
 Sets the renderer map scale. This should match the desired scale denominator
 for the rendered map, eg 1000.0 for a 1:1000 map render.
 
-.. seealso:: :py:func:`rendererScale()`
+.. seealso:: :py:func:`rendererScale`
 %End
 
     void setPainter( QPainter *p );
@@ -229,7 +229,7 @@ Sets the destination QPainter for the render operation. Ownership of the painter
 is not transferred and the QPainter destination must stay alive for the duration
 of any rendering operations.
 
-.. seealso:: :py:func:`painter()`
+.. seealso:: :py:func:`painter`
 %End
 
     void setForceVectorOutput( bool force );
@@ -267,7 +267,7 @@ Added in QGIS v2.4
 Sets the expression context. This context is used for all expression evaluation
 associated with this render context.
 
-.. seealso:: :py:func:`expressionContext()`
+.. seealso:: :py:func:`expressionContext`
 
 .. versionadded:: 2.12
 %End
@@ -277,7 +277,7 @@ associated with this render context.
 Gets the expression context. This context should be used for all expression evaluation
 associated with this render context.
 
-.. seealso:: :py:func:`setExpressionContext()`
+.. seealso:: :py:func:`setExpressionContext`
 
 .. versionadded:: 2.12
 %End
@@ -300,7 +300,7 @@ Set a filter feature provider used for additional filtering of rendered features
 
 .. versionadded:: 2.14
 
-.. seealso:: :py:func:`featureFilterProvider()`
+.. seealso:: :py:func:`featureFilterProvider`
 %End
 
     const QgsFeatureFilterProvider *featureFilterProvider() const;
@@ -311,7 +311,7 @@ Get the filter feature provider used for additional filtering of rendered featur
 
 .. versionadded:: 2.14
 
-.. seealso:: :py:func:`setFeatureFilterProvider()`
+.. seealso:: :py:func:`setFeatureFilterProvider`
 %End
 
     void setSegmentationTolerance( double tolerance );
@@ -344,7 +344,7 @@ specified by the optional scale parameter.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`convertToMapUnits()`
+.. seealso:: :py:func:`convertToMapUnits`
 %End
 
     double convertToMapUnits( double size, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale &scale = QgsMapUnitScale() ) const;
@@ -354,7 +354,7 @@ specified by the optional scale parameter.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`convertToPainterUnits()`
+.. seealso:: :py:func:`convertToPainterUnits`
 %End
 
     double convertFromMapUnits( double sizeInMapUnits, QgsUnitTypes::RenderUnit outputUnit ) const;
@@ -363,7 +363,7 @@ Converts a size from map units to the specified units.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`convertToMapUnits()`
+.. seealso:: :py:func:`convertToMapUnits`
 %End
 
     double convertMetersToMapUnits( double meters ) const;

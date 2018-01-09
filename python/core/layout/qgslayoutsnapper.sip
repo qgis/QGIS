@@ -35,56 +35,56 @@ Constructor for QgsLayoutSnapper, attached to the specified ``layout``.
 %Docstring
 Sets the snap ``tolerance`` (in pixels) to use when snapping.
 
-.. seealso:: :py:func:`snapTolerance()`
+.. seealso:: :py:func:`snapTolerance`
 %End
 
     int snapTolerance() const;
 %Docstring
 Returns the snap tolerance (in pixels) to use when snapping.
 
-.. seealso:: :py:func:`setSnapTolerance()`
+.. seealso:: :py:func:`setSnapTolerance`
 %End
 
     bool snapToGrid() const;
 %Docstring
 Returns true if snapping to grid is enabled.
 
-.. seealso:: :py:func:`setSnapToGrid()`
+.. seealso:: :py:func:`setSnapToGrid`
 %End
 
     void setSnapToGrid( bool enabled );
 %Docstring
 Sets whether snapping to grid is ``enabled``.
 
-.. seealso:: :py:func:`snapToGrid()`
+.. seealso:: :py:func:`snapToGrid`
 %End
 
     bool snapToGuides() const;
 %Docstring
 Returns true if snapping to guides is enabled.
 
-.. seealso:: :py:func:`setSnapToGuides()`
+.. seealso:: :py:func:`setSnapToGuides`
 %End
 
     void setSnapToGuides( bool enabled );
 %Docstring
 Sets whether snapping to guides is ``enabled``.
 
-.. seealso:: :py:func:`snapToGuides()`
+.. seealso:: :py:func:`snapToGuides`
 %End
 
     bool snapToItems() const;
 %Docstring
 Returns true if snapping to items is enabled.
 
-.. seealso:: :py:func:`setSnapToItems()`
+.. seealso:: :py:func:`setSnapToItems`
 %End
 
     void setSnapToItems( bool enabled );
 %Docstring
 Sets whether snapping to items is ``enabled``.
 
-.. seealso:: :py:func:`snapToItems()`
+.. seealso:: :py:func:`snapToItems`
 %End
 
     QPointF snapPoint( QPointF point, double scaleFactor, bool &snapped /Out/, QGraphicsLineItem *horizontalSnapLine = 0,
@@ -104,7 +104,7 @@ will automatically display and position these lines to indicate snapping positio
 
 A list of items to ignore during the snapping can be specified via the ``ignoreItems`` list.
 
-.. seealso:: :py:func:`snapRect()`
+.. seealso:: :py:func:`snapRect`
 %End
 
     QRectF snapRect( const QRectF &rect, double scaleFactor, bool &snapped /Out/, QGraphicsLineItem *horizontalSnapLine = 0,
@@ -127,7 +127,7 @@ will automatically display and position these lines to indicate snapping positio
 
 A list of items to ignore during the snapping can be specified via the ``ignoreItems`` list.
 
-.. seealso:: :py:func:`snapPoint()`
+.. seealso:: :py:func:`snapPoint`
 %End
 
     QPointF snapPointToGrid( QPointF point, double scaleFactor, bool &snappedX /Out/, bool &snappedY /Out/ ) const;
@@ -143,7 +143,7 @@ graphics view transform().m11() value.
 If snapToGrid() is disabled, this method will return the point
 unchanged.
 
-.. seealso:: :py:func:`snapPointsToGrid()`
+.. seealso:: :py:func:`snapPointsToGrid`
 %End
 
     QPointF snapPointsToGrid( const QList< QPointF > &points, double scaleFactor, bool &snappedX /Out/, bool &snappedY /Out/ ) const;
@@ -160,7 +160,7 @@ If snapToGrid() is disabled, this method will not attempt to snap the points.
 The returned value is the smallest delta which the points need to be shifted by in order to align
 one of the points to the grid.
 
-.. seealso:: :py:func:`snapPointToGrid()`
+.. seealso:: :py:func:`snapPointToGrid`
 %End
 
     double snapPointToGuides( double original, Qt::Orientation orientation, double scaleFactor, bool &snapped /Out/ ) const;
@@ -175,7 +175,7 @@ graphics view transform().m11() value.
 If snapToGuides() is disabled, this method will return the point
 unchanged.
 
-.. seealso:: :py:func:`snapPointsToGuides()`
+.. seealso:: :py:func:`snapPointsToGuides`
 %End
 
     double snapPointsToGuides( const QList< double > &points, Qt::Orientation orientation, double scaleFactor, bool &snapped /Out/ ) const;
@@ -192,7 +192,7 @@ If snapToGuides() is disabled, this method will not attempt to snap the points.
 The returned value is the smallest delta which the points need to be shifted by in order to align
 one of the points to a guide.
 
-.. seealso:: :py:func:`snapPointToGuides()`
+.. seealso:: :py:func:`snapPointToGuides`
 %End
 
     double snapPointToItems( double original, Qt::Orientation orientation, double scaleFactor, const QList< QgsLayoutItem * > &ignoreItems, bool &snapped /Out/,
@@ -213,7 +213,7 @@ A list of items to ignore during the snapping can be specified via the ``ignoreI
 If ``snapLine`` is specified, the snapper will automatically show (or hide) the snap line
 based on the result of the snap, and position it at the correct location for the snap.
 
-.. seealso:: :py:func:`snapPointsToItems()`
+.. seealso:: :py:func:`snapPointsToItems`
 %End
 
     double snapPointsToItems( const QList< double > &points, Qt::Orientation orientation, double scaleFactor, const QList< QgsLayoutItem * > &ignoreItems, bool &snapped /Out/,
@@ -231,7 +231,7 @@ If snapToItems() is disabled, this method will not attempt to snap the points.
 The returned value is the smallest delta which the points need to be shifted by in order to align
 one of the points to an item bound.
 
-.. seealso:: :py:func:`snapPointToItems()`
+.. seealso:: :py:func:`snapPointToItems`
 %End
 
     virtual bool writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const;
@@ -239,7 +239,7 @@ one of the points to an item bound.
 %Docstring
 Stores the snapper's state in a DOM element. The ``parentElement`` should refer to the parent layout's DOM element.
 
-.. seealso:: :py:func:`readXml()`
+.. seealso:: :py:func:`readXml`
 %End
 
     virtual bool readXml( const QDomElement &gridElement, const QDomDocument &document, const QgsReadWriteContext &context );
@@ -247,7 +247,7 @@ Stores the snapper's state in a DOM element. The ``parentElement`` should refer 
 %Docstring
 Sets the snapper's state from a DOM element. snapperElement is the DOM node corresponding to the snapper.
 
-.. seealso:: :py:func:`writeXml()`
+.. seealso:: :py:func:`writeXml`
 %End
 
 };

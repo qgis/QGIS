@@ -54,54 +54,54 @@ Constructor for an empty point, where both x and y are set to 0.
 %Docstring
 Sets new x and y coordinates for the point.
 
-.. seealso:: :py:func:`setX()`
+.. seealso:: :py:func:`setX`
 
-.. seealso:: :py:func:`setY()`
+.. seealso:: :py:func:`setY`
 
-.. seealso:: :py:func:`setUnits()`
+.. seealso:: :py:func:`setUnits`
 %End
 
     double x() const;
 %Docstring
 Returns x coordinate of point.
 
-.. seealso:: :py:func:`setX()`
+.. seealso:: :py:func:`setX`
 
-.. seealso:: y()
+.. seealso:: y
 %End
 
     void setX( const double x );
 %Docstring
 Sets the x coordinate of point.
 
-.. seealso:: x()
+.. seealso:: x
 
-.. seealso:: :py:func:`setY()`
+.. seealso:: :py:func:`setY`
 %End
 
     double y() const;
 %Docstring
 Returns y coordinate of point.
 
-.. seealso:: :py:func:`setY()`
+.. seealso:: :py:func:`setY`
 
-.. seealso:: x()
+.. seealso:: x
 %End
 
     void setY( const double y );
 %Docstring
 Sets y coordinate of point.
 
-.. seealso:: y()
+.. seealso:: y
 
-.. seealso:: :py:func:`setX()`
+.. seealso:: :py:func:`setX`
 %End
 
     QgsUnitTypes::LayoutUnit units() const;
 %Docstring
 Returns the units for the point.
 
-.. seealso:: :py:func:`setUnits()`
+.. seealso:: :py:func:`setUnits`
 %End
 
     void setUnits( const QgsUnitTypes::LayoutUnit units );
@@ -109,7 +109,7 @@ Returns the units for the point.
 Sets the ``units`` for the point. Does not alter the stored coordinates,
 ie. no conversion is done.
 
-.. seealso:: :py:func:`units()`
+.. seealso:: :py:func:`units`
 %End
 
     bool isNull() const;
@@ -132,14 +132,14 @@ during this operation.
 %Docstring
 Encodes the layout point to a string
 
-.. seealso:: :py:func:`decodePoint()`
+.. seealso:: :py:func:`decodePoint`
 %End
 
     static QgsLayoutPoint decodePoint( const QString &string );
 %Docstring
 Decodes a point from a ``string``.
 
-.. seealso:: :py:func:`encodePoint()`
+.. seealso:: :py:func:`encodePoint`
 %End
 
     bool operator==( const QgsLayoutPoint &other ) const;

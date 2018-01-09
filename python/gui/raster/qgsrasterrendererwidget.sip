@@ -33,7 +33,7 @@ map extent and other properties from the canvas.
 
 :param canvas: map canvas
 
-.. seealso:: :py:func:`mapCanvas()`
+.. seealso:: :py:func:`mapCanvas`
 
 .. versionadded:: 2.16
 %End
@@ -42,9 +42,9 @@ map extent and other properties from the canvas.
 %Docstring
 Returns the map canvas associated with the widget.
 
-.. seealso:: :py:func:`setMapCanvas()`
+.. seealso:: :py:func:`setMapCanvas`
 
-.. seealso:: :py:func:`canvasExtent()`
+.. seealso:: :py:func:`canvasExtent`
 
 .. versionadded:: 2.16
 %End

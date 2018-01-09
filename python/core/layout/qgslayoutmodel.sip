@@ -79,14 +79,14 @@ Constructor for a QgsLayoutModel attached to the specified ``layout``.
 %Docstring
 Returns the QgsLayoutItem corresponding to a QModelIndex ``index``, if possible.
 
-.. seealso:: :py:func:`indexForItem()`
+.. seealso:: :py:func:`indexForItem`
 %End
 
     QModelIndex indexForItem( QgsLayoutItem *item, const int column = 0 );
 %Docstring
 Returns the QModelIndex corresponding to a :py:class:`QgsLayoutItem` ``item`` and ``column``, if possible.
 
-.. seealso:: :py:func:`itemFromIndex()`
+.. seealso:: :py:func:`itemFromIndex`
 %End
 
   public slots:
@@ -118,7 +118,7 @@ Constructor for QgsLayoutProxyModelm, attached to the specified ``layout``.
 Returns the current item type filter, or QgsLayoutItemRegistry.LayoutItem if no
 item type filter is set.
 
-.. seealso:: :py:func:`setFilterType()`
+.. seealso:: :py:func:`setFilterType`
 %End
 
     void setFilterType( QgsLayoutItemRegistry::ItemType filter );
@@ -127,21 +127,21 @@ Sets the item type ``filter``. Only matching item types will be shown.
 Set ``filter`` to QgsLayoutItemRegistry.LayoutItem to show all
 item types.
 
-.. seealso:: :py:func:`filterType()`
+.. seealso:: :py:func:`filterType`
 %End
 
     void setExceptedItemList( const QList< QgsLayoutItem * > &items );
 %Docstring
 Sets a list of specific ``items`` to exclude from the model.
 
-.. seealso:: :py:func:`exceptedItemList()`
+.. seealso:: :py:func:`exceptedItemList`
 %End
 
     QList< QgsLayoutItem * > exceptedItemList() const;
 %Docstring
 Returns the list of specific items excluded from the model.
 
-.. seealso:: :py:func:`setExceptedItemList()`
+.. seealso:: :py:func:`setExceptedItemList`
 %End
 
     QgsLayoutModel *sourceLayerModel() const;

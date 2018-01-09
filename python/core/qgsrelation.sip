@@ -96,9 +96,9 @@ which have a foreign key pointing to the provided feature.
 
 :return: An iterator with all the referenced features
 
-.. seealso:: :py:func:`getRelatedFeaturesRequest()`
+.. seealso:: :py:func:`getRelatedFeaturesRequest`
 
-.. seealso:: :py:func:`getRelatedFeaturesFilter()`
+.. seealso:: :py:func:`getRelatedFeaturesFilter`
 %End
 
     QgsFeatureRequest getRelatedFeaturesRequest( const QgsFeature &feature ) const;
@@ -110,9 +110,9 @@ which have a foreign key pointing to the provided feature.
 
 :return: A request for all the referencing features
 
-.. seealso:: :py:func:`getRelatedFeatures()`
+.. seealso:: :py:func:`getRelatedFeatures`
 
-.. seealso:: :py:func:`getRelatedFeaturesFilter()`
+.. seealso:: :py:func:`getRelatedFeaturesFilter`
 %End
 
     QString getRelatedFeaturesFilter( const QgsFeature &feature ) const;
@@ -126,9 +126,9 @@ which have a foreign key pointing to the provided feature.
 
 .. versionadded:: 2.16
 
-.. seealso:: :py:func:`getRelatedFeatures()`
+.. seealso:: :py:func:`getRelatedFeatures`
 
-.. seealso:: :py:func:`getRelatedFeaturesRequest()`
+.. seealso:: :py:func:`getRelatedFeaturesRequest`
 %End
 
     QgsFeatureRequest getReferencedFeatureRequest( const QgsAttributes &attributes ) const;
@@ -169,7 +169,7 @@ which is referenced by the provided feature.
 %Docstring
 Returns a human readable name for this relation. Mostly used as title for the children.
 
-.. seealso:: :py:func:`id()`
+.. seealso:: :py:func:`id`
 
 :return: A name
 %End

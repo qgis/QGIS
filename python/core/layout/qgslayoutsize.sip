@@ -59,54 +59,54 @@ Constructor for an empty layout size
 %Docstring
 Sets new ``width`` and ``height`` for the size.
 
-.. seealso:: :py:func:`setWidth()`
+.. seealso:: :py:func:`setWidth`
 
-.. seealso:: :py:func:`setHeight()`
+.. seealso:: :py:func:`setHeight`
 
-.. seealso:: :py:func:`setUnits()`
+.. seealso:: :py:func:`setUnits`
 %End
 
     double width() const;
 %Docstring
 Returns the width of the size.
 
-.. seealso:: :py:func:`setWidth()`
+.. seealso:: :py:func:`setWidth`
 
-.. seealso:: :py:func:`height()`
+.. seealso:: :py:func:`height`
 %End
 
     void setWidth( const double width );
 %Docstring
 Sets the ``width`` for the size.
 
-.. seealso:: :py:func:`width()`
+.. seealso:: :py:func:`width`
 
-.. seealso:: :py:func:`setHeight()`
+.. seealso:: :py:func:`setHeight`
 %End
 
     double height() const;
 %Docstring
 Returns the height of the size.
 
-.. seealso:: :py:func:`setHeight()`
+.. seealso:: :py:func:`setHeight`
 
-.. seealso:: :py:func:`width()`
+.. seealso:: :py:func:`width`
 %End
 
     void setHeight( const double height );
 %Docstring
 Sets the ``height`` for the size.
 
-.. seealso:: :py:func:`height()`
+.. seealso:: :py:func:`height`
 
-.. seealso:: :py:func:`setWidth()`
+.. seealso:: :py:func:`setWidth`
 %End
 
     QgsUnitTypes::LayoutUnit units() const;
 %Docstring
 Returns the units for the size.
 
-.. seealso:: :py:func:`setUnits()`
+.. seealso:: :py:func:`setUnits`
 %End
 
     void setUnits( const QgsUnitTypes::LayoutUnit units );
@@ -114,7 +114,7 @@ Returns the units for the size.
 Sets the ``units`` for the size. Does not alter the stored width or height,
 ie. no conversion is done.
 
-.. seealso:: :py:func:`units()`
+.. seealso:: :py:func:`units`
 %End
 
     bool isEmpty() const;
@@ -137,14 +137,14 @@ during this operation.
 %Docstring
 Encodes the layout size to a string
 
-.. seealso:: :py:func:`decodeSize()`
+.. seealso:: :py:func:`decodeSize`
 %End
 
     static QgsLayoutSize decodeSize( const QString &string );
 %Docstring
 Decodes a size from a ``string``.
 
-.. seealso:: :py:func:`encodeSize()`
+.. seealso:: :py:func:`encodeSize`
 %End
 
     bool operator==( const QgsLayoutSize &other ) const;

@@ -205,7 +205,7 @@ Returns the scheme currently selected in the list.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`setScheme()`
+.. seealso:: :py:func:`setScheme`
 %End
 
   public slots:
@@ -218,7 +218,7 @@ Sets the color scheme to show in the list
 :param context: context string provided to color scheme
 :param baseColor: base color for color scheme
 
-.. seealso:: :py:func:`scheme()`
+.. seealso:: :py:func:`scheme`
 %End
 
     void removeSelection();
@@ -255,7 +255,7 @@ Displays a file picker dialog allowing users to import colors into the list from
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`showExportColorsDialog()`
+.. seealso:: :py:func:`showExportColorsDialog`
 %End
 
     void showExportColorsDialog();
@@ -264,7 +264,7 @@ Displays a file picker dialog allowing users to export colors from the list into
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`showImportColorsDialog()`
+.. seealso:: :py:func:`showImportColorsDialog`
 %End
 
   signals:

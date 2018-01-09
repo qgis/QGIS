@@ -51,7 +51,7 @@ Constructor for QgsFilterLineEdit.
 %Docstring
 Returns true if the widget's clear button is visible.
 
-.. seealso:: :py:func:`setShowClearButton()`
+.. seealso:: :py:func:`setShowClearButton`
 
 .. versionadded:: 3.0
 %End
@@ -62,7 +62,7 @@ Sets whether the widget's clear button is visible.
 
 :param visible: set to false to hide the clear button
 
-.. seealso:: :py:func:`showClearButton()`
+.. seealso:: :py:func:`showClearButton`
 
 .. versionadded:: 3.0
 %End
@@ -72,7 +72,7 @@ Sets whether the widget's clear button is visible.
 Returns the clear mode for the widget. The clear mode defines the behavior of the
 widget when its value is cleared. This defaults to ClearToNull.
 
-.. seealso:: :py:func:`setClearMode()`
+.. seealso:: :py:func:`setClearMode`
 
 .. versionadded:: 3.0
 %End
@@ -82,7 +82,7 @@ widget when its value is cleared. This defaults to ClearToNull.
 Sets the clear mode for the widget. The clear mode defines the behavior of the
 widget when its value is cleared. This defaults to ClearToNull.
 
-.. seealso:: :py:func:`clearMode()`
+.. seealso:: :py:func:`clearMode`
 
 .. versionadded:: 3.0
 %End
@@ -95,16 +95,16 @@ the text that is shown to users when the widget's value is null.
 
 :param nullValue: string to show when widget's value is null
 
-.. seealso:: :py:func:`nullValue()`
+.. seealso:: :py:func:`nullValue`
 %End
 
     QString nullValue() const;
 %Docstring
 Returns the string used for representating null values in the widget.
 
-.. seealso:: :py:func:`setNullValue()`
+.. seealso:: :py:func:`setNullValue`
 
-.. seealso:: :py:func:`isNull()`
+.. seealso:: :py:func:`isNull`
 %End
 
     void setShowSearchIcon( bool visible );
@@ -133,9 +133,9 @@ is equal to ClearToDefault.
 
 :param defaultValue: default value
 
-.. seealso:: :py:func:`defaultValue()`
+.. seealso:: :py:func:`defaultValue`
 
-.. seealso:: :py:func:`clearMode()`
+.. seealso:: :py:func:`clearMode`
 
 .. versionadded:: 3.0
 %End
@@ -146,9 +146,9 @@ Returns the default value for the widget. The default value is a value
 which the widget will be reset to if it is cleared and the clearMode()
 is equal to ClearToDefault.
 
-.. seealso:: :py:func:`setDefaultValue()`
+.. seealso:: :py:func:`setDefaultValue`
 
-.. seealso:: :py:func:`clearMode()`
+.. seealso:: :py:func:`clearMode`
 
 .. versionadded:: 3.0
 %End
@@ -160,7 +160,7 @@ Sets the current text for the widget with support for handling null values.
 :param value: The text to set. If a null string is provided, the text shown in the
 widget will be set to the current nullValue().
 
-.. seealso:: :py:func:`value()`
+.. seealso:: :py:func:`value`
 %End
 
     QString value() const;
@@ -171,7 +171,7 @@ a null string.
 
 :return: Current text (or null string if it matches the nullValue() property )
 
-.. seealso:: :py:func:`setValue()`
+.. seealso:: :py:func:`setValue`
 %End
 
     bool isNull() const;
@@ -180,7 +180,7 @@ Determine if the current text represents null.
 
 :return: True if the widget's value is null.
 
-.. seealso:: :py:func:`nullValue()`
+.. seealso:: :py:func:`nullValue`
 %End
 
     bool showSpinner() const;
@@ -219,7 +219,7 @@ Will select all text when this widget receives the focus.
 %Docstring
 Clears the widget and resets it to the null value.
 
-.. seealso:: :py:func:`nullValue()`
+.. seealso:: :py:func:`nullValue`
 
 .. versionadded:: 3.0
 %End
@@ -230,7 +230,7 @@ Clears the widget and resets it to the null value.
 %Docstring
 Emitted when the widget is cleared
 
-.. seealso:: :py:func:`clearValue()`
+.. seealso:: :py:func:`clearValue`
 %End
 
     void valueChanged( const QString &value );

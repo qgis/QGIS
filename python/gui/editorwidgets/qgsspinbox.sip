@@ -58,14 +58,14 @@ allows users to reset the widget to a default or empty state.
 
 :param showClearButton: set to true to show the clear button, or false to hide it
 
-.. seealso:: :py:func:`showClearButton()`
+.. seealso:: :py:func:`showClearButton`
 %End
 
     bool showClearButton() const;
 %Docstring
 Returns whether the widget is showing a clear button.
 
-.. seealso:: :py:func:`setShowClearButton()`
+.. seealso:: :py:func:`setShowClearButton`
 %End
 
     void setExpressionsEnabled( const bool enabled );
@@ -101,7 +101,7 @@ Defines the clear value as a custom value and will automatically set the clear v
 :param customValue: defines the numerical value used as the clear value
 :param clearValueText: is the text displayed when the spin box is at the clear value. If not specified, no special value text is used.
 
-.. seealso:: :py:func:`setClearValue()`
+.. seealso:: :py:func:`setClearValue`
 %End
 
     void setClearValueMode( ClearValueMode mode, const QString &clearValueText = QString() );
@@ -116,7 +116,7 @@ Defines if the clear value should be the minimum or maximum values of the widget
 %Docstring
 Returns the value used when clear() is called.
 
-.. seealso:: :py:func:`setClearValue()`
+.. seealso:: :py:func:`setClearValue`
 %End
 
     virtual int valueFromText( const QString &text ) const;

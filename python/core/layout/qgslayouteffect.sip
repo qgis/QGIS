@@ -35,7 +35,7 @@ Constructor for QgsLayoutEffect.
 Sets the composition (blending) ``mode`` used for rendering
 the item.
 
-.. seealso:: :py:func:`compositionMode()`
+.. seealso:: :py:func:`compositionMode`
 %End
 
     QPainter::CompositionMode compositionMode() const;
@@ -43,7 +43,7 @@ the item.
 Returns the composition (blending) mode used for rendering
 the item.
 
-.. seealso:: :py:func:`setCompositionMode()`
+.. seealso:: :py:func:`setCompositionMode`
 %End
 
   protected:

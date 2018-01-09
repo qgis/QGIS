@@ -61,7 +61,7 @@ Emitted always when the downloader exits
 %Docstring
 Emitted when the download was canceled by the user.
 
-.. seealso:: :py:func:`cancelDownload()`
+.. seealso:: :py:func:`cancelDownload`
 %End
 
     void downloadError( QStringList errorMessages );
@@ -80,7 +80,7 @@ Emitted when data are ready to be processed
 Call to abort the download and delete this object after the cancelation
 has been processed.
 
-.. seealso:: :py:func:`downloadCanceled()`
+.. seealso:: :py:func:`downloadCanceled`
 %End
 
     void startDownload();

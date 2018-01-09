@@ -47,7 +47,7 @@ ellipsoid if a valid ellipsoid() has been set.
 
 .. versionadded:: 2.14
 
-.. seealso:: :py:func:`ellipsoid()`
+.. seealso:: :py:func:`ellipsoid`
 %End
 
     void setSourceCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context );
@@ -56,14 +56,14 @@ Sets source spatial reference system ``crs``.
 
 .. versionadded:: 2.2
 
-.. seealso:: :py:func:`sourceCrs()`
+.. seealso:: :py:func:`sourceCrs`
 %End
 
     QgsCoordinateReferenceSystem sourceCrs() const;
 %Docstring
 Returns the source spatial reference system.
 
-.. seealso:: :py:func:`setSourceCrs()`
+.. seealso:: :py:func:`setSourceCrs`
 %End
 
     bool setEllipsoid( const QString &ellipsoid );
@@ -74,9 +74,9 @@ Calculations will only use the ellipsoid if a valid ellipsoid has been set.
 
 :return: true if ellipsoid was successfully set
 
-.. seealso:: :py:func:`ellipsoid()`
+.. seealso:: :py:func:`ellipsoid`
 
-.. seealso:: :py:func:`willUseEllipsoid()`
+.. seealso:: :py:func:`willUseEllipsoid`
 %End
 
     bool setEllipsoid( double semiMajor, double semiMinor );
@@ -86,9 +86,9 @@ a valid ellipsoid been set.
 
 :return: true if ellipsoid was successfully set
 
-.. seealso:: :py:func:`ellipsoid()`
+.. seealso:: :py:func:`ellipsoid`
 
-.. seealso:: :py:func:`willUseEllipsoid()`
+.. seealso:: :py:func:`willUseEllipsoid`
 %End
 
     QString ellipsoid() const;
@@ -96,31 +96,31 @@ a valid ellipsoid been set.
 Returns ellipsoid's acronym. Calculations will only use the
 ellipsoid if a valid ellipsoid has been set.
 
-.. seealso:: :py:func:`setEllipsoid()`
+.. seealso:: :py:func:`setEllipsoid`
 
-.. seealso:: :py:func:`willUseEllipsoid()`
+.. seealso:: :py:func:`willUseEllipsoid`
 %End
 
     double ellipsoidSemiMajor() const;
 %Docstring
 Returns the ellipsoid's semi major axis.
 
-.. seealso:: :py:func:`ellipsoid()`
+.. seealso:: :py:func:`ellipsoid`
 
-.. seealso:: :py:func:`ellipsoidSemiMinor()`
+.. seealso:: :py:func:`ellipsoidSemiMinor`
 
-.. seealso:: :py:func:`ellipsoidInverseFlattening()`
+.. seealso:: :py:func:`ellipsoidInverseFlattening`
 %End
 
     double ellipsoidSemiMinor() const;
 %Docstring
 Returns ellipsoid's semi minor axis.
 
-.. seealso:: :py:func:`ellipsoid()`
+.. seealso:: :py:func:`ellipsoid`
 
-.. seealso:: :py:func:`ellipsoidSemiMajor()`
+.. seealso:: :py:func:`ellipsoidSemiMajor`
 
-.. seealso:: :py:func:`ellipsoidInverseFlattening()`
+.. seealso:: :py:func:`ellipsoidInverseFlattening`
 %End
 
     double ellipsoidInverseFlattening() const;
@@ -128,11 +128,11 @@ Returns ellipsoid's semi minor axis.
 Returns ellipsoid's inverse flattening.
 The inverse flattening is calculated with invf = a/(a-b).
 
-.. seealso:: :py:func:`ellipsoid()`
+.. seealso:: :py:func:`ellipsoid`
 
-.. seealso:: :py:func:`ellipsoidSemiMajor()`
+.. seealso:: :py:func:`ellipsoidSemiMajor`
 
-.. seealso:: :py:func:`ellipsoidSemiMinor()`
+.. seealso:: :py:func:`ellipsoidSemiMinor`
 %End
 
     double measureArea( const QgsGeometry &geometry ) const;
@@ -146,11 +146,11 @@ returned area can be retrieved by calling areaUnits().
 
 .. versionadded:: 2.12
 
-.. seealso:: :py:func:`measureLength()`
+.. seealso:: :py:func:`measureLength`
 
-.. seealso:: :py:func:`measurePerimeter()`
+.. seealso:: :py:func:`measurePerimeter`
 
-.. seealso:: :py:func:`areaUnits()`
+.. seealso:: :py:func:`areaUnits`
 %End
 
     double measureLength( const QgsGeometry &geometry ) const;
@@ -164,11 +164,11 @@ returned distance can be retrieved by calling lengthUnits().
 
 .. versionadded:: 2.12
 
-.. seealso:: :py:func:`lengthUnits()`
+.. seealso:: :py:func:`lengthUnits`
 
-.. seealso:: :py:func:`measureArea()`
+.. seealso:: :py:func:`measureArea`
 
-.. seealso:: :py:func:`measurePerimeter()`
+.. seealso:: :py:func:`measurePerimeter`
 %End
 
     double measurePerimeter( const QgsGeometry &geometry ) const;
@@ -182,11 +182,11 @@ returned perimeter can be retrieved by calling lengthUnits().
 
 .. versionadded:: 2.12
 
-.. seealso:: :py:func:`lengthUnits()`
+.. seealso:: :py:func:`lengthUnits`
 
-.. seealso:: :py:func:`measureArea()`
+.. seealso:: :py:func:`measureArea`
 
-.. seealso:: :py:func:`measurePerimeter()`
+.. seealso:: :py:func:`measurePerimeter`
 %End
 
     double measureLine( const QVector<QgsPointXY> &points ) const;
@@ -197,7 +197,7 @@ Measures the length of a line with multiple segments.
 
 :return: length of line. The units for the returned length can be retrieved by calling lengthUnits().
 
-.. seealso:: :py:func:`lengthUnits()`
+.. seealso:: :py:func:`lengthUnits`
 %End
 
     double measureLine( const QgsPointXY &p1, const QgsPointXY &p2 ) const;
@@ -209,7 +209,7 @@ Measures the distance between two points.
 
 :return: distance between points. The units for the returned distance can be retrieved by calling lengthUnits().
 
-.. seealso:: :py:func:`lengthUnits()`
+.. seealso:: :py:func:`lengthUnits`
 %End
 
     double measureLineProjected( const QgsPointXY &p1, double distance = 1, double azimuth = M_PI_2, QgsPointXY *projectedPoint /Out/ = 0 ) const;
@@ -225,9 +225,9 @@ otherwise QgsPoint.project() will be called after QgsUnitTypes.fromUnitToUnitFac
 
 :return: distance in mapUnits
 
-.. seealso:: :py:func:`sourceCrs()`
+.. seealso:: :py:func:`sourceCrs`
 
-.. seealso:: :py:func:`computeSpheroidProject()`
+.. seealso:: :py:func:`computeSpheroidProject`
 
 .. note::
 
@@ -240,7 +240,7 @@ otherwise QgsPoint.project() will be called after QgsUnitTypes.fromUnitToUnitFac
 %Docstring
 Returns the units of distance for length calculations made by this object.
 
-.. seealso:: :py:func:`areaUnits()`
+.. seealso:: :py:func:`areaUnits`
 
 .. versionadded:: 2.14
 %End
@@ -251,7 +251,7 @@ Returns the units of area for areal calculations made by this object.
 
 .. versionadded:: 2.14
 
-.. seealso:: :py:func:`lengthUnits()`
+.. seealso:: :py:func:`lengthUnits`
 %End
 
     double measurePolygon( const QVector<QgsPointXY> &points ) const;
@@ -278,7 +278,7 @@ kilometers
 
 .. versionadded:: 2.16
 
-.. seealso:: :py:func:`formatArea()`
+.. seealso:: :py:func:`formatArea`
 %End
 
     static QString formatArea( double area, int decimals, QgsUnitTypes::AreaUnit unit, bool keepBaseUnit = false );
@@ -295,7 +295,7 @@ square kilometers
 
 .. versionadded:: 2.14
 
-.. seealso:: :py:func:`formatDistance()`
+.. seealso:: :py:func:`formatDistance`
 %End
 
     double convertLengthMeasurement( double length, QgsUnitTypes::DistanceUnit toUnits ) const;
@@ -309,7 +309,7 @@ was calculated by this class, ie that its unit of length is equal to lengthUnits
 
 :return: converted distance
 
-.. seealso:: :py:func:`convertAreaMeasurement()`
+.. seealso:: :py:func:`convertAreaMeasurement`
 
 .. versionadded:: 2.14
 %End
@@ -325,7 +325,7 @@ was calculated by this class, ie that its unit of area is equal to areaUnits().
 
 :return: converted area
 
-.. seealso:: :py:func:`convertLengthMeasurement()`
+.. seealso:: :py:func:`convertLengthMeasurement`
 
 .. versionadded:: 2.14
 %End

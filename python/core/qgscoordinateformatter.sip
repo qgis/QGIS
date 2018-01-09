@@ -56,7 +56,7 @@ The ``precision`` argument gives the number of decimal places to include for coo
 
 Optional ``flags`` can be specified to control the output format.
 
-.. seealso:: :py:func:`formatY()`
+.. seealso:: :py:func:`formatY`
 %End
 
     static QString formatY( double y, Format format, int precision = 12, FormatFlags flags = FlagDegreesUseStringSuffix );
@@ -69,7 +69,7 @@ The ``precision`` argument gives the number of decimal places to include for coo
 
 Optional ``flags`` can be specified to control the output format.
 
-.. seealso:: :py:func:`formatX()`
+.. seealso:: :py:func:`formatX`
 %End
 
     static QString format( QgsPointXY point, Format format, int precision = 12,  FormatFlags flags = FlagDegreesUseStringSuffix );

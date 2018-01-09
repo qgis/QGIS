@@ -30,42 +30,42 @@ Constructor for a QgsGeoNodeConnection with the specified ``name``.
 %Docstring
 Returns the name of the connection.
 
-.. seealso:: :py:func:`setConnectionName()`
+.. seealso:: :py:func:`setConnectionName`
 %End
 
     void setConnectionName( const QString &connectionName );
 %Docstring
 Sets the ``name`` of the connection.
 
-.. seealso:: :py:func:`connectionName()`
+.. seealso:: :py:func:`connectionName`
 %End
 
     QgsDataSourceUri uri() const;
 %Docstring
 Returns the URI for the GeoNode connection.
 
-.. seealso:: :py:func:`setUri()`
+.. seealso:: :py:func:`setUri`
 %End
 
     void setUri( const QgsDataSourceUri &uri );
 %Docstring
 Sets the ``uri`` for the GeoNode connection.
 
-.. seealso:: :py:func:`uri()`
+.. seealso:: :py:func:`uri`
 %End
 
     QgsDataSourceUri &addWmsConnectionSettings( QgsDataSourceUri &uri ) const;
 %Docstring
 Adds uri parameters relating to the settings for a WMS layer on the connection to a :py:class:`QgsDataSourceUri` ``uri``.
 
-.. seealso:: :py:func:`addWmsWcsConnectionSettings()`
+.. seealso:: :py:func:`addWmsWcsConnectionSettings`
 %End
 
     QgsDataSourceUri &addWfsConnectionSettings( QgsDataSourceUri &uri ) const;
 %Docstring
 Adds uri parameters relating to the settings for a WFS layer on the connection to a :py:class:`QgsDataSourceUri` ``uri``.
 
-.. seealso:: :py:func:`addWmsWcsConnectionSettings()`
+.. seealso:: :py:func:`addWmsWcsConnectionSettings`
 %End
 
 };

@@ -102,7 +102,7 @@ text will be used when sorting.
 :param column: column index
 :param value: sort value
 
-.. seealso:: :py:func:`sortData()`
+.. seealso:: :py:func:`sortData`
 %End
 
     QVariant sortData( int column ) const;
@@ -111,7 +111,7 @@ Returns the custom sort data for a specified column. If set, this value will be 
 sorting the item instead of the item's display text. If not set, the item's display
 text will be used when sorting.
 
-.. seealso:: :py:func:`setSortData()`
+.. seealso:: :py:func:`setSortData`
 %End
 
     void setAlwaysOnTopPriority( int priority );
@@ -122,7 +122,7 @@ sort column and sort or display value for the item.
 :param priority: priority for sorting always on top items. Items with a lower priority will
 be placed above items with a higher priority.
 
-.. seealso:: :py:func:`alwaysOnTopPriority()`
+.. seealso:: :py:func:`alwaysOnTopPriority`
 %End
 
     int alwaysOnTopPriority() const;
@@ -132,7 +132,7 @@ be placed above items with a higher priority.
 
 :return: priority, or -1 if item is not set to show always on top
 
-.. seealso:: :py:func:`setAlwaysOnTopPriority()`
+.. seealso:: :py:func:`setAlwaysOnTopPriority`
 %End
 
     virtual bool operator<( const QTreeWidgetItem &other ) const;

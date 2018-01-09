@@ -102,22 +102,22 @@ class QgsWkbTypes
 %Docstring
 Returns the single type for a WKB type. For example, for MultiPolygon WKB types the single type would be Polygon.
 
-.. seealso:: :py:func:`isSingleType()`
+.. seealso:: :py:func:`isSingleType`
 
-.. seealso:: :py:func:`multiType()`
+.. seealso:: :py:func:`multiType`
 
-.. seealso:: :py:func:`flatType()`
+.. seealso:: :py:func:`flatType`
 %End
 
     static Type multiType( Type type );
 %Docstring
 Returns the multi type for a WKB type. For example, for Polygon WKB types the multi type would be MultiPolygon.
 
-.. seealso:: :py:func:`isMultiType()`
+.. seealso:: :py:func:`isMultiType`
 
-.. seealso:: :py:func:`singleType()`
+.. seealso:: :py:func:`singleType`
 
-.. seealso:: :py:func:`flatType()`
+.. seealso:: :py:func:`flatType`
 %End
 
     static Type flatType( Type type );
@@ -125,9 +125,9 @@ Returns the multi type for a WKB type. For example, for Polygon WKB types the mu
 Returns the flat type for a WKB type. This is the WKB type minus any Z or M dimensions.
 For example, for PolygonZM WKB types the single type would be Polygon.
 
-.. seealso:: :py:func:`singleType()`
+.. seealso:: :py:func:`singleType`
 
-.. seealso:: :py:func:`multiType()`
+.. seealso:: :py:func:`multiType`
 %End
 
     static Type zmType( Type type, bool hasZ, bool hasM );
@@ -146,18 +146,18 @@ Attempts to extract the WKB type from a WKT string.
 %Docstring
 Returns true if the WKB type is a single type.
 
-.. seealso:: :py:func:`isMultiType()`
+.. seealso:: :py:func:`isMultiType`
 
-.. seealso:: :py:func:`singleType()`
+.. seealso:: :py:func:`singleType`
 %End
 
     static bool isMultiType( Type type );
 %Docstring
 Returns true if the WKB type is a multi type.
 
-.. seealso:: :py:func:`isSingleType()`
+.. seealso:: :py:func:`isSingleType`
 
-.. seealso:: :py:func:`multiType()`
+.. seealso:: :py:func:`multiType`
 %End
 
     static bool isCurvedType( Type type );
@@ -175,7 +175,7 @@ always be less than or equal to the coordinate dimension.
 :return: 0 for point geometries, 1 for line geometries, 2 for polygon geometries
 Invalid geometry types will return a dimension of 0.
 
-.. seealso:: :py:func:`coordDimensions()`
+.. seealso:: :py:func:`coordDimensions`
 %End
 
     static int coordDimensions( Type type );
@@ -186,7 +186,7 @@ Invalid geometry types will return a dimension of 0.
 
 .. versionadded:: 2.14
 
-.. seealso:: :py:func:`wkbDimensions()`
+.. seealso:: :py:func:`wkbDimensions`
 %End
 
     static GeometryType geometryType( Type type );
@@ -223,9 +223,9 @@ Tests whether a WKB type contains the z-dimension.
 
 :return: true if type has z values
 
-.. seealso:: :py:func:`addZ()`
+.. seealso:: :py:func:`addZ`
 
-.. seealso:: :py:func:`hasM()`
+.. seealso:: :py:func:`hasM`
 %End
 
     static bool hasM( Type type );
@@ -234,9 +234,9 @@ Tests whether a WKB type contains m values.
 
 :return: true if type has m values
 
-.. seealso:: :py:func:`addM()`
+.. seealso:: :py:func:`addM`
 
-.. seealso:: :py:func:`hasZ()`
+.. seealso:: :py:func:`hasZ`
 %End
 
     static Type addZ( Type type );
@@ -247,11 +247,11 @@ Adds the z dimension to a WKB type and returns the new type
 
 .. versionadded:: 2.12
 
-.. seealso:: :py:func:`addM()`
+.. seealso:: :py:func:`addM`
 
-.. seealso:: :py:func:`dropZ()`
+.. seealso:: :py:func:`dropZ`
 
-.. seealso:: :py:func:`hasZ()`
+.. seealso:: :py:func:`hasZ`
 %End
 
     static Type addM( Type type );
@@ -262,11 +262,11 @@ Adds the m dimension to a WKB type and returns the new type
 
 .. versionadded:: 2.12
 
-.. seealso:: :py:func:`addZ()`
+.. seealso:: :py:func:`addZ`
 
-.. seealso:: :py:func:`dropM()`
+.. seealso:: :py:func:`dropM`
 
-.. seealso:: :py:func:`hasM()`
+.. seealso:: :py:func:`hasM`
 %End
 
     static Type dropZ( Type type );
@@ -277,9 +277,9 @@ Drops the z dimension (if present) for a WKB type and returns the new type.
 
 .. versionadded:: 2.14
 
-.. seealso:: :py:func:`dropM()`
+.. seealso:: :py:func:`dropM`
 
-.. seealso:: :py:func:`addZ()`
+.. seealso:: :py:func:`addZ`
 %End
 
     static Type dropM( Type type );
@@ -290,9 +290,9 @@ Drops the m dimension (if present) for a WKB type and returns the new type.
 
 .. versionadded:: 2.14
 
-.. seealso:: :py:func:`dropZ()`
+.. seealso:: :py:func:`dropZ`
 
-.. seealso:: :py:func:`addM()`
+.. seealso:: :py:func:`addM`
 %End
 
     static Type to25D( Type type );

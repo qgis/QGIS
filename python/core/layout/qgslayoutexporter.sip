@@ -51,7 +51,7 @@ Renders a full page to a destination ``painter``.
 The ``page`` argument specifies the page number to render. Page numbers
 are 0 based, such that the first page in a layout is page 0.
 
-.. seealso:: :py:func:`renderRect()`
+.. seealso:: :py:func:`renderRect`
 %End
 
     QImage renderPageToImage( int page, QSize imageSize = QSize(), double dpi = 0 ) const;
@@ -70,9 +70,9 @@ resolution. This parameter has no effect if ``imageSize`` is specified.
 
 Returns the rendered image, or a null QImage if the image does not fit into available memory.
 
-.. seealso:: :py:func:`renderPage()`
+.. seealso:: :py:func:`renderPage`
 
-.. seealso:: :py:func:`renderRegionToImage()`
+.. seealso:: :py:func:`renderRegionToImage`
 %End
 
     void renderRegion( QPainter *painter, const QRectF &region ) const;
@@ -80,9 +80,9 @@ Returns the rendered image, or a null QImage if the image does not fit into avai
 Renders a ``region`` from the layout to a ``painter``. This method can be used
 to render sections of pages rather than full pages.
 
-.. seealso:: :py:func:`renderPage()`
+.. seealso:: :py:func:`renderPage`
 
-.. seealso:: :py:func:`renderRegionToImage()`
+.. seealso:: :py:func:`renderRegionToImage`
 %End
 
     QImage renderRegionToImage( const QRectF &region, QSize imageSize = QSize(), double dpi = 0 ) const;
@@ -99,9 +99,9 @@ resolution. This parameter has no effect if ``imageSize`` is specified.
 
 Returns the rendered image, or a null QImage if the image does not fit into available memory.
 
-.. seealso:: :py:func:`renderRegion()`
+.. seealso:: :py:func:`renderRegion`
 
-.. seealso:: :py:func:`renderPageToImage()`
+.. seealso:: :py:func:`renderPageToImage`
 %End
 
 
@@ -204,7 +204,7 @@ Returns a result code indicating whether the export was successful or an
 error was encountered. If an error was obtained then ``error`` will be set
 to the error description.
 
-.. seealso:: :py:func:`exportToPdfs()`
+.. seealso:: :py:func:`exportToPdfs`
 %End
 
     static ExportResult exportToPdfs( QgsAbstractLayoutIterator *iterator, const QString &baseFilePath,
@@ -220,7 +220,7 @@ Returns a result code indicating whether the export was successful or an
 error was encountered. If an error was obtained then ``error`` will be set
 to the error description.
 
-.. seealso:: :py:func:`exportToPdf()`
+.. seealso:: :py:func:`exportToPdf`
 %End
 
 
@@ -324,7 +324,7 @@ Similarly, the ``dpi`` can be set to the actual DPI of exported file, or left as
 
 The function will return true if the output was successfully georeferenced.
 
-.. seealso:: :py:func:`computeGeoTransform()`
+.. seealso:: :py:func:`computeGeoTransform`
 %End
 
     void computeWorldFileParameters( double &a, double &b, double &c, double &d, double &e, double &f, double dpi = -1 ) const;

@@ -13,10 +13,8 @@
 class QgsIdentifyMenu : QMenu
 {
 %Docstring
-
-.. seealso:: :py:class:`QgsMapToolIdentify`
-
-.. seealso:: :py:class:`QgsAction`
+ The QgsIdentifyMenu class builds a menu to be used with identify results (:py:class:`QgsMapToolIdentify`).
+It is customizable and can display attribute actions (:py:class:`QgsAction`) as well as map layer actions (\see QgsMapLayerAction).
 It can also embed custom map layer actions, defined for this menu exclusively.
 If used in a QgsMapToolIdentify, it is accessible via QgsMapToolIdentify.identifyMenu() and can be customized in the map tool sub-class.
 %End
@@ -92,9 +90,13 @@ Returns an expression context scope used to resolve underlying actions.
 
    custom actions will be shown in any case if they exist.
 
-.. seealso:: :py:class:`QgsAction`
+.. note::
 
-.. seealso:: :py:class:`QgsMapLayerActionRegistry`
+   (1) attribute actions are defined by the user in the layer properties :py:class:`QgsAction`
+
+.. note::
+
+   (2) map layer actions are built-in c++ actions or actions which are defined by a Python plugin :py:class:`QgsMapLayerActionRegistry`
 %End
     bool showFeatureActions();
 
@@ -102,7 +104,9 @@ Returns an expression context scope used to resolve underlying actions.
 %Docstring
  setResultsIfExternalAction if set to false (default) the menu will not return any results if an external action has been triggered
 
-.. seealso:: :py:func:`setShowFeatureActions`
+.. note::
+
+   external action can be either custom actions or feature / map layer actions (:py:func:`setShowFeatureActions`)
 %End
     bool resultsIfExternalAction();
 

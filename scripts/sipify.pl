@@ -172,44 +172,69 @@ sub processDoxygenLine {
         $COMMENT_PARAM_LIST = 1;
     }
 
+    if ( $line =~ m/^\s*[\\@]brief/){
+        $line =~ s/[\\@]brief//;
+        if ( $line =~ m/^\s*$/ ){
+            return "";
+        }
+    }
+
     if ( $line =~ m/[\\@](ingroup|class)/ ) {
-        return ""
+        return "";
     }
     if ( $line =~ m/\\since .*?([\d\.]+)/i ) {
         return "\n.. versionadded:: $1\n";
     }
+
     # create links in see also
-    if ( $line =~ m/\\see +(\w+(\.\w+)*(\(\))?)/ ) {
+    if ( $line =~ m/\\see +(\w+(\.\w+)*)(\([^()]*\))?/ ) {
         my $seealso = $1;
-        if (  $seealso =~ m/^Qgs[A-Z]\w+$/ ) {
-            return "\n.. seealso:: :py:class:`$seealso`\n";
+        my $seeline = '';
+        dbg_info("see also: $seealso");
+        if (  $seealso =~ m/^Qgs[A-Z]\w+(\([^()]*\))?$/ ) {
+            dbg_info("\\see py:class");
+            $seeline = ":py:class:`$seealso`";
         }
-        elsif (  $seealso =~ m/^(Qgs[A-Z]\w+)\.(\w+(\(\))?)$/ ) {
-            return "\n.. seealso:: :py:func:`$1.$2`\n";
+        elsif (  $seealso =~ m/^(Qgs[A-Z]\w+)\.(\w+)(\([^()]*\))?$/ ) {
+            dbg_info("\\see py:func with param");
+            $seeline = ":py:func:`$1.$2`";
         }
-        elsif (  $seealso =~ m/^[a-z]\w+(\(\))?$/ ) {
-            return "\n.. seealso:: :py:func:`$seealso`\n";
+        elsif (  $seealso =~ m/^[a-z]\w+(\([^()]*\))?$/ ) {
+            dbg_info("\\see py:func");
+            $seeline = ":py:func:`$seealso`";
         }
-        else {
-            return "\n.. seealso:: $seealso\n";
+        if ( $line =~ m/^\s*\\see/ ){
+            if ( $seeline ne ''){
+                return "\n.. seealso:: $seeline\n";
+            } else {
+                return "\n.. seealso:: $seealso\n";
+            }
+        } else {
+            if ( $seeline ne ''){
+                $line =~ s/\\see +(\w+(\.\w+)*(\(\))?)/$seeline/;
+            } else {
+                $line =~s/\\see/see/;
+            }
         }
     }
-    # create links in plain text too (less performant)
-    if ( $line =~ m/\b(Qgs[A-Z]\w+)\b(\.?$|[^\w]{2})/) {
-        if ( defined $ACTUAL_CLASS && $1 !~ $ACTUAL_CLASS ) {
-            $line =~ s/\b(Qgs[A-Z]\w+)\b(\.?$|[^\w]{2})/:py:class:`$1`$2/g;
+    else
+    {
+        # create links in plain text too (less performant)
+        if ( $line =~ m/\b(Qgs[A-Z]\w+)\b(\.?$|[^\w]{2})/) {
+            if ( defined $ACTUAL_CLASS && $1 !~ $ACTUAL_CLASS ) {
+                $line =~ s/\b(Qgs[A-Z]\w+)\b(\.?$|[^\w]{2})/:py:class:`$1`$2/g;
+            }
         }
+        $line =~ s/\b(Qgs[A-Z]\w+\.[a-z]\w+\(\))(\.|\b|$)/:py:func:`$1`/g;
     }
-    $line =~ s/\b(Qgs[A-Z]\w+\.[a-z]\w+\(\))(\.|\b|$)/:py:func:`$1`/g;
+
     if ( $line =~ m/[\\@]note (.*)/ ) {
         return "\n.. note::\n\n   $1\n";
     }
     if ( $line =~ m/[\\@]warning (.*)/ ) {
         return "\n.. warning::\n\n   $1\n";
     }
-    if ( $line =~ m/[\\@]brief (.*)/ ) {
-        return " $1\n";
-    }
+
     return "$line\n";
 }
 

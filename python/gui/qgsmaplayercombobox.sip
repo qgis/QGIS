@@ -56,14 +56,14 @@ Sets a list of data providers which should be excluded from the combobox.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`excludedProviders()`
+.. seealso:: :py:func:`excludedProviders`
 %End
 
     QStringList excludedProviders() const;
 %Docstring
 Returns the list of data providers which are excluded from the combobox.
 
-.. seealso:: :py:func:`setExcludedProviders()`
+.. seealso:: :py:func:`setExcludedProviders`
 
 .. versionadded:: 3.0
 %End
@@ -72,7 +72,7 @@ Returns the list of data providers which are excluded from the combobox.
 %Docstring
 Sets whether an optional empty layer ("not set") option is shown in the combo box.
 
-.. seealso:: :py:func:`allowEmptyLayer()`
+.. seealso:: :py:func:`allowEmptyLayer`
 
 .. versionadded:: 3.0
 %End
@@ -81,7 +81,7 @@ Sets whether an optional empty layer ("not set") option is shown in the combo bo
 %Docstring
 Returns true if the combo box allows the empty layer ("not set") choice.
 
-.. seealso:: :py:func:`setAllowEmptyLayer()`
+.. seealso:: :py:func:`setAllowEmptyLayer`
 
 .. versionadded:: 3.0
 %End
@@ -90,7 +90,7 @@ Returns true if the combo box allows the empty layer ("not set") choice.
 %Docstring
 Sets whether the CRS of layers is also included in the combo box text.
 
-.. seealso:: :py:func:`showCrs()`
+.. seealso:: :py:func:`showCrs`
 
 .. versionadded:: 3.0
 %End
@@ -99,7 +99,7 @@ Sets whether the CRS of layers is also included in the combo box text.
 %Docstring
 Returns true if the combo box shows the layer's CRS.
 
-.. seealso:: :py:func:`setShowCrs()`
+.. seealso:: :py:func:`setShowCrs`
 
 .. versionadded:: 3.0
 %End
@@ -110,7 +110,7 @@ Sets a list of additional (non map layer) items to include at the end of the com
 These may represent additional layers such as layers which are not included in the map
 layer registry, or paths to layers which have not yet been loaded into QGIS.
 
-.. seealso:: :py:func:`additionalItems()`
+.. seealso:: :py:func:`additionalItems`
 
 .. versionadded:: 3.0
 %End
@@ -119,7 +119,7 @@ layer registry, or paths to layers which have not yet been loaded into QGIS.
 %Docstring
 Return the list of additional (non map layer) items included at the end of the combo box.
 
-.. seealso:: :py:func:`setAdditionalItems()`
+.. seealso:: :py:func:`setAdditionalItems`
 
 .. versionadded:: 3.0
 %End

@@ -53,7 +53,7 @@ Resets the widget to an initial value.
 %Docstring
 Returns true if the widget's value has been changed since it was initialized.
 
-.. seealso:: :py:func:`initialize()`
+.. seealso:: :py:func:`initialize`
 %End
 
     QVariant currentValue() const;

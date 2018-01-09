@@ -63,7 +63,7 @@ Returns the master layout type.
 %Docstring
 Returns the layout's name.
 
-.. seealso:: :py:func:`setName()`
+.. seealso:: :py:func:`setName`
 %End
 
     virtual QIcon icon() const = 0;
@@ -75,7 +75,7 @@ Returns an icon for the layout.
 %Docstring
 Sets the layout's name.
 
-.. seealso:: :py:func:`name()`
+.. seealso:: :py:func:`name`
 %End
 
     virtual QgsProject *layoutProject() const = 0;
@@ -88,14 +88,14 @@ relations and various other bits. It is never null.
 %Docstring
 Returns the layout's state encapsulated in a DOM element.
 
-.. seealso:: :py:func:`readLayoutXml()`
+.. seealso:: :py:func:`readLayoutXml`
 %End
 
     virtual bool readLayoutXml( const QDomElement &layoutElement, const QDomDocument &document, const QgsReadWriteContext &context ) = 0;
 %Docstring
 Sets the layout's state from a DOM element. ``layoutElement`` is the DOM node corresponding to the layout.
 
-.. seealso:: :py:func:`writeLayoutXml()`
+.. seealso:: :py:func:`writeLayoutXml`
 %End
 
 };

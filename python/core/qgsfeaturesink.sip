@@ -36,7 +36,7 @@ An interface for objects which accept features via addFeature(s) methods.
 %Docstring
 Adds a single ``feature`` to the sink. Feature addition behavior is controlled by the specified ``flags``.
 
-.. seealso:: :py:func:`addFeatures()`
+.. seealso:: :py:func:`addFeatures`
 
 :return: true in case of success and false in case of failure
 %End
@@ -45,7 +45,7 @@ Adds a single ``feature`` to the sink. Feature addition behavior is controlled b
 %Docstring
 Adds a list of ``features`` to the sink. Feature addition behavior is controlled by the specified ``flags``.
 
-.. seealso:: :py:func:`addFeature()`
+.. seealso:: :py:func:`addFeature`
 
 :return: true in case of success and false in case of failure
 %End

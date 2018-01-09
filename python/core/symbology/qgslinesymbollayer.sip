@@ -86,14 +86,14 @@ Sets the units for lengths used in the custom dash pattern.
 
 :param unit: length units
 
-.. seealso:: :py:func:`customDashPatternUnit()`
+.. seealso:: :py:func:`customDashPatternUnit`
 %End
 
     QgsUnitTypes::RenderUnit customDashPatternUnit() const;
 %Docstring
 Returns the units for lengths used in the custom dash pattern.
 
-.. seealso:: :py:func:`setCustomDashPatternUnit()`
+.. seealso:: :py:func:`setCustomDashPatternUnit`
 %End
 
     const QgsMapUnitScale &customDashPatternMapUnitScale() const;
@@ -225,9 +225,9 @@ Shall the marker be rotated.
 %Docstring
 Returns the interval between individual markers. Units are specified through intervalUnits().
 
-.. seealso:: :py:func:`setInterval()`
+.. seealso:: :py:func:`setInterval`
 
-.. seealso:: :py:func:`intervalUnit()`
+.. seealso:: :py:func:`intervalUnit`
 %End
 
     void setInterval( double interval );
@@ -236,9 +236,9 @@ Sets the interval between individual markers.
 
 :param interval: interval size. Units are specified through setIntervalUnits()
 
-.. seealso:: :py:func:`interval()`
+.. seealso:: :py:func:`interval`
 
-.. seealso:: :py:func:`setIntervalUnits()`
+.. seealso:: :py:func:`setIntervalUnits`
 %End
 
     Placement placement() const;
@@ -330,18 +330,18 @@ Sets the units for the interval between markers.
 
 :param unit: interval units
 
-.. seealso:: :py:func:`intervalUnit()`
+.. seealso:: :py:func:`intervalUnit`
 
-.. seealso:: :py:func:`setInterval()`
+.. seealso:: :py:func:`setInterval`
 %End
 
     QgsUnitTypes::RenderUnit intervalUnit() const;
 %Docstring
 Returns the units for the interval between markers.
 
-.. seealso:: :py:func:`setIntervalUnit()`
+.. seealso:: :py:func:`setIntervalUnit`
 
-.. seealso:: :py:func:`interval()`
+.. seealso:: :py:func:`interval`
 %End
 
     void setIntervalMapUnitScale( const QgsMapUnitScale &scale );

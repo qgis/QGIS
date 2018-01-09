@@ -27,7 +27,7 @@ Layout view tool for adding node based items to a layout.
 %Docstring
 Returns the item metadata id for items created by the tool.
 
-.. seealso:: :py:func:`setItemMetadataId()`
+.. seealso:: :py:func:`setItemMetadataId`
 %End
 
     void setItemMetadataId( int metadataId );
@@ -37,7 +37,7 @@ Sets the item metadata ``metadataId`` for items created by the tool.
 The ``metadataId`` associates the current tool behavior with a metadata entry
 from :py:class:`QgsLayoutItemGuiRegistry`.
 
-.. seealso:: :py:func:`itemMetadataId()`
+.. seealso:: :py:func:`itemMetadataId`
 %End
 
     virtual void layoutPressEvent( QgsLayoutViewMouseEvent *event );

@@ -53,7 +53,7 @@ This method returns a new QgsRenderContext which matches the scale and settings 
 target map. If the ``dpi`` argument is not specified then the dpi will be taken from the destination
 painter device.
 
-.. seealso:: :py:func:`createRenderContextForLayout()`
+.. seealso:: :py:func:`createRenderContextForLayout`
 %End
 
     static QgsRenderContext createRenderContextForLayout( QgsLayout *layout, QPainter *painter, double dpi = -1 );
@@ -64,7 +64,7 @@ This method returns a new QgsRenderContext which matches the scale and settings 
 If the ``dpi`` argument is not specified then the dpi will be taken from the destination
 painter device.
 
-.. seealso:: :py:func:`createRenderContextForMap()`
+.. seealso:: :py:func:`createRenderContextForMap`
 %End
 
     static void relativeResizeRect( QRectF &rectToResize, const QRectF &boundsBefore, const QRectF &boundsAfter );
@@ -102,26 +102,26 @@ Returns a font with size set in pixels.
 %Docstring
 Calculates a ``font`` ascent in millimeters, including workarounds for QT font rendering issues.
 
-.. seealso:: :py:func:`fontDescentMM()`
+.. seealso:: :py:func:`fontDescentMM`
 
-.. seealso:: :py:func:`fontHeightMM()`
+.. seealso:: :py:func:`fontHeightMM`
 
-.. seealso:: :py:func:`fontHeightCharacterMM()`
+.. seealso:: :py:func:`fontHeightCharacterMM`
 
-.. seealso:: :py:func:`textWidthMM()`
+.. seealso:: :py:func:`textWidthMM`
 %End
 
     static double fontDescentMM( const QFont &font );
 %Docstring
 Calculate a ``font`` descent in millimeters, including workarounds for QT font rendering issues.
 
-.. seealso:: :py:func:`fontAscentMM()`
+.. seealso:: :py:func:`fontAscentMM`
 
-.. seealso:: :py:func:`fontHeightMM()`
+.. seealso:: :py:func:`fontHeightMM`
 
-.. seealso:: :py:func:`fontHeightCharacterMM()`
+.. seealso:: :py:func:`fontHeightCharacterMM`
 
-.. seealso:: :py:func:`textWidthMM()`
+.. seealso:: :py:func:`textWidthMM`
 %End
 
     static double fontHeightMM( const QFont &font );
@@ -129,13 +129,13 @@ Calculate a ``font`` descent in millimeters, including workarounds for QT font r
 Calculate a ``font`` height in millimeters, including workarounds for QT font rendering issues.
 The font height is the font ascent + descent + 1 (for the baseline).
 
-.. seealso:: :py:func:`fontAscentMM()`
+.. seealso:: :py:func:`fontAscentMM`
 
-.. seealso:: :py:func:`fontDescentMM()`
+.. seealso:: :py:func:`fontDescentMM`
 
-.. seealso:: :py:func:`fontHeightCharacterMM()`
+.. seealso:: :py:func:`fontHeightCharacterMM`
 
-.. seealso:: :py:func:`textWidthMM()`
+.. seealso:: :py:func:`textWidthMM`
 %End
 
     static double fontHeightCharacterMM( const QFont &font, QChar character );
@@ -143,13 +143,13 @@ The font height is the font ascent + descent + 1 (for the baseline).
 Calculate a ``font`` height in millimeters of a single ``character``, including workarounds for QT font
 rendering issues.
 
-.. seealso:: :py:func:`fontAscentMM()`
+.. seealso:: :py:func:`fontAscentMM`
 
-.. seealso:: :py:func:`fontDescentMM()`
+.. seealso:: :py:func:`fontDescentMM`
 
-.. seealso:: :py:func:`fontHeightMM()`
+.. seealso:: :py:func:`fontHeightMM`
 
-.. seealso:: :py:func:`textWidthMM()`
+.. seealso:: :py:func:`textWidthMM`
 %End
 
     static double textWidthMM( const QFont &font, const QString &text );
@@ -157,15 +157,15 @@ rendering issues.
 Calculate a ``font`` width in millimeters for a ``text`` string, including workarounds for QT font
 rendering issues.
 
-.. seealso:: :py:func:`fontAscentMM()`
+.. seealso:: :py:func:`fontAscentMM`
 
-.. seealso:: :py:func:`fontDescentMM()`
+.. seealso:: :py:func:`fontDescentMM`
 
-.. seealso:: :py:func:`fontHeightMM()`
+.. seealso:: :py:func:`fontHeightMM`
 
-.. seealso:: :py:func:`fontHeightCharacterMM()`
+.. seealso:: :py:func:`fontHeightCharacterMM`
 
-.. seealso:: :py:func:`textHeightMM()`
+.. seealso:: :py:func:`textHeightMM`
 %End
 
     static double textHeightMM( const QFont &font, const QString &text, double multiLineHeight = 1.0 );
@@ -176,7 +176,7 @@ where only the font ascent is considered for the first line of text.
 
 The ``multiLineHeight`` parameter specifies the line spacing factor.
 
-.. seealso:: :py:func:`textWidthMM()`
+.. seealso:: :py:func:`textWidthMM`
 %End
 
     static void drawText( QPainter *painter, QPointF position, const QString &text, const QFont &font, const QColor &color = QColor() );

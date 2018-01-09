@@ -165,7 +165,7 @@ this will overwrite the current properties of the font.
 Returns new mime data representing the specified ``font`` settings.
 Caller takes responsibility for deleting the returned object.
 
-.. seealso:: :py:func:`fromMimeData()`
+.. seealso:: :py:func:`fromMimeData`
 
 .. versionadded:: 3.0
 %End
@@ -175,7 +175,7 @@ Caller takes responsibility for deleting the returned object.
 Attempts to parse the provided mime ``data`` as a QFont.
 If data can be parsed as a QFont, ``ok`` will be set to true.
 
-.. seealso:: :py:func:`toMimeData()`
+.. seealso:: :py:func:`toMimeData`
 
 .. versionadded:: 3.0
 %End
@@ -227,14 +227,14 @@ Adds a font ``family`` to the list of recently used font families.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`recentFontFamilies()`
+.. seealso:: :py:func:`recentFontFamilies`
 %End
 
     static QStringList recentFontFamilies();
 %Docstring
 Returns a list of recently used font families.
 
-.. seealso:: :py:func:`addRecentFontFamily()`
+.. seealso:: :py:func:`addRecentFontFamily`
 
 .. versionadded:: 3.0
 %End

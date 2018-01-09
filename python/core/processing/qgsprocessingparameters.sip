@@ -202,7 +202,7 @@ true.
 Returns the name of the parameter. This is the internal identifier by which
 algorithms access this parameter.
 
-.. seealso:: :py:func:`setName()`
+.. seealso:: :py:func:`setName`
 %End
 
     void setName( const QString &name );
@@ -210,7 +210,7 @@ algorithms access this parameter.
 Sets the ``name`` of the parameter. This is the internal identifier by which
 algorithms access this parameter.
 
-.. seealso:: :py:func:`name()`
+.. seealso:: :py:func:`name`
 %End
 
     QString description() const;
@@ -218,7 +218,7 @@ algorithms access this parameter.
 Returns the description for the parameter. This is the user-visible string
 used to identify this parameter.
 
-.. seealso:: :py:func:`setDescription()`
+.. seealso:: :py:func:`setDescription`
 %End
 
     void setDescription( const QString &description );
@@ -226,14 +226,14 @@ used to identify this parameter.
 Sets the ``description`` for the parameter. This is the user-visible string
 used to identify this parameter.
 
-.. seealso:: :py:func:`description()`
+.. seealso:: :py:func:`description`
 %End
 
     QVariant defaultValue() const;
 %Docstring
 Returns the default value for the parameter.
 
-.. seealso:: :py:func:`setDefaultValue()`
+.. seealso:: :py:func:`setDefaultValue`
 %End
 
     void setDefaultValue( const QVariant &value );
@@ -241,21 +241,21 @@ Returns the default value for the parameter.
 Sets the default ``value`` for the parameter. Caller takes responsibility
 to ensure that ``value`` is a valid input for the parameter subclass.
 
-.. seealso:: :py:func:`defaultValue()`
+.. seealso:: :py:func:`defaultValue`
 %End
 
     Flags flags() const;
 %Docstring
 Returns any flags associated with the parameter.
 
-.. seealso:: :py:func:`setFlags()`
+.. seealso:: :py:func:`setFlags`
 %End
 
     void setFlags( const Flags &flags );
 %Docstring
 Sets the ``flags`` associated with the parameter.
 
-.. seealso:: :py:func:`flags()`
+.. seealso:: :py:func:`flags`
 %End
 
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
@@ -285,7 +285,7 @@ Python processing script.
 Saves this parameter to a QVariantMap. Subclasses should ensure that they call the base class
 method and then extend the result with additional properties.
 
-.. seealso:: :py:func:`fromVariantMap()`
+.. seealso:: :py:func:`fromVariantMap`
 %End
 
     virtual bool fromVariantMap( const QVariantMap &map );
@@ -293,7 +293,7 @@ method and then extend the result with additional properties.
 Restores this parameter to a QVariantMap. Subclasses should ensure that they call the base class
 method.
 
-.. seealso:: :py:func:`toVariantMap()`
+.. seealso:: :py:func:`toVariantMap`
 %End
 
 
@@ -302,7 +302,7 @@ method.
 Returns the parameter's freeform metadata. This is mostly used by parameter widget wrappers
 in order to customise their appearance and behavior.
 
-.. seealso:: :py:func:`setMetadata()`
+.. seealso:: :py:func:`setMetadata`
 %End
 
     void setMetadata( const QVariantMap &metadata );
@@ -310,7 +310,7 @@ in order to customise their appearance and behavior.
 Sets the parameter's freeform ``metadata``. This is mostly used by parameter widget wrappers
 in order to customise their appearance and behavior.
 
-.. seealso:: :py:func:`metadata()`
+.. seealso:: :py:func:`metadata`
 %End
 
     virtual QStringList dependsOnOtherParameters() const;
@@ -324,7 +324,7 @@ field parameters which depend on a parent layer parameter).
 Returns a pointer to the algorithm which owns this parameter. May be None
 for non-owned parameters.
 
-.. seealso:: :py:func:`provider()`
+.. seealso:: :py:func:`provider`
 %End
 
     QgsProcessingProvider *provider() const;
@@ -332,7 +332,7 @@ for non-owned parameters.
 Returns a pointer to the provider for the algorithm which owns this parameter. May be None
 for non-owned parameters or algorithms.
 
-.. seealso:: :py:func:`algorithm()`
+.. seealso:: :py:func:`algorithm`
 %End
 
     virtual QString toolTip() const;
@@ -346,11 +346,11 @@ like parameter description, ID, and extra content like default values (depending
 Returns true if the parameter supports is dynamic, and can support data-defined values
 (i.e. QgsProperty based values).
 
-.. seealso:: :py:func:`setIsDynamic()`
+.. seealso:: :py:func:`setIsDynamic`
 
-.. seealso:: :py:func:`dynamicPropertyDefinition()`
+.. seealso:: :py:func:`dynamicPropertyDefinition`
 
-.. seealso:: :py:func:`dynamicLayerParameterName()`
+.. seealso:: :py:func:`dynamicLayerParameterName`
 %End
 
     void setIsDynamic( bool dynamic );
@@ -358,33 +358,33 @@ Returns true if the parameter supports is dynamic, and can support data-defined 
 Sets whether the parameter is ``dynamic``, and can support data-defined values
 (i.e. QgsProperty based values).
 
-.. seealso:: :py:func:`isDynamic()`
+.. seealso:: :py:func:`isDynamic`
 
-.. seealso:: :py:func:`setDynamicPropertyDefinition()`
+.. seealso:: :py:func:`setDynamicPropertyDefinition`
 
-.. seealso:: :py:func:`setDynamicLayerParameterName()`
+.. seealso:: :py:func:`setDynamicLayerParameterName`
 %End
 
     QgsPropertyDefinition dynamicPropertyDefinition() const;
 %Docstring
 Returns the property definition for dynamic properties.
 
-.. seealso:: :py:func:`isDynamic()`
+.. seealso:: :py:func:`isDynamic`
 
-.. seealso:: :py:func:`setDynamicPropertyDefinition()`
+.. seealso:: :py:func:`setDynamicPropertyDefinition`
 
-.. seealso:: :py:func:`dynamicLayerParameterName()`
+.. seealso:: :py:func:`dynamicLayerParameterName`
 %End
 
     void setDynamicPropertyDefinition( const QgsPropertyDefinition &definition );
 %Docstring
 Sets the property ``definition`` for dynamic properties.
 
-.. seealso:: :py:func:`isDynamic()`
+.. seealso:: :py:func:`isDynamic`
 
-.. seealso:: :py:func:`dynamicPropertyDefinition()`
+.. seealso:: :py:func:`dynamicPropertyDefinition`
 
-.. seealso:: :py:func:`setDynamicLayerParameterName()`
+.. seealso:: :py:func:`setDynamicLayerParameterName`
 %End
 
     QString dynamicLayerParameterName() const;
@@ -395,11 +395,11 @@ Dynamic parameters (see isDynamic()) can have an optional vector layer parameter
 which indicates which layer the fields and values will be available from when evaluating
 the dynamic parameter.
 
-.. seealso:: :py:func:`setDynamicLayerParameterName()`
+.. seealso:: :py:func:`setDynamicLayerParameterName`
 
-.. seealso:: :py:func:`isDynamic()`
+.. seealso:: :py:func:`isDynamic`
 
-.. seealso:: :py:func:`dynamicPropertyDefinition()`
+.. seealso:: :py:func:`dynamicPropertyDefinition`
 %End
 
     void setDynamicLayerParameterName( const QString &name );
@@ -410,11 +410,11 @@ Dynamic parameters (see isDynamic()) can have an optional vector layer parameter
 which indicates which layer the fields and values will be available from when evaluating
 the dynamic parameter.
 
-.. seealso:: :py:func:`dynamicLayerParameterName()`
+.. seealso:: :py:func:`dynamicLayerParameterName`
 
-.. seealso:: :py:func:`isDynamic()`
+.. seealso:: :py:func:`isDynamic`
 
-.. seealso:: :py:func:`setDynamicPropertyDefinition()`
+.. seealso:: :py:func:`setDynamicPropertyDefinition`
 %End
 
   protected:
@@ -593,9 +593,9 @@ Evaluates the parameter with matching ``definition`` to a rectangular extent.
 If ``crs`` is set, and the original coordinate reference system of the parameter can be determined, then the extent will be automatically
 reprojected so that it is in the specified ``crs``. In this case the extent of the reproject rectangle will be returned.
 
-.. seealso:: :py:func:`parameterAsExtentGeometry()`
+.. seealso:: :py:func:`parameterAsExtentGeometry`
 
-.. seealso:: :py:func:`parameterAsExtentCrs()`
+.. seealso:: :py:func:`parameterAsExtentCrs`
 %End
 
     static QgsGeometry parameterAsExtentGeometry( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context,
@@ -608,16 +608,16 @@ reprojected so that it is in the specified ``crs``. Unlike parameterAsExtent(), 
 will no longer be a rectangle itself (i.e. this method returns the geometry of the actual reprojected rectangle, while parameterAsExtent() returns
 just the extent of the reprojected rectangle).
 
-.. seealso:: :py:func:`parameterAsExtent()`
+.. seealso:: :py:func:`parameterAsExtent`
 
-.. seealso:: :py:func:`parameterAsExtentCrs()`
+.. seealso:: :py:func:`parameterAsExtentCrs`
 %End
 
     static QgsCoordinateReferenceSystem parameterAsExtentCrs( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 %Docstring
 Returns the coordinate reference system associated with an extent parameter value.
 
-.. seealso:: :py:func:`parameterAsExtent()`
+.. seealso:: :py:func:`parameterAsExtent`
 %End
 
     static QgsPointXY parameterAsPoint( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context,
@@ -627,14 +627,14 @@ Evaluates the parameter with matching ``definition`` to a point.
 
 If ``crs`` is set then the point will be automatically reprojected so that it is in the specified ``crs``.
 
-.. seealso:: :py:func:`parameterAsPointCrs()`
+.. seealso:: :py:func:`parameterAsPointCrs`
 %End
 
     static QgsCoordinateReferenceSystem parameterAsPointCrs( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 %Docstring
 Returns the coordinate reference system associated with an point parameter value.
 
-.. seealso:: :py:func:`parameterAsPoint()`
+.. seealso:: :py:func:`parameterAsPoint`
 %End
 
     static QString parameterAsFile( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
@@ -917,28 +917,28 @@ Returns the type name for the parameter class.
 %Docstring
 Returns the parameter behavior (e.g. File or Folder).
 
-.. seealso:: :py:func:`setBehavior()`
+.. seealso:: :py:func:`setBehavior`
 %End
 
     void setBehavior( Behavior behavior );
 %Docstring
 Sets the parameter ``behavior`` (e.g. File or Folder).
 
-.. seealso:: :py:func:`behavior()`
+.. seealso:: :py:func:`behavior`
 %End
 
     QString extension() const;
 %Docstring
 Returns any specified file extension for the parameter.
 
-.. seealso:: :py:func:`setExtension()`
+.. seealso:: :py:func:`setExtension`
 %End
 
     void setExtension( const QString &extension );
 %Docstring
 Sets a file ``extension`` for the parameter.
 
-.. seealso:: :py:func:`extension()`
+.. seealso:: :py:func:`extension`
 %End
 
     virtual QVariantMap toVariantMap() const;
@@ -990,14 +990,14 @@ Returns the type name for the parameter class.
 %Docstring
 Returns a list of column headers (if set).
 
-.. seealso:: :py:func:`setHeaders()`
+.. seealso:: :py:func:`setHeaders`
 %End
 
     void setHeaders( const QStringList &headers );
 %Docstring
 Sets the list of column ``headers``.
 
-.. seealso:: :py:func:`headers()`
+.. seealso:: :py:func:`headers`
 %End
 
     int numberRows() const;
@@ -1005,9 +1005,9 @@ Sets the list of column ``headers``.
 Returns the fixed number of rows in the table. This parameter only has an
 effect if hasFixedNumberRows() is true.
 
-.. seealso:: :py:func:`setNumberRows()`
+.. seealso:: :py:func:`setNumberRows`
 
-.. seealso:: :py:func:`setFixedNumberRows()`
+.. seealso:: :py:func:`setFixedNumberRows`
 %End
 
     void setNumberRows( int rows );
@@ -1015,27 +1015,27 @@ effect if hasFixedNumberRows() is true.
 Sets the fixed number of ``rows`` in the table. This parameter only has an
 effect if hasFixedNumberRows() is true.
 
-.. seealso:: :py:func:`numberRows()`
+.. seealso:: :py:func:`numberRows`
 
-.. seealso:: :py:func:`setFixedNumberRows()`
+.. seealso:: :py:func:`setFixedNumberRows`
 %End
 
     bool hasFixedNumberRows() const;
 %Docstring
 Returns whether the table has a fixed number of rows.
 
-.. seealso:: :py:func:`numberRows()`
+.. seealso:: :py:func:`numberRows`
 
-.. seealso:: :py:func:`setHasFixedNumberRows()`
+.. seealso:: :py:func:`setHasFixedNumberRows`
 %End
 
     void setHasFixedNumberRows( bool hasFixedNumberRows );
 %Docstring
 Sets whether the table has a fixed number of rows.
 
-.. seealso:: :py:func:`setNumberRows()`
+.. seealso:: :py:func:`setNumberRows`
 
-.. seealso:: :py:func:`hasFixedNumberRows()`
+.. seealso:: :py:func:`hasFixedNumberRows`
 %End
 
     virtual QVariantMap toVariantMap() const;
@@ -1088,14 +1088,14 @@ Returns the type name for the parameter class.
 %Docstring
 Returns the layer type for layers acceptable by the parameter.
 
-.. seealso:: :py:func:`setLayerType()`
+.. seealso:: :py:func:`setLayerType`
 %End
 
     void setLayerType( QgsProcessing::SourceType type );
 %Docstring
 Sets the layer ``type`` for layers acceptable by the parameter.
 
-.. seealso:: :py:func:`layerType()`
+.. seealso:: :py:func:`layerType`
 %End
 
     int minimumNumberInputs() const;
@@ -1103,7 +1103,7 @@ Sets the layer ``type`` for layers acceptable by the parameter.
 Returns the minimum number of layers required for the parameter. If the return value is < 1
 then the parameter accepts any number of layers.
 
-.. seealso:: :py:func:`setMinimumNumberInputs()`
+.. seealso:: :py:func:`setMinimumNumberInputs`
 %End
 
     void setMinimumNumberInputs( int minimum );
@@ -1111,7 +1111,7 @@ then the parameter accepts any number of layers.
 Sets the ``minimum`` number of layers required for the parameter. The minimum must be >= 1
 if the parameter is not optional.
 
-.. seealso:: :py:func:`minimumNumberInputs()`
+.. seealso:: :py:func:`minimumNumberInputs`
 %End
 
     virtual QVariantMap toVariantMap() const;
@@ -1174,42 +1174,42 @@ Returns the type name for the parameter class.
 %Docstring
 Returns the minimum value acceptable by the parameter.
 
-.. seealso:: :py:func:`setMinimum()`
+.. seealso:: :py:func:`setMinimum`
 %End
 
     void setMinimum( double minimum );
 %Docstring
 Sets the ``minimum`` value acceptable by the parameter.
 
-.. seealso:: :py:func:`minimum()`
+.. seealso:: :py:func:`minimum`
 %End
 
     double maximum() const;
 %Docstring
 Returns the maximum value acceptable by the parameter.
 
-.. seealso:: :py:func:`setMaximum()`
+.. seealso:: :py:func:`setMaximum`
 %End
 
     void setMaximum( double maximum );
 %Docstring
 Sets the ``maximum`` value acceptable by the parameter.
 
-.. seealso:: :py:func:`maximum()`
+.. seealso:: :py:func:`maximum`
 %End
 
     Type dataType() const;
 %Docstring
 Returns the acceptable data type for the parameter.
 
-.. seealso:: :py:func:`setDataType()`
+.. seealso:: :py:func:`setDataType`
 %End
 
     void setDataType( const Type &type );
 %Docstring
 Sets the acceptable data ``type`` for the parameter.
 
-.. seealso:: :py:func:`dataType()`
+.. seealso:: :py:func:`dataType`
 %End
 
     virtual QVariantMap toVariantMap() const;
@@ -1261,14 +1261,14 @@ Returns the type name for the parameter class.
 %Docstring
 Returns the acceptable data type for the range.
 
-.. seealso:: :py:func:`setDataType()`
+.. seealso:: :py:func:`setDataType`
 %End
 
     void setDataType( const QgsProcessingParameterNumber::Type &dataType );
 %Docstring
 Sets the acceptable data ``type`` for the range.
 
-.. seealso:: :py:func:`dataType()`
+.. seealso:: :py:func:`dataType`
 %End
 
     virtual QVariantMap toVariantMap() const;
@@ -1360,28 +1360,28 @@ Returns the type name for the parameter class.
 %Docstring
 Returns the list of acceptable options for the parameter.
 
-.. seealso:: :py:func:`setOptions()`
+.. seealso:: :py:func:`setOptions`
 %End
 
     void setOptions( const QStringList &options );
 %Docstring
 Sets the list of acceptable ``options`` for the parameter.
 
-.. seealso:: :py:func:`options()`
+.. seealso:: :py:func:`options`
 %End
 
     bool allowMultiple() const;
 %Docstring
 Returns true if the parameter allows multiple selected values.
 
-.. seealso:: :py:func:`setAllowMultiple()`
+.. seealso:: :py:func:`setAllowMultiple`
 %End
 
     void setAllowMultiple( bool allowMultiple );
 %Docstring
 Sets whether the parameter allows multiple selected values.
 
-.. seealso:: :py:func:`allowMultiple()`
+.. seealso:: :py:func:`allowMultiple`
 %End
 
     virtual QVariantMap toVariantMap() const;
@@ -1432,14 +1432,14 @@ Returns the type name for the parameter class.
 %Docstring
 Returns true if the parameter allows multiline strings.
 
-.. seealso:: :py:func:`setMultiLine()`
+.. seealso:: :py:func:`setMultiLine`
 %End
 
     void setMultiLine( bool multiLine );
 %Docstring
 Sets whether the parameter allows multiline strings.
 
-.. seealso:: :py:func:`multiLine()`
+.. seealso:: :py:func:`multiLine`
 %End
 
     virtual QVariantMap toVariantMap() const;
@@ -1490,14 +1490,14 @@ Returns the type name for the parameter class.
 %Docstring
 Returns the name of the parent layer parameter, or an empty string if this is not set.
 
-.. seealso:: :py:func:`setParentLayerParameterName()`
+.. seealso:: :py:func:`setParentLayerParameterName`
 %End
 
     void setParentLayerParameterName( const QString &parentLayerParameterName );
 %Docstring
 Sets the name of the parent layer parameter. Use an empty string if this is not required.
 
-.. seealso:: :py:func:`parentLayerParameterName()`
+.. seealso:: :py:func:`parentLayerParameterName`
 %End
 
     virtual QVariantMap toVariantMap() const;
@@ -1535,14 +1535,14 @@ Constructor for QgsProcessingParameterLimitedDataTypes, with a list of acceptabl
 %Docstring
 Returns the geometry types for sources acceptable by the parameter.
 
-.. seealso:: :py:func:`setDataTypes()`
+.. seealso:: :py:func:`setDataTypes`
 %End
 
     void setDataTypes( const QList< int > &types );
 %Docstring
 Sets the geometry ``types`` for sources acceptable by the parameter.
 
-.. seealso:: :py:func:`dataTypes()`
+.. seealso:: :py:func:`dataTypes`
 %End
 
   protected:
@@ -1646,42 +1646,42 @@ Returns the type name for the parameter class.
 %Docstring
 Returns the name of the parent layer parameter, or an empty string if this is not set.
 
-.. seealso:: :py:func:`setParentLayerParameterName()`
+.. seealso:: :py:func:`setParentLayerParameterName`
 %End
 
     void setParentLayerParameterName( const QString &parentLayerParameterName );
 %Docstring
 Sets the name of the parent layer parameter. Use an empty string if this is not required.
 
-.. seealso:: :py:func:`parentLayerParameterName()`
+.. seealso:: :py:func:`parentLayerParameterName`
 %End
 
     DataType dataType() const;
 %Docstring
 Returns the acceptable data type for the field.
 
-.. seealso:: :py:func:`setDataType()`
+.. seealso:: :py:func:`setDataType`
 %End
 
     void setDataType( const DataType &type );
 %Docstring
 Sets the acceptable data ``type`` for the field.
 
-.. seealso:: :py:func:`dataType()`
+.. seealso:: :py:func:`dataType`
 %End
 
     bool allowMultiple() const;
 %Docstring
 Returns whether multiple field selections are permitted.
 
-.. seealso:: :py:func:`setAllowMultiple()`
+.. seealso:: :py:func:`setAllowMultiple`
 %End
 
     void setAllowMultiple( bool allowMultiple );
 %Docstring
 Sets whether multiple field selections are permitted.
 
-.. seealso:: :py:func:`allowMultiple()`
+.. seealso:: :py:func:`allowMultiple`
 %End
 
     virtual QVariantMap toVariantMap() const;
@@ -1780,7 +1780,7 @@ parameter.
 Returns true if the destination parameter supports non filed-based outputs,
 such as memory layers or direct database outputs.
 
-.. seealso:: :py:func:`setSupportsNonFileBasedOutputs()`
+.. seealso:: :py:func:`setSupportsNonFileBasedOutputs`
 %End
 
     void setSupportsNonFileBasedOutputs( bool supportsNonFileBasedOutputs );
@@ -1788,7 +1788,7 @@ such as memory layers or direct database outputs.
 Sets whether the destination parameter supports non filed-based outputs,
 such as memory layers or direct database outputs.
 
-.. seealso:: :py:func:`supportsNonFileBasedOutputs()`
+.. seealso:: :py:func:`supportsNonFileBasedOutputs`
 %End
 
     virtual QString defaultFileExtension() const = 0;
@@ -1809,7 +1809,7 @@ temporary storage of created layers and files.
 Returns true if the destination should be created by default. For optional parameters,
 a return value of false indicates that the destination should not be created by default.
 
-.. seealso:: :py:func:`setCreateByDefault()`
+.. seealso:: :py:func:`setCreateByDefault`
 %End
 
     void setCreateByDefault( bool createByDefault );
@@ -1817,7 +1817,7 @@ a return value of false indicates that the destination should not be created by 
 Sets whether the destination should be created by default. For optional parameters,
 a value of false indicates that the destination should not be created by default.
 
-.. seealso:: :py:func:`createByDefault()`
+.. seealso:: :py:func:`createByDefault`
 %End
 
 };
@@ -1866,7 +1866,7 @@ Returns the type name for the parameter class.
 %Docstring
 Returns the layer type for sinks associated with the parameter.
 
-.. seealso:: :py:func:`setDataType()`
+.. seealso:: :py:func:`setDataType`
 %End
 
     bool hasGeometry() const;
@@ -1879,7 +1879,7 @@ cannot be reliably determined in advance, this method will default to returning 
 %Docstring
 Sets the layer ``type`` for the sinks associated with the parameter.
 
-.. seealso:: :py:func:`dataType()`
+.. seealso:: :py:func:`dataType`
 %End
 
     virtual QVariantMap toVariantMap() const;
@@ -1944,7 +1944,7 @@ Returns the type name for the parameter class.
 %Docstring
 Returns the layer type for this created vector layer.
 
-.. seealso:: :py:func:`setDataType()`
+.. seealso:: :py:func:`setDataType`
 %End
 
     bool hasGeometry() const;
@@ -1957,7 +1957,7 @@ cannot be reliably determined in advance, this method will default to returning 
 %Docstring
 Sets the layer ``type`` for the created vector layer.
 
-.. seealso:: :py:func:`dataType()`
+.. seealso:: :py:func:`dataType`
 %End
 
     virtual QVariantMap toVariantMap() const;
@@ -2058,14 +2058,14 @@ Returns the type name for the parameter class.
 %Docstring
 Returns the file filter string for file destinations compatible with this parameter.
 
-.. seealso:: :py:func:`setFileFilter()`
+.. seealso:: :py:func:`setFileFilter`
 %End
 
     void setFileFilter( const QString &filter );
 %Docstring
 Sets the file ``filter`` string for file destinations compatible with this parameter.
 
-.. seealso:: :py:func:`fileFilter()`
+.. seealso:: :py:func:`fileFilter`
 %End
 
     virtual QVariantMap toVariantMap() const;
@@ -2164,14 +2164,14 @@ Returns the type name for the parameter class.
 %Docstring
 Returns the name of the parent layer parameter, or an empty string if this is not set.
 
-.. seealso:: :py:func:`setParentLayerParameterName()`
+.. seealso:: :py:func:`setParentLayerParameterName`
 %End
 
     void setParentLayerParameterName( const QString &parentLayerParameterName );
 %Docstring
 Sets the name of the parent layer parameter. Use an empty string if this is not required.
 
-.. seealso:: :py:func:`parentLayerParameterName()`
+.. seealso:: :py:func:`parentLayerParameterName`
 %End
 
     virtual QVariantMap toVariantMap() const;

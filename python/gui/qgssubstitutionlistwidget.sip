@@ -37,14 +37,14 @@ Sets the list of substitutions to show in the widget.
 
 :param substitutions: substitution list
 
-.. seealso:: :py:func:`substitutions()`
+.. seealso:: :py:func:`substitutions`
 %End
 
     QgsStringReplacementCollection substitutions() const;
 %Docstring
 Returns the list of substitutions currently defined by the widget.
 
-.. seealso:: :py:func:`setSubstitutions()`
+.. seealso:: :py:func:`setSubstitutions`
 %End
 
   signals:
@@ -85,14 +85,14 @@ Sets the list of substitutions to show in the dialog.
 
 :param substitutions: substitution list
 
-.. seealso:: :py:func:`substitutions()`
+.. seealso:: :py:func:`substitutions`
 %End
 
     QgsStringReplacementCollection substitutions() const;
 %Docstring
 Returns the list of substitutions currently defined by the dialog.
 
-.. seealso:: :py:func:`setSubstitutions()`
+.. seealso:: :py:func:`setSubstitutions`
 %End
 
 

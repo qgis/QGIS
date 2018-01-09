@@ -82,14 +82,14 @@ Sets the units for the width of the fill's stroke.
 
 :param unit: width units
 
-.. seealso:: :py:func:`strokeWidthUnit()`
+.. seealso:: :py:func:`strokeWidthUnit`
 %End
 
     QgsUnitTypes::RenderUnit strokeWidthUnit() const;
 %Docstring
 Returns the units for the width of the fill's stroke.
 
-.. seealso:: :py:func:`setStrokeWidthUnit()`
+.. seealso:: :py:func:`setStrokeWidthUnit`
 %End
 
     void setStrokeWidthMapUnitScale( const QgsMapUnitScale &scale );
@@ -101,14 +101,14 @@ Sets the units for the fill's offset.
 
 :param unit: offset units
 
-.. seealso:: :py:func:`offsetUnit()`
+.. seealso:: :py:func:`offsetUnit`
 %End
 
     QgsUnitTypes::RenderUnit offsetUnit() const;
 %Docstring
 Returns the units for the fill's offset.
 
-.. seealso:: :py:func:`setOffsetUnit()`
+.. seealso:: :py:func:`setOffsetUnit`
 %End
 
     void setOffsetMapUnitScale( const QgsMapUnitScale &scale );
@@ -233,9 +233,9 @@ Gradient color mode, controls how gradient color stops are created
 Returns the color ramp used for the gradient fill. This is only
 used if the gradient color type is set to ColorRamp.
 
-.. seealso:: :py:func:`setColorRamp()`
+.. seealso:: :py:func:`setColorRamp`
 
-.. seealso:: :py:func:`gradientColorType()`
+.. seealso:: :py:func:`gradientColorType`
 %End
 
     void setColorRamp( QgsColorRamp *ramp );
@@ -245,9 +245,9 @@ used if the gradient color type is set to ColorRamp.
 
 :param ramp: color ramp. Ownership is transferred.
 
-.. seealso:: :py:func:`colorRamp()`
+.. seealso:: :py:func:`colorRamp`
 
-.. seealso:: :py:func:`setGradientColorType()`
+.. seealso:: :py:func:`setGradientColorType`
 %End
 
     QColor color2() const;
@@ -687,14 +687,14 @@ Sets the units for the symbol's stroke width.
 
 :param unit: symbol units
 
-.. seealso:: :py:func:`strokeWidthUnit()`
+.. seealso:: :py:func:`strokeWidthUnit`
 %End
 
     QgsUnitTypes::RenderUnit strokeWidthUnit() const;
 %Docstring
 Returns the units for the symbol's stroke width.
 
-.. seealso:: :py:func:`setStrokeWidthUnit()`
+.. seealso:: :py:func:`setStrokeWidthUnit`
 %End
 
     void setStrokeWidthMapUnitScale( const QgsMapUnitScale &scale );
@@ -823,7 +823,7 @@ Sets the ``opacity`` for the raster image used in the fill.
 
 :param opacity: opacity value between 0 (fully transparent) and 1 (fully opaque)
 
-.. seealso:: :py:func:`opacity()`
+.. seealso:: :py:func:`opacity`
 %End
 
     double opacity() const;
@@ -832,7 +832,7 @@ Returns the opacity for the raster image used in the fill.
 
 :return: opacity value between 0 (fully transparent) and 1 (fully opaque)
 
-.. seealso:: :py:func:`setOpacity()`
+.. seealso:: :py:func:`setOpacity`
 %End
 
     void setOffset( QPointF offset );
@@ -1072,14 +1072,14 @@ Sets the units for the width of the SVG images in the pattern.
 
 :param unit: width units
 
-.. seealso:: :py:func:`patternWidthUnit()`
+.. seealso:: :py:func:`patternWidthUnit`
 %End
 
     QgsUnitTypes::RenderUnit patternWidthUnit() const;
 %Docstring
 Returns the units for the width of the SVG images in the pattern.
 
-.. seealso:: :py:func:`setPatternWidthUnit()`
+.. seealso:: :py:func:`setPatternWidthUnit`
 %End
 
     void setPatternWidthMapUnitScale( const QgsMapUnitScale &scale );
@@ -1091,14 +1091,14 @@ Sets the units for the stroke width.
 
 :param unit: width units
 
-.. seealso:: :py:func:`svgStrokeWidthUnit()`
+.. seealso:: :py:func:`svgStrokeWidthUnit`
 %End
 
     QgsUnitTypes::RenderUnit svgStrokeWidthUnit() const;
 %Docstring
 Returns the units for the stroke width.
 
-.. seealso:: :py:func:`setSvgStrokeWidthUnit()`
+.. seealso:: :py:func:`setSvgStrokeWidthUnit`
 %End
 
     void setSvgStrokeWidthMapUnitScale( const QgsMapUnitScale &scale );
@@ -1168,18 +1168,18 @@ Sets the distance between lines in the fill pattern.
 
 :param d: distance. Units are specified by setDistanceUnit()
 
-.. seealso:: :py:func:`distance()`
+.. seealso:: :py:func:`distance`
 
-.. seealso:: :py:func:`setDistanceUnit()`
+.. seealso:: :py:func:`setDistanceUnit`
 %End
 
     double distance() const;
 %Docstring
 Returns the distance between lines in the fill pattern. Units are retrieved by distanceUnit().
 
-.. seealso:: :py:func:`setDistance()`
+.. seealso:: :py:func:`setDistance`
 
-.. seealso:: :py:func:`distanceUnit()`
+.. seealso:: :py:func:`distanceUnit`
 %End
 
     void setLineWidth( double w );
@@ -1197,18 +1197,18 @@ Sets the units for the distance between lines in the fill pattern.
 
 :param unit: distance units
 
-.. seealso:: :py:func:`distanceUnit()`
+.. seealso:: :py:func:`distanceUnit`
 
-.. seealso:: :py:func:`setDistance()`
+.. seealso:: :py:func:`setDistance`
 %End
 
     QgsUnitTypes::RenderUnit distanceUnit() const;
 %Docstring
 Returns the units for the distance between lines in the fill pattern.
 
-.. seealso:: :py:func:`setDistanceUnit()`
+.. seealso:: :py:func:`setDistanceUnit`
 
-.. seealso:: :py:func:`distance()`
+.. seealso:: :py:func:`distance`
 %End
 
     void setDistanceMapUnitScale( const QgsMapUnitScale &scale );
@@ -1220,14 +1220,14 @@ Sets the units for the line's width.
 
 :param unit: width units
 
-.. seealso:: :py:func:`lineWidthUnit()`
+.. seealso:: :py:func:`lineWidthUnit`
 %End
 
     QgsUnitTypes::RenderUnit lineWidthUnit() const;
 %Docstring
 Returns the units for the line's width.
 
-.. seealso:: :py:func:`setLineWidthUnit()`
+.. seealso:: :py:func:`setLineWidthUnit`
 %End
 
     void setLineWidthMapUnitScale( const QgsMapUnitScale &scale );
@@ -1239,14 +1239,14 @@ Sets the units for the line pattern's offset.
 
 :param unit: offset units
 
-.. seealso:: :py:func:`offsetUnit()`
+.. seealso:: :py:func:`offsetUnit`
 %End
 
     QgsUnitTypes::RenderUnit offsetUnit() const;
 %Docstring
 Returns the units for the line pattern's offset.
 
-.. seealso:: :py:func:`setOffsetUnit()`
+.. seealso:: :py:func:`setOffsetUnit`
 %End
 
     void setOffsetMapUnitScale( const QgsMapUnitScale &scale );
@@ -1338,18 +1338,18 @@ Sets the units for the horizontal distance between points in the pattern.
 
 :param unit: distance units
 
-.. seealso:: :py:func:`distanceXUnit()`
+.. seealso:: :py:func:`distanceXUnit`
 
-.. seealso:: :py:func:`setDistanceYUnit()`
+.. seealso:: :py:func:`setDistanceYUnit`
 %End
 
     QgsUnitTypes::RenderUnit distanceXUnit() const;
 %Docstring
 Returns the units for the horizontal distance between points in the pattern.
 
-.. seealso:: :py:func:`setDistanceXUnit()`
+.. seealso:: :py:func:`setDistanceXUnit`
 
-.. seealso:: :py:func:`distanceYUnit()`
+.. seealso:: :py:func:`distanceYUnit`
 %End
 
     void setDistanceXMapUnitScale( const QgsMapUnitScale &scale );
@@ -1361,18 +1361,18 @@ Sets the units for the vertical distance between points in the pattern.
 
 :param unit: distance units
 
-.. seealso:: :py:func:`distanceYUnit()`
+.. seealso:: :py:func:`distanceYUnit`
 
-.. seealso:: :py:func:`setDistanceXUnit()`
+.. seealso:: :py:func:`setDistanceXUnit`
 %End
 
     QgsUnitTypes::RenderUnit distanceYUnit() const;
 %Docstring
 Returns the units for the vertical distance between points in the pattern.
 
-.. seealso:: :py:func:`setDistanceYUnit()`
+.. seealso:: :py:func:`setDistanceYUnit`
 
-.. seealso:: :py:func:`distanceXUnit()`
+.. seealso:: :py:func:`distanceXUnit`
 %End
 
     void setDistanceYMapUnitScale( const QgsMapUnitScale &scale );
@@ -1384,18 +1384,18 @@ Sets the units for the horizontal displacement between rows in the pattern.
 
 :param unit: displacement units
 
-.. seealso:: :py:func:`displacementXUnit()`
+.. seealso:: :py:func:`displacementXUnit`
 
-.. seealso:: :py:func:`setDisplacementYUnit()`
+.. seealso:: :py:func:`setDisplacementYUnit`
 %End
 
     QgsUnitTypes::RenderUnit displacementXUnit() const;
 %Docstring
 Returns the units for the horizontal displacement between rows in the pattern.
 
-.. seealso:: :py:func:`setDisplacementXUnit()`
+.. seealso:: :py:func:`setDisplacementXUnit`
 
-.. seealso:: :py:func:`displacementYUnit()`
+.. seealso:: :py:func:`displacementYUnit`
 %End
 
     void setDisplacementXMapUnitScale( const QgsMapUnitScale &scale );
@@ -1407,18 +1407,18 @@ Sets the units for the vertical displacement between rows in the pattern.
 
 :param unit: displacement units
 
-.. seealso:: :py:func:`displacementYUnit()`
+.. seealso:: :py:func:`displacementYUnit`
 
-.. seealso:: :py:func:`setDisplacementXUnit()`
+.. seealso:: :py:func:`setDisplacementXUnit`
 %End
 
     QgsUnitTypes::RenderUnit displacementYUnit() const;
 %Docstring
 Returns the units for the vertical displacement between rows in the pattern.
 
-.. seealso:: :py:func:`setDisplacementYUnit()`
+.. seealso:: :py:func:`setDisplacementYUnit`
 
-.. seealso:: :py:func:`displacementXUnit()`
+.. seealso:: :py:func:`displacementXUnit`
 %End
 
     void setDisplacementYMapUnitScale( const QgsMapUnitScale &scale );

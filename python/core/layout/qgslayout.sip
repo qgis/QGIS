@@ -118,9 +118,9 @@ to reflect the new stacking order. This allows multiple
 raiseItem() calls to be made in sequence without the cost of
 updating the scene for each one.
 
-.. seealso:: :py:func:`lowerItem()`
+.. seealso:: :py:func:`lowerItem`
 
-.. seealso:: :py:func:`updateZValues()`
+.. seealso:: :py:func:`updateZValues`
 %End
 
     bool lowerItem( QgsLayoutItem *item, bool deferUpdate = false );
@@ -133,9 +133,9 @@ to reflect the new stacking order. This allows multiple
 raiseItem() calls to be made in sequence without the cost of
 updating the scene for each one.
 
-.. seealso:: :py:func:`raiseItem()`
+.. seealso:: :py:func:`raiseItem`
 
-.. seealso:: :py:func:`updateZValues()`
+.. seealso:: :py:func:`updateZValues`
 %End
 
     bool moveItemToTop( QgsLayoutItem *item, bool deferUpdate = false );
@@ -148,9 +148,9 @@ to reflect the new stacking order. This allows multiple
 raiseItem() calls to be made in sequence without the cost of
 updating the scene for each one.
 
-.. seealso:: :py:func:`moveItemToBottom()`
+.. seealso:: :py:func:`moveItemToBottom`
 
-.. seealso:: :py:func:`updateZValues()`
+.. seealso:: :py:func:`updateZValues`
 %End
 
     bool moveItemToBottom( QgsLayoutItem *item, bool deferUpdate = false );
@@ -162,9 +162,9 @@ to reflect the new stacking order. This allows multiple
 raiseItem() calls to be made in sequence without the cost of
 updating the scene for each one.
 
-.. seealso:: :py:func:`moveItemToTop()`
+.. seealso:: :py:func:`moveItemToTop`
 
-.. seealso:: :py:func:`updateZValues()`
+.. seealso:: :py:func:`updateZValues`
 %End
 
     void updateZValues( const bool addUndoCommands = true );
@@ -182,9 +182,9 @@ if a matching item could not be found.
 If ``includeTemplateUuids`` is true, then item's :py:func:`QgsLayoutItem.templateUuid()`
 will also be tested when trying to match the uuid.
 
-.. seealso:: :py:func:`multiFrameByUuid()`
+.. seealso:: :py:func:`multiFrameByUuid`
 
-.. seealso:: :py:func:`itemById()`
+.. seealso:: :py:func:`itemById`
 %End
 
     QgsLayoutItem *itemById( const QString &id ) const;
@@ -193,7 +193,7 @@ Returns a layout item given its ``id``.
 Since item IDs are not necessarely unique, this function returns the first matching
 item found.
 
-.. seealso:: :py:func:`itemByUuid()`
+.. seealso:: :py:func:`itemByUuid`
 %End
 
     QgsLayoutMultiFrame *multiFrameByUuid( const QString &uuid ) const;
@@ -201,7 +201,7 @@ item found.
 Returns the layout multiframe with matching ``uuid`` unique identifier, or a None
 if a matching multiframe could not be found.
 
-.. seealso:: :py:func:`itemByUuid()`
+.. seealso:: :py:func:`itemByUuid`
 %End
 
     QgsLayoutItem *layoutItemAt( QPointF position, const bool ignoreLocked = false ) const;
@@ -221,18 +221,18 @@ If ``ignoreLocked`` is set to true any locked items will be ignored.
 Sets the native measurement ``units`` for the layout. These also form the default unit
 for measurements for the layout.
 
-.. seealso:: :py:func:`units()`
+.. seealso:: :py:func:`units`
 
-.. seealso:: :py:func:`convertToLayoutUnits()`
+.. seealso:: :py:func:`convertToLayoutUnits`
 %End
 
     QgsUnitTypes::LayoutUnit units() const;
 %Docstring
 Returns the native units for the layout.
 
-.. seealso:: :py:func:`setUnits()`
+.. seealso:: :py:func:`setUnits`
 
-.. seealso:: :py:func:`convertToLayoutUnits()`
+.. seealso:: :py:func:`convertToLayoutUnits`
 %End
 
     double convertToLayoutUnits( const QgsLayoutMeasurement &measurement ) const;
@@ -241,9 +241,9 @@ Converts a measurement into the layout's native units.
 
 :return: length of measurement in layout units
 
-.. seealso:: :py:func:`convertFromLayoutUnits()`
+.. seealso:: :py:func:`convertFromLayoutUnits`
 
-.. seealso:: :py:func:`units()`
+.. seealso:: :py:func:`units`
 %End
 
     QSizeF convertToLayoutUnits( const QgsLayoutSize &size ) const;
@@ -252,9 +252,9 @@ Converts a size into the layout's native units.
 
 :return: size of measurement in layout units
 
-.. seealso:: :py:func:`convertFromLayoutUnits()`
+.. seealso:: :py:func:`convertFromLayoutUnits`
 
-.. seealso:: :py:func:`units()`
+.. seealso:: :py:func:`units`
 %End
 
     QPointF convertToLayoutUnits( const QgsLayoutPoint &point ) const;
@@ -263,9 +263,9 @@ Converts a ``point`` into the layout's native units.
 
 :return: point in layout units
 
-.. seealso:: :py:func:`convertFromLayoutUnits()`
+.. seealso:: :py:func:`convertFromLayoutUnits`
 
-.. seealso:: :py:func:`units()`
+.. seealso:: :py:func:`units`
 %End
 
     QgsLayoutMeasurement convertFromLayoutUnits( const double length, const QgsUnitTypes::LayoutUnit unit ) const;
@@ -274,9 +274,9 @@ Converts a ``length`` measurement from the layout's native units to a specified 
 
 :return: length of measurement in specified units
 
-.. seealso:: :py:func:`convertToLayoutUnits()`
+.. seealso:: :py:func:`convertToLayoutUnits`
 
-.. seealso:: :py:func:`units()`
+.. seealso:: :py:func:`units`
 %End
 
     QgsLayoutSize convertFromLayoutUnits( const QSizeF &size, const QgsUnitTypes::LayoutUnit unit ) const;
@@ -285,9 +285,9 @@ Converts a ``size`` from the layout's native units to a specified target ``unit`
 
 :return: size of measurement in specified units
 
-.. seealso:: :py:func:`convertToLayoutUnits()`
+.. seealso:: :py:func:`convertToLayoutUnits`
 
-.. seealso:: :py:func:`units()`
+.. seealso:: :py:func:`units`
 %End
 
     QgsLayoutPoint convertFromLayoutUnits( const QPointF &point, const QgsUnitTypes::LayoutUnit unit ) const;
@@ -296,9 +296,9 @@ Converts a ``point`` from the layout's native units to a specified target ``unit
 
 :return: point in specified units
 
-.. seealso:: :py:func:`convertToLayoutUnits()`
+.. seealso:: :py:func:`convertToLayoutUnits`
 
-.. seealso:: :py:func:`units()`
+.. seealso:: :py:func:`units`
 %End
 
     QgsLayoutRenderContext &renderContext();
@@ -349,11 +349,11 @@ Set a custom property for the layout.
 :param key: property key. If a property with the same key already exists it will be overwritten.
 :param value: property value
 
-.. seealso:: :py:func:`customProperty()`
+.. seealso:: :py:func:`customProperty`
 
-.. seealso:: :py:func:`removeCustomProperty()`
+.. seealso:: :py:func:`removeCustomProperty`
 
-.. seealso:: :py:func:`customProperties()`
+.. seealso:: :py:func:`customProperties`
 %End
 
     QVariant customProperty( const QString &key, const QVariant &defaultValue = QVariant() ) const;
@@ -365,11 +365,11 @@ Read a custom property from the layout.
 
 :return: value of matching property
 
-.. seealso:: :py:func:`setCustomProperty()`
+.. seealso:: :py:func:`setCustomProperty`
 
-.. seealso:: :py:func:`removeCustomProperty()`
+.. seealso:: :py:func:`removeCustomProperty`
 
-.. seealso:: :py:func:`customProperties()`
+.. seealso:: :py:func:`customProperties`
 %End
 
     void removeCustomProperty( const QString &key );
@@ -378,22 +378,22 @@ Remove a custom property from the layout.
 
 :param key: property key
 
-.. seealso:: :py:func:`setCustomProperty()`
+.. seealso:: :py:func:`setCustomProperty`
 
-.. seealso:: :py:func:`customProperty()`
+.. seealso:: :py:func:`customProperty`
 
-.. seealso:: :py:func:`customProperties()`
+.. seealso:: :py:func:`customProperties`
 %End
 
     QStringList customProperties() const;
 %Docstring
 Return list of keys stored in custom properties for the layout.
 
-.. seealso:: :py:func:`setCustomProperty()`
+.. seealso:: :py:func:`setCustomProperty`
 
-.. seealso:: :py:func:`customProperty()`
+.. seealso:: :py:func:`customProperty`
 
-.. seealso:: :py:func:`removeCustomProperty()`
+.. seealso:: :py:func:`removeCustomProperty`
 %End
 
     QgsLayoutItemMap *referenceMap() const;
@@ -402,9 +402,9 @@ Returns the map item which will be used to generate corresponding world files wh
 layout is exported. If no map was explicitly set via setReferenceMap(), the largest
 map in the layout will be returned (or None if there are no maps in the layout).
 
-.. seealso:: :py:func:`setReferenceMap()`
+.. seealso:: :py:func:`setReferenceMap`
 
-.. seealso:: :py:func:`generateWorldFile()`
+.. seealso:: :py:func:`generateWorldFile`
 %End
 
     void setReferenceMap( QgsLayoutItemMap *map );
@@ -412,9 +412,9 @@ map in the layout will be returned (or None if there are no maps in the layout).
 Sets the ``map`` item which will be used to generate corresponding world files when the
 layout is exported.
 
-.. seealso:: :py:func:`referenceMap()`
+.. seealso:: :py:func:`referenceMap`
 
-.. seealso:: :py:func:`setGenerateWorldFile()`
+.. seealso:: :py:func:`setGenerateWorldFile`
 %End
 
     QgsLayoutPageCollection *pageCollection();
@@ -434,7 +434,7 @@ and other cosmetic items.
 
 :return: layout bounds, in layout units.
 
-.. seealso:: :py:func:`pageItemBounds()`
+.. seealso:: :py:func:`pageItemBounds`
 %End
 
     QRectF pageItemBounds( int page, bool visibleOnly = false ) const;
@@ -446,7 +446,7 @@ Set ``visibleOnly`` to true to only include visible items.
 
 The returned bounds are in layout units.
 
-.. seealso:: :py:func:`layoutBounds()`
+.. seealso:: :py:func:`layoutBounds`
 %End
 
     void addLayoutItem( QgsLayoutItem *item /Transfer/ );
@@ -466,27 +466,27 @@ The item will also be deleted.
 %Docstring
 Adds a ``multiFrame`` to the layout. The object is owned by the layout until removeMultiFrame() is called.
 
-.. seealso:: :py:func:`removeMultiFrame()`
+.. seealso:: :py:func:`removeMultiFrame`
 
-.. seealso:: :py:func:`multiFrames()`
+.. seealso:: :py:func:`multiFrames`
 %End
 
     void removeMultiFrame( QgsLayoutMultiFrame *multiFrame );
 %Docstring
 Removes a ``multiFrame`` from the layout (but does not delete it).
 
-.. seealso:: :py:func:`addMultiFrame()`
+.. seealso:: :py:func:`addMultiFrame`
 
-.. seealso:: :py:func:`multiFrames()`
+.. seealso:: :py:func:`multiFrames`
 %End
 
     QList< QgsLayoutMultiFrame * > multiFrames() const;
 %Docstring
 Returns a list of multi frames contained in the layout.
 
-.. seealso:: :py:func:`addMultiFrame()`
+.. seealso:: :py:func:`addMultiFrame`
 
-.. seealso:: :py:func:`removeMultiFrame()`
+.. seealso:: :py:func:`removeMultiFrame`
 %End
 
     bool saveAsTemplate( const QString &path, const QgsReadWriteContext &context ) const;
@@ -494,7 +494,7 @@ Returns a list of multi frames contained in the layout.
 Saves the layout as a template at the given file ``path``.
 Returns true if save was successful.
 
-.. seealso:: :py:func:`loadFromTemplate()`
+.. seealso:: :py:func:`loadFromTemplate`
 %End
 
     QList< QgsLayoutItem * > loadFromTemplate( const QDomDocument &document, const QgsReadWriteContext &context, bool clearExisting = true, bool *ok /Out/ = 0 );
@@ -514,14 +514,14 @@ Returns a list of loaded items.
 %Docstring
 Returns the layout's state encapsulated in a DOM element.
 
-.. seealso:: :py:func:`readXml()`
+.. seealso:: :py:func:`readXml`
 %End
 
     virtual bool readXml( const QDomElement &layoutElement, const QDomDocument &document, const QgsReadWriteContext &context );
 %Docstring
 Sets the collection's state from a DOM element. ``layoutElement`` is the DOM node corresponding to the layout.
 
-.. seealso:: :py:func:`writeXml()`
+.. seealso:: :py:func:`writeXml`
 %End
 
     QList< QgsLayoutItem * > addItemsFromXml( const QDomElement &parentElement, const QDomDocument &document,
@@ -555,7 +555,7 @@ and it's associated objects.
 Creates a new group from a list of layout ``items`` and adds the group to the layout.
 If grouping was not possible, a None will be returned.
 
-.. seealso:: :py:func:`ungroupItems()`
+.. seealso:: :py:func:`ungroupItems`
 %End
 
     QList<QgsLayoutItem *> ungroupItems( QgsLayoutItemGroup *group );
@@ -566,7 +566,7 @@ layout. Child items will remain in the layout and will not be deleted.
 Returns a list of the items removed from the group, or an empty list if ungrouping
 was not successful.
 
-.. seealso:: :py:func:`groupItems()`
+.. seealso:: :py:func:`groupItems`
 %End
 
   public slots:
@@ -578,7 +578,7 @@ and rebuild cached images, html items to reload their source url, and attribute 
 to refresh their contents. Calling this also triggers a recalculation of all data defined
 attributes within the layout.
 
-.. seealso:: :py:func:`refreshed()`
+.. seealso:: :py:func:`refreshed`
 %End
 
     void updateBounds();
