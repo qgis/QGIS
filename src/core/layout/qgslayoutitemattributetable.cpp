@@ -549,7 +549,7 @@ QVariant QgsLayoutItemAttributeTable::replaceWrapChar( const QVariant &variant )
   return replaced;
 }
 
-QgsVectorLayer *QgsLayoutItemAttributeTable::sourceLayer()
+QgsVectorLayer *QgsLayoutItemAttributeTable::sourceLayer() const
 {
   switch ( mSource )
   {

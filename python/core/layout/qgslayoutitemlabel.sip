@@ -61,7 +61,7 @@ Returns the required item size (in layout units) for the label's text to fill th
 .. seealso:: :py:func:`adjustSizeToText()`
 %End
 
-    QString text();
+    QString text() const;
 %Docstring
 Returns the label's preset text.
 

@@ -87,6 +87,7 @@ Returns the items model attached to the layout.
 %End
 
 
+
     QList<QgsLayoutItem *> selectedLayoutItems( const bool includeLockedItems = true );
 %Docstring
 Returns list of selected layout items.

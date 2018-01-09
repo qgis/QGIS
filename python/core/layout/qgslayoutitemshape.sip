@@ -34,6 +34,14 @@ class QgsLayoutItemShape : QgsLayoutItem
 Constructor for QgsLayoutItemShape, with the specified parent ``layout``.
 %End
 
+    static QgsLayoutItemShape *create( QgsLayout *layout ) /Factory/;
+%Docstring
+Returns a new shape item for the specified ``layout``.
+
+The caller takes responsibility for deleting the returned object.
+%End
+
+
     virtual int type() const;
 
     virtual QIcon icon() const;

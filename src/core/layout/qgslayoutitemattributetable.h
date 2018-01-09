@@ -82,7 +82,7 @@ class CORE_EXPORT QgsLayoutItemAttributeTable: public QgsLayoutTable
      * atlas coverage layer. If the table is set to layer attributes mode, then
      * the source layer will be the user specified vector layer.
      */
-    QgsVectorLayer *sourceLayer();
+    QgsVectorLayer *sourceLayer() const;
 
     /**
      * Sets the vector \a layer from which to display feature attributes.

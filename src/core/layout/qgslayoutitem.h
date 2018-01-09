@@ -1084,6 +1084,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     friend class TestQgsLayoutItem;
     friend class TestQgsLayoutView;
     friend class QgsLayoutItemGroup;
+    friend class QgsCompositionConverter;
 };
 
 #endif //QGSLAYOUTITEM_H

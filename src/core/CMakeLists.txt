@@ -418,6 +418,7 @@ SET(QGIS_CORE_SRCS
   layout/qgsreport.cpp
   layout/qgsreportsectionfieldgroup.cpp
   layout/qgsreportsectionlayout.cpp
+  layout/qgscompositionconverter.cpp
 
   pal/costcalculator.cpp
   pal/feature.cpp
@@ -1052,6 +1053,7 @@ SET(QGIS_CORE_HDRS
   layout/qgslayoututils.h
   layout/qgsreportsectionfieldgroup.h
   layout/qgsreportsectionlayout.h
+  layout/qgscompositionconverter.h
 
   metadata/qgslayermetadata.h
   metadata/qgslayermetadatavalidator.h

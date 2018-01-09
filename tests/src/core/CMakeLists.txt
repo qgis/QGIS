@@ -83,6 +83,7 @@ SET(TESTS
  testqgscolorscheme.cpp
  testqgscolorschemeregistry.cpp
  testqgscomposermultiframe.cpp
+ testqgscompositionconverter.cpp
  testqgsconnectionpool.cpp
  testcontrastenhancements.cpp
  testqgscoordinatereferencesystem.cpp

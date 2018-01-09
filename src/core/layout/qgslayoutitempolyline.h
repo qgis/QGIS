@@ -261,6 +261,8 @@ class CORE_EXPORT QgsLayoutItemPolyline: public QgsLayoutNodesItem
     double computeMarkerMargin() const;
 
     friend class TestQgsLayoutPolyline;
+    friend class QgsCompositionConverter;
+
 };
 
 #endif // QGSLAYOUTITEMPOLYLINE_H

@@ -505,6 +505,9 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
 
     //! Will be true if the legend should be resized automatically to fit contents
     bool mSizeToContents = true;
+
+    friend class QgsCompositionConverter;
+
 };
 
 #endif // QGSLAYOUTITEMLEGEND_H

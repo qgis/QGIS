@@ -207,12 +207,15 @@ class CORE_EXPORT QgsLayoutChecker : public QgsMultiRenderChecker
      * The maximum number of allowable pixels differing from the reference image is
      * specified via the \a pixelDiff argument.
      *
+     * A reference image can be created by setting \a createReferenceImage to true
+     * in this case the test will always return true.
+     *
      * The page number is specified via \a page, where 0 corresponds to the first
      * page in the layout.
      *
      * Returns false if the rendered layout differs from the expected reference image.
      */
-    bool testLayout( QString &report, int page = 0, int pixelDiff = 0 );
+    bool testLayout( QString &report, int page = 0, int pixelDiff = 0, bool createReferenceImage = false );
 
   private:
     QgsLayoutChecker() = delete;

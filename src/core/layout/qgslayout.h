@@ -134,6 +134,33 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     }
 
     /**
+     * Returns a list of layout objects (items and multiframes) of a specific type.
+     * \note not available in Python bindings
+     */
+    template<class T> void layoutObjects( QList<T *> &objectList ) const SIP_SKIP
+    {
+      objectList.clear();
+      const QList<QGraphicsItem *> itemList( items() );
+      const QList<QgsLayoutMultiFrame *> frameList( multiFrames() );
+      for ( const auto &obj :  itemList )
+      {
+        T *item = dynamic_cast<T *>( obj );
+        if ( item )
+        {
+          objectList.push_back( item );
+        }
+      }
+      for ( const auto &obj :  frameList )
+      {
+        T *item = dynamic_cast<T *>( obj );
+        if ( item )
+        {
+          objectList.push_back( item );
+        }
+      }
+    }
+
+    /**
      * Returns list of selected layout items.
      *
      * If \a includeLockedItems is set to true, then locked items will also be included
@@ -678,6 +705,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     friend class QgsLayoutItemGroupUndoCommand;
     friend class QgsLayoutModel;
     friend class QgsLayoutMultiFrame;
+    friend class QgsCompositionConverter;
 };
 
 #endif //QGSLAYOUT_H
