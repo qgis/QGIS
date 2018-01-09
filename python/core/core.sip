@@ -1,6 +1,8 @@
 %Module(name=qgis._core,
         keyword_arguments="All")
 
+%DefaultDocstringSignature "prepended"
+
 %ModuleCode
 
 #include "qgsexception.h"

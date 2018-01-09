@@ -1,6 +1,7 @@
 %Module(name=qgis._server,
         keyword_arguments="All")
 
+%DefaultDocstringSignature "prepended"
 
 %Import QtCore/QtCoremod.sip
 %Import QtGui/QtGuimod.sip
