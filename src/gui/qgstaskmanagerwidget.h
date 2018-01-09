@@ -55,9 +55,11 @@ class GUI_EXPORT QgsTaskManagerWidget : public QWidget
   private slots:
 
     void modelRowsInserted( const QModelIndex &index, int start, int end );
+    void clicked( const QModelIndex &index );
 
   private:
 
+    QgsTaskManager *mManager = nullptr;
     QTreeView *mTreeView = nullptr;
     QgsTaskManagerModel *mModel = nullptr;
 };
