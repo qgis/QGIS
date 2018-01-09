@@ -1,7 +1,9 @@
 %Module(name=qgis._core,
         keyword_arguments="All")
 
+%If (SIP_4_20 - )
 %DefaultDocstringSignature "prepended"
+%End
 
 %ModuleCode
 
