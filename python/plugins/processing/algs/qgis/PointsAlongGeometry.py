@@ -73,11 +73,11 @@ class PointsAlongGeometry(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
                                                               self.tr('Input layer'), [QgsProcessing.TypeVectorPolygon, QgsProcessing.TypeVectorLine]))
         self.addParameter(QgsProcessingParameterNumber(self.DISTANCE,
-                                                       self.tr('Distance'), minValue=0.0, defaultValue=1.0))
+                                                       self.tr('Distance'), type=QgsProcessingParameterNumber.Double, minValue=0.0, defaultValue=1.0))
         self.addParameter(QgsProcessingParameterNumber(self.START_OFFSET,
-                                                       self.tr('Start offset'), minValue=0.0, defaultValue=0.0))
+                                                       self.tr('Start offset'), type=QgsProcessingParameterNumber.Double, minValue=0.0, defaultValue=0.0))
         self.addParameter(QgsProcessingParameterNumber(self.END_OFFSET,
-                                                       self.tr('End offset'), minValue=0.0, defaultValue=0.0))
+                                                       self.tr('End offset'), type=QgsProcessingParameterNumber.Double, minValue=0.0, defaultValue=0.0))
 
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Points'), QgsProcessing.TypeVectorPoint))
 
