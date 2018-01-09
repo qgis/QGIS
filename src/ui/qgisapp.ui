@@ -1827,7 +1827,7 @@ Ctrl (Cmd) increments by 15 deg.</string>
   <action name="mActionShowPythonDialog">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/console/iconRunConsole.png</normaloff>:/images/themes/default/console/iconRunConsole.png</iconset>
+     <normaloff>:/images/themes/default/console/mIconRunConsole.svg</normaloff>:/images/themes/default/console/mIconRunConsole.svg</iconset>
    </property>
    <property name="text">
     <string>Python Console</string>

@@ -85,7 +85,7 @@
         <file>themes/default/console/iconOpenConsole.png</file>
         <file>themes/default/console/iconQtCoreConsole.png</file>
         <file>themes/default/console/iconQtGuiConsole.png</file>
-        <file>themes/default/console/iconRunConsole.png</file>
+        <file>themes/default/console/mIconRunConsole.svg</file>
         <file>themes/default/console/iconSaveConsole.png</file>
         <file>themes/default/console/iconSettingsConsole.png</file>
         <file>themes/default/console/iconProcessingConsole.png</file>
