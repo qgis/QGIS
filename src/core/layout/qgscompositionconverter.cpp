@@ -1206,12 +1206,8 @@ bool QgsCompositionConverter::readLegendXml( QgsLayoutItemLegend *layoutItem, co
   layoutItem->setWrapString( itemElem.attribute( QStringLiteral( "wrapChar" ) ) );
 
   layoutItem->mSizeToContents = itemElem.attribute( QStringLiteral( "resizeToContents" ), QStringLiteral( "1" ) ) != QLatin1String( "0" );
-
   layoutItem->mLegendFilterByMap = itemElem.attribute( QStringLiteral( "legendFilterByMap" ), QStringLiteral( "0" ) ).toInt();
-
-  /* TODO: atlas
-  mFilterOutAtlas = itemElem.attribute( QStringLiteral( "legendFilterByAtlas" ), QStringLiteral( "0" ) ).toInt();
-  */
+  layoutItem->mFilterOutAtlas = itemElem.attribute( QStringLiteral( "legendFilterByAtlas" ), QStringLiteral( "0" ) ).toInt();
 
   // QGIS >= 2.6
   QDomElement layerTreeElem = itemElem.firstChildElement( QStringLiteral( "layer-tree" ) );
@@ -1247,8 +1243,6 @@ bool QgsCompositionConverter::readAtlasXml( QgsLayoutAtlas *atlasItem, const QDo
   atlasItem->setCoverageLayer( layerRef.resolveWeakly( project ) );
 
   atlasItem->setPageNameExpression( itemElem.attribute( QStringLiteral( "pageNameExpression" ), QString() ) );
-  // TODO: gone?
-  //layoutItem->mSingleFile = itemElem.attribute( QStringLiteral( "singleFile" ), QStringLiteral( "false" ) ) == QLatin1String( "true" );
   QString errorString;
   atlasItem->setFilenameExpression( itemElem.attribute( QStringLiteral( "filenamePattern" ), QLatin1String( "" ) ), errorString );
   // note: no error reporting for errorString
@@ -1267,9 +1261,6 @@ bool QgsCompositionConverter::readAtlasXml( QgsLayoutAtlas *atlasItem, const QDo
   }
 
   atlasItem->setHideCoverage( itemElem.attribute( QStringLiteral( "hideCoverage" ), QStringLiteral( "false" ) ) == QLatin1String( "true" ) );
-
-  // TODO: gone?
-  // layoutItem->setFileFormat = atlasElem.attribute( QStringLiteral( "fileFormat" ), QStringLiteral( "png" ) );
 
   return true;
 

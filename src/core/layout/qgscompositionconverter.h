@@ -125,7 +125,6 @@ class CORE_EXPORT QgsCompositionConverter
      * createLayoutFromCompositionXml is a factory that creates layout instances from a
      *  QGIS 2.x XML composition \a parentElement and a QGIS \a project
      * \return a QgsPrintLayout instance
-     * \since QGIS 3.0
      */
     static std::unique_ptr<QgsPrintLayout> createLayoutFromCompositionXml( const QDomElement &composerElement,
         QgsProject *project );
@@ -134,10 +133,11 @@ class CORE_EXPORT QgsCompositionConverter
     /**
      * addItemsFromCompositionXml parse a QGIS 2.x composition XML in the \a parentElement,
      * converts the 2.x items to the new layout elements and add them to the  \a layout
+     * \param layout where the items will be added
+     * \param parentElement parent DOM element
      * \param position for pasting
      * \param pasteInPlace if true element position is translated to \a position
      * \return list of layout object items that have been added to the layout
-     * \since QGIS 3.0
      */
     static QList<QgsLayoutObject *> addItemsFromCompositionXml( QgsPrintLayout *layout,
         const QDomElement &parentElement,

@@ -225,6 +225,7 @@ void TestQgsCompositionConverter::importComposerTemplateShape()
   QCOMPARE( shape->pos().y(), 83.1791 );
   QCOMPARE( shape->sizeWithUnits().width(), 12.0988 );
   QCOMPARE( shape->sizeWithUnits().height(), 33.2716 );
+  QCOMPARE( shape->sizeWithUnits().units(), QgsUnitTypes::LayoutUnit::LayoutMillimeters );
   QCOMPARE( shape->referencePoint(), QgsLayoutItem::ReferencePoint::MiddleRight );
   QCOMPARE( shape->frameStrokeColor(), QColor( 0, 0, 0, 255 ) );
   QCOMPARE( shape->frameStrokeWidth().length(), 0.3 );
@@ -457,11 +458,11 @@ void TestQgsCompositionConverter::importComposerTemplateAttributeTable()
   QVERIFY( layout.get() );
   QCOMPARE( layout->pageCollection()->pageCount(), 1 );
 
-  QList<QgsLayoutMultiFrame *> items = layout->multiFrames();
+  // Check the table
+  QList<QgsLayoutItemAttributeTable *> items;
+  layout->layoutObjects<QgsLayoutItemAttributeTable>( items );
   QVERIFY( items.size() > 0 );
-
-  // Check the HTML
-  const QgsLayoutItemAttributeTable *table = qobject_cast<QgsLayoutItemAttributeTable * >( items.at( 0 ) );
+  const QgsLayoutItemAttributeTable *table = items.at( 0 );
   QVERIFY( table );
   QVERIFY( table->sourceLayer() );
   QVERIFY( table->sourceLayer()->isValid() );
@@ -481,11 +482,11 @@ void TestQgsCompositionConverter::importComposerTemplateHtml()
   QVERIFY( layout.get() );
   QCOMPARE( layout->pageCollection()->pageCount(), 7 );
 
-  QList<QgsLayoutMultiFrame *> items = layout->multiFrames();
-  QVERIFY( items.size() > 0 );
-
   // Check the HTML
-  const QgsLayoutItemHtml *html = qobject_cast<QgsLayoutItemHtml * >( items.at( 0 ) );
+  QList<QgsLayoutItemHtml *> items;
+  layout->layoutObjects<QgsLayoutItemHtml>( items );
+  QVERIFY( items.size() > 0 );
+  const QgsLayoutItemHtml *html = items.at( 0 );
   QVERIFY( html );
   QCOMPARE( html->contentMode(),  QgsLayoutItemHtml::ContentMode::ManualHtml );
   QCOMPARE( html->html(),  QStringLiteral( "<div style=\"height:5000px; background-color:green; color:white;\">aaaaA</div>\t\n" ) );
@@ -609,7 +610,6 @@ void TestQgsCompositionConverter::importComposerTemplate()
     // We have at least one item linked to a map for this test
     QVERIFY( count > 0 );
   }
-  // TODO: attr table (not yet imported)
 
   checkRenderedImage( layout.get(), QTest::currentTestFunction(), 0 );
   checkRenderedImage( layout.get(), QTest::currentTestFunction(), 1 );
@@ -642,7 +642,7 @@ void TestQgsCompositionConverter::checkRenderedImage( QgsLayout *layout, const Q
   QSize size( layout->pageCollection()->page( pageNumber )->sizeWithUnits().width() * 3.77, layout->pageCollection()->page( pageNumber )->sizeWithUnits().height() * 3.77 );
   checker.setSize( size );
   checker.setControlPathPrefix( QStringLiteral( "compositionconverter" ) );
-  QVERIFY( checker.testLayout( mReport, pageNumber ) );
+  QVERIFY( checker.testLayout( mReport, pageNumber, 0, true ) );
 }
 
 
