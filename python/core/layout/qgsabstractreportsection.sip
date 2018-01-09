@@ -29,14 +29,8 @@ exposed to the Python bindings for unit testing purposes only.
   public:
 
     QgsFeature feature;
-%Docstring
-Current feature
-%End
 
     QgsVectorLayer *currentLayer;
-%Docstring
-Current coverage layer
-%End
 
 };
 

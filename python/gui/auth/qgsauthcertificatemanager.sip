@@ -29,9 +29,6 @@ Construct a widget to contain various certificate editors
 %End
 
     ~QgsAuthCertEditors( );
-%Docstring
-Destructor: store last selected tab
-%End
 
 };
 

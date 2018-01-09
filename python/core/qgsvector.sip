@@ -34,58 +34,20 @@ Constructor for QgsVector taking x and y component values.
 %End
 
     QgsVector operator-() const;
-%Docstring
-Swaps the sign of the x and y components of the vector.
-%End
 
     QgsVector operator*( double scalar ) const;
-%Docstring
-Returns a vector where the components have been multiplied by a scalar value.
-
-:param scalar: factor to multiply by
-%End
 
     QgsVector operator/( double scalar ) const;
-%Docstring
-Returns a vector where the components have been divided by a scalar value.
-
-:param scalar: factor to divide by
-%End
 
     double operator*( QgsVector v ) const;
-%Docstring
-Returns the dot product of two vectors, which is the sum of the x component
-of this vector multiplied by the x component of another
-vector plus the y component of this vector multiplied by the y component of another vector.
-%End
 
     QgsVector operator+( QgsVector other ) const;
-%Docstring
-Adds another vector to this vector.
-
-.. versionadded:: 3.0
-%End
 
     QgsVector &operator+=( const QgsVector other );
-%Docstring
-Adds another vector to this vector in place.
-
-.. versionadded:: 3.0
-%End
 
     QgsVector operator-( const QgsVector other ) const;
-%Docstring
-Subtracts another vector to this vector.
-
-.. versionadded:: 3.0
-%End
 
     QgsVector &operator-=( const QgsVector other );
-%Docstring
-Subtracts another vector to this vector in place.
-
-.. versionadded:: 3.0
-%End
 
     double length() const;
 %Docstring
@@ -137,9 +99,6 @@ Will throw a QgsException if called on a vector with length of 0.
     bool operator==( QgsVector other ) const;
 
     bool operator!=( QgsVector other ) const;
-%Docstring
-Inequality operator
-%End
 
 };
 

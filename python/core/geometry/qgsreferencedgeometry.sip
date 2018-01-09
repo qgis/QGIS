@@ -76,9 +76,6 @@ Constructor for QgsReferencedRectangle.
 %End
 
     operator QVariant() const;
-%Docstring
-Allows direct construction of QVariants from rectangle.
-%End
 
 };
 
@@ -108,9 +105,6 @@ Constructor for QgsReferencedPointXY.
 %End
 
     operator QVariant() const;
-%Docstring
-Allows direct construction of QVariants from point.
-%End
 
 };
 

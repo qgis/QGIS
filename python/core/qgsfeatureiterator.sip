@@ -34,9 +34,6 @@ base class constructor - stores the iteration parameters
 %End
 
     virtual ~QgsAbstractFeatureIterator();
-%Docstring
-destructor makes sure that the iterator is closed properly
-%End
 
     virtual bool nextFeature( QgsFeature &f );
 %Docstring
@@ -223,9 +220,6 @@ construct invalid iterator
 copy constructor copies the iterator, increases ref.count
 %End
     ~QgsFeatureIterator();
-%Docstring
-destructor deletes the iterator if it has no more references
-%End
 
 
     bool nextFeature( QgsFeature &f );

@@ -34,9 +34,6 @@ Copy constructor
 
 
     virtual ~QgsArchive();
-%Docstring
-Destructor
-%End
 
     bool zip( const QString &zipFilename );
 %Docstring

@@ -30,9 +30,6 @@ signal destroyed() to be notified of the deletion
   public:
 
     virtual ~QgsCredentials();
-%Docstring
-Destructor.
-%End
 
     bool get( const QString &realm, QString &username /In,Out/, QString &password /In,Out/, const QString &message = QString() );
     void put( const QString &realm, const QString &username, const QString &password );

@@ -25,17 +25,8 @@ Constructor for QgsInterpolatorVertexData
 %End
 
   double x;
-%Docstring
-X-coordinate
-%End
   double y;
-%Docstring
-Y-coordinate
-%End
   double z;
-%Docstring
-Z-coordinate
-%End
 };
 
 class QgsInterpolator
@@ -76,21 +67,9 @@ can be an attribute or the z-coordinates in case of 3D types.
     struct LayerData
     {
       QgsFeatureSource *source;
-%Docstring
-Feature source
-%End
       QgsInterpolator::ValueSource valueSource;
-%Docstring
-Source for feature values to interpolate
-%End
       int interpolationAttribute;
-%Docstring
-Index of feature attribute to use for interpolation
-%End
       QgsInterpolator::SourceType sourceType;
-%Docstring
-Source type
-%End
     };
 
     QgsInterpolator( const QList<QgsInterpolator::LayerData> &layerData );

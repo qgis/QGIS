@@ -324,15 +324,8 @@ Constructor for LayerOptions.
 %End
 
       bool loadDefaultStyle;
-%Docstring
-Set to true if the default layer style should be loaded
-%End
 
       bool readExtentFromXml;
-%Docstring
-If true, the layer extent will be read from XML (i.e. stored in the
-project file). If false, the extent will be determined by the provider on layer load.
-%End
 
     };
 

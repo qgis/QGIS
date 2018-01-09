@@ -118,21 +118,9 @@ snapper.setLayers([snapping_layer1, snapping_layer2])
       bool operator!=( const QgsSnappingUtils::LayerConfig &other ) const;
 
       QgsVectorLayer *layer;
-%Docstring
-The layer to configure.
-%End
       QgsPointLocator::Types type;
-%Docstring
-To which geometry properties of this layers a snapping should happen.
-%End
       double tolerance;
-%Docstring
-The range around snapping targets in which snapping should occur.
-%End
       QgsTolerance::UnitType unit;
-%Docstring
-The units in which the tolerance is specified.
-%End
     };
 
     QList<QgsSnappingUtils::LayerConfig> layers() const;

@@ -52,9 +52,6 @@ A QgsOptional constructed with enabled status and data
     bool operator== ( const QgsOptional<T> &other ) const;
 
     operator bool() const;
-%Docstring
-Boolean operator. Will return true if this optional is enabled.
-%End
 
     bool enabled() const;
 %Docstring

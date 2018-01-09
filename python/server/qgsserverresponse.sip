@@ -26,9 +26,6 @@ constructor
 %End
 
     virtual ~QgsServerResponse();
-%Docstring
-destructor
-%End
 
     virtual void setHeader( const QString &key, const QString &value ) = 0;
 %Docstring

@@ -51,44 +51,20 @@ Performs Kernel Density Estimation ("heatmap") calculations on a vector layer.
     struct Parameters
     {
       QgsFeatureSource *source;
-%Docstring
-Point feature source
-%End
 
       double radius;
-%Docstring
-Fixed radius, in map units
-%End
 
       QString radiusField;
-%Docstring
-Field for radius, or empty if using a fixed radius
-%End
 
       QString weightField;
-%Docstring
-Field name for weighting field, or empty if not using weights
-%End
 
       double pixelSize;
-%Docstring
-Size of pixel in output file
-%End
 
       QgsKernelDensityEstimation::KernelShape shape;
-%Docstring
-Kernel shape
-%End
 
       double decayRatio;
-%Docstring
-Decay ratio (Triangular kernels only)
-%End
 
       QgsKernelDensityEstimation::OutputValues outputValues;
-%Docstring
-Type of output value
-%End
     };
 
     QgsKernelDensityEstimation( const Parameters &parameters, const QString &outputFile, const QString &outputFormat );

@@ -34,9 +34,6 @@ signal destroyed() to notify the deletion
     enum MessageType { MessageText, MessageHtml };
 
     virtual ~QgsMessageOutput();
-%Docstring
-message can be in plain text or in html format
-%End
 
     virtual void setMessage( const QString &message, MessageType msgType ) = 0;
 %Docstring

@@ -33,9 +33,6 @@ Constructor
 %End
 
     virtual ~QgsServiceModule() = 0;
-%Docstring
-Destructor
-%End
 
     virtual void registerSelf( QgsServiceRegistry &registry,
                                QgsServerInterface *serverIface = 0 ) = 0;

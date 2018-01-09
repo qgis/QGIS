@@ -137,16 +137,8 @@ be placed above items with a higher priority.
 
     virtual bool operator<( const QTreeWidgetItem &other ) const;
 
-%Docstring
-Returns true if this item should appear before another item when sorting
-a list of items.
-%End
 
     bool operator>=( const QTreeWidgetItem &other ) const;
-%Docstring
-Returns true if this item should appear after another item when sorting
-a list of items.
-%End
 
 };
 

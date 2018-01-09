@@ -36,19 +36,10 @@ Constructor for QgsPageSize, accepting a page ``size``.
 %End
 
     QString name;
-%Docstring
-Name of page size
-%End
 
     QgsLayoutSize size;
-%Docstring
-Page size
-%End
 
     QString displayName;
-%Docstring
-Translated page name
-%End
 
     bool operator==( const QgsPageSize &other ) const;
     bool operator!=( const QgsPageSize &other ) const;

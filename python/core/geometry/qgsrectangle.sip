@@ -235,32 +235,12 @@ Expand the rectangle so that covers both the original rectangle and the given po
 %End
 
     QgsRectangle operator-( const QgsVector v ) const;
-%Docstring
-Returns a rectangle offset from this one in the direction of the reversed vector.
-
-.. versionadded:: 3.0
-%End
 
     QgsRectangle operator+( const QgsVector v ) const;
-%Docstring
-Returns a rectangle offset from this one in the direction of the vector.
-
-.. versionadded:: 3.0
-%End
 
     QgsRectangle &operator-=( const QgsVector v );
-%Docstring
-Moves this rectangle in the direction of the reversed vector.
-
-.. versionadded:: 3.0
-%End
 
     QgsRectangle &operator+=( const QgsVector v );
-%Docstring
-Moves this rectangle in the direction of the vector.
-
-.. versionadded:: 3.0
-%End
 
     bool isEmpty() const;
 %Docstring
@@ -306,11 +286,6 @@ Returns the rectangle as a polygon.
     bool operator==( const QgsRectangle &r1 ) const;
 
     bool operator!=( const QgsRectangle &r1 ) const;
-%Docstring
-Comparison operator
-
-:return: False if rectangles are equal
-%End
 
 
     bool isFinite() const;
@@ -333,9 +308,6 @@ Converts the rectangle to a 3D box, with the specified
 %End
 
     operator QVariant() const;
-%Docstring
-Allows direct construction of QVariants from rectangles.
-%End
 
 };
 

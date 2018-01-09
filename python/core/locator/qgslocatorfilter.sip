@@ -34,34 +34,16 @@ Constructor for QgsLocatorResult.
 %End
 
     QgsLocatorFilter *filter;
-%Docstring
-Filter from which the result was obtained.
-%End
 
     QString displayString;
-%Docstring
-String displayed for result.
-%End
 
     QString description;
-%Docstring
-Descriptive text for result.
-%End
 
     QVariant userData;
-%Docstring
-Custom reference or other data set by the filter.
-%End
 
     QIcon icon;
-%Docstring
-Icon for result.
-%End
 
     double score;
-%Docstring
-Match score, from 0 - 1, where 1 represents a perfect match.
-%End
 
 };
 

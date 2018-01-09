@@ -54,9 +54,6 @@ of feature and attribute information from a spatial datasource.
 
 
     static const int EditingCapabilities;
-%Docstring
-Bitmask of all provider's editing capabilities
-%End
 
     enum FeatureCountState
     {

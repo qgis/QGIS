@@ -110,9 +110,6 @@ set the type of units
 %End
 
         bool operator!= ( const QgsSnappingConfig::IndividualLayerSettings &other ) const;
-%Docstring
-Compare this configuration to other.
-%End
 
         bool operator== ( const QgsSnappingConfig::IndividualLayerSettings &other ) const;
 
@@ -245,9 +242,6 @@ set individual layer snappings settings (applied if mode is AdvancedConfiguratio
 %End
 
     bool operator!= ( const QgsSnappingConfig &other ) const;
-%Docstring
-Compare this configuration to other.
-%End
 
     void readProject( const QDomDocument &doc );
 %Docstring

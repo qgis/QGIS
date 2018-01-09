@@ -58,9 +58,6 @@ Copy constructor
 %End
 
     ~QgsSpatialIndex();
-%Docstring
-Destructor finalizes work with spatial index
-%End
 
 
 

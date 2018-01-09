@@ -48,25 +48,8 @@ using QgsNativeMetadataValidator.
     {
 
       QgsCoordinateReferenceSystem extentCrs;
-%Docstring
-Coordinate reference system for spatial extent.
-The CRS should match the CRS defined in the QgsLayerMetadata CRS property.
-
-.. seealso:: :py:func:`QgsLayerMetadata.crs()`
-
-.. seealso:: :py:func:`spatial`
-%End
 
       QgsBox3d bounds;
-%Docstring
-Geospatial extent of the resource. X and Y coordinates are in the
-CRS defined by the metadata (see extentCrs).
-
-While the spatial extent can include a Z dimension, this is not
-compulsory.
-
-.. seealso:: :py:func:`extentCrs`
-%End
     };
 
     struct Extent
@@ -116,15 +99,8 @@ Constructor for Constraint.
 %End
 
       QString type;
-%Docstring
-Constraint type. Standard values include 'access' and 'other', however any
-string can be used for the type.
-%End
 
       QString constraint;
-%Docstring
-Free-form constraint string.
-%End
     };
 
     typedef QList< QgsLayerMetadata::Constraint > ConstraintList;
@@ -139,34 +115,16 @@ Constructor for Address.
 %End
 
       QString type;
-%Docstring
-Type of address, e.g. 'postal'.
-%End
 
       QString address;
-%Docstring
-Free-form physical address component, e.g. '221B Baker St' or 'P.O. Box 196'.
-%End
 
       QString city;
-%Docstring
-City or locality name.
-%End
 
       QString administrativeArea;
-%Docstring
-Administrative area (state, province/territory, etc.).
-%End
 
       QString postalCode;
-%Docstring
-Postal (or ZIP) code.
-%End
 
       QString country;
-%Docstring
-Free-form country string.
-%End
     };
 
     struct Contact
@@ -178,50 +136,20 @@ Constructor for Contact.
 %End
 
       QString name;
-%Docstring
-Name of contact.
-%End
 
       QString organization;
-%Docstring
-Organization contact belongs to/represents.
-%End
 
       QString position;
-%Docstring
-Position/title of contact.
-%End
 
       QList< QgsLayerMetadata::Address > addresses;
-%Docstring
-List of addresses associated with this contact.
-%End
 
       QString voice;
-%Docstring
-Voice telephone.
-%End
 
       QString fax;
-%Docstring
-Facsimile telephone.
-%End
 
       QString email;
-%Docstring
-Electronic mail address.
-
-.. note::
-
-   Do not include mailto: protocol as part of the email address.
-%End
 
       QString role;
-%Docstring
-Role of contact. Acceptable values are those from the ISO 19115 CI_RoleCode specifications
-(see http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml).
-E.g. 'custodian', 'owner', 'distributor', etc.
-%End
     };
 
     typedef QList< QgsLayerMetadata::Contact > ContactList;
@@ -236,40 +164,18 @@ Constructor for Link.
 %End
 
       QString name;
-%Docstring
-Short link name. E.g. WMS layer name.
-%End
 
       QString type;
-%Docstring
-Link type. It is strongly suggested to use values from the 'identifier'
-column in https://github.com/OSGeo/Cat-Interop/blob/master/LinkPropertyLookupTable.csv
-%End
 
       QString description;
-%Docstring
-Abstract text about link.
-%End
 
       QString url;
-%Docstring
-Link url.  If the URL is an OWS server, specify the *base* URL only without parameters like service=xxx....
-%End
 
       QString format;
-%Docstring
-Format specification of online resource. It is strongly suggested to use GDAL/OGR format values.
-%End
 
       QString mimeType;
-%Docstring
-MIME type representative of the online resource response (image/png, application/json, etc.)
-%End
 
       QString size;
-%Docstring
-Estimated size (in bytes) of the online resource response.
-%End
     };
 
     typedef QList< QgsLayerMetadata::Link > LinkList;

@@ -270,9 +270,6 @@ the original location given in parameter.
 %End
 
     virtual ~QgsAuxiliaryStorage();
-%Docstring
-Destructor.
-%End
 
     bool isValid() const;
 %Docstring

@@ -26,29 +26,11 @@ class QgsInterval
   public:
 
     static const int YEARS;
-%Docstring
-Seconds per year (average)
-%End
     static const int MONTHS;
-%Docstring
-Seconds per month, based on 30 day month
-%End
     static const int WEEKS;
-%Docstring
-Seconds per week
-%End
     static const int DAY;
-%Docstring
-Seconds per day
-%End
     static const int HOUR;
-%Docstring
-Seconds per hour
-%End
     static const int MINUTE;
-%Docstring
-Seconds per minute
-%End
 
     QgsInterval();
 %Docstring
@@ -202,9 +184,6 @@ Converts a string to an interval
 %End
 
     operator QVariant() const;
-%Docstring
-Allows direct construction of QVariants from intervals.
-%End
 
 };
 

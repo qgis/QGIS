@@ -33,9 +33,6 @@ Construct a configuration for an authentication method
     bool operator==( const QgsAuthMethodConfig &other ) const;
 
     bool operator!=( const QgsAuthMethodConfig &other ) const;
-%Docstring
-Operator used to compare configs' inequality
-%End
 
     const QString id() const;
 %Docstring

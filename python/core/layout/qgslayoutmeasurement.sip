@@ -81,44 +81,20 @@ Decodes a measurement from a ``string``.
     bool operator!=( const QgsLayoutMeasurement &other ) const;
 
     QgsLayoutMeasurement operator+( const double v ) const;
-%Docstring
-Adds a scalar value to the measurement.
-%End
 
     QgsLayoutMeasurement operator+=( const double v );
-%Docstring
-Adds a scalar value to the measurement.
-%End
 
     QgsLayoutMeasurement operator-( const double v ) const;
-%Docstring
-Subtracts a scalar value from the measurement.
-%End
 
     QgsLayoutMeasurement operator-=( const double v );
-%Docstring
-Subtracts a scalar value from the measurement.
-%End
 
     QgsLayoutMeasurement operator*( const double v ) const;
-%Docstring
-Multiplies the measurement by a scalar value.
-%End
 
     QgsLayoutMeasurement operator*=( const double v );
-%Docstring
-Multiplies the measurement by a scalar value.
-%End
 
     QgsLayoutMeasurement operator/( const double v ) const;
-%Docstring
-Divides the measurement by a scalar value.
-%End
 
     QgsLayoutMeasurement operator/=( const double v );
-%Docstring
-Divides the measurement by a scalar value.
-%End
 
 };
 

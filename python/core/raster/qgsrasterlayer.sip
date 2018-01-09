@@ -83,39 +83,18 @@ methods.
   public:
 
     static const double SAMPLE_SIZE;
-%Docstring
- Default sample size (number of pixels) for estimated statistics/histogram calculation
-%End
 
     static const QgsContrastEnhancement::ContrastEnhancementAlgorithm SINGLE_BAND_ENHANCEMENT_ALGORITHM;
-%Docstring
- Default enhancement algorithm for single band raster
-%End
 
     static const QgsContrastEnhancement::ContrastEnhancementAlgorithm MULTIPLE_BAND_SINGLE_BYTE_ENHANCEMENT_ALGORITHM;
-%Docstring
- Default enhancement algorithm for multiple band raster of type Byte
-%End
 
     static const QgsContrastEnhancement::ContrastEnhancementAlgorithm MULTIPLE_BAND_MULTI_BYTE_ENHANCEMENT_ALGORITHM;
-%Docstring
- Default enhancement algorithm for multiple band raster of type different from Byte
-%End
 
     static const QgsRasterMinMaxOrigin::Limits SINGLE_BAND_MIN_MAX_LIMITS;
-%Docstring
- Default enhancement limits for single band raster
-%End
 
     static const QgsRasterMinMaxOrigin::Limits MULTIPLE_BAND_SINGLE_BYTE_MIN_MAX_LIMITS;
-%Docstring
- Default enhancement limits for multiple band raster of type Byte
-%End
 
     static const QgsRasterMinMaxOrigin::Limits MULTIPLE_BAND_MULTI_BYTE_MIN_MAX_LIMITS;
-%Docstring
- Default enhancement limits for multiple band raster of type different from Byte
-%End
 
     QgsRasterLayer();
 %Docstring
@@ -131,9 +110,6 @@ Constructor for LayerOptions.
 %End
 
       bool loadDefaultStyle;
-%Docstring
-Set to true if the default layer style should be loaded
-%End
     };
 
     explicit QgsRasterLayer( const QString &uri,

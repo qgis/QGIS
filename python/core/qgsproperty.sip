@@ -223,9 +223,6 @@ Copy constructor
 
 
     operator bool() const;
-%Docstring
-Returns true if the property is not an invalid type.
-%End
 
     bool operator==( const QgsProperty &other ) const;
     bool operator!=( const QgsProperty &other ) const;
@@ -486,9 +483,6 @@ be called in non-performance critical code.
 %End
 
     operator QVariant() const;
-%Docstring
-Allows direct construction of QVariants from properties.
-%End
 
 };
 

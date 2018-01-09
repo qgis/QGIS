@@ -39,11 +39,6 @@ Copy constructor.
 
 
     ~QgsTextBufferSettings();
-%Docstring
-Copy constructor.
-
-:param other: source QgsTextBufferSettings
-%End
 
     bool enabled() const;
 %Docstring

@@ -316,39 +316,14 @@ Example:
 %End
 
     QgsVector operator-( const QgsPoint &p ) const;
-%Docstring
-Calculates the vector obtained by subtracting a point from this point.
-
-.. versionadded:: 3.0
-%End
 
     QgsPoint &operator+=( QgsVector v );
-%Docstring
-Adds a vector to this point in place.
-
-.. versionadded:: 3.0
-%End
 
     QgsPoint &operator-=( QgsVector v );
-%Docstring
-Subtracts a vector from this point in place.
-
-.. versionadded:: 3.0
-%End
 
     QgsPoint operator+( QgsVector v ) const;
-%Docstring
-Adds a vector to this point.
-
-.. versionadded:: 3.0
-%End
 
     QgsPoint operator-( QgsVector v ) const;
-%Docstring
-Subtracts a vector from this point.
-
-.. versionadded:: 3.0
-%End
 
     virtual bool isEmpty() const;
 

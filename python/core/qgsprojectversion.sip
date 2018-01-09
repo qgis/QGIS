@@ -43,19 +43,10 @@ Returns true if this is a NULL project version.
     bool operator==( const QgsProjectVersion &other ) const;
 
     bool operator!=( const QgsProjectVersion &other ) const;
-%Docstring
-Boolean not equal operator
-%End
 
     bool operator>=( const QgsProjectVersion &other ) const;
-%Docstring
-Boolean >= operator
-%End
 
     bool operator>( const QgsProjectVersion &other ) const;
-%Docstring
-Boolean > operator
-%End
 
 };
 

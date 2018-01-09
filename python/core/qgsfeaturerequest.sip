@@ -246,9 +246,6 @@ Dumps the content to an SQL equivalent syntax
     };
 
     static const QString ALL_ATTRIBUTES;
-%Docstring
-A special attribute that if set matches all attributes
-%End
 
     QgsFeatureRequest();
 %Docstring

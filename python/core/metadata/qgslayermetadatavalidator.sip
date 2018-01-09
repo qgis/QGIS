@@ -33,22 +33,10 @@ Constructor for ValidationResult.
 %End
 
       QString section;
-%Docstring
-Metadata section which failed the validation
-%End
 
       QVariant identifier;
-%Docstring
-Optional identifier for the failed metadata item.
-For instance, in list type metadata elements this
-will be set to the list index of the failed metadata
-item.
-%End
 
       QString note;
-%Docstring
-The reason behind the validation failure.
-%End
     };
 
     virtual ~QgsMetadataValidator();

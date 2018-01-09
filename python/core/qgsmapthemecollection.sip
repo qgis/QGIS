@@ -56,21 +56,9 @@ Set the map layer for this record
 %End
 
         bool usingCurrentStyle;
-%Docstring
-Whether current style is valid and should be applied
-%End
         QString currentStyle;
-%Docstring
-Name of the current style of the layer
-%End
         bool usingLegendItems;
-%Docstring
-Whether checkedLegendItems should be applied
-%End
         QSet<QString> checkedLegendItems;
-%Docstring
-Rule keys of check legend items in layer tree model
-%End
     };
 
     class MapThemeRecord

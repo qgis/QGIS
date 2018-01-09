@@ -62,13 +62,7 @@ Get the type of expression item, e.g., header, field, ExpressionNode.
 %End
 
     static const int CUSTOM_SORT_ROLE;
-%Docstring
-Custom sort order role
-%End
     static const int ITEM_TYPE_ROLE;
-%Docstring
-Item type role
-%End
 
 };
 

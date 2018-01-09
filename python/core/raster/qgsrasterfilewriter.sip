@@ -142,14 +142,8 @@ Creates a filter for an GDAL driver key
     struct FilterFormatDetails
     {
       QString driverName;
-%Docstring
-Unique driver name
-%End
 
       QString filterString;
-%Docstring
-Filter string for file picker dialogs
-%End
     };
 
     static QList< QgsRasterFileWriter::FilterFormatDetails > supportedFiltersAndFormats( RasterFormatOptions options = SortRecommended );

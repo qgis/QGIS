@@ -120,9 +120,6 @@ Constructor for MetaData
       QMap<QString, QgsVectorFileWriter::Option *> driverOptions;
       QMap<QString, QgsVectorFileWriter::Option *> layerOptions;
       QString compulsoryEncoding;
-%Docstring
-Some formats require a compulsory encoding, typically UTF-8. If no compulsory encoding, empty string
-%End
     };
 
     enum WriterError
@@ -346,99 +343,40 @@ Constructor
         virtual ~SaveVectorOptions();
 
         QString driverName;
-%Docstring
-OGR driver to use
-%End
 
         QString layerName;
-%Docstring
-Layer name. If let empty, it will be derived from the filename
-%End
 
         QgsVectorFileWriter::ActionOnExistingFile actionOnExistingFile;
-%Docstring
-Action on existing file
-%End
 
         QString fileEncoding;
-%Docstring
-Encoding to use
-%End
 
         QgsCoordinateTransform ct;
-%Docstring
-Transform to reproject exported geometries with, or invalid transform
-for no transformation *
-%End
 
         bool onlySelectedFeatures;
-%Docstring
-Write only selected features of layer
-%End
 
         QStringList datasourceOptions;
-%Docstring
-List of OGR data source creation options
-%End
 
         QStringList layerOptions;
-%Docstring
-List of OGR layer creation options
-%End
 
         bool skipAttributeCreation;
-%Docstring
-Only write geometries
-%End
 
         QgsAttributeList attributes;
-%Docstring
-Attributes to export (empty means all unless skipAttributeCreation is set)
-%End
 
         QgsVectorFileWriter::SymbologyExport symbologyExport;
-%Docstring
-Symbology to export
-%End
 
         double symbologyScale;
-%Docstring
-Scale of symbology
-%End
 
         QgsRectangle filterExtent;
-%Docstring
-If not empty, only features intersecting the extent will be saved
-%End
 
         QgsWkbTypes::Type overrideGeometryType;
-%Docstring
-Set to a valid geometry type to override the default geometry type for the layer. This parameter
-allows for conversion of geometryless tables to null geometries, etc *
-%End
 
         bool forceMulti;
-%Docstring
-Set to true to force creation of multi* geometries
-%End
 
         bool includeZ;
-%Docstring
-Set to true to include z dimension in output. This option is only valid if overrideGeometryType is set
-%End
 
         QgsVectorFileWriter::FieldValueConverter *fieldValueConverter;
-%Docstring
-Field value converter.
-
-Ownership is not transferred and callers must ensure that the lifetime of fieldValueConverter
-exceeds the lifetime of the QgsVectorFileWriter object.
-%End
 
         QgsFeedback *feedback;
-%Docstring
-Optional feedback object allowing cancelation of layer save
-%End
     };
 
     static QgsVectorFileWriter::WriterError writeAsVectorFormat( QgsVectorLayer *layer,
@@ -478,14 +416,8 @@ Create a new vector file writer
     struct FilterFormatDetails
     {
       QString driverName;
-%Docstring
-Unique driver name
-%End
 
       QString filterString;
-%Docstring
-Filter string for file picker dialogs
-%End
     };
 
     static QList< QgsVectorFileWriter::FilterFormatDetails > supportedFiltersAndFormats( VectorFormatOptions options = SortRecommended );
@@ -522,14 +454,8 @@ The ``driverName`` argument must be a valid GDAL driver name.
     struct DriverDetails
     {
       QString longName;
-%Docstring
-Descriptive, user friendly name for the driver
-%End
 
       QString driverName;
-%Docstring
-Unique driver name
-%End
     };
 
     static QList< QgsVectorFileWriter::DriverDetails > ogrDriverList( VectorFormatOptions options = SortRecommended );
@@ -596,9 +522,6 @@ Adds a ``feature`` to the currently opened data source, using the style from a s
 
 
     ~QgsVectorFileWriter();
-%Docstring
-Close opened shapefile for writing
-%End
 
     static bool deleteShapeFile( const QString &fileName );
 %Docstring

@@ -145,19 +145,10 @@ Constructor for QgsLayoutItemGuiGroup.
 %End
 
     QString id;
-%Docstring
-Unique (untranslated) group ID string.
-%End
 
     QString name;
-%Docstring
-Translated group name.
-%End
 
     QIcon icon;
-%Docstring
-Icon for group.
-%End
 
 };
 

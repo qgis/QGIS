@@ -41,9 +41,6 @@ Constructor for GroupedFeature.
 %End
 
         QgsFeature feature;
-%Docstring
-Feature
-%End
 
         QgsMarkerSymbol *symbol() const;
 %Docstring
@@ -51,14 +48,8 @@ Base symbol for rendering feature
 %End
 
         bool isSelected;
-%Docstring
-True if feature is selected and should be rendered in a selected state
-%End
 
         QString label;
-%Docstring
-Optional label text
-%End
 
     };
 

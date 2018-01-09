@@ -30,18 +30,9 @@ Constructor for Class
 %End
 
       int value;
-%Docstring
-Value
-%End
 
       QColor color;
-%Docstring
-Color to render value
-%End
       QString label;
-%Docstring
-Label for value
-%End
     };
 
     typedef QList< QgsPalettedRasterRenderer::Class > ClassData;

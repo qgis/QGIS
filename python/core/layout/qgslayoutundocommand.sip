@@ -120,9 +120,6 @@ Interface for layout objects which support undo/redo commands.
   public:
 
     virtual ~QgsLayoutUndoObjectInterface();
-%Docstring
-Destructor for QgsLayoutUndoObjectInterface.
-%End
 
     virtual QgsAbstractLayoutUndoCommand *createCommand( const QString &text, int id = 0, QUndoCommand *parent = 0 ) = 0 /Factory/;
 %Docstring

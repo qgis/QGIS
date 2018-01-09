@@ -151,24 +151,12 @@ Decodes a size from a ``string``.
     bool operator!=( const QgsLayoutSize &other ) const;
 
     QgsLayoutSize operator*( const double v ) const;
-%Docstring
-Multiplies the width and height by a scalar value.
-%End
 
     QgsLayoutSize operator*=( const double v );
-%Docstring
-Multiplies the width and height by a scalar value.
-%End
 
     QgsLayoutSize operator/( const double v ) const;
-%Docstring
-Divides the width and height by a scalar value.
-%End
 
     QgsLayoutSize operator/=( const double v );
-%Docstring
-Divides the width and height by a scalar value.
-%End
 
 };
 

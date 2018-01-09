@@ -37,9 +37,6 @@ Constructor
 %End
 
     ~QgsServiceRegistry();
-%Docstring
-Destructor
-%End
 
     QgsService *getService( const QString &name, const QString &version = QString() );
 %Docstring

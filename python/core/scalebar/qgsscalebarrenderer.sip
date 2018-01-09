@@ -28,21 +28,10 @@ custom labeling.
     struct ScaleBarContext
     {
       double segmentWidth;
-%Docstring
-Width of each individual segment (in millimeters)
-%End
 
       QSizeF size;
-%Docstring
-Destination size for scalebar. This is used for scalebars which
-alter their appearance or alignment based on the desired scalebar
-size (e.g. correctly aligning text in a numeric scale bar).
-%End
 
       double scale;
-%Docstring
-Scale denominator
-%End
 
     };
 

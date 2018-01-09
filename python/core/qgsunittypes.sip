@@ -105,28 +105,16 @@ class QgsUnitTypes
     {
 
       double value;
-%Docstring
-The value part of the distance. For 3.7 meters, this will be 3.7.
-%End
 
       QgsUnitTypes::DistanceUnit unit;
-%Docstring
-The value part of the distance. For 3.7 meters, this will be QgsUnitTypes.DistanceMeters.
-%End
     };
 
     struct AreaValue
     {
 
       double value;
-%Docstring
-The value part of the distance. For 3.7 square meters, this will be 3.7.
-%End
 
       QgsUnitTypes::AreaUnit unit;
-%Docstring
-The value part of the distance. For 3.7 square meters, this will be QgsUnitTypes.AreaSquareMeters.
-%End
     };
 
     typedef QList<QgsUnitTypes::RenderUnit> RenderUnitList;

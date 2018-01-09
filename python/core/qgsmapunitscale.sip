@@ -35,33 +35,13 @@ The scale values indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 %End
 
     double minScale;
-%Docstring
-The minimum scale, or 0.0 if unset.
-The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
-%End
 
     double maxScale;
-%Docstring
-The maximum scale, or 0.0 if unset.
-The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
-%End
 
     bool minSizeMMEnabled;
-%Docstring
-Whether the minimum size in mm should be respected
-%End
     double minSizeMM;
-%Docstring
-The minimum size in millimeters, or 0.0 if unset
-%End
     bool maxSizeMMEnabled;
-%Docstring
-Whether the maximum size in mm should be respected
-%End
     double maxSizeMM;
-%Docstring
-The maximum size in millimeters, or 0.0 if unset
-%End
 
     double computeMapUnitsPerPixel( const QgsRenderContext &c ) const;
 %Docstring

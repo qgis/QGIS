@@ -276,10 +276,6 @@ Utility function to return a list of QgsField instances
 
     bool operator==( const QgsFields &other ) const;
     bool operator!=( const QgsFields &other ) const;
-%Docstring
-
-.. versionadded:: 2.6
-%End
 
     QIcon iconForField( int fieldIdx ) const /Factory/;
 %Docstring
@@ -300,9 +296,6 @@ Returns an icon corresponding to a field index, based on the field's type and so
 %End
 
     operator QVariant() const;
-%Docstring
-Allows direct construction of QVariants from fields.
-%End
 
 
     void __setitem__( int key, const QgsField &field );

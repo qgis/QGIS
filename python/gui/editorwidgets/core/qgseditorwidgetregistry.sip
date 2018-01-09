@@ -46,11 +46,6 @@ Only call this once on startup of an application.
 %End
 
     ~QgsEditorWidgetRegistry();
-%Docstring
-Destructor
-
-Deletes all the registered widgets
-%End
 
     QgsEditorWidgetSetup findBest( const QgsVectorLayer *vl, const QString &fieldName ) const;
 %Docstring

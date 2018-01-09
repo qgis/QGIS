@@ -39,10 +39,6 @@ Constructor for QgsLabelPosition
     bool isDiagram;
     bool isPinned;
     QString providerID;
-%Docstring
-
-.. versionadded:: 2.14
-%End
 };
 
 
@@ -268,31 +264,11 @@ Returns the labeling property definitions.
 %End
 
     bool drawLabels;
-%Docstring
-Whether to draw labels for this layer. For some layers it may be desirable
-to register their features as obstacles for other labels without requiring
-labels to be drawn for the layer itself. In this case drawLabels can be set
-to false and obstacle set to true, which will result in the layer acting
-as an obstacle but having no labels of its own.
-
-.. versionadded:: 2.12
-%End
 
 
     QString fieldName;
-%Docstring
-Name of field (or an expression) to use for label text.
-If fieldName is an expression, then isExpression should be set to true.
-
-.. seealso:: :py:func:`isExpression`
-%End
 
     bool isExpression;
-%Docstring
-True if this label is made from a expression string, e.g., FieldName || 'mm'
-
-.. seealso:: :py:func:`fieldName`
-%End
 
     QgsExpression *getLabelExpression();
 %Docstring
@@ -302,396 +278,108 @@ Returns the QgsExpression for this label settings. May be None if isExpression i
     QColor previewBkgrdColor;
 
     QgsStringReplacementCollection substitutions;
-%Docstring
-Substitution collection for automatic text substitution with labels
-%End
     bool useSubstitutions;
-%Docstring
-True if substitutions should be applied
-%End
 
 
     QString wrapChar;
-%Docstring
-Wrapping character string. If set, any occurrences of this string in the calculated
-label text will be replaced with new line characters.
-%End
 
     MultiLineAlign multilineAlign;
-%Docstring
-Horizontal alignment of multi-line labels.
-%End
 
     bool addDirectionSymbol;
-%Docstring
-If true, '<' or '>' (or custom strings set via leftDirectionSymbol and rightDirectionSymbol)
-will be automatically added to the label text, pointing in the
-direction of the line or polygon ring.
-This setting only affects line or perimeter based labels.
-
-.. seealso:: :py:func:`leftDirectionSymbol`
-
-.. seealso:: :py:func:`rightDirectionSymbol`
-
-.. seealso:: :py:func:`placeDirectionSymbol`
-
-.. seealso:: :py:func:`reverseDirectionSymbol`
-%End
 
     QString leftDirectionSymbol;
-%Docstring
-String to use for left direction arrows.
-
-.. seealso:: :py:func:`addDirectionSymbol`
-
-.. seealso:: :py:func:`rightDirectionSymbol`
-%End
 
     QString rightDirectionSymbol;
-%Docstring
-String to use for right direction arrows.
-
-.. seealso:: :py:func:`addDirectionSymbol`
-
-.. seealso:: :py:func:`leftDirectionSymbol`
-%End
 
     DirectionSymbols placeDirectionSymbol;
-%Docstring
-Placement option for direction symbols. Controls whether to place symbols to the left/right, above or below label.
-
-.. seealso:: :py:func:`addDirectionSymbol`
-%End
 
     bool reverseDirectionSymbol;
-%Docstring
-True if direction symbols should be reversed
-%End
 
     bool formatNumbers;
-%Docstring
-Set to true to format numeric label text as numbers (e.g. inserting thousand separators
-and fixed number of decimal places).
-
-.. seealso:: :py:func:`decimals`
-
-.. seealso:: :py:func:`plusSign`
-%End
 
     int decimals;
-%Docstring
-Number of decimal places to show for numeric labels. formatNumbers must be true for this
-setting to have an effect.
-
-.. seealso:: :py:func:`formatNumbers`
-%End
 
     bool plusSign;
-%Docstring
-Whether '+' signs should be prepended to positive numeric labels. formatNumbers must be true for this
-setting to have an effect.
-
-.. seealso:: :py:func:`formatNumbers`
-%End
 
 
     Placement placement;
     unsigned int placementFlags;
 
     bool centroidWhole;
-%Docstring
-True if feature centroid should be calculated from the whole feature, or
-false if only the visible part of the feature should be considered.
-%End
 
     bool centroidInside;
-%Docstring
-True if centroid positioned labels must be placed inside their corresponding
-feature polygon, or false if centroids which fall outside the polygon
-are permitted.
-%End
 
 
     bool fitInPolygonOnly;
-%Docstring
-True if only labels which completely fit within a polygon are allowed.
-%End
 
     double dist;
-%Docstring
-Distance from feature to the label. Units are specified via distUnits.
-
-.. seealso:: :py:func:`distUnits`
-
-.. seealso:: :py:func:`distMapUnitScale`
-%End
 
     QgsUnitTypes::RenderUnit distUnits;
-%Docstring
-Units the distance from feature to the label.
-
-.. seealso:: :py:func:`dist`
-
-.. seealso:: :py:func:`distMapUnitScale`
-%End
 
     QgsMapUnitScale distMapUnitScale;
-%Docstring
-Map unit scale for label feature distance.
-
-.. seealso:: :py:func:`dist`
-
-.. seealso:: :py:func:`distUnits`
-%End
 
     OffsetType offsetType;
-%Docstring
-Offset type for layer (only applies in certain placement modes)
-%End
 
     double repeatDistance;
-%Docstring
-Distance for repeating labels for a single feature.
-
-.. seealso:: :py:func:`repeatDistanceUnit`
-
-.. seealso:: :py:func:`repeatDistanceMapUnitScale`
-%End
 
     QgsUnitTypes::RenderUnit repeatDistanceUnit;
-%Docstring
-Units for repeating labels for a single feature.
-
-.. seealso:: :py:func:`repeatDistance`
-
-.. seealso:: :py:func:`repeatDistanceMapUnitScale`
-%End
 
     QgsMapUnitScale repeatDistanceMapUnitScale;
-%Docstring
-Map unit scale for repeating labels for a single feature.
-
-.. seealso:: :py:func:`repeatDistance`
-
-.. seealso:: :py:func:`repeatDistanceUnit`
-%End
 
     QuadrantPosition quadOffset;
-%Docstring
-Sets the quadrant in which to offset labels from feature.
-%End
 
     double xOffset;
-%Docstring
-Horizontal offset of label. Units are specified via offsetUnits.
-
-.. seealso:: :py:func:`yOffset`
-
-.. seealso:: :py:func:`offsetUnits`
-
-.. seealso:: :py:func:`labelOffsetMapUnitScale`
-%End
 
     double yOffset;
-%Docstring
-Vertical offset of label. Units are specified via offsetUnits.
-
-.. seealso:: :py:func:`xOffset`
-
-.. seealso:: :py:func:`offsetUnits`
-
-.. seealso:: :py:func:`labelOffsetMapUnitScale`
-%End
 
     QgsUnitTypes::RenderUnit offsetUnits;
-%Docstring
-Units for offsets of label.
-
-.. seealso:: :py:func:`xOffset`
-
-.. seealso:: :py:func:`yOffset`
-
-.. seealso:: :py:func:`labelOffsetMapUnitScale`
-%End
 
     QgsMapUnitScale labelOffsetMapUnitScale;
-%Docstring
-Map unit scale for label offset.
-
-.. seealso:: :py:func:`xOffset`
-
-.. seealso:: :py:func:`yOffset`
-
-.. seealso:: :py:func:`offsetUnits`
-%End
 
     double angleOffset;
-%Docstring
-Label rotation, in degrees clockwise
-%End
 
     bool preserveRotation;
-%Docstring
-True if label rotation should be preserved during label pin/unpin operations.
-%End
 
     double maxCurvedCharAngleIn;
-%Docstring
-Maximum angle between inside curved label characters (valid range 20.0 to 60.0).
-
-.. seealso:: :py:func:`maxCurvedCharAngleOut`
-%End
 
     double maxCurvedCharAngleOut;
-%Docstring
-Maximum angle between outside curved label characters (valid range -20.0 to -95.0)
-
-.. seealso:: :py:func:`maxCurvedCharAngleIn`
-%End
 
     int priority;
-%Docstring
-Label priority. Valid ranges are from 0 to 10, where 0 = lowest priority
-and 10 = highest priority.
-%End
 
 
     bool scaleVisibility;
-%Docstring
-Set to true to limit label visibility to a range of scales.
-
-.. seealso:: :py:func:`maximumScale`
-
-.. seealso:: :py:func:`minimumScale`
-%End
 
     double maximumScale;
-%Docstring
-The maximum map scale (i.e. most "zoomed in" scale) at which the labels will be visible.
-The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
-A scale of 0 indicates no maximum scale visibility.
-
-This setting is only considered if scaleVisibility is true.
-
-.. seealso:: :py:func:`minimumScale`
-
-.. seealso:: :py:func:`scaleVisibility`
-%End
 
     double minimumScale;
-%Docstring
-The minimum map scale (i.e. most "zoomed out" scale) at which the labels will be visible.
-The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
-A scale of 0 indicates no minimum scale visibility.
-
-This setting is only considered if scaleVisibility is true.
-
-.. seealso:: :py:func:`maximumScale`
-
-.. seealso:: :py:func:`scaleVisibility`
-%End
 
     bool fontLimitPixelSize;
-%Docstring
-True if label sizes should be limited by pixel size.
-
-.. seealso:: :py:func:`fontMinPixelSize`
-
-.. seealso:: :py:func:`fontMaxPixelSize`
-%End
 
     int fontMinPixelSize;
-%Docstring
-Minimum pixel size for showing rendered map unit labels (1 - 1000).
-
-.. seealso:: :py:func:`fontLimitPixelSize`
-
-.. seealso:: :py:func:`fontMaxPixelSize`
-%End
 
     int fontMaxPixelSize;
-%Docstring
-Maximum pixel size for showing rendered map unit labels (1 - 10000).
-
-.. seealso:: :py:func:`fontLimitPixelSize`
-
-.. seealso:: :py:func:`fontMinPixelSize`
-%End
 
     bool displayAll;
-%Docstring
-If true, all features will be labelled even when overlaps occur.
-%End
 
     UpsideDownLabels upsidedownLabels;
-%Docstring
-Controls whether upside down labels are displayed and how they are handled.
-%End
 
     bool labelPerPart;
-%Docstring
-True if every part of a multi-part feature should be labeled. If false,
-only the largest part will be labeled.
-%End
 
     bool mergeLines;
-%Docstring
-True if connected line features with identical label text should be merged
-prior to generating label positions.
-%End
 
     bool limitNumLabels;
-%Docstring
-True if the number of labels drawn should be limited.
-
-.. seealso:: :py:func:`maxNumLabels`
-%End
 
     int maxNumLabels;
-%Docstring
-The maximum number of labels which should be drawn for this layer.
-This only has an effect if limitNumLabels is true.
-
-.. seealso:: :py:func:`limitNumLabels`
-%End
 
     double minFeatureSize;
-%Docstring
-Minimum feature size (in millimeters) for a feature to be labelled.
-%End
 
     bool obstacle;
-%Docstring
-True if features for layer are obstacles to labels of other layers.
-
-.. seealso:: :py:func:`obstacleFactor`
-
-.. seealso:: :py:func:`obstacleType`
-%End
 
     double obstacleFactor;
-%Docstring
-Obstacle factor, where 1.0 = default, < 1.0 more likely to be covered by labels,
-> 1.0 less likely to be covered
-
-.. seealso:: :py:func:`obstacle`
-
-.. seealso:: :py:func:`obstacleType`
-%End
 
     ObstacleType obstacleType;
-%Docstring
-Controls how features act as obstacles for labels.
-
-.. seealso:: :py:func:`obstacle`
-
-.. seealso:: :py:func:`obstacleFactor`
-%End
 
     double zIndex;
-%Docstring
-Z-Index of label, where labels with a higher z-index are rendered on top of labels with a lower z-index
-%End
 
     void calculateLabelSize( const QFontMetricsF *fm, QString text, double &labelX, double &labelY, QgsFeature *f = 0, QgsRenderContext *context = 0 );
 
