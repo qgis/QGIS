@@ -154,7 +154,4 @@ def execAlgorithmDialog(algOrName, parameters={}):
         canvas.setMapTool(prevMapTool)
 
     results = dlg.results()
-    # have to manually delete the dialog - otherwise it's owned by the
-    # iface mainWindow and never deleted
-    dlg.deleteLater()
     return results
