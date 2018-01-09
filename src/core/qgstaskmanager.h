@@ -485,6 +485,14 @@ class CORE_EXPORT QgsTaskManager : public QObject
      */
     int countActiveTasks() const;
 
+  public slots:
+
+    /**
+     * Triggers a task, e.g. as a result of a GUI interaction.
+     * \see triggered()
+     */
+    void trigger( QgsTask *task );
+
   signals:
 
     /**
@@ -531,6 +539,14 @@ class CORE_EXPORT QgsTaskManager : public QObject
      * \see countActiveTasks()
      */
     void countActiveTasksChanged( int count );
+
+    /**
+     * Emitted when a \a task is triggered. This occurs when a user clicks on
+     * the task from the QGIS GUI, and can be used to show detailed progress
+     * reports or re-open a related dialog.
+     * \see trigger()
+     */
+    void triggered( QgsTask *task );
 
   private slots:
 

@@ -607,6 +607,12 @@ int QgsTaskManager::countActiveTasks() const
   return tasks.intersect( mParentTasks ).count();
 }
 
+void QgsTaskManager::trigger( QgsTask *task )
+{
+  if ( task )
+    emit triggered( task );
+}
+
 void QgsTaskManager::taskProgressChanged( double progress )
 {
   QgsTask *task = qobject_cast< QgsTask * >( sender() );

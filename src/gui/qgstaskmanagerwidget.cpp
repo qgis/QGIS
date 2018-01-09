@@ -33,6 +33,7 @@
 
 QgsTaskManagerWidget::QgsTaskManagerWidget( QgsTaskManager *manager, QWidget *parent )
   : QWidget( parent )
+  , mManager( manager )
 {
   Q_ASSERT( manager );
 
@@ -53,6 +54,8 @@ QgsTaskManagerWidget::QgsTaskManagerWidget( QgsTaskManager *manager, QWidget *pa
   mTreeView->setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOn );
   mTreeView->header()->setStretchLastSection( false );
   mTreeView->header()->setSectionResizeMode( QgsTaskManagerModel::Description, QHeaderView::Stretch );
+
+  connect( mTreeView, &QTreeView::clicked, this, &QgsTaskManagerWidget::clicked );
 
   vLayout->addWidget( mTreeView );
 
@@ -95,6 +98,15 @@ void QgsTaskManagerWidget::modelRowsInserted( const QModelIndex &, int start, in
     connect( statusWidget, &QgsTaskStatusWidget::cancelClicked, task, &QgsTask::cancel );
     mTreeView->setIndexWidget( mModel->index( row, QgsTaskManagerModel::Status ), statusWidget );
   }
+}
+
+void QgsTaskManagerWidget::clicked( const QModelIndex &index )
+{
+  QgsTask *task = mModel->indexToTask( index );
+  if ( !task )
+    return;
+
+  mManager->trigger( task );
 }
 
 ///@cond PRIVATE
