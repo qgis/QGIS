@@ -300,7 +300,7 @@ class ProcessingToolbox(BASE, WIDGET):
                         self.addRecentAlgorithms(True)
                 # have to manually delete the dialog - otherwise it's owned by the
                 # iface mainWindow and never deleted
-                dlg.deleteLater()
+                # dlg.deleteLater()
             else:
                 feedback = MessageBarProgress()
                 context = dataobjects.createContext(feedback)
