@@ -73,28 +73,28 @@ Sets the band used by the renderer.
 %Docstring
 Returns the direction of the light over the raster between 0-360.
 
-.. seealso:: :py:func:`setAzimuth()`
+.. seealso:: :py:func:`setAzimuth`
 %End
 
     double altitude()  const;
 %Docstring
 Returns the angle of the light source over the raster.
 
-.. seealso:: :py:func:`setAltitude()`
+.. seealso:: :py:func:`setAltitude`
 %End
 
     double zFactor()  const;
 %Docstring
 Returns the Z scaling factor.
 
-.. seealso:: :py:func:`setZFactor()`
+.. seealso:: :py:func:`setZFactor`
 %End
 
     bool multiDirectional() const;
 %Docstring
 Returns true if the renderer is using multi-directional hillshading.
 
-.. seealso:: :py:func:`setMultiDirectional()`
+.. seealso:: :py:func:`setMultiDirectional`
 %End
 
     void setAzimuth( double azimuth );
@@ -103,7 +103,7 @@ Returns true if the renderer is using multi-directional hillshading.
 
 :param azimuth: The azimuth of the light source, between 0 and 360.0
 
-.. seealso:: :py:func:`azimuth()`
+.. seealso:: :py:func:`azimuth`
 %End
 
     void setAltitude( double altitude );
@@ -112,7 +112,7 @@ Returns true if the renderer is using multi-directional hillshading.
 
 :param altitude: the altitude
 
-.. seealso:: :py:func:`altitude()`
+.. seealso:: :py:func:`altitude`
 %End
 
     void setZFactor( double zfactor );
@@ -121,7 +121,7 @@ Returns true if the renderer is using multi-directional hillshading.
 
 :param zfactor: The z factor
 
-.. seealso:: :py:func:`zFactor()`
+.. seealso:: :py:func:`zFactor`
 %End
 
     void setMultiDirectional( bool isMultiDirectional );
@@ -130,7 +130,7 @@ Sets whether to render using a multi-directional hillshade algorithm.
 
 :param isMultiDirectional: set to true to use multi directional rendering
 
-.. seealso:: :py:func:`multiDirectional()`
+.. seealso:: :py:func:`multiDirectional`
 %End
 
 };

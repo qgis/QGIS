@@ -48,7 +48,7 @@ currently used filter on list of fields
 %Docstring
 Sets whether an optional empty field ("not set") option is shown in the combo box.
 
-.. seealso:: :py:func:`allowEmptyFieldName()`
+.. seealso:: :py:func:`allowEmptyFieldName`
 
 .. versionadded:: 3.0
 %End
@@ -57,7 +57,7 @@ Sets whether an optional empty field ("not set") option is shown in the combo bo
 %Docstring
 Returns true if the combo box allows the empty field ("not set") choice.
 
-.. seealso:: :py:func:`setAllowEmptyFieldName()`
+.. seealso:: :py:func:`setAllowEmptyFieldName`
 
 .. versionadded:: 3.0
 %End
@@ -71,7 +71,7 @@ return the currently selected field
 %Docstring
 Returns the layer currently associated with the combobox.
 
-.. seealso:: :py:func:`setLayer()`
+.. seealso:: :py:func:`setLayer`
 %End
 
   signals:
@@ -87,7 +87,7 @@ the signal is emitted when the currently selected field changes
 Sets the layer for which fields are listed in the combobox. If no layer is set
 or a non-vector layer is set then the combobox will be empty.
 
-.. seealso:: :py:func:`layer()`
+.. seealso:: :py:func:`layer`
 %End
 
     void setField( const QString &fieldName );

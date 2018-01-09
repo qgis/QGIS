@@ -36,9 +36,9 @@ If not set, the buttons are hidden.
 Returns the selected minimum scale (i.e. most "zoomed out" scale), or 0 if minimum scale is not set.
 The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 
-.. seealso:: :py:func:`maximumScale()`
+.. seealso:: :py:func:`maximumScale`
 
-.. seealso:: :py:func:`setMinimumScale()`
+.. seealso:: :py:func:`setMinimumScale`
 %End
 
     double maximumScale() const;
@@ -46,9 +46,9 @@ The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 Returns the selected maximum scale (i.e. most "zoomed in" scale), or 0 if maximum scale is not set.
 The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 
-.. seealso:: :py:func:`minimumScale()`
+.. seealso:: :py:func:`minimumScale`
 
-.. seealso:: :py:func:`setMaximumScale()`
+.. seealso:: :py:func:`setMaximumScale`
 %End
 
     void reloadProjectScales();
@@ -63,11 +63,11 @@ Call to reload the preset scales from the current project and apply them to the 
 Set the minimum ``scale`` (i.e. most "zoomed out" scale), or 0 to indicate the minimum is not set.
 The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 
-.. seealso:: :py:func:`minimumScale()`
+.. seealso:: :py:func:`minimumScale`
 
-.. seealso:: :py:func:`setMaximumScale()`
+.. seealso:: :py:func:`setMaximumScale`
 
-.. seealso:: :py:func:`setScaleRange()`
+.. seealso:: :py:func:`setScaleRange`
 %End
 
     void setMaximumScale( double scale );
@@ -75,11 +75,11 @@ The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 Set the maximum ``scale`` (i.e. most "zoomed in" scale), or 0 to indicate the minimum is not set.
 The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 
-.. seealso:: :py:func:`maximumScale()`
+.. seealso:: :py:func:`maximumScale`
 
-.. seealso:: :py:func:`setMinimumScale()`
+.. seealso:: :py:func:`setMinimumScale`
 
-.. seealso:: :py:func:`setScaleRange()`
+.. seealso:: :py:func:`setScaleRange`
 %End
 
     void setScaleRange( double min, double max );
@@ -88,9 +88,9 @@ Sets the scale range, from ``min`` scale (i.e. most "zoomed out" scale) to ``max
 The scale values indicates the scale denominator, e.g. 1000.0 for a 1:1000 map,
 or 0 to indicate not set.
 
-.. seealso:: :py:func:`setMinimumScale()`
+.. seealso:: :py:func:`setMinimumScale`
 
-.. seealso:: :py:func:`setMaximumScale()`
+.. seealso:: :py:func:`setMaximumScale`
 %End
 
   signals:

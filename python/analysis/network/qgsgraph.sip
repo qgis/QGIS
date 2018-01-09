@@ -45,14 +45,14 @@ Returns array of available strategies
 %Docstring
 Returns the index of the vertex at the end of this edge.
 
-.. seealso:: :py:func:`fromVertex()`
+.. seealso:: :py:func:`fromVertex`
 %End
 
     int fromVertex() const;
 %Docstring
 Returns the index of the vertex at the start of this edge.
 
-.. seealso:: :py:func:`toVertex()`
+.. seealso:: :py:func:`toVertex`
 %End
 
 };
@@ -88,14 +88,14 @@ This constructor initializes QgsGraphVertex object and associates a vertex with 
 %Docstring
 Returns the incoming edge ids, i.e. edges which end at this node.
 
-.. seealso:: :py:func:`outgoingEdges()`
+.. seealso:: :py:func:`outgoingEdges`
 %End
 
     QgsGraphEdgeIds outgoingEdges() const;
 %Docstring
 Returns outgoing edge ids, i.e. edges which start at this node.
 
-.. seealso:: :py:func:`incomingEdges()`
+.. seealso:: :py:func:`incomingEdges`
 %End
 
     QgsPointXY point() const;

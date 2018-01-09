@@ -39,16 +39,16 @@ Sets whether to show a button to set the scale to the current scale of the map c
 
    the map canvas must be defined to show the button
 
-.. seealso:: :py:func:`showCurrentScaleButton()`
+.. seealso:: :py:func:`showCurrentScaleButton`
 
-.. seealso:: :py:func:`setMapCanvas()`
+.. seealso:: :py:func:`setMapCanvas`
 %End
 
     bool showCurrentScaleButton();
 %Docstring
 Returns whether a button to set the scale from map canvas is shown or not.
 
-.. seealso:: :py:func:`setShowCurrentScaleButton()`
+.. seealso:: :py:func:`setShowCurrentScaleButton`
 %End
 
     void setMapCanvas( QgsMapCanvas *canvas );
@@ -60,14 +60,14 @@ Set the map ``canvas`` associated to the current button.
 %Docstring
 Returns the selected scale as a string, e.g. "1:150".
 
-.. seealso:: :py:func:`setScaleString()`
+.. seealso:: :py:func:`setScaleString`
 %End
 
     bool setScaleString( const QString &string );
 %Docstring
 Set the selected scale from a ``string``, e.g. "1:150".
 
-.. seealso:: :py:func:`scaleString()`
+.. seealso:: :py:func:`scaleString`
 %End
 
     double scale() const;
@@ -75,7 +75,7 @@ Set the selected scale from a ``string``, e.g. "1:150".
 Returns the selected scale as a double.
 The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 
-.. seealso:: :py:func:`setScale()`
+.. seealso:: :py:func:`setScale`
 %End
 
     double minScale() const;
@@ -93,7 +93,7 @@ The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 ma
 
 The returned string will be rounded (e.g. 1:1000, not 1:1000.345).
 
-.. seealso:: :py:func:`toDouble()`
+.. seealso:: :py:func:`toDouble`
 %End
 
     static double toDouble( const QString &scaleString, bool *ok = 0 );
@@ -102,7 +102,7 @@ Helper function to convert a scale ``string`` to double.
 The returned value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 If specified, ``ok`` will be set to true if the string was successfully interpreted as a scale.
 
-.. seealso:: :py:func:`toString()`
+.. seealso:: :py:func:`toString`
 %End
 
   public slots:
@@ -112,7 +112,7 @@ If specified, ``ok`` will be set to true if the string was successfully interpre
 Set the selected scale from a double.
 The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 
-.. seealso:: :py:func:`scale()`
+.. seealso:: :py:func:`scale`
 %End
 
     void updateScales( const QStringList &scales = QStringList() );
@@ -125,7 +125,7 @@ are expected to be valid scale strings, such as "1:1000000".
 %Docstring
 Assigns the current scale from the map canvas, if set.
 
-.. seealso:: :py:func:`setMapCanvas()`
+.. seealso:: :py:func:`setMapCanvas`
 %End
 
     void setMinScale( double scale );

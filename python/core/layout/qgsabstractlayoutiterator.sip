@@ -33,7 +33,7 @@ Returns the layout associated with the iterator.
 Called when rendering begins, before iteration commences. Returns true if successful, false if no iteration
 is available or required.
 
-.. seealso:: :py:func:`endRender()`
+.. seealso:: :py:func:`endRender`
 %End
 
     virtual bool endRender() = 0;

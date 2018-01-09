@@ -44,9 +44,9 @@ manager.
 Adds an annotation to the manager. Ownership of the annotation is transferred to the manager.
 Returns true if the addition was successful, or false if the annotation could not be added.
 
-.. seealso:: :py:func:`removeAnnotation()`
+.. seealso:: :py:func:`removeAnnotation`
 
-.. seealso:: :py:func:`annotationAdded()`
+.. seealso:: :py:func:`annotationAdded`
 %End
 
     bool removeAnnotation( QgsAnnotation *annotation );
@@ -55,27 +55,27 @@ Removes an annotation from the manager. The annotation is deleted.
 Returns true if the removal was successful, or false if the removal failed (eg as a result
 of removing an annotation which is not contained in the manager).
 
-.. seealso:: :py:func:`addAnnotation()`
+.. seealso:: :py:func:`addAnnotation`
 
-.. seealso:: :py:func:`compositionRemoved()`
+.. seealso:: :py:func:`compositionRemoved`
 
-.. seealso:: :py:func:`compositionAboutToBeRemoved()`
+.. seealso:: :py:func:`compositionAboutToBeRemoved`
 
-.. seealso:: :py:func:`clear()`
+.. seealso:: :py:func:`clear`
 %End
 
     void clear();
 %Docstring
 Removes and deletes all annotations from the manager.
 
-.. seealso:: :py:func:`removeAnnotation()`
+.. seealso:: :py:func:`removeAnnotation`
 %End
 
     QList< QgsAnnotation * > annotations() const;
 %Docstring
 Returns a list of all annotations contained in the manager.
 
-.. seealso:: :py:func:`cloneAnnotations()`
+.. seealso:: :py:func:`cloneAnnotations`
 %End
 
     QList< QgsAnnotation * > cloneAnnotations() const /Factory/;
@@ -84,7 +84,7 @@ Returns a list containing clones of all annotations contained
 in the manager. The caller takes responsibility for deleting
 all returned annotations.
 
-.. seealso:: :py:func:`annotations()`
+.. seealso:: :py:func:`annotations`
 %End
 
     bool readXml( const QDomElement &element, const QgsReadWriteContext &context );
@@ -92,14 +92,14 @@ all returned annotations.
 Reads the manager's state from a DOM element, restoring all annotations
 present in the XML document.
 
-.. seealso:: :py:func:`writeXml()`
+.. seealso:: :py:func:`writeXml`
 %End
 
     QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const;
 %Docstring
 Returns a DOM element representing the state of the manager.
 
-.. seealso:: :py:func:`readXml()`
+.. seealso:: :py:func:`readXml`
 %End
 
   signals:

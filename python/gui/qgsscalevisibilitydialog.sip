@@ -37,9 +37,9 @@ Return true if scale based visibilty is enabled.
 Returns the selected minimum scale, or 0 if minimum scale is not set.
 The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 
-.. seealso:: :py:func:`maximumScale()`
+.. seealso:: :py:func:`maximumScale`
 
-.. seealso:: :py:func:`setMinimumScale()`
+.. seealso:: :py:func:`setMinimumScale`
 %End
 
     double maximumScale() const;
@@ -47,9 +47,9 @@ The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 Returns the selected maximum scale, or 0 if maximum scale is not set.
 The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 
-.. seealso:: :py:func:`minimumScale()`
+.. seealso:: :py:func:`minimumScale`
 
-.. seealso:: :py:func:`setMaximumScale()`
+.. seealso:: :py:func:`setMaximumScale`
 %End
 
   public slots:
@@ -58,7 +58,7 @@ The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 %Docstring
 Set whether scale based visibility is enabled.
 
-.. seealso:: :py:func:`hasScaleVisibility()`
+.. seealso:: :py:func:`hasScaleVisibility`
 %End
 
     void setMinimumScale( double scale );
@@ -66,9 +66,9 @@ Set whether scale based visibility is enabled.
 Set the minimum ``scale``, or 0 to indicate the minimum is not set.
 The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 
-.. seealso:: :py:func:`minimumScale()`
+.. seealso:: :py:func:`minimumScale`
 
-.. seealso:: :py:func:`setMaximumScale()`
+.. seealso:: :py:func:`setMaximumScale`
 %End
 
     void setMaximumScale( double scale );
@@ -76,9 +76,9 @@ The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 Set the maximum ``scale``, or 0 to indicate the minimum is not set.
 The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 
-.. seealso:: :py:func:`maximumScale()`
+.. seealso:: :py:func:`maximumScale`
 
-.. seealso:: :py:func:`setMinimumScale()`
+.. seealso:: :py:func:`setMinimumScale`
 %End
 
 

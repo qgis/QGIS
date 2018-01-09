@@ -214,7 +214,7 @@ Deletes one or more features from the provider. This requires the DeleteFeatures
 
 :return: true in case of success and false in case of failure
 
-.. seealso:: :py:func:`truncate()`
+.. seealso:: :py:func:`truncate`
 %End
 
     virtual bool truncate();
@@ -226,7 +226,7 @@ Providers with the FastTruncate capability will use an optimised method to trunc
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`deleteFeatures()`
+.. seealso:: :py:func:`deleteFeatures`
 %End
 
     virtual bool addAttributes( const QList<QgsField> &attributes );
@@ -297,7 +297,7 @@ is calculated as a result of a sequence). It is recommended that you instead use
 in QgsVectorLayerUtils such as :py:func:`QgsVectorLayerUtils.createFeature()`
 so that default value handling and validation is automatically carried out.
 
-.. seealso:: :py:func:`defaultValueClause()`
+.. seealso:: :py:func:`defaultValueClause`
 %End
 
     virtual QString defaultValueClause( int fieldIndex ) const;
@@ -306,7 +306,7 @@ Returns any default value clauses which are present at the provider for a specif
 field index. These clauses are usually SQL fragments which must be evaluated by the
 provider, e.g., sequence values.
 
-.. seealso:: :py:func:`defaultValue()`
+.. seealso:: :py:func:`defaultValue`
 
 .. versionadded:: 3.0
 %End
@@ -318,7 +318,7 @@ field index.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`skipConstraintCheck()`
+.. seealso:: :py:func:`skipConstraintCheck`
 %End
 
     virtual bool skipConstraintCheck( int fieldIndex, QgsFieldConstraints::Constraint constraint, const QVariant &value = QVariant() ) const;
@@ -329,7 +329,7 @@ passed which can help refine the skip constraint check.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`fieldConstraints()`
+.. seealso:: :py:func:`fieldConstraints`
 %End
 
     virtual bool changeGeometryValues( const QgsGeometryMap &geometry_map );

@@ -60,7 +60,7 @@ empty string before setLayers() calls can be made.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`layers()`
+.. seealso:: :py:func:`layers`
 %End
 
     void setCurrentLayer( QgsMapLayer *layer );
@@ -274,7 +274,7 @@ The ``startColor`` and ``endColor`` can be specified, along with the number of
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`flashGeometries()`
+.. seealso:: :py:func:`flashGeometries`
 %End
 
     void flashGeometries( const QList< QgsGeometry > &geometries, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(),
@@ -291,7 +291,7 @@ The ``startColor`` and ``endColor`` can be specified, along with the number of
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`flashFeatureIds()`
+.. seealso:: :py:func:`flashFeatureIds`
 %End
 
     void setMapTool( QgsMapTool *mapTool, bool clean = false );
@@ -355,7 +355,7 @@ return number of layers on the map
 %Docstring
 Return the list of layers shown within the map canvas.
 
-.. seealso:: :py:func:`setLayers()`
+.. seealso:: :py:func:`setLayers`
 %End
 
     void freeze( bool frozen = true );
@@ -366,9 +366,9 @@ responding to events while layers are being added/removed etc.
 :param frozen: Boolean specifying if the canvas should be frozen (true) or
 thawed (false). Default is true.
 
-.. seealso:: :py:func:`isFrozen()`
+.. seealso:: :py:func:`isFrozen`
 
-.. seealso:: :py:func:`setRenderFlag()`
+.. seealso:: :py:func:`setRenderFlag`
 while setRenderFlag() should only be used when users disable rendering via GUI.
 %End
 
@@ -376,11 +376,11 @@ while setRenderFlag() should only be used when users disable rendering via GUI.
 %Docstring
 Returns true if canvas is frozen.
 
-.. seealso:: :py:func:`renderFlag()`
+.. seealso:: :py:func:`renderFlag`
 have been halted programmatically, while renderFlag() should be used to
 determine whether a user has disabled rendering via GUI.
 
-.. seealso:: :py:func:`freeze()`
+.. seealso:: :py:func:`freeze`
 %End
 
     bool renderFlag() const;
@@ -388,9 +388,9 @@ determine whether a user has disabled rendering via GUI.
 Returns true if canvas render is disabled as a result of user disabling
 renders via the GUI.
 
-.. seealso:: :py:func:`setRenderFlag()`
+.. seealso:: :py:func:`setRenderFlag`
 
-.. seealso:: :py:func:`isFrozen()`
+.. seealso:: :py:func:`isFrozen`
 have been halted programmatically, while renderFlag() should be used to
 determine whether a user has disabled rendering via GUI.
 %End
@@ -407,7 +407,7 @@ Returns the stored overrides of styles for layers.
 
 .. versionadded:: 2.12
 
-.. seealso:: :py:func:`setLayerStyleOverrides()`
+.. seealso:: :py:func:`setLayerStyleOverrides`
 %End
 
     void setLayerStyleOverrides( const QMap<QString, QString> &overrides );
@@ -421,7 +421,7 @@ empty string before setLayerStyleOverrides() calls can be made.
 
 .. versionadded:: 2.12
 
-.. seealso:: :py:func:`layerStyleOverrides()`
+.. seealso:: :py:func:`layerStyleOverrides`
 %End
 
     void setTheme( const QString &theme );
@@ -443,7 +443,7 @@ cleared.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`theme()`
+.. seealso:: :py:func:`theme`
 %End
 
     QString theme() const;
@@ -452,7 +452,7 @@ Returns the map's theme shown in the canvas, if set.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`setTheme()`
+.. seealso:: :py:func:`setTheme`
 %End
 
     const QgsMapToPixel *getCoordinateTransform();
@@ -504,7 +504,7 @@ Returns whether the scale is locked, so zooming can be performed using magnicati
 
 .. versionadded:: 2.16
 
-.. seealso:: :py:func:`setScaleLocked()`
+.. seealso:: :py:func:`setScaleLocked`
 %End
 
     void enableAntiAliasing( bool flag );
@@ -624,7 +624,7 @@ context scope for the canvas.
 
 .. versionadded:: 2.12
 
-.. seealso:: :py:func:`expressionContextScope()`
+.. seealso:: :py:func:`expressionContextScope`
 %End
 
     QgsExpressionContextScope &expressionContextScope();
@@ -635,7 +635,7 @@ overrides for expression evaluation for the map canvas render.
 
 .. versionadded:: 2.12
 
-.. seealso:: :py:func:`setExpressionContextScope()`
+.. seealso:: :py:func:`setExpressionContextScope`
 %End
 
 
@@ -666,7 +666,7 @@ Returns true if annotations are visible within the map canvas.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`setAnnotationsVisible()`
+.. seealso:: :py:func:`setAnnotationsVisible`
 %End
 
     void setAnnotationsVisible( bool visible );
@@ -675,7 +675,7 @@ Sets whether annotations are ``visible`` in the canvas.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`annotationsVisible()`
+.. seealso:: :py:func:`annotationsVisible`
 %End
 
     void setLabelingEngineSettings( const QgsLabelingEngineSettings &settings );
@@ -699,7 +699,7 @@ of the view just outside of the canvas extent, to allow preview of these
 out-of-canvas areas when panning or zooming out the map) are enabled
 for the canvas.
 
-.. seealso:: :py:func:`setPreviewJobsEnabled()`
+.. seealso:: :py:func:`setPreviewJobsEnabled`
 
 .. versionadded:: 3.0
 %End
@@ -711,7 +711,7 @@ of the view just outside of the canvas extent, to allow preview of these
 out-of-canvas areas when panning or zooming out the map) are ``enabled``
 for the canvas.
 
-.. seealso:: :py:func:`previewJobsEnabled()`
+.. seealso:: :py:func:`previewJobsEnabled`
 
 .. versionadded:: 3.0
 %End
@@ -744,9 +744,9 @@ Sets whether a user has disabled canvas renders via the GUI.
 
 :param flag: set to false to indicate that user has disabled renders
 
-.. seealso:: :py:func:`renderFlag()`
+.. seealso:: :py:func:`renderFlag`
 
-.. seealso:: :py:func:`freeze()`
+.. seealso:: :py:func:`freeze`
 while setRenderFlag() should only be used when users disable rendering via GUI.
 %End
 
@@ -783,7 +783,7 @@ Lock the scale, so zooming can be performed using magnication
 
 .. versionadded:: 2.16
 
-.. seealso:: :py:func:`scaleLocked()`
+.. seealso:: :py:func:`scaleLocked`
 %End
 
     void zoomIn();
@@ -925,7 +925,7 @@ Emitted when the configuration of overridden layer styles changes
 %Docstring
 Emitted when the canvas has been assigned a different map theme.
 
-.. seealso:: :py:func:`setTheme()`
+.. seealso:: :py:func:`setTheme`
 
 .. versionadded:: 3.0
 %End

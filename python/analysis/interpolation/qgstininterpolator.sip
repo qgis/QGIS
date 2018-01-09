@@ -46,7 +46,7 @@ Returns the fields output by features when saving the triangulation.
 These fields should be used when creating
 a suitable feature sink for setTriangulationSink()
 
-.. seealso:: :py:func:`setTriangulationSink()`
+.. seealso:: :py:func:`setTriangulationSink`
 
 .. versionadded:: 3.0
 %End
@@ -58,7 +58,7 @@ Sets the optional ``sink`` for saving the triangulation features.
 The sink must be setup to accept LineString features, with fields matching
 those returned by triangulationFields().
 
-.. seealso:: :py:func:`triangulationFields()`
+.. seealso:: :py:func:`triangulationFields`
 
 .. versionadded:: 3.0
 %End

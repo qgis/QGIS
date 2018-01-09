@@ -62,7 +62,7 @@ Access the field index.
 
 :return: The index of the field you are working on
 
-.. seealso:: :py:func:`layer()`
+.. seealso:: :py:func:`layer`
 %End
 
     QgsField field() const;
@@ -71,7 +71,7 @@ Access the field.
 
 :return: The field you are working on
 
-.. seealso:: :py:func:`layer()`
+.. seealso:: :py:func:`layer`
 %End
 
     QVariant defaultValue() const;
@@ -80,7 +80,7 @@ Access the default value of the field.
 
 :return: the default value of the field
 
-.. seealso:: :py:func:`layer()`
+.. seealso:: :py:func:`layer`
 %End
 
     static QgsEditorWidgetWrapper *fromWidget( QWidget *widget );
@@ -151,9 +151,9 @@ false otherwise
 
 .. versionadded:: 2.16
 
-.. seealso:: :py:func:`constraintFailureReason()`
+.. seealso:: :py:func:`constraintFailureReason`
 
-.. seealso:: :py:func:`isBlockingCommit()`
+.. seealso:: :py:func:`isBlockingCommit`
 %End
 
     bool isBlockingCommit() const;
@@ -163,7 +163,7 @@ of attribute values failing enforced field constraints.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`isValidConstraint()`
+.. seealso:: :py:func:`isValidConstraint`
 %End
 
     QString constraintFailureReason() const;
@@ -171,7 +171,7 @@ of attribute values failing enforced field constraints.
 Returns the reason why a constraint check has failed (or an empty string
 if constraint check was successful).
 
-.. seealso:: :py:func:`isValidConstraint()`
+.. seealso:: :py:func:`isValidConstraint`
 
 .. versionadded:: 3.0
 %End

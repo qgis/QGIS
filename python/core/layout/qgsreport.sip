@@ -61,7 +61,7 @@ Note that ownership is not transferred to ``project``.
 %Docstring
 Emitted when the report's name is changed.
 
-.. seealso:: :py:func:`setName()`
+.. seealso:: :py:func:`setName`
 %End
 
 };

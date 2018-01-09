@@ -193,7 +193,7 @@ from the action's color widget.
 from the widget. If set to false, the colorChanged signal will be emitted but the menu will
 stay open.
 
-.. seealso:: :py:func:`dismissOnColorSelection()`
+.. seealso:: :py:func:`dismissOnColorSelection`
 
 .. versionadded:: 2.14
 %End

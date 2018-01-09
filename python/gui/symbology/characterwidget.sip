@@ -44,7 +44,7 @@ Returns the size (in pixels) of the square used to render each character preview
 %Docstring
 Returns the currently selected character in the widget.
 
-.. seealso:: :py:func:`setCharacter()`
+.. seealso:: :py:func:`setCharacter`
 
 .. versionadded:: 3.0
 %End
@@ -53,7 +53,7 @@ Returns the currently selected character in the widget.
 %Docstring
 Returns the font shown in the widget
 
-.. seealso:: :py:func:`setFont()`
+.. seealso:: :py:func:`setFont`
 
 .. versionadded:: 3.0
 %End
@@ -64,7 +64,7 @@ Returns the font shown in the widget
 %Docstring
 Sets the ``font`` to show in the widget.
 
-.. seealso:: :py:func:`font()`
+.. seealso:: :py:func:`font`
 
 .. versionadded:: 3.0
 %End
@@ -96,9 +96,9 @@ Sets the number of columns of characters to show in the widget.
 %Docstring
 Sets the currently selected ``character`` in the widget.
 
-.. seealso:: :py:func:`character()`
+.. seealso:: :py:func:`character`
 
-.. seealso:: :py:func:`characterSelected()`
+.. seealso:: :py:func:`characterSelected`
 %End
 
   signals:

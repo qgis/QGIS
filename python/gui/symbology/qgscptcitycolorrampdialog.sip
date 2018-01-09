@@ -37,7 +37,7 @@ Constructor for QgsCptCityColorRampDialog.
 %Docstring
 Returns a color ramp representing the current settings from the dialog.
 
-.. seealso:: :py:func:`setRamp()`
+.. seealso:: :py:func:`setRamp`
 %End
 
     void setRamp( const QgsCptCityColorRamp &ramp );
@@ -46,7 +46,7 @@ Sets the color ramp to show in the dialog.
 
 :param ramp: color ramp
 
-.. seealso:: :py:func:`ramp()`
+.. seealso:: :py:func:`ramp`
 %End
 
     QString selectedName() const;

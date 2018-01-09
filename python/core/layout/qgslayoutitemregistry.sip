@@ -181,7 +181,7 @@ Creates a new empty item registry.
 QgsLayoutItemRegistry is not usually directly created, but rather accessed through
 :py:func:`QgsApplication.layoutItemRegistry()`
 
-.. seealso:: :py:func:`populate()`
+.. seealso:: :py:func:`populate`
 %End
 
     ~QgsLayoutItemRegistry();
@@ -198,7 +198,7 @@ then this will have no effect and will return false.
 Returns the metadata for the specified item ``type``. Returns None if
 a corresponding type was not found in the registry.
 
-.. seealso:: :py:func:`multiFrameMetadata()`
+.. seealso:: :py:func:`multiFrameMetadata`
 %End
 
     QgsLayoutMultiFrameAbstractMetadata *multiFrameMetadata( int type ) const;
@@ -206,35 +206,35 @@ a corresponding type was not found in the registry.
 Returns the metadata for the specified multiframe ``type``. Returns None if
 a corresponding type was not found in the registry.
 
-.. seealso:: :py:func:`itemMetadata()`
+.. seealso:: :py:func:`itemMetadata`
 %End
 
     bool addLayoutItemType( QgsLayoutItemAbstractMetadata *metadata /Transfer/ );
 %Docstring
 Registers a new layout item type. Takes ownership of the metadata instance.
 
-.. seealso:: :py:func:`addLayoutMultiFrameType()`
+.. seealso:: :py:func:`addLayoutMultiFrameType`
 %End
 
     bool addLayoutMultiFrameType( QgsLayoutMultiFrameAbstractMetadata *metadata /Transfer/ );
 %Docstring
 Registers a new layout multiframe type. Takes ownership of the metadata instance.
 
-.. seealso:: :py:func:`addLayoutItemType()`
+.. seealso:: :py:func:`addLayoutItemType`
 %End
 
     QgsLayoutItem *createItem( int type, QgsLayout *layout ) const /Factory/;
 %Docstring
 Creates a new instance of a layout item given the item ``type``, and target ``layout``.
 
-.. seealso:: :py:func:`createMultiFrame()`
+.. seealso:: :py:func:`createMultiFrame`
 %End
 
     QgsLayoutMultiFrame *createMultiFrame( int type, QgsLayout *layout ) const /Factory/;
 %Docstring
 Creates a new instance of a layout multiframe given the multiframe ``type``, and target ``layout``.
 
-.. seealso:: :py:func:`createItem()`
+.. seealso:: :py:func:`createItem`
 %End
 
     void resolvePaths( int type, QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving ) const;

@@ -38,7 +38,7 @@ stack() or via beginCommand()/endCommand() calls) between a
 beginMacro() and endMacro() block are collapsed into a single
 undo command, which will be applied or rolled back in a single step.
 
-.. seealso:: :py:func:`endMacro()`
+.. seealso:: :py:func:`endMacro`
 %End
 
     void endMacro();
@@ -51,7 +51,7 @@ stack() or via beginCommand()/endCommand() calls) between a
 beginMacro() and endMacro() block are collapsed into a single
 undo command, which will be applied or rolled back in a single step.
 
-.. seealso:: :py:func:`beginMacro()`
+.. seealso:: :py:func:`beginMacro`
 %End
 
     void beginCommand( QgsLayoutUndoObjectInterface *object, const QString &commandText, int id = 0 );
@@ -64,27 +64,27 @@ have been made to ``object``.
 The ``id`` argument can be used to specify an id number for the source event - this is used to determine whether QUndoCommand
 command compression can apply to the command.
 
-.. seealso:: :py:func:`endCommand()`
+.. seealso:: :py:func:`endCommand`
 
-.. seealso:: :py:func:`cancelCommand()`
+.. seealso:: :py:func:`cancelCommand`
 %End
 
     void endCommand();
 %Docstring
 Saves final state of an object and pushes the active command to the undo history.
 
-.. seealso:: :py:func:`beginCommand()`
+.. seealso:: :py:func:`beginCommand`
 
-.. seealso:: :py:func:`cancelCommand()`
+.. seealso:: :py:func:`cancelCommand`
 %End
 
     void cancelCommand();
 %Docstring
 Cancels the active command, discarding it without pushing to the undo history.
 
-.. seealso:: :py:func:`endCommand()`
+.. seealso:: :py:func:`endCommand`
 
-.. seealso:: :py:func:`cancelCommand()`
+.. seealso:: :py:func:`cancelCommand`
 %End
 
     QUndoStack *stack();
@@ -107,14 +107,14 @@ call to blockCommands( false ) is made.
 Note that calls to blockCommands are stacked, so two calls blocking the commands
 will take two calls unblocking commands in order to release the block.
 
-.. seealso:: :py:func:`isBlocked()`
+.. seealso:: :py:func:`isBlocked`
 %End
 
     bool isBlocked() const;
 %Docstring
 Returns true if undo commands are currently blocked.
 
-.. seealso:: :py:func:`blockCommands()`
+.. seealso:: :py:func:`blockCommands`
 %End
 
     void push( QUndoCommand *command /Transfer/ );

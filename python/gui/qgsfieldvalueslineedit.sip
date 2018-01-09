@@ -40,18 +40,18 @@ Sets the layer containing the field that values will be shown from.
 
 :param layer: vector layer
 
-.. seealso:: :py:func:`layer()`
+.. seealso:: :py:func:`layer`
 
-.. seealso:: :py:func:`setAttributeIndex()`
+.. seealso:: :py:func:`setAttributeIndex`
 %End
 
     QgsVectorLayer *layer() const;
 %Docstring
 Returns the layer containing the field that values will be shown from.
 
-.. seealso:: :py:func:`setLayer()`
+.. seealso:: :py:func:`setLayer`
 
-.. seealso:: :py:func:`attributeIndex()`
+.. seealso:: :py:func:`attributeIndex`
 %End
 
     void setAttributeIndex( int index );
@@ -60,18 +60,18 @@ Sets the attribute index for the field containing values to show in the widget.
 
 :param index: index of attribute
 
-.. seealso:: :py:func:`attributeIndex()`
+.. seealso:: :py:func:`attributeIndex`
 
-.. seealso:: :py:func:`setLayer()`
+.. seealso:: :py:func:`setLayer`
 %End
 
     int attributeIndex() const;
 %Docstring
 Returns the attribute index for the field containing values shown in the widget.
 
-.. seealso:: :py:func:`setAttributeIndex()`
+.. seealso:: :py:func:`setAttributeIndex`
 
-.. seealso:: :py:func:`layer()`
+.. seealso:: :py:func:`layer`
 %End
 
   signals:

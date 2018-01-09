@@ -34,7 +34,7 @@ Sets the context in which the symbol widget is shown, e.g., the associated map c
 
 :param context: symbol widget context
 
-.. seealso:: :py:func:`context()`
+.. seealso:: :py:func:`context`
 
 .. versionadded:: 3.0
 %End
@@ -43,7 +43,7 @@ Sets the context in which the symbol widget is shown, e.g., the associated map c
 %Docstring
 Returns the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
 
-.. seealso:: :py:func:`setContext()`
+.. seealso:: :py:func:`setContext`
 
 .. versionadded:: 3.0
 %End
@@ -82,7 +82,7 @@ If the subsymbol is changed, symbolChanged() should be emitted instead.
 Should be emitted whenever the sub symbol changed on this symbol layer configuration.
 Normally changed() should be preferred.
 
-.. seealso:: :py:func:`changed()`
+.. seealso:: :py:func:`changed`
 %End
 
   protected slots:

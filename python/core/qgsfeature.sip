@@ -167,7 +167,7 @@ Get the feature ID for this feature.
 
 :return: feature ID
 
-.. seealso:: :py:func:`setId()`
+.. seealso:: :py:func:`setId`
 %End
 
     void setId( QgsFeatureId id );
@@ -302,7 +302,7 @@ Sets the validity of the feature.
 %Docstring
 Returns true if the feature has an associated geometry.
 
-.. seealso:: :py:func:`geometry()`
+.. seealso:: :py:func:`geometry`
 
 .. versionadded:: 3.0.
 %End
@@ -312,9 +312,9 @@ Returns true if the feature has an associated geometry.
 Returns the geometry associated with this feature. If the feature has no geometry,
 an empty QgsGeometry object will be returned.
 
-.. seealso:: :py:func:`hasGeometry()`
+.. seealso:: :py:func:`hasGeometry`
 
-.. seealso:: :py:func:`setGeometry()`
+.. seealso:: :py:func:`setGeometry`
 %End
 
     void setGeometry( const QgsGeometry &geometry );
@@ -323,18 +323,18 @@ Set the feature's geometry. The feature will be valid after.
 
 :param geometry: new feature geometry
 
-.. seealso:: :py:func:`geometry()`
+.. seealso:: :py:func:`geometry`
 
-.. seealso:: :py:func:`clearGeometry()`
+.. seealso:: :py:func:`clearGeometry`
 %End
 
     void clearGeometry();
 %Docstring
 Removes any geometry associated with the feature.
 
-.. seealso:: :py:func:`setGeometry()`
+.. seealso:: :py:func:`setGeometry`
 
-.. seealso:: :py:func:`hasGeometry()`
+.. seealso:: :py:func:`hasGeometry`
 
 .. versionadded:: 3.0
 %End

@@ -146,7 +146,7 @@ Sets the ``opacity`` for the effect.
 :param opacity: double between 0 and 1 inclusive, where 0 is fully transparent
 and 1 is fully opaque
 
-.. seealso:: :py:func:`opacity()`
+.. seealso:: :py:func:`opacity`
 %End
 
     double opacity() const;
@@ -156,7 +156,7 @@ Returns the opacity for the effect.
 :return: opacity value between 0 and 1 inclusive, where 0 is fully transparent
 and 1 is fully opaque
 
-.. seealso:: :py:func:`setOpacity()`
+.. seealso:: :py:func:`setOpacity`
 %End
 
     void setColor( const QColor &color );

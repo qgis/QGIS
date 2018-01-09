@@ -32,7 +32,7 @@ Sets a progress report text string. This can be used in conjunction with
 setProgress() to provide detailed progress reports, such as "Transformed
 4 of 5 layers".
 
-.. seealso:: :py:func:`setProgress()`
+.. seealso:: :py:func:`setProgress`
 %End
 
     virtual void reportError( const QString &error );
@@ -47,11 +47,11 @@ Pushes a general informational message from the algorithm. This can
 be used to report feedback which is neither a status report or an
 error, such as "Found 47 matching features".
 
-.. seealso:: :py:func:`pushCommandInfo()`
+.. seealso:: :py:func:`pushCommandInfo`
 
-.. seealso:: :py:func:`pushDebugInfo()`
+.. seealso:: :py:func:`pushDebugInfo`
 
-.. seealso:: :py:func:`pushConsoleInfo()`
+.. seealso:: :py:func:`pushConsoleInfo`
 %End
 
     virtual void pushCommandInfo( const QString &info );
@@ -60,11 +60,11 @@ Pushes an informational message containing a command from the algorithm.
 This is usually used to report commands which are executed in an external
 application or as subprocesses.
 
-.. seealso:: :py:func:`pushInfo()`
+.. seealso:: :py:func:`pushInfo`
 
-.. seealso:: :py:func:`pushDebugInfo()`
+.. seealso:: :py:func:`pushDebugInfo`
 
-.. seealso:: :py:func:`pushConsoleInfo()`
+.. seealso:: :py:func:`pushConsoleInfo`
 %End
 
     virtual void pushDebugInfo( const QString &info );
@@ -72,11 +72,11 @@ application or as subprocesses.
 Pushes an informational message containing debugging helpers from
 the algorithm.
 
-.. seealso:: :py:func:`pushInfo()`
+.. seealso:: :py:func:`pushInfo`
 
-.. seealso:: :py:func:`pushCommandInfo()`
+.. seealso:: :py:func:`pushCommandInfo`
 
-.. seealso:: :py:func:`pushConsoleInfo()`
+.. seealso:: :py:func:`pushConsoleInfo`
 %End
 
     virtual void pushConsoleInfo( const QString &info );
@@ -84,11 +84,11 @@ the algorithm.
 Pushes a console feedback message from the algorithm. This is used to
 report the output from executing an external command or subprocess.
 
-.. seealso:: :py:func:`pushInfo()`
+.. seealso:: :py:func:`pushInfo`
 
-.. seealso:: :py:func:`pushDebugInfo()`
+.. seealso:: :py:func:`pushDebugInfo`
 
-.. seealso:: :py:func:`pushCommandInfo()`
+.. seealso:: :py:func:`pushCommandInfo`
 %End
 
 };

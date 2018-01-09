@@ -35,7 +35,7 @@ weighted with distance. Smaller values mean sharper peaks at the data points.
 
 Point values are weighted by 1 / ( distance ^ coefficient ).
 
-.. seealso:: :py:func:`distanceCoefficient()`
+.. seealso:: :py:func:`distanceCoefficient`
 
 .. versionadded:: 3.0
 %End
@@ -48,7 +48,7 @@ The default is a coefficient of 2.
 
 Point values are weighted by 1 / ( distance ^ coefficient ).
 
-.. seealso:: :py:func:`setDistanceCoefficient()`
+.. seealso:: :py:func:`setDistanceCoefficient`
 
 .. versionadded:: 3.0
 %End

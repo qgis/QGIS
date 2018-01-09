@@ -242,7 +242,7 @@ This method is exposed for testing purposes only - it should not be used to modi
 %Docstring
 Returns the project currently associated with the widget.
 
-.. seealso:: :py:func:`setProject()`
+.. seealso:: :py:func:`setProject`
 
 .. versionadded:: 3.0
 %End
@@ -252,7 +252,7 @@ Returns the project currently associated with the widget.
 Sets the ``project`` currently associated with the widget. This
 controls which layers and relations and other project-specific items are shown in the widget.
 
-.. seealso:: :py:func:`project()`
+.. seealso:: :py:func:`project`
 
 .. versionadded:: 3.0
 %End

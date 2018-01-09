@@ -65,7 +65,7 @@ widget itself is not deleted.
 %Docstring
 Returns the current message shown in the status bar.
 
-.. seealso:: :py:func:`showMessage()`
+.. seealso:: :py:func:`showMessage`
 %End
 
   public slots:
@@ -76,16 +76,16 @@ Displays the given ``message`` for the specified number of milli-seconds (``time
 If ``timeout`` is 0 (default), the message remains displayed until the clearMessage()
 slot is called or until the showMessage() slot is called again to change the message.
 
-.. seealso:: :py:func:`clearMessage()`
+.. seealso:: :py:func:`clearMessage`
 
-.. seealso:: :py:func:`currentMessage()`
+.. seealso:: :py:func:`currentMessage`
 %End
 
     void clearMessage();
 %Docstring
 Removes any temporary message being shown.
 
-.. seealso:: :py:func:`showMessage()`
+.. seealso:: :py:func:`showMessage`
 %End
 
 };

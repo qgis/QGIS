@@ -108,14 +108,14 @@ Set the display ``name`` of the layer.
 
 .. versionadded:: 2.16
 
-.. seealso:: :py:func:`name()`
+.. seealso:: :py:func:`name`
 %End
 
     QString name() const;
 %Docstring
 Returns the display name of the layer.
 
-.. seealso:: :py:func:`setName()`
+.. seealso:: :py:func:`setName`
 %End
 
     virtual QgsDataProvider *dataProvider();
@@ -131,7 +131,7 @@ used by QGIS Server to identify the layer.
 
 :return: the layer short name
 
-.. seealso:: :py:func:`shortName()`
+.. seealso:: :py:func:`shortName`
 %End
 
     QString shortName() const;
@@ -139,7 +139,7 @@ used by QGIS Server to identify the layer.
 Returns the short name of the layer
 used by QGIS Server to identify the layer.
 
-.. seealso:: :py:func:`setShortName()`
+.. seealso:: :py:func:`setShortName`
 %End
 
     void setTitle( const QString &title );
@@ -147,7 +147,7 @@ used by QGIS Server to identify the layer.
 Sets the title of the layer
 used by QGIS Server in GetCapabilities request.
 
-.. seealso:: :py:func:`title()`
+.. seealso:: :py:func:`title`
 %End
 
     QString title() const;
@@ -157,7 +157,7 @@ used by QGIS Server in GetCapabilities request.
 
 :return: the layer title
 
-.. seealso:: :py:func:`setTitle()`
+.. seealso:: :py:func:`setTitle`
 %End
 
     void setAbstract( const QString &abstract );
@@ -167,7 +167,7 @@ used by QGIS Server in GetCapabilities request.
 
 :return: the layer abstract
 
-.. seealso:: :py:func:`abstract()`
+.. seealso:: :py:func:`abstract`
 %End
 
     QString abstract() const;
@@ -177,7 +177,7 @@ used by QGIS Server in GetCapabilities request.
 
 :return: the layer abstract
 
-.. seealso:: :py:func:`setAbstract()`
+.. seealso:: :py:func:`setAbstract`
 %End
 
     void setKeywordList( const QString &keywords );
@@ -187,7 +187,7 @@ used by QGIS Server in GetCapabilities request.
 
 :return: the layer keyword list
 
-.. seealso:: :py:func:`keywordList()`
+.. seealso:: :py:func:`keywordList`
 %End
 
     QString keywordList() const;
@@ -197,7 +197,7 @@ used by QGIS Server in GetCapabilities request.
 
 :return: the layer keyword list
 
-.. seealso:: :py:func:`setKeywordList()`
+.. seealso:: :py:func:`setKeywordList`
 %End
 
 
@@ -209,7 +209,7 @@ DataUrl is a a link to the underlying data represented by a particular layer.
 
 :return: the layer DataUrl
 
-.. seealso:: :py:func:`dataUrl()`
+.. seealso:: :py:func:`dataUrl`
 %End
 
     QString dataUrl() const;
@@ -220,7 +220,7 @@ DataUrl is a a link to the underlying data represented by a particular layer.
 
 :return: the layer DataUrl
 
-.. seealso:: :py:func:`setDataUrl()`
+.. seealso:: :py:func:`setDataUrl`
 %End
 
     void setDataUrlFormat( const QString &dataUrlFormat );
@@ -231,7 +231,7 @@ DataUrl is a a link to the underlying data represented by a particular layer.
 
 :return: the layer DataUrl format
 
-.. seealso:: :py:func:`dataUrlFormat()`
+.. seealso:: :py:func:`dataUrlFormat`
 %End
 
     QString dataUrlFormat() const;
@@ -242,7 +242,7 @@ DataUrl is a a link to the underlying data represented by a particular layer.
 
 :return: the layer DataUrl format
 
-.. seealso:: :py:func:`setDataUrlFormat()`
+.. seealso:: :py:func:`setDataUrlFormat`
 %End
 
 
@@ -254,7 +254,7 @@ Attribution indicates the provider of a layer or collection of layers.
 
 :return: the layer attribution
 
-.. seealso:: :py:func:`attribution()`
+.. seealso:: :py:func:`attribution`
 %End
 
     QString attribution() const;
@@ -265,7 +265,7 @@ Attribution indicates the provider of a layer or collection of layers.
 
 :return: the layer attribution
 
-.. seealso:: :py:func:`setAttribution()`
+.. seealso:: :py:func:`setAttribution`
 %End
 
     void setAttributionUrl( const QString &attribUrl );
@@ -276,7 +276,7 @@ Attribution indicates the provider of a layer or collection of layers.
 
 :return: the layer attribution URL
 
-.. seealso:: :py:func:`attributionUrl()`
+.. seealso:: :py:func:`attributionUrl`
 %End
 
     QString attributionUrl() const;
@@ -287,7 +287,7 @@ Attribution indicates the provider of a layer or collection of layers.
 
 :return: the layer attribution URL
 
-.. seealso:: :py:func:`setAttributionUrl()`
+.. seealso:: :py:func:`setAttributionUrl`
 %End
 
 
@@ -299,7 +299,7 @@ MetadataUrl is a a link to the detailed, standardized metadata about the data.
 
 :return: the layer metadata URL
 
-.. seealso:: :py:func:`metadataUrl()`
+.. seealso:: :py:func:`metadataUrl`
 %End
 
     QString metadataUrl() const;
@@ -310,7 +310,7 @@ MetadataUrl is a a link to the detailed, standardized metadata about the data.
 
 :return: the layer metadata URL
 
-.. seealso:: :py:func:`setMetadataUrl()`
+.. seealso:: :py:func:`setMetadataUrl`
 %End
 
     void setMetadataUrlType( const QString &metaUrlType );
@@ -321,7 +321,7 @@ MetadataUrlType indicates the standard to which the metadata complies.
 
 :return: the layer metadata type
 
-.. seealso:: :py:func:`metadataUrlType()`
+.. seealso:: :py:func:`metadataUrlType`
 %End
 
     QString metadataUrlType() const;
@@ -332,7 +332,7 @@ MetadataUrlType indicates the standard to which the metadata complies.
 
 :return: the layer metadata type
 
-.. seealso:: :py:func:`setMetadataUrlType()`
+.. seealso:: :py:func:`setMetadataUrlType`
 %End
 
     void setMetadataUrlFormat( const QString &metaUrlFormat );
@@ -343,7 +343,7 @@ MetadataUrlType indicates how the metadata is structured.
 
 :return: the layer metadata format
 
-.. seealso:: :py:func:`metadataUrlFormat()`
+.. seealso:: :py:func:`metadataUrlFormat`
 %End
 
     QString metadataUrlFormat() const;
@@ -354,7 +354,7 @@ MetadataUrlType indicates how the metadata is structured.
 
 :return: the layer metadata format
 
-.. seealso:: :py:func:`setMetadataUrlFormat()`
+.. seealso:: :py:func:`setMetadataUrlFormat`
 %End
 
     void setBlendMode( QPainter::CompositionMode blendMode );
@@ -363,14 +363,14 @@ Set the blending mode used for rendering a layer.
 
 :param blendMode: new blending mode
 
-.. seealso:: :py:func:`blendMode()`
+.. seealso:: :py:func:`blendMode`
 %End
 
     QPainter::CompositionMode blendMode() const;
 %Docstring
 Returns the current blending mode for a layer.
 
-.. seealso:: :py:func:`setBlendMode()`
+.. seealso:: :py:func:`setBlendMode`
 %End
 
     bool readOnly() const;
@@ -409,7 +409,7 @@ Gets a version of the internal layer definition that has sensitive
 bits removed (for example, the password). This function should
 be used when displaying the source name for general viewing.
 
-.. seealso:: :py:func:`source()`
+.. seealso:: :py:func:`source`
 %End
 
     QString source() const;
@@ -417,7 +417,7 @@ be used when displaying the source name for general viewing.
 Returns the source for the layer. This source may contain usernames, passwords
 and other sensitive information.
 
-.. seealso:: :py:func:`publicSource()`
+.. seealso:: :py:func:`publicSource`
 %End
 
     virtual QStringList subLayers() const;
@@ -502,7 +502,7 @@ Resolve references to other layers (kept as layer IDs after reading XML) into la
 %Docstring
 Returns list of all keys within custom properties. Properties are stored in a map and saved in project file.
 
-.. seealso:: :py:func:`customProperty()`
+.. seealso:: :py:func:`customProperty`
 
 .. versionadded:: 3.0
 %End
@@ -511,16 +511,16 @@ Returns list of all keys within custom properties. Properties are stored in a ma
 %Docstring
 Set a custom property for layer. Properties are stored in a map and saved in project file.
 
-.. seealso:: :py:func:`customProperty()`
+.. seealso:: :py:func:`customProperty`
 
-.. seealso:: :py:func:`removeCustomProperty()`
+.. seealso:: :py:func:`removeCustomProperty`
 %End
 
     QVariant customProperty( const QString &value, const QVariant &defaultValue = QVariant() ) const;
 %Docstring
 Read a custom property from layer. Properties are stored in a map and saved in project file.
 
-.. seealso:: :py:func:`setCustomProperty()`
+.. seealso:: :py:func:`setCustomProperty`
 %End
 
     void setCustomProperties( const QgsObjectCustomProperties &properties );
@@ -534,7 +534,7 @@ Set custom properties for layer. Current properties are dropped.
 %Docstring
 Remove a custom property from layer. Properties are stored in a map and saved in project file.
 
-.. seealso:: :py:func:`setCustomProperty()`
+.. seealso:: :py:func:`setCustomProperty`
 %End
 
     virtual QgsError error() const;
@@ -773,7 +773,7 @@ we did not manage to save the default style.
 
 :return: a QString with any status messages
 
-.. seealso:: :py:func:`loadNamedStyle()`
+.. seealso:: :py:func:`loadNamedStyle`
 %End
 
     virtual QString saveNamedStyle( const QString &uri, bool &resultFlag /Out/ );
@@ -792,7 +792,7 @@ we did not manage to save the default style.
 
 :return: a QString with any status messages
 
-.. seealso:: :py:func:`saveDefaultStyle()`
+.. seealso:: :py:func:`saveDefaultStyle`
 %End
 
     virtual QString saveSldStyle( const QString &uri, bool &resultFlag ) const;
@@ -805,7 +805,7 @@ the SLD file could not be generated
 
 :return: a string with any status or error messages
 
-.. seealso:: :py:func:`loadSldStyle()`
+.. seealso:: :py:func:`loadSldStyle`
 %End
 
     virtual QString loadSldStyle( const QString &uri, bool &resultFlag );
@@ -818,7 +818,7 @@ the SLD file could not be loaded
 
 :return: a string with any status or error messages
 
-.. seealso:: :py:func:`saveSldStyle()`
+.. seealso:: :py:func:`saveSldStyle`
 %End
 
     virtual bool readSld( const QDomNode &node, QString &errorMessage );
@@ -961,11 +961,11 @@ The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 ma
 
 .. versionadded:: 2.16
 
-.. seealso:: :py:func:`minimumScale()`
+.. seealso:: :py:func:`minimumScale`
 
-.. seealso:: :py:func:`maximumScale()`
+.. seealso:: :py:func:`maximumScale`
 
-.. seealso:: :py:func:`hasScaleBasedVisibility()`
+.. seealso:: :py:func:`hasScaleBasedVisibility`
 %End
 
     double minimumScale() const;
@@ -978,13 +978,13 @@ A scale of 0 indicates no minimum scale visibility.
 
    Scale based visibility is only used if setScaleBasedVisibility() is set to true.
 
-.. seealso:: :py:func:`setMinimumScale()`
+.. seealso:: :py:func:`setMinimumScale`
 
-.. seealso:: :py:func:`maximumScale()`
+.. seealso:: :py:func:`maximumScale`
 
-.. seealso:: :py:func:`hasScaleBasedVisibility()`
+.. seealso:: :py:func:`hasScaleBasedVisibility`
 
-.. seealso:: :py:func:`isInScaleRange()`
+.. seealso:: :py:func:`isInScaleRange`
 %End
 
     double maximumScale() const;
@@ -997,13 +997,13 @@ A scale of 0 indicates no maximum scale visibility.
 
    Scale based visibility is only used if setScaleBasedVisibility() is set to true.
 
-.. seealso:: :py:func:`setMaximumScale()`
+.. seealso:: :py:func:`setMaximumScale`
 
-.. seealso:: :py:func:`minimumScale()`
+.. seealso:: :py:func:`minimumScale`
 
-.. seealso:: :py:func:`hasScaleBasedVisibility()`
+.. seealso:: :py:func:`hasScaleBasedVisibility`
 
-.. seealso:: :py:func:`isInScaleRange()`
+.. seealso:: :py:func:`isInScaleRange`
 %End
 
     bool hasScaleBasedVisibility() const;
@@ -1012,13 +1012,13 @@ Returns whether scale based visibility is enabled for the layer.
 
 :return: true if scale based visibility is enabled
 
-.. seealso:: :py:func:`minimumScale()`
+.. seealso:: :py:func:`minimumScale`
 
-.. seealso:: :py:func:`maximumScale()`
+.. seealso:: :py:func:`maximumScale`
 
-.. seealso:: :py:func:`setScaleBasedVisibility()`
+.. seealso:: :py:func:`setScaleBasedVisibility`
 
-.. seealso:: :py:func:`isInScaleRange()`
+.. seealso:: :py:func:`isInScaleRange`
 %End
 
     bool hasAutoRefreshEnabled() const;
@@ -1027,9 +1027,9 @@ Returns true if auto refresh is enabled for the layer.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`autoRefreshInterval()`
+.. seealso:: :py:func:`autoRefreshInterval`
 
-.. seealso:: :py:func:`setAutoRefreshEnabled()`
+.. seealso:: :py:func:`setAutoRefreshEnabled`
 %End
 
     int autoRefreshInterval() const;
@@ -1039,9 +1039,9 @@ auto refresh is only active when hasAutoRefreshEnabled() is true.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`autoRefreshEnabled()`
+.. seealso:: :py:func:`autoRefreshEnabled`
 
-.. seealso:: :py:func:`setAutoRefreshInterval()`
+.. seealso:: :py:func:`setAutoRefreshInterval`
 %End
 
     void setAutoRefreshInterval( int interval );
@@ -1055,9 +1055,9 @@ canvas must be refreshed separately in order to view the refreshed layer.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`autoRefreshInterval()`
+.. seealso:: :py:func:`autoRefreshInterval`
 
-.. seealso:: :py:func:`setAutoRefreshEnabled()`
+.. seealso:: :py:func:`setAutoRefreshEnabled`
 %End
 
     void setAutoRefreshEnabled( bool enabled );
@@ -1066,9 +1066,9 @@ Sets whether auto refresh is enabled for the layer.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`hasAutoRefreshEnabled()`
+.. seealso:: :py:func:`hasAutoRefreshEnabled`
 
-.. seealso:: :py:func:`setAutoRefreshInterval()`
+.. seealso:: :py:func:`setAutoRefreshInterval`
 %End
 
     virtual const QgsLayerMetadata &metadata() const;
@@ -1077,9 +1077,9 @@ Returns a reference to the layer's metadata store.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`setMetadata()`
+.. seealso:: :py:func:`setMetadata`
 
-.. seealso:: :py:func:`metadataChanged()`
+.. seealso:: :py:func:`metadataChanged`
 %End
 
     virtual void setMetadata( const QgsLayerMetadata &metadata );
@@ -1088,9 +1088,9 @@ Sets the layer's ``metadata`` store.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`metadata()`
+.. seealso:: :py:func:`metadata`
 
-.. seealso:: :py:func:`metadataChanged()`
+.. seealso:: :py:func:`metadataChanged`
 %End
 
     virtual QString htmlMetadata() const;
@@ -1107,8 +1107,7 @@ Time stamp of data source in the moment when data/metadata were loaded by provid
 
     virtual QSet<QgsMapLayerDependency> dependencies() const;
 %Docstring
-
-.. seealso:: :py:func:`setDataDependencies`
+Gets the list of dependencies. This includes data dependencies set by the user (:py:func:`setDataDependencies`)
 as well as dependencies given by the provider
 
 :return: a set of QgsMapLayerDependency
@@ -1142,11 +1141,11 @@ A ``scale`` of 0 indicates no minimum scale visibility.
 
    Scale based visibility is only used if setScaleBasedVisibility() is set to true.
 
-.. seealso:: :py:func:`minimumScale()`
+.. seealso:: :py:func:`minimumScale`
 
-.. seealso:: :py:func:`setMaximumScale()`
+.. seealso:: :py:func:`setMaximumScale`
 
-.. seealso:: :py:func:`setScaleBasedVisibility()`
+.. seealso:: :py:func:`setScaleBasedVisibility`
 %End
 
     void setMaximumScale( double scale );
@@ -1159,11 +1158,11 @@ A ``scale`` of 0 indicates no maximum scale visibility.
 
    Scale based visibility is only used if setScaleBasedVisibility() is set to true.
 
-.. seealso:: :py:func:`maximumScale()`
+.. seealso:: :py:func:`maximumScale`
 
-.. seealso:: :py:func:`setMinimumScale()`
+.. seealso:: :py:func:`setMinimumScale`
 
-.. seealso:: :py:func:`setScaleBasedVisibility()`
+.. seealso:: :py:func:`setScaleBasedVisibility`
 %End
 
     void setScaleBasedVisibility( const bool enabled );
@@ -1202,7 +1201,7 @@ Triggers an emission of the styleChanged() signal.
 %Docstring
 Sets the list of dependencies.
 
-.. seealso:: :py:func:`dependencies()`
+.. seealso:: :py:func:`dependencies`
 
 :param layers: set of QgsMapLayerDependency. Only user-defined dependencies will be added
 
@@ -1274,7 +1273,7 @@ Signal emitted when the blend mode is changed, through :py:func:`QgsMapLayer.set
 %Docstring
 Signal emitted when renderer is changed.
 
-.. seealso:: :py:func:`styleChanged()`
+.. seealso:: :py:func:`styleChanged`
 %End
 
     void styleChanged();
@@ -1285,7 +1284,7 @@ mode or layer opacity changes.
 
 .. versionadded:: 2.16
 
-.. seealso:: :py:func:`rendererChanged()`
+.. seealso:: :py:func:`rendererChanged`
 %End
 
     void legendChanged();
@@ -1326,7 +1325,7 @@ other pieces of code for some cleanup if they use the layer.
 %Docstring
 Emitted when the auto refresh interval changes.
 
-.. seealso:: :py:func:`setAutoRefreshInterval()`
+.. seealso:: :py:func:`setAutoRefreshInterval`
 
 .. versionadded:: 3.0
 %End
@@ -1335,9 +1334,9 @@ Emitted when the auto refresh interval changes.
 %Docstring
 Emitted when the layer's metadata is changed.
 
-.. seealso:: :py:func:`setMetadata()`
+.. seealso:: :py:func:`setMetadata`
 
-.. seealso:: :py:func:`metadata()`
+.. seealso:: :py:func:`metadata`
 
 .. versionadded:: 3.0
 %End

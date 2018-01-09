@@ -58,11 +58,11 @@ Sets whether the associated field contains mixed values.
 
 :param mixed: whether field values are mixed
 
-.. seealso:: :py:func:`isMixed()`
+.. seealso:: :py:func:`isMixed`
 
-.. seealso:: :py:func:`setIsChanged()`
+.. seealso:: :py:func:`setIsChanged`
 
-.. seealso:: :py:func:`resetChanges()`
+.. seealso:: :py:func:`resetChanges`
 %End
 
     void setIsChanged( bool changed );
@@ -71,29 +71,29 @@ Sets whether the associated field has changed.
 
 :param changed: whether field has changed
 
-.. seealso:: :py:func:`isChanged()`
+.. seealso:: :py:func:`isChanged`
 
-.. seealso:: :py:func:`setIsMixed()`
+.. seealso:: :py:func:`setIsMixed`
 
-.. seealso:: :py:func:`resetChanges()`
+.. seealso:: :py:func:`resetChanges`
 %End
 
     void resetChanges();
 %Docstring
 Resets the changed state for the field.
 
-.. seealso:: :py:func:`setIsMixed()`
+.. seealso:: :py:func:`setIsMixed`
 
-.. seealso:: :py:func:`setIsChanged()`
+.. seealso:: :py:func:`setIsChanged`
 
-.. seealso:: :py:func:`changesCommitted()`
+.. seealso:: :py:func:`changesCommitted`
 %End
 
     void changesCommitted();
 %Docstring
 Called when field values have been changed and field now contains all the same values.
 
-.. seealso:: :py:func:`resetChanges()`
+.. seealso:: :py:func:`resetChanges`
 %End
 
   signals:

@@ -42,11 +42,11 @@ Constructor for QgsLayoutRenderContext.
 %Docstring
 Sets the combination of ``flags`` that will be used for rendering the layout.
 
-.. seealso:: :py:func:`setFlag()`
+.. seealso:: :py:func:`setFlag`
 
-.. seealso:: :py:func:`flags()`
+.. seealso:: :py:func:`flags`
 
-.. seealso:: :py:func:`testFlag()`
+.. seealso:: :py:func:`testFlag`
 %End
 
     void setFlag( const QgsLayoutRenderContext::Flag flag, const bool on = true );
@@ -54,33 +54,33 @@ Sets the combination of ``flags`` that will be used for rendering the layout.
 Enables or disables a particular rendering ``flag`` for the layout. Other existing
 flags are not affected.
 
-.. seealso:: :py:func:`setFlags()`
+.. seealso:: :py:func:`setFlags`
 
-.. seealso:: :py:func:`flags()`
+.. seealso:: :py:func:`flags`
 
-.. seealso:: :py:func:`testFlag()`
+.. seealso:: :py:func:`testFlag`
 %End
 
     QgsLayoutRenderContext::Flags flags() const;
 %Docstring
 Returns the current combination of flags used for rendering the layout.
 
-.. seealso:: :py:func:`setFlags()`
+.. seealso:: :py:func:`setFlags`
 
-.. seealso:: :py:func:`setFlag()`
+.. seealso:: :py:func:`setFlag`
 
-.. seealso:: :py:func:`testFlag()`
+.. seealso:: :py:func:`testFlag`
 %End
 
     bool testFlag( const Flag flag ) const;
 %Docstring
 Check whether a particular rendering ``flag`` is enabled for the layout.
 
-.. seealso:: :py:func:`setFlags()`
+.. seealso:: :py:func:`setFlags`
 
-.. seealso:: :py:func:`setFlag()`
+.. seealso:: :py:func:`setFlag`
 
-.. seealso:: :py:func:`flags()`
+.. seealso:: :py:func:`flags`
 %End
 
     QgsRenderContext::Flags renderContextFlags() const;
@@ -93,14 +93,14 @@ Returns the combination of render context flags matched to the layout context's 
 Sets the ``dpi`` for outputting the layout. This also sets the
 corresponding DPI for the context's measurementConverter().
 
-.. seealso:: :py:func:`dpi()`
+.. seealso:: :py:func:`dpi`
 %End
 
     double dpi() const;
 %Docstring
 Returns the ``dpi`` for outputting the layout.
 
-.. seealso:: :py:func:`setDpi()`
+.. seealso:: :py:func:`setDpi`
 %End
 
 
@@ -121,28 +121,28 @@ device (such as an image).
 %Docstring
 Returns true if the page grid should be drawn.
 
-.. seealso:: :py:func:`setGridVisible()`
+.. seealso:: :py:func:`setGridVisible`
 %End
 
     void setGridVisible( bool visible );
 %Docstring
 Sets whether the page grid should be ``visible``.
 
-.. seealso:: :py:func:`gridVisible()`
+.. seealso:: :py:func:`gridVisible`
 %End
 
     bool boundingBoxesVisible() const;
 %Docstring
 Returns true if the item bounding boxes should be drawn.
 
-.. seealso:: :py:func:`setBoundingBoxesVisible()`
+.. seealso:: :py:func:`setBoundingBoxesVisible`
 %End
 
     void setBoundingBoxesVisible( bool visible );
 %Docstring
 Sets whether the item bounding boxes should be ``visible``.
 
-.. seealso:: :py:func:`boundingBoxesVisible()`
+.. seealso:: :py:func:`boundingBoxesVisible`
 %End
 
     void setPagesVisible( bool visible );
@@ -151,7 +151,7 @@ Sets whether the page items should be ``visible`` in the layout. Removing
 them will prevent both display of the page boundaries in layout views and
 will also prevent them from being rendered in layout exports.
 
-.. seealso:: :py:func:`pagesVisible()`
+.. seealso:: :py:func:`pagesVisible`
 %End
 
     bool pagesVisible() const;
@@ -160,7 +160,7 @@ Returns whether the page items are be visible in the layout. This setting
 effects both display of the page boundaries in layout views and
 whether they will be rendered in layout exports.
 
-.. seealso:: :py:func:`setPagesVisible()`
+.. seealso:: :py:func:`setPagesVisible`
 %End
 
     void setCurrentExportLayer( int layer = -1 );
@@ -171,7 +171,7 @@ and customise their rendering based on the layer.
 
 If ``layer`` is -1, all item layers will be rendered.
 
-.. seealso:: :py:func:`currentExportLayer()`
+.. seealso:: :py:func:`currentExportLayer`
 %End
 
     int currentExportLayer() const;
@@ -182,7 +182,7 @@ and customise their rendering based on the layer.
 
 If ``layer`` is -1, all item layers should be rendered.
 
-.. seealso:: :py:func:`setCurrentExportLayer()`
+.. seealso:: :py:func:`setCurrentExportLayer`
 %End
 
   signals:
@@ -191,7 +191,7 @@ If ``layer`` is -1, all item layers should be rendered.
 %Docstring
 Emitted whenever the context's ``flags`` change.
 
-.. seealso:: :py:func:`setFlags()`
+.. seealso:: :py:func:`setFlags`
 %End
 
     void dpiChanged();

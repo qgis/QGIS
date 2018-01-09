@@ -98,7 +98,7 @@ Inserts a new child item. The child will be inserted at a position using an alph
 :param child: child item to insert. Ownership is transferred, and item parent will be set and relevant connections made.
 :param refresh: - set to true to refresh populated item, emitting relevant signals to the model
 
-.. seealso:: :py:func:`deleteChildItem()`
+.. seealso:: :py:func:`deleteChildItem`
 %End
 
     virtual void deleteChildItem( QgsDataItem *child );
@@ -107,7 +107,7 @@ Removes and deletes a child item, emitting relevant signals to the model.
 
 :param child: child to remove. Item must exist as a current child.
 
-.. seealso:: :py:func:`addChildItem()`
+.. seealso:: :py:func:`addChildItem`
 %End
 
     virtual QgsDataItem *removeChildItem( QgsDataItem *child ) /TransferBack/;
@@ -153,7 +153,7 @@ created menus is correctly handled by parenting them to the specified parent wid
 Returns whether the item accepts drag and dropped layers - e.g. for importing a dataset to a provider.
 Subclasses should override this and handleDrop() to accept dropped layers.
 
-.. seealso:: :py:func:`handleDrop()`
+.. seealso:: :py:func:`handleDrop`
 %End
 
     virtual bool handleDrop( const QMimeData * /*data*/, Qt::DropAction /*action*/ );
@@ -161,7 +161,7 @@ Subclasses should override this and handleDrop() to accept dropped layers.
 Attempts to process the mime data dropped on this item. Subclasses must override this and acceptDrop() if they
 accept dropped layers.
 
-.. seealso:: :py:func:`acceptDrop()`
+.. seealso:: :py:func:`acceptDrop`
 %End
 
     virtual bool handleDoubleClick();
@@ -179,7 +179,7 @@ Returns true if the item may be dragged.
 Default implementation returns false.
 A draggable item has to implement mimeUri() that will be used to pass data.
 
-.. seealso:: :py:func:`mimeUri()`
+.. seealso:: :py:func:`mimeUri`
 
 .. versionadded:: 3.0
 %End
@@ -189,7 +189,7 @@ A draggable item has to implement mimeUri() that will be used to pass data.
 Return mime URI for the data item.
 Items that return valid URI will be returned in mime data when dragging a selection from browser model.
 
-.. seealso:: :py:func:`hasDragEnabled()`
+.. seealso:: :py:func:`hasDragEnabled`
 
 .. versionadded:: 3.0
 %End
@@ -242,14 +242,14 @@ It does not add itself to parents children (mChildren) *
 %Docstring
 Returns the name of the item (the displayed text for the item).
 
-.. seealso:: :py:func:`setName()`
+.. seealso:: :py:func:`setName`
 %End
 
     void setName( const QString &name );
 %Docstring
 Sets the ``name`` of the item (the displayed text for the item).
 
-.. seealso:: :py:func:`name()`
+.. seealso:: :py:func:`name`
 %End
 
     QString path() const;
@@ -267,7 +267,7 @@ but setSortKey() can be used to set a custom sort key for the item.
 Alternatively subclasses can override this method to return a custom
 sort key.
 
-.. seealso:: :py:func:`setSortKey()`
+.. seealso:: :py:func:`setSortKey`
 
 .. versionadded:: 3.0
 %End
@@ -276,7 +276,7 @@ sort key.
 %Docstring
 Sets a custom sorting ``key`` for the item.
 
-.. seealso:: :py:func:`sortKey()`
+.. seealso:: :py:func:`sortKey`
 
 .. versionadded:: 3.0
 %End
@@ -651,14 +651,14 @@ Adds a new ``directory`` to the favorites group.
 If ``name`` is specified, it will be used as the favorite's name. Otherwise
 the name will be set to match ``directory``.
 
-.. seealso:: :py:func:`removeDirectory()`
+.. seealso:: :py:func:`removeDirectory`
 %End
 
     void removeDirectory( QgsDirectoryItem *item );
 %Docstring
 Removes an existing directory from the favorites group.
 
-.. seealso:: :py:func:`addDirectory()`
+.. seealso:: :py:func:`addDirectory`
 %End
 
     void renameFavorite( const QString &path, const QString &name );

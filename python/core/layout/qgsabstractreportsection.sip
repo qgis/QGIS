@@ -126,14 +126,14 @@ Resets the section, ready for a new iteration.
 %Docstring
 Called just before rendering the section's header.
 
-.. seealso:: :py:func:`prepareFooter()`
+.. seealso:: :py:func:`prepareFooter`
 %End
 
     virtual void prepareFooter();
 %Docstring
 Called just before rendering the section's footer.
 
-.. seealso:: :py:func:`prepareHeader()`
+.. seealso:: :py:func:`prepareHeader`
 %End
 
     virtual QgsLayout *nextBody( bool &ok /Out/ );
@@ -148,22 +148,22 @@ no body layout is required this iteration.
 %Docstring
 Returns true if the header for the section is enabled.
 
-.. seealso:: :py:func:`setHeaderEnabled()`
+.. seealso:: :py:func:`setHeaderEnabled`
 
-.. seealso:: :py:func:`header()`
+.. seealso:: :py:func:`header`
 
-.. seealso:: :py:func:`setHeader()`
+.. seealso:: :py:func:`setHeader`
 %End
 
     void setHeaderEnabled( bool enabled );
 %Docstring
 Sets whether the header for the section is ``enabled``.
 
-.. seealso:: :py:func:`headerEnabled()`
+.. seealso:: :py:func:`headerEnabled`
 
-.. seealso:: :py:func:`header()`
+.. seealso:: :py:func:`header`
 
-.. seealso:: :py:func:`setHeader()`
+.. seealso:: :py:func:`setHeader`
 %End
 
     QgsLayout *header();
@@ -171,11 +171,11 @@ Sets whether the header for the section is ``enabled``.
 Returns the header for the section. Note that the header is only
 included if headerEnabled() is true.
 
-.. seealso:: :py:func:`setHeaderEnabled()`
+.. seealso:: :py:func:`setHeaderEnabled`
 
-.. seealso:: :py:func:`headerEnabled()`
+.. seealso:: :py:func:`headerEnabled`
 
-.. seealso:: :py:func:`setHeader()`
+.. seealso:: :py:func:`setHeader`
 %End
 
     void setHeader( QgsLayout *header /Transfer/ );
@@ -184,33 +184,33 @@ Sets the ``header`` for the section. Note that the header is only
 included if headerEnabled() is true. Ownership of ``header``
 is transferred to the report section.
 
-.. seealso:: :py:func:`setHeaderEnabled()`
+.. seealso:: :py:func:`setHeaderEnabled`
 
-.. seealso:: :py:func:`headerEnabled()`
+.. seealso:: :py:func:`headerEnabled`
 
-.. seealso:: :py:func:`header()`
+.. seealso:: :py:func:`header`
 %End
 
     bool footerEnabled() const;
 %Docstring
 Returns true if the footer for the section is enabled.
 
-.. seealso:: :py:func:`setFooterEnabled()`
+.. seealso:: :py:func:`setFooterEnabled`
 
-.. seealso:: :py:func:`footer()`
+.. seealso:: :py:func:`footer`
 
-.. seealso:: :py:func:`setFooter()`
+.. seealso:: :py:func:`setFooter`
 %End
 
     void setFooterEnabled( bool enabled );
 %Docstring
 Sets whether the footer for the section is ``enabled``.
 
-.. seealso:: :py:func:`footerEnabled()`
+.. seealso:: :py:func:`footerEnabled`
 
-.. seealso:: :py:func:`footer()`
+.. seealso:: :py:func:`footer`
 
-.. seealso:: :py:func:`setFooter()`
+.. seealso:: :py:func:`setFooter`
 %End
 
     QgsLayout *footer();
@@ -218,11 +218,11 @@ Sets whether the footer for the section is ``enabled``.
 Returns the footer for the section. Note that the footer is only
 included if footerEnabled() is true.
 
-.. seealso:: :py:func:`setFooterEnabled()`
+.. seealso:: :py:func:`setFooterEnabled`
 
-.. seealso:: :py:func:`footerEnabled()`
+.. seealso:: :py:func:`footerEnabled`
 
-.. seealso:: :py:func:`setFooter()`
+.. seealso:: :py:func:`setFooter`
 %End
 
     void setFooter( QgsLayout *footer /Transfer/ );
@@ -231,11 +231,11 @@ Sets the ``footer`` for the section. Note that the footer is only
 included if footerEnabled() is true. Ownership of ``footer``
 is transferred to the report section.
 
-.. seealso:: :py:func:`setFooterEnabled()`
+.. seealso:: :py:func:`setFooterEnabled`
 
-.. seealso:: :py:func:`footerEnabled()`
+.. seealso:: :py:func:`footerEnabled`
 
-.. seealso:: :py:func:`footer()`
+.. seealso:: :py:func:`footer`
 %End
 
     int childCount() const;
@@ -243,7 +243,7 @@ is transferred to the report section.
 Return the number of child sections for this report section. The child
 sections form the body of the report section.
 
-.. seealso:: :py:func:`children()`
+.. seealso:: :py:func:`children`
 %End
 
     int row() const;
@@ -256,82 +256,82 @@ Returns the row number of the section within it's parent section.
 Return all child sections for this report section. The child
 sections form the body of the report section.
 
-.. seealso:: :py:func:`childCount()`
+.. seealso:: :py:func:`childCount`
 
-.. seealso:: :py:func:`child()`
+.. seealso:: :py:func:`child`
 
-.. seealso:: :py:func:`appendChild()`
+.. seealso:: :py:func:`appendChild`
 
-.. seealso:: :py:func:`insertChild()`
+.. seealso:: :py:func:`insertChild`
 
-.. seealso:: :py:func:`removeChild()`
+.. seealso:: :py:func:`removeChild`
 %End
 
     QgsAbstractReportSection *childSection( int index );
 %Docstring
 Returns the child section at the specified ``index``.
 
-.. seealso:: :py:func:`children()`
+.. seealso:: :py:func:`children`
 %End
 
     void appendChild( QgsAbstractReportSection *section /Transfer/ );
 %Docstring
 Adds a child ``section``, transferring ownership of the section to this section.
 
-.. seealso:: :py:func:`children()`
+.. seealso:: :py:func:`children`
 
-.. seealso:: :py:func:`insertChild()`
+.. seealso:: :py:func:`insertChild`
 %End
 
     void insertChild( int index, QgsAbstractReportSection *section /Transfer/ );
 %Docstring
 Inserts a child ``section`` at the specified ``index``, transferring ownership of the section to this section.
 
-.. seealso:: :py:func:`children()`
+.. seealso:: :py:func:`children`
 
-.. seealso:: :py:func:`appendChild()`
+.. seealso:: :py:func:`appendChild`
 %End
 
     void removeChild( QgsAbstractReportSection *section );
 %Docstring
 Removes a child ``section``, deleting it.
 
-.. seealso:: :py:func:`children()`
+.. seealso:: :py:func:`children`
 %End
 
     void removeChildAt( int index );
 %Docstring
 Removes the child section at the specified ``index``, deleting it.
 
-.. seealso:: :py:func:`children()`
+.. seealso:: :py:func:`children`
 %End
 
     void setContext( const QgsReportSectionContext &context );
 %Docstring
 Sets the current ``context`` for this section.
 
-.. seealso:: :py:func:`context()`
+.. seealso:: :py:func:`context`
 %End
 
     const QgsReportSectionContext &context() const;
 %Docstring
 Returns the current context for this section.
 
-.. seealso:: :py:func:`setContext()`
+.. seealso:: :py:func:`setContext`
 %End
 
     bool writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const;
 %Docstring
 Stores the section state in a DOM element.
 
-.. seealso:: :py:func:`readXml()`
+.. seealso:: :py:func:`readXml`
 %End
 
     bool readXml( const QDomElement &sectionElement, const QDomDocument &document, const QgsReadWriteContext &context );
 %Docstring
 Sets the item state from a DOM element.
 
-.. seealso:: :py:func:`writeXml()`
+.. seealso:: :py:func:`writeXml`
 %End
 
   protected:
@@ -360,18 +360,18 @@ Sets the ``parent`` report section.
 %Docstring
 Stores section state within an XML DOM element.
 
-.. seealso:: :py:func:`writeXml()`
+.. seealso:: :py:func:`writeXml`
 
-.. seealso:: :py:func:`readPropertiesFromElement()`
+.. seealso:: :py:func:`readPropertiesFromElement`
 %End
 
     virtual bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context );
 %Docstring
 Sets section state from a DOM element.
 
-.. seealso:: :py:func:`writePropertiesToElement()`
+.. seealso:: :py:func:`writePropertiesToElement`
 
-.. seealso:: :py:func:`readXml()`
+.. seealso:: :py:func:`readXml`
 %End
 
   private:

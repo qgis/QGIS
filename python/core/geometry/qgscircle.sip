@@ -139,9 +139,9 @@ If the points are colinear an empty circle is returned.
 %Docstring
 Inherited method. Use setRadius instead.
 
-.. seealso:: :py:func:`radius()`
+.. seealso:: :py:func:`radius`
 
-.. seealso:: :py:func:`setRadius()`
+.. seealso:: :py:func:`setRadius`
 %End
 
     virtual void setSemiMinorAxis( const double semiMinorAxis );
@@ -149,9 +149,9 @@ Inherited method. Use setRadius instead.
 %Docstring
 Inherited method. Use setRadius instead.
 
-.. seealso:: :py:func:`radius()`
+.. seealso:: :py:func:`radius`
 
-.. seealso:: :py:func:`setRadius()`
+.. seealso:: :py:func:`setRadius`
 %End
 
     double radius() const;
@@ -170,7 +170,7 @@ They are oriented and started from North.
 
 :return: quadrants defined by four points.
 
-.. seealso:: :py:func:`quadrant()`
+.. seealso:: :py:func:`quadrant`
 %End
 
     QgsCircularString *toCircularString( bool oriented = false ) const;

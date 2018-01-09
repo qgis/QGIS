@@ -102,30 +102,30 @@ An ellipse is empty if axes are equal to 0
 %Docstring
 Returns the center point.
 
-.. seealso:: :py:func:`setCenter()`
+.. seealso:: :py:func:`setCenter`
 
-.. seealso:: :py:func:`rcenter()`
+.. seealso:: :py:func:`rcenter`
 %End
 
     double semiMajorAxis() const;
 %Docstring
 Returns the semi-major axis.
 
-.. seealso:: :py:func:`setSemiMajorAxis()`
+.. seealso:: :py:func:`setSemiMajorAxis`
 %End
 
     double semiMinorAxis() const;
 %Docstring
 Returns the semi-minor axis.
 
-.. seealso:: :py:func:`setSemiMinorAxis()`
+.. seealso:: :py:func:`setSemiMinorAxis`
 %End
 
     double azimuth() const;
 %Docstring
 Returns the azimuth.
 
-.. seealso:: :py:func:`setAzimuth()`
+.. seealso:: :py:func:`setAzimuth`
 %End
 
 
@@ -133,39 +133,39 @@ Returns the azimuth.
 %Docstring
 Sets the center point.
 
-.. seealso:: :py:func:`center()`
+.. seealso:: :py:func:`center`
 
-.. seealso:: :py:func:`rcenter()`
+.. seealso:: :py:func:`rcenter`
 %End
 
     virtual void setSemiMajorAxis( const double semiMajorAxis );
 %Docstring
 Sets the semi-major axis.
 
-.. seealso:: :py:func:`semiMajorAxis()`
+.. seealso:: :py:func:`semiMajorAxis`
 %End
 
     virtual void setSemiMinorAxis( const double semiMinorAxis );
 %Docstring
 Sets the semi-minor axis.
 
-.. seealso:: :py:func:`semiMinorAxis()`
+.. seealso:: :py:func:`semiMinorAxis`
 %End
 
     void setAzimuth( const double azimuth );
 %Docstring
 Sets the azimuth (orientation).
 
-.. seealso:: :py:func:`azimuth()`
+.. seealso:: :py:func:`azimuth`
 %End
 
     virtual double focusDistance() const;
 %Docstring
 The distance between the center and each foci.
 
-.. seealso:: :py:func:`fromFoci()`
+.. seealso:: :py:func:`fromFoci`
 
-.. seealso:: :py:func:`foci()`
+.. seealso:: :py:func:`foci`
 
 :return: The distance between the center and each foci.
 %End
@@ -174,9 +174,9 @@ The distance between the center and each foci.
 %Docstring
 Two foci of the ellipse. The axes are oriented by the azimuth and are on the semi-major axis.
 
-.. seealso:: :py:func:`fromFoci()`
+.. seealso:: :py:func:`fromFoci`
 
-.. seealso:: :py:func:`focusDistance()`
+.. seealso:: :py:func:`focusDistance`
 
 :return: the two foci.
 %End

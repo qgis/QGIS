@@ -42,14 +42,14 @@ the scene with the rulers.
 %Docstring
 Returns the current layout view associated with the ruler.
 
-.. seealso:: :py:func:`setLayoutView()`
+.. seealso:: :py:func:`setLayoutView`
 %End
 
     void setLayoutView( QgsLayoutView *view );
 %Docstring
 Sets the current layout ``view`` to synchronize the ruler with.
 
-.. seealso:: :py:func:`layoutView()`
+.. seealso:: :py:func:`layoutView`
 %End
 
     int rulerSize() const;

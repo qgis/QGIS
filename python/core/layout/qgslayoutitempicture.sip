@@ -68,7 +68,7 @@ Sets the source ``path`` of the image (may be svg or a raster format). Data defi
 picture source may override this value. The path can either be a local path
 or a remote (http) path.
 
-.. seealso:: :py:func:`picturePath()`
+.. seealso:: :py:func:`picturePath`
 %End
 
     QString picturePath() const;
@@ -78,9 +78,9 @@ this value. The path can either be a local path or a remote (http) path.
 
 :return: path for the source image
 
-.. seealso:: :py:func:`usePictureExpression()`
+.. seealso:: :py:func:`usePictureExpression`
 
-.. seealso:: :py:func:`setPicturePath()`
+.. seealso:: :py:func:`setPicturePath`
 %End
 
     double pictureRotation() const;
@@ -88,9 +88,9 @@ this value. The path can either be a local path or a remote (http) path.
 Returns the rotation used for drawing the picture within the item's frame,
 in degrees clockwise.
 
-.. seealso:: :py:func:`setPictureRotation()`
+.. seealso:: :py:func:`setPictureRotation`
 
-.. seealso:: :py:func:`rotationMap()`
+.. seealso:: :py:func:`rotationMap`
 %End
 
     void setLinkedMap( QgsLayoutItemMap *map );
@@ -101,9 +101,9 @@ If this is set then the picture will be rotated by the same
 amount as the specified map object. This is useful especially for
 syncing north arrows with a map item.
 
-.. seealso:: :py:func:`setPictureRotation()`
+.. seealso:: :py:func:`setPictureRotation`
 
-.. seealso:: :py:func:`linkedMap()`
+.. seealso:: :py:func:`linkedMap`
 %End
 
     QgsLayoutItemMap *linkedMap() const;
@@ -112,43 +112,43 @@ Returns the linked rotation map, if set. An None means map rotation is
 disabled.  If this is set then the picture is rotated by the same amount
 as the specified map object.
 
-.. seealso:: :py:func:`setLinkedMap()`
+.. seealso:: :py:func:`setLinkedMap`
 %End
 
     NorthMode northMode() const;
 %Docstring
 Returns the mode used to align the picture to a map's North.
 
-.. seealso:: :py:func:`setNorthMode()`
+.. seealso:: :py:func:`setNorthMode`
 
-.. seealso:: :py:func:`northOffset()`
+.. seealso:: :py:func:`northOffset`
 %End
 
     void setNorthMode( NorthMode mode );
 %Docstring
 Sets the ``mode`` used to align the picture to a map's North.
 
-.. seealso:: :py:func:`northMode()`
+.. seealso:: :py:func:`northMode`
 
-.. seealso:: :py:func:`setNorthOffset()`
+.. seealso:: :py:func:`setNorthOffset`
 %End
 
     double northOffset() const;
 %Docstring
 Returns the offset added to the picture's rotation from a map's North.
 
-.. seealso:: :py:func:`setNorthOffset()`
+.. seealso:: :py:func:`setNorthOffset`
 
-.. seealso:: :py:func:`northMode()`
+.. seealso:: :py:func:`northMode`
 %End
 
     void setNorthOffset( double offset );
 %Docstring
 Sets the ``offset`` added to the picture's rotation from a map's North.
 
-.. seealso:: :py:func:`northOffset()`
+.. seealso:: :py:func:`northOffset`
 
-.. seealso:: :py:func:`setNorthMode()`
+.. seealso:: :py:func:`setNorthMode`
 %End
 
     ResizeMode resizeMode() const;
@@ -156,7 +156,7 @@ Sets the ``offset`` added to the picture's rotation from a map's North.
 Returns the resize mode used for drawing the picture within the composer
 item's frame.
 
-.. seealso:: :py:func:`setResizeMode()`
+.. seealso:: :py:func:`setResizeMode`
 %End
 
     void setPictureAnchor( QgsLayoutItem::ReferencePoint anchor );
@@ -164,7 +164,7 @@ item's frame.
 Sets the picture's ``anchor`` point, which controls how it is placed
 within the picture item's frame.
 
-.. seealso:: :py:func:`pictureAnchor()`
+.. seealso:: :py:func:`pictureAnchor`
 %End
 
     QgsLayoutItem::ReferencePoint pictureAnchor() const;
@@ -172,16 +172,16 @@ within the picture item's frame.
 Returns the picture's current anchor, which controls how it is placed
 within the picture item's frame.
 
-.. seealso:: :py:func:`setPictureAnchor()`
+.. seealso:: :py:func:`setPictureAnchor`
 %End
 
     QColor svgFillColor() const;
 %Docstring
 Returns the fill color used for parametrized SVG files.
 
-.. seealso:: :py:func:`setSvgFillColor()`
+.. seealso:: :py:func:`setSvgFillColor`
 
-.. seealso:: :py:func:`svgStrokeColor()`
+.. seealso:: :py:func:`svgStrokeColor`
 %End
 
     void setSvgFillColor( const QColor &color );
@@ -193,18 +193,18 @@ Sets the fill ``color`` used for parametrized SVG files.
    This setting only has an effect on parametrized SVG files, and is ignored for
 non-parametrized SVG files.
 
-.. seealso:: :py:func:`svgFillColor()`
+.. seealso:: :py:func:`svgFillColor`
 
-.. seealso:: :py:func:`setSvgStrokeColor()`
+.. seealso:: :py:func:`setSvgStrokeColor`
 %End
 
     QColor svgStrokeColor() const;
 %Docstring
 Returns the stroke color used for parametrized SVG files.
 
-.. seealso:: :py:func:`setSvgStrokeColor()`
+.. seealso:: :py:func:`setSvgStrokeColor`
 
-.. seealso:: :py:func:`svgFillColor()`
+.. seealso:: :py:func:`svgFillColor`
 %End
 
     void setSvgStrokeColor( const QColor &color );
@@ -218,18 +218,18 @@ Sets the stroke ``color`` used for parametrized SVG files.
    This setting only has an effect on parametrized SVG files, and is ignored for
 non-parametrized SVG files.
 
-.. seealso:: :py:func:`svgStrokelColor()`
+.. seealso:: :py:func:`svgStrokelColor`
 
-.. seealso:: :py:func:`setSvgFillColor()`
+.. seealso:: :py:func:`setSvgFillColor`
 %End
 
     double svgStrokeWidth() const;
 %Docstring
 Returns the stroke width (in layout units) used for parametrized SVG files.
 
-.. seealso:: :py:func:`setSvgStrokeWidth()`
+.. seealso:: :py:func:`setSvgStrokeWidth`
 
-.. seealso:: :py:func:`svgStrokeColor()`
+.. seealso:: :py:func:`svgStrokeColor`
 %End
 
     void setSvgStrokeWidth( double width );
@@ -241,9 +241,9 @@ Sets the stroke ``width`` (in layout units) used for parametrized SVG files.
    This setting only has an effect on parametrized SVG files, and is ignored for
 non-parametrized SVG files.
 
-.. seealso:: :py:func:`svgStrokeWidth()`
+.. seealso:: :py:func:`svgStrokeWidth`
 
-.. seealso:: :py:func:`setSvgStrokeColor()`
+.. seealso:: :py:func:`setSvgStrokeColor`
 %End
 
     Format mode() const;
@@ -261,7 +261,7 @@ Returns the current picture mode (image format).
 Sets the picture ``rotation`` within the item bounds, in degrees clockwise. This does not affect
 the item's frame, only the way the picture is drawn within the item.
 
-.. seealso:: :py:func:`pictureRotation()`
+.. seealso:: :py:func:`pictureRotation`
 %End
 
     void setResizeMode( ResizeMode mode );

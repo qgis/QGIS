@@ -46,7 +46,7 @@ Type of custom URI recognized by the handler. This must match
 the URI entry's providerKey in order for handleCustomUriDrop()
 to be called.
 
-.. seealso:: :py:func:`handleCustomUriDrop()`
+.. seealso:: :py:func:`handleCustomUriDrop`
 %End
 
     virtual void handleCustomUriDrop( const QgsMimeDataUtils::Uri &uri ) const;
@@ -57,7 +57,7 @@ In order for handleCustomUriDrop() to be called, subclasses must
 also implement customUriProviderKey() to indicate the providerKey
 value which the handler accepts.
 
-.. seealso:: :py:func:`customUriProviderKey()`
+.. seealso:: :py:func:`customUriProviderKey`
 %End
 
     virtual void handleMimeData( const QMimeData *data );

@@ -91,9 +91,9 @@ the sizes of all frames can be recalculated by calling recalculateFrameRects().
 the frame size is not fixed in that direction and frames can have variable width
 or height accordingly.
 
-.. seealso:: :py:func:`minFrameSize()`
+.. seealso:: :py:func:`minFrameSize`
 
-.. seealso:: :py:func:`recalculateFrameRects()`
+.. seealso:: :py:func:`recalculateFrameRects`
 %End
 
     virtual QSizeF minFrameSize( const int frameIndex = -1 ) const;
@@ -107,9 +107,9 @@ recalculateFrameRects().
 :return: minimum size for frame. If the size has a width or height of 0, then
 the frame size has no minimum in that direction.
 
-.. seealso:: :py:func:`fixedFrameSize()`
+.. seealso:: :py:func:`fixedFrameSize`
 
-.. seealso:: :py:func:`recalculateFrameRects()`
+.. seealso:: :py:func:`recalculateFrameRects`
 %End
 
     virtual void render( QgsRenderContext &context, const QRectF &renderExtent, int frameIndex,
@@ -129,7 +129,7 @@ Adds a ``frame`` to the multiframe.
 
 If ``recalcFrameSizes`` is set to true, then a recalculation of all existing frame sizes will be forced.
 
-.. seealso:: :py:func:`removeFrame()`
+.. seealso:: :py:func:`removeFrame`
 %End
 
     virtual double findNearbyPageBreak( double yPos );
@@ -150,30 +150,30 @@ layout too.
 If ``removeEmptyPages`` is set to true, then pages which are empty after the frame is removed will
 also be removed from the layout.
 
-.. seealso:: :py:func:`addFrame()`
+.. seealso:: :py:func:`addFrame`
 
-.. seealso:: :py:func:`deleteFrames()`
+.. seealso:: :py:func:`deleteFrames`
 %End
 
     void deleteFrames();
 %Docstring
 Removes and deletes all child frames.
 
-.. seealso:: :py:func:`removeFrame()`
+.. seealso:: :py:func:`removeFrame`
 %End
 
     void setResizeMode( ResizeMode mode );
 %Docstring
 Sets the resize ``mode`` for the multiframe, and recalculates frame sizes to match.
 
-.. seealso:: :py:func:`resizeMode()`
+.. seealso:: :py:func:`resizeMode`
 %End
 
     ResizeMode resizeMode() const;
 %Docstring
 Returns the resize mode for the multiframe.
 
-.. seealso:: :py:func:`setResizeMode()`
+.. seealso:: :py:func:`setResizeMode`
 %End
 
     bool writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context, bool ignoreFrames = false ) const;
@@ -185,7 +185,7 @@ Stores the multiframe state in a DOM element.
 :param context: read write context
 :param ignoreFrames: set to false to avoid writing state information about child frames into DOM
 
-.. seealso:: :py:func:`readXml()`
+.. seealso:: :py:func:`readXml`
 %End
 
     bool readXml( const QDomElement &itemElement, const QDomDocument &document, const QgsReadWriteContext &context, bool ignoreFrames = false );
@@ -197,28 +197,28 @@ Sets the item state from a DOM element.
 :param context: read write context
 :param ignoreFrames: set to false to avoid read state information about child frames from DOM
 
-.. seealso:: :py:func:`writeXml()`
+.. seealso:: :py:func:`writeXml`
 %End
 
     QList<QgsLayoutFrame *> frames() const;
 %Docstring
 Returns a list of all child frames for this multiframe.
 
-.. seealso:: :py:func:`frameCount()`
+.. seealso:: :py:func:`frameCount`
 %End
 
     int frameCount() const;
 %Docstring
 Returns the number of frames associated with this multiframe.
 
-.. seealso:: :py:func:`frames()`
+.. seealso:: :py:func:`frames`
 %End
 
     QgsLayoutFrame *frame( int index ) const;
 %Docstring
 Returns the child frame at a specified ``index`` from the multiframe.
 
-.. seealso:: :py:func:`frameIndex()`
+.. seealso:: :py:func:`frameIndex`
 %End
 
     int frameIndex( QgsLayoutFrame *frame ) const;
@@ -227,7 +227,7 @@ Returns the index of a ``frame`` within the multiframe.
 
 :return: index for frame if found, -1 if frame not found in multiframe
 
-.. seealso:: :py:func:`frame()`
+.. seealso:: :py:func:`frame`
 %End
 
     QgsLayoutFrame *createNewFrame( QgsLayoutFrame *currentFrame, QPointF pos, QSizeF size );
@@ -255,27 +255,27 @@ The ``commandText`` should be a capitalized, imperative tense description (e.g. 
 If specified, multiple consecutive commands for this item with the same ``command`` will
 be collapsed into a single undo command in the layout history.
 
-.. seealso:: :py:func:`endCommand()`
+.. seealso:: :py:func:`endCommand`
 
-.. seealso:: :py:func:`cancelCommand()`
+.. seealso:: :py:func:`cancelCommand`
 %End
 
     void endCommand();
 %Docstring
 Completes the current item command and push it onto the layout's undo stack.
 
-.. seealso:: :py:func:`beginCommand()`
+.. seealso:: :py:func:`beginCommand`
 
-.. seealso:: :py:func:`cancelCommand()`
+.. seealso:: :py:func:`cancelCommand`
 %End
 
     void cancelCommand();
 %Docstring
 Cancels the current item command and discards it.
 
-.. seealso:: :py:func:`beginCommand()`
+.. seealso:: :py:func:`beginCommand`
 
-.. seealso:: :py:func:`endCommand()`
+.. seealso:: :py:func:`endCommand`
 %End
 
     virtual void finalizeRestoreFromXml();
@@ -286,7 +286,7 @@ such as connecting to signals emitted by other items, which may not have existed
 at the time readXml() was called. E.g. a scalebar can use this to connect to its linked
 map item after restoration from XML.
 
-.. seealso:: :py:func:`readXml()`
+.. seealso:: :py:func:`readXml`
 %End
 
   public slots:
@@ -309,7 +309,7 @@ component frames. If the resize mode is set to anything but UseExistingFrames th
 this may cause new frames to be added or frames to be removed, in order to fit
 the current size of the multiframe's content.
 
-.. seealso:: :py:func:`recalculateFrameRects()`
+.. seealso:: :py:func:`recalculateFrameRects`
 %End
 
     void recalculateFrameRects();
@@ -318,9 +318,9 @@ Forces a recalculation of all the associated frame's scene rectangles. This
 method is useful for multiframes which implement a minFrameSize() or
 fixedFrameSize() method.
 
-.. seealso:: :py:func:`minFrameSize()`
+.. seealso:: :py:func:`minFrameSize`
 
-.. seealso:: :py:func:`fixedFrameSize()`
+.. seealso:: :py:func:`fixedFrameSize`
 
 .. seealso:: :py:func:`recalculateFrameSizes`
 %End
@@ -357,9 +357,9 @@ Stores multiframe state within an XML DOM element.
 :param document: DOM document
 :param context: read write context
 
-.. seealso:: :py:func:`writeXml()`
+.. seealso:: :py:func:`writeXml`
 
-.. seealso:: :py:func:`readPropertiesFromElement()`
+.. seealso:: :py:func:`readPropertiesFromElement`
 %End
 
     virtual bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context );
@@ -370,7 +370,7 @@ Sets multiframe state from a DOM element.
 :param document: DOM document
 :param context: read write context
 
-.. seealso:: :py:func:`writePropertiesToElement()`
+.. seealso:: :py:func:`writePropertiesToElement`
 
 Note that item subclasses should not rely on all other items being present in the
 layout at the time this method is called. Instead, any connections and links to
@@ -378,7 +378,7 @@ other items must be made in the finalizeRestoreFromXml() method. E.g. when resto
 a scalebar, the connection to the linked map's signals should be implemented
 in finalizeRestoreFromXml(), not readPropertiesFromElement().
 
-.. seealso:: :py:func:`readXml()`
+.. seealso:: :py:func:`readXml`
 %End
 
 

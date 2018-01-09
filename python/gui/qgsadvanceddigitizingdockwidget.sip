@@ -93,7 +93,7 @@ automatically cleared after a new point is added.
 
 .. versionadded:: 2.16
 
-.. seealso:: :py:func:`setRepeatingLock()`
+.. seealso:: :py:func:`setRepeatingLock`
 %End
 
         bool relative() const;
@@ -125,7 +125,7 @@ automatically cleared after a new point is added.
 
 .. versionadded:: 2.16
 
-.. seealso:: :py:func:`isRepeatingLock()`
+.. seealso:: :py:func:`isRepeatingLock`
 %End
 
         void setRelative( bool relative );

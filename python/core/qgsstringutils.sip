@@ -71,14 +71,14 @@ Processes a given input string, applying any valid replacements which should be 
 %Docstring
 Returns a map of the replacement properties.
 
-.. seealso:: :py:func:`fromProperties()`
+.. seealso:: :py:func:`fromProperties`
 %End
 
     static QgsStringReplacement fromProperties( const QgsStringMap &properties );
 %Docstring
 Creates a new QgsStringReplacement from an encoded properties map.
 
-.. seealso:: :py:func:`properties()`
+.. seealso:: :py:func:`properties`
 %End
 
 };
@@ -109,7 +109,7 @@ Constructor for QgsStringReplacementCollection
 %Docstring
 Returns the list of string replacements in this collection.
 
-.. seealso:: :py:func:`setReplacements()`
+.. seealso:: :py:func:`setReplacements`
 %End
 
     void setReplacements( const QList< QgsStringReplacement > &replacements );
@@ -119,7 +119,7 @@ Sets the list of string replacements in this collection.
 :param replacements: list of string replacements to apply. Replacements are applied in the
 order they are specified here.
 
-.. seealso:: :py:func:`replacements()`
+.. seealso:: :py:func:`replacements`
 %End
 
     QString process( const QString &input ) const;
@@ -140,7 +140,7 @@ Writes the collection state to an XML element.
 :param elem: target DOM element
 :param doc: DOM document
 
-.. seealso:: :py:func:`readXml()`
+.. seealso:: :py:func:`readXml`
 %End
 
     void readXml( const QDomElement &elem );
@@ -149,7 +149,7 @@ Reads the collection state from an XML element.
 
 :param elem: DOM element
 
-.. seealso:: :py:func:`writeXml()`
+.. seealso:: :py:func:`writeXml`
 %End
 
 };

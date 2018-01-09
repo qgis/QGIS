@@ -34,14 +34,14 @@ Constructor for :py:class:`QgsLayoutNewItemPropertiesDialog`.
 %Docstring
 Sets the item ``position`` to show in the dialog.
 
-.. seealso:: :py:func:`itemPosition()`
+.. seealso:: :py:func:`itemPosition`
 %End
 
     QgsLayoutPoint itemPosition() const;
 %Docstring
 Returns the current item position defined by the dialog.
 
-.. seealso:: :py:func:`setItemPosition()`
+.. seealso:: :py:func:`setItemPosition`
 %End
 
     int page() const;
@@ -53,28 +53,28 @@ Returns the page number for the new item.
 %Docstring
 Sets the item ``size`` to show in the dialog.
 
-.. seealso:: :py:func:`itemSize()`
+.. seealso:: :py:func:`itemSize`
 %End
 
     QgsLayoutSize itemSize() const;
 %Docstring
 Returns the item size defined by the dialog.
 
-.. seealso:: :py:func:`setItemSize()`
+.. seealso:: :py:func:`setItemSize`
 %End
 
     QgsLayoutItem::ReferencePoint referencePoint() const;
 %Docstring
 Returns the item reference point defined by the dialog.
 
-.. seealso:: :py:func:`setReferencePoint()`
+.. seealso:: :py:func:`setReferencePoint`
 %End
 
     void setReferencePoint( QgsLayoutItem::ReferencePoint point );
 %Docstring
 Sets the item reference ``point`` defined to show in the dialog.
 
-.. seealso:: :py:func:`referencePoint()`
+.. seealso:: :py:func:`referencePoint`
 %End
 
     void setLayout( QgsLayout *layout );

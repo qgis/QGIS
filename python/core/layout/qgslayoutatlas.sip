@@ -49,28 +49,28 @@ Constructor for new QgsLayoutAtlas.
 %Docstring
 Returns whether the atlas generation is enabled
 
-.. seealso:: :py:func:`setEnabled()`
+.. seealso:: :py:func:`setEnabled`
 %End
 
     void setEnabled( bool enabled );
 %Docstring
 Sets whether the atlas is ``enabled``.
 
-.. seealso:: :py:func:`enabled()`
+.. seealso:: :py:func:`enabled`
 %End
 
     bool hideCoverage() const;
 %Docstring
 Returns true if the atlas is set to hide the coverage layer.
 
-.. seealso:: :py:func:`setHideCoverage()`
+.. seealso:: :py:func:`setHideCoverage`
 %End
 
     void setHideCoverage( bool hide );
 %Docstring
 Sets whether the coverage layer should be hidden in map items in the layouts.
 
-.. seealso:: :py:func:`hideCoverage()`
+.. seealso:: :py:func:`hideCoverage`
 %End
 
     QString filenameExpression() const;
@@ -78,9 +78,9 @@ Sets whether the coverage layer should be hidden in map items in the layouts.
 Returns the filename expression used for generating output filenames for each
 atlas page.
 
-.. seealso:: :py:func:`setFilenameExpression()`
+.. seealso:: :py:func:`setFilenameExpression`
 
-.. seealso:: :py:func:`currentFilename()`
+.. seealso:: :py:func:`currentFilename`
 %End
 
     bool setFilenameExpression( const QString &expression, QString &errorString /Out/ );
@@ -90,77 +90,77 @@ atlas page.
 If an invalid expression is passed, false will be returned and ``errorString``
 will be set to the expression error.
 
-.. seealso:: :py:func:`filenameExpression()`
+.. seealso:: :py:func:`filenameExpression`
 
-.. seealso:: :py:func:`currentFilename()`
+.. seealso:: :py:func:`currentFilename`
 %End
 
     QString currentFilename() const;
 %Docstring
 Returns the current feature filename.
 
-.. seealso:: :py:func:`filenameExpression()`
+.. seealso:: :py:func:`filenameExpression`
 
-.. seealso:: :py:func:`setFilenameExpression()`
+.. seealso:: :py:func:`setFilenameExpression`
 %End
 
     QgsVectorLayer *coverageLayer() const;
 %Docstring
 Returns the coverage layer used for the atlas features.
 
-.. seealso:: :py:func:`setCoverageLayer()`
+.. seealso:: :py:func:`setCoverageLayer`
 %End
 
     void setCoverageLayer( QgsVectorLayer *layer );
 %Docstring
 Sets the coverage ``layer`` to use for the atlas features.
 
-.. seealso:: :py:func:`coverageLayer()`
+.. seealso:: :py:func:`coverageLayer`
 %End
 
     QString pageNameExpression() const;
 %Docstring
 Returns the expression (or field name) used for calculating the page name.
 
-.. seealso:: :py:func:`setPageNameExpression()`
+.. seealso:: :py:func:`setPageNameExpression`
 
-.. seealso:: :py:func:`nameForPage()`
+.. seealso:: :py:func:`nameForPage`
 %End
 
     void setPageNameExpression( const QString &expression );
 %Docstring
 Sets the ``expression`` (or field name) used for calculating the page name.
 
-.. seealso:: :py:func:`pageNameExpression()`
+.. seealso:: :py:func:`pageNameExpression`
 %End
 
     QString nameForPage( int page ) const;
 %Docstring
 Returns the calculated name for a specified atlas ``page`` number. Page numbers start at 0.
 
-.. seealso:: :py:func:`pageNameExpression()`
+.. seealso:: :py:func:`pageNameExpression`
 %End
 
     bool sortFeatures() const;
 %Docstring
 Returns true if features should be sorted in the atlas.
 
-.. seealso:: :py:func:`setSortFeatures()`
+.. seealso:: :py:func:`setSortFeatures`
 
-.. seealso:: :py:func:`sortAscending()`
+.. seealso:: :py:func:`sortAscending`
 
-.. seealso:: :py:func:`sortExpression()`
+.. seealso:: :py:func:`sortExpression`
 %End
 
     void setSortFeatures( bool enabled );
 %Docstring
 Sets whether features should be sorted in the atlas.
 
-.. seealso:: :py:func:`sortFeatures()`
+.. seealso:: :py:func:`sortFeatures`
 
-.. seealso:: :py:func:`setSortAscending()`
+.. seealso:: :py:func:`setSortAscending`
 
-.. seealso:: :py:func:`setSortExpression()`
+.. seealso:: :py:func:`setSortExpression`
 %End
 
     bool sortAscending() const;
@@ -169,11 +169,11 @@ Returns true if features should be sorted in an ascending order.
 
 This property has no effect is sortFeatures() is false.
 
-.. seealso:: :py:func:`sortFeatures()`
+.. seealso:: :py:func:`sortFeatures`
 
-.. seealso:: :py:func:`setSortAscending()`
+.. seealso:: :py:func:`setSortAscending`
 
-.. seealso:: :py:func:`sortExpression()`
+.. seealso:: :py:func:`sortExpression`
 %End
 
     void setSortAscending( bool ascending );
@@ -182,11 +182,11 @@ Sets whether features should be sorted in an ascending order.
 
 This property has no effect is sortFeatures() is false.
 
-.. seealso:: :py:func:`setSortFeatures()`
+.. seealso:: :py:func:`setSortFeatures`
 
-.. seealso:: :py:func:`sortAscending()`
+.. seealso:: :py:func:`sortAscending`
 
-.. seealso:: :py:func:`setSortExpression()`
+.. seealso:: :py:func:`setSortExpression`
 %End
 
     QString sortExpression() const;
@@ -195,11 +195,11 @@ Returns the expression (or field name) to use for sorting features.
 
 This property has no effect is sortFeatures() is false.
 
-.. seealso:: :py:func:`sortFeatures()`
+.. seealso:: :py:func:`sortFeatures`
 
-.. seealso:: :py:func:`sortAscending()`
+.. seealso:: :py:func:`sortAscending`
 
-.. seealso:: :py:func:`setSortExpression()`
+.. seealso:: :py:func:`setSortExpression`
 %End
 
     void setSortExpression( const QString &expression );
@@ -208,29 +208,29 @@ Sets the ``expression`` (or field name) to use for sorting features.
 
 This property has no effect is sortFeatures() is false.
 
-.. seealso:: :py:func:`setSortFeatures()`
+.. seealso:: :py:func:`setSortFeatures`
 
-.. seealso:: :py:func:`setSortAscending()`
+.. seealso:: :py:func:`setSortAscending`
 
-.. seealso:: :py:func:`sortExpression()`
+.. seealso:: :py:func:`sortExpression`
 %End
 
     bool filterFeatures() const;
 %Docstring
 Returns true if features should be filtered in the coverage layer.
 
-.. seealso:: :py:func:`filterExpression()`
+.. seealso:: :py:func:`filterExpression`
 
-.. seealso:: :py:func:`setFilterExpression()`
+.. seealso:: :py:func:`setFilterExpression`
 %End
 
     void setFilterFeatures( bool filtered );
 %Docstring
 Sets whether features should be ``filtered`` in the coverage layer.
 
-.. seealso:: :py:func:`filterFeatures()`
+.. seealso:: :py:func:`filterFeatures`
 
-.. seealso:: :py:func:`setFilterExpression()`
+.. seealso:: :py:func:`setFilterExpression`
 %End
 
     QString filterExpression() const;
@@ -239,9 +239,9 @@ Returns the expression used for filtering features in the coverage layer.
 
 This property has no effect is filterFeatures() is false.
 
-.. seealso:: :py:func:`setFilterExpression()`
+.. seealso:: :py:func:`setFilterExpression`
 
-.. seealso:: :py:func:`filterFeatures()`
+.. seealso:: :py:func:`filterFeatures`
 %End
 
     bool setFilterExpression( const QString &expression, QString &errorString /Out/ );
@@ -253,9 +253,9 @@ This property has no effect is filterFeatures() is false.
 If an invalid expression is passed, false will be returned and ``errorString``
 will be set to the expression error.
 
-.. seealso:: :py:func:`filterExpression()`
+.. seealso:: :py:func:`filterExpression`
 
-.. seealso:: :py:func:`setFilterFeatures()`
+.. seealso:: :py:func:`setFilterFeatures`
 %End
 
     int updateFeatures();
@@ -287,65 +287,65 @@ Returns the current feature number, where a value of 0 corresponds to the first 
 %Docstring
 Iterates to the previous feature, returning false if no previous feature exists.
 
-.. seealso:: :py:func:`next()`
+.. seealso:: :py:func:`next`
 
-.. seealso:: :py:func:`last()`
+.. seealso:: :py:func:`last`
 
-.. seealso:: :py:func:`first()`
+.. seealso:: :py:func:`first`
 
-.. seealso:: :py:func:`seekTo()`
+.. seealso:: :py:func:`seekTo`
 %End
 
     bool last();
 %Docstring
 Seeks to the last feature, returning false if no feature was found.
 
-.. seealso:: :py:func:`next()`
+.. seealso:: :py:func:`next`
 
-.. seealso:: :py:func:`previous()`
+.. seealso:: :py:func:`previous`
 
-.. seealso:: :py:func:`first()`
+.. seealso:: :py:func:`first`
 
-.. seealso:: :py:func:`seekTo()`
+.. seealso:: :py:func:`seekTo`
 %End
 
     bool first();
 %Docstring
 Seeks to the first feature, returning false if no feature was found.
 
-.. seealso:: :py:func:`next()`
+.. seealso:: :py:func:`next`
 
-.. seealso:: :py:func:`previous()`
+.. seealso:: :py:func:`previous`
 
-.. seealso:: :py:func:`last()`
+.. seealso:: :py:func:`last`
 
-.. seealso:: :py:func:`seekTo()`
+.. seealso:: :py:func:`seekTo`
 %End
 
     bool seekTo( int feature );
 %Docstring
 Seeks to the specified ``feature`` number.
 
-.. seealso:: :py:func:`first()`
+.. seealso:: :py:func:`first`
 
-.. seealso:: :py:func:`previous()`
+.. seealso:: :py:func:`previous`
 
-.. seealso:: :py:func:`next()`
+.. seealso:: :py:func:`next`
 
-.. seealso:: :py:func:`last()`
+.. seealso:: :py:func:`last`
 %End
 
     bool seekTo( const QgsFeature &feature );
 %Docstring
 Seeks to the specified ``feature``.
 
-.. seealso:: :py:func:`first()`
+.. seealso:: :py:func:`first`
 
-.. seealso:: :py:func:`previous()`
+.. seealso:: :py:func:`previous`
 
-.. seealso:: :py:func:`next()`
+.. seealso:: :py:func:`next`
 
-.. seealso:: :py:func:`last()`
+.. seealso:: :py:func:`last`
 %End
 
     void refreshCurrentFeature();

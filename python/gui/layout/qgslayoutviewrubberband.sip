@@ -65,50 +65,50 @@ Returns the final bounding box of the rubber band.
 %Docstring
 Returns the view associated with the rubber band.
 
-.. seealso:: :py:func:`layout()`
+.. seealso:: :py:func:`layout`
 %End
 
     QgsLayout *layout() const;
 %Docstring
 Returns the layout associated with the rubber band.
 
-.. seealso:: :py:func:`view()`
+.. seealso:: :py:func:`view`
 %End
 
     QBrush brush() const;
 %Docstring
 Returns the brush used for drawing the rubber band.
 
-.. seealso:: :py:func:`setBrush()`
+.. seealso:: :py:func:`setBrush`
 
-.. seealso:: :py:func:`pen()`
+.. seealso:: :py:func:`pen`
 %End
 
     void setBrush( const QBrush &brush );
 %Docstring
 Sets the ``brush`` used for drawing the rubber band.
 
-.. seealso:: :py:func:`brush()`
+.. seealso:: :py:func:`brush`
 
-.. seealso:: :py:func:`setPen()`
+.. seealso:: :py:func:`setPen`
 %End
 
     QPen pen() const;
 %Docstring
 Returns the pen used for drawing the rubber band.
 
-.. seealso:: :py:func:`setPen()`
+.. seealso:: :py:func:`setPen`
 
-.. seealso:: :py:func:`brush()`
+.. seealso:: :py:func:`brush`
 %End
 
     void setPen( const QPen &pen );
 %Docstring
 Sets the ``pen`` used for drawing the rubber band.
 
-.. seealso:: :py:func:`pen()`
+.. seealso:: :py:func:`pen`
 
-.. seealso:: :py:func:`setBrush()`
+.. seealso:: :py:func:`setBrush`
 %End
 
   protected:

@@ -44,7 +44,7 @@ Creates a renderer from XML element
 %Docstring
 Returns the symbol used for rendering clustered groups (but not ownership of the symbol).
 
-.. seealso:: :py:func:`setClusterSymbol()`
+.. seealso:: :py:func:`setClusterSymbol`
 %End
 
     void setClusterSymbol( QgsMarkerSymbol *symbol /Transfer/ );
@@ -53,7 +53,7 @@ Sets the symbol for rendering clustered groups.
 
 :param symbol: new cluster symbol. Ownership is transferred to the renderer.
 
-.. seealso:: :py:func:`clusterSymbol()`
+.. seealso:: :py:func:`clusterSymbol`
 %End
 
     static QgsPointClusterRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) /Factory/;

@@ -58,14 +58,14 @@ Returns the length of the vector.
 %Docstring
 Returns the vector's x-component.
 
-.. seealso:: y()
+.. seealso:: y
 %End
 
     double y() const;
 %Docstring
 Returns the vector's y-component.
 
-.. seealso:: x()
+.. seealso:: x
 %End
 
     QgsVector perpVector() const;

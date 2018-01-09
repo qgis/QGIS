@@ -53,14 +53,14 @@ Returns a new QgsLayoutItemAttributeTable for the specified parent ``layout``.
 %Docstring
 Sets the ``source`` for attributes to show in table body.
 
-.. seealso:: :py:func:`source()`
+.. seealso:: :py:func:`source`
 %End
 
     ContentSource source() const;
 %Docstring
 Returns the source for attributes shown in the table body.
 
-.. seealso:: :py:func:`setSource()`
+.. seealso:: :py:func:`setSource`
 %End
 
     QgsVectorLayer *sourceLayer() const;
@@ -77,7 +77,7 @@ Sets the vector ``layer`` from which to display feature attributes.
 
 This is only considered if the table source() is LayerAttributes.
 
-.. seealso:: :py:func:`vectorLayer()`
+.. seealso:: :py:func:`vectorLayer`
 %End
 
     QgsVectorLayer *vectorLayer() const;
@@ -86,18 +86,18 @@ Returns the vector layer the attribute table is currently using.
 
 This is only considered if the table source() is LayerAttributes.
 
-.. seealso:: :py:func:`setVectorLayer()`
+.. seealso:: :py:func:`setVectorLayer`
 
-.. seealso:: :py:func:`sourceLayer()`
+.. seealso:: :py:func:`sourceLayer`
 %End
 
     void setRelationId( const QString &id );
 %Docstring
 Sets the relation ``id`` from which to display child features
 
-.. seealso:: :py:func:`relationId()`
+.. seealso:: :py:func:`relationId`
 
-.. seealso:: :py:func:`setSource()`
+.. seealso:: :py:func:`setSource`
 
 .. note::
 
@@ -108,9 +108,9 @@ Sets the relation ``id`` from which to display child features
 %Docstring
 Returns the relation id which the table displays child features from.
 
-.. seealso:: :py:func:`setRelationId()`
+.. seealso:: :py:func:`setRelationId`
 
-.. seealso:: :py:func:`source()`
+.. seealso:: :py:func:`source`
 
 .. note::
 
@@ -121,7 +121,7 @@ Returns the relation id which the table displays child features from.
 %Docstring
 Resets the attribute table's columns to match the vector layer's fields.
 
-.. seealso:: :py:func:`setVectorLayer()`
+.. seealso:: :py:func:`setVectorLayer`
 %End
 
     void setMap( QgsLayoutItemMap *map );
@@ -132,7 +132,7 @@ set to true. Changing the map forces the table to refetch features from its
 vector layer, and may result in the table changing size to accommodate the new displayed
 feature attributes.
 
-.. seealso:: :py:func:`map()`
+.. seealso:: :py:func:`map`
 
 .. seealso:: :py:func:`setDisplayOnlyVisibleFeatures`
 %End
@@ -142,9 +142,9 @@ feature attributes.
 Returns the layout map whose extents are controlling the features shown in the
 table. The extents of the map are only used if displayOnlyVisibleFeatures() is true.
 
-.. seealso:: :py:func:`setMap()`
+.. seealso:: :py:func:`setMap`
 
-.. seealso:: :py:func:`displayOnlyVisibleFeatures()`
+.. seealso:: :py:func:`displayOnlyVisibleFeatures`
 %End
 
     void setMaximumNumberOfFeatures( int features );
@@ -153,14 +153,14 @@ Sets the maximum number of ``features`` shown by the table. Changing this settin
 in the attribute table changing its size to accommodate the new number of rows, and requires
 the table to refetch features from its vector layer.
 
-.. seealso:: :py:func:`maximumNumberOfFeatures()`
+.. seealso:: :py:func:`maximumNumberOfFeatures`
 %End
 
     int maximumNumberOfFeatures() const;
 %Docstring
 Returns the maximum number of features to be shown by the table.
 
-.. seealso:: :py:func:`setMaximumNumberOfFeatures()`
+.. seealso:: :py:func:`setMaximumNumberOfFeatures`
 %End
 
     void setUniqueRowsOnly( bool uniqueOnly );
@@ -170,14 +170,14 @@ Sets attribute table to only show unique rows.
 Set ``uniqueOnly`` to true to show only unique rows. Duplicate rows
 will be stripped from the table.
 
-.. seealso:: :py:func:`uniqueRowsOnly()`
+.. seealso:: :py:func:`uniqueRowsOnly`
 %End
 
     bool uniqueRowsOnly() const;
 %Docstring
 Returns true if the table is set to show only unique rows.
 
-.. seealso:: :py:func:`setUniqueRowsOnly()`
+.. seealso:: :py:func:`setUniqueRowsOnly`
 %End
 
     void setDisplayOnlyVisibleFeatures( bool visibleOnly );
@@ -186,9 +186,9 @@ Sets the attribute table to only show features which are visible in a map item. 
 this setting forces the table to refetch features from its vector layer, and may result in
 the table changing size to accommodate the new displayed feature attributes.
 
-.. seealso:: :py:func:`displayOnlyVisibleFeatures()`
+.. seealso:: :py:func:`displayOnlyVisibleFeatures`
 
-.. seealso:: :py:func:`setMap()`
+.. seealso:: :py:func:`setMap`
 %End
 
     bool displayOnlyVisibleFeatures() const;
@@ -196,9 +196,9 @@ the table changing size to accommodate the new displayed feature attributes.
 Returns true if the table is set to show only features visible on a corresponding
 map item.
 
-.. seealso:: :py:func:`map()`
+.. seealso:: :py:func:`map`
 
-.. seealso:: :py:func:`setDisplayOnlyVisibleFeatures()`
+.. seealso:: :py:func:`setDisplayOnlyVisibleFeatures`
 %End
 
     void setFilterToAtlasFeature( bool filterToAtlas );
@@ -206,7 +206,7 @@ map item.
 Sets attribute table to only show features which intersect the current atlas
 feature.
 
-.. seealso:: :py:func:`filterToAtlasFeature()`
+.. seealso:: :py:func:`filterToAtlasFeature`
 %End
 
     bool filterToAtlasFeature() const;
@@ -214,16 +214,16 @@ feature.
 Returns true if the table is set to only show features which intersect the current atlas
 feature.
 
-.. seealso:: :py:func:`setFilterToAtlasFeature()`
+.. seealso:: :py:func:`setFilterToAtlasFeature`
 %End
 
     bool filterFeatures() const;
 %Docstring
 Returns true if a feature filter is active on the attribute table.
 
-.. seealso:: :py:func:`setFilterFeatures()`
+.. seealso:: :py:func:`setFilterFeatures`
 
-.. seealso:: :py:func:`featureFilter()`
+.. seealso:: :py:func:`featureFilter`
 %End
 
     void setFilterFeatures( bool filter );
@@ -232,9 +232,9 @@ Sets whether the feature filter is active for the attribute table. Changing
 this setting forces the table to refetch features from its vector layer, and may result in
 the table changing size to accommodate the new displayed feature attributes.
 
-.. seealso:: :py:func:`filterFeatures()`
+.. seealso:: :py:func:`filterFeatures`
 
-.. seealso:: :py:func:`setFeatureFilter()`
+.. seealso:: :py:func:`setFeatureFilter`
 %End
 
     QString featureFilter() const;
@@ -242,9 +242,9 @@ the table changing size to accommodate the new displayed feature attributes.
 Returns the current expression used to filter features for the table. The filter is only
 active if filterFeatures() is true.
 
-.. seealso:: :py:func:`setFeatureFilter()`
+.. seealso:: :py:func:`setFeatureFilter`
 
-.. seealso:: :py:func:`filterFeatures()`
+.. seealso:: :py:func:`filterFeatures`
 %End
 
     void setFeatureFilter( const QString &expression );
@@ -254,9 +254,9 @@ active if filterFeatures() is set to true. Changing this setting forces the tabl
 to refetch features from its vector layer, and may result in
 the table changing size to accommodate the new displayed feature attributes.
 
-.. seealso:: :py:func:`featureFilter()`
+.. seealso:: :py:func:`featureFilter`
 
-.. seealso:: :py:func:`setFilterFeatures()`
+.. seealso:: :py:func:`setFilterFeatures`
 %End
 
     void setDisplayedFields( const QStringList &fields, bool refresh = true );
@@ -278,7 +278,7 @@ be replaced by a line break.
 
 :param wrapString: string to replace with line break
 
-.. seealso:: :py:func:`wrapString()`
+.. seealso:: :py:func:`wrapString`
 %End
 
     QString wrapString() const;
@@ -286,7 +286,7 @@ be replaced by a line break.
 Returns the string used to wrap the contents of the table cells by. Occurrences of this string will
 be replaced by a line break.
 
-.. seealso:: :py:func:`setWrapString()`
+.. seealso:: :py:func:`setWrapString`
 %End
 
 

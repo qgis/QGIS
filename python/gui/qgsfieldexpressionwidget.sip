@@ -107,7 +107,7 @@ Alias for asExpression()
 %Docstring
 Returns the layer currently associated with the widget.
 
-.. seealso:: :py:func:`setLayer()`
+.. seealso:: :py:func:`setLayer`
 %End
 
     void registerExpressionContextGenerator( const QgsExpressionContextGenerator *generator );
@@ -162,7 +162,7 @@ provide an expression context of which we are sure it's completely populated.
 %Docstring
 Sets the layer used to display the fields and expression.
 
-.. seealso:: :py:func:`layer()`
+.. seealso:: :py:func:`layer`
 %End
 
     void setRow( int row );

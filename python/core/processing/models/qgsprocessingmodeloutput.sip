@@ -32,56 +32,56 @@ Constructor for QgsProcessingModelOutput with the specified ``name`` and ``descr
 %Docstring
 Returns the model output name.
 
-.. seealso:: :py:func:`setName()`
+.. seealso:: :py:func:`setName`
 %End
 
     void setName( const QString &name );
 %Docstring
 Sets the model output ``name``.
 
-.. seealso:: :py:func:`name()`
+.. seealso:: :py:func:`name`
 %End
 
     QString childId() const;
 %Docstring
 Returns the child algorithm ID from which this output is generated.
 
-.. seealso:: :py:func:`setChildId()`
+.. seealso:: :py:func:`setChildId`
 %End
 
     void setChildId( const QString &id );
 %Docstring
 Sets the child algorithm ``id`` from which this output is generated.
 
-.. seealso:: :py:func:`childId()`
+.. seealso:: :py:func:`childId`
 %End
 
     QString childOutputName() const;
 %Docstring
 Returns the child algorithm output name from which this output is generated.
 
-.. seealso:: :py:func:`setOutputName()`
+.. seealso:: :py:func:`setOutputName`
 %End
 
     void setChildOutputName( const QString &name );
 %Docstring
 Sets the child algorithm output ``name`` from which this output is generated.
 
-.. seealso:: :py:func:`outputName()`
+.. seealso:: :py:func:`outputName`
 %End
 
     QVariant toVariant() const;
 %Docstring
 Saves this output to a QVariant.
 
-.. seealso:: :py:func:`loadVariant()`
+.. seealso:: :py:func:`loadVariant`
 %End
 
     bool loadVariant( const QVariantMap &map );
 %Docstring
 Loads this output from a QVariantMap.
 
-.. seealso:: :py:func:`toVariant()`
+.. seealso:: :py:func:`toVariant`
 %End
 
 };

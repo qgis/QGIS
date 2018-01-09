@@ -133,7 +133,7 @@ Encodes a distance unit to a string.
 
 :return: encoded string
 
-.. seealso:: :py:func:`decodeDistanceUnit()`
+.. seealso:: :py:func:`decodeDistanceUnit`
 %End
 
     static QgsUnitTypes::DistanceUnit decodeDistanceUnit( const QString &string, bool *ok /Out/ = 0 );
@@ -145,7 +145,7 @@ Decodes a distance unit from a string.
 
 :return: decoded units
 
-.. seealso:: :py:func:`encodeUnit()`
+.. seealso:: :py:func:`encodeUnit`
 %End
 
     static QString toString( QgsUnitTypes::DistanceUnit unit );
@@ -154,7 +154,7 @@ Returns a translated string representing a distance unit.
 
 :param unit: unit to convert to string
 
-.. seealso:: :py:func:`stringToDistanceUnit()`
+.. seealso:: :py:func:`stringToDistanceUnit`
 %End
 
     static QString toAbbreviatedString( QgsUnitTypes::DistanceUnit unit );
@@ -163,7 +163,7 @@ Returns a translated abbreviation representing a distance unit.
 
 :param unit: unit to convert to string
 
-.. seealso:: :py:func:`stringToDistanceUnit()`
+.. seealso:: :py:func:`stringToDistanceUnit`
 
 .. versionadded:: 3.0
 %End
@@ -175,7 +175,7 @@ Converts a translated string to a distance unit.
 :param string: string representing a distance unit
 :param ok: optional boolean, will be set to true if string was converted successfully
 
-.. seealso:: :py:func:`toString()`
+.. seealso:: :py:func:`toString`
 %End
 
     static double fromUnitToUnitFactor( QgsUnitTypes::DistanceUnit fromUnit, QgsUnitTypes::DistanceUnit toUnit );
@@ -202,7 +202,7 @@ Encodes an areal unit to a string.
 
 :return: encoded string
 
-.. seealso:: :py:func:`decodeAreaUnit()`
+.. seealso:: :py:func:`decodeAreaUnit`
 %End
 
     static AreaUnit decodeAreaUnit( const QString &string, bool *ok /Out/ = 0 );
@@ -214,7 +214,7 @@ Decodes an areal unit from a string.
 
 :return: decoded units
 
-.. seealso:: :py:func:`encodeUnit()`
+.. seealso:: :py:func:`encodeUnit`
 %End
 
     static QString toString( AreaUnit unit );
@@ -223,7 +223,7 @@ Returns a translated string representing an areal unit.
 
 :param unit: unit to convert to string
 
-.. seealso:: :py:func:`stringToAreaUnit()`
+.. seealso:: :py:func:`stringToAreaUnit`
 %End
 
     static QString toAbbreviatedString( AreaUnit unit );
@@ -232,7 +232,7 @@ Returns a translated abbreviation representing an areal unit.
 
 :param unit: unit to convert to string
 
-.. seealso:: :py:func:`stringToAreaUnit()`
+.. seealso:: :py:func:`stringToAreaUnit`
 
 .. versionadded:: 3.0
 %End
@@ -244,7 +244,7 @@ Converts a translated string to an areal unit.
 :param string: string representing an areal unit
 :param ok: optional boolean, will be set to true if string was converted successfully
 
-.. seealso:: :py:func:`toString()`
+.. seealso:: :py:func:`toString`
 %End
 
     static double fromUnitToUnitFactor( AreaUnit fromUnit, AreaUnit toUnit );
@@ -275,7 +275,7 @@ Encodes an angular unit to a string.
 
 :return: encoded string
 
-.. seealso:: :py:func:`decodeAngleUnit()`
+.. seealso:: :py:func:`decodeAngleUnit`
 %End
 
     static AngleUnit decodeAngleUnit( const QString &string, bool *ok /Out/ = 0 );
@@ -287,7 +287,7 @@ Decodes an angular unit from a string.
 
 :return: decoded units
 
-.. seealso:: :py:func:`encodeUnit()`
+.. seealso:: :py:func:`encodeUnit`
 %End
 
     static QString toString( AngleUnit unit );
@@ -355,7 +355,7 @@ kilometers
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`formatArea()`
+.. seealso:: :py:func:`formatArea`
 %End
 
     static QString formatArea( double area, int decimals, QgsUnitTypes::AreaUnit unit, bool keepBaseUnit = false );
@@ -372,7 +372,7 @@ square kilometers
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`formatDistance()`
+.. seealso:: :py:func:`formatDistance`
 %End
 
 
@@ -384,7 +384,7 @@ Encodes a render unit to a string.
 
 :return: encoded string
 
-.. seealso:: :py:func:`decodeRenderUnit()`
+.. seealso:: :py:func:`decodeRenderUnit`
 %End
 
     static RenderUnit decodeRenderUnit( const QString &string, bool *ok /Out/ = 0 );
@@ -396,7 +396,7 @@ Decodes a render unit from a string.
 
 :return: decoded units
 
-.. seealso:: :py:func:`encodeUnit()`
+.. seealso:: :py:func:`encodeUnit`
 %End
 
     static QString toString( RenderUnit unit );
@@ -416,7 +416,7 @@ Encodes a layout unit to a string.
 
 :return: encoded string
 
-.. seealso:: :py:func:`decodeLayoutUnit()`
+.. seealso:: :py:func:`decodeLayoutUnit`
 
 .. versionadded:: 3.0
 %End
@@ -430,7 +430,7 @@ Decodes a layout unit from a string.
 
 :return: decoded units
 
-.. seealso:: :py:func:`encodeUnit()`
+.. seealso:: :py:func:`encodeUnit`
 
 .. versionadded:: 3.0
 %End

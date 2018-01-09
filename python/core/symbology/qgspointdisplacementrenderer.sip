@@ -56,18 +56,18 @@ Sets the line width for the displacement group circle.
 
 :param width: line width in mm
 
-.. seealso:: :py:func:`circleWidth()`
+.. seealso:: :py:func:`circleWidth`
 
-.. seealso:: :py:func:`setCircleColor()`
+.. seealso:: :py:func:`setCircleColor`
 %End
 
     double circleWidth() const;
 %Docstring
 Returns the line width for the displacement group circle in mm.
 
-.. seealso:: :py:func:`setCircleWidth()`
+.. seealso:: :py:func:`setCircleWidth`
 
-.. seealso:: :py:func:`circleColor()`
+.. seealso:: :py:func:`circleColor`
 %End
 
     void setCircleColor( const QColor &color );
@@ -76,18 +76,18 @@ Sets the color used for drawing the displacement group circle.
 
 :param color: circle color
 
-.. seealso:: :py:func:`circleColor()`
+.. seealso:: :py:func:`circleColor`
 
-.. seealso:: :py:func:`setCircleWidth()`
+.. seealso:: :py:func:`setCircleWidth`
 %End
 
     QColor circleColor() const;
 %Docstring
 Returns the color used for drawing the displacement group circle.
 
-.. seealso:: :py:func:`setCircleColor()`
+.. seealso:: :py:func:`setCircleColor`
 
-.. seealso:: :py:func:`circleWidth()`
+.. seealso:: :py:func:`circleWidth`
 %End
 
     void setCircleRadiusAddition( double distance );
@@ -96,21 +96,21 @@ Sets a factor for increasing the ring size of displacement groups.
 
 :param distance: addition factor
 
-.. seealso:: :py:func:`circleRadiusAddition()`
+.. seealso:: :py:func:`circleRadiusAddition`
 %End
 
     double circleRadiusAddition() const;
 %Docstring
 Returns the factor for increasing the ring size of displacement groups.
 
-.. seealso:: :py:func:`setCircleRadiusAddition()`
+.. seealso:: :py:func:`setCircleRadiusAddition`
 %End
 
     Placement placement() const;
 %Docstring
 Returns the placement method used for dispersing the points.
 
-.. seealso:: :py:func:`setPlacement()`
+.. seealso:: :py:func:`setPlacement`
 
 .. versionadded:: 2.12
 %End
@@ -121,7 +121,7 @@ Sets the placement method used for dispersing the points.
 
 :param placement: placement method
 
-.. seealso:: :py:func:`placement()`
+.. seealso:: :py:func:`placement`
 
 .. versionadded:: 2.12
 %End
@@ -130,7 +130,7 @@ Sets the placement method used for dispersing the points.
 %Docstring
 Returns the symbol for the center of a displacement group (but not ownership of the symbol).
 
-.. seealso:: :py:func:`setCenterSymbol()`
+.. seealso:: :py:func:`setCenterSymbol`
 %End
 
     void setCenterSymbol( QgsMarkerSymbol *symbol /Transfer/ );
@@ -139,7 +139,7 @@ Sets the center symbol for a displacement group.
 
 :param symbol: new center symbol. Ownership is transferred to the renderer.
 
-.. seealso:: :py:func:`centerSymbol()`
+.. seealso:: :py:func:`centerSymbol`
 %End
 
     static QgsPointDisplacementRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) /Factory/;

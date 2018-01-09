@@ -37,28 +37,28 @@ Constructor for QgsProcessingAlgorithmDialogBase.
 %Docstring
 Sets the ``algorithm`` to run in the dialog.
 
-.. seealso:: :py:func:`algorithm()`
+.. seealso:: :py:func:`algorithm`
 %End
 
     QgsProcessingAlgorithm *algorithm();
 %Docstring
 Returns the algorithm running in the dialog.
 
-.. seealso:: :py:func:`setAlgorithm()`
+.. seealso:: :py:func:`setAlgorithm`
 %End
 
     void setMainWidget( QWidget *widget /Transfer/ );
 %Docstring
 Sets the main ``widget`` for the dialog, usually a panel for configuring algorithm parameters.
 
-.. seealso:: :py:func:`mainWidget()`
+.. seealso:: :py:func:`mainWidget`
 %End
 
     QWidget *mainWidget();
 %Docstring
 Returns the main widget for the dialog, usually a panel for configuring algorithm parameters.
 
-.. seealso:: :py:func:`setMainWidget()`
+.. seealso:: :py:func:`setMainWidget`
 %End
 
     void showLog();
@@ -70,18 +70,18 @@ Switches the dialog to the log page.
 %Docstring
 Returns true if an algorithm was executed in the dialog.
 
-.. seealso:: :py:func:`results()`
+.. seealso:: :py:func:`results`
 
-.. seealso:: :py:func:`setExecuted()`
+.. seealso:: :py:func:`setExecuted`
 %End
 
     QVariantMap results() const;
 %Docstring
 Returns the results returned by the algorithm executed.
 
-.. seealso:: :py:func:`wasExecuted()`
+.. seealso:: :py:func:`wasExecuted`
 
-.. seealso:: :py:func:`setResults()`
+.. seealso:: :py:func:`setResults`
 %End
 
     QgsProcessingFeedback *createFeedback() /Factory/;
@@ -172,18 +172,18 @@ Clears any current progress from the dialog.
 %Docstring
 Sets whether the algorithm was executed through the dialog.
 
-.. seealso:: :py:func:`wasExecuted()`
+.. seealso:: :py:func:`wasExecuted`
 
-.. seealso:: :py:func:`setResults()`
+.. seealso:: :py:func:`setResults`
 %End
 
     void setResults( const QVariantMap &results );
 %Docstring
 Sets the algorithm results.
 
-.. seealso:: :py:func:`results()`
+.. seealso:: :py:func:`results`
 
-.. seealso:: :py:func:`setExecuted()`
+.. seealso:: :py:func:`setExecuted`
 %End
 
     void setInfo( const QString &message, bool isError = false, bool escapeHtml = true );

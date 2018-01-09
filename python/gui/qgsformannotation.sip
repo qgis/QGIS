@@ -41,14 +41,14 @@ Returns the optimal frame size
 %Docstring
 Sets the path to the Qt Designer UI file to show in the annotation.
 
-.. seealso:: :py:func:`designerForm()`
+.. seealso:: :py:func:`designerForm`
 %End
 
     QString designerForm() const;
 %Docstring
 Returns the path to the Qt Designer UI file to show in the annotation.
 
-.. seealso:: :py:func:`setDesignerForm()`
+.. seealso:: :py:func:`setDesignerForm`
 %End
 
     virtual void writeXml( QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context ) const;

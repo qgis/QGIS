@@ -47,7 +47,7 @@ to QgsLayoutView widgets.
 %Docstring
 Returns the current combination of flags set for the tool.
 
-.. seealso:: :py:func:`setFlags()`
+.. seealso:: :py:func:`setFlags`
 %End
 
     virtual void layoutMoveEvent( QgsLayoutViewMouseEvent *event );
@@ -100,14 +100,14 @@ method of QgsLayoutView is called the action's state will be set to on.
 Usually this will cause a toolbutton to appear pressed in and
 the previously used toolbutton to pop out.
 
-.. seealso:: :py:func:`action()`
+.. seealso:: :py:func:`action`
 %End
 
     QAction *action();
 %Docstring
 Returns the action associated with the tool or None if no action is associated.
 
-.. seealso:: :py:func:`setAction()`
+.. seealso:: :py:func:`setAction`
 %End
 
     void setCursor( const QCursor &cursor );
@@ -136,14 +136,14 @@ Returns a user-visible, translated name for the tool.
 %Docstring
 Returns the view associated with the tool.
 
-.. seealso:: :py:func:`layout()`
+.. seealso:: :py:func:`layout`
 %End
 
     QgsLayout *layout() const;
 %Docstring
 Returns the layout associated with the tool.
 
-.. seealso:: :py:func:`view()`
+.. seealso:: :py:func:`view`
 %End
 
     virtual QList< QgsLayoutItem * > ignoredSnapItems() const;
@@ -176,7 +176,7 @@ item and should have its properties displayed in any designer windows.
 %Docstring
 Sets the combination of ``flags`` that will be used for the tool.
 
-.. seealso:: :py:func:`flags()`
+.. seealso:: :py:func:`flags`
 %End
 
     QgsLayoutViewTool( QgsLayoutView *view /TransferThis/, const QString &name );

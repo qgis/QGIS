@@ -12,7 +12,6 @@
 class QgsCachedFeatureIterator : QgsAbstractFeatureIterator
 {
 %Docstring
-\brief
 Delivers features from the cache
 %End
 
@@ -73,7 +72,6 @@ We have a local special iterator for FilterFids, no need to run the generic.
 class QgsCachedFeatureWriterIterator : QgsAbstractFeatureIterator
 {
 %Docstring
-\brief
 Uses another iterator as backend and writes features to the cache
 %End
 

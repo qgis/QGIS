@@ -216,7 +216,7 @@ render context in advance and call this method instead of minimumIconSize().
 %Docstring
 Returns the symbol used by the legend node.
 
-.. seealso:: :py:func:`setSymbol()`
+.. seealso:: :py:func:`setSymbol`
 
 .. versionadded:: 2.14
 %End
@@ -228,7 +228,7 @@ to the associated vector layer's renderer.
 
 :param symbol: new symbol for node. Ownership is transferred.
 
-.. seealso:: :py:func:`symbol()`
+.. seealso:: :py:func:`symbol`
 
 .. versionadded:: 2.14
 %End
@@ -241,7 +241,7 @@ Checks all items belonging to the same layer as this node.
 
 .. versionadded:: 2.14
 
-.. seealso:: :py:func:`uncheckAllItems()`
+.. seealso:: :py:func:`uncheckAllItems`
 %End
 
     void uncheckAllItems();
@@ -250,7 +250,7 @@ Unchecks all items belonging to the same layer as this node.
 
 .. versionadded:: 2.14
 
-.. seealso:: :py:func:`checkAllItems()`
+.. seealso:: :py:func:`checkAllItems`
 %End
 
 };

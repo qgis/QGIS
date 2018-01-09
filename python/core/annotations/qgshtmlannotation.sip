@@ -40,14 +40,14 @@ Constructor for QgsHtmlAnnotation.
 %Docstring
 Sets the file path for the source HTML file.
 
-.. seealso:: :py:func:`sourceFile()`
+.. seealso:: :py:func:`sourceFile`
 %End
 
     QString sourceFile() const;
 %Docstring
 Returns the file path for the source HTML file.
 
-.. seealso:: :py:func:`setSourceFile()`
+.. seealso:: :py:func:`setSourceFile`
 %End
 
     virtual void writeXml( QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context ) const;

@@ -60,14 +60,14 @@ using QgsNativeMetadataValidator.
 %Docstring
 Spatial extents of the resource.
 
-.. seealso:: :py:func:`setSpatialExtents()`
+.. seealso:: :py:func:`setSpatialExtents`
 %End
 
         void setSpatialExtents( const QList< QgsLayerMetadata::SpatialExtent > &extents );
 %Docstring
 Sets the spatial ``extents`` of the resource.
 
-.. seealso:: :py:func:`spatialExtents()`
+.. seealso:: :py:func:`spatialExtents`
 %End
 
         QList< QgsDateTimeRange > temporalExtents() const;
@@ -77,14 +77,14 @@ whether the temporal extent is a range or a single point in time.
 If QgsDateTimeRange.isInfinite() returns true then the temporal extent
 is considered to be indeterminate and continuous.
 
-.. seealso:: :py:func:`setTemporalExtents()`
+.. seealso:: :py:func:`setTemporalExtents`
 %End
 
         void setTemporalExtents( const QList< QgsDateTimeRange > &extents );
 %Docstring
 Sets the temporal ``extents`` of the resource.
 
-.. seealso:: :py:func:`temporalExtents()`
+.. seealso:: :py:func:`temporalExtents`
 %End
 
 
@@ -191,14 +191,14 @@ Constructor for QgsLayerMetadata.
 %Docstring
 A reference, URI, URL or some other mechanism to identify the resource.
 
-.. seealso:: :py:func:`setIdentifier()`
+.. seealso:: :py:func:`setIdentifier`
 %End
 
     void setIdentifier( const QString &identifier );
 %Docstring
 Sets the reference, URI, URL or some other mechanism to identify the resource.
 
-.. seealso:: :py:func:`identifier()`
+.. seealso:: :py:func:`identifier`
 %End
 
     QString parentIdentifier() const;
@@ -206,7 +206,7 @@ Sets the reference, URI, URL or some other mechanism to identify the resource.
 A reference, URI, URL or some other mechanism to identify the parent resource that this resource is a part (child) of.
 Returns an empty string if no parent identifier is set.
 
-.. seealso:: :py:func:`setParentIdentifier()`
+.. seealso:: :py:func:`setParentIdentifier`
 %End
 
     void setParentIdentifier( const QString &parentIdentifier );
@@ -214,7 +214,7 @@ Returns an empty string if no parent identifier is set.
 Sets a reference, URI, URL or some other mechanism to identify the parent resource that this resource is a part (child) of.
 Set an empty string if no parent identifier is required.
 
-.. seealso:: :py:func:`parentIdentifier()`
+.. seealso:: :py:func:`parentIdentifier`
 %End
 
     QString language() const;
@@ -224,7 +224,7 @@ will follow either the ISO 639.2 or ISO 3166 specifications, e.g. 'ENG' or 'SPA'
 this is not a hard requirement and the caller must account for non compliant
 values.
 
-.. seealso:: :py:func:`setLanguage()`
+.. seealso:: :py:func:`setLanguage`
 %End
 
     void setLanguage( const QString &language );
@@ -233,7 +233,7 @@ Sets the human ``language`` associated with the resource. While a formal vocabul
 ideally values should be taken from the ISO 639.2 or ISO 3166 specifications,
 e.g. 'ENG' or 'SPA' (ISO 639.2) or 'EN-AU' (ISO 3166).
 
-.. seealso:: :py:func:`language()`
+.. seealso:: :py:func:`language`
 %End
 
     QString type() const;
@@ -241,7 +241,7 @@ e.g. 'ENG' or 'SPA' (ISO 639.2) or 'EN-AU' (ISO 3166).
 Returns the nature of the resource.  While a formal vocabulary is not imposed, it is advised
 to use the ISO 19115 MD_ScopeCode values. E.g. 'dataset' or 'series'.
 
-.. seealso:: :py:func:`setType()`
+.. seealso:: :py:func:`setType`
 %End
 
     void setType( const QString &type );
@@ -249,35 +249,35 @@ to use the ISO 19115 MD_ScopeCode values. E.g. 'dataset' or 'series'.
 Sets the ``type`` (nature) of the resource.  While a formal vocabulary is not imposed, it is advised
 to use the ISO 19115 MD_ScopeCode values. E.g. 'dataset' or 'series'.
 
-.. seealso:: :py:func:`type()`
+.. seealso:: :py:func:`type`
 %End
 
     QString title() const;
 %Docstring
 Returns the human readable name of the resource, typically displayed in search results.
 
-.. seealso:: :py:func:`setTitle()`
+.. seealso:: :py:func:`setTitle`
 %End
 
     void setTitle( const QString &title );
 %Docstring
 Sets the human readable ``title`` (name) of the resource, typically displayed in search results.
 
-.. seealso:: :py:func:`title()`
+.. seealso:: :py:func:`title`
 %End
 
     QString abstract() const;
 %Docstring
 Returns a free-form description of the resource.
 
-.. seealso:: :py:func:`setAbstract()`
+.. seealso:: :py:func:`setAbstract`
 %End
 
     void setAbstract( const QString &abstract );
 %Docstring
 Sets a free-form ``abstract`` (description) of the resource.
 
-.. seealso:: :py:func:`abstract()`
+.. seealso:: :py:func:`abstract`
 %End
 
     QString fees() const;
@@ -285,7 +285,7 @@ Sets a free-form ``abstract`` (description) of the resource.
 Returns any fees associated with using the resource.
 An empty string will be returned if no fees are set.
 
-.. seealso:: :py:func:`setFees()`
+.. seealso:: :py:func:`setFees`
 %End
 
     void setFees( const QString &fees );
@@ -293,51 +293,51 @@ An empty string will be returned if no fees are set.
 Sets the ``fees`` associated with using the resource.
 Use an empty string if no fees are set.
 
-.. seealso:: :py:func:`fees()`
+.. seealso:: :py:func:`fees`
 %End
 
     QgsLayerMetadata::ConstraintList constraints() const;
 %Docstring
 Returns a list of constraints associated with using the resource.
 
-.. seealso:: :py:func:`setConstraints()`
+.. seealso:: :py:func:`setConstraints`
 %End
 
     void addConstraint( const QgsLayerMetadata::Constraint &constraint );
 %Docstring
 Adds an individual constraint to the existing constraints.
 
-.. seealso:: :py:func:`constraints()`
+.. seealso:: :py:func:`constraints`
 
-.. seealso:: :py:func:`setConstraints()`
+.. seealso:: :py:func:`setConstraints`
 %End
 
     void setConstraints( const QgsLayerMetadata::ConstraintList &constraints );
 %Docstring
 Sets the list of ``constraints`` associated with using the resource.
 
-.. seealso:: :py:func:`constraints()`
+.. seealso:: :py:func:`constraints`
 %End
 
     QStringList rights() const;
 %Docstring
 Returns a list of attribution or copyright strings associated with the resource.
 
-.. seealso:: :py:func:`setRights()`
+.. seealso:: :py:func:`setRights`
 %End
 
     void setRights( const QStringList &rights );
 %Docstring
 Sets a list of ``rights`` (attribution or copyright strings) associated with the resource.
 
-.. seealso:: :py:func:`rights()`
+.. seealso:: :py:func:`rights`
 %End
 
     QStringList licenses() const;
 %Docstring
 Returns a list of licenses associated with the resource (examples: http://opendefinition.org/licenses/).
 
-.. seealso:: :py:func:`setLicenses()`
+.. seealso:: :py:func:`setLicenses`
 %End
 
     void setLicenses( const QStringList &licenses );
@@ -345,14 +345,14 @@ Returns a list of licenses associated with the resource (examples: http://opende
 Sets a list of ``licenses`` associated with the resource.
 (examples: http://opendefinition.org/licenses/).
 
-.. seealso:: :py:func:`licenses()`
+.. seealso:: :py:func:`licenses`
 %End
 
     QStringList history() const;
 %Docstring
 Returns a freeform description of the history or lineage of the resource.
 
-.. seealso:: :py:func:`setHistory()`
+.. seealso:: :py:func:`setHistory`
 %End
 
     void setHistory( const QStringList &history );
@@ -360,32 +360,32 @@ Returns a freeform description of the history or lineage of the resource.
 Sets the freeform description of the ``history`` or lineage of the resource.
 Any existing history items will be overwritten.
 
-.. seealso:: :py:func:`addHistoryItem()`
+.. seealso:: :py:func:`addHistoryItem`
 
-.. seealso:: :py:func:`history()`
+.. seealso:: :py:func:`history`
 %End
 
     void addHistoryItem( const QString &text );
 %Docstring
 Adds a single history ``text`` to the end of the existing history list.
 
-.. seealso:: :py:func:`history()`
+.. seealso:: :py:func:`history`
 
-.. seealso:: :py:func:`setHistory()`
+.. seealso:: :py:func:`setHistory`
 %End
 
     QString encoding() const;
 %Docstring
 Returns the character encoding of the data in the resource. An empty string will be returned if no encoding is set.
 
-.. seealso:: :py:func:`setEncoding()`
+.. seealso:: :py:func:`setEncoding`
 %End
 
     void setEncoding( const QString &encoding );
 %Docstring
 Sets the character ``encoding`` of the data in the resource. Use an empty string if no encoding is set.
 
-.. seealso:: :py:func:`encoding()`
+.. seealso:: :py:func:`encoding`
 %End
 
 
@@ -393,14 +393,14 @@ Sets the character ``encoding`` of the data in the resource. Use an empty string
 %Docstring
 Returns the spatial and temporal extents associated with the resource.
 
-.. seealso:: :py:func:`setExtent()`
+.. seealso:: :py:func:`setExtent`
 %End
 
     void setExtent( const QgsLayerMetadata::Extent &extent );
 %Docstring
 Sets the spatial and temporal extents associated with the resource.
 
-.. seealso:: :py:func:`setExtent()`
+.. seealso:: :py:func:`setExtent`
 %End
 
     QgsCoordinateReferenceSystem crs() const;
@@ -419,7 +419,7 @@ or the CRS from the data provider.
 
 This property should also match the CRS property used in the spatial extent.
 
-.. seealso:: :py:func:`setCrs()`
+.. seealso:: :py:func:`setCrs`
 %End
 
     void setCrs( const QgsCoordinateReferenceSystem &crs );
@@ -442,7 +442,7 @@ or the CRS from the data provider.
 
 This property should also match the CRS property used in the spatial extent.
 
-.. seealso:: :py:func:`crs()`
+.. seealso:: :py:func:`crs`
 %End
 
     KeywordMap keywords() const;
@@ -454,9 +454,9 @@ The map key is the vocabulary string and map value is a list of keywords for tha
 The vocabulary string is a reference (URI/URL preferred) to a codelist or vocabulary
 associated with keyword list.
 
-.. seealso:: :py:func:`setKeywords()`
+.. seealso:: :py:func:`setKeywords`
 
-.. seealso:: :py:func:`keywordVocabularies()`
+.. seealso:: :py:func:`keywordVocabularies`
 %End
 
     void setKeywords( const KeywordMap &keywords );
@@ -469,9 +469,9 @@ Calling this replaces any existing keyword vocabularies.
 The vocabulary string is a reference (URI/URL preferred) to a codelist or vocabulary
 associated with keyword list.
 
-.. seealso:: :py:func:`keywords()`
+.. seealso:: :py:func:`keywords`
 
-.. seealso:: :py:func:`addKeywords()`
+.. seealso:: :py:func:`addKeywords`
 %End
 
     void addKeywords( const QString &vocabulary, const QStringList &keywords );
@@ -483,16 +483,16 @@ will not be affected.
 The vocabulary string is a reference (URI/URL preferred) to a codelist or vocabulary
 associated with keyword list.
 
-.. seealso:: :py:func:`setKeywords()`
+.. seealso:: :py:func:`setKeywords`
 %End
 
     bool removeKeywords( const QString &vocabulary );
 %Docstring
 Remove a vocabulary from the list.
 
-.. seealso:: :py:func:`setKeywords()`
+.. seealso:: :py:func:`setKeywords`
 
-.. seealso:: :py:func:`addKeywords()`
+.. seealso:: :py:func:`addKeywords`
 %End
 
     QStringList keywordVocabularies() const;
@@ -502,7 +502,7 @@ Returns a list of keyword vocabularies contained in the metadata.
 The vocabulary string is a reference (URI/URL preferred) to a codelist or vocabulary
 associated with keyword list.
 
-.. seealso:: :py:func:`keywords()`
+.. seealso:: :py:func:`keywords`
 %End
 
     QStringList keywords( const QString &vocabulary ) const;
@@ -514,7 +514,7 @@ list will be returned.
 The vocabulary string is a reference (URI/URL preferred) to a codelist or vocabulary
 associated with keyword list.
 
-.. seealso:: :py:func:`keywordVocabularies()`
+.. seealso:: :py:func:`keywordVocabularies`
 %End
 
     QStringList categories() const;
@@ -522,7 +522,7 @@ associated with keyword list.
 Returns categories of the resource.
 Categories are stored using a special vocabulary 'gmd:topicCategory' in keywords.
 
-.. seealso:: :py:func:`keywords()`
+.. seealso:: :py:func:`keywords`
 %End
 
     void setCategories( const QStringList &categories );
@@ -530,14 +530,14 @@ Categories are stored using a special vocabulary 'gmd:topicCategory' in keywords
 Sets categories of the resource.
 Categories are stored using a special vocabulary 'gmd:topicCategory' in keywords.
 
-.. seealso:: :py:func:`keywords()`
+.. seealso:: :py:func:`keywords`
 %End
 
     QgsLayerMetadata::ContactList contacts() const;
 %Docstring
 Returns a list of contact persons or entities associated with the resource.
 
-.. seealso:: :py:func:`setContacts()`
+.. seealso:: :py:func:`setContacts`
 %End
 
     void setContacts( const QgsLayerMetadata::ContactList &contacts );
@@ -545,25 +545,25 @@ Returns a list of contact persons or entities associated with the resource.
 Sets the list of ``contacts`` or entities associated with the resource. Any existing contacts
 will be replaced.
 
-.. seealso:: :py:func:`contacts()`
+.. seealso:: :py:func:`contacts`
 
-.. seealso:: :py:func:`addContact()`
+.. seealso:: :py:func:`addContact`
 %End
 
     void addContact( const QgsLayerMetadata::Contact &contact );
 %Docstring
 Adds an individual ``contact`` to the existing contacts.
 
-.. seealso:: :py:func:`contacts()`
+.. seealso:: :py:func:`contacts`
 
-.. seealso:: :py:func:`setContacts()`
+.. seealso:: :py:func:`setContacts`
 %End
 
     QgsLayerMetadata::LinkList links() const;
 %Docstring
 Returns a list of online resources associated with the resource.
 
-.. seealso:: :py:func:`setLinks()`
+.. seealso:: :py:func:`setLinks`
 %End
 
     void setLinks( const QgsLayerMetadata::LinkList &links );
@@ -571,32 +571,32 @@ Returns a list of online resources associated with the resource.
 Sets the list of online resources associated with the resource. Any existing links
 will be replaced.
 
-.. seealso:: :py:func:`links()`
+.. seealso:: :py:func:`links`
 
-.. seealso:: :py:func:`addLink()`
+.. seealso:: :py:func:`addLink`
 %End
 
     void addLink( const QgsLayerMetadata::Link &link );
 %Docstring
 Adds an individual ``link`` to the existing links.
 
-.. seealso:: :py:func:`links()`
+.. seealso:: :py:func:`links`
 
-.. seealso:: :py:func:`setLinks()`
+.. seealso:: :py:func:`setLinks`
 %End
 
     void saveToLayer( QgsMapLayer *layer ) const;
 %Docstring
 Saves the metadata to a ``layer``'s custom properties (see QgsMapLayer.setCustomProperty() ).
 
-.. seealso:: :py:func:`readFromLayer()`
+.. seealso:: :py:func:`readFromLayer`
 %End
 
     void readFromLayer( const QgsMapLayer *layer );
 %Docstring
 Reads the metadata state from a ``layer``'s custom properties (see QgsMapLayer.customProperty() ).
 
-.. seealso:: :py:func:`saveToLayer()`
+.. seealso:: :py:func:`saveToLayer`
 %End
 
     bool readMetadataXml( const QDomElement &metadataElement );

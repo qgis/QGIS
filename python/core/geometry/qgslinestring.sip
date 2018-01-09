@@ -81,7 +81,7 @@ Returns the z-coordinate of the specified node in the line string.
 :return: z-coordinate of node, or ``nan`` if index is out of bounds or the line
 does not have a z dimension
 
-.. seealso:: :py:func:`setZAt()`
+.. seealso:: :py:func:`setZAt`
 %End
 
     double mAt( int index ) const;
@@ -93,7 +93,7 @@ Returns the m value of the specified node in the line string.
 :return: m value of node, or ``nan`` if index is out of bounds or the line
 does not have m values
 
-.. seealso:: :py:func:`setMAt()`
+.. seealso:: :py:func:`setMAt`
 %End
 
     void setXAt( int index, double x );
@@ -104,7 +104,7 @@ Sets the x-coordinate of the specified node in the line string.
 node must already exist in line string.
 :param x: x-coordinate of node
 
-.. seealso:: :py:func:`xAt()`
+.. seealso:: :py:func:`xAt`
 %End
 
     void setYAt( int index, double y );
@@ -115,7 +115,7 @@ Sets the y-coordinate of the specified node in the line string.
 node must already exist in line string.
 :param y: y-coordinate of node
 
-.. seealso:: :py:func:`yAt()`
+.. seealso:: :py:func:`yAt`
 %End
 
     void setZAt( int index, double z );
@@ -126,7 +126,7 @@ Sets the z-coordinate of the specified node in the line string.
 node must already exist in line string, and the line string must have z-dimension.
 :param z: z-coordinate of node
 
-.. seealso:: :py:func:`zAt()`
+.. seealso:: :py:func:`zAt`
 %End
 
     void setMAt( int index, double m );
@@ -137,7 +137,7 @@ Sets the m value of the specified node in the line string.
 node must already exist in line string, and the line string must have m values.
 :param m: m value of node
 
-.. seealso:: :py:func:`mAt()`
+.. seealso:: :py:func:`mAt`
 %End
 
     void setPoints( const QgsPointSequence &points );

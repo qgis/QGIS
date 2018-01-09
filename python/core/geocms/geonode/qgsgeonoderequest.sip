@@ -73,7 +73,7 @@ Calling this method does not block while waiting for a result.
 overlapping requests results in undefined behavior. Use separate instances
 of QgsGeoNodeRequest instead to avoid this.
 
-.. seealso:: :py:func:`requestBlocking()`
+.. seealso:: :py:func:`requestBlocking`
 %End
 
     bool requestBlocking( const QString &endPoint );
@@ -84,7 +84,7 @@ Any existing request will be aborted.
 Calling this method will block while waiting for a result. It should not be
 used from any code which potentially blocks operation in the main GUI thread.
 
-.. seealso:: :py:func:`request()`
+.. seealso:: :py:func:`request`
 %End
 
     void fetchLayers();
@@ -101,9 +101,9 @@ This method is non-blocking and returns immediately.
 overlapping requests results in undefined behavior. Use separate instances
 of QgsGeoNodeRequest instead to avoid this.
 
-.. seealso:: :py:func:`layersFetched()`
+.. seealso:: :py:func:`layersFetched`
 
-.. seealso:: :py:func:`fetchLayersBlocking()`
+.. seealso:: :py:func:`fetchLayersBlocking`
 %End
 
     QList<QgsGeoNodeRequest::ServiceLayerDetail> fetchLayersBlocking();
@@ -113,7 +113,7 @@ Requests the list of available layers from the server.
 This method is blocking and will wait for results from the server before returning.
 Accordingly it should not be used from any code which potentially blocks operation in the main GUI thread.
 
-.. seealso:: :py:func:`fetchLayers()`
+.. seealso:: :py:func:`fetchLayers`
 %End
 
     QList<QgsGeoNodeStyle> fetchStylesBlocking( const QString &layerName );
@@ -172,14 +172,14 @@ Returns the most recent response obtained from the server.
 %Docstring
 Returns the network protocol (e.g. 'http') used for connecting with the server.
 
-.. seealso:: :py:func:`setProtocol()`
+.. seealso:: :py:func:`setProtocol`
 %End
 
     void setProtocol( const QString &protocol );
 %Docstring
 Sets the network ``protocol`` (e.g. 'http') used for connecting with the server.
 
-.. seealso:: :py:func:`protocol()`
+.. seealso:: :py:func:`protocol`
 %End
 
   public slots:

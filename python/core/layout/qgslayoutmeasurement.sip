@@ -38,21 +38,21 @@ Constructor for QgsLayoutMeasurement.
 %Docstring
 Returns the length of the measurement.
 
-.. seealso:: :py:func:`setLength()`
+.. seealso:: :py:func:`setLength`
 %End
 
     void setLength( const double length );
 %Docstring
 Sets the ``length`` of the measurement.
 
-.. seealso:: :py:func:`length()`
+.. seealso:: :py:func:`length`
 %End
 
     QgsUnitTypes::LayoutUnit units() const;
 %Docstring
 Returns the units for the measurement.
 
-.. seealso:: :py:func:`setUnits()`
+.. seealso:: :py:func:`setUnits`
 %End
 
     void setUnits( const QgsUnitTypes::LayoutUnit units );
@@ -60,21 +60,21 @@ Returns the units for the measurement.
 Sets the ``units`` for the measurement. Does not alter the stored length,
 ie. no length conversion is done.
 
-.. seealso:: :py:func:`units()`
+.. seealso:: :py:func:`units`
 %End
 
     QString encodeMeasurement() const;
 %Docstring
 Encodes the layout measurement to a string
 
-.. seealso:: :py:func:`decodeMeasurement()`
+.. seealso:: :py:func:`decodeMeasurement`
 %End
 
     static QgsLayoutMeasurement decodeMeasurement( const QString &string );
 %Docstring
 Decodes a measurement from a ``string``.
 
-.. seealso:: :py:func:`encodeMeasurement()`
+.. seealso:: :py:func:`encodeMeasurement`
 %End
 
     bool operator==( const QgsLayoutMeasurement &other ) const;

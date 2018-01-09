@@ -48,11 +48,11 @@ flags will be cleared;
 
 :param flags: available flags to show in widget
 
-.. seealso:: :py:func:`availableFlags()`
+.. seealso:: :py:func:`availableFlags`
 
-.. seealso:: :py:func:`setActiveFlags()`
+.. seealso:: :py:func:`setActiveFlags`
 
-.. seealso:: :py:func:`setDefaultFlags()`
+.. seealso:: :py:func:`setDefaultFlags`
 %End
 
     void setDefaultFlags( QgsSearchWidgetWrapper::FilterFlags flags );
@@ -61,18 +61,18 @@ Sets the default filter flags to show in the widget.
 
 :param flags: default flags to show in widget
 
-.. seealso:: :py:func:`setAvailableFlags()`
+.. seealso:: :py:func:`setAvailableFlags`
 
-.. seealso:: :py:func:`setActiveFlags()`
+.. seealso:: :py:func:`setActiveFlags`
 %End
 
     QgsSearchWidgetWrapper::FilterFlags availableFlags() const;
 %Docstring
 Returns the available filter flags shown in the widget.
 
-.. seealso:: :py:func:`setAvailableFlags()`
+.. seealso:: :py:func:`setAvailableFlags`
 
-.. seealso:: :py:func:`activeFlags()`
+.. seealso:: :py:func:`activeFlags`
 %End
 
     void setActiveFlags( QgsSearchWidgetWrapper::FilterFlags flags );
@@ -83,11 +83,11 @@ will not be set.
 
 :param flags: active flags to show in widget
 
-.. seealso:: :py:func:`toggleFlag()`
+.. seealso:: :py:func:`toggleFlag`
 
-.. seealso:: :py:func:`activeFlags()`
+.. seealso:: :py:func:`activeFlags`
 
-.. seealso:: :py:func:`setAvailableFlags()`
+.. seealso:: :py:func:`setAvailableFlags`
 %End
 
     void toggleFlag( QgsSearchWidgetWrapper::FilterFlag flag );
@@ -99,29 +99,29 @@ toggled flag.
 
 :param flag: flag to toggle
 
-.. seealso:: :py:func:`setActiveFlags()`
+.. seealso:: :py:func:`setActiveFlags`
 
-.. seealso:: :py:func:`activeFlags()`
+.. seealso:: :py:func:`activeFlags`
 %End
 
     QgsSearchWidgetWrapper::FilterFlags activeFlags() const;
 %Docstring
 Returns the active filter flags shown in the widget.
 
-.. seealso:: :py:func:`setActiveFlags()`
+.. seealso:: :py:func:`setActiveFlags`
 
-.. seealso:: :py:func:`toggleFlag()`
+.. seealso:: :py:func:`toggleFlag`
 
-.. seealso:: :py:func:`availableFlags()`
+.. seealso:: :py:func:`availableFlags`
 %End
 
     bool isActive() const;
 %Docstring
 Returns true if the widget is set to be included in the search.
 
-.. seealso:: :py:func:`setInactive()`
+.. seealso:: :py:func:`setInactive`
 
-.. seealso:: :py:func:`setActive()`
+.. seealso:: :py:func:`setActive`
 %End
 
   public slots:
@@ -130,18 +130,18 @@ Returns true if the widget is set to be included in the search.
 %Docstring
 Sets the search widget as inactive, ie do not search the corresponding field.
 
-.. seealso:: :py:func:`isActive()`
+.. seealso:: :py:func:`isActive`
 
-.. seealso:: :py:func:`setActive()`
+.. seealso:: :py:func:`setActive`
 %End
 
     void setActive();
 %Docstring
 Sets the search widget as active by selecting the first available search type.
 
-.. seealso:: :py:func:`isActive()`
+.. seealso:: :py:func:`isActive`
 
-.. seealso:: :py:func:`setInactive()`
+.. seealso:: :py:func:`setInactive`
 %End
 
   signals:

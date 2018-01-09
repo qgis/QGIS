@@ -85,7 +85,7 @@ is disabled.
 Before calling this, ensure that the correct root location has been set via
 calling setRootLocation().
 
-.. seealso:: :py:func:`isNewProfileNotificationEnabled()`
+.. seealso:: :py:func:`isNewProfileNotificationEnabled`
 %End
 
     bool isNewProfileNotificationEnabled() const;
@@ -94,7 +94,7 @@ Returns whether the manager is watching for the creation of new user profiles an
 the profilesChanged() signal when this occurs. By default new profile notification
 is disabled.
 
-.. seealso:: :py:func:`setNewProfileNotificationEnabled()`
+.. seealso:: :py:func:`setNewProfileNotificationEnabled`
 %End
 
     bool rootLocationIsSet() const;
@@ -208,9 +208,9 @@ Emitted when the list of profiles is changed.
 This signal will only be emitted when isNewProfileNotificationEnabled() is true.
 By default new profile notification is disabled.
 
-.. seealso:: :py:func:`isNewProfileNotificationEnabled()`
+.. seealso:: :py:func:`isNewProfileNotificationEnabled`
 
-.. seealso:: :py:func:`setNewProfileNotificationEnabled()`
+.. seealso:: :py:func:`setNewProfileNotificationEnabled`
 %End
 
 };

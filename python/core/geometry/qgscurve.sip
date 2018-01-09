@@ -167,7 +167,7 @@ Returns the x-coordinate of the specified node in the line string.
 
 :return: x-coordinate of node, or 0.0 if index is out of bounds
 
-.. seealso:: :py:func:`setXAt()`
+.. seealso:: :py:func:`setXAt`
 %End
 
     virtual double yAt( int index ) const = 0;
@@ -178,7 +178,7 @@ Returns the y-coordinate of the specified node in the line string.
 
 :return: y-coordinate of node, or 0.0 if index is out of bounds
 
-.. seealso:: :py:func:`setYAt()`
+.. seealso:: :py:func:`setYAt`
 %End
 
     QPolygonF asQPolygonF() const;

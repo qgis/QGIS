@@ -86,7 +86,7 @@ Copy constructor
 %Docstring
 Returns the diagram placement.
 
-.. seealso:: :py:func:`setPlacement()`
+.. seealso:: :py:func:`setPlacement`
 
 .. versionadded:: 2.16
 %End
@@ -97,7 +97,7 @@ Sets the diagram placement.
 
 :param value: placement value
 
-.. seealso:: :py:func:`placement()`
+.. seealso:: :py:func:`placement`
 
 .. versionadded:: 2.16
 %End
@@ -107,7 +107,7 @@ Sets the diagram placement.
 Returns the diagram placement flags. These are only used if the diagram placement
 is set to a line type.
 
-.. seealso:: :py:func:`setLinePlacementFlags()`
+.. seealso:: :py:func:`setLinePlacementFlags`
 
 .. versionadded:: 2.16
 %End
@@ -119,7 +119,7 @@ is set to a line type.
 
 :param flags: placement value
 
-.. seealso:: :py:func:`getPlacement()`
+.. seealso:: :py:func:`getPlacement`
 
 .. versionadded:: 2.16
 %End
@@ -135,7 +135,7 @@ Returns the diagram priority.
    placement priority is shared with labeling, so diagrams with a high priority may displace labels
 and vice-versa
 
-.. seealso:: :py:func:`setPriority()`
+.. seealso:: :py:func:`setPriority`
 
 .. versionadded:: 2.16
 %End
@@ -146,7 +146,7 @@ Sets the diagram priority.
 
 :param value: priority, where 0 = low and 10 = high
 
-.. seealso:: :py:func:`priority()`
+.. seealso:: :py:func:`priority`
 
 .. versionadded:: 2.16
 %End
@@ -161,7 +161,7 @@ with a lower z-index.
    z-index ordering is shared with labeling, so diagrams with a high z-index may be drawn over labels
 with a low z-index and vice-versa
 
-.. seealso:: :py:func:`setZIndex()`
+.. seealso:: :py:func:`setZIndex`
 
 .. versionadded:: 2.16
 %End
@@ -173,7 +173,7 @@ with a lower z-index.
 
 :param index: diagram z-index
 
-.. seealso:: :py:func:`zIndex()`
+.. seealso:: :py:func:`zIndex`
 
 .. versionadded:: 2.16
 %End
@@ -182,7 +182,7 @@ with a lower z-index.
 %Docstring
 Returns whether the feature associated with a diagram acts as an obstacle for other labels or diagrams.
 
-.. seealso:: :py:func:`setIsObstacle()`
+.. seealso:: :py:func:`setIsObstacle`
 
 .. versionadded:: 2.16
 %End
@@ -193,7 +193,7 @@ Sets whether the feature associated with a diagram acts as an obstacle for other
 
 :param isObstacle: set to true for feature to act as obstacle
 
-.. seealso:: :py:func:`isObstacle()`
+.. seealso:: :py:func:`isObstacle`
 
 .. versionadded:: 2.16
 %End
@@ -202,7 +202,7 @@ Sets whether the feature associated with a diagram acts as an obstacle for other
 %Docstring
 Returns the distance between the diagram and the feature (in mm).
 
-.. seealso:: :py:func:`setDistance()`
+.. seealso:: :py:func:`setDistance`
 
 .. versionadded:: 2.16
 %End
@@ -213,7 +213,7 @@ Sets the distance between the diagram and the feature.
 
 :param distance: distance in mm
 
-.. seealso:: :py:func:`distance()`
+.. seealso:: :py:func:`distance`
 
 .. versionadded:: 2.16
 %End
@@ -222,7 +222,7 @@ Sets the distance between the diagram and the feature.
 %Docstring
 Returns the diagram renderer associated with the layer.
 
-.. seealso:: :py:func:`setRenderer()`
+.. seealso:: :py:func:`setRenderer`
 
 .. versionadded:: 2.16
 %End
@@ -234,7 +234,7 @@ Sets the diagram renderer associated with the layer.
 
 :param diagramRenderer: diagram renderer. Ownership is transferred to the object.
 
-.. seealso:: :py:func:`renderer()`
+.. seealso:: :py:func:`renderer`
 
 .. versionadded:: 2.16
 %End
@@ -244,7 +244,7 @@ Sets the diagram renderer associated with the layer.
 Returns the coordinate transform associated with the layer, or an
 invalid transform if no transformation is required.
 
-.. seealso:: :py:func:`setCoordinateTransform()`
+.. seealso:: :py:func:`setCoordinateTransform`
 
 .. versionadded:: 2.16
 %End
@@ -255,7 +255,7 @@ Sets the coordinate transform associated with the layer.
 
 :param transform: coordinate transform. Ownership is transferred to the object.
 
-.. seealso:: :py:func:`coordinateTransform()`
+.. seealso:: :py:func:`coordinateTransform`
 
 .. versionadded:: 2.16
 %End
@@ -264,7 +264,7 @@ Sets the coordinate transform associated with the layer.
 %Docstring
 Returns whether the layer should show all diagrams, including overlapping diagrams
 
-.. seealso:: :py:func:`setShowAllDiagrams()`
+.. seealso:: :py:func:`setShowAllDiagrams`
 
 .. versionadded:: 2.16
 %End
@@ -275,7 +275,7 @@ Sets whether the layer should show all diagrams, including overlapping diagrams
 
 :param showAllDiagrams: set to true to show all diagrams
 
-.. seealso:: :py:func:`showAllDiagrams()`
+.. seealso:: :py:func:`showAllDiagrams`
 
 .. versionadded:: 2.16
 %End
@@ -284,14 +284,14 @@ Sets whether the layer should show all diagrams, including overlapping diagrams
 %Docstring
 Reads the diagram settings from a DOM element.
 
-.. seealso:: :py:func:`writeXml()`
+.. seealso:: :py:func:`writeXml`
 %End
 
     void writeXml( QDomElement &layerElem, QDomDocument &doc ) const;
 %Docstring
 Writes the diagram settings to a DOM element.
 
-.. seealso:: :py:func:`readXml()`
+.. seealso:: :py:func:`readXml`
 %End
 
     bool prepare( const QgsExpressionContext &context = QgsExpressionContext() ) const;
@@ -318,7 +318,7 @@ Returns a reference to the diagram's property collection, used for data defined 
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`setDataDefinedProperties()`
+.. seealso:: :py:func:`setDataDefinedProperties`
 %End
 
 
@@ -330,7 +330,7 @@ Sets the diagram's property collection, used for data defined overrides.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`dataDefinedProperties()`
+.. seealso:: :py:func:`dataDefinedProperties`
 %End
 
 };
@@ -521,7 +521,7 @@ Returns list with all diagram settings in the renderer
 Reads diagram state from a DOM element. Subclasses should ensure that _readXml() is called
 by their readXml implementation to restore the general QgsDiagramRenderer settings.
 
-.. seealso:: :py:func:`writeXml()`
+.. seealso:: :py:func:`writeXml`
 %End
 
     virtual void writeXml( QDomElement &layerElem, QDomDocument &doc, const QgsReadWriteContext &context ) const = 0;
@@ -529,7 +529,7 @@ by their readXml implementation to restore the general QgsDiagramRenderer settin
 Writes diagram state to a DOM element. Subclasses should ensure that _writeXml() is called
 by their writeXml implementation to save the general QgsDiagramRenderer settings.
 
-.. seealso:: :py:func:`readXml()`
+.. seealso:: :py:func:`readXml`
 %End
 
     virtual QList< QgsLayerTreeModelLegendNode * > legendItems( QgsLayerTreeLayer *nodeLayer ) const /Factory/;
@@ -549,9 +549,9 @@ Returns true if renderer will show legend items for diagram attributes.
 
 .. versionadded:: 2.16
 
-.. seealso:: :py:func:`setAttributeLegend()`
+.. seealso:: :py:func:`setAttributeLegend`
 
-.. seealso:: :py:func:`sizeLegend()`
+.. seealso:: :py:func:`sizeLegend`
 %End
 
     void setAttributeLegend( bool enabled );
@@ -562,9 +562,9 @@ Sets whether the renderer will show legend items for diagram attributes.
 
 .. versionadded:: 2.16
 
-.. seealso:: :py:func:`attributeLegend()`
+.. seealso:: :py:func:`attributeLegend`
 
-.. seealso:: :py:func:`setSizeLegend()`
+.. seealso:: :py:func:`setSizeLegend`
 %End
 
   protected:
@@ -599,14 +599,14 @@ Returns the paint device dpi (or -1 in case of error
 %Docstring
 Reads internal QgsDiagramRenderer state from a DOM element.
 
-.. seealso:: _writeXml()
+.. seealso:: _writeXml
 %End
 
     void _writeXml( QDomElement &rendererElem, QDomDocument &doc, const QgsReadWriteContext &context ) const;
 %Docstring
 Writes internal QgsDiagramRenderer diagram state to a DOM element.
 
-.. seealso:: _readXml()
+.. seealso:: _readXml
 %End
 
 
@@ -702,7 +702,7 @@ Returns list with all diagram settings in the renderer
 %Docstring
 Returns the field name used for interpolating the diagram size.
 
-.. seealso:: :py:func:`setClassificationField()`
+.. seealso:: :py:func:`setClassificationField`
 
 .. versionadded:: 3.0
 %End
@@ -711,7 +711,7 @@ Returns the field name used for interpolating the diagram size.
 %Docstring
 Sets the field name used for interpolating the diagram size.
 
-.. seealso:: :py:func:`classificationField()`
+.. seealso:: :py:func:`classificationField`
 
 .. versionadded:: 3.0
 %End

@@ -96,7 +96,7 @@ Returns a list of exclusive filter flags, which cannot be combined with other fl
 
 .. versionadded:: 2.16
 
-.. seealso:: :py:func:`nonExclusiveFilterFlags()`
+.. seealso:: :py:func:`nonExclusiveFilterFlags`
 %End
 
     static QList< QgsSearchWidgetWrapper::FilterFlag > nonExclusiveFilterFlags();
@@ -105,7 +105,7 @@ Returns a list of non-exclusive filter flags, which can be combined with other f
 
 .. versionadded:: 2.16
 
-.. seealso:: :py:func:`exclusiveFilterFlags()`
+.. seealso:: :py:func:`exclusiveFilterFlags`
 %End
 
     static QString toString( QgsSearchWidgetWrapper::FilterFlag flag );
@@ -132,7 +132,7 @@ Returns filter flags supported by the search widget.
 
 .. versionadded:: 2.16
 
-.. seealso:: :py:func:`defaultFlags()`
+.. seealso:: :py:func:`defaultFlags`
 %End
 
     virtual FilterFlags defaultFlags() const;
@@ -141,7 +141,7 @@ Returns the filter flags which should be set by default for the search widget.
 
 .. versionadded:: 2.16
 
-.. seealso:: :py:func:`supportedFlags()`
+.. seealso:: :py:func:`supportedFlags`
 %End
 
     virtual QString expression() const = 0;

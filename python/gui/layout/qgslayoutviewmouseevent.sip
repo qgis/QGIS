@@ -56,7 +56,7 @@ The ``ignoreItems`` argument can be used to specify a list of items to avoid sna
 %Docstring
 Returns the event point location in layout coordinates.
 
-.. seealso:: :py:func:`pos()`
+.. seealso:: :py:func:`pos`
 %End
 
     QPointF snappedPoint() const;
@@ -64,16 +64,16 @@ Returns the event point location in layout coordinates.
 Returns the snapped event point location in layout coordinates. The snapped point will consider
 all possible snapping methods, such as snapping to grid or guide lines.
 
-.. seealso:: :py:func:`isSnapped()`
+.. seealso:: :py:func:`isSnapped`
 
-.. seealso:: :py:func:`pos()`
+.. seealso:: :py:func:`pos`
 %End
 
     bool isSnapped() const;
 %Docstring
 Returns true if point was snapped, e.g. to grid or guide lines.
 
-.. seealso:: :py:func:`snappedPoint()`
+.. seealso:: :py:func:`snappedPoint`
 %End
 
 };

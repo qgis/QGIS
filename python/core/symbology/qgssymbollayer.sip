@@ -146,7 +146,7 @@ Returns true if symbol layer is enabled and will be drawn.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`setEnabled()`
+.. seealso:: :py:func:`setEnabled`
 %End
 
     void setEnabled( bool enabled );
@@ -157,7 +157,7 @@ when desired.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`enabled()`
+.. seealso:: :py:func:`enabled`
 %End
 
     virtual QColor color() const;
@@ -263,7 +263,7 @@ layer may use it to specify the units for the line width.
 
 :param unit: output units
 
-.. seealso:: :py:func:`outputUnit()`
+.. seealso:: :py:func:`outputUnit`
 %End
 
     virtual QgsUnitTypes::RenderUnit outputUnit() const;
@@ -275,7 +275,7 @@ layer may use it to specify the units for the line width.
 
 :return: output unit, or QgsUnitTypes.RenderUnknownUnit if the symbol layer contains mixed units
 
-.. seealso:: :py:func:`setOutputUnit()`
+.. seealso:: :py:func:`setOutputUnit`
 %End
 
     virtual void setMapUnitScale( const QgsMapUnitScale &scale );
@@ -385,7 +385,7 @@ Returns a reference to the symbol layer's property collection, used for data def
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`setProperties()`
+.. seealso:: :py:func:`setProperties`
 %End
 
 
@@ -397,7 +397,7 @@ Sets the symbol layer's property collection, used for data defined overrides.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`properties()`
+.. seealso:: :py:func:`properties`
 %End
 
   protected:
@@ -482,16 +482,16 @@ Sets the rotation angle for the marker.
 
 :param angle: angle in degrees clockwise from north.
 
-.. seealso:: :py:func:`angle()`
+.. seealso:: :py:func:`angle`
 
-.. seealso:: :py:func:`setLineAngle()`
+.. seealso:: :py:func:`setLineAngle`
 %End
 
     double angle() const;
 %Docstring
 Returns the rotation angle for the marker, in degrees clockwise from north.
 
-.. seealso:: :py:func:`setAngle()`
+.. seealso:: :py:func:`setAngle`
 %End
 
     void setLineAngle( double lineAngle );
@@ -504,9 +504,9 @@ is usually used for orienting symbols to match a line's angle.
 
 .. versionadded:: 2.9
 
-.. seealso:: :py:func:`setAngle()`
+.. seealso:: :py:func:`setAngle`
 
-.. seealso:: :py:func:`angle()`
+.. seealso:: :py:func:`angle`
 %End
 
     void setSize( double size );
@@ -515,22 +515,22 @@ Sets the symbol size.
 
 :param size: symbol size. Units are specified by sizeUnit().
 
-.. seealso:: :py:func:`size()`
+.. seealso:: :py:func:`size`
 
-.. seealso:: :py:func:`setSizeUnit()`
+.. seealso:: :py:func:`setSizeUnit`
 
-.. seealso:: :py:func:`setSizeMapUnitScale()`
+.. seealso:: :py:func:`setSizeMapUnitScale`
 %End
 
     double size() const;
 %Docstring
 Returns the symbol size. Units are specified by sizeUnit().
 
-.. seealso:: :py:func:`setSize()`
+.. seealso:: :py:func:`setSize`
 
-.. seealso:: :py:func:`sizeUnit()`
+.. seealso:: :py:func:`sizeUnit`
 
-.. seealso:: :py:func:`sizeUnitMapScale()`
+.. seealso:: :py:func:`sizeUnitMapScale`
 %End
 
     void setSizeUnit( QgsUnitTypes::RenderUnit unit );
@@ -539,22 +539,22 @@ Sets the units for the symbol's size.
 
 :param unit: size units
 
-.. seealso:: :py:func:`sizeUnit()`
+.. seealso:: :py:func:`sizeUnit`
 
-.. seealso:: :py:func:`setSize()`
+.. seealso:: :py:func:`setSize`
 
-.. seealso:: :py:func:`setSizeMapUnitScale()`
+.. seealso:: :py:func:`setSizeMapUnitScale`
 %End
 
     QgsUnitTypes::RenderUnit sizeUnit() const;
 %Docstring
 Returns the units for the symbol's size.
 
-.. seealso:: :py:func:`setSizeUnit()`
+.. seealso:: :py:func:`setSizeUnit`
 
-.. seealso:: :py:func:`size()`
+.. seealso:: :py:func:`size`
 
-.. seealso:: :py:func:`sizeMapUnitScale()`
+.. seealso:: :py:func:`sizeMapUnitScale`
 %End
 
     void setSizeMapUnitScale( const QgsMapUnitScale &scale );
@@ -563,22 +563,22 @@ Sets the map unit scale for the symbol's size.
 
 :param scale: size map unit scale
 
-.. seealso:: :py:func:`sizeMapUnitScale()`
+.. seealso:: :py:func:`sizeMapUnitScale`
 
-.. seealso:: :py:func:`setSize()`
+.. seealso:: :py:func:`setSize`
 
-.. seealso:: :py:func:`setSizeUnit()`
+.. seealso:: :py:func:`setSizeUnit`
 %End
 
     const QgsMapUnitScale &sizeMapUnitScale() const;
 %Docstring
 Returns the map unit scale for the symbol's size.
 
-.. seealso:: :py:func:`setSizeMapUnitScale()`
+.. seealso:: :py:func:`setSizeMapUnitScale`
 
-.. seealso:: :py:func:`size()`
+.. seealso:: :py:func:`size`
 
-.. seealso:: :py:func:`sizeUnit()`
+.. seealso:: :py:func:`sizeUnit`
 %End
 
     void setScaleMethod( QgsSymbol::ScaleMethod scaleMethod );
@@ -587,14 +587,14 @@ Sets the method to use for scaling the marker's size.
 
 :param scaleMethod: scale method
 
-.. seealso:: :py:func:`scaleMethod()`
+.. seealso:: :py:func:`scaleMethod`
 %End
 
     QgsSymbol::ScaleMethod scaleMethod() const;
 %Docstring
 Returns the method to use for scaling the marker's size.
 
-.. seealso:: :py:func:`setScaleMethod()`
+.. seealso:: :py:func:`setScaleMethod`
 %End
 
     void setOffset( QPointF offset );
@@ -604,11 +604,11 @@ should have from the original feature's geometry.
 
 :param offset: marker offset. Units are specified by offsetUnit()
 
-.. seealso:: :py:func:`offset()`
+.. seealso:: :py:func:`offset`
 
-.. seealso:: :py:func:`setOffsetUnit()`
+.. seealso:: :py:func:`setOffsetUnit`
 
-.. seealso:: :py:func:`setOffsetMapUnitScale()`
+.. seealso:: :py:func:`setOffsetMapUnitScale`
 %End
 
     QPointF offset() const;
@@ -616,11 +616,11 @@ should have from the original feature's geometry.
 Returns the marker's offset, which is the horizontal and vertical displacement which the rendered marker
 will have from the original feature's geometry. Units are specified by offsetUnit().
 
-.. seealso:: :py:func:`setOffset()`
+.. seealso:: :py:func:`setOffset`
 
-.. seealso:: :py:func:`offsetUnit()`
+.. seealso:: :py:func:`offsetUnit`
 
-.. seealso:: :py:func:`offsetMapUnitScale()`
+.. seealso:: :py:func:`offsetMapUnitScale`
 %End
 
     void setOffsetUnit( QgsUnitTypes::RenderUnit unit );
@@ -629,22 +629,22 @@ Sets the units for the symbol's offset.
 
 :param unit: offset units
 
-.. seealso:: :py:func:`offsetUnit()`
+.. seealso:: :py:func:`offsetUnit`
 
-.. seealso:: :py:func:`setOffset()`
+.. seealso:: :py:func:`setOffset`
 
-.. seealso:: :py:func:`setOffsetMapUnitScale()`
+.. seealso:: :py:func:`setOffsetMapUnitScale`
 %End
 
     QgsUnitTypes::RenderUnit offsetUnit() const;
 %Docstring
 Returns the units for the symbol's offset.
 
-.. seealso:: :py:func:`setOffsetUnit()`
+.. seealso:: :py:func:`setOffsetUnit`
 
-.. seealso:: :py:func:`offset()`
+.. seealso:: :py:func:`offset`
 
-.. seealso:: :py:func:`offsetMapUnitScale()`
+.. seealso:: :py:func:`offsetMapUnitScale`
 %End
 
     void setOffsetMapUnitScale( const QgsMapUnitScale &scale );
@@ -653,22 +653,22 @@ Sets the map unit scale for the symbol's offset.
 
 :param scale: offset map unit scale
 
-.. seealso:: :py:func:`offsetMapUnitScale()`
+.. seealso:: :py:func:`offsetMapUnitScale`
 
-.. seealso:: :py:func:`setOffset()`
+.. seealso:: :py:func:`setOffset`
 
-.. seealso:: :py:func:`setOffsetUnit()`
+.. seealso:: :py:func:`setOffsetUnit`
 %End
 
     const QgsMapUnitScale &offsetMapUnitScale() const;
 %Docstring
 Returns the map unit scale for the symbol's offset.
 
-.. seealso:: :py:func:`setOffsetMapUnitScale()`
+.. seealso:: :py:func:`setOffsetMapUnitScale`
 
-.. seealso:: :py:func:`offset()`
+.. seealso:: :py:func:`offset`
 
-.. seealso:: :py:func:`offsetUnit()`
+.. seealso:: :py:func:`offsetUnit`
 %End
 
     void setHorizontalAnchorPoint( HorizontalAnchorPoint h );
@@ -678,9 +678,9 @@ Sets the horizontal anchor point for positioning the symbol.
 :param h: anchor point. Symbol will be drawn so that the horizontal anchor point is aligned with
 the marker's desired location.
 
-.. seealso:: :py:func:`horizontalAnchorPoint()`
+.. seealso:: :py:func:`horizontalAnchorPoint`
 
-.. seealso:: :py:func:`setVerticalAnchorPoint()`
+.. seealso:: :py:func:`setVerticalAnchorPoint`
 %End
 
     HorizontalAnchorPoint horizontalAnchorPoint() const;
@@ -688,9 +688,9 @@ the marker's desired location.
 Returns the horizontal anchor point for positioning the symbol. The symbol will be drawn so that
 the horizontal anchor point is aligned with the marker's desired location.
 
-.. seealso:: :py:func:`setHorizontalAnchorPoint()`
+.. seealso:: :py:func:`setHorizontalAnchorPoint`
 
-.. seealso:: :py:func:`verticalAnchorPoint()`
+.. seealso:: :py:func:`verticalAnchorPoint`
 %End
 
     void setVerticalAnchorPoint( VerticalAnchorPoint v );
@@ -700,9 +700,9 @@ Sets the vertical anchor point for positioning the symbol.
 :param v: anchor point. Symbol will be drawn so that the vertical anchor point is aligned with
 the marker's desired location.
 
-.. seealso:: :py:func:`verticalAnchorPoint()`
+.. seealso:: :py:func:`verticalAnchorPoint`
 
-.. seealso:: :py:func:`setHorizontalAnchorPoint()`
+.. seealso:: :py:func:`setHorizontalAnchorPoint`
 %End
 
     VerticalAnchorPoint verticalAnchorPoint() const;
@@ -710,9 +710,9 @@ the marker's desired location.
 Returns the vertical anchor point for positioning the symbol. The symbol will be drawn so that
 the vertical anchor point is aligned with the marker's desired location.
 
-.. seealso:: :py:func:`setVerticalAnchorPoint()`
+.. seealso:: :py:func:`setVerticalAnchorPoint`
 
-.. seealso:: :py:func:`horizontalAnchorPoint()`
+.. seealso:: :py:func:`horizontalAnchorPoint`
 %End
 
     virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const;
@@ -828,14 +828,14 @@ Sets the units for the line's width.
 
 :param unit: width units
 
-.. seealso:: :py:func:`widthUnit()`
+.. seealso:: :py:func:`widthUnit`
 %End
 
     QgsUnitTypes::RenderUnit widthUnit() const;
 %Docstring
 Returns the units for the line's width.
 
-.. seealso:: :py:func:`setWidthUnit()`
+.. seealso:: :py:func:`setWidthUnit`
 %End
 
     void setWidthMapUnitScale( const QgsMapUnitScale &scale );
@@ -847,14 +847,14 @@ Sets the units for the line's offset.
 
 :param unit: offset units
 
-.. seealso:: :py:func:`offsetUnit()`
+.. seealso:: :py:func:`offsetUnit`
 %End
 
     QgsUnitTypes::RenderUnit offsetUnit() const;
 %Docstring
 Returns the units for the line's offset.
 
-.. seealso:: :py:func:`setOffsetUnit()`
+.. seealso:: :py:func:`setOffsetUnit`
 %End
 
     void setOffsetMapUnitScale( const QgsMapUnitScale &scale );

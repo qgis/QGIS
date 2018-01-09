@@ -76,7 +76,7 @@ and outputs according to this configuration. This is generally used only for
 algorithms in a model, allowing them to adjust their behavior at run time
 according to some user configuration.
 
-.. seealso:: :py:func:`initAlgorithm()`
+.. seealso:: :py:func:`initAlgorithm`
 %End
 
     virtual QString name() const = 0;
@@ -86,11 +86,11 @@ should be fixed for the algorithm, and must not be localised. The name should
 be unique within each provider. Names should contain lowercase alphanumeric characters
 only and no spaces or other formatting characters.
 
-.. seealso:: :py:func:`displayName()`
+.. seealso:: :py:func:`displayName`
 
-.. seealso:: :py:func:`group()`
+.. seealso:: :py:func:`group`
 
-.. seealso:: :py:func:`tags()`
+.. seealso:: :py:func:`tags`
 %End
 
     QString id() const;
@@ -98,9 +98,9 @@ only and no spaces or other formatting characters.
 Returns the unique ID for the algorithm, which is a combination of the algorithm
 provider's ID and the algorithms unique name (e.g. "qgis:mergelayers" ).
 
-.. seealso:: :py:func:`name()`
+.. seealso:: :py:func:`name`
 
-.. seealso:: :py:func:`provider()`
+.. seealso:: :py:func:`provider`
 %End
 
     virtual QString displayName() const = 0;
@@ -108,7 +108,7 @@ provider's ID and the algorithms unique name (e.g. "qgis:mergelayers" ).
 Returns the translated algorithm name, which should be used for any user-visible display
 of the algorithm name.
 
-.. seealso:: :py:func:`name()`
+.. seealso:: :py:func:`name`
 %End
 
     virtual QStringList tags() const;
@@ -122,9 +122,9 @@ for suitable algorithms. These tags should be localised.
 Returns a localised short helper string for the algorithm. This string should provide a basic description
 about what the algorithm does and the parameters and outputs associated with it.
 
-.. seealso:: :py:func:`helpString()`
+.. seealso:: :py:func:`helpString`
 
-.. seealso:: :py:func:`helpUrl()`
+.. seealso:: :py:func:`helpUrl`
 %End
 
     virtual QString helpString() const;
@@ -132,32 +132,32 @@ about what the algorithm does and the parameters and outputs associated with it.
 Returns a localised help string for the algorithm. Algorithm subclasses should implement either
 helpString() or helpUrl().
 
-.. seealso:: :py:func:`helpUrl()`
+.. seealso:: :py:func:`helpUrl`
 
-.. seealso:: :py:func:`shortHelpString()`
+.. seealso:: :py:func:`shortHelpString`
 %End
 
     virtual QString helpUrl() const;
 %Docstring
 Returns a url pointing to the algorithm's help page.
 
-.. seealso:: :py:func:`helpString()`
+.. seealso:: :py:func:`helpString`
 
-.. seealso:: :py:func:`shortHelpString()`
+.. seealso:: :py:func:`shortHelpString`
 %End
 
     virtual QIcon icon() const;
 %Docstring
 Returns an icon for the algorithm.
 
-.. seealso:: :py:func:`svgIconPath()`
+.. seealso:: :py:func:`svgIconPath`
 %End
 
     virtual QString svgIconPath() const;
 %Docstring
 Returns a path to an SVG version of the algorithm's icon.
 
-.. seealso:: :py:func:`icon()`
+.. seealso:: :py:func:`icon`
 %End
 
     virtual QString group() const;
@@ -165,9 +165,9 @@ Returns a path to an SVG version of the algorithm's icon.
 Returns the name of the group this algorithm belongs to. This string
 should be localised.
 
-.. seealso:: :py:func:`groupId()`
+.. seealso:: :py:func:`groupId`
 
-.. seealso:: :py:func:`tags()`
+.. seealso:: :py:func:`tags`
 %End
 
     virtual QString groupId() const;
@@ -177,7 +177,7 @@ should be fixed for the algorithm, and must not be localised. The group id
 should be unique within each provider. Group id should contain lowercase
 alphanumeric characters only and no spaces or other formatting characters.
 
-.. seealso:: :py:func:`group()`
+.. seealso:: :py:func:`group`
 %End
     virtual Flags flags() const;
 %Docstring
@@ -213,11 +213,11 @@ Returns the provider to which this algorithm belongs.
 %Docstring
 Returns an ordered list of parameter definitions utilized by the algorithm.
 
-.. seealso:: :py:func:`addParameter()`
+.. seealso:: :py:func:`addParameter`
 
-.. seealso:: :py:func:`parameterDefinition()`
+.. seealso:: :py:func:`parameterDefinition`
 
-.. seealso:: :py:func:`destinationParameterDefinitions()`
+.. seealso:: :py:func:`destinationParameterDefinitions`
 %End
 
     const QgsProcessingParameterDefinition *parameterDefinition( const QString &name ) const;
@@ -225,7 +225,7 @@ Returns an ordered list of parameter definitions utilized by the algorithm.
 Returns a matching parameter by ``name``. Matching is done in a case-insensitive
 manner.
 
-.. seealso:: :py:func:`parameterDefinitions()`
+.. seealso:: :py:func:`parameterDefinitions`
 %End
 
     int countVisibleParameters() const;
@@ -238,18 +238,18 @@ algorithm.
 %Docstring
 Returns a list of destination parameters definitions utilized by the algorithm.
 
-.. seealso:: :py:func:`QgsProcessingParameterDefinition.isDestination()`
+.. seealso:: :py:func:`QgsProcessingParameterDefinition.isDestination`
 
-.. seealso:: :py:func:`parameterDefinitions()`
+.. seealso:: :py:func:`parameterDefinitions`
 %End
 
     QgsProcessingOutputDefinitions outputDefinitions() const;
 %Docstring
 Returns an ordered list of output definitions utilized by the algorithm.
 
-.. seealso:: :py:func:`addOutput()`
+.. seealso:: :py:func:`addOutput`
 
-.. seealso:: :py:func:`outputDefinition()`
+.. seealso:: :py:func:`outputDefinition`
 %End
 
     const QgsProcessingOutputDefinition *outputDefinition( const QString &name ) const;
@@ -257,7 +257,7 @@ Returns an ordered list of output definitions utilized by the algorithm.
 Returns a matching output by ``name``. Matching is done in a case-insensitive
 manner.
 
-.. seealso:: :py:func:`outputDefinitions()`
+.. seealso:: :py:func:`outputDefinitions`
 %End
 
     bool hasHtmlOutputs() const;
@@ -293,9 +293,9 @@ Prepares the algorithm for execution. This must be run in the main thread, and a
 to pre-evaluate input parameters in a thread-safe manner. This must be called before
 calling runPrepared() (which is safe to do in any thread).
 
-.. seealso:: :py:func:`runPrepared()`
+.. seealso:: :py:func:`runPrepared`
 
-.. seealso:: :py:func:`postProcess()`
+.. seealso:: :py:func:`postProcess`
 
 .. note::
 
@@ -311,9 +311,9 @@ This method is safe to call from any thread. Returns true if the algorithm was s
 After runPrepared() has finished, the postProcess() method should be called from the main thread
 to allow the algorithm to perform any required cleanup tasks and return its final result.
 
-.. seealso:: :py:func:`prepare()`
+.. seealso:: :py:func:`prepare`
 
-.. seealso:: :py:func:`postProcess()`
+.. seealso:: :py:func:`postProcess`
 
 .. note::
 
@@ -400,9 +400,9 @@ algorithm which sends input features to one of any number of outputs sinks
 based on some preconfigured filter parameters can use the init method to
 create these outputs based on the specified ``configuration``.
 
-.. seealso:: :py:func:`addParameter()`
+.. seealso:: :py:func:`addParameter`
 
-.. seealso:: :py:func:`addOutput()`
+.. seealso:: :py:func:`addOutput`
 %End
 
     bool addParameter( QgsProcessingParameterDefinition *parameterDefinition /Transfer/, bool createOutput = true );
@@ -420,9 +420,9 @@ added to the algorithm. There is no need to call addOutput() to manually add a c
 for this vector. If ``createOutput`` is false then this automatic output creation will not
 occur.
 
-.. seealso:: :py:func:`initAlgorithm()`
+.. seealso:: :py:func:`initAlgorithm`
 
-.. seealso:: :py:func:`addOutput()`
+.. seealso:: :py:func:`addOutput`
 %End
 
     void removeParameter( const QString &name );
@@ -442,9 +442,9 @@ This should usually be called from a subclass' initAlgorithm() implementation.
 Note that in some cases output creation can be automatically performed when calling addParameter().
 See the notes in addParameter() for a description of when this occurs.
 
-.. seealso:: :py:func:`addParameter()`
+.. seealso:: :py:func:`addParameter`
 
-.. seealso:: :py:func:`initAlgorithm()`
+.. seealso:: :py:func:`initAlgorithm`
 %End
 
     virtual bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) /VirtualErrorHandler=processing_exception_handler/;
@@ -476,9 +476,9 @@ will be canceled.
 
 :return: true if preparation was successful.
 
-.. seealso:: :py:func:`processAlgorithm()`
+.. seealso:: :py:func:`processAlgorithm`
 
-.. seealso:: :py:func:`postProcessAlgorithm()`
+.. seealso:: :py:func:`postProcessAlgorithm`
 %End
 
     virtual QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) = 0 /VirtualErrorHandler=processing_exception_handler/;
@@ -509,9 +509,9 @@ values such as statistical calculations. Unless the algorithm subclass overrides
 the postProcessAlgorithm() step this returned map will be used as the output for the
 algorithm.
 
-.. seealso:: :py:func:`prepareAlgorithm()`
+.. seealso:: :py:func:`prepareAlgorithm`
 
-.. seealso:: :py:func:`postProcessAlgorithm()`
+.. seealso:: :py:func:`postProcessAlgorithm`
 %End
 
     virtual QVariantMap postProcessAlgorithm( QgsProcessingContext &context, QgsProcessingFeedback *feedback ) /VirtualErrorHandler=processing_exception_handler/;
@@ -539,9 +539,9 @@ or if an exception was raised by the processAlgorithm() step.
 values such as statistical calculations. Implementations which return a non-empty
 map will override any results returned by processAlgorithm().
 
-.. seealso:: :py:func:`prepareAlgorithm()`
+.. seealso:: :py:func:`prepareAlgorithm`
 
-.. seealso:: :py:func:`processAlgorithm()`
+.. seealso:: :py:func:`processAlgorithm`
 %End
 
     QString parameterAsString( const QVariantMap &parameters, const QString &name, const QgsProcessingContext &context ) const;
@@ -671,7 +671,7 @@ Evaluates the parameter with matching ``name`` to a rectangular extent.
 If ``crs`` is set, and the original coordinate reference system of the parameter can be determined, then the extent will be automatically
 reprojected so that it is in the specified ``crs``. In this case the extent of the reproject rectangle will be returned.
 
-.. seealso:: :py:func:`parameterAsExtentGeometry()`
+.. seealso:: :py:func:`parameterAsExtentGeometry`
 %End
 
     QgsGeometry parameterAsExtentGeometry( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context,
@@ -684,14 +684,14 @@ reprojected so that it is in the specified ``crs``. Unlike parameterAsExtent(), 
 will no longer be a rectangle itself (i.e. this method returns the geometry of the actual reprojected rectangle, while parameterAsExtent() returns
 just the extent of the reprojected rectangle).
 
-.. seealso:: :py:func:`parameterAsExtent()`
+.. seealso:: :py:func:`parameterAsExtent`
 %End
 
     QgsCoordinateReferenceSystem parameterAsExtentCrs( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
 %Docstring
 Returns the coordinate reference system associated with an extent parameter value.
 
-.. seealso:: :py:func:`parameterAsExtent()`
+.. seealso:: :py:func:`parameterAsExtent`
 %End
 
     QgsPointXY parameterAsPoint( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context,
@@ -702,14 +702,14 @@ Evaluates the parameter with matching ``name`` to a point.
 If ``crs`` is set then the point will be automatically
 reprojected so that it is in the specified ``crs``.
 
-.. seealso:: :py:func:`parameterAsPointCrs()`
+.. seealso:: :py:func:`parameterAsPointCrs`
 %End
 
     QgsCoordinateReferenceSystem parameterAsPointCrs( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context );
 %Docstring
 Returns the coordinate reference system associated with an point parameter value.
 
-.. seealso:: :py:func:`parameterAsPoint()`
+.. seealso:: :py:func:`parameterAsPoint`
 %End
 
     QString parameterAsFile( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context ) const;

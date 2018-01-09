@@ -154,7 +154,7 @@ Relies on GDAL_DMD_EXTENSIONS metadata, if it is empty corresponding driver will
 The ``options`` argument can be used to control the sorting and filtering of
 returned formats.
 
-.. seealso:: :py:func:`supportedOutputRasterLayerExtensions()`
+.. seealso:: :py:func:`supportedOutputRasterLayerExtensions`
 %End
 
     static QStringList supportedFormatExtensions( RasterFormatOptions options = SortRecommended );
@@ -166,7 +166,7 @@ returned formats.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`supportedFiltersAndFormats()`
+.. seealso:: :py:func:`supportedFiltersAndFormats`
 %End
 
     static QString driverForExtension( const QString &extension );

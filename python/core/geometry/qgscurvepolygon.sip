@@ -91,9 +91,9 @@ from the CurvePolygon and all interior rings.
 
 :param ring: new exterior ring. Ownership is transferred to the CurvePolygon.
 
-.. seealso:: :py:func:`setInteriorRings()`
+.. seealso:: :py:func:`setInteriorRings`
 
-.. seealso:: :py:func:`exteriorRing()`
+.. seealso:: :py:func:`exteriorRing`
 %End
 
     void setInteriorRings( const QVector<QgsCurve *> &rings /Transfer/ );
@@ -111,7 +111,7 @@ Removes an interior ring from the polygon. The first interior ring has index 0.
 The corresponding ring is removed from the polygon and deleted. If a ring was successfully removed
 the function will return true.  It is not possible to remove the exterior ring using this method.
 
-.. seealso:: :py:func:`removeInteriorRings()`
+.. seealso:: :py:func:`removeInteriorRings`
 %End
 
     void removeInteriorRings( double minimumAllowedArea = -1 );
@@ -122,7 +122,7 @@ area will be removed.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`removeInteriorRing()`
+.. seealso:: :py:func:`removeInteriorRing`
 %End
 
     virtual void draw( QPainter &p ) const;

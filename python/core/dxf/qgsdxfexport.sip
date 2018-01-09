@@ -52,7 +52,7 @@ Sets the export flags.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`flags()`
+.. seealso:: :py:func:`flags`
 %End
 
     QgsDxfExport::Flags flags() const;
@@ -61,7 +61,7 @@ Returns the export flags.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`setFlags()`
+.. seealso:: :py:func:`setFlags`
 %End
 
     void addLayers( const QList< QPair<QgsVectorLayer *, int > > &layers );
@@ -82,7 +82,7 @@ The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 ma
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`symbologyScale()`
+.. seealso:: :py:func:`symbologyScale`
 %End
 
     double symbologyScale() const;
@@ -92,7 +92,7 @@ The  scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`setSymbologyScale()`
+.. seealso:: :py:func:`setSymbologyScale`
 %End
 
     QgsUnitTypes::DistanceUnit mapUnits() const;
@@ -106,7 +106,7 @@ Retrieve map units
 %Docstring
 Set destination CRS
 
-.. seealso:: :py:func:`destinationCrs()`
+.. seealso:: :py:func:`destinationCrs`
 
 .. versionadded:: 3.0
 %End
@@ -115,7 +115,7 @@ Set destination CRS
 %Docstring
 Returns the destination CRS, or an invalid CRS if no reprojection will be done.
 
-.. seealso:: :py:func:`setDestinationCrs()`
+.. seealso:: :py:func:`setDestinationCrs`
 
 .. versionadded:: 3.0
 %End

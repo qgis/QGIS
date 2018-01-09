@@ -33,7 +33,7 @@ or atlas layout.
 
 Emits the changed() signal.
 
-.. seealso:: :py:func:`feature()`
+.. seealso:: :py:func:`feature`
 %End
 
     QgsFeature feature() const;
@@ -42,9 +42,9 @@ Returns the current feature for evaluating the layout. This feature may
 be used for altering an item's content and appearance for a report
 or atlas layout.
 
-.. seealso:: :py:func:`currentGeometry()`
+.. seealso:: :py:func:`currentGeometry`
 
-.. seealso:: :py:func:`setFeature()`
+.. seealso:: :py:func:`setFeature`
 %End
 
     QgsGeometry currentGeometry( const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() ) const;
@@ -54,16 +54,16 @@ If no CRS is specified, the original feature geometry is returned.
 
 Reprojection only works if a valid layer is set for layer().
 
-.. seealso:: :py:func:`feature()`
+.. seealso:: :py:func:`feature`
 
-.. seealso:: :py:func:`layer()`
+.. seealso:: :py:func:`layer`
 %End
 
     QgsVectorLayer *layer() const;
 %Docstring
 Returns the vector layer associated with the layout's context.
 
-.. seealso:: :py:func:`setLayer()`
+.. seealso:: :py:func:`setLayer`
 %End
 
     void setLayer( QgsVectorLayer *layer );
@@ -72,7 +72,7 @@ Sets the vector ``layer`` associated with the layout's context.
 
 Emits the changed() signal.
 
-.. seealso:: :py:func:`layer()`
+.. seealso:: :py:func:`layer`
 %End
 
     void setPredefinedScales( const QVector<qreal> &scales );
@@ -80,14 +80,14 @@ Emits the changed() signal.
 Sets the list of predefined ``scales`` to use with the layout. This is used
 for maps which are set to the predefined atlas scaling mode.
 
-.. seealso:: :py:func:`predefinedScales()`
+.. seealso:: :py:func:`predefinedScales`
 %End
 
     QVector<qreal> predefinedScales() const;
 %Docstring
 Returns the current list of predefined scales for use with the layout.
 
-.. seealso:: :py:func:`setPredefinedScales()`
+.. seealso:: :py:func:`setPredefinedScales`
 %End
 
   signals:

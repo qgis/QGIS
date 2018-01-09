@@ -214,11 +214,11 @@ upon creation.
 
    There is no corresponding setter for the uuid - it's created automatically.
 
-.. seealso:: :py:func:`id()`
+.. seealso:: :py:func:`id`
 
-.. seealso:: :py:func:`setId()`
+.. seealso:: :py:func:`setId`
 
-.. seealso:: :py:func:`templateUuid()`
+.. seealso:: :py:func:`templateUuid`
 %End
 
     QString templateUuid() const;
@@ -228,7 +228,7 @@ for items which have been added to an existing layout from a template. In this c
 templateUuid() returns the original item UUID at the time the template was created,
 while uuid() returns the current instance of the item's unique identifier.
 
-.. seealso:: :py:func:`uuid()`
+.. seealso:: :py:func:`uuid`
 %End
 
     QString id() const;
@@ -236,9 +236,9 @@ while uuid() returns the current instance of the item's unique identifier.
 Returns the item's ID name. This is not necessarily unique, and duplicate ID names may exist
 for a layout.
 
-.. seealso:: :py:func:`setId()`
+.. seealso:: :py:func:`setId`
 
-.. seealso:: :py:func:`uuid()`
+.. seealso:: :py:func:`uuid`
 %End
 
     virtual void setId( const QString &id );
@@ -246,9 +246,9 @@ for a layout.
 Set the item's ``id`` name. This is not necessarily unique, and duplicate ID names may exist
 for a layout.
 
-.. seealso:: :py:func:`id()`
+.. seealso:: :py:func:`id`
 
-.. seealso:: :py:func:`uuid()`
+.. seealso:: :py:func:`uuid`
 %End
 
     virtual QString displayName() const;
@@ -256,9 +256,9 @@ for a layout.
 Get item display name. This is the item's id if set, and if
 not, a user-friendly string identifying item type.
 
-.. seealso:: :py:func:`id()`
+.. seealso:: :py:func:`id`
 
-.. seealso:: :py:func:`setId()`
+.. seealso:: :py:func:`setId`
 %End
 
     virtual void setSelected( bool selected );
@@ -281,45 +281,45 @@ the visibility toggle.
 %Docstring
 Sets whether the item is ``locked``, preventing mouse interactions with the item.
 
-.. seealso:: :py:func:`isLocked()`
+.. seealso:: :py:func:`isLocked`
 
-.. seealso:: :py:func:`lockChanged()`
+.. seealso:: :py:func:`lockChanged`
 %End
 
     bool isLocked() const;
 %Docstring
 Returns true if the item is locked, and cannot be interacted with using the mouse.
 
-.. seealso:: :py:func:`setLocked()`
+.. seealso:: :py:func:`setLocked`
 
-.. seealso:: :py:func:`lockChanged()`
+.. seealso:: :py:func:`lockChanged`
 %End
 
     bool isGroupMember() const;
 %Docstring
 Returns true if the item is part of a QgsLayoutItemGroup group.
 
-.. seealso:: :py:func:`parentGroup()`
+.. seealso:: :py:func:`parentGroup`
 
-.. seealso:: :py:func:`setParentGroup()`
+.. seealso:: :py:func:`setParentGroup`
 %End
 
     QgsLayoutItemGroup *parentGroup() const;
 %Docstring
 Returns the item's parent group, if the item is part of a QgsLayoutItemGroup group.
 
-.. seealso:: :py:func:`isGroupMember()`
+.. seealso:: :py:func:`isGroupMember`
 
-.. seealso:: :py:func:`setParentGroup()`
+.. seealso:: :py:func:`setParentGroup`
 %End
 
     void setParentGroup( QgsLayoutItemGroup *group );
 %Docstring
 Sets the item's parent ``group``.
 
-.. seealso:: :py:func:`isGroupMember()`
+.. seealso:: :py:func:`isGroupMember`
 
-.. seealso:: :py:func:`parentGroup()`
+.. seealso:: :py:func:`parentGroup`
 %End
 
     virtual int numberExportLayers() const;
@@ -346,7 +346,7 @@ Sets the reference ``point`` for positioning of the layout item. This point is a
 fixed during resizing of the item, and any size changes will be performed
 so that the position of the reference point within the layout remains unchanged.
 
-.. seealso:: :py:func:`referencePoint()`
+.. seealso:: :py:func:`referencePoint`
 %End
 
     ReferencePoint referencePoint() const;
@@ -355,7 +355,7 @@ Returns the reference point for positioning of the layout item. This point is al
 fixed during resizing of the item, and any size changes will be performed
 so that the position of the reference point within the layout remains unchanged.
 
-.. seealso:: :py:func:`setReferencePoint()`
+.. seealso:: :py:func:`setReferencePoint`
 %End
 
     virtual QgsLayoutSize fixedSize() const;
@@ -363,9 +363,9 @@ so that the position of the reference point within the layout remains unchanged.
 Returns the fixed size of the item, if applicable, or an empty size if item can be freely
 resized.
 
-.. seealso:: :py:func:`setFixedSize()`
+.. seealso:: :py:func:`setFixedSize`
 
-.. seealso:: :py:func:`minimumSize()`
+.. seealso:: :py:func:`minimumSize`
 %End
 
     virtual QgsLayoutSize minimumSize() const;
@@ -373,9 +373,9 @@ resized.
 Returns the minimum allowed size of the item, if applicable, or an empty size if item can be freely
 resized.
 
-.. seealso:: :py:func:`setMinimumSize()`
+.. seealso:: :py:func:`setMinimumSize`
 
-.. seealso:: :py:func:`fixedSize()`
+.. seealso:: :py:func:`fixedSize`
 %End
 
     virtual void attemptResize( const QgsLayoutSize &size, bool includesFrame = false );
@@ -388,13 +388,13 @@ will also override the specified target size.
 If ``includesFrame`` is true, then the size specified by ``size`` includes the
 item's frame.
 
-.. seealso:: :py:func:`minimumSize()`
+.. seealso:: :py:func:`minimumSize`
 
-.. seealso:: :py:func:`fixedSize()`
+.. seealso:: :py:func:`fixedSize`
 
-.. seealso:: :py:func:`attemptMove()`
+.. seealso:: :py:func:`attemptMove`
 
-.. seealso:: :py:func:`sizeWithUnits()`
+.. seealso:: :py:func:`sizeWithUnits`
 %End
 
     virtual void attemptMove( const QgsLayoutPoint &point, bool useReferencePoint = true, bool includesFrame = false, int page = -1 );
@@ -418,13 +418,13 @@ of 0 represents the first page).
 Note that the final position of the item may not match the specified target position,
 as data defined item position may override the specified value.
 
-.. seealso:: :py:func:`attemptMoveBy()`
+.. seealso:: :py:func:`attemptMoveBy`
 
-.. seealso:: :py:func:`attemptResize()`
+.. seealso:: :py:func:`attemptResize`
 
-.. seealso:: :py:func:`referencePoint()`
+.. seealso:: :py:func:`referencePoint`
 
-.. seealso:: :py:func:`positionWithUnits()`
+.. seealso:: :py:func:`positionWithUnits`
 %End
 
     void attemptSetSceneRect( const QRectF &rect, bool includesFrame = false );
@@ -438,13 +438,13 @@ position and size at for the outside of the item's frame.
 Note that the final position and size of the item may not match the specified target rect,
 as data defined item position and size may override the specified value.
 
-.. seealso:: :py:func:`attemptResize()`
+.. seealso:: :py:func:`attemptResize`
 
-.. seealso:: :py:func:`attemptMove()`
+.. seealso:: :py:func:`attemptMove`
 
-.. seealso:: :py:func:`referencePoint()`
+.. seealso:: :py:func:`referencePoint`
 
-.. seealso:: :py:func:`positionWithUnits()`
+.. seealso:: :py:func:`positionWithUnits`
 %End
 
     void attemptMoveBy( double deltaX, double deltaY );
@@ -455,13 +455,13 @@ units.
 Note that the final position of the item may not match the specified offsets,
 as data defined item position and size may override the specified value.
 
-.. seealso:: :py:func:`attemptResize()`
+.. seealso:: :py:func:`attemptResize`
 
-.. seealso:: :py:func:`attemptMove()`
+.. seealso:: :py:func:`attemptMove`
 
-.. seealso:: :py:func:`referencePoint()`
+.. seealso:: :py:func:`referencePoint`
 
-.. seealso:: :py:func:`positionWithUnits()`
+.. seealso:: :py:func:`positionWithUnits`
 %End
 
     QgsLayoutPoint positionWithUnits() const;
@@ -470,45 +470,45 @@ Returns the item's current position, including units. The position returned
 is the position of the item's reference point, which may not necessarily be the top
 left corner of the item.
 
-.. seealso:: :py:func:`attemptMove()`
+.. seealso:: :py:func:`attemptMove`
 
-.. seealso:: :py:func:`referencePoint()`
+.. seealso:: :py:func:`referencePoint`
 
-.. seealso:: :py:func:`sizeWithUnits()`
+.. seealso:: :py:func:`sizeWithUnits`
 %End
 
     int page() const;
 %Docstring
 Returns the page the item is currently on, with the first page returning 0.
 
-.. seealso:: :py:func:`pagePos()`
+.. seealso:: :py:func:`pagePos`
 %End
 
     QPointF pagePos() const;
 %Docstring
 Returns the item's position (in layout units) relative to the top left corner of its current page.
 
-.. seealso:: :py:func:`page()`
+.. seealso:: :py:func:`page`
 
-.. seealso:: :py:func:`pagePositionWithUnits()`
+.. seealso:: :py:func:`pagePositionWithUnits`
 %End
 
     QgsLayoutPoint pagePositionWithUnits() const;
 %Docstring
 Returns the item's position (in item units) relative to the top left corner of its current page.
 
-.. seealso:: :py:func:`page()`
+.. seealso:: :py:func:`page`
 
-.. seealso:: :py:func:`pagePos()`
+.. seealso:: :py:func:`pagePos`
 %End
 
     QgsLayoutSize sizeWithUnits() const;
 %Docstring
 Returns the item's current size, including units.
 
-.. seealso:: :py:func:`attemptResize()`
+.. seealso:: :py:func:`attemptResize`
 
-.. seealso:: :py:func:`positionWithUnits()`
+.. seealso:: :py:func:`positionWithUnits`
 %End
 
     double itemRotation() const;
@@ -520,7 +520,7 @@ which may differ from the current item rotation (if data defined rotation
 settings are present). Use QGraphicsItem.rotation() to obtain the current
 item rotation.
 
-.. seealso:: :py:func:`setItemRotation()`
+.. seealso:: :py:func:`setItemRotation`
 %End
 
     bool writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const;
@@ -531,7 +531,7 @@ Stores the item state in a DOM element.
 :param document: DOM document
 :param context: read write context
 
-.. seealso:: :py:func:`readXml()`
+.. seealso:: :py:func:`readXml`
 %End
 
     bool readXml( const QDomElement &itemElement, const QDomDocument &document, const QgsReadWriteContext &context );
@@ -548,9 +548,9 @@ other items must be made in the finalizeRestoreFromXml() method. E.g. when resto
 a scalebar, the connection to the linked map's signals should be implemented
 in finalizeRestoreFromXml(), not readXml().
 
-.. seealso:: :py:func:`writeXml()`
+.. seealso:: :py:func:`writeXml`
 
-.. seealso:: :py:func:`finalizeRestoreFromXml()`
+.. seealso:: :py:func:`finalizeRestoreFromXml`
 %End
 
     virtual void finalizeRestoreFromXml();
@@ -561,7 +561,7 @@ such as connecting to signals emitted by other items, which may not have existed
 at the time readXml() was called. E.g. a scalebar can use this to connect to its linked
 map item after restoration from XML.
 
-.. seealso:: :py:func:`readXml()`
+.. seealso:: :py:func:`readXml`
 %End
 
     virtual QgsAbstractLayoutUndoCommand *createCommand( const QString &text, int id, QUndoCommand *parent = 0 ) /Factory/;
@@ -571,122 +571,122 @@ map item after restoration from XML.
 %Docstring
 Returns true if the item includes a frame.
 
-.. seealso:: :py:func:`setFrameEnabled()`
+.. seealso:: :py:func:`setFrameEnabled`
 
-.. seealso:: :py:func:`frameStrokeWidth()`
+.. seealso:: :py:func:`frameStrokeWidth`
 
-.. seealso:: :py:func:`frameJoinStyle()`
+.. seealso:: :py:func:`frameJoinStyle`
 
-.. seealso:: :py:func:`frameStrokeColor()`
+.. seealso:: :py:func:`frameStrokeColor`
 %End
 
     virtual void setFrameEnabled( bool drawFrame );
 %Docstring
 Sets whether this item has a frame drawn around it or not.
 
-.. seealso:: :py:func:`frameEnabled()`
+.. seealso:: :py:func:`frameEnabled`
 
-.. seealso:: :py:func:`setFrameStrokeWidth()`
+.. seealso:: :py:func:`setFrameStrokeWidth`
 
-.. seealso:: :py:func:`setFrameJoinStyle()`
+.. seealso:: :py:func:`setFrameJoinStyle`
 
-.. seealso:: :py:func:`setFrameStrokeColor()`
+.. seealso:: :py:func:`setFrameStrokeColor`
 %End
 
     void setFrameStrokeColor( const QColor &color );
 %Docstring
 Sets the frame stroke ``color``.
 
-.. seealso:: :py:func:`frameStrokeColor()`
+.. seealso:: :py:func:`frameStrokeColor`
 
-.. seealso:: :py:func:`setFrameEnabled()`
+.. seealso:: :py:func:`setFrameEnabled`
 
-.. seealso:: :py:func:`setFrameJoinStyle()`
+.. seealso:: :py:func:`setFrameJoinStyle`
 
-.. seealso:: :py:func:`setFrameStrokeWidth()`
+.. seealso:: :py:func:`setFrameStrokeWidth`
 %End
 
     QColor frameStrokeColor() const;
 %Docstring
 Returns the frame's stroke color. This is only used if frameEnabled() returns true.
 
-.. seealso:: :py:func:`frameEnabled()`
+.. seealso:: :py:func:`frameEnabled`
 
-.. seealso:: :py:func:`setFrameStrokeColor()`
+.. seealso:: :py:func:`setFrameStrokeColor`
 
-.. seealso:: :py:func:`frameJoinStyle()`
+.. seealso:: :py:func:`frameJoinStyle`
 
-.. seealso:: :py:func:`setFrameStrokeColor()`
+.. seealso:: :py:func:`setFrameStrokeColor`
 %End
 
     virtual void setFrameStrokeWidth( const QgsLayoutMeasurement &width );
 %Docstring
 Sets the frame stroke ``width``.
 
-.. seealso:: :py:func:`frameStrokeWidth()`
+.. seealso:: :py:func:`frameStrokeWidth`
 
-.. seealso:: :py:func:`setFrameEnabled()`
+.. seealso:: :py:func:`setFrameEnabled`
 
-.. seealso:: :py:func:`setFrameJoinStyle()`
+.. seealso:: :py:func:`setFrameJoinStyle`
 
-.. seealso:: :py:func:`setFrameStrokeColor()`
+.. seealso:: :py:func:`setFrameStrokeColor`
 %End
 
     QgsLayoutMeasurement frameStrokeWidth() const;
 %Docstring
 Returns the frame's stroke width. This is only used if frameEnabled() returns true.
 
-.. seealso:: :py:func:`frameEnabled()`
+.. seealso:: :py:func:`frameEnabled`
 
-.. seealso:: :py:func:`setFrameStrokeWidth()`
+.. seealso:: :py:func:`setFrameStrokeWidth`
 
-.. seealso:: :py:func:`frameJoinStyle()`
+.. seealso:: :py:func:`frameJoinStyle`
 
-.. seealso:: :py:func:`frameStrokeColor()`
+.. seealso:: :py:func:`frameStrokeColor`
 %End
 
     Qt::PenJoinStyle frameJoinStyle() const;
 %Docstring
 Returns the join style used for drawing the item's frame.
 
-.. seealso:: :py:func:`frameEnabled()`
+.. seealso:: :py:func:`frameEnabled`
 
-.. seealso:: :py:func:`setFrameJoinStyle()`
+.. seealso:: :py:func:`setFrameJoinStyle`
 
-.. seealso:: :py:func:`frameStrokeWidth()`
+.. seealso:: :py:func:`frameStrokeWidth`
 
-.. seealso:: :py:func:`frameStrokeColor()`
+.. seealso:: :py:func:`frameStrokeColor`
 %End
 
     void setFrameJoinStyle( const Qt::PenJoinStyle style );
 %Docstring
 Sets the join ``style`` used when drawing the item's frame.
 
-.. seealso:: :py:func:`setFrameEnabled()`
+.. seealso:: :py:func:`setFrameEnabled`
 
-.. seealso:: :py:func:`frameJoinStyle()`
+.. seealso:: :py:func:`frameJoinStyle`
 
-.. seealso:: :py:func:`setFrameStrokeWidth()`
+.. seealso:: :py:func:`setFrameStrokeWidth`
 
-.. seealso:: :py:func:`setFrameStrokeColor()`
+.. seealso:: :py:func:`setFrameStrokeColor`
 %End
 
     bool hasBackground() const;
 %Docstring
 Returns true if the item has a background.
 
-.. seealso:: :py:func:`setBackgroundEnabled()`
+.. seealso:: :py:func:`setBackgroundEnabled`
 
-.. seealso:: :py:func:`backgroundColor()`
+.. seealso:: :py:func:`backgroundColor`
 %End
 
     void setBackgroundEnabled( bool drawBackground );
 %Docstring
 Sets whether this item has a background drawn under it or not.
 
-.. seealso:: :py:func:`hasBackground()`
+.. seealso:: :py:func:`hasBackground`
 
-.. seealso:: :py:func:`setBackgroundColor()`
+.. seealso:: :py:func:`setBackgroundColor`
 %End
 
     QColor backgroundColor() const;
@@ -694,32 +694,32 @@ Sets whether this item has a background drawn under it or not.
 Returns the background color for this item. This is only used if hasBackground()
 returns true.
 
-.. seealso:: :py:func:`setBackgroundColor()`
+.. seealso:: :py:func:`setBackgroundColor`
 
-.. seealso:: :py:func:`hasBackground()`
+.. seealso:: :py:func:`hasBackground`
 %End
 
     void setBackgroundColor( const QColor &color );
 %Docstring
 Sets the background ``color`` for this item.
 
-.. seealso:: :py:func:`backgroundColor()`
+.. seealso:: :py:func:`backgroundColor`
 
-.. seealso:: :py:func:`setBackgroundEnabled()`
+.. seealso:: :py:func:`setBackgroundEnabled`
 %End
 
     QPainter::CompositionMode blendMode() const;
 %Docstring
 Returns the item's composition blending mode.
 
-.. seealso:: :py:func:`setBlendMode()`
+.. seealso:: :py:func:`setBlendMode`
 %End
 
     void setBlendMode( const QPainter::CompositionMode mode );
 %Docstring
 Sets the item's composition blending ``mode``.
 
-.. seealso:: :py:func:`blendMode()`
+.. seealso:: :py:func:`blendMode`
 %End
 
     double itemOpacity() const;
@@ -730,7 +730,7 @@ respected.
 
 :return: opacity as double between 1.0 (opaque) and 0 (transparent).
 
-.. seealso:: :py:func:`setItemOpacity()`
+.. seealso:: :py:func:`setItemOpacity`
 %End
 
     void setItemOpacity( double opacity );
@@ -741,21 +741,21 @@ respected.
 
 :param opacity: double between 1.0 (opaque) and 0 (transparent).
 
-.. seealso:: :py:func:`itemOpacity()`
+.. seealso:: :py:func:`itemOpacity`
 %End
 
     bool excludeFromExports() const;
 %Docstring
 Returns whether the item should be excluded from layout exports and prints.
 
-.. seealso:: :py:func:`setExcludeFromExports()`
+.. seealso:: :py:func:`setExcludeFromExports`
 %End
 
     void setExcludeFromExports( bool exclude );
 %Docstring
 Sets whether the item should be excluded from layout exports and prints.
 
-.. seealso:: :py:func:`excludeFromExports()`
+.. seealso:: :py:func:`excludeFromExports`
 %End
 
     virtual bool containsAdvancedEffects() const;
@@ -766,7 +766,7 @@ effects which can only be reproduced by rastering the item.
 Subclasses should ensure that implemented overrides of this method
 also check the base class result.
 
-.. seealso:: :py:func:`requiresRasterization()`
+.. seealso:: :py:func:`requiresRasterization`
 %End
 
     virtual bool requiresRasterization() const;
@@ -774,7 +774,7 @@ also check the base class result.
 Returns true if the item is drawn in such a way that forces the whole layout
 to be rasterized when exporting to vector formats.
 
-.. seealso:: :py:func:`containsAdvancedEffects()`
+.. seealso:: :py:func:`containsAdvancedEffects`
 %End
 
     virtual double estimatedFrameBleed() const;
@@ -786,7 +786,7 @@ return value will be 1.0.
 
 Returned values are in layout units.
 
-.. seealso:: :py:func:`rectWithFrame()`
+.. seealso:: :py:func:`rectWithFrame`
 %End
 
     virtual QRectF rectWithFrame() const;
@@ -797,7 +797,7 @@ more details about QGraphicsItem coordinate systems). The results differ from Qt
 function, as rect() makes no allowances for the portion of outlines which are drawn
 outside of the item.
 
-.. seealso:: :py:func:`estimatedFrameBleed()`
+.. seealso:: :py:func:`estimatedFrameBleed`
 %End
 
     virtual void moveContent( double dx, double dy );
@@ -805,9 +805,9 @@ outside of the item.
 Moves the content of the item, by a specified ``dx`` and ``dy`` in layout units.
 The default implementation has no effect.
 
-.. seealso:: :py:func:`setMoveContentPreviewOffset()`
+.. seealso:: :py:func:`setMoveContentPreviewOffset`
 
-.. seealso:: :py:func:`zoomContent()`
+.. seealso:: :py:func:`zoomContent`
 %End
 
     virtual void setMoveContentPreviewOffset( double dx, double dy );
@@ -816,7 +816,7 @@ Sets temporary offset for the item, by a specified ``dx`` and ``dy`` in layout u
 This is useful for live updates when moving item content in a :py:class:`QgsLayoutView`.
 The default implementation has no effect.
 
-.. seealso:: :py:func:`moveContent()`
+.. seealso:: :py:func:`moveContent`
 %End
 
     virtual void zoomContent( double factor, QPointF point );
@@ -826,7 +826,7 @@ Zooms content of item. Does nothing by default.
 :param factor: zoom factor, where > 1 results in a zoom in and < 1 results in a zoom out
 :param point: item point for zoom center
 
-.. seealso:: :py:func:`moveContent()`
+.. seealso:: :py:func:`moveContent`
 %End
 
     void beginCommand( const QString &commandText, UndoCommand command = UndoNone );
@@ -836,27 +836,27 @@ The ``commandText`` should be a capitalized, imperative tense description (e.g. 
 If specified, multiple consecutive commands for this item with the same ``command`` will
 be collapsed into a single undo command in the layout history.
 
-.. seealso:: :py:func:`endCommand()`
+.. seealso:: :py:func:`endCommand`
 
-.. seealso:: :py:func:`cancelCommand()`
+.. seealso:: :py:func:`cancelCommand`
 %End
 
     void endCommand();
 %Docstring
 Completes the current item command and push it onto the layout's undo stack.
 
-.. seealso:: :py:func:`beginCommand()`
+.. seealso:: :py:func:`beginCommand`
 
-.. seealso:: :py:func:`cancelCommand()`
+.. seealso:: :py:func:`cancelCommand`
 %End
 
     void cancelCommand();
 %Docstring
 Cancels the current item command and discards it.
 
-.. seealso:: :py:func:`beginCommand()`
+.. seealso:: :py:func:`beginCommand`
 
-.. seealso:: :py:func:`endCommand()`
+.. seealso:: :py:func:`endCommand`
 %End
 
     bool shouldDrawItem() const;
@@ -898,18 +898,18 @@ Sets the layout item's ``rotation``, in degrees clockwise.
 If ``adjustPosition`` is true, then this rotation occurs around the center of the item.
 If ``adjustPosition`` is false, rotation occurs around the item origin.
 
-.. seealso:: :py:func:`itemRotation()`
+.. seealso:: :py:func:`itemRotation`
 
-.. seealso:: :py:func:`rotateItem()`
+.. seealso:: :py:func:`rotateItem`
 %End
 
     virtual void rotateItem( const double angle, const QPointF &transformOrigin );
 %Docstring
 Rotates the item by a specified ``angle`` in degrees clockwise around a specified reference point.
 
-.. seealso:: :py:func:`setItemRotation()`
+.. seealso:: :py:func:`setItemRotation`
 
-.. seealso:: :py:func:`itemRotation()`
+.. seealso:: :py:func:`itemRotation`
 %End
 
     virtual QgsExpressionContext createExpressionContext() const;
@@ -926,9 +926,9 @@ Emitted if the item's frame style changes.
 %Docstring
 Emitted if the item's lock status changes.
 
-.. seealso:: :py:func:`isLocked()`
+.. seealso:: :py:func:`isLocked`
 
-.. seealso:: :py:func:`setLocked()`
+.. seealso:: :py:func:`setLocked`
 %End
 
     void rotationChanged( double newRotation );
@@ -973,9 +973,9 @@ Draws the background for the item.
 Sets a fixed ``size`` for the layout item, which prevents it from being freely
 resized. Set an empty size if item can be freely resized.
 
-.. seealso:: :py:func:`fixedSize()`
+.. seealso:: :py:func:`fixedSize`
 
-.. seealso:: :py:func:`setMinimumSize()`
+.. seealso:: :py:func:`setMinimumSize`
 %End
 
     virtual void setMinimumSize( const QgsLayoutSize &size );
@@ -983,9 +983,9 @@ resized. Set an empty size if item can be freely resized.
 Sets the minimum allowed ``size`` for the layout item. Set an empty size if item can be freely
 resized.
 
-.. seealso:: :py:func:`minimumSize()`
+.. seealso:: :py:func:`minimumSize`
 
-.. seealso:: :py:func:`setFixedSize()`
+.. seealso:: :py:func:`setFixedSize`
 %End
 
     virtual QSizeF applyItemSizeConstraint( const QSizeF &targetSize );
@@ -995,9 +995,9 @@ Subclasses can override this method if they need to apply advanced logic regardi
 sizes, which cannot be covered by setFixedSize() or setMinimumSize().
 Item size constraints are applied after fixed, minimum and data defined size constraints.
 
-.. seealso:: :py:func:`setFixedSize()`
+.. seealso:: :py:func:`setFixedSize`
 
-.. seealso:: :py:func:`setMinimumSize()`
+.. seealso:: :py:func:`setMinimumSize`
 %End
 
     void refreshItemSize();
@@ -1005,11 +1005,11 @@ Item size constraints are applied after fixed, minimum and data defined size con
 Refreshes an item's size by rechecking it against any possible item fixed
 or minimum sizes.
 
-.. seealso:: :py:func:`setFixedSize()`
+.. seealso:: :py:func:`setFixedSize`
 
-.. seealso:: :py:func:`setMinimumSize()`
+.. seealso:: :py:func:`setMinimumSize`
 
-.. seealso:: :py:func:`refreshItemPosition()`
+.. seealso:: :py:func:`refreshItemPosition`
 %End
 
     void refreshItemPosition();
@@ -1017,7 +1017,7 @@ or minimum sizes.
 Refreshes an item's position by rechecking it against any possible overrides
 such as data defined positioning.
 
-.. seealso:: :py:func:`refreshItemSize()`
+.. seealso:: :py:func:`refreshItemSize`
 %End
 
     void refreshItemRotation( QPointF *origin = 0 );
@@ -1028,9 +1028,9 @@ such as data defined rotation.
 The optional ``origin`` point specifies the origin (in item coordinates)
 around which the rotation should be applied.
 
-.. seealso:: :py:func:`refreshItemSize()`
+.. seealso:: :py:func:`refreshItemSize`
 
-.. seealso:: :py:func:`refreshItemPosition()`
+.. seealso:: :py:func:`refreshItemPosition`
 %End
 
     void refreshOpacity( bool updateItem = true );
@@ -1084,9 +1084,9 @@ Stores item state within an XML DOM element.
 :param document: DOM document
 :param context: read write context
 
-.. seealso:: :py:func:`writeXml()`
+.. seealso:: :py:func:`writeXml`
 
-.. seealso:: :py:func:`readPropertiesFromElement()`
+.. seealso:: :py:func:`readPropertiesFromElement`
 %End
 
     virtual bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context );
@@ -1103,9 +1103,9 @@ other items must be made in the finalizeRestoreFromXml() method. E.g. when resto
 a scalebar, the connection to the linked map's signals should be implemented
 in finalizeRestoreFromXml(), not readPropertiesFromElement().
 
-.. seealso:: :py:func:`writePropertiesToElement()`
+.. seealso:: :py:func:`writePropertiesToElement`
 
-.. seealso:: :py:func:`readXml()`
+.. seealso:: :py:func:`readXml`
 %End
 
     QgsLayoutSize applyDataDefinedSize( const QgsLayoutSize &size );

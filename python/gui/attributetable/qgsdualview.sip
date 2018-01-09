@@ -62,14 +62,14 @@ Change the current view mode.
 
 :param view: The view mode to set
 
-.. seealso:: :py:func:`view()`
+.. seealso:: :py:func:`view`
 %End
 
     ViewMode view() const;
 %Docstring
 Returns the current view mode.
 
-.. seealso:: :py:func:`setView()`
+.. seealso:: :py:func:`setView`
 
 .. versionadded:: 2.16
 %End

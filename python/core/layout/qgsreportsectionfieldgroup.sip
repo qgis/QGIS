@@ -44,11 +44,11 @@ Note that ownership is not transferred to ``parent``.
 %Docstring
 Returns the body layout for the section.
 
-.. seealso:: :py:func:`setBody()`
+.. seealso:: :py:func:`setBody`
 
-.. seealso:: :py:func:`bodyEnabled()`
+.. seealso:: :py:func:`bodyEnabled`
 
-.. seealso:: :py:func:`setBodyEnabled()`
+.. seealso:: :py:func:`setBodyEnabled`
 %End
 
     void setBody( QgsLayout *body /Transfer/ );
@@ -56,33 +56,33 @@ Returns the body layout for the section.
 Sets the ``body`` layout for the section. Ownership of ``body``
 is transferred to the report section.
 
-.. seealso:: :py:func:`body()`
+.. seealso:: :py:func:`body`
 
-.. seealso:: :py:func:`bodyEnabled()`
+.. seealso:: :py:func:`bodyEnabled`
 
-.. seealso:: :py:func:`setBodyEnabled()`
+.. seealso:: :py:func:`setBodyEnabled`
 %End
 
     bool bodyEnabled() const;
 %Docstring
 Returns true if the body for the section is enabled.
 
-.. seealso:: :py:func:`setBodyEnabled()`
+.. seealso:: :py:func:`setBodyEnabled`
 
-.. seealso:: :py:func:`body()`
+.. seealso:: :py:func:`body`
 
-.. seealso:: :py:func:`setBody()`
+.. seealso:: :py:func:`setBody`
 %End
 
     void setBodyEnabled( bool enabled );
 %Docstring
 Sets whether the body for the section is ``enabled``.
 
-.. seealso:: :py:func:`bodyEnabled()`
+.. seealso:: :py:func:`bodyEnabled`
 
-.. seealso:: :py:func:`body()`
+.. seealso:: :py:func:`body`
 
-.. seealso:: :py:func:`setBody()`
+.. seealso:: :py:func:`setBody`
 %End
 
 
@@ -90,28 +90,28 @@ Sets whether the body for the section is ``enabled``.
 %Docstring
 Returns the vector layer associated with this section.
 
-.. seealso:: :py:func:`setLayer()`
+.. seealso:: :py:func:`setLayer`
 %End
 
     void setLayer( QgsVectorLayer *layer );
 %Docstring
 Sets the vector ``layer`` associated with this section.
 
-.. seealso:: :py:func:`layer()`
+.. seealso:: :py:func:`layer`
 %End
 
     QString field() const;
 %Docstring
 Returns the field associated with this section.
 
-.. seealso:: :py:func:`setField()`
+.. seealso:: :py:func:`setField`
 %End
 
     void setField( const QString &field );
 %Docstring
 Sets the ``field`` associated with this section.
 
-.. seealso:: :py:func:`field()`
+.. seealso:: :py:func:`field`
 %End
 
     bool sortAscending() const;
@@ -119,7 +119,7 @@ Sets the ``field`` associated with this section.
 Returns true if the field values should be sorted ascending,
 or false for descending sort.
 
-.. seealso:: :py:func:`setSortAscending()`
+.. seealso:: :py:func:`setSortAscending`
 %End
 
     void setSortAscending( bool sortAscending );
@@ -127,7 +127,7 @@ or false for descending sort.
 Sets whether the field values should be sorted ascending. Set to true to sort
 ascending, or false for descending sort.
 
-.. seealso:: :py:func:`sortAscending()`
+.. seealso:: :py:func:`sortAscending`
 %End
 
     virtual QgsReportSectionFieldGroup *clone() const /Factory/;

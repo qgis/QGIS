@@ -45,14 +45,14 @@ Sets the title used in the expression builder dialog
 
 :param title: dialog title
 
-.. seealso:: :py:func:`expressionDialogTitle()`
+.. seealso:: :py:func:`expressionDialogTitle`
 %End
 
     QString expressionDialogTitle() const;
 %Docstring
 Returns the title used for the expression dialog.
 
-.. seealso:: :py:func:`setExpressionDialogTitle()`
+.. seealso:: :py:func:`setExpressionDialogTitle`
 %End
 
     void setMultiLine( bool multiLine );
@@ -84,7 +84,7 @@ no generator has been set before or the previous layer has been used as generato
 %Docstring
 Returns the current expression shown in the widget.
 
-.. seealso:: :py:func:`setExpression()`
+.. seealso:: :py:func:`setExpression`
 %End
 
     bool isValidExpression( QString *expressionError /Out/ = 0 ) const;
@@ -120,7 +120,7 @@ Sets the current expression to show in the widget.
 
 :param expression: expression string
 
-.. seealso:: :py:func:`expression()`
+.. seealso:: :py:func:`expression`
 %End
 
   protected:

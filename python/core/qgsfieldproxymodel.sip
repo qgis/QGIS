@@ -56,14 +56,14 @@ Set flags that affect how fields are filtered in the model.
 
 :param filters: are Filter flags
 
-.. seealso:: :py:func:`filters()`
+.. seealso:: :py:func:`filters`
 %End
 
     const Filters &filters() const;
 %Docstring
 Returns the filters controlling displayed fields.
 
-.. seealso:: :py:func:`setFilters()`
+.. seealso:: :py:func:`setFilters`
 %End
 
   public:

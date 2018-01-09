@@ -54,7 +54,7 @@ from existing configs, or creating/removing them from auth database
 
 :param warningText: the text of the warning label
 
-.. seealso:: :py:func:`formattedWarning()`
+.. seealso:: :py:func:`formattedWarning`
 %End
 
     void setBasicText( const QString &basicText );

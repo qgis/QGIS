@@ -44,9 +44,9 @@ passed object.
 :param object: parent object containing actions and shortcuts to register
 :param recursive: set to true to recursively add child actions and shortcuts
 
-.. seealso:: :py:func:`registerAllChildActions()`
+.. seealso:: :py:func:`registerAllChildActions`
 
-.. seealso:: :py:func:`registerAllChildShortcuts()`
+.. seealso:: :py:func:`registerAllChildShortcuts`
 %End
 
     void registerAllChildActions( QObject *object, bool recursive = false );
@@ -56,11 +56,11 @@ Automatically registers all QActions which are children of the passed object.
 :param object: parent object containing actions to register
 :param recursive: set to true to recursively add child actions
 
-.. seealso:: :py:func:`registerAction()`
+.. seealso:: :py:func:`registerAction`
 
-.. seealso:: :py:func:`registerAllChildren()`
+.. seealso:: :py:func:`registerAllChildren`
 
-.. seealso:: :py:func:`registerAllChildShortcuts()`
+.. seealso:: :py:func:`registerAllChildShortcuts`
 %End
 
     void registerAllChildShortcuts( QObject *object, bool recursive = false );
@@ -70,11 +70,11 @@ Automatically registers all QShortcuts which are children of the passed object.
 :param object: parent object containing shortcuts to register
 :param recursive: set to true to recursively add child shortcuts
 
-.. seealso:: :py:func:`registerShortcut()`
+.. seealso:: :py:func:`registerShortcut`
 
-.. seealso:: :py:func:`registerAllChildren()`
+.. seealso:: :py:func:`registerAllChildren`
 
-.. seealso:: :py:func:`registerAllChildActions()`
+.. seealso:: :py:func:`registerAllChildActions`
 %End
 
     bool registerAction( QAction *action, const QString &defaultShortcut = QString() );
@@ -87,11 +87,11 @@ identification.
 
 :return: true if action was successfully registered
 
-.. seealso:: :py:func:`registerShortcut()`
+.. seealso:: :py:func:`registerShortcut`
 
-.. seealso:: :py:func:`unregisterAction()`
+.. seealso:: :py:func:`unregisterAction`
 
-.. seealso:: :py:func:`registerAllChildActions()`
+.. seealso:: :py:func:`registerAllChildActions`
 %End
 
     bool registerShortcut( QShortcut *shortcut, const QString &defaultSequence = QString() );
@@ -104,9 +104,9 @@ identification.
 
 :return: true if shortcut was successfully registered
 
-.. seealso:: :py:func:`registerAction()`
+.. seealso:: :py:func:`registerAction`
 
-.. seealso:: :py:func:`registerAllChildShortcuts()`
+.. seealso:: :py:func:`registerAllChildShortcuts`
 %End
 
     bool unregisterAction( QAction *action );
@@ -118,9 +118,9 @@ Removes an action from the manager.
 :return: true if action was previously registered in manager and has been removed, or
 false if action was not previously registered in manager
 
-.. seealso:: :py:func:`registerAction()`
+.. seealso:: :py:func:`registerAction`
 
-.. seealso:: :py:func:`unregisterShortcut()`
+.. seealso:: :py:func:`unregisterShortcut`
 %End
 
     bool unregisterShortcut( QShortcut *shortcut );
@@ -132,36 +132,36 @@ Removes a shortcut from the manager.
 :return: true if shortcut was previously registered in manager and has been removed, or
 false if shortcut was not previously registered in manager
 
-.. seealso:: :py:func:`registerShortcut()`
+.. seealso:: :py:func:`registerShortcut`
 
-.. seealso:: :py:func:`unregisterAction()`
+.. seealso:: :py:func:`unregisterAction`
 %End
 
     QList<QAction *> listActions() const;
 %Docstring
 Returns a list of all actions in the manager.
 
-.. seealso:: :py:func:`listShortcuts()`
+.. seealso:: :py:func:`listShortcuts`
 
-.. seealso:: :py:func:`listAll()`
+.. seealso:: :py:func:`listAll`
 %End
 
     QList<QShortcut *> listShortcuts() const;
 %Docstring
 Returns a list of shortcuts in the manager.
 
-.. seealso:: :py:func:`listActions()`
+.. seealso:: :py:func:`listActions`
 
-.. seealso:: :py:func:`listAll()`
+.. seealso:: :py:func:`listAll`
 %End
 
     QList<QObject *> listAll() const;
 %Docstring
 Returns a list of both actions and shortcuts in the manager.
 
-.. seealso:: :py:func:`listAction()`
+.. seealso:: :py:func:`listAction`
 
-.. seealso:: :py:func:`listShortcuts()`
+.. seealso:: :py:func:`listShortcuts`
 %End
 
     QString objectDefaultKeySequence( QObject *object ) const;
@@ -171,7 +171,7 @@ An empty return string indicates no shortcut.
 
 :param object: QAction or QShortcut to return default key sequence for
 
-.. seealso:: :py:func:`defaultKeySequence()`
+.. seealso:: :py:func:`defaultKeySequence`
 %End
 
     QString defaultKeySequence( QAction *action ) const;
@@ -181,7 +181,7 @@ no default sequence.
 
 :param action: action to return default key sequence for
 
-.. seealso:: :py:func:`objectDefaultKeySequence()`
+.. seealso:: :py:func:`objectDefaultKeySequence`
 %End
 
     QString defaultKeySequence( QShortcut *shortcut ) const;
@@ -191,7 +191,7 @@ no default sequence.
 
 :param shortcut: shortcut to return default key sequence for
 
-.. seealso:: :py:func:`objectDefaultKeySequence()`
+.. seealso:: :py:func:`objectDefaultKeySequence`
 %End
 
     bool setKeySequence( const QString &name, const QString &sequence );
@@ -202,7 +202,7 @@ Modifies an action or shortcut's key sequence.
 shortcut's QObject.objectName()
 :param sequence: new shortcut key sequence
 
-.. seealso:: :py:func:`setObjectKeySequence()`
+.. seealso:: :py:func:`setObjectKeySequence`
 %End
 
     bool setObjectKeySequence( QObject *object, const QString &sequence );
@@ -212,7 +212,7 @@ Modifies an object's (either a QAction or a QShortcut) key sequence.
 :param object: QAction or QShortcut to modify
 :param sequence: new shortcut key sequence
 
-.. seealso:: :py:func:`setKeySequence()`
+.. seealso:: :py:func:`setKeySequence`
 %End
 
     bool setKeySequence( QAction *action, const QString &sequence );
@@ -222,7 +222,7 @@ Modifies an action's key sequence.
 :param action: action to modify
 :param sequence: new shortcut key sequence
 
-.. seealso:: :py:func:`setObjectKeySequence()`
+.. seealso:: :py:func:`setObjectKeySequence`
 %End
 
     bool setKeySequence( QShortcut *shortcut, const QString &sequence );
@@ -232,7 +232,7 @@ Modifies a shortcuts's key sequence.
 :param shortcut: QShortcut to modify
 :param sequence: new shortcut key sequence
 
-.. seealso:: :py:func:`setObjectKeySequence()`
+.. seealso:: :py:func:`setObjectKeySequence`
 %End
 
     QObject *objectForSequence( const QKeySequence &sequence ) const;
@@ -243,9 +243,9 @@ Returns the object (QAction or QShortcut) matching the specified key sequence,
 
 :return: object with matching sequence, or None if not found
 
-.. seealso:: :py:func:`actionForSequence()`
+.. seealso:: :py:func:`actionForSequence`
 
-.. seealso:: :py:func:`shortcutForSequence()`
+.. seealso:: :py:func:`shortcutForSequence`
 %End
 
     QAction *actionForSequence( const QKeySequence &sequence ) const;
@@ -254,9 +254,9 @@ Returns the action which is associated for a shortcut sequence, or None if no ac
 
 :param sequence: shortcut key sequence
 
-.. seealso:: :py:func:`objectForSequence()`
+.. seealso:: :py:func:`objectForSequence`
 
-.. seealso:: :py:func:`shortcutForSequence()`
+.. seealso:: :py:func:`shortcutForSequence`
 %End
 
     QShortcut *shortcutForSequence( const QKeySequence &sequence ) const;
@@ -265,9 +265,9 @@ Returns the shortcut which is associated for a key sequence, or None if no short
 
 :param sequence: shortcut key sequence
 
-.. seealso:: :py:func:`objectForSequence()`
+.. seealso:: :py:func:`objectForSequence`
 
-.. seealso:: :py:func:`actionForSequence()`
+.. seealso:: :py:func:`actionForSequence`
 %End
 
     QAction *actionByName( const QString &name ) const;
@@ -276,7 +276,7 @@ Returns an action by its name, or None if nothing found.
 
 :param name: action name. Must match QAction's text.
 
-.. seealso:: :py:func:`shortcutByName()`
+.. seealso:: :py:func:`shortcutByName`
 %End
 
     QShortcut *shortcutByName( const QString &name ) const;
@@ -285,7 +285,7 @@ Returns a shortcut by its name, or None if nothing found
 
 :param name: shortcut name. Must match QShortcut's QObject.objectName() property.
 
-.. seealso:: :py:func:`actionByName()`
+.. seealso:: :py:func:`actionByName`
 %End
 
     QString settingsPath() const;

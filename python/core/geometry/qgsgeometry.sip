@@ -100,9 +100,9 @@ This is much faster then calling the non-const get() method.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`primitive()`
+.. seealso:: :py:func:`primitive`
 
-.. seealso:: :py:func:`set()`
+.. seealso:: :py:func:`set`
 %End
 
     QgsAbstractGeometry *get();
@@ -118,9 +118,9 @@ and a deep copy. Where possible, use constGet() instead.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`constGet()`
+.. seealso:: :py:func:`constGet`
 
-.. seealso:: :py:func:`set()`
+.. seealso:: :py:func:`set`
 %End
 
     void set( QgsAbstractGeometry *geometry /Transfer/ );
@@ -133,9 +133,9 @@ Sets the underlying geometry store. Ownership of geometry is transferred.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`get()`
+.. seealso:: :py:func:`get`
 
-.. seealso:: :py:func:`constGet()`
+.. seealso:: :py:func:`constGet`
 %End
 
     bool isNull() const;
@@ -147,7 +147,7 @@ accessible via geometry() ).
 
 .. versionadded:: 2.10
 
-.. seealso:: :py:func:`isEmpty()`
+.. seealso:: :py:func:`isEmpty`
 %End
 
     static QgsGeometry fromWkt( const QString &wkt );
@@ -176,7 +176,7 @@ and will respect any Z or M dimensions present in the input points.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`fromPolyline()`
+.. seealso:: :py:func:`fromPolyline`
 %End
 
     static QgsGeometry fromPolyline( const QgsPolyline &polyline );
@@ -241,7 +241,7 @@ Returns true if the geometry is empty (eg a linestring with no vertices,
 or a collection with no geometries). A null geometry will always
 return true for isEmpty().
 
-.. seealso:: :py:func:`isNull()`
+.. seealso:: :py:func:`isNull`
 %End
 
     bool isMultipart() const;
@@ -265,7 +265,7 @@ equality test performed by isGeosEqual().
 
 .. versionadded:: 1.5
 
-.. seealso:: :py:func:`isGeosEqual()`
+.. seealso:: :py:func:`isGeosEqual`
 %End
 
     bool isGeosEqual( const QgsGeometry & ) const;
@@ -286,7 +286,7 @@ by equals() instead.
 
 .. versionadded:: 1.5
 
-.. seealso:: :py:func:`equals()`
+.. seealso:: :py:func:`equals`
 %End
 
     bool isGeosValid() const;
@@ -357,7 +357,7 @@ In case of error -1 will be returned.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`hausdorffDistanceDensify()`
+.. seealso:: :py:func:`hausdorffDistanceDensify`
 %End
 
     double hausdorffDistanceDensify( const QgsGeometry &geom, double densifyFraction ) const;
@@ -378,7 +378,7 @@ In case of error -1 will be returned.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`hausdorffDistance()`
+.. seealso:: :py:func:`hausdorffDistance`
 %End
 
     QgsPointXY closestVertex( const QgsPointXY &point, int &atVertex /Out/, int &beforeVertex /Out/, int &afterVertex /Out/, double &sqrDist /Out/ ) const;
@@ -404,7 +404,7 @@ Returns the bisector angle for this geometry at the specified vertex.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`interpolateAngle()`
+.. seealso:: :py:func:`interpolateAngle`
 %End
 
     void adjacentVertices( int atVertex, int &beforeVertex /Out/, int &afterVertex /Out/ ) const;
@@ -503,7 +503,7 @@ Returns the nearest point on this geometry to another geometry.
 
 .. versionadded:: 2.14
 
-.. seealso:: :py:func:`shortestLine()`
+.. seealso:: :py:func:`shortestLine`
 %End
 
     QgsGeometry shortestLine( const QgsGeometry &other ) const;
@@ -512,7 +512,7 @@ Returns the shortest line joining this geometry to another geometry.
 
 .. versionadded:: 2.14
 
-.. seealso:: :py:func:`nearestPoint()`
+.. seealso:: :py:func:`nearestPoint`
 %End
 
     double closestVertexWithContext( const QgsPointXY &point, int &atVertex /Out/ ) const;
@@ -679,7 +679,7 @@ intersect the other geometry.
 %Docstring
 Returns the bounding box of the geometry.
 
-.. seealso:: :py:func:`orientedMinimumBoundingBox()`
+.. seealso:: :py:func:`orientedMinimumBoundingBox`
 %End
 
     QgsGeometry orientedMinimumBoundingBox( double &area /Out/, double &angle /Out/, double &width /Out/, double &height /Out/ ) const;
@@ -690,7 +690,7 @@ width and height of the rotated bounding box will also be returned.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`boundingBox()`
+.. seealso:: :py:func:`boundingBox`
 %End
 
 
@@ -700,8 +700,7 @@ Returns the minimal enclosing circle for the geometry.
 
 :param center: Center of the minimal enclosing circle returneds
 :param radius: Radius of the minimal enclosing circle returned
-
-.. seealso:: :py:func:`QgsEllipse.toPolygon()`
+:param segments: Number of segments used to segment geometry. :py:func:`QgsEllipse.toPolygon`
 
 .. versionadded:: 3.0
 %End
@@ -907,7 +906,7 @@ Curved geometry types are automatically segmentized by this routine.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`densifyByDistance()`
+.. seealso:: :py:func:`densifyByDistance`
 %End
 
     QgsGeometry densifyByDistance( double distance ) const;
@@ -925,7 +924,7 @@ Curved geometry types are automatically segmentized by this routine.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`densifyByCount()`
+.. seealso:: :py:func:`densifyByCount`
 %End
 
     QgsGeometry centroid() const;
@@ -942,9 +941,9 @@ by calling `error()` on the returned geometry.
    for line based geometries, the center point of the line is returned,
 and for point based geometries, the point itself is returned
 
-.. seealso:: :py:func:`pointOnSurface()`
+.. seealso:: :py:func:`pointOnSurface`
 
-.. seealso:: :py:func:`poleOfInaccessibility()`
+.. seealso:: :py:func:`poleOfInaccessibility`
 %End
 
     QgsGeometry pointOnSurface() const;
@@ -958,9 +957,9 @@ If the input is a NULL geometry, the output will also be a NULL geometry.
 If an error was encountered while creating the result, more information can be retrieved
 by calling `error()` on the returned geometry.
 
-.. seealso:: :py:func:`centroid()`
+.. seealso:: :py:func:`centroid`
 
-.. seealso:: :py:func:`poleOfInaccessibility()`
+.. seealso:: :py:func:`poleOfInaccessibility`
 %End
 
     QgsGeometry poleOfInaccessibility( double precision, double *distanceToBoundary /Out/ = 0 ) const;
@@ -973,9 +972,9 @@ tolerance. More precise tolerances require more iterations and will take longer
 to calculate.
 Optionally, the distance to the polygon boundary from the pole can be stored.
 
-.. seealso:: :py:func:`centroid()`
+.. seealso:: :py:func:`centroid`
 
-.. seealso:: :py:func:`pointOnSurface()`
+.. seealso:: :py:func:`pointOnSurface`
 
 .. versionadded:: 3.0
 %End
@@ -1052,7 +1051,7 @@ by calling `error()` on the returned geometry.
 
 .. versionadded:: 2.0
 
-.. seealso:: :py:func:`lineLocatePoint()`
+.. seealso:: :py:func:`lineLocatePoint`
 %End
 
     double lineLocatePoint( const QgsGeometry &point ) const;
@@ -1070,7 +1069,7 @@ where this linestring comes to the specified point.
 
    only valid for linestring geometries
 
-.. seealso:: :py:func:`interpolate()`
+.. seealso:: :py:func:`interpolate`
 
 .. versionadded:: 3.0
 %End
@@ -1086,7 +1085,7 @@ of the node is returned.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`angleAtVertex()`
+.. seealso:: :py:func:`angleAtVertex`
 %End
 
     QgsGeometry intersection( const QgsGeometry &geometry ) const;
@@ -1437,7 +1436,7 @@ Returns true if vertex was found.
 
 .. versionadded:: 2.10
 
-.. seealso:: :py:func:`vertexNrFromVertexId()`
+.. seealso:: :py:func:`vertexNrFromVertexId`
 %End
 
     int vertexNrFromVertexId( QgsVertexId id ) const;
@@ -1451,7 +1450,7 @@ Returns -1 if a corresponding vertex could not be found.
 
 .. versionadded:: 2.10
 
-.. seealso:: :py:func:`vertexIdFromVertexNr()`
+.. seealso:: :py:func:`vertexIdFromVertexNr`
 %End
 
     QString lastError() const;

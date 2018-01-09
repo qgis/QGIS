@@ -40,7 +40,7 @@ Sets the context in which the symbol widget is shown, e.g., the associated map c
 
 :param context: symbol widget context
 
-.. seealso:: :py:func:`context()`
+.. seealso:: :py:func:`context`
 
 .. versionadded:: 3.0
 %End
@@ -49,7 +49,7 @@ Sets the context in which the symbol widget is shown, e.g., the associated map c
 %Docstring
 Returns the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
 
-.. seealso:: :py:func:`setContext()`
+.. seealso:: :py:func:`setContext`
 
 .. versionadded:: 3.0
 %End

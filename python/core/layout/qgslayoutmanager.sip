@@ -50,9 +50,9 @@ Adds a ``layout`` to the manager. Ownership of the layout is transferred to the 
 Returns true if the addition was successful, or false if the layout could not be added (eg
 as a result of a duplicate layout name).
 
-.. seealso:: :py:func:`removeLayout()`
+.. seealso:: :py:func:`removeLayout`
 
-.. seealso:: :py:func:`layoutAdded()`
+.. seealso:: :py:func:`layoutAdded`
 %End
 
 
@@ -62,20 +62,20 @@ Removes a ``layout`` from the manager. The layout is deleted.
 Returns true if the removal was successful, or false if the removal failed (eg as a result
 of removing a layout which is not contained in the manager).
 
-.. seealso:: :py:func:`addLayout()`
+.. seealso:: :py:func:`addLayout`
 
-.. seealso:: :py:func:`layoutRemoved()`
+.. seealso:: :py:func:`layoutRemoved`
 
-.. seealso:: :py:func:`layoutAboutToBeRemoved()`
+.. seealso:: :py:func:`layoutAboutToBeRemoved`
 
-.. seealso:: :py:func:`clear()`
+.. seealso:: :py:func:`clear`
 %End
 
     void clear();
 %Docstring
 Removes and deletes all layouts from the manager.
 
-.. seealso:: :py:func:`removeLayout()`
+.. seealso:: :py:func:`removeLayout`
 %End
 
 
@@ -96,14 +96,14 @@ were found.
 Reads the manager's state from a DOM element, restoring all layouts
 present in the XML document.
 
-.. seealso:: :py:func:`writeXml()`
+.. seealso:: :py:func:`writeXml`
 %End
 
     QDomElement writeXml( QDomDocument &doc ) const;
 %Docstring
 Returns a DOM element representing the state of the manager.
 
-.. seealso:: :py:func:`readXml()`
+.. seealso:: :py:func:`readXml`
 %End
 
     bool saveAsTemplate( const QString &name, QDomDocument &doc ) const;

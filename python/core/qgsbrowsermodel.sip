@@ -168,7 +168,7 @@ the name will be set to match ``directory``.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`removeFavorite()`
+.. seealso:: :py:func:`removeFavorite`
 %End
 
     void removeFavorite( const QModelIndex &index );
@@ -177,7 +177,7 @@ Removes a favorite directory from its corresponding model index.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`addFavoriteDirectory()`
+.. seealso:: :py:func:`addFavoriteDirectory`
 %End
 
     void updateProjectHome();

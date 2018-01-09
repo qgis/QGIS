@@ -61,7 +61,7 @@ Constructor for QgsAttributeEditorContext
 %Docstring
 Returns the form mode.
 
-.. seealso:: :py:func:`setFormMode()`
+.. seealso:: :py:func:`setFormMode`
 %End
 
     void setFormMode( FormMode mode );
@@ -70,7 +70,7 @@ Sets the form mode.
 
 :param mode: form mode
 
-.. seealso:: :py:func:`formMode()`
+.. seealso:: :py:func:`formMode`
 
 .. versionadded:: 2.16
 %End
@@ -79,7 +79,7 @@ Sets the form mode.
 %Docstring
 Returns true if the attribute editor should permit use of custom UI forms.
 
-.. seealso:: :py:func:`setAllowCustomUi()`
+.. seealso:: :py:func:`setAllowCustomUi`
 
 .. versionadded:: 2.16
 %End
@@ -91,7 +91,7 @@ Sets whether the attribute editor should permit use of custom UI forms.
 :param allow: set to true to allow custom UI forms, or false to disable them and use default generated
 QGIS forms
 
-.. seealso:: :py:func:`allowCustomUi()`
+.. seealso:: :py:func:`allowCustomUi`
 
 .. versionadded:: 2.16
 %End

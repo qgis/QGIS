@@ -42,7 +42,7 @@ and highlight any overridden variables within scopes.
 
 :param context: expression context
 
-.. seealso:: :py:func:`context()`
+.. seealso:: :py:func:`context`
 %End
 
     QgsExpressionContext *context() const;
@@ -50,7 +50,7 @@ and highlight any overridden variables within scopes.
 Returns the current expression context for the widget. QgsVariableEditorWidget widgets
 are created with an empty context by default.
 
-.. seealso:: :py:func:`setContext()`
+.. seealso:: :py:func:`setContext`
 %End
 
     void setEditableScopeIndex( int scopeIndex );
@@ -61,7 +61,7 @@ be modified by users.
 :param scopeIndex: index of current editable scope. Set to -1 to disable
 editing and make the widget read-only.
 
-.. seealso:: :py:func:`editableScope()`
+.. seealso:: :py:func:`editableScope`
 %End
 
     QgsExpressionContextScope *editableScope() const;
@@ -70,7 +70,7 @@ Returns the current editable scope for the widget.
 
 :return: editable scope, or 0 if no editable scope is set
 
-.. seealso:: :py:func:`setEditableScopeIndex()`
+.. seealso:: :py:func:`setEditableScopeIndex`
 %End
 
     void setSettingGroup( const QString &group );
@@ -81,7 +81,7 @@ of columns in the tree widget.
 
 :param group: setting group
 
-.. seealso:: :py:func:`settingGroup()`
+.. seealso:: :py:func:`settingGroup`
 %End
 
     QString settingGroup() const;
@@ -92,7 +92,7 @@ of columns in the tree widget.
 
 :return: setting group name
 
-.. seealso:: :py:func:`setSettingGroup()`
+.. seealso:: :py:func:`setSettingGroup`
 %End
 
     QVariantMap variablesInActiveScope() const;
@@ -109,7 +109,7 @@ users via the widget.
 Reloads all scopes from the editor's current context. This method should be called
 after adding or removing scopes from the attached context.
 
-.. seealso:: :py:func:`context()`
+.. seealso:: :py:func:`context`
 %End
 
   signals:

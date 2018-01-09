@@ -42,35 +42,35 @@ Sets a filter for the item type to show in the combo box.
 :param itemType: type of items to show. Set to QgsLayoutItemRegistry.LayoutItem to
 show all items.
 
-.. seealso:: :py:func:`itemType()`
+.. seealso:: :py:func:`itemType`
 %End
 
     QgsLayoutItemRegistry::ItemType itemType() const;
 %Docstring
 Returns the filter for the item types to show in the combo box.
 
-.. seealso:: :py:func:`setItemType()`
+.. seealso:: :py:func:`setItemType`
 %End
 
     void setExceptedItemList( const QList< QgsLayoutItem * > &exceptList );
 %Docstring
 Sets a list of specific items to exclude from the combo box.
 
-.. seealso:: :py:func:`exceptedItemList()`
+.. seealso:: :py:func:`exceptedItemList`
 %End
 
     QList< QgsLayoutItem * > exceptedItemList() const;
 %Docstring
 Returns the list of specific items excluded from the combo box.
 
-.. seealso:: :py:func:`setExceptedItemList()`
+.. seealso:: :py:func:`setExceptedItemList`
 %End
 
     QgsLayoutItem *item( int index ) const;
 %Docstring
 Return the item currently shown at the specified ``index`` within the combo box.
 
-.. seealso:: :py:func:`currentItem()`
+.. seealso:: :py:func:`currentItem`
 %End
 
     QgsLayoutItem *currentItem() const;

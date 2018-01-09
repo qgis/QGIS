@@ -82,7 +82,7 @@ Returns true if the render job was able to use a cached labeling solution.
 If so, any previously stored labeling results (see takeLabelingResults())
 should be retained.
 
-.. seealso:: :py:func:`takeLabelingResults()`
+.. seealso:: :py:func:`takeLabelingResults`
 
 .. versionadded:: 3.0
 %End
@@ -92,7 +92,7 @@ should be retained.
 Get pointer to internal labeling engine (in order to get access to the results).
 This should not be used if cached labeling was redrawn - see usedCachedLabels().
 
-.. seealso:: :py:func:`usedCachedLabels()`
+.. seealso:: :py:func:`usedCachedLabels`
 %End
 
     void setFeatureFilterProvider( const QgsFeatureFilterProvider *f );
@@ -139,7 +139,7 @@ Does not take ownership of the object.
 %Docstring
 Returns the total time it took to finish the job (in milliseconds).
 
-.. seealso:: :py:func:`perLayerRenderingTime()`
+.. seealso:: :py:func:`perLayerRenderingTime`
 %End
 
 

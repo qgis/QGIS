@@ -16,7 +16,6 @@ class QgsAttributeTableModel: QAbstractTableModel
 A model backed by a QgsVectorLayerCache which is able to provide
 feature/attribute information to a QAbstractItemView.
 
-\brief
 Is able to generate editor widgets for its QModelIndexes as well.
 Is mostly referred to as "master model" within this doc and the source.
 

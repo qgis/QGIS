@@ -31,14 +31,14 @@ Constructor for QgsScaleComboBox.
 %Docstring
 Returns the selected scale as a string, e.g. "1:150".
 
-.. seealso:: :py:func:`setScaleString()`
+.. seealso:: :py:func:`setScaleString`
 %End
 
     bool setScaleString( const QString &string );
 %Docstring
 Set the selected scale from a ``string``, e.g. "1:150".
 
-.. seealso:: :py:func:`scaleString()`
+.. seealso:: :py:func:`scaleString`
 %End
 
     double scale() const;
@@ -46,7 +46,7 @@ Set the selected scale from a ``string``, e.g. "1:150".
 Returns the selected scale as a double.
 The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 
-.. seealso:: :py:func:`setScale()`
+.. seealso:: :py:func:`setScale`
 %End
 
     double minScale() const;
@@ -64,7 +64,7 @@ The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 ma
 
 The returned string will be rounded (e.g. 1:1000, not 1:1000.345).
 
-.. seealso:: :py:func:`toDouble()`
+.. seealso:: :py:func:`toDouble`
 %End
 
     static double toDouble( const QString &string, bool *ok = 0 );
@@ -73,7 +73,7 @@ Helper function to convert a scale ``string`` to double.
 The returned value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 If specified, ``ok`` will be set to true if the string was successfully interpreted as a scale.
 
-.. seealso:: :py:func:`toString()`
+.. seealso:: :py:func:`toString`
 %End
 
   signals:
@@ -97,7 +97,7 @@ are expected to be valid scale strings, such as "1:1000000".
 Set the selected scale from a double.
 The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 
-.. seealso:: :py:func:`scale()`
+.. seealso:: :py:func:`scale`
 %End
 
     void setMinScale( double scale );

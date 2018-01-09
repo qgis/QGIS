@@ -31,28 +31,28 @@ Constructor
 %Docstring
 Returns the store's field list.
 
-.. seealso:: :py:func:`setFields()`
+.. seealso:: :py:func:`setFields`
 %End
 
     void setFields( const QgsFields &fields );
 %Docstring
 Sets the store's ``fields``. Every contained feature's fields will be reset to match ``fields``.
 
-.. seealso:: :py:func:`fields()`
+.. seealso:: :py:func:`fields`
 %End
 
     QgsCoordinateReferenceSystem crs() const;
 %Docstring
 Returns the store's coordinate reference system.
 
-.. seealso:: :py:func:`setCrs()`
+.. seealso:: :py:func:`setCrs`
 %End
 
     void setCrs( const QgsCoordinateReferenceSystem &crs );
 %Docstring
 Sets the store's ``crs``.
 
-.. seealso:: :py:func:`crs()`
+.. seealso:: :py:func:`crs`
 %End
 
     virtual bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = 0 );
@@ -83,14 +83,14 @@ Returns the list of features contained in the store.
 %Docstring
 Sets a map of optional ``parameters`` for the store.
 
-.. seealso:: :py:func:`params()`
+.. seealso:: :py:func:`params`
 %End
 
     QMap<QString, QVariant> params() const;
 %Docstring
 Returns the map of optional parameters.
 
-.. seealso:: :py:func:`setParams()`
+.. seealso:: :py:func:`setParams`
 %End
 
 };

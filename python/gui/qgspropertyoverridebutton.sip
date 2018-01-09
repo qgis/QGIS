@@ -91,7 +91,7 @@ Initialize a newly constructed property button (useful if button was included in
 Returns a QgsProperty object encapsulating the current state of the
 widget.
 
-.. seealso:: :py:func:`setToProperty()`
+.. seealso:: :py:func:`setToProperty`
 %End
 
     void setToProperty( const QgsProperty &property );
@@ -126,14 +126,14 @@ Returns the full definition description and current definition
 %Docstring
 Returns usage information for the property.
 
-.. seealso:: :py:func:`setUsageInfo()`
+.. seealso:: :py:func:`setUsageInfo`
 %End
 
     void setUsageInfo( const QString &info );
 %Docstring
 Set the usage information for the property.
 
-.. seealso:: :py:func:`usageInfo()`
+.. seealso:: :py:func:`usageInfo`
 %End
 
     void setVectorLayer( const QgsVectorLayer *layer );
@@ -141,7 +141,7 @@ Set the usage information for the property.
 Sets the vector layer associated with the button. This controls which fields are
 displayed within the widget's pop up menu.
 
-.. seealso:: :py:func:`vectorLayer()`
+.. seealso:: :py:func:`vectorLayer`
 %End
 
     const QgsVectorLayer *vectorLayer() const;
@@ -149,7 +149,7 @@ displayed within the widget's pop up menu.
 Returns the vector layer associated with the button. This controls which fields are
 displayed within the widget's pop up menu.
 
-.. seealso:: :py:func:`setVectorLayer()`
+.. seealso:: :py:func:`setVectorLayer`
 %End
 
     void registerCheckedWidget( QWidget *widget, bool natural = true );

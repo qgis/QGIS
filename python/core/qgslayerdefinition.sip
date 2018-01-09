@@ -51,7 +51,7 @@ Layer definitions can be used to load a layer and styling all from a single file
 
 This is a low-level routine that does not write layer tree.
 
-.. seealso:: :py:func:`exportLayerDefinition()`
+.. seealso:: :py:func:`exportLayerDefinition`
 %End
 
     static QList<QgsMapLayer *> loadLayerDefinitionLayers( QDomDocument &document, const QgsReadWriteContext &context ) /Factory/;
@@ -59,7 +59,7 @@ This is a low-level routine that does not write layer tree.
 Creates new layers from a layer definition document.
 This is a low-level routine that does not resolve layer ID conflicts, dependencies and joins
 
-.. seealso:: :py:func:`loadLayerDefinition()`
+.. seealso:: :py:func:`loadLayerDefinition`
 %End
 
     static QList<QgsMapLayer *> loadLayerDefinitionLayers( const QString &qlrfile ) /Factory/;
@@ -67,7 +67,7 @@ This is a low-level routine that does not resolve layer ID conflicts, dependenci
 Creates new layers from a layer definition file (.QLR)
 This is a low-level routine that does not resolve layer ID conflicts, dependencies and joins
 
-.. seealso:: :py:func:`loadLayerDefinition()`
+.. seealso:: :py:func:`loadLayerDefinition`
 %End
 
     class DependencySorter

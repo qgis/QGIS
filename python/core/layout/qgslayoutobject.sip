@@ -105,7 +105,7 @@ Returns the layout the object is attached to.
 %Docstring
 Returns a reference to the object's property collection, used for data defined overrides.
 
-.. seealso:: :py:func:`setDataDefinedProperties()`
+.. seealso:: :py:func:`setDataDefinedProperties`
 %End
 
 
@@ -115,7 +115,7 @@ Sets the objects's property collection, used for data defined overrides.
 
 :param collection: property collection. Existing properties will be replaced.
 
-.. seealso:: :py:func:`dataDefinedProperties()`
+.. seealso:: :py:func:`dataDefinedProperties`
 %End
 
 
@@ -126,11 +126,11 @@ Set a custom property for the object.
 :param key: property key. If a property with the same key already exists it will be overwritten.
 :param value: property value
 
-.. seealso:: :py:func:`customProperty()`
+.. seealso:: :py:func:`customProperty`
 
-.. seealso:: :py:func:`removeCustomProperty()`
+.. seealso:: :py:func:`removeCustomProperty`
 
-.. seealso:: :py:func:`customProperties()`
+.. seealso:: :py:func:`customProperties`
 %End
 
     QVariant customProperty( const QString &key, const QVariant &defaultValue = QVariant() ) const;
@@ -142,11 +142,11 @@ Read a custom property from the object.
 
 :return: value of matching property
 
-.. seealso:: :py:func:`setCustomProperty()`
+.. seealso:: :py:func:`setCustomProperty`
 
-.. seealso:: :py:func:`removeCustomProperty()`
+.. seealso:: :py:func:`removeCustomProperty`
 
-.. seealso:: :py:func:`customProperties()`
+.. seealso:: :py:func:`customProperties`
 %End
 
     void removeCustomProperty( const QString &key );
@@ -155,22 +155,22 @@ Remove a custom property from the object.
 
 :param key: property key
 
-.. seealso:: :py:func:`setCustomProperty()`
+.. seealso:: :py:func:`setCustomProperty`
 
-.. seealso:: :py:func:`customProperty()`
+.. seealso:: :py:func:`customProperty`
 
-.. seealso:: :py:func:`customProperties()`
+.. seealso:: :py:func:`customProperties`
 %End
 
     QStringList customProperties() const;
 %Docstring
 Return list of keys stored in custom properties for the object.
 
-.. seealso:: :py:func:`setCustomProperty()`
+.. seealso:: :py:func:`setCustomProperty`
 
-.. seealso:: :py:func:`customProperty()`
+.. seealso:: :py:func:`customProperty`
 
-.. seealso:: :py:func:`removeCustomProperty()`
+.. seealso:: :py:func:`removeCustomProperty`
 %End
 
     virtual QgsExpressionContext createExpressionContext() const;
@@ -206,7 +206,7 @@ Stores object properties within an XML DOM element.
 
 :return: true if write was successful
 
-.. seealso:: :py:func:`readObjectPropertiesFromElement()`
+.. seealso:: :py:func:`readObjectPropertiesFromElement`
 %End
 
     bool readObjectPropertiesFromElement( const QDomElement &parentElement, const QDomDocument &document, const QgsReadWriteContext &context );
@@ -219,7 +219,7 @@ Sets object properties from a DOM element
 
 :return: true if read was successful
 
-.. seealso:: :py:func:`writeObjectPropertiesToElement()`
+.. seealso:: :py:func:`writeObjectPropertiesToElement`
 %End
 
 

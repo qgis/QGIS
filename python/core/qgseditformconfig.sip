@@ -139,7 +139,7 @@ Example:
 :return: false if a field exists with the provided widgetName. In this case
 QgsVectorLayer.setEditorWidgetSetup should be used.
 
-.. seealso:: :py:func:`QgsVectorLayer.setEditorWidgetSetup()`
+.. seealso:: :py:func:`QgsVectorLayer.setEditorWidgetSetup`
 %End
 
     QVariantMap widgetConfig( const QString &widgetName ) const;

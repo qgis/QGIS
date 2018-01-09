@@ -65,7 +65,7 @@ for the color. Defaults to false.
 
 :param allowOpacity: set to true to allow opacity modification
 
-.. seealso:: :py:func:`allowOpacity()`
+.. seealso:: :py:func:`allowOpacity`
 
 .. versionadded:: 3.0
 %End
@@ -77,7 +77,7 @@ for the color.
 
 :return: true if opacity modification is allowed
 
-.. seealso:: :py:func:`setAllowOpacity()`
+.. seealso:: :py:func:`setAllowOpacity`
 
 .. versionadded:: 3.0
 %End
@@ -237,9 +237,9 @@ Sets whether a set to null (clear) option is shown in the button's drop-down men
 
 .. versionadded:: 2.16
 
-.. seealso:: :py:func:`showNull()`
+.. seealso:: :py:func:`showNull`
 
-.. seealso:: :py:func:`isNull()`
+.. seealso:: :py:func:`isNull`
 %End
 
     bool showNull() const;
@@ -248,9 +248,9 @@ Returns whether the set to null (clear) option is shown in the button's drop-dow
 
 .. versionadded:: 2.16
 
-.. seealso:: :py:func:`setShowNull()`
+.. seealso:: :py:func:`setShowNull`
 
-.. seealso:: :py:func:`isNull()`
+.. seealso:: :py:func:`isNull`
 %End
 
     bool isNull() const;
@@ -259,9 +259,9 @@ Returns true if the current color is null.
 
 .. versionadded:: 2.16
 
-.. seealso:: :py:func:`setShowNull()`
+.. seealso:: :py:func:`setShowNull`
 
-.. seealso:: :py:func:`showNull()`
+.. seealso:: :py:func:`showNull`
 %End
 
     QString noColorString() const;
@@ -376,7 +376,7 @@ Sets color to a totally transparent color.
    If the color button is not set to show an opacity channel in the color
 dialog (see setColorDialogOptions) then the color will not be changed.
 
-.. seealso:: :py:func:`setToNull()`
+.. seealso:: :py:func:`setToNull`
 %End
 
     void setToDefaultColor();
@@ -387,16 +387,16 @@ Sets color to the button's default color, if set.
 
 .. seealso:: :py:func:`defaultColor`
 
-.. seealso:: :py:func:`setToNull()`
+.. seealso:: :py:func:`setToNull`
 %End
 
     void setToNull();
 %Docstring
 Sets color to null.
 
-.. seealso:: :py:func:`setToDefaultColor()`
+.. seealso:: :py:func:`setToDefaultColor`
 
-.. seealso:: :py:func:`setToNoColor()`
+.. seealso:: :py:func:`setToNoColor`
 
 .. versionadded:: 2.16
 %End

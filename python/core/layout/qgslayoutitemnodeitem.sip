@@ -27,14 +27,14 @@ shapes such as polygon or polylines.
 %Docstring
 Sets the ``nodes`` the shape consists of.
 
-.. seealso:: :py:func:`nodes()`
+.. seealso:: :py:func:`nodes`
 %End
 
     QPolygonF nodes() const;
 %Docstring
 Returns the nodes the shape consists of.
 
-.. seealso:: :py:func:`setNodes()`
+.. seealso:: :py:func:`setNodes`
 %End
 
     bool addNode( QPointF point, bool checkArea = true, double radius = 10 );

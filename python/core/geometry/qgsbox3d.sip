@@ -48,108 +48,108 @@ Z Minimum and Z Maximum are set to 0.0.
 %Docstring
 Sets the minimum ``x`` value.
 
-.. seealso:: :py:func:`xMinimum()`
+.. seealso:: :py:func:`xMinimum`
 
-.. seealso:: :py:func:`setXMaximum()`
+.. seealso:: :py:func:`setXMaximum`
 %End
 
     void setXMaximum( double x );
 %Docstring
 Sets the maximum ``x`` value.
 
-.. seealso:: :py:func:`xMaximum()`
+.. seealso:: :py:func:`xMaximum`
 
-.. seealso:: :py:func:`setXMinimum()`
+.. seealso:: :py:func:`setXMinimum`
 %End
 
     double xMinimum() const;
 %Docstring
 Returns the minimum x value.
 
-.. seealso:: :py:func:`setXMinimum()`
+.. seealso:: :py:func:`setXMinimum`
 
-.. seealso:: :py:func:`xMaximum()`
+.. seealso:: :py:func:`xMaximum`
 %End
 
     double xMaximum() const;
 %Docstring
 Returns the maximum x value.
 
-.. seealso:: :py:func:`setXMaximum()`
+.. seealso:: :py:func:`setXMaximum`
 
-.. seealso:: :py:func:`xMinimum()`
+.. seealso:: :py:func:`xMinimum`
 %End
 
     void setYMinimum( double y );
 %Docstring
 Sets the minimum ``y`` value.
 
-.. seealso:: :py:func:`yMinimum()`
+.. seealso:: :py:func:`yMinimum`
 
-.. seealso:: :py:func:`setYMaximum()`
+.. seealso:: :py:func:`setYMaximum`
 %End
 
     void setYMaximum( double y );
 %Docstring
 Sets the maximum ``y`` value.
 
-.. seealso:: :py:func:`yMaximum()`
+.. seealso:: :py:func:`yMaximum`
 
-.. seealso:: :py:func:`setYMinimum()`
+.. seealso:: :py:func:`setYMinimum`
 %End
 
     double yMinimum() const;
 %Docstring
 Returns the minimum y value.
 
-.. seealso:: :py:func:`setYMinimum()`
+.. seealso:: :py:func:`setYMinimum`
 
-.. seealso:: :py:func:`yMaximum()`
+.. seealso:: :py:func:`yMaximum`
 %End
 
     double yMaximum() const;
 %Docstring
 Returns the maximum y value.
 
-.. seealso:: :py:func:`setYMaximum()`
+.. seealso:: :py:func:`setYMaximum`
 
-.. seealso:: :py:func:`yMinimum()`
+.. seealso:: :py:func:`yMinimum`
 %End
 
     void setZMinimum( double z );
 %Docstring
 Sets the minimum ``z`` value.
 
-.. seealso:: :py:func:`zMinimum()`
+.. seealso:: :py:func:`zMinimum`
 
-.. seealso:: :py:func:`setZMaximum()`
+.. seealso:: :py:func:`setZMaximum`
 %End
 
     void setZMaximum( double z );
 %Docstring
 Sets the maximum ``z`` value.
 
-.. seealso:: :py:func:`zMaximum()`
+.. seealso:: :py:func:`zMaximum`
 
-.. seealso:: :py:func:`setZMinimum()`
+.. seealso:: :py:func:`setZMinimum`
 %End
 
     double zMinimum() const;
 %Docstring
 Returns the minimum z value.
 
-.. seealso:: :py:func:`setZMinimum()`
+.. seealso:: :py:func:`setZMinimum`
 
-.. seealso:: :py:func:`zMaximum()`
+.. seealso:: :py:func:`zMaximum`
 %End
 
     double zMaximum() const;
 %Docstring
 Returns the maximum z value.
 
-.. seealso:: :py:func:`setZMaximum()`
+.. seealso:: :py:func:`setZMaximum`
 
-.. seealso:: :py:func:`zMinimum()`
+.. seealso:: :py:func:`zMinimum`
 %End
 
     void normalize();
@@ -161,27 +161,27 @@ Normalize the box so it has non-negative width/height/depth.
 %Docstring
 Returns the width of the box.
 
-.. seealso:: :py:func:`height()`
+.. seealso:: :py:func:`height`
 
-.. seealso:: :py:func:`depth()`
+.. seealso:: :py:func:`depth`
 %End
 
     double height() const;
 %Docstring
 Returns the height of the box.
 
-.. seealso:: :py:func:`width()`
+.. seealso:: :py:func:`width`
 
-.. seealso:: :py:func:`depth()`
+.. seealso:: :py:func:`depth`
 %End
 
     double depth() const;
 %Docstring
 Returns the depth of the box.
 
-.. seealso:: :py:func:`width()`
+.. seealso:: :py:func:`width`
 
-.. seealso:: :py:func:`height()`
+.. seealso:: :py:func:`height`
 %End
 
     double volume() const;

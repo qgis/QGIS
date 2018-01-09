@@ -51,7 +51,7 @@ Returns the name for the new layer
 %Docstring
 Returns the selected CRS for the new layer.
 
-.. seealso:: :py:func:`setCrs()`
+.. seealso:: :py:func:`setCrs`
 %End
 
     void setCrs( const QgsCoordinateReferenceSystem &crs );
@@ -60,7 +60,7 @@ Sets the ``crs`` value for the new layer in the dialog.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`crs()`
+.. seealso:: :py:func:`crs`
 %End
 
 };

@@ -92,14 +92,14 @@ Sets a filter to limit the features used during the aggregate calculation.
 
 :param filterExpression: expression for filtering features, or empty string to remove filter
 
-.. seealso:: :py:func:`filter()`
+.. seealso:: :py:func:`filter`
 %End
 
     QString filter() const;
 %Docstring
 Returns the filter which limits the features used during the aggregate calculation.
 
-.. seealso:: :py:func:`setFilter()`
+.. seealso:: :py:func:`setFilter`
 %End
 
     void setDelimiter( const QString &delimiter );
@@ -108,14 +108,14 @@ Sets the delimiter to use for joining values with the StringConcatenate aggregat
 
 :param delimiter: string delimiter
 
-.. seealso:: :py:func:`delimiter()`
+.. seealso:: :py:func:`delimiter`
 %End
 
     QString delimiter() const;
 %Docstring
 Returns the delimiter used for joining values with the StringConcatenate aggregate.
 
-.. seealso:: :py:func:`setDelimiter()`
+.. seealso:: :py:func:`setDelimiter`
 %End
 
     QVariant calculate( Aggregate aggregate, const QString &fieldOrExpression,

@@ -59,7 +59,7 @@ Return reference to identifiers of selected features
 
 :return: A list of QgsFeatureId's
 
-.. seealso:: :py:func:`selectedFeatures()`
+.. seealso:: :py:func:`selectedFeatures`
 %End
 
   signals:

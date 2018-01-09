@@ -33,9 +33,9 @@ framework.
 If the ``sort`` argument is true then the layers will be sorted by their :py:func:`QgsMapLayer.name()`
 value.
 
-.. seealso:: :py:func:`compatibleVectorLayers()`
+.. seealso:: :py:func:`compatibleVectorLayers`
 
-.. seealso:: :py:func:`compatibleLayers()`
+.. seealso:: :py:func:`compatibleLayers`
 %End
 
     static QList< QgsVectorLayer * > compatibleVectorLayers( QgsProject *project,
@@ -52,9 +52,9 @@ list empty will cause all vector layers, regardless of their geometry type, to b
 If the ``sort`` argument is true then the layers will be sorted by their :py:func:`QgsMapLayer.name()`
 value.
 
-.. seealso:: :py:func:`compatibleRasterLayers()`
+.. seealso:: :py:func:`compatibleRasterLayers`
 
-.. seealso:: :py:func:`compatibleLayers()`
+.. seealso:: :py:func:`compatibleLayers`
 %End
 
     static QList< QgsMapLayer * > compatibleLayers( QgsProject *project, bool sort = true );
@@ -65,9 +65,9 @@ framework.
 If the ``sort`` argument is true then the layers will be sorted by their :py:func:`QgsMapLayer.name()`
 value.
 
-.. seealso:: :py:func:`compatibleRasterLayers()`
+.. seealso:: :py:func:`compatibleRasterLayers`
 
-.. seealso:: :py:func:`compatibleVectorLayers()`
+.. seealso:: :py:func:`compatibleVectorLayers`
 %End
 
     static QgsMapLayer *mapLayerFromString( const QString &string, QgsProcessingContext &context, bool allowLoadingNewLayers = true );
@@ -158,7 +158,7 @@ parameter value.
 %Docstring
 Returns a session specific processing temporary folder for use in processing algorithms.
 
-.. seealso:: :py:func:`generateTempFileName()`
+.. seealso:: :py:func:`generateTempFileName`
 %End
 
     static QString generateTempFilename( const QString &basename );
@@ -167,7 +167,7 @@ Returns a temporary filename for a given file, putting it into
 a temporary folder (creating that folder in the process),
 but not changing the ``basename``.
 
-.. seealso:: :py:func:`tempFolder()`
+.. seealso:: :py:func:`tempFolder`
 %End
 
     static QString formatHelpMapAsHtml( const QVariantMap &map, const QgsProcessingAlgorithm *algorithm );

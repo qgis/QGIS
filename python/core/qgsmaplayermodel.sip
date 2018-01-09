@@ -60,7 +60,7 @@ class QgsMapLayerModel : QAbstractItemModel
 %Docstring
 Sets whether an optional empty layer ("not set") option is present in the model.
 
-.. seealso:: :py:func:`allowEmptyLayer()`
+.. seealso:: :py:func:`allowEmptyLayer`
 
 .. versionadded:: 3.0
 %End
@@ -69,7 +69,7 @@ Sets whether an optional empty layer ("not set") option is present in the model.
 %Docstring
 Returns true if the model allows the empty layer ("not set") choice.
 
-.. seealso:: :py:func:`setAllowEmptyLayer()`
+.. seealso:: :py:func:`setAllowEmptyLayer`
 
 .. versionadded:: 3.0
 %End
@@ -78,7 +78,7 @@ Returns true if the model allows the empty layer ("not set") choice.
 %Docstring
 Sets whether the CRS of layers is also included in the model's display role.
 
-.. seealso:: :py:func:`showCrs()`
+.. seealso:: :py:func:`showCrs`
 
 .. versionadded:: 3.0
 %End
@@ -87,7 +87,7 @@ Sets whether the CRS of layers is also included in the model's display role.
 %Docstring
 Returns true if the model includes layer's CRS in the display role.
 
-.. seealso:: :py:func:`setShowCrs()`
+.. seealso:: :py:func:`setShowCrs`
 
 .. versionadded:: 3.0
 %End
@@ -105,7 +105,7 @@ returns if the items can be checked or not
 %Docstring
  indexFromLayer returns the model index for a given layer
 
-.. seealso:: :py:func:`layerFromIndex()`
+.. seealso:: :py:func:`layerFromIndex`
 %End
 
     QgsMapLayer *layerFromIndex( const QModelIndex &index ) const;
@@ -114,7 +114,7 @@ Returns the map layer corresponding to the specified ``index``.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`indexFromLayer()`
+.. seealso:: :py:func:`indexFromLayer`
 %End
 
     void setAdditionalItems( const QStringList &items );
@@ -123,7 +123,7 @@ Sets a list of additional (non map layer) items to include at the end of the mod
 These may represent additional layers such as layers which are not included in the map
 layer registry, or paths to layers which have not yet been loaded into QGIS.
 
-.. seealso:: :py:func:`additionalItems()`
+.. seealso:: :py:func:`additionalItems`
 
 .. versionadded:: 3.0
 %End
@@ -132,7 +132,7 @@ layer registry, or paths to layers which have not yet been loaded into QGIS.
 %Docstring
 Return the list of additional (non map layer) items included at the end of the model.
 
-.. seealso:: :py:func:`setAdditionalItems()`
+.. seealso:: :py:func:`setAdditionalItems`
 
 .. versionadded:: 3.0
 %End

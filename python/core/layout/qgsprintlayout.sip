@@ -62,7 +62,7 @@ Returns the print layout's atlas.
 %Docstring
 Emitted when the layout's name is changed.
 
-.. seealso:: :py:func:`setName()`
+.. seealso:: :py:func:`setName`
 %End
 
 };

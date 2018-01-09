@@ -53,7 +53,7 @@ The caller takes responsibility for deleting the returned object.
 %Docstring
 Sets the ``size`` of the page.
 
-.. seealso:: :py:func:`pageSize()`
+.. seealso:: :py:func:`pageSize`
 %End
 
     bool setPageSize( const QString &size, Orientation orientation = Portrait );
@@ -65,14 +65,14 @@ The function returns true if ``size`` was a valid page size and the page
 size was changed. If false is returned then ``size`` could not be matched
 to a known page size.
 
-.. seealso:: :py:func:`pageSize()`
+.. seealso:: :py:func:`pageSize`
 %End
 
     QgsLayoutSize pageSize() const;
 %Docstring
 Returns the size of the page.
 
-.. seealso:: :py:func:`setPageSize()`
+.. seealso:: :py:func:`setPageSize`
 %End
 
     Orientation orientation() const;

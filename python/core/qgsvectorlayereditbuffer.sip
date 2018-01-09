@@ -107,7 +107,7 @@ Stop editing and discard the edits
 %Docstring
 Returns a map of new features which are not committed.
 
-.. seealso:: :py:func:`isFeatureAdded()`
+.. seealso:: :py:func:`isFeatureAdded`
 %End
 
     bool isFeatureAdded( QgsFeatureId id ) const;
@@ -118,14 +118,14 @@ Returns true if the specified feature ID has been added but not committed.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`addedFeatures()`
+.. seealso:: :py:func:`addedFeatures`
 %End
 
     QgsChangedAttributesMap changedAttributeValues() const;
 %Docstring
 Returns a map of features with changed attributes values which are not committed.
 
-.. seealso:: :py:func:`isFeatureAttributesChanged()`
+.. seealso:: :py:func:`isFeatureAttributesChanged`
 %End
 
     bool isFeatureAttributesChanged( QgsFeatureId id ) const;
@@ -136,14 +136,14 @@ Returns true if the specified feature ID has had an attribute changed but not co
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`changedAttributeValues()`
+.. seealso:: :py:func:`changedAttributeValues`
 %End
 
     QgsAttributeList deletedAttributeIds() const;
 %Docstring
 Returns a list of deleted attributes fields which are not committed. The list is kept sorted.
 
-.. seealso:: :py:func:`isAttributeDeleted()`
+.. seealso:: :py:func:`isAttributeDeleted`
 %End
 
     bool isAttributeDeleted( int index ) const;
@@ -154,7 +154,7 @@ Returns true if the specified attribute has been deleted but not committed.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`deletedAttributeIds()`
+.. seealso:: :py:func:`deletedAttributeIds`
 %End
 
     QList<QgsField> addedAttributes() const;
@@ -166,7 +166,7 @@ Returns a list of added attributes fields which are not committed.
 %Docstring
 Returns a map of features with changed geometries which are not committed.
 
-.. seealso:: :py:func:`hasFeatureGeometryChange()`
+.. seealso:: :py:func:`hasFeatureGeometryChange`
 %End
 
     bool isFeatureGeometryChanged( QgsFeatureId id ) const;
@@ -177,14 +177,14 @@ Returns true if the specified feature ID has had its geometry changed but not co
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`changedGeometries()`
+.. seealso:: :py:func:`changedGeometries`
 %End
 
     QgsFeatureIds deletedFeatureIds() const;
 %Docstring
 Returns a list of deleted feature IDs which are not committed.
 
-.. seealso:: :py:func:`isFeatureDeleted()`
+.. seealso:: :py:func:`isFeatureDeleted`
 %End
 
     bool isFeatureDeleted( QgsFeatureId id ) const;
@@ -195,7 +195,7 @@ Returns true if the specified feature ID has been deleted but not committed.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`deletedFeatureIds()`
+.. seealso:: :py:func:`deletedFeatureIds`
 %End
 
 

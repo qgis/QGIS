@@ -76,7 +76,7 @@ statement() instead.
 %Docstring
 Returns a quoted column reference (in double quotes)
 
-.. seealso:: :py:func:`quotedString()`
+.. seealso:: :py:func:`quotedString`
 %End
 
     static QString quotedIdentifierIfNeeded( const QString &name );
@@ -84,21 +84,21 @@ Returns a quoted column reference (in double quotes)
 Returns a quoted column reference (in double quotes) if needed, or
 otherwise the original string.
 
-.. seealso:: :py:func:`quotedString()`
+.. seealso:: :py:func:`quotedString`
 %End
 
     static QString stripQuotedIdentifier( QString text );
 %Docstring
 Remove double quotes from an identifier.
 
-.. seealso:: :py:func:`quotedIdentifier()`
+.. seealso:: :py:func:`quotedIdentifier`
 %End
 
     static QString quotedString( QString text );
 %Docstring
 Returns a quoted version of a string (in single quotes)
 
-.. seealso:: :py:func:`quotedIdentifier()`
+.. seealso:: :py:func:`quotedIdentifier`
 %End
 
     enum UnaryOperator

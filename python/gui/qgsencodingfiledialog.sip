@@ -76,7 +76,7 @@ The ``encoding`` argument can be used to specify the encoding initially selected
 %Docstring
 Returns the encoding selected within the dialog.
 
-.. seealso:: :py:func:`setEncoding()`
+.. seealso:: :py:func:`setEncoding`
 %End
 
     void setEncoding( const QString &encoding );

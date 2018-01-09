@@ -109,11 +109,11 @@ to clear the results from any previous calculations
    finalize() must be called after adding the final value and before
 retrieving calculated statistics.
 
-.. seealso:: :py:func:`calculate()`
+.. seealso:: :py:func:`calculate`
 
-.. seealso:: :py:func:`addVariant()`
+.. seealso:: :py:func:`addVariant`
 
-.. seealso:: :py:func:`finalize()`
+.. seealso:: :py:func:`finalize`
 
 .. versionadded:: 2.16
 %End
@@ -137,11 +137,11 @@ to clear the results from any previous calculations
    finalize() must be called after adding the final value and before
 retrieving calculated statistics.
 
-.. seealso:: :py:func:`addValue()`
+.. seealso:: :py:func:`addValue`
 
-.. seealso:: :py:func:`calculate()`
+.. seealso:: :py:func:`calculate`
 
-.. seealso:: :py:func:`finalize()`
+.. seealso:: :py:func:`finalize`
 
 .. versionadded:: 2.16
 %End
@@ -151,9 +151,9 @@ retrieving calculated statistics.
 Must be called after adding all values with addValues() and before retrieving
 any calculated statistics.
 
-.. seealso:: :py:func:`addValue()`
+.. seealso:: :py:func:`addValue`
 
-.. seealso:: :py:func:`addVariant()`
+.. seealso:: :py:func:`addVariant`
 
 .. versionadded:: 2.16
 %End

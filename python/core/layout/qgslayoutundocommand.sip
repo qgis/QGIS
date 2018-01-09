@@ -41,36 +41,36 @@ command compression can apply to the command.
 %Docstring
 Saves current layout state as before state.
 
-.. seealso:: :py:func:`beforeState()`
+.. seealso:: :py:func:`beforeState`
 
-.. seealso:: :py:func:`saveAfterState()`
+.. seealso:: :py:func:`saveAfterState`
 %End
 
     void saveAfterState();
 %Docstring
 Saves current layout state as after state.
 
-.. seealso:: :py:func:`afterState()`
+.. seealso:: :py:func:`afterState`
 
-.. seealso:: :py:func:`saveBeforeState()`
+.. seealso:: :py:func:`saveBeforeState`
 %End
 
     QDomDocument beforeState() const;
 %Docstring
 Returns the before state for the layout.
 
-.. seealso:: :py:func:`saveBeforeState()`
+.. seealso:: :py:func:`saveBeforeState`
 
-.. seealso:: :py:func:`afterState()`
+.. seealso:: :py:func:`afterState`
 %End
 
     QDomDocument afterState() const;
 %Docstring
 Returns the after state for the layout.
 
-.. seealso:: :py:func:`saveAfterState()`
+.. seealso:: :py:func:`saveAfterState`
 
-.. seealso:: :py:func:`beforeState()`
+.. seealso:: :py:func:`beforeState`
 %End
 
     virtual bool containsChange() const;
@@ -86,7 +86,7 @@ Saves the state of the object to the specified ``stateDoc``.
 
 Subclasses must implement this to handle encapsulating their current state into a DOM document.
 
-.. seealso:: :py:func:`restoreState()`
+.. seealso:: :py:func:`restoreState`
 %End
 
     virtual void restoreState( QDomDocument &stateDoc ) = 0;
@@ -95,7 +95,7 @@ Restores the state of the object from the specified ``stateDoc``.
 
 Subclasses must implement this to handle restoring their current state from the encapsulated state.
 
-.. seealso:: :py:func:`saveState()`
+.. seealso:: :py:func:`saveState`
 %End
 
     void setAfterState( const QDomDocument &stateDoc );

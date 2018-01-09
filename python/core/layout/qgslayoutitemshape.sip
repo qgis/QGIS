@@ -54,14 +54,14 @@ The caller takes responsibility for deleting the returned object.
 %Docstring
 Returns the type of shape (e.g. rectangle, ellipse, etc).
 
-.. seealso:: :py:func:`setShapeType()`
+.. seealso:: :py:func:`setShapeType`
 %End
 
     void setShapeType( QgsLayoutItemShape::Shape type );
 %Docstring
 Sets the ``type`` of shape (e.g. rectangle, ellipse, etc).
 
-.. seealso:: :py:func:`shapeType()`
+.. seealso:: :py:func:`shapeType`
 %End
 
     void setSymbol( QgsFillSymbol *symbol );
@@ -69,28 +69,28 @@ Sets the ``type`` of shape (e.g. rectangle, ellipse, etc).
 Sets the fill ``symbol`` used to draw the shape. Ownership is not transferred
 and a clone of the symbol is made.
 
-.. seealso:: :py:func:`symbol()`
+.. seealso:: :py:func:`symbol`
 %End
 
     QgsFillSymbol *symbol();
 %Docstring
 Returns the fill symbol used to draw the shape.
 
-.. seealso:: :py:func:`setSymbol()`
+.. seealso:: :py:func:`setSymbol`
 %End
 
     void setCornerRadius( QgsLayoutMeasurement radius );
 %Docstring
 Sets the corner ``radius`` for rounded rectangle corners.
 
-.. seealso:: :py:func:`cornerRadius()`
+.. seealso:: :py:func:`cornerRadius`
 %End
 
     QgsLayoutMeasurement cornerRadius() const;
 %Docstring
 Returns the corner radius for rounded rectangle corners.
 
-.. seealso:: :py:func:`setCornerRadius()`
+.. seealso:: :py:func:`setCornerRadius`
 %End
 
     virtual QRectF boundingRect() const;

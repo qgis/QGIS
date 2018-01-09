@@ -17,7 +17,6 @@ class QgsVectorLayerCache : QObject
 %Docstring
 This class caches features of a given QgsVectorLayer.
 
-\brief
 The cached features can be indexed by QgsAbstractCacheIndex.
 
 Proper indexing for a given use-case may speed up performance substantially.
@@ -41,7 +40,6 @@ the cache if the number is smaller than the previous size of the cache.
 
     int cacheSize();
 %Docstring
-\brief
 Returns the maximum number of features this cache will hold.
 In case full caching is enabled, this number can change, as new features get added.
 
@@ -54,7 +52,7 @@ Enable or disable the caching of geometries
 
 :param cacheGeometry:    Enable or disable the caching of geometries
 
-.. seealso:: :py:func:`cacheGeometry()`
+.. seealso:: :py:func:`cacheGeometry`
 %End
 
     bool cacheGeometry() const;
@@ -63,7 +61,7 @@ Returns true if the cache will fetch and cache feature geometries.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`setCacheGeometry()`
+.. seealso:: :py:func:`setCacheGeometry`
 %End
 
     void setCacheSubsetOfAttributes( const QgsAttributeList &attributes );
@@ -83,7 +81,6 @@ to also include newly added attributes.
 
     void setFullCache( bool fullCache );
 %Docstring
-\brief
 This enables or disables full caching.
 If enabled, all features will be held in the cache. The cache size will incrementally
 be increased to offer space for all features.
@@ -97,7 +94,7 @@ be used for slow data sources, be aware, that the call to this method might take
    when a cache is invalidated() (e.g. by adding an attribute to a layer) this setting
 is reset. A full cache rebuild must be performed by calling setFullCache( true ) again.
 
-.. seealso:: :py:func:`hasFullCache()`
+.. seealso:: :py:func:`hasFullCache`
 %End
 
     bool hasFullCache() const;
@@ -106,14 +103,13 @@ Returns true if the cache is complete, ie it contains all features. This may hap
 a result of a call to setFullCache() or by through a feature request which resulted in
 all available features being cached.
 
-.. seealso:: :py:func:`setFullCache()`
+.. seealso:: :py:func:`setFullCache`
 
 .. versionadded:: 3.0
 %End
 
     void addCacheIndex( QgsAbstractCacheIndex *cacheIndex /Transfer/ );
 %Docstring
-\brief
 Adds a QgsAbstractCacheIndex to this cache. Cache indices know about features present
 in this cache and decide, if enough information is present in the cache to respond to a :py:class:`QgsFeatureRequest`.
 The layer cache will take ownership of the index.
@@ -163,7 +159,7 @@ Check if a certain feature id is cached.
 
 :return: True if this id is in the cache
 
-.. seealso:: :py:func:`cachedFeatureIds()`
+.. seealso:: :py:func:`cachedFeatureIds`
 %End
 
     QgsFeatureIds cachedFeatureIds() const;
@@ -172,7 +168,7 @@ Returns the set of feature IDs for features which are cached.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`isFidCached()`
+.. seealso:: :py:func:`isFidCached`
 %End
 
     bool featureAtId( QgsFeatureId featureId, QgsFeature &feature, bool skipCache = false );
@@ -235,7 +231,6 @@ if the feature count is unknown.
 
     void requestCompleted( const QgsFeatureRequest &featureRequest, const QgsFeatureIds &fids );
 %Docstring
-\brief
 Gets called, whenever the full list of feature ids for a certain request is known.
 Broadcasts this information to indices, so they can update their tables.
 
@@ -245,7 +240,6 @@ Broadcasts this information to indices, so they can update their tables.
 
     void featureRemoved( QgsFeatureId fid );
 %Docstring
-\brief
 Gets called, whenever a feature has been removed.
 Broadcasts this information to indices, so they can invalidate their cache if required.
 
@@ -254,7 +248,6 @@ Broadcasts this information to indices, so they can invalidate their cache if re
 
     bool checkInformationCovered( const QgsFeatureRequest &featureRequest );
 %Docstring
-\brief
 Checks if the information required to complete the request is cached.
 i.e. If all attributes required and the geometry is held in the cache.
 Please note, that this does not check, if the requested features are cached.

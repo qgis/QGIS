@@ -37,7 +37,7 @@ The class is thread-safe (multiple classes can access the same instance safely).
 %Docstring
 Invalidates the cache contents, clearing all cached images.
 
-.. seealso:: :py:func:`clearCacheImage()`
+.. seealso:: :py:func:`clearCacheImage`
 %End
 
     bool init( const QgsRectangle &extent, double scale );
@@ -56,7 +56,7 @@ A list of ``dependentLayers`` should be passed containing all layer
 on which this cache image is dependent. If any of these layers triggers a
 repaint then the cache image will be cleared.
 
-.. seealso:: :py:func:`cacheImage()`
+.. seealso:: :py:func:`cacheImage`
 %End
 
     bool hasCacheImage( const QString &cacheKey ) const;
@@ -65,7 +65,7 @@ Returns true if the cache contains an image with the specified ``cacheKey``.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`cacheImage()`
+.. seealso:: :py:func:`cacheImage`
 %End
 
     QImage cacheImage( const QString &cacheKey ) const;
@@ -74,9 +74,9 @@ Returns the cached image for the specified ``cacheKey``. The ``cacheKey`` usuall
 matches the QgsMapLayer.id() which the image is a render of.
 Returns a null image if it is not cached.
 
-.. seealso:: :py:func:`setCacheImage()`
+.. seealso:: :py:func:`setCacheImage`
 
-.. seealso:: :py:func:`hasCacheImage()`
+.. seealso:: :py:func:`hasCacheImage`
 %End
 
     QList< QgsMapLayer * > dependentLayers( const QString &cacheKey ) const;
@@ -90,7 +90,7 @@ Returns a list of map layers on which an image in the cache depends.
 %Docstring
 Removes an image from the cache with matching ``cacheKey``.
 
-.. seealso:: :py:func:`clear()`
+.. seealso:: :py:func:`clear`
 %End
 
 };

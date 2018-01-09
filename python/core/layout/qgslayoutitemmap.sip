@@ -69,7 +69,7 @@ The caller takes responsibility for deleting the returned object.
 Returns the map scale.
 The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 
-.. seealso:: :py:func:`setScale()`
+.. seealso:: :py:func:`setScale`
 %End
 
     void setScale( double scale, bool forceUpdate = true );
@@ -78,7 +78,7 @@ Sets new map ``scale`` and changes only the map extent.
 
 The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 
-.. seealso:: :py:func:`scale()`
+.. seealso:: :py:func:`scale`
 %End
 
     void setExtent( const QgsRectangle &extent );
@@ -87,9 +87,9 @@ Sets a new ``extent`` for the map. This method may change the width or height of
 item to ensure that the extent exactly matches the specified extent, with no
 overlap or margin. This method implicitly alters the map scale.
 
-.. seealso:: :py:func:`zoomToExtent()`
+.. seealso:: :py:func:`zoomToExtent`
 
-.. seealso:: :py:func:`extentChanged()`
+.. seealso:: :py:func:`extentChanged`
 %End
 
     void zoomToExtent( const QgsRectangle &extent );
@@ -99,16 +99,16 @@ This method will not change the width or height of the map, and may result in
 an overlap or margin from the specified extent. This method implicitly alters the
 map scale.
 
-.. seealso:: :py:func:`setExtent()`
+.. seealso:: :py:func:`setExtent`
 %End
 
     QgsRectangle extent() const;
 %Docstring
 Returns the current map extent.
 
-.. seealso:: :py:func:`visibleExtentPolygon()`
+.. seealso:: :py:func:`visibleExtentPolygon`
 
-.. seealso:: :py:func:`extentChanged()`
+.. seealso:: :py:func:`extentChanged`
 %End
 
 
@@ -120,7 +120,7 @@ If the map rotation is 0, the result is the same as currentMapExtent
 :return: polygon with the four corner points representing the visible map extent. The points are
 clockwise, starting at the top-left point
 
-.. seealso:: :py:func:`extent()`
+.. seealso:: :py:func:`extent`
 %End
 
     QgsCoordinateReferenceSystem crs() const;
@@ -130,9 +130,9 @@ This will match the presetCrs() if that is set, or if a preset
 CRS is not set then the map's CRS will follow the composition's
 project's CRS.
 
-.. seealso:: :py:func:`presetCrs()`
+.. seealso:: :py:func:`presetCrs`
 
-.. seealso:: :py:func:`setCrs()`
+.. seealso:: :py:func:`setCrs`
 %End
 
     QgsCoordinateReferenceSystem presetCrs() const;
@@ -142,9 +142,9 @@ CRS will be used to render the map regardless of any project CRS
 setting. If the returned CRS is not valid then the project CRS
 will be used to render the map.
 
-.. seealso:: :py:func:`crs()`
+.. seealso:: :py:func:`crs`
 
-.. seealso:: :py:func:`setCrs()`
+.. seealso:: :py:func:`setCrs`
 %End
 
     void setCrs( const QgsCoordinateReferenceSystem &crs );
@@ -153,9 +153,9 @@ Sets the map's preset ``crs`` (coordinate reference system). If a valid CRS is
 set, this CRS will be used to render the map regardless of any project CRS
 setting. If the CRS is not valid then the project CRS will be used to render the map.
 
-.. seealso:: :py:func:`crs()`
+.. seealso:: :py:func:`crs`
 
-.. seealso:: :py:func:`presetCrs()`
+.. seealso:: :py:func:`presetCrs`
 %End
 
     bool keepLayerSet() const;
@@ -165,9 +165,9 @@ or the current layer set from the project associated with the layout. This is ju
 and itself does not change which layers are rendered in the map.
 Instead, use setLayers() to control which layers are rendered.
 
-.. seealso:: :py:func:`setKeepLayerSet()`
+.. seealso:: :py:func:`setKeepLayerSet`
 
-.. seealso:: :py:func:`layers()`
+.. seealso:: :py:func:`layers`
 %End
 
     void setKeepLayerSet( bool enabled );
@@ -177,9 +177,9 @@ or the current layer set of the associated project. This is just a GUI flag,
 and itself does not change which layers are rendered in the map.
 Instead, use setLayers() to control which layers are rendered.
 
-.. seealso:: :py:func:`keepLayerSet()`
+.. seealso:: :py:func:`keepLayerSet`
 
-.. seealso:: :py:func:`layers()`
+.. seealso:: :py:func:`layers`
 %End
 
     QList<QgsMapLayer *> layers() const;
@@ -187,9 +187,9 @@ Instead, use setLayers() to control which layers are rendered.
 Returns the stored layer set. If empty, the current project layers will
 be used instead.
 
-.. seealso:: :py:func:`setLayers()`
+.. seealso:: :py:func:`setLayers`
 
-.. seealso:: :py:func:`keepLayerSet()`
+.. seealso:: :py:func:`keepLayerSet`
 %End
 
     void setLayers( const QList<QgsMapLayer *> &layers );
@@ -197,37 +197,37 @@ be used instead.
 Sets the stored ``layers`` set. If empty, the current project layers will
 be used instead.
 
-.. seealso:: :py:func:`layers()`
+.. seealso:: :py:func:`layers`
 
-.. seealso:: :py:func:`keepLayerSet()`
+.. seealso:: :py:func:`keepLayerSet`
 %End
 
     bool keepLayerStyles() const;
 %Docstring
 Returns whether current styles of layers should be overridden by previously stored styles.
 
-.. seealso:: :py:func:`setKeepLayerStyles()`
+.. seealso:: :py:func:`setKeepLayerStyles`
 %End
 
     void setKeepLayerStyles( bool enabled );
 %Docstring
 Sets whether current styles of layers should be overridden by previously stored styles.
 
-.. seealso:: :py:func:`keepLayerStyles()`
+.. seealso:: :py:func:`keepLayerStyles`
 %End
 
     QMap<QString, QString> layerStyleOverrides() const;
 %Docstring
 Returns stored overrides of styles for layers.
 
-.. seealso:: :py:func:`setLayerStyleOverrides()`
+.. seealso:: :py:func:`setLayerStyleOverrides`
 %End
 
     void setLayerStyleOverrides( const QMap<QString, QString> &overrides );
 %Docstring
 Sets the stored overrides of styles for layers.
 
-.. seealso:: :py:func:`layerStyleOverrides()`
+.. seealso:: :py:func:`layerStyleOverrides`
 %End
 
     void storeCurrentLayerStyles();
@@ -257,14 +257,14 @@ Sets whether the map should follow a map theme. See followVisibilityPreset() for
 Preset name that decides which layers and layer styles are used for map rendering. It is only
 used when followVisibilityPreset() returns true.
 
-.. seealso:: :py:func:`setFollowVisibilityPresetName()`
+.. seealso:: :py:func:`setFollowVisibilityPresetName`
 %End
 
     void setFollowVisibilityPresetName( const QString &name );
 %Docstring
 Sets preset name for map rendering. See followVisibilityPresetName() for more details.
 
-.. seealso:: :py:func:`followVisibilityPresetName()`
+.. seealso:: :py:func:`followVisibilityPresetName`
 %End
 
     virtual void moveContent( double dx, double dy );
@@ -291,9 +291,9 @@ Returns true if the map contains a WMS layer.
 Sets the ``rotation`` for the map - this does not affect the composer item shape, only the
 way the map is drawn within the item. Rotation is in degrees, clockwise.
 
-.. seealso:: :py:func:`mapRotation()`
+.. seealso:: :py:func:`mapRotation`
 
-.. seealso:: :py:func:`mapRotationChanged()`
+.. seealso:: :py:func:`mapRotationChanged`
 %End
 
     double mapRotation( QgsLayoutObject::PropertyValueType valueType = QgsLayoutObject::EvaluatedValue ) const;
@@ -304,23 +304,23 @@ Returns the rotation used for drawing the map within the composer item, in degre
 or the current evaluated rotation (which may be affected by data driven rotation
 settings).
 
-.. seealso:: :py:func:`setMapRotation()`
+.. seealso:: :py:func:`setMapRotation`
 
-.. seealso:: :py:func:`mapRotationChanged()`
+.. seealso:: :py:func:`mapRotationChanged`
 %End
 
     void setDrawAnnotations( bool draw );
 %Docstring
 Sets whether annotations are drawn within the composer map.
 
-.. seealso:: :py:func:`drawAnnotations()`
+.. seealso:: :py:func:`drawAnnotations`
 %End
 
     bool drawAnnotations() const;
 %Docstring
 Returns whether annotations are drawn within the composer map.
 
-.. seealso:: :py:func:`setDrawAnnotations()`
+.. seealso:: :py:func:`setDrawAnnotations`
 %End
 
 
@@ -419,14 +419,14 @@ Sets the margin size (percentage) used when the map is in atlas mode.
 Returns the map item's grid stack, which is used to control how grids
 are drawn over the map's contents.
 
-.. seealso:: :py:func:`grid()`
+.. seealso:: :py:func:`grid`
 %End
 
     QgsLayoutItemMapGrid *grid();
 %Docstring
 Returns the map item's first grid. This is a convenience function.
 
-.. seealso:: :py:func:`grids()`
+.. seealso:: :py:func:`grids`
 %End
 
     QgsLayoutItemMapOverviewStack *overviews();
@@ -436,7 +436,7 @@ are drawn over the map's contents.
 
 :return: pointer to overview stack
 
-.. seealso:: :py:func:`overview()`
+.. seealso:: :py:func:`overview`
 %End
 
     QgsLayoutItemMapOverview *overview();
@@ -445,7 +445,7 @@ Returns the map item's first overview. This is a convenience function.
 
 :return: pointer to first overview for map item
 
-.. seealso:: :py:func:`overviews()`
+.. seealso:: :py:func:`overviews`
 %End
 
     virtual QgsExpressionContext createExpressionContext() const;
@@ -504,18 +504,18 @@ Calculates the extent to request and the yShift of the top-left point in case of
 %Docstring
 Is emitted when the map's extent changes.
 
-.. seealso:: :py:func:`setExtent()`
+.. seealso:: :py:func:`setExtent`
 
-.. seealso:: :py:func:`extent()`
+.. seealso:: :py:func:`extent`
 %End
 
     void mapRotationChanged( double newRotation );
 %Docstring
 Is emitted when the map's rotation changes.
 
-.. seealso:: :py:func:`setMapRotation()`
+.. seealso:: :py:func:`setMapRotation`
 
-.. seealso:: :py:func:`mapRotation()`
+.. seealso:: :py:func:`mapRotation`
 %End
 
     void preparedForAtlas();

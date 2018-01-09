@@ -49,7 +49,7 @@ Creates a new QgsLayoutFrame belonging to the specified ``layout``.
 Sets the visible part of the multiframe's content which is visible within
 this frame (relative to the total multiframe extent in layout units).
 
-.. seealso:: :py:func:`extent()`
+.. seealso:: :py:func:`extent`
 %End
 
     QgsLayoutMultiFrame *multiFrame() const;
@@ -68,7 +68,7 @@ Returns the parent multiframe for the frame.
 Returns the visible portion of the multi frame's content which
 is shown in this frame, in layout units.
 
-.. seealso:: :py:func:`setContentSection()`
+.. seealso:: :py:func:`setContentSection`
 %End
 
     bool hidePageIfEmpty() const;
@@ -77,7 +77,7 @@ Returns whether the page should be hidden (ie, not included in layout exports) i
 
 :return: true if page should be hidden if frame is empty
 
-.. seealso:: :py:func:`setHidePageIfEmpty()`
+.. seealso:: :py:func:`setHidePageIfEmpty`
 %End
 
     void setHidePageIfEmpty( const bool hidePageIfEmpty );
@@ -86,7 +86,7 @@ Sets whether the page should be hidden (ie, not included in layout exports) if t
 
 :param hidePageIfEmpty: set to true if page should be hidden if frame is empty
 
-.. seealso:: :py:func:`hidePageIfEmpty()`
+.. seealso:: :py:func:`hidePageIfEmpty`
 %End
 
     bool hideBackgroundIfEmpty() const;
@@ -95,7 +95,7 @@ Returns whether the background and frame stroke should be hidden if this frame i
 
 :return: true if background and stroke should be hidden if frame is empty
 
-.. seealso:: :py:func:`setHideBackgroundIfEmpty()`
+.. seealso:: :py:func:`setHideBackgroundIfEmpty`
 %End
 
     void setHideBackgroundIfEmpty( const bool hideBackgroundIfEmpty );
@@ -104,14 +104,14 @@ Sets whether the background and frame stroke should be hidden if this frame is e
 
 :param hideBackgroundIfEmpty: set to true if background and stroke should be hidden if frame is empty
 
-.. seealso:: :py:func:`hideBackgroundIfEmpty()`
+.. seealso:: :py:func:`hideBackgroundIfEmpty`
 %End
 
     bool isEmpty() const;
 %Docstring
 Returns whether the frame is empty.
 
-.. seealso:: :py:func:`hidePageIfEmpty()`
+.. seealso:: :py:func:`hidePageIfEmpty`
 %End
 
     virtual QgsExpressionContext createExpressionContext() const;

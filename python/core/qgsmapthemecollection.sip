@@ -116,7 +116,7 @@ Returns whether a map theme with a matching name exists.
 %Docstring
 Inserts a new map theme to the collection.
 
-.. seealso:: :py:func:`update()`
+.. seealso:: :py:func:`update`
 %End
 
     void update( const QString &name, const QgsMapThemeCollection::MapThemeRecord &state );
@@ -126,7 +126,7 @@ Updates a map theme within the collection.
 :param name: name of map theme to update
 :param state: map theme record to replace existing map theme
 
-.. seealso:: :py:func:`insert()`
+.. seealso:: :py:func:`insert`
 %End
 
     void removeMapTheme( const QString &name );
@@ -241,7 +241,7 @@ All map themes will maintain the same layer order as the master layer order.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`masterVisibleLayers()`
+.. seealso:: :py:func:`masterVisibleLayers`
 %End
 
     QList< QgsMapLayer * > masterVisibleLayers() const;
@@ -252,7 +252,7 @@ in the project's layer tree.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`masterLayerOrder()`
+.. seealso:: :py:func:`masterLayerOrder`
 %End
 
   signals:

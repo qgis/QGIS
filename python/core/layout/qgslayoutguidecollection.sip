@@ -37,7 +37,7 @@ the corresponding layout for you.
 %Docstring
 Returns the layout the guide belongs to.
 
-.. seealso:: :py:func:`setLayout()`
+.. seealso:: :py:func:`setLayout`
 %End
 
     void setLayout( QgsLayout *layout );
@@ -49,7 +49,7 @@ Sets the ``layout`` the guide belongs to.
    Adding the guide to a QgsLayoutGuideCollection will automatically set
 the corresponding layout for you.
 
-.. seealso:: :py:func:`layout()`
+.. seealso:: :py:func:`layout`
 %End
 
     Qt::Orientation orientation() const;
@@ -64,7 +64,7 @@ Returns the guide's position within the page.
 The position indicates either the horizontal or vertical position
 of the guide, depending on the guide's orientation().
 
-.. seealso:: :py:func:`setPosition()`
+.. seealso:: :py:func:`setPosition`
 %End
 
     void setPosition( const QgsLayoutMeasurement &position );
@@ -74,21 +74,21 @@ Sets the guide's ``position`` within the page.
 The ``position`` argument indicates either the horizontal or vertical position
 of the guide, depending on the guide's orientation().
 
-.. seealso:: :py:func:`position()`
+.. seealso:: :py:func:`position`
 %End
 
     QgsLayoutItemPage *page();
 %Docstring
 Returns the page the guide is contained within.
 
-.. seealso:: :py:func:`setPage()`
+.. seealso:: :py:func:`setPage`
 %End
 
     void setPage( QgsLayoutItemPage *page );
 %Docstring
 Sets the ``page`` the guide is contained within.
 
-.. seealso:: :py:func:`page()`
+.. seealso:: :py:func:`page`
 %End
 
     void update();
@@ -105,14 +105,14 @@ Returns the guide's line item.
 %Docstring
 Returns the guide's position in absolute layout units.
 
-.. seealso:: :py:func:`setLayoutPosition()`
+.. seealso:: :py:func:`setLayoutPosition`
 %End
 
     void setLayoutPosition( double position );
 %Docstring
 Sets the guide's ``position`` in absolute layout units.
 
-.. seealso:: :py:func:`layoutPosition()`
+.. seealso:: :py:func:`layoutPosition`
 %End
 
   signals:
@@ -183,7 +183,7 @@ set.
 %Docstring
 Removes the specified ``guide``, and deletes it.
 
-.. seealso:: :py:func:`clear()`
+.. seealso:: :py:func:`clear`
 %End
 
     void setGuideLayoutPosition( QgsLayoutGuide *guide, double position );
@@ -195,7 +195,7 @@ Sets the absolute ``position`` (in layout coordinates) for ``guide`` within the 
 %Docstring
 Removes all guides from the collection.
 
-.. seealso:: :py:func:`removeGuide()`
+.. seealso:: :py:func:`removeGuide`
 %End
 
     void applyGuidesToAllOtherPages( int sourcePage );
@@ -219,28 +219,28 @@ Returns the list of guides contained in the collection with the specified
 ``orientation`` and on a matching ``page``.
 If ``page`` is -1, guides from all pages will be returned.
 
-.. seealso:: :py:func:`guidesOnPage()`
+.. seealso:: :py:func:`guidesOnPage`
 %End
 
     QList< QgsLayoutGuide * > guidesOnPage( int page );
 %Docstring
 Returns the list of guides contained on a matching ``page``.
 
-.. seealso:: :py:func:`guides()`
+.. seealso:: :py:func:`guides`
 %End
 
     bool visible() const;
 %Docstring
 Returns true if the guide lines should be drawn.
 
-.. seealso:: :py:func:`setVisible()`
+.. seealso:: :py:func:`setVisible`
 %End
 
     void setVisible( bool visible );
 %Docstring
 Sets whether the guide lines should be ``visible``.
 
-.. seealso:: :py:func:`visible()`
+.. seealso:: :py:func:`visible`
 %End
 
     virtual bool writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const;
@@ -248,7 +248,7 @@ Sets whether the guide lines should be ``visible``.
 %Docstring
 Stores the collection's state in a DOM element. The ``parentElement`` should refer to the parent layout's DOM element.
 
-.. seealso:: :py:func:`readXml()`
+.. seealso:: :py:func:`readXml`
 %End
 
     virtual bool readXml( const QDomElement &collectionElement, const QDomDocument &document, const QgsReadWriteContext &context );
@@ -256,7 +256,7 @@ Stores the collection's state in a DOM element. The ``parentElement`` should ref
 %Docstring
 Sets the collection's state from a DOM element. collectionElement is the DOM node corresponding to the collection.
 
-.. seealso:: :py:func:`writeXml()`
+.. seealso:: :py:func:`writeXml`
 %End
 
 };

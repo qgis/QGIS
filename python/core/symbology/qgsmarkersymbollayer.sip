@@ -82,7 +82,7 @@ Constructor for QgsSimpleMarkerSymbolLayerBase.
 %Docstring
 Returns the shape for the rendered marker symbol.
 
-.. seealso:: :py:func:`setShape()`
+.. seealso:: :py:func:`setShape`
 %End
 
     void setShape( QgsSimpleMarkerSymbolLayerBase::Shape shape );
@@ -91,7 +91,7 @@ Sets the rendered marker shape.
 
 :param shape: new marker shape
 
-.. seealso:: :py:func:`shape()`
+.. seealso:: :py:func:`shape`
 %End
 
     static QgsSimpleMarkerSymbolLayerBase::Shape decodeShape( const QString &name, bool *ok = 0 );
@@ -104,7 +104,7 @@ shape.
 
 :return: decoded name
 
-.. seealso:: :py:func:`encodeShape()`
+.. seealso:: :py:func:`encodeShape`
 %End
 
     static QString encodeShape( QgsSimpleMarkerSymbolLayerBase::Shape shape );
@@ -115,7 +115,7 @@ Encodes a shape to its string representation.
 
 :return: encoded string
 
-.. seealso:: :py:func:`decodeShape()`
+.. seealso:: :py:func:`decodeShape`
 %End
 
     virtual void startRender( QgsSymbolRenderContext &context );
@@ -294,11 +294,11 @@ Creates a new QgsSimpleMarkerSymbolLayer from an SLD XML element.
 %Docstring
 Returns the marker's stroke color.
 
-.. seealso:: :py:func:`setStrokeColor()`
+.. seealso:: :py:func:`setStrokeColor`
 
-.. seealso:: :py:func:`strokeStyle()`
+.. seealso:: :py:func:`strokeStyle`
 
-.. seealso:: :py:func:`penJoinStyle()`
+.. seealso:: :py:func:`penJoinStyle`
 %End
 
     virtual void setStrokeColor( const QColor &color );
@@ -307,11 +307,11 @@ Sets the marker's stroke color.
 
 :param color: stroke color
 
-.. seealso:: :py:func:`strokeColor()`
+.. seealso:: :py:func:`strokeColor`
 
-.. seealso:: :py:func:`setStrokeStyle()`
+.. seealso:: :py:func:`setStrokeStyle`
 
-.. seealso:: :py:func:`setPenJoinStyle()`
+.. seealso:: :py:func:`setPenJoinStyle`
 %End
 
     Qt::PenStyle strokeStyle() const;
@@ -320,11 +320,11 @@ Returns the marker's stroke style (e.g., solid, dashed, etc)
 
 .. versionadded:: 2.4
 
-.. seealso:: :py:func:`setStrokeStyle()`
+.. seealso:: :py:func:`setStrokeStyle`
 
-.. seealso:: :py:func:`strokeColor()`
+.. seealso:: :py:func:`strokeColor`
 
-.. seealso:: :py:func:`penJoinStyle()`
+.. seealso:: :py:func:`penJoinStyle`
 %End
 
     void setStrokeStyle( Qt::PenStyle strokeStyle );
@@ -335,11 +335,11 @@ Sets the marker's stroke style (e.g., solid, dashed, etc)
 
 .. versionadded:: 2.4
 
-.. seealso:: :py:func:`strokeStyle()`
+.. seealso:: :py:func:`strokeStyle`
 
-.. seealso:: :py:func:`setStrokeColor()`
+.. seealso:: :py:func:`setStrokeColor`
 
-.. seealso:: :py:func:`setPenJoinStyle()`
+.. seealso:: :py:func:`setPenJoinStyle`
 %End
 
     Qt::PenJoinStyle penJoinStyle() const;
@@ -348,11 +348,11 @@ Returns the marker's stroke join style (e.g., miter, bevel, etc).
 
 .. versionadded:: 2.16
 
-.. seealso:: :py:func:`setPenJoinStyle()`
+.. seealso:: :py:func:`setPenJoinStyle`
 
-.. seealso:: :py:func:`strokeColor()`
+.. seealso:: :py:func:`strokeColor`
 
-.. seealso:: :py:func:`strokeStyle()`
+.. seealso:: :py:func:`strokeStyle`
 %End
 
     void setPenJoinStyle( Qt::PenJoinStyle style );
@@ -363,22 +363,22 @@ Sets the marker's stroke join style (e.g., miter, bevel, etc).
 
 .. versionadded:: 2.16
 
-.. seealso:: :py:func:`penJoinStyle()`
+.. seealso:: :py:func:`penJoinStyle`
 
-.. seealso:: :py:func:`setStrokeColor()`
+.. seealso:: :py:func:`setStrokeColor`
 
-.. seealso:: :py:func:`setStrokeStyle()`
+.. seealso:: :py:func:`setStrokeStyle`
 %End
 
     double strokeWidth() const;
 %Docstring
 Returns the width of the marker's stroke.
 
-.. seealso:: :py:func:`setStrokeWidth()`
+.. seealso:: :py:func:`setStrokeWidth`
 
-.. seealso:: :py:func:`strokeWidthUnit()`
+.. seealso:: :py:func:`strokeWidthUnit`
 
-.. seealso:: :py:func:`strokeWidthMapUnitScale()`
+.. seealso:: :py:func:`strokeWidthMapUnitScale`
 %End
 
     void setStrokeWidth( double w );
@@ -387,11 +387,11 @@ Sets the width of the marker's stroke.
 
 :param w: stroke width. See strokeWidthUnit() for units.
 
-.. seealso:: :py:func:`strokeWidth()`
+.. seealso:: :py:func:`strokeWidth`
 
-.. seealso:: :py:func:`setStrokeWidthUnit()`
+.. seealso:: :py:func:`setStrokeWidthUnit`
 
-.. seealso:: :py:func:`setStrokeWidthMapUnitScale()`
+.. seealso:: :py:func:`setStrokeWidthMapUnitScale`
 %End
 
     void setStrokeWidthUnit( QgsUnitTypes::RenderUnit u );
@@ -400,22 +400,22 @@ Sets the unit for the width of the marker's stroke.
 
 :param u: stroke width unit
 
-.. seealso:: :py:func:`strokeWidthUnit()`
+.. seealso:: :py:func:`strokeWidthUnit`
 
-.. seealso:: :py:func:`setStrokeWidth()`
+.. seealso:: :py:func:`setStrokeWidth`
 
-.. seealso:: :py:func:`setStrokeWidthMapUnitScale()`
+.. seealso:: :py:func:`setStrokeWidthMapUnitScale`
 %End
 
     QgsUnitTypes::RenderUnit strokeWidthUnit() const;
 %Docstring
 Returns the unit for the width of the marker's stroke.
 
-.. seealso:: :py:func:`setStrokeWidthUnit()`
+.. seealso:: :py:func:`setStrokeWidthUnit`
 
-.. seealso:: :py:func:`strokeWidth()`
+.. seealso:: :py:func:`strokeWidth`
 
-.. seealso:: :py:func:`strokeWidthMapUnitScale()`
+.. seealso:: :py:func:`strokeWidthMapUnitScale`
 %End
 
     void setStrokeWidthMapUnitScale( const QgsMapUnitScale &scale );
@@ -424,22 +424,22 @@ Sets the map scale for the width of the marker's stroke.
 
 :param scale: stroke width map unit scale
 
-.. seealso:: :py:func:`strokeWidthMapUnitScale()`
+.. seealso:: :py:func:`strokeWidthMapUnitScale`
 
-.. seealso:: :py:func:`setStrokeWidth()`
+.. seealso:: :py:func:`setStrokeWidth`
 
-.. seealso:: :py:func:`setStrokeWidthUnit()`
+.. seealso:: :py:func:`setStrokeWidthUnit`
 %End
 
     const QgsMapUnitScale &strokeWidthMapUnitScale() const;
 %Docstring
 Returns the map scale for the width of the marker's stroke.
 
-.. seealso:: :py:func:`setStrokeWidthMapUnitScale()`
+.. seealso:: :py:func:`setStrokeWidthMapUnitScale`
 
-.. seealso:: :py:func:`strokeWidth()`
+.. seealso:: :py:func:`strokeWidth`
 
-.. seealso:: :py:func:`strokeWidthUnit()`
+.. seealso:: :py:func:`strokeWidthUnit`
 %End
 
   protected:
@@ -591,7 +591,7 @@ Used internally when reading/writing symbols.
 %Docstring
 Returns the marker SVG path.
 
-.. seealso:: :py:func:`setPath()`
+.. seealso:: :py:func:`setPath`
 %End
 
     void setPath( const QString &path );
@@ -600,14 +600,14 @@ Set the marker SVG path.
 
 :param path: SVG path
 
-.. seealso:: :py:func:`path()`
+.. seealso:: :py:func:`path`
 %End
 
     double defaultAspectRatio() const;
 %Docstring
 Returns the default marker aspect ratio between width and height, 0 if not yet calculated.
 
-.. seealso:: :py:func:`updateDefaultAspectRatio()`
+.. seealso:: :py:func:`updateDefaultAspectRatio`
 %End
 
     double updateDefaultAspectRatio();
@@ -616,14 +616,14 @@ Calculates the default marker aspect ratio between width and height.
 
 :return: the default aspect ratio value
 
-.. seealso:: :py:func:`defaultAspectRatio()`
+.. seealso:: :py:func:`defaultAspectRatio`
 %End
 
     bool preservedAspectRatio() const;
 %Docstring
 Returns the preserved aspect ratio value, true if fixed aspect ratio has been lower or equal to 0.
 
-.. seealso:: :py:func:`setPreservedAspectRatio()`
+.. seealso:: :py:func:`setPreservedAspectRatio`
 %End
 
     bool setPreservedAspectRatio( bool par );
@@ -634,7 +634,7 @@ Set preserved the marker aspect ratio between width and height.
 
 :return: the preserved aspect ratio value, true if fixed aspect ratio has been lower or equal to 0
 
-.. seealso:: :py:func:`preservedAspectRatio()`
+.. seealso:: :py:func:`preservedAspectRatio`
 %End
 
     double fixedAspectRatio() const;
@@ -642,7 +642,7 @@ Set preserved the marker aspect ratio between width and height.
 Returns the marker aspect ratio between width and height to be used in rendering,
 if the value set is lower or equal to 0 the aspect ratio will be preserved in rendering
 
-.. seealso:: :py:func:`setFixedAspectRatio()`
+.. seealso:: :py:func:`setFixedAspectRatio`
 %End
 
     void setFixedAspectRatio( double ratio );
@@ -652,7 +652,7 @@ if the value set is lower or equal to 0 the aspect ratio will be preserved in re
 
 :param ratio: Fixed Aspect Ratio
 
-.. seealso:: :py:func:`fixedAspectRatio()`
+.. seealso:: :py:func:`fixedAspectRatio`
 %End
 
     virtual QColor fillColor() const;
@@ -670,14 +670,14 @@ Sets the units for the stroke width.
 
 :param unit: width units
 
-.. seealso:: :py:func:`strokeWidthUnit()`
+.. seealso:: :py:func:`strokeWidthUnit`
 %End
 
     QgsUnitTypes::RenderUnit strokeWidthUnit() const;
 %Docstring
 Returns the units for the stroke width.
 
-.. seealso:: :py:func:`strokeWidthUnit()`
+.. seealso:: :py:func:`strokeWidthUnit`
 %End
 
     void setStrokeWidthMapUnitScale( const QgsMapUnitScale &scale );

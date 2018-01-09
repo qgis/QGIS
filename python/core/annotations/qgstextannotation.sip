@@ -35,7 +35,7 @@ Constructor for QgsTextAnnotation.
 Returns the text document which will be rendered
 within the annotation.
 
-.. seealso:: :py:func:`setDocument()`
+.. seealso:: :py:func:`setDocument`
 %End
 
     void setDocument( const QTextDocument *doc );
@@ -43,7 +43,7 @@ within the annotation.
 Sets the text document which will be rendered
 within the annotation. Ownership is not transferred.
 
-.. seealso:: :py:func:`document()`
+.. seealso:: :py:func:`document`
 %End
 
     virtual void writeXml( QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context ) const;

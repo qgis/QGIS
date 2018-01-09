@@ -100,7 +100,7 @@ Get the source color ramp
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`setSourceColorRamp()`
+.. seealso:: :py:func:`setSourceColorRamp`
 %End
 
     void setSourceColorRamp( QgsColorRamp *colorramp /Transfer/ );
@@ -109,7 +109,7 @@ Set the source color ramp. Ownership is transferred to the renderer.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`sourceColorRamp()`
+.. seealso:: :py:func:`sourceColorRamp`
 %End
 
     void setColorRampType( const QString &type );
@@ -172,14 +172,14 @@ Sets whether the shader should not render values out of range.
 
 :param clip: set to true to clip values which are out of range.
 
-.. seealso:: :py:func:`clip()`
+.. seealso:: :py:func:`clip`
 %End
 
     bool clip() const;
 %Docstring
 Returns whether the shader will clip values which are out of range.
 
-.. seealso:: :py:func:`setClip()`
+.. seealso:: :py:func:`setClip`
 %End
 
   protected:

@@ -13,8 +13,7 @@
 class QgsAdvancedDigitizingCanvasItem : QgsMapCanvasItem
 {
 %Docstring
-
-.. seealso:: :py:class:`QgsAdvancedDigitizingDockWidget`
+ The QgsAdvancedDigitizingCanvasItem class draws the graphical elements of the CAD tools (:py:class:`QgsAdvancedDigitizingDockWidget`) on the map canvas.
 %End
 
 %TypeHeaderCode

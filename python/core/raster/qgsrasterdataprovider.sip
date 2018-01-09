@@ -270,7 +270,7 @@ Current time stamp of data source
 Checks whether the provider is in editing mode, i.e. raster write operations will be accepted.
 By default providers are not editable. Use setEditable() method to enable/disable editing.
 
-.. seealso:: :py:func:`setEditable()`
+.. seealso:: :py:func:`setEditable`
 
 .. versionadded:: 3.0
 %End
@@ -288,7 +288,7 @@ to overwrite data of the provider using writeBlock() calls.
 the underlying data source into editing mode, so it is necessary to check the return
 value whether the operation was successful.
 
-.. seealso:: :py:func:`isEditable()`
+.. seealso:: :py:func:`isEditable`
 
 .. versionadded:: 3.0
 %End
@@ -309,7 +309,7 @@ xOffset and yOffset values.
 Writing is supported only by some data providers. Provider has to be in editing mode
 in order to allow write operations.
 
-.. seealso:: :py:func:`isEditable()`
+.. seealso:: :py:func:`isEditable`
 
 :return: true on success
 
@@ -378,7 +378,7 @@ Validates pyramid creation options for a specific dataset and destination format
 %Docstring
 Step width for raster iterations.
 
-.. seealso:: :py:func:`stepHeight()`
+.. seealso:: :py:func:`stepHeight`
 
 .. versionadded:: 3.0
 %End
@@ -387,7 +387,7 @@ Step width for raster iterations.
 %Docstring
 Step height for raster iterations.
 
-.. seealso:: :py:func:`stepWidth()`
+.. seealso:: :py:func:`stepWidth`
 
 .. versionadded:: 3.0
 %End

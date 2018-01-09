@@ -44,14 +44,14 @@ Constructor for QgsTicksScaleBarRenderer.
 %Docstring
 Sets the ``position`` for tick marks in the scalebar.
 
-.. seealso:: :py:func:`tickPosition()`
+.. seealso:: :py:func:`tickPosition`
 %End
 
     TickPosition tickPosition() const;
 %Docstring
 Returns the position for tick marks in the scalebar.
 
-.. seealso:: :py:func:`setTickPosition()`
+.. seealso:: :py:func:`setTickPosition`
 %End
 
 };

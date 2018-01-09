@@ -53,7 +53,7 @@ Sets whether a predefined CRS option should be shown in the widget.
 :param option: CRS option to show/hide
 :param visible: whether the option should be shown
 
-.. seealso:: :py:func:`optionVisible()`
+.. seealso:: :py:func:`optionVisible`
 %End
 
     bool optionVisible( CrsOption option ) const;
@@ -62,7 +62,7 @@ Returns whether the specified CRS option is visible in the widget.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`setOptionVisible()`
+.. seealso:: :py:func:`setOptionVisible`
 %End
 
     void setNotSetText( const QString &text );

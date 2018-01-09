@@ -175,7 +175,7 @@ Returns a WKB representation of the geometry.
 
 .. seealso:: :py:func:`asGML3`
 
-.. seealso:: :py:func:`asJson()`
+.. seealso:: :py:func:`asJson`
 
 .. versionadded:: 3.0
 %End
@@ -186,13 +186,13 @@ Returns a WKT representation of the geometry.
 
 :param precision: number of decimal places for coordinates
 
-.. seealso:: :py:func:`asWkb()`
+.. seealso:: :py:func:`asWkb`
 
-.. seealso:: :py:func:`asGml2()`
+.. seealso:: :py:func:`asGml2`
 
-.. seealso:: :py:func:`asGml3()`
+.. seealso:: :py:func:`asGml3`
 
-.. seealso:: :py:func:`asJson()`
+.. seealso:: :py:func:`asJson`
 %End
 
     virtual QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const = 0;
@@ -203,13 +203,13 @@ Returns a GML2 representation of the geometry.
 :param precision: number of decimal places for coordinates
 :param ns: XML namespace
 
-.. seealso:: :py:func:`asWkb()`
+.. seealso:: :py:func:`asWkb`
 
-.. seealso:: :py:func:`asWkt()`
+.. seealso:: :py:func:`asWkt`
 
-.. seealso:: :py:func:`asGml3()`
+.. seealso:: :py:func:`asGml3`
 
-.. seealso:: :py:func:`asJson()`
+.. seealso:: :py:func:`asJson`
 %End
 
     virtual QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const = 0;
@@ -220,13 +220,13 @@ Returns a GML3 representation of the geometry.
 :param precision: number of decimal places for coordinates
 :param ns: XML namespace
 
-.. seealso:: :py:func:`asWkb()`
+.. seealso:: :py:func:`asWkb`
 
-.. seealso:: :py:func:`asWkt()`
+.. seealso:: :py:func:`asWkt`
 
-.. seealso:: :py:func:`asGml2()`
+.. seealso:: :py:func:`asGml2`
 
-.. seealso:: :py:func:`asJson()`
+.. seealso:: :py:func:`asJson`
 %End
 
     virtual QString asJson( int precision = 17 ) const = 0;
@@ -235,13 +235,13 @@ Returns a GeoJSON representation of the geometry.
 
 :param precision: number of decimal places for coordinates
 
-.. seealso:: :py:func:`asWkb()`
+.. seealso:: :py:func:`asWkb`
 
-.. seealso:: :py:func:`asWkt()`
+.. seealso:: :py:func:`asWkt`
 
-.. seealso:: :py:func:`asGml2()`
+.. seealso:: :py:func:`asGml2`
 
-.. seealso:: :py:func:`asGml3()`
+.. seealso:: :py:func:`asGml3`
 %End
 
 
@@ -387,27 +387,27 @@ Deletes a vertex within the geometry
 %Docstring
 Returns the length of the geometry.
 
-.. seealso:: :py:func:`area()`
+.. seealso:: :py:func:`area`
 
-.. seealso:: :py:func:`perimeter()`
+.. seealso:: :py:func:`perimeter`
 %End
 
     virtual double perimeter() const;
 %Docstring
 Returns the perimeter of the geometry.
 
-.. seealso:: :py:func:`area()`
+.. seealso:: :py:func:`area`
 
-.. seealso:: :py:func:`length()`
+.. seealso:: :py:func:`length`
 %End
 
     virtual double area() const;
 %Docstring
 Returns the area of the geometry.
 
-.. seealso:: :py:func:`length()`
+.. seealso:: :py:func:`length`
 
-.. seealso:: :py:func:`perimeter()`
+.. seealso:: :py:func:`perimeter`
 %End
 
     virtual double segmentLength( QgsVertexId startVertex ) const = 0;
@@ -533,9 +533,9 @@ Adds a z-dimension to the geometry, initialized to a preset value.
 
 .. versionadded:: 2.12
 
-.. seealso:: :py:func:`dropZValue()`
+.. seealso:: :py:func:`dropZValue`
 
-.. seealso:: :py:func:`addMValue()`
+.. seealso:: :py:func:`addMValue`
 %End
 
     virtual bool addMValue( double mValue = 0 ) = 0;
@@ -548,9 +548,9 @@ Adds a measure to the geometry, initialized to a preset value.
 
 .. versionadded:: 2.12
 
-.. seealso:: :py:func:`dropMValue()`
+.. seealso:: :py:func:`dropMValue`
 
-.. seealso:: :py:func:`addZValue()`
+.. seealso:: :py:func:`addZValue`
 %End
 
     virtual bool dropZValue() = 0;
@@ -559,9 +559,9 @@ Drops any z-dimensions which exist in the geometry.
 
 :return: true if Z values were present and have been removed
 
-.. seealso:: :py:func:`addZValue()`
+.. seealso:: :py:func:`addZValue`
 
-.. seealso:: :py:func:`dropMValue()`
+.. seealso:: :py:func:`dropMValue`
 
 .. versionadded:: 2.14
 %End
@@ -572,9 +572,9 @@ Drops any measure values which exist in the geometry.
 
 :return: true if m-values were present and have been removed
 
-.. seealso:: :py:func:`addMValue()`
+.. seealso:: :py:func:`addMValue`
 
-.. seealso:: :py:func:`dropZValue()`
+.. seealso:: :py:func:`dropZValue`
 
 .. versionadded:: 2.14
 %End
@@ -603,7 +603,7 @@ Returns Java-style iterator for traversal of vertices of the geometry
 Creates a new geometry with the same class and same WKB type as the original and transfers ownership.
 To create it, the geometry is default constructed and then the WKB is changed.
 
-.. seealso:: :py:func:`clone()`
+.. seealso:: :py:func:`clone`
 
 .. versionadded:: 3.0
 

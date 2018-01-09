@@ -44,7 +44,7 @@ Constructor for QgsLocatorModel.
 %Docstring
 Resets the model and clears all existing results.
 
-.. seealso:: :py:func:`deferredClear()`
+.. seealso:: :py:func:`deferredClear`
 %End
 
     void deferredClear();
@@ -53,7 +53,7 @@ Resets the model and clears all existing results after a short delay, or wheneve
 (whichever occurs first). Using deferredClear() instead of clear() can avoid the visually distracting frequent clears
 which may occur if the model is being updated quickly multiple times as a result of users typing in a search query.
 
-.. seealso:: :py:func:`deferredClear()`
+.. seealso:: :py:func:`deferredClear`
 %End
 
     virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const;

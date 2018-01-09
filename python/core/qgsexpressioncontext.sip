@@ -145,7 +145,7 @@ with the same name is already set then its value is overwritten, otherwise a new
 If the ``isStatic`` parameter is set to true, this variable can be cached during the execution
 of :py:func:`QgsExpression.prepare()`
 
-.. seealso:: :py:func:`addVariable()`
+.. seealso:: :py:func:`addVariable`
 %End
 
     void addVariable( const QgsExpressionContextScope::StaticVariable &variable );
@@ -155,9 +155,9 @@ value is overwritten, otherwise a new variable is added to the scope.
 
 :param variable: definition of variable to insert
 
-.. seealso:: :py:func:`setVariable()`
+.. seealso:: :py:func:`setVariable`
 
-.. seealso:: :py:func:`addFunction()`
+.. seealso:: :py:func:`addFunction`
 %End
 
     bool removeVariable( const QString &name );
@@ -178,9 +178,9 @@ Tests whether a variable with the specified name exists in the scope.
 
 :return: true if matching variable was found in the scope
 
-.. seealso:: :py:func:`variable()`
+.. seealso:: :py:func:`variable`
 
-.. seealso:: :py:func:`hasFunction()`
+.. seealso:: :py:func:`hasFunction`
 %End
 
     QVariant variable( const QString &name ) const;
@@ -191,18 +191,18 @@ Retrieves a variable's value from the scope.
 
 :return: variable value, or invalid QVariant if matching variable could not be found
 
-.. seealso:: :py:func:`hasVariable()`
+.. seealso:: :py:func:`hasVariable`
 
-.. seealso:: :py:func:`function()`
+.. seealso:: :py:func:`function`
 %End
 
     QStringList variableNames() const;
 %Docstring
 Returns a list of variable names contained within the scope.
 
-.. seealso:: :py:func:`functionNames()`
+.. seealso:: :py:func:`functionNames`
 
-.. seealso:: :py:func:`filteredVariableNames()`
+.. seealso:: :py:func:`filteredVariableNames`
 %End
 
     QStringList filteredVariableNames() const;
@@ -211,7 +211,7 @@ Returns a filtered and sorted list of variable names contained within the scope.
 Hidden variable names will be excluded, and the list will be sorted so that
 read only variables are listed first.
 
-.. seealso:: :py:func:`variableNames()`
+.. seealso:: :py:func:`variableNames`
 %End
 
     bool isReadOnly( const QString &name ) const;
@@ -253,9 +253,9 @@ Tests whether a function with the specified name exists in the scope.
 
 :return: true if matching function was found in the scope
 
-.. seealso:: :py:func:`function()`
+.. seealso:: :py:func:`function`
 
-.. seealso:: :py:func:`hasFunction()`
+.. seealso:: :py:func:`hasFunction`
 %End
 
     QgsExpressionFunction *function( const QString &name ) const;
@@ -266,20 +266,20 @@ Retrieves a function from the scope.
 
 :return: function, or null if matching function could not be found
 
-.. seealso:: :py:func:`hasFunction()`
+.. seealso:: :py:func:`hasFunction`
 
-.. seealso:: :py:func:`functionNames()`
+.. seealso:: :py:func:`functionNames`
 
-.. seealso:: :py:func:`variable()`
+.. seealso:: :py:func:`variable`
 %End
 
     QStringList functionNames() const;
 %Docstring
 Retrieves a list of names of functions contained in the scope.
 
-.. seealso:: :py:func:`function()`
+.. seealso:: :py:func:`function`
 
-.. seealso:: :py:func:`variableNames()`
+.. seealso:: :py:func:`variableNames`
 %End
 
     void addFunction( const QString &name, QgsScopedExpressionFunction *function /Transfer/ );
@@ -289,7 +289,7 @@ Adds a function to the scope.
 :param name: function name
 :param function: function to insert. Ownership is transferred to the scope.
 
-.. seealso:: :py:func:`addVariable()`
+.. seealso:: :py:func:`addVariable`
 %End
 
     bool hasFeature() const;
@@ -298,16 +298,16 @@ Returns true if the scope has a feature associated with it.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`feature()`
+.. seealso:: :py:func:`feature`
 %End
 
     QgsFeature feature() const;
 %Docstring
 Sets the feature associated with the scope.
 
-.. seealso:: :py:func:`setFeature()`
+.. seealso:: :py:func:`setFeature`
 
-.. seealso:: :py:func:`hasFeature()`
+.. seealso:: :py:func:`hasFeature`
 
 .. versionadded:: 3.0
 %End
@@ -319,9 +319,9 @@ feature set by the scope will be overwritten.
 
 :param feature: feature for scope
 
-.. seealso:: :py:func:`removeFeature()`
+.. seealso:: :py:func:`removeFeature`
 
-.. seealso:: :py:func:`feature()`
+.. seealso:: :py:func:`feature`
 %End
 
     void removeFeature();
@@ -330,9 +330,9 @@ Removes any feature associated with the scope.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`setFeature()`
+.. seealso:: :py:func:`setFeature`
 
-.. seealso:: :py:func:`hasFeature()`
+.. seealso:: :py:func:`hasFeature`
 %End
 
     void setFields( const QgsFields &fields );
@@ -394,9 +394,9 @@ Check whether a variable is specified by any scope within the context.
 
 :return: true if variable is set
 
-.. seealso:: :py:func:`variable()`
+.. seealso:: :py:func:`variable`
 
-.. seealso:: :py:func:`variableNames()`
+.. seealso:: :py:func:`variableNames`
 %End
 
     QVariant variable( const QString &name ) const;
@@ -409,9 +409,9 @@ variable set.
 
 :return: variable value if matching variable exists in the context, otherwise an invalid QVariant
 
-.. seealso:: :py:func:`hasVariable()`
+.. seealso:: :py:func:`hasVariable`
 
-.. seealso:: :py:func:`variableNames()`
+.. seealso:: :py:func:`variableNames`
 %End
 
     QVariantMap variablesToMap() const;
@@ -430,7 +430,7 @@ variable.
 
 :param name: variable name
 
-.. seealso:: :py:func:`setHighlightedVariables()`
+.. seealso:: :py:func:`setHighlightedVariables`
 %End
 
     void setHighlightedVariables( const QStringList &variableNames );
@@ -440,7 +440,7 @@ is used by the expression builder to more prominently display these variables.
 
 :param variableNames: variable names to highlight
 
-.. seealso:: :py:func:`isHighlightedVariable()`
+.. seealso:: :py:func:`isHighlightedVariable`
 %End
 
     QgsExpressionContextScope *activeScopeForVariable( const QString &name );
@@ -463,14 +463,14 @@ Returns the scope at the specified index within the context.
 
 :return: matching scope, or null if none found
 
-.. seealso:: :py:func:`lastScope()`
+.. seealso:: :py:func:`lastScope`
 %End
 
     QgsExpressionContextScope *lastScope();
 %Docstring
 Returns the last scope added to the context.
 
-.. seealso:: :py:func:`scope()`
+.. seealso:: :py:func:`scope`
 %End
 
     QList< QgsExpressionContextScope * > scopes();
@@ -560,9 +560,9 @@ Checks whether a specified function is contained in the context.
 %Docstring
 Retrieves a list of function names contained in the context.
 
-.. seealso:: :py:func:`function()`
+.. seealso:: :py:func:`function`
 
-.. seealso:: :py:func:`variableNames()`
+.. seealso:: :py:func:`variableNames`
 %End
 
     QgsExpressionFunction *function( const QString &name ) const;
@@ -618,7 +618,7 @@ existing features within the context.
 
 :param feature: feature for context
 
-.. seealso:: :py:func:`feature()`
+.. seealso:: :py:func:`feature`
 %End
 
     bool hasFeature() const;
@@ -627,7 +627,7 @@ Returns true if the context has a feature associated with it.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`feature()`
+.. seealso:: :py:func:`feature`
 %End
 
     QgsFeature feature() const;
@@ -645,7 +645,7 @@ existing fields within the context.
 
 :param fields: fields for context
 
-.. seealso:: :py:func:`fields()`
+.. seealso:: :py:func:`fields`
 %End
 
     QgsFields fields() const;
@@ -674,11 +674,11 @@ expression context.
 :param key: unique key for retrieving cached value
 :param value: value to cache
 
-.. seealso:: :py:func:`hasCachedValue()`
+.. seealso:: :py:func:`hasCachedValue`
 
-.. seealso:: :py:func:`cachedValue()`
+.. seealso:: :py:func:`cachedValue`
 
-.. seealso:: :py:func:`clearCachedValues()`
+.. seealso:: :py:func:`clearCachedValues`
 
 .. versionadded:: 2.16
 %End
@@ -689,11 +689,11 @@ Returns true if the expression context contains a cached value with a matching k
 
 :param key: unique key used to store cached value
 
-.. seealso:: :py:func:`setCachedValue()`
+.. seealso:: :py:func:`setCachedValue`
 
-.. seealso:: :py:func:`cachedValue()`
+.. seealso:: :py:func:`cachedValue`
 
-.. seealso:: :py:func:`clearCachedValues()`
+.. seealso:: :py:func:`clearCachedValues`
 
 .. versionadded:: 2.16
 %End
@@ -707,11 +707,11 @@ of an expensive expression sub-calculation.
 
 :return: matching cached value, or invalid QVariant if not set
 
-.. seealso:: :py:func:`setCachedValue()`
+.. seealso:: :py:func:`setCachedValue`
 
-.. seealso:: :py:func:`hasCachedValue()`
+.. seealso:: :py:func:`hasCachedValue`
 
-.. seealso:: :py:func:`clearCachedValues()`
+.. seealso:: :py:func:`clearCachedValues`
 
 .. versionadded:: 2.16
 %End
@@ -720,11 +720,11 @@ of an expensive expression sub-calculation.
 %Docstring
 Clears all cached values from the context.
 
-.. seealso:: :py:func:`setCachedValue()`
+.. seealso:: :py:func:`setCachedValue`
 
-.. seealso:: :py:func:`hasCachedValue()`
+.. seealso:: :py:func:`hasCachedValue`
 
-.. seealso:: :py:func:`cachedValue()`
+.. seealso:: :py:func:`cachedValue`
 
 .. versionadded:: 2.16
 %End
@@ -762,7 +762,7 @@ for creating scopes for specific uses (e.g., project scopes, layer scopes).
 Creates a new scope which contains variables and functions relating to the global QGIS context.
 For instance, QGIS version numbers and variables specified through QGIS options.
 
-.. seealso:: :py:func:`setGlobalVariable()`
+.. seealso:: :py:func:`setGlobalVariable`
 %End
 
     static void setGlobalVariable( const QString &name, const QVariant &value );
@@ -773,11 +773,11 @@ globalScope().
 :param name: variable name
 :param value: variable value
 
-.. seealso:: :py:func:`setGlobalVariable()`
+.. seealso:: :py:func:`setGlobalVariable`
 
-.. seealso:: :py:func:`globalScope()`
+.. seealso:: :py:func:`globalScope`
 
-.. seealso:: :py:func:`removeGlobalVariable()`
+.. seealso:: :py:func:`removeGlobalVariable`
 %End
 
     static void setGlobalVariables( const QVariantMap &variables );
@@ -787,11 +787,11 @@ with the variables specified.
 
 :param variables: new set of global variables
 
-.. seealso:: :py:func:`setGlobalVariable()`
+.. seealso:: :py:func:`setGlobalVariable`
 
-.. seealso:: :py:func:`globalScope()`
+.. seealso:: :py:func:`globalScope`
 
-.. seealso:: :py:func:`removeGlobalVariable()`
+.. seealso:: :py:func:`removeGlobalVariable`
 %End
 
     static void removeGlobalVariable( const QString &name );
@@ -800,11 +800,11 @@ Remove a global context variable.
 
 :param name: variable name
 
-.. seealso:: :py:func:`setGlobalVariable()`
+.. seealso:: :py:func:`setGlobalVariable`
 
-.. seealso:: :py:func:`setGlobalVariables()`
+.. seealso:: :py:func:`setGlobalVariables`
 
-.. seealso:: :py:func:`globalScope()`
+.. seealso:: :py:func:`globalScope`
 %End
 
     static QgsExpressionContextScope *projectScope( const QgsProject *project ) /Factory/;
@@ -814,7 +814,7 @@ For instance, project path and title, and variables specified through the projec
 
 :param project: What project to use
 
-.. seealso:: :py:func:`setProjectVariable()`
+.. seealso:: :py:func:`setProjectVariable`
 %End
 
     static void setProjectVariable( QgsProject *project, const QString &name, const QVariant &value );
@@ -826,11 +826,11 @@ projectScope().
 :param name: variable name
 :param value: variable value
 
-.. seealso:: :py:func:`setProjectVariables()`
+.. seealso:: :py:func:`setProjectVariables`
 
-.. seealso:: :py:func:`removeProjectVariable()`
+.. seealso:: :py:func:`removeProjectVariable`
 
-.. seealso:: :py:func:`projectScope()`
+.. seealso:: :py:func:`projectScope`
 %End
 
     static void setProjectVariables( QgsProject *project, const QVariantMap &variables );
@@ -841,11 +841,11 @@ with the variables specified.
 :param project: Project to apply changes to
 :param variables: new set of project variables
 
-.. seealso:: :py:func:`setProjectVariable()`
+.. seealso:: :py:func:`setProjectVariable`
 
-.. seealso:: :py:func:`removeProjectVariable()`
+.. seealso:: :py:func:`removeProjectVariable`
 
-.. seealso:: :py:func:`projectScope()`
+.. seealso:: :py:func:`projectScope`
 %End
 
     static void removeProjectVariable( QgsProject *project, const QString &name );
@@ -855,11 +855,11 @@ Remove project context variable.
 :param project: Project to apply changes to
 :param name: variable name
 
-.. seealso:: :py:func:`setProjectVariable()`
+.. seealso:: :py:func:`setProjectVariable`
 
-.. seealso:: :py:func:`setProjectVariables()`
+.. seealso:: :py:func:`setProjectVariables`
 
-.. seealso:: :py:func:`projectScope()`
+.. seealso:: :py:func:`projectScope`
 %End
 
     static QgsExpressionContextScope *layerScope( const QgsMapLayer *layer ) /Factory/;
@@ -884,9 +884,9 @@ layerScope().
 :param name: variable name
 :param value: variable value
 
-.. seealso:: :py:func:`setLayerVariables()`
+.. seealso:: :py:func:`setLayerVariables`
 
-.. seealso:: :py:func:`layerScope()`
+.. seealso:: :py:func:`layerScope`
 %End
 
     static void setLayerVariables( QgsMapLayer *layer, const QVariantMap &variables );
@@ -897,9 +897,9 @@ with the variables specified.
 :param layer: map layer
 :param variables: new set of layer variables
 
-.. seealso:: :py:func:`setLayerVariable()`
+.. seealso:: :py:func:`setLayerVariable`
 
-.. seealso:: :py:func:`layerScope()`
+.. seealso:: :py:func:`layerScope`
 %End
 
     static QgsExpressionContextScope *mapSettingsScope( const QgsMapSettings &mapSettings ) /Factory/;
@@ -944,9 +944,9 @@ layoutScope().
 :param name: variable name
 :param value: variable value
 
-.. seealso:: :py:func:`setLayoutVariables()`
+.. seealso:: :py:func:`setLayoutVariables`
 
-.. seealso:: :py:func:`layoutScope()`
+.. seealso:: :py:func:`layoutScope`
 
 .. versionadded:: 3.0
 %End
@@ -959,9 +959,9 @@ with the variables specified.
 :param layout: target layout
 :param variables: new set of layer variables
 
-.. seealso:: :py:func:`setLayoutVariable()`
+.. seealso:: :py:func:`setLayoutVariable`
 
-.. seealso:: :py:func:`layoutScope()`
+.. seealso:: :py:func:`layoutScope`
 
 .. versionadded:: 3.0
 %End
@@ -983,9 +983,9 @@ For instance, item size and position.
 
 .. versionadded:: 3.0
 
-.. seealso:: :py:func:`setLayoutItemVariable()`
+.. seealso:: :py:func:`setLayoutItemVariable`
 
-.. seealso:: :py:func:`setLayoutItemVariables()`
+.. seealso:: :py:func:`setLayoutItemVariables`
 %End
 
     static void setLayoutItemVariable( QgsLayoutItem *item, const QString &name, const QVariant &value );
@@ -994,9 +994,9 @@ Sets a layout ``item`` context variable, with the given ``name`` and ``value``.
 This variable will be contained within scopes retrieved via
 layoutItemScope().
 
-.. seealso:: :py:func:`setLayoutItemVariables()`
+.. seealso:: :py:func:`setLayoutItemVariables`
 
-.. seealso:: :py:func:`layoutItemScope()`
+.. seealso:: :py:func:`layoutItemScope`
 
 .. versionadded:: 3.0
 %End
@@ -1006,9 +1006,9 @@ layoutItemScope().
 Sets all layout item context variables for an ``item``. Existing variables will be removed and replaced
 with the ``variables`` specified.
 
-.. seealso:: :py:func:`setLayoutItemVariable()`
+.. seealso:: :py:func:`setLayoutItemVariable`
 
-.. seealso:: :py:func:`layoutItemScope()`
+.. seealso:: :py:func:`layoutItemScope`
 
 .. versionadded:: 3.0
 %End

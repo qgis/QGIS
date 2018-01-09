@@ -14,7 +14,6 @@
 class QgsAttributeTableView : QTableView
 {
 %Docstring
-\brief
 Provides a table view of features of a QgsVectorLayer.
 
 This can either be used as a standalone widget. QgsBrowser features a reference implementation.
@@ -102,7 +101,6 @@ Disables selection change by only pressing an arrow key
     virtual void contextMenuEvent( QContextMenuEvent *event );
 
 %Docstring
-\brief
 Is called when the context menu will be shown. Emits a willShowContextMenu() signal,
 so the menu can be populated by other parts of the application.
 
@@ -121,7 +119,6 @@ Saves geometry to the settings on close
 
     void willShowContextMenu( QMenu *menu, const QModelIndex &atIndex );
 %Docstring
-\brief
 Is emitted, in order to provide a hook to add additional* menu entries to the context menu.
 
 :param menu:     If additional QMenuItems are added, they will show up in the context menu.

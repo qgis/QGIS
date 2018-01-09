@@ -36,7 +36,7 @@ Constructor for QgsCheckableComboBox.
 %Docstring
 Returns separator used to separate items in the display text.
 
-.. seealso:: :py:func:`setSeparator()`
+.. seealso:: :py:func:`setSeparator`
 %End
 
     void setSeparator( const QString &separator );
@@ -45,7 +45,7 @@ Set separator used to separate items in the display text.
 
 :param separator: separator to use
 
-.. seealso:: :py:func:`separator()`
+.. seealso:: :py:func:`separator`
 %End
 
     QString defaultText() const;
@@ -53,7 +53,7 @@ Set separator used to separate items in the display text.
 Returns default text which will be displayed in the widget
 when no items selected.
 
-.. seealso:: :py:func:`setDefaultText()`
+.. seealso:: :py:func:`setDefaultText`
 %End
 
     void setDefaultText( const QString &text );
@@ -63,14 +63,14 @@ no items selected.
 
 :param text: default text
 
-.. seealso:: :py:func:`defaultText()`
+.. seealso:: :py:func:`defaultText`
 %End
 
     QStringList checkedItems() const;
 %Docstring
 Returns currently checked items.
 
-.. seealso:: :py:func:`setCheckedItems()`
+.. seealso:: :py:func:`setCheckedItems`
 %End
 
     Qt::CheckState itemCheckState( int index ) const;
@@ -79,9 +79,9 @@ Returns the checked state of the item identified by index
 
 :param index: item index
 
-.. seealso:: :py:func:`setItemCheckState()`
+.. seealso:: :py:func:`setItemCheckState`
 
-.. seealso:: :py:func:`toggleItemCheckState()`
+.. seealso:: :py:func:`toggleItemCheckState`
 %End
 
     void setItemCheckState( int index, Qt::CheckState state );
@@ -91,9 +91,9 @@ Sets the item check state to state
 :param index: item index
 :param state: check state
 
-.. seealso:: :py:func:`itemCheckState()`
+.. seealso:: :py:func:`itemCheckState`
 
-.. seealso:: :py:func:`toggleItemCheckState()`
+.. seealso:: :py:func:`toggleItemCheckState`
 %End
 
     void toggleItemCheckState( int index );
@@ -102,9 +102,9 @@ Toggles the item check state
 
 :param index: item index
 
-.. seealso:: :py:func:`itemCheckState()`
+.. seealso:: :py:func:`itemCheckState`
 
-.. seealso:: :py:func:`setItemCheckState()`
+.. seealso:: :py:func:`setItemCheckState`
 %End
 
     virtual void hidePopup();
@@ -135,7 +135,7 @@ Set items which should be checked/selected.
 
 :param items: items to select
 
-.. seealso:: :py:func:`checkedItems()`
+.. seealso:: :py:func:`checkedItems`
 %End
 
   protected:

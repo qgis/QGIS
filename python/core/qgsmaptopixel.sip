@@ -182,7 +182,7 @@ String representation of the parameters used in the transform
 %Docstring
 Returns the center x-coordinate for the transform.
 
-.. seealso:: :py:func:`yCenter()`
+.. seealso:: :py:func:`yCenter`
 
 .. versionadded:: 3.0
 %End
@@ -191,7 +191,7 @@ Returns the center x-coordinate for the transform.
 %Docstring
 Returns the center y-coordinate for the transform.
 
-.. seealso:: :py:func:`xCenter()`
+.. seealso:: :py:func:`xCenter`
 
 .. versionadded:: 3.0
 %End
