@@ -212,9 +212,6 @@ Copy constructor
 
 
     operator QVariant() const;
-%Docstring
-Allows direct construction of QVariants from QgsCoordinateReferenceSystem.
-%End
 
     static QList< long > validSrsIds();
 %Docstring
@@ -506,11 +503,6 @@ pieces of information about CRS.
     bool operator==( const QgsCoordinateReferenceSystem &srs ) const;
 
     bool operator!=( const QgsCoordinateReferenceSystem &srs ) const;
-%Docstring
-Overloaded != operator used to compare to CRS's.
-
-Returns opposite bool value to operator ==
-%End
 
     bool readXml( const QDomNode &node );
 %Docstring

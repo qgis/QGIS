@@ -515,9 +515,6 @@ before this method can be used.
 %End
 
     operator QVariant() const;
-%Docstring
-Allows direct construction of QVariants from features.
-%End
 
 }; // class QgsFeature
 

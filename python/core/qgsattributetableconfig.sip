@@ -182,9 +182,6 @@ Set the sort order
 %End
 
     bool operator!= ( const QgsAttributeTableConfig &other ) const;
-%Docstring
-Compare this configuration to other.
-%End
 
 };
 

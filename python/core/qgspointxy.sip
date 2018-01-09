@@ -198,9 +198,6 @@ Compares this point with another point with a fuzzy tolerance
     bool operator==( const QgsPointXY &other );
 
     bool operator!=( const QgsPointXY &other ) const;
-%Docstring
-Inequality operator
-%End
 
     void multiply( double scalar );
 %Docstring
@@ -209,54 +206,24 @@ Multiply x and y by the given value
 
 
     QgsVector operator-( const QgsPointXY &p ) const;
-%Docstring
-Calculates the vector obtained by subtracting a point from this point
-%End
 
     QgsPointXY &operator+=( QgsVector v );
-%Docstring
-Adds a vector to this point in place
-%End
 
     QgsPointXY &operator-=( QgsVector v );
-%Docstring
-Subtracts a vector from this point in place
-%End
 
     QgsPointXY operator+( QgsVector v ) const;
-%Docstring
-Adds a vector to this point
-%End
 
     QgsPointXY operator-( QgsVector v ) const;
-%Docstring
-Subtracts a vector from this point
-%End
 
     QgsPointXY operator*( double scalar ) const;
-%Docstring
-Multiplies the coordinates in this point by a scalar quantity
-%End
 
     QgsPointXY operator/( double scalar ) const;
-%Docstring
-Divides the coordinates in this point by a scalar quantity
-%End
 
     QgsPointXY &operator*=( double scalar );
-%Docstring
-Multiplies the coordinates in this point by a scalar quantity in place
-%End
 
     QgsPointXY &operator/=( double scalar );
-%Docstring
-Divides the coordinates in this point by a scalar quantity in place
-%End
 
     operator QVariant() const;
-%Docstring
-Allows direct construction of QVariants from points.
-%End
 
     SIP_PYOBJECT __repr__();
 %MethodCode

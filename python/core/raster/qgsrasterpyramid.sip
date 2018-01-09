@@ -19,25 +19,10 @@ This struct is used to store pyramid info for the raster layer.
 %End
   public:
     int level;
-%Docstring
- The pyramid level as implemented in gdal (level 2 is half original raster size etc)
-%End
     int xDim;
-%Docstring
- XDimension for this pyramid layer
-%End
     int yDim;
-%Docstring
- YDimension for this pyramid layer
-%End
     bool exists;
-%Docstring
- Whether the pyramid layer has been built yet
-%End
     bool build;
-%Docstring
- Whether the pyramid should be built
-%End
 
     QgsRasterPyramid();
 

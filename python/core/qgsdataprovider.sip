@@ -166,13 +166,6 @@ it knows about in some way before it hands them off to the provider.
 %End
 
     static QString SUBLAYER_SEPARATOR;
-%Docstring
-String sequence used for separating components of sublayers strings.
-
-.. seealso:: :py:func:`subLayers()`
-
-.. versionadded:: 3.0
-%End
 
     virtual QStringList subLayerStyles() const;
 %Docstring

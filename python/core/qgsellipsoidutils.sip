@@ -24,49 +24,22 @@ Contains utility functions for working with ellipsoids and querying the ellipsoi
     struct EllipsoidParameters
     {
       bool valid;
-%Docstring
-Whether ellipsoid parameters are valid
-%End
 
       double semiMajor;
-%Docstring
-Semi-major axis
-%End
       double semiMinor;
-%Docstring
-Semi-minor axis
-%End
 
       bool useCustomParameters;
-%Docstring
-Whether custom parameters alone should be used (semiMajor/semiMinor only)
-%End
 
       double inverseFlattening;
-%Docstring
-Inverse flattening
-%End
 
       QgsCoordinateReferenceSystem crs;
-%Docstring
-Associated coordinate reference system
-%End
     };
 
     struct EllipsoidDefinition
     {
       QString acronym;
-%Docstring
-Acronym for ellipsoid
-%End
       QString description;
-%Docstring
-Description of ellipsoid
-%End
       QgsEllipsoidUtils::EllipsoidParameters parameters;
-%Docstring
-Ellipsoid parameters
-%End
     };
 
     static EllipsoidParameters ellipsoidParameters( const QString &ellipsoid );

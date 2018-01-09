@@ -125,9 +125,6 @@ Returns the number of error messages encountered during the export.
 
 
     ~QgsVectorLayerExporter();
-%Docstring
-Finalizes the export and closes the new created layer.
-%End
 
     virtual bool flushBuffer();
 

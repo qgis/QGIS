@@ -309,9 +309,6 @@ Converts the provided variant to a compatible format
 %End
 
     operator QVariant() const;
-%Docstring
-Allows direct construction of QVariants from fields.
-%End
 
     void setEditorWidgetSetup( const QgsEditorWidgetSetup &v );
 %Docstring

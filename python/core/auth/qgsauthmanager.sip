@@ -720,14 +720,8 @@ Rebuild trusted certificate authorities cache
 
 
     static const QString AUTH_PASSWORD_HELPER_DISPLAY_NAME;
-%Docstring
-The display name of the password helper (platform dependent)
-%End
 
     static const QString AUTH_MAN_TAG;
-%Docstring
-The display name of the Authentication Manager
-%End
 
   signals:
 

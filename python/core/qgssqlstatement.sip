@@ -34,9 +34,6 @@ Create a copy of this statement.
 %End
 
     ~QgsSQLStatement();
-%Docstring
-Create a copy of this statement.
-%End
 
     bool hasParserError() const;
 %Docstring

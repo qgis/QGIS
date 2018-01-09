@@ -38,14 +38,8 @@ Constructor for QgsLayoutTableStyle
 %End
 
     bool enabled;
-%Docstring
-Whether the styling option is enabled
-%End
 
     QColor cellBackgroundColor;
-%Docstring
-Cell background color
-%End
 
     bool writeXml( QDomElement &styleElem, QDomDocument &doc ) const;
 %Docstring

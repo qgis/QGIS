@@ -44,9 +44,6 @@ Constructor for QgsLocator.
 %End
 
     ~QgsLocator();
-%Docstring
-Destructor for QgsLocator. Destruction will block while any currently running query is terminated.
-%End
 
     void registerFilter( QgsLocatorFilter *filter /Transfer/ );
 %Docstring

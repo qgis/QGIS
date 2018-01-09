@@ -100,28 +100,12 @@ original image, but replaces all image pixel colors with the specified color.
     {
 
       bool shadeExterior;
-%Docstring
-Set to true to perform the distance transform on transparent pixels
-in the source image, set to false to perform the distance transform
-on opaque pixels
-%End
 
       bool useMaxDistance;
-%Docstring
-Set to true to automatically calculate the maximum distance in the
-transform to use as the spread value
-%End
 
       double spread;
-%Docstring
-Maximum distance (in pixels) for the distance transform shading to
-spread
-%End
 
       QgsColorRamp *ramp;
-%Docstring
-Color ramp to use for shading the distance transform
-%End
     };
 
     static void distanceTransform( QImage &image, const QgsImageOperation::DistanceTransformProperties &properties );

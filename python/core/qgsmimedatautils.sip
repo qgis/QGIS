@@ -57,24 +57,10 @@ Get raster layer from uri if possible, otherwise returns 0 and error is set
 %End
 
       QString layerType;
-%Docstring
-Type of URI. Recognized types: "vector" / "raster" / "plugin" / "custom"
-%End
 
       QString providerKey;
-%Docstring
-For "vector" / "raster" type: provider id.
-For "plugin" type: plugin layer type name.
-For "custom" type: key of its :py:class:`QgsCustomDropHandler`
-%End
       QString name;
-%Docstring
-Human readable name to be used e.g. in layer tree
-%End
       QString uri;
-%Docstring
-Identifier of the data source recognized by its providerKey
-%End
       QStringList supportedCrs;
       QStringList supportedFormats;
     };

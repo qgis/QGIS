@@ -1665,17 +1665,8 @@ Downgrades a point list from QgsPoint to :py:class:`QgsPointXY`
 %End
 
     operator QVariant() const;
-%Docstring
-Allows direct construction of QVariants from geometry.
-%End
 
     operator bool() const;
-%Docstring
-Returns true if the geometry is non empty (ie, isNull() returns false),
-or false if it is an empty, uninitialized geometry (ie, isNull() returns true).
-
-.. versionadded:: 3.0
-%End
 
 }; // class QgsGeometry
 

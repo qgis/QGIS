@@ -78,11 +78,6 @@ Returns if this default value should be applied.
 %End
 
     operator bool() const;
-%Docstring
-Checks if a default value is set. Alias for isValid().
-
-:return: false if the expression is a null string.
-%End
 
 };
 

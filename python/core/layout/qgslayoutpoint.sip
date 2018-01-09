@@ -146,24 +146,12 @@ Decodes a point from a ``string``.
     bool operator!=( const QgsLayoutPoint &other ) const;
 
     QgsLayoutPoint operator*( const double v ) const;
-%Docstring
-Multiplies the x and y by a scalar value.
-%End
 
     QgsLayoutPoint operator*=( const double v );
-%Docstring
-Multiplies the x and y by a scalar value.
-%End
 
     QgsLayoutPoint operator/( const double v ) const;
-%Docstring
-Divides the x and y by a scalar value.
-%End
 
     QgsLayoutPoint operator/=( const double v );
-%Docstring
-Divides the x and y by a scalar value.
-%End
 
 };
 

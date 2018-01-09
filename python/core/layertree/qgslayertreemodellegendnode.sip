@@ -77,17 +77,8 @@ Default implementation does nothing. *
     struct ItemContext
     {
       QPainter *painter;
-%Docstring
-Painter
-%End
       QPointF point;
-%Docstring
-Top-left corner of the legend item
-%End
       double labelXOffset;
-%Docstring
-offset from the left side where label should start
-%End
     };
 
     struct ItemMetrics

@@ -102,13 +102,7 @@ Constructor for QgsGradientStop
 %End
 
     double offset;
-%Docstring
-Relative positional offset, between 0 and 1
-%End
     QColor color;
-%Docstring
-Gradient color at stop
-%End
 
     bool operator==( const QgsGradientStop &other ) const;
 };

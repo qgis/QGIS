@@ -358,19 +358,10 @@ parameter ``source``, and ``description``.
 %End
 
         QVariant value;
-%Docstring
-Value of variable
-%End
 
         QgsProcessingModelChildParameterSource source;
-%Docstring
-Original source of variable's value
-%End
 
         QString description;
-%Docstring
-Translated description of variable
-%End
     };
 
     QMap< QString, QgsProcessingModelAlgorithm::VariableDefinition > variablesForChildAlgorithm( const QString &childId, QgsProcessingContext &context, const QVariantMap &modelParameters = QVariantMap(),

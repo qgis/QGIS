@@ -63,23 +63,8 @@ to a data provider for remote calculation.
     {
 
       QString filter;
-%Docstring
-Optional filter for calculating aggregate over a subset of features, or an
-empty string to use all features.
-
-.. seealso:: :py:func:`QgsAggregateCalculator.setFilter()`
-
-.. seealso:: :py:func:`QgsAggregateCalculator.filter()`
-%End
 
       QString delimiter;
-%Docstring
-Delimiter to use for joining values with the StringConcatenate aggregate.
-
-.. seealso:: :py:func:`QgsAggregateCalculator.setDelimiter()`
-
-.. seealso:: :py:func:`QgsAggregateCalculator.delimiter()`
-%End
     };
 
     QgsAggregateCalculator( const QgsVectorLayer *layer );

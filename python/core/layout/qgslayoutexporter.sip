@@ -24,24 +24,12 @@ class QgsLayoutExporter
     struct PageExportDetails
     {
       QString directory;
-%Docstring
-Target folder
-%End
 
       QString baseName;
-%Docstring
-Base part of filename (i.e. file name without extension or '.')
-%End
 
       QString extension;
-%Docstring
-File suffix/extension (without the leading '.')
-%End
 
       int page;
-%Docstring
-Page number, where 0 = first page.
-%End
     };
 
     QgsLayoutExporter( QgsLayout *layout );
@@ -136,55 +124,18 @@ Constructor for ImageExportSettings
 %End
 
       double dpi;
-%Docstring
-Resolution to export layout at. If dpi <= 0 the default layout dpi will be used.
-%End
 
       QSize imageSize;
-%Docstring
-Manual size in pixels for output image. If imageSize is not
-set then it will be automatically calculated based on the
-output dpi and layout size.
-
-If cropToContents is true then imageSize has no effect.
-
-Be careful when specifying manual sizes if pages in the layout
-have differing sizes! It's likely not going to give a reasonable
-output in this case, and the automatic dpi-based image size should be
-used instead.
-%End
 
       bool cropToContents;
-%Docstring
-Set to true if image should be cropped so only parts of the layout
-containing items are exported.
-%End
 
       QgsMargins cropMargins;
-%Docstring
-Crop to content margins, in pixels. These margins will be added
-to the bounds of the exported layout if cropToContents is true.
-%End
 
       QList< int > pages;
-%Docstring
-List of specific pages to export, or an empty list to
-export all pages.
-
-Page numbers are 0 index based, so the first page in the
-layout corresponds to page 0.
-%End
 
       bool generateWorldFile;
-%Docstring
-Set to true to generate an external world file alongside
-exported images.
-%End
 
       QgsLayoutRenderContext::Flags flags;
-%Docstring
-Layout context flags, which control how the export will be created.
-%End
 
     };
 
@@ -224,30 +175,12 @@ Constructor for PdfExportSettings
 %End
 
       double dpi;
-%Docstring
-Resolution to export layout at. If dpi <= 0 the default layout dpi will be used.
-%End
 
       bool rasterizeWholeImage;
-%Docstring
-Set to true to force whole layout to be rasterized while exporting.
-
-This option is mutually exclusive with forceVectorOutput.
-%End
 
       bool forceVectorOutput;
-%Docstring
-Set to true to force vector object exports, even when the resultant appearance will differ
-from the layout. If false, some items may be rasterized in order to maintain their
-correct appearance in the output.
-
-This option is mutually exclusive with rasterizeWholeImage.
-%End
 
       QgsLayoutRenderContext::Flags flags;
-%Docstring
-Layout context flags, which control how the export will be created.
-%End
 
     };
 
@@ -299,21 +232,10 @@ Constructor for PrintExportSettings
 %End
 
       double dpi;
-%Docstring
-Resolution to export layout at. If dpi <= 0 the default layout dpi will be used.
-%End
 
       bool rasterizeWholeImage;
-%Docstring
-Set to true to force whole layout to be rasterized while exporting.
-
-This option is mutually exclusive with forceVectorOutput.
-%End
 
       QgsLayoutRenderContext::Flags flags;
-%Docstring
-Layout context flags, which control how the export will be created.
-%End
 
     };
 
@@ -345,42 +267,16 @@ Constructor for SvgExportSettings
 %End
 
       double dpi;
-%Docstring
-Resolution to export layout at. If dpi <= 0 the default layout dpi will be used.
-%End
 
       bool forceVectorOutput;
-%Docstring
-Set to true to force vector object exports, even when the resultant appearance will differ
-from the layout. If false, some items may be rasterized in order to maintain their
-correct appearance in the output.
-
-This option is mutually exclusive with rasterizeWholeImage.
-%End
 
       bool cropToContents;
-%Docstring
-Set to true if image should be cropped so only parts of the layout
-containing items are exported.
-%End
 
       QgsMargins cropMargins;
-%Docstring
-Crop to content margins, in layout units. These margins will be added
-to the bounds of the exported layout if cropToContents is true.
-%End
 
       bool exportAsLayers;
-%Docstring
-Set to true to export as a layered SVG file.
-Note that this option is considered experimental, and the generated
-SVG may differ from the expected appearance of the layout.
-%End
 
       QgsLayoutRenderContext::Flags flags;
-%Docstring
-Layout context flags, which control how the export will be created.
-%End
 
     };
 

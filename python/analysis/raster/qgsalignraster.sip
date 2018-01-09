@@ -111,27 +111,12 @@ Get raster value at the given coordinates (from the first band)
       Item( const QString &input, const QString &output );
 
       QString inputFilename;
-%Docstring
-filename of the source raster
-%End
       QString outputFilename;
-%Docstring
-filename of the newly created aligned raster (will be overwritten if exists already)
-%End
       QgsAlignRaster::ResampleAlg resampleMethod;
-%Docstring
-resampling method to be used
-%End
       bool rescaleValues;
-%Docstring
-rescaling of values according to the change of pixel size
-%End
 
 
       double srcCellSizeInDestCRS;
-%Docstring
-used for rescaling of values (if necessary)
-%End
     };
     typedef QList<QgsAlignRaster::Item> List;
 

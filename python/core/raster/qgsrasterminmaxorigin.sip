@@ -25,19 +25,10 @@ itself the min/max values.
   public:
 
     static const double CUMULATIVE_CUT_LOWER;
-%Docstring
- Default cumulative cut lower limit
-%End
 
     static const double CUMULATIVE_CUT_UPPER;
-%Docstring
- Default cumulative cut upper limit
-%End
 
     static const double DEFAULT_STDDEV_FACTOR;
-%Docstring
- Default standard deviation factor
-%End
 
     enum Limits
     {
@@ -71,9 +62,6 @@ itself the min/max values.
 %End
 
     bool operator ==( const QgsRasterMinMaxOrigin &other ) const;
-%Docstring
- Equality operator.
-%End
 
 
     QgsRasterMinMaxOrigin::Limits limits() const;

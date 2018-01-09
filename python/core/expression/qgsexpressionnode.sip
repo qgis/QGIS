@@ -76,14 +76,8 @@ Constructor for NamedNode
 %End
 
         QString name;
-%Docstring
-Node name
-%End
 
         QgsExpressionNode *node;
-%Docstring
-Node
-%End
     };
 
     class NodeList

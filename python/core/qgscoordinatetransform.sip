@@ -120,9 +120,6 @@ Copy constructor
 
 
     ~QgsCoordinateTransform();
-%Docstring
-Assignment operator
-%End
 
     bool isValid() const;
 %Docstring

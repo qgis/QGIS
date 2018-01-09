@@ -30,21 +30,9 @@ The Qgis class provides global constants for use throughout the application.
 %End
   public:
     static const QString QGIS_VERSION;
-%Docstring
-Version string
-%End
     static const int QGIS_VERSION_INT;
-%Docstring
-Version number used for comparing versions using the "Check QGIS Version" function
-%End
     static const QString QGIS_RELEASE_NAME;
-%Docstring
-Release name
-%End
     static const char *QGIS_DEV_VERSION;
-%Docstring
-The development version
-%End
 
 
     enum DataType
@@ -66,63 +54,20 @@ The development version
     };
 
     static const double DEFAULT_SEARCH_RADIUS_MM;
-%Docstring
-Identify search radius in mm
-
-.. versionadded:: 2.3
-%End
 
     static const float DEFAULT_MAPTOPIXEL_THRESHOLD;
-%Docstring
-Default threshold between map coordinates and device coordinates for map2pixel simplification
-%End
 
     static const QColor DEFAULT_HIGHLIGHT_COLOR;
-%Docstring
-Default highlight color.  The transparency is expected to only be applied to polygon
-fill. Lines and outlines are rendered opaque.
-
-.. versionadded:: 2.3
-%End
 
     static const double DEFAULT_HIGHLIGHT_BUFFER_MM;
-%Docstring
-Default highlight buffer in mm.
-
-.. versionadded:: 2.3
-%End
 
     static const double DEFAULT_HIGHLIGHT_MIN_WIDTH_MM;
-%Docstring
-Default highlight line/stroke minimum width in mm.
-
-.. versionadded:: 2.3
-%End
 
     static const double SCALE_PRECISION;
-%Docstring
-Fudge factor used to compare two scales. The code is often going from scale to scale
-denominator. So it looses precision and, when a limit is inclusive, can lead to errors.
-To avoid that, use this factor instead of using <= or >=.
-
-.. versionadded:: 2.15
-%End
 
     static const double DEFAULT_Z_COORDINATE;
-%Docstring
-Default Z coordinate value for 2.5d geometry
-This value have to be assigned to the Z coordinate for the new 2.5d geometry vertex.
-
-.. versionadded:: 3.0
-%End
 
     static const double UI_SCALE_FACTOR;
-%Docstring
-UI scaling factor. This should be applied to all widget sizes obtained from font metrics,
-to account for differences in the default font sizes across different platforms.
-
-.. versionadded:: 3.0
-%End
 
 };
 

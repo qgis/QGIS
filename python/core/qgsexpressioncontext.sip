@@ -108,29 +108,14 @@ Constructor for StaticVariable.
 %End
 
       QString name;
-%Docstring
-Variable name
-%End
 
       QVariant value;
-%Docstring
-Variable value
-%End
 
       bool readOnly;
-%Docstring
-True if variable should not be editable by users
-%End
 
       bool isStatic;
-%Docstring
-A static variable can be cached for the lifetime of a context
-%End
 
       QString description;
-%Docstring
-Translated description of variable, for use within expression builder widgets.
-%End
     };
 
     QgsExpressionContextScope( const QString &name = QString() );
@@ -745,45 +730,15 @@ Clears all cached values from the context.
 %End
 
     static const QString EXPR_FIELDS;
-%Docstring
-Inbuilt variable name for fields storage
-%End
     static const QString EXPR_ORIGINAL_VALUE;
-%Docstring
-Inbuilt variable name for value original value variable
-%End
     static const QString EXPR_SYMBOL_COLOR;
-%Docstring
-Inbuilt variable name for symbol color variable
-%End
     static const QString EXPR_SYMBOL_ANGLE;
-%Docstring
-Inbuilt variable name for symbol angle variable
-%End
     static const QString EXPR_GEOMETRY_PART_COUNT;
-%Docstring
-Inbuilt variable name for geometry part count variable
-%End
     static const QString EXPR_GEOMETRY_PART_NUM;
-%Docstring
-Inbuilt variable name for geometry part number variable
-%End
     static const QString EXPR_GEOMETRY_POINT_COUNT;
-%Docstring
-Inbuilt variable name for point count variable
-%End
     static const QString EXPR_GEOMETRY_POINT_NUM;
-%Docstring
-Inbuilt variable name for point number variable
-%End
     static const QString EXPR_CLUSTER_SIZE;
-%Docstring
-Inbuilt variable name for cluster size variable
-%End
     static const QString EXPR_CLUSTER_COLOR;
-%Docstring
-Inbuilt variable name for cluster color variable
-%End
 
 };
 

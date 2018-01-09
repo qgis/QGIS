@@ -318,16 +318,8 @@ but will be transferred to a QgsTaskManager.
 %End
 
       QgsTask *task;
-%Docstring
-Task
-%End
 
       QgsTaskList dependentTasks;
-%Docstring
-List of dependent tasks which must be completed before task can run. If any dependent tasks are
-canceled this task will also be canceled. Dependent tasks must also be added
-to the task manager for proper handling of dependencies.
-%End
 
     };
 

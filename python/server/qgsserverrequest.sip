@@ -55,9 +55,6 @@ Constructor
 %End
 
     virtual ~QgsServerRequest();
-%Docstring
-destructor
-%End
 
     QUrl url() const;
 %Docstring

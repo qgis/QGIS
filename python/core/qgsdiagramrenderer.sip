@@ -374,37 +374,15 @@ Constructor for QgsDiagramSettings
     QList< QColor > categoryColors;
     QList< QString > categoryAttributes;
     QList< QString > categoryLabels;
-%Docstring
-
-.. versionadded:: 2.10
-%End
     QSizeF size; //size
 
     QgsUnitTypes::RenderUnit sizeType;
-%Docstring
-Diagram size unit
-%End
 
     QgsMapUnitScale sizeScale;
-%Docstring
-Diagram size unit scale
-
-.. versionadded:: 2.16
-%End
 
     QgsUnitTypes::RenderUnit lineSizeUnit;
-%Docstring
-Line unit index
-
-.. versionadded:: 2.16
-%End
 
     QgsMapUnitScale lineSizeScale;
-%Docstring
-Line unit scale
-
-.. versionadded:: 2.16
-%End
 
     QColor backgroundColor;
     QColor penColor;
@@ -414,43 +392,18 @@ Line unit scale
     double barWidth;
 
     double opacity;
-%Docstring
-Opacity, from 0 (transparent) to 1.0 (opaque)
-%End
 
     bool scaleByArea;
 
     double rotationOffset;
-%Docstring
-Rotation offset, in degrees clockwise from horizontal.
-
-.. versionadded:: 3.0
-%End
 
     bool scaleBasedVisibility;
 
     double maximumScale;
-%Docstring
-The maximum map scale (i.e. most "zoomed in" scale) at which the diagrams will be visible.
-The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
-A scale of 0 indicates no maximum scale visibility.
-
-.. seealso:: :py:func:`minimumScale`
-%End
 
     double minimumScale;
-%Docstring
-The minimum map scale (i.e. most "zoomed out" scale) at which the diagrams will be visible.
-The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
-A scale of 0 indicates no minimum scale visibility.
-
-.. seealso:: :py:func:`maximumScale`
-%End
 
     double minimumSize;
-%Docstring
-Scale diagrams smaller than mMinimumSize to mMinimumSize
-%End
 
     void readXml( const QDomElement &elem );
 %Docstring
@@ -490,9 +443,6 @@ Additional diagram settings for interpolated size rendering.
     double upperValue;
 
     QString classificationField;
-%Docstring
-Name of the field for classification
-%End
 
     QString classificationAttributeExpression;
     bool classificationAttributeIsExpression;

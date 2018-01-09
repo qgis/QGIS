@@ -36,9 +36,6 @@ Constructor
 %End
 
     virtual ~QgsService();
-%Docstring
-Destructor
-%End
 
     virtual QString name() const = 0;
 %Docstring

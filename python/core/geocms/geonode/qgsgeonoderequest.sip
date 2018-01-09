@@ -14,29 +14,14 @@ struct QgsGeoNodeStyle
 %End
 
   QString id;
-%Docstring
-Unique style ID
-%End
 
   QString name;
-%Docstring
-Style name
-%End
 
   QString title;
-%Docstring
-Style title
-%End
 
   QDomDocument body;
-%Docstring
-DOM documenting containing style
-%End
 
   QString styleUrl;
-%Docstring
-Associated URL
-%End
 };
 
 class QgsGeoNodeRequest : QObject
@@ -58,33 +43,12 @@ server instance, for instance requesting all available layers or layer styles.
     struct ServiceLayerDetail
     {
       QUuid uuid;
-%Docstring
-Unique identifier (generate on the client side, not at the GeoNode server)
-%End
       QString name;
-%Docstring
-Layer name
-%End
       QString typeName;
-%Docstring
-Layer type name
-%End
       QString title;
-%Docstring
-Layer title
-%End
       QString wmsURL;
-%Docstring
-WMS URL for layer
-%End
       QString wfsURL;
-%Docstring
-WFS URL for layer
-%End
       QString xyzURL;
-%Docstring
-XYZ tileserver URL for layer
-%End
     };
 
     QgsGeoNodeRequest( const QString &baseUrl, bool forceRefresh, QObject *parent = 0 );

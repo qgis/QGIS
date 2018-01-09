@@ -36,23 +36,14 @@ Constructor for QgsProcessingFeatureSourceDefinition, accepting a QgsProperty so
 %End
 
     QgsProperty source;
-%Docstring
-Source definition. Usually a static property set to a source layer's ID or file name.
-%End
 
     bool selectedFeaturesOnly;
-%Docstring
-True if only selected features in the source should be used by algorithms.
-%End
 
     bool operator==( const QgsProcessingFeatureSourceDefinition &other );
 
     bool operator!=( const QgsProcessingFeatureSourceDefinition &other );
 
     operator QVariant() const;
-%Docstring
-Allows direct construction of QVariants.
-%End
 
 };
 
@@ -87,35 +78,15 @@ to automatically load the resulting sink/layer after completing processing.
 %End
 
     QgsProperty sink;
-%Docstring
-Sink/layer definition. Usually a static property set to the destination file name for the sink's layer.
-%End
 
     QgsProject *destinationProject;
-%Docstring
-Destination project. Can be set to a QgsProject instance in which
-to automatically load the resulting sink/layer after completing processing.
-The default behavior is not to load the result into any project (None).
-%End
 
     QString destinationName;
-%Docstring
-Name to use for sink if it's to be loaded into a destination project.
-%End
 
     QVariantMap createOptions;
-%Docstring
-Map of optional sink/layer creation options, which
-are passed to the underlying provider when creating new layers. Known options also
-include 'fileEncoding', which is used to specify a file encoding to use for created
-files.
-%End
 
 
     operator QVariant() const;
-%Docstring
-Allows direct construction of QVariants.
-%End
 
 };
 

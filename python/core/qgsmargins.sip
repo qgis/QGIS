@@ -98,39 +98,16 @@ Sets the bottom margin to ``bottom``.
 %End
 
     QgsMargins &operator+=( const QgsMargins &margins );
-%Docstring
-Add each component of ``margins`` to the respective component of this object
-and returns a reference to it.
-%End
 
     QgsMargins &operator-=( const QgsMargins &margins );
-%Docstring
-Subtract each component of ``margins`` from the respective component of this object
-and returns a reference to it.
-%End
 
     QgsMargins &operator+=( double addend );
-%Docstring
-Adds the ``addend`` to each component of this object and returns a reference to it.
-%End
 
     QgsMargins &operator-=( double subtrahend );
-%Docstring
-Subtracts the ``subtrahend`` from each component of this object
-and returns a reference to it.
-%End
 
     QgsMargins &operator*=( double factor );
-%Docstring
-Multiplies each component of this object by ``factor``
-and returns a reference to it.
-%End
 
     QgsMargins &operator/=( double divisor );
-%Docstring
-Multiplies each component of this object by ``factor``
-and returns a reference to it.
-%End
 
     QString toString() const;
 %Docstring

@@ -119,19 +119,10 @@ Constructor for LayerDetails.
 %End
 
       QString name;
-%Docstring
-Friendly name for layer, to use when loading layer into project.
-%End
 
       QString outputName;
-%Docstring
-Associated output name from algorithm which generated the layer.
-%End
 
       QgsProject *project;
-%Docstring
-Destination project
-%End
 
     };
 
