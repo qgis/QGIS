@@ -58,7 +58,7 @@ class PointsAlongGeometry(QgisAlgorithm):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'extract_nodes.png'))
 
     def tags(self):
-        return self.tr('create,interpolate,points,lines').split(',')
+        return self.tr('create,interpolate,points,lines,regular,distance,by').split(',')
 
     def group(self):
         return self.tr('Vector geometry')
@@ -85,7 +85,7 @@ class PointsAlongGeometry(QgisAlgorithm):
         return 'pointsalonglines'
 
     def displayName(self):
-        return self.tr('Points along lines')
+        return self.tr('Points along geometry')
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
