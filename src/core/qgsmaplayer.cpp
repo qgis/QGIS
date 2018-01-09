@@ -64,7 +64,7 @@ QString QgsMapLayer::extensionPropertyType( QgsMapLayer::PropertyType type )
     case Style:
       return QStringLiteral( ".qml" );
   }
-  return QStringLiteral();
+  return QString();
 }
 
 QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
