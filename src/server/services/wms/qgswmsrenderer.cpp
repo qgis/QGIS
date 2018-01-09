@@ -123,7 +123,9 @@ namespace QgsWms
                             const QgsProject *project,
                             const QgsServerRequest::Parameters &parameters )
     : mParameters( parameters )
+#ifdef HAVE_SERVER_PYTHON_PLUGINS
     , mAccessControl( serverIface->accessControls() )
+#endif
     , mSettings( *serverIface->serverSettings() )
     , mProject( project )
   {
