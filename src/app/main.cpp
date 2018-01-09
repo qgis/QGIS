@@ -138,7 +138,7 @@ void usage( const QString &appName )
       << QStringLiteral( "\t[--dxf-symbology-mode none|symbollayer|feature]\tsymbology mode for dxf output\n" )
       << QStringLiteral( "\t[--dxf-scale-denom scale]\tscale for dxf output\n" )
       << QStringLiteral( "\t[--dxf-encoding encoding]\tencoding to use for dxf output\n" )
-      << QStringLiteral( "\t[--dxf-preset maptheme]\tmap theme to use for dxf output\n" )
+      << QStringLiteral( "\t[--dxf-map-theme maptheme]\tmap theme to use for dxf output\n" )
       << QStringLiteral( "\t[--profile name]\tload a named profile from the users profiles folder.\n" )
       << QStringLiteral( "\t[--profiles-path path]\tpath to store user profile folders. Will create profiles inside a {path}\\profiles folder \n" )
       << QStringLiteral( "\t[--version-migration]\tforce the settings migration from older version if found\n" )
@@ -519,7 +519,7 @@ int main( int argc, char *argv[] )
   QgsDxfExport::SymbologyExport dxfSymbologyMode = QgsDxfExport::SymbolLayerSymbology;
   double dxfScale = 50000.0;
   QString dxfEncoding = QStringLiteral( "CP1252" );
-  QString dxfPreset;
+  QString dxfMapTheme;
   QgsRectangle dxfExtent;
 
   // This behavior will set initial extent of map canvas, but only if
@@ -723,9 +723,9 @@ int main( int argc, char *argv[] )
       {
         dxfEncoding = args[++i];
       }
-      else if ( arg == QLatin1String( "--dxf-preset" ) )
+      else if ( arg == QLatin1String( "--dxf-map-theme" ) )
       {
-        dxfPreset = args[++i];
+        dxfMapTheme = args[++i];
       }
       else if ( arg == QLatin1String( "--" ) )
       {
@@ -1358,9 +1358,9 @@ int main( int argc, char *argv[] )
 
     QStringList layerIds;
     QList< QPair<QgsVectorLayer *, int > > layers;
-    if ( !dxfPreset.isEmpty() )
+    if ( !dxfMapTheme.isEmpty() )
     {
-      Q_FOREACH ( QgsMapLayer *layer, QgsProject::instance()->mapThemeCollection()->mapThemeVisibleLayers( dxfPreset ) )
+      Q_FOREACH ( QgsMapLayer *layer, QgsProject::instance()->mapThemeCollection()->mapThemeVisibleLayers( dxfMapTheme ) )
       {
         QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
         if ( !vl )
