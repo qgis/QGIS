@@ -203,17 +203,6 @@ bool QgsLayoutManager::readXml( const QDomElement &element, const QDomDocument &
         result = result && addLayout( l.release() );
       }
     }
-
-    // legacy import (to be removed!)
-    QgsComposition *c = createCompositionFromXml( composerNodes.at( i ).toElement(), doc );
-    if ( !c )
-    {
-      result = false;
-      continue;
-    }
-    if ( c->name().isEmpty() )
-      c->setName( legacyTitle );
-    result = result && addComposition( c );
   }
 
   QgsReadWriteContext context;
