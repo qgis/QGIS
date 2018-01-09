@@ -17,6 +17,7 @@
 #define QGSSTACKTRACE_H
 
 #include <QVector>
+#include "qgsconfig.h"
 
 #ifdef QGISDEBUG
 #ifdef WIN32
