@@ -67,13 +67,14 @@ my @OUTPUT = ();
 sub read_line {
     my $new_line = $INPUT_LINES[$LINE_IDX];
     $LINE_IDX++;
-    $debug == 0 or print sprintf('LIN:%d DEPTH:%d ACC:%d BRCK:%d SIP:%d MLT:%d CLSS: %s/%d',
+    $debug == 0 or print sprintf('LIN:%d DEPTH:%d ACC:%d BRCK:%d SIP:%d MLT:%d OVR: %d CLSS: %s/%d',
                                   $LINE_IDX,
                                   $#ACCESS,
                                   $ACCESS[$#ACCESS],
                                   $GLOB_BRACKET_NESTING_IDX[$#GLOB_BRACKET_NESTING_IDX],
                                   $SIP_RUN,
                                   $MULTILINE_DEFINITION,
+                                  $IS_OVERRIDE,
                                   $ACTUAL_CLASS,
                                   $#CLASSNAME)." :: ".$new_line."\n";
     return $new_line;
@@ -358,6 +359,12 @@ sub detect_comment_block{
     return 0;
 }
 
+# Detect if line is a non method member declaration
+# https://regex101.com/r/gUBZUk/10
+sub detect_non_method_member{
+  return 1 if $LINE =~ m/^\s*(?:template\s*<\w+>\s+)?(?:(const|mutable|static|friend|unsigned)\s+)*\w+(::\w+)?(<([\w<> *&,()]|::)+>)?(,?\s+\*?\w+( = (-?\d+(\.\d+)?|(\w+::)*\w+(\([^()]+\))?)|\[\d+\])?)+;/;
+  return 0;
+}
 
 
 write_header_footer();
@@ -806,10 +813,9 @@ while ($LINE_IDX < $LINE_COUNT){
     }
 
     # skip non-method member declaration in non-public sections
-    # https://regex101.com/r/gUBZUk/10
     if ( $SIP_RUN != 1 &&
          $ACCESS[$#ACCESS] != PUBLIC &&
-         $LINE =~ m/^\s*(?:template\s*<\w+>\s+)?(?:(const|mutable|static|friend|unsigned)\s+)*\w+(::\w+)?(<([\w<> *&,()]|::)+>)?(,?\s+\*?\w+( = (-?\d+(\.\d+)?|(\w+::)*\w+(\([^()]+\))?)|\[\d+\])?)+;/){
+         detect_non_method_member() == 1){
         dbg_info("skip non-method member declaration in non-public sections");
         next;
     }
@@ -969,19 +975,20 @@ while ($LINE_IDX < $LINE_COUNT){
         # do not comment now for templates, wait for class definition
         next;
     }
-    if ( $LINE =~ m/^\s*namespace\s+\w+/){
-        $COMMENT = '';
-    }
     if ( $LINE =~ m/\/\// ||
             $LINE =~ m/\s*typedef / ||
             $LINE =~ m/\s*struct / ||
             $LINE =~ m/operator\[\]\(/ ||
-            $LINE =~ m/operator==/ ||
-            ($LINE =~ m/operator[!+-=*\/\[\]]{1,2}/ && $#ACCESS == 0) ||  # apparently global operators cannot be documented
-            $LINE =~ m/^\s*%\w+(.*)?$/ ){
+            $LINE =~ m/^\s*operator\b/ ||
+            $LINE =~ m/operator\s?[!+-=*\/\[\]<>]{1,2}/ ||
+            $LINE =~ m/^\s*%\w+(.*)?$/ ||
+            $LINE =~ m/^\s*namespace\s+\w+/ ||
+            $LINE =~ m/^\s*(virtual\s*)?~/ ||
+            detect_non_method_member() == 1 ){
         dbg_info('skipping comment');
         $COMMENT = '';
         $RETURN_TYPE = '';
+        $IS_OVERRIDE = 0;
     }
     elsif ( $COMMENT !~ m/^\s*$/ || $RETURN_TYPE ne ''){
         if ( $IS_OVERRIDE == 1 && $COMMENT =~ m/^\s*$/ ){
