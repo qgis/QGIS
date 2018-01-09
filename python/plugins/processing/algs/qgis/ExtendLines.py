@@ -49,9 +49,9 @@ class ExtendLines(QgisFeatureBasedAlgorithm):
 
     def initParameters(self, config=None):
         self.addParameter(QgsProcessingParameterNumber(self.START_DISTANCE,
-                                                       self.tr('Start distance'), defaultValue=0.0))
+                                                       self.tr('Start distance'), type=QgsProcessingParameterNumber.Double, defaultValue=0.0))
         self.addParameter(QgsProcessingParameterNumber(self.END_DISTANCE,
-                                                       self.tr('End distance'), defaultValue=0.0))
+                                                       self.tr('End distance'), type=QgsProcessingParameterNumber.Double, defaultValue=0.0))
 
     def name(self):
         return 'extendlines'
