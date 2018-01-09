@@ -204,13 +204,8 @@ class TestQgsLayoutManager(unittest.TestCase):
         self.assertTrue(manager2.readXml(elem, doc))
 
         self.assertEqual(len(manager2.layouts()), 3)
-        self.assertEqual(len(manager2.compositions()), 3)
-        names = [c.name() for c in manager2.compositions()]
-        self.assertEqual(set(names), {'test composition', 'test composition2', 'test composition3'})
-
-        self.assertEqual(len(manager2.layouts()), 6)
         names = [c.name() for c in manager2.layouts()]
-        self.assertCountEqual(names, ['test composition', 'test composition2', 'test composition3', 'test layout', 'test layout2', 'test layout3'])
+        self.assertCountEqual(names, ['test layout', 'test layout2', 'test layout3'])
 
     def testDuplicateLayout(self):
         """
