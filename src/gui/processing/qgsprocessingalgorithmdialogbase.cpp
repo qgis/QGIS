@@ -306,6 +306,23 @@ void QgsProcessingAlgorithmDialogBase::pushConsoleInfo( const QString &info )
   processEvents();
 }
 
+QDialog *QgsProcessingAlgorithmDialogBase::createProgressDialog()
+{
+  QgsProcessingAlgorithmProgressDialog *dialog = new QgsProcessingAlgorithmProgressDialog( this );
+  dialog->setWindowModality( Qt::ApplicationModal );
+  dialog->setWindowTitle( windowTitle() );
+  connect( progressBar, &QProgressBar::valueChanged, dialog->progressBar(), &QProgressBar::setValue );
+  connect( dialog->cancelButton(), &QPushButton::clicked, buttonCancel, &QPushButton::click );
+  dialog->logTextEdit()->setHtml( txtLog->toHtml() );
+  connect( txtLog, &QTextEdit::textChanged, dialog, [this, dialog]()
+  {
+    dialog->logTextEdit()->setHtml( txtLog->toHtml() );
+    QScrollBar *sb = dialog->logTextEdit()->verticalScrollBar();
+    sb->setValue( sb->maximum() );
+  } );
+  return dialog;
+}
+
 void QgsProcessingAlgorithmDialogBase::setPercentage( double percent )
 {
   // delay setting maximum progress value until we know algorithm reports progress
@@ -392,5 +409,38 @@ void QgsProcessingAlgorithmDialogBase::setInfo( const QString &message, bool isE
   scrollToBottomOfLog();
   processEvents();
 }
+
+//
+// QgsProcessingAlgorithmProgressDialog
+//
+
+QgsProcessingAlgorithmProgressDialog::QgsProcessingAlgorithmProgressDialog( QWidget *parent )
+  : QDialog( parent )
+{
+  setWindowFlags( Qt::Dialog ); // hide close button
+  setupUi( this );
+}
+
+QProgressBar *QgsProcessingAlgorithmProgressDialog::progressBar()
+{
+  return mProgressBar;
+}
+
+QPushButton *QgsProcessingAlgorithmProgressDialog::cancelButton()
+{
+  return mButtonBox->button( QDialogButtonBox::Cancel );
+}
+
+QTextEdit *QgsProcessingAlgorithmProgressDialog::logTextEdit()
+{
+  return mTxtLog;
+}
+
+void QgsProcessingAlgorithmProgressDialog::reject()
+{
+
+}
+
+
 
 ///@endcond

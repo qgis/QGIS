@@ -19,6 +19,7 @@
 #include "qgis.h"
 #include "qgis_gui.h"
 #include "ui_qgsprocessingalgorithmdialogbase.h"
+#include "ui_qgsprocessingalgorithmprogressdialogbase.h"
 #include "processing/qgsprocessingcontext.h"
 #include "processing/qgsprocessingfeedback.h"
 
@@ -180,6 +181,12 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, private Ui::
      */
     void pushConsoleInfo( const QString &info );
 
+    /**
+     * Creates a modal progress dialog showing progress and log messages
+     * from this dialog.
+     */
+    QDialog *createProgressDialog();
+
   protected:
 
     /**
@@ -271,10 +278,52 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, private Ui::
     bool mHelpCollapsed = false;
 
     QString formatHelp( QgsProcessingAlgorithm *algorithm );
-    void processEvents();
     void scrollToBottomOfLog();
+    void processEvents();
 
 };
+
+#ifndef SIP_RUN
+
+/**
+ * \ingroup gui
+ * \brief A modal dialog for showing algorithm progress and log messages.
+ * \note This is not considered stable API and may change in future QGIS versions.
+ * \since QGIS 3.0
+ */
+class QgsProcessingAlgorithmProgressDialog : public QDialog, private Ui::QgsProcessingProgressDialogBase
+{
+    Q_OBJECT
+
+  public:
+
+    /**
+     * Constructor for QgsProcessingAlgorithmProgressDialog.
+     */
+    QgsProcessingAlgorithmProgressDialog( QWidget *parent = nullptr );
+
+    /**
+     * Returns the dialog's progress bar.
+     */
+    QProgressBar *progressBar();
+
+    /**
+     * Returns the dialog's cancel button.
+     */
+    QPushButton *cancelButton();
+
+    /**
+     * Returns the dialog's text log.
+     */
+    QTextEdit *logTextEdit();
+
+  public slots:
+
+    void reject() override;
+
+};
+
+#endif
 
 ///@endcond
 

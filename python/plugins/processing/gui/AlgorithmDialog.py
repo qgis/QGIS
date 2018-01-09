@@ -63,6 +63,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
 
     def __init__(self, alg):
         super().__init__()
+        self.feedback_dialog = None
 
         self.setAlgorithm(alg)
         self.setMainWidget(self.getParametersPanel(alg, self))
@@ -196,12 +197,6 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
 
             self.clearProgress()
             self.setProgressText(self.tr('Processing algorithm...'))
-            # Make sure the Log tab is visible before executing the algorithm
-            try:
-                self.showLog()
-                self.repaint()
-            except:
-                pass
 
             self.setInfo(
                 self.tr('<b>Algorithm \'{0}\' starting...</b>').format(self.algorithm().displayName()), escapeHtml=False)
@@ -215,6 +210,13 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
             start_time = time.time()
 
             if self.iterateParam:
+                # Make sure the Log tab is visible before executing the algorithm
+                try:
+                    self.showLog()
+                    self.repaint()
+                except:
+                    pass
+
                 self.cancelButton().setEnabled(self.algorithm().flags() & QgsProcessingAlgorithm.FlagCanCancel)
                 if executeIterating(self.algorithm(), parameters, self.iterateParam, context, feedback):
                     feedback.pushInfo(
@@ -240,15 +242,25 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                             self.tr('Execution failed after {0:0.2f} seconds'.format(time.time() - start_time)))
                     feedback.pushInfo('')
 
+                    if self.feedback_dialog is not None:
+                        self.feedback_dialog.close()
+                        self.feedback_dialog.deleteLater()
+                        self.feedback_dialog = None
+
                     self.cancelButton().setEnabled(False)
 
                     self.finish(ok, results, context, feedback)
 
                 if self.algorithm().flags() & QgsProcessingAlgorithm.FlagCanRunInBackground:
+                    # Make sure the Log tab is visible before executing the algorithm
+                    self.showLog()
+
                     task = QgsProcessingAlgRunnerTask(self.algorithm(), parameters, context, feedback)
                     task.executed.connect(on_complete)
                     QgsApplication.taskManager().addTask(task)
                 else:
+                    self.feedback_dialog = self.createProgressDialog()
+                    self.feedback_dialog.show()
                     ok, results = execute(self.algorithm(), parameters, context, feedback)
                     on_complete(ok, results)
 
