@@ -4,5 +4,5 @@ Vector (v.*)
 QgsProcessingParameterVectorLayer|input|Input vector line layer (arcs)|-1|None|False
 QgsProcessingParameterPoint|coordinates|Coordinates|None|True
 QgsProcessingParameterString|coordinates|Coordinates|None|False|True
-QgsProcessingParameterVectorLayer|visibility|Input vector line layer containing visible points|1|None|True
+QgsProcessingParameterVectorLayer|visibility|Input vector line layer containing visible points|0|None|True
 QgsProcessingParameterVectorDestination|output|Network Visibility

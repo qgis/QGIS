@@ -25,7 +25,7 @@ __copyright__ = '(C) 2016, Médéric Ribreux'
 
 __revision__ = '$Format:%H$'
 
-from .i import verifyRasterNum, regroupRasters
+from .i import verifyRasterNum, regroupRasters, importSigFile
 
 
 def checkParameterValuesBeforeExecuting(alg, parameters, context):
@@ -34,7 +34,12 @@ def checkParameterValuesBeforeExecuting(alg, parameters, context):
 
 def processCommand(alg, parameters, context):
     # Regroup rasters
-    regroupRasters(alg, parameters, 'input', 'group', 'subgroup', {'signature': 'sig'})
+    group, subgroup = regroupRasters(alg, parameters, context,
+                                     'input', 'group', 'subgroup')
+
+    signatureFile = alg.parameterAsString(parameters, 'signature', context)
+    shortSigFile = importSigFile(alg, group, subgroup, signatureFile)
+    parameters['signature'] = shortSigFile
 
     # Handle other parameters
-    alg.processCommand(alg, parameters, context)
+    alg.processCommand(parameters, context)

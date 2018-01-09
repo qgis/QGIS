@@ -25,36 +25,26 @@ __copyright__ = '(C) 2016, Médéric Ribreux'
 
 __revision__ = '$Format:%H$'
 
-import os
+from qgis.core import QgsProcessingParameterDefinition
 
 
 def checkParameterValuesBeforeExecuting(alg, parameters, context):
     """ Verify if we have the right parameters """
-    # Verify upload value
-    upload = alg.parameterAsString(parameters, 'upload', context)
-    if upload:
-        uploadList = [f for f in upload.split(",") if f not in ['cat', 'dist', 'to_x', 'to_y', 'to_along', 'to_angle', 'to_attr']]
-        if len(uploadList) > 0:
-            return alg.tr(u"Upload parameters should be a list of elements taken in the following values:\n'cat', 'dist', 'to_x', 'to_y', 'to_along', 'to_angle', 'to_attr'")
-        # Verifiy that we have the good number of columns
-        column = alg.parameterAsString(parameters, 'column', context)
-        if ((column is None or len(column) == 0) and upload) or (len(column.split(",")) != len(upload.split(","))):
-            return alg.tr(u"The number of columns and the number of upload parameters should be equal!")
-
-    # Verify from_type and to_type values
-    for geom in [u'from', u'to']:
-        geoType = alg.parameterAsString(parameters, '{}_type'.format(geom), context)
-        if geoType:
-            geoTypeList = [f for f in geoType.split(",") if f not in ['point', 'line', 'boundary', 'centroid', 'area']]
-            if len(geoTypeList) > 0:
-                return alg.tr(u"Feature type for '{}' should be a list of elements taken in the following values:\n'point', 'line', 'boundary', 'centroid', 'area'".format(geom))
+    # Verifiy that we have the good number of columns
+    uploads = alg.parameterAsEnums(parameters, 'upload', context)
+    columns = alg.parameterAsFields(parameters, 'column', context)
+    if len(columns) != len(uploads):
+        return alg.tr(u"The number of columns and the number of upload parameters should be equal!")
 
     return None
 
 
 def processCommand(alg, parameters, context):
-    # We do not incorporate outputs in commands
-    alg.processCommand(parameters, context, True)
+    # We need to disable only from_output parameter
+    fromOutput = alg.parameterDefinition('from_output')
+    fromOutput.setFlags(fromOutput.flags() | QgsProcessingParameterDefinition.FlagHidden)
+    alg.processCommand(parameters, context, False)
+    fromOutput.setFlags(fromOutput.flags() | QgsProcessingParameterDefinition.FlagHidden)
 
 
 def processOutputs(alg, parameters, context):

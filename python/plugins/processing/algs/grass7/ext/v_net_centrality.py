@@ -2,10 +2,10 @@
 
 """
 ***************************************************************************
-    r_topmodel.py
-    -------------
-    Date                 : February 2016
-    Copyright            : (C) 2016 by Médéric Ribreux
+    v_net_centrality.py
+    -------------------
+    Date                 : December 2017
+    Copyright            : (C) 2017 by Médéric Ribreux
     Email                : medspx at medspx dot fr
 ***************************************************************************
 *                                                                         *
@@ -18,22 +18,20 @@
 """
 
 __author__ = 'Médéric Ribreux'
-__date__ = 'February 2016'
-__copyright__ = '(C) 2016, Médéric Ribreux'
+__date__ = 'December 2017'
+__copyright__ = '(C) 2017, Médéric Ribreux'
 
 # This will get replaced with a git SHA1 when you do a git archive
 
 __revision__ = '$Format:%H$'
 
+from .v_net import incorporatePoints, variableOutput
 
-def processCommand(alg, parameters):
-    # We temporary remove the output
-    command = "r.topmodel parameters=\"{}\" topidxstats=\"{}\" input=\"{}\" output=\"{}\" {} {}--overwrite".format(
-        alg.getParameterValue('parameters'),
-        alg.getParameterValue('topidxstats'),
-        alg.getParameterValue('input'),
-        alg.getOutputValue('output'),
-        'timestep={}'.format(alg.getParameterValue('timestep')) if alg.getParameterValue('timestep') else '',
-        'topidxclass={}'.format(alg.getParameterValue('topidxclass')) if alg.getParameterValue('topidxclass') else ''
-    )
-    alg.commands.append(command)
+
+def processCommand(alg, parameters, context):
+    incorporatePoints(alg, parameters, context)
+
+
+def processOutputs(alg, parameters, context):
+    outputParameter = {'output': ['output', 'point', 1, False]}
+    variableOutput(alg, outputParameter, parameters, context)

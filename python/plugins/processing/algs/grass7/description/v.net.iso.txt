@@ -3,8 +3,6 @@ Splits network by cost isolines.
 Vector (v.*)
 QgsProcessingParameterVectorLayer|input|Input vector line layer (arcs)|1|None|False
 QgsProcessingParameterVectorLayer|points|Centers point layer (nodes)|0|None|False
-QgsProcessingParameterVectorLayer|turn_layer|Layer with turntable (with -t option)|0|None|True
-QgsProcessingParameterVectorLayer|turn_cat_layer|Layer with unique categories used in turntable (with -t option)|0|None|True
 QgsProcessingParameterNumber|threshold|Threshold for connecting centers to the network (in map unit)|QgsProcessingParameterNumber.Double|50.0|False|0.0|None
 *QgsProcessingParameterEnum|arc_type|Arc type|line;boundary|True|0,1|False
 *QgsProcessingParameterString|center_cats|Category values|1-100000|False|False
@@ -12,6 +10,5 @@ QgsProcessingParameterString|costs|Costs for isolines|1000,2000,3000|False|False
 *QgsProcessingParameterField|arc_column|Arc forward/both direction(s) cost column (number)|None|input|0|False|True
 *QgsProcessingParameterField|arc_backward_column|Arc backward direction cost column (number)|None|input|0|False|True
 *QgsProcessingParameterField|node_column|Node cost column (number)|None|points|0|False|True
-*QgsProcessingParameterBoolean|-t|Use turntable|False|True
 *QgsProcessingParameterBoolean|-g|Use geodesic calculation for longitude-latitude locations|False|True
 QgsProcessingParameterVectorDestination|output|Network_Iso

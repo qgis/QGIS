@@ -540,9 +540,10 @@ class Grass7Utils:
         """
         ext = os.path.splitext(filename)[1].lower()
         ext = ext.lstrip('.')
-        supported = GdalUtils.getSupportedRasters()
-        for name in list(supported.keys()):
-            exts = supported[name]
-            if ext in exts:
-                return name
+        if ext:
+            supported = GdalUtils.getSupportedRasters()
+            for name in list(supported.keys()):
+                exts = supported[name]
+                if ext in exts:
+                    return name
         return 'GTiff'
