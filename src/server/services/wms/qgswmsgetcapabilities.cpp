@@ -656,12 +656,12 @@ namespace QgsWms
       composerTemplateElem.setAttribute( QStringLiteral( "height" ), height.length() );
 
       //add available composer maps and their size in mm
-      QList<QgsLayoutItemMap *> composerMapList;
-      layout->layoutItems<QgsLayoutItemMap>( composerMapList );
-      QList<QgsLayoutItemMap *>::const_iterator cmIt = composerMapList.constBegin();
+      QList<QgsLayoutItemMap *> layoutMapList;
+      layout->layoutItems<QgsLayoutItemMap>( layoutMapList );
+      QList<QgsLayoutItemMap *>::const_iterator cmIt = layoutMapList.constBegin();
       // Add map id
       int mapId = 0;
-      for ( ; cmIt != composerMapList.constEnd(); ++cmIt )
+      for ( ; cmIt != layoutMapList.constEnd(); ++cmIt )
       {
         const QgsLayoutItemMap *composerMap = *cmIt;
 
