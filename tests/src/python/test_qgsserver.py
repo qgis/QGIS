@@ -74,6 +74,7 @@ class QgsServerTestBase(unittest.TestCase):
         for expected_line in expected_lines:
             expected_line = expected_line.strip()
             response_line = response_lines[line_no - 1].strip()
+            response_line = response_line.replace(b'e+6', b'e+06')
             # Compare tag
             if re.match(RE_ELEMENT, expected_line):
                 expected_elements = re.findall(RE_ELEMENT, expected_line)
