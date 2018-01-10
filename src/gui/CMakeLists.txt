@@ -690,6 +690,7 @@ SET(QGIS_GUI_MOC_HDRS
   layout/qgslayoutruler.h
   layout/qgslayoutunitscombobox.h
   layout/qgslayoutview.h
+  layout/qgslayoutviewrubberband.h
   layout/qgslayoutviewtool.h
   layout/qgslayoutviewtooladditem.h
   layout/qgslayoutviewtooladdnodeitem.h
@@ -804,7 +805,6 @@ SET(QGIS_GUI_HDRS
 
   layout/qgslayoutreportsectionlabel.h
   layout/qgslayoutviewmouseevent.h
-  layout/qgslayoutviewrubberband.h
 
   raster/qgsrasterrendererwidget.h
 

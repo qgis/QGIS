@@ -46,7 +46,6 @@
 %Include layertree/qgslayertreeembeddedconfigwidget.sip
 %Include layertree/qgslayertreeembeddedwidgetregistry.sip
 %Include layout/qgslayoutviewmouseevent.sip
-%Include layout/qgslayoutviewrubberband.sip
 %Include raster/qgsrasterrendererwidget.sip
 %Include symbology/qgssymbolwidgetcontext.sip
 %Include qgisinterface.sip
@@ -295,6 +294,7 @@
 %Include layout/qgslayoutruler.sip
 %Include layout/qgslayoutunitscombobox.sip
 %Include layout/qgslayoutview.sip
+%Include layout/qgslayoutviewrubberband.sip
 %Include layout/qgslayoutviewtool.sip
 %Include layout/qgslayoutviewtooladditem.sip
 %Include layout/qgslayoutviewtooladdnodeitem.sip
