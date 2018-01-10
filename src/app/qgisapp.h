@@ -590,6 +590,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QToolBar *vectorToolBar() { return mVectorToolBar; }
     QToolBar *databaseToolBar() { return mDatabaseToolBar; }
     QToolBar *webToolBar() { return mWebToolBar; }
+    QToolBar *labelToolBar() { return mLabelToolBar; }
+    QToolBar *snappingToolBar() { return mSnappingToolBar; }
 
     QgsStatusBar *statusBarIface() { return mStatusBar; }
 

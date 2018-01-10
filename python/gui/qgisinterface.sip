@@ -199,6 +199,22 @@ Advanced digitizing dock widget
     virtual QToolBar *databaseToolBar() = 0;
     virtual QToolBar *webToolBar() = 0;
 
+%Docstring
+ :rtype: QToolBar
+%End
+    virtual QToolBar *labelToolBar() = 0;
+%Docstring
+ :rtype: QToolBar
+%End
+    virtual QToolBar *snappingToolBar() = 0;
+%Docstring
+ :rtype: QToolBar
+%End
+    virtual QToolBar *dataSourceManagerToolBar() = 0;
+%Docstring
+ :rtype: QToolBar
+%End
+
     virtual QAction *actionNewProject() = 0;
     virtual QAction *actionOpenProject() = 0;
     virtual QAction *actionSaveProject() = 0;
