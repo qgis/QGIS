@@ -1,5 +1,7 @@
-%Module(name=qgis._analysis,
+%Module(name=qgis._server,
         keyword_arguments="All")
+
+${DEFAULTDOCSTRINGSIGNATURE}
 
 %Import QtCore/QtCoremod.sip
 %Import QtGui/QtGuimod.sip
@@ -7,4 +9,6 @@
 
 %Import core/core.sip
 
-%Include analysis_auto.sip
+%Feature HAVE_SERVER_PYTHON_PLUGINS
+
+%Include server_auto.sip
