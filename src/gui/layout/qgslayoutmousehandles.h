@@ -143,9 +143,9 @@ class GUI_EXPORT QgsLayoutMouseHandles: public QObject, public QGraphicsRectItem
     QPointF mLastMouseEventPos;
     //! Position of the mouse at beginning of move/resize (in scene coordinates)
     QPointF mBeginMouseEventPos;
-    //! Position of composer handles at beginning of move/resize (in scene coordinates)
+    //! Position of layout handles at beginning of move/resize (in scene coordinates)
     QPointF mBeginHandlePos;
-    //! Width and height of composer handles at beginning of resize
+    //! Width and height of layout handles at beginning of resize
     double mBeginHandleWidth = 0;
     double mBeginHandleHeight = 0;
 
@@ -200,7 +200,7 @@ class GUI_EXPORT QgsLayoutMouseHandles: public QObject, public QGraphicsRectItem
     //sets the mouse cursor for the QGraphicsView attached to the composition (workaround qt bug #3732)
     void setViewportCursor( Qt::CursorShape cursor );
 
-    //resets the composer window status bar to the default message
+    //resets the layout designer status bar to the default message
     void resetStatusBar();
 
     //! Snaps an item or point (depending on mode) originating at originalPoint to the grid or align rulers

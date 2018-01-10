@@ -40,7 +40,7 @@ class QgsPropertyOverrideButton;
 // So QgsLayoutItemWidget HAS a QgsLayoutConfigObject to handle these common tasks.
 // Specific item property widgets (e.g., QgsLayoutMapWidget) should inherit from QgsLayoutItemBaseWidget
 // (which is a QgsPanelWidget) and also HAS a QgsLayoutConfigObject, with protected methods
-// which are just proxied through to the QgsComposerConfigObject.
+// which are just proxied through to the QgsLayoutConfigObject.
 // phew!
 // long story short - don't change this without good reason. If you add a new item type, inherit
 // from QgsLayoutItemBaseWidget and trust that everything else has been done for you.

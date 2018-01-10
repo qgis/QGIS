@@ -225,9 +225,6 @@ SET(QGIS_GUI_SRCS
   qgscolorschemelist.cpp
   qgscolorswatchgrid.cpp
   qgscolorwidgets.cpp
-  qgscomposeritemcombobox.cpp
-  qgscomposerruler.cpp
-  qgscomposerview.cpp
   qgscompoundcolorwidget.cpp
   qgsconfigureshortcutsdialog.cpp
   qgscredentialdialog.cpp
@@ -400,10 +397,6 @@ SET(QGIS_GUI_MOC_HDRS
   qgscolorschemelist.h
   qgscolorswatchgrid.h
   qgscolorwidgets.h
-  qgscomposerinterface.h
-  qgscomposeritemcombobox.h
-  qgscomposerruler.h
-  qgscomposerview.h
   qgscompoundcolorwidget.h
   qgsconfigureshortcutsdialog.h
   qgscredentialdialog.h
@@ -872,7 +865,6 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/core/annotations
   ${CMAKE_SOURCE_DIR}/src/core/auth
-  ${CMAKE_SOURCE_DIR}/src/core/composer
   ${CMAKE_SOURCE_DIR}/src/core/fieldformatter
   ${CMAKE_SOURCE_DIR}/src/core/geometry
   ${CMAKE_SOURCE_DIR}/src/core/layertree

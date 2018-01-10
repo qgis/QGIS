@@ -154,7 +154,6 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsbrowserdockwidget.h"
 #include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsclipboard.h"
-#include "qgscomposerview.h"
 #include "qgsconfigureshortcutsdialog.h"
 #include "qgscoordinatetransform.h"
 #include "qgscoordinateutils.h"

@@ -34,6 +34,7 @@
 #include "qgslayoutpagecollection.h"
 #include "qgslayoutundostack.h"
 #include "qgslayoutreportsectionlabel.h"
+#include "qgsreadwritecontext.h"
 #include <memory>
 #include <QDesktopWidget>
 #include <QMenu>

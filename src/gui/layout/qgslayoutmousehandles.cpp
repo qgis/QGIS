@@ -319,7 +319,7 @@ double QgsLayoutMouseHandles::rectHandlerBorderTolerance()
   //get view scale factor
   double viewScaleFactor = mView->transform().m11();
 
-  //size of handle boxes depends on zoom level in composer view
+  //size of handle boxes depends on zoom level in layout view
   double rectHandlerSize = 10.0 / viewScaleFactor;
 
   //make sure the boxes don't get too large
@@ -510,7 +510,7 @@ QgsLayoutMouseHandles::MouseAction QgsLayoutMouseHandles::mouseActionForPosition
     QgsLayoutItem *item = dynamic_cast<QgsLayoutItem *>( graphicsItem );
     if ( item && item->isSelected() )
     {
-      //cursor is over a selected composer item
+      //cursor is over a selected layout item
       return QgsLayoutMouseHandles::MoveItem;
     }
   }

@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgscomposerinterface.h
+    qgslayoutdesignerinterface.h
      ---------------------
     Date                 : July 2017
     Copyright            : (C) 2017 Nyall Dawson
