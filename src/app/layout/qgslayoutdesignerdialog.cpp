@@ -3374,12 +3374,12 @@ void QgsLayoutDesignerDialog::restoreWindowState()
   QgsSettings settings;
 
   //TODO - defaults
-  if ( !restoreState( settings.value( QStringLiteral( "LayoutDesigner/state" ) /*, QByteArray::fromRawData( ( char * )defaultComposerUIstate, sizeof defaultComposerUIstate ) */ ).toByteArray() ) )
+  if ( !restoreState( settings.value( QStringLiteral( "LayoutDesigner/state" ), QVariant(),  QgsSettings::App /*, QByteArray::fromRawData( ( char * )defaultComposerUIstate, sizeof defaultComposerUIstate ) */ ).toByteArray() ) )
   {
     QgsDebugMsg( "restore of layout UI state failed" );
   }
   // restore window geometry
-  if ( !restoreGeometry( settings.value( QStringLiteral( "LayoutDesigner/geometry" ) /*, QByteArray::fromRawData( ( char * )defaultComposerUIgeometry, sizeof defaultComposerUIgeometry ) */ ).toByteArray() ) )
+  if ( !restoreGeometry( settings.value( QStringLiteral( "LayoutDesigner/geometry" ), QVariant(),  QgsSettings::App /*, QByteArray::fromRawData( ( char * )defaultComposerUIgeometry, sizeof defaultComposerUIgeometry ) */ ).toByteArray() ) )
   {
     QgsDebugMsg( "restore of layout UI geometry failed" );
   }
