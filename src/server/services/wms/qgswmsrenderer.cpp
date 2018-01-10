@@ -458,7 +458,7 @@ namespace QgsWms
     // Layout maps now use a string UUID as "id", let's assume that the first map
     // has id 0 and so on ...
     int mapId = 0;
-    for ( auto &map : maps )
+    for ( const auto &map : qgis::as_const( maps ) )
     {
       QgsWmsParametersComposerMap cMapParams = mWmsParameters.composerMapParameters( mapId );
       mapId++;
@@ -467,8 +467,7 @@ namespace QgsWms
       if ( !cMapParams.mHasExtent )
       {
         //remove map from composition if not referenced by the request
-        c->removeItem( map );
-        delete map;
+        c->removeLayoutItem( map );
         continue;
       }
       // Change CRS of map set to "project CRS" to match requested CRS
@@ -547,7 +546,7 @@ namespace QgsWms
     // Labels
     QList<QgsLayoutItemLabel *> labels;
     c->layoutItems<QgsLayoutItemLabel>( labels );
-    for ( auto &label : labels )
+    for ( const auto &label : qgis::as_const( labels ) )
     {
       QString labelId = label->id().toUpper();
       if ( !mParameters.contains( labelId ) )
@@ -569,7 +568,7 @@ namespace QgsWms
     // HTMLs
     QList<QgsLayoutItemHtml *> htmls;
     c->layoutObjects<QgsLayoutItemHtml>( htmls );
-    for ( auto &html : htmls )
+    for ( const auto &html : qgis::as_const( htmls ) )
     {
       if ( html->frameCount() == 0 )
         continue;
@@ -600,7 +599,7 @@ namespace QgsWms
     // legends
     QList<QgsLayoutItemLegend *> legends;
     c->layoutItems<QgsLayoutItemLegend>( legends );
-    for ( auto &legend : legends )
+    for ( const auto &legend : qgis::as_const( legends ) )
     {
       if ( legend->autoUpdateModel() )
       {
@@ -617,7 +616,8 @@ namespace QgsWms
         // get model and layer tree root of the legend
         QgsLegendModel *model = legend->model();
         QStringList layerSet;
-        for ( const auto &layer : map->layers() )
+        const QList<QgsMapLayer *> layerList( map->layers() );
+        for ( const auto &layer : layerList )
           layerSet << layer->id();
 
         //setLayerIdsToLegendModel( model, layerSet, map->scale() );
@@ -626,7 +626,7 @@ namespace QgsWms
         QgsLayerTree *root = model->rootGroup();
 
         // get layerIds find in the layer tree root
-        QStringList layerIds = root->findLayerIds();
+        const QStringList layerIds = root->findLayerIds();
 
         // find the layer in the layer tree
         // remove it if the layer id is not in map layerIds

@@ -13,7 +13,7 @@ A XYZ map service is also available for multithreading testing:
 Note that multi threading in QGIS server is not officially supported and
 it is not supposed to work in any case
 
-Set MULTITHREADING environment varialbe to 1 to activate.
+Set MULTITHREADING environment variable to 1 to activate.
 
 
 For testing purposes, HTTP Basic can be enabled by setting the following
