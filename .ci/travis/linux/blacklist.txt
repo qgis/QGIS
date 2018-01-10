@@ -38,6 +38,3 @@ PyQgsAuthManagerPKIPostgresTest
 PyQgsAuthManagerPasswordPostgresTest
 PyQgsAuthManagerOgrPostgresTest
 
-# temporary disable for composition -> layout transition
-PyQgsServerWMS
-PyQgsServerWMSGetPrint
