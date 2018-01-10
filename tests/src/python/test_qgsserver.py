@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsServer.
 
-Set the env var NO_ENCODED_OUTPUT to disable printing the base64 encoded image diff
+Set the env var ENCODED_OUTPUT to enable printing the base64 encoded image diff
 
 FIXME: keep here only generic server tests and move specific services
        tests to test_qgsserver_<service>.py
@@ -191,7 +191,7 @@ class QgsServerTestBase(unittest.TestCase):
 
         with open(os.path.join(tempfile.gettempdir(), image + "_result.png"), "rb") as rendered_file:
             encoded_rendered_file = base64.b64encode(rendered_file.read())
-            if os.environ.get('NO_ENCODED_OUTPUT'):
+            if not os.environ.get('ENCODED_OUTPUT'):
                 message = "Image is wrong\: rendered file %s/%s_result.png" % (tempfile.gettempdir(), image)
             else:
                 message = "Image is wrong\n%s\nImage:\necho '%s' | base64 -d >%s/%s_result.png" % (
@@ -201,7 +201,7 @@ class QgsServerTestBase(unittest.TestCase):
         # If the failure is in image sizes the diff file will not exists.
         if os.path.exists(os.path.join(tempfile.gettempdir(), image + "_result_diff.png")):
             with open(os.path.join(tempfile.gettempdir(), image + "_result_diff.png"), "rb") as diff_file:
-                if os.environ.get('NO_ENCODED_OUTPUT'):
+                if not os.environ.get('ENCODED_OUTPUT'):
                     message = "Image is wrong\: diff file %s/%s_result_diff.png" % (tempfile.gettempdir(), image)
                 else:
                     encoded_diff_file = base64.b64encode(diff_file.read())
