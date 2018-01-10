@@ -84,6 +84,11 @@ Removes and deletes all layouts from the manager.
 Returns a list of all layouts contained in the manager.
 %End
 
+    QList< QgsPrintLayout * > printLayouts() const;
+%Docstring
+Returns a list of all print layouts contained in the manager.
+%End
+
 
     QgsMasterLayoutInterface *layoutByName( const QString &name ) const;
 %Docstring

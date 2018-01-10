@@ -23,6 +23,7 @@
 #include <QObject>
 
 class QgsProject;
+class QgsPrintLayout;
 
 /**
  * \ingroup core
@@ -109,6 +110,11 @@ class CORE_EXPORT QgsLayoutManager : public QObject
      * Returns a list of all layouts contained in the manager.
      */
     QList< QgsMasterLayoutInterface * > layouts() const;
+
+    /**
+     * Returns a list of all print layouts contained in the manager.
+     */
+    QList< QgsPrintLayout * > printLayouts() const;
 
     /**
      * Returns the composition with a matching name, or nullptr if no matching compositions
