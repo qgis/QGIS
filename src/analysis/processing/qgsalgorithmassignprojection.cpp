@@ -19,6 +19,11 @@
 
 ///@cond PRIVATE
 
+QgsProcessingAlgorithm::Flags QgsAssignProjectionAlgorithm::flags() const
+{
+  return QgsProcessingFeatureBasedAlgorithm::flags() | QgsProcessingAlgorithm::FlagCanRunInBackground;
+}
+
 QString QgsAssignProjectionAlgorithm::name() const
 {
   return QStringLiteral( "assignprojection" );

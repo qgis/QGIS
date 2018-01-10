@@ -19,6 +19,11 @@
 
 ///@cond PRIVATE
 
+QgsProcessingAlgorithm::Flags QgsSnapToGridAlgorithm::flags() const
+{
+  return QgsProcessingFeatureBasedAlgorithm::flags() | QgsProcessingAlgorithm::FlagCanRunInBackground;
+}
+
 QString QgsSnapToGridAlgorithm::name() const
 {
   return QStringLiteral( "snappointstogrid" );

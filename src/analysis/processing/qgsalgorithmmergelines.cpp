@@ -19,6 +19,11 @@
 
 ///@cond PRIVATE
 
+QgsProcessingAlgorithm::Flags QgsMergeLinesAlgorithm::flags() const
+{
+  return QgsProcessingFeatureBasedAlgorithm::flags() | QgsProcessingAlgorithm::FlagCanRunInBackground;
+}
+
 QString QgsMergeLinesAlgorithm::name() const
 {
   return QStringLiteral( "mergelines" );

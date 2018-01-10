@@ -34,6 +34,7 @@ class QgsLineIntersectionAlgorithm : public QgsProcessingAlgorithm
   public:
 
     QgsLineIntersectionAlgorithm() = default;
+    Flags flags() const override;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
     QString displayName() const override;

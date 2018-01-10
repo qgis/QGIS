@@ -45,6 +45,11 @@ QString QgsSplitWithLinesAlgorithm::groupId() const
   return QStringLiteral( "vectoroverlay" );
 }
 
+QgsProcessingAlgorithm::Flags QgsSplitWithLinesAlgorithm::flags() const
+{
+  return QgsProcessingAlgorithm::flags() | QgsProcessingAlgorithm::FlagCanRunInBackground;
+}
+
 void QgsSplitWithLinesAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ),

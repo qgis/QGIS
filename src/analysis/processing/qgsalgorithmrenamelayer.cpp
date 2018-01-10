@@ -26,7 +26,7 @@ QString QgsRenameLayerAlgorithm::name() const
 
 QgsProcessingAlgorithm::Flags QgsRenameLayerAlgorithm::flags() const
 {
-  return FlagHideFromToolbox;
+  return FlagHideFromToolbox | FlagCanRunInBackground;
 }
 
 QString QgsRenameLayerAlgorithm::displayName() const

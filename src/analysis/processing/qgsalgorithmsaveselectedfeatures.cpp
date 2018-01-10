@@ -19,6 +19,11 @@
 
 ///@cond PRIVATE
 
+QgsProcessingAlgorithm::Flags QgsSaveSelectedFeatures::flags() const
+{
+  return QgsProcessingAlgorithm::flags() | QgsProcessingAlgorithm::FlagCanRunInBackground;
+}
+
 void QgsSaveSelectedFeatures::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterVectorLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );

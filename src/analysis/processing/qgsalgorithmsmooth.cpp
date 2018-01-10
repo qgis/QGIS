@@ -19,6 +19,11 @@
 
 ///@cond PRIVATE
 
+QgsProcessingAlgorithm::Flags QgsSmoothAlgorithm::flags() const
+{
+  return QgsProcessingFeatureBasedAlgorithm::flags() | QgsProcessingAlgorithm::FlagCanRunInBackground;
+}
+
 QString QgsSmoothAlgorithm::name() const
 {
   return QStringLiteral( "smoothgeometry" );

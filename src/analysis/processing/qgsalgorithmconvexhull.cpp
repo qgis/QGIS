@@ -19,6 +19,11 @@
 
 ///@cond PRIVATE
 
+QgsProcessingAlgorithm::Flags QgsConvexHullAlgorithm::flags() const
+{
+  return QgsProcessingFeatureBasedAlgorithm::flags() | QgsProcessingAlgorithm::FlagCanRunInBackground;
+}
+
 QString QgsConvexHullAlgorithm::name() const
 {
   return QStringLiteral( "convexhull" );

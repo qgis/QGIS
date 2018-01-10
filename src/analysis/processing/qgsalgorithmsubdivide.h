@@ -34,6 +34,7 @@ class QgsSubdivideAlgorithm : public QgsProcessingFeatureBasedAlgorithm
   public:
 
     QgsSubdivideAlgorithm() = default;
+    Flags flags() const override;
     void initParameters( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
     QString displayName() const override;

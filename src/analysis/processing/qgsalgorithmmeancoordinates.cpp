@@ -44,6 +44,11 @@ QString QgsMeanCoordinatesAlgorithm::groupId() const
   return QStringLiteral( "vectoranalysis" );
 }
 
+QgsProcessingAlgorithm::Flags QgsMeanCoordinatesAlgorithm::flags() const
+{
+  return QgsProcessingAlgorithm::flags() | QgsProcessingAlgorithm::FlagCanRunInBackground;
+}
+
 void QgsMeanCoordinatesAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ),

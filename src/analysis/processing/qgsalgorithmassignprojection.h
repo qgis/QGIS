@@ -34,6 +34,7 @@ class QgsAssignProjectionAlgorithm : public QgsProcessingFeatureBasedAlgorithm
   public:
 
     QgsAssignProjectionAlgorithm() = default;
+    Flags flags() const override;
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;

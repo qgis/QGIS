@@ -72,6 +72,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
       FlagSupportsBatch = 1 << 3,  //!< Algorithm supports batch mode
       FlagCanCancel = 1 << 4, //!< Algorithm can be canceled
       FlagRequiresMatchingCrs = 1 << 5, //!< Algorithm requires that all input layers have matching coordinate reference systems
+      FlagCanRunInBackground = 1 << 6, //!< Algorithm is safe to run in a background thread
       FlagDeprecated = FlagHideFromToolbox | FlagHideFromModeler, //!< Algorithm is deprecated
     };
     Q_DECLARE_FLAGS( Flags, Flag )

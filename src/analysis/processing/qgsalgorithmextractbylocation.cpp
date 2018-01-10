@@ -286,6 +286,11 @@ QVariantMap QgsSelectByLocationAlgorithm::processAlgorithm( const QVariantMap &p
 // QgsExtractByLocationAlgorithm
 //
 
+QgsProcessingAlgorithm::Flags QgsExtractByLocationAlgorithm::flags() const
+{
+  return QgsProcessingAlgorithm::flags() | QgsProcessingAlgorithm::FlagCanRunInBackground;
+}
+
 void QgsExtractByLocationAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterVectorLayer( QStringLiteral( "INPUT" ), QObject::tr( "Extract features from" ),

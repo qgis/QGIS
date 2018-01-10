@@ -34,6 +34,7 @@ class QgsExtentToLayerAlgorithm : public QgsProcessingAlgorithm
   public:
 
     QgsExtentToLayerAlgorithm() = default;
+    Flags flags() const override;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
     QString displayName() const override { return QObject::tr( "Create layer from extent" ); }

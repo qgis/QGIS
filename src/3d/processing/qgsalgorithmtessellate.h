@@ -36,6 +36,7 @@ class QgsTessellateAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QgsTessellateAlgorithm() = default;
     QString name() const override;
     QString displayName() const override;
+    Flags flags() const override;
     QStringList tags() const override;
     QString group() const override;
     QString shortHelpString() const override;

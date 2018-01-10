@@ -135,6 +135,12 @@ Sets a progress text message.
 Pushes a console info string to the dialog's log.
 %End
 
+    QDialog *createProgressDialog();
+%Docstring
+Creates a modal progress dialog showing progress and log messages
+from this dialog.
+%End
+
   protected:
 
     QPushButton *runButton();
@@ -208,6 +214,7 @@ Called when the algorithm has finished executing.
 %End
 
 };
+
 
 
 /************************************************************************
