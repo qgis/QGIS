@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-"""QGIS Unit tests for QgsServer WMS.
+"""QGIS Unit tests for QgsServer WMS GetPrint.
 
-From build dir, run: ctest -R PyQgsServerWMS -V
+From build dir, run: ctest -R PyQgsServerWMSGetPrint -V
 
 
 .. note:: This program is free software; you can redistribute it and/or modify

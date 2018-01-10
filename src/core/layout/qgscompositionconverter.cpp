@@ -782,7 +782,7 @@ bool QgsCompositionConverter::readMapXml( QgsLayoutItemMap *layoutItem, const QD
   }
   else
   {
-    layoutItem->setKeepLayerSet( true );
+    layoutItem->setKeepLayerSet( false );
   }
 
   QString drawCanvasItemsFlag = itemElem.attribute( QStringLiteral( "drawCanvasItems" ), QStringLiteral( "true" ) );

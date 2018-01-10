@@ -31,7 +31,7 @@
 
 class QgsCapabilitiesCache;
 class QgsCoordinateReferenceSystem;
-class QgsComposition;
+class QgsPrintLayout;
 class QgsConfigParser;
 class QgsFeature;
 class QgsFeatureRenderer;
@@ -274,8 +274,8 @@ namespace QgsWms
       //! Gets layer search rectangle (depending on request parameter, layer type, map and layer crs)
       QgsRectangle featureInfoSearchRect( QgsVectorLayer *ml, const QgsMapSettings &ms, const QgsRenderContext &rct, const QgsPointXY &infoPoint ) const;
 
-      //! configure the composition for the GetPrint request
-      bool configureComposition( QgsComposition *c, const QgsMapSettings &mapSettings );
+      //! configure the print layout for the GetPrint request
+      bool configurePrintLayout( QgsPrintLayout *c, const QgsMapSettings &mapSettings );
 
       //! Creates external WMS layer. Caller takes ownership
       QgsMapLayer *createExternalWMSLayer( const QString &externalLayerId ) const;

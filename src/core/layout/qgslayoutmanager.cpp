@@ -140,6 +140,19 @@ QList<QgsMasterLayoutInterface *> QgsLayoutManager::layouts() const
   return mLayouts;
 }
 
+QList<QgsPrintLayout *> QgsLayoutManager::printLayouts() const
+{
+  QList<QgsPrintLayout *> result;
+  const QList<QgsMasterLayoutInterface *> _layouts( mLayouts );
+  for ( const auto &layout : _layouts )
+  {
+    QgsPrintLayout *_item( dynamic_cast<QgsPrintLayout *>( layout ) );
+    if ( _item )
+      result.push_back( _item );
+  }
+  return result;
+}
+
 QgsComposition *QgsLayoutManager::compositionByName( const QString &name ) const
 {
   Q_FOREACH ( QgsComposition *c, mCompositions )
