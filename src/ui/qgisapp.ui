@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1018</width>
-     <height>25</height>
+     <height>21</height>
     </rect>
    </property>
    <property name="toolTip">
@@ -62,7 +62,6 @@
     <addaction name="mActionNewReport"/>
     <addaction name="mActionShowLayoutManager"/>
     <addaction name="mLayoutsMenu"/>
-    <addaction name="mActionShowComposerManager"/>
     <addaction name="separator"/>
     <addaction name="mActionExit"/>
    </widget>
@@ -737,15 +736,6 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+M</string>
-   </property>
-  </action>
-  <action name="mActionShowComposerManager">
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionComposerManager.svg</normaloff>:/images/themes/default/mActionComposerManager.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Composer Manager...</string>
    </property>
   </action>
   <action name="mActionExit">

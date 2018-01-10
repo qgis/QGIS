@@ -157,28 +157,6 @@ SET(QGIS_APP_SRCS
   qgsmaptoolregularpolygoncenterpoint.cpp
   qgsmaptoolregularpolygoncentercorner.cpp
 
-  composer/qgsattributeselectiondialog.cpp
-  composer/qgscomposer.cpp
-  composer/qgscomposerarrowwidget.cpp
-  composer/qgscomposerattributetablewidget.cpp
-  composer/qgscomposerhtmlwidget.cpp
-  composer/qgscomposerimageexportoptionsdialog.cpp
-  composer/qgscomposeritemwidget.cpp
-  composer/qgscomposerlabelwidget.cpp
-  composer/qgscomposerpicturewidget.cpp
-  composer/qgscomposermanager.cpp
-  composer/qgscomposermapgridwidget.cpp
-  composer/qgscomposermapwidget.cpp
-  composer/qgscomposerscalebarwidget.cpp
-  composer/qgscomposershapewidget.cpp
-  composer/qgscomposerpolygonwidget.cpp
-  composer/qgscomposerpolylinewidget.cpp
-  composer/qgscomposertablebackgroundcolorsdialog.cpp
-  composer/qgscomposerlegendlayersdialog.cpp
-  composer/qgscomposerlegendwidget.cpp
-  composer/qgscompositionwidget.cpp
-  composer/qgsatlascompositionwidget.cpp
-
   layout/qgslayoutaddpagesdialog.cpp
   layout/qgslayoutapputils.cpp
   layout/qgslayoutatlaswidget.cpp
@@ -382,28 +360,6 @@ SET (QGIS_APP_MOC_HDRS
   qgsvectorlayerproperties.h
   qgsmapthemes.h
   qgshandlebadlayers.h
-
-  composer/qgsattributeselectiondialog.h
-  composer/qgscomposer.h
-  composer/qgscomposerarrowwidget.h
-  composer/qgscomposerattributetablewidget.h
-  composer/qgscomposerhtmlwidget.h
-  composer/qgscomposerimageexportoptionsdialog.h
-  composer/qgscomposeritemwidget.h
-  composer/qgscomposerlabelwidget.h
-  composer/qgscomposerlegendwidget.h
-  composer/qgscomposerlegendlayersdialog.h
-  composer/qgscomposermanager.h
-  composer/qgscomposermapgridwidget.h
-  composer/qgscomposermapwidget.h
-  composer/qgscomposerpicturewidget.h
-  composer/qgscomposerscalebarwidget.h
-  composer/qgscomposertablebackgroundcolorsdialog.h
-  composer/qgscomposershapewidget.h
-  composer/qgscomposerpolygonwidget.h
-  composer/qgscomposerpolylinewidget.h
-  composer/qgscompositionwidget.h
-  composer/qgsatlascompositionwidget.h
 
   layout/qgslayoutaddpagesdialog.h
   layout/qgslayoutappmenuprovider.h
@@ -610,7 +566,6 @@ ENDIF(MSVC)
 
 INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/app
-  ${CMAKE_SOURCE_DIR}/src/app/composer
   ${CMAKE_SOURCE_DIR}/src/app/layout
   ${CMAKE_SOURCE_DIR}/src/app/pluginmanager
   ${CMAKE_SOURCE_DIR}/src/app/gps
@@ -621,9 +576,9 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/core/annotations
   ${CMAKE_SOURCE_DIR}/src/core/auth
+  ${CMAKE_SOURCE_DIR}/src/core/composer
   ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/core/gps
-  ${CMAKE_SOURCE_DIR}/src/core/composer
   ${CMAKE_SOURCE_DIR}/src/core/dxf
   ${CMAKE_SOURCE_DIR}/src/core/geometry
   ${CMAKE_SOURCE_DIR}/src/core/geocms/geonode
@@ -681,8 +636,8 @@ INCLUDE_DIRECTORIES(
   ../core
   ../core/annotations
   ../core/auth
-  ../core/gps
   ../core/composer
+  ../core/gps
   ../core/dxf
   ../core/geometry
   ../core/geocms/geonode
@@ -747,7 +702,7 @@ ELSE (ANDROID)
 ENDIF (ANDROID)
 
 # Putting IMAGE_RCC_SRCS into qgis_app lib is causing problems when the lib is
-# loaded (by plugin for example) in test unit (qgis_composerpicturetest).
+# loaded (by plugin for example) in test unit (qgis_layoutpicturetest).
 ADD_LIBRARY(qgis_app SHARED ${QGIS_APP_SRCS} ${QGIS_APP_MOC_SRCS} ${QGIS_APP_HDRS} ${QGIS_APP_MOC_HDRS})
 
 TARGET_LINK_LIBRARIES(qgis_app

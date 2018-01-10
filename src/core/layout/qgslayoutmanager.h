@@ -18,8 +18,8 @@
 
 #include "qgis_core.h"
 #include "qgis.h"
-#include "qgscomposition.h"
 #include "qgsmasterlayoutinterface.h"
+#include "qgscomposition.h"
 #include <QObject>
 
 class QgsProject;
@@ -149,12 +149,6 @@ class CORE_EXPORT QgsLayoutManager : public QObject
     QgsMasterLayoutInterface *duplicateLayout( const QgsMasterLayoutInterface *layout, const QString &newName );
 
     /**
-     * Generates a unique title for a new composition, which does not
-     * clash with any already contained by the manager.
-     */
-    QString generateUniqueComposerTitle() const;
-
-    /**
      * Generates a unique title for a new layout of the specified \a type, which does not
      * clash with any already contained by the manager.
      */
@@ -162,32 +156,17 @@ class CORE_EXPORT QgsLayoutManager : public QObject
 
   signals:
 
-    //! Emitted when a composition is about to be added to the manager
-    void compositionAboutToBeAdded( const QString &name );
-
     //! Emitted when a layout is about to be added to the manager
     void layoutAboutToBeAdded( const QString &name );
-
-    //! Emitted when a composition has been added to the manager
-    void compositionAdded( const QString &name );
 
     //! Emitted when a layout has been added to the manager
     void layoutAdded( const QString &name );
 
-    //! Emitted when a composition was removed from the manager
-    void compositionRemoved( const QString &name );
-
     //! Emitted when a layout was removed from the manager
     void layoutRemoved( const QString &name );
 
-    //! Emitted when a composition is about to be removed from the manager
-    void compositionAboutToBeRemoved( const QString &name );
-
     //! Emitted when a layout is about to be removed from the manager
     void layoutAboutToBeRemoved( const QString &name );
-
-    //! Emitted when a composition is renamed
-    void compositionRenamed( QgsComposition *composition, const QString &newName ) SIP_SKIP;
 
     //! Emitted when a layout is renamed
     void layoutRenamed( QgsMasterLayoutInterface *layout, const QString &newName );
