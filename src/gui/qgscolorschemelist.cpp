@@ -320,7 +320,7 @@ QModelIndex QgsColorSchemeModel::index( int row, int column, const QModelIndex &
 
   if ( !parent.isValid() && row >= 0 && row < mColors.size() )
   {
-    //return an index for the composer item at this position
+    //return an index for the color item at this position
     return createIndex( row, column );
   }
 

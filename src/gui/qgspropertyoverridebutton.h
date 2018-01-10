@@ -42,7 +42,7 @@ class QgsMapCanvas;
  * It allows users to specify field or expression based overrides
  * which should be applied to a property of an object. Eg, this widget
  * is used for controlling data defined overrides in symbology, labeling
- * and composer.
+ * and layouts.
  * \since QGIS 3.0
  */
 

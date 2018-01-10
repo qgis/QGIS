@@ -67,7 +67,7 @@ void TestQgsLayoutGui::itemTypeComboBox()
   // test QgsLayoutItemComboBox
   QgsLayout *layout = new QgsLayout( QgsProject::instance() );
 
-  // create a composer item combobox
+  // create a layout item combobox
   QgsLayoutItemComboBox *cb = new QgsLayoutItemComboBox( nullptr, layout );
   QgsLayoutItemComboBox *cb2 = new QgsLayoutItemComboBox( nullptr, layout );
   cb2->setItemType( QgsLayoutItemRegistry::LayoutShape );
@@ -76,7 +76,7 @@ void TestQgsLayoutGui::itemTypeComboBox()
   QSignalSpy spy1( cb, &QgsLayoutItemComboBox::itemChanged );
   QSignalSpy spy2( cb2, &QgsLayoutItemComboBox::itemChanged );
 
-  // add some items to composition
+  // add some items to layout
   QgsLayoutItemMap *item1 = new QgsLayoutItemMap( layout );
   item1->setId( "item 1" );
   layout->addLayoutItem( item1 );
@@ -183,13 +183,13 @@ void TestQgsLayoutGui::testProxyCrash()
   // test for a possible crash when using QgsLayoutProxyModel and reordering items
   QgsLayout *layout = new QgsLayout( QgsProject::instance() );
 
-  // create a composer item combobox
+  // create a layout item combobox
   QgsLayoutItemComboBox *cb = new QgsLayoutItemComboBox( nullptr, layout );
   QgsLayoutItemComboBox *cb2 = new QgsLayoutItemComboBox( nullptr, layout );
   QgsLayoutItemComboBox *cb3 = new QgsLayoutItemComboBox( nullptr, layout );
   QgsLayoutItemComboBox *cb4 = new QgsLayoutItemComboBox( nullptr, layout );
 
-  // add some items to composition
+  // add some items to layout
   QgsLayoutItemMap *item1 = new QgsLayoutItemMap( layout );
   layout->addLayoutItem( item1 );
   QCOMPARE( cb->count(), 1 );
