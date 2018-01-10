@@ -52,6 +52,11 @@ MACRO(GENERATE_SIP_PYTHON_MODULE_CODE MODULE_NAME MODULE_SIP CPP_FILES)
 
   FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${_module_path})    # Output goes in this dir.
 
+  # If this is not need anymore (using input configuration file for SIP modules)
+  # Then SIP could build against the file in the source rather than in CMake current directory
+  # and thus remove the 2 extras includes:
+  # - hereafter in the custom command: -I ${CMAKE_CURRENT_SOURCE_DIR}/${_module_path}
+  # - in top CMakeLists.txt in SIP_INCLUDES declaraiton the core part
   SET(_configured_module_sip ${CMAKE_CURRENT_BINARY_DIR}/${_module_path}/${_module_path}.sip)
   CONFIGURE_FILE(${_abs_module_sip}.in ${_configured_module_sip})
 
