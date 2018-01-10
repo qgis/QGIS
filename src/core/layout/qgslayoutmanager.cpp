@@ -46,13 +46,7 @@ bool QgsLayoutManager::addComposition( QgsComposition *composition )
       return false;
   }
 
-  connect( composition, &QgsComposition::nameChanged, this, [this, composition]( const QString & newName )
-  {
-    emit compositionRenamed( composition, newName );
-  } );
-  emit compositionAboutToBeAdded( composition->name() );
   mCompositions << composition;
-  emit compositionAdded( composition->name() );
   mProject->setDirty( true );
   return true;
 }
@@ -100,11 +94,8 @@ bool QgsLayoutManager::removeComposition( QgsComposition *composition )
   if ( !mCompositions.contains( composition ) )
     return false;
 
-  QString name = composition->name();
-  emit compositionAboutToBeRemoved( name );
   mCompositions.removeAll( composition );
   delete composition;
-  emit compositionRemoved( name );
   mProject->setDirty( true );
   return true;
 }
@@ -312,23 +303,6 @@ QgsMasterLayoutInterface *QgsLayoutManager::duplicateLayout( const QgsMasterLayo
     ( void )newLayout.release(); //ownership was transferred successfully
     return l;
   }
-}
-
-QString QgsLayoutManager::generateUniqueComposerTitle() const
-{
-  QStringList names;
-  Q_FOREACH ( QgsComposition *c, mCompositions )
-  {
-    names << c->name();
-  }
-  QString name;
-  int id = 1;
-  while ( name.isEmpty() || names.contains( name ) )
-  {
-    name = tr( "Composer %1" ).arg( id );
-    id++;
-  }
-  return name;
 }
 
 QString QgsLayoutManager::generateUniqueTitle( QgsMasterLayoutInterface::Type type ) const

@@ -370,11 +370,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     bool uniqueLayoutTitle( QWidget *parent, QString &title, bool acceptEmpty, QgsMasterLayoutInterface::Type type, const QString &currentTitle = QString() );
 
     /**
-     * Opens a composer window for an existing \a composition.
-     */
-    QgsComposer *openComposer( QgsComposition *composition );
-
-    /**
      * Creates a new print layout, opens a designer for it and returns a pointer to
      * designer dialog.
      *
@@ -432,7 +427,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionSaveMapAsPdf() { return mActionSaveMapAsPdf; }
     QAction *actionProjectProperties() { return mActionProjectProperties; }
     QAction *actionShowLayoutManager() { return mActionShowLayoutManager; }
-    QAction *actionShowComposerManager() { return mActionShowComposerManager; }
     QAction *actionNewPrintLayout() { return mActionNewPrintLayout; }
     QAction *actionExit() { return mActionExit; }
 
@@ -1264,7 +1258,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Slot to handle display of layouts menu, e.g. sorting
     void layoutsMenuAboutToShow();
 
-    void showComposerManager();
     //! Add all loaded layers into the overview - overrides qgisappbase method
     void addAllToOverview();
     //! Remove all loaded layers from the overview - overrides qgisappbase method
@@ -1532,8 +1525,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     void showStyleManager();
 
-    void compositionAboutToBeRemoved( const QString &name );
-
     //! Toggles whether to show pinned labels
     void showPinnedLabels( bool show );
     //! Activates pin labels tool
@@ -1562,9 +1553,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! catch MapCanvas keyPress event so we can check if selected feature collection must be deleted
     void mapCanvas_keyPressed( QKeyEvent *e );
-
-    //! Deletes the active QgsComposerManager instance
-    void deleteComposerManager();
 
     /**
      * Disable any preview modes shown on the map canvas
@@ -1747,9 +1735,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * Helper function to union several geometries together (used in function mergeSelectedFeatures)
       \returns empty geometry in case of error or if canceled */
     QgsGeometry unionGeometries( const QgsVectorLayer *vl, QgsFeatureList &featureList, bool &canceled );
-
-    //! Deletes all the composer objects and clears mPrintComposers
-    void deletePrintComposers();
 
     //! Deletes all the layout designer windows
     void deleteLayoutDesigners();
@@ -2036,9 +2021,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! list of recently opened/saved project files
     QList<QgsWelcomePageItemsModel::RecentProjectData> mRecentProjects;
 
-    //! Print composers of this project, accessible by id string
-    QSet<QgsComposer *> mPrintComposers;
-
     //! Currently open layout designer dialogs
     QSet<QgsLayoutDesignerDialog *> mLayoutDesignerDialogs;
 
@@ -2107,7 +2089,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsDockWidget *mMapStylingDock = nullptr;
     QgsLayerStylingWidget *mMapStyleWidget = nullptr;
 
-    QgsComposerManager *mComposerManager = nullptr;
     QPointer< QgsLayoutManagerDialog > mLayoutManagerDialog;
 
     //! Persistent tile scale slider

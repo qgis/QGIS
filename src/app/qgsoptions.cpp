@@ -40,7 +40,6 @@
 #include "qgsrasterpyramidsoptionswidget.h"
 #include "qgsdatumtransformtablewidget.h"
 #include "qgsdialog.h"
-#include "qgscomposer.h"
 #include "qgscolorschemeregistry.h"
 #include "qgssymbollayerutils.h"
 #include "qgscolordialog.h"

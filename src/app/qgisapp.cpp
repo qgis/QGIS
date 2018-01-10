@@ -74,7 +74,6 @@
 #include "qgssettings.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsapplication.h"
-#include "qgscomposition.h"
 #include "qgslayerstylingwidget.h"
 #include "qgstaskmanager.h"
 #include "qgsziputils.h"
@@ -155,8 +154,6 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsbrowserdockwidget.h"
 #include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsclipboard.h"
-#include "qgscomposer.h"
-#include "qgscomposermanager.h"
 #include "qgscomposerview.h"
 #include "qgsconfigureshortcutsdialog.h"
 #include "qgscoordinatetransform.h"
@@ -1390,14 +1387,11 @@ QgisApp::~QgisApp()
 
   delete mOverviewMapCursor;
 
-  delete mComposerManager;
-
   delete mTracer;
 
   delete mVectorLayerTools;
   delete mWelcomePage;
 
-  deletePrintComposers();
   deleteLayoutDesigners();
   removeAnnotationItems();
 
@@ -1860,7 +1854,6 @@ void QgisApp::createActions()
   connect( mActionNew3DMapCanvas, &QAction::triggered, this, &QgisApp::new3DMapCanvas );
   connect( mActionNewPrintLayout, &QAction::triggered, this, &QgisApp::newPrintLayout );
   connect( mActionNewReport, &QAction::triggered, this, &QgisApp::newReport );
-  connect( mActionShowComposerManager, &QAction::triggered, this, &QgisApp::showComposerManager );
   connect( mActionShowLayoutManager, &QAction::triggered, this, &QgisApp::showLayoutManager );
   connect( mActionExit, &QAction::triggered, this, &QgisApp::fileExit );
   connect( mActionDxfExport, &QAction::triggered, this, &QgisApp::dxfExport );
@@ -3248,7 +3241,6 @@ void QgisApp::setupConnections()
   connect( mUndoWidget, &QgsUndoWidget::undoStackChanged, this, &QgisApp::updateUndoActions );
 
   connect( mLayoutsMenu, &QMenu::aboutToShow, this, &QgisApp::layoutsMenuAboutToShow );
-  connect( QgsProject::instance()->layoutManager(), &QgsLayoutManager::compositionAboutToBeRemoved, this, &QgisApp::compositionAboutToBeRemoved );
 }
 
 void QgisApp::createCanvasTools()
@@ -5995,23 +5987,6 @@ void QgisApp::newReport()
   createNewReport( title );
 }
 
-void QgisApp::showComposerManager()
-{
-  if ( !mComposerManager )
-  {
-    mComposerManager = new QgsComposerManager( nullptr, Qt::Window );
-    connect( mComposerManager, &QDialog::finished, this, &QgisApp::deleteComposerManager );
-  }
-  mComposerManager->show();
-  mComposerManager->activate();
-}
-
-void QgisApp::deleteComposerManager()
-{
-  mComposerManager->deleteLater();
-  mComposerManager = nullptr;
-}
-
 void QgisApp::disablePreviewMode()
 {
   mMapCanvas->setPreviewModeEnabled( false );
@@ -7333,36 +7308,6 @@ bool QgisApp::uniqueLayoutTitle( QWidget *parent, QString &title, bool acceptEmp
   return true;
 }
 
-QgsComposer *QgisApp::openComposer( QgsComposition *composition )
-{
-  // maybe a composer already open for this composition
-  Q_FOREACH ( QgsComposer *composer, mPrintComposers )
-  {
-    if ( composer->composition() == composition )
-    {
-      composer->show();
-      composer->activate();
-      composer->raise();
-      return composer;
-    }
-  }
-
-  //nope, so make a new one
-  QgsComposer *newComposerObject = new QgsComposer( composition );
-  connect( newComposerObject, &QgsComposer::aboutToClose, this, [this, newComposerObject]
-  {
-    mPrintComposers.remove( newComposerObject );
-  } );
-
-  //add it to the map of existing print composers
-  mPrintComposers.insert( newComposerObject );
-
-  newComposerObject->open();
-  connect( newComposerObject, &QgsComposer::atlasPreviewFeatureChanged, this, &QgisApp::refreshMapCanvas );
-
-  return newComposerObject;
-}
-
 QgsLayoutDesignerDialog *QgisApp::createNewPrintLayout( const QString &t )
 {
   QString title = t;
@@ -7438,17 +7383,6 @@ QgsLayoutDesignerDialog *QgisApp::duplicateLayout( QgsMasterLayoutInterface *lay
   QgsLayoutDesignerDialog *dlg = openLayoutDesignerDialog( newLayout );
   dlg->activate();
   return dlg;
-}
-
-void QgisApp::deletePrintComposers()
-{
-  QSet<QgsComposer *>::iterator it = mPrintComposers.begin();
-  while ( it != mPrintComposers.end() )
-  {
-    QgsComposer *c = ( *it );
-    it = mPrintComposers.erase( it );
-    delete ( c );
-  }
 }
 
 void QgisApp::deleteLayoutDesigners()
@@ -7598,19 +7532,6 @@ void QgisApp::populateLayoutsMenu( QMenu *menu )
     std::sort( acts.begin(), acts.end(), cmpByText_ );
   }
   menu->addActions( acts );
-}
-
-void QgisApp::compositionAboutToBeRemoved( const QString &name )
-{
-  Q_FOREACH ( QgsComposer *composer, mPrintComposers )
-  {
-    if ( composer->composition()->name() == name )
-    {
-      mPrintComposers.remove( composer );
-      delete composer;
-      return;
-    }
-  }
 }
 
 void QgisApp::showPinnedLabels( bool show )
@@ -10534,7 +10455,6 @@ void QgisApp::closeProject()
   closeAdditionalMapCanvases();
   closeAdditional3DMapCanvases();
 
-  deletePrintComposers();
   deleteLayoutDesigners();
 
   // ensure layout widgets are fully deleted

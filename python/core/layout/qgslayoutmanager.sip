@@ -119,12 +119,6 @@ layout will automatically be stored in the manager.
 Returns new the layout if duplication was successful.
 %End
 
-    QString generateUniqueComposerTitle() const;
-%Docstring
-Generates a unique title for a new composition, which does not
-clash with any already contained by the manager.
-%End
-
     QString generateUniqueTitle( QgsMasterLayoutInterface::Type type = QgsMasterLayoutInterface::PrintLayout ) const;
 %Docstring
 Generates a unique title for a new layout of the specified ``type``, which does not
@@ -133,19 +127,9 @@ clash with any already contained by the manager.
 
   signals:
 
-    void compositionAboutToBeAdded( const QString &name );
-%Docstring
-Emitted when a composition is about to be added to the manager
-%End
-
     void layoutAboutToBeAdded( const QString &name );
 %Docstring
 Emitted when a layout is about to be added to the manager
-%End
-
-    void compositionAdded( const QString &name );
-%Docstring
-Emitted when a composition has been added to the manager
 %End
 
     void layoutAdded( const QString &name );
@@ -153,26 +137,15 @@ Emitted when a composition has been added to the manager
 Emitted when a layout has been added to the manager
 %End
 
-    void compositionRemoved( const QString &name );
-%Docstring
-Emitted when a composition was removed from the manager
-%End
-
     void layoutRemoved( const QString &name );
 %Docstring
 Emitted when a layout was removed from the manager
-%End
-
-    void compositionAboutToBeRemoved( const QString &name );
-%Docstring
-Emitted when a composition is about to be removed from the manager
 %End
 
     void layoutAboutToBeRemoved( const QString &name );
 %Docstring
 Emitted when a layout is about to be removed from the manager
 %End
-
 
     void layoutRenamed( QgsMasterLayoutInterface *layout, const QString &newName );
 %Docstring

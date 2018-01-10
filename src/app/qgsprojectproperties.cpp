@@ -22,7 +22,6 @@
 #include "qgsapplication.h"
 #include "qgsdistancearea.h"
 #include "qgisapp.h"
-#include "qgscomposer.h"
 #include "qgscoordinatetransform.h"
 #include "qgsdatumtransformtablewidget.h"
 #include "qgslayoutmanager.h"
