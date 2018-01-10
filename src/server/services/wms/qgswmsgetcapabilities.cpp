@@ -28,6 +28,7 @@
 #include "qgslayoutitemlabel.h"
 #include "qgslayoutitemhtml.h"
 #include "qgslayoutframe.h"
+#include "qgslayoutpagecollection.h"
 
 #include "qgslayertreenode.h"
 #include "qgslayertreegroup.h"
@@ -638,23 +639,35 @@ namespace QgsWms
       if ( restrictedComposers.contains( layout->name() ) )
         continue;
 
+      // Check that we have at least one page
+      if ( layout->pageCollection()->pageCount() < 1 )
+        continue;
+
+      // Get width and height from first page of the collection
+      QgsLayoutSize layoutSize( layout->pageCollection()->page( 0 )->sizeWithUnits() );
+      QgsLayoutMeasurement width( layout->convertFromLayoutUnits( layoutSize.width(), QgsUnitTypes::LayoutUnit::LayoutMillimeters ) );
+      QgsLayoutMeasurement height( layout->convertFromLayoutUnits( layoutSize.height(), QgsUnitTypes::LayoutUnit::LayoutMillimeters ) );
+
       QDomElement composerTemplateElem = doc.createElement( QStringLiteral( "ComposerTemplate" ) );
       composerTemplateElem.setAttribute( QStringLiteral( "name" ), layout->name() );
 
-      //get paper width and hight in mm from composition
-      composerTemplateElem.setAttribute( QStringLiteral( "width" ), layout->width() );
-      composerTemplateElem.setAttribute( QStringLiteral( "height" ), layout->height() );
+      //get paper width and height in mm from composition
+      composerTemplateElem.setAttribute( QStringLiteral( "width" ), width.length() );
+      composerTemplateElem.setAttribute( QStringLiteral( "height" ), height.length() );
 
       //add available composer maps and their size in mm
       QList<QgsLayoutItemMap *> composerMapList;
       layout->layoutItems<QgsLayoutItemMap>( composerMapList );
       QList<QgsLayoutItemMap *>::const_iterator cmIt = composerMapList.constBegin();
+      // Add map id
+      int mapId = 0;
       for ( ; cmIt != composerMapList.constEnd(); ++cmIt )
       {
         const QgsLayoutItemMap *composerMap = *cmIt;
 
         QDomElement composerMapElem = doc.createElement( QStringLiteral( "ComposerMap" ) );
-        composerMapElem.setAttribute( QStringLiteral( "name" ), QStringLiteral( "map%1" ).arg( composerMap->id() ) );
+        composerMapElem.setAttribute( QStringLiteral( "name" ), QStringLiteral( "map%1" ).arg( mapId ) );
+        mapId++;
         composerMapElem.setAttribute( QStringLiteral( "width" ), composerMap->rect().width() );
         composerMapElem.setAttribute( QStringLiteral( "height" ), composerMap->rect().height() );
         composerTemplateElem.appendChild( composerMapElem );
