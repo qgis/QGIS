@@ -6,8 +6,7 @@
     <message>
         <source>&lt;html&gt;&lt;body&gt;&lt;h2&gt;Algorithm description&lt;/h2&gt;
 </source>
-        <translation>&lt;html&gt;&lt;body&gt;&lt;h2&gt;Algorithmenbeschreibung&lt;/h2&gt;
-</translation>
+        <translation>&lt;html&gt;&lt;body&gt;&lt;h2&gt;Algorithmenbeschreibung&lt;/h2&gt;</translation>
     </message>
     <message>
         <source>OTB execution console output</source>
@@ -4250,6 +4249,30 @@ Objektgeometriefehler: Eine oder mehrere Ausgabeobjekte mit ungültiger Geometri
     <message>
         <source>A-</source>
         <translation>A-</translation>
+    </message>
+    <message>
+        <source>Case sensitive</source>
+        <translation>Groß-/Kleinschreibung beachten</translation>
+    </message>
+    <message>
+        <source>Whole word</source>
+        <translation>Ganzes Wort</translation>
+    </message>
+    <message>
+        <source>Replace</source>
+        <translation>Ersetzen</translation>
+    </message>
+    <message>
+        <source>Find what:</source>
+        <translation>Zu suchender Text:</translation>
+    </message>
+    <message>
+        <source>Replace with:</source>
+        <translation>Ersetzen durch:</translation>
+    </message>
+    <message>
+        <source>Find</source>
+        <translation>Suchen</translation>
     </message>
 </context>
 <context>
@@ -31912,11 +31935,11 @@ und aktuelle Datei ist [%3]</translation>
     </message>
     <message>
         <source>Date &amp; time</source>
-        <translation>Datum &amp; Zeit</translation>
+        <translation type="obsolete">Datum &amp; Zeit</translation>
     </message>
     <message>
         <source>Custom format</source>
-        <translation>Benutzerformat</translation>
+        <translation type="obsolete">Benutzerformat</translation>
     </message>
     <message>
         <source>Default</source>
@@ -31945,6 +31968,14 @@ und aktuelle Datei ist [%3]</translation>
     <message>
         <source>Widget display</source>
         <translation>Bedienelementanzeige</translation>
+    </message>
+    <message>
+        <source>Date time</source>
+        <translation>Datum mit Zeit</translation>
+    </message>
+    <message>
+        <source>ISO date time</source>
+        <translation>ISO-Datum mit Zeit</translation>
     </message>
 </context>
 <context>
