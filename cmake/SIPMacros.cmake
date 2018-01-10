@@ -50,13 +50,10 @@ MACRO(GENERATE_SIP_PYTHON_MODULE_CODE MODULE_NAME MODULE_SIP CPP_FILES)
   GET_FILENAME_COMPONENT(_module_path ${MODULE_SIP} PATH)
   GET_FILENAME_COMPONENT(_abs_module_sip ${MODULE_SIP} ABSOLUTE)
 
-  IF(${SIP_VERSION_STR} VERSION_GREATER 4.19.6)
-    SET(DEFAULTDOCSTRINGSIGNATURE "%DefaultDocstringSignature \"prepended\"")
-  ENDIF(${SIP_VERSION_STR} VERSION_GREATER 4.19.6)
+  FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${_module_path})    # Output goes in this dir.
+
   SET(_configured_module_sip ${CMAKE_CURRENT_BINARY_DIR}/${_module_path}/${_module_path}.sip)
   CONFIGURE_FILE(${_abs_module_sip}.in ${_configured_module_sip})
-
-  FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${_module_path})    # Output goes in this dir.
 
   SET(_sip_includes)
   FOREACH (_inc ${SIP_INCLUDES})
@@ -105,13 +102,14 @@ MACRO(GENERATE_SIP_PYTHON_MODULE_CODE MODULE_NAME MODULE_SIP CPP_FILES)
     ADD_DEFINITIONS( /bigobj )
   ENDIF(MSVC)
 
-  SET(SIPCMD ${SIP_BINARY_PATH} ${_sip_tags} -w -e ${_sip_x} ${SIP_EXTRA_OPTIONS} -j ${SIP_CONCAT_PARTS} -c ${CMAKE_CURRENT_BINARY_DIR}/${_module_path} ${_sip_includes} ${_configured_module_sip})
+  SET(SIPCMD ${SIP_BINARY_PATH} ${_sip_tags} -w -e ${_sip_x} ${SIP_EXTRA_OPTIONS} -j ${SIP_CONCAT_PARTS} -c ${CMAKE_CURRENT_BINARY_DIR}/${_module_path} -I ${CMAKE_CURRENT_SOURCE_DIR}/${_module_path} ${_sip_includes} ${_configured_module_sip})
   ADD_CUSTOM_COMMAND(
     OUTPUT ${_sip_output_files}
     COMMAND ${CMAKE_COMMAND} -E echo ${message}
     COMMAND ${CMAKE_COMMAND} -E touch ${_sip_output_files}
     COMMAND ${SIPCMD}
-    DEPENDS ${_configured_module_sip} ${SIP_EXTRA_FILES_DEPEND}
+    MAIN_DEPENDENCY ${_configured_module_sip}
+    DEPENDS ${SIP_EXTRA_FILES_DEPEND}
     VERBATIM
   )
 
