@@ -1,6 +1,10 @@
 %Module(name=qgis._gui,
         keyword_arguments="All")
 
+%If (SIP_4_20 - )
+%DefaultDocstringSignature "prepended"
+%End
+
 %Feature HAVE_QSCI_SIP
 
 %Import core/core.sip
