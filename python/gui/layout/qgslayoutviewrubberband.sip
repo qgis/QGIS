@@ -10,7 +10,7 @@
 
 
 
-class QgsLayoutViewRubberBand
+class QgsLayoutViewRubberBand : QObject
 {
 %Docstring
 QgsLayoutViewRubberBand is an abstract base class for temporary rubber band items
@@ -109,6 +109,16 @@ Sets the ``pen`` used for drawing the rubber band.
 .. seealso:: :py:func:`pen`
 
 .. seealso:: :py:func:`setBrush`
+%End
+
+  signals:
+
+    void sizeChanged( const QString &size );
+%Docstring
+Emitted when the size of the rubber band is changed. The ``size``
+argument gives a translated string describing the new rubber band size,
+with a format which differs per subclass (e.g. rectangles may describe
+a size using width and height, while circles may describe a size by radius).
 %End
 
   protected:

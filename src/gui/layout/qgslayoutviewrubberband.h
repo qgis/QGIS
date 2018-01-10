@@ -22,6 +22,7 @@
 #include "qgis_sip.h"
 #include <QBrush>
 #include <QPen>
+#include <QObject>
 
 class QgsLayoutView;
 class QGraphicsRectItem;
@@ -35,8 +36,10 @@ class QgsLayout;
  * in various shapes, for use within QgsLayoutView widgets.
  * \since QGIS 3.0
  */
-class GUI_EXPORT QgsLayoutViewRubberBand
+class GUI_EXPORT QgsLayoutViewRubberBand : public QObject
 {
+
+    Q_OBJECT
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
@@ -119,6 +122,16 @@ class GUI_EXPORT QgsLayoutViewRubberBand
      * \see setBrush()
      */
     void setPen( const QPen &pen );
+
+  signals:
+
+    /**
+     * Emitted when the size of the rubber band is changed. The \a size
+     * argument gives a translated string describing the new rubber band size,
+     * with a format which differs per subclass (e.g. rectangles may describe
+     * a size using width and height, while circles may describe a size by radius).
+     */
+    void sizeChanged( const QString &size );
 
   protected:
 
