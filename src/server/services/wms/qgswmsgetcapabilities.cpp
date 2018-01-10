@@ -23,11 +23,11 @@
 #include "qgsserverprojectutils.h"
 
 #include "qgslayoutmanager.h"
-#include "qgscomposition.h"
-#include "qgscomposermap.h"
-#include "qgscomposerlabel.h"
-#include "qgscomposerhtml.h"
-#include "qgscomposerframe.h"
+#include "qgsprintlayout.h"
+#include "qgslayoutitemmap.h"
+#include "qgslayoutitemlabel.h"
+#include "qgslayoutitemhtml.h"
+#include "qgslayoutframe.h"
 
 #include "qgslayertreenode.h"
 #include "qgslayertreegroup.h"
@@ -624,33 +624,34 @@ namespace QgsWms
 
   QDomElement getComposerTemplatesElement( QDomDocument &doc, const QgsProject *project )
   {
-    QList<QgsComposition *> projectComposers = project->layoutManager()->compositions();
+    QList< QgsPrintLayout * > projectComposers = project->layoutManager()->printLayouts();
     if ( projectComposers.size() == 0 )
       return QDomElement();
 
     QStringList restrictedComposers = QgsServerProjectUtils::wmsRestrictedComposers( *project );
 
     QDomElement composerTemplatesElem = doc.createElement( QStringLiteral( "ComposerTemplates" ) );
-    QList<QgsComposition *>::const_iterator cIt = projectComposers.constBegin();
+    QList<QgsPrintLayout *>::const_iterator cIt = projectComposers.constBegin();
     for ( ; cIt != projectComposers.constEnd(); ++cIt )
     {
-      QgsComposition *composer = *cIt;
-      if ( restrictedComposers.contains( composer->name() ) )
+      QgsPrintLayout *layout = *cIt;
+      if ( restrictedComposers.contains( layout->name() ) )
         continue;
 
       QDomElement composerTemplateElem = doc.createElement( QStringLiteral( "ComposerTemplate" ) );
-      composerTemplateElem.setAttribute( QStringLiteral( "name" ), composer->name() );
+      composerTemplateElem.setAttribute( QStringLiteral( "name" ), layout->name() );
 
       //get paper width and hight in mm from composition
-      composerTemplateElem.setAttribute( QStringLiteral( "width" ), composer->paperWidth() );
-      composerTemplateElem.setAttribute( QStringLiteral( "height" ), composer->paperHeight() );
+      composerTemplateElem.setAttribute( QStringLiteral( "width" ), layout->width() );
+      composerTemplateElem.setAttribute( QStringLiteral( "height" ), layout->height() );
 
       //add available composer maps and their size in mm
-      QList<const QgsComposerMap *> composerMapList = composer->composerMapItems();
-      QList<const QgsComposerMap *>::const_iterator cmIt = composerMapList.constBegin();
+      QList<QgsLayoutItemMap *> composerMapList;
+      layout->layoutItems<QgsLayoutItemMap>( composerMapList );
+      QList<QgsLayoutItemMap *>::const_iterator cmIt = composerMapList.constBegin();
       for ( ; cmIt != composerMapList.constEnd(); ++cmIt )
       {
-        const QgsComposerMap *composerMap = *cmIt;
+        const QgsLayoutItemMap *composerMap = *cmIt;
 
         QDomElement composerMapElem = doc.createElement( QStringLiteral( "ComposerMap" ) );
         composerMapElem.setAttribute( QStringLiteral( "name" ), QStringLiteral( "map%1" ).arg( composerMap->id() ) );
@@ -660,12 +661,12 @@ namespace QgsWms
       }
 
       //add available composer labels
-      QList<QgsComposerLabel *> composerLabelList;
-      composer->composerItems( composerLabelList );
-      QList<QgsComposerLabel *>::const_iterator clIt = composerLabelList.constBegin();
+      QList<QgsLayoutItemLabel *> composerLabelList;
+      layout->layoutItems<QgsLayoutItemLabel>( composerLabelList );
+      QList<QgsLayoutItemLabel *>::const_iterator clIt = composerLabelList.constBegin();
       for ( ; clIt != composerLabelList.constEnd(); ++clIt )
       {
-        QgsComposerLabel *composerLabel = *clIt;
+        QgsLayoutItemLabel *composerLabel = *clIt;
         QString id = composerLabel->id();
         if ( id.isEmpty() )
           continue;
@@ -676,12 +677,12 @@ namespace QgsWms
       }
 
       //add available composer HTML
-      QList<QgsComposerHtml *> composerHtmlList;
-      composer->composerItems( composerHtmlList );
-      QList<QgsComposerHtml *>::const_iterator chIt = composerHtmlList.constBegin();
+      QList<QgsLayoutItemHtml *> composerHtmlList;
+      layout->layoutObjects<QgsLayoutItemHtml>( composerHtmlList );
+      QList<QgsLayoutItemHtml *>::const_iterator chIt = composerHtmlList.constBegin();
       for ( ; chIt != composerHtmlList.constEnd(); ++chIt )
       {
-        QgsComposerHtml *composerHtml = *chIt;
+        QgsLayoutItemHtml *composerHtml = *chIt;
         if ( composerHtml->frameCount() == 0 )
           continue;
 
