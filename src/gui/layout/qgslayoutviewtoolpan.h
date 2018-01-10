@@ -46,6 +46,8 @@ class GUI_EXPORT QgsLayoutViewToolPan : public QgsLayoutViewTool
 
     bool mIsPanning = false;
     QPoint mLastMousePos;
+    //! Start position for mouse press
+    QPoint mMousePressStartPos;
 
 };
 
