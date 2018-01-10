@@ -395,7 +395,7 @@ void QgsBookmarks::exportToXml()
         QString value = idx.data( Qt::DisplayRole ).toString();
         QString header = headerList.at( j );
         // If it's the EPSG code, convert it to internal srid
-        if ( header == QStringLiteral( "sr_id" ) )
+        if ( header == "sr_id" )
         {
           QgsCoordinateReferenceSystem crs = QgsCRSCache::instance()->crsByOgcWmsCrs( value );
           if ( crs.isValid() )
@@ -524,9 +524,9 @@ bool QgsProjectBookmarksTableModel::insertRows( int row, int count, const QModel
   Q_UNUSED( parent );
   Q_UNUSED( row );
   // append
-  int oldCount = QgsProject::instance()->readNumEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/count" ) );
+  int oldCount = QgsProject::instance()->readNumEntry( "Bookmarks", "/count" );
   beginInsertRows( parent, oldCount, oldCount + count );
-  bool result = QgsProject::instance()->writeEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/count" ), oldCount + count );
+  bool result = QgsProject::instance()->writeEntry( "Bookmarks", "/count", oldCount + count );
   endInsertRows();
   return result;
 }
