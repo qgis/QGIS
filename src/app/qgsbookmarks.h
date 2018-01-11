@@ -105,6 +105,10 @@ class QgsMergedBookmarksTableModel: public QAbstractTableModel
     bool projectAvailable() const;
     void moveBookmark( QAbstractTableModel& modelFrom, QAbstractTableModel& modelTo, int row );
 
+  signals:
+
+    void selectItem( const QModelIndex &index );
+
   private slots:
     void allLayoutChanged()
     {
@@ -155,10 +159,12 @@ class APP_EXPORT QgsBookmarks : public QgsDockWidget, private Ui::QgsBookmarksBa
 
     void lstBookmarks_doubleClicked( const QModelIndex & );
 
+    void scrollToIndex( const QModelIndex & );
+
   private:
     QSqlTableModel *mQgisModel;
     QgsProjectBookmarksTableModel *mProjectModel;
-    QgsMergedBookmarksTableModel *mModel;
+    QgsMergedBookmarksTableModel *mMergedModel;
     QgsBookmarksProxyModel *mProxyModel;
 
     void saveWindowLocation();
