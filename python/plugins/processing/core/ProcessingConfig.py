@@ -81,7 +81,7 @@ class ProcessingConfig:
         ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),
             ProcessingConfig.KEEP_DIALOG_OPEN,
-            ProcessingConfig.tr('Keep dialog open after running an algorithm'), False))
+            ProcessingConfig.tr('Keep dialog open after running an algorithm'), True))
         ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),
             ProcessingConfig.USE_FILENAME_AS_LAYER_NAME,
