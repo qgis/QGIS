@@ -391,6 +391,26 @@ class TestQgsServerWMSGetPrint(QgsServerTestBase):
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetPrint_LabelRemoved")
 
+    def test_wms_getprint_two_maps(self):
+        """Test map0 and map1 apply to the correct maps"""
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(self.projectPath),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetPrint",
+            "TEMPLATE": "layoutA4twoMaps",
+            "FORMAT": "png",
+            "map0:EXTENT": "11863620.20301065221428871,-5848927.97872077487409115,19375243.89574331790208817,138857.97204941",
+            "map0:LAYERS": "Country",
+            "map1:EXTENT": "-33626185.498,-13032965.185,33978427.737,16020257.031",
+            "map1:LAYERS": "Country,Hello",
+            "CRS": "EPSG:3857",
+            "IDTEXTBOX": "",
+        }.items())])
+
+        r, h = self._result(self._execute_request(qs))
+        self._img_diff_error(r, h, "WMS_GetPrint_TwoMaps")
+
 
 if __name__ == '__main__':
     unittest.main()
