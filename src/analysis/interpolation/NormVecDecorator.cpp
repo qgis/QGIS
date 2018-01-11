@@ -59,7 +59,7 @@ int NormVecDecorator::addPoint( const QgsPoint &p )
       estimateFirstDerivative( pointno );
       //update also the neighbours of the new point
       const QList<int> list = mTIN->getSurroundingTriangles( pointno );
-      auto it = list.constBegin();//iterate through the list and analize it
+      auto it = list.constBegin();//iterate through the list and analyze it
       while ( it != list.constEnd() )
       {
         int point;
@@ -393,7 +393,7 @@ bool NormVecDecorator::estimateFirstDerivative( int pointno )
     return false;
   }
 
-  auto it = vlist.constBegin();//iterate through the list and analize it
+  auto it = vlist.constBegin();//iterate through the list and analyze it
   while ( it != vlist.constEnd() )
   {
     int p1, p2, p3, flag;

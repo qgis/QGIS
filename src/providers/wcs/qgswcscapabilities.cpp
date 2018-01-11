@@ -224,8 +224,8 @@ bool QgsWcsCapabilities::retrieveServerCapabilities()
   }
   else
   {
-    // We prefer 1.0 because 1.1 has many issues, each server implements it in defferent
-    // way with various particularities
+    // We prefer 1.0 because 1.1 has many issues, each server implements it in
+    // a different way with various particularities.
     // It may happen that server supports 1.1.0 but gives error for 1.1
     versions << QStringLiteral( "1.0.0" ) << QStringLiteral( "1.1.0,1.0.0" );
   }

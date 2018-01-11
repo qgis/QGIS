@@ -32,7 +32,7 @@ class QgsPointXY;
 
 /**
  * \ingroup core
- * A class to query the labeling structure at a given point (small wraper around pal RTree class)
+ * A class to query the labeling structure at a given point (small wrapper around pal RTree class)
  */
 class CORE_EXPORT QgsLabelSearchTree
 {
