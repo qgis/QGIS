@@ -50,6 +50,7 @@
 #include "qgslayouttablecolumn.h"
 #include "qgslayoutmultiframe.h"
 #include "qgslayoutframe.h"
+#include "qgslayoutguidecollection.h"
 
 QgsPropertiesDefinition QgsCompositionConverter::sPropertyDefinitions;
 
@@ -122,6 +123,9 @@ std::unique_ptr< QgsPrintLayout > QgsCompositionConverter::createLayoutFromCompo
 
   std::unique_ptr< QgsPrintLayout > layout = qgis::make_unique< QgsPrintLayout >( project );
 
+  // Guides
+  layout->guides().setVisible( composerElement.attribute( QStringLiteral( "guidesVisible" ), QStringLiteral( "1" ) ).toInt() != 0 );
+
   // Create pages
   int pages = composerElement.attribute( QStringLiteral( "numPages" ) ).toInt( );
   float paperHeight = composerElement.attribute( QStringLiteral( "paperHeight" ) ).toDouble( );
@@ -152,6 +156,20 @@ std::unique_ptr< QgsPrintLayout > QgsCompositionConverter::createLayoutFromCompo
     QgsLayoutItemPage *page = QgsLayoutItemPage::create( layout.get() );
     page->setPageSize( pageSize );
     layout->pageCollection()->addPage( page );
+    //custom snap lines
+    QDomNodeList snapLineNodes = composerElement.elementsByTagName( QStringLiteral( "SnapLine" ) );
+    for ( int i = 0; i < snapLineNodes.size(); ++i )
+    {
+      QDomElement snapLineElem = snapLineNodes.at( i ).toElement();
+      double x1 = snapLineElem.attribute( QStringLiteral( "x1" ) ).toDouble();
+      double y1 = snapLineElem.attribute( QStringLiteral( "y1" ) ).toDouble();
+      double x2 = snapLineElem.attribute( QStringLiteral( "x2" ) ).toDouble();
+      // Not necessary: double y2 = snapLineElem.attribute( QStringLiteral( "y2" ) ).toDouble();
+      Qt::Orientation orientation( x1 == x2 ? Qt::Orientation::Vertical : Qt::Orientation::Horizontal );
+      QgsLayoutMeasurement position( x1 == x2 ? x1 : y1 );
+      std::unique_ptr< QgsLayoutGuide > guide = qgis::make_unique< QgsLayoutGuide >( orientation, position, page );
+      layout->guides().addGuide( guide.release() );
+    }
   }
   addItemsFromCompositionXml( layout.get(), composerElement );
 

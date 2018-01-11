@@ -535,6 +535,9 @@ void TestQgsCompositionConverter::convertComposerTemplate()
   QCOMPARE( layout->pageCollection()->pageCount(), 2 );
   QCOMPARE( layout->name(), QStringLiteral( "composer title" ) );
 
+  // Check guides
+  QCOMPARE( layout->guides().rowCount( QModelIndex() ), 8 );
+
 }
 
 void TestQgsCompositionConverter::importComposerTemplate()

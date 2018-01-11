@@ -65,7 +65,7 @@
       </filegroup>
     </legendlayer>
   </legend>
-  <Composer title="composer title" visible="0">
+  <Composer title="composer title" visible="1">
     <Composition resizeToContentsMarginLeft="0" snapping="0" showPages="1" guidesVisible="1" resizeToContentsMarginTop="0" worldFileMap="" alignmentSnap="1" printResolution="305" paperWidth="297" gridVisible="0" snapGridOffsetX="0" smartGuides="1" snapGridOffsetY="0" resizeToContentsMarginRight="0" snapTolerancePixels="5" printAsRaster="0" generateWorldFile="0" paperHeight="210" numPages="2" snapGridResolution="10" resizeToContentsMarginBottom="0">
       <symbol alpha="1" clip_to_extent="1" type="fill" name="">
         <layer pass="0" class="SimpleFill" locked="0">
@@ -82,6 +82,10 @@
           <prop k="style" v="solid"/>
         </layer>
       </symbol>
+      <SnapLine y1="172.551" x1="0" y2="172.551" x2="297"/>
+      <SnapLine y1="0" x1="210.139" y2="430" x2="210.139"/>
+      <SnapLine y1="79.6326" x1="0" y2="79.6326" x2="297"/>
+      <SnapLine y1="0" x1="139.499" y2="430" x2="139.499"/>
       <ComposerArrow arrowHeadFillColor="213,158,7,255" arrowHeadOutlineColor="134,50,50,255" startMarkerFile="" boundsBehaviourVersion="24" arrowHeadWidth="12" endMarkerFile="" outlineWidth="3" markerMode="0">
         <lineStyle>
           <symbol alpha="1" clip_to_extent="1" type="line" name="">
@@ -436,7 +440,7 @@
         </ComposerItem>
       </ComposerPicture>
       <ComposerMap followPreset="false" mapRotation="45" keepLayerSet="false" followPresetName="" id="0" previewMode="Cache" drawCanvasItems="true">
-        <Extent ymin="-3.49239519835850132" xmin="-120.73406158097824914" ymax="75.27752318418143318" xmax="-80.1556187778516005"/>
+        <Extent ymin="-3.49239519835850132" xmin="-120.73406158097826335" ymax="75.27752318418149002" xmax="-80.15561877785158629"/>
         <LayerSet/>
         <Grid/>
         <ComposerMapGrid rightAnnotationDirection="1" gridFramePenColor="0,0,0,255" show="1" bottomAnnotationPosition="1" annotationPrecision="2" showAnnotation="1" topFrameDivisions="0" uuid="{f1c52bff-827e-4c0b-9d4a-8b6e005501bd}" leftAnnotationDirection="0" topAnnotationPosition="1" rightAnnotationDisplay="2" offsetX="0" offsetY="0" rightFrameDivisions="0" gridStyle="0" annotationFontColor="209,35,35,255" intervalX="10" gridFrameSideFlags="15" intervalY="10" bottomAnnotationDirection="0" leftAnnotationDisplay="1" leftFrameDivisions="0" frameFillColor1="255,255,255,255" annotationExpression="" frameFillColor2="0,0,0,255" crossLength="3" gridFramePenThickness="0.29999999999999999" bottomAnnotationDisplay="0" unit="0" topAnnotationDisplay="3" leftAnnotationPosition="1" blendMode="0" gridFrameStyle="0" rightAnnotationPosition="0" gridFrameWidth="2" name="Grid 1" annotationFormat="0" bottomFrameDivisions="0" topAnnotationDirection="0" frameAnnotationDistance="4">
@@ -505,13 +509,30 @@
           <annotationFontProperties description="MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0" style=""/>
         </ComposerMapGrid>
         <AtlasMap scalingMode="2" atlasDriven="0" margin="0.10000000000000001"/>
-        <ComposerItem pagey="6" page="1" id="my map" lastValidViewScaleFactor="3.67048" positionMode="0" positionLock="false" x="24.1399" y="6" visibility="1" zValue="1" background="true" transparency="22" frameJoinStyle="round" blendMode="0" width="102" outlineWidth="0.6" excludeFromExports="0" uuid="{5c70116e-a26b-4e05-ac30-466c4f893dbb}" height="198" itemRotation="0" frame="true" pagex="24.1399">
+        <ComposerItem pagey="6" page="1" id="my map" lastValidViewScaleFactor="12.3442" positionMode="0" positionLock="false" x="24.1399" y="6" visibility="1" zValue="1" background="true" transparency="22" frameJoinStyle="round" blendMode="0" width="102" outlineWidth="0.6" excludeFromExports="0" uuid="{5c70116e-a26b-4e05-ac30-466c4f893dbb}" height="198" itemRotation="0" frame="true" pagex="24.1399">
           <FrameColor alpha="255" red="255" blue="11" green="190"/>
           <BackgroundColor alpha="255" red="224" blue="174" green="174"/>
           <dataDefinedMapScale expr="24126145*1.1" field="" active="true" useExpr="true"/>
           <customproperties/>
         </ComposerItem>
       </ComposerMap>
+      <ComposerHtml maxBreakDistance="10" contentMode="1" resizeMode="0" url="" useSmartBreaks="true" evaluateExpressions="true" html="&lt;div style=&quot;height:2000px; background-color:green&quot;>aaaaA&lt;/div>&#x9;" stylesheetEnabled="false" stylesheet="">
+        <ComposerFrame sectionWidth="105.864" sectionHeight="47.6852" hideBackgroundIfEmpty="0" hidePageIfEmpty="0" sectionX="0" sectionY="0">
+          <ComposerItem pagey="156.07" page="2" id="" lastValidViewScaleFactor="-1" positionMode="0" positionLock="false" x="111.28" y="376.07" visibility="1" zValue="16" background="false" transparency="0" frameJoinStyle="miter" blendMode="0" width="105.864" outlineWidth="0.3" excludeFromExports="0" uuid="{5da38571-9fb3-49fb-a353-88ee823eccca}" height="47.891" itemRotation="0" frame="false" pagex="111.28">
+            <FrameColor alpha="255" red="0" blue="0" green="0"/>
+            <BackgroundColor alpha="255" red="255" blue="255" green="255"/>
+            <customproperties/>
+          </ComposerItem>
+        </ComposerFrame>
+        <ComposerFrame sectionWidth="45.8745" sectionHeight="47.6852" hideBackgroundIfEmpty="0" hidePageIfEmpty="0" sectionX="0" sectionY="47.6852">
+          <ComposerItem pagey="156.07" page="2" id="" lastValidViewScaleFactor="-1" positionMode="0" positionLock="false" x="223.827" y="376.07" visibility="1" zValue="17" background="false" transparency="0" frameJoinStyle="miter" blendMode="0" width="45.8745" outlineWidth="0.3" excludeFromExports="0" uuid="{2564ea7a-f647-419c-9d0a-6909904f12fa}" height="47.891" itemRotation="0" frame="false" pagex="223.827">
+            <FrameColor alpha="255" red="0" blue="0" green="0"/>
+            <BackgroundColor alpha="255" red="255" blue="255" green="255"/>
+            <customproperties/>
+          </ComposerItem>
+        </ComposerFrame>
+        <customproperties/>
+      </ComposerHtml>
       <ComposerAttributeTableV2 vectorLayerName="points" source="0" showGrid="1" maxFeatures="30" resizeMode="0" filterFeatures="false" featureFilter="" emptyTableMode="1" wrapString="" wrapBehaviour="0" headerMode="1" backgroundColor="240,33,33,255" showEmptyRows="0" emptyTableMessage="" showOnlyVisibleFeatures="1" vectorLayer="points20171212162310546" vectorLayerSource="/home/ale/dev/QGIS/tests/testdata/points.shp" composerMap="0" headerHAlignment="2" contentFontColor="115,115,115,255" headerFontColor="194,143,12,255" cellMargin="1.2" filterToAtlasIntersection="0" relationId="" gridStrokeWidth="0.7" gridColor="245,57,220,255" showUniqueRowsOnly="1" vectorLayerProvider="ogr">
         <headerFontProperties description="MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0" style=""/>
         <contentFontProperties description="MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0" style=""/>
@@ -562,23 +583,6 @@
         </ComposerFrame>
         <customproperties/>
       </ComposerAttributeTableV2>
-      <ComposerHtml maxBreakDistance="10" contentMode="1" resizeMode="0" url="" useSmartBreaks="true" evaluateExpressions="true" html="&lt;div style=&quot;height:2000px; background-color:green&quot;>aaaaA&lt;/div>&#x9;" stylesheetEnabled="false" stylesheet="">
-        <ComposerFrame sectionWidth="105.864" sectionHeight="47.6852" hideBackgroundIfEmpty="0" hidePageIfEmpty="0" sectionX="0" sectionY="0">
-          <ComposerItem pagey="156.07" page="2" id="" lastValidViewScaleFactor="-1" positionMode="0" positionLock="false" x="111.28" y="376.07" visibility="1" zValue="16" background="false" transparency="0" frameJoinStyle="miter" blendMode="0" width="105.864" outlineWidth="0.3" excludeFromExports="0" uuid="{5da38571-9fb3-49fb-a353-88ee823eccca}" height="47.891" itemRotation="0" frame="false" pagex="111.28">
-            <FrameColor alpha="255" red="0" blue="0" green="0"/>
-            <BackgroundColor alpha="255" red="255" blue="255" green="255"/>
-            <customproperties/>
-          </ComposerItem>
-        </ComposerFrame>
-        <ComposerFrame sectionWidth="45.8745" sectionHeight="47.6852" hideBackgroundIfEmpty="0" hidePageIfEmpty="0" sectionX="0" sectionY="47.6852">
-          <ComposerItem pagey="156.07" page="2" id="" lastValidViewScaleFactor="-1" positionMode="0" positionLock="false" x="223.827" y="376.07" visibility="1" zValue="17" background="false" transparency="0" frameJoinStyle="miter" blendMode="0" width="45.8745" outlineWidth="0.3" excludeFromExports="0" uuid="{2564ea7a-f647-419c-9d0a-6909904f12fa}" height="47.891" itemRotation="0" frame="false" pagex="223.827">
-            <FrameColor alpha="255" red="0" blue="0" green="0"/>
-            <BackgroundColor alpha="255" red="255" blue="255" green="255"/>
-            <customproperties/>
-          </ComposerItem>
-        </ComposerFrame>
-        <customproperties/>
-      </ComposerHtml>
       <customproperties/>
     </Composition>
   </Composer>
@@ -602,7 +606,7 @@
       <ComposerLabel valign="32" marginX="1" marginY="1" labelText="Atlas feature id [% @atlas_featureid %]" htmlState="0" halign="1">
         <LabelFont description="Ubuntu,20,-1,5,63,1,0,0,0,0" style="Medium Italic"/>
         <FontColor red="0" blue="0" green="0"/>
-        <ComposerItem pagey="7.03957" page="1" id="" lastValidViewScaleFactor="-1" positionMode="0" positionLock="false" x="20.1588" y="7.03957" visibility="1" zValue="3" background="false" transparency="0" frameJoinStyle="miter" blendMode="0" width="171.19" outlineWidth="0.3" excludeFromExports="0" uuid="{d06c40d5-844d-4042-a77c-7796a0ad452a}" height="17.9189" itemRotation="0" frame="false" pagex="20.1588">
+        <ComposerItem pagey="7.03957" page="1" id="" lastValidViewScaleFactor="-1" positionMode="0" positionLock="false" x="20.1588" y="7.03957" visibility="1" zValue="2" background="false" transparency="0" frameJoinStyle="miter" blendMode="0" width="171.19" outlineWidth="0.3" excludeFromExports="0" uuid="{d06c40d5-844d-4042-a77c-7796a0ad452a}" height="17.9189" itemRotation="0" frame="false" pagex="20.1588">
           <FrameColor alpha="255" red="0" blue="0" green="0"/>
           <BackgroundColor alpha="255" red="255" blue="255" green="255"/>
           <customproperties/>
@@ -612,8 +616,56 @@
         <Extent ymin="0.73546975069833564" xmin="-138.93849579032786323" ymax="70.49857261875700942" xmax="-63.77437850667756436"/>
         <LayerSet/>
         <Grid/>
+        <ComposerMapGrid rightAnnotationDirection="0" gridFramePenColor="0,0,0,255" show="0" bottomAnnotationPosition="1" annotationPrecision="3" showAnnotation="0" topFrameDivisions="0" uuid="{127e0f82-47ae-4710-bc5b-fa444eb4ecda}" leftAnnotationDirection="0" topAnnotationPosition="1" rightAnnotationDisplay="0" offsetX="0" offsetY="0" rightFrameDivisions="0" gridStyle="0" annotationFontColor="0,0,0,255" intervalX="0" gridFrameSideFlags="15" intervalY="0" bottomAnnotationDirection="0" leftAnnotationDisplay="0" leftFrameDivisions="0" frameFillColor1="255,255,255,255" annotationExpression="" frameFillColor2="0,0,0,255" crossLength="3" gridFramePenThickness="0.5" bottomAnnotationDisplay="0" unit="0" topAnnotationDisplay="0" leftAnnotationPosition="1" blendMode="0" gridFrameStyle="0" rightAnnotationPosition="1" gridFrameWidth="2" name="Grid 1" annotationFormat="0" bottomFrameDivisions="0" topAnnotationDirection="0" frameAnnotationDistance="1">
+          <lineStyle>
+            <symbol alpha="1" clip_to_extent="1" type="line" name="">
+              <layer pass="0" class="SimpleLine" locked="0">
+                <prop k="capstyle" v="square"/>
+                <prop k="customdash" v="5;2"/>
+                <prop k="customdash_map_unit_scale" v="0,0,0,0,0,0"/>
+                <prop k="customdash_unit" v="MM"/>
+                <prop k="draw_inside_polygon" v="0"/>
+                <prop k="joinstyle" v="bevel"/>
+                <prop k="line_color" v="0,0,0,255"/>
+                <prop k="line_style" v="solid"/>
+                <prop k="line_width" v="0"/>
+                <prop k="line_width_unit" v="MM"/>
+                <prop k="offset" v="0"/>
+                <prop k="offset_map_unit_scale" v="0,0,0,0,0,0"/>
+                <prop k="offset_unit" v="MM"/>
+                <prop k="use_custom_dash" v="0"/>
+                <prop k="width_map_unit_scale" v="0,0,0,0,0,0"/>
+              </layer>
+            </symbol>
+          </lineStyle>
+          <markerStyle>
+            <symbol alpha="1" clip_to_extent="1" type="marker" name="">
+              <layer pass="0" class="SimpleMarker" locked="0">
+                <prop k="angle" v="0"/>
+                <prop k="color" v="0,0,0,255"/>
+                <prop k="horizontal_anchor_point" v="1"/>
+                <prop k="joinstyle" v="bevel"/>
+                <prop k="name" v="circle"/>
+                <prop k="offset" v="0,0"/>
+                <prop k="offset_map_unit_scale" v="0,0,0,0,0,0"/>
+                <prop k="offset_unit" v="MM"/>
+                <prop k="outline_color" v="0,0,0,255"/>
+                <prop k="outline_style" v="solid"/>
+                <prop k="outline_width" v="0"/>
+                <prop k="outline_width_map_unit_scale" v="0,0,0,0,0,0"/>
+                <prop k="outline_width_unit" v="MM"/>
+                <prop k="scale_method" v="diameter"/>
+                <prop k="size" v="2"/>
+                <prop k="size_map_unit_scale" v="0,0,0,0,0,0"/>
+                <prop k="size_unit" v="MM"/>
+                <prop k="vertical_anchor_point" v="1"/>
+              </layer>
+            </symbol>
+          </markerStyle>
+          <annotationFontProperties description="Ubuntu,10,-1,5,50,0,0,0,0,0" style=""/>
+        </ComposerMapGrid>
         <AtlasMap scalingMode="2" atlasDriven="1" margin="0.10000000000000001"/>
-        <ComposerItem pagey="29.7597" page="1" id="" lastValidViewScaleFactor="6.25038" positionMode="0" positionLock="false" x="18.7198" y="29.7597" visibility="1" zValue="2" background="true" transparency="0" frameJoinStyle="miter" blendMode="0" width="167" outlineWidth="0.3" excludeFromExports="0" uuid="{8a0c5aee-5f83-4751-8278-590c6d477f6d}" height="155" itemRotation="0" frame="false" pagex="18.7198">
+        <ComposerItem pagey="29.7597" page="1" id="" lastValidViewScaleFactor="6.25038" positionMode="0" positionLock="false" x="18.7198" y="29.7597" visibility="1" zValue="1" background="true" transparency="0" frameJoinStyle="miter" blendMode="0" width="167" outlineWidth="0.3" excludeFromExports="0" uuid="{8a0c5aee-5f83-4751-8278-590c6d477f6d}" height="155" itemRotation="0" frame="false" pagex="18.7198">
           <FrameColor alpha="255" red="0" blue="0" green="0"/>
           <BackgroundColor alpha="255" red="255" blue="255" green="255"/>
           <customproperties/>
