@@ -2146,6 +2146,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     QHash< QgsPrintLayout *, QgsMapLayerAction * > mAtlasFeatureActions;
 
+    std::unique_ptr<QgsMapLayerAction> mDuplicateFeatureAction;
+    std::unique_ptr<QgsMapLayerAction> mDuplicateFeatureDigitizeAction;
+
     int mProjOpen = 0;
 
     bool gestureEvent( QGestureEvent *event );
