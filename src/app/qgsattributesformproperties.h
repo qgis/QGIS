@@ -159,7 +159,7 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
       RelationConfig();
       RelationConfig( QgsVectorLayer *layer, const QString &relationId );
 
-      QString mCardinality;
+      QVariant mCardinality;
 
       operator QVariant();
     };

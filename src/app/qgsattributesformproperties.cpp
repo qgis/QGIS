@@ -707,7 +707,7 @@ void QgsAttributesFormProperties::apply()
     RelationConfig relCfg = configForRelation( itemData.name() );
 
     QVariantMap cfg;
-    cfg[QStringLiteral( "nm-rel" )] = relCfg.mCardinality;
+    cfg[QStringLiteral( "nm-rel" )] = relCfg.mCardinality.toString();
 
     editFormConfig.setWidgetConfig( itemData.name(), cfg );
   }
@@ -749,7 +749,7 @@ QgsAttributesFormProperties::FieldConfig::operator QVariant()
  * RelationConfig implementation
  */
 QgsAttributesFormProperties::RelationConfig::RelationConfig()
-  : mCardinality( QString() )
+  : mCardinality( QVariant() )
 {
 }
 
@@ -757,7 +757,7 @@ QgsAttributesFormProperties::RelationConfig::RelationConfig( QgsVectorLayer *lay
 {
   const QVariant nmrelcfg = layer->editFormConfig().widgetConfig( relationId ).value( QStringLiteral( "nm-rel" ) );
 
-  mCardinality = nmrelcfg.toString();
+  mCardinality = nmrelcfg;
 }
 
 QgsAttributesFormProperties::RelationConfig::operator QVariant()
