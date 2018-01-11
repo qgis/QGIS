@@ -134,7 +134,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
      */
     void zoomContent( const double factor, const QPointF point, const ZoomMode mode = QgsComposerItem::Zoom ) override;
 
-    //! Sets new scene rectangle bounds and recalculates hight and extent
+    //! Sets new scene rectangle bounds and recalculates height and extent
     void setSceneRect( const QRectF &rectangle ) override;
 
     /**
