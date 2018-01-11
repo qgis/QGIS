@@ -358,6 +358,8 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   }
 
   QString title = QString( tr( "Layer Properties - %1" ) ).arg( mLayer->name() );
+  if ( !mLayer->styleManager()->isDefault( mLayer->styleManager()->currentStyle() ) )
+    title += QStringLiteral( " (%1)" ).arg( mLayer->styleManager()->currentStyle() );
   restoreOptionsBaseUi( title );
 
   mLayersDependenciesTreeGroup.reset( QgsProject::instance()->layerTreeRoot()->clone() );

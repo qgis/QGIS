@@ -224,6 +224,11 @@ bool QgsMapLayerStyleManager::restoreOverrideStyle()
   return true;
 }
 
+bool QgsMapLayerStyleManager::isDefault( const QString &styleName ) const
+{
+  return styleName == defaultStyleName();
+}
+
 
 // -----
 

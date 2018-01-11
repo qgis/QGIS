@@ -195,6 +195,13 @@ Each call must be paired with restoreOverrideStyle()
 Restore the original store after a call to setOverrideStyle()
 %End
 
+    bool isDefault( const QString &styleName ) const;
+%Docstring
+Returns true if this is the default style
+
+.. versionadded:: 3.0
+%End
+
   signals:
     void styleAdded( const QString &name );
 %Docstring
