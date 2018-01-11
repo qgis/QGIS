@@ -84,14 +84,14 @@
      </property>
     </widget>
    </item>
-   <item row="5" column="1" colspan="2">
+   <item row="4" column="1" colspan="2">
     <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
      <property name="focusPolicy">
       <enum>Qt::StrongFocus</enum>
      </property>
     </widget>
    </item>
-   <item row="4" column="1" colspan="2">
+   <item row="5" column="1" colspan="2">
     <widget class="QComboBox" name="mVisibilityPresets"/>
    </item>
    <item row="15" column="0" colspan="3">
@@ -107,7 +107,7 @@
    <item row="0" column="1">
     <widget class="QLineEdit" name="mFileLineEdit"/>
    </item>
-   <item row="5" column="0">
+   <item row="4" column="0">
     <widget class="QLabel" name="label_3">
      <property name="text">
       <string>CRS</string>
@@ -152,7 +152,7 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="0">
+   <item row="5" column="0">
     <widget class="QLabel" name="mSymbologyScaleLabel_2">
      <property name="text">
       <string>Map themes</string>
@@ -231,13 +231,17 @@
   <tabstop>mFileLineEdit</tabstop>
   <tabstop>mFileSelectionButton</tabstop>
   <tabstop>mSymbologyModeComboBox</tabstop>
-  <tabstop>mEncoding</tabstop>
   <tabstop>mScaleWidget</tabstop>
-  <tabstop>mVisibilityPresets</tabstop>
+  <tabstop>mEncoding</tabstop>
   <tabstop>mCrsSelector</tabstop>
+  <tabstop>mVisibilityPresets</tabstop>
   <tabstop>mTreeView</tabstop>
   <tabstop>mSelectAllButton</tabstop>
   <tabstop>mDeselectAllButton</tabstop>
+  <tabstop>mLayerTitleAsName</tabstop>
+  <tabstop>mMTextCheckBox</tabstop>
+  <tabstop>mMapExtentCheckBox</tabstop>
+  <tabstop>mForce2d</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>
