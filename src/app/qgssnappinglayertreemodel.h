@@ -72,6 +72,7 @@ class APP_EXPORT QgsSnappingLayerTreeModel : public QSortFilterProxyModel
 
     QgsLayerTreeModel *layerTreeModel() const;
     void setLayerTreeModel( QgsLayerTreeModel *layerTreeModel );
+    void resetLayerTreeModel() { reset(); }
 
     QgsVectorLayer *vectorLayer( const QModelIndex &idx ) const;
 

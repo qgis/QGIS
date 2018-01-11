@@ -1042,7 +1042,6 @@ bool QgsProject::readProjectFile( const QString &filename )
   }
 
   mSnappingConfig.readProject( *doc );
-  emit snappingConfigChanged( mSnappingConfig );
 
   //add variables defined in project file
   QStringList variableNames = readListEntry( QStringLiteral( "Variables" ), QStringLiteral( "/variableNames" ) );
@@ -1066,6 +1065,7 @@ bool QgsProject::readProjectFile( const QString &filename )
 
   // read the project: used by map canvas and legend
   emit readProject( *doc );
+  emit snappingConfigChanged( mSnappingConfig );
 
   // if all went well, we're allegedly in pristine state
   if ( clean )

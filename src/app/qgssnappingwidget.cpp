@@ -219,9 +219,7 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
     connect( model, &QgsSnappingLayerTreeModel::rowsRemoved, this, &QgsSnappingWidget::onSnappingTreeLayersChanged );
     connect( project, &QgsProject::readProject, this, [ = ]
     {
-      if ( model->layerTreeModel() )
-        delete model->layerTreeModel();
-      model->setLayerTreeModel( new QgsLayerTreeModel( mProject->layerTreeRoot(), model ) );
+      model->resetLayerTreeModel();
     } );
 
     // model->setFlags( 0 );
