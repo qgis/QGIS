@@ -276,7 +276,7 @@ class TestAuthManager(unittest.TestCase):
 
         # Check the we've got a likely PNG image
         self.assertTrue(self.completed_was_called)
-        self.assertTrue(os.path.getsize(destination) > 700000, "Image size: %s" % os.path.getsize(destination))  # > 1MB
+        self.assertTrue(os.path.getsize(destination) > 2000, "Image size: %s" % os.path.getsize(destination))  # > 1MB
         with open(destination, 'rb') as f:
             self.assertTrue(b'PNG' in f.read())  # is a PNG
 
