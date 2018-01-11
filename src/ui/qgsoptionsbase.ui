@@ -205,10 +205,10 @@
          </item>
          <item>
           <property name="text">
-           <string>Composer</string>
+           <string>Layouts</string>
           </property>
           <property name="toolTip">
-           <string>Composer</string>
+           <string>Print layouts</string>
           </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
@@ -320,7 +320,7 @@
        <item>
         <widget class="QStackedWidget" name="mOptionsStackedWidget">
          <property name="currentIndex">
-          <number>0</number>
+          <number>9</number>
          </property>
          <widget class="QWidget" name="mOptionsPageGeneral">
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -349,8 +349,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>855</width>
-                <height>827</height>
+                <width>866</width>
+                <height>822</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -1044,8 +1044,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>839</width>
-                <height>1042</height>
+                <width>846</width>
+                <height>1128</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_22">
@@ -1580,8 +1580,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>855</width>
-                <height>827</height>
+                <width>866</width>
+                <height>822</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_15">
@@ -1747,8 +1747,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>855</width>
-                <height>827</height>
+                <width>866</width>
+                <height>822</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -2115,8 +2115,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>839</width>
-                <height>982</height>
+                <width>846</width>
+                <height>1043</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_22">
@@ -2866,8 +2866,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>855</width>
-                <height>827</height>
+                <width>866</width>
+                <height>822</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -3123,8 +3123,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>855</width>
-                <height>827</height>
+                <width>866</width>
+                <height>822</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_30">
@@ -3567,8 +3567,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>855</width>
-                <height>827</height>
+                <width>866</width>
+                <height>822</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_46">
@@ -3718,8 +3718,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>855</width>
-                <height>827</height>
+                <width>846</width>
+                <height>855</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_31">
@@ -4313,8 +4313,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>855</width>
-                <height>827</height>
+                <width>866</width>
+                <height>822</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_39">
@@ -4324,7 +4324,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                   <bool>true</bool>
                  </property>
                  <property name="title">
-                  <string>Composition defaults</string>
+                  <string>Layout defaults</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_8">
                   <item row="1" column="0">
@@ -4472,7 +4472,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <item>
                 <widget class="QgsCollapsibleGroupBox" name="groupBox_27">
                  <property name="title">
-                  <string>Composer Paths</string>
+                  <string>Layout Paths</string>
                  </property>
                  <layout class="QGridLayout" name="_7">
                   <item row="0" column="0">
@@ -4582,8 +4582,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>855</width>
-                <height>827</height>
+                <width>866</width>
+                <height>822</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_6">
@@ -4751,8 +4751,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>855</width>
-                <height>827</height>
+                <width>617</width>
+                <height>786</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_33">

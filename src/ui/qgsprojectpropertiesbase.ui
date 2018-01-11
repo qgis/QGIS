@@ -1901,9 +1901,9 @@
                    </widget>
                   </item>
                   <item row="2" column="0">
-                   <widget class="QgsCollapsibleGroupBox" name="mWMSComposerGroupBox">
+                   <widget class="QgsCollapsibleGroupBox" name="mWMSPrintLayoutGroupBox">
                     <property name="title">
-                     <string>Exclude composers</string>
+                     <string>Exclude layouts</string>
                     </property>
                     <property name="checkable">
                      <bool>true</bool>
@@ -1919,12 +1919,12 @@
                     </property>
                     <layout class="QGridLayout" name="gridLayout_10">
                      <item row="0" column="0" colspan="3">
-                      <widget class="QListWidget" name="mComposerListWidget"/>
+                      <widget class="QListWidget" name="mPrintLayoutListWidget"/>
                      </item>
                      <item row="1" column="0">
-                      <widget class="QToolButton" name="mAddWMSComposerButton">
+                      <widget class="QToolButton" name="mAddWMSPrintLayoutButton">
                        <property name="toolTip">
-                        <string>Add composer to exclude</string>
+                        <string>Add layout to exclude</string>
                        </property>
                        <property name="text">
                         <string/>
@@ -1936,9 +1936,9 @@
                       </widget>
                      </item>
                      <item row="1" column="1">
-                      <widget class="QToolButton" name="mRemoveWMSComposerButton">
+                      <widget class="QToolButton" name="mRemoveWMSPrintLayoutButton">
                        <property name="toolTip">
-                        <string>Remove selected composer</string>
+                        <string>Remove selected layout</string>
                        </property>
                        <property name="text">
                         <string/>
@@ -2783,10 +2783,10 @@
   <tabstop>pbnWMSRemoveSRS</tabstop>
   <tabstop>pbnWMSSetUsedSRS</tabstop>
   <tabstop>mWMSList</tabstop>
-  <tabstop>mWMSComposerGroupBox</tabstop>
-  <tabstop>mAddWMSComposerButton</tabstop>
-  <tabstop>mRemoveWMSComposerButton</tabstop>
-  <tabstop>mComposerListWidget</tabstop>
+  <tabstop>mWMSPrintLayoutGroupBox</tabstop>
+  <tabstop>mAddWMSPrintLayoutButton</tabstop>
+  <tabstop>mRemoveWMSPrintLayoutButton</tabstop>
+  <tabstop>mPrintLayoutListWidget</tabstop>
   <tabstop>mLayerRestrictionsGroupBox</tabstop>
   <tabstop>mAddLayerRestrictionButton</tabstop>
   <tabstop>mRemoveLayerRestrictionButton</tabstop>
