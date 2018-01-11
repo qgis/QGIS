@@ -171,7 +171,7 @@ void QgsUnitSelectionWidget::setUnits( const QgsUnitTypes::RenderUnitList &units
   }
   if ( units.contains( QgsUnitTypes::RenderMetersInMapUnits ) )
   {
-    mUnitCombo->addItem( tr( "Meters (at Map Scale)" ), QgsUnitTypes::RenderMetersInMapUnits );
+    mUnitCombo->addItem( tr( "Meters at Scale" ), QgsUnitTypes::RenderMetersInMapUnits );
   }
   if ( units.contains( QgsUnitTypes::RenderMapUnits ) )
   {
