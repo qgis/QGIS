@@ -13,15 +13,15 @@ void QgsAttributeRelationEdit::setCardinalityCombo( const QString &cardinalityCo
   coCardinality->addItem( cardinalityComboItem, auserData );
 }
 
-void QgsAttributeRelationEdit::setCardinality( const QString &cardinality )
+void QgsAttributeRelationEdit::setCardinality( const QVariant &auserData )
 {
-  int idx = coCardinality->findText( cardinality );
+  int idx = coCardinality->findData( auserData );
 
   if ( idx != -1 )
     coCardinality->setCurrentIndex( idx );
 }
 
-QString QgsAttributeRelationEdit::cardinality()
+QVariant  QgsAttributeRelationEdit::cardinality()
 {
-  return coCardinality->currentText();
+  return coCardinality->currentData();
 }
