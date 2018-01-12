@@ -69,13 +69,13 @@ start_app()
 
 def createEmptyLayer():
     layer = QgsVectorLayer("Point", "addfeat", "memory")
-    assert layer.pendingFeatureCount() == 0
+    assert layer.featureCount() == 0
     return layer
 
 
 def createEmptyLayerWithFields():
     layer = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer", "addfeat", "memory")
-    assert layer.pendingFeatureCount() == 0
+    assert layer.featureCount() == 0
     return layer
 
 
@@ -87,7 +87,7 @@ def createLayerWithOnePoint():
     f.setAttributes(["test", 123])
     f.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(100, 200)))
     assert pr.addFeatures([f])
-    assert layer.pendingFeatureCount() == 1
+    assert layer.featureCount() == 1
     return layer
 
 
@@ -102,7 +102,7 @@ def createLayerWithTwoPoints():
     f2.setAttributes(["test2", 457])
     f2.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(100, 200)))
     assert pr.addFeatures([f, f2])
-    assert layer.pendingFeatureCount() == 2
+    assert layer.featureCount() == 2
     return layer
 
 
@@ -148,7 +148,7 @@ def createJoinLayer():
     f4.setAttributes(["a", 458, 19])
     f4.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(2, 2)))
     assert pr.addFeatures([f1, f2, f3, f4])
-    assert joinLayer.pendingFeatureCount() == 4
+    assert joinLayer.featureCount() == 4
     return joinLayer
 
 
@@ -246,7 +246,7 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         feat.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(1, 2)))
 
         def checkAfter():
-            self.assertEqual(layer.pendingFeatureCount(), 1)
+            self.assertEqual(layer.featureCount(), 1)
 
             # check select+nextFeature
             f = next(layer.getFeatures())
@@ -257,7 +257,7 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
             self.assertEqual(f2.geometry().asPoint(), QgsPointXY(1, 2))
 
         def checkBefore():
-            self.assertEqual(layer.pendingFeatureCount(), 0)
+            self.assertEqual(layer.featureCount(), 0)
 
             # check select+nextFeature
             with self.assertRaises(StopIteration):
@@ -302,7 +302,7 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         feat2.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(11, 12)))
 
         def checkAfter():
-            self.assertEqual(layer.pendingFeatureCount(), 2)
+            self.assertEqual(layer.featureCount(), 2)
 
             # check select+nextFeature
             it = layer.getFeatures()
@@ -318,7 +318,7 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
             self.assertEqual(f2_1.geometry().asPoint(), QgsPointXY(11, 12))
 
         def checkBefore():
-            self.assertEqual(layer.pendingFeatureCount(), 0)
+            self.assertEqual(layer.featureCount(), 0)
 
             # check select+nextFeature
             with self.assertRaises(StopIteration):
@@ -362,7 +362,7 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         fid = 1
 
         def checkAfter():
-            self.assertEqual(layer.pendingFeatureCount(), 0)
+            self.assertEqual(layer.featureCount(), 0)
 
             # check select+nextFeature
             with self.assertRaises(StopIteration):
@@ -373,7 +373,7 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
                 next(layer.getFeatures(QgsFeatureRequest(fid)))
 
         def checkBefore():
-            self.assertEqual(layer.pendingFeatureCount(), 1)
+            self.assertEqual(layer.featureCount(), 1)
 
             # check select+nextFeature
             fi = layer.getFeatures()
@@ -420,14 +420,14 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         feat.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(1, 2)))
 
         def checkBefore():
-            self.assertEqual(layer.pendingFeatureCount(), 0)
+            self.assertEqual(layer.featureCount(), 0)
 
             # check select+nextFeature
             with self.assertRaises(StopIteration):
                 next(layer.getFeatures())
 
         def checkAfter1():
-            self.assertEqual(layer.pendingFeatureCount(), 1)
+            self.assertEqual(layer.featureCount(), 1)
 
         def checkAfter2():
             checkBefore()  # should be the same state: no features

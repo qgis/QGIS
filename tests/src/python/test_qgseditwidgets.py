@@ -38,7 +38,7 @@ class TestQgsTextEditWidget(unittest.TestCase):
         f.setAttributes(["test", 123])
         f.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(100, 200)))
         self.assertTrue(pr.addFeatures([f]))
-        self.assertEqual(self.layer.pendingFeatureCount(), 1)
+        self.assertEqual(self.layer.featureCount(), 1)
         return self.layer
 
     def doAttributeTest(self, idx, expected):

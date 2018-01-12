@@ -1309,19 +1309,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     inline QgsAttributeList attributeList() const { return mFields.allAttributesList(); }
 
     /**
-     * Returns list of attributes making up the primary key
-     * Alias for pkAttributeList()
+     * Returns the list of attributes which make up the layer's primary keys.
      */
-    inline QgsAttributeList pendingPkAttributesList() const { return pkAttributeList(); }
-
-    //! Returns list of attributes making up the primary key
     QgsAttributeList pkAttributeList() const;
-
-    /**
-     * Returns feature count including changes which have not yet been committed
-     * Alias for featureCount()
-     */
-    inline long pendingFeatureCount() const { return featureCount(); }
 
     /**
      * Returns feature count including changes which have not yet been committed
