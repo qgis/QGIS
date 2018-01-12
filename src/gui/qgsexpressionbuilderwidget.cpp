@@ -349,7 +349,8 @@ void QgsExpressionBuilderWidget::fillFieldValues( const QString &fieldName, int 
     return;
 
   QStringList strValues;
-  QSet<QVariant> values = mLayer->uniqueValues( fieldIndex, countLimit );
+  QList<QVariant> values = mLayer->uniqueValues( fieldIndex, countLimit ).toList();
+  qSort( values );
   Q_FOREACH ( const QVariant &value, values )
   {
     QString strValue;
