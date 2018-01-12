@@ -822,7 +822,7 @@ bool QgsWcsCapabilities::parseDescribeCoverageDom10( QByteArray const &xml, QgsW
     QList<int> high = parseInts( domElementText( gridElement, QStringLiteral( "limits.GridEnvelope.high" ) ) );
     if ( low.size() == 2 && high.size() == 2 )
     {
-      // low/high are indexes in grid -> size is hight - low + 1
+      // low/high are indexes in grid -> size is height - low + 1
       double width = high[0] - low[0] + 1;
       double height = high[1] - low[1] + 1;
       if ( width > 0 && height > 0 )
