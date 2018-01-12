@@ -1663,7 +1663,7 @@ namespace QgsWms
 
         //attributes
         QDomElement attributesElem = doc.createElement( QStringLiteral( "Attributes" ) );
-        const QgsFields &layerFields = vLayer->pendingFields();
+        const QgsFields layerFields = vLayer->fields();
         for ( int idx = 0; idx < layerFields.count(); ++idx )
         {
           QgsField field = layerFields.at( idx );

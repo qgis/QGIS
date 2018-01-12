@@ -554,7 +554,7 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         newF.setAttributes(["hello", 42])
 
         def checkAfter():
-            self.assertEqual(len(layer.pendingFields()), 2)
+            self.assertEqual(len(layer.fields()), 2)
             # check feature
             fi = layer.getFeatures()
             f = next(fi)
@@ -688,7 +688,7 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         newF.setAttributes(["hello", 42])
 
         def checkAfter():
-            self.assertEqual(len(layer.pendingFields()), 2)
+            self.assertEqual(len(layer.fields()), 2)
             # check feature
             f = next(layer.getFeatures())
             self.assertEqual(f.geometry().asPoint(), QgsPointXY(2, 2))
@@ -781,7 +781,7 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
 
         def checkBefore():
             # check fields
-            flds = layer.pendingFields()
+            flds = layer.fields()
             self.assertEqual(len(flds), 2)
             self.assertEqual(flds[0].name(), "fldtxt")
             self.assertEqual(flds[1].name(), "fldint")
@@ -795,7 +795,7 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
 
         def checkAfter():
             # check fields
-            flds = layer.pendingFields()
+            flds = layer.fields()
             self.assertEqual(len(flds), 3)
             self.assertEqual(flds[0].name(), "fldtxt")
             self.assertEqual(flds[1].name(), "fldint")
@@ -850,13 +850,13 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         fld1 = QgsField("fld1", QVariant.Int, "integer")
 
         def checkBefore():
-            self.assertEqual(len(layer.pendingFields()), 2)
+            self.assertEqual(len(layer.fields()), 2)
             # check feature
             with self.assertRaises(StopIteration):
                 next(layer.getFeatures())
 
         def checkAfter():
-            self.assertEqual(len(layer.pendingFields()), 3)
+            self.assertEqual(len(layer.fields()), 3)
             # check feature
             f = next(layer.getFeatures())
             attrs = f.attributes()
@@ -912,7 +912,7 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         self.assertFalse(layer.deleteAttribute(0))
 
         def checkBefore():
-            flds = layer.pendingFields()
+            flds = layer.fields()
             self.assertEqual(len(flds), 3)
             self.assertEqual(flds[0].name(), "fldtxt")
             self.assertEqual(flds[1].name(), "fldint")
@@ -932,7 +932,7 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         self.assertTrue(layer.deleteAttribute(0))
 
         def checkAfterOneDelete():
-            flds = layer.pendingFields()
+            flds = layer.fields()
             # for fld in flds: print "FLD", fld.name()
             self.assertEqual(len(flds), 2)
             self.assertEqual(flds[0].name(), "fldint")
@@ -952,7 +952,7 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
 
         def checkAfterTwoDeletes():
             self.assertEqual(layer.pendingAllAttributesList(), [0])
-            flds = layer.pendingFields()
+            flds = layer.fields()
             # for fld in flds: print "FLD", fld.name()
             self.assertEqual(len(flds), 1)
             self.assertEqual(flds[0].name(), "flddouble")
@@ -984,7 +984,7 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         fld1 = QgsField("fld1", QVariant.Int, "integer")
 
         def checkAfter():  # layer should be unchanged
-            flds = layer.pendingFields()
+            flds = layer.fields()
             self.assertEqual(len(flds), 2)
             self.assertEqual(flds[0].name(), "fldtxt")
             self.assertEqual(flds[1].name(), "fldint")
@@ -1030,13 +1030,13 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         newF.setAttributes(["hello", 42])
 
         def checkBefore():
-            self.assertEqual(len(layer.pendingFields()), 2)
+            self.assertEqual(len(layer.fields()), 2)
             # check feature
             with self.assertRaises(StopIteration):
                 next(layer.getFeatures())
 
         def checkAfter1():
-            self.assertEqual(len(layer.pendingFields()), 2)
+            self.assertEqual(len(layer.fields()), 2)
             # check feature
             f = next(layer.getFeatures())
             attrs = f.attributes()
@@ -1045,7 +1045,7 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
             self.assertEqual(attrs[1], 42)
 
         def checkAfter2():
-            self.assertEqual(len(layer.pendingFields()), 1)
+            self.assertEqual(len(layer.fields()), 1)
             # check feature
             f = next(layer.getFeatures())
             attrs = f.attributes()
@@ -1310,7 +1310,7 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
     def test_fields(self):
         layer = createLayerWithOnePoint()
 
-        flds = layer.pendingFields()
+        flds = layer.fields()
         self.assertEqual(flds.indexFromName("fldint"), 1)
         self.assertEqual(flds.indexFromName("fldXXX"), -1)
 
@@ -1379,7 +1379,7 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
 
         layer.addJoin(join2)
 
-        flds = layer.pendingFields()
+        flds = layer.fields()
         self.assertEqual(len(flds), 6)
         self.assertEqual(flds[2].name(), "joinlayer_x")
         self.assertEqual(flds[3].name(), "joinlayer_z")
@@ -1688,7 +1688,7 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
     def test_ExpressionField(self):
         layer = createLayerWithOnePoint()
 
-        cnt = layer.pendingFields().count()
+        cnt = layer.fields().count()
 
         idx = layer.addExpressionField('5', QgsField('test', QVariant.LongLong))
 
@@ -1708,7 +1708,7 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
 
         layer.removeExpressionField(idx)
 
-        self.assertEqual(layer.pendingFields().count(), cnt)
+        self.assertEqual(layer.fields().count(), cnt)
 
         # expression field which references itself
         idx = layer.addExpressionField('sum(test2)', QgsField('test2', QVariant.LongLong))

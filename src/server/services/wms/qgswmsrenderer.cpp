@@ -266,7 +266,7 @@ namespace QgsWms
   {
     std::unique_ptr< QgsFeatureRenderer > r( vl->renderer()->clone() );
     bool moreSymbolsPerFeature = r->capabilities() & QgsFeatureRenderer::MoreSymbolsPerFeature;
-    r->startRender( context, vl->pendingFields() );
+    r->startRender( context, vl->fields() );
     QgsFeature f;
     QgsFeatureRequest request( context.extent() );
     request.setFlags( QgsFeatureRequest::ExactIntersect );
@@ -821,7 +821,7 @@ namespace QgsWms
       int layerAttribute = -1;
       if ( layerAttributes.size() > layerIdx )
       {
-        layerAttribute = vlayer->pendingFields().indexFromName( layerAttributes.at( layerIdx ) );
+        layerAttribute = vlayer->fields().indexFromName( layerAttributes.at( layerIdx ) );
       }
 
       dxfLayers.append( qMakePair( vlayer, layerAttribute ) );
@@ -1401,7 +1401,7 @@ namespace QgsWms
     QgsAttributes featureAttributes;
     int featureCounter = 0;
     layer->updateFields();
-    const QgsFields &fields = layer->pendingFields();
+    const QgsFields fields = layer->fields();
     bool addWktGeometry = ( QgsServerProjectUtils::wmsFeatureInfoAddWktGeometry( *mProject ) && mWmsParameters.withGeometry() );
     bool segmentizeWktGeometry = QgsServerProjectUtils::wmsFeatureInfoSegmentizeWktGeometry( *mProject );
     const QSet<QString> &excludedAttributes = layer->excludeAttributesWms();
@@ -1429,19 +1429,19 @@ namespace QgsWms
 
     QStringList attributes;
     QgsField field;
-    Q_FOREACH ( field, layer->pendingFields().toList() )
+    Q_FOREACH ( field, layer->fields().toList() )
     {
       attributes.append( field.name() );
     }
     attributes = mAccessControl->layerAttributes( layer, attributes );
-    fReq.setSubsetOfAttributes( attributes, layer->pendingFields() );
+    fReq.setSubsetOfAttributes( attributes, layer->fields() );
 #endif
 
     QgsFeatureIterator fit = layer->getFeatures( fReq );
     std::unique_ptr< QgsFeatureRenderer > r2( layer->renderer() ? layer->renderer()->clone() : nullptr );
     if ( r2 )
     {
-      r2->startRender( renderContext, layer->pendingFields() );
+      r2->startRender( renderContext, layer->fields() );
     }
 
     bool featureBBoxInitialized = false;
@@ -2432,7 +2432,7 @@ namespace QgsWms
       }
 
       // create feature with label if necessary
-      QgsFeature fet( layer->pendingFields() );
+      QgsFeature fet( layer->fields() );
       if ( ! param.mLabel.isEmpty() )
       {
         fet.setAttribute( 0, param.mLabel );

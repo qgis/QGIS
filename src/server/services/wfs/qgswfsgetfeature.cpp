@@ -247,7 +247,7 @@ namespace QgsWfs
         withGeom = false;
         QStringList::const_iterator plstIt;
         QList<int> idxList;
-        QgsFields fields = vlayer->pendingFields();
+        QgsFields fields = vlayer->fields();
         QString fieldName;
         for ( plstIt = propertyList.begin(); plstIt != propertyList.end(); ++plstIt )
         {
@@ -294,11 +294,11 @@ namespace QgsWfs
         QStringList attributes = QStringList();
         Q_FOREACH ( int idx, attrIndexes )
         {
-          attributes.append( vlayer->pendingFields().field( idx ).name() );
+          attributes.append( vlayer->fields().field( idx ).name() );
         }
         featureRequest.setSubsetOfAttributes(
           accessControl->layerAttributes( vlayer, attributes ),
-          vlayer->pendingFields() );
+          vlayer->fields() );
       }
 
       if ( onlyOneLayer )

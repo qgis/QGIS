@@ -67,7 +67,7 @@ class OfflineTestBase(object):
         layer = self._getLayer('test_point')
         assert layer.startEditing()
         for id, name, geom in TEST_FEATURES:
-            f = QgsFeature(layer.pendingFields())
+            f = QgsFeature(layer.fields())
             f['id'] = id
             f['name'] = name
             f.setGeometry(QgsGeometry.fromPointXY(geom))
@@ -271,7 +271,7 @@ class OfflineTestBase(object):
         self.assertTrue(offline_layer.startEditing())
         features = []
         for id, name, geom in TEST_FEATURES_INSERT:
-            f = QgsFeature(offline_layer.pendingFields())
+            f = QgsFeature(offline_layer.fields())
             f['id'] = id
             f['name'] = name
             f.setGeometry(QgsGeometry.fromPointXY(geom))

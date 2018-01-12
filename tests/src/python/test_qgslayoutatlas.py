@@ -570,7 +570,7 @@ class TestQgsLayoutAtlas(unittest.TestCase):
         # rotate the map and test that the bounding rectangle
         # is smaller than the bounds without rotation.
         polygonLayer = QgsVectorLayer('Polygon', 'test_polygon', 'memory')
-        poly = QgsFeature(polygonLayer.pendingFields())
+        poly = QgsFeature(polygonLayer.fields())
         points = [(10, 15), (15, 10), (45, 40), (40, 45)]
         poly.setGeometry(QgsGeometry.fromPolygonXY([[QgsPointXY(x[0], x[1]) for x in points]]))
         polygonLayer.dataProvider().addFeatures([poly])

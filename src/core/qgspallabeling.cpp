@@ -1186,7 +1186,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature &f, QgsRenderContext &cont
     return;
   }
 
-//  mCurFields = &layer->pendingFields();
+//  mCurFields = &layer->fields();
 
   // store data defined-derived values for later adding to label feature for use during rendering
   dataDefinedValues.clear();

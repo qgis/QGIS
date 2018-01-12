@@ -1303,15 +1303,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     inline QgsFields fields() const override { return mFields; }
 
     /**
-     * Returns the list of fields of this layer.
-     * This also includes fields which have not yet been saved to the provider.
-     * Alias for fields()
-     *
-     * \returns A list of fields
-     */
-    inline QgsFields pendingFields() const { return mFields; }
-
-    /**
      * Returns list of attribute indexes. i.e. a list from 0 ... fieldCount()
      * Alias for attributeList()
      */

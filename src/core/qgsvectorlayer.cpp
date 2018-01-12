@@ -4093,7 +4093,7 @@ QString QgsVectorLayer::htmlMetadata() const
     myMetadata += QLatin1String( "</td></tr>\n" );
   }
 
-  const QgsFields &myFields = pendingFields();
+  const QgsFields myFields = fields();
 
   // count fields
   myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Count" ) + QStringLiteral( "</td><td>" ) + QString::number( myFields.size() ) + QStringLiteral( "</td></tr>\n" );

@@ -159,7 +159,7 @@ class QgsGlobeFeatureUtils
       osgEarth::SpatialReference *ref = osgEarth::SpatialReference::create( layer->crs().toWkt().toStdString() );
       osgEarth::Features::Feature *retFeat = new osgEarth::Features::Feature( nGeom, ref, osgEarth::Style(), feat.id() );
 
-      const QgsFields &fields = layer->pendingFields();
+      const QgsFields fields = layer->fields();
       const QgsAttributes &attrs = feat.attributes();
 
       for ( int idx = 0, numFlds = fields.size(); idx < numFlds; ++idx )
