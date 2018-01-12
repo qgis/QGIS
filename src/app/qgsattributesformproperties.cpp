@@ -749,7 +749,6 @@ QgsAttributesFormProperties::FieldConfig::operator QVariant()
  * RelationConfig implementation
  */
 QgsAttributesFormProperties::RelationConfig::RelationConfig()
-  : mCardinality( QVariant() )
 {
 }
 
