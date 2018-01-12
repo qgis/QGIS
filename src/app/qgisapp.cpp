@@ -7451,8 +7451,8 @@ void QgisApp::setupLayoutManagerConnections()
 
 void QgisApp::setupDuplicateFeaturesAction()
 {
-  mDuplicateFeatureAction.reset( new QgsMapLayerAction( QString( tr( "Duplicate feature" ) ),
-                                 this, QgsMapLayerAction::AllActions,
+  mDuplicateFeatureAction.reset( new QgsMapLayerAction( tr( "Duplicate feature" ),
+                                 nullptr, QgsMapLayerAction::SingleFeature,
                                  QgsApplication::getThemeIcon( QStringLiteral( "/mActionDuplicateFeature.svg" ) ) ) );
 
   QgsGui::mapLayerActionRegistry()->addMapLayerAction( mDuplicateFeatureAction.get() );
@@ -7462,8 +7462,8 @@ void QgisApp::setupDuplicateFeaturesAction()
   }
          );
 
-  mDuplicateFeatureDigitizeAction.reset( new QgsMapLayerAction( QString( tr( "Duplicate feature and digitize" ) ),
-                                         this, QgsMapLayerAction::AllActions,
+  mDuplicateFeatureDigitizeAction.reset( new QgsMapLayerAction( tr( "Duplicate feature and digitize" ),
+                                         nullptr, QgsMapLayerAction::SingleFeature,
                                          QgsApplication::getThemeIcon( QStringLiteral( "/mActionDuplicateFeatureDigitized.svg" ) ) ) );
 
   QgsGui::mapLayerActionRegistry()->addMapLayerAction( mDuplicateFeatureDigitizeAction.get() );
