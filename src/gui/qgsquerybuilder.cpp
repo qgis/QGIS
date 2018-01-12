@@ -137,7 +137,8 @@ void QgsQueryBuilder::fillValues( int idx, int limit )
   mModelValues->clear();
 
   // determine the field type
-  QSet<QVariant> values = mLayer->uniqueValues( idx, limit );
+  QList<QVariant> values = mLayer->uniqueValues( idx, limit ).toList();
+  std::sort( values.begin(), values.end() );
 
   QString nullValue = QgsApplication::nullRepresentation();
 
@@ -159,7 +160,6 @@ void QgsQueryBuilder::fillValues( int idx, int limit )
     mModelValues->insertRow( mModelValues->rowCount(), myItem );
     QgsDebugMsg( QString( "Value is null: %1\nvalue: %2" ).arg( var.isNull() ).arg( var.isNull() ? nullValue : var.toString() ) );
   }
-  mModelValues->sort( 0 );
 }
 
 void QgsQueryBuilder::btnSampleValues_clicked()
