@@ -110,32 +110,22 @@ void QgsColorButton::showColorDialog()
   QColor newColor;
   QgsSettings settings;
 
-  if ( mAcceptLiveUpdates && settings.value( QStringLiteral( "qgis/live_color_dialogs" ), false ).toBool() )
+  // first check if we need to use the limited native dialogs
+  bool useNative = settings.value( QStringLiteral( "qgis/native_color_dialogs" ), false ).toBool();
+  if ( useNative )
   {
-    // live updating dialog - QgsColorDialog will automatically use native dialog if option is set
-    newColor = QgsColorDialog::getLiveColor(
-                 color(), this, SLOT( setValidColor( const QColor & ) ),
-                 this, mColorDialogTitle, mAllowOpacity );
+    // why would anyone want this? who knows.... maybe the limited nature of native dialogs helps ease the transition for MapInfo users?
+    newColor = QColorDialog::getColor( color(), this, mColorDialogTitle, mAllowOpacity ? QColorDialog::ShowAlphaChannel : ( QColorDialog::ColorDialogOption )0 );
   }
   else
   {
-    // not using live updating dialog - first check if we need to use the limited native dialogs
-    bool useNative = settings.value( QStringLiteral( "qgis/native_color_dialogs" ), false ).toBool();
-    if ( useNative )
-    {
-      // why would anyone want this? who knows.... maybe the limited nature of native dialogs helps ease the transition for MapInfo users?
-      newColor = QColorDialog::getColor( color(), this, mColorDialogTitle, mAllowOpacity ? QColorDialog::ShowAlphaChannel : ( QColorDialog::ColorDialogOption )0 );
-    }
-    else
-    {
-      QgsColorDialog dialog( this, nullptr, color() );
-      dialog.setTitle( mColorDialogTitle );
-      dialog.setAllowOpacity( mAllowOpacity );
+    QgsColorDialog dialog( this, nullptr, color() );
+    dialog.setTitle( mColorDialogTitle );
+    dialog.setAllowOpacity( mAllowOpacity );
 
-      if ( dialog.exec() )
-      {
-        newColor = dialog.color();
-      }
+    if ( dialog.exec() )
+    {
+      newColor = dialog.color();
     }
   }
 

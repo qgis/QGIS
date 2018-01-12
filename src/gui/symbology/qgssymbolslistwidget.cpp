@@ -108,8 +108,6 @@ QgsSymbolsListWidget::QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, 
   connect( this, &QgsSymbolsListWidget::changed, this, &QgsSymbolsListWidget::updateAssistantSymbol );
   updateAssistantSymbol();
 
-  // Live color updates are not undoable to child symbol layers
-  btnColor->setAcceptLiveUpdates( false );
   btnColor->setAllowOpacity( true );
   btnColor->setColorDialogTitle( tr( "Select Color" ) );
   btnColor->setContext( QStringLiteral( "symbology" ) );

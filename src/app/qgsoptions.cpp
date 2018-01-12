@@ -563,7 +563,6 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   cmbUITheme->setCurrentIndex( cmbUITheme->findText( theme, Qt::MatchFixedString ) );
 
   mNativeColorDialogsChkBx->setChecked( mSettings->value( QStringLiteral( "/qgis/native_color_dialogs" ), false ).toBool() );
-  mLiveColorDialogsChkBx->setChecked( mSettings->value( QStringLiteral( "/qgis/live_color_dialogs" ), false ).toBool() );
 
   //set the state of the checkboxes
   //Changed to default to true as of QGIS 1.7
@@ -1301,7 +1300,6 @@ void QgsOptions::saveOptions()
   mSettings->setValue( QStringLiteral( "/qgis/messageTimeout" ), mMessageTimeoutSpnBx->value() );
 
   mSettings->setValue( QStringLiteral( "/qgis/native_color_dialogs" ), mNativeColorDialogsChkBx->isChecked() );
-  mSettings->setValue( QStringLiteral( "/qgis/live_color_dialogs" ), mLiveColorDialogsChkBx->isChecked() );
 
   // rasters settings
   mSettings->setValue( QStringLiteral( "/Raster/defaultRedBand" ), spnRed->value() );

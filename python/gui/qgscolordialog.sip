@@ -58,25 +58,6 @@ for the color dialog. Defaults to true.
 .. versionadded:: 3.0
 %End
 
-    static QColor getLiveColor( const QColor &initialColor, QObject *updateObject, const char *updateSlot,
-                                QWidget *parent = 0,
-                                const QString &title = QString(),
-                                const bool allowOpacity = true );
-%Docstring
-Return a color selection from a color dialog, with live updating of interim selections.
-
-:param initialColor: the initial color of the selection dialog.
-:param updateObject: the receiver object of the live updating.
-:param updateSlot: the receiver object's slot for live updating (e.g. SLOT( setValidColor( const QColor& ) ) ).
-:param parent: parent widget
-:param title: the title of the dialog.
-:param allowOpacity: set to true to allow modification of color opacity value (transparency)
-
-:return: Selected color on accepted() or initialColor on rejected().
-
-.. seealso:: :py:func:`getColor`
-%End
-
     static QColor getColor( const QColor &initialColor, QWidget *parent, const QString &title = QString(),
                             const bool allowOpacity = false );
 %Docstring
