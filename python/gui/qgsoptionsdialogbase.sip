@@ -58,6 +58,9 @@ reset the style to the original state
 return the widget
 %End
 
+    virtual bool eventFilter( QObject *obj, QEvent *event );
+
+
 };
 
 

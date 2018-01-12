@@ -80,6 +80,8 @@ class GUI_EXPORT QgsSearchHighlightOptionWidget : public QObject
      */
     QWidget *widget() { return mWidget; }
 
+    bool eventFilter( QObject *obj, QEvent *event ) override;
+
   private slots:
     void widgetDestroyed();
 
@@ -89,6 +91,7 @@ class GUI_EXPORT QgsSearchHighlightOptionWidget : public QObject
     bool mValid = true;
     bool mChangedStyle = false;
     std::function < QString() > mText;
+    bool mInstalledFilter = false;
 };
 
 
