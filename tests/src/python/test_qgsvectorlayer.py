@@ -937,7 +937,7 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
             self.assertEqual(len(flds), 2)
             self.assertEqual(flds[0].name(), "fldint")
             self.assertEqual(flds[1].name(), "flddouble")
-            self.assertEqual(layer.pendingAllAttributesList(), [0, 1])
+            self.assertEqual(layer.attributeList(), [0, 1])
 
             f = next(layer.getFeatures())
             attrs = f.attributes()
@@ -951,7 +951,7 @@ class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):
         self.assertTrue(layer.deleteAttribute(0))
 
         def checkAfterTwoDeletes():
-            self.assertEqual(layer.pendingAllAttributesList(), [0])
+            self.assertEqual(layer.attributeList(), [0])
             flds = layer.fields()
             # for fld in flds: print "FLD", fld.name()
             self.assertEqual(len(flds), 1)

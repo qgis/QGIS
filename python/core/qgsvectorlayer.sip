@@ -1394,12 +1394,6 @@ This also includes fields which have not yet been saved to the provider.
 :return: A list of fields
 %End
 
-    QgsAttributeList pendingAllAttributesList() const;
-%Docstring
-Returns list of attribute indexes. i.e. a list from 0 ... fieldCount()
-Alias for attributeList()
-%End
-
     QgsAttributeList attributeList() const;
 %Docstring
 Returns list of attribute indexes. i.e. a list from 0 ... fieldCount()

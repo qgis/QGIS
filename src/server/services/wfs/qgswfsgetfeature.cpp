@@ -240,7 +240,7 @@ namespace QgsWfs
       QStringList propertyList = query.propertyList;
 
       //Using pending attributes and pending fields
-      QgsAttributeList attrIndexes = vlayer->pendingAllAttributesList();
+      QgsAttributeList attrIndexes = vlayer->attributeList();
       bool withGeom = true;
       if ( !propertyList.isEmpty() && propertyList.first() != QStringLiteral( "*" ) )
       {
