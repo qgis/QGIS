@@ -2431,6 +2431,7 @@ displayExpression instead. For the map tip use mapTipTemplate() instead.
 - addPart() now returns QgsGeometry::OperationResult enum, integer representation of returned values may have changed
 - splitParts() now returns QgsGeometry::OperationResult enum, integer representation of returned values may have changed
 - splitFeatured() now returns QgsGeometry::OperationResult enum, integer representation of returned values may have changed
+- pendingFields() was dropped. Use fields() instead.
 
 
 QgsVectorLayerEditBuffer        {#qgis_api_break_3_0_QgsVectorLayerEditBuffer}
