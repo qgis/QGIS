@@ -350,7 +350,7 @@ void QgsExpressionBuilderWidget::fillFieldValues( const QString &fieldName, int 
 
   QStringList strValues;
   QList<QVariant> values = mLayer->uniqueValues( fieldIndex, countLimit ).toList();
-  qSort( values );
+  std::sort( values.begin(), values.end() );
   Q_FOREACH ( const QVariant &value, values )
   {
     QString strValue;
