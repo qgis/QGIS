@@ -464,23 +464,55 @@ bool QgsSearchHighlightOptionWidget::searchHighlight( const QString &searchText 
     if ( !mWidget->isVisible() )
     {
       // show the widget to get initial stylesheet in case it's modified
-      mWidget->show();
+      QgsDebugMsg( QString( "installing event filter on: %1 (%2)" )
+                   .arg( mWidget->objectName() )
+                   .arg( qobject_cast<QLabel *>( mWidget ) ? qobject_cast<QLabel *>( mWidget )->text() : QString() ) );
+      mWidget->installEventFilter( this );
+      mInstalledFilter = true;
     }
-    mWidget->setStyleSheet( mWidget->styleSheet() + mStyleSheet );
-    mChangedStyle = true;
+    else
+    {
+      mWidget->setStyleSheet( mWidget->styleSheet() + mStyleSheet );
+      mChangedStyle = true;
+    }
   }
 
   return found;
 }
 
+bool QgsSearchHighlightOptionWidget::eventFilter( QObject *obj, QEvent *event )
+{
+  if ( mInstalledFilter && event->type() == QEvent::Show && obj == mWidget )
+  {
+    removeEventFilter( mWidget );
+    mInstalledFilter = false;
+    mWidget->show();
+    //QTimer::singleShot( 500, this, [ = ]
+    //{
+    mWidget->setStyleSheet( mWidget->styleSheet() + mStyleSheet );
+    mChangedStyle = true;
+    //} );
+    return true;
+  }
+  return QObject::eventFilter( obj, event );
+}
+
 void QgsSearchHighlightOptionWidget::reset()
 {
-  if ( mWidget && mValid && mChangedStyle )
+  if ( mWidget && mValid )
   {
-    QString ss = mWidget->styleSheet();
-    ss.remove( mStyleSheet );
-    mWidget->setStyleSheet( ss );
-    mChangedStyle = false;
+    if ( mChangedStyle )
+    {
+      QString ss = mWidget->styleSheet();
+      ss.remove( mStyleSheet );
+      mWidget->setStyleSheet( ss );
+      mChangedStyle = false;
+    }
+    else if ( mInstalledFilter )
+    {
+      removeEventFilter( mWidget );
+      mInstalledFilter = false;
+    }
   }
 }
 
