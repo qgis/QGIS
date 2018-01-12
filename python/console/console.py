@@ -37,15 +37,15 @@ from functools import partial
 
 import sys
 
-_console = None
-_consoleEditor = None
-_consoleAsDock = None
+_console = None         # current console widget container
+_consoleEditor = None   # console widget
+_consoleAsDock = None   # status: True=dockwidget, False=top-level window
 
 
 def show_console():
     """ called from QGIS to open the console """
-    global _console         # current console widget
-    global _consoleEditor   # actual console object
+    global _console
+    global _consoleEditor
     global _consoleAsDock
 
     s = QgsSettings()
@@ -54,13 +54,13 @@ def show_console():
     dockValue = QVariant(s.value("qgis/dockPythonConsole","true"))
     # defense against other than "true" or "false"
     if dockValue.convert(QVariant.Bool):
-      tempConsoleAsDock = dockValue.value()
+        tempConsoleAsDock = dockValue.value()
     else:
-      tempConsoleAsDock = True
+        tempConsoleAsDock = True
 
     # switch widget type
     if _consoleAsDock != tempConsoleAsDock:
-        # be sure we have actual console
+        # be sure we have the console widget
         if _consoleEditor is None:
             _consoleEditor = PythonConsoleWidget()
 
@@ -77,7 +77,7 @@ def show_console():
         else:
             newConsole = PythonConsoleW(_consoleEditor)
 
-        # delete old console window; store current console window, status
+        # delete old console window; store current console container, status
         _console = None
         _console = newConsole
         _consoleAsDock = tempConsoleAsDock
@@ -93,11 +93,10 @@ def show_console():
             _console.setVisible(not _console.isVisible())
         else:
             _console.show()
-            _console.raise_()
             _console.setWindowState(_console.windowState() & ~Qt.WindowMinimized)
 
         if _console.isVisible():
-            QTimer.singleShot(0, _console.activate)
+            _console.activate()
 
     return _console
 
@@ -150,12 +149,12 @@ class PythonConsoleW(QWidget):
 
         self.console = editor
         self.setLayout(QVBoxLayout())
-        self.layout().setContentsMargins(0,0,0,0)
+        self.layout().setContentsMargins(0, 0, 0, 0)
         self.layout().addWidget(self.console)
         self.setFocusProxy(self.console)
 
         self.settings = QgsSettings()
-        self.restoreGeometry(self.settings.value("pythonConsole/geometry",QByteArray()))
+        self.restoreGeometry(self.settings.value("pythonConsole/geometry", QByteArray()))
 
     def activate(self):
         self.activateWindow()
