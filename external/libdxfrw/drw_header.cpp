@@ -1947,8 +1947,8 @@ bool DRW_Header::parseDwg( DRW::Version version, dwgBuffer *buf, dwgBuffer *hBbu
   if ( version > DRW::AC1021 && mv > 3 ) //2010+
   {
     duint32 hSize = buf->getRawLong32();
-    endBitPos += 32; //start bit: + 4 hight size
-    QgsDebugMsg( QString( "2010+ & MV> 3, higth 32b:%1" ).arg( hSize ) );
+    endBitPos += 32; //start bit: + 4 height size
+    QgsDebugMsg( QString( "2010+ & MV> 3, height 32b:%1" ).arg( hSize ) );
     Q_UNUSED( hSize );
   }
 //RLZ TODO add $ACADVER var & $DWGCODEPAGE & $MEASUREMENT
