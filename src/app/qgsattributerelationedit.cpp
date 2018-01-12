@@ -6,6 +6,7 @@ QgsAttributeRelationEdit::QgsAttributeRelationEdit( const QString &relationid, Q
   mRelationId( relationid )
 {
   setupUi( this );
+  coCardinality->setToolTip( QStringLiteral( "For many to many relation, the direct link has to be selected. In-between table will be hidden." ) );
 }
 
 void QgsAttributeRelationEdit::setCardinalityCombo( const QString &cardinalityComboItem, const QVariant &auserData )
