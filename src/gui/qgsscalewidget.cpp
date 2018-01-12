@@ -24,7 +24,7 @@ QgsScaleWidget::QgsScaleWidget( QWidget *parent )
 {
   QHBoxLayout *layout = new QHBoxLayout( this );
   layout->setContentsMargins( 0, 0, 0, 0 );
-  layout->setSpacing( 2 );
+  layout->setSpacing( 6 );
 
   mScaleComboBox = new QgsScaleComboBox( this );
   layout->addWidget( mScaleComboBox );
