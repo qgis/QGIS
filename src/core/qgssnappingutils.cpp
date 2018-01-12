@@ -364,7 +364,7 @@ void QgsSnappingUtils::prepareIndex( const QList<LayerAndAreaOfInterest> &layers
         // first time the layer is used? - let's set an initial guess about indexing
         if ( !mHybridMaxAreaPerLayer.contains( vl->id() ) )
         {
-          int totalFeatureCount = vl->pendingFeatureCount();
+          int totalFeatureCount = vl->featureCount();
           if ( totalFeatureCount < mHybridPerLayerFeatureLimit )
           {
             // index the whole layer

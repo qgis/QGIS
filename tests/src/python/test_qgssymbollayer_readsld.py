@@ -71,7 +71,7 @@ def createLayerWithOnePoint():
     f.setAttributes(["test", 123])
     f.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(100, 200)))
     assert pr.addFeatures([f])
-    assert layer.pendingFeatureCount() == 1
+    assert layer.featureCount() == 1
     return layer
 
 

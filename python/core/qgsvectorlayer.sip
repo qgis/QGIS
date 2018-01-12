@@ -1400,21 +1400,9 @@ Returns list of attribute indexes. i.e. a list from 0 ... fieldCount()
 Alias for attributeList()
 %End
 
-    QgsAttributeList pendingPkAttributesList() const;
-%Docstring
-Returns list of attributes making up the primary key
-Alias for pkAttributeList()
-%End
-
     QgsAttributeList pkAttributeList() const;
 %Docstring
-Returns list of attributes making up the primary key
-%End
-
-    long pendingFeatureCount() const;
-%Docstring
-Returns feature count including changes which have not yet been committed
-Alias for featureCount()
+Returns the list of attributes which make up the layer's primary keys.
 %End
 
     virtual long featureCount() const;
