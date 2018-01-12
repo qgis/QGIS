@@ -100,25 +100,6 @@ Returns the title for the color chooser dialog window.
 .. seealso:: :py:func:`setColorDialogTitle`
 %End
 
-    bool acceptLiveUpdates() const;
-%Docstring
-Returns whether the button accepts live updates from QColorDialog.
-
-:return: true if the button will be accepted immediately when the dialog's color changes
-
-.. seealso:: :py:func:`setAcceptLiveUpdates`
-%End
-
-    void setAcceptLiveUpdates( const bool accept );
-%Docstring
-Sets whether the button accepts live updates from QColorDialog. Live updates may cause changes
-that are not undoable on QColorDialog cancel.
-
-:param accept: set to true to enable live updates
-
-.. seealso:: :py:func:`acceptLiveUpdates`
-%End
-
     void setShowMenu( const bool showMenu );
 %Docstring
 Sets whether the drop-down menu should be shown for the button. The default behavior is to

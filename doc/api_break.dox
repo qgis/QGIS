@@ -627,12 +627,14 @@ QgsColorButton     {#qgis_api_break_3_0_QgsColorButton}
 
 - Behaviour enum and its corresponding setter/getter have been renamed to Behavior <!--#spellok-->
 - setAllowAlpha() and allowAlpha() were removed. Use setAllowOpacity() and allowOpacity() instead.
+- acceptLiveUpdates() and setAcceptLiveUpdates() were removed. This functionality is no longer supported.
 
 
 QgsColorDialog     {#qgis_api_break_3_0_QgsColorDialog}
 --------------
 
 - setAllowAlpha() was removed. Use setAllowOpacity() instead.
+- getLiveColor() was removed. This functionality is no longer supported.
 
 
 QgsColorEffect        {#qgis_api_break_3_0_QgsColorEffect}

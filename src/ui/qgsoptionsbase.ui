@@ -320,7 +320,7 @@
        <item>
         <widget class="QStackedWidget" name="mOptionsStackedWidget">
          <property name="currentIndex">
-          <number>9</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="mOptionsPageGeneral">
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -690,13 +690,6 @@
                      <widget class="QCheckBox" name="mNativeColorDialogsChkBx">
                       <property name="text">
                        <string>Use native color chooser dialogs</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item row="2" column="1">
-                     <widget class="QCheckBox" name="mLiveColorDialogsChkBx">
-                      <property name="text">
-                       <string>Use live-updating color chooser dialogs</string>
                       </property>
                      </widget>
                     </item>
@@ -5354,7 +5347,6 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
   <tabstop>mDataSourceManagerNonModal</tabstop>
   <tabstop>mCustomGroupBoxChkBx</tabstop>
   <tabstop>mNativeColorDialogsChkBx</tabstop>
-  <tabstop>mLiveColorDialogsChkBx</tabstop>
   <tabstop>mProjectOnLaunchCmbBx</tabstop>
   <tabstop>mProjectOnLaunchLineEdit</tabstop>
   <tabstop>mProjectOnLaunchPushBtn</tabstop>
