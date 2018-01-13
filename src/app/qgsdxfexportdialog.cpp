@@ -22,6 +22,7 @@
 #include "qgslayertreegroup.h"
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
+#include "qgshelp.h"
 #include "qgis.h"
 #include "qgsfieldcombobox.h"
 #include "qgisapp.h"
@@ -30,6 +31,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsprojectionselectiondialog.h"
 #include "qgssettings.h"
+#include "qgsgui.h"
 
 #include <QFileDialog>
 #include <QPushButton>
@@ -422,6 +424,8 @@ QgsDxfExportDialog::QgsDxfExportDialog( QWidget *parent, Qt::WindowFlags f )
 {
   setupUi( this );
   connect( mFileSelectionButton, &QToolButton::clicked, this, &QgsDxfExportDialog::mFileSelectionButton_clicked );
+  QgsGui::instance()->enableAutoGeometryRestore( this );
+
   connect( mVisibilityPresets, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsDxfExportDialog::mVisibilityPresets_currentIndexChanged );
   connect( mCrsSelector, &QgsProjectionSelectionWidget::crsChanged, this, &QgsDxfExportDialog::mCrsSelector_crsChanged );
 
@@ -465,7 +469,6 @@ QgsDxfExportDialog::QgsDxfExportDialog( QWidget *parent, Qt::WindowFlags f )
   mVisibilityPresets->setCurrentIndex( mVisibilityPresets->findText( QgsProject::instance()->readEntry( QStringLiteral( "dxf" ), QStringLiteral( "/lastVisibliltyPreset" ), QLatin1String( "" ) ) ) );
 
   buttonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
-  restoreGeometry( s.value( QStringLiteral( "/Windows/DxfExport/geometry" ) ).toByteArray() );
 
   long crsid = QgsProject::instance()->readEntry( QStringLiteral( "dxf" ), QStringLiteral( "/lastDxfCrs" ),
                s.value( QStringLiteral( "qgis/lastDxfCrs" ), QString::number( QgsProject::instance()->crs().srsid() ) ).toString()
@@ -484,8 +487,6 @@ QgsDxfExportDialog::QgsDxfExportDialog( QWidget *parent, Qt::WindowFlags f )
 QgsDxfExportDialog::~QgsDxfExportDialog()
 {
   delete mLayerTreeGroup;
-
-  QgsSettings().setValue( QStringLiteral( "/Windows/DxfExport/geometry" ), saveGeometry() );
 }
 
 void QgsDxfExportDialog::mVisibilityPresets_currentIndexChanged( int index )
