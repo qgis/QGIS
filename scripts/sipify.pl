@@ -1017,7 +1017,7 @@ while ($LINE_IDX < $LINE_COUNT){
         next;
     }
     if ( $LINE =~ m/\/\// ||
-            $LINE =~ m/\s*typedef / ||
+            $LINE =~ m/\s*typedef\s+\w+(?!\s*<) / ||  # keep comments for templates
             $LINE =~ m/\s*struct / ||
             $LINE =~ m/operator\[\]\(/ ||
             $LINE =~ m/^\s*operator\b/ ||
