@@ -16,16 +16,46 @@
 
 
 typedef QVector<QgsPointXY> QgsPolylineXY;
+%Docstring
+Polyline as represented as a vector of two-dimensional points.
+
+This type has no support for Z/M dimensions and use of QgsPolyline is encouraged instead.
+
+.. note::
+
+   In QGIS 2.x this type was available as QgsPolyline.
+
+.. versionadded:: 3.0
+%End
 
 typedef QVector<QgsPoint> QgsPolyline;
+%Docstring
+Polyline as represented as a vector of points.
+
+This type has full support for Z/M dimensions.
+
+.. versionadded:: 3.0
+%End
 
 typedef QVector<QVector<QgsPointXY>> QgsPolygonXY;
+%Docstring
+Polygon: first item of the list is outer ring, inner rings (if any) start from second item
+%End
 
 typedef QVector<QgsPointXY> QgsMultiPointXY;
+%Docstring
+A collection of QgsPoints that share a common collection of attributes
+%End
 
 typedef QVector<QVector<QgsPointXY>> QgsMultiPolylineXY;
+%Docstring
+A collection of QgsPolylines that share a common collection of attributes
+%End
 
 typedef QVector<QVector<QVector<QgsPointXY>>> QgsMultiPolygonXY;
+%Docstring
+A collection of QgsPolygons that share a common collection of attributes
+%End
 
 
 

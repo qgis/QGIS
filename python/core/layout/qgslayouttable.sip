@@ -11,11 +11,28 @@
 
 
 typedef QVector< QVariant > QgsLayoutTableRow;
+%Docstring
+List of QVariants, representing a the contents of a single row in
+a QgsComposerTable
+
+.. versionadded:: 3.0
+%End
 
 typedef QVector< QVector< QVariant > > QgsLayoutTableContents;
+%Docstring
+List of QgsLayoutTableRows, representing rows and column cell contents
+for a QgsLayoutTable
+
+.. versionadded:: 3.0
+%End
 
 
 typedef QVector< QgsLayoutTableColumn * > QgsLayoutTableColumns;
+%Docstring
+List of column definitions for a QgsLayoutTable
+
+.. versionadded:: 3.0
+%End
 
 
 

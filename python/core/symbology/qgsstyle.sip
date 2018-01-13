@@ -13,10 +13,45 @@
 
 
 typedef QMap<QString, QgsColorRamp * > QgsVectorColorRampMap;
+%Docstring
+*************************************************************************
+qgsstyle.h
+---------------------
+begin                : November 2009
+copyright            : (C) 2009 by Martin Dobias
+email                : wonder dot sk at gmail dot com
+**************************************************************************
+*
+This program is free software; you can redistribute it and/or modify  *
+it under the terms of the GNU General Public License as published by  *
+the Free Software Foundation; either version 2 of the License, or     *
+(at your option) any later version.                                   *
+*
+**************************************************************************
+%End
 typedef QMap<int, QString> QgsSymbolGroupMap;
 
 
 typedef QMultiMap<QString, QString> QgsSmartConditionMap;
+%Docstring
+A multimap to hold the smart group conditions as constraint and parameter pairs.
+Both the key and the value of the map are QString. The key is the constraint of the condition and the value is the parameter which is applied for the constraint.
+
+The supported constraints are:
+tag -> symbol has the tag matching the parameter
+!tag -> symbol doesnot have the tag matching the parameter
+name -> symbol has a part of its name matching the parameter
+!name -> symbol doesn't have any part of the name matching the parameter
+
+Example Usage:
+QgsSmartConditionMap conditions;
+conditions.insert( "tag", "red" ); // adds the condition: Symbol has the tag red
+conditions.insert( "!name", "way" ); // add the condition: Symbol doesn't have any part of its name matching `way`
+
+.. note::
+
+   This is a Multimap, which means it will contain multiple values for the same key.
+%End
 
 enum SymbolTable { SymbolId, SymbolName, SymbolXML, SymbolFavoriteId };
 enum TagTable { TagId, TagName };

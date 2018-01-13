@@ -54,6 +54,9 @@ Base symbol for rendering feature
     };
 
     typedef QList< QgsPointDistanceRenderer::GroupedFeature > ClusteredGroup;
+%Docstring
+A group of clustered points (ie features within the distance tolerance).
+%End
 
     QgsPointDistanceRenderer( const QString &rendererName, const QString &labelAttributeName = QString() );
 %Docstring

@@ -11,6 +11,11 @@
 
 
 typedef QList< QPair< QColor, QString > > QgsNamedColorList;
+%Docstring
+List of colors paired with a friendly display name identifying the color
+
+.. versionadded:: 2.5
+%End
 
 class QgsColorScheme
 {

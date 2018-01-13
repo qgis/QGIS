@@ -213,6 +213,11 @@ Creates a clone of the FieldValueConverter.
 
     typedef QFlags<QgsVectorFileWriter::EditionCapability> EditionCapabilities;
 
+%Docstring
+Combination of CanAddNewLayer, CanAppendToExistingLayer, CanAddNewFieldsToExistingLayer or CanDeleteLayer
+
+.. versionadded:: 3.0
+%End
 
     enum ActionOnExistingFile
     {

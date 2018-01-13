@@ -43,6 +43,9 @@ using QgsNativeMetadataValidator.
   public:
 
     typedef QMap< QString, QStringList > KeywordMap;
+%Docstring
+Map of vocabulary string to keyword list.
+%End
 
     struct SpatialExtent
     {
@@ -104,6 +107,9 @@ Constructor for Constraint.
     };
 
     typedef QList< QgsLayerMetadata::Constraint > ConstraintList;
+%Docstring
+A list of constraints.
+%End
 
 
     struct Address
@@ -153,6 +159,9 @@ Constructor for Contact.
     };
 
     typedef QList< QgsLayerMetadata::Contact > ContactList;
+%Docstring
+A list of contacts.
+%End
 
 
     struct Link
@@ -179,6 +188,9 @@ Constructor for Link.
     };
 
     typedef QList< QgsLayerMetadata::Link > LinkList;
+%Docstring
+A list of links.
+%End
 
     QgsLayerMetadata();
 %Docstring

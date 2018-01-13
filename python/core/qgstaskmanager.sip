@@ -12,6 +12,9 @@
 
 
 typedef QList< QgsTask * > QgsTaskList;
+%Docstring
+List of QgsTask objects
+%End
 
 class QgsTask : QObject
 {

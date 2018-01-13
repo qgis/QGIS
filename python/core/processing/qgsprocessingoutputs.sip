@@ -99,6 +99,9 @@ used to identify this output.
 };
 
 typedef QList< const QgsProcessingOutputDefinition * > QgsProcessingOutputDefinitions;
+%Docstring
+List of processing parameters
+%End
 
 class QgsProcessingOutputMapLayer : QgsProcessingOutputDefinition
 {

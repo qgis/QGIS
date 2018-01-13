@@ -32,6 +32,11 @@ class QgsSublayersDialog : QDialog
     };
 
     typedef QList<QgsSublayersDialog::LayerDefinition> LayerDefinitionList;
+%Docstring
+List of layer definitions for the purpose of this dialog
+
+.. versionadded:: 2.16
+%End
 
     QgsSublayersDialog( ProviderType providerType,
                         const QString &name,

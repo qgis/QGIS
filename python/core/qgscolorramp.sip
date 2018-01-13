@@ -108,6 +108,9 @@ Constructor for QgsGradientStop
 };
 
 typedef QList<QgsGradientStop> QgsGradientStopsList;
+%Docstring
+List of gradient stops
+%End
 
 
 class QgsGradientColorRamp : QgsColorRamp
