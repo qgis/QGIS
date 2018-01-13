@@ -356,7 +356,7 @@ SET(QGIS_GUI_SRCS
   qgstextpreview.cpp
   qgstreewidgetitem.cpp
   qgsunitselectionwidget.cpp
-  qgsuserinputdockwidget.cpp
+  qgsuserinputwidget.cpp
   qgsvariableeditorwidget.cpp
   qgsvertexmarker.cpp
   qgsfiledownloaderdialog.cpp
@@ -519,7 +519,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgstextpreview.h
   qgstreewidgetitem.h
   qgsunitselectionwidget.h
-  qgsuserinputdockwidget.h
+  qgsuserinputwidget.h
   qgsvariableeditorwidget.h
   qgsfiledownloaderdialog.h
   qgsdatasourcemanagerdialog.h
@@ -734,7 +734,7 @@ SET(QGIS_GUI_HDRS
   qgssnapindicator.h
   qgssqlcomposerdialog.h
   qgstablewidgetitem.h
-  qgsuserinputdockwidget.h
+  qgsuserinputwidget.h
   qgsbrowserdockwidget.h
   qgsbrowserdockwidget_p.h
   qgsvertexmarker.h

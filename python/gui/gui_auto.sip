@@ -16,7 +16,7 @@
 %Include qgsrubberband.sip
 %Include qgssnapindicator.sip
 %Include qgstablewidgetitem.sip
-%Include qgsuserinputdockwidget.sip
+%Include qgsuserinputwidget.sip
 %Include qgsbrowserdockwidget.sip
 %Include qgsvertexmarker.sip
 %Include qgsabstractdatasourcewidget.sip
