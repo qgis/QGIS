@@ -34,7 +34,7 @@ def checkParameterValuesBeforeExecuting(alg, parameters, context):
     step = alg.parameterAsDouble(parameters, 'step', context)
 
     if start >= end:
-        return alg.tr("The start position muste be inferior to the end position!")
+        return alg.tr("The start position must be inferior to the end position!")
     if step == 0.0:
         return alg.tr("The step must be greater than zero!")
     return None
