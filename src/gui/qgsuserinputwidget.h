@@ -35,6 +35,7 @@ class QFrame;
  * Several widgets can be displayed at once, they will be separated by a separator.
  * Widgets will be either layout horizontally or vertically.
  * The widget is automatically hidden if it contains no widget.
+ * \since QGIS 2.10
  */
 class GUI_EXPORT QgsUserInputWidget : public QgsFloatingWidget
 {
