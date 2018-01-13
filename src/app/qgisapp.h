@@ -94,7 +94,7 @@ class QgsStatusBarScaleWidget;
 class QgsTaskManagerStatusBarWidget;
 class QgsTransactionGroup;
 class QgsUndoWidget;
-class QgsUserInputDockWidget;
+class QgsUserInputWidget;
 class QgsVectorLayer;
 class QgsVectorLayerTools;
 class QgsWelcomePage;
@@ -2116,7 +2116,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QWidget *mMacrosWarn = nullptr;
 
     //! A tool bar for user input
-    QgsUserInputDockWidget *mUserInputDockWidget = nullptr;
+    QgsUserInputWidget *mUserInputDockWidget = nullptr;
 
     QgsVectorLayerTools *mVectorLayerTools = nullptr;
 

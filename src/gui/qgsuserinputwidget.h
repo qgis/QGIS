@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsuserinputdockwidget.h
+    qgsuserinputwidget.h
      --------------------------------------
     Date                 : 04.2015
     Copyright            : (C) 2015 Denis Rouzaud
@@ -14,34 +14,35 @@
  ***************************************************************************/
 
 
+#ifndef QGSUSERINPUTWIDGET_H
+#define QGSUSERINPUTWIDGET_H
 
-#ifndef QGSUSERINPUTDOCKWIDGET_H
-#define QGSUSERINPUTDOCKWIDGET_H
-
-#include "qgsdockwidget.h"
 #include "qgis.h"
-#include <QMap>
 #include "qgis_gui.h"
+#include "qgsfloatingwidget.h"
 
+#include <QMap>
+#include <QBoxLayout>
 
-class QFrame;
 class QBoxLayout;
+class QFrame;
 
 
 /**
  * \ingroup gui
- * \brief The QgsUserInputDockWidget class is a dock widget that shall be used to display widgets for user inputs.
+ * \brief The QgsUserInputWidget class is a floating widget that shall be used to display widgets for user inputs.
  * It can be used by map tools, plugins, etc.
- * Several widgets can be displayed at once, they will be separated by a separator. Widgets will be either layout horizontally or vertically.
- * The dock is automatically hidden if it contains no widget.
+ * Several widgets can be displayed at once, they will be separated by a separator.
+ * Widgets will be either layout horizontally or vertically.
+ * The widget is automatically hidden if it contains no widget.
  */
-class GUI_EXPORT QgsUserInputDockWidget : public QgsDockWidget
+class GUI_EXPORT QgsUserInputWidget : public QgsFloatingWidget
 {
     Q_OBJECT
   public:
 
-    //! Constructor for QgsUserInputDockWidget
-    QgsUserInputDockWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    //! Constructor for QgsUserInputWidget
+    QgsUserInputWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Add a widget to be displayed in the dock.
@@ -56,13 +57,9 @@ class GUI_EXPORT QgsUserInputDockWidget : public QgsDockWidget
   private slots:
     void widgetDestroyed( QObject *obj );
 
-    //! when area change, update the layout according to the new dock location
-    void areaChanged( Qt::DockWidgetArea area );
-    void floatingChanged( bool floating );
-
   private:
-    //! change layout according to dock location
-    void updateLayoutDirection();
+    //! change layout direction
+    void setLayoutDirection( QBoxLayout::Direction direction );
 
     // list of widget with their corresponding line separator
     QMap<QWidget *, QFrame *> mWidgetList;
@@ -71,4 +68,4 @@ class GUI_EXPORT QgsUserInputDockWidget : public QgsDockWidget
     QBoxLayout *mLayout = nullptr;
 };
 
-#endif // QGSUSERINPUTDOCKWIDGET_H
+#endif // QGSUSERINPUTWIDGET_H

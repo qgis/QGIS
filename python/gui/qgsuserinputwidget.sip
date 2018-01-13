@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/qgsuserinputdockwidget.h                                     *
+ * src/gui/qgsuserinputwidget.h                                         *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -12,24 +12,24 @@
 
 
 
-
-class QgsUserInputDockWidget : QgsDockWidget
+class QgsUserInputWidget : QgsFloatingWidget
 {
 %Docstring
- The QgsUserInputDockWidget class is a dock widget that shall be used to display widgets for user inputs.
+ The QgsUserInputWidget class is a floating widget that shall be used to display widgets for user inputs.
 It can be used by map tools, plugins, etc.
-Several widgets can be displayed at once, they will be separated by a separator. Widgets will be either layout horizontally or vertically.
-The dock is automatically hidden if it contains no widget.
+Several widgets can be displayed at once, they will be separated by a separator.
+Widgets will be either layout horizontally or vertically.
+The widget is automatically hidden if it contains no widget.
 %End
 
 %TypeHeaderCode
-#include "qgsuserinputdockwidget.h"
+#include "qgsuserinputwidget.h"
 %End
   public:
 
-    QgsUserInputDockWidget( QWidget *parent /TransferThis/ = 0 );
+    QgsUserInputWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
-Constructor for QgsUserInputDockWidget
+Constructor for QgsUserInputWidget
 %End
 
     void addUserInputWidget( QWidget *widget );
@@ -48,7 +48,7 @@ Add a widget to be displayed in the dock.
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/qgsuserinputdockwidget.h                                     *
+ * src/gui/qgsuserinputwidget.h                                         *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

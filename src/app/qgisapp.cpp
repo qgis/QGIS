@@ -283,7 +283,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgssymbolselectordialog.h"
 #include "qgstextannotation.h"
 #include "qgsundowidget.h"
-#include "qgsuserinputdockwidget.h"
+#include "qgsuserinputwidget.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorfilewriter.h"
 #include "qgsvectorlayer.h"
@@ -788,8 +788,12 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 
   startProfile( QStringLiteral( "User input dock" ) );
   // User Input Dock Widget
-  mUserInputDockWidget = new QgsUserInputDockWidget( this );
+  mUserInputDockWidget = new QgsUserInputWidget( mMapCanvas );
   mUserInputDockWidget->setObjectName( QStringLiteral( "UserInputDockWidget" ) );
+  mUserInputDockWidget->setAnchorWidget( mMapCanvas );
+  mUserInputDockWidget->setAnchorWidgetPoint( QgsFloatingWidget::TopRight );
+  mUserInputDockWidget->setAnchorPoint( QgsFloatingWidget::TopRight );
+
   endProfile();
 
   //set the focus to the map canvas
@@ -958,9 +962,6 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 
   addDockWidget( Qt::LeftDockWidgetArea, mBookMarksDockWidget );
   mBookMarksDockWidget->hide();
-
-  QMainWindow::addDockWidget( Qt::BottomDockWidgetArea, mUserInputDockWidget );
-  mUserInputDockWidget->setFloating( true );
 
   // create the GPS tool on starting QGIS - this is like the browser
   mpGpsWidget = new QgsGpsInformationWidget( mMapCanvas );
