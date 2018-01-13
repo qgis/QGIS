@@ -34,7 +34,7 @@ ifneq (,$(findstring -oracle,$(DISTRIBUTION)))
 	WITH_ORACLE=1
 endif
 
-ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"jessie stretch trusty xenial yakkety zesty artful"))
+ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"jessie stretch trusty xenial yakkety zesty artful bionic"))
 	DISTRIBUTION := sid
 endif
 
@@ -136,7 +136,7 @@ ifneq (,$(findstring $(DISTRIBUTION),"sid stretch"))
 	CMAKE_OPTS += -DPOSTGRES_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libpq.so
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"sid stretch yakkety zesty artful"))
+ifneq (,$(findstring $(DISTRIBUTION),"sid stretch yakkety zesty artful bionic"))
 	CMAKE_OPTS += -DWITH_INTERNAL_WEBKIT_BINDINGS=TRUE
 endif
 
@@ -144,7 +144,7 @@ ifneq (,$(findstring $(DISTRIBUTION),"sid"))
 	CMAKE_OPTS += -DGEOS_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libgeos_c.so
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"jessie stretch trusty xenial yakkety zesty artful sid"))
+ifneq (,$(findstring $(DISTRIBUTION),"jessie stretch trusty xenial yakkety zesty artful bionic sid"))
 	CMAKE_OPTS += -DPYTHON_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libpython2.7.so
 endif
 
