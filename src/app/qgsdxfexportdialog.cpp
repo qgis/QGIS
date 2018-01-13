@@ -428,6 +428,8 @@ QgsDxfExportDialog::QgsDxfExportDialog( QWidget *parent, Qt::WindowFlags f )
   connect( mVisibilityPresets, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsDxfExportDialog::mVisibilityPresets_currentIndexChanged );
   connect( mCrsSelector, &QgsProjectionSelectionWidget::crsChanged, this, &QgsDxfExportDialog::mCrsSelector_crsChanged );
 
+  QgsSettings settings;
+
   mLayerTreeGroup = QgsProject::instance()->layerTreeRoot()->clone();
   cleanGroup( mLayerTreeGroup );
 
@@ -444,7 +446,7 @@ QgsDxfExportDialog::QgsDxfExportDialog( QWidget *parent, Qt::WindowFlags f )
   mFileName->setStorageMode( QgsFileWidget::SaveFile );
   mFileName->setFilter( tr( "DXF files" ) + " (*.dxf *.DXF)" );
   mFileName->setDialogTitle( tr( "Export as DXF" ) );
-  mFileName->setDefaultRoot( s.value( QStringLiteral( "qgis/lastDxfDir" ), QDir::homePath() ).toString() );
+  mFileName->setDefaultRoot( settings.value( QStringLiteral( "qgis/lastDxfDir" ), QDir::homePath() ).toString() );
 
   connect( this, &QDialog::accepted, this, &QgsDxfExportDialog::saveSettings );
   connect( mSelectAllButton, &QAbstractButton::clicked, this, &QgsDxfExportDialog::selectAll );
@@ -461,17 +463,16 @@ QgsDxfExportDialog::QgsDxfExportDialog( QWidget *parent, Qt::WindowFlags f )
   } );
 
   //last dxf symbology mode
-  QgsSettings s;
-  mSymbologyModeComboBox->setCurrentIndex( QgsProject::instance()->readEntry( QStringLiteral( "dxf" ), QStringLiteral( "/lastDxfSymbologyMode" ), s.value( QStringLiteral( "qgis/lastDxfSymbologyMode" ), "2" ).toString() ).toInt() );
+  mSymbologyModeComboBox->setCurrentIndex( QgsProject::instance()->readEntry( QStringLiteral( "dxf" ), QStringLiteral( "/lastDxfSymbologyMode" ), settings.value( QStringLiteral( "qgis/lastDxfSymbologyMode" ), "2" ).toString() ).toInt() );
 
   //last symbol scale
   mScaleWidget->setMapCanvas( QgisApp::instance()->mapCanvas() );
-  double oldScale = QgsProject::instance()->readEntry( QStringLiteral( "dxf" ), QStringLiteral( "/lastSymbologyExportScale" ), s.value( QStringLiteral( "qgis/lastSymbologyExportScale" ), "1/50000" ).toString() ).toDouble();
+  double oldScale = QgsProject::instance()->readEntry( QStringLiteral( "dxf" ), QStringLiteral( "/lastSymbologyExportScale" ), settings.value( QStringLiteral( "qgis/lastSymbologyExportScale" ), "1/50000" ).toString() ).toDouble();
   if ( oldScale != 0.0 )
     mScaleWidget->setScale( 1.0 / oldScale );
-  mLayerTitleAsName->setChecked( QgsProject::instance()->readEntry( QStringLiteral( "dxf" ), QStringLiteral( "/lastDxfLayerTitleAsName" ), s.value( QStringLiteral( "qgis/lastDxfLayerTitleAsName" ), "false" ).toString() ) != QLatin1String( "false" ) );
-  mMapExtentCheckBox->setChecked( QgsProject::instance()->readEntry( QStringLiteral( "dxf" ), QStringLiteral( "/lastDxfMapRectangle" ), s.value( QStringLiteral( "qgis/lastDxfMapRectangle" ), "false" ).toString() ) != QLatin1String( "false" ) );
-  mMTextCheckBox->setChecked( QgsProject::instance()->readEntry( QStringLiteral( "dxf" ), QStringLiteral( "/lastDxfUseMText" ), s.value( QStringLiteral( "qgis/lastDxfUseMText" ), "true" ).toString() ) != QLatin1String( "false" ) );
+  mLayerTitleAsName->setChecked( QgsProject::instance()->readEntry( QStringLiteral( "dxf" ), QStringLiteral( "/lastDxfLayerTitleAsName" ), settings.value( QStringLiteral( "qgis/lastDxfLayerTitleAsName" ), "false" ).toString() ) != QLatin1String( "false" ) );
+  mMapExtentCheckBox->setChecked( QgsProject::instance()->readEntry( QStringLiteral( "dxf" ), QStringLiteral( "/lastDxfMapRectangle" ), settings.value( QStringLiteral( "qgis/lastDxfMapRectangle" ), "false" ).toString() ) != QLatin1String( "false" ) );
+  mMTextCheckBox->setChecked( QgsProject::instance()->readEntry( QStringLiteral( "dxf" ), QStringLiteral( "/lastDxfUseMText" ), settings.value( QStringLiteral( "qgis/lastDxfUseMText" ), "true" ).toString() ) != QLatin1String( "false" ) );
 
   QStringList ids = QgsProject::instance()->mapThemeCollection()->mapThemes();
   ids.prepend( QLatin1String( "" ) );
@@ -481,7 +482,7 @@ QgsDxfExportDialog::QgsDxfExportDialog( QWidget *parent, Qt::WindowFlags f )
   buttonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
 
   long crsid = QgsProject::instance()->readEntry( QStringLiteral( "dxf" ), QStringLiteral( "/lastDxfCrs" ),
-               s.value( QStringLiteral( "qgis/lastDxfCrs" ), QString::number( QgsProject::instance()->crs().srsid() ) ).toString()
+               settings.value( QStringLiteral( "qgis/lastDxfCrs" ), QString::number( QgsProject::instance()->crs().srsid() ) ).toString()
                                                 ).toLong();
   mCRS = QgsCoordinateReferenceSystem::fromSrsId( crsid );
   mCrsSelector->setCrs( mCRS );
@@ -490,7 +491,7 @@ QgsDxfExportDialog::QgsDxfExportDialog( QWidget *parent, Qt::WindowFlags f )
                                 "The data points will be transformed from the layer coordinate reference system." ) );
 
   mEncoding->addItems( QgsDxfExport::encodings() );
-  mEncoding->setCurrentIndex( mEncoding->findText( QgsProject::instance()->readEntry( QStringLiteral( "dxf" ), QStringLiteral( "/lastDxfEncoding" ), s.value( QStringLiteral( "qgis/lastDxfEncoding" ), "CP1252" ).toString() ) ) );
+  mEncoding->setCurrentIndex( mEncoding->findText( QgsProject::instance()->readEntry( QStringLiteral( "dxf" ), QStringLiteral( "/lastDxfEncoding" ), settings.value( QStringLiteral( "qgis/lastDxfEncoding" ), "CP1252" ).toString() ) ) );
 }
 
 
@@ -619,16 +620,16 @@ bool QgsDxfExportDialog::useMText() const
 
 void QgsDxfExportDialog::saveSettings()
 {
-  QgsSettings s;
+  QgsSettings settings;
   QFileInfo dxfFileInfo( mFileName->filePath() );
-  s.setValue( QStringLiteral( "qgis/lastDxfDir" ), dxfFileInfo.absolutePath() );
-  s.setValue( QStringLiteral( "qgis/lastDxfSymbologyMode" ), mSymbologyModeComboBox->currentIndex() );
-  s.setValue( QStringLiteral( "qgis/lastSymbologyExportScale" ), mScaleWidget->scale() != 0 ? 1.0 / mScaleWidget->scale() : 0 );
-  s.setValue( QStringLiteral( "qgis/lastDxfMapRectangle" ), mMapExtentCheckBox->isChecked() );
-  s.setValue( QStringLiteral( "qgis/lastDxfLayerTitleAsName" ), mLayerTitleAsName->isChecked() );
-  s.setValue( QStringLiteral( "qgis/lastDxfEncoding" ), mEncoding->currentText() );
-  s.setValue( QStringLiteral( "qgis/lastDxfCrs" ), QString::number( mCRS.srsid() ) );
-  s.setValue( QStringLiteral( "qgis/lastDxfUseMText" ), mMTextCheckBox->isChecked() );
+  settings.setValue( QStringLiteral( "qgis/lastDxfDir" ), dxfFileInfo.absolutePath() );
+  settings.setValue( QStringLiteral( "qgis/lastDxfSymbologyMode" ), mSymbologyModeComboBox->currentIndex() );
+  settings.setValue( QStringLiteral( "qgis/lastSymbologyExportScale" ), mScaleWidget->scale() != 0 ? 1.0 / mScaleWidget->scale() : 0 );
+  settings.setValue( QStringLiteral( "qgis/lastDxfMapRectangle" ), mMapExtentCheckBox->isChecked() );
+  settings.setValue( QStringLiteral( "qgis/lastDxfLayerTitleAsName" ), mLayerTitleAsName->isChecked() );
+  settings.setValue( QStringLiteral( "qgis/lastDxfEncoding" ), mEncoding->currentText() );
+  settings.setValue( QStringLiteral( "qgis/lastDxfCrs" ), QString::number( mCRS.srsid() ) );
+  settings.setValue( QStringLiteral( "qgis/lastDxfUseMText" ), mMTextCheckBox->isChecked() );
 
   QgsProject::instance()->writeEntry( QStringLiteral( "dxf" ), QStringLiteral( "/lastDxfSymbologyMode" ), mSymbologyModeComboBox->currentIndex() );
   QgsProject::instance()->writeEntry( QStringLiteral( "dxf" ), QStringLiteral( "/lastSymbologyExportScale" ), mScaleWidget->scale() != 0 ? 1.0 / mScaleWidget->scale() : 0 );
