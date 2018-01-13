@@ -21,7 +21,6 @@
 #include "ui_qgsdxfexportdialogbase.h"
 #include "qgslayertreemodel.h"
 #include "qgsdxfexport.h"
-#include "qgshelp.h"
 
 #include <QList>
 #include <QPair>
