@@ -154,7 +154,6 @@ Query the layer for the features which intersect the specified rectangle.
     bool isFidCached( const QgsFeatureId fid ) const;
 %Docstring
 Check if a certain feature id is cached.
-
 \param  fid The feature id to look for
 
 :return: True if this id is in the cache

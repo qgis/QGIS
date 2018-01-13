@@ -166,12 +166,14 @@ sub processDoxygenLine {
     # params
     if ( $line =~ m/\\param / ){
         $line =~ s/\s*\\param (\w+)\b/:param $1:/g;
-        if ( $COMMENT_PARAM_LIST == 0 )
-        {
-            $line = "\n$line";
+        if ( $line =~ m/^:param/ ){
+          if ( $COMMENT_PARAM_LIST == 0 )
+          {
+              $line = "\n$line";
+          }
+          $COMMENT_PARAM_LIST = 1;
+          $COMMENT_LAST_LINE_NOTE_WARNING = 0;
         }
-        $COMMENT_PARAM_LIST = 1;
-        $COMMENT_LAST_LINE_NOTE_WARNING = 0;
     }
 
     if ( $line =~ m/^\s*[\\@]brief/){

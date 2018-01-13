@@ -1221,7 +1221,6 @@ Set whether provider notification is connected to triggerRepaint
 %Docstring
 Set the notification message that triggers repaine
 If refresh on notification is enabled, the notification will triggerRepaint only
-
 if the notification message is equal to:param message:
 
 .. versionadded:: 3.0
