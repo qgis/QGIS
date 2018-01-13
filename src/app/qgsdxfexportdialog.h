@@ -98,7 +98,6 @@ class QgsDxfExportDialog : public QDialog, private Ui::QgsDxfExportDialogBase
     void deSelectAll();
 
   private slots:
-    void mFileSelectionButton_clicked();
     void setOkEnabled();
     void saveSettings();
     void mVisibilityPresets_currentIndexChanged( int index );
