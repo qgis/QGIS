@@ -26,6 +26,7 @@ class QgsLayerTreeModel;
 class QgsLayerTreeNode;
 class QgsLayerTreeModelLegendNode;
 class QgsLayerTreeViewDefaultActions;
+class QgsLayerTreeViewIndicator;
 class QgsLayerTreeViewMenuProvider;
 class QgsMapLayer;
 
@@ -106,6 +107,34 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
     //! Get list of selected layers
     QList<QgsMapLayer *> selectedLayers() const;
 
+    /**
+     * Adds an indicator to the given layer tree node. Indicators are icons shown next to layer/group names
+     * in the layer tree view. They can be used to show extra information with tree nodes and they allow
+     * user interaction.
+     *
+     * Does not take ownership of the indicator. One indicator object may be used for multiple layer tree nodes.
+     * \sa removeIndicator
+     * \sa indicators
+     * \since QGIS 3.2
+     */
+    void addIndicator( QgsLayerTreeNode *node, QgsLayerTreeViewIndicator *indicator );
+
+    /**
+     * Removes a previously added indicator to a layer tree node. Does not delete the indicator.
+     * \sa addIndicator
+     * \sa indicators
+     * \since QGIS 3.2
+     */
+    void removeIndicator( QgsLayerTreeNode *node, QgsLayerTreeViewIndicator *indicator );
+
+    /**
+     * Returns list of indicators associated with a particular layer tree node.
+     * \sa addIndicator
+     * \sa removeIndicator
+     * \since QGIS 3.2
+     */
+    QList<QgsLayerTreeViewIndicator *> indicators( QgsLayerTreeNode *node ) const;
+
   public slots:
     //! Force refresh of layer symbology. Normally not needed as the changes of layer's renderer are monitored by the model
     void refreshLayerSymbology( const QString &layerId );
@@ -138,7 +167,6 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
 
     void dropEvent( QDropEvent *event ) override;
 
-
   protected slots:
 
     void modelRowsInserted( const QModelIndex &index, int start, int end );
@@ -157,6 +185,13 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
     QgsLayerTreeViewMenuProvider *mMenuProvider = nullptr;
     //! Keeps track of current layer ID (to check when to emit signal about change of current layer)
     QString mCurrentLayerID;
+    //! Storage of indicators used with the tree view
+    QHash< QgsLayerTreeNode *, QList<QgsLayerTreeViewIndicator *> > mIndicators;
+    //! Used by the item delegate for identification of which indicator has been clicked
+    QPoint mLastReleaseMousePos;
+
+    // friend so it can access viewOptions() method and mLastReleaseMousePos without making them public
+    friend class QgsLayerTreeViewItemDelegate;
 };
 
 

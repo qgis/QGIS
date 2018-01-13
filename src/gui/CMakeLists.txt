@@ -159,6 +159,8 @@ SET(QGIS_GUI_SRCS
   layertree/qgslayertreemapcanvasbridge.cpp
   layertree/qgslayertreeview.cpp
   layertree/qgslayertreeviewdefaultactions.cpp
+  layertree/qgslayertreeviewindicator.cpp
+  layertree/qgslayertreeviewitemdelegate.cpp
 
   layout/qgslayoutcustomdrophandler.cpp
   layout/qgslayoutitemguiregistry.cpp
@@ -677,6 +679,8 @@ SET(QGIS_GUI_MOC_HDRS
   layertree/qgslayertreemapcanvasbridge.h
   layertree/qgslayertreeview.h
   layertree/qgslayertreeviewdefaultactions.h
+  layertree/qgslayertreeviewindicator.h
+  layertree/qgslayertreeviewitemdelegate.h
 
   layout/qgslayoutcustomdrophandler.h
   layout/qgslayoutdesignerinterface.h

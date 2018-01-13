@@ -111,6 +111,37 @@ Return list of selected nodes filtered to just layer nodes
 Get list of selected layers
 %End
 
+    void addIndicator( QgsLayerTreeNode *node, QgsLayerTreeViewIndicator *indicator );
+%Docstring
+Adds an indicator to the given layer tree node. Indicators are icons shown next to layer/group names
+in the layer tree view. They can be used to show extra information with tree nodes and they allow
+user interaction.
+
+Does not take ownership of the indicator. One indicator object may be used for multiple layer tree nodes.
+\sa removeIndicator
+\sa indicators
+
+.. versionadded:: 3.2
+%End
+
+    void removeIndicator( QgsLayerTreeNode *node, QgsLayerTreeViewIndicator *indicator );
+%Docstring
+Removes a previously added indicator to a layer tree node. Does not delete the indicator.
+\sa addIndicator
+\sa indicators
+
+.. versionadded:: 3.2
+%End
+
+    QList<QgsLayerTreeViewIndicator *> indicators( QgsLayerTreeNode *node ) const;
+%Docstring
+Returns list of indicators associated with a particular layer tree node.
+\sa addIndicator
+\sa removeIndicator
+
+.. versionadded:: 3.2
+%End
+
   public slots:
     void refreshLayerSymbology( const QString &layerId );
 %Docstring
@@ -153,7 +184,6 @@ Emitted when a current layer is changed
     virtual void dropEvent( QDropEvent *event );
 
 
-
   protected slots:
 
     void modelRowsInserted( const QModelIndex &index, int start, int end );
@@ -166,6 +196,7 @@ Emitted when a current layer is changed
     void onModelReset();
 
   protected:
+
 };
 
 
