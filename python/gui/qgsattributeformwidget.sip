@@ -93,12 +93,12 @@ search mode.
 .. note::
 
    the search widget wrapper should be created using searchWidgetFrame()
-as its parent
+   as its parent
 
 .. note::
 
    this method is in place for unit testing only, and is not considered
-stable API
+   stable API
 %End
 
     void addAdditionalSearchWidgetWrapper( QgsSearchWidgetWrapper *wrapper );
@@ -115,7 +115,7 @@ first be created using createSearchWidgetWrapper()
 .. note::
 
    this method is in place for unit testing only, and is not considered
-stable API
+   stable API
 %End
 
     void resetSearch();

@@ -33,7 +33,7 @@ Sets the extent to use for minimum and maximum value calculation.
 .. note::
 
    if a map canvas is set using setMapCanvas(), its extent will take
-precedence over any extent set using this method.
+   precedence over any extent set using this method.
 %End
 
     void setMapCanvas( QgsMapCanvas *canvas );

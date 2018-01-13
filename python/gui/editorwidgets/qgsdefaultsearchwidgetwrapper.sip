@@ -65,7 +65,7 @@ Returns a pointer to the line edit part of the widget.
 .. note::
 
    this method is in place for unit testing only, and is not considered
-stable API
+   stable API
 %End
 
     QCheckBox *caseSensitiveCheckBox();
@@ -75,7 +75,7 @@ Returns a pointer to the case sensitivity checkbox in the widget.
 .. note::
 
    this method is in place for unit testing only, and is not considered
-stable API
+   stable API
 %End
 
 };

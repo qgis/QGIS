@@ -118,7 +118,7 @@ clipped to the range of valid values for the color component.
 .. note::
 
    this method has no effect if the widget is set to the QgsColorWidget.Multiple
-component
+   component
 %End
 
   signals:

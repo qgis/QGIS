@@ -191,7 +191,7 @@ Sets the fill ``color`` used for parametrized SVG files.
 .. note::
 
    This setting only has an effect on parametrized SVG files, and is ignored for
-non-parametrized SVG files.
+   non-parametrized SVG files.
 
 .. seealso:: :py:func:`svgFillColor`
 
@@ -216,7 +216,7 @@ Sets the stroke ``color`` used for parametrized SVG files.
 .. note::
 
    This setting only has an effect on parametrized SVG files, and is ignored for
-non-parametrized SVG files.
+   non-parametrized SVG files.
 
 .. seealso:: :py:func:`svgStrokelColor`
 
@@ -239,7 +239,7 @@ Sets the stroke ``width`` (in layout units) used for parametrized SVG files.
 .. note::
 
    This setting only has an effect on parametrized SVG files, and is ignored for
-non-parametrized SVG files.
+   non-parametrized SVG files.
 
 .. seealso:: :py:func:`svgStrokeWidth`
 

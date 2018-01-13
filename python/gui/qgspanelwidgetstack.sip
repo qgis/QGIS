@@ -42,7 +42,7 @@ to handle children widget opening panels.
 .. note::
 
    a stack can have only one main panel. Any existing main panel
-should be removed by first calling takeMainPanel().
+   should be removed by first calling takeMainPanel().
 
 .. seealso:: :py:func:`mainPanel`
 
@@ -69,7 +69,7 @@ caller.
 .. note::
 
    Calling this will clear out any current stacked panels by accepting
-each panel in turn.
+   each panel in turn.
 
 .. seealso:: :py:func:`mainPanel`
 

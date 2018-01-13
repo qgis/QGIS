@@ -215,7 +215,7 @@ Removes all registered layers. These layers will also be deleted.
 .. note::
 
    Calling this method will cause the removeAll() signal to
-be emitted.
+   be emitted.
 
 .. seealso:: :py:func:`removeMapLayer`
 

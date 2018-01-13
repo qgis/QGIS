@@ -93,8 +93,8 @@ connection string
 .. note::
 
    The default authentication configuration expansion is FALSE. This keeps credentials
-out of layer data source URIs and project files. Expansion should be specifically done
-only when needed within a provider
+   out of layer data source URIs and project files. Expansion should be specifically done
+   only when needed within a provider
 %End
 
     void setUri( const QgsDataSourceUri &uri );

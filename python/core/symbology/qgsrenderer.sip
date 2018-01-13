@@ -119,7 +119,7 @@ be followed by a corresponding call to stopRender() after all features have been
 .. warning::
 
    This method is not thread safe. Before calling startRender() in a non-main thread,
-the renderer should instead be cloned and startRender()/stopRender() called on the clone.
+   the renderer should instead be cloned and startRender()/stopRender() called on the clone.
 %End
 
     virtual void stopRender( QgsRenderContext &context );
@@ -131,7 +131,7 @@ Calls to stopRender() must always be preceded by a call to startRender().
 .. warning::
 
    This method is not thread safe. Before calling startRender() in a non-main thread,
-the renderer should instead be cloned and startRender()/stopRender() called on the clone.
+   the renderer should instead be cloned and startRender()/stopRender() called on the clone.
 
 .. seealso:: :py:func:`startRender`
 %End
@@ -520,7 +520,7 @@ Currently clones
 .. note::
 
    this function is used to convert old sizeScale expressions to symbol
-level DataDefined size
+   level DataDefined size
 %End
 
     static void convertSymbolRotation( QgsSymbol *symbol, const QString &field );
@@ -529,7 +529,7 @@ level DataDefined size
 .. note::
 
    this function is used to convert old rotations expressions to symbol
-level DataDefined angle
+   level DataDefined angle
 %End
 
 

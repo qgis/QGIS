@@ -117,13 +117,13 @@ Emitted when the panel is accepted by the user.
 .. note::
 
    This argument is normally raised with emit panelAccepted(this)
-so that callers can retrieve the widget easier in calling code.
+   so that callers can retrieve the widget easier in calling code.
 
 .. note::
 
    this is emitted only when this panel is accepted, and is not emitted for
-child panels. For example, if this panel opens a second stacked panel, then this panel
-will not emit panelAccepted when the second panel is accepted.
+   child panels. For example, if this panel opens a second stacked panel, then this panel
+   will not emit panelAccepted when the second panel is accepted.
 %End
 
     void showPanel( QgsPanelWidget *panel );
@@ -135,7 +135,7 @@ Emit when you require a panel to be show in the interface.
 .. note::
 
    If you are connected to this signal you should also connect
-given panels showPanel signal as they can be nested.
+   given panels showPanel signal as they can be nested.
 %End
 
     void widgetChanged();
@@ -188,7 +188,7 @@ the inheritance tree changed, e.g dialogs.
 .. note::
 
    Generally you should use the QgsPanelWidget class if you can
-and only use this wrapper if you can't update your code.
+   and only use this wrapper if you can't update your code.
 %End
 
 %TypeHeaderCode

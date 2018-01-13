@@ -162,7 +162,7 @@ Returns the list of layer IDs that are visible for the specified map theme.
 .. note::
 
    The order of the returned list is not guaranteed to reflect the order of layers
-in the canvas.
+   in the canvas.
 
 .. versionadded:: 3.0
 %End
@@ -174,7 +174,7 @@ Returns the list of layers that are visible for the specified map theme.
 .. note::
 
    The order of the returned list is not guaranteed to reflect the order of layers
-in the canvas.
+   in the canvas.
 
 .. versionadded:: 3.0
 %End

@@ -158,7 +158,7 @@ attributes
 .. note::
 
    Attributes excluded via setExcludedAttributes() take precedence over
-attributes specified by this method.
+   attributes specified by this method.
 %End
 
     QgsAttributeList attributes() const;
@@ -173,7 +173,7 @@ an empty list if all attributes will be included.
 .. note::
 
    Attributes excluded via excludedAttributes() take precedence over
-attributes returned by this method.
+   attributes returned by this method.
 %End
 
     void setExcludedAttributes( const QgsAttributeList &attributes );

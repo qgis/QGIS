@@ -756,7 +756,7 @@ Register a new tab in the vector layer properties dialog.
 .. note::
 
    Ownership of the factory is not transferred, and the factory must
-be unregistered when plugin is unloaded.
+   be unregistered when plugin is unloaded.
 
 .. seealso:: :py:func:`unregisterMapLayerPropertiesFactory`
 %End
@@ -779,7 +779,7 @@ Register a new tab in the options dialog.
 .. note::
 
    Ownership of the factory is not transferred, and the factory must
-be unregistered when plugin is unloaded.
+   be unregistered when plugin is unloaded.
 
 .. seealso:: :py:func:`unregisterOptionsWidgetFactory`
 %End
@@ -802,7 +802,7 @@ Register a new custom drop handler.
 .. note::
 
    Ownership of the factory is not transferred, and the factory must
-be unregistered when plugin is unloaded.
+   be unregistered when plugin is unloaded.
 
 .. seealso:: :py:func:`unregisterCustomDropHandler`
 %End
@@ -825,7 +825,7 @@ Register a new custom drop ``handler`` for layout windows.
 .. note::
 
    Ownership of the factory is not transferred, and the factory must
-be unregistered when plugin is unloaded.
+   be unregistered when plugin is unloaded.
 
 .. seealso:: :py:func:`unregisterCustomLayoutDropHandler`
 %End
@@ -894,7 +894,7 @@ locator.
 .. warning::
 
    Plugins which register filters to the locator bar must take care to correctly call
-deregisterLocatorFilter() and deregister their filters upon plugin unload to avoid crashes.
+   deregisterLocatorFilter() and deregister their filters upon plugin unload to avoid crashes.
 
 .. seealso:: :py:func:`deregisterLocatorFilter`
 

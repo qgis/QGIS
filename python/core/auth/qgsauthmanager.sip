@@ -161,8 +161,8 @@ Re-emit a signal to schedule an optional erase of authentication database.
 .. note::
 
    This can be called from the slot connected to a previously emitted scheduling signal,
-so that the slot can ask for another emit later, if the slot noticies the current GUI
-processing state is not ready for interacting with the user, e.g. project is still loading
+   so that the slot can ask for another emit later, if the slot noticies the current GUI
+   processing state is not ready for interacting with the user, e.g. project is still loading
 
 :param emitted: Setting to false will cause signal to be emitted by the schedule timer.
 Setting to true will stop any emitting, but will not stop the schedule timer.

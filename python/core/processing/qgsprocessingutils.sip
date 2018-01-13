@@ -133,7 +133,7 @@ temporary layer store.
 .. note::
 
    this version of the createFeatureSink() function has an API designed around use from the
-SIP bindings. c++ code should call the other createFeatureSink() version.
+   SIP bindings. c++ code should call the other createFeatureSink() version.
 
 .. note::
 
@@ -206,8 +206,8 @@ non-duplicate name.
 .. note::
 
    Some output file formats (e.g. shapefiles) have restrictions on the maximum
-length of field names, so be aware that the results of calling this method may
-be truncated when saving to these formats.
+   length of field names, so be aware that the results of calling this method may
+   be truncated when saving to these formats.
 %End
 
 };

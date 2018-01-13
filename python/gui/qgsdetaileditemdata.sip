@@ -43,7 +43,7 @@ part of the list item.
 .. note::
 
    the delegate may completely ignore this
-depending on the delegate implementation.
+   depending on the delegate implementation.
 %End
 
     QString title() const;

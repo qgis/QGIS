@@ -53,7 +53,7 @@ locator.
 .. warning::
 
    Plugins which register filters to the locator must take care to correctly call
-deregisterFilter() and deregister their filters upon plugin unload to avoid crashes.
+   deregisterFilter() and deregister their filters upon plugin unload to avoid crashes.
 
 .. seealso:: :py:func:`deregisterFilter`
 %End

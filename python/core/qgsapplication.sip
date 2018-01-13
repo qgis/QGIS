@@ -139,8 +139,8 @@ for resources in their own datastores e.g. a Qt4 resource bundle.
 .. note::
 
    A basic test will be carried out to ensure the theme search path
-based on the supplied theme name exists. If it does not the theme name will
-be reverted to 'default'.
+   based on the supplied theme name exists. If it does not the theme name will
+   be reverted to 'default'.
 %End
 
     static QString themeName();
@@ -499,7 +499,7 @@ textBrowserReport->document()->setDefaultStyleSheet(myStyle);
 .. note::
 
    you can use the special Qt extensions too, for example
-the gradient fills for backgrounds.
+   the gradient fills for backgrounds.
 %End
 
     static QString showSettings();

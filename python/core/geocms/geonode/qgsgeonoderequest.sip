@@ -70,8 +70,8 @@ Calling this method does not block while waiting for a result.
 .. warning::
 
    When using the non-blocking methods in this class, sending
-overlapping requests results in undefined behavior. Use separate instances
-of QgsGeoNodeRequest instead to avoid this.
+   overlapping requests results in undefined behavior. Use separate instances
+   of QgsGeoNodeRequest instead to avoid this.
 
 .. seealso:: :py:func:`requestBlocking`
 %End
@@ -98,8 +98,8 @@ This method is non-blocking and returns immediately.
 .. warning::
 
    When using the non-blocking methods in this class, sending
-overlapping requests results in undefined behavior. Use separate instances
-of QgsGeoNodeRequest instead to avoid this.
+   overlapping requests results in undefined behavior. Use separate instances
+   of QgsGeoNodeRequest instead to avoid this.
 
 .. seealso:: :py:func:`layersFetched`
 

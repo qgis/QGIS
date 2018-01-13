@@ -43,7 +43,7 @@ Holding Shift modifier key when attempting to toggle collapsed state will expand
 .. note::
 
    To add Collapsible properties in promoted QtDesigner widgets, you can add the following "Dynamic properties" by clicking on the green + in the propreties palette:
-bool collapsed, QString syncGroup, bool scrollOnExpand
+   bool collapsed, QString syncGroup, bool scrollOnExpand
 %End
 
 %TypeHeaderCode
@@ -134,7 +134,7 @@ Holding Shift modifier key when attempting to toggle collapsed state will expand
 .. note::
 
    To add Collapsible properties in promoted QtDesigner widgets, you can add the following "Dynamic properties" by clicking on the green + in the propreties palette:
-bool collapsed, bool saveCollapsedState, bool saveCheckedState, QString syncGroup
+   bool collapsed, bool saveCollapsedState, bool saveCheckedState, QString syncGroup
 %End
 
 %TypeHeaderCode
@@ -159,7 +159,7 @@ Set this to true to save/restore checked state
 .. note::
 
    only turn on mSaveCheckedState for groupboxes NOT used
-in multiple places or used as options for different parent objects *
+   in multiple places or used as options for different parent objects *
 %End
     bool saveCollapsedState();
     bool saveCheckedState();

@@ -129,8 +129,8 @@ Clear any cached configuration. Called when the QgsAuthManager deletes an authen
 .. note::
 
    It is highly recommended that a cache of authentication components (per requested authcfg)
-be implemented, to avoid excessive queries on the auth database. Such a cache could be as
-simple as a QHash or QMap of authcfg -> QgsAuthMethodConfig. See 'Basic' auth method plugin for example.
+   be implemented, to avoid excessive queries on the auth database. Such a cache could be as
+   simple as a QHash or QMap of authcfg -> QgsAuthMethodConfig. See 'Basic' auth method plugin for example.
 %End
 
     virtual void updateMethodConfig( QgsAuthMethodConfig &mconfig ) = 0;

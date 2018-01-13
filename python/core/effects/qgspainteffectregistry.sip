@@ -18,8 +18,8 @@ class QgsPaintEffectAbstractMetadata
 .. note::
 
    It's necessary to implement the createPaintEffect() function.
-In C++ you can use the QgsPaintEffectMetadata convenience class to
-simplify creation of the metadata.
+   In C++ you can use the QgsPaintEffectMetadata convenience class to
+   simplify creation of the metadata.
 
 .. versionadded:: 2.9
 %End

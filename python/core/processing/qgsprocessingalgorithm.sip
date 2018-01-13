@@ -284,7 +284,7 @@ values such as statistical calculations.
 .. note::
 
    this method can only be called from the main thread. Use prepare(), runPrepared() and postProcess()
-if you need to run algorithms from a background thread, or use the QgsProcessingAlgRunnerTask class.
+   if you need to run algorithms from a background thread, or use the QgsProcessingAlgRunnerTask class.
 %End
 
     bool prepare( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback );
@@ -300,8 +300,8 @@ calling runPrepared() (which is safe to do in any thread).
 .. note::
 
    This method modifies the algorithm instance, so it is not safe to call
-on algorithms directly retrieved from QgsProcessingRegistry and :py:class:`QgsProcessingProvider`. Instead, a copy
-of the algorithm should be created with clone() and prepare()/runPrepared() called on the copy.
+   on algorithms directly retrieved from QgsProcessingRegistry and :py:class:`QgsProcessingProvider`. Instead, a copy
+   of the algorithm should be created with clone() and prepare()/runPrepared() called on the copy.
 %End
 
     QVariantMap runPrepared( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback );
@@ -318,8 +318,8 @@ to allow the algorithm to perform any required cleanup tasks and return its fina
 .. note::
 
    This method modifies the algorithm instance, so it is not safe to call
-on algorithms directly retrieved from QgsProcessingRegistry and :py:class:`QgsProcessingProvider`. Instead, a copy
-of the algorithm should be created with clone() and prepare()/runPrepared() called on the copy.
+   on algorithms directly retrieved from QgsProcessingRegistry and :py:class:`QgsProcessingProvider`. Instead, a copy
+   of the algorithm should be created with clone() and prepare()/runPrepared() called on the copy.
 %End
 
     QVariantMap postProcess( QgsProcessingContext &context, QgsProcessingFeedback *feedback );
@@ -331,8 +331,8 @@ includes the results evaluated by the algorithm.
 .. note::
 
    This method modifies the algorithm instance, so it is not safe to call
-on algorithms directly retrieved from QgsProcessingRegistry and :py:class:`QgsProcessingProvider`. Instead, a copy
-of the algorithm should be created with clone() and prepare()/runPrepared() called on the copy.
+   on algorithms directly retrieved from QgsProcessingRegistry and :py:class:`QgsProcessingProvider`. Instead, a copy
+   of the algorithm should be created with clone() and prepare()/runPrepared() called on the copy.
 %End
 
     virtual QWidget *createCustomParametersWidget( QWidget *parent = 0 ) const /Factory/;

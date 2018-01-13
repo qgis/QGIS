@@ -25,7 +25,7 @@ hierarchy.  QgsProjectPropertyValues are always graph leaves.
 .. note::
 
    This class is used internally by QgsProject. It's generally recommended that the methods in
-QgsProject are used to modify project properties rather than using these low-level classes.
+   QgsProject are used to modify project properties rather than using these low-level classes.
 
 .. versionadded:: 3.0
 %End
@@ -228,7 +228,7 @@ Set the value associated with this key
 .. note::
 
    that the single value node associated with each key is always
-stored keyed by the current key name
+   stored keyed by the current key name
 %End
 
     virtual void dump( int tabs = 0 ) const;

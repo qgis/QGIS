@@ -18,7 +18,7 @@ Stores metadata about one renderer class.
 .. note::
 
    It's necessary to implement createRenderer() function.
-In C++ you can use QgsRendererMetadata convenience class.
+   In C++ you can use QgsRendererMetadata convenience class.
 %End
 
 %TypeHeaderCode

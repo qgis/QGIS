@@ -155,7 +155,7 @@ Sets the point's z-coordinate.
 .. note::
 
    calling this will have no effect if the point does not contain a z-dimension. Use addZValue() to
-add a z value and force the point to have a z dimension.
+   add a z value and force the point to have a z dimension.
 
 .. seealso:: z
 
@@ -169,7 +169,7 @@ Sets the point's m-value.
 .. note::
 
    calling this will have no effect if the point does not contain a m-dimension. Use addMValue() to
-add a m value and force the point to have an m dimension.
+   add a m value and force the point to have an m dimension.
 
 .. seealso:: m
 

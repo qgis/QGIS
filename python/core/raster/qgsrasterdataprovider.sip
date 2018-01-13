@@ -285,8 +285,8 @@ to overwrite data of the provider using writeBlock() calls.
 .. note::
 
    Only some providers support editing mode and even those may fail to turn
-the underlying data source into editing mode, so it is necessary to check the return
-value whether the operation was successful.
+   the underlying data source into editing mode, so it is necessary to check the return
+   value whether the operation was successful.
 
 .. seealso:: :py:func:`isEditable`
 

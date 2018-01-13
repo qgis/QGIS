@@ -40,8 +40,8 @@ Returns a variant representing the current state of the widget.
 .. note::
 
    this will not be a boolean true or false value, it will instead
-be the values configured to represent checked and unchecked states in
-the editor widget configuration.
+   be the values configured to represent checked and unchecked states in
+   the editor widget configuration.
 %End
 
     virtual bool applyDirectly();

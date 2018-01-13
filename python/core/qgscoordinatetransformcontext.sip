@@ -82,8 +82,8 @@ required for transformations for that source or destination.
 .. warning::
 
    This method should not be used to calculate the corresponding datum transforms
-to use for a coordinate transform. Instead, always use calculateDatumTransforms()
-to determine this.
+   to use for a coordinate transform. Instead, always use calculateDatumTransforms()
+   to determine this.
 
 .. seealso:: :py:func:`addSourceDestinationDatumTransform`
 %End
@@ -104,7 +104,7 @@ Returns true if the new transform pair was added successfully.
 .. note::
 
    Transforms set using this method will override any specific source or destination
-transforms set by addSourceDatumTransform() or addDestinationDatumTransform().
+   transforms set by addSourceDatumTransform() or addDestinationDatumTransform().
 
 .. seealso:: :py:func:`sourceDestinationDatumTransforms`
 

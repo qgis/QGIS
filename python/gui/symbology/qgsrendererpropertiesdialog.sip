@@ -74,7 +74,7 @@ Emit when you require a panel to be show in the interface.
 .. note::
 
    If you are connected to this signal you should also connect
-given panels showPanel signal as they can be nested.
+   given panels showPanel signal as they can be nested.
 %End
 
   public slots:

@@ -180,7 +180,7 @@ above any existing map items already present in the stack.
 .. note::
 
    After adding an item to the stack update()
-should be called for the QgsLayoutItemMap to prevent rendering artifacts.
+   should be called for the QgsLayoutItemMap to prevent rendering artifacts.
 
 .. seealso:: :py:func:`removeItem`
 %End
@@ -192,7 +192,7 @@ Removes an item which matching ``itemId`` from the stack and deletes the corresp
 .. note::
 
    After removing an item from the stack, update()
-should be called for the QgsLayoutItemMap to prevent rendering artifacts.
+   should be called for the QgsLayoutItemMap to prevent rendering artifacts.
 
 .. seealso:: :py:func:`addItem`
 %End
@@ -204,7 +204,7 @@ Moves an item which matching ``itemId`` up the stack, causing it to be rendered 
 .. note::
 
    After moving an item within the stack, update() should be
-called for the QgsLayoutItemMap to redraw the map with the new item stack order.
+   called for the QgsLayoutItemMap to redraw the map with the new item stack order.
 
 .. seealso:: :py:func:`moveItemDown`
 %End
@@ -216,7 +216,7 @@ Moves an item which matching ``itemId`` up the stack, causing it to be rendered 
 .. note::
 
    After moving an item within the stack, update() should be
-called for the QgsLayoutItemMap to redraw the map with the new item stack order.
+   called for the QgsLayoutItemMap to redraw the map with the new item stack order.
 
 .. seealso:: :py:func:`moveItemUp`
 %End

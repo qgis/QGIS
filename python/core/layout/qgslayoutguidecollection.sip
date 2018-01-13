@@ -47,7 +47,7 @@ Sets the ``layout`` the guide belongs to.
 .. note::
 
    Adding the guide to a QgsLayoutGuideCollection will automatically set
-the corresponding layout for you.
+   the corresponding layout for you.
 
 .. seealso:: :py:func:`layout`
 %End

@@ -17,7 +17,7 @@ class QgsReportSectionLayout : QgsAbstractReportSection
 .. warning::
 
    This is not considered stable API, and may change in future QGIS releases. It is
-exposed to the Python bindings for unit testing purposes only.
+   exposed to the Python bindings for unit testing purposes only.
 
 .. versionadded:: 3.0
 %End
