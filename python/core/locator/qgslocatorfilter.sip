@@ -103,9 +103,9 @@ results from this filter.
 .. note::
 
    Plugins are not permitted to utilize prefixes with < 3 characters,
-as these are reserved for core QGIS functions. If a plugin registers
-a filter with a prefix shorter than 3 characters then the prefix will
-be ignored.
+   as these are reserved for core QGIS functions. If a plugin registers
+   a filter with a prefix shorter than 3 characters then the prefix will
+   be ignored.
 %End
 
     virtual void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) = 0;

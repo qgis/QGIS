@@ -18,7 +18,7 @@ Stores metadata about one symbol layer class.
 .. note::
 
    It's necessary to implement createSymbolLayer() function.
-In C++ you can use QgsSymbolLayerMetadata convenience class.
+   In C++ you can use QgsSymbolLayerMetadata convenience class.
 %End
 
 %TypeHeaderCode

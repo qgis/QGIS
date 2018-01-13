@@ -92,7 +92,7 @@ be used for slow data sources, be aware, that the call to this method might take
 .. note::
 
    when a cache is invalidated() (e.g. by adding an attribute to a layer) this setting
-is reset. A full cache rebuild must be performed by calling setFullCache( true ) again.
+   is reset. A full cache rebuild must be performed by calling setFullCache( true ) again.
 
 .. seealso:: :py:func:`hasFullCache`
 %End

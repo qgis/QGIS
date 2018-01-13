@@ -1906,7 +1906,7 @@ created by the algorithm.
 .. note::
 
    Consider using the more flexible QgsProcessingParameterFeatureSink wherever
-possible.
+   possible.
 
 .. versionadded:: 3.0
 %End

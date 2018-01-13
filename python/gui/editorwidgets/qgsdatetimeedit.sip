@@ -16,9 +16,9 @@ class QgsDateTimeEdit : QDateTimeEdit
 .. warning::
 
    You should use the signal valueChanged of this subclass
-rather than QDateTimeEdit.dateTimeChanged. If you consequently connect parent's
-dateTimeChanged signal and call dateTime() afterwards there is no warranty to
-have a proper NULL value handling.
+   rather than QDateTimeEdit.dateTimeChanged. If you consequently connect parent's
+   dateTimeChanged signal and call dateTime() afterwards there is no warranty to
+   have a proper NULL value handling.
 %End
 
 %TypeHeaderCode

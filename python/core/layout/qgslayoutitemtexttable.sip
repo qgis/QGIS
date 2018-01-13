@@ -48,8 +48,8 @@ Adds a row to the table
 .. note::
 
    If row is shorter than the number of columns in the table than blank cells
-will be inserted at the end of the row. If row contains more strings then the number
-of columns in the table then these extra strings will be ignored.
+   will be inserted at the end of the row. If row contains more strings then the number
+   of columns in the table then these extra strings will be ignored.
 
 .. note::
 

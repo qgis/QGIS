@@ -68,11 +68,11 @@ a QgsProject instance instead of this constructor.
 .. warning::
 
    Do NOT use an empty/default constructed QgsCoordinateTransformContext()
-object when creating QgsCoordinateTransform objects. This prevents correct
-datum transform handling and may result in inaccurate transformations. Always
-ensure that the QgsCoordinateTransformContext object is correctly retrieved
-based on the current code context, or use the constructor variant which
-accepts a QgsProject argument instead.
+   object when creating QgsCoordinateTransform objects. This prevents correct
+   datum transform handling and may result in inaccurate transformations. Always
+   ensure that the QgsCoordinateTransformContext object is correctly retrieved
+   based on the current code context, or use the constructor variant which
+   accepts a QgsProject argument instead.
 
 .. versionadded:: 3.0
 %End

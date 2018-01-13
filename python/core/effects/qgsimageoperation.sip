@@ -130,7 +130,7 @@ speed and blur quality.
 .. note::
 
    for fastest operation, ensure the source image is ARGB32_Premultiplied if
-alphaOnly is set to false, or ARGB32 if alphaOnly is true
+   alphaOnly is set to false, or ARGB32 if alphaOnly is true
 %End
 
     static QImage *gaussianBlur( QImage &image, const int radius ) /Factory/;

@@ -198,7 +198,7 @@ Constructor a CRS object using a PostGIS SRID, an EPSG code or an internal QGIS 
 .. note::
 
    We encourage you to use EPSG code, WKT or Proj4 to describe CRS's in your code
-wherever possible. Internal QGIS CRS IDs are not guaranteed to be permanent / involatile.
+   wherever possible. Internal QGIS CRS IDs are not guaranteed to be permanent / involatile.
 
 :param id: The ID valid for the chosen CRS ID type
 :param type: One of the types described in CrsType
@@ -300,8 +300,8 @@ Sets this CRS by lookup of the given ID in the CRS database.
 .. note::
 
    We encourage you to use EPSG code, WKT or Proj4 to describe CRS's in your code
-wherever possible. Internal QGIS CRS IDs are not guaranteed to be permanent / involatile.
-/     // TODO QGIS 3: remove type and always use EPSG code, rename to createFromEpsg
+   wherever possible. Internal QGIS CRS IDs are not guaranteed to be permanent / involatile.
+   /     // TODO QGIS 3: remove type and always use EPSG code, rename to createFromEpsg
 %End
 
     bool createFromOgcWmsCrs( const QString &crs );
@@ -319,7 +319,7 @@ and refer to QGIS internal CRS IDs.
    this method uses an internal cache. Call invalidateCache() to clear the cache.
 
 .. seealso:: :py:func:`fromOgcWmsCrs`
-/     // TODO QGIS 3: remove "QGIS" and "CUSTOM", only support "USER" (also returned by authid())
+   /     // TODO QGIS 3: remove "QGIS" and "CUSTOM", only support "USER" (also returned by authid())
 %End
 
     bool createFromSrid( const long srid );
@@ -444,8 +444,8 @@ For more details on supported formats see OGRSpatialReference.SetFromUserInput()
 .. note::
 
    this function generates a WKT string using OSRSetFromUserInput() and
-passes it to createFromWkt() function.
-/    // TODO QGIS3: rename to createFromStringOGR so it is clear it's similar to createFromString, just different backend
+   passes it to createFromWkt() function.
+   /    // TODO QGIS3: rename to createFromStringOGR so it is clear it's similar to createFromString, just different backend
 %End
 
     static void setupESRIWktFix();
@@ -456,13 +456,13 @@ This is required for proper shapefile CRS import when using gdal>= 1.9.
 .. note::
 
    This function is called by createFromUserInput() and QgsOgrProvider.crs(), there is usually
-no need to call it from elsewhere.
+   no need to call it from elsewhere.
 
 .. note::
 
    This function sets CPL config option GDAL_FIX_ESRI_WKT to a proper value,
-unless it has been set by the user through the commandline or an environment variable.
-For more details refer to OGRSpatialReference.morphFromESRI() .
+   unless it has been set by the user through the commandline or an environment variable.
+   For more details refer to OGRSpatialReference.morphFromESRI() .
 %End
 
     bool isValid() const;
@@ -481,7 +481,7 @@ if that involves resorting to a hard coded default of geocs:wgs84.
 .. note::
 
    It is not usually necessary to use this function, unless you
-are trying to force this CRS to be valid.
+   are trying to force this CRS to be valid.
 
 .. seealso:: :py:func:`setCustomCrsValidation`
 %End
@@ -497,7 +497,7 @@ pieces of information about CRS.
    The ellipsoid and projection acronyms must be set as well as the proj4string!
 
 :return: long the SrsId of the matched CRS, zero if no match was found
-/    // TODO QGIS 3: seems completely obsolete now (only compares proj4 - already done in createFromProj4)
+   /    // TODO QGIS 3: seems completely obsolete now (only compares proj4 - already done in createFromProj4)
 %End
 
     bool operator==( const QgsCoordinateReferenceSystem &srs ) const;

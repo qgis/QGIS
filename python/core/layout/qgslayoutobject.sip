@@ -91,8 +91,8 @@ Constructor for QgsLayoutObject, with the specified parent ``layout``.
 .. note::
 
    While ownership of a QgsLayoutObject is not passed to the layout,
-classes which are derived from QgsLayoutObject (such as QgsLayoutItem)
-may transfer their ownership to a layout upon construction.
+   classes which are derived from QgsLayoutObject (such as QgsLayoutItem)
+   may transfer their ownership to a layout upon construction.
 %End
 
 

@@ -305,7 +305,7 @@ Uses GEOS library for the test.
 .. note::
 
    This is useful mainly for linestrings and linear rings. Polygons are simple by definition,
-for checking anomalies in polygon geometries one can use isGeosValid().
+   for checking anomalies in polygon geometries one can use isGeosValid().
 
 .. versionadded:: 3.0
 %End
@@ -939,7 +939,7 @@ by calling `error()` on the returned geometry.
 .. note::
 
    for line based geometries, the center point of the line is returned,
-and for point based geometries, the point itself is returned
+   and for point based geometries, the point itself is returned
 
 .. seealso:: :py:func:`pointOnSurface`
 
@@ -1368,7 +1368,7 @@ The ``method`` argument dictates which validator to utilize.
 .. note::
 
    Available in Python bindings since QGIS 1.6
-*
+   *
 %End
 
     static QgsGeometry unaryUnion( const QVector<QgsGeometry> &geometries );

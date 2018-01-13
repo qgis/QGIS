@@ -193,7 +193,7 @@ the "no color" option sets the color button's color to a totally transparent col
 .. note::
 
    The "no color" option is only shown if the color button is set to show an alpha channel in the color
-dialog (see setColorDialogOptions)
+   dialog (see setColorDialogOptions)
 %End
 
     bool showNoColor() const;
@@ -210,7 +210,7 @@ the "no color" option sets the color button's color to a totally transparent col
 .. note::
 
    The "no color" option is only shown if the color button is set to show an alpha channel in the color
-dialog (see setColorDialogOptions)
+   dialog (see setColorDialogOptions)
 %End
 
     void setNoColorString( const QString &noColorString );
@@ -226,7 +226,7 @@ Sets the string to use for the "no color" option in the button's drop-down menu.
 .. note::
 
    The "no color" option is only shown if the color button is set to show an alpha channel in the color
-dialog (see setColorDialogOptions)
+   dialog (see setColorDialogOptions)
 %End
 
     void setShowNull( bool showNull );
@@ -277,7 +277,7 @@ Returns the string used for the "no color" option in the button's drop-down menu
 .. note::
 
    The "no color" option is only shown if the color button is set to show an alpha channel in the color
-dialog (see setColorDialogOptions)
+   dialog (see setColorDialogOptions)
 %End
 
     void setContext( const QString &context );
@@ -374,7 +374,7 @@ Sets color to a totally transparent color.
 .. note::
 
    If the color button is not set to show an opacity channel in the color
-dialog (see setColorDialogOptions) then the color will not be changed.
+   dialog (see setColorDialogOptions) then the color will not be changed.
 
 .. seealso:: :py:func:`setToNull`
 %End

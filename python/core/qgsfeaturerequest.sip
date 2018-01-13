@@ -333,7 +333,7 @@ Sets invalid geometry checking behavior.
 .. note::
 
    Invalid geometry checking is not performed when retrieving features
-directly from a :py:class:`QgsVectorDataProvider`.
+   directly from a :py:class:`QgsVectorDataProvider`.
 
 .. seealso:: :py:func:`invalidGeometryCheck`
 

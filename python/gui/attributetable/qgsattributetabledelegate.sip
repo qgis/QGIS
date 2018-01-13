@@ -73,8 +73,8 @@ The consumer of this signal can initialize the index widget.
 .. note::
 
    This signal is emitted repeatedly whenever the item is being painted.
-It is the consumers responsibility to check if initialization has already
-happened before.
+   It is the consumers responsibility to check if initialization has already
+   happened before.
 %End
 
 };

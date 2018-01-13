@@ -109,12 +109,12 @@ strings to a list and calling calculate().
 .. note::
 
    call reset() before adding the first string using this method
-to clear the results from any previous calculations
+   to clear the results from any previous calculations
 
 .. note::
 
    finalize() must be called after adding the final string and before
-retrieving calculated statistics.
+   retrieving calculated statistics.
 
 .. seealso:: :py:func:`calculate`
 
@@ -135,12 +135,12 @@ variants to a list and calling calculateFromVariants().
 .. note::
 
    call reset() before adding the first string using this method
-to clear the results from any previous calculations
+   to clear the results from any previous calculations
 
 .. note::
 
    finalize() must be called after adding the final value and before
-retrieving calculated statistics.
+   retrieving calculated statistics.
 
 .. seealso:: :py:func:`calculateFromVariants`
 

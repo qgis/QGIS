@@ -23,10 +23,10 @@ for use in QGIS layouts. Measurement units are stored alongside the size.
 .. note::
 
    This class does not inherit from QSizeF since QSizeF includes methods which should not apply to sizes
-with units. For instance, the + and - operators would mislead users of this class to believe that
-addition of two QgsLayoutSize with different unit types would automatically convert units. Instead,
-all unit conversion must be handled by a QgsLayoutMeasurementConverter so that conversion between
-paper and screen units can be correctly performed.
+   with units. For instance, the + and - operators would mislead users of this class to believe that
+   addition of two QgsLayoutSize with different unit types would automatically convert units. Instead,
+   all unit conversion must be handled by a QgsLayoutMeasurementConverter so that conversion between
+   paper and screen units can be correctly performed.
 %End
 
 %TypeHeaderCode

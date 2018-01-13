@@ -199,8 +199,8 @@ Reads the layer described in the associated DOM node.
 .. note::
 
    This method is mainly for use by QgsProjectBadLayerHandler subclasses
-that may fix definition of bad layers with the user's help in GUI. Calling
-this method with corrected DOM node adds the layer back to the project.
+   that may fix definition of bad layers with the user's help in GUI. Calling
+   this method with corrected DOM node adds the layer back to the project.
 
 :param layerNode: represents a QgsProject DOM node that encodes a specific layer.
 %End
@@ -678,7 +678,7 @@ it will not be part of the returned QList.
 .. note::
 
    takeOwnership is not available in the Python bindings - the registry will always
-take ownership
+   take ownership
 
 .. versionadded:: 1.8
 
@@ -721,7 +721,7 @@ the layer yourself. Not available in Python.
 .. note::
 
    takeOwnership is not available in the Python bindings - the registry will always
-take ownership
+   take ownership
 
 .. seealso:: :py:func:`addMapLayers`
 %End
@@ -807,7 +807,7 @@ of any layers these layers will also be deleted.
 .. note::
 
    Calling this method will cause the removeAll() signal to
-be emitted.
+   be emitted.
 
 .. seealso:: :py:func:`removeMapLayer`
 

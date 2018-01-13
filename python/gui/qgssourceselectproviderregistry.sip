@@ -20,8 +20,8 @@ QgsSourceSelectProviderRegistry is not usually directly created, but rather acce
 .. note::
 
    This class access to QgsProviderRegistry instance to initialize, but QgsProviderRegistry is
-typically initialized after QgsGui is constructed, for this reason a delayed initialization has been
-implemented in the class.
+   typically initialized after QgsGui is constructed, for this reason a delayed initialization has been
+   implemented in the class.
 
 .. versionadded:: 3.0
 %End

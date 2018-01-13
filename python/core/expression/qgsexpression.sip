@@ -132,8 +132,8 @@ Get list of columns referenced by the expression.
 .. note::
 
    If the returned list contains the QgsFeatureRequest.AllAttributes constant then
-all attributes from the layer are required for evaluation of the expression.
-QgsFeatureRequest.setSubsetOfAttributes automatically handles this case.
+   all attributes from the layer are required for evaluation of the expression.
+   QgsFeatureRequest.setSubsetOfAttributes automatically handles this case.
 
 .. seealso:: :py:func:`referencedAttributeIndexes`
 %End
@@ -355,7 +355,7 @@ value.
 .. note::
 
    this method is inefficient for bulk evaluation of expressions, it is intended
-for one-off evaluations only.
+   for one-off evaluations only.
 %End
 
     enum SpatialOperator

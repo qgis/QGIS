@@ -18,8 +18,8 @@ This class is used for printing, exporting to PDF and images.
 .. note::
 
    This class should not be created directly. For the atlas to function correctly
-the atlasComposition() property for QgsComposition should be used to retrieve a
-QgsLayoutAtlas which is automatically created and attached to the composition.
+   the atlasComposition() property for QgsComposition should be used to retrieve a
+   QgsLayoutAtlas which is automatically created and attached to the composition.
 
 .. versionadded:: 3.0
 %End

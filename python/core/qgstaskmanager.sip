@@ -191,7 +191,7 @@ Will be emitted by task when its progress changes.
 .. note::
 
    derived classes should not emit this signal directly, instead they should call
-setProgress()
+   setProgress()
 %End
 
     void statusChanged( int status );
@@ -203,7 +203,7 @@ Will be emitted by task when its status changes.
 .. note::
 
    derived classes should not emit this signal directly, it will automatically
-be emitted
+   be emitted
 %End
 
     void begun();
@@ -213,7 +213,7 @@ Will be emitted by task to indicate its commencement.
 .. note::
 
    derived classes should not emit this signal directly, it will automatically
-be emitted when the task begins
+   be emitted when the task begins
 %End
 
     void taskCompleted();
@@ -223,7 +223,7 @@ Will be emitted by task to indicate its successful completion.
 .. note::
 
    derived classes should not emit this signal directly, it will automatically
-be emitted
+   be emitted
 %End
 
     void taskTerminated();
@@ -235,7 +235,7 @@ an internal error).
 .. note::
 
    derived classes should not emit this signal directly, it will automatically
-be emitted
+   be emitted
 %End
 
   protected:

@@ -42,7 +42,7 @@ above any existing map overviews already present in the stack.
 .. note::
 
    After adding a overview to the stack, update()
-should be called for the QgsLayoutItemMap to prevent rendering artifacts.
+   should be called for the QgsLayoutItemMap to prevent rendering artifacts.
 
 .. seealso:: :py:func:`removeOverview`
 %End
@@ -54,7 +54,7 @@ Removes an overview with matching overviewId from the stack and deletes the corr
 .. note::
 
    After removing an overview from the stack, update()
-should be called for the QgsLayoutItemMap to prevent rendering artifacts.
+   should be called for the QgsLayoutItemMap to prevent rendering artifacts.
 
 .. seealso:: :py:func:`addOverview`
 %End
@@ -66,7 +66,7 @@ Moves an overview with matching overviewId up the stack, causing it to be render
 .. note::
 
    After moving an overview within the stack, update() should be
-called for the QgsLayoutItemMap to redraw the map with the new overview stack order.
+   called for the QgsLayoutItemMap to redraw the map with the new overview stack order.
 
 .. seealso:: :py:func:`moveOverviewDown`
 %End
@@ -78,7 +78,7 @@ Moves an overview with matching overviewId down the stack, causing it to be rend
 .. note::
 
    After moving an overview within the stack, update() should be
-called for the QgsLayoutItemMap to redraw the map with the new overview stack order.
+   called for the QgsLayoutItemMap to redraw the map with the new overview stack order.
 
 .. seealso:: :py:func:`moveOverviewUp`
 %End

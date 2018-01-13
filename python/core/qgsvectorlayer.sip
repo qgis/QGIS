@@ -930,8 +930,8 @@ notified when the freshly updated feature counts are ready.
 .. note::
 
    If the count features for symbols has been already done a
-None is returned. If you need to wait for the results,
-you can call waitForFinished() on the feature counter.
+   None is returned. If you need to wait for the results,
+   you can call waitForFinished() on the feature counter.
 
 .. versionadded:: 3.0
 %End
@@ -1002,16 +1002,16 @@ Returns true if the feature's attribute was successfully changed.
 .. note::
 
    Calls to updateFeature() are only valid for layers in which edits have been enabled
-by a call to startEditing(). Changes made to features using this method are not committed
-to the underlying data provider until a commitChanges() call is made. Any uncommitted
-changes can be discarded by calling rollBack().
+   by a call to startEditing(). Changes made to features using this method are not committed
+   to the underlying data provider until a commitChanges() call is made. Any uncommitted
+   changes can be discarded by calling rollBack().
 
 .. warning::
 
    This method needs to query the underlying data provider to fetch the feature
-with matching QgsFeature.id() on every call. Depending on the underlying data source this
-can be slow to execute. Consider using the more efficient changeAttributeValue() or
-changeGeometry() methods instead.
+   with matching QgsFeature.id() on every call. Depending on the underlying data source this
+   can be slow to execute. Consider using the more efficient changeAttributeValue() or
+   changeGeometry() methods instead.
 
 
 .. seealso:: :py:func:`startEditing`
@@ -1032,9 +1032,9 @@ Not meaningful for Point geometries
 .. note::
 
    Calls to insertVertex() are only valid for layers in which edits have been enabled
-by a call to startEditing(). Changes made to features using this method are not committed
-to the underlying data provider until a commitChanges() call is made. Any uncommitted
-changes can be discarded by calling rollBack().
+   by a call to startEditing(). Changes made to features using this method are not committed
+   to the underlying data provider until a commitChanges() call is made. Any uncommitted
+   changes can be discarded by calling rollBack().
 %End
 
     bool insertVertex( const QgsPoint &point, QgsFeatureId atFeatureId, int beforeVertex );
@@ -1046,9 +1046,9 @@ Not meaningful for Point geometries
 .. note::
 
    Calls to insertVertex() are only valid for layers in which edits have been enabled
-by a call to startEditing(). Changes made to features using this method are not committed
-to the underlying data provider until a commitChanges() call is made. Any uncommitted
-changes can be discarded by calling rollBack().
+   by a call to startEditing(). Changes made to features using this method are not committed
+   to the underlying data provider until a commitChanges() call is made. Any uncommitted
+   changes can be discarded by calling rollBack().
 %End
 
     bool moveVertex( double x, double y, QgsFeatureId atFeatureId, int atVertex );
@@ -1060,9 +1060,9 @@ to the given coordinates
 .. note::
 
    Calls to moveVertex() are only valid for layers in which edits have been enabled
-by a call to startEditing(). Changes made to features using this method are not committed
-to the underlying data provider until a commitChanges() call is made. Any uncommitted
-changes can be discarded by calling rollBack().
+   by a call to startEditing(). Changes made to features using this method are not committed
+   to the underlying data provider until a commitChanges() call is made. Any uncommitted
+   changes can be discarded by calling rollBack().
 %End
 
     bool moveVertex( const QgsPoint &p, QgsFeatureId atFeatureId, int atVertex ) /PyName=moveVertexV2/;
@@ -1078,9 +1078,9 @@ to the given coordinates
 .. note::
 
    Calls to moveVertex() are only valid for layers in which edits have been enabled
-by a call to startEditing(). Changes made to features using this method are not committed
-to the underlying data provider until a commitChanges() call is made. Any uncommitted
-changes can be discarded by calling rollBack().
+   by a call to startEditing(). Changes made to features using this method are not committed
+   to the underlying data provider until a commitChanges() call is made. Any uncommitted
+   changes can be discarded by calling rollBack().
 %End
 
     EditResult deleteVertex( QgsFeatureId featureId, int vertex );
@@ -1095,9 +1095,9 @@ Deletes a vertex from a feature.
 .. note::
 
    Calls to deleteVertex() are only valid for layers in which edits have been enabled
-by a call to startEditing(). Changes made to features using this method are not committed
-to the underlying data provider until a commitChanges() call is made. Any uncommitted
-changes can be discarded by calling rollBack().
+   by a call to startEditing(). Changes made to features using this method are not committed
+   to the underlying data provider until a commitChanges() call is made. Any uncommitted
+   changes can be discarded by calling rollBack().
 %End
 
     bool deleteSelectedFeatures( int *deletedCount = 0 );
@@ -1126,9 +1126,9 @@ Adds a ring to polygon/multipolygon features
 .. note::
 
    Calls to addRing() are only valid for layers in which edits have been enabled
-by a call to startEditing(). Changes made to features using this method are not committed
-to the underlying data provider until a commitChanges() call is made. Any uncommitted
-changes can be discarded by calling rollBack().
+   by a call to startEditing(). Changes made to features using this method are not committed
+   to the underlying data provider until a commitChanges() call is made. Any uncommitted
+   changes can be discarded by calling rollBack().
 %End
 
     QgsGeometry::OperationResult addRing( QgsCurve *ring /Transfer/, QgsFeatureId *featureId = 0 ) /PyName=addCurvedRing/;
@@ -1154,9 +1154,9 @@ Adds a ring to polygon/multipolygon features (takes ownership)
 .. note::
 
    Calls to addRing() are only valid for layers in which edits have been enabled
-by a call to startEditing(). Changes made to features using this method are not committed
-to the underlying data provider until a commitChanges() call is made. Any uncommitted
-changes can be discarded by calling rollBack().
+   by a call to startEditing(). Changes made to features using this method are not committed
+   to the underlying data provider until a commitChanges() call is made. Any uncommitted
+   changes can be discarded by calling rollBack().
 %End
 
     QgsGeometry::OperationResult addPart( const QList<QgsPointXY> &ring );
@@ -1176,9 +1176,9 @@ Adds a new part polygon to a multipart feature
 .. note::
 
    Calls to addPart() are only valid for layers in which edits have been enabled
-by a call to startEditing(). Changes made to features using this method are not committed
-to the underlying data provider until a commitChanges() call is made. Any uncommitted
-changes can be discarded by calling rollBack().
+   by a call to startEditing(). Changes made to features using this method are not committed
+   to the underlying data provider until a commitChanges() call is made. Any uncommitted
+   changes can be discarded by calling rollBack().
 %End
 
     QgsGeometry::OperationResult addPart( const QgsPointSequence &ring ) /PyName=addPartV2/;
@@ -1202,9 +1202,9 @@ Adds a new part polygon to a multipart feature
 .. note::
 
    Calls to addPart() are only valid for layers in which edits have been enabled
-by a call to startEditing(). Changes made to features using this method are not committed
-to the underlying data provider until a commitChanges() call is made. Any uncommitted
-changes can be discarded by calling rollBack().
+   by a call to startEditing(). Changes made to features using this method are not committed
+   to the underlying data provider until a commitChanges() call is made. Any uncommitted
+   changes can be discarded by calling rollBack().
 %End
 
     QgsGeometry::OperationResult addPart( QgsCurve *ring /Transfer/ ) /PyName=addCurvedPart/;
@@ -1217,9 +1217,9 @@ changes can be discarded by calling rollBack().
 .. note::
 
    Calls to addPart() are only valid for layers in which edits have been enabled
-by a call to startEditing(). Changes made to features using this method are not committed
-to the underlying data provider until a commitChanges() call is made. Any uncommitted
-changes can be discarded by calling rollBack().
+   by a call to startEditing(). Changes made to features using this method are not committed
+   to the underlying data provider until a commitChanges() call is made. Any uncommitted
+   changes can be discarded by calling rollBack().
 %End
 
     int translateFeature( QgsFeatureId featureId, double dx, double dy );
@@ -1235,9 +1235,9 @@ Translates feature by dx, dy
 .. note::
 
    Calls to translateFeature() are only valid for layers in which edits have been enabled
-by a call to startEditing(). Changes made to features using this method are not committed
-to the underlying data provider until a commitChanges() call is made. Any uncommitted
-changes can be discarded by calling rollBack().
+   by a call to startEditing(). Changes made to features using this method are not committed
+   to the underlying data provider until a commitChanges() call is made. Any uncommitted
+   changes can be discarded by calling rollBack().
 %End
 
     QgsGeometry::OperationResult splitParts( const QVector<QgsPointXY> &splitLine, bool topologicalEditing = false );
@@ -1259,9 +1259,9 @@ Splits parts cut by the given line
 .. note::
 
    Calls to splitParts() are only valid for layers in which edits have been enabled
-by a call to startEditing(). Changes made to features using this method are not committed
-to the underlying data provider until a commitChanges() call is made. Any uncommitted
-changes can be discarded by calling rollBack().
+   by a call to startEditing(). Changes made to features using this method are not committed
+   to the underlying data provider until a commitChanges() call is made. Any uncommitted
+   changes can be discarded by calling rollBack().
 %End
 
     QgsGeometry::OperationResult splitFeatures( const QVector<QgsPointXY> &splitLine, bool topologicalEditing = false );
@@ -1283,9 +1283,9 @@ Splits features cut by the given line
 .. note::
 
    Calls to splitFeatures() are only valid for layers in which edits have been enabled
-by a call to startEditing(). Changes made to features using this method are not committed
-to the underlying data provider until a commitChanges() call is made. Any uncommitted
-changes can be discarded by calling rollBack().
+   by a call to startEditing(). Changes made to features using this method are not committed
+   to the underlying data provider until a commitChanges() call is made. Any uncommitted
+   changes can be discarded by calling rollBack().
 %End
 
     int addTopologicalPoints( const QgsGeometry &geom );
@@ -1303,9 +1303,9 @@ Adds topological points for every vertex of the geometry.
 .. note::
 
    Calls to addTopologicalPoints() are only valid for layers in which edits have been enabled
-by a call to startEditing(). Changes made to features using this method are not committed
-to the underlying data provider until a commitChanges() call is made. Any uncommitted
-changes can be discarded by calling rollBack().
+   by a call to startEditing(). Changes made to features using this method are not committed
+   to the underlying data provider until a commitChanges() call is made. Any uncommitted
+   changes can be discarded by calling rollBack().
 %End
 
     int addTopologicalPoints( const QgsPointXY &p );
@@ -1322,9 +1322,9 @@ editing.
 .. note::
 
    Calls to addTopologicalPoints() are only valid for layers in which edits have been enabled
-by a call to startEditing(). Changes made to features using this method are not committed
-to the underlying data provider until a commitChanges() call is made. Any uncommitted
-changes can be discarded by calling rollBack().
+   by a call to startEditing(). Changes made to features using this method are not committed
+   to the underlying data provider until a commitChanges() call is made. Any uncommitted
+   changes can be discarded by calling rollBack().
 %End
 
 
@@ -1460,9 +1460,9 @@ Returns true if the feature's geometry was successfully changed.
 .. note::
 
    Calls to changeGeometry() are only valid for layers in which edits have been enabled
-by a call to startEditing(). Changes made to features using this method are not committed
-to the underlying data provider until a commitChanges() call is made. Any uncommitted
-changes can be discarded by calling rollBack().
+   by a call to startEditing(). Changes made to features using this method are not committed
+   to the underlying data provider until a commitChanges() call is made. Any uncommitted
+   changes can be discarded by calling rollBack().
 
 .. seealso:: :py:func:`startEditing`
 
@@ -1497,9 +1497,9 @@ Returns true if the feature's attribute was successfully changed.
 .. note::
 
    Calls to changeAttributeValue() are only valid for layers in which edits have been enabled
-by a call to startEditing(). Changes made to features using this method are not committed
-to the underlying data provider until a commitChanges() call is made. Any uncommitted
-changes can be discarded by calling rollBack().
+   by a call to startEditing(). Changes made to features using this method are not committed
+   to the underlying data provider until a commitChanges() call is made. Any uncommitted
+   changes can be discarded by calling rollBack().
 
 .. seealso:: :py:func:`startEditing`
 
@@ -1518,9 +1518,9 @@ returns true if the field was added
 .. note::
 
    Calls to addAttribute() are only valid for layers in which edits have been enabled
-by a call to startEditing(). Changes made to features using this method are not committed
-to the underlying data provider until a commitChanges() call is made. Any uncommitted
-changes can be discarded by calling rollBack().
+   by a call to startEditing(). Changes made to features using this method are not committed
+   to the underlying data provider until a commitChanges() call is made. Any uncommitted
+   changes can be discarded by calling rollBack().
 %End
 
     void setFieldAlias( int index, const QString &aliasString );
@@ -1549,9 +1549,9 @@ Renames an attribute field  (but does not commit it).
 .. note::
 
    Calls to renameAttribute() are only valid for layers in which edits have been enabled
-by a call to startEditing(). Changes made to features using this method are not committed
-to the underlying data provider until a commitChanges() call is made. Any uncommitted
-changes can be discarded by calling rollBack().
+   by a call to startEditing(). Changes made to features using this method are not committed
+   to the underlying data provider until a commitChanges() call is made. Any uncommitted
+   changes can be discarded by calling rollBack().
 %End
 
     QString attributeAlias( int index ) const;
@@ -1599,9 +1599,9 @@ Deletes an attribute field (but does not commit it).
 .. note::
 
    Calls to deleteAttribute() are only valid for layers in which edits have been enabled
-by a call to startEditing(). Changes made to features using this method are not committed
-to the underlying data provider until a commitChanges() call is made. Any uncommitted
-changes can be discarded by calling rollBack().
+   by a call to startEditing(). Changes made to features using this method are not committed
+   to the underlying data provider until a commitChanges() call is made. Any uncommitted
+   changes can be discarded by calling rollBack().
 %End
 
     bool deleteAttributes( QList<int> attrs );
@@ -1623,9 +1623,9 @@ Deletes a feature from the layer (but does not commit it).
 .. note::
 
    Calls to deleteFeature() are only valid for layers in which edits have been enabled
-by a call to startEditing(). Changes made to features using this method are not committed
-to the underlying data provider until a commitChanges() call is made. Any uncommitted
-changes can be discarded by calling rollBack().
+   by a call to startEditing(). Changes made to features using this method are not committed
+   to the underlying data provider until a commitChanges() call is made. Any uncommitted
+   changes can be discarded by calling rollBack().
 %End
 
     bool deleteFeatures( const QgsFeatureIds &fids );
@@ -1640,9 +1640,9 @@ in case of an active transaction depends on the provider implementation
 .. note::
 
    Calls to deleteFeatures() are only valid for layers in which edits have been enabled
-by a call to startEditing(). Changes made to features using this method are not committed
-to the underlying data provider until a commitChanges() call is made. Any uncommitted
-changes can be discarded by calling rollBack().
+   by a call to startEditing(). Changes made to features using this method are not committed
+   to the underlying data provider until a commitChanges() call is made. Any uncommitted
+   changes can be discarded by calling rollBack().
 %End
 
     bool commitChanges();
@@ -1742,7 +1742,7 @@ take any changes made to default values into consideration.
 .. note::
 
    Unless the fields on the provider have directly been modified, there is
-no reason to call this method.
+   no reason to call this method.
 %End
 
     QVariant defaultValue( int index, const QgsFeature &feature = QgsFeature(),
@@ -2431,7 +2431,7 @@ Signal emitted, when an edit command successfully ended
 .. note::
 
    This does not mean it is also committed, only that it is written
-to the edit buffer. See beforeCommitChanges()
+   to the edit buffer. See beforeCommitChanges()
 %End
 
     void editCommandDestroyed();
@@ -2441,7 +2441,7 @@ Signal emitted, whan an edit command is destroyed
 .. note::
 
    This is not a rollback, it is only related to the current edit command.
-See beforeRollBack()
+   See beforeRollBack()
 %End
 
     void readCustomSymbology( const QDomElement &element, QString &errorMessage );

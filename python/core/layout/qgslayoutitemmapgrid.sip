@@ -41,7 +41,7 @@ above any existing map grids already present in the stack.
 .. note::
 
    After adding a grid to the stack, updateBoundingRect() and update()
-should be called for the QgsLayoutItemMap to prevent rendering artifacts.
+   should be called for the QgsLayoutItemMap to prevent rendering artifacts.
 
 .. seealso:: :py:func:`removeGrid`
 %End
@@ -53,7 +53,7 @@ Removes a grid with matching ``gridId`` from the stack and deletes the correspon
 .. note::
 
    After removing a grid from the stack, updateBoundingRect() and update()
-should be called for the QgsLayoutItemMap to prevent rendering artifacts.
+   should be called for the QgsLayoutItemMap to prevent rendering artifacts.
 
 .. seealso:: :py:func:`addGrid`
 %End
@@ -65,7 +65,7 @@ Moves a grid with matching ``gridId`` up the stack, causing it to be rendered ab
 .. note::
 
    After moving a grid within the stack, update() should be
-called for the QgsLayoutItemMap to redraw the map with the new grid stack order.
+   called for the QgsLayoutItemMap to redraw the map with the new grid stack order.
 
 .. seealso:: :py:func:`moveGridDown`
 %End
@@ -77,7 +77,7 @@ Moves a grid with matching ``gridId`` down the stack, causing it to be rendered 
 .. note::
 
    After moving a grid within the stack, update() should be
-called for the QgsLayoutItemMap to redraw the map with the new grid stack order.
+   called for the QgsLayoutItemMap to redraw the map with the new grid stack order.
 
 .. seealso:: :py:func:`moveGridUp`
 %End

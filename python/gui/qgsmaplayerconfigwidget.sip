@@ -33,7 +33,7 @@ class QgsMapLayerConfigWidget : QgsPanelWidget
 .. note::
 
    The widget is created each time the panel is selected in the dock.
-Keep the loading light as possible for speed in the UI.
+   Keep the loading light as possible for speed in the UI.
 %End
 
   public slots:

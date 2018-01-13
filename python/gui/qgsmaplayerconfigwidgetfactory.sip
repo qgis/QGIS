@@ -66,7 +66,7 @@ Set the title for the interface
 .. note::
 
    Not all users may show this as a label
-e.g style dock uses this as a tooltip.
+   e.g style dock uses this as a tooltip.
 
 :param title: The title to set.
 %End

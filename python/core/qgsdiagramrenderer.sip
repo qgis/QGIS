@@ -133,7 +133,7 @@ Returns the diagram priority.
 .. note::
 
    placement priority is shared with labeling, so diagrams with a high priority may displace labels
-and vice-versa
+   and vice-versa
 
 .. seealso:: :py:func:`setPriority`
 
@@ -159,7 +159,7 @@ with a lower z-index.
 .. note::
 
    z-index ordering is shared with labeling, so diagrams with a high z-index may be drawn over labels
-with a low z-index and vice-versa
+   with a low z-index and vice-versa
 
 .. seealso:: :py:func:`setZIndex`
 
