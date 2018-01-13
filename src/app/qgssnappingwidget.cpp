@@ -27,6 +27,7 @@
 
 #include "qgsapplication.h"
 #include "qgsdoublespinbox.h"
+#include "qgsfloatingwidget.h"
 #include "qgslayertreegroup.h"
 #include "qgslayertree.h"
 #include "qgslayertreeview.h"
@@ -91,6 +92,13 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
   }
   connect( mModeButton, &QToolButton::triggered, this, &QgsSnappingWidget::modeButtonTriggered );
 
+  // advanced drop down button
+  mAdvancedDropDownButton = new QToolButton();
+  mAdvancedDropDownButton->setIcon( QIcon( QgsApplication::getThemeIcon( "/mIconSnappingIntersection.svg" ) ) );
+  mAdvancedDropDownButton->setToolTip( tr( "Avdanced configuration tool" ) );
+  mAdvancedDropDownButton->setObjectName( QStringLiteral( "AdvancedDropdownButton" ) );
+  connect( mAdvancedDropDownButton, &QToolButton::clicked, this, &QgsSnappingWidget::advancedDropDownButtonClicked );
+
   // type button
   mTypeButton = new QToolButton();
   mTypeButton->setToolTip( tr( "Snapping Type" ) );
@@ -150,6 +158,7 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
   mEnableTracingAction->setShortcut( tr( "T", "Keyboard shortcut: Enable tracing" ) );
   mEnableTracingAction->setObjectName( QStringLiteral( "EnableTracingAction" ) );
 
+  // tracing offset
   mTracingOffsetSpinBox = new QgsDoubleSpinBox;
   mTracingOffsetSpinBox->setRange( -1000000, 1000000 );
   mTracingOffsetSpinBox->setDecimals( 6 );
@@ -166,18 +175,53 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
   tracingMenu->addAction( widgetAction );
   mEnableTracingAction->setMenu( tracingMenu );
 
+  // Advanced config layer tree view
+  mLayerTreeView = new QTreeView();
+  QgsSnappingLayerTreeModel *model = new QgsSnappingLayerTreeModel( mProject, this );
+  model->setLayerTreeModel( new QgsLayerTreeModel( mProject->layerTreeRoot(), model ) );
+  // connections
+  connect( model, &QgsSnappingLayerTreeModel::rowsInserted, this, &QgsSnappingWidget::onSnappingTreeLayersChanged );
+  connect( model, &QgsSnappingLayerTreeModel::modelReset, this, &QgsSnappingWidget::onSnappingTreeLayersChanged );
+  connect( model, &QgsSnappingLayerTreeModel::rowsRemoved, this, &QgsSnappingWidget::onSnappingTreeLayersChanged );
+  connect( project, &QgsProject::readProject, this, [ = ]
+  {
+    model->resetLayerTreeModel();
+  } );
+  // model->setFlags( 0 );
+  mLayerTreeView->setModel( model );
+  mLayerTreeView->resizeColumnToContents( 0 );
+  mLayerTreeView->header()->show();
+  mLayerTreeView->setSelectionMode( QAbstractItemView::NoSelection );
+  // item delegates
+  mLayerTreeView->setEditTriggers( QAbstractItemView::AllEditTriggers );
+  mLayerTreeView->setItemDelegate( new QgsSnappingLayerDelegate( mCanvas, this ) );
+
+
   // layout
   if ( mDisplayMode == ToolBar )
   {
     // hiding widget in a toolbar is not possible, actions are required
     tb->addAction( mEnabledAction );
     mModeAction = tb->addWidget( mModeButton );
+    mAdvancedDropDownAction = tb->addWidget( mAdvancedDropDownButton );
     mTypeAction = tb->addWidget( mTypeButton );
     mToleranceAction = tb->addWidget( mToleranceSpinBox );
     mUnitAction = tb->addWidget( mUnitsComboBox );
     tb->addAction( mTopologicalEditingAction );
     tb->addAction( mIntersectionSnappingAction );
     tb->addAction( mEnableTracingAction );
+
+    // setup floating container widget for advanced config
+    mAdvancedConfigContainer = new QgsFloatingWidget( parent ? parent->window() : nullptr );
+    mAdvancedConfigContainer->setAnchorWidget( mAdvancedDropDownButton );
+    mAdvancedConfigContainer->setAnchorPoint( QgsFloatingWidget::TopMiddle );
+    mAdvancedConfigContainer->setAnchorWidgetPoint( QgsFloatingWidget::BottomMiddle );
+    QGridLayout *layout = new QGridLayout();
+    layout->setContentsMargins( 0, 0, 0, 0 );
+    layout->addWidget( mLayerTreeView );
+    mAdvancedConfigContainer->setLayout( layout );
+    mAdvancedConfigContainer->hide();
+    mAdvancedConfigContainer->installEventFilter( this );
   }
   else
   {
@@ -209,28 +253,6 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
     layout->setContentsMargins( 0, 0, 0, 0 );
     layout->setAlignment( Qt::AlignRight );
     layout->setSpacing( mDisplayMode == Widget ? 3 : 0 );
-
-    mLayerTreeView = new QTreeView();
-    QgsSnappingLayerTreeModel *model = new QgsSnappingLayerTreeModel( mProject, this );
-    model->setLayerTreeModel( new QgsLayerTreeModel( mProject->layerTreeRoot(), model ) );
-
-    connect( model, &QgsSnappingLayerTreeModel::rowsInserted, this, &QgsSnappingWidget::onSnappingTreeLayersChanged );
-    connect( model, &QgsSnappingLayerTreeModel::modelReset, this, &QgsSnappingWidget::onSnappingTreeLayersChanged );
-    connect( model, &QgsSnappingLayerTreeModel::rowsRemoved, this, &QgsSnappingWidget::onSnappingTreeLayersChanged );
-    connect( project, &QgsProject::readProject, this, [ = ]
-    {
-      model->resetLayerTreeModel();
-    } );
-
-    // model->setFlags( 0 );
-    mLayerTreeView->setModel( model );
-    mLayerTreeView->resizeColumnToContents( 0 );
-    mLayerTreeView->header()->show();
-    mLayerTreeView->setSelectionMode( QAbstractItemView::NoSelection );
-
-    // item delegates
-    mLayerTreeView->setEditTriggers( QAbstractItemView::AllEditTriggers );
-    mLayerTreeView->setItemDelegate( new QgsSnappingLayerDelegate( mCanvas, this ) );
 
     QGridLayout *topLayout = new QGridLayout();
     topLayout->addLayout( layout, 0, 0, Qt::AlignLeft | Qt::AlignTop );
@@ -431,6 +453,13 @@ void QgsSnappingWidget::typeButtonTriggered( QAction *action )
   }
 }
 
+void QgsSnappingWidget::advancedDropDownButtonClicked()
+{
+  mAdvancedConfigContainer->show();
+  mAdvancedConfigContainer->raise();
+  mAdvancedConfigContainer->adjustSize();
+}
+
 void QgsSnappingWidget::updateToleranceDecimals()
 {
   if ( mConfig.units() == QgsTolerance::Pixels )
@@ -512,4 +541,15 @@ void QgsSnappingWidget::cleanGroup( QgsLayerTreeNode *node )
 
   Q_FOREACH ( QgsLayerTreeNode *child, toRemove )
     group->removeChildNode( child );
+}
+
+bool QgsSnappingWidget::eventFilter( QObject *obj, QEvent *event )
+{
+  if ( event->type() == QEvent::FocusOut &&
+       ( obj == mAdvancedConfigContainer ||
+         ( obj == mLayerTreeView && mDisplayMode == ToolBar ) ) )
+  {
+    mAdvancedConfigContainer->hide();
+  }
+  return QWidget::eventFilter( obj, event );
 }
