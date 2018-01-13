@@ -72,7 +72,6 @@ Constructor for QgsFeatureListModel
 
     bool setDisplayExpression( const QString &expression );
 %Docstring
-
 \param  expression   A QgsExpression compatible string.
 
 :return: true if the expression could be set, false if there was a parse error.
