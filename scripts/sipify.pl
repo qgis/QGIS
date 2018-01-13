@@ -49,7 +49,8 @@ my $PYTHON_SIGNATURE = '';
 
 my $COMMENT = '';
 my $COMMENT_PARAM_LIST = 0;
-my $CODE_SNIPPET = 0;
+my $COMMENT_LAST_LINE_NOTE_WARNING = 0;
+my $COMMENT_CODE_SNIPPET = 0;
 my $GLOB_IFDEF_NESTING_IDX = 0;
 my @GLOB_BRACKET_NESTING_IDX = (0);
 my $PRIVATE_SECTION_LINE = '';
@@ -129,18 +130,18 @@ sub processDoxygenLine {
     if ( $line =~ m/\\code(\{\.(\w+)\})?/ ) {
         my $codelang = "";
         $codelang = " $2" if (defined $2);
-        $CODE_SNIPPET = CODE_SNIPPET;
-        $CODE_SNIPPET = CODE_SNIPPET_CPP if ($codelang =~ m/cpp/ );
+        $COMMENT_CODE_SNIPPET = CODE_SNIPPET;
+        $COMMENT_CODE_SNIPPET = CODE_SNIPPET_CPP if ($codelang =~ m/cpp/ );
         $codelang =~ s/py/python/;
-        return "\n" if ( $CODE_SNIPPET == CODE_SNIPPET_CPP );
+        return "\n" if ( $COMMENT_CODE_SNIPPET == CODE_SNIPPET_CPP );
         return ".. code-block::$codelang\n\n";
     }
     if ( $line =~ m/\\endcode/ ) {
-        $CODE_SNIPPET = 0;
+        $COMMENT_CODE_SNIPPET = 0;
         return "\n";
     }
-    if ($CODE_SNIPPET != 0){
-        if ( $CODE_SNIPPET == CODE_SNIPPET_CPP ){
+    if ($COMMENT_CODE_SNIPPET != 0){
+        if ( $COMMENT_CODE_SNIPPET == CODE_SNIPPET_CPP ){
             return "";
         } else {
             if ( $line ne ''){
@@ -170,6 +171,7 @@ sub processDoxygenLine {
             $line = "\n$line";
         }
         $COMMENT_PARAM_LIST = 1;
+        $COMMENT_LAST_LINE_NOTE_WARNING = 0;
     }
 
     if ( $line =~ m/^\s*[\\@]brief/){
@@ -229,12 +231,22 @@ sub processDoxygenLine {
     }
 
     if ( $line =~ m/[\\@]note (.*)/ ) {
+        $COMMENT_LAST_LINE_NOTE_WARNING = 1;
         return "\n.. note::\n\n   $1\n";
     }
     if ( $line =~ m/[\\@]warning (.*)/ ) {
+        $COMMENT_LAST_LINE_NOTE_WARNING = 1;
         return "\n.. warning::\n\n   $1\n";
     }
 
+    if ( $line !~ m/^\s*$/ ){
+        if ( $COMMENT_LAST_LINE_NOTE_WARNING == 1 ){
+            dbg_info("prepend spaces for multiline warning/note xx$line");
+            $line = "   $line";
+        }
+    } else {
+        $COMMENT_LAST_LINE_NOTE_WARNING = 0;
+    }
     return "$line\n";
 }
 
@@ -365,7 +377,8 @@ sub detect_comment_block{
     my %args = ( strict_mode => STRICT, @_ );
     # dbg_info("detect comment strict:" . $args{strict_mode} );
     $COMMENT_PARAM_LIST = 0;
-    $CODE_SNIPPET = 0;
+    $COMMENT_CODE_SNIPPET = 0;
+    $COMMENT_LAST_LINE_NOTE_WARNING = 0;
     if ( $LINE =~ m/^\s*\/\*/ || $args{strict_mode} == UNSTRICT && $LINE =~ m/\/\*/ ){
         dbg_info("found comment block");
         do {no warnings 'uninitialized';
@@ -774,6 +787,7 @@ while ($LINE_IDX < $LINE_COUNT){
         if ( $LINE =~ m/^\s*\/\// ){
             if ($LINE =~ m/^\s*\/\/\!\s*(.*?)\n?$/){
                 $COMMENT_PARAM_LIST = 0;
+                $COMMENT_LAST_LINE_NOTE_WARNING = 0;
                 $COMMENT = processDoxygenLine( $1 );
                 $COMMENT =~ s/\n+$//;
             }
