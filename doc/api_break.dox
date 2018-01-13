@@ -193,6 +193,7 @@ Renamed Classes        {#qgis_api_break_3_0_renamed_classes}
 <tr><td>QgsSymbolV2SelectorWidget<td>QgsSymbolSelectorWidget
 <tr><td>QgsTicksScaleBarStyle<td>QgsTicksScaleBarRenderer
 <tr><td>QgsTINInterpolator<td>QgsTinInterpolator
+<tr><td>QgsUserInputDockWidget<td>QgsUserInputWidget
 <tr><td>QgsVectorColorBrewerColorRampV2<td>QgsColorBrewerColorRamp
 <tr><td>QgsVectorColorBrewerColorRampV2Dialog<td>QgsColorBrewerColorRampDialog
 <tr><td>QgsVectorColorBrewerColorRampV2DialogBase<td>QgsColorBrewerColorRampDialogBase
