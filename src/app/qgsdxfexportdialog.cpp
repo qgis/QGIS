@@ -423,7 +423,6 @@ QgsDxfExportDialog::QgsDxfExportDialog( QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )
 {
   setupUi( this );
-  connect( mFileSelectionButton, &QToolButton::clicked, this, &QgsDxfExportDialog::mFileSelectionButton_clicked );
   QgsGui::instance()->enableAutoGeometryRestore( this );
 
   connect( mVisibilityPresets, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsDxfExportDialog::mVisibilityPresets_currentIndexChanged );
@@ -442,13 +441,24 @@ QgsDxfExportDialog::QgsDxfExportDialog( QWidget *parent, Qt::WindowFlags f )
   mTreeView->resizeColumnToContents( 0 );
   mTreeView->header()->show();
 
-  connect( mFileLineEdit, &QLineEdit::textChanged, this, &QgsDxfExportDialog::setOkEnabled );
+  mFileName->setStorageMode( QgsFileWidget::SaveFile );
+  mFileName->setFilter( tr( "DXF files" ) + " (*.dxf *.DXF)" );
+  mFileName->setDialogTitle( tr( "Export as DXF" ) );
+  mFileName->setDefaultRoot( s.value( QStringLiteral( "qgis/lastDxfDir" ), QDir::homePath() ).toString() );
+
   connect( this, &QDialog::accepted, this, &QgsDxfExportDialog::saveSettings );
   connect( mSelectAllButton, &QAbstractButton::clicked, this, &QgsDxfExportDialog::selectAll );
   connect( mDeselectAllButton, &QAbstractButton::clicked, this, &QgsDxfExportDialog::deSelectAll );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsDxfExportDialog::showHelp );
 
-  mFileLineEdit->setFocus();
+  connect( mFileName, &QgsFileWidget::fileChanged, this, [ = ]( const QString & filePath )
+  {
+    QgsSettings settings;
+    QFileInfo tmplFileInfo( filePath );
+    settings.setValue( QStringLiteral( "qgis/lastDxfDir" ), tmplFileInfo.absolutePath() );
+
+    setOkEnabled();
+  } );
 
   //last dxf symbology mode
   QgsSettings s;
@@ -558,7 +568,7 @@ double QgsDxfExportDialog::symbologyScale() const
 
 QString QgsDxfExportDialog::saveFile() const
 {
-  return mFileLineEdit->text();
+  return mFileName->filePath();
 }
 
 
@@ -568,32 +578,22 @@ QgsDxfExport::SymbologyExport QgsDxfExportDialog::symbologyMode() const
 }
 
 
-void QgsDxfExportDialog::mFileSelectionButton_clicked()
-{
-  //get last dxf save directory
-  QgsSettings s;
-  QString lastSavePath = s.value( QStringLiteral( "qgis/lastDxfDir" ), QDir::homePath() ).toString();
-
-  QString filePath = QFileDialog::getSaveFileName( nullptr, tr( "Export as DXF" ), lastSavePath, tr( "DXF files *.dxf *.DXF" ) );
-  if ( !filePath.isEmpty() )
-  {
-    mFileLineEdit->setText( filePath );
-  }
-}
-
-
 void QgsDxfExportDialog::setOkEnabled()
 {
   QPushButton *btn = buttonBox->button( QDialogButtonBox::Ok );
 
-  QString filePath = mFileLineEdit->text();
+  QString filePath = mFileName->filePath();
   if ( filePath.isEmpty() )
   {
     btn->setEnabled( false );
+    return;
   }
 
   QFileInfo fi( filePath );
-  btn->setEnabled( fi.absoluteDir().exists() );
+
+  bool ok = ( fi.absoluteDir().exists() && !fi.baseName().isEmpty() );
+  btn->setEnabled( ok );
+
 }
 
 
@@ -620,7 +620,7 @@ bool QgsDxfExportDialog::useMText() const
 void QgsDxfExportDialog::saveSettings()
 {
   QgsSettings s;
-  QFileInfo dxfFileInfo( mFileLineEdit->text() );
+  QFileInfo dxfFileInfo( mFileName->filePath() );
   s.setValue( QStringLiteral( "qgis/lastDxfDir" ), dxfFileInfo.absolutePath() );
   s.setValue( QStringLiteral( "qgis/lastDxfSymbologyMode" ), mSymbologyModeComboBox->currentIndex() );
   s.setValue( QStringLiteral( "qgis/lastSymbologyExportScale" ), mScaleWidget->scale() != 0 ? 1.0 / mScaleWidget->scale() : 0 );
