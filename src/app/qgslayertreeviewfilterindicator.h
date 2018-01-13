@@ -18,6 +18,8 @@
 
 #include "qgslayertreeviewindicator.h"
 
+#include <QSet>
+
 class QgsLayerTreeNode;
 class QgsLayerTreeView;
 class QgsVectorDataProvider;
@@ -43,11 +45,14 @@ class QgsLayerTreeViewFilterIndicatorManager : public QObject
     void onIndicatorClicked( const QModelIndex &index );
 
   private:
+    QgsLayerTreeViewIndicator *newIndicator( const QString &filter );
+    void updateIndicator( QgsLayerTreeViewIndicator *indicator, const QString &filter );
     void addOrRemoveIndicator( QgsLayerTreeNode *node, QgsVectorDataProvider *provider );
 
   private:
     QgsLayerTreeView *mLayerTreeView;
-    QgsLayerTreeViewIndicator *mIndicator = nullptr;
+    QIcon mIcon;
+    QSet<QgsLayerTreeViewIndicator *> mIndicators;
 };
 
 #endif // QGSLAYERTREEVIEWFILTERINDICATOR_H

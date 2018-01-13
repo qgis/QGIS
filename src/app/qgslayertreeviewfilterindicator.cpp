@@ -26,10 +26,7 @@ QgsLayerTreeViewFilterIndicatorManager::QgsLayerTreeViewFilterIndicatorManager( 
   : QObject( view )
   , mLayerTreeView( view )
 {
-  mIndicator = new QgsLayerTreeViewIndicator( this );
-  mIndicator->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFilter2.svg" ) ) );
-  mIndicator->setToolTip( "Filtered" );
-  connect( mIndicator, &QgsLayerTreeViewIndicator::clicked, this, &QgsLayerTreeViewFilterIndicatorManager::onIndicatorClicked );
+  mIcon = QgsApplication::getThemeIcon( QStringLiteral( "/mActionFilter2.svg" ) );
 
   QgsLayerTree *tree = mLayerTreeView->layerTreeModel()->rootGroup();
   onAddedChildren( tree, 0, tree->children().count() - 1 );
@@ -154,12 +151,57 @@ void QgsLayerTreeViewFilterIndicatorManager::onIndicatorClicked( const QModelInd
     vlayer->dataProvider()->setSubsetString( qb.sql() );
 }
 
+QgsLayerTreeViewIndicator *QgsLayerTreeViewFilterIndicatorManager::newIndicator( const QString &filter )
+{
+  QgsLayerTreeViewIndicator *indicator = new QgsLayerTreeViewIndicator( this );
+  indicator->setIcon( mIcon );
+  updateIndicator( indicator, filter );
+  connect( indicator, &QgsLayerTreeViewIndicator::clicked, this, &QgsLayerTreeViewFilterIndicatorManager::onIndicatorClicked );
+  mIndicators.insert( indicator );
+  return indicator;
+}
+
+void QgsLayerTreeViewFilterIndicatorManager::updateIndicator( QgsLayerTreeViewIndicator *indicator, const QString &filter )
+{
+  indicator->setToolTip( QString( "<b>%1:</b><br>%2" ).arg( tr( "Filter" ) ).arg( filter ) );
+}
+
 
 void QgsLayerTreeViewFilterIndicatorManager::addOrRemoveIndicator( QgsLayerTreeNode *node, QgsVectorDataProvider *provider )
 {
   QString filter = provider->subsetString();
   if ( !filter.isEmpty() )
-    mLayerTreeView->addIndicator( node, mIndicator );
+  {
+    const QList<QgsLayerTreeViewIndicator *> nodeIndicators = mLayerTreeView->indicators( node );
+
+    // maybe the indicator exists already
+    foreach ( QgsLayerTreeViewIndicator *indicator, nodeIndicators )
+    {
+      if ( mIndicators.contains( indicator ) )
+      {
+        updateIndicator( indicator, filter );
+        return;
+      }
+    }
+
+    // it does not exist: need to create a new one
+    mLayerTreeView->addIndicator( node, newIndicator( filter ) );
+  }
   else
-    mLayerTreeView->removeIndicator( node, mIndicator );
+  {
+    const QList<QgsLayerTreeViewIndicator *> nodeIndicators = mLayerTreeView->indicators( node );
+
+    // there may be existing indicator we need to get rid of
+    foreach ( QgsLayerTreeViewIndicator *indicator, nodeIndicators )
+    {
+      if ( mIndicators.contains( indicator ) )
+      {
+        mLayerTreeView->removeIndicator( node, indicator );
+        indicator->deleteLater();
+        return;
+      }
+    }
+
+    // no indicator was there before, nothing to do
+  }
 }
