@@ -50,7 +50,7 @@
 #endif
 
 #include "gdalwarper.h"
-#include "ogr_spatialref.h"
+#include "ogr_srs_api.h"
 #include "cpl_conv.h"
 #include "cpl_string.h"
 
