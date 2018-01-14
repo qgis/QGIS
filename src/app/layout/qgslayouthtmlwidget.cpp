@@ -46,7 +46,7 @@ QgsLayoutHtmlWidget::QgsLayoutHtmlWidget( QgsLayoutFrame *frame )
   connect( mAddFramePushButton, &QPushButton::clicked, this, &QgsLayoutHtmlWidget::mAddFramePushButton_clicked );
   connect( mEmptyFrameCheckBox, &QCheckBox::toggled, this, &QgsLayoutHtmlWidget::mEmptyFrameCheckBox_toggled );
   connect( mHideEmptyBgCheckBox, &QCheckBox::toggled, this, &QgsLayoutHtmlWidget::mHideEmptyBgCheckBox_toggled );
-  setPanelTitle( tr( "HTML properties" ) );
+  setPanelTitle( tr( "HTML Properties" ) );
 
   //setup html editor
   mHtmlEditor = new QgsCodeEditorHTML( this );

@@ -183,7 +183,7 @@ void QgsRuleBasedRendererWidget::editRule( const QModelIndex &index )
   QgsRuleBasedRenderer::Rule *rule = mModel->ruleForIndex( index );
 
   QgsRendererRulePropsWidget *widget = new QgsRendererRulePropsWidget( rule, mLayer, mStyle, this, mContext );
-  widget->setPanelTitle( tr( "Edit rule" ) );
+  widget->setPanelTitle( tr( "Edit Rule" ) );
   connect( widget, &QgsPanelWidget::panelAccepted, this, &QgsRuleBasedRendererWidget::ruleWidgetPanelAccepted );
   connect( widget, &QgsPanelWidget::widgetChanged, this, &QgsRuleBasedRendererWidget::liveUpdateRuleFromPanel );
   openPanel( widget );
@@ -260,7 +260,7 @@ void QgsRuleBasedRendererWidget::refineRuleScales()
 void QgsRuleBasedRendererWidget::refineRuleCategoriesGui()
 {
   QgsCategorizedSymbolRendererWidget *w = new QgsCategorizedSymbolRendererWidget( mLayer, mStyle, nullptr );
-  w->setPanelTitle( tr( "Add categories to rules" ) );
+  w->setPanelTitle( tr( "Add Categories to Rules" ) );
   connect( w, &QgsPanelWidget::panelAccepted, this, &QgsRuleBasedRendererWidget::refineRuleCategoriesAccepted );
   w->setContext( mContext );
   openPanel( w );
@@ -269,7 +269,7 @@ void QgsRuleBasedRendererWidget::refineRuleCategoriesGui()
 void QgsRuleBasedRendererWidget::refineRuleRangesGui()
 {
   QgsGraduatedSymbolRendererWidget *w = new QgsGraduatedSymbolRendererWidget( mLayer, mStyle, nullptr );
-  w->setPanelTitle( tr( "Add ranges to rules" ) );
+  w->setPanelTitle( tr( "Add Ranges to Rules" ) );
   connect( w, &QgsPanelWidget::panelAccepted, this, &QgsRuleBasedRendererWidget::refineRuleRangesAccepted );
   w->setContext( mContext );
   openPanel( w );
@@ -284,13 +284,13 @@ void QgsRuleBasedRendererWidget::refineRuleScalesGui( const QModelIndexList &ind
     // If any of the rules don't have a symbol let the user know and exit.
     if ( !initialRule->symbol() )
     {
-      QMessageBox::warning( this, tr( "Scale refinement" ), tr( "Parent rule %1 must have a symbol for this operation." ).arg( initialRule->label() ) );
+      QMessageBox::warning( this, tr( "Scale Refinement" ), tr( "Parent rule %1 must have a symbol for this operation." ).arg( initialRule->label() ) );
       return;
     }
   }
 
   QString txt = QInputDialog::getText( this,
-                                       tr( "Scale refinement" ),
+                                       tr( "Scale Refinement" ),
                                        tr( "Please enter scale denominators at which will split the rule, separate them by commas (e.g. 1000,5000):" ) );
   if ( txt.isEmpty() )
     return;

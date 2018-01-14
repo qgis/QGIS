@@ -36,7 +36,7 @@ QgsDataDefinedSizeLegendWidget::QgsDataDefinedSizeLegendWidget( const QgsDataDef
   , mMapCanvas( canvas )
 {
   setupUi( this );
-  setPanelTitle( tr( "Data-defined size legend" ) );
+  setPanelTitle( tr( "Data-defined Size Legend" ) );
 
   QgsMarkerSymbol *symbol = nullptr;
 

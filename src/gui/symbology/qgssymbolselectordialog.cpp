@@ -267,7 +267,7 @@ QgsSymbolSelectorWidget::QgsSymbolSelectorWidget( QgsSymbol *symbol, QgsStyle *s
   QModelIndex newIndex = layersTree->model()->index( 0, 0 );
   layersTree->setCurrentIndex( newIndex );
 
-  setPanelTitle( tr( "Symbol selector" ) );
+  setPanelTitle( tr( "Symbol Selector" ) );
 }
 
 QMenu *QgsSymbolSelectorWidget::advancedMenu()

@@ -52,7 +52,7 @@ QgsLayoutPictureWidget::QgsLayoutPictureWidget( QgsLayoutItemPicture *picture )
   connect( mStrokeWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutPictureWidget::mStrokeWidthSpinBox_valueChanged );
   connect( mPictureRotationOffsetSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutPictureWidget::mPictureRotationOffsetSpinBox_valueChanged );
   connect( mNorthTypeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutPictureWidget::mNorthTypeComboBox_currentIndexChanged );
-  setPanelTitle( tr( "Picture properties" ) );
+  setPanelTitle( tr( "Picture Properties" ) );
 
   mFillColorButton->setAllowOpacity( true );
   mFillColorButton->setColorDialogTitle( tr( "Select Fill Color" ) );

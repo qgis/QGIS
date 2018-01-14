@@ -28,7 +28,7 @@ QgsLayoutPropertiesWidget::QgsLayoutPropertiesWidget( QWidget *parent, QgsLayout
   Q_ASSERT( mLayout );
 
   setupUi( this );
-  setPanelTitle( tr( "Layout properties" ) );
+  setPanelTitle( tr( "Layout Properties" ) );
   blockSignals( true );
 
   updateSnappingElements();
