@@ -758,7 +758,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
                 self.assertEqual(oflds.size(), flds.size())
                 for i in range(oflds.size()):
                     self.assertEqual(oflds[i].name(), flds[i].name())
-            pks = olyr.pkAttributeList()
+            pks = olyr.primaryKeyAttributes()
             self.assertEqual(len(pks), len(kfnames))
             for i in range(0, len(kfnames)):
                 self.assertEqual(oflds[pks[i]].name(), kfnames[i])

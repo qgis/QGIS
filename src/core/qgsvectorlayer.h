@@ -1304,14 +1304,13 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     /**
      * Returns list of attribute indexes. i.e. a list from 0 ... fieldCount()
-     * Alias for attributeList()
      */
     inline QgsAttributeList attributeList() const { return mFields.allAttributesList(); }
 
     /**
      * Returns the list of attributes which make up the layer's primary keys.
      */
-    QgsAttributeList pkAttributeList() const;
+    QgsAttributeList primaryKeyAttributes() const;
 
     /**
      * Returns feature count including changes which have not yet been committed

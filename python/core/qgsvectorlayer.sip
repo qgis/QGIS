@@ -1397,10 +1397,9 @@ This also includes fields which have not yet been saved to the provider.
     QgsAttributeList attributeList() const;
 %Docstring
 Returns list of attribute indexes. i.e. a list from 0 ... fieldCount()
-Alias for attributeList()
 %End
 
-    QgsAttributeList pkAttributeList() const;
+    QgsAttributeList primaryKeyAttributes() const;
 %Docstring
 Returns the list of attributes which make up the layer's primary keys.
 %End
