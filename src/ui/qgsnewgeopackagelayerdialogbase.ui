@@ -66,10 +66,7 @@
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout_51">
-       <item row="0" column="0">
-        <layout class="QHBoxLayout" name="horizontalLayout_6"/>
-       </item>
-       <item row="4" column="0">
+       <item row="3" column="0">
         <widget class="QGroupBox" name="groupBox_3">
          <property name="title">
           <string>New field</string>
@@ -83,6 +80,12 @@
           </item>
           <item row="2" column="0">
            <widget class="QLabel" name="mFieldLengthLabel">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <property name="text">
              <string>Maximum length</string>
             </property>
@@ -144,9 +147,9 @@
          </layout>
         </widget>
        </item>
-       <item row="1" column="0">
+       <item row="0" column="0">
         <layout class="QGridLayout" name="gridLayout_2">
-         <item row="1" column="2">
+         <item row="0" column="1">
           <layout class="QHBoxLayout" name="horizontalLayout">
            <item>
             <widget class="QgsFileWidget" name="mDatabase">
@@ -163,7 +166,7 @@
            </item>
           </layout>
          </item>
-         <item row="3" column="0">
+         <item row="2" column="0">
           <widget class="QLabel" name="mGeometryTypeLabel">
            <property name="enabled">
             <bool>true</bool>
@@ -173,7 +176,7 @@
            </property>
           </widget>
          </item>
-         <item row="2" column="2">
+         <item row="1" column="1">
           <widget class="QLineEdit" name="mTableNameEdit">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -186,7 +189,7 @@
            </property>
           </widget>
          </item>
-         <item row="1" column="0">
+         <item row="0" column="0">
           <widget class="QLabel" name="mDatabaseLabel">
            <property name="enabled">
             <bool>true</bool>
@@ -196,7 +199,7 @@
            </property>
           </widget>
          </item>
-         <item row="2" column="0">
+         <item row="1" column="0">
           <widget class="QLabel" name="mTableNameLabel">
            <property name="text">
             <string>Table name</string>
@@ -206,7 +209,7 @@
            </property>
           </widget>
          </item>
-         <item row="3" column="2">
+         <item row="2" column="1">
           <widget class="QComboBox" name="mGeometryTypeBox">
            <property name="enabled">
             <bool>true</bool>
@@ -222,7 +225,7 @@
            </property>
           </widget>
          </item>
-         <item row="4" column="2">
+         <item row="3" column="1">
           <layout class="QHBoxLayout" name="horizontalZMLayout">
            <item>
             <widget class="QCheckBox" name="mGeometryWithZCheckBox">
@@ -238,9 +241,22 @@
              </property>
             </widget>
            </item>
+           <item>
+            <spacer name="horizontalSpacer_3">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>0</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
           </layout>
          </item>
-         <item row="5" column="2">
+         <item row="4" column="1">
           <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
            <property name="focusPolicy">
             <enum>Qt::StrongFocus</enum>
@@ -249,7 +265,7 @@
          </item>
         </layout>
        </item>
-       <item row="5" column="0">
+       <item row="4" column="0">
         <widget class="QGroupBox" name="groupBox_2">
          <property name="title">
           <string>Fields list</string>
@@ -328,7 +344,7 @@
          </layout>
         </widget>
        </item>
-       <item row="6" column="0">
+       <item row="5" column="0">
         <widget class="QgsCollapsibleGroupBox" name="groupBox" native="true">
          <property name="title" stdset="0">
           <string>Advanced options</string>
@@ -363,7 +379,7 @@
           <item row="2" column="0">
            <widget class="QLabel" name="mLayerDescriptionLabel">
             <property name="text">
-            <string>Layer description</string>
+             <string>Layer description</string>
             </property>
             <property name="buddy">
              <cstring>mLayerIdentifierEdit</cstring>
@@ -471,21 +487,22 @@
  </customwidgets>
  <tabstops>
   <tabstop>scrollArea</tabstop>
-  <tabstop>mDatabase</tabstop>
   <tabstop>mTableNameEdit</tabstop>
-  <tabstop>mLayerIdentifierEdit</tabstop>
-  <tabstop>mLayerDescriptionEdit</tabstop>
-  <tabstop>mFeatureIdColumnEdit</tabstop>
   <tabstop>mGeometryTypeBox</tabstop>
-  <tabstop>mGeometryColumnEdit</tabstop>
+  <tabstop>mGeometryWithZCheckBox</tabstop>
+  <tabstop>mGeometryWithMCheckBox</tabstop>
   <tabstop>mCrsSelector</tabstop>
-  <tabstop>mCheckBoxCreateSpatialIndex</tabstop>
   <tabstop>mFieldNameEdit</tabstop>
   <tabstop>mFieldTypeBox</tabstop>
   <tabstop>mFieldLengthEdit</tabstop>
   <tabstop>mAddAttributeButton</tabstop>
   <tabstop>mAttributeView</tabstop>
   <tabstop>mRemoveAttributeButton</tabstop>
+  <tabstop>mLayerIdentifierEdit</tabstop>
+  <tabstop>mLayerDescriptionEdit</tabstop>
+  <tabstop>mFeatureIdColumnEdit</tabstop>
+  <tabstop>mGeometryColumnEdit</tabstop>
+  <tabstop>mCheckBoxCreateSpatialIndex</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
