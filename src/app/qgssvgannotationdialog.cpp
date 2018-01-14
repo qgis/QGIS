@@ -35,7 +35,7 @@ QgsSvgAnnotationDialog::QgsSvgAnnotationDialog( QgsMapCanvasAnnotationItem *item
   setupUi( this );
   connect( mBrowseToolButton, &QToolButton::clicked, this, &QgsSvgAnnotationDialog::mBrowseToolButton_clicked );
   connect( mButtonBox, &QDialogButtonBox::clicked, this, &QgsSvgAnnotationDialog::mButtonBox_clicked );
-  setWindowTitle( tr( "SVG annotation" ) );
+  setWindowTitle( tr( "SVG Annotation" ) );
   mEmbeddedWidget = new QgsAnnotationWidget( mItem );
   mStackedWidget->addWidget( mEmbeddedWidget );
   mStackedWidget->setCurrentWidget( mEmbeddedWidget );
