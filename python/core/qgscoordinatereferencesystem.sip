@@ -507,7 +507,7 @@ pieces of information about CRS.
     bool readXml( const QDomNode &node );
 %Docstring
 Restores state from the given DOM node.
-If it fails or if the node is empty, a default not empty CRS will be returned.
+If it fails or if the node is empty, a default empty CRS will be returned.
 
 :param node: The node from which state will be restored
 

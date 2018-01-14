@@ -62,8 +62,7 @@ class TestQgsCoordinateReferenceSystem: public QObject
     void equality();
     void noEquality();
     void equalityInvalid();
-    void readXml();
-    void writeXml();
+    void readWriteXml();
     void setCustomSrsValidation();
     void customSrsValidation();
     void postgisSrid();
@@ -600,18 +599,38 @@ void TestQgsCoordinateReferenceSystem::equalityInvalid()
   QgsCoordinateReferenceSystem invalidCrs2;
   QVERIFY( invalidCrs1 == invalidCrs2 );
 }
-void TestQgsCoordinateReferenceSystem::readXml()
+void TestQgsCoordinateReferenceSystem::readWriteXml()
 {
-  //QgsCoordinateReferenceSystem myCrs;
-  //myCrs.createFromSrid( GEOSRID );
-  //QgsCoordinateReferenceSystem myCrs2;
-  //QVERIFY( myCrs2.readXml( QDomNode & node ) );
-}
-void TestQgsCoordinateReferenceSystem::writeXml()
-{
-  //QgsCoordinateReferenceSystem myCrs;
-  //bool writeXml( QDomNode & node, QDomDocument & doc ) const;
-  //QVERIFY( myCrs.isValid() );
+  QgsCoordinateReferenceSystem myCrs;
+  myCrs.createFromSrid( GEOSRID );
+  QVERIFY( myCrs.isValid() );
+  QDomDocument document( "test" );
+  QDomElement node = document.createElement( QStringLiteral( "crs" ) );
+  document.appendChild( node );
+  QVERIFY( myCrs.writeXml( node, document ) );
+  QgsCoordinateReferenceSystem myCrs2;
+  QVERIFY( myCrs2.readXml( node ) );
+  QVERIFY( myCrs == myCrs2 );
+
+  // Empty XML made from writeXml operation
+  QgsCoordinateReferenceSystem myCrs3;
+  QDomDocument document2( "test" );
+  QDomElement node2 = document2.createElement( QStringLiteral( "crs" ) );
+  document2.appendChild( node2 );
+  QVERIFY( ! myCrs3.isValid() );
+  QVERIFY( myCrs3.writeXml( node2, document2 ) );
+  QgsCoordinateReferenceSystem myCrs4;
+  QVERIFY( myCrs4.readXml( node2 ) );
+  QVERIFY( ! myCrs4.isValid() );
+  QVERIFY( myCrs3 == myCrs4 );
+
+  // Empty XML node
+  QDomDocument document3( "test" );
+  QDomElement node3 = document3.createElement( QStringLiteral( "crs" ) );
+  document3.appendChild( node3 );
+  QgsCoordinateReferenceSystem myCrs5;
+  QVERIFY( ! myCrs5.readXml( node3 ) );
+  QVERIFY( myCrs5 == QgsCoordinateReferenceSystem() );
 }
 void TestQgsCoordinateReferenceSystem::setCustomSrsValidation()
 {
