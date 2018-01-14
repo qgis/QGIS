@@ -14,7 +14,7 @@
    <bool>true</bool>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Main Window</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <property name="mouseTracking">
@@ -355,7 +355,7 @@
   </widget>
   <widget class="QToolBar" name="mReportToolbar">
    <property name="windowTitle">
-    <string>toolBar</string>
+    <string>ToolBar</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
