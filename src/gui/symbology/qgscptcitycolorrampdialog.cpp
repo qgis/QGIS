@@ -464,7 +464,7 @@ void QgsCptCityColorRampDialog::showHelp()
                          "(you must enable Experimental plugins in the plugin manager).\n\n"
                        );
   QMessageBox *msg = new QMessageBox( this );
-  msg->setWindowTitle( tr( "Download more cpt-city Gradients" ) );
+  msg->setWindowTitle( tr( "Download More Cpt-city Gradients" ) );
   msg->setText( helpText );
   msg->exec();
 }
