@@ -321,10 +321,10 @@ Reset the label decimal places to a numberbased on the minimum class interval
         const QgsRendererRangeLabelFormat &legendFormat = QgsRendererRangeLabelFormat() );
 %Docstring
 Creates a new graduated renderer.
+
 :param vlayer: vector layer
 :param attrName: attribute to classify
 :param classes: number of classes
-
 :param mode: classification mode
 :param useSymmetricMode: A bool indicating if we want to have classes and hence colors ramp symmetric around a value
 :param symmetryPoint: The value around which the classes will be symmetric if useSymmetricMode is checked
@@ -333,6 +333,7 @@ Creates a new graduated renderer.
 :param symbol: base symbol
 :param ramp: color ramp for classes
 :param legendFormat:
+
 :return: new QgsGraduatedSymbolRenderer object
 %End
 
