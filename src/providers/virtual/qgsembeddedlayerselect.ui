@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Select layers to embed</string>
+   <string>Select Layers to Embed</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
