@@ -101,7 +101,7 @@ QgsLayoutLegendWidget::QgsLayoutLegendWidget( QgsLayoutItemLegend *legend )
   connect( mAddGroupToolButton, &QToolButton::clicked, this, &QgsLayoutLegendWidget::mAddGroupToolButton_clicked );
   connect( mFilterLegendByAtlasCheckBox, &QCheckBox::toggled, this, &QgsLayoutLegendWidget::mFilterLegendByAtlasCheckBox_toggled );
   connect( mItemTreeView, &QgsLayerTreeView::doubleClicked, this, &QgsLayoutLegendWidget::mItemTreeView_doubleClicked );
-  setPanelTitle( tr( "Legend properties" ) );
+  setPanelTitle( tr( "Legend Properties" ) );
 
   mTitleFontButton->setMode( QgsFontButton::ModeQFont );
   mGroupFontButton->setMode( QgsFontButton::ModeQFont );

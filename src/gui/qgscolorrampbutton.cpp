@@ -101,7 +101,7 @@ void QgsColorRampButton::showColorRampDialog()
     if ( panelMode )
     {
       QgsLimitedRandomColorRampWidget *widget = new QgsLimitedRandomColorRampWidget( *randRamp, this );
-      widget->setPanelTitle( tr( "Edit ramp" ) );
+      widget->setPanelTitle( tr( "Edit Ramp" ) );
       connect( widget, &QgsLimitedRandomColorRampWidget::changed, this, &QgsColorRampButton::rampWidgetUpdated );
       panel->openPanel( widget );
     }
@@ -120,7 +120,7 @@ void QgsColorRampButton::showColorRampDialog()
     if ( panelMode )
     {
       QgsPresetColorRampWidget *widget = new QgsPresetColorRampWidget( *presetRamp, this );
-      widget->setPanelTitle( tr( "Edit ramp" ) );
+      widget->setPanelTitle( tr( "Edit Ramp" ) );
       connect( widget, &QgsPresetColorRampWidget::changed, this, &QgsColorRampButton::rampWidgetUpdated );
       panel->openPanel( widget );
     }
@@ -139,7 +139,7 @@ void QgsColorRampButton::showColorRampDialog()
     if ( panelMode )
     {
       QgsColorBrewerColorRampWidget *widget = new QgsColorBrewerColorRampWidget( *brewerRamp, this );
-      widget->setPanelTitle( tr( "Edit ramp" ) );
+      widget->setPanelTitle( tr( "Edit Ramp" ) );
       connect( widget, &QgsColorBrewerColorRampWidget::changed, this, &QgsColorRampButton::rampWidgetUpdated );
       panel->openPanel( widget );
     }

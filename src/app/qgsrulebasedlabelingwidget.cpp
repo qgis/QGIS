@@ -166,7 +166,7 @@ void QgsRuleBasedLabelingWidget::editRule( const QModelIndex &index )
   QgsRuleBasedLabeling::Rule *rule = mModel->ruleForIndex( index );
 
   QgsLabelingRulePropsWidget *widget = new QgsLabelingRulePropsWidget( rule, mLayer, this, mCanvas );
-  widget->setPanelTitle( tr( "Edit rule" ) );
+  widget->setPanelTitle( tr( "Edit Rule" ) );
   connect( widget, &QgsPanelWidget::panelAccepted, this, &QgsRuleBasedLabelingWidget::ruleWidgetPanelAccepted );
   connect( widget, &QgsLabelingRulePropsWidget::widgetChanged, this, &QgsRuleBasedLabelingWidget::liveUpdateRuleFromPanel );
   openPanel( widget );
