@@ -2554,7 +2554,7 @@ bool QgsVectorLayer::deleteFeatures( const QgsFeatureIds &fids )
   return res;
 }
 
-QgsAttributeList QgsVectorLayer::pkAttributeList() const
+QgsAttributeList QgsVectorLayer::primaryKeyAttributes() const
 {
   QgsAttributeList pkAttributesList;
 
@@ -4082,7 +4082,7 @@ QString QgsVectorLayer::htmlMetadata() const
   myMetadata += QStringLiteral( "<h1>" ) + tr( "Fields" ) + QStringLiteral( "</h1>\n<hr>\n<table class=\"list-view\">\n" );
 
   // primary key
-  QgsAttributeList pkAttrList = pkAttributeList();
+  QgsAttributeList pkAttrList = primaryKeyAttributes();
   if ( !pkAttrList.isEmpty() )
   {
     myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Primary key attributes" ) + QStringLiteral( "</td><td>" );

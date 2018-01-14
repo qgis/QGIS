@@ -2433,7 +2433,7 @@ displayExpression instead. For the map tip use mapTipTemplate() instead.
 - splitFeatured() now returns QgsGeometry::OperationResult enum, integer representation of returned values may have changed
 - pendingFields() was dropped. Use fields() instead.
 - pendingAllAttributesList() was dropped. Use allAttributes() instead.
-- pendingPkAttributesList() was dropped. Use pkAttributeList() instead.
+- pendingPkAttributesList() and pkAttributeList() were dropped. Use primaryKeyAttributes() instead.
 - pendingFeatureCount() was dropped. Use featureCount() instead.
 
 
