@@ -40,6 +40,7 @@
 #include "qgsconfig.h"
 
 // use GDAL VSI mechanism
+#define CPL_SUPRESS_CPLUSPLUS
 #include "cpl_vsi.h"
 #include "cpl_string.h"
 
@@ -1301,7 +1302,7 @@ char **VSIReadDirRecursive1( const char *pszPath )
   char **papszFiles1 = nullptr;
   char **papszFiles2 = nullptr;
   VSIStatBufL psStatBuf;
-  CPLString osTemp1, osTemp2;
+  QString temp1, temp2;
   int i, j;
   int nCount1, nCount2;
 
@@ -1315,41 +1316,35 @@ char **VSIReadDirRecursive1( const char *pszPath )
   for ( i = 0; i < nCount1; i++ )
   {
     // build complete file name for stat
-    osTemp1.clear();
-    osTemp1.append( pszPath );
-    osTemp1.append( "/" );
-    osTemp1.append( papszFiles1[i] );
+    temp1 = QString( "%1/%2" ).arg( pszPath, papszFiles1[i] );
 
     // if is file, add it
-    if ( VSIStatL( osTemp1.c_str(), &psStatBuf ) == 0 &&
+    if ( VSIStatL( temp1.toUtf8(), &psStatBuf ) == 0 &&
          VSI_ISREG( psStatBuf.st_mode ) )
     {
       // oFiles.AddString( papszFiles1[i] );
       papszOFiles = CSLAddString( papszOFiles, papszFiles1[i] );
     }
-    else if ( VSIStatL( osTemp1.c_str(), &psStatBuf ) == 0 &&
+    else if ( VSIStatL( temp1.toUtf8(), &psStatBuf ) == 0 &&
               VSI_ISDIR( psStatBuf.st_mode ) )
     {
       // add directory entry
-      osTemp2.clear();
-      osTemp2.append( papszFiles1[i] );
-      osTemp2.append( "/" );
-      // oFiles.AddString( osTemp2.c_str() );
-      papszOFiles = CSLAddString( papszOFiles, osTemp2.c_str() );
+      temp2 = QString( "%1/" ).arg( papszFiles1[i] );
+
+      // oFiles.AddString( temp2.toUtf8() );
+      papszOFiles = CSLAddString( papszOFiles, temp2.toUtf8() );
 
       // recursively add files inside directory
-      papszFiles2 = VSIReadDirRecursive1( osTemp1.c_str() );
+      papszFiles2 = VSIReadDirRecursive1( temp1.toUtf8() );
       if ( papszFiles2 )
       {
         nCount2 = CSLCount( papszFiles2 );
         for ( j = 0; j < nCount2; j++ )
         {
-          osTemp2.clear();
-          osTemp2.append( papszFiles1[i] );
-          osTemp2.append( "/" );
-          osTemp2.append( papszFiles2[j] );
-          // oFiles.AddString( osTemp2.c_str() );
-          papszOFiles = CSLAddString( papszOFiles, osTemp2.c_str() );
+          temp2 = QString( "%1/%2" ).arg( papszFiles1[i], papszFiles2[j] );
+
+          // oFiles.AddString( temp2.toUtf8() );
+          papszOFiles = CSLAddString( papszOFiles, temp2.toUtf8() );
         }
         CSLDestroy( papszFiles2 );
       }

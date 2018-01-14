@@ -20,7 +20,7 @@
 #include <cpl_string.h>
 #include <gdal.h>
 #include <gdalwarper.h>
-#include <ogr_spatialref.h>
+#include <ogr_srs_api.h>
 
 #include <QFile>
 #include <QProgressDialog>
@@ -33,6 +33,10 @@
 #define TO8F(x) (x).toUtf8().constData()
 #else
 #define TO8F(x) QFile::encodeName( x ).constData()
+#endif
+
+#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 2300
+#define OGRFree(x) CPLFree(x)
 #endif
 
 bool QgsImageWarper::mWarpCanceled = false;
@@ -101,16 +105,23 @@ bool QgsImageWarper::createDestinationDataset( const QString &outputName, GDALDa
 
   if ( crs.isValid() )
   {
-    OGRSpatialReference oTargetSRS;
-    oTargetSRS.importFromProj4( crs.toProj4().toLatin1().data() );
+    OGRSpatialReferenceH oTargetSRS = OSRNewSpatialReference( nullptr );
+    OGRErr err = OSRImportFromProj4( oTargetSRS, crs.toProj4().toUtf8() );
+    if ( err != CE_None )
+    {
+      OSRDestroySpatialReference( oTargetSRS );
+      return false;
+    }
 
     char *wkt = nullptr;
-    OGRErr err = oTargetSRS.exportToWkt( &wkt );
+    err = OSRExportToWkt( oTargetSRS, &wkt );
     if ( err != CE_None || GDALSetProjection( hDstDS, wkt ) != CE_None )
     {
+      OSRDestroySpatialReference( oTargetSRS );
       OGRFree( wkt );
       return false;
     }
+    OSRDestroySpatialReference( oTargetSRS );
     OGRFree( wkt );
   }
 
