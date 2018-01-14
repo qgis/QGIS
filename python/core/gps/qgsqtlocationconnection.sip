@@ -15,7 +15,7 @@
 
 %If (MOBILITY_LOCATION)
 
-class QgsQtLocationConnection: QgsGPSConnection
+class QgsQtLocationConnection: QgsGpsConnection
 {
 %Docstring
 

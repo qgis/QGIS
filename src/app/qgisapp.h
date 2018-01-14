@@ -112,7 +112,7 @@ class QAuthenticator;
 
 class QgsBrowserDockWidget;
 class QgsAdvancedDigitizingDockWidget;
-class QgsGPSInformationWidget;
+class QgsGpsInformationWidget;
 class QgsStatisticalSummaryDockWidget;
 class QgsMapCanvasTracer;
 
@@ -2097,7 +2097,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QList<QgsDecorationItem *> mDecorationItems;
 
     //! Persistent GPS toolbox
-    QgsGPSInformationWidget *mpGpsWidget = nullptr;
+    QgsGpsInformationWidget *mpGpsWidget = nullptr;
 
     QgsMessageBarItem *mLastMapToolMessage = nullptr;
 

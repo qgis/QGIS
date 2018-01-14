@@ -31,11 +31,12 @@
 
 #define KNOTS_TO_KMH 1.852
 
-QgsNMEAConnection::QgsNMEAConnection( QIODevice *dev ): QgsGPSConnection( dev )
+QgsNmeaConnection::QgsNmeaConnection( QIODevice *dev )
+  : QgsGpsConnection( dev )
 {
 }
 
-void QgsNMEAConnection::parseData()
+void QgsNmeaConnection::parseData()
 {
   if ( !mSource )
   {
@@ -69,7 +70,7 @@ void QgsNMEAConnection::parseData()
   }
 }
 
-void QgsNMEAConnection::processStringBuffer()
+void QgsNmeaConnection::processStringBuffer()
 {
   int endSentenceIndex = 0;
   int dollarIndex;
@@ -133,7 +134,7 @@ void QgsNMEAConnection::processStringBuffer()
   }
 }
 
-void QgsNMEAConnection::processGGASentence( const char *data, int len )
+void QgsNmeaConnection::processGGASentence( const char *data, int len )
 {
   nmeaGPGGA result;
   if ( nmea_parse_GPGGA( data, len, &result ) )
@@ -158,7 +159,7 @@ void QgsNMEAConnection::processGGASentence( const char *data, int len )
   }
 }
 
-void QgsNMEAConnection::processRMCSentence( const char *data, int len )
+void QgsNmeaConnection::processRMCSentence( const char *data, int len )
 {
   nmeaGPRMC result;
   if ( nmea_parse_GPRMC( data, len, &result ) )
@@ -195,7 +196,7 @@ void QgsNMEAConnection::processRMCSentence( const char *data, int len )
   }
 }
 
-void QgsNMEAConnection::processGSVSentence( const char *data, int len )
+void QgsNmeaConnection::processGSVSentence( const char *data, int len )
 {
   nmeaGPGSV result;
   if ( nmea_parse_GPGSV( data, len, &result ) )
@@ -224,7 +225,7 @@ void QgsNMEAConnection::processGSVSentence( const char *data, int len )
   }
 }
 
-void QgsNMEAConnection::processVTGSentence( const char *data, int len )
+void QgsNmeaConnection::processVTGSentence( const char *data, int len )
 {
   nmeaGPVTG result;
   if ( nmea_parse_GPVTG( data, len, &result ) )
@@ -233,7 +234,7 @@ void QgsNMEAConnection::processVTGSentence( const char *data, int len )
   }
 }
 
-void QgsNMEAConnection::processGSASentence( const char *data, int len )
+void QgsNmeaConnection::processGSASentence( const char *data, int len )
 {
   nmeaGPGSA result;
   if ( nmea_parse_GPGSA( data, len, &result ) )

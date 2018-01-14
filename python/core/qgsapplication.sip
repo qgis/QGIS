@@ -648,7 +648,7 @@ Returns the application's layout item registry, used for layout item types.
 .. versionadded:: 3.0
 %End
 
-    static QgsGPSConnectionRegistry *gpsConnectionRegistry();
+    static QgsGpsConnectionRegistry *gpsConnectionRegistry();
 %Docstring
 Returns the application's GPS connection registry, used for managing GPS connections.
 

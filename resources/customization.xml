@@ -409,7 +409,7 @@
     <widget objectName="sourceLayerComboBox" class="QComboBox" label=""/>
     <widget objectName="buttonBox" class="QDialogButtonBox" label=""/>
   </widget>
-  <widget objectName="QgsGPSInformationWidgetBase" class="QWidget" label="">
+  <widget objectName="QgsGpsInformationWidgetBase" class="QWidget" label="">
     <widget objectName="mBtnCloseFeature" class="QPushButton" label="&amp;Add feature"/>
     <widget objectName="mLblStatusIndicator" class="QLabel" label=""/>
     <widget objectName="mBtnAddVertex" class="QPushButton" label="Add track point"/>
