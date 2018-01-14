@@ -11,7 +11,7 @@
 
 
 
-class QgsGPSDetector : QObject
+class QgsGpsDetector : QObject
 {
 %Docstring
 Class to detect the GPS port
@@ -21,18 +21,18 @@ Class to detect the GPS port
 #include "qgsgpsdetector.h"
 %End
   public:
-    QgsGPSDetector( const QString &portName );
-    ~QgsGPSDetector();
+    QgsGpsDetector( const QString &portName );
+    ~QgsGpsDetector();
 
     static QList< QPair<QString, QString> > availablePorts();
 
   public slots:
     void advance();
-    void detected( const QgsGPSInformation & );
+    void detected( const QgsGpsInformation & );
     void connDestroyed( QObject * );
 
   signals:
-    void detected( QgsGPSConnection * );
+    void detected( QgsGpsConnection * );
     void detectionFailed();
 
 };

@@ -10,7 +10,7 @@
 
 
 
-class QgsGpsdConnection: QgsNMEAConnection
+class QgsGpsdConnection: QgsNmeaConnection
 {
 %Docstring
 Evaluates NMEA sentences coming from gpsd*

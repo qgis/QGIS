@@ -11,13 +11,13 @@
 
 
 
-class QgsGPSConnectionRegistry
+class QgsGpsConnectionRegistry
 {
 %Docstring
 A class to register / unregister existing GPS connections such that the information
 is available to all classes and plugins.
 
-QgsGPSConnectionRegistry is not usually directly created, but rather accessed through
+QgsGpsConnectionRegistry is not usually directly created, but rather accessed through
 :py:func:`QgsApplication.gpsConnectionRegistry()`
 %End
 
@@ -26,26 +26,26 @@ QgsGPSConnectionRegistry is not usually directly created, but rather accessed th
 %End
   public:
 
-    QgsGPSConnectionRegistry();
+    QgsGpsConnectionRegistry();
 %Docstring
-Constructor for QgsGPSConnectionRegistry.
+Constructor for QgsGpsConnectionRegistry.
 %End
-    ~QgsGPSConnectionRegistry();
+    ~QgsGpsConnectionRegistry();
 
 
-    void registerConnection( QgsGPSConnection *c );
+    void registerConnection( QgsGpsConnection *c );
 %Docstring
 Inserts a connection into the registry. The connection is owned by the registry class until it is unregistered again
 %End
-    void unregisterConnection( QgsGPSConnection *c );
+    void unregisterConnection( QgsGpsConnection *c );
 %Docstring
 Unregisters connection. The registry does no longer own the connection
 %End
 
-    QList< QgsGPSConnection *> connectionList() const;
+    QList< QgsGpsConnection *> connectionList() const;
 
   private:
-    QgsGPSConnectionRegistry( const QgsGPSConnectionRegistry &rh );
+    QgsGpsConnectionRegistry( const QgsGpsConnectionRegistry &rh );
 };
 
 /************************************************************************

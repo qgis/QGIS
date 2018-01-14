@@ -47,7 +47,7 @@ SIP_IF_FEATURE( MOBILITY_LOCATION )
  * \class QgsQtLocationConnection
  * \note may not be available in Python bindings on all platforms
 */
-class CORE_EXPORT QgsQtLocationConnection: public QgsGPSConnection
+class CORE_EXPORT QgsQtLocationConnection: public QgsGpsConnection
 {
     Q_OBJECT
   public:

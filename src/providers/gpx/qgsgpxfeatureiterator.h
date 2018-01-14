@@ -34,7 +34,7 @@ class QgsGPXFeatureSource : public QgsAbstractFeatureSource
   private:
     QString mFileName;
     QgsGPXProvider::DataType mFeatureType;
-    QgsGPSData *data = nullptr;
+    QgsGpsData *data = nullptr;
     QVector<int> indexToAttr;
     QgsFields mFields;
     QgsCoordinateReferenceSystem mCrs;
@@ -74,11 +74,11 @@ class QgsGPXFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsGPX
     void readAttributes( QgsFeature &feature, const QgsTrack &trk );
 
     //! Current waypoint iterator
-    QgsGPSData::WaypointIterator mWptIter;
+    QgsGpsData::WaypointIterator mWptIter;
     //! Current route iterator
-    QgsGPSData::RouteIterator mRteIter;
+    QgsGpsData::RouteIterator mRteIter;
     //! Current track iterator
-    QgsGPSData::TrackIterator mTrkIter;
+    QgsGpsData::TrackIterator mTrkIter;
 
     bool mFetchedFid = false;
 

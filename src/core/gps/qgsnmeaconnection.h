@@ -25,11 +25,11 @@
  * \ingroup core
  * Evaluates NMEA sentences coming from a GPS device
 */
-class CORE_EXPORT QgsNMEAConnection: public QgsGPSConnection
+class CORE_EXPORT QgsNmeaConnection: public QgsGpsConnection
 {
     Q_OBJECT
   public:
-    QgsNMEAConnection( QIODevice *dev );
+    QgsNmeaConnection( QIODevice *dev );
 
   protected slots:
     //! Parse available data source content

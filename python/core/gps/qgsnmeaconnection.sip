@@ -9,7 +9,7 @@
 
 
 
-class QgsNMEAConnection: QgsGPSConnection
+class QgsNmeaConnection: QgsGpsConnection
 {
 %Docstring
 Evaluates NMEA sentences coming from a GPS device
@@ -19,7 +19,7 @@ Evaluates NMEA sentences coming from a GPS device
 #include "qgsnmeaconnection.h"
 %End
   public:
-    QgsNMEAConnection( QIODevice *dev );
+    QgsNmeaConnection( QIODevice *dev );
 
   protected slots:
     virtual void parseData();
