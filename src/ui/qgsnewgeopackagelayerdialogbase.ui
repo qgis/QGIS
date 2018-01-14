@@ -404,9 +404,6 @@
             <property name="toolTip">
              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Name of the feature id column&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>
-            <property name="text">
-             <string>fid</string>
-            </property>
            </widget>
           </item>
           <item row="4" column="0">
@@ -429,9 +426,6 @@
             </property>
             <property name="toolTip">
              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Name of the geometry column&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-            </property>
-            <property name="text">
-             <string>geometry</string>
             </property>
            </widget>
           </item>
