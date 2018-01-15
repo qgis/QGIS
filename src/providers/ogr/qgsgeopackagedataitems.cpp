@@ -65,7 +65,7 @@ QVector<QgsDataItem *> QgsGeoPackageRootItem::createChildren()
   for ( const QString &connName : connList )
   {
     QgsOgrDbConnection connection( connName, QStringLiteral( "GPKG" ) );
-    QgsDataItem *conn = new QgsGeoPackageConnectionItem( this, connection.name(), connection.uri().encodedUri() );
+    QgsDataItem *conn = new QgsGeoPackageConnectionItem( this, connection.name(), connection.path() );
 
     connections.append( conn );
   }
