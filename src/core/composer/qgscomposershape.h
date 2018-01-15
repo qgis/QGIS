@@ -101,7 +101,7 @@ class CORE_EXPORT QgsComposerShape: public QgsComposerItem
     QRectF boundingRect() const override;
 
     /**
-     * Sets new scene rectangle bounds and recalculates hight and extent. Reimplemented from
+     * Sets new scene rectangle bounds and recalculates height and extent. Reimplemented from
      * QgsComposerItem as it needs to call updateBoundingRect after the shape's size changes
      */
     void setSceneRect( const QRectF &rectangle ) override;

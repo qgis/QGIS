@@ -3986,7 +3986,7 @@ void QgsOgrProvider::open( OpenMode mode )
     // Ensure subset is set (setSubsetString does nothing if the passed sql subset string is equal to mSubsetString, which is the case when reloading the dataset)
     QString origSubsetString = mSubsetString;
     mSubsetString.clear();
-    // Block signals to avoid endless recusion reloadData -> emit dataChanged -> reloadData
+    // Block signals to avoid endless recursion reloadData -> emit dataChanged -> reloadData
     blockSignals( true );
     // Do not update capabilities: it will be done later
     mValid = _setSubsetString( origSubsetString, true, false );
