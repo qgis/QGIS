@@ -254,17 +254,17 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
     void selectOnFocusChanged();
 
   protected:
-    void mousePressEvent( QMouseEvent *e ) override;
-    void mouseMoveEvent( QMouseEvent *e ) override;
     void focusInEvent( QFocusEvent *e ) override;
-    void paintEvent( QPaintEvent *e ) override;
-    void leaveEvent( QEvent *e ) override;
 
   private slots:
     void onTextChanged( const QString &text );
     void updateBusySpinner();
+    void updateClearIcon();
 
   private:
+    QAction *mClearAction;
+    QAction *mSearchAction;
+    QAction *mBusySpinnerAction = nullptr;
 
     bool mClearButtonVisible = true;
     bool mSearchIconVisible = false;
@@ -276,23 +276,12 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
     QString mDefaultValue;
     QString mStyleSheet;
     bool mFocusInEvent = false;
-    bool mClearHover = false;
     bool mSelectOnFocus = false;
 
-    QSize mClearIconSize;
-    QPixmap mClearIconPixmap;
-    QPixmap mClearHoverPixmap;
-
-    QSize mSearchIconSize;
-    QPixmap mSearchIconPixmap;
-    QgsAnimatedIcon *mBusySpinner = nullptr;
+    QgsAnimatedIcon *mBusySpinnerAnimatedIcon = nullptr;
 
     //! Returns true if clear button should be shown
     bool shouldShowClear() const;
-
-    QRect clearRect() const;
-    QRect searchRect() const;
-    QRect busySpinnerRect() const;
 };
 
 /// @cond PRIVATE

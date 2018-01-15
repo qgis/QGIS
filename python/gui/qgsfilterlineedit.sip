@@ -257,15 +257,7 @@ Will select all text when this widget receives the focus.
 %End
 
   protected:
-    virtual void mousePressEvent( QMouseEvent *e );
-
-    virtual void mouseMoveEvent( QMouseEvent *e );
-
     virtual void focusInEvent( QFocusEvent *e );
-
-    virtual void paintEvent( QPaintEvent *e );
-
-    virtual void leaveEvent( QEvent *e );
 
 
 };
