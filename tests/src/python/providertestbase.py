@@ -26,6 +26,7 @@ from qgis.core import (
     QgsVectorDataProvider,
     QgsVectorLayerFeatureSource,
     QgsFeatureSink,
+    QgsTestUtils,
     NULL
 )
 
@@ -191,6 +192,15 @@ class ProviderTestCase(FeatureSourceTestCase):
     def getSubsetStringNoMatching(self):
         """Individual providers may need to override this depending on their subset string formats"""
         return '"name"=\'AppleBearOrangePear\''
+
+    def testGetFeaturesThreadSafety(self):
+        # no request
+        self.assertTrue(QgsTestUtils.testProviderIteratorThreadSafety(self.source))
+
+        # filter rect request
+        extent = QgsRectangle(-73, 70, -63, 80)
+        request = QgsFeatureRequest().setFilterRect(extent)
+        self.assertTrue(QgsTestUtils.testProviderIteratorThreadSafety(self.source, request))
 
     def testOrderBy(self):
         try:
