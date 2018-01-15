@@ -526,7 +526,7 @@ void QgsLayoutLegendWidget::mMoveDownToolButton_clicked()
   if ( !node && !legendNode )
     return;
 
-  mLegend->beginCommand( QStringLiteral( "Moved Legend Item Down" ) );
+  mLegend->beginCommand( tr( "Moved Legend Item Down" ) );
 
   if ( node )
   {
@@ -563,7 +563,7 @@ void QgsLayoutLegendWidget::mMoveUpToolButton_clicked()
   if ( !node && !legendNode )
     return;
 
-  mLegend->beginCommand( QStringLiteral( "Move Legend Item Up" ) );
+  mLegend->beginCommand( tr( "Move Legend Item Up" ) );
 
   if ( node )
   {
@@ -585,7 +585,7 @@ void QgsLayoutLegendWidget::mMoveUpToolButton_clicked()
 
 void QgsLayoutLegendWidget::mCheckBoxAutoUpdate_stateChanged( int state )
 {
-  mLegend->beginCommand( QStringLiteral( "Change Auto Update" ) );
+  mLegend->beginCommand( tr( "Change Auto Update" ) );
 
   mLegend->setAutoUpdateModel( state == Qt::Checked );
 
@@ -699,7 +699,7 @@ void QgsLayoutLegendWidget::mAddToolButton_clicked()
     const QList<QgsMapLayer *> layers = addDialog.selectedLayers();
     if ( !layers.empty() )
     {
-      mLegend->beginCommand( QStringLiteral( "Add Legend Item(s)" ) );
+      mLegend->beginCommand( tr( "Add Legend Item(s)" ) );
       for ( QgsMapLayer *layer : layers )
       {
         mLegend->model()->rootGroup()->addLayer( layer );
@@ -723,7 +723,7 @@ void QgsLayoutLegendWidget::mRemoveToolButton_clicked()
     return;
   }
 
-  mLegend->beginCommand( QStringLiteral( "Remove Legend Item" ) );
+  mLegend->beginCommand( tr( "Remove Legend Item" ) );
 
   QList<QPersistentModelIndex> indexes;
   Q_FOREACH ( const QModelIndex &index, selectionModel->selectedIndexes() )
