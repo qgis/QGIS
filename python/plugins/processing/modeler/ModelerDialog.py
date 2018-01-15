@@ -623,6 +623,7 @@ class ModelerDialog(BASE, WIDGET):
             paramItem.setText(0, paramType)
             paramItem.setIcon(0, icon)
             paramItem.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable | Qt.ItemIsDragEnabled)
+            paramItem.setToolTip(0, ModelerParameterDefinitionDialog.inputTooltip(paramType))
             parametersItem.addChild(paramItem)
         self.inputsTree.addTopLevelItem(parametersItem)
         parametersItem.setExpanded(True)
