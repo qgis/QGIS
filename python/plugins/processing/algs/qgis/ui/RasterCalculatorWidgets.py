@@ -102,7 +102,7 @@ class ExpressionWidget(BASE, WIDGET):
         self.setList(options)
 
         def doubleClicked(item):
-            self.text.insertPlainText(self.options[item.text()])
+            self.text.insertPlainText('"{}"'.format(self.options[item.text()]))
 
         def addButtonText(text):
             if any(c for c in text if c.islower()):
