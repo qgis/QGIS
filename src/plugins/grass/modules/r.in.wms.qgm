@@ -17,7 +17,6 @@
 	<flag key="k" answer="off" version_max="6.4"/>
 	<flag key="o" answer="off"/>
 	<flag key="p" answer="off" version_max="6.4"/>
-	<option key="method" />
 	<option key="output" />
 	<option key="maxcols" advanced="yes" version_min="7.0"/>
 	<option key="maxrows" advanced="yes" version_min="7.0"/>
