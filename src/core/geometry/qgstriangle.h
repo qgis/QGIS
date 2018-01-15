@@ -352,7 +352,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygon
 
     /**
      * Center of the inscribed circle of the triangle. Z dimension is
-     * supported and is retrieved from the first 3D point amongst vertexes.
+     * supported and is retrieved from the first 3D point amongst vertices.
      * \returns The center of the inscribed circle of the triangle.
      * An empty point is returned for empty triangle.
      * * Example:
