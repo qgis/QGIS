@@ -18,21 +18,16 @@
 #include "qgscomposition.h"
 #include <QtCore>
 
-QgsComposerMultiFrame::QgsComposerMultiFrame( QgsComposition* c, bool createUndoCommands )
-    : QgsComposerObject( c )
-    , mResizeMode( UseExistingFrames )
-    , mCreateUndoCommands( createUndoCommands )
-    , mIsRecalculatingSize( false )
+QgsComposerMultiFrame::QgsComposerMultiFrame( QgsComposition *c, bool createUndoCommands )
+  : QgsComposerObject( c )
+  , mCreateUndoCommands( createUndoCommands )
 {
   mComposition->addMultiFrame( this );
-  connect( mComposition, SIGNAL( nPagesChanged() ), this, SLOT( handlePageChange() ) );
+  connect( mComposition, &QgsComposition::nPagesChanged, this, &QgsComposerMultiFrame::handlePageChange );
 }
 
 QgsComposerMultiFrame::QgsComposerMultiFrame()
-    : QgsComposerObject( nullptr )
-    , mResizeMode( UseExistingFrames )
-    , mCreateUndoCommands( false )
-    , mIsRecalculatingSize( false )
+  : QgsComposerObject( nullptr )
 {
 }
 
@@ -41,20 +36,19 @@ QgsComposerMultiFrame::~QgsComposerMultiFrame()
   deleteFrames();
 }
 
-void QgsComposerMultiFrame::render( QPainter *p, const QRectF &renderExtent )
+QSizeF QgsComposerMultiFrame::fixedFrameSize( const int frameIndex ) const
 {
-  //base implementation does nothing
-  Q_UNUSED( p );
-  Q_UNUSED( renderExtent );
+  Q_UNUSED( frameIndex ); return QSizeF( 0, 0 );
 }
 
-void QgsComposerMultiFrame::render( QPainter *painter, const QRectF &renderExtent, const int frameIndex )
+QSizeF QgsComposerMultiFrame::minFrameSize( const int frameIndex ) const
 {
-  Q_UNUSED( frameIndex );
-  //base implementation ignores frameIndex
-  Q_NOWARN_DEPRECATED_PUSH
-  render( painter, renderExtent );
-  Q_NOWARN_DEPRECATED_POP
+  Q_UNUSED( frameIndex ); return QSizeF( 0, 0 );
+}
+
+double QgsComposerMultiFrame::findNearbyPageBreak( double yPos )
+{
+  return yPos;
 }
 
 void QgsComposerMultiFrame::setResizeMode( ResizeMode mode )
@@ -69,7 +63,7 @@ void QgsComposerMultiFrame::setResizeMode( ResizeMode mode )
 
 void QgsComposerMultiFrame::recalculateFrameSizes()
 {
-  if ( mFrameItems.size() < 1 )
+  if ( mFrameItems.empty() )
   {
     return;
   }
@@ -84,7 +78,7 @@ void QgsComposerMultiFrame::recalculateFrameSizes()
 
   double currentY = 0;
   double currentHeight = 0;
-  QgsComposerFrame* currentItem = nullptr;
+  QgsComposerFrame *currentItem = nullptr;
 
   for ( int i = 0; i < mFrameItems.size(); ++i )
   {
@@ -122,10 +116,10 @@ void QgsComposerMultiFrame::recalculateFrameSizes()
   //at end of frames but there is  still content left. Add other pages if ResizeMode ==
   if ( mResizeMode != UseExistingFrames )
   {
-    while (( mResizeMode == RepeatOnEveryPage ) || currentY < totalHeight )
+    while ( ( mResizeMode == RepeatOnEveryPage ) || currentY < totalHeight )
     {
       //find out on which page the lower left point of the last frame is
-      int page = qFloor(( currentItem->pos().y() + currentItem->rect().height() ) / ( mComposition->paperHeight() + mComposition->spaceBetweenPages() ) ) + 1;
+      int page = std::floor( ( currentItem->pos().y() + currentItem->rect().height() ) / ( mComposition->paperHeight() + mComposition->spaceBetweenPages() ) ) + 1;
 
       if ( mResizeMode == RepeatOnEveryPage )
       {
@@ -160,7 +154,7 @@ void QgsComposerMultiFrame::recalculateFrameSizes()
       }
 
       //create new frame
-      QgsComposerFrame* newFrame = createNewFrame( currentItem,
+      QgsComposerFrame *newFrame = createNewFrame( currentItem,
                                    QPointF( currentItem->pos().x(), newFrameY ),
                                    QSizeF( currentItem->rect().width(), frameHeight ) );
 
@@ -183,27 +177,27 @@ void QgsComposerMultiFrame::recalculateFrameSizes()
 
 void QgsComposerMultiFrame::recalculateFrameRects()
 {
-  if ( mFrameItems.size() < 1 )
+  if ( mFrameItems.empty() )
   {
     //no frames, nothing to do
     return;
   }
 
-  Q_FOREACH ( QgsComposerFrame* frame, mFrameItems )
+  Q_FOREACH ( QgsComposerFrame *frame, mFrameItems )
   {
     frame->setSceneRect( QRectF( frame->scenePos().x(), frame->scenePos().y(),
                                  frame->rect().width(), frame->rect().height() ) );
   }
 }
 
-QgsComposerFrame* QgsComposerMultiFrame::createNewFrame( QgsComposerFrame* currentFrame, QPointF pos, QSizeF size )
+QgsComposerFrame *QgsComposerMultiFrame::createNewFrame( QgsComposerFrame *currentFrame, QPointF pos, QSizeF size )
 {
   if ( !currentFrame )
   {
     return nullptr;
   }
 
-  QgsComposerFrame* newFrame = new QgsComposerFrame( mComposition, this, pos.x(),
+  QgsComposerFrame *newFrame = new QgsComposerFrame( mComposition, this, pos.x(),
       pos.y(), size.width(), size.height() );
 
   //copy some settings from the parent frame
@@ -211,10 +205,10 @@ QgsComposerFrame* QgsComposerMultiFrame::createNewFrame( QgsComposerFrame* curre
   newFrame->setBackgroundEnabled( currentFrame->hasBackground() );
   newFrame->setBlendMode( currentFrame->blendMode() );
   newFrame->setFrameEnabled( currentFrame->hasFrame() );
-  newFrame->setFrameOutlineColor( currentFrame->frameOutlineColor() );
+  newFrame->setFrameStrokeColor( currentFrame->frameStrokeColor() );
   newFrame->setFrameJoinStyle( currentFrame->frameJoinStyle() );
-  newFrame->setFrameOutlineWidth( currentFrame->frameOutlineWidth() );
-  newFrame->setTransparency( currentFrame->transparency() );
+  newFrame->setFrameStrokeWidth( currentFrame->frameStrokeWidth() );
+  newFrame->setItemOpacity( currentFrame->itemOpacity() );
   newFrame->setHideBackgroundIfEmpty( currentFrame->hideBackgroundIfEmpty() );
 
   addFrame( newFrame, false );
@@ -227,9 +221,9 @@ QString QgsComposerMultiFrame::displayName() const
   return tr( "<frame>" );
 }
 
-void QgsComposerMultiFrame::handleFrameRemoval( QgsComposerItem* item )
+void QgsComposerMultiFrame::handleFrameRemoval( QgsComposerItem *item )
 {
-  QgsComposerFrame* frame = dynamic_cast<QgsComposerFrame*>( item );
+  QgsComposerFrame *frame = dynamic_cast<QgsComposerFrame *>( item );
   if ( !frame )
   {
     return;
@@ -246,7 +240,7 @@ void QgsComposerMultiFrame::handleFrameRemoval( QgsComposerItem* item )
     if ( resizeMode() != QgsComposerMultiFrame::RepeatOnEveryPage && !mIsRecalculatingSize )
     {
       //removing a frame forces the multi frame to UseExistingFrames resize mode
-      //otherwise the frame may not actually be removed, leading to confusing ui behaviour
+      //otherwise the frame may not actually be removed, leading to confusing ui behavior
       mResizeMode = QgsComposerMultiFrame::UseExistingFrames;
       emit changed();
       recalculateFrameSizes();
@@ -269,7 +263,7 @@ void QgsComposerMultiFrame::handlePageChange()
   //remove items beginning on non-existing pages
   for ( int i = mFrameItems.size() - 1; i >= 0; --i )
   {
-    QgsComposerFrame* frame = mFrameItems.at( i );
+    QgsComposerFrame *frame = mFrameItems.at( i );
     int page = frame->pos().y() / ( mComposition->paperHeight() + mComposition->spaceBetweenPages() );
     if ( page > ( mComposition->numPages() - 1 ) )
     {
@@ -278,13 +272,13 @@ void QgsComposerMultiFrame::handlePageChange()
   }
 
   //page number of the last item
-  QgsComposerFrame* lastFrame = mFrameItems.last();
+  QgsComposerFrame *lastFrame = mFrameItems.last();
   int lastItemPage = lastFrame->pos().y() / ( mComposition->paperHeight() + mComposition->spaceBetweenPages() );
 
   for ( int i = lastItemPage + 1; i < mComposition->numPages(); ++i )
   {
     //copy last frame to current page
-    QgsComposerFrame* newFrame = new QgsComposerFrame( mComposition, this, lastFrame->pos().x(),
+    QgsComposerFrame *newFrame = new QgsComposerFrame( mComposition, this, lastFrame->pos().x(),
         lastFrame->pos().y() + mComposition->paperHeight() + mComposition->spaceBetweenPages(),
         lastFrame->rect().width(), lastFrame->rect().height() );
     addFrame( newFrame, false );
@@ -302,7 +296,7 @@ void QgsComposerMultiFrame::removeFrame( int i, const bool removeEmptyPages )
     return;
   }
 
-  QgsComposerFrame* frameItem = mFrameItems.at( i );
+  QgsComposerFrame *frameItem = mFrameItems.at( i );
   if ( mComposition )
   {
     mIsRecalculatingSize = true;
@@ -321,7 +315,7 @@ void QgsComposerMultiFrame::removeFrame( int i, const bool removeEmptyPages )
 
 void QgsComposerMultiFrame::update()
 {
-  Q_FOREACH ( QgsComposerFrame* frame, mFrameItems )
+  Q_FOREACH ( QgsComposerFrame *frame, mFrameItems )
   {
     frame->update();
   }
@@ -331,18 +325,18 @@ void QgsComposerMultiFrame::deleteFrames()
 {
   ResizeMode bkResizeMode = mResizeMode;
   mResizeMode = UseExistingFrames;
-  QObject::disconnect( mComposition, SIGNAL( itemRemoved( QgsComposerItem* ) ), this, SLOT( handleFrameRemoval( QgsComposerItem* ) ) );
-  Q_FOREACH ( QgsComposerFrame* frame, mFrameItems )
+  disconnect( mComposition, &QgsComposition::itemRemoved, this, &QgsComposerMultiFrame::handleFrameRemoval );
+  Q_FOREACH ( QgsComposerFrame *frame, mFrameItems )
   {
     mComposition->removeComposerItem( frame, false );
     delete frame;
   }
-  QObject::connect( mComposition, SIGNAL( itemRemoved( QgsComposerItem* ) ), this, SLOT( handleFrameRemoval( QgsComposerItem* ) ) );
+  connect( mComposition, &QgsComposition::itemRemoved, this, &QgsComposerMultiFrame::handleFrameRemoval );
   mFrameItems.clear();
   mResizeMode = bkResizeMode;
 }
 
-QgsComposerFrame* QgsComposerMultiFrame::frame( int i ) const
+QgsComposerFrame *QgsComposerMultiFrame::frame( int i ) const
 {
   if ( i >= mFrameItems.size() )
   {
@@ -356,34 +350,34 @@ int QgsComposerMultiFrame::frameIndex( QgsComposerFrame *frame ) const
   return mFrameItems.indexOf( frame );
 }
 
-bool QgsComposerMultiFrame::_writeXML( QDomElement& elem, QDomDocument& doc, bool ignoreFrames ) const
+bool QgsComposerMultiFrame::_writeXml( QDomElement &elem, QDomDocument &doc, bool ignoreFrames ) const
 {
-  elem.setAttribute( "resizeMode", mResizeMode );
+  elem.setAttribute( QStringLiteral( "resizeMode" ), mResizeMode );
   if ( !ignoreFrames )
   {
-    QList<QgsComposerFrame*>::const_iterator frameIt = mFrameItems.constBegin();
+    QList<QgsComposerFrame *>::const_iterator frameIt = mFrameItems.constBegin();
     for ( ; frameIt != mFrameItems.constEnd(); ++frameIt )
     {
-      ( *frameIt )->writeXML( elem, doc );
+      ( *frameIt )->writeXml( elem, doc );
     }
   }
-  QgsComposerObject::writeXML( elem, doc );
+  QgsComposerObject::writeXml( elem, doc );
   return true;
 }
 
-bool QgsComposerMultiFrame::_readXML( const QDomElement& itemElem, const QDomDocument& doc, bool ignoreFrames )
+bool QgsComposerMultiFrame::_readXml( const QDomElement &itemElem, const QDomDocument &doc, bool ignoreFrames )
 {
-  QgsComposerObject::readXML( itemElem, doc );
+  QgsComposerObject::readXml( itemElem, doc );
 
-  mResizeMode = static_cast< ResizeMode >( itemElem.attribute( "resizeMode", "0" ).toInt() );
+  mResizeMode = static_cast< ResizeMode >( itemElem.attribute( QStringLiteral( "resizeMode" ), QStringLiteral( "0" ) ).toInt() );
   if ( !ignoreFrames )
   {
-    QDomNodeList frameList = itemElem.elementsByTagName( "ComposerFrame" );
+    QDomNodeList frameList = itemElem.elementsByTagName( QStringLiteral( "ComposerFrame" ) );
     for ( int i = 0; i < frameList.size(); ++i )
     {
       QDomElement frameElem = frameList.at( i ).toElement();
-      QgsComposerFrame* newFrame = new QgsComposerFrame( mComposition, this, 0, 0, 0, 0 );
-      newFrame->readXML( frameElem, doc );
+      QgsComposerFrame *newFrame = new QgsComposerFrame( mComposition, this, 0, 0, 0, 0 );
+      newFrame->readXml( frameElem, doc );
       addFrame( newFrame, false );
     }
 

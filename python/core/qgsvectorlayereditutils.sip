@@ -1,164 +1,208 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsvectorlayereditutils.h                                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
 class QgsVectorLayerEditUtils
 {
+
 %TypeHeaderCode
-#include <qgsvectorlayereditutils.h>
+#include "qgsvectorlayereditutils.h"
 %End
   public:
-    QgsVectorLayerEditUtils( QgsVectorLayer* layer );
+    QgsVectorLayerEditUtils( QgsVectorLayer *layer );
 
-    QgsGeometryCache* cache();
-
-
-    /** Insert a new vertex before the given vertex number,
-     *  in the given ring, item (first number is index 0), and feature
-     *  Not meaningful for Point geometries
-     */
     bool insertVertex( double x, double y, QgsFeatureId atFeatureId, int beforeVertex );
+%Docstring
+Insert a new vertex before the given vertex number,
+in the given ring, item (first number is index 0), and feature
+Not meaningful for Point geometries
+%End
 
-    /** Moves the vertex at the given position number,
-     *  ring and item (first number is index 0), and feature
-     *  to the given coordinates
-     */
+    bool insertVertex( const QgsPoint &point, QgsFeatureId atFeatureId, int beforeVertex );
+%Docstring
+Inserts a new vertex before the given vertex number,
+in the given ring, item (first number is index 0), and feature
+Not meaningful for Point geometries
+%End
+
     bool moveVertex( double x, double y, QgsFeatureId atFeatureId, int atVertex );
+%Docstring
+Moves the vertex at the given position number,
+ring and item (first number is index 0), and feature
+to the given coordinates
+%End
 
-    /** Moves the vertex at the given position number,
-     *  ring and item (first number is index 0), and feature
-     *  to the given coordinates
-     *  @note available in python bindings as moveVertexV2
-     */
-    bool moveVertex( const QgsPointV2& p, QgsFeatureId atFeatureId, int atVertex ) /PyName=moveVertexV2/;
+    bool moveVertex( const QgsPoint &p, QgsFeatureId atFeatureId, int atVertex ) /PyName=moveVertexV2/;
+%Docstring
+Moves the vertex at the given position number,
+ring and item (first number is index 0), and feature
+to the given coordinates
 
-    /** Deletes a vertex from a feature
-     * @deprecated use deleteVertexV2() instead
-     */
-    bool deleteVertex( QgsFeatureId atFeatureId, int atVertex ) /Deprecated/;
+.. note::
 
-    /** Deletes a vertex from a feature.
-     * @param featureId ID of feature to remove vertex from
-     * @param vertex index of vertex to delete
-     * @note added in QGIS 2.14
-     */
-    //TODO QGIS 3.0 - rename to deleteVertex
-    QgsVectorLayer::EditResult deleteVertexV2( QgsFeatureId featureId, int vertex );
+   available in Python bindings as moveVertexV2
+%End
 
-    /** Adds a ring to polygon/multipolygon features
-     * @param ring ring to add
-     * @param targetFeatureIds if specified, only these features will be the candidates for adding a ring. Otherwise
-     * all intersecting features are tested and the ring is added to the first valid feature.
-     * @param modifiedFeatureId if specified, feature ID for feature that ring was added to will be stored in this parameter
-     * @return
-     *   0 in case of success,
-     *   1 problem with feature type,
-     *   2 ring not closed,
-     *   3 ring not valid,
-     *   4 ring crosses existing rings,
-     *   5 no feature found where ring can be inserted
-     */
-    // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int addRing( const QList<QgsPoint>& ring, const QgsFeatureIds& targetFeatureIds = QgsFeatureIds(), QgsFeatureId* modifiedFeatureId = 0 );
+    QgsVectorLayer::EditResult deleteVertex( QgsFeatureId featureId, int vertex );
+%Docstring
+Deletes a vertex from a feature.
 
-    /** Adds a ring to polygon/multipolygon features
-     * @param ring ring to add
-     * @param targetFeatureIds if specified, only these features will be the candidates for adding a ring. Otherwise
-     * all intersecting features are tested and the ring is added to the first valid feature.
-     * @param modifiedFeatureId if specified, feature ID for feature that ring was added to will be stored in this parameter
-     * @return
-     *  0 in case of success,
-     *  1 problem with feature type,
-     *  2 ring not closed,
-     *  3 ring not valid,
-     *  4 ring crosses existing rings,
-     *  5 no feature found where ring can be inserted
-     * @note available in python bindings as addCurvedRing
-     */
-    // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int addRing( QgsCurveV2* ring, const QgsFeatureIds& targetFeatureIds = QgsFeatureIds(), QgsFeatureId* modifiedFeatureId = nullptr ) /PyName=addCurvedRing/;
+:param featureId: ID of feature to remove vertex from
+:param vertex: index of vertex to delete
 
-    /** Adds a new part polygon to a multipart feature
-     * @return
-     *  0 in case of success,
-     *  1 if selected feature is not multipart,
-     *  2 if ring is not a valid geometry,
-     *  3 if new polygon ring not disjoint with existing rings,
-     *  4 if no feature was selected,
-     *  5 if several features are selected,
-     *  6 if selected geometry not found
-     */
-    // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int addPart( const QList<QgsPoint>& ring, QgsFeatureId featureId );
+.. versionadded:: 2.14
+%End
 
-    /** Adds a new part polygon to a multipart feature
-     * @return
-     *  0 in case of success,
-     *  1 if selected feature is not multipart,
-     *  2 if ring is not a valid geometry,
-     *  3 if new polygon ring not disjoint with existing rings,
-     *  4 if no feature was selected,
-     *  5 if several features are selected,
-     *  6 if selected geometry not found
-     * @note available in python bindings as addPartV2
-     */
-    // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int addPart( const QList<QgsPointV2>& ring, QgsFeatureId featureId ) /PyName=addPartV2/;
+    QgsGeometry::OperationResult addRing( const QVector<QgsPointXY> &ring, const QgsFeatureIds &targetFeatureIds = QgsFeatureIds(), QgsFeatureId *modifiedFeatureId = 0 );
+%Docstring
+Adds a ring to polygon/multipolygon features
 
-    // @note available in python bindings as addCurvedPart
-    // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int addPart( QgsCurveV2* ring, QgsFeatureId featureId ) /PyName=addCurvedPart/;
+:param ring: ring to add
+:param targetFeatureIds: if specified, only these features will be the candidates for adding a ring. Otherwise
+all intersecting features are tested and the ring is added to the first valid feature.
+:param modifiedFeatureId: if specified, feature ID for feature that ring was added to will be stored in this parameter
 
-    /** Translates feature by dx, dy
-     * @param featureId id of the feature to translate
-     * @param dx translation of x-coordinate
-     * @param dy translation of y-coordinate
-     * @return 0 in case of success
-     */
+:return: OperationResult result code: success or reason of failure
+%End
+
+    QgsGeometry::OperationResult addRing( QgsCurve *ring, const QgsFeatureIds &targetFeatureIds = QgsFeatureIds(), QgsFeatureId *modifiedFeatureId = 0 ) /PyName=addCurvedRing/;
+%Docstring
+Adds a ring to polygon/multipolygon features
+
+:param ring: ring to add
+:param targetFeatureIds: if specified, only these features will be the candidates for adding a ring. Otherwise
+all intersecting features are tested and the ring is added to the first valid feature.
+:param modifiedFeatureId: if specified, feature ID for feature that ring was added to will be stored in this parameter
+
+:return: OperationResult result code: success or reason of failure
+
+.. note::
+
+   available in python bindings as addCurvedRing
+%End
+
+    QgsGeometry::OperationResult addPart( const QList<QgsPointXY> &ring, QgsFeatureId featureId );
+%Docstring
+Adds a new part polygon to a multipart feature
+
+:return:
+- QgsGeometry.Success
+- QgsGeometry.AddPartSelectedGeometryNotFound
+- QgsGeometry.AddPartNotMultiGeometry
+- QgsGeometry.InvalidBaseGeometry
+- QgsGeometry.InvalidInput
+%End
+
+    QgsGeometry::OperationResult addPart( const QgsPointSequence &ring, QgsFeatureId featureId );
+%Docstring
+Adds a new part polygon to a multipart feature
+
+:return:
+- QgsGeometry.Success
+- QgsGeometry.AddPartSelectedGeometryNotFound
+- QgsGeometry.AddPartNotMultiGeometry
+- QgsGeometry.InvalidBaseGeometry
+- QgsGeometry.InvalidInput
+
+.. note::
+
+   available in python bindings as addPartV2
+%End
+
+    QgsGeometry::OperationResult addPart( QgsCurve *ring, QgsFeatureId featureId ) /PyName=addCurvedPart/;
+%Docstring
+Adds a new part polygon to a multipart feature
+
+:return:
+- QgsGeometry.Success
+- QgsGeometry.AddPartSelectedGeometryNotFound
+- QgsGeometry.AddPartNotMultiGeometry
+- QgsGeometry.InvalidBaseGeometry
+- QgsGeometry.InvalidInput
+
+.. note::
+
+   available in python bindings as addCurvedPart
+%End
+
     int translateFeature( QgsFeatureId featureId, double dx, double dy );
+%Docstring
+Translates feature by dx, dy
 
-    /** Splits parts cut by the given line
-     *  @param splitLine line that splits the layer feature parts
-     *  @param topologicalEditing true if topological editing is enabled
-     *  @return
-     *   0 in case of success,
-     *   4 if there is a selection but no feature split
-     */
-    // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int splitParts( const QList<QgsPoint>& splitLine, bool topologicalEditing = false );
+:param featureId: id of the feature to translate
+:param dx: translation of x-coordinate
+:param dy: translation of y-coordinate
 
-    /** Splits features cut by the given line
-     *  @param splitLine line that splits the layer features
-     *  @param topologicalEditing true if topological editing is enabled
-     *  @return
-     *   0 in case of success,
-     *   4 if there is a selection but no feature split
-     */
-    // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int splitFeatures( const QList<QgsPoint>& splitLine, bool topologicalEditing = false );
+:return: 0 in case of success
+%End
 
-    /** Adds topological points for every vertex of the geometry.
-     * @param geom the geometry where each vertex is added to segments of other features
-     * @note geom is not going to be modified by the function
-     * @return 0 in case of success
-     */
-    int addTopologicalPoints( const QgsGeometry *geom );
+    QgsGeometry::OperationResult splitParts( const QVector<QgsPointXY> &splitLine, bool topologicalEditing = false );
+%Docstring
+Splits parts cut by the given line
 
-    /** Adds a vertex to segments which intersect point p but don't
-     * already have a vertex there. If a feature already has a vertex at position p,
-     * no additional vertex is inserted. This method is useful for topological
-     * editing.
-     * @param p position of the vertex
-     * @return 0 in case of success
-     */
-    int addTopologicalPoints( const QgsPoint& p );
+:param splitLine: line that splits the layer feature parts
+:param topologicalEditing: true if topological editing is enabled
 
-    /** Inserts vertices to the snapped segments.
-     * This is useful for topological editing if snap to segment is enabled.
-     * @param snapResults results collected from the snapping operation
-     * @return 0 in case of success
-     */
-    int insertSegmentVerticesForSnap( const QList<QgsSnappingResult>& snapResults );
+:return:
+- QgsGeometry.InvalidBaseGeometry
+- QgsGeometry.Success
+- QgsGeometry.InvalidInput
+- QgsGeometry.NothingHappened if a selection is present but no feature has been split
+- QgsGeometry.InvalidBaseGeometry
+- QgsGeometry.GeometryEngineError
+- QgsGeometry.SplitCannotSplitPoint
+%End
 
-  protected:
+    QgsGeometry::OperationResult splitFeatures( const QVector<QgsPointXY> &splitLine, bool topologicalEditing = false );
+%Docstring
+Splits features cut by the given line
 
-    /** Little helper function that gives bounding box from a list of points.
-    @return 0 in case of success */
-    int boundingBoxFromPointList( const QList<QgsPoint>& list, double& xmin, double& ymin, double& xmax, double& ymax ) const;
+:param splitLine: line that splits the layer features
+:param topologicalEditing: true if topological editing is enabled
+
+:return:
+0 in case of success,
+4 if there is a selection but no feature split
+%End
+
+    int addTopologicalPoints( const QgsGeometry &geom );
+%Docstring
+Adds topological points for every vertex of the geometry.
+
+:param geom: the geometry where each vertex is added to segments of other features
+
+:return: 0 in case of success
+
+.. note::
+
+   geom is not going to be modified by the function
+%End
+
+    int addTopologicalPoints( const QgsPointXY &p );
+%Docstring
+Adds a vertex to segments which intersect point p but don't
+already have a vertex there. If a feature already has a vertex at position p,
+no additional vertex is inserted. This method is useful for topological
+editing.
+
+:param p: position of the vertex
+
+:return: 0 in case of success
+%End
+
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsvectorlayereditutils.h                                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

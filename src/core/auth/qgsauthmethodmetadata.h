@@ -17,9 +17,14 @@
 #ifndef QGSAUTHMETHODMETADATA_H
 #define QGSAUTHMETHODMETADATA_H
 
+#define SIP_NO_FILE
+
 #include <QString>
 
-/** \ingroup core
+#include "qgis_core.h"
+
+/**
+ * \ingroup core
  * Holds data auth method key, description, and associated shared library file information.
 
    The metadata class is used in a lazy load implementation in
@@ -35,27 +40,31 @@
 class CORE_EXPORT QgsAuthMethodMetadata
 {
   public:
+
     /**
      * Construct an authentication method metadata container
-     * @param _key Textual key of the library plugin
-     * @param _description Description of the library plugin
-     * @param _library File name of library plugin
+     * \param _key Textual key of the library plugin
+     * \param _description Description of the library plugin
+     * \param _library File name of library plugin
      */
-    QgsAuthMethodMetadata( const QString & _key, const QString & _description, const QString & _library );
+    QgsAuthMethodMetadata( const QString &_key, const QString &_description, const QString &_library );
 
-    /** This returns the unique key associated with the method
+    /**
+     * This returns the unique key associated with the method
 
         This key string is used for the associative container in QgsAtuhMethodRegistry
      */
     QString key() const;
 
-    /** This returns descriptive text for the method
+    /**
+     * This returns descriptive text for the method
 
         This is used to provide a descriptive list of available data methods.
      */
     QString description() const;
 
-    /** This returns the library file name
+    /**
+     * This returns the library file name
 
         This is used to QLibrary calls to load the method.
      */

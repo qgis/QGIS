@@ -79,10 +79,10 @@ if __name__ == '__main__':
 
     api_files = [
         os.path.join(api_bin_dir, 'PyQGIS.api'),
-        os.path.join(api_src_dir, 'Python-2.7.api'),
-        os.path.join(api_src_dir, 'PyQt4-4.7.4.api'),
-        os.path.join(api_src_dir, 'OSGeo_GEOS-3.4.2.api'),
-        os.path.join(api_src_dir, 'OSGeo_GDAL-OGR-1.10.0.api')
+        os.path.join(api_src_dir, 'Python-3.6.api'),
+        os.path.join(api_src_dir, 'PyQt5.api'),
+        os.path.join(api_src_dir, 'OSGeo_GEOS-3.6.2.api'),
+        os.path.join(api_src_dir, 'OSGeo_GDAL-OGR-2.2.3.api')
     ]
     # print api_files.__repr__()
     # print pap_file.__repr__()

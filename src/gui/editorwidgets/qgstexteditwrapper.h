@@ -21,8 +21,12 @@
 #include <QLineEdit>
 #include <QPlainTextEdit>
 #include <QTextEdit>
+#include "qgis_gui.h"
+
+SIP_NO_FILE
 
 /**
+ * \ingroup gui
  * Wraps a text widget. Users will be able to modify text with this widget type.
  *
  * Options:
@@ -37,30 +41,42 @@ class GUI_EXPORT QgsTextEditWrapper : public QgsEditorWidgetWrapper
 {
     Q_OBJECT
   public:
-    explicit QgsTextEditWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor = nullptr, QWidget* parent = nullptr );
+    explicit QgsTextEditWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *editor = nullptr, QWidget *parent = nullptr );
 
     // QgsEditorWidgetWrapper interface
   public:
     QVariant value() const override;
     void showIndeterminateState() override;
 
+    /**
+     * Add a hint text on the widget
+     * \param hintText The hint text to display
+     * \since QGIS 3.0
+     */
+    void setHint( const QString &hintText ) override;
+
   protected:
-    QWidget*createWidget( QWidget* parent ) override;
-    void initWidget( QWidget* editor ) override;
+    QWidget *createWidget( QWidget *parent ) override;
+    void initWidget( QWidget *editor ) override;
     bool valid() const override;
 
   public slots:
-    void setValue( const QVariant& value ) override;
+    void setValue( const QVariant &value ) override;
     void setEnabled( bool enabled ) override;
 
+  private slots:
+    void textChanged( const QString &text );
+
   private:
-    QTextEdit* mTextEdit;
-    QPlainTextEdit* mPlainTextEdit;
-    QLineEdit* mLineEdit;
+    QTextEdit *mTextEdit = nullptr;
+    QPlainTextEdit *mPlainTextEdit = nullptr;
+    QLineEdit *mLineEdit = nullptr;
     QPalette mReadOnlyPalette;
     QPalette mWritablePalette;
+    QString mPlaceholderText;
+    QString mPlaceholderTextBackup;
 
-    void setWidgetValue( const QVariant& value );
+    void setWidgetValue( const QVariant &value );
 };
 
 #endif // QGSTEXTEDITWRAPPER_H

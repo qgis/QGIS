@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Raster calculator</string>
+   <string>Raster Calculator</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_3">
    <item>
@@ -205,7 +205,7 @@
            </size>
           </property>
           <property name="text">
-           <string>...</string>
+           <string>…</string>
           </property>
          </widget>
         </item>
@@ -504,7 +504,7 @@
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>
@@ -541,6 +541,7 @@
   <tabstop>mNRowsSpinBox</tabstop>
   <tabstop>mCrsSelector</tabstop>
   <tabstop>mAddResultToProjectCheckBox</tabstop>
+  <tabstop>mOperatorsGroupBox</tabstop>
   <tabstop>mPlusPushButton</tabstop>
   <tabstop>mMultiplyPushButton</tabstop>
   <tabstop>mSqrtButton</tabstop>

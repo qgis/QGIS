@@ -22,13 +22,11 @@ email                : jef at norbit dot de
 #include <QMetaType>
 #include <climits>
 
-QgsGeomColumnTypeThread::QgsGeomColumnTypeThread( QString name, bool useEstimatedMetaData, bool allowGeometrylessTables )
-    : QThread()
-    , mConn( nullptr )
-    , mName( name )
-    , mUseEstimatedMetadata( useEstimatedMetaData )
-    , mAllowGeometrylessTables( allowGeometrylessTables )
-    , mStopped( false )
+QgsGeomColumnTypeThread::QgsGeomColumnTypeThread( const QString &name, bool useEstimatedMetaData, bool allowGeometrylessTables )
+  : mName( name )
+  , mUseEstimatedMetadata( useEstimatedMetaData )
+  , mAllowGeometrylessTables( allowGeometrylessTables )
+  , mStopped( false )
 {
   qRegisterMetaType<QgsPostgresLayerProperty>( "QgsPostgresLayerProperty" );
 }
@@ -44,7 +42,7 @@ void QgsGeomColumnTypeThread::stop()
 
 void QgsGeomColumnTypeThread::run()
 {
-  QgsDataSourceURI uri = QgsPostgresConn::connUri( mName );
+  QgsDataSourceUri uri = QgsPostgresConn::connUri( mName );
   mConn = QgsPostgresConnPool::instance()->acquireConnection( uri.connectionInfo( false ) );
   if ( !mConn )
   {
@@ -74,7 +72,7 @@ void QgsGeomColumnTypeThread::run()
         end = layerProperties.end();
         it != end; ++it )
   {
-    QgsPostgresLayerProperty& layerProperty = *it;
+    QgsPostgresLayerProperty &layerProperty = *it;
     if ( !mStopped )
     {
       emit progress( i++, n );
@@ -84,7 +82,7 @@ void QgsGeomColumnTypeThread::run()
                                   layerProperty.geometryColName ) );
 
       if ( !layerProperty.geometryColName.isNull() &&
-           ( layerProperty.types.value( 0, QGis::WKBUnknown ) == QGis::WKBUnknown ||
+           ( layerProperty.types.value( 0, QgsWkbTypes::Unknown ) == QgsWkbTypes::Unknown ||
              layerProperty.srids.value( 0, INT_MIN ) == INT_MIN ) )
       {
         if ( dontResolveType )

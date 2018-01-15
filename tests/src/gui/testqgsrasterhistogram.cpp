@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QString>
 #include <QApplication>
@@ -34,7 +34,8 @@
 #include <qgsrenderchecker.h>
 
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test to verify that raster histogram works
  */
 class TestRasterHistogram : public QObject
@@ -48,19 +49,19 @@ class TestRasterHistogram : public QObject
     QString mDataDir;
     QString mTestPrefix;
     int mWidth, mHeight, mImageQuality;
-    QgsRasterLayer* mRasterLayer;
-    QgsSingleBandGrayRendererWidget* mGrayRendererWidget;
-    QgsMultiBandColorRendererWidget* mRGBRendererWidget;
-    QgsSingleBandPseudoColorRendererWidget* mPseudoRendererWidget;
-    QgsRasterHistogramWidget* mHistogramWidget;
+    QgsRasterLayer *mRasterLayer = nullptr;
+    QgsSingleBandGrayRendererWidget *mGrayRendererWidget = nullptr;
+    QgsMultiBandColorRendererWidget *mRGBRendererWidget = nullptr;
+    QgsSingleBandPseudoColorRendererWidget *mPseudoRendererWidget = nullptr;
+    QgsRasterHistogramWidget *mHistogramWidget = nullptr;
     QString mReport;
 
-    bool openLayer( const QString& fileName );
+    bool openLayer( const QString &fileName );
     void closeLayer();
-    bool saveImage( const QString& fileName );
+    bool saveImage( const QString &fileName );
     int testFile( QString testName,
                   QString rendererName,
-                  QgsRasterRendererWidget* rendererWidget,
+                  QgsRasterRendererWidget *rendererWidget,
                   QStringList actionsList = QStringList(),
                   int selectedBand = -1 );
 
@@ -95,17 +96,13 @@ void TestRasterHistogram::initTestCase()
   // output test environment
   QgsApplication::showSettings();
   qDebug() << "QWT version:   " << QWT_VERSION_STR;
-#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
   mTestPrefix = "histogram_qwt6";
-#else
-  mTestPrefix = "histogram_qwt5";
-#endif
 
   // save data dir
   mDataDir = QString( TEST_DATA_DIR ) + "/";
   mWidth = mHeight = 400;
   mImageQuality = -1;
-  // Set up the QSettings environment
+  // Set up the QgsSettings environment
   QCoreApplication::setOrganizationName( "QGIS" );
   QCoreApplication::setOrganizationDomain( "qgis.org" );
   QCoreApplication::setApplicationName( "QGIS-TEST" );
@@ -193,7 +190,7 @@ void TestRasterHistogram::testPseudo1()
 
 // helper methods
 
-bool TestRasterHistogram::openLayer( const QString& fileName )
+bool TestRasterHistogram::openLayer( const QString &fileName )
 {
   mRasterLayer = new QgsRasterLayer( mDataDir + "/" + fileName, fileName );
   if ( ! mRasterLayer )
@@ -235,15 +232,15 @@ void TestRasterHistogram::closeLayer()
   }
 }
 
-bool TestRasterHistogram::saveImage( const QString& fileName )
+bool TestRasterHistogram::saveImage( const QString &fileName )
 {
   return mHistogramWidget->histoSaveAsImage( fileName, mWidth, mHeight, mImageQuality );
 }
 
 // test resulting image file - relax this test because there are too many possible outputs depending on machine
 // 1 means pass, 0 means warning (different images), -1 means fail (no image output)
-int TestRasterHistogram::testFile( QString theTestType,
-                                   QString rendererName, QgsRasterRendererWidget* rendererWidget,
+int TestRasterHistogram::testFile( QString testType,
+                                   QString rendererName, QgsRasterRendererWidget *rendererWidget,
                                    QStringList actionsList, int selectedBand )
 {
   if ( mRasterLayer == 0 )
@@ -268,30 +265,30 @@ int TestRasterHistogram::testFile( QString theTestType,
     mHistogramWidget->setSelectedBand( selectedBand );
   }
   QString fileName = QDir::tempPath() + "/" +
-                     theTestType + "_result.png";
+                     testType + "_result.png";
   if ( ! saveImage( fileName ) )
   {
     QWARN( QString( "Did not save image file " + fileName ).toLocal8Bit().data() );
     return -1;
   }
-  mReport += "<h2>" + theTestType + "</h2>\n";
+  mReport += "<h2>" + testType + "</h2>\n";
 
   QgsRenderChecker myChecker;
   myChecker.setControlPathPrefix( mTestPrefix );
-  myChecker.setControlName( "expected_histo_" + theTestType );
+  myChecker.setControlName( "expected_histo_" + testType );
   //  myChecker.setMapRenderer( mpMapRenderer );
-  bool myResultFlag = myChecker.compareImages( theTestType, 0, fileName );
+  bool myResultFlag = myChecker.compareImages( testType, 0, fileName );
   mReport += "\n\n\n" + myChecker.report();
 
   // return myResultFlag;
   if ( ! myResultFlag )
   {
-    QWARN( QString( "Test %1 failed with file %2 " ).arg( theTestType ).arg( fileName ).toLocal8Bit().data() );
+    QWARN( QString( "Test %1 failed with file %2 " ).arg( testType ).arg( fileName ).toLocal8Bit().data() );
     return 0;
   }
   return 1;
 }
 
 
-QTEST_MAIN( TestRasterHistogram )
+QGSTEST_MAIN( TestRasterHistogram )
 #include "testqgsrasterhistogram.moc"

@@ -80,10 +80,7 @@ protected:
     int numRowsAffected();
     QVariant lastInsertId() const;
     QSqlRecord record() const;
-#if QT_VERSION >= 0x050000
     void detachFromResultSet();
-#endif
-    void virtual_hook(int id, void *data);
 
 private:
     QSpatiaLiteResultPrivate* d;
@@ -94,8 +91,8 @@ class Q_EXPORT_SQLDRIVER_SQLITE QSpatiaLiteDriver : public QSqlDriver
     Q_OBJECT
     friend class QSpatiaLiteResult;
 public:
-    explicit QSpatiaLiteDriver(QObject *parent = 0);
-    explicit QSpatiaLiteDriver(sqlite3 *connection, QObject *parent = 0);
+    explicit QSpatiaLiteDriver(QObject *parent = nullptr);
+
     ~QSpatiaLiteDriver();
     bool hasFeature(DriverFeature f) const;
     bool open(const QString & db,

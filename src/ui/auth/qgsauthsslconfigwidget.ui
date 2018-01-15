@@ -14,16 +14,7 @@
    <string>Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
-   <property name="leftMargin">
-    <number>0</number>
-   </property>
-   <property name="topMargin">
-    <number>0</number>
-   </property>
-   <property name="rightMargin">
-    <number>0</number>
-   </property>
-   <property name="bottomMargin">
+   <property name="margin">
     <number>0</number>
    </property>
    <item>
@@ -32,23 +23,14 @@
       <string>Certificate</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
-      <property name="leftMargin">
-       <number>6</number>
-      </property>
-      <property name="topMargin">
-       <number>6</number>
-      </property>
-      <property name="rightMargin">
-       <number>6</number>
-      </property>
-      <property name="bottomMargin">
-       <number>6</number>
-      </property>
       <property name="horizontalSpacing">
        <number>6</number>
       </property>
       <property name="verticalSpacing">
        <number>12</number>
+      </property>
+      <property name="margin">
+       <number>6</number>
       </property>
       <item row="1" column="0">
        <widget class="QLabel" name="lblCert">
@@ -82,11 +64,8 @@
       </item>
       <item row="1" column="2">
        <widget class="QToolButton" name="btnCertInfo">
-        <property name="minimumSize">
-         <size>
-          <width>22</width>
-          <height>22</height>
-         </size>
+        <property name="toolTip">
+         <string>Show information for certificate</string>
         </property>
         <property name="text">
          <string>?</string>
@@ -94,12 +73,6 @@
         <property name="icon">
          <iconset resource="../../../images/images.qrc">
           <normaloff>:/images/themes/default/propertyicons/metadata.svg</normaloff>:/images/themes/default/propertyicons/metadata.svg</iconset>
-        </property>
-        <property name="iconSize">
-         <size>
-          <width>16</width>
-          <height>16</height>
-         </size>
         </property>
        </widget>
       </item>
@@ -132,16 +105,7 @@
          <property name="spacing">
           <number>6</number>
          </property>
-         <property name="leftMargin">
-          <number>6</number>
-         </property>
-         <property name="topMargin">
-          <number>6</number>
-         </property>
-         <property name="rightMargin">
-          <number>6</number>
-         </property>
-         <property name="bottomMargin">
+         <property name="margin">
           <number>6</number>
          </property>
          <item>

@@ -1,191 +1,255 @@
-/** \ingroup gui
- * \class QgsEffectStackPropertiesWidget
- * \brief A widget for modifying the properties of a QgsEffectStack, including adding
- * and reordering effects within the stack.
- *
- * \note Added in version 2.9
- * \see QgsEffectStack
- * \see QgsEffectStackPropertiesDialog
- * \see QgsEffectStackCompactWidget
- */
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/effects/qgseffectstackpropertieswidget.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
 
-class QgsEffectStackPropertiesWidget : QWidget
+
+
+
+
+
+class QgsEffectStackPropertiesWidget : QgsPanelWidget
 {
-%TypeHeaderCode
-#include <qgseffectstackpropertieswidget.h>
+%Docstring
+ A widget for modifying the properties of a QgsEffectStack, including adding
+and reordering effects within the stack.
+
+.. versionadded:: 2.9
+
+.. seealso:: :py:class:`QgsEffectStack`
+
+.. seealso:: :py:class:`QgsEffectStackPropertiesDialog`
+
+.. seealso:: :py:class:`QgsEffectStackCompactWidget`
 %End
 
+%TypeHeaderCode
+#include "qgseffectstackpropertieswidget.h"
+%End
   public:
 
-    /** QgsEffectStackPropertiesWidget constructor
-     * @param stack QgsEffectStack to modify in the widget
-     * @param parent parent widget
-     */
-    QgsEffectStackPropertiesWidget( QgsEffectStack* stack, QWidget* parent /TransferThis/ = 0 );
+    QgsEffectStackPropertiesWidget( QgsEffectStack *stack, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+QgsEffectStackPropertiesWidget constructor
+
+:param stack: QgsEffectStack to modify in the widget
+:param parent: parent widget
+%End
 
     ~QgsEffectStackPropertiesWidget();
 
-    /** Returns effect stack attached to the widget
-     * @returns QgsEffectStack modified by the widget
-     */
-    QgsEffectStack* stack();
+    QgsEffectStack *stack();
+%Docstring
+Returns effect stack attached to the widget
 
-    /** Sets the picture to use for effect previews for the dialog
-     * @param picture preview picture
-     */
-    void setPreviewPicture( const QPicture& picture );
+:return: QgsEffectStack modified by the widget
+%End
+
+    void setPreviewPicture( const QPicture &picture );
+%Docstring
+Sets the picture to use for effect previews for the dialog
+
+:param picture: preview picture
+%End
 
   public slots:
 
-    /** Moves the currently selected effect down in the stack.
-     */
     void moveEffectDown();
+%Docstring
+Moves the currently selected effect down in the stack.
+%End
 
-    /** Moves the currently selected effect up in the stack.
-     */
     void moveEffectUp();
+%Docstring
+Moves the currently selected effect up in the stack.
+%End
 
-    /** Adds a new effect to the stack.
-     */
     void addEffect();
+%Docstring
+Adds a new effect to the stack.
+%End
 
-    /** Removes the currently selected effect from the stack.
-     */
     void removeEffect();
+%Docstring
+Removes the currently selected effect from the stack.
+%End
 
-    /** Updates the widget when the selected effect changes type.
-     */
     void effectChanged();
+%Docstring
+Updates the widget when the selected effect changes type.
+%End
 
-    /** Updates the effect preview icon.
-     */
     void updatePreview();
+%Docstring
+Updates the effect preview icon.
+%End
 
-    /** Updates the effect stack when the currently selected effect changes properties.
-     * @param newEffect new effect to replace existing effect at selected position within the stack.
-     */
-    void changeEffect( QgsPaintEffect* newEffect );
+    void changeEffect( QgsPaintEffect *newEffect );
+%Docstring
+Updates the effect stack when the currently selected effect changes properties.
+
+:param newEffect: new effect to replace existing effect at selected position within the stack.
+%End
 
   protected:
 
-    /** Refreshes the widget to reflect the current state of the stack.
-     */
+
     void loadStack();
+%Docstring
+Refreshes the widget to reflect the current state of the stack.
+%End
 
-    /** Refreshes the widget to reflect the current state of a specified stack.
-     * @param stack QgsEffectStack for widget
-     */
-    void loadStack( QgsEffectStack* stack );
+    void loadStack( QgsEffectStack *stack );
+%Docstring
+Refreshes the widget to reflect the current state of a specified stack.
 
-    /** Enables or disables widgets depending on the selected effect within the stack.
-     */
+:param stack: QgsEffectStack for widget
+%End
+
     void updateUi();
+%Docstring
+Enables or disables widgets depending on the selected effect within the stack.
+%End
 
-    /** Returns the currently selected effect within the stack.
-     * @note not available in python bindings
-     */
-    //EffectItem* currentEffectItem();
 
-    /** Moves the currently selected effect within the stack by a specified offset
-     */
     void moveEffectByOffset( int offset );
+%Docstring
+Moves the currently selected effect within the stack by a specified offset
+%End
 
-    /** Sets the effect properties widget
-     */
-    void setWidget( QWidget* widget );
+    void setWidget( QWidget *widget );
+%Docstring
+Sets the effect properties widget
+%End
 
 };
 
 
-/** \ingroup gui
- * \class QgsEffectStackPropertiesDialog
- * \brief A dialog for modifying the properties of a QgsEffectStack, including adding
- * and reordering effects within the stack.
- *
- * \note Added in version 2.9
- * \see QgsEffectStack
- * \see QgsEffectStackPropertiesWidget
- * \see QgsEffectStackCompactWidget
- */
 
-class QgsEffectStackPropertiesDialog : QgsDialog
+class QgsEffectStackPropertiesDialog: QgsDialog
 {
-%TypeHeaderCode
-#include <qgseffectstackpropertieswidget.h>
+%Docstring
+ A dialog for modifying the properties of a :py:class:`QgsEffectStack`, including adding
+and reordering effects within the stack.
+
+.. versionadded:: 2.9
+
+.. seealso:: :py:class:`QgsEffectStack`
+
+.. seealso:: :py:class:`QgsEffectStackPropertiesWidget`
+
+.. seealso:: :py:class:`QgsEffectStackCompactWidget`
 %End
 
+%TypeHeaderCode
+#include "qgseffectstackpropertieswidget.h"
+%End
   public:
 
-    /** QgsEffectStackPropertiesDialog constructor
-     * @param stack QgsEffectStack to modify in the dialog
-     * @param parent parent widget
-     * @param f window flags
-     */
-    QgsEffectStackPropertiesDialog( QgsEffectStack* stack, QWidget* parent /TransferThis/ = 0, const Qt::WindowFlags& f = 0 );
-    ~QgsEffectStackPropertiesDialog();
+    QgsEffectStackPropertiesDialog( QgsEffectStack *stack, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags f = 0 );
+%Docstring
+QgsEffectStackPropertiesDialog constructor
 
-    /** Returns effect stack attached to the dialog
-     * @returns QgsEffectStack modified by the dialog
-     */
-    QgsEffectStack* stack();
+:param stack: QgsEffectStack to modify in the dialog
+:param parent: parent widget
+:param f: window flags
+%End
 
-    /** Sets the picture to use for effect previews for the dialog
-     * @param picture preview picture
-     */
-    void setPreviewPicture( const QPicture& picture );
+    QgsEffectStack *stack();
+%Docstring
+Returns effect stack attached to the dialog
+
+:return: QgsEffectStack modified by the dialog
+%End
+
+    void setPreviewPicture( const QPicture &picture );
+%Docstring
+Sets the picture to use for effect previews for the dialog
+
+:param picture: preview picture
+%End
+
+  protected:
+
 
 };
 
-/** \ingroup gui
- * \class QgsEffectStackCompactWidget
- * \brief A small widget consisting of a check box for enabling/disabling an effect stack
- * and a button for opening an effect stack customisation dialog.
- *
- * \note Added in version 2.9
- * \see QgsEffectStack
- * \see QgsEffectStackPropertiesWidget
- * \see QgsEffectStackPropertiesDialog
- */
 
-class QgsEffectStackCompactWidget : QWidget
+
+class QgsEffectStackCompactWidget: QgsPanelWidget
 {
+%Docstring
+ A small widget consisting of a checkbox for enabling/disabling an effect stack
+and a button for opening an effect stack customisation dialog.
+
+.. versionadded:: 2.9
+
+.. seealso:: :py:class:`QgsEffectStack`
+
+.. seealso:: :py:class:`QgsEffectStackPropertiesWidget`
+
+.. seealso:: :py:class:`QgsEffectStackPropertiesDialog`
+%End
+
 %TypeHeaderCode
-#include <qgseffectstackpropertieswidget.h>
+#include "qgseffectstackpropertieswidget.h"
 %End
   public:
 
-    /** QgsEffectStackCompactWidget constructor
-     * @param parent parent widget
-     * @param effect QgsPaintEffect for modification by the widget. If the effect
-     * is not a QgsEffectStack, it will be automatically converted to an effect
-     * stack consisting of the original effect
-     */
-    QgsEffectStackCompactWidget( QWidget* parent /TransferThis/ = 0, QgsPaintEffect* effect = 0 );
+    QgsEffectStackCompactWidget( QWidget *parent /TransferThis/ = 0, QgsPaintEffect *effect = 0 );
+%Docstring
+QgsEffectStackCompactWidget constructor
+
+:param parent: parent widget
+:param effect: QgsPaintEffect for modification by the widget. If the effect
+is not a :py:class:`QgsEffectStack`, it will be automatically converted to an effect
+stack consisting of the original effect
+%End
     ~QgsEffectStackCompactWidget();
 
-    /** Sets paint effect attached to the widget
-     * @param effect QgsPaintEffect for modification by the widget. If the effect
-     * is not a QgsEffectStack, it will be automatically converted to an effect
-     * stack consisting of the original effect
-     * @see paintEffect
-     */
-    void setPaintEffect( QgsPaintEffect* effect );
+    void setPaintEffect( QgsPaintEffect *effect );
+%Docstring
+Sets paint effect attached to the widget,
 
-    /** Returns paint effect attached to the widget
-     * @returns QgsPaintEffect modified by the widget
-     * @see setPaintEffect
-     */
-    QgsPaintEffect* paintEffect() const;
+:param effect: QgsPaintEffect for modification by the widget. If the effect
+is not a :py:class:`QgsEffectStack`, it will be automatically converted to an effect
+stack consisting of the original effect
 
-    /** Sets the picture to use for effect previews for the dialog
-     * @param picture preview picture
-     */
-    void setPreviewPicture( const QPicture& picture );
+.. seealso:: :py:func:`paintEffect`
+%End
+
+    QgsPaintEffect *paintEffect() const;
+%Docstring
+Returns paint effect attached to the widget
+
+:return: QgsPaintEffect modified by the widget
+
+.. seealso:: :py:func:`setPaintEffect`
+%End
+
+    void setPreviewPicture( const QPicture &picture );
+%Docstring
+Sets the picture to use for effect previews for the dialog
+
+:param picture: preview picture
+%End
 
   signals:
 
-    /** Emitted when the paint effect properties change
-     */
     void changed();
+%Docstring
+Emitted when the paint effect properties change
+%End
 
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/effects/qgseffectstackpropertieswidget.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

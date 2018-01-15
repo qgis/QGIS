@@ -14,8 +14,8 @@ __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
-from qgis.core import QgsFeature, QgsGeometry, QgsPoint, QgsVectorLayer, NULL
-from qgis.gui import QgsEditorWidgetRegistry
+from qgis.core import QgsFeature, QgsGeometry, QgsPointXY, QgsVectorLayer, NULL
+from qgis.gui import QgsGui
 from qgis.testing import start_app, unittest
 
 start_app()
@@ -25,7 +25,7 @@ class TestQgsRangeWidget(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        QgsEditorWidgetRegistry.initEditors()
+        QgsGui.editorWidgetRegistry().initEditors()
 
     def setUp(self):
         """
@@ -36,13 +36,13 @@ class TestQgsRangeWidget(unittest.TestCase):
         pr = self.layer.dataProvider()  # NOQA
         f = QgsFeature()
         f.setAttributes(["Hello World", 123])
-        f.setGeometry(QgsGeometry.fromPoint(QgsPoint(600000, 200000)))
+        f.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(600000, 200000)))
 
     def __createRangeWidget(self, allownull=False):
         """
         create a range widget
         """
-        reg = QgsEditorWidgetRegistry.instance()
+        reg = QgsGui.editorWidgetRegistry()
         configWdg = reg.createConfigWidget('Range', self.layer, 1, None)
         config = configWdg.config()
 

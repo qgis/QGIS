@@ -1,32 +1,64 @@
-class QgsGroupWMSDataDialog : QDialog
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsgroupwmsdatadialog.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsGroupWmsDataDialog: QDialog
 {
+
 %TypeHeaderCode
-#include <qgsgroupwmsdatadialog.h>
+#include "qgsgroupwmsdatadialog.h"
+%End
+  public:
+    QgsGroupWmsDataDialog( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
+%Docstring
+Constructor
 %End
 
-  public:
-    //! Constructor
-    QgsGroupWMSDataDialog( QWidget *parent /TransferThis/ = nullptr, const Qt::WindowFlags& fl = QgisGui::ModalDialogFlags );
-    //~QgsGroupWMSDataDialog();
-
-    //! return group WMS title
     QString groupTitle();
+%Docstring
+return group WMS title
+%End
 
-    //! return group WMS short name
     QString groupShortName();
+%Docstring
+return group WMS short name
+%End
 
-    //! return group WMS abstract
     QString groupAbstract();
+%Docstring
+return group WMS abstract
+%End
 
 
   public slots:
-    //! set group WMS title
-    void setGroupTitle( const QString& title );
+    void setGroupTitle( const QString &title );
+%Docstring
+set group WMS title
+%End
 
-    //! set group WMS short name
-    void setGroupShortName( const QString& shortName );
+    void setGroupShortName( const QString &shortName );
+%Docstring
+set group WMS short name
+%End
 
-    //! set group WMS abstract
-    void setGroupAbstract( const QString& abstract );
+    void setGroupAbstract( const QString &abstract );
+%Docstring
+set group WMS abstract
+%End
+
 
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsgroupwmsdatadialog.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

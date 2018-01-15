@@ -14,55 +14,54 @@
  ***************************************************************************/
 
 #include "qgsogrexpressioncompiler.h"
+#include "qgsexpressionnodeimpl.h"
 #include "qgsogrprovider.h"
 
-QgsOgrExpressionCompiler::QgsOgrExpressionCompiler( QgsOgrFeatureSource* source )
-    : QgsSqlExpressionCompiler( source->mFields, QgsSqlExpressionCompiler::CaseInsensitiveStringMatch | QgsSqlExpressionCompiler::NoNullInBooleanLogic
-                                | QgsSqlExpressionCompiler::NoUnaryMinus )
-    , mSource( source )
+QgsOgrExpressionCompiler::QgsOgrExpressionCompiler( QgsOgrFeatureSource *source )
+  : QgsSqlExpressionCompiler( source->mFields, QgsSqlExpressionCompiler::CaseInsensitiveStringMatch | QgsSqlExpressionCompiler::NoNullInBooleanLogic
+                              | QgsSqlExpressionCompiler::NoUnaryMinus | QgsSqlExpressionCompiler::IntegerDivisionResultsInInteger )
+  , mSource( source )
 {
 }
 
 
-QgsSqlExpressionCompiler::Result QgsOgrExpressionCompiler::compile( const QgsExpression* exp )
+QgsSqlExpressionCompiler::Result QgsOgrExpressionCompiler::compile( const QgsExpression *exp )
 {
   //for certain driver types, OGR forwards SQL through to the underlying provider. In these cases
   //the syntax may differ from OGR SQL, so we don't support compilation for these drivers
   //see http://www.gdal.org/ogr_sql.html
-  if ( mSource->mDriverName == "MySQL" )
+  if ( mSource->mDriverName == QLatin1String( "MySQL" ) )
     return Fail;
-  else if ( mSource->mDriverName == "PostgreSQL" )
+  else if ( mSource->mDriverName == QLatin1String( "PostgreSQL" ) )
     return Fail;
-  else if ( mSource->mDriverName == "OCI" )
+  else if ( mSource->mDriverName == QLatin1String( "OCI" ) )
     return Fail;
-  else if ( mSource->mDriverName == "ODBC" )
+  else if ( mSource->mDriverName == QLatin1String( "ODBC" ) )
     return Fail;
-  else if ( mSource->mDriverName == "PGeo" )
+  else if ( mSource->mDriverName == QLatin1String( "PGeo" ) )
     return Fail;
-  else if ( mSource->mDriverName == "MSSQLSpatial" )
+  else if ( mSource->mDriverName == QLatin1String( "MSSQLSpatial" ) )
     return Fail;
 
   return QgsSqlExpressionCompiler::compile( exp );
 }
 
-QgsSqlExpressionCompiler::Result QgsOgrExpressionCompiler::compileNode( const QgsExpression::Node* node, QString& result )
+QgsSqlExpressionCompiler::Result QgsOgrExpressionCompiler::compileNode( const QgsExpressionNode *node, QString &result )
 {
   switch ( node->nodeType() )
   {
-    case QgsExpression::ntBinaryOperator:
+    case QgsExpressionNode::ntBinaryOperator:
     {
-      switch ( static_cast<const QgsExpression::NodeBinaryOperator*>( node )->op() )
+      switch ( static_cast<const QgsExpressionNodeBinaryOperator *>( node )->op() )
       {
-        case QgsExpression::boILike:
-        case QgsExpression::boNotILike:
+        case QgsExpressionNodeBinaryOperator::boILike:
+        case QgsExpressionNodeBinaryOperator::boNotILike:
           return Fail; //disabled until https://trac.osgeo.org/gdal/ticket/5132 is fixed
 
-        case QgsExpression::boDiv:
-        case QgsExpression::boMod:
-        case QgsExpression::boConcat:
-        case QgsExpression::boIntDiv:
-        case QgsExpression::boPow:
-        case QgsExpression::boRegexp:
+        case QgsExpressionNodeBinaryOperator::boMod:
+        case QgsExpressionNodeBinaryOperator::boConcat:
+        case QgsExpressionNodeBinaryOperator::boPow:
+        case QgsExpressionNodeBinaryOperator::boRegexp:
           return Fail; //not supported by OGR
 
         default:
@@ -71,27 +70,27 @@ QgsSqlExpressionCompiler::Result QgsOgrExpressionCompiler::compileNode( const Qg
       }
     }
 
-    case QgsExpression::ntFunction:
-    case QgsExpression::ntCondition:
+    case QgsExpressionNode::ntFunction:
+    case QgsExpressionNode::ntCondition:
       //not support by OGR
       return Fail;
 
-    case QgsExpression::ntUnaryOperator:
-    case QgsExpression::ntColumnRef:
-    case QgsExpression::ntInOperator:
-    case QgsExpression::ntLiteral:
+    case QgsExpressionNode::ntUnaryOperator:
+    case QgsExpressionNode::ntColumnRef:
+    case QgsExpressionNode::ntInOperator:
+    case QgsExpressionNode::ntLiteral:
       break;
   }
 
   return QgsSqlExpressionCompiler::compileNode( node, result );
 }
 
-QString QgsOgrExpressionCompiler::quotedIdentifier( const QString& identifier )
+QString QgsOgrExpressionCompiler::quotedIdentifier( const QString &identifier )
 {
-  return mSource->mProvider->quotedIdentifier( identifier.toUtf8() );
+  return QgsOgrProviderUtils::quotedIdentifier( identifier.toUtf8(), mSource->mDriverName );
 }
 
-QString QgsOgrExpressionCompiler::quotedValue( const QVariant& value, bool& ok )
+QString QgsOgrExpressionCompiler::quotedValue( const QVariant &value, bool &ok )
 {
   ok = true;
 
@@ -102,4 +101,14 @@ QString QgsOgrExpressionCompiler::quotedValue( const QVariant& value, bool& ok )
   }
 
   return QgsOgrProviderUtils::quotedValue( value );
+}
+
+QString QgsOgrExpressionCompiler::castToReal( const QString &value ) const
+{
+  return QStringLiteral( "CAST((%1) AS float)" ).arg( value );
+}
+
+QString QgsOgrExpressionCompiler::castToInt( const QString &value ) const
+{
+  return QStringLiteral( "CAST((%1) AS integer)" ).arg( value );
 }

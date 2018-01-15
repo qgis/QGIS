@@ -1,119 +1,202 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/interpolation/Triangulation.h                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
 class Triangulation
 {
-%TypeHeaderCode
-#include <Triangulation.h>
+%Docstring
+ Interface for Triangulation classes*
 %End
 
+%TypeHeaderCode
+#include "Triangulation.h"
+%End
   public:
-
-
-    //! Enumeration describing the behaviour, if two forced lines cross.
-    enum forcedCrossBehaviour
+    enum ForcedCrossBehavior
     {
-      SnappingType_VERTICE,  //!< the second inserted forced line is snapped to the closest vertice of the first inserted forced line.
-      DELETE_FIRST,          //!< the status of the first inserted forced line is reset to that of a normal edge (so that the second inserted forced line remain and the first not)
-      INSERT_VERTICE
+      SnappingTypeVertex,
+      DeleteFirst,
+      InsertVertex
     };
-
     virtual ~Triangulation();
 
-    /**
-     * Adds a line (e.g. a break-, structure- or an isoline) to the triangulation.
-     * The class takes ownership of the line object and its points
-     */
-    virtual void addLine( Line3D* line /Transfer/, bool breakline ) = 0;
+    virtual void addLine( Line3D *line /Transfer/, bool breakline ) = 0;
+%Docstring
+ Adds a line (e.g. a break-, structure- or an isoline) to the triangulation.
+ The class takes ownership of the line object and its points
+%End
 
-    /**
-     * Adds a point to the triangulation
-     * Ownership is transferred to this class
-     */
-    virtual int addPoint( Point3D* p ) = 0;
+    virtual int addPoint( QgsPoint *p ) = 0;
+%Docstring
+ Adds a point to the triangulation
+ Ownership is transferred to this class
+ :rtype: int
+%End
 
-    /**
-     * Calculates the normal at a point on the surface and assigns it to 'result'.
-     * @return true in case of success and false in case of failure
-     */
-    virtual bool calcNormal( double x, double y, Vector3D* result ) = 0;
+    virtual bool calcNormal( double x, double y, Vector3D *result /Out/ ) = 0;
+%Docstring
+ Calculates the normal at a point on the surface and assigns it to 'result'.
+ :return: true in case of success and false in case of failure
+ :rtype: bool
+%End
 
-    /** Performs a consistency check, remove this later*/
     virtual void performConsistencyTest() = 0;
+%Docstring
+Performs a consistency check, remove this later
+%End
 
-    /**
-     * Calculates x-, y and z-value of the point on the surface and assigns it to 'result'.
-     * Returns true in case of success and flase in case of failure
-     */
-    virtual bool calcPoint( double x, double y, Point3D* result ) = 0;
+    virtual bool calcPoint( double x, double y, QgsPoint *result /Out/ ) = 0;
+%Docstring
+ Calculates x-, y and z-value of the point on the surface and assigns it to 'result'.
+ Returns true in case of success and flase in case of failure
+ :rtype: bool
+%End
 
-    /** Returns a pointer to the point with number i. Any virtual points must have the number -1*/
-    virtual Point3D* getPoint( unsigned int i ) const = 0;
+    virtual QgsPoint *getPoint( unsigned int i ) const = 0;
+%Docstring
+Returns a pointer to the point with number i. Any virtual points must have the number -1
+ :rtype: QgsPoint
+%End
 
-    /** Finds out in which triangle the point with coordinates x and y is and
-     * assigns the numbers of the vertices to 'n1', 'n2' and 'n3' and the vertices to 'p1', 'p2' and 'p3'
-     */
-    virtual bool getTriangle( double x, double y, Point3D* p1, int* n1 /Out/, Point3D* p2 /Out/, int* n2 /Out/, Point3D* p3 /Out/, int* n3 /Out/ ) = 0;
+    virtual bool getTriangle( double x, double y, QgsPoint *p1 /Out/, int *n1 /Out/, QgsPoint *p2 /Out/, int *n2 /Out/, QgsPoint *p3 /Out/, int *n3 /Out/ ) = 0 /PyName=getTriangleVertices/;
+%Docstring
+ Finds out in which triangle the point with coordinates x and y is and
+ assigns the numbers of the vertices to 'n1', 'n2' and 'n3' and the vertices to 'p1', 'p2' and 'p3'
+ :rtype: bool
+%End
 
-    /** Finds out, in which triangle the point with coordinates x and y is and assigns the  points at the vertices to 'p1', 'p2' and 'p3*/
-    virtual bool getTriangle( double x, double y, Point3D* p1 /Out/, Point3D* p2 /Out/, Point3D* p3 /Out/ ) = 0;
+    virtual bool getTriangle( double x, double y, QgsPoint *p1 /Out/, QgsPoint *p2 /Out/, QgsPoint *p3 /Out/ ) = 0;
+%Docstring
+Finds out, in which triangle the point with coordinates x and y is and assigns the  points at the vertices to 'p1', 'p2' and 'p3
+ :rtype: bool
+%End
 
-    /** Returns the number of the point opposite to the triangle points p1, p2 (which have to be on a halfedge)*/
     virtual int getOppositePoint( int p1, int p2 ) = 0;
+%Docstring
+Returns the number of the point opposite to the triangle points p1, p2 (which have to be on a halfedge)
+ :rtype: int
+%End
 
-    /** Returns the largest x-coordinate value of the bounding box*/
     virtual double getXMax() const = 0;
+%Docstring
+Returns the largest x-coordinate value of the bounding box
+ :rtype: float
+%End
 
-    /** Returns the smallest x-coordinate value of the bounding box*/
     virtual double getXMin() const = 0;
+%Docstring
+Returns the smallest x-coordinate value of the bounding box
+ :rtype: float
+%End
 
-    /** Returns the largest y-coordinate value of the bounding box*/
     virtual double getYMax() const = 0;
+%Docstring
+Returns the largest y-coordinate value of the bounding box
+ :rtype: float
+%End
 
-    /** Returns the smallest x-coordinate value of the bounding box*/
     virtual double getYMin() const = 0;
+%Docstring
+Returns the smallest x-coordinate value of the bounding box
+ :rtype: float
+%End
 
-    /** Returns the number of points*/
     virtual int getNumberOfPoints() const = 0;
+%Docstring
+Returns the number of points
+ :rtype: int
+%End
 
-    /**
-     * Returns a pointer to a value list with the information of the triangles surrounding (counterclockwise) a point.
-     * Four integer values describe a triangle, the first three are the number of the half edges of the triangle
-     * and the fourth is -10, if the third (and most counterclockwise) edge is a breakline, and -20 otherwise.
-     * The value list has to be deleted by the code which called the method.
-     * Any virtual point needs to have the number -1
-     */
-    virtual QList<int>* getSurroundingTriangles( int pointno ) = 0;
+    virtual QList<int> *getSurroundingTriangles( int pointno ) = 0;
+%Docstring
+ Returns a pointer to a value list with the information of the triangles surrounding (counterclockwise) a point.
+ Four integer values describe a triangle, the first three are the number of the half edges of the triangle
+ and the fourth is -10, if the third (and most counterclockwise) edge is a breakline, and -20 otherwise.
+ The value list has to be deleted by the code which called the method.
+ Any virtual point needs to have the number -1
+ :rtype: list of int
+%End
 
-    /** Returns a value list with the numbers of the four points, which would be affected by an edge swap.
-     * This function is e.g. needed by NormVecDecorator to know the points,
-     * for which the normals have to be recalculated.
-     * The list has to be deleted by the code which calls this method
-     */
-    virtual QList<int>* getPointsAroundEdge( double x, double y ) = 0;
+    virtual QList<int> *getPointsAroundEdge( double x, double y ) = 0;
+%Docstring
+ Returns a value list with the numbers of the four points, which would be affected by an edge swap.
+ This function is e.g. needed by NormVecDecorator to know the points,
+ for which the normals have to be recalculated.
+ The list has to be deleted by the code which calls this method
+ :rtype: list of int
+%End
 
-    /** Draws the points, edges and the forced lines*/
-    //virtual void draw(QPainter* p, double xlowleft, double ylowleft, double xupright, double yupright, double width, double height) const=0;
-    /** Sets the behaviour of the triangulation in case of crossing forced lines*/
-    virtual void setForcedCrossBehaviour( Triangulation::forcedCrossBehaviour b ) = 0;
-    /** Sets the color of the normal edges*/
+
+    virtual void setForcedCrossBehavior( Triangulation::ForcedCrossBehavior b ) = 0;
+%Docstring
+Sets the behavior of the triangulation in case of crossing forced lines
+%End
+
     virtual void setEdgeColor( int r, int g, int b ) = 0;
-    /** Sets the color of the forced edges*/
+%Docstring
+Sets the color of the normal edges
+%End
+
     virtual void setForcedEdgeColor( int r, int g, int b ) = 0;
-    /** Sets the color of the breaklines*/
+%Docstring
+Sets the color of the forced edges
+%End
+
     virtual void setBreakEdgeColor( int r, int g, int b ) = 0;
-    /** Sets an interpolator object*/
-    virtual void setTriangleInterpolator( TriangleInterpolator* interpolator ) = 0;
-    /** Eliminates the horizontal triangles by swapping*/
+%Docstring
+Sets the color of the breaklines
+%End
+
+    virtual void setTriangleInterpolator( TriangleInterpolator *interpolator ) = 0;
+%Docstring
+Sets an interpolator object
+%End
+
     virtual void eliminateHorizontalTriangles() = 0;
-    /** Adds points to make the triangles better shaped (algorithm of ruppert)*/
+%Docstring
+Eliminates the horizontal triangles by swapping
+%End
+
     virtual void ruppertRefinement() = 0;
-    /** Returns true, if the point with coordinates x and y is inside the convex hull and false otherwise*/
+%Docstring
+Adds points to make the triangles better shaped (algorithm of ruppert)
+%End
+
     virtual bool pointInside( double x, double y ) = 0;
-    /** Reads the content of a taff-file*/
-    //virtual bool readFromTAFF(QString fileName)=0;
-    /** Saves the content to a taff file*/
-    //virtual bool saveToTAFF(QString fileName) const=0;
-    /** Swaps the edge which is closest to the point with x and y coordinates (if this is possible)*/
+%Docstring
+Returns true, if the point with coordinates x and y is inside the convex hull and false otherwise
+ :rtype: bool
+%End
+
+
+
     virtual bool swapEdge( double x, double y ) = 0;
-    /** Saves the triangulation as a (line) shapefile
-    @return true in case of success*/
-    virtual bool saveAsShapefile( const QString& fileName ) const = 0;
+%Docstring
+Swaps the edge which is closest to the point with x and y coordinates (if this is possible)
+ :rtype: bool
+%End
+
+    virtual bool saveAsShapefile( const QString &fileName ) const = 0;
+%Docstring
+ Saves the triangulation as a (line) shapefile
+ :return: true in case of success
+ :rtype: bool
+%End
 };
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/interpolation/Triangulation.h                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -12,21 +12,17 @@ __copyright__ = 'Copyright 2016, Even Rouault'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import hashlib
 import os
-import sys
 import tempfile
 import shutil
 
-from qgis.PyQt.QtCore import QObject, QCoreApplication, QSettings, Qt, QEventLoop, QItemSelectionModel, QModelIndex
-from qgis.PyQt.QtWidgets import QApplication, QWidget, QLineEdit, QDialogButtonBox, QTreeWidget, QComboBox, QPushButton, QToolButton
+from qgis.PyQt.QtCore import QCoreApplication, Qt
+from qgis.PyQt.QtWidgets import QLineEdit, QDialogButtonBox, QTreeWidget, QComboBox, QToolButton
 from qgis.PyQt.QtTest import QTest
 
-from qgis.core import QGis, QgsMapLayerRegistry
-from qgis.gui import QgsNewGeoPackageLayerDialog
-from qgis.testing import (start_app,
-                          unittest
-                          )
+from qgis.core import QgsProject, QgsSettings, QgsWkbTypes
+from qgis.gui import QgsNewGeoPackageLayerDialog, QgsFileWidget
+from qgis.testing import start_app, unittest
 
 
 def GDAL_COMPUTE_VERSION(maj, min, rev):
@@ -41,14 +37,14 @@ class TestPyQgsNewGeoPackageLayerDialog(unittest.TestCase):
         QCoreApplication.setOrganizationName("QGIS_Test")
         QCoreApplication.setOrganizationDomain("QGIS_TestPyQgsNewGeoPackageLayerDialog.com")
         QCoreApplication.setApplicationName("QGIS_TestPyQgsNewGeoPackageLayerDialog")
-        QSettings().clear()
+        QgsSettings().clear()
         start_app()
         cls.basetestpath = tempfile.mkdtemp()
 
     @classmethod
     def tearDownClass(cls):
         """Run after all tests"""
-        QSettings().clear()
+        QgsSettings().clear()
         if cls.basetestpath is not None:
             shutil.rmtree(cls.basetestpath, True)
 
@@ -67,7 +63,7 @@ class TestPyQgsNewGeoPackageLayerDialog(unittest.TestCase):
         dialog = QgsNewGeoPackageLayerDialog()
         dialog.setProperty("hideDialogs", True)
 
-        mDatabaseEdit = dialog.findChild(QLineEdit, "mDatabaseEdit")
+        mDatabase = dialog.findChild(QgsFileWidget, "mDatabase")
         buttonBox = dialog.findChild(QDialogButtonBox, "buttonBox")
         ok_button = buttonBox.button(QDialogButtonBox.Ok)
         mTableNameEdit = dialog.findChild(QLineEdit, "mTableNameEdit")
@@ -90,7 +86,7 @@ class TestPyQgsNewGeoPackageLayerDialog(unittest.TestCase):
         self.assertFalse(ok_button.isEnabled())
 
         dbname = os.path.join(self.basetestpath, 'test.gpkg')
-        mDatabaseEdit.setText(dbname)
+        mDatabase.setFilePath(dbname)
         self.assertEqual(mTableNameEdit.text(), 'test')
         self.assertEqual(mLayerIdentifierEdit.text(), 'test')
         self.assertTrue(ok_button.isEnabled())
@@ -146,12 +142,12 @@ class TestPyQgsNewGeoPackageLayerDialog(unittest.TestCase):
         QTest.mouseClick(ok_button, Qt.LeftButton)
         self.assertTrue(self.accepted)
 
-        layers = QgsMapLayerRegistry.instance().mapLayers()
+        layers = QgsProject.instance().mapLayers()
         self.assertEqual(len(layers), 1)
         layer = layers[list(layers.keys())[0]]
         self.assertEqual(layer.name(), 'test')
-        self.assertEqual(layer.geometryType(), QGis.Point)
-        QgsMapLayerRegistry.instance().removeAllMapLayers()
+        self.assertEqual(layer.geometryType(), QgsWkbTypes.PointGeometry)
+        QgsProject.instance().removeAllMapLayers()
 
         ds = ogr.Open(dbname)
         lyr = ds.GetLayer(0)
@@ -205,7 +201,7 @@ class TestPyQgsNewGeoPackageLayerDialog(unittest.TestCase):
         dialog.setProperty('question_existing_db_answer_add_new_layer', None)
         self.assertTrue(self.accepted)
 
-        QgsMapLayerRegistry.instance().removeAllMapLayers()
+        QgsProject.instance().removeAllMapLayers()
         ds = ogr.Open(dbname)
         self.assertEqual(ds.GetLayerCount(), 2)
         ds = None
@@ -217,7 +213,7 @@ class TestPyQgsNewGeoPackageLayerDialog(unittest.TestCase):
         dialog.setProperty('question_existing_db_answer_overwrite', None)
         self.assertTrue(self.accepted)
 
-        QgsMapLayerRegistry.instance().removeAllMapLayers()
+        QgsProject.instance().removeAllMapLayers()
         ds = ogr.Open(dbname)
         self.assertEqual(ds.GetLayerCount(), 1)
         ds = None
@@ -244,11 +240,11 @@ class TestPyQgsNewGeoPackageLayerDialog(unittest.TestCase):
 
         # Only check with OGR 2.0 since the IDENTIFIER and DESCRIPTION creation options don't exist in OGR 1.11
         if version_num >= GDAL_COMPUTE_VERSION(2, 0, 0):
-            layers = QgsMapLayerRegistry.instance().mapLayers()
+            layers = QgsProject.instance().mapLayers()
             self.assertEqual(len(layers), 1)
             layer = layers[list(layers.keys())[0]]
             self.assertEqual(layer.name(), 'my_identifier')
-            QgsMapLayerRegistry.instance().removeAllMapLayers()
+            QgsProject.instance().removeAllMapLayers()
 
             ds = ogr.Open(dbname)
             sql_lyr = ds.ExecuteSQL('SELECT * FROM gpkg_contents')
@@ -262,10 +258,10 @@ class TestPyQgsNewGeoPackageLayerDialog(unittest.TestCase):
             self.assertEqual(identifier, 'my_identifier')
             self.assertEqual(description, 'my_description')
         else:
-            QgsMapLayerRegistry.instance().removeAllMapLayers()
+            QgsProject.instance().removeAllMapLayers()
 
         # Try invalid path
-        mDatabaseEdit.setText('/this/is/invalid/test.gpkg')
+        mDatabase.setFilePath('/this/is/invalid/test.gpkg')
         self.accepted = False
         QTest.mouseClick(ok_button, Qt.LeftButton)
         self.assertFalse(self.accepted)
@@ -274,6 +270,7 @@ class TestPyQgsNewGeoPackageLayerDialog(unittest.TestCase):
 
     def accepted_slot(self):
         self.accepted = True
+
 
 if __name__ == '__main__':
     unittest.main()

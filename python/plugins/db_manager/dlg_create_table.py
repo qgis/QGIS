@@ -21,10 +21,14 @@ The content of this file is based on
  *                                                                         *
  ***************************************************************************/
 """
+from builtins import str
+from builtins import range
 
 from qgis.PyQt.QtCore import Qt, QModelIndex
 from qgis.PyQt.QtWidgets import QItemDelegate, QComboBox, QDialog, QPushButton, QDialogButtonBox, QMessageBox, QApplication
 from qgis.PyQt.QtCore import QItemSelectionModel, pyqtSignal
+
+from qgis.utils import OverrideCursor
 
 from .db_plugins.data_model import TableFieldsModel
 from .db_plugins.plugin import DbError, ConnectionError
@@ -48,7 +52,6 @@ class TableFieldsDelegate(QItemDelegate):
         if index.column() == 1:
             cbo = QComboBox(parent)
             cbo.setEditable(True)
-            cbo.setAutoCompletion(True)
             cbo.setFrame(False)
             for item in self.fieldTypes:
                 cbo.addItem(item)
@@ -164,7 +167,7 @@ class DlgCreateTable(QDialog, Ui_Dialog):
         self.cboPrimaryKey.clear()
 
         m = self.fields.model()
-        for row in xrange(m.rowCount()):
+        for row in range(m.rowCount()):
             name = m.data(m.index(row, 0))
             self.cboPrimaryKey.addItem(name)
 
@@ -260,12 +263,12 @@ class DlgCreateTable(QDialog, Ui_Dialog):
         if not self.hasSchemas:
             schema = None
         else:
-            schema = unicode(self.cboSchema.currentText())
+            schema = str(self.cboSchema.currentText())
             if len(schema) == 0:
                 QMessageBox.information(self, self.tr("DB Manager"), self.tr("select schema!"))
                 return
 
-        table = unicode(self.editName.text())
+        table = str(self.editName.text())
         if len(table) == 0:
             QMessageBox.information(self, self.tr("DB Manager"), self.tr("enter table name!"))
             return
@@ -277,7 +280,7 @@ class DlgCreateTable(QDialog, Ui_Dialog):
 
         useGeomColumn = self.chkGeomColumn.isChecked()
         if useGeomColumn:
-            geomColumn = unicode(self.editGeomColumn.text())
+            geomColumn = str(self.editGeomColumn.text())
             if len(geomColumn) == 0:
                 QMessageBox.information(self, self.tr("DB Manager"), self.tr("set geometry column name"))
                 return
@@ -296,19 +299,16 @@ class DlgCreateTable(QDialog, Ui_Dialog):
             flds[pk_index].primaryKey = True
 
         # commit to DB
-        QApplication.setOverrideCursor(Qt.WaitCursor)
-        try:
-            if not useGeomColumn:
-                self.db.createTable(table, flds, schema)
-            else:
-                geom = geomColumn, geomType, geomSrid, geomDim, useSpatialIndex
-                self.db.createVectorTable(table, flds, geom, schema)
+        with OverrideCursor(Qt.WaitCursor):
+            try:
+                if not useGeomColumn:
+                    self.db.createTable(table, flds, schema)
+                else:
+                    geom = geomColumn, geomType, geomSrid, geomDim, useSpatialIndex
+                    self.db.createVectorTable(table, flds, geom, schema)
 
-        except (ConnectionError, DbError) as e:
-            DlgDbError.showError(e, self)
+            except (ConnectionError, DbError) as e:
+                DlgDbError.showError(e, self)
             return
-
-        finally:
-            QApplication.restoreOverrideCursor()
 
         QMessageBox.information(self, self.tr("Good"), self.tr("everything went fine"))

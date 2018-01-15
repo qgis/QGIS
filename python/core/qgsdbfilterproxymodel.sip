@@ -1,16 +1,53 @@
-class QgsDbFilterProxyModel: QSortFilterProxyModel
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsdbfilterproxymodel.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsDatabaseFilterProxyModel: QSortFilterProxyModel
 {
+%Docstring
+A class that implements a custom filter and can be used
+as a proxy for QgsDbTableModel
+
+.. versionadded:: 3.0
+%End
+
 %TypeHeaderCode
-#include <qgsdbfilterproxymodel.h>
+#include "qgsdbfilterproxymodel.h"
 %End
   public:
-    QgsDbFilterProxyModel( QObject* parent /TransferThis/ = 0 );
-    ~QgsDbFilterProxyModel();
-    /** Calls QSortFilterProxyModel::setFilterWildcard and triggers update*/
-    void _setFilterWildcard( const QString& pattern );
-    /** Calls QSortFilterProxyModel::setFilterRegExp and triggers update*/
-    void _setFilterRegExp( const QString& pattern );
+
+    QgsDatabaseFilterProxyModel( QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsDatabaseFilterProxyModel.
+%End
+
+    void _setFilterWildcard( const QString &pattern );
+%Docstring
+Calls QSortFilterProxyModel.setFilterWildcard and triggers update
+%End
+
+    void _setFilterRegExp( const QString &pattern );
+%Docstring
+Calls QSortFilterProxyModel.setFilterRegExp and triggers update
+%End
 
   protected:
-    virtual bool filterAcceptsRow( int row, const QModelIndex & source_parent ) const;
+    virtual bool filterAcceptsRow( int row, const QModelIndex &source_parent ) const;
+
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsdbfilterproxymodel.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

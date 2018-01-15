@@ -15,8 +15,8 @@
 
 #include "qgsdummyconfigdlg.h"
 
-QgsDummyConfigDlg::QgsDummyConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget* parent, const QString& description )
-    :    QgsEditorConfigWidget( vl, fieldIdx, parent )
+QgsDummyConfigDlg::QgsDummyConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget *parent, const QString &description )
+  :    QgsEditorConfigWidget( vl, fieldIdx, parent )
 {
   setupUi( this );
 
@@ -24,12 +24,12 @@ QgsDummyConfigDlg::QgsDummyConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget*
 }
 
 
-QgsEditorWidgetConfig QgsDummyConfigDlg::config()
+QVariantMap QgsDummyConfigDlg::config()
 {
-  return QgsEditorWidgetConfig();
+  return QVariantMap();
 }
 
-void QgsDummyConfigDlg::setConfig( const QgsEditorWidgetConfig& config )
+void QgsDummyConfigDlg::setConfig( const QVariantMap &config )
 {
   Q_UNUSED( config );
 }

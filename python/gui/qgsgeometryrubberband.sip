@@ -1,77 +1,92 @@
-/***************************************************************************
-                         qgsgeometryrubberband.h
-                         -----------------------
-    begin                : December 2014
-    copyright            : (C) 2014 by Marco Hugentobler
-    email                : marco at sourcepole dot ch
- ***************************************************************************/
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsgeometryrubberband.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
 
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
 
-/** A rubberband class for QgsAbstractGeometryV2 (considering curved geometries)*/
+
+
+
+
 class QgsGeometryRubberBand: QgsMapCanvasItem
 {
+%Docstring
+A rubberband class for QgsAbstractGeometry (considering curved geometries)*
+%End
+
 %TypeHeaderCode
 #include "qgsgeometryrubberband.h"
 %End
   public:
     enum IconType
     {
-      /**
-      * No icon is used
-      */
+
       ICON_NONE,
-      /**
-       * A cross is used to highlight points (+)
-       */
+
       ICON_CROSS,
-      /**
-       * A cross is used to highlight points (x)
-       */
+
       ICON_X,
-      /**
-       * A box is used to highlight points (□)
-       */
+
       ICON_BOX,
-      /**
-       * A circle is used to highlight points (○)
-       */
+
       ICON_CIRCLE,
-      /**
-       * A full box is used to highlight points (■)
-       */
+
       ICON_FULL_BOX
     };
 
-    QgsGeometryRubberBand( QgsMapCanvas* mapCanvas, QGis::GeometryType geomType = QGis::Line );
+    QgsGeometryRubberBand( QgsMapCanvas *mapCanvas, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::LineGeometry );
     ~QgsGeometryRubberBand();
 
-    /** Sets geometry (takes ownership). Geometry is expected to be in map coordinates */
-    void setGeometry( QgsAbstractGeometryV2* geom );
-    /** Returns a pointer to the geometry*/
-    const QgsAbstractGeometryV2* geometry();
-    /** Moves vertex to new position (in map coordinates)*/
-    void moveVertex( QgsVertexId id, const QgsPointV2& newPos );
-    /** Sets fill color for vertex markers*/
-    void setFillColor( const QColor& c );
-    /** Sets outline color for vertex markes*/
-    void setOutlineColor( const QColor& c );
-    /** Sets outline width*/
-    void setOutlineWidth( int width );
-    /** Sets pen style*/
+    void setGeometry( QgsAbstractGeometry *geom /Transfer/ );
+%Docstring
+Sets geometry (takes ownership). Geometry is expected to be in map coordinates
+%End
+    const QgsAbstractGeometry *geometry();
+%Docstring
+Returns a pointer to the geometry
+%End
+    void moveVertex( QgsVertexId id, const QgsPoint &newPos );
+%Docstring
+Moves vertex to new position (in map coordinates)
+%End
+    void setFillColor( const QColor &c );
+%Docstring
+Sets fill color for vertex markers
+%End
+    void setStrokeColor( const QColor &c );
+%Docstring
+Sets stroke color for vertex markers
+%End
+    void setStrokeWidth( int width );
+%Docstring
+Sets stroke width
+%End
     void setLineStyle( Qt::PenStyle penStyle );
-    /** Sets brush style*/
+%Docstring
+Sets pen style
+%End
     void setBrushStyle( Qt::BrushStyle brushStyle );
-    /** Sets vertex marker icon type*/
+%Docstring
+Sets brush style
+%End
     void setIconType( IconType iconType );
+%Docstring
+Sets vertex marker icon type
+%End
 
   protected:
-    virtual void paint( QPainter* painter );
+    virtual void paint( QPainter *painter );
+
+
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsgeometryrubberband.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

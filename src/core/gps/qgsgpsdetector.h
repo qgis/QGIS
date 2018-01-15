@@ -22,24 +22,28 @@
 #include <QList>
 #include <QPair>
 
+#include "qgis_core.h"
 #include "qextserialport.h"
 
 class QgsGPSConnection;
 struct QgsGPSInformation;
 
-// Class to detect the GPS port
+/**
+ * \ingroup core
+ * Class to detect the GPS port
+ */
 class CORE_EXPORT QgsGPSDetector : public QObject
 {
     Q_OBJECT
   public:
-    QgsGPSDetector( const QString& portName );
-    ~QgsGPSDetector();
+    QgsGPSDetector( const QString &portName );
+    ~QgsGPSDetector() override;
 
     static QList< QPair<QString, QString> > availablePorts();
 
   public slots:
     void advance();
-    void detected( const QgsGPSInformation& );
+    void detected( const QgsGPSInformation & );
     void connDestroyed( QObject * );
 
   signals:
@@ -52,7 +56,7 @@ class CORE_EXPORT QgsGPSDetector : public QObject
     QList< QPair< QString, QString > > mPortList;
     QList<BaudRateType> mBaudList;
 
-    QgsGPSConnection *mConn;
+    QgsGPSConnection *mConn = nullptr;
 };
 
 #endif // QGSGPSDETECTOR_H

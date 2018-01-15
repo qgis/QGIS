@@ -1,99 +1,229 @@
-/**
- * Layer tree group node serves as a container for layers and further groups.
- *
- * Group names do not need to be unique within one tree nor within one parent.
- *
- * @note added in 2.4
- */
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/layertree/qgslayertreegroup.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
 class QgsLayerTreeGroup : QgsLayerTreeNode
 {
-%TypeHeaderCode
-#include <qgslayertreegroup.h>
+%Docstring
+Layer tree group node serves as a container for layers and further groups.
+
+Group names do not need to be unique within one tree nor within one parent.
+
+.. versionadded:: 2.4
 %End
 
+%TypeHeaderCode
+#include "qgslayertreegroup.h"
+%End
   public:
-    QgsLayerTreeGroup( const QString& name = QString(), Qt::CheckState checked = Qt::Checked );
 
-    //! Get group's name
-    QString name() const;
-    //! Set group's name
-    void setName( const QString& n );
+    QgsLayerTreeGroup( const QString &name = QString(), bool checked = true );
+%Docstring
+Constructor
+%End
 
-    //! Insert a new group node with given name at specified position. Newly created node is owned by this group.
-    QgsLayerTreeGroup* insertGroup( int index, const QString& name );
-    //! Append a new group node with given name. Newly created node is owned by this group.
-    QgsLayerTreeGroup* addGroup( const QString& name );
-    //! Insert a new layer node for given map layer at specified position. Newly created node is owned by this group.
-    QgsLayerTreeLayer* insertLayer( int index, QgsMapLayer* layer );
-    //! Append a new layer node for given map layer. Newly created node is owned by this group.
-    QgsLayerTreeLayer* addLayer( QgsMapLayer* layer );
 
-    //! Insert existing nodes at specified position. The nodes must not have a parent yet. The nodes will be owned by this group.
-    void insertChildNodes( int index, const QList<QgsLayerTreeNode*>& nodes /Transfer/ );
-    //! Insert existing node at specified position. The node must not have a parent yet. The node will be owned by this group.
-    void insertChildNode( int index, QgsLayerTreeNode* node /Transfer/ );
-    //! Append an existing node. The node must not have a parent yet. The node will be owned by this group.
-    void addChildNode( QgsLayerTreeNode* node /Transfer/ );
+    virtual QString name() const;
 
-    //! Remove a child node from this group. The node will be deleted.
-    void removeChildNode( QgsLayerTreeNode* node );
-    //! Remove map layer's node from this group. The node will be deleted.
-    void removeLayer( QgsMapLayer* layer );
-    //! Remove child nodes from index "from". The nodes will be deleted.
+%Docstring
+Returns the group's name.
+%End
+
+    virtual void setName( const QString &n );
+
+%Docstring
+Sets the group's name.
+%End
+
+    QgsLayerTreeGroup *insertGroup( int index, const QString &name );
+%Docstring
+Insert a new group node with given name at specified position. The newly created node is owned by this group.
+%End
+
+    QgsLayerTreeGroup *addGroup( const QString &name );
+%Docstring
+Append a new group node with given name. Newly created node is owned by this group.
+%End
+
+    QgsLayerTreeLayer *insertLayer( int index, QgsMapLayer *layer );
+%Docstring
+Insert a new layer node for given map layer at specified position. The newly created node is owned by this group.
+%End
+
+    QgsLayerTreeLayer *addLayer( QgsMapLayer *layer );
+%Docstring
+Append a new layer node for given map layer. The newly created node is owned by this group.
+%End
+
+    void insertChildNodes( int index, const QList<QgsLayerTreeNode *> &nodes /Transfer/ );
+%Docstring
+Insert existing nodes at specified position. The nodes must not have a parent yet. The nodes will be owned by this group.
+%End
+
+    void insertChildNode( int index, QgsLayerTreeNode *node /Transfer/ );
+%Docstring
+Insert existing node at specified position. The node must not have a parent yet. The node will be owned by this group.
+%End
+
+    void addChildNode( QgsLayerTreeNode *node /Transfer/ );
+%Docstring
+Append an existing node. The node must not have a parent yet. The node will be owned by this group.
+%End
+
+    void removeChildNode( QgsLayerTreeNode *node );
+%Docstring
+Remove a child node from this group. The node will be deleted.
+%End
+
+    void removeLayer( QgsMapLayer *layer );
+%Docstring
+Remove map layer's node from this group. The node will be deleted.
+%End
+
     void removeChildren( int from, int count );
-    //! Remove all child group nodes without layers. The groupnodes will be deleted.
+%Docstring
+Remove child nodes from index "from". The nodes will be deleted.
+%End
+
     void removeChildrenGroupWithoutLayers();
-    //! Remove all child nodes. The nodes will be deleted.
+%Docstring
+Remove all child group nodes without layers. The groupnodes will be deleted.
+%End
+
     void removeAllChildren();
+%Docstring
+Remove all child nodes. The nodes will be deleted.
+%End
 
-    //! Find layer node representing the map layer specified by its ID. Searches recursively the whole sub-tree.
-    QgsLayerTreeLayer* findLayer( const QString& layerId );
-    //! Find all layer nodes. Searches recursively the whole sub-tree.
-    QList<QgsLayerTreeLayer*> findLayers() const;
-    //! Find layer IDs used in all layer nodes. Searches recursively the whole sub-tree.
+    QgsLayerTreeLayer *findLayer( QgsMapLayer *layer ) const;
+%Docstring
+Find layer node representing the map layer. Searches recursively the whole sub-tree.
+
+.. versionadded:: 3.0
+%End
+
+    QgsLayerTreeLayer *findLayer( const QString &layerId ) const;
+%Docstring
+Find layer node representing the map layer specified by its ID. Searches recursively the whole sub-tree.
+%End
+
+    QList<QgsLayerTreeLayer *> findLayers() const;
+%Docstring
+Find all layer nodes. Searches recursively the whole sub-tree.
+%End
+
     QStringList findLayerIds() const;
-    //! Find group node with specified name. Searches recursively the whole sub-tree.
-    QgsLayerTreeGroup* findGroup( const QString& name );
+%Docstring
+Find layer IDs used in all layer nodes. Searches recursively the whole sub-tree.
+%End
 
-    //! Read group (tree) from XML element <layer-tree-group> and return the newly created group (or null on error)
-    static QgsLayerTreeGroup* readXML( QDomElement& element ) /Factory/;
-    //! Write group (tree) as XML element <layer-tree-group> and add it to the given parent element
-    virtual void writeXML( QDomElement& parentElement );
-    //! Read children from XML and append them to the group.
-    void readChildrenFromXML( QDomElement& element );
+    QgsLayerTreeGroup *findGroup( const QString &name );
+%Docstring
+Find group node with specified name. Searches recursively the whole sub-tree.
+%End
 
-    //! Return text representation of the tree. For debugging purposes only.
+    static QgsLayerTreeGroup *readXml( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
+%Docstring
+Read group (tree) from XML element <layer-tree-group> and return the newly created group (or null on error).
+Does not resolve textual references to layers. Call resolveReferences() afterwards to do it.
+%End
+
+    static QgsLayerTreeGroup *readXml( QDomElement &element, const QgsProject *project, const QgsReadWriteContext &context ) /Factory/;
+%Docstring
+Read group (tree) from XML element <layer-tree-group> and return the newly created group (or null on error).
+Also resolves textual references to layers from the project (calls resolveReferences() internally).
+
+.. versionadded:: 3.0
+%End
+
+    virtual void writeXml( QDomElement &parentElement, const QgsReadWriteContext &context );
+
+%Docstring
+Write group (tree) as XML element <layer-tree-group> and add it to the given parent element
+%End
+
+    void readChildrenFromXml( QDomElement &element, const QgsReadWriteContext &context );
+%Docstring
+Read children from XML and append them to the group.
+Does not resolve textual references to layers. Call resolveReferences() afterwards to do it.
+%End
+
     virtual QString dump() const;
 
-    //! Return a clone of the group. The children are cloned too.
-    virtual QgsLayerTreeGroup* clone() const /Factory/;
+%Docstring
+Return text representation of the tree. For debugging purposes only.
+%End
 
-    //! Return the check state of the group node
-    Qt::CheckState isVisible() const;
-    //! Set check state of the group node - will also update children
-    void setVisible( Qt::CheckState state );
+    virtual QgsLayerTreeGroup *clone() const /Factory/;
 
-    //! Return whether the group is mutually exclusive (only one child can be checked at a time)
-    //! @note added in 2.12
+%Docstring
+Return a clone of the group. The children are cloned too.
+%End
+
+    virtual void resolveReferences( const QgsProject *project, bool looseMatching = false );
+
+%Docstring
+Calls resolveReferences() on child tree nodes
+
+.. versionadded:: 3.0
+%End
+
+    virtual void setItemVisibilityCheckedRecursive( bool checked );
+
+%Docstring
+Check or uncheck a node and all its children (taking into account exclusion rules)
+%End
+
     bool isMutuallyExclusive() const;
-    //! Set whether the group is mutually exclusive (only one child can be checked at a time).
-    //! The initial child index determines which child should be initially checked. The default value
-    //! of -1 will determine automatically (either first one currently checked or none)
-    //! @note added in 2.12
+%Docstring
+Return whether the group is mutually exclusive (only one child can be checked at a time)
+
+.. versionadded:: 2.12
+%End
+
     void setIsMutuallyExclusive( bool enabled, int initialChildIndex = -1 );
+%Docstring
+Set whether the group is mutually exclusive (only one child can be checked at a time).
+The initial child index determines which child should be initially checked. The default value
+of -1 will determine automatically (either first one currently checked or none)
+
+.. versionadded:: 2.12
+%End
 
   protected slots:
-    void layerDestroyed();
-    void nodeVisibilityChanged( QgsLayerTreeNode* node );
+    void nodeVisibilityChanged( QgsLayerTreeNode *node );
 
   protected:
-    //! Set check state of this group from its children
-    void updateVisibilityFromChildren();
-    //! Set check state of children (when this group's check state changes) - if not mutually exclusive
-    void updateChildVisibility();
-    //! Set check state of children - if mutually exclusive
+
     void updateChildVisibilityMutuallyExclusive();
+%Docstring
+Set check state of children - if mutually exclusive
+%End
+
+
+
+
 
   private:
-    QgsLayerTreeGroup( const QgsLayerTreeGroup& other );
+
+    QgsLayerTreeGroup( const QgsLayerTreeGroup &other );
+%Docstring
+Copies are not allowed
+%End
 };
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/layertree/qgslayertreegroup.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -13,28 +13,33 @@
 #include "qgsdecorationnortharrowdialog.h"
 #include "qgsdecorationnortharrow.h"
 #include "qgslogger.h"
-#include "qgscontexthelp.h"
+#include "qgshelp.h"
+#include "qgssettings.h"
+#include "qgssvgcache.h"
 
 #include <QPainter>
-#include <QSettings>
 #include <cmath>
 #include <QDialogButtonBox>
 #include <QPushButton>
+#include <QSvgRenderer>
 
-QgsDecorationNorthArrowDialog::QgsDecorationNorthArrowDialog( QgsDecorationNorthArrow& deco, QWidget* parent )
-    : QDialog( parent )
-    , mDeco( deco )
+QgsDecorationNorthArrowDialog::QgsDecorationNorthArrowDialog( QgsDecorationNorthArrow &deco, QWidget *parent )
+  : QDialog( parent )
+  , mDeco( deco )
 {
   setupUi( this );
+  connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsDecorationNorthArrowDialog::buttonBox_accepted );
+  connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsDecorationNorthArrowDialog::buttonBox_rejected );
+  connect( spinAngle, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsDecorationNorthArrowDialog::spinAngle_valueChanged );
+  connect( sliderRotation, &QSlider::valueChanged, this, &QgsDecorationNorthArrowDialog::sliderRotation_valueChanged );
 
-  QSettings settings;
-  restoreGeometry( settings.value( "/Windows/DecorationNorthArrow/geometry" ).toByteArray() );
+  QgsSettings settings;
+  restoreGeometry( settings.value( QStringLiteral( "Windows/DecorationNorthArrow/geometry" ) ).toByteArray() );
 
-  QPushButton* applyButton = buttonBox->button( QDialogButtonBox::Apply );
-  connect( applyButton, SIGNAL( clicked() ), this, SLOT( apply() ) );
+  QPushButton *applyButton = buttonBox->button( QDialogButtonBox::Apply );
+  connect( applyButton, &QAbstractButton::clicked, this, &QgsDecorationNorthArrowDialog::apply );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsDecorationNorthArrowDialog::showHelp );
 
-  // rotation
-  rotatePixmap( mDeco.mRotationInt );
   // signal/slot connection defined in 'designer' causes the slider to
   // be moved to reflect the change in the spinbox.
   spinAngle->setValue( mDeco.mRotationInt );
@@ -47,7 +52,7 @@ QgsDecorationNorthArrowDialog::QgsDecorationNorthArrowDialog( QgsDecorationNorth
   cboPlacement->setCurrentIndex( cboPlacement->findData( mDeco.placement() ) );
   spinHorizontal->setValue( mDeco.mMarginHorizontal );
   spinVertical->setValue( mDeco.mMarginVertical );
-  wgtUnitSelection->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::Percentage << QgsSymbolV2::Pixel );
+  wgtUnitSelection->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderPercentage << QgsUnitTypes::RenderPixels );
   wgtUnitSelection->setUnit( mDeco.mMarginUnit );
 
   // enabled
@@ -55,45 +60,64 @@ QgsDecorationNorthArrowDialog::QgsDecorationNorthArrowDialog( QgsDecorationNorth
 
   // automatic
   cboxAutomatic->setChecked( mDeco.mAutomatic );
+
+  pbnChangeColor->setAllowOpacity( true );
+  pbnChangeColor->setColor( mDeco.mColor );
+  pbnChangeColor->setContext( QStringLiteral( "gui" ) );
+  pbnChangeColor->setColorDialogTitle( tr( "Select North Arrow Fill Color" ) );
+
+  pbnChangeOutlineColor->setAllowOpacity( true );
+  pbnChangeOutlineColor->setColor( mDeco.mOutlineColor );
+  pbnChangeOutlineColor->setContext( QStringLiteral( "gui" ) );
+  pbnChangeOutlineColor->setColorDialogTitle( tr( "Select North Arrow Outline Color" ) );
+
+  connect( pbnChangeColor, &QgsColorButton::colorChanged, this, [ = ]( QColor ) { drawNorthArrow(); } );
+  connect( pbnChangeOutlineColor, &QgsColorButton::colorChanged, this, [ = ]( QColor ) { drawNorthArrow(); } );
+
+  drawNorthArrow();
 }
 
 QgsDecorationNorthArrowDialog::~QgsDecorationNorthArrowDialog()
 {
-  QSettings settings;
-  settings.setValue( "/Windows/DecorationNorthArrow/geometry", saveGeometry() );
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "Windows/DecorationNorthArrow/geometry" ), saveGeometry() );
 }
 
-void QgsDecorationNorthArrowDialog::on_buttonBox_helpRequested()
+void QgsDecorationNorthArrowDialog::showHelp()
 {
-  QgsContextHelp::run( metaObject()->className() );
+  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#north-arrow" ) );
 }
 
-void QgsDecorationNorthArrowDialog::on_buttonBox_accepted()
+void QgsDecorationNorthArrowDialog::buttonBox_accepted()
 {
   apply();
   accept();
 }
 
-void QgsDecorationNorthArrowDialog::on_buttonBox_rejected()
+void QgsDecorationNorthArrowDialog::buttonBox_rejected()
 {
   reject();
 }
 
 
-void QgsDecorationNorthArrowDialog::on_spinAngle_valueChanged( int theInt )
+void QgsDecorationNorthArrowDialog::spinAngle_valueChanged( int spinAngle )
 {
-  Q_UNUSED( theInt );
+  Q_UNUSED( spinAngle );
 }
 
-void QgsDecorationNorthArrowDialog::on_sliderRotation_valueChanged( int theInt )
+void QgsDecorationNorthArrowDialog::sliderRotation_valueChanged( int rotationValue )
 {
-  rotatePixmap( theInt );
+  Q_UNUSED( rotationValue );
+
+  drawNorthArrow();
 }
 
 void QgsDecorationNorthArrowDialog::apply()
 {
+  mDeco.mColor = pbnChangeColor->color();
+  mDeco.mOutlineColor = pbnChangeOutlineColor->color();
   mDeco.mRotationInt = sliderRotation->value();
-  mDeco.setPlacement( static_cast< QgsDecorationItem::Placement>( cboPlacement->itemData( cboPlacement->currentIndex() ).toInt() ) );
+  mDeco.setPlacement( static_cast< QgsDecorationItem::Placement>( cboPlacement->currentData().toInt() ) );
   mDeco.mMarginUnit = wgtUnitSelection->unit();
   mDeco.setEnabled( grpEnable->isChecked() );
   mDeco.mAutomatic = cboxAutomatic->isChecked();
@@ -102,43 +126,49 @@ void QgsDecorationNorthArrowDialog::apply()
   mDeco.update();
 }
 
-void QgsDecorationNorthArrowDialog::rotatePixmap( int theRotationInt )
+void QgsDecorationNorthArrowDialog::drawNorthArrow()
 {
-  QPixmap myQPixmap;
-  QString myFileNameQString = ":/images/north_arrows/default.png";
-// QgsDebugMsg(QString("Trying to load %1").arg(myFileNameQString));
-  if ( myQPixmap.load( myFileNameQString ) )
+  int rotation = spinAngle->value();
+
+  QSize size( 64, 64 );
+  QSvgRenderer svg;
+
+  const QByteArray &svgContent = QgsApplication::svgCache()->svgContent( QStringLiteral( ":/images/north_arrows/default.svg" ), size.width(), pbnChangeColor->color(), pbnChangeOutlineColor->color(), 1.0, 1.0 );
+  svg.load( svgContent );
+
+  if ( svg.isValid() )
   {
-    QPixmap  myPainterPixmap( myQPixmap.height(), myQPixmap.width() );
+    QPixmap  myPainterPixmap( size.height(), size.width() );
     myPainterPixmap.fill();
+
     QPainter myQPainter;
     myQPainter.begin( &myPainterPixmap );
 
     myQPainter.setRenderHint( QPainter::SmoothPixmapTransform );
 
-    double centerXDouble = myQPixmap.width() / 2.0;
-    double centerYDouble = myQPixmap.height() / 2.0;
+    double centerXDouble = size.width() / 2.0;
+    double centerYDouble = size.height() / 2.0;
     //save the current canvas rotation
     myQPainter.save();
     //myQPainter.translate( (int)centerXDouble, (int)centerYDouble );
 
     //rotate the canvas
-    myQPainter.rotate( theRotationInt );
+    myQPainter.rotate( rotation );
     //work out how to shift the image so that it appears in the center of the canvas
     //(x cos a + y sin a - x, -x sin a + y cos a - y)
-    const double PI = 3.14159265358979323846;
-    double myRadiansDouble = ( PI / 180 ) * theRotationInt;
-    int xShift = static_cast<int>((
-                                    ( centerXDouble * cos( myRadiansDouble ) ) +
-                                    ( centerYDouble * sin( myRadiansDouble ) )
-                                  ) - centerXDouble );
-    int yShift = static_cast<int>((
-                                    ( -centerXDouble * sin( myRadiansDouble ) ) +
-                                    ( centerYDouble * cos( myRadiansDouble ) )
-                                  ) - centerYDouble );
+    double myRadiansDouble = ( M_PI / 180 ) * rotation;
+    int xShift = static_cast<int>( (
+                                     ( centerXDouble * std::cos( myRadiansDouble ) ) +
+                                     ( centerYDouble * std::sin( myRadiansDouble ) )
+                                   ) - centerXDouble );
+    int yShift = static_cast<int>( (
+                                     ( -centerXDouble * std::sin( myRadiansDouble ) ) +
+                                     ( centerYDouble * std::cos( myRadiansDouble ) )
+                                   ) - centerYDouble );
 
     //draw the pixmap in the proper position
-    myQPainter.drawPixmap( xShift, yShift, myQPixmap );
+    myQPainter.translate( xShift, yShift );
+    svg.render( &myQPainter, QRectF( 0, 0, size.width(), size.height() ) );
 
     //unrotate the canvas again
     myQPainter.restore();
@@ -152,7 +182,7 @@ void QgsDecorationNorthArrowDialog::rotatePixmap( int theRotationInt )
     myPainterPixmap.fill();
     QPainter myQPainter;
     myQPainter.begin( &myPainterPixmap );
-    QFont myQFont( "time", 12, QFont::Bold );
+    QFont myQFont( QStringLiteral( "time" ), 12, QFont::Bold );
     myQPainter.setFont( myQFont );
     myQPainter.setPen( Qt::red );
     myQPainter.drawText( 10, 20, tr( "Pixmap not found" ) );
@@ -165,8 +195,8 @@ void QgsDecorationNorthArrowDialog::rotatePixmap( int theRotationInt )
 // Called when the widget has been resized.
 //
 
-void QgsDecorationNorthArrowDialog::resizeEvent( QResizeEvent *theResizeEvent )
+void QgsDecorationNorthArrowDialog::resizeEvent( QResizeEvent *resizeEvent )
 {
-  Q_UNUSED( theResizeEvent );
-  rotatePixmap( sliderRotation->value() );
+  Q_UNUSED( resizeEvent );
+  drawNorthArrow();
 }

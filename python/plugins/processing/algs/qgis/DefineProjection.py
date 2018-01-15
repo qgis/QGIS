@@ -28,43 +28,46 @@ __revision__ = '$Format:%H$'
 import os
 import re
 
-from qgis.core import QgsCoordinateReferenceSystem
-from qgis.utils import iface
+from qgis.core import (QgsProcessing,
+                       QgsProcessingParameterVectorLayer,
+                       QgsProcessingParameterCrs,
+                       QgsProcessingOutputVectorLayer)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterCrs
-from processing.core.outputs import OutputVector
-
-from processing.tools import dataobjects
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class DefineProjection(GeoAlgorithm):
+class DefineProjection(QgisAlgorithm):
 
     INPUT = 'INPUT'
     CRS = 'CRS'
-    OUTPUT = 'OUTPUT'
 
-    #def getIcon(self):
-    #    return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'basic_statistics.png'))
+    def group(self):
+        return self.tr('Vector general')
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Define current projection')
-        self.group, self.i18n_group = self.trAlgorithm('Vector general tools')
+    def groupId(self):
+        return 'vectorgeneral'
 
-        self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input Layer'),
-                                          [ParameterVector.VECTOR_TYPE_ANY]))
-        self.addParameter(ParameterCrs(self.CRS, 'Output CRS'))
-        self.addOutput(OutputVector(self.OUTPUT,
-                                    self.tr('Layer with projection'), True))
+    def __init__(self):
+        super().__init__()
 
-    def processAlgorithm(self, progress):
-        fileName = self.getParameterValue(self.INPUT)
-        layer = dataobjects.getObjectFromUri(fileName)
-        crs = QgsCoordinateReferenceSystem(self.getParameterValue(self.CRS))
+    def initAlgorithm(self, config=None):
+        self.addParameter(QgsProcessingParameterVectorLayer(self.INPUT,
+                                                            self.tr('Input Layer'), types=[QgsProcessing.TypeVectorAnyGeometry]))
+        self.addParameter(QgsProcessingParameterCrs(self.CRS, 'Output CRS'))
+        self.addOutput(QgsProcessingOutputVectorLayer(self.INPUT,
+                                                      self.tr('Layer with projection')))
+
+    def name(self):
+        return 'definecurrentprojection'
+
+    def displayName(self):
+        return self.tr('Define current projection')
+
+    def processAlgorithm(self, parameters, context, feedback):
+        layer = self.parameterAsVectorLayer(parameters, self.INPUT, context)
+        crs = self.parameterAsCrs(parameters, self.CRS, context)
 
         provider = layer.dataProvider()
         ds = provider.dataSourceUri()
@@ -84,6 +87,6 @@ class DefineProjection(GeoAlgorithm):
                 f.write(wkt)
 
         layer.setCrs(crs)
-        iface.mapCanvas().refresh()
+        layer.triggerRepaint()
 
-        self.setOutputValue(self.OUTPUT, fileName)
+        return {self.INPUT: layer}

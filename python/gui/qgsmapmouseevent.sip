@@ -1,118 +1,125 @@
-/***************************************************************************
-    qgsmapmouseevent.h  -  mouse event in map coordinates and ability to snap
-    ----------------------
-    begin                : October 2014
-    copyright            : (C) Denis Rouzaud
-    email                : denis.rouzaud@gmail.com
- ***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsmapmouseevent.h                                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
 
-/**
- * A QgsMapMouseEvent is the result of a user interaction with the mouse on a QgsMapCanvas.
- * It is sent whenever the user moves, clicks, releases or double clicks the mouse.
- * In addition to the coordiantes in pixel space it also knows the coordinates in the mapcanvas' CRS
- * as well as it knows the concept of snapping.
- */
+
+
+
+
 class QgsMapMouseEvent : QMouseEvent
 {
+%Docstring
+A QgsMapMouseEvent is the result of a user interaction with the mouse on a QgsMapCanvas.
+It is sent whenever the user moves, clicks, releases or double clicks the mouse.
+In addition to the coordinates in pixel space it also knows the coordinates in the mapcanvas' CRS
+as well as it knows the concept of snapping.
+%End
+
 %TypeHeaderCode
 #include "qgsmapmouseevent.h"
 %End
-
 %ConvertToSubClassCode
-  if ( dynamic_cast<QgsMapMouseEvent*>( sipCpp ) )
-    sipType = sipType_QgsMapMouseEvent;
-  else
-    sipType = 0;
+    if ( dynamic_cast<QgsMapMouseEvent *>( sipCpp ) )
+      sipType = sipType_QgsMapMouseEvent;
+    else
+      sipType = 0;
 %End
-
   public:
 
-    enum SnappingMode
-    {
-      NoSnapping,
-      SnapProjectConfig,  //!< snap according to the configuration set in the snapping settings
-      SnapAllLayers,      //!< snap to all rendered layers (tolerance and type from defaultSettings())
-    };
+    QgsMapMouseEvent( QgsMapCanvas *mapCanvas, QMouseEvent *event );
+%Docstring
+Creates a new QgsMapMouseEvent. Should only be required to be called from the QgsMapCanvas.
 
-    /**
-     * Creates a new QgsMapMouseEvent. Should only be required to be called from the QgsMapCanvas.
-     *
-     * @param mapCanvas The map canvas on which the event occurred
-     * @param event     The original mouse event
-     */
-    QgsMapMouseEvent( QgsMapCanvas* mapCanvas, QMouseEvent* event );
+:param mapCanvas: The map canvas on which the event occurred
+:param event:     The original mouse event
+%End
 
-    /**
-     * @brief snapPoint will snap the points using the map canvas snapping utils configuration
-     * @note if snapping did not succeeded, the map point will be reset to its original position
-     */
-    QgsPoint snapPoint( SnappingMode snappingMode );
+    QgsMapMouseEvent( QgsMapCanvas *mapCanvas, QEvent::Type type, QPoint pos, Qt::MouseButton button = Qt::NoButton,
+                      Qt::MouseButtons buttons = Qt::NoButton, Qt::KeyboardModifiers modifiers = Qt::NoModifier );
+%Docstring
+Creates a new QgsMapMouseEvent. Should only be required to be called from the QgsMapCanvas.
 
-    /**
-     * Returns the first snapped segment. If the cached snapped match is a segment, it will simply return it.
-     * Otherwise it will try to snap a segment according to the event's snapping mode. In this case the cache
-     * will not be overwritten.
-     * @param snappingMode Specify if the default project settings or all layers should be used for snapping
-     * @param snapped if given, determines if a segment has been snapped
-     * @param allLayers if true, override snapping mode
-     */
-    QList<QgsPoint> snapSegment( SnappingMode snappingMode, bool* snapped = 0, bool allLayers = false ) const;
+:param mapCanvas: The map canvas on which the event occurred
+:param type:      The type of the event
+:param pos:       The pixel position of the mouse
+:param button:    The pressed button
+:param buttons:   Further buttons that are pressed
+:param modifiers: Keyboard modifiers
+%End
 
-    /**
-     * Returns true if there is a snapped point cached.
-     * Will only be useful after snapPoint has previously been called.
-     *
-     * @return True if there is a snapped point cached.
-     */
+    QgsPointXY snapPoint();
+%Docstring
+ snapPoint will snap the points using the map canvas snapping utils configuration
+
+.. note::
+
+   if snapping did not succeeded, the map point will be reset to its original position
+%End
+
     bool isSnapped() const;
+%Docstring
+Returns true if there is a snapped point cached.
+Will only be useful after snapPoint has previously been called.
 
-    /**
-     * @brief mapPoint returns the point in coordinates
-     * @return the point in map coordinates, after snapping if requested in the event.
-     */
-    QgsPoint mapPoint() const;
+:return: True if there is a snapped point cached.
+%End
 
-    /**
-      * Returns the matching data from the most recently snapped point.
-      * @return the snapping data structure
-      * @note added in 2.14
-      */
+    QgsPointXY mapPoint() const;
+%Docstring
+ mapPoint returns the point in coordinates
+
+:return: the point in map coordinates, after snapping if requested in the event.
+%End
+
     QgsPointLocator::Match mapPointMatch() const;
+%Docstring
+Returns the matching data from the most recently snapped point.
 
-    /**
-     * Set the (snapped) point this event points to in map coordinates.
-     * The point in pixel coordinates will be calculated accordingly.
-     *
-     * @param point The point in map coordinates
-     */
-    void setMapPoint( const QgsPoint& point );
+:return: the snapping data structure
 
-    /**
-     * Returns the original, unmodified map point of the mouse cursor.
-     *
-     * @return The cursor position in map coordinates.
-     */
-    QgsPoint originalMapPoint() const;
+.. versionadded:: 2.14
+%End
 
-    /**
-     * The snapped mouse cursor in pixel coordinates.
-     *
-     * @return The snapped mouse cursor position in pixel coordinates.
-     */
+    void setMapPoint( const QgsPointXY &point );
+%Docstring
+Set the (snapped) point this event points to in map coordinates.
+The point in pixel coordinates will be calculated accordingly.
+
+:param point: The point in map coordinates
+%End
+
+    QgsPointXY originalMapPoint() const;
+%Docstring
+Returns the original, unmodified map point of the mouse cursor.
+
+:return: The cursor position in map coordinates.
+%End
+
     QPoint pixelPoint() const;
+%Docstring
+The snapped mouse cursor in pixel coordinates.
 
-    /**
-     * The unsnapped, real mouse cursor position in pixel coordinates.
-     * Alias to pos()
-     *
-     * @return Mouse position in pixel coordinates
-     */
+:return: The snapped mouse cursor position in pixel coordinates.
+%End
+
     QPoint originalPixelPoint() const;
+%Docstring
+The unsnapped, real mouse cursor position in pixel coordinates.
+Alias to pos()
+
+:return: Mouse position in pixel coordinates
+%End
+
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsmapmouseevent.h                                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

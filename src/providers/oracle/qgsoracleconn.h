@@ -24,8 +24,11 @@
 #include <QMap>
 #include <QSet>
 #include <QThread>
+#include <QVariant>
+#include <QDateTime>
 
 #include "qgis.h"
+#include "qgslogger.h"
 #include "qgsdatasourceuri.h"
 
 #include <QSqlDatabase>
@@ -36,7 +39,7 @@ class QgsField;
 // Oracle layer properties
 struct QgsOracleLayerProperty
 {
-  QList<QGis::WkbType> types;
+  QList<QgsWkbTypes::Type> types;
   QList<int>           srids;
   QString              ownerName;
   QString              tableName;
@@ -45,9 +48,13 @@ struct QgsOracleLayerProperty
   QStringList          pkCols;
   QString              sql;
 
+  QgsOracleLayerProperty()
+    : isView( false )
+  {}
+
   int size() const { Q_ASSERT( types.size() == srids.size() ); return types.size(); }
 
-  bool operator==( const QgsOracleLayerProperty& other )
+  bool operator==( const QgsOracleLayerProperty &other )
   {
     return types == other.types && srids == other.srids && ownerName == other.ownerName &&
            tableName == other.tableName && geometryColName == other.geometryColName &&
@@ -72,11 +79,11 @@ struct QgsOracleLayerProperty
     return property;
   }
 
-#if QGISDEBUG
+#ifdef QGISDEBUG
   QString toString() const
   {
     QString typeString;
-    Q_FOREACH ( QGis::WkbType type, types )
+    Q_FOREACH ( QgsWkbTypes::Type type, types )
     {
       if ( !typeString.isEmpty() )
         typeString += "|";
@@ -107,14 +114,16 @@ class QgsOracleConn : public QObject
 {
     Q_OBJECT
   public:
-    static QgsOracleConn *connectDb( QgsDataSourceURI uri );
+    static QgsOracleConn *connectDb( const QgsDataSourceUri &uri );
     void disconnect();
 
-    /** Double quote a Oracle identifier for placement in a SQL string.
+    /**
+     * Double quote a Oracle identifier for placement in a SQL string.
      */
     static QString quotedIdentifier( QString ident );
 
-    /** Quote a value for placement in a SQL string.
+    /**
+     * Quote a value for placement in a SQL string.
      */
     static QString quotedValue( const QVariant &value, QVariant::Type type = QVariant::Invalid );
 
@@ -126,10 +135,10 @@ class QgsOracleConn : public QObject
 
     void retrieveLayerTypes( QgsOracleLayerProperty &layerProperty, bool useEstimatedMetadata, bool onlyExistingTypes );
 
-    /** Gets information about the spatial tables */
+    //! Gets information about the spatial tables
     bool tableInfo( bool geometryTablesOnly, bool userTablesOnly, bool allowGeometrylessTables );
 
-    /** Get primary key candidates (all int4 columns) */
+    //! Get primary key candidates (all int4 columns)
     QStringList pkCandidates( QString ownerName, QString viewName );
 
     static QString fieldExpression( const QgsField &fld );
@@ -142,33 +151,33 @@ class QgsOracleConn : public QObject
 
     static const int sGeomTypeSelectLimit;
 
-    static QString displayStringForWkbType( QGis::WkbType wkbType );
-    static QGis::WkbType wkbTypeFromDatabase( int gtype );
+    static QString displayStringForWkbType( QgsWkbTypes::Type wkbType );
+    static QgsWkbTypes::Type wkbTypeFromDatabase( int gtype );
 
-    static QString databaseTypeFilter( QString alias, QString geomCol, QGis::WkbType wkbType );
+    static QString databaseTypeFilter( QString alias, QString geomCol, QgsWkbTypes::Type wkbType );
 
-    static QGis::WkbType wkbTypeFromGeomType( QGis::GeometryType geomType );
+    static QgsWkbTypes::Type wkbTypeFromGeomType( QgsWkbTypes::GeometryType geomType );
 
     static QStringList connectionList();
     static QString selectedConnection();
-    static void setSelectedConnection( QString theConnName );
-    static QgsDataSourceURI connUri( QString theConnName );
-    static bool userTablesOnly( QString theConnName );
-    static bool geometryColumnsOnly( QString theConnName );
-    static bool allowGeometrylessTables( QString theConnName );
-    static bool estimatedMetadata( QString theConnName );
-    static bool onlyExistingTypes( QString theConnName );
-    static void deleteConnection( QString theConnName );
+    static void setSelectedConnection( QString connName );
+    static QgsDataSourceUri connUri( QString connName );
+    static bool userTablesOnly( QString connName );
+    static bool geometryColumnsOnly( QString connName );
+    static bool allowGeometrylessTables( QString connName );
+    static bool estimatedMetadata( QString connName );
+    static bool onlyExistingTypes( QString connName );
+    static void deleteConnection( QString connName );
     static QString databaseName( QString database, QString host, QString port );
-    static QString toPoolName( QgsDataSourceURI uri );
+    static QString toPoolName( const QgsDataSourceUri &uri );
 
     operator QSqlDatabase() { return mDatabase; }
 
   private:
-    explicit QgsOracleConn( QgsDataSourceURI uri );
+    explicit QgsOracleConn( QgsDataSourceUri uri );
     ~QgsOracleConn();
 
-    bool exec( QSqlQuery &qry, QString sql );
+    bool exec( QSqlQuery &qry, QString sql, const QVariantList &params );
 
     //! reference count
     int mRef;
@@ -186,6 +195,7 @@ class QgsOracleConn : public QObject
 
     static QMap<QString, QgsOracleConn *> sConnections;
     static int snConnections;
+    static QMap<QString, QDateTime> sBrokenConnections;
 };
 
 #endif

@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QString>
 #include <QCoreApplication>
@@ -28,9 +28,7 @@ class TestQgsMapToolZoom : public QObject
 {
     Q_OBJECT
   public:
-    TestQgsMapToolZoom()
-        : canvas( 0 )
-    {}
+    TestQgsMapToolZoom() = default;
 
   private slots:
     void initTestCase(); // will be called before the first testfunction is executed.
@@ -39,7 +37,7 @@ class TestQgsMapToolZoom : public QObject
     void cleanup(); // will be called after every testfunction.
     void zeroDragArea();
   private:
-    QgsMapCanvas* canvas;
+    QgsMapCanvas *canvas = nullptr;
 };
 
 void TestQgsMapToolZoom::initTestCase()
@@ -64,14 +62,15 @@ void TestQgsMapToolZoom::cleanup()
   delete canvas;
 }
 
-/** Zero drag areas can happen on pen based computer when a mouse down,
+/**
+ * Zero drag areas can happen on pen based computer when a mouse down,
   * move, and up, all happened at the same spot due to the pen. In this case
   * QGIS thinks it is in dragging mode but it's not really and fails to zoom in.
   **/
 void TestQgsMapToolZoom::zeroDragArea()
 {
   QPoint point = QPoint( 15, 15 );
-  QMouseEvent press( QEvent::MouseButtonPress, point ,
+  QMouseEvent press( QEvent::MouseButtonPress, point,
                      Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
   QMouseEvent move( QEvent::MouseMove, point,
                     Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
@@ -82,7 +81,7 @@ void TestQgsMapToolZoom::zeroDragArea()
   QgsMapMouseEvent mapMove( 0, &move );
   QgsMapMouseEvent mapReleases( 0, &releases );
 
-  QgsMapToolZoom* tool = new QgsMapToolZoom( canvas, false );
+  QgsMapToolZoom *tool = new QgsMapToolZoom( canvas, false );
   // Just set some made up extent so that we can zoom.
   canvas->setExtent( QgsRectangle( 0, 0, 20, 20 ) );
 
@@ -97,7 +96,7 @@ void TestQgsMapToolZoom::zeroDragArea()
   QVERIFY2( before != after, "Extents didn't change" );
 }
 
-QTEST_MAIN( TestQgsMapToolZoom )
+QGSTEST_MAIN( TestQgsMapToolZoom )
 #include "testqgsmaptoolzoom.moc"
 
 

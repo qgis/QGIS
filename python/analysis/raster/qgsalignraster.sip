@@ -1,183 +1,298 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/raster/qgsalignraster.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
 
 class QgsAlignRaster
 {
-%TypeHeaderCode
-#include <qgsalignraster.h>
-#include <gdal_version.h>
+%Docstring
+ QgsAlignRaster takes one or more raster layers and warps (resamples) them
+so they have the same:
+- coordinate reference system
+- cell size and raster size
+- offset of the raster grid
+
+.. versionadded:: 2.12
 %End
 
+%TypeHeaderCode
+#include "qgsalignraster.h"
+#include <gdal_version.h>
+%End
   public:
     QgsAlignRaster();
 
-    //! Utility class for gathering information about rasters
     struct RasterInfo
     {
-    public:
-      //! Construct raster info with a path to a raster file
-      RasterInfo( const QString& layerpath );
-      ~RasterInfo();
+      public:
+        RasterInfo( const QString &layerpath );
+%Docstring
+Construct raster info with a path to a raster file
+%End
 
-      //! Check whether the given path is a valid raster
-      bool isValid() const;
 
-      //! Return CRS in WKT format
-      QString crs() const;
-      //! Return size of the raster grid in pixels
-      QSize rasterSize() const;
-      //! Return number of raster bands in the file
-      int bandCount() const;
-      //! Return cell size in map units
-      QSizeF cellSize() const;
-      //! Return grid offset
-      QPointF gridOffset() const;
-      //! Return extent of the raster
-      QgsRectangle extent() const;
-      //! Return origin of the raster
-      QPointF origin() const;
+        bool isValid() const;
+%Docstring
+Check whether the given path is a valid raster
+%End
 
-      //! write contents of the object to standard error stream - for debugging
-      void dump() const;
+        QString crs() const;
+%Docstring
+Return CRS in WKT format
+%End
+        QSize rasterSize() const;
+%Docstring
+Return size of the raster grid in pixels
+%End
+        int bandCount() const;
+%Docstring
+Return number of raster bands in the file
+%End
+        QSizeF cellSize() const;
+%Docstring
+Return cell size in map units
+%End
+        QPointF gridOffset() const;
+%Docstring
+Return grid offset
+%End
+        QgsRectangle extent() const;
+%Docstring
+Return extent of the raster
+%End
+        QPointF origin() const;
+%Docstring
+Return origin of the raster
+%End
 
-      //! Get raster value at the given coordinates (from the first band)
-      double identify( double mx, double my );
+        void dump() const;
+%Docstring
+write contents of the object to standard error stream - for debugging
+%End
+
+        double identify( double mx, double my );
+%Docstring
+Get raster value at the given coordinates (from the first band)
+%End
+
+      protected:
 
       private:
-        RasterInfo( const QgsAlignRaster::RasterInfo& rh );
-
+        RasterInfo( const QgsAlignRaster::RasterInfo &rh );
     };
 
 
-    //! Resampling algorithm to be used (equivalent to GDAL's enum GDALResampleAlg)
-    //! @note RA_Max, RA_Min, RA_Median, RA_Q1 and RA_Q3 are available on GDAL >= 2.0 builds only
     enum ResampleAlg
     {
-      RA_NearestNeighbour, //!< Nearest neighbour (select on one input pixel)
-      RA_Bilinear,       //!< Bilinear (2x2 kernel)
-      RA_Cubic,          //!< Cubic Convolution Approximation (4x4 kernel)
-      RA_CubicSpline,    //!< Cubic B-Spline Approximation (4x4 kernel)
-      RA_Lanczos,        //!< Lanczos windowed sinc interpolation (6x6 kernel)
-      RA_Average,        //!< Average (computes the average of all non-NODATA contributing pixels)
-      RA_Mode,            //!< Mode (selects the value which appears most often of all the sampled points)
-      RA_Max, //!< Maximum (selects the maximum of all non-NODATA contributing pixels)
-      RA_Min, //!< Minimum (selects the minimum of all non-NODATA contributing pixels)
-      RA_Median, //!< Median (selects the median of all non-NODATA contributing pixels)
-      RA_Q1, //!< First quartile (selects the first quartile of all non-NODATA contributing pixels)
-      RA_Q3, //!< Third quartile (selects the third quartile of all non-NODATA contributing pixels)
+      RA_NearestNeighbour,
+      RA_Bilinear,
+      RA_Cubic,
+      RA_CubicSpline,
+      RA_Lanczos,
+      RA_Average,
+      RA_Mode,
+      RA_Max,
+      RA_Min,
+      RA_Median,
+      RA_Q1,
+      RA_Q3,
     };
 
-    //! Definition of one raster layer for alignment
     struct Item
     {
-      Item( const QString& input, const QString& output );
+      Item( const QString &input, const QString &output );
 
-      //! filename of the source raster
       QString inputFilename;
-      //! filename of the newly created aligned raster (will be overwritten if exists already)
       QString outputFilename;
-      //! resampling method to be used
       QgsAlignRaster::ResampleAlg resampleMethod;
-      //! rescaling of values according to the change of pixel size
       bool rescaleValues;
 
-      // private part
 
-      //! used for rescaling of values (if necessary)
       double srcCellSizeInDestCRS;
     };
     typedef QList<QgsAlignRaster::Item> List;
 
-    //! Helper struct to be sub-classed for progress reporting
     struct ProgressHandler
     {
-      //! Method to be overridden for progress reporting.
-      //! @param complete Overall progress of the alignment operation
-      //! @return false if the execution should be cancelled, true otherwise
+
       virtual bool progress( double complete ) = 0;
+%Docstring
+Method to be overridden for progress reporting.
+
+:param complete: Overall progress of the alignment operation
+
+:return: false if the execution should be canceled, true otherwise
+%End
 
       virtual ~ProgressHandler();
     };
 
-    //! Assign a progress handler instance. Does not take ownership. NULL can be passed.
-    void setProgressHandler( ProgressHandler* progressHandler );
-    //! Get associated progress handler. May be NULL (default)
-    ProgressHandler* progressHandler() const;
+    void setProgressHandler( ProgressHandler *progressHandler );
+%Docstring
+Assign a progress handler instance. Does not take ownership. None can be passed.
+%End
+    ProgressHandler *progressHandler() const;
+%Docstring
+Get associated progress handler. May be None (default)
+%End
 
-    //! Set list of rasters that will be aligned
-    void setRasters( const List& list );
-    //! Get list of rasters that will be aligned
+    void setRasters( const List &list );
+%Docstring
+Set list of rasters that will be aligned
+%End
     List rasters() const;
+%Docstring
+Get list of rasters that will be aligned
+%End
 
     void setGridOffset( QPointF offset );
     QPointF gridOffset() const;
 
-    //! Set output cell size
     void setCellSize( double x, double y );
-    //! Set output cell size
+%Docstring
+Set output cell size
+%End
     void setCellSize( QSizeF size );
-    //! Get output cell size
+%Docstring
+Set output cell size
+%End
     QSizeF cellSize() const;
+%Docstring
+Get output cell size
+%End
 
-    //! Set the output CRS in WKT format
-    void setDestinationCRS( const QString& crsWkt );
-    //! Get the output CRS in WKT format
-    QString destinationCRS() const;
+    void setDestinationCrs( const QString &crsWkt );
+%Docstring
+Set the output CRS in WKT format
+%End
+    QString destinationCrs() const;
+%Docstring
+Get the output CRS in WKT format
+%End
 
-    //! Configure clipping extent (region of interest).
-    //! No extra clipping is done if the rectangle is null
     void setClipExtent( double xmin, double ymin, double xmax, double ymax );
-    //! Configure clipping extent (region of interest).
-    //! No extra clipping is done if the rectangle is null
-    void setClipExtent( const QgsRectangle& extent );
-    //! Get clipping extent (region of interest).
-    //! No extra clipping is done if the rectangle is null
+%Docstring
+Configure clipping extent (region of interest).
+No extra clipping is done if the rectangle is null
+%End
+
+    void setClipExtent( const QgsRectangle &extent );
+%Docstring
+Configure clipping extent (region of interest).
+No extra clipping is done if the rectangle is null
+%End
+
     QgsRectangle clipExtent() const;
+%Docstring
+Get clipping extent (region of interest).
+No extra clipping is done if the rectangle is null
+%End
 
-    //! Set destination CRS, cell size and grid offset from a raster file.
-    //! The user may provide custom values for some of the parameters - in such case
-    //! only the remaining parameters are calculated.
-    //!
-    //! If default CRS is used, the parameters are set according to the raster file's geo-transform.
-    //! If a custom CRS is provided, suggested reprojection is calculated first (using GDAL) in order
-    //! to determine suitable defaults for cell size and grid offset.
-    //!
-    //! @return true on success (may fail if it is not possible to reproject raster to given CRS)
-    bool setParametersFromRaster( const QgsAlignRaster::RasterInfo& rasterInfo, const QString& customCRSWkt = QString(), QSizeF customCellSize = QSizeF(), QPointF customGridOffset = QPointF( -1, -1 ) );
-    //! Overridden variant for convenience, taking filename instead RasterInfo object.
-    //! See the other variant for details.
-    bool setParametersFromRaster( const QString& filename, const QString& customCRSWkt = QString(), QSizeF customCellSize = QSizeF(), QPointF customGridOffset = QPointF( -1, -1 ) );
+    bool setParametersFromRaster( const RasterInfo &rasterInfo, const QString &customCRSWkt = QString(), QSizeF customCellSize = QSizeF(), QPointF customGridOffset = QPointF( -1, -1 ) );
+%Docstring
+Set destination CRS, cell size and grid offset from a raster file.
+The user may provide custom values for some of the parameters - in such case
+only the remaining parameters are calculated.
 
-    //! Determine destination extent from the input rasters and calculate derived values
-    //! @return true on success, sets error on error (see errorMessage())
+If default CRS is used, the parameters are set according to the raster file's geo-transform.
+If a custom CRS is provided, suggested reprojection is calculated first (using GDAL) in order
+to determine suitable defaults for cell size and grid offset.
+
+:return: true on success (may fail if it is not possible to reproject raster to given CRS)
+%End
+
+    bool setParametersFromRaster( const QString &filename, const QString &customCRSWkt = QString(), QSizeF customCellSize = QSizeF(), QPointF customGridOffset = QPointF( -1, -1 ) );
+%Docstring
+Overridden variant for convenience, taking filename instead RasterInfo object.
+See the other variant for details.
+%End
+
     bool checkInputParameters();
+%Docstring
+Determine destination extent from the input rasters and calculate derived values
 
-    //! Return expected size of the resulting aligned raster
-    //! @note first need to run checkInputParameters() which returns with success
+:return: true on success, sets error on error (see errorMessage())
+%End
+
     QSize alignedRasterSize() const;
-    //! Return expected extent of the resulting aligned raster
-    //! @note first need to run checkInputParameters() which returns with success
+%Docstring
+Return expected size of the resulting aligned raster
+
+.. note::
+
+   first need to run checkInputParameters() which returns with success
+%End
+
     QgsRectangle alignedRasterExtent() const;
+%Docstring
+Return expected extent of the resulting aligned raster
 
-    //! Run the alignment process
-    //! @return true on success, sets error on error (see errorMessage())
+.. note::
+
+   first need to run checkInputParameters() which returns with success
+%End
+
     bool run();
+%Docstring
+Run the alignment process
 
-    //! Return error from a previous run() call.
-    //! Error message is empty if run() succeeded (returned true)
+:return: true on success, sets error on error (see errorMessage())
+%End
+
     QString errorMessage() const;
+%Docstring
+Return error from a previous run() call.
+Error message is empty if run() succeeded (returned true)
+%End
 
-    //! write contents of the object to standard error stream - for debugging
     void dump() const;
+%Docstring
+write contents of the object to standard error stream - for debugging
+%End
 
-    //! Return index of the layer which has smallest cell size (returns -1 on error)
     int suggestedReferenceLayer() const;
+%Docstring
+Return index of the layer which has smallest cell size (returns -1 on error)
+%End
 
   protected:
 
-    //! Internal function for processing of one raster (1. create output, 2. do the alignment)
-    bool createAndWarp( const Item& raster );
+    bool createAndWarp( const Item &raster );
+%Docstring
+Internal function for processing of one raster (1. create output, 2. do the alignment)
+%End
 
-    //! Determine suggested output of raster warp to a different CRS. Returns true on success
-    static bool suggestedWarpOutput( const RasterInfo& info, const QString& destWkt, QSizeF* cellSize = 0, QPointF* gridOffset = 0, QgsRectangle* rect = 0 );
+    static bool suggestedWarpOutput( const RasterInfo &info, const QString &destWkt, QSizeF *cellSize = 0, QPointF *gridOffset = 0, QgsRectangle *rect = 0 );
+%Docstring
+Determine suggested output of raster warp to a different CRS. Returns true on success
+%End
+
+  protected:
+
+
+
+
+
+
+
+
+
 
 };
 
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/raster/qgsalignraster.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

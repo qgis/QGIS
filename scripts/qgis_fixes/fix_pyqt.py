@@ -33,6 +33,7 @@ MAPPING = {
          "QPolygonF",
          "QFontMetricsF",
          "QGradient",
+         "QIntValidator",
          ]),
         ("qgis.PyQt.QtWidgets", [
          "QAbstractButton",
@@ -284,6 +285,7 @@ MAPPING = {
             "pyqtSlot",
             "qDebug",
             "qWarning",
+            "qVersion",
             "QDate",
             "QTime",
             "QDateTime",
@@ -298,6 +300,7 @@ MAPPING = {
             "QPoint",
             "QPointF",
             "QDirIterator",
+            "QEventLoop",
             "NULL",
         ]),
         (None, [
@@ -306,7 +309,13 @@ MAPPING = {
         ]),
     ],
     "PyQt4.QtNetwork": [
-        ("qgis.PyQt.QtNetwork", ["QNetworkReply", "QNetworkRequest"])
+        ("qgis.PyQt.QtNetwork", [
+            "QNetworkReply",
+            "QNetworkRequest",
+            "QSslCertificate",
+            "QSslKey",
+            "QSsl"
+        ])
     ],
     "PyQt4.QtXml": [
         ("qgis.PyQt.QtXml", [
@@ -358,7 +367,7 @@ MAPPING = {
         ]),
     ],
     "PyQt4": [
-        ("PyQt", [
+        ("qgis.PyQt", [
             "QtCore",
             "QtGui",
             "QtNetwork",

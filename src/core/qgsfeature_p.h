@@ -33,7 +33,7 @@ email                : nyall dot dawson at gmail dot com
  * See details in QEP #17
  ****************************************************************************/
 
-#include "qgsfield.h"
+#include "qgsfields.h"
 
 #include "qgsgeometry.h"
 
@@ -42,46 +42,33 @@ class QgsFeaturePrivate : public QSharedData
   public:
 
     explicit QgsFeaturePrivate( QgsFeatureId id )
-        : fid( id )
-        , geometry( nullptr )
-        , ownsGeometry( false )
-        , valid( false )
+      : fid( id )
+      , valid( false )
     {
     }
 
-    QgsFeaturePrivate( const QgsFeaturePrivate& other )
-        : QSharedData( other )
-        , fid( other.fid )
-        , attributes( other.attributes )
-        , geometry( other.ownsGeometry && other.geometry ? new QgsGeometry( *other.geometry ) : other.geometry )
-        , ownsGeometry( other.ownsGeometry )
-        , valid( other.valid )
-        , fields( other.fields )
+    QgsFeaturePrivate( const QgsFeaturePrivate &other )
+      : QSharedData( other )
+      , fid( other.fid )
+      , attributes( other.attributes )
+      , geometry( other.geometry )
+      , valid( other.valid )
+      , fields( other.fields )
     {
     }
 
     ~QgsFeaturePrivate()
     {
-      if ( ownsGeometry )
-        delete geometry;
     }
 
-    //! feature id
+    //! Feature ID
     QgsFeatureId fid;
 
-    /** Attributes accessed by field index */
+    ///! Attributes accessed by field index
     QgsAttributes attributes;
 
-    /** Pointer to geometry in binary WKB format
-
-       This is usually set by a call to OGRGeometry::exportToWkb()
-     */
-    QgsGeometry *geometry;
-
-    /** Indicator if the mGeometry is owned by this QgsFeature.
-        If so, this QgsFeature takes responsibility for the mGeometry's destruction.
-     */
-    bool ownsGeometry;
+    //! Geometry, may be empty if feature has no geometry
+    QgsGeometry geometry;
 
     //! Flag to indicate if this feature is valid
     bool valid;

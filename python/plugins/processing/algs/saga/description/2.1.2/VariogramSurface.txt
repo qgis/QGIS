@@ -1,9 +1,0 @@
-Variogram Surface
-statistics_points
-ParameterVector|POINTS|Points|0|False
-ParameterTableField|FIELD|Attribute|POINTS|-1|False
-ParameterNumber|DISTCOUNT|Number of Distance Classes|1.0|None|10
-ParameterNumber|NSKIP|Skip Number|None|None|1
-OutputRaster|COUNT|Number of Pairs
-OutputRaster|VARIANCE|Variogram Surface
-OutputRaster|COVARIANCE|Covariance Surface

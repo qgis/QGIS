@@ -1,108 +1,128 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgscachedfeatureiterator.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
 class QgsCachedFeatureIterator : QgsAbstractFeatureIterator
 {
+%Docstring
+Delivers features from the cache
+%End
+
 %TypeHeaderCode
-#include <qgscachedfeatureiterator.h>
+#include "qgscachedfeatureiterator.h"
 %End
   public:
-    /**
-     * This constructor creates a feature iterator, that delivers only cached information, based on the
-     * @link QgsFeatureIds @endlink. No request is made to the backend.
-     *
-     * @param vlCache          The vector layer cache to use
-     * @param featureRequest   The feature request to answer
-     * @param featureIds       The feature ids to return
-     *
-     * @deprecated Use QgsCachedFeatureIterator( QgsVectorLayerCache* vlCache, QgsFeatureRequest featureRequest )
-     *             instead
-     */
-    QgsCachedFeatureIterator( QgsVectorLayerCache* vlCache, const QgsFeatureRequest& featureRequest, const QgsFeatureIds& featureIds ) /Deprecated/;
 
-    /**
-     * This constructor creates a feature iterator, that delivers all cached features. No request is made to the backend.
-     *
-     * @param vlCache          The vector layer cache to use
-     * @param featureRequest   The feature request to answer
-     */
-    QgsCachedFeatureIterator( QgsVectorLayerCache* vlCache, const QgsFeatureRequest& featureRequest );
+    QgsCachedFeatureIterator( QgsVectorLayerCache *vlCache, const QgsFeatureRequest &featureRequest );
+%Docstring
+This constructor creates a feature iterator, that delivers all cached features. No request is made to the backend.
 
-    /**
-     * Rewind to the beginning of the iterator
-     *
-     * @return bool true if the operation was ok
-     */
+:param vlCache:          The vector layer cache to use
+:param featureRequest:   The feature request to answer
+%End
+
     virtual bool rewind();
 
-    /**
-     * Close this iterator. No further features will be available.
-     *
-     * @return true if successful
-     */
+%Docstring
+Rewind to the beginning of the iterator
+
+:return: bool true if the operation was OK
+%End
+
     virtual bool close();
 
-    // QgsAbstractFeatureIterator interface
-  protected:
-    /**
-     * Implementation for fetching a feature.
-     *
-     * @param f      Will write to this feature
-     * @return bool  true if the operation was ok
-     *
-     * @see bool getFeature( QgsFeature& f )
-     */
-    virtual bool fetchFeature( QgsFeature& f );
+%Docstring
+Close this iterator. No further features will be available.
 
-    /**
-     * We have a local special iterator for FilterFids, no need to run the generic.
-     *
-     * @param f      Will write to this feature
-     * @return bool  true if the operation was ok
-     */
-    virtual bool nextFeatureFilterFids( QgsFeature& f );
+:return: true if successful
+%End
+
+  protected:
+
+    virtual bool fetchFeature( QgsFeature &f );
+
+%Docstring
+Implementation for fetching a feature.
+
+:param f:      Will write to this feature
+
+:return: bool  true if the operation was OK
+
+.. seealso:: :py:func:`bool`
+%End
+
+    virtual bool nextFeatureFilterFids( QgsFeature &f );
+%Docstring
+We have a local special iterator for FilterFids, no need to run the generic.
+
+:param f:      Will write to this feature
+
+:return: bool  true if the operation was OK
+%End
 
 };
 
-/**
- * @brief
- * Uses another iterator as backend and writes features to the cache
- *
- */
 class QgsCachedFeatureWriterIterator : QgsAbstractFeatureIterator
 {
+%Docstring
+Uses another iterator as backend and writes features to the cache
+%End
+
 %TypeHeaderCode
-#include <qgscachedfeatureiterator.h>
+#include "qgscachedfeatureiterator.h"
 %End
   public:
-    /**
-     * This constructor creates a feature iterator, which queries the backend and caches retrieved features.
-     *
-     * @param vlCache          The vector layer cache to use
-     * @param featureRequest   The feature request to answer
-     */
-    QgsCachedFeatureWriterIterator( QgsVectorLayerCache* vlCache, const QgsFeatureRequest& featureRequest );
 
-    /**
-     * Rewind to the beginning of the iterator
-     *
-     * @return bool true if the operation was ok
-     */
+    QgsCachedFeatureWriterIterator( QgsVectorLayerCache *vlCache, const QgsFeatureRequest &featureRequest );
+%Docstring
+This constructor creates a feature iterator, which queries the backend and caches retrieved features.
+
+:param vlCache:          The vector layer cache to use
+:param featureRequest:   The feature request to answer
+%End
+
     virtual bool rewind();
 
-    /**
-     * Close this iterator. No further features will be available.
-     *
-     * @return true if successful
-     */
+%Docstring
+Rewind to the beginning of the iterator
+
+:return: bool true if the operation was OK
+%End
+
     virtual bool close();
+
+%Docstring
+Close this iterator. No further features will be available.
+
+:return: true if successful
+%End
 
   protected:
 
-    /**
-     * Implementation for fetching a feature.
-     *
-     * @param f      Will write to this feature
-     * @return bool  true if the operation was ok
-     *
-     * @see bool getFeature( QgsFeature& f )
-     */
-    virtual bool fetchFeature( QgsFeature& f );
+    virtual bool fetchFeature( QgsFeature &f );
+
+%Docstring
+Implementation for fetching a feature.
+
+:param f:      Will write to this feature
+
+:return: bool  true if the operation was OK
+
+.. seealso:: :py:func:`bool`
+%End
+
 };
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgscachedfeatureiterator.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

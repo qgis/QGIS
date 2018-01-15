@@ -126,7 +126,7 @@ int _nmea_parse_time( const char *buff, int buff_sz, nmeaTIME *res )
  */
 int nmea_pack_type( const char *buff, int buff_sz )
 {
-  static const char *pheads[] =
+  static const char *P_HEADS[] =
   {
     "GPGGA",
     "GPGSA",
@@ -140,17 +140,17 @@ int nmea_pack_type( const char *buff, int buff_sz )
 
   if ( buff_sz < 5 )
     return GPNON;
-  else if ( 0 == memcmp( buff, pheads[0], 5 ) )
+  else if ( 0 == memcmp( buff, P_HEADS[0], 5 ) )
     return GPGGA;
-  else if ( 0 == memcmp( buff, pheads[1], 5 ) )
+  else if ( 0 == memcmp( buff, P_HEADS[1], 5 ) )
     return GPGSA;
-  else if ( 0 == memcmp( buff, pheads[2], 5 ) )
+  else if ( 0 == memcmp( buff, P_HEADS[2], 5 ) )
     return GPGSV;
-  else if ( 0 == memcmp( buff, pheads[3], 5 ) )
+  else if ( 0 == memcmp( buff, P_HEADS[3], 5 ) )
     return GPRMC;
-  else if ( 0 == memcmp( buff, pheads[4], 5 ) )
+  else if ( 0 == memcmp( buff, P_HEADS[4], 5 ) )
     return GPVTG;
-  else if ( 0 == memcmp( buff, pheads[5], 5 ) )
+  else if ( 0 == memcmp( buff, P_HEADS[5], 5 ) )
     return GPRMC;
 
   return GPNON;
@@ -177,7 +177,7 @@ int nmea_find_tail( const char *buff, int buff_sz, int *res_crc )
 
   for ( ; buff < end_buff; ++buff, ++nread )
   {
-    if (( '$' == *buff ) && nread )
+    if ( ( '$' == *buff ) && nread )
     {
       buff = 0;
       break;
@@ -421,8 +421,8 @@ void nmea_GPGGA2info( nmeaGPGGA *pack, nmeaINFO *info )
   info->sig = pack->sig;
   info->HDOP = pack->HDOP;
   info->elv = pack->elv;
-  info->lat = (( pack->ns == 'N' ) ? pack->lat : -( pack->lat ) );
-  info->lon = (( pack->ew == 'E' ) ? pack->lon : -( pack->lon ) );
+  info->lat = ( ( pack->ns == 'N' ) ? pack->lat : -( pack->lat ) );
+  info->lon = ( ( pack->ew == 'E' ) ? pack->lon : -( pack->lon ) );
   info->smask |= GPGGA;
 }
 
@@ -516,8 +516,8 @@ void nmea_GPRMC2info( nmeaGPRMC *pack, nmeaINFO *info )
   }
 
   info->utc = pack->utc;
-  info->lat = (( pack->ns == 'N' ) ? pack->lat : -( pack->lat ) );
-  info->lon = (( pack->ew == 'E' ) ? pack->lon : -( pack->lon ) );
+  info->lat = ( ( pack->ns == 'N' ) ? pack->lat : -( pack->lat ) );
+  info->lon = ( ( pack->ew == 'E' ) ? pack->lon : -( pack->lon ) );
   info->speed = pack->speed * NMEA_TUD_KNOTS;
   info->direction = pack->direction;
   info->smask |= GPRMC;

@@ -27,17 +27,17 @@ class QgsGeorefDataPoint : public QObject
   public:
     //! constructor
     QgsGeorefDataPoint( QgsMapCanvas *srcCanvas, QgsMapCanvas *dstCanvas,
-                        const QgsPoint& pixelCoords, const QgsPoint& mapCoords,
+                        const QgsPointXY &pixelCoords, const QgsPointXY &mapCoords,
                         bool enable );
     QgsGeorefDataPoint( const QgsGeorefDataPoint &p );
-    ~QgsGeorefDataPoint();
+    ~QgsGeorefDataPoint() override;
 
     //! returns coordinates of the point
-    QgsPoint pixelCoords() const { return mPixelCoords; }
-    void setPixelCoords( const QgsPoint &p );
+    QgsPointXY pixelCoords() const { return mPixelCoords; }
+    void setPixelCoords( const QgsPointXY &p );
 
-    QgsPoint mapCoords() const { return mMapCoords; }
-    void setMapCoords( const QgsPoint &p );
+    QgsPointXY mapCoords() const { return mMapCoords; }
+    void setMapCoords( const QgsPointXY &p );
 
     bool isEnabled() const { return mEnabled; }
     void setEnabled( bool enabled );
@@ -58,12 +58,12 @@ class QgsGeorefDataPoint : public QObject
     void updateCoords();
 
   private:
-    QgsMapCanvas *mSrcCanvas;
-    QgsMapCanvas *mDstCanvas;
-    QgsGCPCanvasItem *mGCPSourceItem;
-    QgsGCPCanvasItem *mGCPDestinationItem;
-    QgsPoint mPixelCoords;
-    QgsPoint mMapCoords;
+    QgsMapCanvas *mSrcCanvas = nullptr;
+    QgsMapCanvas *mDstCanvas = nullptr;
+    QgsGCPCanvasItem *mGCPSourceItem = nullptr;
+    QgsGCPCanvasItem *mGCPDestinationItem = nullptr;
+    QgsPointXY mPixelCoords;
+    QgsPointXY mMapCoords;
 
     int mId;
     bool mEnabled;

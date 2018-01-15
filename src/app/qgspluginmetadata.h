@@ -19,7 +19,9 @@
 #ifndef QGSPLUGINMETADATA_H
 #define QGSPLUGINMETADATA_H
 #include <QString>
+#include "qgis_app.h"
 class QgisPlugin;
+
 /**
 * \class QgsPluginMetadata
 * \brief Stores information about a loaded plugin, including a pointer to
@@ -29,14 +31,14 @@ class QgisPlugin;
 class APP_EXPORT QgsPluginMetadata
 {
   public:
-    QgsPluginMetadata( const QString& _libraryPath, const QString& _name, QgisPlugin *_plugin );
+    QgsPluginMetadata( const QString &_libraryPath, const QString &_name, QgisPlugin *_plugin );
     QString name() const;
     QString library() const;
     QgisPlugin *plugin();
   private:
     QString m_name;
     QString libraryPath;
-    QgisPlugin *m_plugin;
+    QgisPlugin *m_plugin = nullptr;
 };
 #endif //QGSPLUGINMETADATA_H
 

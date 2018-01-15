@@ -1,188 +1,244 @@
-/***************************************************************************
-    qgsattributeform.h
-     --------------------------------------
-    Date                 : 3.5.2014
-    Copyright            : (C) 2014 Matthias Kuhn
-    Email                : matthias at opengis dot ch
- ***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsattributeform.h                                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
 
 class QgsAttributeForm : QWidget
 {
-%TypeHeaderCode
-#include <qgsattributeform.h>
-%End
 
+%TypeHeaderCode
+#include "qgsattributeform.h"
+%End
   public:
 
-    //! Form modes
     enum Mode
     {
-      SingleEditMode, /*!< Single edit mode, for editing a single feature */
-      MultiEditMode, /*!< Multi edit mode, for editing fields of multiple features at once */
-      // TODO: SearchMode, /*!< Form values are used for searching/filtering the layer */
+      SingleEditMode,
+      AddFeatureMode,
+      MultiEditMode,
+      SearchMode,
+      AggregateSearchMode,
     };
 
-    explicit QgsAttributeForm( QgsVectorLayer* vl, const QgsFeature& feature = QgsFeature(), const QgsAttributeEditorContext& context = QgsAttributeEditorContext(), QWidget *parent /TransferThis/ = 0 );
+    enum FilterType
+    {
+      ReplaceFilter,
+      FilterAnd,
+      FilterOr,
+    };
+
+    explicit QgsAttributeForm( QgsVectorLayer *vl,
+                               const QgsFeature &feature = QgsFeature(),
+                               const QgsAttributeEditorContext &context = QgsAttributeEditorContext(),
+                               QWidget *parent /TransferThis/ = 0 );
     ~QgsAttributeForm();
 
-    const QgsFeature& feature();
+    const QgsFeature &feature();
 
-    /**
-     * Hides the button box (Ok/Cancel) and enables auto-commit
-     */
     void hideButtonBox();
 
-    /**
-     * Shows the button box (Ok/Cancel) and disables auto-commit
-     */
     void showButtonBox();
 
-    /**
-     * Disconnects the button box (Ok/Cancel) from the accept/resetValues slots
-     * If this method is called, you have to create these connections from outside
-     */
     void disconnectButtonBox();
 
-    /**
-     * Takes ownership
-     * @param iface
-     */
-    void addInterface( QgsAttributeFormInterface* iface /Transfer/ );
+    void addInterface( QgsAttributeFormInterface *iface /Transfer/ );
+%Docstring
+Takes ownership
 
-    /**
-     * Returns the layer for which this form is shown
-     *
-     * @return  Layer
-     */
-    QgsVectorLayer* layer();
+:param iface:
+%End
 
-    /**
-     * Returns if the form is currently in editable mode.
-     *
-     * @return Editable mode of this form
-     */
+    QgsVectorLayer *layer();
+%Docstring
+Returns the layer for which this form is shown
+
+:return:  Layer
+%End
+
     bool editable();
+%Docstring
+Returns if the form is currently in editable mode.
 
-    /** Returns the current mode of the form.
-     * @note added in QGIS 2.16
-     * @see setMode()
-     */
+:return: Editable mode of this form
+%End
+
     Mode mode() const;
+%Docstring
+Returns the current mode of the form.
 
-    /** Sets the current mode of the form.
-     * @param mode form mode
-     * @note added in QGIS 2.16
-     * @see mode()
-     */
+.. versionadded:: 2.16
+
+.. seealso:: :py:func:`setMode`
+%End
+
     void setMode( Mode mode );
+%Docstring
+Sets the current mode of the form.
 
-    /**
-     * Toggles the form mode between edit feature and add feature.
-     * If set to true, the dialog will be editable even with an invalid feature.
-     * If set to true, the dialog will add a new feature when the form is accepted.
-     *
-     * @param isAddDialog If set to true, turn this dialog into an add feature dialog.
-     */
-    void setIsAddDialog( bool isAddDialog );
+:param mode: form mode
 
-    /**
-     * Sets the edit command message (Undo) that will be used when the dialog is accepted
-     *
-     * @param message The message
-     */
-    void setEditCommandMessage( const QString& message );
+.. versionadded:: 2.16
 
-    /**
-     * Intercepts keypress on custom form (escape should not close it)
-     *
-     * @param object   The object for which the event has been sent
-     * @param event    The event which is being filtered
-     *
-     * @return         true if the event has been handled (key was ESC)
-     */
-    bool eventFilter( QObject* object, QEvent* event );
+.. seealso:: :py:func:`mode`
+%End
 
-    /** Sets all feature IDs which are to be edited if the form is in multiedit mode
-     * @param fids feature ID list
-     * @note added in QGIS 2.16
-     */
-    void setMultiEditFeatureIds( const QgsFeatureIds& fids );
+    void setEditCommandMessage( const QString &message );
+%Docstring
+Sets the edit command message (Undo) that will be used when the dialog is accepted
+
+:param message: The message
+%End
+
+    virtual bool eventFilter( QObject *object, QEvent *event );
+
+%Docstring
+Intercepts keypress on custom form (escape should not close it)
+
+:param object:   The object for which the event has been sent
+:param event:    The event which is being filtered
+
+:return:         true if the event has been handled (key was ESC)
+%End
+
+    void setMultiEditFeatureIds( const QgsFeatureIds &fids );
+%Docstring
+Sets all feature IDs which are to be edited if the form is in multiedit mode
+
+:param fids: feature ID list
+
+.. versionadded:: 2.16
+%End
+
+    void setMessageBar( QgsMessageBar *messageBar );
+%Docstring
+Sets the message bar to display feedback from the form in. This is used in the search/filter
+mode to display the count of selected features.
+
+:param messageBar: target message bar
+
+.. versionadded:: 2.16
+%End
+
+    QString aggregateFilter() const;
+%Docstring
+The aggregate filter is only useful if the form is in AggregateFilter mode.
+In this case it will return a combined expression according to the chosen filters
+on all attribute widgets.
+
+.. versionadded:: 3.0
+%End
 
   signals:
-    /**
-     * Notifies about changes of attributes
-     *
-     * @param attribute The name of the attribute that changed.
-     * @param value     The new value of the attribute.
-     */
-    void attributeChanged( const QString& attribute, const QVariant& value );
 
-    /**
-     * Will be emitted before the feature is saved. Use this signal to perform sanity checks.
-     * You can set the parameter ok to false to notify the form that you don't want it to be saved.
-     * If you want the form to be saved, leave the parameter untouched.
-     *
-     * @param ok  Set this parameter to false if you don't want the form to be saved
-     * @note not available  in python bindings
-     */
-    // void beforeSave( bool& ok );
+    void attributeChanged( const QString &attribute, const QVariant &value );
+%Docstring
+Notifies about changes of attributes
 
-    /**
-     * Is emitted, when a feature is changed or added
-     */
-    void featureSaved( const QgsFeature& feature );
+:param attribute: The name of the attribute that changed.
+:param value:     The new value of the attribute.
+%End
+
+
+    void featureSaved( const QgsFeature &feature );
+%Docstring
+Is emitted, when a feature is changed or added
+%End
+
+    void filterExpressionSet( const QString &expression, QgsAttributeForm::FilterType type );
+%Docstring
+Is emitted when a filter expression is set using the form.
+
+:param expression: filter expression
+:param type: filter type
+
+.. versionadded:: 2.16
+%End
+
+    void modeChanged( QgsAttributeForm::Mode mode );
+%Docstring
+Emitted when the form changes mode.
+
+:param mode: new mode
+%End
+
+    void closed();
+%Docstring
+Emitted when the user selects the close option from the form's button bar.
+
+.. versionadded:: 2.16
+%End
+
+    void zoomToFeatures( const QString &filter );
+%Docstring
+Emitted when the user chooses to zoom to a filtered set of features.
+
+.. versionadded:: 3.0
+%End
+
+    void flashFeatures( const QString &filter );
+%Docstring
+Emitted when the user chooses to flash a filtered set of features.
+
+.. versionadded:: 3.0
+%End
 
   public slots:
-    /**
-     * Call this to change the content of a given attribute. Will update the editor(s) related to this field.
-     *
-     * @param field The field to change
-     * @param value The new value
-     */
-    void changeAttribute( const QString& field, const QVariant& value );
 
-    /**
-     * Update all editors to correspond to a different feature.
-     *
-     * @param feature The feature which will be represented by the form
-     */
-    void setFeature( const QgsFeature& feature );
+    void changeAttribute( const QString &field, const QVariant &value, const QString &hintText = QString() );
+%Docstring
+Call this to change the content of a given attribute. Will update the editor(s) related to this field.
 
-    /**
-     * Save all the values from the editors to the layer.
-     *
-     * @return True if successful
-     */
+:param field: The field to change
+:param value: The new value
+:param hintText: A hint text for non existent joined features
+%End
+
+    void setFeature( const QgsFeature &feature );
+%Docstring
+Update all editors to correspond to a different feature.
+
+:param feature: The feature which will be represented by the form
+%End
+
     bool save();
+%Docstring
+Save all the values from the editors to the layer.
 
-    /**
-     * Alias for save()
-     *
-     * @deprecated
-     */
-    void accept() /Deprecated/;
+:return: True if successful
+%End
 
-    /**
-     * Alias for resetValues()
-     *
-     * @deprecated
-     */
-    void reject() /Deprecated/;
-
-    /**
-     * Sets all values to the values of the current feature
-     */
     void resetValues();
+%Docstring
+Sets all values to the values of the current feature
+%End
 
-    /**
-     * reload current feature
-     */
+    void resetSearch();
+%Docstring
+Resets the search/filter form values.
+
+.. versionadded:: 2.16
+%End
+
     void refreshFeature();
+%Docstring
+reload current feature
+%End
+
 };
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsattributeform.h                                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

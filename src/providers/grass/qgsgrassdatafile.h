@@ -18,6 +18,7 @@
 #define QGSGRASSDATAFILE_H
 
 #include <QFile>
+#include "qgis_grass_lib.h"
 
 /*
  * This class does blocking reading which is necessary for QgsDataFile.
@@ -33,16 +34,17 @@
  */
 class GRASS_LIB_EXPORT QgsGrassDataFile : public QFile
 {
+    Q_OBJECT
+
   public:
-    explicit QgsGrassDataFile( QObject *parent = 0 );
-    virtual ~QgsGrassDataFile() {}
+    explicit QgsGrassDataFile( QObject *parent = nullptr );
     // We need FILE* to be able to test feof but QFile::open(FILE *, OpenMode) is not virtual
-    bool open( FILE * fh );
+    bool open( FILE *fh );
     // Block until all data are read
-    virtual qint64 readData( char * data, qint64 len ) override;
+    qint64 readData( char *data, qint64 len ) override;
 
   private:
-    FILE *mFh;
+    FILE *mFh = nullptr;
 };
 
 #endif // QGSGRASSDATAFILE_H

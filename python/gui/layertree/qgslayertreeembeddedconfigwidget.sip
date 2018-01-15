@@ -1,0 +1,50 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/layertree/qgslayertreeembeddedconfigwidget.h                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsLayerTreeEmbeddedConfigWidget : QWidget, protected Ui::QgsLayerTreeEmbeddedConfigWidgetBase
+{
+%Docstring
+A widget to configure layer tree embedded widgets for a particular map layer.
+
+.. versionadded:: 2.16
+%End
+
+%TypeHeaderCode
+#include "qgslayertreeembeddedconfigwidget.h"
+%End
+  public:
+
+    QgsLayerTreeEmbeddedConfigWidget( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+A widget to configure layer tree embedded widgets for a particular map layer.
+
+:param parent: The parent of the widget.
+%End
+
+    void setLayer( QgsMapLayer *layer );
+%Docstring
+Initialize widget with a map layer
+%End
+
+    void applyToLayer();
+%Docstring
+Store changes made in the widget to the layer
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/layertree/qgslayertreeembeddedconfigwidget.h                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Add field</string>
+   <string>Add Field</string>
   </property>
   <property name="modal">
    <bool>true</bool>
@@ -128,7 +128,6 @@
   <tabstop>mTypeBox</tabstop>
   <tabstop>mLength</tabstop>
   <tabstop>mPrec</tabstop>
-  <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>
  <connections>

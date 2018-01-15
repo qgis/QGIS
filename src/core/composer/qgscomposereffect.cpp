@@ -19,15 +19,6 @@
 
 #include "qgscomposereffect.h"
 
-QgsComposerEffect::QgsComposerEffect()
-    : mCompositionMode( QPainter::CompositionMode_SourceOver )
-{
-}
-
-QgsComposerEffect::~QgsComposerEffect()
-{
-}
-
 void QgsComposerEffect::draw( QPainter *painter )
 {
   QPoint offset;

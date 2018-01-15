@@ -17,34 +17,13 @@
 
 #include "qgscubicrasterresampler.h"
 #include <QImage>
-#include <qmath.h>
 
-QgsCubicRasterResampler::QgsCubicRasterResampler()
-// red
-    : cRed00( 0.0 ), cRed10( 0.0 ), cRed20( 0.0 ), cRed30( 0.0 ), cRed01( 0.0 ), cRed11( 0.0 ), cRed21( 0.0 ), cRed31( 0.0 )
-    , cRed02( 0.0 ), cRed12( 0.0 ), cRed22( 0.0 ), cRed32( 0.0 ), cRed03( 0.0 ), cRed13( 0.0 ), cRed23( 0.0 ), cRed33( 0.0 )
-    // green
-    , cGreen00( 0.0 ), cGreen10( 0.0 ), cGreen20( 0.0 ), cGreen30( 0.0 ), cGreen01( 0.0 ), cGreen11( 0.0 ), cGreen21( 0.0 ), cGreen31( 0.0 )
-    , cGreen02( 0.0 ), cGreen12( 0.0 ), cGreen22( 0.0 ), cGreen32( 0.0 ), cGreen03( 0.0 ), cGreen13( 0.0 ), cGreen23( 0.0 ), cGreen33( 0.0 )
-    // blue
-    , cBlue00( 0.0 ), cBlue10( 0.0 ), cBlue20( 0.0 ), cBlue30( 0.0 ), cBlue01( 0.0 ), cBlue11( 0.0 ), cBlue21( 0.0 ), cBlue31( 0.0 )
-    , cBlue02( 0.0 ), cBlue12( 0.0 ), cBlue22( 0.0 ), cBlue32( 0.0 ), cBlue03( 0.0 ), cBlue13( 0.0 ), cBlue23( 0.0 ), cBlue33( 0.0 )
-    // alpha
-    , cAlpha00( 0.0 ), cAlpha10( 0.0 ), cAlpha20( 0.0 ), cAlpha30( 0.0 ), cAlpha01( 0.0 ), cAlpha11( 0.0 ), cAlpha21( 0.0 ), cAlpha31( 0.0 )
-    , cAlpha02( 0.0 ), cAlpha12( 0.0 ), cAlpha22( 0.0 ), cAlpha32( 0.0 ), cAlpha03( 0.0 ), cAlpha13( 0.0 ), cAlpha23( 0.0 ), cAlpha33( 0.0 )
-{
-}
-
-QgsCubicRasterResampler::~QgsCubicRasterResampler()
-{
-}
-
-QgsCubicRasterResampler* QgsCubicRasterResampler::clone() const
+QgsCubicRasterResampler *QgsCubicRasterResampler::clone() const
 {
   return new QgsCubicRasterResampler();
 }
 
-void QgsCubicRasterResampler::resample( const QImage& srcImage, QImage& dstImage )
+void QgsCubicRasterResampler::resample( const QImage &srcImage, QImage &dstImage )
 {
   int nCols = srcImage.width();
   int nRows = srcImage.height();
@@ -58,7 +37,7 @@ void QgsCubicRasterResampler::resample( const QImage& srcImage, QImage& dstImage
 
   for ( int heightIndex = 0; heightIndex < nRows; ++heightIndex )
   {
-    QRgb* scanLine = ( QRgb* )srcImage.constScanLine( heightIndex );
+    QRgb *scanLine = ( QRgb * )srcImage.constScanLine( heightIndex );
     for ( int widthIndex = 0; widthIndex < nCols; ++widthIndex )
     {
       px = scanLine[widthIndex];
@@ -73,23 +52,23 @@ void QgsCubicRasterResampler::resample( const QImage& srcImage, QImage& dstImage
   }
 
   //derivative x
-  double* xDerivativeMatrixRed = new double[ nCols * nRows ];
+  double *xDerivativeMatrixRed = new double[ nCols * nRows ];
   xDerivativeMatrix( nCols, nRows, xDerivativeMatrixRed, redMatrix );
-  double* xDerivativeMatrixGreen = new double[ nCols * nRows ];
+  double *xDerivativeMatrixGreen = new double[ nCols * nRows ];
   xDerivativeMatrix( nCols, nRows, xDerivativeMatrixGreen, greenMatrix );
-  double* xDerivativeMatrixBlue = new double[ nCols * nRows ];
+  double *xDerivativeMatrixBlue = new double[ nCols * nRows ];
   xDerivativeMatrix( nCols, nRows, xDerivativeMatrixBlue, blueMatrix );
-  double* xDerivativeMatrixAlpha = new double[ nCols * nRows ];
+  double *xDerivativeMatrixAlpha = new double[ nCols * nRows ];
   xDerivativeMatrix( nCols, nRows, xDerivativeMatrixAlpha, alphaMatrix );
 
   //derivative y
-  double* yDerivativeMatrixRed = new double[ nCols * nRows ];
+  double *yDerivativeMatrixRed = new double[ nCols * nRows ];
   yDerivativeMatrix( nCols, nRows, yDerivativeMatrixRed, redMatrix );
-  double* yDerivativeMatrixGreen = new double[ nCols * nRows ];
+  double *yDerivativeMatrixGreen = new double[ nCols * nRows ];
   yDerivativeMatrix( nCols, nRows, yDerivativeMatrixGreen, greenMatrix );
-  double* yDerivativeMatrixBlue = new double[ nCols * nRows ];
+  double *yDerivativeMatrixBlue = new double[ nCols * nRows ];
   yDerivativeMatrix( nCols, nRows, yDerivativeMatrixBlue, blueMatrix );
-  double* yDerivativeMatrixAlpha = new double[ nCols * nRows ];
+  double *yDerivativeMatrixAlpha = new double[ nCols * nRows ];
   yDerivativeMatrix( nCols, nRows, yDerivativeMatrixAlpha, alphaMatrix );
 
   //compute output
@@ -109,19 +88,19 @@ void QgsCubicRasterResampler::resample( const QImage& srcImage, QImage& dstImage
 
   for ( int y = 0; y < dstImage.height(); ++y )
   {
-    currentSrcRowInt = floor( currentSrcRow );
+    currentSrcRowInt = std::floor( currentSrcRow );
     v = currentSrcRow - currentSrcRowInt;
 
     currentSrcCol = nSrcPerDstX / 2.0 - 0.5;
 
-    QRgb* scanLine = ( QRgb* )dstImage.scanLine( y );
+    QRgb *scanLine = ( QRgb * )dstImage.scanLine( y );
     for ( int x = 0; x < dstImage.width(); ++x )
     {
-      currentSrcColInt = floor( currentSrcCol );
+      currentSrcColInt = std::floor( currentSrcCol );
       u = currentSrcCol - currentSrcColInt;
 
       //handle eight edge-cases
-      if (( currentSrcRowInt < 0 || currentSrcRowInt >= ( srcImage.height() - 1 ) || currentSrcColInt < 0 || currentSrcColInt >= ( srcImage.width() - 1 ) ) )
+      if ( ( currentSrcRowInt < 0 || currentSrcRowInt >= ( srcImage.height() - 1 ) || currentSrcColInt < 0 || currentSrcColInt >= ( srcImage.width() - 1 ) ) )
       {
         QRgb px1, px2;
         //pixels at the border of the source image needs to be handled in a special way
@@ -295,7 +274,7 @@ void QgsCubicRasterResampler::resample( const QImage& srcImage, QImage& dstImage
   delete[] yDerivativeMatrixAlpha;
 }
 
-void QgsCubicRasterResampler::xDerivativeMatrix( int nCols, int nRows, double* matrix, const int* colorMatrix )
+void QgsCubicRasterResampler::xDerivativeMatrix( int nCols, int nRows, double *matrix, const int *colorMatrix )
 {
   double val = 0;
   int index = 0;
@@ -322,7 +301,7 @@ void QgsCubicRasterResampler::xDerivativeMatrix( int nCols, int nRows, double* m
   }
 }
 
-void QgsCubicRasterResampler::yDerivativeMatrix( int nCols, int nRows, double* matrix, const int* colorMatrix )
+void QgsCubicRasterResampler::yDerivativeMatrix( int nCols, int nRows, double *matrix, const int *colorMatrix )
 {
   double val = 0;
   int index = 0;
@@ -349,9 +328,9 @@ void QgsCubicRasterResampler::yDerivativeMatrix( int nCols, int nRows, double* m
   }
 }
 
-void QgsCubicRasterResampler::calculateControlPoints( int nCols, int nRows, int currentRow, int currentCol, int* redMatrix, int* greenMatrix, int* blueMatrix,
-    int* alphaMatrix, double* xDerivativeMatrixRed, double* xDerivativeMatrixGreen, double* xDerivativeMatrixBlue, double* xDerivativeMatrixAlpha,
-    double* yDerivativeMatrixRed, double* yDerivativeMatrixGreen, double* yDerivativeMatrixBlue, double* yDerivativeMatrixAlpha )
+void QgsCubicRasterResampler::calculateControlPoints( int nCols, int nRows, int currentRow, int currentCol, int *redMatrix, int *greenMatrix, int *blueMatrix,
+    int *alphaMatrix, double *xDerivativeMatrixRed, double *xDerivativeMatrixGreen, double *xDerivativeMatrixBlue, double *xDerivativeMatrixAlpha,
+    double *yDerivativeMatrixRed, double *yDerivativeMatrixGreen, double *yDerivativeMatrixBlue, double *yDerivativeMatrixAlpha )
 {
   Q_UNUSED( nRows );
   int idx00 = currentRow * nCols + currentCol;
@@ -476,7 +455,7 @@ double QgsCubicRasterResampler::calcBernsteinPolyN3( int i, double t )
     return 0;
   }
 
-  return lowerN3( i ) * qPow( t, i ) * qPow(( 1 - t ), ( 3 - i ) );
+  return lowerN3( i ) * std::pow( t, i ) * std::pow( ( 1 - t ), ( 3 - i ) );
 }
 
 inline int QgsCubicRasterResampler::lowerN3( int i )

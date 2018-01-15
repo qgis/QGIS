@@ -1,7 +1,0 @@
-Watershed Basins
-ta_channels
-ParameterRaster|ELEVATION|Elevation|False
-ParameterRaster|CHANNELS|Channel Network|False
-ParameterRaster|SINKROUTE|Sink Route|True
-ParameterNumber|MINSIZE|Min. Size|None|None|0
-OutputRaster|BASINS|Watershed Basins

@@ -18,8 +18,7 @@
 #ifndef QGSWMTSDIMENSIONS_H
 #define QGSWMTSDIMENSIONS_H
 #include "ui_qgswmtsdimensionsbase.h"
-#include "qgisgui.h"
-#include "qgscontexthelp.h"
+#include "qgsguiutils.h"
 #include "qgswmsprovider.h"
 
 #include <QHash>
@@ -38,12 +37,11 @@ class QgsWmtsDimensions : public QDialog, private Ui::QgsWmtsDimensionsBase
   public:
     //! Constructor
     QgsWmtsDimensions( const QgsWmtsTileLayer &layer, QWidget *parent = nullptr, Qt::WindowFlags fl = nullptr );
-    //! Destructor
-    ~QgsWmtsDimensions();
+
+    ~QgsWmtsDimensions() override;
 
     void selectedDimensions( QHash<QString, QString> &dims );
 
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 };
 
 

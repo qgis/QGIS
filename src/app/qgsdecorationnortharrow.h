@@ -22,6 +22,7 @@
 #include "qgsdecorationitem.h"
 
 #include <QStringList>
+#include "qgis_app.h"
 
 class QAction;
 class QToolBar;
@@ -33,9 +34,7 @@ class APP_EXPORT QgsDecorationNorthArrow: public QgsDecorationItem
 
   public:
     //! Constructor
-    QgsDecorationNorthArrow( QObject* parent = nullptr );
-    //! Destructor
-    virtual ~QgsDecorationNorthArrow();
+    QgsDecorationNorthArrow( QObject *parent = nullptr );
 
   public slots:
     //! set values on the gui when a project is read or the gui first loaded
@@ -45,29 +44,27 @@ class APP_EXPORT QgsDecorationNorthArrow: public QgsDecorationItem
 
     //! Show the dialog box
     void run() override;
-    //! draw some arbitary text to the screen
-    void render( QPainter * ) override;
-
-    //! try to calculate the direction for the north arrow. Sets the
-    //! private class rotation variable. If unable to calculate the
-    //! direction, the function returns false and leaves the rotation
-    //! variable as is.
-    bool calculateNorthDirection();
+    //! draw some arbitrary text to the screen
+    void render( const QgsMapSettings &mapSettings, QgsRenderContext &context ) override;
 
   private:
 
-    static const double PI;
     //  static const double DEG2RAD;
     static const double TOL;
 
+    //! The north arrow fill color
+    QColor mColor;
+    //! The north arrow outline color
+    QColor mOutlineColor;
+
     // The amount of rotation for the north arrow
-    int mRotationInt;
+    int mRotationInt = 0;
 
     //! enable or disable the automatic setting of the arrow direction
-    bool mAutomatic;
+    bool mAutomatic = true;
     //! margin values
-    int mMarginHorizontal;
-    int mMarginVertical;
+    int mMarginHorizontal = 0;
+    int mMarginVertical = 0;
 
     friend class QgsDecorationNorthArrowDialog;
 };

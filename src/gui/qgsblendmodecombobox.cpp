@@ -18,50 +18,39 @@
 #include "qgis.h"
 #include "qgslogger.h"
 #include "qgsblendmodecombobox.h"
+#include "qgspainting.h"
 
 #include <QAbstractItemView>
 #include <QLocale>
 #include <QSettings>
 #include <QLineEdit>
 
-QgsBlendModeComboBox::QgsBlendModeComboBox( QWidget* parent ) : QComboBox( parent )
+QgsBlendModeComboBox::QgsBlendModeComboBox( QWidget *parent ) : QComboBox( parent )
 {
   updateModes();
 }
 
-QgsBlendModeComboBox::~QgsBlendModeComboBox()
-{
-}
-
-/* Returns a QStringList of the translated blend modes
-* "-" is used to indicate the position of a separator in the list
-* This list is designed to emulate GIMP's layer modes, where
-* blending modes are grouped by their effect (lightening, darkening, etc)
-*/
 QStringList QgsBlendModeComboBox::blendModesList() const
 {
   return QStringList() << tr( "Normal" )
-         << "-"
+         << QStringLiteral( "-" )
          << tr( "Lighten" )
          << tr( "Screen" )
          << tr( "Dodge" )
          << tr( "Addition" )
-         << "-"
+         << QStringLiteral( "-" )
          << tr( "Darken" )
          << tr( "Multiply" )
          << tr( "Burn" )
-         << "-"
+         << QStringLiteral( "-" )
          << tr( "Overlay" )
          << tr( "Soft light" )
          << tr( "Hard light" )
-         << "-"
+         << QStringLiteral( "-" )
          << tr( "Difference" )
          << tr( "Subtract" );
 }
 
-/* Populates the blend mode combo box, and sets up mapping for
-* blend modes to combo box indexes
-*/
 void QgsBlendModeComboBox::updateModes()
 {
   blockSignals( true );
@@ -78,7 +67,7 @@ void QgsBlendModeComboBox::updateModes()
   int blendModeIndex = 0;
   for ( ; blendModeIt != myBlendModesList.constEnd(); ++blendModeIt )
   {
-    if ( *blendModeIt == "-" )
+    if ( *blendModeIt == QLatin1String( "-" ) )
     {
       // Add separator
       insertSeparator( index );
@@ -98,15 +87,13 @@ void QgsBlendModeComboBox::updateModes()
   blockSignals( false );
 }
 
-//! Function to read the selected blend mode
 QPainter::CompositionMode QgsBlendModeComboBox::blendMode()
 {
-  return QgsMapRenderer::getCompositionMode(( QgsMapRenderer::BlendMode ) mListIndexToBlendMode[ currentIndex()] );
+  return QgsPainting::getCompositionMode( ( QgsPainting::BlendMode ) mListIndexToBlendMode[ currentIndex()] );
 }
 
-//! Function to set the selected blend mode
 void QgsBlendModeComboBox::setBlendMode( QPainter::CompositionMode blendMode )
 {
-  setCurrentIndex( mBlendModeToListIndex[( int ) QgsMapRenderer::getBlendModeEnum( blendMode )] );
+  setCurrentIndex( mBlendModeToListIndex[( int ) QgsPainting::getBlendModeEnum( blendMode )] );
 }
 

@@ -1,6 +1,0 @@
-D-Infinity Upslope Dependence
-dinfupdependence
-Specialized Grid Analysis tools
-ParameterRaster|-ang|D-Infinity Flow Direction Grid|False
-ParameterRaster|-dg|Destination Grid|False
-OutputRaster|-dep|Output Upslope Dependence Grid

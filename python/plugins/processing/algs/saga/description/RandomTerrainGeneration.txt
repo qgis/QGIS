@@ -1,0 +1,9 @@
+Random Terrain Generation
+grid_calculus
+QgsProcessingParameterNumber|RADIUS|Radius (cells)|QgsProcessingParameterNumber.Integer|10|False|None|None
+QgsProcessingParameterNumber|ITERATIONS|Iterations|QgsProcessingParameterNumber.Integer|10|False|None|None
+QgsProcessingParameterEnum|TARGET_TYPE|Target Dimensions|[0] User defined
+QgsProcessingParameterNumber|USER_CELL_SIZE|Grid Size|QgsProcessingParameterNumber.Double|1.0|False|0.0|None
+QgsProcessingParameterNumber|USER_COLS|Cols|QgsProcessingParameterNumber.Integer|100|False|1.0|None
+QgsProcessingParameterNumber|USER_ROWS|Rows|QgsProcessingParameterNumber.Integer|100|False|1.0|None
+QgsProcessingParameterRasterDestination|TARGET_GRID|Grid

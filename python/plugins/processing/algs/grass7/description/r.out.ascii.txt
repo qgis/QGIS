@@ -1,0 +1,11 @@
+r.out.ascii
+Export a raster layer into a GRASS ASCII text file
+Raster (r.*)
+QgsProcessingParameterRasterLayer|input|Input raster|None|False
+QgsProcessingParameterNumber|precision|Number of significant digits|QgsProcessingParameterNumber.Integer|None|True|0|None
+QgsProcessingParameterNumber|width|Number of values printed before wrapping a line (only SURFER or MODFLOW format)|QgsProcessingParameterNumber.Integer|None|True|0|None
+QgsProcessingParameterString|null_value|String to represent null cell (GRASS grid only)|*|False|True
+*QgsProcessingParameterBoolean|-s|Write SURFER (Golden Software) ASCII grid|False|True
+*QgsProcessingParameterBoolean|-m|Write MODFLOW (USGS) ASCII array|False|True
+*QgsProcessingParameterBoolean|-i|Force output of integer values|False|True
+QgsProcessingParameterFileDestination|output|GRASS Ascii|Txt files (*.txt)|None|False

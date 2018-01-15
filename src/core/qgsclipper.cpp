@@ -18,7 +18,7 @@
 
 #include "qgsclipper.h"
 #include "qgsgeometry.h"
-#include "qgswkbptr.h"
+#include "qgscurve.h"
 #include "qgslogger.h"
 
 // Where has all the code gone?
@@ -31,41 +31,30 @@
 // moreover from Qt 4.6, Qt clips also when the width/height of a painter path
 // is more than 32767. Since we want to avoid clipping by Qt (because it is slow)
 // we set coordinate limit to less than 32767 / 2
-const double QgsClipper::MAX_X =  16000;
+const double QgsClipper::MAX_X = 16000;
 const double QgsClipper::MIN_X = -16000;
-const double QgsClipper::MAX_Y =  16000;
+const double QgsClipper::MAX_Y = 16000;
 const double QgsClipper::MIN_Y = -16000;
 
 const double QgsClipper::SMALL_NUM = 1e-12;
 
-QgsConstWkbPtr QgsClipper::clippedLineWKB( QgsConstWkbPtr wkbPtr, const QgsRectangle& clipExtent, QPolygonF& line )
+QPolygonF QgsClipper::clippedLine( const QgsCurve &curve, const QgsRectangle &clipExtent )
 {
-  QgsWKBTypes::Type wkbType = wkbPtr.readHeader();
-
-  int nPoints;
-  wkbPtr >> nPoints;
-
-  int skipZM = ( QgsWKBTypes::coordDimensions( wkbType ) - 2 ) * sizeof( double );
-
-  if ( static_cast<int>( nPoints * ( 2 * sizeof( double ) + skipZM ) ) > wkbPtr.remaining() )
-  {
-    QgsDebugMsg( QString( "%1 points exceed wkb length (%2>%3)" ).arg( nPoints ).arg( nPoints * ( 2 * sizeof( double ) + skipZM ) ).arg( wkbPtr.remaining() ) );
-    return QgsConstWkbPtr( nullptr, 0 );
-  }
+  const int nPoints = curve.numPoints();
 
   double p0x, p0y, p1x = 0.0, p1y = 0.0; //original coordinates
   double p1x_c, p1y_c; //clipped end coordinates
   double lastClipX = 0.0, lastClipY = 0.0; //last successfully clipped coords
 
-  line.clear();
+  QPolygonF line;
   line.reserve( nPoints + 1 );
 
   for ( int i = 0; i < nPoints; ++i )
   {
     if ( i == 0 )
     {
-      wkbPtr >> p1x >> p1y;
-      wkbPtr += skipZM;
+      p1x = curve.xAt( i );
+      p1y = curve.yAt( i );
       continue;
     }
     else
@@ -73,8 +62,8 @@ QgsConstWkbPtr QgsClipper::clippedLineWKB( QgsConstWkbPtr wkbPtr, const QgsRecta
       p0x = p1x;
       p0y = p1y;
 
-      wkbPtr >> p1x >> p1y;
-      wkbPtr += skipZM;
+      p1x = curve.xAt( i );
+      p1y = curve.yAt( i );
 
       p1x_c = p1x;
       p1y_c = p1y;
@@ -87,7 +76,7 @@ QgsConstWkbPtr QgsClipper::clippedLineWKB( QgsConstWkbPtr wkbPtr, const QgsRecta
           //add edge points to connect old and new line
           connectSeparatedLines( lastClipX, lastClipY, p0x, p0y, clipExtent, line );
         }
-        if ( line.size() < 1 || newLine )
+        if ( line.empty() || newLine )
         {
           //add first point
           line << QPointF( p0x, p0y );
@@ -100,11 +89,11 @@ QgsConstWkbPtr QgsClipper::clippedLineWKB( QgsConstWkbPtr wkbPtr, const QgsRecta
       }
     }
   }
-  return wkbPtr;
+  return line;
 }
 
 void QgsClipper::connectSeparatedLines( double x0, double y0, double x1, double y1,
-                                        const QgsRectangle& clipRect, QPolygonF& pts )
+                                        const QgsRectangle &clipRect, QPolygonF &pts )
 {
   //test the different edge combinations...
   if ( qgsDoubleNear( x0, clipRect.xMinimum() ) )

@@ -1,4 +1,0 @@
-Convert Multipoints to Points
-shapes_points
-ParameterVector|MULTIPOINTS|Multipoints|0|False
-OutputVector|POINTS|Points

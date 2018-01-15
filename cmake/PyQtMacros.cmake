@@ -4,15 +4,9 @@
 # Redistribution and use is allowed according to the terms of the BSD license.
 # For details see the accompanying COPYING-CMAKE-SCRIPTS file.
 
-IF(ENABLE_QT5)
-  SET(PYUIC_PROG_NAME pyuic5)
-  SET(PYUIC_PROG_NAMES pyuic5)
-  SET(PYRCC_PROG_NAME pyrcc5)
-ELSE(ENABLE_QT5)
-  SET(PYUIC_PROG_NAME pyuic4)
-  SET(PYUIC_PROG_NAMES python2-pyuic4 pyuic4)
-  SET(PYRCC_PROG_NAME pyrcc4)
-ENDIF(ENABLE_QT5)
+SET(PYUIC_PROG_NAME pyuic5)
+SET(PYUIC_PROG_NAMES pyuic5)
+SET(PYRCC_PROG_NAME pyrcc5)
 
 IF(NOT PYUIC_PROGRAM)
   IF (MSVC)
@@ -32,8 +26,13 @@ ENDIF(NOT PYUIC_PROGRAM)
 # Adapted from QT4_WRAP_UI
 MACRO(PYQT_WRAP_UI outfiles )
   IF(WIN32)
-    SET(PYUIC_WRAPPER "${CMAKE_SOURCE_DIR}/scripts/pyuic-wrapper.bat")
-    SET(PYUIC_WRAPPER_PATH "${QGIS_OUTPUT_DIRECTORY}/bin/${CMAKE_BUILD_TYPE}")
+    IF(USING_NINJA OR USING_NMAKE)
+      SET(PYUIC_WRAPPER "${CMAKE_SOURCE_DIR}/scripts/pyuic-wrapper.bat")
+      SET(PYUIC_WRAPPER_PATH "${QGIS_OUTPUT_DIRECTORY}/bin")
+    ELSE(USING_NINJA OR USING_NMAKE)
+      SET(PYUIC_WRAPPER "${CMAKE_SOURCE_DIR}/scripts/pyuic-wrapper.bat")
+      SET(PYUIC_WRAPPER_PATH "${QGIS_OUTPUT_DIRECTORY}/bin/${CMAKE_BUILD_TYPE}")
+    ENDIF(USING_NINJA OR USING_NMAKE)
   ELSE(WIN32)
     # TODO osx
     SET(PYUIC_WRAPPER "${CMAKE_SOURCE_DIR}/scripts/pyuic-wrapper.sh")
@@ -56,7 +55,7 @@ ENDMACRO(PYQT_WRAP_UI)
 IF(NOT PYRCC_PROGRAM)
   IF (MSVC)
     FIND_PROGRAM(PYRCC_PROGRAM
-      NAMES ${PYRCC_PROG_NAME}.exe
+      NAMES ${PYRCC_PROG_NAME}.bat
       PATHS $ENV{LIB_DIR}/bin
     )
   ELSE(MSVC)
@@ -88,8 +87,13 @@ MACRO (PYQT_ADD_RESOURCES outfiles )
       ENDIF(NOT _ABS_PATH_INDICATOR)
       SET(_RC_DEPENDS ${_RC_DEPENDS} "${_RC_FILE}")
     ENDFOREACH(_RC_FILE)
+    SET(_name_opt)
+    IF(PYQT5_VERSION_STR VERSION_LESS 5.9.1)
+      # option removed in PyQt5 >= 5.9.1
+      SET(_name_opt -name ${outfile})
+    ENDIF()
     ADD_CUSTOM_COMMAND(OUTPUT ${outfile}
-      COMMAND ${PYRCC_PROGRAM} -name ${outfile} -o ${outfile} ${infile}
+      COMMAND ${PYRCC_PROGRAM} ${_name_opt} -o ${outfile} ${infile}
       MAIN_DEPENDENCY ${infile}
       DEPENDS ${_RC_DEPENDS})
     SET(${outfiles} ${${outfiles}} ${outfile})

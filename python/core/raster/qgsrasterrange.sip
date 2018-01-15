@@ -1,39 +1,59 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgsrasterrange.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
 typedef QList<QgsRasterRange> QgsRasterRangeList;
 
-/** \ingroup core
- * Raster values range container. Represents range of values between min and max
- * including min and max value.
- */
 class QgsRasterRange
 {
-%TypeHeaderCode
-#include <qgsrasterrange.h>
+%Docstring
+Raster values range container. Represents range of values between min and max
+including min and max value.
 %End
 
+%TypeHeaderCode
+#include "qgsrasterrange.h"
+%End
   public:
-    /** \brief Constructor.
-     */
-    QgsRasterRange();
 
-    /** \brief Constructor
-     *  @param theMin minimum value
-     *  @param theMax max value
-     */
-    QgsRasterRange( double theMin, double theMax );
+    QgsRasterRange();
+%Docstring
+ Constructor.
+%End
+
+    QgsRasterRange( double min, double max );
+%Docstring
+ Constructor
+
+:param min: minimum value
+:param max: max value
+%End
 
     double min() const;
     double max() const;
 
-    double setMin( double theMin );
-    double setMax( double theMax );
+    double setMin( double min );
+    double setMax( double max );
 
     bool operator==( QgsRasterRange o ) const;
 
-    /** \brief Test if value is within the list of ranges
-     *  @param value value
-     *  @param rangeList list of ranges
-     *  @return true if value is in at least one of ranges
-     *  @note not available in python bindings
-     */
-    static bool contains( double value, const QgsRasterRangeList &rangeList );
+
 };
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgsrasterrange.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

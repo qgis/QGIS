@@ -1,5 +1,0 @@
-Pit Remove
-pitremove
-Basic Grid Analysis tools
-ParameterRaster|-z|Elevation Grid|False
-OutputRaster|-fel|Pit Removed Elevation Grid

@@ -24,20 +24,16 @@ email                : jpalmer at linz dot govt dot nz
 #include <cmath>
 #include <QMouseEvent>
 
-#ifndef M_PI
-#define M_PI 3.1415926535897931159979634685
-#endif
-
 const int RADIUS_SEGMENTS = 40;
 
-QgsMapToolSelectRadius::QgsMapToolSelectRadius( QgsMapCanvas* canvas )
-    : QgsMapTool( canvas )
-    , mDragging( false )
+QgsMapToolSelectRadius::QgsMapToolSelectRadius( QgsMapCanvas *canvas )
+  : QgsMapTool( canvas )
+  , mDragging( false )
 {
   mRubberBand = nullptr;
   mCursor = Qt::ArrowCursor;
   mFillColor = QColor( 254, 178, 76, 63 );
-  mBorderColour = QColor( 254, 58, 29, 100 );
+  mStrokeColor = QColor( 254, 58, 29, 100 );
 }
 
 QgsMapToolSelectRadius::~QgsMapToolSelectRadius()
@@ -45,7 +41,7 @@ QgsMapToolSelectRadius::~QgsMapToolSelectRadius()
   delete mRubberBand;
 }
 
-void QgsMapToolSelectRadius::canvasPressEvent( QgsMapMouseEvent* e )
+void QgsMapToolSelectRadius::canvasPressEvent( QgsMapMouseEvent *e )
 {
   if ( e->button() != Qt::LeftButton )
     return;
@@ -54,7 +50,7 @@ void QgsMapToolSelectRadius::canvasPressEvent( QgsMapMouseEvent* e )
 }
 
 
-void QgsMapToolSelectRadius::canvasMoveEvent( QgsMapMouseEvent* e )
+void QgsMapToolSelectRadius::canvasMoveEvent( QgsMapMouseEvent *e )
 {
   if ( e->buttons() != Qt::LeftButton )
     return;
@@ -63,18 +59,18 @@ void QgsMapToolSelectRadius::canvasMoveEvent( QgsMapMouseEvent* e )
   {
     if ( !mRubberBand )
     {
-      mRubberBand = new QgsRubberBand( mCanvas, QGis::Polygon );
+      mRubberBand = new QgsRubberBand( mCanvas, QgsWkbTypes::PolygonGeometry );
       mRubberBand->setFillColor( mFillColor );
-      mRubberBand->setBorderColor( mBorderColour );
+      mRubberBand->setStrokeColor( mStrokeColor );
     }
     mDragging = true;
   }
-  QgsPoint radiusEdge = toMapCoordinates( e->pos() );
+  QgsPointXY radiusEdge = toMapCoordinates( e->pos() );
   setRadiusRubberBand( radiusEdge );
 }
 
 
-void QgsMapToolSelectRadius::canvasReleaseEvent( QgsMapMouseEvent* e )
+void QgsMapToolSelectRadius::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
   if ( e->button() != Qt::LeftButton )
     return;
@@ -83,33 +79,33 @@ void QgsMapToolSelectRadius::canvasReleaseEvent( QgsMapMouseEvent* e )
   {
     if ( !mRubberBand )
     {
-      mRubberBand = new QgsRubberBand( mCanvas, QGis::Polygon );
+      mRubberBand = new QgsRubberBand( mCanvas, QgsWkbTypes::PolygonGeometry );
       mRubberBand->setFillColor( mFillColor );
-      mRubberBand->setBorderColor( mBorderColour );
+      mRubberBand->setStrokeColor( mStrokeColor );
     }
     mRadiusCenter = toMapCoordinates( e->pos() );
-    QgsPoint radiusEdge = toMapCoordinates( QPoint( e->pos().x() + 1, e->pos().y() + 1 ) );
+    QgsPointXY radiusEdge = toMapCoordinates( QPoint( e->pos().x() + 1, e->pos().y() + 1 ) );
     setRadiusRubberBand( radiusEdge );
   }
-  QgsGeometry* radiusGeometry = mRubberBand->asGeometry();
-  QgsMapToolSelectUtils::setSelectFeatures( mCanvas, radiusGeometry, e );
-  delete radiusGeometry;
-  mRubberBand->reset( QGis::Polygon );
+  QgsGeometry radiusGeometry = mRubberBand->asGeometry();
+  QgsMapToolSelectUtils::selectMultipleFeatures( mCanvas, radiusGeometry, e );
+  mRubberBand->reset( QgsWkbTypes::PolygonGeometry );
   delete mRubberBand;
   mRubberBand = nullptr;
   mDragging = false;
 }
 
 
-void QgsMapToolSelectRadius::setRadiusRubberBand( QgsPoint & radiusEdge )
+void QgsMapToolSelectRadius::setRadiusRubberBand( QgsPointXY &radiusEdge )
 {
-  double r = sqrt( mRadiusCenter.sqrDist( radiusEdge ) );
-  mRubberBand->reset( QGis::Polygon );
+  double r = std::sqrt( mRadiusCenter.sqrDist( radiusEdge ) );
+  mRubberBand->reset( QgsWkbTypes::PolygonGeometry );
   for ( int i = 0; i <= RADIUS_SEGMENTS; ++i )
   {
     double theta = i * ( 2.0 * M_PI / RADIUS_SEGMENTS );
-    QgsPoint radiusPoint( mRadiusCenter.x() + r * cos( theta ),
-                          mRadiusCenter.y() + r * sin( theta ) );
-    mRubberBand->addPoint( radiusPoint );
+    QgsPointXY radiusPoint( mRadiusCenter.x() + r * std::cos( theta ),
+                            mRadiusCenter.y() + r * std::sin( theta ) );
+    mRubberBand->addPoint( radiusPoint, false );
   }
+  mRubberBand->closePoints( true );
 }

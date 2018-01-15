@@ -1,51 +1,117 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgssinglebandpseudocolorrenderer.h                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
 class QgsSingleBandPseudoColorRenderer: QgsRasterRenderer
 {
+%Docstring
+Raster renderer pipe for single band pseudocolor.
+%End
+
 %TypeHeaderCode
-    #include "qgssinglebandpseudocolorrenderer.h"
+#include "qgssinglebandpseudocolorrenderer.h"
 %End
   public:
-    /** Note: takes ownership of QgsRasterShader*/
-    QgsSingleBandPseudoColorRenderer( QgsRasterDataProvider* provider, int band, QgsRasterShader* shader /Transfer/ );
-    ~QgsSingleBandPseudoColorRenderer();
-    virtual QgsSingleBandPseudoColorRenderer * clone() const /Factory/;
 
-    static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterDataProvider* provider ) /Factory/;
+    QgsSingleBandPseudoColorRenderer( QgsRasterInterface *input, int band = -1, QgsRasterShader *shader /Transfer/ = 0 );
+%Docstring
+Note: takes ownership of :py:class:`QgsRasterShader`
+%End
 
-    QgsRasterBlock* block( int bandNo, const QgsRectangle & extent, int width, int height ) / Factory /;
 
-    /** Takes ownership of the shader*/
-    void setShader( QgsRasterShader* shader /Transfer/ );
-    QgsRasterShader* shader();
-    //! @note available in python as constShader
-    const QgsRasterShader* shader() const /PyName=constShader/;
+    virtual QgsSingleBandPseudoColorRenderer *clone() const /Factory/;
 
-    void writeXML( QDomDocument& doc, QDomElement& parentElem ) const;
+%Docstring
+QgsSingleBandPseudoColorRenderer cannot be copied. Use clone() instead.
+%End
 
-    void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const;
+    static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterInterface *input ) /Factory/;
 
-    QList<int> usesBands() const;
+    virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = 0 ) /Factory/;
 
-    /** Returns the band used by the renderer
-     * @note added in QGIS 2.7
-     */
+
+    void setShader( QgsRasterShader *shader /Transfer/ );
+%Docstring
+Takes ownership of the shader
+%End
+
+    QgsRasterShader *shader();
+%Docstring
+Returns the raster shader
+%End
+
+    const QgsRasterShader *shader() const /PyName=constShader/;
+%Docstring
+
+.. note::
+
+   available in Python as constShader
+%End
+
+    void createShader( QgsColorRamp *colorRamp = 0,
+                       QgsColorRampShader::Type colorRampType  = QgsColorRampShader::Interpolated,
+                       QgsColorRampShader::ClassificationMode classificationMode = QgsColorRampShader::Continuous,
+                       int classes = 0,
+                       bool clip = false,
+                       const QgsRectangle &extent = QgsRectangle() );
+%Docstring
+Creates a color ramp shader
+
+:param colorRamp: vector color ramp
+:param colorRampType: type of color ramp shader
+:param classificationMode: classification mode
+:param classes: number of classes
+:param clip: clip out of range values
+:param extent: extent used in classification (only used in quantile mode)
+%End
+
+    virtual void writeXml( QDomDocument &doc, QDomElement &parentElem ) const;
+
+
+    virtual void legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems /Out/ ) const;
+
+
+    virtual QList<int> usesBands() const;
+
+
     int band() const;
+%Docstring
+Returns the band used by the renderer
 
-    /** Sets the band used by the renderer.
-     * @see band
-     * @note added in QGIS 2.10
-     */
-    void setBand(int bandNo);
+.. versionadded:: 2.7
+%End
+
+    void setBand( int bandNo );
+%Docstring
+Sets the band used by the renderer.
+
+.. seealso:: :py:func:`band`
+
+.. versionadded:: 2.10
+%End
 
     double classificationMin() const;
     double classificationMax() const;
     void setClassificationMin( double min );
     void setClassificationMax( double max );
-    int classificationMinMaxOrigin() const;
-    void setClassificationMinMaxOrigin( int origin );
 
   private:
-
-    QgsSingleBandPseudoColorRenderer( const QgsSingleBandPseudoColorRenderer& );
-    const QgsSingleBandPseudoColorRenderer& operator=( const QgsSingleBandPseudoColorRenderer& );
-
+    QgsSingleBandPseudoColorRenderer( const QgsSingleBandPseudoColorRenderer & );
+    const QgsSingleBandPseudoColorRenderer &operator=( const QgsSingleBandPseudoColorRenderer & );
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgssinglebandpseudocolorrenderer.h                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -1,20 +1,20 @@
-gdalogr:executesql,Execute SQL on vector layer
-gdalogr:rasterinfo,Raster layer information
-gdalogr:merge,Merge raster layers
-gdalogr:ogr2ogr,Export vector layer
-gdalogr:vectorinfo,Vector layer information
-gdalogr:pcttorgb,PCT to RGB
-gdalogr:rgbtopct,RGB to PCT
-gdalogr:sieve,Remove small pixel clumps (nearest neighbour)
-gdalogr:translate,Export raster layer
-gdalogr:warpreproject,Reproject raster layer
-gdalogr:polygonize,Vectorize raster layer
-gdalogr:gridrasterize,Rasterize vector layer
-gdalogr:gridnearestneighbor,Interpolate (Nearest Neighbor)
-gdalogr:griddatametrics,Interpolate (Data metrics)
-gdalogr:gridinvdist,Interpolate (Inverse distance weighting)
-gdalogr:gridaverage,Interpolate (Average)
-gdalogr:contour,Contour lines
+gdal:executesql,Execute SQL on vector layer
+gdal:rasterinfo,Raster layer information
+gdal:merge,Merge raster layers
+gdal:ogr2ogr,Export vector layer
+gdal:vectorinfo,Vector layer information
+gdal:pcttorgb,PCT to RGB
+gdal:rgbtopct,RGB to PCT
+gdal:sieve,Remove small pixel clumps (nearest neighbour)
+gdal:translate,Export raster layer
+gdal:warpreproject,Reproject raster layer
+gdal:polygonize,Vectorize raster layer
+gdal:gridrasterize,Rasterize vector layer
+gdal:gridnearestneighbor,Interpolate (Nearest Neighbor)
+gdal:griddatametrics,Interpolate (Data metrics)
+gdal:gridinvdist,Interpolate (Inverse distance weighting)
+gdal:gridaverage,Interpolate (Average)
+gdal:contour,Contour lines
 qgis:creategrid,Create graticule
 saga:changegridvalues,Reclassify (simple)
 saga:creategraticule,Create graticule from extent

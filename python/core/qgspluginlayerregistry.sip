@@ -1,69 +1,112 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgspluginlayerregistry.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
 
 class QgsPluginLayerType
 {
+%Docstring
+class for creating plugin specific layers
+%End
+
 %TypeHeaderCode
 #include "qgspluginlayerregistry.h"
 %End
   public:
 
-    QgsPluginLayerType( const QString& name );
+    QgsPluginLayerType( const QString &name );
     virtual ~QgsPluginLayerType();
 
     QString name();
 
-    /** Return new layer of this type. Return NULL on error */
-    virtual QgsPluginLayer* createLayer() /Factory/;
+    virtual QgsPluginLayer *createLayer() /Factory/;
+%Docstring
+Return new layer of this type. Return NULL on error
+%End
 
-    /** Return new layer of this type, using layer URI (specific to this plugin layer type). Return NULL on error.
-     * @note added in 2.10
-     */
-    virtual QgsPluginLayer* createLayer( const QString& uri ) /Factory/;
+    virtual QgsPluginLayer *createLayer( const QString &uri ) /Factory/;
+%Docstring
+Return new layer of this type, using layer URI (specific to this plugin layer type). Return NULL on error.
 
-    /** Show plugin layer properties dialog. Return false if the dialog cannot be shown. */
-    virtual bool showLayerProperties( QgsPluginLayer* layer );
+.. versionadded:: 2.10
+%End
 
+    virtual bool showLayerProperties( QgsPluginLayer *layer );
+%Docstring
+Show plugin layer properties dialog. Return false if the dialog cannot be shown.
+%End
+
+  protected:
 };
 
-//=============================================================================
 
-/** \ingroup core
-    a registry of plugin layers types
-*/
 class QgsPluginLayerRegistry
 {
+%Docstring
+A registry of plugin layers types.
+
+QgsPluginLayerRegistry is not usually directly created, but rather accessed through
+:py:func:`QgsApplication.pluginLayerRegistry()`
+%End
+
 %TypeHeaderCode
 #include "qgspluginlayerregistry.h"
 %End
-
   public:
 
-    /** Means of accessing canonical single instance  */
-    static QgsPluginLayerRegistry* instance();
-
+    QgsPluginLayerRegistry();
+%Docstring
+Constructor for QgsPluginLayerRegistry.
+%End
     ~QgsPluginLayerRegistry();
 
-    /** List all known layer types
-     *  \note added in v2.1 */
+
     QStringList pluginLayerTypes();
+%Docstring
+List all known layer types
+\since QGIS *
+%End
 
-    /** Add plugin layer type (take ownership) and return true on success */
-    bool addPluginLayerType( QgsPluginLayerType* pluginLayerType /Transfer/ );
+    bool addPluginLayerType( QgsPluginLayerType *pluginLayerType /Transfer/ );
+%Docstring
+Add plugin layer type (take ownership) and return true on success
+%End
 
-    /** Remove plugin layer type and return true on success */
-    bool removePluginLayerType( const QString& typeName );
+    bool removePluginLayerType( const QString &typeName );
+%Docstring
+Remove plugin layer type and return true on success
+%End
 
-    /** Return plugin layer type metadata or NULL if doesn't exist */
-    QgsPluginLayerType* pluginLayerType( const QString& typeName );
+    QgsPluginLayerType *pluginLayerType( const QString &typeName );
+%Docstring
+Return plugin layer type metadata or NULL if doesn't exist
+%End
 
-    /** Return new layer if corresponding plugin has been found, else return NULL.
-     * @note optional param uri added in 2.10
-     */
-    QgsPluginLayer* createLayer( const QString& typeName, const QString& uri = QString() ) /Factory/;
+    QgsPluginLayer *createLayer( const QString &typeName, const QString &uri = QString() ) /Factory/;
+%Docstring
+Returns new layer if corresponding plugin has been found else returns a None.
+
+.. note::
+
+   parameter uri has been added in QGIS 2.10
+%End
 
   private:
-
-    /** Private since instance() creates it */
-    QgsPluginLayerRegistry();
-    QgsPluginLayerRegistry( const QgsPluginLayerRegistry& rh );
-
+    QgsPluginLayerRegistry( const QgsPluginLayerRegistry &rh );
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgspluginlayerregistry.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

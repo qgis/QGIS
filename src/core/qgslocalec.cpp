@@ -15,9 +15,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <qgslocalec.h>
+#include "qgslocalec.h"
 
-#include <locale.h>
+#include <locale>
 #include <QByteArray>
 
 QMutex QgsLocaleNumC::sLocaleLock;

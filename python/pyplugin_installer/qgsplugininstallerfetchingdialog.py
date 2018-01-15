@@ -24,6 +24,7 @@
  ***************************************************************************/
 """
 
+from qgis.PyQt.QtCore import QByteArray
 from qgis.PyQt.QtWidgets import QDialog, QTreeWidgetItem
 
 from .ui_qgsplugininstallerfetchingbase import Ui_QgsPluginInstallerFetchingDialogBase

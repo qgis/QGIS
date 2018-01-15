@@ -19,15 +19,27 @@
 #define QGSCOMPOSERMULTIFRAMECOMMAND_H
 
 #include <QUndoCommand>
+#include "qgis.h"
 #include <QDomDocument>
+
+#include "qgis_core.h"
 
 class QgsComposerMultiFrame;
 
+#define SIP_NO_FILE
+
+/**
+ * \ingroup core
+ * \class QgsComposerMultiFrameCommand
+ * \note Not available in Python bindings
+ * \deprecated Will be removed in QGIS 3.2
+ */
 class CORE_EXPORT QgsComposerMultiFrameCommand: public QUndoCommand
 {
   public:
-    QgsComposerMultiFrameCommand( QgsComposerMultiFrame* multiFrame, const QString& text, QUndoCommand* parent = nullptr );
-    ~QgsComposerMultiFrameCommand();
+
+    //! Constructor for QgsComposerMultiFrameCommand
+    QgsComposerMultiFrameCommand( QgsComposerMultiFrame *multiFrame, const QString &text, QUndoCommand *parent SIP_TRANSFERTHIS = nullptr );
 
     void undo() override;
     void redo() override;
@@ -38,26 +50,28 @@ class CORE_EXPORT QgsComposerMultiFrameCommand: public QUndoCommand
     QDomDocument previousState() const { return mPreviousState.cloneNode().toDocument(); }
     QDomDocument afterState() const { return mAfterState.cloneNode().toDocument(); }
 
-    /** Returns true if previous state and after state are valid and different*/
+    //! Returns true if previous state and after state are valid and different
     bool containsChange() const;
 
-    const QgsComposerMultiFrame* multiFrame() const { return mMultiFrame; }
+    const QgsComposerMultiFrame *multiFrame() const { return mMultiFrame; }
 
   protected:
-    QgsComposerMultiFrame* mMultiFrame;
+    QgsComposerMultiFrame *mMultiFrame = nullptr;
 
     QDomDocument mPreviousState;
     QDomDocument mAfterState;
 
-    bool mFirstRun;
+    bool mFirstRun = false;
 
     QgsComposerMultiFrameCommand(); //forbidden
-    void saveState( QDomDocument& stateDoc );
-    void restoreState( QDomDocument& stateDoc );
+    void saveState( QDomDocument &stateDoc );
+    void restoreState( QDomDocument &stateDoc );
     bool checkFirstRun();
 };
 
-/** A composer command that merges together with other commands having the same context (=id)
+/**
+ * \ingroup core
+ * A composer command that merges together with other commands having the same context (=id)
  * for multi frame items. Keeps the oldest previous state and uses the newest after state.
  * The purpose is to avoid too many micro changes in the history*/
 class CORE_EXPORT QgsComposerMultiFrameMergeCommand: public QgsComposerMultiFrameCommand
@@ -74,13 +88,16 @@ class CORE_EXPORT QgsComposerMultiFrameMergeCommand: public QgsComposerMultiFram
       TableMaximumFeatures,
       TableMargin,
       TableGridStrokeWidth,
-      TableCellStyle
+      TableCellStyle,
+      TableHeaderFontColor,
+      TableContentFontColor,
+      TableGridColor,
+      TableBackgroundColor,
     };
 
-    QgsComposerMultiFrameMergeCommand( Context c, QgsComposerMultiFrame* multiFrame, const QString& text );
-    ~QgsComposerMultiFrameMergeCommand();
+    QgsComposerMultiFrameMergeCommand( Context c, QgsComposerMultiFrame *multiFrame, const QString &text );
 
-    bool mergeWith( const QUndoCommand * command ) override;
+    bool mergeWith( const QUndoCommand *command ) override;
     int id() const override { return static_cast< int >( mContext ); }
 
   private:

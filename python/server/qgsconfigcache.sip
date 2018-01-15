@@ -1,44 +1,58 @@
-/***************************************************************************
-                              qgsconfigcache.sip
-                              -------------------
-  begin                : 2015-05-19
-  copyright            : (C) 2015 by Alessandro Pasotti
-  email                : a dot pasotti at itopen dot it
- ***************************************************************************/
-
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
-
-/**
-* \class QgsConfigCache
-* \brief A cache for xml documents (by configuration file path)
-*/
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/server/qgsconfigcache.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
 
 
-class QgsConfigCache: QObject
+
+
+
+
+
+class QgsConfigCache : QObject
 {
+%Docstring
+*************************************************************************
+*
+This program is free software; you can redistribute it and/or modify  *
+it under the terms of the GNU General Public License as published by  *
+the Free Software Foundation; either version 2 of the License, or     *
+(at your option) any later version.                                   *
+*
+**************************************************************************
+%End
+
 %TypeHeaderCode
 #include "qgsconfigcache.h"
-#include "qgsaccesscontrolfilter.h"
 %End
   public:
-    static QgsConfigCache* instance();
-    ~QgsConfigCache();
+    static QgsConfigCache *instance();
 
-    QgsServerProjectParser* serverConfiguration( const QString& filePath );
-    QgsWCSProjectParser* wcsConfiguration( const QString& filePath, const QgsAccessControl* accessControl );
-    QgsWFSProjectParser* wfsConfiguration( const QString& filePath, const QgsAccessControl* accessControl );
-    QgsWMSConfigParser* wmsConfiguration( const QString& filePath, const QgsAccessControl* accessControl, const QMap<QString, QString>& parameterMap = QMap< QString, QString >() );
+    void removeEntry( const QString &path );
+
+    const QgsProject *project( const QString &path );
+%Docstring
+If the project is not cached yet, then the project is read thank to the
+path. If the project is not available, then a None is returned.
+
+:param path: the filename of the QGIS project
+
+:return: the project or None if an error happened
+
+.. versionadded:: 3.0
+%End
 
   private:
-    QgsConfigCache();
-
+    QgsConfigCache() ;
 };
 
-
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/server/qgsconfigcache.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

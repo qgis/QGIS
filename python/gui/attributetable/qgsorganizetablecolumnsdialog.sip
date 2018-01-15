@@ -1,26 +1,63 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/attributetable/qgsorganizetablecolumnsdialog.h               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
 class QgsOrganizeTableColumnsDialog : QDialog
 {
-%TypeHeaderCode
-#include <qgsorganizetablecolumnsdialog.h>
+%Docstring
+Dialog for organising (hiding and reordering) columns in the attributes table.
+
+.. versionadded:: 2.16
 %End
 
+%TypeHeaderCode
+#include "qgsorganizetablecolumnsdialog.h"
+%End
   public:
-    /**
-     * Constructor
-     * @param vl The concerned vector layer
-     * @param visible the current list of visible fields name
-     * @param parent parent object
-     * @param flags window flags
-     */
-    QgsOrganizeTableColumnsDialog(const QgsVectorLayer* vl, QWidget* parent = nullptr, Qt::WindowFlags flags = Qt::Window );
 
-    /**
-     * Destructor
-     */
+    QgsOrganizeTableColumnsDialog( const QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags flags = Qt::Window );
+%Docstring
+Constructor
+
+:param vl: The concerned vector layer
+:param parent: parent object
+:param flags: window flags
+%End
+
     ~QgsOrganizeTableColumnsDialog();
 
-    /**
-     * Get the updated configuration
-     */
     QgsAttributeTableConfig config() const;
+%Docstring
+Get the updated configuration
+%End
+
+  public slots:
+
+    void showAll();
+%Docstring
+showAll checks all the  fields to show them all in the attribute table
+%End
+
+    void hideAll();
+%Docstring
+hideAll unchecks all the fields to hide them all in the attribute table
+%End
+
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/attributetable/qgsorganizetablecolumnsdialog.h               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -18,34 +18,26 @@
 #ifndef QGSWMSCONNECTION_H
 #define QGSWMSCONNECTION_H
 
-#include "qgsdatasourceuri.h"
-
+#include "qgsowsconnection.h"
 #include <QStringList>
 
 /*!
  * \brief   Connections management
  */
-class QgsWMSConnection : public QObject
+class QgsWMSConnection : public QgsOwsConnection
 {
-    Q_OBJECT
 
   public:
     //! Constructor
-    explicit QgsWMSConnection( const QString& theConnName );
-    //! Destructor
-    ~QgsWMSConnection();
+    explicit QgsWMSConnection( const QString &connName );
 
     static QStringList connectionList();
 
-    static void deleteConnection( const QString& name );
+    static void deleteConnection( const QString &name );
 
     static QString selectedConnection();
-    static void setSelectedConnection( const QString& name );
+    static void setSelectedConnection( const QString &name );
 
-  public:
-    QString mConnName;
-    QgsDataSourceURI uri();
-    QgsDataSourceURI mUri;
 };
 
 #endif // QGSWMSCONNECTION_H

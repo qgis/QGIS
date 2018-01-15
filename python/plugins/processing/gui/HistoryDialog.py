@@ -84,8 +84,8 @@ class HistoryDialog(BASE, WIDGET):
             self.fillTree()
 
     def saveLog(self):
-        fileName = QFileDialog.getSaveFileName(self,
-                                               self.tr('Save file'), '.', self.tr('Log files (*.log *.LOG)'))
+        fileName, filter = QFileDialog.getSaveFileName(self,
+                                                       self.tr('Save file'), '.', self.tr('Log files (*.log *.LOG)'))
 
         if fileName == '':
             return
@@ -97,24 +97,24 @@ class HistoryDialog(BASE, WIDGET):
 
     def fillTree(self):
         self.tree.clear()
-        elements = ProcessingLog.getLogEntries()
-        for category in elements.keys():
-            groupItem = QTreeWidgetItem()
-            groupItem.setText(0, category)
-            groupItem.setIcon(0, self.groupIcon)
-            for entry in elements[category]:
-                item = TreeLogEntryItem(entry, category
-                                        == ProcessingLog.LOG_ALGORITHM)
-                item.setIcon(0, self.keyIcon)
-                groupItem.insertChild(0, item)
-            self.tree.addTopLevelItem(groupItem)
+        entries = ProcessingLog.getLogEntries()
+        groupItem = QTreeWidgetItem()
+        groupItem.setText(0, 'ALGORITHM')
+        groupItem.setIcon(0, self.groupIcon)
+        for entry in entries:
+            item = TreeLogEntryItem(entry, True)
+            item.setIcon(0, self.keyIcon)
+            groupItem.insertChild(0, item)
+        self.tree.addTopLevelItem(groupItem)
 
     def executeAlgorithm(self):
         item = self.tree.currentItem()
         if isinstance(item, TreeLogEntryItem):
             if item.isAlg:
                 script = 'import processing\n'
-                script += item.entry.text.replace('runalg(', 'runandload(')
+                script += 'from qgis.core import QgsProcessingOutputLayerDefinition, QgsProcessingFeatureSourceDefinition\n'
+                script += item.entry.text.replace('processing.run(', 'processing.execAlgorithmDialog(')
+                self.close()
                 exec(script)
 
     def changeText(self):

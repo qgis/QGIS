@@ -1,0 +1,65 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/symbology/qgspointclusterrendererwidget.h                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsPointClusterRendererWidget: QgsRendererWidget, QgsExpressionContextGenerator
+{
+%Docstring
+A widget which allows configuration of the properties for a QgsPointClusterRenderer.
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgspointclusterrendererwidget.h"
+%End
+  public:
+
+    static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer ) /Factory/;
+%Docstring
+Returns a new QgsPointClusterRendererWidget.
+
+:param layer: associated vector layer
+:param style: style collection
+:param renderer: source QgsPointClusterRenderer renderer
+
+:return: new :py:class:`QgsRendererWidget`
+%End
+
+    QgsPointClusterRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );
+%Docstring
+Constructor for QgsPointClusterRendererWidget.
+
+:param layer: associated vector layer
+:param style: style collection
+:param renderer: source QgsPointClusterRenderer renderer
+%End
+
+    ~QgsPointClusterRendererWidget();
+
+    virtual QgsFeatureRenderer *renderer();
+
+    virtual void setContext( const QgsSymbolWidgetContext &context );
+
+
+    virtual QgsExpressionContext createExpressionContext() const;
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/symbology/qgspointclusterrendererwidget.h                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

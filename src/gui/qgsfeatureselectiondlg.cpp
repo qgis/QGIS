@@ -21,9 +21,9 @@
 #include "qgsattributeeditorcontext.h"
 
 
-QgsFeatureSelectionDlg::QgsFeatureSelectionDlg( QgsVectorLayer* vl, QgsAttributeEditorContext &context, QWidget *parent )
-    : QDialog( parent )
-    , mVectorLayer( vl )
+QgsFeatureSelectionDlg::QgsFeatureSelectionDlg( QgsVectorLayer *vl, QgsAttributeEditorContext &context, QWidget *parent )
+  : QDialog( parent )
+  , mVectorLayer( vl )
 {
   setupUi( this );
 
@@ -35,12 +35,12 @@ QgsFeatureSelectionDlg::QgsFeatureSelectionDlg( QgsVectorLayer* vl, QgsAttribute
   mDualView->init( mVectorLayer, nullptr, QgsFeatureRequest(), context );
 }
 
-const QgsFeatureIds& QgsFeatureSelectionDlg::selectedFeatures()
+const QgsFeatureIds &QgsFeatureSelectionDlg::selectedFeatures()
 {
-  return mFeatureSelection->selectedFeaturesIds();
+  return mFeatureSelection->selectedFeatureIds();
 }
 
-void QgsFeatureSelectionDlg::setSelectedFeatures( const QgsFeatureIds& ids )
+void QgsFeatureSelectionDlg::setSelectedFeatures( const QgsFeatureIds &ids )
 {
   mFeatureSelection->setSelectedFeatures( ids );
 }

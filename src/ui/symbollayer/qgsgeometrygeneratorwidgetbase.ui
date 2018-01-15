@@ -15,28 +15,19 @@
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="1" column="0" colspan="2">
-    <widget class="QgsExpressionBuilderWidget" name="modificationExpressionSelector" native="true">
-     <layout class="QGridLayout" name="gridLayout_2">
-      <property name="leftMargin">
-       <number>0</number>
-      </property>
-      <property name="topMargin">
-       <number>0</number>
-      </property>
-      <property name="rightMargin">
-       <number>0</number>
-      </property>
-      <property name="bottomMargin">
-       <number>0</number>
-      </property>
-     </layout>
-    </widget>
+    <widget class="QgsExpressionLineEdit" name="modificationExpressionSelector" native="true"/>
    </item>
    <item row="0" column="1">
     <widget class="QComboBox" name="cbxGeometryType"/>
    </item>
    <item row="0" column="0">
     <widget class="QLabel" name="label">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="text">
       <string>Geometry Type</string>
      </property>
@@ -46,9 +37,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsExpressionBuilderWidget</class>
+   <class>QgsExpressionLineEdit</class>
    <extends>QWidget</extends>
-   <header>qgsexpressionbuilderwidget.h</header>
+   <header>qgsexpressionlineedit.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

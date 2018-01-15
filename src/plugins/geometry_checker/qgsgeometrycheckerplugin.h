@@ -30,14 +30,14 @@ class QgsGeometryCheckerPlugin : public QObject, public QgisPlugin
     Q_OBJECT
 
   public:
-    explicit QgsGeometryCheckerPlugin( QgisInterface* iface );
+    explicit QgsGeometryCheckerPlugin( QgisInterface *iface );
     void initGui() override;
     void unload() override;
 
   private:
-    QgisInterface* mIface;
-    QgsGeometryCheckerDialog* mDialog;
-    QAction* mMenuAction;
+    QgisInterface *mIface = nullptr;
+    QgsGeometryCheckerDialog *mDialog = nullptr;
+    QAction *mMenuAction = nullptr;
 };
 
 
@@ -45,7 +45,7 @@ static const QString sName = QApplication::translate( "QgsGeometryCheckerPlugin"
 static const QString sDescription = QApplication::translate( "QgsGeometryCheckerPlugin", "Check geometries for errors" );
 static const QString sCategory = QApplication::translate( "QgsGeometryCheckerPlugin", "Vector" );
 static const QString sPluginVersion = QApplication::translate( "QgsGeometryCheckerPlugin", "Version 0.1" );
-static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
-static const QString sPluginIcon = ":/geometrychecker/icons/geometrychecker.png";
+static const QgisPlugin::PluginType sPluginType = QgisPlugin::UI;
+static const QString sPluginIcon = QStringLiteral( ":/geometrychecker/icons/geometrychecker.png" );
 
 #endif // QGS_GEOMETRY_CHECKER_PLUGIN_H

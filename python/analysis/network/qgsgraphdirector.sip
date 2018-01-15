@@ -1,54 +1,71 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/network/qgsgraphdirector.h                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
 %ModuleHeaderCode
-#include <qgslinevectorlayerdirector.h>
+#include <qgsvectorlayerdirector.h>
 %End
 
-/**
- * \ingroup networkanalysis
- * \class QgsGraphDirector
- * \brief Determine making the graph. QgsGraphBuilder and QgsGraphDirector is a builder patter.
- */
 class QgsGraphDirector : QObject
 {
+%Docstring
+ Determine making the graph. QgsGraphBuilder and QgsGraphDirector implemented
+using "builder" design patter.
+%End
+
 %TypeHeaderCode
-#include <qgsgraphbuilder.h>
+#include "qgsgraphdirector.h"
 %End
-
 %ConvertToSubClassCode
-  if ( dynamic_cast< QgsLineVectorLayerDirector* > ( sipCpp ) != NULL )
-    sipType = sipType_QgsLineVectorLayerDirector;
-  else
-    sipType = NULL;
+    if ( dynamic_cast< QgsVectorLayerDirector * >( sipCpp ) != NULL )
+      sipType = sipType_QgsVectorLayerDirector;
+    else
+      sipType = NULL;
+%End
+  public:
+
+    virtual void makeGraph( QgsGraphBuilderInterface *builder,
+                            const QVector< QgsPointXY > &additionalPoints,
+                            QVector< QgsPointXY > &snappedPoints /Out/,
+                            QgsFeedback *feedback = 0 ) const;
+%Docstring
+Make a graph using :py:class:`QgsGraphBuilder`
+
+:param builder: the graph builder
+:param additionalPoints: list of points that should be snapped to the graph
+:param snappedPoints: list of snapped points
+:param feedback: feedback object for reporting progress
+
+.. note::
+
+   if snappedPoints[i] == QgsPointXY(0.0,0.0) then snapping failed.
 %End
 
+    void addStrategy( QgsNetworkStrategy *prop /Transfer/ );
+%Docstring
+Add optimization strategy
+%End
 
-  signals:
-    void buildProgress( int, int ) const;
-    void buildMessage( const QString& ) const;
-
-  public:
-    //! Destructor
-    virtual ~QgsGraphDirector();
-
-    /**
-     * Make a graph using RgGraphBuilder
-     *
-     * @param builder   The graph builder
-     *
-     * @param additionalPoints  Vector of points that must be tied to the graph
-     *
-     * @param tiedPoints  Vector of tied points
-     *
-     * @note if tiedPoints[i]==QgsPoint(0.0,0.0) then tied failed.
-     */
-    virtual void makeGraph( QgsGraphBuilderInterface *builder,
-                            const QVector< QgsPoint > &additionalPoints,
-                            QVector< QgsPoint> &tiedPoints /Out/ );
-
-    void addProperter( QgsArcProperter* prop /Transfer/ );
-
-    /**
-     * return Director name
-     */
     virtual QString name() const = 0;
+%Docstring
+Returns director name
+%End
+
+  protected:
 };
 
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/network/qgsgraphdirector.h                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

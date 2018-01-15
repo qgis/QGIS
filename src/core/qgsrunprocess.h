@@ -24,14 +24,18 @@
 #include <QObject>
 #include <QProcess>
 
+#include "qgis_core.h"
+#include "qgis_sip.h"
+
 class QgsMessageOutput;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * A class that executes an external program/script.
  * It can optionally capture the standard output and error from the
  * process and displays them in a dialog box.
  */
-class CORE_EXPORT QgsRunProcess: public QObject
+class CORE_EXPORT QgsRunProcess: public QObject SIP_NODEFAULTCTORS
 {
     Q_OBJECT
 
@@ -42,8 +46,8 @@ class CORE_EXPORT QgsRunProcess: public QObject
 
     // The action argument contains string with the command.
     // If capture is true, the standard output and error from the process
-    // will be sent to QgsMessageOuptut - usually a dialog box.
-    static QgsRunProcess* create( const QString& action, bool capture )
+    // will be sent to QgsMessageOutput - usually a dialog box.
+    static QgsRunProcess *create( const QString &action, bool capture ) SIP_FACTORY
     { return new QgsRunProcess( action, capture ); }
 
   public slots:
@@ -54,14 +58,14 @@ class CORE_EXPORT QgsRunProcess: public QObject
     void dialogGone();
 
   private:
-    QgsRunProcess( const QString& action, bool capture );
-    ~QgsRunProcess();
+    QgsRunProcess( const QString &action, bool capture ) SIP_FORCE;
+    ~QgsRunProcess() override SIP_FORCE;
 
     // Deletes the instance of the class
     void die();
 
-    QProcess* mProcess;
-    QgsMessageOutput* mOutput;
+    QProcess *mProcess = nullptr;
+    QgsMessageOutput *mOutput = nullptr;
     QString mCommand;
 };
 

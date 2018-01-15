@@ -16,8 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from processing.modeler.ModelerAlgorithm import ModelerAlgorithm
-
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -33,7 +31,10 @@ import json
 from qgis.PyQt import uic
 from qgis.PyQt.QtWidgets import QDialog, QTreeWidgetItem
 
-from processing.core.ProcessingLog import ProcessingLog
+from qgis.core import (QgsMessageLog,
+                       QgsProcessingUtils,
+                       QgsProcessingParameterDefinition,
+                       QgsProcessingModelAlgorithm)
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 WIDGET, BASE = uic.loadUiType(
@@ -53,8 +54,8 @@ class HelpEditionDialog(BASE, WIDGET):
 
         self.alg = alg
         self.descriptions = {}
-        if isinstance(self.alg, ModelerAlgorithm):
-            self.descriptions = self.alg.helpContent
+        if isinstance(self.alg, QgsProcessingModelAlgorithm):
+            self.descriptions = self.alg.helpContent()
         else:
             if self.alg.descriptionFile is not None:
                 helpfile = alg.descriptionFile + '.help'
@@ -63,8 +64,7 @@ class HelpEditionDialog(BASE, WIDGET):
                         with open(helpfile) as f:
                             self.descriptions = json.load(f)
                     except Exception:
-                        ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
-                                               self.tr('Cannot open help file: %s') % helpfile)
+                        QgsMessageLog.logMessage(self.tr('Cannot open help file: {0}').format(helpfile), self.tr('Processing'), QgsMessageLog.WARNING)
 
         self.currentName = self.ALG_DESC
         if self.ALG_DESC in self.descriptions:
@@ -79,20 +79,20 @@ class HelpEditionDialog(BASE, WIDGET):
         QDialog.reject(self)
 
     def accept(self):
-        self.descriptions[self.currentName] = unicode(self.text.toPlainText())
+        self.descriptions[self.currentName] = str(self.text.toPlainText())
         QDialog.accept(self)
 
     def getHtml(self):
         s = self.tr('<h2>Algorithm description</h2>\n')
         s += '<p>' + self.getDescription(self.ALG_DESC) + '</p>\n'
         s += self.tr('<h2>Input parameters</h2>\n')
-        for param in self.alg.parameters:
-            s += '<h3>' + param.description + '</h3>\n'
-            s += '<p>' + self.getDescription(param.name) + '</p>\n'
+        for param in self.alg.parameterDefinitions():
+            s += '<h3>' + param.description() + '</h3>\n'
+            s += '<p>' + self.getDescription(param.name()) + '</p>\n'
         s += self.tr('<h2>Outputs</h2>\n')
-        for out in self.alg.outputs:
-            s += '<h3>' + out.description + '</h3>\n'
-            s += '<p>' + self.getDescription(out.name) + '</p>\n'
+        for out in self.alg.outputDefinitions():
+            s += '<h3>' + out.description() + '</h3>\n'
+            s += '<p>' + self.getDescription(out.name()) + '</p>\n'
         return s
 
     def fillTree(self):
@@ -100,13 +100,16 @@ class HelpEditionDialog(BASE, WIDGET):
         self.tree.addTopLevelItem(item)
         parametersItem = TreeDescriptionItem(self.tr('Input parameters'), None)
         self.tree.addTopLevelItem(parametersItem)
-        for param in self.alg.parameters:
-            item = TreeDescriptionItem(param.description, param.name)
+        for param in self.alg.parameterDefinitions():
+            if param.flags() & QgsProcessingParameterDefinition.FlagHidden or param.isDestination():
+                continue
+
+            item = TreeDescriptionItem(param.description(), param.name())
             parametersItem.addChild(item)
         outputsItem = TreeDescriptionItem(self.tr('Outputs'), None)
         self.tree.addTopLevelItem(outputsItem)
-        for out in self.alg.outputs:
-            item = TreeDescriptionItem(out.description, out.name)
+        for out in self.alg.outputDefinitions():
+            item = TreeDescriptionItem(out.description(), out.name())
             outputsItem.addChild(item)
         item = TreeDescriptionItem(self.tr('Algorithm created by'), self.ALG_CREATOR)
         self.tree.addTopLevelItem(item)
@@ -121,7 +124,7 @@ class HelpEditionDialog(BASE, WIDGET):
         item = self.tree.currentItem()
         if isinstance(item, TreeDescriptionItem):
             if self.currentName:
-                self.descriptions[self.currentName] = unicode(self.text.toPlainText())
+                self.descriptions[self.currentName] = str(self.text.toPlainText())
             name = item.name
             if name:
                 self.text.setEnabled(True)
@@ -138,7 +141,7 @@ class HelpEditionDialog(BASE, WIDGET):
                 self.updateHtmlView()
 
     def updateHtmlView(self):
-        self.webView.setHtml(self.getHtml())
+        self.txtPreview.setHtml(self.getHtml())
 
     def getDescription(self, name):
         if name in self.descriptions:

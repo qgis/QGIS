@@ -1,5 +1,9 @@
 v.in.wfs
 Import GetFeature from WFS
 Vector (v.*)
-ParameterString|url|GetFeature URL starting with 'http'|http://
-OutputVector|output|Converted
+QgsProcessingParameterString|url|GetFeature URL starting with 'http'|http://|False|False
+QgsProcessingParameterCrs|srs|Alternate spatial reference system|None|True
+QgsProcessingParameterString|name|Comma separated names of data layers to download|None|False|True
+QgsProcessingParameterNumber|maximum_features|Maximum number of features to download|QgsProcessingParameterNumber.Integer|None|True|1|None
+QgsProcessingParameterNumber|start_index|Skip earlier feature IDs and start downloading at this one|QgsProcessingParameterNumber.Integer|None|True|1|None
+QgsProcessingParameterVectorDestination|output|Converted

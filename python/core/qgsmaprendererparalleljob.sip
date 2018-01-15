@@ -1,39 +1,57 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsmaprendererparalleljob.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
 
-/** Job implementation that renders all layers in parallel.
- *
- * The resulting map image can be retrieved with renderedImage() function.
- * It is safe to call that function while rendering is active to see preview of the map.
- *
- * @note added in 2.4
- */
+
+
 class QgsMapRendererParallelJob : QgsMapRendererQImageJob
 {
-%TypeHeaderCode
-#include <qgsmaprendererparalleljob.h>
+%Docstring
+Job implementation that renders all layers in parallel.
+
+The resulting map image can be retrieved with renderedImage() function.
+It is safe to call that function while rendering is active to see preview of the map.
+
+.. versionadded:: 2.4
 %End
 
+%TypeHeaderCode
+#include "qgsmaprendererparalleljob.h"
+%End
   public:
-    QgsMapRendererParallelJob( const QgsMapSettings& settings );
+    QgsMapRendererParallelJob( const QgsMapSettings &settings );
     ~QgsMapRendererParallelJob();
 
     virtual void start();
+
     virtual void cancel();
+
+    virtual void cancelWithoutBlocking();
+
     virtual void waitForFinished();
+
     virtual bool isActive() const;
 
-    virtual QgsLabelingResults* takeLabelingResults() /Transfer/;
 
-    // from QgsMapRendererJobWithPreview
+    virtual bool usedCachedLabels() const;
+
+    virtual QgsLabelingResults *takeLabelingResults() /Transfer/;
+
+
     virtual QImage renderedImage();
 
-  protected slots:
-    //! layers are rendered, labeling is still pending
-    void renderLayersFinished();
-    //! all rendering is finished, including labeling
-    void renderingFinished();
 
-  protected:
-
-    static void renderLayerStatic( LayerRenderJob& job );
-    static void renderLabelsStatic( QgsMapRendererParallelJob* self );
 };
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsmaprendererparalleljob.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

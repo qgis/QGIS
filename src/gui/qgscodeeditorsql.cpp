@@ -19,11 +19,11 @@
 #include <QWidget>
 #include <QString>
 #include <QFont>
-#include <Qsci/qscilexersql.h>
+#include <QLabel>
 
 
 QgsCodeEditorSQL::QgsCodeEditorSQL( QWidget *parent )
-    : QgsCodeEditor( parent )
+  : QgsCodeEditor( parent )
 {
   if ( !parent )
   {
@@ -35,15 +35,15 @@ QgsCodeEditorSQL::QgsCodeEditorSQL( QWidget *parent )
   setSciLexerSQL();
 }
 
-QgsCodeEditorSQL::~QgsCodeEditorSQL()
-{
-}
 
 void QgsCodeEditorSQL::setSciLexerSQL()
 {
   QFont font = getMonospaceFont();
-
-  QsciLexerSQL* sqlLexer = new QsciLexerSQL( this );
+#ifdef Q_OS_MAC
+  // The font size gotten from getMonospaceFont() is too small on Mac
+  font.setPointSize( QLabel().font().pointSize() );
+#endif
+  QsciLexerSQL *sqlLexer = new QgsCaseInsensitiveLexerSQL( this );
   sqlLexer->setDefaultFont( font );
   sqlLexer->setFont( font, -1 );
   font.setBold( true );

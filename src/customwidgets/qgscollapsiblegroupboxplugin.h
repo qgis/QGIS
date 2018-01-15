@@ -18,13 +18,9 @@
 
 
 #include <QtGlobal>
-#if QT_VERSION < 0x050000
-#include <QDesignerCustomWidgetCollectionInterface>
-#include <QDesignerExportWidget>
-#else
 #include <QtUiPlugin/QDesignerCustomWidgetInterface>
 #include <QtUiPlugin/QDesignerExportWidget>
-#endif
+#include "qgis_customwidgets.h"
 
 class CUSTOMWIDGETS_EXPORT QgsCollapsibleGroupBoxPlugin : public QObject, public QDesignerCustomWidgetInterface
 {
@@ -32,7 +28,7 @@ class CUSTOMWIDGETS_EXPORT QgsCollapsibleGroupBoxPlugin : public QObject, public
     Q_INTERFACES( QDesignerCustomWidgetInterface )
 
   public:
-    explicit QgsCollapsibleGroupBoxPlugin( QObject *parent = 0 );
+    explicit QgsCollapsibleGroupBoxPlugin( QObject *parent = nullptr );
 
   private:
     bool mInitialized;

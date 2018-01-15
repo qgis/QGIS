@@ -25,63 +25,84 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import QGis, QgsFeature, QgsGeometry
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.parameters import ParameterVector
-from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
+from qgis.core import (QgsFeature,
+                       QgsGeometry,
+                       QgsFeatureSink,
+                       QgsWkbTypes,
+                       QgsProcessing,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterFeatureSink,
+                       QgsLineString)
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
-class Explode(GeoAlgorithm):
+class Explode(QgisAlgorithm):
 
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Explode lines')
-        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
-        self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_LINE]))
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Exploded')))
+    def group(self):
+        return self.tr('Vector geometry')
 
-    def processAlgorithm(self, progress):
-        vlayer = dataobjects.getObjectFromUri(
-            self.getParameterValue(self.INPUT))
-        output = self.getOutputFromName(self.OUTPUT)
-        vprovider = vlayer.dataProvider()
-        fields = vprovider.fields()
-        writer = output.getVectorWriter(fields, QGis.WKBLineString,
-                                        vlayer.crs())
-        outFeat = QgsFeature()
-        features = vector.features(vlayer)
-        total = 100.0 / len(features)
+    def groupId(self):
+        return 'vectorgeometry'
+
+    def __init__(self):
+        super().__init__()
+
+    def initAlgorithm(self, config=None):
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
+                                                              self.tr('Input layer'), [QgsProcessing.TypeVectorLine]))
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT,
+                                                            self.tr('Exploded'), QgsProcessing.TypeVectorLine))
+
+    def name(self):
+        return 'explodelines'
+
+    def displayName(self):
+        return self.tr('Explode lines')
+
+    def processAlgorithm(self, parameters, context, feedback):
+        source = self.parameterAsSource(parameters, self.INPUT, context)
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               source.fields(), QgsWkbTypes.singleType(source.wkbType()), source.sourceCrs())
+
+        features = source.getFeatures()
+        total = 100.0 / source.featureCount() if source.featureCount() else 0
         for current, feature in enumerate(features):
-            progress.setPercentage(int(current * total))
+            if feedback.isCanceled():
+                break
+
+            feedback.setProgress(int(current * total))
+
+            if not feature.hasGeometry():
+                sink.addFeature(feature, QgsFeatureSink.FastInsert)
+                continue
+
+            outFeat = QgsFeature()
             inGeom = feature.geometry()
-            atMap = feature.attributes()
             segments = self.extractAsSingleSegments(inGeom)
-            outFeat.setAttributes(atMap)
+            outFeat.setAttributes(feature.attributes())
             for segment in segments:
                 outFeat.setGeometry(segment)
-                writer.addFeature(outFeat)
-        del writer
+                sink.addFeature(outFeat, QgsFeatureSink.FastInsert)
+        return {self.OUTPUT: dest_id}
 
     def extractAsSingleSegments(self, geom):
         segments = []
         if geom.isMultipart():
-            multi = geom.asMultiPolyline()
-            for polyline in multi:
-                segments.extend(self.getPolylineAsSingleSegments(polyline))
+            for part in range(geom.constGet().numGeometries()):
+                segments.extend(self.getPolylineAsSingleSegments(geom.constGet().geometryN(part)))
         else:
             segments.extend(self.getPolylineAsSingleSegments(
-                geom.asPolyline()))
+                geom.constGet()))
         return segments
 
     def getPolylineAsSingleSegments(self, polyline):
         segments = []
-        for i in range(len(polyline) - 1):
-            ptA = polyline[i]
-            ptB = polyline[i + 1]
-            segment = QgsGeometry.fromPolyline([ptA, ptB])
+        for i in range(polyline.numPoints() - 1):
+            ptA = polyline.pointN(i)
+            ptB = polyline.pointN(i + 1)
+            segment = QgsGeometry(QgsLineString([ptA, ptB]))
             segments.append(segment)
         return segments

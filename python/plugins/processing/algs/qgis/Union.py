@@ -29,214 +29,222 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QGis, QgsFeatureRequest, QgsFeature, QgsGeometry, QgsWKBTypes
+from qgis.core import (QgsFeatureRequest,
+                       QgsFeature,
+                       QgsFeatureSink,
+                       QgsGeometry,
+                       QgsWkbTypes,
+                       QgsProcessingUtils,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterFeatureSink,
+                       QgsSpatialIndex)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.ProcessingLog import ProcessingLog
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.parameters import ParameterVector
-from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
+from processing.tools import vector
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
-wkbTypeGroups = {
-    'Point': (QGis.WKBPoint, QGis.WKBMultiPoint, QGis.WKBPoint25D, QGis.WKBMultiPoint25D,),
-    'LineString': (QGis.WKBLineString, QGis.WKBMultiLineString, QGis.WKBLineString25D, QGis.WKBMultiLineString25D,),
-    'Polygon': (QGis.WKBPolygon, QGis.WKBMultiPolygon, QGis.WKBPolygon25D, QGis.WKBMultiPolygon25D,),
-}
-for key, value in wkbTypeGroups.items():
-    for const in value:
-        wkbTypeGroups[const] = key
 
-GEOM_25D = [QGis.WKBPoint25D, QGis.WKBLineString25D, QGis.WKBPolygon25D,
-            QGis.WKBMultiPoint25D, QGis.WKBMultiLineString25D,
-            QGis.WKBMultiPolygon25D]
-
-
-class Union(GeoAlgorithm):
+class Union(QgisAlgorithm):
 
     INPUT = 'INPUT'
-    INPUT2 = 'INPUT2'
+    OVERLAY = 'OVERLAY'
     OUTPUT = 'OUTPUT'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'union.png'))
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Union')
-        self.group, self.i18n_group = self.trAlgorithm('Vector overlay tools')
-        self.addParameter(ParameterVector(Union.INPUT,
-                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_ANY]))
-        self.addParameter(ParameterVector(Union.INPUT2,
-                                          self.tr('Input layer 2'), [ParameterVector.VECTOR_TYPE_ANY]))
-        self.addOutput(OutputVector(Union.OUTPUT, self.tr('Union')))
+    def group(self):
+        return self.tr('Vector overlay')
 
-    def processAlgorithm(self, progress):
-        vlayerA = dataobjects.getObjectFromUri(self.getParameterValue(Union.INPUT))
-        vlayerB = dataobjects.getObjectFromUri(self.getParameterValue(Union.INPUT2))
+    def groupId(self):
+        return 'vectoroverlay'
 
-        vproviderA = vlayerA.dataProvider()
+    def __init__(self):
+        super().__init__()
 
-        geomType = vproviderA.geometryType()
-        if geomType in GEOM_25D:
-            raise GeoAlgorithmExecutionException(
-                self.tr('Input layer has unsupported geometry type {}').format(geomType))
+    def initAlgorithm(self, config=None):
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
+                                                              self.tr('Input layer')))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.OVERLAY,
+                                                              self.tr('Union layer')))
 
-        fields = vector.combineVectorFields(vlayerA, vlayerB)
-        writer = self.getOutputFromName(Union.OUTPUT).getVectorWriter(fields,
-                                                                      geomType, vproviderA.crs())
-        inFeatA = QgsFeature()
-        inFeatB = QgsFeature()
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Union')))
+
+    def name(self):
+        return 'union'
+
+    def displayName(self):
+        return self.tr('Union')
+
+    def processAlgorithm(self, parameters, context, feedback):
+        sourceA = self.parameterAsSource(parameters, self.INPUT, context)
+        sourceB = self.parameterAsSource(parameters, self.OVERLAY, context)
+
+        geomType = QgsWkbTypes.multiType(sourceA.wkbType())
+        fields = QgsProcessingUtils.combineFields(sourceA.fields(), sourceB.fields())
+
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               fields, geomType, sourceA.sourceCrs())
+
+        featA = QgsFeature()
+        featB = QgsFeature()
         outFeat = QgsFeature()
-        indexA = vector.spatialindex(vlayerB)
-        indexB = vector.spatialindex(vlayerA)
 
+        indexA = QgsSpatialIndex(sourceA, feedback)
+        indexB = QgsSpatialIndex(sourceB.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([]).setDestinationCrs(sourceA.sourceCrs(), context.transformContext())), feedback)
+
+        total = 100.0 / (sourceA.featureCount() * sourceB.featureCount()) if sourceA.featureCount() and sourceB.featureCount() else 1
         count = 0
-        nElement = 0
-        featuresA = vector.features(vlayerA)
-        nFeat = len(featuresA)
-        for inFeatA in featuresA:
-            progress.setPercentage(nElement / float(nFeat) * 50)
-            nElement += 1
+
+        for featA in sourceA.getFeatures():
+            if feedback.isCanceled():
+                break
+
             lstIntersectingB = []
-            geom = QgsGeometry(inFeatA.geometry())
-            atMapA = inFeatA.attributes()
-            intersects = indexA.intersects(geom.boundingBox())
+            geom = featA.geometry()
+            atMapA = featA.attributes()
+            intersects = indexB.intersects(geom.boundingBox())
             if len(intersects) < 1:
                 try:
+                    geom.convertToMultiType()
                     outFeat.setGeometry(geom)
                     outFeat.setAttributes(atMapA)
-                    writer.addFeature(outFeat)
+                    sink.addFeature(outFeat, QgsFeatureSink.FastInsert)
                 except:
                     # This really shouldn't happen, as we haven't
                     # edited the input geom at all
-                    ProcessingLog.addToLog(ProcessingLog.LOG_INFO,
-                                           self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'))
+                    feedback.pushInfo(self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'))
             else:
-                for id in intersects:
-                    count += 1
-                    request = QgsFeatureRequest().setFilterFid(id)
-                    inFeatB = vlayerB.getFeatures(request).next()
-                    atMapB = inFeatB.attributes()
-                    tmpGeom = QgsGeometry(inFeatB.geometry())
+                request = QgsFeatureRequest().setFilterFids(intersects).setSubsetOfAttributes([])
+                request.setDestinationCrs(sourceA.sourceCrs(), context.transformContext())
 
-                    if geom.intersects(tmpGeom):
+                engine = QgsGeometry.createGeometryEngine(geom.constGet())
+                engine.prepareGeometry()
+
+                for featB in sourceB.getFeatures(request):
+                    atMapB = featB.attributes()
+                    tmpGeom = featB.geometry()
+
+                    if engine.intersects(tmpGeom.constGet()):
                         int_geom = geom.intersection(tmpGeom)
                         lstIntersectingB.append(tmpGeom)
 
-                        if int_geom is None:
+                        if not int_geom:
                             # There was a problem creating the intersection
-                            ProcessingLog.addToLog(ProcessingLog.LOG_INFO,
-                                                   self.tr('GEOS geoprocessing error: One or more input features have invalid geometry.'))
+                            feedback.pushInfo(self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'))
                             int_geom = QgsGeometry()
                         else:
                             int_geom = QgsGeometry(int_geom)
 
-                        if int_geom.wkbType() == QGis.WKBUnknown or QgsWKBTypes.flatType(int_geom.geometry().wkbType()) == QgsWKBTypes.GeometryCollection:
+                        if int_geom.wkbType() == QgsWkbTypes.Unknown or QgsWkbTypes.flatType(int_geom.wkbType()) == QgsWkbTypes.GeometryCollection:
                             # Intersection produced different geomety types
                             temp_list = int_geom.asGeometryCollection()
                             for i in temp_list:
                                 if i.type() == geom.type():
                                     int_geom = QgsGeometry(i)
                                     try:
+                                        int_geom.convertToMultiType()
                                         outFeat.setGeometry(int_geom)
                                         outFeat.setAttributes(atMapA + atMapB)
-                                        writer.addFeature(outFeat)
+                                        sink.addFeature(outFeat, QgsFeatureSink.FastInsert)
                                     except:
-                                        ProcessingLog.addToLog(ProcessingLog.LOG_INFO,
-                                                               self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'))
+                                        feedback.pushInfo(self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'))
                         else:
                             # Geometry list: prevents writing error
                             # in geometries of different types
                             # produced by the intersection
                             # fix #3549
-                            if int_geom.wkbType() in wkbTypeGroups[wkbTypeGroups[int_geom.wkbType()]]:
+                            if QgsWkbTypes.geometryType(int_geom.wkbType()) == QgsWkbTypes.geometryType(geomType):
                                 try:
+                                    int_geom.convertToMultiType()
                                     outFeat.setGeometry(int_geom)
                                     outFeat.setAttributes(atMapA + atMapB)
-                                    writer.addFeature(outFeat)
+                                    sink.addFeature(outFeat, QgsFeatureSink.FastInsert)
                                 except:
-                                    ProcessingLog.addToLog(ProcessingLog.LOG_INFO,
-                                                           self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'))
+                                    feedback.pushInfo(self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'))
 
-                # the remaining bit of inFeatA's geometry
+                # the remaining bit of featA's geometry
                 # if there is nothing left, this will just silently fail and we're good
                 diff_geom = QgsGeometry(geom)
                 if len(lstIntersectingB) != 0:
                     intB = QgsGeometry.unaryUnion(lstIntersectingB)
                     diff_geom = diff_geom.difference(intB)
-                    if diff_geom.isGeosEmpty() or not diff_geom.isGeosValid():
-                        ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                               self.tr('GEOS geoprocessing error: One or more input features have invalid geometry.'))
 
-                if diff_geom.wkbType() == 0 or QgsWKBTypes.flatType(diff_geom.geometry().wkbType()) == QgsWKBTypes.GeometryCollection:
+                if diff_geom.wkbType() == QgsWkbTypes.Unknown or QgsWkbTypes.flatType(diff_geom.wkbType()) == QgsWkbTypes.GeometryCollection:
                     temp_list = diff_geom.asGeometryCollection()
                     for i in temp_list:
                         if i.type() == geom.type():
                             diff_geom = QgsGeometry(i)
                 try:
+                    diff_geom.convertToMultiType()
                     outFeat.setGeometry(diff_geom)
                     outFeat.setAttributes(atMapA)
-                    writer.addFeature(outFeat)
+                    sink.addFeature(outFeat, QgsFeatureSink.FastInsert)
                 except:
-                    ProcessingLog.addToLog(ProcessingLog.LOG_INFO,
-                                           self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'))
+                    feedback.pushInfo(self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'))
 
-        length = len(vproviderA.fields())
+            count += 1
+            feedback.setProgress(int(count * total))
+
+        length = len(sourceA.fields())
         atMapA = [None] * length
 
-        featuresA = vector.features(vlayerB)
-        nFeat = len(featuresA)
-        for inFeatA in featuresA:
-            progress.setPercentage(nElement / float(nFeat) * 100)
+        for featA in sourceB.getFeatures(QgsFeatureRequest().setDestinationCrs(sourceA.sourceCrs(), context.transformContext())):
+            if feedback.isCanceled():
+                break
+
             add = False
-            geom = QgsGeometry(inFeatA.geometry())
+            geom = featA.geometry()
             diff_geom = QgsGeometry(geom)
             atMap = [None] * length
-            atMap.extend(inFeatA.attributes())
-            intersects = indexB.intersects(geom.boundingBox())
+            atMap.extend(featA.attributes())
+            intersects = indexA.intersects(geom.boundingBox())
 
             if len(intersects) < 1:
                 try:
+                    geom.convertToMultiType()
                     outFeat.setGeometry(geom)
                     outFeat.setAttributes(atMap)
-                    writer.addFeature(outFeat)
+                    sink.addFeature(outFeat, QgsFeatureSink.FastInsert)
                 except:
-                    ProcessingLog.addToLog(ProcessingLog.LOG_INFO,
-                                           self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'))
+                    feedback.pushInfo(self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'))
             else:
-                for id in intersects:
-                    request = QgsFeatureRequest().setFilterFid(id)
-                    inFeatB = vlayerA.getFeatures(request).next()
-                    atMapB = inFeatB.attributes()
-                    tmpGeom = QgsGeometry(inFeatB.geometry())
+                request = QgsFeatureRequest().setFilterFids(intersects).setSubsetOfAttributes([])
+                request.setDestinationCrs(sourceA.sourceCrs(), context.transformContext())
 
-                    if diff_geom.intersects(tmpGeom):
+                # use prepared geometries for faster intersection tests
+                engine = QgsGeometry.createGeometryEngine(diff_geom.constGet())
+                engine.prepareGeometry()
+
+                for featB in sourceA.getFeatures(request):
+                    atMapB = featB.attributes()
+                    tmpGeom = featB.geometry()
+
+                    if engine.intersects(tmpGeom.constGet()):
                         add = True
                         diff_geom = QgsGeometry(diff_geom.difference(tmpGeom))
-                        if diff_geom.isGeosEmpty() or not diff_geom.isGeosValid():
-                            ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                                   self.tr('GEOS geoprocessing error: One or more input features have invalid geometry.'))
                     else:
                         try:
-                            # Ihis only happends if the bounding box
+                            # Ihis only happens if the bounding box
                             # intersects, but the geometry doesn't
+                            diff_geom.convertToMultiType()
                             outFeat.setGeometry(diff_geom)
                             outFeat.setAttributes(atMap)
-                            writer.addFeature(outFeat)
+                            sink.addFeature(outFeat, QgsFeatureSink.FastInsert)
                         except:
-                            ProcessingLog.addToLog(ProcessingLog.LOG_INFO,
-                                                   self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'))
+                            feedback.pushInfo(self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'))
 
             if add:
                 try:
+                    diff_geom.convertToMultiType()
                     outFeat.setGeometry(diff_geom)
                     outFeat.setAttributes(atMap)
-                    writer.addFeature(outFeat)
+                    sink.addFeature(outFeat, QgsFeatureSink.FastInsert)
                 except:
-                    ProcessingLog.addToLog(ProcessingLog.LOG_INFO,
-                                           self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'))
-            nElement += 1
+                    feedback.pushInfo(self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'))
 
-        del writer
+            count += 1
+            feedback.setProgress(int(count * total))
+
+        return {self.OUTPUT: dest_id}

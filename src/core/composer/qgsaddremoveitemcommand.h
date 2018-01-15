@@ -19,10 +19,21 @@
 #define QGSADDREMOVEITEMCOMMAND_H
 
 #include <QUndoCommand>
+#include "qgis.h"
+
+#include "qgis_core.h"
+
+#define SIP_NO_FILE
+
 class QgsComposerItem;
 class QgsComposition;
 
-/** A composer command class for adding / removing composer items. If mState == Removed, the command owns the item*/
+/**
+ * \ingroup core
+ * A composer command class for adding / removing composer items. If mState == Removed, the command owns the item
+ * \note Not available in Python bindings
+ * \deprecated Will be removed in QGIS 3.2
+*/
 class CORE_EXPORT QgsAddRemoveItemCommand: public QObject, public QUndoCommand
 {
     Q_OBJECT
@@ -35,19 +46,20 @@ class CORE_EXPORT QgsAddRemoveItemCommand: public QObject, public QUndoCommand
       Removed
     };
 
-    QgsAddRemoveItemCommand( State s, QgsComposerItem* item, QgsComposition* c, const QString& text, QUndoCommand* parent = nullptr );
-    ~QgsAddRemoveItemCommand();
+    //! Constructor for QgsAddRemoveItemCommand
+    QgsAddRemoveItemCommand( State s, QgsComposerItem *item, QgsComposition *c, const QString &text, QUndoCommand *parent SIP_TRANSFERTHIS = nullptr );
+    ~QgsAddRemoveItemCommand() override;
 
     void redo() override;
     void undo() override;
 
   signals:
-    void itemAdded( QgsComposerItem* item );
-    void itemRemoved( QgsComposerItem* item );
+    void itemAdded( QgsComposerItem *item );
+    void itemRemoved( QgsComposerItem *item );
 
   private:
-    QgsComposerItem* mItem;
-    QgsComposition* mComposition;
+    QgsComposerItem *mItem = nullptr;
+    QgsComposition *mComposition = nullptr;
     State mState;
     bool mFirstRun; //flag to prevent execution when the command is pushed to the QUndoStack
 

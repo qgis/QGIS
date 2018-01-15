@@ -20,27 +20,37 @@
 #include <QDialog>
 
 #include "ui_qgserrordialogbase.h"
-#include "qgisgui.h"
+#include "qgsguiutils.h"
 #include "qgserror.h"
+#include "qgis_gui.h"
+#include "qgis.h"
 
+/**
+ * \ingroup gui
+ * \class QgsErrorDialog
+ */
 class GUI_EXPORT QgsErrorDialog: public QDialog, private Ui::QgsErrorDialogBase
 {
     Q_OBJECT
   public:
-    QgsErrorDialog( const QgsError & theError, const QString & theTitle, QWidget *parent = nullptr, const Qt::WindowFlags& fl = QgisGui::ModalDialogFlags );
-    ~QgsErrorDialog();
 
-    /** Show dialog with error
-     * @param theError error
-     * @param theTitle title
-     * @param parent parent object
-     * @param fl widget flags
+    /**
+     * Constructor for QgsErrorDialog
      */
-    static void show( const QgsError & theError, const QString & theTitle, QWidget *parent = nullptr, const Qt::WindowFlags& fl = QgisGui::ModalDialogFlags );
+    QgsErrorDialog( const QgsError &error, const QString &title, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
-  public slots:
-    void on_mDetailPushButton_clicked();
-    void on_mDetailCheckBox_stateChanged( int state );
+    /**
+     * Show dialog with error
+     * \param error error
+     * \param title title
+     * \param parent parent object
+     * \param fl widget flags
+     */
+    static void show( const QgsError &error, const QString &title, QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
+
+  private slots:
+    void mDetailPushButton_clicked();
+    void mDetailCheckBox_stateChanged( int state );
 
   private:
     QgsError mError;

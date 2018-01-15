@@ -14,28 +14,26 @@
 
 #include "ui_qgsdecorationscalebardialog.h"
 #include <QDialog>
+#include "qgis_app.h"
 
 class QgsDecorationScaleBar;
 
-/**
-@author Peter Brewer
-*/
 class APP_EXPORT QgsDecorationScaleBarDialog : public QDialog, private Ui::QgsDecorationScaleBarDialog
 {
     Q_OBJECT
 
   public:
-    QgsDecorationScaleBarDialog( QgsDecorationScaleBar& deco, int units, QWidget* parent = nullptr );
-    ~QgsDecorationScaleBarDialog();
+    QgsDecorationScaleBarDialog( QgsDecorationScaleBar &deco, int units, QWidget *parent = nullptr );
+    ~QgsDecorationScaleBarDialog() override;
 
   private slots:
-    void on_buttonBox_accepted();
-    void on_buttonBox_rejected();
-    void on_buttonBox_helpRequested();
+    void buttonBox_accepted();
+    void buttonBox_rejected();
+    void showHelp();
     void apply();
 
   protected:
-    QgsDecorationScaleBar& mDeco;
+    QgsDecorationScaleBar &mDeco;
 };
 
 #endif

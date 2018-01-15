@@ -30,67 +30,66 @@ import os
 import traceback
 from qgis.PyQt.QtWidgets import QApplication
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis.core import QgsMapLayerRegistry
+from qgis.core import (QgsProject,
+                       QgsProcessingFeedback,
+                       QgsProcessingUtils,
+                       QgsMapLayer,
+                       QgsWkbTypes,
+                       QgsMessageLog)
 
 from processing.core.ProcessingConfig import ProcessingConfig
-from processing.core.ProcessingResults import ProcessingResults
-from processing.core.ProcessingLog import ProcessingLog
-from processing.core.SilentProgress import SilentProgress
-
-from processing.gui.ResultsDialog import ResultsDialog
 from processing.gui.RenderingStyles import RenderingStyles
 
-from processing.core.outputs import OutputRaster
-from processing.core.outputs import OutputVector
-from processing.core.outputs import OutputTable
-from processing.core.outputs import OutputHTML
 
-from processing.tools import dataobjects
-
-
-def handleAlgorithmResults(alg, progress=None, showResults=True):
+def handleAlgorithmResults(alg, context, feedback=None, showResults=True):
     wrongLayers = []
-    htmlResults = False
-    if progress is None:
-        progress = SilentProgress()
-    progress.setText(QCoreApplication.translate('Postprocessing', 'Loading resulting layers'))
+    if feedback is None:
+        feedback = QgsProcessingFeedback()
+    feedback.setProgressText(QCoreApplication.translate('Postprocessing', 'Loading resulting layers'))
     i = 0
-    for out in alg.outputs:
-        progress.setPercentage(100 * i / float(len(alg.outputs)))
-        if out.hidden or not out.open:
-            continue
-        if isinstance(out, (OutputRaster, OutputVector, OutputTable)):
-            try:
-                if hasattr(out, "layer") and out.layer is not None:
-                    out.layer.setLayerName(out.description)
-                    QgsMapLayerRegistry.instance().addMapLayers([out.layer])
-                else:
-                    if ProcessingConfig.getSetting(
-                            ProcessingConfig.USE_FILENAME_AS_LAYER_NAME):
-                        name = os.path.basename(out.value)
+    for l, details in context.layersToLoadOnCompletion().items():
+        if feedback.isCanceled():
+            return False
+
+        if len(context.layersToLoadOnCompletion()) > 2:
+            # only show progress feedback if we're loading a bunch of layers
+            feedback.setProgress(100 * i / float(len(context.layersToLoadOnCompletion())))
+
+        try:
+            layer = QgsProcessingUtils.mapLayerFromString(l, context)
+            if layer is not None:
+                if not ProcessingConfig.getSetting(ProcessingConfig.USE_FILENAME_AS_LAYER_NAME):
+                    layer.setName(details.name)
+
+                style = None
+                if details.outputName:
+                    style = RenderingStyles.getStyle(alg.id(), details.outputName)
+                if style is None:
+                    if layer.type() == QgsMapLayer.RasterLayer:
+                        style = ProcessingConfig.getSetting(ProcessingConfig.RASTER_STYLE)
                     else:
-                        name = out.description
-                    dataobjects.load(out.value, name, alg.crs,
-                                     RenderingStyles.getStyle(alg.commandLineName(),
-                                                              out.name))
-            except Exception:
-                ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                       "Error loading result layer:\n" + traceback.format_exc())
-                wrongLayers.append(out.description)
-        elif isinstance(out, OutputHTML):
-            ProcessingResults.addResult(out.description, out.value)
-            htmlResults = True
+                        if layer.geometryType() == QgsWkbTypes.PointGeometry:
+                            style = ProcessingConfig.getSetting(ProcessingConfig.VECTOR_POINT_STYLE)
+                        elif layer.geometryType() == QgsWkbTypes.LineGeometry:
+                            style = ProcessingConfig.getSetting(ProcessingConfig.VECTOR_LINE_STYLE)
+                        else:
+                            style = ProcessingConfig.getSetting(ProcessingConfig.VECTOR_POLYGON_STYLE)
+                if style:
+                    layer.loadNamedStyle(style)
+                details.project.addMapLayer(context.temporaryLayerStore().takeMapLayer(layer))
+            else:
+                wrongLayers.append(str(l))
+        except Exception:
+            QgsMessageLog.logMessage(QCoreApplication.translate('Postprocessing', "Error loading result layer:") + "\n" + traceback.format_exc(), 'Processing', QgsMessageLog.CRITICAL)
+            wrongLayers.append(str(l))
         i += 1
 
-    QApplication.restoreOverrideCursor()
-    if wrongLayers:
-        msg = "The following layers were not correctly generated.<ul>"
-        msg += "".join(["<li>%s</li>" % lay for lay in wrongLayers]) + "</ul>"
-        msg += "You can check the log messages to find more information about the execution of the algorithm"
-        progress.error(msg)
+    feedback.setProgress(100)
 
-    if showResults and htmlResults and not wrongLayers:
-        dlg = ResultsDialog()
-        dlg.exec_()
+    if wrongLayers:
+        msg = QCoreApplication.translate('Postprocessing', "The following layers were not correctly generated.")
+        msg += "<ul>" + "".join(["<li>%s</li>" % lay for lay in wrongLayers]) + "</ul>"
+        msg += QCoreApplication.translate('Postprocessing', "You can check the 'Log Messages Panel' in QGIS main window to find more information about the execution of the algorithm.")
+        feedback.reportError(msg)
 
     return len(wrongLayers) == 0

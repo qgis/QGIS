@@ -17,42 +17,31 @@
 
 #include "qgstexteditwrapper.h"
 #include "qgstexteditconfigdlg.h"
+#include "qgstexteditsearchwidgetwrapper.h"
 
-QgsTextEditWidgetFactory::QgsTextEditWidgetFactory( const QString& name )
-    : QgsEditorWidgetFactory( name )
+QgsTextEditWidgetFactory::QgsTextEditWidgetFactory( const QString &name )
+  : QgsEditorWidgetFactory( name )
 {
 }
 
-QgsEditorWidgetWrapper* QgsTextEditWidgetFactory::create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ) const
+QgsEditorWidgetWrapper *QgsTextEditWidgetFactory::create( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent ) const
 {
   return new QgsTextEditWrapper( vl, fieldIdx, editor, parent );
 }
 
-QgsEditorConfigWidget* QgsTextEditWidgetFactory::configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const
+QgsSearchWidgetWrapper *QgsTextEditWidgetFactory::createSearchWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const
+{
+  return new QgsTextEditSearchWidgetWrapper( vl, fieldIdx, parent );
+}
+
+QgsEditorConfigWidget *QgsTextEditWidgetFactory::configWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const
 {
   return new QgsTextEditConfigDlg( vl, fieldIdx, parent );
 }
 
-
-void QgsTextEditWidgetFactory::writeConfig( const QgsEditorWidgetConfig& config, QDomElement& configElement, QDomDocument& doc, const QgsVectorLayer* layer, int fieldIdx )
+unsigned int QgsTextEditWidgetFactory::fieldScore( const QgsVectorLayer *vl, int fieldIdx ) const
 {
-  Q_UNUSED( doc )
-  Q_UNUSED( layer )
+  Q_UNUSED( vl )
   Q_UNUSED( fieldIdx )
-
-  configElement.setAttribute( "IsMultiline", config.value( "IsMultiline", false ).toBool() );
-  configElement.setAttribute( "UseHtml", config.value( "UseHtml", false ).toBool() );
-}
-
-QgsEditorWidgetConfig QgsTextEditWidgetFactory::readConfig( const QDomElement& configElement, QgsVectorLayer* layer, int fieldIdx )
-{
-  Q_UNUSED( layer )
-  Q_UNUSED( fieldIdx )
-
-  QgsEditorWidgetConfig cfg;
-
-  cfg.insert( "IsMultiline", configElement.attribute( "IsMultiline", "0" ) == "1" );
-  cfg.insert( "UseHtml", configElement.attribute( "UseHtml", "0" ) == "1" );
-
-  return cfg;
+  return 10;
 }

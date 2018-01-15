@@ -17,40 +17,38 @@
 
 #include "qgscolorscheme.h"
 #include <QObject>
-#include <QSharedPointer>
-#include <QtTest/QtTest>
+#include <memory>
+#include "qgstest.h"
 
 //dummy color scheme for testing
 class DummyColorScheme : public QgsColorScheme
 {
   public:
 
-    DummyColorScheme() {}
+    DummyColorScheme() = default;
 
-    virtual ~DummyColorScheme() {}
+    QString schemeName() const override { return QStringLiteral( "Dummy scheme" ); }
 
-    virtual QString schemeName() const override { return QString( "Dummy scheme" ); }
-
-    virtual QgsNamedColorList fetchColors( const QString &context = QString(),
-                                           const QColor &baseColor = QColor() ) override
+    QgsNamedColorList fetchColors( const QString &context = QString(),
+                                   const QColor &baseColor = QColor() ) override
     {
       QList< QPair< QColor, QString> > colors;
-      if ( context == "testscheme" )
+      if ( context == QLatin1String( "testscheme" ) )
       {
-        colors << qMakePair( QColor( 255, 255, 0 ), QString( "schemetest" ) );
+        colors << qMakePair( QColor( 255, 255, 0 ), QStringLiteral( "schemetest" ) );
       }
       else if ( baseColor.isValid() )
       {
-        colors << qMakePair( baseColor, QString( "base" ) );
+        colors << qMakePair( baseColor, QStringLiteral( "base" ) );
       }
       else
       {
-        colors << qMakePair( QColor( 255, 0, 0 ), QString( "red" ) ) << qMakePair( QColor( 0, 255, 0 ), QString() );
+        colors << qMakePair( QColor( 255, 0, 0 ), QStringLiteral( "red" ) ) << qMakePair( QColor( 0, 255, 0 ), QString() );
       }
       return colors;
     }
 
-    virtual QgsColorScheme* clone() const override
+    QgsColorScheme *clone() const override
     {
       return new DummyColorScheme();
     }
@@ -99,19 +97,19 @@ void TestQgsColorScheme::cleanup()
 
 void TestQgsColorScheme::createScheme()
 {
-  QSharedPointer<DummyColorScheme> dummyScheme( new DummyColorScheme() );
-  QVERIFY( dummyScheme );
+  std::shared_ptr<DummyColorScheme> dummyScheme( new DummyColorScheme() );
+  QVERIFY( dummyScheme.get() );
 }
 
 void TestQgsColorScheme::getName()
 {
-  QSharedPointer<DummyColorScheme> dummyScheme( new DummyColorScheme() );
+  std::shared_ptr<DummyColorScheme> dummyScheme( new DummyColorScheme() );
   QCOMPARE( dummyScheme->schemeName(),  QString( "Dummy scheme" ) );
 }
 
 void TestQgsColorScheme::colorsNoBase()
 {
-  QSharedPointer<DummyColorScheme> dummyScheme( new DummyColorScheme() );
+  std::shared_ptr<DummyColorScheme> dummyScheme( new DummyColorScheme() );
   QgsNamedColorList colors = dummyScheme->fetchColors();
   QCOMPARE( colors.length(), 2 );
   QCOMPARE( colors.at( 0 ).first, QColor( 255, 0, 0 ) );
@@ -122,7 +120,7 @@ void TestQgsColorScheme::colorsNoBase()
 
 void TestQgsColorScheme::colorsWithBase()
 {
-  QSharedPointer<DummyColorScheme> dummyScheme( new DummyColorScheme() );
+  std::shared_ptr<DummyColorScheme> dummyScheme( new DummyColorScheme() );
   QColor testColor = QColor( 0, 0, 255 );
   QgsNamedColorList colors = dummyScheme->fetchColors( QString(), testColor );
   QCOMPARE( colors.length(), 1 );
@@ -132,8 +130,8 @@ void TestQgsColorScheme::colorsWithBase()
 
 void TestQgsColorScheme::colorsWithScheme()
 {
-  QSharedPointer<DummyColorScheme> dummyScheme( new DummyColorScheme() );
-  QgsNamedColorList colors = dummyScheme->fetchColors( QString( "testscheme" ) );
+  std::shared_ptr<DummyColorScheme> dummyScheme( new DummyColorScheme() );
+  QgsNamedColorList colors = dummyScheme->fetchColors( QStringLiteral( "testscheme" ) );
   QCOMPARE( colors.length(), 1 );
   QCOMPARE( colors.at( 0 ).first, QColor( 255, 255, 0 ) );
   QCOMPARE( colors.at( 0 ).second, QString( "schemetest" ) );
@@ -141,12 +139,12 @@ void TestQgsColorScheme::colorsWithScheme()
 
 void TestQgsColorScheme::clone()
 {
-  QSharedPointer<DummyColorScheme> dummyScheme( new DummyColorScheme() );
+  std::shared_ptr<DummyColorScheme> dummyScheme( new DummyColorScheme() );
   QgsNamedColorList colors = dummyScheme->fetchColors();
-  QSharedPointer<QgsColorScheme> dummyScheme2( dummyScheme->clone() );
+  std::shared_ptr<QgsColorScheme> dummyScheme2( dummyScheme->clone() );
   QgsNamedColorList colors2 = dummyScheme2->fetchColors();
   QCOMPARE( colors, colors2 );
 }
 
-QTEST_MAIN( TestQgsColorScheme )
+QGSTEST_MAIN( TestQgsColorScheme )
 #include "testqgscolorscheme.moc"

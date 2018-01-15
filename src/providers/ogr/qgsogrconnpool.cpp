@@ -14,24 +14,25 @@
  ***************************************************************************/
 
 #include "qgsogrconnpool.h"
+#include "qgslogger.h"
 
-QgsOgrConnPool* QgsOgrConnPool::mInstance = nullptr;
+QgsOgrConnPool *QgsOgrConnPool::sInstance = nullptr;
 
 // static public
-QgsOgrConnPool* QgsOgrConnPool::instance()
+QgsOgrConnPool *QgsOgrConnPool::instance()
 {
-  if ( ! mInstance ) mInstance = new QgsOgrConnPool();
-  return mInstance;
+  if ( ! sInstance ) sInstance = new QgsOgrConnPool();
+  return sInstance;
 }
 
 // static public
 void QgsOgrConnPool::cleanupInstance()
 {
-  delete mInstance;
-  mInstance = nullptr;
+  delete sInstance;
+  sInstance = nullptr;
 }
 
-QgsOgrConnPool::QgsOgrConnPool() : QgsConnectionPool<QgsOgrConn*, QgsOgrConnPoolGroup>()
+QgsOgrConnPool::QgsOgrConnPool() : QgsConnectionPool<QgsOgrConn *, QgsOgrConnPoolGroup>()
 {
   QgsDebugCall;
 }

@@ -1,78 +1,196 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgscolorrampshader.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
 class QgsColorRampShader : QgsRasterShaderFunction
 {
-%TypeHeaderCode
-#include <qgscolorrampshader.h>
+%Docstring
+A ramp shader will color a raster pixel based on a list of values ranges in a ramp.
 %End
 
+%TypeHeaderCode
+#include "qgscolorrampshader.h"
+%End
   public:
-    QgsColorRampShader( double theMinimumValue = 0.0, double theMaximumValue = 255.0 );
 
-    //An entry for classification based upon value.
-    //Such a classification is typically used for
-    //single band layers where a pixel value represents
-    //not a color but a quantity, e.g. temperature or elevation
+    enum Type
+    {
+      Interpolated,
+      Discrete,
+      Exact
+    };
+
+    enum ClassificationMode
+    {
+      Continuous,
+      EqualInterval,
+      Quantile
+    };
+
+    QgsColorRampShader( double minimumValue = 0.0, double maximumValue = 255.0, QgsColorRamp *colorRamp = 0, Type type = Interpolated, ClassificationMode classificationMode = Continuous );
+%Docstring
+Creates a new color ramp shader.
+
+:param minimumValue: minimum value for the raster shader
+:param maximumValue: maximum value for the raster shader
+:param type: interpolation type used
+:param classificationMode: method used to classify the color ramp shader
+:param colorRamp: vector color ramp used to classify the color ramp shader
+
+:return: new QgsColorRampShader
+%End
+
+    QgsColorRampShader( const QgsColorRampShader &other );
+%Docstring
+Copy constructor
+%End
+
+
     struct ColorRampItem
     {
-      //! default constructor
       ColorRampItem();
-      //! convenience constructor
-      ColorRampItem( double val, const QColor& col, const QString& lbl = QString() );
+%Docstring
+default constructor
+%End
+      ColorRampItem( double val, const QColor &col, const QString &lbl = QString() );
+%Docstring
+convenience constructor
+%End
 
       QString label;
       double value;
       QColor color;
 
-      // compare operator for sorting
-      bool operator<( const QgsColorRampShader::ColorRampItem& other ) const;
+      bool operator<( const QgsColorRampShader::ColorRampItem &other ) const;
     };
 
-    enum ColorRamp_TYPE
-    {
-      INTERPOLATED,
-      DISCRETE,
-      EXACT
-    };
-
-    /** \brief Get the custom colormap*/
     QList<QgsColorRampShader::ColorRampItem> colorRampItemList() const;
+%Docstring
+ Get the custom colormap
+%End
 
-    /** \brief Get the color ramp type */
-    QgsColorRampShader::ColorRamp_TYPE colorRampType() const;
+    Type colorRampType() const;
+%Docstring
+ Get the color ramp type
+%End
 
-    /** \brief Get the color ramp type as a string */
     QString colorRampTypeAsQString();
+%Docstring
+ Get the color ramp type as a string
+%End
 
-    /** \brief Get the maximum size the color cache can be*/
-    int maximumColorCacheSize();
+    void setColorRampItemList( const QList<QgsColorRampShader::ColorRampItem> &list ); //TODO: sort on set
 
-    /** \brief Set custom colormap */
-    void setColorRampItemList( const QList<QgsColorRampShader::ColorRampItem>& theList ); //TODO: sort on set
+    void setColorRampType( QgsColorRampShader::Type colorRampType );
+%Docstring
+ Set the color ramp type
+%End
 
-    /** \brief Set the color ramp type*/
-    void setColorRampType( QgsColorRampShader::ColorRamp_TYPE theColorRampType );
+    QgsColorRamp *sourceColorRamp() const /Factory/;
+%Docstring
+Get the source color ramp
 
-    /** \brief Set the color ramp type*/
-    void setColorRampType( const QString& theType );
+.. versionadded:: 3.0
 
-    /** \brief Set the maximum size the color cache can be */
-    void setMaximumColorCacheSize( int theSize );
+.. seealso:: :py:func:`setSourceColorRamp`
+%End
 
-    /** \brief Generates and new RGB value based on one input value */
-    bool shade( double, int* /Out/, int* /Out/, int* /Out/, int* /Out/ );
+    void setSourceColorRamp( QgsColorRamp *colorramp /Transfer/ );
+%Docstring
+Set the source color ramp. Ownership is transferred to the renderer.
 
-    /** \brief Generates and new RGB value based on original RGB value */
-    bool shade( double, double, double, double, int* /Out/, int* /Out/, int* /Out/, int* /Out/);
+.. versionadded:: 3.0
 
-    void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const;
+.. seealso:: :py:func:`sourceColorRamp`
+%End
 
-    /** Sets whether the shader should not render values out of range.
-     * @param clip set to true to clip values which are out of range.
-     * @see clip()
-     */
+    void setColorRampType( const QString &type );
+%Docstring
+ Set the color ramp type
+%End
+
+    void classifyColorRamp( const int classes = 0, const int band = -1, const QgsRectangle &extent = QgsRectangle(), QgsRasterInterface *input = 0 );
+%Docstring
+Classify color ramp shader
+
+:param classes: number of classes
+:param band: raster band used in classification (only used in quantile mode)
+:param extent: extent used in classification (only used in quantile mode)
+:param input: raster input used in classification (only used in quantile mode)
+%End
+
+    void classifyColorRamp( const int band = -1, const QgsRectangle &extent = QgsRectangle(), QgsRasterInterface *input = 0 ) /PyName=classifyColorRampV2/;
+%Docstring
+Classify color ramp shader
+
+:param band: raster band used in classification (quantile mode only)
+:param extent: extent used in classification (quantile mode only)
+:param input: raster input used in classification (quantile mode only)
+%End
+
+    virtual bool shade( double value, int *returnRedValue /Out/, int *returnGreenValue /Out/, int *returnBlueValue /Out/, int *returnAlphaValue /Out/ );
+
+%Docstring
+ Generates and new RGB value based on one input value
+%End
+
+     virtual bool shade( double redValue, double greenValue,
+                double blueValue, double alphaValue,
+                int *returnRedValue /Out/, int *returnGreenValue /Out/,
+                int *returnBlueValue /Out/, int *returnAlphaValue /Out/ );
+%Docstring
+ Generates and new RGB value based on original RGB value
+%End
+
+    virtual void legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems /Out/ ) const;
+
+%Docstring
+ Get symbology items if provided by renderer
+%End
+
+    void setClassificationMode( ClassificationMode classificationMode );
+%Docstring
+Sets classification mode
+%End
+
+    ClassificationMode classificationMode() const;
+%Docstring
+Returns the classification mode
+%End
+
     void setClip( bool clip );
+%Docstring
+Sets whether the shader should not render values out of range.
 
-    /** Returns whether the shader will clip values which are out of range.
-     * @see setClip()
-     */
+:param clip: set to true to clip values which are out of range.
+
+.. seealso:: :py:func:`clip`
+%End
+
     bool clip() const;
+%Docstring
+Returns whether the shader will clip values which are out of range.
+
+.. seealso:: :py:func:`setClip`
+%End
+
+  protected:
+
+
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgscolorrampshader.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

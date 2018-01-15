@@ -17,8 +17,9 @@
 
 #define DIAGRAM_NAME_TEXT "Text"
 
+#include "qgis_core.h"
+#include "qgis.h"
 #include "qgsdiagram.h"
-#include "qgsfeature.h"
 #include <QPen>
 #include <QBrush>
 
@@ -26,10 +27,13 @@ class QPainter;
 class QPointF;
 class QgsDiagramSettings;
 class QgsDiagramInterpolationSettings;
-
+class QgsFeature;
 class QgsRenderContext;
 
-
+/**
+ * \ingroup core
+ * \class QgsTextDiagram
+ */
 class CORE_EXPORT QgsTextDiagram: public QgsDiagram
 {
   public:
@@ -47,26 +51,26 @@ class CORE_EXPORT QgsTextDiagram: public QgsDiagram
     };
 
     QgsTextDiagram();
-    ~QgsTextDiagram();
-    virtual QgsTextDiagram* clone() const override;
+    QgsTextDiagram *clone() const override SIP_FACTORY;
 
-    void renderDiagram( const QgsFeature& feature, QgsRenderContext& c, const QgsDiagramSettings& s, QPointF position ) override;
+    void renderDiagram( const QgsFeature &feature, QgsRenderContext &c, const QgsDiagramSettings &s, QPointF position ) override;
 
-    QSizeF diagramSize( const QgsAttributes& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s ) override;
-    QSizeF diagramSize( const QgsFeature& feature, const QgsRenderContext& c, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is ) override;
-    double legendSize( double value, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is ) const override;
+    QSizeF diagramSize( const QgsAttributes &attributes, const QgsRenderContext &c, const QgsDiagramSettings &s ) override;
+    QSizeF diagramSize( const QgsFeature &feature, const QgsRenderContext &c, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &is ) override;
+    double legendSize( double value, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &is ) const override;
 
-    QString diagramName() const override { return DIAGRAM_NAME_TEXT; }
+    QString diagramName() const override;
 
   private:
-    Orientation mOrientation;
-    Shape mShape;
+    Orientation mOrientation = Vertical;
+    Shape mShape = Circle;
     QBrush mBrush; //transparent brush
     QPen mPen;
 
-    /** Calculates intersection points between a line and an ellipse
-      @return intersection points*/
-    void lineEllipseIntersection( QPointF lineStart, QPointF lineEnd, QPointF ellipseMid, double r1, double r2, QList<QPointF>& result ) const;
+    /**
+     * Calculates intersection points between a line and an ellipse
+      \returns intersection points*/
+    void lineEllipseIntersection( QPointF lineStart, QPointF lineEnd, QPointF ellipseMid, double r1, double r2, QList<QPointF> &result ) const;
 };
 
 #endif // QGSTEXTDIAGRAM_H

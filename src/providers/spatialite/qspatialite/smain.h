@@ -45,9 +45,6 @@
 #include <QSqlDriverPlugin>
 #include <QStringList>
 
-#if QT_VERSION < 0x050000
-#define Q_PLUGIN_METADATA(x)
-#endif
 
 class QSpatiaLiteDriverPlugin : public QSqlDriverPlugin
 {

@@ -1,5 +1,5 @@
 /***************************************************************************
-    testqgsdoublespinbox.cpp
+    testqgsfilewidget.cpp
      --------------------------------------
     Date                 : December 2014
     Copyright            : (C) 2014 Nyall Dawson
@@ -14,9 +14,10 @@
  ***************************************************************************/
 
 
-#include <QtTest/QtTest>
+#include "qgstest.h"
 
 #include "qgsfilewidget.h"
+#include <memory>
 
 class TestQgsFileWidget: public QObject
 {
@@ -26,9 +27,11 @@ class TestQgsFileWidget: public QObject
     void cleanupTestCase(); // will be called after the last testfunction was executed.
     void init(); // will be called before each testfunction is executed.
     void cleanup(); // will be called after every testfunction.
-
     void relativePath();
     void toUrl();
+    void testDroppedFiles();
+    void testMultipleFiles();
+    void testSplitFilePaths();
 
 };
 
@@ -51,8 +54,8 @@ void TestQgsFileWidget::cleanup()
 
 void TestQgsFileWidget::relativePath()
 {
-  QgsFileWidget* w = new QgsFileWidget();
-  w->setDefaultRoot( "/home/test" );
+  QgsFileWidget *w = new QgsFileWidget();
+  w->setDefaultRoot( QStringLiteral( "/home/test" ) );
   w->setRelativeStorage( QgsFileWidget::Absolute );
   QCOMPARE( w->relativePath( "/home/test2/file1.ext", true ), QString( "/home/test2/file1.ext" ) );
   QCOMPARE( w->relativePath( "/home/test2/file2.ext", false ), QString( "/home/test2/file2.ext" ) );
@@ -65,8 +68,8 @@ void TestQgsFileWidget::relativePath()
 
 void TestQgsFileWidget::toUrl()
 {
-  QgsFileWidget* w = new QgsFileWidget();
-  w->setDefaultRoot( "/home/test" );
+  QgsFileWidget *w = new QgsFileWidget();
+  w->setDefaultRoot( QStringLiteral( "/home/test" ) );
   w->setRelativeStorage( QgsFileWidget::Absolute );
   w->setFullUrl( true );
   QCOMPARE( w->toUrl( "/home/test2/file1.ext" ), QString( "<a href=\"file:///home/test2/file1.ext\">/home/test2/file1.ext</a>" ) );
@@ -81,7 +84,92 @@ void TestQgsFileWidget::toUrl()
   QCOMPARE( w->toUrl( "../test2/file6.ext" ), QString( "<a href=\"file:///home/test2/file6.ext\">file6.ext</a>" ) );
 }
 
+void TestQgsFileWidget::testDroppedFiles()
+{
+  QgsFileWidget *w = new QgsFileWidget();
+  w->setStorageMode( QgsFileWidget::GetFile );
+
+  // should not accept dropped folders
+  std::unique_ptr< QMimeData > mime( new QMimeData() );
+  mime->setUrls( QList<QUrl>() << QUrl::fromLocalFile( TEST_DATA_DIR ) );
+  std::unique_ptr< QDropEvent > event( new QDropEvent( QPointF( 1, 1 ), Qt::CopyAction, mime.get(), Qt::LeftButton, Qt::NoModifier ) );
+
+  qobject_cast< QgsFileDropEdit * >( w->lineEdit() )->dropEvent( event.get() );
+  QVERIFY( w->lineEdit()->text().isEmpty() );
+
+  // but dropped files should be fine
+  mime->setUrls( QList<QUrl>() << QUrl::fromLocalFile( TEST_DATA_DIR + QStringLiteral( "/bug5598.shp" ) ) );
+  event.reset( new QDropEvent( QPointF( 1, 1 ), Qt::CopyAction, mime.get(), Qt::LeftButton,  Qt::NoModifier ) );
+  qobject_cast< QgsFileDropEdit * >( w->lineEdit() )->dropEvent( event.get() );
+  QCOMPARE( w->lineEdit()->text(), TEST_DATA_DIR + QStringLiteral( "/bug5598.shp" ) );
+
+  // with file filter
+  w->setFilter( QStringLiteral( "Data (*.shp)" ) );
+  w->setFilePath( QString() );
+  qobject_cast< QgsFileDropEdit * >( w->lineEdit() )->dropEvent( event.get() );
+  QCOMPARE( w->lineEdit()->text(), TEST_DATA_DIR + QStringLiteral( "/bug5598.shp" ) );
+  w->setFilePath( QString() );
+  // should be rejected, not compatible with filter
+  mime->setUrls( QList<QUrl>() << QUrl::fromLocalFile( TEST_DATA_DIR + QStringLiteral( "/encoded_html.html" ) ) );
+  event.reset( new QDropEvent( QPointF( 1, 1 ), Qt::CopyAction, mime.get(), Qt::LeftButton,  Qt::NoModifier ) );
+  qobject_cast< QgsFileDropEdit * >( w->lineEdit() )->dropEvent( event.get() );
+  QVERIFY( w->lineEdit()->text().isEmpty() );
+  // new filter, should be allowed now
+  w->setFilter( QStringLiteral( "Data (*.shp);;HTML (*.HTML)" ) );
+  qobject_cast< QgsFileDropEdit * >( w->lineEdit() )->dropEvent( event.get() );
+  QCOMPARE( w->lineEdit()->text(), TEST_DATA_DIR + QStringLiteral( "/encoded_html.html" ) );
+
+  //try with wildcard filter
+  w->setFilter( QStringLiteral( "All files (*.*);;Data (*.shp);;HTML (*.HTML)" ) );
+  mime->setUrls( QList<QUrl>() << QUrl::fromLocalFile( TEST_DATA_DIR + QStringLiteral( "/bug5598.prj" ) ) );
+  event.reset( new QDropEvent( QPointF( 1, 1 ), Qt::CopyAction, mime.get(), Qt::LeftButton,  Qt::NoModifier ) );
+  qobject_cast< QgsFileDropEdit * >( w->lineEdit() )->dropEvent( event.get() );
+  QCOMPARE( w->lineEdit()->text(), TEST_DATA_DIR + QStringLiteral( "/bug5598.prj" ) );
+
+  // try with folders
+  w->setStorageMode( QgsFileWidget::GetDirectory );
+  w->setFilePath( QString() );
+  // should be rejected
+  qobject_cast< QgsFileDropEdit * >( w->lineEdit() )->dropEvent( event.get() );
+  QVERIFY( w->lineEdit()->text().isEmpty() );
+
+  // but dropping a folder should work
+  mime->setUrls( QList<QUrl>() << QUrl::fromLocalFile( TEST_DATA_DIR ) );
+  event.reset( new QDropEvent( QPointF( 1, 1 ), Qt::CopyAction, mime.get(), Qt::LeftButton, Qt::NoModifier ) );
+  qobject_cast< QgsFileDropEdit * >( w->lineEdit() )->dropEvent( event.get() );
+  QCOMPARE( w->lineEdit()->text(), QString( TEST_DATA_DIR ) );
+
+}
+
+void TestQgsFileWidget::testMultipleFiles()
+{
+  QgsFileWidget *w = new QgsFileWidget();
+  w->setStorageMode( QgsFileWidget::GetMultipleFiles );
+
+  std::unique_ptr< QMimeData > mime( new QMimeData() );
+  mime->setUrls( QList<QUrl>() << QUrl::fromLocalFile( TEST_DATA_DIR + QStringLiteral( "/bug5598.shp" ) )
+                 << QUrl::fromLocalFile( TEST_DATA_DIR + QStringLiteral( "/bug5598.shp" ) ) );
+  std::unique_ptr< QDropEvent > event( new QDropEvent( QPointF( 1, 1 ), Qt::CopyAction, mime.get(), Qt::LeftButton, Qt::NoModifier ) );
+
+  qobject_cast< QgsFileDropEdit * >( w->lineEdit() )->dropEvent( event.get() );
+  QCOMPARE( w->lineEdit()->text(), QStringLiteral( "\"%1\" \"%1\"" ).arg( TEST_DATA_DIR + QStringLiteral( "/bug5598.shp" ) ) );
+}
 
 
-QTEST_MAIN( TestQgsFileWidget )
+
+void TestQgsFileWidget::testSplitFilePaths()
+{
+  const QString path = QString( TEST_DATA_DIR + QStringLiteral( "/bug5598.shp" ) );
+  QCOMPARE( QgsFileWidget::splitFilePaths( QStringLiteral( "\"%1\" \"%1\"" ).arg( path ) ), QStringList() << path << path );
+  QCOMPARE( QgsFileWidget::splitFilePaths( QStringLiteral( "\"%1\"   \"%1\"" ).arg( path ) ), QStringList() << path << path );
+  QCOMPARE( QgsFileWidget::splitFilePaths( QStringLiteral( " \"%1\"   \"%1\"" ).arg( path ) ), QStringList() << path << path );
+  QCOMPARE( QgsFileWidget::splitFilePaths( QStringLiteral( " \"%1\"   \"%1\" " ).arg( path ) ), QStringList() << path << path );
+  QCOMPARE( QgsFileWidget::splitFilePaths( QStringLiteral( "\"%1\"   \"%1\" " ).arg( path ) ), QStringList() << path << path );
+  QCOMPARE( QgsFileWidget::splitFilePaths( path ), QStringList() << path );
+}
+
+
+
+
+QGSTEST_MAIN( TestQgsFileWidget )
 #include "testqgsfilewidget.moc"

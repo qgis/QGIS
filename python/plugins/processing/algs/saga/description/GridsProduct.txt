@@ -1,0 +1,4 @@
+Grids Product
+grid_calculus
+QgsProcessingParameterMultipleLayers|GRIDS|Grids|3|None|False
+QgsProcessingParameterRasterDestination|RESULT|Product

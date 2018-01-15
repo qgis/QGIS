@@ -24,60 +24,52 @@ __copyright__ = '(C) 2015, Etienne Trimaille'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import QgsFeature, QgsGeometry
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.parameters import ParameterVector
-from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
+from qgis.core import (QgsProcessingParameterNumber,
+                       QgsProcessing)
+from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 
 
-class DeleteHoles(GeoAlgorithm):
+class DeleteHoles(QgisFeatureBasedAlgorithm):
 
-    INPUT = 'INPUT'
-    OUTPUT = 'OUTPUT'
+    MIN_AREA = 'MIN_AREA'
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Delete holes')
-        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
+    def __init__(self):
+        super().__init__()
+        self.min_area = None
 
-        self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_POLYGON]))
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Cleaned')))
+    def initParameters(self, config=None):
+        self.addParameter(QgsProcessingParameterNumber(self.MIN_AREA,
+                                                       self.tr('Remove holes with area less than'), QgsProcessingParameterNumber.Double,
+                                                       0, True, 0.0, 10000000.0))
 
-    def processAlgorithm(self, progress):
-        layer = dataobjects.getObjectFromUri(
-            self.getParameterValue(self.INPUT))
+    def tags(self):
+        return self.tr('remove,delete,drop,holes,rings,fill').split(',')
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            layer.pendingFields(),
-            layer.wkbType(),
-            layer.crs())
+    def group(self):
+        return self.tr('Vector geometry')
 
-        features = vector.features(layer)
-        total = 100.0 / len(features)
+    def groupId(self):
+        return 'vectorgeometry'
 
-        feat = QgsFeature()
-        for current, f in enumerate(features):
-            geometry = f.geometry()
-            if geometry:
-                if geometry.isMultipart():
-                    multi_polygon = geometry.asMultiPolygon()
-                    for polygon in multi_polygon:
-                        for ring in polygon[1:]:
-                            polygon.remove(ring)
-                    geometry = QgsGeometry.fromMultiPolygon(multi_polygon)
+    def name(self):
+        return 'deleteholes'
 
-                else:
-                    polygon = geometry.asPolygon()
-                    for ring in polygon[1:]:
-                        polygon.remove(ring)
-                    geometry = QgsGeometry.fromPolygon(polygon)
-            else:
-                geometry = QgsGeometry(None)
+    def displayName(self):
+        return self.tr('Delete holes')
 
-            feat.setGeometry(geometry)
-            feat.setAttributes(f.attributes())
-            writer.addFeature(feat)
-            progress.setPercentage(int(current * total))
+    def outputName(self):
+        return self.tr('Cleaned')
 
-        del writer
+    def inputLayerTypes(self):
+        return [QgsProcessing.TypeVectorPolygon]
+
+    def prepareAlgorithm(self, parameters, context, feedback):
+        self.min_area = self.parameterAsDouble(parameters, self.MIN_AREA, context)
+        if self.min_area == 0.0:
+            self.min_area = -1.0
+        return True
+
+    def processFeature(self, feature, context, feedback):
+        if feature.hasGeometry():
+            feature.setGeometry(feature.geometry().removeInteriorRings(self.min_area))
+        return feature

@@ -1,8 +1,18 @@
-class QgsRasterLayerSaveAsDialog : QDialog
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsrasterlayersaveasdialog.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+class QgsRasterLayerSaveAsDialog: QDialog
 {
+
 %TypeHeaderCode
-#include <qgsextentgroupbox.h>
-#include <qgsrasterlayersaveasdialog.h>
+#include "qgsrasterlayersaveasdialog.h"
 %End
   public:
     enum Mode
@@ -22,10 +32,16 @@ class QgsRasterLayerSaveAsDialog : QDialog
       UserResolution
     };
 
-    QgsRasterLayerSaveAsDialog( QgsRasterLayer* rasterLayer,
-                                QgsRasterDataProvider* sourceProvider, const QgsRectangle& currentExtent,
-                                const QgsCoordinateReferenceSystem& layerCrs, const QgsCoordinateReferenceSystem& currentCrs,
-                                QWidget* parent /TransferThis/ = 0, const Qt::WindowFlags& f = 0 );
+    QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLayer,
+                                QgsRasterDataProvider *sourceProvider,
+                                const QgsRectangle &currentExtent,
+                                const QgsCoordinateReferenceSystem &layerCrs,
+                                const QgsCoordinateReferenceSystem &currentCrs,
+                                QWidget *parent /TransferThis/ = 0,
+                                Qt::WindowFlags f = 0 );
+%Docstring
+Constructor for QgsRasterLayerSaveAsDialog
+%End
     ~QgsRasterLayerSaveAsDialog();
 
     Mode mode() const;
@@ -55,4 +71,15 @@ class QgsRasterLayerSaveAsDialog : QDialog
 
   public slots:
     virtual void accept();
+
 };
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsrasterlayersaveasdialog.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

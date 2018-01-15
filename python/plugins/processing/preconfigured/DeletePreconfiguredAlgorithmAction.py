@@ -26,7 +26,8 @@ __copyright__ = '(C) 2016, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from PyQt4.QtGui import QMessageBox
+from qgis.PyQt.QtWidgets import QMessageBox
+from qgis.core import QgsApplication
 from processing.gui.ContextAction import ContextAction
 from processing.preconfigured.PreconfiguredAlgorithm import PreconfiguredAlgorithm
 
@@ -48,4 +49,4 @@ class DeletePreconfiguredAlgorithmAction(ContextAction):
                                      QMessageBox.No)
         if reply == QMessageBox.Yes:
             os.remove(self.itemData.descriptionFile)
-            self.toolbox.updateProvider('preconfigured')
+            QgsApplication.processingRegistry().providerById('preconfigured').refreshAlgorithms()

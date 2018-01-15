@@ -1,40 +1,75 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgsrasterresamplefilter.h                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
 
-/** Raster resample filter */
+
+
+
 
 class QgsRasterResampleFilter : QgsRasterInterface
 {
-%TypeHeaderCode
-#include <qgsrasterresamplefilter.h>
+%Docstring
+Resample filter pipe for rasters.
 %End
 
+%TypeHeaderCode
+#include "qgsrasterresamplefilter.h"
+%End
   public:
     QgsRasterResampleFilter( QgsRasterInterface *input = 0 );
-    ~QgsRasterResampleFilter();
 
-    virtual QgsRasterResampleFilter * clone() const /Factory/;
+    virtual QgsRasterResampleFilter *clone() const /Factory/;
 
-    int bandCount() const;
 
-    QGis::DataType dataType( int bandNo ) const;
+    virtual int bandCount() const;
 
-    bool setInput( QgsRasterInterface* input );
 
-    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height ) /Factory/;
+    virtual Qgis::DataType dataType( int bandNo ) const;
 
-    /** Set resampler for zoomed in scales. Takes ownership of the object*/
-    void setZoomedInResampler( QgsRasterResampler* r /Transfer/ );
-    const QgsRasterResampler* zoomedInResampler() const;
 
-    /** Set resampler for zoomed out scales. Takes ownership of the object*/
-    void setZoomedOutResampler( QgsRasterResampler* r /Transfer/ );
-    const QgsRasterResampler* zoomedOutResampler() const;
+    virtual bool setInput( QgsRasterInterface *input );
+
+
+    virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = 0 ) /Factory/;
+
+
+    void setZoomedInResampler( QgsRasterResampler *r /Transfer/ );
+%Docstring
+Set resampler for zoomed in scales. Takes ownership of the object
+%End
+    const QgsRasterResampler *zoomedInResampler() const;
+
+    void setZoomedOutResampler( QgsRasterResampler *r /Transfer/ );
+%Docstring
+Set resampler for zoomed out scales. Takes ownership of the object
+%End
+    const QgsRasterResampler *zoomedOutResampler() const;
 
     void setMaxOversampling( double os );
     double maxOversampling() const;
 
-    void writeXML( QDomDocument& doc, QDomElement& parentElem ) const;
+    virtual void writeXml( QDomDocument &doc, QDomElement &parentElem ) const;
 
-    /** Sets base class members from xml. Usually called from create() methods of subclasses*/
-    void readXML( const QDomElement& filterElem );
+
+    virtual void readXml( const QDomElement &filterElem );
+
+%Docstring
+Sets base class members from xml. Usually called from create() methods of subclasses
+%End
+
+  protected:
+
+
 };
 
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgsrasterresamplefilter.h                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

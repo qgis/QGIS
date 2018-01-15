@@ -17,11 +17,17 @@
 #include "qgsmaplayerlegend.h"
 #include "qgsmaplayerrenderer.h"
 
-QgsPluginLayer::QgsPluginLayer( const QString& layerType, const QString& layerName )
-    : QgsMapLayer( PluginLayer, layerName )
-    , mPluginLayerType( layerType )
+QgsPluginLayer::QgsPluginLayer( const QString &layerType, const QString &layerName )
+  : QgsMapLayer( PluginLayer, layerName )
+  , mPluginLayerType( layerType )
 {
-  setLegend( QgsMapLayerLegend::defaultPluginLegend( this ) );
+}
+
+QgsPluginLayer::~QgsPluginLayer()
+{
+  // TODO: shall we move the responsibility of emitting the signal to plugin
+  // layer implementations before they start doing their part of cleanup...?
+  emit willBeDeleted();
 }
 
 QString QgsPluginLayer::pluginLayerType()
@@ -34,42 +40,7 @@ void QgsPluginLayer::setExtent( const QgsRectangle &extent )
   mExtent = extent;
 }
 
-void QgsPluginLayer::setSource( const QString& source )
+void QgsPluginLayer::setSource( const QString &source )
 {
   mDataSource = source;
-}
-
-QgsLegendSymbologyList QgsPluginLayer::legendSymbologyItems( QSize iconSize )
-{
-  Q_UNUSED( iconSize );
-  return QgsLegendSymbologyList();
-}
-
-/** Fallback layer renderer implementation for layer that do not support map renderer yet.
- *
- * @note added in 2.4
- * @note not available in Python bindings
- */
-class QgsPluginLayerRenderer : public QgsMapLayerRenderer
-{
-  public:
-    QgsPluginLayerRenderer( QgsPluginLayer* layer, QgsRenderContext& rendererContext )
-        : QgsMapLayerRenderer( layer->id() )
-        , mLayer( layer )
-        , mRendererContext( rendererContext )
-    {}
-
-    virtual bool render() override
-    {
-      return mLayer->draw( mRendererContext );
-    }
-
-  protected:
-    QgsPluginLayer* mLayer;
-    QgsRenderContext& mRendererContext;
-};
-
-QgsMapLayerRenderer* QgsPluginLayer::createMapRenderer( QgsRenderContext& rendererContext )
-{
-  return new QgsPluginLayerRenderer( this, rendererContext );
 }

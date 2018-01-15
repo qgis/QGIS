@@ -20,18 +20,18 @@
 #include "qgsdatasourceuri.h"
 #include "qgsmessagelog.h"
 #include "qgscredentials.h"
-#include "qgsfield.h"
+#include "qgsfields.h"
 #include "qgsoracletablemodel.h"
+#include "qgssettings.h"
 
-#include <QSettings>
 #include <QSqlError>
-#include <QDateTime>
 
 QMap<QString, QgsOracleConn *> QgsOracleConn::sConnections;
 int QgsOracleConn::snConnections = 0;
 const int QgsOracleConn::sGeomTypeSelectLimit = 100;
+QMap<QString, QDateTime> QgsOracleConn::sBrokenConnections;
 
-QgsOracleConn *QgsOracleConn::connectDb( QgsDataSourceURI uri )
+QgsOracleConn *QgsOracleConn::connectDb( const QgsDataSourceUri &uri )
 {
   QString conninfo = toPoolName( uri );
   if ( sConnections.contains( conninfo ) )
@@ -54,10 +54,10 @@ QgsOracleConn *QgsOracleConn::connectDb( QgsDataSourceURI uri )
   return conn;
 }
 
-QgsOracleConn::QgsOracleConn( QgsDataSourceURI uri )
-    : mRef( 1 )
-    , mCurrentUser( QString::null )
-    , mHasSpatial( -1 )
+QgsOracleConn::QgsOracleConn( QgsDataSourceUri uri )
+  : mRef( 1 )
+  , mCurrentUser( QString() )
+  , mHasSpatial( -1 )
 {
   QgsDebugMsg( QString( "New Oracle connection for " ) + uri.connectionInfo() );
 
@@ -67,29 +67,49 @@ QgsOracleConn::QgsOracleConn( QgsDataSourceURI uri )
   mDatabase = QSqlDatabase::addDatabase( "QOCISPATIAL", QString( "oracle%1" ).arg( snConnections++ ) );
   mDatabase.setDatabaseName( database );
   QString options = uri.hasParam( "dboptions" ) ? uri.param( "dboptions" ) : "OCI_ATTR_PREFETCH_ROWS=1000";
-  QString workspace = uri.hasParam( "dbworkspace" ) ? uri.param( "dbworkspace" ) : QString::null;
+  QString workspace = uri.hasParam( "dbworkspace" ) ? uri.param( "dbworkspace" ) : QString();
   mDatabase.setConnectOptions( options );
   mDatabase.setUserName( uri.username() );
   mDatabase.setPassword( uri.password() );
 
-  QgsDebugMsg( QString( "Connecting with options: " ) + options );
+  QString username = uri.username();
+  QString password = uri.password();
 
+  QString realm( database );
+  if ( !username.isEmpty() )
+    realm.prepend( username + "@" );
+
+  if ( sBrokenConnections.contains( realm ) )
+  {
+    QDateTime now( QDateTime::currentDateTime() );
+    QDateTime since( sBrokenConnections[ realm ] );
+    QgsDebugMsg( QString( "Broken since %1 [%2s ago]" ).arg( since.toString( Qt::ISODate ) ).arg( since.secsTo( now ) ) );
+
+    if ( since.secsTo( now ) < 30 )
+    {
+      QgsMessageLog::logMessage( tr( "Connection failed %1s ago - skipping retry" ).arg( since.secsTo( now ) ), tr( "Oracle" ) );
+      mRef = 0;
+      return;
+    }
+  }
+
+  QgsDebugMsg( QString( "Connecting with options: " ) + options );
   if ( !mDatabase.open() )
   {
-    QString username = uri.username();
-    QString password = uri.password();
-
-    QString realm( database );
-    if ( !username.isEmpty() )
-      realm.prepend( username + "@" );
-
     QgsCredentials::instance()->lock();
 
     while ( !mDatabase.open() )
     {
       bool ok = QgsCredentials::instance()->get( realm, username, password, mDatabase.lastError().text() );
       if ( !ok )
+      {
+        QDateTime now( QDateTime::currentDateTime() );
+        QgsDebugMsg( QString( "get failed: %1 <= %2" ).arg( realm ).arg( now.toString( Qt::ISODate ) ) );
+        sBrokenConnections.insert( realm, now );
         break;
+      }
+
+      sBrokenConnections.remove( realm );
 
       if ( !username.isEmpty() )
       {
@@ -123,7 +143,7 @@ QgsOracleConn::QgsOracleConn( QgsDataSourceURI uri )
   {
     QSqlQuery qry( mDatabase );
 
-    if ( !qry.exec( QString( "BEGIN\nDBMS_WM.GotoWorkspace(%1);\nEND;" ).arg( quotedValue( workspace ) ) ) )
+    if ( !qry.prepare( QString( "BEGIN\nDBMS_WM.GotoWorkspace(?);\nEND;" ) ) || !( qry.addBindValue( workspace ), qry.exec() ) )
     {
       mDatabase.close();
       QgsMessageLog::logMessage( tr( "Could not switch to workspace %1 [%2]" ).arg( workspace, qry.lastError().databaseText() ), tr( "Oracle" ) );
@@ -140,7 +160,7 @@ QgsOracleConn::~QgsOracleConn()
     mDatabase.close();
 }
 
-QString QgsOracleConn::toPoolName( QgsDataSourceURI uri )
+QString QgsOracleConn::toPoolName( const QgsDataSourceUri &uri )
 {
   QString conninfo = uri.connectionInfo();
   if ( uri.hasParam( "dbworkspace" ) )
@@ -150,7 +170,7 @@ QString QgsOracleConn::toPoolName( QgsDataSourceURI uri )
 
 QString QgsOracleConn::connInfo()
 {
-  return sConnections.key( this, QString::null );
+  return sConnections.key( this, QString() );
 }
 
 void QgsOracleConn::disconnect()
@@ -158,7 +178,7 @@ void QgsOracleConn::disconnect()
   if ( --mRef > 0 )
     return;
 
-  QString key = sConnections.key( this, QString::null );
+  QString key = sConnections.key( this, QString() );
 
   if ( !key.isNull() )
   {
@@ -172,11 +192,22 @@ void QgsOracleConn::disconnect()
   deleteLater();
 }
 
-bool QgsOracleConn::exec( QSqlQuery &qry, QString sql )
+bool QgsOracleConn::exec( QSqlQuery &qry, QString sql, const QVariantList &params )
 {
   QgsDebugMsgLevel( QString( "SQL: %1" ).arg( sql ), 4 );
 
-  bool res = qry.exec( sql );
+  bool res = qry.prepare( sql );
+  if ( res )
+  {
+    for ( const auto &param : params )
+    {
+      QgsDebugMsgLevel( QString( " ARG: %1 [%2]" ).arg( param.toString() ).arg( param.typeName() ), 4 );
+      qry.addBindValue( param );
+    }
+
+    res = qry.exec();
+  }
+
   if ( !res )
   {
     QgsDebugMsg( QString( "SQL: %1\nERROR: %2" )
@@ -192,10 +223,10 @@ QStringList QgsOracleConn::pkCandidates( QString ownerName, QString viewName )
   QStringList cols;
 
   QSqlQuery qry( mDatabase );
-  if ( !exec( qry, QString( "SELECT column_name FROM all_tab_columns WHERE owner=%1 AND table_name=%2 ORDER BY column_id" )
-              .arg( quotedValue( ownerName ) ).arg( quotedValue( viewName ) ) ) )
+  if ( !exec( qry, QString( "SELECT column_name FROM all_tab_columns WHERE owner=? AND table_name=? ORDER BY column_id" ),
+              QVariantList() << ownerName << viewName ) )
   {
-    QgsMessageLog::logMessage( tr( "SQL:%1\nerror:%2\n" ).arg( qry.lastQuery() ).arg( qry.lastError().text() ), tr( "Oracle" ) );
+    QgsMessageLog::logMessage( tr( "SQL: %1 [owner: %2 table_name: %3]\nerror: %4\n" ).arg( qry.lastQuery(), qry.lastError().text(), ownerName, viewName ), tr( "Oracle" ) );
     return cols;
   }
 
@@ -219,7 +250,7 @@ bool QgsOracleConn::tableInfo( bool geometryColumnsOnly, bool userTablesOnly, bo
 
   QString
   prefix( userTablesOnly ? "user" : "all" ),
-  owner( userTablesOnly ? "user AS owner" : "c.owner" );
+          owner( userTablesOnly ? "user AS owner" : "c.owner" );
 
   sql = QString( "SELECT %1,c.table_name,c.column_name,%2,o.object_type AS type"
                  " FROM %3_%4 c"
@@ -242,9 +273,9 @@ bool QgsOracleConn::tableInfo( bool geometryColumnsOnly, bool userTablesOnly, bo
   // sql += " ORDER BY owner,isview,table_name,column_name";
 
   QSqlQuery qry( mDatabase );
-  if ( !exec( qry, sql ) )
+  if ( !exec( qry, sql, QVariantList() ) )
   {
-    QgsMessageLog::logMessage( tr( "Querying available tables failed.\nSQL:%1\nerror:%2\n" ).arg( qry.lastQuery() ).arg( qry.lastError().text() ), tr( "Oracle" ) );
+    QgsMessageLog::logMessage( tr( "Querying available tables failed.\nSQL: %1\nerror: %2\n" ).arg( qry.lastQuery() ).arg( qry.lastError().text() ), tr( "Oracle" ) );
     return false;
   }
 
@@ -254,7 +285,7 @@ bool QgsOracleConn::tableInfo( bool geometryColumnsOnly, bool userTablesOnly, bo
     layerProperty.ownerName       = qry.value( 0 ).toString();
     layerProperty.tableName       = qry.value( 1 ).toString();
     layerProperty.geometryColName = qry.value( 2 ).toString();
-    layerProperty.types           = QList<QGis::WkbType>() << ( qry.value( 2 ).isNull() ? QGis::WKBNoGeometry : QGis::WKBUnknown );
+    layerProperty.types           = QList<QgsWkbTypes::Type>() << ( qry.value( 2 ).isNull() ? QgsWkbTypes::NoGeometry : QgsWkbTypes::Unknown );
     layerProperty.srids           = QList<int>() << qry.value( 3 ).toInt();
     layerProperty.isView          = qry.value( 4 ) != "TABLE";
     layerProperty.pkCols.clear();
@@ -382,7 +413,7 @@ QString QgsOracleConn::fieldExpression( const QgsField &fld )
 
 void QgsOracleConn::retrieveLayerTypes( QgsOracleLayerProperty &layerProperty, bool useEstimatedMetadata, bool onlyExistingTypes )
 {
-  QgsDebugMsg( "entering: " + layerProperty.toString() );
+  QgsDebugMsgLevel( "entering: " + layerProperty.toString(), 3 );
 
   if ( layerProperty.isView )
   {
@@ -423,15 +454,15 @@ void QgsOracleConn::retrieveLayerTypes( QgsOracleLayerProperty &layerProperty, b
     where = layerProperty.sql;
   }
 
-  QGis::WkbType detectedType = layerProperty.types.value( 0, QGis::WKBUnknown );
+  QgsWkbTypes::Type detectedType = layerProperty.types.value( 0, QgsWkbTypes::Unknown );
   int detectedSrid = layerProperty.srids.value( 0, -1 );
 
-  Q_ASSERT( detectedType == QGis::WKBUnknown || detectedSrid <= 0 );
+  Q_ASSERT( detectedType == QgsWkbTypes::Unknown || detectedSrid <= 0 );
 
   QSqlQuery qry( mDatabase );
   int idx = 0;
   QString sql = "SELECT DISTINCT ";
-  if ( detectedType == QGis::WKBUnknown )
+  if ( detectedType == QgsWkbTypes::Unknown )
   {
     sql += "t.%1.SDO_GTYPE";
     if ( detectedSrid <= 0 )
@@ -451,9 +482,9 @@ void QgsOracleConn::retrieveLayerTypes( QgsOracleLayerProperty &layerProperty, b
   if ( !exec( qry, sql
               .arg( quotedIdentifier( layerProperty.geometryColName ) )
               .arg( table )
-              .arg( where.isEmpty() ? "" : QString( " AND (%1)" ).arg( where ) ) ) )
+              .arg( where.isEmpty() ? "" : QString( " AND (%1)" ).arg( where ) ), QVariantList() ) )
   {
-    QgsMessageLog::logMessage( tr( "SQL:%1\nerror:%2\n" )
+    QgsMessageLog::logMessage( tr( "SQL: %1\nerror: %2\n" )
                                .arg( qry.lastQuery() )
                                .arg( qry.lastError().text() ),
                                tr( "Oracle" ) );
@@ -466,10 +497,10 @@ void QgsOracleConn::retrieveLayerTypes( QgsOracleLayerProperty &layerProperty, b
   QSet<int> srids;
   while ( qry.next() )
   {
-    if ( detectedType == QGis::WKBUnknown )
+    if ( detectedType == QgsWkbTypes::Unknown )
     {
-      QGis::WkbType type = wkbTypeFromDatabase( qry.value( 0 ).toInt() );
-      if ( type == QGis::WKBUnknown )
+      QgsWkbTypes::Type type = wkbTypeFromDatabase( qry.value( 0 ).toInt() );
+      if ( type == QgsWkbTypes::Unknown )
       {
         QgsMessageLog::logMessage( tr( "Unsupported geometry type %1 in %2.%3.%4 ignored" )
                                    .arg( qry.value( 0 ).toInt() )
@@ -494,52 +525,54 @@ void QgsOracleConn::retrieveLayerTypes( QgsOracleLayerProperty &layerProperty, b
 
   if ( !onlyExistingTypes )
   {
-    layerProperty.types << QGis::WKBUnknown;
+    layerProperty.types << QgsWkbTypes::Unknown;
     layerProperty.srids << ( srids.size() == 1 ? *srids.constBegin() : 0 );
   }
 
   QgsDebugMsg( "leaving." );
 }
 
-QString QgsOracleConn::databaseTypeFilter( QString alias, QString geomCol, QGis::WkbType geomType )
+QString QgsOracleConn::databaseTypeFilter( QString alias, QString geomCol, QgsWkbTypes::Type geomType )
 {
   geomCol = quotedIdentifier( alias ) + "." + quotedIdentifier( geomCol );
 
   switch ( geomType )
   {
-    case QGis::WKBPoint:
-    case QGis::WKBPoint25D:
-    case QGis::WKBMultiPoint:
-    case QGis::WKBMultiPoint25D:
+    case QgsWkbTypes::Point:
+    case QgsWkbTypes::Point25D:
+    case QgsWkbTypes::MultiPoint:
+    case QgsWkbTypes::MultiPoint25D:
       return QString( "mod(%1.sdo_gtype,100) IN (1,5)" ).arg( geomCol );
-    case QGis::WKBLineString:
-    case QGis::WKBLineString25D:
-    case QGis::WKBMultiLineString:
-    case QGis::WKBMultiLineString25D:
+    case QgsWkbTypes::LineString:
+    case QgsWkbTypes::LineString25D:
+    case QgsWkbTypes::MultiLineString:
+    case QgsWkbTypes::MultiLineString25D:
       return QString( "mod(%1.sdo_gtype,100) IN (2,6)" ).arg( geomCol );
-    case QGis::WKBPolygon:
-    case QGis::WKBPolygon25D:
-    case QGis::WKBMultiPolygon:
-    case QGis::WKBMultiPolygon25D:
+    case QgsWkbTypes::Polygon:
+    case QgsWkbTypes::Polygon25D:
+    case QgsWkbTypes::MultiPolygon:
+    case QgsWkbTypes::MultiPolygon25D:
       return QString( "mod(%1.sdo_gtype,100) IN (3,7)" ).arg( geomCol );
-    case QGis::WKBNoGeometry:
+    case QgsWkbTypes::NoGeometry:
       return QString( "%1 IS NULL" ).arg( geomCol );
-    case QGis::WKBUnknown:
+    case QgsWkbTypes::Unknown:
       Q_ASSERT( !"unknown geometry unexpected" );
-      return QString::null;
+      return QString();
+    default:
+      break;
   }
 
   Q_ASSERT( !"unexpected geomType" );
-  return QString::null;
+  return QString();
 }
 
-QGis::WkbType QgsOracleConn::wkbTypeFromDatabase( int gtype )
+QgsWkbTypes::Type QgsOracleConn::wkbTypeFromDatabase( int gtype )
 {
   QgsDebugMsg( QString( "entering %1" ).arg( gtype ) );
   int t = gtype % 100;
 
   if ( t == 0 )
-    return QGis::WKBUnknown;
+    return QgsWkbTypes::Unknown;
 
   int d = gtype / 1000;
   if ( d == 2 )
@@ -547,23 +580,23 @@ QGis::WkbType QgsOracleConn::wkbTypeFromDatabase( int gtype )
     switch ( t )
     {
       case 1:
-        return QGis::WKBPoint;
+        return QgsWkbTypes::Point;
       case 2:
-        return QGis::WKBLineString;
+        return QgsWkbTypes::LineString;
       case 3:
-        return QGis::WKBPolygon;
+        return QgsWkbTypes::Polygon;
       case 4:
         QgsDebugMsg( QString( "geometry collection type %1 unsupported" ).arg( gtype ) );
-        return QGis::WKBUnknown;
+        return QgsWkbTypes::Unknown;
       case 5:
-        return QGis::WKBMultiPoint;
+        return QgsWkbTypes::MultiPoint;
       case 6:
-        return QGis::WKBMultiLineString;
+        return QgsWkbTypes::MultiLineString;
       case 7:
-        return QGis::WKBMultiPolygon;
+        return QgsWkbTypes::MultiPolygon;
       default:
         QgsDebugMsg( QString( "gtype %1 unsupported" ).arg( gtype ) );
-        return QGis::WKBUnknown;
+        return QgsWkbTypes::Unknown;
     }
   }
   else if ( d == 3 )
@@ -571,103 +604,106 @@ QGis::WkbType QgsOracleConn::wkbTypeFromDatabase( int gtype )
     switch ( t )
     {
       case 1:
-        return QGis::WKBPoint25D;
+        return QgsWkbTypes::Point25D;
       case 2:
-        return QGis::WKBLineString25D;
+        return QgsWkbTypes::LineString25D;
       case 3:
-        return QGis::WKBPolygon25D;
+        return QgsWkbTypes::Polygon25D;
       case 4:
         QgsDebugMsg( QString( "geometry collection type %1 unsupported" ).arg( gtype ) );
-        return QGis::WKBUnknown;
+        return QgsWkbTypes::Unknown;
       case 5:
-        return QGis::WKBMultiPoint25D;
+        return QgsWkbTypes::MultiPoint25D;
       case 6:
-        return QGis::WKBMultiLineString25D;
+        return QgsWkbTypes::MultiLineString25D;
       case 7:
-        return QGis::WKBMultiPolygon25D;
+        return QgsWkbTypes::MultiPolygon25D;
       default:
         QgsDebugMsg( QString( "gtype %1 unsupported" ).arg( gtype ) );
-        return QGis::WKBUnknown;
+        return QgsWkbTypes::Unknown;
     }
   }
   else
   {
     QgsDebugMsg( QString( "dimension of gtype %1 unsupported" ).arg( gtype ) );
-    return QGis::WKBUnknown;
+    return QgsWkbTypes::Unknown;
   }
 }
 
-QString QgsOracleConn::displayStringForWkbType( QGis::WkbType type )
+QString QgsOracleConn::displayStringForWkbType( QgsWkbTypes::Type type )
 {
   switch ( type )
   {
-    case QGis::WKBPoint:
-    case QGis::WKBPoint25D:
+    case QgsWkbTypes::Point:
+    case QgsWkbTypes::Point25D:
       return tr( "Point" );
 
-    case QGis::WKBMultiPoint:
-    case QGis::WKBMultiPoint25D:
+    case QgsWkbTypes::MultiPoint:
+    case QgsWkbTypes::MultiPoint25D:
       return tr( "Multipoint" );
 
-    case QGis::WKBLineString:
-    case QGis::WKBLineString25D:
+    case QgsWkbTypes::LineString:
+    case QgsWkbTypes::LineString25D:
       return tr( "Line" );
 
-    case QGis::WKBMultiLineString:
-    case QGis::WKBMultiLineString25D:
+    case QgsWkbTypes::MultiLineString:
+    case QgsWkbTypes::MultiLineString25D:
       return tr( "Multiline" );
 
-    case QGis::WKBPolygon:
-    case QGis::WKBPolygon25D:
+    case QgsWkbTypes::Polygon:
+    case QgsWkbTypes::Polygon25D:
       return tr( "Polygon" );
 
-    case QGis::WKBMultiPolygon:
-    case QGis::WKBMultiPolygon25D:
+    case QgsWkbTypes::MultiPolygon:
+    case QgsWkbTypes::MultiPolygon25D:
       return tr( "Multipolygon" );
 
-    case QGis::WKBNoGeometry:
+    case QgsWkbTypes::NoGeometry:
       return tr( "No Geometry" );
 
-    case QGis::WKBUnknown:
+    case QgsWkbTypes::Unknown:
       return tr( "Unknown Geometry" );
+
+    default:
+      break;
   }
 
   Q_ASSERT( !"unexpected wkbType" );
-  return QString::null;
+  return QString();
 }
 
-QGis::WkbType QgsOracleConn::wkbTypeFromGeomType( QGis::GeometryType geomType )
+QgsWkbTypes::Type QgsOracleConn::wkbTypeFromGeomType( QgsWkbTypes::GeometryType geomType )
 {
   switch ( geomType )
   {
-    case QGis::Point:
-      return QGis::WKBPoint;
-    case QGis::Line:
-      return QGis::WKBLineString;
-    case QGis::Polygon:
-      return QGis::WKBPolygon;
-    case QGis::NoGeometry:
-      return QGis::WKBNoGeometry;
-    case QGis::UnknownGeometry:
-      return QGis::WKBUnknown;
+    case QgsWkbTypes::PointGeometry:
+      return QgsWkbTypes::Point;
+    case QgsWkbTypes::LineGeometry:
+      return QgsWkbTypes::LineString;
+    case QgsWkbTypes::PolygonGeometry:
+      return QgsWkbTypes::Polygon;
+    case QgsWkbTypes::NullGeometry:
+      return QgsWkbTypes::NoGeometry;
+    case QgsWkbTypes::UnknownGeometry:
+      return QgsWkbTypes::Unknown;
   }
 
   Q_ASSERT( !"unexpected geomType" );
-  return QGis::WKBUnknown;
+  return QgsWkbTypes::Unknown;
 }
 
 QStringList QgsOracleConn::connectionList()
 {
-  QSettings settings;
+  QgsSettings settings;
   settings.beginGroup( "/Oracle/connections" );
   return settings.childGroups();
 }
 
-void QgsOracleConn::deleteConnection( QString theConnName )
+void QgsOracleConn::deleteConnection( QString connName )
 {
-  QSettings settings;
+  QgsSettings settings;
 
-  QString key = "/Oracle/connections/" + theConnName;
+  QString key = "/Oracle/connections/" + connName;
   settings.remove( key + "/host" );
   settings.remove( key + "/port" );
   settings.remove( key + "/database" );
@@ -678,6 +714,7 @@ void QgsOracleConn::deleteConnection( QString theConnName )
   settings.remove( key + "/allowGeometrylessTables" );
   settings.remove( key + "/estimatedMetadata" );
   settings.remove( key + "/onlyExistingTypes" );
+  settings.remove( key + "/includeGeoAttributes" );
   settings.remove( key + "/saveUsername" );
   settings.remove( key + "/savePassword" );
   settings.remove( key + "/save" );
@@ -686,23 +723,23 @@ void QgsOracleConn::deleteConnection( QString theConnName )
 
 QString QgsOracleConn::selectedConnection()
 {
-  QSettings settings;
+  QgsSettings settings;
   return settings.value( "/Oracle/connections/selected" ).toString();
 }
 
 void QgsOracleConn::setSelectedConnection( QString name )
 {
-  QSettings settings;
+  QgsSettings settings;
   return settings.setValue( "/Oracle/connections/selected", name );
 }
 
-QgsDataSourceURI QgsOracleConn::connUri( QString theConnName )
+QgsDataSourceUri QgsOracleConn::connUri( QString connName )
 {
-  QgsDebugMsg( "theConnName = " + theConnName );
+  QgsDebugMsgLevel( "theConnName = " + connName, 3 );
 
-  QSettings settings;
+  QgsSettings settings;
 
-  QString key = "/Oracle/connections/" + theConnName;
+  QString key = "/Oracle/connections/" + connName;
 
   QString database = settings.value( key + "/database" ).toString();
 
@@ -727,7 +764,7 @@ QgsDataSourceURI QgsOracleConn::connUri( QString theConnName )
     password = settings.value( key + "/password" ).toString();
   }
 
-  QgsDataSourceURI uri;
+  QgsDataSourceUri uri;
   uri.setConnection( host, port, database, username, password );
   uri.setUseEstimatedMetadata( useEstimatedMetadata );
   if ( !settings.value( key + "/dboptions" ).toString().isEmpty() )
@@ -742,34 +779,34 @@ QgsDataSourceURI QgsOracleConn::connUri( QString theConnName )
   return uri;
 }
 
-bool QgsOracleConn::userTablesOnly( QString theConnName )
+bool QgsOracleConn::userTablesOnly( QString connName )
 {
-  QSettings settings;
-  return settings.value( "/Oracle/connections/" + theConnName + "/userTablesOnly", false ).toBool();
+  QgsSettings settings;
+  return settings.value( "/Oracle/connections/" + connName + "/userTablesOnly", false ).toBool();
 }
 
-bool QgsOracleConn::geometryColumnsOnly( QString theConnName )
+bool QgsOracleConn::geometryColumnsOnly( QString connName )
 {
-  QSettings settings;
-  return settings.value( "/Oracle/connections/" + theConnName + "/geometryColumnsOnly", true ).toBool();
+  QgsSettings settings;
+  return settings.value( "/Oracle/connections/" + connName + "/geometryColumnsOnly", true ).toBool();
 }
 
-bool QgsOracleConn::allowGeometrylessTables( QString theConnName )
+bool QgsOracleConn::allowGeometrylessTables( QString connName )
 {
-  QSettings settings;
-  return settings.value( "/Oracle/connections/" + theConnName + "/allowGeometrylessTables", false ).toBool();
+  QgsSettings settings;
+  return settings.value( "/Oracle/connections/" + connName + "/allowGeometrylessTables", false ).toBool();
 }
 
-bool QgsOracleConn::estimatedMetadata( QString theConnName )
+bool QgsOracleConn::estimatedMetadata( QString connName )
 {
-  QSettings settings;
-  return settings.value( "/Oracle/connections/" + theConnName + "/estimatedMetadata", false ).toBool();
+  QgsSettings settings;
+  return settings.value( "/Oracle/connections/" + connName + "/estimatedMetadata", false ).toBool();
 }
 
-bool QgsOracleConn::onlyExistingTypes( QString theConnName )
+bool QgsOracleConn::onlyExistingTypes( QString connName )
 {
-  QSettings settings;
-  return settings.value( "/Oracle/connections/" + theConnName + "/onlyExistingTypes", false ).toBool();
+  QgsSettings settings;
+  return settings.value( "/Oracle/connections/" + connName + "/onlyExistingTypes", false ).toBool();
 }
 
 QString QgsOracleConn::databaseName( QString database, QString host, QString port )
@@ -803,7 +840,7 @@ bool QgsOracleConn::hasSpatial()
   if ( mHasSpatial == -1 )
   {
     QSqlQuery qry( mDatabase );
-    mHasSpatial = exec( qry, "SELECT 1 FROM v$option WHERE parameter='Spatial' AND value='TRUE'" ) && qry.next();
+    mHasSpatial = exec( qry, "SELECT 1 FROM v$option WHERE parameter='Spatial' AND value='TRUE'", QVariantList() ) && qry.next();
   }
 
   return mHasSpatial;
@@ -814,7 +851,7 @@ QString QgsOracleConn::currentUser()
   if ( mCurrentUser.isNull() )
   {
     QSqlQuery qry( mDatabase );
-    if ( exec( qry, "SELECT user FROM dual" ) && qry.next() )
+    if ( exec( qry, "SELECT user FROM dual", QVariantList() ) && qry.next() )
     {
       mCurrentUser = qry.value( 0 ).toString();
     }

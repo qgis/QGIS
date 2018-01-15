@@ -14,7 +14,7 @@
  ***************************************************************************/
 
 
-#include <QtTest/QtTest>
+#include "qgstest.h"
 
 #include <editorwidgets/qgsspinbox.h>
 
@@ -53,7 +53,7 @@ void TestQgsSpinBox::cleanup()
 
 void TestQgsSpinBox::clear()
 {
-  QgsSpinBox* spinBox = new QgsSpinBox();
+  QgsSpinBox *spinBox = new QgsSpinBox();
   spinBox->setMaximum( 10 );
   spinBox->setMinimum( 1 );
   spinBox->setValue( 5 );
@@ -74,7 +74,7 @@ void TestQgsSpinBox::clear()
 
 void TestQgsSpinBox::expression()
 {
-  QgsSpinBox* spinBox = new QgsSpinBox();
+  QgsSpinBox *spinBox = new QgsSpinBox();
   spinBox->setMinimum( -10 );
   spinBox->setMaximum( 10 );
   spinBox->setValue( 1 );
@@ -95,7 +95,7 @@ void TestQgsSpinBox::expression()
   QCOMPARE( spinBox->valueFromText( QString( "5/" ) ), 4 ); //invalid expression should reset to previous value
 
   //suffix tests
-  spinBox->setSuffix( QString( "mm" ) );
+  spinBox->setSuffix( QStringLiteral( "mm" ) );
   spinBox->setExpressionsEnabled( false );
   QCOMPARE( spinBox->valueFromText( QString( "5mm" ) ), 5 );
   QCOMPARE( spinBox->valueFromText( QString( "5+2mm" ) ), -10 );
@@ -112,7 +112,7 @@ void TestQgsSpinBox::expression()
 
   //prefix tests
   spinBox->setSuffix( QString() );
-  spinBox->setPrefix( QString( "mm" ) );
+  spinBox->setPrefix( QStringLiteral( "mm" ) );
   spinBox->setExpressionsEnabled( false );
   QCOMPARE( spinBox->valueFromText( QString( "mm5" ) ), 5 );
   QCOMPARE( spinBox->valueFromText( QString( "mm5+2" ) ), -10 );
@@ -128,8 +128,8 @@ void TestQgsSpinBox::expression()
   QCOMPARE( spinBox->valueFromText( QString( "mm5/" ) ), 4 ); //invalid expression should reset to previous value
 
   //both suffix and prefix
-  spinBox->setSuffix( QString( "ll" ) );
-  spinBox->setPrefix( QString( "mm" ) );
+  spinBox->setSuffix( QStringLiteral( "ll" ) );
+  spinBox->setPrefix( QStringLiteral( "mm" ) );
   spinBox->setExpressionsEnabled( true );
   QCOMPARE( spinBox->valueFromText( QString( "mm 5 ll" ) ), 5 );
   QCOMPARE( spinBox->valueFromText( QString( "mm 5+2 ll" ) ), 7 );
@@ -144,5 +144,5 @@ void TestQgsSpinBox::expression()
   delete spinBox;
 }
 
-QTEST_MAIN( TestQgsSpinBox )
+QGSTEST_MAIN( TestQgsSpinBox )
 #include "testqgsspinbox.moc"

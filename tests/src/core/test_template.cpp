@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QString>
 //header for class being tested
@@ -25,7 +25,7 @@ class Test[testClassCamelCaseName]: public QObject
     [TestMethods]
 };
 
-QTEST_MAIN( Test[testClassCamelCaseName] )
+QGSTEST_MAIN( Test[testClassCamelCaseName] )
 #include "test[testClassLowerCaseName].moc"
 
 

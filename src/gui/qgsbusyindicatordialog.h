@@ -18,13 +18,16 @@
 #ifndef QGSBUSYINDICATORDIALOG_H
 #define QGSBUSYINDICATORDIALOG_H
 
-#include "qgisgui.h"
+#include "qgsguiutils.h"
 
 #include <QDialog>
 #include <QLabel>
+#include "qgis_gui.h"
+#include "qgis_sip.h"
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsBusyIndicatorDialog
  * A simple dialog to show an indeterminate busy progress indicator.
  */
@@ -32,21 +35,24 @@ class GUI_EXPORT QgsBusyIndicatorDialog : public QDialog
 {
     Q_OBJECT
   public:
-    /** Constructor
+
+    /**
+     * Constructor
      * Modal busy indicator dialog with no buttons.
-     * @param message Text to show above busy progress indicator.
-     * @param parent parent object (owner)
-     * @param fl widget flags
+     * \param message Text to show above busy progress indicator.
+     * \param parent parent object (owner)
+     * \param fl widget flags
      */
-    QgsBusyIndicatorDialog( const QString& message = "", QWidget *parent = nullptr, const Qt::WindowFlags& fl = QgisGui::ModalDialogFlags );
-    ~QgsBusyIndicatorDialog();
+    QgsBusyIndicatorDialog( const QString &message = QString(), QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
     QString message() const { return mMessage; }
-    void setMessage( const QString& message );
+    void setMessage( const QString &message );
 
   private:
     QString mMessage;
-    QLabel* mMsgLabel;
+    QLabel *mMsgLabel = nullptr;
 };
+
+// clazy:excludeall=qstring-allocations
 
 #endif // QGSBUSYINDICATORDIALOG_H

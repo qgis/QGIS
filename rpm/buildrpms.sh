@@ -30,21 +30,36 @@ function print_help
 Creates RPM packages.
 
 Usage:
+  -c          only compile spec file
   -s          only create srpm, nothing will be compiled
+  -u          build unstable, release will include the short commit id
   -b          build last srpm, the package release number will not be increased
   -h          show help
 '
 }
 
+if [ $_MOCK_OLD_CHROOT ]
+then
+    mock_args="--old-chroot"
+fi
+
+compile_spec_only=0
 build_only=0
 srpm_only=0
+build_unstable=0
 
-while getopts "shb" opt; do
+while getopts "csuhb" opt; do
   case ${opt} in
+    c)
+      compile_spec_only=1
+      ;;
     s)
       srpm_only=1
       ;;
-    [\?|h])
+    u)
+      build_unstable=1
+      ;;
+    \?|h)
       print_help
       exit 0
       ;;
@@ -62,16 +77,23 @@ then
   source local.cfg
 fi
 
-# Get next release version number and increment after
-if [ ! -f version.cfg ]
+if [ $build_unstable -ne 1 ]
 then
-  echo "RELVER=1" > version.cfg
-fi
-source version.cfg
-if [ "$build_only" -ne "1" ]
-then
-  let RELVER+=1
-  echo "RELVER=$RELVER" > version.cfg
+  # Get next release version number and increment after
+  if [ ! -f version.cfg ]
+  then
+    echo "relver=1" > version.cfg
+  fi
+  source version.cfg
+  if [ "$build_only" -ne "1" ]
+  then
+    let relver+=1
+    echo "relver=$relver" > version.cfg
+  fi
+  timestamp=0
+else
+  relver="git$(git rev-parse --short HEAD)"
+  timestamp=$(date +'%s')
 fi
 
 # Clean logfiles
@@ -91,25 +113,33 @@ patch=$(grep -e 'SET(CPACK_PACKAGE_VERSION_PATCH' ../CMakeLists.txt |
 
 version=$(echo $major.$minor.$patch)
 
-print_info "Building version $version-$RELVER"
-
+print_info "Building version $version-$relver"
 if [ "$build_only" -ne "1" ]
 then
-  # Current git branch name
-  branch=$(git branch --no-color 2> /dev/null |
-      sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/')
+  print_info "Creating spec file from template"
+  # Create spec file
+  cat qgis.spec.template \
+    | sed -e s/%{_version}/$version/g \
+    | sed -e s/%{_relver}/$relver/g \
+    | sed -e s/%{_timestamp}/$timestamp/g \
+    | tee qgis.spec 1>/dev/null
+
+  if [ "$compile_spec_only" -eq "1" ]
+  then
+    exit 0
+  fi
 
   print_info "Creating source tarball"
   # Create source tarball
-  git -C .. archive --format=tar --prefix=qgis-$version/ $BRANCH | bzip2 > sources/qgis-$version.tar.gz
+  git -C .. archive --format=tar --prefix=qgis-$version/ HEAD | bzip2 > sources/qgis-$version.tar.bz2
 
   print_info "Creating source package"
-  # Create spec file
-  cat qgis.spec.template | sed -e s/%{_version}/$version/g \
-    | sed -e s/%{_relver}/$RELVER/g \
-    | tee qgis.spec 1>/dev/null
   # Build source package
-  mock --buildsrpm --spec qgis.spec --sources ./sources --define "_relver $RELVER" --define "_version $version" --resultdir=$OUTDIR
+  mock --buildsrpm --spec qgis.spec --sources ./sources \
+    --define "_relver $relver" \
+    --define "_version $version" \
+    --define "_timestamp $timestamp" \
+    --resultdir=$OUTDIR $mock_args
   if [ $? -ne 0 ]
   then
     print_error "Creating source package failed"
@@ -137,11 +167,15 @@ do :
     rm $OUTDIR/$arch/build.log
   fi
   mkdir $OUTDIR/$arch
-  mock -r $arch --rebuild $OUTDIR/$srpm --define "_relver $RELVER" --define "_version $version" --resultdir=$OUTDIR/$arch
+  mock -r $arch --rebuild $OUTDIR/$srpm \
+    --define "_relver $relver" \
+    --define "_version $version" \
+    --define "_timestamp $timestamp" \
+    --resultdir=$OUTDIR/$arch $mock_args
   if [  $? -eq 0 ]
   then
     # Add to package list
-    packages="$packages $(ls $OUTDIR/$arch/*-$version-$RELVER.*.rpm)"
+    packages="$packages $(ls $OUTDIR/$arch/*-$version-$relver.*.rpm)"
   else
     print_error "Package creation for $arch failed. Abort"
     exit 1

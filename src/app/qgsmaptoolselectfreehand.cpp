@@ -23,14 +23,14 @@ email                : jpalmer at linz dot govt dot nz
 #include <QMouseEvent>
 
 
-QgsMapToolSelectFreehand::QgsMapToolSelectFreehand( QgsMapCanvas* canvas )
-    : QgsMapTool( canvas )
-    , mDragging( false )
+QgsMapToolSelectFreehand::QgsMapToolSelectFreehand( QgsMapCanvas *canvas )
+  : QgsMapTool( canvas )
+  , mDragging( false )
 {
   mRubberBand = nullptr;
   mCursor = Qt::ArrowCursor;
   mFillColor = QColor( 254, 178, 76, 63 );
-  mBorderColour = QColor( 254, 58, 29, 100 );
+  mStrokeColor = QColor( 254, 58, 29, 100 );
 }
 
 QgsMapToolSelectFreehand::~QgsMapToolSelectFreehand()
@@ -38,23 +38,23 @@ QgsMapToolSelectFreehand::~QgsMapToolSelectFreehand()
   delete mRubberBand;
 }
 
-void QgsMapToolSelectFreehand::canvasPressEvent( QgsMapMouseEvent* e )
+void QgsMapToolSelectFreehand::canvasPressEvent( QgsMapMouseEvent *e )
 {
   if ( e->button() != Qt::LeftButton )
     return;
 
   if ( !mRubberBand )
   {
-    mRubberBand = new QgsRubberBand( mCanvas, QGis::Polygon );
+    mRubberBand = new QgsRubberBand( mCanvas, QgsWkbTypes::PolygonGeometry );
     mRubberBand->setFillColor( mFillColor );
-    mRubberBand->setBorderColor( mBorderColour );
+    mRubberBand->setStrokeColor( mStrokeColor );
   }
   mRubberBand->addPoint( toMapCoordinates( e->pos() ) );
   mDragging = true;
 }
 
 
-void QgsMapToolSelectFreehand::canvasMoveEvent( QgsMapMouseEvent* e )
+void QgsMapToolSelectFreehand::canvasMoveEvent( QgsMapMouseEvent *e )
 {
   if ( !mDragging || !mRubberBand )
     return;
@@ -63,7 +63,7 @@ void QgsMapToolSelectFreehand::canvasMoveEvent( QgsMapMouseEvent* e )
 }
 
 
-void QgsMapToolSelectFreehand::canvasReleaseEvent( QgsMapMouseEvent* e )
+void QgsMapToolSelectFreehand::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
   if ( !mRubberBand )
     return;
@@ -72,7 +72,7 @@ void QgsMapToolSelectFreehand::canvasReleaseEvent( QgsMapMouseEvent* e )
   if ( mRubberBand->numberOfVertices() > 0 && mRubberBand->numberOfVertices() <= 2 )
   {
     // single click, not drag - create a rectangle around clicked point
-    QgsVectorLayer* vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( mCanvas );
+    QgsVectorLayer *vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( mCanvas );
     if ( vlayer )
     {
       QRect selectRect;
@@ -84,14 +84,14 @@ void QgsMapToolSelectFreehand::canvasReleaseEvent( QgsMapMouseEvent* e )
 
   if ( mRubberBand->numberOfVertices() > 2 )
   {
-    QgsGeometry* shapeGeom = mRubberBand->asGeometry();
-    QgsMapToolSelectUtils::setSelectFeatures( mCanvas, shapeGeom,
-        e->modifiers() & Qt::ShiftModifier,
-        e->modifiers() & Qt::ControlModifier, singleSelect );
-    delete shapeGeom;
+    QgsGeometry shapeGeom = mRubberBand->asGeometry();
+    if ( singleSelect )
+      QgsMapToolSelectUtils::selectSingleFeature( mCanvas, shapeGeom, e );
+    else
+      QgsMapToolSelectUtils::selectMultipleFeatures( mCanvas, shapeGeom, e );
   }
 
-  mRubberBand->reset( QGis::Polygon );
+  mRubberBand->reset( QgsWkbTypes::PolygonGeometry );
   delete mRubberBand;
   mRubberBand = nullptr;
   mDragging = false;

@@ -17,7 +17,6 @@
 ***************************************************************************
 """
 
-
 __author__ = 'Alexander Bruy'
 __date__ = 'December 2012'
 __copyright__ = '(C) 2012, Alexander Bruy'
@@ -32,18 +31,17 @@ import json
 import os
 
 from qgis.PyQt import uic
-from qgis.PyQt.QtCore import Qt
-from qgis.PyQt.QtGui import QIcon, QCursor
-from qgis.PyQt.QtWidgets import QMenu, QAction, QMessageBox, QFileDialog, QApplication
+from qgis.PyQt.QtCore import Qt, QSize, QByteArray
+from qgis.PyQt.QtGui import QCursor
+from qgis.PyQt.QtWidgets import (QMessageBox,
+                                 QFileDialog,
+                                 QApplication)
 
-from qgis.core import QgsApplication
-from qgis.utils import iface
+from qgis.core import QgsApplication, QgsSettings
+from qgis.utils import iface, OverrideCursor
 
-from processing.modeler.ModelerUtils import ModelerUtils
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.gui.HelpEditionDialog import HelpEditionDialog
-from processing.algs.r.RAlgorithm import RAlgorithm
-from processing.algs.r.RUtils import RUtils
 from processing.script.ScriptAlgorithm import ScriptAlgorithm
 from processing.script.ScriptUtils import ScriptUtils
 
@@ -55,7 +53,6 @@ WIDGET, BASE = uic.loadUiType(
 class ScriptEditorDialog(BASE, WIDGET):
 
     SCRIPT_PYTHON = 0
-    SCRIPT_R = 1
 
     hasChanged = False
 
@@ -66,41 +63,61 @@ class ScriptEditorDialog(BASE, WIDGET):
         self.setWindowFlags(Qt.WindowMinimizeButtonHint |
                             Qt.WindowMaximizeButtonHint |
                             Qt.WindowCloseButtonHint)
-        # Set icons
-        self.btnOpen.setIcon(
+
+        self.searchWidget.setVisible(False)
+
+        settings = QgsSettings()
+        self.restoreState(settings.value("/Processing/stateScriptEditor", QByteArray()))
+        self.restoreGeometry(settings.value("/Processing/geometryScriptEditor", QByteArray()))
+
+        self.toolBar.setIconSize(iface.iconSize())
+
+        self.actionOpenScript.setIcon(
             QgsApplication.getThemeIcon('/mActionFileOpen.svg'))
-        self.btnSave.setIcon(
+        self.actionSaveScript.setIcon(
             QgsApplication.getThemeIcon('/mActionFileSave.svg'))
-        self.btnSaveAs.setIcon(
+        self.actionSaveScriptAs.setIcon(
             QgsApplication.getThemeIcon('/mActionFileSaveAs.svg'))
-        self.btnEditHelp.setIcon(
-            QIcon(os.path.join(pluginPath, 'images', 'edithelp.png')))
-        self.btnRun.setIcon(
-            QIcon(os.path.join(pluginPath, 'images', 'runalgorithm.png')))
-        self.btnCut.setIcon(QgsApplication.getThemeIcon('/mActionEditCut.png'))
-        self.btnCopy.setIcon(
-            QgsApplication.getThemeIcon('/mActionEditCopy.png'))
-        self.btnPaste.setIcon(
-            QgsApplication.getThemeIcon('/mActionEditPaste.png'))
-        self.btnUndo.setIcon(QgsApplication.getThemeIcon('/mActionUndo.png'))
-        self.btnRedo.setIcon(QgsApplication.getThemeIcon('/mActionRedo.png'))
-        self.btnSnippets.setIcon(QgsApplication.getThemeIcon('/mActionHelpAPI.png'))
+        self.actionEditScriptHelp.setIcon(
+            QgsApplication.getThemeIcon('/mActionEditHelpContent.svg'))
+        self.actionRunScript.setIcon(
+            QgsApplication.getThemeIcon('/mActionStart.svg'))
+        self.actionCut.setIcon(
+            QgsApplication.getThemeIcon('/mActionEditCut.svg'))
+        self.actionCopy.setIcon(
+            QgsApplication.getThemeIcon('/mActionEditCopy.svg'))
+        self.actionPaste.setIcon(
+            QgsApplication.getThemeIcon('/mActionEditPaste.svg'))
+        self.actionUndo.setIcon(
+            QgsApplication.getThemeIcon('/mActionUndo.svg'))
+        self.actionRedo.setIcon(
+            QgsApplication.getThemeIcon('/mActionRedo.svg'))
+        self.actionFindReplace.setIcon(
+            QgsApplication.getThemeIcon('/mActionFindReplace.svg'))
+        self.actionIncreaseFontSize.setIcon(
+            QgsApplication.getThemeIcon('/mActionIncreaseFont.svg'))
+        self.actionDecreaseFontSize.setIcon(
+            QgsApplication.getThemeIcon('/mActionDecreaseFont.svg'))
 
         # Connect signals and slots
-        self.btnOpen.clicked.connect(self.openScript)
-        self.btnSave.clicked.connect(self.save)
-        self.btnSaveAs.clicked.connect(self.saveAs)
-        self.btnEditHelp.clicked.connect(self.editHelp)
-        self.btnRun.clicked.connect(self.runAlgorithm)
-        self.btnSnippets.clicked.connect(self.showSnippets)
-        self.btnCut.clicked.connect(self.editor.cut)
-        self.btnCopy.clicked.connect(self.editor.copy)
-        self.btnPaste.clicked.connect(self.editor.paste)
-        self.btnUndo.clicked.connect(self.editor.undo)
-        self.btnRedo.clicked.connect(self.editor.redo)
-        self.btnIncreaseFont.clicked.connect(self.increaseFontSize)
-        self.btnDecreaseFont.clicked.connect(self.decreaseFontSize)
+        self.actionOpenScript.triggered.connect(self.openScript)
+        self.actionSaveScript.triggered.connect(self.save)
+        self.actionSaveScriptAs.triggered.connect(self.saveAs)
+        self.actionEditScriptHelp.triggered.connect(self.editHelp)
+        self.actionRunScript.triggered.connect(self.runAlgorithm)
+        self.actionCut.triggered.connect(self.editor.cut)
+        self.actionCopy.triggered.connect(self.editor.copy)
+        self.actionPaste.triggered.connect(self.editor.paste)
+        self.actionUndo.triggered.connect(self.editor.undo)
+        self.actionRedo.triggered.connect(self.editor.redo)
+        self.actionFindReplace.toggled.connect(self.toggleSearchBox)
+        self.actionIncreaseFontSize.triggered.connect(self.editor.zoomIn)
+        self.actionDecreaseFontSize.triggered.connect(self.editor.zoomOut)
         self.editor.textChanged.connect(lambda: self.setHasChanged(True))
+
+        self.btnFind.clicked.connect(self.find)
+        self.btnReplace.clicked.connect(self.replace)
+        self.lastSearch = None
 
         self.alg = alg
         self.algType = algType
@@ -108,7 +125,7 @@ class ScriptEditorDialog(BASE, WIDGET):
         self.snippets = {}
         if self.algType == self.SCRIPT_PYTHON:
             path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "script", "snippets.py")
-            with open(path) as f:
+            with codecs.open(path, 'r', encoding='utf-8') as f:
                 lines = f.readlines()
             snippetlines = []
             name = None
@@ -123,8 +140,8 @@ class ScriptEditorDialog(BASE, WIDGET):
             if snippetlines:
                 self.snippets[name] = "".join(snippetlines)
 
-        if not self.snippets:
-            self.btnSnippets.setVisible(False)
+        #if self.snippets:
+        #    self.btnSnippets.setVisible(False)
 
         if self.alg is not None:
             self.filename = self.alg.descriptionFile
@@ -139,23 +156,13 @@ class ScriptEditorDialog(BASE, WIDGET):
 
         self.editor.setLexerType(self.algType)
 
-    def increaseFontSize(self):
-        font = self.editor.defaultFont
-        self.editor.setFonts(font.pointSize() + 1)
-        self.editor.initLexer()
-
-    def decreaseFontSize(self):
-        font = self.editor.defaultFont
-        self.editor.setFonts(font.pointSize() - 1)
-        self.editor.initLexer()
-
-    def showSnippets(self, evt):
-        popupmenu = QMenu()
-        for name, snippet in self.snippets.iteritems():
-            action = QAction(self.tr(name), self.btnSnippets)
-            action.triggered[()].connect(lambda snippet=snippet: self.editor.insert(snippet))
-            popupmenu.addAction(action)
-        popupmenu.exec_(QCursor.pos())
+    #def showSnippets(self, evt):
+    #    popupmenu = QMenu()
+    #    for name, snippet in list(self.snippets.items()):
+    #        action = QAction(self.tr(name), self.btnSnippets)
+    #        action.triggered[()].connect(lambda snippet=snippet: self.editor.insert(snippet))
+    #    popupmenu.addAction(action)
+    #    popupmenu.exec_(QCursor.pos())
 
     def closeEvent(self, evt):
         if self.hasChanged:
@@ -164,18 +171,23 @@ class ScriptEditorDialog(BASE, WIDGET):
                                        QMessageBox.Yes | QMessageBox.No, QMessageBox.No
                                        )
             if ret == QMessageBox.Yes:
+                self.updateProviders()
                 evt.accept()
             else:
                 evt.ignore()
         else:
+            self.updateProviders()
             evt.accept()
+
+    def updateProviders(self):
+        if self.update:
+            if self.algType == self.SCRIPT_PYTHON:
+                QgsApplication.processingRegistry().providerById('script').refreshAlgorithms()
 
     def editHelp(self):
         if self.alg is None:
             if self.algType == self.SCRIPT_PYTHON:
-                alg = ScriptAlgorithm(None, unicode(self.editor.text()))
-            elif self.algType == self.SCRIPT_R:
-                alg = RAlgorithm(None, unicode(self.editor.text()))
+                alg = ScriptAlgorithm(None, self.editor.text())
         else:
             alg = self.alg
 
@@ -194,24 +206,23 @@ class ScriptEditorDialog(BASE, WIDGET):
                 return
 
         if self.algType == self.SCRIPT_PYTHON:
-            scriptDir = ScriptUtils.scriptsFolder()
+            scriptDir = ScriptUtils.scriptsFolders()[0]
             filterName = self.tr('Python scripts (*.py)')
-        elif self.algType == self.SCRIPT_R:
-            scriptDir = RUtils.RScriptsFolder()
-            filterName = self.tr('Processing R script (*.rsx)')
 
-        self.filename = QFileDialog.getOpenFileName(
-            self, self.tr('Save script'), scriptDir, filterName)
+        self.filename, fileFilter = QFileDialog.getOpenFileName(
+            self, self.tr('Open script'), scriptDir, filterName)
 
-        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-        with codecs.open(self.filename, 'r', encoding='utf-8') as f:
-            txt = f.read()
+        if self.filename == '':
+            return
 
-        self.editor.setText(txt)
-        self.hasChanged = False
-        self.editor.setModified(False)
-        self.editor.recolor()
-        QApplication.restoreOverrideCursor()
+        with OverrideCursor(Qt.WaitCursor):
+            with codecs.open(self.filename, 'r', encoding='utf-8') as f:
+                txt = f.read()
+
+            self.editor.setText(txt)
+            self.hasChanged = False
+            self.editor.setModified(False)
+            self.editor.recolor()
 
     def save(self):
         self.saveScript(False)
@@ -222,34 +233,27 @@ class ScriptEditorDialog(BASE, WIDGET):
     def saveScript(self, saveAs):
         if self.filename is None or saveAs:
             if self.algType == self.SCRIPT_PYTHON:
-                scriptDir = ScriptUtils.scriptsFolder()
+                scriptDir = ScriptUtils.scriptsFolders()[0]
                 filterName = self.tr('Python scripts (*.py)')
-            elif self.algType == self.SCRIPT_R:
-                scriptDir = RUtils.RScriptsFolder()
-                filterName = self.tr('Processing R script (*.rsx)')
 
-            self.filename = unicode(QFileDialog.getSaveFileName(self,
-                                                                self.tr('Save script'), scriptDir,
-                                                                filterName))
+            self.filename, fileFilter = QFileDialog.getSaveFileName(
+                self, self.tr('Save script'), scriptDir, filterName)
 
         if self.filename:
             if self.algType == self.SCRIPT_PYTHON and \
                     not self.filename.lower().endswith('.py'):
                 self.filename += '.py'
-            if self.algType == self.SCRIPT_R and \
-                    not self.filename.lower().endswith('.rsx'):
-                self.filename += '.rsx'
 
-            text = unicode(self.editor.text())
+            text = self.editor.text()
             if self.alg is not None:
                 self.alg.script = text
             try:
                 with codecs.open(self.filename, 'w', encoding='utf-8') as fout:
                     fout.write(text)
             except IOError:
-                QMessageBox.warning(self, self.tr('I/O error'),
-                                    self.tr('Unable to save edits. Reason:\n %s')
-                                    % unicode(sys.exc_info()[1])
+                QMessageBox.warning(self,
+                                    self.tr('I/O error'),
+                                    self.tr('Unable to save edits. Reason:\n{}').format(sys.exc_info()[1])
                                     )
                 return
             self.update = True
@@ -257,7 +261,7 @@ class ScriptEditorDialog(BASE, WIDGET):
             # If help strings were defined before saving the script for
             # the first time, we do it here
             if self.help:
-                with open(self.filename + '.help', 'w') as f:
+                with codecs.open(self.filename + '.help', 'w', encoding='utf-8') as f:
                     json.dump(self.help, f)
                 self.help = None
             self.setHasChanged(False)
@@ -266,17 +270,13 @@ class ScriptEditorDialog(BASE, WIDGET):
 
     def setHasChanged(self, hasChanged):
         self.hasChanged = hasChanged
-        self.btnSave.setEnabled(hasChanged)
+        self.actionSaveScript.setEnabled(hasChanged)
 
     def runAlgorithm(self):
         if self.algType == self.SCRIPT_PYTHON:
-            alg = ScriptAlgorithm(None, unicode(self.editor.text()))
-            alg.provider = ModelerUtils.providers['script']
-        if self.algType == self.SCRIPT_R:
-            alg = RAlgorithm(None, unicode(self.editor.text()))
-            alg.provider = ModelerUtils.providers['r']
+            alg = ScriptAlgorithm(None, self.editor.text())
 
-        dlg = alg.getCustomParametersDialog()
+        dlg = alg.createCustomParametersWidget(self)
         if not dlg:
             dlg = AlgorithmDialog(alg)
 
@@ -286,9 +286,29 @@ class ScriptEditorDialog(BASE, WIDGET):
         dlg.show()
         dlg.exec_()
 
+        # have to manually delete the dialog - otherwise it's owned by the
+        # iface mainWindow and never deleted
+        dlg.deleteLater()
+
         if canvas.mapTool() != prevMapTool:
             try:
                 canvas.mapTool().reset()
             except:
                 pass
             canvas.setMapTool(prevMapTool)
+
+    def find(self):
+        textToFind = self.leFindText.text()
+        caseSensitive = self.chkCaseSensitive.isChecked()
+        wholeWord = self.chkWholeWord.isChecked()
+        if self.lastSearch is None or textToFind != self.lastSearch:
+            self.editor.findFirst(textToFind, False, caseSensitive, wholeWord, True)
+        else:
+            self.editor.findNext()
+
+    def replace(self):
+        textToReplace = self.leReplaceText.text()
+        self.editor.replaceSelectedText(textToReplace)
+
+    def toggleSearchBox(self, checked):
+        self.searchWidget.setVisible(checked)

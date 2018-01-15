@@ -1,172 +1,235 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgscolorswatchgrid.h                                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
 
-/** \ingroup gui
- * \class QgsColorSwatchGrid
- * A grid of color swatches, which allows for user selection. Colors are taken from an
- * associated QgsColorScheme.
- * @see QgsColorGridAction
- * @note introduced in QGIS 2.5
- */
+
 class QgsColorSwatchGrid : QWidget
 {
-%TypeHeaderCode
-#include <qgscolorswatchgrid.h>
+%Docstring
+A grid of color swatches, which allows for user selection. Colors are taken from an
+associated QgsColorScheme.
+
+.. seealso:: :py:class:`QgsColorGridAction`
+
+.. versionadded:: 2.5
 %End
 
+%TypeHeaderCode
+#include "qgscolorswatchgrid.h"
+%End
   public:
 
-    /** Construct a new color swatch grid.
-     * @param scheme QgsColorScheme for colors to show in grid
-     * @param context context string provided to color scheme
-     * @param parent parent widget
-     */
-    QgsColorSwatchGrid( QgsColorScheme* scheme, const QString& context = QString(), QWidget *parent /TransferThis/ = 0 );
+    QgsColorSwatchGrid( QgsColorScheme *scheme, const QString &context = QString(), QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Construct a new color swatch grid.
 
-    virtual ~QgsColorSwatchGrid();
+:param scheme: QgsColorScheme for colors to show in grid
+:param context: context string provided to color scheme
+:param parent: parent widget
+%End
 
-    //Reimplemented to set fixed size on widget
     virtual QSize minimumSizeHint() const;
 
-    //Reimplemented to set fixed size on widget
+
     virtual QSize sizeHint() const;
 
-    /** Get the current context for the grid
-     * @returns context string which is passed to scheme for color generation
-     * @see setContext
-     */
+
     QString context() const;
+%Docstring
+Get the current context for the grid
 
-    /** Sets the current context for the grid
-     * @param context string which is passed to scheme for color generation
-     * @see context
-     */
-    void setContext( const QString context );
+:return: context string which is passed to scheme for color generation
 
-    /** Get the base color for the widget
-     * @returns base color which is passed to scheme for color generation
-     * @see setBaseColor
-     */
+.. seealso:: :py:func:`setContext`
+%End
+
+    void setContext( const QString &context );
+%Docstring
+Sets the current context for the grid
+
+:param context: string which is passed to scheme for color generation
+
+.. seealso:: :py:func:`context`
+%End
+
     QColor baseColor() const;
+%Docstring
+Get the base color for the widget
 
-    /** Sets the base color for the widget
-     * @param baseColor base color to pass to scheme for color generation
-     * @see baseColor
-     */
+:return: base color which is passed to scheme for color generation
+
+.. seealso:: :py:func:`setBaseColor`
+%End
+
     void setBaseColor( const QColor &baseColor );
+%Docstring
+Sets the base color for the widget
 
-    /** Gets the list of colors shown in the grid
-     * @returns list of colors currently shown in the grid
-     */
+:param baseColor: base color to pass to scheme for color generation
+
+.. seealso:: :py:func:`baseColor`
+%End
+
     QgsNamedColorList *colors();
+%Docstring
+Gets the list of colors shown in the grid
+
+:return: list of colors currently shown in the grid
+%End
 
   public slots:
 
-    /** Reload colors from scheme and redraws the widget
-     */
     void refreshColors();
+%Docstring
+Reload colors from scheme and redraws the widget
+%End
 
   signals:
 
-    /** Emitted when a color has been selected from the widget
-     * @param color selected color
-     */
     void colorChanged( const QColor &color );
+%Docstring
+Emitted when a color has been selected from the widget
 
-    /** Emitted when mouse hovers over widget
-     */
+:param color: selected color
+%End
+
     void hovered();
+%Docstring
+Emitted when mouse hovers over widget
+%End
 
   protected:
 
-    //reimplemented QWidget events
-    void paintEvent( QPaintEvent * event );
-    void mouseMoveEvent( QMouseEvent * event );
-    void mousePressEvent( QMouseEvent * event );
-    void mouseReleaseEvent( QMouseEvent * event );
-    void keyPressEvent( QKeyEvent* event );
-    void focusInEvent( QFocusEvent* event );
-    void focusOutEvent( QFocusEvent* event );
+    virtual void paintEvent( QPaintEvent *event );
+
+    virtual void mouseMoveEvent( QMouseEvent *event );
+
+    virtual void mousePressEvent( QMouseEvent *event );
+
+    virtual void mouseReleaseEvent( QMouseEvent *event );
+
+    virtual void keyPressEvent( QKeyEvent *event );
+
+    virtual void focusInEvent( QFocusEvent *event );
+
+    virtual void focusOutEvent( QFocusEvent *event );
+
 
 };
 
 
-/** \ingroup gui
- * \class QgsColorGridAction
- * A color swatch grid which can be embedded into a menu.
- * @see QgsColorSwatchGrid
- * @note introduced in QGIS 2.5
- */
 
 class QgsColorSwatchGridAction: QWidgetAction
 {
+%Docstring
+A color swatch grid which can be embedded into a menu.
 
-%TypeHeaderCode
-#include <qgscolorswatchgrid.h>
+.. seealso:: :py:class:`QgsColorSwatchGrid`
+
+.. versionadded:: 2.5
 %End
 
+%TypeHeaderCode
+#include "qgscolorswatchgrid.h"
+%End
   public:
 
-    /** Construct a new color swatch grid action.
-     * @param scheme QgsColorScheme for colors to show in grid
-     * @param menu parent menu
-     * @param context context string provided to color scheme
-     * @param parent parent widget
-     */
-    QgsColorSwatchGridAction( QgsColorScheme* scheme, QMenu* menu = 0, const QString& context = QString(), QWidget *parent /TransferThis/ = 0 );
+    QgsColorSwatchGridAction( QgsColorScheme *scheme, QMenu *menu = 0, const QString &context = QString(), QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Construct a new color swatch grid action.
 
-    virtual ~QgsColorSwatchGridAction();
+:param scheme: QgsColorScheme for colors to show in grid
+:param menu: parent menu
+:param context: context string provided to color scheme
+:param parent: parent widget
+%End
 
-    /** Sets the base color for the color grid
-     * @param baseColor base color to pass to scheme for color generation
-     * @see baseColor
-     */
     void setBaseColor( const QColor &baseColor );
+%Docstring
+Sets the base color for the color grid
 
-    /** Get the base color for the color grid
-     * @returns base color which is passed to scheme for color generation
-     * @see setBaseColor
-     */
+:param baseColor: base color to pass to scheme for color generation
+
+.. seealso:: :py:func:`baseColor`
+%End
+
     QColor baseColor() const;
+%Docstring
+Get the base color for the color grid
 
-    /** Get the current context for the color grid
-     * @returns context string which is passed to scheme for color generation
-     * @see setContext
-     */
+:return: base color which is passed to scheme for color generation
+
+.. seealso:: :py:func:`setBaseColor`
+%End
+
     QString context() const;
+%Docstring
+Get the current context for the color grid
 
-    /** Sets the current context for the color grid
-     * @param context string which is passed to scheme for color generation
-     * @see context
-     */
+:return: context string which is passed to scheme for color generation
+
+.. seealso:: :py:func:`setContext`
+%End
+
     void setContext( const QString &context );
+%Docstring
+Sets the current context for the color grid
 
-    /** Sets whether the parent menu should be dismissed and closed when a color is selected
-     * from the action's color widget.
-     * @param dismiss set to true (default) to immediately close the menu when a color is selected
-     * from the widget. If set to false, the colorChanged signal will be emitted but the menu will
-     * stay open.
-     * @see dismissOnColorSelection()
-     * @note added in QGIS 2.14
-     */
+:param context: string which is passed to scheme for color generation
+
+.. seealso:: :py:func:`context`
+%End
+
     void setDismissOnColorSelection( bool dismiss );
+%Docstring
+Sets whether the parent menu should be dismissed and closed when a color is selected
+from the action's color widget.
 
-    /** Returns whether the parent menu will be dismissed after a color is selected from the
-     * action's color widget.
-     * @see setDismissOnColorSelection
-     * @note added in QGIS 2.14
-     */
+:param dismiss: set to true (default) to immediately close the menu when a color is selected
+from the widget. If set to false, the colorChanged signal will be emitted but the menu will
+stay open.
+
+.. seealso:: :py:func:`dismissOnColorSelection`
+
+.. versionadded:: 2.14
+%End
+
     bool dismissOnColorSelection() const;
+%Docstring
+Returns whether the parent menu will be dismissed after a color is selected from the
+action's color widget.
+
+.. seealso:: :py:func:`setDismissOnColorSelection`
+
+.. versionadded:: 2.14
+%End
 
   public slots:
 
-    /** Reload colors from scheme and redraws the widget
-     */
     void refreshColors();
+%Docstring
+Reload colors from scheme and redraws the widget
+%End
 
   signals:
 
-    /** Emitted when a color has been selected from the widget
-     * @param color selected color
-     */
     void colorChanged( const QColor &color );
+%Docstring
+Emitted when a color has been selected from the widget
+
+:param color: selected color
+%End
 
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgscolorswatchgrid.h                                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

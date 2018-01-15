@@ -17,6 +17,7 @@
 #define QGSMAPTOOLSELECTFREEHAND_H
 
 #include "qgsmaptool.h"
+#include "qgis_app.h"
 
 class QgsMapCanvas;
 class QgsRubberBand;
@@ -26,28 +27,28 @@ class APP_EXPORT QgsMapToolSelectFreehand : public QgsMapTool
 {
     Q_OBJECT
   public:
-    QgsMapToolSelectFreehand( QgsMapCanvas* canvas );
+    QgsMapToolSelectFreehand( QgsMapCanvas *canvas );
 
-    virtual ~QgsMapToolSelectFreehand();
+    ~QgsMapToolSelectFreehand() override;
 
     //! Overridden mouse move event
-    virtual void canvasMoveEvent( QgsMapMouseEvent* e ) override;
+    void canvasMoveEvent( QgsMapMouseEvent *e ) override;
 
     //! Overridden mouse press event
-    virtual void canvasPressEvent( QgsMapMouseEvent* e ) override;
+    void canvasPressEvent( QgsMapMouseEvent *e ) override;
 
     //! Overridden mouse release event
-    virtual void canvasReleaseEvent( QgsMapMouseEvent* e ) override;
+    void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
 
   private:
 
     //! used for storing all of the maps point for the freehand sketch
-    QgsRubberBand* mRubberBand;
+    QgsRubberBand *mRubberBand = nullptr;
 
     bool mDragging;
 
     QColor mFillColor;
-    QColor mBorderColour;
+    QColor mStrokeColor;
 };
 
 #endif

@@ -32,15 +32,17 @@ from qgis.PyQt.QtWidgets import QMenu, QAction, QInputDialog
 from qgis.PyQt.QtGui import QCursor
 
 from qgis.gui import QgsMessageBar
-from qgis.core import QgsRasterLayer, QgsVectorLayer
 from qgis.utils import iface
-
+from qgis.core import (QgsProcessingUtils,
+                       QgsProcessingParameterDefinition,
+                       QgsProcessingParameters,
+                       QgsProject,
+                       QgsCoordinateReferenceSystem,
+                       QgsRectangle,
+                       QgsReferencedRectangle)
 from processing.gui.RectangleMapTool import RectangleMapTool
-from processing.core.parameters import ParameterRaster
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterMultipleInput
 from processing.core.ProcessingConfig import ProcessingConfig
-from processing.tools import dataobjects
+from processing.tools.dataobjects import createContext
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 WIDGET, BASE = uic.loadUiType(
@@ -49,44 +51,44 @@ WIDGET, BASE = uic.loadUiType(
 
 class ExtentSelectionPanel(BASE, WIDGET):
 
-    def __init__(self, dialog, alg, default=None):
+    def __init__(self, dialog, param):
         super(ExtentSelectionPanel, self).__init__(None)
         self.setupUi(self)
 
         self.dialog = dialog
-        self.params = alg.parameters
-        if self.canUseAutoExtent():
+        self.param = param
+        self.crs = QgsProject.instance().crs()
+
+        if self.param.flags() & QgsProcessingParameterDefinition.FlagOptional:
             if hasattr(self.leText, 'setPlaceholderText'):
                 self.leText.setPlaceholderText(
                     self.tr('[Leave blank to use min covering extent]'))
 
         self.btnSelect.clicked.connect(self.selectExtent)
 
-        canvas = iface.mapCanvas()
-        self.prevMapTool = canvas.mapTool()
-        self.tool = RectangleMapTool(canvas)
-        self.tool.rectangleCreated.connect(self.updateExtent)
+        if iface is not None:
+            canvas = iface.mapCanvas()
+            self.prevMapTool = canvas.mapTool()
+            self.tool = RectangleMapTool(canvas)
+            self.tool.rectangleCreated.connect(self.updateExtent)
+        else:
+            self.prevMapTool = None
+            self.tool = None
 
-        if default:
-            tokens = unicode(default).split(',')
-            if len(tokens) == 4:
+        if param.defaultValue() is not None:
+            context = createContext()
+            rect = QgsProcessingParameters.parameterAsExtent(param, {param.name(): param.defaultValue()}, context)
+            crs = QgsProcessingParameters.parameterAsExtentCrs(param, {param.name(): param.defaultValue()}, context)
+            if not rect.isNull():
                 try:
-                    float(tokens[0])
-                    float(tokens[1])
-                    float(tokens[2])
-                    float(tokens[3])
-                    self.leText.setText(unicode(default))
+                    s = '{},{},{},{}'.format(
+                        rect.xMinimum(), rect.xMaximum(), rect.yMinimum(), rect.yMaximum())
+                    if crs.isValid():
+                        s += ' [' + crs.authid() + ']'
+                        self.crs = crs
+                    self.leText.setText(s)
                 except:
                     pass
-
-    def canUseAutoExtent(self):
-        for param in self.params:
-            if isinstance(param, (ParameterRaster, ParameterVector)):
-                return True
-            if isinstance(param, ParameterMultipleInput):
-                return True
-
-        return False
 
     def selectExtent(self):
         popupmenu = QMenu()
@@ -101,7 +103,7 @@ class ExtentSelectionPanel(BASE, WIDGET):
         selectOnCanvasAction.triggered.connect(self.selectOnCanvas)
         useLayerExtentAction.triggered.connect(self.useLayerExtent)
 
-        if self.canUseAutoExtent():
+        if self.param.flags() & QgsProcessingParameterDefinition.FlagOptional:
             useMincoveringExtentAction = QAction(
                 self.tr('Use min covering extent from input layers'),
                 self.btnSelect)
@@ -114,57 +116,13 @@ class ExtentSelectionPanel(BASE, WIDGET):
     def useMinCoveringExtent(self):
         self.leText.setText('')
 
-    def getMinCoveringExtent(self):
-        first = True
-        found = False
-        for param in self.params:
-            if param.value:
-                if isinstance(param, (ParameterRaster, ParameterVector)):
-                    if isinstance(param.value, (QgsRasterLayer,
-                                                QgsVectorLayer)):
-                        layer = param.value
-                    else:
-                        layer = dataobjects.getObject(param.value)
-                    if layer:
-                        found = True
-                        self.addToRegion(layer, first)
-                        first = False
-                elif isinstance(param, ParameterMultipleInput):
-                    layers = param.value.split(';')
-                    for layername in layers:
-                        layer = dataobjects.getObject(layername)
-                        if layer:
-                            found = True
-                            self.addToRegion(layer, first)
-                            first = False
-        if found:
-            return '{},{},{},{}'.format(
-                self.xmin, self.xmax, self.ymin, self.ymax)
-        else:
-            return None
-
-    def useNewAlg(self, alg):
-        self.params = alg.parameters
-
-    def addToRegion(self, layer, first):
-        if first:
-            self.xmin = layer.extent().xMinimum()
-            self.xmax = layer.extent().xMaximum()
-            self.ymin = layer.extent().yMinimum()
-            self.ymax = layer.extent().yMaximum()
-        else:
-            self.xmin = min(self.xmin, layer.extent().xMinimum())
-            self.xmax = max(self.xmax, layer.extent().xMaximum())
-            self.ymin = min(self.ymin, layer.extent().yMinimum())
-            self.ymax = max(self.ymax, layer.extent().yMaximum())
-
     def useLayerExtent(self):
         CANVAS_KEY = 'Use canvas extent'
         extentsDict = {}
         extentsDict[CANVAS_KEY] = {"extent": iface.mapCanvas().extent(),
                                    "authid": iface.mapCanvas().mapSettings().destinationCrs().authid()}
         extents = [CANVAS_KEY]
-        layers = dataobjects.getAllLayers()
+        layers = QgsProcessingUtils.compatibleLayers(QgsProject.instance())
         for layer in layers:
             authid = layer.crs().authid()
             if ProcessingConfig.getSetting(ProcessingConfig.SHOW_CRS_DEF) \
@@ -177,11 +135,7 @@ class ExtentSelectionPanel(BASE, WIDGET):
         (item, ok) = QInputDialog.getItem(self, self.tr('Select extent'),
                                           self.tr('Use extent from'), extents, False)
         if ok:
-            self.setValueFromRect(extentsDict[item]["extent"])
-            if extentsDict[item]["authid"] != iface.mapCanvas().mapSettings().destinationCrs().authid():
-                iface.messageBar().pushMessage(self.tr("Warning"),
-                                               self.tr("The projection of the chosen layer is not the same as canvas projection! The selected extent might not be what was intended."),
-                                               QgsMessageBar.WARNING, 8)
+            self.setValueFromRect(QgsReferencedRectangle(extentsDict[item]["extent"], QgsCoordinateReferenceSystem(extentsDict[item]["authid"])))
 
     def selectOnCanvas(self):
         canvas = iface.mapCanvas()
@@ -196,6 +150,13 @@ class ExtentSelectionPanel(BASE, WIDGET):
         s = '{},{},{},{}'.format(
             r.xMinimum(), r.xMaximum(), r.yMinimum(), r.yMaximum())
 
+        try:
+            self.crs = r.crs()
+        except:
+            self.crs = QgsProject.instance().crs()
+        if self.crs.isValid():
+            s += ' [' + self.crs.authid() + ']'
+
         self.leText.setText(s)
         self.tool.reset()
         canvas = iface.mapCanvas()
@@ -205,10 +166,10 @@ class ExtentSelectionPanel(BASE, WIDGET):
         self.dialog.activateWindow()
 
     def getValue(self):
-        if unicode(self.leText.text()).strip() != '':
-            return unicode(self.leText.text())
+        if str(self.leText.text()).strip() != '':
+            return str(self.leText.text())
         else:
-            return self.getMinCoveringExtent()
+            return None
 
     def setExtentFromString(self, s):
         self.leText.setText(s)

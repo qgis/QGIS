@@ -19,16 +19,18 @@ email                : ersts@amnh.org
 #ifndef QGSLINEARMINMAXENHANCEMENT_H
 #define QGSLINEARMINMAXENHANCEMENT_H
 
+#include "qgis_core.h"
 #include "qgscontrastenhancementfunction.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
   * A color enhancement function that performs a linear enhanceContrast between min and max.
   */
 class CORE_EXPORT QgsLinearMinMaxEnhancement : public QgsContrastEnhancementFunction
 {
 
   public:
-    QgsLinearMinMaxEnhancement( QGis::DataType, double, double );
+    QgsLinearMinMaxEnhancement( Qgis::DataType, double, double );
 
     int enhance( double ) override;
 

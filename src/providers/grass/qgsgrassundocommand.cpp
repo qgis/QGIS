@@ -18,14 +18,14 @@
 #include "qgsgrassprovider.h"
 #include "qgslogger.h"
 
-QgsGrassUndoCommandChangeAttribute::QgsGrassUndoCommandChangeAttribute( QgsGrassProvider * provider, int fid, int lid, int field, int cat, bool deleteCat, bool deleteRecord )
-    : mProvider( provider )
-    , mFid( fid )
-    , mLid( lid )
-    , mField( field )
-    , mCat( cat )
-    , mDeleteCat( deleteCat )
-    , mDeleteRecord( deleteRecord )
+QgsGrassUndoCommandChangeAttribute::QgsGrassUndoCommandChangeAttribute( QgsGrassProvider *provider, int fid, int lid, int field, int cat, bool deleteCat, bool deleteRecord )
+  : mProvider( provider )
+  , mFid( fid )
+  , mLid( lid )
+  , mField( field )
+  , mCat( cat )
+  , mDeleteCat( deleteCat )
+  , mDeleteRecord( deleteRecord )
 {
   Q_UNUSED( mField );
 }

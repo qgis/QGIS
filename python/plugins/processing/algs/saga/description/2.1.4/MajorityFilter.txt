@@ -1,7 +1,0 @@
-Majority Filter
-grid_filter
-ParameterRaster|INPUT|Grid|False
-ParameterSelection|MODE|Search Mode|[0] Square;[1] Circle
-ParameterNumber|RADIUS|Radius|1.0|None|1
-ParameterNumber|THRESHOLD|Threshold [Percent]|0.0|None|0
-OutputRaster|RESULT|Filtered Grid

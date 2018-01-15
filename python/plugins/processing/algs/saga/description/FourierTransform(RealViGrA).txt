@@ -1,0 +1,4 @@
+Fourier Transform (Real, ViGrA)
+imagery_vigra
+QgsProcessingParameterRasterLayer|INPUT|Input|None|False
+QgsProcessingParameterRasterDestination|OUTPUT|Output

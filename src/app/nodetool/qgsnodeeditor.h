@@ -19,7 +19,7 @@
 #ifndef QGSNODEEDITOR_H
 #define QGSNODEEDITOR_H
 
-#include <QDockWidget>
+#include "qgsdockwidget.h"
 #include <QAbstractTableModel>
 #include <QItemSelection>
 #include <QStyledItemDelegate>
@@ -35,22 +35,22 @@ class QgsNodeEditorModel : public QAbstractTableModel
     Q_OBJECT
   public:
 
-    QgsNodeEditorModel( QgsVectorLayer* layer,
-                        QgsSelectedFeature* selectedFeature,
-                        QgsMapCanvas* canvas, QObject* parent = nullptr );
+    QgsNodeEditorModel( QgsVectorLayer *layer,
+                        QgsSelectedFeature *selectedFeature,
+                        QgsMapCanvas *canvas, QObject *parent = nullptr );
 
-    virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
+    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
     int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
-    virtual QVariant data( const QModelIndex &index, int role ) const override;
+    QVariant data( const QModelIndex &index, int role ) const override;
     QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
-    virtual bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
+    bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
 
   private:
 
-    QgsVectorLayer* mLayer;
-    QgsSelectedFeature* mSelectedFeature;
-    QgsMapCanvas* mCanvas;
+    QgsVectorLayer *mLayer = nullptr;
+    QgsSelectedFeature *mSelectedFeature = nullptr;
+    QgsMapCanvas *mCanvas = nullptr;
 
     bool mHasZ;
     bool mHasM;
@@ -62,37 +62,37 @@ class QgsNodeEditorModel : public QAbstractTableModel
 
     QFont mWidgetFont;
 
-    bool calcR( int row, double& r, double &minRadius ) const;
+    bool calcR( int row, double &r, double &minRadius ) const;
 
   private slots:
 
     void featureChanged();
 };
 
-class QgsNodeEditor : public QDockWidget
+class QgsNodeEditor : public QgsDockWidget
 {
     Q_OBJECT
   public:
-    QgsNodeEditor( QgsVectorLayer* layer,
-                   QgsSelectedFeature* selectedFeature,
-                   QgsMapCanvas* canvas );
+    QgsNodeEditor( QgsVectorLayer *layer,
+                   QgsSelectedFeature *selectedFeature,
+                   QgsMapCanvas *canvas );
 
   public:
-    QgsVectorLayer* mLayer;
-    QgsSelectedFeature* mSelectedFeature;
-    QgsMapCanvas* mCanvas;
-    QTableView* mTableView;
-    QgsNodeEditorModel* mNodeModel;
+    QgsVectorLayer *mLayer = nullptr;
+    QgsSelectedFeature *mSelectedFeature = nullptr;
+    QgsMapCanvas *mCanvas = nullptr;
+    QTableView *mTableView = nullptr;
+    QgsNodeEditorModel *mNodeModel = nullptr;
 
   signals:
-    void deleteSelectedRequested( );
+    void deleteSelectedRequested();
 
   protected:
-    void keyPressEvent( QKeyEvent * event );
+    void keyPressEvent( QKeyEvent *event ) override;
 
   private slots:
     void updateTableSelection();
-    void updateNodeSelection( const QItemSelection& selected, const QItemSelection& deselected );
+    void updateNodeSelection( const QItemSelection &selected, const QItemSelection &deselected );
     void zoomToNode( int idx );
 
   private:
@@ -107,10 +107,13 @@ class CoordinateItemDelegate : public QStyledItemDelegate
     Q_OBJECT
 
   public:
-    QString displayText( const QVariant & value, const QLocale & locale ) const override;
+
+    explicit CoordinateItemDelegate( QObject *parent = nullptr );
+
+    QString displayText( const QVariant &value, const QLocale &locale ) const override;
 
   protected:
-    QWidget* createEditor( QWidget * parent, const QStyleOptionViewItem & /*option*/, const QModelIndex & index ) const override;
+    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem & /*option*/, const QModelIndex &index ) const override;
     void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override;
 };
 

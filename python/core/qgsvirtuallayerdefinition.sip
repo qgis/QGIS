@@ -1,125 +1,215 @@
-/**
- * Class to manipulate the definition of a virtual layer
- *
- * It is used to extract parameters from an initial virtual layer definition as well as
- * to store the complete, expanded definition once types have been detected.
- */
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsvirtuallayerdefinition.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
 class QgsVirtualLayerDefinition
 {
+%Docstring
+Class to manipulate the definition of a virtual layer
+
+It is used to extract parameters from an initial virtual layer definition as well as
+to store the complete, expanded definition once types have been detected.
+%End
+
 %TypeHeaderCode
-#include <qgsvirtuallayerdefinition.h>
+#include "qgsvirtuallayerdefinition.h"
 %End
   public:
-    /**
-     * A SourceLayer is either a reference to a live layer in the registry
-     * or all the parameters needed to load it (provider key, source, etc.)
-     */
+
     class SourceLayer
-    {
+{
+%Docstring
+A SourceLayer is either a reference to a live layer in the registry
+or all the parameters needed to load it (provider key, source, etc.)
+%End
+
+%TypeHeaderCode
+#include "qgsvirtuallayerdefinition.h"
+%End
       public:
-        //! Constructor variant to build a live layer reference
-        SourceLayer( const QString& name, const QString& ref );
-        //! Constructor variant to build a layer with a provider and a source
-        SourceLayer( const QString& name, const QString& source, const QString& provider, const QString& encoding );
+        SourceLayer( const QString &name, const QString &ref );
+%Docstring
+Constructor variant to build a live layer reference
+%End
+        SourceLayer( const QString &name, const QString &source, const QString &provider, const QString &encoding );
+%Docstring
+Constructor variant to build a layer with a provider and a source
+%End
 
-        //! Is it a live layer or not ?
         bool isReferenced() const;
+%Docstring
+Is it a live layer or not ?
+%End
 
-        //! The reference (id) of the live layer
         QString reference() const;
+%Docstring
+The reference (id) of the live layer
+%End
 
-        //! Name of the layer
         QString name() const;
+%Docstring
+Name of the layer
+%End
 
-        //! Provider key
         QString provider() const;
+%Docstring
+Provider key
+%End
 
-        //! The source url used by the provider to build the layer
         QString source() const;
+%Docstring
+The source url used by the provider to build the layer
+%End
 
-        //! Optional encoding for the provider
         QString encoding() const;
+%Docstring
+Optional encoding for the provider
+%End
+
     };
 
-    //! Constructor with an optional file path
-    QgsVirtualLayerDefinition( const QString& filePath = "" );
+    QgsVirtualLayerDefinition( const QString &filePath = "" );
+%Docstring
+Constructor with an optional file path
+%End
 
-    //! Constructor to build a definition from a QUrl
-    //! The path part of the URL is extracted as well as the following optional keys:
-    //! layer_ref=layer_id[:name]               represents a live layer referenced by its ID. An optional name can be given
-    //! layer=provider:source[:name[:encoding]] represents a layer given by its provider key, its source url (URL-encoded).
-    //!                                         An optional name and encoding can be given
-    //! geometry=column_name[:type:srid]        gives the definition of the geometry column.
-    //!                                         Type can be either a WKB type code or a string (point, linestring, etc.)
-    //!                                         srid is an integer
-    //! uid=column_name                         is the name of a column with unique integer values.
-    //! nogeometry                              is a flag to force the layer to be a non-geometry layer
-    //! query=sql                               represents the SQL query. Must be URL-encoded
-    //! field=column_name:[int|real|text]       represents a field with its name and its type
-    static QgsVirtualLayerDefinition fromUrl( const QUrl& url );
+    static QgsVirtualLayerDefinition fromUrl( const QUrl &url );
+%Docstring
+Constructor to build a definition from a QUrl
+The path part of the URL is extracted as well as the following optional keys:
+layer_ref=layer_id[:name]               represents a live layer referenced by its ID. An optional name can be given
+layer=provider:source[:name[:encoding]] represents a layer given by its provider key, its source url (URL-encoded).
+An optional name and encoding can be given
+geometry=column_name[:type:srid]        gives the definition of the geometry column.
+Type can be either a WKB type code or a string (point, linestring, etc.)
+srid is an integer
+uid=column_name                         is the name of a column with unique integer values.
+nogeometry                              is a flag to force the layer to be a non-geometry layer
+query=sql                               represents the SQL query. Must be URL-encoded
+field=column_name:[int|real|text]       represents a field with its name and its type
+%End
 
-    //! Convert the definition into a QUrl
     QUrl toUrl() const;
+%Docstring
+Convert the definition into a QUrl
+%End
 
-    //! Convert into a QString that can be read by the virtual layer provider
     QString toString() const;
+%Docstring
+Convert into a QString that can be read by the virtual layer provider
+%End
 
-    //! Add a live layer source layer
-    void addSource( const QString& name, const QString& ref );
+    void addSource( const QString &name, const QString &ref );
+%Docstring
+Add a live layer source layer
+%End
 
-    //! Add a layer with a source, a provider and an encoding
-    void addSource( const QString& name, const QString& source, const QString& provider, const QString& encoding = "" );
+    void addSource( const QString &name, const QString &source, const QString &provider, const QString &encoding = "" );
+%Docstring
+Add a layer with a source, a provider and an encoding
+%End
 
-    //! List of source layers
     typedef QList<QgsVirtualLayerDefinition::SourceLayer> SourceLayers;
 
-    //! Get access to the source layers
-    const SourceLayers& sourceLayers() const;
+    const QgsVirtualLayerDefinition::SourceLayers &sourceLayers() const;
+%Docstring
+Get access to the source layers
+%End
 
-    //! Get the SQL query
     QString query() const;
-    //! Set the SQL query
-    void setQuery( const QString& query );
+%Docstring
+Get the SQL query
+%End
+    void setQuery( const QString &query );
+%Docstring
+Set the SQL query
+%End
 
-    //! Get the file path. May be empty
     QString filePath() const;
-    //! Set the file path
-    void setFilePath( const QString& filePath );
+%Docstring
+Get the file path. May be empty
+%End
+    void setFilePath( const QString &filePath );
+%Docstring
+Set the file path
+%End
 
-    //! Get the name of the field with unique identifiers
     QString uid() const;
-    //! Set the name of the field with unique identifiers
-    void setUid( const QString& uid );
+%Docstring
+Get the name of the field with unique identifiers
+%End
+    void setUid( const QString &uid );
+%Docstring
+Set the name of the field with unique identifiers
+%End
 
-    //! Get the name of the geometry field. Empty if no geometry field
     QString geometryField() const;
-    //! Set the name of the geometry field
-    void setGeometryField( const QString& geometryField );
+%Docstring
+Get the name of the geometry field. Empty if no geometry field
+%End
+    void setGeometryField( const QString &geometryField );
+%Docstring
+Set the name of the geometry field
+%End
 
-    //! Get the type of the geometry
-    //! QgsWKBTypes::NoGeometry to hide any geometry
-    //! QgsWKBTypes::Unknown for unknown types
-    QgsWKBTypes::Type geometryWkbType() const;
-    //! Set the type of the geometry
-    void setGeometryWkbType( QgsWKBTypes::Type t );
+    QgsWkbTypes::Type geometryWkbType() const;
+%Docstring
+Get the type of the geometry
+QgsWkbTypes.NoGeometry to hide any geometry
+QgsWkbTypes.Unknown for unknown types
+%End
+    void setGeometryWkbType( QgsWkbTypes::Type t );
+%Docstring
+Set the type of the geometry
+%End
 
-    //! Get the SRID of the geometry
     long geometrySrid() const;
-    //! Set the SRID of the geometry
+%Docstring
+Get the SRID of the geometry
+%End
     void setGeometrySrid( long srid );
+%Docstring
+Set the SRID of the geometry
+%End
 
-    //! Get field definitions
-    const QgsFields& fields() const;
-    //! Set field definitions
-    void setFields( const QgsFields& fields );
+    QgsFields fields() const;
+%Docstring
+Get field definitions
+%End
+    void setFields( const QgsFields &fields );
+%Docstring
+Set field definitions
+%End
 
-    //! Convenience method to test if a given source layer is part of the definition
-    bool hasSourceLayer( const QString& name ) const;
+    bool hasSourceLayer( const QString &name ) const;
+%Docstring
+Convenience method to test if a given source layer is part of the definition
+%End
 
-    //! Convenience method to test whether the definition has referenced (live) layers
     bool hasReferencedLayers() const;
+%Docstring
+Convenience method to test whether the definition has referenced (live) layers
+%End
 
-    //! Convenient method to test if the geometry is defined (not NoGeometry and not Unknown)
     bool hasDefinedGeometry() const;
+%Docstring
+Convenient method to test if the geometry is defined (not NoGeometry and not Unknown)
+%End
+
 };
 
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsvirtuallayerdefinition.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -17,16 +17,18 @@
 #ifndef QGSSHADOWEFFECT_H
 #define QGSSHADOWEFFECT_H
 
+#include "qgis_core.h"
 #include "qgspainteffect.h"
 #include "qgis.h"
-#include "qgssymbolv2.h"
+#include "qgssymbol.h"
 #include <QPainter>
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsShadowEffect
  * \brief Base class for paint effects which offset, blurred shadows
  *
- * \note Added in version 2.9
+ * \since QGIS 2.9
  */
 
 class CORE_EXPORT QgsShadowEffect : public QgsPaintEffect
@@ -35,207 +37,225 @@ class CORE_EXPORT QgsShadowEffect : public QgsPaintEffect
   public:
 
     QgsShadowEffect();
-    virtual ~QgsShadowEffect();
 
-    virtual QgsStringMap properties() const override;
-    virtual void readProperties( const QgsStringMap& props ) override;
+    QgsStringMap properties() const override;
+    void readProperties( const QgsStringMap &props ) override;
 
-    /** Sets blur level (strength) for the shadow.
-     * @param level blur level. Values between 0 and 16 are valid, with larger
+    /**
+     * Sets blur level (strength) for the shadow.
+     * \param level blur level. Values between 0 and 16 are valid, with larger
      * values indicating greater blur strength.
-     * @see blurLevel
+     * \see blurLevel
      */
     void setBlurLevel( const int level ) { mBlurLevel = level; }
 
-    /** Returns the blur level (strength) for the shadow.
-     * @returns blur level. Value will be between 0 and 16, with larger
+    /**
+     * Returns the blur level (strength) for the shadow.
+     * \returns blur level. Value will be between 0 and 16, with larger
      * values indicating greater blur strength.
-     * @see setBlurLevel
+     * \see setBlurLevel
      */
     int blurLevel() const { return mBlurLevel; }
 
-    /** Sets the angle for offsetting the shadow.
-     * @param angle offset angle in degrees clockwise from North
-     * @see offsetAngle
-     * @see setOffsetDistance
+    /**
+     * Sets the angle for offsetting the shadow.
+     * \param angle offset angle in degrees clockwise from North
+     * \see offsetAngle
+     * \see setOffsetDistance
      */
     void setOffsetAngle( const int angle ) { mOffsetAngle = angle; }
 
-    /** Returns the angle used for offsetting the shadow.
-     * @returns offset angle in degrees clockwise from North
-     * @see setOffsetAngle
-     * @see offsetDistance
+    /**
+     * Returns the angle used for offsetting the shadow.
+     * \returns offset angle in degrees clockwise from North
+     * \see setOffsetAngle
+     * \see offsetDistance
      */
     int offsetAngle() const { return mOffsetAngle; }
 
-    /** Sets the distance for offsetting the shadow.
-     * @param distance offset distance. Units are specified via @link setOffsetUnit @endlink
-     * @see offsetDistance
-     * @see setOffsetUnit
-     * @see setOffsetMapUnitScale
+    /**
+     * Sets the distance for offsetting the shadow.
+     * \param distance offset distance. Units are specified via setOffsetUnit()
+     * \see offsetDistance
+     * \see setOffsetUnit
+     * \see setOffsetMapUnitScale
      */
     void setOffsetDistance( const double distance ) { mOffsetDist = distance; }
 
-    /** Returns the distance used for offsetting the shadow.
-     * @returns offset distance. Distance units are retreived via @link offsetUnit @endlink
-     * @see setOffsetDistance
-     * @see offsetUnit
-     * @see offsetMapUnitScale
+    /**
+     * Returns the distance used for offsetting the shadow.
+     * \returns offset distance. Distance units are retrieved via offsetUnit()
+     * \see setOffsetDistance
+     * \see offsetUnit
+     * \see offsetMapUnitScale
      */
     double offsetDistance() const { return mOffsetDist; }
 
-    /** Sets the units used for the shadow offset distance.
-     * @param unit units for offset distance
-     * @see offsetUnit
-     * @see setOffsetDistance
-     * @see setOffsetMapUnitScale
+    /**
+     * Sets the units used for the shadow offset distance.
+     * \param unit units for offset distance
+     * \see offsetUnit
+     * \see setOffsetDistance
+     * \see setOffsetMapUnitScale
      */
-    void setOffsetUnit( const QgsSymbolV2::OutputUnit unit ) { mOffsetUnit = unit; }
+    void setOffsetUnit( const QgsUnitTypes::RenderUnit unit ) { mOffsetUnit = unit; }
 
-    /** Returns the units used for the shadow offset distance.
-     * @returns units for offset distance
-     * @see setOffsetUnit
-     * @see offsetDistance
-     * @see offsetMapUnitScale
+    /**
+     * Returns the units used for the shadow offset distance.
+     * \returns units for offset distance
+     * \see setOffsetUnit
+     * \see offsetDistance
+     * \see offsetMapUnitScale
      */
-    QgsSymbolV2::OutputUnit offsetUnit() const { return mOffsetUnit; }
+    QgsUnitTypes::RenderUnit offsetUnit() const { return mOffsetUnit; }
 
-    /** Sets the map unit scale used for the shadow offset distance.
-     * @param scale map unit scale for offset distance
-     * @see offsetMapUnitScale
-     * @see setOffsetDistance
-     * @see setOffsetUnit
+    /**
+     * Sets the map unit scale used for the shadow offset distance.
+     * \param scale map unit scale for offset distance
+     * \see offsetMapUnitScale
+     * \see setOffsetDistance
+     * \see setOffsetUnit
      */
-    void setOffsetMapUnitScale( const QgsMapUnitScale& scale ) { mOffsetMapUnitScale = scale; }
+    void setOffsetMapUnitScale( const QgsMapUnitScale &scale ) { mOffsetMapUnitScale = scale; }
 
-    /** Returns the map unit scale used for the shadow offset distance.
-     * @returns map unit scale for offset distance
-     * @see setOffsetMapUnitScale
-     * @see offsetDistance
-     * @see offsetUnit
+    /**
+     * Returns the map unit scale used for the shadow offset distance.
+     * \returns map unit scale for offset distance
+     * \see setOffsetMapUnitScale
+     * \see offsetDistance
+     * \see offsetUnit
      */
-    const QgsMapUnitScale& offsetMapUnitScale() const { return mOffsetMapUnitScale; }
+    const QgsMapUnitScale &offsetMapUnitScale() const { return mOffsetMapUnitScale; }
 
-    /** Sets the color for the shadow.
-     * @param color shadow color
-     * @see color
+    /**
+     * Sets the color for the shadow.
+     * \param color shadow color
+     * \see color
      */
-    void setColor( const QColor& color ) { mColor = color; }
+    void setColor( const QColor &color ) { mColor = color; }
 
-    /** Returns the color used for the shadow.
-     * @returns shadow color
-     * @see setColor
+    /**
+     * Returns the color used for the shadow.
+     * \returns shadow color
+     * \see setColor
      */
     QColor color() const { return mColor; }
 
-    /** Sets the transparency for the effect
-     * @param transparency double between 0 and 1 inclusive, where 0 is fully opaque
-     * and 1 is fully transparent
-     * @see transparency
+    /**
+     * Sets the \a opacity for the effect.
+     * \param opacity double between 0 and 1 inclusive, where 0 is fully transparent
+     * and 1 is fully opaque
+     * \see opacity()
      */
-    void setTransparency( const double transparency ) { mTransparency = transparency; }
+    void setOpacity( const double opacity ) { mOpacity = opacity; }
 
-    /** Returns the transparency for the effect
-     * @returns transparency value between 0 and 1 inclusive, where 0 is fully opaque
-     * and 1 is fully transparent
-     * @see setTransparency
+    /**
+     * Returns the opacity for the effect.
+     * \returns opacity value between 0 and 1 inclusive, where 0 is fully transparent
+     * and 1 is fully opaque
+     * \see setOpacity()
      */
-    double transparency() const { return mTransparency; }
+    double opacity() const { return mOpacity; }
 
-    /** Sets the blend mode for the effect
-     * @param mode blend mode used for drawing the effect on to a destination
+    /**
+     * Sets the blend mode for the effect
+     * \param mode blend mode used for drawing the effect on to a destination
      * paint device
-     * @see blendMode
+     * \see blendMode
      */
     void setBlendMode( const QPainter::CompositionMode mode ) { mBlendMode = mode; }
 
-    /** Returns the blend mode for the effect
-     * @returns blend mode used for drawing the effect on to a destination
+    /**
+     * Returns the blend mode for the effect
+     * \returns blend mode used for drawing the effect on to a destination
      * paint device
-     * @see setBlendMode
+     * \see setBlendMode
      */
     QPainter::CompositionMode blendMode() const { return mBlendMode; }
 
   protected:
 
-    virtual QRectF boundingRect( const QRectF& rect, const QgsRenderContext& context ) const override;
-    virtual void draw( QgsRenderContext& context ) override;
+    QRectF boundingRect( const QRectF &rect, const QgsRenderContext &context ) const override;
+    void draw( QgsRenderContext &context ) override;
 
-    /** Specifies whether the shadow is drawn outside the picture or within
+    /**
+     * Specifies whether the shadow is drawn outside the picture or within
      * the picture.
-     * @returns true if shadow is to be drawn outside the picture, or false
+     * \returns true if shadow is to be drawn outside the picture, or false
      * to draw shadow within the picture
      */
     virtual bool exteriorShadow() const = 0;
 
-    int mBlurLevel;
-    int mOffsetAngle;
-    double mOffsetDist;
-    QgsSymbolV2::OutputUnit mOffsetUnit;
+    int mBlurLevel = 10;
+    int mOffsetAngle = 135;
+    double mOffsetDist = 2.0;
+    QgsUnitTypes::RenderUnit mOffsetUnit = QgsUnitTypes::RenderMillimeters;
     QgsMapUnitScale mOffsetMapUnitScale;
-    double mTransparency;
+    double mOpacity = 1.0;
     QColor mColor;
-    QPainter::CompositionMode mBlendMode;
+    QPainter::CompositionMode mBlendMode = QPainter::CompositionMode_Multiply;
 
 };
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsDropShadowEffect
  * \brief A paint effect which draws an offset and optionally blurred drop shadow
  *
- * \note Added in version 2.9
+ * \since QGIS 2.9
  */
 class CORE_EXPORT QgsDropShadowEffect : public QgsShadowEffect
 {
 
   public:
 
-    /** Creates a new QgsDropShadowEffect effect from a properties string map.
-     * @param map encoded properties string map
-     * @returns new QgsDropShadowEffect
+    /**
+     * Creates a new QgsDropShadowEffect effect from a properties string map.
+     * \param map encoded properties string map
+     * \returns new QgsDropShadowEffect
      */
-    static QgsPaintEffect* create( const QgsStringMap& map );
+    static QgsPaintEffect *create( const QgsStringMap &map ) SIP_FACTORY;
 
     QgsDropShadowEffect();
-    virtual ~QgsDropShadowEffect();
 
-    virtual QString type() const override { return QString( "dropShadow" ); }
-    virtual QgsDropShadowEffect* clone() const override;
+    QString type() const override;
+    QgsDropShadowEffect *clone() const override SIP_FACTORY;
 
   protected:
 
-    virtual bool exteriorShadow() const override { return true; }
+    bool exteriorShadow() const override;
 
 };
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsInnerShadowEffect
  * \brief A paint effect which draws an offset and optionally blurred drop shadow
  * within a picture.
  *
- * \note Added in version 2.9
+ * \since QGIS 2.9
  */
 class CORE_EXPORT QgsInnerShadowEffect : public QgsShadowEffect
 {
 
   public:
 
-    /** Creates a new QgsInnerShadowEffect effect from a properties string map.
-     * @param map encoded properties string map
-     * @returns new QgsInnerShadowEffect
+    /**
+     * Creates a new QgsInnerShadowEffect effect from a properties string map.
+     * \param map encoded properties string map
+     * \returns new QgsInnerShadowEffect
      */
-    static QgsPaintEffect* create( const QgsStringMap& map );
+    static QgsPaintEffect *create( const QgsStringMap &map ) SIP_FACTORY;
 
     QgsInnerShadowEffect();
-    virtual ~QgsInnerShadowEffect();
 
-    virtual QString type() const override { return QString( "innerShadow" ); }
-    virtual QgsInnerShadowEffect* clone() const override;
+    QString type() const override;
+    QgsInnerShadowEffect *clone() const override SIP_FACTORY;
 
   protected:
 
-    virtual bool exteriorShadow() const override { return false; }
+    bool exteriorShadow() const override;
 
 };
 

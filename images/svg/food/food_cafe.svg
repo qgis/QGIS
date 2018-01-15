@@ -1,35 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg version="1.1"
-	 id="svg2" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" sodipodi:version="0.32" sodipodi:docname="refreshments.svg" inkscape:output_extension="org.inkscape.output.svg.inkscape" inkscape:version="0.46" sodipodi:docbase="s:\Data\FacilityIcons"
-	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="580px" height="580px"
-	 viewBox="0 0 580 580" enable-background="new 0 0 580 580" xml:space="preserve">
-<sodipodi:namedview  showgrid="false" inkscape:cy="-1006.2977" inkscape:cx="1601.608" inkscape:zoom="0.11520964" pagecolor="#ffffff" bordercolor="#666666" guidetolerance="10.0" objecttolerance="10.0" gridtolerance="10.0" borderopacity="1.0" id="base" inkscape:current-layer="svg2" inkscape:window-y="-4" inkscape:window-x="-4" inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:window-height="721" inkscape:window-width="1024">
-	</sodipodi:namedview>
-<defs>
-	
-	
-		<inkscape:perspective  inkscape:vp_z="580 : 290 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:vp_x="0 : 290 : 1" sodipodi:type="inkscape:persp3d" id="perspective2441" inkscape:persp3d-origin="290 : 193.33333 : 1">
-		</inkscape:perspective>
-	
-		<inkscape:perspective  inkscape:vp_z="744.09448 : 526.18109 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:vp_x="0 : 526.18109 : 1" sodipodi:type="inkscape:persp3d" id="perspective2466" inkscape:persp3d-origin="372.04724 : 350.78739 : 1">
-		</inkscape:perspective>
-	
-		<inkscape:perspective  inkscape:vp_z="744.09448 : 526.18109 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:vp_x="0 : 526.18109 : 1" sodipodi:type="inkscape:persp3d" id="perspective3333" inkscape:persp3d-origin="372.04724 : 350.78739 : 1">
-		</inkscape:perspective>
-	
-		<inkscape:perspective  inkscape:vp_z="744.09448 : 526.18109 : 1" inkscape:vp_y="0 : 1000 : 0" inkscape:vp_x="0 : 526.18109 : 1" sodipodi:type="inkscape:persp3d" id="perspective3401" inkscape:persp3d-origin="372.04724 : 350.78739 : 1">
-		</inkscape:perspective>
-</defs>
-<path fill="param(fill)" fill-opacity="param(fill-opacity)" stroke="param(outline)" stroke-opacity="param(outline-opacity)" stroke-width="param(outline-width)" d="M509.464,158.581c-11.798-12.039-26.258-18.403-41.817-18.403
-	c-15.321,0-31.313,4.62-45.704,10.677c-1.149-16.095-2.424-26.081-2.544-27c-0.604-4.64-4.558-8.109-9.232-8.109
-	c-0.014,0-0.026,0-0.039,0l-162.288,0.669l-162.364-0.669c-0.013,0-0.026,0-0.039,0c-4.675,0-8.629,3.469-9.233,8.11
-	c-0.277,2.13-6.749,52.881-3.494,115.625c4.421,85.248,24.077,148.298,58.42,187.399c26.255,29.893,60.775,45.049,102.6,45.049
-	l0.384-0.001c4.602,0.247,9.259,0.331,13.687,0.263c1.012,0.016,2.035,0.024,3.07,0.024c3.496,0,7.066-0.097,10.616-0.287
-	l0.385,0.001c41.838,0,76.367-15.161,102.626-45.061c5.28-6.013,10.211-12.597,14.795-19.735
-	c25.595-2.137,48.771-7.71,69.093-16.667c22.597-9.959,41.745-24.062,56.915-41.915c32.663-38.44,35.997-80.543,36.241-92.532
-	C542.185,224.469,532.514,182.104,509.464,158.581z M495.926,255.09c-0.118,5.822-1.899,36.266-25.394,63.917
-	c-16.351,19.243-39.116,32.16-67.954,38.636c11.14-32.77,17.948-72.242,20.326-118.17c0.705-13.625,0.951-26.683,0.903-38.801
-	c13.839-7.604,30.693-14.866,43.839-14.866c2.147,0,5.138,0.535,9.228,4.709C488.062,201.931,496.43,230.296,495.926,255.09z"/>
+<svg enable-background="new 0 0 580 580" height="580" viewBox="0 0 580 580" width="580" xmlns="http://www.w3.org/2000/svg">
+<path d="m509.464 158.581c-11.798-12.039-26.258-18.403-41.817-18.403-15.321 0-31.313 4.62-45.704 10.677-1.149-16.095-2.424-26.081-2.544-27-.604-4.64-4.558-8.109-9.232-8.109-.014 0-.026 0-.039 0l-162.288.669-162.364-.669c-.013 0-.026 0-.039 0-4.675 0-8.629 3.469-9.233 8.11-.277 2.13-6.749 52.881-3.494 115.625 4.421 85.248 24.077 148.298 58.42 187.399 26.255 29.893 60.775 45.049 102.6 45.049l.384-.001c4.602.247 9.259.331 13.687.263 1.012.016 2.035.024 3.07.024 3.496 0 7.066-.097 10.616-.287l.385.001c41.838 0 76.367-15.161 102.626-45.061 5.28-6.013 10.211-12.597 14.795-19.735 25.595-2.137 48.771-7.71 69.093-16.667 22.597-9.959 41.745-24.062 56.915-41.915 32.663-38.44 35.997-80.543 36.241-92.532.643-31.55-9.028-73.915-32.078-97.438zm-13.538 96.509c-.118 5.822-1.899 36.266-25.394 63.917-16.351 19.243-39.116 32.16-67.954 38.636 11.14-32.77 17.948-72.242 20.326-118.17.705-13.625.951-26.683.903-38.801 13.839-7.604 30.693-14.866 43.839-14.866 2.147 0 5.138.535 9.228 4.709 11.188 11.416 19.556 39.781 19.052 64.575z" fill="param(fill)" fill-opacity="param(fill-opacity)" stroke="param(outline)" stroke-opacity="param(outline-opacity)" stroke-width="param(outline-width)"/>
 </svg>

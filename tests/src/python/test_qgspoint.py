@@ -14,21 +14,21 @@ __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
-from qgis.core import QgsPoint
+from qgis.core import QgsPointXY
 
 from qgis.testing import start_app, unittest
 
 start_app()
 
 
-class TestQgsPoint(unittest.TestCase):
+class TestQgsPointXY(unittest.TestCase):
 
     def __init__(self, methodName):
         """Run once on class initialization."""
         unittest.TestCase.__init__(self, methodName)
 
     def setUp(self):
-        self.mPoint = QgsPoint(10.0, 10.0)
+        self.mPoint = QgsPointXY(10.0, 10.0)
 
     def test_Point(self):
         myExpectedValue = 10.0
@@ -43,16 +43,17 @@ class TestQgsPoint(unittest.TestCase):
         assert myExpectedValue == myActualValue, myMessage
 
     def test_hash(self):
-        a = QgsPoint(2.0, 1.0)
-        b = QgsPoint(2.0, 2.0)
-        c = QgsPoint(1.0, 2.0)
-        d = QgsPoint(1.0, 1.0)
-        e = QgsPoint(2.0, 1.0)
+        a = QgsPointXY(2.0, 1.0)
+        b = QgsPointXY(2.0, 2.0)
+        c = QgsPointXY(1.0, 2.0)
+        d = QgsPointXY(1.0, 1.0)
+        e = QgsPointXY(2.0, 1.0)
         assert a.__hash__() != b.__hash__()
         assert e.__hash__() == a.__hash__()
 
         mySet = set([a, b, c, d, e])
         assert len(mySet) == 4
+
 
 if __name__ == '__main__':
     unittest.main()

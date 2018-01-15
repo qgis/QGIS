@@ -17,13 +17,3 @@
  ****************************************************************************/
 
 #include "qgisinterface.h"
-
-QgisInterface::QgisInterface()
-{
-
-
-}
-
-QgisInterface::~QgisInterface()
-{
-}

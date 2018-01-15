@@ -19,6 +19,7 @@
 #include "qgsauthmanager.h"
 #include "qgsdatasourceuri.h"
 #include "qgsrectangle.h"
+#include "qgsapplication.h"
 
 #include <QNetworkRequest>
 #include <QString>
@@ -26,22 +27,32 @@
 // TODO: merge with QgsWmsAuthorization?
 struct QgsWFSAuthorization
 {
-  QgsWFSAuthorization( const QString& userName = QString(), const QString& password = QString(), const QString& authcfg = QString() )
-      : mUserName( userName )
-      , mPassword( password )
-      , mAuthCfg( authcfg )
+  QgsWFSAuthorization( const QString &userName = QString(), const QString &password = QString(), const QString &authcfg = QString() )
+    : mUserName( userName )
+    , mPassword( password )
+    , mAuthCfg( authcfg )
   {}
 
-  //! set authorization header
+  //! update authorization for request
   bool setAuthorization( QNetworkRequest &request ) const
+  {
+    if ( !mAuthCfg.isEmpty() ) // must be non-empty value
+    {
+      return QgsApplication::authManager()->updateNetworkRequest( request, mAuthCfg );
+    }
+    else if ( !mUserName.isNull() || !mPassword.isNull() ) // allow empty values
+    {
+      request.setRawHeader( "Authorization", "Basic " + QStringLiteral( "%1:%2" ).arg( mUserName, mPassword ).toLatin1().toBase64() );
+    }
+    return true;
+  }
+
+  //! update authorization for reply
+  bool setAuthorizationReply( QNetworkReply *reply ) const
   {
     if ( !mAuthCfg.isEmpty() )
     {
-      return QgsAuthManager::instance()->updateNetworkRequest( request, mAuthCfg );
-    }
-    else if ( !mUserName.isNull() || !mPassword.isNull() )
-    {
-      request.setRawHeader( "Authorization", "Basic " + QString( "%1:%2" ).arg( mUserName, mPassword ).toAscii().toBase64() );
+      return QgsApplication::authManager()->updateNetworkReply( reply, mAuthCfg );
     }
     return true;
   }
@@ -56,70 +67,91 @@ struct QgsWFSAuthorization
   QString mAuthCfg;
 };
 
-/** Utility class that wraps a QgsDataSourceURI with conveniency
+/**
+ * Utility class that wraps a QgsDataSourceUri with conveniency
  * methods with the parameters used for a WFS URI.
  */
 class QgsWFSDataSourceURI
 {
   public:
 
-    QgsWFSDataSourceURI( const QString& uri );
+    explicit QgsWFSDataSourceURI( const QString &uri );
 
-    /** Return the URI */
-    QString uri();
+    //! Return the URI, avoiding expansion of authentication configuration, which is handled during network access
+    const QString uri( bool expandAuthConfig = false ) const;
 
-    /** Return base URL (with SERVICE=WFS parameter if bIncludeServiceWFS=true) */
+    //! Return base URL (with SERVICE=WFS parameter if bIncludeServiceWFS=true)
     QUrl baseURL( bool bIncludeServiceWFS = true ) const;
 
-    /** Get WFS version. Can be auto, 1.0.0, 1.1.0 or 2.0.0. */
+    //! Get WFS version. Can be auto, 1.0.0, 1.1.0 or 2.0.0.
     QString version() const;
 
-    /** Return user defined limit of features to download. 0=no limitation */
+    //! Return user defined limit of features to download. 0=no limitation
     int maxNumFeatures() const;
 
-    /** Set user defined limit of features to download */
+    //! Set user defined limit of features to download
     void setMaxNumFeatures( int maxNumFeatures );
 
-    /** Get typename (with prefix) */
+    //! Get typename (with prefix)
     QString typeName() const;
 
-    /** Set typename (with prefix)*/
-    void setTypeName( const QString& typeName );
+    //! Set typename (with prefix)
+    void setTypeName( const QString &typeName );
 
-    /** Get SRS name (in the normalized form EPSG:xxxx) */
+    //! Get SRS name (in the normalized form EPSG:xxxx)
     QString SRSName() const;
 
-    /** Set SRS name (in the normalized form EPSG:xxxx) */
-    void setSRSName( const QString& crsString );
+    //! Set SRS name (in the normalized form EPSG:xxxx)
+    void setSRSName( const QString &crsString );
 
-    /** Get OGC filter xml or a QGIS expression */
+    //! Set version
+    void setVersion( const QString &versionString );
+
+    //! Get OGC filter xml or a QGIS expression
     QString filter() const;
 
-    /** Set OGC filter xml or a QGIS expression */
-    void setFilter( const QString& filterIn );
+    //! Set OGC filter xml or a QGIS expression
+    void setFilter( const QString &filterIn );
 
-    /** Returns whether GetFeature request should include the request bounding box. Defaults to false */
+    //! Get SQL query
+    QString sql() const;
+
+    //! Set SQL query
+    void setSql( const QString &sql );
+
+    //! Get GetFeature output format
+    QString outputFormat() const;
+
+    //! Set GetFeature output format
+    void setOutputFormat( const QString &outputFormat );
+
+    //! Returns whether GetFeature request should include the request bounding box. Defaults to false
     bool isRestrictedToRequestBBOX() const;
 
-    /** Returns whether axis orientation should be ignored (for WFS >= 1.1). Defaults to false */
+    //! Returns whether axis orientation should be ignored (for WFS >= 1.1). Defaults to false
     bool ignoreAxisOrientation() const;
 
-    /** Returns whether axis orientation should be inverted. Defaults to false */
+    //! Returns whether axis orientation should be inverted. Defaults to false
     bool invertAxisOrientation() const;
 
-    /** Return authorization parameters */
-    QgsWFSAuthorization& auth() { return mAuth; }
+    //! For debug purposes. Checks that functions used in sql match functions declared by the server. Defaults to false
+    bool validateSqlFunctions() const;
 
-    /** Builds a derived uri from a base uri */
-    //! @param filter can be an OGC filter xml or a QGIS expression
-    static QString build( const QString& uri,
-                          const QString& typeName,
-                          const QString& crsString = QString(),
-                          const QString& filter = QString(),
+    //! Whether to hide download progress dialog in QGIS main app. Defaults to false
+    bool hideDownloadProgressDialog() const;
+
+    //! Return authorization parameters
+    QgsWFSAuthorization &auth() { return mAuth; }
+
+    //! Builds a derived uri from a base uri
+    static QString build( const QString &uri,
+                          const QString &typeName,
+                          const QString &crsString = QString(),
+                          const QString &sql = QString(),
                           bool restrictToCurrentViewExtent = false );
 
   private:
-    QgsDataSourceURI    mURI;
+    QgsDataSourceUri    mURI;
     QgsWFSAuthorization mAuth;
 };
 

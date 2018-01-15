@@ -16,28 +16,32 @@
 #include "qgsvaluemapconfigdlg.h"
 
 #include "qgsattributetypeloaddialog.h"
+#include "qgsvaluemapfieldformatter.h"
+#include "qgsapplication.h"
+#include "qgssettings.h"
 
-#include <QSettings>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QTextStream>
 
-QgsValueMapConfigDlg::QgsValueMapConfigDlg( QgsVectorLayer* vl, int fieldIdx, QWidget* parent )
-    : QgsEditorConfigWidget( vl, fieldIdx, parent )
+QgsValueMapConfigDlg::QgsValueMapConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
+  : QgsEditorConfigWidget( vl, fieldIdx, parent )
 {
   setupUi( this );
 
   tableWidget->insertRow( 0 );
 
-  connect( removeSelectedButton, SIGNAL( clicked() ), this, SLOT( removeSelectedButtonPushed() ) );
-  connect( loadFromLayerButton, SIGNAL( clicked() ), this, SLOT( loadFromLayerButtonPushed() ) );
-  connect( loadFromCSVButton, SIGNAL( clicked() ), this, SLOT( loadFromCSVButtonPushed() ) );
-  connect( tableWidget, SIGNAL( cellChanged( int, int ) ), this, SLOT( vCellChanged( int, int ) ) );
+  connect( addNullButton, &QAbstractButton::clicked, this, &QgsValueMapConfigDlg::addNullButtonPushed );
+  connect( removeSelectedButton, &QAbstractButton::clicked, this, &QgsValueMapConfigDlg::removeSelectedButtonPushed );
+  connect( loadFromLayerButton, &QAbstractButton::clicked, this, &QgsValueMapConfigDlg::loadFromLayerButtonPushed );
+  connect( loadFromCSVButton, &QAbstractButton::clicked, this, &QgsValueMapConfigDlg::loadFromCSVButtonPushed );
+  connect( tableWidget, &QTableWidget::cellChanged, this, &QgsValueMapConfigDlg::vCellChanged );
 }
 
-QgsEditorWidgetConfig QgsValueMapConfigDlg::config()
+QVariantMap QgsValueMapConfigDlg::config()
 {
-  QgsEditorWidgetConfig cfg;
+  QVariantMap values;
+  QgsSettings settings;
 
   //store data to map
   for ( int i = 0; i < tableWidget->rowCount() - 1; i++ )
@@ -48,20 +52,26 @@ QgsEditorWidgetConfig QgsValueMapConfigDlg::config()
     if ( !ki )
       continue;
 
+    QString ks = ki->text();
+    if ( ( ks == QgsApplication::nullRepresentation() ) && !( ki->flags() & Qt::ItemIsEditable ) )
+      ks = QgsValueMapFieldFormatter::NULL_VALUE;
+
     if ( !vi || vi->text().isNull() )
     {
-      cfg.insert( ki->text(), ki->text() );
+      values.insert( ks, ks );
     }
     else
     {
-      cfg.insert( vi->text(), ki->text() );
+      values.insert( vi->text(), ks );
     }
   }
 
+  QVariantMap cfg;
+  cfg.insert( QStringLiteral( "map" ), values );
   return cfg;
 }
 
-void QgsValueMapConfigDlg::setConfig( const QgsEditorWidgetConfig& config )
+void QgsValueMapConfigDlg::setConfig( const QVariantMap &config )
 {
   tableWidget->clearContents();
   for ( int i = tableWidget->rowCount() - 1; i > 0; i-- )
@@ -70,18 +80,13 @@ void QgsValueMapConfigDlg::setConfig( const QgsEditorWidgetConfig& config )
   }
 
   int row = 0;
-  for ( QgsEditorWidgetConfig::ConstIterator mit = config.begin(); mit != config.end(); mit++, row++ )
+  QVariantMap values = config.value( QStringLiteral( "map" ) ).toMap();
+  for ( QVariantMap::ConstIterator mit = values.constBegin(); mit != values.constEnd(); mit++, row++ )
   {
-    tableWidget->insertRow( row );
     if ( mit.value().isNull() )
-    {
-      tableWidget->setItem( row, 0, new QTableWidgetItem( mit.key() ) );
-    }
+      setRow( row, mit.key(), QString() );
     else
-    {
-      tableWidget->setItem( row, 0, new QTableWidgetItem( mit.value().toString() ) );
-      tableWidget->setItem( row, 1, new QTableWidgetItem( mit.key() ) );
-    }
+      setRow( row, mit.value().toString(), mit.key() );
   }
 }
 
@@ -92,6 +97,8 @@ void QgsValueMapConfigDlg::vCellChanged( int row, int column )
   {
     tableWidget->insertRow( row + 1 );
   } //else check type
+
+  emit changed();
 }
 
 void QgsValueMapConfigDlg::removeSelectedButtonPushed()
@@ -116,6 +123,7 @@ void QgsValueMapConfigDlg::removeSelectedButtonPushed()
     tableWidget->removeRow( rowsToRemove.values().at( i ) - removed );
     removed++;
   }
+  emit changed();
 }
 
 void QgsValueMapConfigDlg::updateMap( const QMap<QString, QVariant> &map, bool insertNull )
@@ -129,25 +137,45 @@ void QgsValueMapConfigDlg::updateMap( const QMap<QString, QVariant> &map, bool i
 
   if ( insertNull )
   {
-    QSettings settings;
-    tableWidget->setItem( row, 0, new QTableWidgetItem( settings.value( "qgis/nullValue", "NULL" ).toString() ) );
-    tableWidget->setItem( row, 1, new QTableWidgetItem( "<NULL>" ) );
+    setRow( row, QgsValueMapFieldFormatter::NULL_VALUE, QStringLiteral( "<NULL>" ) );
     ++row;
   }
 
   for ( QMap<QString, QVariant>::const_iterator mit = map.begin(); mit != map.end(); ++mit, ++row )
   {
-    tableWidget->insertRow( row );
     if ( mit.value().isNull() )
-    {
-      tableWidget->setItem( row, 0, new QTableWidgetItem( mit.key() ) );
-    }
+      setRow( row, mit.key(), QString() );
     else
-    {
-      tableWidget->setItem( row, 0, new QTableWidgetItem( mit.key() ) );
-      tableWidget->setItem( row, 1, new QTableWidgetItem( mit.value().toString() ) );
-    }
+      setRow( row, mit.key(), mit.value().toString() );
   }
+}
+
+void QgsValueMapConfigDlg::setRow( int row, const QString &value, const QString &description )
+{
+  QgsSettings settings;
+  QTableWidgetItem *valueCell = nullptr;
+  QTableWidgetItem *descriptionCell = new QTableWidgetItem( description );
+  tableWidget->insertRow( row );
+  if ( value == QgsValueMapFieldFormatter::NULL_VALUE )
+  {
+    QFont cellFont;
+    cellFont.setItalic( true );
+    valueCell = new QTableWidgetItem( QgsApplication::nullRepresentation() );
+    valueCell->setFont( cellFont );
+    valueCell->setFlags( Qt::ItemIsSelectable | Qt::ItemIsEnabled );
+    descriptionCell->setFont( cellFont );
+  }
+  else
+  {
+    valueCell = new QTableWidgetItem( value );
+  }
+  tableWidget->setItem( row, 0, valueCell );
+  tableWidget->setItem( row, 1, descriptionCell );
+}
+
+void QgsValueMapConfigDlg::addNullButtonPushed()
+{
+  setRow( tableWidget->rowCount() - 1, QgsValueMapFieldFormatter::NULL_VALUE, QStringLiteral( "<NULL>" ) );
 }
 
 void QgsValueMapConfigDlg::loadFromLayerButtonPushed()
@@ -161,6 +189,8 @@ void QgsValueMapConfigDlg::loadFromLayerButtonPushed()
 
 void QgsValueMapConfigDlg::loadFromCSVButtonPushed()
 {
+  QgsSettings settings;
+
   QString fileName = QFileDialog::getOpenFileName( nullptr, tr( "Select a file" ), QDir::homePath() );
   if ( fileName.isNull() )
     return;
@@ -171,7 +201,7 @@ void QgsValueMapConfigDlg::loadFromCSVButtonPushed()
   {
     QMessageBox::information( nullptr,
                               tr( "Error" ),
-                              tr( "Could not open file %1\nError was:%2" ).arg( fileName, f.errorString() ),
+                              tr( "Could not open file %1\nError was: %2" ).arg( fileName, f.errorString() ),
                               QMessageBox::Cancel );
     return;
   }
@@ -205,17 +235,20 @@ void QgsValueMapConfigDlg::loadFromCSVButtonPushed()
     else
       continue;
 
-    if (( key.startsWith( '\"' ) && key.endsWith( '\"' ) ) ||
-        ( key.startsWith( '\'' ) && key.endsWith( '\'' ) ) )
+    if ( ( key.startsWith( '\"' ) && key.endsWith( '\"' ) ) ||
+         ( key.startsWith( '\'' ) && key.endsWith( '\'' ) ) )
     {
       key = key.mid( 1, key.length() - 2 );
     }
 
-    if (( val.startsWith( '\"' ) && val.endsWith( '\"' ) ) ||
-        ( val.startsWith( '\'' ) && val.endsWith( '\'' ) ) )
+    if ( ( val.startsWith( '\"' ) && val.endsWith( '\"' ) ) ||
+         ( val.startsWith( '\'' ) && val.endsWith( '\'' ) ) )
     {
       val = val.mid( 1, val.length() - 2 );
     }
+
+    if ( key == QgsApplication::nullRepresentation() )
+      key = QgsValueMapFieldFormatter::NULL_VALUE;
 
     map[ key ] = val;
   }

@@ -30,7 +30,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 
-nmeaPROPERTY * nmea_property()
+nmeaPROPERTY *nmea_property()
 {
   static nmeaPROPERTY prop =
   {

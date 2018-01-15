@@ -17,22 +17,22 @@
 
 #include <QTextStream>
 
-QgsDartMeasurement::QgsDartMeasurement( const QString& name, Type type, const QString& value )
-    : mName( name )
-    , mType( type )
-    , mValue( value )
+QgsDartMeasurement::QgsDartMeasurement( const QString &name, Type type, const QString &value )
+  : mName( name )
+  , mType( type )
+  , mValue( value )
 {
 }
 
 const QString QgsDartMeasurement::toString() const
 {
-  QString elementName = "DartMeasurement";
+  QString elementName = QStringLiteral( "DartMeasurement" );
   if ( mType == ImagePng )
   {
-    elementName = "DartMeasurementFile";
+    elementName = QStringLiteral( "DartMeasurementFile" );
   }
 
-  QString dashMessage = QString( "<%1 name=\"%2\" type=\"%3\">%4</%1>" )
+  QString dashMessage = QStringLiteral( "<%1 name=\"%2\" type=\"%3\">%4</%1>" )
                         .arg( elementName,
                               mName,
                               typeToString( mType ),
@@ -53,15 +53,15 @@ const QString QgsDartMeasurement::typeToString( QgsDartMeasurement::Type type )
   switch ( type )
   {
     case Text:
-      str = "text/text";
+      str = QStringLiteral( "text/text" );
       break;
 
     case ImagePng:
-      str = "image/png";
+      str = QStringLiteral( "image/png" );
       break;
 
     case Integer:
-      str = "numeric/integer";
+      str = QStringLiteral( "numeric/integer" );
       break;
   }
 

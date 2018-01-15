@@ -1,27 +1,67 @@
-class QgsNewMemoryLayerDialog : QDialog
-{
-%TypeHeaderCode
-#include <qgsnewmemorylayerdialog.h>
-%End
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsnewmemorylayerdialog.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
 
+
+
+
+class QgsNewMemoryLayerDialog: QDialog
+{
+
+%TypeHeaderCode
+#include "qgsnewmemorylayerdialog.h"
+%End
   public:
 
-    /** Runs the dialoag and creates a new memory layer
-     * @param parent parent widget
-     * @returns new memory layer
-     */
-    static QgsVectorLayer* runAndCreateLayer( QWidget* parent = 0 );
+    static QgsVectorLayer *runAndCreateLayer( QWidget *parent = 0, const QgsCoordinateReferenceSystem &defaultCrs = QgsCoordinateReferenceSystem() );
+%Docstring
+Runs the dialog and creates a new memory layer
 
-    QgsNewMemoryLayerDialog( QWidget *parent /TransferThis/ = 0, const Qt::WindowFlags& fl = QgisGui::ModalDialogFlags );
+:param parent: parent widget
+:param defaultCrs: default layer CRS to show in dialog
+
+:return: new memory layer
+%End
+
+    QgsNewMemoryLayerDialog( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
     ~QgsNewMemoryLayerDialog();
 
-    /** Returns the selected geometry type*/
-    QGis::WkbType selectedType() const;
+    QgsWkbTypes::Type selectedType() const;
+%Docstring
+Returns the selected geometry type
+%End
 
-    /** Returns the selected crs*/
+    void setCrs( const QgsCoordinateReferenceSystem &crs );
+%Docstring
+Sets the ``crs`` value for the new layer in the dialog.
+
+.. versionadded:: 3.0
+
+.. seealso:: :py:func:`crs`
+%End
+
     QgsCoordinateReferenceSystem crs() const;
+%Docstring
+Returns the selected CRS for the new layer.
 
-    /** Returns the layer name*/
+.. seealso:: :py:func:`setCrs`
+%End
+
     QString layerName() const;
+%Docstring
+Returns the layer name
+%End
 
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsnewmemorylayerdialog.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

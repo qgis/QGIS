@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg  PUBLIC '-//W3C//DTD SVG 1.1//EN'  'http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd'>
+<svg xmlns="http://www.w3.org/2000/svg" height="600" width="1200" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 12 6">
+ <title>Flag of Slovenia</title>
+ <rect width="12" fill="#ed1c24" height="6"/>
+ <rect width="12" fill="#005da4" height="4"/>
+ <rect width="12" fill="#fff" height="2"/>
+ <g transform="translate(2.2238 1) scale(.12937)">
+  <svg width="12" viewBox="-120 -190.223125 240 309.188274" height="15.459"><!-- R0 = 15*sqrt(349) ~ 280.223125  Py= 15*sqrt(285)-90 ~ 163.229145242 -->
+   <path d="m110.26-19.478l9.74-143.75a280.22 280.22 0 0 0 -240 0l9.74 143.75a155.61 155.61 0 0 0 110.26 138.45 155.61 155.61 0 0 0 110.26 -138.45" fill="#005da4"/>
+<!-- 30*sqrt(81/4+1) , 30*sqrt(19)-30  -->
+   <path d="m-90 0a138.29 138.29 0 0 0 90 100.77 138.29 138.29 0 0 0 90 -100.77l-45-60-18 24-27-54-27 54-18-24-45 60" fill="#fff"/>
+   <g id="wave" fill="#005da4" transform="scale(5) translate(0 5.1962)">
+    <path d="m-17.196-2.1962a6 6 0 0 0 8.1962 2.1962 6 6 0 0 1 6 0 6 6 0 0 0 6 0 6 6 0 0 1 6 0 6 6 0 0 0 8.1962 -2.1962v1.732a6 6 0 0 1 -8.1962 2.1962 6 6 0 0 0 -6 0 6 6 0 0 1 -6 0 6 6 0 0 0 -6 0 6 6 0 0 1 -8.1962 -2.1962z"/>
+   </g>
+   <use xlink:href="#wave" transform="translate(0 17.321)"/>
+   <g id="s" transform="translate(0,-120) scale(2.25)">
+    <path stroke-width=".2" d="m0-5l1 3.2679 3.3301-0.7679-2.3301 2.5 2.3301 2.5-3.3301-0.7679-1 3.2679-1-3.2679-3.3301 0.7679 2.3301-2.5-2.3301-2.5 3.3301 0.7679z" fill="#fd0"/>
+   </g>
+   <use xlink:href="#s" transform="translate(-33.75,-45)"/>
+   <use xlink:href="#s" transform="translate(33.75,-45)"/>
+   <path d="m-111.58-167.05l9.96 146.99a146.95 146.95 0 0 0 101.62 129.95 146.95 146.95 0 0 0 101.62 -129.95l9.96-146.99a280.22 280.22 0 0 0 8.42 3.82l-9.74 143.75a155.61 155.61 0 0 1 -110.26 138.45 155.61 155.61 0 0 1 -110.26 -138.45l-9.74-143.75a280.22 280.22 0 0 0 8.42 -3.82" fill="#ed1c24"/>
+  </svg>
+ </g>
+</svg>

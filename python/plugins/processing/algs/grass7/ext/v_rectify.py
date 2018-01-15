@@ -25,43 +25,30 @@ __copyright__ = '(C) 2016, Médéric Ribreux'
 
 __revision__ = '$Format:%H$'
 
-from processing.core.parameters import getParameterFromString
+import os
+from processing.algs.grass7.Grass7Utils import Grass7Utils
 
 
-def checkParameterValuesBeforeExecuting(alg):
+def checkParameterValuesBeforeExecuting(alg, parameters, context):
     """ Verify if we have the right parameters """
-    if alg.getParameterValue('inline_points') and alg.getParameterValue(u'points'):
+    if (alg.parameterAsString(parameters, 'inline_points', context)
+            and alg.parameterAsString(parameters, 'points', context)):
         return alg.tr("You need to set either an input control point file or inline control points!")
 
     return None
 
 
-def processCommand(alg):
-    # handle inline add data
-    input_txt = alg.getParameterFromName('inline_points')
-    inputParameter = alg.getParameterFromName('points')
-    if input_txt.value:
+def processCommand(alg, parameters, context):
+    # handle inline points
+    inlinePoints = alg.parameterAsString(parameters, 'inline_points', context)
+    if inlinePoints:
         # Creates a temporary txt file
-        ruleFile = alg.getTempFilename()
+        pointsName = getTempFilename()
 
         # Inject rules into temporary txt file
-        with open(ruleFile, "w") as tempRules:
-            tempRules.write(input_txt.value)
-        inputParameter.value = ruleFile
-        alg.parameters.remove(input_txt)
+        with open(pointsName, "w") as tempPoints:
+            tempPoints.write(inlinePoints)
+        alg.removeParameter('inline_points')
+        parameters['points'] = tempPoints
 
-    # exclude output for from_output
-    output = alg.getOutputFromName('rmsfile')
-    alg.removeOutputFromName('rmsfile')
-
-    # Create a false input parameter for rmsfile
-    param = getParameterFromString(u"ParameterString|rmsfile|the file|None|False|False")
-    param.value = output.value
-    alg.addParameter(param)
-
-    alg.processCommand()
-    alg.parameters.remove(param)
-    alg.addOutput(output)
-    if input_txt.value:
-        inputParameter.value = None
-        alg.addParameter(input_txt)
+    alg.processCommand(parameters, context, True)

@@ -1,117 +1,202 @@
-/**
- * The QgsLayerTreeView class extends QTreeView and provides some additional functionality
- * when working with a layer tree.
- *
- * The view updates expanded state of layer tree nodes and also listens to changes
- * to expanded states in the layer tree.
- *
- * The view keeps track of the current layer and emits a signal when the current layer has changed.
- *
- * Allows the client to specify a context menu provider with custom actions. Also it comes
- * with a set of default actions that can be used when building context menu.
- *
- * @see QgsLayerTreeModel
- * @note added in 2.4
- */
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/layertree/qgslayertreeview.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
 class QgsLayerTreeView : QTreeView
 {
+%Docstring
+The QgsLayerTreeView class extends QTreeView and provides some additional functionality
+when working with a layer tree.
+
+The view updates expanded state of layer tree nodes and also listens to changes
+to expanded states in the layer tree.
+
+The view keeps track of the current layer and emits a signal when the current layer has changed.
+
+Allows the client to specify a context menu provider with custom actions. Also it comes
+with a set of default actions that can be used when building context menu.
+
+.. seealso:: :py:class:`QgsLayerTreeModel`
+
+.. versionadded:: 2.4
+%End
+
 %TypeHeaderCode
-#include <qgslayertreeview.h>
+#include "qgslayertreeview.h"
 %End
-
 %ConvertToSubClassCode
-  if (sipCpp->inherits("QgsLayerTreeView"))
-    sipType = sipType_QgsLayerTreeView;
-  else
-    sipType = 0;
+    if ( sipCpp->inherits( "QgsLayerTreeView" ) )
+      sipType = sipType_QgsLayerTreeView;
+    else
+      sipType = 0;
 %End
-
   public:
+
     explicit QgsLayerTreeView( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsLayerTreeView
+%End
     ~QgsLayerTreeView();
 
-    //! Overridden setModel() from base class. Only QgsLayerTreeModel is an acceptable model.
-    virtual void setModel( QAbstractItemModel* model );
+    virtual void setModel( QAbstractItemModel *model );
 
-    //! Get access to the model casted to QgsLayerTreeModel
-    QgsLayerTreeModel* layerTreeModel() const;
+%Docstring
+Overridden setModel() from base class. Only QgsLayerTreeModel is an acceptable model.
+%End
 
-    //! Get access to the default actions that may be used with the tree view
-    QgsLayerTreeViewDefaultActions* defaultActions();
+    QgsLayerTreeModel *layerTreeModel() const;
+%Docstring
+Get access to the model casted to :py:class:`QgsLayerTreeModel`
+%End
 
-    //! Set provider for context menu. Takes ownership of the instance
-    void setMenuProvider( QgsLayerTreeViewMenuProvider* menuProvider /Transfer/ );
-    //! Return pointer to the context menu provider. May be null
-    QgsLayerTreeViewMenuProvider* menuProvider() const;
+    QgsLayerTreeViewDefaultActions *defaultActions();
+%Docstring
+Get access to the default actions that may be used with the tree view
+%End
 
-    //! Get currently selected layer. May be null
-    QgsMapLayer* currentLayer() const;
-    //! Set currently selected layer. Null pointer will deselect any layer.
-    void setCurrentLayer( QgsMapLayer* layer );
+    void setMenuProvider( QgsLayerTreeViewMenuProvider *menuProvider /Transfer/ );
+%Docstring
+Set provider for context menu. Takes ownership of the instance
+%End
+    QgsLayerTreeViewMenuProvider *menuProvider() const;
+%Docstring
+Return pointer to the context menu provider. May be null
+%End
 
-    //! Get current node. May be null
-    QgsLayerTreeNode* currentNode() const;
-    //! Get current group node. If a layer is current node, the function will return parent group. May be null.
-    QgsLayerTreeGroup* currentGroupNode() const;
+    QgsMapLayer *currentLayer() const;
+%Docstring
+Get currently selected layer. May be null
+%End
+    void setCurrentLayer( QgsMapLayer *layer );
+%Docstring
+Set currently selected layer. Null pointer will deselect any layer.
+%End
 
-    /** Get current legend node. May be null if current node is not a legend node.
-     * @note added in QGIS 2.14
-     */
-    QgsLayerTreeModelLegendNode* currentLegendNode() const;
+    QgsLayerTreeNode *currentNode() const;
+%Docstring
+Get current node. May be null
+%End
+    QgsLayerTreeGroup *currentGroupNode() const;
+%Docstring
+Get current group node. If a layer is current node, the function will return parent group. May be null.
+%End
 
-    //! Return list of selected nodes
-    //! @arg skipInternal If true, will ignore nodes which have an ancestor in the selection
-    QList<QgsLayerTreeNode*> selectedNodes( bool skipInternal = false ) const;
-    //! Return list of selected nodes filtered to just layer nodes
-    QList<QgsLayerTreeLayer*> selectedLayerNodes() const;
+    QgsLayerTreeModelLegendNode *currentLegendNode() const;
+%Docstring
+Get current legend node. May be null if current node is not a legend node.
 
-    //! Get list of selected layers
-    QList<QgsMapLayer*> selectedLayers() const;
+.. versionadded:: 2.14
+%End
+
+    QList<QgsLayerTreeNode *> selectedNodes( bool skipInternal = false ) const;
+%Docstring
+Return list of selected nodes
+
+:param skipInternal: If true, will ignore nodes which have an ancestor in the selection
+%End
+    QList<QgsLayerTreeLayer *> selectedLayerNodes() const;
+%Docstring
+Return list of selected nodes filtered to just layer nodes
+%End
+
+    QList<QgsMapLayer *> selectedLayers() const;
+%Docstring
+Get list of selected layers
+%End
 
   public slots:
-    //! Force refresh of layer symbology. Normally not needed as the changes of layer's renderer are monitored by the model
-    void refreshLayerSymbology( const QString& layerId );
+    void refreshLayerSymbology( const QString &layerId );
+%Docstring
+Force refresh of layer symbology. Normally not needed as the changes of layer's renderer are monitored by the model
+%End
+
+    void expandAllNodes();
+%Docstring
+Enhancement of QTreeView.expandAll() that also records expanded state in layer tree nodes
+
+.. versionadded:: 2.18
+%End
+
+    void collapseAllNodes();
+%Docstring
+Enhancement of QTreeView.collapseAll() that also records expanded state in layer tree nodes
+
+.. versionadded:: 2.18
+%End
 
   signals:
-    //! Emitted when a current layer is changed
-    void currentLayerChanged( QgsMapLayer* layer );
+    void currentLayerChanged( QgsMapLayer *layer );
+%Docstring
+Emitted when a current layer is changed
+%End
 
   protected:
-    void contextMenuEvent( QContextMenuEvent* event );
+    virtual void contextMenuEvent( QContextMenuEvent *event );
 
-    void updateExpandedStateFromNode( QgsLayerTreeNode* node );
 
-    QgsMapLayer* layerForIndex( const QModelIndex& index ) const;
+    void updateExpandedStateFromNode( QgsLayerTreeNode *node );
+
+    QgsMapLayer *layerForIndex( const QModelIndex &index ) const;
+
+    virtual void mouseReleaseEvent( QMouseEvent *event );
+
+    virtual void keyPressEvent( QKeyEvent *event );
+
+
+    virtual void dropEvent( QDropEvent *event );
+
+
 
   protected slots:
 
-    void modelRowsInserted( const QModelIndex& index, int start, int end );
+    void modelRowsInserted( const QModelIndex &index, int start, int end );
     void modelRowsRemoved();
 
-    void updateExpandedStateToNode( const QModelIndex& index );
+    void updateExpandedStateToNode( const QModelIndex &index );
 
     void onCurrentChanged();
-    void onExpandedChanged( QgsLayerTreeNode* node, bool expanded );
+    void onExpandedChanged( QgsLayerTreeNode *node, bool expanded );
     void onModelReset();
+
+  protected:
 };
 
 
-/**
- * Implementation of this interface can be implemented to allow QgsLayerTreeView
- * instance to provide custom context menus (opened upon right-click).
- *
- * @see QgsLayerTreeView
- * @note added in 2.4
- */
 class QgsLayerTreeViewMenuProvider
 {
-%TypeHeaderCode
-#include <qgslayertreeview.h>
+%Docstring
+Implementation of this interface can be implemented to allow QgsLayerTreeView
+instance to provide custom context menus (opened upon right-click).
+
+.. seealso:: :py:class:`QgsLayerTreeView`
+
+.. versionadded:: 2.4
 %End
 
+%TypeHeaderCode
+#include "qgslayertreeview.h"
+%End
   public:
     virtual ~QgsLayerTreeViewMenuProvider();
 
-    //! Return a newly created menu instance (or null pointer on error)
-    virtual QMenu* createContextMenu() = 0 /Factory/;
+    virtual QMenu *createContextMenu() = 0 /Factory/;
+%Docstring
+Return a newly created menu instance (or null pointer on error)
+%End
 };
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/layertree/qgslayertreeview.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

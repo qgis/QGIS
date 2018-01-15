@@ -14,8 +14,9 @@ __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
-from qgis.testing import unittest
-from qgis.core import QgsColorScheme
+from qgis.testing import unittest, start_app
+from qgis.core import QgsColorScheme, QgsUserColorScheme, QgsRecentColorScheme, QgsSettings
+from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtGui import QColor
 
 # Make a dummy color scheme for testing
@@ -42,6 +43,15 @@ class DummyColorScheme(QgsColorScheme):
 
 
 class TestQgsColorScheme(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        """Run before all tests"""
+        QCoreApplication.setOrganizationName("QGIS_Test")
+        QCoreApplication.setOrganizationDomain("QGIS_TestPyQgsColorScheme.com")
+        QCoreApplication.setApplicationName("QGIS_TestPyQgsColorScheme")
+        QgsSettings().clear()
+        start_app()
 
     def testCreateScheme(self):
         """Test creating a new color scheme"""
@@ -87,6 +97,33 @@ class TestQgsColorScheme(unittest.TestCase):
         dummySchemeClone = dummyScheme.clone()
         colorsClone = dummySchemeClone.fetchColors()
         self.assertEqual(colors, colorsClone)
+
+    def testUserScheme(self):
+        """ Tests for user color schemes """
+
+        scheme = QgsUserColorScheme("user_test.gpl")
+        self.assertEqual(scheme.schemeName(), 'user_test.gpl')
+        self.assertTrue(scheme.isEditable())
+
+        self.assertFalse(scheme.flags() & QgsColorScheme.ShowInColorButtonMenu)
+        scheme.setShowSchemeInMenu(True)
+        self.assertTrue(scheme.flags() & QgsColorScheme.ShowInColorButtonMenu)
+        scheme.setShowSchemeInMenu(False)
+        self.assertFalse(scheme.flags() & QgsColorScheme.ShowInColorButtonMenu)
+
+        scheme.erase()
+
+    def testRecentColors(self):
+        """ test retrieving recent colors """
+
+        # no colors
+        self.assertFalse(QgsRecentColorScheme().lastUsedColor().isValid())
+
+        # add a recent color
+        QgsRecentColorScheme().addRecentColor(QColor(255, 0, 0))
+        self.assertEqual(QgsRecentColorScheme().lastUsedColor(), QColor(255, 0, 0))
+        QgsRecentColorScheme().addRecentColor(QColor(0, 255, 0))
+        self.assertEqual(QgsRecentColorScheme().lastUsedColor(), QColor(0, 255, 0))
 
 
 if __name__ == "__main__":

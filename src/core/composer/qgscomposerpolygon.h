@@ -17,15 +17,22 @@
 #ifndef QGSCOMPOSERPOLYGON_H
 #define QGSCOMPOSERPOLYGON_H
 
+#include "qgis_core.h"
 #include "qgscomposernodesitem.h"
+#include "qgssymbol.h"
 #include <QBrush>
 #include <QPen>
 
-class QgsFillSymbolV2;
+class QgsFillSymbol;
+
+#define SIP_NO_FILE
 
 /**
+ * \ingroup core
  * Composer item for polygons.
- * @note added in QGIS 2.16
+ * \since QGIS 2.16
+ * \note Not available in Python bindings
+ * \deprecated Will be removed in QGIS 3.2
  */
 
 class CORE_EXPORT QgsComposerPolygon: public QgsComposerNodesItem
@@ -34,53 +41,53 @@ class CORE_EXPORT QgsComposerPolygon: public QgsComposerNodesItem
 
   public:
 
-    /** Constructor
-     * @param c parent composition
+    /**
+     * Constructor
+     * \param c parent composition
      */
-    QgsComposerPolygon( QgsComposition* c );
+    QgsComposerPolygon( QgsComposition *c );
 
-    /** Constructor
-     * @param polygon nodes of the shape
-     * @param c parent composition
+    /**
+     * Constructor
+     * \param polygon nodes of the shape
+     * \param c parent composition
      */
-    QgsComposerPolygon( QPolygonF polygon, QgsComposition* c );
+    QgsComposerPolygon( const QPolygonF &polygon, QgsComposition *c );
 
-    /** Destructor */
-    ~QgsComposerPolygon();
+    //! Overridden to return shape name
+    QString displayName() const override;
 
-    /** Overridden to return shape name */
-    virtual QString displayName() const override;
+    //! Returns the QgsSymbol used to draw the shape.
+    QgsFillSymbol *polygonStyleSymbol() { return mPolygonStyleSymbol.get(); }
 
-    /** Returns the QgsSymbolV2 used to draw the shape. */
-    QgsFillSymbolV2* polygonStyleSymbol() { return mPolygonStyleSymbol.data(); }
+    //! Set the QgsSymbol used to draw the shape.
+    void setPolygonStyleSymbol( QgsFillSymbol *symbol );
 
-    /** Set the QgsSymbolV2 used to draw the shape. */
-    void setPolygonStyleSymbol( QgsFillSymbolV2* symbol );
-
-    /** Return correct graphics item type. */
-    virtual int type() const override { return ComposerPolygon; }
+    //! Return correct graphics item type.
+    int type() const override { return ComposerPolygon; }
 
   protected:
 
-    /** QgsSymbolV2 use to draw the shape. */
-    QScopedPointer<QgsFillSymbolV2> mPolygonStyleSymbol;
+    //! QgsSymbol use to draw the shape.
+    std::unique_ptr<QgsFillSymbol> mPolygonStyleSymbol;
 
-    /** Add the node newPoint at the given position according to some
+    /**
+     * Add the node newPoint at the given position according to some
      * criteres. */
-    bool _addNode( const int indexPoint, const QPointF &newPoint, const double radius ) override;
+    bool _addNode( const int indexPoint, QPointF newPoint, const double radius ) override;
 
     bool _removeNode( const int nodeIndex ) override;
 
-    /** Draw nodes for the current shape. */
+    //! Draw nodes for the current shape.
     void _draw( QPainter *painter ) override;
 
-    /** Read symbol in XML. */
-    void _readXMLStyle( const QDomElement &elmt ) override;
+    //! Read symbol in XML.
+    void _readXmlStyle( const QDomElement &elmt ) override;
 
-    /** Write the symbol in an XML document. */
-    void _writeXMLStyle( QDomDocument &doc, QDomElement &elmt ) const override;
+    //! Write the symbol in an XML document.
+    void _writeXmlStyle( QDomDocument &doc, QDomElement &elmt ) const override;
 
-    /** Create a default symbol. */
+    //! Create a default symbol.
     void createDefaultPolygonStyleSymbol();
 };
 

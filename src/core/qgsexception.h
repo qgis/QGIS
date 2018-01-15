@@ -17,33 +17,77 @@
 #ifndef QGSEXCEPTION_H
 #define QGSEXCEPTION_H
 
+#define SIP_NO_CREATION
+
+#define SIP_NO_FILE
+
 #include <QString>
 
-/** \ingroup core
-  * Defines a qgis exception class.
+#include "qgis_core.h"
+
+
+
+/**
+ * \ingroup core
+  * Defines a QGIS exception class.
  */
 class CORE_EXPORT QgsException
 {
   public:
-    QgsException( QString const & what )
-        : what_( what )
+
+    /**
+     * Constructor for QgsException, with the specified error \a message.
+     */
+    QgsException( const QString &message )
+      : mWhat( message )
     {}
 
-    virtual ~QgsException() throw()
-    {}
+    virtual ~QgsException() throw() = default;
 
-    //! @note not available in Python bindings
+    //! \note not available in Python bindings
     QString what() const throw()
     {
-      return what_;
+      return mWhat;
     }
 
   private:
 
-    /// description of exception
-    QString what_;
+    //! Description of exception
+    QString mWhat;
 
-}; // class QgsException
+};
 
+
+/**
+ * \ingroup core
+ * Custom exception class for Coordinate Reference System related exceptions.
+ */
+class CORE_EXPORT QgsCsException : public QgsException
+{
+  public:
+
+    /**
+     * Constructor for QgsCsException, with the specified error \a message.
+     */
+    QgsCsException( const QString &message ) : QgsException( message ) {}
+
+};
+
+/**
+ * \class QgsProcessingException
+ * \ingroup core
+ * Custom exception class for processing related exceptions.
+ * \since QGIS 3.0
+ */
+class CORE_EXPORT QgsProcessingException : public QgsException
+{
+  public:
+
+    /**
+     * Constructor for QgsProcessingException, with the specified error \a message.
+     */
+    QgsProcessingException( const QString &message ) : QgsException( message ) {}
+
+};
 
 #endif

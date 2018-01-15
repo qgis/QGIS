@@ -119,7 +119,7 @@ class ModelChangeCommand : public QObject
     virtual void doCommand() = 0;
 
   protected:
-    DynamicTreeModel* m_model;
+    DynamicTreeModel *m_model = nullptr;
     QList<int> m_rowNumbers;
     int m_numCols;
     int m_startRow;
@@ -127,7 +127,7 @@ class ModelChangeCommand : public QObject
 
 };
 
-typedef QList<ModelChangeCommand*> ModelChangeCommandList;
+typedef QList<ModelChangeCommand *> ModelChangeCommandList;
 
 class ModelInsertCommand : public ModelChangeCommand
 {
@@ -172,7 +172,7 @@ class ModelResetCommand : public ModelMoveCommand
 {
     Q_OBJECT
   public:
-    ModelResetCommand( DynamicTreeModel* model, QObject* parent = 0 );
+    ModelResetCommand( DynamicTreeModel *model, QObject *parent = 0 );
 
     virtual ~ModelResetCommand();
 
@@ -188,7 +188,7 @@ class ModelResetCommandFixed : public ModelMoveCommand
 {
     Q_OBJECT
   public:
-    ModelResetCommandFixed( DynamicTreeModel* model, QObject* parent = 0 );
+    ModelResetCommandFixed( DynamicTreeModel *model, QObject *parent = 0 );
 
     virtual ~ModelResetCommandFixed();
 

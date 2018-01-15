@@ -1,11 +1,44 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/auth/qgsauthserverseditor.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
 class QgsAuthServersEditor : QWidget
 {
-%TypeHeaderCode
-#include <qgsauthserverseditor.h>
+%Docstring
+Widget for viewing and editing servers in authentication database
 %End
 
+%TypeHeaderCode
+#include "qgsauthserverseditor.h"
+%End
   public:
+
     explicit QgsAuthServersEditor( QWidget *parent /TransferThis/ = 0 );
-    ~QgsAuthServersEditor();
+%Docstring
+Widget for editing authentication configurations directly in database
+
+:param parent: Parent Widget
+%End
+
+  protected:
+
+    virtual void showEvent( QShowEvent *e );
+
 
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/auth/qgsauthserverseditor.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -20,17 +20,14 @@
 #include <cfloat>
 #include <cmath>
 
-QgsResidualPlotItem::QgsResidualPlotItem( QgsComposition* c ): QgsComposerItem( c ), mConvertScaleToMapUnits( false )
+QgsResidualPlotItem::QgsResidualPlotItem( QgsComposition *c )
+  : QgsComposerItem( c )
+  , mConvertScaleToMapUnits( false )
 {
 
 }
 
-QgsResidualPlotItem::~QgsResidualPlotItem()
-{
-
-}
-
-void QgsResidualPlotItem::paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget )
+void QgsResidualPlotItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget )
 {
   Q_UNUSED( itemStyle );
   Q_UNUSED( pWidget );
@@ -56,11 +53,11 @@ void QgsResidualPlotItem::paint( QPainter* painter, const QStyleOptionGraphicsIt
   QgsGCPList::const_iterator gcpIt = mGCPList.constBegin();
   for ( ; gcpIt != mGCPList.constEnd(); ++gcpIt )
   {
-    QgsPoint gcpCoords = ( *gcpIt )->pixelCoords();
+    QgsPointXY gcpCoords = ( *gcpIt )->pixelCoords();
     double gcpItemMMX = ( gcpCoords.x() - mExtent.xMinimum() ) / mExtent.width() * widthMM;
     double gcpItemMMY = ( 1 - ( gcpCoords.y() - mExtent.yMinimum() ) / mExtent.height() ) * heightMM;
 
-    if (( *gcpIt )->isEnabled() )
+    if ( ( *gcpIt )->isEnabled() )
     {
       painter->setPen( enabledPen );
       painter->setBrush( enabledBrush );
@@ -71,7 +68,7 @@ void QgsResidualPlotItem::paint( QPainter* painter, const QStyleOptionGraphicsIt
       painter->setBrush( disabledBrush );
     }
     painter->drawRect( QRectF( gcpItemMMX - 0.5, gcpItemMMY - 0.5, 1, 1 ) );
-    QgsComposerUtils::drawText( painter, QPointF( gcpItemMMX + 2, gcpItemMMY + 2 ), QString::number(( *gcpIt )->id() ), QFont() );
+    QgsComposerUtils::drawText( painter, QPointF( gcpItemMMX + 2, gcpItemMMY + 2 ), QString::number( ( *gcpIt )->id() ), QFont() );
 
     mmPixelRatio = maxMMToPixelRatioForGCP( *gcpIt, gcpItemMMX, gcpItemMMY );
     if ( mmPixelRatio < minMMPixelRatio )
@@ -84,10 +81,10 @@ void QgsResidualPlotItem::paint( QPainter* painter, const QStyleOptionGraphicsIt
   gcpIt = mGCPList.constBegin();
   for ( ; gcpIt != mGCPList.constEnd(); ++gcpIt )
   {
-    QgsPoint gcpCoords = ( *gcpIt )->pixelCoords();
+    QgsPointXY gcpCoords = ( *gcpIt )->pixelCoords();
     double gcpItemMMX = ( gcpCoords.x() - mExtent.xMinimum() ) / mExtent.width() * widthMM;
     double gcpItemMMY = ( 1 - ( gcpCoords.y() - mExtent.yMinimum() ) / mExtent.height() ) * heightMM;
-    if (( *gcpIt )->isEnabled() )
+    if ( ( *gcpIt )->isEnabled() )
     {
       painter->setPen( enabledPen );
     }
@@ -111,17 +108,17 @@ void QgsResidualPlotItem::paint( QPainter* painter, const QStyleOptionGraphicsIt
   int nDecPlaces;
   if ( scaleBarWidthUnits < 1 )
   {
-    nDecPlaces = -floor( log10( scaleBarWidthUnits ) );
-    scaleBarWidthUnits *= pow( 10.0, nDecPlaces );
+    nDecPlaces = -std::floor( std::log10( scaleBarWidthUnits ) );
+    scaleBarWidthUnits *= std::pow( 10.0, nDecPlaces );
     scaleBarWidthUnits = ( int )( scaleBarWidthUnits + 0.5 );
-    scaleBarWidthUnits /= pow( 10.0, nDecPlaces );
+    scaleBarWidthUnits /= std::pow( 10.0, nDecPlaces );
   }
   else
   {
-    nDecPlaces = ( int )log10( scaleBarWidthUnits );
-    scaleBarWidthUnits /= pow( 10.0, nDecPlaces );
+    nDecPlaces = ( int )std::log10( scaleBarWidthUnits );
+    scaleBarWidthUnits /= std::pow( 10.0, nDecPlaces );
     scaleBarWidthUnits = ( int )( scaleBarWidthUnits + 0.5 );
-    scaleBarWidthUnits *= pow( 10.0, nDecPlaces );
+    scaleBarWidthUnits *= std::pow( 10.0, nDecPlaces );
   }
   initialScaleBarWidth = scaleBarWidthUnits * minMMPixelRatio;
 
@@ -135,11 +132,11 @@ void QgsResidualPlotItem::paint( QPainter* painter, const QStyleOptionGraphicsIt
   scaleBarFont.setPointSize( 9 );
   if ( mConvertScaleToMapUnits )
   {
-    QgsComposerUtils::drawText( painter, QPointF( 5, rect().height() - 4 + QgsComposerUtils::fontAscentMM( scaleBarFont ) ), QString( "%1 map units" ).arg( scaleBarWidthUnits ), QFont() );
+    QgsComposerUtils::drawText( painter, QPointF( 5, rect().height() - 4 + QgsComposerUtils::fontAscentMM( scaleBarFont ) ), QStringLiteral( "%1 map units" ).arg( scaleBarWidthUnits ), QFont() );
   }
   else
   {
-    QgsComposerUtils::drawText( painter, QPointF( 5, rect().height() - 4 + QgsComposerUtils::fontAscentMM( scaleBarFont ) ), QString( "%1 pixels" ).arg( scaleBarWidthUnits ), QFont() );
+    QgsComposerUtils::drawText( painter, QPointF( 5, rect().height() - 4 + QgsComposerUtils::fontAscentMM( scaleBarFont ) ), QStringLiteral( "%1 pixels" ).arg( scaleBarWidthUnits ), QFont() );
   }
 
   drawFrame( painter );
@@ -149,7 +146,7 @@ void QgsResidualPlotItem::paint( QPainter* painter, const QStyleOptionGraphicsIt
   }
 }
 
-double QgsResidualPlotItem::maxMMToPixelRatioForGCP( const QgsGeorefDataPoint* p, double pixelXMM, double pixelYMM )
+double QgsResidualPlotItem::maxMMToPixelRatioForGCP( const QgsGeorefDataPoint *p, double pixelXMM, double pixelYMM )
 {
   if ( !p )
   {
@@ -199,7 +196,7 @@ double QgsResidualPlotItem::maxMMToPixelRatioForGCP( const QgsGeorefDataPoint* p
     }
   }
 
-  double resTot = sqrt( residual.x() * residual.x() + residual.y() * residual.y() );
+  double resTot = std::sqrt( residual.x() * residual.x() + residual.y() * residual.y() );
   if ( leftRightDist <= upDownDist )
   {
     return leftRightDist / resTot;
@@ -210,14 +207,14 @@ double QgsResidualPlotItem::maxMMToPixelRatioForGCP( const QgsGeorefDataPoint* p
   }
 }
 
-bool QgsResidualPlotItem::writeXML( QDomElement& elem, QDomDocument & doc ) const
+bool QgsResidualPlotItem::writeXml( QDomElement &elem, QDomDocument &doc ) const
 {
   Q_UNUSED( elem );
   Q_UNUSED( doc );
   return false;
 }
 
-bool QgsResidualPlotItem::readXML( const QDomElement& itemElem, const QDomDocument& doc )
+bool QgsResidualPlotItem::readXml( const QDomElement &itemElem, const QDomDocument &doc )
 {
   Q_UNUSED( itemElem );
   Q_UNUSED( doc );
@@ -228,5 +225,5 @@ double QgsResidualPlotItem::dist( QPointF p1, QPointF p2 ) const
 {
   double dx = p2.x() - p1.x();
   double dy = p2.y() - p1.y();
-  return sqrt( dx * dx + dy * dy );
+  return std::sqrt( dx * dx + dy * dy );
 }

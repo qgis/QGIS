@@ -29,50 +29,64 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QGis, QgsFeatureRequest, QgsFeature, QgsGeometry, QgsPoint
+from qgis.core import (QgsFeatureRequest,
+                       QgsFeatureSink,
+                       QgsFeature,
+                       QgsGeometry,
+                       QgsPointXY,
+                       QgsWkbTypes,
+                       QgsProcessing,
+                       QgsProcessingException,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterFeatureSink,
+                       QgsProcessingParameterNumber)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterNumber
-from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 from . import voronoi
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class VoronoiPolygons(GeoAlgorithm):
+class VoronoiPolygons(QgisAlgorithm):
 
     INPUT = 'INPUT'
     BUFFER = 'BUFFER'
     OUTPUT = 'OUTPUT'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'voronoi.png'))
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Voronoi polygons')
-        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
+    def group(self):
+        return self.tr('Vector geometry')
 
-        self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_POINT]))
-        self.addParameter(ParameterNumber(self.BUFFER,
-                                          self.tr('Buffer region'), 0.0, 100.0, 0.0))
+    def groupId(self):
+        return 'vectorgeometry'
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Voronoi polygons')))
+    def __init__(self):
+        super().__init__()
 
-    def processAlgorithm(self, progress):
-        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
+    def initAlgorithm(self, config=None):
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT, self.tr('Input layer'), [QgsProcessing.TypeVectorPoint]))
+        self.addParameter(QgsProcessingParameterNumber(self.BUFFER, self.tr('Buffer region'), type=QgsProcessingParameterNumber.Double,
+                                                       minValue=0.0, maxValue=9999999999, defaultValue=0.0))
 
-        buf = self.getParameterValue(self.BUFFER)
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Voronoi polygons'), type=QgsProcessing.TypeVectorPolygon))
 
-        writer = self.getOutputFromName(self.OUTPUT).getVectorWriter(
-            layer.pendingFields().toList(), QGis.WKBPolygon, layer.crs())
+    def name(self):
+        return 'voronoipolygons'
+
+    def displayName(self):
+        return self.tr('Voronoi polygons')
+
+    def processAlgorithm(self, parameters, context, feedback):
+        source = self.parameterAsSource(parameters, self.INPUT, context)
+        buf = self.parameterAsDouble(parameters, self.BUFFER, context)
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               source.fields(), QgsWkbTypes.Polygon, source.sourceCrs())
 
         outFeat = QgsFeature()
-        extent = layer.extent()
+        extent = source.sourceExtent()
         extraX = extent.height() * (buf / 100.0)
         extraY = extent.width() * (buf / 100.0)
         height = extent.height()
@@ -82,20 +96,22 @@ class VoronoiPolygons(GeoAlgorithm):
         ptDict = {}
         ptNdx = -1
 
-        features = vector.features(layer)
-        total = 100.0 / len(features)
+        features = source.getFeatures()
+        total = 100.0 / source.featureCount() if source.featureCount() else 0
         for current, inFeat in enumerate(features):
-            geom = QgsGeometry(inFeat.geometry())
+            if feedback.isCanceled():
+                break
+            geom = inFeat.geometry()
             point = geom.asPoint()
             x = point.x() - extent.xMinimum()
             y = point.y() - extent.yMinimum()
             pts.append((x, y))
             ptNdx += 1
             ptDict[ptNdx] = inFeat.id()
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
         if len(pts) < 3:
-            raise GeoAlgorithmExecutionException(
+            raise QgsProcessingException(
                 self.tr('Input file should contain at least 3 points. Choose '
                         'another file and try again.'))
 
@@ -107,23 +123,30 @@ class VoronoiPolygons(GeoAlgorithm):
         inFeat = QgsFeature()
 
         current = 0
+        if len(c.polygons) == 0:
+            raise QgsProcessingException(
+                self.tr('There were no polygons created.'))
+
         total = 100.0 / len(c.polygons)
 
-        for (site, edges) in c.polygons.iteritems():
+        for (site, edges) in list(c.polygons.items()):
+            if feedback.isCanceled():
+                break
+
             request = QgsFeatureRequest().setFilterFid(ptDict[ids[site]])
-            inFeat = layer.getFeatures(request).next()
+            inFeat = next(source.getFeatures(request))
             lines = self.clip_voronoi(edges, c, width, height, extent, extraX, extraY)
 
-            geom = QgsGeometry.fromMultiPoint(lines)
+            geom = QgsGeometry.fromMultiPointXY(lines)
             geom = QgsGeometry(geom.convexHull())
             outFeat.setGeometry(geom)
             outFeat.setAttributes(inFeat.attributes())
-            writer.addFeature(outFeat)
+            sink.addFeature(outFeat, QgsFeatureSink.FastInsert)
 
             current += 1
-            progress.setPercentage(int(current * total))
+            feedback.setProgress(int(current * total))
 
-        del writer
+        return {self.OUTPUT: dest_id}
 
     def clip_voronoi(self, edges, c, width, height, extent, exX, exY):
         """Clip voronoi function based on code written for Inkscape.
@@ -196,8 +219,8 @@ class VoronoiPolygons(GeoAlgorithm):
                         ytemp = 0 - exX
                 else:
                     xtemp = width + exX
-                    ytemp = (c.lines[edge[0]][2] - (width + exX)
-                             * c.lines[edge[0]][0]) / c.lines[edge[0]][1]
+                    ytemp = (c.lines[edge[0]][2] - (width + exX) *
+                             c.lines[edge[0]][0]) / c.lines[edge[0]][1]
                 [x1, y1, x2, y2] = clip_line(
                     c.vertices[edge[1]][0],
                     c.vertices[edge[1]][1],
@@ -231,10 +254,10 @@ class VoronoiPolygons(GeoAlgorithm):
                     exY,
                 )
             if x1 or x2 or y1 or y2:
-                lines.append(QgsPoint(x1 + extent.xMinimum(), y1
-                                      + extent.yMinimum()))
-                lines.append(QgsPoint(x2 + extent.xMinimum(), y2
-                                      + extent.yMinimum()))
+                lines.append(QgsPointXY(x1 + extent.xMinimum(),
+                                        y1 + extent.yMinimum()))
+                lines.append(QgsPointXY(x2 + extent.xMinimum(),
+                                        y2 + extent.yMinimum()))
                 if 0 - exX in (x1, x2):
                     hasXMin = True
                 if 0 - exY in (y1, y2):
@@ -245,16 +268,16 @@ class VoronoiPolygons(GeoAlgorithm):
                     hasXMax = True
         if hasXMin:
             if hasYMax:
-                lines.append(QgsPoint(extent.xMinimum() - exX, height
-                                      + extent.yMinimum() + exY))
+                lines.append(QgsPointXY(extent.xMinimum() - exX,
+                                        height + extent.yMinimum() + exY))
             if hasYMin:
-                lines.append(QgsPoint(extent.xMinimum() - exX,
-                                      extent.yMinimum() - exY))
+                lines.append(QgsPointXY(extent.xMinimum() - exX,
+                                        extent.yMinimum() - exY))
         if hasXMax:
             if hasYMax:
-                lines.append(QgsPoint(width + extent.xMinimum() + exX, height
-                                      + extent.yMinimum() + exY))
+                lines.append(QgsPointXY(width + extent.xMinimum() + exX,
+                                        height + extent.yMinimum() + exY))
             if hasYMin:
-                lines.append(QgsPoint(width + extent.xMinimum() + exX,
-                                      extent.yMinimum() - exY))
+                lines.append(QgsPointXY(width + extent.xMinimum() + exX,
+                                        extent.yMinimum() - exY))
         return lines

@@ -1,63 +1,83 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/layertree/qgslayertreemodellegendnode.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
 
-/**
- * The QgsLegendRendererItem class is abstract interface for legend items
- * returned from QgsMapLayerLegend implementation.
- *
- * The objects are used in QgsLayerTreeModel. Custom implementations may offer additional interactivity
- * and customized look.
- *
- * @note added in 2.6
- */
+
+
+
+
+
+
 class QgsLayerTreeModelLegendNode : QObject
 {
-%TypeHeaderCode
-#include <qgslayertreemodellegendnode.h>
+%Docstring
+The QgsLegendRendererItem class is abstract interface for legend items
+returned from QgsMapLayerLegend implementation.
+
+The objects are used in QgsLayerTreeModel. Custom implementations may offer additional interactivity
+and customized look.
+
+.. versionadded:: 2.6
 %End
 
+%TypeHeaderCode
+#include "qgslayertreemodellegendnode.h"
+%End
   public:
-    ~QgsLayerTreeModelLegendNode();
 
     enum LegendNodeRoles
     {
-      RuleKeyRole,                    //!< rule key of the node (QString)
-      SymbolV2LegacyRuleKeyRole,      //!< for QgsSymbolV2LegendNode only - legacy rule key (void ptr, to be cast to QgsSymbolV2 ptr)
-      ParentRuleKeyRole               //!< rule key of the parent legend node - for legends with tree hierarchy (QString). Added in 2.8
+      RuleKeyRole,
+      ParentRuleKeyRole
     };
 
-    /** Return pointer to the parent layer node */
-    QgsLayerTreeLayer* layerNode() const;
+    QgsLayerTreeLayer *layerNode() const;
+%Docstring
+Return pointer to the parent layer node
+%End
 
-    /** Return pointer to model owning this legend node */
-    QgsLayerTreeModel* model() const;
+    QgsLayerTreeModel *model() const;
+%Docstring
+Return pointer to model owning this legend node
+%End
 
-    /** Return item flags associated with the item. Default implementation returns Qt::ItemIsEnabled. */
     virtual Qt::ItemFlags flags() const;
+%Docstring
+Return item flags associated with the item. Default implementation returns Qt.ItemIsEnabled.
+%End
 
-    /** Return data associated with the item. Must be implemented in derived class. */
     virtual QVariant data( int role ) const = 0;
+%Docstring
+Return data associated with the item. Must be implemented in derived class.
+%End
 
-    /** Set some data associated with the item. Default implementation does nothing and returns false. */
-    virtual bool setData( const QVariant& value, int role );
+    virtual bool setData( const QVariant &value, int role );
+%Docstring
+Set some data associated with the item. Default implementation does nothing and returns false.
+%End
 
     virtual bool isEmbeddedInParent() const;
     virtual void setEmbeddedInParent( bool embedded );
 
     virtual QString userLabel() const;
-    virtual void setUserLabel( const QString& userLabel );
+    virtual void setUserLabel( const QString &userLabel );
 
     virtual bool isScaleOK( double scale ) const;
 
-    /** Notification from model that information from associated map view has changed.
-     *  Default implementation does nothing. */
     virtual void invalidateMapBasedData();
+%Docstring
+Notification from model that information from associated map view has changed.
+Default implementation does nothing. *
+%End
 
     struct ItemContext
     {
-      //! Painter
-      QPainter* painter;
-      //! Top-left corner of the legend item
+      QPainter *painter;
       QPointF point;
-      //! offset from the left side where label should start
       double labelXOffset;
     };
 
@@ -67,186 +87,330 @@ class QgsLayerTreeModelLegendNode : QObject
       QSizeF labelSize;
     };
 
-    /** Entry point called from QgsLegendRenderer to do the rendering.
-     *  Default implementation calls drawSymbol() and drawSymbolText() methods.
-     *
-     *  If ctx is null, this is just first stage when preparing layout - without actual rendering.
-     */
-    virtual ItemMetrics draw( const QgsLegendSettings& settings, ItemContext* ctx );
+    virtual ItemMetrics draw( const QgsLegendSettings &settings, ItemContext *ctx );
+%Docstring
+Entry point called from QgsLegendRenderer to do the rendering.
+Default implementation calls drawSymbol() and drawSymbolText() methods.
 
-    /**
-     * Draws symbol on the left side of the item
-     * @param settings Legend layout configuration
-     * @param ctx Context for rendering - may be null if only doing layout without actual rendering
-     * @param itemHeight Minimal height of the legend item - used for correct positioning when rendering
-     * @return Real size of the symbol (may be bigger than "normal" symbol size from settings)
-     */
-    virtual QSizeF drawSymbol( const QgsLegendSettings& settings, ItemContext* ctx, double itemHeight ) const;
+If ctx is null, this is just first stage when preparing layout - without actual rendering.
+%End
 
-    /**
-     * Draws label on the right side of the item
-     * @param settings Legend layout configuration
-     * @param ctx Context for rendering - may be null if only doing layout without actual rendering
-     * @param symbolSize  Real size of the associated symbol - used for correct positioning when rendering
-     * @return Size of the label (may span multiple lines)
-     */
-    virtual QSizeF drawSymbolText( const QgsLegendSettings& settings, ItemContext* ctx, QSizeF symbolSize ) const;
+    virtual QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const;
+%Docstring
+Draws symbol on the left side of the item
+
+:param settings: Legend layout configuration
+:param ctx: Context for rendering - may be null if only doing layout without actual rendering
+:param itemHeight: Minimal height of the legend item - used for correct positioning when rendering
+
+:return: Real size of the symbol (may be bigger than "normal" symbol size from settings)
+%End
+
+    virtual QSizeF drawSymbolText( const QgsLegendSettings &settings, ItemContext *ctx, QSizeF symbolSize ) const;
+%Docstring
+Draws label on the right side of the item
+
+:param settings: Legend layout configuration
+:param ctx: Context for rendering - may be null if only doing layout without actual rendering
+:param symbolSize:  Real size of the associated symbol - used for correct positioning when rendering
+
+:return: Size of the label (may span multiple lines)
+%End
 
   signals:
-    //! Emitted on internal data change so the layer tree model can forward the signal to views
     void dataChanged();
+%Docstring
+Emitted on internal data change so the layer tree model can forward the signal to views
+%End
 
   protected:
-    /** Construct the node with pointer to its parent layer node */
-    explicit QgsLayerTreeModelLegendNode( QgsLayerTreeLayer* nodeL, QObject* parent /TransferThis/ = 0 );
+    explicit QgsLayerTreeModelLegendNode( QgsLayerTreeLayer *nodeL, QObject *parent /TransferThis/ = 0 );
+%Docstring
+Construct the node with pointer to its parent layer node
+%End
 
-  private:
-    QgsLayerTreeModelLegendNode(const QgsLayerTreeModelLegendNode &);
+    QgsRenderContext *createTemporaryRenderContext() const /Factory/;
+%Docstring
+Returns a temporary context or null if legendMapViewData are not valid
+%End
+
+  protected:
 };
 
 
-
-/**
- * Implementation of legend node interface for displaying preview of vector symbols and their labels
- * and allowing interaction with the symbol / renderer.
- *
- * @note added in 2.6
- */
-class QgsSymbolV2LegendNode : QgsLayerTreeModelLegendNode
+class QgsSymbolLegendNode : QgsLayerTreeModelLegendNode
 {
+%Docstring
+Implementation of legend node interface for displaying preview of vector symbols and their labels
+and allowing interaction with the symbol / renderer.
+
+.. versionadded:: 2.6
+%End
+
 %TypeHeaderCode
-#include <qgslayertreemodellegendnode.h>
+#include "qgslayertreemodellegendnode.h"
 %End
   public:
-    QgsSymbolV2LegendNode( QgsLayerTreeLayer* nodeLayer, const QgsLegendSymbolItemV2& item, QObject* parent /TransferThis/ = 0 );
-    ~QgsSymbolV2LegendNode();
+
+    QgsSymbolLegendNode( QgsLayerTreeLayer *nodeLayer, const QgsLegendSymbolItem &item, QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsSymbolLegendNode.
+
+:param nodeLayer: layer node
+:param item: the legend symbol item
+:param parent: attach a parent QObject to the legend node.
+%End
 
     virtual Qt::ItemFlags flags() const;
-    virtual QVariant data( int role ) const;
-    virtual bool setData( const QVariant& value, int role );
 
-    QSizeF drawSymbol( const QgsLegendSettings& settings, ItemContext* ctx, double itemHeight ) const;
+    virtual QVariant data( int role ) const;
+
+    virtual bool setData( const QVariant &value, int role );
+
+
+    virtual QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const;
+
 
     virtual void setEmbeddedInParent( bool embedded );
 
-    void setUserLabel( const QString& userLabel );
+
+    virtual void setUserLabel( const QString &userLabel );
 
     virtual bool isScaleOK( double scale ) const;
 
     virtual void invalidateMapBasedData();
 
-    //! Set the icon size
-    //! @note added in 2.10
+
     void setIconSize( QSize sz );
-    //! @note added in 2.10
+%Docstring
+Set the icon size
+
+.. versionadded:: 2.10
+%End
     QSize iconSize() const;
+%Docstring
 
-    //! Get the minimum icon size to prevent cropping
-    //! @note added in 2.10
+.. versionadded:: 2.10
+%End
+
     QSize minimumIconSize() const;
+%Docstring
+Calculates the minimum icon size to prevent cropping. When evaluating
+the size for multiple icons it is more efficient to create a single
+render context in advance and use the variant which accepts a :py:class:`QgsRenderContext`
+argument.
 
-    /** Returns the symbol used by the legend node.
-     * @see setSymbol()
-     * @note added in QGIS 2.14
-     */
-    const QgsSymbolV2* symbol() const;
+.. versionadded:: 2.10
+%End
 
-    /** Sets the symbol to be used by the legend node. The symbol change is also propagated
-     * to the associated vector layer's renderer.
-     * @param symbol new symbol for node. Ownership is transferred.
-     * @see symbol()
-     * @note added in QGIS 2.14
-     */
-    void setSymbol( QgsSymbolV2* symbol /Transfer/ );
+    QSize minimumIconSize( QgsRenderContext *context ) const;
+%Docstring
+Calculates the minimum icon size to prevent cropping. When evaluating
+the size for multiple icons it is more efficient to create a single
+render context in advance and call this method instead of minimumIconSize().
+
+.. versionadded:: 2.18
+%End
+
+    const QgsSymbol *symbol() const;
+%Docstring
+Returns the symbol used by the legend node.
+
+.. seealso:: :py:func:`setSymbol`
+
+.. versionadded:: 2.14
+%End
+
+    void setSymbol( QgsSymbol *symbol );
+%Docstring
+Sets the symbol to be used by the legend node. The symbol change is also propagated
+to the associated vector layer's renderer.
+
+:param symbol: new symbol for node. Ownership is transferred.
+
+.. seealso:: :py:func:`symbol`
+
+.. versionadded:: 2.14
+%End
 
   public slots:
 
-    /** Checks all items belonging to the same layer as this node.
-     * @note added in QGIS 2.14
-     * @see uncheckAllItems()
-     */
     void checkAllItems();
+%Docstring
+Checks all items belonging to the same layer as this node.
 
-    /** Unchecks all items belonging to the same layer as this node.
-     * @note added in QGIS 2.14
-     * @see checkAllItems()
-     */
+.. versionadded:: 2.14
+
+.. seealso:: :py:func:`uncheckAllItems`
+%End
+
     void uncheckAllItems();
+%Docstring
+Unchecks all items belonging to the same layer as this node.
+
+.. versionadded:: 2.14
+
+.. seealso:: :py:func:`checkAllItems`
+%End
 
 };
 
 
-/**
- * Implementation of legend node interface for displaying arbitrary label with icon.
- *
- * @note added in 2.6
- */
 class QgsSimpleLegendNode : QgsLayerTreeModelLegendNode
 {
+%Docstring
+Implementation of legend node interface for displaying arbitrary label with icon.
+
+.. versionadded:: 2.6
+%End
+
 %TypeHeaderCode
-#include <qgslayertreemodellegendnode.h>
+#include "qgslayertreemodellegendnode.h"
 %End
   public:
-    QgsSimpleLegendNode( QgsLayerTreeLayer* nodeLayer, const QString& label, const QIcon& icon = QIcon(), QObject* parent /TransferThis/ = 0, const QString& key = QString() );
+
+    QgsSimpleLegendNode( QgsLayerTreeLayer *nodeLayer, const QString &label, const QIcon &icon = QIcon(), QObject *parent /TransferThis/ = 0, const QString &key = QString() );
+%Docstring
+Constructor for QgsSimpleLegendNode.
+
+:param nodeLayer: layer node
+:param label: label
+:param icon: icon
+:param parent: attach a parent QObject to the legend node.
+:param key: the rule key
+%End
 
     virtual QVariant data( int role ) const;
+
+
 };
 
 
-/**
- * Implementation of legend node interface for displaying arbitrary raster image
- *
- * @note added in 2.6
- */
 class QgsImageLegendNode : QgsLayerTreeModelLegendNode
 {
+%Docstring
+Implementation of legend node interface for displaying arbitrary raster image
+
+.. versionadded:: 2.6
+%End
+
 %TypeHeaderCode
-#include <qgslayertreemodellegendnode.h>
+#include "qgslayertreemodellegendnode.h"
 %End
   public:
-    QgsImageLegendNode( QgsLayerTreeLayer* nodeLayer, const QImage& img, QObject* parent /TransferThis/ = 0 );
+
+    QgsImageLegendNode( QgsLayerTreeLayer *nodeLayer, const QImage &img, QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsImageLegendNode.
+
+:param nodeLayer: layer node
+:param img: the image
+:param parent: attach a parent QObject to the legend node.
+%End
 
     virtual QVariant data( int role ) const;
 
-    QSizeF drawSymbol( const QgsLegendSettings& settings, ItemContext* ctx, double itemHeight ) const;
+
+    virtual QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const;
+
 
 };
 
-/**
- * Implementation of legend node interface for displaying raster legend entries
- *
- * @note added in 2.6
- */
 class QgsRasterSymbolLegendNode : QgsLayerTreeModelLegendNode
 {
+%Docstring
+Implementation of legend node interface for displaying raster legend entries
+
+.. versionadded:: 2.6
+%End
+
 %TypeHeaderCode
-#include <qgslayertreemodellegendnode.h>
+#include "qgslayertreemodellegendnode.h"
 %End
   public:
-    QgsRasterSymbolLegendNode( QgsLayerTreeLayer* nodeLayer, const QColor& color, const QString& label, QObject* parent /TransferThis/ = 0 );
+
+    QgsRasterSymbolLegendNode( QgsLayerTreeLayer *nodeLayer, const QColor &color, const QString &label, QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsRasterSymbolLegendNode.
+
+:param nodeLayer: layer node
+:param color: color
+:param label: label
+:param parent: attach a parent QObject to the legend node.
+%End
 
     virtual QVariant data( int role ) const;
 
-    QSizeF drawSymbol( const QgsLegendSettings& settings, ItemContext* ctx, double itemHeight ) const;
+
+    virtual QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const;
+
+
 };
 
-/**
- * Implementation of legend node interface for displaying WMS legend entries
- *
- * @note added in 2.8
- */
-class QgsWMSLegendNode : QgsLayerTreeModelLegendNode
+
+class QgsWmsLegendNode : QgsLayerTreeModelLegendNode
 {
+%Docstring
+Implementation of legend node interface for displaying WMS legend entries
+
+.. versionadded:: 2.8
+%End
+
 %TypeHeaderCode
-#include <qgslayertreemodellegendnode.h>
+#include "qgslayertreemodellegendnode.h"
 %End
   public:
-    QgsWMSLegendNode( QgsLayerTreeLayer* nodeLayer, QObject* parent /TransferThis/ = nullptr );
+
+    QgsWmsLegendNode( QgsLayerTreeLayer *nodeLayer, QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsWmsLegendNode.
+
+:param nodeLayer: layer node
+:param parent: attach a parent QObject to the legend node.
+%End
 
     virtual QVariant data( int role ) const;
 
-    virtual QSizeF drawSymbol( const QgsLegendSettings& settings, ItemContext* ctx, double itemHeight ) const;
+
+    virtual QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const;
+
 
     virtual void invalidateMapBasedData();
 
+
 };
+
+
+class QgsDataDefinedSizeLegendNode : QgsLayerTreeModelLegendNode
+{
+%Docstring
+Produces legend node with a marker symbol
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgslayertreemodellegendnode.h"
+%End
+  public:
+    QgsDataDefinedSizeLegendNode( QgsLayerTreeLayer *nodeLayer, const QgsDataDefinedSizeLegend &settings, QObject *parent /TransferThis/ = 0 );
+%Docstring
+Construct the node using QgsDataDefinedSizeLegend as definition of the node's appearance
+%End
+    ~QgsDataDefinedSizeLegendNode();
+
+    virtual QVariant data( int role ) const;
+
+
+    virtual ItemMetrics draw( const QgsLegendSettings &settings, ItemContext *ctx );
+
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/layertree/qgslayertreemodellegendnode.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

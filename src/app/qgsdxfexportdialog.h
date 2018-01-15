@@ -19,8 +19,9 @@
 #define QGSDXFEXPORTDIALOG_H
 
 #include "ui_qgsdxfexportdialogbase.h"
-#include "qgsdxfexport.h"
 #include "qgslayertreemodel.h"
+#include "qgsdxfexport.h"
+#include "qgshelp.h"
 
 #include <QList>
 #include <QPair>
@@ -45,8 +46,7 @@ class QgsVectorLayerAndAttributeModel : public QgsLayerTreeModel
 {
     Q_OBJECT
   public:
-    QgsVectorLayerAndAttributeModel( QgsLayerTreeGroup* rootNode, QObject *parent = nullptr );
-    ~QgsVectorLayerAndAttributeModel();
+    QgsVectorLayerAndAttributeModel( QgsLayerTree *rootNode, QObject *parent = nullptr );
 
     int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
     QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
@@ -62,7 +62,7 @@ class QgsVectorLayerAndAttributeModel : public QgsLayerTreeModel
     void applyVisibilityPreset( const QString &name );
 
     void selectAll();
-    void unSelectAll();
+    void deSelectAll();
 
   private:
     QHash<const QgsVectorLayer *, int> mAttributeIdx;
@@ -77,8 +77,8 @@ class QgsDxfExportDialog : public QDialog, private Ui::QgsDxfExportDialogBase
 {
     Q_OBJECT
   public:
-    QgsDxfExportDialog( QWidget * parent = nullptr, Qt::WindowFlags f = nullptr );
-    ~QgsDxfExportDialog();
+    QgsDxfExportDialog( QWidget *parent = nullptr, Qt::WindowFlags f = nullptr );
+    ~QgsDxfExportDialog() override;
 
     QList< QPair<QgsVectorLayer *, int> > layers() const;
 
@@ -87,23 +87,31 @@ class QgsDxfExportDialog : public QDialog, private Ui::QgsDxfExportDialogBase
     QString saveFile() const;
     bool exportMapExtent() const;
     bool layerTitleAsName() const;
+    bool force2d() const;
+    bool useMText() const;
+    QString mapTheme() const;
     QString encoding() const;
+    QgsCoordinateReferenceSystem crs() const;
 
   public slots:
-    /** Change the selection of layers in the list */
+    //! Change the selection of layers in the list
     void selectAll();
-    void unSelectAll();
+    void deSelectAll();
 
   private slots:
-    void on_mFileSelectionButton_clicked();
+    void mFileSelectionButton_clicked();
     void setOkEnabled();
     void saveSettings();
-    void on_mVisibilityPresets_currentIndexChanged( int index );
+    void mVisibilityPresets_currentIndexChanged( int index );
+    void mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem &crs );
+    void showHelp();
 
   private:
     void cleanGroup( QgsLayerTreeNode *node );
-    QgsLayerTreeGroup *mLayerTreeGroup;
-    FieldSelectorDelegate *mFieldSelectorDelegate;
+    QgsLayerTree *mLayerTreeGroup = nullptr;
+    FieldSelectorDelegate *mFieldSelectorDelegate = nullptr;
+
+    QgsCoordinateReferenceSystem mCRS;
 };
 
 #endif // QGSDXFEXPORTDIALOG_H

@@ -55,13 +55,8 @@ def load_user_expressions(path):
 
 userpythonhome = os.path.join(QgsApplication.qgisSettingsDirPath(), "python")
 expressionspath = os.path.join(userpythonhome, "expressions")
-startuppy = os.path.join(userpythonhome, "startup.py")
 
 sys.path.append(userpythonhome)
-
-# exec startup script
-if os.path.exists(startuppy):
-    exec(compile(open(startuppy).read(), startuppy, 'exec'), locals(), globals())
 
 if not os.path.exists(expressionspath):
     os.makedirs(expressionspath)
@@ -71,16 +66,48 @@ if not os.path.exists(initfile):
     open(initfile, "w").close()
 
 template = """\"\"\"
-Define new functions using @qgsfunction. feature and parent must always be the
-last args. Use args=-1 to pass a list of values as arguments
+Define a new function using the @qgsfunction decorator.
+
+The function accept the following parameters
+
+:param [any]: Define any parameters you want to pass to your function before
+              the following arguments.
+:param feature: The current feature
+:param parent: The QgsExpression object
+:param context: If there is an argument called ``context`` found at the last
+                position, this variable will contain a ``QgsExpressionContext``
+                object, that gives access to various additional information like
+                expression variables. E.g. ``context.variable('layer_id')``
+:returns: The result of the expression.
+
+
+The @qgsfunction decorator accepts the following arguments:
+
+:param args: Defines the number of arguments. With ``args='auto'`` the number
+             arguments will automatically be extracted from the signature.
+:param group: The name of the group under which this expression function will
+              be listed.
+:param usesgeometry: Set this to False if your function does not access
+                     feature.geometry(). Defaults to True.
+:param referenced_columns: An array of attribute names that are required to run
+                           this function. Defaults to
+                           [QgsFeatureRequest.ALL_ATTRIBUTES].
 \"\"\"
 
 from qgis.core import *
 from qgis.gui import *
 
 @qgsfunction(args='auto', group='Custom')
-def func(value1, feature, parent):
-    return value1
+def my_sum(value1, value2, feature, parent):
+    \"\"\"
+    Calculates the sum of the two parameters value1 and value2.
+    <h2>Example usage:</h2>
+    <ul>
+      <li>my_sum(5, 8) -> 13</li>
+      <li>my_sum(\"fiel1\", \"field2\") -> 42</li>
+    </ul>
+    \"\"\"
+    return value1 + value2
 """
 
 

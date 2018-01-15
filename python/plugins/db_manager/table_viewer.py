@@ -24,6 +24,8 @@ from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QTableView, QAbstractItemView, QApplication, QAction
 from qgis.PyQt.QtGui import QKeySequence, QCursor, QClipboard
 
+from qgis.utils import OverrideCursor
+
 from .db_plugins.plugin import DbError, Table
 from .dlg_db_error import DlgDbError
 
@@ -86,20 +88,14 @@ class TableViewer(QTableView):
             model.deleteLater()
 
     def _loadTableData(self, table):
-        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-        try:
-            # set the new model
-            self.setModel(table.tableDataModel(self))
-
-        except DbError as e:
-            DlgDbError.showError(e, self)
-            return
-
-        else:
-            self.update()
-
-        finally:
-            QApplication.restoreOverrideCursor()
+        with OverrideCursor(Qt.WaitCursor):
+            try:
+                # set the new model
+                self.setModel(table.tableDataModel(self))
+            except DbError as e:
+                DlgDbError.showError(e, self)
+            else:
+                self.update()
 
     def copySelectedResults(self):
         if len(self.selectedIndexes()) <= 0:

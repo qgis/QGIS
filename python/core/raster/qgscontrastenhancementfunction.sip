@@ -1,25 +1,61 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgscontrastenhancementfunction.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
 
 class QgsContrastEnhancementFunction
 {
-%TypeHeaderCode
-#include <qgscontrastenhancement.h>
-#include <qgscontrastenhancementfunction.h>
+%Docstring
+A contrast enhancement function is the base class for all raster contrast enhancements.
+
+The purpose of a contrast enhancement is to enhanceContrast or clip a pixel value into
+a specified bounding range.
 %End
 
+%TypeHeaderCode
+#include "qgscontrastenhancementfunction.h"
+%End
   public:
-    QgsContrastEnhancementFunction( QGis::DataType, double, double );
+    QgsContrastEnhancementFunction( Qgis::DataType, double, double );
+    QgsContrastEnhancementFunction( const QgsContrastEnhancementFunction &f );
     virtual ~QgsContrastEnhancementFunction();
 
-    /** \brief A customizable method that takes in a double and returns a int between 0 and 255 */
     virtual int enhance( double );
+%Docstring
+ A customizable method that takes in a double and returns a int between 0 and 255
+%End
 
-    /** \brief A customicable method to indicate if the pixels is displayable */
     virtual bool isValueInDisplayableRange( double );
+%Docstring
+ A customicable method to indicate if the pixels is displayable
+%End
 
-    /** \brief Mustator for the maximum value */
     void setMaximumValue( double );
+%Docstring
+ Mustator for the maximum value
+%End
 
-    /** \brief Mutator for the minimum value */
     void setMinimumValue( double );
+%Docstring
+ Mutator for the minimum value
+%End
+
+  protected:
+
+
+
 };
 
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgscontrastenhancementfunction.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

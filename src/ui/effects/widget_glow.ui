@@ -45,28 +45,6 @@
           </property>
          </widget>
         </item>
-        <item row="3" column="1">
-         <widget class="QgsColorButtonV2" name="mColorBtn">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>120</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>120</width>
-            <height>16777215</height>
-           </size>
-          </property>
-         </widget>
-        </item>
         <item row="1" column="0">
          <widget class="QLabel" name="label_27">
           <property name="text">
@@ -77,7 +55,7 @@
         <item row="2" column="0">
          <widget class="QLabel" name="label_28">
           <property name="text">
-           <string>Transparency</string>
+           <string>Opacity</string>
           </property>
          </widget>
         </item>
@@ -135,81 +113,29 @@
          </widget>
         </item>
         <item row="4" column="1" colspan="2">
-         <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,0">
-          <item>
-           <widget class="QgsColorRampComboBox" name="mRampComboBox"/>
-          </item>
-          <item>
-           <widget class="QPushButton" name="mButtonEditRamp">
-            <property name="maximumSize">
-             <size>
-              <width>100</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>Edit</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
+         <widget class="QgsColorRampButton" name="btnColorRamp">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>120</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>16777215</height>
+           </size>
+          </property>
+         </widget>
         </item>
         <item row="5" column="1" colspan="2">
          <widget class="QgsBlendModeComboBox" name="mBlendCmbBx"/>
-        </item>
-        <item row="2" column="1" colspan="2">
-         <layout class="QHBoxLayout" name="horizontalLayout_28">
-          <item>
-           <widget class="QSlider" name="mTranspSlider">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>50</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximum">
-             <number>1000</number>
-            </property>
-            <property name="singleStep">
-             <number>10</number>
-            </property>
-            <property name="pageStep">
-             <number>100</number>
-            </property>
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QgsDoubleSpinBox" name="mTranspSpnBx">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-            <property name="suffix">
-             <string> %</string>
-            </property>
-            <property name="decimals">
-             <number>1</number>
-            </property>
-            <property name="maximum">
-             <double>100.000000000000000</double>
-            </property>
-           </widget>
-          </item>
-         </layout>
         </item>
         <item row="6" column="1" colspan="2">
          <widget class="QgsEffectDrawModeComboBox" name="mDrawModeComboBox"/>
@@ -218,6 +144,29 @@
          <widget class="QLabel" name="label">
           <property name="text">
            <string>Draw mode</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1" colspan="2">
+         <widget class="QgsOpacityWidget" name="mOpacityWidget" native="true">
+          <property name="focusPolicy">
+           <enum>Qt::StrongFocus</enum>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1" colspan="2">
+         <widget class="QgsColorButton" name="mColorBtn">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>120</width>
+            <height>0</height>
+           </size>
           </property>
          </widget>
         </item>
@@ -234,7 +183,7 @@
      <property name="sizeHint" stdset="0">
       <size>
        <width>20</width>
-       <height>40</height>
+       <height>0</height>
       </size>
      </property>
     </spacer>
@@ -243,15 +192,10 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsColorButtonV2</class>
+   <class>QgsColorButton</class>
    <extends>QToolButton</extends>
-   <header>qgscolorbuttonv2.h</header>
+   <header>qgscolorbutton.h</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsDoubleSpinBox</class>
-   <extends>QDoubleSpinBox</extends>
-   <header>qgsdoublespinbox.h</header>
   </customwidget>
   <customwidget>
    <class>QgsSpinBox</class>
@@ -269,28 +213,38 @@
    <header>qgseffectdrawmodecombobox.h</header>
   </customwidget>
   <customwidget>
+   <class>QgsOpacityWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsopacitywidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsUnitSelectionWidget</class>
    <extends>QWidget</extends>
    <header>qgsunitselectionwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsColorRampComboBox</class>
-   <extends>QComboBox</extends>
-   <header>qgscolorrampcombobox.h</header>
+   <class>QgsColorRampButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorrampbutton.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>mSpreadSpnBx</tabstop>
   <tabstop>mSpreadUnitWidget</tabstop>
   <tabstop>mBlurRadiusSpnBx</tabstop>
-  <tabstop>mTranspSlider</tabstop>
-  <tabstop>mTranspSpnBx</tabstop>
+  <tabstop>mOpacityWidget</tabstop>
   <tabstop>radioSingleColor</tabstop>
   <tabstop>mColorBtn</tabstop>
   <tabstop>radioColorRamp</tabstop>
-  <tabstop>mRampComboBox</tabstop>
-  <tabstop>mButtonEditRamp</tabstop>
+  <tabstop>btnColorRamp</tabstop>
   <tabstop>mBlendCmbBx</tabstop>
   <tabstop>mDrawModeComboBox</tabstop>
  </tabstops>
@@ -315,7 +269,7 @@
   <connection>
    <sender>radioColorRamp</sender>
    <signal>toggled(bool)</signal>
-   <receiver>mRampComboBox</receiver>
+   <receiver>btnColorRamp</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
     <hint type="sourcelabel">
@@ -324,22 +278,6 @@
     </hint>
     <hint type="destinationlabel">
      <x>250</x>
-     <y>157</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>radioColorRamp</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>mButtonEditRamp</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>64</x>
-     <y>156</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>423</x>
      <y>157</y>
     </hint>
    </hints>

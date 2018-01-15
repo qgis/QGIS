@@ -31,7 +31,9 @@
 #include <stdlib.h>  // atof()
 
 #include "qgsexpression.h"
-struct expression_parser_context;
+#include "expression/qgsexpressionnodeimpl.h"
+#include "qgsexpressionfunction.h"
+        struct expression_parser_context;
 #include "qgsexpressionparser.hpp"
 #include <QLocale>
 
@@ -47,8 +49,8 @@ struct expression_parser_context;
 #define YY_NO_UNISTD_H
 #endif
 
-#define B_OP(x) yylval->b_op = QgsExpression::x
-#define U_OP(x) yylval->u_op = QgsExpression::x
+#define B_OP(x) yylval->b_op = QgsExpressionNodeBinaryOperator::x
+#define U_OP(x) yylval->u_op = QgsExpressionNodeUnaryOperator::x
 #define TEXT                   yylval->text = new QString( QString::fromUtf8(yytext) );
 #define TEXT_FILTER(filter_fn) yylval->text = new QString( filter_fn( QString::fromUtf8(yytext) ) );
 
@@ -184,14 +186,14 @@ string      "'"{str_char}*"'"
 
 ","                 { return COMMA; }
 
-{num_float}  { yylval->numberFloat = cLocale.toDouble( QString::fromAscii(yytext) ); return NUMBER_FLOAT; }
+{num_float}  { yylval->numberFloat = cLocale.toDouble( QString::fromLatin1(yytext) ); return NUMBER_FLOAT; }
 {num_int}  {
 	bool ok;
-	yylval->numberInt = cLocale.toInt( QString::fromAscii(yytext), &ok );
+	yylval->numberInt = cLocale.toInt( QString::fromLatin1(yytext), &ok );
 	if( ok )
 		return NUMBER_INT;
 
-	yylval->numberFloat = cLocale.toDouble( QString::fromAscii(yytext), &ok );
+	yylval->numberFloat = cLocale.toDouble( QString::fromLatin1(yytext), &ok );
 	if( ok )
 		return NUMBER_FLOAT;
 

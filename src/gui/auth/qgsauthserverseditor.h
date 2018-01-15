@@ -18,13 +18,16 @@
 #define QGSAUTHSERVERSEDITOR_H
 
 #include <QWidget>
+#include "qgis.h"
 
 #include "ui_qgsauthserverseditor.h"
 #include "qgsauthmanager.h"
+#include "qgis_gui.h"
 
 class QgsMessageBar;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Widget for viewing and editing servers in authentication database
  */
 class GUI_EXPORT QgsAuthServersEditor : public QWidget, private Ui::QgsAuthServersEditor
@@ -32,39 +35,39 @@ class GUI_EXPORT QgsAuthServersEditor : public QWidget, private Ui::QgsAuthServe
     Q_OBJECT
 
   public:
+
     /**
      * Widget for editing authentication configurations directly in database
-     * @param parent Parent Widget
+     * \param parent Parent Widget
      */
-    explicit QgsAuthServersEditor( QWidget *parent = nullptr );
-    ~QgsAuthServersEditor();
+    explicit QgsAuthServersEditor( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
   private slots:
     void populateSslConfigsView();
 
     void refreshSslConfigsView();
 
-    /** Pass selection change on to UI update */
-    void selectionChanged( const QItemSelection& selected, const QItemSelection& deselected );
+    //! Pass selection change on to UI update
+    void selectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
 
-    /** Update UI based upon current selection */
+    //! Update UI based upon current selection
     void checkSelection();
 
-    void handleDoubleClick( QTreeWidgetItem* item, int col );
+    void handleDoubleClick( QTreeWidgetItem *item, int col );
 
-    void on_btnAddServer_clicked();
+    void btnAddServer_clicked();
 
-    void on_btnRemoveServer_clicked();
+    void btnRemoveServer_clicked();
 
-    void on_btnEditServer_clicked();
+    void btnEditServer_clicked();
 
-    void on_btnGroupByOrg_toggled( bool checked );
+    void btnGroupByOrg_toggled( bool checked );
 
-    /** Relay messages to widget's messagebar */
-    void authMessageOut( const QString& message, const QString& authtag, QgsAuthManager::MessageLevel level );
+    //! Relay messages to widget's messagebar
+    void authMessageOut( const QString &message, const QString &authtag, QgsAuthManager::MessageLevel level );
 
   protected:
-    /** Overridden show event of base widget */
+
     void showEvent( QShowEvent *e ) override;
 
   private:
@@ -78,25 +81,25 @@ class GUI_EXPORT QgsAuthServersEditor : public QWidget, private Ui::QgsAuthServe
     void setupSslConfigsTree();
 
     void populateSslConfigsSection( QTreeWidgetItem *item,
-                                    const QList<QgsAuthConfigSslServer>& configs,
+                                    const QList<QgsAuthConfigSslServer> &configs,
                                     QgsAuthServersEditor::ConfigType conftype );
 
-    void appendSslConfigsToGroup( const QList<QgsAuthConfigSslServer>& configs,
+    void appendSslConfigsToGroup( const QList<QgsAuthConfigSslServer> &configs,
                                   QgsAuthServersEditor::ConfigType conftype,
                                   QTreeWidgetItem *parent = nullptr );
 
-    void appendSslConfigsToItem( const QList<QgsAuthConfigSslServer>& configs,
+    void appendSslConfigsToItem( const QList<QgsAuthConfigSslServer> &configs,
                                  QgsAuthServersEditor::ConfigType conftype,
                                  QTreeWidgetItem *parent = nullptr );
 
-    QgsMessageBar * messageBar();
+    QgsMessageBar *messageBar();
     int messageTimeout();
 
-    bool mDisabled;
-    QVBoxLayout *mAuthNotifyLayout;
-    QLabel *mAuthNotify;
+    bool mDisabled = false;
+    QVBoxLayout *mAuthNotifyLayout = nullptr;
+    QLabel *mAuthNotify = nullptr;
 
-    QTreeWidgetItem *mRootSslConfigItem;
+    QTreeWidgetItem *mRootSslConfigItem = nullptr;
 };
 
 #endif // QGSAUTHSERVERSEDITOR_H

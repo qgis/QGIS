@@ -1,44 +1,108 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsmaptopixelgeometrysimplifier.h                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
 class QgsMapToPixelSimplifier : QgsAbstractGeometrySimplifier
 {
+%Docstring
+Implementation of GeometrySimplifier using the "MapToPixel" algorithm
+
+Simplifies a geometry removing points within of the maximum distance difference that defines the MapToPixel info of a RenderContext request.
+This class enables simplify the geometries to be rendered in a MapCanvas target to speed up the vector drawing.
+%End
+
 %TypeHeaderCode
 #include "qgsmaptopixelgeometrysimplifier.h"
 %End
   public:
-    QgsMapToPixelSimplifier( int simplifyFlags, double tolerance );
-    virtual ~QgsMapToPixelSimplifier();
+    enum SimplifyAlgorithm
+    {
+      Distance,
+      SnapToGrid,
+      Visvalingam,
+    };
 
-    //! Applicable simplification flags
+    QgsMapToPixelSimplifier( int simplifyFlags, double tolerance, SimplifyAlgorithm simplifyAlgorithm = Distance );
+%Docstring
+Constructor
+%End
+
     enum SimplifyFlag
     {
-      NoFlags          = 0, //!< No simplification can be applied
-      SimplifyGeometry = 1, //!< The geometries can be simplified using the current map2pixel context state
-      SimplifyEnvelope = 2, //!< The geometries can be fully simplified by its BoundingBox
+      NoFlags,
+      SimplifyGeometry,
+      SimplifyEnvelope,
     };
 
   protected:
 
-    //! Returns the squared 2D-distance of the vector defined by the two points specified
+
+
     static float calculateLengthSquared2D( double x1, double y1, double x2, double y2 );
+%Docstring
+Returns the squared 2D-distance of the vector defined by the two points specified
+%End
+
+    static bool equalSnapToGrid( double x1, double y1, double x2, double y2, double gridOriginX, double gridOriginY, float gridInverseSizeXY );
+%Docstring
+Returns whether the points belong to the same grid
+%End
 
   public:
     int simplifyFlags() const;
+%Docstring
+Gets the simplification hints of the vector layer managed
+%End
     void setSimplifyFlags( int simplifyFlags );
+%Docstring
+Sets the simplification hints of the vector layer managed
+%End
 
-    //! Returns a simplified version the specified geometry
-    virtual QgsGeometry* simplify( QgsGeometry* geometry ) const;
-    //! Simplifies the specified geometry
-    virtual bool simplifyGeometry( QgsGeometry* geometry ) const;
+    SimplifyAlgorithm simplifyAlgorithm() const;
+%Docstring
+Gets the local simplification algorithm of the vector layer managed
+%End
+    void setSimplifyAlgorithm( SimplifyAlgorithm simplifyAlgorithm );
+%Docstring
+Sets the local simplification algorithm of the vector layer managed
+%End
 
-    // MapToPixel simplification helper methods
+    virtual QgsGeometry simplify( const QgsGeometry &geometry ) const;
+
+%Docstring
+Returns a simplified version the specified geometry
+%End
+
+    void setTolerance( double value );
+%Docstring
+Sets the tolerance of the vector layer managed
+%End
+
   public:
 
-    //! Returns whether the envelope can be replaced by its BBOX when is applied the specified map2pixel context
-    static bool isGeneralizableByMapBoundingBox( const QgsRectangle& envelope, double map2pixelTol );
+    static bool isGeneralizableByMapBoundingBox( const QgsRectangle &envelope, double map2pixelTol );
+%Docstring
+Returns whether the envelope can be replaced by its BBOX when is applied the specified map2pixel context
+%End
 
-    //! Returns whether the envelope can be replaced by its BBOX when is applied the specified map2pixel context
-    bool isGeneralizableByMapBoundingBox( const QgsRectangle& envelope ) const;
-
-    //! Simplifies the geometry when is applied the specified map2pixel context
-    static bool simplifyGeometry( QgsGeometry* geometry, int simplifyFlags, double tolerance );
-
+    bool isGeneralizableByMapBoundingBox( const QgsRectangle &envelope ) const;
+%Docstring
+Returns whether the envelope can be replaced by its BBOX when is applied the specified map2pixel context
+%End
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsmaptopixelgeometrysimplifier.h                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

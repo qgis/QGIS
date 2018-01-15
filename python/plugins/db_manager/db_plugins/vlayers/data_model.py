@@ -25,8 +25,8 @@ from .connector import VLayerRegistry, getQueryGeometryName
 from .plugin import LVectorTable
 from ..plugin import DbError
 
-from qgis.PyQt.QtCore import QUrl, QTime, QTemporaryFile
-from qgis.core import QGis, QgsVectorLayer, QgsWKBTypes
+from qgis.PyQt.QtCore import QTime, QTemporaryFile
+from qgis.core import QgsVectorLayer, QgsWkbTypes, QgsVirtualLayerDefinition
 
 
 class LTableDataModel(TableDataModel):
@@ -48,8 +48,8 @@ class LTableDataModel(TableDataModel):
         for f in self.layer.getFeatures():
             a = f.attributes()
             # add the geometry type
-            if f.geometry():
-                a.append(QgsWKBTypes.displayString(QGis.fromOldWkbType(f.geometry().wkbType())))
+            if f.hasGeometry():
+                a.append(QgsWkbTypes.displayString(f.geometry().wkbType()))
             else:
                 a.append('None')
             self.resdata.append(a)
@@ -68,7 +68,6 @@ class LSqlResultModel(BaseTableModel):
 
     def __init__(self, db, sql, parent=None):
         # create a virtual layer with non-geometry results
-        q = QUrl.toPercentEncoding(sql)
         t = QTime()
         t.start()
 
@@ -77,7 +76,10 @@ class LSqlResultModel(BaseTableModel):
         tmp = tf.fileName()
         tf.close()
 
-        p = QgsVectorLayer("%s?query=%s" % (QUrl.fromLocalFile(tmp).toString(), q), "vv", "virtual")
+        df = QgsVirtualLayerDefinition()
+        df.setFilePath(tmp)
+        df.setQuery(sql)
+        p = QgsVectorLayer(df.toString(), "vv", "virtual")
         self._secs = t.elapsed() / 1000.0
 
         if not p.isValid():
@@ -87,7 +89,7 @@ class LSqlResultModel(BaseTableModel):
         else:
             header = [f.name() for f in p.fields()]
             has_geometry = False
-            if p.geometryType() != QGis.WKBNoGeometry:
+            if p.geometryType() != QgsWkbTypes.NullGeometry:
                 gn = getQueryGeometryName(tmp)
                 if gn:
                     has_geometry = True
@@ -97,8 +99,8 @@ class LSqlResultModel(BaseTableModel):
             for f in p.getFeatures():
                 a = f.attributes()
                 if has_geometry:
-                    if f.geometry():
-                        a += [f.geometry().exportToWkt()]
+                    if f.hasGeometry():
+                        a += [f.geometry().asWkt()]
                     else:
                         a += [None]
                 data += [a]

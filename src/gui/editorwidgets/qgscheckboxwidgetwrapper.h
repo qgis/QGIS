@@ -20,8 +20,12 @@
 
 #include <QCheckBox>
 #include <QGroupBox>
+#include "qgis_gui.h"
+
+SIP_NO_FILE
 
 /**
+ * \ingroup gui
  * Wraps a checkbox widget. This will offer a checkbox to represent boolean values.
  *
  * Options:
@@ -37,7 +41,7 @@ class GUI_EXPORT QgsCheckboxWidgetWrapper : public QgsEditorWidgetWrapper
 {
     Q_OBJECT
   public:
-    explicit QgsCheckboxWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor = nullptr, QWidget* parent = nullptr );
+    explicit QgsCheckboxWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *editor = nullptr, QWidget *parent = nullptr );
 
     // QgsEditorWidgetWrapper interface
   public:
@@ -46,16 +50,16 @@ class GUI_EXPORT QgsCheckboxWidgetWrapper : public QgsEditorWidgetWrapper
     void showIndeterminateState() override;
 
   protected:
-    QWidget* createWidget( QWidget* parent ) override;
-    void initWidget( QWidget* editor ) override;
+    QWidget *createWidget( QWidget *parent ) override;
+    void initWidget( QWidget *editor ) override;
     bool valid() const override;
 
   public slots:
-    void setValue( const QVariant& value ) override;
+    void setValue( const QVariant &value ) override;
 
   private:
-    QCheckBox* mCheckBox;
-    QGroupBox* mGroupBox;
+    QCheckBox *mCheckBox = nullptr;
+    QGroupBox *mGroupBox = nullptr;
 };
 
 #endif // QGSCHECKBOXWIDGETWRAPPER_H

@@ -21,13 +21,13 @@
 #include "ui_qgsgeorefdescriptiondialogbase.h"
 #include <QDialog>
 
-/** Dialog that shows logo and description of the georef plugin*/
+//! Dialog that shows logo and description of the georef plugin
 class QgsGeorefDescriptionDialog: public QDialog, private Ui::QgsGeorefDescriptionDialogBase
 {
     Q_OBJECT
 
   public:
-    explicit QgsGeorefDescriptionDialog( QWidget* parent );
+    explicit QgsGeorefDescriptionDialog( QWidget *parent );
 };
 
 #endif

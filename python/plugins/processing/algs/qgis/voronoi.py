@@ -57,7 +57,8 @@ __revision__ = '$Format:%H$'
 
 
 def usage():
-    print """
+    # fix_print_with_import
+    print("""
 voronoi - compute Voronoi diagram or Delaunay triangulation
 
 voronoi [-t -p -d]  [filename]
@@ -94,7 +95,7 @@ On unsorted data uniformly distributed in the unit square, voronoi uses about
 AUTHOR
 Steve J. Fortune (1987) A Sweepline Algorithm for Voronoi Diagrams,
 Algorithmica 2, 153-174.
-"""
+""")
 
 #############################################################################
 #
@@ -121,14 +122,16 @@ Algorithmica 2, 153-174.
 #        Delaunay triangle.
 #
 #############################################################################
+
+
 import math
 import sys
 import getopt
 TOLERANCE = 1e-9
 BIG_FLOAT = 1e38
 
-#------------------------------------------------------------------
 
+# ------------------------------------------------------------------
 
 class Context(object):
 
@@ -154,39 +157,47 @@ class Context(object):
 
     def outSite(self, s):
         if self.debug:
-            print "site (%d) at %f %f" % (s.sitenum, s.x, s.y)
+            # fix_print_with_import
+            print("site (%d) at %f %f" % (s.sitenum, s.x, s.y))
         elif(self.triangulate):
             pass
         elif self.plot:
             self.circle(s.x, s.y, None)  # No radius?
         elif(self.doPrint):
-            print "s %f %f" % (s.x, s.y)
+            # fix_print_with_import
+            print("s %f %f" % (s.x, s.y))
 
     def outVertex(self, s):
         self.vertices.append((s.x, s.y))
         if(self.debug):
-            print "vertex(%d) at %f %f" % (s.sitenum, s.x, s.y)
+            # fix_print_with_import
+            print("vertex(%d) at %f %f" % (s.sitenum, s.x, s.y))
         elif(self.triangulate):
             pass
         elif(self.doPrint and not self.plot):
-            print "v %f %f" % (s.x, s.y)
+            # fix_print_with_import
+            print("v %f %f" % (s.x, s.y))
 
     def outTriple(self, s1, s2, s3):
         self.triangles.append((s1.sitenum, s2.sitenum, s3.sitenum))
         if(self.debug):
-            print "circle through left=%d right=%d bottom=%d" % (s1.sitenum, s2.sitenum, s3.sitenum)
+            # fix_print_with_import
+            print("circle through left=%d right=%d bottom=%d" % (s1.sitenum, s2.sitenum, s3.sitenum))
         elif(self.triangulate and self.doPrint and not self.plot):
-            print "%d %d %d" % (s1.sitenum, s2.sitenum, s3.sitenum)
+            # fix_print_with_import
+            print("%d %d %d" % (s1.sitenum, s2.sitenum, s3.sitenum))
 
     def outBisector(self, edge):
         self.lines.append((edge.a, edge.b, edge.c))
         if(self.debug):
-            print "line(%d) %gx+%gy=%g, bisecting %d %d" % (edge.edgenum, edge.a, edge.b, edge.c, edge.reg[0].sitenum, edge.reg[1].sitenum)
+            # fix_print_with_import
+            print("line(%d) %gx+%gy=%g, bisecting %d %d" % (edge.edgenum, edge.a, edge.b, edge.c, edge.reg[0].sitenum, edge.reg[1].sitenum))
         elif(self.triangulate):
             if(self.plot):
                 self.line(edge.reg[0].x, edge.reg[0].y, edge.reg[1].x, edge.reg[1].y)
         elif(self.doPrint and not self.plot):
-            print "l %f %f %f" % (edge.a, edge.b, edge.c)
+            # fix_print_with_import
+            print("l %f %f %f" % (edge.a, edge.b, edge.c))
 
     def outEdge(self, edge):
         sitenumL = -1
@@ -206,9 +217,10 @@ class Context(object):
             if self.plot:
                 self.clip_line(edge)
             elif(self.doPrint):
-                print "e %d %d %d" % (edge.edgenum, sitenumL, sitenumR)
+                # fix_print_with_import
+                print("e %d %d %d" % (edge.edgenum, sitenumL, sitenumR))
 
-#------------------------------------------------------------------
+# ------------------------------------------------------------------
 
 
 def voronoi(siteList, context):
@@ -217,9 +229,9 @@ def voronoi(siteList, context):
         priorityQ = PriorityQueue(siteList.ymin, siteList.ymax, len(siteList))
         siteIter = siteList.iterator()
 
-        bottomsite = siteIter.next()
+        bottomsite = next(siteIter)
         context.outSite(bottomsite)
-        newsite = siteIter.next()
+        newsite = next(siteIter)
         minpt = Site(-BIG_FLOAT, -BIG_FLOAT)
         while True:
             if not priorityQ.isEmpty():
@@ -264,7 +276,7 @@ def voronoi(siteList, context):
                     # push the Halfedge into the ordered linked list of vertices
                     priorityQ.insert(bisector, p, newsite.distance(p))
 
-                newsite = siteIter.next()
+                newsite = next(siteIter)
 
             elif not priorityQ.isEmpty():
                 # intersection is smallest - this is a vector (circle) event
@@ -348,10 +360,12 @@ def voronoi(siteList, context):
             he = he.right
         Edge.EDGE_NUM = 0
     except Exception as err:
-        print "######################################################"
-        print unicode(err)
+        # fix_print_with_import
+        print("######################################################")
+        # fix_print_with_import
+        print(str(err))
 
-#------------------------------------------------------------------
+# ------------------------------------------------------------------
 
 
 def isEqual(a, b, relativeError=TOLERANCE):
@@ -359,7 +373,7 @@ def isEqual(a, b, relativeError=TOLERANCE):
     norm = max(abs(a), abs(b))
     return (norm < relativeError) or (abs(a - b) < (relativeError * norm))
 
-#------------------------------------------------------------------
+# ------------------------------------------------------------------
 
 
 class Site(object):
@@ -370,26 +384,28 @@ class Site(object):
         self.sitenum = sitenum
 
     def dump(self):
-        print "Site #%d (%g, %g)" % (self.sitenum, self.x, self.y)
+        # fix_print_with_import
+        print("Site #%d (%g, %g)" % (self.sitenum, self.x, self.y))
 
-    def __cmp__(self, other):
+    def __eq__(self, other):
+        return (self.x == other.x) and (self.y == other.y)
+
+    def __lt__(self, other):
         if self.y < other.y:
-            return -1
+            return True
         elif self.y > other.y:
-            return 1
+            return False
         elif self.x < other.x:
-            return -1
+            return True
         elif self.x > other.x:
-            return 1
-        else:
-            return 0
+            return False
 
     def distance(self, other):
         dx = self.x - other.x
         dy = self.y - other.y
         return math.sqrt(dx * dx + dy * dy)
 
-#------------------------------------------------------------------
+# ------------------------------------------------------------------
 
 
 class Edge(object):
@@ -407,9 +423,12 @@ class Edge(object):
         self.edgenum = 0
 
     def dump(self):
-        print "(#%d a=%g, b=%g, c=%g)" % (self.edgenum, self.a, self.b, self.c)
-        print "ep", self.ep
-        print "reg", self.reg
+        # fix_print_with_import
+        print("(#%d a=%g, b=%g, c=%g)" % (self.edgenum, self.a, self.b, self.c))
+        # fix_print_with_import
+        print("ep", self.ep)
+        # fix_print_with_import
+        print("reg", self.reg)
 
     def setEndpoint(self, lrFlag, site):
         self.ep[lrFlag] = site
@@ -450,7 +469,7 @@ class Edge(object):
         return newedge
 
 
-#------------------------------------------------------------------
+# ------------------------------------------------------------------
 class Halfedge(object):
 
     def __init__(self, edge=None, pm=Edge.LE):
@@ -463,29 +482,38 @@ class Halfedge(object):
         self.ystar = BIG_FLOAT
 
     def dump(self):
-        print "Halfedge--------------------------"
-        print "left: ", self.left
-        print "right: ", self.right
-        print "edge: ", self.edge
-        print "pm: ", self.pm
-        print "vertex:"
+        # fix_print_with_import
+        print("Halfedge--------------------------")
+        # fix_print_with_import
+        print("left: ", self.left)
+        # fix_print_with_import
+        print("right: ", self.right)
+        # fix_print_with_import
+        print("edge: ", self.edge)
+        # fix_print_with_import
+        print("pm: ", self.pm)
+        # fix_print_with_import
+        print("vertex:")
         if self.vertex:
             self.vertex.dump()
         else:
-            print "None"
-        print "ystar: ", self.ystar
+            # fix_print_with_import
+            print("None")
+        # fix_print_with_import
+        print("ystar: ", self.ystar)
 
-    def __cmp__(self, other):
-        if self.ystar > other.ystar:
-            return 1
-        elif self.ystar < other.ystar:
-            return -1
-        elif self.vertex.x > other.vertex.x:
-            return 1
+    def __eq__(self, other):
+        return (self.vertex.x == other.vertex.x) and (self.ystar == other.ystar)
+
+    def __lt__(self, other):
+        if self.ystar < other.ystar:
+            return True
+        elif self.ystar > other.ystar:
+            return False
         elif self.vertex.x < other.vertex.x:
-            return -1
-        else:
-            return 0
+            return True
+        elif self.vertex.x > other.vertex.x:
+            return False
 
     def leftreg(self, default):
         if not self.edge:
@@ -545,7 +573,7 @@ class Halfedge(object):
         else:
             return not above
 
-    #--------------------------
+    # --------------------------
     # create a new site where the Halfedges el1 and el2 intersect
     def intersect(self, other):
         e1 = self.edge
@@ -580,7 +608,7 @@ class Halfedge(object):
         return Site(xint, yint)
 
 
-#------------------------------------------------------------------
+# ------------------------------------------------------------------
 class EdgeList(object):
 
     def __init__(self, xmin, xmax, nsites):
@@ -661,7 +689,7 @@ class EdgeList(object):
         return he
 
 
-#------------------------------------------------------------------
+# ------------------------------------------------------------------
 class PriorityQueue(object):
 
     def __init__(self, ymin, ymax, nsites):
@@ -726,7 +754,7 @@ class PriorityQueue(object):
         return curr
 
 
-#------------------------------------------------------------------
+# ------------------------------------------------------------------
 class SiteList(object):
 
     def __init__(self, pointList):
@@ -761,9 +789,9 @@ class SiteList(object):
         def __iter__(this):
             return this
 
-        def next(this):
+        def __next__(this):
             try:
-                return this.generator.next()
+                return next(this.generator)
             except StopIteration:
                 return None
 
@@ -794,7 +822,7 @@ class SiteList(object):
     ymax = property(_getymax)
 
 
-#------------------------------------------------------------------
+# ------------------------------------------------------------------
 def computeVoronoiDiagram(points):
     """ Takes a list of point objects (which must have x and y fields).
         Returns a 3-tuple of:
@@ -813,7 +841,7 @@ def computeVoronoiDiagram(points):
     voronoi(siteList, context)
     return (context.vertices, context.lines, context.edges)
 
-#------------------------------------------------------------------
+# ------------------------------------------------------------------
 
 
 def computeDelaunayTriangulation(points):
@@ -827,7 +855,8 @@ def computeDelaunayTriangulation(points):
     voronoi(siteList, context)
     return context.triangles
 
-#-----------------------------------------------------------------------------
+
+# -----------------------------------------------------------------------------
 if __name__ == "__main__":
     try:
         optlist, args = getopt.getopt(sys.argv[1:], "thdp")
@@ -867,3 +896,13 @@ if __name__ == "__main__":
 
     sl = SiteList(pts)
     voronoi(sl, c)
+
+
+def cmp(a, b):
+    """Compare the two objects x and y and return an integer according to the
+    outcome. The return value is negative if x < y, zero if x == y and strictly
+    positive if x > y.
+
+    In python 2 cmp() was a built in function but in python 3 is gone.
+    """
+    return (a > b) - (a < b)

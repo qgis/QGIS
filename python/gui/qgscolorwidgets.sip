@@ -1,493 +1,630 @@
-/** \ingroup gui
- * \class QgsColorWidget
- * A base class for interactive color widgets. Widgets can either allow setting a single component of
- * a color (eg the red or green components), or an entire color. The QgsColorWidget also keeps track of
- * any explicitly set hue for the color, so that this information is not lost when the widget is
- * set to a color with an ambiguous hue (eg black or white shades).
- * \note Added in version 2.5
- */
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgscolorwidgets.h                                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
 
 class QgsColorWidget : QWidget
 {
-%TypeHeaderCode
-#include <qgscolorwidgets.h>
+%Docstring
+A base class for interactive color widgets. Widgets can either allow setting a single component of
+a color (e.g., the red or green components), or an entire color. The QgsColorWidget also keeps track of
+any explicitly set hue for the color, so that this information is not lost when the widget is
+set to a color with an ambiguous hue (e.g., black or white shades).
+
+.. versionadded:: 2.5
 %End
 
+%TypeHeaderCode
+#include "qgscolorwidgets.h"
+%End
   public:
 
-    /** Specifies the color component which the widget alters
-     */
     enum ColorComponent
     {
-      Multiple = 0, /*!< widget alters multiple color components */
-      Red, /*!< red component of color */
-      Green, /*!< green component of color */
-      Blue, /*!< blue component of color */
-      Hue, /*!< hue component of color (based on HSV model) */
-      Saturation, /*!< saturation component of color (based on HSV model) */
-      Value, /*!< value component of color (based on HSV model) */
-      Alpha /*!< alpha component (opacity) of color */
+      Multiple,
+      Red,
+      Green,
+      Blue,
+      Hue,
+      Saturation,
+      Value,
+      Alpha
     };
 
-    /** Construct a new color widget.
-     * @param parent parent QWidget for the widget
-     * @param component color component the widget alters
-     */
-    QgsColorWidget( QWidget* parent /TransferThis/ = 0, const ColorComponent component = Multiple );
+    QgsColorWidget( QWidget *parent /TransferThis/ = 0, const ColorComponent component = Multiple );
+%Docstring
+Construct a new color widget.
 
-    virtual ~QgsColorWidget();
+:param parent: parent QWidget for the widget
+:param component: color component the widget alters
+%End
 
-    /** Returns the current color for the widget
-     * @returns current widget color
-     * @see setColor
-     */
     QColor color() const;
+%Docstring
+Returns the current color for the widget
 
-    /** Returns the color component which the widget controls
-     * @returns color component for widget
-     * @see setComponent
-     */
+:return: current widget color
+
+.. seealso:: :py:func:`setColor`
+%End
+
     ColorComponent component() const;
+%Docstring
+Returns the color component which the widget controls
 
-    /** Returns the current value of the widget's color component
-     * @returns value of color component, or -1 if widget has multiple components or an invalid color
-     * set
-     * @see setComponentValue
-     * @see component
-     */
+:return: color component for widget
+
+.. seealso:: :py:func:`setComponent`
+%End
+
     int componentValue() const;
+%Docstring
+Returns the current value of the widget's color component
 
-    /** Create an icon for dragging colors
-     * @param color for icon
-     */
+:return: value of color component, or -1 if widget has multiple components or an invalid color
+set
+
+.. seealso:: :py:func:`setComponentValue`
+
+.. seealso:: :py:func:`component`
+%End
+
     static QPixmap createDragIcon( const QColor &color );
+%Docstring
+Create an icon for dragging colors
+
+:param color: for icon
+%End
 
   public slots:
 
-    /** Sets the color for the widget
-     * @param color widget color
-     * @param emitSignals set to true to emit the colorChanged signal after setting color
-     * @see color
-     */
     virtual void setColor( const QColor &color, const bool emitSignals = false );
+%Docstring
+Sets the color for the widget
 
-    /** Sets the color component which the widget controls
-     * @param component color component for widget
-     * @see component
-     */
+:param color: widget color
+:param emitSignals: set to true to emit the colorChanged signal after setting color
+
+.. seealso:: :py:func:`color`
+%End
+
     virtual void setComponent( const ColorComponent component );
+%Docstring
+Sets the color component which the widget controls
 
-    /** Alters the widget's color by setting the value for the widget's color component
-     * @param value value for widget's color component. This value is automatically
-     * clipped to the range of valid values for the color component.
-     * @see componentValue
-     * @see setComponent
-     * @note this method has no effect if the widget is set to the QgsColorWidget::Multiple
-     * component
-     */
+:param component: color component for widget
+
+.. seealso:: :py:func:`component`
+%End
+
     virtual void setComponentValue( const int value );
+%Docstring
+Alters the widget's color by setting the value for the widget's color component
+
+:param value: value for widget's color component. This value is automatically
+clipped to the range of valid values for the color component.
+
+.. seealso:: :py:func:`componentValue`
+
+.. seealso:: :py:func:`setComponent`
+
+.. note::
+
+   this method has no effect if the widget is set to the QgsColorWidget.Multiple
+   component
+%End
 
   signals:
 
-    /** Emitted when the widget's color changes
-     * @param color new widget color
-     */
     void colorChanged( const QColor &color );
+%Docstring
+Emitted when the widget's color changes
 
-    /** Emitted when mouse hovers over widget.
-     * @note added in QGIS 2.14
-     */
+:param color: new widget color
+%End
+
     void hovered();
+%Docstring
+Emitted when mouse hovers over widget.
+
+.. versionadded:: 2.14
+%End
 
   protected:
 
-    /** Returns the range of valid values for the color widget's component
-     * @returns maximum value allowed for color component, or -1 if widget has multiple components
-     */
+
+
+
     int componentRange() const;
+%Docstring
+Returns the range of valid values for the color widget's component
 
-    /** Returns the range of valid values a color component
-     * @returns maximum value allowed for color component
-     */
+:return: maximum value allowed for color component, or -1 if widget has multiple components
+%End
+
     int componentRange( const ColorComponent component ) const;
+%Docstring
+Returns the range of valid values a color component
 
-    /** Returns the value of a component of the widget's current color. This method correctly
-     * handles hue values when the color has an ambiguous hue (eg black or white shades)
-     * @param component color component to return
-     * @returns value of color component, or -1 if widget has an invalid color set
-     * @see hue
-     */
+:return: maximum value allowed for color component
+%End
+
     int componentValue( const ColorComponent component ) const;
+%Docstring
+Returns the value of a component of the widget's current color. This method correctly
+handles hue values when the color has an ambiguous hue (e.g., black or white shades)
 
-    /** Returns the hue for the widget. This may differ from the hue for the QColor returned by color(),
-     * as QColor returns a hue of -1 if the color's hue is ambiguous (eg, if the saturation is zero).
-     * @returns explicitly set hue for widget
-     */
+:param component: color component to return
+
+:return: value of color component, or -1 if widget has an invalid color set
+
+.. seealso:: :py:func:`hue`
+%End
+
     int hue() const;
+%Docstring
+Returns the hue for the widget. This may differ from the hue for the QColor returned by color(),
+as QColor returns a hue of -1 if the color's hue is ambiguous (e.g., if the saturation is zero).
 
-    /** Alters a color by modifiying the value of a specific color component
-     * @param color color to alter
-     * @param component color component to alter
-     * @param newValue new value of color component. Values are automatically clipped to a
-     * valid range for the color component.
-     */
-    void alterColor( QColor& color, const QgsColorWidget::ColorComponent component, const int newValue ) const;
+:return: explicitly set hue for widget
+%End
 
-    /** Generates a checkboard pattern pixmap for use as a background to transparent colors
-     * @returns checkerboard pixmap
-     */
-    static const QPixmap& transparentBackground();
+    void alterColor( QColor &color, const QgsColorWidget::ColorComponent component, const int newValue ) const;
+%Docstring
+Alters a color by modifiying the value of a specific color component
 
-    //Reimplemented to accept dragged colors
-    void dragEnterEvent( QDragEnterEvent * e );
+:param color: color to alter
+:param component: color component to alter
+:param newValue: new value of color component. Values are automatically clipped to a
+valid range for the color component.
+%End
 
-    //Reimplemented to accept dropped colors
-    void dropEvent( QDropEvent *e );
+    static const QPixmap &transparentBackground();
+%Docstring
+Generates a checkboard pattern pixmap for use as a background to transparent colors
 
-    void mouseMoveEvent( QMouseEvent* e );
-    void mousePressEvent( QMouseEvent* e );
-    void mouseReleaseEvent( QMouseEvent* e );
+:return: checkerboard pixmap
+%End
+
+    virtual void dragEnterEvent( QDragEnterEvent *e );
+
+
+    virtual void dropEvent( QDropEvent *e );
+
+
+    virtual void mouseMoveEvent( QMouseEvent *e );
+
+    virtual void mousePressEvent( QMouseEvent *e );
+
+    virtual void mouseReleaseEvent( QMouseEvent *e );
+
 };
 
 
-/** \ingroup gui
- * \class QgsColorWidgetAction
- * An action containing a color widget, which can be embedded into a menu.
- * @see QgsColorWidget
- * @note introduced in QGIS 2.14
- */
 
 class QgsColorWidgetAction: QWidgetAction
 {
-%TypeHeaderCode
-#include <qgscolorwidgets.h>
+%Docstring
+An action containing a color widget, which can be embedded into a menu.
+
+.. seealso:: :py:class:`QgsColorWidget`
+
+.. versionadded:: 2.14
 %End
 
+%TypeHeaderCode
+#include "qgscolorwidgets.h"
+%End
   public:
 
-    /** Construct a new color widget action.
-     * @param colorWidget QgsColorWidget to show in action
-     * @param menu parent menu
-     * @param parent parent widget
-     */
-    QgsColorWidgetAction( QgsColorWidget* colorWidget, QMenu* menu = 0, QWidget *parent /TransferThis/ = 0 );
+    QgsColorWidgetAction( QgsColorWidget *colorWidget, QMenu *menu = 0, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Construct a new color widget action.
 
-    virtual ~QgsColorWidgetAction();
+:param colorWidget: QgsColorWidget to show in action
+:param menu: parent menu
+:param parent: parent widget
+%End
 
-    /** Returns the color widget contained in the widget action.
-     */
-    QgsColorWidget* colorWidget();
+    QgsColorWidget *colorWidget();
+%Docstring
+Returns the color widget contained in the widget action.
+%End
 
-    /** Sets whether the parent menu should be dismissed and closed when a color is selected
-     * from the action's color widget.
-     * @param dismiss set to true (default) to immediately close the menu when a color is selected
-     * from the widget. If set to false, the colorChanged signal will be emitted but the menu will
-     * stay open.
-     * @see dismissOnColorSelection()
-     */
     void setDismissOnColorSelection( bool dismiss );
+%Docstring
+Sets whether the parent menu should be dismissed and closed when a color is selected
+from the action's color widget.
 
-    /** Returns whether the parent menu will be dismissed after a color is selected from the
-     * action's color widget.
-     * @see setDismissOnColorSelection
-     */
+:param dismiss: set to true (default) to immediately close the menu when a color is selected
+from the widget. If set to false, the colorChanged signal will be emitted but the menu will
+stay open.
+
+.. seealso:: :py:func:`dismissOnColorSelection`
+%End
+
     bool dismissOnColorSelection() const;
+%Docstring
+Returns whether the parent menu will be dismissed after a color is selected from the
+action's color widget.
+
+.. seealso:: :py:func:`setDismissOnColorSelection`
+%End
 
   signals:
 
-    /** Emitted when a color has been selected from the widget
-     * @param color selected color
-     */
     void colorChanged( const QColor &color );
+%Docstring
+Emitted when a color has been selected from the widget
+
+:param color: selected color
+%End
 
 };
 
 
 
-/** \ingroup gui
- * \class QgsColorWheel
- * A color wheel widget. This widget consists of an outer ring which allows for hue selection, and an
- * inner rotating triangle which allows for saturation and value selection.
- * \note Added in version 2.5
- */
 
 class QgsColorWheel : QgsColorWidget
 {
-%TypeHeaderCode
-#include <qgscolorwidgets.h>
+%Docstring
+A color wheel widget. This widget consists of an outer ring which allows for hue selection, and an
+inner rotating triangle which allows for saturation and value selection.
+
+.. versionadded:: 2.5
 %End
 
+%TypeHeaderCode
+#include "qgscolorwidgets.h"
+%End
   public:
 
-    /** Constructs a new color wheel widget.
-     * @param parent parent QWidget for the widget
-     */
-    QgsColorWheel( QWidget* parent /TransferThis/ = 0 );
+    QgsColorWheel( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructs a new color wheel widget.
 
-    virtual ~QgsColorWheel();
+:param parent: parent QWidget for the widget
+%End
+
+    ~QgsColorWheel();
 
     virtual QSize sizeHint() const;
-    void paintEvent( QPaintEvent* event );
+
+    virtual void paintEvent( QPaintEvent *event );
+
 
   public slots:
 
     virtual void setColor( const QColor &color, const bool emitSignals = false );
 
+
   protected:
 
     virtual void resizeEvent( QResizeEvent *event );
+
     virtual void mouseMoveEvent( QMouseEvent *event );
+
     virtual void mousePressEvent( QMouseEvent *event );
+
     virtual void mouseReleaseEvent( QMouseEvent *event );
+
 
 };
 
 
-/** \ingroup gui
- * \class QgsColorBox
- * A color box widget. This widget consists of a two dimensional rectangle filled with color
- * variations, where a different color component varies along both the horizontal and vertical
- * axis.
- * \note Added in version 2.5
- */
 
 class QgsColorBox : QgsColorWidget
 {
-%TypeHeaderCode
-#include <qgscolorwidgets.h>
+%Docstring
+A color box widget. This widget consists of a two dimensional rectangle filled with color
+variations, where a different color component varies along both the horizontal and vertical
+axis.
+
+.. versionadded:: 2.5
 %End
 
+%TypeHeaderCode
+#include "qgscolorwidgets.h"
+%End
   public:
 
-    /** Construct a new color box widget.
-     * @param parent parent QWidget for the widget
-     * @param component constant color component for the widget. The color components
-     * which vary along the horizontal and vertical axis are automatically assigned
-     * based on this constant color component.
-     */
-    QgsColorBox( QWidget* parent /TransferThis/ = 0, const ColorComponent component = Value );
+    QgsColorBox( QWidget *parent /TransferThis/ = 0, const ColorComponent component = Value );
+%Docstring
+Construct a new color box widget.
 
-    virtual ~QgsColorBox();
+:param parent: parent QWidget for the widget
+:param component: constant color component for the widget. The color components
+which vary along the horizontal and vertical axis are automatically assigned
+based on this constant color component.
+%End
+
+    ~QgsColorBox();
 
     virtual QSize sizeHint() const;
-    void paintEvent( QPaintEvent* event );
+
+    virtual void paintEvent( QPaintEvent *event );
+
 
     virtual void setComponent( const ColorComponent component );
 
+
   public slots:
     virtual void setColor( const QColor &color, const bool emitSignals = false );
+
 
   protected:
 
     virtual void resizeEvent( QResizeEvent *event );
+
     virtual void mouseMoveEvent( QMouseEvent *event );
+
     virtual void mousePressEvent( QMouseEvent *event );
+
+
 };
 
 
-/** \ingroup gui
- * \class QgsColorRampWidget
- * A color ramp widget. This widget consists of an interactive box filled with a color which varies along
- * its length by a single color component (eg, varying saturation from 0 to 100%).
- * \note Added in version 2.5
- */
 
 class QgsColorRampWidget : QgsColorWidget
 {
-%TypeHeaderCode
-#include <qgscolorwidgets.h>
+%Docstring
+A color ramp widget. This widget consists of an interactive box filled with a color which varies along
+its length by a single color component (e.g., varying saturation from 0 to 100%).
+
+.. versionadded:: 2.5
 %End
 
+%TypeHeaderCode
+#include "qgscolorwidgets.h"
+%End
   public:
 
-    /** Specifies the orientation of a color ramp
-     */
     enum Orientation
     {
-      Horizontal, /*!< horizontal ramp */
-      Vertical /*!< vertical ramp */
+      Horizontal,
+      Vertical
     };
 
-    /** Construct a new color ramp widget.
-     * @param parent parent QWidget for the widget
-     * @param component color component which varies along the ramp
-     * @param orientation orientation for widget
-     */
-    QgsColorRampWidget( QWidget* parent /TransferThis/ = 0,
+    QgsColorRampWidget( QWidget *parent /TransferThis/ = 0,
                         const ColorComponent component = QgsColorWidget::Red,
                         const Orientation orientation = QgsColorRampWidget::Horizontal );
+%Docstring
+Construct a new color ramp widget.
 
-    virtual ~QgsColorRampWidget();
+:param parent: parent QWidget for the widget
+:param component: color component which varies along the ramp
+:param orientation: orientation for widget
+%End
 
     virtual QSize sizeHint() const;
-    void paintEvent( QPaintEvent* event );
 
-    /** Sets the orientation for the color ramp
-     * @param orientation new orientation for the ramp
-     * @see orientation
-     */
+    virtual void paintEvent( QPaintEvent *event );
+
+
     void setOrientation( const Orientation orientation );
+%Docstring
+Sets the orientation for the color ramp
 
-    /** Fetches the orientation for the color ramp
-     * @returns orientation for the ramp
-     * @see setOrientation
-     */
+:param orientation: new orientation for the ramp
+
+.. seealso:: :py:func:`orientation`
+%End
+
     Orientation orientation() const;
+%Docstring
+Fetches the orientation for the color ramp
 
-    /** Sets the margin between the edge of the widget and the ramp
-     * @param margin margin around the ramp
-     * @see interiorMargin
-     */
+:return: orientation for the ramp
+
+.. seealso:: :py:func:`setOrientation`
+%End
+
     void setInteriorMargin( const int margin );
+%Docstring
+Sets the margin between the edge of the widget and the ramp
 
-    /** Fetches the margin between the edge of the widget and the ramp
-     * @returns margin around the ramp
-     * @see setInteriorMargin
-     */
+:param margin: margin around the ramp
+
+.. seealso:: :py:func:`interiorMargin`
+%End
+
     int interiorMargin() const;
+%Docstring
+Fetches the margin between the edge of the widget and the ramp
 
-    /** Sets whether the ramp should be drawn within a frame
-     * @param showFrame set to true to draw a frame around the ramp
-     * @see showFrame
-     */
+:return: margin around the ramp
+
+.. seealso:: :py:func:`setInteriorMargin`
+%End
+
     void setShowFrame( const bool showFrame );
+%Docstring
+Sets whether the ramp should be drawn within a frame
 
-    /** Fetches whether the ramp is drawn within a frame
-     * @returns true if a frame is drawn around the ramp
-     * @see setShowFrame
-     */
+:param showFrame: set to true to draw a frame around the ramp
+
+.. seealso:: :py:func:`showFrame`
+%End
+
     bool showFrame() const;
+%Docstring
+Fetches whether the ramp is drawn within a frame
 
-    /** Sets the size for drawing the triangular markers on the ramp
-     * @param markerSize marker size in pixels
-     */
+:return: true if a frame is drawn around the ramp
+
+.. seealso:: :py:func:`setShowFrame`
+%End
+
     void setMarkerSize( const int markerSize );
+%Docstring
+Sets the size for drawing the triangular markers on the ramp
+
+:param markerSize: marker size in pixels
+%End
 
   signals:
 
-    /** Emitted when the widget's color component value changes
-     * @param value new value of color component
-     */
     void valueChanged( const int value );
+%Docstring
+Emitted when the widget's color component value changes
+
+:param value: new value of color component
+%End
 
   protected:
 
     virtual void mouseMoveEvent( QMouseEvent *event );
+
+    virtual void wheelEvent( QWheelEvent *event );
+
     virtual void mousePressEvent( QMouseEvent *event );
-    virtual void keyPressEvent( QKeyEvent * event );
+
+    virtual void keyPressEvent( QKeyEvent *event );
+
+
 };
 
 
-/** \ingroup gui
- * \class QgsColorSliderWidget
- * A composite horizontal color ramp widget and associated spinbox for manual value entry.
- * \note Added in version 2.5
- */
 
 class QgsColorSliderWidget : QgsColorWidget
 {
-%TypeHeaderCode
-#include <qgscolorwidgets.h>
+%Docstring
+A composite horizontal color ramp widget and associated spinbox for manual value entry.
+
+.. versionadded:: 2.5
 %End
 
+%TypeHeaderCode
+#include "qgscolorwidgets.h"
+%End
   public:
 
-    /** Construct a new color slider widget.
-     * @param parent parent QWidget for the widget
-     * @param component color component which is controlled by the slider
-     */
-    QgsColorSliderWidget( QWidget* parent /TransferThis/ = 0, const ColorComponent component = QgsColorWidget::Red );
+    QgsColorSliderWidget( QWidget *parent /TransferThis/ = 0, const ColorComponent component = QgsColorWidget::Red );
+%Docstring
+Construct a new color slider widget.
 
-    virtual ~QgsColorSliderWidget();
+:param parent: parent QWidget for the widget
+:param component: color component which is controlled by the slider
+%End
 
     virtual void setComponent( const ColorComponent component );
+
     virtual void setComponentValue( const int value );
+
     virtual void setColor( const QColor &color, const bool emitSignals = false );
+
 
 };
 
 
-/** \ingroup gui
- * \class QgsColorTextWidget
- * A line edit widget which displays colors as text and accepts string representations
- * of colors.
- * \note Added in version 2.5
- */
 
 class QgsColorTextWidget : QgsColorWidget
 {
-%TypeHeaderCode
-#include <qgscolorwidgets.h>
+%Docstring
+A line edit widget which displays colors as text and accepts string representations
+of colors.
+
+.. versionadded:: 2.5
 %End
 
+%TypeHeaderCode
+#include "qgscolorwidgets.h"
+%End
   public:
 
-    /** Construct a new color line edit widget.
-     * @param parent parent QWidget for the widget
-     */
-    QgsColorTextWidget( QWidget* parent /TransferThis/ = 0 );
+    QgsColorTextWidget( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Construct a new color line edit widget.
 
-    virtual ~QgsColorTextWidget();
+:param parent: parent QWidget for the widget
+%End
 
     virtual void setColor( const QColor &color, const bool emitSignals = false );
 
+
   protected:
-    void resizeEvent( QResizeEvent * event );
+    virtual void resizeEvent( QResizeEvent *event );
+
 
 };
 
 
-/** \ingroup gui
- * \class QgsColorPreviewWidget
- * A preview box which displays one or two colors as swatches.
- * \note Added in version 2.5
- */
 
 class QgsColorPreviewWidget : QgsColorWidget
 {
-%TypeHeaderCode
-#include <qgscolorwidgets.h>
+%Docstring
+A preview box which displays one or two colors as swatches.
+
+.. versionadded:: 2.5
 %End
 
+%TypeHeaderCode
+#include "qgscolorwidgets.h"
+%End
   public:
 
-    /** Construct a new color preview widget.
-     * @param parent parent QWidget for the widget
-     */
-    QgsColorPreviewWidget( QWidget* parent /TransferThis/ = 0 );
+    QgsColorPreviewWidget( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Construct a new color preview widget.
 
-    virtual ~QgsColorPreviewWidget();
+:param parent: parent QWidget for the widget
+%End
+
+    virtual void paintEvent( QPaintEvent *event );
 
     virtual QSize sizeHint() const;
-    void paintEvent( QPaintEvent* event );
 
-    /** Returns the secondary color for the widget
-     * @returns secondary widget color, or an invalid color if the widget
-     * has no secondary color
-     * @see color
-     * @see setColor2
-     */
+
     QColor color2() const;
+%Docstring
+Returns the secondary color for the widget
+
+:return: secondary widget color, or an invalid color if the widget
+has no secondary color
+
+.. seealso:: :py:func:`color`
+
+.. seealso:: :py:func:`setColor2`
+%End
 
   public slots:
 
-    /** Sets the second color for the widget
-     * @param color secondary widget color. Set to an invalid color to prevent
-     * drawing of a secondary color
-     * @see setColor
-     * @see color2
-     */
-    virtual void setColor2( const QColor& color );
+    virtual void setColor2( const QColor &color );
+%Docstring
+Sets the second color for the widget
+
+:param color: secondary widget color. Set to an invalid color to prevent
+drawing of a secondary color
+
+.. seealso:: :py:func:`setColor`
+
+.. seealso:: :py:func:`color2`
+%End
 
   protected:
 
-    //reimplemented to allow dragging colors
-    void mousePressEvent( QMouseEvent* e );
+    virtual void mousePressEvent( QMouseEvent *e );
 
-    //reimplemented to click colors
-    void mouseReleaseEvent( QMouseEvent* e );
 
-    //reimplemented to allow dragging colors
-    void mouseMoveEvent( QMouseEvent *e );
+    virtual void mouseReleaseEvent( QMouseEvent *e );
+
+
+    virtual void mouseMoveEvent( QMouseEvent *e );
+
 
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgscolorwidgets.h                                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -1,39 +1,108 @@
-class QgsFeatureStore
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsfeaturestore.h                                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+class QgsFeatureStore : QgsFeatureSink
 {
+%Docstring
+A container for features with the same fields and crs.
+%End
+
 %TypeHeaderCode
-#include <qgsfeaturestore.h>
+#include "qgsfeaturestore.h"
 %End
   public:
-    //! Constructor
     QgsFeatureStore();
+%Docstring
+Constructor
+%End
 
-    //! Constructor
-    QgsFeatureStore( const QgsFields& fields, const QgsCoordinateReferenceSystem& crs );
+    QgsFeatureStore( const QgsFields &fields, const QgsCoordinateReferenceSystem &crs );
+%Docstring
+Constructor
+%End
 
-    /** Get fields list */
-    QgsFields& fields();
+    QgsFields fields() const;
+%Docstring
+Returns the store's field list.
 
-    /** Set fields. Resets feature's fields to pointer to new internal fields. */
-    void setFields( const QgsFields & fields );
+.. seealso:: :py:func:`setFields`
+%End
 
-    /** Get crs */
+    void setFields( const QgsFields &fields );
+%Docstring
+Sets the store's ``fields``. Every contained feature's fields will be reset to match ``fields``.
+
+.. seealso:: :py:func:`fields`
+%End
+
     QgsCoordinateReferenceSystem crs() const;
+%Docstring
+Returns the store's coordinate reference system.
 
-    /** Set crs */
-    void setCrs( const QgsCoordinateReferenceSystem& crs );
+.. seealso:: :py:func:`setCrs`
+%End
 
-    /** Add feature. Feature's fields will be set to pointer to the store fields.
-     * @param feature
-     * @note added in 2.1
-     */
-    void addFeature( const QgsFeature& feature );
+    void setCrs( const QgsCoordinateReferenceSystem &crs );
+%Docstring
+Sets the store's ``crs``.
 
-    /** Get features list reference */
-    QgsFeatureList& features();
+.. seealso:: :py:func:`crs`
+%End
 
-    /** Set map of optional parameters */
-    void setParams( const QMap<QString, QVariant> &theParams );
+    virtual bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = 0 );
 
-    /** Get map of optional parameters */
+    virtual bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = 0 );
+
+
+    int count() const;
+%Docstring
+Returns the number of features contained in the store.
+%End
+
+
+    int __len__() const;
+%Docstring
+Returns the number of features contained in the store.
+%End
+%MethodCode
+    sipRes = sipCpp->count();
+%End
+
+    QgsFeatureList features() const;
+%Docstring
+Returns the list of features contained in the store.
+%End
+
+    void setParams( const QMap<QString, QVariant> &parameters );
+%Docstring
+Sets a map of optional ``parameters`` for the store.
+
+.. seealso:: :py:func:`params`
+%End
+
     QMap<QString, QVariant> params() const;
+%Docstring
+Returns the map of optional parameters.
+
+.. seealso:: :py:func:`setParams`
+%End
+
 };
+
+typedef QList<QgsFeatureStore> QgsFeatureStoreList;
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsfeaturestore.h                                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

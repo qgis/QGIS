@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Handle bad layers</string>
+   <string>Handle Bad Layers</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>

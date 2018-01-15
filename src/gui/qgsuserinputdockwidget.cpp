@@ -19,27 +19,22 @@
 #include <QBoxLayout>
 
 QgsUserInputDockWidget::QgsUserInputDockWidget( QWidget *parent )
-    : QDockWidget( tr( "User Input Panel" ), parent )
-    , mLayoutHorizontal( true )
+  : QgsDockWidget( tr( "User Input Panel" ), parent )
 {
-  QWidget* w = new QWidget( nullptr );
+  QWidget *w = new QWidget( nullptr );
   mLayout = new QBoxLayout( QBoxLayout::LeftToRight );
   mLayout->setAlignment( Qt::AlignLeft | Qt::AlignTop );
   w->setLayout( mLayout );
   setWidget( w );
 
-  connect( this, SIGNAL( dockLocationChanged( Qt::DockWidgetArea ) ), this, SLOT( areaChanged( Qt::DockWidgetArea ) ) );
-  connect( this, SIGNAL( topLevelChanged( bool ) ), this, SLOT( floatingChanged( bool ) ) );
+  connect( this, &QDockWidget::dockLocationChanged, this, &QgsUserInputDockWidget::areaChanged );
+  connect( this, &QDockWidget::topLevelChanged, this, &QgsUserInputDockWidget::floatingChanged );
   hide();
-}
-
-QgsUserInputDockWidget::~QgsUserInputDockWidget()
-{
 }
 
 void QgsUserInputDockWidget::addUserInputWidget( QWidget *widget )
 {
-  QFrame* line = nullptr;
+  QFrame *line = nullptr;
   if ( mWidgetList.count() > 0 )
   {
     line = new QFrame( this );
@@ -49,7 +44,7 @@ void QgsUserInputDockWidget::addUserInputWidget( QWidget *widget )
   }
   mLayout->addWidget( widget );
 
-  connect( widget, SIGNAL( destroyed( QObject* ) ), this, SLOT( widgetDestroyed( QObject* ) ) );
+  connect( widget, &QObject::destroyed, this, &QgsUserInputDockWidget::widgetDestroyed );
 
   mWidgetList.insert( widget, line );
 
@@ -61,16 +56,15 @@ void QgsUserInputDockWidget::widgetDestroyed( QObject *obj )
 {
   if ( obj->isWidgetType() )
   {
-    QWidget* w = qobject_cast<QWidget*>( obj );
-    QMap<QWidget*, QFrame*>::iterator i = mWidgetList.find( w );
+    QWidget *w = qobject_cast<QWidget *>( obj );
+    QMap<QWidget *, QFrame *>::iterator i = mWidgetList.find( w );
     while ( i != mWidgetList.end() )
     {
       if ( i.value() )
       {
         i.value()->deleteLater();
       }
-      mWidgetList.remove( i.key() );
-      ++i;
+      i = mWidgetList.erase( i );
     }
   }
 }
@@ -103,7 +97,7 @@ void QgsUserInputDockWidget::updateLayoutDirection()
 {
   mLayout->setDirection( mLayoutHorizontal ? QBoxLayout::LeftToRight : QBoxLayout::TopToBottom );
 
-  QMap<QWidget*, QFrame*>::const_iterator i = mWidgetList.constBegin();
+  QMap<QWidget *, QFrame *>::const_iterator i = mWidgetList.constBegin();
   while ( i != mWidgetList.constEnd() )
   {
     if ( i.value() )
@@ -116,7 +110,7 @@ void QgsUserInputDockWidget::updateLayoutDirection()
   adjustSize();
 }
 
-void QgsUserInputDockWidget::paintEvent( QPaintEvent * event )
+void QgsUserInputDockWidget::paintEvent( QPaintEvent *event )
 {
   if ( mWidgetList.count() == 0 )
   {
@@ -124,6 +118,6 @@ void QgsUserInputDockWidget::paintEvent( QPaintEvent * event )
   }
   else
   {
-    QDockWidget::paintEvent( event );
+    QgsDockWidget::paintEvent( event );
   }
 }

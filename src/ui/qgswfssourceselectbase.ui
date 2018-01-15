@@ -56,6 +56,9 @@
           <property name="enabled">
            <bool>false</bool>
           </property>
+          <property name="toolTip">
+           <string>Connect to selected service</string>
+          </property>
           <property name="text">
            <string>C&amp;onnect</string>
           </property>
@@ -63,6 +66,9 @@
         </item>
         <item>
          <widget class="QPushButton" name="btnNew">
+          <property name="toolTip">
+           <string>Create a new service connection</string>
+          </property>
           <property name="text">
            <string>&amp;New</string>
           </property>
@@ -72,6 +78,9 @@
          <widget class="QPushButton" name="btnEdit">
           <property name="enabled">
            <bool>false</bool>
+          </property>
+          <property name="toolTip">
+           <string>Edit selected service connection</string>
           </property>
           <property name="text">
            <string>Edit</string>
@@ -83,8 +92,11 @@
           <property name="enabled">
            <bool>false</bool>
           </property>
+          <property name="toolTip">
+           <string>Remove connection to selected service</string>
+          </property>
           <property name="text">
-           <string>Delete</string>
+           <string>Remove</string>
           </property>
          </widget>
         </item>
@@ -137,7 +149,7 @@
         <bool>true</bool>
        </property>
        <property name="text">
-        <string>Filter:</string>
+        <string>Filter</string>
        </property>
        <property name="buddy">
         <cstring>lineFilter</cstring>
@@ -165,7 +177,7 @@
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="standardButtons">
-      <set>QDialogButtonBox::Close|QDialogButtonBox::Help</set>
+      <set>QDialogButtonBox::Help</set>
      </property>
     </widget>
    </item>

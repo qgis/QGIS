@@ -1,33 +1,112 @@
-/***************************************************************************
-    qgsrelationwidgetwrapper.h
-     --------------------------------------
-    Date                 : 14.5.2014
-    Copyright            : (C) 2014 Matthias Kuhn
-    Email                : matthias at opengis dot ch
- ***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/editorwidgets/qgsrelationwidgetwrapper.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
 
 
 class QgsRelationWidgetWrapper : QgsWidgetWrapper
 {
-%TypeHeaderCode
-#include <qgsrelationwidgetwrapper.h>
+%Docstring
+
+.. note::
+
+   not available in Python bindings
 %End
 
+%TypeHeaderCode
+#include "qgsrelationwidgetwrapper.h"
+%End
   public:
-    explicit QgsRelationWidgetWrapper( QgsVectorLayer* vl, const QgsRelation& relation, QWidget* editor = 0, QWidget* parent /TransferThis/ = 0 );
+
+    explicit QgsRelationWidgetWrapper( QgsVectorLayer *vl, const QgsRelation &relation, QWidget *editor = 0, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsRelationWidgetWrapper
+%End
+
+    bool showLabel() const;
+%Docstring
+Defines if a title lable should be shown for this widget.
+Only has an effect after widget() has been called at least once.
+
+.. versionadded:: 2.18
+%End
+
+    void setShowLabel( bool showLabel );
+%Docstring
+Defines if a title lable should be shown for this widget.
+Only has an effect after widget() has been called at least once.
+
+.. versionadded:: 2.18
+%End
+
+    bool showLinkButton() const;
+%Docstring
+Determines if the "link feature" button should be shown
+
+.. versionadded:: 2.18
+%End
+
+    void setShowLinkButton( bool showLinkButton );
+%Docstring
+Determines if the "link feature" button should be shown
+
+.. versionadded:: 2.18
+%End
+
+    bool showUnlinkButton() const;
+%Docstring
+Determines if the "unlink feature" button should be shown
+
+.. versionadded:: 2.18
+%End
+
+    void setShowUnlinkButton( bool showUnlinkButton );
+%Docstring
+Determines if the "unlink feature" button should be shown
+
+.. versionadded:: 2.18
+%End
+
+    QgsRelation relation() const;
+%Docstring
+The relation for which this wrapper is created.
+
+.. versionadded:: 3.0
+%End
 
   protected:
-    QWidget* createWidget( QWidget* parent );
-    void initWidget( QWidget* editor );
-    bool valid() const;
+    virtual QWidget *createWidget( QWidget *parent );
+
+    virtual void initWidget( QWidget *editor );
+
+    virtual bool valid() const;
+
 
   public slots:
-    void setFeature( const QgsFeature& feature );
+    virtual void setFeature( const QgsFeature &feature );
+
+
+    void setVisible( bool visible );
+%Docstring
+Sets the visibility of the wrapper's widget.
+
+:param visible: set to true to show widget, false to hide widget
+
+.. versionadded:: 2.16
+%End
+
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/editorwidgets/qgsrelationwidgetwrapper.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

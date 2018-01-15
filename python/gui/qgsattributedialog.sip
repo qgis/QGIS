@@ -1,115 +1,109 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsattributedialog.h                                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
 class QgsAttributeDialog : QDialog
 {
+
 %TypeHeaderCode
-#include <qgsattributedialog.h>
+#include "qgsattributedialog.h"
+%End
+  public:
+
+    QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeature, bool featureOwner, QWidget *parent /TransferThis/ = 0, bool showDialogButtons = true, const QgsAttributeEditorContext &context = QgsAttributeEditorContext() );
+%Docstring
+Create an attribute dialog for a given layer and feature
+
+:param vl:                The layer for which the dialog will be generated
+:param thepFeature:       A feature for which the dialog will be generated
+:param featureOwner:      Set to true, if the dialog should take ownership of the feature
+:param parent:            A parent widget for the dialog
+:param showDialogButtons: True: Show the dialog buttons accept/cancel
+:param context:           The context in which this dialog is created
 %End
 
-  public:
-    /**
-     * Create an attribute dialog for a given layer and feature
-     *
-     * @param vl                The layer for which the dialog will be generated
-     * @param thepFeature       A feature for which the dialog will be generated
-     * @param featureOwner      Set to true, if the dialog should take ownership of the feature
-     * @param myDa              A QgsDistanceArea which will be used for expressions
-     * @param parent            A parent widget for the dialog
-     * @param showDialogButtons True: Show the dialog buttons accept/cancel
-     *
-     * @deprecated
-     */
-    QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeature, bool featureOwner, const QgsDistanceArea& myDa, QWidget* parent /TransferThis/ = 0, bool showDialogButtons = true ) /Deprecated/;
+    ~QgsAttributeDialog();
 
-    /**
-     * Create an attribute dialog for a given layer and feature
-     *
-     * @param vl                The layer for which the dialog will be generated
-     * @param thepFeature       A feature for which the dialog will be generated
-     * @param featureOwner      Set to true, if the dialog should take ownership of the feature
-     * @param parent            A parent widget for the dialog
-     * @param showDialogButtons True: Show the dialog buttons accept/cancel
-     * @param context           The context in which this dialog is created
-     *
-     */
-    QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeature, bool featureOwner, QWidget* parent /TransferThis/ = 0, bool showDialogButtons = true, const QgsAttributeEditorContext& context = QgsAttributeEditorContext() );
-
-    /** Saves the size and position for the next time
-     *  this dialog box will be used.
-     */
     void saveGeometry();
+%Docstring
+Saves the size and position for the next time
+this dialog box will be used.
+%End
 
-    /** Restores the size and position from the last time
-     *  this dialog box was used.
-     */
     void restoreGeometry();
+%Docstring
+Restores the size and position from the last time
+this dialog box was used.
+%End
 
-    /**
-     * @brief setHighlight
-     * @param h The highlight. Ownership is taken.
-     */
     void setHighlight( QgsHighlight *h );
+%Docstring
+ setHighlight
 
-    /**
-     * @brief Returns reference to self. Only here for legacy compliance
-     *
-     * @return this
-     *
-     * @deprecated Do not use. Just use this object itself. Or QgsAttributeForm if you want to embed.
-     */
-    QDialog *dialog() /Deprecated/;
+:param h: The highlight. Ownership is taken.
+%End
 
     QgsAttributeForm *attributeForm();
 
     const QgsFeature *feature();
 
-    /**
-     * Is this dialog editable?
-     *
-     * @return returns true, if this dialog was created in an editable manner.
-     */
     bool editable();
+%Docstring
+Is this dialog editable?
 
-    /**
-     * Toggles the form mode between edit feature and add feature.
-     * If set to true, the dialog will be editable even with an invalid feature.
-     * If set to true, the dialog will add a new feature when the form is accepted.
-     *
-     * @param isAddDialog If set to true, turn this dialog into an add feature dialog.
-     * @deprecated use setMode() instead
-     */
-    void setIsAddDialog( bool isAddDialog ) /Deprecated/;
+:return: returns true, if this dialog was created in an editable manner.
+%End
 
-    /**
-     * Toggles the form mode.
-     * @param mode form mode. Eg if set to QgsAttributeForm::AddFeatureMode, the dialog will be editable even with an invalid feature and
-     * will add a new feature when the form is accepted.
-     */
     void setMode( QgsAttributeForm::Mode mode );
+%Docstring
+Toggles the form mode.
 
-    /**
-     * Sets the edit command message (Undo) that will be used when the dialog is accepted
-     *
-     * @param message The message
-     */
-    void setEditCommandMessage( const QString& message );
+:param mode: form mode. For example, if set to QgsAttributeForm.AddFeatureMode, the dialog will be editable even with an invalid feature and
+will add a new feature when the form is accepted.
+%End
 
-    /**
-     * Intercept window activate/deactive events to show/hide the highlighted feature.
-     *
-     * @param e The event
-     *
-     * @return The same as the parent QDialog
-     */
+    void setEditCommandMessage( const QString &message );
+%Docstring
+Sets the edit command message (Undo) that will be used when the dialog is accepted
+
+:param message: The message
+%End
+
     virtual bool event( QEvent *e );
 
+%Docstring
+Intercept window activate/deactive events to show/hide the highlighted feature.
+
+:param e: The event
+
+:return: The same as the parent QDialog
+%End
+
   public slots:
-    void accept();
+    virtual void accept();
 
-    //! Show the dialog non-blocking. Reparents this dialog to be a child of the dialog form and is deleted when
-    //! closed.
+    virtual void reject();
+
+
     void show();
+%Docstring
+Show the dialog non-blocking. Reparents this dialog to be a child of the dialog form
+%End
 
-    int exec();
-
-  protected:
-    bool eventFilter( QObject *obj, QEvent *e );
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsattributedialog.h                                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -18,6 +18,9 @@
 #ifndef QGSSERVERPLUGINS_H
 #define QGSSERVERPLUGINS_H
 
+#define SIP_NO_FILE
+
+
 #include "qgsrequesthandler.h"
 #include "qgsserverinterface.h"
 
@@ -25,22 +28,23 @@
 class QgsPythonUtils;
 
 /**
- * @brief Init Python server plugins and store a list of server plugin names
+ * \brief Init Python server plugins and store a list of server plugin names
  */
 class SERVER_EXPORT QgsServerPlugins
 {
   public:
-    explicit QgsServerPlugins();
+    explicit QgsServerPlugins() = default;
+
     /**
-     * Initialise the python plugins
-     * @param interface QgsServerInterface
-     * @return bool true on success
+     * Initialize the Python plugins
+     * \param interface QgsServerInterface
+     * \returns bool true on success
      */
-    static bool initPlugins( QgsServerInterface* interface );
+    static bool initPlugins( QgsServerInterface *interface );
     //! List of available server plugin names
-    static QStringList& serverPlugins();
+    static QStringList &serverPlugins();
     //! Pointer to QgsPythonUtils
-    static QgsPythonUtils* sPythonUtils;
+    static QgsPythonUtils *sPythonUtils;
 };
 
 #endif // QGSSERVERPLUGINS_H

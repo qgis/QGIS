@@ -1,72 +1,172 @@
-/**
- * This class allows to include a set of layers in a database-side transaction,
- * provided the layer data providers support transactions and are compatible
- * with each other.
- *
- * Only layers which are not in edit mode can be included in a transaction,
- * and all layers need to be in read-only mode for a transaction to be committed
- * or rolled back.
- *
- * Layers cannot only be included in one transaction at a time.
- *
- * When editing layers which are part of a transaction group, all changes are
- * sent directly to the data provider (bypassing the undo/redo stack), and the
- * changes can either be committed or rolled back on the database side via the
- * QgsTransaction::commit and QgsTransaction::rollback methods.
- *
- * As long as the transaction is active, the state of all layer features reflects
- * the current state in the transaction.
- *
- * Edits on features can get rejected if another conflicting transaction is active.
- */
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgstransaction.h                                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
 class QgsTransaction : QObject /Abstract/
 {
+%Docstring
+This class allows including a set of layers in a database-side transaction,
+provided the layer data providers support transactions and are compatible
+with each other.
+
+Only layers which are not in edit mode can be included in a transaction,
+and all layers need to be in read-only mode for a transaction to be committed
+or rolled back.
+
+Layers can only be included in one transaction at a time.
+
+When editing layers which are part of a transaction group, all changes are
+sent directly to the data provider (bypassing the undo/redo stack), and the
+changes can either be committed or rolled back on the database side via the
+QgsTransaction.commit and QgsTransaction.rollback methods.
+
+As long as the transaction is active, the state of all layer features reflects
+the current state in the transaction.
+
+Edits on features can get rejected if another conflicting transaction is active.
+%End
+
 %TypeHeaderCode
-#include <qgstransaction.h>
+#include "qgstransaction.h"
 %End
   public:
-    /** Creates a transaction for the specified connection string and provider */
-    static QgsTransaction* create( const QString& connString, const QString& providerKey ) /Factory/;
 
-    /** Creates a transaction which includes the specified layers. Connection string
-     *  and data provider are taken from the first layer */
-    static QgsTransaction* create( const QStringList& layerIds ) /Factory/;
+    static QgsTransaction *create( const QString &connString, const QString &providerKey ) /Factory/;
+%Docstring
+Create a transaction for the specified connection string ``connString``
+and provider with ``providerKey``.
+%End
 
-    virtual ~QgsTransaction();
+    static QgsTransaction *create( const QSet<QgsVectorLayer *> &layers ) /Factory/;
+%Docstring
+Create a transaction which includes the ``layers``.
+All layers are expected to have the same connection string and data
+provider.
+%End
 
-    /** Add layer to the transaction. The layer must not be in edit mode.*/
-    bool addLayer( const QString& layerId );
+    ~QgsTransaction();
 
-    /** Add layer to the transaction. The layer must not be in edit mode.*/
-    bool addLayer( QgsVectorLayer* layer );
+    bool addLayer( QgsVectorLayer *layer );
+%Docstring
+Add the ``layer`` to the transaction. The layer must not be
+in edit mode and the connection string must match.
+%End
 
-    /** Begin transaction
-     *  The statement timeout, in seconds, specifies how long an sql statement
-     *  is allowed to block QGIS before it is aborted. Statements can block,
-     *  depending on the provider, if multiple transactions are active and a
-     *  statement would produce a conflicting state. In these cases, the
-     *  statements block until the conflicting transaction is committed or
-     *  rolled back.
-     *  Some providers might not honour the statement timeout. */
-    bool begin( QString& errorMsg /Out/, int statementTimeout = 20 );
+    bool begin( QString &errorMsg /Out/, int statementTimeout = 20 );
+%Docstring
+Begin transaction
+The ``statementTimeout`` (in seconds) specifies how long an sql statement
+is allowed to block QGIS before it is aborted.
+Statements can block, if multiple transactions are active and a
+statement would produce a conflicting state. In these cases, the
+statements block until the conflicting transaction is committed or
+rolled back.
+Some providers might not honour the statement timeout.
+%End
 
-    /** Commit transaction. All layers need to be in read-only mode. */
-    bool commit( QString& errorMsg /Out/ );
+    bool commit( QString &errorMsg /Out/ );
+%Docstring
+Commit transaction.
+%End
 
-    /** Roll back transaction. All layers need to be in read-only mode. */
-    bool rollback( QString& errorMsg /Out/ );
+    bool rollback( QString &errorMsg /Out/ );
+%Docstring
+Roll back transaction.
+%End
 
-    /** Executes sql */
-    virtual bool executeSql( const QString& sql, QString& error /Out/ ) = 0;
+    virtual bool executeSql( const QString &sql, QString &error /Out/, bool isDirty = false, const QString &name = QString() ) = 0;
+%Docstring
+Execute the ``sql`` string.
 
-    /**
-     * Checks if a the provider of a give layer supports transactions.
-     */
-    static bool supportsTransaction( const QgsVectorLayer* layer );
+:param sql: The sql query to execute
+:param error: The error message
+:param isDirty: Flag to indicate if the underlying data will be modified
+:param name: Name of the transaction ( only used if `isDirty` is true)
+
+:return: true if everything is OK, false otherwise
+%End
+
+    static bool supportsTransaction( const QgsVectorLayer *layer );
+%Docstring
+Checks if the provider of a given ``layer`` supports transactions.
+%End
+
+    QString createSavepoint( QString &error /Out/ );
+%Docstring
+creates a save point
+returns empty string on error
+returns the last created savepoint if it's not dirty
+
+.. versionadded:: 3.0
+%End
+
+    QString createSavepoint( const QString &savePointId, QString &error /Out/ );
+%Docstring
+creates a save point
+returns empty string on error
+
+.. versionadded:: 3.0
+%End
+
+    bool rollbackToSavepoint( const QString &name, QString &error /Out/ );
+%Docstring
+rollback to save point, the save point is maintained and is "undertied"
+
+.. versionadded:: 3.0
+%End
+
+    void dirtyLastSavePoint();
+%Docstring
+dirty save point such that next call to createSavepoint will create a new one
+
+.. versionadded:: 3.0
+%End
+
+    QList< QString > savePoints() const;
+%Docstring
+returns savepoints
+
+.. versionadded:: 3.0
+%End
+
+    bool lastSavePointIsDirty() const;
+%Docstring
+returns the last created savepoint
+
+.. versionadded:: 3.0
+%End
 
   signals:
-    /**
-     * Emitted after a rollback
-     */
+
     void afterRollback();
+%Docstring
+Emitted after a rollback
+%End
+
+    void dirtied( const QString &sql, const QString &name );
+%Docstring
+Emitted if a sql query is executed and the underlying data is modified
+%End
+
+  protected:
+
+
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgstransaction.h                                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

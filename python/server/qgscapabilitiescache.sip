@@ -1,36 +1,58 @@
-/***************************************************************************
-                              qgscapabilitiescache.sip
-                              -------------------
-  begin                : 2014-09-10
-  copyright            : (C) 2014 by Alessandro Pasotti
-  email                : a dot pasotti at itopen dot it
- ***************************************************************************/
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/server/qgscapabilitiescache.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
 
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
 
-/**
-* \class QgsCapabilitiesCache
-* \brief A cache for capabilities xml documents (by configuration file path)
-*/
-class QgsCapabilitiesCache: QObject
+
+
+class QgsCapabilitiesCache : QObject
 {
+%Docstring
+A cache for capabilities xml documents (by configuration file path)
+%End
+
 %TypeHeaderCode
 #include "qgscapabilitiescache.h"
 %End
   public:
+    QgsCapabilitiesCache();
 
-    /** Returns cached capabilities document (or 0 if document for configuration file not in cache)*/
-    const QDomDocument* searchCapabilitiesDocument( const QString& configFilePath, const QString& version );
-    /** Inserts new capabilities document (creates a copy of the document, does not take ownership)*/
-    void insertCapabilitiesDocument( const QString& configFilePath, const QString& version, const QDomDocument* doc );
+    const QDomDocument *searchCapabilitiesDocument( const QString &configFilePath, const QString &key );
+%Docstring
+Returns cached capabilities document (or 0 if document for configuration file not in cache)
+
+:param configFilePath: the progect file path
+:param key: key used to separate different version in different cache
+%End
+
+    void insertCapabilitiesDocument( const QString &configFilePath, const QString &key, const QDomDocument *doc );
+%Docstring
+Inserts new capabilities document (creates a copy of the document, does not take ownership)
+
+:param configFilePath: the project file path
+:param key: key used to separate different version in different cache
+:param doc: the DOM document
+%End
+
+    void removeCapabilitiesDocument( const QString &path );
+%Docstring
+Remove capabilities document
+
+:param path: the project file path
+
+.. versionadded:: 2.16
+%End
 
 };
 
-
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/server/qgscapabilitiescache.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

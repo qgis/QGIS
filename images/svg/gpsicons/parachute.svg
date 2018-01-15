@@ -1,19 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg version="1.1"
-	 id="svg602" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://web.resource.org/cc/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns:sodipodi="http://inkscape.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" sodipodi:docbase="/usr/share/qgis/svg/Garmin_Symbols" sodipodi:version="0.32" sodipodi:docname="parachute.svg" inkscape:version="0.43"
-	 xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="579.997px"
-	 height="579.997px" viewBox="0 0 579.997 579.997" enable-background="new 0 0 579.997 579.997" xml:space="preserve">
-<path id="path846" sodipodi:nodetypes="ccsc" opacity="0.25" fill="param(fill) #000" fill-opacity="param(fill-opacity)" d="M486.968,249.016
-	c0.256,0.463-394.516,0.303-393.939,0c0-106.551,88.186-192.93,196.97-192.93C398.78,56.086,486.968,142.465,486.968,249.016z"/>
-<path fill="param(fill) #000" fill-opacity="param(fill-opacity)" stroke="param(outline) #FFF" stroke-opacity="param(outline-opacity)" stroke-width="param(outline-width) 0" d="M502.655,259.913l-3.586-3.336c0.065-0.104,0.135-0.196,0.198-0.305
-	l1.98-3.358v-3.897c0-114.255-94.766-207.208-211.249-207.208c-116.482,0-211.249,92.954-211.249,207.208v1.736l0.415,1.685
-	c0.262,1.062,0.778,2.588,1.738,4.162l-3.562,3.313l146.401,157.35v121.314h136.695V412.766L502.655,259.913z M218.33,263.55
-	l37.389,144.136h-2.63l0.97-0.902l-133.38-143.354c12.123,0.027,27.656,0.053,45.471,0.074
-	C181.954,263.522,199.654,263.538,218.33,263.55z M286.022,407.686l-37.385-144.118c23.515,0.012,47.758,0.018,71.124,0.018
-	c4.977,0,9.872,0,14.69-0.001l-37.381,144.102H286.022z M436.172,263.518c8.62-0.013,16.385-0.027,23.104-0.045L328.253,404.297
-	l36.504-140.72C392.628,263.567,416.861,263.547,436.172,263.518z M289.999,70.366c95.873,0,174.733,72.583,182.124,164.511
-	c-24.382,0.095-78.661,0.15-152.361,0.15c-90.996,0-178.356-0.083-211.884-0.189C115.294,142.935,194.144,70.366,289.999,70.366z
-	 M331.106,509.245h-78.031v-72.227h78.031V509.245z"/>
+<svg enable-background="new 0 0 579.997 579.997" height="579.997" viewBox="0 0 579.997 579.997" width="579.997" xmlns="http://www.w3.org/2000/svg">
+<path d="m486.968 249.016c.256.463-394.516.303-393.939 0 0-106.551 88.186-192.93 196.97-192.93 108.781 0 196.969 86.379 196.969 192.93z" fill="param(fill) #000" opacity=".25"/>
+<path d="m502.655 259.913l-3.586-3.336c.065-.104.135-.196.198-.305l1.98-3.358v-3.897c0-114.255-94.766-207.208-211.249-207.208-116.482 0-211.249 92.954-211.249 207.208v1.736l.415 1.685c.262 1.062.778 2.588 1.738 4.162l-3.562 3.313 146.401 157.35v121.314h136.695v-125.811zm-284.325 3.637l37.389 144.136h-2.63l.97-.902-133.38-143.354c12.123.027 27.656.053 45.471.074 15.804.018 33.504.034 52.18.046zm67.692 144.136l-37.385-144.118c23.515.012 47.758.018 71.124.018 4.977 0 9.872 0 14.69-.001l-37.381 144.102h-11.048zm150.15-144.168c8.62-.013 16.385-.027 23.104-.045l-131.023 140.824 36.504-140.72c27.871-.01 52.104-.03 71.415-.059zm-146.173-193.152c95.873 0 174.733 72.583 182.124 164.511-24.382.095-78.661.15-152.361.15-90.996 0-178.356-.083-211.884-.189 7.416-91.903 86.266-164.472 182.121-164.472zm41.107 438.879h-78.031v-72.227h78.031z" fill="param(fill) #000" fill-opacity="255" stroke="param(outline) #FFF" stroke-opacity="255" stroke-width="param(outline-width) 0"/>
 </svg>

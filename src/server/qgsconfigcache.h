@@ -24,60 +24,46 @@
 #include <QFileSystemWatcher>
 #include <QMap>
 #include <QObject>
+#include <QDomDocument>
 
-class QgsServerProjectParser;
-class QgsWCSProjectParser;
-class QgsWFSProjectParser;
-class QgsWMSConfigParser;
+#include "qgis_server.h"
+#include "qgis_sip.h"
+#include "qgsproject.h"
+
 class QgsAccessControl;
-
-class QDomDocument;
 
 class SERVER_EXPORT QgsConfigCache : public QObject
 {
     Q_OBJECT
   public:
-    static QgsConfigCache* instance();
-    ~QgsConfigCache();
+    static QgsConfigCache *instance();
 
-    QgsServerProjectParser* serverConfiguration( const QString& filePath );
-    QgsWCSProjectParser* wcsConfiguration(
-      const QString& filePath
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
-      , const QgsAccessControl* accessControl
-#endif
-    );
-    QgsWFSProjectParser* wfsConfiguration(
-      const QString& filePath
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
-      , const QgsAccessControl* accessControl
-#endif
-    );
-    QgsWMSConfigParser* wmsConfiguration(
-      const QString& filePath
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
-      , const QgsAccessControl* accessControl
-#endif
-      , const QMap<QString, QString>& parameterMap = ( QMap< QString, QString >() )
-    );
+    void removeEntry( const QString &path );
+
+    /**
+     * If the project is not cached yet, then the project is read thank to the
+     *  path. If the project is not available, then a nullptr is returned.
+     * \param path the filename of the QGIS project
+     * \returns the project or nullptr if an error happened
+     * \since QGIS 3.0
+     */
+    const QgsProject *project( const QString &path );
 
   private:
-    QgsConfigCache();
+    QgsConfigCache() SIP_FORCE;
 
-    /** Check for configuration file updates (remove entry from cache if file changes)*/
+    //! Check for configuration file updates (remove entry from cache if file changes)
     QFileSystemWatcher mFileSystemWatcher;
 
-    /** Returns xml document for project file / sld or 0 in case of errors*/
-    QDomDocument* xmlDocument( const QString& filePath );
+    //! Returns xml document for project file / sld or 0 in case of errors
+    QDomDocument *xmlDocument( const QString &filePath );
 
     QCache<QString, QDomDocument> mXmlDocumentCache;
-    QCache<QString, QgsWMSConfigParser> mWMSConfigCache;
-    QCache<QString, QgsWFSProjectParser> mWFSConfigCache;
-    QCache<QString, QgsWCSProjectParser> mWCSConfigCache;
+    QCache<QString, QgsProject> mProjectCache;
 
   private slots:
-    /** Removes changed entry from this cache*/
-    void removeChangedEntry( const QString& path );
+    //! Removes changed entry from this cache
+    void removeChangedEntry( const QString &path );
 };
 
 #endif // QGSCONFIGCACHE_H

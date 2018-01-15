@@ -1,26 +1,22 @@
-/***************************************************************************
-  qgsaction.h - QgsAction
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsaction.h                                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
 
- ---------------------
- begin                : 18.4.2016
- copyright            : (C) 2016 by Matthias Kuhn
- email                : matthias@opengis.ch
- ***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
 
-/** \ingroup core
- * Utility class that encapsulates an action based on vector attributes.
- */
+
+
 class QgsAction
 {
+%Docstring
+Utility class that encapsulates an action based on vector attributes.
+%End
+
 %TypeHeaderCode
-#include <qgsaction.h>
+#include "qgsaction.h"
 %End
   public:
     enum ActionType
@@ -33,66 +29,171 @@ class QgsAction
       OpenUrl,
     };
 
-    /**
-     * Create a new QgsAction
-     *
-     * @param type          The type of this action
-     * @param description   A human readable description string
-     * @param action        The action text. Its interpretation depends on the type
-     * @param capture       If this is set to true, the output will be captured when an action is run
-     */
-    QgsAction( ActionType type, const QString& description, const QString& action, bool capture );
+    QgsAction();
+%Docstring
+Default constructor
+%End
 
+    QgsAction( ActionType type, const QString &description, const QString &command, bool capture = false );
+%Docstring
+Create a new QgsAction
 
-    /**
-     * Create a new QgsAction
-     *
-     * @param type          The type of this action
-     * @param description   A human readable description string
-     * @param action        The action text. Its interpretation depends on the type
-     * @param icon          Path to an icon for this action
-     * @param capture       If this is set to true, the output will be captured when an action is run
-     * @param shortTitle    A short string used to label user interface elements like buttons
-     */
-    QgsAction( ActionType type, const QString& description, const QString& action, const QString& icon, bool capture, const QString& shortTitle = QString() );
+:param type:          The type of this action
+:param description:   A human readable description string
+:param command:       The action text. Its interpretation depends on the type
+:param capture:       If this is set to true, the output will be captured when an action is run
+%End
 
-    /**
-     * Create a new QgsAction
-     *
-     * @param type                 The type of this action
-     * @param description          A human readable description string
-     * @param action               The action text. Its interpretation depends on the type
-     * @param icon                 Path to an icon for this action
-     * @param capture              If this is set to true, the output will be captured when an action is run
-     * @param showInAttributeTable If this is false, the action will be hidden on the attribute table action widget
-     * @param shortTitle           A short string used to label user interface elements like buttons
-     */
-    QgsAction( ActionType type, const QString& description, const QString& action, const QString& icon, bool capture, bool showInAttributeTable, const QString& shortTitle = QString() );
+    QgsAction( ActionType type, const QString &description, const QString &action, const QString &icon, bool capture, const QString &shortTitle = QString(), const QSet<QString> &actionScopes = QSet<QString>(), const QString &notificationMessage = QString() );
+%Docstring
+Create a new QgsAction
 
-    //! The name of the action. This may be a longer description.
+:param type:                 The type of this action
+:param description:          A human readable description string
+:param action:               The action text. Its interpretation depends on the type
+:param icon:                 Path to an icon for this action
+:param capture:              If this is set to true, the output will be captured when an action is run
+:param shortTitle:           A short string used to label user interface elements like buttons
+:param actionScopes:         A set of scopes in which this action will be available
+:param notificationMessage:  A particular message which reception will trigger the action
+%End
+
     QString name() const;
+%Docstring
+The name of the action. This may be a longer description.
+%End
 
-    //! The short title is used to label user interface elements like buttons
     QString shortTitle() const;
+%Docstring
+The short title is used to label user interface elements like buttons
+%End
 
-    //! The path to the icon
+    QUuid id() const;
+%Docstring
+Returns a unique id for this action.
+
+.. versionadded:: 3.0
+%End
+
+    bool isValid() const;
+%Docstring
+Returns true if this action was a default constructed one.
+
+.. versionadded:: 3.0
+%End
+
     QString iconPath() const;
+%Docstring
+The path to the icon
+%End
 
-    //! The icon
     QIcon icon() const;
+%Docstring
+The icon
+%End
 
-    //! The action
-    QString action() const;
+    QString command() const;
+%Docstring
+Returns the command that is executed by this action.
+How the content is interpreted depends on the type() and
+the actionScope().
 
-    //! The action type
+.. versionadded:: 3.0
+%End
+
+    QString notificationMessage() const;
+%Docstring
+Returns the notification message that triggers the action
+
+.. versionadded:: 3.0
+%End
+
     ActionType type() const;
+%Docstring
+The action type
+%End
 
-    //! Whether to capture output for display when this action is run
     bool capture() const;
+%Docstring
+Whether to capture output for display when this action is run
+%End
 
-    //! Wheter this action should be shown on the attribute table
-    bool showInAttributeTable() const;
-
-    //! Whether the action is runable on the current platform
     bool runable() const;
+%Docstring
+Checks if the action is runable on the current platform
+%End
+
+    void run( QgsVectorLayer *layer, const QgsFeature &feature, const QgsExpressionContext &expressionContext ) const;
+%Docstring
+Run this action.
+
+.. versionadded:: 3.0
+%End
+
+    void run( const QgsExpressionContext &expressionContext ) const;
+%Docstring
+Run this action.
+
+.. versionadded:: 3.0
+%End
+
+    QSet<QString> actionScopes() const;
+%Docstring
+The action scopes define where an action will be available.
+Action scopes may offer additional variables like the clicked
+coordinate.
+
+.. seealso:: :py:class:`QgsActionScope`
+
+.. versionadded:: 3.0
+%End
+
+    void setActionScopes( const QSet<QString> &actionScopes );
+%Docstring
+The action scopes define where an action will be available.
+Action scopes may offer additional variables like the clicked
+coordinate.
+
+.. versionadded:: 3.0
+%End
+
+    void readXml( const QDomNode &actionNode );
+%Docstring
+Reads an XML definition from actionNode
+into this object.
+
+.. versionadded:: 3.0
+%End
+
+    void writeXml( QDomNode &actionsNode ) const;
+%Docstring
+Appends an XML definition for this action as a new
+child node to actionsNode.
+
+.. versionadded:: 3.0
+%End
+
+    void setExpressionContextScope( const QgsExpressionContextScope &scope );
+%Docstring
+Sets an expression context scope to use for running the action.
+
+.. versionadded:: 3.0
+%End
+
+    QgsExpressionContextScope expressionContextScope() const;
+%Docstring
+Returns an expression context scope used for running the action.
+
+.. versionadded:: 3.0
+%End
+
 };
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsaction.h                                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

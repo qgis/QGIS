@@ -1,24 +1,36 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/auth/qgsauthimportidentitydialog.h                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
 class QgsAuthImportIdentityDialog : QDialog
 {
-%TypeHeaderCode
-#include <qgsauthimportidentitydialog.h>
+%Docstring
+Widget for importing an identity certificate/key bundle into the authentication database
 %End
 
+%TypeHeaderCode
+#include "qgsauthimportidentitydialog.h"
+%End
   public:
-    /** Type of identity being imported */
     enum IdentityType
     {
-      CertIdentity = 0,
+      CertIdentity,
     };
 
-    /** Type of bundles supported */
     enum BundleTypes
     {
-      PkiPaths = 0,
-      PkiPkcs12 = 1,
+      PkiPaths,
+      PkiPkcs12,
     };
 
-    /** Type of certificate/bundle validity output */
     enum Validity
     {
       Valid,
@@ -26,23 +38,32 @@ class QgsAuthImportIdentityDialog : QDialog
       Unknown
     };
 
-    /**
-     * Construct a dialog for importing identities
-     * @param identitytype Type of the identity to import
-     * @param parent Parent widget
-     */
     explicit QgsAuthImportIdentityDialog( QgsAuthImportIdentityDialog::IdentityType identitytype,
                                           QWidget *parent /TransferThis/ = 0 );
-    ~QgsAuthImportIdentityDialog();
+%Docstring
+Construct a dialog for importing identities
 
-    /** Get identity type */
+:param identitytype: Type of the identity to import
+:param parent: Parent widget
+%End
+
     QgsAuthImportIdentityDialog::IdentityType identityType();
+%Docstring
+Get identity type
+%End
 
-    /** Get certificate/key bundle to be imported.
-     * @note not available in Python bindings
-     */
-    // const QPair<QSslCertificate, QSslKey> certBundleToImport();
 
-    /** Get certificate/key bundle to be imported as a PKI bundle object */
     const QgsPkiBundle pkiBundleToImport();
+%Docstring
+Get certificate/key bundle to be imported as a PKI bundle object
+%End
+
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/auth/qgsauthimportidentitydialog.h                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -8,7 +8,7 @@
         "Committer": "Yes",
         "First Commit Message": "Initial revision",
         "First Commit Date": "06-07-2002",
-        "GIT Nickname": "gsherman"
+        "GIT Nickname": "g-sherman"
       },
       "geometry": {
         "type": "Point",
@@ -141,7 +141,7 @@
         "Committer": "Yes",
         "First Commit Message": "some dutch translations for git testing",
         "First Commit Date": "4-9-2011",
-        "GIT Nickname": "duiv"
+        "GIT Nickname": "rduivenvoorde"
       },
       "geometry": {
         "type": "Point",
@@ -207,7 +207,7 @@
       "properties": {
         "Name": "Marco Hugentobler",
         "Committer": "Yes",
-        "First Commit Message": "Changes in the display behaviour of qgsmapcanvas (updating the screen, avoid flickering when paning).",
+        "First Commit Message": "Changes in the display behavior of qgsmapcanvas (updating the screen, avoid flickering when paning).",
         "First Commit Date": "15-06-2003",
         "GIT Nickname": "mhugent"
       },
@@ -277,7 +277,7 @@
         "Committer": "Yes",
         "First Commit Message": "some bugfixes",
         "First Commit Date": "07-04-2004",
-        "GIT Nickname": "rabla,rblazek,blazek"
+        "GIT Nickname": "blazek"
       },
       "geometry": {
         "type": "Point",
@@ -318,6 +318,23 @@
         "coordinates": [
           -8.397524356842041,
           43.37283922663916
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Mathieu Pellerin",
+        "Committer": "Yes",
+        "First Commit Message": "[labelling] set fill rule of qpainterpath for text/buffer rendering",
+        "First Commit Date": "04-09-2015",
+        "GIT Nickname": "nirvn"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          104.9110,
+          11.5582
         ]
       }
     },
@@ -406,8 +423,27 @@
     {
       "type": "Feature",
       "properties": {
+        "Name": "Paul Blottiere",
+        "Committer": "Yes",
+        "First Commit Message": "Add polygon and polyline tools in composer",
+        "First Commit Date": "04-03-2016",
+        "GIT Nickname": "pblottiere"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -4.6445492,
+          48.3748789
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
         "Name": "Germán Carrillo",
         "Committer": "No",
+        "First Commit Message": "Applied patch to fix legend cursor. Provided by gcarrillo",
+        "First Commit Date": "10-06-2009",
         "GIT Nickname": "gacarrillor"
       },
       "geometry": {
@@ -545,8 +581,8 @@
       "geometry": {
         "type": "Point",
         "coordinates": [
-          6.86121,
-          46.47796
+          -70.413406,
+          19.745284
         ]
       }
     },
@@ -608,7 +644,7 @@
         "Committer": "Yes",
         "First Commit Message": "Patch to allow setting extents from cli on startup",
         "First Commit Date": "03-06-2005",
-        "GIT Nickname": "wonder"
+        "GIT Nickname": "wonder-sk"
       },
       "geometry": {
         "type": "Point",
@@ -751,6 +787,72 @@
         "coordinates": [
           13.409402,
           52.520804
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Alexandre Neto",
+        "Committer": "No",
+        "First Commit Message": "Some translations",
+        "First Commit Date": "26-02-2013",
+        "GIT Nickname": "SrNetoChan"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -9.42036,
+          38.69744
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Even Rouault",
+        "Committer": "Yes",
+        "First Commit Message": "OGR provider: don't segfault when the layer cannot be retrieved (e.g. datasource with 0 layer)",
+        "First Commit Date": "20-11-2011",
+        "GIT Nickname": "rouault"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.1539,
+          48.9472
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Matteo Ghetta",
+        "Committer": "No",
+        "GIT Nickname": "ghtmtt"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          11.9358,
+          46.7963
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Name": "Raymond Nijssen",
+        "Committer": "No",
+        "First Commit Message": "Sipify QgsPoint",
+        "First Commit Date": "30-04-2017",
+        "GIT Nickname": "raymondnijssen"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.2926,
+          51.6934
         ]
       }
     }

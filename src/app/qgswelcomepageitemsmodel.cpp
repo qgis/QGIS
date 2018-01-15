@@ -24,14 +24,15 @@
 #include <QFileInfo>
 #include <QPainter>
 #include <QTextDocument>
+#include <QDir>
 
-QgsWelcomePageItemDelegate::QgsWelcomePageItemDelegate( QObject * parent )
-    : QStyledItemDelegate( parent )
+QgsWelcomePageItemDelegate::QgsWelcomePageItemDelegate( QObject *parent )
+  : QStyledItemDelegate( parent )
 {
 
 }
 
-void QgsWelcomePageItemDelegate::paint( QPainter* painter, const QStyleOptionViewItem & option, const QModelIndex &index ) const
+void QgsWelcomePageItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
   painter->save();
 
@@ -39,12 +40,12 @@ void QgsWelcomePageItemDelegate::paint( QPainter* painter, const QStyleOptionVie
   QPixmap icon = qvariant_cast<QPixmap>( index.data( Qt::DecorationRole ) );
 
   QAbstractTextDocumentLayout::PaintContext ctx;
-  QStyleOptionViewItemV4 optionV4 = option;
+  QStyleOptionViewItem optionV4 = option;
 
-  QColor color;
+  QColor color = optionV4.palette.color( QPalette::Active, QPalette::Window );
   if ( option.state & QStyle::State_Selected && option.state & QStyle::State_HasFocus )
   {
-    color = QColor( 255, 255, 255, 60 );
+    color.setAlpha( 40 );
     ctx.palette.setColor( QPalette::Text, optionV4.palette.color( QPalette::Active, QPalette::HighlightedText ) );
 
     QStyle *style = QApplication::style();
@@ -52,7 +53,10 @@ void QgsWelcomePageItemDelegate::paint( QPainter* painter, const QStyleOptionVie
   }
   else if ( option.state & QStyle::State_Enabled )
   {
-    color = QColor( 100, 100, 100, 30 );
+    if ( option.state & QStyle::State_Selected )
+    {
+      color.setAlpha( 40 );
+    }
     ctx.palette.setColor( QPalette::Text, optionV4.palette.color( QPalette::Active, QPalette::Text ) );
 
     QStyle *style = QApplication::style();
@@ -60,7 +64,6 @@ void QgsWelcomePageItemDelegate::paint( QPainter* painter, const QStyleOptionVie
   }
   else
   {
-    color = QColor( 100, 100, 100, 30 );
     ctx.palette.setColor( QPalette::Text, optionV4.palette.color( QPalette::Disabled, QPalette::Text ) );
   }
 
@@ -72,9 +75,10 @@ void QgsWelcomePageItemDelegate::paint( QPainter* painter, const QStyleOptionVie
   int titleSize = QApplication::fontMetrics().height() * 1.1;
   int textSize = titleSize * 0.85;
 
-  doc.setHtml( QString( "<div style='font-size:%1px;'><span style='font-size:%2px;font-weight:bold;'>%3</span><br>%4<br>%5</div>" ).arg( textSize ).arg( titleSize )
+  doc.setHtml( QStringLiteral( "<div style='font-size:%1px;'><span style='font-size:%2px;font-weight:bold;'>%3%4</span><br>%5<br>%6</div>" ).arg( textSize ).arg( titleSize )
                .arg( index.data( QgsWelcomePageItemsModel::TitleRole ).toString(),
-                     index.data( QgsWelcomePageItemsModel::PathRole ).toString(),
+                     index.data( QgsWelcomePageItemsModel::PinRole ).toBool() ? QStringLiteral( "<img src=\"qrc:/images/themes/default/pin.svg\">" ) : QString(),
+                     index.data( QgsWelcomePageItemsModel::NativePathRole ).toString(),
                      index.data( QgsWelcomePageItemsModel::CrsRole ).toString() ) );
   doc.setTextWidth( option.rect.width() - ( !icon.isNull() ? icon.width() + 35 : 35 ) );
 
@@ -90,7 +94,7 @@ void QgsWelcomePageItemDelegate::paint( QPainter* painter, const QStyleOptionVie
   painter->restore();
 }
 
-QSize QgsWelcomePageItemDelegate::sizeHint( const QStyleOptionViewItem & option, const QModelIndex & index ) const
+QSize QgsWelcomePageItemDelegate::sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
   QTextDocument doc;
   QPixmap icon = qvariant_cast<QPixmap>( index.data( Qt::DecorationRole ) );
@@ -108,22 +112,23 @@ QSize QgsWelcomePageItemDelegate::sizeHint( const QStyleOptionViewItem & option,
   int titleSize = QApplication::fontMetrics().height() * 1.1;
   int textSize = titleSize * 0.85;
 
-  doc.setHtml( QString( "<div style='font-size:%1px;'><span style='font-size:%2px;font-weight:bold;'>%3</span><br>%4<br>%5</div>" ).arg( textSize ).arg( titleSize )
+  doc.setHtml( QStringLiteral( "<div style='font-size:%1px;'><span style='font-size:%2px;font-weight:bold;'>%3%4</span><br>%5<br>%6</div>" ).arg( textSize ).arg( titleSize )
                .arg( index.data( QgsWelcomePageItemsModel::TitleRole ).toString(),
-                     index.data( QgsWelcomePageItemsModel::PathRole ).toString(),
+                     index.data( QgsWelcomePageItemsModel::PinRole ).toBool() ? QStringLiteral( "<img src=\"qrc:/images/themes/default/pin.svg\">" ) : QString(),
+                     index.data( QgsWelcomePageItemsModel::NativePathRole ).toString(),
                      index.data( QgsWelcomePageItemsModel::CrsRole ).toString() ) );
   doc.setTextWidth( width - ( !icon.isNull() ? icon.width() + 35 : 35 ) );
 
-  return QSize( width, qMax(( double ) doc.size().height() + 10, ( double )icon.height() ) + 20 );
+  return QSize( width, std::max( ( double ) doc.size().height() + 10, ( double )icon.height() ) + 20 );
 }
 
-QgsWelcomePageItemsModel::QgsWelcomePageItemsModel( QObject* parent )
-    : QAbstractListModel( parent )
+QgsWelcomePageItemsModel::QgsWelcomePageItemsModel( QObject *parent )
+  : QAbstractListModel( parent )
 {
 
 }
 
-void QgsWelcomePageItemsModel::setRecentProjects( const QList<RecentProjectData>& recentProjects )
+void QgsWelcomePageItemsModel::setRecentProjects( const QList<RecentProjectData> &recentProjects )
 {
   beginResetModel();
   mRecentProjects = recentProjects;
@@ -131,32 +136,35 @@ void QgsWelcomePageItemsModel::setRecentProjects( const QList<RecentProjectData>
 }
 
 
-int QgsWelcomePageItemsModel::rowCount( const QModelIndex& parent ) const
+int QgsWelcomePageItemsModel::rowCount( const QModelIndex &parent ) const
 {
   Q_UNUSED( parent )
   return mRecentProjects.size();
 }
 
-QVariant QgsWelcomePageItemsModel::data( const QModelIndex& index, int role ) const
+QVariant QgsWelcomePageItemsModel::data( const QModelIndex &index, int role ) const
 {
   switch ( role )
   {
     case Qt::DisplayRole:
     case TitleRole:
-      return mRecentProjects.at( index.row() ).title != mRecentProjects.at( index.row() ).path ? mRecentProjects.at( index.row() ).title : QFileInfo( mRecentProjects.at( index.row() ).path ).baseName();
+      return mRecentProjects.at( index.row() ).title != mRecentProjects.at( index.row() ).path ? mRecentProjects.at( index.row() ).title : QFileInfo( mRecentProjects.at( index.row() ).path ).completeBaseName();
     case PathRole:
       return mRecentProjects.at( index.row() ).path;
+    case NativePathRole:
+      return QDir::toNativeSeparators( mRecentProjects.at( index.row() ).path );
     case CrsRole:
-      if ( mRecentProjects.at( index.row() ).crs != "" )
+      if ( !mRecentProjects.at( index.row() ).crs.isEmpty() )
       {
-        QgsCoordinateReferenceSystem crs;
-        crs.createFromOgcWmsCrs( mRecentProjects.at( index.row() ).crs );
-        return  QString( "%1 (%2)" ).arg( mRecentProjects.at( index.row() ).crs, crs.description() );
+        QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( mRecentProjects.at( index.row() ).crs );
+        return  QStringLiteral( "%1 (%2)" ).arg( mRecentProjects.at( index.row() ).crs, crs.description() );
       }
       else
       {
         return QString();
       }
+    case PinRole:
+      return mRecentProjects.at( index.row() ).pin;
     case Qt::DecorationRole:
     {
       QString filename( mRecentProjects.at( index.row() ).previewImagePath );
@@ -191,14 +199,43 @@ QVariant QgsWelcomePageItemsModel::data( const QModelIndex& index, int role ) co
 }
 
 
-Qt::ItemFlags QgsWelcomePageItemsModel::flags( const QModelIndex& index ) const
+Qt::ItemFlags QgsWelcomePageItemsModel::flags( const QModelIndex &index ) const
 {
   Qt::ItemFlags flags = QAbstractItemModel::flags( index );
 
-  const RecentProjectData& projectData = mRecentProjects.at( index.row() );
+  const RecentProjectData &projectData = mRecentProjects.at( index.row() );
 
-  if ( !QFile::exists(( projectData.path ) ) )
+  // This check can be slow for network based projects, so only run it the first time
+  if ( !projectData.checkedExists )
+  {
+    projectData.exists = QFile::exists( ( projectData.path ) );
+    projectData.checkedExists = true;
+  }
+
+  if ( !projectData.exists )
     flags &= ~Qt::ItemIsEnabled;
 
   return flags;
+}
+
+void QgsWelcomePageItemsModel::pinProject( const QModelIndex &index )
+{
+  mRecentProjects.at( index.row() ).pin = true;
+}
+
+void QgsWelcomePageItemsModel::unpinProject( const QModelIndex &index )
+{
+  mRecentProjects.at( index.row() ).pin = false;
+}
+
+void QgsWelcomePageItemsModel::removeProject( const QModelIndex &index )
+{
+  mRecentProjects.removeAt( index.row() );
+}
+
+void QgsWelcomePageItemsModel::recheckProject( const QModelIndex &index )
+{
+  const RecentProjectData &projectData = mRecentProjects.at( index.row() );
+  projectData.exists = QFile::exists( ( projectData.path ) );
+  projectData.checkedExists = true;
 }

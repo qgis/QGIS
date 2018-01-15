@@ -26,18 +26,18 @@ class QString;
 class QgsBabelFormat
 {
   public:
-    explicit QgsBabelFormat( const QString& name = "" );
-    virtual ~QgsBabelFormat() { }
+    explicit QgsBabelFormat( const QString &name = "" );
+    virtual ~QgsBabelFormat() = default;
 
-    const QString& name() const;
-    virtual QStringList importCommand( const QString& babel,
-                                       const QString& featuretype,
-                                       const QString& input,
-                                       const QString& output ) const;
-    virtual QStringList exportCommand( const QString& babel,
-                                       const QString& featuretype,
-                                       const QString& input,
-                                       const QString& output ) const;
+    QString name() const;
+    virtual QStringList importCommand( const QString &babel,
+                                       const QString &featuretype,
+                                       const QString &input,
+                                       const QString &output ) const;
+    virtual QStringList exportCommand( const QString &babel,
+                                       const QString &featuretype,
+                                       const QString &input,
+                                       const QString &output ) const;
 
     bool supportsImport() const;
     bool supportsExport() const;
@@ -48,8 +48,8 @@ class QgsBabelFormat
   protected:
 
     QString mName;
-    bool mSupportsImport, mSupportsExport;
-    bool mSupportsWaypoints, mSupportsRoutes, mSupportsTracks;
+    bool mSupportsImport = false, mSupportsExport = false;
+    bool mSupportsWaypoints = false, mSupportsRoutes = false, mSupportsTracks = false;
 };
 
 
@@ -57,12 +57,12 @@ class QgsBabelFormat
 class QgsSimpleBabelFormat : public QgsBabelFormat
 {
   public:
-    QgsSimpleBabelFormat( const QString& format, bool hasWaypoints,
+    QgsSimpleBabelFormat( const QString &format, bool hasWaypoints,
                           bool hasRoutes, bool hasTracks );
-    QStringList importCommand( const QString& babel,
-                               const QString& featuretype,
-                               const QString& input,
-                               const QString& output ) const override;
+    QStringList importCommand( const QString &babel,
+                               const QString &featuretype,
+                               const QString &input,
+                               const QString &output ) const override;
   protected:
     QString mFormat;
 };
@@ -72,22 +72,22 @@ class QgsSimpleBabelFormat : public QgsBabelFormat
 class QgsBabelCommand : public QgsBabelFormat
 {
   public:
-    QgsBabelCommand( const QString& importCmd, const QString& exportCmd );
-    QStringList importCommand( const QString& babel,
-                               const QString& featuretype,
-                               const QString& input,
-                               const QString& output ) const override;
-    QStringList exportCommand( const QString& babel,
-                               const QString& featuretype,
-                               const QString& input,
-                               const QString& output ) const override;
+    QgsBabelCommand( const QString &importCmd, const QString &exportCmd );
+    QStringList importCommand( const QString &babel,
+                               const QString &featuretype,
+                               const QString &input,
+                               const QString &output ) const override;
+    QStringList exportCommand( const QString &babel,
+                               const QString &featuretype,
+                               const QString &input,
+                               const QString &output ) const override;
   protected:
     QStringList mImportCmd;
     QStringList mExportCmd;
 };
 
 
-typedef std::map<QString, QgsBabelFormat*> BabelMap;
+typedef std::map<QString, QgsBabelFormat *> BabelMap;
 
 
 #endif

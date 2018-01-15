@@ -19,16 +19,19 @@
 #define QGSDECORATIONITEM_H
 
 #include <QObject>
-#include "qgslogger.h"
-#include "qgssymbollayerv2.h"
+
+#include "qgsmapdecoration.h"
+#include "qgsunittypes.h"
+#include "qgis_app.h"
 
 class QPainter;
 
 #define INCHES_TO_MM 0.0393700787402
 
-class APP_EXPORT QgsDecorationItem: public QObject
+class APP_EXPORT QgsDecorationItem : public QObject, public QgsMapDecoration
 {
     Q_OBJECT
+
   public:
 
     //! Item placements
@@ -41,22 +44,24 @@ class APP_EXPORT QgsDecorationItem: public QObject
     };
 
     //! Constructor
-    QgsDecorationItem( QObject* parent = nullptr );
-    //! Destructor
-    virtual ~ QgsDecorationItem();
+    QgsDecorationItem( QObject *parent = nullptr );
 
     void setEnabled( bool enabled ) { mEnabled = enabled; }
     bool enabled() const { return mEnabled; }
 
-    /** Returns the current placement for the item.
-     * @see setPlacement()
+    /**
+     * Returns the current placement for the item.
+     * \see setPlacement()
      */
     Placement placement() const { return mPlacement; }
 
-    /** Sets the placement of the item.
-     * @see placement()
+    /**
+     * Sets the placement of the item.
+     * \see placement()
      */
     void setPlacement( Placement placement ) { mPlacement = placement; }
+
+    QString name() const { return mName; }
 
   signals:
     void toggled( bool t );
@@ -67,26 +72,23 @@ class APP_EXPORT QgsDecorationItem: public QObject
     //! save values to the project
     virtual void saveToProject();
 
-    //! this does the meaty bit of the work
-    virtual void render( QPainter * ) {}
     //! Show the dialog box
     virtual void run() {}
-
-    virtual void setName( const char *name );
-    virtual QString name() { return mName; }
 
     //! Redraws the decoration
     void update();
 
   protected:
 
-    /** True if decoration item has to be displayed*/
-    bool mEnabled;
+    void setName( const char *name );
+
+    //! True if decoration item has to be displayed
+    bool mEnabled = false;
 
     //! Placement of the decoration
-    Placement mPlacement;
+    Placement mPlacement = TopLeft;
     //! Units used for the decoration placement margin
-    QgsSymbolV2::OutputUnit mMarginUnit;
+    QgsUnitTypes::RenderUnit mMarginUnit = QgsUnitTypes::RenderMillimeters;
 
     QString mName;
     QString mNameConfig;

@@ -27,11 +27,12 @@ __revision__ = '$Format:%H$'
 
 import os
 import shutil
-from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QFileDialog, QMessageBox
-from qgis.PyQt.QtCore import QSettings, QFileInfo
+from qgis.PyQt.QtCore import QFileInfo
+
+from qgis.core import QgsApplication, QgsSettings, QgsProcessingModelAlgorithm
+
 from processing.gui.ToolboxAction import ToolboxAction
-from processing.modeler.ModelerAlgorithm import ModelerAlgorithm
 from processing.modeler.WrongModelException import WrongModelException
 from processing.modeler.ModelerUtils import ModelerUtils
 
@@ -45,31 +46,25 @@ class AddModelFromFileAction(ToolboxAction):
         self.group, self.i18n_group = self.trAction('Tools')
 
     def getIcon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'model.png'))
+        return QgsApplication.getThemeIcon("/processingModel.svg")
 
     def execute(self):
-        settings = QSettings()
+        settings = QgsSettings()
         lastDir = settings.value('Processing/lastModelsDir', '')
-        filename = QFileDialog.getOpenFileName(self.toolbox,
-                                               self.tr('Open model', 'AddModelFromFileAction'), lastDir,
-                                               self.tr('Processing model files (*.model *.MODEL)', 'AddModelFromFileAction'))
+        filename, selected_filter = QFileDialog.getOpenFileName(self.toolbox,
+                                                                self.tr('Open model', 'AddModelFromFileAction'), lastDir,
+                                                                self.tr('Processing model files (*.model3 *.MODEL3)', 'AddModelFromFileAction'))
         if filename:
-            try:
-                settings.setValue('Processing/lastModelsDir',
-                                  QFileInfo(filename).absoluteDir().absolutePath())
+            settings.setValue('Processing/lastModelsDir',
+                              QFileInfo(filename).absoluteDir().absolutePath())
 
-                ModelerAlgorithm.fromFile(filename)
-            except WrongModelException:
+            alg = QgsProcessingModelAlgorithm()
+            if not alg.fromFile(filename):
                 QMessageBox.warning(
                     self.toolbox,
                     self.tr('Error reading model', 'AddModelFromFileAction'),
                     self.tr('The selected file does not contain a valid model', 'AddModelFromFileAction'))
                 return
-            except:
-                QMessageBox.warning(self.toolbox,
-                                    self.tr('Error reading model', 'AddModelFromFileAction'),
-                                    self.tr('Cannot read file', 'AddModelFromFileAction'))
-                return
-            destFilename = os.path.join(ModelerUtils.modelsFolder(), os.path.basename(filename))
+            destFilename = os.path.join(ModelerUtils.modelsFolders()[0], os.path.basename(filename))
             shutil.copyfile(filename, destFilename)
-            self.toolbox.updateProvider('model')
+            QgsApplication.processingRegistry().providerById('model').refreshAlgorithms()

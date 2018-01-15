@@ -2,6 +2,8 @@
 #ifndef QEXTSERIALPORT_H
 #define QEXTSERIALPORT_H
 
+#define SIP_NO_FILE
+
 
 /*if all warning messages are turned off, flag portability warnings to be turned off as well*/
 #ifdef _TTY_NOWARN_
@@ -148,9 +150,9 @@ QextSerialPort offers both a polling and event driven API.  Event driven is typi
 to use, since you never have to worry about checking for new data.
 
 \b Example
-\code
+\code{.cpp}
 QextSerialPort* port = new QextSerialPort("COM1", QextSerialPort::EventDriven);
-connect(port, SIGNAL(readyRead()), myClass, SLOT(onDataAvailable()));
+connect(port, &QextSerialPort::readyRead, myClass, &MyObject::onDataAvailable);
 port->open();
 
 void MyClass::onDataAvailable() {
@@ -189,18 +191,18 @@ class QextSerialPort: public QIODevice
             EventDriven
         };
 
-        QextSerialPort(QueryMode mode = EventDriven);
+        explicit QextSerialPort(QueryMode mode = EventDriven);
         QextSerialPort(const QString & name, QueryMode mode = EventDriven);
         QextSerialPort(PortSettings const& s, QueryMode mode = EventDriven);
         QextSerialPort(const QString & name, PortSettings const& s, QueryMode mode = EventDriven);
-        ~QextSerialPort();
+        ~QextSerialPort() override;
 
         void setPortName(const QString & name);
         QString portName() const;
 
         /**!
          * Get query mode.
-         * \return query mode.
+         * \returns query mode.
          */
         inline QueryMode queryMode() const { return _queryMode; }
 

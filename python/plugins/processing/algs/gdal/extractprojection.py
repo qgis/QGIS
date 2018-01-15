@@ -43,29 +43,42 @@ class ExtractProjection(GdalAlgorithm):
     INPUT = 'INPUT'
     PRJ_FILE = 'PRJ_FILE'
 
-    def getIcon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'projection-export.png'))
+    def __init__(self):
+        super().__init__()
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Extract projection')
-        self.group, self.i18n_group = self.trAlgorithm('[GDAL] Projections')
+    def initAlgorithm(self, config=None):
         self.addParameter(ParameterRaster(self.INPUT, self.tr('Input file')))
         self.addParameter(ParameterBoolean(self.PRJ_FILE,
                                            self.tr('Create also .prj file'), False))
 
-    def getConsoleCommands(self):
+    def name(self):
+        return 'extractprojection'
+
+    def displayName(self):
+        return self.tr('Extract projection')
+
+    def icon(self):
+        return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'projection-export.png'))
+
+    def group(self):
+        return self.tr('Raster projections')
+
+    def groupId(self):
+        return 'rasterprojections'
+
+    def getConsoleCommands(self, parameters, context, feedback, executing=True):
         return ["extractprojection"]
 
-    def processAlgorithm(self, progress):
+    def processAlgorithm(self, parameters, context, feedback):
         rasterPath = self.getParameterValue(self.INPUT)
         createPrj = self.getParameterValue(self.PRJ_FILE)
 
-        raster = gdal.Open(unicode(rasterPath))
+        raster = gdal.Open(str(rasterPath))
         crs = raster.GetProjection()
         geotransform = raster.GetGeoTransform()
         raster = None
 
-        outFileName = os.path.splitext(unicode(rasterPath))[0]
+        outFileName = os.path.splitext(str(rasterPath))[0]
 
         if crs != '' and createPrj:
             tmp = osr.SpatialReference()
@@ -74,17 +87,17 @@ class ExtractProjection(GdalAlgorithm):
             crs = tmp.ExportToWkt()
             tmp = None
 
-            prj = open(outFileName + '.prj', 'wt')
-            prj.write(crs)
-            prj.close()
+            with open(outFileName + '.prj', 'wt') as prj:
+                prj.write(crs)
 
-        wld = open(outFileName + '.wld', 'wt')
-        wld.write('%0.8f\n' % geotransform[1])
-        wld.write('%0.8f\n' % geotransform[4])
-        wld.write('%0.8f\n' % geotransform[2])
-        wld.write('%0.8f\n' % geotransform[5])
-        wld.write('%0.8f\n' % (geotransform[0] + 0.5 * geotransform[1] + 0.5
-                               * geotransform[2]))
-        wld.write('%0.8f\n' % (geotransform[3] + 0.5 * geotransform[4] + 0.5
-                               * geotransform[5]))
-        wld.close()
+        with open(outFileName + '.wld', 'wt') as wld:
+            wld.write('%0.8f\n' % geotransform[1])
+            wld.write('%0.8f\n' % geotransform[4])
+            wld.write('%0.8f\n' % geotransform[2])
+            wld.write('%0.8f\n' % geotransform[5])
+            wld.write('%0.8f\n' % (geotransform[0] +
+                                   0.5 * geotransform[1] +
+                                   0.5 * geotransform[2]))
+            wld.write('%0.8f\n' % (geotransform[3] +
+                                   0.5 * geotransform[4] +
+                                   0.5 * geotransform[5]))

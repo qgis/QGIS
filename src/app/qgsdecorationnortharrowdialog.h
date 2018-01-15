@@ -13,6 +13,7 @@
 #define QGSNORTHARROWPLUGINGUI_H
 
 #include "ui_qgsdecorationnortharrowdialog.h"
+#include "qgis_app.h"
 
 class QgsDecorationNorthArrow;
 
@@ -21,23 +22,23 @@ class APP_EXPORT QgsDecorationNorthArrowDialog : public QDialog, private Ui::Qgs
     Q_OBJECT
 
   public:
-    QgsDecorationNorthArrowDialog( QgsDecorationNorthArrow& deco, QWidget* parent = nullptr );
-    ~QgsDecorationNorthArrowDialog();
+    QgsDecorationNorthArrowDialog( QgsDecorationNorthArrow &deco, QWidget *parent = nullptr );
+    ~QgsDecorationNorthArrowDialog() override;
 
   private:
-    void rotatePixmap( int theRotationInt );
+    void drawNorthArrow();
     void resizeEvent( QResizeEvent * ) override; //overloads qwidget
 
   private slots:
-    void on_buttonBox_accepted();
-    void on_buttonBox_rejected();
-    void on_buttonBox_helpRequested();
-    void on_spinAngle_valueChanged( int theInt );
-    void on_sliderRotation_valueChanged( int theInt );
+    void buttonBox_accepted();
+    void buttonBox_rejected();
+    void showHelp();
+    void spinAngle_valueChanged( int spinAngle );
+    void sliderRotation_valueChanged( int rotationValue );
     void apply();
 
   protected:
-    QgsDecorationNorthArrow& mDeco;
+    QgsDecorationNorthArrow &mDeco;
 };
 
 #endif

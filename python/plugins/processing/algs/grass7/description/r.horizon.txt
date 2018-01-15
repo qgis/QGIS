@@ -1,9 +1,18 @@
 r.horizon
 Horizon angle computation from a digital elevation model.
 Raster (r.*)
-ParameterRaster|elevation|Name of input elevation raster map|False
-ParameterNumber|direction|Direction in which you want to know the horizon height|0|360|0.0
-ParameterNumber|maxdistance|The maximum distance to consider when finding the horizon height|0|None|10000
-ParameterString|distance|Sampling distance step coefficient (0.5-1.5)|1.0
-ParameterBoolean|-d|Write output in degrees (default is radians)|False
-OutputRaster|output|Horizon
+QgsProcessingParameterRasterLayer|elevation|Name of input elevation raster map|None|False
+QgsProcessingParameterNumber|direction|Direction in which you want to know the horizon height|QgsProcessingParameterNumber.Double|None|True|0.0|360.0
+QgsProcessingParameterNumber|step|Angle step size for multidirectional horizon|QgsProcessingParameterNumber.Double|None|True|0.0|360.0
+QgsProcessingParameterNumber|start|Start angle for multidirectional horizon|QgsProcessingParameterNumber.Double|0.0|True|0.0|360.0
+QgsProcessingParameterNumber|end|End angle for multidirectional horizon|QgsProcessingParameterNumber.Double|360.0|True|0.0|360.0
+QgsProcessingParameterNumber|bufferzone|For horizon rasters, read from the DEM an extra buffer around the present region|QgsProcessingParameterNumber.Double|None|True|0.0|None
+QgsProcessingParameterNumber|e_buff|For horizon rasters, read from the DEM an extra buffer eastward the present region|QgsProcessingParameterNumber.Double|None|True|0.0|None
+QgsProcessingParameterNumber|w_buff|For horizon rasters, read from the DEM an extra buffer westward the present region|QgsProcessingParameterNumber.Double|None|True|0.0|None
+QgsProcessingParameterNumber|n_buff|For horizon rasters, read from the DEM an extra buffer northward the present region|QgsProcessingParameterNumber.Double|None|True|0.0|None
+QgsProcessingParameterNumber|s_buff|For horizon rasters, read from the DEM an extra buffer southward the present region|QgsProcessingParameterNumber.Double|None|True|0.0|None
+QgsProcessingParameterNumber|maxdistance|The maximum distance to consider when finding the horizon height|QgsProcessingParameterNumber.Double|None|True|0.0|None
+QgsProcessingParameterNumber|distance|Sampling distance step coefficient|QgsProcessingParameterNumber.Double|1.0|True|0.5|1.5
+QgsProcessingParameterBoolean|-d|Write output in degrees (default is radians)|False
+QgsProcessingParameterBoolean|-c|Write output in compass orientation (default is CCW, East=0)|False
+QgsProcessingParameterFolderDestination|output|Folder to get horizon rasters

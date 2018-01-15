@@ -19,10 +19,21 @@
 #define QGSADDREMOVEMULTIFRAMECOMMAND_H
 
 #include <QUndoCommand>
+#include "qgis.h"
+
+#include "qgis_core.h"
+
+#define SIP_NO_FILE
 
 class QgsComposerMultiFrame;
 class QgsComposition;
 
+/**
+ * \ingroup core
+ * \class QgsAddRemoveMultiFrameCommand
+ * \note Not available in Python bindings
+ * \deprecated Will be removed in QGIS 3.2
+ */
 class CORE_EXPORT QgsAddRemoveMultiFrameCommand: public QUndoCommand
 {
   public:
@@ -33,22 +44,23 @@ class CORE_EXPORT QgsAddRemoveMultiFrameCommand: public QUndoCommand
       Removed
     };
 
-    QgsAddRemoveMultiFrameCommand( State s, QgsComposerMultiFrame* multiFrame, QgsComposition* c, const QString& text, QUndoCommand* parent = nullptr );
-    ~QgsAddRemoveMultiFrameCommand();
+    //! Constructor for QgsAddRemoveMultiFrameCommand
+    QgsAddRemoveMultiFrameCommand( State s, QgsComposerMultiFrame *multiFrame, QgsComposition *c, const QString &text, QUndoCommand *parent SIP_TRANSFERTHIS = nullptr );
+    ~QgsAddRemoveMultiFrameCommand() override;
     void redo() override;
     void undo() override;
 
   private:
-    QgsAddRemoveMultiFrameCommand();
+    QgsAddRemoveMultiFrameCommand() = delete;
 
     //changes between added / removed state
     void switchState();
     bool checkFirstRun();
 
-    QgsComposerMultiFrame* mMultiFrame;
-    QgsComposition* mComposition;
-    State mState;
-    bool mFirstRun;
+    QgsComposerMultiFrame *mMultiFrame = nullptr;
+    QgsComposition *mComposition = nullptr;
+    State mState = Added;
+    bool mFirstRun = true;
 };
 
 #endif // QGSADDREMOVEMULTIFRAMECOMMAND_H

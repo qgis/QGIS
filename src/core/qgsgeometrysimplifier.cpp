@@ -16,19 +16,15 @@
 
 #include <limits>
 #include "qgsgeometrysimplifier.h"
+#include "qgsrectangle.h"
+#include "qgsgeometry.h"
 
-QgsAbstractGeometrySimplifier::~QgsAbstractGeometrySimplifier()
-{
-}
-
-//! Returns whether the device-envelope can be replaced by its BBOX when is applied the specified tolerance
-bool QgsAbstractGeometrySimplifier::isGeneralizableByDeviceBoundingBox( const QgsRectangle& envelope, float mapToPixelTol )
+bool QgsAbstractGeometrySimplifier::isGeneralizableByDeviceBoundingBox( const QgsRectangle &envelope, float mapToPixelTol )
 {
   return ( envelope.xMaximum() - envelope.xMinimum() ) < mapToPixelTol && ( envelope.yMaximum() - envelope.yMinimum() ) < mapToPixelTol;
 }
 
-//! Returns whether the device-geometry can be replaced by its BBOX when is applied the specified tolerance
-bool QgsAbstractGeometrySimplifier::isGeneralizableByDeviceBoundingBox( const QVector<QPointF>& points, float mapToPixelTol )
+bool QgsAbstractGeometrySimplifier::isGeneralizableByDeviceBoundingBox( const QVector<QPointF> &points, float mapToPixelTol )
 {
   QgsRectangle r;
   r.setMinimal();
@@ -41,36 +37,13 @@ bool QgsAbstractGeometrySimplifier::isGeneralizableByDeviceBoundingBox( const QV
 }
 
 /***************************************************************************/
-/**
- * Implementation of GeometrySimplifier using the Douglas-Peucker algorithm
- */
+
 QgsTopologyPreservingSimplifier::QgsTopologyPreservingSimplifier( double tolerance ) : mTolerance( tolerance )
 {
 }
-QgsTopologyPreservingSimplifier::~QgsTopologyPreservingSimplifier()
+
+QgsGeometry QgsTopologyPreservingSimplifier::simplify( const QgsGeometry &geometry ) const
 {
+  return geometry.simplify( mTolerance );
 }
 
-//! Returns a simplified version the specified geometry
-QgsGeometry* QgsTopologyPreservingSimplifier::simplify( QgsGeometry* geometry ) const
-{
-  return geometry->simplify( mTolerance );
-}
-
-//! Simplifies the specified geometry
-bool QgsTopologyPreservingSimplifier::simplifyGeometry( QgsGeometry* geometry ) const
-{
-  QgsGeometry* g = geometry->simplify( mTolerance );
-
-  if ( g )
-  {
-    int wkbSize = g->wkbSize();
-    unsigned char *wkb = new unsigned char[ wkbSize ];
-    memcpy( wkb, g->asWkb(), wkbSize );
-    geometry->fromWkb( wkb, wkbSize );
-    delete g;
-
-    return true;
-  }
-  return false;
-}

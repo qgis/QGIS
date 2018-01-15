@@ -12,20 +12,25 @@
 # QWTPOLAR_INCLUDE_DIR = where to find headers 
 #
 
-
-FIND_PATH(QWTPOLAR_INCLUDE_DIR NAMES qwt_polar.h PATHS
-  /usr/include
-  /usr/local/include
-  "$ENV{LIB_DIR}/include" 
-  "$ENV{INCLUDE}" 
-  PATH_SUFFIXES qwtpolar qwt
-  )
-
 FIND_LIBRARY(QWTPOLAR_LIBRARY NAMES qwtpolar PATHS 
   /usr/lib
   /usr/local/lib
   "$ENV{LIB_DIR}/lib" 
   "$ENV{LIB}/lib" 
+  )
+
+SET(_qwtpolar_fw)
+IF (QWTPOLAR_LIBRARY MATCHES "/qwtpolar.*\\.framework")
+  STRING(REGEX REPLACE "^(.*/qwtpolar.*\\.framework).*$" "\\1" _qwtpolar_fw "${QWTPOLAR_LIBRARY}")
+ENDIF ()
+
+FIND_PATH(QWTPOLAR_INCLUDE_DIR NAMES qwt_polar.h PATHS
+  "${_qwtpolar_fw}/Headers"
+  /usr/include
+  /usr/local/include
+  "$ENV{LIB_DIR}/include"
+  "$ENV{INCLUDE}"
+  PATH_SUFFIXES qwtpolar qwt
   )
 
 IF (QWTPOLAR_INCLUDE_DIR AND QWTPOLAR_LIBRARY)

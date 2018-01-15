@@ -1,68 +1,75 @@
-/***************************************************************************
-  qgstransactiongroup.h - QgsTransactionGroup
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgstransactiongroup.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
 
- ---------------------
- begin                : 15.1.2016
- copyright            : (C) 2016 by Matthias Kuhn
- email                : mmatthias@opengis.ch
- ***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+
 
 class QgsTransactionGroup : QObject
 {
+
 %TypeHeaderCode
 #include "qgstransactiongroup.h"
 %End
   public:
+
     explicit QgsTransactionGroup( QObject *parent = 0 );
+%Docstring
+Constructor for QgsTransactionGroup
+%End
 
-    ~QgsTransactionGroup();
+    bool addLayer( QgsVectorLayer *layer );
+%Docstring
+Add a layer to this transaction group.
 
-    /**
-     * Add a layer to this transaction group.
-     *
-     * Will return true if it is compatible and has been added.
-     */
-    bool addLayer( QgsVectorLayer* layer );
+Will return true if it is compatible and has been added.
+%End
 
-    /**
-     * Get the set of layers currently managed by this transaction group.
-     *
-     * @return Layer set
-     */
-    QSet<QgsVectorLayer*> layers() const;
+    QSet<QgsVectorLayer *> layers() const;
+%Docstring
+Get the set of layers currently managed by this transaction group.
 
-    /**
-     * Returns true if any of the layers in this group reports a modification.
-     */
+:return: Layer set
+%End
+
     bool modified() const;
+%Docstring
+Returns true if any of the layers in this group reports a modification.
+%End
 
-    /**
-     * Return the connection string used by this transaction group.
-     * Layers need be compatible when added.
-     */
     QString connString() const;
+%Docstring
+Return the connection string used by this transaction group.
+Layers need be compatible when added.
+%End
 
-    /**
-     * Return the provider key used by this transaction group.
-     * Layers need be compatible when added.
-     */
     QString providerKey() const;
+%Docstring
+Return the provider key used by this transaction group.
+Layers need be compatible when added.
+%End
 
-    /**
-     * Returns true if there are no layers in this transaction group.
-     */
     bool isEmpty() const;
+%Docstring
+Returns true if there are no layers in this transaction group.
+%End
 
   signals:
-    /**
-     * Will be emitted whenever there is a commit error
-     */
-    void commitError( const QString& msg );
+
+    void commitError( const QString &msg );
+%Docstring
+Will be emitted whenever there is a commit error
+%End
+
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgstransactiongroup.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

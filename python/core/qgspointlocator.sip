@@ -1,31 +1,77 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgspointlocator.h                                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
 
 class QgsPointLocator : QObject
 {
-%TypeHeaderCode
-#include <qgspointlocator.h>
+%Docstring
+ The class defines interface for querying point location:
+- query nearest vertices / edges to a point
+- query vertices / edges in rectangle
+- query areas covering a point
+
+Works with one layer.
+
+.. versionadded:: 2.8
 %End
 
+%TypeHeaderCode
+#include "qgspointlocator.h"
+%End
   public:
-    /** Construct point locator for a layer.
-     *  @arg destCRS if not null, will do the searches on data reprojected to the given CRS
-     *  @arg extent  if not null, will index only a subset of the layer
-     */
-    explicit QgsPointLocator( QgsVectorLayer* layer, const QgsCoordinateReferenceSystem* destCRS = 0, const QgsRectangle* extent = 0 );
+
+    explicit QgsPointLocator( QgsVectorLayer *layer, const QgsCoordinateReferenceSystem &destinationCrs = QgsCoordinateReferenceSystem(),
+                              const QgsCoordinateTransformContext &transformContext = QgsCoordinateTransformContext(),
+                              const QgsRectangle *extent = 0 );
+%Docstring
+Construct point locator for a ``layer``.
+
+If a valid QgsCoordinateReferenceSystem is passed for ``destinationCrs`` then the locator will
+do the searches on data reprojected to the given CRS. For accurate reprojection it is important
+to set the correct ``transformContext`` if a ``destinationCrs`` is specified. This is usually taken
+from the current :py:func:`QgsProject.transformContext()`
+
+If ``extent`` is not null, the locator will index only a subset of the layer which falls within that extent.
+%End
 
     ~QgsPointLocator();
 
-    //! Get associated layer
-    //! @note added in QGIS 2.14
-    QgsVectorLayer* layer() const;
-    //! Get destination CRS - may be null if not doing OTF reprojection
-    //! @note added in QGIS 2.14
-    const QgsCoordinateReferenceSystem* destCRS() const;
-    //! Get extent of the area point locator covers - if null then it caches the whole layer
-    //! @note added in QGIS 2.14
-    const QgsRectangle* extent() const;
-    //! Configure extent - if not null, it will index only that area
-    //! @note added in QGIS 2.14
-    void setExtent( const QgsRectangle* extent );
+    QgsVectorLayer *layer() const;
+%Docstring
+Get associated layer
+
+.. versionadded:: 2.14
+%End
+
+    QgsCoordinateReferenceSystem destinationCrs() const;
+%Docstring
+Get destination CRS - may be an invalid QgsCoordinateReferenceSystem if not doing OTF reprojection
+
+.. versionadded:: 2.14
+%End
+
+    const QgsRectangle *extent() const;
+%Docstring
+Get extent of the area point locator covers - if null then it caches the whole layer
+
+.. versionadded:: 2.14
+%End
+
+    void setExtent( const QgsRectangle *extent );
+%Docstring
+Configure extent - if not null, it will index only that area
+
+.. versionadded:: 2.14
+%End
 
     enum Type
     {
@@ -38,88 +84,130 @@ class QgsPointLocator : QObject
 
     typedef QFlags<QgsPointLocator::Type> Types;
 
-    /** Prepare the index for queries. Does nothing if the index already exists.
-     * If the number of features is greater than the value of maxFeaturesToIndex, creation of index is stopped
-     * to make sure we do not run out of memory. If maxFeaturesToIndex is -1, no limits are used. Returns
-     * false if the creation of index has been prematurely stopped due to the limit of features, otherwise true */
-    bool init( int maxFeaturesToIndex = -1 );
 
-    /** Indicate whether the data have been already indexed */
+    bool init( int maxFeaturesToIndex = -1 );
+%Docstring
+Prepare the index for queries. Does nothing if the index already exists.
+If the number of features is greater than the value of maxFeaturesToIndex, creation of index is stopped
+to make sure we do not run out of memory. If maxFeaturesToIndex is -1, no limits are used. Returns
+false if the creation of index has been prematurely stopped due to the limit of features, otherwise true *
+%End
+
     bool hasIndex() const;
+%Docstring
+Indicate whether the data have been already indexed
+%End
 
     struct Match
     {
-      //! consruct invalid match
-      Match();
+        Match();
+%Docstring
+construct invalid match
+%End
 
-      Match( QgsPointLocator::Type t, QgsVectorLayer* vl, QgsFeatureId fid, double dist, const QgsPoint& pt, int vertexIndex = 0 );
+        Match( QgsPointLocator::Type t, QgsVectorLayer *vl, QgsFeatureId fid, double dist, const QgsPointXY &pt, int vertexIndex = 0, QgsPointXY *edgePoints = 0 );
 
-      QgsPointLocator::Type type() const;
+        QgsPointLocator::Type type() const;
 
+        bool isValid() const;
+        bool hasVertex() const;
+        bool hasEdge() const;
+        bool hasArea() const;
 
-      bool isValid() const;
-      bool hasVertex() const;
-      bool hasEdge() const;
-      bool hasArea() const;
+        double distance() const;
+%Docstring
+for vertex / edge match
+units depending on what class returns it (geom.cache: layer units, map canvas snapper: dest crs units)
+%End
 
-      //! for vertex / edge match
-      //! units depending on what class returns it (geom.cache: layer units, map canvas snapper: dest crs units)
-      double distance() const;
+        QgsPointXY point() const;
+%Docstring
+for vertex / edge match
+coords depending on what class returns it (geom.cache: layer coords, map canvas snapper: dest coords)
+%End
 
-      //! for vertex / edge match
-      //! coords depending on what class returns it (geom.cache: layer coords, map canvas snapper: dest coords)
-      QgsPoint point() const;
+        int vertexIndex() const;
+%Docstring
+for vertex / edge match (first vertex of the edge)
+%End
 
-      //! for vertex / edge match (first vertex of the edge)
-      int vertexIndex() const;
+        QgsVectorLayer *layer() const;
+%Docstring
+The vector layer where the snap occurred.
+Will be null if the snap happened on an intersection.
+%End
 
-      //! reference vector layer
-      QgsVectorLayer* layer() const;
+        QgsFeatureId featureId() const;
+%Docstring
+The id of the feature to which the snapped geometry belongs.
+%End
 
-      QgsFeatureId featureId() const;
+        void edgePoints( QgsPointXY &pt1 /Out/, QgsPointXY &pt2 /Out/ ) const;
+%Docstring
+Only for a valid edge match - obtain endpoints of the edge
+%End
 
-      //! Only for a valid edge match - obtain endpoints of the edge
-      void edgePoints( QgsPoint& pt1 /Out/, QgsPoint& pt2 /Out/ ) const;
+        bool operator==( const QgsPointLocator::Match &other ) const;
+
+      protected:
     };
 
     typedef QList<QgsPointLocator::Match> MatchList;
 
-    //! Interface that allows rejection of some matches in intersection queries
-    //! (e.g. a match can only belong to a particular feature / match must not be a particular point).
-    //! Implement the interface and pass its instance to QgsPointLocator or QgsSnappingUtils methods.
     struct MatchFilter
     {
       virtual ~MatchFilter();
-      virtual bool acceptMatch( const QgsPointLocator::Match& match ) = 0;
+      virtual bool acceptMatch( const QgsPointLocator::Match &match ) = 0;
     };
 
-    // intersection queries
 
-    //! Find nearest vertex to the specified point - up to distance specified by tolerance
-    //! Optional filter may discard unwanted matches.
-    Match nearestVertex( const QgsPoint& point, double tolerance, QgsPointLocator::MatchFilter* filter = 0 );
-    //! Find nearest edges to the specified point - up to distance specified by tolerance
-    //! Optional filter may discard unwanted matches.
-    Match nearestEdge( const QgsPoint& point, double tolerance, QgsPointLocator::MatchFilter* filter = 0 );
-    //! Find edges within a specified recangle
-    //! Optional filter may discard unwanted matches.
-    MatchList edgesInRect( const QgsRectangle& rect, QgsPointLocator::MatchFilter* filter = 0 );
-    //! Override of edgesInRect that construct rectangle from a center point and tolerance
-    MatchList edgesInRect( const QgsPoint& point, double tolerance, QgsPointLocator::MatchFilter* filter = 0 );
+    Match nearestVertex( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = 0 );
+%Docstring
+Find nearest vertex to the specified point - up to distance specified by tolerance
+Optional filter may discard unwanted matches.
+%End
 
-    // point-in-polygon query
+    Match nearestEdge( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = 0 );
+%Docstring
+Find nearest edge to the specified point - up to distance specified by tolerance
+Optional filter may discard unwanted matches.
+%End
 
-    // TODO: function to return just the first match?
-    //! find out if the point is in any polygons
-    MatchList pointInPolygon( const QgsPoint& point );
+    MatchList edgesInRect( const QgsRectangle &rect, QgsPointLocator::MatchFilter *filter = 0 );
+%Docstring
+Find edges within a specified recangle
+Optional filter may discard unwanted matches.
+%End
+    MatchList edgesInRect( const QgsPointXY &point, double tolerance, QgsPointLocator::MatchFilter *filter = 0 );
+%Docstring
+Override of edgesInRect that construct rectangle from a center point and tolerance
+%End
 
-    //
 
-    //! Return how many geometries are cached in the index
-    //! @note added in QGIS 2.14
+    MatchList pointInPolygon( const QgsPointXY &point );
+%Docstring
+find out if the point is in any polygons
+%End
+
+
     int cachedGeometryCount() const;
+%Docstring
+Return how many geometries are cached in the index
+
+.. versionadded:: 2.14
+%End
 
   protected:
     bool rebuildIndex( int maxFeaturesToIndex = -1 );
+  protected slots:
     void destroyIndex();
 };
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgspointlocator.h                                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

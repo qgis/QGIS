@@ -22,13 +22,25 @@ email                : brush.tyler@gmail.com
 
 from qgis.PyQt.QtWidgets import QApplication
 
-from ..info_model import TableInfo, VectorTableInfo, RasterTableInfo
+from ..info_model import TableInfo, VectorTableInfo, RasterTableInfo, DatabaseInfo
 from ..html_elems import HtmlSection, HtmlParagraph, HtmlTable, HtmlTableHeader, HtmlTableCol
+
+
+class PGDatabaseInfo(DatabaseInfo):
+
+    def connectionDetails(self):
+        tbl = [
+            (QApplication.translate("DBManagerPlugin", "Host:"), self.db.connector.host),
+            (QApplication.translate("DBManagerPlugin", "User:"), self.db.connector.user),
+            (QApplication.translate("DBManagerPlugin", "Database:"), self.db.connector.dbname)
+        ]
+        return HtmlTable(tbl)
 
 
 class PGTableInfo(TableInfo):
 
     def __init__(self, table):
+        super(PGTableInfo, self).__init__(table)
         self.table = table
 
     def generalInfo(self):
@@ -73,7 +85,7 @@ class PGTableInfo(TableInfo):
             if table_priv[0]:
                 privileges.append("select")
 
-                if self.table.rowCount is not None or self.table.rowCount >= 0:
+                if self.table.rowCount is not None and self.table.rowCount >= 0:
                     tbl.append((QApplication.translate("DBManagerPlugin", "Rows (counted):"),
                                 self.table.rowCount if self.table.rowCount is not None else QApplication.translate(
                                     "DBManagerPlugin", 'Unknown (<a href="action:rows/count">find out</a>)')))

@@ -17,58 +17,60 @@
 #ifndef QGSMESSAGEVIEWER_H
 #define QGSMESSAGEVIEWER_H
 
-#include <ui_qgsmessageviewer.h>
-#include <qgisgui.h>
+#include "ui_qgsmessageviewer.h"
+#include "qgsguiutils.h"
 #include "qgsmessageoutput.h"
+#include "qgis_gui.h"
 
 #include <QString>
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * A generic message view for displaying QGIS messages.
  */
 class GUI_EXPORT QgsMessageViewer: public QDialog, public QgsMessageOutput, private Ui::QgsMessageViewer
 {
     Q_OBJECT
   public:
-    QgsMessageViewer( QWidget *parent = nullptr, const Qt::WindowFlags& fl = QgisGui::ModalDialogFlags, bool deleteOnClose = true );
-    ~QgsMessageViewer();
+    QgsMessageViewer( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, bool deleteOnClose = true );
+    ~QgsMessageViewer() override;
 
-    virtual void setMessage( const QString& message, MessageType msgType ) override;
+    void setMessage( const QString &message, MessageType msgType ) override;
 
-    virtual void appendMessage( const QString& message ) override;
+    void appendMessage( const QString &message ) override;
 
-    virtual void showMessage( bool blocking = true ) override;
+    void showMessage( bool blocking = true ) override;
 
-    virtual void setTitle( const QString& title ) override;
+    void setTitle( const QString &title ) override;
 
     // Call one of the setMessage...() functions first.
     // Subsequent calls to appendMessage use the format as determined
     // by the call to setMessage...()
 
     // Treats the given text as html.
-    void setMessageAsHtml( const QString& msg );
+    void setMessageAsHtml( const QString &msg );
     // Treats the given text as plain text
-    void setMessageAsPlainText( const QString& msg );
+    void setMessageAsPlainText( const QString &msg );
     // A checkbox that can be used for something like
     // "don't show this message again"
-    void setCheckBoxText( const QString& text );
-    // Make the check box visible/invisible
+    void setCheckBoxText( const QString &text );
+    // Make the checkbox visible/invisible
     void setCheckBoxVisible( bool visible );
     // Sets the check state
     void setCheckBoxState( Qt::CheckState state );
     // Get checkbox state
     Qt::CheckState checkBoxState();
-    // Specifies a QSettings tag to store/retrieve the checkbox
+    // Specifies a QgsSettings tag to store/retrieve the checkbox
     // state to/from. Use an empty QString to disable this feature.
-    void setCheckBoxQSettingsLabel( const QString& label );
+    void setCheckBoxQgsSettingsLabel( const QString &label );
 
   private slots:
-    void on_checkBox_toggled( bool );
+    void checkBox_toggled( bool );
 
 
   private:
-    QString mCheckBoxQSettingsLabel;
+    QString mCheckBoxQgsSettingsLabel;
 };
 
 #endif

@@ -18,7 +18,7 @@
 
 #include "qgsmaptooledit.h"
 #include "qgsgeometry.h"
-#include "qgspointlocator.h"
+#include "qgis_app.h"
 
 class QgsVertexMarker;
 class QgsDoubleSpinBox;
@@ -28,52 +28,54 @@ class APP_EXPORT QgsMapToolOffsetCurve: public QgsMapToolEdit
 {
     Q_OBJECT
   public:
-    QgsMapToolOffsetCurve( QgsMapCanvas* canvas );
-    ~QgsMapToolOffsetCurve();
+    QgsMapToolOffsetCurve( QgsMapCanvas *canvas );
+    ~QgsMapToolOffsetCurve() override;
 
-    void canvasReleaseEvent( QgsMapMouseEvent* e ) override;
-    void canvasMoveEvent( QgsMapMouseEvent* e ) override;
+    void keyPressEvent( QKeyEvent *e ) override;
+    void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
+    void canvasMoveEvent( QgsMapMouseEvent *e ) override;
 
   private slots:
-    /** Places curve offset to value entered in the spin box*/
+    //! Places curve offset to value entered in the spin box
     void placeOffsetCurveToValue();
 
-    /** Apply the offset either from the spin box or from the mouse event */
-    void applyOffset();
+    //! Apply the offset either from the spin box or from the mouse event
+    void applyOffset( bool forceCopy = false );
 
   private:
-    /** Rubberband that shows the position of the offset curve*/
-    QgsRubberBand* mRubberBand;
-    /** Geometry to manipulate*/
-    QgsGeometry* mOriginalGeometry;
-    /** Geometry after manipulation*/
+    //! Rubberband that shows the position of the offset curve
+    QgsRubberBand *mRubberBand = nullptr;
+    //! Geometry to manipulate
+    QgsGeometry mOriginalGeometry;
+    //! Geometry being manipulated
+    QgsGeometry mManipulatedGeometry;
+    //! Geometry after manipulation
     QgsGeometry mModifiedGeometry;
-    /** ID of manipulated feature*/
-    QgsFeatureId mModifiedFeature;
-    /** Layer ID of source layer*/
+    //! ID of manipulated feature
+    QgsFeatureId mModifiedFeature = -1;
+    //! Layer ID of source layer
     QString mSourceLayerId;
-    /** Internal flag to distinguish move from click*/
-    bool mGeometryModified;
-    /** Shows current distance value and allows numerical editing*/
-    QgsDoubleSpinBox* mDistanceWidget;
-    /** Marker to show the cursor was snapped to another location*/
-    QgsVertexMarker* mSnapVertexMarker;
-    /** Forces geometry copy (no modification of geometry in current layer)*/
-    bool mForceCopy;
-    bool mMultiPartGeometry;
+    //! Internal flag to distinguish move from click
+    bool mGeometryModified = false;
+    //! Shows current distance value and allows numerical editing
+    QgsDoubleSpinBox *mDistanceWidget = nullptr;
+    //! Marker to show the cursor was snapped to another location
+    QgsVertexMarker *mSnapVertexMarker = nullptr;
+    //! Forces geometry copy (no modification of geometry in current layer)
+    bool mCtrlWasHeldOnFeatureSelection = false;
+    bool mMultiPartGeometry = false;
+    int mModifiedPart = 0;
 
+    void prepareGeometry( QgsVectorLayer *vl, const QgsPointLocator::Match &match, QgsFeature &snappedFeature );
 
     void deleteRubberBandAndGeometry();
-    QgsGeometry* createOriginGeometry( QgsVectorLayer* vl, const QgsPointLocator::Match& match, QgsFeature& snappedFeature );
     void createDistanceWidget();
     void deleteDistanceWidget();
     void setOffsetForRubberBand( double offset );
-    /** Creates a linestring from the polygon ring containing the snapped vertex. Caller takes ownership of the created object*/
-    QgsGeometry* linestringFromPolygon( const QgsGeometry *featureGeom, int vertex );
-    /** Returns a single line from a multiline (or does nothing if geometry is already a single line). Deletes the input geometry*/
-    QgsGeometry* convertToSingleLine( QgsGeometry* geom, int vertex, bool& isMulti );
-    /** Converts offset line back to a multiline if necessary*/
-    QgsGeometry* convertToMultiLine( QgsGeometry* geom );
+    //! Creates a linestring from the polygon ring containing the snapped vertex. Caller takes ownership of the created object
+    QgsGeometry linestringFromPolygon( const QgsGeometry &featureGeom, int vertex );
+    //! Returns a single line from a multiline (or does nothing if geometry is already a single line). Deletes the input geometry
+    QgsGeometry convertToSingleLine( const QgsGeometry &geom, int vertex );
 };
 
 #endif // QGSMAPTOOLOFFSETCURVE_H

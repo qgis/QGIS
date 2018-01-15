@@ -16,33 +16,39 @@
 #ifndef QGSMAPRENDERERCUSTOMPAINTERJOB_H
 #define QGSMAPRENDERERCUSTOMPAINTERJOB_H
 
+#include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgsmaprendererjob.h"
 
 #include <QEventLoop>
 
-/** Job implementation that renders everything sequentially using a custom painter.
+/**
+ * \ingroup core
+ * Job implementation that renders everything sequentially using a custom painter.
  *
  * Also supports synchronous rendering in main thread for cases when rendering in background
  * is not an option because of some technical limitations (e.g. printing to printer on some
  * platforms).
  *
- * @note added in 2.4
+ * \since QGIS 2.4
  */
 class CORE_EXPORT QgsMapRendererCustomPainterJob : public QgsMapRendererJob
 {
     Q_OBJECT
   public:
-    QgsMapRendererCustomPainterJob( const QgsMapSettings& settings, QPainter* painter );
-    ~QgsMapRendererCustomPainterJob();
+    QgsMapRendererCustomPainterJob( const QgsMapSettings &settings, QPainter *painter );
+    ~QgsMapRendererCustomPainterJob() override;
 
-    virtual void start() override;
-    virtual void cancel() override;
-    virtual void waitForFinished() override;
-    virtual bool isActive() const override;
-    virtual QgsLabelingResults* takeLabelingResults() override;
+    void start() override;
+    void cancel() override;
+    void cancelWithoutBlocking() override;
+    void waitForFinished() override;
+    bool isActive() const override;
+    bool usedCachedLabels() const override;
+    QgsLabelingResults *takeLabelingResults() SIP_TRANSFER override;
 
-    //! @note not available in python bindings
-    const LayerRenderJobs& jobs() const { return mLayerJobs; }
+    //! \note not available in Python bindings
+    const LayerRenderJobs &jobs() const { return mLayerJobs; } SIP_SKIP
 
     /**
      * Wait for the job to be finished - and keep the thread's event loop running while waiting.
@@ -56,7 +62,7 @@ class CORE_EXPORT QgsMapRendererCustomPainterJob : public QgsMapRendererJob
      * Ideally the "wait for finished" method should not be used at all. The code triggering
      * rendering should not need to actively wait for rendering to finish.
      */
-    void waitForFinishedWithEventLoop( const QEventLoop::ProcessEventsFlags& flags = QEventLoop::AllEvents );
+    void waitForFinishedWithEventLoop( QEventLoop::ProcessEventsFlags flags = QEventLoop::AllEvents );
 
     /**
      * Render the map synchronously in this thread. The function does not return until the map
@@ -69,26 +75,25 @@ class CORE_EXPORT QgsMapRendererCustomPainterJob : public QgsMapRendererJob
      */
     void renderSynchronously();
 
-  protected slots:
+  private slots:
     void futureFinished();
 
-  protected:
-    static void staticRender( QgsMapRendererCustomPainterJob* self ); // function to be used within the thread
+  private:
+    static void staticRender( QgsMapRendererCustomPainterJob *self ); // function to be used within the thread
 
     // these methods are called within worker thread
     void doRender();
 
-  private:
-    QPainter* mPainter;
+    QPainter *mPainter = nullptr;
     QFuture<void> mFuture;
     QFutureWatcher<void> mFutureWatcher;
-    QgsRenderContext mLabelingRenderContext;
-    QgsPalLabeling* mLabelingEngine;
-    QgsLabelingEngineV2* mLabelingEngineV2;
+    std::unique_ptr< QgsLabelingEngine > mLabelingEngineV2;
 
     bool mActive;
     LayerRenderJobs mLayerJobs;
+    LabelRenderJob mLabelJob;
     bool mRenderSynchronously;
+
 };
 
 

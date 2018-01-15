@@ -1,73 +1,139 @@
-/***************************************************************************
-                          qgsserverinterface.sip
-
-  Class defining the interface made available to QGIS Server plugins.
-  -------------------
-  begin                : 2014-09-10
-  copyright            : (C) 2014 by Alessandro Pasotti
-  email                : a dot pasotti at itopen dot it
- ***************************************************************************/
-
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
-
-/**
- * \class QgsServerInterface
- * \brief Class defining the interface made available to server plugins.
- *
- * This class provides methods to access the request handler and
- * the capabilties cache. A method to read the environment
- * variables set in the main FCGI loop is also available.
- * Plugins can add listeners (instances of QgsServerFilter) with
- * a certain priority through the registerFilter( QgsServerFilter* , int) method.
- */
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/server/qgsserverinterface.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
 
 
-typedef QMultiMap<int, QgsServerFilter*> QgsServerFiltersMap;
+
+
 
 
 
 class QgsServerInterface
 {
-%TypeHeaderCode
-  #include "qgsserverinterface.h"
+%Docstring
+QgsServerInterface
+Class defining interfaces exposed by QGIS Server and
+made available to plugins.
+
+This class provides methods to access the request handler and
+the capabilities cache. A method to read the environment
+variables set in the main FCGI loop is also available.
+Plugins can add listeners (instances of QgsServerFilter) with
+a certain priority through the registerFilter( QgsServerFilter* , int) method.
 %End
 
+%TypeHeaderCode
+#include "qgsserverinterface.h"
+%End
   public:
-    /** Returns the current request handler*/
-    virtual QgsRequestHandler* requestHandler() = 0 /KeepReference/;
-    /** Returns the capabilities cache*/
-    virtual QgsCapabilitiesCache* capabiblitiesCache() = 0 /KeepReference/;
-    // Tansfer ownership to avoid garbage collector to call dtor
-    /** Register a filter with the given priority. The filter's requestReady()
-     * and responseReady() methods will be called from the loop*/
-    virtual void registerFilter( QgsServerFilter* filter /Transfer/, int priority = 0 ) = 0;
-    /** Set the filters map */
-    virtual void setFilters( QgsServerFiltersMap* filters /Transfer/) = 0;
-    /** Register a security module with the given priority.*/
-    virtual void registerAccessControl( QgsAccessControlFilter* accessControl /Transfer/, int priority = 0 ) = 0;
-    /** Gets the registred access control filters */
-    virtual const QgsAccessControl* accessControls() const = 0;
-    /** Return an environment variable set by FCGI*/
-    virtual QString getEnv(const QString& name ) const = 0;
-    // Commented because of problems with typedef QgsServerFiltersMap, provided
-    // methods to alter the filters map into QgsRequestHandler API
+
+
+    virtual ~QgsServerInterface();
+
+
+
+    virtual QgsCapabilitiesCache *capabilitiesCache() = 0 /KeepReference/;
+%Docstring
+Get pointer to the capabiblities cache
+
+:return: :py:class:`QgsCapabilitiesCache`
+%End
+
+    virtual QgsRequestHandler *requestHandler() = 0 /KeepReference/;
+%Docstring
+Get pointer to the request handler
+
+:return: :py:class:`QgsRequestHandler`
+%End
+
+    virtual void registerFilter( QgsServerFilter *filter /Transfer/, int priority = 0 ) = 0;
+%Docstring
+Register a :py:class:`QgsServerFilter`
+
+:param filter: the QgsServerFilter to add
+:param priority: an optional priority for the filter order
+%End
+
+    virtual void setFilters( QgsServerFiltersMap *filters /Transfer/ ) = 0;
+%Docstring
+Set the filters map
+
+:param filters: the :py:class:`QgsServerFiltersMap`
+%End
+
     virtual QgsServerFiltersMap filters() = 0;
-    /** Returns the configFilePath as seen by the server, this value is only
-     * available after requestReady has been called.*/
+%Docstring
+Return the list of current :py:class:`QgsServerFilter`
+
+:return: QgsServerFiltersMap list of :py:class:`QgsServerFilter`
+%End
+
+    virtual void registerAccessControl( QgsAccessControlFilter *accessControl /Transfer/, int priority = 0 ) = 0;
+%Docstring
+Register an access control filter
+
+:param accessControl: the access control to register
+:param priority: the priority used to order them
+%End
+
+    virtual QgsAccessControl *accessControls() const = 0;
+%Docstring
+Gets the registered access control filters
+%End
+
+    virtual QString getEnv( const QString &name ) const = 0;
+%Docstring
+Return an enrironment variable, used to pass  environment variables to Python
+%End
+
     virtual QString configFilePath() = 0;
-    /** Set the config file path */
-    virtual void setConfigFilePath( const QString& configFilePath) = 0;
+%Docstring
+Return the configuration file path
 
-private:
-    /** Constructor */
+:return: QString containing the configuration file path
+%End
+
+    virtual void setConfigFilePath( const QString &configFilePath ) = 0;
+%Docstring
+Set the configuration file path
+
+:param configFilePath: QString with the configuration file path
+%End
+
+    virtual void removeConfigCacheEntry( const QString &path ) = 0;
+%Docstring
+Remove entry from config cache
+
+:param path: the path of the file to remove
+%End
+
+    virtual void removeProjectLayers( const QString &path ) = 0;
+%Docstring
+Remove entries from layer cache
+
+:param path: the path of the project which own the layers to be removed
+%End
+
+    virtual QgsServiceRegistry *serviceRegistry() = 0 /KeepReference/;
+%Docstring
+Return the service registry
+
+:return: :py:class:`QgsServiceResgistry`
+%End
+
+
+  private:
     QgsServerInterface();
-
 };
 
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/server/qgsserverinterface.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

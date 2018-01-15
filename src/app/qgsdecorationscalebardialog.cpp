@@ -13,24 +13,27 @@
 #include "qgsdecorationscalebardialog.h"
 #include "qgsdecorationscalebar.h"
 #include "qgslogger.h"
-#include "qgscontexthelp.h"
+#include "qgshelp.h"
+#include "qgssettings.h"
 
 #include <QColorDialog>
-#include <QSettings>
 #include <QDialogButtonBox>
 #include <QPushButton>
 
-QgsDecorationScaleBarDialog::QgsDecorationScaleBarDialog( QgsDecorationScaleBar& deco, int units, QWidget* parent )
-    : QDialog( parent )
-    , mDeco( deco )
+QgsDecorationScaleBarDialog::QgsDecorationScaleBarDialog( QgsDecorationScaleBar &deco, int units, QWidget *parent )
+  : QDialog( parent )
+  , mDeco( deco )
 {
   setupUi( this );
+  connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsDecorationScaleBarDialog::buttonBox_accepted );
+  connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsDecorationScaleBarDialog::buttonBox_rejected );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsDecorationScaleBarDialog::showHelp );
 
-  QSettings settings;
-  restoreGeometry( settings.value( "/Windows/DecorationScaleBar/geometry" ).toByteArray() );
+  QgsSettings settings;
+  restoreGeometry( settings.value( QStringLiteral( "Windows/DecorationScaleBar/geometry" ) ).toByteArray() );
 
-  QPushButton* applyButton = buttonBox->button( QDialogButtonBox::Apply );
-  connect( applyButton, SIGNAL( clicked() ), this, SLOT( apply() ) );
+  QPushButton *applyButton = buttonBox->button( QDialogButtonBox::Apply );
+  connect( applyButton, &QAbstractButton::clicked, this, &QgsDecorationScaleBarDialog::apply );
 
   // set the map units in the spin box
   spnSize->setShowClearButton( false );
@@ -60,7 +63,7 @@ QgsDecorationScaleBarDialog::QgsDecorationScaleBarDialog( QgsDecorationScaleBar&
   cboPlacement->setCurrentIndex( cboPlacement->findData( mDeco.placement() ) );
   spnHorizontal->setValue( mDeco.mMarginHorizontal );
   spnVertical->setValue( mDeco.mMarginVertical );
-  wgtUnitSelection->setUnits( QgsSymbolV2::OutputUnitList() << QgsSymbolV2::MM << QgsSymbolV2::Percentage << QgsSymbolV2::Pixel );
+  wgtUnitSelection->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderPercentage << QgsUnitTypes::RenderPixels );
   wgtUnitSelection->setUnit( mDeco.mMarginUnit );
 
   grpEnable->setChecked( mDeco.enabled() );
@@ -71,25 +74,31 @@ QgsDecorationScaleBarDialog::QgsDecorationScaleBarDialog( QgsDecorationScaleBar&
 
   cboStyle->setCurrentIndex( mDeco.mStyleIndex );
 
+  pbnChangeColor->setAllowOpacity( true );
   pbnChangeColor->setColor( mDeco.mColor );
-  pbnChangeColor->setContext( "gui" );
-  pbnChangeColor->setColorDialogTitle( tr( "Select scalebar color" ) );
+  pbnChangeColor->setContext( QStringLiteral( "gui" ) );
+  pbnChangeColor->setColorDialogTitle( tr( "Select Scale Bar Fill Color" ) );
+
+  pbnChangeOutlineColor->setAllowOpacity( true );
+  pbnChangeOutlineColor->setColor( mDeco.mOutlineColor );
+  pbnChangeOutlineColor->setContext( QStringLiteral( "gui" ) );
+  pbnChangeOutlineColor->setColorDialogTitle( tr( "Select Scale Bar Outline Color" ) );
 }
 
 QgsDecorationScaleBarDialog::~QgsDecorationScaleBarDialog()
 {
-  QSettings settings;
-  settings.setValue( "/Windows/DecorationScaleBar/geometry", saveGeometry() );
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "Windows/DecorationScaleBar/geometry" ), saveGeometry() );
 }
 
-void QgsDecorationScaleBarDialog::on_buttonBox_helpRequested()
+void QgsDecorationScaleBarDialog::showHelp()
 {
-  QgsContextHelp::run( metaObject()->className() );
+  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#scale-bar" ) );
 }
 
 void QgsDecorationScaleBarDialog::apply()
 {
-  mDeco.setPlacement( static_cast< QgsDecorationItem::Placement>( cboPlacement->itemData( cboPlacement->currentIndex() ).toInt() ) );
+  mDeco.setPlacement( static_cast< QgsDecorationItem::Placement>( cboPlacement->currentData().toInt() ) );
   mDeco.mMarginUnit = wgtUnitSelection->unit();
   mDeco.mMarginHorizontal = spnHorizontal->value();
   mDeco.mMarginVertical = spnVertical->value();
@@ -98,16 +107,17 @@ void QgsDecorationScaleBarDialog::apply()
   mDeco.setEnabled( grpEnable->isChecked() );
   mDeco.mStyleIndex = cboStyle->currentIndex();
   mDeco.mColor = pbnChangeColor->color();
+  mDeco.mOutlineColor = pbnChangeOutlineColor->color();
   mDeco.update();
 }
 
-void QgsDecorationScaleBarDialog::on_buttonBox_accepted()
+void QgsDecorationScaleBarDialog::buttonBox_accepted()
 {
   apply();
   accept();
 }
 
-void QgsDecorationScaleBarDialog::on_buttonBox_rejected()
+void QgsDecorationScaleBarDialog::buttonBox_rejected()
 {
   reject();
 }

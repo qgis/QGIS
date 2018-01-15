@@ -135,7 +135,11 @@
       </widget>
      </item>
      <item row="2" column="1">
-      <widget class="QgsUnitSelectionWidget" name="mDistanceUnitWidget" native="true"/>
+      <widget class="QgsUnitSelectionWidget" name="mDistanceUnitWidget" native="true">
+       <property name="focusPolicy">
+        <enum>Qt::StrongFocus</enum>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>
@@ -250,6 +254,7 @@
  <tabstops>
   <tabstop>mXAttributeComboBox</tabstop>
   <tabstop>mYAttributeComboBox</tabstop>
+  <tabstop>mDistanceUnitWidget</tabstop>
   <tabstop>mScaleSpinBox</tabstop>
   <tabstop>mCartesianRadioButton</tabstop>
   <tabstop>mPolarRadioButton</tabstop>

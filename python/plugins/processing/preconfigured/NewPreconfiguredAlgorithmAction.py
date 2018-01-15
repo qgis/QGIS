@@ -42,5 +42,6 @@ class NewPreconfiguredAlgorithmAction(ContextAction):
                 not isinstance(self.itemData, PreconfiguredAlgorithm))
 
     def execute(self):
-        dlg = PreconfiguredAlgorithmDialog(self.itemData, self.toolbox)
+        alg = self.itemData
+        dlg = PreconfiguredAlgorithmDialog(alg, self.toolbox)
         dlg.exec_()

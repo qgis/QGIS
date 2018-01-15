@@ -21,29 +21,38 @@
 #include <QMetaType>
 #include <QString>
 #include <QPixmap>
+#include "qgis_gui.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * This class is the data only representation of a
  * QgsDetailedItemWidget, designed to be used in custom views.
  */
 class GUI_EXPORT QgsDetailedItemData
 {
   public:
-    QgsDetailedItemData();
-    void setTitle( const QString& theTitle );
-    void setDetail( const QString& theDetail );
-    void setCategory( const QString& theCategory );
-    void setIcon( const QPixmap& theIcon );
-    void setCheckable( const bool theFlag );
-    void setChecked( const bool theFlag );
-    void setEnabled( bool theFlag );
-    /** This is a hint to the delegate to render using
+
+    /**
+     * Constructor for QgsDetailedItemData.
+     */
+    QgsDetailedItemData() = default;
+
+    void setTitle( const QString &title );
+    void setDetail( const QString &detail );
+    void setCategory( const QString &category );
+    void setIcon( const QPixmap &icon );
+    void setCheckable( const bool flag );
+    void setChecked( const bool flag );
+    void setEnabled( bool flag );
+
+    /**
+     * This is a hint to the delegate to render using
      * a widget rather than manually painting every
      * part of the list item.
-     * @note the delegate may completely ignore this
+     * \note the delegate may completely ignore this
      * depending on the delegate implementation.
      */
-    void setRenderAsWidget( bool theFlag );
+    void setRenderAsWidget( bool flag );
 
     QString title() const;
     QString detail() const;
@@ -60,10 +69,10 @@ class GUI_EXPORT QgsDetailedItemData
     QString mCategory;
     QString mLibraryName;
     QPixmap mPixmap;
-    bool mCheckableFlag;
-    bool mCheckedFlag;
-    bool mEnabledFlag;
-    bool mRenderAsWidgetFlag;
+    bool mCheckableFlag = false;
+    bool mCheckedFlag = false;
+    bool mEnabledFlag = true;
+    bool mRenderAsWidgetFlag = false;
 };
 
 // Make QVariant aware of this data type (see qtdocs star

@@ -23,7 +23,7 @@ email                : brush.tyler@gmail.com
 from qgis.PyQt.QtCore import pyqtSignal
 from qgis.PyQt.QtWidgets import QWidget, QTreeView, QMenu, QLabel
 
-from qgis.core import QgsMapLayerRegistry, QgsMessageLog
+from qgis.core import QgsProject, QgsMessageLog
 from qgis.gui import QgsMessageBar, QgsMessageBarItem
 
 from .db_model import DBModel, PluginItem
@@ -137,7 +137,7 @@ class DBTree(QTreeView):
                 menu.addAction(self.tr("Re-connect"), self.reconnect)
             menu.addAction(self.tr("Remove"), self.delete)
 
-        elif not index.parent().isValid() and item.typeName() == "spatialite":
+        elif not index.parent().isValid() and item.typeName() in ("spatialite", "gpkg"):
             menu.addAction(self.tr("New Connection..."), self.newConnection)
 
         if not menu.isEmpty():
@@ -161,7 +161,7 @@ class DBTree(QTreeView):
         table = self.currentTable()
         if table is not None:
             layer = table.toMapLayer()
-            layers = QgsMapLayerRegistry.instance().addMapLayers([layer])
+            layers = QgsProject.instance().addMapLayers([layer])
             if len(layers) != 1:
                 QgsMessageLog.logMessage(
                     self.tr("%1 is an invalid layer - not loaded").replace("%1", layer.publicSource()))

@@ -7,6 +7,9 @@
 #ifndef QEXTSERIALENUMERATOR_H
 #define QEXTSERIALENUMERATOR_H
 
+#define SIP_NO_FILE
+
+
 #include <QString>
 #include <QList>
 #include <QObject>
@@ -74,7 +77,7 @@ class QextSerialRegistrationWidget : public QWidget
   QextPortInfo structure will populated with information about the corresponding device.
 
   \b Example
-  \code
+  \code{.cpp}
   QList<QextPortInfo> ports = QextSerialEnumerator::getPorts();
   Q_FOREACH( QextPortInfo port, ports ) {
       // inspect port...
@@ -86,12 +89,12 @@ class QextSerialRegistrationWidget : public QWidget
   signals.  Event-driven behavior is currently available only on Windows and OS X.
 
   \b Example
-  \code
+  \code{.cpp}
   QextSerialEnumerator* enumerator = new QextSerialEnumerator();
-  connect(enumerator, SIGNAL(deviceDiscovered(const QextPortInfo &)),
-             myClass, SLOT(onDeviceDiscovered(const QextPortInfo &)));
-  connect(enumerator, SIGNAL(deviceRemoved(const QextPortInfo &)),
-             myClass, SLOT(onDeviceRemoved(const QextPortInfo &)));
+  connect(enumerator, &QextSerialEnumerator::deviceDiscovered,
+             myClass, &MyObject::onDeviceDiscovered);
+  connect(enumerator, &QextSerialEnumerator::deviceRemoved,
+             myClass, &MyObject::onDeviceRemoved);
   \endcode
 
   \section Credits
@@ -108,7 +111,7 @@ class QextSerialEnumerator : public QObject
 Q_OBJECT
     public:
         QextSerialEnumerator( );
-        ~QextSerialEnumerator( );
+        ~QextSerialEnumerator( ) override;
 
         #ifdef Q_OS_WIN
             LRESULT onDeviceChangeWin( WPARAM wParam, LPARAM lParam );
@@ -117,7 +120,7 @@ Q_OBJECT
              * Get value of specified property from the registry.
              * 	\param key handle to an open key.
              * 	\param property property name.
-             * 	\return property value.
+             * 	\returns property value.
              */
             static QString getRegKeyValue(HKEY key, LPCTSTR property);
 
@@ -128,7 +131,7 @@ Q_OBJECT
              * \param devData pointer to an SP_DEVINFO_DATA structure that defines the device instance.
              *    this is returned by SetupDiGetDeviceInterfaceDetail() function.
              * \param property registry property. One of defined SPDRP_* constants.
-             * \return property string.
+             * \returns property string.
              */
             static QString getDeviceProperty(HDEVINFO devInfo, PSP_DEVINFO_DATA devData, DWORD property);
 
@@ -178,7 +181,7 @@ Q_OBJECT
     public:
         /*!
           Get list of ports.
-          \return list of ports currently available in the system.
+          \returns list of ports currently available in the system.
         */
         static QList<QextPortInfo> getPorts();
         /*!

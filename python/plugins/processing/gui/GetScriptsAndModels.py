@@ -17,7 +17,6 @@
 ***************************************************************************
 """
 
-
 __author__ = 'Victor Olaya'
 __date__ = 'June 2014'
 __copyright__ = '(C) 2014, Victor Olaya'
@@ -32,20 +31,22 @@ from functools import partial
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt, QCoreApplication, QUrl
-from qgis.PyQt.QtGui import QIcon, QCursor
-from qgis.PyQt.QtWidgets import QApplication, QTreeWidgetItem, QPushButton
+from qgis.PyQt.QtGui import QCursor
+from qgis.PyQt.QtWidgets import QApplication, QTreeWidgetItem, QPushButton, QMessageBox
 from qgis.PyQt.QtNetwork import QNetworkReply, QNetworkRequest
 
 from qgis.utils import iface, show_message_log
-from qgis.core import QgsNetworkAccessManager, QgsMessageLog
+from qgis.core import (QgsNetworkAccessManager,
+                       QgsMessageLog,
+                       QgsApplication)
 from qgis.gui import QgsMessageBar
 
+from processing.core.ProcessingConfig import ProcessingConfig
 from processing.gui.ToolboxAction import ToolboxAction
-from processing.script.ScriptUtils import ScriptUtils
-from processing.algs.r.RUtils import RUtils
-from processing.modeler.ModelerUtils import ModelerUtils
 from processing.gui import Help2Html
 from processing.gui.Help2Html import getDescription, ALG_DESC, ALG_VERSION, ALG_CREATOR
+from processing.script.ScriptUtils import ScriptUtils
+from processing.modeler.ModelerUtils import ModelerUtils
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 WIDGET, BASE = uic.loadUiType(
@@ -59,29 +60,19 @@ class GetScriptsAction(ToolboxAction):
         self.group, self.i18n_group = self.trAction('Tools')
 
     def getIcon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'script.png'))
+        return QgsApplication.getThemeIcon("/processingScript.svg")
 
     def execute(self):
+        repoUrl = ProcessingConfig.getSetting(ProcessingConfig.MODELS_SCRIPTS_REPO)
+        if repoUrl is None or repoUrl == '':
+            QMessageBox.warning(None,
+                                self.tr('Repository error'),
+                                self.tr('Scripts and models repository is not configured.'))
+            return
         dlg = GetScriptsAndModelsDialog(GetScriptsAndModelsDialog.SCRIPTS)
         dlg.exec_()
-        if dlg.updateToolbox:
-            self.toolbox.updateProvider('script')
-
-
-class GetRScriptsAction(ToolboxAction):
-
-    def __init__(self):
-        self.name, self.i18n_name = self.trAction('Get R scripts from on-line scripts collection')
-        self.group, self.i18n_group = self.trAction('Tools')
-
-    def getIcon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'r.svg'))
-
-    def execute(self):
-        dlg = GetScriptsAndModelsDialog(GetScriptsAndModelsDialog.RSCRIPTS)
-        dlg.exec_()
-        if dlg.updateToolbox:
-            self.toolbox.updateProvider('r')
+        if dlg.updateProvider:
+            QgsApplication.processingRegistry().providerById('script').refreshAlgorithms()
 
 
 class GetModelsAction(ToolboxAction):
@@ -91,13 +82,20 @@ class GetModelsAction(ToolboxAction):
         self.group, self.i18n_group = self.trAction('Tools')
 
     def getIcon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'model.png'))
+        return QgsApplication.getThemeIcon("/processingModel.svg")
 
     def execute(self):
+        repoUrl = ProcessingConfig.getSetting(ProcessingConfig.MODELS_SCRIPTS_REPO)
+        if repoUrl is None or repoUrl == '':
+            QMessageBox.warning(None,
+                                self.tr('Repository error'),
+                                self.tr('Scripts and models repository is not configured.'))
+            return
+
         dlg = GetScriptsAndModelsDialog(GetScriptsAndModelsDialog.MODELS)
         dlg.exec_()
-        if dlg.updateToolbox:
-            self.toolbox.updateProvider('model')
+        if dlg.updateProvider:
+            QgsApplication.processingRegistry().providerById('model').refreshAlgorithms()
 
 
 class GetScriptsAndModelsDialog(BASE, WIDGET):
@@ -115,37 +113,40 @@ class GetScriptsAndModelsDialog(BASE, WIDGET):
                                            'system</li></ul>')
     MODELS = 0
     SCRIPTS = 1
-    RSCRIPTS = 2
 
     tr_disambiguation = {0: 'GetModelsAction',
-                         1: 'GetScriptsAction',
-                         2: 'GetRScriptsAction'}
+                         1: 'GetScriptsAction'}
 
     def __init__(self, resourceType):
         super(GetScriptsAndModelsDialog, self).__init__(iface.mainWindow())
         self.setupUi(self)
+
+        if hasattr(self.leFilter, 'setPlaceholderText'):
+            self.leFilter.setPlaceholderText(self.tr('Search...'))
+
         self.manager = QgsNetworkAccessManager.instance()
+
+        repoUrl = ProcessingConfig.getSetting(ProcessingConfig.MODELS_SCRIPTS_REPO)
 
         self.resourceType = resourceType
         if self.resourceType == self.MODELS:
-            self.folder = ModelerUtils.modelsFolder()
-            self.urlBase = 'https://raw.githubusercontent.com/qgis/QGIS-Processing/master/models/'
-            self.icon = QIcon(os.path.join(pluginPath, 'images', 'model.png'))
+            self.folder = ModelerUtils.modelsFolders()[0]
+            self.urlBase = '{}/models/'.format(repoUrl)
+            self.icon = QgsApplication.getThemeIcon("/processingModel.svg")
         elif self.resourceType == self.SCRIPTS:
-            self.folder = ScriptUtils.scriptsFolder()
-            self.urlBase = 'https://raw.githubusercontent.com/qgis/QGIS-Processing/master/scripts/'
-            self.icon = QIcon(os.path.join(pluginPath, 'images', 'script.png'))
-        else:
-            self.folder = RUtils.RScriptsFolder()
-            self.urlBase = 'https://raw.githubusercontent.com/qgis/QGIS-Processing/master/rscripts/'
-            self.icon = QIcon(os.path.join(pluginPath, 'images', 'r.svg'))
+            self.folder = ScriptUtils.scriptsFolders()[0]
+            self.urlBase = '{}/scripts/'.format(repoUrl)
+            self.icon = QgsApplication.getThemeIcon("/processingScript.svg")
 
         self.lastSelectedItem = None
-        self.updateToolbox = False
+        self.updateProvider = False
+        self.data = None
+
         self.populateTree()
         self.buttonBox.accepted.connect(self.okPressed)
         self.buttonBox.rejected.connect(self.cancelPressed)
         self.tree.currentItemChanged.connect(self.currentItemChanged)
+        self.leFilter.textChanged.connect(self.fillTree)
 
     def popupError(self, error=None, url=None):
         """Popups an Error message bar for network errors."""
@@ -161,7 +162,7 @@ class GetScriptsAndModelsDialog(BASE, WIDGET):
 
     def grabHTTP(self, url, loadFunction, arguments=None):
         """Grab distant content via QGIS internal classes and QtNetwork."""
-        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
+        QApplication.setOverrideCursor(Qt.WaitCursor)
         request = QUrl(url)
         reply = self.manager.get(QNetworkRequest(request))
         if arguments:
@@ -173,15 +174,6 @@ class GetScriptsAndModelsDialog(BASE, WIDGET):
             QCoreApplication.processEvents()
 
     def populateTree(self):
-        self.uptodateItem = QTreeWidgetItem()
-        self.uptodateItem.setText(0, self.tr('Installed'))
-        self.toupdateItem = QTreeWidgetItem()
-        self.toupdateItem.setText(0, self.tr('Updatable'))
-        self.notinstalledItem = QTreeWidgetItem()
-        self.notinstalledItem.setText(0, self.tr('Not installed'))
-        self.toupdateItem.setIcon(0, self.icon)
-        self.uptodateItem.setIcon(0, self.icon)
-        self.notinstalledItem.setIcon(0, self.icon)
         self.grabHTTP(self.urlBase + 'list.txt', self.treeLoaded)
 
     def treeLoaded(self, reply):
@@ -193,44 +185,75 @@ class GetScriptsAndModelsDialog(BASE, WIDGET):
         if reply.error() != QNetworkReply.NoError:
             self.popupError(reply.error(), reply.request().url().toString())
         else:
-            resources = unicode(reply.readAll()).splitlines()
-            resources = [r.split(',') for r in resources]
+            resources = bytes(reply.readAll()).decode('utf8').splitlines()
+            resources = [r.split(',', 2) for r in resources]
             self.resources = {f: (v, n) for f, v, n in resources}
-            for filename, version, name in sorted(resources, key=lambda kv: kv[2].lower()):
-                treeBranch = self.getTreeBranchForState(filename, float(version))
+
+        reply.deleteLater()
+        self.fillTree()
+
+    def fillTree(self):
+        self.tree.clear()
+
+        self.uptodateItem = QTreeWidgetItem()
+        self.uptodateItem.setText(0, self.tr('Installed'))
+        self.toupdateItem = QTreeWidgetItem()
+        self.toupdateItem.setText(0, self.tr('Updatable'))
+        self.notinstalledItem = QTreeWidgetItem()
+        self.notinstalledItem.setText(0, self.tr('Not installed'))
+        self.toupdateItem.setIcon(0, self.icon)
+        self.uptodateItem.setIcon(0, self.icon)
+        self.notinstalledItem.setIcon(0, self.icon)
+
+        text = str(self.leFilter.text())
+
+        for i in sorted(list(self.resources.keys()), key=lambda kv: kv[2].lower()):
+            filename = i
+            version = self.resources[filename][0]
+            name = self.resources[filename][1]
+            treeBranch = self.getTreeBranchForState(filename, float(version))
+            if text == '' or text.lower() in filename.lower():
                 item = TreeItem(filename, name, self.icon)
                 treeBranch.addChild(item)
                 if treeBranch != self.notinstalledItem:
                     item.setCheckState(0, Qt.Checked)
 
-        reply.deleteLater()
         self.tree.addTopLevelItem(self.toupdateItem)
         self.tree.addTopLevelItem(self.notinstalledItem)
         self.tree.addTopLevelItem(self.uptodateItem)
 
-        self.webView.setHtml(self.HELP_TEXT)
+        if text != '':
+            self.tree.expandAll()
+
+        self.txtHelp.setHtml(self.HELP_TEXT)
 
     def setHelp(self, reply, item):
-        """Change the webview HTML content"""
+        """Change the HTML content"""
         QApplication.restoreOverrideCursor()
         if reply.error() != QNetworkReply.NoError:
             html = self.tr('<h2>No detailed description available for this script</h2>')
         else:
-            content = unicode(reply.readAll())
-            descriptions = json.loads(content)
+            content = bytes(reply.readAll()).decode('utf8')
+            try:
+                descriptions = json.loads(content)
+            except json.decoder.JSONDecodeError:
+                html = self.tr('<h2>JSON Decoding Error - could not load help</h2>')
+            except Exception:
+                html = self.tr('<h2>Unspecified Error - could not load help</h2>')
+
             html = '<h2>%s</h2>' % item.name
-            html += self.tr('<p><b>Description:</b> %s</p>') % getDescription(ALG_DESC, descriptions)
-            html += self.tr('<p><b>Created by:</b> %s') % getDescription(ALG_CREATOR, descriptions)
-            html += self.tr('<p><b>Version:</b> %s') % getDescription(ALG_VERSION, descriptions)
+            html += self.tr('<p><b>Description:</b> {0}</p>').format(getDescription(ALG_DESC, descriptions))
+            html += self.tr('<p><b>Created by:</b> {0}').format(getDescription(ALG_CREATOR, descriptions))
+            html += self.tr('<p><b>Version:</b> {0}').format(getDescription(ALG_VERSION, descriptions))
         reply.deleteLater()
-        self.webView.setHtml(html)
+        self.txtHelp.setHtml(html)
 
     def currentItemChanged(self, item, prev):
         if isinstance(item, TreeItem):
             url = self.urlBase + item.filename.replace(' ', '%20') + '.help'
             self.grabHTTP(url, self.setHelp, item)
         else:
-            self.webView.setHtml(self.HELP_TEXT)
+            self.txtHelp.setHtml(self.HELP_TEXT)
 
     def getTreeBranchForState(self, filename, version):
         if not os.path.exists(os.path.join(self.folder, filename)):
@@ -261,7 +284,7 @@ class GetScriptsAndModelsDialog(BASE, WIDGET):
                 self.popupError(reply.error(), reply.request().url().toString())
                 content = None
         else:
-            content = reply.readAll()
+            content = bytes(reply.readAll()).decode('utf8')
 
         reply.deleteLater()
         if content:
@@ -273,11 +296,11 @@ class GetScriptsAndModelsDialog(BASE, WIDGET):
 
     def okPressed(self):
         toDownload = []
-        for i in xrange(self.toupdateItem.childCount()):
+        for i in range(self.toupdateItem.childCount()):
             item = self.toupdateItem.child(i)
             if item.checkState(0) == Qt.Checked:
                 toDownload.append(item.filename)
-        for i in xrange(self.notinstalledItem.childCount()):
+        for i in range(self.notinstalledItem.childCount()):
             item = self.notinstalledItem.child(i)
             if item.checkState(0) == Qt.Checked:
                 toDownload.append(item.filename)
@@ -293,7 +316,7 @@ class GetScriptsAndModelsDialog(BASE, WIDGET):
                 self.grabHTTP(url, self.storeFile, filename + '.help')
 
         toDelete = []
-        for i in xrange(self.uptodateItem.childCount()):
+        for i in range(self.uptodateItem.childCount()):
             item = self.uptodateItem.child(i)
             if item.checkState(0) == Qt.Unchecked:
                 toDelete.append(item.filename)
@@ -305,7 +328,7 @@ class GetScriptsAndModelsDialog(BASE, WIDGET):
                 if os.path.exists(path):
                     os.remove(path)
 
-        self.updateToolbox = len(toDownload) + len(toDelete) > 0
+        self.updateProvider = len(toDownload) + len(toDelete) > 0
         super(GetScriptsAndModelsDialog, self).accept()
 
 

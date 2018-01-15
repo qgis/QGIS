@@ -27,23 +27,23 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from qgis.PyQt.QtGui import QIcon
-
+from qgis.core import QgsProcessingProvider
 from processing.preconfigured.PreconfiguredAlgorithm import PreconfiguredAlgorithm
 from processing.preconfigured.PreconfiguredUtils import preconfiguredAlgorithmsFolder
-from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.preconfigured.NewPreconfiguredAlgorithmAction import NewPreconfiguredAlgorithmAction
 from processing.preconfigured.DeletePreconfiguredAlgorithmAction import DeletePreconfiguredAlgorithmAction
+from processing.gui.ProviderActions import ProviderContextMenuActions
 
 
-class PreconfiguredAlgorithmProvider(AlgorithmProvider):
+class PreconfiguredAlgorithmProvider(QgsProcessingProvider):
 
     def __init__(self):
-        AlgorithmProvider.__init__(self)
+        super().__init__()
+        self.algs = []
         self.contextMenuActions = \
             [NewPreconfiguredAlgorithmAction(), DeletePreconfiguredAlgorithmAction()]
 
-    def _loadAlgorithms(self):
+    def loadAlgorithms(self):
         self.algs = []
         folder = preconfiguredAlgorithmsFolder()
         for path, subdirs, files in os.walk(folder):
@@ -52,12 +52,19 @@ class PreconfiguredAlgorithmProvider(AlgorithmProvider):
                     fullpath = os.path.join(path, descriptionFile)
                     alg = PreconfiguredAlgorithm(fullpath)
                     self.algs.append(alg)
+        for a in self.algs:
+            self.addAlgorithm(a)
 
-    def getIcon(self):
-        return QIcon(os.path.join(os.path.dirname(os.path.dirname(__file__)), 'images', 'alg.png'))
+    def load(self):
+        ProviderContextMenuActions.registerProviderContextMenuActions(self.contextMenuActions)
+        self.refreshAlgorithms()
+        return True
 
-    def getName(self):
+    def unload(self):
+        ProviderContextMenuActions.deregisterProviderContextMenuActions(self.contextMenuActions)
+
+    def id(self):
         return 'preconfigured'
 
-    def getDescription(self):
+    def name(self):
         return self.tr('Preconfigured algorithms', 'PreconfiguredAlgorithmProvider')

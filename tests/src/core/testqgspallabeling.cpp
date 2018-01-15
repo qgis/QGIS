@@ -12,11 +12,10 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QString>
 #include <QStringList>
-#include <QSharedPointer>
 
 #include "qgspallabeling.h"
 
@@ -56,7 +55,7 @@ void TestQgsPalLabeling::cleanup()
 
 void TestQgsPalLabeling::wrapChar()
 {
-  QCOMPARE( QgsPalLabeling::splitToLines( "nolines", QString() ) , QStringList() << "nolines" );
+  QCOMPARE( QgsPalLabeling::splitToLines( "nolines", QString() ), QStringList() << "nolines" );
   QCOMPARE( QgsPalLabeling::splitToLines( "new line\nonly", QString() ), QStringList() << "new line" << "only" );
   QCOMPARE( QgsPalLabeling::splitToLines( "new line\nonly", QString( "\n" ) ), QStringList() << "new line" << "only" );
   QCOMPARE( QgsPalLabeling::splitToLines( "mixed new line\nand char", QString( " " ) ), QStringList() << "mixed" << "new" << "line" << "and" << "char" );
@@ -66,10 +65,10 @@ void TestQgsPalLabeling::wrapChar()
 
 void TestQgsPalLabeling::graphemes()
 {
-  QCOMPARE( QgsPalLabeling::splitToGraphemes( QString() ) , QStringList() );
-  QCOMPARE( QgsPalLabeling::splitToGraphemes( "abcd" ) , QStringList() << "a" << "b" << "c" << "d" );
-  QCOMPARE( QgsPalLabeling::splitToGraphemes( "ab cd" ) , QStringList() << "a" << "b" << " " << "c" << "d" );
-  QCOMPARE( QgsPalLabeling::splitToGraphemes( "ab cd " ) , QStringList() << "a" << "b" << " " << "c" << "d" << " " );
+  QCOMPARE( QgsPalLabeling::splitToGraphemes( QString() ), QStringList() );
+  QCOMPARE( QgsPalLabeling::splitToGraphemes( "abcd" ), QStringList() << "a" << "b" << "c" << "d" );
+  QCOMPARE( QgsPalLabeling::splitToGraphemes( "ab cd" ), QStringList() << "a" << "b" << " " << "c" << "d" );
+  QCOMPARE( QgsPalLabeling::splitToGraphemes( "ab cd " ), QStringList() << "a" << "b" << " " << "c" << "d" << " " );
 
   //note - have to use this method to build up unicode QStrings to avoid issues with Windows
   //builds and invalid codepages
@@ -170,5 +169,5 @@ void TestQgsPalLabeling::graphemes()
             << expected2Pt11 );
 }
 
-QTEST_MAIN( TestQgsPalLabeling )
+QGSTEST_MAIN( TestQgsPalLabeling )
 #include "testqgspallabeling.moc"

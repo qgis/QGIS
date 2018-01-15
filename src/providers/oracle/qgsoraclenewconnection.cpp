@@ -15,26 +15,27 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QSettings>
 #include <QMessageBox>
 #include <QInputDialog>
+#include <QRegExpValidator>
 
+#include "qgssettings.h"
 #include "qgsoraclenewconnection.h"
-#include "qgscontexthelp.h"
 #include "qgsdatasourceuri.h"
 #include "qgsoracletablemodel.h"
 #include "qgsoracleconnpool.h"
 
-QgsOracleNewConnection::QgsOracleNewConnection( QWidget *parent, const QString& connName, Qt::WindowFlags fl )
-    : QDialog( parent, fl ), mOriginalConnName( connName )
+QgsOracleNewConnection::QgsOracleNewConnection( QWidget *parent, const QString &connName, Qt::WindowFlags fl )
+  : QDialog( parent, fl ), mOriginalConnName( connName )
 {
   setupUi( this );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsOracleNewConnection::showHelp );
 
   if ( !connName.isEmpty() )
   {
     // populate the dialog with the information stored for the connection
     // populate the fields with the stored setting parameters
-    QSettings settings;
+    QgsSettings settings;
 
     QString key = "/Oracle/connections/" + connName;
     txtDatabase->setText( settings.value( key + "/database" ).toString() );
@@ -52,6 +53,7 @@ QgsOracleNewConnection::QgsOracleNewConnection( QWidget *parent, const QString& 
     cb_allowGeometrylessTables->setChecked( settings.value( key + "/allowGeometrylessTables", false ).toBool() );
     cb_useEstimatedMetadata->setChecked( settings.value( key + "/estimatedMetadata", false ).toBool() );
     cb_onlyExistingTypes->setChecked( settings.value( key + "/onlyExistingTypes", true ).toBool() );
+    cb_includeGeoAttributes->setChecked( settings.value( key + "/includeGeoAttributes", false ).toBool() );
 
     if ( settings.value( key + "/saveUsername" ).toString() == "true" )
     {
@@ -79,17 +81,18 @@ QgsOracleNewConnection::QgsOracleNewConnection( QWidget *parent, const QString& 
 
     txtName->setText( connName );
   }
+  txtName->setValidator( new QRegExpValidator( QRegExp( "[^\\/]+" ), txtName ) );
 }
-/** Autoconnected SLOTS **/
+//! Autoconnected SLOTS *
 void QgsOracleNewConnection::accept()
 {
-  QSettings settings;
+  QgsSettings settings;
   QString baseKey = "/Oracle/connections/";
   settings.setValue( baseKey + "selected", txtName->text() );
 
   if ( chkStorePassword->isChecked() &&
        QMessageBox::question( this,
-                              tr( "Saving passwords" ),
+                              tr( "Saving Passwords" ),
                               tr( "WARNING: You have opted to save your password. It will be stored in plain text in your project files and in your home directory on Unix-like systems, or in your user profile on Windows. If you do not want this to happen, please press the Cancel button.\n" ),
                               QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
   {
@@ -97,13 +100,13 @@ void QgsOracleNewConnection::accept()
   }
 
   // warn if entry was renamed to an existing connection
-  if (( mOriginalConnName.isNull() || mOriginalConnName.compare( txtName->text(), Qt::CaseInsensitive ) != 0 ) &&
-      ( settings.contains( baseKey + txtName->text() + "/service" ) ||
-        settings.contains( baseKey + txtName->text() + "/host" ) ) &&
-      QMessageBox::question( this,
-                             tr( "Save connection" ),
-                             tr( "Should the existing connection %1 be overwritten?" ).arg( txtName->text() ),
-                             QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
+  if ( ( mOriginalConnName.isNull() || mOriginalConnName.compare( txtName->text(), Qt::CaseInsensitive ) != 0 ) &&
+       ( settings.contains( baseKey + txtName->text() + "/service" ) ||
+         settings.contains( baseKey + txtName->text() + "/host" ) ) &&
+       QMessageBox::question( this,
+                              tr( "Save Connection" ),
+                              tr( "Should the existing connection %1 be overwritten?" ).arg( txtName->text() ),
+                              QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
   {
     return;
   }
@@ -126,6 +129,7 @@ void QgsOracleNewConnection::accept()
   settings.setValue( baseKey + "/allowGeometrylessTables", cb_allowGeometrylessTables->isChecked() );
   settings.setValue( baseKey + "/estimatedMetadata", cb_useEstimatedMetadata->isChecked() ? "true" : "false" );
   settings.setValue( baseKey + "/onlyExistingTypes", cb_onlyExistingTypes->isChecked() ? "true" : "false" );
+  settings.setValue( baseKey + "/includeGeoAttributes", cb_includeGeoAttributes->isChecked() ? "true" : "false" );
   settings.setValue( baseKey + "/saveUsername", chkStoreUsername->isChecked() ? "true" : "false" );
   settings.setValue( baseKey + "/savePassword", chkStorePassword->isChecked() ? "true" : "false" );
   settings.setValue( baseKey + "/dboptions", txtOptions->text() );
@@ -136,7 +140,7 @@ void QgsOracleNewConnection::accept()
 
 void QgsOracleNewConnection::on_btnConnect_clicked()
 {
-  QgsDataSourceURI uri;
+  QgsDataSourceUri uri;
   uri.setConnection( txtHost->text(), txtPort->text(), txtDatabase->text(), txtUsername->text(), txtPassword->text() );
   if ( !txtOptions->text().isEmpty() )
     uri.setParam( "dboptions", txtOptions->text() );
@@ -148,23 +152,26 @@ void QgsOracleNewConnection::on_btnConnect_clicked()
   if ( conn )
   {
     // Database successfully opened; we can now issue SQL commands.
-    QMessageBox::information( this,
-                              tr( "Test connection" ),
-                              tr( "Connection to %1 was successful" ).arg( txtDatabase->text() ) );
-
+    bar->pushMessage( tr( "Connection to %1 was successful." ).arg( txtDatabase->text() ),
+                      QgsMessageBar::INFO );
     // free connection resources
     QgsOracleConnPool::instance()->releaseConnection( conn );
   }
   else
   {
-    QMessageBox::information( this,
-                              tr( "Test connection" ),
-                              tr( "Connection failed - consult message log for details.\n\n" ) );
+    bar->pushMessage( tr( "Connection failed - consult message log for details." ),
+                      QgsMessageBar::WARNING );
   }
 }
 
-/** End  Autoconnected SLOTS **/
+//! End  Autoconnected SLOTS *
 
 QgsOracleNewConnection::~QgsOracleNewConnection()
 {
+}
+
+
+void QgsOracleNewConnection::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#connecting-to-oracle-spatial" ) );
 }

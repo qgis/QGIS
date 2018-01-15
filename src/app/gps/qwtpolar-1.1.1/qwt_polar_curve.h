@@ -141,7 +141,7 @@ private:
     PrivateData *d_data;
 };
 
-//! \return the the curve data
+//! \returns the the curve data
 inline const QwtSeriesData<QwtPointPolar> *QwtPolarCurve::data() const
 {
     return d_series;
@@ -149,7 +149,7 @@ inline const QwtSeriesData<QwtPointPolar> *QwtPolarCurve::data() const
 
 /*!
     \param i index
-    \return point at position i
+    \returns point at position i
 */
 inline QwtPointPolar QwtPolarCurve::sample( int i ) const
 {

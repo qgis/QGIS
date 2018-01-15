@@ -1,4 +1,0 @@
-Real Surface Area
-ta_morphometry
-ParameterRaster|DEM|Elevation|False
-OutputRaster|AREA|Surface Area

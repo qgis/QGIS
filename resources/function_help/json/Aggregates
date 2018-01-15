@@ -1,0 +1,5 @@
+{
+  "name": "Aggregates",
+  "type": "group",
+  "description": "Contains functions which aggregate values over layers and fields."
+}

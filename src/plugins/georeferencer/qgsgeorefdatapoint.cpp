@@ -19,15 +19,15 @@
 
 #include "qgsgeorefdatapoint.h"
 
-QgsGeorefDataPoint::QgsGeorefDataPoint( QgsMapCanvas* srcCanvas, QgsMapCanvas *dstCanvas,
-                                        const QgsPoint& pixelCoords, const QgsPoint& mapCoords,
+QgsGeorefDataPoint::QgsGeorefDataPoint( QgsMapCanvas *srcCanvas, QgsMapCanvas *dstCanvas,
+                                        const QgsPointXY &pixelCoords, const QgsPointXY &mapCoords,
                                         bool enable )
-    : mSrcCanvas( srcCanvas )
-    , mDstCanvas( dstCanvas )
-    , mPixelCoords( pixelCoords )
-    , mMapCoords( mapCoords )
-    , mId( -1 )
-    , mEnabled( enable )
+  : mSrcCanvas( srcCanvas )
+  , mDstCanvas( dstCanvas )
+  , mPixelCoords( pixelCoords )
+  , mMapCoords( mapCoords )
+  , mId( -1 )
+  , mEnabled( enable )
 {
   mGCPSourceItem = new QgsGCPCanvasItem( srcCanvas, this, true );
   mGCPDestinationItem = new QgsGCPCanvasItem( dstCanvas, this, false );
@@ -39,13 +39,8 @@ QgsGeorefDataPoint::QgsGeorefDataPoint( QgsMapCanvas* srcCanvas, QgsMapCanvas *d
 }
 
 QgsGeorefDataPoint::QgsGeorefDataPoint( const QgsGeorefDataPoint &p )
-    : QObject()
-    , mSrcCanvas( nullptr )
-    , mDstCanvas( nullptr )
-    , mGCPSourceItem( nullptr )
-    , mGCPDestinationItem( nullptr )
+  : QObject( nullptr )
 {
-  Q_UNUSED( p );
   // we share item representation on canvas between all points
 //  mGCPSourceItem = new QgsGCPCanvasItem(p.srcCanvas(), p.pixelCoords(), p.mapCoords(), p.isEnabled());
 //  mGCPDestinationItem = new QgsGCPCanvasItem(p.dstCanvas(), p.pixelCoords(), p.mapCoords(), p.isEnabled());
@@ -62,14 +57,14 @@ QgsGeorefDataPoint::~QgsGeorefDataPoint()
   delete mGCPDestinationItem;
 }
 
-void QgsGeorefDataPoint::setPixelCoords( const QgsPoint &p )
+void QgsGeorefDataPoint::setPixelCoords( const QgsPointXY &p )
 {
   mPixelCoords = p;
   mGCPSourceItem->update();
   mGCPDestinationItem->update();
 }
 
-void QgsGeorefDataPoint::setMapCoords( const QgsPoint &p )
+void QgsGeorefDataPoint::setMapCoords( const QgsPointXY &p )
 {
   mMapCoords = p;
   if ( mGCPSourceItem )
@@ -145,12 +140,12 @@ void QgsGeorefDataPoint::moveTo( QPoint p, bool isMapPlugin )
 {
   if ( isMapPlugin )
   {
-    QgsPoint pnt = mGCPSourceItem->toMapCoordinates( p );
+    QgsPointXY pnt = mGCPSourceItem->toMapCoordinates( p );
     mPixelCoords = pnt;
   }
   else
   {
-    QgsPoint pnt = mGCPDestinationItem->toMapCoordinates( p );
+    QgsPointXY pnt = mGCPDestinationItem->toMapCoordinates( p );
     mMapCoords = pnt;
   }
   mGCPSourceItem->update();

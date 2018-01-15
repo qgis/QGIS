@@ -20,7 +20,9 @@
 #define QGSADDTABORGROUP
 
 #include "ui_qgsaddtaborgroupbase.h"
-#include "qgisgui.h"
+#include "qgsguiutils.h"
+#include "qgis_app.h"
+#include "qgshelp.h"
 
 class QTreeWidgetItem;
 class QgsVectorLayer;
@@ -30,28 +32,28 @@ class APP_EXPORT QgsAddTabOrGroup : public QDialog, private Ui::QgsAddTabOrGroup
     Q_OBJECT
 
   public:
-    typedef QPair<QString, QTreeWidgetItem*> TabPair;
+    typedef QPair<QString, QTreeWidgetItem *> TabPair;
 
   public:
-    QgsAddTabOrGroup( QgsVectorLayer *lyr, const QList<TabPair>& tabList, QWidget *parent = nullptr );
-    ~QgsAddTabOrGroup();
+    QgsAddTabOrGroup( QgsVectorLayer *lyr, const QList<TabPair> &tabList, QWidget *parent = nullptr );
 
     QString name();
 
-    QTreeWidgetItem* tab();
+    QTreeWidgetItem *tab();
 
     int columnCount() const;
 
     bool tabButtonIsChecked();
 
-    virtual void accept() override;
+    void accept() override;
 
   private slots:
-    void on_mGroupButton_toggled( bool checked );
-    void on_mTabButton_toggled( bool checked );
+    void mGroupButton_toggled( bool checked );
+    void mTabButton_toggled( bool checked );
+    void showHelp();
 
   protected:
-    QgsVectorLayer *mLayer;
+    QgsVectorLayer *mLayer = nullptr;
     QList< TabPair > mTabs;
 };
 

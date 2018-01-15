@@ -14,17 +14,30 @@
 #                                                                         #
 ###########################################################################
 
-for ASTYLE in $(dirname $0)/qgisstyle $(dirname $0)/RelWithDebInfo/qgisstyle
+# sort by version option
+SV=V
+if [[ "$OSTYPE" =~ darwin* ]]; then
+	SV=n
+fi
+
+min_version="3"
+astyle_version_check() {
+	[ `printf "$($1 --version | cut -d ' ' -f4)\n$min_version" | sort -${SV} | head -n1` = "$min_version" ]
+}
+
+for ASTYLE in ${QGISSTYLE} $(dirname $0)/qgisstyle $(dirname $0)/RelWithDebInfo/qgisstyle astyle
 do
 	if type -p $ASTYLE >/dev/null; then
-		break
+		if astyle_version_check $ASTYLE; then
+			break
+		fi
 	fi
 	ASTYLE=
 done
 
 if [ -z "$ASTYLE" ]; then
-	echo "qgisstyle not found - please enable WITH_ASTYLE in cmake and build it" >&2
-	exit 1	
+	echo "qgisstyle / astyle not found - please install astyle >= $min_version or enable WITH_ASTYLE in cmake and build" >&2
+	exit 1
 fi
 
 if type -p tput >/dev/null; then
@@ -65,20 +78,21 @@ astyleit() {
 	modified=$1.unify_includes_modified
 	cp "$1" "$modified"
 	scripts/unify_includes.pl "$modified"
+	scripts/doxygen_space.pl "$modified"
 	diff "$1" "$modified" >/dev/null || mv "$modified" "$1"
 	rm -f "$modified"
 }
 
 for f in "$@"; do
 	case "$f" in
-		src/app/gps/qwtpolar-*|src/core/gps/qextserialport/*|src/plugins/grass/qtermwidget/*|src/astyle/*|python/ext-libs/*|src/providers/spatialite/qspatialite/*|src/plugins/dxf2shp_converter/dxflib/src/*|src/plugins/globe/osgEarthQt/*|src/plugins/globe/osgEarthUtil/*|python/ext-libs/*|*/ui_*.py)
+		src/app/gps/qwtpolar-*|src/core/gps/qextserialport/*|src/plugins/grass/qtermwidget/*|external/astyle/*|python/ext-libs/*|src/providers/spatialite/qspatialite/*|src/plugins/globe/osgEarthQt/*|src/plugins/globe/osgEarthUtil/*|python/ext-libs/*|*/ui_*.py|*.astyle|tests/testdata/*|editors/*)
 			echo -ne "$f skipped $elcr"
 			continue
 			;;
 
 		*.cpp|*.h|*.c|*.h|*.cxx|*.hxx|*.c++|*.h++|*.cc|*.hh|*.C|*.H|*.hpp)
 			if [ -x "$f" ]; then
-							chmod a-x "$f"
+				chmod a-x "$f"
 			fi
 			cmd=astyleit
 			;;

@@ -1,64 +1,126 @@
-/**
- * Layer tree node points to a map layer.
- *
- * When using with existing QgsMapLayer instance, it is expected that the layer
- * has been registered in QgsMapLayerRegistry earlier.
- *
- * The node can exist also without a valid instance of a layer (just ID). That
- * means the referenced layer does not need to be loaded in order to use it
- * in layer tree. In such case, the node will start listening to map layer
- * registry updates in expectation that the layer (identified by its ID) will
- * be loaded later.
- *
- * A map layer is supposed to be present in one layer tree just once. It is
- * however possible that temporarily a layer exists in one tree more than just
- * once, e.g. while reordering items with drag and drop.
- *
- * @note added in 2.4
- */
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/layertree/qgslayertreelayer.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
 class QgsLayerTreeLayer : QgsLayerTreeNode
 {
-%TypeHeaderCode
-#include <qgslayertreelayer.h>
+%Docstring
+Layer tree node points to a map layer.
+
+The node can exist also without a valid instance of a layer (just ID). That
+means the referenced layer does not need to be loaded in order to use it
+in layer tree. In such case, resolveReferences() method can be called
+once the layer is loaded.
+
+A map layer is supposed to be present in one layer tree just once. It is
+however possible that temporarily a layer exists in one tree more than just
+once, e.g. while reordering items with drag and drop.
+
+.. versionadded:: 2.4
 %End
 
+%TypeHeaderCode
+#include "qgslayertreelayer.h"
+%End
   public:
-    explicit QgsLayerTreeLayer( QgsMapLayer* layer );
+    explicit QgsLayerTreeLayer( QgsMapLayer *layer );
 
-    explicit QgsLayerTreeLayer( const QString& layerId, const QString& name = QString() );
+
+    explicit QgsLayerTreeLayer( const QString &layerId, const QString &name = QString(), const QString &source = QString(), const QString &provider = QString() );
+%Docstring
+Constructor for QgsLayerTreeLayer using weak references to layer ID, ``name``, public ``source``, and ``provider`` key.
+%End
 
     QString layerId() const;
 
-    QgsMapLayer* layer() const;
+    QgsMapLayer *layer() const;
 
-    QString layerName() const;
-    void setLayerName( const QString& n );
+    virtual QString name() const;
 
-    Qt::CheckState isVisible() const;
-    void setVisible( Qt::CheckState visible );
+%Docstring
+Returns the layer's name.
 
-    static QgsLayerTreeLayer* readXML( QDomElement& element ) /Factory/;
-    virtual void writeXML( QDomElement& parentElement );
+.. versionadded:: 3.0
+%End
+
+    virtual void setName( const QString &n );
+
+%Docstring
+Sets the layer's name.
+
+.. versionadded:: 3.0
+%End
+
+    static QgsLayerTreeLayer *readXml( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
+%Docstring
+Read layer node from XML. Returns new instance.
+Does not resolve textual references to layers. Call resolveReferences() afterwards to do it.
+%End
+
+    static QgsLayerTreeLayer *readXml( QDomElement &element, const QgsProject *project, const QgsReadWriteContext &context ) /Factory/;
+%Docstring
+Read layer node from XML. Returns new instance.
+Also resolves textual references to layers from the project (calls resolveReferences() internally).
+
+.. versionadded:: 3.0
+%End
+
+    virtual void writeXml( QDomElement &parentElement, const QgsReadWriteContext &context );
+
 
     virtual QString dump() const;
 
-    virtual QgsLayerTreeLayer* clone() const /Factory/;
 
-  protected slots:
-    void registryLayersAdded( const QList<QgsMapLayer*>& layers );
-    void registryLayersWillBeRemoved( const QStringList& layerIds );
+    virtual QgsLayerTreeLayer *clone() const /Factory/;
+
+
+    virtual void resolveReferences( const QgsProject *project, bool looseMatching = false );
+
+%Docstring
+Resolves reference to layer from stored layer ID (if it has not been resolved already)
+
+.. versionadded:: 3.0
+%End
 
   signals:
-    //! emitted when a previously unavailable layer got loaded
+
     void layerLoaded();
-    //! emitted when a previously available layer got unloaded (from layer registry)
-    //! @note added in 2.6
+%Docstring
+Emitted when a previously unavailable layer got loaded.
+%End
+
     void layerWillBeUnloaded();
+%Docstring
+Emitted when a previously available layer got unloaded (from layer registry).
+
+.. versionadded:: 2.6
+%End
 
   protected:
     void attachToLayer();
 
-  private:
-    QgsLayerTreeLayer( const QgsLayerTreeLayer& other );
 
+  private:
+
+    QgsLayerTreeLayer( const QgsLayerTreeLayer &other );
+%Docstring
+Copies are not allowed
+%End
 };
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/layertree/qgslayertreelayer.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

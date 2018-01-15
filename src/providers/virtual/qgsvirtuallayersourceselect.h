@@ -20,43 +20,47 @@ email                : hugo dot mercier at oslandia dot com
 #define QGSVIRTUAL_LAYER_SOURCE_SELECT_H
 
 #include "ui_qgsvirtuallayersourceselectbase.h"
-#include <qgis.h>
-#include <qgisgui.h>
-#include <qgsvirtuallayerdefinition.h>
+#include "qgis.h"
+#include "qgsguiutils.h"
+#include "qgsvirtuallayerdefinition.h"
+#include "qgsproviderregistry.h"
+#include "qgsabstractdatasourcewidget.h"
 
 class QgsVectorLayer;
 class QMainWindow;
 class QgsEmbeddedLayerSelectDialog;
+class QgsLayerTreeView;
 
-class QgsVirtualLayerSourceSelect : public QDialog, private Ui::QgsVirtualLayerSourceSelectBase
+class QgsVirtualLayerSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsVirtualLayerSourceSelectBase
 {
     Q_OBJECT
 
   public:
-    QgsVirtualLayerSourceSelect( QWidget * parent, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+    QgsVirtualLayerSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
+
+  public slots:
+    //! Triggered when the provider's connections need to be refreshed
+    void refresh() override;
+    void addButtonClicked() override;
 
   private slots:
-    void on_buttonBox_accepted();
-    void onTestQuery();
-    void onBrowseCRS();
-    void onLayerComboChanged( int );
-    void onAddLayer();
-    void onRemoveLayer();
-    void onImportLayer();
-    void onTableRowChanged( const QModelIndex& current, const QModelIndex& previous );
+    void testQuery();
+    void browseCRS();
+    void layerComboChanged( int );
+    void addLayer();
+    void removeLayer();
+    void importLayer();
+    void tableRowChanged( const QModelIndex &current, const QModelIndex &previous );
+    void updateLayersList();
 
-  signals:
-    /** Source, name, provider */
-    void addVectorLayer( QString, QString, QString );
-    /** Old_id, source, name, provider */
-    void replaceVectorLayer( QString, QString, QString, QString );
 
   private:
     QgsVirtualLayerDefinition getVirtualLayerDef();
-    long mSrid;
+    long mSrid = 0;
     QStringList mProviderList;
-    QgsEmbeddedLayerSelectDialog* mEmbeddedSelectionDialog;
-    void addEmbeddedLayer( QString name, QString provider, QString encoding, QString source );
+    QgsEmbeddedLayerSelectDialog *mEmbeddedSelectionDialog = nullptr;
+    void addEmbeddedLayer( const QString &name, const QString &provider, const QString &encoding, const QString &source );
+    QgsLayerTreeView *mTreeView  = nullptr;
 };
 
 #endif

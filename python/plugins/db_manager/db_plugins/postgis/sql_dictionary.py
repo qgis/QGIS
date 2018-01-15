@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import map
 
 __author__ = 'Giuseppe Sucameli'
 __date__ = 'April 2012'
@@ -196,7 +197,7 @@ def getSqlDictionary(spatial=True):
         f += postgis_functions
         c += postgis_constants
 
-    return {'keyword': map(strip_star, k), 'constant': map(strip_star, c), 'function': map(strip_star, f)}
+    return {'keyword': list(map(strip_star, k)), 'constant': list(map(strip_star, c)), 'function': list(map(strip_star, f))}
 
 
 def getQueryBuilderDictionary():

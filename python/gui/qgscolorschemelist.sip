@@ -1,190 +1,298 @@
-/** \ingroup gui
- * \class QgsColorSwatchDelegate
- * A delegate for showing a color swatch in a list
- * @see QgsColorSchemeList
- * @note introduced in QGIS 2.5
- */
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgscolorschemelist.h                                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
 class QgsColorSwatchDelegate : QAbstractItemDelegate
 {
-%TypeHeaderCode
-#include <qgscolorschemelist.h>
+%Docstring
+A delegate for showing a color swatch in a list
+
+.. seealso:: :py:class:`QgsColorSchemeList`
+
+.. versionadded:: 2.5
 %End
 
- public:
+%TypeHeaderCode
+#include "qgscolorschemelist.h"
+%End
+  public:
     QgsColorSwatchDelegate( QWidget *parent /TransferThis/ = 0 );
-    void paint( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const;
-    QSize sizeHint( const QStyleOptionViewItem & option, const QModelIndex & index ) const;
-    bool editorEvent( QEvent * event, QAbstractItemModel * model, const QStyleOptionViewItem & option, const QModelIndex & index );
+    virtual void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
+
+    virtual QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const;
+
+    virtual bool editorEvent( QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option, const QModelIndex &index );
+
+
 };
 
 
-/** \ingroup gui
- * \class QgsColorSchemeModel
- * A model for colors in a color scheme
- * @see QgsColorSchemeList
- * @note introduced in QGIS 2.5
- */
 class QgsColorSchemeModel: QAbstractItemModel
 {
-%TypeHeaderCode
-#include <qgscolorschemelist.h>
+%Docstring
+A model for colors in a color scheme
+
+.. seealso:: :py:class:`QgsColorSchemeList`
+
+.. versionadded:: 2.5
 %End
 
+%TypeHeaderCode
+#include "qgscolorschemelist.h"
+%End
   public:
 
-    /** Constructor
-     * @param scheme color scheme for list
-     * @param context context string for color scheme
-     * @param baseColor base color for color scheme
-     * @param parent parent object
-     */
-    explicit QgsColorSchemeModel( QgsColorScheme* scheme, const QString &context = QString(), const QColor &baseColor = QColor(), QObject* parent /TransferThis/ = 0 );
+    explicit QgsColorSchemeModel( QgsColorScheme *scheme, const QString &context = QString(), const QColor &baseColor = QColor(), QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor
 
-    ~QgsColorSchemeModel();
+:param scheme: color scheme for list
+:param context: context string for color scheme
+:param baseColor: base color for color scheme
+:param parent: parent object
+%End
 
-    //reimplemented QAbstractItemModel methods
-    QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const;
-    QModelIndex parent( const QModelIndex &index ) const;
-    int rowCount( const QModelIndex &parent = QModelIndex() ) const;
-    int columnCount( const QModelIndex &parent = QModelIndex() ) const;
-    QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const;
-    Qt::ItemFlags flags( const QModelIndex & index ) const;
-    bool setData( const QModelIndex & index, const QVariant & value, int role = Qt::EditRole );
-    QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
-    Qt::DropActions supportedDropActions() const;
-    QStringList mimeTypes() const;
-    bool removeRows( int row, int count, const QModelIndex & parent = QModelIndex() );
-    bool insertRows( int row, int count, const QModelIndex &parent = QModelIndex() );
-    QMimeData *mimeData( const QModelIndexList &indexes ) const;
-    bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent );
+    virtual QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const;
 
-    /** Returns a list of colors shown in the widget
-     * @returns colors shown in the widget
-     */
+    virtual QModelIndex parent( const QModelIndex &index ) const;
+
+    virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const;
+
+    virtual int columnCount( const QModelIndex &parent = QModelIndex() ) const;
+
+    virtual QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const;
+
+    virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
+
+    virtual bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole );
+
+    virtual QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
+
+    virtual Qt::DropActions supportedDropActions() const;
+
+    virtual QStringList mimeTypes() const;
+
+    virtual bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() );
+
+    virtual bool insertRows( int row, int count, const QModelIndex &parent = QModelIndex() );
+
+    virtual QMimeData *mimeData( const QModelIndexList &indexes ) const;
+
+    virtual bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent );
+
+
     QgsNamedColorList colors() const;
+%Docstring
+Returns a list of colors shown in the widget
 
-    /** Sets the color scheme to show in the widget
-     * @param scheme color scheme
-     * @param context context for color scheme
-     * @param baseColor base color for color scheme
-     */
-    void setScheme( QgsColorScheme* scheme, const QString &context = QString(), const QColor &baseColor = QColor() );
+:return: colors shown in the widget
+%End
 
-    /** Get the current color scheme context for the model
-     * @returns context string which is passed to scheme for color generation
-     * @see baseColor
-     */
+    void setScheme( QgsColorScheme *scheme, const QString &context = QString(), const QColor &baseColor = QColor() );
+%Docstring
+Sets the color scheme to show in the widget
+
+:param scheme: color scheme
+:param context: context for color scheme
+:param baseColor: base color for color scheme
+%End
+
     QString context() const;
+%Docstring
+Get the current color scheme context for the model
 
-    /** Get the base color for the color scheme used by the model
-     * @returns base color which is passed to scheme for color generation
-     * @see context
-     */
+:return: context string which is passed to scheme for color generation
+
+.. seealso:: :py:func:`baseColor`
+%End
+
     QColor baseColor() const;
+%Docstring
+Get the base color for the color scheme used by the model
 
-    /** Add a color to the list
-     * @param color color to add
-     * @param label label for color
-     */
-    void addColor( const QColor color, const QString &label = QString() );
+:return: base color which is passed to scheme for color generation
 
-    /** Returns whether the color scheme model has been modified
-     * @returns true if colors have been modified
-     */
+.. seealso:: :py:func:`context`
+%End
+
+    void addColor( const QColor &color, const QString &label = QString(), bool allowDuplicate = false );
+%Docstring
+Add a color to the list
+
+:param color: color to add
+:param label: label for color
+:param allowDuplicate: set to true to allow duplicate colors to be added (colors which are already present in the list)
+%End
+
     bool isDirty() const;
+%Docstring
+Returns whether the color scheme model has been modified
+
+:return: true if colors have been modified
+%End
 
 };
 
-/** \ingroup gui
- * \class QgsColorSchemeList
- * An editable list of color swatches, taken from an associated QgsColorScheme.
- * @see QgsColorSchemeList
- * @note introduced in QGIS 2.5
- */
 class QgsColorSchemeList: QTreeView
 {
-%TypeHeaderCode
-#include <qgscolorschemelist.h>
+%Docstring
+An editable list of color swatches, taken from an associated :py:class:`QgsColorScheme`.
+
+.. seealso:: :py:class:`QgsColorSchemeList`
+
+.. versionadded:: 2.5
 %End
 
+%TypeHeaderCode
+#include "qgscolorschemelist.h"
+%End
   public:
 
-    /** Construct a new color swatch grid.
-     * @param parent parent widget
-     * @param scheme QgsColorScheme for colors to show in the list
-     * @param context context string provided to color scheme
-     * @param baseColor base color for color scheme
-     */
-    QgsColorSchemeList( QWidget *parent /TransferThis/ = 0, QgsColorScheme* scheme = 0, const QString &context = QString(), const QColor &baseColor = QColor() );
+    QgsColorSchemeList( QWidget *parent /TransferThis/ = 0, QgsColorScheme *scheme = 0, const QString &context = QString(), const QColor &baseColor = QColor() );
+%Docstring
+Construct a new color swatch grid.
 
-    virtual ~QgsColorSchemeList();
+:param parent: parent widget
+:param scheme: QgsColorScheme for colors to show in the list
+:param context: context string provided to color scheme
+:param baseColor: base color for color scheme
+%End
 
-    /** Saves the current colors shown in the list back to a color scheme, if supported
-     * by the color scheme.
-     * @note this method is only effective if the color scheme is editable
-     */
     bool saveColorsToScheme();
+%Docstring
+Saves the current colors shown in the list back to a color scheme, if supported
+by the color scheme.
 
-    /** Import colors from a GPL palette file to the list
-     * @param file file to import
-     * @see exportColorsToGpl
-     */
+.. note::
+
+   this method is only effective if the color scheme is editable
+%End
+
     bool importColorsFromGpl( QFile &file );
+%Docstring
+Import colors from a GPL palette file to the list
 
-    /** Export colors to a GPL palette file from the list
-     * @param file destination file
-     * @see importColorsFromGpl
-     */
+:param file: file to import
+
+.. seealso:: :py:func:`exportColorsToGpl`
+%End
+
     bool exportColorsToGpl( QFile &file );
+%Docstring
+Export colors to a GPL palette file from the list
 
-    /** Returns whether the color scheme list has been modified
-     * @returns true if colors have been modified
-     */
+:param file: destination file
+
+.. seealso:: :py:func:`importColorsFromGpl`
+%End
+
     bool isDirty() const;
+%Docstring
+Returns whether the color scheme list has been modified
+
+:return: true if colors have been modified
+%End
+
+    QgsColorScheme *scheme();
+%Docstring
+Returns the scheme currently selected in the list.
+
+.. versionadded:: 3.0
+
+.. seealso:: :py:func:`setScheme`
+%End
 
   public slots:
 
-    /** Sets the color scheme to show in the list
-     * @param scheme QgsColorScheme for colors to show in the list
-     * @param context context string provided to color scheme
-     * @param baseColor base color for color scheme
-     */
-    void setScheme( QgsColorScheme* scheme, const QString &context = QString(), const QColor &baseColor = QColor() );
+    void setScheme( QgsColorScheme *scheme, const QString &context = QString(), const QColor &baseColor = QColor() );
+%Docstring
+Sets the color scheme to show in the list
 
-    /** Removes any selected colors from the list
-     */
+:param scheme: QgsColorScheme for colors to show in the list
+:param context: context string provided to color scheme
+:param baseColor: base color for color scheme
+
+.. seealso:: :py:func:`scheme`
+%End
+
     void removeSelection();
+%Docstring
+Removes any selected colors from the list
+%End
 
-    /** Adds a color to the list
-     * @param color color to add
-     * @param label optional label for color
-     */
-    void addColor( const QColor &color, const QString &label = QString() );
+    void addColor( const QColor &color, const QString &label = QString(), bool allowDuplicate = false );
+%Docstring
+Adds a color to the list
 
-    /** Pastes colors from clipboard to the list
-     * @see copyColors
-     */
+:param color: color to add
+:param label: optional label for color
+:param allowDuplicate: set to true to allow duplicate colors to be added, ie colors which already exist in the list
+%End
+
     void pasteColors();
+%Docstring
+Pastes colors from clipboard to the list
 
-    /** Copies colors from the list to the clipboard
-     * @see pasteColors
-     */
+.. seealso:: :py:func:`copyColors`
+%End
+
     void copyColors();
+%Docstring
+Copies colors from the list to the clipboard
+
+.. seealso:: :py:func:`pasteColors`
+%End
+
+    void showImportColorsDialog();
+%Docstring
+Displays a file picker dialog allowing users to import colors into the list from a file.
+
+.. versionadded:: 3.0
+
+.. seealso:: :py:func:`showExportColorsDialog`
+%End
+
+    void showExportColorsDialog();
+%Docstring
+Displays a file picker dialog allowing users to export colors from the list into a file.
+
+.. versionadded:: 3.0
+
+.. seealso:: :py:func:`showImportColorsDialog`
+%End
 
   signals:
 
-    /** Emitted when a color is selected from the list
-     * @param color color selected
-     */
     void colorSelected( const QColor &color );
+%Docstring
+Emitted when a color is selected from the list
+
+:param color: color selected
+%End
 
   protected:
 
-    void keyPressEvent( QKeyEvent* event );
+    virtual void keyPressEvent( QKeyEvent *event );
 
-    void mousePressEvent( QMouseEvent* event );
 
-    void mouseReleaseEvent( QMouseEvent* event );
+    virtual void mousePressEvent( QMouseEvent *event );
+
+
+    virtual void mouseReleaseEvent( QMouseEvent *event );
+
 
 };
 
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgscolorschemelist.h                                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

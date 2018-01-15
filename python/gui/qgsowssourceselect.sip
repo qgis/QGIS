@@ -1,168 +1,198 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsowssourceselect.h                                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
 
-/*!
- * \brief  Dialog to create connections and add layers from WMS, WFS, WCS etc.
- *
- * This dialog allows the user to define and save connection information
- * for WMS servers, etc.
- *
- * The user can then connect and add
- * layers from the WMS server to the map canvas.
- */
-class QgsOWSSourceSelect : QDialog
+
+
+
+
+
+class QgsOWSSourceSelect : QgsAbstractDataSourceWidget, protected Ui::QgsOWSSourceSelectBase
 {
-%TypeHeaderCode
-#include <qgsowssourceselect.h>
+%Docstring
+  Dialog to create connections and add layers WCS etc.
+
+This dialog allows the user to define and save connection information
+for WMS servers, etc.
+
+The user can then connect and add
+layers from the WCS server to the map canvas.
 %End
 
+%TypeHeaderCode
+#include "qgsowssourceselect.h"
+%End
   public:
-    /** Formats supported by provider */
     struct SupportedFormat
     {
       QString format;
       QString label;
     };
 
-    //! Constructor
-    QgsOWSSourceSelect( const QString& service, QWidget *parent /TransferThis/ = 0, const Qt::WindowFlags& fl = QgisGui::ModalDialogFlags, bool managerMode = false, bool embeddedMode = false );
-    //! Destructor
+    QgsOWSSourceSelect( const QString &service, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
+%Docstring
+Constructor
+%End
+
     ~QgsOWSSourceSelect();
 
   public slots:
 
-    //! Opens the create connection dialog to build a new connection
-    void on_mNewButton_clicked();
-    //! Opens a dialog to edit an existing connection
-    void on_mEditButton_clicked();
-    //! Deletes the selected connection
-    void on_mDeleteButton_clicked();
-    //! Saves connections to the file
-    void on_mSaveButton_clicked();
-    //! Loads connections from the file
-    void on_mLoadButton_clicked();
+    virtual void refresh();
 
-    /** Connects to the database using the stored connection parameters.
-     * Once connected, available layers are displayed.
-     */
-    void on_mConnectButton_clicked();
+%Docstring
+Triggered when the provider's connections need to be refreshed
+%End
 
-    //! Determines the layers the user selected
-    virtual void addClicked();
+  protected slots:
+    void showError( const QString &title, const QString &format, const QString &error );
+%Docstring
+show whatever error is exposed.
+%End
 
-    void searchFinished();
-
-    //! Opens the Spatial Reference System dialog.
-    void on_mChangeCRSButton_clicked();
-
-    //! Signaled when a layer selection is changed.
-    virtual void on_mLayersTreeWidget_itemSelectionChanged();
-
-    //! Set status message to theMessage
-    void showStatusMessage( const QString &theMessage );
-
-    //! show whatever error is exposed.
-    void showError( const QString &theTitle, const QString &theFormat, const QString &theError );
-
-    //! Stores the selected datasource whenerver it is changed
-    void on_mConnectionsComboBox_activated( int );
-
-    //! Add some default wms servers to the list
-    void on_mAddDefaultButton_clicked();
-
-    void on_mDialogButtonBox_helpRequested();
-
-  signals:
-    void addRasterLayer( const QString & rasterLayerPath,
-                         const QString & baseName,
-                         const QString & providerKey );
-    void connectionsChanged();
+    void showStatusMessage( const QString &message );
+%Docstring
+Set status message to theMessage
+%End
 
   protected:
-    /**
-     * List of image formats (encodings) supported by provider
-     * @return list of format/label pairs
-     */
+
     virtual QList<QgsOWSSourceSelect::SupportedFormat> providerFormats();
+%Docstring
+List of image formats (encodings) supported by provider
 
-    //! List of formats supported for currently selected layer item(s)
+:return: list of format/label pairs
+%End
+
     virtual QStringList selectedLayersFormats();
+%Docstring
+List of formats supported for currently selected layer item(s)
+%End
 
-    //! Server CRS supported for currently selected layer item(s)
-    virtual QStringList selectedLayersCRSs();
+    virtual QStringList selectedLayersCrses();
+%Docstring
+Server CRS supported for currently selected layer item(s)
+%End
 
-    //! List of times (temporalDomain timePosition/timePeriod for currently selected layer item(s)
     virtual QStringList selectedLayersTimes();
+%Docstring
+List of times (temporalDomain timePosition/timePeriod for currently selected layer item(s)
+%End
 
-    //virtual QStringList layerCRS( int id );
 
-    //! Populate the connection list combo box
     void populateConnectionList();
+%Docstring
+Populate the connection list combo box
+%End
 
-    //! Populate supported formats
     void populateFormats();
+%Docstring
+Populate supported formats
+%End
 
-    //! Clear previously set formats
     void clearFormats();
+%Docstring
+Clear previously set formats
+%End
 
-    //! Set supported CRSs
-    void populateCRS();
+    void populateCrs();
+%Docstring
+Set supported CRSs
+%End
 
-    //! Clear CRSs
-    void clearCRS();
+    void clearCrs();
+%Docstring
+Clear CRSs
+%End
 
-    //! Populate times
     void populateTimes();
+%Docstring
+Populate times
+%End
 
-    //! Clear times
     void clearTimes();
+%Docstring
+Clear times
+%End
 
-    //! Connection name
     QString connName();
+%Docstring
+Connection name
+%End
 
-    //! Connection info (uri)
     QString connectionInfo();
+%Docstring
+Connection info (uri)
+%End
 
-    //! Set the server connection combo box to that stored in the config file.
     void setConnectionListPosition();
+%Docstring
+Set the server connection combo box to that stored in the config file.
+%End
 
-    //! Add a few example servers to the list.
     void addDefaultServers();
+%Docstring
+Add a few example servers to the list.
+%End
 
-    /**
-     * \brief Populate the layer list.
-     *
-     * \retval false if the layers could not be retrieved or parsed
-     */
+
     virtual void populateLayerList();
+%Docstring
+ Populate the layer list.
 
-    //! create an item including possible parents
-    //! @note not available in python bindings
-    /*
-    QgsNumericSortTreeWidgetItem *createItem( int id,
-        const QStringList &names,
-        QMap<int, QgsNumericSortTreeWidgetItem *> &items,
-        int &layerAndStyleCount,
-        const QMap<int, int> &layerParents,
-        const QMap<int, QStringList> &layerParentNames ) /Factory/;
-    */
+\retval false if the layers could not be retrieved or parsed
+%End
 
-    //! Returns a textual description for the authority id
-    QString descriptionForAuthId( const QString& authId );
 
-    void addWMSListRow( const QDomElement& item, int row );
-    void addWMSListItem( const QDomElement& el, int row, int column );
+    QString descriptionForAuthId( const QString &authId );
+%Docstring
+Returns a textual description for the authority id
+%End
+
+
+
+    void addWmsListRow( const QDomElement &item, int row );
+%Docstring
+layer name derived from latest layer selection (updated as long it's not edited manually)
+%End
+    void addWmsListItem( const QDomElement &el, int row, int column );
 
     virtual void enableLayersForCrs( QTreeWidgetItem *item );
 
-    //! Returns currently selected format
     QString selectedFormat();
+%Docstring
+Returns currently selected format
+%End
 
-    //! Returns currently selected Crs
-    QString selectedCRS();
+    QString selectedCrs();
+%Docstring
+Returns currently selected Crs
+%End
 
-    //! Returns currently selected time
     QString selectedTime();
+%Docstring
+Returns currently selected time
+%End
 
-    //! Returns currently selected cache load control
     QNetworkRequest::CacheLoadControl selectedCacheLoadControl();
+%Docstring
+Returns currently selected cache load control
+%End
+
+
+
+
 
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsowssourceselect.h                                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

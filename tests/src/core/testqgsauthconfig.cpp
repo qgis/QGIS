@@ -13,7 +13,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest/QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QString>
 #include <QStringList>
@@ -22,7 +22,8 @@
 #include "qgsauthcrypto.h"
 #include "qgsauthconfig.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * Unit tests for QgsAuthConfig
  */
 class TestQgsAuthConfig: public QObject
@@ -41,10 +42,10 @@ class TestQgsAuthConfig: public QObject
     void testConfigSslServer();
 
   private:
-    static QString smPkiData;
+    static QString sPkiData;
 };
 
-QString TestQgsAuthConfig::smPkiData = QString( TEST_DATA_DIR ) + "/auth_system/certs_keys";
+QString TestQgsAuthConfig::sPkiData = QStringLiteral( TEST_DATA_DIR ) + "/auth_system/certs_keys";
 
 
 void TestQgsAuthConfig::initTestCase()
@@ -65,15 +66,15 @@ void TestQgsAuthConfig::testMethodConfig()
   QgsAuthMethodConfig mconfig;
   QVERIFY( !mconfig.isValid() );
 
-  mconfig.setName( "Some Name" );
-  mconfig.setMethod( "MethodKey" );
+  mconfig.setName( QStringLiteral( "Some Name" ) );
+  mconfig.setMethod( QStringLiteral( "MethodKey" ) );
   QVERIFY( mconfig.isValid() );
 
-  mconfig.setId( "0000000" );
+  mconfig.setId( QStringLiteral( "0000000" ) );
   QVERIFY( mconfig.isValid( true ) );
 
   mconfig.setVersion( 1 );
-  mconfig.setUri( "http://example.com" );
+  mconfig.setUri( QStringLiteral( "http://example.com" ) );
 
   QCOMPARE( mconfig.name(), QString( "Some Name" ) );
   QCOMPARE( mconfig.method(), QString( "MethodKey" ) );
@@ -81,11 +82,11 @@ void TestQgsAuthConfig::testMethodConfig()
   QCOMPARE( mconfig.version(), 1 );
   QCOMPARE( mconfig.uri(), QString( "http://example.com" ) );
 
-  QString confstr( "key1:::value1|||key2:::value2|||key3:::value3a```value3b```value3c" );
+  QString confstr( QStringLiteral( "key1:::value1|||key2:::value2|||key3:::value3a```value3b```value3c" ) );
   QgsStringMap confmap;
-  confmap.insert( "key1", "value1" );
-  confmap.insert( "key2", "value2" );
-  confmap.insert( "key3", "value3a```value3b```value3c" );
+  confmap.insert( QStringLiteral( "key1" ), QStringLiteral( "value1" ) );
+  confmap.insert( QStringLiteral( "key2" ), QStringLiteral( "value2" ) );
+  confmap.insert( QStringLiteral( "key3" ), QStringLiteral( "value3a```value3b```value3c" ) );
 
   mconfig.setConfigMap( confmap );
   QCOMPARE( mconfig.configMap(), confmap );
@@ -94,11 +95,11 @@ void TestQgsAuthConfig::testMethodConfig()
   mconfig.clearConfigMap();
   QVERIFY( mconfig.configMap().isEmpty() );
 
-  mconfig.setConfig( "key1", "value1" );
-  mconfig.setConfig( "key2", "value2" );
+  mconfig.setConfig( QStringLiteral( "key1" ), QStringLiteral( "value1" ) );
+  mconfig.setConfig( QStringLiteral( "key2" ), QStringLiteral( "value2" ) );
   QStringList key3list;
-  key3list << "value3a" << "value3b" << "value3c";
-  mconfig.setConfigList( "key3", key3list );
+  key3list << QStringLiteral( "value3a" ) << QStringLiteral( "value3b" ) << QStringLiteral( "value3c" );
+  mconfig.setConfigList( QStringLiteral( "key3" ), key3list );
   QCOMPARE( mconfig.configMap(), confmap );
   QCOMPARE( mconfig.configString(), confstr );
 
@@ -106,7 +107,7 @@ void TestQgsAuthConfig::testMethodConfig()
   QCOMPARE( mconfig.configList( "key3" ), key3list );
 
   QVERIFY( mconfig.hasConfig( "key2" ) );
-  mconfig.removeConfig( "key2" );
+  mconfig.removeConfig( QStringLiteral( "key2" ) );
   QVERIFY( !mconfig.hasConfig( "key2" ) );
 
   mconfig.loadConfigString( confstr );
@@ -116,7 +117,7 @@ void TestQgsAuthConfig::testMethodConfig()
   QgsAuthMethodConfig mconfig2( mconfig );
   QVERIFY( mconfig2 == mconfig );
 
-  mconfig.setMethod( "MethodKey2" );
+  mconfig.setMethod( QStringLiteral( "MethodKey2" ) );
   QVERIFY( mconfig2 != mconfig );
 }
 
@@ -126,12 +127,12 @@ void TestQgsAuthConfig::testPkiBundle()
   QVERIFY( bundle.isNull() );
   QVERIFY( !bundle.isValid() );
 
-  QList<QSslCertificate> cacerts( QSslCertificate::fromPath( smPkiData + "/chain_subissuer-issuer-root.pem" ) );
+  QList<QSslCertificate> cacerts( QSslCertificate::fromPath( sPkiData + "/chain_subissuer-issuer-root.pem" ) );
   QVERIFY( !cacerts.isEmpty() );
   QCOMPARE( cacerts.size(), 3 );
-  QgsPkiBundle bundle2( QgsPkiBundle::fromPemPaths( smPkiData + "/fra_cert.pem",
-                        smPkiData + "/fra_key_w-pass.pem",
-                        "password",
+  QgsPkiBundle bundle2( QgsPkiBundle::fromPemPaths( sPkiData + "/fra_cert.pem",
+                        sPkiData + "/fra_key_w-pass.pem",
+                        QStringLiteral( "password" ),
                         cacerts ) );
   QVERIFY( !bundle2.isNull() );
   QVERIFY( bundle2.isValid() );
@@ -155,8 +156,8 @@ void TestQgsAuthConfig::testPkiBundle()
   QVERIFY( !bundle.isNull() );
   QVERIFY( bundle.isValid() );
 
-  QgsPkiBundle bundle4( QgsPkiBundle::fromPkcs12Paths( smPkiData + "/fra_w-chain.p12",
-                        "password" ) );
+  QgsPkiBundle bundle4( QgsPkiBundle::fromPkcs12Paths( sPkiData + "/fra_w-chain.p12",
+                        QStringLiteral( "password" ) ) );
   QVERIFY( !bundle4.isNull() );
   QVERIFY( bundle4.isValid() );
   QList<QSslCertificate> cachain4( bundle2.caChain() );
@@ -167,16 +168,16 @@ void TestQgsAuthConfig::testPkiBundle()
 void TestQgsAuthConfig::testPkiConfigBundle()
 {
   QgsAuthMethodConfig mconfig;
-  mconfig.setName( "Some Name" );
-  mconfig.setMethod( "MethodKey" );
-  mconfig.setId( "0000000" );
+  mconfig.setName( QStringLiteral( "Some Name" ) );
+  mconfig.setMethod( QStringLiteral( "MethodKey" ) );
+  mconfig.setId( QStringLiteral( "0000000" ) );
   mconfig.setVersion( 1 );
-  mconfig.setUri( "http://example.com" );
+  mconfig.setUri( QStringLiteral( "http://example.com" ) );
   QVERIFY( mconfig.isValid( true ) );
 
-  QSslCertificate clientcert( QSslCertificate::fromPath( smPkiData + "/gerardus_cert.pem" ).at( 0 ) );
+  QSslCertificate clientcert( QSslCertificate::fromPath( sPkiData + "/gerardus_cert.pem" ).at( 0 ) );
   QByteArray keydata;
-  QFile file( smPkiData + "/gerardus_key.pem" );
+  QFile file( sPkiData + "/gerardus_key.pem" );
   if ( file.open( QIODevice::ReadOnly | QIODevice::Text ) )
     keydata = file.readAll();
   file.close();
@@ -199,17 +200,13 @@ void TestQgsAuthConfig::testPkiConfigBundle()
 
 void TestQgsAuthConfig::testConfigSslServer()
 {
-  QString hostport( "localhost:443" );
-  QString confstr( "2|||470|||2|||10~~19|||0~~2" );
-  QSslCertificate sslcert( QSslCertificate::fromPath( smPkiData + "/localhost_ssl_cert.pem" ).at( 0 ) );
+  QString hostport( QStringLiteral( "localhost:443" ) );
+  QString confstr( QStringLiteral( "2|||470|||2|||10~~19|||0~~2" ) );
+  QSslCertificate sslcert( QSslCertificate::fromPath( sPkiData + "/localhost_ssl_cert.pem" ).at( 0 ) );
 
   QgsAuthConfigSslServer sslconfig;
   QVERIFY( sslconfig.isNull() );
-#if QT_VERSION >= 0x040800
   QCOMPARE( sslconfig.qtVersion(), 480 );
-#else
-  QCOMPARE( sslconfig.qtVersion(), 470 );
-#endif
   QCOMPARE( sslconfig.version(), 1 );
   QCOMPARE( sslconfig.sslPeerVerifyMode(), QSslSocket::VerifyPeer );
 
@@ -246,5 +243,5 @@ void TestQgsAuthConfig::testConfigSslServer()
   QCOMPARE( sslconfig2.configString(), confstr );
 }
 
-QTEST_MAIN( TestQgsAuthConfig )
+QGSTEST_MAIN( TestQgsAuthConfig )
 #include "testqgsauthconfig.moc"

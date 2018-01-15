@@ -22,15 +22,17 @@ The content of this file is based on
  *                                                                         *
  ***************************************************************************/
 """
+from builtins import str
+from builtins import range
 
 # this will disable the dbplugin if the connector raise an ImportError
 from .connector import OracleDBConnector
 
-from qgis.PyQt.QtCore import Qt, QSettings, QPyNullVariant
+from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QIcon, QKeySequence
 from qgis.PyQt.QtWidgets import QAction, QApplication, QMessageBox
 
-from qgis.core import QgsVectorLayer
+from qgis.core import QgsVectorLayer, NULL, QgsSettings
 
 from ..plugin import ConnectionError, InvalidDataException, DBPlugin, \
     Database, Schema, Table, VectorTable, TableField, TableConstraint, \
@@ -78,17 +80,17 @@ class OracleDBPlugin(DBPlugin):
 
     def connect(self, parent=None):
         conn_name = self.connectionName()
-        settings = QSettings()
+        settings = QgsSettings()
         settings.beginGroup(u"/{0}/{1}".format(
                             self.connectionSettingsKey(), conn_name))
 
         if not settings.contains("database"):  # non-existent entry?
             raise InvalidDataException(
-                self.tr('There is no defined database connection "{}".'.format(
+                self.tr('There is no defined database connection "{0}".'.format(
                     conn_name)))
 
-        from qgis.core import QgsDataSourceURI
-        uri = QgsDataSourceURI()
+        from qgis.core import QgsDataSourceUri
+        uri = QgsDataSourceUri()
 
         settingsList = ["host", "port", "database", "username", "password"]
         host, port, database, username, password = [settings.value(x, "", type=str) for x in settingsList]
@@ -97,14 +99,16 @@ class OracleDBPlugin(DBPlugin):
 
         useEstimatedMetadata = settings.value(
             "estimatedMetadata", False, type=bool)
-        uri.setParam('userTablesOnly', unicode(
+        uri.setParam('userTablesOnly', str(
             settings.value("userTablesOnly", False, type=bool)))
-        uri.setParam('geometryColumnsOnly', unicode(
+        uri.setParam('geometryColumnsOnly', str(
             settings.value("geometryColumnsOnly", False, type=bool)))
-        uri.setParam('allowGeometrylessTables', unicode(
+        uri.setParam('allowGeometrylessTables', str(
             settings.value("allowGeometrylessTables", False, type=bool)))
-        uri.setParam('onlyExistingTypes', unicode(
+        uri.setParam('onlyExistingTypes', str(
             settings.value("onlyExistingTypes", False, type=bool)))
+        uri.setParam('includeGeoAttributes', str(
+            settings.value("includeGeoAttributes", False, type=bool)))
 
         settings.endGroup()
 
@@ -116,7 +120,7 @@ class OracleDBPlugin(DBPlugin):
         try:
             return self.connectToUri(uri)
         except ConnectionError as e:
-            err = unicode(e)
+            err = str(e)
 
         # ask for valid credentials
         max_attempts = 3
@@ -134,7 +138,7 @@ class OracleDBPlugin(DBPlugin):
             except ConnectionError as e:
                 if i == max_attempts - 1:  # failed the last attempt
                     raise e
-                err = unicode(e)
+                err = str(e)
                 continue
 
             QgsCredentials.instance().put(
@@ -208,7 +212,7 @@ class ORDatabase(Database):
                 u"({})".format(sql), geomCol)
             uri.setWkbType(wkbType)
             if srid:
-                uri.setSrid(unicode(srid))
+                uri.setSrid(str(srid))
             vlayer = QgsVectorLayer(uri.uri(False), layerName, provider)
 
         return vlayer
@@ -315,7 +319,7 @@ class ORTable(Table):
             return None
 
     def runAction(self, action):
-        action = unicode(action)
+        action = str(action)
 
         if action.startswith("rows/"):
             if action == "rows/recount":
@@ -377,9 +381,9 @@ class ORTable(Table):
         from .data_model import ORTableDataModel
         return ORTableDataModel(self, parent)
 
-    def getValidQGisUniqueFields(self, onlyOne=False):
-        """ list of fields valid to load the table as layer in QGis canvas.
-        QGis automatically search for a valid unique field, so it's
+    def getValidQgisUniqueFields(self, onlyOne=False):
+        """ list of fields valid to load the table as layer in Qgis canvas.
+        Qgis automatically search for a valid unique field, so it's
         needed only for queries and views.
         """
 
@@ -396,18 +400,18 @@ class ORTable(Table):
             for idx in indexes:
                 if idx.isUnique and len(idx.columns) == 1:
                     fld = idx.fields()[idx.columns[0]]
-                    if (fld.dataType == u"NUMBER"
-                            and not fld.modifier
-                            and fld.notNull
-                            and fld not in ret):
+                    if (fld.dataType == u"NUMBER" and
+                            not fld.modifier and
+                            fld.notNull and
+                            fld not in ret):
                         ret.append(fld)
 
         # and finally append the other suitable fields
         for fld in self.fields():
-            if (fld.dataType == u"NUMBER"
-                    and not fld.modifier
-                    and fld.notNull
-                    and fld not in ret):
+            if (fld.dataType == u"NUMBER" and
+                    not fld.modifier and
+                    fld.notNull and
+                    fld not in ret):
                 ret.append(fld)
 
         if onlyOne:
@@ -419,7 +423,7 @@ class ORTable(Table):
         schema = self.schemaName() if self.schemaName() else ''
         geomCol = self.geomColumn if self.type in [
             Table.VectorType, Table.RasterType] else ""
-        uniqueCol = self.getValidQGisUniqueFields(
+        uniqueCol = self.getValidQgisUniqueFields(
             True) if self.isView else None
         uri.setDataSource(schema, self.name, geomCol if geomCol else None,
                           None, uniqueCol.name if uniqueCol else "")
@@ -427,7 +431,7 @@ class ORTable(Table):
         # Handle geographic table
         if geomCol:
             uri.setWkbType(self.wkbType)
-            uri.setSrid(unicode(self.srid))
+            uri.setSrid(str(self.srid))
 
         return uri
 
@@ -487,12 +491,12 @@ class ORTableField(TableField):
 
         self.primaryKey = False
         self.num = int(self.num)
-        if isinstance(self.charMaxLen, QPyNullVariant):
+        if self.charMaxLen == NULL:
             self.charMaxLen = None
         else:
             self.charMaxLen = int(self.charMaxLen)
 
-        if isinstance(self.modifier, QPyNullVariant):
+        if self.modifier == NULL:
             self.modifier = None
         else:
             self.modifier = int(self.modifier)
@@ -502,20 +506,20 @@ class ORTableField(TableField):
         else:
             self.notNull = True
 
-        if isinstance(self.comment, QPyNullVariant):
+        if self.comment == NULL:
             self.comment = u""
 
         # find out whether fields are part of primary key
         for con in self.table().constraints():
-            if (con.type == ORTableConstraint.TypePrimaryKey
-                    and self.name == con.column):
+            if (con.type == ORTableConstraint.TypePrimaryKey and
+                    self.name == con.column):
                 self.primaryKey = True
                 break
 
     def type2String(self):
-        if (u"TIMESTAMP" in self.dataType
-            or self.dataType in [u"DATE", u"SDO_GEOMETRY",
-                                 u"BINARY_FLOAT", u"BINARY_DOUBLE"]):
+        if (u"TIMESTAMP" in self.dataType or
+            self.dataType in [u"DATE", u"SDO_GEOMETRY",
+                              u"BINARY_FLOAT", u"BINARY_DOUBLE"]):
             return u"{}".format(self.dataType)
         if self.charMaxLen in [None, -1]:
             return u"{}".format(self.dataType)
@@ -527,7 +531,7 @@ class ORTableField(TableField):
 
     def update(self, new_name, new_type_str=None, new_not_null=None,
                new_default_str=None):
-        self.table().aboutToChange()
+        self.table().aboutToChange.emit()
         if self.name == new_name:
             new_name = None
         if self.type2String() == new_type_str:
@@ -554,7 +558,7 @@ class ORTableField(TableField):
 class ORTableConstraint(TableConstraint):
 
     TypeCheck, TypeForeignKey, TypePrimaryKey, \
-        TypeUnique, TypeUnknown = range(5)
+        TypeUnique, TypeUnknown = list(range(5))
 
     types = {"c": TypeCheck, "r": TypeForeignKey,
              "p": TypePrimaryKey, "u": TypeUnique}
@@ -571,22 +575,22 @@ class ORTableConstraint(TableConstraint):
         else:
             self.type = ORTableConstraint.TypeUnknown
 
-        if isinstance(row[6], QPyNullVariant):
+        if row[6] == NULL:
             self.checkSource = u""
         else:
             self.checkSource = row[6]
 
-        if isinstance(row[8], QPyNullVariant):
+        if row[8] == NULL:
             self.foreignTable = u""
         else:
             self.foreignTable = row[8]
 
-        if isinstance(row[7], QPyNullVariant):
+        if row[7] == NULL:
             self.foreignOnDelete = u""
         else:
             self.foreignOnDelete = row[7]
 
-        if isinstance(row[9], QPyNullVariant):
+        if row[9] == NULL:
             self.foreignKey = u""
         else:
             self.foreignKey = row[9]

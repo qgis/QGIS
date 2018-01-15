@@ -16,13 +16,13 @@
 #include "qgsgenericfeatureselectionmanager.h"
 
 QgsGenericFeatureSelectionManager::QgsGenericFeatureSelectionManager( QObject *parent )
-    : QgsIFeatureSelectionManager( parent )
+  : QgsIFeatureSelectionManager( parent )
 {
 }
 
-QgsGenericFeatureSelectionManager::QgsGenericFeatureSelectionManager( const QgsFeatureIds& initialSelection, QObject* parent )
-    : QgsIFeatureSelectionManager( parent )
-    , mSelectedFeatures( initialSelection )
+QgsGenericFeatureSelectionManager::QgsGenericFeatureSelectionManager( const QgsFeatureIds &initialSelection, QObject *parent )
+  : QgsIFeatureSelectionManager( parent )
+  , mSelectedFeatures( initialSelection )
 {
 }
 
@@ -31,19 +31,19 @@ int QgsGenericFeatureSelectionManager::selectedFeatureCount()
   return mSelectedFeatures.size();
 }
 
-void QgsGenericFeatureSelectionManager::select( const QgsFeatureIds& ids )
+void QgsGenericFeatureSelectionManager::select( const QgsFeatureIds &ids )
 {
   mSelectedFeatures += ids;
   emit selectionChanged( ids, QgsFeatureIds(), false );
 }
 
-void QgsGenericFeatureSelectionManager::deselect( const QgsFeatureIds& ids )
+void QgsGenericFeatureSelectionManager::deselect( const QgsFeatureIds &ids )
 {
   mSelectedFeatures -= ids;
   emit selectionChanged( QgsFeatureIds(), ids, false );
 }
 
-void QgsGenericFeatureSelectionManager::setSelectedFeatures( const QgsFeatureIds& ids )
+void QgsGenericFeatureSelectionManager::setSelectedFeatures( const QgsFeatureIds &ids )
 {
   QgsFeatureIds selected = mSelectedFeatures - ids;
   QgsFeatureIds deselected = ids - mSelectedFeatures;
@@ -52,7 +52,7 @@ void QgsGenericFeatureSelectionManager::setSelectedFeatures( const QgsFeatureIds
   emit selectionChanged( selected, deselected, true );
 }
 
-const QgsFeatureIds& QgsGenericFeatureSelectionManager::selectedFeaturesIds() const
+const QgsFeatureIds &QgsGenericFeatureSelectionManager::selectedFeatureIds() const
 {
   return mSelectedFeatures;
 }

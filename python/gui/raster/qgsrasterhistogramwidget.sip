@@ -1,55 +1,77 @@
-class QgsRasterHistogramWidget : QWidget
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/raster/qgsrasterhistogramwidget.h                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+class QgsRasterHistogramWidget : QgsMapLayerConfigWidget
 {
+%Docstring
+Histogram widget
+%End
+
 %TypeHeaderCode
-#include <qgsrasterhistogramwidget.h>
+#include "qgsrasterhistogramwidget.h"
 %End
   public:
-    QgsRasterHistogramWidget( QgsRasterLayer *lyr, QWidget *parent /TransferThis/ = 0 );
-    ~QgsRasterHistogramWidget();
 
-    /** Save the histogram as an image to disk */
-    bool histoSaveAsImage( const QString& theFilename, int width = 600, int height = 600, int quality = -1 );
+    QgsRasterHistogramWidget( QgsRasterLayer *layer, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsRasterHistogramWidget, for the specified raster ``layer``.
+%End
 
-    /** Set the renderer widget (or just its name if there is no widget) */
-    void setRendererWidget( const QString& name, QgsRasterRendererWidget* rendererWidget = NULL );
+    bool histoSaveAsImage( const QString &filename, int width = 600, int height = 600, int quality = -1 );
+%Docstring
+Save the histogram as an image to disk
+%End
 
-    /** Activate the histogram widget */
-    void setActive( bool theActiveFlag );
+    void setRendererWidget( const QString &name, QgsRasterRendererWidget *rendererWidget = 0 );
+%Docstring
+Set the renderer widget (or just its name if there is no widget)
+%End
 
-    /** \brief Compute the histogram on demand. */
+    void setActive( bool activeFlag );
+%Docstring
+Activate the histogram widget
+%End
+
     bool computeHistogram( bool forceComputeFlag );
+%Docstring
+ Compute the histogram on demand.
+%End
 
-    /** Apply a histoActionTriggered() event. */
     void histoAction( const QString &actionName, bool actionFlag = true );
+%Docstring
+Apply a histoActionTriggered() event.
+%End
 
-    /** Apply a histoActionTriggered() event. */
     void setSelectedBand( int index );
+%Docstring
+Apply a histoActionTriggered() event.
+%End
 
   public slots:
-    /** \brief slot executed when user wishes to refresh raster histogramwidget */
     void refreshHistogram();
-    /** This slot lets you save the histogram as an image to disk */
-    void on_mSaveAsImageButton_clicked();
+%Docstring
+ slot executed when user wishes to refresh raster histogramwidget
+%End
 
-  private slots:
-    /** Used when the histogram band selector changes, or when tab is loaded. */
-    void on_cboHistoBand_currentIndexChanged( int );
-    /** Applies the selected min/max values to the renderer widget. */
-    void applyHistoMin();
-    void applyHistoMax();
-    /** Button to activate picking of the min/max value on the graph. */
-    void on_btnHistoMin_toggled();
-    void on_btnHistoMax_toggled();
-    /** Called when a selection has been made using the plot picker. */
-    void histoPickerSelected( QPointF );
-    /** Called when a selection has been made using the plot picker (for qwt5 only).
-      @note not available in python bindings
-      */
-    // void histoPickerSelectedQwt5( QwtDoublePoint );
-    /** Various actions that are stored in btnHistoActions. */
-    void histoActionTriggered( QAction* );
-    /** Draw the min/max markers on the histogram plot. */
-    void updateHistoMarkers();
-    /** Button to compute the histogram, appears when no cached histogram is available. */
-    void on_btnHistoCompute_clicked();
+    virtual void apply();
+
+
 };
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/raster/qgsrasterhistogramwidget.h                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

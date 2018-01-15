@@ -50,6 +50,7 @@
 #include <qstringlist.h>
 #include <qvector.h>
 #include <qdebug.h>
+#include "qgsspatialiteutils.h"
 
 #if defined Q_OS_WIN
 # include <qt_windows.h>
@@ -58,12 +59,9 @@
 #endif
 
 #include <sqlite3.h>
-#include <qgsslconnect.h>
 
-#if QT_VERSION >= 0x050000
 Q_DECLARE_OPAQUE_POINTER(sqlite3*)
 Q_DECLARE_OPAQUE_POINTER(sqlite3_stmt*)
-#endif
 Q_DECLARE_METATYPE(sqlite3*)
 Q_DECLARE_METATYPE(sqlite3_stmt*)
 
@@ -72,7 +70,7 @@ QT_BEGIN_NAMESPACE
 static QString _q_escapeIdentifier(const QString &identifier)
 {
     QString res = identifier;
-    if(!identifier.isEmpty() && identifier.left(1) != QString(QLatin1Char('"')) && identifier.right(1) != QString(QLatin1Char('"')) ) {
+    if(!identifier.isEmpty() && identifier.at(0) != '"' && identifier.right(1) != QString(QLatin1Char('"')) ) {
         res.replace(QLatin1Char('"'), QLatin1String("\"\""));
         res.prepend(QLatin1Char('"')).append(QLatin1Char('"'));
         res.replace(QLatin1Char('.'), QLatin1String("\".\""));
@@ -108,8 +106,8 @@ static QSqlError qMakeError(sqlite3 *access, const QString &descr, QSqlError::Er
 class QSpatiaLiteDriverPrivate
 {
 public:
-    inline QSpatiaLiteDriverPrivate() : access(0) {}
-    sqlite3 *access;
+    inline QSpatiaLiteDriverPrivate() {}
+    spatialite_database_unique_ptr access;
     QList <QSpatiaLiteResult *> results;
 };
 
@@ -313,7 +311,7 @@ QSpatiaLiteResult::QSpatiaLiteResult(const QSpatiaLiteDriver* db)
     : QSqlCachedResult(db)
 {
     d = new QSpatiaLiteResultPrivate(this);
-    d->access = db->d->access;
+    d->access = db->d->access.get();
     db->d->results.append(this);
 }
 
@@ -324,20 +322,6 @@ QSpatiaLiteResult::~QSpatiaLiteResult()
         sqlDriver->d->results.removeOne(this);
     d->cleanup();
     delete d;
-}
-
-void QSpatiaLiteResult::virtual_hook(int id, void *data)
-{
-    switch (id) {
-#if QT_VERSION < 0x050000
-    case QSqlResult::DetachFromResultSet:
-        if (d->stmt)
-            sqlite3_reset(d->stmt);
-        break;
-#endif
-    default:
-        QSqlCachedResult::virtual_hook(id, data);
-    }
 }
 
 bool QSpatiaLiteResult::reset(const QString &query)
@@ -491,13 +475,11 @@ QSqlRecord QSpatiaLiteResult::record() const
     return d->rInf;
 }
 
-#if QT_VERSION >= 0x050000
 void QSpatiaLiteResult::detachFromResultSet()
 {
     if (d->stmt)
         sqlite3_reset(d->stmt);
 }
-#endif
 
 QVariant QSpatiaLiteResult::handle() const
 {
@@ -511,16 +493,6 @@ QSpatiaLiteDriver::QSpatiaLiteDriver(QObject * parent)
 {
     d = new QSpatiaLiteDriverPrivate();
 }
-
-QSpatiaLiteDriver::QSpatiaLiteDriver(sqlite3 *connection, QObject *parent)
-    : QSqlDriver(parent)
-{
-    d = new QSpatiaLiteDriverPrivate();
-    d->access = connection;
-    setOpen(true);
-    setOpenError(false);
-}
-
 
 QSpatiaLiteDriver::~QSpatiaLiteDriver()
 {
@@ -545,9 +517,7 @@ bool QSpatiaLiteDriver::hasFeature(DriverFeature f) const
     case BatchOperations:
     case EventNotifications:
     case MultipleResultSets:
-#if QT_VERSION >= 0x050000
     case CancelQuery:
-#endif
         return false;
     }
     return false;
@@ -583,13 +553,16 @@ bool QSpatiaLiteDriver::open(const QString & db, const QString &, const QString 
 
     sqlite3_enable_shared_cache(sharedCache);
 
-    if (QgsSLConnect::sqlite3_open_v2(db.toUtf8().constData(), &d->access, openMode, nullptr ) == SQLITE_OK) {
-        sqlite3_busy_timeout(d->access, timeOut);
+    spatialite_database_unique_ptr database;
+
+
+    if (d->access.open_v2(db, openMode, nullptr ) == SQLITE_OK) {
+        sqlite3_busy_timeout(d->access.get(), timeOut);
         setOpen(true);
         setOpenError(false);
         return true;
     } else {
-        setLastError(qMakeError(d->access, tr("Error opening database"),
+        setLastError(qMakeError(d->access.get(), tr("Error opening database"),
                      QSqlError::ConnectionError));
         setOpenError(true);
         return false;
@@ -602,10 +575,7 @@ void QSpatiaLiteDriver::close()
         foreach (QSpatiaLiteResult *result, d->results)
             result->d->finalize();
 
-        if (QgsSLConnect::sqlite3_close(d->access) != SQLITE_OK)
-            setLastError(qMakeError(d->access, tr("Error closing database"),
-                                    QSqlError::ConnectionError));
-        d->access = 0;
+        d->access.reset();
         setOpen(false);
         setOpenError(false);
     }
@@ -753,7 +723,7 @@ QSqlRecord QSpatiaLiteDriver::record(const QString &tbl) const
 
 QVariant QSpatiaLiteDriver::handle() const
 {
-    return QVariant::fromValue(d->access);
+    return QVariant::fromValue(d->access.get());
 }
 
 QString QSpatiaLiteDriver::escapeIdentifier(const QString &identifier, IdentifierType type) const

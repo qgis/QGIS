@@ -1,25 +1,57 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgssinglebandcolordatarenderer.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
 class QgsSingleBandColorDataRenderer: QgsRasterRenderer
 {
+%Docstring
+Raster renderer pipe for single band color.
+%End
+
 %TypeHeaderCode
-    #include "qgssinglebandcolordatarenderer.h"
+#include "qgssinglebandcolordatarenderer.h"
 %End
   public:
-    QgsSingleBandColorDataRenderer( QgsRasterDataProvider* provider, int band );
-    ~QgsSingleBandColorDataRenderer();
-    virtual QgsSingleBandColorDataRenderer * clone() const /Factory/;
+    QgsSingleBandColorDataRenderer( QgsRasterInterface *input, int band );
 
-    static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterDataProvider* provider ) /Factory/;
 
-    bool setInput( QgsRasterInterface* input );
+    virtual QgsSingleBandColorDataRenderer *clone() const /Factory/;
 
-    QgsRasterBlock* block( int bandNo, const QgsRectangle & extent, int width, int height ) / Factory /;
+%Docstring
+QgsSingleBandColorDataRenderer cannot be copied. Use clone() instead.
+%End
 
-    void writeXML( QDomDocument& doc, QDomElement& parentElem ) const;
+    static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterInterface *input ) /Factory/;
 
-    QList<int> usesBands() const;
+    virtual bool setInput( QgsRasterInterface *input );
+
+
+    virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = 0 ) /Factory/;
+
+
+    virtual void writeXml( QDomDocument &doc, QDomElement &parentElem ) const;
+
+
+    virtual QList<int> usesBands() const;
+
 
   private:
-
-    QgsSingleBandColorDataRenderer( const QgsSingleBandColorDataRenderer& );
-    const QgsSingleBandColorDataRenderer& operator=( const QgsSingleBandColorDataRenderer& );
+    QgsSingleBandColorDataRenderer( const QgsSingleBandColorDataRenderer & );
+    const QgsSingleBandColorDataRenderer &operator=( const QgsSingleBandColorDataRenderer & );
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgssinglebandcolordatarenderer.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

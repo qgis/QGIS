@@ -22,22 +22,26 @@ class QLabel;
 class QLineEdit;
 
 #include "qgseditorwidgetwrapper.h"
+#include "qgis_gui.h"
+
+SIP_NO_FILE
 
 
 
 /**
+ * \ingroup gui
  * Wraps a file name widget. Will offer a file browser to choose files.
  * \note not available in Python bindings
  */
 
 /**
- * @brief The QgsExternalResourceWidgetWrapper class wraps a external resource widget
+ * \brief The QgsExternalResourceWidgetWrapper class wraps a external resource widget
  */
 class GUI_EXPORT QgsExternalResourceWidgetWrapper : public QgsEditorWidgetWrapper
 {
     Q_OBJECT
   public:
-    explicit QgsExternalResourceWidgetWrapper( QgsVectorLayer* vl, int fieldIdx, QWidget* editor = nullptr, QWidget* parent = nullptr );
+    explicit QgsExternalResourceWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *editor = nullptr, QWidget *parent = nullptr );
 
     // QgsEditorWidgetWrapper interface
   public:
@@ -45,20 +49,21 @@ class GUI_EXPORT QgsExternalResourceWidgetWrapper : public QgsEditorWidgetWrappe
     void showIndeterminateState() override;
 
   protected:
-    QWidget* createWidget( QWidget* parent ) override;
-    void initWidget( QWidget* editor ) override;
+    QWidget *createWidget( QWidget *parent ) override;
+    void initWidget( QWidget *editor ) override;
     bool valid() const override;
 
   public slots:
-    void setValue( const QVariant& value ) override;
+    void setFeature( const QgsFeature &feature ) override;
+    void setValue( const QVariant &value ) override;
     void setEnabled( bool enabled ) override;
 
   private:
-    QLineEdit* mLineEdit;
-    QLabel* mLabel;
-    QgsExternalResourceWidget* mQgsWidget;
+    void updateConstraintWidgetStatus() override;
 
-
+    QLineEdit *mLineEdit = nullptr;
+    QLabel *mLabel = nullptr;
+    QgsExternalResourceWidget *mQgsWidget = nullptr;
 };
 
 #endif // QGSEXTERNALRESOURCEWIDGETWRAPPER_H

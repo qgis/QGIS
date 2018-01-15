@@ -1,58 +1,100 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsexpressionfieldbuffer.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
 class QgsExpressionFieldBuffer
 {
+%Docstring
+Buffers information about expression fields for a vector layer.
+
+.. versionadded:: 2.6
+%End
+
 %TypeHeaderCode
-#include <qgsexpressionfieldbuffer.h>
+#include "qgsexpressionfieldbuffer.h"
 %End
   public:
-    class ExpressionField
+    struct ExpressionField
     {
-      ExpressionField();
-      ExpressionField( const QString& exp, const QgsField& fld );
+      ExpressionField( const QString &exp, const QgsField &fld );
+
+      QgsExpression cachedExpression;
+      QgsField field;
     };
 
     QgsExpressionFieldBuffer();
+%Docstring
+Constructor for QgsExpressionFieldBuffer.
+%End
 
-    /**
-     * Add an expression to the buffer
-     *
-     * @param exp expression to add
-     * @param fld field to add
-     */
-    void addExpression( const QString& exp, const QgsField& fld );
+    void addExpression( const QString &exp, const QgsField &fld );
+%Docstring
+Add an expression to the buffer
 
-    /**
-     * Remove an expression from the buffer
-     *
-     * @param index index of expression to remove
-     */
+:param exp: expression to add
+:param fld: field to add
+%End
+
     void removeExpression( int index );
+%Docstring
+Remove an expression from the buffer
 
-    /**
-     * Changes the expression at a given index
-     *
-     * @param index The index of the expression to change
-     * @param exp   The new expression to set
-     *
-     * @note added in 2.9
-     */
-    void updateExpression( int index, const QString& exp );
+:param index: index of expression to remove
+%End
 
-    /**
-     * Saves expressions to xml under the layer node
-     */
-    void writeXml( QDomNode& layer_node, QDomDocument& document ) const;
+    void renameExpression( int index, const QString &name );
+%Docstring
+Renames an expression field at a given index
 
-    /**
-     * Reads expressions from project file
-     */
-    void readXml( const QDomNode& layer_node );
+:param index: The index of the expression to change
+:param name:   New name for field
 
-    /**
-     * Adds fields with the expressions buffered in this object to a QgsFields object
-     *
-     * @param flds The fields to be updated
-     */
-    void updateFields( QgsFields& flds );
+.. versionadded:: 3.0
+%End
 
-    const QList<QgsExpressionFieldBuffer::ExpressionField>& expressions() const;
+    void updateExpression( int index, const QString &exp );
+%Docstring
+Changes the expression at a given index
+
+:param index: The index of the expression to change
+:param exp:   The new expression to set
+
+.. versionadded:: 2.9
+%End
+
+    void writeXml( QDomNode &layer_node, QDomDocument &document ) const;
+%Docstring
+Saves expressions to xml under the layer node
+%End
+
+    void readXml( const QDomNode &layer_node );
+%Docstring
+Reads expressions from project file
+%End
+
+    void updateFields( QgsFields &flds );
+%Docstring
+Adds fields with the expressions buffered in this object to a QgsFields object
+
+:param flds: The fields to be updated
+%End
+
+    QList<QgsExpressionFieldBuffer::ExpressionField> expressions() const;
+
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsexpressionfieldbuffer.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

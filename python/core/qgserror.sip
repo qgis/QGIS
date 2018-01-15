@@ -1,82 +1,137 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgserror.h                                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
 class QgsErrorMessage
 {
+%Docstring
+QgsErrorMessage represents single error message.
+%End
+
 %TypeHeaderCode
-#include <qgserror.h>
+#include "qgserror.h"
 %End
   public:
-    /** Format */
     enum Format
     {
-      Text, // Plain text
+      Text,
       Html
     };
 
     QgsErrorMessage();
+%Docstring
+Constructor for QgsErrorMessage
+%End
 
-    /** Constructor.
-     *  @param theMessage error message string
-     *  @param theTag error label, for example GDAL, GDAL Provider, Raster layer
-     *  @param theFile the file where error was created
-     *  @param theFunction the function where error was created
-     *  @param theLine the line where error was created
-     */
-    QgsErrorMessage( const QString & theMessage, const QString & theTag = QString::null, const QString & theFile = QString::null, const QString & theFunction = QString::null, int theLine = 0 );
+    QgsErrorMessage( const QString &message, const QString &tag = QString(), const QString &file = QString(), const QString &function = QString(), int line = 0 );
+%Docstring
+Constructor.
+
+:param message: error message string
+:param tag: error label, for example GDAL, GDAL Provider, Raster layer
+:param file: the file where error was created
+:param function: the function where error was created
+:param line: the line where error was created
+%End
 
     QString message() const;
     QString tag() const;
     QString file() const;
     QString function() const;
     int line() const;
+
 };
 
-/** \ingroup core
- * QgsError is container for error messages (report). It may contain chain
- * (sort of traceback) of error messages (e.g. GDAL - provider - layer).
- * Higher level messages are appended at the end.
-*/
 class QgsError
 {
+%Docstring
+QgsError is container for error messages (report). It may contain chain
+(sort of traceback) of error messages (e.g. GDAL - provider - layer).
+Higher level messages are appended at the end.
+%End
+
 %TypeHeaderCode
-#include <qgserror.h>
+#include "qgserror.h"
 %End
   public:
 
     QgsError();
+%Docstring
+Constructor for QgsError
+%End
 
-    /** Constructor with single message.
-     *  @param theMessage error message
-     *  @param theTag short description, e.g. GDAL, Provider, Layer
-     */
-    QgsError( const QString & theMessage, const QString & theTag );
+    QgsError( const QString &message, const QString &tag );
+%Docstring
+Constructor with single message.
 
-    /** Append new error message.
-     *  @param theMessage error message string
-     *  @param theTag error label, for example GDAL, GDAL Provider, Raster layer
-     */
-    void append( const QString & theMessage, const QString & theTag );
+:param message: error message
+:param tag: short description, e.g. GDAL, Provider, Layer
+%End
 
-    /** Append new error message.
-     *  @param theMessage error message
-     */
-    void append( const QgsErrorMessage & theMessage );
+    void append( const QString &message, const QString &tag );
+%Docstring
+Append new error message.
 
-    /** Test if any error is set.
-     *  @return true if contains error
-     */
+:param message: error message string
+:param tag: error label, for example GDAL, GDAL Provider, Raster layer
+%End
+
+    void append( const QgsErrorMessage &message );
+%Docstring
+Append new error message.
+
+:param message: error message
+%End
+
     bool isEmpty() const;
+%Docstring
+Test if any error is set.
 
-    /** Full error messages description
-     *  @param theFormat output format
-     *  @return error report
-     */
-    QString message( QgsErrorMessage::Format theFormat = QgsErrorMessage::Html ) const;
+:return: true if contains error
+%End
 
-    /** Short error description, usually the first error in chain, the real error.
-     *  @return error description
-     */
+    QString message( QgsErrorMessage::Format format = QgsErrorMessage::Html ) const;
+%Docstring
+Full error messages description
+
+:param format: output format
+
+:return: error report
+%End
+
     QString summary() const;
+%Docstring
+Short error description, usually the first error in chain, the real error.
 
-    /** Clear error messages */
+:return: error description
+%End
+
     void clear();
+%Docstring
+Clear error messages
+%End
+
+    QList<QgsErrorMessage> messageList() const;
+%Docstring
+ messageList return the list of current error messages
+
+:return: current list of error messages
+%End
+
 };
 
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgserror.h                                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

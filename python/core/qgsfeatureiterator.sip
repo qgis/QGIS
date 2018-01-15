@@ -1,125 +1,266 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsfeatureiterator.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
 class QgsAbstractFeatureIterator
 {
+%Docstring
+Internal feature iterator to be implemented within data providers
+%End
+
 %TypeHeaderCode
-#include <qgsfeatureiterator.h>
+#include "qgsfeatureiterator.h"
 %End
   public:
 
-    //! Status of expression compilation for filter expression requests
     enum CompileStatus
     {
-      NoCompilation, /*!< Expression could not be compiled or not attempt was made to compile expression */
-      PartiallyCompiled, /*!< Expression was partially compiled, but extra checks need to be applied to features*/
-      Compiled, /*!< Expression was fully compiled and delegated to data provider source*/
+      NoCompilation,
+      PartiallyCompiled,
+      Compiled,
     };
 
-    //! base class constructor - stores the iteration parameters
-    QgsAbstractFeatureIterator( const QgsFeatureRequest& request );
+    QgsAbstractFeatureIterator( const QgsFeatureRequest &request );
+%Docstring
+base class constructor - stores the iteration parameters
+%End
 
-    //! destructor makes sure that the iterator is closed properly
     virtual ~QgsAbstractFeatureIterator();
 
-    //! fetch next feature, return true on success
-    virtual bool nextFeature( QgsFeature& f );
+    virtual bool nextFeature( QgsFeature &f );
+%Docstring
+fetch next feature, return true on success
+%End
 
-    //! reset the iterator to the starting position
     virtual bool rewind() = 0;
-    //! end of iterating: free the resources / lock
+%Docstring
+reset the iterator to the starting position
+%End
     virtual bool close() = 0;
+%Docstring
+end of iterating: free the resources / lock
+%End
 
-    /** Returns the status of expression compilation for filter expression requests.
-     * @note added in QGIS 2.16
-     */
+
     CompileStatus compileStatus() const;
+%Docstring
+Returns the status of expression compilation for filter expression requests.
+
+.. versionadded:: 2.16
+%End
+
+    virtual bool isValid() const;
+%Docstring
+Returns if this iterator is valid.
+An invalid feature iterator is not able to provide a reliable source for data.
+If an iterator is invalid, either give up or try to send the request again (preferably
+after a timeout to give the system some time to stay responsive).
+
+If you want to check if the iterator successfully completed, better use :py:func:`QgsFeatureIterator.isClosed()`
+
+.. versionadded:: 3.0
+%End
 
   protected:
-    /**
-     * If you write a feature iterator for your provider, this is the method you
-     * need to implement!!
-     *
-     * @param f The feature to write to
-     * @return  true if a feature was written to f
-     */
-    virtual bool fetchFeature( QgsFeature& f ) = 0;
 
-    /**
-     * By default, the iterator will fetch all features and check if the feature
-     * matches the expression.
-     * If you have a more sophisticated metodology (SQL request for the features...)
-     * and you check for the expression in your fetchFeature method, you can just
-     * redirect this call to fetchFeature so the default check will be omitted.
-     *
-     * @param f The feature to write to
-     * @return  true if a feature was written to f
-     */
+    virtual bool fetchFeature( QgsFeature &f ) = 0;
+%Docstring
+If you write a feature iterator for your provider, this is the method you
+need to implement!!
+
+:param f: The feature to write to
+
+:return:  true if a feature was written to f
+%End
+
     virtual bool nextFeatureFilterExpression( QgsFeature &f );
+%Docstring
+By default, the iterator will fetch all features and check if the feature
+matches the expression.
+If you have a more sophisticated metodology (SQL request for the features...)
+and you check for the expression in your fetchFeature method, you can just
+redirect this call to fetchFeature so the default check will be omitted.
 
-    /**
-     * By default, the iterator will fetch all features and check if the id
-     * is in the request.
-     * If you have a more sophisticated metodology (SQL request for the features...)
-     * and you are sure, that any feature you return from fetchFeature will match
-     * if the request was FilterFids you can just redirect this call to fetchFeature
-     * so the default check will be omitted.
-     *
-     * @param f The feature to write to
-     * @return  true if a feature was written to f
-     */
-    virtual bool nextFeatureFilterFids( QgsFeature & f );
+:param f: The feature to write to
 
-    void ref(); //!< add reference
-    void deref(); //!< remove reference, delete if refs == 0
+:return:  true if a feature was written to f
+%End
 
-    //! Setup the simplification of geometries to fetch using the specified simplify method
-    virtual bool prepareSimplification( const QgsSimplifyMethod& simplifyMethod );
+    virtual bool nextFeatureFilterFids( QgsFeature &f );
+%Docstring
+By default, the iterator will fetch all features and check if the id
+is in the request.
+If you have a more sophisticated metodology (SQL request for the features...)
+and you are sure, that any feature you return from fetchFeature will match
+if the request was FilterFids you can just redirect this call to fetchFeature
+so the default check will be omitted.
+
+:param f: The feature to write to
+
+:return:  true if a feature was written to f
+%End
+
+    void geometryToDestinationCrs( QgsFeature &feature, const QgsCoordinateTransform &transform ) const;
+%Docstring
+Transforms ``feature``'s geometry according to the specified coordinate ``transform``.
+If ``feature`` has no geometry or ``transform`` is invalid then calling this method
+has no effect and will be shortcut.
+Iterators should call this method before returning features to ensure that any
+QgsFeatureRequest.destinationCrs() set on the request is respected.
+
+.. versionadded:: 3.0
+%End
+
+
+    QgsRectangle filterRectToSourceCrs( const QgsCoordinateTransform &transform ) const;
+%Docstring
+Returns a rectangle representing the original request's :py:func:`QgsFeatureRequest.filterRect()`
+If ``transform`` is a valid coordinate transform, the return rectangle will represent
+the requested filterRect() transformed to the source's coordinate reference system.
+Iterators should call this method and use the returned rectangle for filtering
+features to ensure that any QgsFeatureRequest.destinationCrs() set on the request is respected.
+Will throw a QgsCsException if the rect cannot be transformed from the destination CRS.
+
+.. versionadded:: 3.0
+%End
+
+
+
+
+    void ref();
+%Docstring
+Add reference
+%End
+    void deref();
+%Docstring
+Remove reference, delete if refs == 0
+%End
+
+
+
+    virtual bool prepareSimplification( const QgsSimplifyMethod &simplifyMethod );
+%Docstring
+Setup the simplification of geometries to fetch using the specified simplify method
+%End
+
+
+};
+
+
+template<T>
+class QgsAbstractFeatureIteratorFromSource : QgsAbstractFeatureIterator
+{
+%Docstring
+Helper template that cares of two things: 1. automatic deletion of source if owned by iterator, 2. notification of open/closed iterator.
+
+.. note::
+
+   not available in Python bindings (although present in SIP file)
+%End
+
+%TypeHeaderCode
+#include "qgsfeatureiterator.h"
+%End
+  public:
+    QgsAbstractFeatureIteratorFromSource( T *source, bool ownSource, const QgsFeatureRequest &request );
+
+    ~QgsAbstractFeatureIteratorFromSource();
+
+  protected:
+    void iteratorClosed();
+%Docstring
+to be called by from subclass in close()
+%End
+
 };
 
 
 class QgsFeatureIterator
 {
+%Docstring
+Wrapper for iterator of features from vector data provider or vector layer
+%End
+
 %TypeHeaderCode
-#include <qgsfeatureiterator.h>
+#include "qgsfeatureiterator.h"
 %End
-
   public:
-    QgsFeatureIterator* __iter__();
+
+    QgsFeatureIterator *__iter__();
 %MethodCode
-  sipRes = sipCpp;
+    sipRes = sipCpp;
 %End
 
-  SIP_PYOBJECT __next__();
+    SIP_PYOBJECT __next__();
 %MethodCode
-  QgsFeature* f = new QgsFeature;
-  if (sipCpp->nextFeature(*f))
-    sipRes = sipConvertFromType(f, sipType_QgsFeature, Py_None);
-  else
-  {
-    delete f;
-    PyErr_SetString(PyExc_StopIteration,"");
-  }
+    QgsFeature *f = new QgsFeature;
+    if ( sipCpp->nextFeature( *f ) )
+      sipRes = sipConvertFromType( f, sipType_QgsFeature, Py_None );
+    else
+    {
+      delete f;
+      PyErr_SetString( PyExc_StopIteration, "" );
+    }
 %End
 
-    //! construct invalid iterator
     QgsFeatureIterator();
-    //! construct a valid iterator
-    // QgsFeatureIterator( QgsAbstractFeatureIterator* iter );
-    //! copy constructor copies the iterator, increases ref.count
-    QgsFeatureIterator( const QgsFeatureIterator& fi );
-    //! destructor deletes the iterator if it has no more references
+%Docstring
+construct invalid iterator
+%End
+    QgsFeatureIterator( const QgsFeatureIterator &fi );
+%Docstring
+copy constructor copies the iterator, increases ref.count
+%End
     ~QgsFeatureIterator();
 
-    // QgsFeatureIterator& operator=(const QgsFeatureIterator& other);
 
-    bool nextFeature( QgsFeature& f );
+    bool nextFeature( QgsFeature &f );
     bool rewind();
     bool close();
 
-    //! find out whether the iterator is still valid or closed already
-    bool isClosed() const;
+    virtual bool isValid() const;
+%Docstring
+Will return if this iterator is valid.
+An invalid iterator was probably introduced by a failed attempt to acquire a connection
+or is a default constructed iterator.
 
-    /** Returns the status of expression compilation for filter expression requests.
-     * @note added in QGIS 2.16
-     */
+.. seealso:: :py:func:`isClosed`
+
+.. versionadded:: 3.0
+%End
+
+    bool isClosed() const;
+%Docstring
+find out whether the iterator is still valid or closed already
+%End
+
+
     QgsAbstractFeatureIterator::CompileStatus compileStatus() const;
+%Docstring
+Returns the status of expression compilation for filter expression requests.
+
+.. versionadded:: 2.16
+%End
+
+
+  protected:
+
 
 };
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsfeatureiterator.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -1,6 +1,0 @@
-Select GT Threshold
-selectgtthreshold
-Basic Grid Analysis tools
-ParameterRaster|-z|Elevation Grid|False
-ParameterNumber|-thresh|Threshold|0.0|999999.999999|0.0
-OutputRaster|-t|Output Grid

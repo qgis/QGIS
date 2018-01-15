@@ -11,13 +11,13 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Unable To Validate The Connection</string>
+   <string>Unable to Validate the Connection</string>
   </property>
   <layout class="QVBoxLayout">
    <item>
     <widget class="QLabel" name="label">
      <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-family:'Sans Serif'; font-size:11pt; font-weight:600; color:#ff0000;&quot;&gt;Warning&lt;/span&gt;&lt;span style=&quot; font-family:'Sans Serif'; font-size:11pt; color:#ff0000;&quot;&gt;:&lt;/span&gt;&lt;span style=&quot; font-family:'Sans Serif'; font-size:11pt; color:#000000;&quot;&gt; One or more SSL errors have occurred validating the host you are connecting to. Review the following list of errors and click Ignore to continue, or Cancel to abort the connection.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-family:'Sans Serif'; font-size:11pt; font-weight:600; color:#ff0000;&quot;&gt;Warning&lt;/span&gt;&lt;span style=&quot; font-family:'Sans Serif'; font-size:11pt; color:#ff0000;&quot;&gt;:&lt;/span&gt;&lt;span style=&quot; font-family:'Sans Serif'; font-size:8pt; color:#000000;&quot;&gt; One or more SSL errors have occurred validating the host you are connecting to. Review the following list of errors and click Ignore to continue, or Cancel to abort the connection.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="wordWrap">
       <bool>true</bool>

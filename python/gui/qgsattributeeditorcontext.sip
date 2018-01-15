@@ -1,23 +1,33 @@
-/**
- * This class contains context information for attribute editor widgets.
- * It will be passed to embedded widgets whenever this occurs (e.g. when
- * showing an embedded form due to relations)
- */
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsattributeeditorcontext.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
 
 class QgsAttributeEditorContext
 {
+%Docstring
+This class contains context information for attribute editor widgets.
+It will be passed to embedded widgets whenever this occurs (e.g. when
+showing an embedded form due to relations)
+%End
+
 %TypeHeaderCode
 #include "qgsattributeeditorcontext.h"
 %End
   public:
-    /**
-     * Determines in which direction a relation was resolved.
-     */
+
     enum RelationMode
     {
-      Undefined,  //!< This context is not defined by a relation
-      Multiple,   //!< When showing a list of features (e.g. houses as an embedded form in a district form)
-      Single      //!< When showing a single feature (e.g. district information when looking at the form of a house)
+      Undefined,
+      Multiple,
+      Single
     };
 
     enum FormMode
@@ -28,21 +38,72 @@ class QgsAttributeEditorContext
     };
 
     QgsAttributeEditorContext();
-    QgsAttributeEditorContext( const QgsAttributeEditorContext& parentContext, FormMode formMode );
-    QgsAttributeEditorContext( const QgsAttributeEditorContext& parentContext, const QgsRelation& relation, RelationMode relationMode, FormMode formMode );
+%Docstring
+Constructor for QgsAttributeEditorContext
+%End
 
+    QgsAttributeEditorContext( const QgsAttributeEditorContext &parentContext, FormMode formMode );
 
-    void setDistanceArea( const QgsDistanceArea& distanceArea );
-    const QgsDistanceArea& distanceArea() const;
+    QgsAttributeEditorContext( const QgsAttributeEditorContext &parentContext, const QgsRelation &relation, RelationMode relationMode, FormMode widgetMode );
 
-    void setVectorLayerTools( QgsVectorLayerTools* vlTools );
-    const QgsVectorLayerTools* vectorLayerTools() const;
+    void setDistanceArea( const QgsDistanceArea &distanceArea );
 
-    void setRelation( const QgsRelation& relation, RelationMode mode );
-    const QgsRelation& relation() const;
+    const QgsDistanceArea &distanceArea() const;
+
+    void setVectorLayerTools( QgsVectorLayerTools *vlTools );
+    const QgsVectorLayerTools *vectorLayerTools() const;
+
+    void setRelation( const QgsRelation &relation, RelationMode mode );
+    const QgsRelation &relation() const;
     RelationMode relationMode() const;
 
     FormMode formMode() const;
+%Docstring
+Returns the form mode.
 
-    const QgsAttributeEditorContext* parentContext() const;
+.. seealso:: :py:func:`setFormMode`
+%End
+
+    void setFormMode( FormMode mode );
+%Docstring
+Sets the form mode.
+
+:param mode: form mode
+
+.. seealso:: :py:func:`formMode`
+
+.. versionadded:: 2.16
+%End
+
+    bool allowCustomUi() const;
+%Docstring
+Returns true if the attribute editor should permit use of custom UI forms.
+
+.. seealso:: :py:func:`setAllowCustomUi`
+
+.. versionadded:: 2.16
+%End
+
+    void setAllowCustomUi( bool allow );
+%Docstring
+Sets whether the attribute editor should permit use of custom UI forms.
+
+:param allow: set to true to allow custom UI forms, or false to disable them and use default generated
+QGIS forms
+
+.. seealso:: :py:func:`allowCustomUi`
+
+.. versionadded:: 2.16
+%End
+
+    const QgsAttributeEditorContext *parentContext() const;
+
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsattributeeditorcontext.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

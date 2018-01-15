@@ -1,29 +1,63 @@
-/**
- * The QgsBrowserTreeView class extends QTreeView with save/restore tree state functionality.
- *
- * @see QgsBrowserModel
- * @note added in 2.8
- */
-class QgsBrowserTreeView: QTreeView
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsbrowsertreeview.h                                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsBrowserTreeView : QTreeView
 {
-%TypeHeaderCode
-#include <qgsbrowsertreeview.h>
+%Docstring
+The QgsBrowserTreeView class extends QTreeView with save/restore tree state functionality.
+
+.. seealso:: :py:class:`QgsBrowserModel`
+
+.. versionadded:: 2.8
 %End
 
+%TypeHeaderCode
+#include "qgsbrowsertreeview.h"
+%End
   public:
+
     QgsBrowserTreeView( QWidget *parent /TransferThis/ = 0 );
-    ~QgsBrowserTreeView();
+%Docstring
+Constructor for QgsBrowserTreeView
+%End
 
-    virtual void setModel( QAbstractItemModel* model );
-    virtual void showEvent( QShowEvent * e );
-    virtual void hideEvent( QHideEvent * e );
+    virtual void setModel( QAbstractItemModel *model );
 
-    // returns true if at least one descendat is expanded, used in refresh
-    bool hasExpandedDescendant( const QModelIndex& index ) const;
+    void setBrowserModel( QgsBrowserModel *model );
+%Docstring
+Set the browser model
+%End
+    QgsBrowserModel *browserModel();
+%Docstring
+Return the browser model
+%End
+    virtual void showEvent( QShowEvent *e );
 
-    // Set section where to store settings (because we have 2 browser dock widgets)
-    void setSettingsSection( const QString & section );
+    virtual void hideEvent( QHideEvent *e );
+
+
+    bool hasExpandedDescendant( const QModelIndex &index ) const;
+
+    void setSettingsSection( const QString &section );
 
   protected slots:
-    virtual void rowsInserted( const QModelIndex & parentIndex, int start, int end );
+    virtual void rowsInserted( const QModelIndex &parentIndex, int start, int end );
+
+
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsbrowsertreeview.h                                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

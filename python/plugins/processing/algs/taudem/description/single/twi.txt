@@ -1,6 +1,0 @@
-Topographic Wetness Index
-twi
-Stream Network Analysis tools
-ParameterRaster|-sca|D-Infinity Specific Catchment Area Grid|False
-ParameterRaster|-slp|D-Infinity Slope Grid|False
-OutputRaster|-twi|Topographic Wetness Index Grid

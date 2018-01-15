@@ -26,14 +26,9 @@ __copyright__ = '(C) 2015, Giovanni Manghi'
 __revision__ = '$Format:%H$'
 
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
-from processing.core.parameters import ParameterString
-from processing.core.parameters import ParameterRaster
-from processing.core.parameters import ParameterSelection
-from processing.core.outputs import OutputRaster
+from processing.algs.gdal.GdalUtils import GdalUtils
 
 from processing.tools.system import isWindows
-
-from processing.algs.gdal.GdalUtils import GdalUtils
 
 
 class gdalcalc(GdalAlgorithm):
@@ -58,9 +53,10 @@ class gdalcalc(GdalAlgorithm):
     TYPE = ['Byte', 'Int16', 'UInt16', 'UInt32', 'Int32', 'Float32', 'Float64']
     #DEBUG = 'DEBUG'
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Raster calculator')
-        self.group, self.i18n_group = self.trAlgorithm('[GDAL] Miscellaneous')
+    def __init__(self):
+        super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.addParameter(ParameterRaster(
             self.INPUT_A, self.tr('Input layer A'), False))
         self.addParameter(ParameterString(self.BAND_A,
@@ -97,16 +93,28 @@ class gdalcalc(GdalAlgorithm):
                                           self.tr('Additional creation parameters'), '', optional=True))
         self.addOutput(OutputRaster(self.OUTPUT, self.tr('Calculated')))
 
-    def getConsoleCommands(self):
+    def name(self):
+        return 'rastercalculator'
+
+    def displayName(self):
+        return self.tr('Raster calculator')
+
+    def group(self):
+        return self.tr('Raster miscellaneous')
+
+    def groupId(self):
+        return 'rastermiscellaneous'
+
+    def getConsoleCommands(self, parameters, context, feedback, executing=True):
         out = self.getOutputValue(self.OUTPUT)
         extra = self.getParameterValue(self.EXTRA)
         if extra is not None:
-            extra = unicode(extra)
+            extra = str(extra)
         #debug = self.getParameterValue(self.DEBUG)
         formula = self.getParameterValue(self.FORMULA)
         noData = self.getParameterValue(self.NO_DATA)
         if noData is not None:
-            noData = unicode(noData)
+            noData = str(noData)
 
         arguments = []
         arguments.append('--calc')

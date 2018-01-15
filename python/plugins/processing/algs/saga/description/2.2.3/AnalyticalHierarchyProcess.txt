@@ -1,5 +1,0 @@
-Analytical Hierarchy Process
-grid_analysis
-ParameterMultipleInput|GRIDS|Input Grids|3|False
-ParameterTable|TABLE|Pairwise Comparisons Table|False
-OutputRaster|OUTPUT|Output Grid

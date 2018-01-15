@@ -1,239 +1,365 @@
-/** \ingroup core
- * \brief Configuration storage class for authentication method configurations
- */
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/auth/qgsauthconfig.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
 class QgsAuthMethodConfig
 {
+%Docstring
+ Configuration storage class for authentication method configurations
+%End
+
 %TypeHeaderCode
-#include <qgsauthconfig.h>
+#include "qgsauthconfig.h"
 %End
   public:
 
-    /**
-     * Construct a configuration for an authentication method
-     * @param method Textual key of the authentication method
-     * @param version Version of the configuration (for updating previously saved configs later on)
-     */
-    QgsAuthMethodConfig( const QString& method = QString(), int version = 0 );
+    QgsAuthMethodConfig( const QString &method = QString(), int version = 0 );
+%Docstring
+Construct a configuration for an authentication method
 
-    /** Operator used to compare configs' equality */
-    bool operator==( const QgsAuthMethodConfig& other ) const;
+:param method: Textual key of the authentication method
+:param version: Version of the configuration (for updating previously saved configs later on)
+%End
 
-    /** Operator used to compare configs' inequality */
-    bool operator!=( const QgsAuthMethodConfig& other ) const;
+    bool operator==( const QgsAuthMethodConfig &other ) const;
 
-    /**
-     * Get 'authcfg' 7-character alphanumeric ID of the config
-     * @note This is set by QgsAuthManager when the config is initially stored
-     */
+    bool operator!=( const QgsAuthMethodConfig &other ) const;
+
     const QString id() const;
-    /** Set auth config ID */
-    void setId( const QString& id );
+%Docstring
+Get 'authcfg' 7-character alphanumeric ID of the config
 
-    /** Get name of configuration */
+.. note::
+
+   This is set by QgsAuthManager when the config is initially stored
+%End
+    void setId( const QString &id );
+%Docstring
+Set auth config ID
+%End
+
     const QString name() const;
-    /** Set name of configuration */
-    void setName( const QString& name );
+%Docstring
+Get name of configuration
+%End
+    void setName( const QString &name );
+%Docstring
+Set name of configuration
+%End
 
-    /** A URI to auto-select a config when connecting to a resource */
     const QString uri() const;
-    void setUri( const QString& uri );
+%Docstring
+A URI to auto-select a config when connecting to a resource
+%End
+    void setUri( const QString &uri );
 
-    /** Textual key of the associated authentication method */
     QString method() const;
-    void setMethod( const QString& method );
+%Docstring
+Textual key of the associated authentication method
+%End
+    void setMethod( const QString &method );
 
-    /** Get version of the configuration */
     int version() const;
-    /** Set version of the configuration */
+%Docstring
+Get version of the configuration
+%End
     void setVersion( int version );
+%Docstring
+Set version of the configuration
+%End
 
-    /**
-     * Whether the configuration is valid
-     * @param validateid Additionally verify the auth config ID is not empty
-     */
     bool isValid( bool validateid = false ) const;
+%Docstring
+Whether the configuration is valid
 
-    /**
-     * The extended configuration, as stored and retrieved from the authentication database
-     * @note This is an internal construct used by QgsAuthManager that should generally not be set by client code
-     */
+:param validateid: Additionally verify the auth config ID is not empty
+%End
+
     const QString configString() const;
-    /**
-     * Load existing extended configuration
-     * @param configstr Configuration string to load
-     */
-    void loadConfigString( const QString& configstr );
+%Docstring
+The extended configuration, as stored and retrieved from the authentication database
 
-    /** Get extended configuration, mapped to key/value pairs of QStrings */
+.. note::
+
+   This is an internal construct used by QgsAuthManager that should generally not be set by client code
+%End
+
+    void loadConfigString( const QString &configstr );
+%Docstring
+Load existing extended configuration
+
+:param configstr: Configuration string to load
+%End
+
     QgsStringMap configMap() const;
-    /**
-     * Set extended configuration map
-     * @param map Map to set
-     */
-    void setConfigMap( const QgsStringMap& map );
+%Docstring
+Get extended configuration, mapped to key/value pairs of QStrings
+%End
 
-    /**
-     * Set a single config value per key in the map
-     * @note if key exists, it is replaced
-     * @param key Config key
-     * @param value Config value
-     */
+    void setConfigMap( const QgsStringMap &map );
+%Docstring
+Set extended configuration map
+
+:param map: Map to set
+%End
+
     void setConfig( const QString &key, const QString &value );
-    /**
-     * Set a multiple config values per key in the map
-     * @note if key exists, it is replaced
-     * @param key Config key
-     * @param value Config value
-     */
+%Docstring
+Set a single config value per key in the map
+
+.. note::
+
+   if key exists, it is replaced
+
+:param key: Config key
+:param value: Config value
+%End
+
     void setConfigList( const QString &key, const QStringList &value );
+%Docstring
+Set a multiple config values per key in the map
 
-    /**
-     * Remove a config from map
-     * @param key Config to remove
-     * @return Number of keys removed (should always be 1 or 0)
-     */
+.. note::
+
+   if key exists, it is replaced
+
+:param key: Config key
+:param value: Config value
+%End
+
     int removeConfig( const QString &key );
+%Docstring
+Remove a config from map
 
-    /**
-     * Return a config's value
-     * @param key Config key
-     * @param defaultvalue Default value, if key not found
-     */
-    QString config( const QString &key, const QString& defaultvalue = QString() ) const;
+:param key: Config to remove
 
-    /**
-     * Return a config's list of values
-     * @param key
-     */
+:return: Number of keys removed (should always be 1 or 0)
+%End
+
+    QString config( const QString &key, const QString &defaultvalue = QString() ) const;
+%Docstring
+Return a config's value
+
+:param key: Config key
+:param defaultvalue: Default value, if key not found
+%End
+
     QStringList configList( const QString &key ) const;
+%Docstring
+Return a config's list of values
 
-    /**
-     * Whether a config key exists in config map
-     * @param key
-     */
+:param key:
+%End
+
     bool hasConfig( const QString &key ) const;
+%Docstring
+Whether a config key exists in config map
 
-    /** Clear all configs */
+:param key:
+%End
+
     void clearConfigMap();
+%Docstring
+Clear all configs
+%End
 
-    /**
-     * A utility function for generating a resource from a URL to be compared
-     * against the config's uri() for auto-selecting authentication configs to use
-     * @note Essentially strips the URL query variables, and by default, strips the path as well
-     * @param accessurl A URL to process
-     * @param resource Ouput variable for result
-     * @param withpath Whether to include the URI's path in output
-     */
     static bool uriToResource( const QString &accessurl, QString *resource, bool withpath = false );
+%Docstring
+A utility function for generating a resource from a URL to be compared
+against the config's uri() for auto-selecting authentication configs to use
+
+.. note::
+
+   Essentially strips the URL query variables, and by default, strips the path as well
+
+:param accessurl: A URL to process
+:param resource: Output variable for result
+:param withpath: Whether to include the URI's path in output
+%End
+
 };
 
 typedef QHash<QString, QgsAuthMethodConfig> QgsAuthMethodConfigsMap;
 
 
-/** \ingroup core
- * \brief Storage set for PKI bundle: SSL certificate, key, optional CA cert chain
- * \note Useful for caching the bundle during application run sessions
- */
+
 class QgsPkiBundle
 {
+%Docstring
+ Storage set for PKI bundle: SSL certificate, key, optional CA cert chain
+
+.. note::
+
+   Useful for caching the bundle during application run sessions
+%End
+
 %TypeHeaderCode
-#include <qgsauthconfig.h>
+#include "qgsauthconfig.h"
 %End
   public:
-    /**
-     * Construct a bundle from existing PKI components
-     * @param clientCert Certificate to store in bundle
-     * @param clientKey Private key to store in bundle
-     * @param caChain Chain of Certificate Authorities for client certificate
-     */
+
     QgsPkiBundle( const QSslCertificate &clientCert = QSslCertificate(),
                   const QSslKey &clientKey = QSslKey(),
                   const QList<QSslCertificate> &caChain = QList<QSslCertificate>() );
+%Docstring
+Construct a bundle from existing PKI components
 
-    /**
-     * Construct a bundle of PKI components from PEM-formatted file paths
-     * @param certPath Certificate file path
-     * @param keyPath Private key path
-     * @param keyPass Private key passphrase
-     * @param caChain Chain of Certificate Authorities for client certificate
-     */
-    static const QgsPkiBundle fromPemPaths( const QString &certPath,
-                                            const QString &keyPath,
-                                            const QString &keyPass = QString::null,
-                                            const QList<QSslCertificate> &caChain = QList<QSslCertificate>() );
-
-    /**
-     * Construct a bundle of PKI components from a PKCS#12 file path
-     * @param bundlepath Bundle file path
-     * @param bundlepass Optional bundle passphrase
-     */
-    static const QgsPkiBundle fromPkcs12Paths( const QString &bundlepath,
-        const QString &bundlepass = QString::null );
-
-    /** Whether the bundle, either its certificate or private key, is null */
-    bool isNull() const;
-
-    /** Whether the bundle is valid */
-    bool isValid() const;
-
-    /** The sha hash of the client certificate */
-    const QString certId() const;
-
-    /** Client certificate object */
-    const QSslCertificate clientCert() const;
-    /** Set client certificate object */
-    void setClientCert( const QSslCertificate &cert );
-
-    /** Private key object */
-    const QSslKey clientKey() const;
-    /** Set private key object */
-    void setClientKey( const QSslKey &certkey );
-
-    /** Chain of Certificate Authorities for client certificate */
-    const QList<QSslCertificate> caChain() const;
-    /** Set chain of Certificate Authorities for client certificate */
-    void setCaChain( const QList<QSslCertificate> &cachain );
-};
-
-
-/** \ingroup core
- * \brief Storage set for constructed SSL certificate, key, associated with an authentication config
- */
-class QgsPkiConfigBundle
-{
-%TypeHeaderCode
-#include <qgsauthconfig.h>
+:param clientCert: Certificate to store in bundle
+:param clientKey: Private key to store in bundle
+:param caChain: Chain of Certificate Authorities for client certificate
 %End
 
-  public:
-    /**
-     * Construct a bundle from existing PKI components and authentication method configuration
-     * @param config Authentication method configuration
-     * @param cert Certificate to store in bundle
-     * @param certkey Private key to store in bundle
-     */
-    QgsPkiConfigBundle( const QgsAuthMethodConfig& config,
-                        const QSslCertificate& cert,
-                        const QSslKey& certkey );
+    static const QgsPkiBundle fromPemPaths( const QString &certPath,
+                                            const QString &keyPath,
+                                            const QString &keyPass = QString(),
+                                            const QList<QSslCertificate> &caChain = QList<QSslCertificate>() );
+%Docstring
+Construct a bundle of PKI components from PEM-formatted file paths
 
-    /** Whether the bundle is valid */
-    bool isValid();
+:param certPath: Certificate file path
+:param keyPath: Private key path
+:param keyPass: Private key passphrase
+:param caChain: Chain of Certificate Authorities for client certificate
+%End
 
-    /** Authentication method configuration */
-    const QgsAuthMethodConfig config() const;
-    /** Set authentication method configuration */
-    void setConfig( const QgsAuthMethodConfig& config );
+    static const QgsPkiBundle fromPkcs12Paths( const QString &bundlepath,
+        const QString &bundlepass = QString() );
+%Docstring
+Construct a bundle of PKI components from a PKCS#12 file path
 
-    /** Client certificate object */
+:param bundlepath: Bundle file path
+:param bundlepass: Optional bundle passphrase
+%End
+
+    bool isNull() const;
+%Docstring
+Whether the bundle, either its certificate or private key, is null
+%End
+
+    bool isValid() const;
+%Docstring
+Whether the bundle is valid
+%End
+
+    const QString certId() const;
+%Docstring
+The sha hash of the client certificate
+%End
+
     const QSslCertificate clientCert() const;
-    /** Set client certificate object */
-    void setClientCert( const QSslCertificate& cert );
+%Docstring
+Client certificate object
+%End
+    void setClientCert( const QSslCertificate &cert );
+%Docstring
+Set client certificate object
+%End
 
-    /** Private key object */
-    const QSslKey clientCertKey() const;
-    /** Set private key object */
-    void setClientCertKey( const QSslKey& certkey );
+    const QSslKey clientKey() const;
+%Docstring
+Private key object
+%End
+    void setClientKey( const QSslKey &certkey );
+%Docstring
+Set private key object
+%End
+
+    const QList<QSslCertificate> caChain() const;
+%Docstring
+Chain of Certificate Authorities for client certificate
+%End
+    void setCaChain( const QList<QSslCertificate> &cachain );
+%Docstring
+Set chain of Certificate Authorities for client certificate
+%End
+
 };
+
+
+class QgsPkiConfigBundle
+{
+%Docstring
+ Storage set for constructed SSL certificate, key, associated with an authentication config
+%End
+
+%TypeHeaderCode
+#include "qgsauthconfig.h"
+%End
+  public:
+
+    QgsPkiConfigBundle( const QgsAuthMethodConfig &config,
+                        const QSslCertificate &cert,
+                        const QSslKey &certkey,
+                        const QList<QSslCertificate> &cachain = QList<QSslCertificate>( ) );
+%Docstring
+Construct a bundle from existing PKI components and authentication method configuration
+
+:param config: Authentication method configuration
+:param cert: Certificate to store in bundle
+:param certkey: Private key to store in bundle
+:param cachain: list of CA certificates
+%End
+
+    bool isValid();
+%Docstring
+Whether the bundle is valid
+%End
+
+    const QgsAuthMethodConfig config() const;
+%Docstring
+Authentication method configuration
+%End
+
+    void setConfig( const QgsAuthMethodConfig &config );
+%Docstring
+Set authentication method configuration
+%End
+
+    const QSslCertificate clientCert() const;
+%Docstring
+Client certificate object
+%End
+
+    void setClientCert( const QSslCertificate &cert );
+%Docstring
+Set client certificate object
+%End
+
+    const QSslKey clientCertKey() const;
+%Docstring
+Private key object
+%End
+
+    void setClientCertKey( const QSslKey &certkey );
+%Docstring
+Set private key object
+%End
+
+    QList<QSslCertificate> caChain() const;
+%Docstring
+ caChain return the CA chain
+
+:return: list of CA certificates
+%End
+
+    void setCaChain( const QList<QSslCertificate> &caChain );
+%Docstring
+ setCaChain set the CA chain
+
+:param caChain:
+%End
+
+};
+
 
 
 %MappedType QList<QSslError::SslError>
@@ -246,21 +372,21 @@ class QgsPkiConfigBundle
   // Create the list.
   PyObject *l;
 
-  if ((l = PyList_New(sipCpp->size())) == NULL)
+  if ( ( l = PyList_New( sipCpp->size() ) ) == NULL )
     return NULL;
 
   // Set the list elements.
   QList<QSslError::SslError>::iterator it = sipCpp->begin();
-  for (int i = 0; it != sipCpp->end(); ++it, ++i)
+  for ( int i = 0; it != sipCpp->end(); ++it, ++i )
   {
     PyObject *tobj;
 
-    if ((tobj = sipConvertFromEnum(*it, sipType_QSslError_SslError)) == NULL)
+    if ( ( tobj = sipConvertFromEnum( *it, sipType_QSslError_SslError ) ) == NULL )
     {
-      Py_DECREF(l);
+      Py_DECREF( l );
       return NULL;
     }
-    PyList_SET_ITEM(l, i, tobj);
+    PyList_SET_ITEM( l, i, tobj );
   }
 
   return l;
@@ -268,87 +394,143 @@ class QgsPkiConfigBundle
 
 %ConvertToTypeCode
   // Check the type if that is all that is required.
-  if (sipIsErr == NULL)
-    return PyList_Check(sipPy);
+  if ( sipIsErr == NULL )
+    return PyList_Check( sipPy );
 
   QList<QSslError::SslError> *qlist = new QList<QSslError::SslError>;
 
-  for (int i = 0; i < PyList_GET_SIZE(sipPy); ++i)
+  for ( int i = 0; i < PyList_GET_SIZE( sipPy ); ++i )
   {
-    *qlist << (QSslError::SslError)SIPLong_AsLong(PyList_GET_ITEM(sipPy, i));
+    *qlist << ( QSslError::SslError )SIPLong_AsLong( PyList_GET_ITEM( sipPy, i ) );
   }
 
   *sipCppPtr = qlist;
-  return sipGetState(sipTransferObj);
+  return sipGetState( sipTransferObj );
 %End
 };
 
 
-/** \ingroup core
- * \brief Configuration container for SSL server connection exceptions or overrides
- */
+
 class QgsAuthConfigSslServer
 {
+%Docstring
+ Configuration container for SSL server connection exceptions or overrides
+%End
+
 %TypeHeaderCode
-#include <qgsauthconfig.h>
+#include "qgsauthconfig.h"
 %End
   public:
     QgsAuthConfigSslServer();
+%Docstring
+Construct a default SSL server configuration
+%End
 
-    ~QgsAuthConfigSslServer();
-
-    /** Server certificate object */
     const QSslCertificate sslCertificate() const;
-    /** Set server certificate object */
-    void setSslCertificate( const QSslCertificate& cert );
+%Docstring
+Server certificate object
+%End
+    void setSslCertificate( const QSslCertificate &cert );
+%Docstring
+Set server certificate object
+%End
 
-    /** Server host:port string */
     const QString sslHostPort() const;
-    /** Set server host:port string */
-    void setSslHostPort( const QString& hostport );
+%Docstring
+Server host:port string
+%End
+    void setSslHostPort( const QString &hostport );
+%Docstring
+Set server host:port string
+%End
 
-    /** SSL server protocol to use in connections */
     QSsl::SslProtocol sslProtocol() const;
-    /** Set SSL server protocol to use in connections */
+%Docstring
+SSL server protocol to use in connections
+%End
     void setSslProtocol( QSsl::SslProtocol protocol );
+%Docstring
+Set SSL server protocol to use in connections
+%End
 
-    /** SSL server errors to ignore in connections */
     const QList<QSslError> sslIgnoredErrors() const;
-    /** SSL server errors (as enum list) to ignore in connections */
+%Docstring
+SSL server errors to ignore in connections
+%End
     const QList<QSslError::SslError> sslIgnoredErrorEnums() const;
-    /** Set SSL server errors (as enum list) to ignore in connections */
-    void setSslIgnoredErrorEnums( const QList<QSslError::SslError>& errors );
+%Docstring
+SSL server errors (as enum list) to ignore in connections
+%End
+    void setSslIgnoredErrorEnums( const QList<QSslError::SslError> &errors );
+%Docstring
+Set SSL server errors (as enum list) to ignore in connections
+%End
 
-    /** SSL client's peer verify mode to use in connections */
     QSslSocket::PeerVerifyMode sslPeerVerifyMode() const;
-    /** Set SSL client's peer verify mode to use in connections */
+%Docstring
+SSL client's peer verify mode to use in connections
+%End
     void setSslPeerVerifyMode( QSslSocket::PeerVerifyMode mode );
+%Docstring
+Set SSL client's peer verify mode to use in connections
+%End
 
-    /** Number or SSL client's peer to verify in connections
-     * @note When set to 0 = unlimited depth
-     */
     int sslPeerVerifyDepth() const;
-    /** Set number or SSL client's peer to verify in connections
-     * @note When set to 0 = unlimited depth
-     */
+%Docstring
+Number or SSL client's peer to verify in connections
+
+.. note::
+
+   When set to 0 = unlimited depth
+%End
+
     void setSslPeerVerifyDepth( int depth );
+%Docstring
+Set number or SSL client's peer to verify in connections
 
-    /** Version of the configuration (used for future upgrading) */
+.. note::
+
+   When set to 0 = unlimited depth
+%End
+
     int version() const;
-    /** Set version of the configuration (used for future upgrading) */
+%Docstring
+Version of the configuration (used for future upgrading)
+%End
     void setVersion( int version );
+%Docstring
+Set version of the configuration (used for future upgrading)
+%End
 
-    /** Qt version when the configuration was made (SSL protocols may differ) */
     int qtVersion() const;
-    /** Set Qt version when the configuration was made (SSL protocols may differ) */
+%Docstring
+Qt version when the configuration was made (SSL protocols may differ)
+%End
     void setQtVersion( int version );
+%Docstring
+Set Qt version when the configuration was made (SSL protocols may differ)
+%End
 
-    /** Configuration as a concatenated string */
     const QString configString() const;
-    /** Load concatenated string into configuration, e.g. from auth database */
-    void loadConfigString( const QString& config = QString() );
+%Docstring
+Configuration as a concatenated string
+%End
+    void loadConfigString( const QString &config = QString() );
+%Docstring
+Load concatenated string into configuration, e.g. from auth database
+%End
 
-    /** Whether configuration is null (missing components) */
     bool isNull() const;
+%Docstring
+Whether configuration is null (missing components)
+%End
+
 };
 
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/auth/qgsauthconfig.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

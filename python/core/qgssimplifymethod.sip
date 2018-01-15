@@ -1,44 +1,86 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgssimplifymethod.h                                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
 
-/** This class contains information about how to simplify geometries fetched from a QgsFeatureIterator
- * @note added in 2.2
- */
+
+
+
 class QgsSimplifyMethod
 {
+%Docstring
+This class contains information about how to simplify geometries fetched from a QgsFeatureIterator
+
+.. versionadded:: 2.2
+%End
+
 %TypeHeaderCode
 #include "qgssimplifymethod.h"
 %End
-
   public:
     enum MethodType
     {
-      NoSimplification,     //!< No simplification is applied
-      OptimizeForRendering, //!< Simplify using the map2pixel data to optimize the rendering of geometries
-      PreserveTopology      //!< Simplify using the Douglas-Peucker algorithm ensuring that the result is a valid geometry
+      NoSimplification,
+      OptimizeForRendering,
+      PreserveTopology
     };
 
-    //! construct a default method
     QgsSimplifyMethod();
+%Docstring
+construct a default method
+%End
 
-    //! Sets the simplification type
     void setMethodType( MethodType methodType );
-    //! Gets the simplification type
+%Docstring
+Sets the simplification type
+%End
     MethodType methodType() const;
+%Docstring
+Gets the simplification type
+%End
 
-    //! Sets the tolerance of simplification in map units. Represents the maximum distance in map units between two coordinates which can be considered equal.
     void setTolerance( double tolerance );
-    //! Gets the tolerance of simplification in map units . Represents the maximum distance in map units between two coordinates which can be considered equal.
+%Docstring
+Sets the tolerance of simplification in map units. Represents the maximum distance in map units between two coordinates which can be considered equal.
+%End
     double tolerance() const;
+%Docstring
+Gets the tolerance of simplification in map units. Represents the maximum distance in map units between two coordinates which can be considered equal.
+%End
 
-    //! Sets the simplification threshold in pixels. Represents the maximum distance in pixels between two coordinates which can be considered equal.
     void setThreshold( float threshold );
-    //! Gets the simplification threshold in pixels. Represents the maximum distance in pixels between two coordinates which can be considered equal.
+%Docstring
+Sets the simplification threshold in pixels. Represents the maximum distance in pixels between two coordinates which can be considered equal.
+%End
     float threshold() const;
+%Docstring
+Gets the simplification threshold in pixels. Represents the maximum distance in pixels between two coordinates which can be considered equal.
+%End
 
-    //! Sets whether the simplification executes after fetch the geometries from provider, otherwise it executes, when supported, in provider before fetch the geometries
     void setForceLocalOptimization( bool localOptimization );
-    //! Gets whether the simplification executes after fetch the geometries from provider, otherwise it executes, when supported, in provider before fetch the geometries
+%Docstring
+Sets whether the simplification executes after fetch the geometries from provider, otherwise it executes, when supported, in provider before fetch the geometries
+%End
     bool forceLocalOptimization() const;
+%Docstring
+Gets whether the simplification executes after fetch the geometries from provider, otherwise it executes, when supported, in provider before fetch the geometries
+%End
 
-    //! Creates a geometry simplifier according to specified method
-    static QgsAbstractGeometrySimplifier* createGeometrySimplifier( const QgsSimplifyMethod& simplifyMethod );
+    static QgsAbstractGeometrySimplifier *createGeometrySimplifier( const QgsSimplifyMethod &simplifyMethod );
+%Docstring
+Creates a geometry simplifier according to specified method
+%End
+
+  protected:
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgssimplifymethod.h                                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

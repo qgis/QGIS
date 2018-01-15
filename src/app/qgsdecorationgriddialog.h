@@ -20,41 +20,35 @@
 
 #include "ui_qgsdecorationgriddialog.h"
 #include <QDialog>
+#include "qgis_app.h"
 
 class QgsDecorationGrid;
-class QgsLineSymbolV2;
-class QgsMarkerSymbolV2;
+class QgsLineSymbol;
+class QgsMarkerSymbol;
 
-/**
-@author Etienne Tourigny
-*/
 class APP_EXPORT QgsDecorationGridDialog : public QDialog, private Ui::QgsDecorationGridDialog
 {
     Q_OBJECT
 
   public:
-    QgsDecorationGridDialog( QgsDecorationGrid& decoGrid, QWidget* parent = nullptr );
-    ~QgsDecorationGridDialog();
+    QgsDecorationGridDialog( QgsDecorationGrid &decoGrid, QWidget *parent = nullptr );
+    ~QgsDecorationGridDialog() override;
 
   private slots:
     void apply();
-    void on_buttonBox_accepted();
-    void on_buttonBox_rejected();
-    void on_buttonBox_helpRequested();
-    void on_mGridTypeComboBox_currentIndexChanged( int index );
-    void on_mLineSymbolButton_clicked();
-    void on_mMarkerSymbolButton_clicked();
-    void on_mPbtnUpdateFromExtents_clicked();
-    void on_mPbtnUpdateFromLayer_clicked();
+    void buttonBox_accepted();
+    void buttonBox_rejected();
+    void showHelp();
+    void mGridTypeComboBox_currentIndexChanged( int index );
+    void mPbtnUpdateFromExtents_clicked();
+    void mPbtnUpdateFromLayer_clicked();
 
     // from composer map
     /* void on_mLineColorButton_clicked(); */
-    void on_mAnnotationFontButton_clicked();
+    void annotationFontChanged();
 
   private:
-    QgsDecorationGrid& mDeco;
-    QgsLineSymbolV2* mLineSymbol;
-    QgsMarkerSymbolV2* mMarkerSymbol;
+    QgsDecorationGrid &mDeco;
 
     void updateGuiElements();
     void updateDecoFromGui();

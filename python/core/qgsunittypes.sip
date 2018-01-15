@@ -1,172 +1,467 @@
-/** \ingroup core
- * \class QgsUnitTypes
- * \brief Helper functions for various unit types.
- * \note Added in version 2.14
- */
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsunittypes.h                                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
 
 class QgsUnitTypes
 {
-%TypeHeaderCode
-#include <qgsunittypes.h>
+%Docstring
+ Helper functions for various unit types.
+
+.. versionadded:: 2.14
 %End
 
+%TypeHeaderCode
+#include "qgsunittypes.h"
+%End
   public:
+    enum DistanceUnit
+    {
+      DistanceMeters,
+      DistanceKilometers,
+      DistanceFeet,
+      DistanceNauticalMiles,
+      DistanceYards,
+      DistanceMiles,
+      DistanceDegrees,
+      DistanceCentimeters,
+      DistanceMillimeters,
+      DistanceUnknownUnit,
+    };
 
-    /** Types of distance units
-     */
     enum DistanceUnitType
     {
-      Standard,    /*!< unit is a standard measurement unit */
-      Geographic,  /*!< unit is a geographic (eg degree based) unit */
-      UnknownType, /*!< unknown unit type */
+      Standard,
+      Geographic,
+      UnknownType,
     };
 
-    //! Units of area
     enum AreaUnit
     {
-      SquareMeters, /*!< square meters */
-      SquareKilometers, /*!< square kilometers */
-      SquareFeet, /*!< square feet */
-      SquareYards, /*!< square yards */
-      SquareMiles, /*!< square miles */
-      Hectares, /*!< hectares */
-      Acres, /*!< acres */
-      SquareNauticalMiles, /*!< square nautical miles */
-      SquareDegrees, /*!< square degrees, for planar geographic CRS area measurements */
-      UnknownAreaUnit, /*!< unknown areal unit */
+      AreaSquareMeters,
+      AreaSquareKilometers,
+      AreaSquareFeet,
+      AreaSquareYards,
+      AreaSquareMiles,
+      AreaHectares,
+      AreaAcres,
+      AreaSquareNauticalMiles,
+      AreaSquareDegrees,
+      AreaSquareCentimeters,
+      AreaSquareMillimeters,
+      AreaUnknownUnit,
     };
 
-    //! Units of angles
     enum AngleUnit
     {
-      AngleDegrees = 0, /*!< degrees */
-      Radians, /*!< square kilometers */
-      Gon, /*!< gon/gradian */
-      MinutesOfArc, /*!< minutes of arc */
-      SecondsOfArc, /*!< seconds of arc */
-      Turn, /*!< turn/revolutions */
-      UnknownAngleUnit, /*!< unknown angle unit */
+      AngleDegrees,
+      AngleRadians,
+      AngleGon,
+      AngleMinutesOfArc,
+      AngleSecondsOfArc,
+      AngleTurn,
+      AngleUnknownUnit,
     };
 
-    /** Returns the type for a distance unit.
-     */
-    static DistanceUnitType unitType( QGis::UnitType unit );
+    enum RenderUnit
+    {
+      RenderMillimeters,
+      RenderMapUnits,
+      RenderPixels,
+      RenderPercentage,
+      RenderPoints,
+      RenderInches,
+      RenderUnknownUnit,
+      RenderMetersInMapUnits,
+    };
 
-    /** Encodes a distance unit to a string.
-     * @param unit unit to encode
-     * @returns encoded string
-     * @see decodeDistanceUnit()
-     */
-    static QString encodeUnit( QGis::UnitType unit );
+    enum LayoutUnit
+    {
+      LayoutMillimeters,
+      LayoutCentimeters,
+      LayoutMeters,
+      LayoutInches,
+      LayoutFeet,
+      LayoutPoints,
+      LayoutPicas,
+      LayoutPixels
+    };
 
-    /** Decodes a distance unit from a string.
-     * @param string string to decode
-     * @param ok optional boolean, will be set to true if string was converted successfully
-     * @returns decoded units
-     * @see encodeUnit()
-     */
-    static QGis::UnitType decodeDistanceUnit( const QString& string, bool *ok = 0 );
+    enum LayoutUnitType
+    {
+      LayoutPaperUnits,
+      LayoutScreenUnits
+    };
 
-    /** Returns a translated string representing a distance unit.
-     * @param unit unit to convert to string
-     * @see stringToDistanceUnit()
-     */
-    static QString toString( QGis::UnitType unit );
+    struct DistanceValue
+    {
 
-    /** Converts a translated string to a distance unit.
-     * @param string string representing a distance unit
-     * @param ok optional boolean, will be set to true if string was converted successfully
-     * @see toString()
-     */
-    static QGis::UnitType stringToDistanceUnit( const QString& string, bool *ok = 0 );
+      double value;
 
-    /** Returns the conversion factor between the specified distance units.
-     * @param fromUnit distance unit to convert from
-     * @param toUnit distance unit to convert to
-     * @returns multiplication factor to convert between units
-     */
-    static double fromUnitToUnitFactor( QGis::UnitType fromUnit, QGis::UnitType toUnit );
+      QgsUnitTypes::DistanceUnit unit;
+    };
 
-    /** Returns the type for an areal unit.
-    */
+    struct AreaValue
+    {
+
+      double value;
+
+      QgsUnitTypes::AreaUnit unit;
+    };
+
+    typedef QList<QgsUnitTypes::RenderUnit> RenderUnitList;
+
+
+    static DistanceUnitType unitType( QgsUnitTypes::DistanceUnit unit );
+%Docstring
+Returns the type for a distance unit.
+%End
+
+    static QString encodeUnit( QgsUnitTypes::DistanceUnit unit );
+%Docstring
+Encodes a distance unit to a string.
+
+:param unit: unit to encode
+
+:return: encoded string
+
+.. seealso:: :py:func:`decodeDistanceUnit`
+%End
+
+    static QgsUnitTypes::DistanceUnit decodeDistanceUnit( const QString &string, bool *ok /Out/ = 0 );
+%Docstring
+Decodes a distance unit from a string.
+
+:param string: string to decode
+:param ok: optional boolean, will be set to true if string was converted successfully
+
+:return: decoded units
+
+.. seealso:: :py:func:`encodeUnit`
+%End
+
+    static QString toString( QgsUnitTypes::DistanceUnit unit );
+%Docstring
+Returns a translated string representing a distance unit.
+
+:param unit: unit to convert to string
+
+.. seealso:: :py:func:`stringToDistanceUnit`
+%End
+
+    static QString toAbbreviatedString( QgsUnitTypes::DistanceUnit unit );
+%Docstring
+Returns a translated abbreviation representing a distance unit.
+
+:param unit: unit to convert to string
+
+.. seealso:: :py:func:`stringToDistanceUnit`
+
+.. versionadded:: 3.0
+%End
+
+    static QgsUnitTypes::DistanceUnit stringToDistanceUnit( const QString &string, bool *ok /Out/ = 0 );
+%Docstring
+Converts a translated string to a distance unit.
+
+:param string: string representing a distance unit
+:param ok: optional boolean, will be set to true if string was converted successfully
+
+.. seealso:: :py:func:`toString`
+%End
+
+    static double fromUnitToUnitFactor( QgsUnitTypes::DistanceUnit fromUnit, QgsUnitTypes::DistanceUnit toUnit );
+%Docstring
+Returns the conversion factor between the specified distance units.
+
+:param fromUnit: distance unit to convert from
+:param toUnit: distance unit to convert to
+
+:return: multiplication factor to convert between units
+%End
+
+
     static DistanceUnitType unitType( AreaUnit unit );
+%Docstring
+Returns the type for an areal unit.
+%End
 
-    /** Encodes an areal unit to a string.
-     * @param unit unit to encode
-     * @returns encoded string
-     * @see decodeAreaUnit()
-    */
     static QString encodeUnit( AreaUnit unit );
+%Docstring
+Encodes an areal unit to a string.
 
-    /** Decodes an areal unit from a string.
-     * @param string string to decode
-     * @param ok optional boolean, will be set to true if string was converted successfully
-     * @returns decoded units
-     * @see encodeUnit()
-    */
-    static AreaUnit decodeAreaUnit( const QString& string, bool *ok = 0 );
+:param unit: unit to encode
 
-    /** Returns a translated string representing an areal unit.
-     * @param unit unit to convert to string
-     * @see stringToAreaUnit()
-     */
+:return: encoded string
+
+.. seealso:: :py:func:`decodeAreaUnit`
+%End
+
+    static AreaUnit decodeAreaUnit( const QString &string, bool *ok /Out/ = 0 );
+%Docstring
+Decodes an areal unit from a string.
+
+:param string: string to decode
+:param ok: optional boolean, will be set to true if string was converted successfully
+
+:return: decoded units
+
+.. seealso:: :py:func:`encodeUnit`
+%End
+
     static QString toString( AreaUnit unit );
+%Docstring
+Returns a translated string representing an areal unit.
 
-    /** Converts a translated string to an areal unit.
-     * @param string string representing an areal unit
-     * @param ok optional boolean, will be set to true if string was converted successfully
-     * @see toString()
-     */
-    static AreaUnit stringToAreaUnit( const QString& string, bool *ok = 0 );
+:param unit: unit to convert to string
 
-    /** Returns the conversion factor between the specified areal units.
-     * @param fromUnit area unit to convert from
-     * @param toUnit area unit to convert to
-     * @returns multiplication factor to convert between units
-     */
+.. seealso:: :py:func:`stringToAreaUnit`
+%End
+
+    static QString toAbbreviatedString( AreaUnit unit );
+%Docstring
+Returns a translated abbreviation representing an areal unit.
+
+:param unit: unit to convert to string
+
+.. seealso:: :py:func:`stringToAreaUnit`
+
+.. versionadded:: 3.0
+%End
+
+    static AreaUnit stringToAreaUnit( const QString &string, bool *ok /Out/ = 0 );
+%Docstring
+Converts a translated string to an areal unit.
+
+:param string: string representing an areal unit
+:param ok: optional boolean, will be set to true if string was converted successfully
+
+.. seealso:: :py:func:`toString`
+%End
+
     static double fromUnitToUnitFactor( AreaUnit fromUnit, AreaUnit toUnit );
+%Docstring
+Returns the conversion factor between the specified areal units.
 
-    /** Converts a distance unit to its corresponding area unit, eg meters to square meters
-     * @param distanceUnit distance unit to convert
-     * @return matching areal unit
-     */
-    static AreaUnit distanceToAreaUnit( QGis::UnitType distanceUnit );
+:param fromUnit: area unit to convert from
+:param toUnit: area unit to convert to
 
-    // ANGULAR UNITS
+:return: multiplication factor to convert between units
+%End
 
-    /** Encodes an angular unit to a string.
-     * @param unit unit to encode
-     * @returns encoded string
-     * @see decodeAngleUnit()
-    */
+    static AreaUnit distanceToAreaUnit( QgsUnitTypes::DistanceUnit distanceUnit );
+%Docstring
+Converts a distance unit to its corresponding area unit, e.g., meters to square meters
+
+:param distanceUnit: distance unit to convert
+
+:return: matching areal unit
+%End
+
+
     static QString encodeUnit( AngleUnit unit );
+%Docstring
+Encodes an angular unit to a string.
 
-    /** Decodes an angular unit from a string.
-     * @param string string to decode
-     * @param ok optional boolean, will be set to true if string was converted successfully
-     * @returns decoded units
-     * @see encodeUnit()
-    */
-    static AngleUnit decodeAngleUnit( const QString& string, bool *ok = 0 );
+:param unit: unit to encode
 
-    /** Returns a translated string representing an angular unit.
-     * @param unit unit to convert to string
-     */
+:return: encoded string
+
+.. seealso:: :py:func:`decodeAngleUnit`
+%End
+
+    static AngleUnit decodeAngleUnit( const QString &string, bool *ok /Out/ = 0 );
+%Docstring
+Decodes an angular unit from a string.
+
+:param string: string to decode
+:param ok: optional boolean, will be set to true if string was converted successfully
+
+:return: decoded units
+
+.. seealso:: :py:func:`encodeUnit`
+%End
+
     static QString toString( AngleUnit unit );
+%Docstring
+Returns a translated string representing an angular unit.
 
-    /** Returns the conversion factor between the specified angular units.
-     * @param fromUnit angle unit to convert from
-     * @param toUnit angle unit to convert to
-     * @returns multiplication factor to convert between units
-     */
+:param unit: unit to convert to string
+%End
+
     static double fromUnitToUnitFactor( AngleUnit fromUnit, AngleUnit toUnit );
+%Docstring
+Returns the conversion factor between the specified angular units.
 
-    /** Returns an angle formatted as a friendly string.
-     * @param angle angle to format
-     * @param decimals number of decimal places to show
-     * @param unit unit of angle
-     * @returns formatted angle string
-     */
+:param fromUnit: angle unit to convert from
+:param toUnit: angle unit to convert to
+
+:return: multiplication factor to convert between units
+%End
+
     static QString formatAngle( double angle, int decimals, AngleUnit unit );
+%Docstring
+Returns an angle formatted as a friendly string.
+
+:param angle: angle to format
+:param decimals: number of decimal places to show
+:param unit: unit of angle
+
+:return: formatted angle string
+%End
+
+
+    static QgsUnitTypes::DistanceValue scaledDistance( double distance, QgsUnitTypes::DistanceUnit unit, int decimals, bool keepBaseUnit = false );
+%Docstring
+Will convert a ``distance`` with a given ``unit`` to a distance value which is nice to display.
+It will convert between different units (e.g. from meters to kilometers or millimeters)
+if appropriate, unless forced otherwise with ``keepBaseUnit``.
+The value will also be rounded to ``decimals`` (be prepared that the returned value is still a double so it will require
+further formatting when converting to a string).
+
+.. versionadded:: 3.0
+%End
+
+    static QgsUnitTypes::AreaValue scaledArea( double area, QgsUnitTypes::AreaUnit unit, int decimals, bool keepBaseUnit = false );
+%Docstring
+Will convert an ``area`` with a given ``unit`` to an area value which is nice to display.
+It will convert between different units (e.g. from square meters to square kilometers)
+if appropriate, unless forced otherwise with ``keepBaseUnit``.
+The value will also be rounded to ``decimals`` (be prepared that the returned value is still a double so it will require
+further formatting when converting to a string).
+
+.. versionadded:: 3.0
+%End
+
+    static QString formatDistance( double distance, int decimals, QgsUnitTypes::DistanceUnit unit, bool keepBaseUnit = false );
+%Docstring
+Returns an distance formatted as a friendly string.
+
+:param distance: distance to format
+:param decimals: number of decimal places to show
+:param unit: unit of distance
+:param keepBaseUnit: set to false to allow conversion of large distances to more suitable units, e.g., meters to
+kilometers
+
+:return: formatted distance string
+
+.. versionadded:: 3.0
+
+.. seealso:: :py:func:`formatArea`
+%End
+
+    static QString formatArea( double area, int decimals, QgsUnitTypes::AreaUnit unit, bool keepBaseUnit = false );
+%Docstring
+Returns an area formatted as a friendly string.
+
+:param area: area to format
+:param decimals: number of decimal places to show
+:param unit: unit of area
+:param keepBaseUnit: set to false to allow conversion of large areas to more suitable units, e.g., square meters to
+square kilometers
+
+:return: formatted area string
+
+.. versionadded:: 3.0
+
+.. seealso:: :py:func:`formatDistance`
+%End
+
+
+    static QString encodeUnit( RenderUnit unit );
+%Docstring
+Encodes a render unit to a string.
+
+:param unit: unit to encode
+
+:return: encoded string
+
+.. seealso:: :py:func:`decodeRenderUnit`
+%End
+
+    static RenderUnit decodeRenderUnit( const QString &string, bool *ok /Out/ = 0 );
+%Docstring
+Decodes a render unit from a string.
+
+:param string: string to decode
+:param ok: optional boolean, will be set to true if string was converted successfully
+
+:return: decoded units
+
+.. seealso:: :py:func:`encodeUnit`
+%End
+
+    static QString toString( RenderUnit unit );
+%Docstring
+Returns a translated string representing a render ``unit``.
+
+.. versionadded:: 3.0
+%End
+
+
+
+    static QString encodeUnit( LayoutUnit unit );
+%Docstring
+Encodes a layout unit to a string.
+
+:param unit: unit to encode
+
+:return: encoded string
+
+.. seealso:: :py:func:`decodeLayoutUnit`
+
+.. versionadded:: 3.0
+%End
+
+    static LayoutUnit decodeLayoutUnit( const QString &string, bool *ok /Out/ = 0 );
+%Docstring
+Decodes a layout unit from a string.
+
+:param string: string to decode
+:param ok: optional boolean, will be set to true if string was converted successfully
+
+:return: decoded units
+
+.. seealso:: :py:func:`encodeUnit`
+
+.. versionadded:: 3.0
+%End
+
+    static LayoutUnitType unitType( const LayoutUnit units );
+%Docstring
+Returns the type for a unit of measurement.
+
+.. versionadded:: 3.0
+%End
+
+    static QString toAbbreviatedString( LayoutUnit unit );
+%Docstring
+Returns a translated abbreviation representing a layout ``unit`` (e.g. "mm").
+
+.. versionadded:: 3.0
+%End
+
+    static QString toString( LayoutUnit unit );
+%Docstring
+Returns a translated string representing a layout ``unit``.
+
+.. versionadded:: 3.0
+%End
+
 };
 
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsunittypes.h                                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -18,7 +18,7 @@
 #define QGSMAPTOOLCIRCULARSTRINGRADIUS_H
 
 #include "qgsmaptooladdcircularstring.h"
-#include "qgspointv2.h"
+#include "qgspoint.h"
 
 class QDoubleSpinBox;
 
@@ -26,25 +26,24 @@ class QgsMapToolCircularStringRadius: public QgsMapToolAddCircularString
 {
     Q_OBJECT
   public:
-    QgsMapToolCircularStringRadius( QgsMapToolCapture* parentTool, QgsMapCanvas* canvas, CaptureMode mode = CaptureLine );
-    ~QgsMapToolCircularStringRadius();
+    QgsMapToolCircularStringRadius( QgsMapToolCapture *parentTool, QgsMapCanvas *canvas, CaptureMode mode = CaptureLine );
 
-    virtual void cadCanvasReleaseEvent( QgsMapMouseEvent* e ) override;
-    virtual void cadCanvasMoveEvent( QgsMapMouseEvent* e ) override;
-    virtual void deactivate() override;
+    void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
+    void cadCanvasMoveEvent( QgsMapMouseEvent *e ) override;
+    void deactivate() override;
 
   private slots:
     void updateRadiusFromSpinBox( double radius );
 
   private:
-    QgsPointV2 mTemporaryEndPoint;
+    QgsPoint mTemporaryEndPoint;
     double mRadius;
-    QDoubleSpinBox* mRadiusSpinBox;
+    QDoubleSpinBox *mRadiusSpinBox = nullptr;
 
     //! recalculate the rubberband
     void recalculateRubberBand();
     //! recalculate the temporary rubberband using the given mouse position
-    void recalculateTempRubberBand( const QgsPoint& mousePosition );
+    void recalculateTempRubberBand( const QgsPointXY &mousePosition );
     //! (re-)create the spin box to enter the radius
     void createRadiusSpinBox();
     //! delete the spin box to enter the radius, if it exists

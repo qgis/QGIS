@@ -1,0 +1,122 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/vector/qgsgeometrysnapper.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsGeometrySnapper : QObject
+{
+%Docstring
+QgsGeometrySnapper allows a geometry to be snapped to the geometries within a
+different reference layer. Vertices in the geometries will be modified to
+match the reference layer features within a specified snap tolerance.
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsgeometrysnapper.h"
+%End
+  public:
+
+    enum SnapMode
+    {
+      PreferNodes,
+      PreferClosest,
+      PreferNodesNoExtraVertices,
+      PreferClosestNoExtraVertices,
+      EndPointPreferNodes,
+      EndPointPreferClosest,
+      EndPointToEndPoint,
+    };
+
+    QgsGeometrySnapper( QgsFeatureSource *referenceSource );
+%Docstring
+Constructor for QgsGeometrySnapper. A reference feature source which contains geometries to snap to must be
+set. It is assumed that all geometries snapped using this object will have the
+same CRS as the reference source (ie, no reprojection is performed).
+%End
+
+    QgsGeometry snapGeometry( const QgsGeometry &geometry, double snapTolerance, SnapMode mode = PreferNodes ) const;
+%Docstring
+Snaps a geometry to the reference layer and returns the result. The geometry must be in the same
+CRS as the reference layer, and must have the same type as the reference layer geometry. The snap tolerance
+is specified in the layer units for the reference layer.
+%End
+
+    QgsFeatureList snapFeatures( const QgsFeatureList &features, double snapTolerance, SnapMode mode = PreferNodes );
+%Docstring
+Snaps a set of features to the reference layer and returns the result. This operation is
+multithreaded for performance. The featureSnapped() signal will be emitted each time a feature
+is processed. The snap tolerance is specified in the layer units for the reference layer.
+%End
+
+    static QgsGeometry snapGeometry( const QgsGeometry &geometry, double snapTolerance, const QList<QgsGeometry> &referenceGeometries, SnapMode mode = PreferNodes );
+%Docstring
+Snaps a single geometry against a list of reference geometries.
+%End
+
+  signals:
+
+    void featureSnapped();
+%Docstring
+Emitted each time a feature has been processed when calling snapFeatures()
+%End
+
+};
+
+
+class QgsInternalGeometrySnapper
+{
+%Docstring
+QgsInternalGeometrySnapper allows a set of geometries to be snapped to each other. It can be used to close gaps in layers.
+
+To use :py:class:`QgsInternalGeometrySnapper`, first construct the snapper using the desired snap parameters. Then,
+features are fed to to the snapper one-by-one by calling snapFeature(). Each feature passed by calling
+snapFeature() will be snapped to any features which have already been processed by the snapper.
+
+After processing all desired features, the results can be fetched by calling snappedGeometries().
+The returned QgsGeometryMap can be passed to QgsVectorDataProvider.changeGeometryValues() to save
+the snapped geometries back to the source layer.
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsgeometrysnapper.h"
+%End
+  public:
+
+    QgsInternalGeometrySnapper( double snapTolerance, QgsGeometrySnapper::SnapMode mode = QgsGeometrySnapper::PreferNodes );
+%Docstring
+Constructor for QgsInternalGeometrySnapper. The ``snapTolerance`` and ``mode`` parameters dictate
+how geometries will be snapped by the snapper.
+%End
+
+    QgsGeometry snapFeature( const QgsFeature &feature );
+%Docstring
+Snaps a single feature's geometry against all feature geometries already processed by
+calls to snapFeature() in this object, and returns the snapped geometry.
+%End
+
+    QgsGeometryMap snappedGeometries() const;
+%Docstring
+Returns a QgsGeometryMap of all feature geometries snapped by this object.
+%End
+
+};
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/vector/qgsgeometrysnapper.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

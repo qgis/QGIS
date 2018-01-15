@@ -24,6 +24,7 @@
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsvectordataprovider.h"
+#include "qgswfscapabilities.h"
 #include "qgswfsfeatureiterator.h"
 #include "qgswfsdatasourceuri.h"
 
@@ -31,7 +32,8 @@ class QgsRectangle;
 class QgsWFSSharedData;
 
 
-/** \ingroup WFSProvider
+/**
+ * \ingroup WFSProvider
  *
  * A provider reading/write features from/into a WFS server.
  *
@@ -46,13 +48,13 @@ class QgsWFSSharedData;
  * QgsWFSSharedData class purpose:
  * - contains logic shared by QgsWFSProvider, QgsWFSFeatureIterator and QgsWFSFeatureDownloader.
  * - one of its main function is to maintain a on-disk cache of the features retrieved
- *   from the server. This cache is a Spatialite database.
+ *   from the server. This cache is a SpatiaLite database.
  *
  * QgsWFSRequest class purpose: abstract base class to create WFS network requests,
  * such as QgsWFSCapabilities, QgsWFSDescribeFeatureType, QgsWFSFeatureDownloader,
  * QgsWFSFeatureHitsAsyncRequest, QgsWFSFeatureHitsRequest, QgsWFSTransactionRequest
  *
- * QgsWFSDataSourceURI class purpose: wrapper above QgsDataSourceURI to get/set
+ * QgsWFSDataSourceURI class purpose: wrapper above QgsDataSourceUri to get/set
  * the specific attributes of a WFS URI.
  *
  */
@@ -61,83 +63,67 @@ class QgsWFSProvider : public QgsVectorDataProvider
     Q_OBJECT
   public:
 
-    explicit QgsWFSProvider( const QString& uri );
-    ~QgsWFSProvider();
+    explicit QgsWFSProvider( const QString &uri, const QgsWfsCapabilities::Capabilities &caps = QgsWfsCapabilities::Capabilities() );
+    ~QgsWFSProvider() override;
 
     /* Inherited from QgsVectorDataProvider */
 
-    virtual QgsAbstractFeatureSource* featureSource() const override;
+    QgsAbstractFeatureSource *featureSource() const override;
 
-    QgsFeatureIterator getFeatures( const QgsFeatureRequest& request = QgsFeatureRequest() ) override;
+    QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const override;
 
-    QGis::WkbType geometryType() const override;
+    QgsWkbTypes::Type wkbType() const override;
     long featureCount() const override;
 
-    const QgsFields& fields() const override;
+    QgsFields fields() const override;
 
-    virtual QgsCoordinateReferenceSystem crs() override;
+    QgsCoordinateReferenceSystem crs() const override;
 
-    /** Accessor for sql where clause used to limit dataset */
-    virtual QString subsetString() override;
+    QString subsetString() const override;
+    bool setSubsetString( const QString &theSQL, bool updateFeatureCount = true ) override;
 
-    /** Mutator for sql where clause used to limit dataset size */
-    virtual bool setSubsetString( const QString& theSQL, bool updateFeatureCount = true ) override;
-
-    virtual bool supportsSubsetString() override { return true; }
+    bool supportsSubsetString() const override { return true; }
 
     /* Inherited from QgsDataProvider */
 
-    QgsRectangle extent() override;
-    bool isValid() override;
+    QgsRectangle extent() const override;
+    bool isValid() const override;
     QString name() const override;
     QString description() const override;
 
-    virtual int capabilities() const override;
+    QgsVectorDataProvider::Capabilities capabilities() const override;
 
     /* new functions */
 
+    QString geometryAttribute() const;
+
+    const QString processSQLErrorMsg() const { return mProcessSQLErrorMsg; }
+
+    const QString processSQLWarningMsg() const { return mProcessSQLWarningMsg; }
+
     //Editing operations
-    /**
-     * Adds a list of features
-     * @return true in case of success and false in case of failure
-     */
-    virtual bool addFeatures( QgsFeatureList &flist ) override;
 
-    /**
-     * Deletes one or more features
-     * @param id list containing feature ids to delete
-     * @return true in case of success and false in case of failure
-     */
-    virtual bool deleteFeatures( const QgsFeatureIds &id ) override;
-
-    /**
-     * Changes geometries of existing features
-     * @param geometry_map   A QgsGeometryMap whose index contains the feature IDs
-     *                       that will have their geometries changed.
-     *                       The second map parameter being the new geometries themselves
-     * @return               True in case of success and false in case of failure
-     */
-    virtual bool changeGeometryValues( const QgsGeometryMap &geometry_map ) override;
-
-    /**
-     * Changes attribute values of existing features.
-     * @param attr_map a map containing changed attributes
-     * @return true in case of success and false in case of failure
-     */
-    virtual bool changeAttributeValues( const QgsChangedAttributesMap &attr_map ) override;
+    bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = nullptr ) override;
+    bool deleteFeatures( const QgsFeatureIds &id ) override;
+    bool changeGeometryValues( const QgsGeometryMap &geometry_map ) override;
+    bool changeAttributeValues( const QgsChangedAttributesMap &attr_map ) override;
+    QVariantMap metadata() const override;
+    QString translateMetadataKey( const QString &mdKey ) const override;
+    QString translateMetadataValue( const QString &mdKey, const QVariant &value ) const override;
 
   public slots:
-    /** Reloads the data from the source. Needs to be implemented by providers with data caches to
-      synchronize with changes in the data source*/
-    virtual void reloadData() override;
+
+    void reloadData() override;
 
   private slots:
 
     void featureReceivedAnalyzeOneFeature( QVector<QgsWFSFeatureGmlIdPair> );
 
+    void pushErrorSlot( const QString &errorMsg );
+
   private:
-    /** Mutable data shared between provider and feature sources */
-    QSharedPointer<QgsWFSSharedData> mShared;
+    //! Mutable data shared between provider and feature sources
+    std::shared_ptr<QgsWFSSharedData> mShared;
 
     friend class QgsWFSFeatureSource;
 
@@ -146,51 +132,60 @@ class QgsWFSProvider : public QgsVectorDataProvider
     //! String used to define a subset of the layer
     QString mSubsetString;
 
-    /** Bounding box for the layer*/
-    QgsRectangle mExtent;
-    /** Geometry type of the features in this layer*/
-    mutable QGis::WkbType mWKBType;
-    /** Flag if provider is valid*/
-    bool mValid;
-    /** Namespace URL of the server (comes from DescribeFeatureDocument)*/
+    //! Geometry type of the features in this layer
+    mutable QgsWkbTypes::Type mWKBType = QgsWkbTypes::Unknown;
+    //! Flag if provider is valid
+    bool mValid = true;
+    //! Namespace URL of the server (comes from DescribeFeatureDocument)
     QString mApplicationNamespace;
-    /** Server capabilities for this layer (generated from capabilities document)*/
-    int mCapabilities;
+    //! Server capabilities for this layer (generated from capabilities document)
+    QgsVectorDataProvider::Capabilities mCapabilities = nullptr;
+    //! Fields of this typename. Might be different from mShared->mFields in case of SELECT
+    QgsFields mThisTypenameFields;
 
-    /** Collects information about the field types. Is called internally from QgsWFSProvider ctor.
+    QString mProcessSQLErrorMsg;
+    QString mProcessSQLWarningMsg;
+
+    /**
+     * Collects information about the field types. Is called internally from QgsWFSProvider ctor.
        The method gives back the name of
        the geometry attribute and the thematic attributes with their types*/
-    bool describeFeatureType( QString& geometryAttribute,
-                              QgsFields& fields, QGis::WkbType& geomType );
+    bool describeFeatureType( QString &geometryAttribute,
+                              QgsFields &fields, QgsWkbTypes::Type &geomType );
 
-    /** Reads the name of the geometry attribute, the thematic attributes and their types from a dom document. Returns 0 in case of success*/
-    int readAttributesFromSchema( QDomDocument& schemaDoc, QString& geometryAttribute, QgsFields& fields, QGis::WkbType& geomType );
+    /**
+     * For a given typename, reads the name of the geometry attribute, the
+        thematic attributes and their types from a dom document. Returns true in case of success*/
+    bool readAttributesFromSchema( QDomDocument &schemaDoc,
+                                   const QString &prefixedTypename,
+                                   QString &geometryAttribute,
+                                   QgsFields &fields, QgsWkbTypes::Type &geomType, QString &errorMsg );
 
     //helper methods for WFS-T
 
-    /** Removes a possible namespace prefix from a typename*/
-    void removeNamespacePrefix( QString& tname ) const;
-    /** Returns namespace prefix (or an empty string if there is no prefix)*/
-    QString nameSpacePrefix( const QString& tname ) const;
-
-    /** Sends the transaction document to the server using HTTP POST
-      @return true if transmission to the server succeeded, otherwise false
+    /**
+     * Sends the transaction document to the server using HTTP POST
+      \returns true if transmission to the server succeeded, otherwise false
         note: true does not automatically mean that the transaction succeeded*/
-    bool sendTransactionDocument( const QDomDocument& doc, QDomDocument& serverResponse );
+    bool sendTransactionDocument( const QDomDocument &doc, QDomDocument &serverResponse );
 
-    /** Creates a transaction element and adds it (normally as first element) to the document*/
-    QDomElement createTransactionElement( QDomDocument& doc ) const;
+    //! Creates a transaction element and adds it (normally as first element) to the document
+    QDomElement createTransactionElement( QDomDocument &doc ) const;
 
-    /** True if the server response means success*/
-    bool transactionSuccess( const QDomDocument& serverResponse ) const;
-    /** Returns the inserted ids*/
-    QStringList insertedFeatureIds( const QDomDocument& serverResponse ) const;
-    /** Retrieve version and capabilities for this layer from GetCapabilities document (will be stored in mCapabilites)*/
+    //! True if the server response means success
+    bool transactionSuccess( const QDomDocument &serverResponse ) const;
+    //! Returns the inserted ids
+    QStringList insertedFeatureIds( const QDomDocument &serverResponse ) const;
+    //! Retrieve version and capabilities for this layer from GetCapabilities document (will be stored in mCapabilities)
     bool getCapabilities();
-    /** Records provider error*/
-    void handleException( const QDomDocument& serverResponse );
-    /** Converts DescribeFeatureType schema geometry property type to WKBType*/
-    QGis::WkbType geomTypeFromPropertyType( const QString& attName, const QString& propType );
+    //! Records provider error
+    void handleException( const QDomDocument &serverResponse );
+    //! Converts DescribeFeatureType schema geometry property type to WKBType
+    QgsWkbTypes::Type geomTypeFromPropertyType( const QString &attName, const QString &propType );
+    //! Convert the value to its appropriate XML representation
+    QString convertToXML( const QVariant &value );
+
+    bool processSQL( const QString &sqlString, QString &errorMsg, QString &warningMsg );
 };
 
 #endif /* QGSWFSPROVIDER_H */

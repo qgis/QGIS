@@ -21,23 +21,36 @@
 #include <QGraphicsEffect>
 #include <QPainter>
 
+#include "qgis_core.h"
+
+#define SIP_NO_FILE
+
+/**
+ * \ingroup core
+ * \class QgsComposerEffect
+ * \note Not available in Python bindings
+ * \deprecated Will be removed in QGIS 3.2
+ */
 class CORE_EXPORT QgsComposerEffect : public QGraphicsEffect
 {
     Q_OBJECT
 
   public:
-    QgsComposerEffect();
-    ~QgsComposerEffect();
+
+    /**
+     * Constructor for QgsComposerEffect.
+     */
+    QgsComposerEffect() = default;
 
     void setCompositionMode( QPainter::CompositionMode compositionMode );
 
   protected:
-    /** Called whenever source needs to be drawn */
-    virtual void draw( QPainter *painter ) override;
+    //! Called whenever source needs to be drawn
+    void draw( QPainter *painter ) override;
 
   private:
 
-    QPainter::CompositionMode mCompositionMode;
+    QPainter::CompositionMode mCompositionMode = QPainter::CompositionMode_SourceOver;
 };
 
 #endif // QGSCOMPOSEREFFECT_H

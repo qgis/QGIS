@@ -1,73 +1,87 @@
-/**
- * The QgsLayerTreeMapCanvasBridge class takes care of updates of layer set
- * for QgsMapCanvas from a layer tree. The class listens to the updates in the layer tree
- * and updates the list of layers for rendering whenever some layers are added, removed,
- * or their visibility changes.
- *
- * The update of layers is not done immediately - it is postponed, so a series of updates
- * to the layer tree will trigger just one update of canvas layers.
- *
- * Also allows the client to override the default order of layers. This is useful
- * in advanced cases where the grouping in layer tree should be independent from the actual
- * order in the canvas.
- *
- * @note added in 2.4
- */
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/layertree/qgslayertreemapcanvasbridge.h                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
 class QgsLayerTreeMapCanvasBridge : QObject
 {
-%TypeHeaderCode
-#include <qgslayertreemapcanvasbridge.h>
+%Docstring
+The QgsLayerTreeMapCanvasBridge class takes care of updates of layer set
+for QgsMapCanvas from a layer tree. The class listens to the updates in the layer tree
+and updates the list of layers for rendering whenever some layers are added, removed,
+or their visibility changes.
+
+The update of layers is not done immediately - it is postponed, so a series of updates
+to the layer tree will trigger just one update of canvas layers.
+
+Also allows the client to override the default order of layers. This is useful
+in advanced cases where the grouping in layer tree should be independent from the actual
+order in the canvas.
+
+.. versionadded:: 2.4
 %End
 
+%TypeHeaderCode
+#include "qgslayertreemapcanvasbridge.h"
+%End
   public:
-    //! Constructor: does not take ownership of the layer tree nor canvas
-    QgsLayerTreeMapCanvasBridge( QgsLayerTreeGroup* root, QgsMapCanvas* canvas, QObject* parent /TransferThis/ = 0 );
+    QgsLayerTreeMapCanvasBridge( QgsLayerTree *root, QgsMapCanvas *canvas, QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor: does not take ownership of the layer tree nor canvas
+%End
 
-    void clear();
+    QgsLayerTree *rootGroup() const;
+    QgsMapCanvas *mapCanvas() const;
 
-    QgsLayerTreeGroup* rootGroup() const;
-    QgsMapCanvas* mapCanvas() const;
+    void setOvervewCanvas( QgsMapOverviewCanvas *overviewCanvas );
+%Docstring
+Associates overview canvas with the bridge, so the overview will be updated whenever main canvas is updated
 
-    bool hasCustomLayerOrder() const;
-    QStringList customLayerOrder() const;
+.. versionadded:: 3.0
+%End
 
-    QStringList defaultLayerOrder() const;
+    QgsMapOverviewCanvas *overviewCanvas() const;
+%Docstring
+Returns associated overview canvas (may be null)
 
-    //! if enabled, will automatically set full canvas extent and destination CRS + map units
-    //! when first layer(s) are added
+.. versionadded:: 3.0
+%End
+
     void setAutoSetupOnFirstLayer( bool enabled );
+%Docstring
+if enabled, will automatically set full canvas extent and destination CRS + map units
+when first layer(s) are added
+%End
     bool autoSetupOnFirstLayer() const;
 
-    //! if enabled, will automatically turn on on-the-fly reprojection of layers if a layer
-    //! with different source CRS is added
-    void setAutoEnableCrsTransform( bool enabled );
-    bool autoEnableCrsTransform() const;
-
-  public slots:
-    void setHasCustomLayerOrder( bool state );
-    void setCustomLayerOrder( const QStringList& order );
-
-    //! force update of canvas layers from the layer tree. Normally this should not be needed to be called.
     void setCanvasLayers();
-
-    void readProject( const QDomDocument& doc );
-    void writeProject( QDomDocument& doc );
+%Docstring
+force update of canvas layers from the layer tree. Normally this should not be needed to be called.
+%End
 
   signals:
-    void hasCustomLayerOrderChanged( bool );
-    void customLayerOrderChanged( const QStringList& order );
 
-  protected:
+    void canvasLayersChanged( const QList< QgsMapLayer * > &layers );
+%Docstring
+Emitted when the set of layers (or order of layers) visible in the
+canvas changes.
 
-    void defaultLayerOrder( QgsLayerTreeNode* node, QStringList& order ) const;
+.. versionadded:: 3.0
+%End
 
-    void setCanvasLayers( QgsLayerTreeNode* node, QList<QgsMapCanvasLayer>& layers );
-
-    void deferredSetCanvasLayers();
-
-  protected slots:
-    void nodeAddedChildren( QgsLayerTreeNode* node, int indexFrom, int indexTo );
-    void nodeRemovedChildren();
-    void nodeVisibilityChanged();
-    void nodeCustomPropertyChanged( QgsLayerTreeNode* node, const QString& key );
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/layertree/qgslayertreemapcanvasbridge.h                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

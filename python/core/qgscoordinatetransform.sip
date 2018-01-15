@@ -1,219 +1,367 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgscoordinatetransform.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
 
-/** \ingroup core
-* Class for doing transforms between two map coordinate systems.
-*
-* This class can convert map coordinates to a different coordinate reference system.
-* It is normally associated with a map layer and is used to transform between the
-* layer's coordinate system and the coordinate system of the map canvas, although
-* it can be used in a more general sense to transform coordinates.
-*
-* All references to source and destination coordinate systems refer to
-* layer and map canvas respectively. All operations are from the perspective
-* of the layer. For example, a forward transformation transforms coordinates from the
-* layers coordinate system to the map canvas.
-*/
-class QgsCoordinateTransform : QObject
+
+
+
+
+class QgsCoordinateTransform
 {
-%TypeHeaderCode
-#include <qgscoordinatetransform.h>
+%Docstring
+Class for doing transforms between two map coordinate systems.
+
+This class can convert map coordinates to a different coordinate reference system.
+It is normally associated with a map layer and is used to transform between the
+layer's coordinate system and the coordinate system of the map canvas, although
+it can be used in a more general sense to transform coordinates.
+
+When used to transform between a layer and the map canvas, all references to source
+and destination coordinate systems refer to layer and map canvas respectively. All
+operations are from the perspective of the layer. For example, a forward transformation
+transforms coordinates from the layer's coordinate system to the map canvas.
+
+.. note::
+
+   Since QGIS 3.0 QgsCoordinateReferenceSystem objects are implicitly shared.
+
+.. seealso:: :py:class:`QgsDatumTransform`
+
+.. seealso:: :py:class:`QgsCoordinateTransformContext`
 %End
 
+%TypeHeaderCode
+#include "qgscoordinatetransform.h"
+%End
   public:
-    /** Default constructor. Make sure you use initialized() manually if you use this one! */
-    QgsCoordinateTransform();
 
-    /** Constructs a QgsCoordinateTransform using QgsCoordinateReferenceSystem objects.
-     * @param theSource CRS, typically of the layer's coordinate system
-     * @param theDest CRS, typically of the map canvas coordinate system
-     */
-    QgsCoordinateTransform( const QgsCoordinateReferenceSystem& theSource,
-                            const QgsCoordinateReferenceSystem& theDest );
-
-    /** Constructs a QgsCoordinateTransform using CRS ID of source and destination CRS */
-    QgsCoordinateTransform( long theSourceSrsId, long theDestSrsId );
-
-    /*!
-     * Constructs a QgsCoordinateTransform using the Well Known Text representation
-     * of the layer and map canvas coordinate systems
-     * @param theSourceWkt Wkt, typically of the layer's coordinate system
-     * @param theDestWkt Wkt, typically of the map canvas coordinate system
-     */
-    QgsCoordinateTransform( const QString& theSourceWkt, const QString& theDestWkt );
-
-    /*!
-     * Constructs a QgsCoordinateTransform using a Spatial Reference Id
-     * of the layer and map canvas coordinate system as Wkt
-     * @param theSourceSrid Spatial Ref Id of the layer's coordinate system
-     * @param theDestWkt Wkt of the map canvas coordinate system
-     * @param theSourceCRSType On of the enum members defined in QgsCoordinateReferenceSystem::CrsType
-     */
-    QgsCoordinateTransform( long theSourceSrid,
-                            const QString& theDestWkt,
-                            QgsCoordinateReferenceSystem::CrsType theSourceCRSType = QgsCoordinateReferenceSystem::PostgisCrsId );
-
-    //! destructor
-    ~QgsCoordinateTransform();
-
-    QgsCoordinateTransform* clone() const /Factory/;
-
-    //! Enum used to indicate the direction (forward or inverse) of the transform
     enum TransformDirection
     {
-      ForwardTransform,     /*!< Transform from source to destination CRS. */
-      ReverseTransform      /*!< Transform from destination to source CRS. */
+      ForwardTransform,
+      ReverseTransform
     };
 
-    /*!
-     * Set the source (layer) QgsCoordinateReferenceSystem
-     * @param theCRS QgsCoordinateReferenceSystem representation of the layer's coordinate system
-     */
-    void setSourceCrs( const QgsCoordinateReferenceSystem& theCRS );
+    QgsCoordinateTransform();
+%Docstring
+Default constructor, creates an invalid QgsCoordinateTransform.
+%End
 
-    /*!
-     * Mutator for dest QgsCoordinateReferenceSystem
-     * @param theCRS of the destination coordinate system
-     */
-    void setDestCRS( const QgsCoordinateReferenceSystem& theCRS );
 
-    /*!
-     * Get the QgsCoordinateReferenceSystem representation of the layer's coordinate system
-     * @return QgsCoordinateReferenceSystem of the layer's coordinate system
-     */
-    const QgsCoordinateReferenceSystem& sourceCrs() const;
+    explicit QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source,
+                                     const QgsCoordinateReferenceSystem &destination,
+                                     const QgsCoordinateTransformContext &context );
+%Docstring
+Constructs a QgsCoordinateTransform to transform from the ``source``
+to ``destination`` coordinate reference system.
 
-    /*!
-     * Get the QgsCoordinateReferenceSystem representation of the map canvas coordinate system
-     * @return QgsCoordinateReferenceSystem of the map canvas coordinate system
-     */
-    const QgsCoordinateReferenceSystem& destCRS() const;
+The ``context`` argument specifies the context under which the transform
+will be applied, and is used for calculating necessary datum transforms
+to utilize.
 
-    /** Transform the point from Source Coordinate System to Destination Coordinate System
-     * If the direction is ForwardTransform then coordinates are transformed from layer CS --> map canvas CS,
-     * otherwise points are transformed from map canvas CS to layerCS.
-     * @param p Point to transform
-     * @param direction TransformDirection (defaults to ForwardTransform)
-     * @return QgsPoint in Destination Coordinate System
-     */
-    QgsPoint transform( const QgsPoint &p, TransformDirection direction = ForwardTransform ) const throw (QgsCsException);
+Python scripts should generally use the constructor variant which accepts
+a QgsProject instance instead of this constructor.
 
-    /** Transform the point specified by x,y from Source Coordinate System to Destination Coordinate System
-     * If the direction is ForwardTransform then coordinates are transformed from layer CS --> map canvas CS,
-     * otherwise points are transformed from map canvas CS to layerCS.
-     * @param x x cordinate of point to transform
-     * @param y y coordinate of point to transform
-     * @param direction TransformDirection (defaults to ForwardTransform)
-     * @return QgsPoint in Destination Coordinate System
-     */
-    QgsPoint transform( const double x, const double y, TransformDirection direction = ForwardTransform ) const throw (QgsCsException);
+.. warning::
 
-    /** Transform a QgsRectangle to the dest Coordinate system
-     * If the direction is ForwardTransform then coordinates are transformed from layer CS --> map canvas CS,
-     * otherwise points are transformed from map canvas CS to layerCS.
-     * It assumes that rect is a bounding box, and creates a bounding box
-     * in the proejcted CS, so that all points in source rectangle is within
-     * returned rectangle.
-     * @param theRect rect to transform
-     * @param direction TransformDirection (defaults to ForwardTransform)
-     * @param handle180Crossover set to true if destination crs is geographic and handling of extents crossing the 180 degree
-     * longitude line is required
-     * @return QgsRectangle in Destination Coordinate System
-     */
-    QgsRectangle transformBoundingBox( const QgsRectangle &theRect, TransformDirection direction = ForwardTransform, const bool handle180Crossover = false ) const throw (QgsCsException);
+   Do NOT use an empty/default constructed QgsCoordinateTransformContext()
+   object when creating QgsCoordinateTransform objects. This prevents correct
+   datum transform handling and may result in inaccurate transformations. Always
+   ensure that the QgsCoordinateTransformContext object is correctly retrieved
+   based on the current code context, or use the constructor variant which
+   accepts a QgsProject argument instead.
 
-    // Same as for the other transform() functions, but alters the x
-    // and y variables in place. The second one works with good old-fashioned
-    // C style arrays.
-    void transformInPlace( double& x, double& y, double &z, TransformDirection direction = ForwardTransform ) const throw (QgsCsException);
+.. versionadded:: 3.0
+%End
 
-    // @note not available in python bindings
-    // void transformInPlace( float& x, float& y, double &z, TransformDirection direction = ForwardTransform ) const;
-    // @note not available in python bindings
-    // void transformInPlace( float& x, float& y, float& z, TransformDirection direction = ForwardTransform ) const;
-    // @note not available in python bindings
-    // void transformInPlace( QVector<float>& x, QVector<float>& y, QVector<float>& z,
-    //                       TransformDirection direction = ForwardTransform ) const;
+    explicit QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source,
+                                     const QgsCoordinateReferenceSystem &destination,
+                                     const QgsProject *project );
+%Docstring
+Constructs a QgsCoordinateTransform to transform from the ``source``
+to ``destination`` coordinate reference system, when used with the
+given ``project``.
 
-    //! @note not available in python bindings
-    // void transformInPlace( QVector<double>& x, QVector<double>& y, QVector<double>& z,
-    //                        TransformDirection direction = ForwardTransform ) const;
+No reference to ``project`` is stored or utilized outside of the constructor,
+and it is used to retrieve the project's transform context only.
 
-    void transformPolygon( QPolygonF& poly, TransformDirection direction = ForwardTransform ) const;
+Python scripts should utilize the QgsProject.instance() project
+instance when creating QgsCoordinateTransform. This will ensure
+that any datum transforms defined in the project will be
+correctly respected during coordinate transforms. E.g.
 
-    /** Transform a QgsRectangle to the dest Coordinate system
-     * If the direction is ForwardTransform then coordinates are transformed from layer CS --> map canvas CS,
-     * otherwise points are transformed from map canvas CS to layerCS.
-     * @param theRect rect to transform
-     * @param direction TransformDirection (defaults to ForwardTransform)
-     * @return QgsRectangle in Destination Coordinate System
-     */
-    QgsRectangle transform( const QgsRectangle &theRect, TransformDirection direction = ForwardTransform ) const throw (QgsCsException);
+.. code-block:: python
 
-    /** Transform an array of coordinates to a different Coordinate System
-     * If the direction is ForwardTransform then coordinates are transformed from layer CS --> map canvas CS,
-     * otherwise points are transformed from map canvas CS to layerCS.
-     * @param numPoint number of coordinates in arrays
-     * @param x array of x coordinates to transform
-     * @param y array of y coordinates to transform
-     * @param z array of z coordinates to transform
-     * @param direction TransformDirection (defaults to ForwardTransform)
-     * @return QgsRectangle in Destination Coordinate System
-     */
-    void transformCoords( int numPoint, double *x, double *y, double *z, TransformDirection direction = ForwardTransform ) const throw (QgsCsException);
+       transform = QgsCoordinateTransform(QgsCoordinateReferenceSystem("EPSG:3111"),
+                                          QgsCoordinateReferenceSystem("EPSG:4326"), QgsProject.instance())
 
-    /*!
-     * Flag to indicate whether the coordinate systems have been initialized
-     * @return true if initialized, otherwise false
-     */
-    bool isInitialised() const;
+.. versionadded:: 3.0
+%End
 
-    /** See if the transform short circuits because src and dest are equivalent
-     * @return bool True if it short circuits
-     */
+    explicit QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source,
+                                     const QgsCoordinateReferenceSystem &destination,
+                                     int sourceDatumTransformId,
+                                     int destinationDatumTransformId );
+%Docstring
+Constructs a QgsCoordinateTransform to transform from the ``source``
+to ``destination`` coordinate reference system, with the specified
+datum transforms (see :py:class:`QgsDatumTransform`).
+
+.. versionadded:: 3.0
+%End
+
+    QgsCoordinateTransform( const QgsCoordinateTransform &o );
+%Docstring
+Copy constructor
+%End
+
+
+    ~QgsCoordinateTransform();
+
+    bool isValid() const;
+%Docstring
+Returns true if the coordinate transform is valid, ie both the source and destination
+CRS have been set and are valid.
+
+.. versionadded:: 3.0
+%End
+
+    void setSourceCrs( const QgsCoordinateReferenceSystem &crs );
+%Docstring
+Sets the source coordinate reference system.
+
+:param crs: CRS to transform coordinates from
+
+.. seealso:: :py:func:`sourceCrs`
+
+.. seealso:: :py:func:`setDestinationCrs`
+%End
+
+    void setDestinationCrs( const QgsCoordinateReferenceSystem &crs );
+%Docstring
+Sets the destination coordinate reference system.
+
+:param crs: CRS to transform coordinates to
+
+.. seealso:: :py:func:`destinationCrs`
+
+.. seealso:: :py:func:`setSourceCrs`
+%End
+
+    void setContext( const QgsCoordinateTransformContext &context );
+%Docstring
+Sets the ``context`` in which the coordinate transform should be
+calculated.
+
+.. versionadded:: 3.0
+%End
+
+    QgsCoordinateReferenceSystem sourceCrs() const;
+%Docstring
+Returns the source coordinate reference system, which the transform will
+transform coordinates from.
+
+.. seealso:: :py:func:`setSourceCrs`
+
+.. seealso:: :py:func:`destinationCrs`
+%End
+
+    QgsCoordinateReferenceSystem destinationCrs() const;
+%Docstring
+Returns the destination coordinate reference system, which the transform will
+transform coordinates to.
+
+.. seealso:: :py:func:`setDestinationCrs`
+
+.. seealso:: :py:func:`sourceCrs`
+%End
+
+    QgsPointXY transform( const QgsPointXY &point, TransformDirection direction = ForwardTransform ) const;
+%Docstring
+Transform the point from the source CRS to the destination CRS.
+If the direction is ForwardTransform then coordinates are transformed from source to destination,
+otherwise points are transformed from destination to source CRS.
+
+:param point: point to transform
+:param direction: transform direction (defaults to ForwardTransform)
+
+:return: transformed point
+%End
+
+    QgsPointXY transform( const double x, const double y, TransformDirection direction = ForwardTransform ) const;
+%Docstring
+Transform the point specified by x,y from the source CRS to the destination CRS.
+If the direction is ForwardTransform then coordinates are transformed from source to destination,
+otherwise points are transformed from destination to source CRS.
+
+:param x: x coordinate of point to transform
+:param y: y coordinate of point to transform
+:param direction: transform direction (defaults to ForwardTransform)
+
+:return: transformed point
+%End
+
+    QgsRectangle transformBoundingBox( const QgsRectangle &rectangle, TransformDirection direction = ForwardTransform, const bool handle180Crossover = false ) const;
+%Docstring
+Transforms a rectangle from the source CRS to the destination CRS.
+If the direction is ForwardTransform then coordinates are transformed from source to destination,
+otherwise points are transformed from destination to source CRS.
+This method assumes that the rectangle is a bounding box, and creates a bounding box
+in the projected CRS, such that all points from the source rectangle are within
+the returned rectangle.
+
+:param rectangle: rectangle to transform
+:param direction: transform direction (defaults to ForwardTransform)
+:param handle180Crossover: set to true if destination CRS is geographic and handling of extents
+crossing the 180 degree longitude line is required
+
+:return: rectangle in destination CRS
+%End
+
+    void transformInPlace( double &x, double &y, double &z, TransformDirection direction = ForwardTransform ) const;
+%Docstring
+Transforms an array of x, y and z double coordinates in place, from the source CRS to the destination CRS.
+If the direction is ForwardTransform then coordinates are transformed from source to destination,
+otherwise points are transformed from destination to source CRS.
+
+:param x: array of x coordinates of points to transform
+:param y: array of y coordinates of points to transform
+:param z: array of z coordinates of points to transform. The z coordinates of the points
+must represent height relative to the vertical datum of the source CRS (generally ellipsoidal
+heights) and must be expressed in its vertical units (generally meters)
+:param direction: transform direction (defaults to ForwardTransform)
+%End
+
+
+
+
+
+    void transformPolygon( QPolygonF &polygon, TransformDirection direction = ForwardTransform ) const;
+%Docstring
+Transforms a polygon to the destination coordinate system.
+
+:param polygon: polygon to transform (occurs in place)
+:param direction: transform direction (defaults to forward transformation)
+%End
+
+    QgsRectangle transform( const QgsRectangle &rectangle, TransformDirection direction = ForwardTransform ) const;
+%Docstring
+Transforms a rectangle to the destination CRS.
+If the direction is ForwardTransform then coordinates are transformed from source to destination,
+otherwise points are transformed from destination to source CRS.
+
+:param rectangle: rectangle to transform
+:param direction: transform direction (defaults to ForwardTransform)
+
+:return: transformed rectangle
+%End
+
+    void transformCoords( int numPoint, double *x, double *y, double *z, TransformDirection direction = ForwardTransform ) const;
+%Docstring
+Transform an array of coordinates to the destination CRS.
+If the direction is ForwardTransform then coordinates are transformed from source to destination,
+otherwise points are transformed from destination to source CRS.
+
+:param numPoint: number of coordinates in arrays
+:param x: array of x coordinates to transform
+:param y: array of y coordinates to transform
+:param z: array of z coordinates to transform
+:param direction: transform direction (defaults to ForwardTransform)
+%End
+
     bool isShortCircuited() const;
+%Docstring
+Returns true if the transform short circuits because the source and destination are equivalent.
+%End
 
-    /** Change the destination coordinate system by passing it a qgis srsid
-    * A QGIS srsid is a unique key value to an entry on the tbl_srs in the
-    * srs.db sqlite database.
-    * @note This slot will usually be called if the
-    * project properties change and a different coordinate system is
-    * selected.
-    * @note This coord transform will be reinitialized when this slot is called
-    * to check if short circuiting is needed or not etc.
-    * @param theCRSID -  A long representing the srsid of the srs to be used */
-    void setDestCRSID( long theCRSID );
+    int sourceDatumTransformId() const;
+%Docstring
+Returns the ID of the datum transform to use when projecting from the source
+CRS.
 
-    /** Returns list of datum transformations for the given src and dest CRS
-     * @note not available in python bindings
-     */
-    // static QList< QList< int > > datumTransformations( const QgsCoordinateReferenceSystem& srcCRS, const QgsCoordinateReferenceSystem& destCRS );
-    static QString datumTransformString( int datumTransform );
-    /** Gets name of source and dest geographical CRS (to show in a tooltip)
-        @return epsgNr epsg code of the transformation (or 0 if not in epsg db)*/
-    static bool datumTransformCrsInfo( int datumTransform, int& epsgNr, QString& srcProjection, QString& dstProjection, QString &remarks, QString &scope, bool &preferred, bool &deprecated );
+This is usually calculated automatically from the transform's QgsCoordinateTransformContext,
+but can be manually overwritten by a call to setSourceDatumTransformId().
 
-    int sourceDatumTransform() const;
-    void setSourceDatumTransform( int dt );
-    int destinationDatumTransform() const;
-    void setDestinationDatumTransform( int dt );
+.. seealso:: :py:class:`QgsDatumTransform`
 
-  public slots:
-    //!initialize is used to actually create the Transformer instance
-    void initialise();
+.. seealso:: :py:func:`setSourceDatumTransformId`
 
-    /** Restores state from the given Dom node.
-     * @param theNode The node from which state will be restored
-     * @return bool True on success, False on failure
-     */
-    bool readXML( QDomNode & theNode );
+.. seealso:: :py:func:`destinationDatumTransformId`
 
-    /** Stores state to the given Dom node in the given document
-     * @param theNode The node in which state will be restored
-     * @param theDoc The document in which state will be stored
-     * @return bool True on success, False on failure
-     */
-    bool writeXML( QDomNode & theNode, QDomDocument & theDoc );
+.. seealso:: :py:func:`datumTransformInfo`
+%End
 
-  signals:
-    /** Signal when an invalid pj_transform() has occurred */
-    void  invalidTransformInput() const;
+    void setSourceDatumTransformId( int datumId );
+%Docstring
+Sets the ``datumId`` ID of the datum transform to use when projecting from the source
+CRS.
+
+This is usually calculated automatically from the transform's QgsCoordinateTransformContext.
+Calling this method will overwrite any automatically calculated datum transform.
+
+.. seealso:: :py:class:`QgsDatumTransform`
+
+.. seealso:: :py:func:`sourceDatumTransformId`
+
+.. seealso:: :py:func:`setDestinationDatumTransformId`
+
+.. seealso:: :py:func:`datumTransformInfo`
+%End
+
+    int destinationDatumTransformId() const;
+%Docstring
+Returns the ID of the datum transform to use when projecting to the destination
+CRS.
+
+This is usually calculated automatically from the transform's QgsCoordinateTransformContext,
+but can be manually overwritten by a call to setDestinationDatumTransformId().
+
+.. seealso:: :py:class:`QgsDatumTransform`
+
+.. seealso:: :py:func:`setDestinationDatumTransformId`
+
+.. seealso:: :py:func:`sourceDatumTransformId`
+
+.. seealso:: :py:func:`datumTransformInfo`
+%End
+
+    void setDestinationDatumTransformId( int datumId );
+%Docstring
+Sets the ``datumId`` ID of the datum transform to use when projecting to the destination
+CRS.
+
+This is usually calculated automatically from the transform's QgsCoordinateTransformContext.
+Calling this method will overwrite any automatically calculated datum transform.
+
+.. seealso:: :py:class:`QgsDatumTransform`
+
+.. seealso:: :py:func:`destinationDatumTransformId`
+
+.. seealso:: :py:func:`setSourceDatumTransformId`
+
+.. seealso:: :py:func:`datumTransformInfo`
+%End
+
+    static void invalidateCache();
+%Docstring
+Clears the internal cache used to initialize QgsCoordinateTransform objects.
+This should be called whenever the srs database has
+been modified in order to ensure that outdated CRS transforms are not created.
+
+.. versionadded:: 3.0
+%End
+
 };
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgscoordinatetransform.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

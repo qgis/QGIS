@@ -16,26 +16,27 @@
 #include "qgsproject.h"
 #include "qgisapp.h"
 #include "qgsapplication.h"
-
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
 #include "qgslayertreeutils.h"
+#include "qgssettings.h"
 
 #include <QDomDocument>
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QMessageBox>
-#include <QSettings>
 
-QgsProjectLayerGroupDialog::QgsProjectLayerGroupDialog( QWidget * parent, const QString& projectFile, Qt::WindowFlags f )
-    : QDialog( parent, f )
-    , mShowEmbeddedContent( false )
-    , mRootGroup( new QgsLayerTreeGroup )
+QgsProjectLayerGroupDialog::QgsProjectLayerGroupDialog( QWidget *parent, const QString &projectFile, Qt::WindowFlags f )
+  : QDialog( parent, f )
+  , mRootGroup( new QgsLayerTree )
 {
   setupUi( this );
+  connect( mBrowseFileToolButton, &QToolButton::clicked, this, &QgsProjectLayerGroupDialog::mBrowseFileToolButton_clicked );
+  connect( mProjectFileLineEdit, &QLineEdit::editingFinished, this, &QgsProjectLayerGroupDialog::mProjectFileLineEdit_editingFinished );
+  connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsProjectLayerGroupDialog::mButtonBox_accepted );
 
-  QSettings settings;
-  restoreGeometry( settings.value( "/Windows/EmbedLayer/geometry" ).toByteArray() );
+  QgsSettings settings;
+  restoreGeometry( settings.value( QStringLiteral( "Windows/EmbedLayer/geometry" ) ).toByteArray() );
 
   if ( !projectFile.isEmpty() )
   {
@@ -47,13 +48,14 @@ QgsProjectLayerGroupDialog::QgsProjectLayerGroupDialog( QWidget * parent, const 
     changeProjectFile();
   }
 
-  QObject::connect( mButtonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
+  connect( mButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsProjectLayerGroupDialog::showHelp );
 }
 
 QgsProjectLayerGroupDialog::~QgsProjectLayerGroupDialog()
 {
-  QSettings settings;
-  settings.setValue( "/Windows/EmbedLayer/geometry", saveGeometry() );
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "Windows/EmbedLayer/geometry" ), saveGeometry() );
 
   delete mRootGroup;
 }
@@ -61,10 +63,10 @@ QgsProjectLayerGroupDialog::~QgsProjectLayerGroupDialog()
 QStringList QgsProjectLayerGroupDialog::selectedGroups() const
 {
   QStringList groups;
-  QgsLayerTreeModel* model = mTreeView->layerTreeModel();
-  Q_FOREACH ( const QModelIndex& index, mTreeView->selectionModel()->selectedIndexes() )
+  QgsLayerTreeModel *model = mTreeView->layerTreeModel();
+  Q_FOREACH ( const QModelIndex &index, mTreeView->selectionModel()->selectedIndexes() )
   {
-    QgsLayerTreeNode* node = model->index2node( index );
+    QgsLayerTreeNode *node = model->index2node( index );
     if ( QgsLayerTree::isGroup( node ) )
       groups << QgsLayerTree::toGroup( node )->name();
   }
@@ -74,10 +76,10 @@ QStringList QgsProjectLayerGroupDialog::selectedGroups() const
 QStringList QgsProjectLayerGroupDialog::selectedLayerIds() const
 {
   QStringList layerIds;
-  QgsLayerTreeModel* model = mTreeView->layerTreeModel();
-  Q_FOREACH ( const QModelIndex& index, mTreeView->selectionModel()->selectedIndexes() )
+  QgsLayerTreeModel *model = mTreeView->layerTreeModel();
+  Q_FOREACH ( const QModelIndex &index, mTreeView->selectionModel()->selectedIndexes() )
   {
-    QgsLayerTreeNode* node = model->index2node( index );
+    QgsLayerTreeNode *node = model->index2node( index );
     if ( QgsLayerTree::isLayer( node ) )
       layerIds << QgsLayerTree::toLayer( node )->layerId();
   }
@@ -87,12 +89,12 @@ QStringList QgsProjectLayerGroupDialog::selectedLayerIds() const
 QStringList QgsProjectLayerGroupDialog::selectedLayerNames() const
 {
   QStringList layerNames;
-  QgsLayerTreeModel* model = mTreeView->layerTreeModel();
-  Q_FOREACH ( const QModelIndex& index, mTreeView->selectionModel()->selectedIndexes() )
+  QgsLayerTreeModel *model = mTreeView->layerTreeModel();
+  Q_FOREACH ( const QModelIndex &index, mTreeView->selectionModel()->selectedIndexes() )
   {
-    QgsLayerTreeNode* node = model->index2node( index );
+    QgsLayerTreeNode *node = model->index2node( index );
     if ( QgsLayerTree::isLayer( node ) )
-      layerNames << QgsLayerTree::toLayer( node )->layerName();
+      layerNames << QgsLayerTree::toLayer( node )->name();
   }
   return layerNames;
 }
@@ -107,15 +109,15 @@ bool QgsProjectLayerGroupDialog::isValid() const
   return nullptr != mTreeView->layerTreeModel();
 }
 
-void QgsProjectLayerGroupDialog::on_mBrowseFileToolButton_clicked()
+void QgsProjectLayerGroupDialog::mBrowseFileToolButton_clicked()
 {
-  //line edit might emit editingFinished signal when loosing focus
+  //line edit might emit editingFinished signal when losing focus
   mProjectFileLineEdit->blockSignals( true );
 
-  QSettings s;
+  QgsSettings s;
   QString projectFile = QFileDialog::getOpenFileName( this,
                         tr( "Select project file" ),
-                        s.value( "/qgis/last_embedded_project_path", QDir::homePath() ).toString(),
+                        s.value( QStringLiteral( "/qgis/last_embedded_project_path" ), QDir::homePath() ).toString(),
                         tr( "QGIS files" ) + " (*.qgs *.QGS)" );
   if ( !projectFile.isEmpty() )
   {
@@ -125,7 +127,7 @@ void QgsProjectLayerGroupDialog::on_mBrowseFileToolButton_clicked()
   mProjectFileLineEdit->blockSignals( false );
 }
 
-void QgsProjectLayerGroupDialog::on_mProjectFileLineEdit_editingFinished()
+void QgsProjectLayerGroupDialog::mProjectFileLineEdit_editingFinished()
 {
   changeProjectFile();
 }
@@ -165,53 +167,53 @@ void QgsProjectLayerGroupDialog::changeProjectFile()
 
   mRootGroup->removeAllChildren();
 
-  QDomElement layerTreeElem = projectDom.documentElement().firstChildElement( "layer-tree-group" );
+  QDomElement layerTreeElem = projectDom.documentElement().firstChildElement( QStringLiteral( "layer-tree-group" ) );
   if ( !layerTreeElem.isNull() )
   {
-    mRootGroup->readChildrenFromXML( layerTreeElem );
+    mRootGroup->readChildrenFromXml( layerTreeElem, QgsReadWriteContext() );
   }
   else
   {
-    QgsLayerTreeUtils::readOldLegend( mRootGroup, projectDom.documentElement().firstChildElement( "legend" ) );
+    QgsLayerTreeUtils::readOldLegend( mRootGroup, projectDom.documentElement().firstChildElement( QStringLiteral( "legend" ) ) );
   }
 
   if ( !mShowEmbeddedContent )
     removeEmbeddedNodes( mRootGroup );
 
-  QgsLayerTreeModel* model = new QgsLayerTreeModel( mRootGroup, this );
+  QgsLayerTreeModel *model = new QgsLayerTreeModel( mRootGroup, this );
   mTreeView->setModel( model );
 
-  QObject::connect( mTreeView->selectionModel(), SIGNAL( selectionChanged( QItemSelection, QItemSelection ) ), this, SLOT( onTreeViewSelectionChanged() ) );
+  connect( mTreeView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsProjectLayerGroupDialog::onTreeViewSelectionChanged );
 
   mProjectPath = mProjectFileLineEdit->text();
 }
 
 
-void QgsProjectLayerGroupDialog::removeEmbeddedNodes( QgsLayerTreeGroup* node )
+void QgsProjectLayerGroupDialog::removeEmbeddedNodes( QgsLayerTreeGroup *node )
 {
-  QList<QgsLayerTreeNode*> childrenToRemove;
-  Q_FOREACH ( QgsLayerTreeNode* child, node->children() )
+  QList<QgsLayerTreeNode *> childrenToRemove;
+  Q_FOREACH ( QgsLayerTreeNode *child, node->children() )
   {
-    if ( child->customProperty( "embedded" ).toInt() )
+    if ( child->customProperty( QStringLiteral( "embedded" ) ).toInt() )
       childrenToRemove << child;
     else if ( QgsLayerTree::isGroup( child ) )
       removeEmbeddedNodes( QgsLayerTree::toGroup( child ) );
   }
-  Q_FOREACH ( QgsLayerTreeNode* childToRemove, childrenToRemove )
+  Q_FOREACH ( QgsLayerTreeNode *childToRemove, childrenToRemove )
     node->removeChildNode( childToRemove );
 }
 
 
 void QgsProjectLayerGroupDialog::onTreeViewSelectionChanged()
 {
-  Q_FOREACH ( const QModelIndex& index, mTreeView->selectionModel()->selectedIndexes() )
+  Q_FOREACH ( const QModelIndex &index, mTreeView->selectionModel()->selectedIndexes() )
   {
-    unselectChildren( index );
+    deselectChildren( index );
   }
 }
 
 
-void QgsProjectLayerGroupDialog::unselectChildren( const QModelIndex& index )
+void QgsProjectLayerGroupDialog::deselectChildren( const QModelIndex &index )
 {
   int childCount = mTreeView->model()->rowCount( index );
   for ( int i = 0; i < childCount; ++i )
@@ -220,17 +222,23 @@ void QgsProjectLayerGroupDialog::unselectChildren( const QModelIndex& index )
     if ( mTreeView->selectionModel()->isSelected( childIndex ) )
       mTreeView->selectionModel()->select( childIndex, QItemSelectionModel::Deselect );
 
-    unselectChildren( childIndex );
+    deselectChildren( childIndex );
   }
 }
 
-void QgsProjectLayerGroupDialog::on_mButtonBox_accepted()
+void QgsProjectLayerGroupDialog::mButtonBox_accepted()
 {
-  QSettings s;
+  QgsSettings s;
   QFileInfo fi( mProjectPath );
   if ( fi.exists() )
   {
-    s.setValue( "/qgis/last_embedded_project_path", fi.absolutePath() );
+    s.setValue( QStringLiteral( "/qgis/last_embedded_project_path" ), fi.absolutePath() );
   }
   accept();
+}
+
+void QgsProjectLayerGroupDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#nesting-projects" ) );
+
 }

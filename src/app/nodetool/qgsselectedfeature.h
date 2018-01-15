@@ -33,7 +33,7 @@ class QgsVertexEntry;
 /**
  * Constant representing zero value for distance. It's 0 because of error in double counting.
  */
-const static double ZERO_TOLERANCE = 0.000000001;
+static const double ZERO_TOLERANCE = 0.000000001;
 
 /**
  * Class that keeps the selected feature
@@ -44,74 +44,63 @@ class QgsSelectedFeature: public QObject
 
   public:
     QgsSelectedFeature( QgsFeatureId id, QgsVectorLayer *layer, QgsMapCanvas *canvas );
-    ~QgsSelectedFeature();
+    ~QgsSelectedFeature() override;
 
     /**
      * Setting selected feature
-     * @param featureId id of feature which was selected
-     * @param vlayer vector layer in which feature is selected
-     * @param canvas mapCanvas on which we are working
+     * \param featureId id of feature which was selected
+     * \param vlayer vector layer in which feature is selected
+     * \param canvas mapCanvas on which we are working
      */
-    void setSelectedFeature( QgsFeatureId featureId, QgsVectorLayer* vlayer, QgsMapCanvas* canvas );
+    void setSelectedFeature( QgsFeatureId featureId, QgsVectorLayer *vlayer, QgsMapCanvas *canvas );
 
     /**
      * Function to select vertex with number
-     * @param vertexNr number of vertex which is to be selected
+     * \param vertexNr number of vertex which is to be selected
      */
     void selectVertex( int vertexNr );
 
     /**
      * Function to deselect vertex with number
-     * @param vertexNr number of vertex which is to be deselected
+     * \param vertexNr number of vertex which is to be deselected
      */
     void deselectVertex( int vertexNr );
 
     /**
-     * Deselects all vertexes of selected feature
+     * Deselects all vertices of selected feature
      */
-    void deselectAllVertexes();
-
-    /**
-     * Deletes all selected vertexes
-     */
-    void deleteSelectedVertexes();
-
-    /**
-     * Moves selected vertex
-     * @param v translation vector
-     */
-    void moveSelectedVertexes( QgsVector v );
+    void deselectAllVertices();
 
     /**
      * Inverts selection of vertex with number
-     * @param vertexNr number of vertex which is to be inverted
+     * \param vertexNr number of vertex which is to be inverted
      */
     void invertVertexSelection( int vertexNr );
 
     /**
      * Inverts selection of a set of vertices at once.
-     * @param vertexIndices list of vertex indices to invert whether or not they are selected
+     * \param vertexIndices list of vertex indices to invert whether or not they are selected
      */
-    void invertVertexSelection( QVector<int> vertexIndices );
+    void invertVertexSelection( const QVector<int> &vertexIndices );
 
     /**
      * Tells if vertex is selected
-     * @param vertexNr number of vertex for which we are getting info
-     * @return true if vertex is selected, false otherwise
+     * \param vertexNr number of vertex for which we are getting info
+     * \returns true if vertex is selected, false otherwise
      */
     bool isSelected( int vertexNr );
 
     /**
      * Getting feature Id of feature selected
-     * @return feature id of selected feature
+     * \returns feature id of selected feature
      */
     QgsFeatureId featureId();
 
     /**
-     * Getting vertex map of vertexes
-     * @return currently used vertex map
+     * Getting vertex map of vertices
+     * \returns currently used vertex map
      */
-    QList<QgsVertexEntry*> &vertexMap();
+    QList<QgsVertexEntry *> &vertexMap();
 
     /**
      * Updates whole selection object from the selected object
@@ -120,7 +109,7 @@ class QgsSelectedFeature: public QObject
 
     /**
      * Get the layer of the selected feature
-     * @return used vector layer
+     * \returns used vector layer
      */
     QgsVectorLayer *vlayer();
 
@@ -160,7 +149,7 @@ class QgsSelectedFeature: public QObject
     /*
      * the geometry of a feature from the layer was changed - might be the selected
      */
-    void geometryChanged( QgsFeatureId, QgsGeometry & );
+    void geometryChanged( QgsFeatureId, const QgsGeometry & );
 
     /*
      * the current layer changed - destroy
@@ -178,6 +167,7 @@ class QgsSelectedFeature: public QObject
     void beforeRollBack();
 
   private:
+
     /**
      * Deletes whole vertex map.
      */
@@ -192,7 +182,7 @@ class QgsSelectedFeature: public QObject
      * Updates stored geometry to actual one loaded from layer
      * (or already available geometry)
      */
-    void updateGeometry( QgsGeometry *geom );
+    void updateGeometry( const QgsGeometry *geom );
 
     /**
      * Validates the geometry
@@ -200,14 +190,14 @@ class QgsSelectedFeature: public QObject
     void validateGeometry( QgsGeometry *g = nullptr );
 
     QgsFeatureId mFeatureId;
-    QgsGeometry *mGeometry;
+    QgsGeometry *mGeometry = nullptr;
     bool mFeatureSelected;
     bool mChangingGeometry;
-    QgsVectorLayer* mVlayer;
-    QList<QgsVertexEntry*> mVertexMap;
-    QgsMapCanvas* mCanvas;
+    QgsVectorLayer *mVlayer = nullptr;
+    QList<QgsVertexEntry *> mVertexMap;
+    QgsMapCanvas *mCanvas = nullptr;
 
-    QgsGeometryValidator *mValidator;
+    QgsGeometryValidator *mValidator = nullptr;
     QString mTip;
     QList< QgsGeometry::Error > mGeomErrors;
     QList< QgsVertexMarker * > mGeomErrorMarkers;

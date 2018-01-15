@@ -17,39 +17,52 @@
 #define QGSDATAITEMPROVIDERREGISTRY_H
 
 #include <QList>
+#include "qgis.h"
+
+#include "qgis_core.h"
 
 class QgsDataItemProvider;
 
 /**
- * This singleton class keeps a list of data item providers that may add items to the browser tree.
+ * \ingroup core
+ * This class keeps a list of data item providers that may add items to the browser tree.
  * When created, it automatically adds providers from provider plugins (e.g. PostGIS, WMS, ...)
  *
- * @note added in 2.10
+ * QgsDataItemProviderRegistry is not usually directly created, but rather accessed through
+ * QgsApplication::dataItemProviderRegistry().
+ *
+ * \since QGIS 2.10
  */
 class CORE_EXPORT QgsDataItemProviderRegistry
 {
   public:
-    static QgsDataItemProviderRegistry* instance();
+
+    QgsDataItemProviderRegistry();
 
     ~QgsDataItemProviderRegistry();
 
+    //! QgsDataItemProviderRegistry cannot be copied.
+    QgsDataItemProviderRegistry( const QgsDataItemProviderRegistry &rh ) = delete;
+    //! QgsDataItemProviderRegistry cannot be copied.
+    QgsDataItemProviderRegistry &operator=( const QgsDataItemProviderRegistry &rh ) = delete;
+
     //! Get list of available providers
-    QList<QgsDataItemProvider*> providers() const { return mProviders; }
+    QList<QgsDataItemProvider *> providers() const { return mProviders; }
 
     //! Add a provider implementation. Takes ownership of the object.
-    void addProvider( QgsDataItemProvider* provider );
+    void addProvider( QgsDataItemProvider *provider SIP_TRANSFER );
 
     //! Remove provider implementation from the list (provider object is deleted)
-    void removeProvider( QgsDataItemProvider* provider );
+    void removeProvider( QgsDataItemProvider *provider );
 
   private:
-    QgsDataItemProviderRegistry();
+#ifdef SIP_RUN
+    QgsDataItemProviderRegistry( const QgsDataItemProviderRegistry &rh );
+#endif
 
     //! available providers. this class owns the pointers
-    QList<QgsDataItemProvider*> mProviders;
+    QList<QgsDataItemProvider *> mProviders;
 
-    QgsDataItemProviderRegistry( const QgsDataItemProviderRegistry& rh );
-    QgsDataItemProviderRegistry& operator=( const QgsDataItemProviderRegistry& rh );
 };
 
 #endif // QGSDATAITEMPROVIDERREGISTRY_H

@@ -28,7 +28,7 @@
 #define eVisDatabaseLayerFieldSelectionGui_H
 
 #include <QDialog>
-#include <ui_evisdatabaselayerfieldselectionguibase.h>
+#include "ui_evisdatabaselayerfieldselectionguibase.h"
 
 /**
 * \class eVisDatabaseLayerFieldSelectionGui
@@ -41,18 +41,18 @@ class eVisDatabaseLayerFieldSelectionGui : public QDialog, private Ui::eVisDatab
     Q_OBJECT
 
   public:
-    /** \brief Constructor */
-    eVisDatabaseLayerFieldSelectionGui( QWidget* parent, Qt::WindowFlags fl );
+    //! \brief Constructor
+    eVisDatabaseLayerFieldSelectionGui( QWidget *parent, Qt::WindowFlags fl );
 
-    /** \brief Public method that sets the contents of the combo boxes with the available field names */
-    void setFieldList( QStringList* );
+    //! \brief Public method that sets the contents of the combo boxes with the available field names
+    void setFieldList( QStringList * );
 
   public slots:
-    void on_buttonBox_accepted();
-    void on_buttonBox_rejected();
+    void buttonBox_accepted();
+    void buttonBox_rejected();
 
   signals:
-    /** \brief Signal emitted when the user has entered the layername, selected the field names, and pressed the accept button */
-    void eVisDatabaseLayerFieldsSelected( const QString&, const QString&, const QString& );
+    //! \brief Signal emitted when the user has entered the layername, selected the field names, and pressed the accept button
+    void eVisDatabaseLayerFieldsSelected( const QString &, const QString &, const QString & );
 };
 #endif

@@ -1,3 +1,0 @@
-
-[coverage_plugin]
-cov-core>=1.12

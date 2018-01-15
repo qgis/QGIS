@@ -9,7 +9,7 @@
 # This file defines the following variables:
 #
 # SIP_VERSION - The version of SIP found expressed as a 6 digit hex number
-#     suitable for comparision as a string.
+#     suitable for comparison as a string.
 #
 # SIP_VERSION_STR - The version of SIP found as a human readable string.
 #

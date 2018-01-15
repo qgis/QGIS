@@ -1,43 +1,67 @@
-/** \ingroup gui
- * \class QgsPaintEffectPropertiesWidget
- * \brief A widget which modifies the properties of a QgsPaintEffect
- *
- * \note Added in version 2.9
- */
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/effects/qgspainteffectpropertieswidget.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
 
 class QgsPaintEffectPropertiesWidget : QWidget
 {
-%TypeHeaderCode
-#include <qgspainteffectpropertieswidget.h>
+%Docstring
+ A widget which modifies the properties of a QgsPaintEffect
+
+.. versionadded:: 2.9
 %End
 
+%TypeHeaderCode
+#include "qgspainteffectpropertieswidget.h"
+%End
   public:
 
-    /** QgsPaintEffectPropertiesWidget constructor
-     * @param effect QgsPaintEffect to modify in the widget
-     * @param parent parent widget
-     */
-    QgsPaintEffectPropertiesWidget( QgsPaintEffect* effect, QWidget* parent /TransferThis/ = NULL );
+    QgsPaintEffectPropertiesWidget( QgsPaintEffect *effect, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+QgsPaintEffectPropertiesWidget constructor
+
+:param effect: QgsPaintEffect to modify in the widget
+:param parent: parent widget
+%End
 
   public slots:
 
-    /** Update widget when effect type changes
-     */
     void effectTypeChanged();
+%Docstring
+Update widget when effect type changes
+%End
 
-    /** Emits the changed signal
-     */
     void emitSignalChanged();
+%Docstring
+Emits the changed signal
+%End
 
   signals:
 
-    /** Emitted when paint effect properties changes
-     */
     void changed();
+%Docstring
+Emitted when paint effect properties changes
+%End
 
-    /** Emitted when paint effect type changes
-     */
-    void changeEffect( QgsPaintEffect* effect );
+    void changeEffect( QgsPaintEffect *effect );
+%Docstring
+Emitted when paint effect type changes
+%End
 
 };
 
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/effects/qgspainteffectpropertieswidget.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

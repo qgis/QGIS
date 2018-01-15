@@ -25,6 +25,9 @@
 #include <QLibrary>
 #include <QString>
 
+#include "qgis_core.h"
+#include "qgis_sip.h"
+
 
 class QgsDataProvider;
 class QgsProviderMetadata;
@@ -32,83 +35,113 @@ class QgsVectorLayer;
 class QgsCoordinateReferenceSystem;
 
 
-/** \ingroup core
+/**
+ * \ingroup core
   * A registry / canonical manager of data providers.
-
-  This is a Singleton class that manages data provider access.
-
-  Loaded providers may be restricted using QGIS_PROVIDER_FILE environment variable.
-  QGIS_PROVIDER_FILE is regexp pattern applied to provider file name (not provider key).
-  For example, if the variable is set to gdal|ogr|postgres it will load only providers gdal,
-  ogr and postgres.
+  *
+  * This is a Singleton class that manages data provider access.
+  *
+  * Providers can be either loaded via libraries or native providers that
+  * are included in the core QGIS installation and accessed through function pointers.
+  *
+  * Loaded providers may be restricted using QGIS_PROVIDER_FILE environment variable.
+  * QGIS_PROVIDER_FILE is regexp pattern applied to provider file name (not provider key).
+  * For example, if the variable is set to gdal|ogr|postgres it will load only providers gdal,
+  * ogr and postgres.
 */
 class CORE_EXPORT QgsProviderRegistry
 {
 
   public:
 
-    /** Means of accessing canonical single instance  */
-    static QgsProviderRegistry* instance( const QString& pluginPath = QString::null );
+    /**
+     * Different ways a source select dialog can be used
+     * (embedded is for the data source manager dialog)
+     */
+    enum WidgetMode
+    {
+      None,
+      Embedded,
+      Manager,
+    };
 
-    /** Virtual dectructor */
+    //! Means of accessing canonical single instance
+    static QgsProviderRegistry *instance( const QString &pluginPath = QString() );
+
     virtual ~QgsProviderRegistry();
 
-    /** Return path for the library of the provider */
-    QString library( const QString & providerKey ) const;
+    /**
+     * Return path for the library of the provider.
+     *
+     * If the provider uses direct provider function pointers instead of a library an empty string will
+     * be returned.
+     */
+    QString library( const QString &providerKey ) const;
 
-    /** Return list of provider plugins found */
+    //! Return list of provider plugins found
     QString pluginList( bool asHtml = false ) const;
 
-    /** Return library directory where plugins are found */
-    const QDir & libraryDirectory() const;
-
-    /** Set library directory where to search for plugins */
-    void setLibraryDirectory( const QDir & path );
-
-    /** Create an instance of the provider
-        @param providerKey identificator of the provider
-        @param dataSource  string containing data source for the provider
-        @return instance of provider or NULL on error
+    /**
+     * Returns the library directory where plugins are found.
      */
-    QgsDataProvider *provider( const QString & providerKey,
-                               const QString & dataSource );
+    QDir libraryDirectory() const;
 
-    /** Return the provider capabilities
-        @param providerKey identificator of the provider
-        @note Added in 2.6
+    //! Set library directory where to search for plugins
+    void setLibraryDirectory( const QDir &path );
+
+    /**
+     * Creates a new instance of a provider.
+     * \param providerKey identificator of the provider
+     * \param dataSource  string containing data source for the provider
+     * \returns new instance of provider or NULL on error
      */
-    int providerCapabilities( const QString& providerKey ) const;
+    QgsDataProvider *createProvider( const QString &providerKey,
+                                     const QString &dataSource ) SIP_FACTORY;
 
-    QWidget *selectWidget( const QString & providerKey,
-                           QWidget * parent = nullptr, const Qt::WindowFlags& fl = nullptr );
-
-#if QT_VERSION >= 0x050000
-    /** Get pointer to provider function
-        @param providerKey identificator of the provider
-        @param functionName name of function
-        @return pointer to function or NULL on error
+    /**
+     * Return the provider capabilities
+        \param providerKey identificator of the provider
+        \since QGIS 2.6
      */
-    QFunctionPointer function( const QString & providerKey,
-                               const QString & functionName );
-#else
-    /** Get pointer to provider function
-     * @param providerKey identificator of the provider
-     * @param functionName name of function
-     * @return pointer to function or NULL on error
+    int providerCapabilities( const QString &providerKey ) const;
+
+    /**
+     * Returns a new widget for selecting layers from a provider.
+     * Either the \a parent widget must be set or the caller becomes
+     * responsible for deleting the returned widget.
      */
-    void *function( const QString & providerKey,
-                    const QString & functionName );
-#endif
+    QWidget *createSelectionWidget( const QString &providerKey,
+                                    QWidget *parent = nullptr,
+                                    Qt::WindowFlags fl = Qt::WindowFlags(),
+                                    QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
 
-    QLibrary *providerLibrary( const QString & providerKey ) const;
+    /**
+     * Get pointer to provider function
+     * \param providerKey identificator of the provider
+     * \param functionName name of function
+     * \returns pointer to function or NULL on error. If the provider uses direct provider
+     * function pointers instead of a library nullptr will be returned.
+     */
+    QFunctionPointer function( const QString &providerKey,
+                               const QString &functionName );
 
-    /** Return list of available providers by their keys */
+    /**
+     * Returns a new QLibrary for the specified \a providerKey. Ownership of the returned
+     * object is transferred to the caller and the caller is responsible for deleting it.
+     *
+     * If the provider uses direct provider function pointers instead of a library nullptr will
+     * be returned.
+     */
+    QLibrary *createProviderLibrary( const QString &providerKey ) const SIP_FACTORY;
+
+    //! Return list of available providers by their keys
     QStringList providerList() const;
 
-    /** Return metadata of the provider or NULL if not found */
-    const QgsProviderMetadata* providerMetadata( const QString& providerKey ) const;
+    //! Return metadata of the provider or NULL if not found
+    const QgsProviderMetadata *providerMetadata( const QString &providerKey ) const;
 
-    /** Return vector file filter string
+    /**
+     * Return vector file filter string
 
       Returns a string suitable for a QFileDialog of vector file formats
       supported by all data providers.
@@ -116,12 +149,14 @@ class CORE_EXPORT QgsProviderRegistry
       This walks through all data providers appending calls to their
       fileVectorFilters to a string, which is then returned.
 
-      @note
+      \note
 
       It'd be nice to eventually be raster/vector neutral.
      */
     virtual QString fileVectorFilters() const;
-    /** Return raster file filter string
+
+    /**
+     * Return raster file filter string
 
       Returns a string suitable for a QFileDialog of raster file formats
       supported by all data providers.
@@ -129,19 +164,20 @@ class CORE_EXPORT QgsProviderRegistry
       This walks through all data providers appending calls to their
       buildSupportedRasterFileFilter to a string, which is then returned.
 
-      @note This replaces QgsRasterLayer::buildSupportedRasterFileFilter()
+      \note This replaces QgsRasterLayer::buildSupportedRasterFileFilter()
      */
     virtual QString fileRasterFilters() const;
-    /** Return a string containing the available database drivers */
+    //! Return a string containing the available database drivers
     virtual QString databaseDrivers() const;
-    /** Return a string containing the available directory drivers */
+    //! Return a string containing the available directory drivers
     virtual QString directoryDrivers() const;
-    /** Return a string containing the available protocol drivers */
+    //! Return a string containing the available protocol drivers
     virtual QString protocolDrivers() const;
 
     void registerGuis( QWidget *widget );
 
-    /** Open the given vector data source
+    /**
+     * Open the given vector data source
      *
      * Similar to open(QString const &), except that the user specifies a data provider
      * with which to open the data source instead of using the default data provider
@@ -152,9 +188,9 @@ class CORE_EXPORT QgsProviderRegistry
      *
      * Called by QgsDataManager::open().
      *
-     * @param name could be a file, URI
-     * @param provider is the key for the dataprovider used to open name
-     * @return NULL if unable to open vector data source
+     * \param name could be a file, URI
+     * \param provider is the key for the dataprovider used to open name
+     * \returns NULL if unable to open vector data source
      *
      * Temporarily always returns false until finished implementing.
      *
@@ -164,24 +200,28 @@ class CORE_EXPORT QgsProviderRegistry
      */
     //QgsDataProvider * openVector( QString const & dataSource, QString const & providerKey );
 
-
-    /** Type for data provider metadata associative container */
-    typedef std::map<QString, QgsProviderMetadata*> Providers;
+    //! Type for data provider metadata associative container
+    SIP_SKIP typedef std::map<QString, QgsProviderMetadata *> Providers;
 
   private:
-    /** Ctor private since instance() creates it */
-    QgsProviderRegistry( const QString& pluginPath );
+    //! Ctor private since instance() creates it
+    QgsProviderRegistry( const QString &pluginPath );
+
+#ifdef SIP_RUN
+    QgsProviderRegistry( const QString &pluginPath );
+#endif
 
     void init();
     void clean();
 
-    /** Associative container of provider metadata handles */
+    //! Associative container of provider metadata handles
     Providers mProviders;
 
-    /** Directory in which provider plugins are installed */
+    //! Directory in which provider plugins are installed
     QDir mLibraryDirectory;
 
-    /** File filter string for vector files
+    /**
+     * File filter string for vector files
      *
      * Built once when registry is constructed by appending strings returned
      * from iteratively calling vectorFileFilter() for each visited data
@@ -190,21 +230,29 @@ class CORE_EXPORT QgsProviderRegistry
      * one time.
      */
     QString mVectorFileFilters;
-    /** File filter string for raster files
+
+    /**
+     * File filter string for raster files
      */
     QString mRasterFileFilters;
-    /** Available database drivers string for vector databases
+
+    /**
+     * Available database drivers string for vector databases
      *
      * This is a string of form:
      * DriverNameToShow,DriverName;DriverNameToShow,DriverName;...
      */
     QString mDatabaseDrivers;
-    /** Available directory drivers string for vector databases
+
+    /**
+     * Available directory drivers string for vector databases
      * This is a string of form:
      * DriverNameToShow,DriverName;DriverNameToShow,DriverName;...
      */
     QString mDirectoryDrivers;
-    /** Available protocol drivers string for vector databases
+
+    /**
+     * Available protocol drivers string for vector databases
      *
      * This is a string of form:
      * DriverNameToShow,DriverName;DriverNameToShow,DriverName;...

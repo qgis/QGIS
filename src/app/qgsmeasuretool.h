@@ -18,6 +18,7 @@
 #define QGSMEASURETOOL_H
 
 #include "qgsmaptool.h"
+#include "qgis_app.h"
 
 class QgsDistanceArea;
 class QgsMapCanvas;
@@ -32,9 +33,11 @@ class APP_EXPORT QgsMeasureTool : public QgsMapTool
 
   public:
 
-    QgsMeasureTool( QgsMapCanvas* canvas, bool measureArea );
+    QgsMeasureTool( QgsMapCanvas *canvas, bool measureArea );
 
-    ~QgsMeasureTool();
+    ~QgsMeasureTool() override;
+
+    Flags flags() const override { return QgsMapTool::AllowZoomRect; }
 
     //! returns whether measuring distance or area
     bool measureArea() { return mMeasureArea; }
@@ -46,29 +49,29 @@ class APP_EXPORT QgsMeasureTool : public QgsMapTool
     void restart();
 
     //! Add new point
-    void addPoint( const QgsPoint &point );
+    void addPoint( const QgsPointXY &point );
 
     //! Returns reference to array of the points
-    const QList<QgsPoint>& points();
+    QVector<QgsPointXY> points();
 
     // Inherited from QgsMapTool
 
     //! Mouse move event for overriding
-    virtual void canvasMoveEvent( QgsMapMouseEvent* e ) override;
+    void canvasMoveEvent( QgsMapMouseEvent *e ) override;
 
     //! Mouse press event for overriding
-    virtual void canvasPressEvent( QgsMapMouseEvent* e ) override;
+    void canvasPressEvent( QgsMapMouseEvent *e ) override;
 
     //! Mouse release event for overriding
-    virtual void canvasReleaseEvent( QgsMapMouseEvent* e ) override;
+    void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
 
     //! called when set as currently active map tool
-    virtual void activate() override;
+    void activate() override;
 
     //! called when map tool is being deactivated
-    virtual void deactivate() override;
+    void deactivate() override;
 
-    virtual void keyPressEvent( QKeyEvent* e ) override;
+    void keyPressEvent( QKeyEvent *e ) override;
 
   public slots:
     //! updates the projections we're using
@@ -76,15 +79,15 @@ class APP_EXPORT QgsMeasureTool : public QgsMapTool
 
   protected:
 
-    QList<QgsPoint> mPoints;
+    QVector<QgsPointXY> mPoints;
 
-    QgsMeasureDialog* mDialog;
+    QgsMeasureDialog *mDialog = nullptr;
 
     //! Rubberband widget tracking the lines being drawn
-    QgsRubberBand *mRubberBand;
+    QgsRubberBand *mRubberBand = nullptr;
 
     //! Rubberband widget tracking the added nodes to line
-    QgsRubberBand *mRubberBandPoints;
+    QgsRubberBand *mRubberBandPoints = nullptr;
 
     //! indicates whether we're measuring distances or areas
     bool mMeasureArea;
@@ -96,11 +99,14 @@ class APP_EXPORT QgsMeasureTool : public QgsMapTool
     // project projection
     bool mWrongProjectProjection;
 
-    //! Returns the snapped (map) coordinate
-    //@param p (pixel) coordinate
-    QgsPoint snapPoint( const QPoint& p );
+    //! Destination CoordinateReferenceSystem used by the MapCanvas
+    QgsCoordinateReferenceSystem mDestinationCrs;
 
-    /** Removes the last vertex from mRubberBand*/
+    //! Returns the snapped (map) coordinate
+    //\param p (pixel) coordinate
+    QgsPointXY snapPoint( QPoint p );
+
+    //! Removes the last vertex from mRubberBand
     void undo();
 };
 

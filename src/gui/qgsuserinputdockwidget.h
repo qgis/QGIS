@@ -18,35 +18,43 @@
 #ifndef QGSUSERINPUTDOCKWIDGET_H
 #define QGSUSERINPUTDOCKWIDGET_H
 
-#include <QDockWidget>
+#include "qgsdockwidget.h"
+#include "qgis.h"
 #include <QMap>
+#include "qgis_gui.h"
+
 
 class QFrame;
 class QBoxLayout;
 
 
 /**
- * @brief The QgsUserInputDockWidget class is a dock widget that shall be used to display widgets for user inputs.
+ * \ingroup gui
+ * \brief The QgsUserInputDockWidget class is a dock widget that shall be used to display widgets for user inputs.
  * It can be used by map tools, plugins, etc.
  * Several widgets can be displayed at once, they will be separated by a separator. Widgets will be either layout horizontally or vertically.
  * The dock is automatically hidden if it contains no widget.
  */
-class GUI_EXPORT QgsUserInputDockWidget : public QDockWidget
+class GUI_EXPORT QgsUserInputDockWidget : public QgsDockWidget
 {
     Q_OBJECT
   public:
-    QgsUserInputDockWidget( QWidget* parent = nullptr );
-    ~QgsUserInputDockWidget();
 
-    //! add a widget to be displayed in the dock
-    void addUserInputWidget( QWidget* widget );
+    //! Constructor for QgsUserInputDockWidget
+    QgsUserInputDockWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
+
+    /**
+     * Add a widget to be displayed in the dock.
+     * \param widget widget to add. Ownership is not transferred.
+     */
+    void addUserInputWidget( QWidget *widget );
 
   protected:
-    //! will not display the dock if it contains no widget
+    // will not display the dock if it contains no widget
     void paintEvent( QPaintEvent *event ) override;
 
   private slots:
-    void widgetDestroyed( QObject* obj );
+    void widgetDestroyed( QObject *obj );
 
     //! when area change, update the layout according to the new dock location
     void areaChanged( Qt::DockWidgetArea area );
@@ -57,10 +65,10 @@ class GUI_EXPORT QgsUserInputDockWidget : public QDockWidget
     void updateLayoutDirection();
 
     // list of widget with their corresponding line separator
-    QMap<QWidget*, QFrame*> mWidgetList;
+    QMap<QWidget *, QFrame *> mWidgetList;
 
-    bool mLayoutHorizontal;
-    QBoxLayout* mLayout;
+    bool mLayoutHorizontal = true;
+    QBoxLayout *mLayout = nullptr;
 };
 
 #endif // QGSUSERINPUTDOCKWIDGET_H

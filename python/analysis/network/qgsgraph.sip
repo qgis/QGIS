@@ -1,130 +1,174 @@
-/**
- * \ingroup networkanalysis
- * \class QgsGraphArc
- * \brief This class implement a graph edge
- */
-class QgsGraphArc
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/network/qgsgraph.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsGraphEdge
 {
-%TypeHeaderCode
-#include <qgsgraph.h>
+%Docstring
+
+.. versionadded:: 3.0
+ This class implements a graph edge
 %End
 
+%TypeHeaderCode
+#include "qgsgraph.h"
+%End
   public:
-    QgsGraphArc();
 
-    /**
-     * return property value
-     * @param propertyIndex property index
-     */
-    QVariant property( int propertyIndex ) const;
+    QgsGraphEdge();
+%Docstring
+Constructor for QgsGraphEdge.
+%End
 
-    /**
-     * get array of properties
-     */
-    QVector< QVariant > properties() const;
+    QVariant cost( int strategyIndex ) const;
+%Docstring
+Returns edge cost calculated using specified strategy
 
-    /**
-     * return index of outgoing vertex
-     */
-    int outVertex() const;
+:param strategyIndex: strategy index
+%End
 
-    /**
-     * return index of incoming vertex
-     */
-    int inVertex() const;
+    QVector< QVariant > strategies() const;
+%Docstring
+Returns array of available strategies
+%End
+
+    int toVertex() const;
+%Docstring
+Returns the index of the vertex at the end of this edge.
+
+.. seealso:: :py:func:`fromVertex`
+%End
+
+    int fromVertex() const;
+%Docstring
+Returns the index of the vertex at the start of this edge.
+
+.. seealso:: :py:func:`toVertex`
+%End
+
 };
 
 
-typedef QList< int > QgsGraphArcIdList;
+typedef QList< int > QgsGraphEdgeIds;
 
-/**
- * \ingroup networkanalysis
- * \class QgsGraphVertex
- * \brief This class implement a graph vertex
- */
 class QgsGraphVertex
 {
-%TypeHeaderCode
-#include <qgsgraph.h>
+%Docstring
+ This class implements a graph vertex
+
+.. versionadded:: 3.0
 %End
 
+%TypeHeaderCode
+#include "qgsgraph.h"
+%End
   public:
-    /**
-     * default constructor. It need for QT's container, e.g. QVector
-     */
+
     QgsGraphVertex();
+%Docstring
+Default constructor. It is needed for Qt's container, e.g. QVector
+%End
 
-    /**
-     * This constructor initializes QgsGraphVertex object and associates a vertex with a point
-     */
 
-    QgsGraphVertex( const QgsPoint& point );
+    QgsGraphVertex( const QgsPointXY &point );
+%Docstring
+This constructor initializes QgsGraphVertex object and associates a vertex with a point
+%End
 
-    /**
-     * return outgoing edges
-     */
-    QgsGraphArcIdList outArc() const;
+    QgsGraphEdgeIds incomingEdges() const;
+%Docstring
+Returns the incoming edge ids, i.e. edges which end at this node.
 
-    /**
-     * return incoming edges
-     */
-    QgsGraphArcIdList inArc() const;
+.. seealso:: :py:func:`outgoingEdges`
+%End
 
-    /**
-     * return vertex point
-     */
-    QgsPoint point() const;
+    QgsGraphEdgeIds outgoingEdges() const;
+%Docstring
+Returns outgoing edge ids, i.e. edges which start at this node.
+
+.. seealso:: :py:func:`incomingEdges`
+%End
+
+    QgsPointXY point() const;
+%Docstring
+Returns point associated with graph vertex.
+%End
+
 };
 
-/**
- * \ingroup networkanalysis
- * \class QgsGraph
- * \brief Mathematics graph representation
- */
 
 class QgsGraph
 {
-%TypeHeaderCode
-#include <qgsgraph.h>
+%Docstring
+ Mathematical graph representation
+
+.. versionadded:: 3.0
 %End
 
+%TypeHeaderCode
+#include "qgsgraph.h"
+%End
   public:
+
     QgsGraph();
+%Docstring
+Constructor for QgsGraph.
+%End
 
-    // begin graph constructing methods
-    /**
-     * add vertex to a grap
-     */
-    int addVertex( const QgsPoint& pt );
 
-    /**
-     * add edge to a graph
-     */
-    int addArc( int outVertexIdx, int inVertexIdx, const QVector< QVariant >& properties );
+    int addVertex( const QgsPointXY &pt );
+%Docstring
+Add a vertex to the graph
+%End
 
-    /**
-     * return vertex count
-     */
+    int addEdge( int fromVertexIdx, int toVertexIdx, const QVector< QVariant > &strategies );
+%Docstring
+Add an edge to the graph, going from the ``fromVertexIdx``
+to ``toVertexIdx``.
+%End
+
     int vertexCount() const;
+%Docstring
+Returns number of graph vertices
+%End
 
-    /**
-     * return vertex at index
-     */
-    const QgsGraphVertex& vertex( int idx ) const;
+    const QgsGraphVertex &vertex( int idx ) const;
+%Docstring
+Returns vertex at given index
+%End
 
-    /**
-      * return edge count
-      */
-    int arcCount() const;
+    int edgeCount() const;
+%Docstring
+Returns number of graph edges
+%End
 
-    /**
-     * return edge at index
-     */
-    const QgsGraphArc& arc( int idx ) const;
+    const QgsGraphEdge &edge( int idx ) const;
+%Docstring
+Returns edge at given index
+%End
 
-    /**
-     * find vertex by point
-     * \return vertex index
-     */
-    int findVertex( const QgsPoint& pt ) const;
+    int findVertex( const QgsPointXY &pt ) const;
+%Docstring
+Find vertex by associated point
+
+:return: vertex index
+%End
+
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/network/qgsgraph.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

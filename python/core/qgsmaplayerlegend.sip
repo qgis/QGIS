@@ -1,113 +1,133 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsmaplayerlegend.h                                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
 
-/**
- * The QgsMapLayerLegend class is abstract interface for implementations
- * of legends for one map layer.
- *
- * @note added in 2.6
- */
+
+
+
+
+
 class QgsMapLayerLegend : QObject
 {
-%TypeHeaderCode
-#include <qgsmaplayerlegend.h>
+%Docstring
+The QgsMapLayerLegend class is abstract interface for implementations
+of legends for one map layer.
+
+.. versionadded:: 2.6
 %End
 
+%TypeHeaderCode
+#include "qgsmaplayerlegend.h"
+%End
   public:
+
     explicit QgsMapLayerLegend( QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsMapLayerLegend
+%End
 
-    // TODO: type, load/save settings
 
-    /**
-     * Return list of legend nodes to be used for a particular layer tree layer node.
-     * Ownership is transferred to the caller.
-     */
-    virtual QList<QgsLayerTreeModelLegendNode*> createLayerTreeModelLegendNodes( QgsLayerTreeLayer* nodeLayer ) = 0 /Factory/;
+    virtual QList<QgsLayerTreeModelLegendNode *> createLayerTreeModelLegendNodes( QgsLayerTreeLayer *nodeLayer ) = 0 /Factory/;
+%Docstring
+Return list of legend nodes to be used for a particular layer tree layer node.
+Ownership is transferred to the caller.
+%End
 
-    // TODO: support for layer tree view delegates
 
-    //! Create new legend implementation for vector layer
-    static QgsMapLayerLegend* defaultVectorLegend( QgsVectorLayer* vl ) /Factory/;
+    static QgsMapLayerLegend *defaultVectorLegend( QgsVectorLayer *vl ) /Factory/;
+%Docstring
+Create new legend implementation for vector layer
+%End
 
-    //! Create new legend implementation for raster layer
-    static QgsMapLayerLegend* defaultRasterLegend( QgsRasterLayer* rl ) /Factory/;
-
-    //! Create new legend implementation for raster layer
-    static QgsMapLayerLegend* defaultPluginLegend( QgsPluginLayer* pl ) /Factory/;
+    static QgsMapLayerLegend *defaultRasterLegend( QgsRasterLayer *rl ) /Factory/;
+%Docstring
+Create new legend implementation for raster layer
+%End
 
   signals:
-    //! Emitted when existing items/nodes got invalid and should be replaced by new ones
     void itemsChanged();
+%Docstring
+Emitted when existing items/nodes got invalid and should be replaced by new ones
+%End
 };
 
 
-/**
- * Miscellaneous utility functions for handling of map layer legend
- *
- * @note added in 2.6
- */
 class QgsMapLayerLegendUtils
 {
+%Docstring
+Miscellaneous utility functions for handling of map layer legend
+
+.. versionadded:: 2.6
+%End
+
 %TypeHeaderCode
-#include <qgsmaplayerlegend.h>
+#include "qgsmaplayerlegend.h"
 %End
   public:
-    static void setLegendNodeOrder( QgsLayerTreeLayer* nodeLayer, const QList<int>& order );
-    static QList<int> legendNodeOrder( QgsLayerTreeLayer* nodeLayer );
-    static bool hasLegendNodeOrder( QgsLayerTreeLayer* nodeLayer );
+    static void setLegendNodeOrder( QgsLayerTreeLayer *nodeLayer, const QList<int> &order );
+    static QList<int> legendNodeOrder( QgsLayerTreeLayer *nodeLayer );
+    static bool hasLegendNodeOrder( QgsLayerTreeLayer *nodeLayer );
 
-    static void setLegendNodeUserLabel( QgsLayerTreeLayer* nodeLayer, int originalIndex, const QString& newLabel );
-    static QString legendNodeUserLabel( QgsLayerTreeLayer* nodeLayer, int originalIndex );
-    static bool hasLegendNodeUserLabel( QgsLayerTreeLayer* nodeLayer, int originalIndex );
+    static void setLegendNodeUserLabel( QgsLayerTreeLayer *nodeLayer, int originalIndex, const QString &newLabel );
+    static QString legendNodeUserLabel( QgsLayerTreeLayer *nodeLayer, int originalIndex );
+    static bool hasLegendNodeUserLabel( QgsLayerTreeLayer *nodeLayer, int originalIndex );
 
-    //! update according to layer node's custom properties (order of items, user labels for items)
-    static void applyLayerNodeProperties( QgsLayerTreeLayer* nodeLayer, QList<QgsLayerTreeModelLegendNode*>& nodes );
+    static void applyLayerNodeProperties( QgsLayerTreeLayer *nodeLayer, QList<QgsLayerTreeModelLegendNode *> &nodes );
+%Docstring
+update according to layer node's custom properties (order of items, user labels for items)
+%End
 };
 
 
 
-/** Default legend implementation for vector layers
- * @note added in 2.6
- */
 class QgsDefaultVectorLayerLegend : QgsMapLayerLegend
 {
+%Docstring
+Default legend implementation for vector layers
+
+.. versionadded:: 2.6
+%End
+
 %TypeHeaderCode
-#include <qgsmaplayerlegend.h>
+#include "qgsmaplayerlegend.h"
 %End
   public:
-    explicit QgsDefaultVectorLayerLegend( QgsVectorLayer* vl );
+    explicit QgsDefaultVectorLayerLegend( QgsVectorLayer *vl );
 
-    virtual QList<QgsLayerTreeModelLegendNode*> createLayerTreeModelLegendNodes( QgsLayerTreeLayer* nodeLayer ) /Factory/;
+    virtual QList<QgsLayerTreeModelLegendNode *> createLayerTreeModelLegendNodes( QgsLayerTreeLayer *nodeLayer ) /Factory/;
+
 
 };
 
 
-/** Default legend implementation for raster layers
- * @note added in 2.6
- */
 class QgsDefaultRasterLayerLegend : QgsMapLayerLegend
 {
+%Docstring
+Default legend implementation for raster layers
+
+.. versionadded:: 2.6
+%End
+
 %TypeHeaderCode
-#include <qgsmaplayerlegend.h>
+#include "qgsmaplayerlegend.h"
 %End
   public:
-    explicit QgsDefaultRasterLayerLegend( QgsRasterLayer* rl );
+    explicit QgsDefaultRasterLayerLegend( QgsRasterLayer *rl );
 
-    virtual QList<QgsLayerTreeModelLegendNode*> createLayerTreeModelLegendNodes( QgsLayerTreeLayer* nodeLayer ) /Factory/;
+    virtual QList<QgsLayerTreeModelLegendNode *> createLayerTreeModelLegendNodes( QgsLayerTreeLayer *nodeLayer ) /Factory/;
+
 
 };
 
 
-/** Default legend implementation for plugin layers
- * @note added in 2.6
- */
-class QgsDefaultPluginLayerLegend : QgsMapLayerLegend
-{
-%TypeHeaderCode
-#include <qgsmaplayerlegend.h>
-%End
-  public:
-    explicit QgsDefaultPluginLayerLegend( QgsPluginLayer* pl );
-
-    virtual QList<QgsLayerTreeModelLegendNode*> createLayerTreeModelLegendNodes( QgsLayerTreeLayer* nodeLayer ) /Factory/;
-
-};
-
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsmaplayerlegend.h                                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

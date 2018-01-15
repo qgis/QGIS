@@ -25,9 +25,10 @@ class QToolButton;
 class QValidator;
 
 class QgsMapCanvas;
-class QgsPoint;
+class QgsPointXY;
 
 #include <QWidget>
+#include "qgis_app.h"
 
 class APP_EXPORT QgsStatusBarCoordinatesWidget : public QWidget
 {
@@ -43,9 +44,9 @@ class APP_EXPORT QgsStatusBarCoordinatesWidget : public QWidget
     QgsStatusBarCoordinatesWidget( QWidget *parent );
 
     //! define the map canvas associated to the widget
-    void setMapCanvas( QgsMapCanvas* mapCanvas );
+    void setMapCanvas( QgsMapCanvas *mapCanvas );
 
-    void setFont( const QFont& myFont );
+    void setFont( const QFont &myFont );
 
     void setMouseCoordinatesPrecision( unsigned int precision );
 
@@ -53,8 +54,8 @@ class APP_EXPORT QgsStatusBarCoordinatesWidget : public QWidget
     void coordinatesChanged();
 
   private slots:
-    void showMouseCoordinates( const QgsPoint &p );
-    void extentsViewToggled( bool theFlag );
+    void showMouseCoordinates( const QgsPointXY &p );
+    void extentsViewToggled( bool flag );
     void validateCoordinates();
     void dizzy();
     void showExtent();
@@ -62,14 +63,14 @@ class APP_EXPORT QgsStatusBarCoordinatesWidget : public QWidget
   private:
     void refreshMapCanvas();
 
-    QLineEdit *mLineEdit;
-    QToolButton *mToggleExtentsViewButton;
+    QLineEdit *mLineEdit = nullptr;
+    QToolButton *mToggleExtentsViewButton = nullptr;
     //! Widget that will live on the statusbar to display "Coordinate / Extent"
-    QLabel *mLabel;
+    QLabel *mLabel = nullptr;
 
-    QValidator *mCoordsEditValidator;
-    QTimer *mDizzyTimer;
-    QgsMapCanvas* mMapCanvas;
+    QValidator *mCoordsEditValidator = nullptr;
+    QTimer *mDizzyTimer = nullptr;
+    QgsMapCanvas *mMapCanvas = nullptr;
 
     //! The number of decimal places to use if not automatic
     unsigned int mMousePrecisionDecimalPlaces;

@@ -61,7 +61,6 @@ def get_iface():
 
     canvas = QgsMapCanvas(my_iface.mainWindow())
     canvas.resize(QSize(400, 400))
-
     my_iface.mapCanvas.return_value = canvas
 
     return my_iface

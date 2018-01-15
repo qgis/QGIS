@@ -15,8 +15,53 @@
 
 #include "qgsstringutils.h"
 #include <QVector>
+#include <QRegExp>
+#include <QStringList>
+#include <QTextBoundaryFinder>
 
-int QgsStringUtils::levenshteinDistance( const QString& string1, const QString& string2, bool caseSensitive )
+QString QgsStringUtils::capitalize( const QString &string, QgsStringUtils::Capitalization capitalization )
+{
+  if ( string.isEmpty() )
+    return QString();
+
+  switch ( capitalization )
+  {
+    case MixedCase:
+      return string;
+
+    case AllUppercase:
+      return string.toUpper();
+
+    case AllLowercase:
+      return string.toLower();
+
+    case ForceFirstLetterToCapital:
+    {
+      QString temp = string;
+
+      QTextBoundaryFinder wordSplitter( QTextBoundaryFinder::Word, string.constData(), string.length(), nullptr, 0 );
+      QTextBoundaryFinder letterSplitter( QTextBoundaryFinder::Grapheme, string.constData(), string.length(), nullptr, 0 );
+
+      wordSplitter.setPosition( 0 );
+      bool first = true;
+      while ( ( first && wordSplitter.boundaryReasons() & QTextBoundaryFinder::StartOfItem )
+              || wordSplitter.toNextBoundary() >= 0 )
+      {
+        first = false;
+        letterSplitter.setPosition( wordSplitter.position() );
+        letterSplitter.toNextBoundary();
+        QString substr = string.mid( wordSplitter.position(), letterSplitter.position() - wordSplitter.position() );
+        temp.replace( wordSplitter.position(), substr.length(), substr.toUpper() );
+      }
+      return temp;
+    }
+
+  }
+  // no warnings
+  return string;
+}
+
+int QgsStringUtils::levenshteinDistance( const QString &string1, const QString &string2, bool caseSensitive )
 {
   int length1 = string1.length();
   int length2 = string2.length();
@@ -35,8 +80,8 @@ int QgsStringUtils::levenshteinDistance( const QString& string1, const QString& 
   QString s1( caseSensitive ? string1 : string1.toLower() );
   QString s2( caseSensitive ? string2 : string2.toLower() );
 
-  const QChar* s1Char = s1.constData();
-  const QChar* s2Char = s2.constData();
+  const QChar *s1Char = s1.constData();
+  const QChar *s2Char = s2.constData();
 
   //strip out any common prefix
   int commonPrefixLen = 0;
@@ -69,8 +114,8 @@ int QgsStringUtils::levenshteinDistance( const QString& string1, const QString& 
   //ensure the inner loop is longer
   if ( length1 > length2 )
   {
-    qSwap( s1, s2 );
-    qSwap( length1, length2 );
+    std::swap( s1, s2 );
+    std::swap( length1, length2 );
   }
 
   //levenshtein algorithm begins here
@@ -82,14 +127,14 @@ int QgsStringUtils::levenshteinDistance( const QString& string1, const QString& 
   {
     prevCol << i;
   }
-  const QChar* s2start = s2Char;
+  const QChar *s2start = s2Char;
   for ( int i = 0; i < length1; ++i )
   {
     col[0] = i + 1;
     s2Char = s2start;
     for ( int j = 0; j < length2; ++j )
     {
-      col[j + 1] = qMin( qMin( 1 + col[j], 1 + prevCol[1 + j] ), prevCol[j] + (( *s1Char == *s2Char ) ? 0 : 1 ) );
+      col[j + 1] = std::min( std::min( 1 + col[j], 1 + prevCol[1 + j] ), prevCol[j] + ( ( *s1Char == *s2Char ) ? 0 : 1 ) );
       s2Char++;
     }
     col.swap( prevCol );
@@ -98,7 +143,7 @@ int QgsStringUtils::levenshteinDistance( const QString& string1, const QString& 
   return prevCol[length2];
 }
 
-QString QgsStringUtils::longestCommonSubstring( const QString& string1, const QString& string2, bool caseSensitive )
+QString QgsStringUtils::longestCommonSubstring( const QString &string1, const QString &string2, bool caseSensitive )
 {
   if ( string1.isEmpty() || string2.isEmpty() )
   {
@@ -116,14 +161,14 @@ QString QgsStringUtils::longestCommonSubstring( const QString& string1, const QS
     return s1;
   }
 
-  int* currentScores = new int [ s2.length()];
-  int* previousScores = new int [ s2.length()];
+  int *currentScores = new int [ s2.length()];
+  int *previousScores = new int [ s2.length()];
   int maxCommonLength = 0;
   int lastMaxBeginIndex = 0;
 
-  const QChar* s1Char = s1.constData();
-  const QChar* s2Char = s2.constData();
-  const QChar* s2Start = s2Char;
+  const QChar *s1Char = s1.constData();
+  const QChar *s2Char = s2.constData();
+  const QChar *s2Start = s2Char;
 
   for ( int i = 0; i < s1.length(); ++i )
   {
@@ -152,7 +197,7 @@ QString QgsStringUtils::longestCommonSubstring( const QString& string1, const QS
       }
       s2Char++;
     }
-    qSwap( currentScores, previousScores );
+    std::swap( currentScores, previousScores );
     s1Char++;
     s2Char = s2Start;
   }
@@ -161,7 +206,7 @@ QString QgsStringUtils::longestCommonSubstring( const QString& string1, const QS
   return string1.mid( lastMaxBeginIndex - maxCommonLength + 1, maxCommonLength );
 }
 
-int QgsStringUtils::hammingDistance( const QString& string1, const QString& string2, bool caseSensitive )
+int QgsStringUtils::hammingDistance( const QString &string1, const QString &string2, bool caseSensitive )
 {
   if ( string1.isEmpty() && string2.isEmpty() )
   {
@@ -186,8 +231,8 @@ int QgsStringUtils::hammingDistance( const QString& string1, const QString& stri
   }
 
   int distance = 0;
-  const QChar* s1Char = s1.constData();
-  const QChar* s2Char = s2.constData();
+  const QChar *s1Char = s1.constData();
+  const QChar *s2Char = s2.constData();
 
   for ( int i = 0; i < string1.length(); ++i )
   {
@@ -200,7 +245,7 @@ int QgsStringUtils::hammingDistance( const QString& string1, const QString& stri
   return distance;
 }
 
-QString QgsStringUtils::soundex( const QString& string )
+QString QgsStringUtils::soundex( const QString &string )
 {
   if ( string.isEmpty() )
     return QString();
@@ -208,15 +253,15 @@ QString QgsStringUtils::soundex( const QString& string )
   QString tmp = string.toUpper();
 
   //strip non character codes, and vowel like characters after the first character
-  QChar* char1 = tmp.data();
-  QChar* char2 = tmp.data();
+  QChar *char1 = tmp.data();
+  QChar *char2 = tmp.data();
   int outLen = 0;
   for ( int i = 0; i < tmp.length(); ++i, ++char2 )
   {
-    if (( *char2 ).unicode() >= 0x41 && ( *char2 ).unicode() <= 0x5A && ( i == 0 || (( *char2 ).unicode() != 0x41 && ( *char2 ).unicode() != 0x45
-        && ( *char2 ).unicode() != 0x48 && ( *char2 ).unicode() != 0x49
-        && ( *char2 ).unicode() != 0x4F && ( *char2 ).unicode() != 0x55
-        && ( *char2 ).unicode() != 0x57 && ( *char2 ).unicode() != 0x59 ) ) )
+    if ( ( *char2 ).unicode() >= 0x41 && ( *char2 ).unicode() <= 0x5A && ( i == 0 || ( ( *char2 ).unicode() != 0x41 && ( *char2 ).unicode() != 0x45
+         && ( *char2 ).unicode() != 0x48 && ( *char2 ).unicode() != 0x49
+         && ( *char2 ).unicode() != 0x4F && ( *char2 ).unicode() != 0x55
+         && ( *char2 ).unicode() != 0x57 && ( *char2 ).unicode() != 0x59 ) ) )
     {
       *char1 = *char2;
       char1++;
@@ -225,11 +270,11 @@ QString QgsStringUtils::soundex( const QString& string )
   }
   tmp.truncate( outLen );
 
-  QChar* tmpChar = tmp.data();
+  QChar *tmpChar = tmp.data();
   tmpChar++;
   for ( int i = 1; i < tmp.length(); ++i, ++tmpChar )
   {
-    switch (( *tmpChar ).unicode() )
+    switch ( ( *tmpChar ).unicode() )
     {
       case 0x42:
       case 0x46:
@@ -293,4 +338,131 @@ QString QgsStringUtils::soundex( const QString& string )
   }
 
   return tmp;
+}
+
+QString QgsStringUtils::insertLinks( const QString &string, bool *foundLinks )
+{
+  QString converted = string;
+
+  // http://alanstorm.com/url_regex_explained
+  // note - there's more robust implementations available, but we need one which works within the limitation of QRegExp
+  static QRegExp urlRegEx( "(\\b(([\\w-]+://?|www[.])[^\\s()<>]+(?:\\([\\w\\d]+\\)|([^!\"#$%&'()*+,\\-./:;<=>?@[\\\\\\]^_`{|}~\\s]|/))))" );
+  static QRegExp protoRegEx( "^(?:f|ht)tps?://" );
+  static QRegExp emailRegEx( "([\\w._%+-]+@[\\w.-]+\\.[A-Za-z]+)" );
+
+  int offset = 0;
+  bool found = false;
+  while ( urlRegEx.indexIn( converted, offset ) != -1 )
+  {
+    found = true;
+    QString url = urlRegEx.cap( 1 );
+    QString protoUrl = url;
+    if ( protoRegEx.indexIn( protoUrl ) == -1 )
+    {
+      protoUrl.prepend( "http://" );
+    }
+    QString anchor = QStringLiteral( "<a href=\"%1\">%2</a>" ).arg( protoUrl.toHtmlEscaped(), url.toHtmlEscaped() );
+    converted.replace( urlRegEx.pos( 1 ), url.length(), anchor );
+    offset = urlRegEx.pos( 1 ) + anchor.length();
+  }
+  offset = 0;
+  while ( emailRegEx.indexIn( converted, offset ) != -1 )
+  {
+    found = true;
+    QString email = emailRegEx.cap( 1 );
+    QString anchor = QStringLiteral( "<a href=\"mailto:%1\">%1</a>" ).arg( email.toHtmlEscaped(), email.toHtmlEscaped() );
+    converted.replace( emailRegEx.pos( 1 ), email.length(), anchor );
+    offset = emailRegEx.pos( 1 ) + anchor.length();
+  }
+
+  if ( foundLinks )
+    *foundLinks = found;
+
+  return converted;
+}
+
+QgsStringReplacement::QgsStringReplacement( const QString &match, const QString &replacement, bool caseSensitive, bool wholeWordOnly )
+  : mMatch( match )
+  , mReplacement( replacement )
+  , mCaseSensitive( caseSensitive )
+  , mWholeWordOnly( wholeWordOnly )
+{
+  if ( mWholeWordOnly )
+    mRx = QRegExp( QString( "\\b%1\\b" ).arg( mMatch ),
+                   mCaseSensitive ? Qt::CaseSensitive : Qt::CaseInsensitive );
+}
+
+QString QgsStringReplacement::process( const QString &input ) const
+{
+  QString result = input;
+  if ( !mWholeWordOnly )
+  {
+    return result.replace( mMatch, mReplacement, mCaseSensitive ? Qt::CaseSensitive : Qt::CaseInsensitive );
+  }
+  else
+  {
+    return result.replace( mRx, mReplacement );
+  }
+}
+
+QgsStringMap QgsStringReplacement::properties() const
+{
+  QgsStringMap map;
+  map.insert( QStringLiteral( "match" ), mMatch );
+  map.insert( QStringLiteral( "replace" ), mReplacement );
+  map.insert( QStringLiteral( "caseSensitive" ), mCaseSensitive ? "1" : "0" );
+  map.insert( QStringLiteral( "wholeWord" ), mWholeWordOnly ? "1" : "0" );
+  return map;
+}
+
+QgsStringReplacement QgsStringReplacement::fromProperties( const QgsStringMap &properties )
+{
+  return QgsStringReplacement( properties.value( QStringLiteral( "match" ) ),
+                               properties.value( QStringLiteral( "replace" ) ),
+                               properties.value( QStringLiteral( "caseSensitive" ), QStringLiteral( "0" ) ) == QLatin1String( "1" ),
+                               properties.value( QStringLiteral( "wholeWord" ), QStringLiteral( "0" ) ) == QLatin1String( "1" ) );
+}
+
+QString QgsStringReplacementCollection::process( const QString &input ) const
+{
+  QString result = input;
+  Q_FOREACH ( const QgsStringReplacement &r, mReplacements )
+  {
+    result = r.process( result );
+  }
+  return result;
+}
+
+void QgsStringReplacementCollection::writeXml( QDomElement &elem, QDomDocument &doc ) const
+{
+  Q_FOREACH ( const QgsStringReplacement &r, mReplacements )
+  {
+    QgsStringMap props = r.properties();
+    QDomElement propEl = doc.createElement( QStringLiteral( "replacement" ) );
+    QgsStringMap::const_iterator it = props.constBegin();
+    for ( ; it != props.constEnd(); ++it )
+    {
+      propEl.setAttribute( it.key(), it.value() );
+    }
+    elem.appendChild( propEl );
+  }
+}
+
+void QgsStringReplacementCollection::readXml( const QDomElement &elem )
+{
+  mReplacements.clear();
+  QDomNodeList nodelist = elem.elementsByTagName( QStringLiteral( "replacement" ) );
+  for ( int i = 0; i < nodelist.count(); i++ )
+  {
+    QDomElement replacementElem = nodelist.at( i ).toElement();
+    QDomNamedNodeMap nodeMap = replacementElem.attributes();
+
+    QgsStringMap props;
+    for ( int j = 0; j < nodeMap.count(); ++j )
+    {
+      props.insert( nodeMap.item( j ).nodeName(), nodeMap.item( j ).nodeValue() );
+    }
+    mReplacements << QgsStringReplacement::fromProperties( props );
+  }
+
 }

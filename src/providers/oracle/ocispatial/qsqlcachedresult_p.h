@@ -62,15 +62,15 @@ template <typename T> class QVector;
 
 class QSqlCachedResultPrivate;
 
-class Q_SQL_EXPORT QSqlCachedResult: public QSqlResult
+class /* Q_SQL_EXPORT */ QSqlCachedResult: public QSqlResult
 {
   public:
-    virtual ~QSqlCachedResult();
+    virtual ~QSqlCachedResult() {}
 
     typedef QVector<QVariant> ValueCache;
 
   protected:
-    QSqlCachedResult( const QSqlDriver * db );
+    QSqlCachedResult( const QSqlDriver *db ) : QSqlResult( db ) {}
 
     void init( int colCount );
     void cleanup();
@@ -92,7 +92,7 @@ class Q_SQL_EXPORT QSqlCachedResult: public QSqlResult
     void virtual_hook( int id, void *data );
   private:
     bool cacheNext();
-    QSqlCachedResultPrivate *d;
+    QSqlCachedResultPrivate *d = nullptr;
 };
 
 QT_END_NAMESPACE

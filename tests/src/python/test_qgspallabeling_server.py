@@ -24,20 +24,16 @@ import os
 import glob
 import shutil
 
-from qgis.PyQt.QtCore import QSettings, qDebug
+from qgis.PyQt.QtCore import qDebug
 
-from qgis.core import QgsProject, QgsApplication, QgsPalLabeling
+from qgis.core import QgsProject, QgsApplication, QgsSettings, QgsPalLabeling
 
 from utilities import mapSettingsString
 
 from qgis_local_server import getLocalServer
 
 from test_qgspallabeling_base import TestQgsPalLabeling, runSuite
-from test_qgspallabeling_tests import (
-    TestPointBase,
-    TestLineBase,
-    suiteTests
-)
+from test_qgspallabeling_tests import TestPointBase, TestLineBase, suiteTests
 
 MAPSERV = getLocalServer()
 
@@ -68,13 +64,13 @@ class TestServerBase(TestQgsPalLabeling):
         # the blue background (set via layer style) to match renderchecker's
         TestQgsPalLabeling.loadFeatureLayer('background', True)
 
-        settings = QSettings()
+        settings = QgsSettings()
         # noinspection PyArgumentList
         cls._CacheDir = settings.value(
             "cache/directory",
-            os.path.join(unicode(QgsApplication.qgisSettingsDirPath()),
+            os.path.join(str(QgsApplication.qgisSettingsDirPath()),
                          "cache"),
-            type=unicode)
+            type=str)
 
     @classmethod
     def tearDownClass(cls):
@@ -115,8 +111,8 @@ class TestServerBase(TestQgsPalLabeling):
         # TODO: support other types of servers, besides WMS
         ms = self._TestMapSettings
         osize = ms.outputSize()
-        dpi = str(ms.outputDpi())
-        lyrs = [str(self._MapRegistry.mapLayer(i).name()) for i in ms.layers()]
+        dpi = str(int(ms.outputDpi()))
+        lyrs = [str(layer.name()) for layer in ms.layers()]
         lyrs.reverse()
         params = {
             'SERVICE': 'WMS',
@@ -142,17 +138,7 @@ class TestServerBase(TestQgsPalLabeling):
         # print params
         return params
 
-    def sync_map_settings(self):
-        """
-        Sync custom test QgsMapSettings to Project file
-        """
-        pal = QgsPalLabeling()
-        pal.loadEngineSettings()
-        pal.init(self._TestMapSettings)
-        pal.saveEngineSettings()
-
     def checkTest(self, **kwargs):
-        self.sync_map_settings()
         self.lyr.writeToLayer(self.layer)
         # save project file
         self._TestProj.write()
@@ -236,6 +222,7 @@ class TestServerVsCanvasLine(TestServerBaseLine, TestLineBase):
     def setUp(self):
         super(TestServerVsCanvasLine, self).setUp()
         self.configTest('pal_canvas_line', 'sp')
+
 
 if __name__ == '__main__':
     # NOTE: unless PAL_SUITE env var is set all test class methods will be run

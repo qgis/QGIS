@@ -1,48 +1,110 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsvectorsimplifymethod.h                                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
 
-/** This class contains information how to simplify geometries fetched from a vector layer
- * @note added in 2.2
- */
+
+
 class QgsVectorSimplifyMethod
 {
+%Docstring
+This class contains information how to simplify geometries fetched from a vector layer
+
+.. versionadded:: 2.2
+%End
+
 %TypeHeaderCode
 #include "qgsvectorsimplifymethod.h"
 %End
-
   public:
-    //! construct a default object
     QgsVectorSimplifyMethod();
-    //! copy constructor
-    QgsVectorSimplifyMethod( const QgsVectorSimplifyMethod& rh );
+%Docstring
+construct a default object
+%End
 
-    /** Simplification flags for fast rendering of features */
     enum SimplifyHint
     {
-      NoSimplification,           //!< No simplification can be applied
-      GeometrySimplification,     //!< The geometries can be simplified using the current map2pixel context state
-      AntialiasingSimplification, //!< The geometries can be rendered with 'AntiAliasing' disabled because of it is '1-pixel size'
-      FullSimplification,         //!< All simplification hints can be applied ( Geometry + AA-disabling )
+      NoSimplification,
+      GeometrySimplification,
+      AntialiasingSimplification,
+      FullSimplification,
     };
     typedef QFlags<QgsVectorSimplifyMethod::SimplifyHint> SimplifyHints;
 
-    /** Sets the simplification hints of the vector layer managed */
-    void setSimplifyHints( const QFlags<QgsVectorSimplifyMethod::SimplifyHint>& simplifyHints );
-    /** Gets the simplification hints of the vector layer managed */
-    QFlags<QgsVectorSimplifyMethod::SimplifyHint> simplifyHints() const;
 
-    /** Sets the simplification threshold of the vector layer managed */
+    void setSimplifyHints( SimplifyHints simplifyHints );
+%Docstring
+Sets the simplification hints of the vector layer managed
+%End
+    SimplifyHints simplifyHints() const;
+%Docstring
+Gets the simplification hints of the vector layer managed
+%End
+
+    enum SimplifyAlgorithm
+    {
+      Distance,
+      SnapToGrid,
+      Visvalingam,
+    };
+
+    void setSimplifyAlgorithm( SimplifyAlgorithm simplifyAlgorithm );
+%Docstring
+Sets the local simplification algorithm of the vector layer managed
+%End
+    SimplifyAlgorithm simplifyAlgorithm() const;
+%Docstring
+Gets the local simplification algorithm of the vector layer managed
+%End
+
+    void setTolerance( double tolerance );
+%Docstring
+Sets the tolerance of simplification in map units. Represents the maximum distance in map units between two coordinates which can be considered equal
+%End
+    double tolerance() const;
+%Docstring
+Gets the tolerance of simplification in map units. Represents the maximum distance in map units between two coordinates which can be considered equal
+%End
+
     void setThreshold( float threshold );
-    /** Gets the simplification threshold of the vector layer managed */
+%Docstring
+Sets the simplification threshold of the vector layer managed
+%End
     float threshold() const;
+%Docstring
+Gets the simplification threshold of the vector layer managed
+%End
 
-    /** Sets where the simplification executes, after fetch the geometries from provider, or when supported, in provider before fetch the geometries */
     void setForceLocalOptimization( bool localOptimization );
-    /** Gets where the simplification executes, after fetch the geometries from provider, or when supported, in provider before fetch the geometries */
+%Docstring
+Sets where the simplification executes, after fetch the geometries from provider, or when supported, in provider before fetch the geometries
+%End
     bool forceLocalOptimization() const;
+%Docstring
+Gets where the simplification executes, after fetch the geometries from provider, or when supported, in provider before fetch the geometries
+%End
 
-    /** Sets the maximum scale at which the layer should be simplified */
     void setMaximumScale( float maximumScale );
-    /** Gets the maximum scale at which the layer should be simplified */
+%Docstring
+Sets the maximum scale at which the layer should be simplified
+%End
     float maximumScale() const;
+%Docstring
+Gets the maximum scale at which the layer should be simplified
+%End
+
 };
 
-QFlags<QgsVectorSimplifyMethod::SimplifyHint> operator|( QgsVectorSimplifyMethod::SimplifyHint f1, QFlags<QgsVectorSimplifyMethod::SimplifyHint> f2 );
+QFlags<QgsVectorSimplifyMethod::SimplifyHint> operator|(QgsVectorSimplifyMethod::SimplifyHint f1, QFlags<QgsVectorSimplifyMethod::SimplifyHint> f2);
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsvectorsimplifymethod.h                                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

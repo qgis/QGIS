@@ -18,6 +18,7 @@
 #ifndef QGSDB2FEATUREITERATOR_H
 #define QGSDB2FEATUREITERATOR_H
 
+#include "qgsfields.h"
 #include "qgsfeatureiterator.h"
 #include <QtSql/QSqlDatabase>
 #include <QtSql/QSqlQuery>
@@ -28,12 +29,11 @@ class QgsDb2Provider;
 class QgsDb2FeatureSource : public QgsAbstractFeatureSource
 {
   public:
-    explicit QgsDb2FeatureSource( const QgsDb2Provider* p );
-    ~QgsDb2FeatureSource();
+    explicit QgsDb2FeatureSource( const QgsDb2Provider *p );
 
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request ) override;
+    QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
 
-  protected:
+  private:
     QgsFields mFields;
     QString mFidColName;
     long mSRId;
@@ -51,6 +51,8 @@ class QgsDb2FeatureSource : public QgsAbstractFeatureSource
     // SQL statement used to limit the features retrieved
     QString mSqlWhereClause;
 
+    QgsCoordinateReferenceSystem mCrs;
+
     // Return True if this feature source has spatial attributes.
     bool isSpatial() { return !mGeometryColName.isEmpty() || !mGeometryColType.isEmpty(); }
 
@@ -61,28 +63,22 @@ class QgsDb2FeatureSource : public QgsAbstractFeatureSource
 class QgsDb2FeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsDb2FeatureSource>
 {
   public:
-    QgsDb2FeatureIterator( QgsDb2FeatureSource* source, bool ownSource, const QgsFeatureRequest& request );
+    QgsDb2FeatureIterator( QgsDb2FeatureSource *source, bool ownSource, const QgsFeatureRequest &request );
 
-    ~QgsDb2FeatureIterator();
+    ~QgsDb2FeatureIterator() override;
 
-    //! reset the iterator to the starting position
-    virtual bool rewind() override;
-
-    //! end of iterating: free the resources / lock
-    virtual bool close() override;
+    bool rewind() override;
+    bool close() override;
 
   protected:
-    void BuildStatement( const QgsFeatureRequest& request );
+    void BuildStatement( const QgsFeatureRequest &request );
 
-    //! fetch next feature, return true on success
-    virtual bool fetchFeature( QgsFeature& feature ) override;
-
-    //! fetch next feature filter expression
-    bool nextFeatureFilterExpression( QgsFeature& f ) override;
+    bool fetchFeature( QgsFeature &feature ) override;
+    bool nextFeatureFilterExpression( QgsFeature &f ) override;
 
   private:
 
-    virtual bool prepareOrderBy( const QList<QgsFeatureRequest::OrderByClause> &orderBys ) override;
+    bool prepareOrderBy( const QList<QgsFeatureRequest::OrderByClause> &orderBys ) override;
 
 
     // The current database
@@ -90,7 +86,7 @@ class QgsDb2FeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsDb2
     QString mOrderByClause;
 
     // The current sql query
-    QSqlQuery* mQuery;
+    std::unique_ptr< QSqlQuery > mQuery;
 
     // The current sql statement
     QString mStatement;
@@ -104,7 +100,10 @@ class QgsDb2FeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsDb2
     bool mExpressionCompiled;
     bool mOrderByCompiled;
 
-    int mFetchCount;
+    int mFetchCount = 0;
+
+    QgsCoordinateTransform mTransform;
+    QgsRectangle mFilterRect;
 };
 
 #endif // QGSDB2FEATUREITERATOR_H

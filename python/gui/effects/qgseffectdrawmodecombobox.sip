@@ -1,30 +1,49 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/effects/qgseffectdrawmodecombobox.h                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
 
-/** \ingroup gui
- * \class QgsEffectDrawModeComboBox
- * \brief A combo box allowing selection of paint effect draw modes
- *
- * \note Added in version 2.9
- */
+
+
 
 class QgsEffectDrawModeComboBox : QComboBox
 {
-%TypeHeaderCode
-#include <qgseffectdrawmodecombobox.h>
+%Docstring
+ A combo box allowing selection of paint effect draw modes
+
+.. versionadded:: 2.9
 %End
 
+%TypeHeaderCode
+#include "qgseffectdrawmodecombobox.h"
+%End
   public:
 
-    QgsEffectDrawModeComboBox( QWidget* parent /TransferThis/ = NULL );
+    QgsEffectDrawModeComboBox( QWidget *parent /TransferThis/ = 0 );
 
-    /** Returns the currently selected draw mode for the combo box
-     * @returns current draw mode
-     */
     QgsPaintEffect::DrawMode drawMode() const;
+%Docstring
+Returns the currently selected draw mode for the combo box
 
-    /** Sets the currently selected draw mode for the combo box
-     * @param drawMode selected draw mode
-     */
+:return: current draw mode
+%End
+
     void setDrawMode( QgsPaintEffect::DrawMode drawMode );
+%Docstring
+Sets the currently selected draw mode for the combo box
+
+:param drawMode: selected draw mode
+%End
 
 };
 
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/effects/qgseffectdrawmodecombobox.h                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

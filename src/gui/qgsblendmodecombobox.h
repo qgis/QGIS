@@ -19,25 +19,34 @@
 #define QGSBLENDMODECOMBOBOX_H
 
 #include <QComboBox>
+#include "qgis.h"
 #include <QPainter> // For QPainter::CompositionMode enum
-#include "qgsmaprenderer.h" //for getCompositionMode
+#include "qgis_gui.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * A combobox which lets the user select blend modes from a predefined list
  **/
 class GUI_EXPORT QgsBlendModeComboBox : public QComboBox
 {
     Q_OBJECT
   public:
-    QgsBlendModeComboBox( QWidget* parent = nullptr );
-    virtual ~QgsBlendModeComboBox();
+
+    //! Constructor for QgsBlendModeComboBox
+    QgsBlendModeComboBox( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     //! Function to read the selected blend mode as QPainter::CompositionMode
     QPainter::CompositionMode blendMode();
     //! Function to set the selected blend mode from QPainter::CompositionMode
     void setBlendMode( QPainter::CompositionMode blendMode );
   private:
-    //! Returns a list of grouped blend modes (with separators)
+
+    /**
+     * Returns a QStringList of the translated blend modes
+    * "-" is used to indicate the position of a separator in the list
+    * This list is designed to emulate GIMP's layer modes, where
+    * blending modes are grouped by their effect (lightening, darkening, etc)
+    */
     QStringList blendModesList() const;
 
     //! Used to map blend modes across to their corresponding
@@ -46,6 +55,11 @@ class GUI_EXPORT QgsBlendModeComboBox : public QComboBox
     std::vector<int> mListIndexToBlendMode;
 
   public slots:
+
+    /**
+     * Populates the blend mode combo box, and sets up mapping for
+    * blend modes to combo box indexes
+    */
     void updateModes();
 
 };

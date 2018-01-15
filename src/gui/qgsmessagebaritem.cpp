@@ -21,62 +21,50 @@
 
 #include <QHBoxLayout>
 #include <QLabel>
-#include <QTextEdit>
+#include <QTextBrowser>
+#include <QDesktopServices>
 
 QgsMessageBarItem::QgsMessageBarItem( const QString &text, QgsMessageBar::MessageLevel level, int duration, QWidget *parent )
-    : QWidget( parent )
-    , mTitle( "" )
-    , mText( text )
-    , mLevel( level )
-    , mDuration( duration )
-    , mWidget( nullptr )
-    , mUserIcon( QIcon() )
-    , mLayout( nullptr )
+  : QWidget( parent )
+  , mText( text )
+  , mLevel( level )
+  , mDuration( duration )
 {
   writeContent();
 }
 
 QgsMessageBarItem::QgsMessageBarItem( const QString &title, const QString &text, QgsMessageBar::MessageLevel level, int duration, QWidget *parent )
-    : QWidget( parent )
-    , mTitle( title )
-    , mText( text )
-    , mLevel( level )
-    , mDuration( duration )
-    , mWidget( nullptr )
-    , mUserIcon( QIcon() )
-    , mLayout( nullptr )
+  : QWidget( parent )
+  , mTitle( title )
+  , mText( text )
+  , mLevel( level )
+  , mDuration( duration )
 {
   writeContent();
 }
 
 QgsMessageBarItem::QgsMessageBarItem( const QString &title, const QString &text, QWidget *widget, QgsMessageBar::MessageLevel level, int duration, QWidget *parent )
-    : QWidget( parent )
-    , mTitle( title )
-    , mText( text )
-    , mLevel( level )
-    , mDuration( duration )
-    , mWidget( widget )
-    , mUserIcon( QIcon() )
-    , mLayout( nullptr )
+  : QWidget( parent )
+  , mTitle( title )
+  , mText( text )
+  , mLevel( level )
+  , mDuration( duration )
+  , mWidget( widget )
+  , mUserIcon( QIcon() )
+
 {
   writeContent();
 }
 
 QgsMessageBarItem::QgsMessageBarItem( QWidget *widget, QgsMessageBar::MessageLevel level, int duration, QWidget *parent )
-    : QWidget( parent )
-    , mTitle( "" )
-    , mText( "" )
-    , mLevel( level )
-    , mDuration( duration )
-    , mWidget( widget )
-    , mUserIcon( QIcon() )
-    , mLayout( nullptr )
+  : QWidget( parent )
+  , mLevel( level )
+  , mDuration( duration )
+  , mWidget( widget )
+  , mUserIcon( QIcon() )
+
 {
   writeContent();
-}
-
-QgsMessageBarItem::~QgsMessageBarItem()
-{
 }
 
 void QgsMessageBarItem::writeContent()
@@ -85,7 +73,7 @@ void QgsMessageBarItem::writeContent()
   {
     mLayout = new QHBoxLayout( this );
     mLayout->setContentsMargins( 0, 0, 0, 0 );
-    mTextEdit = nullptr;
+    mTextBrowser = nullptr;
     mLblIcon = nullptr;
   }
 
@@ -102,17 +90,17 @@ void QgsMessageBarItem::writeContent()
   }
   else
   {
-    QString msgIcon( "/mIconInfo.png" );
+    QString msgIcon( QStringLiteral( "/mIconInfo.svg" ) );
     switch ( mLevel )
     {
       case QgsMessageBar::CRITICAL:
-        msgIcon = QString( "/mIconCritical.png" );
+        msgIcon = QStringLiteral( "/mIconCritical.png" );
         break;
       case QgsMessageBar::WARNING:
-        msgIcon = QString( "/mIconWarn.png" );
+        msgIcon = QStringLiteral( "/mIconWarning.svg" );
         break;
       case QgsMessageBar::SUCCESS:
-        msgIcon = QString( "/mIconSuccess.png" );
+        msgIcon = QStringLiteral( "/mIconSuccess.svg" );
         break;
       default:
         break;
@@ -121,42 +109,75 @@ void QgsMessageBarItem::writeContent()
   }
   mLblIcon->setPixmap( icon.pixmap( 24 ) );
 
+
+  // STYLESHEETS
+  QString contentStyleSheet;
+  if ( mLevel == QgsMessageBar::SUCCESS )
+  {
+    mStyleSheet = "QgsMessageBar { background-color: #dff0d8; border: 1px solid #8e998a; } "
+                  "QLabel,QTextEdit { color: black; } ";
+    contentStyleSheet = "<style> a, a:visited, a:hover { color:#268300; } </style>";
+  }
+  else if ( mLevel == QgsMessageBar::CRITICAL )
+  {
+    mStyleSheet = "QgsMessageBar { background-color: #d65253; border: 1px solid #9b3d3d; } "
+                  "QLabel,QTextEdit { color: white; } ";
+    contentStyleSheet = "<style>a, a:visited, a:hover { color:#4e0001; }</style>";
+  }
+  else if ( mLevel == QgsMessageBar::WARNING )
+  {
+    mStyleSheet = "QgsMessageBar { background-color: #ffc800; border: 1px solid #e0aa00; } "
+                  "QLabel,QTextEdit { color: black; } ";
+    contentStyleSheet = "<style>a, a:visited, a:hover { color:#945a00; }</style>";
+  }
+  else if ( mLevel == QgsMessageBar::INFO )
+  {
+    mStyleSheet = "QgsMessageBar { background-color: #e7f5fe; border: 1px solid #b9cfe4; } "
+                  "QLabel,QTextEdit { color: #2554a1; } ";
+    contentStyleSheet = "<style>a, a:visited, a:hover { color:#3bb2fe; }</style>";
+  }
+  mStyleSheet += QLatin1String( "QLabel#mItemCount { font-style: italic; }" );
+
   // TITLE AND TEXT
   if ( mTitle.isEmpty() && mText.isEmpty() )
   {
-    if ( mTextEdit )
+    if ( mTextBrowser )
     {
-      delete mTextEdit;
-      mTextEdit = nullptr;
+      delete mTextBrowser;
+      mTextBrowser = nullptr;
     }
   }
   else
   {
-    if ( !mTextEdit )
+    if ( !mTextBrowser )
     {
-      mTextEdit = new QTextEdit( this );
-      mTextEdit->setObjectName( "textEdit" );
-      mTextEdit->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Maximum );
-      mTextEdit->setReadOnly( true );
-      mTextEdit->setFrameShape( QFrame::NoFrame );
+      mTextBrowser = new QTextBrowser( this );
+      mTextBrowser->setObjectName( QStringLiteral( "textEdit" ) );
+      mTextBrowser->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Maximum );
+      mTextBrowser->setReadOnly( true );
+      mTextBrowser->setOpenLinks( false );
+      connect( mTextBrowser, &QTextBrowser::anchorClicked, this, &QgsMessageBarItem::urlClicked );
+
+      mTextBrowser->setFrameShape( QFrame::NoFrame );
       // stylesheet set here so Qt-style substitued scrollbar arrows can show within limited height
       // adjusts to height of font set in app options
-      mTextEdit->setStyleSheet( "QTextEdit { background-color: rgba(0,0,0,0); margin-top: 0.25em; max-height: 1.75em; min-height: 1.75em; } "
-                                "QScrollBar { background-color: rgba(0,0,0,0); } "
-                                "QScrollBar::add-page,QScrollBar::sub-page,QScrollBar::handle { background-color: rgba(0,0,0,0); color: rgba(0,0,0,0); } "
-                                "QScrollBar::up-arrow,QScrollBar::down-arrow { color: rgb(0,0,0); } " );
-      mLayout->addWidget( mTextEdit );
+      mTextBrowser->setStyleSheet( "QTextEdit { background-color: rgba(0,0,0,0); margin-top: 0.25em; max-height: 1.75em; min-height: 1.75em; } "
+                                   "QScrollBar { background-color: rgba(0,0,0,0); } "
+                                   "QScrollBar::add-page,QScrollBar::sub-page,QScrollBar::handle { background-color: rgba(0,0,0,0); color: rgba(0,0,0,0); } "
+                                   "QScrollBar::up-arrow,QScrollBar::down-arrow { color: rgb(0,0,0); } " );
+      mLayout->addWidget( mTextBrowser );
     }
     QString content = mText;
     if ( !mTitle.isEmpty() )
     {
       // add ':' to end of title
       QString t = mTitle.trimmed();
-      if ( !content.isEmpty() && !t.endsWith( ':' ) && !t.endsWith( ": " ) )
-        t += ": ";
-      content.prepend( QLatin1String( "<b>" ) + t + " </b>" );
+      if ( !content.isEmpty() && !t.endsWith( ':' ) && !t.endsWith( QLatin1String( ": " ) ) )
+        t += QLatin1String( ": " );
+      content.prepend( QStringLiteral( "<b>" ) + t + " </b>" );
     }
-    mTextEdit->setText( content );
+    content.prepend( contentStyleSheet );
+    mTextBrowser->setText( content );
   }
 
   // WIDGET
@@ -168,43 +189,30 @@ void QgsMessageBarItem::writeContent()
       mLayout->addWidget( mWidget );
     }
   }
-
-  // STYLESHEET
-  if ( mLevel == QgsMessageBar::SUCCESS )
-  {
-    mStyleSheet = "QgsMessageBar { background-color: #dff0d8; border: 1px solid #8e998a; } "
-                  "QLabel,QTextEdit { color: black; } ";
-  }
-  else if ( mLevel == QgsMessageBar::CRITICAL )
-  {
-    mStyleSheet = "QgsMessageBar { background-color: #d65253; border: 1px solid #9b3d3d; } "
-                  "QLabel,QTextEdit { color: white; } ";
-  }
-  else if ( mLevel == QgsMessageBar::WARNING )
-  {
-    mStyleSheet = "QgsMessageBar { background-color: #ffc800; border: 1px solid #e0aa00; } "
-                  "QLabel,QTextEdit { color: black; } ";
-  }
-  else if ( mLevel == QgsMessageBar::INFO )
-  {
-    mStyleSheet = "QgsMessageBar { background-color: #e7f5fe; border: 1px solid #b9cfe4; } "
-                  "QLabel,QTextEdit { color: #2554a1; } ";
-  }
-  mStyleSheet += "QLabel#mItemCount { font-style: italic; }";
 }
 
-QgsMessageBarItem* QgsMessageBarItem::setText( const QString& text )
+QgsMessageBarItem *QgsMessageBarItem::setText( const QString &text )
 {
   mText = text;
   writeContent();
   return this;
 }
 
-QgsMessageBarItem *QgsMessageBarItem::setTitle( const QString& title )
+QString QgsMessageBarItem::text() const
+{
+  return mText;
+}
+
+QgsMessageBarItem *QgsMessageBarItem::setTitle( const QString &title )
 {
   mTitle = title;
   writeContent();
   return this;
+}
+
+QString QgsMessageBarItem::title() const
+{
+  return mTitle;
 }
 
 QgsMessageBarItem *QgsMessageBarItem::setLevel( QgsMessageBar::MessageLevel level )
@@ -215,11 +223,16 @@ QgsMessageBarItem *QgsMessageBarItem::setLevel( QgsMessageBar::MessageLevel leve
   return this;
 }
 
+QgsMessageBar::MessageLevel QgsMessageBarItem::level() const
+{
+  return mLevel;
+}
+
 QgsMessageBarItem *QgsMessageBarItem::setWidget( QWidget *widget )
 {
   if ( mWidget )
   {
-    QLayoutItem *item;
+    QLayoutItem *item = nullptr;
     item = mLayout->itemAt( 2 );
     if ( item->widget() == mWidget )
     {
@@ -231,16 +244,30 @@ QgsMessageBarItem *QgsMessageBarItem::setWidget( QWidget *widget )
   return this;
 }
 
-QgsMessageBarItem* QgsMessageBarItem::setIcon( const QIcon &icon )
+QWidget *QgsMessageBarItem::widget() const
+{
+  return mWidget;
+}
+
+QgsMessageBarItem *QgsMessageBarItem::setIcon( const QIcon &icon )
 {
   mUserIcon = icon;
   return this;
 }
 
+QIcon QgsMessageBarItem::icon() const
+{
+  return mUserIcon;
+}
 
-QgsMessageBarItem* QgsMessageBarItem::setDuration( int duration )
+
+QgsMessageBarItem *QgsMessageBarItem::setDuration( int duration )
 {
   mDuration = duration;
   return this;
 }
 
+void QgsMessageBarItem::urlClicked( const QUrl &url )
+{
+  QDesktopServices::openUrl( url );
+}

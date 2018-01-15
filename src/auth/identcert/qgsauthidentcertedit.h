@@ -30,7 +30,6 @@ class QgsAuthIdentCertEdit : public QgsAuthMethodEdit, private Ui::QgsAuthIdentC
 
   public:
     explicit QgsAuthIdentCertEdit( QWidget *parent = nullptr );
-    virtual ~QgsAuthIdentCertEdit();
 
     bool validateConfig() override;
 
@@ -46,11 +45,11 @@ class QgsAuthIdentCertEdit : public QgsAuthMethodEdit, private Ui::QgsAuthIdentC
   private slots:
     void populateIdentityComboBox();
 
-    void on_cmbIdentityCert_currentIndexChanged( int indx );
+    void cmbIdentityCert_currentIndexChanged( int indx );
 
   private:
     QgsStringMap mConfigMap;
-    bool mValid;
+    bool mValid = 0;
 };
 
 #endif // QGSAUTHIDENTCERTEDIT_H

@@ -15,22 +15,22 @@
  ***************************************************************************/
 
 #include "qgscodeeditor.h"
+#include "qgssettings.h"
 
-#include <QSettings>
 #include <QWidget>
 #include <QFont>
 #include <QDebug>
+#include <QFocusEvent>
 
-QgsCodeEditor::QgsCodeEditor( QWidget *parent, const QString& title, bool folding, bool margin )
-    : QsciScintilla( parent )
-    , mWidgetTitle( title )
-    , mFolding( folding )
-    , mMargin( margin )
+QgsCodeEditor::QgsCodeEditor( QWidget *parent, const QString &title, bool folding, bool margin )
+  : QsciScintilla( parent )
+  , mWidgetTitle( title )
+  , mFolding( folding )
+  , mMargin( margin )
 {
   if ( !parent && mWidgetTitle.isEmpty() )
   {
-    setWindowTitle( "Text Editor" );
-    setMinimumSize( 800, 300 );
+    setWindowTitle( QStringLiteral( "Text Editor" ) );
   }
   else
   {
@@ -40,18 +40,58 @@ QgsCodeEditor::QgsCodeEditor( QWidget *parent, const QString& title, bool foldin
   setHorizontalScrollBarPolicy( Qt::ScrollBarAsNeeded );
 }
 
-QgsCodeEditor::~QgsCodeEditor()
+// Workaround a bug in QScintilla 2.8.X
+void QgsCodeEditor::focusOutEvent( QFocusEvent *event )
 {
+#if QSCINTILLA_VERSION >= 0x020800 && QSCINTILLA_VERSION < 0x020900
+  if ( event->reason() != Qt::ActiveWindowFocusReason )
+  {
+    /* There's a bug in all QScintilla 2.8.X, where
+       a focus out event that is not due to ActiveWindowFocusReason doesn't
+       lead to the bliking caret being disabled. The hack consists in making
+       QsciScintilla::focusOutEvent believe that the event is a ActiveWindowFocusReason
+       The bug was fixed in 2.9 per:
+        2015-04-14  Phil Thompson  <phil@riverbankcomputing.com>
+
+        * qt/qsciscintillabase.cpp:
+        Fixed a problem notifying when focus is lost to another application
+        widget.
+        [41734678234e]
+    */
+    QFocusEvent newFocusEvent( QEvent::FocusOut, Qt::ActiveWindowFocusReason );
+    QsciScintilla::focusOutEvent( &newFocusEvent );
+  }
+  else
+#endif
+  {
+    QsciScintilla::focusOutEvent( event );
+  }
+}
+
+// This workaround a likely bug in QScintilla. The ESC key should not be consumned
+// by the main entry, so that the default behavior (Dialog closing) can trigger,
+// but only is the auto-completion suggestion list isn't displayed
+void QgsCodeEditor::keyPressEvent( QKeyEvent *event )
+{
+  if ( event->key() == Qt::Key_Escape && !isListActive() )
+  {
+    // Shortcut QScintilla and redirect the event to the QWidget handler
+    QWidget::keyPressEvent( event );
+  }
+  else
+  {
+    QsciScintilla::keyPressEvent( event );
+  }
 }
 
 void QgsCodeEditor::setSciWidget()
 {
   setUtf8( true );
   setCaretLineVisible( true );
-  setCaretLineBackgroundColor( QColor( "#fcf3ed" ) );
+  setCaretLineBackgroundColor( QColor( 252, 243, 237 ) );
 
   setBraceMatching( QsciScintilla::SloppyBraceMatch );
-  setMatchedBraceBackgroundColor( QColor( "#b7f907" ) );
+  setMatchedBraceBackgroundColor( QColor( 183, 249, 7 ) );
   // whether margin will be shown
   setMarginVisible( mMargin );
   // whether margin will be shown
@@ -67,7 +107,7 @@ void QgsCodeEditor::setSciWidget()
   setAutoCompletionSource( QsciScintilla::AcsAPIs );
 }
 
-void QgsCodeEditor::setTitle( const QString& title )
+void QgsCodeEditor::setTitle( const QString &title )
 {
   setWindowTitle( title );
 }
@@ -77,12 +117,12 @@ void QgsCodeEditor::setMarginVisible( bool margin )
   mMargin = margin;
   if ( margin )
   {
-    QFont marginFont( "Courier", 10 );
+    QFont marginFont( QStringLiteral( "Courier" ), 10 );
     setMarginLineNumbers( 1, true );
     setMarginsFont( marginFont );
-    setMarginWidth( 1, "00000" );
-    setMarginsForegroundColor( QColor( "#3E3EE3" ) );
-    setMarginsBackgroundColor( QColor( "#f9f9f9" ) );
+    setMarginWidth( 1, QStringLiteral( "00000" ) );
+    setMarginsForegroundColor( QColor( 62, 62, 227 ) );
+    setMarginsBackgroundColor( QColor( 249, 249, 249 ) );
   }
   else
   {
@@ -98,7 +138,7 @@ void QgsCodeEditor::setFoldingVisible( bool folding )
   if ( folding )
   {
     setFolding( QsciScintilla::PlainFoldStyle );
-    setFoldMarginColors( QColor( "#f4f4f4" ), QColor( "#f4f4f4" ) );
+    setFoldMarginColors( QColor( 244, 244, 244 ), QColor( 244, 244, 244 ) );
   }
   else
   {
@@ -106,33 +146,33 @@ void QgsCodeEditor::setFoldingVisible( bool folding )
   }
 }
 
-void QgsCodeEditor::insertText( const QString& theText )
+void QgsCodeEditor::insertText( const QString &text )
 {
   // Insert the text or replace selected text
   if ( hasSelectedText() )
   {
-    replaceSelectedText( theText );
+    replaceSelectedText( text );
   }
   else
   {
     int line, index;
     getCursorPosition( &line, &index );
-    insertAt( theText, line, index );
-    setCursorPosition( line, index + theText.length() );
+    insertAt( text, line, index );
+    setCursorPosition( line, index + text.length() );
   }
 }
 
 // Settings for font and fontsize
-bool QgsCodeEditor::isFixedPitch( const QFont& font )
+bool QgsCodeEditor::isFixedPitch( const QFont &font )
 {
   return font.fixedPitch();
 }
 
 QFont QgsCodeEditor::getMonospaceFont()
 {
-  QSettings settings;
-  QString loadFont = settings.value( "pythonConsole/fontfamilytextEditor", "Monospace" ).toString();
-  int fontSize = settings.value( "pythonConsole/fontsizeEditor", 10 ).toInt();
+  QgsSettings settings;
+  QString loadFont = settings.value( QStringLiteral( "pythonConsole/fontfamilytextEditor" ), "Monospace" ).toString();
+  int fontSize = settings.value( QStringLiteral( "pythonConsole/fontsizeEditor" ), 10 ).toInt();
 
   QFont font( loadFont );
   font.setFixedPitch( true );

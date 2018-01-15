@@ -17,15 +17,17 @@
 
 #include "qgspaperitem.h"
 #include "qgscomposition.h"
-#include "qgsstylev2.h"
+#include "qgsstyle.h"
 #include "qgslogger.h"
+#include "qgsmapsettings.h"
+#include "qgscomposerutils.h"
 #include <QGraphicsRectItem>
 #include <QGraphicsView>
 #include <QPainter>
 
 //QgsPaperGrid
 
-QgsPaperGrid::QgsPaperGrid( double x, double y, double width, double height, QgsComposition* composition ): QGraphicsRectItem( 0, 0, width, height ), mComposition( composition )
+QgsPaperGrid::QgsPaperGrid( double x, double y, double width, double height, QgsComposition *composition ): QGraphicsRectItem( 0, 0, width, height ), mComposition( composition )
 {
   setFlag( QGraphicsItem::ItemIsSelectable, false );
   setFlag( QGraphicsItem::ItemIsMovable, false );
@@ -33,11 +35,7 @@ QgsPaperGrid::QgsPaperGrid( double x, double y, double width, double height, Qgs
   setPos( x, y );
 }
 
-QgsPaperGrid::~QgsPaperGrid()
-{
-}
-
-void QgsPaperGrid::paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget )
+void QgsPaperGrid::paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget )
 {
   Q_UNUSED( itemStyle );
   Q_UNUSED( pWidget );
@@ -45,7 +43,7 @@ void QgsPaperGrid::paint( QPainter* painter, const QStyleOptionGraphicsItem* ite
   //draw grid
   if ( mComposition )
   {
-    if ( mComposition->gridVisible() && mComposition->plotStyle() ==  QgsComposition::Preview
+    if ( mComposition->gridVisible() && mComposition->plotStyle() == QgsComposition::Preview
          && mComposition->snapGridResolution() > 0 )
     {
       int gridMultiplyX = static_cast< int >( mComposition->snapGridOffsetX() / mComposition->snapGridResolution() );
@@ -87,10 +85,10 @@ void QgsPaperGrid::paint( QPainter* painter, const QStyleOptionGraphicsItem* ite
           //check QGraphicsView to get current transform
           if ( scene() )
           {
-            QList<QGraphicsView*> viewList = scene()->views();
+            QList<QGraphicsView *> viewList = scene()->views();
             if ( !viewList.isEmpty() )
             {
-              QGraphicsView* currentView = viewList.at( 0 );
+              QGraphicsView *currentView = viewList.at( 0 );
               if ( currentView->isVisible() )
               {
                 //set halfCrossLength to equivalent of 1 pixel
@@ -122,20 +120,20 @@ void QgsPaperGrid::paint( QPainter* painter, const QStyleOptionGraphicsItem* ite
 
 //QgsPaperItem
 
-QgsPaperItem::QgsPaperItem( QgsComposition* c ): QgsComposerItem( c, false ),
-    mPageGrid( nullptr )
+QgsPaperItem::QgsPaperItem( QgsComposition *c )
+  : QgsComposerItem( c, false )
 {
   initialize();
 }
 
-QgsPaperItem::QgsPaperItem( qreal x, qreal y, qreal width, qreal height, QgsComposition* composition ): QgsComposerItem( x, y, width, height, composition, false ),
-    mPageGrid( nullptr ), mPageMargin( 0 )
+QgsPaperItem::QgsPaperItem( qreal x, qreal y, qreal width, qreal height, QgsComposition *composition )
+  : QgsComposerItem( x, y, width, height, composition, false )
 {
   initialize();
 }
 
-QgsPaperItem::QgsPaperItem(): QgsComposerItem( nullptr, false ),
-    mPageGrid( nullptr ), mPageMargin( 0 )
+QgsPaperItem::QgsPaperItem()
+  : QgsComposerItem( nullptr, false )
 {
   initialize();
 }
@@ -145,7 +143,7 @@ QgsPaperItem::~QgsPaperItem()
   delete mPageGrid;
 }
 
-void QgsPaperItem::paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget )
+void QgsPaperItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget )
 {
   Q_UNUSED( itemStyle );
   Q_UNUSED( pWidget );
@@ -158,19 +156,15 @@ void QgsPaperItem::paint( QPainter* painter, const QStyleOptionGraphicsItem* ite
   double dotsPerMM = painter->device()->logicalDpiX() / 25.4;
 
   //setup render context
-  QgsMapSettings ms = mComposition->mapSettings();
-  //context units should be in dots
-  ms.setOutputDpi( painter->device()->logicalDpiX() );
-  QgsRenderContext context = QgsRenderContext::fromMapSettings( ms );
-  context.setPainter( painter );
+  QgsRenderContext context = QgsComposerUtils::createRenderContextForComposition( mComposition, painter );
   context.setForceVectorOutput( true );
-  QgsExpressionContext* expressionContext = createExpressionContext();
-  context.setExpressionContext( *expressionContext );
-  delete expressionContext;
+
+  QgsExpressionContext expressionContext = createExpressionContext();
+  context.setExpressionContext( expressionContext );
 
   painter->save();
 
-  if ( mComposition->plotStyle() ==  QgsComposition::Preview )
+  if ( mComposition->plotStyle() == QgsComposition::Preview )
   {
     //if in preview mode, draw page border and shadow so that it's
     //still possible to tell where pages with a transparent style begin and end
@@ -183,7 +177,9 @@ void QgsPaperItem::paint( QPainter* painter, const QStyleOptionGraphicsItem* ite
 
     //page area
     painter->setBrush( QColor( 215, 215, 215 ) );
-    painter->setPen( QPen( QColor( 100, 100, 100 ) ) );
+    QPen pagePen = QPen( QColor( 100, 100, 100 ), 0 );
+    pagePen.setCosmetic( true );
+    painter->setPen( pagePen );
     painter->drawRect( QRectF( 0, 0, rect().width(), rect().height() ) );
   }
 
@@ -205,29 +201,33 @@ void QgsPaperItem::paint( QPainter* painter, const QStyleOptionGraphicsItem* ite
 void QgsPaperItem::calculatePageMargin()
 {
   //get max bleed from symbol
-  double maxBleed = QgsSymbolLayerV2Utils::estimateMaxSymbolBleed( mComposition->pageStyleSymbol() );
+  QgsRenderContext rc = QgsComposerUtils::createRenderContextForMap( mComposition->referenceMap(), nullptr, mComposition->printResolution() );
+  double maxBleedPixels = QgsSymbolLayerUtils::estimateMaxSymbolBleed( mComposition->pageStyleSymbol(), rc );
 
   //Now subtract 1 pixel to prevent semi-transparent borders at edge of solid page caused by
   //anti-aliased painting. This may cause a pixel to be cropped from certain edge lines/symbols,
   //but that can be counteracted by adding a dummy transparent line symbol layer with a wider line width
-  mPageMargin = maxBleed - ( 25.4 / mComposition->printResolution() );
+  maxBleedPixels--;
+
+  double maxBleedMm = ( 25.4 / mComposition->printResolution() ) * maxBleedPixels;
+  mPageMargin = maxBleedMm;
 }
 
-bool QgsPaperItem::writeXML( QDomElement& elem, QDomDocument & doc ) const
+bool QgsPaperItem::writeXml( QDomElement &elem, QDomDocument &doc ) const
 {
   Q_UNUSED( elem );
   Q_UNUSED( doc );
   return true;
 }
 
-bool QgsPaperItem::readXML( const QDomElement& itemElem, const QDomDocument& doc )
+bool QgsPaperItem::readXml( const QDomElement &itemElem, const QDomDocument &doc )
 {
   Q_UNUSED( itemElem );
   Q_UNUSED( doc );
   return true;
 }
 
-void QgsPaperItem::setSceneRect( const QRectF& rectangle )
+void QgsPaperItem::setSceneRect( const QRectF &rectangle )
 {
   QgsComposerItem::setSceneRect( rectangle );
   //update size and position of attached QgsPaperGrid to reflect new page size and position
@@ -254,6 +254,6 @@ void QgsPaperItem::initialize()
 
     //connect to atlas feature changes
     //to update symbol style (in case of data-defined symbology)
-    connect( &mComposition->atlasComposition(), SIGNAL( featureChanged( QgsFeature* ) ), this, SLOT( repaint() ) );
+    connect( &mComposition->atlasComposition(), &QgsAtlasComposition::featureChanged, this, &QgsComposerItem::repaint );
   }
 }

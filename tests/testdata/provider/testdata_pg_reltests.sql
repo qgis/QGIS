@@ -1,4 +1,5 @@
-﻿-- Table: qgis_test.authors
+
+-- Table: qgis_test.authors
 
 DROP TABLE IF EXISTS qgis_test.books_authors;
 DROP TABLE IF EXISTS qgis_test.authors;
@@ -40,7 +41,7 @@ CREATE TABLE qgis_test.books_authors
 );
 
 INSERT INTO qgis_test.authors(name)
-	    VALUES 
+        VALUES
               ('Erich Gamma'),
               ('Richard Helm'),
               ('Ralph Johnson'),
@@ -50,11 +51,11 @@ INSERT INTO qgis_test.authors(name)
               ('Gabriel García Márquez');
 
 INSERT INTO qgis_test.books(name)
-	    VALUES
+        VALUES
               ('Design Patterns. Elements of Reusable Object-Oriented Software');
 
 INSERT INTO qgis_test.books_authors(fk_book, fk_author)
-	    VALUES 
+        VALUES
               (1, 1),
               (1, 2),
               (1, 3),

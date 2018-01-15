@@ -18,14 +18,17 @@
 #define QGSAUTHIDENTITIESEDITOR_H
 
 #include <QWidget>
+#include "qgis.h"
 #include <QSslCertificate>
 
 #include "ui_qgsauthidentitieseditor.h"
 #include "qgsauthmanager.h"
+#include "qgis_gui.h"
 
 class QgsMessageBar;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Widget for viewing and editing authentication identities database
  */
 class GUI_EXPORT QgsAuthIdentitiesEditor : public QWidget, private Ui::QgsAuthIdentitiesEditor
@@ -33,12 +36,12 @@ class GUI_EXPORT QgsAuthIdentitiesEditor : public QWidget, private Ui::QgsAuthId
     Q_OBJECT
 
   public:
+
     /**
      * Widget for editing authentication configurations directly in database
-     * @param parent Parent widget
+     * \param parent Parent widget
      */
-    explicit QgsAuthIdentitiesEditor( QWidget *parent = nullptr );
-    ~QgsAuthIdentitiesEditor();
+    explicit QgsAuthIdentitiesEditor( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
   private slots:
     void populateIdentitiesView();
@@ -47,27 +50,27 @@ class GUI_EXPORT QgsAuthIdentitiesEditor : public QWidget, private Ui::QgsAuthId
 
     void showCertInfo( QTreeWidgetItem *item );
 
-    /** Pass selection change on to UI update */
-    void selectionChanged( const QItemSelection& selected, const QItemSelection& deselected );
+    //! Pass selection change on to UI update
+    void selectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
 
-    /** Update UI based upon current selection */
+    //! Update UI based upon current selection
     void checkSelection();
 
-    void handleDoubleClick( QTreeWidgetItem* item, int col );
+    void handleDoubleClick( QTreeWidgetItem *item, int col );
 
-    void on_btnAddIdentity_clicked();
+    void btnAddIdentity_clicked();
 
-    void on_btnRemoveIdentity_clicked();
+    void btnRemoveIdentity_clicked();
 
-    void on_btnInfoIdentity_clicked();
+    void btnInfoIdentity_clicked();
 
-    void on_btnGroupByOrg_toggled( bool checked );
+    void btnGroupByOrg_toggled( bool checked );
 
-    /** Relay messages to widget's messagebar */
-    void authMessageOut( const QString& message, const QString& authtag, QgsAuthManager::MessageLevel level );
+    //! Relay messages to widget's messagebar
+    void authMessageOut( const QString &message, const QString &authtag, QgsAuthManager::MessageLevel level );
 
   protected:
-    /** Overridden show event of base widget */
+    //! Overridden show event of base widget
     void showEvent( QShowEvent *e ) override;
 
   private:
@@ -80,25 +83,25 @@ class GUI_EXPORT QgsAuthIdentitiesEditor : public QWidget, private Ui::QgsAuthId
 
     void setupIdentitiesTree();
 
-    void populateIdentitiesSection( QTreeWidgetItem *item, const QList<QSslCertificate>& certs,
+    void populateIdentitiesSection( QTreeWidgetItem *item, const QList<QSslCertificate> &certs,
                                     QgsAuthIdentitiesEditor::IdentityType identype );
 
-    void appendIdentitiesToGroup( const QList<QSslCertificate>& certs,
+    void appendIdentitiesToGroup( const QList<QSslCertificate> &certs,
                                   QgsAuthIdentitiesEditor::IdentityType identype,
                                   QTreeWidgetItem *parent = nullptr );
 
-    void appendIdentitiesToItem( const QList<QSslCertificate>& certs,
+    void appendIdentitiesToItem( const QList<QSslCertificate> &certs,
                                  QgsAuthIdentitiesEditor::IdentityType identype,
                                  QTreeWidgetItem *parent = nullptr );
 
-    QgsMessageBar * messageBar();
+    QgsMessageBar *messageBar();
     int messageTimeout();
 
-    bool mDisabled;
-    QVBoxLayout *mAuthNotifyLayout;
-    QLabel *mAuthNotify;
+    bool mDisabled = false;
+    QVBoxLayout *mAuthNotifyLayout = nullptr;
+    QLabel *mAuthNotify = nullptr;
 
-    QTreeWidgetItem *mRootCertIdentItem;
+    QTreeWidgetItem *mRootCertIdentItem = nullptr;
 };
 
 #endif // QGSAUTHIDENTITIESEDITOR_H

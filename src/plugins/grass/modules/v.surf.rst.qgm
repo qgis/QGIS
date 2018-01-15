@@ -6,8 +6,8 @@
 	<field key="zcolumn" layer="input" type="integer,double" label="Attribute field (interpolated values)" />
 	<option key="tension" />
 	<!--option key="smooth" /-->
-	<option key="elev" version_max="6"/>
-	<option key="elevation" version_min="7"/>
+
+	<option key="elevation"/>
 		<option key="segmax" advanced="yes" />
 		<option key="npmin" advanced="yes" />
 		<option key="dmin" advanced="yes" />
@@ -15,23 +15,23 @@
         <option key="where" advanced="yes" />
 		<option key="slope" advanced="yes" />
         <option key="aspect" advanced="yes" />
-        <option key="pcurv" advanced="yes" version_max="6"/>
-        <option key="pcurvature" advanced="yes" version_min="7"/>
-        <option key="tcurv" advanced="yes" version_max="6"/>
-        <option key="tcurvature" advanced="yes" version_min="7"/>
-        <option key="mcurv" advanced="yes" version_max="6"/>
-        <option key="mcurvature" advanced="yes" version_min="7"/>
-        <option key="devi" advanced="yes" version_max="6"/>
-        <option key="deviations" advanced="yes" version_min="7"/>
+
+        <option key="pcurvature" advanced="yes"/>
+
+        <option key="tcurvature" advanced="yes"/>
+
+        <option key="mcurvature" advanced="yes"/>
+
+        <option key="deviations" advanced="yes"/>
         <option key="cvdev" advanced="yes" />
-        <option key="treefile" advanced="yes" version_max="6"/>
-        <option key="treeseg" advanced="yes" version_min="7"/>
-        <option key="overfile" advanced="yes" version_max="6"/>
-        <option key="overwin" advanced="yes" version_min="7"/>
-        <option key="scolumn" advanced="yes" version_max="6"/>
-        <option key="smooth_column" advanced="yes" version_min="7"/>
-    <option key="zmult" hidden="yes" version_max="6"/>
-    <option key="zscale" hidden="yes" version_min="7"/>
+
+        <option key="treeseg" advanced="yes"/>
+
+        <option key="overwin" advanced="yes"/>
+
+        <option key="smooth_column" advanced="yes"/>
+
+    <option key="zscale" hidden="yes"/>
 		<option key="theta" advanced="yes"/>
 		<option key="scalex" advanced="yes"/>
 </qgisgrassmodule>

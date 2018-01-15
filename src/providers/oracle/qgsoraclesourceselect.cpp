@@ -20,7 +20,6 @@ email                : jef at norbit dot de
 
 #include "qgslogger.h"
 #include "qgsapplication.h"
-#include "qgscontexthelp.h"
 #include "qgsoracleprovider.h"
 #include "qgsoraclenewconnection.h"
 #include "qgsoracletablecache.h"
@@ -29,48 +28,48 @@ email                : jef at norbit dot de
 #include "qgsdatasourceuri.h"
 #include "qgsvectorlayer.h"
 #include "qgsoraclecolumntypethread.h"
+#include "qgssettings.h"
 
 #include <QFileDialog>
 #include <QInputDialog>
 #include <QMessageBox>
-#include <QSettings>
 #include <QTextStream>
 #include <QHeaderView>
 #include <QStringList>
 
-/** Used to create an editor for when the user tries to change the contents of a cell */
+//! Used to create an editor for when the user tries to change the contents of a cell
 QWidget *QgsOracleSourceSelectDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
   Q_UNUSED( option );
 
-  QString tableName = index.sibling( index.row(), QgsOracleTableModel::dbtmTable ).data( Qt::DisplayRole ).toString();
+  QString tableName = index.sibling( index.row(), QgsOracleTableModel::DbtmTable ).data( Qt::DisplayRole ).toString();
   if ( tableName.isEmpty() )
     return 0;
 
-  if ( index.column() == QgsOracleTableModel::dbtmSql )
+  if ( index.column() == QgsOracleTableModel::DbtmSql )
   {
     return new QLineEdit( parent );
   }
 
-  if ( index.column() == QgsOracleTableModel::dbtmType && index.data( Qt::UserRole + 1 ).toBool() )
+  if ( index.column() == QgsOracleTableModel::DbtmType && index.data( Qt::UserRole + 1 ).toBool() )
   {
     QComboBox *cb = new QComboBox( parent );
-    Q_FOREACH ( QGis::WkbType type,
-                QList<QGis::WkbType>()
-                << QGis::WKBPoint
-                << QGis::WKBLineString
-                << QGis::WKBPolygon
-                << QGis::WKBMultiPoint
-                << QGis::WKBMultiLineString
-                << QGis::WKBMultiPolygon
-                << QGis::WKBNoGeometry )
+    Q_FOREACH ( QgsWkbTypes::Type type,
+                QList<QgsWkbTypes::Type>()
+                << QgsWkbTypes::Point
+                << QgsWkbTypes::LineString
+                << QgsWkbTypes::Polygon
+                << QgsWkbTypes::MultiPoint
+                << QgsWkbTypes::MultiLineString
+                << QgsWkbTypes::MultiPolygon
+                << QgsWkbTypes::NoGeometry )
     {
       cb->addItem( QgsOracleTableModel::iconForWkbType( type ), QgsOracleConn::displayStringForWkbType( type ), type );
     }
     return cb;
   }
 
-  if ( index.column() == QgsOracleTableModel::dbtmPkCol )
+  if ( index.column() == QgsOracleTableModel::DbtmPkCol )
   {
     bool isView = index.data( Qt::UserRole + 1 ).toBool();
     if ( !isView )
@@ -79,7 +78,7 @@ QWidget *QgsOracleSourceSelectDelegate::createEditor( QWidget *parent, const QSt
     QStringList values = index.data( Qt::UserRole + 2 ).toStringList();
     if ( values.size() == 0 )
     {
-      QString ownerName = index.sibling( index.row(), QgsOracleTableModel::dbtmOwner ).data( Qt::DisplayRole ).toString();
+      QString ownerName = index.sibling( index.row(), QgsOracleTableModel::DbtmOwner ).data( Qt::DisplayRole ).toString();
       if ( conn() )
         values = conn()->pkCandidates( ownerName, tableName );
     }
@@ -95,7 +94,7 @@ QWidget *QgsOracleSourceSelectDelegate::createEditor( QWidget *parent, const QSt
     }
   }
 
-  if ( index.column() == QgsOracleTableModel::dbtmSrid )
+  if ( index.column() == QgsOracleTableModel::DbtmSrid )
   {
     QLineEdit *le = new QLineEdit( parent );
     le->setValidator( new QIntValidator( -1, 999999, parent ) );
@@ -109,22 +108,22 @@ void QgsOracleSourceSelectDelegate::setEditorData( QWidget *editor, const QModel
 {
   QString value( index.data( Qt::DisplayRole ).toString() );
 
-  QComboBox *cb = qobject_cast<QComboBox* >( editor );
+  QComboBox *cb = qobject_cast<QComboBox * >( editor );
   if ( cb )
   {
-    if ( index.column() == QgsOracleTableModel::dbtmType )
+    if ( index.column() == QgsOracleTableModel::DbtmType )
       cb->setCurrentIndex( cb->findData( index.data( Qt::UserRole + 2 ).toInt() ) );
 
-    if ( index.column() == QgsOracleTableModel::dbtmPkCol && index.data( Qt::UserRole + 2 ).toBool() )
+    if ( index.column() == QgsOracleTableModel::DbtmPkCol && index.data( Qt::UserRole + 2 ).toBool() )
       cb->setCurrentIndex( cb->findText( value ) );
   }
 
-  QLineEdit *le = qobject_cast<QLineEdit*>( editor );
+  QLineEdit *le = qobject_cast<QLineEdit *>( editor );
   if ( le )
   {
     bool ok;
     value.toInt( &ok );
-    if ( index.column() == QgsOracleTableModel::dbtmSrid && !ok )
+    if ( index.column() == QgsOracleTableModel::DbtmSrid && !ok )
       value = "";
 
     le->setText( value );
@@ -136,15 +135,15 @@ void QgsOracleSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItem
   QComboBox *cb = qobject_cast<QComboBox *>( editor );
   if ( cb )
   {
-    if ( index.column() == QgsOracleTableModel::dbtmType )
+    if ( index.column() == QgsOracleTableModel::DbtmType )
     {
-      QGis::WkbType type = ( QGis::WkbType ) cb->itemData( cb->currentIndex() ).toInt();
+      QgsWkbTypes::Type type = ( QgsWkbTypes::Type ) cb->currentData().toInt();
 
       model->setData( index, QgsOracleTableModel::iconForWkbType( type ), Qt::DecorationRole );
-      model->setData( index, type != QGis::WKBUnknown ? QgsOracleConn::displayStringForWkbType( type ) : tr( "Select..." ) );
+      model->setData( index, type != QgsWkbTypes::Unknown ? QgsOracleConn::displayStringForWkbType( type ) : tr( "Select..." ) );
       model->setData( index, type, Qt::UserRole + 2 );
     }
-    else if ( index.column() == QgsOracleTableModel::dbtmPkCol )
+    else if ( index.column() == QgsOracleTableModel::DbtmPkCol )
     {
       QString value( cb->currentText() );
       model->setData( index, value.isEmpty() ? tr( "Select..." ) : value );
@@ -157,7 +156,7 @@ void QgsOracleSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItem
   {
     QString value( le->text() );
 
-    if ( index.column() == QgsOracleTableModel::dbtmSrid && value.isEmpty() )
+    if ( index.column() == QgsOracleTableModel::DbtmSrid && value.isEmpty() )
     {
       value = tr( "Enter..." );
     }
@@ -166,38 +165,32 @@ void QgsOracleSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItem
   }
 }
 
-QgsOracleSourceSelect::QgsOracleSourceSelect( QWidget *parent, Qt::WindowFlags fl, bool managerMode, bool embeddedMode )
-    : QDialog( parent, fl )
-    , mManagerMode( managerMode )
-    , mEmbeddedMode( embeddedMode )
-    , mColumnTypeThread( 0 )
-    , mIsConnected( false )
+QgsOracleSourceSelect::QgsOracleSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode theWidgetMode )
+  : QgsAbstractDataSourceWidget( parent, fl, theWidgetMode )
+  , mColumnTypeThread( 0 )
+  , mIsConnected( false )
 {
   setupUi( this );
+  setupButtons( buttonBox );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsOracleSourceSelect::showHelp );
 
-  if ( mEmbeddedMode )
+  if ( widgetMode() != QgsProviderRegistry::WidgetMode::None )
   {
-    buttonBox->button( QDialogButtonBox::Close )->hide();
+    mHoldDialogOpen->hide();
   }
   else
   {
     setWindowTitle( tr( "Add Oracle Table(s)" ) );
   }
 
-  mAddButton = new QPushButton( tr( "&Add" ) );
-  mAddButton->setEnabled( false );
-
   mBuildQueryButton = new QPushButton( tr( "&Set Filter" ) );
   mBuildQueryButton->setToolTip( tr( "Set Filter" ) );
   mBuildQueryButton->setDisabled( true );
 
-  if ( !mManagerMode )
+  if ( widgetMode() != QgsProviderRegistry::WidgetMode::Manager )
   {
-    buttonBox->addButton( mAddButton, QDialogButtonBox::ActionRole );
-    connect( mAddButton, SIGNAL( clicked() ), this, SLOT( addTables() ) );
-
     buttonBox->addButton( mBuildQueryButton, QDialogButtonBox::ActionRole );
-    connect( mBuildQueryButton, SIGNAL( clicked() ), this, SLOT( buildQuery() ) );
+    connect( mBuildQueryButton, &QAbstractButton::clicked, this, &QgsOracleSourceSelect::buildQuery );
   }
 
   mSearchModeComboBox->addItem( tr( "Wildcard" ) );
@@ -224,8 +217,10 @@ QgsOracleSourceSelect::QgsOracleSourceSelect( QWidget *parent, Qt::WindowFlags f
   mTablesTreeView->setEditTriggers( QAbstractItemView::CurrentChanged );
   mTablesTreeView->setItemDelegate( mTablesTreeDelegate );
 
-  QSettings settings;
-  mTablesTreeView->setSelectionMode( settings.value( "/qgis/addOracleDC", false ).toBool() ?
+  connect( mTablesTreeView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsOracleSourceSelect::treeWidgetSelectionChanged );
+
+  QgsSettings settings;
+  mTablesTreeView->setSelectionMode( settings.value( "qgis/addOracleDC", false ).toBool() ?
                                      QAbstractItemView::ExtendedSelection :
                                      QAbstractItemView::MultiSelection );
 
@@ -254,7 +249,7 @@ QgsOracleSourceSelect::QgsOracleSourceSelect( QWidget *parent, Qt::WindowFlags f
 
   populateConnectionList();
 }
-/** Autoconnected SLOTS **/
+//! Autoconnected SLOTS *
 // Slot for adding a new connection
 void QgsOracleSourceSelect::on_btnNew_clicked()
 {
@@ -290,7 +285,7 @@ void QgsOracleSourceSelect::on_btnSave_clicked()
 
 void QgsOracleSourceSelect::on_btnLoad_clicked()
 {
-  QString fileName = QFileDialog::getOpenFileName( this, tr( "Load connections" ), ".",
+  QString fileName = QFileDialog::getOpenFileName( this, tr( "Load Connections" ), ".",
                      tr( "XML files (*.xml *XML)" ) );
   if ( fileName.isEmpty() )
   {
@@ -317,10 +312,10 @@ void QgsOracleSourceSelect::on_btnEdit_clicked()
   delete nc;
 }
 
-/** End Autoconnected SLOTS **/
+//! End Autoconnected SLOTS *
 
 // Remember which database is selected
-void QgsOracleSourceSelect::on_cmbConnections_currentIndexChanged( const QString & text )
+void QgsOracleSourceSelect::on_cmbConnections_currentIndexChanged( const QString &text )
 {
   // Remember which database was selected.
   QgsOracleConn::setSelectedConnection( text );
@@ -355,10 +350,10 @@ void QgsOracleSourceSelect::on_mTablesTreeView_clicked( const QModelIndex &index
 
 void QgsOracleSourceSelect::on_mTablesTreeView_doubleClicked( const QModelIndex &index )
 {
-  QSettings settings;
-  if ( settings.value( "/qgis/addOracleDC", false ).toBool() )
+  QgsSettings settings;
+  if ( settings.value( QStringLiteral( "qgis/addOracleDC" ), false ).toBool() )
   {
-    addTables();
+    addButtonClicked();
   }
   else
   {
@@ -374,7 +369,7 @@ void QgsOracleSourceSelect::on_mSearchGroupBox_toggled( bool checked )
   on_mSearchTableEdit_textChanged( checked ? mSearchTableEdit->text() : "" );
 }
 
-void QgsOracleSourceSelect::on_mSearchTableEdit_textChanged( const QString & text )
+void QgsOracleSourceSelect::on_mSearchTableEdit_textChanged( const QString &text )
 {
   if ( mSearchModeComboBox->currentText() == tr( "Wildcard" ) )
   {
@@ -386,7 +381,7 @@ void QgsOracleSourceSelect::on_mSearchTableEdit_textChanged( const QString & tex
   }
 }
 
-void QgsOracleSourceSelect::on_mSearchColumnComboBox_currentIndexChanged( const QString & text )
+void QgsOracleSourceSelect::on_mSearchColumnComboBox_currentIndexChanged( const QString &text )
 {
   if ( text == tr( "All" ) )
   {
@@ -394,35 +389,35 @@ void QgsOracleSourceSelect::on_mSearchColumnComboBox_currentIndexChanged( const 
   }
   else if ( text == tr( "Owner" ) )
   {
-    mProxyModel.setFilterKeyColumn( QgsOracleTableModel::dbtmOwner );
+    mProxyModel.setFilterKeyColumn( QgsOracleTableModel::DbtmOwner );
   }
   else if ( text == tr( "Table" ) )
   {
-    mProxyModel.setFilterKeyColumn( QgsOracleTableModel::dbtmTable );
+    mProxyModel.setFilterKeyColumn( QgsOracleTableModel::DbtmTable );
   }
   else if ( text == tr( "Type" ) )
   {
-    mProxyModel.setFilterKeyColumn( QgsOracleTableModel::dbtmType );
+    mProxyModel.setFilterKeyColumn( QgsOracleTableModel::DbtmType );
   }
   else if ( text == tr( "Geometry column" ) )
   {
-    mProxyModel.setFilterKeyColumn( QgsOracleTableModel::dbtmGeomCol );
+    mProxyModel.setFilterKeyColumn( QgsOracleTableModel::DbtmGeomCol );
   }
   else if ( text == tr( "Primary key column" ) )
   {
-    mProxyModel.setFilterKeyColumn( QgsOracleTableModel::dbtmPkCol );
+    mProxyModel.setFilterKeyColumn( QgsOracleTableModel::DbtmPkCol );
   }
   else if ( text == tr( "SRID" ) )
   {
-    mProxyModel.setFilterKeyColumn( QgsOracleTableModel::dbtmSrid );
+    mProxyModel.setFilterKeyColumn( QgsOracleTableModel::DbtmSrid );
   }
   else if ( text == tr( "Sql" ) )
   {
-    mProxyModel.setFilterKeyColumn( QgsOracleTableModel::dbtmSql );
+    mProxyModel.setFilterKeyColumn( QgsOracleTableModel::DbtmSql );
   }
 }
 
-void QgsOracleSourceSelect::on_mSearchModeComboBox_currentIndexChanged( const QString & text )
+void QgsOracleSourceSelect::on_mSearchModeComboBox_currentIndexChanged( const QString &text )
 {
   Q_UNUSED( text );
   on_mSearchTableEdit_textChanged( mSearchTableEdit->text() );
@@ -430,7 +425,6 @@ void QgsOracleSourceSelect::on_mSearchModeComboBox_currentIndexChanged( const QS
 
 void QgsOracleSourceSelect::setLayerType( QgsOracleLayerProperty layerProperty )
 {
-  QgsDebugMsg( "entering." );
   mTableModel.addTableEntry( layerProperty );
 }
 
@@ -442,13 +436,13 @@ QgsOracleSourceSelect::~QgsOracleSourceSelect()
     finishList();
   }
 
-  QSettings settings;
-  settings.setValue( "/Windows/OracleSourceSelect/geometry", saveGeometry() );
-  settings.setValue( "/Windows/OracleSourceSelect/HoldDialogOpen", mHoldDialogOpen->isChecked() );
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "/Windows/OracleSourceSelect/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "/Windows/OracleSourceSelect/HoldDialogOpen" ), mHoldDialogOpen->isChecked() );
 
   for ( int i = 0; i < mTableModel.columnCount(); i++ )
   {
-    settings.setValue( QString( "/Windows/OracleSourceSelect/columnWidths/%1" ).arg( i ), mTablesTreeView->columnWidth( i ) );
+    settings.setValue( QStringLiteral( "Windows/OracleSourceSelect/columnWidths/%1" ).arg( i ), mTablesTreeView->columnWidth( i ) );
   }
 }
 
@@ -470,13 +464,13 @@ void QgsOracleSourceSelect::populateConnectionList()
 }
 
 // Slot for performing action when the Add button is clicked
-void QgsOracleSourceSelect::addTables()
+void QgsOracleSourceSelect::addButtonClicked()
 {
   mSelectedTables.clear();
 
   Q_FOREACH ( QModelIndex idx, mTablesTreeView->selectionModel()->selection().indexes() )
   {
-    if ( idx.column() != QgsOracleTableModel::dbtmTable )
+    if ( idx.column() != QgsOracleTableModel::DbtmTable )
       continue;
 
     QString uri = mTableModel.layerURI( mProxyModel.mapToSource( idx ), mConnInfo );
@@ -492,8 +486,8 @@ void QgsOracleSourceSelect::addTables()
   }
   else
   {
-    emit addDatabaseLayers( mSelectedTables, "oracle" );
-    if ( !mHoldDialogOpen->isChecked() )
+    emit addDatabaseLayers( mSelectedTables, QStringLiteral( "oracle" ) );
+    if ( !mHoldDialogOpen->isChecked() && widgetMode() == QgsProviderRegistry::WidgetMode::None )
     {
       accept();
     }
@@ -515,7 +509,7 @@ void QgsOracleSourceSelect::on_btnConnect_clicked()
 
   QApplication::setOverrideCursor( Qt::BusyCursor );
 
-  QgsDataSourceURI uri = QgsOracleConn::connUri( cmbConnections->currentText() );
+  QgsDataSourceUri uri = QgsOracleConn::connUri( cmbConnections->currentText() );
 
   mIsConnected = true;
   mTablesTreeDelegate->setConnectionInfo( uri );
@@ -541,16 +535,8 @@ void QgsOracleSourceSelect::finishList()
 {
   QApplication::restoreOverrideCursor();
 
-  if ( cmbConnections->count() > 0 )
-    mAddButton->setEnabled( true );
-
-#if 0
-  for ( int i = 0; i < QgsOracleTableModel::dbtmColumns; i++ )
-    mTablesTreeView->resizeColumnToContents( i );
-#endif
-
-  mTablesTreeView->sortByColumn( QgsOracleTableModel::dbtmTable, Qt::AscendingOrder );
-  mTablesTreeView->sortByColumn( QgsOracleTableModel::dbtmOwner, Qt::AscendingOrder );
+  mTablesTreeView->sortByColumn( QgsOracleTableModel::DbtmTable, Qt::AscendingOrder );
+  mTablesTreeView->sortByColumn( QgsOracleTableModel::DbtmOwner, Qt::AscendingOrder );
 }
 
 static QgsOracleTableCache::CacheFlags _currentFlags( QString connName, bool useEstimatedMetadata, bool allowGeometrylessTables )
@@ -599,7 +585,7 @@ void QgsOracleSourceSelect::setSql( const QModelIndex &index )
   }
 
   QModelIndex idx = mProxyModel.mapToSource( index );
-  QString tableName = mTableModel.itemFromIndex( idx.sibling( idx.row(), QgsOracleTableModel::dbtmTable ) )->text();
+  QString tableName = mTableModel.itemFromIndex( idx.sibling( idx.row(), QgsOracleTableModel::DbtmTable ) )->text();
 
   QString uri = mTableModel.layerURI( idx, mConnInfo );
   if ( uri.isNull() )
@@ -651,7 +637,7 @@ void QgsOracleSourceSelect::setConnectionListPosition()
   }
 }
 
-void QgsOracleSourceSelect::setSearchExpression( const QString& regexp )
+void QgsOracleSourceSelect::setSearchExpression( const QString &regexp )
 {
   Q_UNUSED( regexp );
 }
@@ -662,12 +648,12 @@ void QgsOracleSourceSelect::loadTableFromCache()
   mTableModel.removeRows( 0, mTableModel.rowCount( rootItemIndex ), rootItemIndex );
 
   QString connName = cmbConnections->currentText();
-  QgsDataSourceURI uri = QgsOracleConn::connUri( connName );
+  QgsDataSourceUri uri = QgsOracleConn::connUri( connName );
   QVector<QgsOracleLayerProperty> layers;
   if ( !QgsOracleTableCache::loadFromCache( connName, _currentFlags( connName, uri.useEstimatedMetadata(), cbxAllowGeometrylessTables->isChecked() ), layers ) )
     return;
 
-  Q_FOREACH ( const QgsOracleLayerProperty& layerProperty, layers )
+  Q_FOREACH ( const QgsOracleLayerProperty &layerProperty, layers )
     mTableModel.addTableEntry( layerProperty );
 
   QApplication::setOverrideCursor( Qt::BusyCursor );
@@ -677,4 +663,15 @@ void QgsOracleSourceSelect::loadTableFromCache()
   mTablesTreeDelegate->setConnectionInfo( uri );
 
   finishList();
+}
+
+void QgsOracleSourceSelect::treeWidgetSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected )
+{
+  Q_UNUSED( deselected )
+  emit enableButtons( !selected.isEmpty() );
+}
+
+void QgsOracleSourceSelect::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#loading-a-database-layer" ) );
 }

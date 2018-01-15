@@ -4,13 +4,13 @@ description=Spatial data processing framework for QGIS
 about=Spatial data processing framework for QGIS
 category=Analysis
 version=2.12.99
-qgisMinimumVersion=2.13
+qgisMinimumVersion=3.0
 
 author=Victor Olaya
 email=volayaf@gmail.com
 
-icon=images/alg.png
+icon=:/images/themes/default/processingAlgorithm.svg
 
 homepage=http://qgis.org
-tracker=https://hub.qgis.org/projects/quantum-gis/issues
+tracker=https://issues.qgis.org/projects/qgis/issues
 repository=https://github.com/qgis/QGIS

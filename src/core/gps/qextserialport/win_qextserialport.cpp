@@ -53,7 +53,7 @@ bool QextSerialPort::open(OpenMode mode) {
         return isOpen();
     if (!isOpen()) {
         /*open the port*/
-        Win_Handle=CreateFileA(port.toAscii(), GENERIC_READ|GENERIC_WRITE,
+        Win_Handle=CreateFileA(port.toLatin1(), GENERIC_READ|GENERIC_WRITE,
                               0, NULL, OPEN_EXISTING, dwFlagsAndAttributes, NULL);
         if (Win_Handle!=INVALID_HANDLE_VALUE) {
             QIODevice::open(mode);
@@ -848,7 +848,7 @@ void QextSerialPort::onWinEvent(HANDLE h)
 Sets the read and write timeouts for the port to millisec milliseconds.
 Setting 0 indicates that timeouts are not used for read nor write operations;
 however read() and write() functions will still block. Set -1 to provide
-non-blocking behaviour (read() and write() will return immediately).
+non-blocking behavior (read() and write() will return immediately).
 
 \note this function does nothing in event driven mode.
 */

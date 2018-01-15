@@ -18,6 +18,7 @@
 #define QGSAUTHBASICMETHOD_H
 
 #include <QObject>
+#include <QMutex>
 
 #include "qgsauthconfig.h"
 #include "qgsauthmethod.h"
@@ -29,7 +30,6 @@ class QgsAuthBasicMethod : public QgsAuthMethod
 
   public:
     explicit QgsAuthBasicMethod();
-    ~QgsAuthBasicMethod();
 
     // QgsAuthMethod interface
     QString key() const override;
@@ -44,6 +44,10 @@ class QgsAuthBasicMethod : public QgsAuthMethod
     bool updateDataSourceUriItems( QStringList &connectionItems, const QString &authcfg,
                                    const QString &dataprovider = QString() ) override;
 
+
+    bool updateNetworkProxy( QNetworkProxy &proxy, const QString &authcfg,
+                             const QString &dataprovider = QString() ) override;
+
     void clearCachedConfig( const QString &authcfg ) override;
 
     void updateMethodConfig( QgsAuthMethodConfig &mconfig ) override;
@@ -51,13 +55,14 @@ class QgsAuthBasicMethod : public QgsAuthMethod
   private:
     QgsAuthMethodConfig getMethodConfig( const QString &authcfg, bool fullconfig = true );
 
-    void putMethodConfig( const QString &authcfg, const QgsAuthMethodConfig& mconfig );
+    void putMethodConfig( const QString &authcfg, const QgsAuthMethodConfig &mconfig );
 
     void removeMethodConfig( const QString &authcfg );
 
-    QString escapeUserPass( const QString &theVal, QChar delim = '\'' ) const;
+    QString escapeUserPass( const QString &val, QChar delim = '\'' ) const;
 
-    static QMap<QString, QgsAuthMethodConfig> mAuthConfigCache;
+    static QMap<QString, QgsAuthMethodConfig> sAuthConfigCache;
+
 };
 
 #endif // QGSAUTHBASICMETHOD_H

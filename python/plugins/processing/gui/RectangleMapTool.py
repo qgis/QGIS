@@ -27,7 +27,7 @@ __revision__ = '$Format:%H$'
 
 from qgis.PyQt.QtCore import pyqtSignal
 from qgis.PyQt.QtGui import QColor
-from qgis.core import QGis, QgsPoint, QgsRectangle
+from qgis.core import QgsPointXY, QgsRectangle, QgsWkbTypes
 from qgis.gui import QgsMapTool, QgsMapToolEmitPoint, QgsRubberBand
 
 
@@ -40,7 +40,7 @@ class RectangleMapTool(QgsMapToolEmitPoint):
         self.canvas = canvas
         QgsMapToolEmitPoint.__init__(self, self.canvas)
 
-        self.rubberBand = QgsRubberBand(self.canvas, QGis.Polygon)
+        self.rubberBand = QgsRubberBand(self.canvas, QgsWkbTypes.PolygonGeometry)
         self.rubberBand.setColor(QColor(255, 0, 0, 100))
         self.rubberBand.setWidth(2)
 
@@ -49,7 +49,7 @@ class RectangleMapTool(QgsMapToolEmitPoint):
     def reset(self):
         self.startPoint = self.endPoint = None
         self.isEmittingPoint = False
-        self.rubberBand.reset(QGis.Polygon)
+        self.rubberBand.reset(QgsWkbTypes.PolygonGeometry)
 
     def canvasPressEvent(self, e):
         self.startPoint = self.toMapCoordinates(e.pos())
@@ -71,14 +71,14 @@ class RectangleMapTool(QgsMapToolEmitPoint):
         self.showRect(self.startPoint, self.endPoint)
 
     def showRect(self, startPoint, endPoint):
-        self.rubberBand.reset(QGis.Polygon)
+        self.rubberBand.reset(QgsWkbTypes.PolygonGeometry)
         if startPoint.x() == endPoint.x() or startPoint.y() == endPoint.y():
             return
 
-        point1 = QgsPoint(startPoint.x(), startPoint.y())
-        point2 = QgsPoint(startPoint.x(), endPoint.y())
-        point3 = QgsPoint(endPoint.x(), endPoint.y())
-        point4 = QgsPoint(endPoint.x(), startPoint.y())
+        point1 = QgsPointXY(startPoint.x(), startPoint.y())
+        point2 = QgsPointXY(startPoint.x(), endPoint.y())
+        point3 = QgsPointXY(endPoint.x(), endPoint.y())
+        point4 = QgsPointXY(endPoint.x(), startPoint.y())
 
         self.rubberBand.addPoint(point1, False)
         self.rubberBand.addPoint(point2, False)
@@ -103,8 +103,8 @@ class RectangleMapTool(QgsMapToolEmitPoint):
         if rect is None:
             self.reset()
         else:
-            self.startPoint = QgsPoint(rect.xMaximum(), rect.yMaximum())
-            self.endPoint = QgsPoint(rect.xMinimum(), rect.yMinimum())
+            self.startPoint = QgsPointXY(rect.xMaximum(), rect.yMaximum())
+            self.endPoint = QgsPointXY(rect.xMinimum(), rect.yMinimum())
             self.showRect(self.startPoint, self.endPoint)
         return True
 

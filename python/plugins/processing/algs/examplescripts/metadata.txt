@@ -1,0 +1,18 @@
+[general]
+name=Processing Example Scripts
+description=An example plugin that adds algorithms to Processing as plugins
+category=Analysis
+version=1.0
+qgisMinimumVersion=2.0
+
+author=Victor Olaya
+email=volayaf@gmail.com
+
+tags=analysis,processing
+
+homepage=
+tracker=
+repository=
+
+experimental=False
+deprecated=False

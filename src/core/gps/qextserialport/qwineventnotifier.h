@@ -1,5 +1,6 @@
 #ifndef QWINEVENTNOTIFIER_H
 #define QWINEVENTNOTIFIER_H
+#include "qgis_core.h"
 #include <QObject>
 
 #include <windows.h>
@@ -13,8 +14,8 @@ class Q_CORE_EXPORT QWinEventNotifier : public QObject
     Q_DECLARE_PRIVATE(QObject)
 
 public:
-    explicit QWinEventNotifier(QObject *parent = 0);
-    explicit QWinEventNotifier(HANDLE hEvent, QObject *parent = 0);
+    explicit QWinEventNotifier(QObject *parent = nullptr);
+    explicit QWinEventNotifier(HANDLE hEvent, QObject *parent = nullptr);
     ~QWinEventNotifier();
 
     void setHandle(HANDLE hEvent);

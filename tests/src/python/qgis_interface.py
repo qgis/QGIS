@@ -26,7 +26,7 @@ __copyright__ = ('Copyright (c) 2010 by Ivan Mincik, ivan.mincik@gista.sk and '
 
 import qgis  # NOQA
 from qgis.PyQt.QtCore import QObject
-from qgis.core import QgsMapLayerRegistry
+from qgis.core import QgsProject
 
 
 class QgisInterface(QObject):
@@ -68,7 +68,7 @@ class QgisInterface(QObject):
 
     def activeLayer(self):
         """Get pointer to the active layer (layer selected in the legend)"""
-        myLayers = QgsMapLayerRegistry.instance().mapLayers()
+        myLayers = QgsProject.instance().mapLayers()
         for myItem in myLayers:
             return myLayers[myItem]
 

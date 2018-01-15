@@ -1,184 +1,288 @@
-/** \ingroup core
- * Class for storing the component parts of a PostgreSQL/RDBMS datasource URI.
- * This structure stores the database connection information, including host, database,
- * user name, password, schema, password, and sql where clause
- *
- * Extended to support generic params so that it may be used by any provider.
- * The 2 modes (the old - RDMS specific and the new generic) may not yet be mixed.
- * (Radim Blazek 4/2012)
- */
-class QgsDataSourceURI
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsdatasourceuri.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsDataSourceUri
 {
+
 %TypeHeaderCode
-#include <qgsdatasourceuri.h>
+#include "qgsdatasourceuri.h"
+%End
+  public:
+    enum SslMode
+    {
+      SslPrefer,
+      SslDisable,
+      SslAllow,
+      SslRequire,
+      SslVerifyCa,
+      SslVerifyFull
+    };
+
+    QgsDataSourceUri();
+%Docstring
+default constructor
 %End
 
-  public:
-    enum SSLmode { SSLprefer, SSLdisable, SSLallow, SSLrequire, SSLverifyCA, SSLverifyFull };
+    QgsDataSourceUri( QString uri );
+%Docstring
+constructor which parses input URI
+%End
 
-    //! default constructor
-    QgsDataSourceURI();
 
-    //! constructor which parses input URI
-    QgsDataSourceURI( QString uri );
-
-    //! return connection part of URI
     QString connectionInfo( bool expandAuthConfig = true ) const;
+%Docstring
+return connection part of URI
+%End
 
-    //! return complete uri
     QString uri( bool expandAuthConfig = true ) const;
+%Docstring
+return complete uri
+%End
 
-    //! return complete encoded uri (generic mode)
     QByteArray encodedUri() const;
+%Docstring
+return complete encoded uri (generic mode)
+%End
 
-    //! set complete encoded uri (generic mode)
-    // \note not available in python bindings
-    // void setEncodedUri( const QByteArray & uri );
 
-    //! set complete encoded uri (generic mode)
-    void setEncodedUri( const QString & uri );
+    void setEncodedUri( const QString &uri );
+%Docstring
+set complete encoded uri (generic mode)
+%End
 
-    //! quoted table name
     QString quotedTablename() const;
+%Docstring
+quoted table name
+%End
 
-    //! Set generic param (generic mode)
-    // \note if key exists, another is inserted
     void setParam( const QString &key, const QString &value );
-    //! @note available in python as setParamList
+%Docstring
+Set generic param (generic mode)
+
+.. note::
+
+   if key exists, another is inserted
+%End
     void setParam( const QString &key, const QStringList &value ) /PyName=setParamList/;
+%Docstring
 
-    //! Remove generic param (generic mode)
-    // \note remove all occurrences of key, returns number of params removed
+.. note::
+
+   available in Python as setParamList
+%End
+
     int removeParam( const QString &key );
+%Docstring
+Remove generic param (generic mode)
 
-    //! Get generic param (generic mode)
+.. note::
+
+   remove all occurrences of key, returns number of params removed
+%End
+
     QString param( const QString &key ) const;
+%Docstring
+Get generic param (generic mode)
+%End
 
-    //! Get multiple generic param (generic mode)
     QStringList params( const QString &key ) const;
+%Docstring
+Get multiple generic param (generic mode)
+%End
 
-    //! Test if param exists (generic mode)
     bool hasParam( const QString &key ) const;
+%Docstring
+Test if param exists (generic mode)
+%End
 
-    //! Set all connection related members at once
-    void setConnection( const QString& aHost,
-                        const QString& aPort,
-                        const QString& aDatabase,
-                        const QString& aUsername,
-                        const QString& aPassword,
-                        SSLmode sslmode = SSLprefer,
-                        const QString& authConfigId = QString() );
+    void setConnection( const QString &aHost,
+                        const QString &aPort,
+                        const QString &aDatabase,
+                        const QString &aUsername,
+                        const QString &aPassword,
+                        SslMode sslmode = SslPrefer,
+                        const QString &authConfigId = QString() );
+%Docstring
+Set all connection related members at once
+%End
 
-    //! Set all connection related members at once (for the service case)
-    void setConnection( const QString& aService,
-                        const QString& aDatabase,
-                        const QString& aUsername,
-                        const QString& aPassword,
-                        SSLmode sslmode = SSLprefer,
-                        const QString& authConfigId = QString() );
+    void setConnection( const QString &aService,
+                        const QString &aDatabase,
+                        const QString &aUsername,
+                        const QString &aPassword,
+                        SslMode sslmode = SslPrefer,
+                        const QString &authConfigId = QString() );
+%Docstring
+Set all connection related members at once (for the service case)
+%End
 
-    //! Set database
     void setDatabase( const QString &database );
+%Docstring
+Set database
+%End
 
-    //! Set all data source related members at once
-    void setDataSource( const QString& aSchema,
-                        const QString& aTable,
-                        const QString& aGeometryColumn,
-                        const QString& aSql = QString(),
-                        const QString& aKeyColumn = QString() );
+    void setDataSource( const QString &aSchema,
+                        const QString &aTable,
+                        const QString &aGeometryColumn,
+                        const QString &aSql = QString(),
+                        const QString &aKeyColumn = QString() );
+%Docstring
+Set all data source related members at once
+%End
 
-    //! Set authentication configuration ID
-    void setAuthConfigId( const QString& authcfg );
+    void setAuthConfigId( const QString &authcfg );
+%Docstring
+Set authentication configuration ID
+%End
 
-    //! set username
-    void setUsername( const QString& username );
+    void setUsername( const QString &username );
+%Docstring
+set username
+%End
 
-    //! set password
-    void setPassword( const QString& password );
+    void setPassword( const QString &password );
+%Docstring
+set password
+%End
 
-    //! Removes password element from uris
-    static QString removePassword( const QString& aUri );
+    static QString removePassword( const QString &aUri );
+%Docstring
+Removes password element from uris
+%End
 
-    //! Any associated authentication configuration ID
     QString authConfigId() const;
+%Docstring
+Any associated authentication configuration ID
+%End
 
-    //! Returns the username
     QString username() const;
+%Docstring
+Returns the username
+%End
 
-    //! Returns the schema
     QString schema() const;
+%Docstring
+Returns the schema
+%End
 
-    //! Returns the table
     QString table() const;
+%Docstring
+Returns the table
+%End
 
-    //! Returns the SQL query
     QString sql() const;
+%Docstring
+Returns the SQL query
+%End
 
-    //! Return the name of the geometry column
     QString geometryColumn() const;
+%Docstring
+Return the name of the geometry column
+%End
 
-    //! set use Estimated Metadata
-    void setUseEstimatedMetadata( bool theFlag );
+    void setUseEstimatedMetadata( bool flag );
+%Docstring
+set use Estimated Metadata
+%End
 
-    //! Returns true if estimated metadata are used
     bool useEstimatedMetadata() const;
+%Docstring
+Returns true if estimated metadata are used
+%End
 
-    //! Set to true to disable selection by id
-    void disableSelectAtId( bool theFlag );
-    //! Returns whether the selection by id is disabled
+    void disableSelectAtId( bool flag );
+%Docstring
+Set to true to disable selection by id
+%End
     bool selectAtIdDisabled() const;
+%Docstring
+Returns whether the selection by id is disabled
+%End
 
-    //! Clears the schema
     void clearSchema();
+%Docstring
+Clears the schema
+%End
 
-    //! set the table schema
-    // @note added in 2.11
-    void setSchema( const QString& schema );
+    void setSchema( const QString &schema );
 
-    //! Sets the SQL query
-    void setSql( const QString& sql );
+    void setSql( const QString &sql );
+%Docstring
+Sets the SQL query
+%End
 
-    //! Returns the host
     QString host() const;
-    //! Returns the database
+%Docstring
+Returns the host
+%End
     QString database() const;
-    //! Returns the port
+%Docstring
+Returns the database
+%End
     QString port() const;
-    //! Returns the driver
-	// @note added in QGIS 2.16
+%Docstring
+Returns the port
+%End
     QString driver() const;
-    //! Sets the driver name
-	// @note added in QGIS 2.16
-    void setDriver( const QString& driver );
-    //! Returns the password
+    void setDriver( const QString &driver );
     QString password() const;
-    //! Returns the SSL mode
-    SSLmode sslMode() const;
+%Docstring
+Returns the password
+%End
+    SslMode sslMode() const;
+%Docstring
+Returns the SSL mode
+%End
 
-    //! Returns the service name
     QString service() const;
+%Docstring
+Returns the service name
+%End
 
-    //! Returns the name of the (primary) key column
     QString keyColumn() const;
-    //! Sets the name of the (primary) key column
-    void setKeyColumn( const QString& column );
+%Docstring
+Returns the name of the (primary) key column
+%End
+    void setKeyColumn( const QString &column );
+%Docstring
+Sets the name of the (primary) key column
+%End
 
-    /** The (old) wkb type.
-        @deprecated Will return QgsWKBTypes::Type in 3.0. Prefer newWkbType() in the meantime */
-    QGis::WkbType wkbType() const /Deprecated/;
+    QgsWkbTypes::Type wkbType() const;
+%Docstring
+The wkb type.
+%End
 
-    /** The wkb type.
-        @note Will be removed in 3.0 */
-    QgsWKBTypes::Type newWkbType() const;
+    void setWkbType( QgsWkbTypes::Type type );
+%Docstring
+Sets the wkb type
+%End
 
-    //! @deprecated See setWkbType( QgsWKBTypes::Type )
-    void setWkbType( QGis::WkbType type ) /Deprecated/;
-
-    //! Sets the wkb type
-    void setWkbType( QgsWKBTypes::Type type );
-
-    //! Returns the srid
     QString srid() const;
-    //! Sets the srid
-    void setSrid( const QString& srid );
+%Docstring
+Returns the srid
+%End
+    void setSrid( const QString &srid );
+%Docstring
+Sets the srid
+%End
+
 };
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsdatasourceuri.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -18,30 +18,89 @@
 
 #include "qgsdataitem.h"
 #include "qgsogrprovider.h"
+#include "qgsdataitemprovider.h"
 
-Q_NOWARN_DEPRECATED_PUSH
+
+/**
+ * Holds the information about a gpkg layer
+ */
+class QgsOgrDbLayerInfo
+{
+  public:
+    QgsOgrDbLayerInfo( const QString &path, const QString &uri, const QString &name, const QString &theGeometryColumn, const QString &theGeometryType, const QgsLayerItem::LayerType &theLayerType )
+      : mPath( path )
+      , mUri( uri )
+      , mName( name )
+      , mGeometryColumn( theGeometryColumn )
+      , mGeometryType( theGeometryType )
+      , mLayerType( theLayerType )
+    {
+    }
+    const QString path() const { return mPath; }
+    const QString uri() const { return mUri; }
+    const QString name() const { return mName; }
+    const QString geometryColumn() const { return mGeometryColumn; }
+    const QString geometryType() const { return mGeometryType; }
+    QgsLayerItem::LayerType layerType() const { return mLayerType; }
+
+  private:
+    QString mPath;
+    QString mUri;
+    QString mName;
+    QString mGeometryColumn;
+    QString mGeometryType;
+    QgsLayerItem::LayerType mLayerType = QgsLayerItem::LayerType::NoType;
+};
+
+
 class QgsOgrLayerItem : public QgsLayerItem
 {
     Q_OBJECT
   public:
-    QgsOgrLayerItem( QgsDataItem* parent, QString name, QString path, QString uri, LayerType layerType );
-    ~QgsOgrLayerItem();
+    QgsOgrLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, LayerType layerType, bool isSubLayer = false );
 
-    bool setCrs( QgsCoordinateReferenceSystem crs ) override;
+    bool setCrs( const QgsCoordinateReferenceSystem &crs ) override;
 
-    Q_DECL_DEPRECATED Capability capabilities() override;
     QString layerName() const override;
+    //! Retrieve sub layers from a DB ogr layer \a path with the specified \a driver
+    static QList<QgsOgrDbLayerInfo *> subLayers( const QString &path, const QString &driver );
+    //! Return a LayerType from a geometry type string
+    static QgsLayerItem::LayerType layerTypeFromDb( const QString &geometryType );
+
+#ifdef HAVE_GUI
+    QList<QAction *> actions( QWidget *parent ) override;
+  public slots:
+    void deleteLayer();
+#endif
+  private:
+    bool mIsSubLayer;
 };
-Q_NOWARN_DEPRECATED_POP
+
 
 class QgsOgrDataCollectionItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    QgsOgrDataCollectionItem( QgsDataItem* parent, QString name, QString path );
-    ~QgsOgrDataCollectionItem();
+    QgsOgrDataCollectionItem( QgsDataItem *parent, const QString &name, const QString &path );
 
-    QVector<QgsDataItem*> createChildren() override;
+    QVector<QgsDataItem *> createChildren() override;
+
+    /**
+     * Utility function to store DB connections
+     * \param path to the DB
+     * \param ogrDriverName the OGR/GDAL driver name (e.g. "GPKG")
+     */
+    static bool storeConnection( const QString &path, const QString &ogrDriverName );
+
+    /**
+     * Utility function to create and store a new DB connection
+     * \param name is the translatable name of the managed layers (e.g. "GeoPackage")
+     * \param extensions is a string with file extensions (e.g. "GeoPackage Database (*.gpkg *.GPKG)")
+     * \param ogrDriverName the OGR/GDAL driver name (e.g. "GPKG")
+     */
+    static bool createConnection( const QString &name, const QString &extensions, const QString &ogrDriverName );
+
 };
+
 
 #endif // QGSOGRDATAITEMS_H

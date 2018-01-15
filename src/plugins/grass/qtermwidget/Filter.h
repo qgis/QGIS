@@ -98,14 +98,14 @@ public:
        /** Returns the column on endLine() where the hotspot area ends */
        int endColumn() const;
        /**
-        * Returns the type of the hotspot.  This is usually used as a hint for views on how to represent
-        * the hotspot graphically.  eg.  Link hotspots are typically underlined when the user mouses over them
+        * Returns the type of the hotspot. This is usually used as a hint for views on how to represent
+        * the hotspot graphically. For example, Link hotspots are typically underlined when the user mouses over them
         */
        Type type() const;
        /**
         * Causes the an action associated with a hotspot to be triggered.
         *
-        * @param action The action to trigger.  This is
+        * \param action The action to trigger.  This is
         * typically empty ( in which case the default action should be performed ) or
         * one of the object names from the actions() list.  In which case the associated
         * action should be performed.
@@ -140,7 +140,7 @@ public:
 
     /** Constructs a new filter. */
     Filter();
-    virtual ~Filter();
+    ~Filter() override;
 
     /** Causes the filter to process the block of text currently in its internal buffer */
     virtual void process() = 0;
@@ -202,7 +202,7 @@ public:
     {
     public:
         HotSpot(int startLine, int startColumn, int endLine , int endColumn);
-        virtual void activate(const QString& action = QString());
+        void activate(const QString& action = QString()) override;
 
         /** Sets the captured texts associated with this hotspot */
         void setCapturedTexts(const QStringList& texts);
@@ -231,7 +231,7 @@ public:
      * If regexp matches the empty string, then process() will return immediately
      * without finding results.
      */
-    virtual void process();
+    void process() override;
 
 protected:
     /**
@@ -260,19 +260,19 @@ public:
     {
     public:
         HotSpot(int startLine,int startColumn,int endLine,int endColumn);
-        virtual ~HotSpot();
+        ~HotSpot() override;
 
         FilterObject* getUrlObject() const;
 
-        virtual QList<QAction*> actions();
+        QList<QAction*> actions() override;
 
         /**
          * Open a web browser at the current URL.  The url itself can be determined using
          * the capturedTexts() method.
          */
-        virtual void activate(const QString& action = QString());
+        void activate(const QString& action = QString()) override;
 
-        virtual QString tooltip() const;
+        QString tooltip() const override;
     private:
         enum UrlType
         {
@@ -288,7 +288,7 @@ public:
     UrlFilter();
 
 protected:
-    virtual RegExpFilter::HotSpot* newHotSpot(int,int,int,int);
+    RegExpFilter::HotSpot* newHotSpot(int,int,int,int) override;
 
 private:
 
@@ -308,7 +308,7 @@ public:
     FilterObject(Filter::HotSpot* filter) : _filter(filter) {}
 
     void emitActivated(const QUrl& url);
-private slots:
+public slots:
     void activated();
 private:
     Filter::HotSpot* _filter;
@@ -371,15 +371,15 @@ class TerminalImageFilterChain : public FilterChain
 {
 public:
     TerminalImageFilterChain();
-    virtual ~TerminalImageFilterChain();
+    ~TerminalImageFilterChain() override;
 
     /**
      * Set the current terminal image to @p image.
      *
-     * @param image The terminal image
-     * @param lines The number of lines in the terminal image
-     * @param columns The number of columns in the terminal image
-     * @param lineProperties The line properties to set for image
+     * \param image The terminal image
+     * \param lines The number of lines in the terminal image
+     * \param columns The number of columns in the terminal image
+     * \param lineProperties The line properties to set for image
      */
     void setImage(const Character* const image , int lines , int columns,
                   const QVector<LineProperty>& lineProperties);

@@ -16,176 +16,153 @@
  ***************************************************************************/
 
 #include "qgszonalstatistics.h"
+#include "qgsfeatureiterator.h"
+#include "qgsfeedback.h"
 #include "qgsgeometry.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
-#include "qmath.h"
-#include "gdal.h"
-#include "cpl_string.h"
-#include <QProgressDialog>
+#include "qgsrasterdataprovider.h"
+#include "qgsrasterlayer.h"
+#include "qgsrasterblock.h"
+#include "qgslogger.h"
+#include "qgsgeos.h"
+
 #include <QFile>
 
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
-#define TO8F(x) (x).toUtf8().constData()
-#else
-#define TO8F(x) QFile::encodeName( x ).constData()
-#endif
+QgsZonalStatistics::QgsZonalStatistics( QgsVectorLayer *polygonLayer, QgsRasterLayer *rasterLayer, const QString &attributePrefix, int rasterBand, QgsZonalStatistics::Statistics stats )
+  : mRasterLayer( rasterLayer )
+  , mRasterBand( rasterBand )
+  , mPolygonLayer( polygonLayer )
+  , mAttributePrefix( attributePrefix )
+  , mStatistics( stats )
+{}
 
-QgsZonalStatistics::QgsZonalStatistics( QgsVectorLayer* polygonLayer, const QString& rasterFile, const QString& attributePrefix, int rasterBand, const Statistics& stats )
-    : mRasterFilePath( rasterFile )
-    , mRasterBand( rasterBand )
-    , mPolygonLayer( polygonLayer )
-    , mAttributePrefix( attributePrefix )
-    , mInputNodataValue( -1 )
-    , mStatistics( stats )
+int QgsZonalStatistics::calculateStatistics( QgsFeedback *feedback )
 {
-
-}
-
-QgsZonalStatistics::QgsZonalStatistics()
-    : mRasterBand( 0 )
-    , mPolygonLayer( nullptr )
-    , mInputNodataValue( -1 )
-    , mStatistics( QgsZonalStatistics::All )
-{
-
-}
-
-int QgsZonalStatistics::calculateStatistics( QProgressDialog* p )
-{
-  if ( !mPolygonLayer || mPolygonLayer->geometryType() != QGis::Polygon )
+  if ( !mPolygonLayer || mPolygonLayer->geometryType() != QgsWkbTypes::PolygonGeometry )
   {
     return 1;
   }
 
-  QgsVectorDataProvider* vectorProvider = mPolygonLayer->dataProvider();
+  QgsVectorDataProvider *vectorProvider = mPolygonLayer->dataProvider();
   if ( !vectorProvider )
   {
     return 2;
   }
 
-  //open the raster layer and the raster band
-  GDALAllRegister();
-  GDALDatasetH inputDataset = GDALOpen( TO8F( mRasterFilePath ), GA_ReadOnly );
-  if ( !inputDataset )
+  if ( !mRasterLayer )
   {
     return 3;
   }
 
-  if ( GDALGetRasterCount( inputDataset ) < ( mRasterBand - 1 ) )
+  if ( mRasterLayer->bandCount() < mRasterBand )
   {
-    GDALClose( inputDataset );
     return 4;
   }
 
-  GDALRasterBandH rasterBand = GDALGetRasterBand( inputDataset, mRasterBand );
-  if ( !rasterBand )
-  {
-    GDALClose( inputDataset );
-    return 5;
-  }
-  mInputNodataValue = GDALGetRasterNoDataValue( rasterBand, nullptr );
+  mRasterProvider = mRasterLayer->dataProvider();
+  mInputNodataValue = mRasterProvider->sourceNoDataValue( mRasterBand );
 
   //get geometry info about raster layer
-  int nCellsXGDAL = GDALGetRasterXSize( inputDataset );
-  int nCellsYGDAL = GDALGetRasterYSize( inputDataset );
-  double geoTransform[6];
-  if ( GDALGetGeoTransform( inputDataset, geoTransform ) != CE_None )
-  {
-    GDALClose( inputDataset );
-    return 6;
-  }
-  double cellsizeX = geoTransform[1];
+  int nCellsXProvider = mRasterProvider->xSize();
+  int nCellsYProvider = mRasterProvider->ySize();
+  double cellsizeX = mRasterLayer->rasterUnitsPerPixelX();
   if ( cellsizeX < 0 )
   {
     cellsizeX = -cellsizeX;
   }
-  double cellsizeY = geoTransform[5];
+  double cellsizeY = mRasterLayer->rasterUnitsPerPixelY();
   if ( cellsizeY < 0 )
   {
     cellsizeY = -cellsizeY;
   }
-  QgsRectangle rasterBBox( geoTransform[0], geoTransform[3] - ( nCellsYGDAL * cellsizeY ),
-                           geoTransform[0] + ( nCellsXGDAL * cellsizeX ), geoTransform[3] );
+  QgsRectangle rasterBBox = mRasterProvider->extent();
 
   //add the new fields to the provider
   QList<QgsField> newFieldList;
   QString countFieldName;
   if ( mStatistics & QgsZonalStatistics::Count )
   {
-    countFieldName = getUniqueFieldName( mAttributePrefix + "count" );
-    QgsField countField( countFieldName, QVariant::Double, "double precision" );
+    countFieldName = getUniqueFieldName( mAttributePrefix + "count", newFieldList );
+    QgsField countField( countFieldName, QVariant::Double, QStringLiteral( "double precision" ) );
     newFieldList.push_back( countField );
   }
   QString sumFieldName;
   if ( mStatistics & QgsZonalStatistics::Sum )
   {
-    sumFieldName = getUniqueFieldName( mAttributePrefix + "sum" );
-    QgsField sumField( sumFieldName, QVariant::Double, "double precision" );
+    sumFieldName = getUniqueFieldName( mAttributePrefix + "sum", newFieldList );
+    QgsField sumField( sumFieldName, QVariant::Double, QStringLiteral( "double precision" ) );
     newFieldList.push_back( sumField );
   }
   QString meanFieldName;
   if ( mStatistics & QgsZonalStatistics::Mean )
   {
-    meanFieldName = getUniqueFieldName( mAttributePrefix + "mean" );
-    QgsField meanField( meanFieldName, QVariant::Double, "double precision" );
+    meanFieldName = getUniqueFieldName( mAttributePrefix + "mean", newFieldList );
+    QgsField meanField( meanFieldName, QVariant::Double, QStringLiteral( "double precision" ) );
     newFieldList.push_back( meanField );
   }
   QString medianFieldName;
   if ( mStatistics & QgsZonalStatistics::Median )
   {
-    medianFieldName = getUniqueFieldName( mAttributePrefix + "median" );
-    QgsField medianField( medianFieldName, QVariant::Double, "double precision" );
+    medianFieldName = getUniqueFieldName( mAttributePrefix + "median", newFieldList );
+    QgsField medianField( medianFieldName, QVariant::Double, QStringLiteral( "double precision" ) );
     newFieldList.push_back( medianField );
   }
   QString stdevFieldName;
   if ( mStatistics & QgsZonalStatistics::StDev )
   {
-    stdevFieldName = getUniqueFieldName( mAttributePrefix + "stdev" );
-    QgsField stdField( stdevFieldName, QVariant::Double, "double precision" );
+    stdevFieldName = getUniqueFieldName( mAttributePrefix + "stdev", newFieldList );
+    QgsField stdField( stdevFieldName, QVariant::Double, QStringLiteral( "double precision" ) );
     newFieldList.push_back( stdField );
   }
   QString minFieldName;
   if ( mStatistics & QgsZonalStatistics::Min )
   {
-    minFieldName = getUniqueFieldName( mAttributePrefix + "min" );
-    QgsField minField( minFieldName, QVariant::Double, "double precision" );
+    minFieldName = getUniqueFieldName( mAttributePrefix + "min", newFieldList );
+    QgsField minField( minFieldName, QVariant::Double, QStringLiteral( "double precision" ) );
     newFieldList.push_back( minField );
   }
   QString maxFieldName;
   if ( mStatistics & QgsZonalStatistics::Max )
   {
-    maxFieldName = getUniqueFieldName( mAttributePrefix + "max" );
-    QgsField maxField( maxFieldName, QVariant::Double, "double precision" );
+    maxFieldName = getUniqueFieldName( mAttributePrefix + "max", newFieldList );
+    QgsField maxField( maxFieldName, QVariant::Double, QStringLiteral( "double precision" ) );
     newFieldList.push_back( maxField );
   }
   QString rangeFieldName;
   if ( mStatistics & QgsZonalStatistics::Range )
   {
-    rangeFieldName = getUniqueFieldName( mAttributePrefix + "range" );
-    QgsField rangeField( rangeFieldName, QVariant::Double, "double precision" );
+    rangeFieldName = getUniqueFieldName( mAttributePrefix + "range", newFieldList );
+    QgsField rangeField( rangeFieldName, QVariant::Double, QStringLiteral( "double precision" ) );
     newFieldList.push_back( rangeField );
   }
   QString minorityFieldName;
   if ( mStatistics & QgsZonalStatistics::Minority )
   {
-    minorityFieldName = getUniqueFieldName( mAttributePrefix + "minority" );
-    QgsField minorityField( minorityFieldName, QVariant::Double, "double precision" );
+    minorityFieldName = getUniqueFieldName( mAttributePrefix + "minority", newFieldList );
+    QgsField minorityField( minorityFieldName, QVariant::Double, QStringLiteral( "double precision" ) );
     newFieldList.push_back( minorityField );
   }
   QString majorityFieldName;
   if ( mStatistics & QgsZonalStatistics::Majority )
   {
-    majorityFieldName = getUniqueFieldName( mAttributePrefix + "majority" );
-    QgsField majField( majorityFieldName, QVariant::Double, "double precision" );
+    majorityFieldName = getUniqueFieldName( mAttributePrefix + "majority", newFieldList );
+    QgsField majField( majorityFieldName, QVariant::Double, QStringLiteral( "double precision" ) );
     newFieldList.push_back( majField );
   }
   QString varietyFieldName;
   if ( mStatistics & QgsZonalStatistics::Variety )
   {
-    varietyFieldName = getUniqueFieldName( mAttributePrefix + "variety" );
-    QgsField varietyField( varietyFieldName, QVariant::Int, "int" );
+    varietyFieldName = getUniqueFieldName( mAttributePrefix + "variety", newFieldList );
+    QgsField varietyField( varietyFieldName, QVariant::Int, QStringLiteral( "int" ) );
     newFieldList.push_back( varietyField );
+  }
+  QString varianceFieldName;
+  if ( mStatistics & QgsZonalStatistics::Variance )
+  {
+    varianceFieldName = getUniqueFieldName( mAttributePrefix + "variance", newFieldList );
+    QgsField varianceField( varianceFieldName, QVariant::Double, QStringLiteral( "double precision" ) );
+    newFieldList.push_back( varianceField );
   }
   vectorProvider->addAttributes( newFieldList );
 
@@ -201,18 +178,20 @@ int QgsZonalStatistics::calculateStatistics( QProgressDialog* p )
   int minorityIndex = mStatistics & QgsZonalStatistics::Minority ? vectorProvider->fieldNameIndex( minorityFieldName ) : -1;
   int majorityIndex = mStatistics & QgsZonalStatistics::Majority ? vectorProvider->fieldNameIndex( majorityFieldName ) : -1;
   int varietyIndex = mStatistics & QgsZonalStatistics::Variety ? vectorProvider->fieldNameIndex( varietyFieldName ) : -1;
+  int varianceIndex = mStatistics & QgsZonalStatistics::Variance ? vectorProvider->fieldNameIndex( varianceFieldName ) : -1;
 
-  if (( mStatistics & QgsZonalStatistics::Count && countIndex == -1 )
-      || ( mStatistics & QgsZonalStatistics::Sum && sumIndex == -1 )
-      || ( mStatistics & QgsZonalStatistics::Mean && meanIndex == -1 )
-      || ( mStatistics & QgsZonalStatistics::Median && medianIndex == -1 )
-      || ( mStatistics & QgsZonalStatistics::StDev && stdevIndex == -1 )
-      || ( mStatistics & QgsZonalStatistics::Min && minIndex == -1 )
-      || ( mStatistics & QgsZonalStatistics::Max && maxIndex == -1 )
-      || ( mStatistics & QgsZonalStatistics::Range && rangeIndex == -1 )
-      || ( mStatistics & QgsZonalStatistics::Minority && minorityIndex == -1 )
-      || ( mStatistics & QgsZonalStatistics::Majority && majorityIndex == -1 )
-      || ( mStatistics & QgsZonalStatistics::Variety && varietyIndex == -1 )
+  if ( ( mStatistics & QgsZonalStatistics::Count && countIndex == -1 )
+       || ( mStatistics & QgsZonalStatistics::Sum && sumIndex == -1 )
+       || ( mStatistics & QgsZonalStatistics::Mean && meanIndex == -1 )
+       || ( mStatistics & QgsZonalStatistics::Median && medianIndex == -1 )
+       || ( mStatistics & QgsZonalStatistics::StDev && stdevIndex == -1 )
+       || ( mStatistics & QgsZonalStatistics::Min && minIndex == -1 )
+       || ( mStatistics & QgsZonalStatistics::Max && maxIndex == -1 )
+       || ( mStatistics & QgsZonalStatistics::Range && rangeIndex == -1 )
+       || ( mStatistics & QgsZonalStatistics::Minority && minorityIndex == -1 )
+       || ( mStatistics & QgsZonalStatistics::Majority && majorityIndex == -1 )
+       || ( mStatistics & QgsZonalStatistics::Variety && varietyIndex == -1 )
+       || ( mStatistics & QgsZonalStatistics::Variance && varianceIndex == -1 )
      )
   {
     //failed to create a required field
@@ -221,11 +200,6 @@ int QgsZonalStatistics::calculateStatistics( QProgressDialog* p )
 
   //progress dialog
   long featureCount = vectorProvider->featureCount();
-  if ( p )
-  {
-    p->setMaximum( featureCount );
-  }
-
 
   //iterate over each polygon
   QgsFeatureRequest request;
@@ -234,7 +208,8 @@ int QgsZonalStatistics::calculateStatistics( QProgressDialog* p )
   QgsFeature f;
 
   bool statsStoreValues = ( mStatistics & QgsZonalStatistics::Median ) ||
-                          ( mStatistics & QgsZonalStatistics::StDev );
+                          ( mStatistics & QgsZonalStatistics::StDev ) ||
+                          ( mStatistics & QgsZonalStatistics::Variance );
   bool statsStoreValueCount = ( mStatistics & QgsZonalStatistics::Minority ) ||
                               ( mStatistics & QgsZonalStatistics::Majority );
 
@@ -244,24 +219,24 @@ int QgsZonalStatistics::calculateStatistics( QProgressDialog* p )
   QgsChangedAttributesMap changeMap;
   while ( fi.nextFeature( f ) )
   {
-    if ( p )
-    {
-      p->setValue( featureCounter );
-    }
-
-    if ( p && p->wasCanceled() )
+    if ( feedback && feedback->isCanceled() )
     {
       break;
     }
 
-    if ( !f.constGeometry() )
+    if ( feedback )
+    {
+      feedback->setProgress( 100.0 * static_cast< double >( featureCounter ) / featureCount );
+    }
+
+    if ( !f.hasGeometry() )
     {
       ++featureCounter;
       continue;
     }
-    const QgsGeometry* featureGeometry = f.constGeometry();
+    QgsGeometry featureGeometry = f.geometry();
 
-    QgsRectangle featureRect = featureGeometry->boundingBox().intersect( &rasterBBox );
+    QgsRectangle featureRect = featureGeometry.boundingBox().intersect( &rasterBBox );
     if ( featureRect.isEmpty() )
     {
       ++featureCounter;
@@ -276,22 +251,22 @@ int QgsZonalStatistics::calculateStatistics( QProgressDialog* p )
     }
 
     //avoid access to cells outside of the raster (may occur because of rounding)
-    if (( offsetX + nCellsX ) > nCellsXGDAL )
+    if ( ( offsetX + nCellsX ) > nCellsXProvider )
     {
-      nCellsX = nCellsXGDAL - offsetX;
+      nCellsX = nCellsXProvider - offsetX;
     }
-    if (( offsetY + nCellsY ) > nCellsYGDAL )
+    if ( ( offsetY + nCellsY ) > nCellsYProvider )
     {
-      nCellsY = nCellsYGDAL - offsetY;
+      nCellsY = nCellsYProvider - offsetY;
     }
 
-    statisticsFromMiddlePointTest( rasterBand, featureGeometry, offsetX, offsetY, nCellsX, nCellsY, cellsizeX, cellsizeY,
+    statisticsFromMiddlePointTest( featureGeometry, offsetX, offsetY, nCellsX, nCellsY, cellsizeX, cellsizeY,
                                    rasterBBox, featureStats );
 
     if ( featureStats.count <= 1 )
     {
       //the cell resolution is probably larger than the polygon area. We switch to precise pixel - polygon intersection in this case
-      statisticsFromPreciseIntersection( rasterBand, featureGeometry, offsetX, offsetY, nCellsX, nCellsY, cellsizeX, cellsizeY,
+      statisticsFromPreciseIntersection( featureGeometry, offsetX, offsetY, nCellsX, nCellsY, cellsizeX, cellsizeY,
                                          rasterBBox, featureStats );
     }
 
@@ -308,8 +283,8 @@ int QgsZonalStatistics::calculateStatistics( QProgressDialog* p )
         changeAttributeMap.insert( meanIndex, QVariant( mean ) );
       if ( mStatistics & QgsZonalStatistics::Median )
       {
-        qSort( featureStats.values.begin(), featureStats.values.end() );
-        int size =  featureStats.values.count();
+        std::sort( featureStats.values.begin(), featureStats.values.end() );
+        int size = featureStats.values.count();
         bool even = ( size % 2 ) < 1;
         double medianValue;
         if ( even )
@@ -318,11 +293,11 @@ int QgsZonalStatistics::calculateStatistics( QProgressDialog* p )
         }
         else //odd
         {
-          medianValue = featureStats.values.at(( size + 1 ) / 2 - 1 );
+          medianValue = featureStats.values.at( ( size + 1 ) / 2 - 1 );
         }
         changeAttributeMap.insert( medianIndex, QVariant( medianValue ) );
       }
-      if ( mStatistics & QgsZonalStatistics::StDev )
+      if ( mStatistics & QgsZonalStatistics::StDev || mStatistics & QgsZonalStatistics::Variance )
       {
         double sumSquared = 0;
         for ( int i = 0; i < featureStats.values.count(); ++i )
@@ -330,8 +305,14 @@ int QgsZonalStatistics::calculateStatistics( QProgressDialog* p )
           double diff = featureStats.values.at( i ) - mean;
           sumSquared += diff * diff;
         }
-        double stdev = qPow( sumSquared / featureStats.values.count(), 0.5 );
-        changeAttributeMap.insert( stdevIndex, QVariant( stdev ) );
+        double variance = sumSquared / featureStats.values.count();
+        if ( mStatistics & QgsZonalStatistics::StDev )
+        {
+          double stdev = std::pow( variance, 0.5 );
+          changeAttributeMap.insert( stdevIndex, QVariant( stdev ) );
+        }
+        if ( mStatistics & QgsZonalStatistics::Variance )
+          changeAttributeMap.insert( varianceIndex, QVariant( variance ) );
       }
       if ( mStatistics & QgsZonalStatistics::Min )
         changeAttributeMap.insert( minIndex, QVariant( featureStats.min ) );
@@ -342,7 +323,7 @@ int QgsZonalStatistics::calculateStatistics( QProgressDialog* p )
       if ( mStatistics & QgsZonalStatistics::Minority || mStatistics & QgsZonalStatistics::Majority )
       {
         QList<int> vals = featureStats.valueCount.values();
-        qSort( vals.begin(), vals.end() );
+        std::sort( vals.begin(), vals.end() );
         if ( mStatistics & QgsZonalStatistics::Minority )
         {
           float minorityKey = featureStats.valueCount.key( vals.first() );
@@ -364,15 +345,14 @@ int QgsZonalStatistics::calculateStatistics( QProgressDialog* p )
 
   vectorProvider->changeAttributeValues( changeMap );
 
-  if ( p )
+  if ( feedback )
   {
-    p->setValue( featureCount );
+    feedback->setProgress( 100 );
   }
 
-  GDALClose( inputDataset );
   mPolygonLayer->updateFields();
 
-  if ( p && p->wasCanceled() )
+  if ( feedback && feedback->isCanceled() )
   {
     return 9;
   }
@@ -380,8 +360,8 @@ int QgsZonalStatistics::calculateStatistics( QProgressDialog* p )
   return 0;
 }
 
-int QgsZonalStatistics::cellInfoForBBox( const QgsRectangle& rasterBBox, const QgsRectangle& featureBBox, double cellSizeX, double cellSizeY,
-    int& offsetX, int& offsetY, int& nCellsX, int& nCellsY ) const
+int QgsZonalStatistics::cellInfoForBBox( const QgsRectangle &rasterBBox, const QgsRectangle &featureBBox, double cellSizeX, double cellSizeY,
+    int &offsetX, int &offsetY, int &nCellsX, int &nCellsY ) const
 {
   //get intersecting bbox
   QgsRectangle intersectBox = rasterBBox.intersect( &featureBBox );
@@ -395,11 +375,11 @@ int QgsZonalStatistics::cellInfoForBBox( const QgsRectangle& rasterBBox, const Q
   }
 
   //get offset in pixels in x- and y- direction
-  offsetX = ( int )(( intersectBox.xMinimum() - rasterBBox.xMinimum() ) / cellSizeX );
-  offsetY = ( int )(( rasterBBox.yMaximum() - intersectBox.yMaximum() ) / cellSizeY );
+  offsetX = ( int )( ( intersectBox.xMinimum() - rasterBBox.xMinimum() ) / cellSizeX );
+  offsetY = ( int )( ( rasterBBox.yMaximum() - intersectBox.yMaximum() ) / cellSizeY );
 
-  int maxColumn = ( int )(( intersectBox.xMaximum() - rasterBBox.xMinimum() ) / cellSizeX ) + 1;
-  int maxRow = ( int )(( rasterBBox.yMaximum() - intersectBox.yMinimum() ) / cellSizeY ) + 1;
+  int maxColumn = ( int )( ( intersectBox.xMaximum() - rasterBBox.xMinimum() ) / cellSizeX ) + 1;
+  int maxRow = ( int )( ( rasterBBox.yMaximum() - intersectBox.yMinimum() ) / cellSizeY ) + 1;
 
   nCellsX = maxColumn - offsetX;
   nCellsY = maxRow - offsetY;
@@ -407,139 +387,128 @@ int QgsZonalStatistics::cellInfoForBBox( const QgsRectangle& rasterBBox, const Q
   return 0;
 }
 
-void QgsZonalStatistics::statisticsFromMiddlePointTest( void* band, const QgsGeometry* poly, int pixelOffsetX,
-    int pixelOffsetY, int nCellsX, int nCellsY, double cellSizeX, double cellSizeY, const QgsRectangle& rasterBBox, FeatureStats &stats )
+void QgsZonalStatistics::statisticsFromMiddlePointTest( const QgsGeometry &poly, int pixelOffsetX,
+    int pixelOffsetY, int nCellsX, int nCellsY, double cellSizeX, double cellSizeY, const QgsRectangle &rasterBBox, FeatureStats &stats )
 {
   double cellCenterX, cellCenterY;
 
-  float* scanLine = ( float * ) CPLMalloc( sizeof( float ) * nCellsX );
   cellCenterY = rasterBBox.yMaximum() - pixelOffsetY * cellSizeY - cellSizeY / 2;
   stats.reset();
 
-  const GEOSGeometry* polyGeos = poly->asGeos();
+  geos::unique_ptr polyGeos( poly.exportToGeos() );
   if ( !polyGeos )
   {
     return;
   }
 
   GEOSContextHandle_t geosctxt = QgsGeometry::getGEOSHandler();
-  const GEOSPreparedGeometry* polyGeosPrepared = GEOSPrepare_r( geosctxt, poly->asGeos() );
+  geos::prepared_unique_ptr polyGeosPrepared( GEOSPrepare_r( geosctxt, polyGeos.get() ) );
   if ( !polyGeosPrepared )
   {
     return;
   }
 
-  GEOSCoordSequence* cellCenterCoords = nullptr;
-  GEOSGeometry* currentCellCenter = nullptr;
+  GEOSCoordSequence *cellCenterCoords = nullptr;
+  geos::unique_ptr currentCellCenter;
 
+  QgsRectangle featureBBox = poly.boundingBox().intersect( &rasterBBox );
+  QgsRectangle intersectBBox = rasterBBox.intersect( &featureBBox );
+
+  std::unique_ptr< QgsRasterBlock > block( mRasterProvider->block( mRasterBand, intersectBBox, nCellsX, nCellsY ) );
   for ( int i = 0; i < nCellsY; ++i )
   {
-    if ( GDALRasterIO( band, GF_Read, pixelOffsetX, pixelOffsetY + i, nCellsX, 1, scanLine, nCellsX, 1, GDT_Float32, 0, 0 )
-         != CPLE_None )
-    {
-      continue;
-    }
     cellCenterX = rasterBBox.xMinimum() + pixelOffsetX * cellSizeX + cellSizeX / 2;
     for ( int j = 0; j < nCellsX; ++j )
     {
-      if ( validPixel( scanLine[j] ) )
+      if ( validPixel( block->value( i, j ) ) )
       {
-        GEOSGeom_destroy_r( geosctxt, currentCellCenter );
         cellCenterCoords = GEOSCoordSeq_create_r( geosctxt, 1, 2 );
         GEOSCoordSeq_setX_r( geosctxt, cellCenterCoords, 0, cellCenterX );
         GEOSCoordSeq_setY_r( geosctxt, cellCenterCoords, 0, cellCenterY );
-        currentCellCenter = GEOSGeom_createPoint_r( geosctxt, cellCenterCoords );
-        if ( GEOSPreparedContains_r( geosctxt, polyGeosPrepared, currentCellCenter ) )
+        currentCellCenter.reset( GEOSGeom_createPoint_r( geosctxt, cellCenterCoords ) );
+        if ( GEOSPreparedContains_r( geosctxt, polyGeosPrepared.get(), currentCellCenter.get() ) )
         {
-          stats.addValue( scanLine[j] );
+          stats.addValue( block->value( i, j ) );
         }
       }
       cellCenterX += cellSizeX;
     }
     cellCenterY -= cellSizeY;
   }
-  GEOSGeom_destroy_r( geosctxt, currentCellCenter );
-  CPLFree( scanLine );
-  GEOSPreparedGeom_destroy_r( geosctxt, polyGeosPrepared );
 }
 
-void QgsZonalStatistics::statisticsFromPreciseIntersection( void* band, const QgsGeometry* poly, int pixelOffsetX,
-    int pixelOffsetY, int nCellsX, int nCellsY, double cellSizeX, double cellSizeY, const QgsRectangle& rasterBBox, FeatureStats &stats )
+void QgsZonalStatistics::statisticsFromPreciseIntersection( const QgsGeometry &poly, int pixelOffsetX,
+    int pixelOffsetY, int nCellsX, int nCellsY, double cellSizeX, double cellSizeY, const QgsRectangle &rasterBBox, FeatureStats &stats )
 {
   stats.reset();
 
   double currentY = rasterBBox.yMaximum() - pixelOffsetY * cellSizeY - cellSizeY / 2;
-  float* pixelData = ( float * ) CPLMalloc( sizeof( float ) );
-  QgsGeometry* pixelRectGeometry = nullptr;
+  QgsGeometry pixelRectGeometry;
 
   double hCellSizeX = cellSizeX / 2.0;
   double hCellSizeY = cellSizeY / 2.0;
   double pixelArea = cellSizeX * cellSizeY;
   double weight = 0;
 
-  for ( int row = 0; row < nCellsY; ++row )
+  QgsRectangle featureBBox = poly.boundingBox().intersect( &rasterBBox );
+  QgsRectangle intersectBBox = rasterBBox.intersect( &featureBBox );
+
+  QgsRasterBlock *block = mRasterProvider->block( mRasterBand, intersectBBox, nCellsX, nCellsY );
+  for ( int i = 0; i < nCellsY; ++i )
   {
     double currentX = rasterBBox.xMinimum() + cellSizeX / 2.0 + pixelOffsetX * cellSizeX;
-    for ( int col = 0; col < nCellsX; ++col )
+    for ( int j = 0; j < nCellsX; ++j )
     {
-      if ( GDALRasterIO( band, GF_Read, pixelOffsetX + col, pixelOffsetY + row, nCellsX, 1, pixelData, 1, 1, GDT_Float32, 0, 0 ) != CE_None )
+      if ( !validPixel( block->value( i, j ) ) )
       {
-        QgsDebugMsg( "Raster IO Error" );
+        continue;
       }
 
-      if ( !validPixel( *pixelData ) )
-        continue;
-
       pixelRectGeometry = QgsGeometry::fromRect( QgsRectangle( currentX - hCellSizeX, currentY - hCellSizeY, currentX + hCellSizeX, currentY + hCellSizeY ) );
-      if ( pixelRectGeometry )
+      if ( !pixelRectGeometry.isNull() )
       {
         //intersection
-        QgsGeometry *intersectGeometry = pixelRectGeometry->intersection( poly );
-        if ( intersectGeometry )
+        QgsGeometry intersectGeometry = pixelRectGeometry.intersection( poly );
+        if ( !intersectGeometry.isNull() )
         {
-          double intersectionArea = intersectGeometry->area();
+          double intersectionArea = intersectGeometry.area();
           if ( intersectionArea >= 0.0 )
           {
             weight = intersectionArea / pixelArea;
-            stats.addValue( *pixelData, weight );
+            stats.addValue( block->value( i, j ), weight );
           }
-          delete intersectGeometry;
         }
-        delete pixelRectGeometry;
-        pixelRectGeometry = nullptr;
+        pixelRectGeometry = QgsGeometry();
       }
       currentX += cellSizeX;
     }
     currentY -= cellSizeY;
   }
-  CPLFree( pixelData );
+  delete block;
 }
 
 bool QgsZonalStatistics::validPixel( float value ) const
 {
-  if ( value == mInputNodataValue || qIsNaN( value ) )
-  {
-    return false;
-  }
-  return true;
+  return !( value == mInputNodataValue || std::isnan( value ) );
 }
 
-QString QgsZonalStatistics::getUniqueFieldName( const QString& fieldName )
+QString QgsZonalStatistics::getUniqueFieldName( const QString &fieldName, const QList<QgsField> &newFields )
 {
-  QgsVectorDataProvider* dp = mPolygonLayer->dataProvider();
+  QgsVectorDataProvider *dp = mPolygonLayer->dataProvider();
 
-  if ( !dp->storageType().contains( "ESRI Shapefile" ) )
+  if ( !dp->storageType().contains( QLatin1String( "ESRI Shapefile" ) ) )
   {
     return fieldName;
   }
 
-  const QgsFields& providerFields = dp->fields();
+  QList<QgsField> allFields = dp->fields().toList();
+  allFields.append( newFields );
   QString shortName = fieldName.mid( 0, 10 );
 
   bool found = false;
-  for ( int idx = 0; idx < providerFields.count(); ++idx )
+  for ( int idx = 0; idx < allFields.count(); ++idx )
   {
-    if ( shortName == providerFields[idx].name() )
+    if ( shortName == allFields.at( idx ).name() )
     {
       found = true;
       break;
@@ -552,23 +521,23 @@ QString QgsZonalStatistics::getUniqueFieldName( const QString& fieldName )
   }
 
   int n = 1;
-  shortName = QString( "%1_%2" ).arg( fieldName.mid( 0, 8 ) ).arg( n );
+  shortName = QStringLiteral( "%1_%2" ).arg( fieldName.mid( 0, 8 ) ).arg( n );
   found = true;
   while ( found )
   {
     found = false;
-    for ( int idx = 0; idx < providerFields.count(); ++idx )
+    for ( int idx = 0; idx < allFields.count(); ++idx )
     {
-      if ( shortName == providerFields[idx].name() )
+      if ( shortName == allFields.at( idx ).name() )
       {
         n += 1;
         if ( n < 9 )
         {
-          shortName = QString( "%1_%2" ).arg( fieldName.mid( 0, 8 ) ).arg( n );
+          shortName = QStringLiteral( "%1_%2" ).arg( fieldName.mid( 0, 8 ) ).arg( n );
         }
         else
         {
-          shortName = QString( "%1_%2" ).arg( fieldName.mid( 0, 7 ) ).arg( n );
+          shortName = QStringLiteral( "%1_%2" ).arg( fieldName.mid( 0, 7 ) ).arg( n );
         }
         found = true;
       }

@@ -56,7 +56,7 @@
  *
  *   Additional useful conventions:
  *
- *   theVariableName - a method parameter ( prefix with 'the' )
+ *   variableName - a method parameter ( prefix with 'the' )
  *   myVariableName - a locally declared variable within a method ( 'my' prefix )
  *
  *   DO: Use mixed case variable names - myVariableName
@@ -70,8 +70,8 @@
 
 #include <QObject>
 
-#include <qgisplugin.h>
-#include <qgisinterface.h>
+#include "qgisplugin.h"
+#include "qgisinterface.h"
 
 //forward declarations
 class QAction;
@@ -92,14 +92,11 @@ class eVis: public QObject, public QgisPlugin
   public:
 
     //! Constructor
-    explicit eVis( QgisInterface * theInterface );
-
-    //! Destructor */
-    ~eVis();
+    explicit eVis( QgisInterface *interface );
 
   public slots:
     //! init the gui
-    virtual void initGui() override;
+    void initGui() override;
 
     //! Main button actions
     void launchDatabaseConnection();
@@ -113,21 +110,21 @@ class eVis: public QObject, public QgisPlugin
     void help();
 
     //! Add a vector layer given vectorLayerPath, baseName, providerKey ( "ogr" or "postgres" );
-    void drawVectorLayer( const QString&, const QString&, const QString& );
+    void drawVectorLayer( const QString &, const QString &, const QString & );
 
   private:
 
-    QgisInterface *mQGisIface;
+    QgisInterface *mQGisIface = nullptr;
 
-    QAction* mDatabaseConnectionActionPointer;
+    QAction *mDatabaseConnectionActionPointer = nullptr;
 
-    QAction* mEventIdToolActionPointer;
+    QAction *mEventIdToolActionPointer = nullptr;
 
-    QAction* mEventBrowserActionPointer;
+    QAction *mEventBrowserActionPointer = nullptr;
 
-    eVisEventIdTool* mIdTool;
+    eVisEventIdTool *mIdTool = nullptr;
 
     //! List of pointers to temporary files, files are created by database queries */
-    QList<QTemporaryFile*> mTemporaryFileList;
+    QList<QTemporaryFile *> mTemporaryFileList;
 };
 #endif //eVis_H

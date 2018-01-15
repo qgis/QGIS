@@ -38,6 +38,7 @@ class QgsOwsProvider : public QgsDataProvider
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for the provider.
      *
@@ -45,10 +46,7 @@ class QgsOwsProvider : public QgsDataProvider
      *                otherwise we contact the host directly.
      *
      */
-    explicit QgsOwsProvider( QString const & uri = nullptr );
-
-    //! Destructor
-    ~QgsOwsProvider();
+    explicit QgsOwsProvider( const QString &uri = QString() );
 
     /* Pure virtuals */
 
@@ -56,11 +54,11 @@ class QgsOwsProvider : public QgsDataProvider
 
     QString description() const override;
 
-    QgsCoordinateReferenceSystem crs() override { return QgsCoordinateReferenceSystem(); }
+    QgsCoordinateReferenceSystem crs() const override { return QgsCoordinateReferenceSystem(); }
 
-    QgsRectangle extent() override { return QgsRectangle(); }
+    QgsRectangle extent() const override { return QgsRectangle(); }
 
-    bool isValid() override { return false; }
+    bool isValid() const override { return false; }
 };
 
 #endif // QGSOWSPROVIDER_H

@@ -1,84 +1,173 @@
-/** \ingroup core
- * Utility class that construct a planar graph from the input vector
- * layers and provides shortest path search for tracing of existing
- * features.
- *
- * @note added in QGIS 2.14
- */
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgstracer.h                                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
 class QgsTracer : QObject
 {
-%TypeHeaderCode
-#include <qgstracer.h>
+%Docstring
+Utility class that construct a planar graph from the input vector
+layers and provides shortest path search for tracing of existing
+features.
+
+.. versionadded:: 2.14
 %End
 
+%TypeHeaderCode
+#include "qgstracer.h"
+%End
   public:
+
     QgsTracer();
+%Docstring
+Constructor for QgsTracer.
+%End
     ~QgsTracer();
 
-    //! Get layers used for tracing
-    QList<QgsVectorLayer*> layers() const;
-    //! Set layers used for tracing
-    void setLayers( const QList<QgsVectorLayer*>& layers );
+    QList<QgsVectorLayer *> layers() const;
+%Docstring
+Get layers used for tracing
+%End
+    void setLayers( const QList<QgsVectorLayer *> &layers );
+%Docstring
+Set layers used for tracing
+%End
 
-    //! Return true if reprojection to destination CRS is enabled
-    bool hasCrsTransformEnabled() const;
-    //! Set whether to do reprojection to destination CRS
-    void setCrsTransformEnabled( bool enabled );
-
-    //! Get CRS used for tracing
     QgsCoordinateReferenceSystem destinationCrs() const;
-    //! Set CRS used for tracing
-    void setDestinationCrs( const QgsCoordinateReferenceSystem& crs );
+%Docstring
+Returns the CRS used for tracing.
 
-    //! Get extent to which graph's features will be limited (empty extent means no limit)
+.. seealso:: :py:func:`setDestinationCrs`
+%End
+
+    void setDestinationCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context );
+%Docstring
+Sets the ``crs`` and transform ``context`` used for tracing.
+
+.. seealso:: :py:func:`destinationCrs`
+%End
+
     QgsRectangle extent() const;
-    //! Set extent to which graph's features will be limited (empty extent means no limit)
-    void setExtent( const QgsRectangle& extent );
+%Docstring
+Get extent to which graph's features will be limited (empty extent means no limit)
+%End
+    void setExtent( const QgsRectangle &extent );
+%Docstring
+Set extent to which graph's features will be limited (empty extent means no limit)
+%End
 
-    //! Get maximum possible number of features in graph. If the number is exceeded, graph is not created.
+    double offset() const;
+%Docstring
+Get offset in map units that should be applied to the traced paths returned from findShortestPath().
+Positive offset for right side, negative offset for left side.
+
+.. versionadded:: 3.0
+%End
+
+    void setOffset( double offset );
+%Docstring
+Set offset in map units that should be applied to the traced paths returned from findShortestPath().
+Positive offset for right side, negative offset for left side.
+
+.. versionadded:: 3.0
+%End
+
+    void offsetParameters( int &quadSegments /Out/, int &joinStyle /Out/, double &miterLimit /Out/ );
+%Docstring
+Get extra parameters for offset curve algorithm (used when offset is non-zero)
+
+.. versionadded:: 3.0
+%End
+
+    void setOffsetParameters( int quadSegments, int joinStyle, double miterLimit );
+%Docstring
+Set extra parameters for offset curve algorithm (used when offset is non-zero)
+
+.. versionadded:: 3.0
+%End
+
     int maxFeatureCount() const;
-    //! Get maximum possible number of features in graph. If the number is exceeded, graph is not created.
+%Docstring
+Get maximum possible number of features in graph. If the number is exceeded, graph is not created.
+%End
     void setMaxFeatureCount( int count );
+%Docstring
+Get maximum possible number of features in graph. If the number is exceeded, graph is not created.
+%End
 
-    //! Build the internal data structures. This may take some time
-    //! depending on how big the input layers are. It is not necessary
-    //! to call this method explicitly - it will be called by findShortestPath()
-    //! if necessary.
     bool init();
+%Docstring
+Build the internal data structures. This may take some time
+depending on how big the input layers are. It is not necessary
+to call this method explicitly - it will be called by findShortestPath()
+if necessary.
+%End
 
-    //! Whether the internal data structures have been initialized
     bool isInitialized() const;
+%Docstring
+Whether the internal data structures have been initialized
+%End
 
-    //! Whether there was an error during graph creation due to noding exception,
-    //! indicating some input data topology problems
-    //! @note added in QGIS 2.16
     bool hasTopologyProblem() const;
+%Docstring
+Whether there was an error during graph creation due to noding exception,
+indicating some input data topology problems
 
-    //! Possible errors that may happen when calling findShortestPath()
+.. versionadded:: 2.16
+%End
+
     enum PathError
     {
-      ErrNone,               //!< No error
-      ErrTooManyFeatures,    //!< Max feature count threshold was reached while reading features
-      ErrPoint1,             //!< Start point cannot be joined to the graph
-      ErrPoint2,             //!< End point cannot be joined to the graph
-      ErrNoPath,             //!< Points are not connected in the graph
+      ErrNone,
+      ErrTooManyFeatures,
+      ErrPoint1,
+      ErrPoint2,
+      ErrNoPath,
     };
 
-    //! Given two points, find the shortest path and return points on the way.
-    //! The optional "error" argument may receive error code (PathError enum) if it is not null
-    //! @return array of points - trace of linestrings of other features (empty array one error)
-    QVector<QgsPoint> findShortestPath( const QgsPoint& p1, const QgsPoint& p2, QgsTracer::PathError* error /Out/ = nullptr );
+    QVector<QgsPointXY> findShortestPath( const QgsPointXY &p1, const QgsPointXY &p2, PathError *error /Out/ = 0 );
+%Docstring
+Given two points, find the shortest path and return points on the way.
+The optional "error" argument may receive error code (PathError enum) if it is not null
 
-    //! Find out whether the point is snapped to a vertex or edge (i.e. it can be used for tracing start/stop)
-    bool isPointSnapped( const QgsPoint& pt );
+:return: array of points - trace of linestrings of other features (empty array one error)
+%End
+
+    bool isPointSnapped( const QgsPointXY &pt );
+%Docstring
+Find out whether the point is snapped to a vertex or edge (i.e. it can be used for tracing start/stop)
+%End
 
   protected:
-    //! Allows derived classes to setup the settings just before the tracer is initialized.
-    //! This allows the configuration to be set in a lazy way only when it is really necessary.
-    //! Default implementation does nothing.
+
     virtual void configure();
+%Docstring
+Allows derived classes to setup the settings just before the tracer is initialized.
+This allows the configuration to be set in a lazy way only when it is really necessary.
+Default implementation does nothing.
+%End
 
   protected slots:
-    //! Destroy the existing graph structure if any (de-initialize)
     void invalidateGraph();
+%Docstring
+Destroy the existing graph structure if any (de-initialize)
+%End
+
 };
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgstracer.h                                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

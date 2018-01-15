@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgshistogramdiagram.h"
-#include "qgsdiagramrendererv2.h"
+#include "qgsdiagramrenderer.h"
 #include "qgsrendercontext.h"
 #include "qgsexpression.h"
 
@@ -26,16 +26,12 @@ QgsHistogramDiagram::QgsHistogramDiagram()
   mScaleFactor = 0;
 }
 
-QgsHistogramDiagram::~QgsHistogramDiagram()
-{
-}
-
-QgsHistogramDiagram* QgsHistogramDiagram::clone() const
+QgsHistogramDiagram *QgsHistogramDiagram::clone() const
 {
   return new QgsHistogramDiagram( *this );
 }
 
-QSizeF QgsHistogramDiagram::diagramSize( const QgsFeature& feature, const QgsRenderContext& c, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is )
+QSizeF QgsHistogramDiagram::diagramSize( const QgsFeature &feature, const QgsRenderContext &c, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &is )
 {
   QSizeF size;
   if ( feature.attributes().isEmpty() )
@@ -50,13 +46,13 @@ QSizeF QgsHistogramDiagram::diagramSize( const QgsFeature& feature, const QgsRen
 
   QgsExpressionContext expressionContext = c.expressionContext();
   expressionContext.setFeature( feature );
-  if ( feature.fields() )
-    expressionContext.setFields( *feature.fields() );
+  if ( !feature.fields().isEmpty() )
+    expressionContext.setFields( feature.fields() );
 
-  Q_FOREACH ( const QString& cat, s.categoryAttributes )
+  for ( const QString &cat : qgis::as_const( s.categoryAttributes ) )
   {
-    QgsExpression* expression = getExpression( cat, expressionContext );
-    maxValue = qMax( expression->evaluate( &expressionContext ).toDouble(), maxValue );
+    QgsExpression *expression = getExpression( cat, expressionContext );
+    maxValue = std::max( expression->evaluate( &expressionContext ).toDouble(), maxValue );
   }
 
   // Scale, if extension is smaller than the specified minimum
@@ -69,13 +65,13 @@ QSizeF QgsHistogramDiagram::diagramSize( const QgsFeature& feature, const QgsRen
   {
     case QgsDiagramSettings::Up:
     case QgsDiagramSettings::Down:
-      mScaleFactor = (( is.upperSize.width() - is.lowerSize.height() ) / ( is.upperValue - is.lowerValue ) );
+      mScaleFactor = ( ( is.upperSize.width() - is.lowerSize.height() ) / ( is.upperValue - is.lowerValue ) );
       size.scale( s.barWidth * s.categoryAttributes.size(), maxValue * mScaleFactor, Qt::IgnoreAspectRatio );
       break;
 
     case QgsDiagramSettings::Right:
     case QgsDiagramSettings::Left:
-      mScaleFactor = (( is.upperSize.width() - is.lowerSize.width() ) / ( is.upperValue - is.lowerValue ) );
+      mScaleFactor = ( ( is.upperSize.width() - is.lowerSize.width() ) / ( is.upperValue - is.lowerValue ) );
       size.scale( maxValue * mScaleFactor, s.barWidth * s.categoryAttributes.size(), Qt::IgnoreAspectRatio );
       break;
   }
@@ -94,11 +90,16 @@ double QgsHistogramDiagram::legendSize( double value, const QgsDiagramSettings &
     value = s.minimumSize;
   }
 
-  double scaleFactor = (( is.upperSize.width() - is.lowerSize.width() ) / ( is.upperValue - is.lowerValue ) );
+  double scaleFactor = ( ( is.upperSize.width() - is.lowerSize.width() ) / ( is.upperValue - is.lowerValue ) );
   return value * scaleFactor;
 }
 
-QSizeF QgsHistogramDiagram::diagramSize( const QgsAttributes& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s )
+QString QgsHistogramDiagram::diagramName() const
+{
+  return DIAGRAM_NAME_HISTOGRAM;
+}
+
+QSizeF QgsHistogramDiagram::diagramSize( const QgsAttributes &attributes, const QgsRenderContext &c, const QgsDiagramSettings &s )
 {
   Q_UNUSED( c );
   QSizeF size;
@@ -112,7 +113,7 @@ QSizeF QgsHistogramDiagram::diagramSize( const QgsAttributes& attributes, const 
 
   for ( int i = 0; i < attributes.count(); ++i )
   {
-    maxValue = qMax( attributes.at( i ).toDouble(), maxValue );
+    maxValue = std::max( attributes.at( i ).toDouble(), maxValue );
   }
 
   switch ( s.diagramOrientation )
@@ -134,9 +135,9 @@ QSizeF QgsHistogramDiagram::diagramSize( const QgsAttributes& attributes, const 
   return size;
 }
 
-void QgsHistogramDiagram::renderDiagram( const QgsFeature& feature, QgsRenderContext& c, const QgsDiagramSettings& s, QPointF position )
+void QgsHistogramDiagram::renderDiagram( const QgsFeature &feature, QgsRenderContext &c, const QgsDiagramSettings &s, QPointF position )
 {
-  QPainter* p = c.painter();
+  QPainter *p = c.painter();
   if ( !p )
   {
     return;
@@ -147,15 +148,15 @@ void QgsHistogramDiagram::renderDiagram( const QgsFeature& feature, QgsRenderCon
 
   QgsExpressionContext expressionContext = c.expressionContext();
   expressionContext.setFeature( feature );
-  if ( feature.fields() )
-    expressionContext.setFields( *feature.fields() );
+  if ( !feature.fields().isEmpty() )
+    expressionContext.setFields( feature.fields() );
 
-  Q_FOREACH ( const QString& cat, s.categoryAttributes )
+  for ( const QString &cat : qgis::as_const( s.categoryAttributes ) )
   {
-    QgsExpression* expression = getExpression( cat, expressionContext );
+    QgsExpression *expression = getExpression( cat, expressionContext );
     double currentVal = expression->evaluate( &expressionContext ).toDouble();
     values.push_back( currentVal );
-    maxValue = qMax( currentVal, maxValue );
+    maxValue = std::max( currentVal, maxValue );
   }
 
   double scaledMaxVal = sizePainterUnits( maxValue * mScaleFactor, s, c );

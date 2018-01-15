@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>583</width>
+    <height>99</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout" columnstretch="0,0,0,0,1">
+   <item row="0" column="1">
+    <widget class="QgsSpinBox" name="mRowsSpinBox">
+     <property name="toolTip">
+      <string>Number of rows (pixels) in output raster</string>
+     </property>
+     <property name="keyboardTracking">
+      <bool>false</bool>
+     </property>
+     <property name="minimum">
+      <number>1</number>
+     </property>
+     <property name="maximum">
+      <number>999999</number>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="2">
+    <widget class="QLabel" name="columnLabel">
+     <property name="text">
+      <string>Columns</string>
+     </property>
+     <property name="buddy">
+      <cstring>mColumnsSpinBox</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QgsDoubleSpinBox" name="mCellXSpinBox">
+     <property name="toolTip">
+      <string>Resolution of each pixel in output raster, in layer units</string>
+     </property>
+     <property name="decimals">
+      <number>6</number>
+     </property>
+     <property name="maximum">
+      <double>999999999.000000000000000</double>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="cellsizeXLabel">
+     <property name="text">
+      <string>Pixel size X</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="3">
+    <widget class="QgsSpinBox" name="mColumnsSpinBox">
+     <property name="toolTip">
+      <string>Number of columns (pixels) in output raster</string>
+     </property>
+     <property name="keyboardTracking">
+      <bool>false</bool>
+     </property>
+     <property name="minimum">
+      <number>1</number>
+     </property>
+     <property name="maximum">
+      <number>999999</number>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <widget class="QLabel" name="rowLabel">
+     <property name="text">
+      <string>Rows</string>
+     </property>
+     <property name="buddy">
+      <cstring>mRowsSpinBox</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="2">
+    <widget class="QLabel" name="cellsizeYLabel">
+     <property name="text">
+      <string>Pixel size Y</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="3">
+    <widget class="QgsDoubleSpinBox" name="mCellYSpinBox">
+     <property name="toolTip">
+      <string>Resolution of each pixel in output raster, in layer units</string>
+     </property>
+     <property name="decimals">
+      <number>6</number>
+     </property>
+     <property name="maximum">
+      <double>999999999.000000000000000</double>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="4">
+    <spacer name="horizontalSpacer_2">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>40</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>qgis.gui</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgis.gui</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

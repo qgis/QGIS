@@ -25,57 +25,46 @@ __copyright__ = '(C) 2015, Nyall Dawson'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import QgsGeometry, QgsFeature
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.parameters import ParameterVector
-from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
+from qgis.core import (QgsGeometry,
+                       QgsProcessingException,
+                       QgsProcessing)
+from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 
 
-class ReverseLineDirection(GeoAlgorithm):
+class ReverseLineDirection(QgisFeatureBasedAlgorithm):
 
-    INPUT_LAYER = 'INPUT_LAYER'
-    OUTPUT_LAYER = 'OUTPUT_LAYER'
+    def group(self):
+        return self.tr('Vector geometry')
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Reverse line direction')
-        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
+    def groupId(self):
+        return 'vectorgeometry'
 
-        self.addParameter(ParameterVector(self.INPUT_LAYER,
-                                          self.tr('Input layer'), [ParameterVector.VECTOR_TYPE_LINE]))
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Reversed')))
+    def __init__(self):
+        super().__init__()
 
-    def processAlgorithm(self, progress):
-        layer = dataobjects.getObjectFromUri(
-            self.getParameterValue(self.INPUT_LAYER))
-        provider = layer.dataProvider()
+    def name(self):
+        return 'reverselinedirection'
 
-        writer = self.getOutputFromName(
-            self.OUTPUT_LAYER).getVectorWriter(
-                layer.fields().toList(),
-                provider.geometryType(),
-                layer.crs())
+    def displayName(self):
+        return self.tr('Reverse line direction')
 
-        outFeat = QgsFeature()
+    def outputName(self):
+        return self.tr('Reversed')
 
-        features = vector.features(layer)
-        total = 100.0 / len(features)
-        for current, inFeat in enumerate(features):
-            inGeom = inFeat.constGeometry()
-            attrs = inFeat.attributes()
+    def outputType(self):
+        return QgsProcessing.TypeVectorLine
 
-            outGeom = None
-            if inGeom and not inGeom.isEmpty():
-                reversedLine = inGeom.geometry().reversed()
-                if reversedLine is None:
-                    raise GeoAlgorithmExecutionException(
-                        self.tr('Error reversing line'))
-                outGeom = QgsGeometry(reversedLine)
+    def inputLayerTypes(self):
+        return [QgsProcessing.TypeVectorLine]
 
-            outFeat.setGeometry(outGeom)
-            outFeat.setAttributes(attrs)
-            writer.addFeature(outFeat)
-            progress.setPercentage(int(current * total))
+    def processFeature(self, feature, context, feedback):
+        if feature.geometry():
+            inGeom = feature.geometry()
+            reversedLine = inGeom.constGet().reversed()
+            if not reversedLine:
+                raise QgsProcessingException(
+                    self.tr('Error reversing line'))
+            outGeom = QgsGeometry(reversedLine)
 
-        del writer
+            feature.setGeometry(outGeom)
+        return feature

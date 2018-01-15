@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>508</height>
+    <height>529</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -17,7 +17,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>Create a New Oracle connection</string>
+   <string>Create a New Oracle Connection</string>
   </property>
   <property name="sizeGripEnabled">
    <bool>true</bool>
@@ -26,25 +26,41 @@
    <bool>true</bool>
   </property>
   <layout class="QGridLayout">
-   <property name="margin">
+   <property name="leftMargin">
+    <number>9</number>
+   </property>
+   <property name="topMargin">
+    <number>9</number>
+   </property>
+   <property name="rightMargin">
+    <number>9</number>
+   </property>
+   <property name="bottomMargin">
     <number>9</number>
    </property>
    <property name="spacing">
     <number>6</number>
    </property>
-   <item row="1" column="0">
+   <item row="2" column="0">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="standardButtons">
       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>
-   <item row="0" column="0">
+   <item row="1" column="0">
     <widget class="QGroupBox" name="GroupBox1">
      <property name="title">
       <string>Connection Information</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_1">
+      <item row="9" column="0" colspan="2">
+       <widget class="QCheckBox" name="chkStorePassword">
+        <property name="text">
+         <string>Save Password</string>
+        </property>
+       </widget>
+      </item>
       <item row="13" column="0" colspan="3">
        <widget class="QCheckBox" name="cb_useEstimatedMetadata">
         <property name="toolTip">
@@ -187,13 +203,6 @@
       <item row="1" column="1" colspan="2">
        <widget class="QLineEdit" name="txtDatabase"/>
       </item>
-      <item row="9" column="0" colspan="2">
-       <widget class="QCheckBox" name="chkStorePassword">
-        <property name="text">
-         <string>Save Password</string>
-        </property>
-       </widget>
-      </item>
       <item row="0" column="1" colspan="2">
        <widget class="QLineEdit" name="txtName">
         <property name="toolTip">
@@ -205,7 +214,7 @@
        <widget class="QLineEdit" name="txtHost"/>
       </item>
       <item row="5" column="1" colspan="2">
-       <widget class="QLineEdit" name="txtPassword">
+       <widget class="QgsPasswordLineEdit" name="txtPassword">
         <property name="echoMode">
          <enum>QLineEdit::Password</enum>
         </property>
@@ -252,12 +261,41 @@
         </property>
        </widget>
       </item>
+      <item row="15" column="0" colspan="3">
+       <widget class="QCheckBox" name="cb_includeGeoAttributes">
+        <property name="toolTip">
+         <string/>
+        </property>
+        <property name="whatsThis">
+         <string/>
+        </property>
+        <property name="text">
+         <string>Include additional geometry attributes</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
+   </item>
+   <item row="0" column="0">
+    <widget class="QgsMessageBar" name="bar" native="true"/>
    </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>QgsPasswordLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgspasswordlineedit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsMessageBar</class>
+   <extends>QWidget</extends>
+   <header>qgsmessagebar.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>txtName</tabstop>
   <tabstop>txtDatabase</tabstop>
@@ -275,6 +313,7 @@
   <tabstop>cb_allowGeometrylessTables</tabstop>
   <tabstop>cb_useEstimatedMetadata</tabstop>
   <tabstop>cb_onlyExistingTypes</tabstop>
+  <tabstop>cb_includeGeoAttributes</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>

@@ -1,20 +1,49 @@
-/** \ingroup gui
- * A generic dialog with layout and button box
- */
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsdialog.h                                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
 class QgsDialog : QDialog
 {
-%TypeHeaderCode
-#include <qgsdialog.h>
+%Docstring
+A generic dialog with layout and button box
 %End
 
+%TypeHeaderCode
+#include "qgsdialog.h"
+%End
   public:
-    QgsDialog( QWidget *parent /TransferThis/ = 0, const Qt::WindowFlags& fl = QgisGui::ModalDialogFlags,
-               const QDialogButtonBox::StandardButtons& buttons = QDialogButtonBox::Close,
-               Qt::Orientation orientation = Qt::Horizontal );
-    ~QgsDialog();
 
-    //! Returns the central layout. Widgets added to it must have this dialog as parent.
+    QgsDialog( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags,
+               QDialogButtonBox::StandardButtons buttons = QDialogButtonBox::Close,
+               Qt::Orientation orientation = Qt::Horizontal );
+%Docstring
+Constructor for QgsDialog.
+%End
+
     QVBoxLayout *layout();
-    //! Returns the button box.
+%Docstring
+Returns the central layout. Widgets added to it must have this dialog as parent.
+%End
     QDialogButtonBox *buttonBox();
+%Docstring
+Returns the button box.
+%End
+
+  protected:
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsdialog.h                                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

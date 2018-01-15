@@ -1,0 +1,13 @@
+i.aster.toar
+Calculates Top of Atmosphere Radiance/Reflectance/Brightness Temperature from ASTER DN.
+Imagery (i.*)
+QgsProcessingParameterMultipleLayers|input|Names of ASTER DN layers (15 layers)|3|None|False
+QgsProcessingParameterNumber|dayofyear|Day of Year of satellite overpass [0-366]|QgsProcessingParameterNumber.Integer|0|False|0|366
+QgsProcessingParameterNumber|sun_elevation|Sun elevation angle (degrees, < 90.0)|QgsProcessingParameterNumber.Double|None|False|0.0|90.0
+QgsProcessingParameterBoolean|-r|Output is radiance (W/m2)|False
+QgsProcessingParameterBoolean|-a|VNIR is High Gain|False
+QgsProcessingParameterBoolean|-b|SWIR is High Gain|False
+QgsProcessingParameterBoolean|-c|VNIR is Low Gain 1|False
+QgsProcessingParameterBoolean|-d|SWIR is Low Gain 1|False
+QgsProcessingParameterBoolean|-e|SWIR is Low Gain 2|False
+QgsProcessingParameterFolderDestination|output|Output Directory

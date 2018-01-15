@@ -90,11 +90,11 @@ QextSerialEnumerator::~QextSerialEnumerator( )
 #else
         // just iterate the com ports.
         // looks like GUID_DEVCLASS_PORTS doesn't find them all.
-        for( unsigned int i = 0 ; i < 256; i++ )
+        for( unsigned int i = 0; i < 256; i++ )
         {
           QString port = "\\\\.\\COM" + QString::number(i);
 
-          HANDLE hPort = ::CreateFile(port.toAscii(), GENERIC_READ | GENERIC_WRITE, 0, 0, OPEN_EXISTING, 0, 0);
+          HANDLE hPort = ::CreateFile(port.toLatin1(), GENERIC_READ | GENERIC_WRITE, 0, 0, OPEN_EXISTING, 0, 0);
           if( hPort == INVALID_HANDLE_VALUE )
             continue;
 
@@ -507,21 +507,7 @@ QList<QextPortInfo> QextSerialEnumerator::getPorts()
     QList<QextPortInfo> ports;
 
     #ifdef Q_OS_WIN
-        OSVERSIONINFO vi;
-        vi.dwOSVersionInfoSize = sizeof(vi);
-        if (!::GetVersionEx(&vi)) {
-            qCritical("Could not get OS version.");
-            return ports;
-        }
-        // Handle windows 9x and NT4 specially
-        if (vi.dwMajorVersion < 5) {
-            qCritical("Enumeration for this version of Windows is not implemented yet");
-        /*if (vi.dwPlatformId == VER_PLATFORM_WIN32_NT)
-                EnumPortsWNt4(ports);
-            else
-                EnumPortsW9x(ports);*/
-        } else  //w2k or later
-            setupAPIScan(ports);
+        setupAPIScan(ports);
     #endif /*Q_OS_WIN*/
     #ifdef Q_OS_UNIX
         #ifdef Q_OS_MAC

@@ -15,25 +15,29 @@
  ***************************************************************************/
 
 #include "qgsauthcertificatemanager.h"
+#include "qgssettings.h"
 
 #include <QDialog>
 #include <QDialogButtonBox>
 #include <QPushButton>
 
 QgsAuthCertEditors::QgsAuthCertEditors( QWidget *parent )
-    : QWidget( parent )
+  : QWidget( parent )
 {
   setupUi( this );
+  QgsSettings settings;
+  tabWidget->setCurrentIndex( settings.value( QStringLiteral( "AuthCertEditorsSelectedTab" ), 0, QgsSettings::Section::Auth ).toInt() );
 }
 
 QgsAuthCertEditors::~QgsAuthCertEditors()
 {
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "AuthCertEditorsSelectedTab" ), tabWidget->currentIndex(), QgsSettings::Section::Auth );
 }
 
 
-
 QgsAuthCertManager::QgsAuthCertManager( QWidget *parent )
-    : QDialog( parent )
+  : QDialog( parent )
 {
   setWindowTitle( tr( "Certificate Manager" ) );
   QVBoxLayout *layout = new QVBoxLayout( this );
@@ -45,12 +49,8 @@ QgsAuthCertManager::QgsAuthCertManager( QWidget *parent )
   QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Close,
       Qt::Horizontal, this );
   buttonBox->button( QDialogButtonBox::Close )->setDefault( true );
-  connect( buttonBox, SIGNAL( rejected() ), this, SLOT( close() ) );
+  connect( buttonBox, &QDialogButtonBox::rejected, this, &QWidget::close );
   layout->addWidget( buttonBox );
 
   setLayout( layout );
-}
-
-QgsAuthCertManager::~QgsAuthCertManager()
-{
 }

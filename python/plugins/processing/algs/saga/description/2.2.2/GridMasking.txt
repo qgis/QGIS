@@ -1,6 +1,0 @@
-Grid Masking
-grid_tools
-ParameterRaster|GRID|Grid|False
-ParameterRaster|MASK|Mask|False
-OutputRaster|MASKED|Masked Grid
-AllowUnmatching

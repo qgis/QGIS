@@ -18,9 +18,7 @@
 #include "qgsvectorlayer.h"
 
 QgsVectorSimplifyMethod::QgsVectorSimplifyMethod()
-    : mSimplifyHints( QGis::DEFAULT_MAPTOPIXEL_THRESHOLD > 1 ? QgsVectorSimplifyMethod::FullSimplification : QgsVectorSimplifyMethod::GeometrySimplification )
-    , mThreshold( QGis::DEFAULT_MAPTOPIXEL_THRESHOLD )
-    , mLocalOptimization( true )
-    , mMaximumScale( 1 )
+  : mSimplifyHints( Qgis::DEFAULT_MAPTOPIXEL_THRESHOLD > 1 ? QgsVectorSimplifyMethod::FullSimplification : QgsVectorSimplifyMethod::GeometrySimplification )
+  , mThreshold( Qgis::DEFAULT_MAPTOPIXEL_THRESHOLD )
 {
 }

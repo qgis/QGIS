@@ -1,47 +1,93 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgsrasteridentifyresult.h                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
 class QgsRasterIdentifyResult
 {
+%Docstring
+Raster identify results container.
+%End
+
 %TypeHeaderCode
-#include <qgsrasteridentifyresult.h>
+#include "qgsrasteridentifyresult.h"
 %End
   public:
+
     QgsRasterIdentifyResult();
+%Docstring
+Constructor for QgsRasterIdentifyResult.
+%End
 
-    /** \brief Constructor. Creates valid result.
-     *  @param theFormat the result format
-     *  @param theResults the results
-     */
-    QgsRasterIdentifyResult( QgsRaster::IdentifyFormat theFormat, const QMap<int, QVariant>& theResults );
+    QgsRasterIdentifyResult( QgsRaster::IdentifyFormat format, const QMap<int, QVariant> &results );
+%Docstring
+ Constructor. Creates valid result.
 
-    /** \brief Constructor. Creates invalid result with error.
-     *  @param theError the error
-     */
-    QgsRasterIdentifyResult( const QgsError& theError );
+:param format: the result format
+:param results: the results
+%End
+
+    QgsRasterIdentifyResult( const QgsError &error );
+%Docstring
+ Constructor. Creates invalid result with error.
+
+:param error: the error
+%End
 
     virtual ~QgsRasterIdentifyResult();
 
-    /** \brief Returns true if valid */
     bool isValid() const;
+%Docstring
+ Returns true if valid
+%End
 
-    /** \brief Get results format */
     QgsRaster::IdentifyFormat format() const;
+%Docstring
+ Get results format
+%End
 
-    /** \brief Get results. Results are different for each format:
-     * QgsRaster::IdentifyFormatValue: map of values for each band, keys are band numbers (from 1).
-     * QgsRaster::IdentifyFormatFeature: map of QgsRasterFeatureList for each sublayer (WMS)
-     * QgsRaster::IdentifyFormatHtml: map of HTML strings for each sublayer (WMS).
-     */
     QMap<int, QVariant> results() const;
+%Docstring
+ Get results. Results are different for each format:
+QgsRaster.IdentifyFormatValue: map of values for each band, keys are band numbers (from 1).
+QgsRaster.IdentifyFormatFeature: map of QgsRasterFeatureList for each sublayer (WMS)
+QgsRaster.IdentifyFormatHtml: map of HTML strings for each sublayer (WMS).
+%End
 
-    /** Set map of optional parameters */
-    void setParams( const QMap<QString, QVariant> & theParams );
+    void setParams( const QMap<QString, QVariant> &params );
+%Docstring
+Set map of optional parameters
+%End
 
-    /** Get map of optional parameters */
     QMap<QString, QVariant> params() const;
+%Docstring
+Get map of optional parameters
+%End
 
-    /** \brief Get error */
     QgsError error() const;
+%Docstring
+ Get error
+%End
 
-    /** \brief Set error */
-    void setError( const QgsError & theError );
+    void setError( const QgsError &error );
+%Docstring
+ Set error
+%End
+
 };
 
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgsrasteridentifyresult.h                            *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

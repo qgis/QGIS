@@ -1,23 +1,39 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsfilewidget.h                                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
 
 class QgsFileWidget : QWidget
 {
-%TypeHeaderCode
-#include <qgsfilewidget.h>
+%Docstring
+ The QgsFileWidget class creates a widget for selecting a file or a folder.
 %End
 
+%TypeHeaderCode
+#include "qgsfilewidget.h"
+%End
+%ConvertToSubClassCode
+    if ( qobject_cast<QgsFileWidget *>( sipCpp ) )
+      sipType = sipType_QgsFileWidget;
+    else
+      sipType = NULL;
+%End
   public:
-    /**
-     * @brief The StorageMode enum determines if the file picker should pick files or directories
-     */
+
     enum StorageMode
     {
       GetFile,
-      GetDirectory
+      GetDirectory,
+      GetMultipleFiles,
+      SaveFile,
     };
 
-    /**
-     * @brief The RelativeStorage enum determines if path is absolute, relative to the current project path or relative to a defined default path.
-     */
     enum RelativeStorage
     {
       Absolute,
@@ -25,71 +41,164 @@ class QgsFileWidget : QWidget
       RelativeDefaultPath
     };
 
-    /**
-     * @brief QgsFileWidget creates a widget for selecting a file or a folder.
-     */
-    explicit QgsFileWidget( QWidget *parent /TransferThis/ );
+    explicit QgsFileWidget( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+ QgsFileWidget creates a widget for selecting a file or a folder.
+%End
 
-    ~QgsFileWidget();
-
-    //! Returns the current file path
     QString filePath();
+%Docstring
+ Returns the current file path(s)
+when multiple files are selected, they are quoted and separated
+by a single space (for example: '"/path/foo" "path/bar"')
 
-    //! Sets the file path
+.. seealso:: :py:func:`filePaths`
+%End
+
+    static QStringList splitFilePaths( const QString &path );
+%Docstring
+ Split the the quoted and space separated ``path`` and returns a QString list
+
+.. seealso:: :py:func:`filePath`
+%End
+
     void setFilePath( QString path );
+%Docstring
+Sets the file path
+%End
 
-    //! defines if the widget is readonly
     void setReadOnly( bool readOnly );
+%Docstring
+defines if the widget is readonly
+%End
 
-    //! returns the open file dialog title
     QString dialogTitle() const;
-    /**
-     * @brief setDialogTitle defines the open file dialog title
-     * @note if not defined, the title is "Select a file" or "Select a directory" depending on the configuration.
-     */
-    void setDialogTitle( const QString& title );
+%Docstring
+returns the open file dialog title
+%End
 
-    //! returns the filters used for QDialog::getOpenFileName
+    void setDialogTitle( const QString &title );
+%Docstring
+ setDialogTitle defines the open file dialog title
+
+.. note::
+
+   if not defined, the title is "Select a file" or "Select a directory" or "Select one or more files" depending on the configuration.
+%End
+
     QString filter() const;
-    /**
-     * @brief setFilter sets the filter used by the model to filters. The filter is used to specify the kind of files that should be shown.
-     * @param filter Only files that match the given filter are shown, it may be an empty string. If you want multiple filters, separate them with ';;',
-     */
+%Docstring
+returns the filters used for QDialog.getOpenFileName
+%End
+
     void setFilter( const QString &filter );
+%Docstring
+ setFilter sets the filter used by the model to filters. The filter is used to specify the kind of files that should be shown.
 
-    //! determines if the tool button is shown
+:param filter: Only files that match the given filter are shown, it may be an empty string. If you want multiple filters, separate them with ';;',
+%End
+
+    void setSelectedFilter( const QString selectedFilter );
+%Docstring
+Sets the selected filter when the file dialog opens.
+%End
+
+    QString selectedFilter() const;
+%Docstring
+Returns the selected filter from the last opened file dialog.
+%End
+
+    void setConfirmOverwrite( bool confirmOverwrite );
+%Docstring
+Sets whether a confirmation to overwrite an existing file will appear.
+By default, a confirmation will appear.
+
+:param confirmOverwrite: If set to true, an overwrite confirmation will be shown
+%End
+
+    bool confirmOverwrite() const;
+%Docstring
+Returns whether a confirmation will be shown when overwriting an existing file
+%End
+
     bool fileWidgetButtonVisible() const;
-    //! determines if the tool button is shown
+%Docstring
+determines if the tool button is shown
+%End
     void setFileWidgetButtonVisible( bool visible );
+%Docstring
+determines if the tool button is shown
+%End
 
-    //! determines if the file path will be shown as a link
     bool useLink() const;
-    //! determines if the file path will be shown as a link
+%Docstring
+determines if the file path will be shown as a link
+%End
     void setUseLink( bool useLink );
+%Docstring
+determines if the file path will be shown as a link
+%End
 
-    //! returns if the links shows the full path or not
     bool fullUrl() const;
-    //! determines if the links shows the full path or not
+%Docstring
+returns if the links shows the full path or not
+%End
     void setFullUrl( bool fullUrl );
+%Docstring
+determines if the links shows the full path or not
+%End
 
-    //! returns the default root path
     QString defaultRoot() const;
-    //! determines the default root path used as the first shown location when picking a file and used if the RelativeStorage is RelativeDefaultPath
-    void setDefaultRoot( const QString& defaultRoot );
+%Docstring
+returns the default root path
+%End
+    void setDefaultRoot( const QString &defaultRoot );
+%Docstring
+determines the default root path used as the first shown location when picking a file and used if the RelativeStorage is RelativeDefaultPath
+%End
 
-    //! returns the storage mode (i.e. file or directory)
     QgsFileWidget::StorageMode storageMode() const;
-    //! determines the storage mode (i.e. file or directory)
+%Docstring
+returns the storage mode (i.e. file or directory)
+%End
     void setStorageMode( QgsFileWidget::StorageMode storageMode );
+%Docstring
+determines the storage mode (i.e. file or directory)
+%End
 
-    //! returns if the relative path is with respect to the project path or the default path
     QgsFileWidget::RelativeStorage relativeStorage() const;
-    //! determines if the relative path is with respect to the project path or the default path
+%Docstring
+returns if the relative path is with respect to the project path or the default path
+%End
     void setRelativeStorage( QgsFileWidget::RelativeStorage relativeStorage );
+%Docstring
+determines if the relative path is with respect to the project path or the default path
+%End
+
+    QgsFilterLineEdit *lineEdit();
+%Docstring
+Returns a pointer to the widget's line edit, which can be used to customize
+the appearance and behavior of the line edit portion of the widget.
+
+.. versionadded:: 3.0
+%End
 
   signals:
-    //! emitted as soon as the current file or directory is changed
-    void fileChanged( const QString& );
-
+    void fileChanged( const QString & );
+%Docstring
+emitted as soon as the current file or directory is changed
+%End
 
 };
+
+
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsfilewidget.h                                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

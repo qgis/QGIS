@@ -18,35 +18,15 @@
 #include "qgspainteffect.h"
 #include "qgsimageoperation.h"
 #include "qgslogger.h"
+#include "qgsrendercontext.h"
 #include <QPicture>
 
 Q_GUI_EXPORT extern int qt_defaultDpiX();
 Q_GUI_EXPORT extern int qt_defaultDpiY();
 
-QgsPaintEffect::QgsPaintEffect()
-    : mEnabled( true )
-    , mDrawMode( ModifyAndRender )
-    , requiresQPainterDpiFix( true )
-    , mPicture( nullptr )
-    , mSourceImage( nullptr )
-    , mOwnsImage( false )
-    , mPrevPainter( nullptr )
-    , mEffectPainter( nullptr )
-    , mTempPicture( nullptr )
-{
-
-}
-
 QgsPaintEffect::QgsPaintEffect( const QgsPaintEffect &other )
-    : mEnabled( other.enabled() )
-    , mDrawMode( other.drawMode() )
-    , requiresQPainterDpiFix( true )
-    , mPicture( nullptr )
-    , mSourceImage( nullptr )
-    , mOwnsImage( false )
-    , mPrevPainter( nullptr )
-    , mEffectPainter( nullptr )
-    , mTempPicture( nullptr )
+  : mEnabled( other.enabled() )
+  , mDrawMode( other.drawMode() )
 {
 
 }
@@ -78,15 +58,15 @@ bool QgsPaintEffect::saveProperties( QDomDocument &doc, QDomElement &element ) c
     return false;
   }
 
-  QDomElement effectElement = doc.createElement( "effect" );
-  effectElement.setAttribute( QString( "type" ), type() );
+  QDomElement effectElement = doc.createElement( QStringLiteral( "effect" ) );
+  effectElement.setAttribute( QStringLiteral( "type" ), type() );
 
   QgsStringMap props = properties();
   for ( QgsStringMap::iterator it = props.begin(); it != props.end(); ++it )
   {
-    QDomElement propEl = doc.createElement( "prop" );
-    propEl.setAttribute( "k", it.key() );
-    propEl.setAttribute( "v", it.value() );
+    QDomElement propEl = doc.createElement( QStringLiteral( "prop" ) );
+    propEl.setAttribute( QStringLiteral( "k" ), it.key() );
+    propEl.setAttribute( QStringLiteral( "v" ), it.value() );
     effectElement.appendChild( propEl );
   }
 
@@ -107,14 +87,14 @@ bool QgsPaintEffect::readProperties( const QDomElement &element )
   QDomElement e = element.firstChildElement();
   while ( !e.isNull() )
   {
-    if ( e.tagName() != "prop" )
+    if ( e.tagName() != QLatin1String( "prop" ) )
     {
       QgsDebugMsg( "unknown tag " + e.tagName() );
     }
     else
     {
-      QString propKey = e.attribute( "k" );
-      QString propValue = e.attribute( "v" );
+      QString propKey = e.attribute( QStringLiteral( "k" ) );
+      QString propValue = e.attribute( QStringLiteral( "v" ) );
       props[propKey] = propValue;
     }
     e = e.nextSiblingElement();
@@ -162,6 +142,11 @@ void QgsPaintEffect::end( QgsRenderContext &context )
   context.setPainter( mPrevPainter );
   mPrevPainter = nullptr;
 
+  // clear any existing pen/brush - sometimes these are not correctly restored when restoring a painter
+  // with a QPicture destination - see #15696
+  context.painter()->setPen( Qt::NoPen );
+  context.painter()->setBrush( Qt::NoBrush );
+
   //draw using effect
   render( *mTempPicture, context );
 
@@ -185,7 +170,7 @@ void QgsPaintEffect::drawSource( QPainter &painter )
   }
 }
 
-QImage* QgsPaintEffect::sourceAsImage( QgsRenderContext &context )
+QImage *QgsPaintEffect::sourceAsImage( QgsRenderContext &context )
 {
   //have we already created a source image? if so, return it
   if ( mSourceImage )
@@ -210,7 +195,7 @@ QImage* QgsPaintEffect::sourceAsImage( QgsRenderContext &context )
   return mSourceImage;
 }
 
-QPointF QgsPaintEffect::imageOffset( const QgsRenderContext& context ) const
+QPointF QgsPaintEffect::imageOffset( const QgsRenderContext &context ) const
 {
   return imageBoundingRect( context ).topLeft();
 }
@@ -241,22 +226,9 @@ QRectF QgsPaintEffect::imageBoundingRect( const QgsRenderContext &context ) cons
 // QgsDrawSourceEffect
 //
 
-QgsDrawSourceEffect::QgsDrawSourceEffect()
-    : QgsPaintEffect()
-    , mTransparency( 0.0 )
-    , mBlendMode( QPainter::CompositionMode_SourceOver )
-{
-
-}
-
-QgsDrawSourceEffect::~QgsDrawSourceEffect()
-{
-
-}
-
 QgsPaintEffect *QgsDrawSourceEffect::create( const QgsStringMap &map )
 {
-  QgsDrawSourceEffect* effect = new QgsDrawSourceEffect();
+  QgsDrawSourceEffect *effect = new QgsDrawSourceEffect();
   effect->readProperties( map );
   return effect;
 }
@@ -266,18 +238,18 @@ void QgsDrawSourceEffect::draw( QgsRenderContext &context )
   if ( !enabled() || !context.painter() )
     return;
 
-  QPainter* painter = context.painter();
+  QPainter *painter = context.painter();
 
-  if ( mBlendMode == QPainter::CompositionMode_SourceOver && qgsDoubleNear( mTransparency, 0.0 ) )
+  if ( mBlendMode == QPainter::CompositionMode_SourceOver && qgsDoubleNear( mOpacity, 1.0 ) )
   {
     //just draw unmodified source
     drawSource( *painter );
   }
   else
   {
-    //rasterise source and apply modifications
+    //rasterize source and apply modifications
     QImage image = sourceAsImage( context )->copy();
-    QgsImageOperation::multiplyOpacity( image, 1.0 - mTransparency );
+    QgsImageOperation::multiplyOpacity( image, mOpacity );
     painter->save();
     painter->setCompositionMode( mBlendMode );
     painter->drawImage( imageOffset( context ), image );
@@ -285,7 +257,7 @@ void QgsDrawSourceEffect::draw( QgsRenderContext &context )
   }
 }
 
-QgsDrawSourceEffect* QgsDrawSourceEffect::clone() const
+QgsDrawSourceEffect *QgsDrawSourceEffect::clone() const
 {
   return new QgsDrawSourceEffect( *this );
 }
@@ -293,26 +265,75 @@ QgsDrawSourceEffect* QgsDrawSourceEffect::clone() const
 QgsStringMap QgsDrawSourceEffect::properties() const
 {
   QgsStringMap props;
-  props.insert( "enabled", mEnabled ? "1" : "0" );
-  props.insert( "draw_mode", QString::number( int( mDrawMode ) ) );
-  props.insert( "blend_mode", QString::number( int( mBlendMode ) ) );
-  props.insert( "transparency", QString::number( mTransparency ) );
+  props.insert( QStringLiteral( "enabled" ), mEnabled ? "1" : "0" );
+  props.insert( QStringLiteral( "draw_mode" ), QString::number( int( mDrawMode ) ) );
+  props.insert( QStringLiteral( "blend_mode" ), QString::number( int( mBlendMode ) ) );
+  props.insert( QStringLiteral( "opacity" ), QString::number( mOpacity ) );
   return props;
 }
 
 void QgsDrawSourceEffect::readProperties( const QgsStringMap &props )
 {
   bool ok;
-  QPainter::CompositionMode mode = static_cast< QPainter::CompositionMode >( props.value( "blend_mode" ).toInt( &ok ) );
+  QPainter::CompositionMode mode = static_cast< QPainter::CompositionMode >( props.value( QStringLiteral( "blend_mode" ) ).toInt( &ok ) );
   if ( ok )
   {
     mBlendMode = mode;
   }
-  double transparency = props.value( "transparency" ).toDouble( &ok );
-  if ( ok )
+  if ( props.contains( QStringLiteral( "transparency" ) ) )
   {
-    mTransparency = transparency;
+    double transparency = props.value( QStringLiteral( "transparency" ) ).toDouble( &ok );
+    if ( ok )
+    {
+      mOpacity = 1.0 - transparency;
+    }
   }
-  mEnabled = props.value( "enabled", "1" ).toInt();
-  mDrawMode = static_cast< QgsPaintEffect::DrawMode >( props.value( "draw_mode", "2" ).toInt() );
+  else
+  {
+    double opacity = props.value( QStringLiteral( "opacity" ) ).toDouble( &ok );
+    if ( ok )
+    {
+      mOpacity = opacity;
+    }
+  }
+  mEnabled = props.value( QStringLiteral( "enabled" ), QStringLiteral( "1" ) ).toInt();
+  mDrawMode = static_cast< QgsPaintEffect::DrawMode >( props.value( QStringLiteral( "draw_mode" ), QStringLiteral( "2" ) ).toInt() );
+}
+
+
+//
+// QgsEffectPainter
+//
+
+QgsEffectPainter::QgsEffectPainter( QgsRenderContext &renderContext )
+  : mRenderContext( renderContext )
+
+{
+  mPainter = renderContext.painter();
+  mPainter->save();
+}
+
+QgsEffectPainter::QgsEffectPainter( QgsRenderContext &renderContext, QgsPaintEffect *effect )
+  : mRenderContext( renderContext )
+  , mEffect( effect )
+{
+  mPainter = mRenderContext.painter();
+  mPainter->save();
+  mEffect->begin( mRenderContext );
+}
+
+void QgsEffectPainter::setEffect( QgsPaintEffect *effect )
+{
+  Q_ASSERT( !mEffect );
+
+  mEffect = effect;
+  mEffect->begin( mRenderContext );
+}
+
+QgsEffectPainter::~QgsEffectPainter()
+{
+  Q_ASSERT( mEffect );
+
+  mEffect->end( mRenderContext );
+  mPainter->restore();
 }

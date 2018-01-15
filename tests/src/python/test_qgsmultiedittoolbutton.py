@@ -12,13 +12,11 @@ __copyright__ = 'Copyright 2016, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import qgis # switch sip api
+import qgis  # NOQA switch sip api
 
 from qgis.gui import QgsMultiEditToolButton
 
-from qgis.testing import (start_app,
-                          unittest
-                          )
+from qgis.testing import start_app, unittest
 
 start_app()
 
@@ -37,32 +35,33 @@ class TestQgsMultiEditToolButton(unittest.TestCase):
         self.assertEqual(w.state(), QgsMultiEditToolButton.Changed)
         w.setIsChanged(False)
         self.assertEqual(w.state(), QgsMultiEditToolButton.Default)
-        #resetting changes should fall back to default state
+        # resetting changes should fall back to default state
         w.setIsChanged(True)
         w.resetChanges()
         self.assertEqual(w.state(), QgsMultiEditToolButton.Default)
-        #setting changes committed should result in default state
+        # setting changes committed should result in default state
         w.setIsChanged(True)
         w.changesCommitted()
         self.assertEqual(w.state(), QgsMultiEditToolButton.Default)
 
-        #Test with mixed values
+        # Test with mixed values
         w.setIsMixed(True)
         self.assertEqual(w.state(), QgsMultiEditToolButton.MixedValues)
-        #changed state takes priority over mixed state
+        # changed state takes priority over mixed state
         w.setIsChanged(True)
         self.assertEqual(w.state(), QgsMultiEditToolButton.Changed)
         w.setIsChanged(False)
-        #should reset to mixed state
+        # should reset to mixed state
         self.assertEqual(w.state(), QgsMultiEditToolButton.MixedValues)
-        #resetting changes should fall back to mixed state
+        # resetting changes should fall back to mixed state
         w.setIsChanged(True)
         w.resetChanges()
         self.assertEqual(w.state(), QgsMultiEditToolButton.MixedValues)
-        #setting changes committed should result in default state
+        # setting changes committed should result in default state
         w.setIsChanged(True)
         w.changesCommitted()
         self.assertEqual(w.state(), QgsMultiEditToolButton.Default)
+
 
 if __name__ == '__main__':
     unittest.main()

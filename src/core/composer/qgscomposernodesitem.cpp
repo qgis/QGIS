@@ -17,27 +17,28 @@
 #include "qgscomposernodesitem.h"
 #include "qgscomposition.h"
 #include "qgscomposerutils.h"
-#include "qgssymbollayerv2utils.h"
-#include "qgssymbolv2.h"
+#include "qgssymbollayerutils.h"
+#include "qgssymbol.h"
+#include "qgsmapsettings.h"
 #include <limits>
-#include <math.h>
+#include <cmath>
 
-QgsComposerNodesItem::QgsComposerNodesItem( QString tagName,
-    QgsComposition* c )
-    : QgsComposerItem( c )
-    , mTagName( tagName )
-    , mSelectedNode( -1 )
-    , mDrawNodes( false )
+QgsComposerNodesItem::QgsComposerNodesItem( const QString &tagName,
+    QgsComposition *c )
+  : QgsComposerItem( c )
+  , mTagName( tagName )
+  , mSelectedNode( -1 )
+  , mDrawNodes( false )
 {
 }
 
-QgsComposerNodesItem::QgsComposerNodesItem( QString tagName,
-    QPolygonF polygon,
-    QgsComposition* c )
-    : QgsComposerItem( c )
-    , mTagName( tagName )
-    , mSelectedNode( -1 )
-    , mDrawNodes( false )
+QgsComposerNodesItem::QgsComposerNodesItem( const QString &tagName,
+    const QPolygonF &polygon,
+    QgsComposition *c )
+  : QgsComposerItem( c )
+  , mTagName( tagName )
+  , mSelectedNode( -1 )
+  , mDrawNodes( false )
 {
   const QRectF boundingRect = polygon.boundingRect();
   setSceneRect( boundingRect );
@@ -46,17 +47,13 @@ QgsComposerNodesItem::QgsComposerNodesItem( QString tagName,
   mPolygon = polygon.translated( -topLeft );
 }
 
-QgsComposerNodesItem::~QgsComposerNodesItem()
+double QgsComposerNodesItem::computeDistance( QPointF pt1,
+    QPointF pt2 ) const
 {
+  return std::sqrt( std::pow( pt1.x() - pt2.x(), 2 ) + std::pow( pt1.y() - pt2.y(), 2 ) );
 }
 
-double QgsComposerNodesItem::computeDistance( const QPointF &pt1,
-    const QPointF &pt2 ) const
-{
-  return sqrt( pow( pt1.x() - pt2.x(), 2 ) + pow( pt1.y() - pt2.y(), 2 ) );
-}
-
-bool QgsComposerNodesItem::addNode( const QPointF &pt,
+bool QgsComposerNodesItem::addNode( QPointF pt,
                                     const bool checkArea,
                                     const double radius )
 {
@@ -71,7 +68,7 @@ bool QgsComposerNodesItem::addNode( const QPointF &pt,
     // get nodes of polyline
     const QPointF pt1 = mPolygon.at( i );
     QPointF pt2 = mPolygon.first();
-    if (( i + 1 ) != mPolygon.size() )
+    if ( ( i + 1 ) != mPolygon.size() )
       pt2 = mPolygon.at( i + 1 );
 
     // compute line eq
@@ -79,17 +76,17 @@ bool QgsComposerNodesItem::addNode( const QPointF &pt,
     const double b = pt1.y() - coef * pt1.x();
 
     double distance = std::numeric_limits<double>::max();
-    if ( qIsInf( coef ) )
-      distance = qAbs( pt1.x() - start.x() );
+    if ( std::isinf( coef ) )
+      distance = std::fabs( pt1.x() - start.x() );
     else
     {
       const double coef2 = ( -1 / coef );
       const double b2 = start.y() - coef2 * start.x();
 
       QPointF inter;
-      if ( qIsInf( coef2 ) )
+      if ( std::isinf( coef2 ) )
       {
-        distance = qAbs( pt1.y() - start.y() );
+        distance = std::fabs( pt1.y() - start.y() );
         inter.setX( start.x() );
         inter.setY( pt1.y() );
       }
@@ -107,7 +104,7 @@ bool QgsComposerNodesItem::addNode( const QPointF &pt,
       const double length3 = computeDistance( pt1, pt2 );
       const double length4 = length1 + length2;
 
-      if ( qAbs( length3 - length4 ) < std::numeric_limits<float>::epsilon() )
+      if ( std::fabs( length3 - length4 ) < std::numeric_limits<float>::epsilon() )
         distance = computeDistance( inter, start );
     }
 
@@ -132,31 +129,26 @@ void QgsComposerNodesItem::drawNodes( QPainter *painter ) const
   double rectSize = 3.0 / horizontalViewScaleFactor();
 
   QgsStringMap properties;
-  properties.insert( "name", "cross" );
-  properties.insert( "color_border", "red" );
+  properties.insert( QStringLiteral( "name" ), QStringLiteral( "cross" ) );
+  properties.insert( QStringLiteral( "color_border" ), QStringLiteral( "red" ) );
 
-  QScopedPointer<QgsMarkerSymbolV2> symbol;
-  symbol.reset( QgsMarkerSymbolV2::createSimple( properties ) );
-  symbol.data()->setSize( rectSize );
-  symbol.data()->setAngle( 45 );
+  std::unique_ptr<QgsMarkerSymbol> symbol;
+  symbol.reset( QgsMarkerSymbol::createSimple( properties ) );
+  symbol->setSize( rectSize );
+  symbol->setAngle( 45 );
 
-  QgsMapSettings ms = mComposition->mapSettings();
-  ms.setOutputDpi( painter->device()->logicalDpiX() );
-
-  QgsRenderContext context = QgsRenderContext::fromMapSettings( ms );
-  context.setPainter( painter );
+  QgsRenderContext context = QgsComposerUtils::createRenderContextForComposition( mComposition, painter );
   context.setForceVectorOutput( true );
 
-  QScopedPointer<QgsExpressionContext> expressionContext;
-  expressionContext.reset( createExpressionContext() );
-  context.setExpressionContext( *expressionContext.data() );
+  QgsExpressionContext expressionContext = createExpressionContext();
+  context.setExpressionContext( expressionContext );
 
-  symbol.data()->startRender( context );
+  symbol->startRender( context );
 
   Q_FOREACH ( QPointF pt, mPolygon )
-    symbol.data()->renderPoint( pt, nullptr, context );
+    symbol->renderPoint( pt, nullptr, context );
 
-  symbol.data()->stopRender( context );
+  symbol->stopRender( context );
 
   if ( mSelectedNode >= 0 && mSelectedNode < mPolygon.size() )
     drawSelectedNode( painter );
@@ -167,40 +159,40 @@ void QgsComposerNodesItem::drawSelectedNode( QPainter *painter ) const
   double rectSize = 3.0 / horizontalViewScaleFactor();
 
   QgsStringMap properties;
-  properties.insert( "name", "square" );
-  properties.insert( "color", "0, 0, 0, 0" );
-  properties.insert( "color_border", "blue" );
-  properties.insert( "width_border", "4" );
+  properties.insert( QStringLiteral( "name" ), QStringLiteral( "square" ) );
+  properties.insert( QStringLiteral( "color" ), QStringLiteral( "0, 0, 0, 0" ) );
+  properties.insert( QStringLiteral( "color_border" ), QStringLiteral( "blue" ) );
+  properties.insert( QStringLiteral( "width_border" ), QStringLiteral( "4" ) );
 
-  QScopedPointer<QgsMarkerSymbolV2> symbol;
-  symbol.reset( QgsMarkerSymbolV2::createSimple( properties ) );
-  symbol.data()->setSize( rectSize );
+  std::unique_ptr<QgsMarkerSymbol> symbol;
+  symbol.reset( QgsMarkerSymbol::createSimple( properties ) );
+  symbol->setSize( rectSize );
 
-  QgsMapSettings ms = mComposition->mapSettings();
-  ms.setOutputDpi( painter->device()->logicalDpiX() );
-
-  QgsRenderContext context = QgsRenderContext::fromMapSettings( ms );
-  context.setPainter( painter );
+  QgsRenderContext context = QgsComposerUtils::createRenderContextForComposition( mComposition, painter );
   context.setForceVectorOutput( true );
 
-  QScopedPointer<QgsExpressionContext> expressionContext;
-  expressionContext.reset( createExpressionContext() );
-  context.setExpressionContext( *expressionContext.data() );
+  QgsExpressionContext expressionContext = createExpressionContext();
+  context.setExpressionContext( expressionContext );
 
-  symbol.data()->startRender( context );
-  symbol.data()->renderPoint( mPolygon.at( mSelectedNode ), nullptr, context );
-  symbol.data()->stopRender( context );
+  symbol->startRender( context );
+  symbol->renderPoint( mPolygon.at( mSelectedNode ), nullptr, context );
+  symbol->stopRender( context );
 }
 
-void QgsComposerNodesItem::paint( QPainter* painter,
-                                  const QStyleOptionGraphicsItem* itemStyle,
-                                  QWidget* pWidget )
+void QgsComposerNodesItem::paint( QPainter *painter,
+                                  const QStyleOptionGraphicsItem *itemStyle,
+                                  QWidget *pWidget )
 {
   Q_UNUSED( itemStyle );
   Q_UNUSED( pWidget );
 
   if ( !painter )
     return;
+
+  if ( !shouldDrawItem() )
+  {
+    return;
+  }
 
   painter->save();
   painter->setPen( Qt::NoPen );
@@ -261,7 +253,7 @@ bool QgsComposerNodesItem::removeNode( const int index )
   return rc;
 }
 
-bool QgsComposerNodesItem::moveNode( const int index, const QPointF &pt )
+bool QgsComposerNodesItem::moveNode( const int index, QPointF pt )
 {
   bool rc( false );
 
@@ -277,35 +269,36 @@ bool QgsComposerNodesItem::moveNode( const int index, const QPointF &pt )
   return rc;
 }
 
-bool QgsComposerNodesItem::readXML( const QDomElement& itemElem,
-                                    const QDomDocument& doc )
+bool QgsComposerNodesItem::readXml( const QDomElement &itemElem,
+                                    const QDomDocument &doc )
 {
+
   // restore general composer item properties
-  const QDomNodeList composerItemList = itemElem.elementsByTagName( "ComposerItem" );
+  const QDomNodeList composerItemList = itemElem.elementsByTagName( QStringLiteral( "ComposerItem" ) );
   if ( !composerItemList.isEmpty() )
   {
     QDomElement composerItemElem = composerItemList.at( 0 ).toElement();
 
-    if ( !qgsDoubleNear( composerItemElem.attribute( "rotation", "0" ).toDouble(), 0.0 ) )
-      setItemRotation( composerItemElem.attribute( "rotation", "0" ).toDouble() );
+    if ( !qgsDoubleNear( composerItemElem.attribute( QStringLiteral( "rotation" ), QStringLiteral( "0" ) ).toDouble(), 0.0 ) )
+      setItemRotation( composerItemElem.attribute( QStringLiteral( "rotation" ), QStringLiteral( "0" ) ).toDouble() );
 
-    _readXML( composerItemElem, doc );
+    _readXml( composerItemElem, doc );
   }
 
   // restore style
-  QDomElement styleSymbolElem = itemElem.firstChildElement( "symbol" );
+  QDomElement styleSymbolElem = itemElem.firstChildElement( QStringLiteral( "symbol" ) );
   if ( !styleSymbolElem.isNull() )
-    _readXMLStyle( styleSymbolElem );
+    _readXmlStyle( styleSymbolElem );
 
   // restore nodes
   mPolygon.clear();
-  QDomNodeList nodesList = itemElem.elementsByTagName( "node" );
+  QDomNodeList nodesList = itemElem.elementsByTagName( QStringLiteral( "node" ) );
   for ( int i = 0; i < nodesList.size(); i++ )
   {
     QDomElement nodeElem = nodesList.at( i ).toElement();
     QPointF newPt;
-    newPt.setX( nodeElem.attribute( "x" ).toDouble() );
-    newPt.setY( nodeElem.attribute( "y" ).toDouble() );
+    newPt.setX( nodeElem.attribute( QStringLiteral( "x" ) ).toDouble() );
+    newPt.setY( nodeElem.attribute( QStringLiteral( "y" ) ).toDouble() );
     mPolygon.append( newPt );
   }
 
@@ -319,8 +312,8 @@ void QgsComposerNodesItem::rescaleToFitBoundingBox()
   const QRectF boundingRect = mPolygon.boundingRect();
 
   // compute x/y ratio
-  const float ratioX =  rect().width() / boundingRect.width();
-  const float ratioY =  rect().height() / boundingRect.height();
+  const float ratioX = rect().width() / boundingRect.width();
+  const float ratioY = rect().height() / boundingRect.height();
 
   // scaling
   QTransform trans;
@@ -358,25 +351,25 @@ void QgsComposerNodesItem::updateSceneRect()
   emit itemChanged();
 }
 
-bool QgsComposerNodesItem::writeXML( QDomElement& elem, QDomDocument & doc ) const
+bool QgsComposerNodesItem::writeXml( QDomElement &elem, QDomDocument &doc ) const
 {
   QDomElement composerPolygonElem = doc.createElement( mTagName );
 
   // style
-  _writeXMLStyle( doc, composerPolygonElem );
+  _writeXmlStyle( doc, composerPolygonElem );
 
   // write nodes
-  QDomElement nodesElem = doc.createElement( "nodes" );
+  QDomElement nodesElem = doc.createElement( QStringLiteral( "nodes" ) );
   Q_FOREACH ( QPointF pt, mPolygon )
   {
-    QDomElement nodeElem = doc.createElement( "node" );
-    nodeElem.setAttribute( "x", QString::number( pt.x() ) );
-    nodeElem.setAttribute( "y", QString::number( pt.y() ) );
+    QDomElement nodeElem = doc.createElement( QStringLiteral( "node" ) );
+    nodeElem.setAttribute( QStringLiteral( "x" ), QString::number( pt.x() ) );
+    nodeElem.setAttribute( QStringLiteral( "y" ), QString::number( pt.y() ) );
     nodesElem.appendChild( nodeElem );
   }
   composerPolygonElem.appendChild( nodesElem );
 
   elem.appendChild( composerPolygonElem );
 
-  return _writeXML( composerPolygonElem, doc );
+  return _writeXml( composerPolygonElem, doc );
 }

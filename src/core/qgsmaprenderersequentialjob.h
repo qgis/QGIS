@@ -16,44 +16,51 @@
 #ifndef QGSMAPRENDERERSEQUENTIALJOB_H
 #define QGSMAPRENDERERSEQUENTIALJOB_H
 
+#include "qgis_core.h"
 #include "qgsmaprendererjob.h"
 
 class QgsMapRendererCustomPainterJob;
 
-/** Job implementation that renders everything sequentially in one thread.
+/**
+ * \ingroup core
+ * Job implementation that renders everything sequentially in one thread.
  *
  * The resulting map image can be retrieved with renderedImage() function.
  * It is safe to call that function while rendering is active to see preview of the map.
  *
- * @note added in 2.4
+ * \since QGIS 2.4
  */
 class CORE_EXPORT QgsMapRendererSequentialJob : public QgsMapRendererQImageJob
 {
     Q_OBJECT
   public:
-    QgsMapRendererSequentialJob( const QgsMapSettings& settings );
-    ~QgsMapRendererSequentialJob();
+    QgsMapRendererSequentialJob( const QgsMapSettings &settings );
+    ~QgsMapRendererSequentialJob() override;
 
-    virtual void start() override;
-    virtual void cancel() override;
-    virtual void waitForFinished() override;
-    virtual bool isActive() const override;
+    void start() override;
+    void cancel() override;
+    void cancelWithoutBlocking() override;
+    void waitForFinished() override;
+    bool isActive() const override;
 
-    virtual QgsLabelingResults* takeLabelingResults() override;
+    bool usedCachedLabels() const override;
+    QgsLabelingResults *takeLabelingResults() SIP_TRANSFER override;
 
     // from QgsMapRendererJobWithPreview
-    virtual QImage renderedImage() override;
+    QImage renderedImage() override;
 
   public slots:
 
     void internalFinished();
 
-  protected:
+  private:
 
-    QgsMapRendererCustomPainterJob* mInternalJob;
+    QgsMapRendererCustomPainterJob *mInternalJob = nullptr;
     QImage mImage;
-    QPainter* mPainter;
-    QgsLabelingResults* mLabelingResults;
+    QPainter *mPainter = nullptr;
+    std::unique_ptr< QgsLabelingResults > mLabelingResults;
+    bool mUsedCachedLabels = false;
+
 };
 
 

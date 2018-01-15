@@ -1,42 +1,44 @@
-##Vector geometry tools=group
-##Polygons=vector polygon
-##To_keep=number 1
-##Biggest parts=output vector
+##Vector geometry=group
 
-from qgis.core import QGis, QgsGeometry
+#inputs
+
+##Polygons=source polygon
+##To_keep=number 1
+##Biggest parts=sink polygon
+
+
+from qgis.core import QgsGeometry, QgsWkbTypes, QgsProcessingUtils
 from operator import itemgetter
 
 To_keep = int(To_keep)
 if To_keep < 1:
-    progress.setInfo("'To keep' value has been modified to be at least 1.")
+    feedback.pushInfo("'To keep' value has been modified to be at least 1.")
     To_keep = 1
 
-
-polyLayer = processing.getObject(Polygons)
-polyPrder = polyLayer.dataProvider()
-count = polyLayer.featureCount()
-writer = processing.VectorWriter(Results, None, polyPrder.fields(),
-                                 QGis.WKBMultiPolygon, polyPrder.crs())
+count = Polygons.featureCount()
+(sink, Biggest_parts) = self.parameterAsSink(parameters, 'Biggest parts', context,
+                                             Polygons.fields(), QgsWkbTypes.MultiPolygon, Polygons.sourceCrs())
 
 
-for n, feat in enumerate(processing.features(polyLayer)):
-    progress.setPercentage(int(100 * n / count))
+for n, feat in enumerate(Polygons.getFeatures()):
+    if feedback.isCanceled():
+        break
+    feedback.setProgress(int(100 * n / count))
+
     geom = feat.geometry()
     if geom.isMultipart():
-        featres = feat
+        features = feat
         geoms = geom.asGeometryCollection()
         geomarea = [(i, geoms[i].area()) for i in range(len(geoms))]
         geomarea.sort(key=itemgetter(1))
         if To_keep == 1:
-            featres.setGeometry(geoms[geomarea[-1][0]])
+            features.setGeometry(geoms[geomarea[-1][0]])
         elif To_keep > len(geoms):
-            featres.setGeometry(geom)
+            features.setGeometry(geom)
         else:
-            featres.setGeometry(geom)
+            features.setGeometry(geom)
             geomres = [geoms[i].asPolygon() for i, a in geomarea[-1 * To_keep:]]
-            featres.setGeometry(QgsGeometry.fromMultiPolygon(geomres))
-        writer.addFeature(featres)
+            features.setGeometry(QgsGeometry.fromMultiPolygonXY(geomres))
+        sink.addFeature(features)
     else:
-        writer.addFeature(feat)
-
-del writer
+        sink.addFeature(feat)

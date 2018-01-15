@@ -29,59 +29,59 @@ import subprocess
 import os
 
 
-class SagaDescriptionCreator:
+class SagaDescriptionCreator(object):
 
     def createLibraryFiles(self):
-        f = open('c:\\saga\\sagalibs.txt')
-        for lib in f:
-            lib = lib.strip('\n')
-            command = ['c:\\saga\\saga_cmd.exe', lib]
-            f2 = open('c:\\saga\\desc\\' + lib + '.sagalib', 'w')
-            subprocess.Popen(
-                command,
-                shell=True,
-                stdout=f2,
-                stdin=open(os.devnull),
-                stderr=subprocess.STDOUT,
-                universal_newlines=True,
-            )
-            f2.close()
-        f.close()
+        with open('c:\\saga\\sagalibs.txt') as f:
+            for lib in f:
+                lib = lib.strip('\n')
+                command = ['c:\\saga\\saga_cmd.exe', lib]
+                with open('c:\\saga\\desc\\' + lib + '.sagalib', 'w') as f2:
+                    subprocess.Popen(
+                        command,
+                        shell=True,
+                        stdout=f2,
+                        stdin=subprocess.DEVNULL,
+                        stderr=subprocess.STDOUT,
+                        universal_newlines=True,
+                    )
 
     def createLibraryMap(self):
         self.map = {}
         for libFile in os.listdir('c:\\saga\\desc'):
             if libFile.endswith('sagalib'):
-                print libFile
+                # fix_print_with_import
+                print(libFile)
                 algs = []
-                f = open(os.path.join('c:\\saga\\desc', libFile))
-                for line in f:
-                    line = line.strip('\n').strip(' ')
-                    digit = line.split('\t')[0]
-                    print digit
-                    if digit.isdigit():
-                        algs.append(digit)
-                self.map[libFile[:-8]] = algs
-                f.close()
+                with open(os.path.join('c:\\saga\\desc', libFile)) as f:
+                    for line in f:
+                        line = line.strip('\n').strip(' ')
+                        digit = line.split('\t')[0]
+                        # fix_print_with_import
+                        print(digit)
+                        if digit.isdigit():
+                            algs.append(digit)
+                    self.map[libFile[:-8]] = algs
 
-        print unicode(self.map)
+        # fix_print_with_import
+        print(str(self.map))
 
     def createDescriptionFiles(self):
-        for lib in self.map.keys():
+        for lib in list(self.map.keys()):
             algs = self.map[lib]
             for alg in algs:
                 command = ['c:\\saga\\saga_cmd.exe', lib, alg]
-                f = open('c:\\saga\\desc\\' + lib + '_' + alg + '.txt', 'w')
-                print unicode(command)
-                subprocess.Popen(
-                    command,
-                    shell=True,
-                    stdout=f,
-                    stdin=open(os.devnull),
-                    stderr=f,
-                    universal_newlines=True,
-                )
-                f.close()
+                with open('c:\\saga\\desc\\' + lib + '_' + alg + '.txt', 'w') as f:
+                    # fix_print_with_import
+                    print(str(command))
+                    subprocess.Popen(
+                        command,
+                        shell=True,
+                        stdout=f,
+                        stdin=subprocess.DEVNULL,
+                        stderr=f,
+                        universal_newlines=True,
+                    )
 
     def create(self):
         self.createLibraryMap()

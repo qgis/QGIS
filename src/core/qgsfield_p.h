@@ -27,10 +27,14 @@
 // version without notice, or even be removed.
 //
 
+#define SIP_NO_FILE
+
+#include "qgsfieldconstraints.h"
+#include "qgseditorwidgetsetup.h"
+#include "qgsdefaultvalue.h"
 #include <QString>
 #include <QVariant>
 #include <QSharedData>
-#include "qgsfield.h"
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
@@ -42,38 +46,46 @@ class QgsFieldPrivate : public QSharedData
 {
   public:
 
-    QgsFieldPrivate( const QString& name = QString(),
+    QgsFieldPrivate( const QString &name = QString(),
                      QVariant::Type type = QVariant::Invalid,
-                     const QString& typeName = QString(),
+                     QVariant::Type subType = QVariant::Invalid,
+                     const QString &typeName = QString(),
                      int len = 0,
                      int prec = 0,
-                     const QString& comment = QString() )
-        : name( name )
-        , type( type )
-        , typeName( typeName )
-        , length( len )
-        , precision( prec )
-        , comment( comment )
+                     const QString &comment = QString() )
+      : name( name )
+      , type( type )
+      , subType( subType )
+      , typeName( typeName )
+      , length( len )
+      , precision( prec )
+      , comment( comment )
     {
     }
 
-    QgsFieldPrivate( const QgsFieldPrivate& other )
-        : QSharedData( other )
-        , name( other.name )
-        , type( other.type )
-        , typeName( other.typeName )
-        , length( other.length )
-        , precision( other.precision )
-        , comment( other.comment )
+    QgsFieldPrivate( const QgsFieldPrivate &other )
+      : QSharedData( other )
+      , name( other.name )
+      , type( other.type )
+      , subType( other.subType )
+      , typeName( other.typeName )
+      , length( other.length )
+      , precision( other.precision )
+      , comment( other.comment )
+      , alias( other.alias )
+      , defaultValueDefinition( other.defaultValueDefinition )
+      , constraints( other.constraints )
     {
     }
 
-    ~QgsFieldPrivate() {}
+    ~QgsFieldPrivate() = default;
 
-    bool operator==( const QgsFieldPrivate& other ) const
+    bool operator==( const QgsFieldPrivate &other ) const
     {
-      return (( name == other.name ) && ( type == other.type )
-              && ( length == other.length ) && ( precision == other.precision ) );
+      return ( ( name == other.name ) && ( type == other.type ) && ( subType == other.subType )
+               && ( length == other.length ) && ( precision == other.precision )
+               && ( alias == other.alias ) && ( defaultValueDefinition == other.defaultValueDefinition )
+               && ( constraints == other.constraints ) );
     }
 
     //! Name
@@ -81,6 +93,9 @@ class QgsFieldPrivate : public QSharedData
 
     //! Variant type
     QVariant::Type type;
+
+    //! If the variant is a collection, its element's type
+    QVariant::Type subType;
 
     //! Type name from provider
     QString typeName;
@@ -93,38 +108,17 @@ class QgsFieldPrivate : public QSharedData
 
     //! Comment
     QString comment;
-};
 
+    //! Alias for field name (friendly name shown to users)
+    QString alias;
 
-/***************************************************************************
- * This class is considered CRITICAL and any change MUST be accompanied with
- * full unit tests in testqgsfields.cpp.
- * See details in QEP #17
- ****************************************************************************/
+    //! Default value
+    QgsDefaultValue defaultValueDefinition;
 
-class CORE_EXPORT QgsFieldsPrivate : public QSharedData
-{
-  public:
+    //! Field constraints
+    QgsFieldConstraints constraints;
 
-    QgsFieldsPrivate()
-    {
-    }
-
-    QgsFieldsPrivate( const QgsFieldsPrivate& other )
-        : QSharedData( other )
-        , fields( other.fields )
-        , nameToIndex( other.nameToIndex )
-    {
-    }
-
-    ~QgsFieldsPrivate() {}
-
-    //! internal storage of the container
-    QVector<QgsFields::Field> fields;
-
-    //! map for quick resolution of name to index
-    QHash<QString, int> nameToIndex;
-
+    QgsEditorWidgetSetup editorWidgetSetup;
 };
 
 /// @endcond

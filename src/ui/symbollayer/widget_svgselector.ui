@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>499</width>
+    <width>315</width>
     <height>490</height>
    </rect>
   </property>
@@ -116,17 +116,7 @@
         </size>
        </property>
        <property name="text">
-        <string>...</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QCheckBox" name="mRelativePathChkBx">
-       <property name="toolTip">
-        <string>Generated path will be relative to current SVG search directories or to Project file</string>
-       </property>
-       <property name="text">
-        <string>Relative path</string>
+        <string>…</string>
        </property>
       </widget>
      </item>
@@ -139,7 +129,6 @@
   <tabstop>mImagesListView</tabstop>
   <tabstop>mFileLineEdit</tabstop>
   <tabstop>mFilePushButton</tabstop>
-  <tabstop>mRelativePathChkBx</tabstop>
  </tabstops>
  <resources/>
  <connections/>

@@ -1,284 +1,442 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgsrasterblock.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
 class QgsRasterBlock
 {
-%TypeHeaderCode
-#include <qgis.h>
-#include <qgsrasterblock.h>
+%Docstring
+Raster data container.
 %End
 
+%TypeHeaderCode
+#include "qgsrasterblock.h"
+%End
   public:
     QgsRasterBlock();
 
-    /** \brief Constructor which allocates data block in memory
-     *  @param theDataType raster data type
-     *  @param theWidth width of data matrix
-     *  @param theHeight height of data matrix
-     *  @note not available in python bindings (use variant with theNoDataValue)
-     */
-    // QgsRasterBlock( QGis::DataType theDataType, int theWidth, int theHeight );
+    QgsRasterBlock( Qgis::DataType dataType, int width, int height );
+%Docstring
+ Constructor which allocates data block in memory
 
-    /** \brief Constructor which allocates data block in memory
-     *  @param theDataType raster data type
-     *  @param theWidth width of data matrix
-     *  @param theHeight height of data matrix
-     *  @param theNoDataValue the value representing no data (NULL)
-     */
-    QgsRasterBlock( QGis::DataType theDataType, int theWidth, int theHeight, double theNoDataValue );
+:param dataType: raster data type
+:param width: width of data matrix
+:param height: height of data matrix
+%End
 
     virtual ~QgsRasterBlock();
 
-    /** \brief Reset block
-     *  @param theDataType raster data type
-     *  @param theWidth width of data matrix
-     *  @param theHeight height of data matrix
-     *  @return true on success
-     *  @note not available in python bindings (use variant with theNoDataValue)
-     */
-    // bool reset( QGis::DataType theDataType, int theWidth, int theHeight );
+    bool reset( Qgis::DataType dataType, int width, int height );
+%Docstring
+ Reset block
 
-    /** \brief Reset block
-     *  @param theDataType raster data type
-     *  @param theWidth width of data matrix
-     *  @param theHeight height of data matrix
-     *  @param theNoDataValue the value representing no data (NULL)
-     *  @return true on success
-     */
-    bool reset( QGis::DataType theDataType, int theWidth, int theHeight, double theNoDataValue );
+:param dataType: raster data type
+:param width: width of data matrix
+:param height: height of data matrix
 
-    // TODO: consider if use isValid() at all, isEmpty() should be sufficient
-    // and works also if block is valid but empty - difference between valid and empty?
-    /** \brief Returns true if the block is valid (correctly filled with data).
-     *  An empty block may still be valid (if zero size block was requested).
-     *  If the block is not valid, error may be retrieved by error() method.
-     */
+:return: true on success
+%End
+
+
     bool isValid() const;
+%Docstring
+ Returns true if the block is valid (correctly filled with data).
+An empty block may still be valid (if zero size block was requested).
+If the block is not valid, error may be retrieved by error() method.
+%End
 
-    /** \brief Mark block as valid or invalid */
     void setValid( bool valid );
+%Docstring
+ Mark block as valid or invalid
+%End
 
-    /** Returns true if block is empty, i.e. its size is 0 (zero rows or cols).
-     *  This method does not return true if size is not zero and all values are
-     *  'no data' (null).
-     */
     bool isEmpty() const;
+%Docstring
+Returns true if block is empty, i.e. its size is 0 (zero rows or cols).
+This method does not return true if size is not zero and all values are
+'no data' (null).
+%End
 
-    // Return data type size in bytes
     static int typeSize( int dataType );
 
-    // Data type in bytes
     int dataTypeSize() const;
 
-    /** Returns true if data type is numeric */
-    static bool typeIsNumeric( QGis::DataType type );
+    static bool typeIsNumeric( Qgis::DataType type );
+%Docstring
+Returns true if data type is numeric
+%End
 
-    /** Returns true if data type is color */
-    static bool typeIsColor( QGis::DataType type );
+    static bool typeIsColor( Qgis::DataType type );
+%Docstring
+Returns true if data type is color
+%End
 
-    /** Returns data type */
-    QGis::DataType dataType() const;
+    Qgis::DataType dataType() const;
+%Docstring
+Returns data type
+%End
 
-    /** For given data type returns wider type and sets no data value */
-    static QGis::DataType typeWithNoDataValue( QGis::DataType dataType, double *noDataValue );
+    static Qgis::DataType typeWithNoDataValue( Qgis::DataType dataType, double *noDataValue );
+%Docstring
+For given data type returns wider type and sets no data value
+%End
 
-    /** True if the block has no data value.
-     * @return true if the block has no data value */
     bool hasNoDataValue() const;
+%Docstring
+True if the block has no data value.
 
-    /** Returns true if the block may contain no data. It does not guarantee
-     * that it really contains any no data. It can be used to speed up processing.
-     * Not the difference between this method and hasNoDataValue().
-     * @return true if the block may contain no data */
+:return: true if the block has no data value
+
+.. seealso:: :py:func:`noDataValue`
+%End
+
     bool hasNoData() const;
+%Docstring
+Returns true if the block may contain no data. It does not guarantee
+that it really contains any no data. It can be used to speed up processing.
+Not the difference between this method and hasNoDataValue().
 
-    /** Return no data value. If the block does not have a no data value the
-     *  returned value is undefined.
-     * @return No data value */
+:return: true if the block may contain no data *
+%End
+
+    void setNoDataValue( double noDataValue );
+%Docstring
+Sets cell value that will be considered as "no data".
+
+.. versionadded:: 3.0
+
+.. seealso:: :py:func:`noDataValue`
+%End
+
+    void resetNoDataValue();
+%Docstring
+Reset no data value: if there was a no data value previously set,
+it will be discarded.
+
+.. versionadded:: 3.0
+
+.. seealso:: :py:func:`noDataValue`
+%End
+
     double noDataValue() const;
+%Docstring
+Return no data value. If the block does not have a no data value the
+returned value is undefined.
 
-    /** Get byte array representing a value.
-     * @param theDataType data type
-     * @param theValue value
-     * @return byte array representing the value */
-    static QByteArray valueBytes( QGis::DataType theDataType, double theValue );
+:return: No data value
 
-    /** \brief Read a single value if type of block is numeric. If type is color,
-     *  returned value is undefined.
-     *  @param row row index
-     *  @param column column index
-     *  @return value */
+.. seealso:: :py:func:`hasNoDataValue`
+%End
+
+    static QByteArray valueBytes( Qgis::DataType dataType, double value );
+%Docstring
+Get byte array representing a value.
+
+:param dataType: data type
+:param value: value
+
+:return: byte array representing the value *
+%End
+
     double value( int row, int column ) const;
+%Docstring
+ Read a single value if type of block is numeric. If type is color,
+returned value is undefined.
 
-    /** \brief Read a single value if type of block is numeric. If type is color,
-     *  returned value is undefined.
-     *  @param index data matrix index (long type in Python)
-     *  @return value */
+:param row: row index
+:param column: column index
+
+:return: value *
+%End
+
     double value( qgssize index ) const;
+%Docstring
+ Read a single value if type of block is numeric. If type is color,
+returned value is undefined.
 
-    /** \brief Read a single color
-     *  @param row row index
-     *  @param column column index
-     *  @return color */
+:param index: data matrix index (long type in Python)
+
+:return: value *
+%End
+
     QRgb color( int row, int column ) const;
+%Docstring
+ Read a single color
 
-    /** \brief Read a single value
-     *  @param index data matrix index (long type in Python)
-     *  @return color */
+:param row: row index
+:param column: column index
+
+:return: color *
+%End
+
     QRgb color( qgssize index ) const;
+%Docstring
+ Read a single value
 
-    /** \brief Check if value at position is no data
-     *  @param row row index
-     *  @param column column index
-     *  @return true if value is no data */
+:param index: data matrix index (long type in Python)
+
+:return: color *
+%End
+
     bool isNoData( int row, int column );
+%Docstring
+ Check if value at position is no data
 
-    /** \brief Check if value at position is no data
-     *  @param index data matrix index (long type in Python)
-     *  @return true if value is no data */
+:param row: row index
+:param column: column index
+
+:return: true if value is no data *
+%End
+
     bool isNoData( qgssize index );
+%Docstring
+ Check if value at position is no data
 
-    /** \brief Set value on position
-     *  @param row row index
-     *  @param column column index
-     *  @param value the value to be set
-     *  @return true on success */
+:param index: data matrix index (long type in Python)
+
+:return: true if value is no data *
+%End
+
     bool setValue( int row, int column, double value );
+%Docstring
+ Set value on position
 
-    /** \brief Set value on index (indexed line by line)
-     *  @param index data matrix index (long type in Python)
-     *  @param value the value to be set
-     *  @return true on success */
+:param row: row index
+:param column: column index
+:param value: the value to be set
+
+:return: true on success *
+%End
+
     bool setValue( qgssize index, double value );
+%Docstring
+ Set value on index (indexed line by line)
 
-    /** \brief Set color on position
-     *  @param row row index
-     *  @param column column index
-     *  @param color the color to be set, QRgb value
-     *  @return true on success */
+:param index: data matrix index (long type in Python)
+:param value: the value to be set
+
+:return: true on success *
+%End
+
     bool setColor( int row, int column, QRgb color );
+%Docstring
+ Set color on position
 
-    /** \brief Set color on index (indexed line by line)
-     *  @param index data matrix index (long type in Python)
-     *  @param color the color to be set, QRgb value
-     *  @return true on success */
+:param row: row index
+:param column: column index
+:param color: the color to be set, QRgb value
+
+:return: true on success *
+%End
+
     bool setColor( qgssize index, QRgb color );
+%Docstring
+ Set color on index (indexed line by line)
 
-    /** \brief Set no data on pixel
-     *  @param row row index
-     *  @param column column index
-     *  @return true on success */
+:param index: data matrix index (long type in Python)
+:param color: the color to be set, QRgb value
+
+:return: true on success *
+%End
+
     bool setIsNoData( int row, int column );
+%Docstring
+ Set no data on pixel
 
-    /** \brief Set no data on pixel
-     *  @param index data matrix index (long type in Python)
-     *  @return true on success */
+:param row: row index
+:param column: column index
+
+:return: true on success *
+%End
+
     bool setIsNoData( qgssize index );
+%Docstring
+ Set no data on pixel
 
-    /** \brief Set the whole block to no data
-     *  @return true on success */
+:param index: data matrix index (long type in Python)
+
+:return: true on success *
+%End
+
     bool setIsNoData();
+%Docstring
+ Set the whole block to no data
 
-    /** \brief Set the whole block to no data except specified rectangle
-     *  @return true on success */
-    bool setIsNoDataExcept( QRect theExceptRect );
+:return: true on success *
+%End
 
-    /** \brief Remove no data flag on pixel. If the raster block does not have an explicit
-     * no data value set then an internal map of no data pixels is maintained for the block.
-     * In this case it is possible to reset a pixel to flag it as having valid data using this
-     * method. This method has no effect for raster blocks with an explicit no data value set.
-     *  @param row row index
-     *  @param column column index
-     *  @note added in QGIS 2.10 */
+    bool setIsNoDataExcept( QRect exceptRect );
+%Docstring
+ Set the whole block to no data except specified rectangle
+
+:return: true on success *
+%End
+
     void setIsData( int row, int column );
+%Docstring
+ Remove no data flag on pixel. If the raster block does not have an explicit
+no data value set then an internal map of no data pixels is maintained for the block.
+In this case it is possible to reset a pixel to flag it as having valid data using this
+method. This method has no effect for raster blocks with an explicit no data value set.
 
-    /** \brief Remove no data flag on pixel. If the raster block does not have an explicit
-     * no data value set then an internal map of no data pixels is maintained for the block.
-     * In this case it is possible to reset a pixel to flag it as having valid data using this
-     * method. This method has no effect for raster blocks with an explicit no data value set.
-     *  @param index data matrix index (long type in Python)
-     *  @note added in QGIS 2.10 */
+:param row: row index
+:param column: column index
+
+.. versionadded:: 2.10
+%End
+
     void setIsData( qgssize index );
+%Docstring
+ Remove no data flag on pixel. If the raster block does not have an explicit
+no data value set then an internal map of no data pixels is maintained for the block.
+In this case it is possible to reset a pixel to flag it as having valid data using this
+method. This method has no effect for raster blocks with an explicit no data value set.
 
-    /** \brief Get pointer to data
-     *  @param row row index
-     *  @param column column index
-     *  @return pointer to data
-     *  @note not available in python bindings
-     */
-    // char * bits( int row, int column );
+:param index: data matrix index (long type in Python)
 
-    /** \brief Get pointer to data
-     *  @param index data matrix index (long type in Python)
-     *  @return pointer to data
-     *  @note not available in python bindings
-     */
-    // char * bits( qgssize index );
+.. versionadded:: 2.10
+%End
 
-    /** \brief Get pointer to data
-     *  @return pointer to data
-     *  @note not available in python bindings
-     */
-    // char * bits();
+    QByteArray data() const;
+%Docstring
+Get access to raw data.
+The returned QByteArray instance is not a copy of the data: it only refers to the array
+owned by the QgsRasterBlock, therefore it is only valid while the QgsRasterBlock object
+still exists. Writing to the returned QByteArray will not affect the original data:
+a deep copy of the data will be made and only the local copy will be modified.
 
-    /** \brief Print double value with all necessary significant digits.
-     *         It is ensured that conversion back to double gives the same number.
-     *  @param value the value to be printed
-     *  @return string representing the value*/
+.. note::
+
+   in Python the method returns ordinary bytes object as the
+
+.. versionadded:: 3.0
+%End
+
+    void setData( const QByteArray &data, int offset = 0 );
+%Docstring
+Rewrite raw pixel data.
+If the data array is shorter than the internal array within the raster block object,
+pixels at the end will stay untouched. If the data array is longer than the internal
+array, only the initial data from the input array will be used.
+Optionally it is possible to set non-zero offset (in bytes) if the input data should
+overwrite data somewhere in the middle of the internal buffer.
+
+.. versionadded:: 3.0
+%End
+
+
+
+
     static QString printValue( double value );
+%Docstring
+ Print double value with all necessary significant digits.
+It is ensured that conversion back to double gives the same number.
 
-    /** \brief Convert data to different type.
-     *  @param destDataType dest data type
-     *  @return true on success */
-    bool convert( QGis::DataType destDataType );
+:param value: the value to be printed
 
-    /** \brief Get image if type is color.
-    *   @return image */
+:return: string representing the value*
+%End
+
+
+    bool convert( Qgis::DataType destDataType );
+%Docstring
+ Convert data to different type.
+
+:param destDataType: dest data type
+
+:return: true on success *
+%End
+
     QImage image() const;
+%Docstring
+ Get image if type is color.
 
-    /** \brief set image.
-     *  @param image image
-     *  @return true on success */
-    bool setImage( const QImage * image );
+:return: image *
+%End
 
-    // @note not available in python bindings
-    // inline static double readValue( void *data, QGis::DataType type, qgssize index );
+    bool setImage( const QImage *image );
+%Docstring
+ set image.
 
-    // @note not available in python bindings
-    // inline static void writeValue( void *data, QGis::DataType type, qgssize index, double value );
+:param image: image
 
-    void applyNoDataValues( const QgsRasterRangeList & rangeList );
+:return: true on success *
+%End
 
-    /** Apply band scale and offset to raster block values
-     * @@note added in 2.3 */
+
+
+    void applyNoDataValues( const QgsRasterRangeList &rangeList );
+
     void applyScaleOffset( double scale, double offset );
+%Docstring
+Apply band scale and offset to raster block values
 
-    /** \brief Get error */
+.. versionadded:: 2.3
+%End
+
     QgsError error() const;
+%Docstring
+ Get error
+%End
 
-    /** \brief Set error */
-    void setError( const QgsError & theError );
+    void setError( const QgsError &error );
+%Docstring
+ Set error
+%End
 
     QString toString() const;
 
-    /** \brief For theExtent and theWidht, theHeight find rectangle covered by subextent.
-     * The output rect has x oriented from left to right and y from top to bottom
-     * (upper-left to lower-right orientation).
-     * @param theExtent extent, usually the larger
-     * @param theWidth numbers of columns in theExtent
-     * @param theHeight numbers of rows in theExtent
-     * @param theSubExtent extent, usually smaller than theExtent
-     * @return the rectangle covered by sub extent
-     */
-    static QRect subRect( const QgsRectangle &theExtent, int theWidth, int theHeight, const QgsRectangle &theSubExtent );
+    static QRect subRect( const QgsRectangle &extent, int width, int height, const QgsRectangle &subExtent );
+%Docstring
+ For extent and width, height find rectangle covered by subextent.
+The output rect has x oriented from left to right and y from top to bottom
+(upper-left to lower-right orientation).
 
-    /** Returns the width (number of columns) of the raster block.
-     * @see height
-     * @note added in QGIS 2.10
-     */
+:param extent: extent, usually the larger
+:param width: numbers of columns in theExtent
+:param height: numbers of rows in theExtent
+:param subExtent: extent, usually smaller than theExtent
+
+:return: the rectangle covered by sub extent
+%End
+
     int width() const;
+%Docstring
+Returns the width (number of columns) of the raster block.
 
-    /** Returns the height (number of rows) of the raster block.
-     * @see width
-     * @note added in QGIS 2.10
-     */
+.. seealso:: :py:func:`height`
+
+.. versionadded:: 2.10
+%End
+
     int height() const;
+%Docstring
+Returns the height (number of rows) of the raster block.
+
+.. seealso:: :py:func:`width`
+
+.. versionadded:: 2.10
+%End
+
 };
 
+
+
+
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgsrasterblock.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -1,357 +1,424 @@
-/***************************************************************************
-                         qgsdxfexport.sip
-                         ----------------
-    begin                : September 2013
-    copyright            : (C) 2013 by Marco Hugentobler
-    email                : marco at sourcepole dot ch
- ***************************************************************************/
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/dxf/qgsdxfexport.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
 
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+
+
+
+
+
+
 
 class QgsDxfExport
 {
+
 %TypeHeaderCode
-#include <qgsdxfexport.h>
+#include "qgsdxfexport.h"
 %End
   public:
     enum SymbologyExport
     {
-      NoSymbology, //export only data
-      FeatureSymbology, //Keeps the number of features and export symbology per feature (using the first symbol level)
-      SymbolLayerSymbology //Exports one feature per symbol layer (considering symbol levels)
+      NoSymbology,
+      FeatureSymbology,
+      SymbolLayerSymbology
     };
 
+    enum Flag
+    {
+      FlagNoMText,
+    };
+    typedef QFlags<QgsDxfExport::Flag> Flags;
+
+
     QgsDxfExport();
-    ~QgsDxfExport();
+%Docstring
+Constructor for QgsDxfExport.
+%End
 
-    /**
-     * Add layers to export
-     * @param layers list of layers and corresponding attribute indexes that determine the layer name (-1 for original layer name or title)
-     * @see setLayerTitleAsName
-     */
+    void setMapSettings( const QgsMapSettings &settings );
+%Docstring
+Set map settings and assign layer name attributes
+
+:param settings: map settings to apply
+%End
+
+    void setFlags( QgsDxfExport::Flags flags );
+%Docstring
+Sets the export flags.
+
+.. versionadded:: 3.0
+
+.. seealso:: :py:func:`flags`
+%End
+
+    QgsDxfExport::Flags flags() const;
+%Docstring
+Returns the export flags.
+
+.. versionadded:: 3.0
+
+.. seealso:: :py:func:`setFlags`
+%End
+
     void addLayers( const QList< QPair<QgsVectorLayer *, int > > &layers );
+%Docstring
+Add layers to export
 
-    /**
-     * Export to a dxf file in the given encoding
-     * @param d device
-     * @param codec encoding
-     * @returns 0 on success, 1 on invalid device, 2 when devices is not writable
-     */
-    int writeToFile( QIODevice *d, const QString& codec );  //maybe add progress dialog? other parameters (e.g. scale, dpi)?
+:param layers: list of layers and corresponding attribute indexes that determine the layer name (-1 for original layer name or title)
 
-    /**
-     * Set reference scale for output
-     * @param d scale denominator
-     */
-    void setSymbologyScaleDenominator( double d );
+.. seealso:: :py:func:`setLayerTitleAsName`
+%End
 
-    /**
-     * Retrieve reference scale for output
-     * @returns reference scale
-     * @see setSymbologyScaleDenominator
-     */
-    double symbologyScaleDenominator() const;
+    int writeToFile( QIODevice *d, const QString &codec );  //maybe add progress dialog? other parameters (e.g. scale, dpi)?
 
-    /**
-     * Set map units
-     * @param u unit
-     */
-    void setMapUnits( QGis::UnitType u );
+    void setSymbologyScale( double scale );
+%Docstring
+Set reference ``scale`` for output.
+The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 
-    /**
-     * Retrieve map units
-     * @returns unit
-     * @see setMapUnits
-     */
-    QGis::UnitType mapUnits() const;
+.. versionadded:: 3.0
 
-    /**
-     * Set symbology export mode
-     * @param e the mode
-     */
+.. seealso:: :py:func:`symbologyScale`
+%End
+
+    double symbologyScale() const;
+%Docstring
+Returns the reference scale for output.
+The  scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+
+.. versionadded:: 3.0
+
+.. seealso:: :py:func:`setSymbologyScale`
+%End
+
+    QgsUnitTypes::DistanceUnit mapUnits() const;
+%Docstring
+Retrieve map units
+
+:return: unit
+%End
+
+    void setDestinationCrs( const QgsCoordinateReferenceSystem &crs );
+%Docstring
+Set destination CRS
+
+.. seealso:: :py:func:`destinationCrs`
+
+.. versionadded:: 3.0
+%End
+
+    QgsCoordinateReferenceSystem destinationCrs() const;
+%Docstring
+Returns the destination CRS, or an invalid CRS if no reprojection will be done.
+
+.. seealso:: :py:func:`setDestinationCrs`
+
+.. versionadded:: 3.0
+%End
+
     void setSymbologyExport( QgsDxfExport::SymbologyExport e );
+%Docstring
+Set symbology export mode
 
-    /**
-     * Get symbology export mode
-     * @returns mode
-     * @see setSymbologyExport
-     */
+:param e: the mode
+%End
+
     QgsDxfExport::SymbologyExport symbologyExport() const;
+%Docstring
+Get symbology export mode
 
-    /**
-     * Set extent of area to export
-     * @param r area to export
-     */
+:return: mode
+
+.. seealso:: :py:func:`setSymbologyExport`
+%End
+
     void setExtent( const QgsRectangle &r );
+%Docstring
+Set extent of area to export
 
-    /**
-     * Get extent of area to export
-     * @returns area to export
-     * @see setExtent
-     */
+:param r: area to export
+%End
+
     QgsRectangle extent() const;
+%Docstring
+Get extent of area to export
 
-    /**
-     * Enable use of title (where set) instead of layer name,
-     * when attribute index of corresponding layer index is -1
-     * @param layerTitleAsName flag
-     * @see addLayers
-     */
+:return: area to export
+
+.. seealso:: :py:func:`setExtent`
+%End
+
     void setLayerTitleAsName( bool layerTitleAsName );
+%Docstring
+Enable use of title (where set) instead of layer name,
+when attribute index of corresponding layer index is -1
 
-    /**
-     * Retrieve wether layer title (where set) instead of name shall be use
-     * @returns flag
-     * @see setLayerTitleAsName
-     */
+:param layerTitleAsName: flag
+
+.. seealso:: :py:func:`addLayers`
+%End
+
     bool layerTitleAsName();
+%Docstring
+Retrieve whether layer title (where set) instead of name shall be use
 
-    /**
-     * Get DXF palette index of nearest entry for given color
-     * @param color
-     */
+:return: flag
+
+.. seealso:: :py:func:`setLayerTitleAsName`
+%End
+
+    void setForce2d( bool force2d );
+%Docstring
+Force 2d output (eg. to support linewidth in polylines)
+
+:param force2d: flag
+
+.. seealso:: :py:func:`force2d`
+%End
+
+    bool force2d();
+%Docstring
+Retrieve whether the output should be forced to 2d
+
+:return: flag
+
+.. seealso:: :py:func:`setForce2d`
+%End
+
     static int closestColorMatch( QRgb color );
+%Docstring
+Get DXF palette index of nearest entry for given color
 
-    /**
-     * Get layer name for feature
-     * @param id layer id of layer
-     * @param f feature of layer
-     * @returns layer name for feature
-     */
+:param color:
+%End
+
     QString layerName( const QString &id, const QgsFeature &f ) const;
+%Docstring
+Get layer name for feature
 
-    /**
-     * Get name for layer respecting the use layer title as layer name mode
-     * @param vl the vector layer
-     * @returns name of layer
-     * @see setLayerTitleAsName
-     */
+:param id: layer id of layer
+:param f: feature of layer
+
+:return: layer name for feature
+%End
+
     QString layerName( QgsVectorLayer *vl ) const;
+%Docstring
+Get name for layer respecting the use layer title as layer name mode
 
-    /**
-     * Write a tuple of group code and integer value
-     * @param code group code
-     * @param i integer value
-     * @note available in python bindings as writeGroupInt
-     */
+:param vl: the vector layer
+
+:return: name of layer
+
+.. seealso:: :py:func:`setLayerTitleAsName`
+%End
+
     void writeGroup( int code, int i ) /PyName=writeGroupInt/;
+%Docstring
+Write a tuple of group code and integer value
 
-    /**
-     * Write a group code with a floating point value
-     * @param code group code
-     * @param d floating point value
-     * @note available in python bindings as writeGroupDouble
-     */
+:param code: group code
+:param i: integer value
+
+.. note::
+
+   available in Python bindings as writeGroupInt
+%End
+
     void writeGroup( int code, double d ) /PyName=writeGroupDouble/;
+%Docstring
+Write a group code with a floating point value
 
-    /**
-     * Write a group code with a string value
-     * @param code group code
-     * @param s string value
-     */
+:param code: group code
+:param d: floating point value
+
+.. note::
+
+   available in Python bindings as writeGroupDouble
+%End
+
     void writeGroup( int code, const QString &s );
+%Docstring
+Write a group code with a string value
 
-    /**
-     * Write a group code with a point
-     * @param code group code
-     * @param p point value
-     * @param z z value of the point (defaults to 0.0)
-     * @param skipz write point in 2d (defaults to false)
-     * @note available in python bindings as writeGroupPoint
-     * @deprecated use QgsPointV2 version instead
-     */
-    void writeGroup( int code, const QgsPoint &p, double z = 0.0, bool skipz = false ) /PyName=writeGroupPoint/;
+:param code: group code
+:param s: string value
+%End
 
-    /**
-     * Write a group code with a point
-     * @param code group code
-     * @param p point value
-     * @note available in python bindings as writeGroupPointV2
-     * @note added in 2.15
-     */
-    void writeGroup( int code, const QgsPointV2 &p ) /PyName=writeGroupPointV2/;
+    void writeGroup( int code, const QgsPoint &p ) /PyName=writeGroupPointV2/;
+%Docstring
+Write a group code with a point
 
-    /**
-     * Write a group code with color value
-     * @param color color
-     * @param exactMatch group code to use if the color has an exact match in the dxf palette
-     * @param rgbCode group code to use if the color doesn't have an exact match or has a transparency component
-     * @param transparencyCode group code to use for transparency component
-     * @note available in python bindings as writeGroupPoint
-     */
-    void writeGroup( const QColor& color, int exactMatch = 62, int rgbCode = 420, int transparencyCode = 440 );
+:param code: group code
+:param p: point value
 
-    /**
-     * Write a group code
-     * @param code group code value
-     */
+.. note::
+
+   available in Python bindings as writeGroupPointV2
+
+.. versionadded:: 2.15
+%End
+
+    void writeGroup( const QColor &color, int exactMatch = 62, int rgbCode = 420, int transparencyCode = 440 );
+%Docstring
+Write a group code with color value
+
+:param color: color
+:param exactMatch: group code to use if the color has an exact match in the dxf palette
+:param rgbCode: group code to use if the color doesn't have an exact match or has a transparency component
+:param transparencyCode: group code to use for transparency component
+
+.. note::
+
+   available in Python bindings as writeGroupPoint
+%End
+
     void writeGroupCode( int code );
+%Docstring
+Write a group code
 
-    /**
-     * Write an integer value
-     * @param i integer value
-     */
+:param code: group code value
+%End
+
     void writeInt( int i );
+%Docstring
+Write an integer value
 
-    /**
-     * Write a floating point value
-     * @param d floating point value
-     */
+:param i: integer value
+%End
+
     void writeDouble( double d );
+%Docstring
+Write a floating point value
 
-    /**
-     * Write a string value
-     * @param s string value
-     */
+:param d: floating point value
+%End
+
     void writeString( const QString &s );
+%Docstring
+Write a string value
 
-    /**
-     * Write a tuple of group code and a handle
-     * @param code group code to use
-     * @param handle handle to use (0 generates a new handle)
-     * @returns the used handle
-     */
+:param s: string value
+%End
+
     int writeHandle( int code = 5, int handle = 0 );
+%Docstring
+Write a tuple of group code and a handle
 
-    /**
-     * Draw dxf primitives (LWPOLYLINE)
-     * @param line polyline
-     * @param layer layer name to use
-     * @param lineStyleName line type to use
-     * @param color color to use
-     * @param width line width to use
-     */
-    void writePolyline( const QgsPolyline &line, const QString &layer, const QString &lineStyleName, const QColor& color, double width = -1 );
+:param code: group code to use
+:param handle: handle to use (0 generates a new handle)
 
-    /**
-     * Draw dxf primitives (LWPOLYLINE)
-     * @param line polyline
-     * @param layer layer name to use
-     * @param lineStyleName line type to use
-     * @param color color to use
-     * @param width line width to use
-     * @note not available in Python bindings
-     * @note added in 2.15
-     */
-    // void writePolyline( const QgsPointSequenceV2 &line, const QString &layer, const QString &lineStyleName, const QColor& color, double width = -1 );
+:return: the used handle
+%End
 
-    /**
-     * Draw dxf filled polygon (HATCH)
-     * @param polygon polygon
-     * @param layer layer name to use
-     * @param hatchPattern hatchPattern to use
-     * @param color color to use
-     * @deprecated use version with QgsRingSequenceV2
-     */
-    void writePolygon( const QgsPolygon &polygon, const QString &layer, const QString &hatchPattern, const QColor& color ) /Deprecated/;
 
-    /**
-     * Draw dxf filled polygon (HATCH)
-     * @param polygon polygon
-     * @param layer layer name to use
-     * @param hatchPattern hatchPattern to use
-     * @param color color to use
-     * @note not available in Python bindings
-     * @note added in 2.15
-     */
-    // void writePolygon( const QgsRingSequenceV2 &polygon, const QString &layer, const QString &hatchPattern, const QColor& color );
 
-    /**
-     * Draw dxf filled polygon (SOLID)
-     * @param layer layer name to use
-     * @param color color to use
-     * @param pt1 1. point of solid
-     * @param pt2 2. point of solid
-     * @param pt3 3. point of solid
-     * @param pt4 4. point of solid
-     * @deprecated see writePolygon
-     */
-    void writeSolid( const QString &layer, const QColor& color, const QgsPoint &pt1, const QgsPoint &pt2, const QgsPoint &pt3, const QgsPoint &pt4 ) /Deprecated/;
+    void writeLine( const QgsPoint &pt1, const QgsPoint &pt2, const QString &layer, const QString &lineStyleName, const QColor &color, double width = -1 );
+%Docstring
+Write line (as a polyline)
 
-    //! Write line (as a polyline)
-    void writeLine( const QgsPoint &pt1, const QgsPoint &pt2, const QString &layer, const QString &lineStyleName, const QColor& color, double width = -1 );
+.. versionadded:: 2.15
+%End
 
-    //! Write line (as a polyline)
-    //! @note added in 2.15
-    void writeLine( const QgsPointV2 &pt1, const QgsPointV2 &pt2, const QString &layer, const QString &lineStyleName, const QColor& color, double width = -1 );
+    void writePoint( const QString &layer, const QColor &color, const QgsPoint &pt ) /PyName=writePointV2/;
+%Docstring
+Write point
 
-    //! Write point
-    //! @deprecated use QgsPointV2 version
-    void writePoint( const QString &layer, const QColor& color, const QgsPoint &pt ) /Deprecated/;
+.. note::
 
-    //! Write point
-    //! @note available in Python bindings as writePointV2
-    //! @note added in 2.15
-    void writePoint( const QString &layer, const QColor& color, const QgsPointV2 &pt ) /PyName=writePointV2/;
+   available in Python bindings as writePointV2
 
-    //! Write filled circle (as hatch)
-    //! @deprecated use QgsPointV2 version
-    void writeFilledCircle( const QString &layer, const QColor& color, const QgsPoint &pt, double radius ) /Deprecated/;
+.. versionadded:: 2.15
+%End
 
-    //! Write filled circle (as hatch)
-    //! @note available in Python bindings as writePointV2
-    //! @note added in 2.15
-    void writeFilledCircle( const QString &layer, const QColor& color, const QgsPointV2 &pt, double radius ) /PyName=writeFillCircleV2/;
+    void writeFilledCircle( const QString &layer, const QColor &color, const QgsPoint &pt, double radius ) /PyName=writeFillCircleV2/;
+%Docstring
+Write filled circle (as hatch)
 
-    //! Write circle (as polyline)
-    //! @deprecated use QgsPointV2 version
-    void writeCircle( const QString &layer, const QColor& color, const QgsPoint &pt, double radius, const QString &lineStyleName, double width ) /Deprecated/;
+.. note::
 
-    //! Write circle (as polyline)
-    //! @note available in Python bindings as writeCircleV2
-    //! @note added in 2.15
-    void writeCircle( const QString &layer, const QColor& color, const QgsPointV2 &pt, double radius, const QString &lineStyleName, double width ) /PyName=writeCircleV2/;
+   available in Python bindings as writePointV2
 
-    //! Write text (TEXT)
-    //! @deprecated use QgsPointV2 version
-    void writeText( const QString &layer, const QString &text, const QgsPoint &pt, double size, double angle, const QColor& color ) /Deprecated/;
+.. versionadded:: 2.15
+%End
 
-    //! Write text (TEXT)
-    //! @note available in Python bindings as writeTextV2
-    //! @note added in 2.15
-    void writeText( const QString &layer, const QString &text, const QgsPointV2 &pt, double size, double angle, const QColor& color ) /PyName=writeTextV2/;
+    void writeCircle( const QString &layer, const QColor &color, const QgsPoint &pt, double radius, const QString &lineStyleName, double width ) /PyName=writeCircleV2/;
+%Docstring
+Write circle (as polyline)
 
-    //! Write mtext (MTEXT)
-    //! @deprecated use QgsPointV2 version
-    void writeMText( const QString &layer, const QString &text, const QgsPoint &pt, double width, double angle, const QColor& color ) /Deprecated/;
+.. note::
 
-    //! Write mtext (MTEXT)
-    //! @note available in Python bindings as writeMTextV2
-    //! @note added in 2.15
-    void writeMText( const QString &layer, const QString &text, const QgsPointV2 &pt, double width, double angle, const QColor& color );
+   available in Python bindings as writeCircleV2
 
-    static double mapUnitScaleFactor( double scaleDenominator, QgsSymbolV2::OutputUnit symbolUnits, QGis::UnitType mapUnits );
+.. versionadded:: 2.15
+%End
 
-    //! Return cleaned layer name for use in DXF
+    void writeText( const QString &layer, const QString &text, const QgsPoint &pt, double size, double angle, const QColor &color ) /PyName=writeTextV2/;
+%Docstring
+Write text (TEXT)
+
+.. note::
+
+   available in Python bindings as writeTextV2
+
+.. versionadded:: 2.15
+%End
+
+    void writeMText( const QString &layer, const QString &text, const QgsPoint &pt, double width, double angle, const QColor &color );
+%Docstring
+Write mtext (MTEXT)
+
+.. note::
+
+   available in Python bindings as writeMTextV2
+
+.. versionadded:: 2.15
+%End
+
+    static double mapUnitScaleFactor( double scale, QgsUnitTypes::RenderUnit symbolUnits, QgsUnitTypes::DistanceUnit mapUnits );
+%Docstring
+Calculates a scaling factor to convert from map units to a specified symbol unit.
+The ``scale`` parameter indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+%End
+
     static QString dxfLayerName( const QString &name );
+%Docstring
+Return cleaned layer name for use in DXF
+%End
 
-    //! return DXF encoding for Qt encoding
     static QString dxfEncoding( const QString &name );
+%Docstring
+return DXF encoding for Qt encoding
+%End
 
-    //! return list of available DXF encodings
     static QStringList encodings();
+%Docstring
+return list of available DXF encodings
+%End
 
-    /** Output the label
-     * @param layerId id of the layer
-     * @param context render context
-     * @param label position of label
-     * @param settings label settings
-     * @note not available in Python bindings
-     */
-    // void drawLabel( QString layerId, QgsRenderContext& context, pal::LabelPosition* label, const QgsPalLayerSettings &settings );
 
-    /** Register name of layer for feature
-     * @param layerId id of layer
-     * @param fid id of feature
-     * @param layer dxf layer of feature
-     */
-    void registerDxfLayer( QString layerId, QgsFeatureId fid, QString layer );
+    void registerDxfLayer( const QString &layerId, QgsFeatureId fid, const QString &layer );
+%Docstring
+Register name of layer for feature
+
+:param layerId: id of layer
+:param fid: id of feature
+:param layer: dxf layer of feature
+%End
 
 };
+
+QFlags<QgsDxfExport::Flag> operator|(QgsDxfExport::Flag f1, QFlags<QgsDxfExport::Flag> f2);
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/dxf/qgsdxfexport.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

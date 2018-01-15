@@ -18,11 +18,13 @@
 #define QGSORACLESOURCESELECT_H
 
 #include "ui_qgsdbsourceselectbase.h"
-#include "qgisgui.h"
+#include "qgsguiutils.h"
 #include "qgsdbfilterproxymodel.h"
 #include "qgsoracletablemodel.h"
-#include "qgscontexthelp.h"
+#include "qgshelp.h"
 #include "qgsoracleconnpool.h"
+#include "qgsproviderregistry.h"
+#include "qgsabstractdatasourcewidget.h"
 
 #include <QMap>
 #include <QPair>
@@ -41,8 +43,8 @@ class QgsOracleSourceSelectDelegate : public QItemDelegate
 
   public:
     explicit QgsOracleSourceSelectDelegate( QObject *parent = nullptr )
-        : QItemDelegate( parent )
-        , mConn( nullptr )
+      : QItemDelegate( parent )
+      , mConn( nullptr )
     {}
 
     ~QgsOracleSourceSelectDelegate()
@@ -54,12 +56,12 @@ class QgsOracleSourceSelectDelegate : public QItemDelegate
     void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const;
     void setEditorData( QWidget *editor, const QModelIndex &index ) const;
 
-    void setConnectionInfo( const QgsDataSourceURI& connInfo ) { mConnInfo = connInfo; }
+    void setConnectionInfo( const QgsDataSourceUri &connInfo ) { mConnInfo = connInfo; }
 
   protected:
     void setConn( QgsOracleConn *conn ) const { if ( mConn ) QgsOracleConnPool::instance()->releaseConnection( mConn ); mConn = conn; }
 
-    QgsOracleConn* conn() const
+    QgsOracleConn *conn() const
     {
       if ( !mConn )
         setConn( QgsOracleConnPool::instance()->acquireConnection( QgsOracleConn::toPoolName( mConnInfo ) ) );
@@ -67,26 +69,27 @@ class QgsOracleSourceSelectDelegate : public QItemDelegate
     }
 
   private:
-    QgsDataSourceURI mConnInfo;
+    QgsDataSourceUri mConnInfo;
     //! lazily initialized connection (to detect possible primary keys)
     mutable QgsOracleConn *mConn;
 };
 
 
-/** \class QgsOracleSourceSelect
+/**
+ * \class QgsOracleSourceSelect
  * \brief Dialog to create connections and add tables from Oracle.
  *
  * This dialog allows the user to define and save connection information
  * for Oracle databases. The user can then connect and add
  * tables from the database to the map canvas.
  */
-class QgsOracleSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
+class QgsOracleSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsDbSourceSelectBase
 {
     Q_OBJECT
 
   public:
     //! Constructor
-    QgsOracleSourceSelect( QWidget *parent = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags, bool managerMode = false, bool embeddedMode = false );
+    QgsOracleSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
     //! Destructor
     ~QgsOracleSourceSelect();
     //! Populate the connection list combo box
@@ -95,17 +98,17 @@ class QgsOracleSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     QStringList selectedTables();
 
   signals:
-    void addDatabaseLayers( QStringList const & layerPathList, QString const & providerKey );
-    void connectionsChanged();
+    void addDatabaseLayers( QStringList const &layerPathList, QString const &providerKey );
     void progress( int, int );
     void progressMessage( QString );
 
   public slots:
     //! Determines the tables the user selected and closes the dialog
-    void addTables();
+    void addButtonClicked() override;
     void buildQuery();
 
-    /** Connects to the database using the stored connection parameters.
+    /**
+     * Connects to the database using the stored connection parameters.
      * Once connected, available layers are displayed.
      */
     void on_btnConnect_clicked();
@@ -121,31 +124,24 @@ class QgsOracleSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     //! Loads the selected connections from file
     void on_btnLoad_clicked();
     void on_mSearchGroupBox_toggled( bool );
-    void on_mSearchTableEdit_textChanged( const QString & text );
-    void on_mSearchColumnComboBox_currentIndexChanged( const QString & text );
-    void on_mSearchModeComboBox_currentIndexChanged( const QString & text );
+    void on_mSearchTableEdit_textChanged( const QString &text );
+    void on_mSearchColumnComboBox_currentIndexChanged( const QString &text );
+    void on_mSearchModeComboBox_currentIndexChanged( const QString &text );
     void on_cmbConnections_currentIndexChanged( const QString &text );
-    void setSql( const QModelIndex& index );
+    void setSql( const QModelIndex &index );
     //! Store the selected database
     void setLayerType( QgsOracleLayerProperty layerProperty );
     void on_mTablesTreeView_clicked( const QModelIndex &index );
     void on_mTablesTreeView_doubleClicked( const QModelIndex &index );
+    void treeWidgetSelectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
     //!Sets a new regular expression to the model
-    void setSearchExpression( const QString& regexp );
-
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void setSearchExpression( const QString &regexp );
 
     void columnThreadFinished();
 
   private:
     typedef QPair<QString, QString> geomPair;
     typedef QList<geomPair> geomCol;
-
-    //! Connections manager mode
-    bool mManagerMode;
-
-    //! Embedded mode, without 'Close'
-    bool mEmbeddedMode;
 
     //! try to load list of tables from local cache
     void loadTableFromCache();
@@ -162,22 +158,25 @@ class QgsOracleSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     // The column labels
     QStringList mColumnLabels;
     // Our thread for doing long running queries
-    QgsOracleColumnTypeThread *mColumnTypeThread;
-    QgsDataSourceURI mConnInfo;
+    QgsOracleColumnTypeThread *mColumnTypeThread = nullptr;
+    QgsDataSourceUri mConnInfo;
     QStringList mSelectedTables;
     // Storage for the range of layer type icons
     QMap<QString, QPair<QString, QIcon> > mLayerIcons;
 
     //! Model that acts as datasource for mTableTreeWidget
     QgsOracleTableModel mTableModel;
-    QgsDbFilterProxyModel mProxyModel;
-    QgsOracleSourceSelectDelegate *mTablesTreeDelegate;
+    QgsDatabaseFilterProxyModel mProxyModel;
+    QgsOracleSourceSelectDelegate *mTablesTreeDelegate = nullptr;
 
-    QPushButton *mBuildQueryButton;
-    QPushButton *mAddButton;
+    QPushButton *mBuildQueryButton = nullptr;
+    QPushButton *mAddButton = nullptr;
 
     void finishList();
     bool mIsConnected;
+
+    void showHelp();
+
 };
 
 #endif // QGSORACLESOURCESELECT_H

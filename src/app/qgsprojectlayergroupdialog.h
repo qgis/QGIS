@@ -17,19 +17,21 @@
 
 #include "QDialog"
 #include "ui_qgsprojectlayergroupdialogbase.h"
+#include "qgshelp.h"
+#include "qgis_app.h"
 
 class QDomElement;
 
-class QgsLayerTreeGroup;
+class QgsLayerTree;
 
-/** A dialog to select layers and groups from a qgs project*/
+//! A dialog to select layers and groups from a qgs project
 class APP_EXPORT QgsProjectLayerGroupDialog: public QDialog, private Ui::QgsProjectLayerGroupDialogBase
 {
     Q_OBJECT
   public:
-    /** Constructor. If a project file is given, the groups/layers are displayed directly and the file selection hidden*/
-    QgsProjectLayerGroupDialog( QWidget * parent = nullptr, const QString& projectFile = QString(), Qt::WindowFlags f = nullptr );
-    ~QgsProjectLayerGroupDialog();
+    //! Constructor. If a project file is given, the groups/layers are displayed directly and the file selection hidden
+    QgsProjectLayerGroupDialog( QWidget *parent = nullptr, const QString &projectFile = QString(), Qt::WindowFlags f = nullptr );
+    ~QgsProjectLayerGroupDialog() override;
 
     QStringList selectedGroups() const;
     QStringList selectedLayerIds() const;
@@ -39,19 +41,20 @@ class APP_EXPORT QgsProjectLayerGroupDialog: public QDialog, private Ui::QgsProj
     bool isValid() const;
 
   private slots:
-    void on_mBrowseFileToolButton_clicked();
-    void on_mProjectFileLineEdit_editingFinished();
+    void mBrowseFileToolButton_clicked();
+    void mProjectFileLineEdit_editingFinished();
     void onTreeViewSelectionChanged();
-    void on_mButtonBox_accepted();
+    void mButtonBox_accepted();
+    void showHelp();
 
   private:
     void changeProjectFile();
-    void removeEmbeddedNodes( QgsLayerTreeGroup* node );
-    void unselectChildren( const QModelIndex& index );
+    void removeEmbeddedNodes( QgsLayerTreeGroup *node );
+    void deselectChildren( const QModelIndex &index );
     QString mProjectPath;
-    bool mShowEmbeddedContent;
+    bool mShowEmbeddedContent = false;
 
-    QgsLayerTreeGroup* mRootGroup;
+    QgsLayerTree *mRootGroup = nullptr;
 };
 
 #endif //QGSPROJECTLAYERGROUPDIALOG_H
