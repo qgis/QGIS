@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    QGISAlgorithmProvider.py
+    QgisAlgorithmProvider.py
     ---------------------
     Date                 : December 2012
     Copyright            : (C) 2012 by Victor Olaya
@@ -155,7 +155,7 @@ pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
 
 
-class QGISAlgorithmProvider(QgsProcessingProvider):
+class QgisAlgorithmProvider(QgsProcessingProvider):
 
     def __init__(self):
         super().__init__()
