@@ -69,7 +69,6 @@ from .FieldPyculator import FieldsPyculator
 from .FieldsCalculator import FieldsCalculator
 from .FieldsMapper import FieldsMapper
 from .FindProjection import FindProjection
-from .FixedDistanceBuffer import FixedDistanceBuffer
 from .GeometryConvert import GeometryConvert
 from .GeometryByExpression import GeometryByExpression
 from .GridLine import GridLine
@@ -192,7 +191,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 FieldsMapper(),
                 FieldsPyculator(),
                 FindProjection(),
-                FixedDistanceBuffer(),
                 GeometryByExpression(),
                 GeometryConvert(),
                 GridLine(),
