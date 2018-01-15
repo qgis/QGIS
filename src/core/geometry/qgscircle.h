@@ -54,7 +54,9 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
 
     /**
      * Constructs a circle by 2 points on the circle.
-     * The center point can have z and m values which are the result from the midpoint operation between \a pt1 and \a pt2.
+     * The center point can have m value which is the result from the midpoint
+     * operation between \a pt1 and \a pt2. Z dimension is also supported and
+     * is retrieved from the first 3D point amongst \a pt1 and \a pt2.
      * The radius is calculated from the 2D distance between \a pt1 and \a pt2.
      * The azimuth is the angle between \a pt1 and \a pt2.
      * \param pt1 First point.
@@ -64,7 +66,9 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
 
     /**
      * Constructs a circle by 3 points on the circle.
-     * Z and m values are dropped for the center point.
+     * M value is dropped for the center point.
+     * Z dimension is supported and is retrieved from the first 3D point
+     * amongst \a pt1, \a pt2 and \a pt3.
      * The azimuth always takes the default value.
      * If the points are colinear an empty circle is returned.
      * \param pt1 First point.
@@ -113,7 +117,9 @@ class CORE_EXPORT QgsCircle : public QgsEllipse
 
     /**
      * Constructs a circle by an extent (aka bounding box / QgsRectangle).
-     * The center point can have z and m values which are the result from the midpoint operation between \a pt1 and \a pt2.
+     * The center point can have m value which is the result from the midpoint
+     * operation between \a pt1 and \a pt2. Z dimension is also supported and
+     * is retrieved from the first 3D point amongst \a pt1 and \a pt2.
      * Axes are calculated from the 2D distance between \a pt1 and \a pt2.
      * The azimuth always takes the default value.
      * \param pt1 First corner.

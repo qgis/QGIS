@@ -89,7 +89,9 @@ Returns the squared distance between a point and a line.
 
     static bool lineIntersection( const QgsPoint &p1, QgsVector v1, const QgsPoint &p2, QgsVector v2, QgsPoint &intersection /Out/ );
 %Docstring
- Compute the intersection between two lines
+Computes the intersection between two lines. Z dimension is
+supported and is retrieved from the first 3D point amongst ``p1`` and
+``p2``.
 
 :param p1: Point on the first line
 :param v1: Direction vector of the first line
@@ -219,7 +221,9 @@ Calculates angle of a circular string part defined by pt1, pt2, pt3
 
     static bool segmentMidPoint( const QgsPoint &p1, const QgsPoint &p2, QgsPoint &result /Out/, double radius, const QgsPoint &mousePos );
 %Docstring
-Calculates midpoint on circle passing through p1 and p2, closest to given coordinate
+Calculates midpoint on circle passing through p1 and p2, closest to
+given coordinate. Z dimension is supported and is retrieved from the
+first 3D point amongst ``p1`` and ``p2``.
 %End
 
     static double circleTangentDirection( const QgsPoint &tangentPoint, const QgsPoint &cp1, const QgsPoint &cp2, const QgsPoint &cp3 );
@@ -397,6 +401,8 @@ A Z dimension is added to ``point`` if one of the point in the list
 :param point: The point to update with Z dimension and value.
 
 :return: true if the point is updated, false otherwise
+
+.. versionadded:: 3.0
 %End
 
 

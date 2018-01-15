@@ -378,7 +378,8 @@ Example:
 
     QgsPoint inscribedCenter() const;
 %Docstring
-Center of the inscribed circle of the triangle.
+Center of the inscribed circle of the triangle. Z dimension is
+supported and is retrieved from the first 3D point amongst vertexes.
 
 :return: The center of the inscribed circle of the triangle.
 An empty point is returned for empty triangle.
