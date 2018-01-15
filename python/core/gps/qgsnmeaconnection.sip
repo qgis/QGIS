@@ -13,6 +13,8 @@ class QgsNmeaConnection: QgsGpsConnection
 {
 %Docstring
 Evaluates NMEA sentences coming from a GPS device
+
+.. versionadded:: 1.4
 %End
 
 %TypeHeaderCode
