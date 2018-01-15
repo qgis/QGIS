@@ -202,6 +202,21 @@ QgsCircle QgsCircle::from3Tangents( const QgsPoint &pt1_tg1, const QgsPoint &pt2
   if ( !isIntersect )
     return QgsCircle();
 
+  if ( p1.is3D() )
+  {
+    p1.convertTo( QgsWkbTypes::dropZ( p1.wkbType() ) );
+  }
+
+  if ( p2.is3D() )
+  {
+    p2.convertTo( QgsWkbTypes::dropZ( p2.wkbType() ) );
+  }
+
+  if ( p3.is3D() )
+  {
+    p3.convertTo( QgsWkbTypes::dropZ( p3.wkbType() ) );
+  }
+
   return QgsTriangle( p1, p2, p3 ).inscribedCircle();
 }
 

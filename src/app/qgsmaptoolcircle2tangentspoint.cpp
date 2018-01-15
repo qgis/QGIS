@@ -43,7 +43,7 @@ QgsMapToolCircle2TangentsPoint::~QgsMapToolCircle2TangentsPoint()
 void QgsMapToolCircle2TangentsPoint::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
 
-  QgsPoint mapPoint = fromPointXY( e->mapPoint() );
+  QgsPoint mapPoint( e->mapPoint() );
   EdgesOnlyFilter filter;
   QgsPointLocator::Match match = mCanvas->snappingUtils()->snapToMap( mapPoint, &filter );
 
@@ -56,8 +56,8 @@ void QgsMapToolCircle2TangentsPoint::cadCanvasReleaseEvent( QgsMapMouseEvent *e 
       if ( match.isValid() )
       {
         match.edgePoints( p1, p2 );
-        mPoints.append( fromPointXY( p1 ) );
-        mPoints.append( fromPointXY( p2 ) );
+        mPoints.append( QgsPoint( p1 ) );
+        mPoints.append( QgsPoint( p2 ) );
       }
     }
     if ( mPoints.size() == 4 )
@@ -100,7 +100,7 @@ void QgsMapToolCircle2TangentsPoint::cadCanvasReleaseEvent( QgsMapMouseEvent *e 
 
 void QgsMapToolCircle2TangentsPoint::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 {
-  QgsPoint mapPoint = fromPointXY( e->mapPoint() );
+  QgsPoint mapPoint( e->mapPoint() );
   EdgesOnlyFilter filter;
   QgsPointLocator::Match match = mCanvas->snappingUtils()->snapToMap( mapPoint, &filter );
 
@@ -123,8 +123,8 @@ void QgsMapToolCircle2TangentsPoint::cadCanvasMoveEvent( QgsMapMouseEvent *e )
       match.edgePoints( p1, p2 );
       std::unique_ptr<QgsLineString> line( new QgsLineString() );
 
-      line->addVertex( fromPointXY( p1 ) );
-      line->addVertex( fromPointXY( p2 ) );
+      line->addVertex( QgsPoint( p1 ) );
+      line->addVertex( QgsPoint( p2 ) );
 
       mTempRubberBand->setGeometry( line.release() );
       mTempRubberBand->show();
