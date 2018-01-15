@@ -88,7 +88,7 @@ class PredefinedExpressionDialog(BASE_DLG, WIDGET_DLG):
 
 
 WIDGET, BASE = uic.loadUiType(
-    os.path.join(pluginPath, 'ExpressionWidget.ui'))
+    os.path.join(pluginPath, 'RasterCalculatorWidget.ui'))
 
 
 class ExpressionWidget(BASE, WIDGET):
