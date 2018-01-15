@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 ###########################################################################
 #    astyle.sh
 #    ---------------------
@@ -75,7 +75,7 @@ set -e
 
 astyleit() {
 	$ASTYLE --options="$ASTYLEOPTS" "$1"
-	modified=$1.unify_includes_modified
+        modified=$1.unify_includes_modified
         cp "$1" "$modified"
 	perl scripts/unify_includes.pl -i.sortinc -n "$modified"
         perl scripts/doxygen_space.pl -0 -i.sortinc -n "$modified"
