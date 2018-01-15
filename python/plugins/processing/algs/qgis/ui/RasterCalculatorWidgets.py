@@ -10,6 +10,8 @@ from qgis.PyQt.QtWidgets import (QLineEdit, QPushButton, QLabel,
 
 from qgis.core import (QgsProcessingUtils,
                        QgsProcessingParameterDefinition,
+                       QgsProcessingParameterRasterLayer,
+                       QgsProcessingOutputRasterLayer,
                        QgsProject)
 
 from processing.gui.wrappers import WidgetWrapper, DIALOG_STANDARD, DIALOG_BATCH
