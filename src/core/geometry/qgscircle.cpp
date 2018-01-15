@@ -183,7 +183,7 @@ QgsCircle QgsCircle::fromCenterPoint( const QgsPoint &center, const QgsPoint &pt
   double azimuth = QgsGeometryUtils::lineAngle( center.x(), center.y(), pt1.x(), pt1.y() ) * 180.0 / M_PI;
 
   QgsPoint centerPt( center );
-  QgsGeometryUtils::setZValueFromPoints( QgsPointSequence() << pt1, centerPt );
+  QgsGeometryUtils::setZValueFromPoints( QgsPointSequence() << center << pt1, centerPt );
 
   return QgsCircle( centerPt, centerPt.distance( pt1 ), azimuth );
 }

@@ -81,7 +81,7 @@ QgsEllipse QgsEllipse::fromCenterPoint( const QgsPoint &center, const QgsPoint &
   double azimuth = 90.0;
 
   QgsPoint centerPt( center );
-  QgsGeometryUtils::setZValueFromPoints( QgsPointSequence() << pt1, centerPt );
+  QgsGeometryUtils::setZValueFromPoints( QgsPointSequence() << center << pt1, centerPt );
 
   return QgsEllipse( centerPt, axis_a, axis_b, azimuth );
 }
@@ -96,7 +96,7 @@ QgsEllipse QgsEllipse::fromCenter2Points( const QgsPoint &center, const QgsPoint
   double axis_b = center.distance( pp );
 
   QgsPoint centerPt( center );
-  QgsGeometryUtils::setZValueFromPoints( QgsPointSequence() << pt1 << pt2, centerPt );
+  QgsGeometryUtils::setZValueFromPoints( QgsPointSequence() << center << pt1 << pt2, centerPt );
 
   return QgsEllipse( centerPt, axis_a, axis_b, azimuth );
 }
