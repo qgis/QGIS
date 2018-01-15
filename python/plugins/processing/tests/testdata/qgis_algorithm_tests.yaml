@@ -556,7 +556,7 @@ tests:
           geometry:
             precision: 7
 
-  - algorithm: qgis:fixeddistancebuffer
+  - algorithm: native:buffer
     name: Basic polygon buffer
     params:
       DISSOLVE: 'False'
@@ -573,7 +573,7 @@ tests:
           geometry:
             precision: 7
 
-  - algorithm: qgis:fixeddistancebuffer
+  - algorithm: native:buffer
     name: Polygon buffer with dissolve
     params:
       DISSOLVE: 'True'
@@ -1007,7 +1007,7 @@ tests:
           geometry:
             precision: 7
 
-  - algorithm: qgis:fixeddistancebuffer
+  - algorithm: native:buffer
     name: Buffer polygons using bevel
     params:
       DISSOLVE: false
@@ -1024,7 +1024,7 @@ tests:
         name: expected/buffer_polys_bevel.gml
         type: vector
 
-  - algorithm: qgis:fixeddistancebuffer
+  - algorithm: native:buffer
     name: Buffer polygons using miter
     params:
       DISSOLVE: false
@@ -1041,7 +1041,7 @@ tests:
         name: expected/buffer_polys_miter.gml
         type: vector
 
-  - algorithm: qgis:fixeddistancebuffer
+  - algorithm: native:buffer
     name: Buffer lines
     params:
       DISSOLVE: false
@@ -1061,7 +1061,7 @@ tests:
           geometry:
             precision: 7
 
-  - algorithm: qgis:fixeddistancebuffer
+  - algorithm: native:buffer
     name: Buffer lines (flat)
     params:
       DISSOLVE: false
@@ -1081,7 +1081,7 @@ tests:
           geometry:
             precision: 7
 
-  - algorithm: qgis:fixeddistancebuffer
+  - algorithm: native:buffer
     name: Buffer lines (square)
     params:
       DISSOLVE: false
