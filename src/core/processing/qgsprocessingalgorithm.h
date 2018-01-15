@@ -206,7 +206,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * alphanumeric characters only and no spaces or other formatting characters.
      * \see group()
      */
-    virtual QString groupId() const { return QString(); };
+    virtual QString groupId() const { return QString(); }
 
     /**
      * Returns the flags indicating how and when the algorithm operates and should be exposed to users.
