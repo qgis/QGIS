@@ -31,8 +31,8 @@
 
 #define KNOTS_TO_KMH 1.852
 
-QgsNmeaConnection::QgsNmeaConnection( QIODevice *dev )
-  : QgsGpsConnection( dev )
+QgsNmeaConnection::QgsNmeaConnection( QIODevice *device )
+  : QgsGpsConnection( device )
 {
 }
 
@@ -95,35 +95,35 @@ void QgsNmeaConnection::processStringBuffer()
         if ( substring.startsWith( QLatin1String( "$GPGGA" ) ) )
         {
           QgsDebugMsg( substring );
-          processGGASentence( ba.data(), ba.length() );
+          processGgaSentence( ba.data(), ba.length() );
           mStatus = GPSDataReceived;
           QgsDebugMsg( "*******************GPS data received****************" );
         }
         else if ( substring.startsWith( QLatin1String( "$GPRMC" ) ) || substring.startsWith( QLatin1String( "$GNRMC" ) ) )
         {
           QgsDebugMsg( substring );
-          processRMCSentence( ba.data(), ba.length() );
+          processRmcSentence( ba.data(), ba.length() );
           mStatus = GPSDataReceived;
           QgsDebugMsg( "*******************GPS data received****************" );
         }
         else if ( substring.startsWith( QLatin1String( "$GPGSV" ) ) )
         {
           QgsDebugMsg( substring );
-          processGSVSentence( ba.data(), ba.length() );
+          processGsvSentence( ba.data(), ba.length() );
           mStatus = GPSDataReceived;
           QgsDebugMsg( "*******************GPS data received****************" );
         }
         else if ( substring.startsWith( QLatin1String( "$GPVTG" ) ) )
         {
           QgsDebugMsg( substring );
-          processVTGSentence( ba.data(), ba.length() );
+          processVtgSentence( ba.data(), ba.length() );
           mStatus = GPSDataReceived;
           QgsDebugMsg( "*******************GPS data received****************" );
         }
         else if ( substring.startsWith( QLatin1String( "$GPGSA" ) ) )
         {
           QgsDebugMsg( substring );
-          processGSASentence( ba.data(), ba.length() );
+          processGsaSentence( ba.data(), ba.length() );
           mStatus = GPSDataReceived;
           QgsDebugMsg( "*******************GPS data received****************" );
         }
@@ -134,7 +134,7 @@ void QgsNmeaConnection::processStringBuffer()
   }
 }
 
-void QgsNmeaConnection::processGGASentence( const char *data, int len )
+void QgsNmeaConnection::processGgaSentence( const char *data, int len )
 {
   nmeaGPGGA result;
   if ( nmea_parse_GPGGA( data, len, &result ) )
@@ -159,7 +159,7 @@ void QgsNmeaConnection::processGGASentence( const char *data, int len )
   }
 }
 
-void QgsNmeaConnection::processRMCSentence( const char *data, int len )
+void QgsNmeaConnection::processRmcSentence( const char *data, int len )
 {
   nmeaGPRMC result;
   if ( nmea_parse_GPRMC( data, len, &result ) )
@@ -196,7 +196,7 @@ void QgsNmeaConnection::processRMCSentence( const char *data, int len )
   }
 }
 
-void QgsNmeaConnection::processGSVSentence( const char *data, int len )
+void QgsNmeaConnection::processGsvSentence( const char *data, int len )
 {
   nmeaGPGSV result;
   if ( nmea_parse_GPGSV( data, len, &result ) )
@@ -225,7 +225,7 @@ void QgsNmeaConnection::processGSVSentence( const char *data, int len )
   }
 }
 
-void QgsNmeaConnection::processVTGSentence( const char *data, int len )
+void QgsNmeaConnection::processVtgSentence( const char *data, int len )
 {
   nmeaGPVTG result;
   if ( nmea_parse_GPVTG( data, len, &result ) )
@@ -234,7 +234,7 @@ void QgsNmeaConnection::processVTGSentence( const char *data, int len )
   }
 }
 
-void QgsNmeaConnection::processGSASentence( const char *data, int len )
+void QgsNmeaConnection::processGsaSentence( const char *data, int len )
 {
   nmeaGPGSA result;
   if ( nmea_parse_GPGSA( data, len, &result ) )

@@ -21,7 +21,11 @@ Evaluates NMEA sentences coming from a GPS device
 #include "qgsnmeaconnection.h"
 %End
   public:
-    QgsNmeaConnection( QIODevice *dev );
+
+    QgsNmeaConnection( QIODevice *device );
+%Docstring
+ Constructs a QgsNmeaConnection with given ``device``.
+%End
 
   protected slots:
     virtual void parseData();
@@ -35,11 +39,26 @@ Parse available data source content
 %Docstring
 Splits mStringBuffer into sentences and calls libnmea
 %End
-    void processGGASentence( const char *data, int len );
-    void processRMCSentence( const char *data, int len );
-    void processGSVSentence( const char *data, int len );
-    void processVTGSentence( const char *data, int len );
-    void processGSASentence( const char *data, int len );
+    void processGgaSentence( const char *data, int len );
+%Docstring
+process GGA sentence
+%End
+    void processRmcSentence( const char *data, int len );
+%Docstring
+process RMC sentence
+%End
+    void processGsvSentence( const char *data, int len );
+%Docstring
+process GSV sentence
+%End
+    void processVtgSentence( const char *data, int len );
+%Docstring
+process VTG sentence
+%End
+    void processGsaSentence( const char *data, int len );
+%Docstring
+process GSA sentence
+%End
 };
 
 /************************************************************************
