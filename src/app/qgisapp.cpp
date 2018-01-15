@@ -4182,6 +4182,8 @@ bool QgisApp::addVectorLayers( const QStringList &layerQStringList, const QStrin
 {
   bool wasfrozen = mMapCanvas->isFrozen();
   QList<QgsMapLayer *> myList;
+  QgsSettings settings;
+
   Q_FOREACH ( QString src, layerQStringList )
   {
     src = src.trimmed();
@@ -4213,7 +4215,10 @@ bool QgisApp::addVectorLayers( const QStringList &layerQStringList, const QStrin
       QFileInfo fi( src );
       base = fi.completeBaseName();
     }
-    base = QgsMapLayer::formatLayerName( base );
+    if ( settings.value( QStringLiteral( "qgis/formatLayerName" ), false ).toBool() )
+    {
+      base = QgsMapLayer::formatLayerName( base );
+    }
 
     QgsDebugMsg( "completeBaseName: " + base );
 
@@ -4257,7 +4262,11 @@ bool QgisApp::addVectorLayers( const QStringList &layerQStringList, const QStrin
       {
         //set friendly name for datasources with only one layer
         QStringList elements = sublayers.at( 0 ).split( QgsDataProvider::SUBLAYER_SEPARATOR );
-        QString subLayerNameFormatted = elements.size() >= 2 ? QgsMapLayer::formatLayerName( elements.at( 1 ) ) : QString();
+        QString subLayerNameFormatted = elements.size() >= 2 ? elements.at( 1 ) : QString();
+        if ( settings.value( QStringLiteral( "qgis/formatLayerName" ), false ).toBool() )
+        {
+          subLayerNameFormatted =  QgsMapLayer::formatLayerName( subLayerNameFormatted );
+        }
 
         if ( elements.size() >= 4 && layer->name().compare( elements.at( 1 ), Qt::CaseInsensitive ) != 0
              && layer->name().compare( subLayerNameFormatted, Qt::CaseInsensitive ) != 0 )
@@ -9998,10 +10007,11 @@ void QgisApp::showLayoutManager()
 QgsVectorLayer *QgisApp::addVectorLayer( const QString &vectorLayerPath, const QString &name, const QString &providerKey )
 {
   bool wasfrozen = mMapCanvas->isFrozen();
+  QgsSettings settings;
 
   freezeCanvases();
 
-  QString baseName = QgsMapLayer::formatLayerName( name );
+  QString baseName = settings.value( QStringLiteral( "qgis/formatLayerName" ), false ).toBool() ? QgsMapLayer::formatLayerName( name ) : name;
 
   /* Eliminate the need to instantiate the layer based on provider type.
      The caller is responsible for cobbling together the needed information to
@@ -10056,7 +10066,11 @@ QgsVectorLayer *QgisApp::addVectorLayer( const QString &vectorLayerPath, const Q
       if ( !sublayers.isEmpty() )
       {
         QStringList elements = sublayers.at( 0 ).split( QgsDataProvider::SUBLAYER_SEPARATOR );
-        QString subLayerNameFormatted = elements.size() >= 2 ? QgsMapLayer::formatLayerName( elements.at( 1 ) ) : QString();
+        QString subLayerNameFormatted = elements.size() >= 2 ? elements.at( 1 ) : QString();
+        if ( settings.value( QStringLiteral( "qgis/formatLayerName" ), false ).toBool() )
+        {
+          subLayerNameFormatted =  QgsMapLayer::formatLayerName( subLayerNameFormatted );
+        }
 
         if ( elements.size() >= 4 && layer->name().compare( elements.at( 1 ), Qt::CaseInsensitive ) != 0
              && layer->name().compare( subLayerNameFormatted, Qt::CaseInsensitive ) != 0 )
@@ -11935,7 +11949,8 @@ QgsRasterLayer *QgisApp::addRasterLayerPrivate(
     freezeCanvases();
   }
 
-  QString baseName =  QgsMapLayer::formatLayerName( name );
+  QgsSettings settings;
+  QString baseName =  settings.value( QStringLiteral( "qgis/formatLayerName" ), false ).toBool() ? QgsMapLayer::formatLayerName( name ) : name;
 
   QgsDebugMsg( "Creating new raster layer using " + uri
                + " with baseName of " + baseName );

@@ -1066,7 +1066,12 @@ void QgsRasterLayerProperties::apply()
 
 void QgsRasterLayerProperties::mLayerOrigNameLineEd_textEdited( const QString &text )
 {
-  leDisplayName->setText( mRasterLayer->formatLayerName( text ) );
+  QgsSettings settings;
+  bool format = settings.value( QStringLiteral( "qgis/formatLayerName" ), false ).toBool();
+  if ( format )
+  {
+    leDisplayName->setText( mRasterLayer->formatLayerName( text ) );
+  }
 }
 
 void QgsRasterLayerProperties::buttonBuildPyramids_clicked()

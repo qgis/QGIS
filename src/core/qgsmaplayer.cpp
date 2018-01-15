@@ -51,7 +51,6 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgsxmlutils.h"
-#include "qgssettings.h" // TODO: get rid of it [MD]
 #include "qgsstringutils.h"
 
 QString QgsMapLayer::extensionPropertyType( QgsMapLayer::PropertyType type )
