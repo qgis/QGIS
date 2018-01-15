@@ -711,7 +711,7 @@ class ModelerDialog(BASE, WIDGET):
 
         # Add algorithms
         for alg in algs:
-            if alg.flags() & QgsProcessingAlgorithm.FlagHideFromToolbox:
+            if alg.flags() & QgsProcessingAlgorithm.FlagHideFromModeler:
                 continue
             groupItem = None
             if alg.group() in groups:

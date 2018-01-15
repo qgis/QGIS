@@ -179,6 +179,7 @@ alphanumeric characters only and no spaces or other formatting characters.
 
 .. seealso:: :py:func:`group`
 %End
+
     virtual Flags flags() const;
 %Docstring
 Returns the flags indicating how and when the algorithm operates and should be exposed to users.
