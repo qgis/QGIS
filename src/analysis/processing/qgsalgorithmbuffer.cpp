@@ -31,7 +31,7 @@ QString QgsBufferAlgorithm::displayName() const
 
 QStringList QgsBufferAlgorithm::tags() const
 {
-  return QObject::tr( "buffer,grow" ).split( ',' );
+  return QObject::tr( "buffer,grow,fixed,variable,distance" ).split( ',' );
 }
 
 QString QgsBufferAlgorithm::group() const
