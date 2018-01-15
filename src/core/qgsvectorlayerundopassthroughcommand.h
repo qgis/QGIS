@@ -297,8 +297,9 @@ class CORE_EXPORT QgsVectorLayerUndoPassthroughCommandUpdate : public QgsVectorL
      * \param buffer associated edit buffer
      * \param transaction transaction running the sql query
      * \param sql the query
+     * \param name The name of the command
      */
-    QgsVectorLayerUndoPassthroughCommandUpdate( QgsVectorLayerEditBuffer *buffer SIP_TRANSFER, QgsTransaction *transaction, const QString &sql );
+    QgsVectorLayerUndoPassthroughCommandUpdate( QgsVectorLayerEditBuffer *buffer SIP_TRANSFER, QgsTransaction *transaction, const QString &sql, const QString &name );
 
     void undo() override;
     void redo() override;

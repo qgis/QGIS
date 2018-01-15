@@ -355,6 +355,29 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         for i in range(100):
             iterators.append(self.vl.getFeatures(request))
 
+    def testTransactionDirtyName(self):
+        # create a vector ayer based on postgres
+        vl = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'pk\' srid=4326 type=POLYGON table="qgis_test"."some_poly_data" (geom) sql=', 'test', 'postgres')
+        self.assertTrue(vl.isValid())
+
+        # prepare a project with transactions enabled
+        p = QgsProject()
+        p.setAutoTransaction(True)
+        p.addMapLayers([vl])
+        vl.startEditing()
+
+        # update the data within the transaction
+        tr = vl.dataProvider().transaction()
+        sql = "update qgis_test.some_poly_data set pk=1 where pk=1"
+        name = "My Awesome Transaction!"
+        self.assertTrue(tr.executeSql(sql, True, name)[0])
+
+        # test name
+        self.assertEqual(vl.undoStack().command(0).text(), name)
+
+        # rollback
+        vl.rollBack()
+
     def testTransactionDirty(self):
         # create a vector layer based on postgres
         vl = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'pk\' srid=4326 type=POLYGON table="qgis_test"."some_poly_data" (geom) sql=', 'test', 'postgres')

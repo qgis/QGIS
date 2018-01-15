@@ -4591,11 +4591,11 @@ bool QgsVectorLayer::readExtentFromXml() const
   return mReadExtentFromXml;
 }
 
-void QgsVectorLayer::onDirtyTransaction( const QString &sql )
+void QgsVectorLayer::onDirtyTransaction( const QString &sql, const QString &name )
 {
   QgsTransaction *tr = dataProvider()->transaction();
   if ( tr && mEditBuffer )
   {
-    qobject_cast<QgsVectorLayerEditPassthrough *>( mEditBuffer )->update( tr, sql );
+    qobject_cast<QgsVectorLayerEditPassthrough *>( mEditBuffer )->update( tr, sql, name );
   }
 }

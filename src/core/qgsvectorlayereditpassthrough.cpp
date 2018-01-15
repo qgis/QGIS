@@ -112,7 +112,7 @@ void QgsVectorLayerEditPassthrough::rollBack()
   mModified = false;
 }
 
-bool QgsVectorLayerEditPassthrough::update( QgsTransaction *tr, const QString &sql )
+bool QgsVectorLayerEditPassthrough::update( QgsTransaction *tr, const QString &sql, const QString &name )
 {
-  return modify( new QgsVectorLayerUndoPassthroughCommandUpdate( this, tr, sql ) );
+  return modify( new QgsVectorLayerUndoPassthroughCommandUpdate( this, tr, sql, name ) );
 }
