@@ -618,7 +618,7 @@ class ModelerDialog(BASE, WIDGET):
         icon = QIcon(os.path.join(pluginPath, 'images', 'input.svg'))
         parametersItem = QTreeWidgetItem()
         parametersItem.setText(0, self.tr('Parameters'))
-        for paramType in ModelerParameterDefinitionDialog.paramTypes:
+        for paramType in sorted(ModelerParameterDefinitionDialog.paramTypes):
             paramItem = QTreeWidgetItem()
             paramItem.setText(0, paramType)
             paramItem.setIcon(0, icon)
