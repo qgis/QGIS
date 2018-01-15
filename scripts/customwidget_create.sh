@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 # This script automatically creates custom widget plugin for a given widget class name.
 # Use customwidget_create.sh QgsColorButton to create QgsColorButtonPlugin files.

@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 if [ "$1" = "-h" ]; then
 	echo "usage: $0 [-h] [database] [sha1] [sha2]"
