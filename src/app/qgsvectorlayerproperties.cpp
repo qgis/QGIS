@@ -843,12 +843,7 @@ QString QgsVectorLayerProperties::htmlMetadata()
 
 void QgsVectorLayerProperties::mLayerOrigNameLineEdit_textEdited( const QString &text )
 {
-  QgsSettings settings;
-  bool format = settings.value( QStringLiteral( "qgis/formatLayerName" ), false ).toBool();
-  if ( format )
-  {
-    txtDisplayName->setText( mLayer->formatLayerName( text ) );
-  }
+  txtDisplayName->setText( mLayer->formatLayerName( text ) );
 }
 
 void QgsVectorLayerProperties::mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem &crs )
