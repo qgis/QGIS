@@ -206,7 +206,7 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     qreal mGradientWidth;
 
     QgsMapCanvas *mMapCanvas = nullptr;
-    std::unique_ptr<QgsMapToolEmitPoint> mPixelSelectorTool = nullptr;
+    std::unique_ptr<QgsMapToolEmitPoint> mPixelSelectorTool;
 
     QgsRasterHistogramWidget *mHistogramWidget = nullptr;
 
