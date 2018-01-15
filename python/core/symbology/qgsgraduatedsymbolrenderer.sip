@@ -225,7 +225,47 @@ Tests whether classes assigned to the renderer have gaps between the ranges.
     Mode mode() const;
     void setMode( Mode mode );
 
-    void updateClasses( QgsVectorLayer *vlayer, Mode mode, int nclasses );
+    bool useSymmetricMode();
+%Docstring
+get mUseSymmetricMode, which says if we want to classify symmetric around a given value
+%End
+
+    void setUseSymmetricMode( bool useSymmetricMode );
+%Docstring
+set mUseSymmetricMode, which says if we want to classify symmetric around a given value
+%End
+
+    double symmetryPoint();
+%Docstring
+get mSymmetryPoint, the pivot value for symmetric classification
+%End
+
+    void setSymmetryPoint( double symmetryPoint );
+%Docstring
+set the pivot point
+%End
+
+    QStringList listForCboPrettyBreaks();
+%Docstring
+get mListForCboPrettyBreaks, which is need to recover this list in saved configuration, or when property window in closed and reopened
+%End
+
+    void setListForCboPrettyBreaks( QStringList listForCboPrettyBreaks );
+%Docstring
+set mListForCboPrettyBreaks, which is need to recover this list in saved configuration, or when property window in closed and reopened
+%End
+
+    bool astride();
+%Docstring
+get mAstride, a bool saying if we want to have a central class astride the pivot value
+%End
+
+    void setAstride( bool astride );
+%Docstring
+set mAstride, a bool saying if we want to have a central class astride the pivot value
+%End
+
+    void updateClasses( QgsVectorLayer *vlayer, Mode mode, int nclasses, bool useSymmetricMode = false, double symmetryPoint = 0.0, bool astride = false );
 %Docstring
 Recalculate classes for a layer
 
@@ -234,7 +274,13 @@ Recalculate classes for a layer
 :param nclasses: The number of classes to calculate (approximate for some modes)
 
 .. versionadded:: 2.6
+:param useSymmetricMode: A bool indicating if we want to have classes and hence colors ramp symmetric around a value
+:param symmetryPoint: The value around which the classes will be symmetric if useSymmetricMode is checked
+:param astride: A bool indicating if the symmetry is made astride the symmetryPoint or not ( [-1,1] vs. [-1,0][0,1] )
+
+.. versionadded:: 3.0
 %End
+
 
     const QgsRendererRangeLabelFormat &labelFormat() const;
 %Docstring
@@ -266,6 +312,10 @@ Reset the label decimal places to a numberbased on the minimum class interval
         const QString &attrName,
         int classes,
         Mode mode,
+        bool useSymmetricMode,
+        double symmetryPoint,
+        QStringList listForCboPrettyBreaks,
+        bool astride,
         QgsSymbol *symbol /Transfer/,
         QgsColorRamp *ramp /Transfer/,
         const QgsRendererRangeLabelFormat &legendFormat = QgsRendererRangeLabelFormat() );
@@ -276,6 +326,10 @@ Creates a new graduated renderer.
 :param attrName: attribute to classify
 :param classes: number of classes
 :param mode: classification mode
+:param useSymmetricMode: A bool indicating if we want to have classes and hence colors ramp symmetric around a value
+:param symmetryPoint: The value around which the classes will be symmetric if useSymmetricMode is checked
+:param listForCboPrettyBreaks: The list of potential pivot values for symmetric mode with prettybreaks mode
+:param astride: A bool indicating if the symmetry is made astride the symmetryPoint or not ( [-1,1] vs. [-1,0][0,1] )
 :param symbol: base symbol
 :param ramp: color ramp for classes
 :param legendFormat:
@@ -437,6 +491,7 @@ Will return null if the functionality is disabled.
 %End
 
   protected:
+
 
 
 

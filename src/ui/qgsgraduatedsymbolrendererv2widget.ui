@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>442</width>
+    <width>1097</width>
     <height>554</height>
    </rect>
   </property>
@@ -206,7 +206,7 @@ Negative rounds to powers of 10</string>
        <property name="value">
         <double>1.000000000000000</double>
        </property>
-       <property name="showClearButton">
+       <property name="showClearButton" stdset="0">
         <bool>false</bool>
        </property>
       </widget>
@@ -238,7 +238,7 @@ Negative rounds to powers of 10</string>
        <property name="value">
         <double>10.000000000000000</double>
        </property>
-       <property name="showClearButton">
+       <property name="showClearButton" stdset="0">
         <bool>false</bool>
        </property>
       </widget>
@@ -316,6 +316,9 @@ Negative rounds to powers of 10</string>
          </item>
          <item>
           <widget class="QComboBox" name="cboGraduatedMode">
+           <property name="editable">
+            <bool>false</bool>
+           </property>
            <item>
             <property name="text">
              <string>Equal Interval</string>
@@ -341,6 +344,48 @@ Negative rounds to powers of 10</string>
              <string>Pretty Breaks</string>
             </property>
            </item>
+          </widget>
+         </item>
+         <item>
+          <widget class="QWidget" name="widget" native="true"/>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="cbxClassifySymmetric">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
+           <property name="visible">
+            <bool>true</bool>
+           </property>
+           <property name="text">
+            <string>Symmetric around </string>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
+           </property>
+           <property name="checked">
+            <bool>false</bool>
+           </property>
+           <property name="tristate">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="cboSymmetryPointForPretty"/>
+         </item>
+         <item>
+          <widget class="QgsDoubleSpinBox" name="spinSymmetryPointForOtherMethods">
+           <property name="specialValueText">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="cbxAstride">
+           <property name="text">
+            <string>with a class astride that value</string>
+           </property>
           </widget>
          </item>
          <item>
