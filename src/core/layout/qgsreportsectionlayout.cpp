@@ -66,6 +66,13 @@ QgsLayout *QgsReportSectionLayout::nextBody( bool &ok )
   }
 }
 
+void QgsReportSectionLayout::reloadSettings()
+{
+  QgsAbstractReportSection::reloadSettings();
+  if ( mBody )
+    mBody->reloadSettings();
+}
+
 bool QgsReportSectionLayout::writePropertiesToElement( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
   if ( mBody )

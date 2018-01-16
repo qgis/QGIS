@@ -107,6 +107,11 @@ QgsExpressionContext QgsPrintLayout::createExpressionContext() const
   return context;
 }
 
+void QgsPrintLayout::updateSettings()
+{
+  reloadSettings();
+}
+
 QgsMasterLayoutInterface::Type QgsPrintLayout::layoutType() const
 {
   return QgsMasterLayoutInterface::PrintLayout;

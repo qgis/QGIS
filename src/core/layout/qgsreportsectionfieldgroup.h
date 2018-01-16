@@ -127,6 +127,7 @@ class CORE_EXPORT QgsReportSectionFieldGroup : public QgsAbstractReportSection
     QgsLayout *nextBody( bool &ok ) override;
     void reset() override;
     void setParentSection( QgsAbstractReportSection *parentSection ) override;
+    void reloadSettings() override;
 
   protected:
 

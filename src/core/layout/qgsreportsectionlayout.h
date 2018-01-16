@@ -81,6 +81,7 @@ class CORE_EXPORT QgsReportSectionLayout : public QgsAbstractReportSection
     QgsReportSectionLayout *clone() const override SIP_FACTORY;
     bool beginRender() override;
     QgsLayout *nextBody( bool &ok ) override;
+    void reloadSettings() override;
 
   protected:
 

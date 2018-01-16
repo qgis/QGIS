@@ -55,6 +55,8 @@ Returns the print layout's atlas.
 
     virtual QgsExpressionContext createExpressionContext() const;
 
+    virtual void updateSettings();
+
 
   signals:
 

@@ -54,6 +54,8 @@ Note that ownership is not transferred to ``project``.
 
     virtual bool readLayoutXml( const QDomElement &layoutElement, const QDomDocument &document, const QgsReadWriteContext &context );
 
+    virtual void updateSettings();
+
 
   signals:
 

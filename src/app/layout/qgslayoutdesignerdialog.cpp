@@ -234,6 +234,11 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
 
   connect( mActionPageSetup, &QAction::triggered, this, &QgsLayoutDesignerDialog::pageSetup );
 
+  connect( mActionOptions, &QAction::triggered, this, [ = ]
+  {
+    QgisApp::instance()->showOptionsDialog( this, QString( "mOptionsPageComposer" ) );
+  } );
+
   mView = new QgsLayoutView();
   //mView->setMapCanvas( mQgis->mapCanvas() );
   mView->setContentsMargins( 0, 0, 0, 0 );

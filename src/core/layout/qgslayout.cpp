@@ -358,6 +358,12 @@ const QgsLayoutReportContext &QgsLayout::reportContext() const
   return *mReportContext;
 }
 
+void QgsLayout::reloadSettings()
+{
+  mGridSettings.loadFromSettings();
+  mPageCollection->redraw();
+}
+
 QgsLayoutGuideCollection &QgsLayout::guides()
 {
   return mPageCollection->guides();

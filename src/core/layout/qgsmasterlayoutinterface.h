@@ -116,6 +116,10 @@ class CORE_EXPORT QgsMasterLayoutInterface
      */
     virtual bool readLayoutXml( const QDomElement &layoutElement, const QDomDocument &document, const QgsReadWriteContext &context ) = 0;
 
+    /**
+     * Refreshes the layout when global layout related options change.
+     */
+    virtual void updateSettings() = 0;
 };
 
 #endif //QGSLAYOUTINTERFACE_H

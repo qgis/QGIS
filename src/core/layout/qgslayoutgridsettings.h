@@ -110,6 +110,11 @@ class CORE_EXPORT QgsLayoutGridSettings : public QgsLayoutSerializableObject
     Style style() const { return mGridStyle; }
 
     /**
+     * Loads grid settings from the application layout settings.
+     */
+    void loadFromSettings();
+
+    /**
      * Stores the grid's state in a DOM element. The \a parentElement should refer to the parent layout's DOM element.
      * \see readXml()
      */

@@ -330,6 +330,11 @@ to grid appearance, spacing and offsets.
 %End
 
 
+    void reloadSettings();
+%Docstring
+Refreshes the layout when global layout related options change.
+%End
+
     QgsLayoutGuideCollection &guides();
 %Docstring
 Returns a reference to the layout's guide collection, which manages page snap guides.
