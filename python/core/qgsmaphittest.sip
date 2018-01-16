@@ -23,6 +23,9 @@ will be visible on the map - this is useful for content based legend.
 %End
   public:
     typedef QMap<QString, QString> LayerFilterExpression;
+%Docstring
+Maps an expression string to a layer id
+%End
 
     QgsMapHitTest( const QgsMapSettings &settings, const QgsGeometry &polygon = QgsGeometry(), const QgsMapHitTest::LayerFilterExpression &layerFilterExpression = QgsMapHitTest::LayerFilterExpression() );
 %Docstring

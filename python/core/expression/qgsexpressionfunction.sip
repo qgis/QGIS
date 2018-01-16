@@ -67,6 +67,9 @@ Returns the default value for the parameter.
     };
 
     typedef QList< QgsExpressionFunction::Parameter > ParameterList;
+%Docstring
+List of parameters, used for function definition
+%End
 
     QgsExpressionFunction( const QString &fnname,
                            int params,

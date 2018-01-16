@@ -118,6 +118,9 @@ class QgsUnitTypes
     };
 
     typedef QList<QgsUnitTypes::RenderUnit> RenderUnitList;
+%Docstring
+List of render units
+%End
 
 
     static DistanceUnitType unitType( QgsUnitTypes::DistanceUnit unit );

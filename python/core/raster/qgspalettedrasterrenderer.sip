@@ -36,6 +36,9 @@ Constructor for Class
     };
 
     typedef QList< QgsPalettedRasterRenderer::Class > ClassData;
+%Docstring
+Map of value to class properties
+%End
 
     QgsPalettedRasterRenderer( QgsRasterInterface *input, int bandNumber, const ClassData &classes );
 %Docstring

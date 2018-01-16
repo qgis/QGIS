@@ -9,6 +9,9 @@
 
 
 typedef QMap< int, QgsPropertyDefinition > QgsPropertiesDefinition;
+%Docstring
+Definition of available properties
+%End
 
 
 class QgsAbstractPropertyCollection

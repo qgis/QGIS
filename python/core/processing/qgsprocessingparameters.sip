@@ -435,6 +435,9 @@ QFlags<QgsProcessingParameterDefinition::Flag> operator|(QgsProcessingParameterD
 
 
 typedef QList< const QgsProcessingParameterDefinition * > QgsProcessingParameterDefinitions;
+%Docstring
+List of processing parameters
+%End
 
 
 class QgsProcessingParameters

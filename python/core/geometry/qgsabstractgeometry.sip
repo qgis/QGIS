@@ -11,6 +11,22 @@
 
 
 typedef QVector< QgsPoint > QgsPointSequence;
+%Docstring
+*************************************************************************
+qgsabstractgeometry.h
+-------------------------------------------------------------------
+Date                 : 04 Sept 2014
+Copyright            : (C) 2014 by Marco Hugentobler
+email                : marco.hugentobler at sourcepole dot com
+**************************************************************************
+*
+This program is free software; you can redistribute it and/or modify  *
+it under the terms of the GNU General Public License as published by  *
+the Free Software Foundation; either version 2 of the License, or     *
+(at your option) any later version.                                   *
+*
+**************************************************************************
+%End
 typedef QVector< QVector< QgsPoint > > QgsRingSequence;
 typedef QVector< QVector< QVector< QgsPoint > > > QgsCoordinateSequence;
 

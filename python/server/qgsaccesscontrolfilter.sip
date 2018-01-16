@@ -110,6 +110,9 @@ Cache key to used to create the capabilities cache
 };
 
 typedef QMultiMap<int, QgsAccessControlFilter *> QgsAccessControlFilterMap;
+%Docstring
+The registry definition
+%End
 
 
 /************************************************************************

@@ -117,6 +117,9 @@ Add a layer with a source, a provider and an encoding
 %End
 
     typedef QList<QgsVirtualLayerDefinition::SourceLayer> SourceLayers;
+%Docstring
+List of source layers
+%End
 
     const QgsVirtualLayerDefinition::SourceLayers &sourceLayers() const;
 %Docstring

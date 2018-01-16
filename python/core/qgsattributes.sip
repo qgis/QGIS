@@ -22,6 +22,13 @@ typedef QMap<int, QgsField> QgsFieldMap;
 
 
 typedef QVector<QVariant> QgsAttributes;
+%Docstring
+A vector of attributes. Mostly equal to QVector<QVariant>.
+
+.. note::
+
+   QgsAttributes is implemented as a Python list of Python objects.
+%End
 
 %MappedType QgsAttributes
 {
