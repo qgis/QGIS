@@ -35,13 +35,13 @@ QgsFilterLineEdit::QgsFilterLineEdit( QWidget *parent, const QString &nullValue 
   QIcon clearIcon;
   clearIcon.addPixmap( QgsApplication::getThemeIcon( "/mIconClearText.svg" ).pixmap( QSize( iconSize, iconSize ) ), QIcon::Normal, QIcon::On );
   clearIcon.addPixmap( QgsApplication::getThemeIcon( "/mIconClearTextHover.svg" ).pixmap( QSize( iconSize, iconSize ) ), QIcon::Selected, QIcon::On );
-  mClearAction = new QAction( clearIcon, this );
+  mClearAction = new QAction( clearIcon, QString(), this );
   mClearAction->setCheckable( false );
   addAction( mClearAction, QLineEdit::TrailingPosition );
   connect( mClearAction, &QAction::triggered, this, &QgsFilterLineEdit::clearValue );
 
   QIcon searchIcon = QgsApplication::getThemeIcon( "/search.svg" );
-  mSearchAction = new QAction( searchIcon, this );
+  mSearchAction = new QAction( searchIcon, QString(), this );
   mSearchAction->setCheckable( false );
   addAction( mSearchAction, QLineEdit::TrailingPosition );
   mSearchAction->setVisible( false );
