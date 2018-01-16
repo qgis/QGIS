@@ -417,7 +417,7 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
 
     def testThreadSafetyWithIndex(self):
         layer = QgsVectorLayer('Point?crs=epsg:4326&index=yes&field=pk:integer&field=cnt:int8&field=name:string(0)&field=name2:string(0)&field=num_char:string&key=pk',
-                                'test', 'memory')
+                               'test', 'memory')
 
         provider = layer.dataProvider()
         f = QgsFeature()

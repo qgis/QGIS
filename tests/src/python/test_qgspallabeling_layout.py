@@ -120,7 +120,7 @@ class TestLayoutBase(TestQgsPalLabeling):
         paperw = width * 25.4 / dpi
         paperh = height * 25.4 / dpi
         page = QgsLayoutItemPage(self._c)
-        page.attemptResize(QgsLayoutSize(paperw,paperh))
+        page.attemptResize(QgsLayoutSize(paperw, paperh))
         self._c.pageCollection().addPage(page)
         # NOTE: do not use QgsLayoutItemMap(self._c, 0, 0, paperw, paperh) since
         # it only takes integers as parameters and the composition will grow
@@ -153,7 +153,7 @@ class TestLayoutBase(TestQgsPalLabeling):
             QPainter.Antialiasing,
             self._TestMapSettings.testFlag(QgsMapSettings.Antialiasing)
         )
-        exporter=QgsLayoutExporter(self._c)
+        exporter = QgsLayoutExporter(self._c)
         exporter.renderPage(p, 0)
         p.end()
 
