@@ -169,7 +169,7 @@ QMap<QString, QString> QgsLayoutManagerDialog::defaultTemplates( bool fromUser )
 QMap<QString, QString> QgsLayoutManagerDialog::otherTemplates() const
 {
   QMap<QString, QString> templateMap;
-  QStringList paths = QgsApplication::composerTemplatePaths();
+  QStringList paths = QgsApplication::layoutTemplatePaths();
   Q_FOREACH ( const QString &path, paths )
   {
     QMap<QString, QString> templates = templatesFromPath( path );
