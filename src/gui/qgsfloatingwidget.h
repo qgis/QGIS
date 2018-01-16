@@ -120,6 +120,7 @@ class GUI_EXPORT QgsFloatingWidget: public QWidget
   protected:
     void showEvent( QShowEvent *e ) override;
     void paintEvent( QPaintEvent *e ) override;
+    void resizeEvent( QResizeEvent *e ) override;
 
   private slots:
 

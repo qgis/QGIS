@@ -120,6 +120,8 @@ Emitted when the anchor widget point changes
 
     virtual void paintEvent( QPaintEvent *e );
 
+    virtual void resizeEvent( QResizeEvent *e );
+
 
 };
 
