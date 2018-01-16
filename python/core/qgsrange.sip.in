@@ -247,8 +247,32 @@ Returns true if this range overlaps another range.
 
 
 typedef QgsTemporalRange< QDate > QgsDateRange ;
+@TEMPLATE_DOCSTRING@%Docstring
+@TEMPLATE_DOCSTRING@QgsRange which stores a range of dates.
+@TEMPLATE_DOCSTRING@
+@TEMPLATE_DOCSTRING@Invalid QDates as the beginning or end are permitted. In this case,
+@TEMPLATE_DOCSTRING@the bound is considered to be infinite. E.g. QgsDateRange(QDate(),QDate(2017,1,1))
+@TEMPLATE_DOCSTRING@is treated as a range containing all dates before 2017-1-1.
+@TEMPLATE_DOCSTRING@QgsDateRange(QDate(2017,1,1),QDate()) is treated as a range containing all dates after 2017-1-1.
+@TEMPLATE_DOCSTRING@
+@TEMPLATE_DOCSTRING@.. versionadded:: 3.0
+@TEMPLATE_DOCSTRING@
+@TEMPLATE_DOCSTRING@.. seealso:: :py:class:`QgsDateTimeRange`
+@TEMPLATE_DOCSTRING@%End
 
 typedef QgsTemporalRange< QDateTime > QgsDateTimeRange ;
+@TEMPLATE_DOCSTRING@%Docstring
+@TEMPLATE_DOCSTRING@QgsRange which stores a range of date times.
+@TEMPLATE_DOCSTRING@
+@TEMPLATE_DOCSTRING@Invalid QDateTimes as the beginning or end are permitted. In this case,
+@TEMPLATE_DOCSTRING@the bound is considered to be infinite. E.g. QgsDateTimeRange(QDateTime(),QDateTime(2017,1,1))
+@TEMPLATE_DOCSTRING@is treated as a range containing all dates before 2017-1-1.
+@TEMPLATE_DOCSTRING@QgsDateTimeRange(QDateTime(2017,1,1),QDateTime()) is treated as a range containing all dates after 2017-1-1.
+@TEMPLATE_DOCSTRING@
+@TEMPLATE_DOCSTRING@.. versionadded:: 3.0
+@TEMPLATE_DOCSTRING@
+@TEMPLATE_DOCSTRING@.. seealso:: :py:class:`QgsDateRange`
+@TEMPLATE_DOCSTRING@%End
 
 /************************************************************************
  * This file has been generated automatically from                      *
