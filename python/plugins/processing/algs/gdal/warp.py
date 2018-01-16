@@ -51,6 +51,10 @@ class warp(GdalAlgorithm):
     DEST_SRS = 'DEST_SRS'
     METHOD = 'METHOD'
     METHOD_OPTIONS = ['near', 'bilinear', 'cubic', 'cubicspline', 'lanczos']
+    if GdalUtils.version() >= 1100000:
+        METHOD_OPTIONS.extend(['average', 'mode'])
+    if GdalUtils.version() >= 2000000:
+        METHOD_OPTIONS.extend(['max', 'min', 'med', 'q1', 'q3'])
     TR = 'TR'
     NO_DATA = 'NO_DATA'
     EXTRA = 'EXTRA'
