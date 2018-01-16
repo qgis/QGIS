@@ -72,7 +72,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
         self.runAsBatchButton = QPushButton(QCoreApplication.translate("AlgorithmDialog", "Run as Batch Process…"))
         self.runAsBatchButton.clicked.connect(self.runAsBatch)
         self.buttonBox().addButton(self.runAsBatchButton, QDialogButtonBox.ResetRole) # reset role to ensure left alignment
-        QgsApplication.taskManager().triggered.connect(self.taskTriggered)
+        QgsApplication.taskManager().taskTriggered.connect(self.taskTriggered)
 
     def getParametersPanel(self, alg, parent):
         return ParametersPanel(parent, alg)

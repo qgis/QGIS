@@ -423,11 +423,11 @@ Returns the number of active (queued or running) tasks.
 
   public slots:
 
-    void trigger( QgsTask *task );
+    void triggerTask( QgsTask *task );
 %Docstring
 Triggers a task, e.g. as a result of a GUI interaction.
 
-.. seealso:: :py:func:`triggered()`
+.. seealso:: :py:func:`taskTriggered`
 %End
 
   signals:
@@ -484,13 +484,13 @@ Emitted when the number of active tasks changes
 .. seealso:: :py:func:`countActiveTasks`
 %End
 
-    void triggered( QgsTask *task );
+    void taskTriggered( QgsTask *task );
 %Docstring
 Emitted when a ``task`` is triggered. This occurs when a user clicks on
 the task from the QGIS GUI, and can be used to show detailed progress
 reports or re-open a related dialog.
 
-.. seealso:: :py:func:`trigger()`
+.. seealso:: :py:func:`triggerTask`
 %End
 
 };
