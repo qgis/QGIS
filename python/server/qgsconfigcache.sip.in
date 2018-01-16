@@ -46,7 +46,7 @@ path. If the project is not available, then a None is returned.
 %End
 
   private:
-    QgsConfigCache() ;
+    QgsConfigCache();
 };
 
 /************************************************************************

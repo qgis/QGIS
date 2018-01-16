@@ -312,7 +312,7 @@ Get short strings describing an SSL error
 
     static QList<QSslError> validateCertChain( const QList<QSslCertificate> &certificateChain,
         const QString &hostName = QString(),
-        bool trustRootCa = false ) ;
+        bool trustRootCa = false );
 %Docstring
  validateCertChain validates the given ``certificateChain``
 

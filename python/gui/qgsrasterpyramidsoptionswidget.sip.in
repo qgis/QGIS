@@ -40,10 +40,10 @@ Constructor for QgsRasterPyramidsOptionsWidget
     void checkAllLevels( bool checked );
 
   private slots:
-    void cbxPyramidsLevelsCustom_toggled( bool toggled ) ;
-    void cbxPyramidsFormat_currentIndexChanged( int index ) ;
-    void setOverviewList() ;
-    void updateUi() ;
+    void cbxPyramidsLevelsCustom_toggled( bool toggled );
+    void cbxPyramidsFormat_currentIndexChanged( int index );
+    void setOverviewList();
+    void updateUi();
   signals:
     void overviewListChanged();
     void someValueChanged(); /* emitted when any other setting changes */
