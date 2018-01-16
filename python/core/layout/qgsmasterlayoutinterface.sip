@@ -99,6 +99,10 @@ Sets the layout's state from a DOM element. ``layoutElement`` is the DOM node co
 .. seealso:: :py:func:`writeLayoutXml`
 %End
 
+    virtual void updateSettings() = 0;
+%Docstring
+Refreshes the layout when global layout related options change.
+%End
 };
 
 

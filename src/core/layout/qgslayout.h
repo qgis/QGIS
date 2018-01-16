@@ -394,6 +394,11 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     SIP_SKIP const QgsLayoutGridSettings &gridSettings() const { return mGridSettings; }
 
     /**
+     * Refreshes the layout when global layout related options change.
+     */
+    void reloadSettings();
+
+    /**
      * Returns a reference to the layout's guide collection, which manages page snap guides.
      */
     QgsLayoutGuideCollection &guides();

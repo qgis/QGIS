@@ -99,7 +99,7 @@
      <x>0</x>
      <y>0</y>
      <width>2180</width>
-     <height>25</height>
+     <height>42</height>
     </rect>
    </property>
    <widget class="QMenu" name="mLayoutMenu">
@@ -289,6 +289,12 @@
     <addaction name="separator"/>
     <addaction name="mActionReportSettings"/>
    </widget>
+   <widget class="QMenu" name="menuSettings">
+    <property name="title">
+     <string>Settings</string>
+    </property>
+    <addaction name="mActionOptions"/>
+   </widget>
    <addaction name="mLayoutMenu"/>
    <addaction name="menuEdit"/>
    <addaction name="mMenuView"/>
@@ -296,6 +302,7 @@
    <addaction name="mItemMenu"/>
    <addaction name="mMenuAtlas"/>
    <addaction name="mMenuReport"/>
+   <addaction name="menuSettings"/>
   </widget>
   <widget class="QToolBar" name="mNavigationToolbar">
    <property name="windowTitle">
@@ -1498,10 +1505,23 @@
     <string>dsfg</string>
    </property>
   </action>
+  <action name="mActionOptions">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionOptions.svg</normaloff>:/images/themes/default/mActionOptions.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Layout &amp;Options…</string>
+   </property>
+   <property name="toolTip">
+    <string>Layout Options</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::PreferencesRole</enum>
+   </property>
+  </action>
  </widget>
  <resources>
-  <include location="../../../images/images.qrc"/>
-  <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>

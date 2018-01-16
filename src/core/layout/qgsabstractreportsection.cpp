@@ -164,6 +164,14 @@ bool QgsAbstractReportSection::readXml( const QDomElement &element, const QDomDo
   return result;
 }
 
+void QgsAbstractReportSection::reloadSettings()
+{
+  if ( mHeader )
+    mHeader->reloadSettings();
+  if ( mFooter )
+    mFooter->reloadSettings();
+}
+
 QString QgsAbstractReportSection::filePath( const QString &baseFilePath, const QString &extension )
 {
   QString base = QStringLiteral( "%1_%2" ).arg( baseFilePath ).arg( mSectionNumber, 4, 10, QChar( '0' ) );

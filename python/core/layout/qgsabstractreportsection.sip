@@ -334,6 +334,11 @@ Sets the item state from a DOM element.
 .. seealso:: :py:func:`writeXml`
 %End
 
+    virtual void reloadSettings();
+%Docstring
+Refreshes the section when global layout related options change.
+%End
+
   protected:
 
     enum SubSection

@@ -303,6 +303,11 @@ class CORE_EXPORT QgsAbstractReportSection : public QgsAbstractLayoutIterator
      */
     bool readXml( const QDomElement &sectionElement, const QDomDocument &document, const QgsReadWriteContext &context );
 
+    /**
+     * Refreshes the section when global layout related options change.
+     */
+    virtual void reloadSettings();
+
   protected:
 
     //! Report sub-sections

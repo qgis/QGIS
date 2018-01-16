@@ -162,6 +162,13 @@ void QgsReportSectionFieldGroup::setParentSection( QgsAbstractReportSection *par
     mCoverageLayer.resolveWeakly( project() );
 }
 
+void QgsReportSectionFieldGroup::reloadSettings()
+{
+  QgsAbstractReportSection::reloadSettings();
+  if ( mBody )
+    mBody->reloadSettings();
+}
+
 bool QgsReportSectionFieldGroup::writePropertiesToElement( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
   element.setAttribute( QStringLiteral( "field" ), mField );

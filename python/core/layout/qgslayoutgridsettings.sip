@@ -109,6 +109,11 @@ Returns the style used for drawing the page/snap grids.
 .. seealso:: :py:func:`pen`
 %End
 
+    void loadFromSettings();
+%Docstring
+Loads grid settings from the application layout settings.
+%End
+
     virtual bool writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const;
 
 %Docstring

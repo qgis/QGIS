@@ -62,6 +62,7 @@ class CORE_EXPORT QgsReport : public QObject, public QgsAbstractReportSection, p
     void setName( const QString &name ) override;
     QDomElement writeLayoutXml( QDomDocument &document, const QgsReadWriteContext &context ) const override;
     bool readLayoutXml( const QDomElement &layoutElement, const QDomDocument &document, const QgsReadWriteContext &context ) override;
+    void updateSettings() override;
 
   signals:
 

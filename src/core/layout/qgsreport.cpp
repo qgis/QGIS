@@ -61,6 +61,11 @@ bool QgsReport::readLayoutXml( const QDomElement &layoutElement, const QDomDocum
   return true;
 }
 
+void QgsReport::updateSettings()
+{
+  reloadSettings();
+}
+
 QgsMasterLayoutInterface::Type QgsReport::layoutType() const
 {
   return QgsMasterLayoutInterface::Report;

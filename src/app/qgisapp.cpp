@@ -9707,9 +9707,10 @@ void QgisApp::showOptionsDialog( QWidget *parent, const QString &currentPage )
     //update any open compositions so they reflect new composer settings
     //we have to push the changes to the compositions here, because compositions
     //have no access to qgisapp and accordingly can't listen in to changes
-    Q_FOREACH ( QgsComposition *c, QgsProject::instance()->layoutManager()->compositions() )
+    const QList< QgsMasterLayoutInterface * > layouts = QgsProject::instance()->layoutManager()->layouts() ;
+    for ( QgsMasterLayoutInterface *layout : layouts )
     {
-      c->updateSettings();
+      layout->updateSettings();
     }
 
     //do we need this? TS

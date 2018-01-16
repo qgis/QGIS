@@ -89,6 +89,8 @@ Sets whether the body for the section is ``enabled``.
 
     virtual QgsLayout *nextBody( bool &ok );
 
+    virtual void reloadSettings();
+
 
   protected:
 

@@ -142,6 +142,8 @@ ascending, or false for descending sort.
 
     virtual void setParentSection( QgsAbstractReportSection *parentSection );
 
+    virtual void reloadSettings();
+
 
   protected:
 
