@@ -219,9 +219,7 @@ IF (WITH_SERVER AND WITH_SERVER_PLUGINS)
 
   SET(PY_MODULES ${PY_MODULES} server)
 
-  FILE(GLOB sip_files_server
-    server/server.sip
-  )
+  FILE(GLOB_RECURSE sip_files_server server/*.sip)
   SET(SIP_EXTRA_FILES_DEPEND ${sip_files_core} ${sip_files_server})
   SET(SIP_EXTRA_OPTIONS ${PYQT_SIP_FLAGS} -o -a ${CMAKE_BINARY_DIR}/python/qgis.server.api)
   GENERATE_SIP_PYTHON_MODULE_CODE(qgis._server server/server.sip cpp_files)
