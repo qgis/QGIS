@@ -21,6 +21,7 @@
 #include "qgsprintlayout.h"
 #include "qgsreport.h"
 #include "qgscompositionconverter.h"
+#include "qgsreadwritecontext.h"
 
 QgsLayoutManager::QgsLayoutManager( QgsProject *project )
   : QObject( project )
@@ -32,23 +33,6 @@ QgsLayoutManager::QgsLayoutManager( QgsProject *project )
 QgsLayoutManager::~QgsLayoutManager()
 {
   clear();
-}
-
-bool QgsLayoutManager::addComposition( QgsComposition *composition )
-{
-  if ( !composition )
-    return false;
-
-  // check for duplicate name
-  Q_FOREACH ( QgsComposition *c, mCompositions )
-  {
-    if ( c->name() == composition->name() )
-      return false;
-  }
-
-  mCompositions << composition;
-  mProject->setDirty( true );
-  return true;
 }
 
 bool QgsLayoutManager::addLayout( QgsMasterLayoutInterface *layout )
@@ -86,20 +70,6 @@ bool QgsLayoutManager::addLayout( QgsMasterLayoutInterface *layout )
   return true;
 }
 
-bool QgsLayoutManager::removeComposition( QgsComposition *composition )
-{
-  if ( !composition )
-    return false;
-
-  if ( !mCompositions.contains( composition ) )
-    return false;
-
-  mCompositions.removeAll( composition );
-  delete composition;
-  mProject->setDirty( true );
-  return true;
-}
-
 bool QgsLayoutManager::removeLayout( QgsMasterLayoutInterface *layout )
 {
   if ( !layout )
@@ -119,20 +89,11 @@ bool QgsLayoutManager::removeLayout( QgsMasterLayoutInterface *layout )
 
 void QgsLayoutManager::clear()
 {
-  Q_FOREACH ( QgsComposition *c, mCompositions )
-  {
-    removeComposition( c );
-  }
   const QList< QgsMasterLayoutInterface * > layouts = mLayouts;
   for ( QgsMasterLayoutInterface *l : layouts )
   {
     removeLayout( l );
   }
-}
-
-QList<QgsComposition *> QgsLayoutManager::compositions() const
-{
-  return mCompositions;
 }
 
 QList<QgsMasterLayoutInterface *> QgsLayoutManager::layouts() const
@@ -151,16 +112,6 @@ QList<QgsPrintLayout *> QgsLayoutManager::printLayouts() const
       result.push_back( _item );
   }
   return result;
-}
-
-QgsComposition *QgsLayoutManager::compositionByName( const QString &name ) const
-{
-  Q_FOREACH ( QgsComposition *c, mCompositions )
-  {
-    if ( c->name() == name )
-      return c;
-  }
-  return nullptr;
 }
 
 QgsMasterLayoutInterface *QgsLayoutManager::layoutByName( const QString &name ) const
@@ -261,15 +212,6 @@ bool QgsLayoutManager::readXml( const QDomElement &element, const QDomDocument &
 QDomElement QgsLayoutManager::writeXml( QDomDocument &doc ) const
 {
   QDomElement layoutsElem = doc.createElement( QStringLiteral( "Layouts" ) );
-  Q_FOREACH ( QgsComposition *c, mCompositions )
-  {
-    QDomElement composerElem = doc.createElement( QStringLiteral( "Composer" ) );
-
-    layoutsElem.appendChild( composerElem );
-
-    c->writeXml( composerElem, doc );
-    c->atlasComposition().writeXml( composerElem, doc );
-  }
 
   QgsReadWriteContext context;
   context.setPathResolver( mProject->pathResolver() );
@@ -279,19 +221,6 @@ QDomElement QgsLayoutManager::writeXml( QDomDocument &doc ) const
     layoutsElem.appendChild( layoutElem );
   }
   return layoutsElem;
-}
-
-bool QgsLayoutManager::saveAsTemplate( const QString &name, QDomDocument &doc ) const
-{
-  QgsComposition *c = compositionByName( name );
-  if ( !c )
-    return false;
-
-  QDomElement composerElem = doc.createElement( QStringLiteral( "Composer" ) );
-  doc.appendChild( composerElem );
-  c->writeXml( composerElem, doc );
-  c->atlasComposition().writeXml( composerElem, doc );
-  return true;
 }
 
 QgsMasterLayoutInterface *QgsLayoutManager::duplicateLayout( const QgsMasterLayoutInterface *layout, const QString &newName )
@@ -343,32 +272,3 @@ QString QgsLayoutManager::generateUniqueTitle( QgsMasterLayoutInterface::Type ty
   return name;
 }
 
-QgsComposition *QgsLayoutManager::createCompositionFromXml( const QDomElement &element, const QDomDocument &doc ) const
-{
-  QDomNodeList compositionNodeList = element.elementsByTagName( QStringLiteral( "Composition" ) );
-
-  if ( compositionNodeList.size() > 0 )
-  {
-    std::unique_ptr< QgsComposition > c( new QgsComposition( mProject ) );
-    QDomElement compositionElem = compositionNodeList.at( 0 ).toElement();
-    if ( !c->readXml( compositionElem, doc ) )
-    {
-      return nullptr;
-    }
-
-    // read atlas parameters - must be done before adding items
-    QDomElement atlasElem = element.firstChildElement( QStringLiteral( "Atlas" ) );
-    c->atlasComposition().readXml( atlasElem, doc );
-
-    //read and restore all the items
-    c->addItemsFromXml( element, doc );
-
-    //make sure z values are consistent
-    c->refreshZList();
-    return c.release();
-  }
-  else
-  {
-    return nullptr;
-  }
-}

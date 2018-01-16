@@ -139,7 +139,6 @@ without requiring a transparent background for the image
 %If (TESTS)
 
 
-
 class QgsLayoutChecker : QgsMultiRenderChecker
 {
 %Docstring

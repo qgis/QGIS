@@ -19,7 +19,7 @@ class QgsLayoutManager : QObject
  Manages storage of a set of layouts.
 
 QgsLayoutManager handles the storage, serializing and deserializing
-of QgsLayouts. Usually this class is not constructed directly, but
+of print layouts and reports. Usually this class is not constructed directly, but
 rather accessed through a QgsProject via :py:func:`QgsProject.layoutManager()`
 
 QgsLayoutManager retains ownership of all the layouts contained
@@ -43,7 +43,6 @@ manager.
 
     ~QgsLayoutManager();
 
-
     bool addLayout( QgsMasterLayoutInterface *layout /Transfer/ );
 %Docstring
 Adds a ``layout`` to the manager. Ownership of the layout is transferred to the manager.
@@ -54,7 +53,6 @@ as a result of a duplicate layout name).
 
 .. seealso:: :py:func:`layoutAdded`
 %End
-
 
     bool removeLayout( QgsMasterLayoutInterface *layout );
 %Docstring
@@ -78,7 +76,6 @@ Removes and deletes all layouts from the manager.
 .. seealso:: :py:func:`removeLayout`
 %End
 
-
     QList< QgsMasterLayoutInterface * > layouts() const;
 %Docstring
 Returns a list of all layouts contained in the manager.
@@ -88,7 +85,6 @@ Returns a list of all layouts contained in the manager.
 %Docstring
 Returns a list of all print layouts contained in the manager.
 %End
-
 
     QgsMasterLayoutInterface *layoutByName( const QString &name ) const;
 %Docstring
@@ -109,12 +105,6 @@ present in the XML document.
 Returns a DOM element representing the state of the manager.
 
 .. seealso:: :py:func:`readXml`
-%End
-
-    bool saveAsTemplate( const QString &name, QDomDocument &doc ) const;
-%Docstring
-Saves the composition with matching ``name`` in template format.
-Returns true if save was successful.
 %End
 
     QgsMasterLayoutInterface *duplicateLayout( const QgsMasterLayoutInterface *layout, const QString &newName );
