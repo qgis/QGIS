@@ -374,6 +374,7 @@ sub fix_annotations {
     }
     $line =~ s/SIP_FORCE//;
     $line =~ s/SIP_DOC_TEMPLATE//;
+    $line =~ s/\s+;$/;/;
     return $line;
 }
 
