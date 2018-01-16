@@ -184,4 +184,10 @@
  */
 #define SIP_VIRTUAL_CATCHER_CODE(code)
 
+/*
+ * Force documentation of templates
+ * Available for SIP 4.19.7+
+ */
+#define SIP_DOC_TEMPLATE
+
 #endif // QGIS_SIP_H

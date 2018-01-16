@@ -246,9 +246,9 @@ Returns true if this range overlaps another range.
 };
 
 
-typedef QgsTemporalRange< QDate > QgsDateRange;
+typedef QgsTemporalRange< QDate > QgsDateRange ;
 
-typedef QgsTemporalRange< QDateTime > QgsDateTimeRange;
+typedef QgsTemporalRange< QDateTime > QgsDateTimeRange ;
 
 /************************************************************************
  * This file has been generated automatically from                      *

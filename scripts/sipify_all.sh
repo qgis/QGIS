@@ -15,6 +15,16 @@
 ###########################################################################
 set -e
 
+TEMPLATE_DOC=""
+while :; do
+    case $1 in
+        -t|--template-doc) TEMPLATE_DOC="-template-doc"
+        ;;
+        *) break
+    esac
+    shift
+done
+
 DIR=$(git rev-parse --show-toplevel)
 
 # GNU prefix command for mac os support (gsed, gsplit)
@@ -37,7 +47,7 @@ for module in "${modules[@]}"; do
       else
         path=$(${GP}sed -r 's@/[^/]+$@@' <<< $sipfile)
         mkdir -p python/$path
-        ./scripts/sipify.pl $header > python/$sipfile
+        ./scripts/sipify.pl $TEMPLATE_DOC $header > python/$sipfile
       fi
       count=$((count+1))
   done < <( ${GP}sed -n -r "s/^%Include (.*\.sip)/${module}\/\1/p" python/${module}/${module}_auto.sip )
