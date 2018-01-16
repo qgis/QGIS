@@ -32,6 +32,7 @@ class QgsProcessingAlgorithmDialogBase : QDialog
 %Docstring
 Constructor for QgsProcessingAlgorithmDialogBase.
 %End
+    ~QgsProcessingAlgorithmDialogBase();
 
     void setAlgorithm( QgsProcessingAlgorithm *algorithm );
 %Docstring
@@ -143,6 +144,9 @@ from this dialog.
 
   protected:
 
+    virtual void closeEvent( QCloseEvent *e );
+
+
     QPushButton *runButton();
 %Docstring
 Returns the dialog's run button.
@@ -204,6 +208,12 @@ Returns the dialog's message bar.
     void hideShortHelp();
 %Docstring
 Hides the short help panel.
+%End
+
+    void setCurrentTask( QgsProcessingAlgRunnerTask *task /Transfer/ );
+%Docstring
+Sets the current ``task`` running in the dialog. The task will automatically be started
+by the dialog. Ownership of ``task`` is transferred to the dialog.
 %End
 
   protected slots:

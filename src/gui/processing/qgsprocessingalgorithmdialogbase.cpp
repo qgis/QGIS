@@ -20,6 +20,8 @@
 #include "qgsgui.h"
 #include "processing/qgsprocessingalgorithm.h"
 #include "processing/qgsprocessingprovider.h"
+#include "qgstaskmanager.h"
+#include "processing/qgsprocessingalgrunnertask.h"
 #include <QToolButton>
 #include <QDesktopServices>
 #include <QScrollBar>
@@ -92,7 +94,7 @@ QgsProcessingAlgorithmDialogBase::QgsProcessingAlgorithmDialogBase( QWidget *par
   mSplitterState = splitter->saveState();
   splitterChanged( 0, 0 );
 
-  connect( mButtonBox, &QDialogButtonBox::rejected, this, &QgsProcessingAlgorithmDialogBase::reject );
+  connect( mButtonBox, &QDialogButtonBox::rejected, this, &QgsProcessingAlgorithmDialogBase::closeClicked );
   connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsProcessingAlgorithmDialogBase::accept );
 
   // Rename OK button to Run
@@ -109,6 +111,8 @@ QgsProcessingAlgorithmDialogBase::QgsProcessingAlgorithmDialogBase( QWidget *par
   mMessageBar = new QgsMessageBar();
   mMessageBar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed );
   verticalLayout->insertWidget( 0,  mMessageBar );
+
+  connect( QgsApplication::taskManager(), &QgsTaskManager::taskTriggered, this, &QgsProcessingAlgorithmDialogBase::taskTriggered );
 }
 
 void QgsProcessingAlgorithmDialogBase::setAlgorithm( QgsProcessingAlgorithm *algorithm )
@@ -271,6 +275,47 @@ void QgsProcessingAlgorithmDialogBase::linkClicked( const QUrl &url )
   QDesktopServices::openUrl( url.toString() );
 }
 
+void QgsProcessingAlgorithmDialogBase::algExecuted( bool successful, const QVariantMap & )
+{
+  mAlgorithmTask = nullptr;
+
+  if ( !successful )
+  {
+    // show dialog to display errors
+    show();
+    raise();
+    setWindowState( ( windowState() & ~Qt::WindowMinimized ) | Qt::WindowActive );
+    activateWindow();
+    showLog();
+  }
+  else
+  {
+    // delete dialog if closed
+    if ( !isVisible() )
+    {
+      deleteLater();
+    }
+  }
+}
+
+void QgsProcessingAlgorithmDialogBase::taskTriggered( QgsTask *task )
+{
+  if ( task == mAlgorithmTask )
+  {
+    show();
+    raise();
+    setWindowState( ( windowState() & ~Qt::WindowMinimized ) | Qt::WindowActive );
+    activateWindow();
+    showLog();
+  }
+}
+
+void QgsProcessingAlgorithmDialogBase::closeClicked()
+{
+  reject();
+  close();
+}
+
 void QgsProcessingAlgorithmDialogBase::reportError( const QString &error )
 {
   setInfo( error, true );
@@ -321,6 +366,19 @@ QDialog *QgsProcessingAlgorithmDialogBase::createProgressDialog()
     sb->setValue( sb->maximum() );
   } );
   return dialog;
+}
+
+void QgsProcessingAlgorithmDialogBase::closeEvent( QCloseEvent *e )
+{
+  QDialog::closeEvent( e );
+
+  if ( !mAlgorithmTask )
+  {
+    // when running a background task, the dialog is kept around and deleted only when the task
+    // completes. But if not running a task, we auto cleanup (later - gotta give callers a chance
+    // to retrieve results and execution status).
+    deleteLater();
+  }
 }
 
 void QgsProcessingAlgorithmDialogBase::setPercentage( double percent )
@@ -398,6 +456,13 @@ void QgsProcessingAlgorithmDialogBase::hideShortHelp()
   textShortHelp->setVisible( false );
 }
 
+void QgsProcessingAlgorithmDialogBase::setCurrentTask( QgsProcessingAlgRunnerTask *task )
+{
+  mAlgorithmTask = task;
+  connect( mAlgorithmTask, &QgsProcessingAlgRunnerTask::executed, this, &QgsProcessingAlgorithmDialogBase::algExecuted );
+  QgsApplication::taskManager()->addTask( mAlgorithmTask );
+}
+
 void QgsProcessingAlgorithmDialogBase::setInfo( const QString &message, bool isError, bool escapeHtml )
 {
   if ( isError )
@@ -417,8 +482,8 @@ void QgsProcessingAlgorithmDialogBase::setInfo( const QString &message, bool isE
 QgsProcessingAlgorithmProgressDialog::QgsProcessingAlgorithmProgressDialog( QWidget *parent )
   : QDialog( parent )
 {
-  setWindowFlags( Qt::Dialog ); // hide close button
   setupUi( this );
+  QgsGui::enableAutoGeometryRestore( this );
 }
 
 QProgressBar *QgsProcessingAlgorithmProgressDialog::progressBar()
