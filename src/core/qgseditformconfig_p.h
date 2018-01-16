@@ -36,7 +36,6 @@ class QgsEditFormConfigPrivate : public QSharedData
       , mConfiguredRootContainer( o.mConfiguredRootContainer )
       , mFieldEditables( o.mFieldEditables )
       , mLabelOnTop( o.mLabelOnTop )
-      , mEditorWidgetTypes( o.mEditorWidgetTypes )
       , mWidgetConfigs( o.mWidgetConfigs )
       , mEditorLayout( o.mEditorLayout )
       , mUiFormPath( o.mUiFormPath )
@@ -61,7 +60,6 @@ class QgsEditFormConfigPrivate : public QSharedData
     QMap< QString, bool> mFieldEditables;
     QMap< QString, bool> mLabelOnTop;
 
-    QMap<QString, QString> mEditorWidgetTypes;
     QMap<QString, QVariantMap > mWidgetConfigs;
 
     //! Defines the default layout to use for the attribute editor (Drag and drop, UI File, Generated)
