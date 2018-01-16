@@ -38,7 +38,7 @@ not set, the default value will only be used when a feature is created.
 %End
   public:
 
-    QgsDefaultValue( const QString &expression = QString(), bool applyOnUpdate = false );
+    explicit QgsDefaultValue( const QString &expression = QString(), bool applyOnUpdate = false );
 %Docstring
 Create a new default value with the given ``expression`` and ``applyOnUpdate`` flag.
 

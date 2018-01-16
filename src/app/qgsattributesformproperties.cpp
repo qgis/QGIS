@@ -242,7 +242,6 @@ void QgsAttributesFormProperties::loadAttributeTypeDialog()
     mAttributeTypeDialog->setConstraintExpressionEnforced( cfg.mConstraintStrength.value( QgsFieldConstraints::ConstraintExpression, QgsFieldConstraints::ConstraintStrengthHard ) == QgsFieldConstraints::ConstraintStrengthHard );
     mAttributeTypeDialog->setDefaultValueExpression( mLayer->defaultValueDefinition( index ).expression() );
     mAttributeTypeDialog->setApplyDefaultValueOnUpdate( mLayer->defaultValueDefinition( index ).applyOnUpdate() );
-    //confustion (will be removed): das hier funktioniert nicht, es is neu, aber ich weiss nicht woher: mAttributeTypeDialog->setDefaultValueExpression( mLayer->defaultValueExpression( index ) );
 
     mAttributeTypeDialog->setEditorWidgetConfig( cfg.mEditorWidgetConfig );
     mAttributeTypeDialog->setEditorWidgetType( cfg.mEditorWidgetType );
