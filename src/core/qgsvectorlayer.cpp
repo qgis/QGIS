@@ -3159,9 +3159,9 @@ void QgsVectorLayer::setDefaultValueDefinition( int index, const QgsDefaultValue
 QgsDefaultValue QgsVectorLayer::defaultValueDefinition( int index ) const
 {
   if ( index < 0 || index >= mFields.count() )
-    return QString();
+    return QgsDefaultValue();
   else
-    return mFields.at( index ).defaultValueDefinition().expression();
+    return mFields.at( index ).defaultValueDefinition();
 }
 
 QSet<QVariant> QgsVectorLayer::uniqueValues( int index, int limit ) const
