@@ -277,7 +277,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   connect( mBtnRemoveSVGPath, &QAbstractButton::clicked, this, &QgsOptions::removeSVGPath );
 
   //local directories to search when looking for a composer templates
-  const QStringList composerTemplatePathList = QgsApplication::composerTemplatePaths();
+  const QStringList composerTemplatePathList = QgsApplication::layoutTemplatePaths();
   for ( const QString &path : composerTemplatePathList )
   {
     QListWidgetItem *newItem = new QListWidgetItem( mListComposerTemplatePaths );
@@ -1141,7 +1141,7 @@ void QgsOptions::saveOptions()
   {
     pathsList << mListComposerTemplatePaths->item( i )->text();
   }
-  mSettings->setValue( QStringLiteral( "composer/searchPathsForTemplates" ), pathsList );
+  mSettings->setValue( QStringLiteral( "Layout/searchPathsForTemplates" ), pathsList, QgsSettings::Core );
 
   pathsList.clear();
   for ( int i = 0; i < mListHiddenBrowserPaths->count(); ++i )

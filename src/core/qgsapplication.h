@@ -278,8 +278,11 @@ class CORE_EXPORT QgsApplication : public QApplication
     //! Returns the paths to svg directories.
     static QStringList svgPaths();
 
-    //! Returns the paths to composer template directories
-    static QStringList composerTemplatePaths();
+    /**
+     * Returns the paths to layout template directories.
+     * \since QGIS 3.0
+     */
+    static QStringList layoutTemplatePaths();
 
     //! Returns the system environment variables passed to application.
     static QMap<QString, QString> systemEnvVars() { return ABISYM( mSystemEnvVars ); }

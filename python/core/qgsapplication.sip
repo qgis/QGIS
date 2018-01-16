@@ -275,9 +275,11 @@ Returns the path to the srs.db file.
 Returns the paths to svg directories.
 %End
 
-    static QStringList composerTemplatePaths();
+    static QStringList layoutTemplatePaths();
 %Docstring
-Returns the paths to composer template directories
+Returns the paths to layout template directories.
+
+.. versionadded:: 3.0
 %End
 
     static QMap<QString, QString> systemEnvVars();
