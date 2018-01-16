@@ -23,8 +23,9 @@ use constant CODE_SNIPPET_CPP => 31;
 
 # read arguments
 my $debug = 0;
-my $SUPPORT_TEMPLATE_DOCSTRING = 0;
-die("usage: $0 [-debug] [-template-doc] headerfile\n") unless GetOptions ("debug" => \$debug, "template-doc" => \$SUPPORT_TEMPLATE_DOCSTRING) && @ARGV == 1;
+#my $SUPPORT_TEMPLATE_DOCSTRING = 0;
+#die("usage: $0 [-debug] [-template-doc] headerfile\n") unless GetOptions ("debug" => \$debug, "template-doc" => \$SUPPORT_TEMPLATE_DOCSTRING) && @ARGV == 1;
+die("usage: $0 [-debug] headerfile\n") unless GetOptions ("debug" => \$debug) && @ARGV == 1;
 my $headerfile = $ARGV[0];
 
 # read file
@@ -967,9 +968,10 @@ while ($LINE_IDX < $LINE_COUNT){
     $LINE =~ s/^(\s*struct )\w+_EXPORT (.+)$/$1$2/;
 
     # Skip comments
-    if ( $SUPPORT_TEMPLATE_DOCSTRING == 1 &&
-            $LINE =~ m/^\s*typedef\s+\w+\s*<\s*\w+\s*>\s+\w+\s+.*SIP_DOC_TEMPLATE/ ) {
+    $COMMENT_TEMPLATE_DOCSTRING = 0;
+    if ( $LINE =~ m/^\s*typedef\s+\w+\s*<\s*\w+\s*>\s+\w+\s+.*SIP_DOC_TEMPLATE/ ) {
         # support Docstring for template based classes in SIP 4.19.7+
+        $COMMENT_TEMPLATE_DOCSTRING = 1;
     }
     elsif ( $LINE =~ m/\/\// ||
             $LINE =~ m/^\s*typedef / ||
@@ -1049,7 +1051,9 @@ while ($LINE_IDX < $LINE_COUNT){
         else {
             dbg_info('writing comment');
             if ( $COMMENT !~ m/^\s*$/ ){
-                write_output("CM1", "%Docstring\n");
+                my $doc_prepend = "";
+                $doc_prepend = "\@TEMPLATE_DOCSTRING\@" if $COMMENT_TEMPLATE_DOCSTRING == 1;
+                write_output("CM1", "$doc_prepend%Docstring\n");
                 my @comment_lines = split /\n/, $COMMENT;
                 foreach my $comment_line (@comment_lines) {
                   # if ( $RETURN_TYPE ne '' && $comment_line =~ m/^\s*\.\. \w/ ){
@@ -1057,14 +1061,14 @@ while ($LINE_IDX < $LINE_COUNT){
                   #     write_output("CM5", ":rtype: $RETURN_TYPE\n\n");
                   #     $RETURN_TYPE = '';
                   # }
-                  write_output("CM2", "$comment_line\n");
+                  write_output("CM2", "$doc_prepend$comment_line\n");
                   # if ( $RETURN_TYPE ne '' && $comment_line =~ m/:return:/ ){
                   #     # return type must be added before any other paragraph-level markup
                   #     write_output("CM5", ":rtype: $RETURN_TYPE\n\n");
                   #     $RETURN_TYPE = '';
                   # }
                 }
-            write_output("CM4", "%End\n");
+            write_output("CM4", "$doc_prepend%End\n");
             }
             # if ( $RETURN_TYPE ne '' ){
             #     write_output("CM3", "\n:rtype: $RETURN_TYPE\n");
