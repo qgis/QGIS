@@ -786,7 +786,7 @@ DnDTree::DnDTree( QgsVectorLayer *layer, QWidget *parent )
   connect( this, &QTreeWidget::itemDoubleClicked, this, &DnDTree::onItemDoubleClicked );
 }
 
-QTreeWidgetItem *DnDTree::addItem( QTreeWidgetItem *parent, QgsAttributesFormProperties::DnDTreeItemData data )
+QTreeWidgetItem *DnDTree::addItem( QTreeWidgetItem *parent, QgsAttributesFormProperties::DnDTreeItemData data, int index )
 {
   QTreeWidgetItem *newItem = new QTreeWidgetItem( QStringList() << data.name() );
   newItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled );
@@ -811,7 +811,10 @@ QTreeWidgetItem *DnDTree::addItem( QTreeWidgetItem *parent, QgsAttributesFormPro
     }
   }
   newItem->setData( 0, QgsAttributesFormProperties::DnDTreeRole, data );
-  parent->addChild( newItem );
+  if ( index < 0 )
+    parent->addChild( newItem );
+  else
+    parent->insertChild( index, newItem );
 
   return newItem;
 }
@@ -850,7 +853,6 @@ void DnDTree::dragMoveEvent( QDragMoveEvent *event )
 
 bool DnDTree::dropMimeData( QTreeWidgetItem *parent, int index, const QMimeData *data, Qt::DropAction action )
 {
-  Q_UNUSED( index )
   bool bDropSuccessful = false;
 
   if ( action == Qt::IgnoreAction )
@@ -869,12 +871,12 @@ bool DnDTree::dropMimeData( QTreeWidgetItem *parent, int index, const QMimeData 
 
       if ( parent )
       {
-        addItem( parent, itemElement );
+        addItem( parent, itemElement, index );
         bDropSuccessful = true;
       }
       else
       {
-        addItem( invisibleRootItem(), itemElement );
+        addItem( invisibleRootItem(), itemElement, index );
         bDropSuccessful = true;
       }
     }
