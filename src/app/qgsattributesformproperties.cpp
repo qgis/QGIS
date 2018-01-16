@@ -291,7 +291,6 @@ void QgsAttributesFormProperties::storeAttributeTypeDialog()
 
   cfg.mConstraintDescription = mAttributeTypeDialog->constraintExpressionDescription();
   cfg.mConstraint = mAttributeTypeDialog->constraintExpression();
-  //confustion (will be removed): das hier funktioniert nicht, es is neu, aber ich weiss nicht woher: mLayer->setDefaultValueExpression( mAttributeTypeDialog->fieldIdx(), mAttributeTypeDialog->defaultValueExpression() );
   mLayer->setDefaultValueDefinition( mAttributeTypeDialog->fieldIdx(), QgsDefaultValue( mAttributeTypeDialog->defaultValueExpression(), mAttributeTypeDialog->applyDefaultValueOnUpdate() ) );
 
   cfg.mEditorWidgetType = mAttributeTypeDialog->editorWidgetType();
