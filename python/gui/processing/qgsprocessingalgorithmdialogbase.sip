@@ -32,7 +32,6 @@ class QgsProcessingAlgorithmDialogBase : QDialog
 %Docstring
 Constructor for QgsProcessingAlgorithmDialogBase.
 %End
-    ~QgsProcessingAlgorithmDialogBase();
 
     void setAlgorithm( QgsProcessingAlgorithm *algorithm );
 %Docstring
