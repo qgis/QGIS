@@ -29,11 +29,18 @@ import codecs
 import sys
 import operator
 import os
-import math
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt, QCoreApplication, QRectF, QMimeData, QPoint, QPointF, QByteArray, QSize, QSizeF, pyqtSignal
-from qgis.PyQt.QtWidgets import QGraphicsView, QTreeWidget, QMessageBox, QFileDialog, QTreeWidgetItem, QSizePolicy, QMainWindow, QShortcut
+from qgis.PyQt.QtWidgets import (QGraphicsView,
+                                 QTreeWidget,
+                                 QMessageBox,
+                                 QFileDialog,
+                                 QTreeWidgetItem,
+                                 QSizePolicy,
+                                 QMainWindow,
+                                 QShortcut,
+                                 QLabel)
 from qgis.PyQt.QtGui import QIcon, QImage, QPainter, QKeySequence
 from qgis.PyQt.QtSvg import QSvgGenerator
 from qgis.PyQt.QtPrintSupport import QPrinter
@@ -44,7 +51,7 @@ from qgis.core import (QgsApplication,
                        QgsProcessingUtils,
                        QgsProcessingModelAlgorithm,
                        QgsProcessingModelParameter,
-                       QgsXmlUtils)
+                       )
 from qgis.gui import QgsMessageBar
 from processing.gui.HelpEditionDialog import HelpEditionDialog
 from processing.gui.AlgorithmDialog import AlgorithmDialog
@@ -54,8 +61,6 @@ from processing.modeler.ModelerUtils import ModelerUtils
 from processing.modeler.ModelerScene import ModelerScene
 from qgis.utils import iface
 
-from processing.modeler.WrongModelException import WrongModelException
-from qgis.PyQt.QtXml import QDomDocument
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 WIDGET, BASE = uic.loadUiType(
