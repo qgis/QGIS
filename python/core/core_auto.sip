@@ -134,6 +134,7 @@
 %Include qgsmapthemecollection.sip
 %Include qgsxmlutils.sip
 %Include qgsarchive.sip
+%Include qgstestutils.sip
 %Include qgsziputils.sip
 %Include qgsvector.sip
 %Include auth/qgsauthcertutils.sip
@@ -423,5 +424,4 @@
 %Include layertree/qgslayertreeregistrybridge.sip
 %Include qgsuserprofilemanager.sip
 %Include symbology/qgsarrowsymbollayer.sip
-%Include qgstestutils.sip
 %Include qgsuserprofile.sip
