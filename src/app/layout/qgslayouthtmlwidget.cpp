@@ -419,7 +419,7 @@ void QgsLayoutHtmlWidget::mAddFramePushButton_clicked()
 
 void QgsLayoutHtmlWidget::setGuiElementValues()
 {
-  if ( !mHtml )
+  if ( !mHtml || !mFrame )
   {
     return;
   }

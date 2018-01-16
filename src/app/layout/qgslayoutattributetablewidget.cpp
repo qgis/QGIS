@@ -394,7 +394,7 @@ void QgsLayoutAttributeTableWidget::mBackgroundColorButton_colorChanged( const Q
 
 void QgsLayoutAttributeTableWidget::updateGuiElements()
 {
-  if ( !mTable )
+  if ( !mTable || !mFrame )
   {
     return;
   }
