@@ -557,7 +557,7 @@ Will take ownership.
 %End
 
   private:
-    QgsSymbolRenderContext( const QgsSymbolRenderContext &rh ) ;
+    QgsSymbolRenderContext( const QgsSymbolRenderContext &rh );
 };
 
 

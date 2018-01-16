@@ -38,7 +38,7 @@ Constructor
 
 
   private:
-    virtual void apply() ;
+    virtual void apply();
 
 };
 

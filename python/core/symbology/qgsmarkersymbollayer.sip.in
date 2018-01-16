@@ -194,7 +194,7 @@ Calculates the marker offset and rotation.
 
 
   private:
-    virtual void draw( QgsSymbolRenderContext &context, QgsSimpleMarkerSymbolLayerBase::Shape shape, const QPolygonF &polygon, const QPainterPath &path ) = 0 ;
+    virtual void draw( QgsSymbolRenderContext &context, QgsSimpleMarkerSymbolLayerBase::Shape shape, const QPolygonF &polygon, const QPainterPath &path ) = 0;
 %Docstring
 Derived classes must implement draw() to handle drawing the generated shape onto the painter surface.
 
@@ -467,7 +467,7 @@ Prepares cache image
 
 
   private:
-    virtual void draw( QgsSymbolRenderContext &context, QgsSimpleMarkerSymbolLayerBase::Shape shape, const QPolygonF &polygon, const QPainterPath &path ) ;
+    virtual void draw( QgsSymbolRenderContext &context, QgsSimpleMarkerSymbolLayerBase::Shape shape, const QPolygonF &polygon, const QPainterPath &path );
 
 };
 
@@ -532,7 +532,7 @@ Creates a new QgsFilledMarkerSymbolLayer.
 
   private:
     QgsFilledMarkerSymbolLayer( const QgsFilledMarkerSymbolLayer & );
-    virtual void draw( QgsSymbolRenderContext &context, QgsSimpleMarkerSymbolLayerBase::Shape shape, const QPolygonF &polygon, const QPainterPath &path ) ;
+    virtual void draw( QgsSymbolRenderContext &context, QgsSimpleMarkerSymbolLayerBase::Shape shape, const QPolygonF &polygon, const QPainterPath &path );
 
 };
 

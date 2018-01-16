@@ -135,7 +135,7 @@ Return body
 
 
   private:
-    QgsBufferServerResponse( const QgsBufferServerResponse & ) ;
+    QgsBufferServerResponse( const QgsBufferServerResponse & );
 };
 
 /************************************************************************

@@ -105,17 +105,17 @@ Reloads profiles list from QGIS settings
 %End
 
   private slots:
-    void mProfileNewButton_clicked() ;
-    void mProfileDeleteButton_clicked() ;
-    void mProfileResetButton_clicked() ;
-    void mOptionsAddButton_clicked() ;
-    void mOptionsDeleteButton_clicked() ;
-    void mOptionsLineEdit_editingFinished() ;
-    void optionsTableChanged() ;
-    void optionsTableEnableDeleteButton() ;
-    void updateOptions() ;
-    void swapOptionsUI( int newIndex = -1 ) ;
-    void updateControls() ;
+    void mProfileNewButton_clicked();
+    void mProfileDeleteButton_clicked();
+    void mProfileResetButton_clicked();
+    void mOptionsAddButton_clicked();
+    void mOptionsDeleteButton_clicked();
+    void mOptionsLineEdit_editingFinished();
+    void optionsTableChanged();
+    void optionsTableEnableDeleteButton();
+    void updateOptions();
+    void swapOptionsUI( int newIndex = -1 );
+    void updateControls();
   protected:
     virtual void showEvent( QShowEvent *event );
 
@@ -124,17 +124,17 @@ Reloads profiles list from QGIS settings
     void optionsChanged();
 
   private:
-    QString settingsKey( QString profile ) const ;
-    QString currentProfileKey() const ;
-    QString createOptions( const QString &profile ) const ;
-    void deleteCreateOptions( const QString &profile ) ;
-    void setCreateOptions() ;
-    void setCreateOptions( const QString &profile, const QString &options ) ;
-    void setCreateOptions( const QString &profile, const QStringList &list ) ;
-    QStringList profiles() const ;
-    virtual bool eventFilter( QObject *obj, QEvent *event ) ;
+    QString settingsKey( QString profile ) const;
+    QString currentProfileKey() const;
+    QString createOptions( const QString &profile ) const;
+    void deleteCreateOptions( const QString &profile );
+    void setCreateOptions();
+    void setCreateOptions( const QString &profile, const QString &options );
+    void setCreateOptions( const QString &profile, const QStringList &list );
+    QStringList profiles() const;
+    virtual bool eventFilter( QObject *obj, QEvent *event );
 
-    QString pseudoFormat() const ;
+    QString pseudoFormat() const;
 };
 
 

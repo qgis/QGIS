@@ -246,7 +246,7 @@ Returns true if this range overlaps another range.
 };
 
 
-typedef QgsTemporalRange< QDate > QgsDateRange ;
+typedef QgsTemporalRange< QDate > QgsDateRange;
 @TEMPLATE_DOCSTRING@%Docstring
 @TEMPLATE_DOCSTRING@QgsRange which stores a range of dates.
 @TEMPLATE_DOCSTRING@
@@ -260,7 +260,7 @@ typedef QgsTemporalRange< QDate > QgsDateRange ;
 @TEMPLATE_DOCSTRING@.. seealso:: :py:class:`QgsDateTimeRange`
 @TEMPLATE_DOCSTRING@%End
 
-typedef QgsTemporalRange< QDateTime > QgsDateTimeRange ;
+typedef QgsTemporalRange< QDateTime > QgsDateTimeRange;
 @TEMPLATE_DOCSTRING@%Docstring
 @TEMPLATE_DOCSTRING@QgsRange which stores a range of date times.
 @TEMPLATE_DOCSTRING@

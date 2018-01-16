@@ -34,8 +34,8 @@ process and displays them in a dialog box.
     void dialogGone();
 
   private:
-    QgsRunProcess( const QString &action, bool capture ) ;
-    ~QgsRunProcess() ;
+    QgsRunProcess( const QString &action, bool capture );
+    ~QgsRunProcess();
 };
 
 /************************************************************************

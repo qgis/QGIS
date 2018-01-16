@@ -297,7 +297,7 @@ Renders the labels for a group.
 %End
 
   private:
-    virtual void drawGroup( QPointF centerPoint, QgsRenderContext &context, const ClusteredGroup &group ) = 0 ;
+    virtual void drawGroup( QPointF centerPoint, QgsRenderContext &context, const ClusteredGroup &group ) = 0;
 %Docstring
 Draws a group of clustered points.
 

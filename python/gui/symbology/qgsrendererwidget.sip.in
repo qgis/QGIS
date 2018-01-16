@@ -127,7 +127,7 @@ Change marker angles of selected symbols
     virtual void paste();
 
   private:
-    virtual void apply() ;
+    virtual void apply();
 %Docstring
 This will be called whenever the renderer is set on a layer.
 This can be overwritten in subclasses.
@@ -195,10 +195,10 @@ Returns the vector layer associated with the widget.
     void init( int propertyKey ); // needed in children ctor to call virtual
 
   private:
-    QgsProperty symbolDataDefined() const ;
-    virtual QgsProperty symbolDataDefined( const QgsSymbol * ) const = 0 ;
-    virtual double value( const QgsSymbol * ) const = 0 ;
-    virtual void setDataDefined( QgsSymbol *symbol, const QgsProperty &dd ) = 0 ;
+    QgsProperty symbolDataDefined() const;
+    virtual QgsProperty symbolDataDefined( const QgsSymbol * ) const = 0;
+    virtual double value( const QgsSymbol * ) const = 0;
+    virtual void setDataDefined( QgsSymbol *symbol, const QgsProperty &dd ) = 0;
 };
 
 class QgsDataDefinedSizeDialog : QgsDataDefinedValueDialog
