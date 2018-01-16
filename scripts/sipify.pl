@@ -23,7 +23,8 @@ use constant CODE_SNIPPET_CPP => 31;
 
 # read arguments
 my $debug = 0;
-die("usage: $0 [-debug] headerfile\n") unless GetOptions ("debug" => \$debug) && @ARGV == 1;
+my $SUPPORT_TEMPLATE_DOCSTRING = 0;
+die("usage: $0 [-debug] [-template-doc] headerfile\n") unless GetOptions ("debug" => \$debug, "template-doc" => \$SUPPORT_TEMPLATE_DOCSTRING) && @ARGV == 1;
 my $headerfile = $ARGV[0];
 
 # read file
@@ -51,6 +52,7 @@ my $COMMENT = '';
 my $COMMENT_PARAM_LIST = 0;
 my $COMMENT_LAST_LINE_NOTE_WARNING = 0;
 my $COMMENT_CODE_SNIPPET = 0;
+my $COMMENT_TEMPLATE_DOCSTRING = 0;
 my $GLOB_IFDEF_NESTING_IDX = 0;
 my @GLOB_BRACKET_NESTING_IDX = (0);
 my $PRIVATE_SECTION_LINE = '';
@@ -370,6 +372,7 @@ sub fix_annotations {
         $line =~ s/\(\s+\)/()/;
     }
     $line =~ s/SIP_FORCE//;
+    $line =~ s/SIP_DOC_TEMPLATE//;
     return $line;
 }
 
@@ -963,6 +966,28 @@ while ($LINE_IDX < $LINE_COUNT){
     # remove export macro from struct definition
     $LINE =~ s/^(\s*struct )\w+_EXPORT (.+)$/$1$2/;
 
+    # Skip comments
+    if ( $SUPPORT_TEMPLATE_DOCSTRING == 1 &&
+            $LINE =~ m/^\s*typedef\s+\w+\s*<\s*\w+\s*>\s+\w+\s+.*SIP_DOC_TEMPLATE/ ) {
+        # support Docstring for template based classes in SIP 4.19.7+
+    }
+    elsif ( $LINE =~ m/\/\// ||
+            $LINE =~ m/^\s*typedef / ||
+            $LINE =~ m/\s*struct / ||
+            $LINE =~ m/operator\[\]\(/ ||
+            $LINE =~ m/^\s*operator\b/ ||
+            $LINE =~ m/operator\s?[!+-=*\/\[\]<>]{1,2}/ ||
+            $LINE =~ m/^\s*%\w+(.*)?$/ ||
+            $LINE =~ m/^\s*namespace\s+\w+/ ||
+            $LINE =~ m/^\s*(virtual\s*)?~/ ||
+            detect_non_method_member() == 1 ){
+        dbg_info('skipping comment');
+        dbg_info('because typedef') if ($LINE =~ m/\s*typedef.*?(?!SIP_DOC_TEMPLATE)/);
+        $COMMENT = '';
+        $RETURN_TYPE = '';
+        $IS_OVERRIDE = 0;
+    }
+
     $LINE = fix_annotations($LINE);
 
     # fix astyle placing space after % character
@@ -1016,22 +1041,7 @@ while ($LINE_IDX < $LINE_COUNT){
         # do not comment now for templates, wait for class definition
         next;
     }
-    if ( $LINE =~ m/\/\// ||
-            $LINE =~ m/\s*typedef / ||
-            $LINE =~ m/\s*struct / ||
-            $LINE =~ m/operator\[\]\(/ ||
-            $LINE =~ m/^\s*operator\b/ ||
-            $LINE =~ m/operator\s?[!+-=*\/\[\]<>]{1,2}/ ||
-            $LINE =~ m/^\s*%\w+(.*)?$/ ||
-            $LINE =~ m/^\s*namespace\s+\w+/ ||
-            $LINE =~ m/^\s*(virtual\s*)?~/ ||
-            detect_non_method_member() == 1 ){
-        dbg_info('skipping comment');
-        $COMMENT = '';
-        $RETURN_TYPE = '';
-        $IS_OVERRIDE = 0;
-    }
-    elsif ( $COMMENT !~ m/^\s*$/ || $RETURN_TYPE ne ''){
+    if ( $COMMENT !~ m/^\s*$/ || $RETURN_TYPE ne ''){
         if ( $IS_OVERRIDE == 1 && $COMMENT =~ m/^\s*$/ ){
             # overridden method with no new docs - so don't create a Docstring and use
             # parent class Docstring
