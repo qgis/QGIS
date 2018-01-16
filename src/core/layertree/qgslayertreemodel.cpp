@@ -362,7 +362,7 @@ bool QgsLayerTreeModel::setData( const QModelIndex &index, const QVariant &value
 
   QgsLayerTreeNode *node = index2node( index );
   if ( !node )
-    return QgsLayerTreeModel::setData( index, value, role );
+    return QAbstractItemModel::setData( index, value, role );
 
   if ( role == Qt::CheckStateRole )
   {
