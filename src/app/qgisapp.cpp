@@ -1094,9 +1094,9 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   }
 
   // Set icon size of toolbars
-  if ( settings.contains( QStringLiteral( "IconSize" ) ) )
+  if ( settings.contains( QStringLiteral( "/qgis/iconSize" ) ) )
   {
-    int size = settings.value( QStringLiteral( "IconSize" ) ).toInt();
+    int size = settings.value( QStringLiteral( "/qgis/iconSize" ) ).toInt();
     if ( size < 16 )
       size = QGIS_ICON_SIZE;
     setIconSizes( size );
@@ -1105,7 +1105,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   {
     // first run, guess a good icon size
     int size = chooseReasonableDefaultIconSize();
-    settings.setValue( QStringLiteral( "IconSize" ), size );
+    settings.setValue( QStringLiteral( "/qgis/iconSize" ), size );
     setIconSizes( size );
   }
 
@@ -9967,7 +9967,7 @@ QgsMapLayer *QgisApp::activeLayer()
 QSize QgisApp::iconSize( bool dockedToolbar ) const
 {
   QgsSettings s;
-  int size = s.value( QStringLiteral( "/IconSize" ), 32 ).toInt();
+  int size = s.value( QStringLiteral( "/qgis/iconSize" ), 32 ).toInt();
 
   if ( dockedToolbar )
   {

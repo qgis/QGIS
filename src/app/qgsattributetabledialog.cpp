@@ -123,7 +123,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
 
   QgsSettings settings;
 
-  int size = settings.value( QStringLiteral( "IconSize" ), 16 ).toInt();
+  int size = settings.value( QStringLiteral( "/qgis/iconSize" ), 16 ).toInt();
   if ( size > 32 )
   {
     size -= 16;

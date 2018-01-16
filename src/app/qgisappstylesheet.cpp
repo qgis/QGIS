@@ -84,7 +84,7 @@ QMap<QString, QVariant> QgisAppStyleSheet::defaultOptions()
 
   settings.endGroup(); // "qgis/stylesheet"
 
-  opts.insert( QStringLiteral( "iconSize" ), settings.value( QStringLiteral( "IconSize" ), QGIS_ICON_SIZE ) );
+  opts.insert( QStringLiteral( "iconSize" ), settings.value( QStringLiteral( "/qgis/iconSize" ), QGIS_ICON_SIZE ) );
 
   return opts;
 }
