@@ -52,14 +52,14 @@ class SetVectorStyle(GeoAlgorithm):
 
     def processAlgorithm(self, progress):
         filename = self.getParameterValue(self.INPUT)
-
         style = self.getParameterValue(self.STYLE)
+
+        dataobjects.resetLoadedLayers()
         layer = dataobjects.getObjectFromUri(filename, False)
         if layer is None:
             dataobjects.load(filename, os.path.basename(filename), style=style)
-            self.getOutputFromName(self.OUTPUT).open = False
         else:
             layer.loadNamedStyle(style)
-            iface.mapCanvas().refresh()
-            iface.legendInterface().refreshLayerSymbology(layer)
             layer.triggerRepaint()
+            iface.legendInterface().refreshLayerSymbology(layer)
+        self.setOutputValue(self.OUTPUT, filename)
