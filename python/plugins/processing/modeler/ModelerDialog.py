@@ -323,9 +323,6 @@ class ModelerDialog(BASE, WIDGET):
 
         dlg = AlgorithmDialog(self.model)
         dlg.exec_()
-        # have to manually delete the dialog - otherwise it's owned by the
-        # iface mainWindow and never deleted
-        dlg.deleteLater()
 
     def save(self):
         self.saveModel(False)

@@ -29,6 +29,8 @@ class QgsProcessingAlgorithm;
 class QToolButton;
 class QgsProcessingAlgorithmDialogBase;
 class QgsMessageBar;
+class QgsProcessingAlgRunnerTask;
+class QgsTask;
 
 #ifndef SIP_RUN
 
@@ -87,6 +89,7 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, private Ui::
      * Constructor for QgsProcessingAlgorithmDialogBase.
      */
     QgsProcessingAlgorithmDialogBase( QWidget *parent = nullptr, Qt::WindowFlags flags = nullptr );
+    ~QgsProcessingAlgorithmDialogBase();
 
     /**
      * Sets the \a algorithm to run in the dialog.
@@ -189,6 +192,8 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, private Ui::
 
   protected:
 
+    void closeEvent( QCloseEvent *e ) override;
+
     /**
      * Returns the dialog's run button.
      */
@@ -248,6 +253,12 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, private Ui::
      */
     void hideShortHelp();
 
+    /**
+     * Sets the current \a task running in the dialog. The task will automatically be started
+     * by the dialog. Ownership of \a task is transferred to the dialog.
+     */
+    void setCurrentTask( QgsProcessingAlgRunnerTask *task SIP_TRANSFER );
+
   protected slots:
 
     /**
@@ -262,6 +273,9 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, private Ui::
 
     void splitterChanged( int pos, int index );
     void linkClicked( const QUrl &url );
+    void algExecuted( bool successful, const QVariantMap &results );
+    void taskTriggered( QgsTask *task );
+    void closeClicked();
 
   private:
 
@@ -275,6 +289,8 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, private Ui::
     QVariantMap mResults;
     QWidget *mMainWidget = nullptr;
     QgsProcessingAlgorithm *mAlgorithm = nullptr;
+    QgsProcessingAlgRunnerTask *mAlgorithmTask = nullptr;
+
     bool mHelpCollapsed = false;
 
     QString formatHelp( QgsProcessingAlgorithm *algorithm );

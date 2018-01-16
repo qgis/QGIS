@@ -87,7 +87,6 @@ class ProcessingDropHandler(QgsCustomDropHandler):
 
         alg.setProvider(QgsApplication.processingRegistry().providerById('model'))
         dlg = AlgorithmDialog(alg)
-        dlg.setAttribute(Qt.WA_DeleteOnClose)
         dlg.show()
         return True
 

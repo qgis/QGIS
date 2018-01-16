@@ -64,7 +64,6 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
     def __init__(self, alg):
         super().__init__()
         self.feedback_dialog = None
-        self.task = None
 
         self.setAlgorithm(alg)
         self.setMainWidget(self.getParametersPanel(alg, self))
@@ -72,7 +71,6 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
         self.runAsBatchButton = QPushButton(QCoreApplication.translate("AlgorithmDialog", "Run as Batch Process…"))
         self.runAsBatchButton.clicked.connect(self.runAsBatch)
         self.buttonBox().addButton(self.runAsBatchButton, QDialogButtonBox.ResetRole) # reset role to ensure left alignment
-        QgsApplication.taskManager().taskTriggered.connect(self.taskTriggered)
 
     def getParametersPanel(self, alg, parent):
         return ParametersPanel(parent, alg)
@@ -235,7 +233,6 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                 self.cancelButton().setEnabled(self.algorithm().flags() & QgsProcessingAlgorithm.FlagCanCancel)
 
                 def on_complete(ok, results):
-                    self.task = None
                     if ok:
                         feedback.pushInfo(self.tr('Execution completed in {0:0.2f} seconds'.format(time.time() - start_time)))
                         feedback.pushInfo(self.tr('Results:'))
@@ -258,9 +255,9 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                     # Make sure the Log tab is visible before executing the algorithm
                     self.showLog()
 
-                    self.task = QgsProcessingAlgRunnerTask(self.algorithm(), parameters, context, feedback)
-                    self.task.executed.connect(on_complete)
-                    QgsApplication.taskManager().addTask(self.task)
+                    task = QgsProcessingAlgRunnerTask(self.algorithm(), parameters, context, feedback)
+                    task.executed.connect(on_complete)
+                    self.setCurrentTask(task)
                 else:
                     self.feedback_dialog = self.createProgressDialog()
                     self.feedback_dialog.show()
@@ -279,13 +276,6 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
             self.messageBar().clearWidgets()
             self.messageBar().pushMessage("", self.tr("Wrong or missing parameter value: {0}").format(e.parameter.description()),
                                           level=QgsMessageBar.WARNING, duration=5)
-
-    def taskTriggered(self, task):
-        if task == self.task:
-            self.show()
-            self.raise_()
-            self.setWindowState(self.windowState() & ~Qt.WindowMinimized | Qt.WindowActive)
-            self.activateWindow()
 
     def finish(self, successful, result, context, feedback):
         keepOpen = not successful or ProcessingConfig.getSetting(ProcessingConfig.KEEP_DIALOG_OPEN)
