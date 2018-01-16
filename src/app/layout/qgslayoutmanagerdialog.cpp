@@ -28,6 +28,7 @@
 #include "qgsgui.h"
 #include "qgsprintlayout.h"
 #include "qgsreport.h"
+#include "qgsreadwritecontext.h"
 
 #include <QDesktopServices>
 #include <QDialog>

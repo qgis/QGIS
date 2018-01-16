@@ -61,6 +61,7 @@
 #include "qgslayoutpagecollection.h"
 #include "qgsreport.h"
 #include "qgsreportorganizerwidget.h"
+#include "qgsreadwritecontext.h"
 #include "ui_qgssvgexportoptions.h"
 #include <QShortcut>
 #include <QComboBox>
