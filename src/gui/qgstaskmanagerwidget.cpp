@@ -106,7 +106,7 @@ void QgsTaskManagerWidget::clicked( const QModelIndex &index )
   if ( !task )
     return;
 
-  mManager->trigger( task );
+  mManager->triggerTask( task );
 }
 
 ///@cond PRIVATE

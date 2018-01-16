@@ -489,9 +489,9 @@ class CORE_EXPORT QgsTaskManager : public QObject
 
     /**
      * Triggers a task, e.g. as a result of a GUI interaction.
-     * \see triggered()
+     * \see taskTriggered()
      */
-    void trigger( QgsTask *task );
+    void triggerTask( QgsTask *task );
 
   signals:
 
@@ -544,9 +544,9 @@ class CORE_EXPORT QgsTaskManager : public QObject
      * Emitted when a \a task is triggered. This occurs when a user clicks on
      * the task from the QGIS GUI, and can be used to show detailed progress
      * reports or re-open a related dialog.
-     * \see trigger()
+     * \see triggerTask()
      */
-    void triggered( QgsTask *task );
+    void taskTriggered( QgsTask *task );
 
   private slots:
 
