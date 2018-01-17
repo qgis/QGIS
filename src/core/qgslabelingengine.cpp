@@ -256,10 +256,7 @@ void QgsLabelingEngine::run( QgsRenderContext &context )
   t.start();
 
   // do the labeling itself
-  double bbox[] = { extent.xMinimum(), extent.yMinimum(), extent.xMaximum(), extent.yMaximum() };
-
-  QList<pal::LabelPosition *> *labels;
-  pal::Problem *problem = nullptr;
+  std::unique_ptr< pal::Problem > problem;
   try
   {
     problem = p.extractProblem( bbox );
@@ -271,10 +268,8 @@ void QgsLabelingEngine::run( QgsRenderContext &context )
     return;
   }
 
-
   if ( context.renderingStopped() )
   {
-    delete problem;
     return; // it has been canceled
   }
 
@@ -308,47 +303,39 @@ void QgsLabelingEngine::run( QgsRenderContext &context )
   }
 
   // find the solution
-  labels = p.solveProblem( problem, settings.testFlag( QgsLabelingEngineSettings::UseAllLabels ) );
+  QList<pal::LabelPosition *> labels = p.solveProblem( problem.get(), settings.testFlag( QgsLabelingEngineSettings::UseAllLabels ) );
 
-  QgsDebugMsgLevel( QString( "LABELING work:  %1 ms ... labels# %2" ).arg( t.elapsed() ).arg( labels->size() ), 4 );
+  QgsDebugMsgLevel( QString( "LABELING work:  %1 ms ... labels# %2" ).arg( t.elapsed() ).arg( labels.size() ), 4 );
   t.restart();
 
   if ( context.renderingStopped() )
   {
-    delete problem;
-    delete labels;
     return;
   }
   painter->setRenderHint( QPainter::Antialiasing );
 
   // sort labels
-  std::sort( labels->begin(), labels->end(), QgsLabelSorter( mMapSettings ) );
+  std::sort( labels.begin(), labels.end(), QgsLabelSorter( mMapSettings ) );
 
   // draw the labels
-  QList<pal::LabelPosition *>::iterator it = labels->begin();
-  for ( ; it != labels->end(); ++it )
+  for ( pal::LabelPosition *label : qgis::as_const( labels ) )
   {
     if ( context.renderingStopped() )
       break;
 
-    QgsLabelFeature *lf = ( *it )->getFeaturePart()->feature();
+    QgsLabelFeature *lf = label->getFeaturePart()->feature();
     if ( !lf )
     {
       continue;
     }
 
-    lf->provider()->drawLabel( context, *it );
+    lf->provider()->drawLabel( context, label );
   }
 
   // Reset composition mode for further drawing operations
   painter->setCompositionMode( QPainter::CompositionMode_SourceOver );
 
   QgsDebugMsgLevel( QString( "LABELING draw:  %1 ms" ).arg( t.elapsed() ), 4 );
-
-  delete problem;
-  delete labels;
-
-
 }
 
 QgsLabelingResults *QgsLabelingEngine::takeResults()
