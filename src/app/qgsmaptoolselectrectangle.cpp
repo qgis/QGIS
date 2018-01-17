@@ -104,10 +104,10 @@ void QgsMapToolSelectFeatures::canvasReleaseEvent( QgsMapMouseEvent *e )
     QgsGeometry selectGeom = mRubberBand->asGeometry();
     if ( !mDragging )
     {
-      QgsMapToolSelectUtils::selectSingleFeature( mCanvas, selectGeom, e );
+      QgsMapToolSelectUtils::selectSingleFeature( mCanvas, selectGeom, e->modifiers() );
     }
     else
-      QgsMapToolSelectUtils::selectMultipleFeatures( mCanvas, selectGeom, e );
+      QgsMapToolSelectUtils::selectMultipleFeatures( mCanvas, selectGeom, e->modifiers() );
 
     delete mRubberBand;
     mRubberBand = nullptr;
