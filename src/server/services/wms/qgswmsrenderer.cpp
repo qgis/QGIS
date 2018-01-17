@@ -1041,7 +1041,7 @@ namespace QgsWms
       throw QgsException( QStringLiteral( "createImage: Invalid width / height parameters" ) );
     }
 
-    QImage *image = nullptr;
+    std::unique_ptr<QImage> image;
 
     // use alpha channel only if necessary because it slows down performance
     QgsWmsParameters::Format format = mWmsParameters.format();
@@ -1049,13 +1049,19 @@ namespace QgsWms
 
     if ( transparent && format != QgsWmsParameters::JPG )
     {
-      image = new QImage( width, height, QImage::Format_ARGB32_Premultiplied );
+      image = qgis::make_unique<QImage>( width, height, QImage::Format_ARGB32_Premultiplied );
       image->fill( 0 );
     }
     else
     {
-      image = new QImage( width, height, QImage::Format_RGB32 );
+      image = qgis::make_unique<QImage>( width, height, QImage::Format_RGB32 );
       image->fill( mWmsParameters.backgroundColorAsColor() );
+    }
+
+    // Check that image was correctly created
+    if ( image->isNull() )
+    {
+      throw QgsException( QStringLiteral( "createImage: image could not be created, check for out of memory conditions" ) );
     }
 
     //apply DPI parameter if present. This is an extension of Qgis Mapserver compared to WMS 1.3.
@@ -1067,7 +1073,7 @@ namespace QgsWms
 
     image->setDotsPerMeterX( dpm );
     image->setDotsPerMeterY( dpm );
-    return image;
+    return image.release();
   }
 
   void QgsRenderer::configureMapSettings( const QPaintDevice *paintDevice, QgsMapSettings &mapSettings ) const
@@ -1829,6 +1835,31 @@ namespace QgsWms
     {
       return false;
     }
+
+    // Sanity check from internal QImage checks (see qimage.cpp)
+    // this is to report a meaningful error message in case of
+    // image creation failure and to differentiate it from out
+    // of memory conditions.
+
+    // depth for now it cannot be anything other than 32, but I don't like
+    // to hardcode it: I hope we will support other depths in the future.
+    uint depth = 32;
+    switch ( mWmsParameters.format() )
+    {
+      case QgsWmsParameters::Format::JPG:
+      case QgsWmsParameters::Format::PNG:
+      default:
+        depth = 32;
+    }
+
+    const int bytes_per_line = ( ( width * depth + 31 ) >> 5 ) << 2; // bytes per scanline (must be multiple of 4)
+
+    if ( std::numeric_limits<int>::max() / depth < ( uint )width
+         || bytes_per_line <= 0
+         || height <= 0
+         || std::numeric_limits<int>::max() / uint( bytes_per_line ) < ( uint )height
+         || std::numeric_limits<int>::max() / sizeof( uchar * ) < uint( height ) )
+      return false;
 
     return true;
   }
