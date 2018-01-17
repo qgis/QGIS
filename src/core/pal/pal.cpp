@@ -448,61 +448,6 @@ Problem *Pal::extract( double lambda_min, double phi_min, double lambda_max, dou
   return prob;
 }
 
-/*
- * BIG MACHINE
- */
-QList<LabelPosition *> *Pal::labeller( double bbox[4], PalStat **stats, bool displayAll )
-{
-  Problem *prob = nullptr;
-
-  SearchMethod old_searchMethod = searchMethod;
-
-  if ( displayAll )
-  {
-    setSearch( POPMUSIC_TABU );
-  }
-
-  // First, extract the problem
-  if ( !( prob = extract( bbox[0], bbox[1], bbox[2], bbox[3] ) ) )
-  {
-    // nothing to be done => return an empty result set
-    if ( stats )
-      ( *stats ) = new PalStat();
-    return new QList<LabelPosition *>();
-  }
-
-  // reduce number of candidates
-  // (remove candidates which surely won't be used)
-  prob->reduce();
-  prob->displayAll = displayAll;
-
-  // search a solution
-  if ( searchMethod == FALP )
-    prob->init_sol_falp();
-  else if ( searchMethod == CHAIN )
-    prob->chain_search();
-  else
-    prob->popmusic();
-
-  // Post-Optimization
-  //prob->post_optimization();
-
-
-  QList<LabelPosition *> *solution = prob->getSolution( displayAll );
-
-  if ( stats )
-    *stats = prob->getStats();
-
-  delete prob;
-
-  if ( displayAll )
-  {
-    setSearch( old_searchMethod );
-  }
-
-  return solution;
-}
-
 void Pal::registerCancelationCallback( Pal::FnIsCanceled fnCanceled, void *context )
 {
   fnIsCanceled = fnCanceled;

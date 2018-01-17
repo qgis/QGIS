@@ -130,18 +130,6 @@ namespace pal
        */
       void removeLayer( Layer *layer );
 
-      /**
-       * \brief the labeling machine
-       * Will extract all active layers
-       *
-       * \param bbox map extent
-       * \param stats A PalStat object (can be NULL)
-       * \param displayAll if true, all feature will be labelled even though overlaps occur
-       *
-       * \returns A list of label to display on map
-       */
-      QList<LabelPosition *> *labeller( double bbox[4], PalStat **stats, bool displayAll );
-
       typedef bool ( *FnIsCanceled )( void *ctx );
 
       //! Register a function that returns whether this job has been canceled - PAL calls it during the computation
