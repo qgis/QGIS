@@ -222,12 +222,12 @@ bool filteringCallback( FeaturePart *featurePart, void *ctx )
   return true;
 }
 
-Problem *Pal::extract( double lambda_min, double phi_min, double lambda_max, double phi_max )
+std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeometry &mapBoundary )
 {
   // to store obstacles
   RTree<FeaturePart *, double, 2, double> *obstacles = new RTree<FeaturePart *, double, 2, double>();
 
-  Problem *prob = new Problem();
+  std::unique_ptr< Problem > prob = qgis::make_unique< Problem >();
 
   int i, j;
 
@@ -314,7 +314,6 @@ Problem *Pal::extract( double lambda_min, double phi_min, double lambda_max, dou
   if ( fFeats->isEmpty() )
   {
     delete fFeats;
-    delete prob;
     delete obstacles;
     return nullptr;
   }
@@ -345,7 +344,6 @@ Problem *Pal::extract( double lambda_min, double phi_min, double lambda_max, dou
 
     qDeleteAll( *fFeats );
     delete fFeats;
-    delete prob;
     delete obstacles;
     return nullptr;
   }
@@ -410,7 +408,6 @@ Problem *Pal::extract( double lambda_min, double phi_min, double lambda_max, dou
 
       qDeleteAll( *fFeats );
       delete fFeats;
-      delete prob;
       delete obstacles;
       return nullptr;
     }
@@ -459,10 +456,10 @@ Problem *Pal::extractProblem( double bbox[4] )
   return extract( bbox[0], bbox[1], bbox[2], bbox[3] );
 }
 
-QList<LabelPosition *> *Pal::solveProblem( Problem *prob, bool displayAll )
+QList<LabelPosition *> Pal::solveProblem( Problem *prob, bool displayAll )
 {
   if ( !prob )
-    return new QList<LabelPosition *>();
+    return QList<LabelPosition *>();
 
   prob->reduce();
 
@@ -477,7 +474,7 @@ QList<LabelPosition *> *Pal::solveProblem( Problem *prob, bool displayAll )
   }
   catch ( InternalException::Empty )
   {
-    return new QList<LabelPosition *>();
+    return QList<LabelPosition *>();
   }
 
   return prob->getSolution( displayAll );

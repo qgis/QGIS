@@ -140,7 +140,7 @@ namespace pal
 
       Problem *extractProblem( double bbox[4] );
 
-      QList<LabelPosition *> *solveProblem( Problem *prob, bool displayAll );
+      QList<LabelPosition *> solveProblem( Problem *prob, bool displayAll );
 
       /**
        *\brief Set flag show partial label
