@@ -1,7 +1,7 @@
 /***************************************************************************
   qgslayertreeviewfilterindicator.h
   --------------------------------------
-  Date                 : Januray 2018
+  Date                 : January 2018
   Copyright            : (C) 2018 by Martin Dobias
   Email                : wonder dot sk at gmail dot com
  ***************************************************************************
@@ -26,11 +26,11 @@ class QgsVectorDataProvider;
 
 
 //! Adds indicators showing whether vector layers have a filter applied.
-class QgsLayerTreeViewFilterIndicatorManager : public QObject
+class QgsLayerTreeViewFilterIndicatorProvider : public QObject
 {
     Q_OBJECT
   public:
-    explicit QgsLayerTreeViewFilterIndicatorManager( QgsLayerTreeView *view );
+    explicit QgsLayerTreeViewFilterIndicatorProvider( QgsLayerTreeView *view );
 
   private slots:
     //! Connects to signals of layers newly added to the tree

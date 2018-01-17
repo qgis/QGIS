@@ -1,7 +1,7 @@
 /***************************************************************************
   qgslayertreeviewindicator.cpp
   --------------------------------------
-  Date                 : Januray 2018
+  Date                 : January 2018
   Copyright            : (C) 2018 by Martin Dobias
   Email                : wonder dot sk at gmail dot com
  ***************************************************************************

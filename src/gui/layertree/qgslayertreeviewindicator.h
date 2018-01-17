@@ -1,7 +1,7 @@
 /***************************************************************************
   qgslayertreeviewindicator.h
   --------------------------------------
-  Date                 : Januray 2018
+  Date                 : January 2018
   Copyright            : (C) 2018 by Martin Dobias
   Email                : wonder dot sk at gmail dot com
  ***************************************************************************
@@ -36,6 +36,7 @@ class GUI_EXPORT QgsLayerTreeViewIndicator : public QObject
 {
     Q_OBJECT
   public:
+    //! Constructs an indicator, optionally transferring ownership to a parent QObject
     explicit QgsLayerTreeViewIndicator( QObject *parent SIP_TRANSFERTHIS = nullptr );
 
     //! Indicator icon that will be displayed in the layer tree view

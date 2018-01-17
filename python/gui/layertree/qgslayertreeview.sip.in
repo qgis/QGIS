@@ -118,8 +118,10 @@ in the layer tree view. They can be used to show extra information with tree nod
 user interaction.
 
 Does not take ownership of the indicator. One indicator object may be used for multiple layer tree nodes.
-\sa removeIndicator
-\sa indicators
+
+.. seealso:: :py:func:`removeIndicator`
+
+.. seealso:: :py:func:`indicators`
 
 .. versionadded:: 3.2
 %End
@@ -127,8 +129,10 @@ Does not take ownership of the indicator. One indicator object may be used for m
     void removeIndicator( QgsLayerTreeNode *node, QgsLayerTreeViewIndicator *indicator );
 %Docstring
 Removes a previously added indicator to a layer tree node. Does not delete the indicator.
-\sa addIndicator
-\sa indicators
+
+.. seealso:: :py:func:`addIndicator`
+
+.. seealso:: :py:func:`indicators`
 
 .. versionadded:: 3.2
 %End
@@ -136,8 +140,10 @@ Removes a previously added indicator to a layer tree node. Does not delete the i
     QList<QgsLayerTreeViewIndicator *> indicators( QgsLayerTreeNode *node ) const;
 %Docstring
 Returns list of indicators associated with a particular layer tree node.
-\sa addIndicator
-\sa removeIndicator
+
+.. seealso:: :py:func:`addIndicator`
+
+.. seealso:: :py:func:`removeIndicator`
 
 .. versionadded:: 3.2
 %End

@@ -1,7 +1,7 @@
 /***************************************************************************
   qgslayertreeviewitemdelegate.cpp
   --------------------------------------
-  Date                 : Januray 2018
+  Date                 : January 2018
   Copyright            : (C) 2018 by Martin Dobias
   Email                : wonder dot sk at gmail dot com
  ***************************************************************************
@@ -22,6 +22,7 @@
 #include <QHelpEvent>
 #include <QToolTip>
 
+/// @cond PRIVATE
 
 QgsLayerTreeViewProxyStyle::QgsLayerTreeViewProxyStyle( QgsLayerTreeView *treeView )
   : mLayerTreeView( treeView )
@@ -166,3 +167,5 @@ void QgsLayerTreeViewItemDelegate::onClicked( const QModelIndex &index )
       emit indicators[indicatorIndex]->clicked( index );
   }
 }
+
+/// @endcond

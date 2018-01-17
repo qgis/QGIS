@@ -1,7 +1,7 @@
 /***************************************************************************
   qgslayertreeviewfilterindicator.cpp
   --------------------------------------
-  Date                 : Januray 2018
+  Date                 : January 2018
   Copyright            : (C) 2018 by Martin Dobias
   Email                : wonder dot sk at gmail dot com
  ***************************************************************************
@@ -22,7 +22,7 @@
 #include "qgsvectorlayer.h"
 
 
-QgsLayerTreeViewFilterIndicatorManager::QgsLayerTreeViewFilterIndicatorManager( QgsLayerTreeView *view )
+QgsLayerTreeViewFilterIndicatorProvider::QgsLayerTreeViewFilterIndicatorProvider( QgsLayerTreeView *view )
   : QObject( view )
   , mLayerTreeView( view )
 {
@@ -31,12 +31,12 @@ QgsLayerTreeViewFilterIndicatorManager::QgsLayerTreeViewFilterIndicatorManager( 
   QgsLayerTree *tree = mLayerTreeView->layerTreeModel()->rootGroup();
   onAddedChildren( tree, 0, tree->children().count() - 1 );
 
-  connect( tree, &QgsLayerTree::addedChildren, this, &QgsLayerTreeViewFilterIndicatorManager::onAddedChildren );
-  connect( tree, &QgsLayerTree::willRemoveChildren, this, &QgsLayerTreeViewFilterIndicatorManager::onWillRemoveChildren );
+  connect( tree, &QgsLayerTree::addedChildren, this, &QgsLayerTreeViewFilterIndicatorProvider::onAddedChildren );
+  connect( tree, &QgsLayerTree::willRemoveChildren, this, &QgsLayerTreeViewFilterIndicatorProvider::onWillRemoveChildren );
 }
 
 
-void QgsLayerTreeViewFilterIndicatorManager::onAddedChildren( QgsLayerTreeNode *node, int indexFrom, int indexTo )
+void QgsLayerTreeViewFilterIndicatorProvider::onAddedChildren( QgsLayerTreeNode *node, int indexFrom, int indexTo )
 {
   // recursively connect to providers' dataChanged() signal
 
@@ -56,7 +56,7 @@ void QgsLayerTreeViewFilterIndicatorManager::onAddedChildren( QgsLayerTreeNode *
       {
         if ( vlayer->dataProvider() )
         {
-          connect( vlayer->dataProvider(), &QgsDataProvider::dataChanged, this, &QgsLayerTreeViewFilterIndicatorManager::onProviderDataChanged );
+          connect( vlayer->dataProvider(), &QgsDataProvider::dataChanged, this, &QgsLayerTreeViewFilterIndicatorProvider::onProviderDataChanged );
 
           addOrRemoveIndicator( childLayerNode, vlayer->dataProvider() );
         }
@@ -64,14 +64,14 @@ void QgsLayerTreeViewFilterIndicatorManager::onAddedChildren( QgsLayerTreeNode *
       else if ( !childLayerNode->layer() )
       {
         // wait for layer to be loaded (e.g. when loading project, first the tree is loaded, afterwards the references to layers are resolved)
-        connect( childLayerNode, &QgsLayerTreeLayer::layerLoaded, this, &QgsLayerTreeViewFilterIndicatorManager::onLayerLoaded );
+        connect( childLayerNode, &QgsLayerTreeLayer::layerLoaded, this, &QgsLayerTreeViewFilterIndicatorProvider::onLayerLoaded );
       }
     }
   }
 }
 
 
-void QgsLayerTreeViewFilterIndicatorManager::onWillRemoveChildren( QgsLayerTreeNode *node, int indexFrom, int indexTo )
+void QgsLayerTreeViewFilterIndicatorProvider::onWillRemoveChildren( QgsLayerTreeNode *node, int indexFrom, int indexTo )
 {
   // recursively disconnect from providers' dataChanged() signal
 
@@ -90,14 +90,14 @@ void QgsLayerTreeViewFilterIndicatorManager::onWillRemoveChildren( QgsLayerTreeN
       if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( childLayerNode->layer() ) )
       {
         if ( vlayer->dataProvider() )
-          disconnect( vlayer->dataProvider(), &QgsDataProvider::dataChanged, this, &QgsLayerTreeViewFilterIndicatorManager::onProviderDataChanged );
+          disconnect( vlayer->dataProvider(), &QgsDataProvider::dataChanged, this, &QgsLayerTreeViewFilterIndicatorProvider::onProviderDataChanged );
       }
     }
   }
 }
 
 
-void QgsLayerTreeViewFilterIndicatorManager::onLayerLoaded()
+void QgsLayerTreeViewFilterIndicatorProvider::onLayerLoaded()
 {
   QgsLayerTreeLayer *nodeLayer = qobject_cast<QgsLayerTreeLayer *>( sender() );
   if ( !nodeLayer )
@@ -107,7 +107,7 @@ void QgsLayerTreeViewFilterIndicatorManager::onLayerLoaded()
   {
     if ( vlayer->dataProvider() )
     {
-      connect( vlayer->dataProvider(), &QgsDataProvider::dataChanged, this, &QgsLayerTreeViewFilterIndicatorManager::onProviderDataChanged );
+      connect( vlayer->dataProvider(), &QgsDataProvider::dataChanged, this, &QgsLayerTreeViewFilterIndicatorProvider::onProviderDataChanged );
 
       addOrRemoveIndicator( nodeLayer, vlayer->dataProvider() );
     }
@@ -115,7 +115,7 @@ void QgsLayerTreeViewFilterIndicatorManager::onLayerLoaded()
 }
 
 
-void QgsLayerTreeViewFilterIndicatorManager::onProviderDataChanged()
+void QgsLayerTreeViewFilterIndicatorProvider::onProviderDataChanged()
 {
   QgsVectorDataProvider *provider = qobject_cast<QgsVectorDataProvider *>( sender() );
   if ( !provider )
@@ -134,7 +134,7 @@ void QgsLayerTreeViewFilterIndicatorManager::onProviderDataChanged()
 }
 
 
-void QgsLayerTreeViewFilterIndicatorManager::onIndicatorClicked( const QModelIndex &index )
+void QgsLayerTreeViewFilterIndicatorProvider::onIndicatorClicked( const QModelIndex &index )
 {
   QgsLayerTreeNode *node = mLayerTreeView->layerTreeModel()->index2node( index );
   if ( !QgsLayerTree::isLayer( node ) )
@@ -151,23 +151,23 @@ void QgsLayerTreeViewFilterIndicatorManager::onIndicatorClicked( const QModelInd
     vlayer->dataProvider()->setSubsetString( qb.sql() );
 }
 
-QgsLayerTreeViewIndicator *QgsLayerTreeViewFilterIndicatorManager::newIndicator( const QString &filter )
+QgsLayerTreeViewIndicator *QgsLayerTreeViewFilterIndicatorProvider::newIndicator( const QString &filter )
 {
   QgsLayerTreeViewIndicator *indicator = new QgsLayerTreeViewIndicator( this );
   indicator->setIcon( mIcon );
   updateIndicator( indicator, filter );
-  connect( indicator, &QgsLayerTreeViewIndicator::clicked, this, &QgsLayerTreeViewFilterIndicatorManager::onIndicatorClicked );
+  connect( indicator, &QgsLayerTreeViewIndicator::clicked, this, &QgsLayerTreeViewFilterIndicatorProvider::onIndicatorClicked );
   mIndicators.insert( indicator );
   return indicator;
 }
 
-void QgsLayerTreeViewFilterIndicatorManager::updateIndicator( QgsLayerTreeViewIndicator *indicator, const QString &filter )
+void QgsLayerTreeViewFilterIndicatorProvider::updateIndicator( QgsLayerTreeViewIndicator *indicator, const QString &filter )
 {
   indicator->setToolTip( QString( "<b>%1:</b><br>%2" ).arg( tr( "Filter" ) ).arg( filter ) );
 }
 
 
-void QgsLayerTreeViewFilterIndicatorManager::addOrRemoveIndicator( QgsLayerTreeNode *node, QgsVectorDataProvider *provider )
+void QgsLayerTreeViewFilterIndicatorProvider::addOrRemoveIndicator( QgsLayerTreeNode *node, QgsVectorDataProvider *provider )
 {
   QString filter = provider->subsetString();
   if ( !filter.isEmpty() )

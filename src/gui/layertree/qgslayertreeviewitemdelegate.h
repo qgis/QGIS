@@ -1,7 +1,7 @@
 /***************************************************************************
   qgslayertreeviewitemdelegate.h
   --------------------------------------
-  Date                 : Januray 2018
+  Date                 : January 2018
   Copyright            : (C) 2018 by Martin Dobias
   Email                : wonder dot sk at gmail dot com
  ***************************************************************************
@@ -15,6 +15,10 @@
 
 #ifndef QGSLAYERTREEVIEWITEMDELEGATE_H
 #define QGSLAYERTREEVIEWITEMDELEGATE_H
+
+#include "qgis_sip.h"
+
+SIP_NO_FILE
 
 /// @cond PRIVATE
 

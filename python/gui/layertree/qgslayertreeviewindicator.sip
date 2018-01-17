@@ -26,6 +26,9 @@ and QgsLayerTreeView.removeIndicator() calls.
 %End
   public:
     explicit QgsLayerTreeViewIndicator( QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructs an indicator, optionally transferring ownership to a parent QObject
+%End
 
     QIcon icon() const;
 %Docstring

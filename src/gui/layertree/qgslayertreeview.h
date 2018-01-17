@@ -113,24 +113,24 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
      * user interaction.
      *
      * Does not take ownership of the indicator. One indicator object may be used for multiple layer tree nodes.
-     * \sa removeIndicator
-     * \sa indicators
+     * \see removeIndicator
+     * \see indicators
      * \since QGIS 3.2
      */
     void addIndicator( QgsLayerTreeNode *node, QgsLayerTreeViewIndicator *indicator );
 
     /**
      * Removes a previously added indicator to a layer tree node. Does not delete the indicator.
-     * \sa addIndicator
-     * \sa indicators
+     * \see addIndicator
+     * \see indicators
      * \since QGIS 3.2
      */
     void removeIndicator( QgsLayerTreeNode *node, QgsLayerTreeViewIndicator *indicator );
 
     /**
      * Returns list of indicators associated with a particular layer tree node.
-     * \sa addIndicator
-     * \sa removeIndicator
+     * \see addIndicator
+     * \see removeIndicator
      * \since QGIS 3.2
      */
     QList<QgsLayerTreeViewIndicator *> indicators( QgsLayerTreeNode *node ) const;

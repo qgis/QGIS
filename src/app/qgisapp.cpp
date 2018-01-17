@@ -3646,7 +3646,7 @@ void QgisApp::initLayerTreeView()
 
   mLayerTreeView->setModel( model );
   mLayerTreeView->setMenuProvider( new QgsAppLayerTreeViewMenuProvider( mLayerTreeView, mMapCanvas ) );
-  new QgsLayerTreeViewFilterIndicatorManager( mLayerTreeView );  // gets parented to the layer view
+  new QgsLayerTreeViewFilterIndicatorProvider( mLayerTreeView );  // gets parented to the layer view
 
   setupLayerTreeViewFromSettings();
 
