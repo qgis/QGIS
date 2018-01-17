@@ -193,6 +193,8 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         test_table(self.dbconn, 'mls2d', 'MultiLineString ((0 0, 1 1),(2 2, 3 3))')
         test_table(self.dbconn, 'mls3d', 'MultiLineStringZ ((0 0 0, 1 1 1),(2 2 2, 3 3 3))')
 
+        test_table(self.dbconn, 'pt4d', 'PointZM (1 2 3 4)')
+
     def testGetFeaturesUniqueId(self):
         """
         Test tables with inheritance for unique ids
