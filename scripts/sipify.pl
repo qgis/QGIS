@@ -1053,7 +1053,7 @@ while ($LINE_IDX < $LINE_COUNT){
             dbg_info('writing comment');
             if ( $COMMENT !~ m/^\s*$/ ){
                 my $doc_prepend = "";
-                $doc_prepend = "\@TEMPLATE_DOCSTRING\@" if $COMMENT_TEMPLATE_DOCSTRING == 1;
+                $doc_prepend = "\@DOCSTRINGSTEMPLATE\@" if $COMMENT_TEMPLATE_DOCSTRING == 1;
                 write_output("CM1", "$doc_prepend%Docstring\n");
                 my @comment_lines = split /\n/, $COMMENT;
                 foreach my $comment_line (@comment_lines) {
