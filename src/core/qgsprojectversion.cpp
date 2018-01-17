@@ -49,8 +49,7 @@ QgsProjectVersion::QgsProjectVersion( const QString &string )
   }
   mName  = string.section( '-', 1 );
 
-  QgsDebugMsg( QString( "Version is set to " ) + text() );
-
+  QgsDebugMsgLevel( QString( "Version is set to " ) + text(), 4 );
 }
 
 bool QgsProjectVersion::operator==( const QgsProjectVersion &other ) const
