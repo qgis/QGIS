@@ -43,7 +43,7 @@ QgsValueMapConfigDlg::QgsValueMapConfigDlg( QgsVectorLayer *vl, int fieldIdx, QW
 
 QVariantMap QgsValueMapConfigDlg::config()
 {
-  QList<QPair<QString, QVariant>> valueList;
+  QList<QVariant> valueList;
 
   //store data to map
   for ( int i = 0; i < tableWidget->rowCount() - 1; i++ )
@@ -58,22 +58,21 @@ QVariantMap QgsValueMapConfigDlg::config()
     if ( ( ks == QgsApplication::nullRepresentation() ) && !( ki->flags() & Qt::ItemIsEditable ) )
       ks = QgsValueMapFieldFormatter::NULL_VALUE;
 
+    QVariantMap value;
+
     if ( !vi || vi->text().isNull() )
     {
-      valueList.append( qMakePair( ks, ks ) );
+      value.insert( ks, ks );
     }
     else
     {
-      valueList.append( qMakePair( vi->text(), ks ) );
+      value.insert( vi->text(), ks );
     }
+    valueList.append( value );
   }
 
-  QByteArray ba;
-  QDataStream data( &ba, QIODevice::WriteOnly );
-  data << valueList;
-
   QVariantMap cfg;
-  cfg.insert( QStringLiteral( "map" ), ba );
+  cfg.insert( QStringLiteral( "map" ), valueList );
   return cfg;
 }
 
@@ -85,17 +84,13 @@ void QgsValueMapConfigDlg::setConfig( const QVariantMap &config )
     tableWidget->removeRow( i );
   }
 
-  QList<QPair<QString, QVariant>> valueList;
-
-  QByteArray ba = config.value( QStringLiteral( "map" ) ).toByteArray();
-  QDataStream data( &ba, QIODevice::ReadOnly );
-  data >> valueList;
+  QList<QVariant> valueList = config.value( QStringLiteral( "map" ) ).toList();
 
   if ( valueList.count() > 0 )
   {
     for ( int i = 0, row = 0; i < valueList.count(); i++, row++ )
     {
-      setRow( row, valueList[i].second.toString(), valueList[i].first );
+      setRow( row, valueList[i].toMap().constBegin().value().toString(), valueList[i].toMap().constBegin().key() );
     }
   }
   else

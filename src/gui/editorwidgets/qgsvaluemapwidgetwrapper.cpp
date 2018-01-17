@@ -58,17 +58,13 @@ void QgsValueMapWidgetWrapper::initWidget( QWidget *editor )
 
   if ( mComboBox )
   {
-    QList<QPair<QString, QVariant>> valueList;
-
-    QByteArray ba = config().value( QStringLiteral( "map" ) ).toByteArray();
-    QDataStream data( &ba, QIODevice::ReadOnly );
-    data >> valueList;
+    QList<QVariant> valueList = config().value( QStringLiteral( "map" ) ).toList();
 
     if ( valueList.count() > 0 )
     {
-      for ( int i = 0; i < valueList.count(); i++ )
+      for ( int i = 0, row = 0; i < valueList.count(); i++, row++ )
       {
-        mComboBox->addItem( valueList[i].first, valueList[i].second );
+        mComboBox->addItem( valueList[i].toMap().constBegin().key(), valueList[i].toMap().constBegin().value() );
       }
     }
     else
