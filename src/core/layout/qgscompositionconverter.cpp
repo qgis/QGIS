@@ -33,6 +33,7 @@
 #include "qgsprintlayout.h"
 #include "qgslayoutatlas.h"
 
+#include "qgslayoutundostack.h"
 #include "qgslayoutpagecollection.h"
 #include "qgslayoutitemregistry.h"
 #include "qgslayoutitemlabel.h"
@@ -122,6 +123,7 @@ std::unique_ptr< QgsPrintLayout > QgsCompositionConverter::createLayoutFromCompo
   QDomElement parentElement = composerElement.parentNode().toElement();
 
   std::unique_ptr< QgsPrintLayout > layout = qgis::make_unique< QgsPrintLayout >( project );
+  layout->undoStack()->blockCommands( true );
 
   // Guides
   layout->guides().setVisible( composerElement.attribute( QStringLiteral( "guidesVisible" ), QStringLiteral( "1" ) ).toInt() != 0 );
@@ -179,6 +181,8 @@ std::unique_ptr< QgsPrintLayout > QgsCompositionConverter::createLayoutFromCompo
     QDomElement atlasElement = parentElement.elementsByTagName( QStringLiteral( "Atlas" ) ).at( 0 ).toElement();
     readAtlasXml( layout->atlas(), atlasElement, layout->project() );
   }
+
+  layout->undoStack()->blockCommands( false );
   return layout;
 }
 
