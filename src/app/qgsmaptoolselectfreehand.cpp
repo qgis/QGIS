@@ -86,9 +86,9 @@ void QgsMapToolSelectFreehand::canvasReleaseEvent( QgsMapMouseEvent *e )
   {
     QgsGeometry shapeGeom = mRubberBand->asGeometry();
     if ( singleSelect )
-      QgsMapToolSelectUtils::selectSingleFeature( mCanvas, shapeGeom, e );
+      QgsMapToolSelectUtils::selectSingleFeature( mCanvas, shapeGeom, e->modifiers() );
     else
-      QgsMapToolSelectUtils::selectMultipleFeatures( mCanvas, shapeGeom, e );
+      QgsMapToolSelectUtils::selectMultipleFeatures( mCanvas, shapeGeom, e->modifiers() );
   }
 
   mRubberBand->reset( QgsWkbTypes::PolygonGeometry );

@@ -71,12 +71,12 @@ namespace QgsMapToolSelectUtils
     for any required geometry transformations
     \param selectGeometry the geometry to select the layers features. This geometry
     must be in terms of the canvas coordinate system.
-    \param e MouseEvents are used to determine the current selection
+    \param modifiers Keyboard modifiers are used to determine the current selection
     operations (add, subtract, contains)
     \since QGIS 2.16
     \see selectSingleFeature()
   */
-  void selectMultipleFeatures( QgsMapCanvas *canvas, const QgsGeometry &selectGeometry, QMouseEvent *e );
+  void selectMultipleFeatures( QgsMapCanvas *canvas, const QgsGeometry &selectGeometry, const Qt::KeyboardModifiers &modifiers );
 
   /**
     Selects a single feature from within currently selected layer.
@@ -84,11 +84,11 @@ namespace QgsMapToolSelectUtils
     for any required geometry transformations
     \param selectGeometry the geometry to select the layers features. This geometry
     must be in terms of the canvas coordinate system.
-    \param e MouseEvents are used to determine the current selection
+    \param modifiers Keyboard modifiers are used to determine the current selection
     operations (add, subtract, contains)
     \see selectMultipleFeatures()
   */
-  void selectSingleFeature( QgsMapCanvas *canvas, const QgsGeometry &selectGeometry, QMouseEvent *e );
+  void selectSingleFeature( QgsMapCanvas *canvas, const QgsGeometry &selectGeometry, const Qt::KeyboardModifiers &modifiers );
 
   /**
     Get the current selected canvas map layer. Returns nullptr if it is not a vector layer
