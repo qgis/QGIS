@@ -242,13 +242,20 @@ void QgsLabelingEngine::run( QgsRenderContext &context )
   QPainter *painter = context.painter();
 
   QgsGeometry extentGeom = QgsGeometry::fromRect( mMapSettings.visibleExtent() );
+  QPolygonF visiblePoly = mMapSettings.visiblePolygon();
+  visiblePoly.append( visiblePoly.at( 0 ) ); //close polygon
+  QgsGeometry mapBoundaryGeom = QgsGeometry::fromQPolygonF( visiblePoly );
+
   if ( !qgsDoubleNear( mMapSettings.rotation(), 0.0 ) )
   {
     //PAL features are prerotated, so extent also needs to be unrotated
     extentGeom.rotate( -mMapSettings.rotation(), mMapSettings.visibleExtent().center() );
+    // yes - this is rotated in the opposite direction... phew, this is confusing!
+    mapBoundaryGeom.rotate( mMapSettings.rotation(), mMapSettings.visibleExtent().center() );
   }
 
   QgsRectangle extent = extentGeom.boundingBox();
+
 
   p.registerCancelationCallback( &_palIsCanceled, reinterpret_cast< void * >( &context ) );
 
@@ -259,7 +266,7 @@ void QgsLabelingEngine::run( QgsRenderContext &context )
   std::unique_ptr< pal::Problem > problem;
   try
   {
-    problem = p.extractProblem( bbox );
+    problem = p.extractProblem( extent, mapBoundaryGeom );
   }
   catch ( std::exception &e )
   {

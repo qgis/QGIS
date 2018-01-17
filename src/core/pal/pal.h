@@ -138,7 +138,14 @@ namespace pal
       //! Check whether the job has been canceled
       inline bool isCanceled() { return fnIsCanceled ? fnIsCanceled( fnIsCanceledContext ) : false; }
 
-      Problem *extractProblem( double bbox[4] );
+      /**
+       * Extracts the labeling problem for the specified map \a extent - only features within this
+       * extent will be considered. The \a mapBoundary argument specifies the actual geometry of the map
+       * boundary, which will be used to detect whether a label is visible (or partially visible) in
+       * the rendered map. This may differ from \a extent in the case of rotated or non-rectangular
+       * maps.
+       */
+      std::unique_ptr< Problem > extractProblem( const QgsRectangle &extent, const QgsGeometry &mapBoundary );
 
       QList<LabelPosition *> solveProblem( Problem *prob, bool displayAll );
 
@@ -266,8 +273,7 @@ namespace pal
        * \param lambda_max xMax bounding-box
        * \param phi_max yMax bounding-box
        */
-      Problem *extract( double lambda_min, double phi_min,
-                        double lambda_max, double phi_max );
+      std::unique_ptr< Problem > extract( const QgsRectangle &extent, const QgsGeometry &mapBoundary );
 
 
       /**
