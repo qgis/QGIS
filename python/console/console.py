@@ -51,7 +51,7 @@ def show_console():
     s = QgsSettings()
 
     # get the setting as a bool value (for "true"/"false" values QgsSettings returns a string to Python)
-    dockValue = QVariant(s.value("qgis/dockPythonConsole","true"))
+    dockValue = QVariant(s.value("qgis/dockPythonConsole", "true"))
     # defense against other than "true" or "false"
     if dockValue.convert(QVariant.Bool):
         tempConsoleAsDock = dockValue.value()
@@ -141,7 +141,7 @@ class PythonConsole(QDockWidget):
 
 
 class PythonConsoleW(QWidget):
-    """ as a QWidget """
+
     def __init__(self, editor, parent=None):
         QWidget.__init__(self, parent)
         self.setObjectName("PythonConsoleW")
