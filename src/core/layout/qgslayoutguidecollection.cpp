@@ -169,7 +169,7 @@ void QgsLayoutGuide::setLayout( QgsLayout *layout )
     QPen linePen( Qt::DotLine );
     linePen.setColor( Qt::red );
     // use a pen width of 0, since this activates a cosmetic pen
-    // which doesn't scale with the composer and keeps a constant size
+    // which doesn't scale with the layout and keeps a constant size
     linePen.setWidthF( 0 );
     mLineItem->setPen( linePen );
   }

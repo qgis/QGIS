@@ -29,7 +29,7 @@ QgsExpressionContext QgsLabelingGui::createExpressionContext() const
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
              << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-             << QgsExpressionContextUtils::compositionAtlasScope( nullptr )
+             << QgsExpressionContextUtils::atlasScope( nullptr )
              << QgsExpressionContextUtils::mapSettingsScope( QgisApp::instance()->mapCanvas()->mapSettings() );
 
   if ( mLayer )

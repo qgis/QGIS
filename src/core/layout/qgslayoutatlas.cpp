@@ -491,7 +491,7 @@ bool QgsLayoutAtlas::evalFeatureFilename( const QgsExpressionContext &context )
     QVariant filenameRes = mFilenameExpression.evaluate( &context );
     if ( mFilenameExpression.hasEvalError() )
     {
-      QgsMessageLog::logMessage( tr( "Atlas filename evaluation error: %1" ).arg( mFilenameExpression.evalErrorString() ), tr( "Composer" ) );
+      QgsMessageLog::logMessage( tr( "Atlas filename evaluation error: %1" ).arg( mFilenameExpression.evalErrorString() ), tr( "Layout" ) );
       return false;
     }
 

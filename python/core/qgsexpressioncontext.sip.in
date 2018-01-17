@@ -926,7 +926,6 @@ Updates a symbol scope related to a QgsSymbol to an expression context.
 .. versionadded:: 2.14
 %End
 
-
     static QgsExpressionContextScope *layoutScope( const QgsLayout *layout ) /Factory/;
 %Docstring
 Creates a new scope which contains variables and functions relating to a :py:class:`QgsLayout` ``layout``.
@@ -966,7 +965,6 @@ with the variables specified.
 .. versionadded:: 3.0
 %End
 
-
     static QgsExpressionContextScope *atlasScope( QgsLayoutAtlas *atlas ) /Factory/;
 %Docstring
 Creates a new scope which contains variables and functions relating to a :py:class:`QgsLayoutAtlas`.
@@ -974,7 +972,6 @@ For instance, current page name and number.
 
 :param atlas: source atlas. If null, a set of default atlas variables will be added to the scope.
 %End
-
 
     static QgsExpressionContextScope *layoutItemScope( const QgsLayoutItem *item ) /Factory/;
 %Docstring
@@ -1012,8 +1009,6 @@ with the ``variables`` specified.
 
 .. versionadded:: 3.0
 %End
-
-
 
     static QgsExpressionContext createFeatureBasedContext( const QgsFeature &feature, const QgsFields &fields );
 %Docstring

@@ -463,7 +463,7 @@ QRectF QgsLayout::layoutBounds( bool ignorePages, double margin ) const
   //start with an empty rectangle
   QRectF bounds;
 
-  //add all QgsComposerItems and QgsPaperItems which are in the composition
+  //add all layout items and pages which are in the layout
   Q_FOREACH ( const QGraphicsItem *item, items() )
   {
     const QgsLayoutItem *layoutItem = dynamic_cast<const QgsLayoutItem *>( item );
@@ -737,10 +737,6 @@ QgsLayoutItemGroup *QgsLayout::groupItems( const QList<QgsLayoutItem *> &items )
   mUndoStack->push( c.release() );
   mProject->setDirty( true );
 
-#if 0
-  emit composerItemGroupAdded( itemGroup );
-#endif
-
   mUndoStack->endMacro();
 
   return returnGroup;
@@ -767,10 +763,6 @@ QList<QgsLayoutItem *> QgsLayout::ungroupItems( QgsLayoutItemGroup *group )
 
   removeLayoutItem( group );
   mUndoStack->endMacro();
-
-#if 0 //TODO
-  removeComposerItem( group, false, false );
-#endif
 
   return ungroupedItems;
 }

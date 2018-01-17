@@ -22,7 +22,6 @@
 #include "qgslayoutmodel.h"
 #include "qgsexpression.h"
 #include "qgsnetworkaccessmanager.h"
-#include "qgscomposermodel.h"
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
 #include "qgsdistancearea.h"
@@ -49,7 +48,7 @@ QgsLayoutItemLabel::QgsLayoutItemLabel( QgsLayout *layout )
   mDistanceArea.reset( new QgsDistanceArea() );
   mHtmlUnitsToLayoutUnits = htmlUnitsToLayoutUnits();
 
-  //get default composer font from settings
+  //get default layout font from settings
   QgsSettings settings;
   QString defaultFontString = settings.value( QStringLiteral( "LayoutDesigner/defaultFont" ), QVariant(), QgsSettings::Gui ).toString();
   if ( !defaultFontString.isEmpty() )
@@ -345,26 +344,26 @@ QFont QgsLayoutItemLabel::font() const
   return mFont;
 }
 
-bool QgsLayoutItemLabel::writePropertiesToElement( QDomElement &composerLabelElem, QDomDocument &doc, const QgsReadWriteContext & ) const
+bool QgsLayoutItemLabel::writePropertiesToElement( QDomElement &layoutLabelElem, QDomDocument &doc, const QgsReadWriteContext & ) const
 {
-  composerLabelElem.setAttribute( QStringLiteral( "htmlState" ), static_cast< int >( mMode ) );
+  layoutLabelElem.setAttribute( QStringLiteral( "htmlState" ), static_cast< int >( mMode ) );
 
-  composerLabelElem.setAttribute( QStringLiteral( "labelText" ), mText );
-  composerLabelElem.setAttribute( QStringLiteral( "marginX" ), QString::number( mMarginX ) );
-  composerLabelElem.setAttribute( QStringLiteral( "marginY" ), QString::number( mMarginY ) );
-  composerLabelElem.setAttribute( QStringLiteral( "halign" ), mHAlignment );
-  composerLabelElem.setAttribute( QStringLiteral( "valign" ), mVAlignment );
+  layoutLabelElem.setAttribute( QStringLiteral( "labelText" ), mText );
+  layoutLabelElem.setAttribute( QStringLiteral( "marginX" ), QString::number( mMarginX ) );
+  layoutLabelElem.setAttribute( QStringLiteral( "marginY" ), QString::number( mMarginY ) );
+  layoutLabelElem.setAttribute( QStringLiteral( "halign" ), mHAlignment );
+  layoutLabelElem.setAttribute( QStringLiteral( "valign" ), mVAlignment );
 
   //font
   QDomElement labelFontElem = QgsFontUtils::toXmlElement( mFont, doc, QStringLiteral( "LabelFont" ) );
-  composerLabelElem.appendChild( labelFontElem );
+  layoutLabelElem.appendChild( labelFontElem );
 
   //font color
   QDomElement fontColorElem = doc.createElement( QStringLiteral( "FontColor" ) );
   fontColorElem.setAttribute( QStringLiteral( "red" ), mFontColor.red() );
   fontColorElem.setAttribute( QStringLiteral( "green" ), mFontColor.green() );
   fontColorElem.setAttribute( QStringLiteral( "blue" ), mFontColor.blue() );
-  composerLabelElem.appendChild( fontColorElem );
+  layoutLabelElem.appendChild( fontColorElem );
 
   return true;
 }

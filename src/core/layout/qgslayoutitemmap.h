@@ -280,7 +280,7 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
     bool containsAdvancedEffects() const override;
 
     /**
-     * Sets the \a rotation for the map - this does not affect the composer item shape, only the
+     * Sets the \a rotation for the map - this does not affect the layout item shape, only the
      * way the map is drawn within the item. Rotation is in degrees, clockwise.
      * \see mapRotation()
      * \see mapRotationChanged()
@@ -288,7 +288,7 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
     void setMapRotation( double rotation );
 
     /**
-     * Returns the rotation used for drawing the map within the composer item, in degrees clockwise.
+     * Returns the rotation used for drawing the map within the layout item, in degrees clockwise.
      * \param valueType controls whether the returned value is the user specified rotation,
      * or the current evaluated rotation (which may be affected by data driven rotation
      * settings).
@@ -298,13 +298,13 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
     double mapRotation( QgsLayoutObject::PropertyValueType valueType = QgsLayoutObject::EvaluatedValue ) const;
 
     /**
-     * Sets whether annotations are drawn within the composer map.
+     * Sets whether annotations are drawn within the map.
      * \see drawAnnotations()
      */
     void setDrawAnnotations( bool draw ) { mDrawAnnotations = draw; }
 
     /**
-     * Returns whether annotations are drawn within the composer map.
+     * Returns whether annotations are drawn within the map.
      * \see setDrawAnnotations()
      */
     bool drawAnnotations() const { return mDrawAnnotations; }

@@ -323,43 +323,6 @@ SET(QGIS_CORE_SRCS
   qgstestutils.cpp
   qgsziputils.cpp
 
-  composer/qgsaddremoveitemcommand.cpp
-  composer/qgsaddremovemultiframecommand.cpp
-  composer/qgsatlascomposition.cpp
-  composer/qgscomposerarrow.cpp
-  composer/qgscomposerattributetablemodelv2.cpp
-  composer/qgscomposerattributetablev2.cpp
-  composer/qgscomposereffect.cpp
-  composer/qgscomposerframe.cpp
-  composer/qgscomposerhtml.cpp
-  composer/qgscomposeritem.cpp
-  composer/qgscomposeritemcommand.cpp
-  composer/qgscomposeritemgroup.cpp
-  composer/qgscomposerlabel.cpp
-  composer/qgscomposerlegend.cpp
-  composer/qgscomposermap.cpp
-  composer/qgscomposermapgrid.cpp
-  composer/qgscomposermapitem.cpp
-  composer/qgscomposermapoverview.cpp
-  composer/qgscomposermodel.cpp
-  composer/qgscomposermousehandles.cpp
-  composer/qgscomposermultiframe.cpp
-  composer/qgscomposermultiframecommand.cpp
-  composer/qgscomposerobject.cpp
-  composer/qgscomposerpicture.cpp
-  composer/qgscomposerscalebar.cpp
-  composer/qgscomposershape.cpp
-  composer/qgscomposernodesitem.cpp
-  composer/qgscomposerpolygon.cpp
-  composer/qgscomposerpolyline.cpp
-  composer/qgscomposertablecolumn.cpp
-  composer/qgscomposertablev2.cpp
-  composer/qgscomposertexttable.cpp
-  composer/qgscomposerutils.cpp
-  composer/qgscomposition.cpp
-  composer/qgsgroupungroupitemscommand.cpp
-  composer/qgspaperitem.cpp
-
   dxf/qgsdxfexport.cpp
   dxf/qgsdxfpaintdevice.cpp
   dxf/qgsdxfpaintengine.cpp
@@ -686,39 +649,6 @@ SET(QGIS_CORE_MOC_HDRS
   auth/qgsauthmanager.h
   auth/qgsauthmethod.h
 
-  composer/qgsaddremoveitemcommand.h
-  composer/qgsatlascomposition.h
-  composer/qgscomposerarrow.h
-  composer/qgscomposerattributetablemodelv2.h
-  composer/qgscomposerattributetablev2.h
-  composer/qgscomposereffect.h
-  composer/qgscomposerframe.h
-  composer/qgscomposerhtml.h
-  composer/qgscomposeritemgroup.h
-  composer/qgscomposeritem.h
-  composer/qgscomposerlabel.h
-  composer/qgscomposerlegend.h
-  composer/qgscomposermapgrid.h
-  composer/qgscomposermap.h
-  composer/qgscomposermapitem.h
-  composer/qgscomposermapoverview.h
-  composer/qgscomposermodel.h
-  composer/qgscomposermousehandles.h
-  composer/qgscomposermultiframe.h
-  composer/qgscomposerobject.h
-  composer/qgscomposerpicture.h
-  composer/qgscomposerscalebar.h
-  composer/qgscomposershape.h
-  composer/qgscomposernodesitem.h
-  composer/qgscomposerpolygon.h
-  composer/qgscomposerpolyline.h
-  composer/qgscomposertablecolumn.h
-  composer/qgscomposertablev2.h
-  composer/qgscomposertexttable.h
-  composer/qgscomposition.h
-  composer/qgsgroupungroupitemscommand.h
-  composer/qgspaperitem.h
-
   locator/qgslocator.h
   locator/qgslocatorfilter.h
   locator/qgslocatormodel.h
@@ -1029,14 +959,6 @@ SET(QGIS_CORE_HDRS
   effects/qgstransformeffect.h
   effects/qgscoloreffect.h
 
-  composer/qgsaddremovemultiframecommand.h
-  composer/qgscomposerarrow.h
-  composer/qgscomposerframe.h
-  composer/qgscomposeritemcommand.h
-  composer/qgscomposermultiframecommand.h
-  composer/qgscomposertexttable.h
-  composer/qgspaperitem.h
-
   layout/qgsabstractlayoutiterator.h
   layout/qgsabstractreportsection.h
   layout/qgsmasterlayoutinterface.h
@@ -1216,7 +1138,6 @@ INCLUDE_DIRECTORIES(
   3d
   annotations
   auth
-  composer
   dxf
   effects
   ${CMAKE_SOURCE_DIR}/src/core/expression
