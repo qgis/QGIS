@@ -1012,6 +1012,9 @@ while ($LINE_IDX < $LINE_COUNT){
         $IS_OVERRIDE = 0;
         next;
     }
+    if ( $LINE =~ m/^\s*#/ ){
+        next;
+    }
     if ( $LINE =~ m/^\s*template\s*<.*>/ ){
         # do not comment now for templates, wait for class definition
         next;

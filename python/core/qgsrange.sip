@@ -155,6 +155,17 @@ whether ranges overlap or during calculation of range intersections.
 %End
   public:
 
+#if SIP_VERSION >= 0x041303
+    QgsTemporalRange( const T &begin = T(), const T &end = T(), bool includeBeginning = true, bool includeEnd = true );
+%Docstring
+ Constructor for QgsTemporalRange. The ``begin`` and ``end`` are specified,
+ and optionally whether or not these bounds are included in the range.
+.. note::
+
+   in Python (SIP < 4.19.3) ``begin`` and ``end`` must be provided.
+%End
+#else
+
     QgsTemporalRange( const T &begin, const T &end, bool includeBeginning = true, bool includeEnd = true );
 %Docstring
 Constructor for QgsTemporalRange. The ``begin`` and ``end`` are specified,
@@ -162,9 +173,10 @@ and optionally whether or not these bounds are included in the range.
 
 .. note::
 
-   in Python ``begin`` and ``end`` must be provided.
+   in Python (SIP < 4.19.3) ``begin`` and ``end`` must be provided.
 %End
-    // default constructor as default value for templates is not handled in SIP
+    // default constructor as default value for templates is not handled in SIP < 4.19.3
+#endif
 
     T begin() const;
 %Docstring
