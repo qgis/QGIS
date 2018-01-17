@@ -175,10 +175,10 @@ ENDIF(NOT QT_MOBILITY_LOCATION_FOUND)
 # * prepend auto-generated Python signature to existing Docstrings
 # * document template based classes
 SET(DOCSTRINGSTEMPLATE "//")
-IF(${SIP_VERSION_STR} VERSION_GREATER 4.19.7)
+IF(${SIP_VERSION_STR} VERSION_GREATER 4.19.6)
   SET(DEFAULTDOCSTRINGSIGNATURE "%DefaultDocstringSignature \"prepended\"")
   SET(DOCSTRINGSTEMPLATE "")
-ENDIF(${SIP_VERSION_STR} VERSION_GREATER 4.19.7)
+ENDIF(${SIP_VERSION_STR} VERSION_GREATER 4.19.6)
 
 # core module
 FILE(GLOB_RECURSE sip_files_core core/*.sip core/*.sip.in)
