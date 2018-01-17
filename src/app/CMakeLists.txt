@@ -576,7 +576,6 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/core/annotations
   ${CMAKE_SOURCE_DIR}/src/core/auth
-  ${CMAKE_SOURCE_DIR}/src/core/composer
   ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/core/gps
   ${CMAKE_SOURCE_DIR}/src/core/dxf
@@ -636,7 +635,6 @@ INCLUDE_DIRECTORIES(
   ../core
   ../core/annotations
   ../core/auth
-  ../core/composer
   ../core/gps
   ../core/dxf
   ../core/geometry
