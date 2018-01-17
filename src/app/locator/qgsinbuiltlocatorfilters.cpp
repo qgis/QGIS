@@ -23,7 +23,6 @@
 #include "qgisapp.h"
 #include "qgsstringutils.h"
 #include "qgsmaplayermodel.h"
-#include "qgscomposition.h"
 #include "qgslayoutmanager.h"
 #include "qgsmapcanvas.h"
 #include <QToolButton>

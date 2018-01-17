@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgslegendstyle.h"
-#include "qgscomposition.h"
 #include "qgsfontutils.h"
 #include "qgssettings.h"
 
