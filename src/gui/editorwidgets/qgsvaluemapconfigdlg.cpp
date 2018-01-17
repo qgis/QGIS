@@ -31,6 +31,9 @@ QgsValueMapConfigDlg::QgsValueMapConfigDlg( QgsVectorLayer *vl, int fieldIdx, QW
 
   tableWidget->insertRow( 0 );
 
+  tableWidget->horizontalHeader()->setClickable( true );
+  tableWidget->setSortingEnabled( true );
+
   connect( addNullButton, &QAbstractButton::clicked, this, &QgsValueMapConfigDlg::addNullButtonPushed );
   connect( removeSelectedButton, &QAbstractButton::clicked, this, &QgsValueMapConfigDlg::removeSelectedButtonPushed );
   connect( loadFromLayerButton, &QAbstractButton::clicked, this, &QgsValueMapConfigDlg::loadFromLayerButtonPushed );
@@ -40,8 +43,7 @@ QgsValueMapConfigDlg::QgsValueMapConfigDlg( QgsVectorLayer *vl, int fieldIdx, QW
 
 QVariantMap QgsValueMapConfigDlg::config()
 {
-  QVariantMap values;
-  QgsSettings settings;
+  QList<QPair<QString, QVariant>> valueList;
 
   //store data to map
   for ( int i = 0; i < tableWidget->rowCount() - 1; i++ )
@@ -58,16 +60,20 @@ QVariantMap QgsValueMapConfigDlg::config()
 
     if ( !vi || vi->text().isNull() )
     {
-      values.insert( ks, ks );
+      valueList.append( qMakePair( ks, ks ) );
     }
     else
     {
-      values.insert( vi->text(), ks );
+      valueList.append( qMakePair( vi->text(), ks ) );
     }
   }
 
+  QByteArray ba;
+  QDataStream data( &ba, QIODevice::WriteOnly );
+  data << valueList;
+
   QVariantMap cfg;
-  cfg.insert( QStringLiteral( "map" ), values );
+  cfg.insert( QStringLiteral( "map" ), ba );
   return cfg;
 }
 
@@ -79,14 +85,30 @@ void QgsValueMapConfigDlg::setConfig( const QVariantMap &config )
     tableWidget->removeRow( i );
   }
 
-  int row = 0;
-  QVariantMap values = config.value( QStringLiteral( "map" ) ).toMap();
-  for ( QVariantMap::ConstIterator mit = values.constBegin(); mit != values.constEnd(); mit++, row++ )
+  QList<QPair<QString, QVariant>> valueList;
+
+  QByteArray ba = config.value( QStringLiteral( "map" ) ).toByteArray();
+  QDataStream data( &ba, QIODevice::ReadOnly );
+  data >> valueList;
+
+  if ( valueList.count() > 0 )
   {
-    if ( mit.value().isNull() )
-      setRow( row, mit.key(), QString() );
-    else
-      setRow( row, mit.value().toString(), mit.key() );
+    for ( int i = 0, row = 0; i < valueList.count(); i++, row++ )
+    {
+      setRow( row, valueList[i].second.toString(), valueList[i].first );
+    }
+  }
+  else
+  {
+    int row = 0;
+    QVariantMap values = config.value( QStringLiteral( "map" ) ).toMap();
+    for ( QVariantMap::ConstIterator mit = values.constBegin(); mit != values.constEnd(); mit++, row++ )
+    {
+      if ( mit.value().isNull() )
+        setRow( row, mit.key(), QString() );
+      else
+        setRow( row, mit.value().toString(), mit.key() );
+    }
   }
 }
 

@@ -58,14 +58,31 @@ void QgsValueMapWidgetWrapper::initWidget( QWidget *editor )
 
   if ( mComboBox )
   {
-    const QVariantMap map = config().value( QStringLiteral( "map" ) ).toMap();
-    QVariantMap::ConstIterator it = map.constBegin();
+    QList<QPair<QString, QVariant>> valueList;
 
-    while ( it != map.constEnd() )
+    QByteArray ba = config().value( QStringLiteral( "map" ) ).toByteArray();
+    QDataStream data( &ba, QIODevice::ReadOnly );
+    data >> valueList;
+
+    if ( valueList.count() > 0 )
     {
-      mComboBox->addItem( it.key(), it.value() );
-      ++it;
+      for ( int i = 0; i < valueList.count(); i++ )
+      {
+        mComboBox->addItem( valueList[i].first, valueList[i].second );
+      }
     }
+    else
+    {
+      const QVariantMap map = config().value( QStringLiteral( "map" ) ).toMap();
+      QVariantMap::ConstIterator it = map.constBegin();
+
+      while ( it != map.constEnd() )
+      {
+        mComboBox->addItem( it.key(), it.value() );
+        ++it;
+      }
+    }
+
     connect( mComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ),
              this, static_cast<void ( QgsEditorWidgetWrapper::* )()>( &QgsEditorWidgetWrapper::emitValueChanged ) );
   }
