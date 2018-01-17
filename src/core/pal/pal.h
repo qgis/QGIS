@@ -265,16 +265,11 @@ namespace pal
       void *fnIsCanceledContext = nullptr;
 
       /**
-       * \brief Problem factory
-       * Extract features to label and generates candidates for them,
-       * respects to a bounding box
-       * \param lambda_min xMin bounding-box
-       * \param phi_min yMin bounding-box
-       * \param lambda_max xMax bounding-box
-       * \param phi_max yMax bounding-box
+       * Creates a Problem, by extracting labels and generating candidates from the given \a extent.
+       * The \a mapBoundary geometry specifies the actual visible region of the map, and is used
+       * for pruning candidates which fall outside the visible region.
        */
       std::unique_ptr< Problem > extract( const QgsRectangle &extent, const QgsGeometry &mapBoundary );
-
 
       /**
        * \brief Choose the size of popmusic subpart's
