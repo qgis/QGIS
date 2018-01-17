@@ -124,8 +124,7 @@ typedef struct _featCbackCtx
   QLinkedList<Feats *> *fFeats;
   RTree<FeaturePart *, double, 2, double> *obstacles;
   RTree<LabelPosition *, double, 2, double> *candidates;
-  double bbox_min[2];
-  double bbox_max[2];
+  const GEOSPreparedGeometry *mapBoundary = nullptr;
 } FeatCallBackCtx;
 
 
@@ -154,7 +153,7 @@ bool extractFeatCallback( FeaturePart *ft_ptr, void *ctx )
 
   // generate candidates for the feature part
   QList< LabelPosition * > lPos;
-  if ( ft_ptr->createCandidates( lPos, context->bbox_min, context->bbox_max, ft_ptr, context->candidates ) )
+  if ( ft_ptr->createCandidates( lPos, context->mapBoundary, ft_ptr, context->candidates ) )
   {
     // valid features are added to fFeats
     Feats *ft = new Feats();
@@ -241,23 +240,25 @@ std::unique_ptr<Problem> Pal::extract( const QgsRectangle &extent, const QgsGeom
 
   LabelPosition *lp = nullptr;
 
-  bbx[0] = bbx[3] = amin[0] = prob->bbox[0] = lambda_min;
-  bby[0] = bby[1] = amin[1] = prob->bbox[1] = phi_min;
-  bbx[1] = bbx[2] = amax[0] = prob->bbox[2] = lambda_max;
-  bby[2] = bby[3] = amax[1] = prob->bbox[3] = phi_max;
+  bbx[0] = bbx[3] = amin[0] = prob->bbox[0] = extent.xMinimum();
+  bby[0] = bby[1] = amin[1] = prob->bbox[1] = extent.yMinimum();
+  bbx[1] = bbx[2] = amax[0] = prob->bbox[2] = extent.xMaximum();
+  bby[2] = bby[3] = amax[1] = prob->bbox[3] = extent.yMaximum();
 
   prob->pal = this;
 
   QLinkedList<Feats *> *fFeats = new QLinkedList<Feats *>;
 
   FeatCallBackCtx context;
+
+  // prepare map boundary
+  geos::unique_ptr mapBoundaryGeos( mapBoundary.exportToGeos() );
+  geos::prepared_unique_ptr mapBoundaryPrepared( GEOSPrepare_r( geosContext(), mapBoundaryGeos.get() ) );
+
   context.fFeats = fFeats;
   context.obstacles = obstacles;
   context.candidates = prob->candidates;
-  context.bbox_min[0] = amin[0];
-  context.bbox_min[1] = amin[1];
-  context.bbox_max[0] = amax[0];
-  context.bbox_max[1] = amax[1];
+  context.mapBoundary = mapBoundaryPrepared.get();
 
   ObstacleCallBackCtx obstacleContext;
   obstacleContext.obstacles = obstacles;
@@ -451,9 +452,9 @@ void Pal::registerCancelationCallback( Pal::FnIsCanceled fnCanceled, void *conte
   fnIsCanceledContext = context;
 }
 
-Problem *Pal::extractProblem( double bbox[4] )
+std::unique_ptr<Problem> Pal::extractProblem( const QgsRectangle &extent, const QgsGeometry &mapBoundary )
 {
-  return extract( bbox[0], bbox[1], bbox[2], bbox[3] );
+  return extract( extent, mapBoundary );
 }
 
 QList<LabelPosition *> Pal::solveProblem( Problem *prob, bool displayAll )
