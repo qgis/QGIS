@@ -238,6 +238,17 @@ CREATE TABLE qgis_test.mls3d(
 INSERT INTO qgis_test.mls3d values (1, 'srid=4326;MultiLineString((0 0 0, 1 1 1),(2 2 2, 3 3 3))'::geometry);
 
 
+-- Test of 4D geometries (with Z and M values)
+
+CREATE TABLE qgis_test.pt4d(
+       id int,
+       geom Geometry(PointZM,4326)
+);
+
+INSERT INTO qgis_test.pt4d values (1, 'srid=4326;PointZM(1 2 3 4)'::geometry);
+
+
+
 -----------------------------------------
 -- Test tables with INHERITS
 --
