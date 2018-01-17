@@ -1762,7 +1762,7 @@ void QgsLayoutDesignerDialog::exportToRaster()
   {
     case QgsLayoutExporter::Success:
       mMessageBar->pushMessage( tr( "Export layout" ),
-                                tr( "Successfully exported layout to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( fi.path() ).toString(), fileNExt.first ),
+                                tr( "Successfully exported layout to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( fi.path() ).toString(), QDir::toNativeSeparators( fileNExt.first ) ),
                                 QgsMessageBar::SUCCESS, 0 );
       break;
 
@@ -1866,7 +1866,7 @@ void QgsLayoutDesignerDialog::exportToPdf()
     case QgsLayoutExporter::Success:
     {
       mMessageBar->pushMessage( tr( "Export layout" ),
-                                tr( "Successfully exported layout to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( fi.path() ).toString(), outputFileName ),
+                                tr( "Successfully exported layout to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( fi.path() ).toString(), QDir::toNativeSeparators( outputFileName ) ),
                                 QgsMessageBar::SUCCESS, 0 );
       break;
     }
@@ -1973,7 +1973,7 @@ void QgsLayoutDesignerDialog::exportToSvg()
     case QgsLayoutExporter::Success:
     {
       mMessageBar->pushMessage( tr( "Export layout" ),
-                                tr( "Successfully exported layout to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( fi.path() ).toString(), outputFileName ),
+                                tr( "Successfully exported layout to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( fi.path() ).toString(), QDir::toNativeSeparators( outputFileName ) ),
                                 QgsMessageBar::SUCCESS, 0 );
       break;
     }
@@ -2411,7 +2411,7 @@ void QgsLayoutDesignerDialog::exportAtlasToRaster()
   {
     case QgsLayoutExporter::Success:
       mMessageBar->pushMessage( tr( "Export atlas" ),
-                                tr( "Successfully exported atlas to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( dir ).toString(), dir ),
+                                tr( "Successfully exported atlas to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( dir ).toString(), QDir::toNativeSeparators( dir ) ),
                                 QgsMessageBar::SUCCESS, 0 );
       break;
 
@@ -2563,7 +2563,7 @@ void QgsLayoutDesignerDialog::exportAtlasToSvg()
     case QgsLayoutExporter::Success:
     {
       mMessageBar->pushMessage( tr( "Export atlas" ),
-                                tr( "Successfully exported atlas to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( dir ).toString(), dir ),
+                                tr( "Successfully exported atlas to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( dir ).toString(), QDir::toNativeSeparators( dir ) ),
                                 QgsMessageBar::SUCCESS, 0 );
       break;
     }
@@ -2777,13 +2777,13 @@ void QgsLayoutDesignerDialog::exportAtlasToPdf()
       if ( singleFile )
       {
         mMessageBar->pushMessage( tr( "Export atlas" ),
-                                  tr( "Successfully exported atlas to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( fi.path() ).toString(), outputFileName ),
+                                  tr( "Successfully exported atlas to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( fi.path() ).toString(), QDir::toNativeSeparators( outputFileName ) ),
                                   QgsMessageBar::SUCCESS, 0 );
       }
       else
       {
         mMessageBar->pushMessage( tr( "Export atlas" ),
-                                  tr( "Successfully exported atlas to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( outputFileName ).toString(), outputFileName ),
+                                  tr( "Successfully exported atlas to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( outputFileName ).toString(), QDir::toNativeSeparators( outputFileName ) ),
                                   QgsMessageBar::SUCCESS, 0 );
       }
       break;
@@ -2894,7 +2894,7 @@ void QgsLayoutDesignerDialog::exportReportToRaster()
   {
     case QgsLayoutExporter::Success:
       mMessageBar->pushMessage( tr( "Export report" ),
-                                tr( "Successfully exported report to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( dir ).toString(), dir ),
+                                tr( "Successfully exported report to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( dir ).toString(), QDir::toNativeSeparators( dir ) ),
                                 QgsMessageBar::SUCCESS, 0 );
       break;
 
@@ -3010,7 +3010,7 @@ void QgsLayoutDesignerDialog::exportReportToSvg()
     case QgsLayoutExporter::Success:
     {
       mMessageBar->pushMessage( tr( "Export report" ),
-                                tr( "Successfully exported report to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( dir ).toString(), dir ),
+                                tr( "Successfully exported report to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( dir ).toString(), QDir::toNativeSeparators( dir ) ),
                                 QgsMessageBar::SUCCESS, 0 );
       break;
     }
@@ -3140,7 +3140,7 @@ void QgsLayoutDesignerDialog::exportReportToPdf()
     case QgsLayoutExporter::Success:
     {
       mMessageBar->pushMessage( tr( "Export report" ),
-                                tr( "Successfully exported report to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( fi.path() ).toString(), outputFileName ),
+                                tr( "Successfully exported report to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( fi.path() ).toString(), QDir::toNativeSeparators( outputFileName ) ),
                                 QgsMessageBar::SUCCESS, 0 );
       break;
     }

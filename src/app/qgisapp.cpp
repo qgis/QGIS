@@ -6853,7 +6853,7 @@ void QgisApp::saveAsRasterFile( QgsRasterLayer *rasterLayer )
       emit layerSavedAs( rlWeakPointer, fileName );
 
     messageBar()->pushMessage( tr( "Saving Done" ),
-                               tr( "Successfully saved raster layer to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( QFileInfo( newFilename ).path() ).toString() ).arg( newFilename ),
+                               tr( "Successfully saved raster layer to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( QFileInfo( newFilename ).path() ).toString() ).arg( QDir::toNativeSeparators( newFilename ) ),
                                QgsMessageBar::SUCCESS, messageTimeout() );
   } );
 
@@ -7056,7 +7056,7 @@ void QgisApp::saveAsVectorFileGeneral( QgsVectorLayer *vlayer, bool symbologyOpt
       }
       this->emit layerSavedAs( vlayer, vectorFilename );
       this->messageBar()->pushMessage( tr( "Saving Done" ),
-                                       tr( "Successfully saved vector layer to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( QFileInfo( newFilename ).path() ).toString() ).arg( newFilename ),
+                                       tr( "Successfully saved vector layer to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( QFileInfo( newFilename ).path() ).toString() ).arg( QDir::toNativeSeparators( newFilename ) ),
                                        QgsMessageBar::SUCCESS, messageTimeout() );
     }
            );
