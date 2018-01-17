@@ -245,7 +245,7 @@ If ``ignoreLocked`` is set to true any locked items will be ignored.
 
     QgsLayoutItem *layoutItemAt( QPointF position, const QgsLayoutItem *belowItem, const bool ignoreLocked = false ) const;
 %Docstring
-Returns the topmost composer item at a specified ``position`` which is below a specified ``item``. Ignores paper items.
+Returns the topmost layout item at a specified ``position`` which is below a specified ``item``. Ignores paper items.
 If ``ignoreLocked`` is set to true any locked items will be ignored.
 %End
 

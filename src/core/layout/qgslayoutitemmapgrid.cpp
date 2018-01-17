@@ -555,7 +555,7 @@ void QgsLayoutItemMapGrid::draw( QPainter *p )
 
   p->save();
   p->setCompositionMode( mBlendMode );
-  p->setRenderHint( QPainter::Antialiasing );
+  p->setRenderHint( QPainter::Antialiasing, mMap->layout()->renderContext().flags() & QgsLayoutRenderContext::FlagAntialiasing );
 
   QRectF thisPaintRect = QRectF( 0, 0, mMap->rect().width(), mMap->rect().height() );
   p->setClipRect( thisPaintRect );

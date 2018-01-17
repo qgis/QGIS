@@ -156,8 +156,7 @@ void QgsLayoutItemMap::setScale( double scaleDenominator, bool forceUpdate )
   double scaleRatio = scaleDenominator / currentScaleDenominator;
   mExtent.scale( scaleRatio );
 
-#if 0 //TODO
-  if ( mAtlasDriven && mAtlasScalingMode == Fixed && mComposition->atlasMode() != QgsComposition::AtlasOff )
+  if ( mAtlasDriven && mAtlasScalingMode == Fixed )
   {
     //if map is atlas controlled and set to fixed scaling mode, then scale changes should be treated as permanent
     //and also apply to the map's original extent (see #9602)
@@ -168,7 +167,6 @@ void QgsLayoutItemMap::setScale( double scaleDenominator, bool forceUpdate )
     scaleRatio = scaleDenominator / calculator.calculate( mExtent, rect().width() );
     mExtent.scale( scaleRatio );
   }
-#endif
 
   invalidateCache();
   if ( forceUpdate )
@@ -203,7 +201,7 @@ void QgsLayoutItemMap::zoomToExtent( const QgsRectangle &extent )
 {
   QgsRectangle newExtent = extent;
   QgsRectangle currentExtent = mExtent;
-  //Make sure the width/height ratio is the same as the current composer map extent.
+  //Make sure the width/height ratio is the same as the current layout map extent.
   //This is to keep the map item frame size fixed
   double currentWidthHeightRatio = 1.0;
   if ( !currentExtent.isNull() )
@@ -359,8 +357,7 @@ void QgsLayoutItemMap::zoomContent( double factor, QPointF point )
   mExtent.setYMaximum( centerY + newIntervalY / 2 );
   mExtent.setYMinimum( centerY - newIntervalY / 2 );
 
-#if 0 //TODO
-  if ( mAtlasDriven && mAtlasScalingMode == Fixed && mComposition->atlasMode() != QgsComposition::AtlasOff )
+  if ( mAtlasDriven && mAtlasScalingMode == Fixed )
   {
     //if map is atlas controlled and set to fixed scaling mode, then scale changes should be treated as permanent
     //and also apply to the map's original extent (see #9602)
@@ -371,7 +368,6 @@ void QgsLayoutItemMap::zoomContent( double factor, QPointF point )
     double scaleRatio = scale() / calculator.calculate( mExtent, rect().width() );
     mExtent.scale( scaleRatio );
   }
-#endif
 
   //recalculate data defined scale and extents, since that may override zoom
   refreshMapExtents();
@@ -514,24 +510,24 @@ void QgsLayoutItemMap::draw( QgsRenderContext &, const QStyleOptionGraphicsItem 
 {
 }
 
-bool QgsLayoutItemMap::writePropertiesToElement( QDomElement &composerMapElem, QDomDocument &doc, const QgsReadWriteContext &context ) const
+bool QgsLayoutItemMap::writePropertiesToElement( QDomElement &mapElem, QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
   if ( mKeepLayerSet )
   {
-    composerMapElem.setAttribute( QStringLiteral( "keepLayerSet" ), QStringLiteral( "true" ) );
+    mapElem.setAttribute( QStringLiteral( "keepLayerSet" ), QStringLiteral( "true" ) );
   }
   else
   {
-    composerMapElem.setAttribute( QStringLiteral( "keepLayerSet" ), QStringLiteral( "false" ) );
+    mapElem.setAttribute( QStringLiteral( "keepLayerSet" ), QStringLiteral( "false" ) );
   }
 
   if ( mDrawAnnotations )
   {
-    composerMapElem.setAttribute( QStringLiteral( "drawCanvasItems" ), QStringLiteral( "true" ) );
+    mapElem.setAttribute( QStringLiteral( "drawCanvasItems" ), QStringLiteral( "true" ) );
   }
   else
   {
-    composerMapElem.setAttribute( QStringLiteral( "drawCanvasItems" ), QStringLiteral( "false" ) );
+    mapElem.setAttribute( QStringLiteral( "drawCanvasItems" ), QStringLiteral( "false" ) );
   }
 
   //extent
@@ -540,21 +536,21 @@ bool QgsLayoutItemMap::writePropertiesToElement( QDomElement &composerMapElem, Q
   extentElem.setAttribute( QStringLiteral( "xmax" ), qgsDoubleToString( mExtent.xMaximum() ) );
   extentElem.setAttribute( QStringLiteral( "ymin" ), qgsDoubleToString( mExtent.yMinimum() ) );
   extentElem.setAttribute( QStringLiteral( "ymax" ), qgsDoubleToString( mExtent.yMaximum() ) );
-  composerMapElem.appendChild( extentElem );
+  mapElem.appendChild( extentElem );
 
   if ( mCrs.isValid() )
   {
     QDomElement crsElem = doc.createElement( QStringLiteral( "crs" ) );
     mCrs.writeXml( crsElem, doc );
-    composerMapElem.appendChild( crsElem );
+    mapElem.appendChild( crsElem );
   }
 
   // follow map theme
-  composerMapElem.setAttribute( QStringLiteral( "followPreset" ), mFollowVisibilityPreset ? "true" : "false" );
-  composerMapElem.setAttribute( QStringLiteral( "followPresetName" ), mFollowVisibilityPresetName );
+  mapElem.setAttribute( QStringLiteral( "followPreset" ), mFollowVisibilityPreset ? "true" : "false" );
+  mapElem.setAttribute( QStringLiteral( "followPresetName" ), mFollowVisibilityPresetName );
 
   //map rotation
-  composerMapElem.setAttribute( QStringLiteral( "mapRotation" ), QString::number( mMapRotation ) );
+  mapElem.setAttribute( QStringLiteral( "mapRotation" ), QString::number( mMapRotation ) );
 
   //layer set
   QDomElement layerSetElem = doc.createElement( QStringLiteral( "LayerSet" ) );
@@ -572,7 +568,7 @@ bool QgsLayoutItemMap::writePropertiesToElement( QDomElement &composerMapElem, Q
 
     layerSetElem.appendChild( layerElem );
   }
-  composerMapElem.appendChild( layerSetElem );
+  mapElem.appendChild( layerSetElem );
 
   // override styles
   if ( mKeepLayerStyles )
@@ -594,21 +590,21 @@ bool QgsLayoutItemMap::writePropertiesToElement( QDomElement &composerMapElem, Q
       style.writeXml( styleElem );
       stylesElem.appendChild( styleElem );
     }
-    composerMapElem.appendChild( stylesElem );
+    mapElem.appendChild( stylesElem );
   }
 
   //grids
-  mGridStack->writeXml( composerMapElem, doc, context );
+  mGridStack->writeXml( mapElem, doc, context );
 
   //overviews
-  mOverviewStack->writeXml( composerMapElem, doc, context );
+  mOverviewStack->writeXml( mapElem, doc, context );
 
   //atlas
   QDomElement atlasElem = doc.createElement( QStringLiteral( "AtlasMap" ) );
   atlasElem.setAttribute( QStringLiteral( "atlasDriven" ), mAtlasDriven );
   atlasElem.setAttribute( QStringLiteral( "scalingMode" ), mAtlasScalingMode );
   atlasElem.setAttribute( QStringLiteral( "margin" ), qgsDoubleToString( mAtlasMargin ) );
-  composerMapElem.appendChild( atlasElem );
+  mapElem.appendChild( atlasElem );
 
   return true;
 }
@@ -1655,7 +1651,7 @@ bool QgsLayoutItemMap::shouldDrawPart( QgsLayoutItemMap::PartType part ) const
 
   if ( -1 == currentExportLayer )
   {
-    //all parts of the composer map are visible
+    //all parts of the map are visible
     return true;
   }
 

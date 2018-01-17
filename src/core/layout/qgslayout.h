@@ -307,7 +307,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     QgsLayoutItem *layoutItemAt( QPointF position, const bool ignoreLocked = false ) const;
 
     /**
-     * Returns the topmost composer item at a specified \a position which is below a specified \a item. Ignores paper items.
+     * Returns the topmost layout item at a specified \a position which is below a specified \a item. Ignores paper items.
      * If \a ignoreLocked is set to true any locked items will be ignored.
      */
     QgsLayoutItem *layoutItemAt( QPointF position, const QgsLayoutItem *belowItem, const bool ignoreLocked = false ) const;
@@ -710,7 +710,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     //! List of multiframe objects
     QList<QgsLayoutMultiFrame *> mMultiFrames;
 
-    //! Item ID for composer map to use for the world file generation
+    //! Item ID for layout map to use for the world file generation
     QString mWorldFileMapId;
 
     //! Writes only the layout settings (not member settings like grid settings, etc) to XML

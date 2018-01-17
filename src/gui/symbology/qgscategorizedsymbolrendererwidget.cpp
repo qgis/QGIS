@@ -635,7 +635,7 @@ void QgsCategorizedSymbolRendererWidget::addCategories()
     QgsExpressionContext context;
     context << QgsExpressionContextUtils::globalScope()
             << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-            << QgsExpressionContextUtils::compositionAtlasScope( nullptr )
+            << QgsExpressionContextUtils::atlasScope( nullptr )
             << QgsExpressionContextUtils::layerScope( mLayer );
 
     expression->prepare( &context );
@@ -1014,7 +1014,7 @@ QgsExpressionContext QgsCategorizedSymbolRendererWidget::createExpressionContext
   QgsExpressionContext expContext;
   expContext << QgsExpressionContextUtils::globalScope()
              << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-             << QgsExpressionContextUtils::compositionAtlasScope( nullptr );
+             << QgsExpressionContextUtils::atlasScope( nullptr );
 
   if ( mContext.mapCanvas() )
   {

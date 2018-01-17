@@ -35,7 +35,7 @@ static QList<QgsExpressionContextScope *> _globalProjectAtlasMapLayerScopes( Qgs
   QList<QgsExpressionContextScope *> scopes;
   scopes << QgsExpressionContextUtils::globalScope()
          << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
-         << QgsExpressionContextUtils::compositionAtlasScope( nullptr );
+         << QgsExpressionContextUtils::atlasScope( nullptr );
   if ( mapCanvas )
   {
     scopes << QgsExpressionContextUtils::mapSettingsScope( mapCanvas->mapSettings() )
