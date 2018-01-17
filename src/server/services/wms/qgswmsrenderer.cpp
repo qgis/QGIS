@@ -1854,13 +1854,12 @@ namespace QgsWms
 
     const int bytes_per_line = ( ( width * depth + 31 ) >> 5 ) << 2; // bytes per scanline (must be multiple of 4)
 
-    if ( INT_MAX / depth < width
+    if ( std::numeric_limits<int>::max() / depth < ( uint )width
          || bytes_per_line <= 0
          || height <= 0
-         || INT_MAX / uint( bytes_per_line ) < height
-         || INT_MAX / sizeof( uchar * ) < uint( height ) )
+         || std::numeric_limits<int>::max() / uint( bytes_per_line ) < ( uint )height
+         || std::numeric_limits<int>::max() / sizeof( uchar * ) < uint( height ) )
       return false;
-
 
     return true;
   }
