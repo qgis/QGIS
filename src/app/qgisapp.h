@@ -939,6 +939,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      */
     void showLayoutManager();
 
+    //! shows the snapping Options
+    void snappingOptions();
+
   protected:
 
     //! Handle state changes (WindowTitleChange)
@@ -1344,8 +1347,6 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void rotatePointSymbols();
     //! activates the offset point symbol tool
     void offsetPointSymbol();
-    //! shows the snapping Options
-    void snappingOptions();
     //! activates the tool
     void setMapTool( QgsMapTool *tool, bool clean = false );
 
