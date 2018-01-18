@@ -824,7 +824,7 @@ void QgsLayoutMapWidget::mUpdatePreviewButton_clicked()
   {
     return;
   }
-  mMapItem->invalidateCache();
+  mMapItem->refresh();
 }
 
 void QgsLayoutMapWidget::mFollowVisibilityPresetCheckBox_stateChanged( int state )
