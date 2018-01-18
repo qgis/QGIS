@@ -44,6 +44,7 @@ class APP_EXPORT QgsDistanceWidget : public QWidget
   signals:
     void distanceChanged( double distance );
     void distanceEditingFinished( double distance, const Qt::KeyboardModifiers &modifiers );
+    void distanceEditingCancelled();
 
   protected:
     bool eventFilter( QObject *obj, QEvent *ev ) override;
@@ -74,6 +75,9 @@ class APP_EXPORT QgsMapToolSelectRadius : public QgsMapTool
     //! called when map tool is being deactivated
     void deactivate() override;
 
+    //! catch escape when active to cancel selection
+    void keyReleaseEvent( QKeyEvent *e ) override;
+
   private slots:
     //! update the rubber band from the input widget
     void updateRubberband( const double &radius );
@@ -83,6 +87,9 @@ class APP_EXPORT QgsMapToolSelectRadius : public QgsMapTool
      * either programmatically (from the mouse event) or entered by the user
      */
     void radiusValueEntered( const double &radius, const Qt::KeyboardModifiers &modifiers );
+
+    //! cancel selecting (between two click events)
+    void cancel();
 
   private:
     //! perform selection using radius from rubberband
