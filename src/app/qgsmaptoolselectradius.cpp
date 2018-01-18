@@ -83,7 +83,7 @@ bool QgsDistanceWidget::eventFilter( QObject *obj, QEvent *ev )
     QKeyEvent *event = static_cast<QKeyEvent *>( ev );
     if ( event->key() == Qt::Key_Escape )
     {
-      emit distanceEditingCancelled();
+      emit distanceEditingCanceled();
       return true;
     }
     if ( event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return )
@@ -258,7 +258,7 @@ void QgsMapToolSelectRadius::createRotationWidget()
 
   connect( mDistanceWidget, &QgsDistanceWidget::distanceChanged, this, &QgsMapToolSelectRadius::updateRubberband );
   connect( mDistanceWidget, &QgsDistanceWidget::distanceEditingFinished, this, &QgsMapToolSelectRadius::radiusValueEntered );
-  connect( mDistanceWidget, &QgsDistanceWidget::distanceEditingCancelled, this, &QgsMapToolSelectRadius::cancel );
+  connect( mDistanceWidget, &QgsDistanceWidget::distanceEditingCanceled, this, &QgsMapToolSelectRadius::cancel );
 }
 
 void QgsMapToolSelectRadius::deleteRotationWidget()
@@ -267,6 +267,7 @@ void QgsMapToolSelectRadius::deleteRotationWidget()
   {
     disconnect( mDistanceWidget, &QgsDistanceWidget::distanceChanged, this, &QgsMapToolSelectRadius::updateRubberband );
     disconnect( mDistanceWidget, &QgsDistanceWidget::distanceEditingFinished, this, &QgsMapToolSelectRadius::radiusValueEntered );
+    disconnect( mDistanceWidget, &QgsDistanceWidget::distanceEditingCanceled, this, &QgsMapToolSelectRadius::cancel );
     mDistanceWidget->releaseKeyboard();
     mDistanceWidget->deleteLater();
   }
