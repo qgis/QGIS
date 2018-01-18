@@ -483,6 +483,8 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
 
     void shapeChanged();
 
+    void mapThemeChanged( const QString &theme );
+
   private:
 
 
@@ -550,6 +552,11 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
     bool mKeepLayerStyles = false;
     //! Stored style names (value) to be used with particular layer IDs (key) instead of default style
     QMap<QString, QString> mLayerStyleOverrides;
+
+    //! Empty if no cached style overrides stored
+    mutable QString mCachedLayerStyleOverridesPresetName;
+    //! Cached style overrides, used to avoid frequent expensive lookups of the preset style override
+    mutable QMap<QString, QString> mCachedPresetLayerStyleOverrides;
 
     /**
      * Whether layers and styles should be used from a preset (preset name is stored
