@@ -504,30 +504,7 @@ namespace QgsWms
         }
         else
         {
-          QList<QgsMapLayer *> layerSet;
-          const QList<QgsWmsParametersLayer> layers = cMapParams.mLayers;
-          for ( const auto &layer : layers )
-          {
-            QString nickname = layer.mNickname;
-            QString style = layer.mStyle;
-            if ( mNicknameLayers.contains( nickname ) && !mRestrictedLayers.contains( nickname ) )
-            {
-              if ( !style.isEmpty() )
-              {
-                bool rc = mNicknameLayers[nickname]->styleManager()->setCurrentStyle( style );
-                if ( ! rc )
-                {
-                  throw QgsMapServiceException( QStringLiteral( "StyleNotDefined" ), QStringLiteral( "Style \"%1\" does not exist for layer \"%2\"" ).arg( style, nickname ) );
-                }
-              }
-              layerSet << mNicknameLayers[nickname];
-            }
-            else
-            {
-              throw QgsBadRequestException( QStringLiteral( "LayerNotDefined" ),
-                                            QStringLiteral( "Layer \"%1\" does not exist" ).arg( nickname ) );
-            }
-          }
+          QList<QgsMapLayer *> layerSet = stylizedLayers( cMapParams.mLayers );
           layerSet << highlightLayers( cMapParams.mHighlightLayers );
           std::reverse( layerSet.begin(), layerSet.end() );
           map->setLayers( layerSet );
@@ -2389,6 +2366,30 @@ namespace QgsWms
     {
       mNicknameLayers[ layerNickname( *ml ) ] = ml;
     }
+
+    // init groups
+    const QgsLayerTreeGroup *root = mProject->layerTreeRoot();
+    initLayerGroupsRecursive( root, mProject->title() );
+  }
+
+  void QgsRenderer::initLayerGroupsRecursive( const QgsLayerTreeGroup *group, const QString &groupName )
+  {
+    if ( !groupName.isEmpty() )
+    {
+      mLayerGroups[groupName] = QList<QgsMapLayer *>();
+      for ( QgsLayerTreeLayer *layer : group->findLayers() )
+      {
+        mLayerGroups[groupName].append( layer->layer() );
+      }
+    }
+
+    for ( const QgsLayerTreeNode *child : group->children() )
+    {
+      if ( child->nodeType() == QgsLayerTreeNode::NodeGroup )
+      {
+        initLayerGroupsRecursive( static_cast<const QgsLayerTreeGroup *>( child ), child->name() );
+      }
+    }
   }
 
   QString QgsRenderer::layerNickname( const QgsMapLayer &layer ) const
@@ -2602,6 +2603,18 @@ namespace QgsWms
               mNicknameLayers[lname]->setCustomProperty( "readSLD", true );
               layers.append( mNicknameLayers[lname] );
             }
+            else if ( mLayerGroups.contains( lname ) )
+            {
+              for ( QgsMapLayer *layer : mLayerGroups[lname] )
+              {
+                if ( !mRestrictedLayers.contains( layerNickname( *layer ) ) )
+                {
+                  layer->readSld( namedElem, err );
+                  layer->setCustomProperty( "readSLD", true );
+                  layers.append( layer );
+                }
+              }
+            }
             else
             {
               throw QgsBadRequestException( QStringLiteral( "LayerNotDefined" ),
@@ -2647,6 +2660,24 @@ namespace QgsWms
         }
 
         layers.append( mNicknameLayers[nickname] );
+      }
+      else if ( mLayerGroups.contains( nickname ) )
+      {
+        for ( QgsMapLayer *layer : mLayerGroups[nickname] )
+        {
+          if ( !mRestrictedLayers.contains( layerNickname( *layer ) ) )
+          {
+            if ( !style.isEmpty() )
+            {
+              bool rc = layer->styleManager()->setCurrentStyle( style );
+              if ( ! rc )
+              {
+                throw QgsMapServiceException( QStringLiteral( "StyleNotDefined" ), QStringLiteral( "Style \"%1\" does not exist for layer \"%2\"" ).arg( style, layerNickname( *layer ) ) );
+              }
+            }
+            layers.append( layer );
+          }
+        }
       }
       else
       {
