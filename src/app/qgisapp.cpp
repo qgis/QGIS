@@ -2783,10 +2783,8 @@ void QgisApp::createStatusBar()
   // And also rendering suppression checkbox
   mProgressBar = new QProgressBar( mStatusBar );
   mProgressBar->setObjectName( QStringLiteral( "mProgressBar" ) );
-  mProgressBar->setMaximumWidth( 100 );
-  mProgressBar->hide();
-  mProgressBar->setWhatsThis( tr( "Progress bar that displays the status "
-                                  "of rendering layers and other time-intensive operations" ) );
+  mProgressBar->setMaximumWidth( 0 );
+  mProgressBar->setMaximumHeight( 18 );
   mStatusBar->addPermanentWidget( mProgressBar, 1 );
 
   connect( mMapCanvas, &QgsMapCanvas::renderStarting, this, &QgisApp::canvasRefreshStarted );
@@ -11083,14 +11081,14 @@ void QgisApp::showProgress( int progress, int totalSteps )
   if ( progress == totalSteps )
   {
     mProgressBar->reset();
-    mProgressBar->hide();
+    mProgressBar->setMaximumWidth( 0 );
   }
   else
   {
     //only call show if not already hidden to reduce flicker
-    if ( !mProgressBar->isVisible() )
+    if ( mProgressBar->maximumWidth() == 0 )
     {
-      mProgressBar->show();
+      mProgressBar->setMaximumWidth( 100 );
     }
     mProgressBar->setMaximum( totalSteps );
     mProgressBar->setValue( progress );
