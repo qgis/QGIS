@@ -127,6 +127,9 @@ QgsLayoutItemMap *QgsLayoutItemMap::create( QgsLayout *layout )
 void QgsLayoutItemMap::refresh()
 {
   QgsLayoutItem::refresh();
+
+  mCachedLayerStyleOverridesPresetName.clear();
+
   invalidateCache();
 
   updateAtlasFeature();
@@ -1327,6 +1330,12 @@ void QgsLayoutItemMap::shapeChanged()
   emit extentChanged();
 }
 
+void QgsLayoutItemMap::mapThemeChanged( const QString &theme )
+{
+  if ( theme == mCachedLayerStyleOverridesPresetName )
+    mCachedLayerStyleOverridesPresetName.clear(); // force cache regeneration at next redraw
+}
+
 void QgsLayoutItemMap::connectUpdateSlot()
 {
   //connect signal from layer registry to update in case of new or deleted layers
@@ -1357,6 +1366,8 @@ void QgsLayoutItemMap::connectUpdateSlot()
 
   }
   connect( mLayout, &QgsLayout::refreshed, this, &QgsLayoutItemMap::invalidateCache );
+
+  connect( project->mapThemeCollection(), &QgsMapThemeCollection::mapThemeChanged, this, &QgsLayoutItemMap::mapThemeChanged );
 }
 
 void QgsLayoutItemMap::updateToolTip()
@@ -1436,7 +1447,16 @@ QMap<QString, QString> QgsLayoutItemMap::layerStyleOverridesToRender( const QgsE
     presetName = mDataDefinedProperties.valueAsString( QgsLayoutObject::MapStylePreset, context, presetName );
 
     if ( mLayout->project()->mapThemeCollection()->hasMapTheme( presetName ) )
-      return mLayout->project()->mapThemeCollection()->mapThemeStyleOverrides( presetName );
+    {
+      if ( presetName.isEmpty() || presetName != mCachedLayerStyleOverridesPresetName )
+      {
+        // have to regenerate cache of style overrides
+        mCachedPresetLayerStyleOverrides = mLayout->project()->mapThemeCollection()->mapThemeStyleOverrides( presetName );
+        mCachedLayerStyleOverridesPresetName = presetName;
+      }
+
+      return mCachedPresetLayerStyleOverrides;
+    }
     else
       return QMap<QString, QString>();
   }
