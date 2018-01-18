@@ -44,7 +44,7 @@ class APP_EXPORT QgsDistanceWidget : public QWidget
   signals:
     void distanceChanged( double distance );
     void distanceEditingFinished( double distance, const Qt::KeyboardModifiers &modifiers );
-    void distanceEditingCancelled();
+    void distanceEditingCanceled();
 
   protected:
     bool eventFilter( QObject *obj, QEvent *ev ) override;
