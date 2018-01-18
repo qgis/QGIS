@@ -89,7 +89,7 @@ void QgsLayoutItemLegend::paint( QPainter *painter, const QStyleOptionGraphicsIt
     QSizeF mapSizePixels = QSizeF( mMap->rect().width() * dotsPerMM, mMap->rect().height() * dotsPerMM );
     QgsRectangle mapExtent = mMap->extent();
 
-    QgsMapSettings ms = mMap->mapSettings( mapExtent, mapSizePixels, dpi );
+    QgsMapSettings ms = mMap->mapSettings( mapExtent, mapSizePixels, dpi, false );
     mSettings.setMapScale( ms.scale() );
   }
   mInitialMapScaleCalculated = true;
@@ -761,7 +761,7 @@ void QgsLayoutItemLegend::doUpdateFilterByMap()
     QSizeF size( requestRectangle.width(), requestRectangle.height() );
     size *= mLayout->convertFromLayoutUnits( mMap->mapUnitsToLayoutUnits(), QgsUnitTypes::LayoutMillimeters ).length() * dpi / 25.4;
 
-    QgsMapSettings ms = mMap->mapSettings( requestRectangle, size, dpi );
+    QgsMapSettings ms = mMap->mapSettings( requestRectangle, size, dpi, true );
 
     QgsGeometry filterPolygon;
     if ( mInAtlas )

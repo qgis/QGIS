@@ -408,8 +408,12 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
 
     /**
      * Return map settings that will be used for drawing of the map.
+     *
+     * If \a includeLayerSettings is true, than settings specifically relating to map layers and map layer styles
+     * will be calculated. This can be expensive to calculate, so if they are not required in the map settings
+     * (e.g. for map settings which are used for scale related calculations only) then \a includeLayerSettings should be false.
      */
-    QgsMapSettings mapSettings( const QgsRectangle &extent, QSizeF size, double dpi ) const;
+    QgsMapSettings mapSettings( const QgsRectangle &extent, QSizeF size, double dpi, bool includeLayerSettings ) const;
 
     void finalizeRestoreFromXml() override;
 

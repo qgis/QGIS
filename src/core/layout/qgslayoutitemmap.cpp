@@ -960,7 +960,7 @@ void QgsLayoutItemMap::drawMap( QPainter *painter, const QgsRectangle &extent, Q
   }
 
   // render
-  QgsMapRendererCustomPainterJob job( mapSettings( extent, size, dpi ), painter );
+  QgsMapRendererCustomPainterJob job( mapSettings( extent, size, dpi, true ), painter );
   // Render the map in this thread. This is done because of problems
   // with printing to printer on Windows (printing to PDF is fine though).
   // Raster images were not displayed - see #10599
@@ -1037,13 +1037,13 @@ void QgsLayoutItemMap::recreateCachedImageInBackground( double viewScaleFactor )
 
   mCacheInvalidated = false;
   mPainter.reset( new QPainter( mCacheRenderingImage.get() ) );
-  QgsMapSettings settings( mapSettings( ext, QSizeF( w, h ), mCacheRenderingImage->logicalDpiX() ) );
+  QgsMapSettings settings( mapSettings( ext, QSizeF( w, h ), mCacheRenderingImage->logicalDpiX(), true ) );
   mPainterJob.reset( new QgsMapRendererCustomPainterJob( settings, mPainter.get() ) );
   connect( mPainterJob.get(), &QgsMapRendererCustomPainterJob::finished, this, &QgsLayoutItemMap::painterJobFinished );
   mPainterJob->start();
 }
 
-QgsMapSettings QgsLayoutItemMap::mapSettings( const QgsRectangle &extent, QSizeF size, double dpi ) const
+QgsMapSettings QgsLayoutItemMap::mapSettings( const QgsRectangle &extent, QSizeF size, double dpi, bool includeLayerSettings ) const
 {
   QgsExpressionContext expressionContext = createExpressionContext();
   QgsCoordinateReferenceSystem renderCrs = crs();
@@ -1058,26 +1058,29 @@ QgsMapSettings QgsLayoutItemMap::mapSettings( const QgsRectangle &extent, QSizeF
   if ( mLayout )
     jobMapSettings.setEllipsoid( mLayout->project()->ellipsoid() );
 
-  //set layers to render
-  QList<QgsMapLayer *> layers = layersToRender( &expressionContext );
-  if ( mLayout && -1 != mLayout->renderContext().currentExportLayer() )
+  if ( includeLayerSettings )
   {
-    const int layerIdx = mLayout->renderContext().currentExportLayer() - ( hasBackground() ? 1 : 0 );
-    if ( layerIdx >= 0 && layerIdx < layers.length() )
+    //set layers to render
+    QList<QgsMapLayer *> layers = layersToRender( &expressionContext );
+    if ( mLayout && -1 != mLayout->renderContext().currentExportLayer() )
     {
-      // exporting with separate layers (e.g., to svg layers), so we only want to render a single map layer
-      QgsMapLayer *ml = layers[ layers.length() - layerIdx - 1 ];
-      layers.clear();
-      layers << ml;
+      const int layerIdx = mLayout->renderContext().currentExportLayer() - ( hasBackground() ? 1 : 0 );
+      if ( layerIdx >= 0 && layerIdx < layers.length() )
+      {
+        // exporting with separate layers (e.g., to svg layers), so we only want to render a single map layer
+        QgsMapLayer *ml = layers[ layers.length() - layerIdx - 1 ];
+        layers.clear();
+        layers << ml;
+      }
+      else
+      {
+        // exporting decorations such as map frame/grid/overview, so no map layers required
+        layers.clear();
+      }
     }
-    else
-    {
-      // exporting decorations such as map frame/grid/overview, so no map layers required
-      layers.clear();
-    }
+    jobMapSettings.setLayers( layers );
+    jobMapSettings.setLayerStyleOverrides( layerStyleOverridesToRender( expressionContext ) );
   }
-  jobMapSettings.setLayers( layers );
-  jobMapSettings.setLayerStyleOverrides( layerStyleOverridesToRender( expressionContext ) );
 
   if ( !mLayout->renderContext().isPreviewRender() )
   {
