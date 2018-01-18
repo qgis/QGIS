@@ -664,7 +664,7 @@ def _import(name, globals={}, locals={}, fromlist=[], level=None):
     mod = _builtin_import(name, globals, locals, fromlist, level)
 
     if mod and '__file__' in mod.__dict__:
-        module_name = mod.__name__
+        module_name = mod.__name__ if fromlist else name
         package_name = module_name.split('.')[0]
         # check whether the module belongs to one of our plugins
         if package_name in available_plugins:
