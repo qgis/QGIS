@@ -81,6 +81,11 @@ bool QgsDistanceWidget::eventFilter( QObject *obj, QEvent *ev )
   if ( obj == mDistanceSpinBox && ev->type() == QEvent::KeyPress )
   {
     QKeyEvent *event = static_cast<QKeyEvent *>( ev );
+    if ( event->key() == Qt::Key_Escape )
+    {
+      emit distanceEditingCancelled();
+      return true;
+    }
     if ( event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return )
     {
       emit distanceEditingFinished( distance(), event->modifiers() );
@@ -185,6 +190,16 @@ void QgsMapToolSelectRadius::deactivate()
   QgsMapTool::deactivate();
 }
 
+void QgsMapToolSelectRadius::keyReleaseEvent( QKeyEvent *e )
+{
+  if ( mActive && e->key() == Qt::Key_Escape )
+  {
+    cancel();
+    return;
+  }
+  QgsMapTool::keyReleaseEvent( e );
+}
+
 void QgsMapToolSelectRadius::updateRubberband( const double &radius )
 {
   mRubberBand->reset( QgsWkbTypes::PolygonGeometry );
@@ -214,6 +229,13 @@ void QgsMapToolSelectRadius::radiusValueEntered( const double &radius, const Qt:
   selectFromRubberband( modifiers );
 }
 
+void QgsMapToolSelectRadius::cancel()
+{
+  deleteRotationWidget();
+  deleteRubberband();
+  mActive = false;
+}
+
 void QgsMapToolSelectRadius::deleteRubberband()
 {
   delete mRubberBand;
@@ -236,6 +258,7 @@ void QgsMapToolSelectRadius::createRotationWidget()
 
   connect( mDistanceWidget, &QgsDistanceWidget::distanceChanged, this, &QgsMapToolSelectRadius::updateRubberband );
   connect( mDistanceWidget, &QgsDistanceWidget::distanceEditingFinished, this, &QgsMapToolSelectRadius::radiusValueEntered );
+  connect( mDistanceWidget, &QgsDistanceWidget::distanceEditingCancelled, this, &QgsMapToolSelectRadius::cancel );
 }
 
 void QgsMapToolSelectRadius::deleteRotationWidget()
