@@ -129,6 +129,7 @@ class TestQgsMapRenderer(unittest.TestCase):
         labelSettings = QgsPalLayerSettings()
         labelSettings.fieldName = "fldtxt"
         layer.setLabeling(QgsVectorLayerSimpleLabeling(labelSettings))
+        layer.setLabelsEnabled(True)
 
         settings = QgsMapSettings()
         settings.setExtent(QgsRectangle(5, 25, 25, 45))
@@ -170,6 +171,7 @@ class TestQgsMapRenderer(unittest.TestCase):
         labelSettings = QgsPalLayerSettings()
         labelSettings.fieldName = "fldtxt"
         layer.setLabeling(QgsVectorLayerSimpleLabeling(labelSettings))
+        layer.setLabelsEnabled(True)
 
         settings = QgsMapSettings()
         settings.setExtent(QgsRectangle(5, 25, 25, 45))
@@ -192,6 +194,7 @@ class TestQgsMapRenderer(unittest.TestCase):
         layer2 = QgsVectorLayer("Point?field=fldtxt:string",
                                 "layer2", "memory")
         layer2.setLabeling(QgsVectorLayerSimpleLabeling(labelSettings))
+        layer2.setLabelsEnabled(True)
         settings.setLayers([layer, layer2])
 
         # second job should not be able to use label cache, since a new layer was added
@@ -214,6 +217,7 @@ class TestQgsMapRenderer(unittest.TestCase):
         labelSettings = QgsPalLayerSettings()
         labelSettings.fieldName = "fldtxt"
         layer.setLabeling(QgsVectorLayerSimpleLabeling(labelSettings))
+        layer.setLabelsEnabled(True)
 
         settings = QgsMapSettings()
         settings.setExtent(QgsRectangle(5, 25, 25, 45))
@@ -257,10 +261,12 @@ class TestQgsMapRenderer(unittest.TestCase):
         labelSettings = QgsPalLayerSettings()
         labelSettings.fieldName = "fldtxt"
         layer.setLabeling(QgsVectorLayerSimpleLabeling(labelSettings))
+        layer.setLabelsEnabled(True)
 
         layer2 = QgsVectorLayer("Point?field=fldtxt:string",
                                 "layer2", "memory")
         layer2.setLabeling(QgsVectorLayerSimpleLabeling(labelSettings))
+        layer2.setLabelsEnabled(True)
 
         settings = QgsMapSettings()
         settings.setExtent(QgsRectangle(5, 25, 25, 45))
@@ -302,6 +308,7 @@ class TestQgsMapRenderer(unittest.TestCase):
         labelSettings = QgsPalLayerSettings()
         labelSettings.fieldName = "fldtxt"
         layer.setLabeling(QgsVectorLayerSimpleLabeling(labelSettings))
+        layer.setLabelsEnabled(True)
 
         layer2 = QgsVectorLayer("Point?field=fldtxt:string",
                                 "layer2", "memory")
@@ -346,6 +353,7 @@ class TestQgsMapRenderer(unittest.TestCase):
         labelSettings = QgsPalLayerSettings()
         labelSettings.fieldName = "fldtxt"
         layer.setLabeling(QgsVectorLayerSimpleLabeling(labelSettings))
+        layer.setLabelsEnabled(True)
 
         layer2 = QgsVectorLayer("Point?field=fldtxt:string",
                                 "layer2", "memory")
@@ -355,6 +363,7 @@ class TestQgsMapRenderer(unittest.TestCase):
         format2.setBlendMode(QPainter.CompositionMode_SourceIn)
         labelSettings2.setFormat(format2)
         layer2.setLabeling(QgsVectorLayerSimpleLabeling(labelSettings2))
+        layer2.setLabelsEnabled(True)
 
         settings = QgsMapSettings()
         settings.setExtent(QgsRectangle(5, 25, 25, 45))

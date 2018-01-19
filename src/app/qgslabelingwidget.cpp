@@ -153,6 +153,7 @@ void QgsLabelingWidget::labelModeChanged( int index )
 
   if ( index == 2 )
   {
+    // note - QgsRuleBasedLabelingWidget handles conversion of existing non-rule based labels to rule based
     QgsRuleBasedLabelingWidget *ruleWidget = new QgsRuleBasedLabelingWidget( mLayer, mCanvas, this );
     ruleWidget->setDockMode( dockMode() );
     connect( ruleWidget, &QgsPanelWidget::showPanel, this, &QgsPanelWidget::openPanel );
@@ -163,9 +164,26 @@ void QgsLabelingWidget::labelModeChanged( int index )
   }
   else if ( index == 1 || index == 3 )
   {
+    mSimpleSettings.reset();
     if ( mLayer->labeling() && mLayer->labeling()->type() == QLatin1String( "simple" ) )
+    {
       mSimpleSettings.reset( new QgsPalLayerSettings( mLayer->labeling()->settings() ) );
-    else
+    }
+    else if ( mLayer->labeling() && mLayer->labeling()->type() == QLatin1String( "rule-based" ) )
+    {
+      // changing from rule-based to simple labels... grab first rule, and copy settings
+      const QgsRuleBasedLabeling *rl = static_cast<const QgsRuleBasedLabeling *>( mLayer->labeling() );
+      if ( const QgsRuleBasedLabeling::Rule *rootRule = rl->rootRule() )
+      {
+        if ( const QgsRuleBasedLabeling::Rule *firstChild = rootRule->children().value( 0 ) )
+        {
+          if ( firstChild->settings() )
+            mSimpleSettings.reset( new QgsPalLayerSettings( *firstChild->settings() ) );
+        }
+      }
+    }
+
+    if ( !mSimpleSettings )
       mSimpleSettings.reset( new QgsPalLayerSettings() );
 
     QgsLabelingGui *simpleWidget = new QgsLabelingGui( mLayer, mCanvas, *mSimpleSettings, this );
