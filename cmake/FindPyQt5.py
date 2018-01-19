@@ -43,7 +43,9 @@ except ImportError:
     if sys.platform.startswith('freebsd'):
         py_version = str(sys.version_info.major) + str(sys.version_info.minor)
         sip_dir = sip_dir.replace(py_version, '')
-    for p in (os.path.join(sip_dir, "PyQt5"), sip_dir):
+    for p in (os.path.join(sip_dir, "PyQt5"),
+              os.path.join(sip_dir, "PyQt5-3"),
+              sip_dir):
         if os.path.exists(os.path.join(p, "QtCore", "QtCoremod.sip")):
             sip_dir = p
             break
