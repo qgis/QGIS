@@ -565,13 +565,12 @@ SET_SOURCE_FILES_PROPERTIES(
 ENDIF(MSVC)
 
 INCLUDE_DIRECTORIES(
-  ${CMAKE_SOURCE_DIR}/external/libdxfrw
-
   ${CMAKE_SOURCE_DIR}/src/app
   ${CMAKE_SOURCE_DIR}/src/app/layout
   ${CMAKE_SOURCE_DIR}/src/app/pluginmanager
   ${CMAKE_SOURCE_DIR}/src/app/gps
   ${CMAKE_SOURCE_DIR}/src/app/dwg
+  ${CMAKE_SOURCE_DIR}/src/app/dwg/libdxfrw
   ${CMAKE_SOURCE_DIR}/src/app/locator
   ${CMAKE_SOURCE_DIR}/src/analysis/raster
   ${CMAKE_SOURCE_DIR}/src/core
@@ -662,7 +661,7 @@ INCLUDE_DIRECTORIES(
   ../python
   gps
   dwg
-  ${CMAKE_SOURCE_DIR}/external/libdxfrw
+  dwg/libdxfrw
   ${CMAKE_SOURCE_DIR}/src/native
   ${CMAKE_BINARY_DIR}/src/native
 )
