@@ -26,6 +26,7 @@ class QHBoxLayout;
 class QgsDoubleSpinBox;
 class QgsMapCanvas;
 class QgsRubberBand;
+class QgsSnapIndicator;
 
 class APP_EXPORT QgsDistanceWidget : public QWidget
 {
@@ -104,14 +105,15 @@ class APP_EXPORT QgsMapToolSelectRadius : public QgsMapTool
 
     //! used for storing all of the maps point for the polygon
     QgsRubberBand *mRubberBand = nullptr;
+    std::unique_ptr<QgsSnapIndicator> mSnapIndicator;
 
     //! Center point for the radius
     QgsPointXY mRadiusCenter;
 
     bool mActive = false;
 
-    QColor mFillColor;
-    QColor mStrokeColor;
+    QColor mFillColor = QColor( 254, 178, 76, 63 );
+    QColor mStrokeColor = QColor( 254, 58, 29, 100 );
 
     //! Shows current angle value and allows numerical editing
     QgsDistanceWidget *mDistanceWidget = nullptr;
