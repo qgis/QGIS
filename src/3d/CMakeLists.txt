@@ -43,11 +43,11 @@ SET(QGIS_3D_SRCS
   #terrain/quantizedmeshgeometry.cpp
   #terrain/quantizedmeshterraingenerator.cpp
 
-  poly2tri/common/shapes.cc
-  poly2tri/sweep/advancing_front.cc
-  poly2tri/sweep/cdt.cc
-  poly2tri/sweep/sweep_context.cc
-  poly2tri/sweep/sweep.cc
+  ${CMAKE_SOURCE_DIR}/external/poly2tri/common/shapes.cc
+  ${CMAKE_SOURCE_DIR}/external/poly2tri/sweep/advancing_front.cc
+  ${CMAKE_SOURCE_DIR}/external/poly2tri/sweep/cdt.cc
+  ${CMAKE_SOURCE_DIR}/external/poly2tri/sweep/sweep_context.cc
+  ${CMAKE_SOURCE_DIR}/external/poly2tri/sweep/sweep.cc
 )
 
 SET(QGIS_3D_MOC_HDRS
