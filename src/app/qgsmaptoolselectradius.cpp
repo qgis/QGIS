@@ -31,8 +31,7 @@ email                : jpalmer at linz dot govt dot nz
 #include "qgsdoublespinbox.h"
 
 
-
-const int RADIUS_SEGMENTS = 40;
+const int RADIUS_SEGMENTS = 80;
 
 QgsDistanceWidget::QgsDistanceWidget( const QString &label, QWidget *parent )
   : QWidget( parent )
