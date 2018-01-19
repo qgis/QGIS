@@ -215,7 +215,7 @@ private:
           typeName = "text";
           break;
       }
-      sqlFields << field.name() + " " + typeName;
+      sqlFields << QString( "\"%1\" %2" ).arg( field.name(), typeName );
     }
 
     QgsVectorDataProvider* provider = mLayer ? mLayer->dataProvider() : mProvider;
