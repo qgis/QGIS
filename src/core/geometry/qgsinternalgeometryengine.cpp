@@ -619,7 +619,7 @@ QgsAbstractGeometry *densifyGeometry( const QgsAbstractGeometry *geom, int extra
 
   if ( QgsWkbTypes::geometryType( geom->wkbType() ) == QgsWkbTypes::LineGeometry )
   {
-    return doDensify( static_cast< QgsLineString * >( geom->clone() ), extraNodesPerSegment, distance );
+    return doDensify( static_cast< const QgsLineString * >( geom ), extraNodesPerSegment, distance );
   }
   else
   {
