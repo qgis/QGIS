@@ -1,5 +1,5 @@
 // ASResource.cpp
-// Copyright (c) 2017 by Jim Pattee <jimp03@email.com>.
+// Copyright (c) 2018 by Jim Pattee <jimp03@email.com>.
 // This code is licensed under the MIT License.
 // License.md describes the conditions under which this software may be distributed.
 
@@ -36,6 +36,7 @@ const string ASResource::AS_ELSE = string("else");
 const string ASResource::AS_END = string("end");
 const string ASResource::AS_ENUM = string("enum");
 const string ASResource::AS_EXTERN = string("extern");
+const string ASResource::AS_FINAL = string("final");
 const string ASResource::AS_FINALLY = string("finally");
 const string ASResource::AS_FIXED = string("fixed");
 const string ASResource::AS_FOR = string("for");
@@ -593,10 +594,11 @@ void ASResource::buildPreCommandHeaders(vector<const string*>* preCommandHeaders
 	if (fileType == C_TYPE)
 	{
 		preCommandHeaders->emplace_back(&AS_CONST);
-		preCommandHeaders->emplace_back(&AS_VOLATILE);
+		preCommandHeaders->emplace_back(&AS_FINAL);
 		preCommandHeaders->emplace_back(&AS_INTERRUPT);
 		preCommandHeaders->emplace_back(&AS_NOEXCEPT);
 		preCommandHeaders->emplace_back(&AS_OVERRIDE);
+		preCommandHeaders->emplace_back(&AS_VOLATILE);
 		preCommandHeaders->emplace_back(&AS_SEALED);			// Visual C only
 		preCommandHeaders->emplace_back(&AS_AUTORELEASEPOOL);	// Obj-C only
 	}
@@ -779,6 +781,8 @@ bool ASBase::isCharPotentialHeader(const string& line, size_t i) const
 	char prevCh = ' ';
 	if (i > 0)
 		prevCh = line[i - 1];
+	if (i > 1 && line[i - 2] == '\\')
+		prevCh = ' ';
 	if (!isLegalNameChar(prevCh) && isLegalNameChar(line[i]))
 		return true;
 	return false;

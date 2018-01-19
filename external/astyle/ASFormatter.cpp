@@ -1,5 +1,5 @@
 // ASFormatter.cpp
-// Copyright (c) 2017 by Jim Pattee <jimp03@email.com>.
+// Copyright (c) 2018 by Jim Pattee <jimp03@email.com>.
 // This code is licensed under the MIT License.
 // License.md describes the conditions under which this software may be distributed.
 
@@ -67,6 +67,10 @@ ASFormatter::ASFormatter()
 	shouldBreakClosingHeaderBlocks = false;
 	shouldBreakClosingHeaderBraces = false;
 	shouldDeleteEmptyLines = false;
+	shouldBreakReturnType = false;
+	shouldBreakReturnTypeDecl = false;
+	shouldAttachReturnType = false;
+	shouldAttachReturnTypeDecl = false;
 	shouldBreakElseIfs = false;
 	shouldBreakLineAfterLogical = false;
 	shouldAddBraces = false;
@@ -172,7 +176,7 @@ void ASFormatter::init(ASSourceIterator* si)
 	currentChar = ' ';
 	previousChar = ' ';
 	previousCommandChar = ' ';
-	previousNonWSChar = ' ';
+	previousNonWSChar = ',';	// not a potential name or operator
 	quoteChar = '"';
 	preprocBlockEnd = 0;
 	charNum = 0;
@@ -184,6 +188,10 @@ void ASFormatter::init(ASSourceIterator* si)
 	previousReadyFormattedLineLength = string::npos;
 	preprocBraceTypeStackSize = 0;
 	spacePadNum = 0;
+	methodAttachCharNum = string::npos;
+	methodAttachLineNum = 0;
+	methodBreakCharNum = string::npos;
+	methodBreakLineNum = 0;
 	nextLineSpacePadNum = 0;
 	objCColonAlign = 0;
 	templateDepth = 0;
@@ -273,10 +281,12 @@ void ASFormatter::init(ASSourceIterator* si)
 	isInObjCInterface = false;
 	isInObjCMethodDefinition = false;
 	isInObjCReturnType = false;
+	isInObjCParam = false;
 	isInObjCSelector = false;
 	breakCurrentOneLineBlock = false;
 	shouldRemoveNextClosingBrace = false;
 	isInBraceRunIn = false;
+	returnTypeChecked = false;
 	currentLineBeginsWithBrace = false;
 	isPrependPostBlockEmptyLineRequested = false;
 	isAppendPostBlockEmptyLineRequested = false;
@@ -360,7 +370,7 @@ void ASFormatter::fixOptionVariableConflicts()
 		setBraceIndentVtk(true);		// sets both braceIndent and braceIndentVtk
 		setSwitchIndent(true);			// avoid hanging indent with case statements
 	}
-	else if (formattingStyle == STYLE_BANNER)
+	else if (formattingStyle == STYLE_RATLIFF)
 	{
 		// attached braces can have hanging indents with the closing brace
 		setBraceFormatMode(ATTACH_MODE);
@@ -435,6 +445,11 @@ void ASFormatter::fixOptionVariableConflicts()
 	// don't allow add-braces and remove-braces
 	if (shouldAddBraces || shouldAddOneLineBraces)
 		setRemoveBracesMode(false);
+	// don't allow break-return-type and attach-return-type
+	if (shouldBreakReturnType)
+		shouldAttachReturnType = false;
+	if (shouldBreakReturnTypeDecl)
+		shouldAttachReturnTypeDecl = false;
 	// don't allow indent-classes and indent-modifiers
 	if (getClassIndent())
 		setModifierIndent(false);
@@ -515,7 +530,7 @@ string ASFormatter::nextLine()
 			if (isInLineBreak)			// is true if not the first line
 				breakLine();
 			formattedLine = currentLine;
-			charNum = (int)currentLine.length() - 1;
+			charNum = (int) currentLine.length() - 1;
 			continue;
 		}
 
@@ -634,7 +649,9 @@ string ASFormatter::nextLine()
 		// check if in preprocessor
 		// ** isInPreprocessor will be automatically reset at the beginning
 		//    of a new line in getnextChar()
-		if (currentChar == '#')
+		if (currentChar == '#'
+		        && currentLine.find_first_not_of(" \t") == (size_t) charNum
+		        && !isBraceType(braceTypeStack->back(), SINGLE_LINE_TYPE))
 		{
 			isInPreprocessor = true;
 			// check for run-in
@@ -732,6 +749,7 @@ string ASFormatter::nextLine()
 			// should braces be added
 			if (currentChar != '{'
 			        && shouldAddBraces
+			        && currentChar != '#'	// don't add to preprocessor
 			        && (shouldBreakOneLineStatements || !isHeaderInMultiStatementLine)
 			        && isOkToBreakBlock(braceTypeStack->back()))
 			{
@@ -882,6 +900,58 @@ string ASFormatter::nextLine()
 			checkIfTemplateOpener();
 		}
 
+		// Check for break return type
+		if ((size_t) charNum >= methodBreakCharNum && methodBreakLineNum == 0)
+		{
+			if ((size_t) charNum == methodBreakCharNum)
+				isInLineBreak = true;
+			methodBreakCharNum = string::npos;
+			methodBreakLineNum = 0;
+		}
+		// Check for attach return type
+		if ((size_t) charNum >= methodAttachCharNum && methodAttachLineNum == 0)
+		{
+			if ((size_t) charNum == methodAttachCharNum)
+			{
+				int pa = pointerAlignment;
+				int ra = referenceAlignment;
+				int itemAlignment = (previousNonWSChar == '*' || previousNonWSChar == '^')
+				                    ? pa : ((ra == REF_SAME_AS_PTR) ? pa : ra);
+				isInLineBreak = false;
+				if (previousNonWSChar == '*' || previousNonWSChar == '&' || previousNonWSChar == '^')
+				{
+					if (itemAlignment == REF_ALIGN_TYPE)
+					{
+						if (formattedLine.length() > 0
+						        && !isWhiteSpace(formattedLine[formattedLine.length() - 1]))
+							formattedLine.append(1, ' ');
+					}
+					else if (itemAlignment == REF_ALIGN_MIDDLE)
+					{
+						if (formattedLine.length() > 0
+						        && !isWhiteSpace(formattedLine[formattedLine.length() - 1]))
+							formattedLine.append(1, ' ');
+					}
+					else if (itemAlignment == REF_ALIGN_NAME)
+					{
+						if (formattedLine.length() > 0
+						        && isWhiteSpace(formattedLine[formattedLine.length() - 1]))
+							formattedLine.erase(formattedLine.length() - 1);
+					}
+					else
+					{
+						if (formattedLine.length() > 1
+						        && !isWhiteSpace(formattedLine[formattedLine.length() - 2]))
+							formattedLine.append(1, ' ');
+					}
+				}
+				else
+					formattedLine.append(1, ' ');
+			}
+			methodAttachCharNum = string::npos;
+			methodAttachLineNum = 0;
+		}
+
 		// handle parens
 		if (currentChar == '(' || currentChar == '[' || (isInTemplate && currentChar == '<'))
 		{
@@ -959,13 +1029,21 @@ string ASFormatter::nextLine()
 				foundTrailingReturnType = false;
 				isInPotentialCalculation = false;
 				isInObjCMethodDefinition = false;
+				isImmediatelyPostObjCMethodPrefix = false;
 				isInObjCInterface = false;
 				isInEnum = false;
 				isJavaStaticConstructor = false;
 				isCharImmediatelyPostNonInStmt = false;
 				needHeaderOpeningBrace = false;
 				shouldKeepLineUnbroken = false;
+				returnTypeChecked = false;
 				objCColonAlign = 0;
+				//assert(methodBreakCharNum == string::npos);	// comment out
+				//assert(methodBreakLineNum == 0);				// comment out
+				methodBreakCharNum = string::npos;
+				methodBreakLineNum = 0;
+				methodAttachCharNum = string::npos;
+				methodAttachLineNum = 0;
 
 				isPreviousBraceBlockRelated = !isBraceType(newBraceType, ARRAY_TYPE);
 				braceTypeStack->emplace_back(newBraceType);
@@ -1122,6 +1200,14 @@ string ASFormatter::nextLine()
 		// reset block handling flags
 		isImmediatelyPostEmptyBlock = false;
 
+		// Objective-C method prefix with no return type
+		if (isImmediatelyPostObjCMethodPrefix && currentChar != '(')
+		{
+			if (shouldPadMethodPrefix || shouldUnPadMethodPrefix)
+				padObjCMethodPrefix();
+			isImmediatelyPostObjCMethodPrefix = false;
+		}
+
 		// look for headers
 		bool isPotentialHeader = isCharPotentialHeader(currentLine, charNum);
 
@@ -1132,6 +1218,11 @@ string ASFormatter::nextLine()
 
 			newHeader = findHeader(headers);
 
+			// java can have a 'default' not in a switch
+			if (newHeader == &AS_DEFAULT
+			        && ASBeautifier::peekNextChar(
+			            currentLine, charNum + (*newHeader).length() - 1) != ':')
+				newHeader = nullptr;
 			// Qt headers may be variables in C++
 			if (isCStyle()
 			        && (newHeader == &AS_FOREVER || newHeader == &AS_FOREACH))
@@ -1311,7 +1402,7 @@ string ASFormatter::nextLine()
 					foundClassHeader = true;
 				if (newHeader == &AS_STRUCT)
 					foundStructHeader = true;
-				if (newHeader == &AS_INTERFACE)
+				if (newHeader == &AS_INTERFACE && !foundNamespaceHeader && !foundClassHeader)
 					foundInterfaceHeader = true;
 				foundPreDefinitionHeader = true;
 				appendSequence(*newHeader);
@@ -1321,7 +1412,7 @@ string ASFormatter::nextLine()
 			}
 			else if ((newHeader = findHeader(preCommandHeaders)) != nullptr)
 			{
-				// a 'const' variable is not a preCommandHeader
+				// must be after function arguments
 				if (previousNonWSChar == ')')
 					foundPreCommandHeader = true;
 			}
@@ -1354,6 +1445,12 @@ string ASFormatter::nextLine()
 			if (currentChar == ';')
 			{
 				squareBracketCount = 0;
+				//assert(methodBreakCharNum == string::npos);	// comment out
+				//assert(methodBreakLineNum == 0);				// comment out
+				methodBreakCharNum = string::npos;
+				methodBreakLineNum = 0;
+				methodAttachCharNum = string::npos;
+				methodAttachLineNum = 0;
 
 				if (((shouldBreakOneLineStatements
 				        || isBraceType(braceTypeStack->back(), SINGLE_LINE_TYPE))
@@ -1384,6 +1481,7 @@ string ASFormatter::nextLine()
 			if (currentChar != ';'
 			        || (needHeaderOpeningBrace && parenStack->back() == 0))
 				currentHeader = nullptr;
+
 			resetEndOfStatement();
 		}
 
@@ -1404,7 +1502,7 @@ string ASFormatter::nextLine()
 			         && !foundPreDefinitionHeader   // not in a definition block
 			         && previousCommandChar != ')'  // not after closing paren of a method header
 			         && !foundPreCommandHeader      // not after a 'noexcept'
-			         && squareBracketCount == 0        // not in objC method call
+			         && squareBracketCount == 0     // not in objC method call
 			         && !isInObjCMethodDefinition   // not objC '-' or '+' method
 			         && !isInObjCInterface          // not objC @interface
 			         && !isInObjCSelector           // not objC @selector
@@ -1418,10 +1516,15 @@ string ASFormatter::nextLine()
 			}
 
 			if (isCStyle()
-			        && shouldPadMethodColon
 			        && (squareBracketCount > 0 || isInObjCMethodDefinition || isInObjCSelector)
 			        && !foundQuestionMark)			// not in a ?: sequence
-				padObjCMethodColon();
+			{
+				isImmediatelyPostObjCMethodPrefix = false;
+				isInObjCReturnType = false;
+				isInObjCParam = true;
+				if (shouldPadMethodColon)
+					padObjCMethodColon();
+			}
 
 			if (isInObjCInterface)
 			{
@@ -1449,8 +1552,8 @@ string ASFormatter::nextLine()
 
 			if (findKeyword(currentLine, charNum, AS_RETURN))
 			{
-				isInPotentialCalculation = true;	// return is the same as an = sign
-				isImmediatelyPostReturn = true;
+				isInPotentialCalculation = true;
+				isImmediatelyPostReturn = true;		// return is the same as an = sign
 			}
 
 			if (findKeyword(currentLine, charNum, AS_OPERATOR))
@@ -1476,9 +1579,30 @@ string ASFormatter::nextLine()
 
 			if (isCStyle() && findKeyword(currentLine, charNum, AS_AUTO)
 			        && (isBraceType(braceTypeStack->back(), NULL_TYPE)
-			            || isBraceType(braceTypeStack->back(), NAMESPACE_TYPE)
-			            || isBraceType(braceTypeStack->back(), CLASS_TYPE)))
+			            || isBraceType(braceTypeStack->back(), DEFINITION_TYPE)))
 				foundTrailingReturnType = true;
+
+			// check for break/attach return type
+			if (shouldBreakReturnType || shouldBreakReturnTypeDecl
+			        || shouldAttachReturnType || shouldAttachReturnTypeDecl)
+			{
+				if ((isBraceType(braceTypeStack->back(), NULL_TYPE)
+				        || isBraceType(braceTypeStack->back(), DEFINITION_TYPE))
+				        && !returnTypeChecked
+				        && !foundNamespaceHeader
+				        && !foundClassHeader
+				        && !isInObjCMethodDefinition
+				        // bypass objective-C and java @ character
+				        && charNum == (int) currentLine.find_first_not_of(" \t")
+				        && !(isCStyle() && isCharPotentialHeader(currentLine, charNum)
+				             && (findKeyword(currentLine, charNum, AS_PUBLIC)
+				                 || findKeyword(currentLine, charNum, AS_PRIVATE)
+				                 || findKeyword(currentLine, charNum, AS_PROTECTED))))
+				{
+					findReturnTypeSplitPoint(currentLine);
+					returnTypeChecked = true;
+				}
+			}
 
 			// Objective-C NSException macros are preCommandHeaders
 			if (isCStyle() && findKeyword(currentLine, charNum, AS_NS_DURING))
@@ -1555,6 +1679,9 @@ string ASFormatter::nextLine()
 		// determine if this is an Objective-C statement
 
 		if (currentChar == '@'
+		        && isCStyle()
+		        && (int) currentLine.length() > charNum + 1
+		        && !isWhiteSpace(currentLine[charNum + 1])
 		        && isCharPotentialHeader(currentLine, charNum + 1)
 		        && findKeyword(currentLine, charNum + 1, AS_INTERFACE)
 		        && isBraceType(braceTypeStack->back(), NULL_TYPE))
@@ -1566,6 +1693,9 @@ string ASFormatter::nextLine()
 			continue;
 		}
 		else if (currentChar == '@'
+		         && isCStyle()
+		         && (int) currentLine.length() > charNum + 1
+		         && !isWhiteSpace(currentLine[charNum + 1])
 		         && isCharPotentialHeader(currentLine, charNum + 1)
 		         && findKeyword(currentLine, charNum + 1, AS_SELECTOR))
 		{
@@ -1576,13 +1706,16 @@ string ASFormatter::nextLine()
 			continue;
 		}
 		else if ((currentChar == '-' || currentChar == '+')
+		         && isCStyle()
 		         && (int) currentLine.find_first_not_of(" \t") == charNum
-		         && peekNextChar() == '('
-		         && isBraceType(braceTypeStack->back(), NULL_TYPE)
-		         && !isInPotentialCalculation)
+		         && !isInPotentialCalculation
+		         && !isInObjCMethodDefinition
+		         && (isBraceType(braceTypeStack->back(), NULL_TYPE)
+		             || (isBraceType(braceTypeStack->back(), EXTERN_TYPE))))
 		{
 			isInObjCMethodDefinition = true;
 			isImmediatelyPostObjCMethodPrefix = true;
+			isInObjCParam = false;
 			isInObjCInterface = false;
 			if (getAlignMethodColon())
 				objCColonAlign = findObjCColonAlignment();
@@ -1726,7 +1859,8 @@ string ASFormatter::nextLine()
 						padObjCReturnType();
 					isInObjCReturnType = false;
 				}
-				else if (shouldPadParamType || shouldUnPadParamType)
+				else if (isInObjCParam
+				         && (shouldPadParamType || shouldUnPadParamType))
 					padObjCParamType();
 			}
 			continue;
@@ -1861,7 +1995,7 @@ void ASFormatter::setRemoveBracesMode(bool state)
 	shouldRemoveBraces = state;
 }
 
-// retained for compatability with release 2.06
+// retained for compatibility with release 2.06
 // "Brackets" have been changed to "Braces" in 3.0
 // it is referenced only by the old "bracket" options
 void ASFormatter::setAddBracketsMode(bool state)
@@ -1869,7 +2003,7 @@ void ASFormatter::setAddBracketsMode(bool state)
 	setAddBracesMode(state);
 }
 
-// retained for compatability with release 2.06
+// retained for compatibility with release 2.06
 // "Brackets" have been changed to "Braces" in 3.0
 // it is referenced only by the old "bracket" options
 void ASFormatter::setAddOneLineBracketsMode(bool state)
@@ -1877,7 +2011,7 @@ void ASFormatter::setAddOneLineBracketsMode(bool state)
 	setAddOneLineBracesMode(state);
 }
 
-// retained for compatability with release 2.06
+// retained for compatibility with release 2.06
 // "Brackets" have been changed to "Braces" in 3.0
 // it is referenced only by the old "bracket" options
 void ASFormatter::setRemoveBracketsMode(bool state)
@@ -1885,14 +2019,13 @@ void ASFormatter::setRemoveBracketsMode(bool state)
 	setRemoveBracesMode(state);
 }
 
-// retained for compatability with release 2.06
+// retained for compatibility with release 2.06
 // "Brackets" have been changed to "Braces" in 3.0
 // it is referenced only by the old "bracket" options
 void ASFormatter::setBreakClosingHeaderBracketsMode(bool state)
 {
 	setBreakClosingHeaderBracesMode(state);
 }
-
 
 /**
  * set the brace formatting mode.
@@ -2276,6 +2409,26 @@ void ASFormatter::setDeleteEmptyLinesMode(bool state)
 	shouldDeleteEmptyLines = state;
 }
 
+void ASFormatter::setBreakReturnType(bool state)
+{
+	shouldBreakReturnType = state;
+}
+
+void ASFormatter::setBreakReturnTypeDecl(bool state)
+{
+	shouldBreakReturnTypeDecl = state;
+}
+
+void ASFormatter::setAttachReturnType(bool state)
+{
+	shouldAttachReturnType = state;
+}
+
+void ASFormatter::setAttachReturnTypeDecl(bool state)
+{
+	shouldAttachReturnTypeDecl = state;
+}
+
 /**
  * set the pointer alignment.
  *
@@ -2489,6 +2642,11 @@ bool ASFormatter::getNextLine(bool emptyLineWasDeleted /*false*/)
 
 	if (currentLine.length() == 0)
 		currentLine = string(" ");        // a null is inserted if this is not done
+
+	if (methodBreakLineNum > 0)
+		--methodBreakLineNum;
+	if (methodAttachLineNum > 0)
+		--methodAttachLineNum;
 
 	// unless reading in the first line of the file, break a new line.
 	if (!isVirgin)
@@ -2844,7 +3002,8 @@ BraceType ASFormatter::getBraceType()
 		                      || ((previousCommandChar == '{' || previousCommandChar == '}')
 		                          && isPreviousBraceBlockRelated)
 		                      || (isInClassInitializer
-		                          && (!isLegalNameChar(previousNonWSChar) || foundPreCommandHeader))
+		                          && ((!isLegalNameChar(previousNonWSChar) && previousNonWSChar != '(')
+		                              || foundPreCommandHeader))
 		                      || foundTrailingReturnType
 		                      || isInObjCMethodDefinition
 		                      || isInObjCInterface
@@ -2892,6 +3051,36 @@ BraceType ASFormatter::getBraceType()
 	}
 
 	return returnVal;
+}
+
+bool ASFormatter::isNumericVariable(string word) const
+{
+	if (word == "bool"
+	        || word == "int"
+	        || word == "void"
+	        || word == "char"
+	        || word == "long"
+	        || word == "short"
+	        || word == "double"
+	        || word == "float"
+	        || (word.length() >= 4     // check end of word for _t
+	            && word.compare(word.length() - 2, 2, "_t") == 0)
+// removed release 3.1
+//	        || word == "Int32"
+//	        || word == "UInt32"
+//	        || word == "Int64"
+//	        || word == "UInt64"
+	        || word == "BOOL"
+	        || word == "DWORD"
+	        || word == "HWND"
+	        || word == "INT"
+	        || word == "LPSTR"
+	        || word == "VOID"
+	        || word == "LPVOID"
+	        || word == "wxFontEncoding"
+	   )
+		return true;
+	return false;
 }
 
 /**
@@ -2988,18 +3177,17 @@ bool ASFormatter::isPointerOrReference() const
 	string nextText = peekNextText(currentLine.substr(charNum + 1));
 	if (nextText.length() == 0)
 		nextText = " ";
-	char nextChar = nextText[0];
 	if (isDigit(lastWord[0])
-	        || isDigit(nextChar)
-	        || nextChar == '!'
-	        || nextChar == '~')
+	        || isDigit(nextText[0])
+	        || nextText[0] == '!'
+	        || nextText[0] == '~')
 		return false;
 
 	// check for multiply then a dereference (a * *b)
+	char nextChar = peekNextChar();
 	if (currentChar == '*'
-	        && charNum < (int) currentLine.length() - 1
-	        && isWhiteSpace(currentLine[charNum + 1])
-	        && nextChar == '*')
+	        && nextChar == '*'
+	        && !isPointerToPointer(currentLine, charNum))
 		return false;
 
 	if ((foundCastOperator && nextChar == '>')
@@ -3017,6 +3205,8 @@ bool ASFormatter::isPointerOrReference() const
 	//check for rvalue reference
 	if (currentChar == '&' && nextChar == '&')
 	{
+		if (lastWord == AS_AUTO)
+			return true;
 		if (previousNonWSChar == '>')
 			return true;
 		string followingText;
@@ -3173,7 +3363,7 @@ bool ASFormatter::isDereferenceOrAddressOf() const
 			return true;
 	}
 
-	// check for reference to a pointer *& (cannot have &*)
+	// check for reference to a pointer *&
 	if ((currentChar == '*' && nextChar == '&')
 	        || (previousNonWSChar == '*' && currentChar == '&'))
 		return false;
@@ -3261,6 +3451,27 @@ bool ASFormatter::isPointerOrReferenceVariable(const string& word) const
 }
 
 /**
+ * Check if * * is a pointer to a pointer or a multiply then a dereference.
+ *
+ * @return        true if a pointer *.
+ */
+bool ASFormatter::isPointerToPointer(const string& line, int currPos) const
+{
+	assert(line[currPos] == '*' && peekNextChar() == '*');
+	if ((int) line.length() > currPos + 1 && line[currPos + 1] == '*')
+		return true;
+	size_t nextText = line.find_first_not_of(" \t", currPos + 1);
+	if (nextText == string::npos || line[nextText] != '*')
+		return false;
+	size_t nextText2 = line.find_first_not_of(" \t", nextText + 1);
+	if (nextText == string::npos)
+		return false;
+	if (line[nextText2] == ')' || line[nextText2] == '*')
+		return true;
+	return false;
+}
+
+/**
  * check if the currently reached '+' or '-' character is a unary operator
  * this method takes for granted that the current character
  * is a '+' or '-'.
@@ -3271,11 +3482,31 @@ bool ASFormatter::isUnaryOperator() const
 {
 	assert(currentChar == '+' || currentChar == '-');
 
+	// does a digit follow a c-style cast
+	if (previousCommandChar == ')')
+	{
+		if (!isdigit(peekNextChar()))
+			return false;
+		size_t end = currentLine.rfind(')', charNum);
+		if (end == string::npos)
+			return false;
+		size_t lastChar = currentLine.find_last_not_of(" \t", end - 1);
+		if (lastChar == string::npos)
+			return false;
+		if (currentLine[lastChar] == '*')
+			end = lastChar;
+		string prevWord = getPreviousWord(currentLine, end);
+		if (prevWord.empty())
+			return false;
+		if (!isNumericVariable(prevWord))
+			return false;
+		return true;
+	}
+
 	return ((isCharImmediatelyPostReturn || !isLegalNameChar(previousCommandChar))
 	        && previousCommandChar != '.'
 	        && previousCommandChar != '\"'
 	        && previousCommandChar != '\''
-	        && previousCommandChar != ')'
 	        && previousCommandChar != ']');
 }
 
@@ -3325,7 +3556,7 @@ bool ASFormatter::isNonInStatementArrayBrace() const
 	char nextChar = peekNextChar();
 	// if this opening brace begins the line there will be no inStatement indent
 	if (currentLineBeginsWithBrace
-	        && charNum == (int) currentLineFirstBraceNum
+	        && (size_t) charNum == currentLineFirstBraceNum
 	        && nextChar != '}')
 		returnVal = true;
 	// if an opening brace ends the line there will be no inStatement indent
@@ -3378,15 +3609,11 @@ int ASFormatter::isOneLineBlockReached(const string& line, int startChar) const
 			continue;
 		}
 
-		if (ch == '\\')
-		{
-			++i;
-			continue;
-		}
-
 		if (isInQuote_)
 		{
-			if (ch == quoteChar_)
+			if (ch == '\\')
+				++i;
+			else if (ch == quoteChar_)
 				isInQuote_ = false;
 			continue;
 		}
@@ -3521,7 +3748,8 @@ bool ASFormatter::isUniformInitializerBrace() const
 	if (isCStyle() && !isInEnum && !isImmediatelyPostPreprocessor)
 	{
 		if (isInClassInitializer
-		        || isLegalNameChar(previousNonWSChar))
+		        || isLegalNameChar(previousNonWSChar)
+		        || previousNonWSChar == '(')
 			return true;
 	}
 	return false;
@@ -3610,11 +3838,12 @@ string ASFormatter::peekNextText(const string& firstLine,
                                  bool endOnEmptyLine /*false*/,
                                  shared_ptr<ASPeekStream> streamArg /*nullptr*/) const
 {
+	assert(sourceIterator->getPeekStart() == 0 || streamArg != nullptr);	// Borland may need != 0
 	bool isFirstLine = true;
 	string nextLine_ = firstLine;
 	size_t firstChar = string::npos;
 	shared_ptr<ASPeekStream> stream = streamArg;
-	if (stream == nullptr)							// Borland may need == 0
+	if (stream == nullptr)					// Borland may need == 0
 		stream = make_shared<ASPeekStream>(sourceIterator);
 
 	// find the first non-blank text, bypassing all comments.
@@ -3682,7 +3911,10 @@ void ASFormatter::adjustComments()
 		size_t endNum = currentLine.find("*/", charNum + 2);
 		if (endNum == string::npos)
 			return;
-		if (currentLine.find_first_not_of(" \t", endNum + 2) != string::npos)
+		// following line comments may be a tag from AStyleWx //[[)>
+		size_t nextNum = currentLine.find_first_not_of(" \t", endNum + 2);
+		if (nextNum != string::npos
+		        && currentLine.compare(nextNum, 2, "//") != 0)
 			return;
 	}
 
@@ -3854,7 +4086,8 @@ void ASFormatter::formatPointerOrReference()
 
 	int pa = pointerAlignment;
 	int ra = referenceAlignment;
-	int itemAlignment = (currentChar == '*' || currentChar == '^') ? pa : ((ra == REF_SAME_AS_PTR) ? pa : ra);
+	int itemAlignment = (currentChar == '*' || currentChar == '^')
+	                    ? pa : ((ra == REF_SAME_AS_PTR) ? pa : ra);
 
 	// check for ** and &&
 	int ptrLength = 1;
@@ -3900,7 +4133,7 @@ void ASFormatter::formatPointerOrReference()
 	}
 	else	// pointerAlignment == PTR_ALIGN_NONE
 	{
-		formattedLine.append(ptrLength, currentChar);
+		formattedLine.append(currentLine.substr(charNum, ptrLength));
 		if (ptrLength > 1)
 			goForward(ptrLength - 1);
 	}
@@ -3916,28 +4149,34 @@ void ASFormatter::formatPointerOrReferenceToType()
 
 	// do this before bumping charNum
 	bool isOldPRCentered = isPointerOrReferenceCentered();
-
+	string sequenceToInsert(1, currentChar);
+	// get the sequence
+	if (currentChar == peekNextChar())
+	{
+		for (size_t i = charNum + 1; currentLine.length() > i; i++)
+		{
+			if (currentLine[i] == sequenceToInsert[0])
+			{
+				sequenceToInsert.append(1, currentLine[i]);
+				goForward(1);
+				continue;
+			}
+			break;
+		}
+	}
+	// append the seqence
+	string charSave;
 	size_t prevCh = formattedLine.find_last_not_of(" \t");
-	if (prevCh == string::npos)
-		prevCh = 0;
-	if (formattedLine.length() == 0 || prevCh == formattedLine.length() - 1)
-		formattedLine.append(1, currentChar);
-	else
+	if (prevCh < formattedLine.length())
 	{
-		// exchange * or & with character following the type
-		// this may not work every time with a tab character
-		string charSave = formattedLine.substr(prevCh + 1, 1);
-		formattedLine[prevCh + 1] = currentChar;
+		charSave = formattedLine.substr(prevCh + 1);
+		formattedLine.resize(prevCh + 1);
+	}
+	formattedLine.append(sequenceToInsert);
+	if (peekNextChar() != ')')
 		formattedLine.append(charSave);
-	}
-	if (isSequenceReached("**") || isSequenceReached("&&"))
-	{
-		if (formattedLine.length() == 1)
-			formattedLine.append(1, currentChar);
-		else
-			formattedLine.insert(prevCh + 2, 1, currentChar);
-		goForward(1);
-	}
+	else
+		spacePadNum -= charSave.length();
 	// if no space after then add one
 	if (charNum < (int) currentLine.length() - 1
 	        && !isWhiteSpace(currentLine[charNum + 1])
@@ -3951,7 +4190,7 @@ void ASFormatter::formatPointerOrReferenceToType()
 		spacePadNum--;
 	}
 	// update the formattedLine split point
-	if (maxCodeLength != string::npos)
+	if (maxCodeLength != string::npos && formattedLine.length() > 0)
 	{
 		size_t index = formattedLine.length() - 1;
 		if (isWhiteSpace(formattedLine[index]))
@@ -3977,15 +4216,18 @@ void ASFormatter::formatPointerOrReferenceToMiddle()
 	else
 		wsBefore = charNum - wsBefore - 1;
 	string sequenceToInsert(1, currentChar);
-	if (isSequenceReached("**"))
+	if (currentChar == peekNextChar())
 	{
-		sequenceToInsert = "**";
-		goForward(1);
-	}
-	else if (isSequenceReached("&&"))
-	{
-		sequenceToInsert = "&&";
-		goForward(1);
+		for (size_t i = charNum + 1; currentLine.length() > i; i++)
+		{
+			if (currentLine[i] == sequenceToInsert[0])
+			{
+				sequenceToInsert.append(1, currentLine[i]);
+				goForward(1);
+				continue;
+			}
+			break;
+		}
 	}
 	// if reference to a pointer check for conflicting alignment
 	else if (currentChar == '*' && peekNextChar() == '&'
@@ -4057,7 +4299,10 @@ void ASFormatter::formatPointerOrReferenceToMiddle()
 		// insert the pointer or reference char
 		size_t padAfter = (wsBefore + wsAfter) / 2;
 		size_t index = formattedLine.length() - padAfter;
-		formattedLine.insert(index, sequenceToInsert);
+		if (index < formattedLine.length())
+			formattedLine.insert(index, sequenceToInsert);
+		else
+			formattedLine.append(sequenceToInsert);
 	}
 	else	// formattedLine.length() == 0
 	{
@@ -4095,15 +4340,18 @@ void ASFormatter::formatPointerOrReferenceToName()
 	if (startNum == string::npos)
 		startNum = 0;
 	string sequenceToInsert(1, currentChar);
-	if (isSequenceReached("**"))
+	if (currentChar == peekNextChar())
 	{
-		sequenceToInsert = "**";
-		goForward(1);
-	}
-	else if (isSequenceReached("&&"))
-	{
-		sequenceToInsert = "&&";
-		goForward(1);
+		for (size_t i = charNum + 1; currentLine.length() > i; i++)
+		{
+			if (currentLine[i] == sequenceToInsert[0])
+			{
+				sequenceToInsert.append(1, currentLine[i]);
+				goForward(1);
+				continue;
+			}
+			break;
+		}
 	}
 	// if reference to a pointer align both to name
 	else if (currentChar == '*' && peekNextChar() == '&')
@@ -4116,7 +4364,7 @@ void ASFormatter::formatPointerOrReferenceToName()
 	char peekedChar = peekNextChar();
 	bool isAfterScopeResolution = previousNonWSChar == ':';		// check for ::
 	// if this is not the last thing on the line
-	if (!isBeforeAnyComment()
+	if ((isLegalNameChar(peekedChar) || peekedChar == '(' || peekedChar == '[' || peekedChar == '=')
 	        && (int) currentLine.find_first_not_of(" \t", charNum + 1) > charNum)
 	{
 		// goForward() to convert tabs to spaces, if necessary,
@@ -4128,13 +4376,13 @@ void ASFormatter::formatPointerOrReferenceToName()
 			if (shouldPadParensOutside && peekedChar == '(' && !isOldPRCentered)
 			{
 				// empty parens don't count
-				size_t start = currentLine.find_first_not_of("( \t", charNum + 1);
+				size_t start = currentLine.find_first_not_of("( \t", i);
 				if (start != string::npos && currentLine[start] != ')')
 					break;
 			}
 			goForward(1);
 			if (formattedLine.length() > 0)
-				formattedLine.append(1, currentLine[i]);
+				formattedLine.append(1, currentLine[charNum]);
 			else
 				spacePadNum--;
 		}
@@ -4159,6 +4407,7 @@ void ASFormatter::formatPointerOrReferenceToName()
 	if (isOldPRCentered
 	        && formattedLine.length() > startNum + 1
 	        && isWhiteSpace(formattedLine[startNum + 1])
+	        && peekedChar != '*'		// check for '* *'
 	        && !isBeforeAnyComment())
 	{
 		formattedLine.erase(startNum + 1, 1);
@@ -4207,7 +4456,8 @@ void ASFormatter::formatPointerOrReferenceCast()
 
 	int pa = pointerAlignment;
 	int ra = referenceAlignment;
-	int itemAlignment = (currentChar == '*' || currentChar == '^') ? pa : ((ra == REF_SAME_AS_PTR) ? pa : ra);
+	int itemAlignment = (currentChar == '*' || currentChar == '^')
+	                    ? pa : ((ra == REF_SAME_AS_PTR) ? pa : ra);
 
 	string sequenceToInsert(1, currentChar);
 	if (isSequenceReached("**") || isSequenceReached("&&"))
@@ -4226,9 +4476,19 @@ void ASFormatter::formatPointerOrReferenceCast()
 	if (prevNum != string::npos)
 	{
 		prevCh = formattedLine[prevNum];
-		if (prevNum + 1 < formattedLine.length()
-		        && isWhiteSpace(formattedLine[prevNum + 1])
-		        && prevCh != '(')
+		if (itemAlignment == PTR_ALIGN_TYPE && currentChar == '*' && prevCh == '*')
+		{
+			// '* *' may be a multiply followed by a dereference
+			if (prevNum + 2 < formattedLine.length()
+			        && isWhiteSpace(formattedLine[prevNum + 2]))
+			{
+				spacePadNum -= (formattedLine.length() - 2 - prevNum);
+				formattedLine.erase(prevNum + 2);
+			}
+		}
+		else if (prevNum + 1 < formattedLine.length()
+		         && isWhiteSpace(formattedLine[prevNum + 1])
+		         && prevCh != '(')
 		{
 			spacePadNum -= (formattedLine.length() - 1 - prevNum);
 			formattedLine.erase(prevNum + 1);
@@ -4292,43 +4552,19 @@ void ASFormatter::padParens()
 					        && isCharPotentialHeader(prevWord, 0))
 						prevWordH = ASBase::findHeader(prevWord, 0, headers);
 					if (prevWordH != nullptr)
-						prevIsParenHeader = true;
-					else if (prevWord == AS_RETURN)  // don't unpad
-						prevIsParenHeader = true;
+						prevIsParenHeader = true;    // don't unpad
+					else if (prevWord == AS_RETURN)
+						prevIsParenHeader = true;    // don't unpad
 					else if ((prevWord == AS_NEW || prevWord == AS_DELETE)
-					         && shouldPadHeader)  // don't unpad
-						prevIsParenHeader = true;
-					else if (isCStyle() && prevWord == AS_THROW && shouldPadHeader) // don't unpad
-						prevIsParenHeader = true;
-					else if (prevWord == "and" || prevWord == "or" || prevWord == "in")  // don't unpad
-						prevIsParenHeader = true;
+					         && shouldPadHeader)
+						prevIsParenHeader = true;    // don't unpad
+					else if (isCStyle() && prevWord == AS_THROW && shouldPadHeader)
+						prevIsParenHeader = true;    // don't unpad
+					else if (prevWord == "and" || prevWord == "or" || prevWord == "in")
+						prevIsParenHeader = true;    // don't unpad
 					// don't unpad variables
-					else if (prevWord == "bool"
-					         || prevWord == "int"
-					         || prevWord == "void"
-					         || prevWord == "void*"
-					         || prevWord == "char"
-					         || prevWord == "char*"
-					         || prevWord == "long"
-					         || prevWord == "double"
-					         || prevWord == "float"
-					         || (prevWord.length() >= 4     // check end of word for _t
-					             && prevWord.compare(prevWord.length() - 2, 2, "_t") == 0)
-					         || prevWord == "Int32"
-					         || prevWord == "UInt32"
-					         || prevWord == "Int64"
-					         || prevWord == "UInt64"
-					         || prevWord == "BOOL"
-					         || prevWord == "DWORD"
-					         || prevWord == "HWND"
-					         || prevWord == "INT"
-					         || prevWord == "LPSTR"
-					         || prevWord == "VOID"
-					         || prevWord == "LPVOID"
-					        )
-					{
-						prevIsParenHeader = true;
-					}
+					else if (isNumericVariable(prevWord))
+						prevIsParenHeader = true;    // don't unpad
 				}
 			}
 			// do not unpad operators, but leave them if already padded
@@ -4455,22 +4691,23 @@ void ASFormatter::padParens()
 }
 
 /**
-* add or remove space padding to objective-c parens
+* add or remove space padding to objective-c method prefix (- or +)
+* if this is a '(' it begins a return type
 * these options have precedence over the padParens methods
 * the padParens method has already been called, this method adjusts
 */
 void ASFormatter::padObjCMethodPrefix()
 {
-	assert(currentChar == '(' && isImmediatelyPostObjCMethodPrefix);
+	assert(isInObjCMethodDefinition && isImmediatelyPostObjCMethodPrefix);
 	assert(shouldPadMethodPrefix || shouldUnPadMethodPrefix);
 
 	size_t prefix = formattedLine.find_first_of("+-");
 	if (prefix == string::npos)
 		return;
-	size_t paren = formattedLine.find_first_of('(');
-	if (paren == string::npos)
-		return;
-	int spaces = paren - prefix - 1;
+	size_t firstChar = formattedLine.find_first_not_of(" \t", prefix + 1);
+	if (firstChar == string::npos)
+		firstChar = formattedLine.length();
+	int spaces = firstChar - prefix - 1;
 
 	if (shouldPadMethodPrefix)
 	{
@@ -4482,6 +4719,7 @@ void ASFormatter::padObjCMethodPrefix()
 		else if (spaces > 1)
 		{
 			formattedLine.erase(prefix + 1, spaces - 1);
+			formattedLine[prefix + 1] = ' ';  // convert any tab to space
 			spacePadNum -= spaces - 1;
 		}
 	}
@@ -4526,6 +4764,7 @@ void ASFormatter::padObjCReturnType()
 		{
 			// do not use goForward here
 			currentLine.erase(charNum + 1, spaces - 1);
+			currentLine[charNum + 1] = ' ';  // convert any tab to space
 			spacePadNum -= spaces - 1;
 		}
 	}
@@ -4535,16 +4774,13 @@ void ASFormatter::padObjCReturnType()
 		// this will already be padded if pad-paren is used
 		if (formattedLine[formattedLine.length() - 1] == ' ')
 		{
-			spacePadNum -= formattedLine.length() - 1 - nextText;
 			int lastText = formattedLine.find_last_not_of(" \t");
+			spacePadNum -= formattedLine.length() - lastText - 1;
 			formattedLine.resize(lastText + 1);
 		}
-		if (spaces > 0)
-		{
-			// do not use goForward here
-			currentLine.erase(charNum + 1, spaces);
-			spacePadNum -= spaces;
-		}
+		// do not use goForward here
+		currentLine.erase(charNum + 1, spaces);
+		spacePadNum -= spaces;
 	}
 }
 
@@ -4581,6 +4817,7 @@ void ASFormatter::padObjCParamType()
 			if (spaces > 1)
 			{
 				formattedLine.erase(prevText + 1, spaces - 1);
+				formattedLine[prevText + 1] = ' ';  // convert any tab to space
 				spacePadNum -= spaces - 1;
 			}
 		}
@@ -4618,6 +4855,7 @@ void ASFormatter::padObjCParamType()
 			{
 				// do not use goForward here
 				currentLine.erase(charNum + 1, spaces - 1);
+				currentLine[charNum + 1] = ' ';  // convert any tab to space
 				spacePadNum -= spaces - 1;
 			}
 		}
@@ -4660,7 +4898,7 @@ void ASFormatter::formatOpeningBrace(BraceType braceType)
 
 	if (breakBrace)
 	{
-		if (isBeforeAnyComment() && isOkToBreakBlock(braceType))
+		if (isBeforeAnyComment() && isOkToBreakBlock(braceType) && sourceIterator->hasMoreLines())
 		{
 			// if comment is at line end leave the comment on this line
 			if (isBeforeAnyLineEndComment(charNum) && !currentLineBeginsWithBrace)
@@ -4756,7 +4994,7 @@ void ASFormatter::formatOpeningBrace(BraceType braceType)
 				}
 				else
 				{
-					if (currentLineBeginsWithBrace && charNum == (int) currentLineFirstBraceNum)
+					if (currentLineBeginsWithBrace && (size_t) charNum == currentLineFirstBraceNum)
 					{
 						appendSpacePad();
 						appendCurrentChar(false);		// attach
@@ -4923,7 +5161,7 @@ void ASFormatter::formatArrayBraces(BraceType braceType, bool isOpeningArrayBrac
 							testForTimeToSplitFormattedLine();		// line length will have changed
 
 							if (currentLineBeginsWithBrace
-							        && (int) currentLineFirstBraceNum == charNum)
+							        && currentLineFirstBraceNum == (size_t) charNum)
 								shouldBreakLineAtNextChar = true;
 						}
 						else
@@ -4943,7 +5181,7 @@ void ASFormatter::formatArrayBraces(BraceType braceType, bool isOpeningArrayBrac
 			{
 				if (isWhiteSpace(peekNextChar()) && !isInVirginLine)
 					breakLine();
-				else if (isBeforeAnyComment())
+				else if (isBeforeAnyComment() && sourceIterator->hasMoreLines())
 				{
 					// do not break unless comment is at line end
 					if (isBeforeAnyLineEndComment(charNum) && !currentLineBeginsWithBrace)
@@ -4961,7 +5199,7 @@ void ASFormatter::formatArrayBraces(BraceType braceType, bool isOpeningArrayBrac
 				appendCurrentChar();
 
 				if (currentLineBeginsWithBrace
-				        && (int) currentLineFirstBraceNum == charNum
+				        && currentLineFirstBraceNum == (size_t) charNum
 				        && !isBraceType(braceType, SINGLE_LINE_TYPE))
 					shouldBreakLineAtNextChar = true;
 			}
@@ -4969,7 +5207,7 @@ void ASFormatter::formatArrayBraces(BraceType braceType, bool isOpeningArrayBrac
 			{
 				if (isWhiteSpace(peekNextChar()) && !isInVirginLine)
 					breakLine();
-				else if (isBeforeAnyComment())
+				else if (isBeforeAnyComment() && sourceIterator->hasMoreLines())
 				{
 					// do not break unless comment is at line end
 					if (isBeforeAnyLineEndComment(charNum) && !currentLineBeginsWithBrace)
@@ -4989,7 +5227,7 @@ void ASFormatter::formatArrayBraces(BraceType braceType, bool isOpeningArrayBrac
 			else if (braceFormatMode == NONE_MODE)
 			{
 				if (currentLineBeginsWithBrace
-				        && charNum == (int) currentLineFirstBraceNum)
+				        && (size_t) charNum == currentLineFirstBraceNum)
 				{
 					appendCurrentChar();                // don't attach
 				}
@@ -5054,7 +5292,7 @@ void ASFormatter::formatArrayBraces(BraceType braceType, bool isOpeningArrayBrac
 
 		// if a declaration follows an enum definition, space pad
 		char peekedChar = peekNextChar();
-		if (isLegalNameChar(peekedChar)
+		if ((isLegalNameChar(peekedChar) && peekedChar != '.')
 		        || peekedChar == '[')
 			appendSpaceAfter();
 	}
@@ -5291,7 +5529,7 @@ void ASFormatter::convertTabToSpaces()
 }
 
 /**
-* is it OK to break this block?
+* is it ok to break this block?
 */
 bool ASFormatter::isOkToBreakBlock(BraceType braceType) const
 {
@@ -5468,7 +5706,7 @@ bool ASFormatter::isCurrentBraceBroken() const
 	else if (braceFormatMode == NONE_MODE)
 	{
 		if (currentLineBeginsWithBrace
-		        && (int) currentLineFirstBraceNum == charNum)
+		        && currentLineFirstBraceNum == (size_t) charNum)
 			breakBrace = true;
 	}
 	else if (braceFormatMode == BREAK_MODE || braceFormatMode == RUN_IN_MODE)
@@ -6203,6 +6441,8 @@ bool ASFormatter::removeBracesFromStatement()
 		if (nextChar != string::npos)
 			break;
 	}
+	if (!stream.hasMoreLines())
+		return false;
 
 	// don't remove if comments or a header follow the brace
 	if ((nextLine_.compare(nextChar, 2, "/*") == 0)
@@ -6297,6 +6537,277 @@ size_t ASFormatter::findNextChar(const string& line, char searchChar, int search
 		return string::npos;
 
 	return i;
+}
+
+/**
+ * Find split point for break/attach return type.
+ */
+void ASFormatter::findReturnTypeSplitPoint(const string& firstLine)
+{
+	assert((isBraceType(braceTypeStack->back(), NULL_TYPE)
+	        || isBraceType(braceTypeStack->back(), DEFINITION_TYPE)));
+	assert(shouldBreakReturnType || shouldBreakReturnTypeDecl
+	       || shouldAttachReturnType || shouldAttachReturnTypeDecl);
+
+	bool isFirstLine     = true;
+	bool isInComment_    = false;
+	bool isInQuote_      = false;
+	bool foundSplitPoint = false;
+	bool isAlreadyBroken = false;
+	char quoteChar_      = ' ';
+	char currNonWSChar   = ' ';
+	char prevNonWSChar   = ' ';
+	size_t parenCount    = 0;
+	size_t squareCount   = 0;
+	size_t angleCount    = 0;
+	size_t breakLineNum  = 0;
+	size_t breakCharNum  = string::npos;
+	string line          = firstLine;
+
+	// Process the lines until a ';' or '{'.
+	ASPeekStream stream(sourceIterator);
+	while (stream.hasMoreLines() || isFirstLine)
+	{
+		if (isFirstLine)
+			isFirstLine = false;
+		else
+		{
+			if (isInQuote_)
+				return;
+			line = stream.peekNextLine();
+			if (!foundSplitPoint)
+				++breakLineNum;
+		}
+		size_t firstCharNum = line.find_first_not_of(" \t");
+		if (firstCharNum == string::npos)
+			continue;
+		if (line[firstCharNum] == '#')
+		{
+			// don't attach to a preprocessor
+			if (shouldAttachReturnType || shouldAttachReturnTypeDecl)
+				return;
+			else
+				continue;
+		}
+		// parse the line
+		for (size_t i = 0; i < line.length(); i++)
+		{
+			if (!isWhiteSpace(line[i]))
+			{
+				prevNonWSChar = currNonWSChar;
+				currNonWSChar = line[i];
+			}
+			else if (line[i] == '\t' && shouldConvertTabs)
+			{
+				size_t tabSize = getTabLength();
+				size_t numSpaces = tabSize - ((tabIncrementIn + i) % tabSize);
+				line.replace(i, 1, numSpaces, ' ');
+				currentChar = line[i];
+			}
+			if (line.compare(i, 2, "/*") == 0)
+				isInComment_ = true;
+			if (isInComment_)
+			{
+				if (line.compare(i, 2, "*/") == 0)
+				{
+					isInComment_ = false;
+					++i;
+				}
+				continue;
+			}
+			if (line[i] == '\\')
+			{
+				++i;
+				continue;
+			}
+
+			if (isInQuote_)
+			{
+				if (line[i] == quoteChar_)
+					isInQuote_ = false;
+				continue;
+			}
+
+			if (line[i] == '"'
+			        || (line[i] == '\'' && !isDigitSeparator(line, i)))
+			{
+				isInQuote_ = true;
+				quoteChar_ = line[i];
+				continue;
+			}
+			if (line.compare(i, 2, "//") == 0)
+			{
+				i = line.length();
+				continue;
+			}
+			// not in quote or comment
+			if (!foundSplitPoint)
+			{
+				if (line[i] == '<')
+				{
+					++angleCount;
+					continue;
+				}
+				if (line[i] == '>')
+				{
+					if (angleCount)
+						--angleCount;
+					if (!angleCount)
+					{
+						size_t nextCharNum = line.find_first_not_of(" \t*&", i + 1);
+						if (nextCharNum == string::npos)
+						{
+							breakCharNum  = string::npos;
+							continue;
+						}
+						if (line[nextCharNum] != ':')		// scope operator
+							breakCharNum  = nextCharNum;
+					}
+					continue;
+				}
+				if (angleCount)
+					continue;
+				if (line[i] == '[')
+				{
+					++squareCount;
+					continue;
+				}
+				if (line[i] == ']')
+				{
+					if (squareCount)
+						--squareCount;
+					continue;
+				}
+				// an assignment before the parens is not a function
+				if (line[i] == '=')
+					return;
+				if (isWhiteSpace(line[i]) || line[i] == '*' || line[i] == '&')
+				{
+					size_t nextNum = line.find_first_not_of(" \t", i + 1);
+					if (nextNum == string::npos)
+						breakCharNum = string::npos;
+					else
+					{
+						if (line.length() > nextNum + 1
+						        && line[nextNum] == ':' && line[nextNum + 1] == ':')
+							i = --nextNum;
+						else if (line[nextNum] != '(')
+							breakCharNum = string::npos;
+					}
+					continue;
+				}
+				if ((isLegalNameChar(line[i]) || line[i] == '~')
+				        && breakCharNum == string::npos)
+				{
+					breakCharNum = i;
+					if (isLegalNameChar(line[i])
+					        && findKeyword(line, i, AS_OPERATOR))
+					{
+						if (breakCharNum == firstCharNum)
+							isAlreadyBroken = true;
+						foundSplitPoint = true;
+						// find the operator, may be parens
+						size_t parenNum =
+						    line.find_first_not_of(" \t", i + AS_OPERATOR.length());
+						if (parenNum == string::npos)
+							return;
+						// find paren after the operator
+						parenNum = line.find('(', parenNum + 1);
+						if (parenNum == string::npos)
+							return;
+						i = --parenNum;
+					}
+					continue;
+				}
+				if (line[i] == ':'
+				        && line.length() > i + 1
+				        && line[i + 1] == ':')
+				{
+					size_t nextCharNum = line.find_first_not_of(" \t:", i + 1);
+					if (nextCharNum == string::npos)
+						return;
+
+					if (isLegalNameChar(line[nextCharNum])
+					        && findKeyword(line, nextCharNum, AS_OPERATOR))
+					{
+						i = nextCharNum;
+						if (breakCharNum == firstCharNum)
+							isAlreadyBroken = true;
+						foundSplitPoint = true;
+						// find the operator, may be parens
+						size_t parenNum =
+						    line.find_first_not_of(" \t", i + AS_OPERATOR.length());
+						if (parenNum == string::npos)
+							return;
+						// find paren after the operator
+						parenNum = line.find('(', parenNum + 1);
+						if (parenNum == string::npos)
+							return;
+						i = --parenNum;
+					}
+					else
+						i = --nextCharNum;
+					continue;
+				}
+				if (line[i] == '(' && !squareCount)
+				{
+					// is line is already broken?
+					if (breakCharNum == firstCharNum && breakLineNum > 0)
+						isAlreadyBroken = true;
+					++parenCount;
+					foundSplitPoint = true;
+					continue;
+				}
+			}
+			// end !foundSplitPoint
+			if (line[i] == '(')
+			{
+				// consecutive ')(' parens is probably a function pointer
+				if (prevNonWSChar == ')' && !parenCount)
+					return;
+				++parenCount;
+				continue;
+			}
+			if (line[i] == ')')
+			{
+				if (parenCount)
+					--parenCount;
+				continue;
+			}
+			if (line[i] == '{')
+			{
+				if (shouldBreakReturnType && foundSplitPoint && !isAlreadyBroken)
+				{
+					methodBreakCharNum = breakCharNum;
+					methodBreakLineNum = breakLineNum;
+				}
+				if (shouldAttachReturnType && foundSplitPoint && isAlreadyBroken)
+				{
+					methodAttachCharNum = breakCharNum;
+					methodAttachLineNum = breakLineNum;
+				}
+				return;
+			}
+			if (line[i] == ';')
+			{
+				if (shouldBreakReturnTypeDecl && foundSplitPoint && !isAlreadyBroken)
+				{
+					methodBreakCharNum = breakCharNum;
+					methodBreakLineNum = breakLineNum;
+				}
+				if ((shouldAttachReturnTypeDecl && foundSplitPoint && isAlreadyBroken))
+				{
+					methodAttachCharNum = breakCharNum;
+					methodAttachLineNum = breakLineNum;
+				}
+				return;
+			}
+			if (line[i] == '}')
+				return;
+		}   // end of for loop
+		if (!foundSplitPoint)
+			breakCharNum = string::npos;
+	}   // end of while loop
 }
 
 /**
@@ -6509,7 +7020,7 @@ bool ASFormatter::isIndentablePreprocessorBlock(const string& firstLine, size_t 
 			else if (nextLine_[i] == ':')
 			{
 				// check for '::'
-				if (nextLine_.length() > i && nextLine_[i + 1] == ':')
+				if (nextLine_.length() > i + 1 && nextLine_[i + 1] == ':')
 					++i;
 				else
 					isInClassConstructor = true;
@@ -6927,7 +7438,7 @@ void ASFormatter::updateFormattedLineSplitPoints(char appendedChar)
 		{
 			// if follows an operator break before
 			size_t parenNum;
-			if (isCharPotentialOperator(previousNonWSChar))
+			if (previousNonWSChar != ' ' && isCharPotentialOperator(previousNonWSChar))
 				parenNum = formattedLine.length() - 1;
 			else
 				parenNum = formattedLine.length();
@@ -7225,7 +7736,7 @@ size_t ASFormatter::findFormattedLineSplitPoint() const
 	{
 		// if end of the currentLine, find a new split point
 		size_t newCharNum;
-		if (isCharPotentialHeader(currentLine, charNum))
+		if (!isWhiteSpace(currentChar) && isCharPotentialHeader(currentLine, charNum))
 			newCharNum = getCurrentWord(currentLine, charNum).length() + charNum;
 		else
 			newCharNum = charNum + 2;
@@ -7423,11 +7934,15 @@ void ASFormatter::resetEndOfStatement()
 	isSharpAccessor = false;
 	isSharpDelegate = false;
 	isInObjCMethodDefinition = false;
+	isImmediatelyPostObjCMethodPrefix = false;
+	isInObjCReturnType = false;
+	isInObjCParam = false;
 	isInObjCInterface = false;
 	isInObjCSelector = false;
 	isInEnum = false;
 	isInExternC = false;
 	elseHeaderFollowsComments = false;
+	returnTypeChecked = false;
 	nonInStatementBrace = 0;
 	while (!questionMarkStack->empty())
 		questionMarkStack->pop_back();
@@ -7444,6 +7959,7 @@ int ASFormatter::findObjCColonAlignment() const
 	bool foundMethodColon = false;
 	bool isInComment_ = false;
 	bool isInQuote_ = false;
+	bool haveTernary = false;
 	char quoteChar_ = ' ';
 	int  sqBracketCount = 0;
 	int  colonAdjust = 0;
@@ -7516,9 +8032,19 @@ int ASFormatter::findObjCColonAlignment() const
 				continue;
 			if (haveFirstColon)  // multiple colons per line
 				continue;
+			if (nextLine_[i] == '?')
+			{
+				haveTernary = true;
+				continue;
+			}
 			// compute colon adjustment
 			if (nextLine_[i] == ':')
 			{
+				if (haveTernary)
+				{
+					haveTernary = false;
+					continue;
+				}
 				haveFirstColon = true;
 				foundMethodColon = true;
 				if (shouldPadMethodColon)
@@ -7573,15 +8099,19 @@ void ASFormatter::padObjCMethodColon()
 				formattedLine.erase(i);
 				--commentAdjust;
 			}
-		appendSpacePad();
+		if (formattedLine.length() > 0)
+		{
+			appendSpacePad();
+			formattedLine.back() = ' ';  // convert any tab to space
+		}
 	}
 	if (objCColonPadMode == COLON_PAD_NONE
 	        || objCColonPadMode == COLON_PAD_BEFORE
 	        || nextChar == ')')
 	{
 		// remove spaces after
-		int nextText = currentLine.find_first_not_of(" \t", charNum + 1);
-		if (nextText == (int)string::npos)
+		size_t nextText = currentLine.find_first_not_of(" \t", charNum + 1);
+		if (nextText == string::npos)
 			nextText = currentLine.length();
 		int spaces = nextText - charNum - 1;
 		if (spaces > 0)
@@ -7594,8 +8124,8 @@ void ASFormatter::padObjCMethodColon()
 	else
 	{
 		// pad space after
-		int nextText = currentLine.find_first_not_of(" \t", charNum + 1);
-		if (nextText == (int)string::npos)
+		size_t nextText = currentLine.find_first_not_of(" \t", charNum + 1);
+		if (nextText == string::npos)
 			nextText = currentLine.length();
 		int spaces = nextText - charNum - 1;
 		if (spaces == 0)
@@ -7607,6 +8137,7 @@ void ASFormatter::padObjCMethodColon()
 		{
 			// do not use goForward here
 			currentLine.erase(charNum + 1, spaces - 1);
+			currentLine[charNum + 1] = ' ';  // convert any tab to space
 			spacePadNum -= spaces - 1;
 		}
 	}
