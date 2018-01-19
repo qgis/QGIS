@@ -111,18 +111,9 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
   modeMenu->addAction( mAdvancedModeAction );
   if ( mDisplayMode == ToolBar )
   {
-    QMenu *advConfigMenu = new QMenu( this );
-    QWidgetAction *advConfigWidgetAction = new QWidgetAction( advConfigMenu );
-    advConfigWidgetAction->setDefaultWidget( mLayerTreeView );
-    advConfigMenu->addAction( advConfigWidgetAction );
-    mEditAdvancedConfigAction = new QAction( tr( "Edit advanced configuration" ), modeMenu );
-    mEditAdvancedConfigAction->setMenu( advConfigMenu );
-
+    modeMenu->addSeparator();
     QAction *openDialogAction = new QAction( tr( "Open snapping options" ), modeMenu );
     connect( openDialogAction, &QAction::triggered, QgisApp::instance(), &QgisApp::snappingOptions );
-
-    modeMenu->addSeparator();
-    modeMenu->addAction( mEditAdvancedConfigAction );
     modeMenu->addAction( openDialogAction );
   }
   mModeButton->setMenu( modeMenu );
@@ -215,6 +206,21 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
     // hiding widget in a toolbar is not possible, actions are required
     tb->addAction( mEnabledAction );
     mModeAction = tb->addWidget( mModeButton );
+
+    // edit advanced config button
+    QToolButton *advConfigButton = new QToolButton( this );
+    advConfigButton->setPopupMode( QToolButton::InstantPopup );
+    QMenu *advConfigMenu = new QMenu( this );
+    QWidgetAction *advConfigWidgetAction = new QWidgetAction( advConfigMenu );
+    advConfigWidgetAction->setDefaultWidget( mLayerTreeView );
+    advConfigMenu->addAction( advConfigWidgetAction );
+    advConfigButton->setIcon( QIcon( QgsApplication::getThemeIcon( "/mActionShowAllLayers.svg" ) ) );
+    advConfigButton->setToolTip( tr( "Edit avdanced configuration" ) );
+    advConfigButton->setObjectName( QStringLiteral( "EditAdvancedConfigurationButton" ) );
+    advConfigButton->setMenu( advConfigMenu );
+    mEditAdvancedConfigAction = tb->addWidget( advConfigButton );
+
+    // other buttons / actions
     mTypeAction = tb->addWidget( mTypeButton );
     mToleranceAction = tb->addWidget( mToleranceSpinBox );
     mUnitAction = tb->addWidget( mUnitsComboBox );
