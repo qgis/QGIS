@@ -104,7 +104,7 @@ void QgsDistanceWidget::distanceSpinBoxValueChanged( double distance )
 
 QgsMapToolSelectRadius::QgsMapToolSelectRadius( QgsMapCanvas *canvas )
   : QgsMapTool( canvas )
-  , mSnapIndicator( new QgsSnapIndicator( canvas ) )
+  , mSnapIndicator( qgis::make_unique< QgsSnapIndicator >( canvas ) )
 {
   mCursor = Qt::ArrowCursor;
 }
@@ -112,7 +112,6 @@ QgsMapToolSelectRadius::QgsMapToolSelectRadius( QgsMapCanvas *canvas )
 QgsMapToolSelectRadius::~QgsMapToolSelectRadius()
 {
   deleteRotationWidget();
-  deleteRubberband();
 }
 
 void QgsMapToolSelectRadius::canvasMoveEvent( QgsMapMouseEvent *e )
@@ -125,7 +124,7 @@ void QgsMapToolSelectRadius::canvasMoveEvent( QgsMapMouseEvent *e )
 
   if ( !mRubberBand )
   {
-    mRubberBand = new QgsRubberBand( mCanvas, QgsWkbTypes::PolygonGeometry );
+    mRubberBand = qgis::make_unique< QgsRubberBand >( mCanvas, QgsWkbTypes::PolygonGeometry );
     mRubberBand->setFillColor( mFillColor );
     mRubberBand->setStrokeColor( mStrokeColor );
   }
@@ -157,7 +156,7 @@ void QgsMapToolSelectRadius::canvasReleaseEvent( QgsMapMouseEvent *e )
   {
     if ( !mRubberBand )
     {
-      mRubberBand = new QgsRubberBand( mCanvas, QgsWkbTypes::PolygonGeometry );
+      mRubberBand = qgis::make_unique< QgsRubberBand >( mCanvas, QgsWkbTypes::PolygonGeometry );
       mRubberBand->setFillColor( mFillColor );
       mRubberBand->setStrokeColor( mStrokeColor );
     }
@@ -242,10 +241,8 @@ void QgsMapToolSelectRadius::cancel()
 
 void QgsMapToolSelectRadius::deleteRubberband()
 {
-  delete mRubberBand;
-  mRubberBand = nullptr;
+  mRubberBand.reset();
 }
-
 
 void QgsMapToolSelectRadius::createRotationWidget()
 {
