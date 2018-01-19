@@ -562,18 +562,18 @@ ENDIF (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 
 IF (WITH_INTERNAL_QEXTSERIALPORT)
   SET(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
-    gps/qextserialport/qextserialport.cpp
-    gps/qextserialport/qextserialenumerator.cpp
+    ${CMAKE_SOURCE_DIR}/external/qextserialport/qextserialport.cpp
+    ${CMAKE_SOURCE_DIR}/external/qextserialport/qextserialenumerator.cpp
   )
   IF(WIN32)
     SET(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
-      gps/qextserialport/win_qextserialport.cpp
+      ${CMAKE_SOURCE_DIR}/external/qextserialport/win_qextserialport.cpp
     )
     ADD_DEFINITIONS(-D_TTY_WIN_)
 
   ELSE(WIN32)
     SET(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
-      gps/qextserialport/posix_qextserialport.cpp
+      ${CMAKE_SOURCE_DIR}/external/qextserialport/posix_qextserialport.cpp
     )
     ADD_DEFINITIONS(-D_TTY_POSIX_)
   ENDIF(WIN32)
@@ -810,8 +810,8 @@ ENDIF(NOT WITH_QTWEBKIT)
 
 IF (WITH_INTERNAL_QEXTSERIALPORT)
   SET(QGIS_CORE_MOC_HDRS ${QGIS_CORE_MOC_HDRS}
-    gps/qextserialport/qextserialport.h
-    gps/qextserialport/qextserialenumerator.h
+    ${CMAKE_SOURCE_DIR}/external/qextserialport/qextserialport.h
+    ${CMAKE_SOURCE_DIR}/external/qextserialport/qextserialenumerator.h
   )
 ENDIF (WITH_INTERNAL_QEXTSERIALPORT)
 
@@ -1236,9 +1236,12 @@ INCLUDE_DIRECTORIES(
   renderer
   scalebar
   symbology
-  gps/qextserialport
   metadata
 )
+IF (WITH_INTERNAL_QEXTSERIALPORT)
+  INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/external/qextserialport)
+ENDIF(WITH_INTERNAL_QEXTSERIALPORT)
+
 INCLUDE_DIRECTORIES(SYSTEM
   ${LIBZIP_INCLUDE_DIRS}
   ${SPATIALINDEX_INCLUDE_DIR}
@@ -1251,6 +1254,7 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${QCA_INCLUDE_DIR}
   ${QTKEYCHAIN_INCLUDE_DIR}
 )
+
 
 IF (APPLE)
   # Libtasn1 is for DER-encoded PKI ASN.1 parsing/extracting workarounds
