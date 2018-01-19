@@ -202,7 +202,7 @@ QgsCadUtils::AlignMapPointOutput QgsCadUtils::alignMapPoint( const QgsPointXY &o
   // 1. "hard" lock defined by the user
   // 2. "soft" lock from common angle (e.g. 45 degrees)
   bool angleLocked = false, angleRelative = false;
-  int angleValueDeg = 0;
+  double angleValueDeg = 0;
   if ( ctx.angleConstraint.locked )
   {
     angleLocked = true;
