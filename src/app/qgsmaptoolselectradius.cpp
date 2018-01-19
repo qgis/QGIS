@@ -29,6 +29,7 @@ email                : jpalmer at linz dot govt dot nz
 #include "qgis.h"
 #include "qgslogger.h"
 #include "qgsdoublespinbox.h"
+#include "qgssnapindicator.h"
 
 
 const int RADIUS_SEGMENTS = 80;
@@ -103,11 +104,9 @@ void QgsDistanceWidget::distanceSpinBoxValueChanged( double distance )
 
 QgsMapToolSelectRadius::QgsMapToolSelectRadius( QgsMapCanvas *canvas )
   : QgsMapTool( canvas )
+  , mSnapIndicator( new QgsSnapIndicator( canvas ) )
 {
-  mRubberBand = nullptr;
   mCursor = Qt::ArrowCursor;
-  mFillColor = QColor( 254, 178, 76, 63 );
-  mStrokeColor = QColor( 254, 58, 29, 100 );
 }
 
 QgsMapToolSelectRadius::~QgsMapToolSelectRadius()
@@ -118,6 +117,9 @@ QgsMapToolSelectRadius::~QgsMapToolSelectRadius()
 
 void QgsMapToolSelectRadius::canvasMoveEvent( QgsMapMouseEvent *e )
 {
+  QgsPointXY radiusEdge = e->snapPoint();
+  mSnapIndicator->setMatch( e->mapPointMatch() );
+
   if ( !mActive )
     return;
 
@@ -128,7 +130,6 @@ void QgsMapToolSelectRadius::canvasMoveEvent( QgsMapMouseEvent *e )
     mRubberBand->setStrokeColor( mStrokeColor );
   }
 
-  QgsPointXY radiusEdge = toMapCoordinates( e->pos() );
   updateRadiusFromEdge( radiusEdge );
 }
 
@@ -149,7 +150,7 @@ void QgsMapToolSelectRadius::canvasReleaseEvent( QgsMapMouseEvent *e )
   if ( !mActive )
   {
     mActive = true;
-    mRadiusCenter = toMapCoordinates( e->pos() );
+    mRadiusCenter = e->snapPoint();
     createRotationWidget();
   }
   else
@@ -160,7 +161,7 @@ void QgsMapToolSelectRadius::canvasReleaseEvent( QgsMapMouseEvent *e )
       mRubberBand->setFillColor( mFillColor );
       mRubberBand->setStrokeColor( mStrokeColor );
     }
-    QgsPointXY radiusEdge = toMapCoordinates( QPoint( e->pos().x() + 1, e->pos().y() + 1 ) );
+    QgsPointXY radiusEdge = e->snapPoint();
     updateRadiusFromEdge( radiusEdge );
     selectFromRubberband( e->modifiers() );
   }
@@ -187,6 +188,9 @@ void QgsMapToolSelectRadius::deactivate()
   deleteRotationWidget();
   deleteRubberband();
   mActive = false;
+
+  mSnapIndicator->setMatch( QgsPointLocator::Match() );
+
   QgsMapTool::deactivate();
 }
 
