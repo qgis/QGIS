@@ -159,7 +159,11 @@ ENDIF (WIN32)
 
 IF (UNIX)
   IF (GRASS_FIND_VERSION EQUAL 7)
-    LIST(APPEND GRASS_PATHS /usr/lib64/grass70 /usr/lib/grass70 /usr/lib64/grass71 /usr/lib/grass71 /usr/lib64/grass72 /usr/lib/grass72)
+    FOREACH (PATH /usr/lib64 /usr/lib /usr/local)
+        FOREACH (VERSION grass70, grass71, grass72)
+            LIST(APPEND GRASS_PATHS "${PATH}/${VERSION}")
+        ENDFOREACH (VERSION)
+    ENDFOREACH (PATH)
   ENDIF ()
 ENDIF (UNIX)
 
