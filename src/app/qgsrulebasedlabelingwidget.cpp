@@ -87,6 +87,14 @@ QgsRuleBasedLabelingWidget::QgsRuleBasedLabelingWidget( QgsVectorLayer *layer, Q
     const QgsRuleBasedLabeling *rl = static_cast<const QgsRuleBasedLabeling *>( mLayer->labeling() );
     mRootRule = rl->rootRule()->clone();
   }
+  else if ( mLayer->labeling() && mLayer->labeling()->type() == QLatin1String( "simple" ) )
+  {
+    // copy simple label settings to first rule
+    mRootRule = new QgsRuleBasedLabeling::Rule( nullptr );
+    std::unique_ptr< QgsPalLayerSettings > newSettings = qgis::make_unique< QgsPalLayerSettings >( mLayer->labeling()->settings() );
+    newSettings->drawLabels = true; // otherwise we may be trying to copy a "blocking" setting to a rule - which is confusing for users!
+    mRootRule->appendChild( new QgsRuleBasedLabeling::Rule( newSettings.release() ) );
+  }
   else
   {
     mRootRule = new QgsRuleBasedLabeling::Rule( nullptr );
