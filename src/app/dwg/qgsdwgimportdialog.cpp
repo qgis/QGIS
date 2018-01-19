@@ -414,6 +414,7 @@ void QgsDwgImportDialog::createGroup( QgsLayerTreeGroup *group, const QString &n
 
     pls.placement = QgsPalLayerSettings::OrderedPositionsAroundPoint;
     l->setLabeling( new QgsVectorLayerSimpleLabeling( pls ) );
+    l->setLabelsEnabled( true );
   }
 
   l = layer( layerGroup, layerFilter, QStringLiteral( "points" ) );

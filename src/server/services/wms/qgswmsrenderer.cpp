@@ -2556,6 +2556,7 @@ namespace QgsWms
 
         QgsVectorLayerSimpleLabeling *simpleLabeling = new QgsVectorLayerSimpleLabeling( palSettings );
         layer->setLabeling( simpleLabeling );
+        layer->setLabelsEnabled( true );
       }
       fet.setGeometry( param.mGeom );
 

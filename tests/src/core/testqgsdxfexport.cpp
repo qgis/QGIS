@@ -186,6 +186,7 @@ void TestQgsDxfExport::testMtext()
   format.setColor( QColor( 200, 0, 200 ) );
   settings.setFormat( format );
   mPointLayer->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+  mPointLayer->setLabelsEnabled( true );
 
   QgsDxfExport d;
   d.addLayers( QList< QPair< QgsVectorLayer *, int > >() << qMakePair( mPointLayer, -1 ) );
@@ -247,6 +248,7 @@ void TestQgsDxfExport::testText()
   format.setColor( QColor( 200, 0, 200 ) );
   settings.setFormat( format );
   mPointLayer->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+  mPointLayer->setLabelsEnabled( true );
 
   QgsDxfExport d;
   d.addLayers( QList< QPair< QgsVectorLayer *, int > >() << qMakePair( mPointLayer, -1 ) );

@@ -659,6 +659,22 @@ Returns whether the layer contains labels which are enabled and should be drawn.
 :return: true if layer contains enabled labels
 
 .. versionadded:: 2.9
+
+.. seealso:: :py:func:`setLabelsEnabled`
+%End
+
+    void setLabelsEnabled( bool enabled );
+%Docstring
+Sets whether labels should be ``enabled`` for the layer.
+
+.. note::
+
+   Labels will only be rendered if labelsEnabled() is true and a labeling
+   object is returned by labeling().
+
+.. seealso:: :py:func:`labelsEnabled`
+
+.. seealso:: :py:func:`labeling`
 %End
 
     bool diagramsEnabled() const;
@@ -1332,7 +1348,13 @@ editing.
 %Docstring
 Access to labeling configuration. May be null if labeling is not used.
 
+.. note::
+
+   Labels will only be rendered if labelsEnabled() returns true.
+
 .. versionadded:: 3.0
+
+.. seealso:: :py:func:`labelsEnabled`
 %End
 
     void setLabeling( QgsAbstractVectorLayerLabeling *labeling /Transfer/ );

@@ -695,8 +695,21 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * Returns whether the layer contains labels which are enabled and should be drawn.
      * \returns true if layer contains enabled labels
      * \since QGIS 2.9
+     *
+     * \see setLabelsEnabled()
      */
     bool labelsEnabled() const;
+
+    /**
+     * Sets whether labels should be \a enabled for the layer.
+     *
+     * \note Labels will only be rendered if labelsEnabled() is true and a labeling
+     * object is returned by labeling().
+     *
+     * \see labelsEnabled()
+     * \see labeling()
+     */
+    void setLabelsEnabled( bool enabled );
 
     /**
      * Returns whether the layer contains diagrams which are enabled and should be drawn.
@@ -1249,13 +1262,17 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     /**
      * Access to const labeling configuration. May be null if labeling is not used.
+     * \note Labels will only be rendered if labelsEnabled() returns true.
      * \since QGIS 3.0
+     * \see labelsEnabled()
      */
     const QgsAbstractVectorLayerLabeling *labeling() const SIP_SKIP { return mLabeling; }
 
     /**
      * Access to labeling configuration. May be null if labeling is not used.
+     * \note Labels will only be rendered if labelsEnabled() returns true.
      * \since QGIS 3.0
+     * \see labelsEnabled()
      */
     QgsAbstractVectorLayerLabeling *labeling() { return mLabeling; }
 
@@ -2338,6 +2355,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     //! Labeling configuration
     QgsAbstractVectorLayerLabeling *mLabeling = nullptr;
+
+    //! True if labels are enabled
+    bool mLabelsEnabled = false;
 
     //! Whether 'labeling font not found' has be shown for this layer (only show once in QgsMessageBar, on first rendering)
     bool mLabelFontNotFoundNotified = false;
