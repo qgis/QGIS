@@ -45,7 +45,7 @@ class APP_EXPORT QgsMapToolSelectFreehand : public QgsMapTool
     //! used for storing all of the maps point for the freehand sketch
     QgsRubberBand *mRubberBand = nullptr;
 
-    bool mActive;
+    bool mActive = false;
 
     QColor mFillColor;
     QColor mStrokeColor;
