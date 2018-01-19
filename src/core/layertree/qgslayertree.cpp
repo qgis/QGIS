@@ -15,6 +15,7 @@
 
 #include "qgslayertree.h"
 #include "qgsmaplayerlistutils.h"
+#include "qgsvectorlayer.h"
 
 QgsLayerTree::QgsLayerTree()
 {
@@ -38,7 +39,7 @@ QList<QgsMapLayer *> QgsLayerTree::customLayerOrder() const
 
 void QgsLayerTree::setCustomLayerOrder( const QList<QgsMapLayer *> &customLayerOrder )
 {
-  QgsWeakMapLayerPointerList  newOrder = _qgis_listRawToQPointer( customLayerOrder );
+  QgsWeakMapLayerPointerList newOrder = _qgis_listRawToQPointer( customLayerOrder );
 
   if ( newOrder == mCustomLayerOrder )
     return;
@@ -54,31 +55,49 @@ void QgsLayerTree::setCustomLayerOrder( const QStringList &customLayerOrder )
 {
   QList<QgsMapLayer *> layers;
 
-  Q_FOREACH ( const QString &layerId, customLayerOrder )
+  for ( const auto &layerId : customLayerOrder )
   {
     QgsLayerTreeLayer *nodeLayer = findLayer( layerId );
     if ( nodeLayer )
     {
+      // configuration from 2.x projects might have non spatial layers
+      QgsMapLayer *layer = nodeLayer->layer();
+      if ( layer->type() == QgsMapLayer::VectorLayer )
+      {
+        QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
+        if ( vl && !vl->isSpatial() )
+        {
+          continue;
+        }
+      }
       layers.append( nodeLayer->layer() );
     }
   }
-
   setCustomLayerOrder( layers );
 }
 
 QList<QgsMapLayer *> QgsLayerTree::layerOrder() const
 {
   if ( mHasCustomLayerOrder )
+  {
     return customLayerOrder();
+  }
   else
   {
     QList<QgsMapLayer *> layers;
-
-    Q_FOREACH ( QgsLayerTreeLayer *treeLayer, findLayers() )
+    for ( const auto &treeLayer : findLayers() )
     {
-      layers.append( treeLayer->layer() );
+      QgsMapLayer *layer = treeLayer->layer();
+      if ( layer && layer->type() == QgsMapLayer::VectorLayer )
+      {
+        QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
+        if ( vl && !vl->isSpatial() )
+        {
+          continue;
+        }
+      }
+      layers.append( layer );
     }
-
     return layers;
   }
 }
@@ -201,12 +220,18 @@ void QgsLayerTree::addMissingLayers()
 {
   bool changed = false;
 
-  QList<QgsLayerTreeLayer *> allLayers = findLayers();
-
-  Q_FOREACH ( QgsLayerTreeLayer *layer, allLayers )
+  for ( const auto layer : findLayers() )
   {
     if ( !mCustomLayerOrder.contains( layer->layer() ) && layer->layer() )
     {
+      if ( layer->layer()->type() == QgsMapLayer::VectorLayer )
+      {
+        QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer->layer() );
+        if ( vl && !vl->isSpatial() )
+        {
+          continue;
+        }
+      }
       mCustomLayerOrder.append( layer->layer() );
       changed = true;
     }
