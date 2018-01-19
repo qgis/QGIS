@@ -165,7 +165,15 @@ class APP_EXPORT QgsNodeTool : public QgsMapToolAdvancedDigitizing
 
     void applyEditsToLayers( NodeEdits &edits );
 
-    void setHighlightedNodes( QList<Vertex> listNodes );
+
+    enum HighlightMode
+    {
+      ModeReset, //!< Reset any current selection
+      ModeAdd, //!< Add to current selection
+      ModeSubtract, //!< Remove from current selection
+    };
+
+    void setHighlightedNodes( const QList<Vertex> &listNodes, HighlightMode mode = ModeReset );
 
     void setHighlightedNodesVisible( bool visible );
 
