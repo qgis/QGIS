@@ -41,6 +41,7 @@
 #include "qgsfeatureiterator.h"
 #include "qgsfeaturelistcombobox.h"
 
+
 QgsRelationReferenceWidget::QgsRelationReferenceWidget( QWidget *parent )
   : QWidget( parent )
 {
@@ -441,7 +442,7 @@ void QgsRelationReferenceWidget::init()
 
     if ( !mFilterFields.isEmpty() )
     {
-      Q_FOREACH ( const QString &fieldName, mFilterFields )
+      for ( const QString &fieldName : mFilterFields )
       {
         int idx = mReferencedLayer->fields().lookupField( fieldName );
 
@@ -479,7 +480,8 @@ void QgsRelationReferenceWidget::init()
         QgsFeatureIterator fit = mReferencedLayer->getFeatures();
         while ( fit.nextFeature( ft ) )
         {
-          for ( int i = 0; i < mFilterComboBoxes.count() - 1; ++i )
+          const int count = std::min( mFilterComboBoxes.count(), mFilterFields.count() );
+          for ( int i = 0; i < count - 1; i++ )
           {
             QVariant cv = ft.attribute( mFilterFields.at( i ) );
             QVariant nv = ft.attribute( mFilterFields.at( i + 1 ) );
