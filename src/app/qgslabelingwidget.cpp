@@ -50,6 +50,7 @@ void QgsLabelingWidget::resetSettings()
   if ( mOldSettings )
   {
     mLayer->setLabeling( mOldSettings.release() );
+    mLayer->setLabelsEnabled( mOldLabelsEnabled );
   }
   setLayer( mLayer );
 }
@@ -75,6 +76,7 @@ void QgsLabelingWidget::setLayer( QgsMapLayer *mapLayer )
   }
   else
     mOldSettings.reset();
+  mOldLabelsEnabled = mLayer->labelsEnabled();
 
   adaptToLayer();
 }
@@ -87,11 +89,11 @@ void QgsLabelingWidget::adaptToLayer()
   whileBlocking( mLabelModeComboBox )->setCurrentIndex( -1 );
 
   // pick the right mode of the layer
-  if ( mLayer->labeling() && mLayer->labeling()->type() == QLatin1String( "rule-based" ) )
+  if ( mLayer->labelsEnabled() && mLayer->labeling()->type() == QLatin1String( "rule-based" ) )
   {
     mLabelModeComboBox->setCurrentIndex( 2 );
   }
-  else if ( mLayer->labeling() && mLayer->labeling()->type() == QLatin1String( "simple" ) )
+  else if ( mLayer->labelsEnabled() && mLayer->labeling()->type() == QLatin1String( "simple" ) )
   {
     QgsPalLayerSettings lyr = mLayer->labeling()->settings();
 
@@ -117,14 +119,16 @@ void QgsLabelingWidget::writeSettingsToLayer()
     const QgsRuleBasedLabeling::Rule *rootRule = qobject_cast<QgsRuleBasedLabelingWidget *>( mWidget )->rootRule();
 
     mLayer->setLabeling( new QgsRuleBasedLabeling( rootRule->clone() ) );
+    mLayer->setLabelsEnabled( true );
   }
   else if ( index == 1 || index == 3 )
   {
     mLayer->setLabeling( new QgsVectorLayerSimpleLabeling( qobject_cast<QgsLabelingGui *>( mWidget )->layerSettings() ) );
+    mLayer->setLabelsEnabled( true );
   }
   else
   {
-    mLayer->setLabeling( nullptr );
+    mLayer->setLabelsEnabled( false );
   }
 }
 

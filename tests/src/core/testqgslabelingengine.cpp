@@ -134,6 +134,7 @@ void TestQgsLabelingEngine::testBasic()
   setDefaultLabelParams( settings );
 
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl->setLabelsEnabled( true );
 
   QgsLabelingEngine engine;
   engine.setMapSettings( mapSettings );
@@ -246,6 +247,7 @@ void TestQgsLabelingEngine::testRuleBased()
   root->appendChild( new QgsRuleBasedLabeling::Rule( new QgsPalLayerSettings( s2 ), 0, 0, QStringLiteral( "Class = 'Jet'" ) ) );
 
   vl->setLabeling( new QgsRuleBasedLabeling( root ) );
+  vl->setLabelsEnabled( true );
   //setDefaultLabelParams( vl );
 
   QgsMapRendererSequentialJob job( mapSettings );
@@ -653,6 +655,7 @@ void TestQgsLabelingEngine::testRotateHidePartial()
   vl2->dataProvider()->addFeature( f );
 
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl2->setLabelsEnabled( true );
 
   // make a fake render context
   QSize size( 640, 480 );

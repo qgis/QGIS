@@ -73,6 +73,7 @@ class QgsLabelingWidget : public QgsMapLayerConfigWidget, private Ui::QgsLabelin
     QWidget *mWidget = nullptr;
     std::unique_ptr< QgsPalLayerSettings > mSimpleSettings;
     std::unique_ptr< QgsAbstractVectorLayerLabeling > mOldSettings;
+    bool mOldLabelsEnabled = false;
 };
 
 #endif // QGSLABELINGWIDGET_H
