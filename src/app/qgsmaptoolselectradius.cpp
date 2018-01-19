@@ -53,6 +53,7 @@ QgsDistanceWidget::QgsDistanceWidget( const QString &label, QWidget *parent )
   mDistanceSpinBox->setValue( 0 );
   mDistanceSpinBox->setMinimum( 0 );
   mDistanceSpinBox->setMaximum( 1000000000 );
+  mDistanceSpinBox->setDecimals( 6 );
   mDistanceSpinBox->setShowClearButton( false );
   mDistanceSpinBox->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Preferred );
   mLayout->addWidget( mDistanceSpinBox );
