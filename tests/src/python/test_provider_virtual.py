@@ -16,6 +16,7 @@ import qgis  # NOQA
 import os
 
 from qgis.core import (QgsVectorLayer,
+                       QgsField,
                        QgsFeature,
                        QgsFeatureRequest,
                        QgsGeometry,
@@ -840,6 +841,29 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
                                       'LEFT JOIN {} AS j2 ON t."c_id"=j2."id"').format(v1.id(), v2.id(), v3.id()))
 
         QgsMapLayerRegistry.instance().removeMapLayers([v1, v2, v3])
+
+    def testFieldsWithSpecialCharacters(self):
+        ml = QgsVectorLayer("Point?srid=EPSG:4326&field=123:int", "mem_with_nontext_fieldnames", "memory")
+        self.assertEqual(ml.isValid(), True)
+        QgsMapLayerRegistry.instance().addMapLayer(ml)
+
+        ml.startEditing()
+        self.assertTrue(ml.addAttribute(QgsField('abc:123', QVariant.String)))
+        f1 = QgsFeature(ml.fields())
+        f1.setGeometry(QgsGeometry.fromWkt('POINT(0 0)'))
+        f2 = QgsFeature(ml.fields())
+        f2.setGeometry(QgsGeometry.fromWkt('POINT(1 1)'))
+        ml.addFeatures([f1, f2])
+        ml.commitChanges()
+
+        vl = QgsVectorLayer("?query=select * from mem_with_nontext_fieldnames", "vl", "virtual")
+        self.assertEqual(vl.isValid(), True)
+        self.assertEqual(vl.fields().at(0).name(), '123')
+        self.assertEqual(vl.fields().at(1).name(), 'abc:123')
+
+        self.assertEqual(vl.featureCount(), 2)
+
+        QgsMapLayerRegistry.instance().removeMapLayer(ml)
 
 
 if __name__ == '__main__':
