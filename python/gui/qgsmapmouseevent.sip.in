@@ -79,6 +79,11 @@ Will only be useful after snapPoint has previously been called.
 %Docstring
 Returns the matching data from the most recently snapped point.
 
+.. note::
+
+   This method returns the most recent snap match. It must
+   follow a call to snapPoint() in order to have a recent snap result available.
+
 :return: the snapping data structure
 
 .. versionadded:: 2.14

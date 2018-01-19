@@ -89,6 +89,8 @@ class GUI_EXPORT QgsMapMouseEvent : public QMouseEvent
 
     /**
       * Returns the matching data from the most recently snapped point.
+      * \note This method returns the most recent snap match. It must
+      * follow a call to snapPoint() in order to have a recent snap result available.
       * \returns the snapping data structure
       * \since QGIS 2.14
       */
