@@ -456,33 +456,33 @@ IF (WITH_QWTPOLAR)
   IF(WITH_INTERNAL_QWTPOLAR)
     SET(QGIS_APP_SRCS
       ${QGIS_APP_SRCS}
-      gps/qwtpolar-1.1.1/qwt_polar_canvas.cpp
-      gps/qwtpolar-1.1.1/qwt_polar_curve.cpp
-      gps/qwtpolar-1.1.1/qwt_polar_fitter.cpp
-      gps/qwtpolar-1.1.1/qwt_polar_grid.cpp
-      gps/qwtpolar-1.1.1/qwt_polar_item.cpp
-      gps/qwtpolar-1.1.1/qwt_polar_itemdict.cpp
-      gps/qwtpolar-1.1.1/qwt_polar_layout.cpp
-      gps/qwtpolar-1.1.1/qwt_polar_magnifier.cpp
-      gps/qwtpolar-1.1.1/qwt_polar_marker.cpp
-      gps/qwtpolar-1.1.1/qwt_polar_panner.cpp
-      gps/qwtpolar-1.1.1/qwt_polar_picker.cpp
-      gps/qwtpolar-1.1.1/qwt_polar_plot.cpp
-      gps/qwtpolar-1.1.1/qwt_polar_renderer.cpp
-      gps/qwtpolar-1.1.1/qwt_polar_spectrogram.cpp
+      ${CMAKE_SOURCE_DIR}/external/qwtpolar-1.1.1/qwt_polar_canvas.cpp
+      ${CMAKE_SOURCE_DIR}/external/qwtpolar-1.1.1/qwt_polar_curve.cpp
+      ${CMAKE_SOURCE_DIR}/external/qwtpolar-1.1.1/qwt_polar_fitter.cpp
+      ${CMAKE_SOURCE_DIR}/external/qwtpolar-1.1.1/qwt_polar_grid.cpp
+      ${CMAKE_SOURCE_DIR}/external/qwtpolar-1.1.1/qwt_polar_item.cpp
+      ${CMAKE_SOURCE_DIR}/external/qwtpolar-1.1.1/qwt_polar_itemdict.cpp
+      ${CMAKE_SOURCE_DIR}/external/qwtpolar-1.1.1/qwt_polar_layout.cpp
+      ${CMAKE_SOURCE_DIR}/external/qwtpolar-1.1.1/qwt_polar_magnifier.cpp
+      ${CMAKE_SOURCE_DIR}/external/qwtpolar-1.1.1/qwt_polar_marker.cpp
+      ${CMAKE_SOURCE_DIR}/external/qwtpolar-1.1.1/qwt_polar_panner.cpp
+      ${CMAKE_SOURCE_DIR}/external/qwtpolar-1.1.1/qwt_polar_picker.cpp
+      ${CMAKE_SOURCE_DIR}/external/qwtpolar-1.1.1/qwt_polar_plot.cpp
+      ${CMAKE_SOURCE_DIR}/external/qwtpolar-1.1.1/qwt_polar_renderer.cpp
+      ${CMAKE_SOURCE_DIR}/external/qwtpolar-1.1.1/qwt_polar_spectrogram.cpp
     )
 
     SET (QGIS_APP_MOC_HDRS
       ${QGIS_APP_MOC_HDRS}
-      gps/qwtpolar-1.1.1/qwt_polar_canvas.h
-      gps/qwtpolar-1.1.1/qwt_polar_magnifier.h
-      gps/qwtpolar-1.1.1/qwt_polar_panner.h
-      gps/qwtpolar-1.1.1/qwt_polar_picker.h
-      gps/qwtpolar-1.1.1/qwt_polar_plot.h
-      gps/qwtpolar-1.1.1/qwt_polar_renderer.h
+      ${CMAKE_SOURCE_DIR}/external/qwtpolar-1.1.1/qwt_polar_canvas.h
+      ${CMAKE_SOURCE_DIR}/external/qwtpolar-1.1.1/qwt_polar_magnifier.h
+      ${CMAKE_SOURCE_DIR}/external/qwtpolar-1.1.1/qwt_polar_panner.h
+      ${CMAKE_SOURCE_DIR}/external/qwtpolar-1.1.1/qwt_polar_picker.h
+      ${CMAKE_SOURCE_DIR}/external/qwtpolar-1.1.1/qwt_polar_plot.h
+      ${CMAKE_SOURCE_DIR}/external/qwtpolar-1.1.1/qwt_polar_renderer.h
     )
 
-    SET(QWTPOLAR_INCLUDE_DIR gps/qwtpolar-1.1.1)
+    SET(QWTPOLAR_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/external/qwtpolar-1.1.1)
 
     SET(QWTPOLAR_LIBRARY "")
   ENDIF(WITH_INTERNAL_QWTPOLAR)
