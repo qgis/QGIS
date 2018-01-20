@@ -62,15 +62,11 @@ void QgsLayerTree::setCustomLayerOrder( const QStringList &customLayerOrder )
     {
       // configuration from 2.x projects might have non spatial layers
       QgsMapLayer *layer = nodeLayer->layer();
-      if ( layer->type() == QgsMapLayer::VectorLayer )
+      if ( !layer || !layer->isSpatial() )
       {
-        QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
-        if ( vl && !vl->isSpatial() )
-        {
-          continue;
-        }
+        continue;
       }
-      layers.append( nodeLayer->layer() );
+      layers.append( layer );
     }
   }
   setCustomLayerOrder( layers );
@@ -88,13 +84,9 @@ QList<QgsMapLayer *> QgsLayerTree::layerOrder() const
     for ( const auto &treeLayer : findLayers() )
     {
       QgsMapLayer *layer = treeLayer->layer();
-      if ( layer && layer->type() == QgsMapLayer::VectorLayer )
+      if ( !layer || !layer->isSpatial() )
       {
-        QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
-        if ( vl && !vl->isSpatial() )
-        {
-          continue;
-        }
+        continue;
       }
       layers.append( layer );
     }
@@ -222,16 +214,9 @@ void QgsLayerTree::addMissingLayers()
 
   for ( const auto layer : findLayers() )
   {
-    if ( !mCustomLayerOrder.contains( layer->layer() ) && layer->layer() )
+    if ( !mCustomLayerOrder.contains( layer->layer() ) &&
+         layer->layer() && layer->layer()->isSpatial() )
     {
-      if ( layer->layer()->type() == QgsMapLayer::VectorLayer )
-      {
-        QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer->layer() );
-        if ( vl && !vl->isSpatial() )
-        {
-          continue;
-        }
-      }
       mCustomLayerOrder.append( layer->layer() );
       changed = true;
     }
