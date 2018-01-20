@@ -566,6 +566,7 @@ ENDIF(MSVC)
 
 INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/external/libdxfrw
+  ${CMAKE_SOURCE_DIR}/external/nmea
 
   ${CMAKE_SOURCE_DIR}/src/app
   ${CMAKE_SOURCE_DIR}/src/app/layout
