@@ -220,6 +220,8 @@ int QgsLayoutAtlas::updateFeatures()
   // select all features with all attributes
   QgsFeatureRequest req;
 
+  req.setExpressionContext( expressionContext );
+
   mFilterParserError.clear();
   if ( mFilterFeatures && !mFilterExpression.isEmpty() )
   {
