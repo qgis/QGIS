@@ -118,6 +118,8 @@ QgsValueRelationFieldFormatter::ValueRelationCache QgsValueRelationFieldFormatte
   request.setSubsetOfAttributes( QgsAttributeList() << ki << vi );
   if ( !config.value( QStringLiteral( "FilterExpression" ) ).toString().isEmpty() )
   {
+    QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
+    request.setExpressionContext( context );
     request.setFilterExpression( config.value( QStringLiteral( "FilterExpression" ) ).toString() );
   }
 
