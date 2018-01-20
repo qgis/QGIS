@@ -2,18 +2,19 @@
 # sources
 
 SET(QGIS_CORE_SRCS
-  gps/context.c
-  gps/gmath.c
-  gps/info.c
-  gps/parse.c
+  ${CMAKE_SOURCE_DIR}/external/nmea/context.c
+  ${CMAKE_SOURCE_DIR}/external/nmea/gmath.c
+  ${CMAKE_SOURCE_DIR}/external/nmea/info.c
+  ${CMAKE_SOURCE_DIR}/external/nmea/parse.c
+  ${CMAKE_SOURCE_DIR}/external/nmea/sentence.c
+  ${CMAKE_SOURCE_DIR}/external/nmea/time.c
+  ${CMAKE_SOURCE_DIR}/external/nmea/tok.c
+
   gps/qgsgpsconnection.cpp
   gps/qgsgpsconnectionregistry.cpp
   gps/qgsgpsdconnection.cpp
   gps/qgsgpsdetector.cpp
   gps/qgsnmeaconnection.cpp
-  gps/sentence.c
-  gps/time.c
-  gps/tok.c
 
   symbology/qgs25drenderer.cpp
   symbology/qgsarrowsymbollayer.cpp
@@ -1237,6 +1238,7 @@ INCLUDE_DIRECTORIES(
   scalebar
   symbology
   metadata
+  ${CMAKE_SOURCE_DIR}/external/nmea
 )
 IF (WITH_INTERNAL_QEXTSERIALPORT)
   INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/external/qextserialport)
