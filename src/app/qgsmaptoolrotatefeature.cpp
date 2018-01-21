@@ -167,8 +167,6 @@ void QgsMapToolRotateFeature::canvasMoveEvent( QgsMapMouseEvent *e )
 
 void QgsMapToolRotateFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
-  deleteRotationWidget();
-
   if ( !mCanvas )
   {
     return;
@@ -177,6 +175,7 @@ void QgsMapToolRotateFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
   QgsVectorLayer *vlayer = currentVectorLayer();
   if ( !vlayer )
   {
+    deleteRotationWidget();
     deleteRubberband();
     notifyNotVectorLayer();
     return;
@@ -184,8 +183,7 @@ void QgsMapToolRotateFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
 
   if ( e->button() == Qt::RightButton )
   {
-    deleteRubberband();
-    mRotationActive = false;
+    cancel();
     return;
   }
 
@@ -201,6 +199,8 @@ void QgsMapToolRotateFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
     mStPoint = e->pos();
     return;
   }
+
+  deleteRotationWidget();
 
   // Initialize rotation if not yet active
   if ( !mRotationActive )
