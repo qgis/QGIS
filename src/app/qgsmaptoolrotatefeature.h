@@ -43,6 +43,7 @@ class APP_EXPORT QgsAngleMagnetWidget : public QWidget
   signals:
     void angleChanged( double angle );
     void angleEditingFinished( double angle );
+    void angleEditingCanceled();
 
 
   public slots:
@@ -81,6 +82,7 @@ class APP_EXPORT QgsMapToolRotateFeature: public QgsMapToolEdit
     void updateRubberband( double rotation );
 
     void applyRotation( double rotation );
+    void cancel();
 
   private:
 
