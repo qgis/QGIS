@@ -135,6 +135,7 @@ class CORE_EXPORT QgsLayoutItemMapOverview : public QgsLayoutItemMapItem
     void draw( QPainter *painter ) override;
     bool writeXml( QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context ) const override;
     bool readXml( const QDomElement &itemElem, const QDomDocument &doc, const QgsReadWriteContext &context ) override;
+    void finalizeRestoreFromXml() override;
     bool usesAdvancedEffects() const override;
 
     /**
@@ -224,6 +225,7 @@ class CORE_EXPORT QgsLayoutItemMapOverview : public QgsLayoutItemMapItem
 
     QgsLayoutItemMapOverview() = delete;
 
+    QString mFrameMapUuid;
     QPointer< QgsLayoutItemMap > mFrameMap;
 
     //! Drawing style for overview farme

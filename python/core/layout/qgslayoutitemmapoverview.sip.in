@@ -138,6 +138,8 @@ Constructor for QgsLayoutItemMapOverview.
 
     virtual bool readXml( const QDomElement &itemElem, const QDomDocument &doc, const QgsReadWriteContext &context );
 
+    virtual void finalizeRestoreFromXml();
+
     virtual bool usesAdvancedEffects() const;
 
 

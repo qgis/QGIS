@@ -784,10 +784,8 @@ bool QgsLayoutItemScaleBar::readPropertiesFromElement( const QDomElement &itemEl
   mSettings.setAlignment( static_cast< QgsScaleBarSettings::Alignment >( itemElem.attribute( QStringLiteral( "alignment" ), QStringLiteral( "0" ) ).toInt() ) );
 
   //map
-  mMapUuid.clear();
-  mMapId = -1;
-
-  mMapId = itemElem.attribute( QStringLiteral( "mapId" ), QStringLiteral( "-1" ) ).toInt();
+  disconnectCurrentMap();
+  mMap = nullptr;
   mMapUuid = itemElem.attribute( QStringLiteral( "mapUuid" ) );
   return true;
 }
@@ -795,24 +793,7 @@ bool QgsLayoutItemScaleBar::readPropertiesFromElement( const QDomElement &itemEl
 
 void QgsLayoutItemScaleBar::finalizeRestoreFromXml()
 {
-#if 0 //TODO
-  if ( mMapId >= 0 )
-  {
-    const QgsLayoutItemMap *composerMap = mComposition->getComposerMapById( mapId );
-    mMap = const_cast< QgsComposerMap *>( composerMap );
-    if ( mMap )
-    {
-      connect( mMap, &QgsComposerMap::extentChanged, this, &QgsLayoutItemScaleBar::updateSegmentSize );
-      connect( mMap, &QObject::destroyed, this, &QgsLayoutItemScaleBar::invalidateCurrentMap );
-    }
-  }
-#endif
-
-  if ( !mLayout || mMapUuid.isEmpty() )
-  {
-    mMap = nullptr;
-  }
-  else
+  if ( mLayout && !mMapUuid.isEmpty() )
   {
     disconnectCurrentMap();
     mMap = qobject_cast< QgsLayoutItemMap * >( mLayout->itemByUuid( mMapUuid, true ) );

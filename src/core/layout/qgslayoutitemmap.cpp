@@ -1110,11 +1110,8 @@ void QgsLayoutItemMap::finalizeRestoreFromXml()
 {
   assignFreeId();
 
-  const QList<QgsLayoutItemMapOverview * > allOverviews = overviews()->asList();
-  for ( QgsLayoutItemMapOverview *overview : allOverviews )
-  {
-    overview->connectSignals();
-  }
+  mOverviewStack->finalizeRestoreFromXml();
+  mGridStack->finalizeRestoreFromXml();
 }
 
 void QgsLayoutItemMap::setMoveContentPreviewOffset( double xOffset, double yOffset )

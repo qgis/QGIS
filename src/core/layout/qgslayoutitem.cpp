@@ -699,10 +699,6 @@ bool QgsLayoutItem::readXml( const QDomElement &element, const QDomDocument &doc
     bool alphaOk = false;
     int penRed, penGreen, penBlue, penAlpha;
 
-#if 0 // TODO, old style
-    double penWidth;
-    penWidth = element.attribute( QStringLiteral( "outlineWidth" ) ).toDouble( &widthOk );
-#endif
     penRed = frameColorElem.attribute( QStringLiteral( "red" ) ).toDouble( &redOk );
     penGreen = frameColorElem.attribute( QStringLiteral( "green" ) ).toDouble( &greenOk );
     penBlue = frameColorElem.attribute( QStringLiteral( "blue" ) ).toDouble( &blueOk );
