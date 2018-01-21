@@ -40,7 +40,7 @@ QgsUserInputWidget::QgsUserInputWidget( QWidget *parent )
   topLayout->addWidget( f );
   setLayout( topLayout );
 
-  setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
+  setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding );
   hide();
 }
 
@@ -61,6 +61,7 @@ void QgsUserInputWidget::addUserInputWidget( QWidget *widget )
   mWidgetList.insert( widget, line );
 
   show();
+  raise();
   adjustSize();
 }
 
@@ -85,7 +86,7 @@ void QgsUserInputWidget::widgetDestroyed( QObject *obj )
   }
 }
 
-void QgsUserInputWidget::setLayoutDirection( QBoxLayout::Direction direction)
+void QgsUserInputWidget::setLayoutDirection( QBoxLayout::Direction direction )
 {
   mLayout->setDirection( direction );
 
