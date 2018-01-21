@@ -398,7 +398,6 @@ void QgsMapToolRotateFeature::applyRotation( double rotation )
 
 void QgsMapToolRotateFeature::activate()
 {
-
   QgsVectorLayer *vlayer = currentVectorLayer();
   if ( !vlayer )
   {
@@ -410,11 +409,7 @@ void QgsMapToolRotateFeature::activate()
     return;
   }
 
-  if ( vlayer->selectedFeatureCount() == 0 )
-  {
-    return;
-  }
-  else
+  if ( vlayer->selectedFeatureCount() > 0 )
   {
     QgsRectangle bound = vlayer->boundingBoxOfSelected();
     mStartPointMapCoords = toMapCoordinates( vlayer, bound.center() );
@@ -424,9 +419,8 @@ void QgsMapToolRotateFeature::activate()
     mAnchorPoint->setCenter( mStartPointMapCoords );
 
     mStPoint = toCanvasCoordinates( mStartPointMapCoords );
-
-    QgsMapTool::activate();
   }
+  QgsMapTool::activate();
 }
 
 void QgsMapToolRotateFeature::deleteRubberband()
