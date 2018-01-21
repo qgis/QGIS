@@ -62,7 +62,6 @@ Returns the parent multiframe for the frame.
     virtual QgsLayoutSize fixedSize() const;
 
 
-
     QRectF extent() const;
 %Docstring
 Returns the visible portion of the multi frame's content which

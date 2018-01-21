@@ -71,6 +71,7 @@ void QgsLayoutMultiFrameUndoCommand::restoreState( QDomDocument &stateDoc )
   }
 
   item->readXml( stateDoc.documentElement().firstChild().toElement(), stateDoc, QgsReadWriteContext(), true );
+  item->finalizeRestoreFromXml();
   mLayout->project()->setDirty( true );
 }
 

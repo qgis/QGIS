@@ -68,11 +68,6 @@ class CORE_EXPORT QgsLayoutFrame: public QgsLayoutItem
     QgsLayoutSize minimumSize() const override;
     QgsLayoutSize fixedSize() const override;
 
-#if 0 //TODO
-    void beginItemCommand( const QString &text ) override;
-    void endItemCommand() override;
-#endif
-
     /**
      * Returns the visible portion of the multi frame's content which
      * is shown in this frame, in layout units.

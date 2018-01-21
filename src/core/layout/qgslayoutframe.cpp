@@ -209,21 +209,3 @@ bool QgsLayoutFrame::readPropertiesFromElement( const QDomElement &itemElem, con
   mMultiFrame = mLayout->multiFrameByUuid( mMultiFrameUuid );
   return true;
 }
-
-#if 0 //TODO
-void QgsLayoutFrame::beginItemCommand( const QString &text )
-{
-  if ( mComposition )
-  {
-    mComposition->beginMultiFrameCommand( multiFrame(), text );
-  }
-}
-
-void QgsLayoutFrame::endItemCommand()
-{
-  if ( mComposition )
-  {
-    mComposition->endMultiFrameCommand();
-  }
-}
-#endif

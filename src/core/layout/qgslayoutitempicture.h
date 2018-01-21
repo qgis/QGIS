@@ -297,7 +297,6 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
     double mPictureRotation = 0;
 
     QString mRotationMapUuid;
-    int mRotationMapId = -1;
     //! Map that sets the rotation (or nullptr if this picture uses map independent rotation)
     QPointer< QgsLayoutItemMap > mRotationMap;
 
@@ -340,6 +339,8 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
      * Loads a local picture for the item
      */
     void loadLocalPicture( const QString &path );
+
+    void disconnectMap( QgsLayoutItemMap *map );
 
   private slots:
 

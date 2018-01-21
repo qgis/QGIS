@@ -62,6 +62,16 @@ class CORE_EXPORT QgsLayoutItemMapItem : public QgsLayoutObject
     virtual bool readXml( const QDomElement &element, const QDomDocument &doc, const QgsReadWriteContext &context );
 
     /**
+     * Called after all pending items have been restored from XML. Map items can use
+     * this method to run steps which must take place after all items have been restored to the layout,
+     * such as connecting to signals emitted by other items, which may not have existed in the layout
+     * at the time readXml() was called. E.g. an overview can use this to connect to its linked
+     * map item after restoration from XML.
+     * \see readXml()
+     */
+    virtual void finalizeRestoreFromXml();
+
+    /**
      * Sets the corresponding layout \a map for the item.
      * \see map()
      */
@@ -164,6 +174,16 @@ class CORE_EXPORT QgsLayoutItemMapItemStack
      * \see writeXml()
      */
     virtual bool readXml( const QDomElement &element, const QDomDocument &doc, const QgsReadWriteContext &context ) = 0;
+
+    /**
+     * Called after all pending items have been restored from XML. Map item stacks can use
+     * this method to run steps which must take place after all items have been restored to the layout,
+     * such as connecting to signals emitted by other items, which may not have existed in the layout
+     * at the time readXml() was called. E.g. an overview can use this to connect to its linked
+     * map item after restoration from XML.
+     * \see readXml()
+     */
+    virtual void finalizeRestoreFromXml();
 
     /**
      * Draws the items from the stack on a specified \a painter.

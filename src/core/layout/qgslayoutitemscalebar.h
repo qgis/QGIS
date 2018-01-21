@@ -438,7 +438,6 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
     //! Linked map
     QgsLayoutItemMap *mMap = nullptr;
     QString mMapUuid;
-    int mMapId = -1;
 
     QgsScaleBarSettings mSettings;
 

@@ -126,12 +126,6 @@ void QgsLayoutItemLegend::paint( QPainter *painter, const QStyleOptionGraphicsIt
 
 void QgsLayoutItemLegend::finalizeRestoreFromXml()
 {
-#if 0 //TODO
-  if ( mMapId != -1 && mMapUuid.isEmpty() )
-  {
-    setMap( mComposition->getComposerMapById( itemElem.attribute( QStringLiteral( "map" ) ).toInt() ) );
-  }
-#endif
   if ( !mMapUuid.isEmpty() )
   {
     setLinkedMap( qobject_cast< QgsLayoutItemMap * >( mLayout->itemByUuid( mMapUuid, true ) ) );
@@ -210,7 +204,6 @@ void QgsLayoutItemLegend::setCustomLayerTree( QgsLayerTree *rootGroup )
 
   mCustomLayerTree.reset( rootGroup );
 }
-
 
 void QgsLayoutItemLegend::setAutoUpdateModel( bool autoUpdate )
 {
@@ -584,16 +577,14 @@ bool QgsLayoutItemLegend::readPropertiesFromElement( const QDomElement &itemElem
   //composer map
   mLegendFilterByMap = itemElem.attribute( QStringLiteral( "legendFilterByMap" ), QStringLiteral( "0" ) ).toInt();
 
-  mMapId = -1;
   mMapUuid.clear();
-  if ( !itemElem.attribute( QStringLiteral( "map" ) ).isEmpty() )
-  {
-    mMapId = itemElem.attribute( QStringLiteral( "map" ) ).toInt();
-  }
   if ( !itemElem.attribute( QStringLiteral( "map_uuid" ) ).isEmpty() )
   {
     mMapUuid = itemElem.attribute( QStringLiteral( "map_uuid" ) );
   }
+  // disconnect current map
+  setupMapConnections( mMap, false );
+  mMap = nullptr;
 
   mFilterOutAtlas = itemElem.attribute( QStringLiteral( "legendFilterByAtlas" ), QStringLiteral( "0" ) ).toInt();
 
@@ -638,24 +629,40 @@ QString QgsLayoutItemLegend::displayName() const
   }
 }
 
-void QgsLayoutItemLegend::setLinkedMap( QgsLayoutItemMap *map )
+
+void QgsLayoutItemLegend::setupMapConnections( QgsLayoutItemMap *map, bool connectSlots )
 {
-  if ( mMap )
+  if ( !map )
+    return;
+
+  if ( !connectSlots )
   {
-    disconnect( mMap, &QObject::destroyed, this, &QgsLayoutItemLegend::invalidateCurrentMap );
-    disconnect( mMap, &QgsLayoutObject::changed, this, &QgsLayoutItemLegend::updateFilterByMapAndRedraw );
-    disconnect( mMap, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemLegend::updateFilterByMapAndRedraw );
-    disconnect( mMap, &QgsLayoutItemMap::layerStyleOverridesChanged, this, &QgsLayoutItemLegend::mapLayerStyleOverridesChanged );
+    disconnect( map, &QObject::destroyed, this, &QgsLayoutItemLegend::invalidateCurrentMap );
+    disconnect( map, &QgsLayoutObject::changed, this, &QgsLayoutItemLegend::updateFilterByMapAndRedraw );
+    disconnect( map, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemLegend::updateFilterByMapAndRedraw );
+    disconnect( map, &QgsLayoutItemMap::layerStyleOverridesChanged, this, &QgsLayoutItemLegend::mapLayerStyleOverridesChanged );
   }
-
-  mMap = map;
-
-  if ( map )
+  else
   {
     connect( map, &QObject::destroyed, this, &QgsLayoutItemLegend::invalidateCurrentMap );
     connect( map, &QgsLayoutObject::changed, this, &QgsLayoutItemLegend::updateFilterByMapAndRedraw );
     connect( map, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemLegend::updateFilterByMapAndRedraw );
     connect( map, &QgsLayoutItemMap::layerStyleOverridesChanged, this, &QgsLayoutItemLegend::mapLayerStyleOverridesChanged );
+  }
+}
+
+void QgsLayoutItemLegend::setLinkedMap( QgsLayoutItemMap *map )
+{
+  if ( mMap )
+  {
+    setupMapConnections( mMap, false );
+  }
+
+  mMap = map;
+
+  if ( mMap )
+  {
+    setupMapConnections( mMap, true );
   }
 
   updateFilterByMap();

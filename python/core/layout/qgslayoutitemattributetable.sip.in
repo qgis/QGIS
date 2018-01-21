@@ -292,6 +292,8 @@ be replaced by a line break.
 
     virtual QgsExpressionContext createExpressionContext() const;
 
+    virtual void finalizeRestoreFromXml();
+
 
   protected:
 

@@ -472,6 +472,8 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
     //! use new custom layer tree and update model. if new root is null pointer, will use project's tree
     void setCustomLayerTree( QgsLayerTree *rootGroup );
 
+    void setupMapConnections( QgsLayoutItemMap *map, bool connect = true );
+
     std::unique_ptr< QgsLegendModel > mLegendModel;
     std::unique_ptr< QgsLayerTreeGroup > mCustomLayerTree;
 
@@ -481,7 +483,6 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
     int mColumnCount = 1;
 
     QString mMapUuid;
-    int mMapId = -1;
     QgsLayoutItemMap *mMap = nullptr;
 
     bool mLegendFilterByMap = false;

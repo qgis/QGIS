@@ -436,6 +436,15 @@ void QgsLayoutItemPicture::loadLocalPicture( const QString &path )
   }
 }
 
+void QgsLayoutItemPicture::disconnectMap( QgsLayoutItemMap *map )
+{
+  if ( map )
+  {
+    disconnect( map, &QgsLayoutItemMap::mapRotationChanged, this, &QgsLayoutItemPicture::updateMapRotation );
+    disconnect( map, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemPicture::updateMapRotation );
+  }
+}
+
 void QgsLayoutItemPicture::updateMapRotation()
 {
   if ( !mRotationMap )
@@ -609,8 +618,7 @@ void QgsLayoutItemPicture::setLinkedMap( QgsLayoutItemMap *map )
 {
   if ( mRotationMap )
   {
-    disconnect( mRotationMap, &QgsLayoutItemMap::mapRotationChanged, this, &QgsLayoutItemPicture::updateMapRotation );
-    disconnect( mRotationMap, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemPicture::updateMapRotation );
+    disconnectMap( mRotationMap );
   }
 
   if ( !map ) //disable rotation from map
@@ -772,12 +780,10 @@ bool QgsLayoutItemPicture::readPropertiesFromElement( const QDomElement &itemEle
   mNorthMode = static_cast< NorthMode >( itemElem.attribute( QStringLiteral( "northMode" ), QStringLiteral( "0" ) ).toInt() );
   mNorthOffset = itemElem.attribute( QStringLiteral( "northOffset" ), QStringLiteral( "0" ) ).toDouble();
 
+  disconnectMap( mRotationMap );
   mRotationMap = nullptr;
-  mRotationMapId = -1;
-  mRotationMapUuid.clear();
-
-  mRotationMapId = itemElem.attribute( QStringLiteral( "mapId" ), QStringLiteral( "-1" ) ).toInt();
   mRotationMapUuid = itemElem.attribute( QStringLiteral( "mapUuid" ) );
+
   return true;
 }
 
@@ -824,9 +830,6 @@ void QgsLayoutItemPicture::setSvgStrokeWidth( double width )
 
 void QgsLayoutItemPicture::finalizeRestoreFromXml()
 {
-#if 0 //TODO
-  mRotationMapId restore
-#endif
   if ( !mLayout || mRotationMapUuid.isEmpty() )
   {
     mRotationMap = nullptr;
@@ -835,11 +838,9 @@ void QgsLayoutItemPicture::finalizeRestoreFromXml()
   {
     if ( mRotationMap )
     {
-      disconnect( mRotationMap, &QgsLayoutItemMap::mapRotationChanged, this, &QgsLayoutItemPicture::updateMapRotation );
-      disconnect( mRotationMap, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemPicture::updateMapRotation );
+      disconnectMap( mRotationMap );
     }
-    mRotationMap = qobject_cast< QgsLayoutItemMap * >( mLayout->itemByUuid( mRotationMapUuid, true ) );
-    if ( mRotationMap )
+    if ( mRotationMap = qobject_cast< QgsLayoutItemMap * >( mLayout->itemByUuid( mRotationMapUuid, true ) ) )
     {
       connect( mRotationMap, &QgsLayoutItemMap::mapRotationChanged, this, &QgsLayoutItemPicture::updateMapRotation );
       connect( mRotationMap, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemPicture::updateMapRotation );
