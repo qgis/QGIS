@@ -26,7 +26,7 @@ from builtins import range
 # this will disable the dbplugin if the connector raise an ImportError
 from .connector import PostGisDBConnector
 
-from qgis.PyQt.QtCore import Qt, QRegExp
+from qgis.PyQt.QtCore import Qt, QRegExp, QCoreApplication
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction, QApplication, QMessageBox
 from qgis.core import Qgis, QgsSettings
@@ -56,7 +56,7 @@ class PostGisDBPlugin(DBPlugin):
 
     @classmethod
     def typeNameString(self):
-        return 'PostGIS'
+        return QCoreApplication.translate('db_manager', 'PostGIS')
 
     @classmethod
     def providerName(self):
