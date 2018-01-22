@@ -540,6 +540,7 @@ QgsExpressionContext QgsLayoutItemAttributeTable::createExpressionContext() cons
 
 void QgsLayoutItemAttributeTable::finalizeRestoreFromXml()
 {
+  QgsLayoutTable::finalizeRestoreFromXml();
   if ( !mMap && !mMapUuid.isEmpty() && mLayout )
   {
     mMap = qobject_cast< QgsLayoutItemMap *>( mLayout->itemByUuid( mMapUuid, true ) );

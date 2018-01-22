@@ -54,7 +54,7 @@ double QgsLayoutMultiFrame::findNearbyPageBreak( double yPos )
 
 void QgsLayoutMultiFrame::addFrame( QgsLayoutFrame *frame, bool recalcFrameSizes )
 {
-  if ( !frame )
+  if ( !frame || mFrameItems.contains( frame ) )
     return;
 
   mFrameItems.push_back( frame );
