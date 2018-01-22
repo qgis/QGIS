@@ -77,7 +77,7 @@ void QgsLayoutPageCollection::endPageSizeChange()
     {
       if ( !mBlockUndoCommands )
         item->beginCommand( QString() );
-      item->attemptMove( it.value().second, true, false, it.value().first );
+      item->attemptMove( it.value().second, false, false, it.value().first );
       if ( !mBlockUndoCommands )
         item->endCommand();
     }
