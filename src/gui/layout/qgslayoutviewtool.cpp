@@ -49,7 +49,8 @@ QList<QgsLayoutItem *> QgsLayoutViewTool::ignoredSnapItems() const
 
 QgsLayoutViewTool::~QgsLayoutViewTool()
 {
-  mView->unsetTool( this );
+  if ( mView )
+    mView->unsetTool( this );
 }
 
 QgsLayoutViewTool::Flags QgsLayoutViewTool::flags() const
