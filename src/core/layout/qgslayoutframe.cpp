@@ -163,6 +163,7 @@ void QgsLayoutFrame::draw( QgsRenderContext &context, const QStyleOptionGraphics
   {
     //calculate index of frame
     int frameIndex = mMultiFrame->frameIndex( this );
+    Q_ASSERT_X( frameIndex >= 0, "QgsLayoutFrame::draw", "Invalid frame index for frame" );
     mMultiFrame->render( context, mSection, frameIndex, itemStyle );
   }
 }
