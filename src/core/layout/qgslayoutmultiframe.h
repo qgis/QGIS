@@ -128,8 +128,18 @@ class CORE_EXPORT QgsLayoutMultiFrame: public QgsLayoutObject, public QgsLayoutU
      * Returns the multiframe identification string. This is a unique random string set for the multiframe
      * upon creation.
      * \note There is no corresponding setter for the uuid - it's created automatically.
+     * \see templateUuid()
     */
     QString uuid() const { return mUuid; }
+
+    /**
+     * Returns the multiframe's original identification string. This may differ from the multiframes's uuid()
+     * for multiframes which have been added to an existing layout from a template. In this case
+     * templateUuid() returns the original UUID at the time the template was created,
+     * while uuid() returns the current instance of the multiframes's unique identifier.
+     * \see uuid()
+    */
+    QString templateUuid() const { return mTemplateUuid; }
 
     /**
      * Returns the total size of the multiframe's content, in layout units.
@@ -431,9 +441,11 @@ class CORE_EXPORT QgsLayoutMultiFrame: public QgsLayoutObject, public QgsLayoutU
     bool mBlockUndoCommands = false;
 
     QList< QString > mFrameUuids;
+    QList< QString > mFrameTemplateUuids;
 
-    //! Unique id
+//! Unique id
     QString mUuid;
+    QString mTemplateUuid;
     friend class QgsLayoutFrame;
 };
 

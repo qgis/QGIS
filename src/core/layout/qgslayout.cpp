@@ -259,14 +259,14 @@ QgsLayoutItem *QgsLayout::itemById( const QString &id ) const
   return nullptr;
 }
 
-QgsLayoutMultiFrame *QgsLayout::multiFrameByUuid( const QString &uuid ) const
+QgsLayoutMultiFrame *QgsLayout::multiFrameByUuid( const QString &uuid, bool includeTemplateUuids ) const
 {
   for ( QgsLayoutMultiFrame *mf : mMultiFrames )
   {
     if ( mf->uuid() == uuid )
-    {
       return mf;
-    }
+    else if ( includeTemplateUuids && mf->templateUuid() == uuid )
+      return mf;
   }
 
   return nullptr;
@@ -606,6 +606,21 @@ QList< QgsLayoutItem * > QgsLayout::loadFromTemplate( const QDomDocument &docume
     if ( itemNode.isElement() )
     {
       itemNode.toElement().removeAttribute( QStringLiteral( "uuid" ) );
+    }
+  }
+  QDomNodeList multiFrameNodes = doc.elementsByTagName( QStringLiteral( "LayoutMultiFrame" ) );
+  for ( int i = 0; i < multiFrameNodes.count(); ++i )
+  {
+    QDomNode multiFrameNode = multiFrameNodes.at( i );
+    if ( multiFrameNode.isElement() )
+    {
+      multiFrameNode.toElement().removeAttribute( QStringLiteral( "uuid" ) );
+      QDomNodeList frameNodes = multiFrameNode.toElement().elementsByTagName( QStringLiteral( "childFrame" ) );
+      QDomNode itemNode = frameNodes.at( i );
+      if ( itemNode.isElement() )
+      {
+        itemNode.toElement().removeAttribute( QStringLiteral( "uuid" ) );
+      }
     }
   }
 

@@ -197,10 +197,13 @@ item found.
 .. seealso:: :py:func:`itemByUuid`
 %End
 
-    QgsLayoutMultiFrame *multiFrameByUuid( const QString &uuid ) const;
+    QgsLayoutMultiFrame *multiFrameByUuid( const QString &uuid, bool includeTemplateUuids = false ) const;
 %Docstring
 Returns the layout multiframe with matching ``uuid`` unique identifier, or a None
 if a matching multiframe could not be found.
+
+If ``includeTemplateUuids`` is true, then the multiframe's :py:func:`QgsLayoutMultiFrame.templateUuid()`
+will also be tested when trying to match the uuid.
 
 .. seealso:: :py:func:`itemByUuid`
 %End

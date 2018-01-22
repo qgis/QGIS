@@ -266,9 +266,13 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     /**
      * Returns the layout multiframe with matching \a uuid unique identifier, or a nullptr
      * if a matching multiframe could not be found.
+     *
+     * If \a includeTemplateUuids is true, then the multiframe's QgsLayoutMultiFrame::templateUuid()
+     * will also be tested when trying to match the uuid.
+     *
      * \see itemByUuid()
      */
-    QgsLayoutMultiFrame *multiFrameByUuid( const QString &uuid ) const;
+    QgsLayoutMultiFrame *multiFrameByUuid( const QString &uuid, bool includeTemplateUuids = false ) const;
 
     /**
      * Returns the topmost layout item at a specified \a position. Ignores paper items.
