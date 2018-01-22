@@ -238,7 +238,20 @@ QgsLayoutItem *QgsLayout::itemByUuid( const QString &uuid, bool includeTemplateU
   {
     if ( item->uuid() == uuid )
       return item;
-    else if ( includeTemplateUuids && item->templateUuid() == uuid )
+    else if ( includeTemplateUuids && item->mTemplateUuid == uuid )
+      return item;
+  }
+
+  return nullptr;
+}
+
+QgsLayoutItem *QgsLayout::itemByTemplateUuid( const QString &uuid ) const
+{
+  QList<QgsLayoutItem *> itemList;
+  layoutItems( itemList );
+  for ( QgsLayoutItem *item : qgis::as_const( itemList ) )
+  {
+    if ( item->mTemplateUuid == uuid )
       return item;
   }
 
@@ -265,7 +278,7 @@ QgsLayoutMultiFrame *QgsLayout::multiFrameByUuid( const QString &uuid, bool incl
   {
     if ( mf->uuid() == uuid )
       return mf;
-    else if ( includeTemplateUuids && mf->templateUuid() == uuid )
+    else if ( includeTemplateUuids && mf->mTemplateUuid == uuid )
       return mf;
   }
 
@@ -1038,6 +1051,15 @@ QList< QgsLayoutItem * > QgsLayout::addItemsFromXml( const QDomElement &parentEl
   for ( QgsLayoutMultiFrame *mf : qgis::as_const( newMultiFrames ) )
   {
     mf->finalizeRestoreFromXml();
+  }
+
+  for ( QgsLayoutItem *item : qgis::as_const( newItems ) )
+  {
+    item->mTemplateUuid.clear();
+  }
+  for ( QgsLayoutMultiFrame *mf : qgis::as_const( newMultiFrames ) )
+  {
+    mf->mTemplateUuid.clear();
   }
 
   //Since this function adds items in an order which isn't the z-order, and each item is added to end of

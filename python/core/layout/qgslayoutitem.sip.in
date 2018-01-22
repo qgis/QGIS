@@ -217,18 +217,6 @@ upon creation.
 .. seealso:: :py:func:`id`
 
 .. seealso:: :py:func:`setId`
-
-.. seealso:: :py:func:`templateUuid`
-%End
-
-    QString templateUuid() const;
-%Docstring
-Returns the item's original identification string. This may differ from the item's uuid()
-for items which have been added to an existing layout from a template. In this case
-templateUuid() returns the original item UUID at the time the template was created,
-while uuid() returns the current instance of the item's unique identifier.
-
-.. seealso:: :py:func:`uuid`
 %End
 
     QString id() const;
