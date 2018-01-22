@@ -292,22 +292,16 @@ class TestQgsLayout(unittest.TestCase):
 
         # double check that new items have a unique uid
         self.assertNotIn(new_items[0].uuid(), uuids)
-        self.assertIn(new_items[0].templateUuid(), original_uuids)
         uuids.add(new_items[0].uuid())
         self.assertNotIn(new_items[1].uuid(), uuids)
-        self.assertIn(new_items[1].templateUuid(), original_uuids)
         uuids.add(new_items[1].uuid())
         self.assertNotIn(new_items[2].uuid(), uuids)
-        self.assertIn(new_items[2].templateUuid(), original_uuids)
         uuids.add(new_items[2].uuid())
         self.assertNotIn(new_items[3].uuid(), uuids)
-        self.assertIn(new_items[3].templateUuid(), original_uuids)
         uuids.add(new_items[3].uuid())
 
         self.assertNotIn(multiframes[0].uuid(), [multiframe1.uuid(), multiframe2.uuid()])
-        self.assertIn(multiframes[0].templateUuid(), [multiframe1.uuid(), multiframe2.uuid()])
         self.assertNotIn(multiframes[1].uuid(), [multiframe1.uuid(), multiframe2.uuid()])
-        self.assertIn(multiframes[1].templateUuid(), [multiframe1.uuid(), multiframe2.uuid()])
         new_multiframe1 = [i for i in multiframes if i.html() == 'mf1'][0]
         self.assertEqual(new_multiframe1.layout(), l2)
         new_multiframe2 = [i for i in multiframes if i.html() == 'mf2'][0]
@@ -344,22 +338,16 @@ class TestQgsLayout(unittest.TestCase):
         self.assertTrue(new_items2[2] in l2.items())
         self.assertTrue(new_items2[3] in l2.items())
         self.assertNotIn(new_items2[0].uuid(), uuids)
-        self.assertIn(new_items2[0].templateUuid(), original_uuids)
         uuids.add(new_items[0].uuid())
         self.assertNotIn(new_items2[1].uuid(), uuids)
-        self.assertIn(new_items2[1].templateUuid(), original_uuids)
         uuids.add(new_items[1].uuid())
         self.assertNotIn(new_items2[2].uuid(), uuids)
-        self.assertIn(new_items2[2].templateUuid(), original_uuids)
         uuids.add(new_items[2].uuid())
         self.assertNotIn(new_items2[3].uuid(), uuids)
-        self.assertIn(new_items2[3].templateUuid(), original_uuids)
         uuids.add(new_items[3].uuid())
 
         self.assertNotIn(multiframes2[0].uuid(), [multiframe1.uuid(), multiframe2.uuid(), new_multiframe1.uuid(), new_multiframe2.uuid()])
-        self.assertIn(multiframes2[0].templateUuid(), [multiframe1.uuid(), multiframe2.uuid()])
         self.assertNotIn(multiframes2[1].uuid(), [multiframe1.uuid(), multiframe2.uuid(), new_multiframe1.uuid(), new_multiframe2.uuid()])
-        self.assertIn(multiframes2[1].templateUuid(), [multiframe1.uuid(), multiframe2.uuid()])
 
         new_multiframe1b = [i for i in multiframes2 if i.html() == 'mf1'][0]
         self.assertEqual(new_multiframe1b.layout(), l2)
@@ -387,21 +375,8 @@ class TestQgsLayout(unittest.TestCase):
         self.assertTrue(new_items3[1] in l2.items())
         self.assertTrue(new_items3[2] in l2.items())
         self.assertTrue(new_items3[3] in l2.items())
-        self.assertIn(new_items3[0].templateUuid(), original_uuids)
-        self.assertIn(new_items3[1].templateUuid(), original_uuids)
-        self.assertIn(new_items3[2].templateUuid(), original_uuids)
-        self.assertIn(new_items3[3].templateUuid(), original_uuids)
         new_multiframe1 = [i for i in new_multiframes if i.html() == 'mf1'][0]
-        self.assertEqual(new_multiframe1.templateUuid(), multiframe1.uuid())
         new_multiframe2 = [i for i in new_multiframes if i.html() == 'mf2'][0]
-        self.assertEqual(new_multiframe2.templateUuid(), multiframe2.uuid())
-
-        self.assertEqual(l2.itemByUuid(new_items3[0].templateUuid(), True), new_items3[0])
-        self.assertEqual(l2.itemByUuid(new_items3[1].templateUuid(), True), new_items3[1])
-        self.assertEqual(l2.itemByUuid(new_items3[2].templateUuid(), True), new_items3[2])
-        self.assertEqual(l2.itemByUuid(new_items3[3].templateUuid(), True), new_items3[3])
-        self.assertEqual(l2.multiFrameByUuid(new_multiframe1.templateUuid(), True), new_multiframe1)
-        self.assertEqual(l2.multiFrameByUuid(new_multiframe2.templateUuid(), True), new_multiframe2)
 
         new_frame1 = sip.cast([i for i in items if isinstance(i, QgsLayoutItem) and i.id() == 'frame1'][0], QgsLayoutFrame)
         new_frame2 = sip.cast([i for i in items if isinstance(i, QgsLayoutItem) and i.id() == 'frame2'][0], QgsLayoutFrame)

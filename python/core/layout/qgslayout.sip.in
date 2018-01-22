@@ -180,8 +180,33 @@ which deferred z-order updates.
 Returns the layout item with matching ``uuid`` unique identifier, or a None
 if a matching item could not be found.
 
-If ``includeTemplateUuids`` is true, then item's :py:func:`QgsLayoutItem.templateUuid()`
-will also be tested when trying to match the uuid.
+If ``includeTemplateUuids`` is true, then item's template UUID
+will also be tested when trying to match the uuid. This may differ from the item's UUID
+for items which have been added to an existing layout from a template. In this case
+the template UUID returns the original item UUID at the time the template was created,
+vs the item's uuid() which returns the current instance of the item's unique identifier.
+Note that template UUIDs are only available while a layout is being restored from XML.
+
+.. seealso:: :py:func:`itemByTemplateUuid`
+
+.. seealso:: :py:func:`multiFrameByUuid`
+
+.. seealso:: :py:func:`itemById`
+%End
+
+    QgsLayoutItem *itemByTemplateUuid( const QString &uuid ) const;
+%Docstring
+Returns the layout item with matching template ``uuid`` unique identifier, or a None
+if a matching item could not be found. Unlike itemByUuid(), this method ONLY checks
+template UUIDs for a match.
+
+Template UUIDs are valid only for items which have been added to an existing layout from a template. In this case
+the template UUID is the original item UUID at the time the template was created,
+vs the item's uuid() which returns the current instance of the item's unique identifier.
+
+Note that template UUIDs are only available while a layout is being restored from XML.
+
+.. seealso:: :py:func:`itemByUuid`
 
 .. seealso:: :py:func:`multiFrameByUuid`
 
@@ -203,7 +228,11 @@ Returns the layout multiframe with matching ``uuid`` unique identifier, or a Non
 if a matching multiframe could not be found.
 
 If ``includeTemplateUuids`` is true, then the multiframe's :py:func:`QgsLayoutMultiFrame.templateUuid()`
-will also be tested when trying to match the uuid.
+will also be tested when trying to match the uuid. Template UUIDs are valid only for items
+which have been added to an existing layout from a template. In this case
+the template UUID is the original item UUID at the time the template was created,
+vs the item's uuid() which returns the current instance of the item's unique identifier.
+Note that template UUIDs are only available while a layout is being restored from XML.
 
 .. seealso:: :py:func:`itemByUuid`
 %End

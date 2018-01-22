@@ -95,18 +95,6 @@ upon creation.
 .. note::
 
    There is no corresponding setter for the uuid - it's created automatically.
-
-.. seealso:: :py:func:`templateUuid`
-%End
-
-    QString templateUuid() const;
-%Docstring
-Returns the multiframe's original identification string. This may differ from the multiframes's uuid()
-for multiframes which have been added to an existing layout from a template. In this case
-templateUuid() returns the original UUID at the time the template was created,
-while uuid() returns the current instance of the multiframes's unique identifier.
-
-.. seealso:: :py:func:`uuid`
 %End
 
     virtual QSizeF totalSize() const = 0;

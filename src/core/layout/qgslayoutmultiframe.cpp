@@ -303,9 +303,24 @@ void QgsLayoutMultiFrame::finalizeRestoreFromXml()
 {
   for ( int i = 0; i < mFrameUuids.count(); ++i )
   {
-    const QString uuid = mFrameUuids.at( i ).isEmpty() ? mFrameTemplateUuids.at( i ) : mFrameUuids.at( i );
-    QgsLayoutItem *item = mLayout->itemByUuid( uuid, true );
-    if ( QgsLayoutFrame *frame = qobject_cast< QgsLayoutFrame * >( item ) )
+    QgsLayoutFrame *frame = nullptr;
+    const QString uuid = mFrameUuids.at( i );
+    if ( !uuid.isEmpty() )
+    {
+      QgsLayoutItem *item = mLayout->itemByUuid( uuid, true );
+      frame = qobject_cast< QgsLayoutFrame * >( item );
+    }
+    if ( !frame )
+    {
+      const QString templateUuid = mFrameTemplateUuids.at( i );
+      if ( !templateUuid.isEmpty() )
+      {
+        QgsLayoutItem *item = mLayout->itemByTemplateUuid( templateUuid );
+        frame = qobject_cast< QgsLayoutFrame * >( item );
+      }
+    }
+
+    if ( frame )
     {
       addFrame( frame );
     }
