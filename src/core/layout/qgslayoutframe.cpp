@@ -187,6 +187,7 @@ void QgsLayoutFrame::drawBackground( QgsRenderContext &context )
 bool QgsLayoutFrame::writePropertiesToElement( QDomElement &parentElement, QDomDocument &, const QgsReadWriteContext & ) const
 {
   parentElement.setAttribute( QStringLiteral( "multiFrame" ), mMultiFrameUuid );
+  parentElement.setAttribute( QStringLiteral( "multiFrameTemplateUuid" ), mMultiFrameUuid );
   parentElement.setAttribute( QStringLiteral( "sectionX" ), QString::number( mSection.x() ) );
   parentElement.setAttribute( QStringLiteral( "sectionY" ), QString::number( mSection.y() ) );
   parentElement.setAttribute( QStringLiteral( "sectionWidth" ), QString::number( mSection.width() ) );
@@ -207,6 +208,10 @@ bool QgsLayoutFrame::readPropertiesFromElement( const QDomElement &itemElem, con
   mHideBackgroundIfEmpty = itemElem.attribute( QStringLiteral( "hideBackgroundIfEmpty" ), QStringLiteral( "0" ) ).toInt();
 
   mMultiFrameUuid = itemElem.attribute( QStringLiteral( "multiFrame" ) );
+  if ( mMultiFrameUuid.isEmpty( ) )
+  {
+    mMultiFrameUuid = itemElem.attribute( QStringLiteral( "multiFrameTemplateUuid" ) );
+  }
   mMultiFrame = mLayout->multiFrameByUuid( mMultiFrameUuid );
   return true;
 }
