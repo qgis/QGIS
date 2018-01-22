@@ -21,6 +21,38 @@ several frames (QgsLayoutFrame items).
 
 %TypeHeaderCode
 #include "qgslayoutmultiframe.h"
+#include "qgslayoutitemhtml.h"
+#include "qgslayoutitemattributetable.h"
+#include "qgslayoutitemtexttable.h"
+%End
+%ConvertToSubClassCode
+    // the conversions have to be static, because they're using multiple inheritance
+    // (seen in PyQt4 .sip files for some QGraphicsItem classes)
+    if ( QgsLayoutMultiFrame *mf = qobject_cast< QgsLayoutMultiFrame *>( sipCpp ) )
+    {
+      switch ( mf->type() )
+      {
+        // really, these *should* use the constants from QgsLayoutItemRegistry, but sip doesn't like that!
+        case QGraphicsItem::UserType + 112:
+          sipType = sipType_QgsLayoutItemHtml;
+          *sipCppRet = static_cast<QgsLayoutItemHtml *>( sipCpp );
+          break;
+        case QGraphicsItem::UserType + 113:
+          sipType = sipType_QgsLayoutItemAttributeTable;
+          *sipCppRet = static_cast<QgsLayoutItemAttributeTable *>( sipCpp );
+          break;
+        case QGraphicsItem::UserType + 114:
+          sipType = sipType_QgsLayoutItemTextTable;
+          *sipCppRet = static_cast<QgsLayoutItemTextTable *>( sipCpp );
+          break;
+        default:
+          sipType = 0;
+      }
+    }
+    else
+    {
+      sipType = 0;
+    }
 %End
   public:
 

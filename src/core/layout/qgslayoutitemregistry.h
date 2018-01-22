@@ -296,6 +296,10 @@ class CORE_EXPORT QgsLayoutItemRegistry : public QObject
       LayoutGroup, //!< Grouped item
 
       // known item types
+
+      // WARNING!!!! SIP CASTING OF QgsLayoutItem and QgsLayoutMultiFrame DEPENDS on these
+      // values, and must be updated if any additional types are added
+
       LayoutPage, //!< Page items
       LayoutMap, //!< Map item
       LayoutPicture, //!< Picture item
@@ -308,12 +312,16 @@ class CORE_EXPORT QgsLayoutItemRegistry : public QObject
       LayoutFrame, //!< Frame item, part of a QgsLayoutMultiFrame object
 
       // known multi-frame types
+
+      // WARNING!!!! SIP CASTING OF QgsLayoutItem and QgsLayoutMultiFrame DEPENDS on these
+      // values, and must be updated if any additional types are added
+
       LayoutHtml, //!< Html multiframe item
       LayoutAttributeTable, //!< Attribute table
       LayoutTextTable, //!< Preset text table
 
       // item types provided by plugins
-      PluginItem = LayoutTextTable + 1000, //!< Starting point for plugin item types
+      PluginItem = LayoutTextTable + 10000, //!< Starting point for plugin item types
     };
 
     /**
