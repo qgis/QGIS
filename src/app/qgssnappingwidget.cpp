@@ -78,6 +78,10 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
   {
     model->resetLayerTreeModel();
   } );
+  connect( mProject, &QObject::destroyed, this, [ = ]
+  {
+    mLayerTreeView->setModel( nullptr );
+  } );
   // model->setFlags( 0 );
   mLayerTreeView->setModel( model );
   mLayerTreeView->resizeColumnToContents( 0 );
