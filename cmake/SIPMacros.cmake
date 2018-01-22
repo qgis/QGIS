@@ -111,7 +111,7 @@ MACRO(GENERATE_SIP_PYTHON_MODULE_CODE MODULE_NAME MODULE_SIP SIP_FILES CPP_FILES
     ADD_DEFINITIONS( /bigobj )
   ENDIF(MSVC)
 
-  SET(SIPCMD ${SIP_BINARY_PATH} ${_sip_tags} -w -e ${_sip_x} ${SIP_EXTRA_OPTIONS} -j ${SIP_CONCAT_PARTS} -c ${CMAKE_CURRENT_BINARY_DIR}/${_module_path} -I ${CMAKE_BINARY_SOURCE_DIR}/${_module_path} ${_sip_includes} ${_configured_module_sip})
+  SET(SIPCMD ${SIP_BINARY_PATH} ${_sip_tags} -w -e ${_sip_x} ${SIP_EXTRA_OPTIONS} -j ${SIP_CONCAT_PARTS} -c ${CMAKE_CURRENT_BINARY_DIR}/${_module_path} -I ${CMAKE_CURRENT_BINARY_DIR}/${_module_path} ${_sip_includes} ${_configured_module_sip})
   ADD_CUSTOM_COMMAND(
     OUTPUT ${_sip_output_files}
     COMMAND ${CMAKE_COMMAND} -E echo ${message}
