@@ -517,8 +517,8 @@
         <file>themes/default/repositoryConnected.png</file>
         <file>themes/default/repositoryDisabled.png</file>
         <file>themes/default/repositoryUnavailable.png</file>
-        <file>themes/default/stars_empty.png</file>
-        <file>themes/default/stars_full.png</file>
+        <file>themes/default/stars_empty.svg</file>
+        <file>themes/default/stars_full.svg</file>
         <file>themes/default/styleicons/color.svg</file>
         <file>themes/default/symbologyAdd.svg</file>
         <file>themes/default/symbologyEdit.png</file>
