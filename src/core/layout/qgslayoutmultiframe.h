@@ -45,6 +45,44 @@ class QgsRenderContext;
 
 class CORE_EXPORT QgsLayoutMultiFrame: public QgsLayoutObject, public QgsLayoutUndoObjectInterface
 {
+#ifdef SIP_RUN
+#include "qgslayoutitemhtml.h"
+#include "qgslayoutitemattributetable.h"
+#include "qgslayoutitemtexttable.h"
+#endif
+
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    // the conversions have to be static, because they're using multiple inheritance
+    // (seen in PyQt4 .sip files for some QGraphicsItem classes)
+    if ( QgsLayoutMultiFrame *mf = qobject_cast< QgsLayoutMultiFrame *>( sipCpp ) )
+    {
+      switch ( mf->type() )
+      {
+        // really, these *should* use the constants from QgsLayoutItemRegistry, but sip doesn't like that!
+        case QGraphicsItem::UserType + 112:
+          sipType = sipType_QgsLayoutItemHtml;
+          *sipCppRet = static_cast<QgsLayoutItemHtml *>( sipCpp );
+          break;
+        case QGraphicsItem::UserType + 113:
+          sipType = sipType_QgsLayoutItemAttributeTable;
+          *sipCppRet = static_cast<QgsLayoutItemAttributeTable *>( sipCpp );
+          break;
+        case QGraphicsItem::UserType + 114:
+          sipType = sipType_QgsLayoutItemTextTable;
+          *sipCppRet = static_cast<QgsLayoutItemTextTable *>( sipCpp );
+          break;
+        default:
+          sipType = 0;
+      }
+    }
+    else
+    {
+      sipType = 0;
+    }
+    SIP_END
+#endif
 
     Q_OBJECT
 
@@ -62,7 +100,7 @@ class CORE_EXPORT QgsLayoutMultiFrame: public QgsLayoutObject, public QgsLayoutU
                               until the entire multiframe content is visible */
     };
 
-    //! Multiframe item undo commands, used for collapsing undo commands
+//! Multiframe item undo commands, used for collapsing undo commands
     enum UndoCommand
     {
       UndoHtmlBreakDistance, //!< HTML page break distance

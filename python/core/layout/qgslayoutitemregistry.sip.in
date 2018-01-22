@@ -154,6 +154,10 @@ of layout items.
       LayoutGroup,
 
       // known
+
+      // WARNING
+      // values,
+
       LayoutPage,
       LayoutMap,
       LayoutPicture,
@@ -166,6 +170,10 @@ of layout items.
       LayoutFrame,
 
       // known
+
+      // WARNING
+      // values,
+
       LayoutHtml,
       LayoutAttributeTable,
       LayoutTextTable,
