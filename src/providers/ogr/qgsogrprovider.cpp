@@ -5741,57 +5741,65 @@ QGISEXTERN bool deleteLayer( const QString &uri, QString &errCause )
                                  subsetString,
                                  ogrGeometryType );
 
+
   GDALDatasetH hDS = GDALOpenEx( filePath.toLocal8Bit().data(), GDAL_OF_RASTER | GDAL_OF_VECTOR | GDAL_OF_UPDATE, nullptr, nullptr, nullptr );
   if ( hDS  && ( ! layerName.isEmpty() || layerIndex != -1 ) )
   {
-    if ( layerIndex == -1 )
+    // If we have got a name we convert it into an index
+    if ( ! layerName.isEmpty() )
     {
+      layerIndex = -1;
       for ( int i = 0; i < GDALDatasetGetLayerCount( hDS ); i++ )
       {
         OGRLayerH hL = GDALDatasetGetLayer( hDS, i );
         if ( layerName == QString( OGR_L_GetName( hL ) ) )
         {
           layerIndex = i;
+          break;
         }
       }
     }
-    OGRErr error = GDALDatasetDeleteLayer( hDS, layerIndex );
-    switch ( error )
+    // Do delete!
+    if ( layerIndex != -1 )
     {
-      case OGRERR_NOT_ENOUGH_DATA:
-        errCause = QObject::tr( "Not enough data to deserialize" );
-        break;
-      case OGRERR_NOT_ENOUGH_MEMORY:
-        errCause = QObject::tr( "Not enough memory" );
-        break;
-      case OGRERR_UNSUPPORTED_GEOMETRY_TYPE:
-        errCause = QObject::tr( "Unsupported geometry type" );
-        break;
-      case OGRERR_UNSUPPORTED_OPERATION:
-        errCause = QObject::tr( "Unsupported operation" );
-        break;
-      case OGRERR_CORRUPT_DATA:
-        errCause = QObject::tr( "Corrupt data" );
-        break;
-      case OGRERR_FAILURE:
-        errCause = QObject::tr( "Failure" );
-        break;
-      case OGRERR_UNSUPPORTED_SRS:
-        errCause = QObject::tr( "Unsupported SRS" );
-        break;
-      case OGRERR_INVALID_HANDLE:
-        errCause = QObject::tr( "Invalid handle" );
-        break;
-      case OGRERR_NON_EXISTING_FEATURE:
-        errCause = QObject::tr( "Non existing feature" );
-        break;
-      default:
-      case OGRERR_NONE:
-        errCause = QObject::tr( "Success" );
-        break;
+      OGRErr error = GDALDatasetDeleteLayer( hDS, layerIndex );
+      switch ( error )
+      {
+        case OGRERR_NOT_ENOUGH_DATA:
+          errCause = QObject::tr( "Not enough data to deserialize" );
+          break;
+        case OGRERR_NOT_ENOUGH_MEMORY:
+          errCause = QObject::tr( "Not enough memory" );
+          break;
+        case OGRERR_UNSUPPORTED_GEOMETRY_TYPE:
+          errCause = QObject::tr( "Unsupported geometry type" );
+          break;
+        case OGRERR_UNSUPPORTED_OPERATION:
+          errCause = QObject::tr( "Unsupported operation" );
+          break;
+        case OGRERR_CORRUPT_DATA:
+          errCause = QObject::tr( "Corrupt data" );
+          break;
+        case OGRERR_FAILURE:
+          errCause = QObject::tr( "Failure" );
+          break;
+        case OGRERR_UNSUPPORTED_SRS:
+          errCause = QObject::tr( "Unsupported SRS" );
+          break;
+        case OGRERR_INVALID_HANDLE:
+          errCause = QObject::tr( "Invalid handle" );
+          break;
+        case OGRERR_NON_EXISTING_FEATURE:
+          errCause = QObject::tr( "Non existing feature" );
+          break;
+        default:
+        case OGRERR_NONE:
+          errCause = QObject::tr( "Success" );
+          break;
+      }
+      errCause = QObject::tr( "GDAL result code: %1" ).arg( errCause );
+      return error == OGRERR_NONE;
     }
-    errCause = QObject::tr( "GDAL result code: %1" ).arg( errCause );
-    return error == OGRERR_NONE;
   }
   // This should never happen:
   errCause = QObject::tr( "Layer not found: %1" ).arg( uri );
