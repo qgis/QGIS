@@ -88,13 +88,8 @@ def show_console():
         QTimer.singleShot(0, _console.activate)
 
     else:
-        # show/hide dockwidget console or always show top-level console and make it foreground
-        if _consoleAsDock:
-            _console.setVisible(not _console.isVisible())
-        else:
-            _console.show()
-            _console.setWindowState(_console.windowState() & ~Qt.WindowMinimized)
-
+        # show/hide console
+        _console.setVisible(not _console.isVisible())
         if _console.isVisible():
             _console.activate()
 
