@@ -20,8 +20,9 @@ email                : brush.tyler@gmail.com
  ***************************************************************************/
 """
 
-
-from ..data_model import TableDataModel, SqlResultModel
+from qgis.core import QgsTask
+from ..plugin import BaseError
+from ..data_model import TableDataModel, SqlResultModel, SqlResultModelAsync
 
 
 class PGTableDataModel(TableDataModel):
@@ -77,6 +78,42 @@ class PGTableDataModel(TableDataModel):
 
         self.resdata = self.cursor.fetchmany(self.fetchedCount)
         self.fetchedFrom = row_start
+
+
+class PGSqlResultModelTask(QgsTask):
+
+    def __init__(self, db, sql, parent):
+        QgsTask.__init__(self)
+        self.db = db
+        self.sql = sql
+        self.parent = parent
+        self.error = BaseError('')
+        self.model = None
+
+    def run(self):
+
+        try:
+            self.model = PGSqlResultModel(self.db, self.sql, self.parent)
+        except BaseError as e:
+            self.error = e
+            QgsMessageLog.logMessage(e.msg)
+            return False
+
+        return True
+
+    def cancelQuery(self):
+        self.db.connector.cancel()
+        self.cancel()
+
+
+class PGSqlResultModelAsync(SqlResultModelAsync):
+
+    def __init__(self, db, sql, parent):
+        SqlResultModelAsync.__init__(self, db, sql, parent)
+
+        self.task = PGSqlResultModelTask(db, sql, parent)
+        self.task.taskCompleted.connect(self.modelDone)
+        self.task.taskTerminated.connect(self.modelDone)
 
 
 class PGSqlResultModel(SqlResultModel):

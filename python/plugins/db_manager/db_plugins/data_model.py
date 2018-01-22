@@ -22,11 +22,18 @@ email                : brush.tyler@gmail.com
 from builtins import str
 from builtins import range
 
-from qgis.PyQt.QtCore import Qt, QTime, QRegExp, QAbstractTableModel
-from qgis.PyQt.QtGui import QFont, QStandardItemModel, QStandardItem
+from qgis.PyQt.QtCore import (Qt,
+                              QTime,
+                              QRegExp,
+                              QAbstractTableModel,
+                              pyqtSignal,
+                              QObject)
+from qgis.PyQt.QtGui import (QFont,
+                             QStandardItemModel,
+                             QStandardItem)
 from qgis.PyQt.QtWidgets import QApplication
 
-from .plugin import DbError
+from .plugin import DbError, BaseError
 
 
 class BaseTableModel(QAbstractTableModel):
@@ -137,6 +144,33 @@ class TableDataModel(BaseTableModel):
     def rowCount(self, index=None):
         # case for tables with no columns ... any reason to use them? :-)
         return self.table.rowCount if self.table.rowCount is not None and self.columnCount(index) > 0 else 0
+
+
+class SqlResultModelAsync(QObject):
+
+    done = pyqtSignal()
+
+    def __init__(self, db, sql, parent=None):
+        QObject.__init__(self)
+        self.db = db
+        self.sql = sql
+        self.parent = parent
+        self.error = BaseError('')
+        self.status = None
+        self.model = None
+        self.task = None
+
+    def cancel(self):
+        if self.task:
+            self.task.cancelQuery()
+
+    def modelDone(self):
+        if self.task:
+            self.status = self.task.status
+            self.model = self.task.model
+            self.error = self.task.error
+
+        self.done.emit()
 
 
 class SqlResultModel(BaseTableModel):

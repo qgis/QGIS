@@ -30,13 +30,14 @@ from qgis.PyQt.QtWidgets import QDialog, QWidget, QAction, QApplication, QInputD
 from qgis.PyQt.QtGui import QKeySequence, QCursor, QClipboard, QIcon, QStandardItemModel, QStandardItem
 from qgis.PyQt.Qsci import QsciAPIs
 
-from qgis.core import QgsProject
+from qgis.core import QgsProject, QgsApplication, QgsTask
 from qgis.utils import OverrideCursor
 
 from .db_plugins.plugin import BaseError
 from .db_plugins.postgis.plugin import PGDatabase
 from .dlg_db_error import DlgDbError
 from .dlg_query_builder import QueryBuilderDlg
+from .dlg_cancel_task_query import DlgCancelTaskQuery
 
 try:
     from qgis.gui import QgsCodeEditorSQL  # NOQA
@@ -59,6 +60,9 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         self.iface = iface
         self.db = db
         self.filter = ""
+        self.modelAsync = None
+        self.dlg_cancel_task = DlgCancelTaskQuery(self)
+        self.dlg_cancel_task.canceled.connect(self.executeSqlCanceled)
         self.allowMultiColumnPk = isinstance(db, PGDatabase)  # at the moment only PostgreSQL allows a primary key to span multiple columns, SpatiaLite doesn't
         self.aliasSubQuery = isinstance(db, PGDatabase)       # only PostgreSQL requires subqueries to be aliases
         self.setupUi(self)
@@ -177,40 +181,53 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         self.editSql.setFocus()
         self.filter = ""
 
+    def executeSqlCanceled(self):
+        self.modelAsync.cancel()
+
+    def executeSqlCompleted(self):
+        self.dlg_cancel_task.hide()
+
+        if self.modelAsync.task.status() == QgsTask.Complete:
+            model = self.modelAsync.model
+            cols = []
+            quotedCols = []
+
+            self.viewResult.setModel(model)
+            self.lblResult.setText(self.tr("{0} rows, {1:.1f} seconds").format(model.affectedRows(), model.secs()))
+            cols = self.viewResult.model().columnNames()
+            for col in cols:
+                quotedCols.append(self.db.connector.quoteId(col))
+
+            self.setColumnCombos(cols, quotedCols)
+            self.update()
+        elif not self.dlg_cancel_task.cancelStatus:
+            DlgDbError.showError(self.modelAsync.error, self)
+            self.uniqueModel.clear()
+            self.geomCombo.clear()
+            pass
+
     def executeSql(self):
 
         sql = self._getSqlQuery()
         if sql == "":
             return
 
-        with OverrideCursor(Qt.WaitCursor):
-            # delete the old model
-            old_model = self.viewResult.model()
-            self.viewResult.setModel(None)
-            if old_model:
-                old_model.deleteLater()
+        # delete the old model
+        old_model = self.viewResult.model()
+        self.viewResult.setModel(None)
+        if old_model:
+            old_model.deleteLater()
 
-            cols = []
-            quotedCols = []
-
-            try:
-                # set the new model
-                model = self.db.sqlResultModel(sql, self)
-                self.viewResult.setModel(model)
-                self.lblResult.setText(self.tr("{0} rows, {1:.1f} seconds").format(model.affectedRows(), model.secs()))
-                cols = self.viewResult.model().columnNames()
-                for col in cols:
-                    quotedCols.append(self.db.connector.quoteId(col))
-
-            except BaseError as e:
-                DlgDbError.showError(e, self)
-                self.uniqueModel.clear()
-                self.geomCombo.clear()
-                return
-
-            self.setColumnCombos(cols, quotedCols)
-
-            self.update()
+        try:
+            self.modelAsync = self.db.sqlResultModelAsync(sql, self)
+            self.modelAsync.done.connect(self.executeSqlCompleted)
+            self.dlg_cancel_task.show()
+            QgsApplication.taskManager().addTask(self.modelAsync.task)
+        except Exception as e:
+            DlgDbError.showError(e, self)
+            self.uniqueModel.clear()
+            self.geomCombo.clear()
+            return
 
     def _getSqlLayer(self, _filter):
         hasUniqueField = self.uniqueColumnCheck.checkState() == Qt.Checked

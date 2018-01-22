@@ -256,6 +256,11 @@ class Database(DbItemObject):
 
         return SqlResultModel(self, sql, parent)
 
+    def sqlResultModelAsync(self, sql, parent):
+        from .data_model import SqlResultModelAsync
+
+        return SqlResultModelAsync(self, sql, parent)
+
     def columnUniqueValuesModel(self, col, table, limit=10):
         l = ""
         if limit is not None:

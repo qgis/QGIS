@@ -20,7 +20,10 @@ email                : brush.tyler@gmail.com
  ***************************************************************************/
 """
 
-from ..data_model import TableDataModel, SqlResultModel
+from qgis.core import QgsTask
+from ..plugin import BaseError
+from ..data_model import TableDataModel, SqlResultModel, SqlResultModelAsync
+from .plugin import SLDatabase
 
 
 class SLTableDataModel(TableDataModel):
@@ -58,6 +61,48 @@ class SLTableDataModel(TableDataModel):
 
     def rowCount(self, index=None):
         return self.fetchedCount
+
+
+class SLSqlResultModelTask(QgsTask):
+
+    def __init__(self, db, sql, parent):
+        QgsTask.__init__(self)
+        self.db = db
+        self.sql = sql
+        self.parent = parent
+        self.error = BaseError('')
+        self.model = None
+        self.clone = None
+
+    def run(self):
+        try:
+            self.clone = SLDatabase(None, self.db.connector.uri())
+
+            # import time
+            # self.clone.connector.connection.create_function("sleep", 1, time.sleep)
+
+            self.model = SLSqlResultModel(self.clone, self.sql, None)
+        except BaseError as e:
+            self.error = e
+            QgsMessageLog.logMessage(e.msg)
+            return False
+
+        return True
+
+    def cancelQuery(self):
+        if self.clone:
+            self.clone.connector.cancel()
+        self.cancel()
+
+
+class SLSqlResultModelAsync(SqlResultModelAsync):
+
+    def __init__(self, db, sql, parent):
+        SqlResultModelAsync.__init__(self, db, sql, parent)
+
+        self.task = SLSqlResultModelTask(db, sql, parent)
+        self.task.taskCompleted.connect(self.modelDone)
+        self.task.taskTerminated.connect(self.modelDone)
 
 
 class SLSqlResultModel(SqlResultModel):
