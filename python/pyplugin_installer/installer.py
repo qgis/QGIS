@@ -22,9 +22,9 @@
  *                                                                         *
  ***************************************************************************/
 """
-from builtins import str
 
 import os
+import json
 import zipfile
 
 from qgis.PyQt.QtCore import Qt, QObject, QDir, QUrl, QFileInfo, QFile
@@ -525,10 +525,10 @@ class QgsPluginInstaller(QObject):
         if not plugin_id or not vote:
             return False
         url = "http://plugins.qgis.org/plugins/RPC2/"
-        params = "{\"id\":\"djangorpc\",\"method\":\"plugin.vote\",\"params\":[%s,%s]}" % (str(plugin_id), str(vote))
+        params = {"id":"djangorpc", "method":"plugin.vote", "params":[str(plugin_id), str(vote)]}
         req = QNetworkRequest(QUrl(url))
-        req.setRawHeader("Content-Type", "application/json")
-        QgsNetworkAccessManager.instance().post(req, params)
+        req.setRawHeader(b"Content-Type", b"application/json")
+        QgsNetworkAccessManager.instance().post(req, bytes(json.dumps(params), "utf-8"))
         return True
 
     def installFromZipFile(self, filePath):
