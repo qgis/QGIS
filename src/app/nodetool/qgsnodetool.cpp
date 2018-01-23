@@ -407,7 +407,7 @@ void QgsNodeTool::cadCanvasPressEvent( QgsMapMouseEvent *e )
       if ( mLastMouseMoveMatch.isValid() && mLastMouseMoveMatch.layer() )
       {
         QMenu menu;
-        QAction *actionNodeEditor = menu.addAction( tr( "Node editor" ) );
+        QAction *actionNodeEditor = menu.addAction( tr( "Vertex editor" ) );
         connect( actionNodeEditor, &QAction::triggered, this, &QgsNodeTool::showNodeEditor );
         menu.exec( mCanvas->mapToGlobal( e->pos() ) );
       }

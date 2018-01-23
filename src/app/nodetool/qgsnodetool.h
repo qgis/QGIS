@@ -362,11 +362,11 @@ class APP_EXPORT QgsNodeTool : public QgsMapToolAdvancedDigitizing
     //! Geometry cache for fast access to geometries
     QHash<const QgsVectorLayer *, QHash<QgsFeatureId, QgsGeometry> > mCache;
 
-    // support for node editor
+    // support for vertex editor
 
     //! most recent match when moving mouse
     QgsPointLocator::Match mLastMouseMoveMatch;
-    //! Selected feature for the node editor
+    //! Selected feature for the vertex editor
     std::unique_ptr<QgsSelectedFeature> mSelectedFeature;
     //! Dock widget which allows editing vertices
     std::unique_ptr<QgsNodeEditor> mNodeEditor;
@@ -376,7 +376,7 @@ class APP_EXPORT QgsNodeTool : public QgsMapToolAdvancedDigitizing
     //! data structure for validation of one geometry of a vector layer
     struct GeometryValidation
     {
-      QgsNodeTool *tool = nullptr;               //!< Pointer to the parent node tool (for connections / canvas)
+      QgsNodeTool *tool = nullptr;               //!< Pointer to the parent vertex tool (for connections / canvas)
       QgsVectorLayer *layer = nullptr;            //!< Pointer to the layer of the validated geometry (for reporojection)
       QgsGeometryValidator *validator = nullptr;  //!< Object that does validation. Non-null if active
       QList<QgsVertexMarker *> errorMarkers;      //!< Markers created by validation

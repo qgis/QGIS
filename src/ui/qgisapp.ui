@@ -841,7 +841,7 @@
    </property>
    <property name="toolTip">
     <string>Move Feature(s)
-&lt;p&gt;Try the Node Tool if snapping is needed&lt;/p&gt;</string>
+&lt;p&gt;Try the Vertex Tool if snapping is needed&lt;/p&gt;</string>
    </property>
   </action>
   <action name="mActionReshapeFeatures">
@@ -976,7 +976,7 @@
      <normaloff>:/images/themes/default/mActionNodeTool.svg</normaloff>:/images/themes/default/mActionNodeTool.svg</iconset>
    </property>
    <property name="text">
-    <string>Node Tool</string>
+    <string>Vertex Tool</string>
    </property>
   </action>
   <action name="mActionRotatePointSymbols">
