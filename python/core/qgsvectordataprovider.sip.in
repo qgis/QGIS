@@ -233,6 +233,13 @@ Providers with the FastTruncate capability will use an optimised method to trunc
 %End
 
     virtual bool cancel();
+%Docstring
+Cancels the pending query.
+
+:return: true if the pending query has been interrupted, false otherwise
+
+.. versionadded:: 3.2
+%End
 
     virtual bool addAttributes( const QList<QgsField> &attributes );
 %Docstring

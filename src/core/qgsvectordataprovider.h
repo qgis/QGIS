@@ -249,6 +249,11 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      */
     virtual bool truncate();
 
+    /**
+     * Cancels the pending query.
+     * \returns true if the pending query has been interrupted, false otherwise
+     * \since QGIS 3.2
+     */
     virtual bool cancel();
 
     /**

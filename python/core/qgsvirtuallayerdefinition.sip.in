@@ -151,7 +151,23 @@ Set the name of the field with unique identifiers
 %End
 
     void setPostpone( bool postpone );
+%Docstring
+Sets the postpone mode. If ``postpone`` is true, then the loading is
+delayed until an explicit reloading of the layer.
+
+:param postpone: True to delay the loading, false otherwise
+
+.. versionadded:: 3.2
+%End
+
     bool postpone() const;
+%Docstring
+Returns the postpone mode.
+
+:return: True if the loading is delayed, false otherwise.
+
+.. versionadded:: 3.2
+%End
 
     QString geometryField() const;
 %Docstring

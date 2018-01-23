@@ -131,7 +131,19 @@ class CORE_EXPORT QgsVirtualLayerDefinition
     //! Set the name of the field with unique identifiers
     void setUid( const QString &uid ) { mUid = uid; }
 
+    /**
+     * Sets the postpone mode. If \a postpone is true, then the loading is
+     * delayed until an explicit reloading of the layer.
+     * \param postpone True to delay the loading, false otherwise
+     * \since QGIS 3.2
+     */
     void setPostpone( bool postpone ) { mPostpone = postpone; }
+
+    /**
+     * Returns the postpone mode.
+     * \returns True if the loading is delayed, false otherwise.
+     * \since QGIS 3.2
+     */
     bool postpone() const { return mPostpone; }
 
     //! Get the name of the geometry field. Empty if no geometry field

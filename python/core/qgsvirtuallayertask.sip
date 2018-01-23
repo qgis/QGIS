@@ -13,9 +13,10 @@ class QgsVirtualLayerTask : QgsTask
 {
 %Docstring
 
-Initializes a virtual layer in a separated task.
+Initializes a virtual layer with postpone mode activated and reloads the
+data in a separated thread.
 
-.. versionadded:: 3.0
+.. versionadded:: 3.2
 %End
 
 %TypeHeaderCode
@@ -24,16 +25,35 @@ Initializes a virtual layer in a separated task.
   public:
 
     QgsVirtualLayerTask( const QgsVirtualLayerDefinition &definition );
+%Docstring
+Constructor.
+
+:param definition: The definition to use for initializing the virtual layer
+%End
 
     QgsVectorLayer *layer();
+%Docstring
+Returns the underlying virtual layer.
+%End
 
     QgsVirtualLayerDefinition definition() const;
+%Docstring
+Returns the virtual layer definition.
+%End
 
     virtual bool run();
 
+%Docstring
+Reloads the data.
+
+:return: True if the virtual layer is valid, false otherwise.
+%End
 
     virtual void cancel();
 
+%Docstring
+Cancels the pending query and the parent task.
+%End
 
 };
 

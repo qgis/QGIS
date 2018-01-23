@@ -25,9 +25,10 @@
 /**
  * \ingroup core
  *
- * Initializes a virtual layer in a separated task.
+ * Initializes a virtual layer with postpone mode activated and reloads the
+ * data in a separated thread.
  *
- * \since QGIS 3.0
+ * \since QGIS 3.2
  */
 class CORE_EXPORT QgsVirtualLayerTask : public QgsTask
 {
@@ -35,14 +36,31 @@ class CORE_EXPORT QgsVirtualLayerTask : public QgsTask
 
   public:
 
+    /**
+     * Constructor.
+     * \param definition The definition to use for initializing the virtual layer
+     */
     QgsVirtualLayerTask( const QgsVirtualLayerDefinition &definition );
 
+    /**
+     * Returns the underlying virtual layer.
+     */
     QgsVectorLayer *layer();
 
+    /**
+     * Returns the virtual layer definition.
+     */
     QgsVirtualLayerDefinition definition() const;
 
+    /**
+     * Reloads the data.
+     * \returns True if the virtual layer is valid, false otherwise.
+     */
     bool run() override;
 
+    /**
+     * Cancels the pending query and the parent task.
+     */
     void cancel() override;
 
   private:
