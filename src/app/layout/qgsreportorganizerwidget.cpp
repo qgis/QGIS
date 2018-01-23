@@ -41,6 +41,7 @@ QgsReportOrganizerWidget::QgsReportOrganizerWidget( QWidget *parent, QgsLayoutDe
 
   mSectionModel = new QgsReportSectionModel( mReport, this );
   mViewSections->setModel( mSectionModel );
+  mViewSections->header()->hide();
   mViewSections->expandAll();
 
 #ifdef ENABLE_MODELTEST
