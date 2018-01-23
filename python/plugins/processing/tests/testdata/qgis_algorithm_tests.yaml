@@ -2534,7 +2534,7 @@ tests:
             fid: skip
 
 
-  - algorithm: qgis:adduniquevalueindexfield
+  - algorithm: native:adduniquevalueindexfield
     name: add unique field based on another field
     params:
       FIELD: id2
@@ -2545,6 +2545,24 @@ tests:
       OUTPUT:
         name: expected/add_unique_field.gml
         type: vector
+
+  - algorithm: native:adduniquevalueindexfield
+    name: Add unique field summary
+    params:
+      FIELD: id2
+      FIELD_NAME: classes
+      INPUT:
+        name: points.gml
+        type: vector
+    results:
+      SUMMARY_OUTPUT:
+        name: expected/add_unique_field_summary.gml
+        type: vector
+        compare:
+          fields:
+            fid: skip
+        pk:
+        - id2
 
   - algorithm: qgis:linestopolygons
     name: convert lines to polygon
