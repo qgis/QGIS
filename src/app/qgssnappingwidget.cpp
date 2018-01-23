@@ -376,7 +376,6 @@ void QgsSnappingWidget::toggleSnappingWidgets( bool enabled )
   {
     mLayerTreeView->setEnabled( enabled );
   }
-  mTopologicalEditingAction->setEnabled( enabled );
   mIntersectionSnappingAction->setEnabled( enabled );
   mEnableTracingAction->setEnabled( enabled );
 }
