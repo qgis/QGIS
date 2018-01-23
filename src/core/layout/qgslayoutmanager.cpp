@@ -155,7 +155,8 @@ bool QgsLayoutManager::readXml( const QDomElement &element, const QDomDocument &
       {
         if ( l->name().isEmpty() )
           l->setName( legacyTitle );
-        result = result && addLayout( l.release() );
+        bool added = addLayout( l.release() );
+        result = added && result;
       }
     }
   }
