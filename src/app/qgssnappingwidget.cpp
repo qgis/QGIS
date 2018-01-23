@@ -74,14 +74,8 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
   connect( model, &QgsSnappingLayerTreeModel::rowsInserted, this, &QgsSnappingWidget::onSnappingTreeLayersChanged );
   connect( model, &QgsSnappingLayerTreeModel::modelReset, this, &QgsSnappingWidget::onSnappingTreeLayersChanged );
   connect( model, &QgsSnappingLayerTreeModel::rowsRemoved, this, &QgsSnappingWidget::onSnappingTreeLayersChanged );
-  connect( project, &QgsProject::readProject, this, [ = ]
-  {
-    model->resetLayerTreeModel();
-  } );
-  connect( mProject, &QObject::destroyed, this, [ = ]
-  {
-    mLayerTreeView->setModel( nullptr );
-  } );
+  connect( mProject, &QgsProject::readProject, this, [ = ] {model->resetLayerTreeModel();} );
+  connect( mProject, &QObject::destroyed, this, [ = ] {mLayerTreeView->setModel( nullptr );} );
   // model->setFlags( 0 );
   mLayerTreeView->setModel( model );
   mLayerTreeView->resizeColumnToContents( 0 );
