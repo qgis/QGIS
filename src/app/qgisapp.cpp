@@ -1206,12 +1206,6 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   zoomInToolShortCut->setWhatsThis( tr( "Zoom in (secondary)" ) );
   zoomInToolShortCut->setProperty( "Icon", QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomIn.svg" ) ) );
 
-  QShortcut *toggleSnapping = new QShortcut( QKeySequence( tr( "S", "Keyboard Shortcut: Toggle snapping" ) ), this );
-  toggleSnapping->setObjectName( QStringLiteral( "toggleSnapping" ) );
-  toggleSnapping->setWhatsThis( tr( "Toggle snapping" ) );
-  toggleSnapping->setProperty( "Icon", QgsApplication::getThemeIcon( QStringLiteral( "/mIconSnapping.svg" ) ) );
-  connect( toggleSnapping, &QShortcut::activated, mSnappingUtils, &QgsSnappingUtils::toggleEnabled );
-
   QShortcut *attributeTableSelected = new QShortcut( QKeySequence( tr( "Shift+F6" ) ), this );
   attributeTableSelected->setObjectName( QStringLiteral( "attributeTableSelectedFeatures" ) );
   attributeTableSelected->setWhatsThis( tr( "Open Attribute Table (Selected Features)" ) );
@@ -1253,6 +1247,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 
   // supposedly all actions have been added, now register them to the shortcut manager
   QgsGui::shortcutsManager()->registerAllChildren( this );
+  QgsGui::shortcutsManager()->registerAllChildren( mSnappingWidget );
 
   QgsProviderRegistry::instance()->registerGuis( this );
 
@@ -2410,7 +2405,8 @@ void QgisApp::createToolBars()
   mTracer = new QgsMapCanvasTracer( mMapCanvas, messageBar() );
   mTracer->setActionEnableTracing( mSnappingWidget->enableTracingAction() );
   mTracer->setActionEnableSnapping( mSnappingWidget->enableSnappingAction() );
-  connect( mSnappingWidget->tracingOffsetSpinBox(), static_cast< void ( QgsDoubleSpinBox::* )( double ) >( &QgsDoubleSpinBox::valueChanged ),
+  connect( mSnappingWidget->tracingOffsetSpinBox(),
+           static_cast< void ( QgsDoubleSpinBox::* )( double ) >( &QgsDoubleSpinBox::valueChanged ),
   this, [ = ]( double v ) { mTracer->setOffset( v ); } );
 
   QList<QAction *> toolbarMenuActions;
