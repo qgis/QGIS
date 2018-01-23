@@ -198,19 +198,21 @@ class ProcessingPlugin:
 
         self.modelerAction = QAction(
             QgsApplication.getThemeIcon("/processingModel.svg"),
-            self.tr('Graphical &Modeler...'), self.iface.mainWindow())
+            self.tr('Graphical &Modeler'), self.iface.mainWindow())
         self.modelerAction.setObjectName('modelerAction')
         self.modelerAction.triggered.connect(self.openModeler)
         self.iface.registerMainWindowAction(self.modelerAction, 'Ctrl+Alt+M')
         self.menu.addAction(self.modelerAction)
+        self.toolbox.processingToolbar.addAction(self.modelerAction)
 
         self.historyAction = QAction(
             QIcon(os.path.join(cmd_folder, 'images', 'history.svg')),
-            self.tr('&History...'), self.iface.mainWindow())
+            self.tr('&History'), self.iface.mainWindow())
         self.historyAction.setObjectName('historyAction')
         self.historyAction.triggered.connect(self.openHistory)
         self.iface.registerMainWindowAction(self.historyAction, 'Ctrl+Alt+H')
         self.menu.addAction(self.historyAction)
+        self.toolbox.processingToolbar.addAction(self.historyAction)
 
         self.resultsAction = self.resultsDock.toggleViewAction()
         self.resultsAction.setObjectName('resultsAction')
@@ -219,6 +221,14 @@ class ProcessingPlugin:
         self.resultsAction.setText(self.tr('&Results Viewer'))
         self.iface.registerMainWindowAction(self.resultsAction, 'Ctrl+Alt+R')
         self.menu.addAction(self.resultsAction)
+        self.toolbox.processingToolbar.addAction(self.resultsAction)
+
+        self.optionsAction = QAction(
+            QgsApplication.getThemeIcon("/processingAlgorithm.svg"),
+            self.tr('Options'), self.iface.mainWindow())
+        self.optionsAction.setObjectName('optionsAction')
+        self.optionsAction.triggered.connect(self.openProcessingOptions)
+        self.toolbox.processingToolbar.addAction(self.optionsAction)
 
         menuBar = self.iface.mainWindow().menuBar()
         menuBar.insertMenu(
@@ -228,6 +238,9 @@ class ProcessingPlugin:
 
         initializeMenus()
         createMenus()
+
+    def openProcessingOptions(self):
+        self.iface.showOptionsDialog(self.iface.mainWindow(), currentPage='processingOptions')
 
     def unload(self):
         self.toolbox.setVisible(False)
