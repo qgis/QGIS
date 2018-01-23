@@ -138,6 +138,19 @@ Returns the squared distance between a point and a line.
        # (True, 'Point (0 0)', True)
 %End
 
+    static bool lineCircleIntersection( const QgsPointXY &center, const double radius,
+                                        const QgsPointXY &linePoint1, const QgsPointXY &linePoint2,
+                                        QgsPointXY &intersection /In,Out/ );
+%Docstring
+ lineCircleIntersection returns the closest intersection of a line and a circle
+@param center the center of the circle
+@param radius the radius of the circle
+@param linePoint1 a first point on the line
+@param linePoint2 a second point on the line
+@param intersection the initial point and the returned intersection point
+@return true if an intersection has been found
+%End
+
     static QgsPoint projPointOnSegment( const QgsPoint &p, const QgsPoint &s1, const QgsPoint &s2 );
 %Docstring
  Project the point on a segment
