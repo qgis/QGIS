@@ -44,7 +44,10 @@ bool QgsLayoutManager::addLayout( QgsMasterLayoutInterface *layout )
   for ( QgsMasterLayoutInterface *l : qgis::as_const( mLayouts ) )
   {
     if ( l->name() == layout->name() )
+    {
+      delete layout;
       return false;
+    }
   }
 
   // ugly, but unavoidable for interfaces...
