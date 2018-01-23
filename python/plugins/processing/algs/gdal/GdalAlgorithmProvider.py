@@ -58,6 +58,7 @@ from .nearblack import nearblack
 from .pct2rgb import pct2rgb
 from .polygonize import polygonize
 from .proximity import proximity
+from .rasterize import rasterize
 from .retile import retile
 from .rgb2pct import rgb2pct
 from .roughness import roughness
@@ -68,7 +69,6 @@ from .tpi import tpi
 from .tri import tri
 from .warp import warp
 
-# from .rasterize import rasterize
 # from .extractprojection import ExtractProjection
 # from .gdalcalc import gdalcalc
 # from .rasterize_over import rasterize_over
@@ -164,6 +164,7 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             pct2rgb(),
             polygonize(),
             proximity(),
+            rasterize(),
             retile(),
             rgb2pct(),
             roughness(),
