@@ -56,7 +56,7 @@
      <item>
       <widget class="QPushButton" name="mButtonAddSection">
        <property name="toolTip">
-        <string>Add rule</string>
+        <string>Add section</string>
        </property>
        <property name="text">
         <string/>
@@ -70,7 +70,7 @@
      <item>
       <widget class="QPushButton" name="mButtonRemoveSection">
        <property name="toolTip">
-        <string>Remove selected rules</string>
+        <string>Remove selected section</string>
        </property>
        <property name="text">
         <string/>
