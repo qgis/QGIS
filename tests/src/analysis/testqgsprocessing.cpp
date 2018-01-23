@@ -1853,6 +1853,7 @@ void TestQgsProcessing::parameterCrs()
   QVERIFY( !def->checkValueIsAcceptable( 5 ) );
   QVERIFY( def->checkValueIsAcceptable( "EPSG:12003" ) );
   QVERIFY( def->checkValueIsAcceptable( "EPSG:3111" ) );
+  QVERIFY( def->checkValueIsAcceptable( QVariant::fromValue( r1 ) ) );
   QVERIFY( !def->checkValueIsAcceptable( "" ) );
   QVERIFY( !def->checkValueIsAcceptable( QVariant() ) );
 
@@ -1861,6 +1862,8 @@ void TestQgsProcessing::parameterCrs()
   params.insert( "non_optional",  v1->id() );
   QCOMPARE( QgsProcessingParameters::parameterAsCrs( def.get(), params, context ).authid(), QString( "EPSG:3111" ) );
   QVERIFY( def->checkValueIsAcceptable( v1->id() ) );
+  params.insert( "non_optional",  QVariant::fromValue( v1 ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsCrs( def.get(), params, context ).authid(), QString( "EPSG:3111" ) );
 
   // special ProjectCrs string
   params.insert( "non_optional",  QStringLiteral( "ProjectCrs" ) );
@@ -2112,6 +2115,24 @@ void TestQgsProcessing::parameterExtent()
   QGSCOMPARENEAR( ext.yMinimum(),  5083255, 100 );
   QGSCOMPARENEAR( ext.yMaximum(), 5083355, 100 );
 
+  // layer as parameter
+  params.insert( "non_optional", QVariant::fromValue( r1 ) );
+  QVERIFY( def->checkValueIsAcceptable( QVariant::fromValue( r1 ) ) );
+  QCOMPARE( QgsProcessingParameters::parameterAsExtent( def.get(), params, context ),  r1->extent() );
+  QCOMPARE( QgsProcessingParameters::parameterAsExtentCrs( def.get(), params, context ).authid(), QStringLiteral( "EPSG:4326" ) );
+  ext = QgsProcessingParameters::parameterAsExtent( def.get(), params, context, QgsCoordinateReferenceSystem( "EPSG:4326" ) );
+  QGSCOMPARENEAR( ext.xMinimum(), 1535375, 100 );
+  QGSCOMPARENEAR( ext.xMaximum(), 1535475, 100 );
+  QGSCOMPARENEAR( ext.yMinimum(),  5083255, 100 );
+  QGSCOMPARENEAR( ext.yMaximum(), 5083355, 100 );
+  QgsGeometry gExt = QgsProcessingParameters::parameterAsExtentGeometry( def.get(), params, context, QgsCoordinateReferenceSystem( "EPSG:4326" ) );
+  QCOMPARE( gExt.constGet()->vertexCount(), 5 );
+  ext = gExt.boundingBox();
+  QGSCOMPARENEAR( ext.xMinimum(), 1535375, 100 );
+  QGSCOMPARENEAR( ext.xMaximum(), 1535475, 100 );
+  QGSCOMPARENEAR( ext.yMinimum(),  5083255, 100 );
+  QGSCOMPARENEAR( ext.yMaximum(), 5083355, 100 );
+
   // string representing a non-project layer source
   params.insert( "non_optional", raster2 );
   QVERIFY( def->checkValueIsAcceptable( raster2 ) );
@@ -2126,7 +2147,7 @@ void TestQgsProcessing::parameterExtent()
   QGSCOMPARENEAR( ext.xMaximum(), 18.045658, 0.01 );
   QGSCOMPARENEAR( ext.yMinimum(),  30.151856, 0.01 );
   QGSCOMPARENEAR( ext.yMaximum(), 30.257289, 0.01 );
-  QgsGeometry gExt = QgsProcessingParameters::parameterAsExtentGeometry( def.get(), params, context, QgsCoordinateReferenceSystem( "EPSG:4326" ) );
+  gExt = QgsProcessingParameters::parameterAsExtentGeometry( def.get(), params, context, QgsCoordinateReferenceSystem( "EPSG:4326" ) );
   QCOMPARE( gExt.constGet()->vertexCount(), 85 );
   ext = gExt.boundingBox();
   QGSCOMPARENEAR( ext.xMinimum(), 17.924273, 0.01 );
