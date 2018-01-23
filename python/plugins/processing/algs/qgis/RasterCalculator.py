@@ -118,9 +118,12 @@ class RasterCalculator(QgisAlgorithm):
     def processAlgorithm(self, parameters, context, feedback):
         expression = self.parameterAsString(parameters, self.EXPRESSION, context)
         layers = self.parameterAsLayerList(parameters, self.LAYERS, context)
+
+        if not layers:
+            raise QgsProcessingException(self.tr("No layers selected"))
+
         layersDict = {}
-        if layers:
-            layersDict = {os.path.basename(lyr.source().split(".")[0]): lyr for lyr in layers}
+        layersDict = {os.path.basename(lyr.source().split(".")[0]): lyr for lyr in layers}
 
         for lyr in QgsProcessingUtils.compatibleRasterLayers(context.project()):
             name = lyr.name()
@@ -142,15 +145,13 @@ class RasterCalculator(QgisAlgorithm):
             bbox = QgsProcessingUtils.combineLayerExtents(layers)
 
         if bbox.isNull():
-            if layersDict:
-                bbox = list(layersDict.values())[0].extent()
-                for lyr in layersDict.values():
-                    bbox.combineExtentWith(lyr.extent())
-            else:
-                raise QgsProcessingException(self.tr("No layers selected"))
+            bbox = list(layersDict.values())[0].extent()
+            for lyr in layersDict.values():
+                bbox.combineExtentWith(lyr.extent())
 
         def _cellsize(layer):
             return (layer.extent().xMaximum() - layer.extent().xMinimum()) / layer.width()
+
         cellsize = self.parameterAsDouble(parameters, self.CELLSIZE, context) or min([_cellsize(lyr) for lyr in layersDict.values()])
         width = math.floor((bbox.xMaximum() - bbox.xMinimum()) / cellsize)
         height = math.floor((bbox.yMaximum() - bbox.yMinimum()) / cellsize)
