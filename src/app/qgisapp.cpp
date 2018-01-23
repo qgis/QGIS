@@ -926,6 +926,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   {
     QDialog *dialog = new QDialog( this );
     dialog->setWindowTitle( tr( "Project Snapping Settings" ) );
+    QgsGui::instance()->enableAutoGeometryRestore( dialog );
     QVBoxLayout *layout = new QVBoxLayout( dialog );
     layout->addWidget( mSnappingDialog );
     layout->setMargin( 0 );
