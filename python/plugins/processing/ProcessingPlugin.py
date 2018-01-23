@@ -196,6 +196,7 @@ class ProcessingPlugin:
             QgsApplication.getThemeIcon("/processingAlgorithm.svg"))
         self.iface.registerMainWindowAction(self.toolboxAction, 'Ctrl+Alt+T')
         self.toolboxAction.toggled.connect(self.openToolbox)
+        self.iface.attributesToolBar().insertAction(self.iface.actionOpenStatisticalSummary(), self.toolboxAction)
         self.menu.addAction(self.toolboxAction)
 
         self.modelerAction = QAction(
@@ -249,6 +250,7 @@ class ProcessingPlugin:
     def unload(self):
         self.toolbox.setVisible(False)
         self.iface.removeDockWidget(self.toolbox)
+        self.iface.attributesToolBar().removeAction(self.toolboxAction)
 
         self.resultsDock.setVisible(False)
         self.iface.removeDockWidget(self.resultsDock)

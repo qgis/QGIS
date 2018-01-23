@@ -492,6 +492,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionPasteLayerStyle() { return mActionPasteStyle; }
     QAction *actionOpenTable() { return mActionOpenTable; }
     QAction *actionOpenFieldCalculator() { return mActionOpenFieldCalc; }
+    QAction *actionStatisticalSummary() { return mActionStatisticalSummary; }
     QAction *actionToggleEditing() { return mActionToggleEditing; }
     QAction *actionSaveActiveLayerEdits() { return mActionSaveLayerEdits; }
     QAction *actionAllEdits() { return mActionAllEdits; }

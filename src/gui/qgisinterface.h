@@ -314,6 +314,13 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QAction *actionPasteLayerStyle() = 0;
     virtual QAction *actionOpenTable() = 0;
     virtual QAction *actionOpenFieldCalculator() = 0;
+
+    /**
+     * Statistical summary action.
+     * \since QGIS 3.0
+     */
+    virtual QAction *actionOpenStatisticalSummary() = 0;
+
     virtual QAction *actionToggleEditing() = 0;
     virtual QAction *actionSaveActiveLayerEdits() = 0;
     virtual QAction *actionAllEdits() = 0;

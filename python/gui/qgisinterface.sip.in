@@ -342,6 +342,14 @@ Get access to the native Add ArcGIS MapServer action.
     virtual QAction *actionPasteLayerStyle() = 0;
     virtual QAction *actionOpenTable() = 0;
     virtual QAction *actionOpenFieldCalculator() = 0;
+
+    virtual QAction *actionOpenStatisticalSummary() = 0;
+%Docstring
+Statistical summary action.
+
+.. versionadded:: 3.0
+%End
+
     virtual QAction *actionToggleEditing() = 0;
     virtual QAction *actionSaveActiveLayerEdits() = 0;
     virtual QAction *actionAllEdits() = 0;
