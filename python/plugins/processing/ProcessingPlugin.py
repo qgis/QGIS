@@ -198,7 +198,7 @@ class ProcessingPlugin:
 
         self.modelerAction = QAction(
             QgsApplication.getThemeIcon("/processingModel.svg"),
-            self.tr('Graphical &Modeler'), self.iface.mainWindow())
+            self.tr('Graphical &Modeler...'), self.iface.mainWindow())
         self.modelerAction.setObjectName('modelerAction')
         self.modelerAction.triggered.connect(self.openModeler)
         self.iface.registerMainWindowAction(self.modelerAction, 'Ctrl+Alt+M')
@@ -207,7 +207,7 @@ class ProcessingPlugin:
 
         self.historyAction = QAction(
             QIcon(os.path.join(cmd_folder, 'images', 'history.svg')),
-            self.tr('&History'), self.iface.mainWindow())
+            self.tr('&History...'), self.iface.mainWindow())
         self.historyAction.setObjectName('historyAction')
         self.historyAction.triggered.connect(self.openHistory)
         self.iface.registerMainWindowAction(self.historyAction, 'Ctrl+Alt+H')
