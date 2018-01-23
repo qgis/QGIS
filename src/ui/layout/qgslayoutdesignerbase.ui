@@ -99,7 +99,7 @@
      <x>0</x>
      <y>0</y>
      <width>2180</width>
-     <height>42</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="mLayoutMenu">
@@ -355,7 +355,7 @@
   </widget>
   <widget class="QToolBar" name="mReportToolbar">
    <property name="windowTitle">
-    <string>ToolBar</string>
+    <string>Report</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -1522,6 +1522,7 @@
   </action>
  </widget>
  <resources>
+  <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>

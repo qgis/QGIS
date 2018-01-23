@@ -631,7 +631,7 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
     mGeneralDock->setUserVisible( true );
   } );
 
-  mItemDock = new QgsDockWidget( tr( "Item properties" ), this );
+  mItemDock = new QgsDockWidget( tr( "Item Properties" ), this );
   mItemDock->setObjectName( QStringLiteral( "ItemDock" ) );
   mItemDock->setMinimumWidth( minDockWidth );
   mItemPropertiesStack = new QgsPanelWidgetStack();
@@ -649,7 +649,7 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
     mGuideDock->setUserVisible( true );
   } );
 
-  mUndoDock = new QgsDockWidget( tr( "Command history" ), this );
+  mUndoDock = new QgsDockWidget( tr( "Command History" ), this );
   mUndoDock->setObjectName( QStringLiteral( "CommandDock" ) );
   mPanelsMenu->addAction( mUndoDock->toggleViewAction() );
   mUndoView = new QUndoView( this );
@@ -667,7 +667,7 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   mAtlasDock->setObjectName( QStringLiteral( "AtlasDock" ) );
   connect( mAtlasDock, &QDockWidget::visibilityChanged, mActionAtlasSettings, &QAction::setChecked );
 
-  mReportDock = new QgsDockWidget( tr( "Report" ), this );
+  mReportDock = new QgsDockWidget( tr( "Report Organizer" ), this );
   mReportDock->setObjectName( QStringLiteral( "ReportDock" ) );
   connect( mReportDock, &QDockWidget::visibilityChanged, mActionReportSettings, &QAction::setChecked );
 
