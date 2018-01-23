@@ -177,6 +177,7 @@ class ProcessingPlugin:
         self.toolbox = ProcessingToolbox()
         self.iface.addDockWidget(Qt.RightDockWidgetArea, self.toolbox)
         self.toolbox.hide()
+        self.toolbox.visibilityChanged.connect(self.toolboxVisibilityChanged)
 
         self.resultsDock = ResultsDock()
         self.iface.addDockWidget(Qt.RightDockWidgetArea, self.resultsDock)
@@ -188,12 +189,13 @@ class ProcessingPlugin:
         self.menu.setObjectName('processing')
         self.menu.setTitle(self.tr('Pro&cessing'))
 
-        self.toolboxAction = self.toolbox.toggleViewAction()
+        self.toolboxAction = QAction(self.tr('&Toolbox'), self.iface.mainWindow())
+        self.toolboxAction.setCheckable(True)
         self.toolboxAction.setObjectName('toolboxAction')
         self.toolboxAction.setIcon(
             QgsApplication.getThemeIcon("/processingAlgorithm.svg"))
-        self.toolboxAction.setText(self.tr('&Toolbox'))
         self.iface.registerMainWindowAction(self.toolboxAction, 'Ctrl+Alt+T')
+        self.toolboxAction.toggled.connect(self.openToolbox)
         self.menu.addAction(self.toolboxAction)
 
         self.modelerAction = QAction(
@@ -276,11 +278,11 @@ class ProcessingPlugin:
         removeMenus()
         Processing.deinitialize()
 
-    def openToolbox(self):
-        if self.toolbox.isVisible():
-            self.toolbox.hide()
-        else:
-            self.toolbox.show()
+    def openToolbox(self, show):
+        self.toolbox.setUserVisible(show)
+
+    def toolboxVisibilityChanged(self, visible):
+        self.toolboxAction.setChecked(visible)
 
     def openModeler(self):
         dlg = ModelerDialog()
