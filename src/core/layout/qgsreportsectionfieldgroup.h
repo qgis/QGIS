@@ -39,6 +39,15 @@ class CORE_EXPORT QgsReportSectionFieldGroup : public QgsAbstractReportSection
   public:
 
     /**
+     * Visibility modes for header and footer sections
+     */
+    enum SectionVisibility
+    {
+      IncludeWhenFeaturesFound,      //!< The section will be included when features are found
+      AlwaysInclude                  //!< The section will always be included
+    };
+
+    /**
      * Constructor for QgsReportSectionFieldGroup, attached to the specified \a parent section.
      * Note that ownership is not transferred to \a parent.
      */
@@ -120,6 +129,30 @@ class CORE_EXPORT QgsReportSectionFieldGroup : public QgsAbstractReportSection
      */
     void setSortAscending( bool sortAscending );
 
+    /**
+     * Returns the header visibility mode.
+     * \see setHeaderVisibility()
+     */
+    SectionVisibility headerVisibility() const { return mHeaderVisibility; }
+
+    /**
+     * Sets the visibility mode for the header.
+     * \see headerVisibility()
+     */
+    void setHeaderVisibility( SectionVisibility visibility ) { mHeaderVisibility = visibility; }
+
+    /**
+     * Returns the footer visibility mode.
+     * \see setFooterVisibility()
+     */
+    SectionVisibility footerVisibility() const { return mFooterVisibility; }
+
+    /**
+     * Sets the visibility mode for the footer.
+     * \see footerVisibility()
+     */
+    void setFooterVisibility( SectionVisibility visibility ) { mFooterVisibility = visibility; }
+
     QgsReportSectionFieldGroup *clone() const override SIP_FACTORY;
     bool beginRender() override;
     bool prepareHeader() override;
@@ -143,6 +176,8 @@ class CORE_EXPORT QgsReportSectionFieldGroup : public QgsAbstractReportSection
     QgsFeatureIterator mFeatures;
     bool mSkipNextRequest = false;
     bool mNoFeatures = false;
+    SectionVisibility mHeaderVisibility = IncludeWhenFeaturesFound;
+    SectionVisibility mFooterVisibility = IncludeWhenFeaturesFound;
     QgsFeature mHeaderFeature;
     QgsFeature mLastFeature;
     QSet< QVariant > mEncounteredValues;

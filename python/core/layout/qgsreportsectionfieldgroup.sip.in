@@ -28,6 +28,12 @@ class QgsReportSectionFieldGroup : QgsAbstractReportSection
 %End
   public:
 
+    enum SectionVisibility
+    {
+      IncludeWhenFeaturesFound,
+      AlwaysInclude
+    };
+
     QgsReportSectionFieldGroup( QgsAbstractReportSection *parentSection = 0 );
 %Docstring
 Constructor for QgsReportSectionFieldGroup, attached to the specified ``parent`` section.
@@ -128,6 +134,34 @@ Sets whether the field values should be sorted ascending. Set to true to sort
 ascending, or false for descending sort.
 
 .. seealso:: :py:func:`sortAscending`
+%End
+
+    SectionVisibility headerVisibility() const;
+%Docstring
+Returns the header visibility mode.
+
+.. seealso:: :py:func:`setHeaderVisibility`
+%End
+
+    void setHeaderVisibility( SectionVisibility visibility );
+%Docstring
+Sets the visibility mode for the header.
+
+.. seealso:: :py:func:`headerVisibility`
+%End
+
+    SectionVisibility footerVisibility() const;
+%Docstring
+Returns the footer visibility mode.
+
+.. seealso:: :py:func:`setFooterVisibility`
+%End
+
+    void setFooterVisibility( SectionVisibility visibility );
+%Docstring
+Sets the visibility mode for the footer.
+
+.. seealso:: :py:func:`footerVisibility`
 %End
 
     virtual QgsReportSectionFieldGroup *clone() const /Factory/;

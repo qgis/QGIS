@@ -16,14 +16,14 @@
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <layout class="QGridLayout" name="gridLayout">
-     <item row="5" column="1">
+     <item row="6" column="1">
       <widget class="QPushButton" name="mButtonEditFooter">
        <property name="text">
         <string>Edit</string>
        </property>
       </widget>
      </item>
-     <item row="4" column="2">
+     <item row="5" column="2">
       <spacer name="horizontalSpacer_2">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
@@ -36,44 +36,52 @@
        </property>
       </spacer>
      </item>
-     <item row="2" column="0">
+     <item row="3" column="0">
       <widget class="QLabel" name="label_3">
        <property name="text">
         <string>Field</string>
        </property>
       </widget>
      </item>
-     <item row="3" column="1" colspan="2">
+     <item row="4" column="1" colspan="2">
       <widget class="QCheckBox" name="mSortAscendingCheckBox">
        <property name="text">
         <string>Sort ascending</string>
        </property>
       </widget>
      </item>
-     <item row="1" column="0">
+     <item row="2" column="0">
       <widget class="QLabel" name="label_2">
        <property name="text">
         <string>Layer</string>
        </property>
       </widget>
      </item>
-     <item row="1" column="1" colspan="2">
+     <item row="2" column="1" colspan="2">
       <widget class="QgsMapLayerComboBox" name="mLayerComboBox"/>
      </item>
-     <item row="4" column="1">
+     <item row="5" column="1">
       <widget class="QPushButton" name="mButtonEditBody">
        <property name="text">
         <string>Edit</string>
        </property>
       </widget>
      </item>
-     <item row="2" column="1" colspan="2">
+     <item row="3" column="1" colspan="2">
       <widget class="QgsFieldComboBox" name="mFieldComboBox"/>
      </item>
-     <item row="5" column="0">
+     <item row="6" column="0">
       <widget class="QCheckBox" name="mCheckShowFooter">
        <property name="text">
         <string>Include footer</string>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="0" colspan="2">
+      <widget class="QCheckBox" name="mCheckFooterAlwaysVisible">
+       <property name="text">
+        <string>Show footer when no matching
+features are found</string>
        </property>
       </widget>
      </item>
@@ -91,7 +99,15 @@
        </property>
       </widget>
      </item>
-     <item row="4" column="0">
+     <item row="1" column="0" colspan="2">
+      <widget class="QCheckBox" name="mCheckHeaderAlwaysVisible">
+       <property name="text">
+        <string>Show header when no matching
+features are found</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="0">
       <widget class="QCheckBox" name="mCheckShowBody">
        <property name="text">
         <string>Include body</string>

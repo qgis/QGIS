@@ -725,6 +725,38 @@ class TestQgsReport(unittest.TestCase):
         self.assertEqual(r.layout(), report_footer)
         self.assertFalse(r.next())
 
+    def testFieldGroupSectionVisibility(self):
+        states = QgsVectorLayer("Point?crs=epsg:4326&field=country:string(20)&field=state:string(20)", "points", "memory")
+
+        p = QgsProject()
+        r = QgsReport(p)
+
+        # add a child
+        child1 = QgsReportSectionFieldGroup()
+        child1.setLayer(states)
+        child1.setField('country')
+        child1_header = QgsLayout(p)
+        child1.setHeader(child1_header)
+        child1.setHeaderEnabled(True)
+        child1_footer = QgsLayout(p)
+        child1.setFooter(child1_footer)
+        child1.setFooterEnabled(True)
+        r.appendChild(child1)
+
+        # check that no header was rendered when no features are found
+        self.assertTrue(r.beginRender())
+        self.assertFalse(r.next())
+
+        child1.setHeaderVisibility(QgsReportSectionFieldGroup.AlwaysInclude)
+        child1.setFooterVisibility(QgsReportSectionFieldGroup.AlwaysInclude)
+
+        # check that the header is included when no features are found
+        self.assertTrue(r.beginRender())
+        self.assertTrue(r.next())
+        self.assertEqual(r.layout(), child1_header)
+        self.assertTrue(r.next())
+        self.assertEqual(r.layout(), child1_footer)
+
     def testFieldGroupMultiLayer(self):
         # create a layer
         states = QgsVectorLayer("Point?crs=epsg:4326&field=country:string(20)&field=state:string(20)", "points", "memory")
