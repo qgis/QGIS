@@ -130,7 +130,7 @@ class GridPolygon(QgisAlgorithm):
 
         if width < hSpacing:
             raise QgsProcessingException(
-                self.tr('Horizontal spacing is too small for the covered area'))
+                self.tr('Horizontal spacing is too large for the covered area'))
 
         if hSpacing <= hOverlay or vSpacing <= vOverlay:
             raise QgsProcessingException(
@@ -138,7 +138,7 @@ class GridPolygon(QgisAlgorithm):
 
         if height < vSpacing:
             raise QgsProcessingException(
-                self.tr('Vertical spacing is too small for the covered area'))
+                self.tr('Vertical spacing is too large for the covered area'))
 
         fields = QgsFields()
         fields.append(QgsField('left', QVariant.Double, '', 24, 16))
