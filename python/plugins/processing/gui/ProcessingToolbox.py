@@ -34,6 +34,7 @@ from qgis.PyQt.QtWidgets import QMenu, QAction, QTreeWidgetItem, QLabel, QMessag
 from qgis.utils import iface
 from qgis.core import (QgsApplication,
                        QgsProcessingAlgorithm)
+from qgis.gui import QgsDockWidget
 
 from processing.gui.Postprocessing import handleAlgorithmResults
 from processing.core.Processing import Processing
@@ -55,7 +56,7 @@ WIDGET, BASE = uic.loadUiType(
     os.path.join(pluginPath, 'ui', 'ProcessingToolbox.ui'))
 
 
-class ProcessingToolbox(BASE, WIDGET):
+class ProcessingToolbox(QgsDockWidget, WIDGET):
     ALG_ITEM = 'ALG_ITEM'
     PROVIDER_ITEM = 'PROVIDER_ITEM'
     GROUP_ITEM = 'GROUP_ITEM'
