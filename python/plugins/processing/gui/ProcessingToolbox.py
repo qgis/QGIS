@@ -342,16 +342,18 @@ class ProcessingToolbox(BASE, WIDGET):
     def addProvider(self, provider_id):
         provider = QgsApplication.processingRegistry().providerById(provider_id)
         providerItem = TreeProviderItem(provider, self.algorithmTree, self)
-        if not provider.isActive():
-            providerItem.setHidden(True)
-            self.disabledProviderItems[provider.id()] = providerItem
 
         for i in range(self.algorithmTree.invisibleRootItem().childCount()):
             child = self.algorithmTree.invisibleRootItem().child(i)
             if isinstance(child, TreeProviderItem):
                 if child.text(0) > providerItem.text(0):
                     break
+
         self.algorithmTree.insertTopLevelItem(i, providerItem)
+        if not provider.isActive():
+            providerItem.setHidden(True)
+            self.disabledProviderItems[provider.id()] = providerItem
+
         provider.algorithmsLoaded.connect(self.updateProvider)
 
     def fillTreeUsingProviders(self):
@@ -375,12 +377,7 @@ class ProcessingToolbox(BASE, WIDGET):
             else:
                 providerItem = TreeProviderItem(provider, self.algorithmTree, self)
 
-                if not provider.isActive():
-                    providerItem.setHidden(True)
-                    self.disabledProviderItems[provider.id()] = providerItem
-
                 # insert non-native providers at end of tree, alphabetically
-
                 for i in range(self.algorithmTree.invisibleRootItem().childCount()):
                     child = self.algorithmTree.invisibleRootItem().child(i)
                     if isinstance(child, TreeProviderItem):
@@ -388,6 +385,9 @@ class ProcessingToolbox(BASE, WIDGET):
                             break
 
                 self.algorithmTree.insertTopLevelItem(i + 1, providerItem)
+                if not provider.isActive():
+                    providerItem.setHidden(True)
+                    self.disabledProviderItems[provider.id()] = providerItem
 
     def addAlgorithmsFromProvider(self, provider, parent):
         groups = {}
