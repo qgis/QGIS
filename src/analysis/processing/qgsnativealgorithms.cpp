@@ -62,6 +62,7 @@
 #include "qgsalgorithmtransect.h"
 #include "qgsalgorithmtransform.h"
 #include "qgsalgorithmtranslate.h"
+#include "qgsalgorithmuniquevalueindex.h"
 
 
 ///@cond PRIVATE
@@ -98,6 +99,7 @@ bool QgsNativeAlgorithms::supportsNonFileBasedOutput() const
 void QgsNativeAlgorithms::loadAlgorithms()
 {
   addAlgorithm( new QgsAddIncrementalFieldAlgorithm() );
+  addAlgorithm( new QgsAddUniqueValueIndexAlgorithm() );
   addAlgorithm( new QgsAssignProjectionAlgorithm() );
   addAlgorithm( new QgsBoundaryAlgorithm() );
   addAlgorithm( new QgsBoundingBoxAlgorithm() );

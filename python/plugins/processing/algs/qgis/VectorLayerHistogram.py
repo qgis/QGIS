@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    EquivalentNumField.py
+    VectorLayerHistogram.py
     ---------------------
     Date                 : January 2013
     Copyright            : (C) 2013 by Victor Olaya

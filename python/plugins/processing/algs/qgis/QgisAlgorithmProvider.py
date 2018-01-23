@@ -58,7 +58,6 @@ from .DensifyGeometries import DensifyGeometries
 from .DensifyGeometriesInterval import DensifyGeometriesInterval
 from .Difference import Difference
 from .EliminateSelection import EliminateSelection
-from .EquivalentNumField import EquivalentNumField
 from .ExecuteSQL import ExecuteSQL
 from .Explode import Explode
 from .ExportGeometryInfo import ExportGeometryInfo
@@ -180,7 +179,6 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 DensifyGeometriesInterval(),
                 Difference(),
                 EliminateSelection(),
-                EquivalentNumField(),
                 ExecuteSQL(),
                 Explode(),
                 ExportGeometryInfo(),
