@@ -292,7 +292,7 @@ void QgsLayoutAppUtils::registerGuiForKnownItemTypes()
   {
     return new QgsLayoutHtmlWidget( qobject_cast< QgsLayoutFrame * >( item ) );
   }, createRubberBand );
-  htmlItemMetadata->setItemCreationFunction( [ = ]( QgsLayout * layout )->QgsLayoutItem*
+  htmlItemMetadata->setItemCreationFunction( [ = ]( QgsLayout * layout )->QgsLayoutItem *
   {
     std::unique_ptr< QgsLayoutItemHtml > htmlMultiFrame = qgis::make_unique< QgsLayoutItemHtml >( layout );
     QgsLayoutItemHtml *html = htmlMultiFrame.get();
@@ -311,7 +311,7 @@ void QgsLayoutAppUtils::registerGuiForKnownItemTypes()
   {
     return new QgsLayoutAttributeTableWidget( qobject_cast< QgsLayoutFrame * >( item ) );
   }, createRubberBand );
-  attributeTableItemMetadata->setItemCreationFunction( [ = ]( QgsLayout * layout )->QgsLayoutItem*
+  attributeTableItemMetadata->setItemCreationFunction( [ = ]( QgsLayout * layout )->QgsLayoutItem *
   {
     std::unique_ptr< QgsLayoutItemAttributeTable > tableMultiFrame = qgis::make_unique< QgsLayoutItemAttributeTable >( layout );
     QgsLayoutItemAttributeTable *table = tableMultiFrame.get();
