@@ -230,6 +230,8 @@ class ProcessingPlugin:
         self.optionsAction.triggered.connect(self.openProcessingOptions)
         self.toolbox.processingToolbar.addAction(self.optionsAction)
 
+        self.toolbox.processingToolbar.setIconSize(self.iface.iconSize(True))
+
         menuBar = self.iface.mainWindow().menuBar()
         menuBar.insertMenu(
             self.iface.firstRightStandardMenu().menuAction(), self.menu)
