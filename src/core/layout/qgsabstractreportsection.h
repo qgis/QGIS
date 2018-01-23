@@ -44,8 +44,8 @@ class CORE_EXPORT QgsReportSectionContext
     //! Current coverage layer
     QgsVectorLayer *currentLayer = nullptr;
 
-    //! Current layer filters
-    QMap< QgsVectorLayer *, QString > layerFilters SIP_SKIP;
+    //! Current field filters
+    QVariantMap fieldFilters;
 };
 
 /**
@@ -135,16 +135,20 @@ class CORE_EXPORT QgsAbstractReportSection : public QgsAbstractLayoutIterator
     virtual void reset();
 
     /**
-     * Called just before rendering the section's header.
+     * Called just before rendering the section's header. Should return true if the header
+     * is to be included for this section, or false to skip the header for the current
+     * section.
      * \see prepareFooter()
      */
-    virtual void prepareHeader() {}
+    virtual bool prepareHeader();
 
     /**
-     * Called just before rendering the section's footer.
+     * Called just before rendering the section's footer. Should return true if the footer
+     * is to be included for this section, or false to skip the footerfor the current
+     * section.
      * \see prepareHeader()
      */
-    virtual void prepareFooter() {}
+    virtual bool prepareFooter();
 
     /**
      * Returns the next body layout to export, or a nullptr if
