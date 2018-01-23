@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsvirtuallayertask.h"
+#include "qgslogger.h"
 
 QgsVirtualLayerTask::QgsVirtualLayerTask( const QgsVirtualLayerDefinition &definition )
   : QgsTask()
@@ -27,8 +28,18 @@ QgsVirtualLayerTask::QgsVirtualLayerTask( const QgsVirtualLayerDefinition &defin
 
 bool QgsVirtualLayerTask::run()
 {
-  mLayer->reload(); // blocking call because the loading is postponed
-  return mLayer->isValid();
+  bool rc = false;
+  try
+  {
+    mLayer->reload(); // blocking call because the loading is postponed
+    rc = mLayer->isValid();
+  }
+  catch ( std::exception &e )
+  {
+    QgsDebugMsg( tr( "Reload error: %1" ).arg( e.what() ) );
+    rc = false;
+  }
+  return rc;
 }
 
 QgsVirtualLayerDefinition QgsVirtualLayerTask::definition() const

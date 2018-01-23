@@ -19,14 +19,21 @@ email                : hugo dot mercier at oslandia dot com
  ***************************************************************************/
 """
 
-from ..data_model import TableDataModel, BaseTableModel, SqlResultModelAsync
+from ..data_model import (TableDataModel,
+                          BaseTableModel,
+                          SqlResultModelAsync,
+                          SqlResultModelTask)
 
 from .connector import VLayerRegistry, getQueryGeometryName
 from .plugin import LVectorTable
 from ..plugin import DbError, BaseError
 
 from qgis.PyQt.QtCore import QTime, QTemporaryFile
-from qgis.core import QgsVectorLayer, QgsWkbTypes, QgsVirtualLayerDefinition, QgsVirtualLayerTask, QgsTask
+from qgis.core import (QgsVectorLayer,
+                       QgsWkbTypes,
+                       QgsVirtualLayerDefinition,
+                       QgsVirtualLayerTask,
+                       QgsTask)
 
 
 class LTableDataModel(TableDataModel):
@@ -63,13 +70,22 @@ class LTableDataModel(TableDataModel):
         return 0
 
 
-class LSqlResultModelTask(QgsTask):
+class LSqlResultModelTask(SqlResultModelTask):
 
-    def __init__(self, subtask, db):
-        QgsTask.__init__(self)
-        self.subtask = subtask
-        self.db = db
-        self.model = None
+    def __init__(self, db, sql, parent):
+        SqlResultModelTask.__init__(self, db, sql, parent)
+
+        tf = QTemporaryFile()
+        tf.open()
+        path = tf.fileName()
+        tf.close()
+
+        df = QgsVirtualLayerDefinition()
+        df.setFilePath(path)
+        df.setQuery(sql)
+
+        self.subtask = QgsVirtualLayerTask(df)
+        self.addSubTask(self.subtask, [], QgsTask.ParentDependsOnSubTask)
 
     def run(self):
         try:
@@ -91,18 +107,7 @@ class LSqlResultModelAsync(SqlResultModelAsync):
     def __init__(self, db, sql, parent=None):
         SqlResultModelAsync.__init__(self, db, sql, parent)
 
-        tf = QTemporaryFile()
-        tf.open()
-        path = tf.fileName()
-        tf.close()
-
-        df = QgsVirtualLayerDefinition()
-        df.setFilePath(path)
-        df.setQuery(self.sql)
-
-        self.subtask = QgsVirtualLayerTask(df)
-        self.task = LSqlResultModelTask(self.subtask, db)
-        self.task.addSubTask(self.subtask, [], QgsTask.ParentDependsOnSubTask)
+        self.task = LSqlResultModelTask(db, sql, parent)
         self.task.taskCompleted.connect(self.modelDone)
         self.task.taskTerminated.connect(self.modelDone)
 

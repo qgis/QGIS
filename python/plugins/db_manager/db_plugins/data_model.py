@@ -33,6 +33,8 @@ from qgis.PyQt.QtGui import (QFont,
                              QStandardItem)
 from qgis.PyQt.QtWidgets import QApplication
 
+from qgis.core import QgsTask
+
 from .plugin import DbError, BaseError
 
 
@@ -171,6 +173,17 @@ class SqlResultModelAsync(QObject):
             self.error = self.task.error
 
         self.done.emit()
+
+
+class SqlResultModelTask(QgsTask):
+
+    def __init__(self, db, sql, parent):
+        QgsTask.__init__(self)
+        self.db = db
+        self.sql = sql
+        self.parent = parent
+        self.error = BaseError('')
+        self.model = None
 
 
 class SqlResultModel(BaseTableModel):

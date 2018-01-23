@@ -20,9 +20,12 @@ email                : brush.tyler@gmail.com
  ***************************************************************************/
 """
 
-from qgis.core import QgsTask
+from qgis.core import QgsMessageLog
 from ..plugin import BaseError
-from ..data_model import TableDataModel, SqlResultModel, SqlResultModelAsync
+from ..data_model import (TableDataModel,
+                          SqlResultModel,
+                          SqlResultModelAsync,
+                          SqlResultModelTask)
 from .plugin import SLDatabase
 
 
@@ -63,23 +66,18 @@ class SLTableDataModel(TableDataModel):
         return self.fetchedCount
 
 
-class SLSqlResultModelTask(QgsTask):
+class SLSqlResultModelTask(SqlResultModelTask):
 
     def __init__(self, db, sql, parent):
-        QgsTask.__init__(self)
-        self.db = db
-        self.sql = sql
-        self.parent = parent
-        self.error = BaseError('')
-        self.model = None
+        SqlResultModelTask.__init__(self, db, sql, parent)
         self.clone = None
 
     def run(self):
         try:
             self.clone = SLDatabase(None, self.db.connector.uri())
 
-            # import time
-            # self.clone.connector.connection.create_function("sleep", 1, time.sleep)
+            #import time
+            #self.clone.connector.connection.create_function("sleep", 1, time.sleep)
 
             self.model = SLSqlResultModel(self.clone, self.sql, None)
         except BaseError as e:

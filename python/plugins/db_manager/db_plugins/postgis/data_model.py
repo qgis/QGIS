@@ -20,9 +20,12 @@ email                : brush.tyler@gmail.com
  ***************************************************************************/
 """
 
-from qgis.core import QgsTask
+from qgis.core import QgsMessageLog
 from ..plugin import BaseError
-from ..data_model import TableDataModel, SqlResultModel, SqlResultModelAsync
+from ..data_model import (TableDataModel,
+                          SqlResultModel,
+                          SqlResultModelAsync,
+                          SqlResultModelTask)
 
 
 class PGTableDataModel(TableDataModel):
@@ -80,25 +83,18 @@ class PGTableDataModel(TableDataModel):
         self.fetchedFrom = row_start
 
 
-class PGSqlResultModelTask(QgsTask):
+class PGSqlResultModelTask(SqlResultModelTask):
 
     def __init__(self, db, sql, parent):
-        QgsTask.__init__(self)
-        self.db = db
-        self.sql = sql
-        self.parent = parent
-        self.error = BaseError('')
-        self.model = None
+        SqlResultModelTask.__init__(self, db, sql, parent)
 
     def run(self):
-
         try:
-            self.model = PGSqlResultModel(self.db, self.sql, self.parent)
+            self.model = PGSqlResultModel(self.db, self.sql, None)
         except BaseError as e:
             self.error = e
             QgsMessageLog.logMessage(e.msg)
             return False
-
         return True
 
     def cancelQuery(self):
