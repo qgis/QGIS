@@ -67,6 +67,10 @@ QgsReportOrganizerWidget::QgsReportOrganizerWidget( QWidget *parent, QgsLayoutDe
   mButtonAddSection->setMenu( addMenu );
   connect( mButtonRemoveSection, &QPushButton::clicked, this, &QgsReportOrganizerWidget::removeSection );
   mButtonRemoveSection->setEnabled( false ); //disable until section clicked
+
+  // initially select report section
+  QModelIndex reportIndex = mSectionModel->indexForSection( report );
+  mViewSections->setCurrentIndex( reportIndex );
 }
 
 void QgsReportOrganizerWidget::setMessageBar( QgsMessageBar *bar )
