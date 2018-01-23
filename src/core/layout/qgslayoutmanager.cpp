@@ -37,7 +37,7 @@ QgsLayoutManager::~QgsLayoutManager()
 
 bool QgsLayoutManager::addLayout( QgsMasterLayoutInterface *layout )
 {
-  if ( !layout )
+  if ( !layout || mLayouts.contains( layout ) )
     return false;
 
   // check for duplicate name
@@ -265,13 +265,12 @@ QgsMasterLayoutInterface *QgsLayoutManager::duplicateLayout( const QgsMasterLayo
 
   newLayout->setName( newName );
   QgsMasterLayoutInterface *l = newLayout.get();
-  if ( !addLayout( l ) )
+  if ( !addLayout( newLayout.release() ) )
   {
     return nullptr;
   }
   else
   {
-    ( void )newLayout.release(); //ownership was transferred successfully
     return l;
   }
 }
