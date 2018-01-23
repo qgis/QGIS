@@ -112,6 +112,11 @@ int QgsRasterCalculator::processCalculation( QgsFeedback *feedback )
   }
 
   gdal::dataset_unique_ptr outputDataset( openOutputFile( outputDriver ) );
+  if ( !outputDataset )
+  {
+    return static_cast< int >( CreateOutputError );
+  }
+
   GDALSetProjection( outputDataset.get(), mOutputCrs.toWkt().toLocal8Bit().data() );
   GDALRasterBandH outputRasterBand = GDALGetRasterBand( outputDataset.get(), 1 );
 
