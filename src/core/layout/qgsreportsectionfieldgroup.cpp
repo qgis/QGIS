@@ -94,12 +94,12 @@ bool QgsReportSectionFieldGroup::prepareHeader()
   header()->reportContext().setFeature( mHeaderFeature );
   mSkipNextRequest = true;
   mNoFeatures = !mHeaderFeature.isValid();
-  return !mNoFeatures;
+  return mHeaderVisibility == AlwaysInclude || !mNoFeatures;
 }
 
 bool QgsReportSectionFieldGroup::prepareFooter()
 {
-  return !mNoFeatures;
+  return mFooterVisibility == AlwaysInclude || !mNoFeatures;
 }
 
 QgsLayout *QgsReportSectionFieldGroup::nextBody( bool &ok )
@@ -179,6 +179,8 @@ void QgsReportSectionFieldGroup::reloadSettings()
 
 bool QgsReportSectionFieldGroup::writePropertiesToElement( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
+  element.setAttribute( QStringLiteral( "headerVisibility" ), static_cast< int >( mHeaderVisibility ) );
+  element.setAttribute( QStringLiteral( "footerVisibility" ), static_cast< int >( mFooterVisibility ) );
   element.setAttribute( QStringLiteral( "field" ), mField );
   element.setAttribute( QStringLiteral( "ascending" ), mSortAscending ? "1" : "0" );
   element.setAttribute( QStringLiteral( "bodyEnabled" ), mBodyEnabled ? "1" : "0" );
@@ -201,6 +203,8 @@ bool QgsReportSectionFieldGroup::writePropertiesToElement( QDomElement &element,
 
 bool QgsReportSectionFieldGroup::readPropertiesFromElement( const QDomElement &element, const QDomDocument &doc, const QgsReadWriteContext &context )
 {
+  mHeaderVisibility = static_cast< SectionVisibility >( element.attribute( QStringLiteral( "headerVisibility" ) ).toInt() );
+  mFooterVisibility = static_cast< SectionVisibility >( element.attribute( QStringLiteral( "footerVisibility" ) ).toInt() );
   mField = element.attribute( QStringLiteral( "field" ) );
   mSortAscending = element.attribute( QStringLiteral( "ascending" ) ).toInt();
   mBodyEnabled = element.attribute( QStringLiteral( "bodyEnabled" ) ).toInt();
