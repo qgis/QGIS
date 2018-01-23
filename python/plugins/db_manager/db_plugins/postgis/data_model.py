@@ -97,15 +97,15 @@ class PGSqlResultModelTask(SqlResultModelTask):
             return False
         return True
 
-    def cancelQuery(self):
+    def cancel(self):
         self.db.connector.cancel()
-        self.cancel()
+        SqlResultModelTask.cancel(self)
 
 
 class PGSqlResultModelAsync(SqlResultModelAsync):
 
     def __init__(self, db, sql, parent):
-        SqlResultModelAsync.__init__(self, db, sql, parent)
+        SqlResultModelAsync.__init__(self)
 
         self.task = PGSqlResultModelTask(db, sql, parent)
         self.task.taskCompleted.connect(self.modelDone)

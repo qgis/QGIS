@@ -97,15 +97,15 @@ class LSqlResultModelTask(SqlResultModelTask):
             return False
         return True
 
-    def cancelQuery(self):
+    def cancel(self):
         self.subtask.cancel()
-        self.cancel()
+        SqlResultModelTask.cancel(self)
 
 
 class LSqlResultModelAsync(SqlResultModelAsync):
 
     def __init__(self, db, sql, parent=None):
-        SqlResultModelAsync.__init__(self, db, sql, parent)
+        SqlResultModelAsync.__init__(self)
 
         self.task = LSqlResultModelTask(db, sql, parent)
         self.task.taskCompleted.connect(self.modelDone)

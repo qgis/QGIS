@@ -58,8 +58,8 @@ class DlgCancelTaskQuery(QDialog, Ui_Dialog):
         self.mGif.start()
         self.mCancelButton.setEnabled(True)
         self.mLabel.setText("Executing SQL...")
-        super(QDialog, self).show()
+        QDialog.show(self)
 
     def hide(self):
         self.mGif.stop()
-        super(QDialog, self).hide()
+        QDialog.hide(self)

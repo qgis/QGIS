@@ -152,11 +152,8 @@ class SqlResultModelAsync(QObject):
 
     done = pyqtSignal()
 
-    def __init__(self, db, sql, parent=None):
+    def __init__(self):
         QObject.__init__(self)
-        self.db = db
-        self.sql = sql
-        self.parent = parent
         self.error = BaseError('')
         self.status = None
         self.model = None
@@ -164,7 +161,7 @@ class SqlResultModelAsync(QObject):
 
     def cancel(self):
         if self.task:
-            self.task.cancelQuery()
+            self.task.cancel()
 
     def modelDone(self):
         if self.task:
