@@ -158,6 +158,31 @@ bool QgsLayoutManager::readXml( const QDomElement &element, const QDomDocument &
       {
         if ( l->name().isEmpty() )
           l->setName( legacyTitle );
+
+        // some 2.x projects could end in a state where they had duplicated layout names. This is strictly forbidden in 3.x
+        // so check for duplicate name in layouts already added
+        int id = 2;
+        bool isDuplicateName = false;
+        QString originalName = l->name();
+        do
+        {
+          isDuplicateName = false;
+          for ( QgsMasterLayoutInterface *layout : qgis::as_const( mLayouts ) )
+          {
+            if ( l->name() == layout->name() )
+            {
+              isDuplicateName = true;
+              break;
+            }
+          }
+          if ( isDuplicateName )
+          {
+            l->setName( QStringLiteral( "%1 %2" ).arg( originalName ).arg( id ) );
+            id++;
+          }
+        }
+        while ( isDuplicateName );
+
         bool added = addLayout( l.release() );
         result = added && result;
       }
