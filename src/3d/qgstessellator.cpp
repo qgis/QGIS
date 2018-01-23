@@ -24,7 +24,7 @@
 #include "qgstriangle.h"
 #include "qgis_sip.h"
 
-#include "poly2tri/poly2tri.h"
+#include "poly2tri.h"
 
 #include <QtDebug>
 #include <QMatrix4x4>
