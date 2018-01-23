@@ -77,6 +77,9 @@ void QgsShortcutsManager::registerAllChildShortcuts( QObject *object, bool recur
 
 bool QgsShortcutsManager::registerAction( QAction *action, const QString &defaultSequence )
 {
+  if ( mActions.contains( action ) )
+    return false; // already registered
+
 #ifdef QGISDEBUG
   // if using a debug build, warn on duplicate actions
   if ( actionByName( action->text() ) || shortcutByName( action->text() ) )
