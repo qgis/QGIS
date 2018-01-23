@@ -187,24 +187,25 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
     def executeSqlCompleted(self):
         self.dlg_cancel_task.hide()
 
-        if self.modelAsync.task.status() == QgsTask.Complete:
-            model = self.modelAsync.model
-            cols = []
-            quotedCols = []
+        with OverrideCursor(Qt.WaitCursor):
+            if self.modelAsync.task.status() == QgsTask.Complete:
+                model = self.modelAsync.model
+                cols = []
+                quotedCols = []
 
-            self.viewResult.setModel(model)
-            self.lblResult.setText(self.tr("{0} rows, {1:.1f} seconds").format(model.affectedRows(), model.secs()))
-            cols = self.viewResult.model().columnNames()
-            for col in cols:
-                quotedCols.append(self.db.connector.quoteId(col))
+                self.viewResult.setModel(model)
+                self.lblResult.setText(self.tr("{0} rows, {1:.1f} seconds").format(model.affectedRows(), model.secs()))
+                cols = self.viewResult.model().columnNames()
+                for col in cols:
+                    quotedCols.append(self.db.connector.quoteId(col))
 
-            self.setColumnCombos(cols, quotedCols)
-            self.update()
-        elif not self.dlg_cancel_task.cancelStatus:
-            DlgDbError.showError(self.modelAsync.error, self)
-            self.uniqueModel.clear()
-            self.geomCombo.clear()
-            pass
+                self.setColumnCombos(cols, quotedCols)
+                self.update()
+            elif not self.dlg_cancel_task.cancelStatus:
+                DlgDbError.showError(self.modelAsync.error, self)
+                self.uniqueModel.clear()
+                self.geomCombo.clear()
+                pass
 
     def executeSql(self):
 

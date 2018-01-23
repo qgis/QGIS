@@ -50,6 +50,7 @@ of feature and attribute information from a spatial datasource.
       FastTruncate,
       ReadLayerMetadata,
       WriteLayerMetadata,
+      CancelSupport,
     };
 
     typedef QFlags<QgsVectorDataProvider::Capability> Capabilities;
@@ -230,6 +231,8 @@ Providers with the FastTruncate capability will use an optimised method to trunc
 
 .. seealso:: :py:func:`deleteFeatures`
 %End
+
+    virtual bool cancel();
 
     virtual bool addAttributes( const QList<QgsField> &attributes );
 %Docstring

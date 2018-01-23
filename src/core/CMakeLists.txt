@@ -297,6 +297,7 @@ SET(QGIS_CORE_SRCS
   qgsvectorfilewriter.cpp
   qgsvectorfilewritertask.cpp
   qgsvectorlayer.cpp
+  qgsvirtuallayertask.cpp
   qgsvectorlayerfeaturecounter.cpp
   qgsvectorlayercache.cpp
   qgsvectorlayerdiagramprovider.cpp
@@ -635,6 +636,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsvectorlayereditbuffer.h
   qgsvectorlayereditpassthrough.h
   qgsvectorlayer.h
+  qgsvirtuallayertask.h
   qgsvectorlayerexporter.h
   qgsvectorlayerfeaturecounter.h
   qgsvectorlayerjoinbuffer.h

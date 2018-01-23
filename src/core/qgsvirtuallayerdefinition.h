@@ -131,6 +131,9 @@ class CORE_EXPORT QgsVirtualLayerDefinition
     //! Set the name of the field with unique identifiers
     void setUid( const QString &uid ) { mUid = uid; }
 
+    void setPostpone( bool postpone ) { mPostpone = postpone; }
+    bool postpone() const { return mPostpone; }
+
     //! Get the name of the geometry field. Empty if no geometry field
     QString geometryField() const { return mGeometryField; }
     //! Set the name of the geometry field
@@ -174,6 +177,7 @@ class CORE_EXPORT QgsVirtualLayerDefinition
     QString mGeometryField;
     QString mFilePath;
     QgsFields mFields;
+    bool mPostpone = false;
     QgsWkbTypes::Type mGeometryWkbType = QgsWkbTypes::Unknown;
     long mGeometrySrid = 0;
 };

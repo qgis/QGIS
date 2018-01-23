@@ -19,14 +19,14 @@ email                : hugo dot mercier at oslandia dot com
  ***************************************************************************/
 """
 
-from ..data_model import TableDataModel, BaseTableModel
+from ..data_model import TableDataModel, BaseTableModel, SqlResultModelAsync
 
 from .connector import VLayerRegistry, getQueryGeometryName
 from .plugin import LVectorTable
-from ..plugin import DbError
+from ..plugin import DbError, BaseError
 
 from qgis.PyQt.QtCore import QTime, QTemporaryFile
-from qgis.core import QgsVectorLayer, QgsWkbTypes, QgsVirtualLayerDefinition
+from qgis.core import QgsVectorLayer, QgsWkbTypes, QgsVirtualLayerDefinition, QgsVirtualLayerTask, QgsTask
 
 
 class LTableDataModel(TableDataModel):
@@ -63,40 +63,88 @@ class LTableDataModel(TableDataModel):
         return 0
 
 
-class LSqlResultModel(BaseTableModel):
-    # BaseTableModel
+class LSqlResultModelTask(QgsTask):
+
+    def __init__(self, subtask, db):
+        QgsTask.__init__(self)
+        self.subtask = subtask
+        self.db = db
+        self.model = None
+
+    def run(self):
+        try:
+            path = self.subtask.definition().filePath()
+            sql = self.subtask.definition().query()
+            self.model = LSqlResultModel(self.db, sql, None, self.subtask.layer(), path)
+        except Exception as e:
+            self.error = BaseError(str(e))
+            return False
+        return True
+
+    def cancelQuery(self):
+        self.subtask.cancel()
+        self.cancel()
+
+
+class LSqlResultModelAsync(SqlResultModelAsync):
 
     def __init__(self, db, sql, parent=None):
-        # create a virtual layer with non-geometry results
-        t = QTime()
-        t.start()
+        SqlResultModelAsync.__init__(self, db, sql, parent)
 
         tf = QTemporaryFile()
         tf.open()
-        tmp = tf.fileName()
+        path = tf.fileName()
         tf.close()
 
         df = QgsVirtualLayerDefinition()
-        df.setFilePath(tmp)
-        df.setQuery(sql)
-        p = QgsVectorLayer(df.toString(), "vv", "virtual")
-        self._secs = t.elapsed() / 1000.0
+        df.setFilePath(path)
+        df.setQuery(self.sql)
 
-        if not p.isValid():
-            data = []
-            header = []
-            raise DbError(p.dataProvider().error().summary(), sql)
+        self.subtask = QgsVirtualLayerTask(df)
+        self.task = LSqlResultModelTask(self.subtask, db)
+        self.task.addSubTask(self.subtask, [], QgsTask.ParentDependsOnSubTask)
+        self.task.taskCompleted.connect(self.modelDone)
+        self.task.taskTerminated.connect(self.modelDone)
+
+    def modelDone(self):
+        self.status = self.task.status
+        self.model = self.task.model
+        self.done.emit()
+
+
+class LSqlResultModel(BaseTableModel):
+
+    def __init__(self, db, sql, parent=None, layer=None, path=None):
+        t = QTime()
+        t.start()
+
+        if not layer:
+            tf = QTemporaryFile()
+            tf.open()
+            path = tf.fileName()
+            tf.close()
+
+            df = QgsVirtualLayerDefinition()
+            df.setFilePath(path)
+            df.setQuery(sql)
+            layer = QgsVectorLayer(df.toString(), "vv", "virtual")
+            self._secs = t.elapsed() / 1000.0
+
+        data = []
+        header = []
+
+        if not layer.isValid():
+            raise DbError(layer.dataProvider().error().summary(), sql)
         else:
-            header = [f.name() for f in p.fields()]
+            header = [f.name() for f in layer.fields()]
             has_geometry = False
-            if p.geometryType() != QgsWkbTypes.NullGeometry:
-                gn = getQueryGeometryName(tmp)
+            if layer.geometryType() != QgsWkbTypes.NullGeometry:
+                gn = getQueryGeometryName(path)
                 if gn:
                     has_geometry = True
                     header += [gn]
 
-            data = []
-            for f in p.getFeatures():
+            for f in layer.getFeatures():
                 a = f.attributes()
                 if has_geometry:
                     if f.hasGeometry():

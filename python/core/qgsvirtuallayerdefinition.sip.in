@@ -150,6 +150,9 @@ Get the name of the field with unique identifiers
 Set the name of the field with unique identifiers
 %End
 
+    void setPostpone( bool postpone );
+    bool postpone() const;
+
     QString geometryField() const;
 %Docstring
 Get the name of the geometry field. Empty if no geometry field

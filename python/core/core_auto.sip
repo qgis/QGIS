@@ -126,6 +126,7 @@
 %Include qgsvectorlayerundocommand.sip
 %Include qgsvectorlayerundopassthroughcommand.sip
 %Include qgsvectorlayerutils.sip
+%Include qgsvirtuallayertask.sip
 %Include qgsvirtuallayerdefinition.sip
 %Include qgsvirtuallayerdefinitionutils.sip
 %Include qgsmapthemecollection.sip

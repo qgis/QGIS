@@ -61,6 +61,5 @@ class DlgCancelTaskQuery(QDialog, Ui_Dialog):
         super(QDialog, self).show()
 
     def hide(self):
-        self.cancelStatus = False
         self.mGif.stop()
         super(QDialog, self).hide()

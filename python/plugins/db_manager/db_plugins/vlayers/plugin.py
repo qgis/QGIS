@@ -98,6 +98,10 @@ class FakeDatabase(Database):
         from .data_model import LSqlResultModel
         return LSqlResultModel(self, sql, parent)
 
+    def sqlResultModelAsync(self, sql, parent):
+        from .data_model import LSqlResultModelAsync
+        return LSqlResultModelAsync(self, sql, parent)
+
     def toSqlLayer(self, sql, geomCol, uniqueCol, layerName="QueryLayer", layerType=None, avoidSelectById=False, _filter=""):
         df = QgsVirtualLayerDefinition()
         df.setQuery(sql)
