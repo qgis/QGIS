@@ -224,7 +224,7 @@ class ProcessingPlugin:
         self.toolbox.processingToolbar.addAction(self.resultsAction)
 
         self.optionsAction = QAction(
-            QgsApplication.getThemeIcon("/processingAlgorithm.svg"),
+            QgsApplication.getThemeIcon("/mActionOptions.svg"),
             self.tr('Options'), self.iface.mainWindow())
         self.optionsAction.setObjectName('optionsAction')
         self.optionsAction.triggered.connect(self.openProcessingOptions)
