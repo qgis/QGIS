@@ -77,10 +77,10 @@ bool QgsReportSectionFieldGroup::beginRender()
   return QgsAbstractReportSection::beginRender();
 }
 
-void QgsReportSectionFieldGroup::prepareHeader()
+bool QgsReportSectionFieldGroup::prepareHeader()
 {
   if ( !header() )
-    return;
+    return false;
 
   if ( !mFeatures.isValid() )
   {
@@ -93,6 +93,13 @@ void QgsReportSectionFieldGroup::prepareHeader()
   header()->reportContext().blockSignals( false );
   header()->reportContext().setFeature( mHeaderFeature );
   mSkipNextRequest = true;
+  mNoFeatures = !mHeaderFeature.isValid();
+  return !mNoFeatures;
+}
+
+bool QgsReportSectionFieldGroup::prepareFooter()
+{
+  return !mNoFeatures;
 }
 
 QgsLayout *QgsReportSectionFieldGroup::nextBody( bool &ok )
@@ -153,6 +160,7 @@ void QgsReportSectionFieldGroup::reset()
   mHeaderFeature = QgsFeature();
   mLastFeature = QgsFeature();
   mFeatures = QgsFeatureIterator();
+  mNoFeatures = false;
 }
 
 void QgsReportSectionFieldGroup::setParentSection( QgsAbstractReportSection *parent )
@@ -227,9 +235,25 @@ void QgsReportSectionFieldGroup::setSortAscending( bool sortAscending )
 QgsFeatureRequest QgsReportSectionFieldGroup::buildFeatureRequest() const
 {
   QgsFeatureRequest request;
-  QString filter = context().layerFilters.value( mCoverageLayer.get() );
-  if ( !filter.isEmpty() )
-    request.setFilterExpression( filter );
+  QVariantMap filter = context().fieldFilters;
+
+  QStringList filterParts;
+  for ( auto filterIt = filter.constBegin(); filterIt != filter.constEnd(); ++filterIt )
+  {
+    // use lookupField since we don't want case sensitivity
+    int fieldIndex = mCoverageLayer->fields().lookupField( filterIt.key() );
+    if ( fieldIndex >= 0 )
+    {
+      // layer has a matching field, so we need to filter by it
+      filterParts << QgsExpression::createFieldEqualityExpression( mCoverageLayer->fields().at( fieldIndex ).name(), filterIt.value() );
+    }
+  }
+  if ( !filterParts.empty() )
+  {
+    QString filterString = QStringLiteral( "(%1)" ).arg( filterParts.join( QStringLiteral( ") AND (" ) ) );
+    request.setFilterExpression( filterString );
+  }
+
   request.addOrderBy( mField, mSortAscending );
   return request;
 }
@@ -261,10 +285,9 @@ void QgsReportSectionFieldGroup::updateChildContexts( const QgsFeature &feature 
   if ( mCoverageLayer )
     c.currentLayer = mCoverageLayer.get();
 
-  QString currentFilter = c.layerFilters.value( mCoverageLayer.get() );
-  QString thisFilter = QgsExpression::createFieldEqualityExpression( mField, feature.attribute( mFieldIndex ) );
-  QString newFilter = currentFilter.isEmpty() ? thisFilter : QStringLiteral( "(%1) AND (%2)" ).arg( currentFilter, thisFilter );
-  c.layerFilters[ mCoverageLayer.get() ] = newFilter;
+  QVariantMap currentFilter = c.fieldFilters;
+  currentFilter.insert( mField, feature.attribute( mFieldIndex ) );
+  c.fieldFilters = currentFilter;
 
   const QList< QgsAbstractReportSection * > sections = childSections();
   for ( QgsAbstractReportSection *section : qgis::as_const( sections ) )

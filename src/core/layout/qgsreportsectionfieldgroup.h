@@ -122,8 +122,8 @@ class CORE_EXPORT QgsReportSectionFieldGroup : public QgsAbstractReportSection
 
     QgsReportSectionFieldGroup *clone() const override SIP_FACTORY;
     bool beginRender() override;
-    void prepareHeader() override;
-    //void prepareFooter() override;
+    bool prepareHeader() override;
+    bool prepareFooter() override;
     QgsLayout *nextBody( bool &ok ) override;
     void reset() override;
     void setParentSection( QgsAbstractReportSection *parentSection ) override;
@@ -142,6 +142,7 @@ class CORE_EXPORT QgsReportSectionFieldGroup : public QgsAbstractReportSection
     int mFieldIndex = -1;
     QgsFeatureIterator mFeatures;
     bool mSkipNextRequest = false;
+    bool mNoFeatures = false;
     QgsFeature mHeaderFeature;
     QgsFeature mLastFeature;
     QSet< QVariant > mEncounteredValues;

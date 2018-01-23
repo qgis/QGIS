@@ -32,6 +32,7 @@ class QgsReportSectionContext
 
     QgsVectorLayer *currentLayer;
 
+    QVariantMap fieldFilters;
 };
 
 class QgsAbstractReportSection : QgsAbstractLayoutIterator
@@ -122,16 +123,20 @@ Returns the associated project.
 Resets the section, ready for a new iteration.
 %End
 
-    virtual void prepareHeader();
+    virtual bool prepareHeader();
 %Docstring
-Called just before rendering the section's header.
+Called just before rendering the section's header. Should return true if the header
+is to be included for this section, or false to skip the header for the current
+section.
 
 .. seealso:: :py:func:`prepareFooter`
 %End
 
-    virtual void prepareFooter();
+    virtual bool prepareFooter();
 %Docstring
-Called just before rendering the section's footer.
+Called just before rendering the section's footer. Should return true if the footer
+is to be included for this section, or false to skip the footerfor the current
+section.
 
 .. seealso:: :py:func:`prepareHeader`
 %End

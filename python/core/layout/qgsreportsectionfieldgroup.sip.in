@@ -134,7 +134,9 @@ ascending, or false for descending sort.
 
     virtual bool beginRender();
 
-    virtual void prepareHeader();
+    virtual bool prepareHeader();
+
+    virtual bool prepareFooter();
 
     virtual QgsLayout *nextBody( bool &ok );
 
