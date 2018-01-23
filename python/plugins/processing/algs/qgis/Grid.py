@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    GridPolygon.py
+    Grid.py
     ---------------------
     Date                 : May 2010
     Copyright            : (C) 2010 by Michael Minn
@@ -34,6 +34,8 @@ from qgis.core import (QgsField,
                        QgsFeatureSink,
                        QgsFeature,
                        QgsGeometry,
+                       QgsLineString,
+                       QgsPoint,
                        QgsPointXY,
                        QgsWkbTypes,
                        QgsProcessing,
@@ -50,7 +52,7 @@ from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class GridPolygon(QgisAlgorithm):
+class Grid(QgisAlgorithm):
     TYPE = 'TYPE'
     EXTENT = 'EXTENT'
     HSPACING = 'HSPACING'
@@ -64,7 +66,7 @@ class GridPolygon(QgisAlgorithm):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'vector_grid.png'))
 
     def tags(self):
-        return self.tr('grid,lines,vector,create,fishnet').split(',')
+        return self.tr('grid,lines,polygons,vector,create,fishnet,diamond,hexagon').split(',')
 
     def group(self):
         return self.tr('Vector creation')
@@ -76,7 +78,9 @@ class GridPolygon(QgisAlgorithm):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.types = [self.tr('Rectangle (polygon)'),
+        self.types = [self.tr('Point'),
+                      self.tr('Line'),
+                      self.tr('Rectangle (polygon)'),
                       self.tr('Diamond (polygon)'),
                       self.tr('Hexagon (polygon)')]
 
@@ -103,10 +107,10 @@ class GridPolygon(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Grid'), type=QgsProcessing.TypeVectorPolygon))
 
     def name(self):
-        return 'creategridpolygon'
+        return 'creategrid'
 
     def displayName(self):
-        return self.tr('Create grid (polygon)')
+        return self.tr('Create grid')
 
     def processAlgorithm(self, parameters, context, feedback):
         idx = self.parameterAsEnum(parameters, self.TYPE, context)
@@ -119,16 +123,11 @@ class GridPolygon(QgisAlgorithm):
         crs = self.parameterAsCrs(parameters, self.CRS, context)
         bbox = self.parameterAsExtent(parameters, self.EXTENT, context, crs)
 
-        width = bbox.width()
-        height = bbox.height()
-        originX = bbox.xMinimum()
-        originY = bbox.yMaximum()
-
         if hSpacing <= 0 or vSpacing <= 0:
             raise QgsProcessingException(
                 self.tr('Invalid grid spacing: {0}/{1}').format(hSpacing, vSpacing))
 
-        if width < hSpacing:
+        if bbox.width() < hSpacing:
             raise QgsProcessingException(
                 self.tr('Horizontal spacing is too large for the covered area'))
 
@@ -136,7 +135,7 @@ class GridPolygon(QgisAlgorithm):
             raise QgsProcessingException(
                 self.tr('Invalid overlay: {0}/{1}').format(hOverlay, vOverlay))
 
-        if height < vSpacing:
+        if bbox.height() < vSpacing:
             raise QgsProcessingException(
                 self.tr('Vertical spacing is too large for the covered area'))
 
@@ -147,27 +146,133 @@ class GridPolygon(QgisAlgorithm):
         fields.append(QgsField('bottom', QVariant.Double, '', 24, 16))
         fields.append(QgsField('id', QVariant.Int, '', 10, 0))
 
+        if idx == 0:
+            outputWkb = QgsWkbTypes.Point
+        elif idx == 1:
+            outputWkb = QgsWkbTypes.LineString
+        else:
+            outputWkb = QgsWkbTypes.Polygon
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
-                                               fields, QgsWkbTypes.Polygon, crs)
+                                               fields, outputWkb, crs)
 
         if idx == 0:
-            self._rectangleGrid(
-                sink, width, height, originX, originY, hSpacing, vSpacing, hOverlay, vOverlay, feedback)
+            self._pointGrid(
+                sink, bbox, hSpacing, vSpacing, hOverlay, vOverlay, feedback)
         elif idx == 1:
-            self._diamondGrid(
-                sink, width, height, originX, originY, hSpacing, vSpacing, hOverlay, vOverlay, feedback)
+            self._lineGrid(
+                sink, bbox, hSpacing, vSpacing, hOverlay, vOverlay, feedback)
         elif idx == 2:
+            self._rectangleGrid(
+                sink, bbox, hSpacing, vSpacing, hOverlay, vOverlay, feedback)
+        elif idx == 3:
+            self._diamondGrid(
+                sink, bbox, hSpacing, vSpacing, hOverlay, vOverlay, feedback)
+        elif idx == 4:
             self._hexagonGrid(
-                sink, width, height, originX, originY, hSpacing, vSpacing, hOverlay, vOverlay, feedback)
+                sink, bbox, hSpacing, vSpacing, hOverlay, vOverlay, feedback)
 
         return {self.OUTPUT: dest_id}
 
-    def _rectangleGrid(self, sink, width, height, originX, originY,
-                       hSpacing, vSpacing, hOverlay, vOverlay, feedback):
-        ft = QgsFeature()
+    def _pointGrid(self, sink, bbox, hSpacing, vSpacing, hOverlay, vOverlay, feedback):
+        feat = QgsFeature()
 
-        columns = int(math.ceil(float(width) / (hSpacing - hOverlay)))
-        rows = int(math.ceil(float(height) / (vSpacing - vOverlay)))
+        columns = int(math.ceil(float(bbox.width()) / (hSpacing - hOverlay)))
+        rows = int(math.ceil(float(bbox.height()) / (vSpacing - vOverlay)))
+
+        cells = rows * columns
+        count_update = cells * 0.05
+
+        id = 1
+        count = 0
+
+        for col in range(columns):
+            for row in range(rows):
+                x = bbox.xMinimum() + (col * hSpacing - col * hOverlay)
+                y = bbox.yMaximum() - (row * vSpacing - row * vOverlay)
+                feat.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(x, y)))
+                feat.setAttributes([x, y, x + hSpacing, y + vSpacing, id])
+                sink.addFeature(feat, QgsFeatureSink.FastInsert)
+
+                id += 1
+                count += 1
+                if int(math.fmod(count, count_update)) == 0:
+                    feedback.setProgress(int(count / cells * 100))
+
+    def _lineGrid(self, sink, bbox, hSpacing, vSpacing, hOverlay, vOverlay, feedback):
+        feat = QgsFeature()
+
+        if hOverlay > 0:
+            hSpace = [hSpacing - hOverlay, hOverlay]
+        else:
+            hSpace = [hSpacing, hSpacing]
+
+        if vOverlay > 0:
+            vSpace = [vSpacing - vOverlay, vOverlay]
+        else:
+            vSpace = [vSpacing, vSpacing]
+
+        count = 0
+        id = 1
+
+        # latitude lines
+        count_max = bbox.height() / vSpacing
+        count_update = count_max * 0.10
+        y = bbox.yMaximum()
+        while y >= bbox.yMinimum():
+            if feedback.isCanceled():
+                break
+
+            pt1 = QgsPoint(bbox.xMinimum(), y)
+            pt2 = QgsPoint(bbox.xMaximum(), y)
+            line = QgsLineString([pt1, pt2])
+            feat.setGeometry(QgsGeometry(line))
+            feat.setAttributes([bbox.xMinimum(),
+                                y,
+                                bbox.xMaximum(),
+                                y,
+                                id,
+                                y])
+            sink.addFeature(feat, QgsFeatureSink.FastInsert)
+            y = y - vSpace[count % 2]
+            id += 1
+            count += 1
+            if int(math.fmod(count, count_update)) == 0:
+                feedback.setProgress(int(count / count_max * 50))
+
+        feedback.setProgress(50)
+
+        # longitude lines
+        # counters for progressbar - update every 5%
+        count = 0
+        count_max = bbox.width() / hSpacing
+        count_update = count_max * 0.10
+        x = bbox.xMinimum()
+        while x <= bbox.xMaximum():
+            if feedback.isCanceled():
+                break
+
+            pt1 = QgsPoint(x, bbox.yMaximum())
+            pt2 = QgsPoint(x, bbox.yMinimum())
+            line = QgsLineString([pt1, pt2])
+            feat.setGeometry(QgsGeometry(line))
+            feat.setAttributes([x,
+                                bbox.yMaximum(),
+                                x,
+                                bbox.yMinimum(),
+                                id,
+                                x])
+            sink.addFeature(feat, QgsFeatureSink.FastInsert)
+            x = x + hSpace[count % 2]
+            id += 1
+            count += 1
+            if int(math.fmod(count, count_update)) == 0:
+                feedback.setProgress(50 + int(count / count_max * 50))
+
+    def _rectangleGrid(self, sink, bbox, hSpacing, vSpacing, hOverlay, vOverlay, feedback):
+        feat = QgsFeature()
+
+        columns = int(math.ceil(float(bbox.width()) / (hSpacing - hOverlay)))
+        rows = int(math.ceil(float(bbox.height()) / (vSpacing - vOverlay)))
 
         cells = rows * columns
         count_update = cells * 0.05
@@ -179,11 +284,11 @@ class GridPolygon(QgisAlgorithm):
             if feedback.isCanceled():
                 break
 
-            x1 = originX + (col * hSpacing - col * hOverlay)
+            x1 = bbox.xMinimum() + (col * hSpacing - col * hOverlay)
             x2 = x1 + hSpacing
 
             for row in range(rows):
-                y1 = originY - (row * vSpacing - row * vOverlay)
+                y1 = bbox.yMaximum() - (row * vSpacing - row * vOverlay)
                 y2 = y1 - vSpacing
 
                 polyline = []
@@ -193,18 +298,17 @@ class GridPolygon(QgisAlgorithm):
                 polyline.append(QgsPointXY(x1, y2))
                 polyline.append(QgsPointXY(x1, y1))
 
-                ft.setGeometry(QgsGeometry.fromPolygonXY([polyline]))
-                ft.setAttributes([x1, y1, x2, y2, id])
-                sink.addFeature(ft, QgsFeatureSink.FastInsert)
+                feat.setGeometry(QgsGeometry.fromPolygonXY([polyline]))
+                feat.setAttributes([x1, y1, x2, y2, id])
+                sink.addFeature(feat, QgsFeatureSink.FastInsert)
 
                 id += 1
                 count += 1
                 if int(math.fmod(count, count_update)) == 0:
                     feedback.setProgress(int(count / cells * 100))
 
-    def _diamondGrid(self, sink, width, height, originX, originY,
-                     hSpacing, vSpacing, hOverlay, vOverlay, feedback):
-        ft = QgsFeature()
+    def _diamondGrid(self, sink, bbox, hSpacing, vSpacing, hOverlay, vOverlay, feedback):
+        feat = QgsFeature()
 
         halfHSpacing = hSpacing / 2
         halfVSpacing = vSpacing / 2
@@ -212,8 +316,8 @@ class GridPolygon(QgisAlgorithm):
         halfHOverlay = hOverlay / 2
         halfVOverlay = vOverlay / 2
 
-        columns = int(math.ceil(float(width) / (halfHSpacing - halfHOverlay)))
-        rows = int(math.ceil(float(height) / (vSpacing - halfVOverlay)))
+        columns = int(math.ceil(float(bbox.width()) / (halfHSpacing - halfHOverlay)))
+        rows = int(math.ceil(float(bbox.height()) / (vSpacing - halfVOverlay)))
 
         cells = rows * columns
         count_update = cells * 0.05
@@ -225,13 +329,13 @@ class GridPolygon(QgisAlgorithm):
             if feedback.isCanceled():
                 break
 
-            x = originX - (col * halfHOverlay)
+            x = bbox.xMinimum() - (col * halfHOverlay)
             x1 = x + ((col + 0) * halfHSpacing)
             x2 = x + ((col + 1) * halfHSpacing)
             x3 = x + ((col + 2) * halfHSpacing)
 
             for row in range(rows):
-                y = originY + (row * halfVOverlay)
+                y = bbox.yMaximum() + (row * halfVOverlay)
                 if (col % 2) == 0:
                     y1 = y - (((row * 2) + 0) * halfVSpacing)
                     y2 = y - (((row * 2) + 1) * halfVSpacing)
@@ -248,17 +352,16 @@ class GridPolygon(QgisAlgorithm):
                 polyline.append(QgsPointXY(x2, y3))
                 polyline.append(QgsPointXY(x1, y2))
 
-                ft.setGeometry(QgsGeometry.fromPolygonXY([polyline]))
-                ft.setAttributes([x1, y1, x3, y3, id])
-                sink.addFeature(ft, QgsFeatureSink.FastInsert)
+                feat.setGeometry(QgsGeometry.fromPolygonXY([polyline]))
+                feat.setAttributes([x1, y1, x3, y3, id])
+                sink.addFeature(feat, QgsFeatureSink.FastInsert)
                 id += 1
                 count += 1
                 if int(math.fmod(count, count_update)) == 0:
                     feedback.setProgress(int(count / cells * 100))
 
-    def _hexagonGrid(self, sink, width, height, originX, originY,
-                     hSpacing, vSpacing, hOverlay, vOverlay, feedback):
-        ft = QgsFeature()
+    def _hexagonGrid(self, sink, bbox, hSpacing, vSpacing, hOverlay, vOverlay, feedback):
+        feat = QgsFeature()
 
         # To preserve symmetry, hspacing is fixed relative to vspacing
         xVertexLo = 0.288675134594813 * vSpacing
@@ -275,8 +378,8 @@ class GridPolygon(QgisAlgorithm):
 
         halfVSpacing = vSpacing / 2.0
 
-        columns = int(math.ceil(float(width) / hOverlay))
-        rows = int(math.ceil(float(height) / (vSpacing - vOverlay)))
+        columns = int(math.ceil(float(bbox.width()) / hOverlay))
+        rows = int(math.ceil(float(bbox.height()) / (vSpacing - vOverlay)))
 
         cells = rows * columns
         count_update = cells * 0.05
@@ -291,20 +394,20 @@ class GridPolygon(QgisAlgorithm):
             # (column + 1) and (row + 1) calculation is used to maintain
             # topology between adjacent shapes and avoid overlaps/holes
             # due to rounding errors
-            x1 = originX + (col * hOverlay)                # far left
+            x1 = bbox.xMinimum() + (col * hOverlay)                # far left
             x2 = x1 + (xVertexHi - xVertexLo)              # left
-            x3 = originX + (col * hOverlay) + hSpacing     # right
+            x3 = bbox.xMinimum() + (col * hOverlay) + hSpacing     # right
             x4 = x3 + (xVertexHi - xVertexLo)              # far right
 
             for row in range(rows):
                 if (col % 2) == 0:
-                    y1 = originY + (row * vOverlay) - (((row * 2) + 0) * halfVSpacing)  # hi
-                    y2 = originY + (row * vOverlay) - (((row * 2) + 1) * halfVSpacing)  # mid
-                    y3 = originY + (row * vOverlay) - (((row * 2) + 2) * halfVSpacing)  # lo
+                    y1 = bbox.yMaximum() + (row * vOverlay) - (((row * 2) + 0) * halfVSpacing)  # hi
+                    y2 = bbox.yMaximum() + (row * vOverlay) - (((row * 2) + 1) * halfVSpacing)  # mid
+                    y3 = bbox.yMaximum() + (row * vOverlay) - (((row * 2) + 2) * halfVSpacing)  # lo
                 else:
-                    y1 = originY + (row * vOverlay) - (((row * 2) + 1) * halfVSpacing)  # hi
-                    y2 = originY + (row * vOverlay) - (((row * 2) + 2) * halfVSpacing)  # mid
-                    y3 = originY + (row * vOverlay) - (((row * 2) + 3) * halfVSpacing)  # lo
+                    y1 = bbox.yMaximum() + (row * vOverlay) - (((row * 2) + 1) * halfVSpacing)  # hi
+                    y2 = bbox.yMaximum() + (row * vOverlay) - (((row * 2) + 2) * halfVSpacing)  # mid
+                    y3 = bbox.yMaximum() + (row * vOverlay) - (((row * 2) + 3) * halfVSpacing)  # lo
 
                 polyline = []
                 polyline.append(QgsPointXY(x1, y2))
@@ -315,9 +418,9 @@ class GridPolygon(QgisAlgorithm):
                 polyline.append(QgsPointXY(x2, y3))
                 polyline.append(QgsPointXY(x1, y2))
 
-                ft.setGeometry(QgsGeometry.fromPolygonXY([polyline]))
-                ft.setAttributes([x1, y1, x4, y3, id])
-                sink.addFeature(ft, QgsFeatureSink.FastInsert)
+                feat.setGeometry(QgsGeometry.fromPolygonXY([polyline]))
+                feat.setAttributes([x1, y1, x4, y3, id])
+                sink.addFeature(feat, QgsFeatureSink.FastInsert)
                 id += 1
                 count += 1
                 if int(math.fmod(count, count_update)) == 0:

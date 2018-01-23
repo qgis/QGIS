@@ -70,8 +70,7 @@ from .FieldsMapper import FieldsMapper
 from .FindProjection import FindProjection
 from .GeometryConvert import GeometryConvert
 from .GeometryByExpression import GeometryByExpression
-from .GridLine import GridLine
-from .GridPolygon import GridPolygon
+from .Grid import Grid
 from .Heatmap import Heatmap
 from .Hillshade import Hillshade
 from .HubDistanceLines import HubDistanceLines
@@ -191,8 +190,7 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 FindProjection(),
                 GeometryByExpression(),
                 GeometryConvert(),
-                GridLine(),
-                GridPolygon(),
+                Grid(),
                 Heatmap(),
                 Hillshade(),
                 HubDistanceLines(),

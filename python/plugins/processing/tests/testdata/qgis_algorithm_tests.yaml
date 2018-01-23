@@ -2163,12 +2163,13 @@ tests:
         name: expected/dropped_geometry.csv
         type: vector
 
-  - algorithm: qgis:creategridlines
+  - algorithm: qgis:creategrid
     name: Create grid (lines)
     params:
       CRS: EPSG:4326
       EXTENT: -1,11.2,-4,6.5
       HSPACING: 5.0
+      TYPE: '1'
       VSPACING: 3.0
     results:
       OUTPUT:
@@ -2178,13 +2179,13 @@ tests:
           geometry:
             precision: 7
 
-  - algorithm: qgis:creategridpolygon
+  - algorithm: qgis:creategrid
     name: Create grid (rectangles)
     params:
       CRS: EPSG:4326
       EXTENT: -1,11.2,-4,6.5
       HSPACING: 5.0
-      TYPE: '0'
+      TYPE: '2'
       VSPACING: 3.0
     results:
       OUTPUT:
@@ -2194,13 +2195,13 @@ tests:
           geometry:
             precision: 7
 
-  - algorithm: qgis:creategridpolygon
+  - algorithm: qgis:creategrid
     name: Create grid (diamond)
     params:
       CRS: EPSG:4326
       EXTENT: -1,11.2,-4,6.5
       HSPACING: 5.0
-      TYPE: '1'
+      TYPE: '3'
       VSPACING: 3.0
     results:
       OUTPUT:
@@ -2210,13 +2211,13 @@ tests:
           geometry:
             precision: 7
 
-  - algorithm: qgis:creategridpolygon
+  - algorithm: qgis:creategrid
     name: Create grid (hexagon)
     params:
       CRS: EPSG:4326
       EXTENT: -1,11.2,-4,6.5
       HSPACING: 5.0
-      TYPE: '2'
+      TYPE: '4'
       VSPACING: 5.0
     results:
       OUTPUT:
@@ -2226,13 +2227,14 @@ tests:
           geometry:
             precision: 7
 
-  - algorithm: qgis:creategridlines
+  - algorithm: qgis:creategrid
     name: Create grid (lines with overlay)
     params:
       CRS: EPSG:4326
       EXTENT: -1,11.2,-4,6.5
       HOVERLAY: 2.0
       HSPACING: 5.0
+      TYPE: '1'
       VOVERLAY: 1.0
       VSPACING: 3.0
     results:
@@ -2240,14 +2242,14 @@ tests:
         name: expected/grid_lines_overlay.gml
         type: vector
 
-  - algorithm: qgis:creategridpolygon
+  - algorithm: qgis:creategrid
     name: Create grid (rectangle with overlay)
     params:
       CRS: EPSG:4326
       EXTENT: -1,11.2,-4,6.5
       HOVERLAY: 2.0
       HSPACING: 5.0
-      TYPE: '0'
+      TYPE: '2'
       VOVERLAY: 1.0
       VSPACING: 3.0
     results:
@@ -2258,14 +2260,14 @@ tests:
           geometry:
             precision: 7
 
-  - algorithm: qgis:creategridpolygon
+  - algorithm: qgis:creategrid
     name: Create grid (diamond with overlay)
     params:
       CRS: EPSG:4326
       EXTENT: -1,11.2,-4,6.5
       HOVERLAY: 2.0
       HSPACING: 5.0
-      TYPE: '1'
+      TYPE: '3'
       VOVERLAY: 1.0
       VSPACING: 3.0
     results:
@@ -2276,14 +2278,14 @@ tests:
           geometry:
             precision: 7
 
-  - algorithm: qgis:creategridpolygon
+  - algorithm: qgis:creategrid
     name: Create grid (hexagon with overlay)
     params:
       CRS: EPSG:4326
       EXTENT: -1,11.2,-4,6.5
       HOVERLAY: 2.0
       HSPACING: 5.0
-      TYPE: '2'
+      TYPE: '4'
       VOVERLAY: 1.0
       VSPACING: 5.0
     results:
@@ -3362,13 +3364,14 @@ tests:
         name: expected/buffer_ovals.gml
         type: vector
 
-  - algorithm: qgis:creategridlines
+  - algorithm: qgis:creategrid
     name: Lines grid 0.1 degree spacing
     params:
       CRS: EPSG:4326
       EXTENT: -0.10453905405405395,8.808021567567568,-2.5010055337837844,4.058021763513514
       HOVERLAY: 0.0
       HSPACING: 0.1
+      TYPE: '1'
       VOVERLAY: 0.0
       VSPACING: 0.1
     results:
