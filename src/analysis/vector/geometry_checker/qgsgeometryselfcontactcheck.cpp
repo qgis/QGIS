@@ -62,7 +62,7 @@ void QgsGeometrySelfContactCheck::collectErrors( QList<QgsGeometryCheckError *> 
             }
             const QgsPoint &si = ring[i];
             const QgsPoint &sj = ring[j];
-            QgsPoint q = QgsGeometryUtils::projPointOnSegment( p, si, sj );
+            QgsPoint q = QgsGeometryUtils::projectPointOnSegment( p, si, sj );
             if ( QgsGeometryUtils::sqrDistance2D( p, q ) < mContext->tolerance * mContext->tolerance )
             {
               errors.append( new QgsGeometryCheckError( this, layerFeature, p, QgsVertexId( iPart, iRing, vtxMap[iVert] ) ) );
