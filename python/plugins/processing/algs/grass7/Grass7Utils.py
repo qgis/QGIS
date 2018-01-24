@@ -457,7 +457,7 @@ class Grass7Utils:
                         'The specified GRASS 7 folder "{}" does not contain '
                         'a valid set of GRASS 7 modules.\nPlease, go to the '
                         'Processing settings dialog, and check that the '
-                        'GRASS 7\nfolder is correctly configured'.format(os.path.join(path, 'bin')))
+                        'GRASS 7\nfolder is correctly configured'.format(os.path.join(Grass7Utils.path, 'bin')))
             Grass7Utils.isGrassInstalled = True
             return
         # Return error messages
