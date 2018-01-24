@@ -1,7 +1,7 @@
 ########################################################
 # Files
 
-ADD_SUBDIRECTORY(ocispatial)
+ADD_SUBDIRECTORY(${CMAKE_SOURCE_DIR}/external/ocispatial ocispatial)
 
 SET(ORACLE_SRCS
   qgsoracleprovider.cpp
