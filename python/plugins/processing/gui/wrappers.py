@@ -70,7 +70,8 @@ from qgis.core import (
     QgsProcessingOutputString,
     QgsProcessingOutputNumber,
     QgsProcessingModelChildParameterSource,
-    QgsProcessingModelAlgorithm)
+    QgsProcessingModelAlgorithm,
+    NULL)
 
 from qgis.PyQt.QtWidgets import (
     QCheckBox,
@@ -249,6 +250,8 @@ class BooleanWidgetWrapper(WidgetWrapper):
             return widget
 
     def setValue(self, value):
+        if value is None or value == NULL:
+            return
         if self.dialogType == DIALOG_STANDARD:
             self.widget.setChecked(value)
         else:
@@ -320,6 +323,9 @@ class CrsWidgetWrapper(WidgetWrapper):
             self.setValue(dialog.crs().authid())
 
     def setValue(self, value):
+        if value is None or value == NULL:
+            return
+
         if self.dialogType == DIALOG_MODELER:
             self.setComboValue(value, self.combo)
         elif value == 'ProjectCrs':
@@ -365,6 +371,9 @@ class ExtentWidgetWrapper(WidgetWrapper):
             return widget
 
     def setValue(self, value):
+        if value is None or value == NULL:
+            return
+
         if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
             self.widget.setExtentFromString(value)
         else:
@@ -410,6 +419,9 @@ class PointWidgetWrapper(WidgetWrapper):
             return item
 
     def setValue(self, value):
+        if value is None or value == NULL:
+            return
+
         if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
             self.widget.setPointFromString(value)
         else:
@@ -491,6 +503,9 @@ class FileWidgetWrapper(WidgetWrapper):
             self.combo.setEditText(filename)
 
     def setValue(self, value):
+        if value is None or value == NULL:
+            return
+
         if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
             self.widget.setText(value)
         else:
@@ -610,6 +625,9 @@ class MultipleLayerWidgetWrapper(WidgetWrapper):
             self.widget.updateForOptions(opts)
 
     def setValue(self, value):
+        if value is None or value == NULL:
+            return
+
         if self.dialogType == DIALOG_STANDARD:
             pass  # TODO
         elif self.dialogType == DIALOG_BATCH:
@@ -666,6 +684,9 @@ class NumberWidgetWrapper(WidgetWrapper):
             return ModellerNumberInputPanel(self.param, self.dialog)
 
     def setValue(self, value):
+        if value is None or value == NULL:
+            return
+
         self.widget.setValue(value)
 
     def value(self):
@@ -694,6 +715,9 @@ class RangeWidgetWrapper(WidgetWrapper):
         #    return ModellerNumberInputPanel(self.param, self.dialog)
 
     def setValue(self, value):
+        if value is None or value == NULL:
+            return
+
         self.widget.setValue(value)
 
     def value(self):
@@ -781,6 +805,9 @@ class MapLayerWidgetWrapper(WidgetWrapper):
                 self.combo.setEditText(filename)
 
     def setValue(self, value):
+        if value is None or value == NULL:
+            return
+
         if self.dialogType == DIALOG_STANDARD:
             if self.combo.findText(value) >= 0:
                 self.combo.setCurrentIndex(self.combo.findText(value))
@@ -858,6 +885,9 @@ class EnumWidgetWrapper(WidgetWrapper):
             return widget
 
     def setValue(self, value):
+        if value is None or value == NULL:
+            return
+
         if self._useCheckBoxes and not self.dialogType == DIALOG_BATCH:
             self.widget.setValue(value)
             return
@@ -990,6 +1020,9 @@ class FeatureSourceWidgetWrapper(WidgetWrapper):
                 self.combo.setEditText(filename)
 
     def setValue(self, value):
+        if value is None or value == NULL:
+            return
+
         if self.dialogType == DIALOG_STANDARD:
             if self.combo.findText(value) >= 0:
                 self.combo.setCurrentIndex(self.combo.findText(value))
@@ -1077,6 +1110,9 @@ class StringWidgetWrapper(WidgetWrapper):
                     self.setValue(dlg.expressionText())
 
     def setValue(self, value):
+        if value is None or value == NULL:
+            return
+
         if self.dialogType == DIALOG_STANDARD:
             if self.param.multiLine():
                 self.widget.setPlainText(value)
@@ -1166,6 +1202,9 @@ class ExpressionWidgetWrapper(WidgetWrapper):
         self.widget.setLayer(layer)
 
     def setValue(self, value):
+        if value is None or value == NULL:
+            return
+
         if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
             self.widget.setExpression(value)
         else:
@@ -1273,6 +1312,9 @@ class VectorLayerWidgetWrapper(WidgetWrapper):
                 self.combo.setEditText(filename)
 
     def setValue(self, value):
+        if value is None or value == NULL:
+            return
+
         if self.dialogType == DIALOG_STANDARD:
             if self.combo.findText(value) >= 0:
                 self.combo.setCurrentIndex(self.combo.findText(value))
@@ -1387,6 +1429,9 @@ class TableFieldWidgetWrapper(WidgetWrapper):
         return fieldNames
 
     def setValue(self, value):
+        if value is None or value == NULL:
+            return
+
         if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
             if self.param.allowMultiple():
                 options = self.widget.options
@@ -1471,6 +1516,9 @@ class BandWidgetWrapper(WidgetWrapper):
         self.widget.setCurrentIndex(0)
 
     def setValue(self, value):
+        if value is None or value == NULL:
+            return
+
         if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
             self.widget.setBand(value)
         else:
