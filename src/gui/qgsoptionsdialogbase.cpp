@@ -398,31 +398,38 @@ void QgsOptionsDialogBase::warnAboutMissingObjects()
 QgsSearchHighlightOptionWidget::QgsSearchHighlightOptionWidget( QWidget *widget )
   : QObject( widget )
   , mWidget( widget )
-  , mText( [ = ]() {return QString();} )
 {
   if ( qobject_cast<QLabel *>( widget ) )
   {
     mStyleSheet = QStringLiteral( "QLabel { background-color: yellow; color: blue;}" );
-    mText = [ = ]() {return qobject_cast<QLabel *>( mWidget )->text();};
+    mTextFound = [ = ]( QString searchText ) {return qobject_cast<QLabel *>( mWidget )->text().contains( searchText, Qt::CaseInsensitive );};
   }
   else if ( qobject_cast<QCheckBox *>( widget ) )
   {
     mStyleSheet = QStringLiteral( "QCheckBox { background-color: yellow; color: blue;}" );
-    mText = [ = ]() {return qobject_cast<QCheckBox *>( mWidget )->text();};
+    mTextFound = [ = ]( QString searchText ) {return qobject_cast<QCheckBox *>( mWidget )->text().contains( searchText, Qt::CaseInsensitive );};
   }
   else if ( qobject_cast<QAbstractButton *>( widget ) )
   {
     mStyleSheet = QStringLiteral( "QAbstractButton { background-color: yellow; color: blue;}" );
-    mText = [ = ]() {return qobject_cast<QAbstractButton *>( mWidget )->text();};
+    mTextFound = [ = ]( QString searchText ) {return qobject_cast<QAbstractButton *>( mWidget )->text().contains( searchText, Qt::CaseInsensitive );};
   }
   else if ( qobject_cast<QGroupBox *>( widget ) )
   {
     mStyleSheet = QStringLiteral( "QGroupBox::title { background-color: yellow; color: blue;}" );
-    mText = [ = ]() {return qobject_cast<QGroupBox *>( mWidget )->title();};
+    mTextFound = [ = ]( QString searchText ) {return qobject_cast<QGroupBox *>( mWidget )->title().contains( searchText, Qt::CaseInsensitive );};
   }
   else if ( qobject_cast<QTreeView *>( widget ) )
   {
     // TODO - style individual matching items
+    mTextFound = [ = ]( QString searchText )
+    {
+      QTreeView *tree = qobject_cast<QTreeView *>( mWidget );
+      if ( !tree )
+        return false;
+      QModelIndexList hits = tree->model()->match( tree->model()->index( 0, 0 ), Qt::DisplayRole, searchText, 1, Qt::MatchContains | Qt::MatchRecursive );
+      return !hits.isEmpty();
+    };
   }
   else
   {
@@ -444,19 +451,7 @@ bool QgsSearchHighlightOptionWidget::searchHighlight( const QString &searchText 
 
   if ( !searchText.isEmpty() )
   {
-    if ( QTreeView *tree = qobject_cast<QTreeView *>( mWidget ) )
-    {
-      QModelIndexList hits = tree->model()->match( tree->model()->index( 0, 0 ), Qt::DisplayRole, searchText, 1, Qt::MatchContains | Qt::MatchRecursive );
-      found = !hits.isEmpty();
-    }
-    else
-    {
-      QString origText = mText();
-      if ( origText.contains( searchText, Qt::CaseInsensitive ) )
-      {
-        found = true;
-      }
-    }
+    found = mTextFound( searchText );
   }
 
   if ( found && !mChangedStyle )
