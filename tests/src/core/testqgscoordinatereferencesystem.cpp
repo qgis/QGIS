@@ -79,6 +79,7 @@ class TestQgsCoordinateReferenceSystem: public QObject
     void bounds();
     void saveAsUserCrs();
     void projectWithCustomCrs();
+    void projectEPSG25833();
 
   private:
     void debugPrint( QgsCoordinateReferenceSystem &crs );
@@ -882,5 +883,15 @@ void TestQgsCoordinateReferenceSystem::projectWithCustomCrs()
   QCOMPARE( spyCrsChanged.count(), 1 );
 }
 
+void TestQgsCoordinateReferenceSystem::projectEPSG25833()
+{
+  // tests loading a 2.x project with a predefined EPSG that has non unique proj.4 string
+  QgsProject p;
+  QSignalSpy spyCrsChanged( &p, &QgsProject::crsChanged );
+  QVERIFY( p.read( TEST_DATA_DIR + QStringLiteral( "/projects/epsg25833.qgs" ) ) );
+  QVERIFY( p.crs().isValid() );
+  QVERIFY( p.crs().authid() == QStringLiteral( "EPSG:25833" ) );
+  QCOMPARE( spyCrsChanged.count(), 1 );
+}
 QGSTEST_MAIN( TestQgsCoordinateReferenceSystem )
 #include "testqgscoordinatereferencesystem.moc"
