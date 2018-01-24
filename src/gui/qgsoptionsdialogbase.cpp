@@ -484,15 +484,22 @@ bool QgsSearchHighlightOptionWidget::eventFilter( QObject *obj, QEvent *event )
 {
   if ( mInstalledFilter && event->type() == QEvent::Show && obj == mWidget )
   {
-    removeEventFilter( mWidget );
+    mWidget->removeEventFilter( this );
     mInstalledFilter = false;
+    // instead of catching the event and calling show again
+    // it might be better to use a timer to change the style
+    // after the widget is shown
+#if 1
     mWidget->show();
-    //QTimer::singleShot( 500, this, [ = ]
-    //{
     mWidget->setStyleSheet( mWidget->styleSheet() + mStyleSheet );
-    mChangedStyle = true;
-    //} );
     return true;
+#else
+    QTimer::singleShot( 500, this, [ = ]
+    {
+      mWidget->setStyleSheet( mWidget->styleSheet() + mStyleSheet );
+      mChangedStyle = true;
+    } );
+#endif
   }
   return QObject::eventFilter( obj, event );
 }
@@ -510,7 +517,7 @@ void QgsSearchHighlightOptionWidget::reset()
     }
     else if ( mInstalledFilter )
     {
-      removeEventFilter( mWidget );
+      mWidget->removeEventFilter( this );
       mInstalledFilter = false;
     }
   }
