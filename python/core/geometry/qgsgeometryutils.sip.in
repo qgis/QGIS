@@ -142,7 +142,9 @@ Returns the squared distance between a point and a line.
                                         const QgsPointXY &linePoint1, const QgsPointXY &linePoint2,
                                         QgsPointXY &intersection /In,Out/ );
 %Docstring
- lineCircleIntersection returns the closest intersection of a line and a circle
+ Compute the intersection of a line and a circle.
+If the intersection has two solutions (points),
+the closest point to the initial ``intersection`` point is returned.
 @param center the center of the circle
 @param radius the radius of the circle
 @param linePoint1 a first point on the line
