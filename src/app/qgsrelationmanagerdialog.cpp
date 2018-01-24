@@ -58,19 +58,19 @@ void QgsRelationManagerDialog::addRelation( const QgsRelation &rel )
   item->setData( Qt::UserRole, QVariant::fromValue<QgsRelation>( rel ) );
   mRelationsTable->setItem( row, 0, item );
 
-  item = new QTableWidgetItem( rel.referencingLayer()->name() );
+  item = new QTableWidgetItem( rel.referencedLayer()->name() );
   item->setFlags( Qt::ItemIsEditable );
   mRelationsTable->setItem( row, 1, item );
 
-  item = new QTableWidgetItem( rel.fieldPairs().at( 0 ).referencingField() );
+  item = new QTableWidgetItem( rel.fieldPairs().at( 0 ).referencedField() );
   item->setFlags( Qt::ItemIsEditable );
   mRelationsTable->setItem( row, 2, item );
 
-  item = new QTableWidgetItem( rel.referencedLayer()->name() );
+  item = new QTableWidgetItem( rel.referencingLayer()->name() );
   item->setFlags( Qt::ItemIsEditable );
   mRelationsTable->setItem( row, 3, item );
 
-  item = new QTableWidgetItem( rel.fieldPairs().at( 0 ).referencedField() );
+  item = new QTableWidgetItem( rel.fieldPairs().at( 0 ).referencingField() );
   item->setFlags( Qt::ItemIsEditable );
   mRelationsTable->setItem( row, 4, item );
 
