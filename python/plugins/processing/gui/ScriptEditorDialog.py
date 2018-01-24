@@ -274,7 +274,8 @@ class ScriptEditorDialog(BASE, WIDGET):
 
     def runAlgorithm(self):
         if self.algType == self.SCRIPT_PYTHON:
-            alg = ScriptAlgorithm(None, self.editor.text())
+            alg = ScriptAlgorithm(None, script=self.editor.text())
+            alg.setProvider(QgsApplication.processingRegistry().providerById('script'))
 
         dlg = alg.createCustomParametersWidget(self)
         if not dlg:

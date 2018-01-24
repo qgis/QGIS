@@ -79,7 +79,10 @@ class ScriptAlgorithm(QgsProcessingAlgorithm):
         self.results = {}
 
     def createInstance(self):
-        return ScriptAlgorithm(self.descriptionFile)
+        if self.descriptionFile is not None:
+            return ScriptAlgorithm(self.descriptionFile)
+        else:
+            return ScriptAlgorithm(descriptionFile=None, script=self.script)
 
     def initAlgorithm(self, config=None):
         pass
@@ -120,7 +123,7 @@ class ScriptAlgorithm(QgsProcessingAlgorithm):
                     try:
                         self.processParameterLine(line.strip('\n'))
                     except:
-                        self.error = self.tr('This script has a syntax errors.\n'
+                        self.error = self.tr('This script has a syntax error.\n'
                                              'Problem with line: {0}', 'ScriptAlgorithm').format(line)
                 self.script += line
                 line = lines.readline()
