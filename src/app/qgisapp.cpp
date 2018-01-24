@@ -12028,7 +12028,10 @@ QgsRasterLayer *QgisApp::addRasterLayerPrivate(
     // Let render() do its own cursor management
     //    QApplication::restoreOverrideCursor();
   }
-  layer->loadDefaultMetadata( ok );
+
+  if ( layer )
+    layer->loadDefaultMetadata( ok );
+
   return layer;
 
 } // QgisApp::addRasterLayer
