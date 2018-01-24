@@ -30,7 +30,7 @@ import os
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt, QCoreApplication
-from qgis.PyQt.QtWidgets import QMenu, QAction, QTreeWidgetItem, QLabel, QMessageBox
+from qgis.PyQt.QtWidgets import QToolButton, QToolBar, QMenu, QAction, QTreeWidgetItem, QLabel, QMessageBox
 from qgis.utils import iface
 from qgis.core import (QgsApplication,
                        QgsProcessingAlgorithm)
@@ -149,12 +149,11 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
                 show = (showChild or show) and item not in list(self.disabledProviderItems.values())
             item.setHidden(not show)
             return show
-        elif isinstance(item, (TreeAlgorithmItem, TreeActionItem)):
+        elif isinstance(item, TreeAlgorithmItem):
             # hide if every part of text is not contained somewhere in either the item text or item user role
             item_text = [item.text(0).lower(), item.data(0, ProcessingToolbox.NAME_ROLE).lower()]
-            if isinstance(item, TreeAlgorithmItem):
-                item_text.append(item.alg.id())
-                item_text.extend(item.data(0, ProcessingToolbox.TAG_ROLE))
+            item_text.append(item.alg.id())
+            item_text.extend(item.data(0, ProcessingToolbox.TAG_ROLE))
 
             hide = bool(text) and not all(
                 any(part in t for t in item_text)
@@ -227,14 +226,11 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
             editRenderingStylesAction.triggered.connect(
                 self.editRenderingStyles)
             popupmenu.addAction(editRenderingStylesAction)
-
-        if isinstance(item, (TreeAlgorithmItem, TreeActionItem)):
-            data = item.alg if isinstance(item, TreeAlgorithmItem) else item.action
             actions = ProviderContextMenuActions.actions
             if len(actions) > 0:
                 popupmenu.addSeparator()
             for action in actions:
-                action.setData(data, self)
+                action.setData(item.alg, self)
                 if action.isEnabled():
                     contextMenuAction = QAction(action.name,
                                                 self.algorithmTree)
@@ -303,10 +299,6 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
                 ret, results = execute(alg, parameters, context, feedback)
                 handleAlgorithmResults(alg, context, feedback)
                 feedback.close()
-        if isinstance(item, TreeActionItem):
-            action = item.action
-            action.setData(self)
-            action.execute()
 
     def fillTree(self):
         self.fillTreeUsingProviders()
@@ -426,14 +418,17 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
 
         if provider.id() in ProviderActions.actions:
             actions = ProviderActions.actions[provider.id()]
+            toolbarButton = QToolButton()
+            toolbarButton.setIcon(provider.icon())
+            toolbarButton.setToolTip(provider.name())
+            toolbarButton.setPopupMode(QToolButton.InstantPopup)
+            menu = QMenu(provider.name(), self)
             for action in actions:
-                if action.group in groups:
-                    groupItem = groups[action.group]
-                else:
-                    groupItem = TreeGroupItem(action.group)
-                    groups[action.group] = groupItem
-                algItem = TreeActionItem(action)
-                groupItem.addChild(algItem)
+                act = QAction(action.name, menu)
+                act.triggered.connect(action.execute)
+                menu.addAction(act)
+            toolbarButton.setMenu(menu)
+            self.processingToolbar.addWidget(toolbarButton)
 
         text = provider.name()
 
@@ -490,16 +485,6 @@ class TreeGroupItem(QTreeWidgetItem):
 
     def setInactive(self):
         self.setForeground(0, Qt.darkGray)
-
-
-class TreeActionItem(QTreeWidgetItem):
-
-    def __init__(self, action):
-        QTreeWidgetItem.__init__(self)
-        self.action = action
-        self.setText(0, action.i18n_name)
-        self.setIcon(0, action.getIcon())
-        self.setData(0, ProcessingToolbox.NAME_ROLE, action.name)
 
 
 class TreeProviderItem(QTreeWidgetItem):

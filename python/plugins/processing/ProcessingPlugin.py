@@ -206,7 +206,6 @@ class ProcessingPlugin:
         self.modelerAction.triggered.connect(self.openModeler)
         self.iface.registerMainWindowAction(self.modelerAction, 'Ctrl+Alt+M')
         self.menu.addAction(self.modelerAction)
-        self.toolbox.processingToolbar.addAction(self.modelerAction)
 
         self.historyAction = QAction(
             QIcon(os.path.join(cmd_folder, 'images', 'history.svg')),
