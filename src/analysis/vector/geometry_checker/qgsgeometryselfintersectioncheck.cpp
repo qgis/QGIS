@@ -71,7 +71,7 @@ void QgsGeometrySelfIntersectionCheck::collectErrors( QList<QgsGeometryCheckErro
     {
       for ( int iRing = 0, nRings = geom->ringCount( iPart ); iRing < nRings; ++iRing )
       {
-        for ( const QgsGeometryUtils::SelfIntersection &inter : QgsGeometryUtils::getSelfIntersections( geom, iPart, iRing, mContext->tolerance ) )
+        for ( const QgsGeometryUtils::SelfIntersection &inter : QgsGeometryUtils::selfIntersections( geom, iPart, iRing, mContext->tolerance ) )
         {
           errors.append( new QgsGeometrySelfIntersectionCheckError( this, layerFeature, inter.point, QgsVertexId( iPart, iRing ), inter ) );
         }

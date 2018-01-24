@@ -151,7 +151,7 @@ Returns the squared distance between a point and a line.
 @return true if an intersection has been found
 %End
 
-    static QgsPoint projPointOnSegment( const QgsPoint &p, const QgsPoint &s1, const QgsPoint &s2 );
+    static QgsPoint projectPointOnSegment( const QgsPoint &p, const QgsPoint &s1, const QgsPoint &s2 );
 %Docstring
  Project the point on a segment
 

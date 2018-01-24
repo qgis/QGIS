@@ -1251,6 +1251,9 @@ QgsGeometryUtils         {#qgis_api_break_3_0_QgsGeometryUtils}
 - adjacentVertices was removed - use QgsAbstractGeometry.adjacentVertices instead.
 - segmentIntersection takes an optional boolean parameter "acceptImproperIntersection" returning true even if the intersection is improper.
 Takes another boolean argument "isIntersection" returning if there is an intersection or not. The "inter" parameter has been renamed "intersectionPoint".
+- projPointOnSegment has been renamed to projectPointOnSegment
+- getSelfIntersections has been renamed to selfIntersections
+
 
 QgsGPSConnectionRegistry        {#qgis_api_break_3_0_QgsGPSConnectionRegistry}
 ------------------------
