@@ -265,10 +265,6 @@ void QgsOptionsDialogBase::registerTextSearchWidgets()
   {
     Q_FOREACH ( QWidget *w, mOptStackedWidget->widget( i )->findChildren<QWidget *>() )
     {
-      // do not register message bar content, items disappear and causes QGIS to crash
-      if ( qobject_cast< QgsMessageBarItem * >( w ) || qobject_cast< QgsMessageBarItem * >( w->parentWidget() ) )
-        continue;
-
       QgsSearchHighlightOptionWidget *shw = new QgsSearchHighlightOptionWidget( w );
       if ( shw->isValid() )
       {
@@ -399,6 +395,17 @@ QgsSearchHighlightOptionWidget::QgsSearchHighlightOptionWidget( QWidget *widget 
   : QObject( widget )
   , mWidget( widget )
 {
+  QWidget *parent = widget;
+  while ( ( parent = parent->parentWidget() ) )
+  {
+    // do not register message bar content, items disappear and causes QGIS to crash
+    if ( qobject_cast< QgsMessageBarItem * >( parent ) )
+    {
+      mValid = false;
+      return;
+    }
+  }
+
   if ( qobject_cast<QLabel *>( widget ) )
   {
     mStyleSheet = QStringLiteral( "QLabel { background-color: yellow; color: blue;}" );
