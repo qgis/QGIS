@@ -90,7 +90,7 @@ class GUI_EXPORT QgsSearchHighlightOptionWidget : public QObject
     QString mStyleSheet;
     bool mValid = true;
     bool mChangedStyle = false;
-    std::function < QString() > mText;
+    std::function < bool( QString )> mTextFound = []( QString searchText ) {Q_UNUSED( searchText ); return false;};
     bool mInstalledFilter = false;
 };
 
