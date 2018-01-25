@@ -1607,6 +1607,8 @@ class WidgetWrapperFactory:
             wrapper = MapLayerWidgetWrapper
         elif param.type() == 'range':
             wrapper = RangeWidgetWrapper
+        elif param.type() == 'matrix':
+            wrapper = FixedTableWidgetWrapper
         else:
             assert False, param.type()
         return wrapper(param, dialog, row, col)
