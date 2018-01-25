@@ -42,7 +42,7 @@
 #include "qgsanimatedicon.h"
 
 // use GDAL VSI mechanism
-#define CPL_SUPRESS_CPLUSPLUS
+#define CPL_SUPRESS_CPLUSPLUS  //#spellok
 #include "cpl_vsi.h"
 #include "cpl_string.h"
 
