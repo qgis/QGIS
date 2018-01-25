@@ -131,7 +131,7 @@ columns</string>
          <item>
           <widget class="QPushButton" name="presetStore">
            <property name="text">
-            <string>Store</string>
+            <string>Save</string>
            </property>
           </widget>
          </item>

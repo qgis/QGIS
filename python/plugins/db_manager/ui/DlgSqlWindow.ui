@@ -87,7 +87,7 @@ columns</string>
          <item row="2" column="3">
           <widget class="QPushButton" name="loadLayerBtn">
            <property name="text">
-            <string>Load now!</string>
+            <string>Load</string>
            </property>
           </widget>
          </item>
@@ -302,7 +302,7 @@ unique values</string>
          <item>
           <widget class="QPushButton" name="presetStore">
            <property name="text">
-            <string>Store</string>
+            <string>Save</string>
            </property>
           </widget>
          </item>
