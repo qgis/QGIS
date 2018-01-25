@@ -1378,7 +1378,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * retrieved and used. Note that this involves a feature request to the underlying data provider,
      * so it is more efficient to explicitly pass an \a oldValue if it is already available.
      *
-     * If \a skipDefaultValue is set to true, default field values will not
+     * If \a skipDefaultValues is set to true, default field values will not
      * be updated. This can be used to override default field value expressions.
      *
      * Returns true if the feature's attribute was successfully changed.
@@ -1410,7 +1410,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * request to the underlying data provider, so it is more efficient to
      * explicitly pass an oldValue if it is already available.
      *
-     * If \a skipDefaultValue is set to true, default field values will not
+     * If \a skipDefaultValues is set to true, default field values will not
      * be updated. This can be used to override default field value
      * expressions.
      *
@@ -1430,7 +1430,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *
      * \since QGIS 3.0
      */
-    bool changeAttributeValues( QgsFeatureId fid, const QgsAttributeMap &newValues, const QgsAttributeMap &oldValues = QgsAttributeMap(), bool skeipDefaultValues = false );
+    bool changeAttributeValues( QgsFeatureId fid, const QgsAttributeMap &newValues, const QgsAttributeMap &oldValues = QgsAttributeMap(), bool skipDefaultValues = false );
 
     /**
      * Add an attribute field (but does not commit it)
