@@ -96,6 +96,8 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
         # connect to existing providers
         for p in QgsApplication.processingRegistry().providers():
             p.algorithmsLoaded.connect(self.updateProvider)
+            if p.isActive():
+                self.addProviderActions(p)
 
         QgsApplication.processingRegistry().providerRemoved.connect(self.removeProvider)
         QgsApplication.processingRegistry().providerAdded.connect(self.addProvider)
@@ -165,6 +167,24 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
             item.setHidden(True)
             return False
 
+    def addProviderActions(self, provider):
+        if provider.id() in ProviderActions.actions:
+            toolbarButton = QToolButton()
+            toolbarButton.setObjectName('provideraction_' + provider.id())
+            toolbarButton.setIcon(provider.icon())
+            toolbarButton.setToolTip(provider.name())
+            toolbarButton.setPopupMode(QToolButton.InstantPopup)
+
+            actions = ProviderActions.actions[provider.id()]
+            menu = QMenu(provider.name(), self)
+            for action in actions:
+                action.setData(self)
+                act = QAction(action.i18n_name, menu)
+                act.triggered.connect(action.execute)
+                menu.addAction(act)
+            toolbarButton.setMenu(menu)
+            self.processingToolbar.addWidget(toolbarButton)
+
     def activateProvider(self, id):
         provider = QgsApplication.processingRegistry().providerById(id)
         if not provider.canBeActivated():
@@ -175,6 +195,7 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
         try:
             # not part of the base class - only some providers have a setActive member
             provider.setActive(True)
+            self.addProviderActions(provider)
             self.fillTree()
             self.textChanged()
             self.showDisabled()
@@ -196,6 +217,9 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
         item = self._providerItem(provider_id)
         if item is not None:
             self.algorithmTree.invisibleRootItem().removeChild(item)
+        button = self.findChild(QToolButton, 'provideraction-' + provider_id)
+        if button:
+            self.processingToolbar.removeChild(button)
 
     def _providerItem(self, provider_id):
         for i in range(self.algorithmTree.invisibleRootItem().childCount()):
@@ -415,20 +439,6 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
                 algItem.setForeground(0, Qt.darkGray)
             groupItem.addChild(algItem)
             count += 1
-
-        if provider.id() in ProviderActions.actions:
-            actions = ProviderActions.actions[provider.id()]
-            toolbarButton = QToolButton()
-            toolbarButton.setIcon(provider.icon())
-            toolbarButton.setToolTip(provider.name())
-            toolbarButton.setPopupMode(QToolButton.InstantPopup)
-            menu = QMenu(provider.name(), self)
-            for action in actions:
-                act = QAction(action.name, menu)
-                act.triggered.connect(action.execute)
-                menu.addAction(act)
-            toolbarButton.setMenu(menu)
-            self.processingToolbar.addWidget(toolbarButton)
 
         text = provider.name()
 
