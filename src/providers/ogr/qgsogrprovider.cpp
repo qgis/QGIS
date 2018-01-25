@@ -5258,7 +5258,6 @@ QGISEXTERN bool saveStyle( const QString &uri, const QString &qmlStyle, const QS
     if ( !hLayer )
     {
       errCause = QObject::tr( "Unable to save layer style. It's not possible to create the destination table on the database." );
-      mutex->unlock();
       return false;
     }
     bool ok = true;
@@ -5322,7 +5321,6 @@ QGISEXTERN bool saveStyle( const QString &uri, const QString &qmlStyle, const QS
     if ( !ok )
     {
       errCause = QObject::tr( "Unable to save layer style. It's not possible to create the destination table on the database." );
-      mutex->unlock();
       return false;
     }
   }
@@ -5379,7 +5377,6 @@ QGISEXTERN bool saveStyle( const QString &uri, const QString &qmlStyle, const QS
                                   QMessageBox::Yes | QMessageBox::No ) == QMessageBox::No ) )
     {
       errCause = QObject::tr( "Operation aborted" );
-      mutex->unlock();
       return false;
     }
     bNew = false;
@@ -5430,8 +5427,6 @@ QGISEXTERN bool saveStyle( const QString &uri, const QString &qmlStyle, const QS
     bFeatureOK = OGR_L_CreateFeature( hLayer, hFeature.get() ) == OGRERR_NONE;
   else
     bFeatureOK = OGR_L_SetFeature( hLayer, hFeature.get() ) == OGRERR_NONE;
-
-  mutex->unlock();
 
   if ( !bFeatureOK )
   {

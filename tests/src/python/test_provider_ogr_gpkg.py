@@ -13,6 +13,7 @@ __copyright__ = 'Copyright 2016, Even Rouault'
 __revision__ = '$Format:%H$'
 
 import os
+import re
 import shutil
 import sys
 import tempfile
@@ -859,6 +860,42 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
 
         vl.setSubsetString('')
         self.assertTrue(vl.dataProvider().capabilities() & isEditable)
+
+    def testSubsetStringExtent_bug17863(self):
+        """Check that the extent is correct when applied in the ctor and when
+        modified after a subset string is set """
+
+        def _lessdigits(s):
+            return re.sub(r'(\d+\.\d{3})\d+', r'\1', s)
+
+        testPath = TEST_DATA_DIR + '/' + 'provider/bug_17795.gpkg|layername=bug_17795'
+        subSetString = '"name" = \'int\''
+        subSet = '|layername=bug_17795|subset=%s' % subSetString
+
+        # unfiltered
+        vl = QgsVectorLayer(testPath, 'test', 'ogr')
+        self.assertTrue(vl.isValid())
+        unfiltered_extent = _lessdigits(vl.extent().toString())
+        del(vl)
+
+        # filter after construction ...
+        subSet_vl2 = QgsVectorLayer(testPath, 'test', 'ogr')
+        self.assertEqual(_lessdigits(subSet_vl2.extent().toString()), unfiltered_extent)
+        # ... apply filter now!
+        subSet_vl2.setSubsetString(subSetString)
+        self.assertEqual(subSet_vl2.subsetString(), subSetString)
+        self.assertNotEqual(_lessdigits(subSet_vl2.extent().toString()), unfiltered_extent)
+        filtered_extent = _lessdigits(subSet_vl2.extent().toString())
+        del(subSet_vl2)
+
+        # filtered in constructor
+        subSet_vl = QgsVectorLayer(testPath + subSet, 'subset_test', 'ogr')
+        self.assertEqual(subSet_vl.subsetString(), subSetString)
+        self.assertTrue(subSet_vl.isValid())
+
+        # This was failing in bug 17863
+        self.assertEqual(_lessdigits(subSet_vl.extent().toString()), filtered_extent)
+        self.assertNotEqual(_lessdigits(subSet_vl.extent().toString()), unfiltered_extent)
 
 
 if __name__ == '__main__':
