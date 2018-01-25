@@ -1807,7 +1807,7 @@ int QgsCoordinateReferenceSystem::syncDb()
         ellps = ellipseRegExp.cap( 1 );
       }
 
-      QString name( OSRIsGeographic( crs ) ? OSRGetAttrValue( crs, "GEOCS", 0 ) : OSRGetAttrValue( crs, "PROJCS", 0 ) );
+      QString name( OSRIsGeographic( crs ) ? OSRGetAttrValue( crs, "GEOGCS", 0 ) : OSRGetAttrValue( crs, "PROJCS", 0 ) );
       if ( name.isEmpty() )
         name = QObject::tr( "Imported from GDAL" );
 
