@@ -26,6 +26,7 @@
 #include <QDialog>
 #include <QPointer>
 #include <QStyledItemDelegate>
+#include <QMap>
 
 
 class QDialogButtonBox;
@@ -36,6 +37,7 @@ class QPainter;
 class QStackedWidget;
 class QStyleOptionViewItem;
 class QSplitter;
+class QTreeWidgetItem;
 
 class QgsFilterLineEdit;
 
@@ -87,10 +89,15 @@ class GUI_EXPORT QgsSearchHighlightOptionWidget : public QObject
 
   private:
     QPointer< QWidget > mWidget;
-    QString mStyleSheet;
+    QString mSearchText = QString();
+    // a map to save the tree state (backouground, expanded) before highlighting items
+    QMap<QTreeWidgetItem *, QBrush> mTreeInitialBackground = QMap<QTreeWidgetItem *, QBrush>();
+    QMap<QTreeWidgetItem *, bool> mTreeInitialExpand = QMap<QTreeWidgetItem *, bool>();
     bool mValid = true;
     bool mChangedStyle = false;
     std::function < bool( QString )> mTextFound = []( QString searchText ) {Q_UNUSED( searchText ); return false;};
+    std::function < void( QString )> mHighlight = []( QString searchText ) {Q_UNUSED( searchText );};
+    std::function < void()> mReset = []() {};
     bool mInstalledFilter = false;
 };
 
