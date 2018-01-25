@@ -1396,10 +1396,10 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags )
           break;
 
         case OFTString:
-          QgsDebugMsg( QString( "Writing string attribute %1 with %2, encoding %3" )
-                       .arg( qgisAttId )
-                       .arg( attrVal.toString(),
-                             textEncoding()->name().data() ) );
+          QgsDebugMsgLevel( QString( "Writing string attribute %1 with %2, encoding %3" )
+                            .arg( qgisAttId )
+                            .arg( attrVal.toString(),
+                                  textEncoding()->name().data() ), 3 );
           OGR_F_SetFieldString( feature.get(), ogrAttId, textEncoding()->fromUnicode( attrVal.toString() ).constData() );
           break;
 
