@@ -214,7 +214,7 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
     advConfigWidgetAction->setDefaultWidget( mLayerTreeView );
     advConfigMenu->addAction( advConfigWidgetAction );
     advConfigButton->setIcon( QIcon( QgsApplication::getThemeIcon( "/mActionShowAllLayers.svg" ) ) );
-    advConfigButton->setToolTip( tr( "Edit avdanced configuration" ) );
+    advConfigButton->setToolTip( tr( "Edit advanced configuration" ) );
     advConfigButton->setObjectName( QStringLiteral( "EditAdvancedConfigurationButton" ) );
     advConfigButton->setMenu( advConfigMenu );
     mEditAdvancedConfigAction = tb->addWidget( advConfigButton );
