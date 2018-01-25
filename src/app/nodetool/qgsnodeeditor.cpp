@@ -68,7 +68,6 @@ QgsNodeEditorModel::QgsNodeEditorModel( QgsVectorLayer *layer, QgsSelectedFeatur
     mWidgetFont = parentWidget->font();
   }
 
-  connect( mSelectedFeature, &QgsSelectedFeature::vertexMapChanged, this, &QgsNodeEditorModel::featureChanged );
 }
 
 int QgsNodeEditorModel::rowCount( const QModelIndex &parent ) const
@@ -273,11 +272,6 @@ bool QgsNodeEditorModel::calcR( int row, double &r, double &minRadius ) const
   return true;
 }
 
-void QgsNodeEditorModel::featureChanged()
-{
-  //TODO - avoid reset
-  reset();
-}
 
 QgsNodeEditor::QgsNodeEditor(
   QgsVectorLayer *layer,
