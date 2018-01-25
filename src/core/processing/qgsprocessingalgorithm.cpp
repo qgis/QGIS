@@ -107,12 +107,12 @@ void QgsProcessingAlgorithm::setProvider( QgsProcessingProvider *provider )
 {
   mProvider = provider;
 
-  if ( !mProvider->supportsNonFileBasedOutput() )
+  if ( mProvider && !mProvider->supportsNonFileBasedOutput() )
   {
     // need to update all destination parameters to turn off non file based outputs
     Q_FOREACH ( const QgsProcessingParameterDefinition *definition, mParameters )
     {
-      if ( definition->isDestination() && mProvider )
+      if ( definition->isDestination() )
       {
         const QgsProcessingDestinationParameter *destParam = static_cast< const QgsProcessingDestinationParameter *>( definition );
         const_cast< QgsProcessingDestinationParameter *>( destParam )->setSupportsNonFileBasedOutput( false );
