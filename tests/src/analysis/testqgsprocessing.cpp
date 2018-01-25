@@ -275,6 +275,16 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
       QCOMPARE( asPythonCommand( params, context ), QStringLiteral( "processing.run(\"test\", {'p1':'a','p2':'b'})" ) );
     }
 
+    void addDestParams()
+    {
+      QgsProcessingParameterFeatureSink *sinkParam1 = new QgsProcessingParameterFeatureSink( "supports" );
+      sinkParam1->setSupportsNonFileBasedOutput( true );
+      addParameter( sinkParam1 );
+      QgsProcessingParameterFeatureSink *sinkParam2 = new QgsProcessingParameterFeatureSink( "non_supports" );
+      sinkParam2->setSupportsNonFileBasedOutput( false );
+      addParameter( sinkParam2 );
+    }
+
 };
 
 //dummy provider for testing
@@ -300,7 +310,13 @@ class DummyProvider : public QgsProcessingProvider
       return "pcx"; // next-gen raster storage
     }
 
+    bool supportsNonFileBasedOutput() const override
+    {
+      return supportsNonFileOutputs;
+    }
+
     bool *unloaded = nullptr;
+    bool supportsNonFileOutputs = false;
 
   protected:
 
@@ -426,6 +442,7 @@ class TestQgsProcessing: public QObject
     void combineFields();
     void stringToPythonLiteral();
     void defaultExtensionsForProvider();
+    void supportsNonFileBasedOutput();
 
   private:
 
@@ -3973,7 +3990,7 @@ void TestQgsProcessing::parameterFeatureSink()
 
   QCOMPARE( def->defaultFileExtension(), QStringLiteral( "shp" ) );
   QCOMPARE( def->generateTemporaryDestination(), QStringLiteral( "memory:" ) );
-  def->setSupportsNonFileBasedOutputs( false );
+  def->setSupportsNonFileBasedOutput( false );
   QVERIFY( def->generateTemporaryDestination().endsWith( QStringLiteral( ".shp" ) ) );
   QVERIFY( def->generateTemporaryDestination().startsWith( QgsProcessingUtils::tempFolder() ) );
 
@@ -3985,7 +4002,7 @@ void TestQgsProcessing::parameterFeatureSink()
   QCOMPARE( fromMap.flags(), def->flags() );
   QCOMPARE( fromMap.defaultValue(), def->defaultValue() );
   QCOMPARE( fromMap.dataType(), def->dataType() );
-  QCOMPARE( fromMap.supportsNonFileBasedOutputs(), def->supportsNonFileBasedOutputs() );
+  QCOMPARE( fromMap.supportsNonFileBasedOutput(), def->supportsNonFileBasedOutput() );
   def.reset( dynamic_cast< QgsProcessingParameterFeatureSink *>( QgsProcessingParameters::parameterFromVariantMap( map ) ) );
   QVERIFY( dynamic_cast< QgsProcessingParameterFeatureSink *>( def.get() ) );
 
@@ -4203,7 +4220,7 @@ void TestQgsProcessing::parameterRasterOut()
   QCOMPARE( fromMap.description(), def->description() );
   QCOMPARE( fromMap.flags(), def->flags() );
   QCOMPARE( fromMap.defaultValue(), def->defaultValue() );
-  QCOMPARE( fromMap.supportsNonFileBasedOutputs(), def->supportsNonFileBasedOutputs() );
+  QCOMPARE( fromMap.supportsNonFileBasedOutput(), def->supportsNonFileBasedOutput() );
   def.reset( dynamic_cast< QgsProcessingParameterRasterDestination *>( QgsProcessingParameters::parameterFromVariantMap( map ) ) );
   QVERIFY( dynamic_cast< QgsProcessingParameterRasterDestination *>( def.get() ) );
 
@@ -4323,7 +4340,7 @@ void TestQgsProcessing::parameterFileOut()
   QCOMPARE( fromMap.flags(), def->flags() );
   QCOMPARE( fromMap.defaultValue(), def->defaultValue() );
   QCOMPARE( fromMap.fileFilter(), def->fileFilter() );
-  QCOMPARE( fromMap.supportsNonFileBasedOutputs(), def->supportsNonFileBasedOutputs() );
+  QCOMPARE( fromMap.supportsNonFileBasedOutput(), def->supportsNonFileBasedOutput() );
   def.reset( dynamic_cast< QgsProcessingParameterFileDestination *>( QgsProcessingParameters::parameterFromVariantMap( map ) ) );
   QVERIFY( dynamic_cast< QgsProcessingParameterFileDestination *>( def.get() ) );
 
@@ -4396,7 +4413,7 @@ void TestQgsProcessing::parameterFolderOut()
   QCOMPARE( fromMap.description(), def->description() );
   QCOMPARE( fromMap.flags(), def->flags() );
   QCOMPARE( fromMap.defaultValue(), def->defaultValue() );
-  QCOMPARE( fromMap.supportsNonFileBasedOutputs(), def->supportsNonFileBasedOutputs() );
+  QCOMPARE( fromMap.supportsNonFileBasedOutput(), def->supportsNonFileBasedOutput() );
   def.reset( dynamic_cast< QgsProcessingParameterFolderDestination *>( QgsProcessingParameters::parameterFromVariantMap( map ) ) );
   QVERIFY( dynamic_cast< QgsProcessingParameterFolderDestination *>( def.get() ) );
 
@@ -5866,6 +5883,26 @@ void TestQgsProcessing::defaultExtensionsForProvider()
   settings.setValue( QStringLiteral( "Processing/DefaultOutputRasterLayerExt" ), QStringLiteral( "ecw" ), QgsSettings::Core );
   QCOMPARE( provider.defaultVectorFileExtension( true ), QStringLiteral( "mif" ) );
   QCOMPARE( provider.defaultRasterFileExtension(), QStringLiteral( "mig" ) );
+}
+
+void TestQgsProcessing::supportsNonFileBasedOutput()
+{
+  DummyAlgorithm alg( QStringLiteral( "test" ) );
+  DummyProvider p( QStringLiteral( "test_provider" ) );
+  alg.addDestParams();
+  // provider has no support for file based outputs, so both output parameters should deny support
+  alg.setProvider( &p );
+  QVERIFY( !static_cast< const QgsProcessingDestinationParameter * >( alg.destinationParameterDefinitions().at( 0 ) )->supportsNonFileBasedOutput() );
+  QVERIFY( !static_cast< const QgsProcessingDestinationParameter * >( alg.destinationParameterDefinitions().at( 1 ) )->supportsNonFileBasedOutput() );
+
+  DummyAlgorithm alg2( QStringLiteral( "test" ) );
+  DummyProvider p2( QStringLiteral( "test_provider" ) );
+  p2.supportsNonFileOutputs = true;
+  alg2.addDestParams();
+  // provider has support for file based outputs, but only first output parameter should indicate support (since the second has support explicitly denied)
+  alg2.setProvider( &p2 );
+  QVERIFY( static_cast< const QgsProcessingDestinationParameter * >( alg2.destinationParameterDefinitions().at( 0 ) )->supportsNonFileBasedOutput() );
+  QVERIFY( !static_cast< const QgsProcessingDestinationParameter * >( alg2.destinationParameterDefinitions().at( 1 ) )->supportsNonFileBasedOutput() );
 }
 
 QGSTEST_MAIN( TestQgsProcessing )

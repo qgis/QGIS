@@ -92,6 +92,9 @@ class ModelerAlgorithmProvider(QgsProcessingProvider):
     def svgIconPath(self):
         return QgsApplication.iconPath("processingModel.svg")
 
+    def supportsNonFileBasedOutput(self):
+        return True
+
     def loadAlgorithms(self):
         self.algs = []
         folders = ModelerUtils.modelsFolders()

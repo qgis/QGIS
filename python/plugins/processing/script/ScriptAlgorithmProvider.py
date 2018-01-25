@@ -99,3 +99,10 @@ class ScriptAlgorithmProvider(QgsProcessingProvider):
 
     def addAlgorithmsFromFolder(self, folder):
         self.folder_algorithms.extend(ScriptUtils.loadFromFolder(folder))
+
+    def supportsNonFileBasedOutput(self):
+        # TODO - this may not be strictly true. We probably need a way for scripts
+        # to indicate whether individual outputs support non-file based outputs,
+        # but for now allow it. At best we expose nice features to users, at worst
+        # they'll get an error if they use them with incompatible outputs...
+        return True
