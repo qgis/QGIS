@@ -1775,20 +1775,20 @@ Returns a new QgsProcessingOutputDefinition corresponding to the definition of t
 parameter.
 %End
 
-    bool supportsNonFileBasedOutputs() const;
+    bool supportsNonFileBasedOutput() const;
 %Docstring
 Returns true if the destination parameter supports non filed-based outputs,
 such as memory layers or direct database outputs.
 
-.. seealso:: :py:func:`setSupportsNonFileBasedOutputs`
+.. seealso:: :py:func:`setSupportsNonFileBasedOutput`
 %End
 
-    void setSupportsNonFileBasedOutputs( bool supportsNonFileBasedOutputs );
+    void setSupportsNonFileBasedOutput( bool supportsNonFileBasedOutput );
 %Docstring
 Sets whether the destination parameter supports non filed-based outputs,
 such as memory layers or direct database outputs.
 
-.. seealso:: :py:func:`supportsNonFileBasedOutputs`
+.. seealso:: :py:func:`supportsNonFileBasedOutput`
 %End
 
     virtual QString defaultFileExtension() const = 0;

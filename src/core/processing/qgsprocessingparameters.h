@@ -1720,16 +1720,16 @@ class CORE_EXPORT QgsProcessingDestinationParameter : public QgsProcessingParame
     /**
      * Returns true if the destination parameter supports non filed-based outputs,
      * such as memory layers or direct database outputs.
-     * \see setSupportsNonFileBasedOutputs()
+     * \see setSupportsNonFileBasedOutput()
      */
-    bool supportsNonFileBasedOutputs() const { return mSupportsNonFileBasedOutputs; }
+    bool supportsNonFileBasedOutput() const { return mSupportsNonFileBasedOutputs; }
 
     /**
      * Sets whether the destination parameter supports non filed-based outputs,
      * such as memory layers or direct database outputs.
-     * \see supportsNonFileBasedOutputs()
+     * \see supportsNonFileBasedOutput()
      */
-    void setSupportsNonFileBasedOutputs( bool supportsNonFileBasedOutputs ) { mSupportsNonFileBasedOutputs = supportsNonFileBasedOutputs; }
+    void setSupportsNonFileBasedOutput( bool supportsNonFileBasedOutput ) { mSupportsNonFileBasedOutputs = supportsNonFileBasedOutput; }
 
     /**
      * Returns the default file extension for destination file paths
