@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>SQL window</string>
+   <string>SQL Window</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
    <item row="3" column="0">
@@ -80,12 +80,19 @@
          <item>
           <widget class="QLabel" name="label">
            <property name="text">
-            <string>Saved query:</string>
+            <string>Saved query</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QComboBox" name="presetCombo"/>
+          <widget class="QComboBox" name="presetCombo">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>1</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+          </widget>
          </item>
          <item>
           <widget class="QLabel" name="label_2">
@@ -96,6 +103,12 @@
          </item>
          <item>
           <widget class="QLineEdit" name="presetName">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>1</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="text">
             <string notr="true"/>
            </property>

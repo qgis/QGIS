@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>SQL query builder</string>
+   <string>SQL Query Builder</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_7">
    <item>

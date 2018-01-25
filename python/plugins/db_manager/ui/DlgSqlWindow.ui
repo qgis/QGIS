@@ -6,12 +6,18 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>626</width>
+    <width>679</width>
     <height>525</height>
    </rect>
   </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
   <property name="windowTitle">
-   <string>SQL window</string>
+   <string>SQL Window</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
    <item row="1" column="0">
@@ -286,12 +292,19 @@ columns</string>
          <item>
           <widget class="QLabel" name="label">
            <property name="text">
-            <string>Saved query:</string>
+            <string>Saved query</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QComboBox" name="presetCombo"/>
+          <widget class="QComboBox" name="presetCombo">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>1</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+          </widget>
          </item>
          <item>
           <widget class="QLabel" name="label_2">
@@ -302,6 +315,12 @@ columns</string>
          </item>
          <item>
           <widget class="QLineEdit" name="presetName">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>1</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="text">
             <string notr="true"/>
            </property>
