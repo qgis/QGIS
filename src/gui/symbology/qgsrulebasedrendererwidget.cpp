@@ -679,6 +679,8 @@ QgsRendererRulePropsWidget::QgsRendererRulePropsWidget( QgsRuleBasedRenderer::Ru
   connect( mScaleRangeWidget, &QgsScaleRangeWidget::rangeChanged, this, &QgsPanelWidget::widgetChanged );
 }
 
+#include "qgsvscrollarea.h"
+
 QgsRendererRulePropsDialog::QgsRendererRulePropsDialog( QgsRuleBasedRenderer::Rule *rule, QgsVectorLayer *layer, QgsStyle *style, QWidget *parent, const QgsSymbolWidgetContext &context )
   : QDialog( parent )
 {
@@ -686,13 +688,16 @@ QgsRendererRulePropsDialog::QgsRendererRulePropsDialog( QgsRuleBasedRenderer::Ru
 #ifdef Q_OS_MAC
   setWindowModality( Qt::WindowModal );
 #endif
-  this->setLayout( new QVBoxLayout() );
+
+  QVBoxLayout *layout = new QVBoxLayout( this );
+  QgsVScrollArea *scrollArea = new QgsVScrollArea( this );
+  layout->addWidget( scrollArea );
 
   buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
   mPropsWidget = new QgsRendererRulePropsWidget( rule, layer, style, this, context );
 
-  this->layout()->addWidget( mPropsWidget );
-  this->layout()->addWidget( buttonBox );
+  scrollArea->setWidget( mPropsWidget );
+  layout->addWidget( buttonBox );
   this->setWindowTitle( "Edit Rule" );
 
   connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsRendererRulePropsDialog::accept );
