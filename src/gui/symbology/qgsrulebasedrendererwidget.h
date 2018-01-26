@@ -273,6 +273,9 @@ class GUI_EXPORT QgsRendererRulePropsDialog : public QDialog
     void buildExpression();
     void accept() override;
 
+  private slots:
+    void showHelp();
+
   private:
     QgsRendererRulePropsWidget *mPropsWidget = nullptr;
     QDialogButtonBox *buttonBox = nullptr;

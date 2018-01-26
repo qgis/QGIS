@@ -693,7 +693,7 @@ QgsRendererRulePropsDialog::QgsRendererRulePropsDialog( QgsRuleBasedRenderer::Ru
   QgsVScrollArea *scrollArea = new QgsVScrollArea( this );
   layout->addWidget( scrollArea );
 
-  buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
+  buttonBox = new QDialogButtonBox( QDialogButtonBox::Cancel | QDialogButtonBox::Help | QDialogButtonBox::Ok );
   mPropsWidget = new QgsRendererRulePropsWidget( rule, layer, style, this, context );
 
   scrollArea->setWidget( mPropsWidget );
@@ -702,6 +702,7 @@ QgsRendererRulePropsDialog::QgsRendererRulePropsDialog( QgsRuleBasedRenderer::Ru
 
   connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsRendererRulePropsDialog::accept );
   connect( buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsRendererRulePropsDialog::showHelp );
 
   QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "Windows/QgsRendererRulePropsDialog/geometry" ) ).toByteArray() );
@@ -727,6 +728,11 @@ void QgsRendererRulePropsDialog::accept()
 {
   mPropsWidget->apply();
   QDialog::accept();
+}
+
+void QgsRendererRulePropsDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#rule-based-rendering" ) );
 }
 
 
