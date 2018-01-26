@@ -90,10 +90,15 @@ set CMAKE_OPT=^
 	-D CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_NO_WARNINGS=TRUE
 
 :devenv
-for /f "usebackq tokens=1" %%a in (`%OSGEO4W_ROOT%\bin\grass72 --config path`) do set GRASS72_PATH=%%a
-for %%i in ("%GRASS72_PATH%") do set GRASS72_VERSION=%%~nxi
-set GRASS72_VERSION=%GRASS72_VERSION:grass-=%
-set GRASS_VERSIONS=%GRASS6_VERSION% %GRASS72_VERSION%
+set GRASS7=
+if exist %OSGEO4W_ROOT%\bin\grass72.bat set GRASS7=%OSGEO4W_ROOT%\bin\grass72.bat
+if exist %OSGEO4W_ROOT%\bin\grass74.bat set GRASS7=%OSGEO4W_ROOT%\bin\grass74.bat
+if "%GRASS7%"=="" (echo GRASS7 not found & goto error)
+
+for /f "usebackq tokens=1" %%a in (`%GRASS7% --config path`) do set GRASS7_PATH=%%a
+for %%i in ("%GRASS7_PATH%") do set GRASS7_VERSION=%%~nxi
+set GRASS7_VERSION=%GRASS7_VERSION:grass-=%
+set GRASS_VERSIONS=%GRASS6_VERSION% %GRASS7_VERSION%
 
 set PYTHONPATH=
 path %PF86%\CMake\bin;%PATH%;c:\cygwin\bin
@@ -164,7 +169,7 @@ cmake %CMAKE_OPT% ^
 	-D WITH_GRASS6=TRUE ^
 	-D WITH_GRASS7=TRUE ^
 	-D GRASS_PREFIX=%O4W_ROOT%/apps/grass/grass-%GRASS6_VERSION% ^
-	-D GRASS_PREFIX7=%GRASS72_PATH:\=/% ^
+	-D GRASS_PREFIX7=%GRASS7_PATH:\=/% ^
 	-D WITH_GLOBE=TRUE ^
 	-D WITH_TOUCH=TRUE ^
 	-D WITH_ORACLE=TRUE ^
@@ -235,6 +240,7 @@ set TMP=%oldtmp%
 PATH %oldpath%
 
 :skiptests
+:package
 
 if exist "%PKGDIR%" (
 	echo REMOVE: %DATE% %TIME%
@@ -324,11 +330,12 @@ goto end
 :usage
 echo usage: %0 version package packagename arch [sha [site]]
 echo sample: %0 2.11.0 38 qgis-dev x86_64 339dbf1 qgis.org
-exit
+exit /b 1
 
 :error
 echo BUILD ERROR %ERRORLEVEL%: %DATE% %TIME%
 if exist %PACKAGENAME%-%VERSION%-%PACKAGE%.tar.bz2 del %PACKAGENAME%-%VERSION%-%PACKAGE%.tar.bz2
+exit /b 1
 
 :end
 echo FINISHED: %DATE% %TIME%

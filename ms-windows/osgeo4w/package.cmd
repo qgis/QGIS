@@ -86,10 +86,15 @@ set CMAKE_OPT=^
 	-D CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_NO_WARNINGS=TRUE
 
 :devenv
-for /f "usebackq tokens=1" %%a in (`%OSGEO4W_ROOT%\bin\grass72 --config path`) do set GRASS72_PATH=%%a
-for %%i in ("%GRASS72_PATH%") do set GRASS72_VERSION=%%~nxi
-set GRASS72_VERSION=%GRASS72_VERSION:grass-=%
-set GRASS_VERSIONS=%GRASS6_VERSION% %GRASS72_VERSION%
+set GRASS7=
+if exist %OSGEO4W_ROOT%\bin\grass72.bat set GRASS7=%OSGEO4W_ROOT%\bin\grass72.bat
+if exist %OSGEO4W_ROOT%\bin\grass74.bat set GRASS7=%OSGEO4W_ROOT%\bin\grass74.bat
+if "%GRASS7%"=="" (echo GRASS7 not found & goto error)
+
+for /f "usebackq tokens=1" %%a in (`%GRASS7% --config path`) do set GRASS7_PATH=%%a
+for %%i in ("%GRASS7_PATH%") do set GRASS7_VERSION=%%~nxi
+set GRASS7_VERSION=%GRASS7_VERSION:grass-=%
+set GRASS_VERSIONS=%GRASS6_VERSION% %GRASS7_VERSION%
 
 set PYTHONPATH=
 path %PF86%\CMake\bin;%PATH%;c:\cygwin\bin
@@ -160,7 +165,7 @@ cmake %CMAKE_OPT% ^
 	-D WITH_GRASS6=TRUE ^
 	-D WITH_GRASS7=TRUE ^
 	-D GRASS_PREFIX=%O4W_ROOT%/apps/grass/grass-%GRASS6_VERSION% ^
-	-D GRASS_PREFIX7=%GRASS72_PATH:\=/% ^
+	-D GRASS_PREFIX7=%GRASS7_PATH:\=/% ^
 	-D WITH_GLOBE=TRUE ^
 	-D WITH_TOUCH=TRUE ^
 	-D WITH_ORACLE=TRUE ^
@@ -209,7 +214,15 @@ if exist ..\skiptests goto skiptests
 
 echo RUN_TESTS: %DATE% %TIME%
 
+set oldtemp=%TEMP%
+set oldtmp=%TMP%
 set oldpath=%PATH%
+
+set TEMP=%TEMP%\%PACKAGENAME%-%ARCH%
+set TMP=%TEMP%
+if exist "%TEMP%" rmdir /s /q "%TEMP%"
+mkdir "%TEMP%"
+
 for %%g IN (%GRASS_VERSIONS%) do (
 	set path=!path!;%OSGEO4W_ROOT%\apps\grass\grass-%%g\lib
 	set GISBASE=%OSGEO4W_ROOT%\apps\grass\grass-%%g
@@ -219,6 +232,8 @@ PATH %path%;%BUILDDIR%\output\plugins\%BUILDCONF%
 cmake --build %BUILDDIR% --target Experimental --config %BUILDCONF%
 if errorlevel 1 echo TESTS WERE NOT SUCCESSFUL.
 
+set TEMP=%oldtemp%
+set TMP=%oldtmp%
 PATH %oldpath%
 
 :skiptests
@@ -233,6 +248,7 @@ echo INSTALL: %DATE% %TIME%
 cmake --build %BUILDDIR% --target INSTALL --config %BUILDCONF%
 if errorlevel 1 (echo INSTALL failed & goto error)
 
+:package
 echo PACKAGE: %DATE% %TIME%
 
 cd ..
@@ -475,13 +491,14 @@ goto end
 :usage
 echo usage: %0 version package packagename arch [sha [site]]
 echo sample: %0 2.0.1 3 qgis x86 f802808
-exit
+exit /b 1
 
 :error
 echo BUILD ERROR %ERRORLEVEL%: %DATE% %TIME%
 for %%i in ("" "-common" "-server" "-devel" "-grass-plugin" "-globe-plugin" "-oracle-provider") do (
 	if exist %ARCH%\release\qgis\%PACKAGENAME%%%i\%PACKAGENAME%%%i-%VERSION%-%PACKAGE%.tar.bz2 del %ARCH%\release\qgis\%PACKAGENAME%%%i\%PACKAGENAME%%%i-%VERSION%-%PACKAGE%.tar.bz2
 )
+exit /b 1
 
 :end
 echo FINISHED: %DATE% %TIME%
