@@ -64,6 +64,8 @@
         <file>flags/te.svg</file>
         <file>flags/tl.svg</file>
         <file>flags/zh.svg</file>
+        <file>flags/zh-Hans.svg</file>
+        <file>flags/zh-Hant.svg</file>
         <file>flags/ky.svg</file>
         <file>icons/qgis-icon-16x16.png</file>
         <file>icons/qgis-icon-60x60.png</file>
@@ -624,7 +626,6 @@
         <file>themes/default/3d.svg</file>
         <file>themes/default/mActionResizeSquare.svg</file>
         <file>themes/default/mSourceFields.svg</file>
-        <file>flags/zh_Hant.svg</file>
         <file>themes/default/cursors/mCapturePoint.svg</file>
         <file>themes/default/cursors/mCrossHair.svg</file>
         <file>themes/default/cursors/mSampler.svg</file>
