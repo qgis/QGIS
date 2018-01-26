@@ -181,12 +181,25 @@ void QgsRuleBasedRendererWidget::editRule( const QModelIndex &index )
     return;
 
   QgsRuleBasedRenderer::Rule *rule = mModel->ruleForIndex( index );
+  QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
 
-  QgsRendererRulePropsWidget *widget = new QgsRendererRulePropsWidget( rule, mLayer, mStyle, this, mContext );
-  widget->setPanelTitle( tr( "Edit Rule" ) );
-  connect( widget, &QgsPanelWidget::panelAccepted, this, &QgsRuleBasedRendererWidget::ruleWidgetPanelAccepted );
-  connect( widget, &QgsPanelWidget::widgetChanged, this, &QgsRuleBasedRendererWidget::liveUpdateRuleFromPanel );
-  openPanel( widget );
+  if ( panel && panel->dockMode() )
+  {
+    QgsRendererRulePropsWidget *widget = new QgsRendererRulePropsWidget( rule, mLayer, mStyle, this, mContext );//panel?
+    widget->setPanelTitle( tr( "Edit Rule" ) );
+    connect( widget, &QgsPanelWidget::panelAccepted, this, &QgsRuleBasedRendererWidget::ruleWidgetPanelAccepted );
+    connect( widget, &QgsPanelWidget::widgetChanged, this, &QgsRuleBasedRendererWidget::liveUpdateRuleFromPanel );
+    openPanel( widget );
+    return;
+  }
+
+  QgsRendererRulePropsDialog dlg( rule, mLayer, mStyle, this, mContext );
+  if ( dlg.exec() )
+  {
+    mModel->updateRule( index.parent(), index.row() );
+    mModel->clearFeatureCounts();
+    emit widgetChanged();
+  }
 }
 
 void QgsRuleBasedRendererWidget::removeRule()
@@ -680,6 +693,7 @@ QgsRendererRulePropsDialog::QgsRendererRulePropsDialog( QgsRuleBasedRenderer::Ru
 
   this->layout()->addWidget( mPropsWidget );
   this->layout()->addWidget( buttonBox );
+  this->setWindowTitle( "Edit Rule" );
 
   connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsRendererRulePropsDialog::accept );
   connect( buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
