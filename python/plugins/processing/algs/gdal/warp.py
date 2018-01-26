@@ -187,10 +187,10 @@ class warp(GdalAlgorithm):
         extent = self.parameterAsExtent(parameters, self.TARGET_EXTENT, context)
         if not extent.isNull():
             arguments.append('-te')
-            arguments.append(rasterExtent.xMinimum())
-            arguments.append(rasterExtent.yMinimum())
-            arguments.append(rasterExtent.xMaximum())
-            arguments.append(rasterExtent.yMaximum())
+            arguments.append(extent.xMinimum())
+            arguments.append(extent.yMinimum())
+            arguments.append(extent.xMaximum())
+            arguments.append(extent.yMaximum())
 
             extentCrs = self.parameterAsCrs(parameters, self.TARGET_EXTENT_CRS, context)
             if extentCrs:
