@@ -70,6 +70,7 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
         self.tipWasClosed = False
         self.setupUi(self)
         self.setAllowedAreas(Qt.LeftDockWidgetArea | Qt.RightDockWidgetArea)
+        self.processingToolbar.setIconSize(iface.iconSize(True))
 
         self.searchBox.textChanged.connect(self.textChanged)
         self.algorithmTree.customContextMenuRequested.connect(
