@@ -666,7 +666,7 @@ void QgsCustomization::updateMainWindow( QMenu *toolBarMenu )
 
   Q_FOREACH ( QObject *obj, menubar->children() )
   {
-    if ( obj->inherits( "QMenu" ) )
+    if ( obj->inherits( "QMenu" ) && !obj->objectName().isEmpty() )
     {
       QMenu *menu = qobject_cast<QMenu *>( obj );
       bool visible = mSettings->value( menu->objectName(), true ).toBool();
@@ -688,7 +688,7 @@ void QgsCustomization::updateMainWindow( QMenu *toolBarMenu )
   mSettings->beginGroup( QStringLiteral( "Customization/Toolbars" ) );
   Q_FOREACH ( QObject *obj, mw->children() )
   {
-    if ( obj->inherits( "QToolBar" ) )
+    if ( obj->inherits( "QToolBar" ) && !obj->objectName().isEmpty() )
     {
       QToolBar *tb = qobject_cast<QToolBar *>( obj );
       bool visible = mSettings->value( tb->objectName(), true ).toBool();
@@ -724,7 +724,7 @@ void QgsCustomization::updateMainWindow( QMenu *toolBarMenu )
   mSettings->beginGroup( QStringLiteral( "Customization/Docks" ) );
   Q_FOREACH ( QObject *obj, mw->children() )
   {
-    if ( obj->inherits( "QDockWidget" ) )
+    if ( obj->inherits( "QDockWidget" ) && !obj->objectName().isEmpty() )
     {
       bool visible = mSettings->value( obj->objectName(), true ).toBool();
       if ( !visible )
@@ -745,7 +745,7 @@ void QgsCustomization::updateMainWindow( QMenu *toolBarMenu )
     QgsStatusBar *sb = mw->statusBarIface();
     Q_FOREACH ( QObject *obj, sb->children() )
     {
-      if ( obj->inherits( "QWidget" ) )
+      if ( obj->inherits( "QWidget" ) && !obj->objectName().isEmpty() )
       {
         QWidget *widget = qobject_cast<QWidget *>( obj );
         if ( widget->objectName().isEmpty() )
