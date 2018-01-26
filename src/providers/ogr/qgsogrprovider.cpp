@@ -3909,10 +3909,10 @@ void QgsOgrProvider::open( OpenMode mode )
     QgsDebugMsg( QString( "Trying %1 syntax, mFilePath= %2" ).arg( vsiPrefix, mFilePath ) );
   }
 
-  QgsDebugMsg( "mFilePath: " + mFilePath );
-  QgsDebugMsg( "mLayerIndex: " + QString::number( mLayerIndex ) );
-  QgsDebugMsg( "mLayerName: " + mLayerName );
-  QgsDebugMsg( "mSubsetString: " + mSubsetString );
+  QgsDebugMsgLevel( "mFilePath: " + mFilePath, 3 );
+  QgsDebugMsgLevel( "mLayerIndex: " + QString::number( mLayerIndex ), 3 );
+  QgsDebugMsgLevel( "mLayerName: " + mLayerName, 3 );
+  QgsDebugMsgLevel( "mSubsetString: " + mSubsetString, 3 );
   CPLSetConfigOption( "OGR_ORGANIZE_POLYGONS", "ONLY_CCW" );  // "SKIP" returns MULTIPOLYGONs for multiringed POLYGONs
   CPLSetConfigOption( "GPX_ELE_AS_25D", "YES" );  // use GPX elevation as z values
 
@@ -4053,7 +4053,11 @@ void QgsOgrProvider::open( OpenMode mode )
         int featuresCountedBackup = mFeaturesCounted;
         mFeaturesCounted = -1;
         // Do not update capabilities here
-        mValid = _setSubsetString( mSubsetString, false, false );
+        // but ensure subset is set (setSubsetString does nothing if the passed sql subset string is equal to
+        // mSubsetString, which is the case when reloading the dataset)
+        QString origSubsetString = mSubsetString;
+        mSubsetString.clear();
+        mValid = _setSubsetString( origSubsetString, false, false );
         mFeaturesCounted = featuresCountedBackup;
       }
     }
@@ -5254,7 +5258,6 @@ QGISEXTERN bool saveStyle( const QString &uri, const QString &qmlStyle, const QS
     if ( !hLayer )
     {
       errCause = QObject::tr( "Unable to save layer style. It's not possible to create the destination table on the database." );
-      mutex->unlock();
       return false;
     }
     bool ok = true;
@@ -5318,7 +5321,6 @@ QGISEXTERN bool saveStyle( const QString &uri, const QString &qmlStyle, const QS
     if ( !ok )
     {
       errCause = QObject::tr( "Unable to save layer style. It's not possible to create the destination table on the database." );
-      mutex->unlock();
       return false;
     }
   }
@@ -5375,7 +5377,6 @@ QGISEXTERN bool saveStyle( const QString &uri, const QString &qmlStyle, const QS
                                   QMessageBox::Yes | QMessageBox::No ) == QMessageBox::No ) )
     {
       errCause = QObject::tr( "Operation aborted" );
-      mutex->unlock();
       return false;
     }
     bNew = false;
@@ -5426,8 +5427,6 @@ QGISEXTERN bool saveStyle( const QString &uri, const QString &qmlStyle, const QS
     bFeatureOK = OGR_L_CreateFeature( hLayer, hFeature.get() ) == OGRERR_NONE;
   else
     bFeatureOK = OGR_L_SetFeature( hLayer, hFeature.get() ) == OGRERR_NONE;
-
-  mutex->unlock();
 
   if ( !bFeatureOK )
   {
