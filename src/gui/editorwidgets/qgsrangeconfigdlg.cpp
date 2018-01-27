@@ -22,16 +22,29 @@ QgsRangeConfigDlg::QgsRangeConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget 
 {
   setupUi( this );
 
-  minimumSpinBox->setMinimum( std::numeric_limits<int>::min() );
+  minimumSpinBox->setMinimum( std::numeric_limits<int>::lowest() );
   minimumSpinBox->setMaximum( std::numeric_limits<int>::max() );
-  minimumSpinBox->setValue( std::numeric_limits<int>::min() );
+  minimumSpinBox->setValue( std::numeric_limits<int>::lowest() );
 
-  maximumSpinBox->setMinimum( std::numeric_limits<int>::min() );
+  maximumSpinBox->setMinimum( std::numeric_limits<int>::lowest() );
   maximumSpinBox->setMaximum( std::numeric_limits<int>::max() );
   maximumSpinBox->setValue( std::numeric_limits<int>::max() );
 
   stepSpinBox->setMaximum( std::numeric_limits<int>::max() );
   stepSpinBox->setValue( 1 );
+
+  minimumDoubleSpinBox->setMinimum( std::numeric_limits<double>::lowest() );
+  minimumDoubleSpinBox->setMaximum( std::numeric_limits<double>::max() );
+  minimumDoubleSpinBox->setValue( std::numeric_limits<double>::min() );
+
+  maximumDoubleSpinBox->setMinimum( std::numeric_limits<double>::lowest() );
+  maximumDoubleSpinBox->setMaximum( std::numeric_limits<double>::max() );
+  maximumDoubleSpinBox->setValue( std::numeric_limits<double>::max() );
+
+  // Use integer here:
+  stepDoubleSpinBox->setMaximum( std::numeric_limits<int>::max() );
+  stepDoubleSpinBox->setValue( 1 );
+
 
   QString text;
 
@@ -44,9 +57,9 @@ QgsRangeConfigDlg::QgsRangeConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget 
       rangeStackedWidget->setCurrentIndex( vl->fields().at( fieldIdx ).type() == QVariant::Double ? 1 : 0 );
 
       rangeWidget->clear();
-      rangeWidget->addItem( tr( "Editable" ), "SpinBox" );
-      rangeWidget->addItem( tr( "Slider" ), "Slider" );
-      rangeWidget->addItem( tr( "Dial" ), "Dial" );
+      rangeWidget->addItem( tr( "Editable" ), QStringLiteral( "SpinBox" ) );
+      rangeWidget->addItem( tr( "Slider" ), QStringLiteral( "Slider" ) );
+      rangeWidget->addItem( tr( "Dial" ), QStringLiteral( "Dial" ) );
 
       QVariant min = vl->minimumValue( fieldIdx );
       QVariant max = vl->maximumValue( fieldIdx );
@@ -111,11 +124,11 @@ QVariantMap QgsRangeConfigDlg::config()
 
 void QgsRangeConfigDlg::setConfig( const QVariantMap &config )
 {
-  minimumDoubleSpinBox->setValue( config.value( QStringLiteral( "Min" ), -std::numeric_limits<double>::max() ).toDouble() );
-  maximumDoubleSpinBox->setValue( config.value( QStringLiteral( "Max" ), std::numeric_limits<double>::max() ).toDouble() );
+  minimumDoubleSpinBox->setValue( config.value( QStringLiteral( "Min" ), std::numeric_limits<double>::lowest() ).toDouble( ) );
+  maximumDoubleSpinBox->setValue( config.value( QStringLiteral( "Max" ), std::numeric_limits<double>::max() ).toDouble( ) );
   stepDoubleSpinBox->setValue( config.value( QStringLiteral( "Step" ), 1.0 ).toDouble() );
 
-  minimumSpinBox->setValue( config.value( QStringLiteral( "Min" ), std::numeric_limits<int>::min() ).toInt() );
+  minimumSpinBox->setValue( config.value( QStringLiteral( "Min" ), std::numeric_limits<int>::lowest() ).toInt() );
   maximumSpinBox->setValue( config.value( QStringLiteral( "Max" ), std::numeric_limits<int>::max() ).toInt() );
   stepSpinBox->setValue( config.value( QStringLiteral( "Step" ), 1 ).toInt() );
 
