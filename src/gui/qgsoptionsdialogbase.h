@@ -90,8 +90,8 @@ class GUI_EXPORT QgsSearchHighlightOptionWidget : public QObject
   private:
     QPointer< QWidget > mWidget;
     QString mSearchText = QString();
-    // a map to save the tree state (backouground, expanded) before highlighting items
-    QMap<QTreeWidgetItem *, QBrush> mTreeInitialBackground = QMap<QTreeWidgetItem *, QBrush>();
+    // a map to save the tree state (backouground, font, expanded) before highlighting items
+    QMap<QTreeWidgetItem *, QPair<QBrush, QBrush>> mTreeInitialStyle = QMap<QTreeWidgetItem *, QPair<QBrush, QBrush>>();
     QMap<QTreeWidgetItem *, bool> mTreeInitialExpand = QMap<QTreeWidgetItem *, bool>();
     bool mValid = true;
     bool mChangedStyle = false;

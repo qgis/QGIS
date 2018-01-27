@@ -468,12 +468,13 @@ QgsSearchHighlightOptionWidget::QgsSearchHighlightOptionWidget( QWidget *widget 
         {
           QList<QTreeWidgetItem *> items = treeWidget->findItems( searchText, Qt::MatchContains | Qt::MatchRecursive, 0 );
           mChangedStyle = items.count() ? true : false;
-          mTreeInitialBackground.clear();
+          mTreeInitialStyle.clear();
           mTreeInitialExpand.clear();
           for ( QTreeWidgetItem *item : items )
           {
-            mTreeInitialBackground.insert( item, item->background( 0 ) );
+            mTreeInitialStyle.insert( item, qMakePair( item->background( 0 ), item->foreground( 0 ) ) );
             item->setBackground( 0, QBrush( QColor( Qt::yellow ) ) );
+            item->setForeground( 0, QBrush( QColor( Qt::blue ) ) );
 
             QTreeWidgetItem *parent = item;
             while ( ( parent = parent->parent() ) )
@@ -484,7 +485,6 @@ QgsSearchHighlightOptionWidget::QgsSearchHighlightOptionWidget( QWidget *widget 
               parent->setExpanded( true );
             }
           }
-
         }
       };
 
@@ -497,14 +497,15 @@ QgsSearchHighlightOptionWidget::QgsSearchHighlightOptionWidget( QWidget *widget 
             item->setExpanded( mTreeInitialExpand.value( item ) );
           }
         }
-        for ( QTreeWidgetItem *item : mTreeInitialBackground.keys() )
+        for ( QTreeWidgetItem *item : mTreeInitialStyle.keys() )
         {
           if ( item )
           {
-            item->setBackground( 0, mTreeInitialBackground.value( item ) );
+            item->setBackground( 0, mTreeInitialStyle.value( item ).first );
+            item->setForeground( 0, mTreeInitialStyle.value( item ).second );
           }
         }
-        mTreeInitialBackground.clear();
+        mTreeInitialStyle.clear();
         mTreeInitialExpand.clear();
       };
     }
