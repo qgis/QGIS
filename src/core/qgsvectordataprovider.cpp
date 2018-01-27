@@ -725,17 +725,6 @@ QgsGeometry QgsVectorDataProvider::convertToProviderType( const QgsGeometry &geo
     }
   }
 
-  //convert to multitype if necessary
-  if ( QgsWkbTypes::isMultiType( providerGeomType ) && !QgsWkbTypes::isMultiType( geometry->wkbType() ) )
-  {
-    outputGeom = QgsGeometryFactory::geomFromWkbType( providerGeomType );
-    QgsGeometryCollection *geomCollection = qgsgeometry_cast<QgsGeometryCollection *>( outputGeom.get() );
-    if ( geomCollection )
-    {
-      geomCollection->addGeometry( geometry->clone() );
-    }
-  }
-
   //convert to curved type if necessary
   if ( !QgsWkbTypes::isCurvedType( geometry->wkbType() ) && QgsWkbTypes::isCurvedType( providerGeomType ) )
   {
@@ -749,11 +738,24 @@ QgsGeometry QgsVectorDataProvider::convertToProviderType( const QgsGeometry &geo
   //convert to linear type from curved type
   if ( QgsWkbTypes::isCurvedType( geometry->wkbType() ) && !QgsWkbTypes::isCurvedType( providerGeomType ) )
   {
-    QgsAbstractGeometry *segmentizedGeom = nullptr;
-    segmentizedGeom = outputGeom ? outputGeom->segmentize() : geometry->segmentize();
+    QgsAbstractGeometry *segmentizedGeom = outputGeom ? outputGeom->segmentize() : geometry->segmentize();
     if ( segmentizedGeom )
     {
       outputGeom.reset( segmentizedGeom );
+    }
+  }
+
+  //convert to multitype if necessary
+  if ( QgsWkbTypes::isMultiType( providerGeomType ) && !QgsWkbTypes::isMultiType( geometry->wkbType() ) )
+  {
+    std::unique_ptr< QgsAbstractGeometry > collGeom( QgsGeometryFactory::geomFromWkbType( providerGeomType ) );
+    QgsGeometryCollection *geomCollection = qgsgeometry_cast<QgsGeometryCollection *>( collGeom.get() );
+    if ( geomCollection )
+    {
+      if ( geomCollection->addGeometry( outputGeom ? outputGeom->clone() : geometry->clone() ) )
+      {
+        outputGeom.reset( collGeom.release() );
+      }
     }
   }
 
@@ -766,6 +768,7 @@ QgsGeometry QgsVectorDataProvider::convertToProviderType( const QgsGeometry &geo
     }
     outputGeom->addZValue();
   }
+
   if ( QgsWkbTypes::hasM( providerGeomType ) )
   {
     if ( !outputGeom )
@@ -779,6 +782,7 @@ QgsGeometry QgsVectorDataProvider::convertToProviderType( const QgsGeometry &geo
   {
     return QgsGeometry( outputGeom.release() );
   }
+
   return QgsGeometry();
 }
 

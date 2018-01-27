@@ -37,8 +37,9 @@ from qgis.core import (
     QgsReadWriteContext,
     QgsRectangle,
     QgsDefaultValue,
-    QgsDataSourceUri,
-    QgsProject
+    QgsProject,
+    QgsWkbTypes,
+    QgsGeometry
 )
 from qgis.gui import QgsGui
 from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant, QDir, QObject
@@ -807,7 +808,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
 
             table = ("%s" % table) if schema is None else ("\"%s\".\"%s\"" % (schema, table))
             dest_uri = "%s sslmode=disable table=%s  (geom) sql" % (self.dbconn, table)
-            err = QgsVectorLayerExporter.exportLayer(lyr, dest_uri, "postgres", lyr.crs())
+            QgsVectorLayerExporter.exportLayer(lyr, dest_uri, "postgres", lyr.crs())
             olyr = QgsVectorLayer(dest_uri, "y", "postgres")
             self.assertTrue(olyr.isValid(), "Failed URI: %s" % dest_uri)
 
@@ -1034,6 +1035,26 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         styles = myvl.listStylesInDatabase()
         ids = styles[1]
         self.assertEqual(len(ids), 0)
+
+    def testCurveToMultipolygon(self):
+        self.execSQLCommand('CREATE TABLE IF NOT EXISTS multicurve(pk SERIAL NOT NULL PRIMARY KEY, geom public.geometry(MultiPolygon, 4326))')
+        self.execSQLCommand('TRUNCATE multicurve')
+
+        vl = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'pk\' srid=4326 type=MULTIPOLYGON table="multicurve" (geom) sql=', 'test', 'postgres')
+
+        f = QgsFeature(vl.fields())
+        f.setGeometry(QgsGeometry.fromWkt('CurvePolygon(CircularString (20 30, 50 30, 50 90, 10 50, 20 30))'))
+        self.assertTrue(vl.startEditing())
+        self.assertTrue(vl.addFeatures([f]))
+        self.assertTrue(vl.commitChanges())
+
+        f = next(vl.getFeatures(QgsFeatureRequest()))
+
+        g = f.geometry().constGet()
+        self.assertTrue(g)
+        self.assertEqual(g.wkbType(), QgsWkbTypes.MultiPolygon)
+        self.assertEqual(g.childCount(), 1)
+        self.assertTrue(g.childGeometry(0).vertexCount() > 3)
 
 
 class TestPyQgsPostgresProviderCompoundKey(unittest.TestCase, ProviderTestCase):
