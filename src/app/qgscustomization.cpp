@@ -245,7 +245,7 @@ void QgsCustomizationDialog::actionSave_triggered( bool checked )
   QFileInfo fileInfo( fileName );
   mySettings.setValue( mLastDirSettingsName, fileInfo.absoluteDir().absolutePath() );
 
-  QSettings fileSettings( fileName );
+  QSettings fileSettings( fileName, QSettings::IniFormat );
   treeToSettings( &fileSettings );
 }
 
@@ -264,7 +264,7 @@ void QgsCustomizationDialog::actionLoad_triggered( bool checked )
   QFileInfo fileInfo( fileName );
   mySettings.setValue( mLastDirSettingsName, fileInfo.absoluteDir().absolutePath() );
 
-  QSettings fileSettings( fileName );
+  QSettings fileSettings( fileName, QSettings::IniFormat );
   settingsToTree( &fileSettings );
 }
 
