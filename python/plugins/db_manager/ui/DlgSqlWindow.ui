@@ -400,9 +400,28 @@ unique values</string>
   </customwidget>
  </customwidgets>
  <tabstops>
+  <tabstop>queryBuilderBtn</tabstop>
+  <tabstop>presetCombo</tabstop>
+  <tabstop>presetName</tabstop>
+  <tabstop>presetStore</tabstop>
+  <tabstop>presetDelete</tabstop>
+  <tabstop>editSql</tabstop>
   <tabstop>btnExecute</tabstop>
+  <tabstop>btnCreateView</tabstop>
   <tabstop>btnClear</tabstop>
   <tabstop>viewResult</tabstop>
+  <tabstop>loadAsLayerGroup</tabstop>
+  <tabstop>uniqueColumnCheck</tabstop>
+  <tabstop>uniqueCombo</tabstop>
+  <tabstop>hasGeometryCol</tabstop>
+  <tabstop>geomCombo</tabstop>
+  <tabstop>getColumnsBtn</tabstop>
+  <tabstop>layerNameEdit</tabstop>
+  <tabstop>vectorRadio</tabstop>
+  <tabstop>rasterRadio</tabstop>
+  <tabstop>btnSetFilter</tabstop>
+  <tabstop>avoidSelectById</tabstop>
+  <tabstop>loadLayerBtn</tabstop>
  </tabstops>
  <resources/>
  <connections>
