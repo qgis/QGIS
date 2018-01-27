@@ -276,12 +276,15 @@ class CORE_EXPORT QgsFeatureIterator
 
     SIP_PYOBJECT __next__();
     % MethodCode
-    QgsFeature *f = new QgsFeature;
-    if ( sipCpp->nextFeature( *f ) )
-      sipRes = sipConvertFromType( f, sipType_QgsFeature, Py_None );
+    std::unique_ptr< QgsFeature > f = qgis::make_unique< QgsFeature >();
+    bool result = false;
+    Py_BEGIN_ALLOW_THREADS
+    result = ( sipCpp->nextFeature( *f ) );
+    Py_END_ALLOW_THREADS
+    if ( result )
+      sipRes = sipConvertFromType( f.release(), sipType_QgsFeature, Py_None );
     else
     {
-      delete f;
       PyErr_SetString( PyExc_StopIteration, "" );
     }
     % End
