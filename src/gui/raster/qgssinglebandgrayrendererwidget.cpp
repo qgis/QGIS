@@ -180,6 +180,7 @@ void QgsSingleBandGrayRendererWidget::setFromRenderer( const QgsRasterRenderer *
   {
     //band
     mGrayBandComboBox->setBand( gr->grayBand() );
+    mMinMaxWidget->setBands( QList< int >() << gr->grayBand() );
     mGradientComboBox->setCurrentIndex( mGradientComboBox->findData( gr->gradient() ) );
 
     const QgsContrastEnhancement *ce = gr->contrastEnhancement();
