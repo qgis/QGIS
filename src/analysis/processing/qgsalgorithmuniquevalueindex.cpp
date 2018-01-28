@@ -62,8 +62,6 @@ void QgsAddUniqueValueIndexAlgorithm::initAlgorithm( const QVariantMap & )
   classedOutput->setCreateByDefault( true );
   addParameter( classedOutput.release() );
 
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Layer with index field" ), QgsProcessing::TypeVector, QVariant(), true ) );
-
   std::unique_ptr< QgsProcessingParameterFeatureSink > summaryOutput = qgis::make_unique< QgsProcessingParameterFeatureSink >( QStringLiteral( "SUMMARY_OUTPUT" ),  QObject::tr( "Class summary" ),
       QgsProcessing::TypeVector, QVariant(), true );
   summaryOutput->setCreateByDefault( false );
