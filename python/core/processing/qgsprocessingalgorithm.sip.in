@@ -224,7 +224,7 @@ Returns an ordered list of parameter definitions utilized by the algorithm.
     const QgsProcessingParameterDefinition *parameterDefinition( const QString &name ) const;
 %Docstring
 Returns a matching parameter by ``name``. Matching is done in a case-insensitive
-manner.
+manner, but exact case matches will be preferred.
 
 .. seealso:: :py:func:`parameterDefinitions`
 %End

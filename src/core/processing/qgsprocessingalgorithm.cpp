@@ -243,7 +243,8 @@ bool QgsProcessingAlgorithm::addParameter( QgsProcessingParameterDefinition *def
     return false;
 
   // check for duplicate named parameters
-  if ( QgsProcessingAlgorithm::parameterDefinition( definition->name() ) )
+  const QgsProcessingParameterDefinition *existingDef = QgsProcessingAlgorithm::parameterDefinition( definition->name() );
+  if ( existingDef && existingDef->name() == definition->name() ) // parameterDefinition is case-insensitive, but we DO allow case-different duplicate names
   {
     QgsLogger::warning( QStringLiteral( "Duplicate parameter %1 registered for alg %2" ).arg( definition->name(), id() ) );
     return false;
@@ -300,7 +301,15 @@ QVariantMap QgsProcessingAlgorithm::postProcessAlgorithm( QgsProcessingContext &
 
 const QgsProcessingParameterDefinition *QgsProcessingAlgorithm::parameterDefinition( const QString &name ) const
 {
-  Q_FOREACH ( const QgsProcessingParameterDefinition *def, mParameters )
+  // first pass - case sensitive match
+  for ( const QgsProcessingParameterDefinition *def : mParameters )
+  {
+    if ( def->name() == name )
+      return def;
+  }
+
+  // second pass - case insensitive
+  for ( const QgsProcessingParameterDefinition *def : mParameters )
   {
     if ( def->name().compare( name, Qt::CaseInsensitive ) == 0 )
       return def;
