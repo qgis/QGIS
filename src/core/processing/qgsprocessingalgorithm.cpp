@@ -246,7 +246,7 @@ bool QgsProcessingAlgorithm::addParameter( QgsProcessingParameterDefinition *def
   const QgsProcessingParameterDefinition *existingDef = QgsProcessingAlgorithm::parameterDefinition( definition->name() );
   if ( existingDef && existingDef->name() == definition->name() ) // parameterDefinition is case-insensitive, but we DO allow case-different duplicate names
   {
-    QgsLogger::warning( QStringLiteral( "Duplicate parameter %1 registered for alg %2" ).arg( definition->name(), id() ) );
+    QgsMessageLog::logMessage( QObject::tr( "Duplicate parameter %1 registered for alg %2" ).arg( definition->name(), id() ), QObject::tr( "Processing" ) );
     return false;
   }
 

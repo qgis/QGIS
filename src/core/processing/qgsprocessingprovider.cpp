@@ -76,7 +76,7 @@ bool QgsProcessingProvider::addAlgorithm( QgsProcessingAlgorithm *algorithm )
 
   if ( mAlgorithms.contains( algorithm->name() ) )
   {
-    QgsLogger::warning( QStringLiteral( "Duplicate algorithm name %1 for provider %2" ).arg( algorithm->name(), id() ) );
+    QgsMessageLog::logMessage( tr( "Duplicate algorithm name %1 for provider %2" ).arg( algorithm->name(), id() ), QObject::tr( "Processing" ) );
     return false;
   }
 
