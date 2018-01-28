@@ -244,7 +244,10 @@ bool QgsProcessingAlgorithm::addParameter( QgsProcessingParameterDefinition *def
 
   // check for duplicate named parameters
   if ( QgsProcessingAlgorithm::parameterDefinition( definition->name() ) )
+  {
+    QgsLogger::warning( QStringLiteral( "Duplicate parameter %1 registered for alg %2" ).arg( definition->name(), id() ) );
     return false;
+  }
 
   if ( definition->isDestination() && mProvider )
   {
