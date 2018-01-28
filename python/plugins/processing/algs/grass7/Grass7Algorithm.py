@@ -420,12 +420,12 @@ class Grass7Algorithm(GeoAlgorithm):
 
         for out in self.outputs:
             if isinstance(out, OutputFile):
-                command += ' > ' + out.value
+                command += ' > "{}"'.format(out.value)
             elif not isinstance(out, OutputHTML):
                 # We add an output name to make sure it is unique if the session
                 # uses this algorithm several times.
                 uniqueOutputName = out.name + self.uniqueSufix
-                command += ' ' + out.name + '=' + uniqueOutputName
+                command += ' {}="{}"'.format(out.name, uniqueOutputName)
 
                 # Add output file to exported layers, to indicate that
                 # they are present in GRASS
