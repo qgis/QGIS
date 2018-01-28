@@ -247,7 +247,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
 
     /**
      * Returns a matching parameter by \a name. Matching is done in a case-insensitive
-     * manner.
+     * manner, but exact case matches will be preferred.
      * \see parameterDefinitions()
      */
     const QgsProcessingParameterDefinition *parameterDefinition( const QString &name ) const;

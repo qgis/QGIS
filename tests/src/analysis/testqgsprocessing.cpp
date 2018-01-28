@@ -147,6 +147,15 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
       QCOMPARE( rasterParam->defaultFileExtension(), QStringLiteral( "tif" ) ); // before alg is accessible
       addParameter( rasterParam );
       QCOMPARE( rasterParam->defaultFileExtension(), QStringLiteral( "tif" ) );
+
+      // should allow parameters with same name but different case (required for grass provider)
+      QgsProcessingParameterBoolean *p1C = new QgsProcessingParameterBoolean( "P1" );
+      QVERIFY( addParameter( p1C ) );
+      QCOMPARE( parameterDefinitions().count(), 8 );
+
+      // parameterDefinition should be case insensitive, but prioritise correct case matches
+      QCOMPARE( parameterDefinition( "p1" ), parameterDefinitions().at( 0 ) );
+      QCOMPARE( parameterDefinition( "P1" ), parameterDefinitions().at( 7 ) );
     }
 
     void runParameterChecks2()
