@@ -832,7 +832,7 @@ class MapLayerWidgetWrapper(WidgetWrapper):
             except:
                 return self.combo.currentText()
         elif self.dialogType == DIALOG_BATCH:
-            return self.widget.getText()
+            return self.widget.value()
         else:
             def validator(v):
                 if not bool(v):
