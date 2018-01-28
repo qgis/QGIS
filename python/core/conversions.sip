@@ -1799,6 +1799,8 @@ template<int, TYPE2*>
         return NULL;
       }
 
+    Py_DECREF(valueobj);
+    Py_DECREF(keyobj);
   }
 
   return d;
@@ -1997,9 +1999,7 @@ template <TYPE>
         {
             Py_DECREF(l);
 
-            if (tobj)
-                Py_DECREF(tobj);
-            else
+            if (!tobj)
                 delete t;
 
             return NULL;
@@ -2073,8 +2073,6 @@ template <TYPE>
 
         PyObject *keyobj = PyLong_FromLong(it.key());
         PyObject *pyOobj = sipConvertFromType(oobj, sipType_QgsFeature, sipTransferObj);
-        PyDict_SetItem(d, keyobj, pyOobj);
-
         if(pyOobj == NULL || keyobj == NULL || PyDict_SetItem(d, keyobj, pyOobj) < 0)
         {
             Py_DECREF(d);
@@ -2082,6 +2080,10 @@ template <TYPE>
             if (pyOobj)
             {
                 Py_DECREF(pyOobj);
+            }
+            else
+            {
+                delete oobj;
             }
 
             if (keyobj)
