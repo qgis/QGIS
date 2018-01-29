@@ -2188,7 +2188,8 @@ void QgsSVGFillSymbolLayer::applyDataDefinedSettings( QgsSymbolRenderContext &co
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyFile ) )
   {
     context.setOriginalValueVariable( mSvgFilePath );
-    svgFile = mDataDefinedProperties.valueAsString( QgsSymbolLayer::PropertyFile, context.renderContext().expressionContext(), mSvgFilePath );
+    svgFile = QgsSymbolLayerUtils::svgSymbolNameToPath( mDataDefinedProperties.valueAsString( QgsSymbolLayer::PropertyFile, context.renderContext().expressionContext(), mSvgFilePath ),
+              context.renderContext().pathResolver() );
   }
   QColor svgFillColor = mColor;
   if ( mDataDefinedProperties.isActive( QgsSymbolLayer::PropertyFillColor ) )

@@ -33,6 +33,7 @@
 #include "qgsvectorsimplifymethod.h"
 #include "qgsdistancearea.h"
 #include "qgscoordinatetransformcontext.h"
+#include "qgspathresolver.h"
 
 class QPainter;
 class QgsAbstractGeometry;
@@ -151,6 +152,24 @@ class CORE_EXPORT QgsRenderContext
      * \see transformContext()
      */
     void setTransformContext( const QgsCoordinateTransformContext &context );
+
+    /**
+     * Returns the path resolver for conversion between relative and absolute paths
+     * during rendering operations, e.g. for resolving relative symbol paths.
+     *
+     * \since QGIS 3.0
+     * \see setPathResolver()
+     */
+    const QgsPathResolver &pathResolver() const { return mPathResolver; }
+
+    /**
+     * Sets the path \a resolver for conversion between relative and absolute paths
+     * during rendering operations, e.g. for resolving relative symbol paths.
+     *
+     * \since QGIS 3.0
+     * \see pathResolver()
+     */
+    void setPathResolver( const QgsPathResolver &resolver ) { mPathResolver = resolver; }
 
     const QgsRectangle &extent() const {return mExtent;}
 
@@ -420,6 +439,9 @@ class CORE_EXPORT QgsRenderContext
     QgsAbstractGeometry::SegmentationToleranceType mSegmentationToleranceType = QgsAbstractGeometry::MaximumAngle;
 
     QgsCoordinateTransformContext mTransformContext;
+
+    QgsPathResolver mPathResolver;
+
 #ifdef QGISDEBUG
     bool mHasTransformContext = false;
 #endif
