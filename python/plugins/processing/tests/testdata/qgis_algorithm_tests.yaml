@@ -1762,7 +1762,7 @@ tests:
       INPUT:
         name: lines.gml
         type: vector
-      NODES: 0,-1,2,-2
+      VERTICES: 0,-1,2,-2
     results:
       OUTPUT:
         name: expected/extract_specific_nodes_lines.gml
@@ -1777,7 +1777,7 @@ tests:
       INPUT:
         name: polys.gml
         type: vector
-      NODES: 0,-1,5,-5
+      VERTICES: 0,-1,5,-5
     results:
       OUTPUT:
         name: expected/extract_specific_nodes_polys.gml
