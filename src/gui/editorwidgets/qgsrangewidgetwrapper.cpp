@@ -85,21 +85,19 @@ void QgsRangeWidgetWrapper::initWidget( QWidget *editor )
   QVariant min( config( QStringLiteral( "Min" ) ) );
   QVariant max( config( QStringLiteral( "Max" ) ) );
   QVariant step( config( QStringLiteral( "Step" ) ) );
+  QVariant precision( config( QStringLiteral( "Precision" ) ) );
 
   if ( mDoubleSpinBox )
   {
-    // set the precision if field is integer
-    int precision = layer()->fields().at( fieldIdx() ).precision();
-    if ( precision > 0 )
-    {
-      mDoubleSpinBox->setDecimals( layer()->fields().at( fieldIdx() ).precision() );
-    }
-
-    QgsDoubleSpinBox *qgsWidget = dynamic_cast<QgsDoubleSpinBox *>( mDoubleSpinBox );
-
     double stepval = step.isValid() ? step.toDouble() : 1.0;
     double minval = min.isValid() ? min.toDouble() : std::numeric_limits<double>::lowest();
     double maxval  = max.isValid() ? max.toDouble() : std::numeric_limits<double>::max();
+    int precisionval = precision.isValid() ? precision.toInt() : 4;
+
+    mDoubleSpinBox->setDecimals( precisionval );
+
+    QgsDoubleSpinBox *qgsWidget = dynamic_cast<QgsDoubleSpinBox *>( mDoubleSpinBox );
+
 
     if ( qgsWidget )
       qgsWidget->setShowClearButton( allowNull );
@@ -107,9 +105,9 @@ void QgsRangeWidgetWrapper::initWidget( QWidget *editor )
     if ( allowNull )
     {
       double decr;
-      if ( precision > 0 )
+      if ( precisionval > 0 )
       {
-        decr = std::pow( 10, -precision );
+        decr = std::pow( 10, -precisionval );
       }
       else
       {
