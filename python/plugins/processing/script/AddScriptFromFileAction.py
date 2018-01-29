@@ -32,8 +32,9 @@ from qgis.PyQt.QtCore import QFileInfo
 
 from qgis.core import QgsApplication, QgsSettings
 
-from processing.script.ScriptAlgorithm import ScriptAlgorithm
 from processing.gui.ToolboxAction import ToolboxAction
+
+from processing.script.ScriptAlgorithm import ScriptAlgorithm
 from processing.script.WrongScriptException import WrongScriptException
 from processing.script.ScriptUtils import ScriptUtils
 
@@ -53,8 +54,9 @@ class AddScriptFromFileAction(ToolboxAction):
         settings = QgsSettings()
         lastDir = settings.value('Processing/lastScriptsDir', '')
         filenames, selected_filter = QFileDialog.getOpenFileNames(self.toolbox,
-                                                                  self.tr('Script files', 'AddScriptFromFileAction'), lastDir,
-                                                                  self.tr('Script files (*.py *.PY)', 'AddScriptFromFileAction'))
+                                                                  self.tr('Script files'),
+                                                                  lastDir,
+                                                                  self.tr('Script files (*.py *.PY)'))
         if filenames:
             validAlgs = 0
             wrongAlgs = []
@@ -73,6 +75,6 @@ class AddScriptFromFileAction(ToolboxAction):
                 QgsApplication.processingRegistry().providerById('script').refreshAlgorithms()
             if wrongAlgs:
                 QMessageBox.warning(self.toolbox,
-                                    self.tr('Error reading scripts', 'AddScriptFromFileAction'),
-                                    self.tr('The following files do not contain a valid script:\n-', 'AddScriptFromFileAction') +
-                                    "\n-".join(wrongAlgs))
+                                    self.tr('Error reading scripts'),
+                                    self.tr('The following files do not contain a valid script:\n') +
+                                    "\n- ".join(wrongAlgs))

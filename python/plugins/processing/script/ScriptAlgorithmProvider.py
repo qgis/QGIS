@@ -31,14 +31,15 @@ from qgis.core import (QgsApplication,
                        QgsProcessingProvider)
 
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
-from processing.gui.EditScriptAction import EditScriptAction
-from processing.gui.DeleteScriptAction import DeleteScriptAction
-from processing.gui.CreateNewScriptAction import CreateNewScriptAction
-from processing.script.ScriptUtils import ScriptUtils
-from processing.script.AddScriptFromFileAction import AddScriptFromFileAction
 from processing.gui.ProviderActions import (ProviderActions,
                                             ProviderContextMenuActions)
+
+from processing.script.AddScriptFromFileAction import AddScriptFromFileAction
+from processing.script.CreateNewScriptAction import CreateNewScriptAction
+from processing.script.DeleteScriptAction import DeleteScriptAction
+from processing.script.EditScriptAction import EditScriptAction
 from processing.script.CreateScriptCollectionPluginAction import CreateScriptCollectionPluginAction
+from processing.script.ScriptUtils import ScriptUtils
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
@@ -49,13 +50,11 @@ class ScriptAlgorithmProvider(QgsProcessingProvider):
         super().__init__()
         self.algs = []
         self.folder_algorithms = []
-        self.actions = [CreateNewScriptAction('Create new script',
-                                              CreateNewScriptAction.SCRIPT_PYTHON),
+        self.actions = [CreateNewScriptAction('Create new script'),
                         AddScriptFromFileAction(),
                         CreateScriptCollectionPluginAction()]
-        self.contextMenuActions = \
-            [EditScriptAction(EditScriptAction.SCRIPT_PYTHON),
-             DeleteScriptAction(DeleteScriptAction.SCRIPT_PYTHON)]
+        self.contextMenuActions = [EditScriptAction(),
+                                   DeleteScriptAction()]
 
     def load(self):
         ProcessingConfig.settingIcons[self.name()] = self.icon()

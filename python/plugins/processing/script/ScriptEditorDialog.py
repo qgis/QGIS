@@ -42,6 +42,7 @@ from qgis.utils import iface, OverrideCursor
 
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.gui.HelpEditionDialog import HelpEditionDialog
+
 from processing.script.ScriptAlgorithm import ScriptAlgorithm
 from processing.script.ScriptUtils import ScriptUtils
 
@@ -51,12 +52,9 @@ WIDGET, BASE = uic.loadUiType(
 
 
 class ScriptEditorDialog(BASE, WIDGET):
-
-    SCRIPT_PYTHON = 0
-
     hasChanged = False
 
-    def __init__(self, algType, alg):
+    def __init__(self, alg):
         super(ScriptEditorDialog, self).__init__(None)
         self.setupUi(self)
 
@@ -120,25 +118,23 @@ class ScriptEditorDialog(BASE, WIDGET):
         self.lastSearch = None
 
         self.alg = alg
-        self.algType = algType
 
         self.snippets = {}
-        if self.algType == self.SCRIPT_PYTHON:
-            path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "script", "snippets.py")
-            with codecs.open(path, 'r', encoding='utf-8') as f:
-                lines = f.readlines()
-            snippetlines = []
-            name = None
-            for line in lines:
-                if line.startswith("##"):
-                    if snippetlines:
-                        self.snippets[name] = "".join(snippetlines)
-                    name = line[2:]
-                    snippetlines = []
-                else:
-                    snippetlines.append(line)
-            if snippetlines:
-                self.snippets[name] = "".join(snippetlines)
+        path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "script", "snippets.py")
+        with codecs.open(path, 'r', encoding='utf-8') as f:
+            lines = f.readlines()
+        snippetlines = []
+        name = None
+        for line in lines:
+            if line.startswith("##"):
+                if snippetlines:
+                    self.snippets[name] = "".join(snippetlines)
+                name = line[2:]
+                snippetlines = []
+            else:
+                snippetlines.append(line)
+        if snippetlines:
+            self.snippets[name] = "".join(snippetlines)
 
         #if self.snippets:
         #    self.btnSnippets.setVisible(False)
@@ -153,8 +149,6 @@ class ScriptEditorDialog(BASE, WIDGET):
         self.help = None
 
         self.setHasChanged(False)
-
-        self.editor.setLexerType(self.algType)
 
     #def showSnippets(self, evt):
     #    popupmenu = QMenu()
@@ -181,13 +175,11 @@ class ScriptEditorDialog(BASE, WIDGET):
 
     def updateProviders(self):
         if self.update:
-            if self.algType == self.SCRIPT_PYTHON:
-                QgsApplication.processingRegistry().providerById('script').refreshAlgorithms()
+            QgsApplication.processingRegistry().providerById('script').refreshAlgorithms()
 
     def editHelp(self):
         if self.alg is None:
-            if self.algType == self.SCRIPT_PYTHON:
-                alg = ScriptAlgorithm(None, self.editor.text())
+            alg = ScriptAlgorithm(None, self.editor.text())
         else:
             alg = self.alg
 
@@ -205,10 +197,8 @@ class ScriptEditorDialog(BASE, WIDGET):
             if ret == QMessageBox.No:
                 return
 
-        if self.algType == self.SCRIPT_PYTHON:
-            scriptDir = ScriptUtils.scriptsFolders()[0]
-            filterName = self.tr('Python scripts (*.py)')
-
+        scriptDir = ScriptUtils.scriptsFolders()[0]
+        filterName = self.tr('Python scripts (*.py)')
         self.filename, fileFilter = QFileDialog.getOpenFileName(
             self, self.tr('Open script'), scriptDir, filterName)
 
@@ -232,16 +222,13 @@ class ScriptEditorDialog(BASE, WIDGET):
 
     def saveScript(self, saveAs):
         if self.filename is None or saveAs:
-            if self.algType == self.SCRIPT_PYTHON:
-                scriptDir = ScriptUtils.scriptsFolders()[0]
-                filterName = self.tr('Python scripts (*.py)')
-
+            scriptDir = ScriptUtils.scriptsFolders()[0]
+            filterName = self.tr('Python scripts (*.py)')
             self.filename, fileFilter = QFileDialog.getSaveFileName(
                 self, self.tr('Save script'), scriptDir, filterName)
 
         if self.filename:
-            if self.algType == self.SCRIPT_PYTHON and \
-                    not self.filename.lower().endswith('.py'):
+            if not self.filename.lower().endswith('.py'):
                 self.filename += '.py'
 
             text = self.editor.text()
@@ -273,9 +260,8 @@ class ScriptEditorDialog(BASE, WIDGET):
         self.actionSaveScript.setEnabled(hasChanged)
 
     def runAlgorithm(self):
-        if self.algType == self.SCRIPT_PYTHON:
-            alg = ScriptAlgorithm(None, script=self.editor.text())
-            alg.setProvider(QgsApplication.processingRegistry().providerById('script'))
+        alg = ScriptAlgorithm(None, script=self.editor.text())
+        alg.setProvider(QgsApplication.processingRegistry().providerById('script'))
 
         dlg = alg.createCustomParametersWidget(self)
         if not dlg:

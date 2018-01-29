@@ -30,27 +30,20 @@ import os
 from qgis.core import QgsApplication
 
 from processing.gui.ToolboxAction import ToolboxAction
-from processing.gui.ScriptEditorDialog import ScriptEditorDialog
+
+from processing.script.ScriptEditorDialog import ScriptEditorDialog
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
 
 class CreateNewScriptAction(ToolboxAction):
-
-    SCRIPT_PYTHON = 0
-
-    def __init__(self, actionName, scriptType):
+    def __init__(self, actionName):
         self.name, self.i18n_name = self.trAction(actionName)
         self.group, self.i18n_group = self.trAction('Tools')
 
-        self.scriptType = scriptType
-
     def getIcon(self):
-        if self.scriptType == self.SCRIPT_PYTHON:
-            return QgsApplication.getThemeIcon("/processingScript.svg")
+        return QgsApplication.getThemeIcon("/processingScript.svg")
 
     def execute(self):
-        dlg = None
-        if self.scriptType == self.SCRIPT_PYTHON:
-            dlg = ScriptEditorDialog(ScriptEditorDialog.SCRIPT_PYTHON, None)
+        dlg = ScriptEditorDialog(None)
         dlg.show()

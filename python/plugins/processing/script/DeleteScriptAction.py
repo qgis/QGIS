@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    EditScriptAction.py
+    DeleteScriptAction.py
     ---------------------
     Date                 : August 2012
     Copyright            : (C) 2012 by Victor Olaya
@@ -25,23 +25,30 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+import os
+
+from qgis.PyQt.QtWidgets import QMessageBox
+
+from qgis.core import QgsApplication
+
 from processing.gui.ContextAction import ContextAction
-from processing.gui.ScriptEditorDialog import ScriptEditorDialog
+
 from processing.script.ScriptAlgorithm import ScriptAlgorithm
 
 
-class EditScriptAction(ContextAction):
-
-    SCRIPT_PYTHON = 0
-
-    def __init__(self, scriptType):
-        self.name = self.tr('Edit script', 'EditScriptAction')
-        self.scriptType = scriptType
+class DeleteScriptAction(ContextAction):
+    def __init__(self):
+        self.name = self.tr('Delete script')
 
     def isEnabled(self):
-        if self.scriptType == ScriptEditorDialog.SCRIPT_PYTHON:
-            return isinstance(self.itemData, ScriptAlgorithm) and self.itemData.allowEdit
+        return isinstance(self.itemData, ScriptAlgorithm) and self.itemData.allowEdit
 
     def execute(self):
-        dlg = ScriptEditorDialog(self.scriptType, self.itemData)
-        dlg.show()
+        reply = QMessageBox.question(None,
+                                     self.tr('Confirmation'),
+                                     self.tr('Are you sure you want to delete this script?'),
+                                     QMessageBox.Yes | QMessageBox.No,
+                                     QMessageBox.No)
+        if reply == QMessageBox.Yes:
+            os.remove(self.itemData.descriptionFile)
+            QgsApplication.processingRegistry().providerById('script').refreshAlgorithms()
