@@ -72,7 +72,7 @@ QString QgsPathResolver::readPath( const QString &filename ) const
     // from the filename.
 
     QFileInfo pfi( mBaseFileName );
-    QString home = pfi.absoluteFilePath();
+    QString home = pfi.absolutePath();
     if ( home.isEmpty() )
       return vsiPrefix + src;
 
