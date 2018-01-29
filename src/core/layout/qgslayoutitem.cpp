@@ -637,9 +637,9 @@ bool QgsLayoutItem::readXml( const QDomElement &element, const QDomDocument &doc
   mUuid = element.attribute( QStringLiteral( "uuid" ), QUuid::createUuid().toString() );
   setId( element.attribute( QStringLiteral( "id" ) ) );
   mReferencePoint = static_cast< ReferencePoint >( element.attribute( QStringLiteral( "referencePoint" ) ).toInt() );
+  setItemRotation( element.attribute( QStringLiteral( "itemRotation" ), QStringLiteral( "0" ) ).toDouble() );
   attemptMove( QgsLayoutPoint::decodePoint( element.attribute( QStringLiteral( "position" ) ) ) );
   attemptResize( QgsLayoutSize::decodeSize( element.attribute( QStringLiteral( "size" ) ) ) );
-  setItemRotation( element.attribute( QStringLiteral( "itemRotation" ), QStringLiteral( "0" ) ).toDouble() );
 
   mParentGroupUuid = element.attribute( QStringLiteral( "groupUuid" ) );
   if ( !mParentGroupUuid.isEmpty() )
