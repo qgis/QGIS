@@ -103,7 +103,7 @@ void QgsRangeWidgetWrapper::initWidget( QWidget *editor )
 
     if ( qgsWidget )
       qgsWidget->setShowClearButton( allowNull );
-    // Make room for null value: lower the minimum to accomodate for NULL
+    // Make room for null value: lower the minimum to allow for NULL special values
     if ( allowNull )
     {
       double decr;
