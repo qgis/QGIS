@@ -281,6 +281,6 @@ class BatchPanel(BASE, WIDGET):
             self.wrappers[row][column].setValue(wrapper.value())
 
     def toggleAdvancedMode(self, checked):
-        for column, param in enumerate(self.alg.parameters):
+        for column, param in enumerate(self.alg.parameterDefinitions()):
             if param.flags() & QgsProcessingParameterDefinition.FlagAdvanced:
                 self.tblParameters.setColumnHidden(column, not checked)
