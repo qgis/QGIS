@@ -153,7 +153,7 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
       QVERIFY( addParameter( p1C ) );
       QCOMPARE( parameterDefinitions().count(), 8 );
 
-      // parameterDefinition should be case insensitive, but prioritise correct case matches
+      // parameterDefinition should be case insensitive, but prioritize correct case matches
       QCOMPARE( parameterDefinition( "p1" ), parameterDefinitions().at( 0 ) );
       QCOMPARE( parameterDefinition( "P1" ), parameterDefinitions().at( 7 ) );
     }
