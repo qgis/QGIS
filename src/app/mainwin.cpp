@@ -42,7 +42,7 @@ int CALLBACK WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
 {
   std::string basename( moduleExeBaseName() );
 
-  if ( getenv( "OSGEO4W_ROOT" ) )
+  if ( getenv( "OSGEO4W_ROOT" ) && getenv( "OSGEO4W_INSTALL" ) )
   {
     std::string envfile( basename + ".env" );
 
