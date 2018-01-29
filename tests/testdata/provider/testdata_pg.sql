@@ -510,3 +510,14 @@ CREATE UNIQUE INDEX constraints_uniq
   ON qgis_test.constraints
   USING btree
   (name COLLATE pg_catalog."default"); -- unique index
+
+CREATE TABLE qgis_test.check_constraints (
+  id integer PRIMARY KEY,
+  a integer,
+  b integer, CHECK (a > b)
+);
+INSERT INTO qgis_test.check_constraints VALUES (
+  1, -- id
+  4, -- a
+  3  -- b
+)

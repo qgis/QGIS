@@ -188,6 +188,23 @@ created if its fields are not empty.
 .. versionadded:: 3.0
 %End
 
+    bool changeAttributeValues( QgsFeatureId fid, const QgsAttributeMap &newValues, const QgsAttributeMap &oldValues = QgsAttributeMap() );
+%Docstring
+Changes attributes' values in joined layers. The feature id given in
+parameter is the one added in target layer. If the corresponding joined
+feature does not exist in a joined layer, then it's automatically
+created if its fields are not empty.
+
+:param fid: The feature id
+:param newValues: The new values for attributes
+:param oldValues: The old values for attributes
+
+:return: false if an error happened, true otherwise
+
+
+.. versionadded:: 3.0
+%End
+
     bool deleteFeature( QgsFeatureId fid ) const;
 %Docstring
 Deletes a feature from joined layers. The feature id given in

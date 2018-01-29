@@ -172,6 +172,22 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer : public QObject, public QgsFeatureSi
     bool changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant &oldValue = QVariant() );
 
     /**
+     * Changes attributes' values in joined layers. The feature id given in
+     * parameter is the one added in target layer. If the corresponding joined
+     * feature does not exist in a joined layer, then it's automatically
+     * created if its fields are not empty.
+     *
+     * \param fid The feature id
+     * \param newValues The new values for attributes
+     * \param oldValues The old values for attributes
+     *
+     * \returns false if an error happened, true otherwise
+     *
+     * \since QGIS 3.0
+     */
+    bool changeAttributeValues( QgsFeatureId fid, const QgsAttributeMap &newValues, const QgsAttributeMap &oldValues = QgsAttributeMap() );
+
+    /**
      * Deletes a feature from joined layers. The feature id given in
      * parameter is the one coming from the target layer.
      *
