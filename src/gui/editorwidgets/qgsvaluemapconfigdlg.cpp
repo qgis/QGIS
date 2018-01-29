@@ -167,6 +167,35 @@ void QgsValueMapConfigDlg::updateMap( const QMap<QString, QVariant> &map, bool i
   }
 }
 
+void QgsValueMapConfigDlg::populateComboBox( QComboBox *comboBox, const QVariantMap &config, bool skipNull )
+{
+  const QList<QVariant> valueList = config.value( QStringLiteral( "map" ) ).toList();
+
+  if ( !valueList.empty() )
+  {
+    for ( const QVariant &value : valueList )
+    {
+      const QVariantMap valueMap = value.toMap();
+
+      if ( skipNull && valueMap.constBegin().value() == QgsValueMapFieldFormatter::NULL_VALUE )
+        continue;
+
+      comboBox->addItem( valueMap.constBegin().key(), valueMap.constBegin().value() );
+    }
+  }
+  else
+  {
+    const QVariantMap map = config.value( QStringLiteral( "map" ) ).toMap();
+    for ( auto it = map.constBegin(); it != map.constEnd(); ++it )
+    {
+      if ( skipNull && it.value() == QgsValueMapFieldFormatter::NULL_VALUE )
+        continue;
+
+      comboBox->addItem( it.key(), it.value() );
+    }
+  }
+}
+
 void QgsValueMapConfigDlg::setRow( int row, const QString &value, const QString &description )
 {
   QgsSettings settings;

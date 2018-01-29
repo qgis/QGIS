@@ -141,16 +141,9 @@ void QgsValueMapSearchWidgetWrapper::initWidget( QWidget *editor )
 
   if ( mComboBox )
   {
-    const QVariantMap cfg = config();
-    QVariantMap::ConstIterator it = cfg.constBegin();
-    mComboBox->addItem( tr( "Please select" ), QString() );
+    QgsValueMapConfigDlg::populateComboBox( mComboBox, config(), true );
+    mComboBox->insertItem( 0, tr( "Please select" ), QString() );
 
-    while ( it != cfg.constEnd() )
-    {
-      if ( it.value() != QgsValueMapFieldFormatter::NULL_VALUE )
-        mComboBox->addItem( it.key(), it.value() );
-      ++it;
-    }
     connect( mComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsValueMapSearchWidgetWrapper::comboBoxIndexChanged );
   }
 }
