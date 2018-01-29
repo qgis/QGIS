@@ -458,7 +458,10 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
           // If the CRS is projected then check that projecting the corner of the bbox, assumed to be in WGS84,
           // into the CRS, and then back to WGS84, works (check that we are in the validity area)
           QgsCoordinateReferenceSystem crsWGS84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "CRS:84" ) );
+
+          Q_NOWARN_DEPRECATED_PUSH
           QgsCoordinateTransform ct( crsWGS84, crs );
+          Q_NOWARN_DEPRECATED_POP
 
           QgsPointXY ptMin( featureType.bbox.xMinimum(), featureType.bbox.yMinimum() );
           QgsPointXY ptMinBack( ct.transform( ct.transform( ptMin, QgsCoordinateTransform::ForwardTransform ), QgsCoordinateTransform::ReverseTransform ) );

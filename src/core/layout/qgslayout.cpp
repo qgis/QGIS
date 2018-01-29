@@ -25,14 +25,17 @@
 #include "qgslayoutitemgroup.h"
 #include "qgslayoutitemgroupundocommand.h"
 #include "qgslayoutmultiframe.h"
+#include "qgslayoutitemmap.h"
+#include "qgslayoutundostack.h"
 
 QgsLayout::QgsLayout( QgsProject *project )
   : mProject( project )
+  , mRenderContext( new QgsLayoutRenderContext( this ) )
+  , mReportContext( new QgsLayoutReportContext( this ) )
   , mSnapper( QgsLayoutSnapper( this ) )
   , mGridSettings( this )
   , mPageCollection( new QgsLayoutPageCollection( this ) )
   , mUndoStack( new QgsLayoutUndoStack( this ) )
-  , mExporter( QgsLayoutExporter( this ) )
 {
   // just to make sure - this should be the default, but maybe it'll change in some future Qt version...
   setBackgroundBrush( Qt::NoBrush );
@@ -72,12 +75,52 @@ QgsLayout::~QgsLayout()
   mItemsModel.reset(); // manually delete, so we can control order of destruction
 }
 
+QgsLayout *QgsLayout::clone() const
+{
+  QDomDocument currentDoc;
+
+  QgsReadWriteContext context;
+  QDomElement elem = writeXml( currentDoc, context );
+  currentDoc.appendChild( elem );
+
+  std::unique_ptr< QgsLayout > newLayout = qgis::make_unique< QgsLayout >( mProject );
+  bool ok = false;
+  newLayout->loadFromTemplate( currentDoc, context, true, &ok );
+  if ( !ok )
+  {
+    return nullptr;
+  }
+
+  return newLayout.release();
+}
+
 void QgsLayout::initializeDefaults()
 {
   // default to a A4 landscape page
   QgsLayoutItemPage *page = new QgsLayoutItemPage( this );
   page->setPageSize( QgsLayoutSize( 297, 210, QgsUnitTypes::LayoutMillimeters ) );
   mPageCollection->addPage( page );
+  mUndoStack->stack()->clear();
+}
+
+void QgsLayout::clear()
+{
+  deleteAndRemoveMultiFrames();
+
+  //delete all non paper items
+  const QList<QGraphicsItem *> itemList = items();
+  for ( QGraphicsItem *item : itemList )
+  {
+    QgsLayoutItem *cItem = dynamic_cast<QgsLayoutItem *>( item );
+    QgsLayoutItemPage *pItem = dynamic_cast<QgsLayoutItemPage *>( item );
+    if ( cItem && !pItem )
+    {
+      removeLayoutItemPrivate( cItem );
+    }
+  }
+  mItemsModel->clear();
+
+  mPageCollection->clear();
   mUndoStack->stack()->clear();
 }
 
@@ -89,11 +132,6 @@ QgsProject *QgsLayout::project() const
 QgsLayoutModel *QgsLayout::itemsModel()
 {
   return mItemsModel.get();
-}
-
-QgsLayoutExporter &QgsLayout::exporter()
-{
-  return mExporter;
 }
 
 QList<QgsLayoutItem *> QgsLayout::selectedLayoutItems( const bool includeLockedItems )
@@ -192,29 +230,56 @@ bool QgsLayout::moveItemToBottom( QgsLayoutItem *item, bool deferUpdate )
   return result;
 }
 
-QgsLayoutItem *QgsLayout::itemByUuid( const QString &uuid )
+QgsLayoutItem *QgsLayout::itemByUuid( const QString &uuid, bool includeTemplateUuids ) const
 {
   QList<QgsLayoutItem *> itemList;
   layoutItems( itemList );
-  Q_FOREACH ( QgsLayoutItem *item, itemList )
+  for ( QgsLayoutItem *item : qgis::as_const( itemList ) )
   {
     if ( item->uuid() == uuid )
-    {
       return item;
-    }
+    else if ( includeTemplateUuids && item->mTemplateUuid == uuid )
+      return item;
   }
 
   return nullptr;
 }
 
-QgsLayoutMultiFrame *QgsLayout::multiFrameByUuid( const QString &uuid ) const
+QgsLayoutItem *QgsLayout::itemByTemplateUuid( const QString &uuid ) const
+{
+  QList<QgsLayoutItem *> itemList;
+  layoutItems( itemList );
+  for ( QgsLayoutItem *item : qgis::as_const( itemList ) )
+  {
+    if ( item->mTemplateUuid == uuid )
+      return item;
+  }
+
+  return nullptr;
+}
+
+QgsLayoutItem *QgsLayout::itemById( const QString &id ) const
+{
+  const QList<QGraphicsItem *> itemList = items();
+  for ( QGraphicsItem *item : itemList )
+  {
+    QgsLayoutItem *layoutItem = dynamic_cast<QgsLayoutItem *>( item );
+    if ( layoutItem && layoutItem->id() == id )
+    {
+      return layoutItem;
+    }
+  }
+  return nullptr;
+}
+
+QgsLayoutMultiFrame *QgsLayout::multiFrameByUuid( const QString &uuid, bool includeTemplateUuids ) const
 {
   for ( QgsLayoutMultiFrame *mf : mMultiFrames )
   {
     if ( mf->uuid() == uuid )
-    {
       return mf;
-    }
+    else if ( includeTemplateUuids && mf->mTemplateUuid == uuid )
+      return mf;
   }
 
   return nullptr;
@@ -258,32 +323,58 @@ QgsLayoutItem *QgsLayout::layoutItemAt( QPointF position, const QgsLayoutItem *b
 
 double QgsLayout::convertToLayoutUnits( const QgsLayoutMeasurement &measurement ) const
 {
-  return mContext.measurementConverter().convert( measurement, mUnits ).length();
+  return mRenderContext->measurementConverter().convert( measurement, mUnits ).length();
 }
 
 QSizeF QgsLayout::convertToLayoutUnits( const QgsLayoutSize &size ) const
 {
-  return mContext.measurementConverter().convert( size, mUnits ).toQSizeF();
+  return mRenderContext->measurementConverter().convert( size, mUnits ).toQSizeF();
 }
 
 QPointF QgsLayout::convertToLayoutUnits( const QgsLayoutPoint &point ) const
 {
-  return mContext.measurementConverter().convert( point, mUnits ).toQPointF();
+  return mRenderContext->measurementConverter().convert( point, mUnits ).toQPointF();
 }
 
 QgsLayoutMeasurement QgsLayout::convertFromLayoutUnits( const double length, const QgsUnitTypes::LayoutUnit unit ) const
 {
-  return mContext.measurementConverter().convert( QgsLayoutMeasurement( length, mUnits ), unit );
+  return mRenderContext->measurementConverter().convert( QgsLayoutMeasurement( length, mUnits ), unit );
 }
 
 QgsLayoutSize QgsLayout::convertFromLayoutUnits( const QSizeF &size, const QgsUnitTypes::LayoutUnit unit ) const
 {
-  return mContext.measurementConverter().convert( QgsLayoutSize( size.width(), size.height(), mUnits ), unit );
+  return mRenderContext->measurementConverter().convert( QgsLayoutSize( size.width(), size.height(), mUnits ), unit );
 }
 
 QgsLayoutPoint QgsLayout::convertFromLayoutUnits( const QPointF &point, const QgsUnitTypes::LayoutUnit unit ) const
 {
-  return mContext.measurementConverter().convert( QgsLayoutPoint( point.x(), point.y(), mUnits ), unit );
+  return mRenderContext->measurementConverter().convert( QgsLayoutPoint( point.x(), point.y(), mUnits ), unit );
+}
+
+QgsLayoutRenderContext &QgsLayout::renderContext()
+{
+  return *mRenderContext;
+}
+
+const QgsLayoutRenderContext &QgsLayout::renderContext() const
+{
+  return *mRenderContext;
+}
+
+QgsLayoutReportContext &QgsLayout::reportContext()
+{
+  return *mReportContext;
+}
+
+const QgsLayoutReportContext &QgsLayout::reportContext() const
+{
+  return *mReportContext;
+}
+
+void QgsLayout::reloadSettings()
+{
+  mGridSettings.loadFromSettings();
+  mPageCollection->redraw();
 }
 
 QgsLayoutGuideCollection &QgsLayout::guides()
@@ -302,12 +393,6 @@ QgsExpressionContext QgsLayout::createExpressionContext() const
   context.appendScope( QgsExpressionContextUtils::globalScope() );
   context.appendScope( QgsExpressionContextUtils::projectScope( mProject ) );
   context.appendScope( QgsExpressionContextUtils::layoutScope( this ) );
-#if 0 //TODO
-  if ( mAtlasComposition.enabled() )
-  {
-    context.appendScope( QgsExpressionContextUtils::atlasScope( &mAtlasComposition ) );
-  }
-#endif
   return context;
 }
 
@@ -336,12 +421,31 @@ QStringList QgsLayout::customProperties() const
 
 QgsLayoutItemMap *QgsLayout::referenceMap() const
 {
-  return nullptr;
+  // prefer explicitly set reference map
+  if ( QgsLayoutItemMap *map = qobject_cast< QgsLayoutItemMap * >( itemByUuid( mWorldFileMapId ) ) )
+    return map;
+
+  // else try to find largest map
+  QList< QgsLayoutItemMap * > maps;
+  layoutItems( maps );
+  QgsLayoutItemMap *largestMap = nullptr;
+  double largestMapArea = 0;
+  for ( QgsLayoutItemMap *map : qgis::as_const( maps ) )
+  {
+    double area = map->rect().width() * map->rect().height();
+    if ( area > largestMapArea )
+    {
+      largestMapArea = area;
+      largestMap = map;
+    }
+  }
+  return largestMap;
 }
 
 void QgsLayout::setReferenceMap( QgsLayoutItemMap *map )
 {
-  Q_UNUSED( map );
+  mWorldFileMapId = map ? map->uuid() : QString();
+  mProject->setDirty( true );
 }
 
 QgsLayoutPageCollection *QgsLayout::pageCollection()
@@ -359,7 +463,7 @@ QRectF QgsLayout::layoutBounds( bool ignorePages, double margin ) const
   //start with an empty rectangle
   QRectF bounds;
 
-  //add all QgsComposerItems and QgsPaperItems which are in the composition
+  //add all layout items and pages which are in the layout
   Q_FOREACH ( const QGraphicsItem *item, items() )
   {
     const QgsLayoutItem *layoutItem = dynamic_cast<const QgsLayoutItem *>( item );
@@ -396,6 +500,32 @@ QRectF QgsLayout::layoutBounds( bool ignorePages, double margin ) const
 
   return bounds;
 
+}
+
+QRectF QgsLayout::pageItemBounds( int page, bool visibleOnly ) const
+{
+  //start with an empty rectangle
+  QRectF bounds;
+
+  //add all QgsLayoutItems on page
+  const QList<QGraphicsItem *> itemList = items();
+  for ( QGraphicsItem *item : itemList )
+  {
+    const QgsLayoutItem *layoutItem = dynamic_cast<const QgsLayoutItem *>( item );
+    if ( layoutItem && layoutItem->type() != QgsLayoutItemRegistry::LayoutPage && layoutItem->page() == page )
+    {
+      if ( visibleOnly && !layoutItem->isVisible() )
+        continue;
+
+      //expand bounds with current item's bounds
+      if ( bounds.isValid() )
+        bounds = bounds.united( item->sceneBoundingRect() );
+      else
+        bounds = item->sceneBoundingRect();
+    }
+  }
+
+  return bounds;
 }
 
 void QgsLayout::addLayoutItem( QgsLayoutItem *item )
@@ -449,6 +579,91 @@ QList<QgsLayoutMultiFrame *> QgsLayout::multiFrames() const
   return mMultiFrames;
 }
 
+bool QgsLayout::saveAsTemplate( const QString &path, const QgsReadWriteContext &context ) const
+{
+  QFile templateFile( path );
+  if ( !templateFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
+  {
+    return false;
+  }
+
+  QDomDocument saveDocument;
+  QDomElement elem = writeXml( saveDocument, context );
+  saveDocument.appendChild( elem );
+
+  if ( templateFile.write( saveDocument.toByteArray() ) == -1 )
+    return false;
+
+  return true;
+}
+
+QList< QgsLayoutItem * > QgsLayout::loadFromTemplate( const QDomDocument &document, const QgsReadWriteContext &context, bool clearExisting, bool *ok )
+{
+  if ( ok )
+    *ok = false;
+
+  QList< QgsLayoutItem * > result;
+
+  if ( clearExisting )
+  {
+    clear();
+  }
+
+  QDomDocument doc = document;
+
+  // remove all uuid attributes since we don't want duplicates UUIDS
+  QDomNodeList itemsNodes = doc.elementsByTagName( QStringLiteral( "LayoutItem" ) );
+  for ( int i = 0; i < itemsNodes.count(); ++i )
+  {
+    QDomNode itemNode = itemsNodes.at( i );
+    if ( itemNode.isElement() )
+    {
+      itemNode.toElement().removeAttribute( QStringLiteral( "uuid" ) );
+    }
+  }
+  QDomNodeList multiFrameNodes = doc.elementsByTagName( QStringLiteral( "LayoutMultiFrame" ) );
+  for ( int i = 0; i < multiFrameNodes.count(); ++i )
+  {
+    QDomNode multiFrameNode = multiFrameNodes.at( i );
+    if ( multiFrameNode.isElement() )
+    {
+      multiFrameNode.toElement().removeAttribute( QStringLiteral( "uuid" ) );
+      QDomNodeList frameNodes = multiFrameNode.toElement().elementsByTagName( QStringLiteral( "childFrame" ) );
+      QDomNode itemNode = frameNodes.at( i );
+      if ( itemNode.isElement() )
+      {
+        itemNode.toElement().removeAttribute( QStringLiteral( "uuid" ) );
+      }
+    }
+  }
+
+  //read general settings
+  if ( clearExisting )
+  {
+    QDomElement layoutElem = doc.documentElement();
+    if ( layoutElem.isNull() )
+    {
+      return result;
+    }
+
+    bool loadOk = readXml( layoutElem, doc, context );
+    if ( !loadOk )
+    {
+      return result;
+    }
+    layoutItems( result );
+  }
+  else
+  {
+    result = addItemsFromXml( doc.documentElement(), doc, context );
+  }
+
+  if ( ok )
+    *ok = true;
+
+  return result;
+}
+
 QgsLayoutUndoStack *QgsLayout::undoStack()
 {
   return mUndoStack.get();
@@ -486,7 +701,7 @@ class QgsLayoutUndoCommand: public QgsAbstractLayoutUndoCommand
         return;
       }
 
-      mLayout->readXmlLayoutSettings( stateDoc.documentElement().firstChild().toElement(), stateDoc, QgsReadWriteContext() );
+      mLayout->readXmlLayoutSettings( stateDoc.documentElement(), stateDoc, QgsReadWriteContext() );
       mLayout->project()->setDirty( true );
     }
 
@@ -522,10 +737,6 @@ QgsLayoutItemGroup *QgsLayout::groupItems( const QList<QgsLayoutItem *> &items )
   mUndoStack->push( c.release() );
   mProject->setDirty( true );
 
-#if 0
-  emit composerItemGroupAdded( itemGroup );
-#endif
-
   mUndoStack->endMacro();
 
   return returnGroup;
@@ -553,24 +764,26 @@ QList<QgsLayoutItem *> QgsLayout::ungroupItems( QgsLayoutItemGroup *group )
   removeLayoutItem( group );
   mUndoStack->endMacro();
 
-#if 0 //TODO
-  removeComposerItem( group, false, false );
-#endif
-
   return ungroupedItems;
 }
 
 void QgsLayout::refresh()
 {
+  mUndoStack->blockCommands( true );
+  mPageCollection->beginPageSizeChange();
   emit refreshed();
+  mPageCollection->reflow();
+  mPageCollection->endPageSizeChange();
+  mUndoStack->blockCommands( false );
   update();
 }
 
 void QgsLayout::writeXmlLayoutSettings( QDomElement &element, QDomDocument &document, const QgsReadWriteContext & ) const
 {
   mCustomProperties.writeXml( element, document );
-  element.setAttribute( QStringLiteral( "name" ), mName );
   element.setAttribute( QStringLiteral( "units" ), QgsUnitTypes::encodeUnit( mUnits ) );
+  element.setAttribute( QStringLiteral( "worldFileMap" ), mWorldFileMapId );
+  element.setAttribute( QStringLiteral( "printResolution" ), mRenderContext->dpi() );
 }
 
 QDomElement QgsLayout::writeXml( QDomDocument &document, const QgsReadWriteContext &context ) const
@@ -584,6 +797,25 @@ QDomElement QgsLayout::writeXml( QDomDocument &document, const QgsReadWriteConte
   save( &mGridSettings );
   save( mPageCollection.get() );
 
+  //save items except paper items and frame items (they are saved with the corresponding multiframe)
+  const QList<QGraphicsItem *> itemList = items();
+  for ( const QGraphicsItem *graphicsItem : itemList )
+  {
+    if ( const QgsLayoutItem *item = dynamic_cast< const QgsLayoutItem *>( graphicsItem ) )
+    {
+      if ( item->type() == QgsLayoutItemRegistry::LayoutPage )
+        continue;
+
+      item->writeXml( element, document, context );
+    }
+  }
+
+  //save multiframes
+  for ( QgsLayoutMultiFrame *mf : mMultiFrames )
+  {
+    mf->writeXml( element, document, context );
+  }
+
   writeXmlLayoutSettings( element, document, context );
   return element;
 }
@@ -591,8 +823,11 @@ QDomElement QgsLayout::writeXml( QDomDocument &document, const QgsReadWriteConte
 bool QgsLayout::readXmlLayoutSettings( const QDomElement &layoutElement, const QDomDocument &, const QgsReadWriteContext & )
 {
   mCustomProperties.readXml( layoutElement );
-  setName( layoutElement.attribute( QStringLiteral( "name" ) ) );
   setUnits( QgsUnitTypes::decodeLayoutUnit( layoutElement.attribute( QStringLiteral( "units" ) ) ) );
+  mWorldFileMapId = layoutElement.attribute( QStringLiteral( "worldFileMap" ) );
+  mRenderContext->setDpi( layoutElement.attribute( QStringLiteral( "printResolution" ), "300" ).toDouble() );
+  emit changed();
+
   return true;
 }
 
@@ -614,13 +849,34 @@ void QgsLayout::removeLayoutItemPrivate( QgsLayoutItem *item )
 #if 0 //TODO
   emit itemRemoved( item );
 #endif
-  delete item;
+  item->cleanup();
+  item->deleteLater();
 }
 
 void QgsLayout::deleteAndRemoveMultiFrames()
 {
   qDeleteAll( mMultiFrames );
   mMultiFrames.clear();
+}
+
+QPointF QgsLayout::minPointFromXml( const QDomElement &elem ) const
+{
+  double minX = std::numeric_limits<double>::max();
+  double minY = std::numeric_limits<double>::max();
+  const QDomNodeList itemList = elem.elementsByTagName( QStringLiteral( "LayoutItem" ) );
+  bool found = false;
+  for ( int i = 0; i < itemList.size(); ++i )
+  {
+    const QDomElement currentItemElem = itemList.at( i ).toElement();
+
+    QgsLayoutPoint pos = QgsLayoutPoint::decodePoint( currentItemElem.attribute( QStringLiteral( "position" ) ) );
+    QPointF layoutPoint = convertToLayoutUnits( pos );
+
+    minX = std::min( minX, layoutPoint.x() );
+    minY = std::min( minY, layoutPoint.y() );
+    found = true;
+  }
+  return found ? QPointF( minX, minY ) : QPointF( 0, 0 );
 }
 
 void QgsLayout::updateZValues( const bool addUndoCommands )
@@ -666,13 +922,144 @@ bool QgsLayout::readXml( const QDomElement &layoutElement, const QDomDocument &d
     return object->readXml( layoutElement, document, context );
   };
 
+  blockSignals( true ); // defer changed signal to end
   readXmlLayoutSettings( layoutElement, document, context );
+  blockSignals( false );
 
   restore( mPageCollection.get() );
   restore( &mSnapper );
   restore( &mGridSettings );
+  addItemsFromXml( layoutElement, document, context );
+
+  emit changed();
 
   return true;
+}
+
+QList< QgsLayoutItem * > QgsLayout::addItemsFromXml( const QDomElement &parentElement, const QDomDocument &document, const QgsReadWriteContext &context, QPointF *position, bool pasteInPlace )
+{
+  QList< QgsLayoutItem * > newItems;
+  QList< QgsLayoutMultiFrame * > newMultiFrames;
+
+  //if we are adding items to a layout which already contains items, we need to make sure
+  //these items are placed at the top of the layout and that zValues are not duplicated
+  //so, calculate an offset which needs to be added to the zValue of created items
+  int zOrderOffset = mItemsModel->zOrderListSize();
+
+  QPointF pasteShiftPos;
+  int pageNumber = -1;
+  if ( position )
+  {
+    //If we are placing items relative to a certain point, then calculate how much we need
+    //to shift the items by so that they are placed at this point
+    //First, calculate the minimum position from the xml
+    QPointF minItemPos = minPointFromXml( parentElement );
+    //next, calculate how much each item needs to be shifted from its original position
+    //so that it's placed at the correct relative position
+    pasteShiftPos = *position - minItemPos;
+    if ( pasteInPlace )
+    {
+      pageNumber = mPageCollection->pageNumberForPoint( *position );
+    }
+  }
+  // multiframes
+
+  //TODO - fix this. pasting multiframe frame items has no effect
+  const QDomNodeList multiFrameList = parentElement.elementsByTagName( QStringLiteral( "LayoutMultiFrame" ) );
+  for ( int i = 0; i < multiFrameList.size(); ++i )
+  {
+    const QDomElement multiFrameElem = multiFrameList.at( i ).toElement();
+    const int itemType = multiFrameElem.attribute( QStringLiteral( "type" ) ).toInt();
+    std::unique_ptr< QgsLayoutMultiFrame > mf( QgsApplication::layoutItemRegistry()->createMultiFrame( itemType, this ) );
+    if ( !mf )
+    {
+      // e.g. plugin based item which is no longer available
+      continue;
+    }
+    mf->readXml( multiFrameElem, document, context );
+
+#if 0 //TODO?
+    mf->setCreateUndoCommands( true );
+#endif
+
+    QgsLayoutMultiFrame *m = mf.get();
+    this->addMultiFrame( mf.release() );
+
+    //offset z values for frames
+    //TODO - fix this after fixing multiframe item paste
+    /*for ( int frameIdx = 0; frameIdx < mf->frameCount(); ++frameIdx )
+    {
+      QgsLayoutItemFrame * frame = mf->frame( frameIdx );
+      frame->setZValue( frame->zValue() + zOrderOffset );
+
+      // also need to shift frames according to position/pasteInPlacePt
+    }*/
+    newMultiFrames << m;
+  }
+
+  const QDomNodeList layoutItemList = parentElement.childNodes();
+  for ( int i = 0; i < layoutItemList.size(); ++i )
+  {
+    const QDomElement currentItemElem = layoutItemList.at( i ).toElement();
+    if ( currentItemElem.nodeName() != QStringLiteral( "LayoutItem" ) )
+      continue;
+
+    const int itemType = currentItemElem.attribute( QStringLiteral( "type" ) ).toInt();
+    std::unique_ptr< QgsLayoutItem > item( QgsApplication::layoutItemRegistry()->createItem( itemType, this ) );
+    if ( !item )
+    {
+      // e.g. plugin based item which is no longer available
+      continue;
+    }
+
+    item->readXml( currentItemElem, document, context );
+    if ( position )
+    {
+      if ( pasteInPlace )
+      {
+        QgsLayoutPoint posOnPage = QgsLayoutPoint::decodePoint( currentItemElem.attribute( QStringLiteral( "positionOnPage" ) ) );
+        item->attemptMove( posOnPage, true, false, pageNumber );
+      }
+      else
+      {
+        item->attemptMoveBy( pasteShiftPos.x(), pasteShiftPos.y() );
+      }
+    }
+
+    QgsLayoutItem *layoutItem = item.get();
+    addLayoutItem( item.release() );
+    layoutItem->setZValue( layoutItem->zValue() + zOrderOffset );
+    newItems << layoutItem;
+  }
+
+  // we now allow items to "post-process", e.g. if they need to setup connections
+  // to other items in the layout, which may not have existed at the time the
+  // item's state was restored. E.g. a scalebar may have been restored before the map
+  // it is linked to
+  for ( QgsLayoutItem *item : qgis::as_const( newItems ) )
+  {
+    item->finalizeRestoreFromXml();
+  }
+  for ( QgsLayoutMultiFrame *mf : qgis::as_const( newMultiFrames ) )
+  {
+    mf->finalizeRestoreFromXml();
+  }
+
+  for ( QgsLayoutItem *item : qgis::as_const( newItems ) )
+  {
+    item->mTemplateUuid.clear();
+  }
+  for ( QgsLayoutMultiFrame *mf : qgis::as_const( newMultiFrames ) )
+  {
+    mf->mTemplateUuid.clear();
+  }
+
+  //Since this function adds items in an order which isn't the z-order, and each item is added to end of
+  //z order list in turn, it will now be inconsistent with the actual order of items in the scene.
+  //Make sure z order list matches the actual order of items in the scene.
+  mItemsModel->rebuildZList();
+
+  return newItems;
 }
 
 void QgsLayout::updateBounds()

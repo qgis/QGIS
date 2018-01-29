@@ -100,6 +100,7 @@ typedef SInt32 SRefCon;
 #include "qgscrashhandler.h"
 #include "qgsziputils.h"
 #include "qgsversionmigration.h"
+#include "qgsfirstrundialog.h"
 
 #include "qgsuserprofilemanager.h"
 #include "qgsuserprofile.h"
@@ -137,7 +138,7 @@ void usage( const QString &appName )
       << QStringLiteral( "\t[--dxf-symbology-mode none|symbollayer|feature]\tsymbology mode for dxf output\n" )
       << QStringLiteral( "\t[--dxf-scale-denom scale]\tscale for dxf output\n" )
       << QStringLiteral( "\t[--dxf-encoding encoding]\tencoding to use for dxf output\n" )
-      << QStringLiteral( "\t[--dxf-preset maptheme]\tmap theme to use for dxf output\n" )
+      << QStringLiteral( "\t[--dxf-map-theme maptheme]\tmap theme to use for dxf output\n" )
       << QStringLiteral( "\t[--profile name]\tload a named profile from the users profiles folder.\n" )
       << QStringLiteral( "\t[--profiles-path path]\tpath to store user profile folders. Will create profiles inside a {path}\\profiles folder \n" )
       << QStringLiteral( "\t[--version-migration]\tforce the settings migration from older version if found\n" )
@@ -518,7 +519,7 @@ int main( int argc, char *argv[] )
   QgsDxfExport::SymbologyExport dxfSymbologyMode = QgsDxfExport::SymbolLayerSymbology;
   double dxfScale = 50000.0;
   QString dxfEncoding = QStringLiteral( "CP1252" );
-  QString dxfPreset;
+  QString dxfMapTheme;
   QgsRectangle dxfExtent;
 
   // This behavior will set initial extent of map canvas, but only if
@@ -722,9 +723,9 @@ int main( int argc, char *argv[] )
       {
         dxfEncoding = args[++i];
       }
-      else if ( arg == QLatin1String( "--dxf-preset" ) )
+      else if ( arg == QLatin1String( "--dxf-map-theme" ) )
       {
-        dxfPreset = args[++i];
+        dxfMapTheme = args[++i];
       }
       else if ( arg == QLatin1String( "--" ) )
       {
@@ -793,40 +794,9 @@ int main( int argc, char *argv[] )
   QCoreApplication::setOrganizationDomain( QgsApplication::QGIS_ORGANIZATION_DOMAIN );
   QCoreApplication::setApplicationName( QgsApplication::QGIS_APPLICATION_NAME );
   QCoreApplication::setAttribute( Qt::AA_DontShowIconsInMenus, false );
-
-  QgsSettings settings;
-  if ( configLocalStorageLocation.isEmpty() )
-  {
-    if ( getenv( "QGIS_CUSTOM_CONFIG_PATH" ) )
-    {
-      configLocalStorageLocation = getenv( "QGIS_CUSTOM_CONFIG_PATH" );
-    }
-    else if ( settings.contains( QStringLiteral( "profilesPath" ), QgsSettings::Core ) )
-    {
-      configLocalStorageLocation = settings.value( QStringLiteral( "profilesPath" ), "", QgsSettings::Core ).toString();
-      QgsDebugMsg( QString( "Loading profiles path from global config at %1" ).arg( configLocalStorageLocation ) );
-    }
-
-    // If it is still empty at this point we get it from the standard location.
-    if ( configLocalStorageLocation.isEmpty() )
-    {
-      configLocalStorageLocation = QStandardPaths::standardLocations( QStandardPaths::AppDataLocation ).value( 0 );
-    }
-  }
-
-  QString rootProfileFolder = QgsUserProfileManager::resolveProfilesFolder( configLocalStorageLocation );
-  QgsUserProfileManager manager( rootProfileFolder );
-  QgsUserProfile *profile = manager.getProfile( profileName, true );
-  QString profileFolder = profile->folder();
-  profileName = profile->name();
-  delete profile;
-
-  QgsDebugMsg( "User profile details:" );
-  QgsDebugMsg( QString( "\t - %1" ).arg( profileName ) );
-  QgsDebugMsg( QString( "\t - %1" ).arg( profileFolder ) );
-  QgsDebugMsg( QString( "\t - %1" ).arg( rootProfileFolder ) );
-
-  QgsApplication myApp( argc, argv, myUseGuiFlag, profileFolder );
+#if QT_VERSION >= 0x051000
+  QCoreApplication::setAttribute( Qt::AA_DisableWindowContextHelpButton, true );
+#endif
 
   // SetUp the QgsSettings Global Settings:
   // - use the path specified with --globalsettingsfile path,
@@ -836,6 +806,7 @@ int main( int argc, char *argv[] )
   {
     globalsettingsfile = getenv( "QGIS_GLOBAL_SETTINGS_FILE" );
   }
+
   if ( globalsettingsfile.isEmpty() )
   {
     QString default_globalsettingsfile = QgsApplication::pkgDataPath() + "/qgis_global_settings.ini";
@@ -844,6 +815,7 @@ int main( int argc, char *argv[] )
       globalsettingsfile = default_globalsettingsfile;
     }
   }
+
   if ( !globalsettingsfile.isEmpty() )
   {
     if ( ! QgsSettings::setGlobalSettingsPath( globalsettingsfile ) )
@@ -856,14 +828,73 @@ int main( int argc, char *argv[] )
     }
   }
 
+  QSettings *globalSettings = new QSettings( globalsettingsfile, QSettings::IniFormat );
+  globalSettings->setIniCodec( "UTF-8" );
+  if ( configLocalStorageLocation.isEmpty() )
+  {
+    if ( getenv( "QGIS_CUSTOM_CONFIG_PATH" ) )
+    {
+      configLocalStorageLocation = getenv( "QGIS_CUSTOM_CONFIG_PATH" );
+    }
+    else if ( globalSettings->contains( QStringLiteral( "core/profilesPath" ) ) )
+    {
+      configLocalStorageLocation = globalSettings->value( QStringLiteral( "core/profilesPath" ), "" ).toString();
+      QgsDebugMsg( QString( "Loading profiles path from global config at %1" ).arg( configLocalStorageLocation ) );
+    }
+
+    // If it is still empty at this point we get it from the standard location.
+    if ( configLocalStorageLocation.isEmpty() )
+    {
+      configLocalStorageLocation = QStandardPaths::standardLocations( QStandardPaths::AppDataLocation ).value( 0 );
+    }
+  }
+  delete globalSettings;
+
+  QString rootProfileFolder = QgsUserProfileManager::resolveProfilesFolder( configLocalStorageLocation );
+  QgsUserProfileManager manager( rootProfileFolder );
+  QgsUserProfile *profile = manager.getProfile( profileName, true );
+  QString profileFolder = profile->folder();
+  profileName = profile->name();
+  delete profile;
+
+  // We can't use QgsSettings until this point because the format and
+  // folder isn't set until profile is fetch.
+  // Should be cleaned up in future to make this cleaner.
+  QgsSettings settings;
+
+  QgsDebugMsg( "User profile details:" );
+  QgsDebugMsg( QString( "\t - %1" ).arg( profileName ) );
+  QgsDebugMsg( QString( "\t - %1" ).arg( profileFolder ) );
+  QgsDebugMsg( QString( "\t - %1" ).arg( rootProfileFolder ) );
+
+  QgsApplication myApp( argc, argv, myUseGuiFlag, profileFolder );
+
   // Settings migration is only supported on the default profile for now.
   if ( profileName == "default" )
   {
+    // Note: this flag is ka version number so that we can reset it once we change the version.
+    // Note2: Is this a good idea can we do it better.
+
+    int firstRunVersion = settings.value( QStringLiteral( "migration/firstRunVersionFlag" ), 0 ).toInt();
+    bool showWelcome = ( firstRunVersion == 0  || Qgis::QGIS_VERSION_INT > firstRunVersion );
+
     std::unique_ptr< QgsVersionMigration > migration( QgsVersionMigration::canMigrate( 20000, Qgis::QGIS_VERSION_INT ) );
     if ( migration && ( mySettingsMigrationForce || migration->requiresMigration() ) )
     {
-      QgsDebugMsg( "RUNNING MIGRATION" );
-      migration->runMigration();
+      bool runMigration = true;
+      if ( !mySettingsMigrationForce && showWelcome )
+      {
+        QgsFirstRunDialog dlg;
+        dlg.exec();
+        runMigration = dlg.migrateSettings();
+        settings.setValue( QStringLiteral( "migration/firstRunVersionFlag" ), Qgis::QGIS_VERSION_INT );
+      }
+
+      if ( runMigration )
+      {
+        QgsDebugMsg( "RUNNING MIGRATION" );
+        migration->runMigration();
+      }
     }
   }
 
@@ -964,16 +995,18 @@ int main( int argc, char *argv[] )
   // TODO: use QgsSettings
   QSettings *customizationsettings = nullptr;
 
-  // Using the customizationfile option always overrides the option and config path options.
   if ( !customizationfile.isEmpty() )
   {
-    customizationsettings = new QSettings( customizationfile, QSettings::IniFormat );
+    // Using the customizationfile option always overrides the option and config path options.
     QgsCustomization::instance()->setEnabled( true );
   }
   else
   {
-    customizationsettings = new QSettings( QStringLiteral( "QGIS" ), QStringLiteral( "QGISCUSTOMIZATION2" ) );
+    // Use the default file location
+    customizationfile = profileFolder + QDir::separator() + QStringLiteral( "QGIS" ) + QDir::separator() + QStringLiteral( "QGISCUSTOMIZATION3.ini" ) ;
   }
+
+  customizationsettings = new QSettings( customizationfile, QSettings::IniFormat );
 
   // Load and set possible default customization, must be done after QgsApplication init and QgsSettings ( QCoreApplication ) init
   QgsCustomization::instance()->setSettings( customizationsettings );
@@ -1325,9 +1358,9 @@ int main( int argc, char *argv[] )
 
     QStringList layerIds;
     QList< QPair<QgsVectorLayer *, int > > layers;
-    if ( !dxfPreset.isEmpty() )
+    if ( !dxfMapTheme.isEmpty() )
     {
-      Q_FOREACH ( QgsMapLayer *layer, QgsProject::instance()->mapThemeCollection()->mapThemeVisibleLayers( dxfPreset ) )
+      Q_FOREACH ( QgsMapLayer *layer, QgsProject::instance()->mapThemeCollection()->mapThemeVisibleLayers( dxfMapTheme ) )
       {
         QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
         if ( !vl )

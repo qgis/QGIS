@@ -352,8 +352,8 @@ void QgsVectorLayerUndoPassthroughCommandRenameAttribute::redo()
   }
 }
 
-QgsVectorLayerUndoPassthroughCommandUpdate::QgsVectorLayerUndoPassthroughCommandUpdate( QgsVectorLayerEditBuffer *buffer, QgsTransaction *transaction, const QString &sql )
-  : QgsVectorLayerUndoPassthroughCommand( buffer, QObject::tr( "custom transaction" ), false )
+QgsVectorLayerUndoPassthroughCommandUpdate::QgsVectorLayerUndoPassthroughCommandUpdate( QgsVectorLayerEditBuffer *buffer, QgsTransaction *transaction, const QString &sql, const QString &name )
+  : QgsVectorLayerUndoPassthroughCommand( buffer, name.isEmpty() ? QObject::tr( "custom transaction" ) : name, false )
   , mTransaction( transaction )
   , mSql( sql )
 {
@@ -400,6 +400,38 @@ void QgsVectorLayerUndoPassthroughCommandUpdate::redo()
     {
       setErrorMessage( errorMessage );
       setError();
+    }
+  }
+}
+
+QgsVectorLayerUndoPassthroughCommandChangeAttributes::QgsVectorLayerUndoPassthroughCommandChangeAttributes( QgsVectorLayerEditBuffer *buffer, QgsFeatureId fid, const QgsAttributeMap &newValues, const QgsAttributeMap &oldValues )
+  : QgsVectorLayerUndoPassthroughCommand( buffer, QObject::tr( "change attribute value" ) )
+  , mFid( fid )
+  , mNewValues( newValues )
+  , mOldValues( oldValues )
+{
+}
+
+void QgsVectorLayerUndoPassthroughCommandChangeAttributes::undo()
+{
+  if ( rollBackToSavePoint() )
+  {
+    for ( auto it = mNewValues.constBegin(); it != mNewValues.constEnd(); ++it )
+    {
+      emit mBuffer->attributeValueChanged( mFid, it.key(), it.value() );
+    }
+  }
+}
+
+void QgsVectorLayerUndoPassthroughCommandChangeAttributes::redo()
+{
+  QgsChangedAttributesMap attribMap;
+  attribMap.insert( mFid, mNewValues );
+  if ( setSavePoint() && mBuffer->L->dataProvider()->changeAttributeValues( attribMap ) )
+  {
+    for ( auto it = mNewValues.constBegin(); it != mNewValues.constEnd(); ++it )
+    {
+      emit mBuffer->attributeValueChanged( mFid, it.key(), it.value() );
     }
   }
 }

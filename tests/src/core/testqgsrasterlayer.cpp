@@ -55,7 +55,7 @@ class TestQgsRasterLayer : public QObject
     Q_OBJECT
   public:
     TestQgsRasterLayer() = default;
-    ~TestQgsRasterLayer()
+    ~TestQgsRasterLayer() override
     {
       delete mMapSettings;
     }
@@ -649,7 +649,7 @@ void TestQgsRasterLayer::transparency()
   rasterTransparency->setTransparentSingleValuePixelList( myTransparentSingleValuePixelList );
 
   QgsRasterRenderer *rasterRenderer = mpFloat32RasterLayer->renderer();
-  QVERIFY( rasterRenderer != 0 );
+  QVERIFY( rasterRenderer != nullptr );
   rasterRenderer->setRasterTransparency( rasterTransparency );
 
   mMapSettings->setLayers( QList<QgsMapLayer *>() << mpFloat32RasterLayer );

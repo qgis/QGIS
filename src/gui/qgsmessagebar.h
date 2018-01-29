@@ -55,7 +55,8 @@ class GUI_EXPORT QgsMessageBar: public QFrame
       SUCCESS = 3
     };
 
-    QgsMessageBar( QWidget *parent SIP_TRANSFERTHIS = 0 );
+    //! Constructor for QgsMessageBar
+    QgsMessageBar( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Display a message item on the bar after hiding the currently visible one

@@ -34,14 +34,13 @@ class QgsDelimitedTextSourceSelect : public QgsAbstractDataSourceWidget, private
 
   public:
     QgsDelimitedTextSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
-    ~QgsDelimitedTextSourceSelect();
+    ~QgsDelimitedTextSourceSelect() override;
 
     QStringList splitLine( QString line );
 
   private:
     bool loadDelimitedFileDefinition();
     void updateFieldLists();
-    void getOpenFileName();
     QString selectedChars();
     void setSelectedChars( const QString &delimiters );
     void loadSettings( const QString &subkey = QString(), bool loadGeomSettings = true );
@@ -59,9 +58,6 @@ class QgsDelimitedTextSourceSelect : public QgsAbstractDataSourceWidget, private
     QButtonGroup *bgFileFormat = nullptr;
     QButtonGroup *bgGeomType = nullptr;
     void showHelp();
-
-  private slots:
-    void btnBrowseForFile_clicked();
 
   public slots:
     void addButtonClicked() override;

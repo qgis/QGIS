@@ -32,7 +32,7 @@ class QgsPythonUtilsImpl : public QgsPythonUtils
 
     QgsPythonUtilsImpl();
 
-    virtual ~QgsPythonUtilsImpl();
+    ~QgsPythonUtilsImpl() override;
 
     /* general purpose functions */
 
@@ -97,10 +97,10 @@ class QgsPythonUtilsImpl : public QgsPythonUtils
     QStringList pluginList() override;
 
     //! return whether the plugin is loaded (active)
-    virtual bool isPluginLoaded( const QString &packageName ) override;
+    bool isPluginLoaded( const QString &packageName ) override;
 
     //! return a list of active plugins
-    virtual QStringList listActivePlugins() override;
+    QStringList listActivePlugins() override;
 
     //! load Python plugin (import)
     bool loadPlugin( const QString &packageName ) override;

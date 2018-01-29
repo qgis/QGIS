@@ -320,7 +320,7 @@ QModelIndex QgsColorSchemeModel::index( int row, int column, const QModelIndex &
 
   if ( !parent.isValid() && row >= 0 && row < mColors.size() )
   {
-    //return an index for the composer item at this position
+    //return an index for the color item at this position
     return createIndex( row, column );
   }
 
@@ -760,7 +760,7 @@ bool QgsColorSwatchDelegate::editorEvent( QEvent *event, QAbstractItemModel *mod
     if ( panel && panel->dockMode() )
     {
       QgsCompoundColorWidget *colorWidget = new QgsCompoundColorWidget( panel, color, QgsCompoundColorWidget::LayoutVertical );
-      colorWidget->setPanelTitle( tr( "Select color" ) );
+      colorWidget->setPanelTitle( tr( "Select Color" ) );
       colorWidget->setAllowOpacity( true );
       colorWidget->setProperty( "index", index );
       connect( colorWidget, &QgsCompoundColorWidget::currentColorChanged, this, &QgsColorSwatchDelegate::colorChanged );

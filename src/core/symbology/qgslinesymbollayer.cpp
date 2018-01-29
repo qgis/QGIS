@@ -798,7 +798,7 @@ void QgsMarkerLineSymbolLayer::startRender( QgsSymbolRenderContext &context )
   mMarker->setOpacity( context.opacity() );
 
   // if being rotated, it gets initialized with every line segment
-  QgsSymbol::RenderHints hints = 0;
+  QgsSymbol::RenderHints hints = nullptr;
   if ( mRotateMarker )
     hints |= QgsSymbol::DynamicRotation;
   mMarker->setRenderHints( hints );

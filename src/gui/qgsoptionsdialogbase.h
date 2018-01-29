@@ -26,6 +26,7 @@
 #include <QDialog>
 #include <QPointer>
 #include <QStyledItemDelegate>
+#include <QMap>
 
 
 class QDialogButtonBox;
@@ -36,6 +37,7 @@ class QPainter;
 class QStackedWidget;
 class QStyleOptionViewItem;
 class QSplitter;
+class QTreeWidgetItem;
 
 class QgsFilterLineEdit;
 
@@ -57,12 +59,12 @@ class GUI_EXPORT QgsSearchHighlightOptionWidget : public QObject
      * Constructor
      * \param widget the widget used to search text into
      */
-    explicit QgsSearchHighlightOptionWidget( QWidget *widget = 0 );
+    explicit QgsSearchHighlightOptionWidget( QWidget *widget = nullptr );
 
     /**
      * Returns if it valid: if the widget type is handled and if the widget is not still available
      */
-    bool isValid() {return mValid;}
+    bool isValid() { return mWidget && mValid; }
 
     /**
      * search for a text pattern and highlight the widget if the text is found
@@ -78,17 +80,25 @@ class GUI_EXPORT QgsSearchHighlightOptionWidget : public QObject
     /**
      * return the widget
      */
-    QWidget *widget() {return mWidget;}
+    QWidget *widget() { return mWidget; }
+
+    bool eventFilter( QObject *obj, QEvent *event ) override;
 
   private slots:
     void widgetDestroyed();
 
   private:
-    QWidget *mWidget = nullptr;
-    QString mStyleSheet;
+    QPointer< QWidget > mWidget;
+    QString mSearchText = QString();
+    // a map to save the tree state (backouground, font, expanded) before highlighting items
+    QMap<QTreeWidgetItem *, QPair<QBrush, QBrush>> mTreeInitialStyle = QMap<QTreeWidgetItem *, QPair<QBrush, QBrush>>();
+    QMap<QTreeWidgetItem *, bool> mTreeInitialExpand = QMap<QTreeWidgetItem *, bool>();
     bool mValid = true;
     bool mChangedStyle = false;
-    std::function < QString() > mText;
+    std::function < bool( QString )> mTextFound = []( QString searchText ) {Q_UNUSED( searchText ); return false;};
+    std::function < void( QString )> mHighlight = []( QString searchText ) {Q_UNUSED( searchText );};
+    std::function < void()> mReset = []() {};
+    bool mInstalledFilter = false;
 };
 
 
@@ -123,8 +133,8 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
      * \param fl widget flags
      * \param settings custom QgsSettings pointer
      */
-    QgsOptionsDialogBase( const QString &settingsKey, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = 0, QgsSettings *settings = nullptr );
-    ~QgsOptionsDialogBase();
+    QgsOptionsDialogBase( const QString &settingsKey, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = nullptr, QgsSettings *settings = nullptr );
+    ~QgsOptionsDialogBase() override;
 
     /**
      * Set up the base ui connections for vertical tabs.

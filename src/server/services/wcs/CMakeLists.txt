@@ -36,7 +36,6 @@ INCLUDE_DIRECTORIES(
   ../../../core/metadata
   ../../../core/raster
   ../../../core/symbology
-  ../../../core/composer
   ../../../core/layertree
   ../..
   ..

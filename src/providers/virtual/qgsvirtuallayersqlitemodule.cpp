@@ -218,7 +218,7 @@ struct VTable
             typeName = QStringLiteral( "text" );
             break;
         }
-        sqlFields << field.name() + " " + typeName;
+        sqlFields << QStringLiteral( "\"%1\" %2" ).arg( field.name(), typeName );
       }
 
       QgsVectorDataProvider *provider = mLayer ? mLayer->dataProvider() : mProvider;

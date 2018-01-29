@@ -21,6 +21,8 @@
 #include "QStyledItemDelegate"
 
 #include "qgis_gui.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgsdataprovider.h"
 #include "qgsmaplayer.h"
 #include "qgslayermetadata.h"
 #include "ui_qgsmetadatawidget.h"
@@ -55,9 +57,19 @@ class GUI_EXPORT QgsMetadataWidget : public QWidget, private Ui::QgsMetadataWidg
     bool checkMetadata() const;
 
     /**
+     * If the CRS is updated.
+     */
+    void crsChanged() const;
+
+    /**
      * Saves the metadata to the layer.
      */
     void acceptMetadata();
+
+    /**
+     * Sets the layer's \a metadata store.
+     */
+    virtual void setMetadata( const QgsLayerMetadata &metadata );
 
     /**
      * Returns a list of languages available by default in the wizard.
@@ -86,10 +98,16 @@ class GUI_EXPORT QgsMetadataWidget : public QWidget, private Ui::QgsMetadataWidg
      */
     static QMap<QString, QString> parseTypes();
 
+    /**
+     * Sets a map \a canvas associated with the widget.
+     */
+    void setMapCanvas( QgsMapCanvas *canvas );
+
   private:
     void updatePanel() const;
     void fillSourceFromLayer() const;
-    void fillCrsFromLayer() const;
+    void fillCrsFromLayer();
+    void fillCrsFromProvider();
     void addDefaultCategory() const;
     void addNewCategory();
     void removeSelectedCategory() const;
@@ -101,18 +119,18 @@ class GUI_EXPORT QgsMetadataWidget : public QWidget, private Ui::QgsMetadataWidg
     void removeSelectedRight() const;
     void addConstraint() const;
     void removeSelectedConstraint() const;
-    void addContact() const;
-    void removeSelectedContact() const;
+    void addAddress() const;
+    void removeSelectedAddress() const;
     void addLink() const;
     void removeSelectedLink() const;
     void addHistory();
     void removeSelectedHistory() const;
-    void updateContactDetails() const;
     void fillComboBox() const;
-    void setPropertiesFromLayer() const;
+    void setPropertiesFromLayer();
     void syncFromCategoriesTabToKeywordsTab() const;
     QStringList mDefaultCategories;
     QgsMapLayer *mLayer = nullptr;
+    QgsCoordinateReferenceSystem mCrs;
     QgsLayerMetadata mMetadata;
     QStandardItemModel *mConstraintsModel = nullptr;
     QStandardItemModel *mLinksModel = nullptr;
@@ -149,7 +167,7 @@ class LinkItemDelegate : public QStyledItemDelegate
     /**
      * Create a special editor with a QCombobox in the link view.
      */
-    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
+    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
 };
 
 /**
@@ -175,7 +193,7 @@ class ConstraintItemDelegate : public QStyledItemDelegate
     /**
      * Create a special editor with a QCombobox in the constraint view.
      */
-    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
+    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
 };
 
 /**

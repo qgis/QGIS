@@ -29,7 +29,7 @@ class QgsMapToolCircle2TangentsPoint: public QgsMapToolAddCircle
 
   public:
     QgsMapToolCircle2TangentsPoint( QgsMapToolCapture *parentTool, QgsMapCanvas *canvas, CaptureMode mode = CaptureLine );
-    ~QgsMapToolCircle2TangentsPoint();
+    ~QgsMapToolCircle2TangentsPoint() override;
 
     void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
     void cadCanvasMoveEvent( QgsMapMouseEvent *e ) override;
@@ -38,9 +38,6 @@ class QgsMapToolCircle2TangentsPoint: public QgsMapToolAddCircle
     void radiusSpinBoxChanged( int radius );
 
   private:
-    //! Return the point where segments are intersected. Method from QgsGeometryUtils doesn't work for special cases used by this tool.
-    QgsPointXY intersect( QgsPointXY seg1_pt1, QgsPointXY seg1_pt2, QgsPointXY seg2_pt1, QgsPointXY seg2_pt2 );
-
     //! Compute 4 possible centers
     void getPossibleCenter();
 

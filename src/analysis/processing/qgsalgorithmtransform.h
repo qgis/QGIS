@@ -36,8 +36,9 @@ class QgsTransformAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QgsTransformAlgorithm() = default;
     QString name() const override;
     QString displayName() const override;
-    virtual QStringList tags() const override;
+    QStringList tags() const override;
     QString group() const override;
+    QString groupId() const override;
     QString shortHelpString() const override;
     QgsTransformAlgorithm *createInstance() const override SIP_FACTORY;
 
@@ -55,6 +56,7 @@ class QgsTransformAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     bool mCreatedTransform = false;
     QgsCoordinateReferenceSystem mDestCrs;
     QgsCoordinateTransform mTransform;
+    QgsCoordinateTransformContext mTransformContext;
 
 };
 

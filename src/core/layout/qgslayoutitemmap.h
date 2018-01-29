@@ -67,10 +67,10 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
      * Constructor for QgsLayoutItemMap, with the specified parent \a layout.
      */
     explicit QgsLayoutItemMap( QgsLayout *layout );
-    ~QgsLayoutItemMap();
+    ~QgsLayoutItemMap() override;
 
     int type() const override;
-    QString stringType() const override;
+    QIcon icon() const override;
 
     /**
      * Sets the map id() to a number not yet used in the layout. The existing id() is kept if it is not in use.
@@ -78,7 +78,7 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
     void assignFreeId();
 
     //overridden to show "Map 1" type names
-    virtual QString displayName() const override;
+    QString displayName() const override;
 
     /**
      * Returns a new map item for the specified \a layout.
@@ -91,7 +91,6 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
     void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget ) override;
     int numberExportLayers() const override;
     void setFrameStrokeWidth( const QgsLayoutMeasurement &width ) override;
-
 
     /**
      * Returns the map scale.
@@ -277,11 +276,11 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
     //! Returns true if the map contains a WMS layer.
     bool containsWmsLayer() const;
 
-    //! Returns true if the map contains layers with blend modes or flattened layers for vectors
-    bool containsAdvancedEffects() const;
+    bool requiresRasterization() const override;
+    bool containsAdvancedEffects() const override;
 
     /**
-     * Sets the \a rotation for the map - this does not affect the composer item shape, only the
+     * Sets the \a rotation for the map - this does not affect the layout item shape, only the
      * way the map is drawn within the item. Rotation is in degrees, clockwise.
      * \see mapRotation()
      * \see mapRotationChanged()
@@ -289,7 +288,7 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
     void setMapRotation( double rotation );
 
     /**
-     * Returns the rotation used for drawing the map within the composer item, in degrees clockwise.
+     * Returns the rotation used for drawing the map within the layout item, in degrees clockwise.
      * \param valueType controls whether the returned value is the user specified rotation,
      * or the current evaluated rotation (which may be affected by data driven rotation
      * settings).
@@ -299,13 +298,13 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
     double mapRotation( QgsLayoutObject::PropertyValueType valueType = QgsLayoutObject::EvaluatedValue ) const;
 
     /**
-     * Sets whether annotations are drawn within the composer map.
+     * Sets whether annotations are drawn within the map.
      * \see drawAnnotations()
      */
     void setDrawAnnotations( bool draw ) { mDrawAnnotations = draw; }
 
     /**
-     * Returns whether annotations are drawn within the composer map.
+     * Returns whether annotations are drawn within the map.
      * \see setDrawAnnotations()
      */
     bool drawAnnotations() const { return mDrawAnnotations; }
@@ -409,8 +408,14 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
 
     /**
      * Return map settings that will be used for drawing of the map.
+     *
+     * If \a includeLayerSettings is true, than settings specifically relating to map layers and map layer styles
+     * will be calculated. This can be expensive to calculate, so if they are not required in the map settings
+     * (e.g. for map settings which are used for scale related calculations only) then \a includeLayerSettings should be false.
      */
-    QgsMapSettings mapSettings( const QgsRectangle &extent, QSizeF size, int dpi ) const;
+    QgsMapSettings mapSettings( const QgsRectangle &extent, QSizeF size, double dpi, bool includeLayerSettings ) const;
+
+    void finalizeRestoreFromXml() override;
 
   protected:
 
@@ -420,15 +425,6 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
 
     //! True if a draw is already in progress
     bool isDrawing() const {return mDrawing;}
-
-#if 0 //TODO
-
-    /**
-     * Sets new Extent for the current atlas preview and changes width, height (and implicitly also scale).
-      Atlas preview extents are only temporary, and are regenerated whenever the atlas feature changes
-     */
-    void setNewAtlasFeatureExtent( const QgsRectangle &extent );
-#endif
 
     // In case of annotations, the bounding rectangle can be larger than the map item rectangle
     QRectF boundingRect() const override;
@@ -471,6 +467,8 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
 
   public slots:
 
+    void refresh() override;
+
     void invalidateCache() override;
 
     //! Updates the bounding rect of this item. Call this function before doing any changes related to annotation out of the map rectangle
@@ -484,6 +482,8 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
     void painterJobFinished();
 
     void shapeChanged();
+
+    void mapThemeChanged( const QString &theme );
 
   private:
 
@@ -552,6 +552,11 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
     bool mKeepLayerStyles = false;
     //! Stored style names (value) to be used with particular layer IDs (key) instead of default style
     QMap<QString, QString> mLayerStyleOverrides;
+
+    //! Empty if no cached style overrides stored
+    mutable QString mCachedLayerStyleOverridesPresetName;
+    //! Cached style overrides, used to avoid frequent expensive lookups of the preset style override
+    mutable QMap<QString, QString> mCachedPresetLayerStyleOverrides;
 
     /**
      * Whether layers and styles should be used from a preset (preset name is stored
@@ -655,10 +660,15 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
      */
     void refreshMapExtents( const QgsExpressionContext *context = nullptr );
 
+    void updateAtlasFeature();
+
+    QgsRectangle computeAtlasRectangle();
+
     friend class QgsLayoutItemMapGrid;
     friend class QgsLayoutItemMapOverview;
     friend class QgsLayoutItemLegend;
     friend class TestQgsLayoutMap;
+    friend class QgsCompositionConverter;
 
 };
 

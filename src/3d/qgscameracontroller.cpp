@@ -37,6 +37,8 @@ QgsCameraController::QgsCameraController( Qt3DCore::QNode *parent )
   , mRightMouseButtonInput( new Qt3DInput::QActionInput() )
   , mShiftAction( new Qt3DInput::QAction() )
   , mShiftInput( new Qt3DInput::QActionInput() )
+  , mCtrlAction( new Qt3DInput::QAction() )
+  , mCtrlInput( new Qt3DInput::QActionInput() )
   , mWheelAxis( new Qt3DInput::QAxis() )
   , mMouseWheelInput( new Qt3DInput::QAnalogAxisInput() )
   , mTxAxis( new Qt3DInput::QAxis() )
@@ -82,6 +84,11 @@ QgsCameraController::QgsCameraController( Qt3DCore::QNode *parent )
   mShiftInput->setSourceDevice( mKeyboardDevice );
   mShiftAction->addInput( mShiftInput );
 
+  // Keyboard ctrl
+  mCtrlInput->setButtons( QVector<int>() << Qt::Key_Control );
+  mCtrlInput->setSourceDevice( mKeyboardDevice );
+  mCtrlAction->addInput( mCtrlInput );
+
   // Keyboard Pos Tx
   mKeyboardTxPosInput->setButtons( QVector<int>() << Qt::Key_Right );
   mKeyboardTxPosInput->setScale( 1.0f );
@@ -110,6 +117,7 @@ QgsCameraController::QgsCameraController( Qt3DCore::QNode *parent )
   mLogicalDevice->addAction( mMiddleMouseButtonAction );
   mLogicalDevice->addAction( mRightMouseButtonAction );
   mLogicalDevice->addAction( mShiftAction );
+  mLogicalDevice->addAction( mCtrlAction );
   mLogicalDevice->addAxis( mWheelAxis );
   mLogicalDevice->addAxis( mTxAxis );
   mLogicalDevice->addAxis( mTyAxis );
@@ -221,7 +229,8 @@ void QgsCameraController::frameTriggered( float dt )
   int dy = mMousePos.y() - mLastMousePos.y();
   mLastMousePos = mMousePos;
 
-  mCameraData.dist -= mCameraData.dist * mWheelAxis->value() * 10 * dt;
+  double scaling = ( mCtrlAction->isActive() ? 0.1 : 1.0 );
+  mCameraData.dist -= scaling * mCameraData.dist * mWheelAxis->value() * 10 * dt;
 
   if ( mRightMouseButtonAction->isActive() )
   {
@@ -231,7 +240,7 @@ void QgsCameraController::frameTriggered( float dt )
   float tx = mTxAxis->value() * dt * mCameraData.dist * 1.5;
   float ty = -mTyAxis->value() * dt * mCameraData.dist * 1.5;
 
-  if ( tx || ty )
+  if ( !mShiftAction->isActive() && ( tx || ty ) )
   {
     // moving with keyboard - take into account yaw of camera
     float t = sqrt( tx * tx + ty * ty );
@@ -244,8 +253,15 @@ void QgsCameraController::frameTriggered( float dt )
 
   if ( ( mLeftMouseButtonAction->isActive() && mShiftAction->isActive() ) || mMiddleMouseButtonAction->isActive() )
   {
+    // rotate/tilt using mouse
     mCameraData.pitch += dy;
     mCameraData.yaw -= dx / 2;
+  }
+  else if ( mShiftAction->isActive() && ( mTxAxis->value() || mTyAxis->value() ) )
+  {
+    // rotate/tilt using keyboard
+    mCameraData.pitch -= mTyAxis->value();   // down key = moving camera toward terrain
+    mCameraData.yaw -= mTxAxis->value();     // right key = moving camera clockwise
   }
   else if ( mLeftMouseButtonAction->isActive() && !mShiftAction->isActive() )
   {

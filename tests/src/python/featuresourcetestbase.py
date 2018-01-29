@@ -20,6 +20,7 @@ from qgis.core import (
     QgsFeatureRequest,
     QgsFeature,
     QgsWkbTypes,
+    QgsProject,
     QgsGeometry,
     QgsAbstractFeatureIterator,
     QgsExpressionContextScope,
@@ -485,6 +486,14 @@ class FeatureSourceTestCase(object):
         assert set(features) == set([1, 2, 3, 4, 5]), 'Got {} instead'.format(features)
         self.assertTrue(all_valid)
 
+        # ExactIntersection flag set, but no filter rect set. Should be ignored.
+        request = QgsFeatureRequest()
+        request.setFlags(QgsFeatureRequest.ExactIntersect)
+        features = [f['pk'] for f in self.source.getFeatures(request)]
+        all_valid = (all(f.isValid() for f in self.source.getFeatures(request)))
+        assert set(features) == set([1, 2, 3, 4, 5]), 'Got {} instead'.format(features)
+        self.assertTrue(all_valid)
+
     def testRectAndExpression(self):
         extent = QgsRectangle(-70, 67, -60, 80)
         request = QgsFeatureRequest().setFilterExpression('"cnt">200').setFilterRect(extent)
@@ -509,7 +518,7 @@ class FeatureSourceTestCase(object):
             self.assertEqual(request.acceptFeature(f), f['pk'] in expected)
 
     def testGetFeaturesDestinationCrs(self):
-        request = QgsFeatureRequest().setDestinationCrs(QgsCoordinateReferenceSystem('epsg:3785'))
+        request = QgsFeatureRequest().setDestinationCrs(QgsCoordinateReferenceSystem('epsg:3785'), QgsProject.instance().transformContext())
         features = {f['pk']: f for f in self.source.getFeatures(request)}
         # test that features have been reprojected
         self.assertAlmostEqual(features[1].geometry().constGet().x(), -7829322, -5)
@@ -524,7 +533,7 @@ class FeatureSourceTestCase(object):
 
         # when destination crs is set, filter rect should be in destination crs
         rect = QgsRectangle(-7650000, 10500000, -7200000, 15000000)
-        request = QgsFeatureRequest().setDestinationCrs(QgsCoordinateReferenceSystem('epsg:3785')).setFilterRect(rect)
+        request = QgsFeatureRequest().setDestinationCrs(QgsCoordinateReferenceSystem('epsg:3785'), QgsProject.instance().transformContext()).setFilterRect(rect)
         features = {f['pk']: f for f in self.source.getFeatures(request)}
         self.assertEqual(set(features.keys()), {2, 4})
         # test that features have been reprojected
@@ -535,7 +544,7 @@ class FeatureSourceTestCase(object):
 
         # bad rect for transform
         rect = QgsRectangle(-99999999999, 99999999999, -99999999998, 99999999998)
-        request = QgsFeatureRequest().setDestinationCrs(QgsCoordinateReferenceSystem('epsg:28356')).setFilterRect(rect)
+        request = QgsFeatureRequest().setDestinationCrs(QgsCoordinateReferenceSystem('epsg:28356'), QgsProject.instance().transformContext()).setFilterRect(rect)
         features = [f for f in self.source.getFeatures(request)]
         self.assertFalse(features)
 

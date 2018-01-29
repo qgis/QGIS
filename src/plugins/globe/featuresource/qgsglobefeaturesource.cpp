@@ -63,7 +63,7 @@ void QgsGlobeFeatureSource::initialize( const osgDB::Options *dbOptions )
   }
   QgsRectangle ext = mLayer->extent();
   osgEarth::GeoExtent geoext( ref, ext.xMinimum(), ext.yMinimum(), ext.xMaximum(), ext.yMaximum() );
-  mSchema = QgsGlobeFeatureUtils::schemaForFields( mLayer->pendingFields() );
+  mSchema = QgsGlobeFeatureUtils::schemaForFields( mLayer->fields() );
 #if OSGEARTH_VERSION_GREATER_OR_EQUAL(2, 8, 0)
   setFeatureProfile( new osgEarth::Features::FeatureProfile( geoext ) );
   return osgEarth::Status( osgEarth::Status::NoError );
@@ -139,7 +139,7 @@ void QgsGlobeFeatureSource::attributeValueChanged( const QgsFeatureId &featureId
   if ( it != mFeatures.end() )
   {
     osgEarth::Features::Feature *feature = it->second.get();
-    QgsGlobeFeatureUtils::setFeatureField( feature, mLayer->pendingFields().at( idx ), value );
+    QgsGlobeFeatureUtils::setFeatureField( feature, mLayer->fields().at( idx ), value );
   }
 }
 

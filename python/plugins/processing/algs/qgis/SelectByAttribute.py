@@ -28,6 +28,7 @@ __revision__ = '$Format:%H$'
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (QgsExpression,
                        QgsProcessingException,
+                       QgsProcessingAlgorithm,
                        QgsProcessingParameterVectorLayer,
                        QgsProcessingParameterField,
                        QgsProcessingParameterEnum,
@@ -65,8 +66,14 @@ class SelectByAttribute(QgisAlgorithm):
     def group(self):
         return self.tr('Vector selection')
 
+    def groupId(self):
+        return 'vectorselection'
+
     def __init__(self):
         super().__init__()
+
+    def flags(self):
+        return super().flags() | QgsProcessingAlgorithm.FlagNoThreading
 
     def initAlgorithm(self, config=None):
         self.i18n_operators = ['=',

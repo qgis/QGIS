@@ -912,8 +912,8 @@ namespace QgsWms
       QgsWmsParametersComposerMap composerMapParameters( int mapId ) const;
 
       /**
-       * @brief externalWMSUri
-       * @param id the id of the external wms
+       * Return the external WMS uri
+       * \param id the id of the external wms
        * @return uri string or an empty string if the external wms id does not exist
        */
       QString externalWMSUri( const QString &id ) const;
@@ -972,6 +972,7 @@ namespace QgsWms
       QList<QgsGeometry> toGeomList( const QStringList &l, bool *error = Q_NULLPTR ) const;
       QList<QgsGeometry> toGeomList( const QStringList &l, ParameterName name ) const;
       QList<QgsGeometry> toGeomList( const QStringList &l, ParameterName name, int mapId ) const;
+      QMultiMap<QString, QString> getLayerFilters( const QStringList &layers ) const;
 
       QgsServerRequest::Parameters mRequestParameters;
       QMap<ParameterName, Parameter> mParameters;

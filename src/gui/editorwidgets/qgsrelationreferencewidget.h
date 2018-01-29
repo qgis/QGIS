@@ -77,7 +77,7 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
 
     explicit QgsRelationReferenceWidget( QWidget *parent SIP_TRANSFERTHIS );
 
-    ~QgsRelationReferenceWidget();
+    ~QgsRelationReferenceWidget() override;
 
     void setRelation( const QgsRelation &relation, bool allowNullValue );
 
@@ -166,7 +166,7 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     void deleteForeignKey();
 
   protected:
-    virtual void showEvent( QShowEvent *e ) override;
+    void showEvent( QShowEvent *e ) override;
 
     void init();
 

@@ -108,6 +108,19 @@ void TestQgsProject::testPathResolver()
   QCOMPARE( resolverRel.readPath( "../file1.txt" ), QString( "/home/file1.txt" ) );
   QCOMPARE( resolverRel.readPath( "/home/qgis/file1.txt" ), QString( "/home/qgis/file1.txt" ) );
 
+  // test older style relative path - file must exist for this to work
+  QTemporaryFile tmpFile;
+  tmpFile.open(); // fileName is not available until we open the file
+  QString tmpName =  tmpFile.fileName();
+  tmpFile.close();
+  QgsPathResolver tempRel( tmpName );
+  QFileInfo fi( tmpName );
+  QFile testFile( fi.path() + QStringLiteral( "/file1.txt" ) );
+  testFile.open( QIODevice::WriteOnly | QIODevice::Text );
+  testFile.close();
+  QVERIFY( QFile::exists( fi.path() + QStringLiteral( "/file1.txt" ) ) );
+  QCOMPARE( tempRel.readPath( "file1.txt" ), fi.path() + QStringLiteral( "/file1.txt" ) );
+
   QgsPathResolver resolverAbs;
   QCOMPARE( resolverAbs.writePath( "/home/qgis/file1.txt" ), QString( "/home/qgis/file1.txt" ) );
   QCOMPARE( resolverAbs.readPath( "/home/qgis/file1.txt" ), QString( "/home/qgis/file1.txt" ) );

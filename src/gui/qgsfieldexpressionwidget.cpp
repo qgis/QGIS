@@ -216,6 +216,7 @@ void QgsFieldExpressionWidget::editExpression()
     dlg.setGeomCalculator( *mDa );
   }
   dlg.setWindowTitle( mExpressionDialogTitle );
+  dlg.setAllowEvalErrors( mAllowEvalErrors );
 
   if ( dlg.exec() )
   {
@@ -263,6 +264,20 @@ void QgsFieldExpressionWidget::afterResetModel()
 {
   // Restore expression
   mCombo->lineEdit()->setText( mBackupExpression );
+}
+
+bool QgsFieldExpressionWidget::allowEvalErrors() const
+{
+  return mAllowEvalErrors;
+}
+
+void QgsFieldExpressionWidget::setAllowEvalErrors( bool allowEvalErrors )
+{
+  if ( allowEvalErrors == mAllowEvalErrors )
+    return;
+
+  mAllowEvalErrors = allowEvalErrors;
+  emit allowEvalErrorsChanged();
 }
 
 void QgsFieldExpressionWidget::currentFieldChanged()

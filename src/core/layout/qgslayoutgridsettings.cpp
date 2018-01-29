@@ -18,6 +18,9 @@
 #include "qgsreadwritecontext.h"
 #include "qgslayout.h"
 #include "qgsproject.h"
+#include "qgslayoutundostack.h"
+#include "qgslayoutpagecollection.h"
+#include "qgssettings.h"
 
 QgsLayoutGridSettings::QgsLayoutGridSettings( QgsLayout *layout )
   : mGridResolution( QgsLayoutMeasurement( 10 ) )
@@ -25,6 +28,7 @@ QgsLayoutGridSettings::QgsLayoutGridSettings( QgsLayout *layout )
 {
   mGridPen = QPen( QColor( 190, 190, 190, 100 ), 0 );
   mGridPen.setCosmetic( true );
+  loadFromSettings();
 }
 
 QgsLayout *QgsLayoutGridSettings::layout()
@@ -44,6 +48,44 @@ void QgsLayoutGridSettings::setOffset( const QgsLayoutPoint offset )
   mLayout->undoStack()->beginCommand( this, QObject::tr( "Change Grid Offset" ), UndoGridOffset );
   mGridOffset = offset;
   mLayout->undoStack()->endCommand();
+}
+
+void QgsLayoutGridSettings::loadFromSettings()
+{
+  //read grid style, grid color and pen width from settings
+  QgsSettings s;
+
+  QString gridStyleString;
+  gridStyleString = s.value( QStringLiteral( "LayoutDesigner/gridStyle" ), "Dots", QgsSettings::Gui ).toString();
+
+  int gridRed, gridGreen, gridBlue, gridAlpha;
+  gridRed = s.value( QStringLiteral( "LayoutDesigner/gridRed" ), 190, QgsSettings::Gui ).toInt();
+  gridGreen = s.value( QStringLiteral( "LayoutDesigner/gridGreen" ), 190, QgsSettings::Gui ).toInt();
+  gridBlue = s.value( QStringLiteral( "LayoutDesigner/gridBlue" ), 190, QgsSettings::Gui ).toInt();
+  gridAlpha = s.value( QStringLiteral( "LayoutDesigner/gridAlpha" ), 100, QgsSettings::Gui ).toInt();
+  QColor gridColor = QColor( gridRed, gridGreen, gridBlue, gridAlpha );
+
+  mGridPen.setColor( gridColor );
+  mGridPen.setWidthF( 0 );
+  mGridPen.setCosmetic( true );
+
+  if ( gridStyleString == QLatin1String( "Dots" ) )
+  {
+    mGridStyle = StyleDots;
+  }
+  else if ( gridStyleString == QLatin1String( "Crosses" ) )
+  {
+    mGridStyle = StyleCrosses;
+  }
+  else
+  {
+    mGridStyle = StyleLines;
+  }
+
+  mGridResolution = QgsLayoutMeasurement( s.value( QStringLiteral( "LayoutDesigner/defaultSnapGridResolution" ), 10.0, QgsSettings::Gui ).toDouble(), QgsUnitTypes::LayoutMillimeters );
+//  mSnapToleranceSpinBox->setValue( mSettings->value( QStringLiteral( "LayoutDesigner/defaultSnapTolerancePixels" ), 5, QgsSettings::Gui ).toInt() );
+  mGridOffset = QgsLayoutPoint( s.value( QStringLiteral( "LayoutDesigner/defaultSnapGridOffsetX" ), 0, QgsSettings::Gui ).toDouble(),
+                                s.value( QStringLiteral( "LayoutDesigner/defaultSnapGridOffsetY" ), 0, QgsSettings::Gui ).toDouble(), QgsUnitTypes::LayoutMillimeters );
 }
 
 bool QgsLayoutGridSettings::writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext & ) const

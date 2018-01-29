@@ -81,7 +81,7 @@ class CORE_EXPORT QgsTask : public QObject
      */
     QgsTask( const QString &description = QString(), const Flags &flags = AllFlags );
 
-    ~QgsTask();
+    ~QgsTask() override;
 
     /**
      * Returns the flags associated with the task.
@@ -368,9 +368,9 @@ class CORE_EXPORT QgsTaskManager : public QObject
      * Constructor for QgsTaskManager.
      * \param parent parent QObject
      */
-    QgsTaskManager( QObject *parent SIP_TRANSFERTHIS = 0 );
+    QgsTaskManager( QObject *parent SIP_TRANSFERTHIS = nullptr );
 
-    virtual ~QgsTaskManager();
+    ~QgsTaskManager() override;
 
     /**
      * Definition of a task for inclusion in the manager.
@@ -485,6 +485,14 @@ class CORE_EXPORT QgsTaskManager : public QObject
      */
     int countActiveTasks() const;
 
+  public slots:
+
+    /**
+     * Triggers a task, e.g. as a result of a GUI interaction.
+     * \see taskTriggered()
+     */
+    void triggerTask( QgsTask *task );
+
   signals:
 
     /**
@@ -531,6 +539,14 @@ class CORE_EXPORT QgsTaskManager : public QObject
      * \see countActiveTasks()
      */
     void countActiveTasksChanged( int count );
+
+    /**
+     * Emitted when a \a task is triggered. This occurs when a user clicks on
+     * the task from the QGIS GUI, and can be used to show detailed progress
+     * reports or re-open a related dialog.
+     * \see triggerTask()
+     */
+    void taskTriggered( QgsTask *task );
 
   private slots:
 

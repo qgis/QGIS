@@ -17,6 +17,7 @@
 #include "qgis.h"
 #include "qgslayoutview.h"
 #include "qgslogger.h"
+#include "qgslayoutpagecollection.h"
 #include <QDragEnterEvent>
 #include <QGraphicsLineItem>
 #include <QPainter>
@@ -364,6 +365,9 @@ QPoint QgsLayoutRuler::convertLayoutPointToLocal( QPointF layoutPoint ) const
 
 QgsLayoutGuide *QgsLayoutRuler::guideAtPoint( QPoint localPoint ) const
 {
+  if ( !mView->currentLayout() )
+    return nullptr;
+
   QPointF layoutPoint = convertLocalPointToLayout( localPoint );
   QList< QgsLayoutItemPage * > visiblePages = mView->visiblePages();
   QList< QgsLayoutGuide * > guides = mView->currentLayout()->guides().guides( mOrientation == Qt::Horizontal ? Qt::Vertical : Qt::Horizontal );

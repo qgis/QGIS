@@ -29,14 +29,16 @@ bool QgsWidgetStateHelper::eventFilter( QObject *object, QEvent *event )
 {
   if ( event->type() == QEvent::Close || event->type() == QEvent::Destroy )
   {
-    QString key = mKeys[object->objectName()];
     QWidget *widget = qobject_cast<QWidget *>( object );
+    QString name = widgetSafeName( widget );
+    QString key = mKeys[name];
     QgsGuiUtils::saveGeometry( widget, key );
   }
   else if ( event->type() == QEvent::Show )
   {
-    QString key = mKeys[object->objectName()];
     QWidget *widget = qobject_cast<QWidget *>( object );
+    QString name = widgetSafeName( widget );
+    QString key = mKeys[name];
     QgsGuiUtils::restoreGeometry( widget, key );
   }
   return QObject::eventFilter( object, event );
@@ -44,7 +46,16 @@ bool QgsWidgetStateHelper::eventFilter( QObject *object, QEvent *event )
 
 void QgsWidgetStateHelper::registerWidget( QWidget *widget, const QString &key )
 {
-  Q_ASSERT( !widget->objectName().isEmpty() );
-  mKeys[widget->objectName()] = key;
+  QString name = widgetSafeName( widget );
+  mKeys[name] = key;
   widget->installEventFilter( this );
+}
+
+QString QgsWidgetStateHelper::widgetSafeName( QWidget *widget )
+{
+  if ( widget->objectName().isEmpty() )
+  {
+    return widget->metaObject()->className();
+  }
+  return widget->objectName();
 }

@@ -89,7 +89,9 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri )
       appendError( QgsErrorMessage( tr( "Could not parse spatial reference" ), QStringLiteral( "AFSProvider" ) ) );
       return;
     }
+    Q_NOWARN_DEPRECATED_PUSH
     mSharedData->mExtent = QgsCoordinateTransform( extentCrs, mSharedData->mSourceCRS ).transformBoundingBox( mSharedData->mExtent );
+    Q_NOWARN_DEPRECATED_POP
   }
 
   // Read fields
@@ -210,11 +212,11 @@ class QgsAfsSourceSelectProvider : public QgsSourceSelectProvider
 {
   public:
 
-    virtual QString providerKey() const override { return QStringLiteral( "arcgisfeatureserver" ); }
-    virtual QString text() const override { return QObject::tr( "ArcGIS Feature Server" ); }
-    virtual int ordering() const override { return QgsSourceSelectProvider::OrderRemoteProvider + 150; }
-    virtual QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddAfsLayer.svg" ) ); }
-    virtual QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
+    QString providerKey() const override { return QStringLiteral( "arcgisfeatureserver" ); }
+    QString text() const override { return QObject::tr( "ArcGIS Feature Server" ); }
+    int ordering() const override { return QgsSourceSelectProvider::OrderRemoteProvider + 150; }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddAfsLayer.svg" ) ); }
+    QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
     {
       return new QgsAfsSourceSelect( parent, fl, widgetMode );
     }

@@ -37,6 +37,7 @@
 #include "qgsterrainentity_p.h"
 #include "qgsterraingenerator.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectorlayer3drenderer.h"
 
 
 Qgs3DMapScene::Qgs3DMapScene( const Qgs3DMapSettings &map, Qt3DExtras::QForwardRenderer *defaultFrameGraph, Qt3DRender::QRenderSettings *renderSettings, Qt3DRender::QCamera *camera, const QRect &viewportRect, Qt3DCore::QNode *parent )
@@ -164,6 +165,11 @@ void Qgs3DMapScene::viewZoomFull()
   QgsRectangle extent = mMap.terrainGenerator()->extent();
   float side = qMax( extent.width(), extent.height() );
   mCameraController->resetView( side );  // assuming FOV being 45 degrees
+}
+
+int Qgs3DMapScene::terrainPendingJobsCount() const
+{
+  return mTerrain ? mTerrain->pendingJobsCount() : 0;
 }
 
 QgsChunkedEntity::SceneState _sceneState( QgsCameraController *cameraController )
@@ -315,6 +321,10 @@ void Qgs3DMapScene::createTerrainDeferred()
   }
 
   mTerrainUpdateScheduled = false;
+
+  connect( mTerrain, &QgsTerrainEntity::pendingJobsCountChanged, this, &Qgs3DMapScene::terrainPendingJobsCountChanged );
+
+  emit terrainEntityChanged();
 }
 
 void Qgs3DMapScene::onBackgroundColorChanged()
@@ -367,9 +377,22 @@ void Qgs3DMapScene::addLayerEntity( QgsMapLayer *layer )
   QgsAbstract3DRenderer *renderer = layer->renderer3D();
   if ( renderer )
   {
+    // Fix vector layer's renderer to make sure the renderer is pointing to its layer.
+    // It has happened before that renderer pointed to a different layer (probably after copying a style).
+    // This is a bit of a hack and it should be handled in QgsMapLayer::setRenderer3D() but in qgis_core
+    // the vector layer 3D renderer class is not available. Maybe we need an intermediate map layer 3D renderer
+    // class in qgis_core that can be used to handle this case nicely.
+    if ( layer->type() == QgsMapLayer::VectorLayer && renderer->type() == "vector" )
+    {
+      static_cast<QgsVectorLayer3DRenderer *>( renderer )->setLayer( static_cast<QgsVectorLayer *>( layer ) );
+    }
+
     Qt3DCore::QEntity *newEntity = renderer->createEntity( mMap );
-    newEntity->setParent( this );
-    mLayerEntities.insert( layer, newEntity );
+    if ( newEntity )
+    {
+      newEntity->setParent( this );
+      mLayerEntities.insert( layer, newEntity );
+    }
   }
 
   connect( layer, &QgsMapLayer::renderer3DChanged, this, &Qgs3DMapScene::onLayerRenderer3DChanged );

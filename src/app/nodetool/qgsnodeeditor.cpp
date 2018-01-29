@@ -22,6 +22,7 @@
 #include "qgsvertexentry.h"
 #include "qgsvectorlayer.h"
 #include "qgsgeometryutils.h"
+#include "qgsproject.h"
 
 #include <QTableWidget>
 #include <QHeaderView>
@@ -67,7 +68,6 @@ QgsNodeEditorModel::QgsNodeEditorModel( QgsVectorLayer *layer, QgsSelectedFeatur
     mWidgetFont = parentWidget->font();
   }
 
-  connect( mSelectedFeature, &QgsSelectedFeature::vertexMapChanged, this, &QgsNodeEditorModel::featureChanged );
 }
 
 int QgsNodeEditorModel::rowCount( const QModelIndex &parent ) const
@@ -272,11 +272,6 @@ bool QgsNodeEditorModel::calcR( int row, double &r, double &minRadius ) const
   return true;
 }
 
-void QgsNodeEditorModel::featureChanged()
-{
-  //TODO - avoid reset
-  reset();
-}
 
 QgsNodeEditor::QgsNodeEditor(
   QgsVectorLayer *layer,
@@ -366,7 +361,7 @@ void QgsNodeEditor::zoomToNode( int idx )
   double y = mSelectedFeature->vertexMap().at( idx )->point().y();
   QgsPointXY newCenter( x, y );
 
-  QgsCoordinateTransform t( mLayer->crs(), mCanvas->mapSettings().destinationCrs() );
+  QgsCoordinateTransform t( mLayer->crs(), mCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
   QgsPointXY tCenter = t.transform( newCenter );
 
   QPolygonF ext = mCanvas->mapSettings().visiblePolygon();

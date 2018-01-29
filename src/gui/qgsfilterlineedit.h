@@ -71,7 +71,7 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
      * \param parent parent widget
      * \param nullValue string for representing null values
      */
-    QgsFilterLineEdit( QWidget *parent SIP_TRANSFERTHIS = 0, const QString &nullValue = QString() );
+    QgsFilterLineEdit( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QString &nullValue = QString() );
 
     /**
      * Returns true if the widget's clear button is visible.
@@ -254,17 +254,17 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
     void selectOnFocusChanged();
 
   protected:
-    void mousePressEvent( QMouseEvent *e ) override;
-    void mouseMoveEvent( QMouseEvent *e ) override;
     void focusInEvent( QFocusEvent *e ) override;
-    void paintEvent( QPaintEvent *e ) override;
-    void leaveEvent( QEvent *e ) override;
 
   private slots:
     void onTextChanged( const QString &text );
     void updateBusySpinner();
+    void updateClearIcon();
 
   private:
+    QAction *mClearAction;
+    QAction *mSearchAction;
+    QAction *mBusySpinnerAction = nullptr;
 
     bool mClearButtonVisible = true;
     bool mSearchIconVisible = false;
@@ -276,23 +276,12 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
     QString mDefaultValue;
     QString mStyleSheet;
     bool mFocusInEvent = false;
-    bool mClearHover = false;
     bool mSelectOnFocus = false;
 
-    QSize mClearIconSize;
-    QPixmap mClearIconPixmap;
-    QPixmap mClearHoverPixmap;
-
-    QSize mSearchIconSize;
-    QPixmap mSearchIconPixmap;
-    QgsAnimatedIcon *mBusySpinner = nullptr;
+    QgsAnimatedIcon *mBusySpinnerAnimatedIcon = nullptr;
 
     //! Returns true if clear button should be shown
     bool shouldShowClear() const;
-
-    QRect clearRect() const;
-    QRect searchRect() const;
-    QRect busySpinnerRect() const;
 };
 
 /// @cond PRIVATE
@@ -315,7 +304,7 @@ class SIP_SKIP QgsSpinBoxLineEdit : public QgsFilterLineEdit
 
   public slots:
 
-    virtual void clearValue() override
+    void clearValue() override
     {
       // don't change the value - let spin boxes handle that by detecting cleared() signal
       setCursor( Qt::IBeamCursor );

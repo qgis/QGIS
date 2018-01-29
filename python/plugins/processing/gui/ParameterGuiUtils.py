@@ -29,7 +29,8 @@ __revision__ = '$Format:%H$'
 from qgis.core import (QgsProcessing,
                        QgsProviderRegistry,
                        QgsProcessingFeatureSourceDefinition,
-                       QgsVectorFileWriter)
+                       QgsVectorFileWriter,
+                       QgsRasterFileWriter)
 from qgis.PyQt.QtCore import QCoreApplication
 from processing.tools import dataobjects
 
@@ -46,9 +47,17 @@ def getFileFilter(param):
     :param param:
     :return:
     """
-    if param.type() == 'multilayer':
+    if param.type() == 'layer':
+        vectors = QgsProviderRegistry.instance().fileVectorFilters().split(';;')
+        vectors.pop(0)
+        rasters = QgsProviderRegistry.instance().fileRasterFilters().split(';;')
+        rasters.pop(0)
+        filters = set(vectors + rasters)
+        filters = sorted(filters)
+        return tr('All files (*.*)') + ';;' + ";;".join(filters)
+    elif param.type() == 'multilayer':
         if param.layerType() == QgsProcessing.TypeRaster:
-            exts = dataobjects.getSupportedOutputRasterLayerExtensions()
+            exts = QgsRasterFileWriter.supportedFormatExtensions()
         elif param.layerType() == QgsProcessing.TypeFile:
             return tr('All files (*.*)', 'QgsProcessingParameterMultipleLayers')
         else:
@@ -59,7 +68,12 @@ def getFileFilter(param):
     elif param.type() == 'raster':
         return QgsProviderRegistry.instance().fileRasterFilters()
     elif param.type() == 'rasterDestination':
-        exts = dataobjects.getSupportedOutputRasterFilters()
+        if param.provider() is not None:
+            exts = param.provider().supportedOutputRasterLayerExtensions()
+        else:
+            exts = QgsRasterFileWriter.supportedFormatExtensions()
+        for i in range(len(exts)):
+            exts[i] = tr('{0} files (*.{1})', 'ParameterRaster').format(exts[i].upper(), exts[i].lower())
         return ';;'.join(exts) + ';;' + tr('All files (*.*)')
     elif param.type() in ('sink', 'vectorDestination'):
         if param.provider() is not None:
@@ -76,4 +90,7 @@ def getFileFilter(param):
     elif param.type() == 'fileDestination':
         return param.fileFilter() + ';;' + tr('All files (*.*)')
 
-    return ''
+    if param.defaultFileExtension():
+        return tr('Default extension') + ' (*.' + param.defaultFileExtension() + ')'
+    else:
+        return ''

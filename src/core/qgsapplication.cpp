@@ -43,7 +43,7 @@
 #include "qgsuserprofilemanager.h"
 #include "qgsreferencedgeometry.h"
 #include "qgs3drendererregistry.h"
-#include "qgslayoutcontext.h"
+#include "qgslayoutrendercontext.h"
 #include "qgssqliteutils.h"
 
 #include "gps/qgsgpsconnectionregistry.h"
@@ -154,7 +154,7 @@ void QgsApplication::init( QString profileFolder )
   qRegisterMetaType<QgsMessageLog::MessageLevel>( "QgsMessageLog::MessageLevel" );
   qRegisterMetaType<QgsReferencedRectangle>( "QgsReferencedRectangle" );
   qRegisterMetaType<QgsReferencedPointXY>( "QgsReferencedPointXY" );
-  qRegisterMetaType<QgsLayoutContext::Flags>( "QgsLayoutContext::Flags" );
+  qRegisterMetaType<QgsLayoutRenderContext::Flags>( "QgsLayoutRenderContext::Flags" );
 
   QString prefixPath( getenv( "QGIS_PREFIX_PATH" ) ? getenv( "QGIS_PREFIX_PATH" ) : applicationDirPath() );
   // QgsDebugMsg( QString( "prefixPath(): %1" ).arg( prefixPath ) );
@@ -432,7 +432,17 @@ QString QgsApplication::defaultThemePath()
 }
 QString QgsApplication::activeThemePath()
 {
-  return userThemesFolder() + QDir::separator() + themeName() + QDir::separator() + "icons/";
+  QString usersThemes = userThemesFolder() + QDir::separator() + themeName() + QDir::separator() + "icons/";
+  QDir dir( usersThemes );
+  if ( dir.exists() )
+  {
+    return usersThemes;
+  }
+  else
+  {
+    QString defaultThemes = defaultThemesFolder() + QDir::separator() + themeName() + QDir::separator() + "icons/";
+    return defaultThemes;
+  }
 }
 
 QString QgsApplication::appIconPath()
@@ -532,17 +542,17 @@ QCursor QgsApplication::getThemeCursor( const Cursor &cursor )
   Q_ASSERT( ! name.isEmpty( ) );
 
   QIcon icon = getThemeIcon( QStringLiteral( "cursors" ) + QDir::separator() + name );
-  QCursor _cursor;
+  QCursor cursorIcon;
   // Check if an icon exists for this cursor (the O.S. default cursor will be used if it does not)
   if ( ! icon.isNull( ) )
   {
     // Apply scaling
-    float scale( ( float ) app->fontMetrics().height() / 32 * 1.5 ) ; // Make them bigger to match 24x24
-    _cursor = QCursor( icon.pixmap( std::ceil( scale * 32 ), std::ceil( scale * 32 ) ), std::ceil( scale * activeX ), std::ceil( scale * activeY ) );
+    float scale = Qgis::UI_SCALE_FACTOR * app->fontMetrics().height() / 32.0;
+    cursorIcon = QCursor( icon.pixmap( std::ceil( scale * 32 ), std::ceil( scale * 32 ) ), std::ceil( scale * activeX ), std::ceil( scale * activeY ) );
   }
   if ( app )
-    app->mCursorCache.insert( cursor, _cursor );
-  return _cursor;
+    app->mCursorCache.insert( cursor, cursorIcon );
+  return cursorIcon;
 }
 
 // TODO: add some caching mechanism ?
@@ -605,7 +615,7 @@ void QgsApplication::setUITheme( const QString &themeName )
     while ( !in.atEnd() )
     {
       QString line = in.readLine();
-      // This is is a variable
+      // This is a variable
       if ( line.startsWith( '@' ) )
       {
         int index = line.indexOf( ':' );
@@ -630,7 +640,7 @@ void QgsApplication::setUITheme( const QString &themeName )
 
 QHash<QString, QString> QgsApplication::uiThemes()
 {
-  QStringList paths = QStringList() << userThemesFolder();
+  QStringList paths = QStringList() << userThemesFolder() << defaultThemesFolder();
   QHash<QString, QString> mapping;
   mapping.insert( QStringLiteral( "default" ), QLatin1String( "" ) );
   Q_FOREACH ( const QString &path, paths )
@@ -774,12 +784,12 @@ QStringList QgsApplication::svgPaths()
   return paths;
 }
 
-QStringList QgsApplication::composerTemplatePaths()
+QStringList QgsApplication::layoutTemplatePaths()
 {
-  //local directories to search when looking for an SVG with a given basename
+  //local directories to search when looking for an template with a given basename
   //defined by user in options dialog
   QgsSettings settings;
-  QStringList pathList = settings.value( QStringLiteral( "composer/searchPathsForTemplates" ) ).toStringList();
+  QStringList pathList = settings.value( QStringLiteral( "Layout/searchPathsForTemplates" ), QVariant(), QgsSettings::Core ).toStringList();
 
   return pathList;
 }
@@ -1042,45 +1052,7 @@ QString QgsApplication::reportStyleSheet()
   QColor myColor2 = myColor1;
   myColor2 = myColor2.lighter( 110 ); //10% lighter
   QString myStyle;
-  myStyle = "p.glossy{ background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, "
-            "  stop: 0 " + myColor1.name()  + ","
-            "  stop: 0.1 " + myColor2.name() + ","
-            "  stop: 0.5 " + myColor1.name()  + ","
-            "  stop: 0.9 " + myColor2.name() + ","
-            "  stop: 1 " + myColor1.name() + ");"
-            "  color: black;"
-            "  padding-left: 4px;"
-            "  padding-top: 20px;"
-            "  padding-bottom: 8px;"
-            "  border: 1px solid #6c6c6c;"
-            "}"
-            "p.subheaderglossy{ background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, "
-            "  stop: 0 " + myColor1.name()  + ","
-            "  stop: 0.1 " + myColor2.name() + ","
-            "  stop: 0.5 " + myColor1.name()  + ","
-            "  stop: 0.9 " + myColor2.name() + ","
-            "  stop: 1 " + myColor1.name() + ");"
-            "  font-weight: bold;"
-            "  font-size: medium;"
-            "  line-height: 1.1em;"
-            "  width: 100%;"
-            "  color: black;"
-            "  padding-left: 4px;"
-            "  padding-right: 4px;"
-            "  padding-top: 20px;"
-            "  padding-bottom: 8px;"
-            "  border: 1px solid #6c6c6c;"
-            "}"
-            "th.glossy{ background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, "
-            "  stop: 0 " + myColor1.name()  + ","
-            "  stop: 0.1 " + myColor2.name() + ","
-            "  stop: 0.5 " + myColor1.name()  + ","
-            "  stop: 0.9 " + myColor2.name() + ","
-            "  stop: 1 " + myColor1.name() + ");"
-            "  color: black;"
-            "  border: 1px solid #6c6c6c;"
-            "}"
-            ".overview{"
+  myStyle = ".overview{"
             "  font: 1.82em;"
             "  font-weight: bold;"
             "}"
@@ -1147,6 +1119,9 @@ QString QgsApplication::reportStyleSheet()
             "  width: 20%;"
             "  padding-right: 15px;"
             "  padding-left: 20px;"
+            "  font-weight: bold;"
+            "}"
+            "th .strong {"
             "  font-weight: bold;"
             "}"
             ".tabular-view{ "
@@ -1333,7 +1308,6 @@ bool QgsApplication::createThemeFolder()
     myDir.mkpath( folder );
   }
 
-  copyPath( defaultThemesFolder(), userThemesFolder() );
   return true;
 }
 
@@ -1663,7 +1637,7 @@ QgsLayoutItemRegistry *QgsApplication::layoutItemRegistry()
   return members()->mLayoutItemRegistry;
 }
 
-QgsGPSConnectionRegistry *QgsApplication::gpsConnectionRegistry()
+QgsGpsConnectionRegistry *QgsApplication::gpsConnectionRegistry()
 {
   return members()->mGpsConnectionRegistry;
 }
@@ -1719,7 +1693,7 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
   mSymbolLayerRegistry = new QgsSymbolLayerRegistry();
   mRendererRegistry = new QgsRendererRegistry();
   mRasterRendererRegistry = new QgsRasterRendererRegistry();
-  mGpsConnectionRegistry = new QgsGPSConnectionRegistry();
+  mGpsConnectionRegistry = new QgsGpsConnectionRegistry();
   mPluginLayerRegistry = new QgsPluginLayerRegistry();
   mProcessingRegistry = new QgsProcessingRegistry();
   mPageSizeRegistry = new QgsPageSizeRegistry();

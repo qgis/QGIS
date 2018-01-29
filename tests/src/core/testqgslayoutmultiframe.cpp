@@ -23,6 +23,9 @@
 #include "qgsapplication.h"
 #include "qgsproject.h"
 #include "qgslayoutitemhtml.h"
+#include "qgslayoutpagecollection.h"
+#include "qgslayoutundostack.h"
+#include "qgsreadwritecontext.h"
 
 #include <QObject>
 #include "qgstest.h"
@@ -45,6 +48,8 @@ class TestQgsLayoutMultiFrame : public QObject
     void undoRedoRemovedFrame(); //test that undo doesn't crash with removed frames
     void undoRedoRemovedFrame2();
     void registry();
+    void deleteFrame();
+    void writeReadXml();
 
   private:
     QgsLayout *mLayout = nullptr;
@@ -67,11 +72,6 @@ class TestMultiFrame : public QgsLayoutMultiFrame
     {
 
       return QgsLayoutItemRegistry::PluginItem + 1;
-    }
-
-    QString stringType() const override
-    {
-      return QStringLiteral( "TestMultiFrame" );
     }
 
     void render( QgsRenderContext &, const QRectF &, int,
@@ -533,7 +533,7 @@ void TestQgsLayoutMultiFrame::registry()
 
   QSignalSpy spyTypeAdded( &registry, &QgsLayoutItemRegistry::multiFrameTypeAdded );
 
-  QgsLayoutMultiFrameMetadata *metadata = new QgsLayoutMultiFrameMetadata( QgsLayoutItemRegistry::PluginItem + 1, QStringLiteral( "TestMultiFrame" ), QIcon(), create, resolve );
+  QgsLayoutMultiFrameMetadata *metadata = new QgsLayoutMultiFrameMetadata( QgsLayoutItemRegistry::PluginItem + 1, QStringLiteral( "TestMultiFrame" ), create, resolve );
   QVERIFY( registry.addLayoutMultiFrameType( metadata ) );
   QCOMPARE( spyTypeAdded.count(), 1 );
   QCOMPARE( spyTypeAdded.value( 0 ).at( 0 ).toInt(), QgsLayoutItemRegistry::PluginItem + 1 );
@@ -557,6 +557,68 @@ void TestQgsLayoutMultiFrame::registry()
   QCOMPARE( props.size(), 1 );
   registry.resolvePaths( QgsLayoutItemRegistry::PluginItem + 1, props, QgsPathResolver(), true );
   QVERIFY( props.isEmpty() );
+}
+
+void TestQgsLayoutMultiFrame::deleteFrame()
+{
+  QgsLayout l( QgsProject::instance() );
+  l.initializeDefaults();
+
+  QgsLayoutItemHtml *htmlItem = new QgsLayoutItemHtml( &l );
+  QgsLayoutFrame *frame1 = new QgsLayoutFrame( &l, htmlItem );
+  frame1->attemptSetSceneRect( QRectF( 0, 0, 100, 200 ) );
+  htmlItem->addFrame( frame1 );
+  QgsLayoutFrame *frame2 = new QgsLayoutFrame( &l, htmlItem );
+  frame2->attemptSetSceneRect( QRectF( 0, 0, 100, 200 ) );
+  htmlItem->addFrame( frame2 );
+
+  QCOMPARE( htmlItem->frameCount(), 2 );
+  QCOMPARE( htmlItem->frames(), QList< QgsLayoutFrame * >() << frame1 << frame2 );
+  l.removeLayoutItem( frame1 );
+  QCOMPARE( htmlItem->frameCount(), 1 );
+  QCOMPARE( htmlItem->frames(), QList< QgsLayoutFrame * >() << frame2 );
+  l.removeLayoutItem( frame2 );
+  QCOMPARE( htmlItem->frameCount(), 0 );
+  QVERIFY( htmlItem->frames().empty() );
+}
+
+void TestQgsLayoutMultiFrame::writeReadXml()
+{
+  QgsProject p;
+
+  // create layout
+  QgsLayout c( &p );
+  // add an multiframe
+  QgsLayoutItemHtml *html = new QgsLayoutItemHtml( &c );
+  c.addMultiFrame( html );
+  html->setHtml( QStringLiteral( "<blink>hi</blink>" ) );
+  QgsLayoutFrame *frame = new QgsLayoutFrame( &c, html );
+  frame->attemptSetSceneRect( QRectF( 1, 1, 10, 10 ) );
+  c.addLayoutItem( frame );
+  html->addFrame( frame );
+
+  QCOMPARE( frame->multiFrame(), html );
+  QCOMPARE( html->frameCount(), 1 );
+  QCOMPARE( html->frames(), QList< QgsLayoutFrame * >() << frame );
+
+  // save layout to xml
+  QDomDocument doc;
+  doc.appendChild( c.writeXml( doc, QgsReadWriteContext() ) );
+
+  // make a new layout from xml
+  QgsLayout c2( &p );
+  c2.readXml( doc.childNodes().at( 0 ).toElement(), doc, QgsReadWriteContext() );
+  // get table from new layout
+  QList< QgsLayoutFrame * > frames2;
+  c2.layoutItems( frames2 );
+  QCOMPARE( frames2.count(), 1 );
+  QgsLayoutFrame *frame2 = frames2.at( 0 );
+
+  QgsLayoutItemHtml *html2 = static_cast< QgsLayoutItemHtml *>( frame2->multiFrame() );
+  QVERIFY( html2 );
+  QCOMPARE( html2->html(), QStringLiteral( "<blink>hi</blink>" ) );
+  QCOMPARE( html2->frameCount(), 1 );
+  QCOMPARE( html2->frames(), QList< QgsLayoutFrame * >() << frame2 );
 }
 
 QGSTEST_MAIN( TestQgsLayoutMultiFrame )

@@ -73,7 +73,9 @@ namespace QgsWcs
 
     //lonLatEnvelope
     QgsCoordinateReferenceSystem layerCrs = layer->crs();
+    Q_NOWARN_DEPRECATED_PUSH
     QgsCoordinateTransform t( layerCrs, QgsCoordinateReferenceSystem( 4326 ) );
+    Q_NOWARN_DEPRECATED_POP
     //transform
     QgsRectangle BBox;
     try

@@ -29,5 +29,5 @@ from .v_net import variableOutput
 
 
 def processOutputs(alg, parameters, context):
-    outputParameter = {'output': ['line', 1]}
-    variableOutput(alg, outputParameter, parameters, context, False)
+    outputParameter = {'output': ['output', 'line', 1, True]}
+    variableOutput(alg, outputParameter, parameters, context)

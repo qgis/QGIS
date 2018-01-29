@@ -180,7 +180,7 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
     {}
 
 
-    virtual ~QgsAttributeEditorContainer();
+    ~QgsAttributeEditorContainer() override;
 
     /**
      * Add a child element to this container. This may be another container, a field or a relation.
@@ -244,7 +244,7 @@ class CORE_EXPORT QgsAttributeEditorContainer : public QgsAttributeEditorElement
      *
      * \since QGIS 3.0
      */
-    virtual QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const override SIP_FACTORY;
+    QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const override SIP_FACTORY;
 
     /**
      * The visibility expression is used in the attribute form to
@@ -300,7 +300,7 @@ class CORE_EXPORT QgsAttributeEditorField : public QgsAttributeEditorElement
      */
     int idx() const { return mIdx; }
 
-    virtual QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const override SIP_FACTORY;
+    QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const override SIP_FACTORY;
 
   private:
     void saveConfiguration( QDomElement &elem ) const override;
@@ -360,7 +360,7 @@ class CORE_EXPORT QgsAttributeEditorRelation : public QgsAttributeEditorElement
      */
     bool init( QgsRelationManager *relManager );
 
-    virtual QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const override SIP_FACTORY;
+    QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const override SIP_FACTORY;
 
     /**
      * Determines if the "link feature" button should be shown

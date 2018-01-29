@@ -26,6 +26,7 @@ __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsExpression,
                        QgsVectorLayer,
+                       QgsProcessingAlgorithm,
                        QgsProcessingException,
                        QgsProcessingParameterVectorLayer,
                        QgsProcessingParameterExpression,
@@ -44,8 +45,14 @@ class SelectByExpression(QgisAlgorithm):
     def group(self):
         return self.tr('Vector selection')
 
+    def groupId(self):
+        return 'vectorselection'
+
     def __init__(self):
         super().__init__()
+
+    def flags(self):
+        return super().flags() | QgsProcessingAlgorithm.FlagNoThreading
 
     def initAlgorithm(self, config=None):
         self.methods = [self.tr('creating new selection'),

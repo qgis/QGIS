@@ -40,6 +40,11 @@ QString QgsLineIntersectionAlgorithm::group() const
   return QObject::tr( "Vector overlay" );
 }
 
+QString QgsLineIntersectionAlgorithm::groupId() const
+{
+  return QStringLiteral( "vectoroverlay" );
+}
+
 void QgsLineIntersectionAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ),
@@ -139,7 +144,7 @@ QVariantMap QgsLineIntersectionAlgorithm::processAlgorithm( const QVariantMap &p
   if ( !sink )
     return QVariantMap();
 
-  QgsSpatialIndex spatialIndex( sourceB->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() ).setDestinationCrs( sourceA->sourceCrs() ) ), feedback );
+  QgsSpatialIndex spatialIndex( sourceB->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() ).setDestinationCrs( sourceA->sourceCrs(), context.transformContext() ) ), feedback );
   QgsFeature outFeature;
   QgsFeatureIterator features = sourceA->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( fieldsAIndices ) );
   double step = sourceA->featureCount() > 0 ? 100.0 / sourceA->featureCount() : 1;
@@ -165,7 +170,7 @@ QVariantMap QgsLineIntersectionAlgorithm::processAlgorithm( const QVariantMap &p
       engine->prepareGeometry();
 
       QgsFeatureRequest request = QgsFeatureRequest().setFilterFids( lines );
-      request.setDestinationCrs( sourceA->sourceCrs() );
+      request.setDestinationCrs( sourceA->sourceCrs(), context.transformContext() );
       request.setSubsetOfAttributes( fieldsBIndices );
 
       QgsFeature inFeatureB;

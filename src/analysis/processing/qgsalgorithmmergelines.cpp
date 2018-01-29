@@ -39,6 +39,11 @@ QString QgsMergeLinesAlgorithm::group() const
   return QObject::tr( "Vector geometry" );
 }
 
+QString QgsMergeLinesAlgorithm::groupId() const
+{
+  return QStringLiteral( "vectorgeometry" );
+}
+
 QString QgsMergeLinesAlgorithm::outputName() const
 {
   return QObject::tr( "Merged" );

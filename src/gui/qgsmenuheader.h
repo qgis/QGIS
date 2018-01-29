@@ -40,8 +40,8 @@ class GUI_EXPORT QgsMenuHeader : public QWidget
      */
     explicit QgsMenuHeader( const QString &text, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    virtual QSize minimumSizeHint() const override;
-    virtual QSize sizeHint() const override;
+    QSize minimumSizeHint() const override;
+    QSize sizeHint() const override;
 
   protected:
 

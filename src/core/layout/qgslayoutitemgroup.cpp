@@ -18,12 +18,14 @@
 #include "qgslayoutitemregistry.h"
 #include "qgslayout.h"
 #include "qgslayoututils.h"
+#include "qgslayoutundostack.h"
+#include "qgslayoutpagecollection.h"
 
 QgsLayoutItemGroup::QgsLayoutItemGroup( QgsLayout *layout )
   : QgsLayoutItem( layout )
 {}
 
-QgsLayoutItemGroup::~QgsLayoutItemGroup()
+void QgsLayoutItemGroup::cleanup()
 {
   //loop through group members and remove them from the scene
   for ( QgsLayoutItem *item : qgis::as_const( mItems ) )
@@ -35,18 +37,18 @@ QgsLayoutItemGroup::~QgsLayoutItemGroup()
     if ( mLayout )
       mLayout->removeLayoutItem( item );
     else
-      delete item;
+    {
+      item->cleanup();
+      item->deleteLater();
+    }
   }
+  mItems.clear();
+  QgsLayoutItem::cleanup();
 }
 
 int QgsLayoutItemGroup::type() const
 {
   return QgsLayoutItemRegistry::LayoutGroup;
-}
-
-QString QgsLayoutItemGroup::stringType() const
-{
-  return QStringLiteral( "ItemGroup" );
 }
 
 QString QgsLayoutItemGroup::displayName() const
@@ -158,12 +160,7 @@ void QgsLayoutItemGroup::attemptMove( const QgsLayoutPoint &point, bool useRefer
       command->saveBeforeState();
     }
 
-    // need to convert delta from layout units -> item units
-    QgsLayoutPoint itemPos = item->positionWithUnits();
-    QgsLayoutPoint deltaPos = mLayout->convertFromLayoutUnits( QPointF( deltaX, deltaY ), itemPos.units() );
-    itemPos.setX( itemPos.x() + deltaPos.x() );
-    itemPos.setY( itemPos.y() + deltaPos.y() );
-    item->attemptMove( itemPos, true, includesFrame );
+    item->attemptMoveBy( deltaX, deltaY );
 
     if ( command )
     {
@@ -230,11 +227,8 @@ void QgsLayoutItemGroup::attemptResize( const QgsLayoutSize &size, bool includes
   resetBoundingRect();
 }
 
-bool QgsLayoutItemGroup::writePropertiesToElement( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext & ) const
+bool QgsLayoutItemGroup::writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext & ) const
 {
-  QDomElement element = document.createElement( QStringLiteral( "LayoutItem" ) );
-  element.setAttribute( QStringLiteral( "type" ), stringType() );
-
   for ( QgsLayoutItem *item : mItems )
   {
     if ( !item )
@@ -244,21 +238,12 @@ bool QgsLayoutItemGroup::writePropertiesToElement( QDomElement &parentElement, Q
     childItem.setAttribute( QStringLiteral( "uuid" ), item->uuid() );
     element.appendChild( childItem );
   }
-
-  parentElement.appendChild( element );
-
   return true;
 }
 
 bool QgsLayoutItemGroup::readPropertiesFromElement( const QDomElement &itemElement, const QDomDocument &, const QgsReadWriteContext & )
 {
-  if ( itemElement.nodeName() != QStringLiteral( "LayoutItem" ) || itemElement.attribute( QStringLiteral( "type" ) ) != stringType() )
-  {
-    return false;
-  }
-
-  QList<QgsLayoutItem *> items;
-  mLayout->layoutItems( items );
+  mItemUuids.clear();
 
   QDomNodeList elementNodes = itemElement.elementsByTagName( QStringLiteral( "ComposerItemGroupElement" ) );
   for ( int i = 0; i < elementNodes.count(); ++i )
@@ -268,20 +253,23 @@ bool QgsLayoutItemGroup::readPropertiesFromElement( const QDomElement &itemEleme
       continue;
 
     QString uuid = elementNode.toElement().attribute( QStringLiteral( "uuid" ) );
+    mItemUuids << uuid;
+  }
+  return true;
+}
 
-    for ( QgsLayoutItem *item : qgis::as_const( items ) )
+void QgsLayoutItemGroup::finalizeRestoreFromXml()
+{
+  for ( const QString &uuid : qgis::as_const( mItemUuids ) )
+  {
+    QgsLayoutItem *item = mLayout->itemByUuid( uuid, true );
+    if ( item )
     {
-      if ( item && ( item->mUuid == uuid /* TODO || item->mTemplateUuid == uuid */ ) )
-      {
-        addItem( item );
-        break;
-      }
+      addItem( item );
     }
   }
 
   resetBoundingRect();
-
-  return true;
 }
 
 void QgsLayoutItemGroup::paint( QPainter *, const QStyleOptionGraphicsItem *, QWidget * )

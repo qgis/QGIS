@@ -73,11 +73,6 @@ class CORE_EXPORT QgsAuxiliaryLayer : public QgsVectorLayer
     QgsAuxiliaryLayer( const QString &pkField, const QString &filename, const QString &table, QgsVectorLayer *vlayer );
 
     /**
-     * Destructor
-     */
-    virtual ~QgsAuxiliaryLayer() = default;
-
-    /**
      * Copy constructor deactivated
      */
     QgsAuxiliaryLayer( const QgsAuxiliaryLayer &rhs ) = delete;
@@ -155,7 +150,7 @@ class CORE_EXPORT QgsAuxiliaryLayer : public QgsVectorLayer
      *
      * \returns true if the attribute is well deleted, false otherwise
      */
-    virtual bool deleteAttribute( int attr ) override;
+    bool deleteAttribute( int attr ) override;
 
     /**
      * Returns true if the underlying field has to be hidden from editing

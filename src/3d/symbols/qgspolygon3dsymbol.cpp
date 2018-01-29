@@ -32,6 +32,7 @@ void QgsPolygon3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext 
   elemDataProperties.setAttribute( QStringLiteral( "height" ), mHeight );
   elemDataProperties.setAttribute( QStringLiteral( "extrusion-height" ), mExtrusionHeight );
   elemDataProperties.setAttribute( QStringLiteral( "culling-mode" ), Qgs3DUtils::cullingModeToString( mCullingMode ) );
+  elemDataProperties.setAttribute( QStringLiteral( "invert-normals" ), mInvertNormals ? "1" : "0" );
   elem.appendChild( elemDataProperties );
 
   QDomElement elemMaterial = doc.createElement( QStringLiteral( "material" ) );
@@ -53,6 +54,7 @@ void QgsPolygon3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteCon
   mHeight = elemDataProperties.attribute( QStringLiteral( "height" ) ).toFloat();
   mExtrusionHeight = elemDataProperties.attribute( QStringLiteral( "extrusion-height" ) ).toFloat();
   mCullingMode = Qgs3DUtils::cullingModeFromString( elemDataProperties.attribute( QStringLiteral( "culling-mode" ) ) );
+  mInvertNormals = elemDataProperties.attribute( QStringLiteral( "invert-normals" ) ).toInt();
 
   QDomElement elemMaterial = elem.firstChildElement( QStringLiteral( "material" ) );
   mMaterial.readXml( elemMaterial );

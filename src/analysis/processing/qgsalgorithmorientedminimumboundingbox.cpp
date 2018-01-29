@@ -39,6 +39,11 @@ QString QgsOrientedMinimumBoundingBoxAlgorithm::group() const
   return QObject::tr( "Vector geometry" );
 }
 
+QString QgsOrientedMinimumBoundingBoxAlgorithm::groupId() const
+{
+  return QStringLiteral( "vectorgeometry" );
+}
+
 QString QgsOrientedMinimumBoundingBoxAlgorithm::outputName() const
 {
   return QObject::tr( "Bounding boxes" );

@@ -48,6 +48,12 @@ class CORE_EXPORT QgsBox3d
     QgsBox3d( const QgsPoint &p1, const QgsPoint &p2 );
 
     /**
+     * Constructs a QgsBox3D from a rectangle.
+     * Z Minimum and Z Maximum are set to 0.0.
+     */
+    QgsBox3d( const QgsRectangle &rect );
+
+    /**
      * Sets the minimum \a x value.
      * \see xMinimum()
      * \see setXMaximum()

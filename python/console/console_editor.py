@@ -282,7 +282,7 @@ class Editor(QsciScintilla):
 
     def contextMenuEvent(self, e):
         menu = QMenu(self)
-        iconRun = QgsApplication.getThemeIcon("console/iconRunConsole.png")
+        iconRun = QgsApplication.getThemeIcon("console/mIconRunConsole.svg")
         iconRunScript = QgsApplication.getThemeIcon("console/iconRunScriptConsole.png")
         iconCodePad = QgsApplication.getThemeIcon("console/iconCodepadConsole.png")
         iconCommentEditor = QgsApplication.getThemeIcon("console/iconCommentEditorConsole.png")

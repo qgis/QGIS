@@ -295,6 +295,8 @@ void QgsMapSaveDialog::applyMapSettings( QgsMapSettings &mapSettings )
   mapSettings.setBackgroundColor( mMapCanvas->canvasColor() );
   mapSettings.setRotation( mMapCanvas->rotation() );
   mapSettings.setLayers( mMapCanvas->layers() );
+  mapSettings.setTransformContext( QgsProject::instance()->transformContext() );
+  mapSettings.setPathResolver( QgsProject::instance()->pathResolver() );
 
   //build the expression context
   QgsExpressionContext expressionContext;
@@ -401,7 +403,8 @@ void QgsMapSaveDialog::onAccepted()
 
       connect( mapRendererTask, &QgsMapRendererTask::renderingComplete, [ = ]
       {
-        QgisApp::instance()->messageBar()->pushSuccess( tr( "Save as image" ), tr( "Successfully saved map to image" ) );
+        QgisApp::instance()->messageBar()->pushSuccess( tr( "Save as image" ), tr( "Successfully saved map to <a href=\"%1\">%2</a>" )
+            .arg( QUrl::fromLocalFile( QFileInfo( fileNameAndFilter.first ).path() ).toString(), QDir::toNativeSeparators( fileNameAndFilter.first ) ) );
       } );
       connect( mapRendererTask, &QgsMapRendererTask::errorOccurred, [ = ]( int error )
       {
@@ -449,7 +452,8 @@ void QgsMapSaveDialog::onAccepted()
 
       connect( mapRendererTask, &QgsMapRendererTask::renderingComplete, [ = ]
       {
-        QgisApp::instance()->messageBar()->pushSuccess( tr( "Save as PDF" ), tr( "Successfully saved map to PDF" ) );
+        QgisApp::instance()->messageBar()->pushSuccess( tr( "Save as PDF" ), tr( "Successfully saved map to <a href=\"%1\">%2</a>" )
+            .arg( QUrl::fromLocalFile( QFileInfo( fileName ).path() ).toString(), QDir::toNativeSeparators( fileName ) ) );
       } );
       connect( mapRendererTask, &QgsMapRendererTask::errorOccurred, [ = ]( int )
       {

@@ -324,12 +324,16 @@ QString QgsRasterLayer::htmlMetadata() const
   myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Provider" ) + QStringLiteral( "</td><td>" ) + providerType() + QStringLiteral( "</td></tr>\n" );
 
   // EPSG
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "CRS" ) + QStringLiteral( "</td><td>" ) + crs().authid() + QStringLiteral( " - " );
-  myMetadata += crs().description() + QStringLiteral( " - " );
-  if ( crs().isGeographic() )
-    myMetadata += tr( "Geographic" );
-  else
-    myMetadata += tr( "Projected" );
+  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "CRS" ) + QStringLiteral( "</td><td>" );
+  if ( crs().isValid() )
+  {
+    myMetadata += crs().authid() + QStringLiteral( " - " );
+    myMetadata += crs().description() + QStringLiteral( " - " );
+    if ( crs().isGeographic() )
+      myMetadata += tr( "Geographic" );
+    else
+      myMetadata += tr( "Projected" );
+  }
   myMetadata += QLatin1String( "</td></tr>\n" );
 
   // Extent
@@ -396,6 +400,9 @@ QString QgsRasterLayer::htmlMetadata() const
       myMetadata += tr( "Could not determine raster data type." );
   }
   myMetadata += QLatin1String( "</td></tr>\n" );
+
+  // Insert provider-specific (e.g. WMS-specific) metadata
+  myMetadata += mDataProvider->htmlMetadata();
 
   // End Provider section
   myMetadata += QLatin1String( "</table>\n<br><br>" );

@@ -40,9 +40,9 @@ class QgsLayoutTableBackgroundColorsDialog: public QDialog, private Ui::QgsLayou
      * \param parent parent widget
      * \param flags window flags
      */
-    QgsLayoutTableBackgroundColorsDialog( QgsLayoutTable *table, QWidget *parent = nullptr, Qt::WindowFlags flags = 0 );
+    QgsLayoutTableBackgroundColorsDialog( QgsLayoutTable *table, QWidget *parent = nullptr, Qt::WindowFlags flags = nullptr );
 
-    ~QgsLayoutTableBackgroundColorsDialog();
+    ~QgsLayoutTableBackgroundColorsDialog() override;
 
   private slots:
 

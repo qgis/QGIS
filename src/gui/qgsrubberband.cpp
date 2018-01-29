@@ -19,6 +19,7 @@
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsvectorlayer.h"
+#include "qgsproject.h"
 #include <QPainter>
 
 QgsRubberBand::QgsRubberBand( QgsMapCanvas *mapCanvas, QgsWkbTypes::GeometryType geometryType )
@@ -257,7 +258,7 @@ void QgsRubberBand::addGeometry( const QgsGeometry &geometry, const QgsCoordinat
   QgsGeometry geom = geometry;
   if ( crs.isValid() )
   {
-    QgsCoordinateTransform ct( crs, ms.destinationCrs() );
+    QgsCoordinateTransform ct( crs, ms.destinationCrs(), QgsProject::instance() );
     geom.transform( ct );
   }
 

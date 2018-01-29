@@ -27,6 +27,9 @@
 #include "qgsproject.h"
 #include "qgsmapthemecollection.h"
 #include "qgsproperty.h"
+#include "qgslayoutpagecollection.h"
+#include "qgslayoutitempolyline.h"
+#include "qgsreadwritecontext.h"
 #include <QObject>
 #include "qgstest.h"
 
@@ -44,13 +47,16 @@ class TestQgsLayoutMap : public QObject
     void cleanup();// will be called after every testfunction.
     void id();
     void render();
-#if 0
     void uniqueId(); //test if map id is adapted when doing copy paste
     void worldFileGeneration(); // test world file generation
-#endif
+
     void mapPolygonVertices(); // test mapPolygon function with no map rotation
     void dataDefinedLayers(); //test data defined layer string
     void dataDefinedStyles(); //test data defined styles
+    void rasterized();
+    void layersToRender();
+    void mapRotation();
+    void mapItemRotation();
 
   private:
     QgsRasterLayer *mRasterLayer = nullptr;
@@ -159,21 +165,26 @@ void TestQgsLayoutMap::render()
 
   QVERIFY( checker.testLayout( mReport, 0, 0 ) );
 }
-#if 0
+
 void TestQgsLayoutMap::uniqueId()
 {
+  QgsLayout l( QgsProject::instance() );
+  l.initializeDefaults();
+  QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
+  l.addLayoutItem( map );
+
   QDomDocument doc;
   QDomElement documentElement = doc.createElement( QStringLiteral( "ComposerItemClipboard" ) );
-  mComposerMap->writeXml( documentElement, doc );
-  mComposition->addItemsFromXml( documentElement, doc, false );
+  map->writeXml( documentElement, doc, QgsReadWriteContext() );
+  l.addItemsFromXml( documentElement, doc, QgsReadWriteContext() );
 
   //test if both composer maps have different ids
-  const QgsComposerMap *newMap = 0;
-  QList<const QgsComposerMap *> mapList = mComposition->composerMapItems();
-  QList<const QgsComposerMap *>::const_iterator mapIt = mapList.constBegin();
-  for ( ; mapIt != mapList.constEnd(); ++mapIt )
+  QgsLayoutItemMap *newMap = 0;
+  QList<QgsLayoutItemMap *> mapList;
+  l.layoutItems( mapList );
+  for ( auto mapIt = mapList.constBegin() ; mapIt != mapList.constEnd(); ++mapIt )
   {
-    if ( *mapIt != mComposerMap )
+    if ( *mapIt != map )
     {
       newMap = *mapIt;
       break;
@@ -182,24 +193,35 @@ void TestQgsLayoutMap::uniqueId()
 
   QVERIFY( newMap );
 
-  int oldId = mComposerMap->id();
-  int newId = newMap->id();
-
-  mComposition->removeComposerItem( const_cast<QgsComposerMap *>( newMap ) );
+  QString oldId = map->displayName();
+  QString newId = newMap->displayName();
 
   QVERIFY( oldId != newId );
 }
 
 void TestQgsLayoutMap::worldFileGeneration()
 {
-  mComposerMap->setNewExtent( QgsRectangle( 781662.375, 3339523.125, 793062.375, 3345223.125 ) );
-  mComposerMap->setMapRotation( 30.0 );
+  QgsLayout l( QgsProject::instance() );
+  l.initializeDefaults();
+  QgsLayoutItemPage *page2 = new QgsLayoutItemPage( &l );
+  page2->setPageSize( "A4", QgsLayoutItemPage::Landscape );
+  l.pageCollection()->addPage( page2 );
 
-  mComposition->setGenerateWorldFile( true );
-  mComposition->setReferenceMap( mComposerMap );
+  QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
+  map->attemptSetSceneRect( QRectF( 20, 20, 200, 100 ) );
+  map->setFrameEnabled( true );
+  map->setLayers( QList<QgsMapLayer *>() << mRasterLayer );
+  l.addLayoutItem( map );
+
+  map->setExtent( QgsRectangle( 781662.375, 3339523.125, 793062.375, 3345223.125 ) );
+  map->setMapRotation( 30.0 );
+
+  l.setReferenceMap( map );
+
+  QgsLayoutExporter exporter( &l );
 
   double a, b, c, d, e, f;
-  mComposition->computeWorldFileParameters( a, b, c, d, e, f );
+  exporter.computeWorldFileParameters( a, b, c, d, e, f );
 
   QGSCOMPARENEAR( a, 4.18048, 0.001 );
   QGSCOMPARENEAR( b, 2.41331, 0.001 );
@@ -209,8 +231,8 @@ void TestQgsLayoutMap::worldFileGeneration()
   QGSCOMPARENEAR( f, 3.34241e+06, 1e+03 );
 
   //test with map on second page. Parameters should be the same
-  mComposerMap->setItemPosition( 20, 20, QgsComposerItem::UpperLeft, 2 );
-  mComposition->computeWorldFileParameters( a, b, c, d, e, f );
+  map->attemptMove( QgsLayoutPoint( 20, 20 ), true, false, 1 );
+  exporter.computeWorldFileParameters( a, b, c, d, e, f );
 
   QGSCOMPARENEAR( a, 4.18048, 0.001 );
   QGSCOMPARENEAR( b, 2.41331, 0.001 );
@@ -220,8 +242,8 @@ void TestQgsLayoutMap::worldFileGeneration()
   QGSCOMPARENEAR( f, 3.34241e+06, 1e+03 );
 
   //test computing parameters for specific region
-  mComposerMap->setItemPosition( 20, 20, QgsComposerItem::UpperLeft, 2 );
-  mComposition->computeWorldFileParameters( QRectF( 10, 5, 260, 200 ), a, b, c, d, e, f );
+  map->attemptMove( QgsLayoutPoint( 20, 20 ), true, false, 1 );
+  exporter.computeWorldFileParameters( QRectF( 10, 5, 260, 200 ), a, b, c, d, e, f );
 
   QGSCOMPARENEAR( a, 4.18061, 0.001 );
   QGSCOMPARENEAR( b, 2.41321, 0.001 );
@@ -229,12 +251,7 @@ void TestQgsLayoutMap::worldFileGeneration()
   QGSCOMPARENEAR( d, 2.4137, 0.001 );
   QGSCOMPARENEAR( e, -4.1798, 0.001 );
   QGSCOMPARENEAR( f, 3.35331e+06, 1e+03 );
-
-  mComposition->setGenerateWorldFile( false );
-  mComposerMap->setMapRotation( 0.0 );
-
 }
-#endif
 
 
 void TestQgsLayoutMap::mapPolygonVertices()
@@ -326,7 +343,6 @@ void TestQgsLayoutMap::dataDefinedLayers()
   result = map->layersToRender();
   QVERIFY( result.isEmpty() );
 
-
   //test with atlas feature evaluation
   QgsVectorLayer *atlasLayer = new QgsVectorLayer( QStringLiteral( "Point?field=col1:string" ), QStringLiteral( "atlas" ), QStringLiteral( "memory" ) );
   QVERIFY( atlasLayer->isValid() );
@@ -335,25 +351,26 @@ void TestQgsLayoutMap::dataDefinedLayers()
   QgsFeature f2( atlasLayer->dataProvider()->fields(), 1 );
   f2.setAttribute( QStringLiteral( "col1" ), mPointsLayer->name() );
   atlasLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 << f2 );
-#if 0 //TODO
-  mComposition->atlasComposition().setCoverageLayer( atlasLayer );
-  mComposition->atlasComposition().setEnabled( true );
-  mComposition->setAtlasMode( QgsComposition::ExportAtlas );
-  mComposition->atlasComposition().beginRender();
-  mComposition->atlasComposition().prepareForFeature( 0 );
+
+  l.reportContext().setLayer( atlasLayer );
+  QgsFeature f;
+  QgsFeatureIterator it = atlasLayer->getFeatures();
+  it.nextFeature( f );
+  l.reportContext().setFeature( f );
 
   map->dataDefinedProperties().setProperty( QgsLayoutObject::MapLayers, QgsProperty::fromField( QStringLiteral( "col1" ) ) );
   result = map->layersToRender();
   QCOMPARE( result.count(), 1 );
   QCOMPARE( result.at( 0 ), mLinesLayer );
-  mComposition->atlasComposition().prepareForFeature( 1 );
+  it.nextFeature( f );
+  l.reportContext().setFeature( f );
   result = map->layersToRender();
   QCOMPARE( result.count(), 1 );
   QCOMPARE( result.at( 0 ), mPointsLayer );
-  mComposition->atlasComposition().setEnabled( false );
-  delete atlasLayer;
+  it.nextFeature( f );
+  l.reportContext().setFeature( f );
 
-#endif
+  delete atlasLayer;
 
   //render test
   map->dataDefinedProperties().setProperty( QgsLayoutObject::MapLayers, QgsProperty::fromExpression(
@@ -427,6 +444,143 @@ void TestQgsLayoutMap::dataDefinedStyles()
   QgsLayoutChecker checker( QStringLiteral( "composermap_ddstyles" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "composer_map" ) );
   QVERIFY( checker.testLayout( mReport, 0, 0 ) );
+}
+
+void TestQgsLayoutMap::rasterized()
+{
+  // test a map which must be rasterized
+  QgsLayout l( QgsProject::instance() );
+  l.initializeDefaults();
+
+  QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
+  map->attemptMove( QgsLayoutPoint( 20, 30 ) );
+  map->attemptResize( QgsLayoutSize( 200, 100 ) );
+  map->setFrameEnabled( true );
+  map->setExtent( QgsRectangle( -110.0, 25.0, -90, 40.0 ) );
+  QList<QgsMapLayer *> layers = QList<QgsMapLayer *>() << mLinesLayer;
+  map->setLayers( layers );
+  map->setBackgroundColor( Qt::yellow );
+  l.addLayoutItem( map );
+
+  // add some guide lines, just for reference
+  QPolygonF points;
+  points << QPointF( 0, 30 ) << QPointF( 10, 30 );
+  QgsLayoutItemPolyline *line1 = new QgsLayoutItemPolyline( points, &l );
+  l.addLayoutItem( line1 );
+  points.clear();
+  points << QPointF( 0, 30 + map->rect().height() ) << QPointF( 10, 30 + map->rect().height() );
+  QgsLayoutItemPolyline *line2 = new QgsLayoutItemPolyline( points, &l );
+  l.addLayoutItem( line2 );
+  points.clear();
+  points << QPointF( 20, 0 ) << QPointF( 20, 20 );
+  QgsLayoutItemPolyline *line3 = new QgsLayoutItemPolyline( points, &l );
+  l.addLayoutItem( line3 );
+  points.clear();
+  points << QPointF( 220, 0 ) << QPointF( 220, 20 );
+  QgsLayoutItemPolyline *line4 = new QgsLayoutItemPolyline( points, &l );
+  l.addLayoutItem( line4 );
+
+  // force rasterization
+  QgsLayoutItemMapGrid *grid = new QgsLayoutItemMapGrid( "test", map );
+  grid->setIntervalX( 10 );
+  grid->setIntervalY( 10 );
+  grid->setBlendMode( QPainter::CompositionMode_Darken );
+  grid->setAnnotationEnabled( true );
+  grid->setAnnotationDisplay( QgsLayoutItemMapGrid::ShowAll, QgsLayoutItemMapGrid::Left );
+  grid->setAnnotationDisplay( QgsLayoutItemMapGrid::ShowAll, QgsLayoutItemMapGrid::Top );
+  grid->setAnnotationDisplay( QgsLayoutItemMapGrid::ShowAll, QgsLayoutItemMapGrid::Right );
+  grid->setAnnotationDisplay( QgsLayoutItemMapGrid::ShowAll, QgsLayoutItemMapGrid::Bottom );
+  map->grids()->addGrid( grid );
+  map->updateBoundingRect();
+
+  QVERIFY( map->containsAdvancedEffects() );
+
+  QgsLayoutChecker checker( QStringLiteral( "layoutmap_rasterized" ), &l );
+  checker.setControlPathPrefix( QStringLiteral( "composer_map" ) );
+  QVERIFY( checker.testLayout( mReport, 0, 0 ) );
+
+  // try rendering again, without requiring rasterization, for comparison
+  // (we can use the same test image, because CompositionMode_Darken doesn't actually have any noticeable
+  // rendering differences for the black grid!)
+  grid->setBlendMode( QPainter::CompositionMode_SourceOver );
+  QVERIFY( !map->containsAdvancedEffects() );
+  QVERIFY( checker.testLayout( mReport, 0, 0 ) );
+}
+
+void TestQgsLayoutMap::layersToRender()
+{
+  QList<QgsMapLayer *> layers = QList<QgsMapLayer *>() << mRasterLayer << mPolysLayer << mPointsLayer << mLinesLayer;
+  QList<QgsMapLayer *> layers2 = QList<QgsMapLayer *>() << mRasterLayer << mPolysLayer << mLinesLayer;
+
+  QgsLayout l( QgsProject::instance() );
+
+  QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
+  map->setLayers( layers );
+  l.addLayoutItem( map );
+
+  QCOMPARE( map->layersToRender(), layers );
+
+  // hide coverage layer
+  l.reportContext().setLayer( mPointsLayer );
+  l.renderContext().setFlag( QgsLayoutRenderContext::FlagHideCoverageLayer, true );
+  QCOMPARE( map->layersToRender(), layers2 );
+
+  l.renderContext().setFlag( QgsLayoutRenderContext::FlagHideCoverageLayer, false );
+  QCOMPARE( map->layersToRender(), layers );
+}
+
+void TestQgsLayoutMap::mapRotation()
+{
+  QgsProject p;
+  QFileInfo rasterFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/rgb256x256.png" );
+  QgsRasterLayer *layer = new QgsRasterLayer( rasterFileInfo.filePath(),
+      rasterFileInfo.completeBaseName() );
+  QgsMultiBandColorRenderer *rasterRenderer = new QgsMultiBandColorRenderer( mRasterLayer->dataProvider(), 1, 2, 3 );
+  layer->setRenderer( rasterRenderer );
+  p.addMapLayer( layer );
+
+  QgsLayout l( &p );
+  l.initializeDefaults();
+
+  //test map rotation
+  QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
+  map->attemptSetSceneRect( QRectF( 20, 20, 100, 50 ) );
+  map->setFrameEnabled( true );
+  l.addLayoutItem( map );
+  map->setExtent( QgsRectangle( 0, -192, 256, -64 ) );
+  map->setMapRotation( 90 );
+  map->setLayers( QList<QgsMapLayer *>() << layer );
+
+  QgsLayoutChecker checker( QStringLiteral( "composerrotation_maprotation" ), &l );
+  checker.setControlPathPrefix( QStringLiteral( "composer_items" ) );
+  QVERIFY( checker.testLayout( mReport, 0, 200 ) );
+}
+
+void TestQgsLayoutMap::mapItemRotation()
+{
+  QgsProject p;
+  QFileInfo rasterFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/rgb256x256.png" );
+  QgsRasterLayer *layer = new QgsRasterLayer( rasterFileInfo.filePath(),
+      rasterFileInfo.completeBaseName() );
+  QgsMultiBandColorRenderer *rasterRenderer = new QgsMultiBandColorRenderer( mRasterLayer->dataProvider(), 1, 2, 3 );
+  layer->setRenderer( rasterRenderer );
+  p.addMapLayer( layer );
+
+  QgsLayout l( &p );
+  l.initializeDefaults();
+
+  //test map rotation
+  QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
+  map->attemptSetSceneRect( QRectF( 20, 50, 100, 50 ) );
+  map->setFrameEnabled( true );
+  l.addLayoutItem( map );
+  map->setExtent( QgsRectangle( 0, -192, 256, -64 ) );
+  map->setItemRotation( 90 );
+  map->setLayers( QList<QgsMapLayer *>() << layer );
+
+  QgsLayoutChecker checker( QStringLiteral( "composerrotation_mapitemrotation" ), &l );
+  checker.setControlPathPrefix( QStringLiteral( "composer_items" ) );
+  QVERIFY( checker.testLayout( mReport, 0, 200 ) );
 }
 
 QGSTEST_MAIN( TestQgsLayoutMap )

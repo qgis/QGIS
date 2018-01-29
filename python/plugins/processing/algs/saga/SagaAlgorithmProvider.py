@@ -127,6 +127,12 @@ class SagaAlgorithmProvider(QgsProcessingProvider):
     def supportedOutputTableExtensions(self):
         return ['dbf']
 
+    def supportsNonFileBasedOutput(self):
+        """
+        SAGA Provider doesn't support non file based outputs
+        """
+        return False
+
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'saga.png'))
 

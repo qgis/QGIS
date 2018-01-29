@@ -23,11 +23,12 @@
 #include "qgsserverprojectutils.h"
 
 #include "qgslayoutmanager.h"
-#include "qgscomposition.h"
-#include "qgscomposermap.h"
-#include "qgscomposerlabel.h"
-#include "qgscomposerhtml.h"
-#include "qgscomposerframe.h"
+#include "qgsprintlayout.h"
+#include "qgslayoutitemmap.h"
+#include "qgslayoutitemlabel.h"
+#include "qgslayoutitemhtml.h"
+#include "qgslayoutframe.h"
+#include "qgslayoutpagecollection.h"
 
 #include "qgslayertreenode.h"
 #include "qgslayertreegroup.h"
@@ -624,48 +625,61 @@ namespace QgsWms
 
   QDomElement getComposerTemplatesElement( QDomDocument &doc, const QgsProject *project )
   {
-    QList<QgsComposition *> projectComposers = project->layoutManager()->compositions();
+    QList< QgsPrintLayout * > projectComposers = project->layoutManager()->printLayouts();
     if ( projectComposers.size() == 0 )
       return QDomElement();
 
     QStringList restrictedComposers = QgsServerProjectUtils::wmsRestrictedComposers( *project );
 
     QDomElement composerTemplatesElem = doc.createElement( QStringLiteral( "ComposerTemplates" ) );
-    QList<QgsComposition *>::const_iterator cIt = projectComposers.constBegin();
+    QList<QgsPrintLayout *>::const_iterator cIt = projectComposers.constBegin();
     for ( ; cIt != projectComposers.constEnd(); ++cIt )
     {
-      QgsComposition *composer = *cIt;
-      if ( restrictedComposers.contains( composer->name() ) )
+      QgsPrintLayout *layout = *cIt;
+      if ( restrictedComposers.contains( layout->name() ) )
         continue;
 
-      QDomElement composerTemplateElem = doc.createElement( QStringLiteral( "ComposerTemplate" ) );
-      composerTemplateElem.setAttribute( QStringLiteral( "name" ), composer->name() );
+      // Check that we have at least one page
+      if ( layout->pageCollection()->pageCount() < 1 )
+        continue;
 
-      //get paper width and hight in mm from composition
-      composerTemplateElem.setAttribute( QStringLiteral( "width" ), composer->paperWidth() );
-      composerTemplateElem.setAttribute( QStringLiteral( "height" ), composer->paperHeight() );
+      // Get width and height from first page of the collection
+      QgsLayoutSize layoutSize( layout->pageCollection()->page( 0 )->sizeWithUnits() );
+      QgsLayoutMeasurement width( layout->convertFromLayoutUnits( layoutSize.width(), QgsUnitTypes::LayoutUnit::LayoutMillimeters ) );
+      QgsLayoutMeasurement height( layout->convertFromLayoutUnits( layoutSize.height(), QgsUnitTypes::LayoutUnit::LayoutMillimeters ) );
+
+      QDomElement composerTemplateElem = doc.createElement( QStringLiteral( "ComposerTemplate" ) );
+      composerTemplateElem.setAttribute( QStringLiteral( "name" ), layout->name() );
+
+      //get paper width and height in mm from composition
+      composerTemplateElem.setAttribute( QStringLiteral( "width" ), width.length() );
+      composerTemplateElem.setAttribute( QStringLiteral( "height" ), height.length() );
 
       //add available composer maps and their size in mm
-      QList<const QgsComposerMap *> composerMapList = composer->composerMapItems();
-      QList<const QgsComposerMap *>::const_iterator cmIt = composerMapList.constBegin();
-      for ( ; cmIt != composerMapList.constEnd(); ++cmIt )
+      QList<QgsLayoutItemMap *> layoutMapList;
+      layout->layoutItems<QgsLayoutItemMap>( layoutMapList );
+      QList<QgsLayoutItemMap *>::const_iterator cmIt = layoutMapList.constBegin();
+      // Add map id
+      int mapId = 0;
+      for ( ; cmIt != layoutMapList.constEnd(); ++cmIt )
       {
-        const QgsComposerMap *composerMap = *cmIt;
+        const QgsLayoutItemMap *composerMap = *cmIt;
 
         QDomElement composerMapElem = doc.createElement( QStringLiteral( "ComposerMap" ) );
-        composerMapElem.setAttribute( QStringLiteral( "name" ), QStringLiteral( "map%1" ).arg( composerMap->id() ) );
+        composerMapElem.setAttribute( QStringLiteral( "name" ), QStringLiteral( "map%1" ).arg( mapId ) );
+        mapId++;
         composerMapElem.setAttribute( QStringLiteral( "width" ), composerMap->rect().width() );
         composerMapElem.setAttribute( QStringLiteral( "height" ), composerMap->rect().height() );
         composerTemplateElem.appendChild( composerMapElem );
       }
 
       //add available composer labels
-      QList<QgsComposerLabel *> composerLabelList;
-      composer->composerItems( composerLabelList );
-      QList<QgsComposerLabel *>::const_iterator clIt = composerLabelList.constBegin();
+      QList<QgsLayoutItemLabel *> composerLabelList;
+      layout->layoutItems<QgsLayoutItemLabel>( composerLabelList );
+      QList<QgsLayoutItemLabel *>::const_iterator clIt = composerLabelList.constBegin();
       for ( ; clIt != composerLabelList.constEnd(); ++clIt )
       {
-        QgsComposerLabel *composerLabel = *clIt;
+        QgsLayoutItemLabel *composerLabel = *clIt;
         QString id = composerLabel->id();
         if ( id.isEmpty() )
           continue;
@@ -676,12 +690,12 @@ namespace QgsWms
       }
 
       //add available composer HTML
-      QList<QgsComposerHtml *> composerHtmlList;
-      composer->composerItems( composerHtmlList );
-      QList<QgsComposerHtml *>::const_iterator chIt = composerHtmlList.constBegin();
+      QList<QgsLayoutItemHtml *> composerHtmlList;
+      layout->layoutObjects<QgsLayoutItemHtml>( composerHtmlList );
+      QList<QgsLayoutItemHtml *>::const_iterator chIt = composerHtmlList.constBegin();
       for ( ; chIt != composerHtmlList.constEnd(); ++chIt )
       {
-        QgsComposerHtml *composerHtml = *chIt;
+        QgsLayoutItemHtml *composerHtml = *chIt;
         if ( composerHtml->frameCount() == 0 )
           continue;
 
@@ -1250,7 +1264,9 @@ namespace QgsWms
       QgsRectangle wgs84BoundingRect;
       if ( !layerExtent.isNull() )
       {
+        Q_NOWARN_DEPRECATED_PUSH
         QgsCoordinateTransform exGeoTransform( layerCRS, wgs84 );
+        Q_NOWARN_DEPRECATED_POP
         try
         {
           wgs84BoundingRect = exGeoTransform.transformBoundingBox( layerExtent );
@@ -1342,7 +1358,9 @@ namespace QgsWms
       QgsRectangle crsExtent;
       if ( !layerExtent.isNull() )
       {
+        Q_NOWARN_DEPRECATED_PUSH
         QgsCoordinateTransform crsTransform( layerCRS, crs );
+        Q_NOWARN_DEPRECATED_POP
         try
         {
           crsExtent = crsTransform.transformBoundingBox( layerExtent );
@@ -1455,7 +1473,9 @@ namespace QgsWms
       }
 
       //get project crs
+      Q_NOWARN_DEPRECATED_PUSH
       QgsCoordinateTransform t( layerCrs, project->crs() );
+      Q_NOWARN_DEPRECATED_POP
 
       //transform
       try
@@ -1643,7 +1663,7 @@ namespace QgsWms
 
         //attributes
         QDomElement attributesElem = doc.createElement( QStringLiteral( "Attributes" ) );
-        const QgsFields &layerFields = vLayer->pendingFields();
+        const QgsFields layerFields = vLayer->fields();
         for ( int idx = 0; idx < layerFields.count(); ++idx )
         {
           QgsField field = layerFields.at( idx );

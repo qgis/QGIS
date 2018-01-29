@@ -60,6 +60,9 @@ class RandomPointsAlongLines(QgisAlgorithm):
     def group(self):
         return self.tr('Vector creation')
 
+    def groupId(self):
+        return 'vectorcreation'
+
     def __init__(self):
         super().__init__()
 
@@ -106,7 +109,7 @@ class RandomPointsAlongLines(QgisAlgorithm):
         points = dict()
 
         da = QgsDistanceArea()
-        da.setSourceCrs(source.sourceCrs())
+        da.setSourceCrs(source.sourceCrs(), context.transformContext())
         da.setEllipsoid(context.project().ellipsoid())
 
         request = QgsFeatureRequest()

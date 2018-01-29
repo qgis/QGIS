@@ -36,8 +36,8 @@ class GUI_EXPORT QgsRelationReferenceConfigDlg : public QgsEditorConfigWidget, p
 
   public:
     explicit QgsRelationReferenceConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget *parent );
-    virtual QVariantMap config() override;
-    virtual void setConfig( const QVariantMap &config ) override;
+    QVariantMap config() override;
+    void setConfig( const QVariantMap &config ) override;
 
   private:
     void loadFields();

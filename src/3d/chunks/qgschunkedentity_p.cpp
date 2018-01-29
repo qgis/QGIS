@@ -120,6 +120,8 @@ void QgsChunkedEntity::update( const SceneState &state )
   QElapsedTimer t;
   t.start();
 
+  int oldJobsCount = pendingJobsCount();
+
   QSet<QgsChunkNode *> activeBefore = QSet<QgsChunkNode *>::fromList( mActiveNodes );
   mActiveNodes.clear();
   mFrustumCulled = 0;
@@ -170,6 +172,9 @@ void QgsChunkedEntity::update( const SceneState &state )
 
   mNeedsUpdate = false;  // just updated
 
+  if ( pendingJobsCount() != oldJobsCount )
+    emit pendingJobsCountChanged();
+
   qDebug() << "update: active " << mActiveNodes.count() << " enabled " << enabled << " disabled " << disabled << " | culled " << mFrustumCulled << " | loading " << mChunkLoaderQueue->count() << " loaded " << mReplacementQueue->count() << " | unloaded " << unloaded << " elapsed " << t.elapsed() << "ms";
 }
 
@@ -213,6 +218,11 @@ void QgsChunkedEntity::updateNodes( const QList<QgsChunkNode *> &nodes, QgsChunk
   // trigger update
   if ( !mActiveJob )
     startJob();
+}
+
+int QgsChunkedEntity::pendingJobsCount() const
+{
+  return mChunkLoaderQueue->count() + ( mActiveJob ? 1 : 0 );
 }
 
 
@@ -294,6 +304,9 @@ void QgsChunkedEntity::requestResidency( QgsChunkNode *node )
   }
   else if ( node->state() == QgsChunkNode::Skeleton )
   {
+    if ( !node->hasData() )
+      return;   // no need to load (we already tried but got nothing back)
+
     // add to the loading queue
     QgsChunkListEntry *entry = new QgsChunkListEntry( node );
     node->setQueuedForLoad( entry );
@@ -306,6 +319,8 @@ void QgsChunkedEntity::requestResidency( QgsChunkNode *node )
 
 void QgsChunkedEntity::onActiveJobFinished()
 {
+  int oldJobsCount = pendingJobsCount();
+
   QgsChunkQueueJob *job = qobject_cast<QgsChunkQueueJob *>( sender() );
   Q_ASSERT( job );
   Q_ASSERT( job == mActiveJob );
@@ -320,10 +335,18 @@ void QgsChunkedEntity::onActiveJobFinished()
     // mark as loaded + create entity
     Qt3DCore::QEntity *entity = node->loader()->createEntity( this );
 
-    // load into node (should be in main thread again)
-    node->setLoaded( entity );
+    if ( entity )
+    {
+      // load into node (should be in main thread again)
+      node->setLoaded( entity );
 
-    mReplacementQueue->insertFirst( node->replacementQueueEntry() );
+      mReplacementQueue->insertFirst( node->replacementQueueEntry() );
+    }
+    else
+    {
+      node->setHasData( false );
+      node->cancelLoading();
+    }
 
     // now we need an update!
     mNeedsUpdate = true;
@@ -340,6 +363,9 @@ void QgsChunkedEntity::onActiveJobFinished()
 
   // start another job - if any
   startJob();
+
+  if ( pendingJobsCount() != oldJobsCount )
+    emit pendingJobsCountChanged();
 }
 
 void QgsChunkedEntity::startJob()

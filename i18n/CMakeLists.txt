@@ -11,7 +11,7 @@ MACRO(ADD_TRANSLATION_FILES _sources )
       ADD_CUSTOM_COMMAND(
          OUTPUT ${_out}
          COMMAND ${QT_LRELEASE_EXECUTABLE}
-         ARGS -verbose ${_in} -qm ${_out}
+         ARGS -silent ${_in} -qm ${_out}
          DEPENDS ${_in}
       )
 

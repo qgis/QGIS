@@ -16,7 +16,7 @@
 %Include qgsrubberband.sip
 %Include qgssnapindicator.sip
 %Include qgstablewidgetitem.sip
-%Include qgsuserinputdockwidget.sip
+%Include qgsuserinputwidget.sip
 %Include qgsbrowserdockwidget.sip
 %Include qgsvertexmarker.sip
 %Include qgsabstractdatasourcewidget.sip
@@ -46,7 +46,6 @@
 %Include layertree/qgslayertreeembeddedconfigwidget.sip
 %Include layertree/qgslayertreeembeddedwidgetregistry.sip
 %Include layout/qgslayoutviewmouseevent.sip
-%Include layout/qgslayoutviewrubberband.sip
 %Include raster/qgsrasterrendererwidget.sip
 %Include symbology/qgssymbolwidgetcontext.sip
 %Include qgisinterface.sip
@@ -87,10 +86,6 @@
 %Include qgscolorschemelist.sip
 %Include qgscolorswatchgrid.sip
 %Include qgscolorwidgets.sip
-%Include qgscomposerinterface.sip
-%Include qgscomposeritemcombobox.sip
-%Include qgscomposerruler.sip
-%Include qgscomposerview.sip
 %Include qgscompoundcolorwidget.sip
 %Include qgsconfigureshortcutsdialog.sip
 %Include qgscredentialdialog.sip
@@ -290,6 +285,7 @@
 %Include layertree/qgslayertreemapcanvasbridge.sip
 %Include layertree/qgslayertreeview.sip
 %Include layertree/qgslayertreeviewdefaultactions.sip
+%Include layout/qgslayoutcustomdrophandler.sip
 %Include layout/qgslayoutdesignerinterface.sip
 %Include layout/qgslayoutitemcombobox.sip
 %Include layout/qgslayoutitemguiregistry.sip
@@ -298,6 +294,7 @@
 %Include layout/qgslayoutruler.sip
 %Include layout/qgslayoutunitscombobox.sip
 %Include layout/qgslayoutview.sip
+%Include layout/qgslayoutviewrubberband.sip
 %Include layout/qgslayoutviewtool.sip
 %Include layout/qgslayoutviewtooladditem.sip
 %Include layout/qgslayoutviewtooladdnodeitem.sip

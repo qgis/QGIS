@@ -34,7 +34,7 @@
  * Typically you will use this when you want to prompt the user for
  * a coordinate system identifier e.g. from a plugin you might do this
  * to get an epsg code:
- * \code
+ * \code{.cpp}
  * QgsProjectionSelectionDialog mySelector( mQGisIface->mainWindow() );
  * mySelector.setCrs( crs );
  * if ( mySelector.exec() )
@@ -56,11 +56,11 @@ class GUI_EXPORT QgsProjectionSelectionDialog : public QDialog, private Ui::QgsG
     /**
      * Constructor for QgsProjectionSelectionDialog.
      */
-    QgsProjectionSelectionDialog( QWidget *parent SIP_TRANSFERTHIS = 0,
+    QgsProjectionSelectionDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr,
                                   Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
 
-    ~QgsProjectionSelectionDialog();
+    ~QgsProjectionSelectionDialog() override;
 
     /**
      * Returns the CRS currently selected in the widget.

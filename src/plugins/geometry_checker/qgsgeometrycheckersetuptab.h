@@ -32,7 +32,7 @@ class QgsGeometryCheckerSetupTab : public QWidget
     Q_OBJECT
   public:
     QgsGeometryCheckerSetupTab( QgisInterface *iface, QDialog *checkerDialog, QWidget *parent = nullptr );
-    ~QgsGeometryCheckerSetupTab();
+    ~QgsGeometryCheckerSetupTab() override;
 
   signals:
     void checkerStarted( QgsGeometryChecker *checker );

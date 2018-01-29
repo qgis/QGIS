@@ -25,7 +25,7 @@ class QgsMapToolRegularPolygonCenterCorner: public QgsMapToolAddRegularPolygon
 
   public:
     QgsMapToolRegularPolygonCenterCorner( QgsMapToolCapture *parentTool, QgsMapCanvas *canvas, CaptureMode mode = CaptureLine );
-    ~QgsMapToolRegularPolygonCenterCorner();
+    ~QgsMapToolRegularPolygonCenterCorner() override;
 
     void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
     void cadCanvasMoveEvent( QgsMapMouseEvent *e ) override;

@@ -55,6 +55,11 @@ QString QgsTransformAlgorithm::group() const
   return QObject::tr( "Vector general" );
 }
 
+QString QgsTransformAlgorithm::groupId() const
+{
+  return QStringLiteral( "vectorgeneral" );
+}
+
 QString QgsTransformAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm reprojects a vector layer. It creates a new layer with the same features "
@@ -70,6 +75,7 @@ QgsTransformAlgorithm *QgsTransformAlgorithm::createInstance() const
 bool QgsTransformAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
   mDestCrs = parameterAsCrs( parameters, QStringLiteral( "TARGET_CRS" ), context );
+  mTransformContext = context.project() ? context.project()->transformContext() : QgsCoordinateTransformContext();
   return true;
 }
 
@@ -79,7 +85,7 @@ QgsFeature QgsTransformAlgorithm::processFeature( const QgsFeature &f, QgsProces
   if ( !mCreatedTransform )
   {
     mCreatedTransform = true;
-    mTransform = QgsCoordinateTransform( sourceCrs(), mDestCrs );
+    mTransform = QgsCoordinateTransform( sourceCrs(), mDestCrs, mTransformContext );
   }
 
   if ( feature.hasGeometry() )

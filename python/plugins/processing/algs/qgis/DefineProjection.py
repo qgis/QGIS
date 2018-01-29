@@ -29,6 +29,7 @@ import os
 import re
 
 from qgis.core import (QgsProcessing,
+                       QgsProcessingAlgorithm,
                        QgsProcessingParameterVectorLayer,
                        QgsProcessingParameterCrs,
                        QgsProcessingOutputVectorLayer)
@@ -46,6 +47,9 @@ class DefineProjection(QgisAlgorithm):
     def group(self):
         return self.tr('Vector general')
 
+    def groupId(self):
+        return 'vectorgeneral'
+
     def __init__(self):
         super().__init__()
 
@@ -61,6 +65,9 @@ class DefineProjection(QgisAlgorithm):
 
     def displayName(self):
         return self.tr('Define current projection')
+
+    def flags(self):
+        return super().flags() | QgsProcessingAlgorithm.FlagNoThreading
 
     def processAlgorithm(self, parameters, context, feedback):
         layer = self.parameterAsVectorLayer(parameters, self.INPUT, context)

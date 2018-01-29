@@ -26,7 +26,9 @@ from qgis.core import (
     QgsWkbTypes,
     NULL,
     QgsMemoryProviderUtils,
-    QgsCoordinateReferenceSystem
+    QgsCoordinateReferenceSystem,
+    QgsRectangle,
+    QgsTestUtils
 )
 
 from qgis.testing import (
@@ -412,6 +414,23 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
         self.assertFalse(layer.fields().isEmpty())
         self.assertEqual(layer.fields()[0].name(), 'rect')
         self.assertEqual(layer.fields()[0].type(), QVariant.String) # should be mapped to string
+
+    def testThreadSafetyWithIndex(self):
+        layer = QgsVectorLayer('Point?crs=epsg:4326&index=yes&field=pk:integer&field=cnt:int8&field=name:string(0)&field=name2:string(0)&field=num_char:string&key=pk',
+                               'test', 'memory')
+
+        provider = layer.dataProvider()
+        f = QgsFeature()
+        f.setAttributes([5, -200, NULL, 'NuLl', '5'])
+        f.setGeometry(QgsGeometry.fromWkt('Point (-71.123 78.23)'))
+
+        for i in range(100000):
+            provider.addFeatures([f])
+
+        # filter rect request
+        extent = QgsRectangle(-73, 70, -63, 80)
+        request = QgsFeatureRequest().setFilterRect(extent)
+        self.assertTrue(QgsTestUtils.testProviderIteratorThreadSafety(self.source, request))
 
 
 class TestPyQgsMemoryProviderIndexed(unittest.TestCase, ProviderTestCase):

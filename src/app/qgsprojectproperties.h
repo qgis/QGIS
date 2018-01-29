@@ -46,7 +46,7 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
 
-    ~QgsProjectProperties();
+    ~QgsProjectProperties() override;
 
     /**
        Every project has a title
@@ -95,8 +95,8 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     void pbnWMSAddSRS_clicked();
     void pbnWMSRemoveSRS_clicked();
     void pbnWMSSetUsedSRS_clicked();
-    void mAddWMSComposerButton_clicked();
-    void mRemoveWMSComposerButton_clicked();
+    void mAddWMSPrintLayoutButton_clicked();
+    void mRemoveWMSPrintLayoutButton_clicked();
     void mAddLayerRestrictionButton_clicked();
     void mRemoveLayerRestrictionButton_clicked();
     void mWMSInspireScenario1_toggled( bool on );

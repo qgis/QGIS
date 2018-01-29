@@ -117,19 +117,18 @@ QgsRenderContext QgsLayoutUtils::createRenderContextForMap( QgsLayoutItemMap *ma
     {
       dpi = ( painter && painter->device() ) ? painter->device()->logicalDpiX() : 88;
     }
-#if 0
     double dotsPerMM = dpi / 25.4;
-// TODO
+
     // get map settings from reference map
-    QgsRectangle extent = *( map->currentMapExtent() );
-    QSizeF mapSizeMM = map->rect().size();
-    QgsMapSettings ms = map->mapSettings( extent, mapSizeMM * dotsPerMM, dpi );
-#endif
-    QgsRenderContext context; // = QgsRenderContext::fromMapSettings( ms );
+    QgsRectangle extent = map->extent();
+    QSizeF mapSizeLayoutUnits = map->rect().size();
+    QSizeF mapSizeMM = map->layout()->convertFromLayoutUnits( mapSizeLayoutUnits, QgsUnitTypes::LayoutMillimeters ).toQSizeF();
+    QgsMapSettings ms = map->mapSettings( extent, mapSizeMM * dotsPerMM, dpi, false );
+    QgsRenderContext context = QgsRenderContext::fromMapSettings( ms );
     if ( painter )
       context.setPainter( painter );
 
-    context.setFlags( map->layout()->context().renderContextFlags() );
+    context.setFlags( map->layout()->renderContext().renderContextFlags() );
     return context;
   }
 }
@@ -139,7 +138,7 @@ QgsRenderContext QgsLayoutUtils::createRenderContextForLayout( QgsLayout *layout
   QgsLayoutItemMap *referenceMap = layout ? layout->referenceMap() : nullptr;
   QgsRenderContext context = createRenderContextForMap( referenceMap, painter, dpi );
   if ( layout )
-    context.setFlags( layout->context().renderContextFlags() );
+    context.setFlags( layout->renderContext().renderContextFlags() );
   return context;
 }
 
@@ -363,7 +362,23 @@ QRectF QgsLayoutUtils::largestRotatedRectWithinBounds( const QRectF &originalRec
   offsetY += std::fabs( minY );
 
   return QRectF( offsetX, offsetY, rectScaledWidth, rectScaledHeight );
+}
 
+QgsLayoutItemPage::Orientation QgsLayoutUtils::decodePaperOrientation( const QString &string, bool &ok )
+{
+  QString s = string.trimmed();
+  if ( s.compare( QLatin1String( "Portrait" ), Qt::CaseInsensitive ) == 0 )
+  {
+    ok = true;
+    return QgsLayoutItemPage::Portrait;
+  }
+  else if ( s.compare( QLatin1String( "Landscape" ), Qt::CaseInsensitive ) == 0 )
+  {
+    ok = true;
+    return QgsLayoutItemPage::Landscape;
+  }
+  ok = false;
+  return QgsLayoutItemPage::Landscape; // default to landscape
 }
 
 double QgsLayoutUtils::pointsToMM( const double pointSize )

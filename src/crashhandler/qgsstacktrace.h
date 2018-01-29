@@ -17,6 +17,7 @@
 #define QGSSTACKTRACE_H
 
 #include <QVector>
+#include "qgsconfig.h"
 
 #ifdef QGISDEBUG
 #ifdef WIN32
@@ -71,6 +72,7 @@ class QgsStackTrace
 #ifdef _MSC_VER
     HANDLE process;
     HANDLE thread;
+    std::vector<HANDLE> threads;
 
     /**
      * Return a demangled stack backtrace of the caller function.

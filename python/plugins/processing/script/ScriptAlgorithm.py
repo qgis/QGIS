@@ -62,6 +62,7 @@ class ScriptAlgorithm(QgsProcessingAlgorithm):
         self._name = ''
         self._display_name = ''
         self._group = ''
+        self._groupId = ''
         self._flags = None
 
         self.script = script
@@ -78,7 +79,10 @@ class ScriptAlgorithm(QgsProcessingAlgorithm):
         self.results = {}
 
     def createInstance(self):
-        return ScriptAlgorithm(self.descriptionFile)
+        if self.descriptionFile is not None:
+            return ScriptAlgorithm(self.descriptionFile)
+        else:
+            return ScriptAlgorithm(descriptionFile=None, script=self.script)
 
     def initAlgorithm(self, config=None):
         pass
@@ -111,6 +115,7 @@ class ScriptAlgorithm(QgsProcessingAlgorithm):
         self._name = filename[:filename.rfind('.')].replace('_', ' ')
         self._display_name = self._name
         self._group = self.tr('User scripts', 'ScriptAlgorithm')
+        self._groupId = 'userscripts'
         with open(self.descriptionFile) as lines:
             line = lines.readline()
             while line != '':
@@ -118,7 +123,7 @@ class ScriptAlgorithm(QgsProcessingAlgorithm):
                     try:
                         self.processParameterLine(line.strip('\n'))
                     except:
-                        self.error = self.tr('This script has a syntax errors.\n'
+                        self.error = self.tr('This script has a syntax error.\n'
                                              'Problem with line: {0}', 'ScriptAlgorithm').format(line)
                 self.script += line
                 line = lines.readline()
@@ -130,6 +135,7 @@ class ScriptAlgorithm(QgsProcessingAlgorithm):
         self._name = '[Unnamed algorithm]'
         self._display_name = self.tr('[Unnamed algorithm]', 'ScriptAlgorithm')
         self._group = self.tr('User scripts', 'ScriptAlgorithm')
+        self._groupId = 'userscripts'
         for line in lines:
             if line.startswith('##'):
                 try:
@@ -163,6 +169,8 @@ class ScriptAlgorithm(QgsProcessingAlgorithm):
         desc = self.createDescriptiveName(tokens[0])
         if tokens[1].lower().strip() == 'group':
             self._group = tokens[0]
+            validChars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:'
+            self._groupId = ''.join(c for c in tokens[0].lower() if c in validChars)
             return
         if tokens[1].lower().strip() == 'name':
             self._name = self._display_name = tokens[0]

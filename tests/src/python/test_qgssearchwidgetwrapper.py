@@ -134,8 +134,8 @@ class PyQgsValueMapSearchWidgetWrapper(unittest.TestCase):
         layer = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer", "test", "memory")
 
         w = QgsValueMapSearchWidgetWrapper(layer, 0)
-        config = {"val1": 1,
-                  "val2": 200}
+        config = {"map": [{"val1": 1},
+                          {"val2": 200}]}
         w.setConfig(config)
         c = w.widget()
 

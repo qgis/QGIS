@@ -154,7 +154,9 @@ namespace QgsWfs
         }
         else
         {
+          Q_NOWARN_DEPRECATED_PUSH
           QgsCoordinateTransform transform( layer->crs(), requestCrs );
+          Q_NOWARN_DEPRECATED_POP
           try
           {
             if ( requestRect.isEmpty() )
@@ -179,7 +181,7 @@ namespace QgsWfs
 
     //scoped pointer to restore all original layer filters (subsetStrings) when pointer goes out of scope
     //there's LOTS of potential exit paths here, so we avoid having to restore the filters manually
-    std::unique_ptr< QgsOWSServerFilterRestorer > filterRestorer( new QgsOWSServerFilterRestorer( accessControl ) );
+    std::unique_ptr< QgsOWSServerFilterRestorer > filterRestorer( new QgsOWSServerFilterRestorer() );
 
     // features counters
     long sentFeatures = 0;
@@ -238,14 +240,14 @@ namespace QgsWfs
       QStringList propertyList = query.propertyList;
 
       //Using pending attributes and pending fields
-      QgsAttributeList attrIndexes = vlayer->pendingAllAttributesList();
+      QgsAttributeList attrIndexes = vlayer->attributeList();
       bool withGeom = true;
       if ( !propertyList.isEmpty() && propertyList.first() != QStringLiteral( "*" ) )
       {
         withGeom = false;
         QStringList::const_iterator plstIt;
         QList<int> idxList;
-        QgsFields fields = vlayer->pendingFields();
+        QgsFields fields = vlayer->fields();
         QString fieldName;
         for ( plstIt = propertyList.begin(); plstIt != propertyList.end(); ++plstIt )
         {
@@ -292,11 +294,11 @@ namespace QgsWfs
         QStringList attributes = QStringList();
         Q_FOREACH ( int idx, attrIndexes )
         {
-          attributes.append( vlayer->pendingFields().field( idx ).name() );
+          attributes.append( vlayer->fields().field( idx ).name() );
         }
         featureRequest.setSubsetOfAttributes(
           accessControl->layerAttributes( vlayer, attributes ),
-          vlayer->pendingFields() );
+          vlayer->fields() );
       }
 
       if ( onlyOneLayer )
@@ -1223,7 +1225,9 @@ namespace QgsWfs
 
         int prec = params.precision;
         QgsCoordinateReferenceSystem crs = params.crs;
+        Q_NOWARN_DEPRECATED_PUSH
         QgsCoordinateTransform mTransform( crs, params.outputCrs );
+        Q_NOWARN_DEPRECATED_POP
         try
         {
           QgsGeometry transformed = geom;
@@ -1324,7 +1328,9 @@ namespace QgsWfs
 
         int prec = params.precision;
         QgsCoordinateReferenceSystem crs = params.crs;
+        Q_NOWARN_DEPRECATED_PUSH
         QgsCoordinateTransform mTransform( crs, params.outputCrs );
+        Q_NOWARN_DEPRECATED_POP
         try
         {
           QgsGeometry transformed = geom;

@@ -28,6 +28,7 @@
 #include "qgsmapsettings.h"
 #include "qgswebpage.h"
 #include "qgswebframe.h"
+#include "qgslayoutitemmap.h"
 
 #include <QCoreApplication>
 #include <QPainter>
@@ -50,23 +51,11 @@ QgsLayoutItemHtml::QgsLayoutItemHtml( QgsLayout *layout )
 
   mWebPage->setNetworkAccessManager( QgsNetworkAccessManager::instance() );
 
-#if 0 //TODO
-  if ( mLayout )
-  {
-    connect( mLayout, &QgsComposition::itemRemoved, this, &QgsComposerMultiFrame::handleFrameRemoval );
-  }
+  //a html item added to a layout needs to have the initial expression context set,
+  //otherwise fields in the html aren't correctly evaluated until atlas preview feature changes (#9457)
+  setExpressionContext( mLayout->reportContext().feature(), mLayout->reportContext().layer() );
 
-  if ( mComposition && mComposition->atlasMode() == QgsComposition::PreviewAtlas )
-  {
-    //a html item added while atlas preview is enabled needs to have the expression context set,
-    //otherwise fields in the html aren't correctly evaluated until atlas preview feature changes (#9457)
-    setExpressionContext( mComposition->atlasComposition().feature(), mComposition->atlasComposition().coverageLayer() );
-  }
-
-  //connect to atlas feature changes
-  //to update the expression context
-  connect( &mComposition->atlasComposition(), &QgsAtlasComposition::featureChanged, this, &QgsLayoutItemHtml::refreshExpressionContext );
-#endif
+  connect( &mLayout->reportContext(), &QgsLayoutReportContext::changed, this, &QgsLayoutItemHtml::refreshExpressionContext );
 
   mFetcher = new QgsNetworkContentFetcher();
 }
@@ -81,9 +70,9 @@ int QgsLayoutItemHtml::type() const
   return QgsLayoutItemRegistry::LayoutHtml;
 }
 
-QString QgsLayoutItemHtml::stringType() const
+QIcon QgsLayoutItemHtml::icon() const
 {
-  return QStringLiteral( "LayoutHtml" );
+  return QgsApplication::getThemeIcon( QStringLiteral( "/mLayoutItemHtml.svg" ) );
 }
 
 QgsLayoutItemHtml *QgsLayoutItemHtml::create( QgsLayout *layout )
@@ -208,9 +197,12 @@ void QgsLayoutItemHtml::loadHtml( const bool useCache, const QgsExpressionContex
   //inject JSON feature
   if ( !mAtlasFeatureJSON.isEmpty() )
   {
-    mWebPage->mainFrame()->evaluateJavaScript( QStringLiteral( "if ( typeof setFeature === \"function\" ) { setFeature(%1); }" ).arg( mAtlasFeatureJSON ) );
-    //needs an extra process events here to give JavaScript a chance to execute
-    qApp->processEvents();
+    JavascriptExecutorLoop jsLoop;
+
+    mWebPage->mainFrame()->addToJavaScriptWindowObject( "loop", &jsLoop );
+    mWebPage->mainFrame()->evaluateJavaScript( QStringLiteral( "if ( typeof setFeature === \"function\" ) { setFeature(%1); }; loop.done();" ).arg( mAtlasFeatureJSON ) );
+
+    jsLoop.execIfNotDone();
   }
 
   recalculateFrameSizes();
@@ -309,7 +301,7 @@ double QgsLayoutItemHtml::htmlUnitsToLayoutUnits()
     return 1.0;
   }
 
-  return mLayout->convertToLayoutUnits( QgsLayoutMeasurement( mLayout->context().dpi() / 72.0, QgsUnitTypes::LayoutMillimeters ) ); //webkit seems to assume a standard dpi of 96
+  return mLayout->convertToLayoutUnits( QgsLayoutMeasurement( mLayout->renderContext().dpi() / 72.0, QgsUnitTypes::LayoutMillimeters ) ); //webkit seems to assume a standard dpi of 96
 }
 
 bool candidateSort( QPair<int, int> c1, QPair<int, int> c2 )
@@ -492,26 +484,31 @@ void QgsLayoutItemHtml::setExpressionContext( const QgsFeature &feature, QgsVect
   //setup distance area conversion
   if ( layer )
   {
-    mDistanceArea.setSourceCrs( layer->crs() );
+    mDistanceArea.setSourceCrs( layer->crs(), mLayout->project()->transformContext() );
   }
   else if ( mLayout )
   {
-#if 0 //TODO
     //set to composition's mapsettings' crs
-    QgsComposerMap *referenceMap = mComposition->referenceMap();
+    QgsLayoutItemMap *referenceMap = mLayout->referenceMap();
     if ( referenceMap )
-      mDistanceArea->setSourceCrs( referenceMap->crs() );
-#endif
+      mDistanceArea.setSourceCrs( referenceMap->crs(), mLayout->project()->transformContext() );
   }
   if ( mLayout )
   {
     mDistanceArea.setEllipsoid( mLayout->project()->ellipsoid() );
   }
 
-  // create JSON representation of feature
-  QgsJsonExporter exporter( layer );
-  exporter.setIncludeRelated( true );
-  mAtlasFeatureJSON = exporter.exportFeature( feature );
+  if ( feature.isValid() )
+  {
+    // create JSON representation of feature
+    QgsJsonExporter exporter( layer );
+    exporter.setIncludeRelated( true );
+    mAtlasFeatureJSON = exporter.exportFeature( feature );
+  }
+  else
+  {
+    mAtlasFeatureJSON.clear();
+  }
 }
 
 void QgsLayoutItemHtml::refreshExpressionContext()
@@ -519,16 +516,11 @@ void QgsLayoutItemHtml::refreshExpressionContext()
   QgsVectorLayer *vl = nullptr;
   QgsFeature feature;
 
-#if 0 //TODO
-  if ( mComposition->atlasComposition().enabled() )
+  if ( mLayout )
   {
-    vl = mComposition->atlasComposition().coverageLayer();
+    vl = mLayout->reportContext().layer();
+    feature = mLayout->reportContext().feature();
   }
-  if ( mComposition->atlasMode() != QgsComposition::AtlasOff )
-  {
-    feature = mComposition->atlasComposition().feature();
-  }
-#endif
 
   setExpressionContext( feature, vl );
   loadHtml( true );
@@ -544,3 +536,25 @@ void QgsLayoutItemHtml::refreshDataDefinedProperty( const QgsLayoutObject::DataD
     loadHtml( true, &context );
   }
 }
+
+//JavascriptExecutorLoop
+///@cond PRIVATE
+
+void JavascriptExecutorLoop::done()
+{
+  mDone = true;
+  quit();
+}
+
+void JavascriptExecutorLoop::execIfNotDone()
+{
+  if ( !mDone )
+    exec( QEventLoop::ExcludeUserInputEvents );
+
+  // gross, but nothing else works, so f*** it.. it's not worth spending a day trying to find a non-hacky way
+  // to force the web page to update following the js execution
+  for ( int i = 0; i < 100; i++ )
+    qApp->processEvents();
+}
+
+///@endcond

@@ -53,7 +53,7 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
       PresetPaperSize, //!< Preset paper size for composition
       PaperWidth, //!< Paper width (deprecated)
       PaperHeight, //!< Paper height (deprecated)
-      NumPages, //!< Number of pages in composition
+      NumPages, //!< Number of pages in composition (deprecated)
       PaperOrientation, //!< Paper orientation
       //general composer item properties
       PageNumber, //!< Page number for item placement
@@ -244,6 +244,7 @@ class CORE_EXPORT QgsLayoutObject: public QObject, public QgsExpressionContextGe
     static void initPropertyDefinitions();
 
     friend class TestQgsLayoutObject;
+    friend class QgsCompositionConverter;
 };
 
 #endif //QGSLAYOUTOBJECT_H

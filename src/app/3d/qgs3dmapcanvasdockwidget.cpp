@@ -18,6 +18,7 @@
 #include "qgisapp.h"
 #include "qgs3dmapcanvas.h"
 #include "qgs3dmapconfigwidget.h"
+#include "qgs3dmapscene.h"
 #include "qgscameracontroller.h"
 #include "qgsmapcanvas.h"
 
@@ -27,7 +28,9 @@
 #include <QBoxLayout>
 #include <QDialog>
 #include <QDialogButtonBox>
+#include <QProgressBar>
 #include <QToolBar>
+#include <QUrl>
 
 Qgs3DMapCanvasDockWidget::Qgs3DMapCanvasDockWidget( QWidget *parent )
   : QgsDockWidget( parent )
@@ -40,24 +43,59 @@ Qgs3DMapCanvasDockWidget::Qgs3DMapCanvasDockWidget( QWidget *parent )
   toolBar->setIconSize( QgisApp::instance()->iconSize( true ) );
   toolBar->addAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionZoomFullExtent.svg" ) ),
                       tr( "Zoom Full" ), this, &Qgs3DMapCanvasDockWidget::resetView );
+  toolBar->addAction( QgsApplication::getThemeIcon( QStringLiteral( "mActionSaveMapAsImage.svg" ) ),
+                      tr( "Save as image..." ), this, &Qgs3DMapCanvasDockWidget::saveAsImage );
   toolBar->addAction( QgsApplication::getThemeIcon( QStringLiteral( "mIconProperties.svg" ) ),
                       tr( "Configure" ), this, &Qgs3DMapCanvasDockWidget::configure );
 
   mCanvas = new Qgs3DMapCanvas( contentsWidget );
   mCanvas->setMinimumSize( QSize( 200, 200 ) );
+  mCanvas->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
 
-  QVBoxLayout *layout = new QVBoxLayout( contentsWidget );
+  connect( mCanvas, &Qgs3DMapCanvas::savedAsImage, this, [ = ]( const QString fileName )
+  {
+    QgisApp::instance()->messageBar()->pushSuccess( tr( "Save as Image" ), tr( "Successfully saved the 3D map to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( QFileInfo( fileName ).path() ).toString(), QDir::toNativeSeparators( fileName ) ) );
+  } );
+
+  mLabelPendingJobs = new QLabel( this );
+  mProgressPendingJobs = new QProgressBar( this );
+  mProgressPendingJobs->setRange( 0, 0 );
+
+  QHBoxLayout *topLayout = new QHBoxLayout;
+  topLayout->setContentsMargins( 0, 0, 0, 0 );
+  topLayout->setSpacing( style()->pixelMetric( QStyle::PM_LayoutHorizontalSpacing ) );
+  topLayout->addWidget( toolBar );
+  topLayout->addStretch( 1 );
+  topLayout->addWidget( mLabelPendingJobs );
+  topLayout->addWidget( mProgressPendingJobs );
+
+  QVBoxLayout *layout = new QVBoxLayout;
   layout->setContentsMargins( 0, 0, 0, 0 );
   layout->setSpacing( 0 );
-  layout->addWidget( toolBar );
-  layout->addWidget( mCanvas, 1 );
+  layout->addLayout( topLayout );
+  layout->addWidget( mCanvas );
+
+  contentsWidget->setLayout( layout );
 
   setWidget( contentsWidget );
+
+  onTerrainPendingJobsCountChanged();
+}
+
+void Qgs3DMapCanvasDockWidget::saveAsImage()
+{
+  QPair< QString, QString> fileNameAndFilter = QgsGuiUtils::getSaveAsImageName( this, tr( "Choose a file name to save the 3D map canvas to an image" ) );
+  if ( !fileNameAndFilter.first.isEmpty() )
+  {
+    mCanvas->saveAsImage( fileNameAndFilter.first, fileNameAndFilter.second );
+  }
 }
 
 void Qgs3DMapCanvasDockWidget::setMapSettings( Qgs3DMapSettings *map )
 {
   mCanvas->setMap( map );
+
+  connect( mCanvas->scene(), &Qgs3DMapScene::terrainPendingJobsCountChanged, this, &Qgs3DMapCanvasDockWidget::onTerrainPendingJobsCountChanged );
 }
 
 void Qgs3DMapCanvasDockWidget::setMainCanvas( QgsMapCanvas *canvas )
@@ -98,7 +136,7 @@ void Qgs3DMapCanvasDockWidget::configure()
   QgsVector3D p = Qgs3DUtils::transformWorldCoordinates(
                     oldLookingAt,
                     oldOrigin, oldCrs,
-                    map->origin(), map->crs() );
+                    map->origin(), map->crs(), QgsProject::instance()->transformContext() );
 
   if ( p != oldLookingAt )
   {
@@ -115,4 +153,13 @@ void Qgs3DMapCanvasDockWidget::onMainCanvasLayersChanged()
 void Qgs3DMapCanvasDockWidget::onMainCanvasColorChanged()
 {
   mCanvas->map()->setBackgroundColor( mMainCanvas->canvasColor() );
+}
+
+void Qgs3DMapCanvasDockWidget::onTerrainPendingJobsCountChanged()
+{
+  int count = mCanvas->scene() ? mCanvas->scene()->terrainPendingJobsCount() : 0;
+  mProgressPendingJobs->setVisible( count );
+  mLabelPendingJobs->setVisible( count );
+  if ( count )
+    mLabelPendingJobs->setText( tr( "Loading %1 tiles" ).arg( count ) );
 }

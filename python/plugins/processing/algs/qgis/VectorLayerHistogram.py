@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    EquivalentNumField.py
+    VectorLayerHistogram.py
     ---------------------
     Date                 : January 2013
     Copyright            : (C) 2013 by Victor Olaya
@@ -46,6 +46,9 @@ class VectorLayerHistogram(QgisAlgorithm):
 
     def group(self):
         return self.tr('Graphics')
+
+    def groupId(self):
+        return 'graphics'
 
     def __init__(self):
         super().__init__()

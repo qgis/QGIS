@@ -122,7 +122,7 @@ class QgsBrowserLayerProperties : public QgsBrowserPropertiesWidget, private Ui:
      * \param condensedMode set to true to enable condensed mode
      * \since QGIS 2.10
      */
-    virtual void setCondensedMode( bool condensedMode ) override;
+    void setCondensedMode( bool condensedMode ) override;
 
   private:
     QgsBrowserPropertiesWrapLabel *mUriLabel = nullptr;
@@ -163,7 +163,7 @@ class QgsBrowserPropertiesDialog : public QDialog, private Ui::QgsBrowserPropert
       * \param parent parent widget
       */
     QgsBrowserPropertiesDialog( const QString &settingsSection, QWidget *parent = nullptr );
-    ~QgsBrowserPropertiesDialog();
+    ~QgsBrowserPropertiesDialog() override;
 
     //! Create dialog from the given item and add it
     void setItem( QgsDataItem *item );
@@ -214,7 +214,7 @@ class QgsBrowserTreeFilterProxyModel : public QSortFilterProxyModel
 
     /**
       * Constructor for QgsBrowserTreeFilterProxyModel
-      * @param parent parent widget
+      * \param parent parent widget
       */
     explicit QgsBrowserTreeFilterProxyModel( QObject *parent );
     //! Set the browser model

@@ -41,7 +41,7 @@ class GUI_EXPORT QgsAuthIdentitiesEditor : public QWidget, private Ui::QgsAuthId
      * Widget for editing authentication configurations directly in database
      * \param parent Parent widget
      */
-    explicit QgsAuthIdentitiesEditor( QWidget *parent SIP_TRANSFERTHIS = 0 );
+    explicit QgsAuthIdentitiesEditor( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
   private slots:
     void populateIdentitiesView();

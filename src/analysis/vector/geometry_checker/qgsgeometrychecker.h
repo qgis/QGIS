@@ -39,7 +39,7 @@ class ANALYSIS_EXPORT QgsGeometryChecker : public QObject
     Q_OBJECT
   public:
     QgsGeometryChecker( const QList<QgsGeometryCheck *> &checks, QgsGeometryCheckerContext *context );
-    ~QgsGeometryChecker();
+    ~QgsGeometryChecker() override;
     QFuture<void> execute( int *totalSteps = nullptr );
     bool fixError( QgsGeometryCheckError *error, int method, bool triggerRepaint = false );
     const QList<QgsGeometryCheck *> getChecks() const { return mChecks; }

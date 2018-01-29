@@ -74,7 +74,7 @@ class QgsGeorefTransform : public QgsGeorefTransformInterface
 
     explicit QgsGeorefTransform( TransformParametrisation parametrisation );
     QgsGeorefTransform();
-    ~QgsGeorefTransform();
+    ~QgsGeorefTransform() override;
 
     /**
      * Switches the used transform type to the given parametrisation.

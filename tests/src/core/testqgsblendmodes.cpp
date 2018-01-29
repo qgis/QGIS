@@ -43,7 +43,7 @@ class TestQgsBlendModes : public QObject
 
   public:
     TestQgsBlendModes() = default;
-    ~TestQgsBlendModes()
+    ~TestQgsBlendModes() override
     {
       delete mMapSettings;
     }

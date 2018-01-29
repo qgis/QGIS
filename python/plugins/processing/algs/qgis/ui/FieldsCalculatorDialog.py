@@ -77,6 +77,7 @@ class FieldsCalculatorDialog(BASE, WIDGET):
         self.setupUi(self)
 
         self.executed = False
+        self._wasExecuted = False
         self.alg = alg
         self.layer = None
 
@@ -244,6 +245,7 @@ class FieldsCalculatorDialog(BASE, WIDGET):
                                            context,
                                            self.feedback,
                                            not keepOpen)
+                self._wasExecuted = self.executed or self._wasExecuted
                 if not keepOpen:
                     QDialog.reject(self)
 
@@ -257,3 +259,6 @@ class FieldsCalculatorDialog(BASE, WIDGET):
     def error(self, text):
         QMessageBox.critical(self, "Error", text)
         QgsMessageLog.logMessage(text, self.tr('Processing'), QgsMessageLog.CRITICAL)
+
+    def wasExecuted(self):
+        return self._wasExecuted

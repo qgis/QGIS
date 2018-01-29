@@ -107,13 +107,16 @@ void QgsProcessingAlgorithm::setProvider( QgsProcessingProvider *provider )
 {
   mProvider = provider;
 
-  // need to update all destination parameters to set whether the provider supports non file based outputs
-  Q_FOREACH ( const QgsProcessingParameterDefinition *definition, mParameters )
+  if ( mProvider && !mProvider->supportsNonFileBasedOutput() )
   {
-    if ( definition->isDestination() && mProvider )
+    // need to update all destination parameters to turn off non file based outputs
+    Q_FOREACH ( const QgsProcessingParameterDefinition *definition, mParameters )
     {
-      const QgsProcessingDestinationParameter *destParam = static_cast< const QgsProcessingDestinationParameter *>( definition );
-      const_cast< QgsProcessingDestinationParameter *>( destParam )->setSupportsNonFileBasedOutputs( mProvider->supportsNonFileBasedOutput() );
+      if ( definition->isDestination() )
+      {
+        const QgsProcessingDestinationParameter *destParam = static_cast< const QgsProcessingDestinationParameter *>( definition );
+        const_cast< QgsProcessingDestinationParameter *>( destParam )->setSupportsNonFileBasedOutput( false );
+      }
     }
   }
 }
@@ -241,12 +244,16 @@ bool QgsProcessingAlgorithm::addParameter( QgsProcessingParameterDefinition *def
 
   // check for duplicate named parameters
   if ( QgsProcessingAlgorithm::parameterDefinition( definition->name() ) )
+  {
+    QgsLogger::warning( QStringLiteral( "Duplicate parameter %1 registered for alg %2" ).arg( definition->name(), id() ) );
     return false;
+  }
 
   if ( definition->isDestination() && mProvider )
   {
     QgsProcessingDestinationParameter *destParam = static_cast< QgsProcessingDestinationParameter *>( definition );
-    destParam->setSupportsNonFileBasedOutputs( mProvider->supportsNonFileBasedOutput() );
+    if ( !mProvider->supportsNonFileBasedOutput() )
+      destParam->setSupportsNonFileBasedOutput( false );
   }
 
   mParameters << definition;
@@ -561,7 +568,7 @@ QgsCoordinateReferenceSystem QgsProcessingAlgorithm::parameterAsCrs( const QVari
 
 QgsCoordinateReferenceSystem QgsProcessingAlgorithm::parameterAsExtentCrs( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context )
 {
-  return QgsProcessingParameters::parameterAsCrs( parameterDefinition( name ), parameters, context );
+  return QgsProcessingParameters::parameterAsExtentCrs( parameterDefinition( name ), parameters, context );
 }
 
 QgsRectangle QgsProcessingAlgorithm::parameterAsExtent( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, const QgsCoordinateReferenceSystem &crs ) const

@@ -75,9 +75,6 @@ Renamed Classes        {#qgis_api_break_3_0_renamed_classes}
 <tr><td>QgsCentroidFillSymbolLayerV2Widget<td>QgsCentroidFillSymbolLayerWidget
 <tr><td>QgsCircularStringV2<td>QgsCircularString
 <tr><td>QgsColorButtonV2<td>QgsColorButton
-<tr><td>QgsComposerLegendStyle<td>QgsLegendStyle
-<tr><td>QgsComposerSymbolV2Item<td>QgsComposerSymbolItem
-<tr><td>QgsComposerTableAvailableSortProxyModelV2<td>QgsComposerTableAvailableSortProxyModel
 <tr><td>QgsCompoundCurveV2<td>QgsCompoundCurve
 <tr><td>QgsCoordinateSequenceV2<td>QgsCoordinateSequence
 <tr><td>QgsCptCityColorRampV2<td>QgsCptCityColorRamp
@@ -100,6 +97,10 @@ Renamed Classes        {#qgis_api_break_3_0_renamed_classes}
 <tr><td>QgsFontMarkerSymbolLayerV2Widget<td>QgsFontMarkerSymbolLayerWidget
 <tr><td>QgsGeometryCollectionV2<td>QgsGeometryCollection
 <tr><td>QgsGeometryGeneratorSymbolLayerV2<td>QgsGeometryGeneratorSymbolLayer
+<tr><td>QgsGPSConnection<td>QgsGpsConnection
+<tr><td>QgsGPSConnectionRegistry<td>QgsGpsConnectionRegistry
+<tr><td>QgsGPSDetector<td>QgsGpsDetector
+<tr><td>QgsGPSInformation<td>QgsGpsInformation
 <tr><td>QgsGradientFillSymbolLayerV2<td>QgsGradientFillSymbolLayer
 <tr><td>QgsGradientFillSymbolLayerV2Widget<td>QgsGradientFillSymbolLayerWidget
 <tr><td>QgsGraduatedSymbolRendererV2<td>QgsGraduatedSymbolRenderer
@@ -128,6 +129,7 @@ Renamed Classes        {#qgis_api_break_3_0_renamed_classes}
 <tr><td>QgsMultiPolyline<td>QgsPolylineXY
 <tr><td>QgsMultiPolylineV2<td>QgsPolyline
 <tr><td>QgsMultiSurfaceV2<td>QgsMultiSurface
+<tr><td>QgsNMEAConnection<td>QgsNmeaConnection
 <tr><td>QgsNumericScaleBarStyle<td>QgsNumericScaleBarRenderer
 <tr><td>QgsPoint<td>QgsPointXY
 <tr><td>QgsPointSequenceV2<td>QgsPointSequence
@@ -196,6 +198,7 @@ Renamed Classes        {#qgis_api_break_3_0_renamed_classes}
 <tr><td>QgsSymbolV2SelectorWidget<td>QgsSymbolSelectorWidget
 <tr><td>QgsTicksScaleBarStyle<td>QgsTicksScaleBarRenderer
 <tr><td>QgsTINInterpolator<td>QgsTinInterpolator
+<tr><td>QgsUserInputDockWidget<td>QgsUserInputWidget
 <tr><td>QgsVectorColorBrewerColorRampV2<td>QgsColorBrewerColorRamp
 <tr><td>QgsVectorColorBrewerColorRampV2Dialog<td>QgsColorBrewerColorRampDialog
 <tr><td>QgsVectorColorBrewerColorRampV2DialogBase<td>QgsColorBrewerColorRampDialogBase
@@ -227,7 +230,6 @@ Renamed Classes        {#qgis_api_break_3_0_renamed_classes}
 <tr><td>QgsAnnotation<td>mapPositionFixed<td>hasFixedMapPosition
 <tr><td>QgsApplication<td>defaultStyleV2Path<td>defaultStylePath
 <tr><td>QgsApplication<td>userStyleV2Path<td>userStylePath
-<tr><td>QgsComposerShape<td>setUseSymbolV2<td>setUseSymbol
 <tr><td>QgsIFeatureSelectionManager<td>selectedFeaturesIds<td>selectedFeatureIds
 <tr><td>QgsMapLayer<td>capitaliseLayerName<td>capitalizeLayerName  <!--#spellok-->
 <tr><td>QgsSymbolLayerUtils<td>createSymbolLayerV2ListFromSld<td>createSymbolLayerListFromSld
@@ -238,7 +240,6 @@ Renamed Classes        {#qgis_api_break_3_0_renamed_classes}
 <tr><td>QgsVectorLayer<td>rendererV2<td>renderer
 <tr><td>QgsVectorLayer<td>selectedFeaturesIds<td>selectedFeatureIds
 <tr><td>QgsVectorLayerEditUtils<td>deleteVertexV2<td>deleteVertex
-<tr><td>QgsComposerSymbolItem<td>symbolV2<td>symbol
 <tr><td>QgsServerInterface<td>capabiblitiesCache<td>capabilitiesCache
 <tr><td>QgsGraphEdge<td>property<td>cost
 <tr><td>QgsGraphEdge<td>properties<td>strategies
@@ -267,18 +268,14 @@ Removed Classes        {#qgis_api_break_3_0_removed_classes}
 - QgsColorDialog was removed, and QgsColorDialogV2 was renamed to QgsColorDialog. Hence, QgsColorButtonV2 does not exist anymore.
 All the functionality from the old QgsColorDialog has been moved to the new class.
 - QgsColorRampComboBox was removed, replaced by QgsColorRampButton
-- QgsComposerAttributeTable and associated classes (eg QgsComposerAttributeTableCompare,
-QgsComposerAttributeTableColumnModel, QgsComposerTableSortColumnsProxyModel) were removed.
-Use QgsComposerAttributeTableV2 instead.
-- QgsComposerLegendItem and subclasses were removed (QgsComposerSymbolItem, QgsComposerRasterSymbolItem, QgsComposerLayerItem, QgsComposerGroupItem, QgsComposerStyleItem).
-- QgsComposerTable was removed. Use QgsComposerAttributeTableV2 instead.
-- ComposerTextTable was removed. Use ComposerTextTableV2 instead.
 - QgsCRSCache was removed. QgsCoordinateReferenceSystem now internally uses a cache for CRS creation,
 so there is no longer a need for the separate cache class. Code which previously called QgsCRSCache::updateCRSCache()
 should now call QgsCoordinateReferenceSystem::invalidateCache() and QgsCoordinateTransformCache::instance()->invalidateCrs( authid ).
+- QgsCoordinateTransformCache was removed. QgsCoordinateTransform now transparently caches transforms.
 - QgsDataDefined was removed. Use the QgsProperty framework instead.
 - QgsDataDefinedButton was removed. Use QgsPropertyOverrideButton instead.
 - QgsDataDefinedSymbolDialog was removed. Code using this dialog should be reworked to use QgsPropertyOverrideButton
+- QgsDatumTransformStore. Use QgsCoordinateTransformContext instead.
 - QgsDefaultPluginLayerLegend was removed. Use QgsMapLayer::setLegend() to provide legend nodes for plugin layers.
 - DualEdgeTriangulation
 - QgsFileNameWidgetWrapper was removed. Use QgsExternalResourceWidgetWrapper instead.
@@ -353,6 +350,14 @@ General changes        {#qgis_api_break_3_0_global}
 - Network analysis library has been merged into analysis library
 
 
+Composer     {#qgis_api_break_3_0_Composer}
+--------
+
+All composer related methods have been removed from the public API and Python bindings. These classes
+have been replaced with the new layouts engine, based on QgsLayout, QgsLayoutItem, and the other
+related classes.
+
+
 Labeling    {#qgis_api_break_3_0_Labeling}
 --------
 
@@ -425,14 +430,6 @@ QgisInterface        {#qgis_api_break_3_0_QgisInterface}
 - fileMenu() has been removed, use projectMenu() instead.
 - actionRemoveLayer was removed as it no longer exists.
 - actionTouch was removed, as the corresponding action no longer exists (see notes on QgsMapToolTouch)
-- activeComposers(), createNewComposer(), duplicateComposer(), deleteComposer(), composerAdded(),
-composerWillBeRemoved(), composerRemoved() were all removed. Composer windows are now only created
-on demand, and destroyed when the window is closed. The new interface methods openComposers(),
-openComposer(), closeComposer(), composerOpened(), composerWillBeClosed() and composerClosed()
-are similar, but only apply to composer windows when they exist. To access all compositions
-from a project, the new QgsProject.instance().layoutManager() class should be used instead.
-Additionally, the new interface methods work with QgsComposerInterface objects instead
-of QgsComposerView objects.
 - interaction with the main window status bar should no longer use the native Qt statusBar() method.
 Instead iface.statusBarIface() should be used.
 
@@ -507,22 +504,7 @@ QgsApplication        {#qgis_api_break_3_0_QgsApplication}
 - srsDbFilePath() was renamed to srsDatabaseFilePath()
 - setAuthDbDirPath() was renamed to setAuthDatabaseDirPath()
 - createDB() was renamed to createDatabase()
-
-
-QgsAtlasComposition        {#qgis_api_break_3_0_QgsAtlasComposition}
--------------------
-
-- readXMLMapSettings() was removed. QGIS no longer supports upgrading pre 2.2 compositions and if this is a
-requirement the projects should first be upgraded by opening and saving in 2.18.
-- composerMap() and setComposerMap() were removed. Use QgsComposerMap::atlasDriven() and setAtlasDriven()
-instead
-- fixedScale() and setFixedScale() were removed. Use QgsComposerMap::atlasScalingMode() and setAtlasScalingMode()
-instead
-- margin() and setMargin() were removed. Use QgsComposerMap::atlasMargin() and setAtlasMargin()
-instead
-- setSortKeyAttributeIndex() and sortKeyAttributeIndex() were removed. Use sortKeyAttributeName()
-and setSortKeyAttributeName() instead.
-- currentFeature() was removed. Use feature() instead.
+- composerTemplatePaths() was renamed to layoutTemplatePaths()
 
 
 QgsAttributeDialog        {#qgis_api_break_3_0_QgsAttributeDialog}
@@ -652,12 +634,14 @@ QgsColorButton     {#qgis_api_break_3_0_QgsColorButton}
 
 - Behaviour enum and its corresponding setter/getter have been renamed to Behavior <!--#spellok-->
 - setAllowAlpha() and allowAlpha() were removed. Use setAllowOpacity() and allowOpacity() instead.
+- acceptLiveUpdates() and setAcceptLiveUpdates() were removed. This functionality is no longer supported.
 
 
 QgsColorDialog     {#qgis_api_break_3_0_QgsColorDialog}
 --------------
 
 - setAllowAlpha() was removed. Use setAllowOpacity() instead.
+- getLiveColor() was removed. This functionality is no longer supported.
 
 
 QgsColorEffect        {#qgis_api_break_3_0_QgsColorEffect}
@@ -677,208 +661,6 @@ QgsColorSchemeRegistry        {#qgis_api_break_3_0_QgsColorSchemeRegistry}
 
 - This class is no longer a singleton and instance() has been removed. Instead use QgsApplication::colorSchemeRegistry() to access an application-wide registry.
 
-
-QgsComposerArrow        {#qgis_api_break_3_0_QgsComposerArrow}
-----------------
-
-- setOutlineWidth(), outlineWidth(), arrowColor() and setArrowColor() were removed.
-Use setArrowHeadOutlineWidth(), arrowHeadOutlineWidth(), arrowHeadOutlineColor(),
-setArrowHeadOutlineColor(), arrowHeadFillColor(), setArrowHeadFillColor(),
-setLineSymbol() or lineSymbol() instead.
-
-
-QgsComposerAttributeTableV2        {#qgis_api_break_3_0_QgsComposerAttributeTableV2}
----------------------------
-
-- setDisplayAttributes() was removed. Use setDisplayedFields() instead.
-
-
-QgsComposerItem        {#qgis_api_break_3_0_QgsComposerItem}
----------------
-
-- zoomContent( int delta, double x, double y ) was removed. Use zoomContent( double, QPointF, ZoomMode )
-instead.
-- drawText(), textWidthMillimeters(), fontHeightCharacterMM(), fontAscentMillimeters(),
-fontDescentMillimeters(), fontHeightMillimeters(), pixelFontSize(), scaledFontPixelSize(),
-drawArrowHead(), angle(), largestRotatedRectWithinBounds(), and rotate() were removed.
-Use the corresponding methods in QgsComposerUtils instead.
-- rotation() and setRotation() were removed. Use itemRotation() and setItemRotation()
-instead.
-- lockSymbolSize(), imageSizeConsideringRotation(), cornerPointOnRotatedAndScaledRect(),
-sizeChangedByRotation() were removed. No replacement is offered for these methods.
-- transparency() and setTransparency() were removed. Use itemOpacity() and setItemOpacity() instead.
-
-QgsComposerItemCommand        {#qgis_api_break_3_0_QgsComposerItemCommand}
-----------------------
-
-- ItemTransparency was removed. Use ItemOpacity instead.
-
-
-QgsComposerLabel        {#qgis_api_break_3_0_QgsComposerLabel}
-----------------
-
-- setExpressionContext() has been removed. Setup the composition using an atlas and with
-expression variables in the composer label item instead.
-- setSubstitutions has been removed. Use expression context variables in the composer
-label item instead.
-- margin() was removed. Use marginX() and marginY() instead.
-
-
-QgsComposerLegend        {#qgis_api_break_3_0_QgsComposerLegend}
------------------
-
-- model() now returns the new QgsLegendModel (previously QgsLegendModelV2, see \ref qgis_api_break_3_0_renamed_classes).
-- modelV2() has been renamed to model().
-
-
-QgsComposerLegendItem        {#qgis_api_break_3_0_QgsComposerLegendItem}
----------------------
-
-- writeXMLChildren() has been renamed to writeXmlChildren()
-
-
-QgsComposerMap        {#qgis_api_break_3_0_QgsComposerMap}
---------------
-
-- layerSet() and setLayerSet() have been replaced by layers() and setLayers() which work with list of layers instead of layer IDs
-- containsWMSLayer() has been renamed to containsWmsLayer()
-- mapRenderer() has been removed. Use mapSettings() instead.
-- All grid style and format enums were moved to QgsComposerMapGrid.
-- All grid property getters and setters were moved to QgsComposerMapGrid,
-and should be accessed using QgsComposerMap::grid() or QgsComposerMap::grids().
-- All overview property getters and setters were moved to QgsComposerMapOverview,
-and should be accessed using QgsComposerMap::overview() or QgsComposerMap::overviews().
-- overviewExtentChanged() was moved to QgsComposerMapOverview.
-- toggleAtlasPreview(), connectMapOverviewSignals() were no longer required and are removed.
-- setRotation() and rotation() were removed. Use setMapRotation() and mapRotation()
-instead.
-- atlasFixedScale() and setAtlasFixedScale() were removed. Use atlasScalingMode()
-and setAtlasScalingMode() instead.
-- storeCurrentLayerSet() was removed. Use setLayers() instead.
-- The layersChanged() slot was removed.
-- setMapCanvas() was removed. This is no longer required to draw map annotations, which are instead retrieved from the composition's
-associated project's annotationManager()
-- setDrawCanvasItems() and drawCanvasItems() were renamed to setDrawAnnotations() and drawAnnotations()
-- setCacheUpdated(), updateCachedImage(), renderModeUpdateCachedImage() and cache() were removed. Use invalidateCache() instead.
-- The PreviewMode mode enums were removed. These are no longer used.
-- previewMode() and setPreviewMode() were removed. These are no longer required.
-
-
-QgsComposerMapGrid        {#qgis_api_break_3_0_QgsComposerMapGrid}
-------------------
-
-- The annotation position Disabled was removed. QgsComposerMapGrid::HideAll
-should be used instead.
-
-
-QgsComposerMultiFrame        {#qgis_api_break_3_0_QgsComposerMultiFrame}
----------------------
-
-- render( QPainter* p, const QRectF& renderExtent ) was removed. Use
-render( QPainter* painter, const QRectF& renderExtent, const int frameIndex )
-instead.
-- render( QPainter* painter, const QRectF& renderExtent, const int frameIndex )
-was made pure virtual.
-
-
-QgsComposerNodesItem        {#qgis_api_break_3_0_QgsComposerNodesItem}
---------------------
-
-- _readXMLStyle() has been renamed to _readXmlStyle()
-- _writeXMLStyle() has been renamed to _writeXMLStyle()
-- unselectNode() has been renamed to deselectNode() <!--#spellok-->
-
-QgsComposerObject        {#qgis_api_break_3_0_QgsComposerObject}
------------------
-
-- dataDefinedProperty() and setDataDefinedProperty() no longer use QgsDataDefined objects.
-Instead these methods have been ported to the QgsProperty framework.
-- dataDefinedEvaluate() was removed. Use the QgsProperty evaluation methods instead.
-
-
-QgsComposerPicture        {#qgis_api_break_3_0_QgsComposerPicture}
-------------------
-
-- setPictureFile() and pictureFile() were removed. Use setPicturePath()
-and picturePath() instead.
-- rotation() and setRotation() were removed. Use pictureRotation()
-and setPictureRotation() instead.
-- usePictureExpression() and pictureExpression() were removed. Use
-QgsComposerObject::dataDefinedProperty instead.
-- setUsePictureExpression() was removed. Use
-QgsComposerObject::setDataDefinedProperty() instead.
-- updatePictureExpression() was removed.
-
-QgsComposerScaleBar        {#qgis_api_break_3_0_QgsComposerScaleBar}
--------------------
-
-- The Alignment and SegmentSizeMode enums were moved to QgsScaleBarSettings
-- The ScaleBarUnits enum was removed. Use QgsUnitTypes::DistanceUnit instead.
-- setBrush() was removed. Use setFillColor() instead.
-- setBrush2() was removed. Use setFillColor2() instead.
-- setPen() was removed. Use setLineColor() and setLineWidth() instead.
-- segmentMillimeters() and firstLabelString() were removed.
-
-
-QgsComposerTable        {#qgis_api_break_3_0_QgsComposerTable}
-----------------
-
-- tableWriteXML() has been renamed to tableWriteXml()
-- tableReadXML() has been renamed to tableReadXml()
-
-
-QgsComposerTableV2        {#qgis_api_break_3_0_QgsComposerTableV2}
-------------------
-
-- rowsVisible(), rowRange(), drawHorizontalGridLines() and
- drawVerticalGridLines() were removed.
-- WrapBehaviour enum and its setter and getter methods has been renamed to WrapBehavior <!--#spellok-->
-- EmptyTableBehaviour enum and its setter and getter methods has been renamed to EmptyTableBehavior <!--#spellok-->
-
-
- QgsComposerView        {#qgis_api_break_3_0_QgsComposerView}
---------------------
-
-- unselectNode() has been renamed to deselectNode() <!--#spellok-->
-
-
- QgsComposerUtils       {#qgis_api_break_3_0_QgsComposerUtils}
------------------
-
-- readDataDefinedPropertyMap() was renamed to readOldDataDefinedPropertyMap() and the signature has changed
-to use a QgsPropertyCollection object.
-- readDataDefinedProperty() was renamed to readOldDataDefinedProperty() and the signature has changed
-to use the QgsProperty framework objects.
-- writeDataDefinedPropertyMap() was removed. This is now handled by QgsPropertyCollection::writeXml()
-
-
-QgsComposition        {#qgis_api_break_3_0_QgsComposition}
---------------
-
-- The constructor no longer takes a reference to a QgsMapSettings object. This is no longer
-used by compositions. To set the layers to show in composer maps, the QgsComposerMap::setLayers()
-method should be used instead.
-- constructor requires QgsProject instance
-- addItemsFromXML() has been renamed to addItemsFromXml()
-- Constructor with QgsMapRenderer parameter has been removed. Use the variant with QgsMapSettings parameter.
-- mapRenderer() has been removed. Use mapSettings() instead.
-- setSnapGridTolerance(), setAlignmentSnapTolerance(), alignmentSnapTolerance() and snapGridTolerance()
-were removed. Use setSnapTolerance() and snapTolerance() instead.
-- getComposerHtmlByItem() was removed. Use QgsComposerFrame::multiFrame() instead.
-- pixelFontSize(), pointFontSize(), relativeResizeRect(), relativePosition() were removed. Use the corresponding methods in QgsComposerUtils instead.
-- sortZList() was removed. Use refreshZList() instead.
-- addComposerTable(), composerTableAdded() were removed.
-- setAllUnselected() has been renamed to setAllDeselected. <!--#spellok-->
-- worldFileMap() and setWorldFileMap() have been renamed to referenceMap() and setReferenceMap()
-- dataDefinedProperty() and setDataDefinedProperty() now use the QgsProperty framework instead
-of QgsDataDefined objects.
-- mapSettings() was removed. Use QgsComposerMap::mapSettings() instead.
-- The composerArrowAdded, composerPolygonAdded, composerPolylineAdded, composerHtmlFrameAdded, composerItemGroupAdded,
-composerLabelAdded, composerMapAdded, composerScaleBarAdded, composerLegendAdded, composerPictureAdded,
-composerShapeAdded, and composerTableFrameAdded were removed. Use the general itemAdded signal instead to catch
-all these item added events.
-- addComposerMap no longer takes a setDefaultPreviewStyle argument.
-- the mapsToRestore parameter has been removed from addItemsFromXml
 
 QgsCompoundColorWidget     {#qgis_api_break_3_0_QgsCompoundColorWidget}
 ----------------------
@@ -914,11 +696,12 @@ called if changes are made to the CRS database.
 QgsCoordinateTransform        {#qgis_api_break_3_0_QgsCoordinateTransform}
 ----------------------
 
-- QgsCoordinateTransform is no longer a QObject. readXml, writeXml and initialize are all normal public members now,
+- QgsCoordinateTransform is no longer a QObject. Initialize is a normal public members now,
 not slots. The invalidTransformInput() signal has been removed.
 - The extra QgsCoordinateTransform constructors (those not taking QgsCoordinateReferenceSystem arguments) have been
 removed. Now, QgsCoordinateTransform must be created using an already existing source and destination
-QgsCoordinateReferenceSystem object.
+QgsCoordinateReferenceSystem object, and either a QgsCoordinateTransformContext object or a reference to the
+current project instance.
 - QgsCoordinateTransform::clone() has been removed. Just use direct copies instead.
 - sourceCrs() and destCrs() now return a copy instead of a reference to the CRS. This has no effect on PyQGIS code, but c++
 plugins calling these methods will need to be updated.
@@ -930,7 +713,15 @@ plugins calling these methods will need to be updated.
 - 'p' argument in transform() has been renamed to 'point', 'theRect' to 'rectangle', 'poly' to 'polygon'
 - setDestCRSID has been removed, use setDestinationCrs() instead
 - 'theNode', 'theDoc' parameters in readXML and writeXML have been renamed to 'node' and 'document' respectively
-- readXML() and writeXML() have been renamed to readXml() and writeXml() for consistency
+- readXML() and writeXML() have been removed.
+- initialize() was removed, calls to this method can safely be omitted.
+- datumTransformations() was moved to QgsDatumTransform, and now returns a list of QgsDatumTransform.TransformPair instead of a list of lists.
+- datumTransformString() was moved to QgsDatumTransform and renamed to datumTransformToProj()
+- datumTransformCrsInfo() was moved to QgsDatumTransform and renamed to datumTransformInfo(), and now returns a QgsDatumTransform.TransformInfo object.
+- sourceDatumTransform() was renamed to sourceDatumTransformId()
+- setSourceDatumTransform() was renamed to setSourceDatumTransformId()
+- destinationDatumTransform() was renamed to destinationDatumTransformId()
+- setDestinationDatumTransform() was renamed to setDestinationDatumTransformId()
 
 
 QgsCoordinateTransformCache        {#qgis_api_break_3_0_QgsCoordinateTransformCache}
@@ -1117,7 +908,8 @@ ellipsoid to 'NONE' to disable ellipsoidal calculations.
 - ellipsoidalEnabled() was removed. Ellipsoidal calculations are now enabled whenever a valid ellipsoid() is set. Check
 willUseEllipsoid() to determine whether ellipsoidal calculations will be performed.
 - sourceCrs() now returns a QgsCoordinateReferenceSystem instead of the crs ID.
-- setSourceCrs() now requires a QgsCoordinateReferenceSystem instead of crs ID.
+- setSourceCrs() now requires a QgsCoordinateReferenceSystem instead of crs ID, and requires a QgsCoordinateTransformContext object. PyQGIS code
+can use QgsProject.instance().transformContext() for the QgsCoordinateTransformContext argument.
 - setSourceAuthId() was removed. Use setSourceCrs() instead.
 - geographic() was removed. Check sourceCrs().isGeographic() instead.
 - measure() has been removed. Use measureArea() or measureLength() instead.
@@ -1164,6 +956,8 @@ QgsEditorWidgetWrapper        {#qgis_api_break_3_0_QgsEditorWidgetWrapper}
 
 - constraintStatusChanged now reports a QgsEditorWidgetWrapper::ConstraintResult instead of the previous boolean value for the constraint status
 - The boolean constraintValid argument for updateConstraintWidgetStatus has been changed to a QgsEditorWidgetWrapper::ConstraintResult value
+- All `valueChanged( value )` slots have been removed. Use `emit valueChanged( value )` instead.
+- The `valueChanged()` slot has been renamed to `emitValueChanged()`.
 
 
 QgsExpression        {#qgis_api_break_3_0_QgsExpression}
@@ -1342,6 +1136,8 @@ maintains Z or M dimensions from the input points and is more efficient.
 - exportToWkt() was renamed to asWkt()
 - exportToGeoJSON() was renamed to asJson()
 - closestSegmentWithContext() now returns an extra value, indicating whether the point is to the left of the geometry
+- equals() now performs a fast, strict equality check, where geometries are considered equal only if they have the
+exact same type, vertices and order. The slower topological test can be performed by calling isGeosEqual instead.
 
 
 QgsGeometryAnalyzer        {#qgis_api_break_3_0_QgsGeometryAnalyzer}
@@ -1453,6 +1249,10 @@ QgsGeometryUtils         {#qgis_api_break_3_0_QgsGeometryUtils}
 
 - componentType enum has been renamed to ComponentType and its members were CamelCased too: VERTEX, RING and PART become Vertex, Ring and Part, respectively.
 - adjacentVertices was removed - use QgsAbstractGeometry.adjacentVertices instead.
+- segmentIntersection takes an optional boolean parameter "acceptImproperIntersection" returning true even if the intersection is improper.
+Takes another boolean argument "isIntersection" returning if there is an intersection or not. The "inter" parameter has been renamed "intersectionPoint".
+- projPointOnSegment has been renamed to projectPointOnSegment
+- getSelfIntersections has been renamed to selfIntersections
 
 
 QgsGPSConnectionRegistry        {#qgis_api_break_3_0_QgsGPSConnectionRegistry}
@@ -1636,6 +1436,7 @@ QgsMapCanvas        {#qgis_api_break_3_0_QgsMapCanvas}
 - setCrsTransformEnabled(), hasCrsTransformEnabled(), hasCrsTransformEnabledChanged() were removed. CRS transformation is now always enabled.
 - setMapUnits() was removed. The map units are dictated by the units for the destination CRS.
 - The mapUnitsChanged() signal was removed. Listen for the destinationCrsChanged() signal instead, as the destination CRS dictates the map units.
+- layerCrsChange() slot was removed. Datum transforms are now handled in QgisApp.
 
 QgsMapCanvasItem        {#qgis_api_break_3_0_QgsMapCanvasItem}
 ----------------
@@ -1988,7 +1789,8 @@ QgsPointLocator        {#qgis_api_break_3_0_QgsPointLocator}
 ---------------
 
 - The constructor now takes a reference rather than a pointer to a CRS.  This has no effect on PyQGIS code, but c++
-plugins calling this method will need to be updated.
+plugins calling this method will need to be updated. The constructor now requires a QgsCoordinateTransformContext argument
+when a destination crs is specified.
 - The destCRS parameter in the constructor has been renamed to destinationCrs.
 - destCRS() has been renamed to destinationCrs()
 - destinationCrs() now returns a copy instead of a reference to the CRS. This has no effect on PyQGIS code, but c++
@@ -2075,6 +1877,9 @@ QgsRasterDataProvider        {#qgis_api_break_3_0_QgsRasterDataProvider}
 - draw() has been removed from the interface as it was not used anywhere.
 - The progress and progressUpdate signals were removed. Methods which previously emitted these
 signals now accept a QgsRasterBlockFeedback argument for reporting progress updates.
+- metadata() was renamed to htmlMetadata()
+- makeTableCell() has been removed
+- makeTableCells() has been removed, look for the new class QgsHtmlUtils
 
 
 QgsRasterFileWriter        {#qgis_api_break_3_0_QgsRasterFileWriter}
@@ -2114,6 +1919,12 @@ loadDefaultStyle argument.
 - showProgress() and onProgress() were removed
 - The progressUpdate() signal was removed.  Methods which previously emitted these
 signals now accept a QgsRasterBlockFeedback argument for reporting progress updates.
+
+
+QgsRasterLayerSaveAsDialog        {#qgis_api_break_3_0_QgsRasterLayerSaveAsDialog}
+--------------------------
+
+- The currentExtent and currentCrs arguments have been dropped from the constructor. Use setMapCanvas() instead.
 
 
 QgsRasterProjector        {#qgis_api_break_3_0_QgsRasterProjector}
@@ -2507,6 +2318,8 @@ QgsTracer        {#qgis_api_break_3_0_QgsTracer}
 ---------
 
 - hasCrsTransformEnabled() and setCrsTransformEnabled() were removed. CRS transformation is now always enabled when required.
+- setDestinationCrs() now requires a QgsCoordinateTransformContext argument.
+
 
 QgsTransaction        {#qgis_api_break_3_0_QgsTransaction}
 --------------
@@ -2630,6 +2443,10 @@ displayExpression instead. For the map tip use mapTipTemplate() instead.
 - addPart() now returns QgsGeometry::OperationResult enum, integer representation of returned values may have changed
 - splitParts() now returns QgsGeometry::OperationResult enum, integer representation of returned values may have changed
 - splitFeatured() now returns QgsGeometry::OperationResult enum, integer representation of returned values may have changed
+- pendingFields() was dropped. Use fields() instead.
+- pendingAllAttributesList() was dropped. Use allAttributes() instead.
+- pendingPkAttributesList() and pkAttributeList() were dropped. Use primaryKeyAttributes() instead.
+- pendingFeatureCount() was dropped. Use featureCount() instead.
 
 
 QgsVectorLayerEditBuffer        {#qgis_api_break_3_0_QgsVectorLayerEditBuffer}

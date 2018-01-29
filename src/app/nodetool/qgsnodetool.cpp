@@ -346,7 +346,7 @@ void QgsNodeTool::cadCanvasPressEvent( QgsMapMouseEvent *e )
 
   cleanupNodeEditor();
 
-  if ( !mDraggingVertex && !mSelectedNodes.isEmpty() )
+  if ( !mDraggingVertex && !mSelectedNodes.isEmpty() && !( e->modifiers() & Qt::ShiftModifier ) && !( e->modifiers() & Qt::ControlModifier ) )
   {
     // only remove highlight if not clicked on one of highlighted nodes
     bool clickedOnHighlightedNode = false;
@@ -369,16 +369,29 @@ void QgsNodeTool::cadCanvasPressEvent( QgsMapMouseEvent *e )
 
   if ( e->button() == Qt::LeftButton )
   {
-    // Ctrl+Click to highlight nodes without entering editing mode
-    if ( e->modifiers() & Qt::ControlModifier )
+    if ( e->modifiers() & Qt::ControlModifier || e->modifiers() & Qt::ShiftModifier )
     {
+      // shift or ctrl-click nodes to highlight without entering edit mode
       QgsPointLocator::Match m = snapToEditableLayer( e );
       if ( m.hasVertex() )
       {
         Vertex node( m.layer(), m.featureId(), m.vertexIndex() );
-        setHighlightedNodes( QList<Vertex>() << node );
+
+        HighlightMode mode = ModeReset;
+        if ( e->modifiers() & Qt::ShiftModifier )
+        {
+          // Shift+Click to add node to highlight
+          mode = ModeAdd;
+        }
+        else if ( e->modifiers() & Qt::ControlModifier )
+        {
+          // Ctrl+Click to remove node
+          mode = ModeSubtract;
+        }
+
+        setHighlightedNodes( QList<Vertex>() << node, mode );
+        return;
       }
-      return;
     }
 
     // the user may have started dragging a rect to select vertices
@@ -451,13 +464,19 @@ void QgsNodeTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       }
     }
 
-    setHighlightedNodes( nodes );
+    HighlightMode mode = ModeReset;
+    if ( e->modifiers() & Qt::ShiftModifier )
+      mode = ModeAdd;
+    else if ( e->modifiers() & Qt::ControlModifier )
+      mode = ModeSubtract;
+
+    setHighlightedNodes( nodes, mode );
 
     stopSelectionRect();
   }
   else  // selection rect is not being dragged
   {
-    if ( e->button() == Qt::LeftButton )
+    if ( e->button() == Qt::LeftButton && !( e->modifiers() & Qt::ShiftModifier ) && !( e->modifiers() & Qt::ControlModifier ) )
     {
       // accepting action
       if ( mDraggingVertex )
@@ -1700,26 +1719,64 @@ void QgsNodeTool::deleteVertex()
   }
 }
 
-void QgsNodeTool::setHighlightedNodes( QList<Vertex> listNodes )
+void QgsNodeTool::setHighlightedNodes( const QList<Vertex> &listNodes, HighlightMode mode )
 {
-  qDeleteAll( mSelectedNodesMarkers );
-  mSelectedNodesMarkers.clear();
-  mSelectedNodes.clear();
+  if ( mode == ModeReset )
+  {
+    qDeleteAll( mSelectedNodesMarkers );
+    mSelectedNodesMarkers.clear();
+    mSelectedNodes.clear();
+  }
+  else if ( mode == ModeSubtract )
+  {
+    // need to clear node markers, and rebuild later. We have no way to link
+    // a marker to a node in order to remove one-by-one
+    qDeleteAll( mSelectedNodesMarkers );
+    mSelectedNodesMarkers.clear();
+  }
 
-  for ( const Vertex &node : qgis::as_const( listNodes ) )
+  auto createMarkerForNode = [ = ]( const Vertex & node )->bool
   {
     QgsGeometry geom = cachedGeometryForVertex( node );
     QgsVertexId vid;
     if ( !geom.vertexIdFromVertexNr( node.vertexId, vid ) )
-      continue;  // node may not exist anymore
+      return false;  // node may not exist anymore
+
     QgsVertexMarker *marker = new QgsVertexMarker( canvas() );
     marker->setIconType( QgsVertexMarker::ICON_CIRCLE );
     marker->setPenWidth( 3 );
     marker->setColor( Qt::blue );
     marker->setFillColor( Qt::blue );
     marker->setCenter( toMapCoordinates( node.layer, geom.vertexAt( node.vertexId ) ) );
-    mSelectedNodes.append( node );
     mSelectedNodesMarkers.append( marker );
+    return true;
+  };
+
+  for ( const Vertex &node : listNodes )
+  {
+    if ( mode == ModeAdd && mSelectedNodes.contains( node ) )
+    {
+      continue;
+    }
+    else if ( mode == ModeSubtract )
+    {
+      mSelectedNodes.removeAll( node );
+      continue;
+    }
+
+    if ( !createMarkerForNode( node ) )
+      continue;  // node may not exist anymore
+
+    mSelectedNodes.append( node );
+  }
+
+  if ( mode == ModeSubtract )
+  {
+    // rebuild markers for remaining selection
+    for ( const Vertex &node : qgis::as_const( mSelectedNodes ) )
+    {
+      createMarkerForNode( node );
+    }
   }
 }
 

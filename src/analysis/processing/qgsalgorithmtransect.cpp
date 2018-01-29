@@ -41,6 +41,11 @@ QString QgsTransectAlgorithm::group() const
   return QObject::tr( "Vector geometry" );
 }
 
+QString QgsTransectAlgorithm::groupId() const
+{
+  return QStringLiteral( "vectorgeometry" );
+}
+
 void QgsTransectAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ),

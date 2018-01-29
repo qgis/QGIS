@@ -66,8 +66,8 @@ class QgsGrassElementDialog: public QObject
     // \param source local source
     QString getItem( QString element,
                      QString title, QString label,
-                     QString text, QString source = 0,
-                     bool *ok = 0 );
+                     QString text, QString source = QString(),
+                     bool *ok = nullptr );
 
   public slots:
     void textChanged();

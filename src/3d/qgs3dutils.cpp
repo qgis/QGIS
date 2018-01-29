@@ -294,14 +294,14 @@ QgsVector3D Qgs3DUtils::worldToMapCoordinates( const QgsVector3D &worldCoords, c
                       worldCoords.y() + origin.z() );
 }
 
-QgsVector3D Qgs3DUtils::transformWorldCoordinates( const QgsVector3D &worldPoint1, const QgsVector3D &origin1, const QgsCoordinateReferenceSystem &crs1, const QgsVector3D &origin2, const QgsCoordinateReferenceSystem &crs2 )
+QgsVector3D Qgs3DUtils::transformWorldCoordinates( const QgsVector3D &worldPoint1, const QgsVector3D &origin1, const QgsCoordinateReferenceSystem &crs1, const QgsVector3D &origin2, const QgsCoordinateReferenceSystem &crs2, const QgsCoordinateTransformContext &context )
 {
   QgsVector3D mapPoint1 = worldToMapCoordinates( worldPoint1, origin1 );
   QgsVector3D mapPoint2 = mapPoint1;
   if ( crs1 != crs2 )
   {
     // reproject if necessary
-    QgsCoordinateTransform ct( crs1, crs2 );
+    QgsCoordinateTransform ct( crs1, crs2, context );
     try
     {
       QgsPointXY pt = ct.transform( QgsPointXY( mapPoint1.x(), mapPoint1.y() ) );

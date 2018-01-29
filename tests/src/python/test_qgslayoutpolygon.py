@@ -29,12 +29,17 @@ from qgis.testing import (start_app,
                           )
 from utilities import unitTestDataPath
 from qgslayoutchecker import QgsLayoutChecker
+from test_qgslayoutitem import LayoutItemTestCase
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsLayoutPolygon(unittest.TestCase):
+class TestQgsLayoutPolygon(unittest.TestCase, LayoutItemTestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        cls.item_class = QgsLayoutItemPolygon
 
     def __init__(self, methodName):
         """Run once on class initialization."""

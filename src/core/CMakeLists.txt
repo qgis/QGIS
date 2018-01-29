@@ -2,18 +2,19 @@
 # sources
 
 SET(QGIS_CORE_SRCS
-  gps/context.c
-  gps/gmath.c
-  gps/info.c
-  gps/parse.c
+  ${CMAKE_SOURCE_DIR}/external/nmea/context.c
+  ${CMAKE_SOURCE_DIR}/external/nmea/gmath.c
+  ${CMAKE_SOURCE_DIR}/external/nmea/info.c
+  ${CMAKE_SOURCE_DIR}/external/nmea/parse.c
+  ${CMAKE_SOURCE_DIR}/external/nmea/sentence.c
+  ${CMAKE_SOURCE_DIR}/external/nmea/time.c
+  ${CMAKE_SOURCE_DIR}/external/nmea/tok.c
+
   gps/qgsgpsconnection.cpp
   gps/qgsgpsconnectionregistry.cpp
   gps/qgsgpsdconnection.cpp
   gps/qgsgpsdetector.cpp
   gps/qgsnmeaconnection.cpp
-  gps/sentence.c
-  gps/time.c
-  gps/tok.c
 
   symbology/qgs25drenderer.cpp
   symbology/qgsarrowsymbollayer.cpp
@@ -150,9 +151,9 @@ SET(QGIS_CORE_SRCS
   qgscoordinatereferencesystem.cpp
   qgscoordinatetransform.cpp
   qgscoordinatetransform_p.cpp
+  qgscoordinatetransformcontext.cpp
   qgscoordinateutils.cpp
   qgscredentials.cpp
-  qgscrscache.cpp
   qgsdartmeasurement.cpp
   qgsdatadefinedsizelegend.cpp
   qgsdataitem.cpp
@@ -161,7 +162,7 @@ SET(QGIS_CORE_SRCS
   qgsdatasourceuri.cpp
   qgsdataprovider.cpp
   qgsdatetimestatisticalsummary.cpp
-  qgsdatumtransformstore.cpp
+  qgsdatumtransform.cpp
   qgsdbfilterproxymodel.cpp
   qgsdefaultvalue.cpp
   qgsdiagramrenderer.cpp
@@ -193,6 +194,7 @@ SET(QGIS_CORE_SRCS
   qgsgml.cpp
   qgsgmlschema.cpp
   qgshistogram.cpp
+  qgshtmlutils.cpp
   qgsinterval.cpp
   qgsjsonutils.cpp
   qgslabelfeature.cpp
@@ -318,54 +320,18 @@ SET(QGIS_CORE_SRCS
   qgsxmlutils.cpp
   qgssettings.cpp
   qgsarchive.cpp
+  qgstestutils.cpp
   qgsziputils.cpp
-
-  composer/qgsaddremoveitemcommand.cpp
-  composer/qgsaddremovemultiframecommand.cpp
-  composer/qgsatlascomposition.cpp
-  composer/qgscomposerarrow.cpp
-  composer/qgscomposerattributetablemodelv2.cpp
-  composer/qgscomposerattributetablev2.cpp
-  composer/qgscomposereffect.cpp
-  composer/qgscomposerframe.cpp
-  composer/qgscomposerhtml.cpp
-  composer/qgscomposeritem.cpp
-  composer/qgscomposeritemcommand.cpp
-  composer/qgscomposeritemgroup.cpp
-  composer/qgscomposerlabel.cpp
-  composer/qgscomposerlegend.cpp
-  composer/qgscomposermap.cpp
-  composer/qgscomposermapgrid.cpp
-  composer/qgscomposermapitem.cpp
-  composer/qgscomposermapoverview.cpp
-  composer/qgscomposermodel.cpp
-  composer/qgscomposermousehandles.cpp
-  composer/qgscomposermultiframe.cpp
-  composer/qgscomposermultiframecommand.cpp
-  composer/qgscomposerobject.cpp
-  composer/qgscomposerpicture.cpp
-  composer/qgscomposerscalebar.cpp
-  composer/qgscomposershape.cpp
-  composer/qgscomposernodesitem.cpp
-  composer/qgscomposerpolygon.cpp
-  composer/qgscomposerpolyline.cpp
-  composer/qgscomposertablecolumn.cpp
-  composer/qgscomposertablev2.cpp
-  composer/qgscomposertexttable.cpp
-  composer/qgscomposerutils.cpp
-  composer/qgscomposition.cpp
-  composer/qgsgroupungroupitemscommand.cpp
-  composer/qgslayoutmanager.cpp
-  composer/qgspaperitem.cpp
 
   dxf/qgsdxfexport.cpp
   dxf/qgsdxfpaintdevice.cpp
   dxf/qgsdxfpaintengine.cpp
   dxf/qgsdxfpallabeling.cpp
 
+  layout/qgsabstractreportsection.cpp
   layout/qgslayout.cpp
   layout/qgslayoutaligner.cpp
-  layout/qgslayoutcontext.cpp
+  layout/qgslayoutatlas.cpp
   layout/qgslayouteffect.cpp
   layout/qgslayoutexporter.cpp
   layout/qgslayoutgridsettings.cpp
@@ -392,6 +358,7 @@ SET(QGIS_CORE_SRCS
   layout/qgslayoutitemshape.cpp
   layout/qgslayoutitemtexttable.cpp
   layout/qgslayoutitemundocommand.cpp
+  layout/qgslayoutmanager.cpp
   layout/qgslayoutmeasurement.cpp
   layout/qgslayoutmeasurementconverter.cpp
   layout/qgslayoutmodel.cpp
@@ -399,6 +366,8 @@ SET(QGIS_CORE_SRCS
   layout/qgslayoutmultiframeundocommand.cpp
   layout/qgslayoutobject.cpp
   layout/qgslayoutpagecollection.cpp
+  layout/qgslayoutrendercontext.cpp
+  layout/qgslayoutreportcontext.cpp
   layout/qgslayoutserializableobject.cpp
   layout/qgslayoutsnapper.cpp
   layout/qgslayouttable.cpp
@@ -410,6 +379,11 @@ SET(QGIS_CORE_SRCS
   layout/qgslayoutpoint.cpp
   layout/qgslayoutserializableobject.cpp
   layout/qgslayoutsize.cpp
+  layout/qgsprintlayout.cpp
+  layout/qgsreport.cpp
+  layout/qgsreportsectionfieldgroup.cpp
+  layout/qgsreportsectionlayout.cpp
+  layout/qgscompositionconverter.cpp
 
   pal/costcalculator.cpp
   pal/feature.cpp
@@ -552,18 +526,18 @@ ENDIF (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 
 IF (WITH_INTERNAL_QEXTSERIALPORT)
   SET(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
-    gps/qextserialport/qextserialport.cpp
-    gps/qextserialport/qextserialenumerator.cpp
+    ${CMAKE_SOURCE_DIR}/external/qextserialport/qextserialport.cpp
+    ${CMAKE_SOURCE_DIR}/external/qextserialport/qextserialenumerator.cpp
   )
   IF(WIN32)
     SET(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
-      gps/qextserialport/win_qextserialport.cpp
+      ${CMAKE_SOURCE_DIR}/external/qextserialport/win_qextserialport.cpp
     )
     ADD_DEFINITIONS(-D_TTY_WIN_)
 
   ELSE(WIN32)
     SET(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
-      gps/qextserialport/posix_qextserialport.cpp
+      ${CMAKE_SOURCE_DIR}/external/qextserialport/posix_qextserialport.cpp
     )
     ADD_DEFINITIONS(-D_TTY_POSIX_)
   ENDIF(WIN32)
@@ -675,40 +649,6 @@ SET(QGIS_CORE_MOC_HDRS
   auth/qgsauthmanager.h
   auth/qgsauthmethod.h
 
-  composer/qgsaddremoveitemcommand.h
-  composer/qgsatlascomposition.h
-  composer/qgscomposerarrow.h
-  composer/qgscomposerattributetablemodelv2.h
-  composer/qgscomposerattributetablev2.h
-  composer/qgscomposereffect.h
-  composer/qgscomposerframe.h
-  composer/qgscomposerhtml.h
-  composer/qgscomposeritemgroup.h
-  composer/qgscomposeritem.h
-  composer/qgscomposerlabel.h
-  composer/qgscomposerlegend.h
-  composer/qgscomposermapgrid.h
-  composer/qgscomposermap.h
-  composer/qgscomposermapitem.h
-  composer/qgscomposermapoverview.h
-  composer/qgscomposermodel.h
-  composer/qgscomposermousehandles.h
-  composer/qgscomposermultiframe.h
-  composer/qgscomposerobject.h
-  composer/qgscomposerpicture.h
-  composer/qgscomposerscalebar.h
-  composer/qgscomposershape.h
-  composer/qgscomposernodesitem.h
-  composer/qgscomposerpolygon.h
-  composer/qgscomposerpolyline.h
-  composer/qgscomposertablecolumn.h
-  composer/qgscomposertablev2.h
-  composer/qgscomposertexttable.h
-  composer/qgscomposition.h
-  composer/qgsgroupungroupitemscommand.h
-  composer/qgslayoutmanager.h
-  composer/qgspaperitem.h
-
   locator/qgslocator.h
   locator/qgslocatorfilter.h
   locator/qgslocatormodel.h
@@ -736,7 +676,7 @@ SET(QGIS_CORE_MOC_HDRS
   gps/qgsgpsdconnection.h
 
   layout/qgslayout.h
-  layout/qgslayoutcontext.h
+  layout/qgslayoutatlas.h
   layout/qgslayouteffect.h
   layout/qgslayoutguidecollection.h
   layout/qgslayoutframe.h
@@ -760,13 +700,18 @@ SET(QGIS_CORE_MOC_HDRS
   layout/qgslayoutitemscalebar.h
   layout/qgslayoutitemshape.h
   layout/qgslayoutitemtexttable.h
+  layout/qgslayoutmanager.h
   layout/qgslayoutmodel.h
   layout/qgslayoutmultiframe.h
   layout/qgslayoutpagecollection.h
   layout/qgslayoutobject.h
+  layout/qgslayoutrendercontext.h
+  layout/qgslayoutreportcontext.h
   layout/qgslayouttable.h
   layout/qgslayouttablecolumn.h
   layout/qgslayoutundostack.h
+  layout/qgsprintlayout.h
+  layout/qgsreport.h
 
   symbology/qgscptcityarchive.h
   symbology/qgssvgcache.h
@@ -796,8 +741,8 @@ ENDIF(NOT WITH_QTWEBKIT)
 
 IF (WITH_INTERNAL_QEXTSERIALPORT)
   SET(QGIS_CORE_MOC_HDRS ${QGIS_CORE_MOC_HDRS}
-    gps/qextserialport/qextserialport.h
-    gps/qextserialport/qextserialenumerator.h
+    ${CMAKE_SOURCE_DIR}/external/qextserialport/qextserialport.h
+    ${CMAKE_SOURCE_DIR}/external/qextserialport/qextserialenumerator.h
   )
 ENDIF (WITH_INTERNAL_QEXTSERIALPORT)
 
@@ -853,15 +798,15 @@ SET(QGIS_CORE_HDRS
   qgsconditionalstyle.h
   qgscoordinateformatter.h
   qgscoordinatetransform.h
+  qgscoordinatetransformcontext.h
   qgscoordinateutils.h
-  qgscrscache.h
   qgsdartmeasurement.h
   qgsdatadefinedsizelegend.h
   qgsdataitemprovider.h
   qgsdataitemproviderregistry.h
   qgsdatasourceuri.h
   qgsdatetimestatisticalsummary.h
-  qgsdatumtransformstore.h
+  qgsdatumtransform.h
   qgsdbfilterproxymodel.h
   qgsdefaultvalue.h
   qgsdiagramrenderer.h
@@ -888,6 +833,7 @@ SET(QGIS_CORE_HDRS
   qgsfontutils.h
   qgsgeometrysimplifier.h
   qgshistogram.h
+  qgshtmlutils.h
   qgsindexedfeature.h
   qgsinterval.h
   qgsjsonutils.h
@@ -981,6 +927,7 @@ SET(QGIS_CORE_HDRS
   qgsmapthemecollection.h
   qgsxmlutils.h
   qgsarchive.h
+  qgstestutils.h
   qgsziputils.h
   qgsvector.h
   qgslocalec.h
@@ -1012,14 +959,9 @@ SET(QGIS_CORE_HDRS
   effects/qgstransformeffect.h
   effects/qgscoloreffect.h
 
-  composer/qgsaddremovemultiframecommand.h
-  composer/qgscomposerarrow.h
-  composer/qgscomposerframe.h
-  composer/qgscomposeritemcommand.h
-  composer/qgscomposermultiframecommand.h
-  composer/qgscomposertexttable.h
-  composer/qgspaperitem.h
-
+  layout/qgsabstractlayoutiterator.h
+  layout/qgsabstractreportsection.h
+  layout/qgsmasterlayoutinterface.h
   layout/qgslayoutaligner.h
   layout/qgslayoutexporter.h
   layout/qgslayoutgridsettings.h
@@ -1034,6 +976,9 @@ SET(QGIS_CORE_HDRS
   layout/qgslayoutsnapper.h
   layout/qgslayoutundocommand.h
   layout/qgslayoututils.h
+  layout/qgsreportsectionfieldgroup.h
+  layout/qgsreportsectionlayout.h
+  layout/qgscompositionconverter.h
 
   metadata/qgslayermetadata.h
   metadata/qgslayermetadatavalidator.h
@@ -1193,7 +1138,6 @@ INCLUDE_DIRECTORIES(
   3d
   annotations
   auth
-  composer
   dxf
   effects
   ${CMAKE_SOURCE_DIR}/src/core/expression
@@ -1214,9 +1158,13 @@ INCLUDE_DIRECTORIES(
   renderer
   scalebar
   symbology
-  gps/qextserialport
   metadata
+  ${CMAKE_SOURCE_DIR}/external/nmea
 )
+IF (WITH_INTERNAL_QEXTSERIALPORT)
+  INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/external/qextserialport)
+ENDIF(WITH_INTERNAL_QEXTSERIALPORT)
+
 INCLUDE_DIRECTORIES(SYSTEM
   ${LIBZIP_INCLUDE_DIRS}
   ${SPATIALINDEX_INCLUDE_DIR}
@@ -1229,6 +1177,7 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${QCA_INCLUDE_DIR}
   ${QTKEYCHAIN_INCLUDE_DIR}
 )
+
 
 IF (APPLE)
   # Libtasn1 is for DER-encoded PKI ASN.1 parsing/extracting workarounds

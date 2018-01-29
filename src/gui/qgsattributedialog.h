@@ -51,9 +51,9 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog
      * \param context           The context in which this dialog is created
      *
      */
-    QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeature, bool featureOwner, QWidget *parent SIP_TRANSFERTHIS = 0, bool showDialogButtons = true, const QgsAttributeEditorContext &context = QgsAttributeEditorContext() );
+    QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeature, bool featureOwner, QWidget *parent SIP_TRANSFERTHIS = nullptr, bool showDialogButtons = true, const QgsAttributeEditorContext &context = QgsAttributeEditorContext() );
 
-    ~QgsAttributeDialog();
+    ~QgsAttributeDialog() override;
 
     /**
      * Saves the size and position for the next time
@@ -105,7 +105,7 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog
      *
      * \returns The same as the parent QDialog
      */
-    virtual bool event( QEvent *e ) override;
+    bool event( QEvent *e ) override;
 
   public slots:
     void accept() override;

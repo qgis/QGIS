@@ -39,7 +39,9 @@ class CORE_EXPORT QgsMapLayerLegend : public QObject
 {
     Q_OBJECT
   public:
-    explicit QgsMapLayerLegend( QObject *parent SIP_TRANSFERTHIS = 0 );
+
+    //! Constructor for QgsMapLayerLegend
+    explicit QgsMapLayerLegend( QObject *parent SIP_TRANSFERTHIS = nullptr );
 
     // TODO: type, load/save settings
 
@@ -99,7 +101,7 @@ class CORE_EXPORT QgsDefaultVectorLayerLegend : public QgsMapLayerLegend
   public:
     explicit QgsDefaultVectorLayerLegend( QgsVectorLayer *vl );
 
-    virtual QList<QgsLayerTreeModelLegendNode *> createLayerTreeModelLegendNodes( QgsLayerTreeLayer *nodeLayer ) SIP_FACTORY override;
+    QList<QgsLayerTreeModelLegendNode *> createLayerTreeModelLegendNodes( QgsLayerTreeLayer *nodeLayer ) SIP_FACTORY override;
 
   private:
     QgsVectorLayer *mLayer = nullptr;
@@ -118,7 +120,7 @@ class CORE_EXPORT QgsDefaultRasterLayerLegend : public QgsMapLayerLegend
   public:
     explicit QgsDefaultRasterLayerLegend( QgsRasterLayer *rl );
 
-    virtual QList<QgsLayerTreeModelLegendNode *> createLayerTreeModelLegendNodes( QgsLayerTreeLayer *nodeLayer ) SIP_FACTORY override;
+    QList<QgsLayerTreeModelLegendNode *> createLayerTreeModelLegendNodes( QgsLayerTreeLayer *nodeLayer ) SIP_FACTORY override;
 
   private:
     QgsRasterLayer *mLayer = nullptr;

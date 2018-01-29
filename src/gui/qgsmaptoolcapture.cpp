@@ -41,9 +41,6 @@
 QgsMapToolCapture::QgsMapToolCapture( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget, CaptureMode mode )
   : QgsMapToolAdvancedDigitizing( canvas, cadDockWidget )
   , mCaptureMode( mode )
-#ifdef Q_OS_WIN
-  , mSkipNextContextMenuEvent( 0 )
-#endif
 {
   mCaptureModeFromLayer = mode == CaptureNone;
   mCapturing = false;
@@ -129,7 +126,8 @@ void QgsMapToolCapture::currentLayerChanged( QgsMapLayer *layer )
 bool QgsMapToolCapture::tracingEnabled()
 {
   QgsMapCanvasTracer *tracer = QgsMapCanvasTracer::tracerForCanvas( mCanvas );
-  return tracer && tracer->actionEnableTracing() && tracer->actionEnableTracing()->isChecked();
+  return tracer && ( !tracer->actionEnableTracing() || tracer->actionEnableTracing()->isChecked() )
+         && ( !tracer->actionEnableSnapping() || tracer->actionEnableSnapping()->isChecked() );
 }
 
 
@@ -639,18 +637,6 @@ void QgsMapToolCapture::stopCapturing()
 
   mTracingStartPoint = QgsPointXY();
 
-#ifdef Q_OS_WIN
-  Q_FOREACH ( QWidget *w, qApp->topLevelWidgets() )
-  {
-    if ( w->objectName() == "QgisApp" )
-    {
-      if ( mSkipNextContextMenuEvent++ == 0 )
-        w->installEventFilter( this );
-      break;
-    }
-  }
-#endif
-
   mCapturing = false;
   mCaptureCurve.clear();
   mSnappingMatches.clear();
@@ -763,7 +749,7 @@ int QgsMapToolCapture::size()
   return mCaptureCurve.numPoints();
 }
 
-QVector<QgsPointXY> QgsMapToolCapture::points()
+QVector<QgsPointXY> QgsMapToolCapture::points() const
 {
   QgsPointSequence pts;
   QVector<QgsPointXY> points;
@@ -782,15 +768,3 @@ void QgsMapToolCapture::setPoints( const QVector<QgsPointXY> &pointList )
     mSnappingMatches.append( QgsPointLocator::Match() );
 }
 
-#ifdef Q_OS_WIN
-bool QgsMapToolCapture::eventFilter( QObject *obj, QEvent *event )
-{
-  if ( event->type() != QEvent::ContextMenu )
-    return false;
-
-  if ( --mSkipNextContextMenuEvent == 0 )
-    obj->removeEventFilter( this );
-
-  return mSkipNextContextMenuEvent >= 0;
-}
-#endif

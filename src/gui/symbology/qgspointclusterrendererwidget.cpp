@@ -149,7 +149,7 @@ void QgsPointClusterRendererWidget::mRendererSettingsButton_clicked()
   if ( m )
   {
     QgsRendererWidget *w = m->createRendererWidget( mLayer, mStyle, mRenderer->embeddedRenderer()->clone() );
-    w->setPanelTitle( tr( "Renderer settings" ) );
+    w->setPanelTitle( tr( "Renderer Settings" ) );
 
     QgsExpressionContextScope scope;
     scope.addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_CLUSTER_COLOR, "", true ) );
@@ -230,6 +230,6 @@ void QgsPointClusterRendererWidget::updateRendererFromWidget()
 void QgsPointClusterRendererWidget::setupBlankUi( const QString &layerName )
 {
   QGridLayout *layout = new QGridLayout( this );
-  QLabel *label = new QLabel( tr( "The point cluster renderer only applies to (single) point layers. \n'%1' is not a point layer and cannot be displayed by the point cluster renderer" ).arg( layerName ), this );
+  QLabel *label = new QLabel( tr( "The point cluster renderer only applies to (single) point layers. \n'%1' is not a (single) point layer and cannot be displayed by the point cluster renderer." ).arg( layerName ), this );
   layout->addWidget( label );
 }

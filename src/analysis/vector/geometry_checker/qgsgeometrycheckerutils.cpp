@@ -81,7 +81,7 @@ namespace QgsGeometryCheckerUtils
     // End
     mFeatureIt = QgsFeatureIds::const_iterator();
     delete mCurrentFeature;
-    mCurrentFeature = 0;
+    mCurrentFeature = nullptr;
     return false;
   }
 
@@ -257,6 +257,7 @@ namespace QgsGeometryCheckerUtils
   {
     QList<QgsPoint> intersections;
     QgsPoint inter;
+    bool intersection = false;
     for ( int i = 0, n = line1->vertexCount() - 1; i < n; ++i )
     {
       for ( int j = 0, m = line2->vertexCount() - 1; j < m; ++j )
@@ -265,7 +266,7 @@ namespace QgsGeometryCheckerUtils
         QgsPoint p2 = line1->vertexAt( QgsVertexId( 0, 0, i + 1 ) );
         QgsPoint q1 = line2->vertexAt( QgsVertexId( 0, 0, j ) );
         QgsPoint q2 = line2->vertexAt( QgsVertexId( 0, 0, j + 1 ) );
-        if ( QgsGeometryUtils::segmentIntersection( p1, p2, q1, q2, inter, tol ) )
+        if ( QgsGeometryUtils::segmentIntersection( p1, p2, q1, q2, inter, intersection, tol ) )
         {
           intersections.append( inter );
         }

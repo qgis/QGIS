@@ -66,7 +66,7 @@ class GUI_EXPORT QgsLayoutViewTool : public QObject
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
-    virtual ~QgsLayoutViewTool();
+    ~QgsLayoutViewTool() override;
 
     /**
      * Returns the current combination of flags set for the tool.
@@ -215,12 +215,12 @@ class GUI_EXPORT QgsLayoutViewTool : public QObject
   private:
 
     //! Pointer to layout view.
-    QgsLayoutView *mView = nullptr;
+    QPointer< QgsLayoutView > mView;
 
-    QgsLayoutViewTool::Flags mFlags;
+    QgsLayoutViewTool::Flags mFlags = nullptr;
 
     //! Cursor used by tool
-    QCursor mCursor;
+    QCursor mCursor = Qt::ArrowCursor;
 
     //! Optional action associated with tool
     QPointer< QAction > mAction;

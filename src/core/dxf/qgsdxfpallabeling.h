@@ -97,7 +97,7 @@ class QgsDxfRuleBasedLabelProvider : public QgsRuleBasedLabelProvider
     void registerDxfFeature( QgsFeature &feature, QgsRenderContext &context, const QString &dxfLayerName );
 
     //! create QgsDxfLabelProvider
-    virtual QgsVectorLayerLabelProvider *createProvider( QgsVectorLayer *layer, const QString &providerId, bool withFeatureLoop, const QgsPalLayerSettings *settings ) override;
+    QgsVectorLayerLabelProvider *createProvider( QgsVectorLayer *layer, const QString &providerId, bool withFeatureLoop, const QgsPalLayerSettings *settings ) override;
 
   protected:
     //! pointer to parent DXF export where this instance is used

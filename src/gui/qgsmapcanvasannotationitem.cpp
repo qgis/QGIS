@@ -60,7 +60,7 @@ void QgsMapCanvasAnnotationItem::updatePosition()
 
   if ( mAnnotation->hasFixedMapPosition() )
   {
-    QgsCoordinateTransform t( mAnnotation->mapPositionCrs(), mMapCanvas->mapSettings().destinationCrs() );
+    QgsCoordinateTransform t( mAnnotation->mapPositionCrs(), mMapCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
     QgsPointXY coord = mAnnotation->mapPosition();
     try
     {
@@ -144,7 +144,7 @@ void QgsMapCanvasAnnotationItem::setFeatureForMapPosition()
 
   try
   {
-    QgsCoordinateTransform ct( mAnnotation->mapPositionCrs(), mMapCanvas->mapSettings().destinationCrs() );
+    QgsCoordinateTransform ct( mAnnotation->mapPositionCrs(), mMapCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
     if ( ct.isValid() )
       mapPosition = ct.transform( mapPosition );
   }
@@ -287,6 +287,9 @@ double QgsMapCanvasAnnotationItem::scaledSymbolSize() const
 
 void QgsMapCanvasAnnotationItem::paint( QPainter *painter )
 {
+  if ( !mAnnotation || !mAnnotation->isVisible() )
+    return;
+
   QgsRenderContext rc = QgsRenderContext::fromQPainter( painter );
   rc.setFlag( QgsRenderContext::Antialiasing, true );
 

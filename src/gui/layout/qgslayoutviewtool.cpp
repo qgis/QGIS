@@ -20,8 +20,6 @@
 QgsLayoutViewTool::QgsLayoutViewTool( QgsLayoutView *view, const QString &name )
   : QObject( view )
   , mView( view )
-  , mFlags( 0 )
-  , mCursor( Qt::ArrowCursor )
   , mToolName( name )
 {
 
@@ -51,7 +49,8 @@ QList<QgsLayoutItem *> QgsLayoutViewTool::ignoredSnapItems() const
 
 QgsLayoutViewTool::~QgsLayoutViewTool()
 {
-  mView->unsetTool( this );
+  if ( mView )
+    mView->unsetTool( this );
 }
 
 QgsLayoutViewTool::Flags QgsLayoutViewTool::flags() const

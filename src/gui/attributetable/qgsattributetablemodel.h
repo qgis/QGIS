@@ -73,7 +73,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      * Returns the number of rows
      * \param parent parent index
      */
-    virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
+    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
 
     /**
      * Returns the number of columns
@@ -94,7 +94,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      * \param index model index
      * \param role data role
      */
-    virtual QVariant data( const QModelIndex &index, int role ) const override;
+    QVariant data( const QModelIndex &index, int role ) const override;
 
     /**
      * Updates data on given index
@@ -102,7 +102,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      * \param value new data value
      * \param role data role
      */
-    virtual bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
+    bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
 
     /**
      * Returns item flags for the index

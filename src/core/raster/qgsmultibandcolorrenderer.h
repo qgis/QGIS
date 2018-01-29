@@ -35,7 +35,7 @@ class CORE_EXPORT QgsMultiBandColorRenderer: public QgsRasterRenderer
     QgsMultiBandColorRenderer( QgsRasterInterface *input, int redBand, int greenBand, int blueBand,
                                QgsContrastEnhancement *redEnhancement = nullptr, QgsContrastEnhancement *greenEnhancement = nullptr,
                                QgsContrastEnhancement *blueEnhancement = nullptr );
-    ~QgsMultiBandColorRenderer();
+    ~QgsMultiBandColorRenderer() override;
 
     //! QgsMultiBandColorRenderer cannot be copied. Use clone() instead.
     QgsMultiBandColorRenderer( const QgsMultiBandColorRenderer & ) = delete;

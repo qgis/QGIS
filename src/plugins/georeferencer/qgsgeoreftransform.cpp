@@ -86,7 +86,7 @@ class QgsGDALGeorefTransform : public QgsGeorefTransformInterface
 {
   public:
     QgsGDALGeorefTransform( bool useTPS, unsigned int polynomialOrder );
-    ~QgsGDALGeorefTransform();
+    ~QgsGDALGeorefTransform() override;
 
     bool updateParametersFromGCPs( const QVector<QgsPointXY> &mapCoords, const QVector<QgsPointXY> &pixelCoords ) override;
     int getMinimumGCPCount() const override;

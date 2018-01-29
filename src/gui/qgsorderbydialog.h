@@ -46,7 +46,7 @@ class GUI_EXPORT QgsOrderByDialog : public QDialog, private Ui::OrderByDialogBas
      * \param layer  The vector layer for which the order by should be produced
      * \param parent The parent widget, optional
      */
-    QgsOrderByDialog( QgsVectorLayer *layer, QWidget *parent SIP_TRANSFERTHIS = 0 );
+    QgsOrderByDialog( QgsVectorLayer *layer, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Set the order by to manage

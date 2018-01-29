@@ -162,7 +162,7 @@ QgsLayoutItemMapGrid::QgsLayoutItemMapGrid( const QString &name, QgsLayoutItemMa
 {
   //get default layout font from settings
   QgsSettings settings;
-  QString defaultFontString = settings.value( QStringLiteral( "Composer/defaultFont" ) ).toString();
+  QString defaultFontString = settings.value( QStringLiteral( "LayoutDesigner/defaultFont" ), QVariant(), QgsSettings::Gui ).toString();
   if ( !defaultFontString.isEmpty() )
   {
     mGridAnnotationFont.setFamily( defaultFontString );
@@ -375,7 +375,7 @@ void QgsLayoutItemMapGrid::setCrs( const QgsCoordinateReferenceSystem &crs )
 
 bool QgsLayoutItemMapGrid::usesAdvancedEffects() const
 {
-  return mBlendMode == QPainter::CompositionMode_SourceOver;
+  return mBlendMode != QPainter::CompositionMode_SourceOver;
 }
 
 QPolygonF QgsLayoutItemMapGrid::scalePolygon( const QPolygonF &polygon, const double scale ) const
@@ -555,7 +555,7 @@ void QgsLayoutItemMapGrid::draw( QPainter *p )
 
   p->save();
   p->setCompositionMode( mBlendMode );
-  p->setRenderHint( QPainter::Antialiasing );
+  p->setRenderHint( QPainter::Antialiasing, mMap->layout()->renderContext().flags() & QgsLayoutRenderContext::FlagAntialiasing );
 
   QRectF thisPaintRect = QRectF( 0, 0, mMap->rect().width(), mMap->rect().height() );
   p->setClipRect( thisPaintRect );
@@ -1219,7 +1219,11 @@ void QgsLayoutItemMapGrid::drawCoordinateAnnotation( QPainter *p, QPointF pos, c
         ypos += ( mAnnotationFrameDistance + textHeight + gridFrameDistance );
         xpos -= textWidth / 2.0;
         if ( extension )
+        {
           extension->bottom = std::max( extension->bottom, mAnnotationFrameDistance + gridFrameDistance + textHeight );
+          extension->left = std::max( extension->left, textWidth / 2.0 ); // annotation at bottom left/right may extend outside the bounds
+          extension->right = std::max( extension->right, textWidth / 2.0 );
+        }
       }
       else if ( mBottomGridAnnotationDirection == QgsLayoutItemMapGrid::VerticalDescending )
       {
@@ -1412,7 +1416,7 @@ QString QgsLayoutItemMapGrid::gridAnnotationString( double value, QgsLayoutItemM
   }
 
   QgsCoordinateFormatter::Format format = QgsCoordinateFormatter::FormatDecimalDegrees;
-  QgsCoordinateFormatter::FormatFlags flags = 0;
+  QgsCoordinateFormatter::FormatFlags flags = nullptr;
   switch ( mGridAnnotationFormat )
   {
     case Decimal:
@@ -1432,7 +1436,7 @@ QString QgsLayoutItemMapGrid::gridAnnotationString( double value, QgsLayoutItemM
 
     case DegreeMinuteNoSuffix:
       format = QgsCoordinateFormatter::FormatDegreesMinutes;
-      flags = 0;
+      flags = nullptr;
       break;
 
     case DegreeMinutePadded:
@@ -1442,7 +1446,7 @@ QString QgsLayoutItemMapGrid::gridAnnotationString( double value, QgsLayoutItemM
 
     case DegreeMinuteSecondNoSuffix:
       format = QgsCoordinateFormatter::FormatDegreesMinutesSeconds;
-      flags = 0;
+      flags = nullptr;
       break;
 
     case DegreeMinuteSecondPadded:
@@ -1876,7 +1880,7 @@ QgsLayoutItemMapGrid::BorderSide QgsLayoutItemMapGrid::borderForLineCoord( QPoin
     return QgsLayoutItemMapGrid::Left;
   }
 
-  double tolerance = std::max( mMap->hasFrame() ? mMap->pen().widthF() : 0.0, 1.0 );
+  double tolerance = std::max( mMap->frameEnabled() ? mMap->pen().widthF() : 0.0, 1.0 );
 
   //check for corner coordinates
   if ( ( p.y() <= tolerance && p.x() <= tolerance ) // top left
@@ -2028,11 +2032,11 @@ void QgsLayoutItemMapGrid::calculateMaxExtension( double &top, double &right, do
   QList< QPair< double, QLineF > > horizontalLines;
   if ( mGridUnit == MapUnit && mCRS.isValid() && mCRS != mMap->crs() )
   {
-    drawGridCrsTransform( context, 0, horizontalLines, verticalLines, false );
+    drawGridCrsTransform( context, 0, horizontalLines, verticalLines, true );
   }
   else
   {
-    drawGridNoTransform( context, 0, horizontalLines, verticalLines, false );
+    drawGridNoTransform( context, 0, horizontalLines, verticalLines, true );
   }
 
   if ( mGridFrameStyle != QgsLayoutItemMapGrid::NoFrame )
@@ -2294,7 +2298,7 @@ int QgsLayoutItemMapGrid::crsGridParams( QgsRectangle &crsRect, QgsCoordinateTra
 
   try
   {
-    QgsCoordinateTransform tr( mMap->crs(), mCRS );
+    QgsCoordinateTransform tr( mMap->crs(), mCRS, mLayout->project() );
     QPolygonF mapPolygon = mMap->transformedMapPolygon();
     QRectF mbr = mapPolygon.boundingRect();
     QgsRectangle mapBoundingRect( mbr.left(), mbr.bottom(), mbr.right(), mbr.top() );
@@ -2325,8 +2329,7 @@ int QgsLayoutItemMapGrid::crsGridParams( QgsRectangle &crsRect, QgsCoordinateTra
       crsRect = tr.transformBoundingBox( mapBoundingRect );
     }
 
-    inverseTransform.setSourceCrs( mCRS );
-    inverseTransform.setDestinationCrs( mMap->crs() );
+    inverseTransform = QgsCoordinateTransform( mCRS, mMap->crs(), mLayout->project() );
   }
   catch ( QgsCsException &cse )
   {

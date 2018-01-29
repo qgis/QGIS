@@ -87,7 +87,7 @@ QWidget *QgsDb2SourceSelectDelegate::createEditor( QWidget *parent, const QStyle
     return le;
   }
 
-  return 0;
+  return nullptr;
 }
 
 void QgsDb2SourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
@@ -572,7 +572,7 @@ void QgsDb2SourceSelect::finishList()
 void QgsDb2SourceSelect::columnThreadFinished()
 {
   delete mColumnTypeThread;
-  mColumnTypeThread = 0;
+  mColumnTypeThread = nullptr;
   btnConnect->setText( tr( "Connect" ) );
 
   finishList();

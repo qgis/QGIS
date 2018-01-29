@@ -20,6 +20,7 @@
 #include "qgssymbollayerutils.h"
 #include "qgslayoutitemregistry.h"
 #include "qgslayout.h"
+#include "qgslayoutundostack.h"
 #include <QFileDialog>
 
 QgsLayoutPolylineWidget::QgsLayoutPolylineWidget( QgsLayoutItemPolyline *polyline )
@@ -27,7 +28,7 @@ QgsLayoutPolylineWidget::QgsLayoutPolylineWidget( QgsLayoutItemPolyline *polylin
   , mPolyline( polyline )
 {
   setupUi( this );
-  setPanelTitle( tr( "Polyline properties" ) );
+  setPanelTitle( tr( "Polyline Properties" ) );
 
   connect( mStrokeWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutPolylineWidget::arrowStrokeWidthChanged );
   connect( mArrowHeadWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutPolylineWidget::arrowHeadWidthChanged );
@@ -43,7 +44,7 @@ QgsLayoutPolylineWidget::QgsLayoutPolylineWidget( QgsLayoutItemPolyline *polylin
   connect( mEndMarkerLineEdit, &QLineEdit::textChanged, this, &QgsLayoutPolylineWidget::mEndMarkerLineEdit_textChanged );
   connect( mStartMarkerToolButton, &QToolButton::clicked, this, &QgsLayoutPolylineWidget::mStartMarkerToolButton_clicked );
   connect( mEndMarkerToolButton, &QToolButton::clicked, this, &QgsLayoutPolylineWidget::mEndMarkerToolButton_clicked );
-  setPanelTitle( tr( "Arrow properties" ) );
+  setPanelTitle( tr( "Arrow Properties" ) );
   QButtonGroup *startMarkerGroup = new QButtonGroup( this );
   startMarkerGroup->addButton( mRadioStartNoMarker );
   startMarkerGroup->addButton( mRadioStartArrow );
@@ -87,9 +88,12 @@ QgsLayoutPolylineWidget::QgsLayoutPolylineWidget( QgsLayoutItemPolyline *polylin
   }
   setGuiElementValues();
 
-#if 0 //TODO
-  mShapeStyleButton->setLayer( atlasCoverageLayer() );
-#endif
+  mLineStyleButton->registerExpressionContextGenerator( mPolyline );
+  mLineStyleButton->setLayer( coverageLayer() );
+  if ( mPolyline->layout() )
+  {
+    connect( &mPolyline->layout()->reportContext(), &QgsLayoutReportContext::layerChanged, mLineStyleButton, &QgsSymbolButton::setLayer );
+  }
 }
 
 bool QgsLayoutPolylineWidget::setNewItem( QgsLayoutItem *item )

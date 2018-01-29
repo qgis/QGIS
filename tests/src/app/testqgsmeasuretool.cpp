@@ -129,7 +129,7 @@ void TestQgsMeasureTool::testLengthCalculation()
   // check new CoordinateReferenceSystem, points must be reprojected to paint them successfully (issue #15182)
   QgsCoordinateReferenceSystem srs2( 4326, QgsCoordinateReferenceSystem::EpsgCrsId );
 
-  QgsCoordinateTransform ct( srs, srs2 );
+  QgsCoordinateTransform ct( srs, srs2, QgsProject::instance() );
 
   QgsPointXY p0 = ct.transform( tool2->points()[0] );
   QgsPointXY p1 = ct.transform( tool2->points()[1] );

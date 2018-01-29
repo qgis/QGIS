@@ -198,11 +198,11 @@ QgsGeometry QgsMapToolFillRing::ringUnderPoint( const QgsPointXY &p, QgsFeatureI
   while ( fit.nextFeature( f ) )
   {
     QgsGeometry g = f.geometry();
-    if ( g.isNull() )
+    if ( g.isNull() || QgsWkbTypes::geometryType( g.wkbType() ) != QgsWkbTypes::PolygonGeometry )
       continue;
 
     QgsMultiPolygonXY pol;
-    if ( g.wkbType() == QgsWkbTypes::Polygon ||  g.wkbType()  == QgsWkbTypes::Polygon25D )
+    if ( !QgsWkbTypes::isMultiType( g.wkbType() ) )
     {
       pol = QgsMultiPolygonXY() << g.asPolygon();
     }

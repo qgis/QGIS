@@ -30,7 +30,7 @@ class QgsAuthPkiPathsMethod : public QgsAuthMethod
 
   public:
     explicit QgsAuthPkiPathsMethod();
-    ~QgsAuthPkiPathsMethod();
+    ~QgsAuthPkiPathsMethod() override;
 
     // QgsAuthMethod interface
     QString key() const override;

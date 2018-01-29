@@ -34,6 +34,5 @@ def processCommand(alg, parameters, context):
 def processOutputs(alg, parameters, context):
     # We need to add the initial vector layer to outputs:
     fileName = alg.parameterAsOutputLayer(parameters, 'output', context)
-    grassName = '{}{}'.format('map', alg.uniqueSuffix)
-    dataType = 'point'
-    alg.exportVectorLayer(grassName, fileName, dataType)
+    grassName = alg.exportedLayers['map']
+    alg.exportVectorLayer(grassName, fileName)

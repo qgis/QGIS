@@ -48,7 +48,6 @@ class GUI_EXPORT QgsColorButton : public QToolButton
 
     Q_OBJECT
     Q_PROPERTY( QString colorDialogTitle READ colorDialogTitle WRITE setColorDialogTitle )
-    Q_PROPERTY( bool acceptLiveUpdates READ acceptLiveUpdates WRITE setAcceptLiveUpdates )
     Q_PROPERTY( QColor color READ color WRITE setColor )
     Q_PROPERTY( bool allowOpacity READ allowOpacity WRITE setAllowOpacity )
     Q_PROPERTY( bool showMenu READ showMenu WRITE setShowMenu )
@@ -79,8 +78,8 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      */
     QgsColorButton( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QString &cdt = QString(), QgsColorSchemeRegistry *registry = nullptr );
 
-    virtual QSize minimumSizeHint() const override;
-    virtual QSize sizeHint() const override;
+    QSize minimumSizeHint() const override;
+    QSize sizeHint() const override;
 
     /**
      * Return the currently selected color.
@@ -120,21 +119,6 @@ class GUI_EXPORT QgsColorButton : public QToolButton
      * \see setColorDialogTitle
      */
     QString colorDialogTitle() const;
-
-    /**
-     * Returns whether the button accepts live updates from QColorDialog.
-     * \returns true if the button will be accepted immediately when the dialog's color changes
-     * \see setAcceptLiveUpdates
-     */
-    bool acceptLiveUpdates() const { return mAcceptLiveUpdates; }
-
-    /**
-     * Sets whether the button accepts live updates from QColorDialog. Live updates may cause changes
-     * that are not undoable on QColorDialog cancel.
-     * \param accept set to true to enable live updates
-     * \see acceptLiveUpdates
-     */
-    void setAcceptLiveUpdates( const bool accept ) { mAcceptLiveUpdates = accept; }
 
     /**
      * Sets whether the drop-down menu should be shown for the button. The default behavior is to
@@ -426,7 +410,6 @@ class GUI_EXPORT QgsColorButton : public QToolButton
     QColor mDefaultColor;
     QString mContext;
     bool mAllowOpacity = false;
-    bool mAcceptLiveUpdates = true;
     bool mColorSet = false;
 
     bool mShowNoColorOption = false;

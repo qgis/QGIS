@@ -58,6 +58,7 @@ QgsAngleMagnetWidget::QgsAngleMagnetWidget( const QString &label, QWidget *paren
   mAngleSpinBox->setSingleStep( 1 );
   mAngleSpinBox->setValue( 0 );
   mAngleSpinBox->setShowClearButton( false );
+  mAngleSpinBox->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Preferred );
   mLayout->addWidget( mAngleSpinBox );
 
   mMagnetSpinBox = new QgsSpinBox( this );
@@ -68,6 +69,7 @@ QgsAngleMagnetWidget::QgsAngleMagnetWidget( const QString &label, QWidget *paren
   mMagnetSpinBox->setSingleStep( 15 );
   mMagnetSpinBox->setValue( 0 );
   mMagnetSpinBox->setClearValue( 0, tr( "No snapping" ) );
+  mMagnetSpinBox->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Preferred );
   mLayout->addWidget( mMagnetSpinBox );
 
   // connect signals
@@ -107,6 +109,11 @@ bool QgsAngleMagnetWidget::eventFilter( QObject *obj, QEvent *ev )
   if ( obj == mAngleSpinBox && ev->type() == QEvent::KeyPress )
   {
     QKeyEvent *event = static_cast<QKeyEvent *>( ev );
+    if ( event->key() == Qt::Key_Escape )
+    {
+      emit angleEditingCanceled();
+      return true;
+    }
     if ( event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return )
     {
       emit angleEditingFinished( angle() );
@@ -160,8 +167,6 @@ void QgsMapToolRotateFeature::canvasMoveEvent( QgsMapMouseEvent *e )
 
 void QgsMapToolRotateFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
-  deleteRotationWidget();
-
   if ( !mCanvas )
   {
     return;
@@ -170,6 +175,7 @@ void QgsMapToolRotateFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
   QgsVectorLayer *vlayer = currentVectorLayer();
   if ( !vlayer )
   {
+    deleteRotationWidget();
     deleteRubberband();
     notifyNotVectorLayer();
     return;
@@ -177,8 +183,7 @@ void QgsMapToolRotateFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
 
   if ( e->button() == Qt::RightButton )
   {
-    deleteRubberband();
-    mRotationActive = false;
+    cancel();
     return;
   }
 
@@ -194,6 +199,8 @@ void QgsMapToolRotateFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
     mStPoint = e->pos();
     return;
   }
+
+  deleteRotationWidget();
 
   // Initialize rotation if not yet active
   if ( !mRotationActive )
@@ -307,6 +314,13 @@ void QgsMapToolRotateFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
   applyRotation( mRotation );
 }
 
+void QgsMapToolRotateFeature::cancel()
+{
+  deleteRotationWidget();
+  deleteRubberband();
+  mRotationActive = false;
+}
+
 void QgsMapToolRotateFeature::updateRubberband( double rotation )
 {
   if ( mRotationActive )
@@ -396,7 +410,6 @@ void QgsMapToolRotateFeature::applyRotation( double rotation )
 
 void QgsMapToolRotateFeature::activate()
 {
-
   QgsVectorLayer *vlayer = currentVectorLayer();
   if ( !vlayer )
   {
@@ -408,11 +421,7 @@ void QgsMapToolRotateFeature::activate()
     return;
   }
 
-  if ( vlayer->selectedFeatureCount() == 0 )
-  {
-    return;
-  }
-  else
+  if ( vlayer->selectedFeatureCount() > 0 )
   {
     QgsRectangle bound = vlayer->boundingBoxOfSelected();
     mStartPointMapCoords = toMapCoordinates( vlayer, bound.center() );
@@ -422,9 +431,8 @@ void QgsMapToolRotateFeature::activate()
     mAnchorPoint->setCenter( mStartPointMapCoords );
 
     mStPoint = toCanvasCoordinates( mStartPointMapCoords );
-
-    QgsMapTool::activate();
   }
+  QgsMapTool::activate();
 }
 
 void QgsMapToolRotateFeature::deleteRubberband()
@@ -459,6 +467,7 @@ void QgsMapToolRotateFeature::createRotationWidget()
 
   connect( mRotationWidget, &QgsAngleMagnetWidget::angleChanged, this, &QgsMapToolRotateFeature::updateRubberband );
   connect( mRotationWidget, &QgsAngleMagnetWidget::angleEditingFinished, this, &QgsMapToolRotateFeature::applyRotation );
+  connect( mRotationWidget, &QgsAngleMagnetWidget::angleEditingCanceled, this, &QgsMapToolRotateFeature::cancel );
 }
 
 void QgsMapToolRotateFeature::deleteRotationWidget()
@@ -467,6 +476,8 @@ void QgsMapToolRotateFeature::deleteRotationWidget()
   {
     disconnect( mRotationWidget, &QgsAngleMagnetWidget::angleChanged, this, &QgsMapToolRotateFeature::updateRubberband );
     disconnect( mRotationWidget, &QgsAngleMagnetWidget::angleEditingFinished, this, &QgsMapToolRotateFeature::applyRotation );
+    disconnect( mRotationWidget, &QgsAngleMagnetWidget::angleEditingCanceled, this, &QgsMapToolRotateFeature::cancel );
+
     mRotationWidget->releaseKeyboard();
     mRotationWidget->deleteLater();
   }

@@ -29,7 +29,7 @@ class CUSTOMWIDGETS_EXPORT QgsPropertyOverrideButtonPlugin : public QObject, pub
     Q_INTERFACES( QDesignerCustomWidgetInterface )
 
   public:
-    explicit QgsPropertyOverrideButtonPlugin( QObject *parent = 0 );
+    explicit QgsPropertyOverrideButtonPlugin( QObject *parent = nullptr );
 
   private:
     bool mInitialized;

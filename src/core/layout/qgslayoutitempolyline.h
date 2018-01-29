@@ -59,7 +59,7 @@ class CORE_EXPORT QgsLayoutItemPolyline: public QgsLayoutNodesItem
     static QgsLayoutItemPolyline *create( QgsLayout *layout ) SIP_FACTORY;
 
     int type() const override;
-    QString stringType() const override;
+    QIcon icon() const override;
     QString displayName() const override;
 
     /**
@@ -259,6 +259,10 @@ class CORE_EXPORT QgsLayoutItemPolyline: public QgsLayoutNodesItem
     void drawSvgMarker( QPainter *p, QPointF point, double angle, const QString &markerPath, double height ) const;
 
     double computeMarkerMargin() const;
+
+    friend class TestQgsLayoutPolyline;
+    friend class QgsCompositionConverter;
+
 };
 
 #endif // QGSLAYOUTITEMPOLYLINE_H

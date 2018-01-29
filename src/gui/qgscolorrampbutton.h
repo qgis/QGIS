@@ -52,9 +52,9 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
      */
     QgsColorRampButton( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QString &dialogTitle = QString() );
 
-    virtual ~QgsColorRampButton();
+    ~QgsColorRampButton() override;
 
-    virtual QSize sizeHint() const override;
+    QSize sizeHint() const override;
 
     /**
      * Return a copy of the current color ramp.

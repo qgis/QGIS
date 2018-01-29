@@ -30,7 +30,8 @@ def processInputs(alg, parameters, context):
     if 'input' in alg.exportedLayers:
         return
 
-    # We need to import all the bands and color tables of the input raster
+    # We need to import the vector with v.in.ogr
+    # and we can use r.external for the raster
     alg.loadVectorLayerFromParameter('input', parameters, context, False)
     alg.loadRasterLayerFromParameter('raster', parameters, context, True)
     alg.postInputs()

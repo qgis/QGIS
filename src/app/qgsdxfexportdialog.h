@@ -21,7 +21,6 @@
 #include "ui_qgsdxfexportdialogbase.h"
 #include "qgslayertreemodel.h"
 #include "qgsdxfexport.h"
-#include "qgshelp.h"
 
 #include <QList>
 #include <QPair>
@@ -77,8 +76,8 @@ class QgsDxfExportDialog : public QDialog, private Ui::QgsDxfExportDialogBase
 {
     Q_OBJECT
   public:
-    QgsDxfExportDialog( QWidget *parent = nullptr, Qt::WindowFlags f = 0 );
-    ~QgsDxfExportDialog();
+    QgsDxfExportDialog( QWidget *parent = nullptr, Qt::WindowFlags f = nullptr );
+    ~QgsDxfExportDialog() override;
 
     QList< QPair<QgsVectorLayer *, int> > layers() const;
 
@@ -99,7 +98,6 @@ class QgsDxfExportDialog : public QDialog, private Ui::QgsDxfExportDialogBase
     void deSelectAll();
 
   private slots:
-    void mFileSelectionButton_clicked();
     void setOkEnabled();
     void saveSettings();
     void mVisibilityPresets_currentIndexChanged( int index );

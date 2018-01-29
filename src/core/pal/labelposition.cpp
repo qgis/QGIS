@@ -196,6 +196,56 @@ bool LabelPosition::isIntersect( double *bbox )
     return false;
 }
 
+bool LabelPosition::intersects( const GEOSPreparedGeometry *geometry )
+{
+  if ( !mGeos )
+    createGeosGeom();
+
+  try
+  {
+    if ( GEOSPreparedIntersects_r( geosContext(), geometry, mGeos ) == 1 )
+    {
+      return true;
+    }
+    else if ( nextPart )
+    {
+      return nextPart->intersects( geometry );
+    }
+  }
+  catch ( GEOSException &e )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
+    return false;
+  }
+
+  return false;
+}
+
+bool LabelPosition::within( const GEOSPreparedGeometry *geometry )
+{
+  if ( !mGeos )
+    createGeosGeom();
+
+  try
+  {
+    if ( GEOSPreparedContains_r( geosContext(), geometry, mGeos ) != 1 )
+    {
+      return false;
+    }
+    else if ( nextPart )
+    {
+      return nextPart->within( geometry );
+    }
+  }
+  catch ( GEOSException &e )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Exception: %1" ).arg( e.what() ), QObject::tr( "GEOS" ) );
+    return false;
+  }
+
+  return true;
+}
+
 bool LabelPosition::isInside( double *bbox )
 {
   for ( int i = 0; i < 4; i++ )

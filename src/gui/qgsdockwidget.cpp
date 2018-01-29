@@ -35,9 +35,6 @@ void QgsDockWidget::setUserVisible( bool visible )
 {
   if ( visible )
   {
-    if ( mVisibleAndActive )
-      return;
-
     show();
     raise();
   }

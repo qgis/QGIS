@@ -39,6 +39,10 @@ QString QgsExtractByExtentAlgorithm::group() const
   return QObject::tr( "Vector overlay" );
 }
 
+QString QgsExtractByExtentAlgorithm::groupId() const
+{
+  return QStringLiteral( "vectoroverlay" );
+}
 void QgsExtractByExtentAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );

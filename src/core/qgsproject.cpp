@@ -471,6 +471,17 @@ void QgsProject::setEllipsoid( const QString &ellipsoid )
   emit ellipsoidChanged( ellipsoid );
 }
 
+QgsCoordinateTransformContext QgsProject::transformContext() const
+{
+  return mTransformContext;
+}
+
+void QgsProject::setTransformContext( const QgsCoordinateTransformContext &context )
+{
+  mTransformContext = context;
+  emit transformContextChanged();
+}
+
 void QgsProject::clear()
 {
   mFile.setFileName( QString() );
@@ -481,6 +492,10 @@ void QgsProject::clear()
   mDirty = false;
   mTrustLayerMetadata = false;
   mCustomVariables.clear();
+
+  QgsCoordinateTransformContext context;
+  context.readSettings();
+  setTransformContext( context );
 
   mEmbeddedLayers.clear();
   mRelationManager->clear();
@@ -890,25 +905,36 @@ bool QgsProject::readProjectFile( const QString &filename )
 
     if ( !projectCrs.isValid() )
     {
-      // else we try using the stored proj4 string - it's consistent across different QGIS installs,
-      // whereas the srsid can vary (e.g. for custom projections)
       QString projCrsString = readEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectCRSProj4String" ) );
-      if ( !projCrsString.isEmpty() )
+      long currentCRS = readNumEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectCRSID" ), -1 );
+
+      // try the CRS
+      if ( currentCRS >= 0 )
+      {
+        projectCrs = QgsCoordinateReferenceSystem::fromSrsId( currentCRS );
+      }
+
+      // if that didn't produce a match, try the proj.4 string
+      if ( !projCrsString.isEmpty() && ( !projectCrs.isValid() || projectCrs.toProj4() != projCrsString ) )
       {
         projectCrs = QgsCoordinateReferenceSystem::fromProj4( projCrsString );
       }
-      // last try using crs id - most fragile
+
+      // last just take the given id
       if ( !projectCrs.isValid() )
       {
-        long currentCRS = readNumEntry( QStringLiteral( "SpatialRefSys" ), QStringLiteral( "/ProjectCRSID" ), -1 );
-        if ( currentCRS != -1 && currentCRS < USER_CRS_START_ID )
-        {
-          projectCrs = QgsCoordinateReferenceSystem::fromSrsId( currentCRS );
-        }
+        projectCrs = QgsCoordinateReferenceSystem::fromSrsId( currentCRS );
       }
     }
   }
   mCrs = projectCrs;
+
+  QStringList datumErrors;
+  if ( !mTransformContext.readXml( doc->documentElement(), context, datumErrors ) )
+  {
+    emit missingDatumTransforms( datumErrors );
+  }
+  emit transformContextChanged();
 
   QDomNodeList nl = doc->elementsByTagName( QStringLiteral( "autotransaction" ) );
   if ( nl.count() )
@@ -1020,7 +1046,6 @@ bool QgsProject::readProjectFile( const QString &filename )
   }
 
   mSnappingConfig.readProject( *doc );
-  emit snappingConfigChanged( mSnappingConfig );
 
   //add variables defined in project file
   QStringList variableNames = readListEntry( QStringLiteral( "Variables" ), QStringLiteral( "/variableNames" ) );
@@ -1044,6 +1069,7 @@ bool QgsProject::readProjectFile( const QString &filename )
 
   // read the project: used by map canvas and legend
   emit readProject( *doc );
+  emit snappingConfigChanged( mSnappingConfig );
 
   // if all went well, we're allegedly in pristine state
   if ( clean )
@@ -1445,6 +1471,8 @@ bool QgsProject::writeProjectFile( const QString &filename )
   mMapThemeCollection->writeXml( *doc );
 
   mLabelingEngineSettings->writeSettingsToProject( this );
+
+  mTransformContext.writeXml( qgisNode, context );
 
   QDomElement annotationsElem = mAnnotationManager->writeXml( *doc, context );
   qgisNode.appendChild( annotationsElem );

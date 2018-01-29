@@ -27,12 +27,13 @@ class QWidget;
 
 class QgsAdvancedDigitizingDockWidget;
 class QgsAttributeDialog;
-class QgsComposerInterface;
 class QgsCustomDropHandler;
+class QgsLayoutCustomDropHandler;
 class QgsFeature;
 class QgsLayerTreeMapCanvasBridge;
 class QgsLayerTreeView;
 class QgsLayout;
+class QgsMasterLayoutInterface;
 class QgsLayoutDesignerInterface;
 class QgsMapCanvas;
 class QgsMapLayer;
@@ -165,12 +166,6 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QgsMessageBar *messageBar() = 0;
 
     /**
-     * Returns all currently open composer windows.
-     * \since QGIS 3.0
-     */
-    virtual QList<QgsComposerInterface *> openComposers() = 0;
-
-    /**
      * Returns all currently open layout designers.
      * \since QGIS 3.0
      */
@@ -233,8 +228,12 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QAction *actionSaveProjectAs() = 0;
     virtual QAction *actionSaveMapAsImage() = 0;
     virtual QAction *actionProjectProperties() = 0;
-    virtual QAction *actionPrintComposer() = 0;
-    virtual QAction *actionShowComposerManager() = 0;
+
+    //! Create new print layout action
+    virtual QAction *actionCreatePrintLayout() = 0;
+
+    //! Show layout manager action
+    virtual QAction *actionShowLayoutManager() = 0;
     virtual QAction *actionExit() = 0;
 
     // Edit menu actions
@@ -315,6 +314,13 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QAction *actionPasteLayerStyle() = 0;
     virtual QAction *actionOpenTable() = 0;
     virtual QAction *actionOpenFieldCalculator() = 0;
+
+    /**
+     * Statistical summary action.
+     * \since QGIS 3.0
+     */
+    virtual QAction *actionOpenStatisticalSummary() = 0;
+
     virtual QAction *actionToggleEditing() = 0;
     virtual QAction *actionSaveActiveLayerEdits() = 0;
     virtual QAction *actionAllEdits() = 0;
@@ -530,30 +536,18 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void addUserInputWidget( QWidget *widget ) = 0;
 
     /**
-     * Opens a new composer window for the specified \a composition, or
-     * brings an already open composer window to the foreground if one
-     * is already created for the composition.
+     * Opens the layout manager dialog.
      * \since QGIS 3.0
-     * \see closeComposer()
      */
-    virtual QgsComposerInterface *openComposer( QgsComposition *composition ) = 0;
-
-    /**
-     * Closes an open composer window showing the specified \a composition.
-     * The composition remains unaffected.
-     * \since QGIS 3.0
-     * \see openComposer()
-     */
-    virtual void closeComposer( QgsComposition *composition ) = 0;
+    virtual void showLayoutManager() = 0;
 
     /**
      * Opens a new layout designer dialog for the specified \a layout, or
      * brings an already open designer window to the foreground if one
      * is already created for the layout.
      * \since QGIS 3.0
-     * \see closeComposer()
      */
-    virtual QgsLayoutDesignerInterface *openLayoutDesigner( QgsLayout *layout ) = 0;
+    virtual QgsLayoutDesignerInterface *openLayoutDesigner( QgsMasterLayoutInterface *layout ) = 0;
 
     /**
      * Opens the options dialog. The \a currentPage argument can be used to force
@@ -679,6 +673,20 @@ class GUI_EXPORT QgisInterface : public QObject
      * \see registerCustomDropHandler() */
     virtual void unregisterCustomDropHandler( QgsCustomDropHandler *handler ) = 0;
 
+    /**
+     * Register a new custom drop \a handler for layout windows.
+     * \since QGIS 3.0
+     * \note Ownership of the factory is not transferred, and the factory must
+     *       be unregistered when plugin is unloaded.
+     * \see unregisterCustomLayoutDropHandler() */
+    virtual void registerCustomLayoutDropHandler( QgsLayoutCustomDropHandler *handler ) = 0;
+
+    /**
+     * Unregister a previously registered custom drop \a handler for layout windows.
+     * \since QGIS 3.0
+     * \see registerCustomLayoutDropHandler() */
+    virtual void unregisterCustomLayoutDropHandler( QgsLayoutCustomDropHandler *handler ) = 0;
+
     // @todo is this deprecated in favour of QgsContextHelp?
 
     /**
@@ -750,6 +758,14 @@ class GUI_EXPORT QgisInterface : public QObject
      */
     virtual void deregisterLocatorFilter( QgsLocatorFilter *filter ) = 0;
 
+    /**
+      * Checks available datum transforms and ask user if several are available and none
+      * is chosen. Dialog is shown only if global option is set accordingly.
+      * \returns true if a datum transform has been specifically chosen by user or only one is available.
+      * \since 3.0
+      */
+    virtual bool askForDatumTransform( QgsCoordinateReferenceSystem sourceCrs, QgsCoordinateReferenceSystem destinationCrs ) = 0;
+
   signals:
 
     /**
@@ -764,30 +780,6 @@ class GUI_EXPORT QgisInterface : public QObject
      * \since QGIS 3.0
     */
     void currentThemeChanged( const QString &theme );
-
-    /**
-     * This signal is emitted when a new composer window has been opened.
-     * \since QGIS 3.0
-     * \see composerWillBeClosed()
-     */
-    void composerOpened( QgsComposerInterface *composer );
-
-    /**
-     * This signal is emitted before a composer window is going to be closed
-     * and deleted.
-     * \since QGIS 3.0
-     * \see composerClosed()
-     * \see composerOpened()
-     */
-    void composerWillBeClosed( QgsComposerInterface *composer );
-
-    /**
-     * This signal is emitted after a composer window is closed.
-     * \since QGIS 3.0
-     * \see composerWillBeClosed()
-     * \see composerOpened()
-     */
-    void composerClosed( QgsComposerInterface *composer );
 
     /**
      * This signal is emitted when a new layout \a designer has been opened.

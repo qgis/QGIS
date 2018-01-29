@@ -22,6 +22,7 @@
 #include "qgis_sip.h"
 #include <QBrush>
 #include <QPen>
+#include <QObject>
 
 class QgsLayoutView;
 class QGraphicsRectItem;
@@ -35,8 +36,10 @@ class QgsLayout;
  * in various shapes, for use within QgsLayoutView widgets.
  * \since QGIS 3.0
  */
-class GUI_EXPORT QgsLayoutViewRubberBand
+class GUI_EXPORT QgsLayoutViewRubberBand : public QObject
 {
+
+    Q_OBJECT
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
@@ -78,7 +81,7 @@ class GUI_EXPORT QgsLayoutViewRubberBand
      * band is no longer required.
      * Returns the final bounding box of the rubber band.
      */
-    virtual QRectF finish( QPointF position = QPointF(), Qt::KeyboardModifiers modifiers = 0 ) = 0;
+    virtual QRectF finish( QPointF position = QPointF(), Qt::KeyboardModifiers modifiers = nullptr ) = 0;
 
     /**
      * Returns the view associated with the rubber band.
@@ -120,6 +123,16 @@ class GUI_EXPORT QgsLayoutViewRubberBand
      */
     void setPen( const QPen &pen );
 
+  signals:
+
+    /**
+     * Emitted when the size of the rubber band is changed. The \a size
+     * argument gives a translated string describing the new rubber band size,
+     * with a format which differs per subclass (e.g. rectangles may describe
+     * a size using width and height, while circles may describe a size by radius).
+     */
+    void sizeChanged( const QString &size );
+
   protected:
 
     /**
@@ -155,11 +168,11 @@ class GUI_EXPORT QgsLayoutViewRectangularRubberBand : public QgsLayoutViewRubber
     QgsLayoutViewRectangularRubberBand( QgsLayoutView *view = nullptr );
     QgsLayoutViewRectangularRubberBand *create( QgsLayoutView *view ) const override SIP_FACTORY;
 
-    ~QgsLayoutViewRectangularRubberBand();
+    ~QgsLayoutViewRectangularRubberBand() override;
 
     void start( QPointF position, Qt::KeyboardModifiers modifiers ) override;
     void update( QPointF position, Qt::KeyboardModifiers modifiers ) override;
-    QRectF finish( QPointF position = QPointF(), Qt::KeyboardModifiers modifiers = 0 ) override;
+    QRectF finish( QPointF position = QPointF(), Qt::KeyboardModifiers modifiers = nullptr ) override;
 
   private:
 
@@ -186,11 +199,11 @@ class GUI_EXPORT QgsLayoutViewEllipticalRubberBand : public QgsLayoutViewRubberB
     QgsLayoutViewEllipticalRubberBand( QgsLayoutView *view = nullptr );
     QgsLayoutViewEllipticalRubberBand *create( QgsLayoutView *view ) const override SIP_FACTORY;
 
-    ~QgsLayoutViewEllipticalRubberBand();
+    ~QgsLayoutViewEllipticalRubberBand() override;
 
     void start( QPointF position, Qt::KeyboardModifiers modifiers ) override;
     void update( QPointF position, Qt::KeyboardModifiers modifiers ) override;
-    QRectF finish( QPointF position = QPointF(), Qt::KeyboardModifiers modifiers = 0 ) override;
+    QRectF finish( QPointF position = QPointF(), Qt::KeyboardModifiers modifiers = nullptr ) override;
 
   private:
 
@@ -217,11 +230,11 @@ class GUI_EXPORT QgsLayoutViewTriangleRubberBand : public QgsLayoutViewRubberBan
     QgsLayoutViewTriangleRubberBand( QgsLayoutView *view = nullptr );
     QgsLayoutViewTriangleRubberBand *create( QgsLayoutView *view ) const override SIP_FACTORY;
 
-    ~QgsLayoutViewTriangleRubberBand();
+    ~QgsLayoutViewTriangleRubberBand() override;
 
     void start( QPointF position, Qt::KeyboardModifiers modifiers ) override;
     void update( QPointF position, Qt::KeyboardModifiers modifiers ) override;
-    QRectF finish( QPointF position = QPointF(), Qt::KeyboardModifiers modifiers = 0 ) override;
+    QRectF finish( QPointF position = QPointF(), Qt::KeyboardModifiers modifiers = nullptr ) override;
 
   private:
 

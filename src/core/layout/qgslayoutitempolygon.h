@@ -52,7 +52,7 @@ class CORE_EXPORT QgsLayoutItemPolygon: public QgsLayoutNodesItem
     static QgsLayoutItemPolygon *create( QgsLayout *layout ) SIP_FACTORY;
 
     int type() const override;
-    QString stringType() const override;
+    QIcon icon() const override;
     QString displayName() const override;
 
     /**

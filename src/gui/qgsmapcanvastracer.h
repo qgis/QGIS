@@ -43,8 +43,8 @@ class GUI_EXPORT QgsMapCanvasTracer : public QgsTracer
 
   public:
     //! Create tracer associated with a particular map canvas, optionally message bar for reporting
-    explicit QgsMapCanvasTracer( QgsMapCanvas *canvas, QgsMessageBar *messageBar = 0 );
-    ~QgsMapCanvasTracer();
+    explicit QgsMapCanvasTracer( QgsMapCanvas *canvas, QgsMessageBar *messageBar = nullptr );
+    ~QgsMapCanvasTracer() override;
 
     //! Access to action that user may use to toggle tracing on/off. May be null if no action was associated
     QAction *actionEnableTracing() const { return mActionEnableTracing; }
@@ -54,6 +54,19 @@ class GUI_EXPORT QgsMapCanvasTracer : public QgsTracer
      * The action is used to determine whether tracing is currently enabled by the user
      */
     void setActionEnableTracing( QAction *action ) { mActionEnableTracing = action; }
+
+    /**
+     * Access to action that user may use to toggle snapping on/off. May be null if no action was associated.
+     * \since QGIS 3.0
+     */
+    QAction *actionEnableSnapping() const { return mActionEnableSnapping; }
+
+    /**
+     * Assign "enable snapping" checkable action to the tracer.
+     * The action is used to determine whether snapping is currently enabled by the user.
+     * \since QGIS 3.0
+     */
+    void setActionEnableSnapping( QAction *action ) { mActionEnableSnapping = action; }
 
     /**
      * Retrieve instance of this class associated with given canvas (if any).
@@ -67,7 +80,7 @@ class GUI_EXPORT QgsMapCanvasTracer : public QgsTracer
 
   protected:
     //! Sets configuration from current snapping settings and canvas settings
-    virtual void configure();
+    void configure() override;
 
   private slots:
     void onCurrentLayerChanged();
@@ -78,6 +91,7 @@ class GUI_EXPORT QgsMapCanvasTracer : public QgsTracer
     QgsMessageBarItem *mLastMessage = nullptr;
 
     QAction *mActionEnableTracing = nullptr;
+    QAction *mActionEnableSnapping = nullptr;
 
     static QHash<QgsMapCanvas *, QgsMapCanvasTracer *> sTracers;
 };

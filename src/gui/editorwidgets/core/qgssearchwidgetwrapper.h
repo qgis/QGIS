@@ -139,7 +139,7 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
      * \param fieldIdx  The field which will be controlled
      * \param parent    A parent widget for this widget wrapper and the created widget.
      */
-    explicit QgsSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent SIP_TRANSFERTHIS = 0 );
+    explicit QgsSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Returns filter flags supported by the search widget.
@@ -219,7 +219,7 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
      * Toggles whether the search widget is enabled or disabled.
      * \param enabled set to true to enable widget
      */
-    virtual void setEnabled( bool enabled ) override { Q_UNUSED( enabled ); }
+    void setEnabled( bool enabled ) override { Q_UNUSED( enabled ); }
 
   signals:
 

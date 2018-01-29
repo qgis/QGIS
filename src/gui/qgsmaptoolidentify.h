@@ -93,14 +93,14 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     //! constructor
     QgsMapToolIdentify( QgsMapCanvas *canvas );
 
-    virtual ~QgsMapToolIdentify();
+    ~QgsMapToolIdentify() override;
 
-    virtual Flags flags() const override { return QgsMapTool::AllowZoomRect; }
-    virtual void canvasMoveEvent( QgsMapMouseEvent *e ) override;
-    virtual void canvasPressEvent( QgsMapMouseEvent *e ) override;
-    virtual void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
-    virtual void activate() override;
-    virtual void deactivate() override;
+    Flags flags() const override { return QgsMapTool::AllowZoomRect; }
+    void canvasMoveEvent( QgsMapMouseEvent *e ) override;
+    void canvasPressEvent( QgsMapMouseEvent *e ) override;
+    void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
+    void activate() override;
+    void deactivate() override;
 
     /**
      * Performs the identification.

@@ -249,14 +249,14 @@ class CORE_EXPORT QgsFeatureRenderer
      *
      * E.g. if you only want to deal with visible features:
      *
-     * ~~~{.py}
+     * \code{.py}
      * if not renderer.capabilities().testFlag(QgsFeatureRenderer.Filter) or renderer.willRenderFeature(feature, context):
      *     deal_with_my_feature()
      * else:
      *     skip_the_curren_feature()
-     * ~~~
+     * \endcode
      */
-    virtual QgsFeatureRenderer::Capabilities capabilities() { return 0; }
+    virtual QgsFeatureRenderer::Capabilities capabilities() { return nullptr; }
 
     /**
      * Returns list of symbols used by the renderer.

@@ -62,8 +62,7 @@ class TestQgsCoordinateReferenceSystem: public QObject
     void equality();
     void noEquality();
     void equalityInvalid();
-    void readXml();
-    void writeXml();
+    void readWriteXml();
     void setCustomSrsValidation();
     void customSrsValidation();
     void postgisSrid();
@@ -80,6 +79,7 @@ class TestQgsCoordinateReferenceSystem: public QObject
     void bounds();
     void saveAsUserCrs();
     void projectWithCustomCrs();
+    void projectEPSG25833();
 
   private:
     void debugPrint( QgsCoordinateReferenceSystem &crs );
@@ -600,18 +600,38 @@ void TestQgsCoordinateReferenceSystem::equalityInvalid()
   QgsCoordinateReferenceSystem invalidCrs2;
   QVERIFY( invalidCrs1 == invalidCrs2 );
 }
-void TestQgsCoordinateReferenceSystem::readXml()
+void TestQgsCoordinateReferenceSystem::readWriteXml()
 {
-  //QgsCoordinateReferenceSystem myCrs;
-  //myCrs.createFromSrid( GEOSRID );
-  //QgsCoordinateReferenceSystem myCrs2;
-  //QVERIFY( myCrs2.readXml( QDomNode & node ) );
-}
-void TestQgsCoordinateReferenceSystem::writeXml()
-{
-  //QgsCoordinateReferenceSystem myCrs;
-  //bool writeXml( QDomNode & node, QDomDocument & doc ) const;
-  //QVERIFY( myCrs.isValid() );
+  QgsCoordinateReferenceSystem myCrs;
+  myCrs.createFromSrid( GEOSRID );
+  QVERIFY( myCrs.isValid() );
+  QDomDocument document( "test" );
+  QDomElement node = document.createElement( QStringLiteral( "crs" ) );
+  document.appendChild( node );
+  QVERIFY( myCrs.writeXml( node, document ) );
+  QgsCoordinateReferenceSystem myCrs2;
+  QVERIFY( myCrs2.readXml( node ) );
+  QVERIFY( myCrs == myCrs2 );
+
+  // Empty XML made from writeXml operation
+  QgsCoordinateReferenceSystem myCrs3;
+  QDomDocument document2( "test" );
+  QDomElement node2 = document2.createElement( QStringLiteral( "crs" ) );
+  document2.appendChild( node2 );
+  QVERIFY( ! myCrs3.isValid() );
+  QVERIFY( myCrs3.writeXml( node2, document2 ) );
+  QgsCoordinateReferenceSystem myCrs4;
+  QVERIFY( myCrs4.readXml( node2 ) );
+  QVERIFY( ! myCrs4.isValid() );
+  QVERIFY( myCrs3 == myCrs4 );
+
+  // Empty XML node
+  QDomDocument document3( "test" );
+  QDomElement node3 = document3.createElement( QStringLiteral( "crs" ) );
+  document3.appendChild( node3 );
+  QgsCoordinateReferenceSystem myCrs5;
+  QVERIFY( ! myCrs5.readXml( node3 ) );
+  QVERIFY( myCrs5 == QgsCoordinateReferenceSystem() );
 }
 void TestQgsCoordinateReferenceSystem::setCustomSrsValidation()
 {
@@ -842,6 +862,14 @@ void TestQgsCoordinateReferenceSystem::saveAsUserCrs()
   QCOMPARE( userCrs2.srsid(), userCrs.srsid() );
   QCOMPARE( userCrs2.authid(), QStringLiteral( "USER:100000" ) );
   QCOMPARE( userCrs2.description(), QStringLiteral( "babies first projection" ) );
+
+  // createFromString with user crs
+  QgsCoordinateReferenceSystem userCrs3;
+  userCrs3.createFromString( QStringLiteral( "USER:100000" ) );
+  QVERIFY( userCrs3.isValid() );
+  QCOMPARE( userCrs3.authid(), QString( "USER:100000" ) );
+  QCOMPARE( userCrs3.toProj4(), madeUpProjection );
+  QCOMPARE( userCrs3.description(), QStringLiteral( "babies first projection" ) );
 }
 
 void TestQgsCoordinateReferenceSystem::projectWithCustomCrs()
@@ -855,5 +883,15 @@ void TestQgsCoordinateReferenceSystem::projectWithCustomCrs()
   QCOMPARE( spyCrsChanged.count(), 1 );
 }
 
+void TestQgsCoordinateReferenceSystem::projectEPSG25833()
+{
+  // tests loading a 2.x project with a predefined EPSG that has non unique proj.4 string
+  QgsProject p;
+  QSignalSpy spyCrsChanged( &p, &QgsProject::crsChanged );
+  QVERIFY( p.read( TEST_DATA_DIR + QStringLiteral( "/projects/epsg25833.qgs" ) ) );
+  QVERIFY( p.crs().isValid() );
+  QVERIFY( p.crs().authid() == QStringLiteral( "EPSG:25833" ) );
+  QCOMPARE( spyCrsChanged.count(), 1 );
+}
 QGSTEST_MAIN( TestQgsCoordinateReferenceSystem )
 #include "testqgscoordinatereferencesystem.moc"

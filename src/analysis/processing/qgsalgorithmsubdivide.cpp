@@ -19,7 +19,6 @@
 
 ///@cond PRIVATE
 
-
 void QgsSubdivideAlgorithm::initParameters( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "MAX_NODES" ), QObject::tr( "Maximum nodes in parts" ), QgsProcessingParameterNumber::Integer,
@@ -44,6 +43,11 @@ QStringList QgsSubdivideAlgorithm::tags() const
 QString QgsSubdivideAlgorithm::group() const
 {
   return QObject::tr( "Vector geometry" );
+}
+
+QString QgsSubdivideAlgorithm::groupId() const
+{
+  return QStringLiteral( "vectorgeometry" );
 }
 
 QString QgsSubdivideAlgorithm::shortHelpString() const

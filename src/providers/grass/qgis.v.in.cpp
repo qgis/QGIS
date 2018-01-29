@@ -62,11 +62,11 @@ void writePolyline( struct Map_info *map, int type, const QgsPolylineXY &polylin
   Vect_write_line( map, type, gLine, cats );
 }
 
-static struct Map_info *finalMap = 0;
-static struct Map_info *tmpMap = 0;
+static struct Map_info *finalMap = nullptr;
+static struct Map_info *tmpMap = nullptr;
 static QString sFinalName;
 static QString sTmpName;
-dbDriver *driver = 0;
+dbDriver *driver = nullptr;
 
 void closeMaps()
 {

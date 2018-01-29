@@ -41,7 +41,7 @@ class GUI_EXPORT QgsRasterTransparencyWidget : public QgsMapLayerConfigWidget, p
     /**
      * \brief Widget to control a layers transparency and related options
      */
-    QgsRasterTransparencyWidget( QgsRasterLayer *layer, QgsMapCanvas *canvas, QWidget *parent = 0 );
+    QgsRasterTransparencyWidget( QgsRasterLayer *layer, QgsMapCanvas *canvas, QWidget *parent = nullptr );
 
   public slots:
 
@@ -53,7 +53,7 @@ class GUI_EXPORT QgsRasterTransparencyWidget : public QgsMapLayerConfigWidget, p
     /**
      * Apply any changes on the widget to the set layer.
      */
-    void apply();
+    void apply() override;
 
   private slots:
 

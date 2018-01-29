@@ -51,7 +51,7 @@ class QgsLabelingWidget : public QgsMapLayerConfigWidget, private Ui::QgsLabelin
     void writeSettingsToLayer();
 
     //! Saves the labeling configuration and immediately updates the map canvas to reflect the changes
-    void apply();
+    void apply() override;
 
     //! reload the settings shown in the dialog from the current layer
     void adaptToLayer();
@@ -73,6 +73,7 @@ class QgsLabelingWidget : public QgsMapLayerConfigWidget, private Ui::QgsLabelin
     QWidget *mWidget = nullptr;
     std::unique_ptr< QgsPalLayerSettings > mSimpleSettings;
     std::unique_ptr< QgsAbstractVectorLayerLabeling > mOldSettings;
+    bool mOldLabelsEnabled = false;
 };
 
 #endif // QGSLABELINGWIDGET_H

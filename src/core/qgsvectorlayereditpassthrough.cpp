@@ -86,6 +86,11 @@ bool QgsVectorLayerEditPassthrough::changeAttributeValue( QgsFeatureId fid, int 
   return modify( new QgsVectorLayerUndoPassthroughCommandChangeAttribute( this, fid, field, newValue ) );
 }
 
+bool QgsVectorLayerEditPassthrough::changeAttributeValues( QgsFeatureId fid, const QgsAttributeMap &newValues, const QgsAttributeMap &oldValues )
+{
+  return modify( new QgsVectorLayerUndoPassthroughCommandChangeAttributes( this, fid, newValues, oldValues ) );
+}
+
 bool QgsVectorLayerEditPassthrough::addAttribute( const QgsField &field )
 {
   return modify( new QgsVectorLayerUndoPassthroughCommandAddAttribute( this, field ) );
@@ -112,7 +117,7 @@ void QgsVectorLayerEditPassthrough::rollBack()
   mModified = false;
 }
 
-bool QgsVectorLayerEditPassthrough::update( QgsTransaction *tr, const QString &sql )
+bool QgsVectorLayerEditPassthrough::update( QgsTransaction *tr, const QString &sql, const QString &name )
 {
-  return modify( new QgsVectorLayerUndoPassthroughCommandUpdate( this, tr, sql ) );
+  return modify( new QgsVectorLayerUndoPassthroughCommandUpdate( this, tr, sql, name ) );
 }

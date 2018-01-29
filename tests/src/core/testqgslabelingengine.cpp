@@ -27,6 +27,7 @@
 #include <qgsvectorlayerlabelprovider.h>
 #include "qgsrenderchecker.h"
 #include "qgsfontutils.h"
+#include "qgsnullsymbolrenderer.h"
 
 class TestQgsLabelingEngine : public QObject
 {
@@ -48,6 +49,7 @@ class TestQgsLabelingEngine : public QObject
     void testCapitalization();
     void testParticipatingLayers();
     void testRegisterFeatureUnprojectible();
+    void testRotateHidePartial();
 
   private:
     QgsVectorLayer *vl = nullptr;
@@ -86,7 +88,7 @@ void TestQgsLabelingEngine::init()
 {
   QString filename = QStringLiteral( TEST_DATA_DIR ) + "/points.shp";
   vl = new QgsVectorLayer( filename, QStringLiteral( "points" ), QStringLiteral( "ogr" ) );
-  Q_ASSERT( vl->isValid() );
+  QVERIFY( vl->isValid() );
   QgsProject::instance()->addMapLayer( vl );
 }
 
@@ -132,6 +134,7 @@ void TestQgsLabelingEngine::testBasic()
   setDefaultLabelParams( settings );
 
   vl->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl->setLabelsEnabled( true );
 
   QgsLabelingEngine engine;
   engine.setMapSettings( mapSettings );
@@ -179,7 +182,7 @@ void TestQgsLabelingEngine::testDiagrams()
 
   bool res;
   vl->loadNamedStyle( QStringLiteral( TEST_DATA_DIR ) + "/points_diagrams.qml", res );
-  Q_ASSERT( res );
+  QVERIFY( res );
 
   QgsLabelingEngine engine;
   engine.setMapSettings( mapSettings );
@@ -244,6 +247,7 @@ void TestQgsLabelingEngine::testRuleBased()
   root->appendChild( new QgsRuleBasedLabeling::Rule( new QgsPalLayerSettings( s2 ), 0, 0, QStringLiteral( "Class = 'Jet'" ) ) );
 
   vl->setLabeling( new QgsRuleBasedLabeling( root ) );
+  vl->setLabelsEnabled( true );
   //setDefaultLabelParams( vl );
 
   QgsMapRendererSequentialJob job( mapSettings );
@@ -353,7 +357,7 @@ void TestQgsLabelingEngine::zOrder()
   //add a second layer
   QString filename = QStringLiteral( TEST_DATA_DIR ) + "/points.shp";
   QgsVectorLayer *vl2 = new QgsVectorLayer( filename, QStringLiteral( "points" ), QStringLiteral( "ogr" ) );
-  Q_ASSERT( vl2->isValid() );
+  QVERIFY( vl2->isValid() );
   QgsProject::instance()->addMapLayer( vl2 );
 
   QgsPalLayerSettings pls2( pls1 );
@@ -621,6 +625,75 @@ void TestQgsLabelingEngine::testRegisterFeatureUnprojectible()
 
   provider->registerFeature( f, context );
   QCOMPARE( provider->mLabels.size(), 0 );
+}
+
+void TestQgsLabelingEngine::testRotateHidePartial()
+{
+  QgsPalLayerSettings settings;
+  setDefaultLabelParams( settings );
+
+  QgsTextFormat format = settings.format();
+  format.setSize( 20 );
+  format.setColor( QColor( 0, 0, 0 ) );
+  settings.setFormat( format );
+
+  settings.fieldName = QStringLiteral( "'label'" );
+  settings.isExpression = true;
+  settings.placement = QgsPalLayerSettings::OverPoint;
+
+  std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( QStringLiteral( "polygon?crs=epsg:4326&field=id:integer" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  vl2->setRenderer( new QgsNullSymbolRenderer() );
+
+  QgsVectorLayerLabelProvider *provider = new QgsVectorLayerLabelProvider( vl2.get(), QStringLiteral( "test" ), true, &settings );
+  QgsFeature f( vl2->fields(), 1 );
+
+  f.setGeometry( QgsGeometry().fromWkt( QStringLiteral( "POLYGON((0 0,8 0,8 8,0 8,0 0))" ) ) );
+  vl2->dataProvider()->addFeature( f );
+  f.setGeometry( QgsGeometry().fromWkt( QStringLiteral( "POLYGON((20 20,28 20,28 28,20 28,20 20))" ) ) );
+  vl2->dataProvider()->addFeature( f );
+  f.setGeometry( QgsGeometry().fromWkt( QStringLiteral( "POLYGON((0 20,8 20,8 28,0 28,0 20))" ) ) );
+  vl2->dataProvider()->addFeature( f );
+
+  vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );  // TODO: this should not be necessary!
+  vl2->setLabelsEnabled( true );
+
+  // make a fake render context
+  QSize size( 640, 480 );
+  QgsMapSettings mapSettings;
+  QgsCoordinateReferenceSystem tgtCrs;
+  tgtCrs.createFromString( QStringLiteral( "EPSG:4326" ) );
+  mapSettings.setDestinationCrs( tgtCrs );
+
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( vl2->extent() );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << vl2.get() );
+  mapSettings.setOutputDpi( 96 );
+  mapSettings.setRotation( 45 );
+
+  QgsLabelingEngineSettings engineSettings = mapSettings.labelingEngineSettings();
+  engineSettings.setFlag( QgsLabelingEngineSettings::UsePartialCandidates, false );
+  engineSettings.setFlag( QgsLabelingEngineSettings::DrawLabelRectOnly, true );
+  mapSettings.setLabelingEngineSettings( engineSettings );
+
+  QgsMapRendererSequentialJob job( mapSettings );
+  job.start();
+  job.waitForFinished();
+
+  QImage img = job.renderedImage();
+
+  QPainter p( &img );
+  QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
+  context.setPainter( &p );
+
+  QgsLabelingEngine engine;
+  engine.setMapSettings( mapSettings );
+  engine.addProvider( provider );
+
+  engine.run( context );
+  p.end();
+  engine.removeProvider( provider );
+
+  QVERIFY( imageCheck( "label_rotate_hide_partial", img, 20 ) );
 }
 
 QGSTEST_MAIN( TestQgsLabelingEngine )

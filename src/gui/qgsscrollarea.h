@@ -47,7 +47,7 @@ class GUI_EXPORT QgsScrollArea : public QScrollArea
     /**
      * Constructor for QgsScrollArea.
      */
-    explicit QgsScrollArea( QWidget *parent SIP_TRANSFERTHIS = 0 );
+    explicit QgsScrollArea( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Should be called when a scroll occurs on with the

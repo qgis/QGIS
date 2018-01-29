@@ -47,6 +47,7 @@ from qgis.core import (QgsProcessingParameterDefinition,
                        QgsProcessingParameterRasterDestination,
                        QgsProcessingParameterFileDestination,
                        QgsProcessingParameterFolderDestination,
+                       QgsProcessingParameterVectorDestination,
                        QgsProcessingOutputDefinition,
                        QgsSettings)
 
@@ -164,8 +165,8 @@ class ModelerParametersDialog(QDialog):
         for dest in self._alg.destinationParameterDefinitions():
             if dest.flags() & QgsProcessingParameterDefinition.FlagHidden:
                 continue
-            if isinstance(dest, (QgsProcessingParameterRasterDestination, QgsProcessingParameterFeatureSink,
-                                 QgsProcessingParameterFileDestination, QgsProcessingParameterFolderDestination)):
+            if isinstance(dest, (QgsProcessingParameterRasterDestination, QgsProcessingParameterVectorDestination,
+                                 QgsProcessingParameterFeatureSink, QgsProcessingParameterFileDestination, QgsProcessingParameterFolderDestination)):
                 label = QLabel(dest.description())
                 item = QgsFilterLineEdit()
                 if hasattr(item, 'setPlaceholderText'):
@@ -364,8 +365,8 @@ class ModelerParametersDialog(QDialog):
     def openHelp(self):
         algHelp = self._alg.helpUrl()
         if not algHelp:
-            algHelp = QgsHelp.helpUrl("processing_algs/{}/{}".format(
-                self._alg.provider().id(), self._alg.id())).toString()
+            algHelp = QgsHelp.helpUrl("processing_algs/{}/{}.html{}".format(
+                self._alg.provider().id(), self._alg.groupId(), self._alg.name())).toString()
 
         if algHelp not in [None, ""]:
             webbrowser.open(algHelp)

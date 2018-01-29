@@ -98,7 +98,7 @@ QgsGPXProvider::QgsGPXProvider( const QString &uri )
   mFileName = uri.left( fileNameEnd );
 
   // parse the file
-  data = QgsGPSData::getData( mFileName );
+  data = QgsGpsData::getData( mFileName );
   if ( !data )
     return;
 
@@ -108,7 +108,7 @@ QgsGPXProvider::QgsGPXProvider( const QString &uri )
 
 QgsGPXProvider::~QgsGPXProvider()
 {
-  QgsGPSData::releaseData( mFileName );
+  QgsGpsData::releaseData( mFileName );
 }
 
 QgsAbstractFeatureSource *QgsGPXProvider::featureSource() const
@@ -214,7 +214,7 @@ bool QgsGPXProvider::addFeature( QgsFeature &f, Flags )
   const char *geo = wkb.constData();
   QgsWkbTypes::Type wkbType = f.geometry().wkbType();
   bool success = false;
-  QgsGPSObject *obj = nullptr;
+  QgsGpsObject *obj = nullptr;
   QgsAttributes attrs = f.attributes();
   QgsAttributeMap::const_iterator it;
 
@@ -243,7 +243,7 @@ bool QgsGPXProvider::addFeature( QgsFeature &f, Flags )
       }
     }
 
-    QgsGPSData::WaypointIterator iter = data->addWaypoint( wpt );
+    QgsGpsData::WaypointIterator iter = data->addWaypoint( wpt );
     success = true;
     obj = &( *iter );
   }
@@ -290,7 +290,7 @@ bool QgsGPXProvider::addFeature( QgsFeature &f, Flags )
       }
     }
 
-    QgsGPSData::RouteIterator iter = data->addRoute( rte );
+    QgsGpsData::RouteIterator iter = data->addRoute( rte );
     success = true;
     obj = &( *iter );
   }
@@ -339,7 +339,7 @@ bool QgsGPXProvider::addFeature( QgsFeature &f, Flags )
     }
 
     trk.segments.push_back( trkseg );
-    QgsGPSData::TrackIterator iter = data->addTrack( trk );
+    QgsGpsData::TrackIterator iter = data->addTrack( trk );
     success = true;
     obj = &( *iter );
   }
@@ -402,7 +402,7 @@ bool QgsGPXProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
   QgsChangedAttributesMap::const_iterator aIter = attr_map.begin();
   if ( mFeatureType == WaypointType )
   {
-    QgsGPSData::WaypointIterator wIter = data->waypointsBegin();
+    QgsGpsData::WaypointIterator wIter = data->waypointsBegin();
     for ( ; wIter != data->waypointsEnd() && aIter != attr_map.end(); ++wIter )
     {
       if ( wIter->id == aIter.key() )
@@ -414,7 +414,7 @@ bool QgsGPXProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
   }
   else if ( mFeatureType == RouteType )
   {
-    QgsGPSData::RouteIterator rIter = data->routesBegin();
+    QgsGpsData::RouteIterator rIter = data->routesBegin();
     for ( ; rIter != data->routesEnd() && aIter != attr_map.end(); ++rIter )
     {
       if ( rIter->id == aIter.key() )
@@ -426,7 +426,7 @@ bool QgsGPXProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
   }
   if ( mFeatureType == TrackType )
   {
-    QgsGPSData::TrackIterator tIter = data->tracksBegin();
+    QgsGpsData::TrackIterator tIter = data->tracksBegin();
     for ( ; tIter != data->tracksEnd() && aIter != attr_map.end(); ++tIter )
     {
       if ( tIter->id == aIter.key() )
@@ -447,11 +447,11 @@ bool QgsGPXProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
 }
 
 
-void QgsGPXProvider::changeAttributeValues( QgsGPSObject &obj, const QgsAttributeMap &attrs )
+void QgsGPXProvider::changeAttributeValues( QgsGpsObject &obj, const QgsAttributeMap &attrs )
 {
 
   QgsWaypoint *wpt = dynamic_cast<QgsWaypoint *>( &obj );
-  QgsGPSExtended *ext = dynamic_cast<QgsGPSExtended *>( &obj );
+  QgsGpsExtended *ext = dynamic_cast<QgsGpsExtended *>( &obj );
 
   QgsAttributeMap::const_iterator aIter = attrs.begin();
   for ( ; aIter != attrs.end(); ++aIter )

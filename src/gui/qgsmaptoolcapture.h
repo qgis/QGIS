@@ -53,10 +53,10 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     //! constructor
     QgsMapToolCapture( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget, CaptureMode mode );
 
-    virtual ~QgsMapToolCapture();
+    ~QgsMapToolCapture() override;
 
-    virtual void activate() override;
-    virtual void deactivate() override;
+    void activate() override;
+    void deactivate() override;
 
     /**
      * The capture mode
@@ -89,17 +89,13 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      */
     QList<QgsPointLocator::Match> snappingMatches() const;
 
-    virtual void cadCanvasMoveEvent( QgsMapMouseEvent *e ) override;
+    void cadCanvasMoveEvent( QgsMapMouseEvent *e ) override;
 
     /**
      * Intercept key events like Esc or Del to delete the last point
      * \param e key event
      */
-    virtual void keyPressEvent( QKeyEvent *e ) override;
-
-#ifdef Q_OS_WIN
-    virtual bool eventFilter( QObject *obj, QEvent *e ) override;
-#endif
+    void keyPressEvent( QKeyEvent *e ) override;
 
     /**
      * Clean a temporary rubberband
@@ -107,12 +103,12 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     void deleteTempRubberBand();
 
     //! convenient method to clean members
-    virtual void clean() override;
+    void clean() override;
 
   private slots:
     void validationFinished();
-    void currentLayerChanged( QgsMapLayer *layer );
     void addError( QgsGeometry::Error );
+    void currentLayerChanged( QgsMapLayer *layer );
 
 
   protected:
@@ -192,7 +188,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      * List of digitized points
      * \returns List of points
      */
-    QVector<QgsPointXY> points();
+    QVector<QgsPointXY> points() const;
 
     /**
      * Set the points on which to work
@@ -259,9 +255,8 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      */
     QgsPointXY mTracingStartPoint;
 
-#ifdef Q_OS_WIN
-    int mSkipNextContextMenuEvent;
-#endif
+    friend class TestQgsMapToolReshape;
+
 };
 
 #endif

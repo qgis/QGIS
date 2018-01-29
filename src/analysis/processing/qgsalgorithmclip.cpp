@@ -40,6 +40,11 @@ QString QgsClipAlgorithm::group() const
   return QObject::tr( "Vector overlay" );
 }
 
+QString QgsClipAlgorithm::groupId() const
+{
+  return QStringLiteral( "vectoroverlay" );
+}
+
 void QgsClipAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
@@ -80,7 +85,7 @@ QVariantMap QgsClipAlgorithm::processAlgorithm( const QVariantMap &parameters, Q
 
   // first build up a list of clip geometries
   QVector< QgsGeometry > clipGeoms;
-  QgsFeatureIterator it = maskSource->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QList< int >() ).setDestinationCrs( featureSource->sourceCrs() ) );
+  QgsFeatureIterator it = maskSource->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QList< int >() ).setDestinationCrs( featureSource->sourceCrs(), context.transformContext() ) );
   QgsFeature f;
   while ( it.nextFeature( f ) )
   {

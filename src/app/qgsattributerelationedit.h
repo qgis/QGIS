@@ -30,7 +30,7 @@ class APP_EXPORT QgsAttributeRelationEdit: public QWidget, private Ui::QgsAttrib
     Q_OBJECT
 
   public:
-    explicit QgsAttributeRelationEdit( const QString &relationid, QWidget *parent = 0 );
+    explicit QgsAttributeRelationEdit( const QString &relationid, QWidget *parent = nullptr );
 
     /**
      * Setter for combo cardinality item
@@ -40,12 +40,12 @@ class APP_EXPORT QgsAttributeRelationEdit: public QWidget, private Ui::QgsAttrib
     /**
      * Setter for combo cardinality
      */
-    void setCardinality( const QString &cardinality );
+    void setCardinality( const QVariant &auserData = QVariant() );
 
     /**
      * Getter for combo cardinality
      */
-    QString cardinality();
+    QVariant cardinality();
 
     QString mRelationId;
   private:

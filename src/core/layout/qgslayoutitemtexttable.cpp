@@ -31,11 +31,6 @@ int QgsLayoutItemTextTable::type() const
   return QgsLayoutItemRegistry::LayoutTextTable;
 }
 
-QString QgsLayoutItemTextTable::stringType() const
-{
-  return QStringLiteral( "LayoutTextTable" );
-}
-
 QString QgsLayoutItemTextTable::displayName() const
 {
   return tr( "<Text table frame>" );

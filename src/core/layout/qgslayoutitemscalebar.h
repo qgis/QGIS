@@ -44,7 +44,7 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
     QgsLayoutItemScaleBar( QgsLayout *layout );
 
     int type() const override;
-    QString stringType() const override;
+    QIcon icon() const override;
 
     /**
      * Returns a new scale bar item for the specified \a layout.
@@ -291,15 +291,15 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
 
     /**
      * Sets the \a map item linked to the scalebar.
-     * \see map()
+     * \see linkedMap()
      */
-    void setMap( QgsLayoutItemMap *map );
+    void setLinkedMap( QgsLayoutItemMap *map );
 
     /**
      * Returns the map item linked to the scalebar.
-     * \see setMap()
+     * \see setLinkedMap()
      */
-    QgsLayoutItemMap *map() const { return mMap; }
+    QgsLayoutItemMap *linkedMap() const { return mMap; }
 
     /**
      * Returns the spacing (in millimeters) between labels and the scalebar.
@@ -422,7 +422,7 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
     void update();
 
     void refreshDataDefinedProperty( const QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties ) override;
-
+    void finalizeRestoreFromXml() override;
   protected:
 
     void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = nullptr ) override;
@@ -437,6 +437,7 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
 
     //! Linked map
     QgsLayoutItemMap *mMap = nullptr;
+    QString mMapUuid;
 
     QgsScaleBarSettings mSettings;
 
@@ -453,6 +454,8 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
     double mapWidth() const;
 
     QgsScaleBarRenderer::ScaleBarContext createScaleContext() const;
+
+    friend class QgsCompositionConverter;
 
 };
 

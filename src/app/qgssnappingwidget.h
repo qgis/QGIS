@@ -25,11 +25,13 @@ class QToolButton;
 class QTreeView;
 
 class QgsDoubleSpinBox;
+class QgsFloatingWidget;
 class QgsLayerTreeGroup;
 class QgsLayerTreeNode;
 class QgsLayerTreeView;
 class QgsMapCanvas;
 class QgsProject;
+
 
 #include "qgssnappingconfig.h"
 
@@ -58,7 +60,7 @@ class APP_EXPORT QgsSnappingWidget : public QWidget
     QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas, QWidget *parent = nullptr );
 
 
-    virtual ~QgsSnappingWidget();
+    ~QgsSnappingWidget() override;
 
     /**
      * The snapping configuration is what is managed by this widget.
@@ -74,6 +76,11 @@ class APP_EXPORT QgsSnappingWidget : public QWidget
      * Returns the enable tracing action widget
      */
     QAction *enableTracingAction() { return mEnableTracingAction; }
+
+    /**
+     * Returns the enable snapping action widget.
+     */
+    QAction *enableSnappingAction() { return mEnabledAction; }
 
     //! Returns spin box used to set offset for tracing
     QgsDoubleSpinBox *tracingOffsetSpinBox() { return mTracingOffsetSpinBox; }
@@ -128,6 +135,7 @@ class APP_EXPORT QgsSnappingWidget : public QWidget
     QAction *mAllLayersAction = nullptr;
     QAction *mActiveLayerAction = nullptr;
     QAction *mAdvancedModeAction = nullptr;
+    QAction *mEditAdvancedConfigAction = nullptr;
     QToolButton *mTypeButton = nullptr;
     QAction *mTypeAction; // hide widget does not work on toolbar, action needed
     QAction *mVertexAction = nullptr;
@@ -142,6 +150,7 @@ class APP_EXPORT QgsSnappingWidget : public QWidget
     QAction *mEnableTracingAction = nullptr;
     QgsDoubleSpinBox *mTracingOffsetSpinBox = nullptr;
     QTreeView *mLayerTreeView = nullptr;
+    QgsFloatingWidget *mAdvancedConfigContainer;
 
     void cleanGroup( QgsLayerTreeNode *node );
 };

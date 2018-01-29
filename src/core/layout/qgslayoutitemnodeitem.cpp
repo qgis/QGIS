@@ -31,7 +31,7 @@ void QgsLayoutNodesItem::setNodes( const QPolygonF &nodes )
 
 QRectF QgsLayoutNodesItem::boundingRect() const
 {
-  return currentRectangle;
+  return mCurrentRectangle;
 }
 
 double QgsLayoutNodesItem::estimatedFrameBleed() const
@@ -79,7 +79,7 @@ void QgsLayoutNodesItem::draw( QgsRenderContext &context, const QStyleOptionGrap
   rescaleToFitBoundingBox();
   _draw( context );
 
-  if ( mDrawNodes && layout()->context().isPreviewRender() )
+  if ( mDrawNodes && layout()->renderContext().isPreviewRender() )
     drawNodes( context, style );
 }
 
@@ -336,7 +336,7 @@ void QgsLayoutNodesItem::updateBoundingRect()
 {
   QRectF br = rect();
   br.adjust( -mMaxSymbolBleed, -mMaxSymbolBleed, mMaxSymbolBleed, mMaxSymbolBleed );
-  currentRectangle = br;
+  mCurrentRectangle = br;
 
   // update
   prepareGeometryChange();

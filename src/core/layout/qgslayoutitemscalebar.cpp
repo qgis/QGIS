@@ -52,9 +52,9 @@ int QgsLayoutItemScaleBar::type() const
   return QgsLayoutItemRegistry::LayoutScaleBar;
 }
 
-QString QgsLayoutItemScaleBar::stringType() const
+QIcon QgsLayoutItemScaleBar::icon() const
 {
-  return QStringLiteral( "ItemScaleBar" );
+  return QgsApplication::getThemeIcon( QStringLiteral( "/mLayoutItemScaleBar.svg" ) );
 }
 
 QgsLayoutItemScaleBar *QgsLayoutItemScaleBar::create( QgsLayout *layout )
@@ -156,7 +156,7 @@ void QgsLayoutItemScaleBar::setBoxContentSpace( double space )
   refreshItemSize();
 }
 
-void QgsLayoutItemScaleBar::setMap( QgsLayoutItemMap *map )
+void QgsLayoutItemScaleBar::setLinkedMap( QgsLayoutItemMap *map )
 {
   disconnectCurrentMap();
 
@@ -306,7 +306,7 @@ double QgsLayoutItemScaleBar::mapWidth() const
   else
   {
     QgsDistanceArea da;
-    da.setSourceCrs( mMap->crs() );
+    da.setSourceCrs( mMap->crs(), mLayout->project()->transformContext() );
     da.setEllipsoid( mLayout->project()->ellipsoid() );
 
     QgsUnitTypes::DistanceUnit units = da.lengthUnits();
@@ -375,7 +375,7 @@ void QgsLayoutItemScaleBar::applyDefaultSettings()
 
   //get default composer font from settings
   QgsSettings settings;
-  QString defaultFontString = settings.value( QStringLiteral( "Composer/defaultFont" ) ).toString();
+  QString defaultFontString = settings.value( QStringLiteral( "LayoutDesigner/defaultFont" ), QVariant(), QgsSettings::Gui ).toString();
   QFont f;
   if ( !defaultFontString.isEmpty() )
   {
@@ -473,7 +473,7 @@ void QgsLayoutItemScaleBar::resizeToMinimumWidth()
 
   double widthMM = mStyle->calculateBoxSize( mSettings, createScaleContext() ).width();
   QgsLayoutSize currentSize = sizeWithUnits();
-  currentSize.setWidth( mLayout->context().measurementConverter().convert( QgsLayoutMeasurement( widthMM, QgsUnitTypes::LayoutMillimeters ), currentSize.units() ).length() );
+  currentSize.setWidth( mLayout->renderContext().measurementConverter().convert( QgsLayoutMeasurement( widthMM, QgsUnitTypes::LayoutMillimeters ), currentSize.units() ).length() );
   attemptResize( currentSize );
   update();
   emit changed();
@@ -784,29 +784,19 @@ bool QgsLayoutItemScaleBar::readPropertiesFromElement( const QDomElement &itemEl
   mSettings.setAlignment( static_cast< QgsScaleBarSettings::Alignment >( itemElem.attribute( QStringLiteral( "alignment" ), QStringLiteral( "0" ) ).toInt() ) );
 
   //map
-#if 0 //TODO
-  int mapId = itemElem.attribute( QStringLiteral( "mapId" ), QStringLiteral( "-1" ) ).toInt();
-  if ( mapId >= 0 )
-  {
-    const QgsLayoutItemMap *composerMap = mComposition->getComposerMapById( mapId );
-    mMap = const_cast< QgsComposerMap *>( composerMap );
-    if ( mMap )
-    {
-      connect( mMap, &QgsComposerMap::extentChanged, this, &QgsLayoutItemScaleBar::updateSegmentSize );
-      connect( mMap, &QObject::destroyed, this, &QgsLayoutItemScaleBar::invalidateCurrentMap );
-    }
-  }
-#endif
+  disconnectCurrentMap();
+  mMap = nullptr;
+  mMapUuid = itemElem.attribute( QStringLiteral( "mapUuid" ) );
+  return true;
+}
 
-  QString mapId = itemElem.attribute( QStringLiteral( "mapUuid" ) );
-  if ( !mLayout || mapId.isEmpty() )
-  {
-    mMap = nullptr;
-  }
-  else
+
+void QgsLayoutItemScaleBar::finalizeRestoreFromXml()
+{
+  if ( mLayout && !mMapUuid.isEmpty() )
   {
     disconnectCurrentMap();
-    mMap = qobject_cast< QgsLayoutItemMap * >( mLayout->itemByUuid( mapId ) );
+    mMap = qobject_cast< QgsLayoutItemMap * >( mLayout->itemByUuid( mMapUuid, true ) );
     if ( mMap )
     {
       connect( mMap, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemScaleBar::updateScale );
@@ -815,6 +805,4 @@ bool QgsLayoutItemScaleBar::readPropertiesFromElement( const QDomElement &itemEl
   }
 
   updateScale();
-  return true;
 }
-

@@ -67,7 +67,7 @@ class QgsLayoutScaleBarWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLa
     void fontChanged();
 
   private:
-    QgsLayoutItemScaleBar *mScalebar = nullptr;
+    QPointer< QgsLayoutItemScaleBar > mScalebar;
     QgsLayoutItemPropertiesWidget *mItemPropertiesWidget = nullptr;
 
     QButtonGroup mSegmentSizeRadioGroup;

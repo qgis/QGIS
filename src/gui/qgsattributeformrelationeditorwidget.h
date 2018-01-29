@@ -41,8 +41,8 @@ class GUI_EXPORT QgsAttributeFormRelationEditorWidget : public QgsAttributeFormW
      */
     explicit QgsAttributeFormRelationEditorWidget( QgsRelationWidgetWrapper *wrapper, QgsAttributeForm *form );
 
-    virtual void createSearchWidgetWrappers( const QgsAttributeEditorContext &context SIP_PYARGREMOVE = QgsAttributeEditorContext() ) override;
-    virtual QString currentFilterExpression() const override;
+    void createSearchWidgetWrappers( const QgsAttributeEditorContext &context SIP_PYARGREMOVE = QgsAttributeEditorContext() ) override;
+    QString currentFilterExpression() const override;
 
   private:
     QgsRelationAggregateSearchWidgetWrapper *mSearchWidget = nullptr;

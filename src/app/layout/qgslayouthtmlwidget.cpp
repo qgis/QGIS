@@ -20,6 +20,7 @@
 #include "qgscodeeditorhtml.h"
 #include "qgscodeeditorcss.h"
 #include "qgssettings.h"
+#include "qgslayoutundostack.h"
 
 #include <QFileDialog>
 
@@ -45,7 +46,7 @@ QgsLayoutHtmlWidget::QgsLayoutHtmlWidget( QgsLayoutFrame *frame )
   connect( mAddFramePushButton, &QPushButton::clicked, this, &QgsLayoutHtmlWidget::mAddFramePushButton_clicked );
   connect( mEmptyFrameCheckBox, &QCheckBox::toggled, this, &QgsLayoutHtmlWidget::mEmptyFrameCheckBox_toggled );
   connect( mHideEmptyBgCheckBox, &QCheckBox::toggled, this, &QgsLayoutHtmlWidget::mHideEmptyBgCheckBox_toggled );
-  setPanelTitle( tr( "HTML properties" ) );
+  setPanelTitle( tr( "HTML Properties" ) );
 
   //setup html editor
   mHtmlEditor = new QgsCodeEditorHTML( this );
@@ -351,14 +352,11 @@ void QgsLayoutHtmlWidget::mInsertExpressionButton_clicked()
     mHtmlEditor->getCursorPosition( &line, &index );
   }
 
-#if 0 //TODO
   // use the atlas coverage layer, if any
-  QgsVectorLayer *coverageLayer = atlasCoverageLayer();
-#endif
-  QgsVectorLayer *coverageLayer = nullptr;
+  QgsVectorLayer *layer = coverageLayer();
 
   QgsExpressionContext context = mHtml->createExpressionContext();
-  QgsExpressionBuilderDialog exprDlg( coverageLayer, selText, this, QStringLiteral( "generic" ), context );
+  QgsExpressionBuilderDialog exprDlg( layer, selText, this, QStringLiteral( "generic" ), context );
   exprDlg.setWindowTitle( tr( "Insert Expression" ) );
   if ( exprDlg.exec() == QDialog::Accepted )
   {
@@ -421,7 +419,7 @@ void QgsLayoutHtmlWidget::mAddFramePushButton_clicked()
 
 void QgsLayoutHtmlWidget::setGuiElementValues()
 {
-  if ( !mHtml )
+  if ( !mHtml || !mFrame )
   {
     return;
   }

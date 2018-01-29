@@ -32,7 +32,9 @@ class GUI_EXPORT QgsDefaultSearchWidgetWrapper : public QgsSearchWidgetWrapper
 {
     Q_OBJECT
   public:
-    explicit QgsDefaultSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent SIP_TRANSFERTHIS = 0 );
+
+    //! Constructor for QgsDefaultSearchWidgetWrapper
+    explicit QgsDefaultSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     // QgsSearchWidgetWrapper interface
   public:
@@ -40,13 +42,13 @@ class GUI_EXPORT QgsDefaultSearchWidgetWrapper : public QgsSearchWidgetWrapper
     bool applyDirectly() override;
     QgsSearchWidgetWrapper::FilterFlags supportedFlags() const override;
     QgsSearchWidgetWrapper::FilterFlags defaultFlags() const override;
-    virtual QString createExpression( QgsSearchWidgetWrapper::FilterFlags flags ) const override;
+    QString createExpression( QgsSearchWidgetWrapper::FilterFlags flags ) const override;
 
   public slots:
 
-    virtual void clearWidget() override;
+    void clearWidget() override;
 
-    virtual void setEnabled( bool enabled ) override;
+    void setEnabled( bool enabled ) override;
 
   protected slots:
     void setExpression( const QString &exp ) override;

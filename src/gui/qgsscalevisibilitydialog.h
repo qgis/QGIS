@@ -43,7 +43,7 @@ class GUI_EXPORT QgsScaleVisibilityDialog : public QDialog
      * can be used to associate the dialog with a map canvas, allowing use of the current map scale
      * within the dialog.
      */
-    explicit QgsScaleVisibilityDialog( QWidget *parent SIP_TRANSFERTHIS = 0, const QString &title = QString(), QgsMapCanvas *mapCanvas = nullptr );
+    explicit QgsScaleVisibilityDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QString &title = QString(), QgsMapCanvas *mapCanvas = nullptr );
 
     /**
      * Return true if scale based visibilty is enabled.

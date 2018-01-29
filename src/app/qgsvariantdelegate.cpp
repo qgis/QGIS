@@ -38,6 +38,7 @@
 **
 ****************************************************************************/
 
+#include <QComboBox>
 #include <QLineEdit>
 #include <QDateTime>
 
@@ -95,16 +96,9 @@ QWidget *QgsVariantDelegate::createEditor( QWidget *parent,
   if ( !isSupportedType( QgsVariantDelegate::type( originalValue ) ) )
     return nullptr;
 
-  QLineEdit *lineEdit = new QLineEdit( parent );
-  lineEdit->setFrame( false );
-
   QRegExp regExp;
-
   switch ( QgsVariantDelegate::type( originalValue ) )
   {
-    case QVariant::Bool:
-      regExp = mBoolExp;
-      break;
     case QVariant::ByteArray:
       regExp = mByteArrayExp;
       break;
@@ -147,97 +141,121 @@ QWidget *QgsVariantDelegate::createEditor( QWidget *parent,
       ;
   }
 
-  if ( !regExp.isEmpty() )
+  if ( QgsVariantDelegate::type( originalValue ) == QVariant::Bool )
   {
-    QValidator *validator = new QRegExpValidator( regExp, lineEdit );
-    lineEdit->setValidator( validator );
+    QComboBox *comboBox = new QComboBox( parent );
+    comboBox->addItem( QStringLiteral( "false" ) );
+    comboBox->addItem( QStringLiteral( "true" ) );
+    return comboBox;
   }
-
-  return lineEdit;
+  else
+  {
+    QLineEdit *lineEdit = new QLineEdit( parent );
+    lineEdit->setFrame( false );
+    if ( !regExp.isEmpty() )
+    {
+      QValidator *validator = new QRegExpValidator( regExp, lineEdit );
+      lineEdit->setValidator( validator );
+    }
+    return lineEdit;
+  }
 }
 
 void QgsVariantDelegate::setEditorData( QWidget *editor,
                                         const QModelIndex &index ) const
 {
   QVariant value = index.model()->data( index, Qt::UserRole );
-  if ( QLineEdit *lineEdit = qobject_cast<QLineEdit * >( editor ) )
+
+  if ( QComboBox *comboBox = qobject_cast<QComboBox * >( editor ) )
+  {
+    comboBox->setCurrentIndex( value.toBool() == true ? 1 : 0 );
+  }
+  else if ( QLineEdit *lineEdit = qobject_cast<QLineEdit * >( editor ) )
+  {
     lineEdit->setText( displayText( value ) );
+  }
 }
 
 void QgsVariantDelegate::setModelData( QWidget *editor, QAbstractItemModel *model,
                                        const QModelIndex &index ) const
 {
-  QLineEdit *lineEdit = qobject_cast<QLineEdit * >( editor );
-  if ( !lineEdit->isModified() )
-    return;
-
-  QString text = lineEdit->text();
-  const QValidator *validator = lineEdit->validator();
-  if ( validator )
-  {
-    int pos;
-    if ( validator->validate( text, pos ) != QValidator::Acceptable )
-      return;
-  }
-
   QVariant originalValue = index.model()->data( index, Qt::UserRole );
   QVariant value;
 
-  switch ( QgsVariantDelegate::type( originalValue ) )
+  if ( QComboBox *comboBox = qobject_cast<QComboBox * >( editor ) )
   {
-    case QVariant::Char:
-      value = text.at( 0 );
-      break;
-    case QVariant::Color:
-      ( void )mColorExp.exactMatch( text );
-      value = QColor( std::min( mColorExp.cap( 1 ).toInt(), 255 ),
-                      std::min( mColorExp.cap( 2 ).toInt(), 255 ),
-                      std::min( mColorExp.cap( 3 ).toInt(), 255 ),
-                      std::min( mColorExp.cap( 4 ).toInt(), 255 ) );
-      break;
-    case QVariant::Date:
+    value = comboBox->currentIndex() == 1;
+  }
+  else if ( QLineEdit *lineEdit = qobject_cast<QLineEdit * >( editor ) )
+  {
+    if ( !lineEdit->isModified() )
+      return;
+
+    QString text = lineEdit->text();
+    const QValidator *validator = lineEdit->validator();
+    if ( validator )
     {
-      QDate date = QDate::fromString( text, Qt::ISODate );
-      if ( !date.isValid() )
+      int pos;
+      if ( validator->validate( text, pos ) != QValidator::Acceptable )
         return;
-      value = date;
     }
-    break;
-    case QVariant::DateTime:
+
+    switch ( QgsVariantDelegate::type( originalValue ) )
     {
-      QDateTime dateTime = QDateTime::fromString( text, Qt::ISODate );
-      if ( !dateTime.isValid() )
-        return;
-      value = dateTime;
+      case QVariant::Char:
+        value = text.at( 0 );
+        break;
+      case QVariant::Color:
+        ( void )mColorExp.exactMatch( text );
+        value = QColor( std::min( mColorExp.cap( 1 ).toInt(), 255 ),
+                        std::min( mColorExp.cap( 2 ).toInt(), 255 ),
+                        std::min( mColorExp.cap( 3 ).toInt(), 255 ),
+                        std::min( mColorExp.cap( 4 ).toInt(), 255 ) );
+        break;
+      case QVariant::Date:
+      {
+        QDate date = QDate::fromString( text, Qt::ISODate );
+        if ( !date.isValid() )
+          return;
+        value = date;
+      }
+      break;
+      case QVariant::DateTime:
+      {
+        QDateTime dateTime = QDateTime::fromString( text, Qt::ISODate );
+        if ( !dateTime.isValid() )
+          return;
+        value = dateTime;
+      }
+      break;
+      case QVariant::Point:
+        ( void )mPointExp.exactMatch( text );
+        value = QPoint( mPointExp.cap( 1 ).toInt(), mPointExp.cap( 2 ).toInt() );
+        break;
+      case QVariant::Rect:
+        ( void )mRectExp.exactMatch( text );
+        value = QRect( mRectExp.cap( 1 ).toInt(), mRectExp.cap( 2 ).toInt(),
+                       mRectExp.cap( 3 ).toInt(), mRectExp.cap( 4 ).toInt() );
+        break;
+      case QVariant::Size:
+        ( void )mSizeExp.exactMatch( text );
+        value = QSize( mSizeExp.cap( 1 ).toInt(), mSizeExp.cap( 2 ).toInt() );
+        break;
+      case QVariant::StringList:
+        value = text.split( ',' );
+        break;
+      case QVariant::Time:
+      {
+        QTime time = QTime::fromString( text, Qt::ISODate );
+        if ( !time.isValid() )
+          return;
+        value = time;
+      }
+      break;
+      default:
+        value = text;
+        value.convert( QgsVariantDelegate::type( originalValue ) );
     }
-    break;
-    case QVariant::Point:
-      ( void )mPointExp.exactMatch( text );
-      value = QPoint( mPointExp.cap( 1 ).toInt(), mPointExp.cap( 2 ).toInt() );
-      break;
-    case QVariant::Rect:
-      ( void )mRectExp.exactMatch( text );
-      value = QRect( mRectExp.cap( 1 ).toInt(), mRectExp.cap( 2 ).toInt(),
-                     mRectExp.cap( 3 ).toInt(), mRectExp.cap( 4 ).toInt() );
-      break;
-    case QVariant::Size:
-      ( void )mSizeExp.exactMatch( text );
-      value = QSize( mSizeExp.cap( 1 ).toInt(), mSizeExp.cap( 2 ).toInt() );
-      break;
-    case QVariant::StringList:
-      value = text.split( ',' );
-      break;
-    case QVariant::Time:
-    {
-      QTime time = QTime::fromString( text, Qt::ISODate );
-      if ( !time.isValid() )
-        return;
-      value = time;
-    }
-    break;
-    default:
-      value = text;
-      value.convert( QgsVariantDelegate::type( originalValue ) );
   }
 
   model->setData( index, displayText( value ), Qt::DisplayRole );

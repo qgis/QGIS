@@ -300,7 +300,7 @@ class CORE_EXPORT QgsProcessingFeatureSource : public QgsFeatureSource
      */
     QgsProcessingFeatureSource( QgsFeatureSource *originalSource, const QgsProcessingContext &context, bool ownsOriginalSource = false );
 
-    ~QgsProcessingFeatureSource();
+    ~QgsProcessingFeatureSource() override;
 
     /**
      * Returns an iterator for the features in the source, respecting the supplied feature \a flags.
@@ -318,6 +318,8 @@ class CORE_EXPORT QgsProcessingFeatureSource : public QgsFeatureSource
     QSet<QVariant> uniqueValues( int fieldIndex, int limit = -1 ) const override;
     QVariant minimumValue( int fieldIndex ) const override;
     QVariant maximumValue( int fieldIndex ) const override;
+    QgsRectangle sourceExtent() const override;
+    QgsFeatureIds allFeatureIds() const override;
 
     /**
      * Returns an expression context scope suitable for this source.

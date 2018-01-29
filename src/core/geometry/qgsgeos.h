@@ -226,9 +226,9 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
 
     /**
      * Reshapes the geometry using a line
-     * @param reshapeWithLine the line used to reshape lines or polygons
-     * @param errorCode if specified, provides result of operation (success or reason of failure)
-     * @param errorMsg if specified, provides more details about failure
+     * \param reshapeWithLine the line used to reshape lines or polygons
+     * \param errorCode if specified, provides result of operation (success or reason of failure)
+     * \param errorMsg if specified, provides more details about failure
      * @return the reshaped geometry
      */
     std::unique_ptr< QgsAbstractGeometry > reshapeGeometry( const QgsLineString &reshapeWithLine, EngineOperationResult *errorCode, QString *errorMsg = nullptr ) const;
@@ -265,8 +265,8 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * where this linestring comes to the specified point.
      * \param point point to seek proximity to
      * \param errorMsg error messages emitted, if any
-     * \note only valid for linestring geometries
      * \returns distance along line, or -1 on error
+     * \note only valid for linestring geometries
      */
     double lineLocatePoint( const QgsPoint &point, QString *errorMsg = nullptr ) const;
 

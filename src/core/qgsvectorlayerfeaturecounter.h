@@ -27,7 +27,7 @@ class CORE_EXPORT QgsVectorLayerFeatureCounter : public QgsTask
      */
     QgsVectorLayerFeatureCounter( QgsVectorLayer *layer, const QgsExpressionContext &context = QgsExpressionContext() );
 
-    virtual bool run() override;
+    bool run() override;
 
     /**
      * Get the count for each symbol. Only valid after the symbolsCounted()

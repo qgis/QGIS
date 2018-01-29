@@ -30,9 +30,9 @@
 #endif
 
 class QextSerialPort;
-class QgsGPSConnection;
-class QgsGPSTrackerThread;
-struct QgsGPSInformation;
+class QgsGpsConnection;
+class QgsGpsTrackerThread;
+struct QgsGpsInformation;
 
 class QFile;
 class QColor;
@@ -41,16 +41,16 @@ class QColor;
  * A dock widget that displays information from a GPS device and
  * allows the user to capture features using gps readings to
  * specify the geometry.*/
-class QgsGPSInformationWidget: public QWidget, private Ui::QgsGPSInformationWidgetBase
+class QgsGpsInformationWidget: public QWidget, private Ui::QgsGpsInformationWidgetBase
 {
     Q_OBJECT
   public:
-    QgsGPSInformationWidget( QgsMapCanvas *thepCanvas, QWidget *parent = nullptr, Qt::WindowFlags f = 0 );
-    ~QgsGPSInformationWidget();
+    QgsGpsInformationWidget( QgsMapCanvas *thepCanvas, QWidget *parent = nullptr, Qt::WindowFlags f = nullptr );
+    ~QgsGpsInformationWidget() override;
 
   private slots:
     void mConnectButton_toggled( bool flag );
-    void displayGPSInformation( const QgsGPSInformation &info );
+    void displayGPSInformation( const QgsGpsInformation &info );
     void logNmeaSentence( const QString &nmeaString ); // added to handle 'raw' data
     void updateCloseFeatureButton( QgsMapLayer *lyr );
     void layerEditStateChanged();
@@ -69,7 +69,7 @@ class QgsGPSInformationWidget: public QWidget, private Ui::QgsGPSInformationWidg
 // not needed    void on_mCbxAutoAddVertices_toggled( bool flag );
     void mBtnLogFile_clicked();
 
-    void connected( QgsGPSConnection * );
+    void connected( QgsGpsConnection * );
     void timedout();
 
   private:
@@ -84,7 +84,7 @@ class QgsGPSInformationWidget: public QWidget, private Ui::QgsGPSInformationWidg
     void populateDevices();
     void setStatusIndicator( const FixStatus statusValue );
     void showStatusBarMessage( const QString &msg );
-    QgsGPSConnection *mNmea = nullptr;
+    QgsGpsConnection *mNmea = nullptr;
     QgsMapCanvas *mpCanvas = nullptr;
     QgsGpsMarker *mpMapMarker = nullptr;
     QwtPlot *mpPlot = nullptr;

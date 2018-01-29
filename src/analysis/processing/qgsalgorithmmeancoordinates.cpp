@@ -39,6 +39,11 @@ QString QgsMeanCoordinatesAlgorithm::group() const
   return QObject::tr( "Vector analysis" );
 }
 
+QString QgsMeanCoordinatesAlgorithm::groupId() const
+{
+  return QStringLiteral( "vectoranalysis" );
+}
+
 void QgsMeanCoordinatesAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ),

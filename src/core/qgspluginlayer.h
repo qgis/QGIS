@@ -34,14 +34,14 @@ class CORE_EXPORT QgsPluginLayer : public QgsMapLayer
 
   public:
     QgsPluginLayer( const QString &layerType, const QString &layerName = QString() );
-    ~QgsPluginLayer();
+    ~QgsPluginLayer() override;
 
     /**
      * Returns a new instance equivalent to this one.
      * \returns a new layer instance
      * \since QGIS 3.0
      */
-    virtual QgsPluginLayer *clone() const override = 0;
+    QgsPluginLayer *clone() const override = 0;
 
     //! Return plugin layer type (the same as used in QgsPluginLayerRegistry)
     QString pluginLayerType();

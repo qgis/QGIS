@@ -83,7 +83,7 @@ class CORE_EXPORT QgsStyle : public QObject
      * Constructor for QgsStyle.
      */
     QgsStyle() = default;
-    ~QgsStyle();
+    ~QgsStyle() override;
 
     /**
      * Enum for Entities involved in a style

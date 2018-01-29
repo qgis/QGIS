@@ -91,12 +91,12 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     explicit QgsPostgresProvider( QString const &uri = QString() );
 
 
-    virtual ~QgsPostgresProvider();
+    ~QgsPostgresProvider() override;
 
-    virtual QgsAbstractFeatureSource *featureSource() const override;
-    virtual QString storageType() const override;
-    virtual QgsCoordinateReferenceSystem crs() const override;
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) const override;
+    QgsAbstractFeatureSource *featureSource() const override;
+    QString storageType() const override;
+    QgsCoordinateReferenceSystem crs() const override;
+    QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) const override;
     QgsWkbTypes::Type wkbType() const override;
 
     /**
@@ -123,8 +123,8 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      */
     void setExtent( QgsRectangle &newExtent );
 
-    virtual QgsRectangle extent() const override;
-    virtual void updateExtents() override;
+    QgsRectangle extent() const override;
+    void updateExtents() override;
 
     /**
      * Determine the fields making up the primary key
@@ -143,24 +143,24 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     QString dataComment() const override;
     QVariant minimumValue( int index ) const override;
     QVariant maximumValue( int index ) const override;
-    virtual QSet< QVariant > uniqueValues( int index, int limit = -1 ) const override;
-    virtual QStringList uniqueStringsMatching( int index, const QString &substring, int limit = -1,
-        QgsFeedback *feedback = nullptr ) const override;
-    virtual void enumValues( int index, QStringList &enumList ) const override;
+    QSet< QVariant > uniqueValues( int index, int limit = -1 ) const override;
+    QStringList uniqueStringsMatching( int index, const QString &substring, int limit = -1,
+                                       QgsFeedback *feedback = nullptr ) const override;
+    void enumValues( int index, QStringList &enumList ) const override;
     bool isValid() const override;
-    virtual bool isSaveAndLoadStyleToDatabaseSupported() const override { return true; }
-    virtual bool isDeleteStyleFromDatabaseSupported() const override { return true; }
+    bool isSaveAndLoadStyleToDatabaseSupported() const override { return true; }
+    bool isDeleteStyleFromDatabaseSupported() const override { return true; }
     QgsAttributeList attributeIndexes() const override;
     QgsAttributeList pkAttributeIndexes() const override { return mPrimaryKeyAttrs; }
     QString defaultValueClause( int fieldId ) const override;
     QVariant defaultValue( int fieldId ) const override;
     bool skipConstraintCheck( int fieldIndex, QgsFieldConstraints::Constraint constraint, const QVariant &value = QVariant() ) const override;
-    bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = 0 ) override;
+    bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = nullptr ) override;
     bool deleteFeatures( const QgsFeatureIds &id ) override;
     bool truncate() override;
     bool addAttributes( const QList<QgsField> &attributes ) override;
     bool deleteAttributes( const QgsAttributeIds &name ) override;
-    virtual bool renameAttributes( const QgsFieldNameMap &renamedAttributes ) override;
+    bool renameAttributes( const QgsFieldNameMap &renamedAttributes ) override;
     bool changeAttributeValues( const QgsChangedAttributesMap &attr_map ) override;
     bool changeGeometryValues( const QgsGeometryMap &geometry_map ) override;
     bool changeFeatures( const QgsChangedAttributesMap &attr_map, const QgsGeometryMap &geometry_map ) override;
@@ -173,7 +173,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
 
     QString subsetString() const override;
     bool setSubsetString( const QString &theSQL, bool updateFeatureCount = true ) override;
-    virtual bool supportsSubsetString() const override { return true; }
+    bool supportsSubsetString() const override { return true; }
     QgsVectorDataProvider::Capabilities capabilities() const override;
 
     /**
@@ -188,7 +188,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
 
     QString name() const override;
     QString description() const override;
-    virtual QgsTransaction *transaction() const override;
+    QgsTransaction *transaction() const override;
 
     /**
      * Convert the postgres string representation into the given QVariant type.
@@ -199,8 +199,8 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      */
     static QVariant convertValue( QVariant::Type type, QVariant::Type subType, const QString &value );
 
-    virtual QList<QgsRelation> discoverRelations( const QgsVectorLayer *self, const QList<QgsVectorLayer *> &layers ) const override;
-    virtual QgsAttrPalIndexNameHash palAttributeIndexNames() const override;
+    QList<QgsRelation> discoverRelations( const QgsVectorLayer *self, const QList<QgsVectorLayer *> &layers ) const override;
+    QgsAttrPalIndexNameHash palAttributeIndexNames() const override;
 
     /**
      * Returns true if the data source has metadata, false otherwise. For
@@ -212,7 +212,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      *
      * \since QGIS 3.0
      */
-    virtual bool hasMetadata() const override;
+    bool hasMetadata() const override;
 
     /**
      * Launch a listening thead to listen to postgres NOTIFY on "qgis" channel
@@ -370,7 +370,6 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     mutable QgsRectangle mLayerExtent;        //! Rectangle that contains the extent (bounding box) of the layer
 
     QgsWkbTypes::Type mDetectedGeomType = QgsWkbTypes::Unknown ;  //! geometry type detected in the database
-    bool mForce2d = false;                    //! geometry type needs to be forced to 2d (e.g., ZM)
     QgsWkbTypes::Type mRequestedGeomType = QgsWkbTypes::Unknown ; //! geometry type requested in the uri
     QString mDetectedSrid;            //! Spatial reference detected in the database
     QString mRequestedSrid;           //! Spatial reference requested in the uri
@@ -420,7 +419,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     // A function that determines if the given columns contain unique entries
     bool uniqueData( const QString &quotedColNames );
 
-    QgsVectorDataProvider::Capabilities mEnabledCapabilities;
+    QgsVectorDataProvider::Capabilities mEnabledCapabilities = nullptr;
 
     void appendGeomParam( const QgsGeometry &geom, QStringList &param ) const;
     void appendPkParams( QgsFeatureId fid, QStringList &param ) const;

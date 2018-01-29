@@ -153,7 +153,14 @@ namespace QgsWms
     if ( outputFormat != UNKN )
     {
       response.setHeader( "Content-Type", contentType );
-      result.save( response.io(), qPrintable( saveFormat ), imageQuality );
+      if ( saveFormat == "JPEG" )
+      {
+        result.save( response.io(), qPrintable( saveFormat ), imageQuality );
+      }
+      else
+      {
+        result.save( response.io(), qPrintable( saveFormat ) );
+      }
     }
     else
     {

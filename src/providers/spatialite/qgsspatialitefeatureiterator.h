@@ -32,7 +32,7 @@ class QgsSpatiaLiteFeatureSource : public QgsAbstractFeatureSource
   public:
     explicit QgsSpatiaLiteFeatureSource( const QgsSpatiaLiteProvider *p );
 
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
+    QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
 
   private:
     QString mGeometryColumn;
@@ -59,13 +59,13 @@ class QgsSpatiaLiteFeatureIterator : public QgsAbstractFeatureIteratorFromSource
   public:
     QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeatureSource *source, bool ownSource, const QgsFeatureRequest &request );
 
-    ~QgsSpatiaLiteFeatureIterator();
-    virtual bool rewind() override;
-    virtual bool close() override;
+    ~QgsSpatiaLiteFeatureIterator() override;
+    bool rewind() override;
+    bool close() override;
 
   protected:
 
-    virtual bool fetchFeature( QgsFeature &feature ) override;
+    bool fetchFeature( QgsFeature &feature ) override;
     bool nextFeatureFilterExpression( QgsFeature &f ) override;
 
   private:

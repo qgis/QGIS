@@ -63,7 +63,7 @@ class GUI_EXPORT QgsAuthSettingsWidget : public QWidget, private Ui::QgsAuthSett
      * \param password
      * \param dataprovider The key of the calling layer provider, if applicable
      */
-    explicit QgsAuthSettingsWidget( QWidget *parent SIP_TRANSFERTHIS = 0,
+    explicit QgsAuthSettingsWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr,
                                     const QString &configId = QString(),
                                     const QString &username = QString(),
                                     const QString &password = QString(),

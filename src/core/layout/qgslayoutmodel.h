@@ -66,7 +66,7 @@ class CORE_EXPORT QgsLayoutModel: public QAbstractItemModel
     /**
      * Constructor for a QgsLayoutModel attached to the specified \a layout.
      */
-    explicit QgsLayoutModel( QgsLayout *layout, QObject *parent SIP_TRANSFERTHIS = 0 );
+    explicit QgsLayoutModel( QgsLayout *layout, QObject *parent SIP_TRANSFERTHIS = nullptr );
 
     //reimplemented QAbstractItemModel methods
     QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
@@ -78,8 +78,8 @@ class CORE_EXPORT QgsLayoutModel: public QAbstractItemModel
     bool setData( const QModelIndex &index, const QVariant &value, int role ) override;
     QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
     Qt::DropActions supportedDropActions() const override;
-    virtual QStringList mimeTypes() const override;
-    virtual QMimeData *mimeData( const QModelIndexList &indexes ) const override;
+    QStringList mimeTypes() const override;
+    QMimeData *mimeData( const QModelIndexList &indexes ) const override;
     bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) override;
     bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
 
@@ -312,7 +312,7 @@ class CORE_EXPORT QgsLayoutProxyModel: public QSortFilterProxyModel
     /**
      * Constructor for QgsLayoutProxyModelm, attached to the specified \a layout.
      */
-    QgsLayoutProxyModel( QgsLayout *layout, QObject *parent SIP_TRANSFERTHIS = 0 );
+    QgsLayoutProxyModel( QgsLayout *layout, QObject *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Returns the current item type filter, or QgsLayoutItemRegistry::LayoutItem if no

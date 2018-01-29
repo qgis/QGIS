@@ -43,7 +43,7 @@ class QgsPostgresListener : public QThread
      */
     static std::unique_ptr< QgsPostgresListener > create( const QString &connString );
 
-    ~QgsPostgresListener();
+    ~QgsPostgresListener() override;
 
     void run() override;
 

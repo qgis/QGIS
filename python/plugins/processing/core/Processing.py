@@ -53,7 +53,7 @@ from processing.gui.Postprocessing import handleAlgorithmResults
 from processing.gui.AlgorithmExecutor import execute
 from processing.tools import dataobjects
 
-from processing.algs.qgis.QGISAlgorithmProvider import QGISAlgorithmProvider  # NOQA
+from processing.algs.qgis.QgisAlgorithmProvider import QgisAlgorithmProvider  # NOQA
 from processing.algs.grass7.Grass7AlgorithmProvider import Grass7AlgorithmProvider
 from processing.algs.gdal.GdalAlgorithmProvider import GdalAlgorithmProvider  # NOQA
 from processing.algs.saga.SagaAlgorithmProvider import SagaAlgorithmProvider  # NOQA
@@ -109,7 +109,7 @@ class Processing(object):
         print(scripts)
         for script in scripts:
             script.allowEdit = False
-            script._icon = provider._icon
+            script._icon = provider.icon()
         provider.externalAlgs.extend(scripts)
         provider.refreshAlgorithms()
 

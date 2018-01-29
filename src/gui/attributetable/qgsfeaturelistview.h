@@ -20,6 +20,7 @@
 #include "qgis_sip.h"
 #include "qgis.h"
 #include <qdebug.h>
+#include "qgsactionmenu.h"
 
 #include "qgsfeature.h" // For QgsFeatureIds
 #include "qgis_gui.h"
@@ -53,7 +54,7 @@ class GUI_EXPORT QgsFeatureListView : public QListView
      *
      * \param parent   owner
      */
-    explicit QgsFeatureListView( QWidget *parent SIP_TRANSFERTHIS = 0 );
+    explicit QgsFeatureListView( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Returns the layer cache
@@ -122,11 +123,11 @@ class GUI_EXPORT QgsFeatureListView : public QListView
     void setFeatureSelectionManager( QgsIFeatureSelectionManager *featureSelectionManager SIP_TRANSFER );
 
   protected:
-    virtual void mouseMoveEvent( QMouseEvent *event ) override;
-    virtual void mousePressEvent( QMouseEvent *event ) override;
-    virtual void mouseReleaseEvent( QMouseEvent *event ) override;
-    virtual void keyPressEvent( QKeyEvent *event ) override;
-    virtual void contextMenuEvent( QContextMenuEvent *event ) override;
+    void mouseMoveEvent( QMouseEvent *event ) override;
+    void mousePressEvent( QMouseEvent *event ) override;
+    void mouseReleaseEvent( QMouseEvent *event ) override;
+    void keyPressEvent( QKeyEvent *event ) override;
+    void contextMenuEvent( QContextMenuEvent *event ) override;
 
   signals:
 
@@ -145,6 +146,13 @@ class GUI_EXPORT QgsFeatureListView : public QListView
 
     //! \note not available in Python bindings
     void aboutToChangeEditSelection( bool &ok ) SIP_SKIP;
+
+    /**
+     * Is emitted, when the context menu is created to add the specific actions to it
+     * \param menu is the already created context menu
+     * \param atIndex is the position of the current feature in the model
+     */
+    void willShowContextMenu( QgsActionMenu *menu, const QModelIndex &atIndex );
 
   public slots:
 
@@ -166,7 +174,7 @@ class GUI_EXPORT QgsFeatureListView : public QListView
     /**
      * Select all currently visible features
      */
-    virtual void selectAll() override;
+    void selectAll() override;
 
     void repaintRequested( const QModelIndexList &indexes );
     void repaintRequested();
@@ -174,8 +182,14 @@ class GUI_EXPORT QgsFeatureListView : public QListView
   private slots:
     void editSelectionChanged( const QItemSelection &deselected, const QItemSelection &selected );
 
+    /**
+     * Make sure, there is an edit selection. If there is none, choose the first item.
+     */
+    void ensureEditSelection();
+
   private:
     void selectRow( const QModelIndex &index, bool anchor );
+
 
     QgsFeatureListModel *mModel = nullptr;
     QItemSelectionModel *mCurrentEditSelectionModel = nullptr;
@@ -185,6 +199,7 @@ class GUI_EXPORT QgsFeatureListView : public QListView
     bool mEditSelectionDrag = false; // Is set to true when the user initiated a left button click over an edit button and still keeps pressing //!< TODO
     int mRowAnchor = 0;
     QItemSelectionModel::SelectionFlags mCtrlDragSelectionFlag;
+
 };
 
 #endif

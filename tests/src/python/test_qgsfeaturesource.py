@@ -19,6 +19,7 @@ from qgis.core import (QgsVectorLayer,
                        QgsFeature,
                        QgsGeometry,
                        QgsPointXY,
+                       QgsProject,
                        QgsFeatureRequest,
                        QgsWkbTypes,
                        QgsCoordinateReferenceSystem)
@@ -121,7 +122,7 @@ class TestQgsFeatureSource(unittest.TestCase):
             self.assertEqual(new_features[id].attributes(), f.attributes())
 
         # materialize with reprojection
-        request = QgsFeatureRequest().setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:3785'))
+        request = QgsFeatureRequest().setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:3785'), QgsProject.instance().transformContext())
         new_layer = layer.materialize(request)
         self.assertEqual(new_layer.fields(), layer.fields())
         self.assertEqual(new_layer.crs().authid(), 'EPSG:3785')

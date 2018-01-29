@@ -64,6 +64,32 @@ QgsGeometryCollection::~QgsGeometryCollection()
   clear();
 }
 
+bool QgsGeometryCollection::operator==( const QgsAbstractGeometry &other ) const
+{
+  const QgsGeometryCollection *otherCollection = qgsgeometry_cast< const QgsGeometryCollection * >( &other );
+  if ( !otherCollection )
+    return false;
+
+  if ( mWkbType != otherCollection->mWkbType )
+    return false;
+
+  if ( mGeometries.count() != otherCollection->mGeometries.count() )
+    return false;
+
+  for ( int i = 0; i < mGeometries.count(); ++i )
+  {
+    if ( mGeometries.at( i ) != otherCollection->mGeometries.at( i ) )
+      return false;
+  }
+
+  return true;
+}
+
+bool QgsGeometryCollection::operator!=( const QgsAbstractGeometry &other ) const
+{
+  return !operator==( other );
+}
+
 QgsGeometryCollection *QgsGeometryCollection::createEmptyWithSameType() const
 {
   auto result = qgis::make_unique< QgsGeometryCollection >();
@@ -826,5 +852,7 @@ int QgsGeometryCollection::childCount() const
 
 QgsAbstractGeometry *QgsGeometryCollection::childGeometry( int index ) const
 {
+  if ( index < 0 || index > mGeometries.count() )
+    return nullptr;
   return mGeometries.at( index );
 }

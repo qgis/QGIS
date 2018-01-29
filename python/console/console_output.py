@@ -203,7 +203,7 @@ class ShellOutputScintilla(QsciScintilla):
 
     def contextMenuEvent(self, e):
         menu = QMenu(self)
-        iconRun = QgsApplication.getThemeIcon("console/iconRunConsole.png")
+        iconRun = QgsApplication.getThemeIcon("console/mIconRunConsole.svg")
         iconClear = QgsApplication.getThemeIcon("console/iconClearConsole.png")
         iconHideTool = QgsApplication.getThemeIcon("console/iconHideToolConsole.png")
         iconSettings = QgsApplication.getThemeIcon("console/iconSettingsConsole.png")

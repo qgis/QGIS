@@ -47,9 +47,9 @@ class APP_EXPORT QgsSelectByFormDialog : public QDialog
      */
     QgsSelectByFormDialog( QgsVectorLayer *layer,
                            const QgsAttributeEditorContext &context = QgsAttributeEditorContext(),
-                           QWidget *parent = nullptr, Qt::WindowFlags fl = 0 );
+                           QWidget *parent = nullptr, Qt::WindowFlags fl = nullptr );
 
-    ~QgsSelectByFormDialog();
+    ~QgsSelectByFormDialog() override;
 
     /**
      * Sets the message bar to display feedback from the form in. This is used in the search/filter

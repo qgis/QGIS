@@ -34,10 +34,9 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
     QgsCompoundCurve();
     QgsCompoundCurve( const QgsCompoundCurve &curve );
     QgsCompoundCurve &operator=( const QgsCompoundCurve &curve );
-    ~QgsCompoundCurve();
+    ~QgsCompoundCurve() override;
 
-    bool operator==( const QgsCurve &other ) const override;
-    bool operator!=( const QgsCurve &other ) const override;
+    bool equals( const QgsCurve &other ) const override;
 
     QString geometryType() const override;
     int dimension() const override;

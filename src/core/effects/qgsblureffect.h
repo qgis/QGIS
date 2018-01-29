@@ -55,10 +55,10 @@ class CORE_EXPORT QgsBlurEffect : public QgsPaintEffect
      */
     QgsBlurEffect() = default;
 
-    virtual QString type() const override { return QStringLiteral( "blur" ); }
-    virtual QgsStringMap properties() const override;
-    virtual void readProperties( const QgsStringMap &props ) override;
-    virtual QgsBlurEffect *clone() const override SIP_FACTORY;
+    QString type() const override { return QStringLiteral( "blur" ); }
+    QgsStringMap properties() const override;
+    void readProperties( const QgsStringMap &props ) override;
+    QgsBlurEffect *clone() const override SIP_FACTORY;
 
     /**
      * Sets blur level (strength)
@@ -126,8 +126,8 @@ class CORE_EXPORT QgsBlurEffect : public QgsPaintEffect
 
   protected:
 
-    virtual void draw( QgsRenderContext &context ) override;
-    virtual QRectF boundingRect( const QRectF &rect, const QgsRenderContext &context ) const override;
+    void draw( QgsRenderContext &context ) override;
+    QRectF boundingRect( const QRectF &rect, const QgsRenderContext &context ) const override;
 
   private:
 

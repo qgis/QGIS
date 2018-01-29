@@ -408,11 +408,33 @@ tests:
       INPUT:
         name: points.gml
         type: vector
-      FIELD_NAME: id2
+      FIELDS: id2
     results:
       OUTPUT:
         name: expected/unique_values.gml
         type: vector
+        pk:
+        - id2
+
+  - algorithm: qgis:listuniquevalues
+    name: Unique values (multiple fields)
+    params:
+      FIELDS:
+      - name
+      - intval
+      INPUT:
+        name: dissolve_polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/unique_values_multiple.gml
+        type: vector
+        compare:
+          fields:
+            fid: skip
+        pk:
+        - name
+        - intval
 
   - algorithm: native:addautoincrementalfield
     name: Add autoincremental field
@@ -534,7 +556,7 @@ tests:
           geometry:
             precision: 7
 
-  - algorithm: qgis:fixeddistancebuffer
+  - algorithm: native:buffer
     name: Basic polygon buffer
     params:
       DISSOLVE: 'False'
@@ -551,7 +573,7 @@ tests:
           geometry:
             precision: 7
 
-  - algorithm: qgis:fixeddistancebuffer
+  - algorithm: native:buffer
     name: Polygon buffer with dissolve
     params:
       DISSOLVE: 'True'
@@ -602,6 +624,67 @@ tests:
       OUTPUT:
         name: expected/merge_lines.gml
         type: vector
+
+  - algorithm: native:mergevectorlayers
+    name: Merge points
+    params:
+      LAYERS:
+        params:
+        - name: custom/points.shp
+          type: vector
+        - name: custom/pointszm.shp
+          type: vector
+        type: multi
+    results:
+      OUTPUT:
+        name: expected/merged_points.gml
+        type: vector
+        compare:
+          fields:
+            fid: skip
+            path: skip
+
+  - algorithm: native:mergevectorlayers
+    name: Merge polygons
+    params:
+      LAYERS:
+        params:
+        - name: multipolys.gml
+          type: vector
+        - name: polys.gml
+          type: vector
+        type: multi
+    results:
+      OUTPUT:
+        name: expected/merged_polys.gml
+        type: vector
+        compare:
+          fields:
+            fid: skip
+            path: skip
+
+  - algorithm: native:mergevectorlayers
+    name: Merge polygons with CRS
+    params:
+      CRS: EPSG:3785
+      LAYERS:
+        params:
+        - name: multipolys.gml
+          type: vector
+        - name: polys.gml
+          type: vector
+        type: multi
+    results:
+      OUTPUT:
+        name: expected/merged_polys_crs.gml
+        type: vector
+        compare:
+          fields:
+            fid: skip
+            layer: skip
+            path: skip
+          geometry:
+            precision: 0
 
   - algorithm: native:multiparttosingleparts
     name: Multiparts to singleparts
@@ -924,7 +1007,7 @@ tests:
           geometry:
             precision: 7
 
-  - algorithm: qgis:fixeddistancebuffer
+  - algorithm: native:buffer
     name: Buffer polygons using bevel
     params:
       DISSOLVE: false
@@ -941,7 +1024,7 @@ tests:
         name: expected/buffer_polys_bevel.gml
         type: vector
 
-  - algorithm: qgis:fixeddistancebuffer
+  - algorithm: native:buffer
     name: Buffer polygons using miter
     params:
       DISSOLVE: false
@@ -958,7 +1041,7 @@ tests:
         name: expected/buffer_polys_miter.gml
         type: vector
 
-  - algorithm: qgis:fixeddistancebuffer
+  - algorithm: native:buffer
     name: Buffer lines
     params:
       DISSOLVE: false
@@ -978,7 +1061,7 @@ tests:
           geometry:
             precision: 7
 
-  - algorithm: qgis:fixeddistancebuffer
+  - algorithm: native:buffer
     name: Buffer lines (flat)
     params:
       DISSOLVE: false
@@ -998,7 +1081,7 @@ tests:
           geometry:
             precision: 7
 
-  - algorithm: qgis:fixeddistancebuffer
+  - algorithm: native:buffer
     name: Buffer lines (square)
     params:
       DISSOLVE: false
@@ -2080,12 +2163,13 @@ tests:
         name: expected/dropped_geometry.csv
         type: vector
 
-  - algorithm: qgis:creategridlines
+  - algorithm: qgis:creategrid
     name: Create grid (lines)
     params:
       CRS: EPSG:4326
       EXTENT: -1,11.2,-4,6.5
       HSPACING: 5.0
+      TYPE: '1'
       VSPACING: 3.0
     results:
       OUTPUT:
@@ -2095,13 +2179,13 @@ tests:
           geometry:
             precision: 7
 
-  - algorithm: qgis:creategridpolygon
+  - algorithm: qgis:creategrid
     name: Create grid (rectangles)
     params:
       CRS: EPSG:4326
       EXTENT: -1,11.2,-4,6.5
       HSPACING: 5.0
-      TYPE: '0'
+      TYPE: '2'
       VSPACING: 3.0
     results:
       OUTPUT:
@@ -2111,13 +2195,13 @@ tests:
           geometry:
             precision: 7
 
-  - algorithm: qgis:creategridpolygon
+  - algorithm: qgis:creategrid
     name: Create grid (diamond)
     params:
       CRS: EPSG:4326
       EXTENT: -1,11.2,-4,6.5
       HSPACING: 5.0
-      TYPE: '1'
+      TYPE: '3'
       VSPACING: 3.0
     results:
       OUTPUT:
@@ -2127,13 +2211,13 @@ tests:
           geometry:
             precision: 7
 
-  - algorithm: qgis:creategridpolygon
+  - algorithm: qgis:creategrid
     name: Create grid (hexagon)
     params:
       CRS: EPSG:4326
       EXTENT: -1,11.2,-4,6.5
       HSPACING: 5.0
-      TYPE: '2'
+      TYPE: '4'
       VSPACING: 5.0
     results:
       OUTPUT:
@@ -2143,13 +2227,14 @@ tests:
           geometry:
             precision: 7
 
-  - algorithm: qgis:creategridlines
+  - algorithm: qgis:creategrid
     name: Create grid (lines with overlay)
     params:
       CRS: EPSG:4326
       EXTENT: -1,11.2,-4,6.5
       HOVERLAY: 2.0
       HSPACING: 5.0
+      TYPE: '1'
       VOVERLAY: 1.0
       VSPACING: 3.0
     results:
@@ -2157,14 +2242,14 @@ tests:
         name: expected/grid_lines_overlay.gml
         type: vector
 
-  - algorithm: qgis:creategridpolygon
+  - algorithm: qgis:creategrid
     name: Create grid (rectangle with overlay)
     params:
       CRS: EPSG:4326
       EXTENT: -1,11.2,-4,6.5
       HOVERLAY: 2.0
       HSPACING: 5.0
-      TYPE: '0'
+      TYPE: '2'
       VOVERLAY: 1.0
       VSPACING: 3.0
     results:
@@ -2175,14 +2260,14 @@ tests:
           geometry:
             precision: 7
 
-  - algorithm: qgis:creategridpolygon
+  - algorithm: qgis:creategrid
     name: Create grid (diamond with overlay)
     params:
       CRS: EPSG:4326
       EXTENT: -1,11.2,-4,6.5
       HOVERLAY: 2.0
       HSPACING: 5.0
-      TYPE: '1'
+      TYPE: '3'
       VOVERLAY: 1.0
       VSPACING: 3.0
     results:
@@ -2193,14 +2278,14 @@ tests:
           geometry:
             precision: 7
 
-  - algorithm: qgis:creategridpolygon
+  - algorithm: qgis:creategrid
     name: Create grid (hexagon with overlay)
     params:
       CRS: EPSG:4326
       EXTENT: -1,11.2,-4,6.5
       HOVERLAY: 2.0
       HSPACING: 5.0
-      TYPE: '2'
+      TYPE: '4'
       VOVERLAY: 1.0
       VSPACING: 5.0
     results:
@@ -2451,7 +2536,7 @@ tests:
             fid: skip
 
 
-  - algorithm: qgis:adduniquevalueindexfield
+  - algorithm: native:adduniquevalueindexfield
     name: add unique field based on another field
     params:
       FIELD: id2
@@ -2462,6 +2547,24 @@ tests:
       OUTPUT:
         name: expected/add_unique_field.gml
         type: vector
+
+  - algorithm: native:adduniquevalueindexfield
+    name: Add unique field summary
+    params:
+      FIELD: id2
+      FIELD_NAME: classes
+      INPUT:
+        name: points.gml
+        type: vector
+    results:
+      SUMMARY_OUTPUT:
+        name: expected/add_unique_field_summary.gml
+        type: vector
+        compare:
+          fields:
+            fid: skip
+        pk:
+        - id2
 
   - algorithm: qgis:linestopolygons
     name: convert lines to polygon
@@ -3261,13 +3364,14 @@ tests:
         name: expected/buffer_ovals.gml
         type: vector
 
-  - algorithm: qgis:creategridlines
+  - algorithm: qgis:creategrid
     name: Lines grid 0.1 degree spacing
     params:
       CRS: EPSG:4326
       EXTENT: -0.10453905405405395,8.808021567567568,-2.5010055337837844,4.058021763513514
       HOVERLAY: 0.0
       HSPACING: 0.1
+      TYPE: '1'
       VOVERLAY: 0.0
       VSPACING: 0.1
     results:

@@ -26,7 +26,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 
-from qgis.core import (QgsProcessingParameterFeatureSource,
+from qgis.core import (QgsProcessingParameterVectorLayer,
                        QgsProcessingParameterBoolean,
                        QgsProcessingParameterFileDestination,
                        QgsProcessingOutputHtml)
@@ -45,8 +45,8 @@ class ogrinfo(GdalAlgorithm):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
-                                                              self.tr('Input layer')))
+        self.addParameter(QgsProcessingParameterVectorLayer(self.INPUT,
+                                                            self.tr('Input layer')))
         self.addParameter(QgsProcessingParameterBoolean(self.SUMMARY_ONLY,
                                                         self.tr('Summary output only'),
                                                         defaultValue=True))
@@ -68,7 +68,10 @@ class ogrinfo(GdalAlgorithm):
     def group(self):
         return self.tr('Vector miscellaneous')
 
-    def getConsoleCommands(self, parameters, context, feedback):
+    def groupId(self):
+        return 'vectormiscellaneous'
+
+    def getConsoleCommands(self, parameters, context, feedback, executing=True):
         arguments = ['ogrinfo']
         arguments.append('-al')
 

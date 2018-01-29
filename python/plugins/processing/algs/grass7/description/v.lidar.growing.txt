@@ -3,6 +3,6 @@ Building contour determination and Region Growing algorithm for determining the 
 Vector (v.*)
 QgsProcessingParameterVectorLayer|input|Input vector (v.lidar.edgedetection output)|-1|None|False
 QgsProcessingParameterVectorLayer|first|First pulse vector layer|-1|None|False
-QgsProcessingParameterNumber|tj|Threshold for cell object frequency in region growing|QgsProcessingParameterNumber.Double|0.2|False|None|None
-QgsProcessingParameterNumber|td|Threshold for double pulse in region growing|QgsProcessingParameterNumber.Double|0.6|False|None|None
+QgsProcessingParameterNumber|tj|Threshold for cell object frequency in region growing|QgsProcessingParameterNumber.Double|0.2|True|None|None
+QgsProcessingParameterNumber|td|Threshold for double pulse in region growing|QgsProcessingParameterNumber.Double|0.6|True|None|None
 QgsProcessingParameterVectorDestination|output|Buildings

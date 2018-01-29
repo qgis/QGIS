@@ -60,6 +60,9 @@ class FieldsCalculator(QgisAlgorithm):
     def group(self):
         return self.tr('Vector table')
 
+    def groupId(self):
+        return 'vectortable'
+
     def __init__(self):
         super().__init__()
         self.type_names = [self.tr('Float'),
@@ -101,7 +104,7 @@ class FieldsCalculator(QgisAlgorithm):
 
         expression = QgsExpression(formula)
         da = QgsDistanceArea()
-        da.setSourceCrs(source.sourceCrs())
+        da.setSourceCrs(source.sourceCrs(), context.transformContext())
         da.setEllipsoid(context.project().ellipsoid())
         expression.setGeomCalculator(da)
 

@@ -349,7 +349,8 @@ void QgsExpressionBuilderWidget::fillFieldValues( const QString &fieldName, int 
     return;
 
   QStringList strValues;
-  QSet<QVariant> values = mLayer->uniqueValues( fieldIndex, countLimit );
+  QList<QVariant> values = mLayer->uniqueValues( fieldIndex, countLimit ).toList();
+  std::sort( values.begin(), values.end() );
   Q_FOREACH ( const QVariant &value, values )
   {
     QString strValue;
@@ -578,6 +579,8 @@ void QgsExpressionBuilderWidget::txtExpressionString_textChanged()
     txtExpressionString->setToolTip( QLatin1String( "" ) );
     lblPreview->setToolTip( QLatin1String( "" ) );
     emit expressionParsed( false );
+    setParserError( true );
+    setEvalError( true );
     return;
   }
 
@@ -614,14 +617,18 @@ void QgsExpressionBuilderWidget::txtExpressionString_textChanged()
     txtExpressionString->setToolTip( tooltip );
     lblPreview->setToolTip( tooltip );
     emit expressionParsed( false );
+    setParserError( exp.hasParserError() );
+    setEvalError( exp.hasEvalError() );
     return;
   }
   else
   {
-    lblPreview->setStyleSheet( QLatin1String( "" ) );
-    txtExpressionString->setToolTip( QLatin1String( "" ) );
-    lblPreview->setToolTip( QLatin1String( "" ) );
+    lblPreview->setStyleSheet( QString() );
+    txtExpressionString->setToolTip( QString() );
+    lblPreview->setToolTip( QString() );
     emit expressionParsed( true );
+    setParserError( false );
+    setEvalError( false );
   }
 }
 
@@ -670,6 +677,34 @@ QString QgsExpressionBuilderWidget::formatLayerHelp( const QgsMapLayer *layer ) 
   QString text = QStringLiteral( "<p>%1</p>" ).arg( tr( "Inserts the layer ID for the layer named '%1'." ).arg( layer->name() ) );
   text.append( QStringLiteral( "<p>%1</p>" ).arg( tr( "Current value: '%1'" ).arg( layer->id() ) ) );
   return text;
+}
+
+bool QgsExpressionBuilderWidget::parserError() const
+{
+  return mParserError;
+}
+
+void QgsExpressionBuilderWidget::setParserError( bool parserError )
+{
+  if ( parserError == mParserError )
+    return;
+
+  mParserError = parserError;
+  emit parserErrorChanged();
+}
+
+bool QgsExpressionBuilderWidget::evalError() const
+{
+  return mEvalError;
+}
+
+void QgsExpressionBuilderWidget::setEvalError( bool evalError )
+{
+  if ( evalError == mEvalError )
+    return;
+
+  mEvalError = evalError;
+  emit evalErrorChanged();
 }
 
 QStandardItemModel *QgsExpressionBuilderWidget::model()

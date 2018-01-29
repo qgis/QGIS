@@ -298,21 +298,21 @@ class GUI_EXPORT QgsColorWheel : public QgsColorWidget
      */
     QgsColorWheel( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    virtual ~QgsColorWheel();
+    ~QgsColorWheel() override;
 
-    virtual QSize sizeHint() const override;
+    QSize sizeHint() const override;
     void paintEvent( QPaintEvent *event ) override;
 
   public slots:
 
-    virtual void setColor( const QColor &color, const bool emitSignals = false ) override;
+    void setColor( const QColor &color, const bool emitSignals = false ) override;
 
   protected:
 
-    virtual void resizeEvent( QResizeEvent *event ) override;
-    virtual void mouseMoveEvent( QMouseEvent *event ) override;
-    virtual void mousePressEvent( QMouseEvent *event ) override;
-    virtual void mouseReleaseEvent( QMouseEvent *event ) override;
+    void resizeEvent( QResizeEvent *event ) override;
+    void mouseMoveEvent( QMouseEvent *event ) override;
+    void mousePressEvent( QMouseEvent *event ) override;
+    void mouseReleaseEvent( QMouseEvent *event ) override;
 
   private:
 
@@ -395,21 +395,21 @@ class GUI_EXPORT QgsColorBox : public QgsColorWidget
      */
     QgsColorBox( QWidget *parent SIP_TRANSFERTHIS = nullptr, const ColorComponent component = Value );
 
-    virtual ~QgsColorBox();
+    ~QgsColorBox() override;
 
-    virtual QSize sizeHint() const override;
+    QSize sizeHint() const override;
     void paintEvent( QPaintEvent *event ) override;
 
-    virtual void setComponent( const ColorComponent component ) override;
+    void setComponent( const ColorComponent component ) override;
 
   public slots:
-    virtual void setColor( const QColor &color, const bool emitSignals = false ) override;
+    void setColor( const QColor &color, const bool emitSignals = false ) override;
 
   protected:
 
-    virtual void resizeEvent( QResizeEvent *event ) override;
-    virtual void mouseMoveEvent( QMouseEvent *event ) override;
-    virtual void mousePressEvent( QMouseEvent *event ) override;
+    void resizeEvent( QResizeEvent *event ) override;
+    void mouseMoveEvent( QMouseEvent *event ) override;
+    void mousePressEvent( QMouseEvent *event ) override;
 
   private:
 
@@ -501,7 +501,7 @@ class GUI_EXPORT QgsColorRampWidget : public QgsColorWidget
                         const ColorComponent component = QgsColorWidget::Red,
                         const Orientation orientation = QgsColorRampWidget::Horizontal );
 
-    virtual QSize sizeHint() const override;
+    QSize sizeHint() const override;
     void paintEvent( QPaintEvent *event ) override;
 
     /**
@@ -562,10 +562,10 @@ class GUI_EXPORT QgsColorRampWidget : public QgsColorWidget
 
   protected:
 
-    virtual void mouseMoveEvent( QMouseEvent *event ) override;
-    virtual void wheelEvent( QWheelEvent *event ) override;
-    virtual void mousePressEvent( QMouseEvent *event ) override;
-    virtual void keyPressEvent( QKeyEvent *event ) override;
+    void mouseMoveEvent( QMouseEvent *event ) override;
+    void wheelEvent( QWheelEvent *event ) override;
+    void mousePressEvent( QMouseEvent *event ) override;
+    void keyPressEvent( QKeyEvent *event ) override;
 
   private:
 
@@ -613,9 +613,9 @@ class GUI_EXPORT QgsColorSliderWidget : public QgsColorWidget
      */
     QgsColorSliderWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr, const ColorComponent component = QgsColorWidget::Red );
 
-    virtual void setComponent( const ColorComponent component ) override;
-    virtual void setComponentValue( const int value ) override;
-    virtual void setColor( const QColor &color, const bool emitSignals = false ) override;
+    void setComponent( const ColorComponent component ) override;
+    void setComponentValue( const int value ) override;
+    void setColor( const QColor &color, const bool emitSignals = false ) override;
 
   private:
 
@@ -682,7 +682,7 @@ class GUI_EXPORT QgsColorTextWidget : public QgsColorWidget
      */
     QgsColorTextWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    virtual void setColor( const QColor &color, const bool emitSignals = false ) override;
+    void setColor( const QColor &color, const bool emitSignals = false ) override;
 
   protected:
     void resizeEvent( QResizeEvent *event ) override;
@@ -747,7 +747,7 @@ class GUI_EXPORT QgsColorPreviewWidget : public QgsColorWidget
     QgsColorPreviewWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     void paintEvent( QPaintEvent *event ) override;
-    virtual QSize sizeHint() const override;
+    QSize sizeHint() const override;
 
     /**
      * Returns the secondary color for the widget

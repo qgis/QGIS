@@ -106,12 +106,15 @@ class Dissolve(GdalAlgorithm):
     def group(self):
         return self.tr('Vector geoprocessing')
 
+    def groupId(self):
+        return 'vectorgeoprocessing'
+
     def commandName(self):
         return 'ogr2ogr'
 
-    def getConsoleCommands(self, parameters, context, feedback):
+    def getConsoleCommands(self, parameters, context, feedback, executing=True):
         fields = self.parameterAsSource(parameters, self.INPUT, context).fields()
-        ogrLayer, layerName = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback)
+        ogrLayer, layerName = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback, executing)
         geometry = self.parameterAsString(parameters, self.GEOMETRY, context)
         fieldName = self.parameterAsString(parameters, self.FIELD, context)
 

@@ -70,7 +70,8 @@ from qgis.core import (
     QgsProcessingOutputString,
     QgsProcessingOutputNumber,
     QgsProcessingModelChildParameterSource,
-    QgsProcessingModelAlgorithm)
+    QgsProcessingModelAlgorithm,
+    NULL)
 
 from qgis.PyQt.QtWidgets import (
     QCheckBox,
@@ -249,6 +250,8 @@ class BooleanWidgetWrapper(WidgetWrapper):
             return widget
 
     def setValue(self, value):
+        if value is None or value == NULL:
+            return
         if self.dialogType == DIALOG_STANDARD:
             self.widget.setChecked(value)
         else:
@@ -320,6 +323,9 @@ class CrsWidgetWrapper(WidgetWrapper):
             self.setValue(dialog.crs().authid())
 
     def setValue(self, value):
+        if value is None or value == NULL:
+            return
+
         if self.dialogType == DIALOG_MODELER:
             self.setComboValue(value, self.combo)
         elif value == 'ProjectCrs':
@@ -365,6 +371,9 @@ class ExtentWidgetWrapper(WidgetWrapper):
             return widget
 
     def setValue(self, value):
+        if value is None or value == NULL:
+            return
+
         if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
             self.widget.setExtentFromString(value)
         else:
@@ -410,6 +419,9 @@ class PointWidgetWrapper(WidgetWrapper):
             return item
 
     def setValue(self, value):
+        if value is None or value == NULL:
+            return
+
         if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
             self.widget.setPointFromString(value)
         else:
@@ -458,7 +470,7 @@ class FileWidgetWrapper(WidgetWrapper):
             layout = QHBoxLayout()
             layout.setMargin(0)
             layout.setContentsMargins(0, 0, 0, 0)
-            layout.setSpacing(2)
+            layout.setSpacing(6)
             layout.addWidget(self.combo)
             btn = QToolButton()
             btn.setText('…')
@@ -491,6 +503,9 @@ class FileWidgetWrapper(WidgetWrapper):
             self.combo.setEditText(filename)
 
     def setValue(self, value):
+        if value is None or value == NULL:
+            return
+
         if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
             self.widget.setText(value)
         else:
@@ -610,6 +625,9 @@ class MultipleLayerWidgetWrapper(WidgetWrapper):
             self.widget.updateForOptions(opts)
 
     def setValue(self, value):
+        if value is None or value == NULL:
+            return
+
         if self.dialogType == DIALOG_STANDARD:
             pass  # TODO
         elif self.dialogType == DIALOG_BATCH:
@@ -666,6 +684,9 @@ class NumberWidgetWrapper(WidgetWrapper):
             return ModellerNumberInputPanel(self.param, self.dialog)
 
     def setValue(self, value):
+        if value is None or value == NULL:
+            return
+
         self.widget.setValue(value)
 
     def value(self):
@@ -694,6 +715,9 @@ class RangeWidgetWrapper(WidgetWrapper):
         #    return ModellerNumberInputPanel(self.param, self.dialog)
 
     def setValue(self, value):
+        if value is None or value == NULL:
+            return
+
         self.widget.setValue(value)
 
     def value(self):
@@ -709,7 +733,7 @@ class MapLayerWidgetWrapper(WidgetWrapper):
             layout = QHBoxLayout()
             layout.setMargin(0)
             layout.setContentsMargins(0, 0, 0, 0)
-            layout.setSpacing(2)
+            layout.setSpacing(6)
             self.combo = QgsMapLayerComboBox()
             layout.addWidget(self.combo)
             btn = QToolButton()
@@ -737,7 +761,9 @@ class MapLayerWidgetWrapper(WidgetWrapper):
             self.combo.currentTextChanged.connect(lambda: self.widgetValueHasChanged.emit(self))
             return widget
         elif self.dialogType == DIALOG_BATCH:
-            return BatchInputSelectionPanel(self.param, self.row, self.col, self.dialog)
+            widget = BatchInputSelectionPanel(self.param, self.row, self.col, self.dialog)
+            widget.valueChanged.connect(lambda: self.widgetValueHasChanged.emit(self))
+            return widget
         else:
             self.combo = QComboBox()
             layers = self.getAvailableLayers()
@@ -751,7 +777,7 @@ class MapLayerWidgetWrapper(WidgetWrapper):
             layout = QHBoxLayout()
             layout.setMargin(0)
             layout.setContentsMargins(0, 0, 0, 0)
-            layout.setSpacing(2)
+            layout.setSpacing(6)
             layout.addWidget(self.combo)
             btn = QToolButton()
             btn.setText('…')
@@ -781,8 +807,17 @@ class MapLayerWidgetWrapper(WidgetWrapper):
                 self.combo.setEditText(filename)
 
     def setValue(self, value):
+        if value is None or value == NULL:
+            return
+
         if self.dialogType == DIALOG_STANDARD:
-            pass  # TODO
+            if self.combo.findText(value) >= 0:
+                self.combo.setCurrentIndex(self.combo.findText(value))
+            else:
+                items = self.combo.additionalItems()
+                items.append(value)
+                self.combo.setAdditionalItems(items)
+                self.combo.setCurrentIndex(self.combo.findText(value))
         elif self.dialogType == DIALOG_BATCH:
             self.widget.setText(value)
         else:
@@ -795,11 +830,11 @@ class MapLayerWidgetWrapper(WidgetWrapper):
                 if layer is not None:
                     return layer
                 else:
-                    return self.combo.currentText()
+                    return self.combo.currentText() or None
             except:
                 return self.combo.currentText()
         elif self.dialogType == DIALOG_BATCH:
-            return self.widget.getText()
+            return self.widget.value()
         else:
             def validator(v):
                 if not bool(v):
@@ -852,6 +887,9 @@ class EnumWidgetWrapper(WidgetWrapper):
             return widget
 
     def setValue(self, value):
+        if value is None or value == NULL:
+            return
+
         if self._useCheckBoxes and not self.dialogType == DIALOG_BATCH:
             self.widget.setValue(value)
             return
@@ -878,7 +916,7 @@ class FeatureSourceWidgetWrapper(WidgetWrapper):
             layout = QHBoxLayout()
             layout.setMargin(0)
             layout.setContentsMargins(0, 0, 0, 0)
-            layout.setSpacing(2)
+            layout.setSpacing(6)
             self.combo = QgsMapLayerComboBox()
             layout.addWidget(self.combo)
             layout.setAlignment(self.combo, Qt.AlignTop)
@@ -892,7 +930,7 @@ class FeatureSourceWidgetWrapper(WidgetWrapper):
             vl = QVBoxLayout()
             vl.setMargin(0)
             vl.setContentsMargins(0, 0, 0, 0)
-            vl.setSpacing(2)
+            vl.setSpacing(6)
             vl.addLayout(layout)
 
             self.use_selection_checkbox = QCheckBox(self.tr('Selected features only'))
@@ -984,8 +1022,17 @@ class FeatureSourceWidgetWrapper(WidgetWrapper):
                 self.combo.setEditText(filename)
 
     def setValue(self, value):
+        if value is None or value == NULL:
+            return
+
         if self.dialogType == DIALOG_STANDARD:
-            pass  # TODO
+            if self.combo.findText(value) >= 0:
+                self.combo.setCurrentIndex(self.combo.findText(value))
+            else:
+                items = self.combo.additionalItems()
+                items.append(value)
+                self.combo.setAdditionalItems(items)
+                self.combo.setCurrentIndex(self.combo.findText(value))
         elif self.dialogType == DIALOG_BATCH:
             self.widget.setValue(value)
         else:
@@ -1065,6 +1112,9 @@ class StringWidgetWrapper(WidgetWrapper):
                     self.setValue(dlg.expressionText())
 
     def setValue(self, value):
+        if value is None or value == NULL:
+            return
+
         if self.dialogType == DIALOG_STANDARD:
             if self.param.multiLine():
                 self.widget.setPlainText(value)
@@ -1154,6 +1204,9 @@ class ExpressionWidgetWrapper(WidgetWrapper):
         self.widget.setLayer(layer)
 
     def setValue(self, value):
+        if value is None or value == NULL:
+            return
+
         if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
             self.widget.setExpression(value)
         else:
@@ -1181,7 +1234,7 @@ class VectorLayerWidgetWrapper(WidgetWrapper):
             layout = QHBoxLayout()
             layout.setMargin(0)
             layout.setContentsMargins(0, 0, 0, 0)
-            layout.setSpacing(2)
+            layout.setSpacing(6)
             self.combo = QgsMapLayerComboBox()
             layout.addWidget(self.combo)
             btn = QToolButton()
@@ -1223,7 +1276,9 @@ class VectorLayerWidgetWrapper(WidgetWrapper):
             return widget
 
         elif self.dialogType == DIALOG_BATCH:
-            return BatchInputSelectionPanel(self.param, self.row, self.col, self.dialog)
+            widget = BatchInputSelectionPanel(self.param, self.row, self.col, self.dialog)
+            widget.valueChanged.connect(lambda: self.widgetValueHasChanged.emit(self))
+            return widget
         else:
             self.combo = QComboBox()
             self.combo.setEditable(True)
@@ -1238,7 +1293,7 @@ class VectorLayerWidgetWrapper(WidgetWrapper):
             layout = QHBoxLayout()
             layout.setMargin(0)
             layout.setContentsMargins(0, 0, 0, 0)
-            layout.setSpacing(2)
+            layout.setSpacing(6)
             layout.addWidget(self.combo)
             btn = QToolButton()
             btn.setText('…')
@@ -1261,8 +1316,17 @@ class VectorLayerWidgetWrapper(WidgetWrapper):
                 self.combo.setEditText(filename)
 
     def setValue(self, value):
+        if value is None or value == NULL:
+            return
+
         if self.dialogType == DIALOG_STANDARD:
-            pass  # TODO
+            if self.combo.findText(value) >= 0:
+                self.combo.setCurrentIndex(self.combo.findText(value))
+            else:
+                items = self.combo.additionalItems()
+                items.append(value)
+                self.combo.setAdditionalItems(items)
+                self.combo.setCurrentIndex(self.combo.findText(value))
         elif self.dialogType == DIALOG_BATCH:
             return self.widget.setText(value)
         else:
@@ -1362,13 +1426,16 @@ class TableFieldWidgetWrapper(WidgetWrapper):
         elif self.param.dataType() == QgsProcessingParameterField.DateTime:
             fieldTypes = [QVariant.Date, QVariant.Time, QVariant.DateTime]
 
-        fieldNames = set()
+        fieldNames = []
         for field in self._layer.fields():
             if not fieldTypes or field.type() in fieldTypes:
-                fieldNames.add(str(field.name()))
-        return sorted(list(fieldNames), key=cmp_to_key(locale.strcoll))
+                fieldNames.append(str(field.name()))
+        return fieldNames
 
     def setValue(self, value):
+        if value is None or value == NULL:
+            return
+
         if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
             if self.param.allowMultiple():
                 options = self.widget.options
@@ -1453,6 +1520,9 @@ class BandWidgetWrapper(WidgetWrapper):
         self.widget.setCurrentIndex(0)
 
     def setValue(self, value):
+        if value is None or value == NULL:
+            return
+
         if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):
             self.widget.setBand(value)
         else:
@@ -1541,6 +1611,8 @@ class WidgetWrapperFactory:
             wrapper = MapLayerWidgetWrapper
         elif param.type() == 'range':
             wrapper = RangeWidgetWrapper
+        elif param.type() == 'matrix':
+            wrapper = FixedTableWidgetWrapper
         else:
             assert False, param.type()
         return wrapper(param, dialog, row, col)

@@ -83,6 +83,9 @@ class ShortestPathPointToLayer(QgisAlgorithm):
     def group(self):
         return self.tr('Network analysis')
 
+    def groupId(self):
+        return 'networkanalysis'
+
     def __init__(self):
         super().__init__()
 
@@ -213,7 +216,7 @@ class ShortestPathPointToLayer(QgisAlgorithm):
 
         feedback.pushInfo(self.tr('Loading end points...'))
         request = QgsFeatureRequest()
-        request.setDestinationCrs(network.sourceCrs())
+        request.setDestinationCrs(network.sourceCrs(), context.transformContext())
         features = endPoints.getFeatures(request)
         total = 100.0 / endPoints.featureCount() if endPoints.featureCount() else 0
 

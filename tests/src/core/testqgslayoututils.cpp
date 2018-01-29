@@ -51,6 +51,7 @@ class TestQgsLayoutUtils: public QObject
     void drawTextPos(); //test drawing text at a pos
     void drawTextRect(); //test drawing text in a rect
     void largestRotatedRect(); //test largest rotated rect helper function
+    void decodePaperOrientation();
 
   private:
 
@@ -244,11 +245,9 @@ void TestQgsLayoutUtils::createRenderContextFromLayout()
 
   // add a reference map
   QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
-#if 0 // TODO
-  map->setNewExtent( extent );
-  map->setSceneRect( QRectF( 30, 60, 200, 100 ) );
-  composition->addComposerMap( map );
-#endif
+  map->attemptSetSceneRect( QRectF( 30, 60, 200, 100 ) );
+  map->setExtent( extent );
+  l.addLayoutItem( map );
   l.setReferenceMap( map );
 
   rc = QgsLayoutUtils::createRenderContextForLayout( &l, &p );
@@ -263,19 +262,19 @@ void TestQgsLayoutUtils::createRenderContextFromLayout()
   QVERIFY( !rc.painter() );
 
   // check render context flags are correctly set
-  l.context().setFlags( 0 );
+  l.renderContext().setFlags( nullptr );
   rc = QgsLayoutUtils::createRenderContextForLayout( &l, nullptr );
   QVERIFY( !( rc.flags() & QgsRenderContext::Antialiasing ) );
   QVERIFY( !( rc.flags() & QgsRenderContext::UseAdvancedEffects ) );
   QVERIFY( ( rc.flags() & QgsRenderContext::ForceVectorOutput ) );
 
-  l.context().setFlag( QgsLayoutContext::FlagAntialiasing );
+  l.renderContext().setFlag( QgsLayoutRenderContext::FlagAntialiasing );
   rc = QgsLayoutUtils::createRenderContextForLayout( &l, nullptr );
   QVERIFY( ( rc.flags() & QgsRenderContext::Antialiasing ) );
   QVERIFY( !( rc.flags() & QgsRenderContext::UseAdvancedEffects ) );
   QVERIFY( ( rc.flags() & QgsRenderContext::ForceVectorOutput ) );
 
-  l.context().setFlag( QgsLayoutContext::FlagUseAdvancedEffects );
+  l.renderContext().setFlag( QgsLayoutRenderContext::FlagUseAdvancedEffects );
   rc = QgsLayoutUtils::createRenderContextForLayout( &l, nullptr );
   QVERIFY( ( rc.flags() & QgsRenderContext::Antialiasing ) );
   QVERIFY( ( rc.flags() & QgsRenderContext::UseAdvancedEffects ) );
@@ -306,16 +305,12 @@ void TestQgsLayoutUtils::createRenderContextFromMap()
   QgsProject project;
   QgsLayout l( &project );
 
-#if 0 // TODO
   // add a map
   QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
+  map->attemptSetSceneRect( QRectF( 30, 60, 200, 100 ) );
+  map->setExtent( extent );
+  l.addLayoutItem( map );
 
-  map->setNewExtent( extent );
-  map->setSceneRect( QRectF( 30, 60, 200, 100 ) );
-  l.addComposerMap( map );
-#endif
-
-#if 0 //TODO
   rc = QgsLayoutUtils::createRenderContextForMap( map, &p );
   QGSCOMPARENEAR( rc.scaleFactor(), 150 / 25.4, 0.001 );
   QGSCOMPARENEAR( rc.rendererScale(), map->scale(), 1000000 );
@@ -329,10 +324,9 @@ void TestQgsLayoutUtils::createRenderContextFromMap()
 
   // secondary map
   QgsLayoutItemMap *map2 = new QgsLayoutItemMap( &l );
-
-  map2->setNewExtent( extent );
-  map2->setSceneRect( QRectF( 30, 60, 100, 50 ) );
-  composition->addComposerMap( map2 );
+  map2->attemptSetSceneRect( QRectF( 30, 60, 100, 50 ) );
+  map2->setExtent( extent );
+  l.addLayoutItem( map2 );
 
   rc = QgsLayoutUtils::createRenderContextForMap( map2, &p );
   QGSCOMPARENEAR( rc.scaleFactor(), 150 / 25.4, 0.001 );
@@ -340,24 +334,24 @@ void TestQgsLayoutUtils::createRenderContextFromMap()
   QVERIFY( rc.painter() );
 
   // check render context flags are correctly set
-  l.context().setFlags( 0 );
+  l.renderContext().setFlags( 0 );
   rc = QgsLayoutUtils::createRenderContextForLayout( &l, nullptr );
   QVERIFY( !( rc.flags() & QgsRenderContext::Antialiasing ) );
   QVERIFY( !( rc.flags() & QgsRenderContext::UseAdvancedEffects ) );
   QVERIFY( ( rc.flags() & QgsRenderContext::ForceVectorOutput ) );
 
-  l.context().setFlag( QgsLayoutContext::FlagAntialiasing );
+  l.renderContext().setFlag( QgsLayoutRenderContext::FlagAntialiasing );
   rc = QgsLayoutUtils::createRenderContextForLayout( &l, nullptr );
   QVERIFY( ( rc.flags() & QgsRenderContext::Antialiasing ) );
   QVERIFY( !( rc.flags() & QgsRenderContext::UseAdvancedEffects ) );
   QVERIFY( ( rc.flags() & QgsRenderContext::ForceVectorOutput ) );
 
-  l.context().setFlag( QgsLayoutContext::FlagUseAdvancedEffects );
+  l.renderContext().setFlag( QgsLayoutRenderContext::FlagUseAdvancedEffects );
   rc = QgsLayoutUtils::createRenderContextForLayout( &l, nullptr );
   QVERIFY( ( rc.flags() & QgsRenderContext::Antialiasing ) );
   QVERIFY( ( rc.flags() & QgsRenderContext::UseAdvancedEffects ) );
   QVERIFY( ( rc.flags() & QgsRenderContext::ForceVectorOutput ) );
-#endif
+
   p.end();
 }
 
@@ -490,7 +484,7 @@ void TestQgsLayoutUtils::textHeightMM()
 void TestQgsLayoutUtils::drawTextPos()
 {
   //test drawing with no painter
-  QgsLayoutUtils::drawText( 0, QPointF( 5, 15 ), QStringLiteral( "Abc123" ), mTestFont );
+  QgsLayoutUtils::drawText( nullptr, QPointF( 5, 15 ), QStringLiteral( "Abc123" ), mTestFont );
 
   //test drawing text on to image
   mTestFont.setPointSize( 48 );
@@ -515,7 +509,7 @@ void TestQgsLayoutUtils::drawTextPos()
 void TestQgsLayoutUtils::drawTextRect()
 {
   //test drawing with no painter
-  QgsLayoutUtils::drawText( 0, QRectF( 5, 15, 200, 50 ), QStringLiteral( "Abc123" ), mTestFont );
+  QgsLayoutUtils::drawText( nullptr, QRectF( 5, 15, 200, 50 ), QStringLiteral( "Abc123" ), mTestFont );
 
   //test drawing text on to image
   mTestFont.setPointSize( 48 );
@@ -614,6 +608,23 @@ void TestQgsLayoutUtils::largestRotatedRect()
     //also verify that aspect ratio of rectangle has not changed
     QGSCOMPARENEAR( result.width() / result.height(), highRect.width() / highRect.height(), 4 * DBL_EPSILON );
   }
+}
+
+void TestQgsLayoutUtils::decodePaperOrientation()
+{
+  QgsLayoutItemPage::Orientation orientation;
+  bool ok = false;
+  orientation = QgsLayoutUtils::decodePaperOrientation( QStringLiteral( "bad string" ), ok );
+  QVERIFY( !ok );
+  QCOMPARE( orientation, QgsLayoutItemPage::Landscape ); //should default to landscape
+  ok = false;
+  orientation = QgsLayoutUtils::decodePaperOrientation( QStringLiteral( "portrait" ), ok );
+  QVERIFY( ok );
+  QCOMPARE( orientation, QgsLayoutItemPage::Portrait );
+  ok = false;
+  orientation = QgsLayoutUtils::decodePaperOrientation( QStringLiteral( " LANDSCAPE  " ), ok );
+  QVERIFY( ok );
+  QCOMPARE( orientation, QgsLayoutItemPage::Landscape );
 }
 
 bool TestQgsLayoutUtils::renderCheck( const QString &testName, QImage &image, int mismatchCount )

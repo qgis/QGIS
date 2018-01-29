@@ -25,7 +25,8 @@ __copyright__ = '(C) 2016, Médéric Ribreux'
 
 __revision__ = '$Format:%H$'
 
-from processing.core.parameters import getParameterFromString
+import os
+from processing.algs.grass7.Grass7Utils import Grass7Utils
 
 
 def checkParameterValuesBeforeExecuting(alg, parameters, context):
@@ -38,31 +39,16 @@ def checkParameterValuesBeforeExecuting(alg, parameters, context):
 
 
 def processCommand(alg, parameters, context):
-    # handle inline add data
-    input_txt = alg.parameterAsString(parameters, 'inline_points', context)
-    inputParameter = alg.parametersAsString(parameters, 'points', context)
-    if input_txt.value:
+    # handle inline points
+    inlinePoints = alg.parameterAsString(parameters, 'inline_points', context)
+    if inlinePoints:
         # Creates a temporary txt file
-        ruleFile = alg.getTempFilename()
+        pointsName = getTempFilename()
 
         # Inject rules into temporary txt file
-        with open(ruleFile, "w") as tempRules:
-            tempRules.write(input_txt.value)
-        inputParameter.value = ruleFile
-        alg.parameters.remove(input_txt)
+        with open(pointsName, "w") as tempPoints:
+            tempPoints.write(inlinePoints)
+        alg.removeParameter('inline_points')
+        parameters['points'] = tempPoints
 
-    # exclude output for from_output
-    output = alg.getOutputFromName('rmsfile')
-    alg.removeOutputFromName('rmsfile')
-
-    # Create a false input parameter for rmsfile
-    param = getParameterFromString(u"ParameterString|rmsfile|the file|None|False|False")
-    param.value = output.value
-    alg.addParameter(param)
-
-    alg.processCommand(parameters, context)
-    alg.parameters.remove(param)
-    alg.addOutput(output)
-    if input_txt.value:
-        inputParameter.value = None
-        alg.addParameter(input_txt)
+    alg.processCommand(parameters, context, True)

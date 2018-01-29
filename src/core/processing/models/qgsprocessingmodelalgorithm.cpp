@@ -26,9 +26,10 @@
 
 ///@cond NOT_STABLE
 
-QgsProcessingModelAlgorithm::QgsProcessingModelAlgorithm( const QString &name, const QString &group )
+QgsProcessingModelAlgorithm::QgsProcessingModelAlgorithm( const QString &name, const QString &group, const QString &groupId )
   : mModelName( name.isEmpty() ? QObject::tr( "model" ) : name )
   , mModelGroup( group )
+  , mModelGroupId( groupId )
 {}
 
 void QgsProcessingModelAlgorithm::initAlgorithm( const QVariantMap & )
@@ -48,6 +49,11 @@ QString QgsProcessingModelAlgorithm::displayName() const
 QString QgsProcessingModelAlgorithm::group() const
 {
   return mModelGroup;
+}
+
+QString QgsProcessingModelAlgorithm::groupId() const
+{
+  return mModelGroupId;
 }
 
 QIcon QgsProcessingModelAlgorithm::icon() const
@@ -70,6 +76,12 @@ QString QgsProcessingModelAlgorithm::shortHelpString() const
 QString QgsProcessingModelAlgorithm::helpUrl() const
 {
   return QgsProcessingUtils::formatHelpMapAsHtml( mHelpContent, this );
+}
+
+QgsProcessingAlgorithm::Flags QgsProcessingModelAlgorithm::flags() const
+{
+  // TODO - check child algorithms, if they all support threading, then the model supports threading...
+  return QgsProcessingAlgorithm::flags() | QgsProcessingAlgorithm::FlagNoThreading;
 }
 
 QVariantMap QgsProcessingModelAlgorithm::parametersForChildAlgorithm( const QgsProcessingModelChildAlgorithm &child, const QVariantMap &modelParameters, const QVariantMap &results, const QgsExpressionContext &expressionContext ) const

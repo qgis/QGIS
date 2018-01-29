@@ -130,18 +130,6 @@ namespace pal
        */
       void removeLayer( Layer *layer );
 
-      /**
-       * \brief the labeling machine
-       * Will extract all active layers
-       *
-       * \param bbox map extent
-       * \param stats A PalStat object (can be NULL)
-       * \param displayAll if true, all feature will be labelled even though overlaps occur
-       *
-       * \returns A list of label to display on map
-       */
-      QList<LabelPosition *> *labeller( double bbox[4], PalStat **stats, bool displayAll );
-
       typedef bool ( *FnIsCanceled )( void *ctx );
 
       //! Register a function that returns whether this job has been canceled - PAL calls it during the computation
@@ -150,9 +138,16 @@ namespace pal
       //! Check whether the job has been canceled
       inline bool isCanceled() { return fnIsCanceled ? fnIsCanceled( fnIsCanceledContext ) : false; }
 
-      Problem *extractProblem( double bbox[4] );
+      /**
+       * Extracts the labeling problem for the specified map \a extent - only features within this
+       * extent will be considered. The \a mapBoundary argument specifies the actual geometry of the map
+       * boundary, which will be used to detect whether a label is visible (or partially visible) in
+       * the rendered map. This may differ from \a extent in the case of rotated or non-rectangular
+       * maps.
+       */
+      std::unique_ptr< Problem > extractProblem( const QgsRectangle &extent, const QgsGeometry &mapBoundary );
 
-      QList<LabelPosition *> *solveProblem( Problem *prob, bool displayAll );
+      QList<LabelPosition *> solveProblem( Problem *prob, bool displayAll );
 
       /**
        *\brief Set flag show partial label
@@ -270,17 +265,11 @@ namespace pal
       void *fnIsCanceledContext = nullptr;
 
       /**
-       * \brief Problem factory
-       * Extract features to label and generates candidates for them,
-       * respects to a bounding box
-       * \param lambda_min xMin bounding-box
-       * \param phi_min yMin bounding-box
-       * \param lambda_max xMax bounding-box
-       * \param phi_max yMax bounding-box
+       * Creates a Problem, by extracting labels and generating candidates from the given \a extent.
+       * The \a mapBoundary geometry specifies the actual visible region of the map, and is used
+       * for pruning candidates which fall outside the visible region.
        */
-      Problem *extract( double lambda_min, double phi_min,
-                        double lambda_max, double phi_max );
-
+      std::unique_ptr< Problem > extract( const QgsRectangle &extent, const QgsGeometry &mapBoundary );
 
       /**
        * \brief Choose the size of popmusic subpart's

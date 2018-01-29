@@ -81,7 +81,7 @@ void QgsOfflineEditingPlugin::initGui()
   connect( mOfflineEditing, &QgsOfflineEditing::warning, mQGisIface->messageBar(), &QgsMessageBar::pushWarning );
 
   connect( mQGisIface, &QgisInterface::projectRead, this, &QgsOfflineEditingPlugin::updateActions );
-  connect( mQGisIface, &QgisInterface::newProject, this, &QgsOfflineEditingPlugin::updateActions );
+  connect( mQGisIface, &QgisInterface::newProjectCreated, this, &QgsOfflineEditingPlugin::updateActions );
   connect( QgsProject::instance(), &QgsProject::writeProject, this, &QgsOfflineEditingPlugin::updateActions );
   connect( QgsProject::instance(), &QgsProject::layerWasAdded, this, &QgsOfflineEditingPlugin::updateActions );
   connect( QgsProject::instance(), static_cast < void ( QgsProject::* )( const QString & ) >( &QgsProject::layerWillBeRemoved ), this, &QgsOfflineEditingPlugin::updateActions );
@@ -125,7 +125,7 @@ void QgsOfflineEditingPlugin::synchronize()
 void QgsOfflineEditingPlugin::unload()
 {
   disconnect( mQGisIface, &QgisInterface::projectRead, this, &QgsOfflineEditingPlugin::updateActions );
-  disconnect( mQGisIface, &QgisInterface::newProject, this, &QgsOfflineEditingPlugin::updateActions );
+  disconnect( mQGisIface, &QgisInterface::newProjectCreated, this, &QgsOfflineEditingPlugin::updateActions );
   disconnect( QgsProject::instance(), &QgsProject::writeProject, this, &QgsOfflineEditingPlugin::updateActions );
 
   // remove the GUI

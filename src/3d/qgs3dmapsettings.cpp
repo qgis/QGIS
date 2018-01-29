@@ -85,7 +85,7 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
   if ( terrainGenType == "dem" )
   {
     QgsDemTerrainGenerator *demTerrainGenerator = new QgsDemTerrainGenerator;
-    demTerrainGenerator->setCrs( mCrs );
+    demTerrainGenerator->setCrs( mCrs, mTransformContext );
     mTerrainGenerator.reset( demTerrainGenerator );
   }
   else if ( terrainGenType == "quantized-mesh" )
@@ -224,6 +224,16 @@ QgsVector3D Qgs3DMapSettings::worldToMapCoordinates( const QgsVector3D &worldCoo
 void Qgs3DMapSettings::setCrs( const QgsCoordinateReferenceSystem &crs )
 {
   mCrs = crs;
+}
+
+QgsCoordinateTransformContext Qgs3DMapSettings::transformContext() const
+{
+  return mTransformContext;
+}
+
+void Qgs3DMapSettings::setTransformContext( const QgsCoordinateTransformContext &context )
+{
+  mTransformContext = context;
 }
 
 void Qgs3DMapSettings::setBackgroundColor( const QColor &color )

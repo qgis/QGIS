@@ -30,7 +30,7 @@ class QgsAuthIdentCertMethod : public QgsAuthMethod
 
   public:
     explicit QgsAuthIdentCertMethod();
-    ~QgsAuthIdentCertMethod();
+    ~QgsAuthIdentCertMethod() override;
 
     // QgsAuthMethod interface
     QString key() const override;

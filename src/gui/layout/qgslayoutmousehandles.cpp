@@ -26,6 +26,7 @@
 #include "qgslayoutviewtoolselect.h"
 #include "qgslayoutsnapper.h"
 #include "qgslayoutitemgroup.h"
+#include "qgslayoutundostack.h"
 #include <QGraphicsView>
 #include <QGraphicsSceneHoverEvent>
 #include <QPainter>
@@ -57,20 +58,20 @@ void QgsLayoutMouseHandles::paint( QPainter *painter, const QStyleOptionGraphics
   Q_UNUSED( itemStyle );
   Q_UNUSED( pWidget );
 
-  if ( !mLayout->context().isPreviewRender() )
+  if ( !mLayout->renderContext().isPreviewRender() )
   {
     //don't draw selection handles in layout outputs
     return;
   }
 
-  if ( mLayout->context().boundingBoxesVisible() )
+  if ( mLayout->renderContext().boundingBoxesVisible() )
   {
     //draw resize handles around bounds of entire selection
     double rectHandlerSize = rectHandlerBorderTolerance();
     drawHandles( painter, rectHandlerSize );
   }
 
-  if ( mIsResizing || mIsDragging || mLayout->context().boundingBoxesVisible() )
+  if ( mIsResizing || mIsDragging || mLayout->renderContext().boundingBoxesVisible() )
   {
     //draw dotted boxes around selected items
     drawSelectedItemBounds( painter );
@@ -311,11 +312,14 @@ bool QgsLayoutMouseHandles::selectionRotation( double &rotation ) const
 
 double QgsLayoutMouseHandles::rectHandlerBorderTolerance()
 {
+  if ( !mView )
+    return 0;
+
   //calculate size for resize handles
   //get view scale factor
   double viewScaleFactor = mView->transform().m11();
 
-  //size of handle boxes depends on zoom level in composer view
+  //size of handle boxes depends on zoom level in layout view
   double rectHandlerSize = 10.0 / viewScaleFactor;
 
   //make sure the boxes don't get too large
@@ -506,7 +510,7 @@ QgsLayoutMouseHandles::MouseAction QgsLayoutMouseHandles::mouseActionForPosition
     QgsLayoutItem *item = dynamic_cast<QgsLayoutItem *>( graphicsItem );
     if ( item && item->isSelected() )
     {
-      //cursor is over a selected composer item
+      //cursor is over a selected layout item
       return QgsLayoutMouseHandles::MoveItem;
     }
   }
@@ -608,12 +612,7 @@ void QgsLayoutMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent *event )
       std::unique_ptr< QgsAbstractLayoutUndoCommand > command( item->createCommand( QString(), 0 ) );
       command->saveBeforeState();
 
-      // need to convert delta from layout units -> item units
-      QgsLayoutPoint itemPos = item->positionWithUnits();
-      QgsLayoutPoint deltaPos = mLayout->convertFromLayoutUnits( QPointF( deltaX, deltaY ), itemPos.units() );
-      itemPos.setX( itemPos.x() + deltaPos.x() );
-      itemPos.setY( itemPos.y() + deltaPos.y() );
-      item->attemptMove( itemPos );
+      item->attemptMoveBy( deltaX, deltaY );
 
       command->saveAfterState();
       mLayout->undoStack()->push( command.release() );

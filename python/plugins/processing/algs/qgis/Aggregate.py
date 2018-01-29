@@ -57,6 +57,9 @@ class Aggregate(QgisAlgorithm):
     def group(self):
         return self.tr('Vector geometry')
 
+    def groupId(self):
+        return 'vectorgeometry'
+
     def name(self):
         return 'aggregate'
 
@@ -132,7 +135,7 @@ class Aggregate(QgisAlgorithm):
         aggregates = self.parameterAsAggregates(parameters, self.AGGREGATES, context)
 
         da = QgsDistanceArea()
-        da.setSourceCrs(source.sourceCrs())
+        da.setSourceCrs(source.sourceCrs(), context.transformContext())
         da.setEllipsoid(context.project().ellipsoid())
 
         self.source = source

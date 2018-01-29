@@ -31,6 +31,9 @@ QgsValueMapConfigDlg::QgsValueMapConfigDlg( QgsVectorLayer *vl, int fieldIdx, QW
 
   tableWidget->insertRow( 0 );
 
+  tableWidget->horizontalHeader()->setClickable( true );
+  tableWidget->setSortingEnabled( true );
+
   connect( addNullButton, &QAbstractButton::clicked, this, &QgsValueMapConfigDlg::addNullButtonPushed );
   connect( removeSelectedButton, &QAbstractButton::clicked, this, &QgsValueMapConfigDlg::removeSelectedButtonPushed );
   connect( loadFromLayerButton, &QAbstractButton::clicked, this, &QgsValueMapConfigDlg::loadFromLayerButtonPushed );
@@ -40,8 +43,7 @@ QgsValueMapConfigDlg::QgsValueMapConfigDlg( QgsVectorLayer *vl, int fieldIdx, QW
 
 QVariantMap QgsValueMapConfigDlg::config()
 {
-  QVariantMap values;
-  QgsSettings settings;
+  QList<QVariant> valueList;
 
   //store data to map
   for ( int i = 0; i < tableWidget->rowCount() - 1; i++ )
@@ -56,18 +58,21 @@ QVariantMap QgsValueMapConfigDlg::config()
     if ( ( ks == QgsApplication::nullRepresentation() ) && !( ki->flags() & Qt::ItemIsEditable ) )
       ks = QgsValueMapFieldFormatter::NULL_VALUE;
 
+    QVariantMap value;
+
     if ( !vi || vi->text().isNull() )
     {
-      values.insert( ks, ks );
+      value.insert( ks, ks );
     }
     else
     {
-      values.insert( vi->text(), ks );
+      value.insert( vi->text(), ks );
     }
+    valueList.append( value );
   }
 
   QVariantMap cfg;
-  cfg.insert( QStringLiteral( "map" ), values );
+  cfg.insert( QStringLiteral( "map" ), valueList );
   return cfg;
 }
 
@@ -79,14 +84,26 @@ void QgsValueMapConfigDlg::setConfig( const QVariantMap &config )
     tableWidget->removeRow( i );
   }
 
-  int row = 0;
-  QVariantMap values = config.value( QStringLiteral( "map" ) ).toMap();
-  for ( QVariantMap::ConstIterator mit = values.constBegin(); mit != values.constEnd(); mit++, row++ )
+  QList<QVariant> valueList = config.value( QStringLiteral( "map" ) ).toList();
+
+  if ( valueList.count() > 0 )
   {
-    if ( mit.value().isNull() )
-      setRow( row, mit.key(), QString() );
-    else
-      setRow( row, mit.value().toString(), mit.key() );
+    for ( int i = 0, row = 0; i < valueList.count(); i++, row++ )
+    {
+      setRow( row, valueList[i].toMap().constBegin().value().toString(), valueList[i].toMap().constBegin().key() );
+    }
+  }
+  else
+  {
+    int row = 0;
+    QVariantMap values = config.value( QStringLiteral( "map" ) ).toMap();
+    for ( QVariantMap::ConstIterator mit = values.constBegin(); mit != values.constEnd(); mit++, row++ )
+    {
+      if ( mit.value().isNull() )
+        setRow( row, mit.key(), QString() );
+      else
+        setRow( row, mit.value().toString(), mit.key() );
+    }
   }
 }
 
@@ -147,6 +164,35 @@ void QgsValueMapConfigDlg::updateMap( const QMap<QString, QVariant> &map, bool i
       setRow( row, mit.key(), QString() );
     else
       setRow( row, mit.key(), mit.value().toString() );
+  }
+}
+
+void QgsValueMapConfigDlg::populateComboBox( QComboBox *comboBox, const QVariantMap &config, bool skipNull )
+{
+  const QList<QVariant> valueList = config.value( QStringLiteral( "map" ) ).toList();
+
+  if ( !valueList.empty() )
+  {
+    for ( const QVariant &value : valueList )
+    {
+      const QVariantMap valueMap = value.toMap();
+
+      if ( skipNull && valueMap.constBegin().value() == QgsValueMapFieldFormatter::NULL_VALUE )
+        continue;
+
+      comboBox->addItem( valueMap.constBegin().key(), valueMap.constBegin().value() );
+    }
+  }
+  else
+  {
+    const QVariantMap map = config.value( QStringLiteral( "map" ) ).toMap();
+    for ( auto it = map.constBegin(); it != map.constEnd(); ++it )
+    {
+      if ( skipNull && it.value() == QgsValueMapFieldFormatter::NULL_VALUE )
+        continue;
+
+      comboBox->addItem( it.key(), it.value() );
+    }
   }
 }
 

@@ -28,7 +28,7 @@ QgsProjectionSelectionWidget::QgsProjectionSelectionWidget( QWidget *parent )
 
   QHBoxLayout *layout = new QHBoxLayout();
   layout->setContentsMargins( 0, 0, 0, 0 );
-  layout->setSpacing( 0 );
+  layout->setSpacing( 6 );
   setLayout( layout );
 
   mCrsComboBox = new QComboBox( this );

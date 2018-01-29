@@ -102,7 +102,10 @@ class gdalcalc(GdalAlgorithm):
     def group(self):
         return self.tr('Raster miscellaneous')
 
-    def getConsoleCommands(self, parameters, context, feedback):
+    def groupId(self):
+        return 'rastermiscellaneous'
+
+    def getConsoleCommands(self, parameters, context, feedback, executing=True):
         out = self.getOutputValue(self.OUTPUT)
         extra = self.getParameterValue(self.EXTRA)
         if extra is not None:

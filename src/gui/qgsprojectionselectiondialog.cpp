@@ -21,16 +21,15 @@
 #include "qgsprojectionselectiondialog.h"
 #include "qgshelp.h"
 #include <QApplication>
+#include "qgsgui.h"
 
 QgsProjectionSelectionDialog::QgsProjectionSelectionDialog( QWidget *parent,
     Qt::WindowFlags fl )
   : QDialog( parent, fl )
 {
   setupUi( this );
+  QgsGui::enableAutoGeometryRestore( this );
   connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsProjectionSelectionDialog::showHelp );
-
-  QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "Windows/ProjectionSelector/geometry" ) ).toByteArray() );
 
   //we will show this only when a message is set
   textEdit->hide();
@@ -73,8 +72,6 @@ bool QgsProjectionSelectionDialog::showNoProjection() const
 
 QgsProjectionSelectionDialog::~QgsProjectionSelectionDialog()
 {
-  QSettings settings;
-  settings.setValue( QStringLiteral( "Windows/ProjectionSelector/geometry" ), saveGeometry() );
 }
 
 QgsCoordinateReferenceSystem QgsProjectionSelectionDialog::crs() const

@@ -88,7 +88,7 @@ class CORE_EXPORT QgsDataItem : public QObject
 
     //! Create new data item.
     QgsDataItem( QgsDataItem::Type type, QgsDataItem *parent SIP_TRANSFERTHIS, const QString &name, const QString &path );
-    virtual ~QgsDataItem();
+    ~QgsDataItem() override;
 
     bool hasChildren();
 
@@ -248,12 +248,45 @@ class CORE_EXPORT QgsDataItem : public QObject
     void setParent( QgsDataItem *parent );
     QVector<QgsDataItem *> children() const { return mChildren; }
     virtual QIcon icon();
+
+    /**
+     * Returns the name of the item (the displayed text for the item).
+     *
+     * \see setName()
+     */
     QString name() const { return mName; }
-    void setName( const QString &name ) { mName = name; }
+
+    /**
+     * Sets the \a name of the item (the displayed text for the item).
+     *
+     * \see name()
+     */
+    void setName( const QString &name );
+
     QString path() const { return mPath; }
     void setPath( const QString &path ) { mPath = path; }
     //! Create path component replacing path separators
     static QString pathComponent( const QString &component );
+
+    /**
+     * Returns the sorting key for the item. By default name() is returned,
+     * but setSortKey() can be used to set a custom sort key for the item.
+     *
+     * Alternatively subclasses can override this method to return a custom
+     * sort key.
+     *
+     * \see setSortKey()
+     * \since QGIS 3.0
+     */
+    virtual QVariant sortKey() const;
+
+    /**
+     * Sets a custom sorting \a key for the item.
+     * \see sortKey()
+     * \since QGIS 3.0
+     */
+    void setSortKey( const QVariant &key );
+
 
     // Because QIcon (QPixmap) must not be used in outside the GUI thread, it is
     // not possible to set mIcon in constructor. Either use mIconName/setIconName()
@@ -302,6 +335,9 @@ class CORE_EXPORT QgsDataItem : public QObject
     QString mIconName;
     QIcon mIcon;
     QMap<QString, QIcon> mIconMap;
+
+    //! Custom sort key. If invalid, name() will be used for sorting instead.
+    QVariant mSortKey;
 
   public slots:
 
@@ -395,11 +431,11 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
 
     // --- reimplemented from QgsDataItem ---
 
-    virtual bool equal( const QgsDataItem *other ) override;
+    bool equal( const QgsDataItem *other ) override;
 
-    virtual bool hasDragEnabled() const override { return true; }
+    bool hasDragEnabled() const override { return true; }
 
-    virtual QgsMimeDataUtils::Uri mimeUri() const override;
+    QgsMimeDataUtils::Uri mimeUri() const override;
 
     // --- New virtual methods for layer item derived classes ---
 
@@ -477,7 +513,7 @@ class CORE_EXPORT QgsDataCollectionItem : public QgsDataItem
     Q_OBJECT
   public:
     QgsDataCollectionItem( QgsDataItem *parent, const QString &name, const QString &path = QString() );
-    ~QgsDataCollectionItem();
+    ~QgsDataCollectionItem() override;
 
     void addChild( QgsDataItem *item SIP_TRANSFER ) { mChildren.append( item ); }
 
@@ -514,14 +550,14 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
      * \param path item path in the tree, it may be dirPath or dirPath with some prefix, e.g. favorites: */
     QgsDirectoryItem( QgsDataItem *parent, const QString &name, const QString &dirPath, const QString &path );
 
-    virtual void setState( State state ) override;
+    void setState( State state ) override;
 
     QVector<QgsDataItem *> createChildren() override;
 
     QString dirPath() const { return mDirPath; }
-    virtual bool equal( const QgsDataItem *other ) override;
-    virtual QIcon icon() override;
-    virtual QWidget *paramWidget() override SIP_FACTORY;
+    bool equal( const QgsDataItem *other ) override;
+    QIcon icon() override;
+    QWidget *paramWidget() override SIP_FACTORY;
 
     //! Check if the given path is hidden from the browser model
     static bool hiddenPath( const QString &path );
@@ -530,7 +566,7 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
 
 
   public slots:
-    virtual void childrenCreated() override;
+    void childrenCreated() override;
     void directoryChanged();
 
   protected:
@@ -560,7 +596,7 @@ class CORE_EXPORT QgsProjectItem : public QgsDataItem
      */
     QgsProjectItem( QgsDataItem *parent, const QString &name, const QString &path );
 
-    virtual bool hasDragEnabled() const override { return true; }
+    bool hasDragEnabled() const override { return true; }
 
 };
 
@@ -617,10 +653,14 @@ class CORE_EXPORT QgsFavoritesItem : public QgsDataCollectionItem
     QVector<QgsDataItem *> createChildren() override;
 
     /**
-     * Adds a new directory to the favorites group.
+     * Adds a new \a directory to the favorites group.
+     *
+     * If \a name is specified, it will be used as the favorite's name. Otherwise
+     * the name will be set to match \a directory.
+     *
      * \see removeDirectory()
      */
-    void addDirectory( const QString &directory );
+    void addDirectory( const QString &directory, const QString &name = QString() );
 
     /**
      * Removes an existing directory from the favorites group.
@@ -628,11 +668,18 @@ class CORE_EXPORT QgsFavoritesItem : public QgsDataCollectionItem
      */
     void removeDirectory( QgsDirectoryItem *item );
 
+    /**
+     * Renames the stored favorite with corresponding \a path a new \a name.
+     */
+    void renameFavorite( const QString &path, const QString &name );
+
     //! Icon for favorites group
     static QIcon iconFavorites();
 
+    QVariant sortKey() const override;
+
   private:
-    QVector<QgsDataItem *> createChildren( const QString &favDir );
+    QVector<QgsDataItem *> createChildren( const QString &favDir, const QString &name );
 };
 
 /**
@@ -677,6 +724,54 @@ class CORE_EXPORT QgsZipItem : public QgsDataCollectionItem
   private:
     void init();
 };
+
+
+///@cond PRIVATE
+#ifndef SIP_RUN
+
+/**
+ * \ingroup core
+ * A directory item showing the current project directory.
+ * \since QGIS 3.0
+*/
+class CORE_EXPORT QgsProjectHomeItem : public QgsDirectoryItem
+{
+    Q_OBJECT
+
+  public:
+
+    QgsProjectHomeItem( QgsDataItem *parent, const QString &name, const QString &dirPath, const QString &path );
+
+    QIcon icon() override;
+    QVariant sortKey() const override;
+
+};
+
+/**
+ * \ingroup core
+ * A directory item showing the a single favorite directory.
+ * \since QGIS 3.0
+*/
+class CORE_EXPORT QgsFavoriteItem : public QgsDirectoryItem
+{
+    Q_OBJECT
+
+  public:
+
+    QgsFavoriteItem( QgsFavoritesItem *parent, const QString &name, const QString &dirPath, const QString &path );
+
+    /**
+     * Sets a new \a name for the favorite, storing the new name permanently for the favorite.
+     */
+    void rename( const QString &name );
+
+  private:
+
+    QgsFavoritesItem *mFavorites = nullptr;
+};
+
+#endif
+///@endcond
 
 #endif // QGSDATAITEM_H
 

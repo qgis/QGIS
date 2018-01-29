@@ -19,14 +19,17 @@
 
 #include <QExplicitlySharedDataPointer>
 
+#include "qgsconfig.h"
 #include "qgis_core.h"
 #include "qgis_sip.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgscoordinatetransformcontext.h"
 
 class QgsCoordinateTransformPrivate;
 class QgsPointXY;
 class QgsRectangle;
 class QPolygonF;
+class QgsProject;
 
 /**
  * \ingroup core
@@ -42,6 +45,9 @@ class QPolygonF;
 * operations are from the perspective of the layer. For example, a forward transformation
 * transforms coordinates from the layer's coordinate system to the map canvas.
 * \note Since QGIS 3.0 QgsCoordinateReferenceSystem objects are implicitly shared.
+*
+* \see QgsDatumTransform
+* \see QgsCoordinateTransformContext
 */
 class CORE_EXPORT QgsCoordinateTransform
 {
@@ -62,9 +68,74 @@ class CORE_EXPORT QgsCoordinateTransform
      * Constructs a QgsCoordinateTransform using QgsCoordinateReferenceSystem objects.
      * \param source source CRS, typically of the layer's coordinate system
      * \param destination CRS, typically of the map canvas coordinate system
+     * \deprecated Use of this constructor is strongly discouraged, as it will not
+     * correctly handle the user's datum transform setup. Instead the constructor
+     * variant which accepts a QgsCoordinateTransformContext or QgsProject
+     * argument should be used instead. It is highly likely that this constructor
+     * will be removed in future QGIS versions.
+     * \note Not available in Python bindings.
      */
-    QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source,
-                            const QgsCoordinateReferenceSystem &destination );
+    Q_DECL_DEPRECATED explicit QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination ) SIP_SKIP;
+
+    /**
+     * Constructs a QgsCoordinateTransform to transform from the \a source
+     * to \a destination coordinate reference system.
+     *
+     * The \a context argument specifies the context under which the transform
+     * will be applied, and is used for calculating necessary datum transforms
+     * to utilize.
+     *
+     * Python scripts should generally use the constructor variant which accepts
+     * a QgsProject instance instead of this constructor.
+     *
+     * \warning Do NOT use an empty/default constructed QgsCoordinateTransformContext()
+     * object when creating QgsCoordinateTransform objects. This prevents correct
+     * datum transform handling and may result in inaccurate transformations. Always
+     * ensure that the QgsCoordinateTransformContext object is correctly retrieved
+     * based on the current code context, or use the constructor variant which
+     * accepts a QgsProject argument instead.
+     *
+     * \since QGIS 3.0
+     */
+    explicit QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source,
+                                     const QgsCoordinateReferenceSystem &destination,
+                                     const QgsCoordinateTransformContext &context );
+
+    /**
+     * Constructs a QgsCoordinateTransform to transform from the \a source
+     * to \a destination coordinate reference system, when used with the
+     * given \a project.
+     *
+     * No reference to \a project is stored or utilized outside of the constructor,
+     * and it is used to retrieve the project's transform context only.
+     *
+     * Python scripts should utilize the QgsProject.instance() project
+     * instance when creating QgsCoordinateTransform. This will ensure
+     * that any datum transforms defined in the project will be
+     * correctly respected during coordinate transforms. E.g.
+     *
+     * \code{.py}
+     *   transform = QgsCoordinateTransform(QgsCoordinateReferenceSystem("EPSG:3111"),
+     *                                      QgsCoordinateReferenceSystem("EPSG:4326"), QgsProject.instance())
+     * \endcode
+     *
+     * \since QGIS 3.0
+     */
+    explicit QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source,
+                                     const QgsCoordinateReferenceSystem &destination,
+                                     const QgsProject *project );
+
+    /**
+     * Constructs a QgsCoordinateTransform to transform from the \a source
+     * to \a destination coordinate reference system, with the specified
+     * datum transforms (see QgsDatumTransform).
+     *
+     * \since QGIS 3.0
+     */
+    explicit QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source,
+                                     const QgsCoordinateReferenceSystem &destination,
+                                     int sourceDatumTransformId,
+                                     int destinationDatumTransformId );
 
     /**
      * Copy constructor
@@ -100,6 +171,13 @@ class CORE_EXPORT QgsCoordinateTransform
      * \see setSourceCrs()
      */
     void setDestinationCrs( const QgsCoordinateReferenceSystem &crs );
+
+    /**
+     * Sets the \a context in which the coordinate transform should be
+     * calculated.
+     * \since QGIS 3.0
+     */
+    void setContext( const QgsCoordinateTransformContext &context );
 
     /**
      * Returns the source coordinate reference system, which the transform will
@@ -239,7 +317,7 @@ class CORE_EXPORT QgsCoordinateTransform
      * \param direction transform direction (defaults to ForwardTransform)
      * \returns transformed rectangle
      */
-    QgsRectangle transform( const QgsRectangle &rectangle, TransformDirection direction = ForwardTransform ) const SIP_SKIP;
+    QgsRectangle transform( const QgsRectangle &rectangle, TransformDirection direction = ForwardTransform ) const;
 
     /**
      * Transform an array of coordinates to the destination CRS.
@@ -259,48 +337,90 @@ class CORE_EXPORT QgsCoordinateTransform
     bool isShortCircuited() const;
 
     /**
-     * Returns list of datum transformations for the given src and dest CRS
-     * \note not available in Python bindings
+     * Returns the ID of the datum transform to use when projecting from the source
+     * CRS.
+     *
+     * This is usually calculated automatically from the transform's QgsCoordinateTransformContext,
+     * but can be manually overwritten by a call to setSourceDatumTransformId().
+     *
+     * \see QgsDatumTransform
+     * \see setSourceDatumTransformId()
+     * \see destinationDatumTransformId()
+     * \see datumTransformInfo()
      */
-    static QList< QList< int > > datumTransformations( const QgsCoordinateReferenceSystem &srcCRS, const QgsCoordinateReferenceSystem &destinationCrs ) SIP_SKIP;
-
-    static QString datumTransformString( int datumTransform );
+    int sourceDatumTransformId() const;
 
     /**
-     * Gets name of source and dest geographical CRS (to show in a tooltip)
-        \returns epsgNr epsg code of the transformation (or 0 if not in epsg db)*/
-    static bool datumTransformCrsInfo( int datumTransform, int &epsgNr, QString &srcProjection, QString &dstProjection, QString &remarks, QString &scope, bool &preferred, bool &deprecated );
-
-    int sourceDatumTransform() const;
-    void setSourceDatumTransform( int dt );
-    int destinationDatumTransform() const;
-    void setDestinationDatumTransform( int dt );
-
-    //!initialize is used to actually create the Transformer instance
-    void initialize();
+     * Sets the \a datumId ID of the datum transform to use when projecting from the source
+     * CRS.
+     *
+     * This is usually calculated automatically from the transform's QgsCoordinateTransformContext.
+     * Calling this method will overwrite any automatically calculated datum transform.
+     *
+     * \see QgsDatumTransform
+     * \see sourceDatumTransformId()
+     * \see setDestinationDatumTransformId()
+     * \see datumTransformInfo()
+     */
+    void setSourceDatumTransformId( int datumId );
 
     /**
-     * Restores state from the given Dom node.
-     * \param node The node from which state will be restored
-     * \returns bool True on success, False on failure
-     * \see writeXml()
+     * Returns the ID of the datum transform to use when projecting to the destination
+     * CRS.
+     *
+     * This is usually calculated automatically from the transform's QgsCoordinateTransformContext,
+     * but can be manually overwritten by a call to setDestinationDatumTransformId().
+     *
+     * \see QgsDatumTransform
+     * \see setDestinationDatumTransformId()
+     * \see sourceDatumTransformId()
+     * \see datumTransformInfo()
      */
-    bool readXml( const QDomNode &node );
+    int destinationDatumTransformId() const;
 
     /**
-     * Stores state to the given Dom node in the given document
-     * \param node The node in which state will be restored
-     * \param document The document in which state will be stored
-     * \returns bool True on success, False on failure
-     * \see readXml()
+     * Sets the \a datumId ID of the datum transform to use when projecting to the destination
+     * CRS.
+     *
+     * This is usually calculated automatically from the transform's QgsCoordinateTransformContext.
+     * Calling this method will overwrite any automatically calculated datum transform.
+     *
+     * \see QgsDatumTransform
+     * \see destinationDatumTransformId()
+     * \see setSourceDatumTransformId()
+     * \see datumTransformInfo()
      */
-    bool writeXml( QDomNode &node, QDomDocument &document ) const;
+    void setDestinationDatumTransformId( int datumId );
+
+    /**
+     * Clears the internal cache used to initialize QgsCoordinateTransform objects.
+     * This should be called whenever the srs database has
+     * been modified in order to ensure that outdated CRS transforms are not created.
+     * \since QGIS 3.0
+     */
+    static void invalidateCache();
 
   private:
 
-    static void searchDatumTransform( const QString &sql, QList< int > &transforms );
-
     mutable QExplicitlySharedDataPointer<QgsCoordinateTransformPrivate> d;
+
+    //! Transform context
+    QgsCoordinateTransformContext mContext;
+
+#ifdef QGISDEBUG
+    bool mHasContext = false;
+#endif
+
+    bool setFromCache( const QgsCoordinateReferenceSystem &src,
+                       const QgsCoordinateReferenceSystem &dest,
+                       int srcDatumTransform,
+                       int destDatumTransform );
+    void addToCache();
+
+    // cache
+    static QReadWriteLock sCacheLock;
+    static QMultiHash< QPair< QString, QString >, QgsCoordinateTransform > sTransforms; //same auth_id pairs might have different datum transformations
+
 };
 
 //! Output stream operator

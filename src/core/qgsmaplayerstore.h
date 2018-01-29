@@ -43,7 +43,7 @@ class CORE_EXPORT QgsMapLayerStore : public QObject
      */
     explicit QgsMapLayerStore( QObject *parent SIP_TRANSFERTHIS = nullptr );
 
-    ~QgsMapLayerStore();
+    ~QgsMapLayerStore() override;
 
     /**
      * Returns the number of layers contained in the store.

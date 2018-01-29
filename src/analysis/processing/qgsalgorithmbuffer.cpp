@@ -31,12 +31,17 @@ QString QgsBufferAlgorithm::displayName() const
 
 QStringList QgsBufferAlgorithm::tags() const
 {
-  return QObject::tr( "buffer,grow" ).split( ',' );
+  return QObject::tr( "buffer,grow,fixed,variable,distance" ).split( ',' );
 }
 
 QString QgsBufferAlgorithm::group() const
 {
   return QObject::tr( "Vector geometry" );
+}
+
+QString QgsBufferAlgorithm::groupId() const
+{
+  return QStringLiteral( "vectorgeometry" );
 }
 
 void QgsBufferAlgorithm::initAlgorithm( const QVariantMap & )

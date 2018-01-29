@@ -110,7 +110,7 @@ namespace pal
       /**
        * Delete the feature
        */
-      virtual ~FeaturePart();
+      ~FeaturePart() override;
 
       /**
        * Returns the parent feature.
@@ -130,13 +130,12 @@ namespace pal
       /**
        * Generic method to generate label candidates for the feature.
        * \param lPos pointer to an array of candidates, will be filled by generated candidates
-       * \param bboxMin min values of the map extent
-       * \param bboxMax max values of the map extent
+       * \param mapBoundary map boundary geometry
        * \param mapShape generate candidates for this spatial entity
        * \param candidates index for candidates
        * \returns the number of candidates generated in lPos
        */
-      int createCandidates( QList<LabelPosition *> &lPos, double bboxMin[2], double bboxMax[2], PointSet *mapShape, RTree<LabelPosition *, double, 2, double> *candidates );
+      int createCandidates( QList<LabelPosition *> &lPos, const GEOSPreparedGeometry *mapBoundary, PointSet *mapShape, RTree<LabelPosition *, double, 2, double> *candidates );
 
       /**
        * Generate candidates for point feature, located around a specified point.

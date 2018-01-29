@@ -5,9 +5,9 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/core
   ${CMAKE_SOURCE_DIR}/src/core/auth
-  ${CMAKE_SOURCE_DIR}/src/core/composer
   ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/core/geometry
+  ${CMAKE_SOURCE_DIR}/src/core/layout
   ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/symbology
@@ -98,6 +98,7 @@ ADD_QGIS_TEST(fieldcalculatortest testqgsfieldcalculator.cpp)
 ADD_QGIS_TEST(maptooladdfeature testqgsmaptooladdfeature.cpp)
 ADD_QGIS_TEST(maptoolidentifyaction testqgsmaptoolidentifyaction.cpp)
 ADD_QGIS_TEST(maptoolselect testqgsmaptoolselect.cpp)
+ADD_QGIS_TEST(maptoolreshape testqgsmaptoolreshape.cpp)
 ADD_QGIS_TEST(measuretool testqgsmeasuretool.cpp)
 ADD_QGIS_TEST(nodetool testqgsnodetool.cpp)
 ADD_QGIS_TEST(vectorlayersaveasdialogtest testqgsvectorlayersaveasdialog.cpp)

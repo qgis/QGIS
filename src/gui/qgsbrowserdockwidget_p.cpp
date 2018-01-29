@@ -339,6 +339,9 @@ QgsBrowserTreeFilterProxyModel::QgsBrowserTreeFilterProxyModel( QObject *parent 
   , mCaseSensitivity( Qt::CaseInsensitive )
 {
   setDynamicSortFilter( true );
+  setSortRole( QgsBrowserModel::SortRole );
+  setSortCaseSensitivity( Qt::CaseInsensitive );
+  sort( 0 );
 }
 
 void QgsBrowserTreeFilterProxyModel::setBrowserModel( QgsBrowserModel *model )

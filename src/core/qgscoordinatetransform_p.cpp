@@ -50,12 +50,23 @@ QgsCoordinateTransformPrivate::QgsCoordinateTransformPrivate()
   setFinder();
 }
 
-QgsCoordinateTransformPrivate::QgsCoordinateTransformPrivate( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination )
+QgsCoordinateTransformPrivate::QgsCoordinateTransformPrivate( const QgsCoordinateReferenceSystem &source,
+    const QgsCoordinateReferenceSystem &destination,
+    const QgsCoordinateTransformContext &context )
   : mSourceCRS( source )
   , mDestCRS( destination )
 {
   setFinder();
-  initialize();
+  calculateTransforms( context );
+}
+
+QgsCoordinateTransformPrivate::QgsCoordinateTransformPrivate( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination, int sourceDatumTransform, int destDatumTransform )
+  : mSourceCRS( source )
+  , mDestCRS( destination )
+  , mSourceDatumTransform( sourceDatumTransform )
+  , mDestinationDatumTransform( destDatumTransform )
+{
+  setFinder();
 }
 
 QgsCoordinateTransformPrivate::QgsCoordinateTransformPrivate( const QgsCoordinateTransformPrivate &other )
@@ -77,11 +88,25 @@ QgsCoordinateTransformPrivate::~QgsCoordinateTransformPrivate()
   freeProj();
 }
 
-bool QgsCoordinateTransformPrivate::initialize()
+bool QgsCoordinateTransformPrivate::checkValidity()
+{
+  if ( !mSourceCRS.isValid() || !mDestCRS.isValid() )
+  {
+    invalidate();
+    return false;
+  }
+  return true;
+}
+
+void QgsCoordinateTransformPrivate::invalidate()
 {
   mShortCircuit = true;
   mIsValid = false;
+}
 
+bool QgsCoordinateTransformPrivate::initialize()
+{
+  invalidate();
   if ( !mSourceCRS.isValid() )
   {
     // Pass through with no projection since we have no idea what the layer
@@ -101,7 +126,9 @@ bool QgsCoordinateTransformPrivate::initialize()
 
   mIsValid = true;
 
-  bool useDefaultDatumTransform = ( mSourceDatumTransform == - 1 && mDestinationDatumTransform == -1 );
+  int sourceDatumTransform = mSourceDatumTransform;
+  int destDatumTransform = mDestinationDatumTransform;
+  bool useDefaultDatumTransform = ( sourceDatumTransform == - 1 && destDatumTransform == -1 );
 
   // init the projections (destination and source)
   freeProj();
@@ -111,9 +138,9 @@ bool QgsCoordinateTransformPrivate::initialize()
   {
     mSourceProjString = stripDatumTransform( mSourceProjString );
   }
-  if ( mSourceDatumTransform != -1 )
+  if ( sourceDatumTransform != -1 )
   {
-    mSourceProjString += ( ' ' + datumTransformString( mSourceDatumTransform ) );
+    mSourceProjString += ( ' ' + QgsDatumTransform::datumTransformToProj( sourceDatumTransform ) );
   }
 
   mDestProjString = mDestCRS.toProj4();
@@ -121,14 +148,14 @@ bool QgsCoordinateTransformPrivate::initialize()
   {
     mDestProjString = stripDatumTransform( mDestProjString );
   }
-  if ( mDestinationDatumTransform != -1 )
+  if ( destDatumTransform != -1 )
   {
-    mDestProjString += ( ' ' +  datumTransformString( mDestinationDatumTransform ) );
+    mDestProjString += ( ' ' +  QgsDatumTransform::datumTransformToProj( destDatumTransform ) );
   }
 
   if ( !useDefaultDatumTransform )
   {
-    addNullGridShifts( mSourceProjString, mDestProjString );
+    addNullGridShifts( mSourceProjString, mDestProjString, sourceDatumTransform, destDatumTransform );
   }
 
   // create proj projections for current thread
@@ -183,6 +210,14 @@ bool QgsCoordinateTransformPrivate::initialize()
     QgsDebugMsgLevel( "Source/Dest CRS not equal, shortcircuit is not set.", 3 );
   }
   return mIsValid;
+}
+
+void QgsCoordinateTransformPrivate::calculateTransforms( const QgsCoordinateTransformContext &context )
+{
+  // recalculate datum transforms from context
+  QgsDatumTransform::TransformPair transforms = context.calculateDatumTransforms( mSourceCRS, mDestCRS );
+  mSourceDatumTransform = transforms.sourceTransformId;
+  mDestinationDatumTransform = transforms.destinationTransformId;
 }
 
 QPair<projPJ, projPJ> QgsCoordinateTransformPrivate::threadLocalProjData()
@@ -249,67 +284,16 @@ QString QgsCoordinateTransformPrivate::stripDatumTransform( const QString &proj4
   return newProjString;
 }
 
-QString QgsCoordinateTransformPrivate::datumTransformString( int datumTransform )
-{
-  QString transformString;
-
-  sqlite3_database_unique_ptr database;
-  int openResult = database.open_v2( QgsApplication::srsDatabaseFilePath(), SQLITE_OPEN_READONLY, nullptr );
-  if ( openResult != SQLITE_OK )
-  {
-    return transformString;
-  }
-
-  sqlite3_statement_unique_ptr statement;
-  QString sql = QStringLiteral( "SELECT coord_op_method_code,p1,p2,p3,p4,p5,p6,p7 FROM tbl_datum_transform WHERE coord_op_code=%1" ).arg( datumTransform );
-  int prepareRes;
-  statement = database.prepare( sql, prepareRes );
-  if ( prepareRes != SQLITE_OK )
-  {
-    return transformString;
-  }
-
-  if ( statement.step() == SQLITE_ROW )
-  {
-    //coord_op_methode_code
-    int methodCode = statement.columnAsInt64( 0 );
-    if ( methodCode == 9615 ) //ntv2
-    {
-      transformString = "+nadgrids=" + statement.columnAsText( 1 );
-    }
-    else if ( methodCode == 9603 || methodCode == 9606 || methodCode == 9607 )
-    {
-      transformString += QLatin1String( "+towgs84=" );
-      double p1 = statement.columnAsDouble( 1 );
-      double p2 = statement.columnAsDouble( 2 );
-      double p3 = statement.columnAsDouble( 3 );
-      double p4 = statement.columnAsDouble( 4 );
-      double p5 = statement.columnAsDouble( 5 );
-      double p6 = statement.columnAsDouble( 6 );
-      double p7 = statement.columnAsDouble( 7 );
-      if ( methodCode == 9603 ) //3 parameter transformation
-      {
-        transformString += QStringLiteral( "%1,%2,%3" ).arg( QString::number( p1 ), QString::number( p2 ), QString::number( p3 ) );
-      }
-      else //7 parameter transformation
-      {
-        transformString += QStringLiteral( "%1,%2,%3,%4,%5,%6,%7" ).arg( QString::number( p1 ), QString::number( p2 ), QString::number( p3 ), QString::number( p4 ), QString::number( p5 ), QString::number( p6 ), QString::number( p7 ) );
-      }
-    }
-  }
-
-  return transformString;
-}
-
-void QgsCoordinateTransformPrivate::addNullGridShifts( QString &srcProjString, QString &destProjString ) const
+void QgsCoordinateTransformPrivate::addNullGridShifts( QString &srcProjString, QString &destProjString,
+    int sourceDatumTransform, int destinationDatumTransform ) const
 {
   //if one transformation uses ntv2, the other one needs to be null grid shift
-  if ( mDestinationDatumTransform == -1 && srcProjString.contains( QLatin1String( "+nadgrids" ) ) ) //add null grid if source transformation is ntv2
+  if ( destinationDatumTransform == -1 && srcProjString.contains( QLatin1String( "+nadgrids" ) ) ) //add null grid if source transformation is ntv2
   {
     destProjString += QLatin1String( " +nadgrids=@null" );
     return;
   }
-  if ( mSourceDatumTransform == -1 && destProjString.contains( QLatin1String( "+nadgrids" ) ) )
+  if ( sourceDatumTransform == -1 && destProjString.contains( QLatin1String( "+nadgrids" ) ) )
   {
     srcProjString += QLatin1String( " +nadgrids=@null" );
     return;
@@ -317,11 +301,11 @@ void QgsCoordinateTransformPrivate::addNullGridShifts( QString &srcProjString, Q
 
   //add null shift grid for google mercator
   //(see e.g. http://trac.osgeo.org/proj/wiki/FAQ#ChangingEllipsoidWhycantIconvertfromWGS84toGoogleEarthVirtualGlobeMercator)
-  if ( mSourceCRS.authid().compare( QLatin1String( "EPSG:3857" ), Qt::CaseInsensitive ) == 0 && mSourceDatumTransform == -1 )
+  if ( mSourceCRS.authid().compare( QLatin1String( "EPSG:3857" ), Qt::CaseInsensitive ) == 0 && sourceDatumTransform == -1 )
   {
     srcProjString += QLatin1String( " +nadgrids=@null" );
   }
-  if ( mDestCRS.authid().compare( QLatin1String( "EPSG:3857" ), Qt::CaseInsensitive ) == 0 && mDestinationDatumTransform == -1 )
+  if ( mDestCRS.authid().compare( QLatin1String( "EPSG:3857" ), Qt::CaseInsensitive ) == 0 && destinationDatumTransform == -1 )
   {
     destProjString += QLatin1String( " +nadgrids=@null" );
   }

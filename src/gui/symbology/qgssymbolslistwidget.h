@@ -50,7 +50,7 @@ class GUI_EXPORT QgsSymbolsListWidget : public QWidget, private Ui::SymbolsListW
     QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, QMenu *menu, QWidget *parent SIP_TRANSFERTHIS, QgsVectorLayer *layer = nullptr );
 
 
-    virtual ~QgsSymbolsListWidget();
+    ~QgsSymbolsListWidget() override;
 
     /**
      * Sets the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.

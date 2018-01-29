@@ -32,6 +32,7 @@ from qgis.PyQt.QtGui import QIcon
 from qgis.core import (QgsFeatureSink,
                        QgsProcessingException,
                        QgsProcessingUtils,
+                       QgsProcessingAlgorithm,
                        QgsProcessingParameterVectorLayer,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterNumber,
@@ -55,6 +56,12 @@ class RandomSelection(QgisAlgorithm):
 
     def group(self):
         return self.tr('Vector selection')
+
+    def groupId(self):
+        return 'vectorselection'
+
+    def flags(self):
+        return super().flags() | QgsProcessingAlgorithm.FlagNoThreading
 
     def __init__(self):
         super().__init__()

@@ -19,6 +19,7 @@
 #include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgsstatusbar.h"
+#include "qgsgui.h"
 
 #include <QAction>
 #include <QDir>
@@ -47,15 +48,14 @@ QgsCustomizationDialog::QgsCustomizationDialog( QWidget * parent, QSettings * se
 {
   mSettings = settings;
   setupUi( this );
+  QgsGui::enableAutoGeometryRestore( this );
+
   connect( actionSave, &QAction::triggered, this, &QgsCustomizationDialog::actionSave_triggered );
   connect( actionLoad, &QAction::triggered, this, &QgsCustomizationDialog::actionLoad_triggered );
   connect( actionExpandAll, &QAction::triggered, this, &QgsCustomizationDialog::actionExpandAll_triggered );
   connect( actionCollapseAll, &QAction::triggered, this, &QgsCustomizationDialog::actionCollapseAll_triggered );
   connect( actionSelectAll, &QAction::triggered, this, &QgsCustomizationDialog::actionSelectAll_triggered );
   connect( mCustomizationEnabledCheckBox, &QCheckBox::toggled, this, &QgsCustomizationDialog::mCustomizationEnabledCheckBox_toggled );
-
-  QSettings appSettings;
-  restoreGeometry( appSettings.value( QStringLiteral( "Windows/Customization/geometry" ) ).toByteArray() );
 
   init();
   QStringList myHeaders;
@@ -74,8 +74,6 @@ QgsCustomizationDialog::QgsCustomizationDialog( QWidget * parent, QSettings * se
 
 QgsCustomizationDialog::~QgsCustomizationDialog()
 {
-  QSettings settings;
-  settings.setValue( QStringLiteral( "Windows/Customization/geometry" ), saveGeometry() );
 }
 
 QTreeWidgetItem *QgsCustomizationDialog::item( const QString &path, QTreeWidgetItem *widgetItem )
@@ -247,7 +245,7 @@ void QgsCustomizationDialog::actionSave_triggered( bool checked )
   QFileInfo fileInfo( fileName );
   mySettings.setValue( mLastDirSettingsName, fileInfo.absoluteDir().absolutePath() );
 
-  QSettings fileSettings( fileName );
+  QSettings fileSettings( fileName, QSettings::IniFormat );
   treeToSettings( &fileSettings );
 }
 
@@ -266,7 +264,7 @@ void QgsCustomizationDialog::actionLoad_triggered( bool checked )
   QFileInfo fileInfo( fileName );
   mySettings.setValue( mLastDirSettingsName, fileInfo.absoluteDir().absolutePath() );
 
-  QSettings fileSettings( fileName );
+  QSettings fileSettings( fileName, QSettings::IniFormat );
   settingsToTree( &fileSettings );
 }
 
@@ -668,7 +666,7 @@ void QgsCustomization::updateMainWindow( QMenu *toolBarMenu )
 
   Q_FOREACH ( QObject *obj, menubar->children() )
   {
-    if ( obj->inherits( "QMenu" ) )
+    if ( obj->inherits( "QMenu" ) && !obj->objectName().isEmpty() )
     {
       QMenu *menu = qobject_cast<QMenu *>( obj );
       bool visible = mSettings->value( menu->objectName(), true ).toBool();
@@ -690,7 +688,7 @@ void QgsCustomization::updateMainWindow( QMenu *toolBarMenu )
   mSettings->beginGroup( QStringLiteral( "Customization/Toolbars" ) );
   Q_FOREACH ( QObject *obj, mw->children() )
   {
-    if ( obj->inherits( "QToolBar" ) )
+    if ( obj->inherits( "QToolBar" ) && !obj->objectName().isEmpty() )
     {
       QToolBar *tb = qobject_cast<QToolBar *>( obj );
       bool visible = mSettings->value( tb->objectName(), true ).toBool();
@@ -726,7 +724,7 @@ void QgsCustomization::updateMainWindow( QMenu *toolBarMenu )
   mSettings->beginGroup( QStringLiteral( "Customization/Docks" ) );
   Q_FOREACH ( QObject *obj, mw->children() )
   {
-    if ( obj->inherits( "QDockWidget" ) )
+    if ( obj->inherits( "QDockWidget" ) && !obj->objectName().isEmpty() )
     {
       bool visible = mSettings->value( obj->objectName(), true ).toBool();
       if ( !visible )
@@ -747,7 +745,7 @@ void QgsCustomization::updateMainWindow( QMenu *toolBarMenu )
     QgsStatusBar *sb = mw->statusBarIface();
     Q_FOREACH ( QObject *obj, sb->children() )
     {
-      if ( obj->inherits( "QWidget" ) )
+      if ( obj->inherits( "QWidget" ) && !obj->objectName().isEmpty() )
       {
         QWidget *widget = qobject_cast<QWidget *>( obj );
         if ( widget->objectName().isEmpty() )

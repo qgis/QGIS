@@ -24,7 +24,9 @@
 double QgsBearingUtils::bearingTrueNorth( const QgsCoordinateReferenceSystem &crs, const QgsPointXY &point )
 {
   // step 1 - transform point into WGS84 geographic crs
+  Q_NOWARN_DEPRECATED_PUSH
   QgsCoordinateTransform transform( crs, QgsCoordinateReferenceSystem::fromEpsgId( 4326 ) );
+  Q_NOWARN_DEPRECATED_POP
 
   if ( !transform.isValid() )
   {

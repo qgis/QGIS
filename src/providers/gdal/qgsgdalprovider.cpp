@@ -25,6 +25,7 @@
 #include "qgscoordinatetransform.h"
 #include "qgsdataitem.h"
 #include "qgsdatasourceuri.h"
+#include "qgshtmlutils.h"
 #include "qgsmessagelog.h"
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
@@ -54,7 +55,7 @@
 #include <QDebug>
 
 #include <gdalwarper.h>
-#include <ogr_spatialref.h>
+#include <ogr_srs_api.h>
 #include <cpl_conv.h>
 #include <cpl_string.h>
 
@@ -479,56 +480,32 @@ QString QgsGdalProvider::htmlMetadata()
   QMutexLocker locker( mpMutex );
   if ( !initIfNeeded() )
     return QString();
+
   QString myMetadata;
-  myMetadata += QString( GDALGetDescription( GDALGetDatasetDriver( mGdalDataset ) ) );
-  myMetadata += QLatin1String( "<br>" );
-  myMetadata += QString( GDALGetMetadataItem( GDALGetDatasetDriver( mGdalDataset ), GDAL_DMD_LONGNAME, nullptr ) );
 
-  // my added code (MColetti)
+  // GDAL Driver description
+  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "GDAL Driver Description" ) + QStringLiteral( "</td><td>" ) + QString( GDALGetDescription( GDALGetDatasetDriver( mGdalDataset ) ) ) + QStringLiteral( "</td></tr>\n" );
 
-  myMetadata += QLatin1String( "<p class=\"glossy\">" );
-  myMetadata += tr( "Dataset Description" );
-  myMetadata += QLatin1String( "</p>\n" );
-  myMetadata += QLatin1String( "<p>" );
-  myMetadata += QString::fromUtf8( GDALGetDescription( mGdalDataset ) );
-  myMetadata += QLatin1String( "</p>\n" );
+  // GDAL Driver Metadata
+  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "GDAL Driver Metadata" ) + QStringLiteral( "</td><td>" ) + QString( GDALGetMetadataItem( GDALGetDatasetDriver( mGdalDataset ), GDAL_DMD_LONGNAME, nullptr ) ) + QStringLiteral( "</td></tr>\n" );
 
-
-  char **GDALmetadata = GDALGetMetadata( mGdalDataset, nullptr );
-
-  if ( GDALmetadata )
-  {
-    QStringList metadata = cStringList2Q_( GDALmetadata );
-    myMetadata += QgsRasterDataProvider::makeTableCells( metadata );
-  }
-  else
-  {
-    QgsDebugMsg( "dataset has no metadata" );
-  }
+  // Dataset description
+  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Dataset Description" ) + QStringLiteral( "</td><td>" ) + QString::fromUtf8( GDALGetDescription( mGdalDataset ) ) + QStringLiteral( "</td></tr>\n" );
 
   // compression
   QString compression = QString( GDALGetMetadataItem( mGdalDataset, "COMPRESSION", "IMAGE_STRUCTURE" ) );
-  if ( !compression.isEmpty() )
-  {
-    myMetadata += QLatin1String( "<p>" );
-    myMetadata += tr( "COMPRESSION=%1" ).arg( compression );
-    myMetadata += QLatin1String( "</p>\n" );
-  }
+  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Compression" ) + QStringLiteral( "</td><td>" ) + compression + QStringLiteral( "</td></tr>\n" );
 
+  // Band details
   for ( int i = 1; i <= GDALGetRasterCount( mGdalDataset ); ++i )
   {
-    myMetadata += "<p class=\"glossy\">" + tr( "Band %1" ).arg( i ) + "</p>\n";
     GDALRasterBandH gdalBand = GDALGetRasterBand( mGdalDataset, i );
-    GDALmetadata = GDALGetMetadata( gdalBand, nullptr );
-
+    char **GDALmetadata = GDALGetMetadata( gdalBand, nullptr );
+    myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Band %1" ).arg( i ) + QStringLiteral( "</td><td>" );
     if ( GDALmetadata )
     {
       QStringList metadata = cStringList2Q_( GDALmetadata );
-      myMetadata += QgsRasterDataProvider::makeTableCells( metadata );
-    }
-    else
-    {
-      QgsDebugMsg( "band " + QString::number( i ) + " has no metadata" );
+      myMetadata += QgsHtmlUtils::buildBulletList( metadata );
     }
 
     char **GDALcategories = GDALGetRasterCategoryNames( gdalBand );
@@ -536,30 +513,25 @@ QString QgsGdalProvider::htmlMetadata()
     if ( GDALcategories )
     {
       QStringList categories = cStringList2Q_( GDALcategories );
-      myMetadata += QgsRasterDataProvider::makeTableCells( categories );
+      myMetadata += QgsHtmlUtils::buildBulletList( categories );
     }
-    else
-    {
-      QgsDebugMsg( "band " + QString::number( i ) + " has no categories" );
-    }
-
+    myMetadata += QStringLiteral( "</td></tr>" );
   }
+
+  // More information
+  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "More information" ) + QStringLiteral( "</td><td>\n" );
+
   if ( mMaskBandExposedAsAlpha )
   {
-    myMetadata += "<p class=\"glossy\">" + tr( "Mask band (exposed as alpha band)" ) + "</p>\n";
+    myMetadata += tr( "Mask band (exposed as alpha band)" ) + QStringLiteral( "<br />\n" );
   }
 
-  // end my added code
-
-  myMetadata += QLatin1String( "<p class=\"glossy\">" );
-  myMetadata += tr( "Dimensions" );
-  myMetadata += QLatin1String( "</p>\n" );
-  myMetadata += QLatin1String( "<p>" );
-  myMetadata += tr( "X: %1 Y: %2 Bands: %3" )
-                .arg( GDALGetRasterXSize( mGdalDataset ) )
-                .arg( GDALGetRasterYSize( mGdalDataset ) )
-                .arg( GDALGetRasterCount( mGdalDataset ) );
-  myMetadata += QLatin1String( "</p>\n" );
+  char **GDALmetadata = GDALGetMetadata( mGdalDataset, nullptr );
+  if ( GDALmetadata )
+  {
+    QStringList metadata = cStringList2Q_( GDALmetadata );
+    myMetadata += QgsHtmlUtils::buildBulletList( metadata );
+  }
 
   //just use the first band
   if ( GDALGetRasterCount( mGdalDataset ) > 0 )
@@ -568,17 +540,28 @@ QString QgsGdalProvider::htmlMetadata()
     if ( GDALGetOverviewCount( myGdalBand ) > 0 )
     {
       int myOverviewInt;
-      for ( myOverviewInt = 0;
-            myOverviewInt < GDALGetOverviewCount( myGdalBand );
-            myOverviewInt++ )
+      for ( myOverviewInt = 0; myOverviewInt < GDALGetOverviewCount( myGdalBand ); myOverviewInt++ )
       {
         GDALRasterBandH myOverview;
         myOverview = GDALGetOverview( myGdalBand, myOverviewInt );
-        myMetadata += "<p>X : " + QString::number( GDALGetRasterBandXSize( myOverview ) );
-        myMetadata += ",Y " + QString::number( GDALGetRasterBandYSize( myOverview ) ) + "</p>";
+        QStringList metadata;
+        metadata.append( QStringLiteral( "X : " ) + QString::number( GDALGetRasterBandXSize( myOverview ) ) );
+        metadata.append( QStringLiteral( "Y : " ) + QString::number( GDALGetRasterBandYSize( myOverview ) ) );
+        myMetadata += QgsHtmlUtils::buildBulletList( metadata );
       }
     }
   }
+
+  // End more information
+  myMetadata += QStringLiteral( "</td></tr>\n" );
+
+  // Dimensions
+  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Dimensions" ) + QStringLiteral( "</td><td>" );
+  myMetadata += tr( "X: %1 Y: %2 Bands: %3" )
+                .arg( GDALGetRasterXSize( mGdalDataset ) )
+                .arg( GDALGetRasterYSize( mGdalDataset ) )
+                .arg( GDALGetRasterCount( mGdalDataset ) );
+  myMetadata += QStringLiteral( "</td></tr>\n" );
 
   if ( GDALGetGeoTransform( mGdalDataset, mGeoTransform ) != CE_None )
   {
@@ -588,23 +571,11 @@ QString QgsGdalProvider::htmlMetadata()
   }
   else
   {
-    myMetadata += QLatin1String( "<p class=\"glossy\">" );
-    myMetadata += tr( "Origin" );
-    myMetadata += QLatin1String( "</p>\n" );
-    myMetadata += QLatin1String( "<p>" );
-    myMetadata += QString::number( mGeoTransform[0] );
-    myMetadata += ',';
-    myMetadata += QString::number( mGeoTransform[3] );
-    myMetadata += QLatin1String( "</p>\n" );
+    // Origin
+    myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Origin" ) + QStringLiteral( "</td><td>" ) + QString::number( mGeoTransform[0] ) + QStringLiteral( "," ) + QString::number( mGeoTransform[3] ) + QStringLiteral( "</td></tr>\n" );
 
-    myMetadata += QLatin1String( "<p class=\"glossy\">" );
-    myMetadata += tr( "Pixel Size" );
-    myMetadata += QLatin1String( "</p>\n" );
-    myMetadata += QLatin1String( "<p>" );
-    myMetadata += QString::number( mGeoTransform[1] );
-    myMetadata += ',';
-    myMetadata += QString::number( mGeoTransform[5] );
-    myMetadata += QLatin1String( "</p>\n" );
+    // Pixel size
+    myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Pixel Size" ) + QStringLiteral( "</td><td>" ) + QString::number( mGeoTransform[1] ) + QStringLiteral( "," ) + QString::number( mGeoTransform[5] ) + QStringLiteral( "</td></tr>\n" );
   }
 
   return myMetadata;

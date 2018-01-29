@@ -23,9 +23,10 @@
 
 #include <QWidget>
 #include <QIcon>
-#include <QTextEdit>
 #include <QHBoxLayout>
 #include "qgis_gui.h"
+
+class QTextBrowser;
 
 /**
  * \ingroup gui
@@ -36,16 +37,16 @@ class GUI_EXPORT QgsMessageBarItem : public QWidget
     Q_OBJECT
   public:
     //! make out a widget containing a message to be displayed on the bar
-    QgsMessageBarItem( const QString &text, QgsMessageBar::MessageLevel level = QgsMessageBar::INFO, int duration = 0, QWidget *parent SIP_TRANSFERTHIS = 0 );
+    QgsMessageBarItem( const QString &text, QgsMessageBar::MessageLevel level = QgsMessageBar::INFO, int duration = 0, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     //! make out a widget containing title and message to be displayed on the bar
-    QgsMessageBarItem( const QString &title, const QString &text, QgsMessageBar::MessageLevel level = QgsMessageBar::INFO, int duration = 0, QWidget *parent SIP_TRANSFERTHIS = 0 );
+    QgsMessageBarItem( const QString &title, const QString &text, QgsMessageBar::MessageLevel level = QgsMessageBar::INFO, int duration = 0, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     //! make out a widget containing title, message and widget to be displayed on the bar
-    QgsMessageBarItem( const QString &title, const QString &text, QWidget *widget, QgsMessageBar::MessageLevel level = QgsMessageBar::INFO, int duration = 0, QWidget *parent SIP_TRANSFERTHIS = 0 );
+    QgsMessageBarItem( const QString &title, const QString &text, QWidget *widget, QgsMessageBar::MessageLevel level = QgsMessageBar::INFO, int duration = 0, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     //! make out a widget containing a widget to be displayed on the bar
-    QgsMessageBarItem( QWidget *widget, QgsMessageBar::MessageLevel level = QgsMessageBar::INFO, int duration = 0, QWidget *parent SIP_TRANSFERTHIS = 0 );
+    QgsMessageBarItem( QWidget *widget, QgsMessageBar::MessageLevel level = QgsMessageBar::INFO, int duration = 0, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     QgsMessageBarItem *setText( const QString &text );
 
@@ -94,6 +95,9 @@ class GUI_EXPORT QgsMessageBarItem : public QWidget
     //! emitted when the message level has changed
     void styleChanged( const QString &styleSheet );
 
+  private slots:
+
+    void urlClicked( const QUrl &url );
 
   private:
     void writeContent();
@@ -107,7 +111,7 @@ class GUI_EXPORT QgsMessageBarItem : public QWidget
     QHBoxLayout *mLayout = nullptr;
     QLabel *mLblIcon = nullptr;
     QString mStyleSheet;
-    QTextEdit *mTextEdit = nullptr;
+    QTextBrowser *mTextBrowser = nullptr;
 };
 
 #endif // qgsmessagebaritem_H

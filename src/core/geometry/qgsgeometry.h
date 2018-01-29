@@ -307,8 +307,36 @@ class CORE_EXPORT QgsGeometry
     bool isMultipart() const;
 
     /**
-     * Compares the geometry with another geometry using GEOS
+     * Test if this geometry is exactly equal to another \a geometry.
+     *
+     * This is a strict equality check, where the underlying geometries must
+     * have exactly the same type, component vertices and vertex order.
+     *
+     * Calling this method is dramatically faster than the topological
+     * equality test performed by isGeosEqual().
+     *
+     * \note Comparing two null geometries will return false.
+     *
      * \since QGIS 1.5
+     * \see isGeosEqual()
+     */
+    bool equals( const QgsGeometry &geometry ) const;
+
+    /**
+     * Compares the geometry with another geometry using GEOS.
+     *
+     * This method performs a slow, topological check, where geometries
+     * are considered equal if all of the their component edges overlap. E.g.
+     * lines with the same vertex locations but opposite direction will be
+     * considered equal by this method.
+     *
+     * Consider using the much faster, stricter equality test performed
+     * by equals() instead.
+     *
+     * \note Comparing two null geometries will return false.
+     *
+     * \since QGIS 1.5
+     * \see equals()
      */
     bool isGeosEqual( const QgsGeometry & ) const;
 
@@ -791,12 +819,6 @@ class CORE_EXPORT QgsGeometry
     bool disjoint( const QgsGeometry &geometry ) const;
 
     /**
-     * Test for if geometry equals another (uses GEOS)
-     *  \since QGIS 1.5
-     */
-    bool equals( const QgsGeometry &geometry ) const;
-
-    /**
      * Test for if geometry touch another (uses GEOS)
      *  \since QGIS 1.5
      */
@@ -1137,8 +1159,8 @@ class CORE_EXPORT QgsGeometry
 
     /**
      * Exports the geometry to WKT
-     * \note precision parameter added in QGIS 2.4
      * \returns true in case of success and false else
+     * \note precision parameter added in QGIS 2.4
      */
     QString asWkt( int precision = 17 ) const;
 

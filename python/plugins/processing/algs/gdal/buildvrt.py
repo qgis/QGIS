@@ -100,7 +100,10 @@ class buildvrt(GdalAlgorithm):
     def group(self):
         return self.tr('Raster miscellaneous')
 
-    def getConsoleCommands(self, parameters, context, feedback):
+    def groupId(self):
+        return 'rastermiscellaneous'
+
+    def getConsoleCommands(self, parameters, context, feedback, executing=True):
         arguments = []
         arguments.append('-resolution')
         arguments.append(self.RESOLUTION_OPTIONS[self.parameterAsEnum(parameters, self.RESOLUTION, context)])
@@ -120,17 +123,6 @@ class buildvrt(GdalAlgorithm):
         arguments.append(listFile)
 
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
-        # Ideally the file extensions should be limited to just .vrt but I'm not sure how
-        # to do it simply so instead a check is performed.
-        _, ext = os.path.splitext(out)
-        if not ext.lower() == '.vrt':
-            out = out[:-len(ext)] + '.vrt'
-            if isinstance(parameters[self.OUTPUT], QgsProcessingOutputLayerDefinition):
-                output_def = QgsProcessingOutputLayerDefinition(parameters[self.OUTPUT])
-                output_def.sink = QgsProperty.fromValue(out)
-                self.setOutputValue(self.OUTPUT, output_def)
-            else:
-                self.setOutputValue(self.OUTPUT, out)
         arguments.append(out)
 
         return ['gdalbuildvrt', GdalUtils.escapeAndJoin(arguments)]

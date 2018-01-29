@@ -19,7 +19,8 @@
 #define QGSMAPRENDERERJOBPROXY_H
 
 #include "qgsmapsettings.h"
-#include "qgsaccesscontrol.h"
+
+class QgsFeatureFilterProvider;
 
 namespace QgsWms
 {
@@ -36,12 +37,12 @@ namespace QgsWms
 
       /**
        * Constructor.
-        * \param accessControl Does not take ownership of QgsAccessControl
+        * \param featureFilterProvider Does not take ownership of QgsFeatureFilterProvider
         */
       QgsMapRendererJobProxy(
         bool parallelRendering
         , int maxThreads
-        , QgsAccessControl *accessControl
+        , QgsFeatureFilterProvider *featureFilterProvider
       );
 
       /**
@@ -59,7 +60,7 @@ namespace QgsWms
 
     private:
       bool mParallelRendering;
-      QgsAccessControl *mAccessControl = nullptr;
+      QgsFeatureFilterProvider *mFeatureFilterProvider = nullptr;
       std::unique_ptr<QPainter> mPainter;
   };
 

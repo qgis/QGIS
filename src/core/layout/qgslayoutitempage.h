@@ -74,7 +74,7 @@ class CORE_EXPORT QgsLayoutItemPage : public QgsLayoutItem
     /**
      * Constructor for QgsLayoutItemPage, with the specified parent \a layout.
      */
-    explicit QgsLayoutItemPage( QgsLayout *layout SIP_TRANSFERTHIS );
+    explicit QgsLayoutItemPage( QgsLayout *layout );
 
     /**
      * Returns a new page item for the specified \a layout.
@@ -83,9 +83,7 @@ class CORE_EXPORT QgsLayoutItemPage : public QgsLayoutItem
      */
     static QgsLayoutItemPage *create( QgsLayout *layout ) SIP_FACTORY;
 
-
-    int type() const override { return QgsLayoutItemRegistry::LayoutPage; }
-    QString stringType() const override { return QStringLiteral( "ItemPaper" ); }
+    int type() const override;
 
     /**
      * Sets the \a size of the page.
@@ -123,8 +121,8 @@ class CORE_EXPORT QgsLayoutItemPage : public QgsLayoutItem
     */
     static QgsLayoutItemPage::Orientation decodePageOrientation( const QString &string, bool *ok SIP_OUT = nullptr );
 
+    QRectF boundingRect() const override;
     void attemptResize( const QgsLayoutSize &size, bool includesFrame = false ) override;
-
     QgsAbstractLayoutUndoCommand *createCommand( const QString &text, int id, QUndoCommand *parent = nullptr ) override SIP_FACTORY;
 
   public slots:
@@ -142,6 +140,7 @@ class CORE_EXPORT QgsLayoutItemPage : public QgsLayoutItem
     double mMaximumShadowWidth = -1;
 
     std::unique_ptr< QgsLayoutItemPageGrid > mGrid;
+    mutable QRectF mBoundingRect;
 
     friend class TestQgsLayoutPage;
 };

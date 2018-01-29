@@ -39,6 +39,11 @@ QString QgsMultipartToSinglepartAlgorithm::group() const
   return QObject::tr( "Vector geometry" );
 }
 
+QString QgsMultipartToSinglepartAlgorithm::groupId() const
+{
+  return QStringLiteral( "vectorgeometry" );
+}
+
 void QgsMultipartToSinglepartAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );

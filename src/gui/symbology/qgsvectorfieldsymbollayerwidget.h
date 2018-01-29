@@ -36,7 +36,7 @@ class GUI_EXPORT QgsVectorFieldSymbolLayerWidget: public QgsSymbolLayerWidget, p
      * \param vl associated vector layer
      * \param parent parent widget
      */
-    QgsVectorFieldSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = 0 );
+    QgsVectorFieldSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Creates a new QgsVectorFieldSymbolLayerWidget.
@@ -45,8 +45,8 @@ class GUI_EXPORT QgsVectorFieldSymbolLayerWidget: public QgsSymbolLayerWidget, p
     static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) SIP_FACTORY { return new QgsVectorFieldSymbolLayerWidget( vl ); }
 
     // from base class
-    virtual void setSymbolLayer( QgsSymbolLayer *layer ) override;
-    virtual QgsSymbolLayer *symbolLayer() override;
+    void setSymbolLayer( QgsSymbolLayer *layer ) override;
+    QgsSymbolLayer *symbolLayer() override;
 
   protected:
     QgsVectorFieldSymbolLayer *mLayer = nullptr;

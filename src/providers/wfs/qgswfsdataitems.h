@@ -31,7 +31,7 @@ class QgsWfsRootItem : public QgsDataCollectionItem
 
 #ifdef HAVE_GUI
     QList<QAction *> actions( QWidget *parent ) override;
-    virtual QWidget *paramWidget() override;
+    QWidget *paramWidget() override;
 #endif
 
   public slots:
@@ -76,7 +76,7 @@ class QgsWfsLayerItem : public QgsLayerItem
   public:
     QgsWfsLayerItem( QgsDataItem *parent, QString name, const QgsDataSourceUri &uri, QString featureType, QString title, QString crsString );
 
-    virtual QList<QMenu *> menus( QWidget *parent ) override;
+    QList<QMenu *> menus( QWidget *parent ) override;
 
   protected:
     QString mBaseUri;
@@ -99,13 +99,13 @@ class QgsWfsLayerItem : public QgsLayerItem
 class QgsWfsDataItemProvider : public QgsDataItemProvider
 {
   public:
-    virtual QString name() override { return QStringLiteral( "WFS" ); }
+    QString name() override { return QStringLiteral( "WFS" ); }
 
-    virtual int capabilities() override { return QgsDataProvider::Net; }
+    int capabilities() override { return QgsDataProvider::Net; }
 
-    virtual QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
+    QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
 
-    virtual QVector<QgsDataItem *> createDataItems( const QString &path, QgsDataItem *parentItem ) override;
+    QVector<QgsDataItem *> createDataItems( const QString &path, QgsDataItem *parentItem ) override;
 };
 
 

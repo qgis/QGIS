@@ -74,7 +74,7 @@ class Topol: public QObject, public QgisPlugin
 
   public slots:
     //! init the gui
-    virtual void initGui() override;
+    void initGui() override;
     //! Create and show the dialog box
     void run();
     //! Show/hide the dialog box

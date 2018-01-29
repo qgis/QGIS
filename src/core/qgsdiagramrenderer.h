@@ -682,7 +682,7 @@ class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer : public QgsDiagramRend
 {
   public:
     QgsLinearlyInterpolatedDiagramRenderer();
-    ~QgsLinearlyInterpolatedDiagramRenderer();
+    ~QgsLinearlyInterpolatedDiagramRenderer() override;
 
     QgsLinearlyInterpolatedDiagramRenderer *clone() const override SIP_FACTORY;
 
@@ -693,7 +693,7 @@ class CORE_EXPORT QgsLinearlyInterpolatedDiagramRenderer : public QgsDiagramRend
 
     QList<QString> diagramAttributes() const override;
 
-    virtual QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext() ) const override;
+    QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext() ) const override;
 
     QString rendererName() const override { return QStringLiteral( "LinearlyInterpolated" ); }
 

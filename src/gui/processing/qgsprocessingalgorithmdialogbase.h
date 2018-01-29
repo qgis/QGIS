@@ -19,6 +19,7 @@
 #include "qgis.h"
 #include "qgis_gui.h"
 #include "ui_qgsprocessingalgorithmdialogbase.h"
+#include "ui_qgsprocessingalgorithmprogressdialogbase.h"
 #include "processing/qgsprocessingcontext.h"
 #include "processing/qgsprocessingfeedback.h"
 
@@ -28,6 +29,8 @@ class QgsProcessingAlgorithm;
 class QToolButton;
 class QgsProcessingAlgorithmDialogBase;
 class QgsMessageBar;
+class QgsProcessingAlgRunnerTask;
+class QgsTask;
 
 #ifndef SIP_RUN
 
@@ -85,7 +88,7 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, private Ui::
     /**
      * Constructor for QgsProcessingAlgorithmDialogBase.
      */
-    QgsProcessingAlgorithmDialogBase( QWidget *parent = nullptr, Qt::WindowFlags flags = 0 );
+    QgsProcessingAlgorithmDialogBase( QWidget *parent = nullptr, Qt::WindowFlags flags = nullptr );
 
     /**
      * Sets the \a algorithm to run in the dialog.
@@ -118,8 +121,17 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, private Ui::
 
     /**
      * Returns true if an algorithm was executed in the dialog.
+     * \see results()
+     * \see setExecuted()
      */
     bool wasExecuted() const { return mExecuted; }
+
+    /**
+     * Returns the results returned by the algorithm executed.
+     * \see wasExecuted()
+     * \see setResults()
+     */
+    QVariantMap results() const { return mResults; }
 
     /**
      * Creates a new processing feedback object, automatically connected to the appropriate
@@ -135,7 +147,6 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, private Ui::
   public slots:
 
     void accept() override;
-    void reject() override;
 
     /**
      * Reports an \a error string to the dialog's log.
@@ -172,6 +183,12 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, private Ui::
      */
     void pushConsoleInfo( const QString &info );
 
+    /**
+     * Creates a modal progress dialog showing progress and log messages
+     * from this dialog.
+     */
+    QDialog *createProgressDialog();
+
   protected:
 
     void closeEvent( QCloseEvent *e ) override;
@@ -203,8 +220,17 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, private Ui::
 
     /**
      * Sets whether the algorithm was executed through the dialog.
+     * \see wasExecuted()
+     * \see setResults()
      */
     void setExecuted( bool executed );
+
+    /**
+     * Sets the algorithm results.
+     * \see results()
+     * \see setExecuted()
+     */
+    void setResults( const QVariantMap &results );
 
     /**
      * Displays an info \a message in the dialog's log.
@@ -226,6 +252,12 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, private Ui::
      */
     void hideShortHelp();
 
+    /**
+     * Sets the current \a task running in the dialog. The task will automatically be started
+     * by the dialog. Ownership of \a task is transferred to the dialog.
+     */
+    void setCurrentTask( QgsProcessingAlgRunnerTask *task SIP_TRANSFER );
+
   protected slots:
 
     /**
@@ -240,6 +272,9 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, private Ui::
 
     void splitterChanged( int pos, int index );
     void linkClicked( const QUrl &url );
+    void algExecuted( bool successful, const QVariantMap &results );
+    void taskTriggered( QgsTask *task );
+    void closeClicked();
 
   private:
 
@@ -250,14 +285,60 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, private Ui::
     QgsMessageBar *mMessageBar = nullptr;
 
     bool mExecuted = false;
+    QVariantMap mResults;
     QWidget *mMainWidget = nullptr;
     QgsProcessingAlgorithm *mAlgorithm = nullptr;
+    QgsProcessingAlgRunnerTask *mAlgorithmTask = nullptr;
+
     bool mHelpCollapsed = false;
 
     QString formatHelp( QgsProcessingAlgorithm *algorithm );
-    void saveWindowGeometry();
+    void scrollToBottomOfLog();
+    void processEvents();
 
 };
+
+#ifndef SIP_RUN
+
+/**
+ * \ingroup gui
+ * \brief A modal dialog for showing algorithm progress and log messages.
+ * \note This is not considered stable API and may change in future QGIS versions.
+ * \since QGIS 3.0
+ */
+class QgsProcessingAlgorithmProgressDialog : public QDialog, private Ui::QgsProcessingProgressDialogBase
+{
+    Q_OBJECT
+
+  public:
+
+    /**
+     * Constructor for QgsProcessingAlgorithmProgressDialog.
+     */
+    QgsProcessingAlgorithmProgressDialog( QWidget *parent = nullptr );
+
+    /**
+     * Returns the dialog's progress bar.
+     */
+    QProgressBar *progressBar();
+
+    /**
+     * Returns the dialog's cancel button.
+     */
+    QPushButton *cancelButton();
+
+    /**
+     * Returns the dialog's text log.
+     */
+    QTextEdit *logTextEdit();
+
+  public slots:
+
+    void reject() override;
+
+};
+
+#endif
 
 ///@endcond
 

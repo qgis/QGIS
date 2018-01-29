@@ -34,7 +34,6 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 QgsMapSettings::QgsMapSettings()
   : mDpi( qt_defaultDpiX() ) // DPI that will be used by default for QImage instances
   , mSize( QSize( 0, 0 ) )
-  , mDatumTransformStore( mDestCRS )
   , mBackgroundColor( Qt::white )
   , mSelectionColor( Qt::yellow )
   , mFlags( Antialiasing | UseAdvancedEffects | DrawLabeling | DrawSelection )
@@ -273,7 +272,6 @@ void QgsMapSettings::setLayerStyleOverrides( const QMap<QString, QString> &overr
 void QgsMapSettings::setDestinationCrs( const QgsCoordinateReferenceSystem &crs )
 {
   mDestCRS = crs;
-  mDatumTransformStore.setDestinationCrs( crs );
   mScaleCalculator.setMapUnits( crs.mapUnits() );
   // Since the map units have changed, force a recalculation of the scale.
   updateDerived();
@@ -362,12 +360,31 @@ double QgsMapSettings::scale() const
   return mScale;
 }
 
+QgsCoordinateTransformContext QgsMapSettings::transformContext() const
+{
+#ifdef QGISDEBUG
+  if ( !mHasTransformContext )
+    qWarning( "No QgsCoordinateTransformContext context set for transform" );
+#endif
+
+  return mTransformContext;
+}
+
+void QgsMapSettings::setTransformContext( const QgsCoordinateTransformContext &context )
+{
+  mTransformContext = context;
+#ifdef QGISDEBUG
+  mHasTransformContext = true;
+#endif
+}
 
 QgsCoordinateTransform QgsMapSettings::layerTransform( const QgsMapLayer *layer ) const
 {
-  return mDatumTransformStore.transformation( layer );
-}
+  if ( !layer )
+    return QgsCoordinateTransform();
 
+  return QgsCoordinateTransform( layer->crs(), mDestCRS, mTransformContext );
+}
 
 double QgsMapSettings::layerToMapUnits( const QgsMapLayer *layer, const QgsRectangle &referenceExtent ) const
 {
@@ -588,8 +605,6 @@ void QgsMapSettings::readXml( QDomNode &node )
   {
     setFlag( QgsMapSettings::RenderMapTile, renderMapTileElem.text() == QLatin1String( "1" ) );
   }
-
-  mDatumTransformStore.readXml( node );
 }
 
 
@@ -622,6 +637,4 @@ void QgsMapSettings::writeXml( QDomNode &node, QDomDocument &doc )
   QDomText renderMapTileText = doc.createTextNode( testFlag( QgsMapSettings::RenderMapTile ) ? "1" : "0" );
   renderMapTileElem.appendChild( renderMapTileText );
   node.appendChild( renderMapTileElem );
-
-  mDatumTransformStore.writeXml( node, doc );
 }

@@ -145,18 +145,18 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
 
     QgsGraduatedSymbolRenderer( const QString &attrName = QString(), const QgsRangeList &ranges = QgsRangeList() );
 
-    virtual ~QgsGraduatedSymbolRenderer();
+    ~QgsGraduatedSymbolRenderer() override;
 
-    virtual QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
-    virtual QgsSymbol *originalSymbolForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
-    virtual void startRender( QgsRenderContext &context, const QgsFields &fields ) override;
-    virtual void stopRender( QgsRenderContext &context ) override;
-    virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
-    virtual QString dump() const override;
-    virtual QgsGraduatedSymbolRenderer *clone() const override SIP_FACTORY;
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const override;
-    virtual QgsFeatureRenderer::Capabilities capabilities() override { return SymbolLevels | Filter; }
-    virtual QgsSymbolList symbols( QgsRenderContext &context ) override;
+    QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
+    QgsSymbol *originalSymbolForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
+    void startRender( QgsRenderContext &context, const QgsFields &fields ) override;
+    void stopRender( QgsRenderContext &context ) override;
+    QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
+    QString dump() const override;
+    QgsGraduatedSymbolRenderer *clone() const override SIP_FACTORY;
+    void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const override;
+    QgsFeatureRenderer::Capabilities capabilities() override { return SymbolLevels | Filter; }
+    QgsSymbolList symbols( QgsRenderContext &context ) override;
 
     QString classAttribute() const { return mAttrName; }
     void setClassAttribute( const QString &attr ) { mAttrName = attr; }
@@ -274,9 +274,9 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     //! create renderer from XML element
     static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) SIP_FACTORY;
 
-    virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) override;
+    QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) override;
     QgsLegendSymbolList legendSymbolItems() const override;
-    virtual QSet< QString > legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
+    QSet< QString > legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
 
     /**
      * Returns the renderer's source symbol, which is the base symbol used for the each classes' symbol before applying
@@ -313,7 +313,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
      * Doesn't alter current breaks.
      * \param ramp color ramp. Ownership is transferred to the renderer
      */
-    void updateColorRamp( QgsColorRamp *ramp SIP_TRANSFER = 0 );
+    void updateColorRamp( QgsColorRamp *ramp SIP_TRANSFER = nullptr );
 
     /**
      * Update all the symbols but leave breaks and colors. This method also sets the source
@@ -360,16 +360,16 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
      */
     void setGraduatedMethod( GraduatedMethod method ) { mGraduatedMethod = method; }
 
-    virtual bool legendSymbolItemsCheckable() const override;
-    virtual bool legendSymbolItemChecked( const QString &key ) override;
-    virtual void checkLegendSymbolItem( const QString &key, bool state = true ) override;
-    virtual void setLegendSymbolItem( const QString &key, QgsSymbol *symbol SIP_TRANSFER ) override;
-    virtual QString legendClassificationAttribute() const override { return classAttribute(); }
+    bool legendSymbolItemsCheckable() const override;
+    bool legendSymbolItemChecked( const QString &key ) override;
+    void checkLegendSymbolItem( const QString &key, bool state = true ) override;
+    void setLegendSymbolItem( const QString &key, QgsSymbol *symbol SIP_TRANSFER ) override;
+    QString legendClassificationAttribute() const override { return classAttribute(); }
 
     /**
      * creates a QgsGraduatedSymbolRenderer from an existing renderer.
-     * \since QGIS 2.6
      * \returns a new renderer if the conversion was possible, otherwise 0.
+     * \since QGIS 2.6
      */
     static QgsGraduatedSymbolRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) SIP_FACTORY;
 

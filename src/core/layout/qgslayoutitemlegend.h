@@ -44,7 +44,7 @@ class CORE_EXPORT QgsLegendModel : public QgsLayerTreeModel
 
   public:
     //! Construct the model based on the given layer tree
-    QgsLegendModel( QgsLayerTree *rootNode, QObject *parent SIP_TRANSFERTHIS = 0 );
+    QgsLegendModel( QgsLayerTree *rootNode, QObject *parent SIP_TRANSFERTHIS = nullptr );
 
     QVariant data( const QModelIndex &index, int role ) const override;
 
@@ -77,7 +77,7 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
     static QgsLayoutItemLegend *create( QgsLayout *layout ) SIP_FACTORY;
 
     int type() const override;
-    QString stringType() const override;
+    QIcon icon() const override;
     //Overridden to show legend title
     QString displayName() const override;
 
@@ -130,14 +130,6 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
      * \see setLegendFilterByMapEnabled()
      */
     bool legendFilterByMapEnabled() const { return mLegendFilterByMap; }
-
-#if 0//TODO
-
-    /**
-     * Update() overloading. Use it rather than update()
-     */
-    virtual void updateItem() override;
-#endif
 
     /**
      * When set to true, during an atlas rendering, it will filter out legend elements
@@ -414,15 +406,15 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
 
     /**
      * Sets the \a map to associate with the legend.
-     * \see map()
+     * \see linkedMap()
      */
-    void setMap( QgsLayoutItemMap *map );
+    void setLinkedMap( QgsLayoutItemMap *map );
 
     /**
      * Returns the associated map.
-     * \see setMap()
+     * \see setLinkedMap()
      */
-    QgsLayoutItemMap *map() const { return mMap; }
+    QgsLayoutItemMap *linkedMap() const { return mMap; }
 
     /**
      * Updates the model and all legend entries.
@@ -441,9 +433,12 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
 
     void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget ) override;
 
+    void finalizeRestoreFromXml() override;
+
 
   public slots:
 
+    void refresh() override;
     void refreshDataDefinedProperty( const QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties ) override;
 
   protected:
@@ -467,7 +462,7 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
 
     //! react to atlas
     void onAtlasEnded();
-    void onAtlasFeature( QgsFeature * );
+    void onAtlasFeature();
 
     void nodeCustomPropertyChanged( QgsLayerTreeNode *node, const QString &key );
 
@@ -477,6 +472,8 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
     //! use new custom layer tree and update model. if new root is null pointer, will use project's tree
     void setCustomLayerTree( QgsLayerTree *rootGroup );
 
+    void setupMapConnections( QgsLayoutItemMap *map, bool connect = true );
+
     std::unique_ptr< QgsLegendModel > mLegendModel;
     std::unique_ptr< QgsLayerTreeGroup > mCustomLayerTree;
 
@@ -485,6 +482,7 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
     QString mTitle;
     int mColumnCount = 1;
 
+    QString mMapUuid;
     QgsLayoutItemMap *mMap = nullptr;
 
     bool mLegendFilterByMap = false;
@@ -508,6 +506,9 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
 
     //! Will be true if the legend should be resized automatically to fit contents
     bool mSizeToContents = true;
+
+    friend class QgsCompositionConverter;
+
 };
 
 #endif // QGSLAYOUTITEMLEGEND_H

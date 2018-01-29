@@ -98,10 +98,13 @@ class merge(GdalAlgorithm):
     def group(self):
         return self.tr('Raster miscellaneous')
 
+    def groupId(self):
+        return 'rastermiscellaneous'
+
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'merge.png'))
 
-    def getConsoleCommands(self, parameters, context, feedback):
+    def getConsoleCommands(self, parameters, context, feedback, executing=True):
         layers = self.parameterAsLayerList(parameters, self.INPUT, context)
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
 

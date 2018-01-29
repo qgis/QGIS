@@ -18,14 +18,12 @@
 #include "qgslayoutitemgroup.h"
 #include "qgslayout.h"
 #include "qgslayoutitemshape.h"
-#include "qgscomposerlabel.h"
-#include "qgscomposerpolygon.h"
-#include "qgscomposition.h"
 #include "qgsmultirenderchecker.h"
 #include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgsproject.h"
 #include "qgsfillsymbollayer.h"
+#include "qgslayoutundostack.h"
 
 #include <QObject>
 #include <QtTest/QSignalSpy>
@@ -80,6 +78,7 @@ void TestQgsLayoutItemGroup::initTestCase()
 
 void TestQgsLayoutItemGroup::cleanupTestCase()
 {
+  QgsApplication::exitQgis();
 }
 
 void TestQgsLayoutItemGroup::init()
@@ -185,6 +184,9 @@ void TestQgsLayoutItemGroup::createGroup()
   QVERIFY( item->isGroupMember() );
   QCOMPARE( item->parentGroup(), group );
   QCOMPARE( item2->parentGroup(), group );
+
+  delete item;
+  delete item2;
 }
 
 void TestQgsLayoutItemGroup::ungroup()

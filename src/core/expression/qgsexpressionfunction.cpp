@@ -415,38 +415,50 @@ static QVariant fcnExpScale( const QVariantList &values, const QgsExpressionCont
 
 static QVariant fcnMax( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  //initially set max as first value
-  double maxVal = QgsExpressionUtils::getDoubleValue( values.at( 0 ), parent );
-
-  //check against all other values
-  for ( int i = 1; i < values.length(); ++i )
+  QVariant result( QVariant::Double );
+  double maxVal = std::numeric_limits<double>::quiet_NaN();
+  for ( const QVariant &val : values )
   {
-    double testVal = QgsExpressionUtils::getDoubleValue( values[i], parent );
-    if ( testVal > maxVal )
+    double testVal = val.isNull() ? std::numeric_limits<double>::quiet_NaN() : QgsExpressionUtils::getDoubleValue( val, parent );
+    if ( std::isnan( maxVal ) )
     {
       maxVal = testVal;
     }
+    else if ( !std::isnan( testVal ) )
+    {
+      maxVal = std::max( maxVal, testVal );
+    }
   }
 
-  return QVariant( maxVal );
+  if ( !std::isnan( maxVal ) )
+  {
+    result = QVariant( maxVal );
+  }
+  return result;
 }
 
 static QVariant fcnMin( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
-  //initially set min as first value
-  double minVal = QgsExpressionUtils::getDoubleValue( values.at( 0 ), parent );
-
-  //check against all other values
-  for ( int i = 1; i < values.length(); ++i )
+  QVariant result( QVariant::Double );
+  double minVal = std::numeric_limits<double>::quiet_NaN();
+  for ( const QVariant &val : values )
   {
-    double testVal = QgsExpressionUtils::getDoubleValue( values[i], parent );
-    if ( testVal < minVal )
+    double testVal = val.isNull() ? std::numeric_limits<double>::quiet_NaN() : QgsExpressionUtils::getDoubleValue( val, parent );
+    if ( std::isnan( minVal ) )
     {
       minVal = testVal;
     }
+    else if ( !std::isnan( testVal ) )
+    {
+      minVal = std::min( minVal, testVal );
+    }
   }
 
-  return QVariant( minVal );
+  if ( !std::isnan( minVal ) )
+  {
+    result = QVariant( minVal );
+  }
+  return result;
 }
 
 static QVariant fcnAggregate( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction * )
@@ -1425,7 +1437,7 @@ static QVariant fcnAge( const QVariantList &values, const QgsExpressionContext *
 {
   QDateTime d1 = QgsExpressionUtils::getDateTimeValue( values.at( 0 ), parent );
   QDateTime d2 = QgsExpressionUtils::getDateTimeValue( values.at( 1 ), parent );
-  int seconds = d2.secsTo( d1 );
+  qint64 seconds = d2.secsTo( d1 );
   return QVariant::fromValue( QgsInterval( seconds ) );
 }
 
@@ -3369,7 +3381,9 @@ static QVariant fcnTransformGeometry( const QVariantList &values, const QgsExpre
   if ( ! d.isValid() )
     return QVariant::fromValue( fGeom );
 
+  Q_NOWARN_DEPRECATED_PUSH
   QgsCoordinateTransform t( s, d );
+  Q_NOWARN_DEPRECATED_POP
   try
   {
     if ( fGeom.transform( t ) == 0 )
@@ -3444,45 +3458,50 @@ static QVariant fcnRepresentValue( const QVariantList &values, const QgsExpressi
 {
   QVariant result;
   QString fieldName;
-  if ( !values.isEmpty() )
+
+  if ( context )
   {
-    QgsExpressionNodeColumnRef *col = dynamic_cast<QgsExpressionNodeColumnRef *>( node->args()->at( 0 ) );
-    if ( col && ( values.size() == 1 || !values.at( 1 ).isValid() ) )
-      fieldName = col->name();
-    else if ( values.size() == 2 )
-      fieldName = QgsExpressionUtils::getStringValue( values.at( 1 ), parent );
-  }
-  QVariant value = values.at( 0 );
+    if ( !values.isEmpty() )
+    {
+      QgsExpressionNodeColumnRef *col = dynamic_cast<QgsExpressionNodeColumnRef *>( node->args()->at( 0 ) );
+      if ( col && ( values.size() == 1 || !values.at( 1 ).isValid() ) )
+        fieldName = col->name();
+      else if ( values.size() == 2 )
+        fieldName = QgsExpressionUtils::getStringValue( values.at( 1 ), parent );
+    }
 
-  QgsVectorLayer *layer = QgsExpressionUtils::getVectorLayer( context->variable( "layer" ), parent );
+    QVariant value = values.at( 0 );
 
-  if ( layer )
-  {
-    const QgsFields fields = layer->fields();
-    int index = fields.lookupField( fieldName );
+    const QgsFields fields = context->fields();
+    int fieldIndex = fields.lookupField( fieldName );
 
-    if ( index == -1 )
+    if ( fieldIndex == -1 )
     {
       parent->setEvalErrorString( QCoreApplication::translate( "expression", "%1: Field not found %2" ).arg( QStringLiteral( "represent_value" ), fieldName ) );
     }
     else
     {
-      QgsEditorWidgetSetup setup = layer->editorWidgetSetup( index );
-      QgsFieldFormatter *formatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
+      QgsVectorLayer *layer = QgsExpressionUtils::getVectorLayer( context->variable( "layer" ), parent );
+      const QgsEditorWidgetSetup setup = fields.at( fieldIndex ).editorWidgetSetup();
+      const QgsFieldFormatter *formatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
 
-      QString cacheKey = QStringLiteral( "repvalfcn:%1:%2" ).arg( layer->id(), fieldName );
+      const QString cacheKey = QStringLiteral( "repvalfcn:%1:%2" ).arg( layer ? layer->id() : QStringLiteral( "[None]" ), fieldName );
 
       QVariant cache;
       if ( !context->hasCachedValue( cacheKey ) )
       {
-        cache = formatter->createCache( layer, index, setup.config() );
+        cache = formatter->createCache( layer, fieldIndex, setup.config() );
         context->setCachedValue( cacheKey, cache );
       }
       else
         cache = context->cachedValue( cacheKey );
 
-      result = formatter->representValue( layer, index, setup.config(), cache, value );
+      result = formatter->representValue( layer, fieldIndex, setup.config(), cache, value );
     }
+  }
+  else
+  {
+    parent->setEvalErrorString( QCoreApplication::translate( "expression", "%1: function cannot be evaluated without a context." ).arg( QStringLiteral( "represent_value" ), fieldName ) );
   }
 
   return result;
@@ -3930,8 +3949,8 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
     sFunctions << randfFunc;
 
     sFunctions
-        << new QgsStaticExpressionFunction( QStringLiteral( "max" ), -1, fcnMax, QStringLiteral( "Math" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "min" ), -1, fcnMin, QStringLiteral( "Math" ) )
+        << new QgsStaticExpressionFunction( QStringLiteral( "max" ), -1, fcnMax, QStringLiteral( "Math" ), QString(), false, QSet<QString>(), false, QStringList(), /* handlesNull = */ true )
+        << new QgsStaticExpressionFunction( QStringLiteral( "min" ), -1, fcnMin, QStringLiteral( "Math" ), QString(), false, QSet<QString>(), false, QStringList(), /* handlesNull = */ true )
         << new QgsStaticExpressionFunction( QStringLiteral( "clamp" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "min" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ) << QgsExpressionFunction::Parameter( QStringLiteral( "max" ) ), fcnClamp, QStringLiteral( "Math" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "scale_linear" ), 5, fcnLinearScale, QStringLiteral( "Math" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "scale_exp" ), 6, fcnExpScale, QStringLiteral( "Math" ) )

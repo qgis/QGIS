@@ -56,7 +56,7 @@ class CORE_EXPORT QgsLayoutGuide : public QObject
      */
     QgsLayoutGuide( Qt::Orientation orientation, const QgsLayoutMeasurement &position, QgsLayoutItemPage *page );
 
-    ~QgsLayoutGuide();
+    ~QgsLayoutGuide() override;
 
     /**
      * Returns the layout the guide belongs to.
@@ -187,7 +187,7 @@ class CORE_EXPORT QgsLayoutGuideCollection : public QAbstractTableModel, public 
      * and linked to the specified \a pageCollection.
      */
     QgsLayoutGuideCollection( QgsLayout *layout, QgsLayoutPageCollection *pageCollection );
-    ~QgsLayoutGuideCollection();
+    ~QgsLayoutGuideCollection() override;
 
     QString stringType() const override { return QStringLiteral( "LayoutGuideCollection" ); }
     QgsLayout *layout() override;
@@ -234,6 +234,11 @@ class CORE_EXPORT QgsLayoutGuideCollection : public QAbstractTableModel, public 
      * Updates the position (and visibility) of all guide line items.
      */
     void update();
+
+    /**
+     * Returns a list of all guides contained in the collection.
+     */
+    QList< QgsLayoutGuide * > guides();
 
     /**
      * Returns the list of guides contained in the collection with the specified

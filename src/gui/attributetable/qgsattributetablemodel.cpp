@@ -37,6 +37,7 @@
 #include "qgsexpressionnodeimpl.h"
 #include "qgsvectorlayerjoininfo.h"
 #include "qgsvectorlayerjoinbuffer.h"
+#include "qgsfieldmodel.h"
 
 #include <QVariant>
 
@@ -583,8 +584,8 @@ QVariant QgsAttributeTableModel::headerData( int section, Qt::Orientation orient
     }
     else
     {
-      QgsField field = layer()->fields().at( mAttributes.at( section ) );
-      return field.name();
+      const QgsField field = layer()->fields().at( mAttributes.at( section ) );
+      return QgsFieldModel::fieldToolTip( field );
     }
   }
   else

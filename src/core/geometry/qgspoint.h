@@ -117,8 +117,8 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
      */
     explicit QgsPoint( QgsWkbTypes::Type wkbType, double x = 0.0, double y = 0.0, double z = std::numeric_limits<double>::quiet_NaN(), double m = std::numeric_limits<double>::quiet_NaN() ) SIP_SKIP;
 
-    bool operator==( const QgsPoint &pt ) const;
-    bool operator!=( const QgsPoint &pt ) const;
+    bool operator==( const QgsAbstractGeometry &other ) const override;
+    bool operator!=( const QgsAbstractGeometry &other ) const override;
 
     /**
      * Returns the point's x-coordinate.

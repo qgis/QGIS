@@ -35,6 +35,49 @@ class CORE_EXPORT QgsFileUtils
      */
     static QString representFileSize( qint64 bytes );
 
+
+    /**
+     * Returns a list of the extensions contained within a file \a filter string.
+     * E.g. a \a filter of "GeoTIFF Files (*.tiff *.tif)" would return a list
+     * containing "tiff", "tif". The initial '.' is stripped off the extension.
+     * \see ensureFileNameHasExtension()
+     * \see addExtensionFromFilter()
+     */
+    static QStringList extensionsFromFilter( const QString &filter );
+
+    /**
+     * Ensures that a \a fileName ends with an extension from the provided list of
+     * \a extensions.
+     *
+     * E.g. if extensions contains "tif" and "tiff", then a \a fileName of
+     * "d:/my_file" will return "d:/my_file.tif". A \a fileName of
+     * "d:/my_file.TIFF" or "d:/my_file.TIF" will be returned unchanged.
+     *
+     * \see extensionsFromFilter()
+     * \see addExtensionFromFilter()
+     */
+    static QString ensureFileNameHasExtension( const QString &fileName, const QStringList &extensions );
+
+    /**
+     * Ensures that a \a fileName ends with an extension from the specified \a filter
+     * string.
+     *
+     * E.g. a \a fileName of "d:/my_file" with a filter of "GeoTIFF Files (*.tiff *.tif)"
+     * will return "d:/my_file.tif", where as \a fileName of "d:/my_file.TIFF" or "d:/my_file.TIF"
+     * will be returned unchanged.
+     *
+     * \see extensionsFromFilter()
+     * \see ensureFileNameHasExtension()
+     */
+    static QString addExtensionFromFilter( const QString &fileName, const QString &filter );
+
+    /**
+     * Converts a \a string to a safe filename, replacing characters which are not safe
+     * for filenames with an '_' character.
+     *
+     * This method should be called with file names only, not complete paths.
+     */
+    static QString stringToSafeFilename( const QString &string );
 };
 
 #endif // QGSFILEUTILS_H

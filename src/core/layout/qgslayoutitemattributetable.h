@@ -56,7 +56,7 @@ class CORE_EXPORT QgsLayoutItemAttributeTable: public QgsLayoutTable
     QgsLayoutItemAttributeTable( QgsLayout *layout SIP_TRANSFERTHIS );
 
     int type() const override;
-    QString stringType() const override;
+    QIcon icon() const override;
     QString displayName() const override;
 
     /**
@@ -82,7 +82,7 @@ class CORE_EXPORT QgsLayoutItemAttributeTable: public QgsLayoutTable
      * atlas coverage layer. If the table is set to layer attributes mode, then
      * the source layer will be the user specified vector layer.
      */
-    QgsVectorLayer *sourceLayer();
+    QgsVectorLayer *sourceLayer() const;
 
     /**
      * Sets the vector \a layer from which to display feature attributes.
@@ -290,6 +290,7 @@ class CORE_EXPORT QgsLayoutItemAttributeTable: public QgsLayoutTable
     bool getTableContents( QgsLayoutTableContents &contents ) override SIP_SKIP;
 
     QgsExpressionContext createExpressionContext() const override;
+    void finalizeRestoreFromXml() override;
 
   protected:
 
@@ -310,6 +311,7 @@ class CORE_EXPORT QgsLayoutItemAttributeTable: public QgsLayoutTable
 
     //! Associated map (used to display the visible features)
     QgsLayoutItemMap *mMap = nullptr;
+    QString mMapUuid;
 
     //! Maximum number of features that is displayed
     int mMaximumNumberOfFeatures = 30;

@@ -49,6 +49,7 @@ class TestQgsLayoutShapes : public QObject
     void symbol(); //test is styling shapes via symbol is working
     void readWriteXml();
     void bounds();
+    void shapeRotation();
 
   private:
 
@@ -226,7 +227,7 @@ void TestQgsLayoutShapes::readWriteXml()
 {
   QgsProject p;
   QgsLayout l( &p );
-  QgsLayoutItemShape *shape = new QgsLayoutItemShape( &l );
+  std::unique_ptr< QgsLayoutItemShape > shape = qgis::make_unique< QgsLayoutItemShape >( &l );
   shape->setShapeType( QgsLayoutItemShape::Triangle );
   QgsSimpleFillSymbolLayer *simpleFill = new QgsSimpleFillSymbolLayer();
   QgsFillSymbol *fillSymbol = new QgsFillSymbol();
@@ -235,6 +236,7 @@ void TestQgsLayoutShapes::readWriteXml()
   simpleFill->setStrokeColor( Qt::yellow );
   simpleFill->setStrokeWidth( 6 );
   shape->setSymbol( fillSymbol );
+  delete fillSymbol;
 
   //save original item to xml
   QDomImplementation DomImplementation;
@@ -247,7 +249,7 @@ void TestQgsLayoutShapes::readWriteXml()
   shape->writeXml( rootNode, doc, QgsReadWriteContext() );
 
   //create new item and restore settings from xml
-  QgsLayoutItemShape *copy = new QgsLayoutItemShape( &l );
+  std::unique_ptr< QgsLayoutItemShape > copy = qgis::make_unique< QgsLayoutItemShape >( &l );
   QVERIFY( copy->readXml( rootNode.firstChildElement(), doc, QgsReadWriteContext() ) );
   QCOMPARE( copy->shapeType(), QgsLayoutItemShape::Triangle );
   QCOMPARE( copy->symbol()->symbolLayer( 0 )->color().name(), QStringLiteral( "#00ff00" ) );
@@ -258,7 +260,7 @@ void TestQgsLayoutShapes::bounds()
 {
   QgsProject p;
   QgsLayout l( &p );
-  QgsLayoutItemShape *shape = new QgsLayoutItemShape( &l );
+  std::unique_ptr< QgsLayoutItemShape > shape = qgis::make_unique< QgsLayoutItemShape >( &l );
   shape->attemptMove( QgsLayoutPoint( 20, 20 ) );
   shape->attemptResize( QgsLayoutSize( 150, 100 ) );
 
@@ -269,6 +271,7 @@ void TestQgsLayoutShapes::bounds()
   simpleFill->setStrokeColor( Qt::yellow );
   simpleFill->setStrokeWidth( 6 );
   shape->setSymbol( fillSymbol );
+  delete fillSymbol;
 
   // scene bounding rect should include symbol outline
   QRectF bounds = shape->sceneBoundingRect();
@@ -283,6 +286,32 @@ void TestQgsLayoutShapes::bounds()
   QCOMPARE( bounds.right(), 153.0 );
   QCOMPARE( bounds.top(), -3.0 );
   QCOMPARE( bounds.bottom(), 103.0 );
+}
+
+void TestQgsLayoutShapes::shapeRotation()
+{
+  QgsProject p;
+  QgsLayout l( &p );
+  l.initializeDefaults();
+
+  QgsLayoutItemShape *shape = new QgsLayoutItemShape( &l );
+  shape->attemptSetSceneRect( QRectF( 70, 70, 150, 100 ) );
+  shape->setItemRotation( 45 );
+
+  //setup simple fill
+  QgsSimpleFillSymbolLayer *simpleFill = new QgsSimpleFillSymbolLayer();
+  QgsFillSymbol *fillSymbol = new QgsFillSymbol();
+  fillSymbol->changeSymbolLayer( 0, simpleFill );
+  simpleFill->setColor( QColor( 255, 150, 0 ) );
+  //simpleFill->setStrokeColor( Qt::yellow );
+  //simpleFill->setStrokeWidth( 6 );
+  shape->setSymbol( fillSymbol );
+  delete fillSymbol;
+
+  l.addLayoutItem( shape );
+  QgsLayoutChecker checker( QStringLiteral( "composerrotation_shape" ), &l );
+  checker.setControlPathPrefix( QStringLiteral( "composer_items" ) );
+  QVERIFY( checker.testLayout( mReport ) );
 }
 
 QGSTEST_MAIN( TestQgsLayoutShapes )

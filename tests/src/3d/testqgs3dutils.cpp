@@ -74,7 +74,7 @@ void TestQgs3DUtils::testTransforms()
   QgsVector3D worldPoint1( 5, 7, -6 );
   QgsVector3D origin1( 10, 20, 30 );
   QgsVector3D origin2( 1, 2, 3 );
-  QgsVector3D worldPoint2 = Qgs3DUtils::transformWorldCoordinates( worldPoint1, origin1, QgsCoordinateReferenceSystem(), origin2, QgsCoordinateReferenceSystem() );
+  QgsVector3D worldPoint2 = Qgs3DUtils::transformWorldCoordinates( worldPoint1, origin1, QgsCoordinateReferenceSystem(), origin2, QgsCoordinateReferenceSystem(), QgsCoordinateTransformContext() );
   QCOMPARE( worldPoint2, QgsVector3D( 14, 34, -24 ) );
   // verify that both are the same map point
   QgsVector3D mapPoint1 = Qgs3DUtils::worldToMapCoordinates( worldPoint1, origin1 );

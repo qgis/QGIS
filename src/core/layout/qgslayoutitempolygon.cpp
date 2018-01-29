@@ -42,14 +42,14 @@ QgsLayoutItemPolygon *QgsLayoutItemPolygon::create( QgsLayout *layout )
   return new QgsLayoutItemPolygon( layout );
 }
 
-QString QgsLayoutItemPolygon::stringType() const
-{
-  return QStringLiteral( "ItemPolygon" );
-}
-
 int QgsLayoutItemPolygon::type() const
 {
   return QgsLayoutItemRegistry::LayoutPolygon;
+}
+
+QIcon QgsLayoutItemPolygon::icon() const
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "/mLayoutItemPolygon.svg" ) );
 }
 
 bool QgsLayoutItemPolygon::_addNode( const int indexPoint,
@@ -80,8 +80,8 @@ void QgsLayoutItemPolygon::refreshSymbol()
 {
   if ( layout() )
   {
-    QgsRenderContext rc = QgsLayoutUtils::createRenderContextForLayout( layout(), nullptr, layout()->context().dpi() );
-    mMaxSymbolBleed = ( 25.4 / layout()->context().dpi() ) * QgsSymbolLayerUtils::estimateMaxSymbolBleed( mPolygonStyleSymbol.get(), rc );
+    QgsRenderContext rc = QgsLayoutUtils::createRenderContextForLayout( layout(), nullptr, layout()->renderContext().dpi() );
+    mMaxSymbolBleed = ( 25.4 / layout()->renderContext().dpi() ) * QgsSymbolLayerUtils::estimateMaxSymbolBleed( mPolygonStyleSymbol.get(), rc );
   }
 
   updateSceneRect();

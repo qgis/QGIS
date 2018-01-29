@@ -167,7 +167,7 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
      */
     QgsLayoutTable( QgsLayout *layout );
 
-    ~QgsLayoutTable();
+    ~QgsLayoutTable() override;
 
     /**
      * Sets the \a margin distance in mm between cell borders and their contents.
@@ -678,6 +678,7 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
     QColor backgroundColor( int row, int column ) const;
 
     friend class TestQgsLayoutTable;
+    friend class QgsCompositionConverter;
 };
 
 #endif // QGSLAYOUTTABLE_H

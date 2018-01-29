@@ -675,7 +675,7 @@ void QgsGrass::loadMapsetSearchPath()
   G_TRY
   {
     QgsGrass::setMapset( getDefaultGisdbase(), getDefaultLocation(), getDefaultMapset() );
-    const char *mapset = 0;
+    const char *mapset = nullptr;
     G_reset_mapsets();
     for ( int i = 0; ( mapset = G_get_mapset_name( i ) ); i++ )
     {
@@ -703,7 +703,7 @@ void QgsGrass::setMapsetSearchPathWatcher()
   if ( mMapsetSearchPathWatcher )
   {
     delete mMapsetSearchPathWatcher;
-    mMapsetSearchPathWatcher = 0;
+    mMapsetSearchPathWatcher = nullptr;
   }
   if ( !activeMode() )
   {
@@ -1800,7 +1800,7 @@ bool QgsGrass::mapRegion( QgsGrassObject::Type type, const QString &gisdbase,
       return false;
     }
 
-    struct Map_info *Map = 0;
+    struct Map_info *Map = nullptr;
     int level = -1;
     G_TRY
     {
@@ -2330,7 +2330,7 @@ bool QgsGrass::deleteObject( const QgsGrassObject &object )
 bool QgsGrass::deleteObjectDialog( const QgsGrassObject &object )
 {
 
-  return QMessageBox::question( 0, QObject::tr( "Delete confirmation" ),
+  return QMessageBox::question( nullptr, QObject::tr( "Delete confirmation" ),
                                 QObject::tr( "Are you sure you want to delete %1 %2?" ).arg( object.elementName(), object.name() ),
                                 QMessageBox::Yes | QMessageBox::No ) == QMessageBox::Yes;
 }
@@ -2340,7 +2340,7 @@ void QgsGrass::createVectorMap( const QgsGrassObject &object, QString &error )
 
   QgsGrass::setMapset( object );
 
-  struct Map_info *Map = 0;
+  struct Map_info *Map = nullptr;
   QgsGrass::lock();
   G_TRY
   {
@@ -2811,7 +2811,7 @@ void QgsGrass::warning( const QString &message )
 {
   if ( !sMute )
   {
-    QMessageBox::warning( 0, QObject::tr( "Warning" ), message );
+    QMessageBox::warning( nullptr, QObject::tr( "Warning" ), message );
   }
   else
   {
@@ -2859,7 +2859,7 @@ void QgsGrass::vectDestroyMapStruct( struct Map_info *map )
   // call G_fatal_error, otherwise check and remove use of vectDestroyMapStruct from G_CATCH blocks
   QgsDebugMsg( QString( "free map = %1" ).arg( ( quint64 )map ) );
   qgsFree( map );
-  map = 0;
+  map = nullptr;
 }
 
 void QgsGrass::sleep( int ms )

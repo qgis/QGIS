@@ -28,7 +28,7 @@ class CUSTOMWIDGETS_EXPORT QgsScrollAreaWidgetPlugin : public QObject, public QD
     Q_INTERFACES( QDesignerCustomWidgetInterface )
 
   public:
-    explicit QgsScrollAreaWidgetPlugin( QObject *parent = 0 );
+    explicit QgsScrollAreaWidgetPlugin( QObject *parent = nullptr );
 
   private:
     bool mInitialized = false;

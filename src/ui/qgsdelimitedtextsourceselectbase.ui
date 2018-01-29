@@ -79,42 +79,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="txtFilePath">
-          <property name="toolTip">
-           <string>Full path to the delimited text file</string>
-          </property>
-          <property name="whatsThis">
-           <string>Full path to the delimited text file. In order to properly parse the fields in the file, the delimiter must be defined prior to entering the file name. Use the Browse button to the right of this field to choose the input file.</string>
-          </property>
-          <property name="readOnly">
-           <bool>false</bool>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="btnBrowseForFile">
-          <property name="enabled">
-           <bool>true</bool>
-          </property>
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>16777215</height>
-           </size>
-          </property>
-          <property name="toolTip">
-           <string>Browse to find the delimited text file to be processed</string>
-          </property>
-          <property name="whatsThis">
-           <string>Use this button to browse to the location of the delimited text file. This button will not be enabled until a delimiter has been entered in the &lt;i&gt;Delimiter&lt;/i&gt; box. Once a file is chosen, the X and Y field drop-down boxes will be populated with the fields from the delimited text file.</string>
-          </property>
-          <property name="text">
-           <string>Browse...</string>
-          </property>
-          <property name="flat">
-           <bool>false</bool>
-          </property>
-         </widget>
+         <widget class="QgsFileWidget" name="mFileWidget" native="true"/>
         </item>
        </layout>
       </item>
@@ -132,7 +97,7 @@
            </sizepolicy>
           </property>
           <property name="text">
-           <string>Layer name</string>
+           <string>Layer Name</string>
           </property>
          </widget>
         </item>
@@ -215,8 +180,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>696</width>
-        <height>742</height>
+        <width>704</width>
+        <height>694</height>
        </rect>
       </property>
       <property name="sizePolicy">
@@ -985,7 +950,7 @@
               </property>
               <item>
                <layout class="QGridLayout" name="gridLayout_5" columnstretch="0,0">
-                <item row="3" column="1">
+                <item row="4" column="1">
                  <widget class="QCheckBox" name="cbxXyDms">
                   <property name="toolTip">
                    <string>X and Y coordinates are expressed in degrees/minutes/seconds</string>
@@ -998,37 +963,6 @@
                   </property>
                   <property name="text">
                    <string>DMS coordinates</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="0" column="1">
-                 <widget class="QComboBox" name="cmbYField">
-                  <property name="enabled">
-                   <bool>true</bool>
-                  </property>
-                  <property name="sizePolicy">
-                   <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                    <horstretch>0</horstretch>
-                    <verstretch>0</verstretch>
-                   </sizepolicy>
-                  </property>
-                  <property name="minimumSize">
-                   <size>
-                    <width>120</width>
-                    <height>0</height>
-                   </size>
-                  </property>
-                  <property name="toolTip">
-                   <string>Name of the field containing y values</string>
-                  </property>
-                  <property name="statusTip">
-                   <string>Name of the field containing y values</string>
-                  </property>
-                  <property name="whatsThis">
-                   <string>Name of the field containing y values</string>
-                  </property>
-                  <property name="editable">
-                   <bool>false</bool>
                   </property>
                  </widget>
                 </item>
@@ -1063,19 +997,34 @@
                   </property>
                  </widget>
                 </item>
-                <item row="0" column="0">
-                 <widget class="QLabel" name="textLabely">
+                <item row="2" column="1">
+                 <widget class="QComboBox" name="cmbYField">
                   <property name="enabled">
                    <bool>true</bool>
                   </property>
                   <property name="sizePolicy">
-                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                   <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                     <horstretch>0</horstretch>
                     <verstretch>0</verstretch>
                    </sizepolicy>
                   </property>
-                  <property name="text">
-                   <string>&lt;p align=&quot;left&quot;&gt;Y field&lt;/p&gt;</string>
+                  <property name="minimumSize">
+                   <size>
+                    <width>120</width>
+                    <height>0</height>
+                   </size>
+                  </property>
+                  <property name="toolTip">
+                   <string>Name of the field containing y values</string>
+                  </property>
+                  <property name="statusTip">
+                   <string>Name of the field containing y values</string>
+                  </property>
+                  <property name="whatsThis">
+                   <string>Name of the field containing y values</string>
+                  </property>
+                  <property name="editable">
+                   <bool>false</bool>
                   </property>
                  </widget>
                 </item>
@@ -1089,6 +1038,22 @@
                   </property>
                   <property name="alignment">
                    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                  </property>
+                 </widget>
+                </item>
+                <item row="2" column="0">
+                 <widget class="QLabel" name="textLabely">
+                  <property name="enabled">
+                   <bool>true</bool>
+                  </property>
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text">
+                   <string>&lt;p align=&quot;left&quot;&gt;Y field&lt;/p&gt;</string>
                   </property>
                  </widget>
                 </item>
@@ -1354,10 +1319,13 @@
    <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>QgsFileWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsfilewidget.h</header>
+  </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>txtFilePath</tabstop>
-  <tabstop>btnBrowseForFile</tabstop>
   <tabstop>txtLayerName</tabstop>
   <tabstop>cmbEncoding</tabstop>
   <tabstop>cbxPointIsComma</tabstop>

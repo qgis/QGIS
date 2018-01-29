@@ -83,7 +83,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      */
     bool init( const QString &pluginPath = QString(),  const QString &authDatabasePath = QString() );
 
-    ~QgsAuthManager();
+    ~QgsAuthManager() override;
 
     //! Set up the application instance of the authentication database connection
     QSqlDatabase authDatabaseConnection() const;
@@ -469,8 +469,8 @@ class CORE_EXPORT QgsAuthManager : public QObject
 
     /**
      * \brief ignoredSslErrorCache Get ignored SSL error cache, keyed with cert/connection's sha:host:port.
-     * \note not available in Python bindings
      * \return hash keyed with cert/connection's sha:host:port.
+     * \note not available in Python bindings
      * \since QGIS 3.0
      */
     QHash<QString, QSet<QSslError::SslError> > ignoredSslErrorCache() { return mIgnoredSslErrorsCache; } SIP_SKIP
@@ -691,19 +691,19 @@ class CORE_EXPORT QgsAuthManager : public QObject
 
     /**
      * Custom logging signal to relay to console output and QgsMessageLog
-     * \see QgsMessageLog
      * \param message Message to send
      * \param tag Associated tag (title)
      * \param level Message log level
+     * \see QgsMessageLog
      */
     void messageOut( const QString &message, const QString &tag = QgsAuthManager::AUTH_MAN_TAG, QgsAuthManager::MessageLevel level = QgsAuthManager::INFO ) const;
 
     /**
      * Custom logging signal to inform the user about master password <-> password manager interactions
-     * @see QgsMessageLog
      * \param message Message to send
      * \param tag Associated tag (title)
      * \param level Message log level
+     * \see QgsMessageLog
      */
     void passwordHelperMessageOut( const QString &message, const QString &tag = QgsAuthManager::AUTH_MAN_TAG, QgsAuthManager::MessageLevel level = QgsAuthManager::INFO );
 

@@ -22,8 +22,8 @@
 #include "qgsapplication.h"
 #include "qgsdistancearea.h"
 #include "qgisapp.h"
-#include "qgscomposer.h"
 #include "qgscoordinatetransform.h"
+#include "qgsdatumtransformtablewidget.h"
 #include "qgslayoutmanager.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
@@ -54,6 +54,7 @@
 #include "qgsunittypes.h"
 #include "qgstablewidgetitem.h"
 #include "qgslayertree.h"
+#include "qgsprintlayout.h"
 
 #include "qgsmessagelog.h"
 
@@ -82,8 +83,8 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   connect( pbnWMSAddSRS, &QToolButton::clicked, this, &QgsProjectProperties::pbnWMSAddSRS_clicked );
   connect( pbnWMSRemoveSRS, &QToolButton::clicked, this, &QgsProjectProperties::pbnWMSRemoveSRS_clicked );
   connect( pbnWMSSetUsedSRS, &QPushButton::clicked, this, &QgsProjectProperties::pbnWMSSetUsedSRS_clicked );
-  connect( mAddWMSComposerButton, &QToolButton::clicked, this, &QgsProjectProperties::mAddWMSComposerButton_clicked );
-  connect( mRemoveWMSComposerButton, &QToolButton::clicked, this, &QgsProjectProperties::mRemoveWMSComposerButton_clicked );
+  connect( mAddWMSPrintLayoutButton, &QToolButton::clicked, this, &QgsProjectProperties::mAddWMSPrintLayoutButton_clicked );
+  connect( mRemoveWMSPrintLayoutButton, &QToolButton::clicked, this, &QgsProjectProperties::mRemoveWMSPrintLayoutButton_clicked );
   connect( mAddLayerRestrictionButton, &QToolButton::clicked, this, &QgsProjectProperties::mAddLayerRestrictionButton_clicked );
   connect( mRemoveLayerRestrictionButton, &QToolButton::clicked, this, &QgsProjectProperties::mRemoveLayerRestrictionButton_clicked );
   connect( mWMSInspireScenario1, &QGroupBox::toggled, this, &QgsProjectProperties::mWMSInspireScenario1_toggled );
@@ -154,6 +155,13 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   updateGuiForMapUnits( QgsProject::instance()->crs().mapUnits() );
   projectionSelector->setCrs( QgsProject::instance()->crs() );
 
+  // Datum transforms
+  QgsCoordinateTransformContext context = QgsProject::instance()->transformContext();
+  mDatumTransformTableWidget->setTransformContext( context );
+
+  bool show = settings.value( QStringLiteral( "/Projections/showDatumTransformDialog" ), false ).toBool();
+  mShowDatumTransformDialogCheckBox->setChecked( show );
+
   QPolygonF mainCanvasPoly = mapCanvas->mapSettings().visiblePolygon();
   QgsGeometry g = QgsGeometry::fromQPolygonF( mainCanvasPoly );
   // close polygon
@@ -163,7 +171,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   {
     // reproject extent
     QgsCoordinateTransform ct( QgsProject::instance()->crs(),
-                               QgsCoordinateReferenceSystem::fromEpsgId( 4326 ) );
+                               QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), QgsProject::instance() );
 
     g = g.densifyByCount( 5 );
     try
@@ -551,12 +559,12 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
 
   grpWMSList->setChecked( mWMSList->count() > 0 );
 
-  //composer restriction for WMS
+  //Layout restriction for WMS
   values = QgsProject::instance()->readListEntry( QStringLiteral( "WMSRestrictedComposers" ), QStringLiteral( "/" ), QStringList(), &ok );
-  mWMSComposerGroupBox->setChecked( ok );
+  mWMSPrintLayoutGroupBox->setChecked( ok );
   if ( ok )
   {
-    mComposerListWidget->addItems( values );
+    mPrintLayoutListWidget->addItems( values );
   }
 
   //layer restriction for WMS
@@ -805,6 +813,9 @@ void QgsProjectProperties::apply()
     // mark selected projection for push to front
     projectionSelector->pushProjectionToFront();
   }
+
+  QgsCoordinateTransformContext transformContext = mDatumTransformTableWidget->transformContext();
+  QgsProject::instance()->setTransformContext( transformContext );
 
   // Set the project title
   QgsProject::instance()->setTitle( title() );
@@ -1059,12 +1070,12 @@ void QgsProjectProperties::apply()
   }
 
   //WMS composer restrictions
-  if ( mWMSComposerGroupBox->isChecked() )
+  if ( mWMSPrintLayoutGroupBox->isChecked() )
   {
     QStringList composerTitles;
-    for ( int i = 0; i < mComposerListWidget->count(); ++i )
+    for ( int i = 0; i < mPrintLayoutListWidget->count(); ++i )
     {
-      composerTitles << mComposerListWidget->item( i )->text();
+      composerTitles << mPrintLayoutListWidget->item( i )->text();
     }
     QgsProject::instance()->writeEntry( QStringLiteral( "WMSRestrictedComposers" ), QStringLiteral( "/" ), composerTitles );
   }
@@ -1414,33 +1425,32 @@ void QgsProjectProperties::pbnWMSSetUsedSRS_clicked()
   mWMSList->addItems( crsList.values() );
 }
 
-void QgsProjectProperties::mAddWMSComposerButton_clicked()
+void QgsProjectProperties::mAddWMSPrintLayoutButton_clicked()
 {
-  QList<QgsComposition *> projectComposers = QgsProject::instance()->layoutManager()->compositions();
-  QStringList composerTitles;
-  QList<QgsComposition *>::const_iterator cIt = projectComposers.constBegin();
-  for ( ; cIt != projectComposers.constEnd(); ++cIt )
+  const QList<QgsPrintLayout *> projectLayouts( QgsProject::instance()->layoutManager()->printLayouts() );
+  QStringList layoutTitles;
+  for ( const auto &layout : projectLayouts )
   {
-    composerTitles << ( *cIt )->name();
+    layoutTitles << layout->name();
   }
 
   bool ok;
-  QString name = QInputDialog::getItem( this, tr( "Select print composer" ), tr( "Composer Title" ), composerTitles, 0, false, &ok );
+  QString name = QInputDialog::getItem( this, tr( "Select layout" ), tr( "Layout Title" ), layoutTitles, 0, false, &ok );
   if ( ok )
   {
-    if ( mComposerListWidget->findItems( name, Qt::MatchExactly ).empty() )
+    if ( mPrintLayoutListWidget->findItems( name, Qt::MatchExactly ).empty() )
     {
-      mComposerListWidget->addItem( name );
+      mPrintLayoutListWidget->addItem( name );
     }
   }
 }
 
-void QgsProjectProperties::mRemoveWMSComposerButton_clicked()
+void QgsProjectProperties::mRemoveWMSPrintLayoutButton_clicked()
 {
-  QListWidgetItem *currentItem = mComposerListWidget->currentItem();
+  QListWidgetItem *currentItem = mPrintLayoutListWidget->currentItem();
   if ( currentItem )
   {
-    delete mComposerListWidget->takeItem( mComposerListWidget->row( currentItem ) );
+    delete mPrintLayoutListWidget->takeItem( mPrintLayoutListWidget->row( currentItem ) );
   }
 }
 

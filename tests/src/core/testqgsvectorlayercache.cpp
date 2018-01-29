@@ -31,7 +31,7 @@
  * @ingroup UnitTests
  * This is a unit test for the vector layer cache
  *
- * @see QgsVectorLayerCache
+ * \see QgsVectorLayerCache
  */
 class TestVectorLayerCache : public QObject
 {

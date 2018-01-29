@@ -19,7 +19,7 @@ import qgis  # NOQA
 
 from qgis.PyQt.QtCore import QSize, QDir, QFileInfo
 from qgis.PyQt.QtGui import QImage, QPainter
-from qgis.core import QgsMultiRenderChecker, QgsLayout
+from qgis.core import QgsMultiRenderChecker, QgsLayoutExporter
 
 
 class QgsLayoutChecker(QgsMultiRenderChecker):
@@ -47,7 +47,8 @@ class QgsLayoutChecker(QgsMultiRenderChecker):
         outputImage.setDotsPerMeterY(self.dots_per_meter)
         QgsMultiRenderChecker.drawBackground(outputImage)
         p = QPainter(outputImage)
-        self.layout.exporter().renderPage(p, page)
+        exporter = QgsLayoutExporter(self.layout)
+        exporter.renderPage(p, page)
         p.end()
 
         renderedFilePath = QDir.tempPath() + QDir.separator() + QFileInfo(self.test_name).baseName() + "_rendered.png"

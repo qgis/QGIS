@@ -19,7 +19,6 @@
       <ogr:right>11.1999999999999993</ogr:right>
       <ogr:bottom>6.5000000000000000</ogr:bottom>
       <ogr:id>1</ogr:id>
-      <ogr:coord>6.500000000000000</ogr:coord>
     </ogr:grid_lines_overlay>
   </gml:featureMember>
   <gml:featureMember>
@@ -30,7 +29,6 @@
       <ogr:right>11.1999999999999993</ogr:right>
       <ogr:bottom>4.5000000000000000</ogr:bottom>
       <ogr:id>2</ogr:id>
-      <ogr:coord>4.500000000000000</ogr:coord>
     </ogr:grid_lines_overlay>
   </gml:featureMember>
   <gml:featureMember>
@@ -41,7 +39,6 @@
       <ogr:right>11.1999999999999993</ogr:right>
       <ogr:bottom>3.5000000000000000</ogr:bottom>
       <ogr:id>3</ogr:id>
-      <ogr:coord>3.500000000000000</ogr:coord>
     </ogr:grid_lines_overlay>
   </gml:featureMember>
   <gml:featureMember>
@@ -52,7 +49,6 @@
       <ogr:right>11.1999999999999993</ogr:right>
       <ogr:bottom>1.5000000000000000</ogr:bottom>
       <ogr:id>4</ogr:id>
-      <ogr:coord>1.500000000000000</ogr:coord>
     </ogr:grid_lines_overlay>
   </gml:featureMember>
   <gml:featureMember>
@@ -63,7 +59,6 @@
       <ogr:right>11.1999999999999993</ogr:right>
       <ogr:bottom>0.5000000000000000</ogr:bottom>
       <ogr:id>5</ogr:id>
-      <ogr:coord>0.500000000000000</ogr:coord>
     </ogr:grid_lines_overlay>
   </gml:featureMember>
   <gml:featureMember>
@@ -74,7 +69,6 @@
       <ogr:right>11.1999999999999993</ogr:right>
       <ogr:bottom>-1.5000000000000000</ogr:bottom>
       <ogr:id>6</ogr:id>
-      <ogr:coord>-1.500000000000000</ogr:coord>
     </ogr:grid_lines_overlay>
   </gml:featureMember>
   <gml:featureMember>
@@ -85,7 +79,6 @@
       <ogr:right>11.1999999999999993</ogr:right>
       <ogr:bottom>-2.5000000000000000</ogr:bottom>
       <ogr:id>7</ogr:id>
-      <ogr:coord>-2.500000000000000</ogr:coord>
     </ogr:grid_lines_overlay>
   </gml:featureMember>
   <gml:featureMember>
@@ -96,7 +89,6 @@
       <ogr:right>-1.0000000000000000</ogr:right>
       <ogr:bottom>-4.0000000000000000</ogr:bottom>
       <ogr:id>8</ogr:id>
-      <ogr:coord>-1.000000000000000</ogr:coord>
     </ogr:grid_lines_overlay>
   </gml:featureMember>
   <gml:featureMember>
@@ -107,7 +99,6 @@
       <ogr:right>2.0000000000000000</ogr:right>
       <ogr:bottom>-4.0000000000000000</ogr:bottom>
       <ogr:id>9</ogr:id>
-      <ogr:coord>2.000000000000000</ogr:coord>
     </ogr:grid_lines_overlay>
   </gml:featureMember>
   <gml:featureMember>
@@ -118,7 +109,6 @@
       <ogr:right>4.0000000000000000</ogr:right>
       <ogr:bottom>-4.0000000000000000</ogr:bottom>
       <ogr:id>10</ogr:id>
-      <ogr:coord>4.000000000000000</ogr:coord>
     </ogr:grid_lines_overlay>
   </gml:featureMember>
   <gml:featureMember>
@@ -129,7 +119,6 @@
       <ogr:right>7.0000000000000000</ogr:right>
       <ogr:bottom>-4.0000000000000000</ogr:bottom>
       <ogr:id>11</ogr:id>
-      <ogr:coord>7.000000000000000</ogr:coord>
     </ogr:grid_lines_overlay>
   </gml:featureMember>
   <gml:featureMember>
@@ -140,7 +129,6 @@
       <ogr:right>9.0000000000000000</ogr:right>
       <ogr:bottom>-4.0000000000000000</ogr:bottom>
       <ogr:id>12</ogr:id>
-      <ogr:coord>9.000000000000000</ogr:coord>
     </ogr:grid_lines_overlay>
   </gml:featureMember>
 </ogr:FeatureCollection>

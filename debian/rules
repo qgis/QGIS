@@ -36,7 +36,7 @@ endif
 
 QT_PLUGINS_DIR = usr/lib/$(DEB_BUILD_MULTIARCH)/qt5/plugins
 
-ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"stretch xenial yakkety zesty artful"))
+ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"stretch xenial yakkety zesty artful bionic"))
 	DISTRIBUTION := sid
 endif
 
@@ -102,7 +102,7 @@ ifneq (,$(findstring $(DISTRIBUTION),"sid stretch"))
 	CMAKE_OPTS += -DPOSTGRES_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libpq.so
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"artful sid"))
+ifneq (,$(findstring $(DISTRIBUTION),"artful bionic sid"))
 	CMAKE_OPTS += \
 		-DWITH_3D=TRUE \
 		-DGEOS_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libgeos_c.so
@@ -266,6 +266,9 @@ override_dh_auto_install:
 	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/doc/LICENSE
 	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/python/plugins/db_manager/LICENSE
 	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/python/plugins/MetaSearch/LICENSE.txt
+	$(RM) $(CURDIR)/debian/tmp/usr/bin/qgis_wcstest
+	$(RM) $(CURDIR)/debian/tmp/usr/bin/qgis_bench
+	$(RM) $(CURDIR)/debian/tmp/usr/share/qgis/resources/wcs-servers.json
 
 	# Man pages are installed by dh_installman
 	$(RM) $(CURDIR)/debian/tmp/usr/man/man1/qgis.1

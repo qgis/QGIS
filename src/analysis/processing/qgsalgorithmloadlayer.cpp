@@ -24,11 +24,6 @@ QString QgsLoadLayerAlgorithm::name() const
   return QStringLiteral( "loadlayer" );
 }
 
-QgsProcessingAlgorithm::Flags QgsLoadLayerAlgorithm::flags() const
-{
-  return FlagHideFromToolbox;
-}
-
 QString QgsLoadLayerAlgorithm::displayName() const
 {
   return QObject::tr( "Load layer into project" );
@@ -42,6 +37,11 @@ QStringList QgsLoadLayerAlgorithm::tags() const
 QString QgsLoadLayerAlgorithm::group() const
 {
   return QObject::tr( "Modeler tools" );
+}
+
+QString QgsLoadLayerAlgorithm::groupId() const
+{
+  return QStringLiteral( "modelertools" );
 }
 
 QString QgsLoadLayerAlgorithm::shortHelpString() const

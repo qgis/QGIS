@@ -30,16 +30,16 @@
 
 /**
 */
-class QgsGPSPluginGui : public QDialog, private Ui::QgsGPSPluginGuiBase
+class QgsGpsPluginGui : public QDialog, private Ui::QgsGpsPluginGuiBase
 {
     Q_OBJECT
 
   public:
-    QgsGPSPluginGui( const BabelMap &importers,
-                     std::map<QString, QgsGPSDevice *> &devices,
+    QgsGpsPluginGui( const BabelMap &importers,
+                     std::map<QString, QgsGpsDevice *> &devices,
                      const std::vector<QgsVectorLayer *> &gpxMapLayers,
                      QWidget *parent, Qt::WindowFlags );
-    ~QgsGPSPluginGui();
+    ~QgsGpsPluginGui() override;
 
   public slots:
 
@@ -103,7 +103,7 @@ class QgsGPSPluginGui : public QDialog, private Ui::QgsGPSPluginGuiBase
 
     std::vector<QgsVectorLayer *> mGPXLayers;
     const BabelMap &mImporters;
-    std::map<QString, QgsGPSDevice *> &mDevices;
+    std::map<QString, QgsGpsDevice *> &mDevices;
     QString mBabelFilter;
     QString mImpFormat;
     QAbstractButton *pbnOK = nullptr;

@@ -41,6 +41,7 @@
 #include "qgsalgorithmloadlayer.h"
 #include "qgsalgorithmmeancoordinates.h"
 #include "qgsalgorithmmergelines.h"
+#include "qgsalgorithmmergevector.h"
 #include "qgsalgorithmminimumenclosingcircle.h"
 #include "qgsalgorithmmultiparttosinglepart.h"
 #include "qgsalgorithmorderbyexpression.h"
@@ -61,6 +62,7 @@
 #include "qgsalgorithmtransect.h"
 #include "qgsalgorithmtransform.h"
 #include "qgsalgorithmtranslate.h"
+#include "qgsalgorithmuniquevalueindex.h"
 
 
 ///@cond PRIVATE
@@ -97,6 +99,7 @@ bool QgsNativeAlgorithms::supportsNonFileBasedOutput() const
 void QgsNativeAlgorithms::loadAlgorithms()
 {
   addAlgorithm( new QgsAddIncrementalFieldAlgorithm() );
+  addAlgorithm( new QgsAddUniqueValueIndexAlgorithm() );
   addAlgorithm( new QgsAssignProjectionAlgorithm() );
   addAlgorithm( new QgsBoundaryAlgorithm() );
   addAlgorithm( new QgsBoundingBoxAlgorithm() );
@@ -122,6 +125,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsLoadLayerAlgorithm() );
   addAlgorithm( new QgsMeanCoordinatesAlgorithm() );
   addAlgorithm( new QgsMergeLinesAlgorithm() );
+  addAlgorithm( new QgsMergeVectorAlgorithm() );
   addAlgorithm( new QgsMinimumEnclosingCircleAlgorithm() );
   addAlgorithm( new QgsMultipartToSinglepartAlgorithm() );
   addAlgorithm( new QgsOrderByExpressionAlgorithm() );

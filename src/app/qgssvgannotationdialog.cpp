@@ -21,6 +21,7 @@
 #include "qgsmapcanvasannotationitem.h"
 #include "qgsproject.h"
 #include "qgsannotationmanager.h"
+#include "qgsgui.h"
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QGraphicsScene>
@@ -34,7 +35,7 @@ QgsSvgAnnotationDialog::QgsSvgAnnotationDialog( QgsMapCanvasAnnotationItem *item
   setupUi( this );
   connect( mBrowseToolButton, &QToolButton::clicked, this, &QgsSvgAnnotationDialog::mBrowseToolButton_clicked );
   connect( mButtonBox, &QDialogButtonBox::clicked, this, &QgsSvgAnnotationDialog::mButtonBox_clicked );
-  setWindowTitle( tr( "SVG annotation" ) );
+  setWindowTitle( tr( "SVG Annotation" ) );
   mEmbeddedWidget = new QgsAnnotationWidget( mItem );
   mStackedWidget->addWidget( mEmbeddedWidget );
   mStackedWidget->setCurrentWidget( mEmbeddedWidget );
@@ -49,6 +50,8 @@ QgsSvgAnnotationDialog::QgsSvgAnnotationDialog( QgsMapCanvasAnnotationItem *item
   QPushButton *deleteButton = new QPushButton( tr( "Delete" ) );
   QObject::connect( deleteButton, &QPushButton::clicked, this, &QgsSvgAnnotationDialog::deleteItem );
   mButtonBox->addButton( deleteButton, QDialogButtonBox::RejectRole );
+
+  QgsGui::instance()->enableAutoGeometryRestore( this );
 }
 
 void QgsSvgAnnotationDialog::mBrowseToolButton_clicked()

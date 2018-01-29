@@ -19,6 +19,11 @@
 
 ///@cond PRIVATE
 
+QgsProcessingAlgorithm::Flags QgsSaveSelectedFeatures::flags() const
+{
+  return QgsProcessingAlgorithm::flags() | QgsProcessingAlgorithm::FlagNoThreading;
+}
+
 void QgsSaveSelectedFeatures::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterVectorLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
@@ -43,6 +48,11 @@ QStringList QgsSaveSelectedFeatures::tags() const
 QString QgsSaveSelectedFeatures::group() const
 {
   return QObject::tr( "Vector general" );
+}
+
+QString QgsSaveSelectedFeatures::groupId() const
+{
+  return QStringLiteral( "vectorgeneral" );
 }
 
 QString QgsSaveSelectedFeatures::shortHelpString() const

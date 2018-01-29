@@ -36,6 +36,7 @@ class QgsLayoutViewToolTemporaryMousePan;
 class QgsLayoutRuler;
 class QgsLayoutViewMenuProvider;
 class QgsLayoutViewSnapMarker;
+class QgsLayoutReportSectionLabel;
 
 /**
  * \ingroup gui
@@ -54,6 +55,21 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
     Q_PROPERTY( QgsLayoutViewTool *tool READ tool WRITE setTool NOTIFY toolSet )
 
   public:
+
+    //! Clipboard operations
+    enum ClipboardOperation
+    {
+      ClipboardCut, //!< Cut items
+      ClipboardCopy, //!< Copy items
+    };
+
+    //! Paste modes
+    enum PasteMode
+    {
+      PasteModeCursor, //!< Paste items at cursor position
+      PasteModeCenter, //!< Paste items in center of view
+      PasteModeInPlace, //!< Paste items in place
+    };
 
     /**
      * Constructor for QgsLayoutView.
@@ -209,10 +225,64 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
     void resizeSelectedItems( QgsLayoutAligner::Resize resize );
 
     /**
+     * Cuts or copies the selected items, respecting the specified \a operation.
+     * \see copyItems()
+     * \see pasteItems()
+     */
+    void copySelectedItems( ClipboardOperation operation );
+
+    /**
+     * Cuts or copies the a list of \a items, respecting the specified \a operation.
+     * \see copySelectedItems()
+     * \see pasteItems()
+     */
+    void copyItems( const QList< QgsLayoutItem * > &items, ClipboardOperation operation );
+
+    /**
+     * Pastes items from clipboard, using the specified \a mode.
+     *
+     * A list of pasted items is returned.
+     *
+     * \see copySelectedItems()
+     * \see hasItemsInClipboard()
+     */
+    QList< QgsLayoutItem * > pasteItems( PasteMode mode );
+
+    /**
+     * Pastes items from clipboard, at the specified \a layoutPoint,
+     * in layout units.
+     *
+     * A list of pasted items is returned.
+     *
+     * \see copySelectedItems()
+     * \see hasItemsInClipboard()
+     */
+    QList< QgsLayoutItem * > pasteItems( QPointF layoutPoint );
+
+    /**
+     * Returns true if the current clipboard contains layout items.
+     * \see pasteItems()
+     */
+    bool hasItemsInClipboard() const;
+
+    /**
      * Returns the delta (in layout coordinates) by which to move items
      * for the given key \a event.
      */
     QPointF deltaForKeyEvent( QKeyEvent *event );
+
+    /**
+     * Sets whether widget repainting should be allowed for the view. This is
+     * used to temporarily halt painting while exporting layouts.
+     * \note Not available in Python bindings.
+     */
+    void setPaintingEnabled( bool enabled ); SIP_SKIP
+
+    /**
+     * Sets a section \a label, to display above the first page shown in the
+     * view.
+     */
+    void setSectionLabel( const QString &label );
 
   public slots:
 
@@ -359,8 +429,15 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
 
     /**
      * Deletes all selected items.
+     * \see deleteItems()
      */
     void deleteSelectedItems();
+
+    /**
+     * Delete the specified \a items.
+     * \see deleteSelectedItems()
+     */
+    void deleteItems( const QList< QgsLayoutItem * > &items );
 
     /**
      * Groups all selected items.
@@ -448,6 +525,8 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
     void keyReleaseEvent( QKeyEvent *event ) override;
     void resizeEvent( QResizeEvent *event ) override;
     void scrollContentsBy( int dx, int dy ) override;
+    void dragEnterEvent( QDragEnterEvent *e ) override;
+    void paintEvent( QPaintEvent *event ) override;
 
   private slots:
 
@@ -471,6 +550,7 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
     std::unique_ptr< QgsLayoutViewMenuProvider > mMenuProvider;
 
     QgsLayoutViewSnapMarker *mSnapMarker = nullptr;
+    QgsLayoutReportSectionLabel *mSectionLabel = nullptr;
 
     QGraphicsLineItem *mHorizontalSnapLine = nullptr;
     QGraphicsLineItem *mVerticalSnapLine = nullptr;
@@ -478,6 +558,8 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
     int mCurrentPage = 0;
 
     QgsPreviewEffect *mPreviewEffect = nullptr;
+
+    bool mPaintingEnabled = true;
 
     friend class TestQgsLayoutView;
     friend class QgsLayoutMouseHandles;

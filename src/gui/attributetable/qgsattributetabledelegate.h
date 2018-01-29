@@ -45,7 +45,7 @@ class GUI_EXPORT QgsAttributeTableDelegate : public QItemDelegate
      * Constructor
      * \param parent parent object
      */
-    QgsAttributeTableDelegate( QObject *parent SIP_TRANSFERTHIS = 0 )
+    QgsAttributeTableDelegate( QObject *parent SIP_TRANSFERTHIS = nullptr )
       : QItemDelegate( parent )
     {
     }

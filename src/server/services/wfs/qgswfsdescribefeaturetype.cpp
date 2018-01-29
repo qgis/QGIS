@@ -248,7 +248,7 @@ namespace QgsWfs
       sequenceElem.appendChild( geomElem );
 
       //Attributes
-      const QgsFields &fields = layer->pendingFields();
+      QgsFields fields = layer->fields();
       //hidden attributes for this layer
       const QSet<QString> &layerExcludedAttributes = layer->excludeAttributesWfs();
       for ( int idx = 0; idx < fields.count(); ++idx )

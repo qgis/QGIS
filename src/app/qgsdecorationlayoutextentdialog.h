@@ -33,7 +33,7 @@ class APP_EXPORT QgsDecorationLayoutExtentDialog : public QDialog, private Ui::Q
 
   public:
     QgsDecorationLayoutExtentDialog( QgsDecorationLayoutExtent &decoration, QWidget *parent = nullptr );
-    ~QgsDecorationLayoutExtentDialog();
+    ~QgsDecorationLayoutExtentDialog() override;
 
   private slots:
     void apply();

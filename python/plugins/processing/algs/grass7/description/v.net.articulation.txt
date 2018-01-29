@@ -1,8 +1,0 @@
-v.net.bridge
-v.net.articulation - Computes articulation points in the network
-Vector (v.*)
-QgsProcessingParameterVectorLayer|input|Input vector line layer (network)|1|None|False
-Hardcoded|method=articulation
-*QgsProcessingParameterField|arc_column|Arc forward/both direction(s) cost column (name)|None|input|0|False|True
-*QgsProcessingParameterField|arc_backward_column|Arc backward direction cost column (name)|None|input|0|False|True
-QgsProcessingParameterVectorDestination|output|Articulation

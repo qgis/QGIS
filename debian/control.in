@@ -13,7 +13,7 @@ Build-Depends:
  libexpat1-dev,
  libfcgi-dev,
  libgdal-dev (>= 1.11),
-#sid stretch xenial yakkety zesty artful# libgsl-dev,
+#sid stretch xenial yakkety zesty artful bionic# libgsl-dev,
  libgeos-dev (>= 3.0.0),
  libpq-dev,
  libproj-dev,
@@ -21,7 +21,7 @@ Build-Depends:
  libsqlite3-dev,
  libspatialindex-dev,
  libzip-dev,
- qtbase5-dev, qttools5-dev-tools, qttools5-dev, qtscript5-dev, qtpositioning5-dev, qt5keychain-dev,
+ qtbase5-dev, qttools5-dev-tools, qttools5-dev, qtpositioning5-dev, qt5keychain-dev,
  libqt5svg5-dev, libqt5xmlpatterns5-dev, libqt5webkit5-dev, libqt5opengl5-dev, libqt5sql5-sqlite, libqt5scintilla2-dev,
  libqwt-qt5-dev, libqca-qt5-2-dev, libqca-qt5-2-plugins,
  python3-dev, python3-all-dev, python3-sip, python3-sip-dev,
@@ -38,12 +38,12 @@ Build-Depends:
  graphviz,
  xvfb, xauth,
  xfonts-base, xfonts-100dpi, xfonts-75dpi, xfonts-scalable,
-#artful sid# libosgearth-dev, qt3d5-dev, qt3d-assimpsceneimport-plugin, qt3d-defaultgeometryloader-plugin, qt3d-gltfsceneio-plugin, qt3d-scene2d-plugin,
+#sid artful bionic# libosgearth-dev, qt3d5-dev, qt3d-assimpsceneimport-plugin, qt3d-defaultgeometryloader-plugin, qt3d-gltfsceneio-plugin, qt3d-scene2d-plugin,
 #oracle# oracle-instantclient12.1-devel, oracle-instantclient12.1-basiclite, qtbase5-private-dev,
  locales, ca-certificates, ninja-build
 Build-Conflicts: libqgis-dev, qgis-dev
-#sid stretch xenial yakkety zesty artful#Standards-Version: 3.9.7
-#            xenial yakkety zesty artful#XS-Python-Version: current
+#sid stretch xenial yakkety zesty artful bionic#Standards-Version: 3.9.7
+#            xenial yakkety zesty artful bionic#XS-Python-Version: current
 Vcs-Browser: https://github.com/qgis/QGIS/
 Vcs-Git: https://github.com/qgis/QGIS.git
 Homepage: http://qgis.org/
@@ -145,19 +145,19 @@ Description: QGIS - shared native gui library
  .
  This package contains the shared native gui library.
 
-#artful sid#Package: libqgis-3d{QGIS_ABI}
-#artful sid#Architecture: any
-#artful sid#Section: libs
-#artful sid#Depends:
-#artful sid# qt3d-assimpsceneimport-plugin, qt3d-defaultgeometryloader-plugin, qt3d-gltfsceneio-plugin, qt3d-scene2d-plugin,
-#artful sid# ${shlibs:Depends},
-#artful sid# ${misc:Depends}
-#artful sid#Description: QGIS - shared 3d library
-#artful sid# QGIS is a Geographic Information System (GIS) which manages, analyzes and
-#artful sid# display databases of geographic information.
-#artful sid# .
-#artful sid# This package contains the shared 3d library.
-#artful sid#
+#artful bionic sid#Package: libqgis-3d{QGIS_ABI}
+#artful bionic sid#Architecture: any
+#artful bionic sid#Section: libs
+#artful bionic sid#Depends:
+#artful bionic sid# qt3d-assimpsceneimport-plugin, qt3d-defaultgeometryloader-plugin, qt3d-gltfsceneio-plugin, qt3d-scene2d-plugin,
+#artful bionic sid# ${shlibs:Depends},
+#artful bionic sid# ${misc:Depends}
+#artful bionic sid#Description: QGIS - shared 3d library
+#artful bionic sid# QGIS is a Geographic Information System (GIS) which manages, analyzes and
+#artful bionic sid# display databases of geographic information.
+#artful bionic sid# .
+#artful bionic sid# This package contains the shared 3d library.
+#artful bionic sid#
 Package: libqgisgrass{GRASSVER}-{QGIS_ABI}
 Architecture: any
 Section: libs
@@ -214,7 +214,7 @@ Depends:
  libexpat1-dev,
  libgdal-dev (>= 1.11),
  libgeos-dev (>= 3.0.0),
-#sid stretch xenial yakkety zesty artful# libgsl-dev,
+#sid stretch xenial yakkety zesty artful bionic# libgsl-dev,
  libpq-dev,
  libproj-dev,
  libqgis-app{QGIS_ABI} (= ${binary:Version}),
@@ -232,7 +232,6 @@ Depends:
  libqt5webkit5-dev,
  libqca-qt5-2-dev,
  libqwt-qt5-dev,
- qtscript5-dev,
  qtpositioning5-dev,
  pyqt5-dev-tools,
  python3-pyqt5,

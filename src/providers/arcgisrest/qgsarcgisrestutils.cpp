@@ -420,7 +420,7 @@ QByteArray QgsArcGisRestUtils::queryService( const QUrl &url, QString &errorTitl
   QEventLoop loop;
 
   QNetworkRequest request( url );
-  QNetworkReply *reply = 0;
+  QNetworkReply *reply = nullptr;
   QgsNetworkAccessManager *nam = QgsNetworkAccessManager::instance();
 
   // Request data, handling redirects

@@ -539,6 +539,15 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     static QStringList supportedFormatExtensions( VectorFormatOptions options = SortRecommended );
 
     /**
+     * Returns true if the specified \a driverName supports feature styles.
+     *
+     * The \a driverName argument must be a valid GDAL driver name.
+     *
+     * \since QGIS 3.0
+     */
+    static bool supportsFeatureStyles( const QString &driverName );
+
+    /**
      * Details of available driver formats.
      * \since QGIS 3.0
      */
@@ -592,8 +601,8 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     //! Retrieves error message
     QString errorMessage();
 
-    bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = 0 ) override;
-    bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = 0 ) override;
+    bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = nullptr ) override;
+    bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = nullptr ) override;
 
     /**
      * Adds a \a feature to the currently opened data source, using the style from a specified \a renderer.
@@ -605,7 +614,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     QMap<int, int> attrIdxToOgrIdx() { return mAttrIdxToOgrIdx; } SIP_SKIP
 
     //! Close opened shapefile for writing
-    ~QgsVectorFileWriter();
+    ~QgsVectorFileWriter() override;
 
     /**
      * Delete a shapefile (and its accompanying shx / dbf / prf)

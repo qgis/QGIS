@@ -27,14 +27,14 @@ class QgsGPXFeatureSource : public QgsAbstractFeatureSource
 {
   public:
     explicit QgsGPXFeatureSource( const QgsGPXProvider *p );
-    ~QgsGPXFeatureSource();
+    ~QgsGPXFeatureSource() override;
 
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
+    QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
 
   private:
     QString mFileName;
     QgsGPXProvider::DataType mFeatureType;
-    QgsGPSData *data = nullptr;
+    QgsGpsData *data = nullptr;
     QVector<int> indexToAttr;
     QgsFields mFields;
     QgsCoordinateReferenceSystem mCrs;
@@ -48,14 +48,14 @@ class QgsGPXFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsGPX
   public:
     QgsGPXFeatureIterator( QgsGPXFeatureSource *source, bool ownSource, const QgsFeatureRequest &request );
 
-    ~QgsGPXFeatureIterator();
+    ~QgsGPXFeatureIterator() override;
 
-    virtual bool rewind() override;
-    virtual bool close() override;
+    bool rewind() override;
+    bool close() override;
 
   protected:
 
-    virtual bool fetchFeature( QgsFeature &feature ) override;
+    bool fetchFeature( QgsFeature &feature ) override;
 
   private:
 
@@ -74,11 +74,11 @@ class QgsGPXFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsGPX
     void readAttributes( QgsFeature &feature, const QgsTrack &trk );
 
     //! Current waypoint iterator
-    QgsGPSData::WaypointIterator mWptIter;
+    QgsGpsData::WaypointIterator mWptIter;
     //! Current route iterator
-    QgsGPSData::RouteIterator mRteIter;
+    QgsGpsData::RouteIterator mRteIter;
     //! Current track iterator
-    QgsGPSData::TrackIterator mTrkIter;
+    QgsGpsData::TrackIterator mTrkIter;
 
     bool mFetchedFid = false;
 

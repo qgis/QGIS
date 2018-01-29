@@ -98,7 +98,7 @@ class SERVER_EXPORT QgsOgcServiceException
     QString version() const { return mVersion; }
 
     //! Overridden from QgsServerException
-    virtual QByteArray formatResponse( QString &responseFormat SIP_OUT ) const override;
+    QByteArray formatResponse( QString &responseFormat SIP_OUT ) const override;
 
   private:
     QString mCode;

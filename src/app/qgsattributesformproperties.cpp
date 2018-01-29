@@ -228,7 +228,7 @@ void QgsAttributesFormProperties::loadAttributeTypeDialog()
     mAttributeTypeDialog->setUniqueEnforced( cfg.mConstraintStrength.value( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintStrengthHard ) == QgsFieldConstraints::ConstraintStrengthHard );
 
     QgsFieldConstraints constraints = cfg.mFieldConstraints;
-    QgsFieldConstraints::Constraints providerConstraints = 0;
+    QgsFieldConstraints::Constraints providerConstraints = nullptr;
     if ( constraints.constraintOrigin( QgsFieldConstraints::ConstraintNotNull ) == QgsFieldConstraints::ConstraintOriginProvider )
       providerConstraints |= QgsFieldConstraints::ConstraintNotNull;
     if ( constraints.constraintOrigin( QgsFieldConstraints::ConstraintUnique ) == QgsFieldConstraints::ConstraintOriginProvider )
@@ -242,7 +242,6 @@ void QgsAttributesFormProperties::loadAttributeTypeDialog()
     mAttributeTypeDialog->setConstraintExpressionEnforced( cfg.mConstraintStrength.value( QgsFieldConstraints::ConstraintExpression, QgsFieldConstraints::ConstraintStrengthHard ) == QgsFieldConstraints::ConstraintStrengthHard );
     mAttributeTypeDialog->setDefaultValueExpression( mLayer->defaultValueDefinition( index ).expression() );
     mAttributeTypeDialog->setApplyDefaultValueOnUpdate( mLayer->defaultValueDefinition( index ).applyOnUpdate() );
-    //confustion (will be removed): das hier funktioniert nicht, es is neu, aber ich weiss nicht woher: mAttributeTypeDialog->setDefaultValueExpression( mLayer->defaultValueExpression( index ) );
 
     mAttributeTypeDialog->setEditorWidgetConfig( cfg.mEditorWidgetConfig );
     mAttributeTypeDialog->setEditorWidgetType( cfg.mEditorWidgetType );
@@ -268,14 +267,14 @@ void QgsAttributesFormProperties::storeAttributeTypeDialog()
 
   //confustion (will be removed): wir laden teilweise sachen einfach beim store anstelle des applys auf die mLayer - eingie Sachen laden wir auch vom layer anstatt über das cfg. wieso
   QgsFieldConstraints constraints = mLayer->fields().at( mAttributeTypeDialog->fieldIdx() ).constraints();
-  QgsFieldConstraints::Constraints providerConstraints = 0;
+  QgsFieldConstraints::Constraints providerConstraints = nullptr;
   if ( constraints.constraintOrigin( QgsFieldConstraints::ConstraintNotNull ) == QgsFieldConstraints::ConstraintOriginProvider )
     providerConstraints |= QgsFieldConstraints::ConstraintNotNull;
   if ( constraints.constraintOrigin( QgsFieldConstraints::ConstraintUnique ) == QgsFieldConstraints::ConstraintOriginProvider )
     providerConstraints |= QgsFieldConstraints::ConstraintUnique;
   if ( constraints.constraintOrigin( QgsFieldConstraints::ConstraintExpression ) == QgsFieldConstraints::ConstraintOriginProvider )
     providerConstraints |= QgsFieldConstraints::ConstraintExpression;
-  cfg.mConstraints = 0;
+  cfg.mConstraints = nullptr;
   if ( mAttributeTypeDialog->notNull() && !( providerConstraints & QgsFieldConstraints::ConstraintNotNull ) )
   {
     cfg.mConstraints |= QgsFieldConstraints::ConstraintNotNull;
@@ -291,7 +290,6 @@ void QgsAttributesFormProperties::storeAttributeTypeDialog()
 
   cfg.mConstraintDescription = mAttributeTypeDialog->constraintExpressionDescription();
   cfg.mConstraint = mAttributeTypeDialog->constraintExpression();
-  //confustion (will be removed): das hier funktioniert nicht, es is neu, aber ich weiss nicht woher: mLayer->setDefaultValueExpression( mAttributeTypeDialog->fieldIdx(), mAttributeTypeDialog->defaultValueExpression() );
   mLayer->setDefaultValueDefinition( mAttributeTypeDialog->fieldIdx(), QgsDefaultValue( mAttributeTypeDialog->defaultValueExpression(), mAttributeTypeDialog->applyDefaultValueOnUpdate() ) );
 
   cfg.mEditorWidgetType = mAttributeTypeDialog->editorWidgetType();
@@ -707,7 +705,7 @@ void QgsAttributesFormProperties::apply()
     RelationConfig relCfg = configForRelation( itemData.name() );
 
     QVariantMap cfg;
-    cfg[QStringLiteral( "nm-rel" )] = relCfg.mCardinality;
+    cfg[QStringLiteral( "nm-rel" )] = relCfg.mCardinality.toString();
 
     editFormConfig.setWidgetConfig( itemData.name(), cfg );
   }
@@ -749,7 +747,6 @@ QgsAttributesFormProperties::FieldConfig::operator QVariant()
  * RelationConfig implementation
  */
 QgsAttributesFormProperties::RelationConfig::RelationConfig()
-  : mCardinality( QString() )
 {
 }
 
@@ -757,7 +754,7 @@ QgsAttributesFormProperties::RelationConfig::RelationConfig( QgsVectorLayer *lay
 {
   const QVariant nmrelcfg = layer->editFormConfig().widgetConfig( relationId ).value( QStringLiteral( "nm-rel" ) );
 
-  mCardinality = nmrelcfg.toString();
+  mCardinality = nmrelcfg;
 }
 
 QgsAttributesFormProperties::RelationConfig::operator QVariant()
@@ -789,7 +786,7 @@ DnDTree::DnDTree( QgsVectorLayer *layer, QWidget *parent )
   connect( this, &QTreeWidget::itemDoubleClicked, this, &DnDTree::onItemDoubleClicked );
 }
 
-QTreeWidgetItem *DnDTree::addItem( QTreeWidgetItem *parent, QgsAttributesFormProperties::DnDTreeItemData data )
+QTreeWidgetItem *DnDTree::addItem( QTreeWidgetItem *parent, QgsAttributesFormProperties::DnDTreeItemData data, int index )
 {
   QTreeWidgetItem *newItem = new QTreeWidgetItem( QStringList() << data.name() );
   newItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled );
@@ -814,7 +811,10 @@ QTreeWidgetItem *DnDTree::addItem( QTreeWidgetItem *parent, QgsAttributesFormPro
     }
   }
   newItem->setData( 0, QgsAttributesFormProperties::DnDTreeRole, data );
-  parent->addChild( newItem );
+  if ( index < 0 )
+    parent->addChild( newItem );
+  else
+    parent->insertChild( index, newItem );
 
   return newItem;
 }
@@ -853,7 +853,6 @@ void DnDTree::dragMoveEvent( QDragMoveEvent *event )
 
 bool DnDTree::dropMimeData( QTreeWidgetItem *parent, int index, const QMimeData *data, Qt::DropAction action )
 {
-  Q_UNUSED( index )
   bool bDropSuccessful = false;
 
   if ( action == Qt::IgnoreAction )
@@ -872,12 +871,12 @@ bool DnDTree::dropMimeData( QTreeWidgetItem *parent, int index, const QMimeData 
 
       if ( parent )
       {
-        addItem( parent, itemElement );
+        addItem( parent, itemElement, index );
         bDropSuccessful = true;
       }
       else
       {
-        addItem( invisibleRootItem(), itemElement );
+        addItem( invisibleRootItem(), itemElement, index );
         bDropSuccessful = true;
       }
     }

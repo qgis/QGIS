@@ -39,7 +39,12 @@ class QgsTessellatedPolygonGeometry : public Qt3DRender::QGeometry
   public:
     //! Constructor
     QgsTessellatedPolygonGeometry( QNode *parent = nullptr );
-    ~QgsTessellatedPolygonGeometry();
+    ~QgsTessellatedPolygonGeometry() override;
+
+    //! Returns whether the normals of triangles will be inverted (useful for fixing clockwise / counter-clockwise face vertex orders)
+    bool invertNormals() const { return mInvertNormals; }
+    //! Sets whether the normals of triangles will be inverted (useful for fixing clockwise / counter-clockwise face vertex orders)
+    void setInvertNormals( bool invert ) { mInvertNormals = invert; }
 
     //! Initializes vertex buffer from given polygons. Takes ownership of passed polygon geometries
     void setPolygons( const QList<QgsPolygon *> &polygons, const QgsPointXY &origin, float extrusionHeight, const QList<float> &extrusionHeightPerPolygon = QList<float>() );
@@ -51,6 +56,7 @@ class QgsTessellatedPolygonGeometry : public Qt3DRender::QGeometry
     Qt3DRender::QBuffer *mVertexBuffer = nullptr;
 
     bool mWithNormals = true;
+    bool mInvertNormals = false;
 };
 
 #endif // QGSTESSELLATEDPOLYGONGEOMETRY_H

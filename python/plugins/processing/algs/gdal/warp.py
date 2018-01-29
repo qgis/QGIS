@@ -146,13 +146,16 @@ class warp(GdalAlgorithm):
     def group(self):
         return self.tr('Raster projections')
 
+    def groupId(self):
+        return 'rasterprojections'
+
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'warp.png'))
 
     def tags(self):
         return self.tr('transform,reproject,crs,srs').split(',')
 
-    def getConsoleCommands(self, parameters, context, feedback):
+    def getConsoleCommands(self, parameters, context, feedback, executing=True):
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
         sourceCrs = self.parameterAsCrs(parameters, self.SOURCE_CRS, context)
@@ -184,10 +187,10 @@ class warp(GdalAlgorithm):
         extent = self.parameterAsExtent(parameters, self.TARGET_EXTENT, context)
         if not extent.isNull():
             arguments.append('-te')
-            arguments.append(rasterExtent.xMinimum())
-            arguments.append(rasterExtent.yMinimum())
-            arguments.append(rasterExtent.xMaximum())
-            arguments.append(rasterExtent.yMaximum())
+            arguments.append(extent.xMinimum())
+            arguments.append(extent.yMinimum())
+            arguments.append(extent.xMaximum())
+            arguments.append(extent.yMaximum())
 
             extentCrs = self.parameterAsCrs(parameters, self.TARGET_EXTENT_CRS, context)
             if extentCrs:

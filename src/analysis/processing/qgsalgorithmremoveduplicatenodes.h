@@ -36,8 +36,9 @@ class QgsAlgorithmRemoveDuplicateNodes : public QgsProcessingFeatureBasedAlgorit
     QgsAlgorithmRemoveDuplicateNodes() = default;
     QString name() const override;
     QString displayName() const override;
-    virtual QStringList tags() const override;
+    QStringList tags() const override;
     QString group() const override;
+    QString groupId() const override;
     QString shortHelpString() const override;
     QgsAlgorithmRemoveDuplicateNodes *createInstance() const override SIP_FACTORY;
     void initParameters( const QVariantMap &configuration = QVariantMap() ) override;

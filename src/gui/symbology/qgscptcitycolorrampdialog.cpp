@@ -335,7 +335,7 @@ void QgsCptCityColorRampDialog::pbtnLicenseDetails_pressed()
   descFile = mArchive->descFileName( path );
 
   // prepare dialog
-  QgsDialog dlg( this, 0, QDialogButtonBox::Close );
+  QgsDialog dlg( this, nullptr, QDialogButtonBox::Close );
   QVBoxLayout *layout = dlg.layout();
   dlg.setWindowTitle( title );
   QTextEdit *textEdit = new QTextEdit( &dlg );
@@ -464,6 +464,7 @@ void QgsCptCityColorRampDialog::showHelp()
                          "(you must enable Experimental plugins in the plugin manager).\n\n"
                        );
   QMessageBox *msg = new QMessageBox( this );
+  msg->setWindowTitle( tr( "Download More Cpt-city Gradients" ) );
   msg->setText( helpText );
   msg->exec();
 }

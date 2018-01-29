@@ -88,6 +88,10 @@ void QgsSourceFieldsProperties::loadRows()
 
   mFieldsList->resizeColumnsToContents();
   connect( mFieldsList, &QTableWidget::cellChanged, this, &QgsSourceFieldsProperties::attributesListCellChanged );
+
+  connect( mFieldsList, &QTableWidget::cellPressed, this, &QgsSourceFieldsProperties::attributesListCellPressed );
+
+  updateButtons();
   updateFieldRenamingStatus();
 }
 
@@ -388,6 +392,10 @@ void QgsSourceFieldsProperties::attributesListCellChanged( int row, int column )
   }
 }
 
+void QgsSourceFieldsProperties::attributesListCellPressed( int /*row*/, int /*column*/ )
+{
+  updateButtons();
+}
 
 //NICE FUNCTIONS
 void QgsSourceFieldsProperties::updateButtons()

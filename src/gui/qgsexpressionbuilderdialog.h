@@ -31,6 +31,8 @@ class GUI_EXPORT QgsExpressionBuilderDialog : public QDialog, private Ui::QgsExp
 {
     Q_OBJECT
 
+    Q_PROPERTY( bool allowEvalErrors READ allowEvalErrors WRITE setAllowEvalErrors NOTIFY allowEvalErrorsChanged )
+
   public:
     QgsExpressionBuilderDialog( QgsVectorLayer *layer,
                                 const QString &startText = QString(),
@@ -65,6 +67,32 @@ class GUI_EXPORT QgsExpressionBuilderDialog : public QDialog, private Ui::QgsExp
     //! Sets geometry calculator used in distance/area calculations.
     void setGeomCalculator( const QgsDistanceArea &da );
 
+    /**
+     * Allow accepting invalid expressions. This can be useful when we are not able to
+     * provide an expression context of which we are sure it's completely populated.
+     *
+     * \since QGIS 3.0
+     */
+    bool allowEvalErrors() const;
+
+    /**
+     * Allow accepting expressions with evaluation errors. This can be useful when we are not able to
+     * provide an expression context of which we are sure it's completely populated.
+     *
+     * \since QGIS 3.0
+     */
+    void setAllowEvalErrors( bool allowEvalErrors );
+
+  signals:
+
+    /**
+     * Allow accepting expressions with evaluation errors. This can be useful when we are not able to
+     * provide an expression context of which we are sure it's completely populated.
+     *
+     * \since QGIS 3.0
+     */
+    void allowEvalErrorsChanged();
+
   protected:
 
     /**
@@ -73,15 +101,17 @@ class GUI_EXPORT QgsExpressionBuilderDialog : public QDialog, private Ui::QgsExp
      *
      * \param r result value (unused)
      */
-    virtual void done( int r ) override;
+    void done( int r ) override;
 
-    virtual void accept() override;
+    void accept() override;
 
   private:
     QString mRecentKey;
+    bool mAllowEvalErrors = false;
 
   private slots:
     void showHelp();
+    void syncOkButtonEnabledState();
 
 };
 

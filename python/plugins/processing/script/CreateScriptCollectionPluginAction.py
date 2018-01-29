@@ -35,29 +35,30 @@ from processing.tools.system import mkdir
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
-initTemplate = '''from .plugin import ProcessingScriptCollectionPlugin
+initTemplate = """from .plugin import ProcessingScriptCollectionPlugin
 
 def classFactory(iface):
     return ProcessingScriptCollectionPlugin()
-'''
-metadataTemplate = '''[general]
+"""
+
+metadataTemplate = """[general]
 name=$name$
 description=$description$
-category=Analysis
+category=Plugins
 version=1.0
-qgisMinimumVersion=2.0
+qgisMinimumVersion=3.0
 
 author=$author$
 email=$email$
 
-tags=analysis,processing
+tags=processing,analysis
 
-homepage=http://qgis.org
-tracker=https://issues.qgis.org/projects/QGIS/issues
-repository=https://github.com/qgis/QGIS
-'''
+homepage=
+tracker=
+repository=
+"""
 
-pluginTemplate = '''import os
+pluginTemplate = """import os
 
 from processing.core.Processing import Processing
 
@@ -68,14 +69,14 @@ class ProcessingScriptCollectionPlugin:
 
     def unload(self):
         Processing.removeScripts(os.path.join(os.path.dirname(__file__), "scripts"))
-'''
+"""
 
 
 class CreateScriptCollectionPluginAction(ToolboxAction):
 
     def __init__(self):
-        self.name, self.i18n_name = self.trAction('Create script collection plugin')
-        self.group, self.i18n_group = self.trAction('Tools')
+        self.name, self.i18n_name = self.trAction("Create script collection plugin")
+        self.group, self.i18n_group = self.trAction("Tools")
 
     def getIcon(self):
         return QgsApplication.getThemeIcon("/processingScript.svg")

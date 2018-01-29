@@ -189,7 +189,7 @@ class CORE_EXPORT QgsOgrUtils
      * \returns attribute converted to a QVariant object
      * \see readOgrFeatureAttributes()
      */
-    static QVariant getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsFields &fields, int attIndex, QTextCodec *encoding, bool *ok = 0 );
+    static QVariant getOgrFeatureAttribute( OGRFeatureH ogrFet, const QgsFields &fields, int attIndex, QTextCodec *encoding, bool *ok = nullptr );
 
     /**
      * Reads all attributes from an OGR feature into a QgsFeature.

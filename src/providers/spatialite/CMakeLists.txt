@@ -2,7 +2,7 @@
 # Files
 
 IF(WITH_QSPATIALITE)
-  SUBDIRS(qspatialite)
+  SUBDIRS(${CMAKE_SOURCE_DIR}/external/qspatialite)
 ENDIF(WITH_QSPATIALITE)
 
 SET(SPATIALITE_SRCS

@@ -51,7 +51,7 @@ class CORE_EXPORT QgsTextDiagram: public QgsDiagram
     };
 
     QgsTextDiagram();
-    virtual QgsTextDiagram *clone() const override SIP_FACTORY;
+    QgsTextDiagram *clone() const override SIP_FACTORY;
 
     void renderDiagram( const QgsFeature &feature, QgsRenderContext &c, const QgsDiagramSettings &s, QPointF position ) override;
 

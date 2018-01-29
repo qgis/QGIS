@@ -26,9 +26,11 @@ __copyright__ = '(C) 2016, Médéric Ribreux'
 __revision__ = '$Format:%H$'
 
 
-def checkParameterValuesBeforeExecuting(alg):
-    if alg.getParameterValue('-h') and alg.getParameterValue('precipitation'):
+def checkParameterValuesBeforeExecuting(alg, parameters, context):
+    if (alg.parameterAsBool(parameters, '-h', context)
+            and alg.parameterAsLayer(parameters, 'precipitation', context)):
         return alg.tr('You can\'t use original Hargreaves flag and precipitation parameter together!')
-    if not alg.getParameterValue('-h') and not alg.getParameterValue('precipitation'):
+    if (not alg.parameterAsBool(parameters, '-h', context)
+            and not alg.parameterAsLayer(parameters, 'precipitation', context)):
         return alg.tr('If you don\'t use original Hargreaves flag, you must set the precipitation raster parameter!')
     return None

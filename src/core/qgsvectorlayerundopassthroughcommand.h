@@ -82,8 +82,8 @@ class CORE_EXPORT QgsVectorLayerUndoPassthroughCommand : public QgsVectorLayerUn
     QString errorMessage() const;
 
   private:
-    QString mSavePointId;
     QString mError;
+    QString mSavePointId;
     bool mHasError;
     bool mRecreateSavePoint;
 };
@@ -106,8 +106,8 @@ class CORE_EXPORT QgsVectorLayerUndoPassthroughCommandAddFeatures : public QgsVe
      */
     QgsVectorLayerUndoPassthroughCommandAddFeatures( QgsVectorLayerEditBuffer *buffer SIP_TRANSFER, QgsFeatureList &features );
 
-    virtual void undo() override;
-    virtual void redo() override;
+    void undo() override;
+    void redo() override;
 
     /**
      * List of features (added feaures can be modified by default values from database)
@@ -138,8 +138,8 @@ class CORE_EXPORT QgsVectorLayerUndoPassthroughCommandDeleteFeatures : public Qg
      */
     QgsVectorLayerUndoPassthroughCommandDeleteFeatures( QgsVectorLayerEditBuffer *buffer SIP_TRANSFER, const QgsFeatureIds &fids );
 
-    virtual void undo() override;
-    virtual void redo() override;
+    void undo() override;
+    void redo() override;
 
   private:
     const QgsFeatureIds mFids;
@@ -164,8 +164,8 @@ class CORE_EXPORT QgsVectorLayerUndoPassthroughCommandChangeGeometry : public Qg
      */
     QgsVectorLayerUndoPassthroughCommandChangeGeometry( QgsVectorLayerEditBuffer *buffer SIP_TRANSFER, const QgsFeatureId &fid, const QgsGeometry &geom );
 
-    virtual void undo() override;
-    virtual void redo() override;
+    void undo() override;
+    void redo() override;
 
   private:
     QgsFeatureId mFid;
@@ -193,14 +193,43 @@ class CORE_EXPORT QgsVectorLayerUndoPassthroughCommandChangeAttribute: public Qg
      */
     QgsVectorLayerUndoPassthroughCommandChangeAttribute( QgsVectorLayerEditBuffer *buffer SIP_TRANSFER, QgsFeatureId fid, int field, const QVariant &newValue );
 
-    virtual void undo() override;
-    virtual void redo() override;
+    void undo() override;
+    void redo() override;
 
   private:
     QgsFeatureId mFid;
     const int mField;
     const QVariant mNewValue;
     const QVariant mOldValue;
+};
+
+/**
+ * \ingroup core
+ * \class QgsVectorLayerUndoPassthroughCommandChangeAttributes
+ * \brief Undo command for changing attributes' values from a vector layer in transaction group.
+ * \since QGIS 3.0
+ */
+
+class CORE_EXPORT QgsVectorLayerUndoPassthroughCommandChangeAttributes: public QgsVectorLayerUndoPassthroughCommand
+{
+  public:
+
+    /**
+     * Constructor for QgsVectorLayerUndoPassthroughCommandChangeAttributes
+     * \param buffer associated edit buffer
+     * \param fid feature ID of feature
+     * \param newValues New values for attributes
+     * \param oldValues Old values for attributes
+     */
+    QgsVectorLayerUndoPassthroughCommandChangeAttributes( QgsVectorLayerEditBuffer *buffer SIP_TRANSFER, QgsFeatureId fid, const QgsAttributeMap &newValues, const QgsAttributeMap &oldValues = QgsAttributeMap() );
+
+    void undo() override;
+    void redo() override;
+
+  private:
+    QgsFeatureId mFid;
+    const QgsAttributeMap mNewValues;
+    const QgsAttributeMap mOldValues;
 };
 
 /**
@@ -221,8 +250,8 @@ class CORE_EXPORT QgsVectorLayerUndoPassthroughCommandAddAttribute : public QgsV
      */
     QgsVectorLayerUndoPassthroughCommandAddAttribute( QgsVectorLayerEditBuffer *buffer SIP_TRANSFER, const QgsField &field );
 
-    virtual void undo() override;
-    virtual void redo() override;
+    void undo() override;
+    void redo() override;
 
   private:
     const QgsField mField;
@@ -246,8 +275,8 @@ class CORE_EXPORT QgsVectorLayerUndoPassthroughCommandDeleteAttribute : public Q
      */
     QgsVectorLayerUndoPassthroughCommandDeleteAttribute( QgsVectorLayerEditBuffer *buffer SIP_TRANSFER, int attr );
 
-    virtual void undo() override;
-    virtual void redo() override;
+    void undo() override;
+    void redo() override;
 
   private:
     const QgsField mField;
@@ -272,8 +301,8 @@ class CORE_EXPORT QgsVectorLayerUndoPassthroughCommandRenameAttribute : public Q
      */
     QgsVectorLayerUndoPassthroughCommandRenameAttribute( QgsVectorLayerEditBuffer *buffer SIP_TRANSFER, int attr, const QString &newName );
 
-    virtual void undo() override;
-    virtual void redo() override;
+    void undo() override;
+    void redo() override;
 
   private:
     const int mAttr;
@@ -297,11 +326,12 @@ class CORE_EXPORT QgsVectorLayerUndoPassthroughCommandUpdate : public QgsVectorL
      * \param buffer associated edit buffer
      * \param transaction transaction running the sql query
      * \param sql the query
+     * \param name The name of the command
      */
-    QgsVectorLayerUndoPassthroughCommandUpdate( QgsVectorLayerEditBuffer *buffer SIP_TRANSFER, QgsTransaction *transaction, const QString &sql );
+    QgsVectorLayerUndoPassthroughCommandUpdate( QgsVectorLayerEditBuffer *buffer SIP_TRANSFER, QgsTransaction *transaction, const QString &sql, const QString &name );
 
-    virtual void undo() override;
-    virtual void redo() override;
+    void undo() override;
+    void redo() override;
 
   private:
     QgsTransaction *mTransaction = nullptr;

@@ -134,9 +134,9 @@ class CORE_EXPORT QgsSvgCache : public QObject
     /**
      * Constructor for QgsSvgCache.
      */
-    QgsSvgCache( QObject *parent SIP_TRANSFERTHIS = 0 );
+    QgsSvgCache( QObject *parent SIP_TRANSFERTHIS = nullptr );
 
-    ~QgsSvgCache();
+    ~QgsSvgCache() override;
 
     /**
      * Get SVG as QImage.

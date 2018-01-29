@@ -441,7 +441,7 @@ QWidget *QgsDb2RootItem::paramWidget()
 void QgsDb2RootItem::newConnection()
 {
   QgsDebugMsg( "DB2: Browser Panel; New Connection dialog requested." );
-  QgsDb2NewConnection newConnection( NULL, mName );
+  QgsDb2NewConnection newConnection( nullptr, mName );
   if ( newConnection.exec() )
   {
     refreshConnections();
@@ -467,7 +467,7 @@ QgsDb2LayerItem *QgsDb2LayerItem::createClone()
 
 QString QgsDb2LayerItem::createUri()
 {
-  QgsDb2ConnectionItem *connItem = qobject_cast<QgsDb2ConnectionItem *>( parent() ? parent()->parent() : 0 );
+  QgsDb2ConnectionItem *connItem = qobject_cast<QgsDb2ConnectionItem *>( parent() ? parent()->parent() : nullptr );
 
   if ( !connItem )
   {

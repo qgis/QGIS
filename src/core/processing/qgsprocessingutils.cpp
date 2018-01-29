@@ -458,7 +458,9 @@ QgsRectangle QgsProcessingUtils::combineLayerExtents( const QList<QgsMapLayer *>
     if ( crs.isValid() )
     {
       //transform layer extent to target CRS
+      Q_NOWARN_DEPRECATED_PUSH
       QgsCoordinateTransform ct( layer->crs(), crs );
+      Q_NOWARN_DEPRECATED_POP
       try
       {
         QgsRectangle reprojExtent = ct.transformBoundingBox( layer->extent() );
@@ -727,6 +729,16 @@ QVariant QgsProcessingFeatureSource::minimumValue( int fieldIndex ) const
 QVariant QgsProcessingFeatureSource::maximumValue( int fieldIndex ) const
 {
   return mSource->maximumValue( fieldIndex );
+}
+
+QgsRectangle QgsProcessingFeatureSource::sourceExtent() const
+{
+  return mSource->sourceExtent();
+}
+
+QgsFeatureIds QgsProcessingFeatureSource::allFeatureIds() const
+{
+  return mSource->allFeatureIds();
 }
 
 QgsExpressionContextScope *QgsProcessingFeatureSource::createExpressionContextScope() const

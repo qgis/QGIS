@@ -70,8 +70,8 @@ class CORE_EXPORT QgsGeometryUtils
      * \param distance distance to traverse along geometry
      * \param previousVertex will be set to previous vertex ID
      * \param nextVertex will be set to next vertex ID
-     * \note if the distance coincides exactly with a vertex, then both previousVertex and nextVertex will be set to this vertex
      * \returns true if vertices were successfully retrieved
+     * \note if the distance coincides exactly with a vertex, then both previousVertex and nextVertex will be set to this vertex
      * \since QGIS 3.0
      */
     static bool verticesAtDistance( const QgsAbstractGeometry &geometry,
@@ -92,13 +92,13 @@ class CORE_EXPORT QgsGeometryUtils
     /**
      * \brief Compute the intersection between two lines
      * \param p1 Point on the first line
-     * \param v Direction vector of the first line
-     * \param q1 Point on the second line
-     * \param w Direction vector of the second line
-     * \param inter Output parameter, the intersection point
+     * \param v1 Direction vector of the first line
+     * \param p2 Point on the second line
+     * \param v2 Direction vector of the second line
+     * \param intersection Output parameter, the intersection point
      * \returns Whether the lines intersect
      */
-    static bool lineIntersection( const QgsPoint &p1, QgsVector v, const QgsPoint &q1, QgsVector w, QgsPoint &inter SIP_OUT );
+    static bool lineIntersection( const QgsPoint &p1, QgsVector v1, const QgsPoint &p2, QgsVector v2, QgsPoint &intersection SIP_OUT );
 
     /**
      * \brief Compute the intersection between two segments
@@ -106,11 +106,50 @@ class CORE_EXPORT QgsGeometryUtils
      * \param p2 First segment end point
      * \param q1 Second segment start point
      * \param q2 Second segment end point
-     * \param inter Output parameter, the intersection point
+     * \param intersectionPoint Output parameter, the intersection point
+     * \param isIntersection Output parameter, return true if an intersection is found
      * \param tolerance The tolerance to use
+     * \param acceptImproperIntersection By default, this method returns true only if segments have proper intersection. If set true, returns also true if segments have improper intersection (end of one segment on other segment ; continuous segments).
      * \returns  Whether the segments intersect
+     * * Example:
+     * \code{.py}
+     *   ret = QgsGeometryUtils.segmentIntersection( QgsPoint( 0, 0 ), QgsPoint( 0, 1 ), QgsPoint( 1, 1 ), QgsPoint( 1, 0 ) )
+     *   ret[0], ret[1].asWkt(), ret[2]
+     *   # Whether the segments intersect, the intersection point, is intersect
+     *   # (False, 'Point (0 0)', False)
+     *   ret = QgsGeometryUtils.segmentIntersection( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 0, 5 ), QgsPoint( 1, 5 ) )
+     *   ret[0], ret[1].asWkt(), ret[2]
+     *   # (False, 'Point (0 5)', True)
+     *   ret = QgsGeometryUtils.segmentIntersection( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 0, 5 ), QgsPoint( 1, 5 ), acceptImproperIntersection=True )
+     *   ret[0], ret[1].asWkt(), ret[2]
+     *   # (True, 'Point (0 5)', True)
+     *   ret = QgsGeometryUtils.segmentIntersection( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 0, 2 ), QgsPoint( 1, 5 ) )
+     *   ret[0], ret[1].asWkt(), ret[2]
+     *   # (False, 'Point (0 2)', True)
+     *   ret = QgsGeometryUtils.segmentIntersection( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 0, 2 ), QgsPoint( 1, 5 ), acceptImproperIntersection=True )
+     *   ret[0], ret[1].asWkt(), ret[2]
+     *   # (True, 'Point (0 2)', True)
+     *   ret = QgsGeometryUtils.segmentIntersection( QgsPoint( 0, -5 ), QgsPoint( 0, 5 ), QgsPoint( 2, 0 ), QgsPoint( -1, 0 ) )
+     *   ret[0], ret[1].asWkt(), ret[2]
+     *   # (True, 'Point (0 0)', True)
+     * \endcode
      */
-    static bool segmentIntersection( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &q1, const QgsPoint &q2, QgsPoint &inter SIP_OUT, double tolerance );
+    static bool segmentIntersection( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &q1, const QgsPoint &q2, QgsPoint &intersectionPoint SIP_OUT, bool &isIntersection SIP_OUT, const double tolerance = 1e-8, bool acceptImproperIntersection = false );
+
+    /**
+     * @brief Compute the intersection of a line and a circle.
+     * If the intersection has two solutions (points),
+     * the closest point to the initial \a intersection point is returned.
+     * @param center the center of the circle
+     * @param radius the radius of the circle
+     * @param linePoint1 a first point on the line
+     * @param linePoint2 a second point on the line
+     * @param intersection the initial point and the returned intersection point
+     * @return true if an intersection has been found
+     */
+    static bool lineCircleIntersection( const QgsPointXY &center, const double radius,
+                                        const QgsPointXY &linePoint1, const QgsPointXY &linePoint2,
+                                        QgsPointXY &intersection SIP_INOUT );
 
     /**
      * \brief Project the point on a segment
@@ -119,7 +158,7 @@ class CORE_EXPORT QgsGeometryUtils
      * \param s2 The segment end point
      * \returns The projection of the point on the segment
      */
-    static QgsPoint projPointOnSegment( const QgsPoint &p, const QgsPoint &s1, const QgsPoint &s2 )
+    static QgsPoint projectPointOnSegment( const QgsPoint &p, const QgsPoint &s1, const QgsPoint &s2 )
     {
       double nx = s2.y() - s1.y();
       double ny = -( s2.x() - s1.x() );
@@ -145,7 +184,7 @@ class CORE_EXPORT QgsGeometryUtils
      * \note not available in Python bindings
      * \since QGIS 2.12
      */
-    static QVector<SelfIntersection> getSelfIntersections( const QgsAbstractGeometry *geom, int part, int ring, double tolerance ) SIP_SKIP;
+    static QVector<SelfIntersection> selfIntersections( const QgsAbstractGeometry *geom, int part, int ring, double tolerance ) SIP_SKIP;
 
     /**
      * Returns a value < 0 if the point (\a x, \a y) is left of the line from (\a x1, \a y1) -> ( \a x2, \a y2).

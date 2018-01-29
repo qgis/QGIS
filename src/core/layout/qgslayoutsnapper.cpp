@@ -18,10 +18,14 @@
 #include "qgslayout.h"
 #include "qgsreadwritecontext.h"
 #include "qgsproject.h"
+#include "qgslayoutpagecollection.h"
+#include "qgssettings.h"
 
 QgsLayoutSnapper::QgsLayoutSnapper( QgsLayout *layout )
   : mLayout( layout )
 {
+  QgsSettings s;
+  mTolerance = s.value( QStringLiteral( "LayoutDesigner/defaultSnapTolerancePixels" ), 5, QgsSettings::Gui ).toInt();
 }
 
 QgsLayout *QgsLayoutSnapper::layout()

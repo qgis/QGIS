@@ -36,7 +36,7 @@ class APP_EXPORT QgsMapToolLabel: public QgsMapTool
 
   public:
     QgsMapToolLabel( QgsMapCanvas *canvas );
-    ~QgsMapToolLabel();
+    ~QgsMapToolLabel() override;
 
     /**
      * Returns true if label move can be applied to a layer

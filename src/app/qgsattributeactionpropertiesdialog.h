@@ -48,7 +48,7 @@ class QgsAttributeActionPropertiesDialog: public QDialog, private Ui::QgsAttribu
 
     bool capture() const;
 
-    virtual QgsExpressionContext createExpressionContext() const override;
+    QgsExpressionContext createExpressionContext() const override;
 
   private slots:
     void browse();

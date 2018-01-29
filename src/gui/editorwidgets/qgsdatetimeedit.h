@@ -20,12 +20,14 @@
 #include "qgis.h"
 #include "qgis_gui.h"
 
-class QToolButton;
-class QLineEdit;
-
 /**
  * \ingroup gui
  * \brief The QgsDateTimeEdit class is a QDateTimeEdit with the capability of setting/reading null date/times.
+ *
+ * \warning You should use the signal valueChanged of this subclass
+ * rather than QDateTimeEdit::dateTimeChanged. If you consequently connect parent's
+ * dateTimeChanged signal and call dateTime() afterwards there is no warranty to
+ * have a proper NULL value handling.
  */
 class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
 {
@@ -33,7 +35,9 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
     Q_PROPERTY( bool allowNull READ allowNull WRITE setAllowNull )
 
   public:
-    explicit QgsDateTimeEdit( QWidget *parent SIP_TRANSFERTHIS = 0 );
+
+    //! Constructor for QgsDateTimeEdit
+    explicit QgsDateTimeEdit( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     //! Determines if the widget allows setting null date/time.
     void setAllowNull( bool allowNull );
@@ -55,7 +59,7 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
      * Set the current date as NULL
      * \note if the widget is not configured to accept NULL dates, this will have no effect
      */
-    virtual void clear() override;
+    void clear() override;
 
     /**
      * Resets the widget to show no value (ie, an "unknown" state).
@@ -63,26 +67,35 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
      */
     void setEmpty();
 
+  signals:
+
+    /**
+     * signal emitted whenever the value changes.
+     * @param date the new date/time value.
+     */
+    void valueChanged( const QDateTime &date );
+
   protected:
-    virtual void resizeEvent( QResizeEvent *event ) override;
-
     void mousePressEvent( QMouseEvent *event ) override;
-
+    void focusOutEvent( QFocusEvent *event ) override;
+    void wheelEvent( QWheelEvent *event ) override;
+    void showEvent( QShowEvent *event ) override;
 
   private slots:
     void changed( const QDateTime &dateTime );
 
-
   private:
-    int spinButtonWidth() const;
-    int frameWidth() const;
-
     bool mAllowNull = true;
-    bool mIsNull = true;
+    bool mIsNull = false;
     bool mIsEmpty = false;
 
-    QLineEdit *mNullLabel = nullptr;
-    QToolButton *mClearButton = nullptr;
+    QString mOriginalStyleSheet = QString();
+    QAction *mClearAction;
+
+    void displayNull( bool updateCalendar = false );
+
+    //! reset the value to current date time
+    void resetBeforeChange( int delta );
 
     /**
      * Set the lowest Date that can be displayed with the Qt::ISODate format
@@ -99,7 +112,6 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
     {
       setMinimumDateTime( QDateTime::fromString( QStringLiteral( "0100-01-01" ), Qt::ISODate ) );
     }
-
 };
 
 #endif // QGSDATETIMEEDIT_H

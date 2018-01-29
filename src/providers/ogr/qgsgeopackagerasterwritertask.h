@@ -47,7 +47,7 @@ class QgsGeoPackageRasterWriterTask : public QgsTask
      */
     QgsGeoPackageRasterWriterTask( const QgsMimeDataUtils::Uri &sourceUri, const QString &destinationPath );
 
-    virtual void cancel() override;
+    void cancel() override;
 
   signals:
 
@@ -65,8 +65,8 @@ class QgsGeoPackageRasterWriterTask : public QgsTask
 
   protected:
 
-    virtual bool run() override;
-    virtual void finished( bool result ) override;
+    bool run() override;
+    void finished( bool result ) override;
 
   private:
 

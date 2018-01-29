@@ -81,28 +81,28 @@ class CORE_EXPORT QgsProcessingOutputDefinition
     /**
      * Returns the name of the output. This is the internal identifier by which
      * algorithms access this output.
-     * @see setName()
+     * \see setName()
      */
     QString name() const { return mName; }
 
     /**
      * Sets the \a name of the output. This is the internal identifier by which
      * algorithms access this output.
-     * @see name()
+     * \see name()
      */
     void setName( const QString &name ) { mName = name; }
 
     /**
      * Returns the description for the output. This is the user-visible string
      * used to identify this output.
-     * @see setDescription()
+     * \see setDescription()
      */
     QString description() const { return mDescription; }
 
     /**
      * Sets the \a description for the output. This is the user-visible string
      * used to identify this output.
-     * @see description()
+     * \see description()
      */
     void setDescription( const QString &description ) { mDescription = description; }
 

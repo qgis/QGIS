@@ -26,13 +26,13 @@
 #include "qgsguiutils.h"
 #include "qgshelp.h"
 #include "qgsmaplayerstylemanager.h"
+#include "qgsmaptoolemitpoint.h"
 #include "qgis_app.h"
 
 class QgsPointXY;
 class QgsMapLayer;
 class QgsMapCanvas;
 class QgsRasterLayer;
-class QgsMapToolEmitPoint;
 class QgsMetadataWidget;
 class QgsRasterRenderer;
 class QgsRasterRendererWidget;
@@ -53,7 +53,7 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
      */
     QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *canvas, QWidget *parent = nullptr, Qt::WindowFlags = QgsGuiUtils::ModalDialogFlags );
 
-    ~QgsRasterLayerProperties();
+    ~QgsRasterLayerProperties() override;
 
     //! Synchronize state with associated raster layer
     void sync();
@@ -91,7 +91,7 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
      */
     //void on_btnResetNull_clicked();
 
-    void pixelSelected( const QgsPointXY & );
+    void pixelSelected( const QgsPointXY &, const Qt::MouseButton & );
 
   private slots:
     void mRenderTypeComboBox_currentIndexChanged( int index );
@@ -103,6 +103,16 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     void loadStyle_clicked();
     //! Save a style when appriate button is pressed.
     void saveStyleAs_clicked();
+
+    //! Load a saved metadata file.
+    void loadMetadata();
+    //! Save a metadata.
+    void saveMetadataAs();
+    //! Save the default metadata.
+    void saveDefaultMetadata();
+    //! Load the default metadata.
+    void loadDefaultMetadata();
+
     //! Help button
     void showHelp();
 
@@ -131,6 +141,11 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     void refreshLegend( const QString &layerID, bool expandItem );
 
   private:
+    QPushButton *mBtnStyle = nullptr;
+    QPushButton *mBtnMetadata = nullptr;
+    QAction *mActionLoadMetadata = nullptr;
+    QAction *mActionSaveMetadataAs = nullptr;
+
     //! \brief  A constant that signals property not used
     const QString TRSTRING_NOT_SET;
 
@@ -191,7 +206,7 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     qreal mGradientWidth;
 
     QgsMapCanvas *mMapCanvas = nullptr;
-    QgsMapToolEmitPoint *mPixelSelectorTool = nullptr;
+    std::unique_ptr<QgsMapToolEmitPoint> mPixelSelectorTool;
 
     QgsRasterHistogramWidget *mHistogramWidget = nullptr;
 

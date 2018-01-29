@@ -45,7 +45,7 @@ class TestQgsRenderers : public QObject
 
   public:
     TestQgsRenderers() = default;
-    ~TestQgsRenderers()
+    ~TestQgsRenderers() override
     {
       delete mMapSettings;
     }

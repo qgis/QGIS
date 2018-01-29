@@ -1512,16 +1512,9 @@ int FeaturePart::createCandidatesForPolygon( QList< LabelPosition *> &lPos, Poin
 }
 
 int FeaturePart::createCandidates( QList< LabelPosition *> &lPos,
-                                   double bboxMin[2], double bboxMax[2],
+                                   const GEOSPreparedGeometry *mapBoundary,
                                    PointSet *mapShape, RTree<LabelPosition *, double, 2, double> *candidates )
 {
-  double bbox[4];
-
-  bbox[0] = bboxMin[0];
-  bbox[1] = bboxMin[1];
-  bbox[2] = bboxMax[0];
-  bbox[3] = bboxMax[1];
-
   double angle = mLF->hasFixedAngle() ? mLF->fixedAngle() : 0.0;
 
   if ( mLF->hasFixedPosition() )
@@ -1579,10 +1572,11 @@ int FeaturePart::createCandidates( QList< LabelPosition *> &lPos,
   {
     LabelPosition *pos = i.next();
     bool outside = false;
+
     if ( mLF->layer()->pal->getShowPartial() )
-      outside = !pos->isIntersect( bbox );
+      outside = !pos->intersects( mapBoundary );
     else
-      outside = !pos->isInside( bbox );
+      outside = !pos->within( mapBoundary );
     if ( outside )
     {
       i.remove();

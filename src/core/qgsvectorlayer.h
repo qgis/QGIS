@@ -48,7 +48,6 @@ class QImage;
 class QgsAbstractGeometrySimplifier;
 class QgsActionManager;
 class QgsConditionalLayerStyles;
-class QgsCoordinateTransform;
 class QgsCurve;
 class QgsDiagramLayerSettings;
 class QgsDiagramRenderer;
@@ -425,7 +424,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
                              const QString &providerLib = "ogr", const QgsVectorLayer::LayerOptions &options = QgsVectorLayer::LayerOptions() );
 
 
-    virtual ~QgsVectorLayer();
+    ~QgsVectorLayer() override;
 
     //! QgsVectorLayer cannot be copied.
     QgsVectorLayer( const QgsVectorLayer &rhs ) = delete;
@@ -440,7 +439,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \returns a new layer instance
      * \since QGIS 3.0
      */
-    virtual QgsVectorLayer *clone() const override SIP_FACTORY;
+    QgsVectorLayer *clone() const override SIP_FACTORY;
 
     /**
      * Returns the permanent storage type for this layer as a friendly name.
@@ -519,7 +518,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \returns false if a dependency cycle has been detected
      * \since QGIS 3.0
      */
-    virtual bool setDependencies( const QSet<QgsMapLayerDependency> &layers ) override;
+    bool setDependencies( const QSet<QgsMapLayerDependency> &layers ) override;
 
     /**
      * Gets the list of dependencies. This includes data dependencies set by the user (\see setDataDependencies)
@@ -528,7 +527,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \returns a set of QgsMapLayerDependency
      * \since QGIS 3.0
      */
-    virtual QSet<QgsMapLayerDependency> dependencies() const override;
+    QSet<QgsMapLayerDependency> dependencies() const override;
 
     /**
      * Add a new field which is calculated by the expression specified
@@ -696,8 +695,21 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * Returns whether the layer contains labels which are enabled and should be drawn.
      * \returns true if layer contains enabled labels
      * \since QGIS 2.9
+     *
+     * \see setLabelsEnabled()
      */
     bool labelsEnabled() const;
+
+    /**
+     * Sets whether labels should be \a enabled for the layer.
+     *
+     * \note Labels will only be rendered if labelsEnabled() is true and a labeling
+     * object is returned by labeling().
+     *
+     * \see labelsEnabled()
+     * \see labeling()
+     */
+    void setLabelsEnabled( bool enabled );
 
     /**
      * Returns whether the layer contains diagrams which are enabled and should be drawn.
@@ -744,19 +756,19 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * Reads vector layer specific state from project file Dom node.
      * \note Called by QgsMapLayer::readXml().
      */
-    virtual bool readXml( const QDomNode &layer_node, const QgsReadWriteContext &context ) override;
+    bool readXml( const QDomNode &layer_node, const QgsReadWriteContext &context ) override;
 
     /**
      * Write vector layer specific state to project file Dom node.
      * \note Called by QgsMapLayer::writeXml().
      */
-    virtual bool writeXml( QDomNode &layer_node, QDomDocument &doc, const QgsReadWriteContext &context ) const override;
+    bool writeXml( QDomNode &layer_node, QDomDocument &doc, const QgsReadWriteContext &context ) const override;
 
     /**
      * Resolve references to other layers (kept as layer IDs after reading XML) into layer objects.
      * \since QGIS 3.0
      */
-    virtual void resolveReferences( QgsProject *project ) override;
+    void resolveReferences( QgsProject *project ) override;
 
     /**
      * Save named and sld style of the layer to the style table in the db.
@@ -788,10 +800,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     /**
      * Delete a style from the database
-     * \since QGIS 3.0
      * \param styleId the provider's layer_styles table id of the style to delete
      * \param msgError reference to string that will be updated with any error messages
      * \returns true in case of success
+     * \since QGIS 3.0
      */
     virtual bool deleteStyleFromDatabase( const QString &styleId, QString &msgError SIP_OUT );
 
@@ -807,7 +819,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * Calls loadNamedStyle( theURI, resultFlag, false );
      * Retained for backward compatibility
      */
-    virtual QString loadNamedStyle( const QString &theURI, bool &resultFlag SIP_OUT ) override;
+    QString loadNamedStyle( const QString &theURI, bool &resultFlag SIP_OUT ) override;
 
     /**
      * Loads the auxiliary layer for this vector layer. If there's no
@@ -989,24 +1001,44 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
       return getFeatures( QgsFeatureRequest( rectangle ) );
     }
 
-    bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = 0 ) override;
+    bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = nullptr ) override;
 
     /**
-     * Updates an existing feature. This method needs to query the datasource
-     * on every call. Consider using changeAttributeValue() or
-     * changeGeometry() instead. The id of the feature will be used to match
-     * an existing feature.
+     * Updates an existing \a feature in the layer, replacing the attributes and geometry for the feature
+     * with matching QgsFeature::id() with the attributes and geometry from \a feature.
+     * Changes are not immediately committed to the layer.
      *
-     *  \param feature  Feature with changed geometry or attributes.
-     *  \param skipDefaultValues Default values will not be updated if this is true. False by default.
-     *  \returns   True in case of success and False in case of error
-     */
+     * If \a skipDefaultValue is set to true, default field values will not
+     * be updated. This can be used to override default field value expressions.
+     *
+     * Returns true if the feature's attribute was successfully changed.
+     *
+     * \note Calls to updateFeature() are only valid for layers in which edits have been enabled
+     * by a call to startEditing(). Changes made to features using this method are not committed
+     * to the underlying data provider until a commitChanges() call is made. Any uncommitted
+     * changes can be discarded by calling rollBack().
+     *
+     * \warning This method needs to query the underlying data provider to fetch the feature
+     * with matching QgsFeature::id() on every call. Depending on the underlying data source this
+     * can be slow to execute. Consider using the more efficient changeAttributeValue() or
+     * changeGeometry() methods instead.
+     *
+     * \see startEditing()
+     * \see commitChanges()
+     * \see changeGeometry()
+     * \see changeAttributeValue()
+    */
     bool updateFeature( const QgsFeature &feature, bool skipDefaultValues = false );
 
     /**
      * Insert a new vertex before the given vertex number,
      *  in the given ring, item (first number is index 0), and feature
      *  Not meaningful for Point geometries
+     *
+     * \note Calls to insertVertex() are only valid for layers in which edits have been enabled
+     * by a call to startEditing(). Changes made to features using this method are not committed
+     * to the underlying data provider until a commitChanges() call is made. Any uncommitted
+     * changes can be discarded by calling rollBack().
      */
     bool insertVertex( double x, double y, QgsFeatureId atFeatureId, int beforeVertex );
 
@@ -1014,6 +1046,11 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * Insert a new vertex before the given vertex number,
      *  in the given ring, item (first number is index 0), and feature
      *  Not meaningful for Point geometries
+     *
+     * \note Calls to insertVertex() are only valid for layers in which edits have been enabled
+     * by a call to startEditing(). Changes made to features using this method are not committed
+     * to the underlying data provider until a commitChanges() call is made. Any uncommitted
+     * changes can be discarded by calling rollBack().
      */
     bool insertVertex( const QgsPoint &point, QgsFeatureId atFeatureId, int beforeVertex );
 
@@ -1021,6 +1058,11 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * Moves the vertex at the given position number,
      *  ring and item (first number is index 0), and feature
      *  to the given coordinates
+     *
+     * \note Calls to moveVertex() are only valid for layers in which edits have been enabled
+     * by a call to startEditing(). Changes made to features using this method are not committed
+     * to the underlying data provider until a commitChanges() call is made. Any uncommitted
+     * changes can be discarded by calling rollBack().
      */
     bool moveVertex( double x, double y, QgsFeatureId atFeatureId, int atVertex );
 
@@ -1029,6 +1071,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * ring and item (first number is index 0), and feature
      * to the given coordinates
      * \note available in Python as moveVertexV2
+     * \note Calls to moveVertex() are only valid for layers in which edits have been enabled
+     * by a call to startEditing(). Changes made to features using this method are not committed
+     * to the underlying data provider until a commitChanges() call is made. Any uncommitted
+     * changes can be discarded by calling rollBack().
      */
     bool moveVertex( const QgsPoint &p, QgsFeatureId atFeatureId, int atVertex ) SIP_PYNAME( moveVertexV2 );
 
@@ -1037,6 +1083,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \param featureId ID of feature to remove vertex from
      * \param vertex index of vertex to delete
      * \since QGIS 2.14
+     * \note Calls to deleteVertex() are only valid for layers in which edits have been enabled
+     * by a call to startEditing(). Changes made to features using this method are not committed
+     * to the underlying data provider until a commitChanges() call is made. Any uncommitted
+     * changes can be discarded by calling rollBack().
      */
     EditResult deleteVertex( QgsFeatureId featureId, int vertex );
 
@@ -1058,6 +1108,11 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * - AddRingNotClosed
      * - AddRingNotValid
      * - AddRingCrossesExistingRings
+     *
+     * \note Calls to addRing() are only valid for layers in which edits have been enabled
+     * by a call to startEditing(). Changes made to features using this method are not committed
+     * to the underlying data provider until a commitChanges() call is made. Any uncommitted
+     * changes can be discarded by calling rollBack().
      */
     QgsGeometry::OperationResult addRing( const QVector<QgsPointXY> &ring, QgsFeatureId *featureId = nullptr );
 
@@ -1074,6 +1129,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * - AddRingNotValid
      * - AddRingCrossesExistingRings
      * \note available in Python as addCurvedRing
+     * \note Calls to addRing() are only valid for layers in which edits have been enabled
+     * by a call to startEditing(). Changes made to features using this method are not committed
+     * to the underlying data provider until a commitChanges() call is made. Any uncommitted
+     * changes can be discarded by calling rollBack().
      */
     QgsGeometry::OperationResult addRing( QgsCurve *ring SIP_TRANSFER, QgsFeatureId *featureId = nullptr ) SIP_PYNAME( addCurvedRing );
 
@@ -1088,6 +1147,11 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * - AddPartNotMultiGeometry
      * - InvalidBaseGeometry
      * - InvalidInputGeometryType
+     *
+     * \note Calls to addPart() are only valid for layers in which edits have been enabled
+     * by a call to startEditing(). Changes made to features using this method are not committed
+     * to the underlying data provider until a commitChanges() call is made. Any uncommitted
+     * changes can be discarded by calling rollBack().
      */
     QgsGeometry::OperationResult addPart( const QList<QgsPointXY> &ring );
 
@@ -1103,10 +1167,20 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * - InvalidBaseGeometry
      * - InvalidInputGeometryType
      * \note available in Python bindings as addPartV2
+     * \note Calls to addPart() are only valid for layers in which edits have been enabled
+     * by a call to startEditing(). Changes made to features using this method are not committed
+     * to the underlying data provider until a commitChanges() call is made. Any uncommitted
+     * changes can be discarded by calling rollBack().
      */
     QgsGeometry::OperationResult addPart( const QgsPointSequence &ring ) SIP_PYNAME( addPartV2 );
 
-    //! \note available in Python as addCurvedPart
+    /**
+     * \note available in Python as addCurvedPart
+     * \note Calls to addPart() are only valid for layers in which edits have been enabled
+     * by a call to startEditing(). Changes made to features using this method are not committed
+     * to the underlying data provider until a commitChanges() call is made. Any uncommitted
+     * changes can be discarded by calling rollBack().
+     */
     QgsGeometry::OperationResult addPart( QgsCurve *ring SIP_TRANSFER ) SIP_PYNAME( addCurvedPart );
 
     /**
@@ -1115,6 +1189,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *  \param dx translation of x-coordinate
      *  \param dy translation of y-coordinate
      *  \returns 0 in case of success
+     * \note Calls to translateFeature() are only valid for layers in which edits have been enabled
+     * by a call to startEditing(). Changes made to features using this method are not committed
+     * to the underlying data provider until a commitChanges() call is made. Any uncommitted
+     * changes can be discarded by calling rollBack().
      */
     int translateFeature( QgsFeatureId featureId, double dx, double dy );
 
@@ -1130,6 +1208,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * - InvalidBaseGeometry
      * - GeometryEngineError
      * - SplitCannotSplitPoint
+     * \note Calls to splitParts() are only valid for layers in which edits have been enabled
+     * by a call to startEditing(). Changes made to features using this method are not committed
+     * to the underlying data provider until a commitChanges() call is made. Any uncommitted
+     * changes can be discarded by calling rollBack().
      */
     QgsGeometry::OperationResult splitParts( const QVector<QgsPointXY> &splitLine, bool topologicalEditing = false );
 
@@ -1145,14 +1227,22 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * - InvalidBaseGeometry
      * - GeometryEngineError
      * - SplitCannotSplitPoint
+     * \note Calls to splitFeatures() are only valid for layers in which edits have been enabled
+     * by a call to startEditing(). Changes made to features using this method are not committed
+     * to the underlying data provider until a commitChanges() call is made. Any uncommitted
+     * changes can be discarded by calling rollBack().
      */
     QgsGeometry::OperationResult splitFeatures( const QVector<QgsPointXY> &splitLine, bool topologicalEditing = false );
 
     /**
      * Adds topological points for every vertex of the geometry.
      * \param geom the geometry where each vertex is added to segments of other features
-     * \note geom is not going to be modified by the function
      * \returns 0 in case of success
+     * \note geom is not going to be modified by the function
+     * \note Calls to addTopologicalPoints() are only valid for layers in which edits have been enabled
+     * by a call to startEditing(). Changes made to features using this method are not committed
+     * to the underlying data provider until a commitChanges() call is made. Any uncommitted
+     * changes can be discarded by calling rollBack().
      */
     int addTopologicalPoints( const QgsGeometry &geom );
 
@@ -1163,18 +1253,26 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * editing.
      * \param p position of the vertex
      * \returns 0 in case of success
+     * \note Calls to addTopologicalPoints() are only valid for layers in which edits have been enabled
+     * by a call to startEditing(). Changes made to features using this method are not committed
+     * to the underlying data provider until a commitChanges() call is made. Any uncommitted
+     * changes can be discarded by calling rollBack().
      */
     int addTopologicalPoints( const QgsPointXY &p );
 
     /**
      * Access to const labeling configuration. May be null if labeling is not used.
+     * \note Labels will only be rendered if labelsEnabled() returns true.
      * \since QGIS 3.0
+     * \see labelsEnabled()
      */
     const QgsAbstractVectorLayerLabeling *labeling() const SIP_SKIP { return mLabeling; }
 
     /**
      * Access to labeling configuration. May be null if labeling is not used.
+     * \note Labels will only be rendered if labelsEnabled() returns true.
      * \since QGIS 3.0
+     * \see labelsEnabled()
      */
     QgsAbstractVectorLayerLabeling *labeling() { return mLabeling; }
 
@@ -1185,10 +1283,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     void setLabeling( QgsAbstractVectorLayerLabeling *labeling SIP_TRANSFER );
 
     //! Returns true if the provider is in editing mode
-    virtual bool isEditable() const override;
+    bool isEditable() const override;
 
     //! Returns true if this is a geometry layer and false in case of NoGeometry (table only) or UnknownGeometry
-    virtual bool isSpatial() const override;
+    bool isSpatial() const override;
 
     //! Returns true if the provider has been modified since the last commit
     virtual bool isModified() const;
@@ -1202,13 +1300,13 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     bool isAuxiliaryField( int index, int &srcIndex ) const;
 
     //! Synchronises with changes in the datasource
-    virtual void reload() override;
+    void reload() override;
 
     /**
      * Return new instance of QgsMapLayerRenderer that will be used for rendering of given context
      * \since QGIS 2.4
      */
-    virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override SIP_FACTORY;
+    QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override SIP_FACTORY;
 
     QgsRectangle extent() const override;
     QgsRectangle sourceExtent() const override;
@@ -1222,40 +1320,14 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     inline QgsFields fields() const override { return mFields; }
 
     /**
-     * Returns the list of fields of this layer.
-     * This also includes fields which have not yet been saved to the provider.
-     * Alias for fields()
-     *
-     * \returns A list of fields
-     */
-    inline QgsFields pendingFields() const { return mFields; }
-
-    /**
      * Returns list of attribute indexes. i.e. a list from 0 ... fieldCount()
-     * Alias for attributeList()
-     */
-    inline QgsAttributeList pendingAllAttributesList() const { return mFields.allAttributesList(); }
-
-    /**
-     * Returns list of attribute indexes. i.e. a list from 0 ... fieldCount()
-     * Alias for attributeList()
      */
     inline QgsAttributeList attributeList() const { return mFields.allAttributesList(); }
 
     /**
-     * Returns list of attributes making up the primary key
-     * Alias for pkAttributeList()
+     * Returns the list of attributes which make up the layer's primary keys.
      */
-    inline QgsAttributeList pendingPkAttributesList() const { return pkAttributeList(); }
-
-    //! Returns list of attributes making up the primary key
-    QgsAttributeList pkAttributeList() const;
-
-    /**
-     * Returns feature count including changes which have not yet been committed
-     * Alias for featureCount()
-     */
-    inline long pendingFeatureCount() const { return featureCount(); }
+    QgsAttributeList primaryKeyAttributes() const;
 
     /**
      * Returns feature count including changes which have not yet been committed
@@ -1269,26 +1341,105 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     bool setReadOnly( bool readonly = true );
 
-    //! Change feature's geometry
-    bool changeGeometry( QgsFeatureId fid, const QgsGeometry &geom, bool skipDefaultValue = false );
+    /**
+     * Changes a feature's \a geometry within the layer's edit buffer
+     * (but does not immediately commit the changes). The \a fid argument
+     * specifies the ID of the feature to be changed.
+     *
+     * If \a skipDefaultValue is set to true, default field values will not
+     * be updated. This can be used to override default field value expressions.
+     *
+     * Returns true if the feature's geometry was successfully changed.
+     *
+     * \note Calls to changeGeometry() are only valid for layers in which edits have been enabled
+     * by a call to startEditing(). Changes made to features using this method are not committed
+     * to the underlying data provider until a commitChanges() call is made. Any uncommitted
+     * changes can be discarded by calling rollBack().
+     *
+     * \see startEditing()
+     * \see commitChanges()
+     * \see changeAttributeValue()
+     * \see updateFeature()
+     */
+    bool changeGeometry( QgsFeatureId fid, const QgsGeometry &geometry, bool skipDefaultValue = false );
 
     /**
-     * Changes an attribute value (but does not commit it)
+     * Changes an attribute value for a feature (but does not immediately commit the changes).
+     * The \a fid argument specifies the ID of the feature to be changed.
      *
-     * \param fid   The feature id of the feature to be changed
-     * \param field The index of the field to be updated
-     * \param newValue The value which will be assigned to the field
-     * \param oldValue The previous value to restore on undo (will otherwise be retrieved)
-     * \param skipDefaultValues If this is set to true, default values will not
-     * be updated. This can be used to override default values. Defaults to false.
+     * The \a field argument must specify a valid field index for the layer (where an index of 0
+     * corresponds to the first field).
      *
-     * \returns true in case of success
+     * The new value to be assigned to the field is given by \a newValue.
+     *
+     * If a valid QVariant is specified for \a oldValue, it will be used as the field value in the
+     * case of an undo operation corresponding to this attribute value change. If an invalid
+     * QVariant is used (the default behavior), then the feature's current value will be automatically
+     * retrieved and used. Note that this involves a feature request to the underlying data provider,
+     * so it is more efficient to explicitly pass an \a oldValue if it is already available.
+     *
+     * If \a skipDefaultValues is set to true, default field values will not
+     * be updated. This can be used to override default field value expressions.
+     *
+     * Returns true if the feature's attribute was successfully changed.
+     *
+     * \note Calls to changeAttributeValue() are only valid for layers in which edits have been enabled
+     * by a call to startEditing(). Changes made to features using this method are not committed
+     * to the underlying data provider until a commitChanges() call is made. Any uncommitted
+     * changes can be discarded by calling rollBack().
+     *
+     * \see startEditing()
+     * \see commitChanges()
+     * \see changeGeometry()
+     * \see updateFeature()
      */
     bool changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant &oldValue = QVariant(), bool skipDefaultValues = false );
 
     /**
+     * Changes attributes' values for a feature (but does not immediately
+     * commit the changes).
+     * The \a fid argument specifies the ID of the feature to be changed.
+     *
+     * The new values to be assigned to the fields are given by \a newValues.
+     *
+     * If a valid QVariant is specified for a field in \a oldValues, it will be
+     * used as the field value in the case of an undo operation corresponding
+     * to this attribute value change. If an invalid QVariant is used (the
+     * default behavior), then the feature's current value will be
+     * automatically retrieved and used. Note that this involves a feature
+     * request to the underlying data provider, so it is more efficient to
+     * explicitly pass an oldValue if it is already available.
+     *
+     * If \a skipDefaultValues is set to true, default field values will not
+     * be updated. This can be used to override default field value
+     * expressions.
+     *
+     * Returns true if feature's attributes was successfully changed.
+     *
+     * \note Calls to changeAttributeValues() are only valid for layers in
+     * which edits have been enabled by a call to startEditing(). Changes made
+     * to features using this method are not committed to the underlying data
+     * provider until a commitChanges() call is made. Any uncommitted changes
+     * can be discarded by calling rollBack().
+     *
+     * \see startEditing()
+     * \see commitChanges()
+     * \see changeGeometry()
+     * \see updateFeature()
+     * \see changeAttributeValue()
+     *
+     * \since QGIS 3.0
+     */
+    bool changeAttributeValues( QgsFeatureId fid, const QgsAttributeMap &newValues, const QgsAttributeMap &oldValues = QgsAttributeMap(), bool skipDefaultValues = false );
+
+    /**
      * Add an attribute field (but does not commit it)
      * returns true if the field was added
+     *
+     * \note Calls to addAttribute() are only valid for layers in which edits have been enabled
+     * by a call to startEditing(). Changes made to features using this method are not committed
+     * to the underlying data provider until a commitChanges() call is made. Any uncommitted
+     * changes can be discarded by calling rollBack().
      */
     bool addAttribute( const QgsField &field );
 
@@ -1311,6 +1462,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \param index attribute index
      * \param newName new name of field
      * \since QGIS 2.16
+     * \note Calls to renameAttribute() are only valid for layers in which edits have been enabled
+     * by a call to startEditing(). Changes made to features using this method are not committed
+     * to the underlying data provider until a commitChanges() call is made. Any uncommitted
+     * changes can be discarded by calling rollBack().
      */
     bool renameAttribute( int index, const QString &newName );
 
@@ -1348,7 +1503,14 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     void setExcludeAttributesWfs( const QSet<QString> &att ) { mExcludeAttributesWFS = att; }
 
-    //! Delete an attribute field (but does not commit it)
+    /**
+     * Deletes an attribute field (but does not commit it).
+     *
+     * \note Calls to deleteAttribute() are only valid for layers in which edits have been enabled
+     * by a call to startEditing(). Changes made to features using this method are not committed
+     * to the underlying data provider until a commitChanges() call is made. Any uncommitted
+     * changes can be discarded by calling rollBack().
+     */
     virtual bool deleteAttribute( int attr );
 
     /**
@@ -1360,9 +1522,16 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      */
     bool deleteAttributes( QList<int> attrs );
 
-    bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = 0 ) override;
+    bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = nullptr ) override;
 
-    //! Delete a feature from the layer (but does not commit it)
+    /**
+     * Deletes a feature from the layer (but does not commit it).
+     *
+     * \note Calls to deleteFeature() are only valid for layers in which edits have been enabled
+     * by a call to startEditing(). Changes made to features using this method are not committed
+     * to the underlying data provider until a commitChanges() call is made. Any uncommitted
+     * changes can be discarded by calling rollBack().
+     */
     bool deleteFeature( QgsFeatureId fid );
 
     /**
@@ -1371,24 +1540,33 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      *
      * \returns false if the layer is not in edit mode or does not support deleting
      *         in case of an active transaction depends on the provider implementation
+     *
+     * \note Calls to deleteFeatures() are only valid for layers in which edits have been enabled
+     * by a call to startEditing(). Changes made to features using this method are not committed
+     * to the underlying data provider until a commitChanges() call is made. Any uncommitted
+     * changes can be discarded by calling rollBack().
      */
     bool deleteFeatures( const QgsFeatureIds &fids );
 
     /**
-     * Attempts to commit any changes to disk.  Returns the result of the attempt.
-     * If a commit fails, the in-memory changes are left alone.
+     * Attempts to commit to the underlying data provider any buffered changes made since the
+     * last to call to startEditing().
      *
-     * This allows editing to continue if the commit failed on e.g. a
-     * disallowed value in a Postgres database - the user can re-edit and try
-     * again.
+     * Returns the result of the attempt. If a commit fails (i.e. false is returned), the
+     * in-memory changes are left untouched and are not discarded. This allows editing to
+     * continue if the commit failed on e.g. a disallowed value in a Postgres
+     * database - the user can re-edit and try again.
      *
      * The commits occur in distinct stages,
      * (add attributes, add features, change attribute values, change
      * geometries, delete features, delete attributes)
-     * so if a stage fails, it's difficult to roll back cleanly.
-     * Therefore any error message also includes which stage failed so
+     * so if a stage fails, it can be difficult to roll back cleanly.
+     * Therefore any error message returned by commitErrors() also includes which stage failed so
      * that the user has some chance of repairing the damage cleanly.
+     *
+     * \see startEditing()
      * \see commitErrors()
+     * \see rollBack()
      */
     bool commitChanges();
 
@@ -1400,8 +1578,13 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     QStringList commitErrors() const;
 
     /**
-     * Stop editing and discard the edits
-     * \param deleteBuffer whether to delete editing buffer
+     * Stops a current editing operation and discards any uncommitted edits.
+     *
+     * If \a deleteBuffer is true the editing buffer will be completely deleted (the default
+     * behavior).
+     *
+     * \see startEditing()
+     * \see commitChanges()
      */
     bool rollBack( bool deleteBuffer = true );
 
@@ -1850,10 +2033,18 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     virtual void updateExtents( bool force = false );
 
     /**
-     * Make layer editable.
+     * Makes the layer editable.
+     *
      * This starts an edit session on this layer. Changes made in this edit session will not
-     * be made persistent until commitChanges() is called and can be reverted by calling
+     * be made persistent until commitChanges() is called, and can be reverted by calling
      * rollBack().
+     *
+     * Returns true if the layer was successfully made editable, or false if the operation
+     * failed (e.g. due to an underlying read-only data source, or lack of edit support
+     * by the backend data provider).
+     *
+     * \see commitChanges()
+     * \see rollBack()
      */
     bool startEditing();
 
@@ -2099,7 +2290,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     void onFeatureDeleted( QgsFeatureId fid );
     void onRelationsLoaded();
     void onSymbolsCounted();
-    void onDirtyTransaction( const QString &sql );
+    void onDirtyTransaction( const QString &sql, const QString &name );
 
   protected:
     //! Set the extent
@@ -2112,7 +2303,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /**
      * Returns true if the provider is in read-only mode
      */
-    virtual bool isReadOnly() const override;
+    bool isReadOnly() const override;
 
     /**
      * Bind layer to a specific data provider
@@ -2202,6 +2393,9 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     //! Labeling configuration
     QgsAbstractVectorLayerLabeling *mLabeling = nullptr;
 
+    //! True if labels are enabled
+    bool mLabelsEnabled = false;
+
     //! Whether 'labeling font not found' has be shown for this layer (only show once in QgsMessageBar, on first rendering)
     bool mLabelFontNotFoundNotified = false;
 
@@ -2219,6 +2413,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     //! stores information about uncommitted changes to layer
     QgsVectorLayerEditBuffer *mEditBuffer = nullptr;
     friend class QgsVectorLayerEditBuffer;
+    friend class QgsVectorLayerEditPassthrough;
 
     //stores information about joined layers
     QgsVectorLayerJoinBuffer *mJoinBuffer = nullptr;

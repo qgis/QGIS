@@ -51,8 +51,10 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     Q_PROPERTY( QgsSnappingConfig config READ config WRITE setConfig NOTIFY configChanged )
 
   public:
-    QgsSnappingUtils( QObject *parent SIP_TRANSFERTHIS = 0 );
-    ~QgsSnappingUtils();
+
+    //! Constructor for QgsSnappingUtils
+    QgsSnappingUtils( QObject *parent SIP_TRANSFERTHIS = nullptr );
+    ~QgsSnappingUtils() override;
 
     // main actions
 
@@ -182,13 +184,13 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
     //! Called when finished indexing a layer. When index == count the indexing is complete
     virtual void prepareIndexProgress( int index ) { Q_UNUSED( index ); }
 
+    //! Deletes all existing locators (e.g. when destination CRS has changed and we need to reindex)
+    void clearAllLocators();
+
   private:
     void onIndividualLayerSettingsChanged( const QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings> &layerSettings );
     //! Get destination CRS from map settings, or an invalid CRS if projections are disabled
     QgsCoordinateReferenceSystem destinationCrs() const;
-
-    //! delete all existing locators (e.g. when destination CRS has changed and we need to reindex)
-    void clearAllLocators();
 
     //! return a locator (temporary or not) according to the indexing strategy
     QgsPointLocator *locatorForLayerUsingStrategy( QgsVectorLayer *vl, const QgsPointXY &pointMap, double tolerance );

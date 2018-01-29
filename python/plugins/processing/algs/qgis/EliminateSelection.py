@@ -33,6 +33,7 @@ from qgis.core import (QgsFeatureRequest,
                        QgsFeature,
                        QgsFeatureSink,
                        QgsGeometry,
+                       QgsProcessingAlgorithm,
                        QgsProcessingException,
                        QgsProcessingUtils,
                        QgsProcessingParameterVectorLayer,
@@ -61,8 +62,14 @@ class EliminateSelection(QgisAlgorithm):
     def group(self):
         return self.tr('Vector geometry')
 
+    def groupId(self):
+        return 'vectorgeometry'
+
     def __init__(self):
         super().__init__()
+
+    def flags(self):
+        return super().flags() | QgsProcessingAlgorithm.FlagNoThreading
 
     def initAlgorithm(self, config=None):
         self.modes = [self.tr('Largest Area'),

@@ -113,7 +113,7 @@ QVector<QgsDataItem *> QgsSLConnectionItem::createChildren()
   QVector<QgsDataItem *> children;
   QgsSpatiaLiteConnection connection( mName );
 
-  QgsSpatiaLiteConnection::Error err = connection.fetchTables( false ); // TODO: allow geometryless tables
+  QgsSpatiaLiteConnection::Error err = connection.fetchTables( true );
   if ( err != QgsSpatiaLiteConnection::NoError )
   {
     QString msg;
@@ -312,7 +312,7 @@ QList<QAction *> QgsSLRootItem::actions( QWidget *parent )
 
 QWidget *QgsSLRootItem::paramWidget()
 {
-  QgsSpatiaLiteSourceSelect *select = new QgsSpatiaLiteSourceSelect( nullptr, 0, QgsProviderRegistry::WidgetMode::Manager );
+  QgsSpatiaLiteSourceSelect *select = new QgsSpatiaLiteSourceSelect( nullptr, nullptr, QgsProviderRegistry::WidgetMode::Manager );
   connect( select, &QgsSpatiaLiteSourceSelect::connectionsChanged, this, &QgsSLRootItem::onConnectionsChanged );
   return select;
 }

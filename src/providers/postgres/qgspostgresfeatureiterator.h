@@ -30,9 +30,9 @@ class QgsPostgresFeatureSource : public QgsAbstractFeatureSource
 {
   public:
     explicit QgsPostgresFeatureSource( const QgsPostgresProvider *p );
-    ~QgsPostgresFeatureSource();
+    ~QgsPostgresFeatureSource() override;
 
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
+    QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
 
   private:
 
@@ -44,7 +44,6 @@ class QgsPostgresFeatureSource : public QgsAbstractFeatureSource
     QgsPostgresGeometryColumnType mSpatialColType;
     QString mRequestedSrid;
     QString mDetectedSrid;
-    bool mForce2d;
     QgsWkbTypes::Type mRequestedGeomType; //! geometry type requested in the uri
     QgsWkbTypes::Type mDetectedGeomType;  //! geometry type detected in the database
     QgsPostgresPrimaryKeyType mPrimaryKeyType;
@@ -74,15 +73,15 @@ class QgsPostgresFeatureIterator : public QgsAbstractFeatureIteratorFromSource<Q
   public:
     QgsPostgresFeatureIterator( QgsPostgresFeatureSource *source, bool ownSource, const QgsFeatureRequest &request );
 
-    ~QgsPostgresFeatureIterator();
+    ~QgsPostgresFeatureIterator() override;
 
-    virtual bool rewind() override;
-    virtual bool close() override;
+    bool rewind() override;
+    bool close() override;
 
   protected:
-    virtual bool fetchFeature( QgsFeature &feature ) override;
+    bool fetchFeature( QgsFeature &feature ) override;
     bool nextFeatureFilterExpression( QgsFeature &f ) override;
-    virtual bool prepareSimplification( const QgsSimplifyMethod &simplifyMethod ) override;
+    bool prepareSimplification( const QgsSimplifyMethod &simplifyMethod ) override;
 
   private:
 
@@ -113,9 +112,9 @@ class QgsPostgresFeatureIterator : public QgsAbstractFeatureIteratorFromSource<Q
 
     bool mIsTransactionConnection = false;
 
-    virtual bool providerCanSimplify( QgsSimplifyMethod::MethodType methodType ) const override;
+    bool providerCanSimplify( QgsSimplifyMethod::MethodType methodType ) const override;
 
-    virtual bool prepareOrderBy( const QList<QgsFeatureRequest::OrderByClause> &orderBys ) override;
+    bool prepareOrderBy( const QList<QgsFeatureRequest::OrderByClause> &orderBys ) override;
 
     inline void lock();
     inline void unlock();

@@ -55,7 +55,7 @@ class GUI_EXPORT QgsSearchWidgetToolButton : public QToolButton
      * Constructor for QgsSearchWidgetToolButton.
      * \param parent parent object
      */
-    explicit QgsSearchWidgetToolButton( QWidget *parent SIP_TRANSFERTHIS = 0 );
+    explicit QgsSearchWidgetToolButton( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Sets the available filter flags to show in the widget. Any active flags

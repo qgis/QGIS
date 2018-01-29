@@ -28,6 +28,7 @@
 #include <QDateTime>
 
 #include "qgis.h"
+#include "qgslogger.h"
 #include "qgsdatasourceuri.h"
 
 #include <QSqlDatabase>
@@ -78,7 +79,7 @@ struct QgsOracleLayerProperty
     return property;
   }
 
-#if QGISDEBUG
+#ifdef QGISDEBUG
   QString toString() const
   {
     QString typeString;

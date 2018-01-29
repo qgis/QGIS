@@ -25,7 +25,8 @@ __copyright__ = '(C) 2016, Médéric Ribreux'
 
 __revision__ = '$Format:%H$'
 
-from os import path
+import os
+from processing.algs.grass7.Grass7Utils import Grass7Utils
 
 
 def checkParameterValuesBeforeExecuting(alg, parameters, context):
@@ -46,20 +47,14 @@ def checkParameterValuesBeforeExecuting(alg, parameters, context):
 
 def processCommand(alg, parameters, context):
     # We temporary remove the output directory
-    outdir = alg.getOutputFromName('output_dir')
-    alg.removeOutputFromName('output_dir')
-
-    alg.processCommand(parameters, context)
-
-    # We re-add the new output
-    alg.addOutput(outdir)
+    alg.processCommand(parameters, context, True)
 
 
 def processOutputs(alg, parameters, context):
     # We take all the outputs and we export them to the output directory
-    outdir = alg.getOutputFromName('output_dir')
-    output = alg.getParameterValue('output')
-    outfile = alg.getParameterValue('outfile')
+    outputDir = alg.parameterAsString(parameters, 'output_dir', context)
+    output = alg.parameterAsString(parameters, 'output', context)
+    outfile = alg.parameterAsString(parameters, 'outfile', context)
     outs = []
     if output:
         outs = output.split(',')
@@ -70,8 +65,12 @@ def processOutputs(alg, parameters, context):
                 if '|' in line:
                     outs.append(line.split('|')[0])
 
+    createOpt = alg.parameterAsString(parameters, alg.GRASS_RASTER_FORMAT_OPT, context)
+    metaOpt = alg.parameterAsString(parameters, alg.GRASS_RASTER_FORMAT_META, context)
+
     for out in outs:
-        command = u"r.out.gdal --overwrite -t -c createopt=\"TFW=YES,COMPRESS=LZW\" input={} output=\"{}\"".format(
-            out, path.join(outdir.value, '{}.tif'.format(out)))
-        alg.commands.append(command)
-        alg.outputCommands.append(command)
+        # We need to export the raster with all its bands and its color table
+        fileName = os.path.join(outputDir, out)
+        outFormat = Grass7Utils.getRasterFormatFromFilename(fileName)
+        alg.exportRasterLayer(out, fileName, True,
+                              outFormat, createOpt, metaOpt)

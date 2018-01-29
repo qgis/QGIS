@@ -26,7 +26,7 @@
 #include "qgsogrdbtablemodel.h"
 
 /**
- * @brief The QgsOgrDbSourceSelect class is a generic class for DB based OGR
+ * The QgsOgrDbSourceSelect class is a generic class for DB based OGR
  * source selects.
  *
  */
@@ -43,7 +43,7 @@ class QgsOgrDbSourceSelect: public QgsAbstractDataSourceWidget, private Ui::QgsD
      */
     QgsOgrDbSourceSelect( const QString &theOgrDriverName, const QString &theName, const QString &theExtensions, QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode theWidgetMode = QgsProviderRegistry::WidgetMode::None );
 
-    ~QgsOgrDbSourceSelect();
+    ~QgsOgrDbSourceSelect() override;
 
     QString layerURI( const QModelIndex &index );
 

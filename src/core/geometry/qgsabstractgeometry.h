@@ -110,6 +110,9 @@ class CORE_EXPORT QgsAbstractGeometry
     QgsAbstractGeometry( const QgsAbstractGeometry &geom );
     QgsAbstractGeometry &operator=( const QgsAbstractGeometry &geom );
 
+    virtual bool operator==( const QgsAbstractGeometry &other ) const = 0;
+    virtual bool operator!=( const QgsAbstractGeometry &other ) const = 0;
+
     /**
      * Clones the geometry by performing a deep copy
      */
@@ -430,7 +433,7 @@ class CORE_EXPORT QgsAbstractGeometry
      * It may generate an invalid geometry (in some corner cases).
      * It can also be thought as rounding the edges and it may be useful for removing errors.
      * Example:
-     * \code
+     * \code{.cpp}
      * geometry->snappedToGrid(1, 1);
      * \endcode
      * In this case we use a 2D grid of 1x1 to gridify.
@@ -736,11 +739,13 @@ struct CORE_EXPORT QgsVertexId
 };
 
 #ifndef SIP_RUN
+
 template <class T>
 inline T qgsgeometry_cast( const QgsAbstractGeometry *geom )
 {
   return const_cast<T>( reinterpret_cast<T>( 0 )->cast( geom ) );
 }
+
 #endif
 
 // clazy:excludeall=qstring-allocations

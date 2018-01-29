@@ -322,7 +322,7 @@ void QgsMapCanvasDockWidget::syncViewCenter( QgsMapCanvas *sourceCanvas )
 
   // reproject extent
   QgsCoordinateTransform ct( sourceCanvas->mapSettings().destinationCrs(),
-                             destCanvas->mapSettings().destinationCrs() );
+                             destCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
   try
   {
     destCanvas->setCenter( ct.transform( sourceCanvas->center() ) );
@@ -412,7 +412,7 @@ void QgsMapCanvasDockWidget::syncMarker( const QgsPointXY &p )
 
   // reproject point
   QgsCoordinateTransform ct( mMainCanvas->mapSettings().destinationCrs(),
-                             mMapCanvas->mapSettings().destinationCrs() );
+                             mMapCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
   QgsPointXY t = p;
   try
   {
@@ -450,7 +450,7 @@ void QgsMapCanvasDockWidget::updateExtentRect()
   {
     // reproject extent
     QgsCoordinateTransform ct( mMainCanvas->mapSettings().destinationCrs(),
-                               mMapCanvas->mapSettings().destinationCrs() );
+                               mMapCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
     g = g.densifyByCount( 5 );
     try
     {

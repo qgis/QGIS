@@ -61,6 +61,9 @@ class PointsInPolygon(QgisAlgorithm):
     def group(self):
         return self.tr('Vector analysis')
 
+    def groupId(self):
+        return 'vectoranalysis'
+
     def __init__(self):
         super().__init__()
 
@@ -111,7 +114,7 @@ class PointsInPolygon(QgisAlgorithm):
                                                fields, poly_source.wkbType(), poly_source.sourceCrs())
 
         spatialIndex = QgsSpatialIndex(point_source.getFeatures(
-            QgsFeatureRequest().setSubsetOfAttributes([]).setDestinationCrs(poly_source.sourceCrs())), feedback)
+            QgsFeatureRequest().setSubsetOfAttributes([]).setDestinationCrs(poly_source.sourceCrs(), context.transformContext())), feedback)
 
         point_attribute_indices = []
         if weight_field_index >= 0:
@@ -137,7 +140,7 @@ class PointsInPolygon(QgisAlgorithm):
 
                 points = spatialIndex.intersects(geom.boundingBox())
                 if len(points) > 0:
-                    request = QgsFeatureRequest().setFilterFids(points).setDestinationCrs(poly_source.sourceCrs())
+                    request = QgsFeatureRequest().setFilterFids(points).setDestinationCrs(poly_source.sourceCrs(), context.transformContext())
                     request.setSubsetOfAttributes(point_attribute_indices)
                     for point_feature in point_source.getFeatures(request):
                         if feedback.isCanceled():

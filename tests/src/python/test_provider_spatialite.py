@@ -15,6 +15,7 @@ __revision__ = '$Format:%H$'
 import qgis  # NOQA
 
 import os
+import re
 import sys
 import shutil
 import tempfile
@@ -28,12 +29,13 @@ from qgis.core import (QgsVectorLayer,
                        QgsFieldConstraints,
                        QgsVectorLayerUtils,
                        QgsSettings,
-                       QgsDefaultValue)
+                       QgsDefaultValue,
+                       QgsWkbTypes)
 
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
 from providertestbase import ProviderTestCase
-from qgis.PyQt.QtCore import QVariant
+from qgis.PyQt.QtCore import QObject, QVariant
 
 from qgis.utils import spatialite_connect
 
@@ -91,6 +93,33 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         sql += "VALUES (1, 'toto', GeomFromText('POLYGON((0 0,1 0,1 1,0 1,0 0))', 4326))"
         cur.execute(sql)
 
+        # table with Z dimension geometry
+        sql = "CREATE TABLE test_z (id INTEGER NOT NULL PRIMARY KEY, name TEXT NOT NULL)"
+        cur.execute(sql)
+        sql = "SELECT AddGeometryColumn('test_z', 'geometry', 4326, 'POINT', 'XYZ')"
+        cur.execute(sql)
+        sql = "INSERT INTO test_z (id, name, geometry) "
+        sql += "VALUES (1, 'toto', GeomFromText('POINT Z (0 0 1)', 4326))"
+        cur.execute(sql)
+
+        # table with M value geometry
+        sql = "CREATE TABLE test_m (id INTEGER NOT NULL PRIMARY KEY, name TEXT NOT NULL)"
+        cur.execute(sql)
+        sql = "SELECT AddGeometryColumn('test_m', 'geometry', 4326, 'POINT', 'XYM')"
+        cur.execute(sql)
+        sql = "INSERT INTO test_m (id, name, geometry) "
+        sql += "VALUES (1, 'toto', GeomFromText('POINT M (0 0 1)', 4326))"
+        cur.execute(sql)
+
+        # table with Z dimension and M value geometry
+        sql = "CREATE TABLE test_zm (id INTEGER NOT NULL PRIMARY KEY, name TEXT NOT NULL)"
+        cur.execute(sql)
+        sql = "SELECT AddGeometryColumn('test_zm', 'geometry', 4326, 'POINT', 'XYZM')"
+        cur.execute(sql)
+        sql = "INSERT INTO test_zm (id, name, geometry) "
+        sql += "VALUES (1, 'toto', GeomFromText('POINT ZM (0 0 1 1)', 4326))"
+        cur.execute(sql)
+
         # table with multiple column primary key
         sql = "CREATE TABLE test_pg_mk (id INTEGER NOT NULL, name TEXT NOT NULL, PRIMARY KEY(id,name))"
         cur.execute(sql)
@@ -145,12 +174,49 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         sql = "SELECT AddGeometryColumn('test_relation_b', 'Geometry', 4326, 'POLYGON', 'XY')"
         cur.execute(sql)
 
+        # table to test auto increment
+        sql = "CREATE TABLE test_autoincrement(id INTEGER PRIMARY KEY AUTOINCREMENT, num INTEGER);"
+        cur.execute(sql)
+        sql = "INSERT INTO test_autoincrement (num) VALUES (123);"
+        cur.execute(sql)
+
         # tables with constraints
         sql = "CREATE TABLE test_constraints(id INTEGER PRIMARY KEY, num INTEGER NOT NULL, desc TEXT UNIQUE, desc2 TEXT, num2 INTEGER NOT NULL UNIQUE)"
         cur.execute(sql)
 
         # simple table with defaults
         sql = "CREATE TABLE test_defaults (id INTEGER NOT NULL PRIMARY KEY, name TEXT DEFAULT 'qgis ''is good', number INTEGER DEFAULT 5, number2 REAL DEFAULT 5.7, no_default REAL)"
+        cur.execute(sql)
+
+        # simple table with catgorized points
+        sql = "CREATE TABLE test_filter (id INTEGER NOT NULL PRIMARY KEY, name TEXT NOT NULL)"
+        cur.execute(sql)
+        sql = "SELECT AddGeometryColumn('test_filter', 'geometry', 4326, 'POINT', 'XY')"
+        cur.execute(sql)
+        sql = "INSERT INTO test_filter (id, name, geometry) "
+        sql += "VALUES (1, 'ext', GeomFromText('POINT(0 0)', 4326))"
+        cur.execute(sql)
+        sql = "INSERT INTO test_filter (id, name, geometry) "
+        sql += "VALUES (2, 'ext', GeomFromText('POINT(0 3)', 4326))"
+        cur.execute(sql)
+        sql = "INSERT INTO test_filter (id, name, geometry) "
+        sql += "VALUES (3, 'ext', GeomFromText('POINT(3 3)', 4326))"
+        cur.execute(sql)
+        sql = "INSERT INTO test_filter (id, name, geometry) "
+        sql += "VALUES (4, 'ext', GeomFromText('POINT(3 0)', 4326))"
+        cur.execute(sql)
+
+        sql = "INSERT INTO test_filter (id, name, geometry) "
+        sql += "VALUES (5, 'int', GeomFromText('POINT(1 1)', 4326))"
+        cur.execute(sql)
+        sql = "INSERT INTO test_filter (id, name, geometry) "
+        sql += "VALUES (6, 'int', GeomFromText('POINT(1 2)', 4326))"
+        cur.execute(sql)
+        sql = "INSERT INTO test_filter (id, name, geometry) "
+        sql += "VALUES (7, 'int', GeomFromText('POINT(2 2)', 4326))"
+        cur.execute(sql)
+        sql = "INSERT INTO test_filter (id, name, geometry) "
+        sql += "VALUES (8, 'int', GeomFromText('POINT(2 1)', 4326))"
         cur.execute(sql)
 
         cur.execute("COMMIT")
@@ -307,6 +373,31 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         sum_id2 = sum(f.attributes()[0] for f in l.getFeatures())
         self.assertEqual(sum_id1, 32)
         self.assertEqual(sum_id2, 32)
+
+    def test_zm(self):
+        """Test Z dimension and M value"""
+        l = QgsVectorLayer("dbname=%s table='test_z' (geometry) key='id'" % self.dbname, "test_z", "spatialite")
+        self.assertTrue(l.isValid())
+        self.assertTrue(QgsWkbTypes.hasZ(l.wkbType()))
+        feature = l.getFeature(1)
+        geom = feature.geometry().constGet()
+        self.assertEqual(geom.z(), 1.0)
+
+        l = QgsVectorLayer("dbname=%s table='test_m' (geometry) key='id'" % self.dbname, "test_m", "spatialite")
+        self.assertTrue(l.isValid())
+        self.assertTrue(QgsWkbTypes.hasM(l.wkbType()))
+        feature = l.getFeature(1)
+        geom = feature.geometry().constGet()
+        self.assertEqual(geom.m(), 1.0)
+
+        l = QgsVectorLayer("dbname=%s table='test_zm' (geometry) key='id'" % self.dbname, "test_zm", "spatialite")
+        self.assertTrue(l.isValid())
+        self.assertTrue(QgsWkbTypes.hasZ(l.wkbType()))
+        self.assertTrue(QgsWkbTypes.hasM(l.wkbType()))
+        feature = l.getFeature(1)
+        geom = feature.geometry().constGet()
+        self.assertEqual(geom.z(), 1.0)
+        self.assertEqual(geom.m(), 1.0)
 
     def test_case(self):
         """Test case sensitivity issues"""
@@ -515,6 +606,14 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(fields.at(4).constraints().constraints() & QgsFieldConstraints.ConstraintUnique)
         self.assertEqual(fields.at(4).constraints().constraintOrigin(QgsFieldConstraints.ConstraintUnique), QgsFieldConstraints.ConstraintOriginProvider)
 
+    def testSkipConstraintCheck(self):
+        vl = QgsVectorLayer("dbname=%s table=test_autoincrement" % self.dbname, "test_autoincrement",
+                            "spatialite")
+        self.assertTrue(vl.isValid())
+
+        self.assertTrue(vl.dataProvider().skipConstraintCheck(0, QgsFieldConstraints.ConstraintUnique, str("Autogenerate")))
+        self.assertFalse(vl.dataProvider().skipConstraintCheck(0, QgsFieldConstraints.ConstraintUnique, 123))
+
     # This test would fail. It would require turning on WAL
     def XXXXXtestLocking(self):
 
@@ -595,6 +694,52 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
 
         self.assertEqual(set(indexed_columns), set(['name', 'number']))
         con.close()
+
+    def testSubsetStringExtent_bug17863(self):
+        """Check that the extent is correct when applied in the ctor and when
+        modified after a subset string is set """
+
+        def _lessdigits(s):
+            return re.sub(r'(\d+\.\d{3})\d+', r'\1', s)
+
+        testPath = "dbname=%s table='test_filter' (geometry) key='id'" % self.dbname
+
+        subSetString = '"name" = \'int\''
+        subSet = ' sql=%s' % subSetString
+
+        # unfiltered
+        vl = QgsVectorLayer(testPath, 'test', 'spatialite')
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.featureCount(), 8)
+        unfiltered_extent = _lessdigits(vl.extent().toString())
+        self.assertNotEqual('Empty', unfiltered_extent)
+        del(vl)
+
+        # filter after construction ...
+        subSet_vl2 = QgsVectorLayer(testPath, 'test', 'spatialite')
+        self.assertEqual(_lessdigits(subSet_vl2.extent().toString()), unfiltered_extent)
+        self.assertEqual(subSet_vl2.featureCount(), 8)
+        # ... apply filter now!
+        subSet_vl2.setSubsetString(subSetString)
+        self.assertEqual(subSet_vl2.featureCount(), 4)
+        self.assertEqual(subSet_vl2.subsetString(), subSetString)
+        self.assertNotEqual(_lessdigits(subSet_vl2.extent().toString()), unfiltered_extent)
+        filtered_extent = _lessdigits(subSet_vl2.extent().toString())
+        del(subSet_vl2)
+
+        # filtered in constructor
+        subSet_vl = QgsVectorLayer(testPath + subSet, 'subset_test', 'spatialite')
+        self.assertEqual(subSet_vl.subsetString(), subSetString)
+        self.assertTrue(subSet_vl.isValid())
+
+        # This was failing in bug 17863
+        self.assertEqual(subSet_vl.featureCount(), 4)
+        self.assertEqual(_lessdigits(subSet_vl.extent().toString()), filtered_extent)
+        self.assertNotEqual(_lessdigits(subSet_vl.extent().toString()), unfiltered_extent)
+
+        self.assertTrue(subSet_vl.setSubsetString(''))
+        self.assertEqual(subSet_vl.featureCount(), 8)
+        self.assertEqual(_lessdigits(subSet_vl.extent().toString()), unfiltered_extent)
 
 
 if __name__ == '__main__':

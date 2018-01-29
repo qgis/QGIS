@@ -64,18 +64,18 @@ class APP_EXPORT QgsNodeTool : public QgsMapToolAdvancedDigitizing
     QgsNodeTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock );
 
     //! Cleanup canvas items we have created
-    ~QgsNodeTool();
+    ~QgsNodeTool() override;
 
-    virtual void cadCanvasPressEvent( QgsMapMouseEvent *e ) override;
+    void cadCanvasPressEvent( QgsMapMouseEvent *e ) override;
 
-    virtual void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
+    void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
 
-    virtual void cadCanvasMoveEvent( QgsMapMouseEvent *e ) override;
+    void cadCanvasMoveEvent( QgsMapMouseEvent *e ) override;
 
     //! Start addition of a new vertex on double-click
-    virtual void canvasDoubleClickEvent( QgsMapMouseEvent *e ) override;
+    void canvasDoubleClickEvent( QgsMapMouseEvent *e ) override;
 
-    virtual void deactivate() override;
+    void deactivate() override;
 
     void keyPressEvent( QKeyEvent *e ) override;
 
@@ -165,7 +165,15 @@ class APP_EXPORT QgsNodeTool : public QgsMapToolAdvancedDigitizing
 
     void applyEditsToLayers( NodeEdits &edits );
 
-    void setHighlightedNodes( QList<Vertex> listNodes );
+
+    enum HighlightMode
+    {
+      ModeReset, //!< Reset any current selection
+      ModeAdd, //!< Add to current selection
+      ModeSubtract, //!< Remove from current selection
+    };
+
+    void setHighlightedNodes( const QList<Vertex> &listNodes, HighlightMode mode = ModeReset );
 
     void setHighlightedNodesVisible( bool visible );
 

@@ -54,7 +54,7 @@ void QgsMapToolSelectPolygon::canvasPressEvent( QgsMapMouseEvent *e )
     if ( mRubberBand->numberOfVertices() > 2 )
     {
       QgsGeometry polygonGeom = mRubberBand->asGeometry();
-      QgsMapToolSelectUtils::selectMultipleFeatures( mCanvas, polygonGeom, e );
+      QgsMapToolSelectUtils::selectMultipleFeatures( mCanvas, polygonGeom, e->modifiers() );
     }
     mRubberBand->reset( QgsWkbTypes::PolygonGeometry );
     delete mRubberBand;

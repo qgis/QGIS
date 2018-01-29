@@ -51,14 +51,15 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRast
       UserResolution
     };
 
+    //! Constructor for QgsRasterLayerSaveAsDialog
     QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLayer,
                                 QgsRasterDataProvider *sourceProvider,
                                 const QgsRectangle &currentExtent,
                                 const QgsCoordinateReferenceSystem &layerCrs,
                                 const QgsCoordinateReferenceSystem &currentCrs,
                                 QWidget *parent SIP_TRANSFERTHIS = nullptr,
-                                Qt::WindowFlags f = 0 );
-    ~QgsRasterLayerSaveAsDialog();
+                                Qt::WindowFlags f = nullptr );
+    ~QgsRasterLayerSaveAsDialog() override;
 
     Mode mode() const;
     int nColumns() const;
@@ -86,12 +87,10 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRast
     void hideOutput();
 
   public slots:
-    virtual void accept() override { if ( validate() ) return QDialog::accept(); }
+    void accept() override { if ( validate() ) return QDialog::accept(); }
 
   private slots:
     void mRawModeRadioButton_toggled( bool );
-    void mBrowseButton_clicked();
-    void mSaveAsLineEdit_textChanged( const QString &text );
     void mFormatComboBox_currentIndexChanged( const QString &text );
     void mResolutionRadioButton_toggled( bool ) { toggleResolutionSize(); }
     void mOriginalResolutionPushButton_clicked() { setOriginalResolution(); }

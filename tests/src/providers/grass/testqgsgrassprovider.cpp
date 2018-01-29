@@ -1209,7 +1209,7 @@ void TestQgsGrassProvider::edit()
         grassLayer->startEditing();
         grassProvider->startEditing( grassLayer );
 
-        Q_ASSERT( expectedLayer );
+        QVERIFY( expectedLayer );
         expectedLayer->startEditing();
       }
 

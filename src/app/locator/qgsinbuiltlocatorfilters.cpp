@@ -23,7 +23,6 @@
 #include "qgisapp.h"
 #include "qgsstringutils.h"
 #include "qgsmaplayermodel.h"
-#include "qgscomposition.h"
 #include "qgslayoutmanager.h"
 #include "qgsmapcanvas.h"
 #include <QToolButton>
@@ -71,19 +70,20 @@ QgsLayoutLocatorFilter::QgsLayoutLocatorFilter( QObject *parent )
 
 void QgsLayoutLocatorFilter::fetchResults( const QString &string, const QgsLocatorContext &, QgsFeedback *feedback )
 {
-  Q_FOREACH ( QgsComposition *composition, QgsProject::instance()->layoutManager()->compositions() )
+  const QList< QgsMasterLayoutInterface * > layouts = QgsProject::instance()->layoutManager()->layouts();
+  for ( QgsMasterLayoutInterface *layout : layouts )
   {
     if ( feedback->isCanceled() )
       return;
 
-    if ( composition && stringMatches( composition->name(), string ) )
+    if ( layout && stringMatches( layout->name(), string ) )
     {
       QgsLocatorResult result;
       result.filter = this;
-      result.displayString = composition->name();
-      result.userData = composition->name();
+      result.displayString = layout->name();
+      result.userData = layout->name();
       //result.icon = QgsMapLayerModel::iconForLayer( layer->layer() );
-      result.score = static_cast< double >( string.length() ) / composition->name().length();
+      result.score = static_cast< double >( string.length() ) / layout->name().length();
       emit resultFetched( result );
     }
   }
@@ -92,11 +92,11 @@ void QgsLayoutLocatorFilter::fetchResults( const QString &string, const QgsLocat
 void QgsLayoutLocatorFilter::triggerResult( const QgsLocatorResult &result )
 {
   QString layoutName = result.userData.toString();
-  QgsComposition *composition = QgsProject::instance()->layoutManager()->compositionByName( layoutName );
-  if ( !composition )
+  QgsMasterLayoutInterface *layout = QgsProject::instance()->layoutManager()->layoutByName( layoutName );
+  if ( !layout )
     return;
 
-  QgisApp::instance()->openComposer( composition );
+  QgisApp::instance()->openLayoutDesignerDialog( layout );
 }
 
 

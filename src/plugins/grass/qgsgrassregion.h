@@ -49,10 +49,10 @@ class QgsGrassRegion: public QWidget, private Ui::QgsGrassRegionBase
   public:
     //! Constructor
     QgsGrassRegion( QgisInterface *iface,
-                    QWidget *parent = 0, Qt::WindowFlags f = 0 );
+                    QWidget *parent = nullptr, Qt::WindowFlags f = nullptr );
 
 
-    ~QgsGrassRegion();
+    ~QgsGrassRegion() override;
 
   public slots:
     void buttonClicked( QAbstractButton *button );
@@ -136,7 +136,7 @@ class QgsGrassRegionEdit : public QgsMapTool
   public:
     explicit QgsGrassRegionEdit( QgsMapCanvas * );
 
-    ~QgsGrassRegionEdit();
+    ~QgsGrassRegionEdit() override;
 
     //! mouse pressed in map canvas
     void canvasPressEvent( QgsMapMouseEvent * ) override;

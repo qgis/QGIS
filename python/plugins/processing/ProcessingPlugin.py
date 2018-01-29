@@ -87,7 +87,6 @@ class ProcessingDropHandler(QgsCustomDropHandler):
 
         alg.setProvider(QgsApplication.processingRegistry().providerById('model'))
         dlg = AlgorithmDialog(alg)
-        dlg.setAttribute(Qt.WA_DeleteOnClose)
         dlg.show()
         return True
 
@@ -130,10 +129,10 @@ class ProcessingModelItem(QgsDataItem):
         dlg.loadModel(self.path())
         dlg.show()
 
-    def actions(self):
-        run_model_action = QAction(QCoreApplication.translate('ProcessingPlugin', '&Run Model…'), self)
+    def actions(self, parent):
+        run_model_action = QAction(QCoreApplication.translate('ProcessingPlugin', '&Run Model…'), parent)
         run_model_action.triggered.connect(self.runModel)
-        edit_model_action = QAction(QCoreApplication.translate('ProcessingPlugin', '&Edit Model…'), self)
+        edit_model_action = QAction(QCoreApplication.translate('ProcessingPlugin', '&Edit Model…'), parent)
         edit_model_action.triggered.connect(self.editModel)
         return [run_model_action, edit_model_action]
 
@@ -178,6 +177,7 @@ class ProcessingPlugin:
         self.toolbox = ProcessingToolbox()
         self.iface.addDockWidget(Qt.RightDockWidgetArea, self.toolbox)
         self.toolbox.hide()
+        self.toolbox.visibilityChanged.connect(self.toolboxVisibilityChanged)
 
         self.resultsDock = ResultsDock()
         self.iface.addDockWidget(Qt.RightDockWidgetArea, self.resultsDock)
@@ -189,12 +189,14 @@ class ProcessingPlugin:
         self.menu.setObjectName('processing')
         self.menu.setTitle(self.tr('Pro&cessing'))
 
-        self.toolboxAction = self.toolbox.toggleViewAction()
+        self.toolboxAction = QAction(self.tr('&Toolbox'), self.iface.mainWindow())
+        self.toolboxAction.setCheckable(True)
         self.toolboxAction.setObjectName('toolboxAction')
         self.toolboxAction.setIcon(
             QgsApplication.getThemeIcon("/processingAlgorithm.svg"))
-        self.toolboxAction.setText(self.tr('&Toolbox'))
         self.iface.registerMainWindowAction(self.toolboxAction, 'Ctrl+Alt+T')
+        self.toolboxAction.toggled.connect(self.openToolbox)
+        self.iface.attributesToolBar().insertAction(self.iface.actionOpenStatisticalSummary(), self.toolboxAction)
         self.menu.addAction(self.toolboxAction)
 
         self.modelerAction = QAction(
@@ -212,6 +214,7 @@ class ProcessingPlugin:
         self.historyAction.triggered.connect(self.openHistory)
         self.iface.registerMainWindowAction(self.historyAction, 'Ctrl+Alt+H')
         self.menu.addAction(self.historyAction)
+        self.toolbox.processingToolbar.addAction(self.historyAction)
 
         self.resultsAction = self.resultsDock.toggleViewAction()
         self.resultsAction.setObjectName('resultsAction')
@@ -220,6 +223,14 @@ class ProcessingPlugin:
         self.resultsAction.setText(self.tr('&Results Viewer'))
         self.iface.registerMainWindowAction(self.resultsAction, 'Ctrl+Alt+R')
         self.menu.addAction(self.resultsAction)
+        self.toolbox.processingToolbar.addAction(self.resultsAction)
+
+        self.optionsAction = QAction(
+            QgsApplication.getThemeIcon("/mActionOptions.svg"),
+            self.tr('Options'), self.iface.mainWindow())
+        self.optionsAction.setObjectName('optionsAction')
+        self.optionsAction.triggered.connect(self.openProcessingOptions)
+        self.toolbox.processingToolbar.addAction(self.optionsAction)
 
         menuBar = self.iface.mainWindow().menuBar()
         menuBar.insertMenu(
@@ -230,9 +241,13 @@ class ProcessingPlugin:
         initializeMenus()
         createMenus()
 
+    def openProcessingOptions(self):
+        self.iface.showOptionsDialog(self.iface.mainWindow(), currentPage='processingOptions')
+
     def unload(self):
         self.toolbox.setVisible(False)
         self.iface.removeDockWidget(self.toolbox)
+        self.iface.attributesToolBar().removeAction(self.toolboxAction)
 
         self.resultsDock.setVisible(False)
         self.iface.removeDockWidget(self.resultsDock)
@@ -262,11 +277,11 @@ class ProcessingPlugin:
         removeMenus()
         Processing.deinitialize()
 
-    def openToolbox(self):
-        if self.toolbox.isVisible():
-            self.toolbox.hide()
-        else:
-            self.toolbox.show()
+    def openToolbox(self, show):
+        self.toolbox.setUserVisible(show)
+
+    def toolboxVisibilityChanged(self, visible):
+        self.toolboxAction.setChecked(visible)
 
     def openModeler(self):
         dlg = ModelerDialog()

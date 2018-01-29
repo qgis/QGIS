@@ -95,6 +95,14 @@ class CORE_EXPORT QgsMultiRenderChecker
     void setColorTolerance( unsigned int colorTolerance ) { mColorTolerance = colorTolerance; }
 
     /**
+     * Sets the largest allowable difference in size between the rendered and the expected image.
+     * \param xTolerance x tolerance in pixels
+     * \param yTolerance y tolerance in pixels
+     * \since QGIS 3.0
+     */
+    void setSizeTolerance( int xTolerance, int yTolerance ) { mMaxSizeDifferenceX = xTolerance; mMaxSizeDifferenceY = yTolerance; }
+
+    /**
      * Test using renderer to generate the image to be compared.
      *
      * \param testName - to be used as the basis for writing a file to
@@ -134,6 +142,8 @@ class CORE_EXPORT QgsMultiRenderChecker
     QString mControlName;
     QString mControlPathPrefix;
     unsigned int mColorTolerance = 0;
+    int mMaxSizeDifferenceX = 0;
+    int mMaxSizeDifferenceY = 0;
     QgsMapSettings mMapSettings;
 };
 
@@ -142,29 +152,6 @@ SIP_FEATURE( TESTS )
 SIP_IF_FEATURE( TESTS )
 
 ///@cond PRIVATE
-
-/**
- * \ingroup core
- * \class QgsCompositionChecker
- * Renders a composition to an image and compares with an expected output
- */
-class CORE_EXPORT QgsCompositionChecker : public QgsMultiRenderChecker
-{
-  public:
-    QgsCompositionChecker( const QString &testName, QgsComposition *composition );
-
-    void setSize( QSize size ) { mSize = size; }
-
-    bool testComposition( QString &checkedReport, int page = 0, int pixelDiff = 0 );
-
-  private:
-    QgsCompositionChecker(); //forbidden
-
-    QString mTestName;
-    QgsComposition *mComposition = nullptr;
-    QSize mSize;
-    int mDotsPerMeter;
-};
 
 /**
  * \ingroup core
@@ -192,12 +179,15 @@ class CORE_EXPORT QgsLayoutChecker : public QgsMultiRenderChecker
      * The maximum number of allowable pixels differing from the reference image is
      * specified via the \a pixelDiff argument.
      *
+     * A reference image can be created by setting \a createReferenceImage to true
+     * in this case the test will always return true.
+     *
      * The page number is specified via \a page, where 0 corresponds to the first
      * page in the layout.
      *
      * Returns false if the rendered layout differs from the expected reference image.
      */
-    bool testLayout( QString &report, int page = 0, int pixelDiff = 0 );
+    bool testLayout( QString &report, int page = 0, int pixelDiff = 0, bool createReferenceImage = false );
 
   private:
     QgsLayoutChecker() = delete;

@@ -43,6 +43,7 @@ class APP_EXPORT QgsAngleMagnetWidget : public QWidget
   signals:
     void angleChanged( double angle );
     void angleEditingFinished( double angle );
+    void angleEditingCanceled();
 
 
   public slots:
@@ -66,11 +67,11 @@ class APP_EXPORT QgsMapToolRotateFeature: public QgsMapToolEdit
     Q_OBJECT
   public:
     QgsMapToolRotateFeature( QgsMapCanvas *canvas );
-    virtual ~QgsMapToolRotateFeature();
+    ~QgsMapToolRotateFeature() override;
 
-    virtual void canvasMoveEvent( QgsMapMouseEvent *e ) override;
+    void canvasMoveEvent( QgsMapMouseEvent *e ) override;
 
-    virtual void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
+    void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
 
     //! called when map tool is being deactivated
     void deactivate() override;
@@ -81,6 +82,7 @@ class APP_EXPORT QgsMapToolRotateFeature: public QgsMapToolEdit
     void updateRubberband( double rotation );
 
     void applyRotation( double rotation );
+    void cancel();
 
   private:
 

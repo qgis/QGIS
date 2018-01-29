@@ -359,7 +359,7 @@ class TestQgsExpression: public QObject
       }
 
       QgsExpressionContext context;
-      Q_ASSERT( exp.prepare( &context ) );
+      QVERIFY( exp.prepare( &context ) );
 
       QVariant res = exp.evaluate();
       if ( exp.hasEvalError() )
@@ -388,10 +388,10 @@ class TestQgsExpression: public QObject
       QgsExpression expression( "represent_value(\"Pilots\", 'Pilots')" );
       if ( expression.hasParserError() )
         qDebug() << expression.parserErrorString();
-      Q_ASSERT( !expression.hasParserError() );
+      QVERIFY( !expression.hasParserError() );
       if ( expression.hasEvalError() )
         qDebug() << expression.evalErrorString();
-      Q_ASSERT( !expression.hasEvalError() );
+      QVERIFY( !expression.hasEvalError() );
       expression.prepare( &context );
 
       QgsFeature feature;
@@ -403,10 +403,10 @@ class TestQgsExpression: public QObject
       QgsExpression expression2( "represent_value(\"Class\", 'Class')" );
       if ( expression2.hasParserError() )
         qDebug() << expression2.parserErrorString();
-      Q_ASSERT( !expression2.hasParserError() );
+      QVERIFY( !expression2.hasParserError() );
       if ( expression2.hasEvalError() )
         qDebug() << expression2.evalErrorString();
-      Q_ASSERT( !expression2.hasEvalError() );
+      QVERIFY( !expression2.hasEvalError() );
       expression2.prepare( &context );
       mPointsLayer->getFeatures( QgsFeatureRequest().setFilterExpression( "Class = 'Jet'" ) ).nextFeature( feature );
       context.setFeature( feature );
@@ -416,10 +416,10 @@ class TestQgsExpression: public QObject
       QgsExpression expression3( "represent_value(\"Pilots\")" );
       if ( expression3.hasParserError() )
         qDebug() << expression.parserErrorString();
-      Q_ASSERT( !expression3.hasParserError() );
+      QVERIFY( !expression3.hasParserError() );
       if ( expression3.hasEvalError() )
         qDebug() << expression3.evalErrorString();
-      Q_ASSERT( !expression3.hasEvalError() );
+      QVERIFY( !expression3.hasEvalError() );
 
       mPointsLayer->getFeatures( QgsFeatureRequest().setFilterExpression( "Pilots = 1" ) ).nextFeature( feature );
       context.setFeature( feature );
@@ -428,12 +428,22 @@ class TestQgsExpression: public QObject
       expression3.prepare( &context );
       QCOMPARE( expression.evaluate( &context ).toString(), QStringLiteral( "one" ) );
 
-
       QgsExpression expression4( "represent_value('Class')" );
+      expression4.evaluate();
       if ( expression4.hasParserError() )
         qDebug() << expression4.parserErrorString();
-      Q_ASSERT( !expression4.hasParserError() );
-      Q_ASSERT( expression4.hasEvalError() );
+      QVERIFY( !expression4.hasParserError() );
+      if ( expression4.hasEvalError() )
+        qDebug() << expression4.evalErrorString();
+      QVERIFY( expression4.hasEvalError() );
+
+      expression4.prepare( &context );
+      if ( expression4.hasParserError() )
+        qDebug() << expression4.parserErrorString();
+      QVERIFY( !expression4.hasParserError() );
+      if ( expression4.hasEvalError() )
+        qDebug() << expression4.evalErrorString();
+      QVERIFY( expression4.hasEvalError() );
     }
 
     void evaluation_data()
@@ -613,12 +623,21 @@ class TestQgsExpression: public QObject
       QTest::newRow( "round(1234.557,2) - round up" ) << "round(1234.557,2)" << false << QVariant( 1234.56 );
       QTest::newRow( "round(1234.554,2) - round down" ) << "round(1234.554,2)" << false << QVariant( 1234.55 );
       QTest::newRow( "round(1234.6) - round up to int" ) << "round(1234.6)" << false << QVariant( 1235 );
-      QTest::newRow( "round(1234.6) - round down to int" ) << "round(1234.4)" << false << QVariant( 1234 );
+      QTest::newRow( "round(1234.4) - round down to int" ) << "round(1234.4)" << false << QVariant( 1234 );
       QTest::newRow( "max(1)" ) << "max(1)" << false << QVariant( 1. );
       QTest::newRow( "max(1,3.5,-2.1)" ) << "max(1,3.5,-2.1)" << false << QVariant( 3.5 );
+      QTest::newRow( "max(3.5,-2.1,1)" ) << "max(3.5,-2.1,1)" << false << QVariant( 3.5 );
+      QTest::newRow( "max with null value" ) << "max(1,3.5,null)" << false << QVariant( 3.5 );
+      QTest::newRow( "max with null value first" ) << "max(null,-3.5,2)" << false << QVariant( 2. );
+      QTest::newRow( "max with no params" ) << "max()" << false << QVariant( QVariant::Double );
+      QTest::newRow( "max with only null value" ) << "max(null)" << false << QVariant( QVariant::Double );
       QTest::newRow( "min(-1.5)" ) << "min(-1.5)" << false << QVariant( -1.5 );
       QTest::newRow( "min(-16.6,3.5,-2.1)" ) << "min(-16.6,3.5,-2.1)" << false << QVariant( -16.6 );
       QTest::newRow( "min(5,3.5,-2.1)" ) << "min(5,3.5,-2.1)" << false << QVariant( -2.1 );
+      QTest::newRow( "min with null value" ) << "min(5,null,-2.1)" << false << QVariant( -2.1 );
+      QTest::newRow( "min with null value first" ) << "min(null,3.2,6.5)" << false << QVariant( 3.2 );
+      QTest::newRow( "min with no params" ) << "min()" << false << QVariant( QVariant::Double );
+      QTest::newRow( "min with only null value" ) << "min(null)" << false << QVariant( QVariant::Double );
       QTest::newRow( "clamp(-2,1,5)" ) << "clamp(-2,1,5)" << false << QVariant( 1.0 );
       QTest::newRow( "clamp(min:=-2,value:=1,max:=5)" ) << "clamp(min:=-2,value:=1,max:=5)" << false << QVariant( 1.0 );
       QTest::newRow( "clamp(-2,-10,5)" ) << "clamp(-2,-10,5)" << false << QVariant( -2.0 );
@@ -976,7 +995,7 @@ class TestQgsExpression: public QObject
       QTest::newRow( "rpad" ) << "rpad('Hello', 10, 'x')" << false << QVariant( "Helloxxxxx" );
       QTest::newRow( "rpad truncate" ) << "rpad('Hello', 4, 'x')" << false << QVariant( "Hell" );
       QTest::newRow( "lpad" ) << "lpad('Hello', 10, 'x')" << false << QVariant( "xxxxxHello" );
-      QTest::newRow( "lpad truncate" ) << "rpad('Hello', 4, 'x')" << false << QVariant( "Hell" );
+      QTest::newRow( "lpad truncate" ) << "lpad('Hello', 4, 'x')" << false << QVariant( "Hell" );
       QTest::newRow( "title" ) << "title(' HeLlO   WORLD ')" << false << QVariant( " Hello   World " );
       QTest::newRow( "trim" ) << "trim('   Test String ')" << false << QVariant( "Test String" );
       QTest::newRow( "trim empty string" ) << "trim('')" << false << QVariant( "" );
@@ -1045,6 +1064,7 @@ class TestQgsExpression: public QObject
       QTest::newRow( "year with interval" ) << "year(tointerval('2 years'))" << false << QVariant( 2.0 );
       QTest::newRow( "age" ) << "age('2012-06-30','2012-06-28')" << false << QVariant::fromValue( QgsInterval( 172800 ) );
       QTest::newRow( "negative age" ) << "age('2012-06-28','2012-06-30')" << false << QVariant::fromValue( QgsInterval( -172800 ) );
+      QTest::newRow( "big age" ) << "age('2000-01-01','1000-01-01')" << false << QVariant::fromValue( QgsInterval( 31556908800LL ) );
       QTest::newRow( "day of week date" ) << "day_of_week(todate('2015-09-21'))" << false << QVariant( 1 );
       QTest::newRow( "day of week datetime" ) << "day_of_week(to_datetime('2015-09-20 13:01:43'))" << false << QVariant( 0 );
       QTest::newRow( "hour datetime" ) << "hour(to_datetime('2015-09-20 13:01:43'))" << false << QVariant( 13 );
@@ -1215,7 +1235,7 @@ class TestQgsExpression: public QObject
         qDebug() << exp.evalErrorString();
       if ( result.type() != expected.type() )
       {
-        qDebug() << "got " << result.typeName() << " instead of " << expected.typeName();
+        qDebug() << "got type " << result.typeName() << "(" << result.type() << ") instead of " << expected.typeName() << "(" << expected.type() << ")";
       }
       //qDebug() << res.type() << " " << result.type();
       //qDebug() << "type " << res.typeName();
@@ -1223,7 +1243,7 @@ class TestQgsExpression: public QObject
 
       QgsExpressionContext context;
 
-      Q_ASSERT( exp.prepare( &context ) );
+      QVERIFY( exp.prepare( &context ) );
 
       QVariant::Type resultType = result.type();
       QVariant::Type expectedType = expected.type();
@@ -1277,7 +1297,7 @@ class TestQgsExpression: public QObject
           break;
         }
         default:
-          Q_ASSERT( false ); // should never happen
+          QVERIFY( false ); // should never happen
       }
     }
 
@@ -1990,7 +2010,7 @@ class TestQgsExpression: public QObject
     {
       //test calculations with and without geometry calculator set
       QgsDistanceArea da;
-      da.setSourceCrs( QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:3111" ) ) );
+      da.setSourceCrs( QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:3111" ) ), QgsProject::instance()->transformContext() );
       da.setEllipsoid( QStringLiteral( "WGS84" ) );
 
       QgsFeature feat;
@@ -2231,7 +2251,7 @@ class TestQgsExpression: public QObject
       s.createFromOgcWmsCrs( QStringLiteral( "EPSG:4326" ) );
       QgsCoordinateReferenceSystem d;
       d.createFromOgcWmsCrs( QStringLiteral( "EPSG:3857" ) );
-      QgsCoordinateTransform t( s, d );
+      QgsCoordinateTransform t( s, d, QgsProject::instance() );
 
       QgsGeometry tLine = QgsGeometry::fromPolylineXY( line );
       tLine.transform( t );
@@ -2416,7 +2436,7 @@ class TestQgsExpression: public QObject
       QgsExpression exp1( QStringLiteral( "eval()" ) );
       QVariant v1 = exp1.evaluate( &context );
 
-      Q_ASSERT( !v1.isValid() );
+      QVERIFY( !v1.isValid() );
 
       QgsExpression exp2( QStringLiteral( "eval('4')" ) );
       QVariant v2 = exp2.evaluate( &context );
@@ -2902,7 +2922,7 @@ class TestQgsExpression: public QObject
       QgsExpression e3( QStringLiteral( "env('TESTENV_I_DO_NOT_EXIST')" ) );
       QVariant result3 = e3.evaluate( &context );
 
-      Q_ASSERT( result3.isNull() );
+      QVERIFY( result3.isNull() );
     }
 
     void test_formatPreviewString()

@@ -46,7 +46,7 @@ class GUI_EXPORT QgsCheckboxSearchWidgetWrapper : public QgsSearchWidgetWrapper
      * \param fieldIdx index of associated field
      * \param parent parent widget
      */
-    explicit QgsCheckboxSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent SIP_TRANSFERTHIS = 0 );
+    explicit QgsCheckboxSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Returns a variant representing the current state of the widget.
@@ -61,12 +61,12 @@ class GUI_EXPORT QgsCheckboxSearchWidgetWrapper : public QgsSearchWidgetWrapper
     bool valid() const override;
     QgsSearchWidgetWrapper::FilterFlags supportedFlags() const override;
     QgsSearchWidgetWrapper::FilterFlags defaultFlags() const override;
-    virtual QString createExpression( QgsSearchWidgetWrapper::FilterFlags flags ) const override;
+    QString createExpression( QgsSearchWidgetWrapper::FilterFlags flags ) const override;
 
   public slots:
 
-    virtual void clearWidget() override;
-    virtual void setEnabled( bool enabled ) override;
+    void clearWidget() override;
+    void setEnabled( bool enabled ) override;
 
   protected:
     QWidget *createWidget( QWidget *parent ) override;

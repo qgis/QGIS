@@ -126,8 +126,8 @@ class CORE_EXPORT QgsCredentialsNone : public QObject, public QgsCredentials
     void destroyed();
 
   protected:
-    virtual bool request( const QString &realm, QString &username SIP_INOUT, QString &password SIP_INOUT, const QString &message = QString() ) override;
-    virtual bool requestMasterPassword( QString &password SIP_INOUT, bool stored = false ) override;
+    bool request( const QString &realm, QString &username SIP_INOUT, QString &password SIP_INOUT, const QString &message = QString() ) override;
+    bool requestMasterPassword( QString &password SIP_INOUT, bool stored = false ) override;
 };
 
 
@@ -151,8 +151,8 @@ class CORE_EXPORT QgsCredentialsConsole : public QObject, public QgsCredentials
     void destroyed();
 
   protected:
-    virtual bool request( const QString &realm, QString &username SIP_INOUT, QString &password SIP_INOUT, const QString &message = QString() ) override;
-    virtual bool requestMasterPassword( QString &password SIP_INOUT, bool stored = false ) override;
+    bool request( const QString &realm, QString &username SIP_INOUT, QString &password SIP_INOUT, const QString &message = QString() ) override;
+    bool requestMasterPassword( QString &password SIP_INOUT, bool stored = false ) override;
 };
 
 #endif

@@ -60,7 +60,7 @@ bool QgsChunkNode::allChildChunksResident( const QTime &currentTime ) const
   {
     if ( !mChildren[i] )
       return false;  // not even a skeleton
-    if ( !mChildren[i]->mEntity )
+    if ( mChildren[i]->mHasData && !mChildren[i]->mEntity )
       return false;  // no there yet
     Q_UNUSED( currentTime ); // seems we do not need this extra time (it just brings extra problems)
     //if (children[i]->entityCreatedTime.msecsTo(currentTime) < 100)

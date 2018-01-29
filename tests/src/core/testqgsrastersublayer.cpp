@@ -84,7 +84,7 @@ void TestQgsRasterSubLayer::initTestCase()
   GDALAllRegister();
   QString format = QStringLiteral( "netCDF" );
   GDALDriverH myGdalDriver = GDALGetDriverByName( format.toLocal8Bit().constData() );
-  mHasNetCDF = myGdalDriver != 0;
+  mHasNetCDF = myGdalDriver != nullptr;
 
   mFileName = mTestDataDir + "landsat2.nc";
 

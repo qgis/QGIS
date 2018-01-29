@@ -129,7 +129,7 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      * \see valueAsInt()
      * \see valueAsBool()
      */
-    QString valueAsString( int key, const QgsExpressionContext &context, const QString &defaultString = QString(), bool *ok SIP_OUT = 0 ) const;
+    QString valueAsString( int key, const QgsExpressionContext &context, const QString &defaultString = QString(), bool *ok SIP_OUT = nullptr ) const;
 
     /**
      * Calculates the current value of the property with the specified key and interprets it as a color.
@@ -145,7 +145,7 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      * \see valueAsInt()
      * \see valueAsBool()
      */
-    QColor valueAsColor( int key, const QgsExpressionContext &context, const QColor &defaultColor = QColor(), bool *ok SIP_OUT = 0 ) const;
+    QColor valueAsColor( int key, const QgsExpressionContext &context, const QColor &defaultColor = QColor(), bool *ok SIP_OUT = nullptr ) const;
 
     /**
      * Calculates the current value of the property with the specified key and interprets it as a double.
@@ -161,7 +161,7 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      * \see valueAsInt()
      * \see valueAsBool()
      */
-    double valueAsDouble( int key, const QgsExpressionContext &context, double defaultValue = 0.0, bool *ok SIP_OUT = 0 ) const;
+    double valueAsDouble( int key, const QgsExpressionContext &context, double defaultValue = 0.0, bool *ok SIP_OUT = nullptr ) const;
 
     /**
      * Calculates the current value of the property with the specified key and interprets it as an integer.
@@ -177,7 +177,7 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      * \see valueAsDouble()
      * \see valueAsBool()
      */
-    int valueAsInt( int key, const QgsExpressionContext &context, int defaultValue = 0, bool *ok SIP_OUT = 0 ) const;
+    int valueAsInt( int key, const QgsExpressionContext &context, int defaultValue = 0, bool *ok SIP_OUT = nullptr ) const;
 
     /**
      * Calculates the current value of the property with the specified key and interprets it as an boolean.
@@ -193,7 +193,7 @@ class CORE_EXPORT QgsAbstractPropertyCollection
      * \see valueAsDouble()
      * \see valueAsInt()
      */
-    bool valueAsBool( int key, const QgsExpressionContext &context, bool defaultValue = false, bool *ok SIP_OUT = 0 ) const;
+    bool valueAsBool( int key, const QgsExpressionContext &context, bool defaultValue = false, bool *ok SIP_OUT = nullptr ) const;
 
     /**
      * Prepares the collection against a specified expression context. Calling prepare before evaluating the
@@ -314,7 +314,7 @@ class CORE_EXPORT QgsPropertyCollection : public QgsAbstractPropertyCollection
     virtual QgsProperty &property( int key );
 
     QVariant value( int key, const QgsExpressionContext &context, const QVariant &defaultValue = QVariant() ) const override;
-    virtual bool prepare( const QgsExpressionContext &context = QgsExpressionContext() ) const override;
+    bool prepare( const QgsExpressionContext &context = QgsExpressionContext() ) const override;
     QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext() ) const override;
     bool isActive( int key ) const override;
     bool hasActiveProperties() const override;
@@ -373,7 +373,7 @@ class CORE_EXPORT QgsPropertyCollectionStack : public QgsAbstractPropertyCollect
      */
     QgsPropertyCollectionStack() = default;
 
-    ~QgsPropertyCollectionStack();
+    ~QgsPropertyCollectionStack() override;
 
     //! Copy constructor
     QgsPropertyCollectionStack( const QgsPropertyCollectionStack &other );
@@ -467,14 +467,14 @@ class CORE_EXPORT QgsPropertyCollectionStack : public QgsAbstractPropertyCollect
      * \param context expression context the properties will be evaluated against.
      */
     QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext() ) const override;
-    virtual bool prepare( const QgsExpressionContext &context = QgsExpressionContext() ) const override;
+    bool prepare( const QgsExpressionContext &context = QgsExpressionContext() ) const override;
 
     QSet<int> propertyKeys() const override;
     bool hasProperty( int key ) const override;
 
-    virtual QVariant toVariant( const QgsPropertiesDefinition &definitions ) const override;
+    QVariant toVariant( const QgsPropertiesDefinition &definitions ) const override;
 
-    virtual bool loadVariant( const QVariant &collection, const QgsPropertiesDefinition &definitions ) override;
+    bool loadVariant( const QVariant &collection, const QgsPropertiesDefinition &definitions ) override;
 
   private:
 

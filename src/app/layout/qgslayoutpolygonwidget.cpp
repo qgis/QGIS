@@ -20,13 +20,14 @@
 #include "qgslayout.h"
 #include "qgssymbollayerutils.h"
 #include "qgslayoutitemregistry.h"
+#include "qgslayoutundostack.h"
 
 QgsLayoutPolygonWidget::QgsLayoutPolygonWidget( QgsLayoutItemPolygon *polygon )
   : QgsLayoutItemBaseWidget( nullptr, polygon )
   , mPolygon( polygon )
 {
   setupUi( this );
-  setPanelTitle( tr( "Polygon properties" ) );
+  setPanelTitle( tr( "Polygon Properties" ) );
 
   //add widget for general composer item properties
   mItemPropertiesWidget = new QgsLayoutItemPropertiesWidget( this, polygon );
@@ -45,9 +46,13 @@ QgsLayoutPolygonWidget::QgsLayoutPolygonWidget( QgsLayoutItemPolygon *polygon )
   }
 
   setGuiElementValues();
-#if 0 //TODO
-  mShapeStyleButton->setLayer( atlasCoverageLayer() );
-#endif
+
+  mPolygonStyleButton->registerExpressionContextGenerator( mPolygon );
+  mPolygonStyleButton->setLayer( coverageLayer() );
+  if ( mPolygon->layout() )
+  {
+    connect( &mPolygon->layout()->reportContext(), &QgsLayoutReportContext::layerChanged, mPolygonStyleButton, &QgsSymbolButton::setLayer );
+  }
 }
 
 bool QgsLayoutPolygonWidget::setNewItem( QgsLayoutItem *item )

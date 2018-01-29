@@ -34,6 +34,7 @@ QgsConfigureShortcutsDialog::QgsConfigureShortcutsDialog( QWidget *parent, QgsSh
   , mManager( manager )
 {
   setupUi( this );
+  QgsGui::enableAutoGeometryRestore( this );
   connect( mLeFilter, &QgsFilterLineEdit::textChanged, this, &QgsConfigureShortcutsDialog::mLeFilter_textChanged );
 
   if ( !mManager )
@@ -50,25 +51,6 @@ QgsConfigureShortcutsDialog::QgsConfigureShortcutsDialog( QWidget *parent, QgsSh
            this, &QgsConfigureShortcutsDialog::actionChanged );
 
   populateActions();
-
-  restoreState();
-}
-
-QgsConfigureShortcutsDialog::~QgsConfigureShortcutsDialog()
-{
-  saveState();
-}
-
-void QgsConfigureShortcutsDialog::saveState()
-{
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/ShortcutsDialog/geometry" ), saveGeometry() );
-}
-
-void QgsConfigureShortcutsDialog::restoreState()
-{
-  QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "Windows/ShortcutsDialog/geometry" ) ).toByteArray() );
 }
 
 void QgsConfigureShortcutsDialog::populateActions()

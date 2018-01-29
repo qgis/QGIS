@@ -16,9 +16,9 @@ import qgis  # NOQA
 
 import os
 
-from qgis.PyQt.QtCore import QFileInfo, QRectF
+from qgis.PyQt.QtCore import QFileInfo, QRectF, QDir
 from qgis.PyQt.QtXml import QDomDocument
-from qgis.PyQt.QtGui import QPainter
+from qgis.PyQt.QtGui import QPainter, QColor
 
 from qgis.core import (QgsLayoutItemMap,
                        QgsRectangle,
@@ -34,12 +34,25 @@ from qgis.core import (QgsLayoutItemMap,
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
 from qgslayoutchecker import QgsLayoutChecker
+from test_qgslayoutitem import LayoutItemTestCase
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsComposerMap(unittest.TestCase):
+class TestQgsLayoutMap(unittest.TestCase, LayoutItemTestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        cls.item_class = QgsLayoutItemMap
+
+    def setUp(self):
+        self.report = "<h1>Python QgsLayoutItemMap Tests</h1>\n"
+
+    def tearDown(self):
+        report_file_path = "%s/qgistest.html" % QDir.tempPath()
+        with open(report_file_path, 'a') as report_file:
+            report_file.write(self.report)
 
     def __init__(self, methodName):
         """Run once on class initialization."""
@@ -62,7 +75,7 @@ class TestQgsComposerMap(unittest.TestCase):
         # assert pipe.set(rasterRenderer), 'Cannot set pipe renderer'
         QgsProject.instance().addMapLayers([self.raster_layer, self.vector_layer])
 
-        # create composition with composer map
+        # create layout with layout map
         self.layout = QgsLayout(QgsProject.instance())
         self.layout.initializeDefaults()
         self.map = QgsLayoutItemMap(self.layout)
@@ -82,11 +95,12 @@ class TestQgsComposerMap(unittest.TestCase):
         self.map.setExtent(myRectangle)
         myRectangle2 = QgsRectangle(0, -256, 256, 0)
         overviewMap.setExtent(myRectangle2)
-        overviewMap.overview().setFrameMap(self.map)
+        overviewMap.overview().setLinkedMap(self.map)
         checker = QgsLayoutChecker('composermap_overview', self.layout)
         checker.setColorTolerance(6)
         checker.setControlPathPrefix("composer_mapoverview")
         myTestResult, myMessage = checker.testLayout()
+        self.report += checker.report()
         self.layout.removeLayoutItem(overviewMap)
         assert myTestResult, myMessage
 
@@ -101,11 +115,12 @@ class TestQgsComposerMap(unittest.TestCase):
         self.map.setExtent(myRectangle)
         myRectangle2 = QgsRectangle(0, -256, 256, 0)
         overviewMap.setExtent(myRectangle2)
-        overviewMap.overview().setFrameMap(self.map)
+        overviewMap.overview().setLinkedMap(self.map)
         overviewMap.overview().setBlendMode(QPainter.CompositionMode_Multiply)
         checker = QgsLayoutChecker('composermap_overview_blending', self.layout)
         checker.setControlPathPrefix("composer_mapoverview")
         myTestResult, myMessage = checker.testLayout()
+        self.report += checker.report()
         self.layout.removeLayoutItem(overviewMap)
         assert myTestResult, myMessage
 
@@ -120,11 +135,12 @@ class TestQgsComposerMap(unittest.TestCase):
         self.map.setExtent(myRectangle)
         myRectangle2 = QgsRectangle(0, -256, 256, 0)
         overviewMap.setExtent(myRectangle2)
-        overviewMap.overview().setFrameMap(self.map)
+        overviewMap.overview().setLinkedMap(self.map)
         overviewMap.overview().setInverted(True)
         checker = QgsLayoutChecker('composermap_overview_invert', self.layout)
         checker.setControlPathPrefix("composer_mapoverview")
         myTestResult, myMessage = checker.testLayout()
+        self.report += checker.report()
         self.layout.removeLayoutItem(overviewMap)
         assert myTestResult, myMessage
 
@@ -139,17 +155,18 @@ class TestQgsComposerMap(unittest.TestCase):
         self.map.setExtent(myRectangle)
         myRectangle2 = QgsRectangle(0, -256, 256, 0)
         overviewMap.setExtent(myRectangle2)
-        overviewMap.overview().setFrameMap(self.map)
+        overviewMap.overview().setLinkedMap(self.map)
         overviewMap.overview().setInverted(False)
         overviewMap.overview().setCentered(True)
         checker = QgsLayoutChecker('composermap_overview_center', self.layout)
         checker.setControlPathPrefix("composer_mapoverview")
         myTestResult, myMessage = checker.testLayout()
+        self.report += checker.report()
         self.layout.removeLayoutItem(overviewMap)
         assert myTestResult, myMessage
 
     def testMapCrs(self):
-        # create composition with composer map
+        # create layout with layout map
         map_settings = QgsMapSettings()
         map_settings.setLayers([self.vector_layer])
         layout = QgsLayout(QgsProject.instance())
@@ -176,6 +193,7 @@ class TestQgsComposerMap(unittest.TestCase):
         checker = QgsLayoutChecker('composermap_crs3857', layout)
         checker.setControlPathPrefix("composer_map")
         result, message = checker.testLayout()
+        self.report += checker.report()
         self.assertTrue(result, message)
 
         # overwrite CRS
@@ -187,6 +205,7 @@ class TestQgsComposerMap(unittest.TestCase):
         checker = QgsLayoutChecker('composermap_crs4326', layout)
         checker.setControlPathPrefix("composer_map")
         result, message = checker.testLayout()
+        self.report += checker.report()
         self.assertTrue(result, message)
 
         # change back to project CRS
@@ -194,44 +213,36 @@ class TestQgsComposerMap(unittest.TestCase):
         self.assertEqual(map.crs().authid(), 'EPSG:4326')
         self.assertFalse(map.presetCrs().isValid())
 
-    def testuniqueId(self):
-        return
-        doc = QDomDocument()
-        documentElement = doc.createElement('ComposerItemClipboard')
-        self.layout.writeXml(documentElement, doc)
-        self.layout.addItemsFromXml(documentElement, doc)
+    def testContainsAdvancedEffects(self):
+        map_settings = QgsMapSettings()
+        map_settings.setLayers([self.vector_layer])
+        layout = QgsLayout(QgsProject.instance())
+        map = QgsLayoutItemMap(layout)
 
-        # test if both composer maps have different ids
-        newMap = QgsComposerMap(self.layout, 0, 0, 10, 10)
-        mapList = self.layout.composerMapItems()
+        self.assertFalse(map.containsAdvancedEffects())
+        self.vector_layer.setBlendMode(QPainter.CompositionMode_Darken)
+        result = map.containsAdvancedEffects()
+        self.vector_layer.setBlendMode(QPainter.CompositionMode_SourceOver)
+        self.assertTrue(result)
 
-        for mapIt in mapList:
-            if mapIt != self.map:
-                newMap = mapIt
-                break
+    def testRasterization(self):
+        map_settings = QgsMapSettings()
+        map_settings.setLayers([self.vector_layer])
+        layout = QgsLayout(QgsProject.instance())
+        map = QgsLayoutItemMap(layout)
 
-        oldId = self.map.id()
-        newId = newMap.id()
+        self.assertFalse(map.requiresRasterization())
+        self.vector_layer.setBlendMode(QPainter.CompositionMode_Darken)
+        self.assertFalse(map.requiresRasterization())
+        self.assertTrue(map.containsAdvancedEffects())
 
-        self.layout.removeComposerItem(newMap)
-        myMessage = 'old: %s new: %s' % (oldId, newId)
-        assert oldId != newId, myMessage
+        map.setBackgroundEnabled(False)
+        self.assertTrue(map.requiresRasterization())
+        map.setBackgroundEnabled(True)
+        map.setBackgroundColor(QColor(1, 1, 1, 1))
+        self.assertTrue(map.requiresRasterization())
 
-    def testWorldFileGeneration(self):
-        return
-        myRectangle = QgsRectangle(781662.375, 3339523.125, 793062.375, 3345223.125)
-        self.map.setNewExtent(myRectangle)
-        self.map.setMapRotation(30.0)
-
-        self.layout.setGenerateWorldFile(True)
-        self.layout.setReferenceMap(self.map)
-
-        p = self.layout.computeWorldFileParameters()
-        pexpected = (4.180480199790922, 2.4133064516129026, 779443.7612381146,
-                     2.4136013686911886, -4.179969388427311, 3342408.5663611)
-        ptolerance = (0.001, 0.001, 1, 0.001, 0.001, 1e+03)
-        for i in range(0, 6):
-            assert abs(p[i] - pexpected[i]) < ptolerance[i]
+        self.vector_layer.setBlendMode(QPainter.CompositionMode_SourceOver)
 
 
 if __name__ == '__main__':

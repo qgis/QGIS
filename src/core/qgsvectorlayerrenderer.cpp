@@ -480,7 +480,7 @@ void QgsVectorLayerRenderer::prepareLabeling( QgsVectorLayer *layer, QSet<QStrin
 {
   if ( QgsLabelingEngine *engine2 = mContext.labelingEngine() )
   {
-    if ( layer->labeling() )
+    if ( layer->labelsEnabled() )
     {
       mLabelProvider = layer->labeling()->provider( layer );
       if ( mLabelProvider )

@@ -78,7 +78,7 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
      * \param sourceModel The QgsAttributeTableModel to use as source (mostly referred to as master model)
      * \param canvas  The mapCanvas. Used to identify the currently visible features.
      */
-    QgsAttributeTableFilterModel( QgsMapCanvas *canvas, QgsAttributeTableModel *sourceModel, QObject *parent SIP_TRANSFERTHIS = 0 );
+    QgsAttributeTableFilterModel( QgsMapCanvas *canvas, QgsAttributeTableModel *sourceModel, QObject *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Set the attribute table model that backs this model
@@ -169,11 +169,11 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
 
     inline QModelIndex mapFromMaster( const QModelIndex &sourceIndex ) const { return mapFromSource( sourceIndex ); }
 
-    virtual QModelIndex mapToSource( const QModelIndex &proxyIndex ) const override;
+    QModelIndex mapToSource( const QModelIndex &proxyIndex ) const override;
 
-    virtual QModelIndex mapFromSource( const QModelIndex &sourceIndex ) const override;
+    QModelIndex mapFromSource( const QModelIndex &sourceIndex ) const override;
 
-    virtual Qt::ItemFlags flags( const QModelIndex &index ) const override;
+    Qt::ItemFlags flags( const QModelIndex &index ) const override;
 
     /**
      * Sort by the given column using the given order.
@@ -182,7 +182,7 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
      * \param column The column which should be sorted
      * \param order  The order ( Qt::AscendingOrder or Qt::DescendingOrder )
      */
-    virtual void sort( int column, Qt::SortOrder order = Qt::AscendingOrder ) override;
+    void sort( int column, Qt::SortOrder order = Qt::AscendingOrder ) override;
 
     /**
      * Sort by the given expression using the given order.
@@ -201,7 +201,7 @@ class GUI_EXPORT QgsAttributeTableFilterModel: public QSortFilterProxyModel, pub
     //! Returns the map canvas
     QgsMapCanvas *mapCanvas() const { return mCanvas; }
 
-    virtual QVariant data( const QModelIndex &index, int role ) const override;
+    QVariant data( const QModelIndex &index, int role ) const override;
 
     QVariant headerData( int section, Qt::Orientation orientation, int role ) const override;
 

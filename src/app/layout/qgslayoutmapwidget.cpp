@@ -28,6 +28,8 @@
 #include "qgssymbollayerutils.h"
 #include "qgslayoutmapgridwidget.h"
 #include "qgsstyle.h"
+#include "qgslayoutundostack.h"
+#include "qgslayoutatlas.h"
 #include <QMenu>
 #include <QMessageBox>
 
@@ -73,7 +75,7 @@ QgsLayoutMapWidget::QgsLayoutMapWidget( QgsLayoutItemMap *item )
   connect( mOverviewCheckBox, &QgsCollapsibleGroupBoxBasic::toggled, this, &QgsLayoutMapWidget::mOverviewCheckBox_toggled );
   connect( mOverviewListWidget, &QListWidget::currentItemChanged, this, &QgsLayoutMapWidget::mOverviewListWidget_currentItemChanged );
   connect( mOverviewListWidget, &QListWidget::itemChanged, this, &QgsLayoutMapWidget::mOverviewListWidget_itemChanged );
-  setPanelTitle( tr( "Map properties" ) );
+  setPanelTitle( tr( "Map Properties" ) );
   mMapRotationSpinBox->setClearValue( 0 );
 
   //add widget for general composer item properties
@@ -108,27 +110,31 @@ QgsLayoutMapWidget::QgsLayoutMapWidget( QgsLayoutItemMap *item )
   mLayerListFromPresetButton->setToolTip( tr( "Set layer list from a map theme" ) );
   connect( menuKeepLayers, &QMenu::aboutToShow, this, &QgsLayoutMapWidget::aboutToShowKeepLayersVisibilityPresetsMenu );
 
-  mOverviewFrameMapComboBox->setItemType( QgsLayoutItemRegistry::LayoutMap );
-
   connect( item, &QgsLayoutObject::changed, this, &QgsLayoutMapWidget::updateGuiElements );
 
-#if 0 //TODO
-  QgsAtlasComposition *atlas = atlasComposition();
-  if ( atlas )
+  connect( &item->layout()->reportContext(), &QgsLayoutReportContext::layerChanged,
+           this, &QgsLayoutMapWidget::atlasLayerChanged );
+  if ( QgsLayoutAtlas *atlas = layoutAtlas() )
   {
-    connect( atlas, &QgsAtlasComposition::coverageLayerChanged,
-             this, &QgsLayoutMapWidget::atlasLayerChanged );
-    connect( atlas, &QgsAtlasComposition::toggled, this, &QgsLayoutMapWidget::compositionAtlasToggled );
-
+    connect( atlas, &QgsLayoutAtlas::toggled, this, &QgsLayoutMapWidget::compositionAtlasToggled );
     compositionAtlasToggled( atlas->enabled() );
   }
-#endif
+
   mOverviewFrameMapComboBox->setCurrentLayout( item->layout() );
+  mOverviewFrameMapComboBox->setItemType( QgsLayoutItemRegistry::LayoutMap );
   mOverviewFrameStyleButton->registerExpressionContextGenerator( item );
 
   connect( mOverviewFrameMapComboBox, &QgsLayoutItemComboBox::itemChanged, this, &QgsLayoutMapWidget::overviewMapChanged );
   connect( mCrsSelector, &QgsProjectionSelectionWidget::crsChanged, this, &QgsLayoutMapWidget::mapCrsChanged );
   connect( mOverviewFrameStyleButton, &QgsSymbolButton::changed, this, &QgsLayoutMapWidget::overviewSymbolChanged );
+
+  mOverviewFrameStyleButton->registerExpressionContextGenerator( item );
+  mOverviewFrameStyleButton->setLayer( coverageLayer() );
+  if ( item->layout() )
+  {
+    connect( &item->layout()->reportContext(), &QgsLayoutReportContext::layerChanged, mOverviewFrameStyleButton, &QgsSymbolButton::setLayer );
+  }
+
 
   registerDataDefinedButton( mScaleDDBtn, QgsLayoutObject::MapScale );
   registerDataDefinedButton( mMapRotationDDBtn, QgsLayoutObject::MapRotation );
@@ -147,6 +153,12 @@ QgsLayoutMapWidget::QgsLayoutMapWidget( QgsLayoutItemMap *item )
   connect( mMapRotationSpinBox, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgsLayoutMapWidget::rotationChanged );
 
   blockAllSignals( false );
+}
+
+void QgsLayoutMapWidget::setReportTypeString( const QString &string )
+{
+  mAtlasCheckBox->setTitle( tr( "Controlled by %1" ).arg( string ) );
+  mAtlasPredefinedScaleRadio->setToolTip( tr( "Use one of the predefined scales of the project where the %1 feature best fits." ).arg( string ) );
 }
 
 bool QgsLayoutMapWidget::setNewItem( QgsLayoutItem *item )
@@ -188,11 +200,9 @@ void QgsLayoutMapWidget::populateDataDefinedButtons()
 
 void QgsLayoutMapWidget::compositionAtlasToggled( bool atlasEnabled )
 {
-  Q_UNUSED( atlasEnabled );
-#if 0 //TODO
   if ( atlasEnabled &&
-       mMapItem && mMapItem->composition() && mMapItem->composition()->atlasComposition().coverageLayer()
-       && mMapItem->composition()->atlasComposition().coverageLayer()->wkbType() != QgsWkbTypes::NoGeometry )
+       mMapItem && mMapItem->layout() && mMapItem->layout()->reportContext().layer()
+       && mMapItem->layout()->reportContext().layer()->wkbType() != QgsWkbTypes::NoGeometry )
   {
     mAtlasCheckBox->setEnabled( true );
   }
@@ -201,7 +211,6 @@ void QgsLayoutMapWidget::compositionAtlasToggled( bool atlasEnabled )
     mAtlasCheckBox->setEnabled( false );
     mAtlasCheckBox->setChecked( false );
   }
-#endif
 }
 
 void QgsLayoutMapWidget::aboutToShowKeepLayersVisibilityPresetsMenu()
@@ -305,7 +314,7 @@ void QgsLayoutMapWidget::mapCrsChanged( const QgsCoordinateReferenceSystem &crs 
   QgsRectangle newExtent;
   try
   {
-    QgsCoordinateTransform xForm( oldCrs, crs.isValid() ? crs : QgsProject::instance()->crs() );
+    QgsCoordinateTransform xForm( oldCrs, crs.isValid() ? crs : QgsProject::instance()->crs(), QgsProject::instance() );
     QgsRectangle prevExtent = mMapItem->extent();
     newExtent = xForm.transformBoundingBox( prevExtent );
     updateExtent = true;
@@ -379,31 +388,16 @@ void QgsLayoutMapWidget::mAtlasCheckBox_toggled( bool checked )
 
 void QgsLayoutMapWidget::updateMapForAtlas()
 {
-#if 0 //TODO
   //update map if in atlas preview mode
-  QgsComposition *composition = mMapItem->composition();
-  if ( !composition )
-  {
-    return;
-  }
-  if ( composition->atlasMode() == QgsComposition::AtlasOff )
-  {
-    return;
-  }
-
   if ( mMapItem->atlasDriven() )
   {
-    //update atlas based extent for map
-    QgsAtlasComposition *atlas = &composition->atlasComposition();
-    //prepareMap causes a redraw
-    atlas->prepareMap( mMapItem );
+    mMapItem->refresh();
   }
   else
   {
     //redraw map
     mMapItem->invalidateCache();
   }
-#endif
 }
 
 void QgsLayoutMapWidget::mAtlasMarginRadio_toggled( bool checked )
@@ -526,7 +520,7 @@ void QgsLayoutMapWidget::mSetToMapCanvasExtentButton_clicked()
     try
     {
       QgsCoordinateTransform xForm( QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs(),
-                                    mMapItem->crs() );
+                                    mMapItem->crs(), QgsProject::instance() );
       newExtent = xForm.transformBoundingBox( newExtent );
     }
     catch ( QgsCsException & )
@@ -559,7 +553,7 @@ void QgsLayoutMapWidget::mViewExtentInCanvasButton_clicked()
       try
       {
         QgsCoordinateTransform xForm( mMapItem->crs(),
-                                      QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs() );
+                                      QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs(), QgsProject::instance() );
         currentMapExtent = xForm.transformBoundingBox( currentMapExtent );
       }
       catch ( QgsCsException & )
@@ -700,31 +694,26 @@ void QgsLayoutMapWidget::toggleAtlasScalingOptionsByLayerType()
     return;
   }
 
-#if 0 //TODO
   //get atlas coverage layer
-  QgsVectorLayer *coverageLayer = atlasCoverageLayer();
-  if ( !coverageLayer )
+  QgsVectorLayer *layer = coverageLayer();
+  if ( !layer )
   {
     return;
   }
 
-  switch ( coverageLayer->wkbType() )
+  if ( QgsWkbTypes::geometryType( layer->wkbType() ) == QgsWkbTypes::PointGeometry )
   {
-    case QgsWkbTypes::Point:
-    case QgsWkbTypes::Point25D:
-    case QgsWkbTypes::MultiPoint:
-    case QgsWkbTypes::MultiPoint25D:
-      //For point layers buffer setting makes no sense, so set "fixed scale" on and disable margin control
-      mAtlasFixedScaleRadio->setChecked( true );
-      mAtlasMarginRadio->setEnabled( false );
-      mAtlasPredefinedScaleRadio->setEnabled( false );
-      break;
-    default:
-      //Not a point layer, so enable changes to fixed scale control
-      mAtlasMarginRadio->setEnabled( true );
-      mAtlasPredefinedScaleRadio->setEnabled( true );
+    //For point layers buffer setting makes no sense, so set "fixed scale" on and disable margin control
+    mAtlasFixedScaleRadio->setChecked( true );
+    mAtlasMarginRadio->setEnabled( false );
+    mAtlasPredefinedScaleRadio->setEnabled( false );
   }
-#endif
+  else
+  {
+    //Not a point layer, so enable changes to fixed scale control
+    mAtlasMarginRadio->setEnabled( true );
+    mAtlasPredefinedScaleRadio->setEnabled( true );
+  }
 }
 
 void QgsLayoutMapWidget::updateComposerExtentFromGui()
@@ -835,7 +824,7 @@ void QgsLayoutMapWidget::mUpdatePreviewButton_clicked()
   {
     return;
   }
-  mMapItem->invalidateCache();
+  mMapItem->refresh();
 }
 
 void QgsLayoutMapWidget::mFollowVisibilityPresetCheckBox_stateChanged( int state )
@@ -1058,8 +1047,6 @@ void QgsLayoutMapWidget::initAnnotationDirectionBox( QComboBox *c, QgsLayoutItem
 
 void QgsLayoutMapWidget::atlasLayerChanged( QgsVectorLayer *layer )
 {
-  Q_UNUSED( layer );
-#if 0 //TODO
   if ( !layer || layer->wkbType() == QgsWkbTypes::NoGeometry )
   {
     //geometryless layer, disable atlas control
@@ -1075,7 +1062,6 @@ void QgsLayoutMapWidget::atlasLayerChanged( QgsVectorLayer *layer )
   // enable or disable fixed scale control based on layer type
   if ( mAtlasCheckBox->isChecked() )
     toggleAtlasScalingOptionsByLayerType();
-#endif
 }
 
 bool QgsLayoutMapWidget::hasPredefinedScales() const
@@ -1484,7 +1470,7 @@ void QgsLayoutMapWidget::setOverviewItems( QgsLayoutItemMapOverview *overview )
   mOverviewCheckBox->setChecked( overview->enabled() );
 
   //overview frame
-  mOverviewFrameMapComboBox->setItem( overview->frameMap() );
+  mOverviewFrameMapComboBox->setItem( overview->linkedMap() );
 
   //overview frame blending mode
   mOverviewBlendModeComboBox->setBlendMode( overview->blendMode() );
@@ -1598,7 +1584,7 @@ void QgsLayoutMapWidget::overviewMapChanged( QgsLayoutItem *item )
     return;
 
   mMapItem->beginCommand( tr( "Change Overview Map" ) );
-  overview->setFrameMapUuid( map->uuid() );
+  overview->setLinkedMap( map );
   mMapItem->update();
   mMapItem->endCommand();
 }

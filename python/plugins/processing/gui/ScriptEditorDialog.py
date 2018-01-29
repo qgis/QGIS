@@ -64,6 +64,8 @@ class ScriptEditorDialog(BASE, WIDGET):
                             Qt.WindowMaximizeButtonHint |
                             Qt.WindowCloseButtonHint)
 
+        self.searchWidget.setVisible(False)
+
         settings = QgsSettings()
         self.restoreState(settings.value("/Processing/stateScriptEditor", QByteArray()))
         self.restoreGeometry(settings.value("/Processing/geometryScriptEditor", QByteArray()))
@@ -90,6 +92,8 @@ class ScriptEditorDialog(BASE, WIDGET):
             QgsApplication.getThemeIcon('/mActionUndo.svg'))
         self.actionRedo.setIcon(
             QgsApplication.getThemeIcon('/mActionRedo.svg'))
+        self.actionFindReplace.setIcon(
+            QgsApplication.getThemeIcon('/mActionFindReplace.svg'))
         self.actionIncreaseFontSize.setIcon(
             QgsApplication.getThemeIcon('/mActionIncreaseFont.svg'))
         self.actionDecreaseFontSize.setIcon(
@@ -106,9 +110,14 @@ class ScriptEditorDialog(BASE, WIDGET):
         self.actionPaste.triggered.connect(self.editor.paste)
         self.actionUndo.triggered.connect(self.editor.undo)
         self.actionRedo.triggered.connect(self.editor.redo)
+        self.actionFindReplace.toggled.connect(self.toggleSearchBox)
         self.actionIncreaseFontSize.triggered.connect(self.editor.zoomIn)
         self.actionDecreaseFontSize.triggered.connect(self.editor.zoomOut)
         self.editor.textChanged.connect(lambda: self.setHasChanged(True))
+
+        self.btnFind.clicked.connect(self.find)
+        self.btnReplace.clicked.connect(self.replace)
+        self.lastSearch = None
 
         self.alg = alg
         self.algType = algType
@@ -265,7 +274,8 @@ class ScriptEditorDialog(BASE, WIDGET):
 
     def runAlgorithm(self):
         if self.algType == self.SCRIPT_PYTHON:
-            alg = ScriptAlgorithm(None, self.editor.text())
+            alg = ScriptAlgorithm(None, script=self.editor.text())
+            alg.setProvider(QgsApplication.processingRegistry().providerById('script'))
 
         dlg = alg.createCustomParametersWidget(self)
         if not dlg:
@@ -275,11 +285,6 @@ class ScriptEditorDialog(BASE, WIDGET):
         prevMapTool = canvas.mapTool()
 
         dlg.show()
-        dlg.exec_()
-
-        # have to manually delete the dialog - otherwise it's owned by the
-        # iface mainWindow and never deleted
-        dlg.deleteLater()
 
         if canvas.mapTool() != prevMapTool:
             try:
@@ -287,3 +292,19 @@ class ScriptEditorDialog(BASE, WIDGET):
             except:
                 pass
             canvas.setMapTool(prevMapTool)
+
+    def find(self):
+        textToFind = self.leFindText.text()
+        caseSensitive = self.chkCaseSensitive.isChecked()
+        wholeWord = self.chkWholeWord.isChecked()
+        if self.lastSearch is None or textToFind != self.lastSearch:
+            self.editor.findFirst(textToFind, False, caseSensitive, wholeWord, True)
+        else:
+            self.editor.findNext()
+
+    def replace(self):
+        textToReplace = self.leReplaceText.text()
+        self.editor.replaceSelectedText(textToReplace)
+
+    def toggleSearchBox(self, checked):
+        self.searchWidget.setVisible(checked)

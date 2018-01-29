@@ -28,7 +28,7 @@ class CUSTOMWIDGETS_EXPORT QgsSpinBoxPlugin : public QObject, public QDesignerCu
     Q_INTERFACES( QDesignerCustomWidgetInterface )
 
   public:
-    explicit QgsSpinBoxPlugin( QObject *parent = 0 );
+    explicit QgsSpinBoxPlugin( QObject *parent = nullptr );
 
   private:
     bool mInitialized;

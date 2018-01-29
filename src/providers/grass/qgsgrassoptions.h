@@ -28,7 +28,7 @@ class GRASS_LIB_EXPORT QgsGrassOptions : public QgsOptionsDialogBase, private Ui
     Q_OBJECT
 
   public:
-    explicit QgsGrassOptions( QWidget *parent = 0 );
+    explicit QgsGrassOptions( QWidget *parent = nullptr );
 
   private slots:
     void mGisbaseBrowseButton_clicked();

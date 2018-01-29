@@ -25,10 +25,11 @@ class QgsWFSDescribeFeatureType : public QgsWfsRequest
     explicit QgsWFSDescribeFeatureType( const QString &uri );
 
     //! Issue the request
-    bool requestFeatureType( const QString &WFSVersion, const QString &typeName );
+    bool requestFeatureType( const QString &WFSVersion, const QString &typeName,
+                             bool forceSingularTypeName = false );
 
   protected:
-    virtual QString errorMessageWithReason( const QString &reason ) override;
+    QString errorMessageWithReason( const QString &reason ) override;
 };
 
 #endif // QGSWFSDESCRIBEFEATURETYPE_H

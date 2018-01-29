@@ -58,7 +58,7 @@ class GUI_EXPORT QgsFloatingWidget: public QWidget
      * Constructor for QgsFloatingWidget.
      * \param parent parent widget
      */
-    QgsFloatingWidget( QWidget *parent SIP_TRANSFERTHIS = 0 );
+    QgsFloatingWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Sets the widget to "anchor" the floating widget to. The floating widget will be repositioned whenever the
@@ -119,7 +119,8 @@ class GUI_EXPORT QgsFloatingWidget: public QWidget
 
   protected:
     void showEvent( QShowEvent *e ) override;
-    virtual void paintEvent( QPaintEvent *e ) override;
+    void paintEvent( QPaintEvent *e ) override;
+    void resizeEvent( QResizeEvent *e ) override;
 
   private slots:
 
@@ -149,7 +150,7 @@ class QgsFloatingWidgetEventFilter: public QObject
 
     QgsFloatingWidgetEventFilter( QWidget *parent = nullptr );
 
-    virtual bool eventFilter( QObject *object, QEvent *event ) override;
+    bool eventFilter( QObject *object, QEvent *event ) override;
 
   signals:
 

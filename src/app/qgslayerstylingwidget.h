@@ -59,13 +59,13 @@ class APP_EXPORT QgsMapLayerStyleCommand : public QUndoCommand
      * Return unique ID for this kind of undo command.
      * Currently we do not have a central registry of undo command IDs, so it is a random magic number.
      */
-    virtual int id() const override { return 0xbeef; }
+    int id() const override { return 0xbeef; }
 
-    virtual void undo() override;
-    virtual void redo() override;
+    void undo() override;
+    void redo() override;
 
     //! Try to merge with other commands of this type when they are created in small time interval
-    virtual bool mergeWith( const QUndoCommand *other ) override;
+    bool mergeWith( const QUndoCommand *other ) override;
 
   private:
     QgsMapLayer *mLayer = nullptr;
@@ -89,8 +89,8 @@ class APP_EXPORT QgsLayerStylingWidget : public QWidget, private Ui::QgsLayerSty
       Symbology3D,
     };
 
-    QgsLayerStylingWidget( QgsMapCanvas *canvas, const QList<QgsMapLayerConfigWidgetFactory *> &pages, QWidget *parent = 0 );
-    ~QgsLayerStylingWidget();
+    QgsLayerStylingWidget( QgsMapCanvas *canvas, const QList<QgsMapLayerConfigWidgetFactory *> &pages, QWidget *parent = nullptr );
+    ~QgsLayerStylingWidget() override;
     QgsMapLayer *layer() { return mCurrentLayer; }
 
     void setPageFactories( const QList<QgsMapLayerConfigWidgetFactory *> &factories );

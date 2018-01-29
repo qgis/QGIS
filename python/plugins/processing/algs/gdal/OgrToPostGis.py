@@ -122,7 +122,7 @@ class OgrToPostGis(GdalAlgorithm):
                                                        self.tr('Maximum distance between 2 nodes (densification)'),
                                                        defaultValue='', optional=True))
         self.addParameter(QgsProcessingParameterExtent(self.SPAT,
-                                                       self.tr('Select features by extent (defined in input layer CRS)')))
+                                                       self.tr('Select features by extent (defined in input layer CRS)'), optional=True))
         self.addParameter(QgsProcessingParameterBoolean(self.CLIP,
                                                         self.tr('Clip the input layer using the above (rectangle) extent'),
                                                         defaultValue=False))
@@ -162,6 +162,9 @@ class OgrToPostGis(GdalAlgorithm):
     def group(self):
         return self.tr('Vector miscellaneous')
 
+    def groupId(self):
+        return 'vectormiscellaneous'
+
     def getConnectionString(self, parameters, context):
         host = self.parameterAsString(parameters, self.HOST, context)
         port = self.parameterAsString(parameters, self.PORT, context)
@@ -184,9 +187,8 @@ class OgrToPostGis(GdalAlgorithm):
             arguments.append('user=' + user)
         return GdalUtils.escapeAndJoin(arguments)
 
-    def getConsoleCommands(self, parameters, context, feedback):
-        inLayer = self.parameterAsSource(parameters, self.INPUT, context)
-        ogrLayer, layername = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback)
+    def getConsoleCommands(self, parameters, context, feedback, executing=True):
+        ogrLayer, layername = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback, executing)
         shapeEncoding = self.parameterAsString(parameters, self.SHAPE_ENCODING, context)
         ssrs = self.parameterAsCrs(parameters, self.S_SRS, context).authid()
         tsrs = self.parameterAsCrs(parameters, self.T_SRS, context).authid()
@@ -203,8 +205,6 @@ class OgrToPostGis(GdalAlgorithm):
         simplify = self.parameterAsString(parameters, self.SIMPLIFY, context)
         segmentize = self.parameterAsString(parameters, self.SEGMENTIZE, context)
         spat = self.parameterAsExtent(parameters, self.SPAT, context)
-        if spat.isNull():
-            spat = inLayer.sourceExtent()
         clip = self.parameterAsBool(parameters, self.CLIP, context)
         where = self.parameterAsString(parameters, self.WHERE, context)
         wherestring = '-where "' + where + '"'
@@ -235,7 +235,7 @@ class OgrToPostGis(GdalAlgorithm):
         arguments.append('"')
         arguments.append(dimstring)
         arguments.append(ogrLayer)
-        arguments.append(GdalUtils.ogrLayerName(inLayer))
+        arguments.append(layername)
         if index:
             arguments.append(indexstring)
         if launder:
@@ -256,7 +256,7 @@ class OgrToPostGis(GdalAlgorithm):
         elif primary_key is not None:
             arguments.append("-lco FID=" + primary_key)
         if len(table) == 0:
-            table = GdalUtils.ogrLayerName(inLayer).lower()
+            table = layername.lower()
         if schema:
             table = '{}.{}'.format(schema, table)
         arguments.append('-nln')

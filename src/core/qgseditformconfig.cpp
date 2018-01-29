@@ -261,6 +261,7 @@ void QgsEditFormConfig::setSuppress( QgsEditFormConfig::FeatureFormSuppress s )
 void QgsEditFormConfig::readXml( const QDomNode &node, const QgsReadWriteContext &context )
 {
   d.detach();
+
   QDomNode editFormNode = node.namedItem( QStringLiteral( "editform" ) );
   if ( !editFormNode.isNull() )
   {
@@ -287,7 +288,7 @@ void QgsEditFormConfig::readXml( const QDomNode &node, const QgsReadWriteContext
   }
 
   // Temporary < 2.12 b/w compatibility "dot" support patch
-  // @see: https://github.com/qgis/QGIS/pull/2498
+  // \see: https://github.com/qgis/QGIS/pull/2498
   // For b/w compatibility, check if there's a dot in the function name
   // and if yes, transform it in an import statement for the module
   // and set the PythonInitCodeSource to CodeSourceDialog
@@ -336,6 +337,22 @@ void QgsEditFormConfig::readXml( const QDomNode &node, const QgsReadWriteContext
     {
       d->mEditorLayout = QgsEditFormConfig::GeneratedLayout;
     }
+  }
+
+  d->mFieldEditables.clear();
+  QDomNodeList editableNodeList = node.namedItem( QStringLiteral( "editable" ) ).toElement().childNodes();
+  for ( int i = 0; i < editableNodeList.size(); ++i )
+  {
+    QDomElement editableElement = editableNodeList.at( i ).toElement();
+    d->mFieldEditables.insert( editableElement.attribute( QStringLiteral( "name" ) ), static_cast< bool >( editableElement.attribute( QStringLiteral( "editable" ) ).toInt() ) );
+  }
+
+  d->mLabelOnTop.clear();
+  QDomNodeList labelOnTopNodeList = node.namedItem( QStringLiteral( "labelOnTop" ) ).toElement().childNodes();
+  for ( int i = 0; i < labelOnTopNodeList.size(); ++i )
+  {
+    QDomElement labelOnTopElement = labelOnTopNodeList.at( i ).toElement();
+    d->mLabelOnTop.insert( labelOnTopElement.attribute( QStringLiteral( "name" ) ), static_cast< bool >( labelOnTopElement.attribute( QStringLiteral( "labelOnTop" ) ).toInt() ) );
   }
 
   QDomNodeList widgetsNodeList = node.namedItem( QStringLiteral( "widgets" ) ).toElement().childNodes();
@@ -438,6 +455,26 @@ void QgsEditFormConfig::writeXml( QDomNode &node, const QgsReadWriteContext &con
 
     node.appendChild( tabsElem );
   }
+
+  QDomElement editableElem = doc.createElement( QStringLiteral( "editable" ) );
+  for ( auto editIt = d->mFieldEditables.constBegin(); editIt != d->mFieldEditables.constEnd(); ++editIt )
+  {
+    QDomElement fieldElem = doc.createElement( QStringLiteral( "field" ) );
+    fieldElem.setAttribute( QStringLiteral( "name" ), editIt.key() );
+    fieldElem.setAttribute( QStringLiteral( "editable" ), editIt.value() ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+    editableElem.appendChild( fieldElem );
+  }
+  node.appendChild( editableElem );
+
+  QDomElement labelOnTopElem = doc.createElement( QStringLiteral( "labelOnTop" ) );
+  for ( auto labelOnTopIt = d->mLabelOnTop.constBegin(); labelOnTopIt != d->mLabelOnTop.constEnd(); ++labelOnTopIt )
+  {
+    QDomElement fieldElem = doc.createElement( QStringLiteral( "field" ) );
+    fieldElem.setAttribute( QStringLiteral( "name" ), labelOnTopIt.key() );
+    fieldElem.setAttribute( QStringLiteral( "labelOnTop" ), labelOnTopIt.value() ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+    labelOnTopElem.appendChild( fieldElem );
+  }
+  node.appendChild( labelOnTopElem );
 
   QDomElement widgetsElem = doc.createElement( QStringLiteral( "widgets" ) );
 

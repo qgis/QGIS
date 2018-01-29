@@ -38,7 +38,7 @@ class ANALYSIS_EXPORT QgsGeometryTypeCheckError : public QgsGeometryCheckError
              mTypeName == static_cast<QgsGeometryTypeCheckError *>( other )->mTypeName;
     }
 
-    virtual QString description() const override { return QStringLiteral( "%1 (%2)" ).arg( mCheck->errorDescription(), mTypeName ); }
+    QString description() const override { return QStringLiteral( "%1 (%2)" ).arg( mCheck->errorDescription(), mTypeName ); }
 
   private:
     QString mTypeName;

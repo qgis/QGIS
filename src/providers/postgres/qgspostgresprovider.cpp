@@ -90,7 +90,6 @@ QgsPostgresProvider::pkType( const QgsField &f ) const
 QgsPostgresProvider::QgsPostgresProvider( QString const &uri )
   : QgsVectorDataProvider( uri )
   , mShared( new QgsPostgresSharedData )
-  , mEnabledCapabilities( 0 )
 {
 
   QgsDebugMsg( QString( "URI: %1 " ).arg( uri ) );
@@ -3524,7 +3523,6 @@ bool QgsPostgresProvider::getGeometryDetails()
     }
     layerProperty.geometryColName = mGeometryColumn;
     layerProperty.geometryColType = mSpatialColType;
-    layerProperty.force2d         = false;
 
     QString delim;
 
@@ -3566,7 +3564,6 @@ bool QgsPostgresProvider::getGeometryDetails()
           // only what we requested is available
           mDetectedGeomType = layerProperty.types.at( 0 );
           mDetectedSrid     = QString::number( layerProperty.srids.at( 0 ) );
-          mForce2d          = layerProperty.force2d;
         }
       }
       else
@@ -3581,7 +3578,6 @@ bool QgsPostgresProvider::getGeometryDetails()
   QgsDebugMsg( QString( "Requested SRID is %1" ).arg( mRequestedSrid ) );
   QgsDebugMsg( QString( "Detected type is %1" ).arg( mDetectedGeomType ) );
   QgsDebugMsg( QString( "Requested type is %1" ).arg( mRequestedGeomType ) );
-  QgsDebugMsg( QString( "Force to 2D %1" ).arg( mForce2d ? "Yes" : "No" ) );
 
   mValid = ( mDetectedGeomType != QgsWkbTypes::Unknown || mRequestedGeomType != QgsWkbTypes::Unknown )
            && ( !mDetectedSrid.isEmpty() || !mRequestedSrid.isEmpty() );
@@ -4905,7 +4901,7 @@ class QgsPostgresSourceSelectProvider : public QgsSourceSelectProvider  //#spell
 
     QString providerKey() const override { return QStringLiteral( "postgres" ); }
     QString text() const override { return QObject::tr( "PostgreSQL" ); }
-    int ordering() const override { return QgsSourceSelectProvider::OrderDatabaseProvider + 10; }
+    int ordering() const override { return QgsSourceSelectProvider::OrderDatabaseProvider + 20; }
     QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddPostgisLayer.svg" ) ); }
     QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
     {

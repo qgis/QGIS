@@ -18,6 +18,7 @@
 #include "qgsprocessingprovider.h"
 #include "qgsapplication.h"
 #include "qgsvectorfilewriter.h"
+#include "qgsrasterfilewriter.h"
 #include "qgssettings.h"
 
 QgsProcessingProvider::QgsProcessingProvider( QObject *parent SIP_TRANSFERTHIS )
@@ -47,7 +48,7 @@ QString QgsProcessingProvider::longName() const
 
 QStringList QgsProcessingProvider::supportedOutputRasterLayerExtensions() const
 {
-  return QStringList() << QStringLiteral( "tif" );
+  return QgsRasterFileWriter::supportedFormatExtensions();
 }
 
 void QgsProcessingProvider::refreshAlgorithms()
@@ -74,7 +75,10 @@ bool QgsProcessingProvider::addAlgorithm( QgsProcessingAlgorithm *algorithm )
     return false;
 
   if ( mAlgorithms.contains( algorithm->name() ) )
+  {
+    QgsLogger::warning( QStringLiteral( "Duplicate algorithm name %1 for provider %2" ).arg( algorithm->name(), id() ) );
     return false;
+  }
 
   // init the algorithm - this allows direct querying of the algorithm's parameters
   // and outputs from the provider's copy
@@ -137,3 +141,7 @@ QString QgsProcessingProvider::defaultRasterFileExtension() const
   }
 }
 
+bool QgsProcessingProvider::supportsNonFileBasedOutput() const
+{
+  return true;
+}

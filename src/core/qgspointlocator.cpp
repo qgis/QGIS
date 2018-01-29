@@ -620,13 +620,13 @@ class QgsPointLocator_DumpTree : public SpatialIndex::IQueryStrategy
 ////////////////////////////////////////////////////////////////////////////
 
 
-QgsPointLocator::QgsPointLocator( QgsVectorLayer *layer, const QgsCoordinateReferenceSystem &destCRS, const QgsRectangle *extent )
+QgsPointLocator::QgsPointLocator( QgsVectorLayer *layer, const QgsCoordinateReferenceSystem &destCRS, const QgsCoordinateTransformContext &transformContext, const QgsRectangle *extent )
   : mIsEmptyLayer( false )
   , mLayer( layer )
 {
   if ( destCRS.isValid() )
   {
-    mTransform = QgsCoordinateTransform( layer->crs(), destCRS );
+    mTransform = QgsCoordinateTransform( layer->crs(), destCRS, transformContext );
   }
 
   setExtent( extent );

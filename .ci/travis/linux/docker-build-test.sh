@@ -58,10 +58,10 @@ echo "travis_fold:end:cmake"
 #######
 # Build
 #######
-echo "travis_fold:start:ninja-build.1"
+# echo "travis_fold:start:ninja-build.1"
 echo "${bold}Building QGIS...${endbold}"
 ${CTEST_BUILD_COMMAND}
-echo "travis_fold:end:ninja-build.1"
+# echo "travis_fold:end:ninja-build.1"
 
 # Temporarily uncomment to debug ccache issues
 # echo "travis_fold:start:ccache-debug"

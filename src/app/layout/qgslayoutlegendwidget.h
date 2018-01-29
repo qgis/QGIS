@@ -20,11 +20,9 @@
 
 #include "ui_qgslayoutlegendwidgetbase.h"
 #include "qgslayoutitemwidget.h"
+#include "qgslayoutitemlegend.h"
 #include <QWidget>
 #include <QItemDelegate>
-
-class QgsLayoutItemLegend;
-
 
 /**
  * \ingroup app
@@ -41,6 +39,7 @@ class QgsLayoutLegendWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayo
     void updateLegend();
 
     QgsLayoutItemLegend *legend() { return mLegend; }
+    void setReportTypeString( const QString &string ) override;
 
   protected:
 
@@ -111,7 +110,7 @@ class QgsLayoutLegendWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayo
     QgsLayoutLegendWidget() = delete;
     void blockAllSignals( bool b );
 
-    QgsLayoutItemLegend *mLegend = nullptr;
+    QPointer< QgsLayoutItemLegend > mLegend;
 
     QgsLayoutItemPropertiesWidget *mItemPropertiesWidget = nullptr;
 };
@@ -123,7 +122,7 @@ class QgsLayoutLegendMenuProvider : public QgsLayerTreeViewMenuProvider
   public:
     QgsLayoutLegendMenuProvider( QgsLayerTreeView *view, QgsLayoutLegendWidget *w );
 
-    virtual QMenu *createContextMenu() override;
+    QMenu *createContextMenu() override;
 
   protected:
     QgsLayerTreeView *mView = nullptr;

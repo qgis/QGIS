@@ -25,7 +25,7 @@ class QgsMapToolRegularPolygon2Points: public QgsMapToolAddRegularPolygon
 
   public:
     QgsMapToolRegularPolygon2Points( QgsMapToolCapture *parentTool, QgsMapCanvas *canvas, CaptureMode mode = CaptureLine );
-    ~QgsMapToolRegularPolygon2Points();
+    ~QgsMapToolRegularPolygon2Points() override;
 
     void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
     void cadCanvasMoveEvent( QgsMapMouseEvent *e ) override;

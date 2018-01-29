@@ -58,15 +58,18 @@ void QgsCategorizedSymbolRendererModel::setRenderer( QgsCategorizedSymbolRendere
 {
   if ( mRenderer )
   {
-    beginRemoveRows( QModelIndex(), 0, mRenderer->categories().size() - 1 );
+    beginRemoveRows( QModelIndex(), 0, std::max( mRenderer->categories().size() - 1, 0 ) );
     mRenderer = nullptr;
     endRemoveRows();
   }
   if ( renderer )
   {
-    beginInsertRows( QModelIndex(), 0, renderer->categories().size() - 1 );
     mRenderer = renderer;
-    endInsertRows();
+    if ( renderer->categories().size() > 0 )
+    {
+      beginInsertRows( QModelIndex(), 0, renderer->categories().size() - 1 );
+      endInsertRows();
+    }
   }
 }
 

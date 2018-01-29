@@ -85,7 +85,7 @@ class QgsLocatorFilter : QObject
       Lowest
     };
 
-    QgsLocatorFilter( QObject *parent = 0 );
+    QgsLocatorFilter( QObject *parent = nullptr );
 %Docstring
  Constructor for QgsLocatorFilter.
 %End
@@ -193,7 +193,7 @@ class QgsLocatorFilter : QObject
  :rtype: bool
 %End
 
-    virtual void openConfigWidget( QWidget *parent = 0 );
+    virtual void openConfigWidget( QWidget *parent = nullptr );
 %Docstring
  Opens the configuration widget for the filter (if it has one), with the specified ``parent`` widget.
  The base class implementation does nothing. Subclasses can override this to show their own

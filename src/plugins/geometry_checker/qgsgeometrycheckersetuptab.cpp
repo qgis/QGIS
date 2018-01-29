@@ -24,7 +24,6 @@
 
 #include "qgsfeatureiterator.h"
 #include "qgisinterface.h"
-#include "qgscrscache.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 #include "qgsmapcanvas.h"
@@ -54,15 +53,10 @@ QgsGeometryCheckerSetupTab::QgsGeometryCheckerSetupTab( QgisInterface *iface, QD
   mAbortButton = new QPushButton( tr( "Abort" ) );
   mRunButton->setEnabled( false );
 
-  const auto filterFormatMap = QgsVectorFileWriter::supportedFiltersAndFormats( QgsVectorFileWriter::SortRecommended | QgsVectorFileWriter::SkipNonSpatialFormats );
-  for ( const QgsVectorFileWriter::FilterFormatDetails &filter : filterFormatMap )
+  const auto drivers = QgsVectorFileWriter::ogrDriverList( QgsVectorFileWriter::SortRecommended | QgsVectorFileWriter::SkipNonSpatialFormats );
+  for ( const QgsVectorFileWriter::DriverDetails &driver : drivers )
   {
-    QString driverName = filter.driverName;
-    ui.comboBoxOutputFormat->addItem( driverName );
-    if ( driverName == QLatin1String( "ESRI Shapefile" ) )
-    {
-      ui.comboBoxOutputFormat->setCurrentIndex( ui.comboBoxOutputFormat->count() - 1 );
-    }
+    ui.comboBoxOutputFormat->addItem( driver.longName, driver.driverName );
   }
   ui.listWidgetInputLayers->setIconSize( QSize( 16, 16 ) );
 
@@ -178,7 +172,7 @@ QList<QgsVectorLayer *> QgsGeometryCheckerSetupTab::getSelectedLayers()
 
 void QgsGeometryCheckerSetupTab::validateInput()
 {
-  QStringList layerCrs = QStringList() << mIface->mapCanvas()->mapSettings().destinationCrs().authid();
+  QStringList layerCrs = QStringList() << QgsProject::instance()->crs().authid();
   QList<QgsVectorLayer *> layers = getSelectedLayers();
   int nApplicable = 0;
   int nPoint = 0;
@@ -215,16 +209,6 @@ void QgsGeometryCheckerSetupTab::validateInput()
 
 void QgsGeometryCheckerSetupTab::selectOutputDirectory()
 {
-  QString filterString = QgsVectorFileWriter::filterForDriver( QStringLiteral( "GPKG" ) );
-  const auto filterFormatMap = QgsVectorFileWriter::supportedFiltersAndFormats( QgsVectorFileWriter::SortRecommended | QgsVectorFileWriter::SkipNonSpatialFormats );
-  for ( const QgsVectorFileWriter::FilterFormatDetails &filter : filterFormatMap )
-  {
-    QString driverName = filter.driverName;
-    if ( driverName != QLatin1String( "ESRI Shapefile" ) ) // Default entry, first in list (see above)
-    {
-      filterString += ";;" + filter.filterString;
-    }
-  }
   QString initialdir = ui.lineEditOutputDirectory->text();
   if ( initialdir.isEmpty() || !QDir( initialdir ).exists() )
   {
@@ -297,7 +281,7 @@ void QgsGeometryCheckerSetupTab::runChecks()
   {
     // Get output directory and file extension
     QDir outputDir = QDir( ui.lineEditOutputDirectory->text() );
-    QString outputDriverName = ui.comboBoxOutputFormat->currentText();
+    QString outputDriverName = ui.comboBoxOutputFormat->currentData().toString();
     QgsVectorFileWriter::MetaData metadata;
     if ( !QgsVectorFileWriter::driverMetadata( outputDriverName, metadata ) )
     {
@@ -431,7 +415,7 @@ void QgsGeometryCheckerSetupTab::runChecks()
   for ( QgsVectorLayer *layer : processLayers )
   {
     double layerToMapUntis = mIface->mapCanvas()->mapSettings().layerToMapUnits( layer );
-    QgsCoordinateTransform layerToMapTransform = QgsCoordinateTransformCache::instance()->transform( layer->crs().authid(), mIface->mapCanvas()->mapSettings().destinationCrs().authid() );
+    QgsCoordinateTransform layerToMapTransform( layer->crs(), QgsProject::instance()->crs(), QgsProject::instance() );
     featurePools.insert( layer->id(), new QgsFeaturePool( layer, layerToMapUntis, layerToMapTransform, selectedOnly ) );
   }
   // LineLayerIntersection check is enabled, make sure there is also a feature pool for that layer
@@ -440,11 +424,11 @@ void QgsGeometryCheckerSetupTab::runChecks()
     QgsVectorLayer *layer = dynamic_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( ui.comboLineLayerIntersection->currentData().toString() ) );
     Q_ASSERT( layer );
     double layerToMapUntis = mIface->mapCanvas()->mapSettings().layerToMapUnits( layer );
-    QgsCoordinateTransform layerToMapTransform = QgsCoordinateTransformCache::instance()->transform( layer->crs().authid(), mIface->mapCanvas()->mapSettings().destinationCrs().authid() );
+    QgsCoordinateTransform layerToMapTransform( layer->crs(), QgsProject::instance()->crs(), QgsProject::instance() );
     featurePools.insert( layer->id(), new QgsFeaturePool( layer, layerToMapUntis, layerToMapTransform, selectedOnly ) );
   }
 
-  QgsGeometryCheckerContext *context = new QgsGeometryCheckerContext( ui.spinBoxTolerance->value(), mIface->mapCanvas()->mapSettings().destinationCrs().authid(), featurePools );
+  QgsGeometryCheckerContext *context = new QgsGeometryCheckerContext( ui.spinBoxTolerance->value(), QgsProject::instance()->crs(), featurePools );
 
   QList<QgsGeometryCheck *> checks;
   for ( const QgsGeometryCheckFactory *factory : QgsGeometryCheckFactoryRegistry::getCheckFactories() )

@@ -197,3 +197,13 @@ void QgsMapToolMoveFeature::deactivate()
 
   QgsMapTool::deactivate();
 }
+
+void QgsMapToolMoveFeature::keyReleaseEvent( QKeyEvent *e )
+{
+  if ( mRubberBand && e->key() == Qt::Key_Escape )
+  {
+    cadDockWidget()->clear();
+    delete mRubberBand;
+    mRubberBand = nullptr;
+  }
+}

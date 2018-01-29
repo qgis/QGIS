@@ -42,6 +42,7 @@
 #include "qgsanimatedicon.h"
 
 // use GDAL VSI mechanism
+#define CPL_SUPRESS_CPLUSPLUS  //#spellok
 #include "cpl_vsi.h"
 #include "cpl_string.h"
 
@@ -102,6 +103,11 @@ QIcon QgsFavoritesItem::iconFavorites()
   return QgsApplication::getThemeIcon( QStringLiteral( "/mIconFavourites.png" ) );
 }
 
+QVariant QgsFavoritesItem::sortKey() const
+{
+  return QStringLiteral( " 0" );
+}
+
 QIcon QgsZipItem::iconZip()
 {
   return QgsApplication::getThemeIcon( QStringLiteral( "/mIconZip.png" ) );
@@ -148,6 +154,16 @@ QgsDataItem::~QgsDataItem()
 QString QgsDataItem::pathComponent( const QString &string )
 {
   return QString( string ).replace( QRegExp( "[\\\\/]" ), QStringLiteral( "|" ) );
+}
+
+QVariant QgsDataItem::sortKey() const
+{
+  return mSortKey.isValid() ? mSortKey : name();
+}
+
+void QgsDataItem::setSortKey( const QVariant &key )
+{
+  mSortKey = key;
 }
 
 void QgsDataItem::deleteLater()
@@ -212,6 +228,12 @@ QIcon QgsDataItem::icon()
   }
 
   return mIconMap.value( mIconName );
+}
+
+void QgsDataItem::setName( const QString &name )
+{
+  mName = name;
+  emit dataChanged( this );
 }
 
 QVector<QgsDataItem *> QgsDataItem::createChildren()
@@ -753,6 +775,10 @@ QVector<QgsDataItem *> QgsDirectoryItem::createChildren()
       continue;
 
     QgsDirectoryItem *item = new QgsDirectoryItem( this, subdir, subdirPath, path );
+
+    // we want directories shown before files
+    item->setSortKey( QStringLiteral( "  %1" ).arg( subdir ) );
+
     // propagate signals up to top
 
     children.append( item );
@@ -770,9 +796,9 @@ QVector<QgsDataItem *> QgsDirectoryItem::createChildren()
     QString path = dir.absoluteFilePath( name );
     QFileInfo fileInfo( path );
 
-    if ( fileInfo.suffix() == QLatin1String( "qgs" ) )
+    if ( fileInfo.suffix() == QLatin1String( "qgs" ) || fileInfo.suffix() == QLatin1String( "qgz" ) )
     {
-      QgsDataItem *item = new QgsProjectItem( this, name, path );
+      QgsDataItem *item = new QgsProjectItem( this, fileInfo.baseName(), path );
       children.append( item );
       continue;
     }
@@ -1060,7 +1086,7 @@ QgsProjectItem::QgsProjectItem( QgsDataItem *parent, const QString &name, const 
   : QgsDataItem( QgsDataItem::Project, parent, name, path )
 {
   mIconName = QStringLiteral( ":/images/icons/qgis-icon-16x16.png" );
-
+  setToolTip( QDir::toNativeSeparators( path ) );
   setState( Populated ); // no more children
 }
 
@@ -1087,26 +1113,37 @@ QVector<QgsDataItem *> QgsFavoritesItem::createChildren()
   QVector<QgsDataItem *> children;
 
   QgsSettings settings;
-  QStringList favDirs = settings.value( QStringLiteral( "browser/favourites" ), QVariant() ).toStringList();
+  const QStringList favDirs = settings.value( QStringLiteral( "browser/favourites" ), QVariant() ).toStringList();
 
-  Q_FOREACH ( const QString &favDir, favDirs )
+  for ( const QString &favDir : favDirs )
   {
-    children << createChildren( favDir );
+    QStringList parts = favDir.split( QStringLiteral( "|||" ) );
+    if ( parts.empty() )
+      continue;
+
+    QString dir = parts.at( 0 );
+    QString name = dir;
+    if ( parts.count() > 1 )
+      name = parts.at( 1 );
+
+    children << createChildren( dir, name );
   }
 
   return children;
 }
 
-void QgsFavoritesItem::addDirectory( const QString &favDir )
+void QgsFavoritesItem::addDirectory( const QString &favDir, const QString &n )
 {
+  QString name = n.isEmpty() ? favDir : n;
+
   QgsSettings settings;
   QStringList favDirs = settings.value( QStringLiteral( "browser/favourites" ) ).toStringList();
-  favDirs.append( favDir );
+  favDirs.append( QStringLiteral( "%1|||%2" ).arg( favDir, name ) );
   settings.setValue( QStringLiteral( "browser/favourites" ), favDirs );
 
   if ( state() == Populated )
   {
-    QVector<QgsDataItem *> items = createChildren( favDir );
+    QVector<QgsDataItem *> items = createChildren( favDir, name );
     Q_FOREACH ( QgsDataItem *item, items )
     {
       addChildItem( item, true );
@@ -1121,7 +1158,16 @@ void QgsFavoritesItem::removeDirectory( QgsDirectoryItem *item )
 
   QgsSettings settings;
   QStringList favDirs = settings.value( QStringLiteral( "browser/favourites" ) ).toStringList();
-  favDirs.removeAll( item->dirPath() );
+  for ( int i = favDirs.count() - 1; i >= 0; --i )
+  {
+    QStringList parts = favDirs.at( i ).split( QStringLiteral( "|||" ) );
+    if ( parts.empty() )
+      continue;
+
+    QString dir = parts.at( 0 );
+    if ( dir == item->dirPath() )
+      favDirs.removeAt( i );
+  }
   settings.setValue( QStringLiteral( "browser/favourites" ), favDirs );
 
   int idx = findItem( mChildren, item );
@@ -1135,7 +1181,42 @@ void QgsFavoritesItem::removeDirectory( QgsDirectoryItem *item )
     deleteChildItem( mChildren.at( idx ) );
 }
 
-QVector<QgsDataItem *> QgsFavoritesItem::createChildren( const QString &favDir )
+void QgsFavoritesItem::renameFavorite( const QString &path, const QString &name )
+{
+  // update stored name
+  QgsSettings settings;
+  QStringList favDirs = settings.value( QStringLiteral( "browser/favourites" ) ).toStringList();
+  for ( int i = 0; i < favDirs.count(); ++i )
+  {
+    QStringList parts = favDirs.at( i ).split( QStringLiteral( "|||" ) );
+    if ( parts.empty() )
+      continue;
+
+    QString dir = parts.at( 0 );
+    if ( dir == path )
+    {
+      favDirs[i] = QStringLiteral( "%1|||%2" ).arg( path, name );
+      break;
+    }
+  }
+  settings.setValue( QStringLiteral( "browser/favourites" ), favDirs );
+
+  // also update existing data item
+  const QVector<QgsDataItem *> ch = children();
+  for ( QgsDataItem *child : ch )
+  {
+    if ( QgsFavoriteItem *favorite = qobject_cast< QgsFavoriteItem * >( child ) )
+    {
+      if ( favorite->dirPath() == path )
+      {
+        favorite->setName( name );
+        break;
+      }
+    }
+  }
+}
+
+QVector<QgsDataItem *> QgsFavoritesItem::createChildren( const QString &favDir, const QString &name )
 {
   QVector<QgsDataItem *> children;
   QString pathName = pathComponent( favDir );
@@ -1148,14 +1229,14 @@ QVector<QgsDataItem *> QgsFavoritesItem::createChildren( const QString &favDir )
       QgsDataItem *item = provider->createDataItem( favDir, this );
       if ( item )
       {
-        item->setName( favDir );
+        item->setName( name );
         children.append( item );
       }
     }
   }
   if ( children.isEmpty() )
   {
-    QgsDataItem *item = new QgsDirectoryItem( this, favDir, favDir, mPath + '/' + pathName );
+    QgsFavoriteItem *item = new QgsFavoriteItem( this, name, favDir, mPath + '/' + pathName );
     if ( item )
     {
       children.append( item );
@@ -1249,7 +1330,7 @@ char **VSIReadDirRecursive1( const char *pszPath )
   char **papszFiles1 = nullptr;
   char **papszFiles2 = nullptr;
   VSIStatBufL psStatBuf;
-  CPLString osTemp1, osTemp2;
+  QString temp1, temp2;
   int i, j;
   int nCount1, nCount2;
 
@@ -1263,41 +1344,35 @@ char **VSIReadDirRecursive1( const char *pszPath )
   for ( i = 0; i < nCount1; i++ )
   {
     // build complete file name for stat
-    osTemp1.clear();
-    osTemp1.append( pszPath );
-    osTemp1.append( "/" );
-    osTemp1.append( papszFiles1[i] );
+    temp1 = QString( "%1/%2" ).arg( pszPath, papszFiles1[i] );
 
     // if is file, add it
-    if ( VSIStatL( osTemp1.c_str(), &psStatBuf ) == 0 &&
+    if ( VSIStatL( temp1.toUtf8(), &psStatBuf ) == 0 &&
          VSI_ISREG( psStatBuf.st_mode ) )
     {
       // oFiles.AddString( papszFiles1[i] );
       papszOFiles = CSLAddString( papszOFiles, papszFiles1[i] );
     }
-    else if ( VSIStatL( osTemp1.c_str(), &psStatBuf ) == 0 &&
+    else if ( VSIStatL( temp1.toUtf8(), &psStatBuf ) == 0 &&
               VSI_ISDIR( psStatBuf.st_mode ) )
     {
       // add directory entry
-      osTemp2.clear();
-      osTemp2.append( papszFiles1[i] );
-      osTemp2.append( "/" );
-      // oFiles.AddString( osTemp2.c_str() );
-      papszOFiles = CSLAddString( papszOFiles, osTemp2.c_str() );
+      temp2 = QString( "%1/" ).arg( papszFiles1[i] );
+
+      // oFiles.AddString( temp2.toUtf8() );
+      papszOFiles = CSLAddString( papszOFiles, temp2.toUtf8() );
 
       // recursively add files inside directory
-      papszFiles2 = VSIReadDirRecursive1( osTemp1.c_str() );
+      papszFiles2 = VSIReadDirRecursive1( temp1.toUtf8() );
       if ( papszFiles2 )
       {
         nCount2 = CSLCount( papszFiles2 );
         for ( j = 0; j < nCount2; j++ )
         {
-          osTemp2.clear();
-          osTemp2.append( papszFiles1[i] );
-          osTemp2.append( "/" );
-          osTemp2.append( papszFiles2[j] );
-          // oFiles.AddString( osTemp2.c_str() );
-          papszOFiles = CSLAddString( papszOFiles, osTemp2.c_str() );
+          temp2 = QString( "%1/%2" ).arg( papszFiles1[i], papszFiles2[j] );
+
+          // oFiles.AddString( temp2.toUtf8() );
+          papszOFiles = CSLAddString( papszOFiles, temp2.toUtf8() );
         }
         CSLDestroy( papszFiles2 );
       }
@@ -1521,3 +1596,36 @@ QStringList QgsZipItem::getZipFileList()
 
   return mZipFileList;
 }
+
+///@cond PRIVATE
+
+QgsProjectHomeItem::QgsProjectHomeItem( QgsDataItem *parent, const QString &name, const QString &dirPath, const QString &path )
+  : QgsDirectoryItem( parent, name, dirPath, path )
+{
+}
+
+QIcon QgsProjectHomeItem::icon()
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "mIconQgsProjectFile.svg" ) );
+}
+
+QVariant QgsProjectHomeItem::sortKey() const
+{
+  return QStringLiteral( " 1" );
+}
+
+QgsFavoriteItem::QgsFavoriteItem( QgsFavoritesItem *parent, const QString &name, const QString &dirPath, const QString &path )
+  : QgsDirectoryItem( parent, name, dirPath, path )
+  , mFavorites( parent )
+{
+
+}
+
+void QgsFavoriteItem::rename( const QString &name )
+{
+  mFavorites->renameFavorite( dirPath(), name );
+}
+
+
+///@endcond
+

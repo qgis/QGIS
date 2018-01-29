@@ -35,10 +35,10 @@ class CORE_EXPORT QgsLayoutItemGroup: public QgsLayoutItem
      * Constructor for QgsLayoutItemGroup, belonging to the specified \a layout.
      */
     explicit QgsLayoutItemGroup( QgsLayout *layout );
-    ~QgsLayoutItemGroup();
+
+    void cleanup() override;
 
     int type() const override;
-    QString stringType() const override;
     QString displayName() const override;
 
     /**
@@ -74,6 +74,8 @@ class CORE_EXPORT QgsLayoutItemGroup: public QgsLayoutItem
 
     void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget ) override;
 
+    void finalizeRestoreFromXml() override;
+
   protected:
     void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = nullptr ) override;
     bool writePropertiesToElement( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const override;
@@ -85,7 +87,7 @@ class CORE_EXPORT QgsLayoutItemGroup: public QgsLayoutItem
     void updateBoundingRect( QgsLayoutItem *item );
     void setSceneRect( const QRectF &rectangle );
 
-
+    QList< QString > mItemUuids;
     QList< QPointer< QgsLayoutItem >> mItems;
     QRectF mBoundingRectangle;
 };

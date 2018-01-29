@@ -33,7 +33,7 @@ start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsComposerMap(unittest.TestCase):
+class TestQgsLayoutMapGrid(unittest.TestCase):
 
     def testGrid(self):
         layout = QgsLayout(QgsProject.instance())

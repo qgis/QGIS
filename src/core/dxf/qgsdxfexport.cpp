@@ -39,7 +39,6 @@
 #include "qgsvectorlayer.h"
 #include "qgsunittypes.h"
 #include "qgstextlabelfeature.h"
-#include "qgscrscache.h"
 #include "qgslogger.h"
 #include "qgsmaplayerstylemanager.h"
 
@@ -991,7 +990,7 @@ void QgsDxfExport::writeEntities()
       QgsDebugMsg( QString( "%1: not override style" ).arg( vl->id() ) );
     }
 
-    QgsSymbolRenderContext sctx( ctx, QgsUnitTypes::RenderMillimeters, 1.0, false, 0, nullptr );
+    QgsSymbolRenderContext sctx( ctx, QgsUnitTypes::RenderMillimeters, 1.0, false, nullptr, nullptr );
     if ( !vl->renderer() )
     {
       if ( hasStyleOverride )
@@ -1010,7 +1009,7 @@ void QgsDxfExport::writeEntities()
       attributes << layerAttr;
     }
 
-    const QgsAbstractVectorLayerLabeling *labeling = vl->labeling();
+    const QgsAbstractVectorLayerLabeling *labeling = vl->labelsEnabled() ? vl->labeling() : nullptr;
     QgsDxfLabelProvider *lp = nullptr;
     QgsDxfRuleBasedLabelProvider *rblp = nullptr;
     if ( const QgsRuleBasedLabeling *rbl = dynamic_cast<const QgsRuleBasedLabeling *>( labeling ) )
@@ -1139,7 +1138,7 @@ void QgsDxfExport::writeEntitiesSymbolLevels( QgsVectorLayer *layer )
 
   QgsRenderContext ctx = renderContext();
   ctx.expressionContext().appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
-  QgsSymbolRenderContext sctx( ctx, QgsUnitTypes::RenderMillimeters, 1.0, false, 0, nullptr );
+  QgsSymbolRenderContext sctx( ctx, QgsUnitTypes::RenderMillimeters, 1.0, false, nullptr, nullptr );
   renderer->startRender( ctx, layer->fields() );
 
   // get iterator

@@ -30,7 +30,11 @@ PyQgsSpatialiteProvider
 # Flaky, see https://travis-ci.org/qgis/QGIS/jobs/297708174
 PyQgsServerAccessControl
 
+# Flaky, see https://dash.orfeo-toolbox.org/testDetails.php?test=61670866&build=297397
+PyQgsLocator
+
 # Need a local postgres installation
 PyQgsAuthManagerPKIPostgresTest
 PyQgsAuthManagerPasswordPostgresTest
 PyQgsAuthManagerOgrPostgresTest
+

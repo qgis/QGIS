@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgslegendstyle.h"
-#include "qgscomposition.h"
 #include "qgsfontutils.h"
 #include "qgssettings.h"
 
@@ -31,7 +30,7 @@ QgsLegendStyle::QgsLegendStyle()
 {
   //get default composer font from settings
   QgsSettings settings;
-  QString defaultFontString = settings.value( QStringLiteral( "Composer/defaultFont" ) ).toString();
+  QString defaultFontString = settings.value( QStringLiteral( "LayoutDesigner/defaultFont" ), QVariant(), QgsSettings::Gui ).toString();
   if ( !defaultFontString.isEmpty() )
   {
     mFont.setFamily( defaultFontString );

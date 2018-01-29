@@ -102,6 +102,9 @@ class TinInterpolation(QgisAlgorithm):
     def group(self):
         return self.tr('Interpolation')
 
+    def groupId(self):
+        return 'interpolation'
+
     def __init__(self):
         super().__init__()
 

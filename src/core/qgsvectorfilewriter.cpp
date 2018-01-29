@@ -112,6 +112,23 @@ QgsVectorFileWriter::QgsVectorFileWriter( const QString &vectorFileName,
         layerName, action );
 }
 
+bool QgsVectorFileWriter::supportsFeatureStyles( const QString &driverName )
+{
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,3,0)
+  GDALDriverH gdalDriver = GDALGetDriverByName( driverName.toLocal8Bit().constData() );
+  if ( !gdalDriver )
+    return false;
+
+  char **driverMetadata = GDALGetMetadata( gdalDriver, nullptr );
+  if ( !driverMetadata )
+    return false;
+
+  return CSLFetchBoolean( driverMetadata, GDAL_DCAP_FEATURE_STYLES, false );
+#else
+  return driverName == QLatin1String( "DXF" ) || driverName == QLatin1String( "KML" ) || driverName == QLatin1String( "MapInfo File" ) || driverName == QLatin1String( "MapInfo MIF" );
+#endif
+}
+
 void QgsVectorFileWriter::init( QString vectorFileName,
                                 QString fileEncoding,
                                 const QgsFields &fields,
@@ -2277,7 +2294,9 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer *layer,
   QgsCoordinateTransform ct;
   if ( destCRS.isValid() && layer )
   {
+    Q_NOWARN_DEPRECATED_PUSH
     ct = QgsCoordinateTransform( layer->crs(), destCRS );
+    Q_NOWARN_DEPRECATED_POP
   }
 
   QgsVectorFileWriter::WriterError error = writeAsVectorFormat( layer, fileName, fileEncoding, ct, driverName, onlySelected,
@@ -2715,13 +2734,26 @@ QList< QgsVectorFileWriter::FilterFormatDetails > QgsVectorFileWriter::supported
     if ( drv )
     {
       QString drvName = OGR_Dr_GetName( drv );
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,3,0)
+      GDALDriverH gdalDriver = GDALGetDriverByName( drvName.toLocal8Bit().constData() );
+      char **driverMetadata = nullptr;
+      if ( gdalDriver )
+      {
+        driverMetadata = GDALGetMetadata( gdalDriver, nullptr );
+      }
+
+      bool nonSpatialFormat = CSLFetchBoolean( driverMetadata, GDAL_DCAP_NONSPATIAL, false );
+#else
+      bool nonSpatialFormat = ( drvName == QLatin1String( "ODS" ) || drvName == QLatin1String( "XLSX" ) || drvName == QLatin1String( "XLS" ) );
+#endif
+
       if ( OGR_Dr_TestCapability( drv, "CreateDataSource" ) != 0 )
       {
         if ( options & SkipNonSpatialFormats )
         {
           // skip non-spatial formats
-          // TODO - use GDAL metadata to determine this, when support exists in GDAL
-          if ( drvName == QLatin1String( "ODS" ) || drvName == QLatin1String( "XLSX" ) || drvName == QLatin1String( "XLS" ) )
+          if ( nonSpatialFormat )
             continue;
         }
 

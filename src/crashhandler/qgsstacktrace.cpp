@@ -29,6 +29,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <tlhelp32.h>
 
 #include <Windows.h>
 #include <DbgHelp.h>
@@ -780,9 +781,34 @@ QgsStackTrace *QgsStackTrace::trace( DWORD processId, DWORD threadId, LPEXCEPTIO
   StackTrace *stackTrace = ( StackTrace * )calloc( sizeof( *stackTrace ), 1 );
   stackTrace->process = OpenProcess( PROCESS_ALL_ACCESS, FALSE, processId );
   stackTrace->thread = OpenThread( THREAD_ALL_ACCESS, FALSE, threadId );
-  SuspendThread( stackTrace->thread );
   trace->process = stackTrace->process;
   trace->thread = stackTrace->thread;
+
+  HANDLE h = CreateToolhelp32Snapshot( TH32CS_SNAPTHREAD, 0 );
+  if ( h != INVALID_HANDLE_VALUE )
+  {
+    THREADENTRY32 te;
+    te.dwSize = sizeof( te );
+    if ( Thread32First( h, &te ) )
+    {
+      do
+      {
+        if ( te.dwSize >= FIELD_OFFSET( THREADENTRY32, th32OwnerProcessID ) +
+             sizeof( te.th32OwnerProcessID ) )
+        {
+          if ( te.th32OwnerProcessID == processId )
+          {
+            HANDLE threadHandle = OpenThread( THREAD_ALL_ACCESS, FALSE, te.th32ThreadID );
+            trace->threads.push_back( threadHandle );
+            SuspendThread( threadHandle );
+          }
+        }
+        te.dwSize = sizeof( te );
+      }
+      while ( Thread32Next( h, &te ) );
+    }
+    CloseHandle( h );
+  }
 
   ReadProcessMemory( stackTrace->process, exception, &remoteException, sizeof( remoteException ), NULL );
   ReadProcessMemory( stackTrace->process, remoteException.ContextRecord, &remoteContextRecord, sizeof( remoteContextRecord ), NULL );

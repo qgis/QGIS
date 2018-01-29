@@ -30,7 +30,7 @@ struct FilterExcludePoint : public QgsPointLocator::MatchFilter
 {
   explicit FilterExcludePoint( const QgsPointXY &p ) : mPoint( p ) {}
 
-  bool acceptMatch( const QgsPointLocator::Match &match ) { return match.point() != mPoint; }
+  bool acceptMatch( const QgsPointLocator::Match &match ) override { return match.point() != mPoint; }
 
   QgsPointXY mPoint;
 };
@@ -42,7 +42,7 @@ struct FilterExcludeEdge : public QgsPointLocator::MatchFilter
     , mP2( p2 )
   {}
 
-  bool acceptMatch( const QgsPointLocator::Match &match )
+  bool acceptMatch( const QgsPointLocator::Match &match ) override
   {
     QgsPointXY p1, p2;
     match.edgePoints( p1, p2 );
@@ -248,13 +248,13 @@ class TestQgsPointLocator : public QObject
     void testExtent()
     {
       QgsRectangle bbox1( 10, 10, 11, 11 ); // out of layer's bounds
-      QgsPointLocator loc1( mVL, QgsCoordinateReferenceSystem(), &bbox1 );
+      QgsPointLocator loc1( mVL, QgsCoordinateReferenceSystem(), QgsCoordinateTransformContext(), &bbox1 );
 
       QgsPointLocator::Match m1 = loc1.nearestVertex( QgsPointXY( 2, 2 ), 999 );
       QVERIFY( !m1.isValid() );
 
       QgsRectangle bbox2( 0, 0, 1, 1 ); // in layer's bounds
-      QgsPointLocator loc2( mVL, QgsCoordinateReferenceSystem(), &bbox2 );
+      QgsPointLocator loc2( mVL, QgsCoordinateReferenceSystem(), QgsCoordinateTransformContext(), &bbox2 );
 
       QgsPointLocator::Match m2 = loc2.nearestVertex( QgsPointXY( 2, 2 ), 999 );
       QVERIFY( m2.isValid() );
@@ -270,7 +270,7 @@ class TestQgsPointLocator : public QObject
       flist << ff;
       vlNullGeom->dataProvider()->addFeatures( flist );
 
-      QgsPointLocator loc( vlNullGeom, QgsCoordinateReferenceSystem(), nullptr );
+      QgsPointLocator loc( vlNullGeom, QgsCoordinateReferenceSystem(), QgsCoordinateTransformContext(), nullptr );
 
       QgsPointLocator::Match m1 = loc.nearestVertex( QgsPointXY( 2, 2 ), std::numeric_limits<double>::max() );
       QVERIFY( !m1.isValid() );
@@ -292,7 +292,7 @@ class TestQgsPointLocator : public QObject
       flist << ff;
       vlEmptyGeom->dataProvider()->addFeatures( flist );
 
-      QgsPointLocator loc( vlEmptyGeom, QgsCoordinateReferenceSystem(), nullptr );
+      QgsPointLocator loc( vlEmptyGeom, QgsCoordinateReferenceSystem(), QgsCoordinateTransformContext(), nullptr );
 
       QgsPointLocator::Match m1 = loc.nearestVertex( QgsPointXY( 2, 2 ), std::numeric_limits<double>::max() );
       QVERIFY( !m1.isValid() );

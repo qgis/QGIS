@@ -20,6 +20,8 @@
 #include "qgspagesizeregistry.h"
 #include "qgssymbollayerutils.h"
 #include "qgslayoutitemundocommand.h"
+#include "qgslayoutpagecollection.h"
+#include "qgslayoutundostack.h"
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
 
@@ -30,10 +32,11 @@ QgsLayoutItemPage::QgsLayoutItemPage( QgsLayout *layout )
   setFlag( QGraphicsItem::ItemIsMovable, false );
   setZValue( QgsLayout::ZPage );
 
-  // use a hidden pen to specify the amount the page "bleeds" outside it's scene bounds,
-  // (it's a lot easier than reimplementing boundingRect() just to handle this)
-  QPen shadowPen( QBrush( Qt::transparent ), layout->pageCollection()->pageShadowWidth() * 2 );
-  setPen( shadowPen );
+  connect( this, &QgsLayoutItem::sizePositionChanged, this, [ = ]
+  {
+    mBoundingRect = QRectF();
+    prepareGeometryChange();
+  } );
 
   QFont font;
   QFontMetrics fm( font );
@@ -46,6 +49,11 @@ QgsLayoutItemPage::QgsLayoutItemPage( QgsLayout *layout )
 QgsLayoutItemPage *QgsLayoutItemPage::create( QgsLayout *layout )
 {
   return new QgsLayoutItemPage( layout );
+}
+
+int QgsLayoutItemPage::type() const
+{
+  return QgsLayoutItemRegistry::LayoutPage;
 }
 
 void QgsLayoutItemPage::setPageSize( const QgsLayoutSize &size )
@@ -116,6 +124,17 @@ QgsLayoutItemPage::Orientation QgsLayoutItemPage::decodePageOrientation( const Q
   return Landscape;
 }
 
+QRectF QgsLayoutItemPage::boundingRect() const
+{
+  if ( mBoundingRect.isNull() )
+  {
+    double shadowWidth = mLayout->pageCollection()->pageShadowWidth();
+    mBoundingRect = rect();
+    mBoundingRect.adjust( 0, 0, shadowWidth, shadowWidth );
+  }
+  return mBoundingRect;
+}
+
 void QgsLayoutItemPage::attemptResize( const QgsLayoutSize &size, bool includesFrame )
 {
   QgsLayoutItem::attemptResize( size, includesFrame );
@@ -164,7 +183,7 @@ void QgsLayoutItemPage::redraw()
 
 void QgsLayoutItemPage::draw( QgsRenderContext &context, const QStyleOptionGraphicsItem * )
 {
-  if ( !context.painter() || !mLayout || !mLayout->context().pagesVisible() )
+  if ( !context.painter() || !mLayout || !mLayout->renderContext().pagesVisible() )
   {
     return;
   }
@@ -177,7 +196,7 @@ void QgsLayoutItemPage::draw( QgsRenderContext &context, const QStyleOptionGraph
   QPainter *painter = context.painter();
   painter->save();
 
-  if ( mLayout->context().isPreviewRender() )
+  if ( mLayout->renderContext().isPreviewRender() )
   {
     //if in preview mode, draw page border and shadow so that it's
     //still possible to tell where pages with a transparent style begin and end
@@ -209,10 +228,14 @@ void QgsLayoutItemPage::draw( QgsRenderContext &context, const QStyleOptionGraph
   //Now subtract 1 pixel to prevent semi-transparent borders at edge of solid page caused by
   //anti-aliased painting. This may cause a pixel to be cropped from certain edge lines/symbols,
   //but that can be counteracted by adding a dummy transparent line symbol layer with a wider line width
-  maxBleedPixels--;
+  if ( !mLayout->renderContext().isPreviewRender() || !qgsDoubleNear( maxBleedPixels, 0.0 ) )
+  {
+    maxBleedPixels = std::floor( maxBleedPixels - 2 );
+  }
 
+  // round up
   QPolygonF pagePolygon = QPolygonF( QRectF( maxBleedPixels, maxBleedPixels,
-                                     ( rect().width() * scale - 2 * maxBleedPixels ), ( rect().height() * scale - 2 * maxBleedPixels ) ) );
+                                     std::ceil( rect().width() * scale ) - 2 * maxBleedPixels, std::ceil( rect().height() * scale ) - 2 * maxBleedPixels ) );
   QList<QPolygonF> rings; //empty list
 
   symbol->renderPolygon( pagePolygon, &rings, nullptr, context );
@@ -253,10 +276,10 @@ void QgsLayoutItemPageGrid::paint( QPainter *painter, const QStyleOptionGraphics
   if ( !mLayout )
     return;
 
-  if ( !mLayout->context().isPreviewRender() )
+  if ( !mLayout->renderContext().isPreviewRender() )
     return;
 
-  const QgsLayoutContext &context = mLayout->context();
+  const QgsLayoutRenderContext &context = mLayout->renderContext();
   const QgsLayoutGridSettings &grid = mLayout->gridSettings();
 
   if ( !context.gridVisible() || grid.resolution().length() <= 0 )

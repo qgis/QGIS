@@ -46,17 +46,24 @@ class CORE_EXPORT QgsTracer : public QObject
      * Constructor for QgsTracer.
      */
     QgsTracer();
-    ~QgsTracer();
+    ~QgsTracer() override;
 
     //! Get layers used for tracing
     QList<QgsVectorLayer *> layers() const { return mLayers; }
     //! Set layers used for tracing
     void setLayers( const QList<QgsVectorLayer *> &layers );
 
-    //! Get CRS used for tracing
+    /**
+     * Returns the CRS used for tracing.
+     * \see setDestinationCrs()
+     */
     QgsCoordinateReferenceSystem destinationCrs() const { return mCRS; }
-    //! Set CRS used for tracing
-    void setDestinationCrs( const QgsCoordinateReferenceSystem &crs );
+
+    /**
+     * Sets the \a crs and transform \a context used for tracing.
+     * \see destinationCrs()
+     */
+    void setDestinationCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context );
 
     //! Get extent to which graph's features will be limited (empty extent means no limit)
     QgsRectangle extent() const { return mExtent; }
@@ -161,6 +168,8 @@ class CORE_EXPORT QgsTracer : public QObject
     QList<QgsVectorLayer *> mLayers;
     //! Destination CRS in which graph is built and tracing done
     QgsCoordinateReferenceSystem mCRS;
+    //! Coordinate transform context
+    QgsCoordinateTransformContext mTransformContext;
     //! Extent for graph building (empty extent means no limit)
     QgsRectangle mExtent;
 

@@ -19,6 +19,7 @@
 #include <qgsgeometry.h>
 #include <qgstracer.h>
 #include <qgsvectorlayer.h>
+#include "qgsproject.h"
 
 class TestQgsTracer : public QObject
 {
@@ -306,13 +307,14 @@ void TestQgsTracer::testReprojection()
   QgsVectorLayer *vl = make_layer( wkts );
 
   QgsCoordinateReferenceSystem dstCrs( QStringLiteral( "EPSG:3857" ) );
-  QgsCoordinateTransform ct( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), dstCrs );
+  QgsCoordinateTransform ct( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), dstCrs, QgsProject::instance() );
   QgsPointXY p1 = ct.transform( QgsPointXY( 1, 0 ) );
   QgsPointXY p2 = ct.transform( QgsPointXY( 2, 0 ) );
 
   QgsTracer tracer;
   tracer.setLayers( QList<QgsVectorLayer *>() << vl );
-  tracer.setDestinationCrs( dstCrs );
+  QgsCoordinateTransformContext context;
+  tracer.setDestinationCrs( dstCrs, context );
   tracer.init();
 
   QgsPolylineXY points1 = tracer.findShortestPath( p1, p2 );
@@ -337,7 +339,7 @@ void TestQgsTracer::testCurved()
 
   QgsPolylineXY points1 = tracer.findShortestPath( QgsPointXY( 0, 0 ), QgsPointXY( 10, 10 ) );
 
-  QVERIFY( points1.count() != 0 );
+  QVERIFY( !points1.isEmpty() );
 
   QgsGeometry tmpG1 = QgsGeometry::fromPolylineXY( points1 );
   double l = tmpG1.length();

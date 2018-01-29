@@ -59,30 +59,44 @@ class GdalAlgorithm(QgsProcessingAlgorithm):
     def createCustomParametersWidget(self, parent):
         return GdalAlgorithmDialog(self)
 
-    def getConsoleCommands(self, parameters, context, feedback):
+    def getConsoleCommands(self, parameters, context, feedback, executing=True):
         return None
 
-    def getOgrCompatibleSource(self, parameter_name, parameters, context, feedback):
+    def getOgrCompatibleSource(self, parameter_name, parameters, context, feedback, executing):
         """
         Interprets a parameter as an OGR compatible source and layer name
+        :param executing:
         """
         input_layer = self.parameterAsVectorLayer(parameters, parameter_name, context)
         ogr_data_path = None
         ogr_layer_name = None
         if input_layer is None:
-            # parameter is not a vector layer - try to convert to a source compatible with OGR
-            # and extract selection if required
-            ogr_data_path = self.parameterAsCompatibleSourceLayerPath(parameters, parameter_name, context,
-                                                                      QgsVectorFileWriter.supportedFormatExtensions(),
-                                                                      feedback=feedback)
-            ogr_layer_name = GdalUtils.ogrLayerName(ogr_data_path)
+            if executing:
+                # parameter is not a vector layer - try to convert to a source compatible with OGR
+                # and extract selection if required
+                ogr_data_path = self.parameterAsCompatibleSourceLayerPath(parameters, parameter_name, context,
+                                                                          QgsVectorFileWriter.supportedFormatExtensions(),
+                                                                          feedback=feedback)
+                ogr_layer_name = GdalUtils.ogrLayerName(ogr_data_path)
+            else:
+                #not executing - don't waste time converting incompatible sources, just return dummy strings
+                #for the command preview (since the source isn't compatible with OGR, it has no meaning anyway and can't
+                #be run directly in the command line)
+                ogr_data_path = 'path_to_data_file'
+                ogr_layer_name = 'layer_name'
         elif input_layer.dataProvider().name() == 'ogr':
-            # parameter is a vector layer, with OGR data provider
-            # so extract selection if required
-            ogr_data_path = self.parameterAsCompatibleSourceLayerPath(parameters, parameter_name, context,
-                                                                      QgsVectorFileWriter.supportedFormatExtensions(),
-                                                                      feedback=feedback)
-            ogr_layer_name = GdalUtils.ogrLayerName(input_layer.dataProvider().dataSourceUri())
+            if executing:
+                # parameter is a vector layer, with OGR data provider
+                # so extract selection if required
+                ogr_data_path = self.parameterAsCompatibleSourceLayerPath(parameters, parameter_name, context,
+                                                                          QgsVectorFileWriter.supportedFormatExtensions(),
+                                                                          feedback=feedback)
+                ogr_layer_name = GdalUtils.ogrLayerName(input_layer.dataProvider().dataSourceUri())
+            else:
+                #not executing - don't worry about 'selected features only' handling. It has no meaning
+                #for the command line preview since it has no meaning outside of a QGIS session!
+                ogr_data_path = GdalUtils.ogrConnectionString(input_layer.dataProvider().dataSourceUri(), context)[1:-1]
+                ogr_layer_name = GdalUtils.ogrLayerName(input_layer.dataProvider().dataSourceUri())
         else:
             # vector layer, but not OGR - get OGR compatible path
             # TODO - handle "selected features only" mode!!
@@ -94,7 +108,7 @@ class GdalAlgorithm(QgsProcessingAlgorithm):
         self.output_values[name] = value
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = self.getConsoleCommands(parameters, context, feedback)
+        commands = self.getConsoleCommands(parameters, context, feedback, executing=True)
         GdalUtils.runGdal(commands, feedback)
 
         # auto generate outputs

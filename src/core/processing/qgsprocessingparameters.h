@@ -278,53 +278,53 @@ class CORE_EXPORT QgsProcessingParameterDefinition
     /**
      * Returns the name of the parameter. This is the internal identifier by which
      * algorithms access this parameter.
-     * @see setName()
+     * \see setName()
      */
     QString name() const { return mName; }
 
     /**
      * Sets the \a name of the parameter. This is the internal identifier by which
      * algorithms access this parameter.
-     * @see name()
+     * \see name()
      */
     void setName( const QString &name ) { mName = name; }
 
     /**
      * Returns the description for the parameter. This is the user-visible string
      * used to identify this parameter.
-     * @see setDescription()
+     * \see setDescription()
      */
     QString description() const { return mDescription; }
 
     /**
      * Sets the \a description for the parameter. This is the user-visible string
      * used to identify this parameter.
-     * @see description()
+     * \see description()
      */
     void setDescription( const QString &description ) { mDescription = description; }
 
     /**
      * Returns the default value for the parameter.
-     * @see setDefaultValue()
+     * \see setDefaultValue()
      */
     QVariant defaultValue() const { return mDefault; }
 
     /**
      * Sets the default \a value for the parameter. Caller takes responsibility
      * to ensure that \a value is a valid input for the parameter subclass.
-     * @see defaultValue()
+     * \see defaultValue()
      */
     void setDefaultValue( const QVariant &value ) { mDefault = value; }
 
     /**
      * Returns any flags associated with the parameter.
-     * @see setFlags()
+     * \see setFlags()
      */
     Flags flags() const { return mFlags; }
 
     /**
      * Sets the \a flags associated with the parameter.
-     * @see flags()
+     * \see flags()
      */
     void setFlags( const Flags &flags ) { mFlags = flags; }
 
@@ -1720,16 +1720,16 @@ class CORE_EXPORT QgsProcessingDestinationParameter : public QgsProcessingParame
     /**
      * Returns true if the destination parameter supports non filed-based outputs,
      * such as memory layers or direct database outputs.
-     * \see setSupportsNonFileBasedOutputs()
+     * \see setSupportsNonFileBasedOutput()
      */
-    bool supportsNonFileBasedOutputs() const { return mSupportsNonFileBasedOutputs; }
+    bool supportsNonFileBasedOutput() const { return mSupportsNonFileBasedOutputs; }
 
     /**
      * Sets whether the destination parameter supports non filed-based outputs,
      * such as memory layers or direct database outputs.
-     * \see supportsNonFileBasedOutputs()
+     * \see supportsNonFileBasedOutput()
      */
-    void setSupportsNonFileBasedOutputs( bool supportsNonFileBasedOutputs ) { mSupportsNonFileBasedOutputs = supportsNonFileBasedOutputs; }
+    void setSupportsNonFileBasedOutput( bool supportsNonFileBasedOutput ) { mSupportsNonFileBasedOutputs = supportsNonFileBasedOutput; }
 
     /**
      * Returns the default file extension for destination file paths

@@ -26,6 +26,8 @@
 #include "qgsmeasuretool.h"
 #include "qgsmessagelog.h"
 #include "qgssettings.h"
+#include "qgsproject.h"
+#include "qgssnapindicator.h"
 
 #include <QMessageBox>
 #include <QMouseEvent>
@@ -33,6 +35,7 @@
 QgsMeasureTool::QgsMeasureTool( QgsMapCanvas *canvas, bool measureArea )
   : QgsMapTool( canvas )
   , mWrongProjectProjection( false )
+  , mSnapIndicator( new QgsSnapIndicator( canvas ) )
 {
   mMeasureArea = measureArea;
 
@@ -97,6 +100,8 @@ void QgsMeasureTool::activate()
 
 void QgsMeasureTool::deactivate()
 {
+  mSnapIndicator->setMatch( QgsPointLocator::Match() );
+
   mDialog->hide();
   QgsMapTool::deactivate();
 }
@@ -133,7 +138,7 @@ void QgsMeasureTool::updateSettings()
 
     mDialog->restart();
     mDone = lastDone;
-    QgsCoordinateTransform ct( mDestinationCrs, mCanvas->mapSettings().destinationCrs() );
+    QgsCoordinateTransform ct( mDestinationCrs, mCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
 
     Q_FOREACH ( const QgsPointXY &previousPoint, points )
     {
@@ -181,10 +186,11 @@ void QgsMeasureTool::canvasPressEvent( QgsMapMouseEvent *e )
 
 void QgsMeasureTool::canvasMoveEvent( QgsMapMouseEvent *e )
 {
+  QgsPointXY point = e->snapPoint();
+  mSnapIndicator->setMatch( e->mapPointMatch() );
+
   if ( ! mDone )
   {
-    QgsPointXY point = snapPoint( e->pos() );
-
     mRubberBand->movePoint( point );
     mDialog->mouseMove( point );
   }
@@ -193,7 +199,7 @@ void QgsMeasureTool::canvasMoveEvent( QgsMapMouseEvent *e )
 
 void QgsMeasureTool::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
-  QgsPointXY point = snapPoint( e->pos() );
+  QgsPointXY point = e->snapPoint();
 
   if ( mDone ) // if we have stopped measuring any mouse click restart measuring
   {
@@ -279,11 +285,4 @@ void QgsMeasureTool::addPoint( const QgsPointXY &point )
   {
     mDialog->addPoint();
   }
-}
-
-
-QgsPointXY QgsMeasureTool::snapPoint( QPoint p )
-{
-  QgsPointLocator::Match m = mCanvas->snappingUtils()->snapToMap( p );
-  return m.isValid() ? m.point() : mCanvas->getCoordinateTransform()->toMapCoordinates( p );
 }

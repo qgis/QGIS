@@ -38,18 +38,20 @@ class GUI_EXPORT QgsValueRelationSearchWidgetWrapper : public QgsSearchWidgetWra
 {
     Q_OBJECT
   public:
-    explicit QgsValueRelationSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent SIP_TRANSFERTHIS = 0 );
+
+    //! Constructor for QgsValueRelationSearchWidgetWrapper
+    explicit QgsValueRelationSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent SIP_TRANSFERTHIS = nullptr );
     bool applyDirectly() override;
     QString expression() const override;
     bool valid() const override;
     QVariant value() const;
     QgsSearchWidgetWrapper::FilterFlags supportedFlags() const override;
     QgsSearchWidgetWrapper::FilterFlags defaultFlags() const override;
-    virtual QString createExpression( QgsSearchWidgetWrapper::FilterFlags flags ) const override;
+    QString createExpression( QgsSearchWidgetWrapper::FilterFlags flags ) const override;
 
   public slots:
-    virtual void clearWidget() override;
-    virtual void setEnabled( bool enabled ) override;
+    void clearWidget() override;
+    void setEnabled( bool enabled ) override;
 
   protected:
     QWidget *createWidget( QWidget *parent ) override;

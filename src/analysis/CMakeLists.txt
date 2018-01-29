@@ -44,6 +44,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmloadlayer.cpp
   processing/qgsalgorithmmeancoordinates.cpp
   processing/qgsalgorithmmergelines.cpp
+  processing/qgsalgorithmmergevector.cpp
   processing/qgsalgorithmminimumenclosingcircle.cpp
   processing/qgsalgorithmmultiparttosinglepart.cpp
   processing/qgsalgorithmorderbyexpression.cpp
@@ -64,6 +65,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmtransect.cpp
   processing/qgsalgorithmtransform.cpp
   processing/qgsalgorithmtranslate.cpp
+  processing/qgsalgorithmuniquevalueindex.cpp
 
   processing/qgsnativealgorithms.cpp
 

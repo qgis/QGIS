@@ -73,7 +73,7 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
      */
     explicit QgsLayerTreeModel( QgsLayerTree *rootNode, QObject *parent SIP_TRANSFERTHIS = nullptr );
 
-    ~QgsLayerTreeModel();
+    ~QgsLayerTreeModel() override;
 
     // Implementation of virtual functions from QAbstractItemModel
 

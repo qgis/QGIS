@@ -84,7 +84,7 @@ QgsEllipse QgsEllipse::fromCenter2Points( const QgsPoint &center, const QgsPoint
   double azimuth = 180.0 / M_PI * QgsGeometryUtils::lineAngle( center.x(), center.y(), pt1.x(), pt1.y() );
   double axis_a = center.distance( pt1 );
 
-  double length = pt2.distance( QgsGeometryUtils::projPointOnSegment( pt2, center, pt1 ) );
+  double length = pt2.distance( QgsGeometryUtils::projectPointOnSegment( pt2, center, pt1 ) );
   QgsPoint pp = center.project( length, 90 + azimuth );
   double axis_b = center.distance( pp );
 

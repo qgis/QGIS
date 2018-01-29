@@ -73,15 +73,15 @@ void TestQgsDxfExport::init()
 {
   QString filename = QStringLiteral( TEST_DATA_DIR ) + "/points.shp";
   mPointLayer = new QgsVectorLayer( filename, QStringLiteral( "points" ), QStringLiteral( "ogr" ) );
-  Q_ASSERT( mPointLayer->isValid() );
+  QVERIFY( mPointLayer->isValid() );
   QgsProject::instance()->addMapLayer( mPointLayer );
   filename = QStringLiteral( TEST_DATA_DIR ) + "/lines.shp";
   mLineLayer = new QgsVectorLayer( filename, QStringLiteral( "lines" ), QStringLiteral( "ogr" ) );
-  Q_ASSERT( mLineLayer->isValid() );
+  QVERIFY( mLineLayer->isValid() );
   QgsProject::instance()->addMapLayer( mLineLayer );
   filename = QStringLiteral( TEST_DATA_DIR ) + "/polys.shp";
   mPolygonLayer = new QgsVectorLayer( filename, QStringLiteral( "polygons" ), QStringLiteral( "ogr" ) );
-  Q_ASSERT( mPolygonLayer->isValid() );
+  QVERIFY( mPolygonLayer->isValid() );
   QgsProject::instance()->addMapLayer( mPolygonLayer );
 }
 
@@ -186,6 +186,7 @@ void TestQgsDxfExport::testMtext()
   format.setColor( QColor( 200, 0, 200 ) );
   settings.setFormat( format );
   mPointLayer->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+  mPointLayer->setLabelsEnabled( true );
 
   QgsDxfExport d;
   d.addLayers( QList< QPair< QgsVectorLayer *, int > >() << qMakePair( mPointLayer, -1 ) );
@@ -247,6 +248,7 @@ void TestQgsDxfExport::testText()
   format.setColor( QColor( 200, 0, 200 ) );
   settings.setFormat( format );
   mPointLayer->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+  mPointLayer->setLabelsEnabled( true );
 
   QgsDxfExport d;
   d.addLayers( QList< QPair< QgsVectorLayer *, int > >() << qMakePair( mPointLayer, -1 ) );

@@ -38,10 +38,10 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     QgsCurvePolygon( const QgsCurvePolygon &p );
     QgsCurvePolygon &operator=( const QgsCurvePolygon &p );
 
-    bool operator==( const QgsCurvePolygon &other ) const;
-    bool operator!=( const QgsCurvePolygon &other ) const;
+    bool operator==( const QgsAbstractGeometry &other ) const override;
+    bool operator!=( const QgsAbstractGeometry &other ) const override;
 
-    ~QgsCurvePolygon();
+    ~QgsCurvePolygon() override;
 
     QString geometryType() const override;
     int dimension() const override;
@@ -136,8 +136,8 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
 
     /**
      * Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.
-     *  \param vertex the vertex id
-     *  \returns rotation in radians, clockwise from north
+     * \param vertex the vertex id
+     * \returns rotation in radians, clockwise from north
      */
     double vertexAngle( QgsVertexId vertex ) const override;
 

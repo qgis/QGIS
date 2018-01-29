@@ -35,8 +35,8 @@ class APP_EXPORT QgsVersionMigration
 
     /**
      * Check if two version has a migration options.
-     * @param fromVersion The version migrating from.
-     * @param toVersion The version migrating to.
+     * \param fromVersion The version migrating from.
+     * \param toVersion The version migrating to.
      * @return
      */
     static QgsVersionMigration *canMigrate( int fromVersion, int toVersion );
@@ -53,8 +53,8 @@ class APP_EXPORT QgsVersionMigration
 class Qgs2To3Migration : public QgsVersionMigration
 {
   public:
-    virtual QgsError runMigration() override;
-    virtual bool requiresMigration() override;
+    QgsError runMigration() override;
+    bool requiresMigration() override;
   private:
     QgsError migrateStyles();
     QgsError migrateSettings();

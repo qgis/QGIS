@@ -72,6 +72,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
       FlagSupportsBatch = 1 << 3,  //!< Algorithm supports batch mode
       FlagCanCancel = 1 << 4, //!< Algorithm can be canceled
       FlagRequiresMatchingCrs = 1 << 5, //!< Algorithm requires that all input layers have matching coordinate reference systems
+      FlagNoThreading = 1 << 6, //!< Algorithm is not thread safe and cannot be run in a background thread, e.g. for algorithms which manipulate the current project, layer selections, or with external dependencies which are not thread-safe.
       FlagDeprecated = FlagHideFromToolbox | FlagHideFromModeler, //!< Algorithm is deprecated
     };
     Q_DECLARE_FLAGS( Flags, Flag )
@@ -193,9 +194,19 @@ class CORE_EXPORT QgsProcessingAlgorithm
     /**
      * Returns the name of the group this algorithm belongs to. This string
      * should be localised.
+     * \see groupId()
      * \see tags()
     */
     virtual QString group() const { return QString(); }
+
+    /**
+     * Returns the unique ID of the group this algorithm belongs to. This string
+     * should be fixed for the algorithm, and must not be localised. The group id
+     * should be unique within each provider. Group id should contain lowercase
+     * alphanumeric characters only and no spaces or other formatting characters.
+     * \see group()
+     */
+    virtual QString groupId() const { return QString(); }
 
     /**
      * Returns the flags indicating how and when the algorithm operates and should be exposed to users.
@@ -876,8 +887,8 @@ class CORE_EXPORT QgsProcessingFeatureBasedAlgorithm : public QgsProcessingAlgor
      */
     virtual QgsFeature processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) = 0;
 
-    virtual QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                          QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters,
+                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
     /**
      * Returns the feature request used for fetching features to process from the

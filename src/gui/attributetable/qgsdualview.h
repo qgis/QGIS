@@ -73,7 +73,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      * \brief Constructor
      * \param parent  The parent widget
      */
-    explicit QgsDualView( QWidget *parent SIP_TRANSFERTHIS = 0 );
+    explicit QgsDualView( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Has to be called to initialize the dual view.
@@ -236,6 +236,12 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      */
     void copyCellContent() const;
 
+    /**
+     * Cancel the progress dialog (if any)
+     * \since QGIS 3.0
+     */
+    void cancelProgress( );
+
   signals:
 
     /**
@@ -263,8 +269,15 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      */
     void formModeChanged( QgsAttributeForm::Mode mode );
 
+    /**
+     * Emitted when selecting context menu on the feature list to create the context menu individually
+     * \param menu context menu
+     * \param fid feature id of the selected feature
+     */
+    void showContextMenuExternally( QgsActionMenu *menu, const QgsFeatureId fid );
+
   protected:
-    virtual void hideEvent( QHideEvent *event ) override;
+    void hideEvent( QHideEvent *event ) override;
 
   private slots:
 
@@ -282,6 +295,8 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     void previewColumnChanged( QAction *previewAction, const QString &expression );
 
     void viewWillShowContextMenu( QMenu *menu, const QModelIndex &atIndex );
+
+    void widgetWillShowContextMenu( QgsActionMenu *menu, const QModelIndex &atIndex );
 
     void showViewHeaderMenu( QPoint point );
 
@@ -360,7 +375,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     QAction *mLastDisplayExpressionAction = nullptr;
     QMenu *mHorizontalHeaderMenu = nullptr;
     QgsVectorLayerCache *mLayerCache = nullptr;
-    QgsVectorLayer *mLayer = nullptr;
+    QPointer< QgsVectorLayer > mLayer = nullptr;
     QProgressDialog *mProgressDlg = nullptr;
     QgsIFeatureSelectionManager *mFeatureSelectionManager = nullptr;
     QgsDistanceArea mDistanceArea;
@@ -368,6 +383,9 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     QgsAttributeTableConfig mConfig;
     QgsScrollArea *mAttributeEditorScrollArea = nullptr;
     QgsMapCanvas *mMapCanvas = nullptr;
+    // If the current feature is set, while the form is still not initialized
+    // we will temporarily save it in here and set it on init
+    QgsFeature mTempAttributeFormFeature;
 
     friend class TestQgsDualView;
     friend class TestQgsAttributeTable;

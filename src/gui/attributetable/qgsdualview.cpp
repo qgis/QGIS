@@ -48,7 +48,6 @@ QgsDualView::QgsDualView( QWidget *parent )
 
   mConditionalFormatWidget->hide();
 
-
   mPreviewColumnsMenu = new QMenu( this );
   mActionPreviewColumnsMenu->setMenu( mPreviewColumnsMenu );
 
@@ -75,6 +74,7 @@ void QgsDualView::init( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const Qg
   mTableView->horizontalHeader()->setContextMenuPolicy( Qt::CustomContextMenu );
   connect( mTableView->horizontalHeader(), &QHeaderView::customContextMenuRequested, this, &QgsDualView::showViewHeaderMenu );
   connect( mTableView, &QgsAttributeTableView::columnResized, this, &QgsDualView::tableColumnResized );
+  connect( mFeatureList, &QgsFeatureListView::willShowContextMenu, this, &QgsDualView::widgetWillShowContextMenu );
 
   initLayerCache( !( request.flags() & QgsFeatureRequest::NoGeometry ) || !request.filterRect().isNull() );
   initModels( mapCanvas, request, loadFeatures );
@@ -84,7 +84,8 @@ void QgsDualView::init( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const Qg
   mTableView->setModel( mFilterModel );
   mFeatureList->setModel( mFeatureListModel );
   delete mAttributeForm;
-  mAttributeForm = new QgsAttributeForm( mLayer, QgsFeature(), mEditorContext );
+  mAttributeForm = new QgsAttributeForm( mLayer, mTempAttributeFormFeature, mEditorContext );
+  mTempAttributeFormFeature = QgsFeature();
   if ( !context.parentContext() )
   {
     mAttributeEditorScrollArea = new QgsScrollArea();
@@ -318,6 +319,10 @@ void QgsDualView::restoreRecentDisplayExpressions()
 
 void QgsDualView::saveRecentDisplayExpressions() const
 {
+  if ( ! mLayer )
+  {
+    return;
+  }
   QList<QAction *> actions = mFeatureListPreviewButton->actions();
 
   // Remove existing same action
@@ -405,7 +410,11 @@ void QgsDualView::mFeatureList_aboutToChangeEditSelection( bool &ok )
 
 void QgsDualView::mFeatureList_currentEditSelectionChanged( const QgsFeature &feat )
 {
-  if ( !mLayer->isEditable() || mAttributeForm->save() )
+  if ( !mAttributeForm )
+  {
+    mTempAttributeFormFeature = feat;
+  }
+  else if ( !mLayer->isEditable() || mAttributeForm->save() )
   {
     mAttributeForm->setFeature( feat );
     setCurrentEditSelection( QgsFeatureIds() << feat.id() );
@@ -515,6 +524,12 @@ void QgsDualView::copyCellContent() const
   }
 }
 
+void QgsDualView::cancelProgress()
+{
+  if ( mProgressDlg )
+    mProgressDlg->cancel();
+}
+
 void QgsDualView::hideEvent( QHideEvent *event )
 {
   Q_UNUSED( event )
@@ -527,7 +542,6 @@ void QgsDualView::viewWillShowContextMenu( QMenu *menu, const QModelIndex &atInd
   {
     return;
   }
-
 
   QModelIndex sourceIndex = mFilterModel->mapToSource( atIndex );
 
@@ -592,6 +606,13 @@ void QgsDualView::viewWillShowContextMenu( QMenu *menu, const QModelIndex &atInd
   menu->addAction( tr( "Open form" ), a, &QgsAttributeTableAction::featureForm );
 #endif
 }
+
+
+void QgsDualView::widgetWillShowContextMenu( QgsActionMenu *menu, const QModelIndex &atIndex )
+{
+  emit showContextMenuExternally( menu, mFilterModel->rowToId( atIndex ) );
+}
+
 
 void QgsDualView::showViewHeaderMenu( QPoint point )
 {

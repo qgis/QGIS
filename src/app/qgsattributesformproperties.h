@@ -137,7 +137,7 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
       bool mEditableEnabled =  true ;
       bool mLabelOnTop =  false ;
       QgsFieldConstraints mFieldConstraints;
-      QgsFieldConstraints::Constraints mConstraints = 0;
+      QgsFieldConstraints::Constraints mConstraints = nullptr;
       QHash< QgsFieldConstraints::Constraint, QgsFieldConstraints::ConstraintStrength > mConstraintStrength;
       QString mConstraint;
       QString mConstraintDescription;
@@ -159,7 +159,7 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
       RelationConfig();
       RelationConfig( QgsVectorLayer *layer, const QString &relationId );
 
-      QString mCardinality;
+      QVariant mCardinality;
 
       operator QVariant();
     };
@@ -238,7 +238,12 @@ class DnDTree : public QTreeWidget
 
   public:
     explicit DnDTree( QgsVectorLayer *layer, QWidget *parent = nullptr );
-    QTreeWidgetItem *addItem( QTreeWidgetItem *parent, QgsAttributesFormProperties::DnDTreeItemData data );
+
+    /**
+     * Adds a new item to a \a parent. If \a index is -1, the item is added to the end of the parent's existing children.
+     * Otherwise it is inserted at the specified \a index.
+     */
+    QTreeWidgetItem *addItem( QTreeWidgetItem *parent, QgsAttributesFormProperties::DnDTreeItemData data, int index = -1 );
     QTreeWidgetItem *addContainer( QTreeWidgetItem *parent, const QString &title, int columnCount );
 
     enum Type
@@ -252,15 +257,15 @@ class DnDTree : public QTreeWidget
     void setType( const Type &value );
 
   protected:
-    virtual void dragMoveEvent( QDragMoveEvent *event ) override;
-    virtual void dropEvent( QDropEvent *event ) override;
-    virtual bool dropMimeData( QTreeWidgetItem *parent, int index, const QMimeData *data, Qt::DropAction action ) override;
+    void dragMoveEvent( QDragMoveEvent *event ) override;
+    void dropEvent( QDropEvent *event ) override;
+    bool dropMimeData( QTreeWidgetItem *parent, int index, const QMimeData *data, Qt::DropAction action ) override;
     /* Qt::DropActions supportedDropActions() const;*/
 
     // QTreeWidget interface
   protected:
-    virtual QStringList mimeTypes() const override;
-    virtual QMimeData *mimeData( const QList<QTreeWidgetItem *> items ) const override;
+    QStringList mimeTypes() const override;
+    QMimeData *mimeData( const QList<QTreeWidgetItem *> items ) const override;
 
 
   private slots:

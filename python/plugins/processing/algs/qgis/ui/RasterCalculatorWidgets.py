@@ -10,6 +10,8 @@ from qgis.PyQt.QtWidgets import (QLineEdit, QPushButton, QLabel,
 
 from qgis.core import (QgsProcessingUtils,
                        QgsProcessingParameterDefinition,
+                       QgsProcessingParameterRasterLayer,
+                       QgsProcessingOutputRasterLayer,
                        QgsProject)
 
 from processing.gui.wrappers import WidgetWrapper, DIALOG_STANDARD, DIALOG_BATCH
@@ -88,7 +90,7 @@ class PredefinedExpressionDialog(BASE_DLG, WIDGET_DLG):
 
 
 WIDGET, BASE = uic.loadUiType(
-    os.path.join(pluginPath, 'ExpressionWidget.ui'))
+    os.path.join(pluginPath, 'RasterCalculatorWidget.ui'))
 
 
 class ExpressionWidget(BASE, WIDGET):
@@ -102,7 +104,7 @@ class ExpressionWidget(BASE, WIDGET):
         self.setList(options)
 
         def doubleClicked(item):
-            self.text.insertPlainText(self.options[item.text()])
+            self.text.insertPlainText('"{}"'.format(self.options[item.text()]))
 
         def addButtonText(text):
             if any(c for c in text if c.islower()):

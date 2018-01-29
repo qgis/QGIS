@@ -1186,7 +1186,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature &f, QgsRenderContext &cont
     return;
   }
 
-//  mCurFields = &layer->pendingFields();
+//  mCurFields = &layer->fields();
 
   // store data defined-derived values for later adding to label feature for use during rendering
   dataDefinedValues.clear();
@@ -2566,8 +2566,8 @@ void QgsPalLayerSettings::parseShapeBackground( QgsRenderContext &context )
     QgsDebugMsgLevel( QString( "exprVal ShapeSVGFile:%1" ).arg( svgfile ), 4 );
 
     // '' empty paths are allowed
-    svgPath = svgfile;
-    dataDefinedValues.insert( QgsPalLayerSettings::ShapeSVGFile, QVariant( svgfile ) );
+    svgPath = QgsSymbolLayerUtils::svgSymbolNameToPath( svgfile, context.pathResolver() );
+    dataDefinedValues.insert( QgsPalLayerSettings::ShapeSVGFile, QVariant( svgPath ) );
   }
 
   // data defined shape size type?

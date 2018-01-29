@@ -78,7 +78,7 @@ class QgsLayoutPictureWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLay
     void mNorthTypeComboBox_currentIndexChanged( int index );
 
   private:
-    QgsLayoutItemPicture *mPicture = nullptr;
+    QPointer< QgsLayoutItemPicture > mPicture;
     QgsLayoutItemPropertiesWidget *mItemPropertiesWidget = nullptr;
 
 

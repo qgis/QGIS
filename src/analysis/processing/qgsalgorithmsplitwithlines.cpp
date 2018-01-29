@@ -40,6 +40,11 @@ QString QgsSplitWithLinesAlgorithm::group() const
   return QObject::tr( "Vector overlay" );
 }
 
+QString QgsSplitWithLinesAlgorithm::groupId() const
+{
+  return QStringLiteral( "vectoroverlay" );
+}
+
 void QgsSplitWithLinesAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ),
@@ -82,7 +87,7 @@ QVariantMap QgsSplitWithLinesAlgorithm::processAlgorithm( const QVariantMap &par
   QMap< QgsFeatureId, QgsGeometry > splitGeoms;
   QgsFeatureRequest request;
   request.setSubsetOfAttributes( QgsAttributeList() );
-  request.setDestinationCrs( source->sourceCrs() );
+  request.setDestinationCrs( source->sourceCrs(), context.transformContext() );
 
   QgsFeatureIterator splitLines = linesSource->getFeatures( request );
   QgsFeature aSplitFeature;
@@ -197,7 +202,7 @@ QVariantMap QgsSplitWithLinesAlgorithm::processAlgorithm( const QVariantMap &par
               // between geometry and splitLine, only the first one is considered.
               if ( result == QgsGeometry::Success ) // split occurred
               {
-                if ( inGeom.equals( before ) )
+                if ( inGeom.isGeosEqual( before ) )
                 {
                   // bug in splitGeometry: sometimes it returns 0 but
                   // the geometry is unchanged

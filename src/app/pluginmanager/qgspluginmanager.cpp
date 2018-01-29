@@ -663,12 +663,14 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
     html += QString(
               "<style>"
               "  div#stars_bg {"
-              "    background-image: url('qrc:/images/themes/default/stars_empty.png');"
+              "    background-image: url('qrc:/images/themes/default/stars_empty.svg');"
+              "    background-size: 92px 16px;"
               "    width:92px;"
               "    height:16px;"
               "  }"
               "  div#stars {"
-              "    background-image: url('qrc:/images/themes/default/stars_full.png');"
+              "    background-image: url('qrc:/images/themes/default/stars_full.svg');"
+              "    background-size: 92px 16px;"  /*scale to the full width*/
               "    width:%1px;"
               "    height:16px;"
               "  }"

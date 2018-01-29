@@ -54,7 +54,7 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject
     Qgs3DMapSettings() = default;
     //! Copy constructor
     Qgs3DMapSettings( const Qgs3DMapSettings &other );
-    ~Qgs3DMapSettings();
+    ~Qgs3DMapSettings() override;
 
     //! Reads configuration from a DOM element previously written by writeXml()
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
@@ -87,6 +87,42 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject
     void setCrs( const QgsCoordinateReferenceSystem &crs );
     //! Returns coordinate reference system used in the 3D scene
     QgsCoordinateReferenceSystem crs() const { return mCrs; }
+
+    /**
+     * Returns the coordinate transform context, which stores various
+     * information regarding which datum transforms should be used when transforming points
+     * from a source to destination coordinate reference system.
+     *
+     * \see setTransformContext()
+     */
+    QgsCoordinateTransformContext transformContext() const;
+
+    /**
+     * Sets the coordinate transform \a context, which stores various
+     * information regarding which datum transforms should be used when transforming points
+     * from a source to destination coordinate reference system.
+     *
+     * \see transformContext()
+     */
+    void setTransformContext( const QgsCoordinateTransformContext &context );
+
+    /**
+     * Returns the path resolver for conversion between relative and absolute paths
+     * during rendering operations, e.g. for resolving relative symbol paths.
+     *
+     * \since QGIS 3.0
+     * \see setPathResolver()
+     */
+    const QgsPathResolver &pathResolver() const { return mPathResolver; }
+
+    /**
+     * Sets the path \a resolver for conversion between relative and absolute paths
+     * during rendering operations, e.g. for resolving relative symbol paths.
+     *
+     * \since QGIS 3.0
+     * \see pathResolver()
+     */
+    void setPathResolver( const QgsPathResolver &resolver ) { mPathResolver = resolver; }
 
     //! Sets background color of the 3D map view
     void setBackgroundColor( const QColor &color );
@@ -239,6 +275,9 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject
     bool mSkyboxEnabled = false;  //!< Whether to render skybox
     QString mSkyboxFileBase; //!< Base part of the files with skybox textures
     QString mSkyboxFileExtension; //!< Extension part of the files with skybox textures
+    //! Coordinate transform context
+    QgsCoordinateTransformContext mTransformContext;
+    QgsPathResolver mPathResolver;
 };
 
 

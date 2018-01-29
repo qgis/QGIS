@@ -57,9 +57,9 @@ class GUI_EXPORT QgsEffectStackPropertiesWidget : public QgsPanelWidget, private
      * \param stack QgsEffectStack to modify in the widget
      * \param parent parent widget
      */
-    QgsEffectStackPropertiesWidget( QgsEffectStack *stack, QWidget *parent SIP_TRANSFERTHIS = 0 );
+    QgsEffectStackPropertiesWidget( QgsEffectStack *stack, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    ~QgsEffectStackPropertiesWidget();
+    ~QgsEffectStackPropertiesWidget() override;
 
     /**
      * Returns effect stack attached to the widget
@@ -177,7 +177,7 @@ class GUI_EXPORT QgsEffectStackPropertiesDialog: public QgsDialog
      * \param parent parent widget
      * \param f window flags
      */
-    QgsEffectStackPropertiesDialog( QgsEffectStack *stack, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags f = 0 );
+    QgsEffectStackPropertiesDialog( QgsEffectStack *stack, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags f = nullptr );
 
     /**
      * Returns effect stack attached to the dialog
@@ -223,8 +223,8 @@ class GUI_EXPORT QgsEffectStackCompactWidget: public QgsPanelWidget
      * is not a QgsEffectStack, it will be automatically converted to an effect
      * stack consisting of the original effect
      */
-    QgsEffectStackCompactWidget( QWidget *parent SIP_TRANSFERTHIS = 0, QgsPaintEffect *effect = nullptr );
-    ~QgsEffectStackCompactWidget();
+    QgsEffectStackCompactWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr, QgsPaintEffect *effect = nullptr );
+    ~QgsEffectStackCompactWidget() override;
 
     /**
      * Sets paint effect attached to the widget,

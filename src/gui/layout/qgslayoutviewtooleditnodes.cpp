@@ -18,6 +18,7 @@
 #include "qgslayoutview.h"
 #include "qgslayout.h"
 #include "qgslayoutitemnodeitem.h"
+#include "qgslayoutundostack.h"
 
 QgsLayoutViewToolEditNodes::QgsLayoutViewToolEditNodes( QgsLayoutView *view )
   : QgsLayoutViewTool( view, tr( "Select" ) )

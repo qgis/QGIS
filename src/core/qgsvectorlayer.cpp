@@ -149,6 +149,7 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
   mJoinBuffer = new QgsVectorLayerJoinBuffer( this );
   connect( mJoinBuffer, &QgsVectorLayerJoinBuffer::joinedFieldsChanged, this, &QgsVectorLayer::onJoinedFieldsChanged );
 
+  mExpressionFieldBuffer = new QgsExpressionFieldBuffer();
   // if we're given a provider type, try to create and bind one to this layer
   if ( !vectorLayerPath.isEmpty() && !mProviderKey.isEmpty() )
   {
@@ -232,6 +233,8 @@ QgsVectorLayer *QgsVectorLayer::clone() const
   {
     layer->setLabeling( labeling()->clone() );
   }
+  layer->setLabelsEnabled( labelsEnabled() );
+
   layer->setSimplifyMethod( simplifyMethod() );
 
   if ( diagramRenderer() )
@@ -665,7 +668,12 @@ QgsRectangle QgsVectorLayer::boundingBoxOfSelected() const
 
 bool QgsVectorLayer::labelsEnabled() const
 {
-  return static_cast< bool >( mLabeling );
+  return mLabelsEnabled && static_cast< bool >( mLabeling );
+}
+
+void QgsVectorLayer::setLabelsEnabled( bool enabled )
+{
+  mLabelsEnabled = enabled;
 }
 
 bool QgsVectorLayer::diagramsEnabled() const
@@ -973,15 +981,18 @@ bool QgsVectorLayer::addFeature( QgsFeature &feature, Flags )
 
 bool QgsVectorLayer::updateFeature( const QgsFeature &updatedFeature, bool skipDefaultValues )
 {
-  bool hasChanged = false;
-  bool hasError = false;
+  if ( !mEditBuffer || !mDataProvider )
+  {
+    return false;
+  }
 
   QgsFeature currentFeature = getFeature( updatedFeature.id() );
   if ( currentFeature.isValid() )
   {
-    QgsDebugMsgLevel( QStringLiteral( "feature %1 could not be retrieved" ).arg( updatedFeature.id() ), 3 );
+    bool hasChanged = false;
+    bool hasError = false;
 
-    if ( updatedFeature.hasGeometry() && currentFeature.hasGeometry() && !updatedFeature.geometry().isGeosEqual( currentFeature.geometry() ) )
+    if ( ( updatedFeature.hasGeometry() || currentFeature.hasGeometry() ) && !updatedFeature.geometry().equals( currentFeature.geometry() ) )
     {
       if ( changeGeometry( updatedFeature.id(), updatedFeature.geometry(), true ) )
       {
@@ -1011,12 +1022,16 @@ bool QgsVectorLayer::updateFeature( const QgsFeature &updatedFeature, bool skipD
         }
       }
     }
+    if ( hasChanged && !mDefaultValueOnUpdateFields.isEmpty() && !skipDefaultValues )
+      updateDefaultValues( updatedFeature.id(), updatedFeature );
+
+    return !hasError;
   }
-
-  if ( hasChanged && !mDefaultValueOnUpdateFields.isEmpty() && !skipDefaultValues )
-    updateDefaultValues( updatedFeature.id(), updatedFeature );
-
-  return !hasError;
+  else
+  {
+    QgsDebugMsgLevel( QStringLiteral( "feature %1 could not be retrieved" ).arg( updatedFeature.id() ), 3 );
+    return false;
+  }
 }
 
 
@@ -1555,7 +1570,6 @@ bool QgsVectorLayer::setDataProvider( QString const &provider )
   // get and store the feature type
   mWkbType = mDataProvider->wkbType();
 
-  mExpressionFieldBuffer = new QgsExpressionFieldBuffer();
   updateFields();
 
   if ( mProviderKey == QLatin1String( "postgres" ) )
@@ -1942,6 +1956,11 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage, con
     }
     setLabeling( labeling );
 
+    if ( node.toElement().hasAttribute( QStringLiteral( "labelsEnabled" ) ) )
+      mLabelsEnabled = node.toElement().attribute( QStringLiteral( "labelsEnabled" ) ).toInt();
+    else
+      mLabelsEnabled = true;
+
     // get and set the blend mode if it exists
     QDomNode blendModeNode = node.namedItem( QStringLiteral( "blendMode" ) );
     if ( !blendModeNode.isNull() )
@@ -2217,6 +2236,7 @@ bool QgsVectorLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &err
       QDomElement labelingElement = mLabeling->save( doc, context );
       node.appendChild( labelingElement );
     }
+    mapLayerNode.setAttribute( QStringLiteral( "labelsEnabled" ), mLabelsEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
 
     // save the simplification drawing settings
     mapLayerNode.setAttribute( QStringLiteral( "simplifyDrawingHints" ), QString::number( mSimplifyMethod.simplifyHints() ) );
@@ -2363,6 +2383,64 @@ bool QgsVectorLayer::changeAttributeValue( QgsFeatureId fid, int field, const QV
 
   if ( result && !skipDefaultValues && !mDefaultValueOnUpdateFields.isEmpty() )
     updateDefaultValues( fid );
+
+  return result;
+}
+
+bool QgsVectorLayer::changeAttributeValues( QgsFeatureId fid, const QgsAttributeMap &newValues, const QgsAttributeMap &oldValues, bool skipDefaultValues )
+{
+  bool result = true;
+
+  QgsAttributeMap newValuesJoin;
+  QgsAttributeMap oldValuesJoin;
+
+  QgsAttributeMap newValuesNotJoin;
+  QgsAttributeMap oldValuesNotJoin;
+
+  for ( auto it = newValues.constBegin(); it != newValues.constEnd(); ++it )
+  {
+    const int field = it.key();
+    const QVariant newValue = it.value();
+    QVariant oldValue;
+
+    if ( oldValues.contains( field ) )
+      oldValue = oldValues[field];
+
+    switch ( fields().fieldOrigin( field ) )
+    {
+      case QgsFields::OriginJoin:
+        newValuesJoin[field] = newValue;
+        oldValuesJoin[field] = oldValue;
+        break;
+
+      case QgsFields::OriginProvider:
+      case QgsFields::OriginEdit:
+      case QgsFields::OriginExpression:
+      {
+        newValuesNotJoin[field] = newValue;
+        oldValuesNotJoin[field] = oldValue;
+        break;
+      }
+
+      case QgsFields::OriginUnknown:
+        break;
+    }
+  }
+
+  if ( ! newValuesJoin.isEmpty() && mJoinBuffer )
+  {
+    result = mJoinBuffer->changeAttributeValues( fid, newValuesJoin, oldValuesJoin );
+  }
+
+  if ( ! newValuesNotJoin.isEmpty() && mEditBuffer && mDataProvider )
+  {
+    result &= mEditBuffer->changeAttributeValues( fid, newValues, oldValues );
+  }
+
+  if ( result && !skipDefaultValues && !mDefaultValueOnUpdateFields.isEmpty() )
+  {
+    updateDefaultValues( fid );
+  }
 
   return result;
 }
@@ -2547,7 +2625,7 @@ bool QgsVectorLayer::deleteFeatures( const QgsFeatureIds &fids )
   return res;
 }
 
-QgsAttributeList QgsVectorLayer::pkAttributeList() const
+QgsAttributeList QgsVectorLayer::primaryKeyAttributes() const
 {
   QgsAttributeList pkAttributesList;
 
@@ -3152,9 +3230,9 @@ void QgsVectorLayer::setDefaultValueDefinition( int index, const QgsDefaultValue
 QgsDefaultValue QgsVectorLayer::defaultValueDefinition( int index ) const
 {
   if ( index < 0 || index >= mFields.count() )
-    return QString();
+    return QgsDefaultValue();
   else
-    return mFields.at( index ).defaultValueDefinition().expression();
+    return mFields.at( index ).defaultValueDefinition();
 }
 
 QSet<QVariant> QgsVectorLayer::uniqueValues( int index, int limit ) const
@@ -3704,6 +3782,7 @@ double QgsVectorLayer::opacity() const
 void QgsVectorLayer::readSldLabeling( const QDomNode &node )
 {
   setLabeling( nullptr ); // start with no labeling
+  setLabelsEnabled( false );
 
   QDomElement element = node.toElement();
   if ( element.isNull() )
@@ -3924,6 +4003,7 @@ void QgsVectorLayer::readSldLabeling( const QDomNode &node )
   format.setBuffer( bufferSettings );
   settings.setFormat( format );
   setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+  setLabelsEnabled( true );
 }
 
 QgsEditFormConfig QgsVectorLayer::editFormConfig() const
@@ -4032,12 +4112,16 @@ QString QgsVectorLayer::htmlMetadata() const
   }
 
   // EPSG
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "CRS" ) + QStringLiteral( "</td><td>" ) + crs().authid() + QStringLiteral( " - " );
-  myMetadata += crs().description() + QStringLiteral( " - " );
-  if ( crs().isGeographic() )
-    myMetadata += tr( "Geographic" );
-  else
-    myMetadata += tr( "Projected" );
+  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "CRS" ) + QStringLiteral( "</td><td>" );
+  if ( crs().isValid() )
+  {
+    myMetadata += crs().authid() + QStringLiteral( " - " );
+    myMetadata += crs().description() + QStringLiteral( " - " );
+    if ( crs().isGeographic() )
+      myMetadata += tr( "Geographic" );
+    else
+      myMetadata += tr( "Projected" );
+  }
   myMetadata += QLatin1String( "</td></tr>\n" );
 
   // Extent
@@ -4071,7 +4155,7 @@ QString QgsVectorLayer::htmlMetadata() const
   myMetadata += QStringLiteral( "<h1>" ) + tr( "Fields" ) + QStringLiteral( "</h1>\n<hr>\n<table class=\"list-view\">\n" );
 
   // primary key
-  QgsAttributeList pkAttrList = pkAttributeList();
+  QgsAttributeList pkAttrList = primaryKeyAttributes();
   if ( !pkAttrList.isEmpty() )
   {
     myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Primary key attributes" ) + QStringLiteral( "</td><td>" );
@@ -4082,7 +4166,7 @@ QString QgsVectorLayer::htmlMetadata() const
     myMetadata += QLatin1String( "</td></tr>\n" );
   }
 
-  const QgsFields &myFields = pendingFields();
+  const QgsFields myFields = fields();
 
   // count fields
   myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "Count" ) + QStringLiteral( "</td><td>" ) + QString::number( myFields.size() ) + QStringLiteral( "</td></tr>\n" );
@@ -4580,11 +4664,11 @@ bool QgsVectorLayer::readExtentFromXml() const
   return mReadExtentFromXml;
 }
 
-void QgsVectorLayer::onDirtyTransaction( const QString &sql )
+void QgsVectorLayer::onDirtyTransaction( const QString &sql, const QString &name )
 {
   QgsTransaction *tr = dataProvider()->transaction();
   if ( tr && mEditBuffer )
   {
-    qobject_cast<QgsVectorLayerEditPassthrough *>( mEditBuffer )->update( tr, sql );
+    qobject_cast<QgsVectorLayerEditPassthrough *>( mEditBuffer )->update( tr, sql, name );
   }
 }

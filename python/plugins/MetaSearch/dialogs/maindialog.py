@@ -39,7 +39,7 @@ from qgis.PyQt.QtGui import QColor, QCursor
 
 from qgis.core import (QgsApplication, QgsCoordinateReferenceSystem,
                        QgsCoordinateTransform, QgsGeometry, QgsPointXY,
-                       QgsProviderRegistry, QgsSettings)
+                       QgsProviderRegistry, QgsSettings, QgsProject)
 from qgis.gui import QgsRubberBand
 from qgis.utils import OverrideCursor
 
@@ -400,7 +400,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         if crsid != 4326:  # reproject to EPSG:4326
             src = QgsCoordinateReferenceSystem(crsid)
             dest = QgsCoordinateReferenceSystem(4326)
-            xform = QgsCoordinateTransform(src, dest)
+            xform = QgsCoordinateTransform(src, dest, QgsProject.instance())
             minxy = xform.transform(QgsPointXY(extent.xMinimum(),
                                                extent.yMinimum()))
             maxxy = xform.transform(QgsPointXY(extent.xMaximum(),
@@ -456,6 +456,8 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         self.timeout = self.spnTimeout.value()
 
         # bbox
+        # CRS is WGS84 with axis order longitude, latitude
+        # defined by 'urn:ogc:def:crs:OGC:1.3:CRS84'
         minx = self.leWest.text()
         miny = self.leSouth.text()
         maxx = self.leEast.text()
@@ -466,7 +468,8 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         # even for a global bbox, if a spatial filter is applied, then
         # the CSW server will skip records without a bbox
         if bbox != ['-180', '-90', '180', '90']:
-            self.constraints.append(BBox(bbox))
+            self.constraints.append(BBox(bbox,
+                                         crs='urn:ogc:def:crs:OGC:1.3:CRS84'))
 
         # keywords
         if self.leKeywords.text():
@@ -570,7 +573,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
                 dst = self.map.mapSettings().destinationCrs()
                 geom = QgsGeometry.fromWkt(points)
                 if src.postgisSrid() != dst.postgisSrid():
-                    ctr = QgsCoordinateTransform(src, dst)
+                    ctr = QgsCoordinateTransform(src, dst, QgsProject.instance())
                     try:
                         geom.transform(ctr)
                     except Exception as err:

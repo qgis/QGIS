@@ -80,7 +80,7 @@ class CORE_EXPORT QWebSettings : public QObject
       CaretBrowsingEnabled,
       NotificationsEnabled
     };
-    explicit QWebSettings( QObject *parent = 0 )
+    explicit QWebSettings( QObject *parent = nullptr )
       : QObject( parent )
     {
     }
@@ -120,7 +120,7 @@ class CORE_EXPORT QWebPage : public QObject
       WebModalDialog
     };
 
-    explicit QWebPage( QObject *parent = 0 )
+    explicit QWebPage( QObject *parent = nullptr )
       : QObject( parent )
       , mSettings( new QWebSettings() )
       , mFrame( new QWebFrame() )
@@ -223,7 +223,7 @@ class CORE_EXPORT QgsWebPage : public QWebPage
      * Constructor for QgsWebPage.
      * \param parent parent object
      */
-    explicit QgsWebPage( QObject *parent = 0 )
+    explicit QgsWebPage( QObject *parent = nullptr )
       : QWebPage( parent )
     {}
 
@@ -245,7 +245,7 @@ class CORE_EXPORT QgsWebPage : public QWebPage
 
   protected:
 
-    virtual void javaScriptConsoleMessage( const QString &message, int lineNumber, const QString & ) override
+    void javaScriptConsoleMessage( const QString &message, int lineNumber, const QString & ) override
     {
       if ( mIdentifier.isEmpty() )
         QgsMessageLog::logMessage( tr( "Line %1: %2" ).arg( lineNumber ).arg( message ), tr( "JavaScript" ) );

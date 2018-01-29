@@ -427,7 +427,7 @@ void QgsAdvancedDigitizingDockWidget::lockAdditionalConstraint( AdditionalConstr
 
 void QgsAdvancedDigitizingDockWidget::updateCapacity( bool updateUIwithoutChange )
 {
-  CadCapacities newCapacities = 0;
+  CadCapacities newCapacities = nullptr;
   // first point is the mouse point (it doesn't count)
   if ( mCadPointList.count() > 1 )
   {
@@ -490,7 +490,7 @@ void QgsAdvancedDigitizingDockWidget::updateCapacity( bool updateUIwithoutChange
     mAngleConstraint->setRelative( true );
   }
 
-  // distance is alway relative
+  // distance is always relative
   mLockDistanceButton->setEnabled( relativeCoordinates );
   mDistanceLineEdit->setEnabled( relativeCoordinates );
   if ( !relativeCoordinates )

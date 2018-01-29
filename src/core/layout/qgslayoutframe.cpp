@@ -72,55 +72,17 @@ QgsLayoutSize QgsLayoutFrame::fixedSize() const
   return QgsLayoutSize( mMultiFrame->fixedFrameSize( frameIndex ), QgsUnitTypes::LayoutMillimeters );
 }
 
-#if 0// TODO - save/restore multiframe uuid!
-bool QgsLayoutFrame::writeXml( QDomElement &elem, QDomDocument &doc ) const
-{
-  QDomElement frameElem = doc.createElement( QStringLiteral( "ComposerFrame" ) );
-  frameElem.setAttribute( QStringLiteral( "sectionX" ), QString::number( mSection.x() ) );
-  frameElem.setAttribute( QStringLiteral( "sectionY" ), QString::number( mSection.y() ) );
-  frameElem.setAttribute( QStringLiteral( "sectionWidth" ), QString::number( mSection.width() ) );
-  frameElem.setAttribute( QStringLiteral( "sectionHeight" ), QString::number( mSection.height() ) );
-  frameElem.setAttribute( QStringLiteral( "hidePageIfEmpty" ), mHidePageIfEmpty );
-  frameElem.setAttribute( QStringLiteral( "hideBackgroundIfEmpty" ), mHideBackgroundIfEmpty );
-  elem.appendChild( frameElem );
-
-  return _writeXml( frameElem, doc );
-}
-
-bool QgsLayoutFrame::readXml( const QDomElement &itemElem, const QDomDocument &doc )
-{
-  double x = itemElem.attribute( QStringLiteral( "sectionX" ) ).toDouble();
-  double y = itemElem.attribute( QStringLiteral( "sectionY" ) ).toDouble();
-  double width = itemElem.attribute( QStringLiteral( "sectionWidth" ) ).toDouble();
-  double height = itemElem.attribute( QStringLiteral( "sectionHeight" ) ).toDouble();
-  mSection = QRectF( x, y, width, height );
-  mHidePageIfEmpty = itemElem.attribute( QStringLiteral( "hidePageIfEmpty" ), QStringLiteral( "0" ) ).toInt();
-  mHideBackgroundIfEmpty = itemElem.attribute( QStringLiteral( "hideBackgroundIfEmpty" ), QStringLiteral( "0" ) ).toInt();
-  QDomElement composerItem = itemElem.firstChildElement( QStringLiteral( "ComposerItem" ) );
-  if ( composerItem.isNull() )
-  {
-    return false;
-  }
-  return _readXml( composerItem, doc );
-}
-#endif
-
 int QgsLayoutFrame::type() const
 {
   return QgsLayoutItemRegistry::LayoutFrame;
 }
 
-QString QgsLayoutFrame::stringType() const
-{
-  return QStringLiteral( "ItemFrame" );
-}
-
-QString QgsLayoutFrame::uuid() const
+QIcon QgsLayoutFrame::icon() const
 {
   if ( mMultiFrame )
-    return mMultiFrame->uuid() + ':' + mMultiFrame->frameIndex( const_cast< QgsLayoutFrame * >( this ) );
+    return mMultiFrame->icon();
   else
-    return QgsLayoutItem::uuid();
+    return QIcon();
 }
 
 void QgsLayoutFrame::setHidePageIfEmpty( const bool hidePageIfEmpty )
@@ -165,10 +127,8 @@ QgsExpressionContext QgsLayoutFrame::createExpressionContext() const
   //start with multiframe's context
   QgsExpressionContext context = mMultiFrame->createExpressionContext();
 
-#if 0 //TODO
   //add frame's individual context
   context.appendScope( QgsExpressionContextUtils::layoutItemScope( this ) );
-#endif
 
   return context;
 }
@@ -189,12 +149,21 @@ QString QgsLayoutFrame::displayName() const
   return tr( "<Frame>" );
 }
 
+void QgsLayoutFrame::cleanup()
+{
+  if ( mMultiFrame )
+    mMultiFrame->handleFrameRemoval( this );
+
+  QgsLayoutItem::cleanup();
+}
+
 void QgsLayoutFrame::draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle )
 {
   if ( mMultiFrame )
   {
     //calculate index of frame
     int frameIndex = mMultiFrame->frameIndex( this );
+    Q_ASSERT_X( frameIndex >= 0, "QgsLayoutFrame::draw", "Invalid frame index for frame" );
     mMultiFrame->render( context, mSection, frameIndex, itemStyle );
   }
 }
@@ -215,20 +184,34 @@ void QgsLayoutFrame::drawBackground( QgsRenderContext &context )
   }
 }
 
-#if 0 //TODO
-void QgsLayoutFrame::beginItemCommand( const QString &text )
+bool QgsLayoutFrame::writePropertiesToElement( QDomElement &parentElement, QDomDocument &, const QgsReadWriteContext & ) const
 {
-  if ( mComposition )
-  {
-    mComposition->beginMultiFrameCommand( multiFrame(), text );
-  }
+  parentElement.setAttribute( QStringLiteral( "multiFrame" ), mMultiFrameUuid );
+  parentElement.setAttribute( QStringLiteral( "multiFrameTemplateUuid" ), mMultiFrameUuid );
+  parentElement.setAttribute( QStringLiteral( "sectionX" ), QString::number( mSection.x() ) );
+  parentElement.setAttribute( QStringLiteral( "sectionY" ), QString::number( mSection.y() ) );
+  parentElement.setAttribute( QStringLiteral( "sectionWidth" ), QString::number( mSection.width() ) );
+  parentElement.setAttribute( QStringLiteral( "sectionHeight" ), QString::number( mSection.height() ) );
+  parentElement.setAttribute( QStringLiteral( "hidePageIfEmpty" ), mHidePageIfEmpty );
+  parentElement.setAttribute( QStringLiteral( "hideBackgroundIfEmpty" ), mHideBackgroundIfEmpty );
+  return true;
 }
 
-void QgsLayoutFrame::endItemCommand()
+bool QgsLayoutFrame::readPropertiesFromElement( const QDomElement &itemElem, const QDomDocument &, const QgsReadWriteContext & )
 {
-  if ( mComposition )
+  double x = itemElem.attribute( QStringLiteral( "sectionX" ) ).toDouble();
+  double y = itemElem.attribute( QStringLiteral( "sectionY" ) ).toDouble();
+  double width = itemElem.attribute( QStringLiteral( "sectionWidth" ) ).toDouble();
+  double height = itemElem.attribute( QStringLiteral( "sectionHeight" ) ).toDouble();
+  mSection = QRectF( x, y, width, height );
+  mHidePageIfEmpty = itemElem.attribute( QStringLiteral( "hidePageIfEmpty" ), QStringLiteral( "0" ) ).toInt();
+  mHideBackgroundIfEmpty = itemElem.attribute( QStringLiteral( "hideBackgroundIfEmpty" ), QStringLiteral( "0" ) ).toInt();
+
+  mMultiFrameUuid = itemElem.attribute( QStringLiteral( "multiFrame" ) );
+  if ( mMultiFrameUuid.isEmpty( ) )
   {
-    mComposition->endMultiFrameCommand();
+    mMultiFrameUuid = itemElem.attribute( QStringLiteral( "multiFrameTemplateUuid" ) );
   }
+  mMultiFrame = mLayout->multiFrameByUuid( mMultiFrameUuid );
+  return true;
 }
-#endif

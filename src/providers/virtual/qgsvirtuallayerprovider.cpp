@@ -567,7 +567,7 @@ QgsVectorDataProvider::Capabilities QgsVirtualLayerProvider::capabilities() cons
   {
     return SelectAtId;
   }
-  return 0;
+  return nullptr;
 }
 
 QString QgsVirtualLayerProvider::name() const
@@ -655,12 +655,12 @@ class QgsVirtualSourceSelectProvider : public QgsSourceSelectProvider
 {
   public:
 
-    virtual QString providerKey() const override { return QStringLiteral( "virtual" ); }
-    virtual QString text() const override { return QObject::tr( "Virtual Layer" ); }
-    virtual int ordering() const override { return QgsSourceSelectProvider::OrderDatabaseProvider + 50; }
-    virtual QString toolTip() const override { return QObject::tr( "Add Virtual Layer" ); }
-    virtual QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddVirtualLayer.svg" ) ); }
-    virtual QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
+    QString providerKey() const override { return QStringLiteral( "virtual" ); }
+    QString text() const override { return QObject::tr( "Virtual Layer" ); }
+    int ordering() const override { return QgsSourceSelectProvider::OrderDatabaseProvider + 60; }
+    QString toolTip() const override { return QObject::tr( "Add Virtual Layer" ); }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddVirtualLayer.svg" ) ); }
+    QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
     {
       return new QgsVirtualLayerSourceSelect( parent, fl, widgetMode );
     }

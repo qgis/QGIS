@@ -23,6 +23,7 @@
 #include "qgslayoutpoint.h"
 #include "qgslayoutitemwidget.h"
 #include "qgslayoutmeasurementconverter.h"
+#include "qgslayoutpagecollection.h"
 
 class QgsLayoutItem;
 class QgsLayoutItemPage;
@@ -41,6 +42,11 @@ class QgsLayoutPagePropertiesWidget : public QgsLayoutItemBaseWidget, private Ui
      */
     QgsLayoutPagePropertiesWidget( QWidget *parent, QgsLayoutItem *page );
 
+  signals:
+
+    //! Is emitted when page orientation changes
+    void pageOrientationChanged();
+
   private slots:
 
     void pageSizeChanged( int index );
@@ -48,6 +54,8 @@ class QgsLayoutPagePropertiesWidget : public QgsLayoutItemBaseWidget, private Ui
     void updatePageSize();
     void setToCustomSize();
     void symbolChanged();
+    void excludeExportsToggled( bool checked );
+    void refreshLayout();
 
   private:
 
@@ -56,6 +64,7 @@ class QgsLayoutPagePropertiesWidget : public QgsLayoutItemBaseWidget, private Ui
     QgsLayoutMeasurementConverter mConverter;
 
     bool mSettingPresetSize = false;
+    bool mBlockPageUpdate = false;
 
     void showCurrentPageSize();
 

@@ -67,9 +67,10 @@ QSize QgsColorRampButton::sizeHint() const
 {
   //make sure height of button looks good under different platforms
 #ifdef Q_OS_WIN
-  return QSize( 120, 22 );
+  return QSize( 120, static_cast<int>( std::max( Qgis::UI_SCALE_FACTOR * fontMetrics().height( ), 22.0 ) ) );
 #else
-  return QSize( 120, 28 );
+  // Adjust height for HiDPI screens
+  return QSize( 120, static_cast<int>( std::max( Qgis::UI_SCALE_FACTOR * fontMetrics().height( ) * 1.4, 28.0 ) ) );
 #endif
 }
 
@@ -100,7 +101,7 @@ void QgsColorRampButton::showColorRampDialog()
     if ( panelMode )
     {
       QgsLimitedRandomColorRampWidget *widget = new QgsLimitedRandomColorRampWidget( *randRamp, this );
-      widget->setPanelTitle( tr( "Edit ramp" ) );
+      widget->setPanelTitle( tr( "Edit Ramp" ) );
       connect( widget, &QgsLimitedRandomColorRampWidget::changed, this, &QgsColorRampButton::rampWidgetUpdated );
       panel->openPanel( widget );
     }
@@ -119,7 +120,7 @@ void QgsColorRampButton::showColorRampDialog()
     if ( panelMode )
     {
       QgsPresetColorRampWidget *widget = new QgsPresetColorRampWidget( *presetRamp, this );
-      widget->setPanelTitle( tr( "Edit ramp" ) );
+      widget->setPanelTitle( tr( "Edit Ramp" ) );
       connect( widget, &QgsPresetColorRampWidget::changed, this, &QgsColorRampButton::rampWidgetUpdated );
       panel->openPanel( widget );
     }
@@ -138,7 +139,7 @@ void QgsColorRampButton::showColorRampDialog()
     if ( panelMode )
     {
       QgsColorBrewerColorRampWidget *widget = new QgsColorBrewerColorRampWidget( *brewerRamp, this );
-      widget->setPanelTitle( tr( "Edit ramp" ) );
+      widget->setPanelTitle( tr( "Edit Ramp" ) );
       connect( widget, &QgsColorBrewerColorRampWidget::changed, this, &QgsColorRampButton::rampWidgetUpdated );
       panel->openPanel( widget );
     }

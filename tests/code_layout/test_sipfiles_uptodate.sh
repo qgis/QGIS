@@ -12,7 +12,7 @@ pushd ${DIR} > /dev/null
 
 code=0
 while read -r sipfile; do
-    header=$(sed -E 's/(.*)\.sip/src\/\1.h/' <<< $sipfile)
+    header=$(${GP}sed -E 's/(.*)\.sip/src\/\1.h/' <<< $sipfile)
     if [ ! -f $header ]; then
       echo "*** Missing header: $header for sipfile $sipfile"
     else
@@ -23,10 +23,10 @@ while read -r sipfile; do
       fi
     fi
 done < <(
-sed -n -r 's/^%Include (.*\.sip)/core\/\1/p' python/core/core_auto.sip
-sed -n -r 's/^%Include (.*\.sip)/gui\/\1/p' python/gui/gui_auto.sip
-sed -n -r 's/^%Include (.*\.sip)/analysis\/\1/p' python/analysis/analysis_auto.sip
-sed -n -r 's/^%Include (.*\.sip)/server\/\1/p' python/server/server_auto.sip
+${GP}sed -n -r 's/^%Include (.*\.sip)/core\/\1/p' python/core/core_auto.sip
+${GP}sed -n -r 's/^%Include (.*\.sip)/gui\/\1/p' python/gui/gui_auto.sip
+${GP}sed -n -r 's/^%Include (.*\.sip)/analysis\/\1/p' python/analysis/analysis_auto.sip
+${GP}sed -n -r 's/^%Include (.*\.sip)/server\/\1/p' python/server/server_auto.sip
   )
 
 

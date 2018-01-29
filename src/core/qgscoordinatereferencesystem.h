@@ -79,21 +79,21 @@ typedef void ( *CUSTOM_CRS_VALIDATION )( QgsCoordinateReferenceSystem & ) SIP_SK
  *
  * For example, the following code will create and inspect "British national grid" CRS:
  *
- * ~~~{.py}
+ * \code{.py}
  * crs = QgsCoordinateReferenceSystem("EPSG:27700")
  * if crs.isValid():
  *     print("CRS Description: {}".format(crs.description()))
  *     print("CRS PROJ.4 text: {}".format(crs.toProj4()))
  * else:
  *     print("Invalid CRS!")
- * ~~~
+ * \endcode
  *
  * This will produce the following output:
  *
- * ~~~
+ * \code
  * CRS Description: OSGB 1936 / British National Grid
  * CRS PROJ.4 text: +proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 [output trimmed]
- * ~~~
+ * \endcode
  *
  * CRS Definition Formats
  * ======================
@@ -304,9 +304,9 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     /**
      * Sets this CRS by lookup of the given ID in the CRS database.
+     * \returns True on success else false
      * \note We encourage you to use EPSG code, WKT or Proj4 to describe CRS's in your code
      * wherever possible. Internal QGIS CRS IDs are not guaranteed to be permanent / involatile.
-     * \returns True on success else false
      */     // TODO QGIS 3: remove type and always use EPSG code, rename to createFromEpsg
     bool createFromId( const long id, CrsType type = PostgisCrsId );
 
@@ -316,8 +316,8 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * Accepts both "<auth>:<code>" format and OGC URN "urn:ogc:def:crs:<auth>:[<version>]:<code>".
      * It also recognizes "QGIS", "USER", "CUSTOM" authorities, which all have the same meaning
      * and refer to QGIS internal CRS IDs.
-     * \note this method uses an internal cache. Call invalidateCache() to clear the cache.
      * \returns True on success else false
+     * \note this method uses an internal cache. Call invalidateCache() to clear the cache.
      * \see fromOgcWmsCrs()
      */     // TODO QGIS 3: remove "QGIS" and "CUSTOM", only support "USER" (also returned by authid())
     bool createFromOgcWmsCrs( const QString &crs );
@@ -336,10 +336,10 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * and createFromOgcWmsCrs() is used to initialize the object.
      * Otherwise the WKT will be converted to a proj4 string and createFromProj4()
      * set up the object.
-     * \note Some members may be left blank if no match can be found in CRS database.
-     * \note this method uses an internal cache. Call invalidateCache() to clear the cache.
      * \param wkt The WKT for the desired spatial reference system.
      * \returns True on success else false
+     * \note Some members may be left blank if no match can be found in CRS database.
+     * \note this method uses an internal cache. Call invalidateCache() to clear the cache.
      * \see fromWkt()
      */
     bool createFromWkt( const QString &wkt );
@@ -349,9 +349,9 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      *
      * If the srsid is < USER_CRS_START_ID, system CRS database is used, otherwise
      * user's local CRS database from home directory is used.
-     * \note this method uses an internal cache. Call invalidateCache() to clear the cache.
      * \param srsId The internal QGIS CRS ID for the desired spatial reference system.
      * \returns True on success else false
+     * \note this method uses an internal cache. Call invalidateCache() to clear the cache.
      * \see fromSrsId()
      */
     bool createFromSrsId( const long srsId );
@@ -373,10 +373,10 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      *   a match where the parameters are in a different order
      * - if none of the above match, use findMatchingProj()
      *
-     * \note Some members may be left blank if no match can be found in CRS database.
-     * \note this method uses an internal cache. Call invalidateCache() to clear the cache.
      * \param projString A proj4 format string
      * \returns True on success else false
+     * \note Some members may be left blank if no match can be found in CRS database.
+     * \note this method uses an internal cache. Call invalidateCache() to clear the cache.
      * \see fromProj4()
      */
     bool createFromProj4( const QString &projString );
@@ -407,10 +407,10 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      *
      * For more details on supported formats see OGRSpatialReference::SetFromUserInput()
      * ( http://www.gdal.org/ogr/classOGRSpatialReference.html#aec3c6a49533fe457ddc763d699ff8796 )
-     * \note this function generates a WKT string using OSRSetFromUserInput() and
-     * passes it to createFromWkt() function.
      * \param definition A String containing a coordinate reference system definition.
      * \returns True on success else false
+     * \note this function generates a WKT string using OSRSetFromUserInput() and
+     * passes it to createFromWkt() function.
      */    // TODO QGIS3: rename to createFromStringOGR so it is clear it's similar to createFromString, just different backend
     bool createFromUserInput( const QString &definition );
 
@@ -466,6 +466,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     /**
      * Restores state from the given DOM node.
+     * If it fails or if the node is empty, a default empty CRS will be returned.
      * \param node The node from which state will be restored
      * \returns bool True on success, False on failure
      */
@@ -721,10 +722,10 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     /**
      * Get a record from the srs.db or qgis.db backends, given an sql statement.
-     * \note only handles queries that return a single record.
-     * \note it will first try the system srs.db then the users qgis.db!
      * \param sql The sql query to execute
      * \returns An associative array of field name <-> value pairs
+     * \note only handles queries that return a single record.
+     * \note it will first try the system srs.db then the users qgis.db!
      */
     RecordMap getRecord( const QString &sql );
 

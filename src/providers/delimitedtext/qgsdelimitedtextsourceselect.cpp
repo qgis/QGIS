@@ -40,7 +40,6 @@ QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget *parent, Qt:
 {
 
   setupUi( this );
-  connect( btnBrowseForFile, &QPushButton::clicked, this, &QgsDelimitedTextSourceSelect::btnBrowseForFile_clicked );
   setupButtons( buttonBox );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsDelimitedTextSourceSelect::showHelp );
 
@@ -67,7 +66,6 @@ QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget *parent, Qt:
   loadSettings();
   updateFieldsAndEnable();
 
-  connect( txtFilePath, &QLineEdit::textChanged, this, &QgsDelimitedTextSourceSelect::updateFileName );
   connect( txtLayerName, &QLineEdit::textChanged, this, &QgsDelimitedTextSourceSelect::enableAccept );
   connect( cmbEncoding, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsDelimitedTextSourceSelect::updateFieldsAndEnable );
 
@@ -93,6 +91,11 @@ QgsDelimitedTextSourceSelect::QgsDelimitedTextSourceSelect( QWidget *parent, Qt:
 
   connect( cbxPointIsComma, &QAbstractButton::toggled, this, &QgsDelimitedTextSourceSelect::updateFieldsAndEnable );
   connect( cbxXyDms, &QAbstractButton::toggled, this, &QgsDelimitedTextSourceSelect::updateFieldsAndEnable );
+
+  mFileWidget->setDialogTitle( tr( "Choose a Delimited Text File to Open" ) );
+  mFileWidget->setFilter( tr( "Text files" ) + " (*.txt *.csv *.dat *.wkt);;" + tr( "All files" ) + " (* *.*)" );
+  mFileWidget->setSelectedFilter( settings.value( mPluginKey + "/file_filter", "" ).toString() );
+  connect( mFileWidget, &QgsFileWidget::fileChanged, this, [ = ]() { updateFileName(); } );
 }
 
 QgsDelimitedTextSourceSelect::~QgsDelimitedTextSourceSelect()
@@ -100,11 +103,6 @@ QgsDelimitedTextSourceSelect::~QgsDelimitedTextSourceSelect()
   QgsSettings settings;
   settings.setValue( mPluginKey + "/geometry", saveGeometry() );
   delete mFile;
-}
-
-void QgsDelimitedTextSourceSelect::btnBrowseForFile_clicked()
-{
-  getOpenFileName();
 }
 
 void QgsDelimitedTextSourceSelect::addButtonClicked()
@@ -187,7 +185,7 @@ void QgsDelimitedTextSourceSelect::addButtonClicked()
 
   // store the settings
   saveSettings();
-  saveSettingsForFile( txtFilePath->text() );
+  saveSettingsForFile( mFileWidget->filePath() );
 
 
   // add the layer to the map
@@ -343,7 +341,7 @@ void QgsDelimitedTextSourceSelect::saveSettingsForFile( const QString &filename 
 
 bool QgsDelimitedTextSourceSelect::loadDelimitedFileDefinition()
 {
-  mFile->setFileName( txtFilePath->text() );
+  mFile->setFileName( mFileWidget->filePath() );
   mFile->setEncoding( cmbEncoding->currentText() );
   if ( delimiterChars->isChecked() )
   {
@@ -610,37 +608,20 @@ bool QgsDelimitedTextSourceSelect::trySetXYField( QStringList &fields, QList<boo
   return indexY >= 0;
 }
 
-void QgsDelimitedTextSourceSelect::getOpenFileName()
-{
-  // Get a file to process, starting at the current directory
-  // Set initial dir to last used
-  QgsSettings settings;
-  QString selectedFilter = settings.value( mPluginKey + "/file_filter", "" ).toString();
-
-  QString s = QFileDialog::getOpenFileName(
-                this,
-                tr( "Choose a delimited text file to open" ),
-                settings.value( mPluginKey + "/text_path", QDir::homePath() ).toString(),
-                tr( "Text files" ) + " (*.txt *.csv *.dat *.wkt);;"
-                + tr( "All files" ) + " (* *.*)",
-                &selectedFilter
-              );
-  // set path
-  if ( s.isNull() ) return;
-  settings.setValue( mPluginKey + "/file_filter", selectedFilter );
-  txtFilePath->setText( s );
-}
-
 void QgsDelimitedTextSourceSelect::updateFileName()
 {
+  QgsSettings settings;
+  settings.setValue( mPluginKey + "/file_filter", mFileWidget->selectedFilter() );
+
   // put a default layer name in the text entry
-  QString filename = txtFilePath->text();
+  QString filename = mFileWidget->filePath();
   QFileInfo finfo( filename );
   if ( finfo.exists() )
   {
     QgsSettings settings;
     settings.setValue( mPluginKey + "/text_path", finfo.path() );
   }
+
   txtLayerName->setText( finfo.completeBaseName() );
   loadSettingsForFile( filename );
   updateFieldsAndEnable();
@@ -659,13 +640,13 @@ bool QgsDelimitedTextSourceSelect::validate()
   QString message( QLatin1String( "" ) );
   bool enabled = false;
 
-  if ( txtFilePath->text().trimmed().isEmpty() )
+  if ( mFileWidget->filePath().trimmed().isEmpty() )
   {
     message = tr( "Please select an input file" );
   }
-  else if ( ! QFileInfo::exists( txtFilePath->text() ) )
+  else if ( ! QFileInfo::exists( mFileWidget->filePath() ) )
   {
-    message = tr( "File %1 does not exist" ).arg( txtFilePath->text() );
+    message = tr( "File %1 does not exist" ).arg( mFileWidget->filePath() );
   }
   else if ( txtLayerName->text().isEmpty() )
   {

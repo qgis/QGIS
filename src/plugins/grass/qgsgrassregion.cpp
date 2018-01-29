@@ -207,8 +207,8 @@ QgsGrassRegion::QgsGrassRegion( QgisInterface *iface,
   mUpdatingGui = false;
 
   // Set input validators
-  QDoubleValidator *dv = new QDoubleValidator( 0 );
-  QIntValidator *iv = new QIntValidator( 0 );
+  QDoubleValidator *dv = new QDoubleValidator( nullptr );
+  QIntValidator *iv = new QIntValidator( nullptr );
 
   mNorth->setValidator( dv );
   mSouth->setValidator( dv );
@@ -305,7 +305,7 @@ void QgsGrassRegion::reloadRegion()
 void QgsGrassRegion::mapsetChanged()
 {
   delete mRegionEdit;
-  mRegionEdit = 0;
+  mRegionEdit = nullptr;
   if ( QgsGrass::activeMode() )
   {
     mRegionEdit = new QgsGrassRegionEdit( mCanvas );

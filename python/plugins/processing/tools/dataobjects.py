@@ -105,35 +105,6 @@ def createExpressionContext():
     return context
 
 
-def getSupportedOutputRasterLayerExtensions():
-    allexts = []
-    for exts in list(GdalUtils.getSupportedRasters().values()):
-        for ext in exts:
-            if ext != 'tif' and ext not in allexts:
-                allexts.append(ext)
-    allexts.sort()
-    allexts.insert(0, 'tif')  # tif is the default, should be the first
-    return allexts
-
-
-def getSupportedOutputRasterFilters():
-    """
-    Return a list of file filters for supported raster formats.
-    Supported formats come from Gdal.
-    :return: a list of strings for Qt file filters.
-    """
-    allFilters = []
-    supported = GdalUtils.getSupportedOutputRasters()
-    formatList = sorted(supported.keys())
-    # Place GTiff as the first format
-    if 'GTiff' in formatList:
-        formatList.pop(formatList.index('GTiff'))
-    formatList.insert(0, 'GTiff')
-    for f in formatList:
-        allFilters.append('{0} files (*.{1})'.format(f, ' *.'.join(supported[f])))
-    return allFilters
-
-
 def load(fileName, name=None, crs=None, style=None, isRaster=False):
     """Loads a layer/table into the current project, given its file.
     """

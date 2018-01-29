@@ -45,12 +45,12 @@ public:
     QTermWidget(int startnow, // 1 = start shell programm immediatelly
                 QWidget * parent = 0);
     // A dummy constructor for Qt Designer. startnow is 1 by default
-    QTermWidget(QWidget *parent = 0);
+    QTermWidget(QWidget *parent = nullptr);
 
-    virtual ~QTermWidget();
+    ~QTermWidget() override;
 
     //Initial size
-    QSize sizeHint() const;
+    QSize sizeHint() const override;
 
     //start shell program if it was not started in constructor
     void startShellProgram();
@@ -227,7 +227,7 @@ public slots:
     void toggleShowSearchBar();
 
 protected:
-    virtual void resizeEvent(QResizeEvent *);
+    void resizeEvent(QResizeEvent *) override;
 
 protected slots:
     void sessionFinished();

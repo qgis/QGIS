@@ -30,6 +30,17 @@ QgsLayoutViewToolSelect::QgsLayoutViewToolSelect( QgsLayoutView *view )
   mRubberBand->setPen( QPen( QBrush( QColor( 254, 58, 29, 100 ) ), 0, Qt::DotLine ) );
 }
 
+QgsLayoutViewToolSelect::~QgsLayoutViewToolSelect()
+{
+  if ( mMouseHandles )
+  {
+    // want to force them to be removed from the scene
+    if ( mMouseHandles->scene() )
+      mMouseHandles->scene()->removeItem( mMouseHandles );
+    mMouseHandles->deleteLater();
+  }
+}
+
 void QgsLayoutViewToolSelect::layoutPressEvent( QgsLayoutViewMouseEvent *event )
 {
   if ( mMouseHandles->shouldBlockEvent( event ) )
@@ -97,7 +108,7 @@ void QgsLayoutViewToolSelect::layoutPressEvent( QgsLayoutViewMouseEvent *event )
     //not clicking over an item, so start marquee selection
     mIsSelecting = true;
     mMousePressStartPos = event->pos();
-    mRubberBand->start( event->layoutPoint(), 0 );
+    mRubberBand->start( event->layoutPoint(), nullptr );
     return;
   }
 
@@ -137,7 +148,7 @@ void QgsLayoutViewToolSelect::layoutMoveEvent( QgsLayoutViewMouseEvent *event )
 {
   if ( mIsSelecting )
   {
-    mRubberBand->update( event->layoutPoint(), 0 );
+    mRubberBand->update( event->layoutPoint(), nullptr );
   }
   else
   {
@@ -276,6 +287,8 @@ QgsLayoutMouseHandles *QgsLayoutViewToolSelect::mouseHandles()
 void QgsLayoutViewToolSelect::setLayout( QgsLayout *layout )
 {
   // existing handles are owned by previous layout
+  if ( mMouseHandles )
+    mMouseHandles->deleteLater();
 
   //add mouse selection handles to layout, and initially hide
   mMouseHandles = new QgsLayoutMouseHandles( layout, view() );

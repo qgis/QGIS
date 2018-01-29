@@ -36,7 +36,7 @@ struct CORE_EXPORT QgsSatelliteInfo
   int signal;
 };
 
-struct CORE_EXPORT QgsGPSInformation
+struct CORE_EXPORT QgsGpsInformation
 {
   double latitude;
   double longitude;
@@ -62,7 +62,7 @@ struct CORE_EXPORT QgsGPSInformation
 /**
  * \ingroup core
  * Abstract base class for connection to a GPS device*/
-class CORE_EXPORT QgsGPSConnection : public QObject
+class CORE_EXPORT QgsGpsConnection : public QObject
 {
 #ifdef SIP_RUN
 #include <qgsgpsdconnection.h>
@@ -74,8 +74,8 @@ class CORE_EXPORT QgsGPSConnection : public QObject
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( sipCpp->inherits( "QgsGpsdConnection" ) )
       sipType = sipType_QgsGpsdConnection;
-    else if ( sipCpp->inherits( "QgsNMEAConnection" ) )
-      sipType = sipType_QgsNMEAConnection;
+    else if ( sipCpp->inherits( "QgsNmeaConnection" ) )
+      sipType = sipType_QgsNmeaConnection;
     else
       sipType = NULL;
     SIP_END
@@ -96,8 +96,8 @@ class CORE_EXPORT QgsGPSConnection : public QObject
      * Constructor
         \param dev input device for the connection (e.g. serial device). The class takes ownership of the object
       */
-    QgsGPSConnection( QIODevice *dev SIP_TRANSFER );
-    virtual ~QgsGPSConnection();
+    QgsGpsConnection( QIODevice *dev SIP_TRANSFER );
+    ~QgsGpsConnection() override;
     //! Opens connection to device
     bool connect();
     //! Closes connection to device
@@ -110,17 +110,17 @@ class CORE_EXPORT QgsGPSConnection : public QObject
     Status status() const { return mStatus; }
 
     //! Returns the current gps information (lat, lon, etc.)
-    QgsGPSInformation currentGPSInformation() const { return mLastGPSInformation; }
+    QgsGpsInformation currentGPSInformation() const { return mLastGPSInformation; }
 
   signals:
-    void stateChanged( const QgsGPSInformation &info );
+    void stateChanged( const QgsGpsInformation &info );
     void nmeaSentenceReceived( const QString &substring ); // added to capture 'raw' data
 
   protected:
     //! Data source (e.g. serial device, socket, file,...)
     QIODevice *mSource = nullptr;
     //! Last state of the gps related variables (e.g. position, time, ...)
-    QgsGPSInformation mLastGPSInformation;
+    QgsGpsInformation mLastGPSInformation;
     //! Connection status
     Status mStatus;
 

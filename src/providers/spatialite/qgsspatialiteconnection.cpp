@@ -238,7 +238,23 @@ bool QgsSpatiaLiteConnection::getTableInfoAbstractInterface( sqlite3 *handle, bo
     return false;
   }
 
-// attempting to load the VectorLayersList
+  // List of system tables not to be shown if geometryless tables are requested
+  QStringList ignoreTableNames;
+  ignoreTableNames << QStringLiteral( "SpatialIndex" ) << QStringLiteral( "geom_cols_ref_sys" ) << QStringLiteral( "geometry_columns" )
+                   << QStringLiteral( "geometry_columns_auth" ) << QStringLiteral( "views_geometry_columns" ) << QStringLiteral( "virts_geometry_columns" )
+                   << QStringLiteral( "spatial_ref_sys" ) << QStringLiteral( "spatial_ref_sys_all" ) << QStringLiteral( "spatial_ref_sys_aux" )
+                   << QStringLiteral( "sqlite_sequence" ) << QStringLiteral( "tableprefix_metadata" ) << QStringLiteral( "tableprefix_rasters" )
+                   << QStringLiteral( "layer_params" ) << QStringLiteral( "layer_statistics" ) << QStringLiteral( "layer_sub_classes" )
+                   << QStringLiteral( "layer_table_layout" ) << QStringLiteral( "pattern_bitmaps" ) << QStringLiteral( "symbol_bitmaps" )
+                   << QStringLiteral( "project_defs" ) << QStringLiteral( "raster_pyramids" ) << QStringLiteral( "sqlite_stat1" ) << QStringLiteral( "sqlite_stat2" )
+                   << QStringLiteral( "spatialite_history" ) << QStringLiteral( "geometry_columns_field_infos" ) << QStringLiteral( "geometry_columns_statistics" )
+                   << QStringLiteral( "geometry_columns_time" ) << QStringLiteral( "sql_statements_log" ) << QStringLiteral( "vector_layers" )
+                   << QStringLiteral( "vector_layers_auth" ) << QStringLiteral( "vector_layers_field_infos" ) << QStringLiteral( "vector_layers_statistics" )
+                   << QStringLiteral( "views_geometry_columns_auth" ) << QStringLiteral( "views_geometry_columns_field_infos" )
+                   << QStringLiteral( "views_geometry_columns_statistics" ) << QStringLiteral( "virts_geometry_columns_auth" )
+                   << QStringLiteral( "virts_geometry_columns_field_infos" ) << QStringLiteral( "virts_geometry_columns_statistics" )
+                   << QStringLiteral( "ElementaryGeometries" );
+  // attempting to load the VectorLayersList
   list = gaiaGetVectorLayersList( handle, nullptr, nullptr, GAIA_VECTORS_LIST_FAST );
   if ( list )
   {
@@ -257,7 +273,12 @@ bool QgsSpatiaLiteConnection::getTableInfoAbstractInterface( sqlite3 *handle, bo
       }
 
       QString tableName = QString::fromUtf8( lyr->TableName );
+      ignoreTableNames << tableName;
       QString column = QString::fromUtf8( lyr->GeometryName );
+      ignoreTableNames << QStringLiteral( "idx_%1_%2" ).arg( tableName, column )
+                       << QStringLiteral( "idx_%1_%2_node" ).arg( tableName, column )
+                       << QStringLiteral( "idx_%1_%2_parent" ).arg( tableName, column )
+                       << QStringLiteral( "idx_%1_%2_rowid" ).arg( tableName, column );
       QString type = tr( "UNKNOWN" );
       switch ( lyr->GeometryType )
       {
@@ -309,7 +330,8 @@ bool QgsSpatiaLiteConnection::getTableInfoAbstractInterface( sqlite3 *handle, bo
       for ( i = 1; i <= rows; i++ )
       {
         QString tableName = QString::fromUtf8( results[( i * columns ) + 0] );
-        mTables.append( TableEntry( tableName, QString(), QStringLiteral( "qgis_table" ) ) );
+        if ( !ignoreTableNames.contains( tableName, Qt::CaseInsensitive ) )
+          mTables.append( TableEntry( tableName, QString(), QStringLiteral( "qgis_table" ) ) );
       }
     }
     sqlite3_free_table( results );
