@@ -140,3 +140,8 @@ QString QgsProcessingProvider::defaultRasterFileExtension() const
     return defaultExtension;
   }
 }
+
+bool QgsProcessingProvider::supportsNonFileBasedOutput() const
+{
+  return true;
+}
