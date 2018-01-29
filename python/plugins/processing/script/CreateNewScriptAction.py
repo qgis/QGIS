@@ -33,17 +33,12 @@ from processing.gui.ToolboxAction import ToolboxAction
 
 from processing.script.ScriptEditorDialog import ScriptEditorDialog
 
-pluginPath = os.path.split(os.path.dirname(__file__))[0]
-
 
 class CreateNewScriptAction(ToolboxAction):
 
     def __init__(self):
-        self.name = self.tr('Create new script')
-        self.group = self.tr('Tools')
-
-    def getIcon(self):
-        return QgsApplication.getThemeIcon("/processingScript.svg")
+        self.name = self.tr("Create new script")
+        self.group = self.tr("Tools")
 
     def execute(self):
         dlg = ScriptEditorDialog(None)
