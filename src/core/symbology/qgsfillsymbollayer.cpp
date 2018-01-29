@@ -3622,6 +3622,18 @@ QgsSymbolLayer *QgsRasterFillSymbolLayer::create( const QgsStringMap &properties
   return symbolLayer;
 }
 
+void QgsRasterFillSymbolLayer::resolvePaths( QgsStringMap &properties, const QgsPathResolver &pathResolver, bool saving )
+{
+  QgsStringMap::iterator it = properties.find( QStringLiteral( "imageFile" ) );
+  if ( it != properties.end() )
+  {
+    if ( saving )
+      it.value() = pathResolver.writePath( it.value() );
+    else
+      it.value() = pathResolver.readPath( it.value() );
+  }
+}
+
 bool QgsRasterFillSymbolLayer::setSubSymbol( QgsSymbol *symbol )
 {
   Q_UNUSED( symbol );
@@ -3770,7 +3782,7 @@ void QgsRasterFillSymbolLayer::applyDataDefinedSettings( QgsSymbolRenderContext 
   if ( hasFileExpression )
   {
     context.setOriginalValueVariable( mImageFilePath );
-    file = mDataDefinedProperties.valueAsString( QgsSymbolLayer::PropertyFile, context.renderContext().expressionContext(), file );
+    file = context.renderContext().pathResolver().readPath( mDataDefinedProperties.valueAsString( QgsSymbolLayer::PropertyFile, context.renderContext().expressionContext(), file ) );
   }
   applyPattern( mBrush, file, width, opacity, context );
 }
