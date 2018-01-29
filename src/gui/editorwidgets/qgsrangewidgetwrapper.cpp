@@ -103,20 +103,21 @@ void QgsRangeWidgetWrapper::initWidget( QWidget *editor )
 
     if ( qgsWidget )
       qgsWidget->setShowClearButton( allowNull );
-    // Make room for null value: use the minimum
+    // Make room for null value: lower the minimum to accomodate for NULL
     if ( allowNull )
     {
       double decr;
       if ( precision > 0 )
       {
-        decr = 10 ^ -precision;
+        decr = std::pow( 10, -precision );
       }
       else
       {
         decr = stepval;
       }
-      minval = std::min( std::numeric_limits<double>::lowest() + decr, minval );
       minval -= decr;
+      // Note: call setMinimum here or setValue won't work
+      mDoubleSpinBox->setMinimum( minval );
       mDoubleSpinBox->setValue( minval );
       mDoubleSpinBox->setSpecialValueText( QgsApplication::nullRepresentation() );
     }
