@@ -296,6 +296,7 @@ void QgsMapSaveDialog::applyMapSettings( QgsMapSettings &mapSettings )
   mapSettings.setRotation( mMapCanvas->rotation() );
   mapSettings.setLayers( mMapCanvas->layers() );
   mapSettings.setTransformContext( QgsProject::instance()->transformContext() );
+  mapSettings.setPathResolver( QgsProject::instance()->pathResolver() );
 
   //build the expression context
   QgsExpressionContext expressionContext;
