@@ -35,7 +35,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmextractbyexpression.cpp
   processing/qgsalgorithmextractbyextent.cpp
   processing/qgsalgorithmextractbylocation.cpp
-  processing/qgsalgorithmextractnodes.cpp
+  processing/qgsalgorithmextractvertices.cpp
   processing/qgsalgorithmfiledownloader.cpp
   processing/qgsalgorithmfixgeometries.cpp
   processing/qgsalgorithmjoinbyattribute.cpp
@@ -52,7 +52,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmpackage.cpp
   processing/qgsalgorithmpromotetomultipart.cpp
   processing/qgsalgorithmrasterlayeruniquevalues.cpp
-  processing/qgsalgorithmremoveduplicatenodes
+  processing/qgsalgorithmremoveduplicatevertices.cpp
   processing/qgsalgorithmremovenullgeometry.cpp
   processing/qgsalgorithmrenamelayer.cpp
   processing/qgsalgorithmsaveselectedfeatures.cpp

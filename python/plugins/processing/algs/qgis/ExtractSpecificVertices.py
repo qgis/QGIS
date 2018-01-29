@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    ExtractSpecificNodes.py
+    ExtractSpecificVertices.py
     --------------------
     Date                 : October 2016
     Copyright            : (C) 2016 by Nyall Dawson
@@ -42,10 +42,10 @@ from qgis.core import (QgsWkbTypes,
 from qgis.PyQt.QtCore import QVariant
 
 
-class ExtractSpecificNodes(QgisAlgorithm):
+class ExtractSpecificVertices(QgisAlgorithm):
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
-    NODES = 'NODES'
+    VERTICES = 'VERTICES'
 
     def group(self):
         return self.tr('Vector geometry')
@@ -59,29 +59,29 @@ class ExtractSpecificNodes(QgisAlgorithm):
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
                                                               self.tr('Input layer'), [QgsProcessing.TypeVectorAnyGeometry]))
-        self.addParameter(QgsProcessingParameterString(self.NODES,
-                                                       self.tr('Node indices'), defaultValue='0'))
+        self.addParameter(QgsProcessingParameterString(self.VERTICES,
+                                                       self.tr('Vertex indices'), defaultValue='0'))
 
-        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Nodes'), QgsProcessing.TypeVectorPoint))
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Vertices'), QgsProcessing.TypeVectorPoint))
 
     def name(self):
-        return 'extractspecificnodes'
+        return 'extractspecificvertices'
 
     def displayName(self):
-        return self.tr('Extract specific nodes')
+        return self.tr('Extract specific vertices')
 
     def tags(self):
-        return self.tr('points,vertex,vertices').split(',')
+        return self.tr('points,vertex,nodes').split(',')
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
         fields = source.fields()
-        fields.append(QgsField('node_pos', QVariant.Int))
-        fields.append(QgsField('node_index', QVariant.Int))
-        fields.append(QgsField('node_part', QVariant.Int))
+        fields.append(QgsField('vertex_pos', QVariant.Int))
+        fields.append(QgsField('vertex_index', QVariant.Int))
+        fields.append(QgsField('vertex_part', QVariant.Int))
         if QgsWkbTypes.geometryType(source.wkbType()) == QgsWkbTypes.PolygonGeometry:
-            fields.append(QgsField('node_part_ring', QVariant.Int))
-        fields.append(QgsField('node_part_index', QVariant.Int))
+            fields.append(QgsField('vertex_part_ring', QVariant.Int))
+        fields.append(QgsField('vertex_part_index', QVariant.Int))
         fields.append(QgsField('distance', QVariant.Double))
         fields.append(QgsField('angle', QVariant.Double))
 
@@ -94,14 +94,14 @@ class ExtractSpecificNodes(QgisAlgorithm):
         (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
                                                fields, wkb_type, source.sourceCrs())
 
-        node_indices_string = self.parameterAsString(parameters, self.NODES, context)
+        vertex_indices_string = self.parameterAsString(parameters, self.VERTICES, context)
         indices = []
-        for node in node_indices_string.split(','):
+        for vertex in vertex_indices_string.split(','):
             try:
-                indices.append(int(node))
+                indices.append(int(vertex))
             except:
                 raise QgsProcessingException(
-                    self.tr('\'{}\' is not a valid node index').format(node))
+                    self.tr('\'{}\' is not a valid vertex index').format(vertex))
 
         features = source.getFeatures()
         total = 100.0 / source.featureCount() if source.featureCount() else 0
@@ -114,26 +114,26 @@ class ExtractSpecificNodes(QgisAlgorithm):
             if not input_geometry:
                 sink.addFeature(f, QgsFeatureSink.FastInsert)
             else:
-                total_nodes = input_geometry.constGet().nCoordinates()
+                total_vertices = input_geometry.constGet().nCoordinates()
 
-                for node in indices:
-                    if node < 0:
-                        node_index = total_nodes + node
+                for vertex in indices:
+                    if vertex < 0:
+                        vertex_index = total_vertices + vertex
                     else:
-                        node_index = node
+                        vertex_index = vertex
 
-                    if node_index < 0 or node_index >= total_nodes:
+                    if vertex_index < 0 or vertex_index >= total_vertices:
                         continue
 
-                    (success, vertex_id) = input_geometry.vertexIdFromVertexNr(node_index)
+                    (success, vertex_id) = input_geometry.vertexIdFromVertexNr(vertex_index)
 
-                    distance = input_geometry.distanceToVertex(node_index)
-                    angle = math.degrees(input_geometry.angleAtVertex(node_index))
+                    distance = input_geometry.distanceToVertex(vertex_index)
+                    angle = math.degrees(input_geometry.angleAtVertex(vertex_index))
 
                     output_feature = QgsFeature()
                     attrs = f.attributes()
-                    attrs.append(node)
-                    attrs.append(node_index)
+                    attrs.append(vertex)
+                    attrs.append(vertex_index)
                     attrs.append(vertex_id.part)
                     if QgsWkbTypes.geometryType(source.wkbType()) == QgsWkbTypes.PolygonGeometry:
                         attrs.append(vertex_id.ring)
@@ -142,7 +142,7 @@ class ExtractSpecificNodes(QgisAlgorithm):
                     attrs.append(angle)
                     output_feature.setAttributes(attrs)
 
-                    point = input_geometry.vertexAt(node_index)
+                    point = input_geometry.vertexAt(vertex_index)
                     output_feature.setGeometry(QgsGeometry(point))
 
                     sink.addFeature(output_feature, QgsFeatureSink.FastInsert)

@@ -1,9 +1,9 @@
 /***************************************************************************
-                         qgsalgorithmextractnodes.h
-                         -------------------------
+                         qgsalgorithmremoveduplicatevertices.h
+                         ---------------------
     begin                : November 2017
-    copyright            : (C) 2017 by Mathieu Pellerin
-    email                : nirvn dot asia at gmail dot com
+    copyright            : (C) 2017 by Nyall Dawson
+    email                : nyall dot dawson at gmail dot com
  ***************************************************************************/
 
 /***************************************************************************
@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSALGORITHMEXTRACTNODES_H
-#define QGSALGORITHMEXTRACTNODES_H
+#ifndef QGSALGORITHMREMOVEDUPLICATEVERTICES_H
+#define QGSALGORITHMREMOVEDUPLICATEVERTICES_H
 
 #define SIP_NO_FILE
 
@@ -26,32 +26,38 @@
 ///@cond PRIVATE
 
 /**
- * Native extract nodes algorithm.
+ * Native remove duplicate nodes algorithm.
  */
-class QgsExtractNodesAlgorithm : public QgsProcessingAlgorithm
+class QgsAlgorithmRemoveDuplicateVertices : public QgsProcessingFeatureBasedAlgorithm
 {
 
   public:
 
-    QgsExtractNodesAlgorithm() = default;
-    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
+    QgsAlgorithmRemoveDuplicateVertices() = default;
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
-    QgsExtractNodesAlgorithm *createInstance() const override SIP_FACTORY;
+    QgsAlgorithmRemoveDuplicateVertices *createInstance() const override SIP_FACTORY;
+    void initParameters( const QVariantMap &configuration = QVariantMap() ) override;
 
   protected:
+    QString outputName() const override;
+    bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QgsFeature processFeature( const QgsFeature &feature,  QgsProcessingContext &, QgsProcessingFeedback *feedback ) override;
 
-    QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+  private:
+
+    double mTolerance = 1.0;
+    bool mUseZValues = false;
 
 };
 
+
 ///@endcond PRIVATE
 
-#endif // QGSALGORITHMEXTRACTNODES_H
+#endif // QGSALGORITHMREMOVEDUPLICATEVERTICES_H
 
 

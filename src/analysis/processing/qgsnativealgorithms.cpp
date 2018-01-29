@@ -32,7 +32,7 @@
 #include "qgsalgorithmextractbyexpression.h"
 #include "qgsalgorithmextractbyextent.h"
 #include "qgsalgorithmextractbylocation.h"
-#include "qgsalgorithmextractnodes.h"
+#include "qgsalgorithmextractvertices.h"
 #include "qgsalgorithmfiledownloader.h"
 #include "qgsalgorithmfixgeometries.h"
 #include "qgsalgorithmjoinbyattribute.h"
@@ -49,7 +49,7 @@
 #include "qgsalgorithmpackage.h"
 #include "qgsalgorithmpromotetomultipart.h"
 #include "qgsalgorithmrasterlayeruniquevalues.h"
-#include "qgsalgorithmremoveduplicatenodes.h"
+#include "qgsalgorithmremoveduplicatevertices.h"
 #include "qgsalgorithmremovenullgeometry.h"
 #include "qgsalgorithmrenamelayer.h"
 #include "qgsalgorithmsaveselectedfeatures.h"
@@ -116,7 +116,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsExtractByExpressionAlgorithm() );
   addAlgorithm( new QgsExtractByExtentAlgorithm() );
   addAlgorithm( new QgsExtractByLocationAlgorithm() );
-  addAlgorithm( new QgsExtractNodesAlgorithm() );
+  addAlgorithm( new QgsExtractVerticesAlgorithm() );
   addAlgorithm( new QgsFileDownloaderAlgorithm() );
   addAlgorithm( new QgsFixGeometriesAlgorithm() );
   addAlgorithm( new QgsJoinByAttributeAlgorithm() );
@@ -133,7 +133,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsPackageAlgorithm() );
   addAlgorithm( new QgsPromoteToMultipartAlgorithm() );
   addAlgorithm( new QgsRasterLayerUniqueValuesReportAlgorithm() );
-  addAlgorithm( new QgsAlgorithmRemoveDuplicateNodes() );
+  addAlgorithm( new QgsAlgorithmRemoveDuplicateVertices() );
   addAlgorithm( new QgsRemoveNullGeometryAlgorithm() );
   addAlgorithm( new QgsRenameLayerAlgorithm() );
   addAlgorithm( new QgsSaveSelectedFeatures() );
