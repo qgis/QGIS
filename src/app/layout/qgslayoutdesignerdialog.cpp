@@ -374,8 +374,8 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   // OSX has issues with QShortcut when certain children are focused
   ctrlEquals->setParent( mView );
   ctrlEquals->setContext( Qt::WidgetWithChildrenShortcut );
-  backspace->setParent( mView );
-  backspace->setContext( Qt::WidgetWithChildrenShortcut );
+  backSpace->setParent( mView );
+  backSpace->setContext( Qt::WidgetWithChildrenShortcut );
 #endif
 
   mActionPreviewModeOff->setChecked( true );
