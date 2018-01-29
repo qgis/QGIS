@@ -378,9 +378,16 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         if not self.is_cursor_on_edition_zone() or startLine < endLine:
             # allow copying and selecting
             if e.modifiers() & (Qt.ControlModifier | Qt.MetaModifier):
-                if e.key() in (Qt.Key_C, Qt.Key_A):
+                if e.key() == Qt.Key_C:
+                    # only catch and return from Ctrl-C here if there's a selection
+                    if self.hasSelectedText():
+                        QsciScintilla.keyPressEvent(self, e)
+                        return
+                elif e.key() == Qt.Key_A:
                     QsciScintilla.keyPressEvent(self, e)
-                return
+                    return
+                else:
+                    return
             # allow selection
             if e.modifiers() & Qt.ShiftModifier:
                 if e.key() in (Qt.Key_Left, Qt.Key_Right, Qt.Key_Home, Qt.Key_End):
@@ -388,6 +395,11 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
                 return
             # all other keystrokes get sent to the input line
             self.move_cursor_to_end()
+
+        if e.modifiers() & (Qt.ControlModifier | Qt.MetaModifier) and e.key() == Qt.Key_C and not self.hasSelectedText():
+            # keyboard interrupt
+            sys.stdout.fire_keyboard_interrupt = True
+            return
 
         line, index = self.getCursorPosition()
         cmd = self.text(line)
@@ -602,12 +614,14 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         sys.stderr.write(txt)
 
     def writeCMD(self, txt):
+        sys.stdout.fire_keyboard_interrupt = False
         if len(txt) > 0:
             getCmdString = self.text()
             prompt = getCmdString[0:4]
             sys.stdout.write(prompt + txt + '\n')
 
     def runsource(self, source, filename='<input>', symbol='single'):
+        sys.stdout.fire_keyboard_interrupt = False
         hook = sys.excepthook
         try:
             def excepthook(etype, value, tb):
