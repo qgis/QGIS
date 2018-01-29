@@ -56,6 +56,8 @@ class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendere
     void classify();
     //! called when new min/max values are loaded
     void loadMinMax( int bandNo, double min, double max );
+    //! called when the color ramp tree has changed
+    void loadMinMaxFromTree();
 
   private:
 
@@ -107,7 +109,6 @@ class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendere
     double lineEditValue( const QLineEdit *lineEdit ) const;
     void resetClassifyButton();
     QgsRasterMinMaxWidget *mMinMaxWidget = nullptr;
-    bool mDisableMinMaxWidgetRefresh;
     int mMinMaxOrigin;
 
     void minMaxModified();

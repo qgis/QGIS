@@ -41,6 +41,10 @@ Executes the single band pseudo raster classficiation
 %Docstring
 called when new min/max values are loaded
 %End
+    void loadMinMaxFromTree();
+%Docstring
+called when the color ramp tree has changed
+%End
 
 };
 
