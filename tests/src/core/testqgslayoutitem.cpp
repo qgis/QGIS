@@ -177,7 +177,7 @@ class TestQgsLayoutItem: public QObject
 
     bool renderCheck( QString testName, QImage &image, int mismatchCount );
 
-    QgsLayoutItem *createCopyViaXml( QgsLayout *layout, QgsLayoutItem *original );
+    std::unique_ptr< QgsLayoutItem > createCopyViaXml( QgsLayout *layout, QgsLayoutItem *original );
 
 };
 
@@ -248,7 +248,7 @@ void TestQgsLayoutItem::registry()
   QVERIFY( registry.itemTypes().isEmpty() );
   QVERIFY( !registry.createItem( 1, nullptr ) );
 
-  auto create = []( QgsLayout * layout )->QgsLayoutItem*
+  auto create = []( QgsLayout * layout )->QgsLayoutItem *
   {
     return new TestItem( layout );
   };
@@ -1647,7 +1647,7 @@ void TestQgsLayoutItem::writeReadXmlProperties()
 
   original->dataDefinedProperties().setProperty( QgsLayoutObject::TestProperty, QgsProperty::fromExpression( QStringLiteral( "10 + 40" ) ) );
 
-  original->setReferencePoint( QgsLayoutItem::Middle );
+  original->setReferencePoint( QgsLayoutItem::MiddleRight );
   original->attemptResize( QgsLayoutSize( 6, 8, QgsUnitTypes::LayoutCentimeters ) );
   original->attemptMove( QgsLayoutPoint( 0.05, 0.09, QgsUnitTypes::LayoutMeters ) );
   original->setItemRotation( 45.0 );
@@ -1665,7 +1665,7 @@ void TestQgsLayoutItem::writeReadXmlProperties()
   original->setExcludeFromExports( true );
   original->setItemOpacity( 0.75 );
 
-  QgsLayoutItem *copy = createCopyViaXml( &l, original );
+  std::unique_ptr< QgsLayoutItem > copy = createCopyViaXml( &l, original );
 
   QCOMPARE( copy->uuid(), original->uuid() );
   QCOMPARE( copy->id(), original->id() );
@@ -1675,8 +1675,12 @@ void TestQgsLayoutItem::writeReadXmlProperties()
   QCOMPARE( dd.propertyType(), QgsProperty::ExpressionBasedProperty );
   QCOMPARE( copy->referencePoint(), original->referencePoint() );
   QCOMPARE( copy->sizeWithUnits(), original->sizeWithUnits() );
-  QCOMPARE( copy->positionWithUnits(), original->positionWithUnits() );
+  QGSCOMPARENEAR( copy->positionWithUnits().x(), original->positionWithUnits().x(), 0.001 );
+  QGSCOMPARENEAR( copy->positionWithUnits().y(), original->positionWithUnits().y(), 0.001 );
+  QCOMPARE( copy->positionWithUnits().units(), original->positionWithUnits().units() );
   QCOMPARE( copy->itemRotation(), original->itemRotation() );
+  QGSCOMPARENEAR( copy->pos().x(), original->pos().x(), 0.001 );
+  QGSCOMPARENEAR( copy->pos().y(), original->pos().y(), 0.001 );
   QVERIFY( copy->isLocked() );
   QCOMPARE( copy->zValue(), 55.0 );
   QVERIFY( !copy->isVisible() );
@@ -1689,8 +1693,6 @@ void TestQgsLayoutItem::writeReadXmlProperties()
   QCOMPARE( copy->blendMode(), QPainter::CompositionMode_Darken );
   QVERIFY( copy->excludeFromExports( ) );
   QCOMPARE( copy->itemOpacity(), 0.75 );
-
-  delete copy;
   delete original;
 }
 
@@ -1985,7 +1987,7 @@ void TestQgsLayoutItem::excludeFromExports()
   QVERIFY( checker.testLayout( mReport ) );
 }
 
-QgsLayoutItem *TestQgsLayoutItem::createCopyViaXml( QgsLayout *layout, QgsLayoutItem *original )
+std::unique_ptr<QgsLayoutItem> TestQgsLayoutItem::createCopyViaXml( QgsLayout *layout, QgsLayoutItem *original )
 {
   //save original item to xml
   QDomImplementation DomImplementation;
@@ -1998,10 +2000,10 @@ QgsLayoutItem *TestQgsLayoutItem::createCopyViaXml( QgsLayout *layout, QgsLayout
   original->writeXml( rootNode, doc, QgsReadWriteContext() );
 
   //create new item and restore settings from xml
-  TestItem *copy = new TestItem( layout );
+  std::unique_ptr< TestItem > copy = qgis::make_unique< TestItem >( layout );
   copy->readXml( rootNode.firstChildElement(), doc, QgsReadWriteContext() );
 
-  return copy;
+  return std::move( copy );
 }
 
 QGSTEST_MAIN( TestQgsLayoutItem )
