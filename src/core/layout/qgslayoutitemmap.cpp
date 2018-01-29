@@ -34,8 +34,11 @@
 QgsLayoutItemMap::QgsLayoutItemMap( QgsLayout *layout )
   : QgsLayoutItem( layout )
 {
-  assignFreeId();
+  mBackgroundUpdateTimer = new QTimer( this );
+  mBackgroundUpdateTimer->setSingleShot( true );
+  connect( mBackgroundUpdateTimer, &QTimer::timeout, this, &QgsLayoutItemMap::recreateCachedImageInBackground );
 
+  assignFreeId();
 
   if ( layout )
   {
@@ -774,18 +777,20 @@ void QgsLayoutItemMap::paint( QPainter *painter, const QStyleOptionGraphicsItem 
       painter->setFont( messageFont );
       painter->setPen( QColor( 255, 255, 255, 255 ) );
       painter->drawText( thisPaintRect, Qt::AlignCenter | Qt::AlignHCenter, tr( "Rendering map" ) );
-      if ( !mPainterJob )
+      if ( !mPainterJob && !mDrawingPreview )
       {
         // this is the map's very first paint - trigger a cache update
-        recreateCachedImageInBackground( style->matrix.m11() );
+        mPreviewScaleFactor = style->matrix.m11();
+        mBackgroundUpdateTimer->start( 1 );
       }
     }
     else
     {
-      if ( mCacheInvalidated )
+      if ( mCacheInvalidated && !mDrawingPreview )
       {
         // cache was invalidated - trigger a background update
-        recreateCachedImageInBackground( style->matrix.m11() );
+        mPreviewScaleFactor = style->matrix.m11();
+        mBackgroundUpdateTimer->start( 1 );
       }
 
       //Background color is already included in cached image, so no need to draw
@@ -966,7 +971,7 @@ void QgsLayoutItemMap::drawMap( QPainter *painter, const QgsRectangle &extent, Q
   job.renderSynchronously();
 }
 
-void QgsLayoutItemMap::recreateCachedImageInBackground( double viewScaleFactor )
+void QgsLayoutItemMap::recreateCachedImageInBackground()
 {
   if ( mPainterJob )
   {
@@ -995,8 +1000,8 @@ void QgsLayoutItemMap::recreateCachedImageInBackground( double viewScaleFactor )
   double widthLayoutUnits = ext.width() * mapUnitsToLayoutUnits();
   double heightLayoutUnits = ext.height() * mapUnitsToLayoutUnits();
 
-  int w = widthLayoutUnits * viewScaleFactor;
-  int h = heightLayoutUnits * viewScaleFactor;
+  int w = widthLayoutUnits * mPreviewScaleFactor;
+  int h = heightLayoutUnits * mPreviewScaleFactor;
 
   // limit size of image for better performance
   if ( w > 5000 || h > 5000 )
@@ -1040,6 +1045,18 @@ void QgsLayoutItemMap::recreateCachedImageInBackground( double viewScaleFactor )
   mPainterJob.reset( new QgsMapRendererCustomPainterJob( settings, mPainter.get() ) );
   connect( mPainterJob.get(), &QgsMapRendererCustomPainterJob::finished, this, &QgsLayoutItemMap::painterJobFinished );
   mPainterJob->start();
+
+  // from now on we can accept refresh requests again
+  // this must be reset only after the job has been started, because
+  // some providers (yes, it's you WCS and AMS!) during preparation
+  // do network requests and start an internal event loop, which may
+  // end up calling refresh() and would schedule another refresh,
+  // deleting the one we have just started.
+
+  // ^^ that comment was directly copied from a similar fix in QgsMapCanvas. And
+  // with little surprise, both those providers are still badly behaved and causing
+  // annoying bugs for us to deal with...
+  mDrawingPreview = false;
 }
 
 QgsMapSettings QgsLayoutItemMap::mapSettings( const QgsRectangle &extent, QSizeF size, double dpi, bool includeLayerSettings ) const
