@@ -64,7 +64,7 @@ template<class T>
 static void setupIntEditor( const QVariant &min, const QVariant &max, const QVariant &step, T *slider, QgsRangeWidgetWrapper *wrapper )
 {
   // must use a template function because those methods are overloaded and not inherited by some classes
-  slider->setMinimum( min.isValid() ? min.toInt() : std::numeric_limits<int>::min() );
+  slider->setMinimum( min.isValid() ? min.toInt() : std::numeric_limits<int>::lowest() );
   slider->setMaximum( max.isValid() ? max.toInt() : std::numeric_limits<int>::max() );
   slider->setSingleStep( step.isValid() ? step.toInt() : 1 );
   QObject::connect( slider, SIGNAL( valueChanged( int ) ), wrapper, SLOT( emitValueChanged() ) );
@@ -95,27 +95,35 @@ void QgsRangeWidgetWrapper::initWidget( QWidget *editor )
       mDoubleSpinBox->setDecimals( layer()->fields().at( fieldIdx() ).precision() );
     }
 
-    double minval = min.toDouble();
-    double stepval = step.toDouble();
     QgsDoubleSpinBox *qgsWidget = dynamic_cast<QgsDoubleSpinBox *>( mDoubleSpinBox );
+
+    double stepval = step.isValid() ? step.toDouble() : 1.0;
+    double minval = min.isValid() ? min.toDouble() : std::numeric_limits<double>::lowest();
+    double maxval  = max.isValid() ? max.toDouble() : std::numeric_limits<double>::max();
+
     if ( qgsWidget )
       qgsWidget->setShowClearButton( allowNull );
+    // Make room for null value: lower the minimum to allow for NULL special values
     if ( allowNull )
     {
+      double decr;
       if ( precision > 0 )
       {
-        minval -= 10 ^ -precision;
+        decr = std::pow( 10, -precision );
       }
       else
       {
-        minval -= stepval;
+        decr = stepval;
       }
+      minval -= decr;
+      // Note: call setMinimum here or setValue won't work
+      mDoubleSpinBox->setMinimum( minval );
       mDoubleSpinBox->setValue( minval );
       mDoubleSpinBox->setSpecialValueText( QgsApplication::nullRepresentation() );
     }
-    mDoubleSpinBox->setMinimum( min.isValid() ? min.toDouble() : std::numeric_limits<double>::min() );
-    mDoubleSpinBox->setMaximum( max.isValid() ? max.toDouble() : std::numeric_limits<double>::max() );
-    mDoubleSpinBox->setSingleStep( step.isValid() ? step.toDouble() : 1.0 );
+    mDoubleSpinBox->setMinimum( minval );
+    mDoubleSpinBox->setMaximum( maxval );
+    mDoubleSpinBox->setSingleStep( stepval );
     if ( config( QStringLiteral( "Suffix" ) ).isValid() )
       mDoubleSpinBox->setSuffix( config( QStringLiteral( "Suffix" ) ).toString() );
 
