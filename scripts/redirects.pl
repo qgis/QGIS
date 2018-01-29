@@ -1,4 +1,4 @@
-#!/usr/bin/perl -i.bak -p
+#!/usr/bin/env perl -i.bak -p
 
 s%www.qgis.org%qgis.org%g;
 
