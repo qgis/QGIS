@@ -71,3 +71,15 @@ def loadAlgorithm(moduleName, filePath):
         QgsMessageLog.logMessage("Could not import script algorithm '{}' from '{}'\n{}".format(moduleName, filePath, str(e)),
                                  "Processing",
                                  QgsMessageLog.CRITICAL)
+
+
+def findAlgorithmSource(className):
+    fileName = "{}.py".format(className)
+    folders = scriptsFolders()
+    for folder in folders:
+        items = os.scandir(folder)
+        for entry in items:
+            if entry.is_file() and entry.name == fileName:
+                return os.path.abspath(os.path.join(folder, fileName))
+
+    return None

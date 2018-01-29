@@ -54,13 +54,13 @@ WIDGET, BASE = uic.loadUiType(
 class ScriptEditorDialog(BASE, WIDGET):
     hasChanged = False
 
-    def __init__(self, alg):
-        super(ScriptEditorDialog, self).__init__(None)
+    def __init__(self, filePath=None, parent=None):
+        super(ScriptEditorDialog, self).__init__(parent)
         self.setupUi(self)
 
-        self.setWindowFlags(Qt.WindowMinimizeButtonHint |
-                            Qt.WindowMaximizeButtonHint |
-                            Qt.WindowCloseButtonHint)
+        #~ self.setWindowFlags(Qt.WindowMinimizeButtonHint |
+                            #~ Qt.WindowMaximizeButtonHint |
+                            #~ Qt.WindowCloseButtonHint)
 
         self.searchWidget.setVisible(False)
 
@@ -117,7 +117,10 @@ class ScriptEditorDialog(BASE, WIDGET):
         self.btnReplace.clicked.connect(self.replace)
         self.lastSearch = None
 
-        self.alg = alg
+        self.filePath = filePath
+        if self.filePath is not None:
+            self._loadFile(self.filePath)
+        #self.alg = alg
 
         self.snippets = {}
         path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "script", "snippets.py")
@@ -139,11 +142,12 @@ class ScriptEditorDialog(BASE, WIDGET):
         #if self.snippets:
         #    self.btnSnippets.setVisible(False)
 
-        if self.alg is not None:
-            self.filename = self.alg.descriptionFile
-            self.editor.setText(self.alg.script)
-        else:
-            self.filename = None
+        #if self.alg is not None:
+        #    pass
+        #    self.filename = self.alg.descriptionFile
+        #    self.editor.setText(self.alg.script)
+        #else:
+        #    self.filename = None
 
         self.update = False
         self.help = None
@@ -178,41 +182,37 @@ class ScriptEditorDialog(BASE, WIDGET):
             QgsApplication.processingRegistry().providerById('script').refreshAlgorithms()
 
     def editHelp(self):
-        if self.alg is None:
-            alg = ScriptAlgorithm(None, self.editor.text())
-        else:
-            alg = self.alg
-
-        dlg = HelpEditionDialog(alg)
-        dlg.exec_()
-        if dlg.descriptions:
-            self.help = dlg.descriptions
-            self.setHasChanged(True)
+        #if self.alg is None:
+        #    alg = ScriptAlgorithm(None, self.editor.text())
+        #else:
+        #    alg = self.alg
+        #
+        #dlg = HelpEditionDialog(alg)
+        #dlg.exec_()
+        #if dlg.descriptions:
+        #    self.help = dlg.descriptions
+        #    self.setHasChanged(True)
+        pass
 
     def openScript(self):
         if self.hasChanged:
-            ret = QMessageBox.warning(self, self.tr('Unsaved changes'),
-                                      self.tr('There are unsaved changes in script. Continue?'),
+            ret = QMessageBox.warning(self,
+                                      self.tr("Unsaved changes"),
+                                      self.tr("There are unsaved changes in script. Continue?"),
                                       QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
             if ret == QMessageBox.No:
                 return
 
         scriptDir = ScriptUtils.scriptsFolders()[0]
-        filterName = self.tr('Python scripts (*.py)')
+        filterName = self.tr("Processing scripts (*.py *.PY)")
         self.filename, fileFilter = QFileDialog.getOpenFileName(
-            self, self.tr('Open script'), scriptDir, filterName)
+            self, self.tr("Open script"), scriptDir, filterName)
 
-        if self.filename == '':
+        if self.filePath == "":
             return
 
         with OverrideCursor(Qt.WaitCursor):
-            with codecs.open(self.filename, 'r', encoding='utf-8') as f:
-                txt = f.read()
-
-            self.editor.setText(txt)
-            self.hasChanged = False
-            self.editor.setModified(False)
-            self.editor.recolor()
+            self._loadFile(self.filePath)
 
     def save(self):
         self.saveScript(False)
@@ -232,11 +232,12 @@ class ScriptEditorDialog(BASE, WIDGET):
                 self.filename += '.py'
 
             text = self.editor.text()
-            if self.alg is not None:
-                self.alg.script = text
+            #if self.alg is not None:
+            #    self.alg.script = text
+
             try:
-                with codecs.open(self.filename, 'w', encoding='utf-8') as fout:
-                    fout.write(text)
+                with codecs.open(self.filePath, 'w', encoding='utf-8') as f:
+                    f.write(text)
             except IOError:
                 QMessageBox.warning(self,
                                     self.tr('I/O error'),
@@ -247,37 +248,38 @@ class ScriptEditorDialog(BASE, WIDGET):
 
             # If help strings were defined before saving the script for
             # the first time, we do it here
-            if self.help:
-                with codecs.open(self.filename + '.help', 'w', encoding='utf-8') as f:
-                    json.dump(self.help, f)
-                self.help = None
+            #if self.help:
+            #    with codecs.open(self.filename + '.help', 'w', encoding='utf-8') as f:
+            #        json.dump(self.help, f)
+            #    self.help = None
             self.setHasChanged(False)
         else:
-            self.filename = None
+            self.filePath = None
 
     def setHasChanged(self, hasChanged):
         self.hasChanged = hasChanged
         self.actionSaveScript.setEnabled(hasChanged)
 
     def runAlgorithm(self):
-        alg = ScriptAlgorithm(None, script=self.editor.text())
-        alg.setProvider(QgsApplication.processingRegistry().providerById('script'))
-
-        dlg = alg.createCustomParametersWidget(self)
-        if not dlg:
-            dlg = AlgorithmDialog(alg)
-
-        canvas = iface.mapCanvas()
-        prevMapTool = canvas.mapTool()
-
-        dlg.show()
-
-        if canvas.mapTool() != prevMapTool:
-            try:
-                canvas.mapTool().reset()
-            except:
-                pass
-            canvas.setMapTool(prevMapTool)
+        #alg = ScriptAlgorithm(None, script=self.editor.text())
+        #alg.setProvider(QgsApplication.processingRegistry().providerById('script'))
+        #
+        #dlg = alg.createCustomParametersWidget(self)
+        #if not dlg:
+        #    dlg = AlgorithmDialog(alg)
+        #
+        #canvas = iface.mapCanvas()
+        #prevMapTool = canvas.mapTool()
+        #
+        #dlg.show()
+        #
+        #if canvas.mapTool() != prevMapTool:
+        #    try:
+        #        canvas.mapTool().reset()
+        #    except:
+        #        pass
+        #    canvas.setMapTool(prevMapTool)
+        pass
 
     def find(self):
         textToFind = self.leFindText.text()
@@ -294,3 +296,12 @@ class ScriptEditorDialog(BASE, WIDGET):
 
     def toggleSearchBox(self, checked):
         self.searchWidget.setVisible(checked)
+
+    def _loadFile(self, filePath):
+        with codecs.open(filePath, "r", encoding="utf-8") as f:
+            txt = f.read()
+
+        self.editor.setText(txt)
+        self.hasChanged = False
+        self.editor.setModified(False)
+        self.editor.recolor()

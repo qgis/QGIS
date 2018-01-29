@@ -25,19 +25,26 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+import inspect
+
+from qgis.core import QgsProcessingAlgorithm
+from qgis.utils import iface
+
 from processing.gui.ContextAction import ContextAction
 
 from processing.script.ScriptEditorDialog import ScriptEditorDialog
-from processing.script.ScriptAlgorithm import ScriptAlgorithm
+from processing.script import ScriptUtils
 
 
 class EditScriptAction(ContextAction):
+
     def __init__(self):
-        self.name = self.tr('Edit script')
+        self.name = self.tr("Edit script")
 
     def isEnabled(self):
-        return isinstance(self.itemData, ScriptAlgorithm) and self.itemData.allowEdit
+        return isinstance(self.itemData, QgsProcessingAlgorithm) and self.itemData.provider().id() == "script"
 
     def execute(self):
-        dlg = ScriptEditorDialog(self.itemData)
+        filePath = ScriptUtils.findAlgorithmSource(self.itemData.__class__.__name__)
+        dlg = ScriptEditorDialog(filePath, iface.mainWindow())
         dlg.show()

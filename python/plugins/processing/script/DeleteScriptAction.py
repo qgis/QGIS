@@ -29,26 +29,28 @@ import os
 
 from qgis.PyQt.QtWidgets import QMessageBox
 
-from qgis.core import QgsApplication
+from qgis.core import QgsApplication, QgsProcessingAlgorithm
 
 from processing.gui.ContextAction import ContextAction
 
-from processing.script.ScriptAlgorithm import ScriptAlgorithm
+from processing.script import ScriptUtils
 
 
 class DeleteScriptAction(ContextAction):
+
     def __init__(self):
-        self.name = self.tr('Delete script')
+        self.name = self.tr("Delete script")
 
     def isEnabled(self):
-        return isinstance(self.itemData, ScriptAlgorithm) and self.itemData.allowEdit
+        return isinstance(self.itemData, QgsProcessingAlgorithm) and self.itemData.provider().id() == "script"
 
     def execute(self):
         reply = QMessageBox.question(None,
-                                     self.tr('Confirmation'),
-                                     self.tr('Are you sure you want to delete this script?'),
+                                     self.tr("Confirmation"),
+                                     self.tr("Are you sure you want to delete this script?"),
                                      QMessageBox.Yes | QMessageBox.No,
                                      QMessageBox.No)
         if reply == QMessageBox.Yes:
-            os.remove(self.itemData.descriptionFile)
-            QgsApplication.processingRegistry().providerById('script').refreshAlgorithms()
+            filePath = ScriptUtils.findAlgorithmSource(self.itemData.__class__.__name__)
+            os.remove(filePath)
+            QgsApplication.processingRegistry().providerById("script").refreshAlgorithms()
