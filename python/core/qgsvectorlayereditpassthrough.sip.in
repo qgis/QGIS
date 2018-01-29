@@ -30,6 +30,17 @@ class QgsVectorLayerEditPassthrough : QgsVectorLayerEditBuffer
 
     virtual bool changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant &oldValue = QVariant() );
 
+
+    virtual bool changeAttributeValues( QgsFeatureId fid, const QgsAttributeMap &newValues, const QgsAttributeMap &oldValues );
+
+%Docstring
+Changes values of attributes (but does not commit it).
+
+:return: true if attributes are well updated, false otherwise
+
+.. versionadded:: 3.0
+%End
+
     virtual bool addAttribute( const QgsField &field );
 
     virtual bool deleteAttribute( int attr );

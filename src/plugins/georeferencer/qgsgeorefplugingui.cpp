@@ -1021,12 +1021,10 @@ void QgsGeorefPluginGui::createMenus()
   mToolbarMenu->addAction( toolBarEdit->toggleViewAction() );
   mToolbarMenu->addAction( toolBarView->toggleViewAction() );
 
-  QgsSettings s;
-  int size = s.value( QStringLiteral( "/IconSize" ), 32 ).toInt();
-  toolBarFile->setIconSize( QSize( size, size ) );
-  toolBarEdit->setIconSize( QSize( size, size ) );
-  toolBarView->setIconSize( QSize( size, size ) );
-  toolBarHistogramStretch->setIconSize( QSize( size, size ) );
+  toolBarFile->setIconSize( mIface->iconSize() );
+  toolBarEdit->setIconSize( mIface->iconSize() );
+  toolBarView->setIconSize( mIface->iconSize() );
+  toolBarHistogramStretch->setIconSize( mIface->iconSize() );
 
   // View menu
   if ( layout != QDialogButtonBox::KdeLayout )

@@ -176,11 +176,10 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   pbnImportTransparentPixelValues->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFileOpen.svg" ) ) );
   pbnExportTransparentPixelValues->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionFileSave.svg" ) ) );
 
-  mPixelSelectorTool = nullptr;
   if ( mMapCanvas )
   {
-    mPixelSelectorTool = new QgsMapToolEmitPoint( canvas );
-    connect( mPixelSelectorTool, &QgsMapToolEmitPoint::canvasClicked, this, &QgsRasterLayerProperties::pixelSelected );
+    mPixelSelectorTool = qgis::make_unique<QgsMapToolEmitPoint>( canvas );
+    connect( mPixelSelectorTool.get(), &QgsMapToolEmitPoint::canvasClicked, this, &QgsRasterLayerProperties::pixelSelected );
   }
   else
   {
@@ -455,10 +454,6 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
 
 QgsRasterLayerProperties::~QgsRasterLayerProperties()
 {
-  if ( mPixelSelectorTool )
-  {
-    delete mPixelSelectorTool;
-  }
 }
 
 void QgsRasterLayerProperties::setupTransparencyTable( int nBands )
@@ -1197,16 +1192,18 @@ void QgsRasterLayerProperties::pbnAddValuesFromDisplay_clicked()
 {
   if ( mMapCanvas && mPixelSelectorTool )
   {
-    mMapCanvas->setMapTool( mPixelSelectorTool );
     //Need to work around the modality of the dialog but can not just hide() it.
+    // According to Qt5 docs, to change modality the dialog needs to be hidden
+    // and shown it again.
+    hide();
     setModal( false );
-
     showMinimized();
 
-    //Q_ASSERT( parentWidget()->parentWidget() );
-    parentWidget()->activateWindow();
-    parentWidget()->raise();
-    //lower();
+    // Transfer focus to the canvas to use the selector tool
+    mMapCanvas->window()->raise();
+    mMapCanvas->window()->activateWindow();
+    mMapCanvas->window()->setFocus();
+    mMapCanvas->setMapTool( mPixelSelectorTool.get() );
   }
 }
 
@@ -1630,8 +1627,9 @@ void QgsRasterLayerProperties::pbnRemoveSelectedRow_clicked()
   }
 }
 
-void QgsRasterLayerProperties::pixelSelected( const QgsPointXY &canvasPoint )
+void QgsRasterLayerProperties::pixelSelected( const QgsPointXY &canvasPoint, const Qt::MouseButton &btn )
 {
+  Q_UNUSED( btn );
   QgsRasterRenderer *renderer = mRendererWidget->renderer();
   if ( !renderer )
   {
@@ -1645,7 +1643,7 @@ void QgsRasterLayerProperties::pixelSelected( const QgsPointXY &canvasPoint )
   //Get the pixel values and add a new entry to the transparency table
   if ( mMapCanvas && mPixelSelectorTool )
   {
-    mMapCanvas->unsetMapTool( mPixelSelectorTool );
+    mMapCanvas->unsetMapTool( mPixelSelectorTool.get() );
 
     const QgsMapSettings &ms = mMapCanvas->mapSettings();
     QgsPointXY myPoint = ms.mapToLayerCoordinates( mRasterLayer, canvasPoint );
