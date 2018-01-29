@@ -1456,7 +1456,7 @@ void QgsLayoutDesignerDialog::undoRedoOccurredForItems( const QSet<QString> item
   mBlockItemOptions = false;
 
   if ( focusItem )
-    showItemOptions( focusItem );
+    showItemOptions( focusItem, false );
 }
 
 void QgsLayoutDesignerDialog::saveAsTemplate()
