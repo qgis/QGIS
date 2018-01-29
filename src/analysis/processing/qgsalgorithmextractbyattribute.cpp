@@ -39,11 +39,6 @@ QString QgsExtractByAttributeAlgorithm::group() const
   return QObject::tr( "Vector selection" );
 }
 
-QgsProcessingAlgorithm::Flags QgsExtractByAttributeAlgorithm::flags() const
-{
-  return QgsProcessingAlgorithm::flags() | QgsProcessingAlgorithm::FlagCanRunInBackground;
-}
-
 QString QgsExtractByAttributeAlgorithm::groupId() const
 {
   return QStringLiteral( "vectorselection" );

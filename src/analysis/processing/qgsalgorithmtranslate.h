@@ -34,7 +34,6 @@ class QgsTranslateAlgorithm : public QgsProcessingFeatureBasedAlgorithm
   public:
 
     QgsTranslateAlgorithm() = default;
-    Flags flags() const override;
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;

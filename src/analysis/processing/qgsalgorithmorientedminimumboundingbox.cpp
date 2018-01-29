@@ -19,11 +19,6 @@
 
 ///@cond PRIVATE
 
-QgsProcessingAlgorithm::Flags QgsOrientedMinimumBoundingBoxAlgorithm::flags() const
-{
-  return QgsProcessingFeatureBasedAlgorithm::flags() | QgsProcessingAlgorithm::FlagCanRunInBackground;
-}
-
 QString QgsOrientedMinimumBoundingBoxAlgorithm::name() const
 {
   return QStringLiteral( "orientedminimumboundingbox" );

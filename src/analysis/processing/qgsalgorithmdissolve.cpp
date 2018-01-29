@@ -23,11 +23,6 @@
 // QgsCollectorAlgorithm
 //
 
-QgsProcessingAlgorithm::Flags QgsCollectorAlgorithm::flags() const
-{
-  return QgsProcessingAlgorithm::flags() | QgsProcessingAlgorithm::FlagCanRunInBackground;
-}
-
 QVariantMap QgsCollectorAlgorithm::processCollection( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback,
     const std::function<QgsGeometry( const QVector< QgsGeometry >& )> &collector, int maxQueueLength )
 {

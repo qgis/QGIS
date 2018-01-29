@@ -19,11 +19,6 @@
 
 ///@cond PRIVATE
 
-QgsProcessingAlgorithm::Flags QgsAlgorithmRemoveDuplicateNodes::flags() const
-{
-  return QgsProcessingFeatureBasedAlgorithm::flags() | QgsProcessingAlgorithm::FlagCanRunInBackground;
-}
-
 QString QgsAlgorithmRemoveDuplicateNodes::name() const
 {
   return QStringLiteral( "removeduplicatenodes" );

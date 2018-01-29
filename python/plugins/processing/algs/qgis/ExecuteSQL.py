@@ -28,6 +28,7 @@ __revision__ = '$Format:%H$'
 from qgis.core import (QgsVirtualLayerDefinition,
                        QgsVectorLayer,
                        QgsWkbTypes,
+                       QgsProcessingAlgorithm,
                        QgsProcessingParameterMultipleLayers,
                        QgsProcessingParameterString,
                        QgsProcessingParameterEnum,
@@ -61,6 +62,9 @@ class ExecuteSQL(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def flags(self):
+        return super().flags() | QgsProcessingAlgorithm.FlagNoThreading
 
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterMultipleLayers(name=self.INPUT_DATASOURCES,

@@ -40,11 +40,6 @@ QString QgsClipAlgorithm::group() const
   return QObject::tr( "Vector overlay" );
 }
 
-QgsProcessingAlgorithm::Flags QgsClipAlgorithm::flags() const
-{
-  return QgsProcessingAlgorithm::flags() | QgsProcessingAlgorithm::FlagCanRunInBackground;
-}
-
 QString QgsClipAlgorithm::groupId() const
 {
   return QStringLiteral( "vectoroverlay" );

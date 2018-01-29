@@ -135,7 +135,7 @@ void QgsProcessingAlgorithmDialogBase::setAlgorithm( QgsProcessingAlgorithm *alg
     connect( textShortHelp, &QTextBrowser::anchorClicked, this, &QgsProcessingAlgorithmDialogBase::linkClicked );
   }
 
-  if ( algorithm->flags() & QgsProcessingAlgorithm::FlagCanRunInBackground )
+  if ( !( algorithm->flags() & QgsProcessingAlgorithm::FlagNoThreading ) )
     mButtonRun->setText( tr( "Run in Background" ) );
 }
 

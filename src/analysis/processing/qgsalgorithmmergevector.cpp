@@ -39,11 +39,6 @@ QString QgsMergeVectorAlgorithm::group() const
   return QObject::tr( "Vector general" );
 }
 
-QgsProcessingAlgorithm::Flags QgsMergeVectorAlgorithm::flags() const
-{
-  return QgsProcessingAlgorithm::flags() | QgsProcessingAlgorithm::FlagCanRunInBackground;
-}
-
 QString QgsMergeVectorAlgorithm::groupId() const
 {
   return QStringLiteral( "vectorgeneral" );

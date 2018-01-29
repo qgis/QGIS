@@ -19,12 +19,6 @@
 
 ///@cond PRIVATE
 
-
-QgsProcessingAlgorithm::Flags QgsAddUniqueValueIndexAlgorithm::flags() const
-{
-  return QgsProcessingAlgorithm::flags() | QgsProcessingAlgorithm::FlagCanRunInBackground;
-}
-
 QString QgsAddUniqueValueIndexAlgorithm::name() const
 {
   return QStringLiteral( "adduniquevalueindexfield" );
