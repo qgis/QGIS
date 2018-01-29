@@ -805,7 +805,7 @@ class TreeActionItem(QTreeWidgetItem):
     def __init__(self, action):
         QTreeWidgetItem.__init__(self)
         self.action = action
-        self.setText(0, action.i18n_name)
+        self.setText(0, action.name)
         self.setIcon(0, action.getIcon())
         self.setData(0, ModelerDialog.NAME_ROLE, action.name)
 

@@ -42,8 +42,3 @@ class ToolboxAction:
         if context == '':
             context = self.__class__.__name__
         return QCoreApplication.translate(context, string)
-
-    def trAction(self, string, context=''):
-        if context == '':
-            context = self.__class__.__name__
-        return string, QCoreApplication.translate(context, string)

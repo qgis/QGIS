@@ -75,8 +75,8 @@ class ProcessingScriptCollectionPlugin:
 class CreateScriptCollectionPluginAction(ToolboxAction):
 
     def __init__(self):
-        self.name, self.i18n_name = self.trAction("Create script collection plugin")
-        self.group, self.i18n_group = self.trAction("Tools")
+        self.name = self.tr("Create script collection plugin")
+        self.group = self.tr("Tools")
 
     def getIcon(self):
         return QgsApplication.getThemeIcon("/processingScript.svg")
