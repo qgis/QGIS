@@ -33,6 +33,7 @@ from qgis.PyQt.QtGui import QIcon
 from qgis.core import (QgsFeatureRequest,
                        QgsProcessingException,
                        QgsProcessingUtils,
+                       QgsProcessingAlgorithm,
                        QgsProcessingParameterVectorLayer,
                        QgsProcessingParameterEnum,
                        QgsProcessingParameterField,
@@ -64,6 +65,9 @@ class RandomSelectionWithinSubsets(QgisAlgorithm):
 
     def __init__(self):
         super().__init__()
+
+    def flags(self):
+        return super().flags() | QgsProcessingAlgorithm.FlagNoThreading
 
     def initAlgorithm(self, config=None):
         self.methods = [self.tr('Number of selected features'),

@@ -44,11 +44,6 @@ QString QgsExtractByExpressionAlgorithm::groupId() const
   return QStringLiteral( "vectorselection" );
 }
 
-QgsProcessingAlgorithm::Flags QgsExtractByExpressionAlgorithm::flags() const
-{
-  return QgsProcessingAlgorithm::flags() | QgsProcessingAlgorithm::FlagCanRunInBackground;
-}
-
 void QgsExtractByExpressionAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );

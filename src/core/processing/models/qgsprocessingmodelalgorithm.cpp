@@ -78,6 +78,12 @@ QString QgsProcessingModelAlgorithm::helpUrl() const
   return QgsProcessingUtils::formatHelpMapAsHtml( mHelpContent, this );
 }
 
+QgsProcessingAlgorithm::Flags QgsProcessingModelAlgorithm::flags() const
+{
+  // TODO - check child algorithms, if they all support threading, then the model supports threading...
+  return QgsProcessingAlgorithm::flags() | QgsProcessingAlgorithm::FlagNoThreading;
+}
+
 QVariantMap QgsProcessingModelAlgorithm::parametersForChildAlgorithm( const QgsProcessingModelChildAlgorithm &child, const QVariantMap &modelParameters, const QVariantMap &results, const QgsExpressionContext &expressionContext ) const
 {
   QVariantMap childParams;

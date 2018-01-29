@@ -33,6 +33,7 @@ from qgis.core import (QgsProcessingUtils,
                        QgsProcessingException,
                        QgsMessageLog,
                        QgsProcessing,
+                       QgsProcessingAlgorithm,
                        QgsProcessingParameterRasterLayer,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterBoolean,
@@ -98,6 +99,10 @@ class SagaAlgorithm(SagaAlgorithmBase):
 
     def shortHelpString(self):
         return shortHelp.get(self.id(), None)
+
+    def flags(self):
+        # TODO - maybe it's safe to background thread this?
+        return super().flags() | QgsProcessingAlgorithm.FlagNoThreading
 
     def defineCharacteristicsFromFile(self):
         with open(self.description_file) as lines:

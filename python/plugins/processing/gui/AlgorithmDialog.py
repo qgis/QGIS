@@ -251,7 +251,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
 
                     self.finish(ok, results, context, feedback)
 
-                if self.algorithm().flags() & QgsProcessingAlgorithm.FlagCanRunInBackground:
+                if not (self.algorithm().flags() & QgsProcessingAlgorithm.FlagNoThreading):
                     # Make sure the Log tab is visible before executing the algorithm
                     self.showLog()
 

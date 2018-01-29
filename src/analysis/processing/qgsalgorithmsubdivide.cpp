@@ -19,12 +19,6 @@
 
 ///@cond PRIVATE
 
-
-QgsProcessingAlgorithm::Flags QgsSubdivideAlgorithm::flags() const
-{
-  return QgsProcessingFeatureBasedAlgorithm::flags() | QgsProcessingAlgorithm::FlagCanRunInBackground;
-}
-
 void QgsSubdivideAlgorithm::initParameters( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "MAX_NODES" ), QObject::tr( "Maximum nodes in parts" ), QgsProcessingParameterNumber::Integer,
