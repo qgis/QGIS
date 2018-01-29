@@ -36,7 +36,7 @@ except:
 from qgis.core import (QgsApplication,
                        QgsProcessingProvider)
 
-from processing.script.ScriptUtils import ScriptUtils
+from processing.script import ScriptUtils
 
 from .QgisAlgorithm import QgisAlgorithm
 
@@ -288,11 +288,11 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                          VectorLayerScatterplot3D()])
 
         # to store algs added by 3rd party plugins as scripts
-        folder = os.path.join(os.path.dirname(__file__), 'scripts')
-        scripts = ScriptUtils.loadFromFolder(folder)
-        for script in scripts:
-            script.allowEdit = False
-        algs.extend(scripts)
+        #folder = os.path.join(os.path.dirname(__file__), 'scripts')
+        #scripts = ScriptUtils.loadFromFolder(folder)
+        #for script in scripts:
+        #    script.allowEdit = False
+        #algs.extend(scripts)
 
         return algs
 

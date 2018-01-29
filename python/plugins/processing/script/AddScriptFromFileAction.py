@@ -36,7 +36,7 @@ from processing.gui.ToolboxAction import ToolboxAction
 
 from processing.script.ScriptAlgorithm import ScriptAlgorithm
 from processing.script.WrongScriptException import WrongScriptException
-from processing.script.ScriptUtils import ScriptUtils
+from processing.script import ScriptUtils
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 

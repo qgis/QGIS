@@ -44,7 +44,7 @@ from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.gui.HelpEditionDialog import HelpEditionDialog
 
 from processing.script.ScriptAlgorithm import ScriptAlgorithm
-from processing.script.ScriptUtils import ScriptUtils
+from processing.script import ScriptUtils
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 WIDGET, BASE = uic.loadUiType(

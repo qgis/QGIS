@@ -26,53 +26,48 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
-from qgis.core import (QgsProcessingUtils,
-                       QgsMessageLog)
-from processing.core.ProcessingConfig import ProcessingConfig
-from processing.script.ScriptAlgorithm import ScriptAlgorithm
-from processing.script.WrongScriptException import WrongScriptException
-from processing.tools.system import mkdir, userFolder
+import inspect
+import importlib
 
 from qgis.PyQt.QtCore import QCoreApplication
 
+from qgis.core import QgsProcessingAlgorithm, QgsMessageLog
 
-class ScriptUtils:
+from processing.core.ProcessingConfig import ProcessingConfig
 
-    SCRIPTS_FOLDER = 'SCRIPTS_FOLDER'
+from processing.script.ScriptAlgorithm import ScriptAlgorithm
+from processing.script.WrongScriptException import WrongScriptException
 
-    @staticmethod
-    def defaultScriptsFolder():
-        folder = str(os.path.join(userFolder(), 'scripts'))
-        mkdir(folder)
-        return os.path.abspath(folder)
+from processing.tools.system import mkdir, userFolder
 
-    @staticmethod
-    def scriptsFolders():
-        folder = ProcessingConfig.getSetting(ScriptUtils.SCRIPTS_FOLDER)
-        if folder is not None:
-            return folder.split(';')
-        else:
-            return [ScriptUtils.defaultScriptsFolder()]
 
-    @staticmethod
-    def loadFromFolder(folder):
-        if not os.path.exists(folder):
-            return []
-        algs = []
-        for path, subdirs, files in os.walk(folder):
-            for descriptionFile in files:
-                if descriptionFile.endswith('py'):
-                    try:
-                        fullpath = os.path.join(path, descriptionFile)
-                        alg = ScriptAlgorithm(fullpath)
-                        if alg.name().strip() != '':
-                            algs.append(alg)
-                    except WrongScriptException as e:
-                        QgsMessageLog.logMessage(e.msg, QCoreApplication.translate('Processing', 'Processing'), QgsMessageLog.CRITICAL)
-                    except Exception as e:
-                        QgsMessageLog.logMessage(
-                            QCoreApplication.translate('Processing', 'Could not load script: {0}\n{1}').format(descriptionFile, str(e)),
-                            QCoreApplication.translate('Processing', 'Processing'),
-                            QgsMessageLog.CRITICAL
-                        )
-        return algs
+SCRIPTS_FOLDERS = "SCRIPTS_FOLDERS"
+
+
+def defaultScriptsFolder():
+    folder = str(os.path.join(userFolder(), "scripts"))
+    mkdir(folder)
+    return os.path.abspath(folder)
+
+
+def scriptsFolders():
+    folder = ProcessingConfig.getSetting(SCRIPTS_FOLDERS)
+    if folder is not None:
+        return folder.split(";")
+    else:
+        return [ScriptUtils.defaultScriptsFolder()]
+
+
+def loadAlgorithm(moduleName, filePath):
+    try:
+        spec = importlib.util.spec_from_file_location(moduleName, filePath)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        for x in dir(module):
+            obj = getattr(module, x)
+            if inspect.isclass(obj) and issubclass(obj, QgsProcessingAlgorithm) and obj.__name__ == moduleName:
+                return obj()
+    except ImportError as e:
+        QgsMessageLog.logMessage("Could not import script algorithm '{}' from '{}'\n{}".format(moduleName, filePath, str(e)),
+                                 "Processing",
+                                 QgsMessageLog.CRITICAL)
