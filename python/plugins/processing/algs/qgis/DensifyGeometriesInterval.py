@@ -36,6 +36,9 @@ class DensifyGeometriesInterval(QgisFeatureBasedAlgorithm):
 
     INTERVAL = 'INTERVAL'
 
+    def tags(self):
+        return self.tr('add,vertex,vertices,points').split(',')
+
     def group(self):
         return self.tr('Vector geometry')
 

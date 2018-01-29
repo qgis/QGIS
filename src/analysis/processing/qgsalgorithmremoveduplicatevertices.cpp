@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgsalgorithmremoveduplicatenodes.cpp
+                         qgsalgorithmremoveduplicatevertices.cpp
                          ---------------------
     begin                : November 2017
     copyright            : (C) 2017 by Nyall Dawson
@@ -15,60 +15,60 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsalgorithmremoveduplicatenodes.h"
+#include "qgsalgorithmremoveduplicatevertices.h"
 
 ///@cond PRIVATE
 
-QString QgsAlgorithmRemoveDuplicateNodes::name() const
+QString QgsAlgorithmRemoveDuplicateVertices::name() const
 {
-  return QStringLiteral( "removeduplicatenodes" );
+  return QStringLiteral( "removeduplicatevertices" );
 }
 
-QString QgsAlgorithmRemoveDuplicateNodes::displayName() const
+QString QgsAlgorithmRemoveDuplicateVertices::displayName() const
 {
-  return QObject::tr( "Remove duplicate nodes" );
+  return QObject::tr( "Remove duplicate vertices" );
 }
 
-QStringList QgsAlgorithmRemoveDuplicateNodes::tags() const
+QStringList QgsAlgorithmRemoveDuplicateVertices::tags() const
 {
-  return QObject::tr( "points,valid,overlapping" ).split( ',' );
+  return QObject::tr( "points,valid,overlapping,vertex,nodes" ).split( ',' );
 }
 
-QString QgsAlgorithmRemoveDuplicateNodes::group() const
+QString QgsAlgorithmRemoveDuplicateVertices::group() const
 {
   return QObject::tr( "Vector geometry" );
 }
 
-QString QgsAlgorithmRemoveDuplicateNodes::groupId() const
+QString QgsAlgorithmRemoveDuplicateVertices::groupId() const
 {
   return QStringLiteral( "vectorgeometry" );
 }
 
-QString QgsAlgorithmRemoveDuplicateNodes::outputName() const
+QString QgsAlgorithmRemoveDuplicateVertices::outputName() const
 {
   return QObject::tr( "Cleaned" );
 }
 
-QString QgsAlgorithmRemoveDuplicateNodes::shortHelpString() const
+QString QgsAlgorithmRemoveDuplicateVertices::shortHelpString() const
 {
-  return QObject::tr( "This algorithm removes duplicate nodes from features, wherever removing the nodes does "
+  return QObject::tr( "This algorithm removes duplicate vertices from features, wherever removing the vertices does "
                       "not result in a degenerate geometry.\n\n"
                       "The tolerance parameter specifies the tolerance for coordinates when determining whether "
                       "vertices are identical.\n\n"
-                      "By default, z values are not considered when detecting duplicate nodes. E.g. two nodes "
+                      "By default, z values are not considered when detecting duplicate vertices. E.g. two vertices "
                       "with the same x and y coordinate but different z values will still be considered "
                       "duplicate and one will be removed. If the Use Z Value parameter is true, then the z values are "
-                      "also tested and nodes with the same x and y but different z will be maintained.\n\n"
-                      "Note that duplicate nodes are not tested between different parts of a multipart geometry. E.g. "
+                      "also tested and vertices with the same x and y but different z will be maintained.\n\n"
+                      "Note that duplicate vertices are not tested between different parts of a multipart geometry. E.g. "
                       "a multipoint geometry with overlapping points will not be changed by this method." );
 }
 
-QgsAlgorithmRemoveDuplicateNodes *QgsAlgorithmRemoveDuplicateNodes::createInstance() const
+QgsAlgorithmRemoveDuplicateVertices *QgsAlgorithmRemoveDuplicateVertices::createInstance() const
 {
-  return new QgsAlgorithmRemoveDuplicateNodes();
+  return new QgsAlgorithmRemoveDuplicateVertices();
 }
 
-void QgsAlgorithmRemoveDuplicateNodes::initParameters( const QVariantMap & )
+void QgsAlgorithmRemoveDuplicateVertices::initParameters( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "TOLERANCE" ),
                 QObject::tr( "Tolerance" ), QgsProcessingParameterNumber::Double,
@@ -77,14 +77,14 @@ void QgsAlgorithmRemoveDuplicateNodes::initParameters( const QVariantMap & )
                 QObject::tr( "Use Z Value" ), false ) );
 }
 
-bool QgsAlgorithmRemoveDuplicateNodes::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
+bool QgsAlgorithmRemoveDuplicateVertices::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
   mTolerance = parameterAsDouble( parameters, QStringLiteral( "TOLERANCE" ), context );
   mUseZValues = parameterAsBool( parameters, QStringLiteral( "USE_Z_VALUE" ), context );
   return true;
 }
 
-QgsFeature QgsAlgorithmRemoveDuplicateNodes::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback * )
+QgsFeature QgsAlgorithmRemoveDuplicateVertices::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback * )
 {
   QgsFeature f = feature;
   if ( f.hasGeometry() )
