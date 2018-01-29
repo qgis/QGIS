@@ -37,14 +37,17 @@ from qgis.core import (QgsApplication,
                        QgsXmlUtils)
 
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
-from processing.modeler.ModelerUtils import ModelerUtils
-from processing.modeler.WrongModelException import WrongModelException
-from processing.modeler.EditModelAction import EditModelAction
-from processing.modeler.CreateNewModelAction import CreateNewModelAction
-from processing.modeler.DeleteModelAction import DeleteModelAction
-from processing.modeler.AddModelFromFileAction import AddModelFromFileAction
+
+#from processing.gui.GetScriptsAndModels import GetModelsAction
 from processing.gui.ProviderActions import (ProviderActions,
                                             ProviderContextMenuActions)
+
+from processing.modeler.AddModelFromFileAction import AddModelFromFileAction
+from processing.modeler.CreateNewModelAction import CreateNewModelAction
+from processing.modeler.DeleteModelAction import DeleteModelAction
+from processing.modeler.EditModelAction import EditModelAction
+from processing.modeler.WrongModelException import WrongModelException
+from processing.modeler.ModelerUtils import ModelerUtils
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
@@ -54,6 +57,9 @@ class ModelerAlgorithmProvider(QgsProcessingProvider):
     def __init__(self):
         super().__init__()
         self.actions = [CreateNewModelAction(), AddModelFromFileAction()]
+                        AddModelFromFileAction(),
+                        #GetModelsAction()
+                        ]
         self.contextMenuActions = [EditModelAction(), DeleteModelAction()]
         self.algs = []
 
