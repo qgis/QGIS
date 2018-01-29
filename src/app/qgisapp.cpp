@@ -396,7 +396,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgsmaptoolrotatelabel.h"
 #include "qgsmaptoolchangelabelproperties.h"
 
-#include "nodetool/qgsnodetool.h"
+#include "vertextool/qgsvertextool.h"
 
 // Editor widgets
 #include "qgseditorwidgetregistry.h"
@@ -1343,7 +1343,7 @@ QgisApp::~QgisApp()
   delete mMapTools.mMoveFeature;
   delete mMapTools.mMoveFeatureCopy;
   delete mMapTools.mMoveLabel;
-  delete mMapTools.mNodeTool;
+  delete mMapTools.mVertexTool;
   delete mMapTools.mOffsetCurve;
   delete mMapTools.mPinLabels;
   delete mMapTools.mReshapeFeatures;
@@ -1904,7 +1904,7 @@ void QgisApp::createActions()
   connect( mActionMergeFeatures, &QAction::triggered, this, &QgisApp::mergeSelectedFeatures );
   connect( mActionMergeFeatureAttributes, &QAction::triggered, this, &QgisApp::mergeAttributesOfSelectedFeatures );
   connect( mActionMultiEditAttributes, &QAction::triggered, this, &QgisApp::modifyAttributesOfSelectedFeatures );
-  connect( mActionNodeTool, &QAction::triggered, this, &QgisApp::nodeTool );
+  connect( mActionVertexTool, &QAction::triggered, this, &QgisApp::vertexTool );
   connect( mActionRotatePointSymbols, &QAction::triggered, this, &QgisApp::rotatePointSymbols );
   connect( mActionOffsetPointSymbol, &QAction::triggered, this, &QgisApp::offsetPointSymbol );
   connect( mActionSnappingOptions, &QAction::triggered, this, &QgisApp::snappingOptions );
@@ -2190,7 +2190,7 @@ void QgisApp::createActionGroups()
   mMapToolGroup->addAction( mActionDeletePart );
   mMapToolGroup->addAction( mActionMergeFeatures );
   mMapToolGroup->addAction( mActionMergeFeatureAttributes );
-  mMapToolGroup->addAction( mActionNodeTool );
+  mMapToolGroup->addAction( mActionVertexTool );
   mMapToolGroup->addAction( mActionRotatePointSymbols );
   mMapToolGroup->addAction( mActionOffsetPointSymbol );
   mMapToolGroup->addAction( mActionPinLabels );
@@ -2681,7 +2681,7 @@ void QgisApp::createToolBars()
   tbAddCircularString->addAction( mActionCircularStringRadius );
   tbAddCircularString->setDefaultAction( mActionCircularStringCurvePoint );
   connect( tbAddCircularString, &QToolButton::triggered, this, &QgisApp::toolButtonActionTriggered );
-  mRegularShapeDigitizeToolBar->insertWidget( mActionNodeTool, tbAddCircularString );
+  mRegularShapeDigitizeToolBar->insertWidget( mActionVertexTool, tbAddCircularString );
 
   //circle digitize tool button
   QToolButton *tbAddCircle = new QToolButton( mRegularShapeDigitizeToolBar );
@@ -2693,7 +2693,7 @@ void QgisApp::createToolBars()
   tbAddCircle->addAction( mActionCircleCenterPoint );
   tbAddCircle->setDefaultAction( mActionCircle2Points );
   connect( tbAddCircle, &QToolButton::triggered, this, &QgisApp::toolButtonActionTriggered );
-  mRegularShapeDigitizeToolBar->insertWidget( mActionNodeTool, tbAddCircle );
+  mRegularShapeDigitizeToolBar->insertWidget( mActionVertexTool, tbAddCircle );
 
   //ellipse digitize tool button
   QToolButton *tbAddEllipse = new QToolButton( mRegularShapeDigitizeToolBar );
@@ -2704,7 +2704,7 @@ void QgisApp::createToolBars()
   tbAddEllipse->addAction( mActionEllipseFoci );
   tbAddEllipse->setDefaultAction( mActionEllipseCenter2Points );
   connect( tbAddEllipse, &QToolButton::triggered, this, &QgisApp::toolButtonActionTriggered );
-  mRegularShapeDigitizeToolBar->insertWidget( mActionNodeTool, tbAddEllipse );
+  mRegularShapeDigitizeToolBar->insertWidget( mActionVertexTool, tbAddEllipse );
 
   //Rectangle digitize tool button
   QToolButton *tbAddRectangle = new QToolButton( mRegularShapeDigitizeToolBar );
@@ -2714,7 +2714,7 @@ void QgisApp::createToolBars()
   tbAddRectangle->addAction( mActionRectangle3Points );
   tbAddRectangle->setDefaultAction( mActionRectangleCenterPoint );
   connect( tbAddRectangle, &QToolButton::triggered, this, &QgisApp::toolButtonActionTriggered );
-  mRegularShapeDigitizeToolBar->insertWidget( mActionNodeTool, tbAddRectangle );
+  mRegularShapeDigitizeToolBar->insertWidget( mActionVertexTool, tbAddRectangle );
 
   //Regular polygon digitize tool button
   QToolButton *tbAddRegularPolygon = new QToolButton( mRegularShapeDigitizeToolBar );
@@ -2724,7 +2724,7 @@ void QgisApp::createToolBars()
   tbAddRegularPolygon->addAction( mActionRegularPolygonCenterCorner );
   tbAddRegularPolygon->setDefaultAction( mActionRegularPolygon2Points );
   connect( tbAddRegularPolygon, &QToolButton::triggered, this, &QgisApp::toolButtonActionTriggered );
-  mRegularShapeDigitizeToolBar->insertWidget( mActionNodeTool, tbAddRegularPolygon );
+  mRegularShapeDigitizeToolBar->insertWidget( mActionVertexTool, tbAddRegularPolygon );
 
   // move feature tool button
   QToolButton *moveFeatureButton = new QToolButton( mDigitizeToolBar );
@@ -2743,7 +2743,7 @@ void QgisApp::createToolBars()
   };
   moveFeatureButton->setDefaultAction( defAction );
   connect( moveFeatureButton, &QToolButton::triggered, this, &QgisApp::toolButtonActionTriggered );
-  mDigitizeToolBar->insertWidget( mActionNodeTool, moveFeatureButton );
+  mDigitizeToolBar->insertWidget( mActionVertexTool, moveFeatureButton );
 
   bt = new QToolButton();
   bt->setPopupMode( QToolButton::MenuButtonPopup );
@@ -3051,7 +3051,7 @@ void QgisApp::setTheme( const QString &themeName )
   mActionSplitFeatures->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSplitFeatures.svg" ) ) );
   mActionSplitParts->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSplitParts.svg" ) ) );
   mActionDeleteSelected->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDeleteSelected.svg" ) ) );
-  mActionNodeTool->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionNodeTool.svg" ) ) );
+  mActionVertexTool->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionVertexTool.svg" ) ) );
   mActionSimplifyFeature->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSimplify.svg" ) ) );
   mActionUndo->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionUndo.svg" ) ) );
   mActionRedo->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionRedo.svg" ) ) );
@@ -3341,8 +3341,8 @@ void QgisApp::createCanvasTools()
   mMapTools.mDeleteRing->setAction( mActionDeleteRing );
   mMapTools.mDeletePart = new QgsMapToolDeletePart( mMapCanvas );
   mMapTools.mDeletePart->setAction( mActionDeletePart );
-  mMapTools.mNodeTool = new QgsNodeTool( mMapCanvas, mAdvancedDigitizingDockWidget );
-  mMapTools.mNodeTool->setAction( mActionNodeTool );
+  mMapTools.mVertexTool = new QgsVertexTool( mMapCanvas, mAdvancedDigitizingDockWidget );
+  mMapTools.mVertexTool->setAction( mActionVertexTool );
   mMapTools.mRotatePointSymbolsTool = new QgsMapToolRotatePointSymbols( mMapCanvas );
   mMapTools.mRotatePointSymbolsTool->setAction( mActionRotatePointSymbols );
   mMapTools.mOffsetPointSymbolTool = new QgsMapToolOffsetPointSymbol( mMapCanvas );
@@ -7904,9 +7904,9 @@ void QgisApp::mergeSelectedFeatures()
   vl->triggerRepaint();
 }
 
-void QgisApp::nodeTool()
+void QgisApp::vertexTool()
 {
-  mMapCanvas->setMapTool( mMapTools.mNodeTool );
+  mMapCanvas->setMapTool( mMapTools.mVertexTool );
 }
 
 void QgisApp::rotatePointSymbols()
@@ -11432,7 +11432,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
     mActionMoveFeatureCopy->setEnabled( false );
     mActionRotateFeature->setEnabled( false );
     mActionOffsetCurve->setEnabled( false );
-    mActionNodeTool->setEnabled( false );
+    mActionVertexTool->setEnabled( false );
     mActionDeleteSelected->setEnabled( false );
     mActionCutFeatures->setEnabled( false );
     mActionCopyFeatures->setEnabled( false );
@@ -11609,7 +11609,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
       mActionMoveFeature->setEnabled( isEditable && canChangeGeometry );
       mActionMoveFeatureCopy->setEnabled( isEditable && canChangeGeometry );
       mActionRotateFeature->setEnabled( isEditable && canChangeGeometry );
-      mActionNodeTool->setEnabled( isEditable && canChangeGeometry );
+      mActionVertexTool->setEnabled( isEditable && canChangeGeometry );
 
       if ( vlayer->geometryType() == QgsWkbTypes::PointGeometry )
       {
@@ -11763,7 +11763,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
     mActionAddRing->setEnabled( false );
     mActionFillRing->setEnabled( false );
     mActionAddPart->setEnabled( false );
-    mActionNodeTool->setEnabled( false );
+    mActionVertexTool->setEnabled( false );
     mActionMoveFeature->setEnabled( false );
     mActionMoveFeatureCopy->setEnabled( false );
     mActionRotateFeature->setEnabled( false );

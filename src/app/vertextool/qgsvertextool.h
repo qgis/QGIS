@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsnodetool.h
+  qgsvertextool.h
   --------------------------------------
   Date                 : February 2017
   Copyright            : (C) 2017 by Martin Dobias
@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSNODETOOL_H
-#define QGSNODETOOL_H
+#ifndef QGSVERTEXTOOL_H
+#define QGSVERTEXTOOL_H
 
 #include <memory>
 
@@ -25,7 +25,7 @@
 class QRubberBand;
 
 class QgsGeometryValidator;
-class QgsNodeEditor;
+class QgsVertexEditor;
 class QgsSelectedFeature;
 class QgsSnapIndicator;
 class QgsVertexMarker;
@@ -57,14 +57,14 @@ uint qHash( const Vertex &v );
 
 
 
-class APP_EXPORT QgsNodeTool : public QgsMapToolAdvancedDigitizing
+class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing
 {
     Q_OBJECT
   public:
-    QgsNodeTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock );
+    QgsVertexTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock );
 
     //! Cleanup canvas items we have created
-    ~QgsNodeTool() override;
+    ~QgsVertexTool() override;
 
     void cadCanvasPressEvent( QgsMapMouseEvent *e ) override;
 
@@ -87,9 +87,9 @@ class APP_EXPORT QgsNodeTool : public QgsMapToolAdvancedDigitizing
 
     void onCachedGeometryDeleted( QgsFeatureId fid );
 
-    void showNodeEditor();
+    void showVertexEditor();
 
-    void deleteNodeEditorSelection();
+    void deleteVertexEditorSelection();
 
     void validationErrorFound( const QgsGeometry::Error &e );
 
@@ -200,7 +200,7 @@ class APP_EXPORT QgsNodeTool : public QgsMapToolAdvancedDigitizing
      */
     bool matchEdgeCenterTest( const QgsPointLocator::Match &m, const QgsPointXY &mapPoint, QgsPointXY *edgeCenterPtr = nullptr );
 
-    void cleanupNodeEditor();
+    void cleanupVertexEditor();
 
     //! Run validation on a geometry (in a background thread)
     void validateGeometry( QgsVectorLayer *layer, QgsFeatureId featureId );
@@ -369,20 +369,20 @@ class APP_EXPORT QgsNodeTool : public QgsMapToolAdvancedDigitizing
     //! Selected feature for the vertex editor
     std::unique_ptr<QgsSelectedFeature> mSelectedFeature;
     //! Dock widget which allows editing vertices
-    std::unique_ptr<QgsNodeEditor> mNodeEditor;
+    std::unique_ptr<QgsVertexEditor> mVertexEditor;
 
     // support for validation of geometries
 
     //! data structure for validation of one geometry of a vector layer
     struct GeometryValidation
     {
-      QgsNodeTool *tool = nullptr;               //!< Pointer to the parent vertex tool (for connections / canvas)
+      QgsVertexTool *tool = nullptr;               //!< Pointer to the parent vertex tool (for connections / canvas)
       QgsVectorLayer *layer = nullptr;            //!< Pointer to the layer of the validated geometry (for reporojection)
       QgsGeometryValidator *validator = nullptr;  //!< Object that does validation. Non-null if active
       QList<QgsVertexMarker *> errorMarkers;      //!< Markers created by validation
       QString errors;                             //!< Full error text from validation
 
-      void start( QgsGeometry &geom, QgsNodeTool *tool, QgsVectorLayer *l );  //!< Start validation
+      void start( QgsGeometry &geom, QgsVertexTool *tool, QgsVectorLayer *l );  //!< Start validation
       void addError( QgsGeometry::Error e );  //!< Add another error to the validation
       void cleanup(); //!< Delete everything
     };
@@ -405,4 +405,4 @@ class APP_EXPORT QgsNodeTool : public QgsMapToolAdvancedDigitizing
 };
 
 
-#endif // QGSNODETOOL_H
+#endif // QGSVERTEXTOOL_H

@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsvertexentry.h  - entry for vertex of nodetool
+    qgsvertexentry.h  - entry for vertex of vertextool
     ---------------------
     begin                : April 2009
     copyright            : (C) 2009 by Richard Kostecky

@@ -230,7 +230,7 @@ Show layout manager action
     virtual QAction *actionSimplifyFeature() = 0;
     virtual QAction *actionDeleteRing() = 0;
     virtual QAction *actionDeletePart() = 0;
-    virtual QAction *actionNodeTool() = 0;
+    virtual QAction *actionVertexTool() = 0;
 
     virtual QAction *actionPan() = 0;
 %Docstring

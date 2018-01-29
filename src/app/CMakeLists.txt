@@ -106,10 +106,10 @@ SET(QGIS_APP_SRCS
   qgsmaptoolsvgannotation.cpp
   qgsmaptooltextannotation.cpp
 
-  nodetool/qgsselectedfeature.cpp
-  nodetool/qgsvertexentry.cpp
-  nodetool/qgsnodeeditor.cpp
-  nodetool/qgsnodetool.cpp
+  vertextool/qgsselectedfeature.cpp
+  vertextool/qgsvertexentry.cpp
+  vertextool/qgsvertexeditor.cpp
+  vertextool/qgsvertextool.cpp
 
   qgslayerstylingwidget.cpp
   qgsmeasuredialog.cpp
@@ -337,9 +337,9 @@ SET (QGIS_APP_MOC_HDRS
   qgsmaptoolregularpolygoncenterpoint.h
   qgsmaptoolregularpolygoncentercorner.h
 
-  nodetool/qgsselectedfeature.h
-  nodetool/qgsnodeeditor.h
-  nodetool/qgsnodetool.h
+  vertextool/qgsselectedfeature.h
+  vertextool/qgsvertexeditor.h
+  vertextool/qgsvertextool.h
 
   qgslayerstylingwidget.h
   qgsmeasuredialog.h

@@ -115,7 +115,7 @@ bool checkTriangleOutput( const QVector<float> &data, bool withNormals, const QL
 
 /**
  * \ingroup UnitTests
- * This is a unit test for the node tool
+ * This is a unit test for the vertex tool
  */
 class TestQgsTessellator : public QObject
 {
