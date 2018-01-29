@@ -175,19 +175,20 @@ typedef QVector<QVariant> QgsAttributes;
   }
 
   QgsAttributes *qv = new QgsAttributes;
+  SIP_SSIZE_T listSize = PyList_GET_SIZE( sipPy );
+  qv->reserve( listSize );
 
-  for ( SIP_SSIZE_T i = 0; i < PyList_GET_SIZE( sipPy ); ++i )
+  for ( SIP_SSIZE_T i = 0; i < listSize; ++i )
   {
-    int state;
     PyObject *obj = PyList_GET_ITEM( sipPy, i );
-    QVariant *t;
     if ( obj == Py_None )
     {
-      t = new QVariant( QVariant::Int );
+      qv->append( QVariant( QVariant::Int ) );
     }
     else
     {
-      t = reinterpret_cast<QVariant *>( sipConvertToType( obj, sipType_QVariant, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr ) );
+      int state;
+      QVariant *t = reinterpret_cast<QVariant *>( sipConvertToType( obj, sipType_QVariant, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr ) );
 
       if ( *sipIsErr )
       {
@@ -196,11 +197,10 @@ typedef QVector<QVariant> QgsAttributes;
         delete qv;
         return 0;
       }
+
+      qv->append( *t );
+      sipReleaseType( t, sipType_QVariant, state );
     }
-
-    qv->append( *t );
-
-    sipReleaseType( t, sipType_QVariant, state );
   }
 
   *sipCppPtr = qv;
