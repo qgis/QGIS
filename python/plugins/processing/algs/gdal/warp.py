@@ -127,6 +127,7 @@ class warp(GdalAlgorithm):
         target_extent_crs_param = QgsProcessingParameterCrs(self.TARGET_EXTENT_CRS,
                                                             self.tr('CRS of the target raster extent'),
                                                             optional=True)
+        self.addParameter(target_extent_crs_param)
 
         multithreading_param = QgsProcessingParameterBoolean(self.MULTITHREADING,
                                                              self.tr('Use multithreaded warping implementation'),
