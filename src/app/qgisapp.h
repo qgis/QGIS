@@ -1307,7 +1307,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void projectPropertiesProjections();
     /*  void urlData(); */
     //! Show the spatial bookmarks dialog
-    void showBookmarks();
+    void showBookmarks( bool show );
     //! Create a new spatial bookmark
     void newBookmark();
     //! activates the add feature tool
@@ -1587,7 +1587,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     /**
      * Shows the statistical summary dock widget and brings it to the foreground
      */
-    void showStatisticsDockWidget();
+    void showStatisticsDockWidget( bool show );
 
     //! Pushes a layer error to the message bar
     void onLayerError( const QString &msg );
