@@ -1909,7 +1909,10 @@ void QgsMapLayer::setLegend( QgsMapLayerLegend *legend )
   mLegend = legend;
 
   if ( mLegend )
+  {
+    mLegend->setParent( this );
     connect( mLegend, &QgsMapLayerLegend::itemsChanged, this, &QgsMapLayer::legendChanged );
+  }
 
   emit legendChanged();
 }

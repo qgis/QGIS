@@ -147,6 +147,7 @@ QgsVectorLayer::QgsVectorLayer( const QString &vectorLayerPath,
   mConditionalStyles = new QgsConditionalLayerStyles();
 
   mJoinBuffer = new QgsVectorLayerJoinBuffer( this );
+  mJoinBuffer->setParent( this );
   connect( mJoinBuffer, &QgsVectorLayerJoinBuffer::joinedFieldsChanged, this, &QgsVectorLayer::onJoinedFieldsChanged );
 
   mExpressionFieldBuffer = new QgsExpressionFieldBuffer();
@@ -1553,6 +1554,7 @@ bool QgsVectorLayer::setDataProvider( QString const &provider )
     return false;
   }
 
+  mDataProvider->setParent( this );
   connect( mDataProvider, &QgsVectorDataProvider::raiseError, this, &QgsVectorLayer::raiseError );
 
   QgsDebugMsgLevel( QStringLiteral( "Instantiated the data provider plugin" ), 2 );
@@ -4405,6 +4407,7 @@ void QgsVectorLayer::setAuxiliaryLayer( QgsAuxiliaryLayer *alayer )
   }
 
   mAuxiliaryLayer.reset( alayer );
+  mAuxiliaryLayer->setParent( this );
   updateFields();
 }
 
