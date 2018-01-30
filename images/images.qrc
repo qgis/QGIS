@@ -640,6 +640,9 @@
         <file>themes/default/mActionDuplicateFeatureDigitized.svg</file>
         <file>themes/default/mActionDuplicateFeature.svg</file>
         <file>themes/default/mActionExport.svg</file>
+        <file>themes/default/dbmanagerExport.svg</file>
+        <file>themes/default/dbmanagerImport.svg</file>
+        <file>themes/default/dbmanagerSQLWindow.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>
