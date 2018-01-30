@@ -36,7 +36,7 @@ import osgeo.gdal  # NOQA
 from test_qgsserver import QgsServerTestBase
 
 # Strip path and content length because path may vary
-RE_STRIP_UNCHECKABLE = b'MAP=[^"]+|Content-Length: \d+'
+RE_STRIP_UNCHECKABLE = b'MAP=[^"]+|Content-Length: \d+|timeStamp="[^"]+"'
 RE_ATTRIBUTES = b'[^>\s]+=[^>\s]+'
 
 
@@ -44,18 +44,26 @@ class TestQgsServerWFS(QgsServerTestBase):
 
     """QGIS Server WFS Tests"""
 
-    def wfs_request_compare(self, request, version=''):
+    def wfs_request_compare(self, request, version='', extra_query_string='', reference_base_name=None):
         project = self.testdata_path + "test_project_wfs.qgs"
         assert os.path.exists(project), "Project file not found: " + project
 
         query_string = '?MAP=%s&SERVICE=WFS&REQUEST=%s' % (urllib.parse.quote(project), request)
         if version:
             query_string += '&VERSION=%s' % version
+
+        if extra_query_string:
+            query_string += '&%s' % extra_query_string
+
         header, body = self._execute_request(query_string)
         self.assert_headers(header, body)
         response = header + body
 
-        reference_name = 'wfs_' + request.lower()
+        if reference_base_name is not None:
+            reference_name = reference_base_name
+        else:
+            reference_name = 'wfs_' + request.lower()
+
         if version == '1.0.0':
             reference_name += '_1_0_0'
         reference_name += '.txt'
@@ -246,6 +254,19 @@ class TestQgsServerWFS(QgsServerTestBase):
 
         for id, req in tests:
             self.wfs_getfeature_post_compare(id, req)
+
+    def test_getFeatureBBOX(self):
+        """Test with (1.1.0) and without (1.0.0) CRS"""
+
+        self.wfs_request_compare("GetFeature", '1.0.0', "SRSNAME=EPSG:4326&TYPENAME=testlayer&RESULTTYPE=hits&BBOX=8.20347,44.901471,8.2035354,44.901493,EPSG:4326", 'wfs_getFeature_1_0_0_epsgbbox_1_feature')
+        self.wfs_request_compare("GetFeature", '1.0.0', "SRSNAME=EPSG:4326&TYPENAME=testlayer&RESULTTYPE=hits&BBOX=8.203127,44.9012765,8.204138,44.901632,EPSG:4326", 'wfs_getFeature_1_0_0_epsgbbox_3_feature')
+        self.wfs_request_compare("GetFeature", '1.1.0', "SRSNAME=EPSG:4326&TYPENAME=testlayer&RESULTTYPE=hits&BBOX=8.20347,44.901471,8.2035354,44.901493,EPSG:4326", 'wfs_getFeature_1_1_0_epsgbbox_1_feature')
+        self.wfs_request_compare("GetFeature", '1.1.0', "SRSNAME=EPSG:4326&TYPENAME=testlayer&RESULTTYPE=hits&BBOX=8.203127,44.9012765,8.204138,44.901632,EPSG:4326", 'wfs_getFeature_1_1_0_epsgbbox_3_feature')
+
+        self.wfs_request_compare("GetFeature", '1.0.0', "SRSNAME=EPSG:4326&TYPENAME=testlayer&RESULTTYPE=hits&BBOX=913144,5605992,913303,5606048,EPSG:3857", 'wfs_getFeature_1_0_0_epsgbbox_3_feature_3857')
+        self.wfs_request_compare("GetFeature", '1.0.0', "SRSNAME=EPSG:4326&TYPENAME=testlayer&RESULTTYPE=hits&BBOX=913206,5606024,913213,5606026,EPSG:3857", 'wfs_getFeature_1_0_0_epsgbbox_1_feature_3857')
+        self.wfs_request_compare("GetFeature", '1.1.0', "SRSNAME=EPSG:4326&TYPENAME=testlayer&RESULTTYPE=hits&BBOX=913144,5605992,913303,5606048,EPSG:3857", 'wfs_getFeature_1_1_0_epsgbbox_3_feature_3857')
+        self.wfs_request_compare("GetFeature", '1.1.0', "SRSNAME=EPSG:4326&TYPENAME=testlayer&RESULTTYPE=hits&BBOX=913206,5606024,913213,5606026,EPSG:3857", 'wfs_getFeature_1_1_0_epsgbbox_1_feature_3857')
 
 
 if __name__ == '__main__':
