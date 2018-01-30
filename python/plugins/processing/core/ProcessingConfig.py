@@ -38,6 +38,7 @@ class SettingsWatcher(QObject):
 
     settingsChanged = pyqtSignal()
 
+
 settingsWatcher = SettingsWatcher()
 
 
