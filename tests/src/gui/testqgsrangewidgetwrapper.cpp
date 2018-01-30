@@ -74,11 +74,11 @@ void TestQgsRangeWidgetWrapper::init()
   // add fields
   QList<QgsField> fields;
   fields.append( QgsField( "id", QVariant::Int ) );
-  // 9 precision
+  // precision = 9
   QgsField dfield( "number",  QVariant::Double );
   dfield.setPrecision( 9 );
   fields.append( dfield );
-  // default precision
+  // default precision = 0
   QgsField dfield2( "number_def",  QVariant::Double );
   fields.append( dfield2 );
   vl->dataProvider()->addAttributes( fields );
@@ -137,17 +137,15 @@ void TestQgsRangeWidgetWrapper::test_setDoubleRange()
   widget2->setFeature( vl->getFeature( 1 ) );
   QCOMPARE( vl->fields().at( 1 ).precision(), 9 );
   // Default is 0 !!! for double, really ?
-  // btw if it is 0 the decimals property in the spinbox is left to the default value of 2
   QCOMPARE( vl->fields().at( 2 ).precision(), 0 );
   QCOMPARE( editor->decimals(), vl->fields().at( 1 ).precision() );
   QCOMPARE( editor->decimals(), 9 );
-  // This fails: QCOMPARE( editor2->decimals(), vl->fields().at( 2 ).precision() );
-  QCOMPARE( editor2->decimals(), 2 ); // Default spinbox decimals is 2
+  QCOMPARE( editor2->decimals(), vl->fields().at( 2 ).precision() );
   QCOMPARE( editor->valueFromText( feat.attribute( 1 ).toString() ),  123.123456789 );
   QCOMPARE( feat.attribute( 1 ).toString(), QStringLiteral( "123.123456789" ) );
   QCOMPARE( editor2->valueFromText( feat.attribute( 1 ).toString() ), 123.123456789 );
   QCOMPARE( editor->value( ), 123.123456789 );
-  QCOMPARE( editor2->value( ), 123.12 );
+  QCOMPARE( editor2->value( ), 123.0 );
   QCOMPARE( editor->minimum( ), std::numeric_limits<double>::lowest() );
   QCOMPARE( editor2->minimum( ), std::numeric_limits<double>::lowest() );
   QCOMPARE( editor->maximum( ), std::numeric_limits<double>::max() );
@@ -161,7 +159,7 @@ void TestQgsRangeWidgetWrapper::test_setDoubleRange()
   widget->setFeature( vl->getFeature( 3 ) );
   widget2->setFeature( vl->getFeature( 3 ) );
   QCOMPARE( editor->value( ), -123.123456789 );
-  QCOMPARE( editor2->value( ), -123.12 );
+  QCOMPARE( editor2->value( ), -123.0 );
 }
 
 void TestQgsRangeWidgetWrapper::test_setDoubleSmallerRange()
@@ -189,11 +187,9 @@ void TestQgsRangeWidgetWrapper::test_setDoubleSmallerRange()
 
   QCOMPARE( vl->fields().at( 1 ).precision(), 9 );
   // Default is 0 !!! for double, really ?
-  // btw if it is 0 the decimals property in the spinbox is left to the default value of 2
   QCOMPARE( vl->fields().at( 2 ).precision(), 0 );
   QCOMPARE( editor->decimals(), vl->fields().at( 1 ).precision() );
-  // This fails: QCOMPARE( editor2->decimals(), vl->fields().at( 2 ).precision() );
-  QCOMPARE( editor2->decimals(), 2 ); // Default spinbox decimals is 2
+  QCOMPARE( editor2->decimals(), vl->fields().at( 2 ).precision() );
   // value was changed to the maximum (not NULL) accepted value
   QCOMPARE( editor->value( ), 100.0 );
   // value was changed to the maximum (not NULL) accepted value
@@ -250,13 +246,11 @@ void TestQgsRangeWidgetWrapper::test_setDoubleLimits()
 
   QCOMPARE( vl->fields().at( 1 ).precision(), 9 );
   // Default is 0 !!! for double, really ?
-  // btw if it is 0 the decimals property in the spinbox is left to the default value of 2
   QCOMPARE( vl->fields().at( 2 ).precision(), 0 );
   QCOMPARE( editor->decimals(), vl->fields().at( 1 ).precision() );
-  // This fails: QCOMPARE( editor2->decimals(), vl->fields().at( 2 ).precision() );
-  QCOMPARE( editor2->decimals(), 2 ); // Default spinbox decimals is 2
+  QCOMPARE( editor2->decimals(), vl->fields().at( 2 ).precision() );
   QCOMPARE( editor->value( ), 123.123456789 );
-  QCOMPARE( editor2->value( ), 123.12 );
+  QCOMPARE( editor2->value( ), 123.0 );
 
   // NULL, NULL
   widget->setFeature( vl->getFeature( 2 ) );
@@ -269,7 +263,7 @@ void TestQgsRangeWidgetWrapper::test_setDoubleLimits()
   widget2->setFeature( vl->getFeature( 3 ) );
   // value was changed to the minimum
   QCOMPARE( editor->value( ), -123.123456789 );
-  QCOMPARE( editor2->value( ), -123.12 );
+  QCOMPARE( editor2->value( ), -123.0 );
 
 }
 
