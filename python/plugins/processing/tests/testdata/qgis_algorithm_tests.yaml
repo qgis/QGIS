@@ -4664,6 +4664,32 @@ tests:
         name: expected/difference.gml
         type: vector
 
+  - algorithm: native:projectpointcartesian
+    name: Project points cartesian
+    params:
+      BEARING: 90.0
+      DISTANCE: 1.0
+      INPUT:
+        name: points.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/projected_points.gml
+        type: vector
+
+  - algorithm: native:projectpointcartesian
+    name: Project multipoints cartesian
+    params:
+      BEARING: -90.0
+      DISTANCE: 0.5
+      INPUT:
+        name: multipoints.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/projected_multipoints.gml
+        type: vector
+
   - algorithm: native:removeduplicatevertices
     name: Remove duplicate vertices from lines
     params:
