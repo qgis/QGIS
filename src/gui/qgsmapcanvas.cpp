@@ -503,6 +503,7 @@ void QgsMapCanvas::refreshMap()
                     << new QgsExpressionContextScope( mExpressionContextScope );
 
   mSettings.setExpressionContext( expressionContext );
+  mSettings.setPathResolver( QgsProject::instance()->pathResolver() );
 
   if ( !mTheme.isEmpty() )
   {

@@ -44,7 +44,7 @@ Abstract base class for processing algorithms.
       FlagSupportsBatch,
       FlagCanCancel,
       FlagRequiresMatchingCrs,
-      FlagCanRunInBackground,
+      FlagNoThreading,
       FlagDeprecated,
     };
     typedef QFlags<QgsProcessingAlgorithm::Flag> Flags;

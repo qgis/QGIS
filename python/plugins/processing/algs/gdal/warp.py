@@ -110,6 +110,7 @@ class warp(GdalAlgorithm):
                                                      self.tr('Resampling method to use'),
                                                      options=[i[0] for i in self.methods],
                                                      defaultValue=0))
+
         dataType_param = QgsProcessingParameterEnum(self.DATA_TYPE,
                                                     self.tr('Output data type'),
                                                     self.TYPES,
@@ -127,6 +128,8 @@ class warp(GdalAlgorithm):
         target_extent_crs_param = QgsProcessingParameterCrs(self.TARGET_EXTENT_CRS,
                                                             self.tr('CRS of the target raster extent'),
                                                             optional=True)
+        target_extent_crs_param.setFlags(target_extent_crs_param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+        self.addParameter(target_extent_crs_param)
 
         multithreading_param = QgsProcessingParameterBoolean(self.MULTITHREADING,
                                                              self.tr('Use multithreaded warping implementation'),

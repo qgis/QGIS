@@ -45,11 +45,6 @@ QString QgsLineIntersectionAlgorithm::groupId() const
   return QStringLiteral( "vectoroverlay" );
 }
 
-QgsProcessingAlgorithm::Flags QgsLineIntersectionAlgorithm::flags() const
-{
-  return QgsProcessingAlgorithm::flags() | QgsProcessingAlgorithm::FlagCanRunInBackground;
-}
-
 void QgsLineIntersectionAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ),

@@ -19,11 +19,6 @@
 
 ///@cond PRIVATE
 
-QgsProcessingAlgorithm::Flags QgsPromoteToMultipartAlgorithm::flags() const
-{
-  return QgsProcessingFeatureBasedAlgorithm::flags() | QgsProcessingAlgorithm::FlagCanRunInBackground;
-}
-
 QString QgsPromoteToMultipartAlgorithm::name() const
 {
   return QStringLiteral( "promotetomulti" );

@@ -329,6 +329,26 @@ from a source to destination coordinate reference system.
 .. seealso:: :py:func:`transformContext`
 %End
 
+    const QgsPathResolver &pathResolver() const;
+%Docstring
+Returns the path resolver for conversion between relative and absolute paths
+during rendering operations, e.g. for resolving relative symbol paths.
+
+.. versionadded:: 3.0
+
+.. seealso:: :py:func:`setPathResolver`
+%End
+
+    void setPathResolver( const QgsPathResolver &resolver );
+%Docstring
+Sets the path ``resolver`` for conversion between relative and absolute paths
+during rendering operations, e.g. for resolving relative symbol paths.
+
+.. versionadded:: 3.0
+
+.. seealso:: :py:func:`pathResolver`
+%End
+
     const QgsMapToPixel &mapToPixel() const;
 
     double layerToMapUnits( const QgsMapLayer *layer, const QgsRectangle &referenceExtent = QgsRectangle() ) const;
@@ -450,6 +470,8 @@ Returns global configuration of the labeling engine
 %End
 
   protected:
+
+
 
 
 

@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgsalgorithmremoveduplicatenodes.h
+                         qgsalgorithmremoveduplicatevertices.h
                          ---------------------
     begin                : November 2017
     copyright            : (C) 2017 by Nyall Dawson
@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSALGORITHMREMOVEDUPLICATENODES_H
-#define QGSALGORITHMREMOVEDUPLICATENODES_H
+#ifndef QGSALGORITHMREMOVEDUPLICATEVERTICES_H
+#define QGSALGORITHMREMOVEDUPLICATEVERTICES_H
 
 #define SIP_NO_FILE
 
@@ -28,20 +28,19 @@
 /**
  * Native remove duplicate nodes algorithm.
  */
-class QgsAlgorithmRemoveDuplicateNodes : public QgsProcessingFeatureBasedAlgorithm
+class QgsAlgorithmRemoveDuplicateVertices : public QgsProcessingFeatureBasedAlgorithm
 {
 
   public:
 
-    QgsAlgorithmRemoveDuplicateNodes() = default;
-    Flags flags() const override;
+    QgsAlgorithmRemoveDuplicateVertices() = default;
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
-    QgsAlgorithmRemoveDuplicateNodes *createInstance() const override SIP_FACTORY;
+    QgsAlgorithmRemoveDuplicateVertices *createInstance() const override SIP_FACTORY;
     void initParameters( const QVariantMap &configuration = QVariantMap() ) override;
 
   protected:
@@ -59,6 +58,6 @@ class QgsAlgorithmRemoveDuplicateNodes : public QgsProcessingFeatureBasedAlgorit
 
 ///@endcond PRIVATE
 
-#endif // QGSALGORITHMSIMPLIFY_H
+#endif // QGSALGORITHMREMOVEDUPLICATEVERTICES_H
 
 

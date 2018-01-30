@@ -370,6 +370,14 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   QShortcut *backSpace = new QShortcut( QKeySequence( QStringLiteral( "Backspace" ) ), this );
   connect( backSpace, &QShortcut::activated, mActionDeleteSelection, &QAction::trigger );
 
+#ifdef Q_OS_MAC
+  // OSX has issues with QShortcut when certain children are focused
+  ctrlEquals->setParent( mView );
+  ctrlEquals->setContext( Qt::WidgetWithChildrenShortcut );
+  backSpace->setParent( mView );
+  backSpace->setContext( Qt::WidgetWithChildrenShortcut );
+#endif
+
   mActionPreviewModeOff->setChecked( true );
   connect( mActionPreviewModeOff, &QAction::triggered, this, [ = ]
   {
@@ -1456,7 +1464,7 @@ void QgsLayoutDesignerDialog::undoRedoOccurredForItems( const QSet<QString> item
   mBlockItemOptions = false;
 
   if ( focusItem )
-    showItemOptions( focusItem );
+    showItemOptions( focusItem, false );
 }
 
 void QgsLayoutDesignerDialog::saveAsTemplate()

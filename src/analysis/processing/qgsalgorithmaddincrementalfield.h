@@ -34,7 +34,6 @@ class QgsAddIncrementalFieldAlgorithm : public QgsProcessingFeatureBasedAlgorith
   public:
 
     QgsAddIncrementalFieldAlgorithm() = default;
-    Flags flags() const override;
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;

@@ -63,7 +63,7 @@ from .Explode import Explode
 from .ExportGeometryInfo import ExportGeometryInfo
 from .ExtendLines import ExtendLines
 from .ExtentFromLayer import ExtentFromLayer
-from .ExtractSpecificNodes import ExtractSpecificNodes
+from .ExtractSpecificVertices import ExtractSpecificVertices
 from .FieldPyculator import FieldsPyculator
 from .FieldsCalculator import FieldsCalculator
 from .FieldsMapper import FieldsMapper
@@ -183,7 +183,7 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 ExportGeometryInfo(),
                 ExtendLines(),
                 ExtentFromLayer(),
-                ExtractSpecificNodes(),
+                ExtractSpecificVertices(),
                 FieldsCalculator(),
                 FieldsMapper(),
                 FieldsPyculator(),

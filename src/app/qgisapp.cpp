@@ -823,12 +823,14 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   startProfile( QStringLiteral( "Stats dock" ) );
   mStatisticalSummaryDockWidget = new QgsStatisticalSummaryDockWidget( this );
   mStatisticalSummaryDockWidget->setObjectName( QStringLiteral( "StatistalSummaryDockWidget" ) );
+  connect( mStatisticalSummaryDockWidget, &QDockWidget::visibilityChanged, mActionStatisticalSummary, &QAction::setChecked );
   endProfile();
 
   // Bookmarks dock
   startProfile( QStringLiteral( "Bookmarks widget" ) );
   mBookMarksDockWidget = new QgsBookmarks( this );
   mBookMarksDockWidget->setObjectName( QStringLiteral( "BookmarksDockWidget" ) );
+  connect( mBookMarksDockWidget, &QDockWidget::visibilityChanged, mActionShowBookmarks, &QAction::setChecked );
   endProfile();
 
   startProfile( QStringLiteral( "Snapping utils" ) );
@@ -1935,7 +1937,7 @@ void QgisApp::createActions()
   connect( mActionZoomActualSize, &QAction::triggered, this, &QgisApp::zoomActualSize );
   connect( mActionMapTips, &QAction::toggled, this, &QgisApp::toggleMapTips );
   connect( mActionNewBookmark, &QAction::triggered, this, &QgisApp::newBookmark );
-  connect( mActionShowBookmarks, &QAction::triggered, this, &QgisApp::showBookmarks );
+  connect( mActionShowBookmarks, &QAction::toggled, this, &QgisApp::showBookmarks );
   connect( mActionDraw, &QAction::triggered, this, &QgisApp::refreshMapCanvas );
   connect( mActionTextAnnotation, &QAction::triggered, this, &QgisApp::addTextAnnotation );
   connect( mActionFormAnnotation, &QAction::triggered, this, &QgisApp::addFormAnnotation );
@@ -1943,7 +1945,7 @@ void QgisApp::createActions()
   connect( mActionSvgAnnotation, &QAction::triggered, this, &QgisApp::addSvgAnnotation );
   connect( mActionAnnotation, &QAction::triggered, this, &QgisApp::modifyAnnotation );
   connect( mActionLabeling, &QAction::triggered, this, &QgisApp::labeling );
-  connect( mActionStatisticalSummary, &QAction::triggered, this, &QgisApp::showStatisticsDockWidget );
+  connect( mActionStatisticalSummary, &QAction::toggled, this, &QgisApp::showStatisticsDockWidget );
 
   // Layer Menu Items
 
@@ -10300,6 +10302,7 @@ void QgisApp::new3DMapCanvas()
     map->setBackgroundColor( mMapCanvas->canvasColor() );
     map->setLayers( mMapCanvas->layers() );
     map->setTransformContext( QgsProject::instance()->transformContext() );
+    map->setPathResolver( QgsProject::instance()->pathResolver() );
     connect( QgsProject::instance(), &QgsProject::transformContextChanged, map, [map]
     {
       map->setTransformContext( QgsProject::instance()->transformContext() );
@@ -12280,14 +12283,13 @@ void QgisApp::customProjection()
 
 void QgisApp::newBookmark()
 {
-  showBookmarks();
+  showBookmarks( true );
   mBookMarksDockWidget->addClicked();
 }
 
-void QgisApp::showBookmarks()
+void QgisApp::showBookmarks( bool show )
 {
-  mBookMarksDockWidget->show();
-  mBookMarksDockWidget->raise();
+  mBookMarksDockWidget->setUserVisible( show );
 }
 
 // Slot that gets called when the project file was saved with an older
@@ -12613,9 +12615,21 @@ void QgisApp::showLayerProperties( QgsMapLayer *ml )
 #else
     QgsRasterLayerProperties *rlp = new QgsRasterLayerProperties( ml, mMapCanvas, this );
 #endif
-
-    rlp->exec();
-    delete rlp; // delete since dialog cannot be reused without updating code
+    // Cannot use exec here due to raster transparency map tool:
+    // in order to pass focus to the canvas, the dialog needs to
+    // be hidden and shown in non-modal mode.
+    rlp->setModal( true );
+    rlp->show();
+    // Delete (later, for safety) since dialog cannot be reused without
+    // updating code
+    connect( rlp, &QgsRasterLayerProperties::accepted, [ rlp ]
+    {
+      rlp->deleteLater();
+    } );
+    connect( rlp, &QgsRasterLayerProperties::rejected, [ rlp ]
+    {
+      rlp->deleteLater();
+    } );
   }
   else if ( ml->type() == QgsMapLayer::VectorLayer ) // VECTOR
   {
@@ -13101,10 +13115,9 @@ void QgisApp::showSystemNotification( const QString &title, const QString &messa
   mTray->hide();
 }
 
-void QgisApp::showStatisticsDockWidget()
+void QgisApp::showStatisticsDockWidget( bool show )
 {
-  mStatisticalSummaryDockWidget->show();
-  mStatisticalSummaryDockWidget->raise();
+  mStatisticalSummaryDockWidget->setUserVisible( show );
 }
 
 void QgisApp::onLayerError( const QString &msg )

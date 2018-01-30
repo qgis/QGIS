@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgsalgorithmextractnodes.cpp
+                         qgsalgorithmextractvertices.cpp
                          --------------------------
     begin                : November 2017
     copyright            : (C) 2017 by Mathieu Pellerin
@@ -15,63 +15,58 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsalgorithmextractnodes.h"
+#include "qgsalgorithmextractvertices.h"
 
 #include "qgsabstractgeometry.h"
 #include "qgsgeometryutils.h"
 
 ///@cond PRIVATE
 
-QString QgsExtractNodesAlgorithm::name() const
+QString QgsExtractVerticesAlgorithm::name() const
 {
-  return QStringLiteral( "extractnodes" );
+  return QStringLiteral( "extractvertices" );
 }
 
-QString QgsExtractNodesAlgorithm::displayName() const
+QString QgsExtractVerticesAlgorithm::displayName() const
 {
-  return QObject::tr( "Extract nodes" );
+  return QObject::tr( "Extract vertices" );
 }
 
-QStringList QgsExtractNodesAlgorithm::tags() const
+QStringList QgsExtractVerticesAlgorithm::tags() const
 {
-  return QObject::tr( "points,vertex,vertices" ).split( ',' );
+  return QObject::tr( "points,vertex,nodes" ).split( ',' );
 }
 
-QString QgsExtractNodesAlgorithm::group() const
+QString QgsExtractVerticesAlgorithm::group() const
 {
   return QObject::tr( "Vector geometry" );
 }
 
-QString QgsExtractNodesAlgorithm::groupId() const
+QString QgsExtractVerticesAlgorithm::groupId() const
 {
   return QStringLiteral( "vectorgeometry" );
 }
 
-QString QgsExtractNodesAlgorithm::shortHelpString() const
+QString QgsExtractVerticesAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm takes a line or polygon layer and generates a point layer with points representing the nodes in the input lines or polygons. The attributes associated to each point are the same ones associated to the line or polygon that the point belongs to." ) +
+  return QObject::tr( "This algorithm takes a line or polygon layer and generates a point layer with points representing the vertices in the input lines or polygons. The attributes associated to each point are the same ones associated to the line or polygon that the point belongs to." ) +
          QStringLiteral( "\n\n" )  +
-         QObject::tr( "Additional fields are added to the nodes indicating the node index (beginning at 0), the node’s part and its index within the part (as well as its ring for polygons), distance along original geometry and bisector angle of node for original geometry." );
+         QObject::tr( "Additional fields are added to the point indicating the vertex index (beginning at 0), the vertex’s part and its index within the part (as well as its ring for polygons), distance along original geometry and bisector angle of vertex for original geometry." );
 }
 
-QgsExtractNodesAlgorithm *QgsExtractNodesAlgorithm::createInstance() const
+QgsExtractVerticesAlgorithm *QgsExtractVerticesAlgorithm::createInstance() const
 {
-  return new QgsExtractNodesAlgorithm();
+  return new QgsExtractVerticesAlgorithm();
 }
 
-QgsProcessingAlgorithm::Flags QgsExtractNodesAlgorithm::flags() const
-{
-  return QgsProcessingAlgorithm::flags() | QgsProcessingAlgorithm::FlagCanRunInBackground;
-}
-
-void QgsExtractNodesAlgorithm::initAlgorithm( const QVariantMap & )
+void QgsExtractVerticesAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
 
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Nodes" ) ) );
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Vertices" ) ) );
 }
 
-QVariantMap QgsExtractNodesAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
+QVariantMap QgsExtractVerticesAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   std::unique_ptr< QgsFeatureSource > featureSource( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
   if ( !featureSource )
@@ -88,13 +83,13 @@ QVariantMap QgsExtractNodesAlgorithm::processAlgorithm( const QVariantMap &param
   }
 
   QgsFields outputFields = featureSource->fields();
-  outputFields.append( QgsField( QStringLiteral( "node_index" ), QVariant::Int, QString(), 10, 0 ) );
-  outputFields.append( QgsField( QStringLiteral( "node_part" ), QVariant::Int, QString(), 10, 0 ) );
+  outputFields.append( QgsField( QStringLiteral( "vertex_index" ), QVariant::Int, QString(), 10, 0 ) );
+  outputFields.append( QgsField( QStringLiteral( "vertex_part" ), QVariant::Int, QString(), 10, 0 ) );
   if ( QgsWkbTypes::geometryType( featureSource->wkbType() ) == QgsWkbTypes::PolygonGeometry )
   {
-    outputFields.append( QgsField( QStringLiteral( "node_part_ring" ), QVariant::Int, QString(), 10, 0 ) );
+    outputFields.append( QgsField( QStringLiteral( "vertex_part_ring" ), QVariant::Int, QString(), 10, 0 ) );
   }
-  outputFields.append( QgsField( QStringLiteral( "node_part_index" ), QVariant::Int, QString(), 10, 0 ) );
+  outputFields.append( QgsField( QStringLiteral( "vertex_part_index" ), QVariant::Int, QString(), 10, 0 ) );
   outputFields.append( QgsField( QStringLiteral( "distance" ), QVariant::Double, QString(), 20, 14 ) );
   outputFields.append( QgsField( QStringLiteral( "angle" ), QVariant::Double, QString(), 20, 14 ) );
 

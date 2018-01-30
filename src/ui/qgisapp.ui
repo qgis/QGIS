@@ -1288,6 +1288,9 @@
    </property>
   </action>
   <action name="mActionShowBookmarks">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
      <normaloff>:/images/themes/default/mActionShowBookmarks.svg</normaloff>:/images/themes/default/mActionShowBookmarks.svg</iconset>
@@ -1815,6 +1818,9 @@ Ctrl (Cmd) increments by 15 deg.</string>
    </property>
   </action>
   <action name="mActionShowPythonDialog">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
      <normaloff>:/images/themes/default/console/mIconRunConsole.svg</normaloff>:/images/themes/default/console/mIconRunConsole.svg</iconset>
@@ -2508,7 +2514,7 @@ Acts on currently active editable layer</string>
   </action>
   <action name="mActionStatisticalSummary">
    <property name="checkable">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">

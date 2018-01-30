@@ -19,11 +19,6 @@
 
 ///@cond PRIVATE
 
-QgsProcessingAlgorithm::Flags QgsSimplifyAlgorithm::flags() const
-{
-  return QgsProcessingFeatureBasedAlgorithm::flags() | QgsProcessingAlgorithm::FlagCanRunInBackground;
-}
-
 QString QgsSimplifyAlgorithm::name() const
 {
   return QStringLiteral( "simplifygeometries" );

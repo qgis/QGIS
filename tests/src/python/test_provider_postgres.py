@@ -37,11 +37,13 @@ from qgis.core import (
     QgsReadWriteContext,
     QgsRectangle,
     QgsDefaultValue,
-    QgsDataSourceUri,
-    QgsProject
+    QgsProject,
+    QgsWkbTypes,
+    QgsGeometry
 )
-from qgis.gui import QgsGui
+from qgis.gui import QgsGui, QgsAttributeForm
 from qgis.PyQt.QtCore import QDate, QTime, QDateTime, QVariant, QDir, QObject
+from qgis.PyQt.QtWidgets import QLabel
 from qgis.testing import start_app, unittest
 from qgis.PyQt.QtXml import QDomDocument
 from utilities import unitTestDataPath
@@ -426,6 +428,46 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         ft1 = vl.getFeatures('pk=1')
         self.assertFalse(ft1.nextFeature(f))
 
+    def testTransactionConstrains(self):
+        # create a vector layer based on postgres
+        vl = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'id\' table="qgis_test"."check_constraints" sql=', 'test', 'postgres')
+        self.assertTrue(vl.isValid())
+
+        # prepare a project with transactions enabled
+        p = QgsProject()
+        p.setAutoTransaction(True)
+        p.addMapLayers([vl])
+
+        # get feature
+        f = QgsFeature()
+        self.assertTrue(vl.getFeatures('id=1').nextFeature(f))
+        self.assertEqual(f.attributes(), [1, 4, 3])
+
+        # start edition
+        vl.startEditing()
+
+        # update attribute form with a failing constraints
+        # coming from the database if attributes are updated
+        # one at a time.
+        # Current feature: a = 4 / b = 3
+        # Update feature: a = 1 / b = 0
+        # If updated one at a time, '(a = 1) < (b = 3)' => FAIL!
+        form = QgsAttributeForm(vl, f)
+        for w in form.findChildren(QLabel):
+            if w.buddy():
+                spinBox = w.buddy()
+                if w.text() == 'a':
+                    spinBox.setValue(1)
+                elif w.text() == 'b':
+                    spinBox.setValue(0)
+
+        # save
+        form.save()
+
+        # check new values
+        self.assertTrue(vl.getFeatures('id=1').nextFeature(f))
+        self.assertEqual(f.attributes(), [1, 1, 0])
+
     def testTransactionTuple(self):
         # create a vector layer based on postgres
         vl = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'pk\' srid=4326 type=POLYGON table="qgis_test"."some_poly_data" (geom) sql=', 'test', 'postgres')
@@ -807,7 +849,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
 
             table = ("%s" % table) if schema is None else ("\"%s\".\"%s\"" % (schema, table))
             dest_uri = "%s sslmode=disable table=%s  (geom) sql" % (self.dbconn, table)
-            err = QgsVectorLayerExporter.exportLayer(lyr, dest_uri, "postgres", lyr.crs())
+            QgsVectorLayerExporter.exportLayer(lyr, dest_uri, "postgres", lyr.crs())
             olyr = QgsVectorLayer(dest_uri, "y", "postgres")
             self.assertTrue(olyr.isValid(), "Failed URI: %s" % dest_uri)
 
@@ -1034,6 +1076,26 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         styles = myvl.listStylesInDatabase()
         ids = styles[1]
         self.assertEqual(len(ids), 0)
+
+    def testCurveToMultipolygon(self):
+        self.execSQLCommand('CREATE TABLE IF NOT EXISTS multicurve(pk SERIAL NOT NULL PRIMARY KEY, geom public.geometry(MultiPolygon, 4326))')
+        self.execSQLCommand('TRUNCATE multicurve')
+
+        vl = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'pk\' srid=4326 type=MULTIPOLYGON table="multicurve" (geom) sql=', 'test', 'postgres')
+
+        f = QgsFeature(vl.fields())
+        f.setGeometry(QgsGeometry.fromWkt('CurvePolygon(CircularString (20 30, 50 30, 50 90, 10 50, 20 30))'))
+        self.assertTrue(vl.startEditing())
+        self.assertTrue(vl.addFeatures([f]))
+        self.assertTrue(vl.commitChanges())
+
+        f = next(vl.getFeatures(QgsFeatureRequest()))
+
+        g = f.geometry().constGet()
+        self.assertTrue(g)
+        self.assertEqual(g.wkbType(), QgsWkbTypes.MultiPolygon)
+        self.assertEqual(g.childCount(), 1)
+        self.assertTrue(g.childGeometry(0).vertexCount() > 3)
 
 
 class TestPyQgsPostgresProviderCompoundKey(unittest.TestCase, ProviderTestCase):

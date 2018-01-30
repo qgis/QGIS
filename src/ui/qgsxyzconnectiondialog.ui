@@ -172,10 +172,13 @@
   </customwidget>
  </customwidgets>
  <tabstops>
+  <tabstop>mEditName</tabstop>
   <tabstop>mEditUrl</tabstop>
   <tabstop>mCheckBoxZMin</tabstop>
+  <tabstop>mSpinZMin</tabstop>
   <tabstop>mCheckBoxZMax</tabstop>
-  <tabstop>buttonBox</tabstop>
+  <tabstop>mSpinZMax</tabstop>
+  <tabstop>mEditReferer</tabstop>
  </tabstops>
  <resources/>
  <connections>

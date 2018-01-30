@@ -26,7 +26,7 @@ QString QgsStringConcatenationAlgorithm::name() const
 
 QgsProcessingAlgorithm::Flags QgsStringConcatenationAlgorithm::flags() const
 {
-  return FlagHideFromToolbox | FlagCanRunInBackground;
+  return FlagHideFromToolbox;
 }
 
 QString QgsStringConcatenationAlgorithm::displayName() const

@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgsalgorithmextractnodes.h
+                         qgsalgorithmextractvertices.h
                          -------------------------
     begin                : November 2017
     copyright            : (C) 2017 by Mathieu Pellerin
@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSALGORITHMEXTRACTNODES_H
-#define QGSALGORITHMEXTRACTNODES_H
+#ifndef QGSALGORITHMEXTRACTVERTICES_H
+#define QGSALGORITHMEXTRACTVERTICES_H
 
 #define SIP_NO_FILE
 
@@ -28,13 +28,12 @@
 /**
  * Native extract nodes algorithm.
  */
-class QgsExtractNodesAlgorithm : public QgsProcessingAlgorithm
+class QgsExtractVerticesAlgorithm : public QgsProcessingAlgorithm
 {
 
   public:
 
-    QgsExtractNodesAlgorithm() = default;
-    Flags flags() const override;
+    QgsExtractVerticesAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
     QString displayName() const override;
@@ -42,7 +41,7 @@ class QgsExtractNodesAlgorithm : public QgsProcessingAlgorithm
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
-    QgsExtractNodesAlgorithm *createInstance() const override SIP_FACTORY;
+    QgsExtractVerticesAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
 
@@ -53,6 +52,6 @@ class QgsExtractNodesAlgorithm : public QgsProcessingAlgorithm
 
 ///@endcond PRIVATE
 
-#endif // QGSALGORITHMEXTRACTNODES_H
+#endif // QGSALGORITHMEXTRACTVERTICES_H
 
 

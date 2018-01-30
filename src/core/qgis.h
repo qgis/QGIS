@@ -137,6 +137,17 @@ class CORE_EXPORT Qgis
     */
     static const double UI_SCALE_FACTOR;
 
+    /**
+     * Default snapping distance tolerance.
+     *  \since QGIS 3.0
+    */
+    static const double DEFAULT_SNAP_TOLERANCE;
+
+    /**
+     * Default snapping distance units.
+     *  \since QGIS 3.0
+    */
+    static const int DEFAULT_SNAP_UNITS;
 };
 
 // hack to workaround warnings when casting void pointers

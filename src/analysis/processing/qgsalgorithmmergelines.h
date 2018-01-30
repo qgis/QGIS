@@ -38,7 +38,6 @@ class QgsMergeLinesAlgorithm : public QgsProcessingFeatureBasedAlgorithm
   public:
 
     QgsMergeLinesAlgorithm() = default;
-    Flags flags() const override;
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;

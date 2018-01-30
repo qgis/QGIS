@@ -761,7 +761,9 @@ class MapLayerWidgetWrapper(WidgetWrapper):
             self.combo.currentTextChanged.connect(lambda: self.widgetValueHasChanged.emit(self))
             return widget
         elif self.dialogType == DIALOG_BATCH:
-            return BatchInputSelectionPanel(self.param, self.row, self.col, self.dialog)
+            widget = BatchInputSelectionPanel(self.param, self.row, self.col, self.dialog)
+            widget.valueChanged.connect(lambda: self.widgetValueHasChanged.emit(self))
+            return widget
         else:
             self.combo = QComboBox()
             layers = self.getAvailableLayers()
@@ -832,7 +834,7 @@ class MapLayerWidgetWrapper(WidgetWrapper):
             except:
                 return self.combo.currentText()
         elif self.dialogType == DIALOG_BATCH:
-            return self.widget.getText()
+            return self.widget.value()
         else:
             def validator(v):
                 if not bool(v):
@@ -1274,7 +1276,9 @@ class VectorLayerWidgetWrapper(WidgetWrapper):
             return widget
 
         elif self.dialogType == DIALOG_BATCH:
-            return BatchInputSelectionPanel(self.param, self.row, self.col, self.dialog)
+            widget = BatchInputSelectionPanel(self.param, self.row, self.col, self.dialog)
+            widget.valueChanged.connect(lambda: self.widgetValueHasChanged.emit(self))
+            return widget
         else:
             self.combo = QComboBox()
             self.combo.setEditable(True)

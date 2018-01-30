@@ -40,6 +40,7 @@ def create_model():
 
 
 class TestQgsFieldModel(unittest.TestCase):
+
     def testGettersSetters(self):
         """ test model getters/setters """
         l = create_layer()

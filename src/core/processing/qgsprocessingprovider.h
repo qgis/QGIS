@@ -150,9 +150,14 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
      * indicates that none of the outputs from any of the provider's algorithms have
      * support for non-file based outputs. Returning true indicates that the algorithm's
      * parameters will each individually declare their non-file based support.
+     *
+     * The default behavior for providers is to support non-file based outputs, and most
+     * providers which rely solely on QGIS API (and which do not depend on third-party scripts
+     * or external dependencies) will automatically support this.
+     *
      * \see supportedOutputVectorLayerExtensions()
      */
-    virtual bool supportsNonFileBasedOutput() const { return false; }
+    virtual bool supportsNonFileBasedOutput() const;
 
     /**
      * Loads the provider. This will be called when the plugin is being loaded, and any general

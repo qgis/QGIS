@@ -1267,8 +1267,8 @@ tests:
         name: expected/single_sided_buffer_multiline_bevel.gml
         type: vector
 
-  - algorithm: qgis:extractnodes
-    name: Test (qgis:extractnodes)
+  - algorithm: qgis:extractvertices
+    name: Extract vertices from multipolygons
     params:
       INPUT:
         name: multipolys.gml
@@ -1284,8 +1284,8 @@ tests:
             angle:
               precision: 7
 
-  - algorithm: qgis:extractnodes
-    name: Extract nodes from polygons
+  - algorithm: qgis:extractvertices
+    name: Extract vertices from polygons
     params:
       INPUT:
         name: polys.gml
@@ -1301,8 +1301,8 @@ tests:
             angle:
               precision: 7
 
-  - algorithm: qgis:extractnodes
-    name: Extract nodes from multilines
+  - algorithm: qgis:extractvertices
+    name: Extract vertices from multilines
     params:
       INPUT:
         name: multilines.gml
@@ -1318,8 +1318,8 @@ tests:
             angle:
               precision: 7
 
-  - algorithm: qgis:extractnodes
-    name: Extract nodes from lines
+  - algorithm: qgis:extractvertices
+    name: Extract vertices from lines
     params:
       INPUT:
         name: lines.gml
@@ -1756,13 +1756,13 @@ tests:
         name: expected/extend_multilines.gml
         type: vector
 
-  - algorithm: qgis:extractspecificnodes
-    name: Extract specific nodes lines
+  - algorithm: qgis:extractspecificvertices
+    name: Extract specific vertices lines
     params:
       INPUT:
         name: lines.gml
         type: vector
-      NODES: 0,-1,2,-2
+      VERTICES: 0,-1,2,-2
     results:
       OUTPUT:
         name: expected/extract_specific_nodes_lines.gml
@@ -1771,13 +1771,13 @@ tests:
           fields:
             fid: skip
 
-  - algorithm: qgis:extractspecificnodes
-    name: Extract specific nodes polygons
+  - algorithm: qgis:extractspecificvertices
+    name: Extract specific vertices polygons
     params:
       INPUT:
         name: polys.gml
         type: vector
-      NODES: 0,-1,5,-5
+      VERTICES: 0,-1,5,-5
     results:
       OUTPUT:
         name: expected/extract_specific_nodes_polys.gml
@@ -4686,8 +4686,8 @@ tests:
         name: expected/difference.gml
         type: vector
         
-  - algorithm: native:removeduplicatenodes
-    name: Remove duplicate nodes lines
+  - algorithm: native:removeduplicatevertices
+    name: Remove duplicate vertices from lines
     params:
       INPUT:
         name: custom/line_duplicate_nodes.gml

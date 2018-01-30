@@ -186,6 +186,10 @@ class CORE_EXPORT QgsRasterFileWriter
      * Returns the GDAL driver name for a specified file \a extension. E.g. the
      * driver name for the ".tif" extension is "GTiff".
      * If no suitable drivers are found then an empty string is returned.
+     *
+     * Note that this method works for all GDAL drivers, including those without create support
+     * (and which are not supported by QgsRasterFileWriter).
+     *
      * \since QGIS 3.0
      */
     static QString driverForExtension( const QString &extension );
@@ -195,6 +199,9 @@ class CORE_EXPORT QgsRasterFileWriter
      * E.g. returns "tif", "tiff" for the format "GTiff".
      *
      * If no matching format driver is found an empty list will be returned.
+     *
+     * Note that this method works for all GDAL drivers, including those without create support
+     * (and which are not supported by QgsRasterFileWriter).
      *
      * \since QGIS 3.0
      */

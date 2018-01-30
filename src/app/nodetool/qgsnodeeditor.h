@@ -64,9 +64,6 @@ class QgsNodeEditorModel : public QAbstractTableModel
 
     bool calcR( int row, double &r, double &minRadius ) const;
 
-  private slots:
-
-    void featureChanged();
 };
 
 class QgsNodeEditor : public QgsDockWidget

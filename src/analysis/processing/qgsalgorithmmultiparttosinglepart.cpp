@@ -44,11 +44,6 @@ QString QgsMultipartToSinglepartAlgorithm::groupId() const
   return QStringLiteral( "vectorgeometry" );
 }
 
-QgsProcessingAlgorithm::Flags QgsMultipartToSinglepartAlgorithm::flags() const
-{
-  return QgsProcessingAlgorithm::flags() | QgsProcessingAlgorithm::FlagCanRunInBackground;
-}
-
 void QgsMultipartToSinglepartAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );

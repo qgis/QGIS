@@ -287,6 +287,24 @@ class CORE_EXPORT QgsMapSettings
      */
     void setTransformContext( const QgsCoordinateTransformContext &context );
 
+    /**
+     * Returns the path resolver for conversion between relative and absolute paths
+     * during rendering operations, e.g. for resolving relative symbol paths.
+     *
+     * \since QGIS 3.0
+     * \see setPathResolver()
+     */
+    const QgsPathResolver &pathResolver() const { return mPathResolver; }
+
+    /**
+     * Sets the path \a resolver for conversion between relative and absolute paths
+     * during rendering operations, e.g. for resolving relative symbol paths.
+     *
+     * \since QGIS 3.0
+     * \see pathResolver()
+     */
+    void setPathResolver( const QgsPathResolver &resolver ) { mPathResolver = resolver; }
+
     const QgsMapToPixel &mapToPixel() const { return mMapToPixel; }
 
     /**
@@ -423,6 +441,9 @@ class CORE_EXPORT QgsMapSettings
     QgsMapToPixel mMapToPixel;
 
     QgsCoordinateTransformContext mTransformContext;
+
+    QgsPathResolver mPathResolver;
+
 #ifdef QGISDEBUG
     bool mHasTransformContext = false;
 #endif

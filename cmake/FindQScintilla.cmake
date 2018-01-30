@@ -39,6 +39,7 @@ ELSE(EXISTS QSCINTILLA_VERSION_STR)
     PATHS
       "${QT_LIBRARY_DIR}"
       /usr/local/lib
+      /usr/local/lib/qt5
       /usr/lib
   )
 

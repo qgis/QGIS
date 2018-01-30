@@ -872,9 +872,9 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   mDefaultSnapModeComboBox->addItem( tr( "Vertex and segment" ), QgsSnappingConfig::VertexAndSegment );
   mDefaultSnapModeComboBox->addItem( tr( "Segment" ), QgsSnappingConfig::Segment );
   mDefaultSnapModeComboBox->setCurrentIndex( mDefaultSnapModeComboBox->findData( mSettings->value( QStringLiteral( "/qgis/digitizing/default_snap_type" ), QgsSnappingConfig::Vertex ).toInt() ) );
-  mDefaultSnappingToleranceSpinBox->setValue( mSettings->value( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance" ), 0 ).toDouble() );
+  mDefaultSnappingToleranceSpinBox->setValue( mSettings->value( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance" ), Qgis::DEFAULT_SNAP_TOLERANCE ).toDouble() );
   mSearchRadiusVertexEditSpinBox->setValue( mSettings->value( QStringLiteral( "/qgis/digitizing/search_radius_vertex_edit" ), 10 ).toDouble() );
-  int defSnapUnits = mSettings->value( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance_unit" ), QgsTolerance::ProjectUnits ).toInt();
+  int defSnapUnits = mSettings->value( QStringLiteral( "/qgis/digitizing/default_snapping_tolerance_unit" ), Qgis::DEFAULT_SNAP_UNITS ).toInt();
   if ( defSnapUnits == QgsTolerance::ProjectUnits || defSnapUnits == QgsTolerance::LayerUnits )
   {
     index = mDefaultSnappingToleranceComboBox->findText( tr( "map units" ) );

@@ -2329,8 +2329,7 @@ int QgsLayoutItemMapGrid::crsGridParams( QgsRectangle &crsRect, QgsCoordinateTra
       crsRect = tr.transformBoundingBox( mapBoundingRect );
     }
 
-    inverseTransform.setSourceCrs( mCRS );
-    inverseTransform.setDestinationCrs( mMap->crs() );
+    inverseTransform = QgsCoordinateTransform( mCRS, mMap->crs(), mLayout->project() );
   }
   catch ( QgsCsException &cse )
   {

@@ -205,6 +205,35 @@ class CORE_EXPORT QgsVectorLayerUndoPassthroughCommandChangeAttribute: public Qg
 
 /**
  * \ingroup core
+ * \class QgsVectorLayerUndoPassthroughCommandChangeAttributes
+ * \brief Undo command for changing attributes' values from a vector layer in transaction group.
+ * \since QGIS 3.0
+ */
+
+class CORE_EXPORT QgsVectorLayerUndoPassthroughCommandChangeAttributes: public QgsVectorLayerUndoPassthroughCommand
+{
+  public:
+
+    /**
+     * Constructor for QgsVectorLayerUndoPassthroughCommandChangeAttributes
+     * \param buffer associated edit buffer
+     * \param fid feature ID of feature
+     * \param newValues New values for attributes
+     * \param oldValues Old values for attributes
+     */
+    QgsVectorLayerUndoPassthroughCommandChangeAttributes( QgsVectorLayerEditBuffer *buffer SIP_TRANSFER, QgsFeatureId fid, const QgsAttributeMap &newValues, const QgsAttributeMap &oldValues = QgsAttributeMap() );
+
+    void undo() override;
+    void redo() override;
+
+  private:
+    QgsFeatureId mFid;
+    const QgsAttributeMap mNewValues;
+    const QgsAttributeMap mOldValues;
+};
+
+/**
+ * \ingroup core
  * \class QgsVectorLayerUndoPassthroughCommandAddAttribute
  * \brief Undo command for adding attri to a vector layer in transaction group.
  * \since QGIS 3.0

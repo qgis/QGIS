@@ -693,6 +693,13 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
 
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
 
+    /**
+     * Turns relative paths in properties map to absolute when reading and vice versa when writing.
+     * Used internally when reading/writing symbols.
+     * \since QGIS 3.0
+     */
+    static void resolvePaths( QgsStringMap &properties, const QgsPathResolver &pathResolver, bool saving );
+
     // implemented from base classes
     QString layerType() const override;
     void renderPolygon( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context ) override;

@@ -27,6 +27,7 @@ __revision__ = '$Format:%H$'
 
 from qgis.core import (QgsDataSourceUri,
                        QgsFeatureSink,
+                       QgsProcessingAlgorithm,
                        QgsVectorLayerExporter,
                        QgsProcessingException,
                        QgsProcessingParameterFeatureSource,
@@ -75,6 +76,9 @@ class ImportIntoSpatialite(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterBoolean(self.LOWERCASE_NAMES, self.tr('Convert field names to lowercase'), True))
         self.addParameter(QgsProcessingParameterBoolean(self.DROP_STRING_LENGTH, self.tr('Drop length constraints on character fields'), False))
         self.addParameter(QgsProcessingParameterBoolean(self.FORCE_SINGLEPART, self.tr('Create single-part geometries instead of multi-part'), False))
+
+    def flags(self):
+        return super().flags() | QgsProcessingAlgorithm.FlagNoThreading
 
     def name(self):
         return 'importintospatialite'

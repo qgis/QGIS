@@ -463,10 +463,11 @@ void QgsLayoutItemPicture::updateMapRotation()
     {
       QgsPointXY center = mRotationMap->extent().center();
       QgsCoordinateReferenceSystem crs = mRotationMap->crs();
+      QgsCoordinateTransformContext transformContext = mLayout->project()->transformContext();
 
       try
       {
-        double bearing = QgsBearingUtils::bearingTrueNorth( crs, center );
+        double bearing = QgsBearingUtils::bearingTrueNorth( crs, transformContext, center );
         rotation += bearing;
       }
       catch ( QgsException &e )

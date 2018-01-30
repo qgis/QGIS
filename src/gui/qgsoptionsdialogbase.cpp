@@ -32,6 +32,7 @@
 #include <QStackedWidget>
 #include <QTimer>
 #include <QTreeView>
+#include <QTreeWidget>
 #include <QAbstractItemModel>
 
 #include "qgsfilterlineedit.h"
@@ -406,52 +407,123 @@ QgsSearchHighlightOptionWidget::QgsSearchHighlightOptionWidget( QWidget *widget 
     }
   }
 
+  QString styleSheet;
   if ( qobject_cast<QLabel *>( widget ) )
   {
-    mStyleSheet = QStringLiteral( "QLabel { background-color: yellow; color: blue;}" );
+    styleSheet = QStringLiteral( "QLabel { background-color: yellow; color: blue;}" );
     mTextFound = [ = ]( QString searchText ) {return qobject_cast<QLabel *>( mWidget )->text().contains( searchText, Qt::CaseInsensitive );};
   }
   else if ( qobject_cast<QCheckBox *>( widget ) )
   {
-    mStyleSheet = QStringLiteral( "QCheckBox { background-color: yellow; color: blue;}" );
+    styleSheet = QStringLiteral( "QCheckBox { background-color: yellow; color: blue;}" );
     mTextFound = [ = ]( QString searchText ) {return qobject_cast<QCheckBox *>( mWidget )->text().contains( searchText, Qt::CaseInsensitive );};
   }
   else if ( qobject_cast<QAbstractButton *>( widget ) )
   {
-    mStyleSheet = QStringLiteral( "QAbstractButton { background-color: yellow; color: blue;}" );
+    styleSheet = QStringLiteral( "QAbstractButton { background-color: yellow; color: blue;}" );
     mTextFound = [ = ]( QString searchText ) {return qobject_cast<QAbstractButton *>( mWidget )->text().contains( searchText, Qt::CaseInsensitive );};
   }
   else if ( qobject_cast<QGroupBox *>( widget ) )
   {
-    mStyleSheet = QStringLiteral( "QGroupBox::title { background-color: yellow; color: blue;}" );
+    styleSheet = QStringLiteral( "QGroupBox::title { background-color: yellow; color: blue;}" );
     mTextFound = [ = ]( QString searchText ) {return qobject_cast<QGroupBox *>( mWidget )->title().contains( searchText, Qt::CaseInsensitive );};
+  }
+  if ( !styleSheet.isEmpty() )
+  {
+    styleSheet.prepend( "/*!search!*/" ).append( "/*!search!*/" );
+
+    mHighlight = [ = ]( QString searchText )
+    {
+      Q_UNUSED( searchText );
+      mWidget->setStyleSheet( mWidget->styleSheet() + styleSheet );
+    };
+
+    mReset = [ = ]()
+    {
+      if ( mWidget )
+      {
+        QString ss = mWidget->styleSheet();
+        ss.remove( styleSheet );
+        mWidget->setStyleSheet( ss );
+      }
+    };
   }
   else if ( qobject_cast<QTreeView *>( widget ) )
   {
-    // TODO - style individual matching items
     mTextFound = [ = ]( QString searchText )
     {
-      QTreeView *tree = qobject_cast<QTreeView *>( mWidget );
-      if ( !tree )
+      QTreeView *treeView = qobject_cast<QTreeView *>( mWidget );
+      if ( !treeView )
         return false;
-      QModelIndexList hits = tree->model()->match( tree->model()->index( 0, 0 ), Qt::DisplayRole, searchText, 1, Qt::MatchContains | Qt::MatchRecursive );
+      QModelIndexList hits = treeView->model()->match( treeView->model()->index( 0, 0 ), Qt::DisplayRole, searchText, 1, Qt::MatchContains | Qt::MatchRecursive );
       return !hits.isEmpty();
     };
+
+    if ( qobject_cast<QTreeWidget *>( widget ) )
+    {
+      mHighlight = [ = ]( QString searchText )
+      {
+        QTreeWidget *treeWidget = qobject_cast<QTreeWidget *>( widget );
+        if ( treeWidget )
+        {
+          QList<QTreeWidgetItem *> items = treeWidget->findItems( searchText, Qt::MatchContains | Qt::MatchRecursive, 0 );
+          mChangedStyle = items.count() ? true : false;
+          mTreeInitialStyle.clear();
+          mTreeInitialExpand.clear();
+          for ( QTreeWidgetItem *item : items )
+          {
+            mTreeInitialStyle.insert( item, qMakePair( item->background( 0 ), item->foreground( 0 ) ) );
+            item->setBackground( 0, QBrush( QColor( Qt::yellow ) ) );
+            item->setForeground( 0, QBrush( QColor( Qt::blue ) ) );
+
+            QTreeWidgetItem *parent = item;
+            while ( ( parent = parent->parent() ) )
+            {
+              if ( mTreeInitialExpand.contains( parent ) )
+                break;
+              mTreeInitialExpand.insert( parent, parent->isExpanded() );
+              parent->setExpanded( true );
+            }
+          }
+        }
+      };
+
+      mReset = [ = ]()
+      {
+        for ( QTreeWidgetItem *item : mTreeInitialExpand.keys() )
+        {
+          if ( item )
+          {
+            item->setExpanded( mTreeInitialExpand.value( item ) );
+          }
+        }
+        for ( QTreeWidgetItem *item : mTreeInitialStyle.keys() )
+        {
+          if ( item )
+          {
+            item->setBackground( 0, mTreeInitialStyle.value( item ).first );
+            item->setForeground( 0, mTreeInitialStyle.value( item ).second );
+          }
+        }
+        mTreeInitialStyle.clear();
+        mTreeInitialExpand.clear();
+      };
+    }
   }
   else
   {
     mValid = false;
   }
+
   if ( mValid )
   {
-    mStyleSheet.prepend( "/*!search!*/" ).append( "/*!search!*/" );
-    QgsDebugMsgLevel( mStyleSheet, 4 );
     connect( mWidget, &QWidget::destroyed, this, &QgsSearchHighlightOptionWidget::widgetDestroyed );
   }
 }
 
 bool QgsSearchHighlightOptionWidget::searchHighlight( const QString &searchText )
 {
+  mSearchText = searchText;
   bool found = false;
   if ( !mWidget )
     return found;
@@ -461,8 +533,13 @@ bool QgsSearchHighlightOptionWidget::searchHighlight( const QString &searchText 
     found = mTextFound( searchText );
   }
 
-  if ( found && !mChangedStyle )
+  if ( found )
   {
+    if ( mChangedStyle )
+    {
+      mReset();
+      mChangedStyle = false;
+    }
     if ( !mWidget->isVisible() )
     {
       // show the widget to get initial stylesheet in case it's modified
@@ -474,7 +551,7 @@ bool QgsSearchHighlightOptionWidget::searchHighlight( const QString &searchText 
     }
     else
     {
-      mWidget->setStyleSheet( mWidget->styleSheet() + mStyleSheet );
+      mHighlight( searchText );
       mChangedStyle = true;
     }
   }
@@ -493,7 +570,8 @@ bool QgsSearchHighlightOptionWidget::eventFilter( QObject *obj, QEvent *event )
     // after the widget is shown
 #if 1
     mWidget->show();
-    mWidget->setStyleSheet( mWidget->styleSheet() + mStyleSheet );
+    mHighlight( mSearchText );
+    mChangedStyle = true;
     return true;
 #else
     QTimer::singleShot( 500, this, [ = ]
@@ -512,12 +590,10 @@ void QgsSearchHighlightOptionWidget::reset()
   {
     if ( mChangedStyle )
     {
-      QString ss = mWidget->styleSheet();
-      ss.remove( mStyleSheet );
-      mWidget->setStyleSheet( ss );
+      mReset();
       mChangedStyle = false;
     }
-    else if ( mInstalledFilter )
+    if ( mInstalledFilter )
     {
       mWidget->removeEventFilter( this );
       mInstalledFilter = false;

@@ -19,12 +19,6 @@
 
 ///@cond PRIVATE
 
-
-QgsProcessingAlgorithm::Flags QgsAddUniqueValueIndexAlgorithm::flags() const
-{
-  return QgsProcessingAlgorithm::flags() | QgsProcessingAlgorithm::FlagCanRunInBackground;
-}
-
 QString QgsAddUniqueValueIndexAlgorithm::name() const
 {
   return QStringLiteral( "adduniquevalueindexfield" );
@@ -61,8 +55,6 @@ void QgsAddUniqueValueIndexAlgorithm::initAlgorithm( const QVariantMap & )
   std::unique_ptr< QgsProcessingParameterFeatureSink > classedOutput = qgis::make_unique< QgsProcessingParameterFeatureSink >( QStringLiteral( "OUTPUT" ), QObject::tr( "Layer with index field" ), QgsProcessing::TypeVectorAnyGeometry, QVariant(), true );
   classedOutput->setCreateByDefault( true );
   addParameter( classedOutput.release() );
-
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Layer with index field" ), QgsProcessing::TypeVector, QVariant(), true ) );
 
   std::unique_ptr< QgsProcessingParameterFeatureSink > summaryOutput = qgis::make_unique< QgsProcessingParameterFeatureSink >( QStringLiteral( "SUMMARY_OUTPUT" ),  QObject::tr( "Class summary" ),
       QgsProcessing::TypeVector, QVariant(), true );

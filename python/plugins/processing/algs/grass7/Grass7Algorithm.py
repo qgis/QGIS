@@ -151,6 +151,10 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
     def svgIconPath(self):
         return QgsApplication.iconPath("providerGrass.svg")
 
+    def flags(self):
+        # TODO - maybe it's safe to background thread this?
+        return super().flags() | QgsProcessingAlgorithm.FlagNoThreading
+
     def tr(self, string, context=''):
         if context == '':
             context = self.__class__.__name__
