@@ -27,6 +27,7 @@ __revision__ = '$Format:%H$'
 
 import os
 import codecs
+import inspect
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt
@@ -117,40 +118,6 @@ class ScriptEditorDialog(BASE, WIDGET):
         self.needUpdate = False
         self.setHasChanged(False)
 
-        #self.snippets = {}
-        #path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "script", "snippets.py")
-        #with codecs.open(path, "r", encoding="utf-8") as f:
-        #    lines = f.readlines()
-        #snippetlines = []
-        #name = None
-        #for line in lines:
-        #    if line.startswith("##"):
-        #        if snippetlines:
-        #            self.snippets[name] = "".join(snippetlines)
-        #        name = line[2:]
-        #        snippetlines = []
-        #    else:
-        #        snippetlines.append(line)
-        #if snippetlines:
-        #    self.snippets[name] = "".join(snippetlines)
-        #if self.snippets:
-        #    self.btnSnippets.setVisible(False)
-
-        #if self.alg is not None:
-        #    pass
-        #    self.filename = self.alg.descriptionFile
-        #    self.editor.setText(self.alg.script)
-        #else:
-        #    self.filename = None
-
-    #def showSnippets(self, evt):
-    #    popupmenu = QMenu()
-    #    for name, snippet in list(self.snippets.items()):
-    #        action = QAction(self.tr(name), self.btnSnippets)
-    #        action.triggered[()].connect(lambda snippet=snippet: self.editor.insert(snippet))
-    #    popupmenu.addAction(action)
-    #    popupmenu.exec_(QCursor.pos())
-
     def closeEvent(self, event):
         if self.hasChanged:
             ret = QMessageBox.question(self,
@@ -226,36 +193,19 @@ class ScriptEditorDialog(BASE, WIDGET):
                 return
             self.needUpdate = True
             self.setHasChanged(False)
-        #else:
-        #    self.filePath = None
 
     def setHasChanged(self, hasChanged):
         self.hasChanged = hasChanged
         self.actionSaveScript.setEnabled(hasChanged)
 
     def runAlgorithm(self):
-        #~ if self.filePath is None or self.hasChanged:
-            #~ QMessageBox.warning(self,
-                                #~ self.tr("Unsaved changes"),
-                                #~ self.tr("There are unsaved changes in script. "
-                                        #~ "Please save it and try again.")
-                                #~ )
-            #~ return
-
-        #~ algName = os.path.splitext(os.path.basename(self.filePath))[0]
-        #~ alg = ScriptUtils.loadAlgorithm(algName, self.filePath)
-        #~ alg.setProvider(QgsApplication.processingRegistry().providerById("script"))
-        #~ print("ALG", alg)
-
         d = {}
-        #print(globals())
-        #print(locals())
         exec(self.editor.text(), d)
-        #print(d)
-        #print(d.keys())
-        #print(d["SpatialIndex"])
-        alg = d["SpatialIndex"]()
+
+        className = d["__all__"][0]
+        alg = d[className]()
         alg.setProvider(QgsApplication.processingRegistry().providerById("script"))
+        alg.initAlgorithm()
 
         dlg = alg.createCustomParametersWidget(self)
         if not dlg:

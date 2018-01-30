@@ -63,12 +63,9 @@ def loadAlgorithm(moduleName, filePath):
         spec = importlib.util.spec_from_file_location(moduleName, filePath)
         module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(module)
-        for x in dir(module):
-            obj = getattr(module, x)
-            if inspect.isclass(obj):
-                print(obj)
-            if inspect.isclass(obj) and issubclass(obj, QgsProcessingAlgorithm) and obj.__name__ == moduleName:
-                return obj()
+        className = module.__all__[0]
+        obj = getattr(module, className)
+        return obj()
     except ImportError as e:
         QgsMessageLog.logMessage("Could not import script algorithm '{}' from '{}'\n{}".format(moduleName, filePath, str(e)),
                                  "Processing",
