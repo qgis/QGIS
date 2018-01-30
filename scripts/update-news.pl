@@ -1,4 +1,4 @@
-#!/usr/bin/env perl
+#!/usr/bin/perl
 # updates the news file from changelog.qgis.org
 
 # Copyright (C) 2016 Jürgen E. Fischer <jef@norbit.de>
