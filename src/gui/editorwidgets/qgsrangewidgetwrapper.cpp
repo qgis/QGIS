@@ -92,7 +92,7 @@ void QgsRangeWidgetWrapper::initWidget( QWidget *editor )
     double stepval = step.isValid() ? step.toDouble() : 1.0;
     double minval = min.isValid() ? min.toDouble() : std::numeric_limits<double>::lowest();
     double maxval  = max.isValid() ? max.toDouble() : std::numeric_limits<double>::max();
-    int precisionval = precision.isValid() ? precision.toInt() : 4;
+    int precisionval = precision.isValid() ? precision.toInt() : layer()->fields().at( fieldIdx() ).precision();
 
     mDoubleSpinBox->setDecimals( precisionval );
 
