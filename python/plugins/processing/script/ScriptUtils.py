@@ -65,6 +65,8 @@ def loadAlgorithm(moduleName, filePath):
         spec.loader.exec_module(module)
         for x in dir(module):
             obj = getattr(module, x)
+            if inspect.isclass(obj):
+                print(obj)
             if inspect.isclass(obj) and issubclass(obj, QgsProcessingAlgorithm) and obj.__name__ == moduleName:
                 return obj()
     except ImportError as e:
