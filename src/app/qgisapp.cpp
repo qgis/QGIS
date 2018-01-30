@@ -3146,8 +3146,6 @@ void QgisApp::setupConnections()
   {
     Q_FOREACH ( QgsMapCanvas *canvas, mapCanvases() )
       canvas->setRenderFlag( flag );
-    if ( !flag )
-      canvasRefreshFinished(); // deals with the busy indicator in case of ongoing rendering
   } );
 
   connect( mMapCanvas, &QgsMapCanvas::destinationCrsChanged, this, &QgisApp::reprojectAnnotations );
