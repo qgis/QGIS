@@ -614,6 +614,7 @@ void QgsRasterLayer::setDataProvider( QString const &provider )
     return;
   }
   QgsDebugMsgLevel( "Data provider created", 4 );
+  mDataProvider->setParent( this );
 
   // Set data provider into pipe even if not valid so that it is deleted with pipe (with layer)
   mPipe.set( mDataProvider );
