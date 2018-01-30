@@ -135,7 +135,7 @@ void QgsSnappingConfig::reset()
   mType = type;
   mTolerance = tolerance;
   // do not allow unit to be "layer" if not in advanced configuration
-  if ( mMode != AdvancedConfiguration )
+  if ( mUnits == QgsTolerance::LayerUnits && mMode != AdvancedConfiguration )
   {
     mUnits = QgsTolerance::ProjectUnits;
   }
