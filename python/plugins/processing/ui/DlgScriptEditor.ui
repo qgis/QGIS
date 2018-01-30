@@ -16,7 +16,7 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="0">
-     <widget class="QgsCodeEditorPython" name="editor"/>
+     <widget class="ScriptEdit" name="editor"/>
     </item>
     <item row="1" column="0">
      <widget class="QWidget" name="searchWidget" native="true">
@@ -248,9 +248,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsCodeEditorPython</class>
+   <class>ScriptEdit</class>
    <extends>QTextEdit</extends>
-   <header>qgis.gui</header>
+   <header location="global">processing.script.ScriptEdit</header>
   </customwidget>
  </customwidgets>
  <resources/>

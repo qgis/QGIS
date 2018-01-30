@@ -56,6 +56,7 @@ class ScriptEditorDialog(BASE, WIDGET):
 
         QgsGui.instance().enableAutoGeometryRestore(self)
 
+        self.editor.initLexer()
         self.searchWidget.setVisible(False)
 
         self.toolBar.setIconSize(iface.iconSize())
