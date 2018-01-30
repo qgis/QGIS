@@ -34,10 +34,6 @@ from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import QgsProcessingAlgorithm, QgsMessageLog
 
 from processing.core.ProcessingConfig import ProcessingConfig
-
-from processing.script.ScriptAlgorithm import ScriptAlgorithm
-from processing.script.WrongScriptException import WrongScriptException
-
 from processing.tools.system import mkdir, userFolder
 
 

@@ -56,10 +56,6 @@ class ScriptEditorDialog(BASE, WIDGET):
 
         QgsGui.instance().enableAutoGeometryRestore(self)
 
-        #~ self.setWindowFlags(Qt.WindowMinimizeButtonHint |
-                            #~ Qt.WindowMaximizeButtonHint |
-                            #~ Qt.WindowCloseButtonHint)
-
         self.searchWidget.setVisible(False)
 
         self.toolBar.setIconSize(iface.iconSize())
@@ -70,8 +66,6 @@ class ScriptEditorDialog(BASE, WIDGET):
             QgsApplication.getThemeIcon('/mActionFileSave.svg'))
         self.actionSaveScriptAs.setIcon(
             QgsApplication.getThemeIcon('/mActionFileSaveAs.svg'))
-        self.actionEditScriptHelp.setIcon(
-            QgsApplication.getThemeIcon('/mActionEditHelpContent.svg'))
         self.actionRunScript.setIcon(
             QgsApplication.getThemeIcon('/mActionStart.svg'))
         self.actionCut.setIcon(
@@ -95,7 +89,6 @@ class ScriptEditorDialog(BASE, WIDGET):
         self.actionOpenScript.triggered.connect(self.openScript)
         self.actionSaveScript.triggered.connect(self.save)
         self.actionSaveScriptAs.triggered.connect(self.saveAs)
-        #self.actionEditScriptHelp.triggered.connect(self.editHelp)
         self.actionRunScript.triggered.connect(self.runAlgorithm)
         self.actionCut.triggered.connect(self.editor.cut)
         self.actionCopy.triggered.connect(self.editor.copy)
