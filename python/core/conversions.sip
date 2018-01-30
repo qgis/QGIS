@@ -2249,7 +2249,11 @@ bool null_from_qvariant_converter( const QVariant *varp, PyObject **objp )
   {
     sWatchDog = true;
     PyObject *vartype = sipConvertFromEnum( varp->type(), sipType_QVariant_Type );
-    *objp = PyObject_Call(( PyObject * )sipTypeAsPyTypeObject( sipType_QVariant ), PyTuple_Pack( 1, vartype ), nullptr );
+    PyObject *args = PyTuple_Pack( 1, vartype );
+    PyTypeObject *typeObj = sipTypeAsPyTypeObject( sipType_QVariant );
+    *objp = PyObject_Call(( PyObject * )typeObj, args, nullptr );
+    Py_DECREF(args);
+    Py_DECREF(vartype);
     sWatchDog = false;
     return true;
   }
