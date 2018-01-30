@@ -143,7 +143,7 @@ int CALLBACK WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
       NULL );
 
     std::string message = "Could not load qgis_app.dll \n Windows Error: " + std::string( errorText )
-            + "\n Help: \n\n Check " + basename + ".env for correct environment paths";
+                          + "\n Help: \n\n Check " + basename + ".env for correct environment paths";
     showError( message, "Error loading QGIS" );
 
     LocalFree( errorText );

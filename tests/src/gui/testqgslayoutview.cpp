@@ -272,7 +272,7 @@ void TestQgsLayoutView::guiRegistry()
   QSignalSpy spyTypeAdded( &registry, &QgsLayoutItemGuiRegistry::typeAdded );
 
   // add a dummy item to registry
-  auto createWidget = []( QgsLayoutItem * item )->QgsLayoutItemBaseWidget*
+  auto createWidget = []( QgsLayoutItem * item )->QgsLayoutItemBaseWidget *
   {
     return new QgsLayoutItemBaseWidget( nullptr, item );
   };
