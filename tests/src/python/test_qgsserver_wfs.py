@@ -36,7 +36,7 @@ import osgeo.gdal  # NOQA
 from test_qgsserver import QgsServerTestBase
 
 # Strip path and content length because path may vary
-RE_STRIP_UNCHECKABLE = b'MAP=[^"]+|Content-Length: \d+'
+RE_STRIP_UNCHECKABLE = b'MAP=[^"]+|Content-Length: \d+|timeStamp="[^"]+"'
 RE_ATTRIBUTES = b'[^>\s]+=[^>\s]+'
 
 
