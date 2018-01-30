@@ -50,6 +50,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmorderbyexpression.cpp
   processing/qgsalgorithmorientedminimumboundingbox.cpp
   processing/qgsalgorithmpackage.cpp
+  processing/qgsalgorithmprojectpointcartesian.cpp
   processing/qgsalgorithmpromotetomultipart.cpp
   processing/qgsalgorithmrasterlayeruniquevalues.cpp
   processing/qgsalgorithmremoveduplicatevertices.cpp
