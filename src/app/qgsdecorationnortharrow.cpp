@@ -125,7 +125,7 @@ void QgsDecorationNorthArrow::render( const QgsMapSettings &mapSettings, QgsRend
       {
         try
         {
-          mRotationInt = QgsBearingUtils:: bearingTrueNorth( mapSettings.destinationCrs(), context.extent().center() );
+          mRotationInt = QgsBearingUtils:: bearingTrueNorth( mapSettings.destinationCrs(), mapSettings.transformContext(), context.extent().center() );
         }
         catch ( QgsException & )
         {
