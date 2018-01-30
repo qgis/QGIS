@@ -3546,28 +3546,6 @@ tests:
         type: vector
         name: randompointsinextent.gml
 
-  - algorithm: script:selectbyattribute
-    name: Select by attribute
-    params:
-      INPUT_LAYER:
-        name: points.gml
-        type: vector
-    results:
-      OUTPUT_LAYER:
-        name: expected/selected_points.gml
-        type: vector
-
-  - algorithm: script:selectbyexpression
-    name: Select by expression
-    params:
-      INPUT_LAYER:
-        name: points.gml
-        type: vector
-    results:
-      OUTPUT_LAYER:
-        name: expected/select_by_expression.gml
-        type: vector
-
   - algorithm: qgis:randomextract
     name: Random extract by number
     params:
@@ -4685,7 +4663,7 @@ tests:
       OUTPUT:
         name: expected/difference.gml
         type: vector
-        
+
   - algorithm: native:removeduplicatevertices
     name: Remove duplicate vertices from lines
     params:
