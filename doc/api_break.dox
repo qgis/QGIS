@@ -1509,7 +1509,8 @@ QgsMapOverviewCanvas        {#qgis_api_break_3_0_QgsMapOverviewCanvas}
 
 - layerSet() and setLayerSet() have been replaced by layers() and setLayers() which work with list of layers instead of layer IDs
 - destinationSrsChanged() was renamed to destinationCrsChanged()
-- hasCrsTransformEnabled() was removed. CRS transformation is now always enabled.
+- hasCrsTransformEnabled() was removed. CRS transformation is now always enabled
+- drawExtentRect() and destinationCrsChanged() are now protected
 
 
 QgsMapRenderer        {#qgis_api_break_3_0_QgsMapRenderer}
