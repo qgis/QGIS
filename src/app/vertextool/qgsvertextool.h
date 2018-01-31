@@ -119,7 +119,7 @@ class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing
 
     /**
      * Temporarily override snapping config and snap to vertices and edges
-     of any editable vector layer, to allow selection of node for editing
+     of any editable vector layer, to allow selection of vertex for editing
      (if snapped to edge, it would offer creation of a new vertex there).
     */
     QgsPointLocator::Match snapToEditableLayer( QgsMapMouseEvent *e );
@@ -159,11 +159,11 @@ class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing
 
     void deleteVertex();
 
-    typedef QHash<QgsVectorLayer *, QHash<QgsFeatureId, QgsGeometry> > NodeEdits;
+    typedef QHash<QgsVectorLayer *, QHash<QgsFeatureId, QgsGeometry> > VertexEdits;
 
-    void addExtraVerticesToEdits( NodeEdits &edits, const QgsPointXY &mapPoint, QgsVectorLayer *dragLayer = nullptr, const QgsPointXY &layerPoint = QgsPointXY() );
+    void addExtraVerticesToEdits( VertexEdits &edits, const QgsPointXY &mapPoint, QgsVectorLayer *dragLayer = nullptr, const QgsPointXY &layerPoint = QgsPointXY() );
 
-    void applyEditsToLayers( NodeEdits &edits );
+    void applyEditsToLayers( VertexEdits &edits );
 
 
     enum HighlightMode
@@ -173,15 +173,15 @@ class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing
       ModeSubtract, //!< Remove from current selection
     };
 
-    void setHighlightedNodes( const QList<Vertex> &listNodes, HighlightMode mode = ModeReset );
+    void setHighlightedVertices( const QList<Vertex> &listVertices, HighlightMode mode = ModeReset );
 
-    void setHighlightedNodesVisible( bool visible );
+    void setHighlightedVerticesVisible( bool visible );
 
     //! Allow moving back and forth selected vertex within a feature
     void highlightAdjacentVertex( double offset );
 
     /**
-     * Initialize rectangle that is being dragged to select nodes.
+     * Initialize rectangle that is being dragged to select vertices.
      * Argument point0 is in screen coordinates.
      */
     void startSelectionRect( const QPoint &point0 );
@@ -205,8 +205,8 @@ class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing
     //! Run validation on a geometry (in a background thread)
     void validateGeometry( QgsVectorLayer *layer, QgsFeatureId featureId );
 
-    //! Makes sure that the node is visible in map canvas
-    void zoomToNode( const Vertex &node );
+    //! Makes sure that the vertex is visible in map canvas
+    void zoomToVertex( const Vertex &vertex );
 
     //! Returns a list of vertices between the two given vertex indices (including those)
     QList<Vertex> verticesInRange( QgsVectorLayer *layer, QgsFeatureId fid, int vertexId0, int vertexId1, bool longWay );
@@ -320,10 +320,10 @@ class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing
 
     // members for selection handling
 
-    //! list of Vertex instances of nodes that are selected
-    QList<Vertex> mSelectedNodes;
+    //! list of Vertex instances of vertices that are selected
+    QList<Vertex> mSelectedVertices;
     //! list of vertex markers
-    QList<QgsVertexMarker *> mSelectedNodesMarkers;
+    QList<QgsVertexMarker *> mSelectedVerticesMarkers;
 
     // members for rectangle for selection
 
@@ -393,8 +393,8 @@ class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing
     //! Enumeration of methods for selection of vertices
     enum VertexSelectionMethod
     {
-      SelectionNormal,   //!< Default selection: clicking node starts move, ctrl+click selects node, dragging rectangle select multiple nodes
-      SelectionRange,    //!< Range selection: clicking selects start node, next click select final node, vertices in the range get selected
+      SelectionNormal,   //!< Default selection: clicking vertex starts move, ctrl+click selects vertex, dragging rectangle select multiple vertices
+      SelectionRange,    //!< Range selection: clicking selects start vertex, next click select final vertex, vertices in the range get selected
     };
 
     //! Current vertex selection method

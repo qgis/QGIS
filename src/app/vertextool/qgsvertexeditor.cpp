@@ -278,7 +278,7 @@ QgsVertexEditor::QgsVertexEditor(
   QgsSelectedFeature *selectedFeature,
   QgsMapCanvas *canvas )
   : mUpdatingTableSelection( false )
-  , mUpdatingNodeSelection( false )
+  , mUpdatingVertexSelection( false )
 {
   setWindowTitle( tr( "Vertex Editor" ) );
 
@@ -287,8 +287,8 @@ QgsVertexEditor::QgsVertexEditor(
   mCanvas = canvas;
 
   mTableView = new QTableView( this );
-  mNodeModel = new QgsVertexEditorModel( mLayer, mSelectedFeature, mCanvas, this );
-  mTableView->setModel( mNodeModel );
+  mVertexModel = new QgsVertexEditorModel( mLayer, mSelectedFeature, mCanvas, this );
+  mTableView->setModel( mVertexModel );
 
   mTableView->setSelectionMode( QTableWidget::ExtendedSelection );
   mTableView->setSelectionBehavior( QTableWidget::SelectRows );
@@ -301,12 +301,12 @@ QgsVertexEditor::QgsVertexEditor(
   setWidget( mTableView );
 
   connect( mSelectedFeature, &QgsSelectedFeature::selectionChanged, this, &QgsVertexEditor::updateTableSelection );
-  connect( mTableView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsVertexEditor::updateNodeSelection );
+  connect( mTableView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsVertexEditor::updateVertexSelection );
 }
 
 void QgsVertexEditor::updateTableSelection()
 {
-  if ( mUpdatingNodeSelection )
+  if ( mUpdatingVertexSelection )
     return;
 
   mUpdatingTableSelection = true;
@@ -320,42 +320,42 @@ void QgsVertexEditor::updateTableSelection()
     {
       if ( firstSelectedRow < 0 )
         firstSelectedRow = i;
-      selection.select( mNodeModel->index( i, 0 ), mNodeModel->index( i, mNodeModel->columnCount() - 1 ) );
+      selection.select( mVertexModel->index( i, 0 ), mVertexModel->index( i, mVertexModel->columnCount() - 1 ) );
     }
   }
   mTableView->selectionModel()->select( selection, QItemSelectionModel::Select );
 
   if ( firstSelectedRow >= 0 )
-    mTableView->scrollTo( mNodeModel->index( firstSelectedRow, 0 ), QAbstractItemView::PositionAtTop );
+    mTableView->scrollTo( mVertexModel->index( firstSelectedRow, 0 ), QAbstractItemView::PositionAtTop );
 
   mUpdatingTableSelection = false;
 }
 
-void QgsVertexEditor::updateNodeSelection( const QItemSelection &selected, const QItemSelection & )
+void QgsVertexEditor::updateVertexSelection( const QItemSelection &selected, const QItemSelection & )
 {
   if ( mUpdatingTableSelection )
     return;
 
-  mUpdatingNodeSelection = true;
+  mUpdatingVertexSelection = true;
 
   mSelectedFeature->deselectAllVertices();
   Q_FOREACH ( const QModelIndex &index, mTableView->selectionModel()->selectedRows() )
   {
-    int nodeIdx = index.row();
-    mSelectedFeature->selectVertex( nodeIdx );
+    int vertexIdx = index.row();
+    mSelectedFeature->selectVertex( vertexIdx );
   }
 
-  //ensure that newly selected node is visible in canvas
+  //ensure that newly selected vertex is visible in canvas
   if ( !selected.indexes().isEmpty() )
   {
     int newRow = selected.indexes().first().row();
-    zoomToNode( newRow );
+    zoomToVertex( newRow );
   }
 
-  mUpdatingNodeSelection = false;
+  mUpdatingVertexSelection = false;
 }
 
-void QgsVertexEditor::zoomToNode( int idx )
+void QgsVertexEditor::zoomToVertex( int idx )
 {
   double x = mSelectedFeature->vertexMap().at( idx )->point().x();
   double y = mSelectedFeature->vertexMap().at( idx )->point().y();
@@ -368,8 +368,8 @@ void QgsVertexEditor::zoomToNode( int idx )
   //close polygon
   ext.append( ext.first() );
   QgsGeometry extGeom( QgsGeometry::fromQPolygonF( ext ) );
-  QgsGeometry nodeGeom( QgsGeometry::fromPointXY( tCenter ) );
-  if ( !nodeGeom.within( extGeom ) )
+  QgsGeometry vertexGeom( QgsGeometry::fromPointXY( tCenter ) );
+  if ( !vertexGeom.within( extGeom ) )
   {
     mCanvas->setCenter( tCenter );
     mCanvas->refresh();

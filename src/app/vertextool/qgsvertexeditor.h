@@ -36,8 +36,8 @@ class QgsVertexEditorModel : public QAbstractTableModel
   public:
 
     QgsVertexEditorModel( QgsVectorLayer *layer,
-                        QgsSelectedFeature *selectedFeature,
-                        QgsMapCanvas *canvas, QObject *parent = nullptr );
+                          QgsSelectedFeature *selectedFeature,
+                          QgsMapCanvas *canvas, QObject *parent = nullptr );
 
     int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
     int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
@@ -71,15 +71,15 @@ class QgsVertexEditor : public QgsDockWidget
     Q_OBJECT
   public:
     QgsVertexEditor( QgsVectorLayer *layer,
-                   QgsSelectedFeature *selectedFeature,
-                   QgsMapCanvas *canvas );
+                     QgsSelectedFeature *selectedFeature,
+                     QgsMapCanvas *canvas );
 
   public:
     QgsVectorLayer *mLayer = nullptr;
     QgsSelectedFeature *mSelectedFeature = nullptr;
     QgsMapCanvas *mCanvas = nullptr;
     QTableView *mTableView = nullptr;
-    QgsVertexEditorModel *mNodeModel = nullptr;
+    QgsVertexEditorModel *mVertexModel = nullptr;
 
   signals:
     void deleteSelectedRequested();
@@ -89,13 +89,13 @@ class QgsVertexEditor : public QgsDockWidget
 
   private slots:
     void updateTableSelection();
-    void updateNodeSelection( const QItemSelection &selected, const QItemSelection &deselected );
-    void zoomToNode( int idx );
+    void updateVertexSelection( const QItemSelection &selected, const QItemSelection &deselected );
+    void zoomToVertex( int idx );
 
   private:
 
     bool mUpdatingTableSelection;
-    bool mUpdatingNodeSelection;
+    bool mUpdatingVertexSelection;
 };
 
 
