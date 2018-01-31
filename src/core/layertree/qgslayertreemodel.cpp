@@ -242,11 +242,10 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
     if ( QgsLayerTree::isLayer( node ) )
     {
       QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
-      if ( nodeLayer->layer() && nodeLayer->layer()->type() == QgsMapLayer::VectorLayer )
-      {
-        if ( qobject_cast<QgsVectorLayer *>( nodeLayer->layer() )->geometryType() == QgsWkbTypes::NullGeometry )
-          return QVariant(); // do not show checkbox for non-spatial tables
-      }
+
+      if ( nodeLayer->layer() && !nodeLayer->layer()->isSpatial() )
+        return QVariant(); // do not show checkbox for non-spatial tables
+
       return nodeLayer->itemVisibilityChecked() ? Qt::Checked : Qt::Unchecked;
     }
     else if ( QgsLayerTree::isGroup( node ) )
@@ -270,7 +269,7 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
     if ( QgsLayerTree::isLayer( node ) )
     {
       const QgsMapLayer *layer = QgsLayerTree::toLayer( node )->layer();
-      if ( !node->isVisible() || ( layer && !layer->isInScaleRange( mLegendMapViewScale ) ) )
+      if ( ( !node->isVisible() && ( !layer || layer->isSpatial() ) ) || ( layer && !layer->isInScaleRange( mLegendMapViewScale ) ) )
       {
         brush.setColor( Qt::lightGray );
       }
