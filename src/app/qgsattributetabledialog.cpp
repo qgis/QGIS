@@ -87,6 +87,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
 {
   setObjectName( QStringLiteral( "QgsAttributeTableDialog/" ) + layer->id() );
   setupUi( this );
+  connect( mActionCutSelectedRows, &QAction::triggered, this, &QgsAttributeTableDialog::mActionCutSelectedRows_triggered );
   connect( mActionCopySelectedRows, &QAction::triggered, this, &QgsAttributeTableDialog::mActionCopySelectedRows_triggered );
   connect( mActionPasteFeatures, &QAction::triggered, this, &QgsAttributeTableDialog::mActionPasteFeatures_triggered );
   connect( mActionToggleEditing, &QAction::toggled, this, &QgsAttributeTableDialog::mActionToggleEditing_toggled );
@@ -264,15 +265,18 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttr
   mActionReload->setEnabled( ! mLayer->isEditable() );
   mActionAddAttribute->setEnabled( ( canChangeAttributes || canAddAttributes ) && mLayer->isEditable() );
   mActionRemoveAttribute->setEnabled( canDeleteAttributes && mLayer->isEditable() );
-  mActionDeleteSelected->setEnabled( canDeleteFeatures && mLayer->isEditable() );
   if ( !canDeleteFeatures )
+  {
     mToolbar->removeAction( mActionDeleteSelected );
+    mToolbar->removeAction( mActionCutSelectedRows );
+  }
   mActionAddFeature->setEnabled( canAddFeatures && mLayer->isEditable() );
+  mActionPasteFeatures->setEnabled( canAddFeatures && mLayer->isEditable() );
   if ( !canAddFeatures )
+  {
     mToolbar->removeAction( mActionAddFeature );
-
-  if ( canDeleteFeatures || canAddFeatures )
-    mToolbar->insertSeparator( mActionExpressionSelect );
+    mToolbar->removeAction( mActionPasteFeatures );
+  }
 
   mMainViewButtonGroup->setId( mTableViewButton, QgsDualView::AttributeTable );
   mMainViewButtonGroup->setId( mAttributeViewButton, QgsDualView::AttributeEditor );
@@ -382,8 +386,12 @@ void QgsAttributeTableDialog::updateTitle()
   else
     mRunFieldCalc->setText( tr( "Update Filtered" ) );
 
+  bool canDeleteFeatures = mLayer->dataProvider()->capabilities() & QgsVectorDataProvider::DeleteFeatures;
   bool enabled = mLayer->selectedFeatureCount() > 0;
   mRunFieldCalcSelected->setEnabled( enabled );
+  mActionDeleteSelected->setEnabled( canDeleteFeatures && mLayer->isEditable() && enabled );
+  mActionCutSelectedRows->setEnabled( canDeleteFeatures && mLayer->isEditable() && enabled );
+  mActionCopySelectedRows->setEnabled( enabled );
 }
 
 void QgsAttributeTableDialog::updateButtonStatus( const QString &fieldName, bool isValid )
@@ -739,6 +747,11 @@ void QgsAttributeTableDialog::mActionExpressionSelect_triggered()
   dlg->show();
 }
 
+void QgsAttributeTableDialog::mActionCutSelectedRows_triggered()
+{
+  QgisApp::instance()->cutSelectionToClipboard( mLayer );
+}
+
 void QgsAttributeTableDialog::mActionCopySelectedRows_triggered()
 {
   QgisApp::instance()->copySelectionToClipboard( mLayer );
@@ -823,8 +836,10 @@ void QgsAttributeTableDialog::editingToggled()
   bool canAddFeatures = mLayer->dataProvider()->capabilities() & QgsVectorDataProvider::AddFeatures;
   mActionAddAttribute->setEnabled( ( canChangeAttributes || canAddAttributes ) && mLayer->isEditable() );
   mActionRemoveAttribute->setEnabled( canDeleteAttributes && mLayer->isEditable() );
-  mActionDeleteSelected->setEnabled( canDeleteFeatures && mLayer->isEditable() );
+  mActionDeleteSelected->setEnabled( canDeleteFeatures && mLayer->isEditable() && mLayer->selectedFeatureCount() > 0 );
+  mActionCutSelectedRows->setEnabled( canDeleteFeatures && mLayer->isEditable() && mLayer->selectedFeatureCount() > 0 );
   mActionAddFeature->setEnabled( canAddFeatures && mLayer->isEditable() );
+  mActionPasteFeatures->setEnabled( canAddFeatures && mLayer->isEditable() );
   mActionToggleEditing->setEnabled( ( canChangeAttributes || canDeleteFeatures || canAddAttributes || canDeleteAttributes || canAddFeatures ) && !mLayer->readOnly() );
 
   mUpdateExpressionBox->setVisible( mLayer->isEditable() );
