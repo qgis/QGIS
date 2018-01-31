@@ -128,6 +128,9 @@ std::unique_ptr< QgsPrintLayout > QgsCompositionConverter::createLayoutFromCompo
   // Guides
   layout->guides().setVisible( composerElement.attribute( QStringLiteral( "guidesVisible" ), QStringLiteral( "1" ) ).toInt() != 0 );
 
+  int printResolution = composerElement.attribute( "printResolution", "300" ).toInt();
+  layout->renderContext().setDpi( printResolution );
+
   // Create pages
   int pages = composerElement.attribute( QStringLiteral( "numPages" ) ).toInt( );
   float paperHeight = composerElement.attribute( QStringLiteral( "paperHeight" ) ).toDouble( );
