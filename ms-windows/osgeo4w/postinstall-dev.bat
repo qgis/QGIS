@@ -6,6 +6,7 @@ if "%OSGEO4W_DESKTOP%"=="" set OSGEO4W_DESKTOP=~$folder.common_desktop$
 if not %OSGEO4W_MENU_LINKS%==0 mkdir "%OSGEO4W_STARTMENU%"
 if not %OSGEO4W_DESKTOP_LINKS%==0 mkdir "%OSGEO4W_DESKTOP%"
 
+SET OSGEO4W_INSTALL=YES
 for %%g in (@grassversions@) do (
 	copy "%OSGEO4W_ROOT%\bin\@package@-bin.exe" "%OSGEO4W_ROOT%\bin\@package@-bin-g%%g.exe"
 	copy "%OSGEO4W_ROOT%\bin\@package@-bin.vars" "%OSGEO4W_ROOT%\bin\@package@-bin-g%%g.vars"
