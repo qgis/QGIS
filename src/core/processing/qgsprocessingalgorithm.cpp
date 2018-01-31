@@ -247,6 +247,7 @@ bool QgsProcessingAlgorithm::addParameter( QgsProcessingParameterDefinition *def
   if ( existingDef && existingDef->name() == definition->name() ) // parameterDefinition is case-insensitive, but we DO allow case-different duplicate names
   {
     QgsMessageLog::logMessage( QObject::tr( "Duplicate parameter %1 registered for alg %2" ).arg( definition->name(), id() ), QObject::tr( "Processing" ) );
+    delete definition;
     return false;
   }
 
@@ -283,7 +284,11 @@ bool QgsProcessingAlgorithm::addOutput( QgsProcessingOutputDefinition *definitio
 
   // check for duplicate named outputs
   if ( QgsProcessingAlgorithm::outputDefinition( definition->name() ) )
+  {
+    QgsMessageLog::logMessage( QObject::tr( "Duplicate output %1 registered for alg %2" ).arg( definition->name(), id() ), QObject::tr( "Processing" ) );
+    delete definition;
     return false;
+  }
 
   mOutputs << definition;
   return true;

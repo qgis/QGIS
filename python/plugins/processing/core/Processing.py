@@ -86,8 +86,11 @@ class Processing(object):
         # Add the basic providers
         for c in QgsProcessingProvider.__subclasses__():
             p = c()
-            Processing.BASIC_PROVIDERS.append(p)
-            QgsApplication.processingRegistry().addProvider(p)
+            if p.id() in ('native', '3d'):
+                # c++ providers are already registered
+                continue
+            if QgsApplication.processingRegistry().addProvider(p):
+                Processing.BASIC_PROVIDERS.append(p)
         # And initialize
         ProcessingConfig.initialize()
         ProcessingConfig.readSettings()

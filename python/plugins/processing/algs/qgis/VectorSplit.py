@@ -67,8 +67,6 @@ class VectorSplit(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterFolderDestination(self.OUTPUT,
                                                                   self.tr('Output directory')))
 
-        self.addOutput(QgsProcessingOutputFolder(self.OUTPUT, self.tr('Output directory')))
-
     def name(self):
         return 'splitvectorlayer'
 

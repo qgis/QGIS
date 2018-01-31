@@ -36,10 +36,18 @@ bool QgsProcessingRegistry::addProvider( QgsProcessingProvider *provider )
     return false;
 
   if ( mProviders.contains( provider->id() ) )
+  {
+    QgsLogger::warning( QStringLiteral( "Duplicate provider %1 registered" ).arg( provider->id() ) );
+    delete provider;
     return false;
+  }
 
   if ( !provider->load() )
+  {
+    QgsLogger::warning( QStringLiteral( "Provider %1 cannot load" ).arg( provider->id() ) );
+    delete provider;
     return false;
+  }
 
   provider->setParent( this );
   mProviders[ provider->id()] = provider;
