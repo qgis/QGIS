@@ -42,7 +42,7 @@ int CALLBACK WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
 {
   std::string basename( moduleExeBaseName() );
 
-  if ( getenv( "OSGEO4W_ROOT" ) )
+  if ( getenv( "OSGEO4W_ROOT" ) && __argc == 2 && strcmp( __argv[1], "--postinstall" ) == 0 )
   {
     std::string envfile( basename + ".env" );
 
@@ -90,41 +90,36 @@ int CALLBACK WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
       }
     }
 
-    if ( __argc == 2 && strcmp( __argv[1], "--exit" ) == 0 )
-    {
-      return EXIT_SUCCESS;
-    }
+    return EXIT_SUCCESS;
   }
-  else
-  {
-    try
-    {
-      std::ifstream file;
-      file.open( basename + ".env" );
 
-      std::string var;
-      while ( std::getline( file, var ) )
+  try
+  {
+    std::ifstream file;
+    file.open( basename + ".env" );
+
+    std::string var;
+    while ( std::getline( file, var ) )
+    {
+      if ( _putenv( var.c_str() ) < 0 )
       {
-        if ( _putenv( var.c_str() ) < 0 )
-        {
-          std::string message = "Could not set environment variable:" + var;
-          showError( message, "Error loading QGIS" );
-          return EXIT_FAILURE;
-        }
+        std::string message = "Could not set environment variable:" + var;
+        showError( message, "Error loading QGIS" );
+        return EXIT_FAILURE;
       }
     }
-    catch ( std::ifstream::failure e )
-    {
-      std::string message = "Could not read environment file " + basename + ".env" + " [" + e.what() + "]";
-      showError( message, "Error loading QGIS" );
-      return EXIT_FAILURE;
-    }
+  }
+  catch ( std::ifstream::failure e )
+  {
+    std::string message = "Could not read environment file " + basename + ".env" + " [" + e.what() + "]";
+    showError( message, "Error loading QGIS" );
+    return EXIT_FAILURE;
   }
 
 #ifdef _MSC_VER
   HINSTANCE hGetProcIDDLL = LoadLibrary( "qgis_app.dll" );
 #else
-  // MinGW
+// MinGW
   HINSTANCE hGetProcIDDLL = LoadLibrary( "libqgis_app.dll" );
 #endif
 
