@@ -643,7 +643,6 @@ bool QgsProcessingAlgorithm::createAutoOutputForParameter( QgsProcessingParamete
   if ( !addOutput( output ) )
   {
     // couldn't add output - probably a duplicate name
-    delete output;
     return false;
   }
   else
