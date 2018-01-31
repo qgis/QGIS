@@ -142,8 +142,6 @@ class gdal2tiles(GdalAlgorithm):
         self.addParameter(QgsProcessingParameterFolderDestination(self.OUTPUT,
                                                                   self.tr('Output directory')))
 
-        self.addOutput(QgsProcessingOutputFolder(self.OUTPUT, self.tr('Output directory')))
-
     def name(self):
         return 'gdal2tiles'
 
