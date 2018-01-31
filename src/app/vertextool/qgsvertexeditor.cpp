@@ -1,5 +1,5 @@
 /***************************************************************************
-                               qgsnodeeditor.cpp
+                               qgsvertexeditor.cpp
                                -----------------
         begin                : Tue Mar 24 2015
         copyright            : (C) 2015 Sandro Mani / Sourcepole AG
@@ -16,7 +16,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsnodeeditor.h"
+#include "qgsvertexeditor.h"
 #include "qgsmapcanvas.h"
 #include "qgsselectedfeature.h"
 #include "qgsvertexentry.h"
@@ -35,7 +35,7 @@
 static const int MIN_RADIUS_ROLE = Qt::UserRole + 1;
 
 
-QgsNodeEditorModel::QgsNodeEditorModel( QgsVectorLayer *layer, QgsSelectedFeature *selectedFeature, QgsMapCanvas *canvas, QObject *parent )
+QgsVertexEditorModel::QgsVertexEditorModel( QgsVectorLayer *layer, QgsSelectedFeature *selectedFeature, QgsMapCanvas *canvas, QObject *parent )
   : QAbstractTableModel( parent )
   , mLayer( layer )
   , mSelectedFeature( selectedFeature )
@@ -70,7 +70,7 @@ QgsNodeEditorModel::QgsNodeEditorModel( QgsVectorLayer *layer, QgsSelectedFeatur
 
 }
 
-int QgsNodeEditorModel::rowCount( const QModelIndex &parent ) const
+int QgsVertexEditorModel::rowCount( const QModelIndex &parent ) const
 {
   if ( parent.isValid() )
     return 0;
@@ -78,13 +78,13 @@ int QgsNodeEditorModel::rowCount( const QModelIndex &parent ) const
   return mSelectedFeature->vertexMap().count();
 }
 
-int QgsNodeEditorModel::columnCount( const QModelIndex &parent ) const
+int QgsVertexEditorModel::columnCount( const QModelIndex &parent ) const
 {
   Q_UNUSED( parent );
   return 2 + ( mHasZ ? 1 : 0 ) + ( mHasM ? 1 : 0 ) + ( mHasR ? 1 : 0 );
 }
 
-QVariant QgsNodeEditorModel::data( const QModelIndex &index, int role ) const
+QVariant QgsVertexEditorModel::data( const QModelIndex &index, int role ) const
 {
   if ( !index.isValid() ||
        ( role != Qt::DisplayRole && role != Qt::EditRole && role != MIN_RADIUS_ROLE && role != Qt::FontRole ) )
@@ -158,7 +158,7 @@ QVariant QgsNodeEditorModel::data( const QModelIndex &index, int role ) const
 
 }
 
-QVariant QgsNodeEditorModel::headerData( int section, Qt::Orientation orientation, int role ) const
+QVariant QgsVertexEditorModel::headerData( int section, Qt::Orientation orientation, int role ) const
 {
   if ( role == Qt::DisplayRole )
   {
@@ -188,7 +188,7 @@ QVariant QgsNodeEditorModel::headerData( int section, Qt::Orientation orientatio
   }
 }
 
-bool QgsNodeEditorModel::setData( const QModelIndex &index, const QVariant &value, int role )
+bool QgsVertexEditorModel::setData( const QModelIndex &index, const QVariant &value, int role )
 {
   if ( !index.isValid() || role != Qt::EditRole )
   {
@@ -234,7 +234,7 @@ bool QgsNodeEditorModel::setData( const QModelIndex &index, const QVariant &valu
   return false;
 }
 
-Qt::ItemFlags QgsNodeEditorModel::flags( const QModelIndex &index ) const
+Qt::ItemFlags QgsVertexEditorModel::flags( const QModelIndex &index ) const
 {
   Qt::ItemFlags flags = QAbstractItemModel::flags( index );
 
@@ -248,7 +248,7 @@ Qt::ItemFlags QgsNodeEditorModel::flags( const QModelIndex &index ) const
   }
 }
 
-bool QgsNodeEditorModel::calcR( int row, double &r, double &minRadius ) const
+bool QgsVertexEditorModel::calcR( int row, double &r, double &minRadius ) const
 {
   if ( row <= 0 || row >= mSelectedFeature->vertexMap().count() - 1 )
     return false;
@@ -273,12 +273,12 @@ bool QgsNodeEditorModel::calcR( int row, double &r, double &minRadius ) const
 }
 
 
-QgsNodeEditor::QgsNodeEditor(
+QgsVertexEditor::QgsVertexEditor(
   QgsVectorLayer *layer,
   QgsSelectedFeature *selectedFeature,
   QgsMapCanvas *canvas )
   : mUpdatingTableSelection( false )
-  , mUpdatingNodeSelection( false )
+  , mUpdatingVertexSelection( false )
 {
   setWindowTitle( tr( "Vertex Editor" ) );
 
@@ -287,8 +287,8 @@ QgsNodeEditor::QgsNodeEditor(
   mCanvas = canvas;
 
   mTableView = new QTableView( this );
-  mNodeModel = new QgsNodeEditorModel( mLayer, mSelectedFeature, mCanvas, this );
-  mTableView->setModel( mNodeModel );
+  mVertexModel = new QgsVertexEditorModel( mLayer, mSelectedFeature, mCanvas, this );
+  mTableView->setModel( mVertexModel );
 
   mTableView->setSelectionMode( QTableWidget::ExtendedSelection );
   mTableView->setSelectionBehavior( QTableWidget::SelectRows );
@@ -300,13 +300,13 @@ QgsNodeEditor::QgsNodeEditor(
 
   setWidget( mTableView );
 
-  connect( mSelectedFeature, &QgsSelectedFeature::selectionChanged, this, &QgsNodeEditor::updateTableSelection );
-  connect( mTableView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsNodeEditor::updateNodeSelection );
+  connect( mSelectedFeature, &QgsSelectedFeature::selectionChanged, this, &QgsVertexEditor::updateTableSelection );
+  connect( mTableView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsVertexEditor::updateVertexSelection );
 }
 
-void QgsNodeEditor::updateTableSelection()
+void QgsVertexEditor::updateTableSelection()
 {
-  if ( mUpdatingNodeSelection )
+  if ( mUpdatingVertexSelection )
     return;
 
   mUpdatingTableSelection = true;
@@ -320,42 +320,42 @@ void QgsNodeEditor::updateTableSelection()
     {
       if ( firstSelectedRow < 0 )
         firstSelectedRow = i;
-      selection.select( mNodeModel->index( i, 0 ), mNodeModel->index( i, mNodeModel->columnCount() - 1 ) );
+      selection.select( mVertexModel->index( i, 0 ), mVertexModel->index( i, mVertexModel->columnCount() - 1 ) );
     }
   }
   mTableView->selectionModel()->select( selection, QItemSelectionModel::Select );
 
   if ( firstSelectedRow >= 0 )
-    mTableView->scrollTo( mNodeModel->index( firstSelectedRow, 0 ), QAbstractItemView::PositionAtTop );
+    mTableView->scrollTo( mVertexModel->index( firstSelectedRow, 0 ), QAbstractItemView::PositionAtTop );
 
   mUpdatingTableSelection = false;
 }
 
-void QgsNodeEditor::updateNodeSelection( const QItemSelection &selected, const QItemSelection & )
+void QgsVertexEditor::updateVertexSelection( const QItemSelection &selected, const QItemSelection & )
 {
   if ( mUpdatingTableSelection )
     return;
 
-  mUpdatingNodeSelection = true;
+  mUpdatingVertexSelection = true;
 
   mSelectedFeature->deselectAllVertices();
   Q_FOREACH ( const QModelIndex &index, mTableView->selectionModel()->selectedRows() )
   {
-    int nodeIdx = index.row();
-    mSelectedFeature->selectVertex( nodeIdx );
+    int vertexIdx = index.row();
+    mSelectedFeature->selectVertex( vertexIdx );
   }
 
-  //ensure that newly selected node is visible in canvas
+  //ensure that newly selected vertex is visible in canvas
   if ( !selected.indexes().isEmpty() )
   {
     int newRow = selected.indexes().first().row();
-    zoomToNode( newRow );
+    zoomToVertex( newRow );
   }
 
-  mUpdatingNodeSelection = false;
+  mUpdatingVertexSelection = false;
 }
 
-void QgsNodeEditor::zoomToNode( int idx )
+void QgsVertexEditor::zoomToVertex( int idx )
 {
   double x = mSelectedFeature->vertexMap().at( idx )->point().x();
   double y = mSelectedFeature->vertexMap().at( idx )->point().y();
@@ -368,15 +368,15 @@ void QgsNodeEditor::zoomToNode( int idx )
   //close polygon
   ext.append( ext.first() );
   QgsGeometry extGeom( QgsGeometry::fromQPolygonF( ext ) );
-  QgsGeometry nodeGeom( QgsGeometry::fromPointXY( tCenter ) );
-  if ( !nodeGeom.within( extGeom ) )
+  QgsGeometry vertexGeom( QgsGeometry::fromPointXY( tCenter ) );
+  if ( !vertexGeom.within( extGeom ) )
   {
     mCanvas->setCenter( tCenter );
     mCanvas->refresh();
   }
 }
 
-void QgsNodeEditor::keyPressEvent( QKeyEvent *e )
+void QgsVertexEditor::keyPressEvent( QKeyEvent *e )
 {
   if ( e->key() == Qt::Key_Backspace || e->key() == Qt::Key_Delete )
   {

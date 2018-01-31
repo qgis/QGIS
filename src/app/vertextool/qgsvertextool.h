@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsnodetool.h
+  qgsvertextool.h
   --------------------------------------
   Date                 : February 2017
   Copyright            : (C) 2017 by Martin Dobias
@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSNODETOOL_H
-#define QGSNODETOOL_H
+#ifndef QGSVERTEXTOOL_H
+#define QGSVERTEXTOOL_H
 
 #include <memory>
 
@@ -25,7 +25,7 @@
 class QRubberBand;
 
 class QgsGeometryValidator;
-class QgsNodeEditor;
+class QgsVertexEditor;
 class QgsSelectedFeature;
 class QgsSnapIndicator;
 class QgsVertexMarker;
@@ -57,14 +57,14 @@ uint qHash( const Vertex &v );
 
 
 
-class APP_EXPORT QgsNodeTool : public QgsMapToolAdvancedDigitizing
+class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing
 {
     Q_OBJECT
   public:
-    QgsNodeTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock );
+    QgsVertexTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock );
 
     //! Cleanup canvas items we have created
-    ~QgsNodeTool() override;
+    ~QgsVertexTool() override;
 
     void cadCanvasPressEvent( QgsMapMouseEvent *e ) override;
 
@@ -87,9 +87,9 @@ class APP_EXPORT QgsNodeTool : public QgsMapToolAdvancedDigitizing
 
     void onCachedGeometryDeleted( QgsFeatureId fid );
 
-    void showNodeEditor();
+    void showVertexEditor();
 
-    void deleteNodeEditorSelection();
+    void deleteVertexEditorSelection();
 
     void validationErrorFound( const QgsGeometry::Error &e );
 
@@ -119,7 +119,7 @@ class APP_EXPORT QgsNodeTool : public QgsMapToolAdvancedDigitizing
 
     /**
      * Temporarily override snapping config and snap to vertices and edges
-     of any editable vector layer, to allow selection of node for editing
+     of any editable vector layer, to allow selection of vertex for editing
      (if snapped to edge, it would offer creation of a new vertex there).
     */
     QgsPointLocator::Match snapToEditableLayer( QgsMapMouseEvent *e );
@@ -159,11 +159,11 @@ class APP_EXPORT QgsNodeTool : public QgsMapToolAdvancedDigitizing
 
     void deleteVertex();
 
-    typedef QHash<QgsVectorLayer *, QHash<QgsFeatureId, QgsGeometry> > NodeEdits;
+    typedef QHash<QgsVectorLayer *, QHash<QgsFeatureId, QgsGeometry> > VertexEdits;
 
-    void addExtraVerticesToEdits( NodeEdits &edits, const QgsPointXY &mapPoint, QgsVectorLayer *dragLayer = nullptr, const QgsPointXY &layerPoint = QgsPointXY() );
+    void addExtraVerticesToEdits( VertexEdits &edits, const QgsPointXY &mapPoint, QgsVectorLayer *dragLayer = nullptr, const QgsPointXY &layerPoint = QgsPointXY() );
 
-    void applyEditsToLayers( NodeEdits &edits );
+    void applyEditsToLayers( VertexEdits &edits );
 
 
     enum HighlightMode
@@ -173,15 +173,15 @@ class APP_EXPORT QgsNodeTool : public QgsMapToolAdvancedDigitizing
       ModeSubtract, //!< Remove from current selection
     };
 
-    void setHighlightedNodes( const QList<Vertex> &listNodes, HighlightMode mode = ModeReset );
+    void setHighlightedVertices( const QList<Vertex> &listVertices, HighlightMode mode = ModeReset );
 
-    void setHighlightedNodesVisible( bool visible );
+    void setHighlightedVerticesVisible( bool visible );
 
     //! Allow moving back and forth selected vertex within a feature
     void highlightAdjacentVertex( double offset );
 
     /**
-     * Initialize rectangle that is being dragged to select nodes.
+     * Initialize rectangle that is being dragged to select vertices.
      * Argument point0 is in screen coordinates.
      */
     void startSelectionRect( const QPoint &point0 );
@@ -200,13 +200,13 @@ class APP_EXPORT QgsNodeTool : public QgsMapToolAdvancedDigitizing
      */
     bool matchEdgeCenterTest( const QgsPointLocator::Match &m, const QgsPointXY &mapPoint, QgsPointXY *edgeCenterPtr = nullptr );
 
-    void cleanupNodeEditor();
+    void cleanupVertexEditor();
 
     //! Run validation on a geometry (in a background thread)
     void validateGeometry( QgsVectorLayer *layer, QgsFeatureId featureId );
 
-    //! Makes sure that the node is visible in map canvas
-    void zoomToNode( const Vertex &node );
+    //! Makes sure that the vertex is visible in map canvas
+    void zoomToVertex( const Vertex &vertex );
 
     //! Returns a list of vertices between the two given vertex indices (including those)
     QList<Vertex> verticesInRange( QgsVectorLayer *layer, QgsFeatureId fid, int vertexId0, int vertexId1, bool longWay );
@@ -320,10 +320,10 @@ class APP_EXPORT QgsNodeTool : public QgsMapToolAdvancedDigitizing
 
     // members for selection handling
 
-    //! list of Vertex instances of nodes that are selected
-    QList<Vertex> mSelectedNodes;
+    //! list of Vertex instances of vertices that are selected
+    QList<Vertex> mSelectedVertices;
     //! list of vertex markers
-    QList<QgsVertexMarker *> mSelectedNodesMarkers;
+    QList<QgsVertexMarker *> mSelectedVerticesMarkers;
 
     // members for rectangle for selection
 
@@ -362,27 +362,27 @@ class APP_EXPORT QgsNodeTool : public QgsMapToolAdvancedDigitizing
     //! Geometry cache for fast access to geometries
     QHash<const QgsVectorLayer *, QHash<QgsFeatureId, QgsGeometry> > mCache;
 
-    // support for node editor
+    // support for vertex editor
 
     //! most recent match when moving mouse
     QgsPointLocator::Match mLastMouseMoveMatch;
-    //! Selected feature for the node editor
+    //! Selected feature for the vertex editor
     std::unique_ptr<QgsSelectedFeature> mSelectedFeature;
     //! Dock widget which allows editing vertices
-    std::unique_ptr<QgsNodeEditor> mNodeEditor;
+    std::unique_ptr<QgsVertexEditor> mVertexEditor;
 
     // support for validation of geometries
 
     //! data structure for validation of one geometry of a vector layer
     struct GeometryValidation
     {
-      QgsNodeTool *tool = nullptr;               //!< Pointer to the parent node tool (for connections / canvas)
+      QgsVertexTool *tool = nullptr;               //!< Pointer to the parent vertex tool (for connections / canvas)
       QgsVectorLayer *layer = nullptr;            //!< Pointer to the layer of the validated geometry (for reporojection)
       QgsGeometryValidator *validator = nullptr;  //!< Object that does validation. Non-null if active
       QList<QgsVertexMarker *> errorMarkers;      //!< Markers created by validation
       QString errors;                             //!< Full error text from validation
 
-      void start( QgsGeometry &geom, QgsNodeTool *tool, QgsVectorLayer *l );  //!< Start validation
+      void start( QgsGeometry &geom, QgsVertexTool *tool, QgsVectorLayer *l );  //!< Start validation
       void addError( QgsGeometry::Error e );  //!< Add another error to the validation
       void cleanup(); //!< Delete everything
     };
@@ -393,8 +393,8 @@ class APP_EXPORT QgsNodeTool : public QgsMapToolAdvancedDigitizing
     //! Enumeration of methods for selection of vertices
     enum VertexSelectionMethod
     {
-      SelectionNormal,   //!< Default selection: clicking node starts move, ctrl+click selects node, dragging rectangle select multiple nodes
-      SelectionRange,    //!< Range selection: clicking selects start node, next click select final node, vertices in the range get selected
+      SelectionNormal,   //!< Default selection: clicking vertex starts move, ctrl+click selects vertex, dragging rectangle select multiple vertices
+      SelectionRange,    //!< Range selection: clicking selects start vertex, next click select final vertex, vertices in the range get selected
     };
 
     //! Current vertex selection method
@@ -405,4 +405,4 @@ class APP_EXPORT QgsNodeTool : public QgsMapToolAdvancedDigitizing
 };
 
 
-#endif // QGSNODETOOL_H
+#endif // QGSVERTEXTOOL_H

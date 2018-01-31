@@ -333,7 +333,7 @@
     <addaction name="mActionSplitParts"/>
     <addaction name="mActionMergeFeatures"/>
     <addaction name="mActionMergeFeatureAttributes"/>
-    <addaction name="mActionNodeTool"/>
+    <addaction name="mActionVertexTool"/>
     <addaction name="mActionRotatePointSymbols"/>
     <addaction name="mActionOffsetPointSymbol"/>
    </widget>
@@ -411,7 +411,7 @@
    <addaction name="mActionToggleEditing"/>
    <addaction name="mActionSaveLayerEdits"/>
    <addaction name="mActionAddFeature"/>
-   <addaction name="mActionNodeTool"/>
+   <addaction name="mActionVertexTool"/>
    <addaction name="mActionDeleteSelected"/>
    <addaction name="mActionCutFeatures"/>
    <addaction name="mActionCopyFeatures"/>
@@ -841,7 +841,7 @@
    </property>
    <property name="toolTip">
     <string>Move Feature(s)
-&lt;p&gt;Try the Node Tool if snapping is needed&lt;/p&gt;</string>
+&lt;p&gt;Try the Vertex Tool if snapping is needed&lt;/p&gt;</string>
    </property>
   </action>
   <action name="mActionReshapeFeatures">
@@ -967,16 +967,16 @@
     <string>Merge Attributes of Selected Features</string>
    </property>
   </action>
-  <action name="mActionNodeTool">
+  <action name="mActionVertexTool">
    <property name="checkable">
     <bool>true</bool>
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionNodeTool.svg</normaloff>:/images/themes/default/mActionNodeTool.svg</iconset>
+     <normaloff>:/images/themes/default/mActionVertexTool.svg</normaloff>:/images/themes/default/mActionVertexTool.svg</iconset>
    </property>
    <property name="text">
-    <string>Node Tool</string>
+    <string>Vertex Tool</string>
    </property>
   </action>
   <action name="mActionRotatePointSymbols">

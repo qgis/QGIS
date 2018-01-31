@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsnodetool.cpp
+  qgsvertextool.cpp
   --------------------------------------
   Date                 : February 2017
   Copyright            : (C) 2017 by Martin Dobias
@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsnodetool.h"
+#include "qgsvertextool.h"
 
 #include "qgsadvanceddigitizingdockwidget.h"
 #include "qgscurve.h"
@@ -35,7 +35,7 @@
 #include "qgsstatusbar.h"
 #include "qgisapp.h"
 #include "qgsselectedfeature.h"
-#include "qgsnodeeditor.h"
+#include "qgsvertexeditor.h"
 #include "qgsvertexentry.h"
 
 #include <QMenu>
@@ -162,10 +162,10 @@ class MatchCollectingFilter : public QgsPointLocator::MatchFilter
 {
   public:
     QList<QgsPointLocator::Match> matches;
-    QgsNodeTool *nodetool = nullptr;
+    QgsVertexTool *vertextool = nullptr;
 
-    MatchCollectingFilter( QgsNodeTool *nodetool )
-      : nodetool( nodetool ) {}
+    MatchCollectingFilter( QgsVertexTool *vertextool )
+      : vertextool( vertextool ) {}
 
     bool acceptMatch( const QgsPointLocator::Match &match ) override
     {
@@ -175,7 +175,7 @@ class MatchCollectingFilter : public QgsPointLocator::MatchFilter
 
       // there may be multiple points at the same location, but we get only one
       // result... the locator API needs a new method verticesInRect()
-      QgsGeometry matchGeom = nodetool->cachedGeometry( match.layer(), match.featureId() );
+      QgsGeometry matchGeom = vertextool->cachedGeometry( match.layer(), match.featureId() );
       QgsVertexId vid;
       QgsPoint pt;
       while ( matchGeom.constGet()->nextVertex( vid, pt ) )
@@ -197,7 +197,7 @@ class MatchCollectingFilter : public QgsPointLocator::MatchFilter
 //
 
 
-QgsNodeTool::QgsNodeTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock )
+QgsVertexTool::QgsVertexTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDock )
   : QgsMapToolAdvancedDigitizing( canvas, cadDock )
 {
   setAdvancedDigitizingAllowed( false );
@@ -240,7 +240,7 @@ QgsNodeTool::QgsNodeTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget 
   mEndpointMarker->setVisible( false );
 }
 
-QgsNodeTool::~QgsNodeTool()
+QgsVertexTool::~QgsVertexTool()
 {
   delete mEdgeCenterMarker;
   delete mFeatureBand;
@@ -250,11 +250,11 @@ QgsNodeTool::~QgsNodeTool()
   delete mEndpointMarker;
 }
 
-void QgsNodeTool::deactivate()
+void QgsVertexTool::deactivate()
 {
-  setHighlightedNodes( QList<Vertex>() );
+  setHighlightedVertices( QList<Vertex>() );
   removeTemporaryRubberBands();
-  cleanupNodeEditor();
+  cleanupVertexEditor();
 
   mSnapIndicator->setMatch( QgsPointLocator::Match() );
 
@@ -266,12 +266,12 @@ void QgsNodeTool::deactivate()
   QgsMapToolAdvancedDigitizing::deactivate();
 }
 
-void QgsNodeTool::addDragBand( const QgsPointXY &v1, const QgsPointXY &v2 )
+void QgsVertexTool::addDragBand( const QgsPointXY &v1, const QgsPointXY &v2 )
 {
   addDragStraightBand( nullptr, v1, v2, false, true, v2 );
 }
 
-void QgsNodeTool::addDragStraightBand( QgsVectorLayer *layer, QgsPointXY v0, QgsPointXY v1, bool moving0, bool moving1, const QgsPointXY &mapPoint )
+void QgsVertexTool::addDragStraightBand( QgsVectorLayer *layer, QgsPointXY v0, QgsPointXY v1, bool moving0, bool moving1, const QgsPointXY &mapPoint )
 {
   // if layer is not null, the input coordinates are coming in the layer's CRS rather than map CRS
   if ( layer )
@@ -295,7 +295,7 @@ void QgsNodeTool::addDragStraightBand( QgsVectorLayer *layer, QgsPointXY v0, Qgs
   mDragStraightBands << b;
 }
 
-void QgsNodeTool::addDragCircularBand( QgsVectorLayer *layer, QgsPointXY v0, QgsPointXY v1, QgsPointXY v2, bool moving0, bool moving1, bool moving2, const QgsPointXY &mapPoint )
+void QgsVertexTool::addDragCircularBand( QgsVectorLayer *layer, QgsPointXY v0, QgsPointXY v1, QgsPointXY v2, bool moving0, bool moving1, bool moving2, const QgsPointXY &mapPoint )
 {
   // if layer is not null, the input coordinates are coming in the layer's CRS rather than map CRS
   if ( layer )
@@ -321,7 +321,7 @@ void QgsNodeTool::addDragCircularBand( QgsVectorLayer *layer, QgsPointXY v0, Qgs
   mDragCircularBands << b;
 }
 
-void QgsNodeTool::clearDragBands()
+void QgsVertexTool::clearDragBands()
 {
   qDeleteAll( mDragPointMarkers );
   mDragPointMarkers.clear();
@@ -336,7 +336,7 @@ void QgsNodeTool::clearDragBands()
   mDragCircularBands.clear();
 }
 
-void QgsNodeTool::cadCanvasPressEvent( QgsMapMouseEvent *e )
+void QgsVertexTool::cadCanvasPressEvent( QgsMapMouseEvent *e )
 {
   if ( mSelectionMethod == SelectionRange )
   {
@@ -344,52 +344,52 @@ void QgsNodeTool::cadCanvasPressEvent( QgsMapMouseEvent *e )
     return;
   }
 
-  cleanupNodeEditor();
+  cleanupVertexEditor();
 
-  if ( !mDraggingVertex && !mSelectedNodes.isEmpty() && !( e->modifiers() & Qt::ShiftModifier ) && !( e->modifiers() & Qt::ControlModifier ) )
+  if ( !mDraggingVertex && !mSelectedVertices.isEmpty() && !( e->modifiers() & Qt::ShiftModifier ) && !( e->modifiers() & Qt::ControlModifier ) )
   {
-    // only remove highlight if not clicked on one of highlighted nodes
-    bool clickedOnHighlightedNode = false;
+    // only remove highlight if not clicked on one of highlighted vertices
+    bool clickedOnHighlightedVertex = false;
     QgsPointLocator::Match m = snapToEditableLayer( e );
     if ( m.hasVertex() )
     {
-      for ( const Vertex &selectedNode : qgis::as_const( mSelectedNodes ) )
+      for ( const Vertex &selectedVertex : qgis::as_const( mSelectedVertices ) )
       {
-        if ( selectedNode.layer == m.layer() && selectedNode.fid == m.featureId() && selectedNode.vertexId == m.vertexIndex() )
+        if ( selectedVertex.layer == m.layer() && selectedVertex.fid == m.featureId() && selectedVertex.vertexId == m.vertexIndex() )
         {
-          clickedOnHighlightedNode = true;
+          clickedOnHighlightedVertex = true;
           break;
         }
       }
     }
 
-    if ( !clickedOnHighlightedNode )
-      setHighlightedNodes( QList<Vertex>() ); // reset selection
+    if ( !clickedOnHighlightedVertex )
+      setHighlightedVertices( QList<Vertex>() ); // reset selection
   }
 
   if ( e->button() == Qt::LeftButton )
   {
     if ( e->modifiers() & Qt::ControlModifier || e->modifiers() & Qt::ShiftModifier )
     {
-      // shift or ctrl-click nodes to highlight without entering edit mode
+      // shift or ctrl-click vertices to highlight without entering edit mode
       QgsPointLocator::Match m = snapToEditableLayer( e );
       if ( m.hasVertex() )
       {
-        Vertex node( m.layer(), m.featureId(), m.vertexIndex() );
+        Vertex vertex( m.layer(), m.featureId(), m.vertexIndex() );
 
         HighlightMode mode = ModeReset;
         if ( e->modifiers() & Qt::ShiftModifier )
         {
-          // Shift+Click to add node to highlight
+          // Shift+Click to add vertex to highlight
           mode = ModeAdd;
         }
         else if ( e->modifiers() & Qt::ControlModifier )
         {
-          // Ctrl+Click to remove node
+          // Ctrl+Click to remove vertex
           mode = ModeSubtract;
         }
 
-        setHighlightedNodes( QList<Vertex>() << node, mode );
+        setHighlightedVertices( QList<Vertex>() << vertex, mode );
         return;
       }
     }
@@ -407,15 +407,15 @@ void QgsNodeTool::cadCanvasPressEvent( QgsMapMouseEvent *e )
       if ( mLastMouseMoveMatch.isValid() && mLastMouseMoveMatch.layer() )
       {
         QMenu menu;
-        QAction *actionNodeEditor = menu.addAction( tr( "Node editor" ) );
-        connect( actionNodeEditor, &QAction::triggered, this, &QgsNodeTool::showNodeEditor );
+        QAction *actionVertexEditor = menu.addAction( tr( "Vertex editor" ) );
+        connect( actionVertexEditor, &QAction::triggered, this, &QgsVertexTool::showVertexEditor );
         menu.exec( mCanvas->mapToGlobal( e->pos() ) );
       }
     }
   }
 }
 
-void QgsNodeTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
+void QgsVertexTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
   if ( mSelectionMethod == SelectionRange )
   {
@@ -439,9 +439,9 @@ void QgsNodeTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     QgsPointXY pt0 = toMapCoordinates( *mSelectionRectStartPos );
     QgsPointXY pt1 = toMapCoordinates( e->pos() );
     QgsRectangle map_rect( pt0, pt1 );
-    QList<Vertex> nodes;
+    QList<Vertex> vertices;
 
-    // for each editable layer, select nodes
+    // for each editable layer, select vertices
     const auto layers = canvas()->layers();
     for ( QgsMapLayer *layer : layers )
     {
@@ -459,7 +459,7 @@ void QgsNodeTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
         {
           QgsPointXY pt = g.vertexAt( i );
           if ( layerRect.contains( pt ) )
-            nodes << Vertex( vlayer, f.id(), i );
+            vertices << Vertex( vlayer, f.id(), i );
         }
       }
     }
@@ -470,7 +470,7 @@ void QgsNodeTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
     else if ( e->modifiers() & Qt::ControlModifier )
       mode = ModeSubtract;
 
-    setHighlightedNodes( nodes, mode );
+    setHighlightedVertices( vertices, mode );
 
     stopSelectionRect();
   }
@@ -504,7 +504,7 @@ void QgsNodeTool::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
   mSelectionRectStartPos.reset();
 }
 
-void QgsNodeTool::cadCanvasMoveEvent( QgsMapMouseEvent *e )
+void QgsVertexTool::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 {
   if ( mSelectionMethod == SelectionRange )
   {
@@ -538,7 +538,7 @@ void QgsNodeTool::cadCanvasMoveEvent( QgsMapMouseEvent *e )
   }
 }
 
-void QgsNodeTool::mouseMoveDraggingVertex( QgsMapMouseEvent *e )
+void QgsVertexTool::mouseMoveDraggingVertex( QgsMapMouseEvent *e )
 {
   mSnapIndicator->setMatch( e->mapPointMatch() );
   mEdgeCenterMarker->setVisible( false );
@@ -546,7 +546,7 @@ void QgsNodeTool::mouseMoveDraggingVertex( QgsMapMouseEvent *e )
   moveDragBands( e->mapPoint() );
 }
 
-void QgsNodeTool::moveDragBands( const QgsPointXY &mapPoint )
+void QgsVertexTool::moveDragBands( const QgsPointXY &mapPoint )
 {
   for ( int i = 0; i < mDragStraightBands.count(); ++i )
   {
@@ -575,7 +575,7 @@ void QgsNodeTool::moveDragBands( const QgsPointXY &mapPoint )
   removeTemporaryRubberBands();
 }
 
-void QgsNodeTool::mouseMoveDraggingEdge( QgsMapMouseEvent *e )
+void QgsVertexTool::mouseMoveDraggingEdge( QgsMapMouseEvent *e )
 {
   mSnapIndicator->setMatch( QgsPointLocator::Match() );
   mEdgeCenterMarker->setVisible( false );
@@ -585,7 +585,7 @@ void QgsNodeTool::mouseMoveDraggingEdge( QgsMapMouseEvent *e )
   moveDragBands( mapPoint );
 }
 
-void QgsNodeTool::canvasDoubleClickEvent( QgsMapMouseEvent *e )
+void QgsVertexTool::canvasDoubleClickEvent( QgsMapMouseEvent *e )
 {
   QgsPointLocator::Match m = snapToEditableLayer( e );
   if ( !m.hasEdge() )
@@ -594,7 +594,7 @@ void QgsNodeTool::canvasDoubleClickEvent( QgsMapMouseEvent *e )
   mNewVertexFromDoubleClick.reset( new QgsPointLocator::Match( m ) );
 }
 
-void QgsNodeTool::removeTemporaryRubberBands()
+void QgsVertexTool::removeTemporaryRubberBands()
 {
   mFeatureBand->setVisible( false );
   mFeatureBandMarkers->setVisible( false );
@@ -606,7 +606,7 @@ void QgsNodeTool::removeTemporaryRubberBands()
   mEndpointMarker->setVisible( false );
 }
 
-QgsPointLocator::Match QgsNodeTool::snapToEditableLayer( QgsMapMouseEvent *e )
+QgsPointLocator::Match QgsVertexTool::snapToEditableLayer( QgsMapMouseEvent *e )
 {
   QgsSnappingUtils *snapUtils = canvas()->snappingUtils();
   QgsSnappingConfig oldConfig = snapUtils->config();
@@ -662,7 +662,7 @@ QgsPointLocator::Match QgsNodeTool::snapToEditableLayer( QgsMapMouseEvent *e )
   }
 
   // try to stay snapped to previously used feature
-  // so the highlight does not jump around at nodes where features are joined
+  // so the highlight does not jump around at vertices where features are joined
   if ( mLastSnap )
   {
     OneFeatureFilter filterLast( mLastSnap->layer(), mLastSnap->featureId() );
@@ -683,7 +683,7 @@ QgsPointLocator::Match QgsNodeTool::snapToEditableLayer( QgsMapMouseEvent *e )
   return m;
 }
 
-bool QgsNodeTool::isNearEndpointMarker( const QgsPointXY &mapPoint )
+bool QgsVertexTool::isNearEndpointMarker( const QgsPointXY &mapPoint )
 {
   if ( !mEndpointMarkerCenter )
     return false;
@@ -699,7 +699,7 @@ bool QgsNodeTool::isNearEndpointMarker( const QgsPointXY &mapPoint )
   return distMarker < tol && distMarker < distVertex;
 }
 
-bool QgsNodeTool::isMatchAtEndpoint( const QgsPointLocator::Match &match )
+bool QgsVertexTool::isMatchAtEndpoint( const QgsPointLocator::Match &match )
 {
   QgsGeometry geom = cachedGeometry( match.layer(), match.featureId() );
 
@@ -709,7 +709,7 @@ bool QgsNodeTool::isMatchAtEndpoint( const QgsPointLocator::Match &match )
   return isEndpointAtVertexIndex( geom, match.vertexIndex() );
 }
 
-QgsPointXY QgsNodeTool::positionForEndpointMarker( const QgsPointLocator::Match &match )
+QgsPointXY QgsVertexTool::positionForEndpointMarker( const QgsPointLocator::Match &match )
 {
   QgsGeometry geom = cachedGeometry( match.layer(), match.featureId() );
 
@@ -728,7 +728,7 @@ QgsPointXY QgsNodeTool::positionForEndpointMarker( const QgsPointLocator::Match 
   return QgsPointXY( x, y );
 }
 
-void QgsNodeTool::mouseMoveNotDragging( QgsMapMouseEvent *e )
+void QgsVertexTool::mouseMoveNotDragging( QgsMapMouseEvent *e )
 {
   if ( mMouseAtEndpoint )
   {
@@ -750,7 +750,7 @@ void QgsNodeTool::mouseMoveNotDragging( QgsMapMouseEvent *e )
 
   mLastMouseMoveMatch = m;
 
-  // possibility to move a node
+  // possibility to move a vertex
   if ( m.type() == QgsPointLocator::Vertex )
   {
     updateVertexBand( m );
@@ -781,7 +781,7 @@ void QgsNodeTool::mouseMoveNotDragging( QgsMapMouseEvent *e )
     mEndpointMarker->setVisible( false );
   }
 
-  // possibility to create new node here - or to move the edge
+  // possibility to create new vertex here - or to move the edge
   if ( m.type() == QgsPointLocator::Edge )
   {
     QgsPointXY mapPoint = toMapCoordinates( e->pos() );
@@ -839,7 +839,7 @@ void QgsNodeTool::mouseMoveNotDragging( QgsMapMouseEvent *e )
   updateFeatureBand( m );
 }
 
-void QgsNodeTool::updateVertexBand( const QgsPointLocator::Match &m )
+void QgsVertexTool::updateVertexBand( const QgsPointLocator::Match &m )
 {
   if ( m.hasVertex() && m.layer() )
   {
@@ -859,7 +859,7 @@ void QgsNodeTool::updateVertexBand( const QgsPointLocator::Match &m )
   }
 }
 
-void QgsNodeTool::updateFeatureBand( const QgsPointLocator::Match &m )
+void QgsVertexTool::updateFeatureBand( const QgsPointLocator::Match &m )
 {
   // highlight feature
   if ( m.isValid() && m.layer() )
@@ -885,7 +885,7 @@ void QgsNodeTool::updateFeatureBand( const QgsPointLocator::Match &m )
   }
 }
 
-void QgsNodeTool::keyPressEvent( QKeyEvent *e )
+void QgsVertexTool::keyPressEvent( QKeyEvent *e )
 {
   if ( !mDraggingVertex && !mDraggingEdge && e->key() == Qt::Key_R && e->modifiers() & Qt::ShiftModifier )
   {
@@ -898,7 +898,7 @@ void QgsNodeTool::keyPressEvent( QKeyEvent *e )
     return;
   }
 
-  if ( !mDraggingVertex && mSelectedNodes.count() == 0 )
+  if ( !mDraggingVertex && mSelectedVertices.count() == 0 )
     return;
 
   if ( e->key() == Qt::Key_Delete || e->key() == Qt::Key_Backspace )
@@ -921,12 +921,12 @@ void QgsNodeTool::keyPressEvent( QKeyEvent *e )
   }
 }
 
-QgsGeometry QgsNodeTool::cachedGeometry( const QgsVectorLayer *layer, QgsFeatureId fid )
+QgsGeometry QgsVertexTool::cachedGeometry( const QgsVectorLayer *layer, QgsFeatureId fid )
 {
   if ( !mCache.contains( layer ) )
   {
-    connect( layer, &QgsVectorLayer::geometryChanged, this, &QgsNodeTool::onCachedGeometryChanged );
-    connect( layer, &QgsVectorLayer::featureDeleted, this, &QgsNodeTool::onCachedGeometryDeleted );
+    connect( layer, &QgsVectorLayer::geometryChanged, this, &QgsVertexTool::onCachedGeometryChanged );
+    connect( layer, &QgsVectorLayer::featureDeleted, this, &QgsVertexTool::onCachedGeometryDeleted );
     // TODO: also clear cache when layer is deleted
   }
 
@@ -941,12 +941,12 @@ QgsGeometry QgsNodeTool::cachedGeometry( const QgsVectorLayer *layer, QgsFeature
   return layerCache[fid];
 }
 
-QgsGeometry QgsNodeTool::cachedGeometryForVertex( const Vertex &vertex )
+QgsGeometry QgsVertexTool::cachedGeometryForVertex( const Vertex &vertex )
 {
   return cachedGeometry( vertex.layer, vertex.fid );
 }
 
-void QgsNodeTool::onCachedGeometryChanged( QgsFeatureId fid, const QgsGeometry &geom )
+void QgsVertexTool::onCachedGeometryChanged( QgsFeatureId fid, const QgsGeometry &geom )
 {
   QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( sender() );
   Q_ASSERT( mCache.contains( layer ) );
@@ -954,14 +954,14 @@ void QgsNodeTool::onCachedGeometryChanged( QgsFeatureId fid, const QgsGeometry &
   if ( layerCache.contains( fid ) )
     layerCache[fid] = geom;
 
-  // refresh highlighted nodes - their position may have changed
-  setHighlightedNodes( mSelectedNodes );
+  // refresh highlighted vertices - their position may have changed
+  setHighlightedVertices( mSelectedVertices );
 
   // re-run validation for the feature
   validateGeometry( layer, fid );
 }
 
-void QgsNodeTool::onCachedGeometryDeleted( QgsFeatureId fid )
+void QgsVertexTool::onCachedGeometryDeleted( QgsFeatureId fid )
 {
   QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( sender() );
   Q_ASSERT( mCache.contains( layer ) );
@@ -969,28 +969,28 @@ void QgsNodeTool::onCachedGeometryDeleted( QgsFeatureId fid )
   if ( layerCache.contains( fid ) )
     layerCache.remove( fid );
 
-  // refresh highlighted nodes - some may have been deleted
-  setHighlightedNodes( mSelectedNodes );
+  // refresh highlighted vertices - some may have been deleted
+  setHighlightedVertices( mSelectedVertices );
 }
 
 
-void QgsNodeTool::showNodeEditor()
+void QgsVertexTool::showVertexEditor()
 {
   QgsPointLocator::Match m = mLastMouseMoveMatch;
   if ( !m.isValid() || !m.layer() )
     return;
 
   mSelectedFeature.reset( new QgsSelectedFeature( m.featureId(), m.layer(), mCanvas ) );
-  mNodeEditor.reset( new QgsNodeEditor( m.layer(), mSelectedFeature.get(), mCanvas ) );
-  QgisApp::instance()->addDockWidget( Qt::LeftDockWidgetArea, mNodeEditor.get() );
-  connect( mNodeEditor.get(), &QgsNodeEditor::deleteSelectedRequested, this, &QgsNodeTool::deleteNodeEditorSelection );
-  connect( mSelectedFeature.get()->vlayer(), &QgsVectorLayer::featureDeleted, this, [ = ]( QgsFeatureId id ) { if ( mSelectedFeature.get()->featureId() == id ) cleanupNodeEditor(); } );
+  mVertexEditor.reset( new QgsVertexEditor( m.layer(), mSelectedFeature.get(), mCanvas ) );
+  QgisApp::instance()->addDockWidget( Qt::LeftDockWidgetArea, mVertexEditor.get() );
+  connect( mVertexEditor.get(), &QgsVertexEditor::deleteSelectedRequested, this, &QgsVertexTool::deleteVertexEditorSelection );
+  connect( mSelectedFeature.get()->vlayer(), &QgsVectorLayer::featureDeleted, this, [ = ]( QgsFeatureId id ) { if ( mSelectedFeature.get()->featureId() == id ) cleanupVertexEditor(); } );
 }
 
-void QgsNodeTool::cleanupNodeEditor()
+void QgsVertexTool::cleanupVertexEditor()
 {
   mSelectedFeature.reset();
-  mNodeEditor.reset();
+  mVertexEditor.reset();
 }
 
 static int _firstSelectedVertex( QgsSelectedFeature &selectedFeature )
@@ -1012,7 +1012,7 @@ static void _safeSelectVertex( QgsSelectedFeature &selectedFeature, int vertexNr
   selectedFeature.selectVertex( ( vertexNr + n ) % n );
 }
 
-void QgsNodeTool::deleteNodeEditorSelection()
+void QgsVertexTool::deleteVertexEditorSelection()
 {
   if ( !mSelectedFeature )
     return;
@@ -1022,7 +1022,7 @@ void QgsNodeTool::deleteNodeEditorSelection()
     return;
 
   // make a list of selected vertices
-  QList<Vertex> nodes;
+  QList<Vertex> vertices;
   QList<QgsVertexEntry *> &selFeatureVertices = mSelectedFeature->vertexMap();
   QgsVectorLayer *layer = mSelectedFeature->vlayer();
   QgsFeatureId fid = mSelectedFeature->featureId();
@@ -1033,12 +1033,12 @@ void QgsNodeTool::deleteNodeEditorSelection()
     {
       int vertexIndex = geometry.vertexNrFromVertexId( vertex->vertexId() );
       if ( vertexIndex != -1 )
-        nodes.append( Vertex( layer, fid, vertexIndex ) );
+        vertices.append( Vertex( layer, fid, vertexIndex ) );
     }
   }
 
   // now select the vertices and delete them...
-  setHighlightedNodes( nodes );
+  setHighlightedVertices( vertices );
   deleteVertex();
 
   if ( !mSelectedFeature->geometry()->isNull() )
@@ -1046,7 +1046,7 @@ void QgsNodeTool::deleteNodeEditorSelection()
     int nextVertexToSelect = firstSelectedIndex;
     if ( mSelectedFeature->geometry()->type() == QgsWkbTypes::LineGeometry )
     {
-      // for lines we don't wrap around vertex selection when deleting nodes from end of line
+      // for lines we don't wrap around vertex selection when deleting vertices from end of line
       nextVertexToSelect = std::min( nextVertexToSelect, mSelectedFeature->geometry()->constGet()->nCoordinates() - 1 );
     }
 
@@ -1056,7 +1056,7 @@ void QgsNodeTool::deleteNodeEditorSelection()
 }
 
 
-void QgsNodeTool::startDragging( QgsMapMouseEvent *e )
+void QgsVertexTool::startDragging( QgsMapMouseEvent *e )
 {
   QgsPointXY mapPoint = toMapCoordinates( e->pos() );
   if ( isNearEndpointMarker( mapPoint ) )
@@ -1089,7 +1089,7 @@ void QgsNodeTool::startDragging( QgsMapMouseEvent *e )
   }
 }
 
-void QgsNodeTool::startDraggingMoveVertex( const QgsPointLocator::Match &m )
+void QgsVertexTool::startDraggingMoveVertex( const QgsPointLocator::Match &m )
 {
   Q_ASSERT( m.hasVertex() );
 
@@ -1101,12 +1101,12 @@ void QgsNodeTool::startDraggingMoveVertex( const QgsPointLocator::Match &m )
   mDraggingExtraVertices.clear();
   mDraggingExtraVerticesOffset.clear();
 
-  setHighlightedNodesVisible( false );  // hide any extra highlight of vertices until we are done with moving
+  setHighlightedVerticesVisible( false );  // hide any extra highlight of vertices until we are done with moving
 
   QgsPointXY origDraggingVertexPoint = geom.vertexAt( mDraggingVertex->vertexId );
 
-  // if there are other highlighted nodes, they should be dragged as well with their offset
-  for ( const Vertex &v : qgis::as_const( mSelectedNodes ) )
+  // if there are other highlighted vertices, they should be dragged as well with their offset
+  for ( const Vertex &v : qgis::as_const( mSelectedVertices ) )
   {
     if ( v != *mDraggingVertex )
     {
@@ -1161,7 +1161,7 @@ void QgsNodeTool::startDraggingMoveVertex( const QgsPointLocator::Match &m )
   buildDragBandsForVertices( movingVertices, dragVertexMapPoint );
 }
 
-void QgsNodeTool::buildDragBandsForVertices( const QSet<Vertex> &movingVertices, const QgsPointXY &dragVertexMapPoint )
+void QgsVertexTool::buildDragBandsForVertices( const QSet<Vertex> &movingVertices, const QgsPointXY &dragVertexMapPoint )
 {
   QSet<Vertex> verticesInStraightBands;  // always the vertex with lower index
 
@@ -1288,7 +1288,7 @@ void QgsNodeTool::buildDragBandsForVertices( const QSet<Vertex> &movingVertices,
   }
 }
 
-QList<QgsPointLocator::Match> QgsNodeTool::layerVerticesSnappedToPoint( QgsVectorLayer *layer, const QgsPointXY &mapPoint )
+QList<QgsPointLocator::Match> QgsVertexTool::layerVerticesSnappedToPoint( QgsVectorLayer *layer, const QgsPointXY &mapPoint )
 {
   MatchCollectingFilter myfilter( this );
   QgsPointLocator *loc = canvas()->snappingUtils()->locatorForLayer( layer );
@@ -1296,7 +1296,7 @@ QList<QgsPointLocator::Match> QgsNodeTool::layerVerticesSnappedToPoint( QgsVecto
   return myfilter.matches;
 }
 
-void QgsNodeTool::startDraggingAddVertex( const QgsPointLocator::Match &m )
+void QgsVertexTool::startDraggingAddVertex( const QgsPointLocator::Match &m )
 {
   Q_ASSERT( m.hasEdge() );
 
@@ -1325,7 +1325,7 @@ void QgsNodeTool::startDraggingAddVertex( const QgsPointLocator::Match &m )
   cadDockWidget()->setPoints( QList<QgsPointXY>() << m.point() << m.point() );
 }
 
-void QgsNodeTool::startDraggingAddVertexAtEndpoint( const QgsPointXY &mapPoint )
+void QgsVertexTool::startDraggingAddVertexAtEndpoint( const QgsPointXY &mapPoint )
 {
   Q_ASSERT( mMouseAtEndpoint );
 
@@ -1350,7 +1350,7 @@ void QgsNodeTool::startDraggingAddVertexAtEndpoint( const QgsPointXY &mapPoint )
   cadDockWidget()->setPoints( QList<QgsPointXY>() << pt0 << pt1 << pt1 );
 }
 
-void QgsNodeTool::startDraggingEdge( const QgsPointLocator::Match &m, const QgsPointXY &mapPoint )
+void QgsVertexTool::startDraggingEdge( const QgsPointLocator::Match &m, const QgsPointXY &mapPoint )
 {
   Q_ASSERT( m.hasEdge() );
 
@@ -1390,7 +1390,7 @@ void QgsNodeTool::startDraggingEdge( const QgsPointLocator::Match &m, const QgsP
   cadDockWidget()->setPoints( QList<QgsPointXY>() << m.point() << m.point() );
 }
 
-void QgsNodeTool::stopDragging()
+void QgsVertexTool::stopDragging()
 {
   // deactivate advanced digitizing
   setAdvancedDigitizingAllowed( false );
@@ -1401,12 +1401,12 @@ void QgsNodeTool::stopDragging()
   mDraggingEdge = false;
   clearDragBands();
 
-  setHighlightedNodesVisible( true );  // highlight can be shown again
+  setHighlightedVerticesVisible( true );  // highlight can be shown again
 
   mSnapIndicator->setMatch( QgsPointLocator::Match() );
 }
 
-QgsPointXY QgsNodeTool::matchToLayerPoint( const QgsVectorLayer *destLayer, const QgsPointXY &mapPoint, const QgsPointLocator::Match *match )
+QgsPointXY QgsVertexTool::matchToLayerPoint( const QgsVectorLayer *destLayer, const QgsPointXY &mapPoint, const QgsPointLocator::Match *match )
 {
   // try to use point coordinates in the original CRS if it is the same
   if ( match && match->hasVertex() && match->layer() && match->layer()->crs() == destLayer->crs() )
@@ -1421,17 +1421,17 @@ QgsPointXY QgsNodeTool::matchToLayerPoint( const QgsVectorLayer *destLayer, cons
   return toLayerCoordinates( destLayer, mapPoint );
 }
 
-void QgsNodeTool::moveEdge( const QgsPointXY &mapPoint )
+void QgsVertexTool::moveEdge( const QgsPointXY &mapPoint )
 {
   stopDragging();
 
-  NodeEdits edits;
+  VertexEdits edits;
   addExtraVerticesToEdits( edits, mapPoint );
 
   applyEditsToLayers( edits );
 }
 
-void QgsNodeTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocator::Match *mapPointMatch )
+void QgsVertexTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocator::Match *mapPointMatch )
 {
   // deactivate advanced digitizing
   setAdvancedDigitizingAllowed( false );
@@ -1482,7 +1482,7 @@ void QgsNodeTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocator:
 
   geom.set( geomTmp );
 
-  NodeEdits edits; // dict { layer : { fid : geom } }
+  VertexEdits edits; // dict { layer : { fid : geom } }
   edits[dragLayer][dragFid] = geom;
 
   addExtraVerticesToEdits( edits, mapPoint, dragLayer, layerPoint );
@@ -1504,12 +1504,12 @@ void QgsNodeTool::moveVertex( const QgsPointXY &mapPoint, const QgsPointLocator:
     }
   }
 
-  setHighlightedNodes( mSelectedNodes );  // update positions of existing highlighted nodes
-  setHighlightedNodesVisible( true );  // time to show highlighted nodes again
+  setHighlightedVertices( mSelectedVertices );  // update positions of existing highlighted vertices
+  setHighlightedVerticesVisible( true );  // time to show highlighted vertices again
 }
 
 
-void QgsNodeTool::addExtraVerticesToEdits( QgsNodeTool::NodeEdits &edits, const QgsPointXY &mapPoint, QgsVectorLayer *dragLayer, const QgsPointXY &layerPoint )
+void QgsVertexTool::addExtraVerticesToEdits( QgsVertexTool::VertexEdits &edits, const QgsPointXY &mapPoint, QgsVectorLayer *dragLayer, const QgsPointXY &layerPoint )
 {
   Q_ASSERT( mDraggingExtraVertices.count() == mDraggingExtraVerticesOffset.count() );
   // add moved vertices from other layers
@@ -1546,7 +1546,7 @@ void QgsNodeTool::addExtraVerticesToEdits( QgsNodeTool::NodeEdits &edits, const 
 }
 
 
-void QgsNodeTool::applyEditsToLayers( QgsNodeTool::NodeEdits &edits )
+void QgsVertexTool::applyEditsToLayers( QgsVertexTool::VertexEdits &edits )
 {
   QHash<QgsVectorLayer *, QHash<QgsFeatureId, QgsGeometry> >::iterator it = edits.begin();
   for ( ; it != edits.end(); ++it )
@@ -1563,12 +1563,12 @@ void QgsNodeTool::applyEditsToLayers( QgsNodeTool::NodeEdits &edits )
 }
 
 
-void QgsNodeTool::deleteVertex()
+void QgsVertexTool::deleteVertex()
 {
   QSet<Vertex> toDelete;
-  if ( !mSelectedNodes.isEmpty() )
+  if ( !mSelectedVertices.isEmpty() )
   {
-    toDelete = QSet<Vertex>::fromList( mSelectedNodes );
+    toDelete = QSet<Vertex>::fromList( mSelectedVertices );
   }
   else
   {
@@ -1584,7 +1584,7 @@ void QgsNodeTool::deleteVertex()
   }
 
   stopDragging();
-  setHighlightedNodes( QList<Vertex>() ); // reset selection
+  setHighlightedVertices( QList<Vertex>() ); // reset selection
 
   if ( QgsProject::instance()->topologicalEditing() )
   {
@@ -1699,7 +1699,7 @@ void QgsNodeTool::deleteVertex()
   // make sure the temporary feature rubber band is not visible
   removeTemporaryRubberBands();
 
-  // pre-select next node for deletion if we are deleting just one node
+  // pre-select next vertex for deletion if we are deleting just one vertex
   if ( toDelete.count() == 1 )
   {
     const Vertex &vertex = *toDelete.constBegin();
@@ -1712,107 +1712,107 @@ void QgsNodeTool::deleteVertex()
 
     if ( geom.vertexAt( vertexId ) != QgsPoint() )
     {
-      QList<Vertex> nodes_new;
-      nodes_new << Vertex( vertex.layer, vertex.fid, vertexId );
-      setHighlightedNodes( nodes_new );
+      QList<Vertex> vertices_new;
+      vertices_new << Vertex( vertex.layer, vertex.fid, vertexId );
+      setHighlightedVertices( vertices_new );
     }
   }
 }
 
-void QgsNodeTool::setHighlightedNodes( const QList<Vertex> &listNodes, HighlightMode mode )
+void QgsVertexTool::setHighlightedVertices( const QList<Vertex> &listVertices, HighlightMode mode )
 {
   if ( mode == ModeReset )
   {
-    qDeleteAll( mSelectedNodesMarkers );
-    mSelectedNodesMarkers.clear();
-    mSelectedNodes.clear();
+    qDeleteAll( mSelectedVerticesMarkers );
+    mSelectedVerticesMarkers.clear();
+    mSelectedVertices.clear();
   }
   else if ( mode == ModeSubtract )
   {
-    // need to clear node markers, and rebuild later. We have no way to link
-    // a marker to a node in order to remove one-by-one
-    qDeleteAll( mSelectedNodesMarkers );
-    mSelectedNodesMarkers.clear();
+    // need to clear vertex markers, and rebuild later. We have no way to link
+    // a marker to a vertex in order to remove one-by-one
+    qDeleteAll( mSelectedVerticesMarkers );
+    mSelectedVerticesMarkers.clear();
   }
 
-  auto createMarkerForNode = [ = ]( const Vertex & node )->bool
+  auto createMarkerForVertex = [ = ]( const Vertex & vertex )->bool
   {
-    QgsGeometry geom = cachedGeometryForVertex( node );
+    QgsGeometry geom = cachedGeometryForVertex( vertex );
     QgsVertexId vid;
-    if ( !geom.vertexIdFromVertexNr( node.vertexId, vid ) )
-      return false;  // node may not exist anymore
+    if ( !geom.vertexIdFromVertexNr( vertex.vertexId, vid ) )
+      return false;  // vertex may not exist anymore
 
     QgsVertexMarker *marker = new QgsVertexMarker( canvas() );
     marker->setIconType( QgsVertexMarker::ICON_CIRCLE );
     marker->setPenWidth( 3 );
     marker->setColor( Qt::blue );
     marker->setFillColor( Qt::blue );
-    marker->setCenter( toMapCoordinates( node.layer, geom.vertexAt( node.vertexId ) ) );
-    mSelectedNodesMarkers.append( marker );
+    marker->setCenter( toMapCoordinates( vertex.layer, geom.vertexAt( vertex.vertexId ) ) );
+    mSelectedVerticesMarkers.append( marker );
     return true;
   };
 
-  for ( const Vertex &node : listNodes )
+  for ( const Vertex &vertex : listVertices )
   {
-    if ( mode == ModeAdd && mSelectedNodes.contains( node ) )
+    if ( mode == ModeAdd && mSelectedVertices.contains( vertex ) )
     {
       continue;
     }
     else if ( mode == ModeSubtract )
     {
-      mSelectedNodes.removeAll( node );
+      mSelectedVertices.removeAll( vertex );
       continue;
     }
 
-    if ( !createMarkerForNode( node ) )
-      continue;  // node may not exist anymore
+    if ( !createMarkerForVertex( vertex ) )
+      continue;  // vertex may not exist anymore
 
-    mSelectedNodes.append( node );
+    mSelectedVertices.append( vertex );
   }
 
   if ( mode == ModeSubtract )
   {
     // rebuild markers for remaining selection
-    for ( const Vertex &node : qgis::as_const( mSelectedNodes ) )
+    for ( const Vertex &vertex : qgis::as_const( mSelectedVertices ) )
     {
-      createMarkerForNode( node );
+      createMarkerForVertex( vertex );
     }
   }
 }
 
-void QgsNodeTool::setHighlightedNodesVisible( bool visible )
+void QgsVertexTool::setHighlightedVerticesVisible( bool visible )
 {
-  for ( QgsVertexMarker *marker : qgis::as_const( mSelectedNodesMarkers ) )
+  for ( QgsVertexMarker *marker : qgis::as_const( mSelectedVerticesMarkers ) )
     marker->setVisible( visible );
 }
 
-void QgsNodeTool::highlightAdjacentVertex( double offset )
+void QgsVertexTool::highlightAdjacentVertex( double offset )
 {
-  if ( mSelectedNodes.isEmpty() )
+  if ( mSelectedVertices.isEmpty() )
     return;
 
-  Vertex node = mSelectedNodes[0];  // simply use the first one
+  Vertex vertex = mSelectedVertices[0];  // simply use the first one
 
-  QgsGeometry geom = cachedGeometryForVertex( node );
+  QgsGeometry geom = cachedGeometryForVertex( vertex );
 
   // try to wrap around polygon rings
   int newVertexId, v0idx, v1idx;
-  geom.adjacentVertices( node.vertexId, v0idx, v1idx );
+  geom.adjacentVertices( vertex.vertexId, v0idx, v1idx );
   if ( offset == -1 && v0idx != -1 )
     newVertexId = v0idx;
   else if ( offset == 1 && v1idx != -1 )
     newVertexId = v1idx;
   else
-    newVertexId = node.vertexId + offset;
+    newVertexId = vertex.vertexId + offset;
 
   QgsPointXY pt = geom.vertexAt( newVertexId );
   if ( pt != QgsPointXY() )
-    node = Vertex( node.layer, node.fid, newVertexId );
-  setHighlightedNodes( QList<Vertex>() << node );
-  zoomToNode( node );  // make sure the node is visible
+    vertex = Vertex( vertex.layer, vertex.fid, newVertexId );
+  setHighlightedVertices( QList<Vertex>() << vertex );
+  zoomToVertex( vertex );  // make sure the vertex is visible
 }
 
-void QgsNodeTool::startSelectionRect( const QPoint &point0 )
+void QgsVertexTool::startSelectionRect( const QPoint &point0 )
 {
   Q_ASSERT( !mSelectionRect );
   mSelectionRect.reset( new QRect() );
@@ -1820,7 +1820,7 @@ void QgsNodeTool::startSelectionRect( const QPoint &point0 )
   mSelectionRectItem = new QRubberBand( QRubberBand::Rectangle, canvas() );
 }
 
-void QgsNodeTool::updateSelectionRect( const QPoint &point1 )
+void QgsVertexTool::updateSelectionRect( const QPoint &point1 )
 {
   Q_ASSERT( mSelectionRect );
   mSelectionRect->setBottomRight( point1 );
@@ -1828,7 +1828,7 @@ void QgsNodeTool::updateSelectionRect( const QPoint &point1 )
   mSelectionRectItem->show();
 }
 
-void QgsNodeTool::stopSelectionRect()
+void QgsVertexTool::stopSelectionRect()
 {
   Q_ASSERT( mSelectionRect );
   mSelectionRectItem->deleteLater();
@@ -1836,7 +1836,7 @@ void QgsNodeTool::stopSelectionRect()
   mSelectionRect.reset();
 }
 
-bool QgsNodeTool::matchEdgeCenterTest( const QgsPointLocator::Match &m, const QgsPointXY &mapPoint, QgsPointXY *edgeCenterPtr )
+bool QgsVertexTool::matchEdgeCenterTest( const QgsPointLocator::Match &m, const QgsPointXY &mapPoint, QgsPointXY *edgeCenterPtr )
 {
   QgsPointXY p0, p1;
   m.edgePoints( p0, p1 );
@@ -1868,7 +1868,7 @@ bool QgsNodeTool::matchEdgeCenterTest( const QgsPointLocator::Match &m, const Qg
   return isNearCenter;
 }
 
-void QgsNodeTool::CircularBand::updateRubberBand( const QgsPointXY &mapPoint )
+void QgsVertexTool::CircularBand::updateRubberBand( const QgsPointXY &mapPoint )
 {
   QgsPointSequence points;
   QgsPointXY v0 = moving0 ? mapPoint + offset0 : p0;
@@ -1882,7 +1882,7 @@ void QgsNodeTool::CircularBand::updateRubberBand( const QgsPointXY &mapPoint )
 }
 
 
-void QgsNodeTool::validationErrorFound( const QgsGeometry::Error &e )
+void QgsVertexTool::validationErrorFound( const QgsGeometry::Error &e )
 {
   QgsGeometryValidator *validator = qobject_cast<QgsGeometryValidator *>( sender() );
   if ( !validator )
@@ -1900,7 +1900,7 @@ void QgsNodeTool::validationErrorFound( const QgsGeometry::Error &e )
   }
 }
 
-void QgsNodeTool::validationFinished()
+void QgsVertexTool::validationFinished()
 {
   QgsGeometryValidator *validator = qobject_cast<QgsGeometryValidator *>( sender() );
   if ( !validator )
@@ -1925,7 +1925,7 @@ void QgsNodeTool::validationFinished()
   }
 }
 
-void QgsNodeTool::GeometryValidation::start( QgsGeometry &geom, QgsNodeTool *t, QgsVectorLayer *l )
+void QgsVertexTool::GeometryValidation::start( QgsGeometry &geom, QgsVertexTool *t, QgsVectorLayer *l )
 {
   tool = t;
   layer = l;
@@ -1935,12 +1935,12 @@ void QgsNodeTool::GeometryValidation::start( QgsGeometry &geom, QgsNodeTool *t, 
     method = QgsGeometry::ValidatorGeos;
 
   validator = new QgsGeometryValidator( geom, nullptr, method );
-  connect( validator, &QgsGeometryValidator::errorFound, tool, &QgsNodeTool::validationErrorFound );
-  connect( validator, &QThread::finished, tool, &QgsNodeTool::validationFinished );
+  connect( validator, &QgsGeometryValidator::errorFound, tool, &QgsVertexTool::validationErrorFound );
+  connect( validator, &QThread::finished, tool, &QgsVertexTool::validationFinished );
   validator->start();
 }
 
-void QgsNodeTool::GeometryValidation::addError( QgsGeometry::Error e )
+void QgsVertexTool::GeometryValidation::addError( QgsGeometry::Error e )
 {
   if ( !errors.isEmpty() )
     errors += '\n';
@@ -1963,7 +1963,7 @@ void QgsNodeTool::GeometryValidation::addError( QgsGeometry::Error e )
   sb->setToolTip( errors );
 }
 
-void QgsNodeTool::GeometryValidation::cleanup()
+void QgsVertexTool::GeometryValidation::cleanup()
 {
   if ( validator )
   {
@@ -1977,7 +1977,7 @@ void QgsNodeTool::GeometryValidation::cleanup()
   errorMarkers.clear();
 }
 
-void QgsNodeTool::validateGeometry( QgsVectorLayer *layer, QgsFeatureId featureId )
+void QgsVertexTool::validateGeometry( QgsVectorLayer *layer, QgsFeatureId featureId )
 {
   QgsSettings settings;
   if ( settings.value( QStringLiteral( "qgis/digitizing/validate_geometries" ), 1 ).toInt() == 0 )
@@ -1996,10 +1996,10 @@ void QgsNodeTool::validateGeometry( QgsVectorLayer *layer, QgsFeatureId featureI
   mValidations.insert( id, validation );
 }
 
-void QgsNodeTool::zoomToNode( const Vertex &node )
+void QgsVertexTool::zoomToVertex( const Vertex &vertex )
 {
-  QgsPointXY newCenter = cachedGeometryForVertex( node ).vertexAt( node.vertexId );
-  QgsPointXY mapPoint = mCanvas->mapSettings().layerToMapCoordinates( node.layer, newCenter );
+  QgsPointXY newCenter = cachedGeometryForVertex( vertex ).vertexAt( vertex.vertexId );
+  QgsPointXY mapPoint = mCanvas->mapSettings().layerToMapCoordinates( vertex.layer, newCenter );
   QPolygonF ext = mCanvas->mapSettings().visiblePolygon();
   if ( !ext.containsPoint( mapPoint.toQPointF(), Qt::OddEvenFill ) )
   {
@@ -2008,7 +2008,7 @@ void QgsNodeTool::zoomToNode( const Vertex &node )
   }
 }
 
-QList<Vertex> QgsNodeTool::verticesInRange( QgsVectorLayer *layer, QgsFeatureId fid, int vertexId0, int vertexId1, bool longWay )
+QList<Vertex> QgsVertexTool::verticesInRange( QgsVectorLayer *layer, QgsFeatureId fid, int vertexId0, int vertexId1, bool longWay )
 {
   QgsGeometry geom = cachedGeometry( layer, fid );
 
@@ -2075,13 +2075,13 @@ QList<Vertex> QgsNodeTool::verticesInRange( QgsVectorLayer *layer, QgsFeatureId 
   return lst;
 }
 
-void QgsNodeTool::rangeMethodPressEvent( QgsMapMouseEvent *e )
+void QgsVertexTool::rangeMethodPressEvent( QgsMapMouseEvent *e )
 {
   // nothing to do here for now...
   Q_UNUSED( e );
 }
 
-void QgsNodeTool::rangeMethodReleaseEvent( QgsMapMouseEvent *e )
+void QgsVertexTool::rangeMethodReleaseEvent( QgsMapMouseEvent *e )
 {
   if ( e->button() == Qt::RightButton )
   {
@@ -2099,7 +2099,7 @@ void QgsNodeTool::rangeMethodReleaseEvent( QgsMapMouseEvent *e )
         if ( m.layer() == mRangeSelectionFirstVertex->layer && m.featureId() == mRangeSelectionFirstVertex->fid )
         {
           QList<Vertex> lst = verticesInRange( m.layer(), m.featureId(), mRangeSelectionFirstVertex->vertexId, m.vertexIndex(), e->modifiers() & Qt::ControlModifier );
-          setHighlightedNodes( lst );
+          setHighlightedVertices( lst );
 
           mSelectionMethod = SelectionNormal;
         }
@@ -2112,13 +2112,13 @@ void QgsNodeTool::rangeMethodReleaseEvent( QgsMapMouseEvent *e )
       if ( m.hasVertex() )
       {
         mRangeSelectionFirstVertex.reset( new Vertex( m.layer(), m.featureId(), m.vertexIndex() ) );
-        setHighlightedNodes( QList<Vertex>() << *mRangeSelectionFirstVertex );
+        setHighlightedVertices( QList<Vertex>() << *mRangeSelectionFirstVertex );
       }
     }
   }
 }
 
-void QgsNodeTool::rangeMethodMoveEvent( QgsMapMouseEvent *e )
+void QgsVertexTool::rangeMethodMoveEvent( QgsMapMouseEvent *e )
 {
   if ( e->buttons() )
     return;  // only with no buttons pressed
@@ -2133,7 +2133,7 @@ void QgsNodeTool::rangeMethodMoveEvent( QgsMapMouseEvent *e )
     QList<Vertex> lst;
     if ( mRangeSelectionFirstVertex )
       lst << *mRangeSelectionFirstVertex;
-    setHighlightedNodes( lst );
+    setHighlightedVertices( lst );
     return;
   }
 
@@ -2143,21 +2143,21 @@ void QgsNodeTool::rangeMethodMoveEvent( QgsMapMouseEvent *e )
     if ( m.layer() == mRangeSelectionFirstVertex->layer && m.featureId() == mRangeSelectionFirstVertex->fid )
     {
       QList<Vertex> lst = verticesInRange( m.layer(), m.featureId(), mRangeSelectionFirstVertex->vertexId, m.vertexIndex(), e->modifiers() & Qt::ControlModifier );
-      setHighlightedNodes( lst );
+      setHighlightedVertices( lst );
     }
   }
 }
 
 
-void QgsNodeTool::startRangeVertexSelection()
+void QgsVertexTool::startRangeVertexSelection()
 {
   mSelectionMethod = SelectionRange;
-  setHighlightedNodes( QList<Vertex>() );
+  setHighlightedVertices( QList<Vertex>() );
   mRangeSelectionFirstVertex.reset();
 }
 
-void QgsNodeTool::stopRangeVertexSelection()
+void QgsVertexTool::stopRangeVertexSelection()
 {
   mSelectionMethod = SelectionNormal;
-  setHighlightedNodes( QList<Vertex>() );
+  setHighlightedVertices( QList<Vertex>() );
 }

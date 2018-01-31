@@ -448,7 +448,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionSimplifyFeature() { return mActionSimplifyFeature; }
     QAction *actionDeleteRing() { return mActionDeleteRing; }
     QAction *actionDeletePart() { return mActionDeletePart; }
-    QAction *actionNodeTool() { return mActionNodeTool; }
+    QAction *actionVertexTool() { return mActionVertexTool; }
     QAction *actionSnappingOptions() { return mActionSnappingOptions; }
     QAction *actionOffsetCurve() { return mActionOffsetCurve; }
     QAction *actionPan() { return mActionPan; }
@@ -1343,7 +1343,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Modifies the attributes of selected features via feature form
     void modifyAttributesOfSelectedFeatures();
     //! provides operations with nodes
-    void nodeTool();
+    void vertexTool();
     //! activates the rotate points tool
     void rotatePointSymbols();
     //! activates the offset point symbol tool
@@ -1939,7 +1939,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
         QgsMapTool *mSimplifyFeature = nullptr;
         QgsMapTool *mDeleteRing = nullptr;
         QgsMapTool *mDeletePart = nullptr;
-        QgsMapTool *mNodeTool = nullptr;
+        QgsMapTool *mVertexTool = nullptr;
         QgsMapTool *mRotatePointSymbolsTool = nullptr;
         QgsMapTool *mOffsetPointSymbolTool = nullptr;
         QgsMapTool *mAnnotation = nullptr;

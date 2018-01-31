@@ -1,5 +1,5 @@
 /***************************************************************************
-                               qgsnodeeditor.h
+                               qgsvertexeditor.h
                                ---------------
         begin                : Tue Mar 24 2015
         copyright            : (C) 2015 Sandro Mani / Sourcepole AG
@@ -16,8 +16,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSNODEEDITOR_H
-#define QGSNODEEDITOR_H
+#ifndef QGSVERTEXEDITOR_H
+#define QGSVERTEXEDITOR_H
 
 #include "qgsdockwidget.h"
 #include <QAbstractTableModel>
@@ -30,14 +30,14 @@ class QgsSelectedFeature;
 class QgsVectorLayer;
 class QTableView;
 
-class QgsNodeEditorModel : public QAbstractTableModel
+class QgsVertexEditorModel : public QAbstractTableModel
 {
     Q_OBJECT
   public:
 
-    QgsNodeEditorModel( QgsVectorLayer *layer,
-                        QgsSelectedFeature *selectedFeature,
-                        QgsMapCanvas *canvas, QObject *parent = nullptr );
+    QgsVertexEditorModel( QgsVectorLayer *layer,
+                          QgsSelectedFeature *selectedFeature,
+                          QgsMapCanvas *canvas, QObject *parent = nullptr );
 
     int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
     int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
@@ -66,20 +66,20 @@ class QgsNodeEditorModel : public QAbstractTableModel
 
 };
 
-class QgsNodeEditor : public QgsDockWidget
+class QgsVertexEditor : public QgsDockWidget
 {
     Q_OBJECT
   public:
-    QgsNodeEditor( QgsVectorLayer *layer,
-                   QgsSelectedFeature *selectedFeature,
-                   QgsMapCanvas *canvas );
+    QgsVertexEditor( QgsVectorLayer *layer,
+                     QgsSelectedFeature *selectedFeature,
+                     QgsMapCanvas *canvas );
 
   public:
     QgsVectorLayer *mLayer = nullptr;
     QgsSelectedFeature *mSelectedFeature = nullptr;
     QgsMapCanvas *mCanvas = nullptr;
     QTableView *mTableView = nullptr;
-    QgsNodeEditorModel *mNodeModel = nullptr;
+    QgsVertexEditorModel *mVertexModel = nullptr;
 
   signals:
     void deleteSelectedRequested();
@@ -89,13 +89,13 @@ class QgsNodeEditor : public QgsDockWidget
 
   private slots:
     void updateTableSelection();
-    void updateNodeSelection( const QItemSelection &selected, const QItemSelection &deselected );
-    void zoomToNode( int idx );
+    void updateVertexSelection( const QItemSelection &selected, const QItemSelection &deselected );
+    void zoomToVertex( int idx );
 
   private:
 
     bool mUpdatingTableSelection;
-    bool mUpdatingNodeSelection;
+    bool mUpdatingVertexSelection;
 };
 
 
@@ -114,4 +114,4 @@ class CoordinateItemDelegate : public QStyledItemDelegate
     void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override;
 };
 
-#endif // QGSNODEEDITOR_H
+#endif // QGSVERTEXEDITOR_H

@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsselectedfeature.cpp  - selected feature of nodetool
+    qgsselectedfeature.cpp  - selected feature of vertextool
     ---------------------
     begin                : April 2009
     copyright            : (C) 2009 by Richard Kostecky
@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "nodetool/qgsselectedfeature.h"
-#include "nodetool/qgsvertexentry.h"
+#include "vertextool/qgsselectedfeature.h"
+#include "vertextool/qgsvertexentry.h"
 
 #include "qgsfeatureiterator.h"
 #include "qgspoint.h"

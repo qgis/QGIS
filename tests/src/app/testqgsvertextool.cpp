@@ -1,5 +1,5 @@
 /***************************************************************************
-     testqgsnodetool.cpp
+     testqgsvertextool.cpp
      ----------------------
     Date                 : 2017-03-01
     Copyright            : (C) 2017 by Martin Dobias
@@ -22,7 +22,7 @@
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 
-#include "nodetool/qgsnodetool.h"
+#include "vertextool/qgsvertextool.h"
 
 bool operator==( const QgsGeometry &g1, const QgsGeometry &g2 )
 {
@@ -44,13 +44,13 @@ namespace QTest
 
 /**
  * \ingroup UnitTests
- * This is a unit test for the node tool
+ * This is a unit test for the vertex tool
  */
-class TestQgsNodeTool : public QObject
+class TestQgsVertexTool : public QObject
 {
     Q_OBJECT
   public:
-    TestQgsNodeTool();
+    TestQgsVertexTool();
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -76,19 +76,19 @@ class TestQgsNodeTool : public QObject
     void mouseMove( double mapX, double mapY )
     {
       QgsMapMouseEvent e( mCanvas, QEvent::MouseMove, mapToScreen( mapX, mapY ) );
-      mNodeTool->cadCanvasMoveEvent( &e );
+      mVertexTool->cadCanvasMoveEvent( &e );
     }
 
     void mousePress( double mapX, double mapY, Qt::MouseButton button, Qt::KeyboardModifiers stateKey = Qt::KeyboardModifiers() )
     {
       QgsMapMouseEvent e1( mCanvas, QEvent::MouseButtonPress, mapToScreen( mapX, mapY ), button, button, stateKey );
-      mNodeTool->cadCanvasPressEvent( &e1 );
+      mVertexTool->cadCanvasPressEvent( &e1 );
     }
 
     void mouseRelease( double mapX, double mapY, Qt::MouseButton button, Qt::KeyboardModifiers stateKey = Qt::KeyboardModifiers() )
     {
       QgsMapMouseEvent e2( mCanvas, QEvent::MouseButtonRelease, mapToScreen( mapX, mapY ), button, Qt::MouseButton(), stateKey );
-      mNodeTool->cadCanvasReleaseEvent( &e2 );
+      mVertexTool->cadCanvasReleaseEvent( &e2 );
     }
 
     void mouseClick( double mapX, double mapY, Qt::MouseButton button, Qt::KeyboardModifiers stateKey = Qt::KeyboardModifiers() )
@@ -100,16 +100,16 @@ class TestQgsNodeTool : public QObject
     void keyClick( int key )
     {
       QKeyEvent e1( QEvent::KeyPress, key, Qt::KeyboardModifiers() );
-      mNodeTool->keyPressEvent( &e1 );
+      mVertexTool->keyPressEvent( &e1 );
 
       QKeyEvent e2( QEvent::KeyRelease, key, Qt::KeyboardModifiers() );
-      mNodeTool->keyReleaseEvent( &e2 );
+      mVertexTool->keyReleaseEvent( &e2 );
     }
 
   private:
     QgsMapCanvas *mCanvas = nullptr;
     QgsAdvancedDigitizingDockWidget *mAdvancedDigitizingDockWidget = nullptr;
-    QgsNodeTool *mNodeTool = nullptr;
+    QgsVertexTool *mVertexTool = nullptr;
     QgsVectorLayer *mLayerLine = nullptr;
     QgsVectorLayer *mLayerPolygon = nullptr;
     QgsVectorLayer *mLayerPoint = nullptr;
@@ -118,11 +118,11 @@ class TestQgsNodeTool : public QObject
     QgsFeatureId mFidPointF1 = 0;
 };
 
-TestQgsNodeTool::TestQgsNodeTool() = default;
+TestQgsVertexTool::TestQgsVertexTool() = default;
 
 
 //runs before all tests
-void TestQgsNodeTool::initTestCase()
+void TestQgsVertexTool::initTestCase()
 {
   qDebug() << "TestQgisAppClipboard::initTestCase()";
   // init QGIS's paths - true means that all path will be inited from prefix
@@ -198,22 +198,22 @@ void TestQgsNodeTool::initTestCase()
 
   mCanvas->setSnappingUtils( new QgsMapCanvasSnappingUtils( mCanvas, this ) );
 
-  // create node tool
-  mNodeTool = new QgsNodeTool( mCanvas, mAdvancedDigitizingDockWidget );
+  // create vertex tool
+  mVertexTool = new QgsVertexTool( mCanvas, mAdvancedDigitizingDockWidget );
 
-  mCanvas->setMapTool( mNodeTool );
+  mCanvas->setMapTool( mVertexTool );
 }
 
 //runs after all tests
-void TestQgsNodeTool::cleanupTestCase()
+void TestQgsVertexTool::cleanupTestCase()
 {
-  delete mNodeTool;
+  delete mVertexTool;
   delete mAdvancedDigitizingDockWidget;
   delete mCanvas;
   QgsApplication::exitQgis();
 }
 
-void TestQgsNodeTool::testMoveVertex()
+void TestQgsVertexTool::testMoveVertex()
 {
   QCOMPARE( mCanvas->mapSettings().outputSize(), QSize( 512, 512 ) );
   QCOMPARE( mCanvas->mapSettings().visibleExtent(), QgsRectangle( 0, 0, 8, 8 ) );
@@ -290,7 +290,7 @@ void TestQgsNodeTool::testMoveVertex()
   QCOMPARE( mLayerPoint->undoStack()->index(), 1 );
 }
 
-void TestQgsNodeTool::testMoveEdge()
+void TestQgsVertexTool::testMoveEdge()
 {
   // move edge of linestring
 
@@ -324,7 +324,7 @@ void TestQgsNodeTool::testMoveEdge()
 }
 
 
-void TestQgsNodeTool::testAddVertex()
+void TestQgsVertexTool::testAddVertex()
 {
   // add vertex in linestring
 
@@ -358,9 +358,9 @@ void TestQgsNodeTool::testAddVertex()
 }
 
 
-void TestQgsNodeTool::testAddVertexAtEndpoint()
+void TestQgsVertexTool::testAddVertexAtEndpoint()
 {
-  // offset of the endpoint marker - currently set as 15px away from the last node in direction of the line
+  // offset of the endpoint marker - currently set as 15px away from the last vertex in direction of the line
   double offsetInMapUnits = 15 * mCanvas->mapSettings().mapUnitsPerPixel();
 
   // add vertex at the end
@@ -393,7 +393,7 @@ void TestQgsNodeTool::testAddVertexAtEndpoint()
 }
 
 
-void TestQgsNodeTool::testDeleteVertex()
+void TestQgsVertexTool::testDeleteVertex()
 {
   // delete vertex in linestring
 
@@ -453,7 +453,7 @@ void TestQgsNodeTool::testDeleteVertex()
   QCOMPARE( mLayerPoint->undoStack()->index(), 1 );
 }
 
-void TestQgsNodeTool::testMoveMultipleVertices()
+void TestQgsVertexTool::testMoveMultipleVertices()
 {
   // select two vertices
   mousePress( 0.5, 0.5, Qt::LeftButton );
@@ -473,7 +473,7 @@ void TestQgsNodeTool::testMoveMultipleVertices()
   QCOMPARE( mLayerLine->getFeature( mFidLineF1 ).geometry(), QgsGeometry::fromWkt( "LINESTRING(2 1, 1 1, 1 3)" ) );
 }
 
-void TestQgsNodeTool::testMoveVertexTopo()
+void TestQgsVertexTool::testMoveVertexTopo()
 {
   // test moving of vertices of two features at once
 
@@ -483,7 +483,7 @@ void TestQgsNodeTool::testMoveVertexTopo()
   mouseClick( 4, 1, Qt::LeftButton );
   mouseClick( 2, 1, Qt::LeftButton );
 
-  // move shared node of linestring and polygon
+  // move shared vertex of linestring and polygon
   mouseClick( 2, 1, Qt::LeftButton );
   mouseClick( 3, 3, Qt::LeftButton );
 
@@ -491,7 +491,7 @@ void TestQgsNodeTool::testMoveVertexTopo()
   QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry(), QgsGeometry::fromWkt( "POLYGON((3 3, 7 1, 7 4, 4 4, 3 3))" ) );
 
   QCOMPARE( mLayerLine->undoStack()->index(), 2 );
-  QCOMPARE( mLayerPolygon->undoStack()->index(), 3 );  // one more move of node from earlier
+  QCOMPARE( mLayerPolygon->undoStack()->index(), 3 );  // one more move of vertex from earlier
   mLayerLine->undoStack()->undo();
   mLayerPolygon->undoStack()->undo();
   mLayerPolygon->undoStack()->undo();
@@ -502,7 +502,7 @@ void TestQgsNodeTool::testMoveVertexTopo()
   QgsProject::instance()->setTopologicalEditing( false );
 }
 
-void TestQgsNodeTool::testDeleteVertexTopo()
+void TestQgsVertexTool::testDeleteVertexTopo()
 {
   // test deletion of vertices with topological editing enabled
 
@@ -512,7 +512,7 @@ void TestQgsNodeTool::testDeleteVertexTopo()
   mouseClick( 4, 1, Qt::LeftButton );
   mouseClick( 2, 1, Qt::LeftButton );
 
-  // move shared node of linestring and polygon
+  // move shared vertex of linestring and polygon
   mouseClick( 2, 1, Qt::LeftButton );
   keyClick( Qt::Key_Delete );
 
@@ -520,7 +520,7 @@ void TestQgsNodeTool::testDeleteVertexTopo()
   QCOMPARE( mLayerPolygon->getFeature( mFidPolygonF1 ).geometry(), QgsGeometry::fromWkt( "POLYGON((7 1, 7 4, 4 4, 7 1))" ) );
 
   QCOMPARE( mLayerLine->undoStack()->index(), 2 );
-  QCOMPARE( mLayerPolygon->undoStack()->index(), 3 );  // one more move of node from earlier
+  QCOMPARE( mLayerPolygon->undoStack()->index(), 3 );  // one more move of vertex from earlier
   mLayerLine->undoStack()->undo();
   mLayerPolygon->undoStack()->undo();
   mLayerPolygon->undoStack()->undo();
@@ -531,7 +531,7 @@ void TestQgsNodeTool::testDeleteVertexTopo()
   QgsProject::instance()->setTopologicalEditing( false );
 }
 
-void TestQgsNodeTool::testActiveLayerPriority()
+void TestQgsVertexTool::testActiveLayerPriority()
 {
   // check that features from current layer get priority when picking points
 
@@ -576,5 +576,5 @@ void TestQgsNodeTool::testActiveLayerPriority()
   QgsProject::instance()->removeMapLayer( layerLine2 );
 }
 
-QGSTEST_MAIN( TestQgsNodeTool )
-#include "testqgsnodetool.moc"
+QGSTEST_MAIN( TestQgsVertexTool )
+#include "testqgsvertextool.moc"

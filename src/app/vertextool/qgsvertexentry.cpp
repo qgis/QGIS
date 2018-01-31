@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsvertexentry.cpp  - entry for vertex of nodetool
+    qgsvertexentry.cpp  - entry for vertex of vertextool
     ---------------------
     begin                : April 2009
     copyright            : (C) 2009 by Richard Kostecky
@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "nodetool/qgsvertexentry.h"
+#include "vertextool/qgsvertexentry.h"
 
 QgsVertexEntry::QgsVertexEntry( QgsMapCanvas *canvas, QgsMapLayer *layer, const QgsPoint &p, QgsVertexId vertexId, const QString &tooltip, QgsVertexMarker::IconType type, int penWidth )
   : mSelected( false )

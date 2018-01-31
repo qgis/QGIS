@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsselectedfeature.h  - selected feature of nodetool
+    qgsselectedfeature.h  - selected feature of vertextool
     ---------------------
     begin                : April 2009
     copyright            : (C) 2009 by Richard Kostecky
