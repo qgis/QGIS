@@ -343,9 +343,9 @@ sub fix_annotations {
     $line =~ s/SIP_VIRTUALERRORHANDLER\(\s*(\w+)\s*\)/\/VirtualErrorHandler=$1\//;
 
     # combine multiple annotations
-    # https://regex101.com/r/uvCt4M/3
+    # https://regex101.com/r/uvCt4M/4
     do {no warnings 'uninitialized';
-        $line =~ s/\/(\w+(=\w+)?)\/\s*\/(\w+(=\w+)?)\//\/$1,$3\//;
+        $line =~ s/\/([\w,]+(=\w+)?)\/\s*\/([\w,]+(=\w+)?)\//\/$1,$3\//;
         (! $3) or dbg_info("combine multiple annotations -- works only for 2");
     };
 
