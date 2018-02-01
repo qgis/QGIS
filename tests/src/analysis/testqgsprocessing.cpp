@@ -516,14 +516,12 @@ void TestQgsProcessing::addProvider()
   QVERIFY( !r.addProvider( p3 ) );
   QCOMPARE( r.providers().toSet(), QSet< QgsProcessingProvider * >() << p << p2 );
   QCOMPARE( spyProviderAdded.count(), 2 );
-  delete p3;
 
   // test that adding a provider which does not load means it is not added to registry
   DummyProviderNoLoad *p4 = new DummyProviderNoLoad( "p4" );
   QVERIFY( !r.addProvider( p4 ) );
   QCOMPARE( r.providers().toSet(), QSet< QgsProcessingProvider * >() << p << p2 );
   QCOMPARE( spyProviderAdded.count(), 2 );
-  delete p4;
 }
 
 void TestQgsProcessing::providerById()
