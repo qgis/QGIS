@@ -158,8 +158,10 @@ class SqlResultModelAsync(QObject):
         self.status = None
         self.model = None
         self.task = None
+        self.canceled = False
 
     def cancel(self):
+        self.canceled = True
         if self.task:
             self.task.cancel()
 

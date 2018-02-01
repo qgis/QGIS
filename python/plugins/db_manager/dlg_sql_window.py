@@ -37,7 +37,6 @@ from .db_plugins.plugin import BaseError
 from .db_plugins.postgis.plugin import PGDatabase
 from .dlg_db_error import DlgDbError
 from .dlg_query_builder import QueryBuilderDlg
-from .dlg_cancel_task_query import DlgCancelTaskQuery
 
 try:
     from qgis.gui import QgsCodeEditorSQL  # NOQA
@@ -57,12 +56,11 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
 
     def __init__(self, iface, db, parent=None):
         QWidget.__init__(self, parent)
+        self.mainWindow = parent
         self.iface = iface
         self.db = db
         self.filter = ""
         self.modelAsync = None
-        self.dlg_cancel_task = DlgCancelTaskQuery(self)
-        self.dlg_cancel_task.canceled.connect(self.executeSqlCanceled)
         self.allowMultiColumnPk = isinstance(db, PGDatabase)  # at the moment only PostgreSQL allows a primary key to span multiple columns, SpatiaLite doesn't
         self.aliasSubQuery = isinstance(db, PGDatabase)       # only PostgreSQL requires subqueries to be aliases
         self.setupUi(self)
@@ -80,6 +78,16 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         self.editSql.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.editSql.setMarginVisible(True)
         self.initCompleter()
+
+        self.btnCancel.setText(self.tr("Cancel (ESC)"))
+        self.btnCancel.setEnabled(False)
+        self.btnCancel.clicked.connect(self.executeSqlCanceled)
+        self.btnCancel.setShortcut(QKeySequence.Cancel)
+        self.progressBar.setEnabled(False)
+        self.progressBar.setRange(0, 100)
+        self.progressBar.setValue(0)
+        self.progressBar.setFormat("")
+        self.progressBar.setAlignment(Qt.AlignCenter)
 
         # allow copying results
         copyAction = QAction("copy", self)
@@ -181,11 +189,45 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         self.editSql.setFocus()
         self.filter = ""
 
+    def updateUiWhileSqlExecution(self, status):
+        if status:
+            for i in range(0, self.mainWindow.tabs.count()):
+                if i != self.mainWindow.tabs.currentIndex():
+                    self.mainWindow.tabs.setTabEnabled(i, False)
+
+            self.mainWindow.menuBar.setEnabled(False)
+            self.mainWindow.toolBar.setEnabled(False)
+            self.mainWindow.tree.setEnabled(False)
+
+            for w in self.findChildren(QWidget):
+                w.setEnabled(False)
+
+            self.btnCancel.setEnabled(True)
+            self.progressBar.setEnabled(True)
+            self.progressBar.setRange(0, 0)
+        else:
+            for i in range(0, self.mainWindow.tabs.count()):
+                if i != self.mainWindow.tabs.currentIndex():
+                    self.mainWindow.tabs.setTabEnabled(i, True)
+
+            self.mainWindow.refreshTabs()
+            self.mainWindow.menuBar.setEnabled(True)
+            self.mainWindow.toolBar.setEnabled(True)
+            self.mainWindow.tree.setEnabled(True)
+
+            for w in self.findChildren(QWidget):
+                w.setEnabled(True)
+
+            self.btnCancel.setEnabled(False)
+            self.progressBar.setRange(0, 100)
+            self.progressBar.setEnabled(False)
+
     def executeSqlCanceled(self):
+        self.btnCancel.setEnabled(False)
         self.modelAsync.cancel()
 
     def executeSqlCompleted(self):
-        self.dlg_cancel_task.hide()
+        self.updateUiWhileSqlExecution(False)
 
         with OverrideCursor(Qt.WaitCursor):
             if self.modelAsync.task.status() == QgsTask.Complete:
@@ -201,7 +243,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
 
                 self.setColumnCombos(cols, quotedCols)
                 self.update()
-            elif not self.dlg_cancel_task.cancelStatus:
+            elif not self.modelAsync.canceled:
                 DlgDbError.showError(self.modelAsync.error, self)
                 self.uniqueModel.clear()
                 self.geomCombo.clear()
@@ -222,7 +264,7 @@ class DlgSqlWindow(QWidget, Ui_Dialog):
         try:
             self.modelAsync = self.db.sqlResultModelAsync(sql, self)
             self.modelAsync.done.connect(self.executeSqlCompleted)
-            self.dlg_cancel_task.show()
+            self.updateUiWhileSqlExecution(True)
             QgsApplication.taskManager().addTask(self.modelAsync.task)
         except Exception as e:
             DlgDbError.showError(e, self)
