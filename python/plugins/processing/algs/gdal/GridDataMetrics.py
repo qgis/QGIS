@@ -124,6 +124,11 @@ class GridDataMetrics(GdalAlgorithm):
         arguments.append(params)
         arguments.append('-ot')
         arguments.append(self.TYPE[self.getParameterValue(self.RTYPE)])
+
+        out = self.getOutputValue(self.OUTPUT)
+        arguments.append('-of')
+        arguments.append(GdalUtils.getFormatShortNameFromFilename(out))
+
         arguments.append(unicode(self.getParameterValue(self.INPUT)))
         arguments.append(unicode(self.getOutputValue(self.OUTPUT)))
 
