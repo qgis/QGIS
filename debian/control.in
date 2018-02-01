@@ -27,7 +27,6 @@ Build-Depends:
  libqt4-dev (>= 4.7.0),
  libqt4-opengl-dev,
  libqca2-dev,
- libqca2-plugin-ossl,
  libqtwebkit-dev,
 #stretch jessie wheezy# libqwt-dev,
 #precise saucy trusty utopic vivid wily xenial yakkety sid# libqwt5-qt4-dev,
@@ -423,7 +422,8 @@ Pre-Depends: ${misc:Pre-Depends}
 Depends:
  qgis-providers-common (= ${source:Version}),
  libqt4-sql-sqlite,
- libqca2-plugin-ossl,
+#    jessie         trusty                                   # libqca2-plugin-ossl,
+#sid        stretch        xenial yakkety zesty artful bionic# libqca2-plugins,
  ${shlibs:Depends},
  ${misc:Depends}
 Breaks: qgis (<= 1.6)
