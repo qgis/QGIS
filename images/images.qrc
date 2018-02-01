@@ -122,6 +122,7 @@
         <file>themes/default/grass_mapset_open.png</file>
         <file>themes/default/grass_mapset_search.png</file>
         <file>themes/default/histogram.svg</file>
+        <file>themes/default/heatmap.svg</file>
         <file>themes/default/join_bevel.svg</file>
         <file>themes/default/join_miter.svg</file>
         <file>themes/default/join_round.svg</file>

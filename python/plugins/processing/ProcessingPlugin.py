@@ -26,7 +26,6 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import shutil
-import inspect
 import os
 import sys
 
@@ -55,9 +54,7 @@ from processing.tools.system import tempHelpFolder
 from processing.gui.menus import removeMenus, initializeMenus, createMenus
 from processing.core.ProcessingResults import resultsList
 
-cmd_folder = os.path.split(inspect.getfile(inspect.currentframe()))[0]
-if cmd_folder not in sys.path:
-    sys.path.insert(0, cmd_folder)
+pluginPath = os.path.dirname(__file__)
 
 
 class ProcessingOptionsFactory(QgsOptionsWidgetFactory):
@@ -208,7 +205,7 @@ class ProcessingPlugin:
         self.menu.addAction(self.modelerAction)
 
         self.historyAction = QAction(
-            QIcon(os.path.join(cmd_folder, 'images', 'history.svg')),
+            QIcon(os.path.join(pluginPath, 'images', 'history.svg')),
             self.tr('&History...'), self.iface.mainWindow())
         self.historyAction.setObjectName('historyAction')
         self.historyAction.triggered.connect(self.openHistory)
