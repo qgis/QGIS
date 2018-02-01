@@ -142,8 +142,8 @@ class PyQgsValueMapSearchWidgetWrapper(unittest.TestCase):
         # first, set it to the "select value" item
         c.setCurrentIndex(0)
 
-        self.assertEqual(w.createExpression(QgsSearchWidgetWrapper.IsNull), '')
-        self.assertEqual(w.createExpression(QgsSearchWidgetWrapper.IsNotNull), '')
+        self.assertEqual(w.createExpression(QgsSearchWidgetWrapper.IsNull), '"fldtxt" IS NULL')
+        self.assertEqual(w.createExpression(QgsSearchWidgetWrapper.IsNotNull), '"fldtxt" IS NOT NULL')
         self.assertEqual(w.createExpression(QgsSearchWidgetWrapper.EqualTo), '')
         self.assertEqual(w.createExpression(QgsSearchWidgetWrapper.NotEqualTo), '')
 
