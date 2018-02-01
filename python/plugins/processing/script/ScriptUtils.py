@@ -36,6 +36,7 @@ from qgis.core import QgsProcessingAlgorithm, QgsMessageLog
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.tools.system import mkdir, userFolder
 
+scriptsRegistry = dict()
 
 SCRIPTS_FOLDERS = "SCRIPTS_FOLDERS"
 
@@ -55,13 +56,17 @@ def scriptsFolders():
 
 
 def loadAlgorithm(moduleName, filePath):
+    global scriptsRegistry
+
     try:
         spec = importlib.util.spec_from_file_location(moduleName, filePath)
         module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(module)
-        className = module.__all__[0]
-        obj = getattr(module, className)
-        return obj()
+        for x in dir(module):
+            obj = getattr(module, x)
+            if inspect.isclass(obj) and issubclass(obj, QgsProcessingAlgorithm) and obj.__name__ != "QgsProcessingAlgorithm":
+                scriptsRegistry[x] = filePath
+                return obj()
     except ImportError as e:
         QgsMessageLog.logMessage("Could not import script algorithm '{}' from '{}'\n{}".format(moduleName, filePath, str(e)),
                                  "Processing",
@@ -69,12 +74,8 @@ def loadAlgorithm(moduleName, filePath):
 
 
 def findAlgorithmSource(className):
-    fileName = "{}.py".format(className)
-    folders = scriptsFolders()
-    for folder in folders:
-        items = os.scandir(folder)
-        for entry in items:
-            if entry.is_file() and entry.name == fileName:
-                return os.path.abspath(os.path.join(folder, fileName))
-
-    return None
+    global scriptsRegistry
+    try:
+        return scriptsRegistry[className]
+    except:
+        return None

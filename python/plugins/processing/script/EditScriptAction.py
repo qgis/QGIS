@@ -46,5 +46,11 @@ class EditScriptAction(ContextAction):
 
     def execute(self):
         filePath = ScriptUtils.findAlgorithmSource(self.itemData.__class__.__name__)
-        dlg = ScriptEditorDialog(filePath, iface.mainWindow())
-        dlg.show()
+        if filePath is not None:
+            dlg = ScriptEditorDialog(filePath, iface.mainWindow())
+            dlg.show()
+        else:
+            QgsMessageBox.warning(None,
+                                  self.tr("File not found"),
+                                  self.tr("Can not find corresponding script file.")
+                                  )

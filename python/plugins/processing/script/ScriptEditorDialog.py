@@ -28,6 +28,7 @@ __revision__ = '$Format:%H$'
 import os
 import codecs
 import inspect
+import traceback
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt
@@ -35,8 +36,8 @@ from qgis.PyQt.QtGui import QCursor
 from qgis.PyQt.QtWidgets import (QMessageBox,
                                  QFileDialog)
 
-from qgis.gui import QgsGui
-from qgis.core import QgsApplication, QgsSettings
+from qgis.gui import QgsGui, QgsErrorDialog
+from qgis.core import QgsApplication, QgsSettings, QgsError, QgsProcessingAlgorithm
 from qgis.utils import iface, OverrideCursor
 
 from processing.gui.AlgorithmDialog import AlgorithmDialog
@@ -162,6 +163,7 @@ class ScriptEditorDialog(BASE, WIDGET):
         self.saveScript(True)
 
     def saveScript(self, saveAs):
+        newPath = None
         if self.filePath is None or saveAs:
             scriptDir = ScriptUtils.scriptsFolders()[0]
             newPath, _ = QFileDialog.getSaveFileName(self,
@@ -169,12 +171,13 @@ class ScriptEditorDialog(BASE, WIDGET):
                                                      scriptDir,
                                                      self.tr("Script files (*.py *.PY)"))
 
-        if newPath:
-            if not newPath.lower().endswith(".py"):
-                newPath += ".py"
+            if newPath:
+                if not newPath.lower().endswith(".py"):
+                    newPath += ".py"
 
-            self.filePath = newPath
+                self.filePath = newPath
 
+        if self.filePath:
             text = self.editor.text()
             try:
                 with codecs.open(self.filePath, "w", encoding="utf-8") as f:
@@ -194,10 +197,28 @@ class ScriptEditorDialog(BASE, WIDGET):
 
     def runAlgorithm(self):
         d = {}
-        exec(self.editor.text(), d)
+        try:
+            exec(self.editor.text(), d)
+        except Exception as e:
+            error = QgsError(traceback.format_exc(), "Processing")
+            QgsErrorDialog.show(error,
+                                self.tr("Execution error")
+                                )
+            return
 
-        className = d["__all__"][0]
-        alg = d[className]()
+        alg = None
+        for k, v in d.items():
+            if inspect.isclass(v) and issubclass(v, QgsProcessingAlgorithm) and v.__name__ != "QgsProcessingAlgorithm":
+                alg = v()
+                break
+
+        if alg is None:
+            QMessageBox.warning(self,
+                                self.tr("No script found"),
+                                self.tr("Seems there is no valid script in the file.")
+                                )
+            return
+
         alg.setProvider(QgsApplication.processingRegistry().providerById("script"))
         alg.initAlgorithm()
 
