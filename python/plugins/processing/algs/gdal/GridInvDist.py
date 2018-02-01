@@ -106,7 +106,7 @@ class GridInvDist(GdalAlgorithm):
 
         params = 'invdist'
         params += ':power=%s' % self.getParameterValue(self.POWER)
-        params += ':smothing=%s' % self.getParameterValue(self.SMOTHING)
+        params += ':smoothing=%s' % self.getParameterValue(self.SMOTHING)
         params += ':radius1=%s' % self.getParameterValue(self.RADIUS_1)
         params += ':radius2=%s' % self.getParameterValue(self.RADIUS_2)
         params += ':angle=%s' % self.getParameterValue(self.ANGLE)
