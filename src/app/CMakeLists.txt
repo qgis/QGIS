@@ -522,17 +522,23 @@ IF (WIN32)
 
     IF (NOT WINDRES)
       FIND_PROGRAM(WINDRES windres)
-      IF (NOT WINDRES)
+      IF (NOT WINDRES AND NOT CMAKE_RC_COMPILER)
         MESSAGE(FATAL_ERROR "windres not found - aborting")
-      ENDIF (NOT WINDRES)
+      ENDIF (NOT WINDRES AND NOT CMAKE_RC_COMPILER)
     ENDIF (NOT WINDRES)
-    #############################################################
-    # application icon
-    # resource compilation for MinGW
-    ADD_CUSTOM_COMMAND( OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/icon.o
-      COMMAND ${WINDRES} -I${CMAKE_CURRENT_SOURCE_DIR} -i${CMAKE_CURRENT_SOURCE_DIR}/qgis_win32.rc
-      -o ${CMAKE_CURRENT_BINARY_DIR}/icon.o )
-    SET(QGIS_APPMAIN_SRCS ${QGIS_APPMAIN_SRCS} ${CMAKE_CURRENT_BINARY_DIR}/icon.o)
+
+    # MXE
+    IF (WINDRES)
+        #############################################################
+        # application icon
+        # resource compilation for MinGW
+        ADD_CUSTOM_COMMAND( OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/icon.o
+          COMMAND ${WINDRES} -I${CMAKE_CURRENT_SOURCE_DIR} -i${CMAKE_CURRENT_SOURCE_DIR}/qgis_win32.rc
+          -o ${CMAKE_CURRENT_BINARY_DIR}/icon.o )
+        SET(QGIS_APPMAIN_SRCS ${QGIS_APPMAIN_SRCS} ${CMAKE_CURRENT_BINARY_DIR}/icon.o)
+    ELSE (WINDRES)
+        SET (QGIS_APPMAIN_SRCS main.cpp ${IMAGE_RCC_SRCS} ${TEST_RCC_SRCS})
+    ENDIF (WINDRES)
   ENDIF (MSVC)
 ELSE(WIN32)
   SET (QGIS_APPMAIN_SRCS main.cpp ${IMAGE_RCC_SRCS} ${TEST_RCC_SRCS})
@@ -556,7 +562,7 @@ IF(PEDANTIC)
 ENDIF(PEDANTIC)
 
 IF(MSVC)
-# -wd4091 Avoid 'typedef' ignored on left of '' when no variable is declared warning in DbgHelp.h
+# -wd4091 Avoid 'typedef' ignored on left of '' when no variable is declared warning in dbghelp.h
 SET_SOURCE_FILES_PROPERTIES(
   qgisapp.cpp
   main.cpp
@@ -772,8 +778,8 @@ ENDIF (ANDROID)
 IF(WIN32)
   ADD_DEFINITIONS(-DQWT_DLL)
   ADD_DEFINITIONS(-DQSCINTILLA_DLL)
-  TARGET_LINK_LIBRARIES(${QGIS_APP_NAME} DbgHelp)
-  TARGET_LINK_LIBRARIES(qgis_app DbgHelp Qt5::WinExtras)
+  TARGET_LINK_LIBRARIES(${QGIS_APP_NAME} dbghelp)
+  TARGET_LINK_LIBRARIES(qgis_app dbghelp Qt5::WinExtras)
 ENDIF(WIN32)
 
 TARGET_LINK_LIBRARIES(${QGIS_APP_NAME} qgis_native)
