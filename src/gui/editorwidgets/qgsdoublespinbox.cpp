@@ -31,7 +31,10 @@ QgsDoubleSpinBox::QgsDoubleSpinBox( QWidget *parent )
 {
   mLineEdit = new QgsSpinBoxLineEdit();
 
+  // By default, group separator is off
+  setLocale( QLocale( QgsApplication::locale( ) ) );
   setLineEdit( mLineEdit );
+  mLineEdit->setAlignment( Qt::AlignRight );
 
   QSize msz = minimumSizeHint();
   setMinimumSize( msz.width() + CLEAR_ICON_SIZE + 9 + frameWidth() * 2 + 2,

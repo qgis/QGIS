@@ -30,7 +30,7 @@ QgsSpinBox::QgsSpinBox( QWidget *parent )
   : QSpinBox( parent )
 {
   mLineEdit = new QgsSpinBoxLineEdit();
-
+  mLineEdit->setAlignment( Qt::AlignRight );
   setLineEdit( mLineEdit );
 
   QSize msz = minimumSizeHint();
