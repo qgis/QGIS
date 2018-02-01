@@ -527,7 +527,6 @@ IF (WIN32)
       ENDIF (NOT WINDRES AND NOT CMAKE_RC_COMPILER)
     ENDIF (NOT WINDRES)
 
-    # MXE
     IF (WINDRES)
         #############################################################
         # application icon
@@ -537,7 +536,7 @@ IF (WIN32)
           -o ${CMAKE_CURRENT_BINARY_DIR}/icon.o )
         SET(QGIS_APPMAIN_SRCS ${QGIS_APPMAIN_SRCS} ${CMAKE_CURRENT_BINARY_DIR}/icon.o)
     ELSE (WINDRES)
-        SET (QGIS_APPMAIN_SRCS main.cpp ${IMAGE_RCC_SRCS} ${TEST_RCC_SRCS})
+        # MXE
     ENDIF (WINDRES)
   ENDIF (MSVC)
 ELSE(WIN32)
