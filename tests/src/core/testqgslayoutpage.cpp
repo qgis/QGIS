@@ -24,6 +24,7 @@
 #include "qgssinglesymbolrenderer.h"
 #include "qgsfillsymbollayer.h"
 #include "qgslinesymbollayer.h"
+#include "qgsmarkersymbollayer.h"
 #include "qgsmultirenderchecker.h"
 #include "qgslayoutpagecollection.h"
 #include <QObject>
@@ -234,6 +235,7 @@ void TestQgsLayoutPage::markerLinePaper()
   l.pageCollection()->addPage( page.release() );
 
   QgsMarkerLineSymbolLayer *markerLine = new QgsMarkerLineSymbolLayer();
+  static_cast< QgsSimpleMarkerSymbolLayer * >( markerLine->subSymbol()->symbolLayer( 0 ) )->setStrokeColor( Qt::black );
   std::unique_ptr< QgsFillSymbol > markerLineSymbol = qgis::make_unique< QgsFillSymbol >();
   markerLineSymbol->changeSymbolLayer( 0, markerLine );
   l.pageCollection()->setPageStyleSymbol( markerLineSymbol.get() );
