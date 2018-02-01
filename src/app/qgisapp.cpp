@@ -3133,35 +3133,25 @@ void QgisApp::setupConnections()
   connect( mMapCanvas, &QgsMapCanvas::extentsChanged, this, &QgisApp::extentChanged );
   connect( mMapCanvas, &QgsMapCanvas::scaleChanged, this, &QgisApp::showScale );
   connect( mMapCanvas, &QgsMapCanvas::rotationChanged, this, &QgisApp::showRotation );
-  connect( mMapCanvas, &QgsMapCanvas::scaleChanged,
-           this, &QgisApp::updateMouseCoordinatePrecision );
-  connect( mMapCanvas, &QgsMapCanvas::mapToolSet,
-           this, &QgisApp::mapToolChanged );
-  connect( mMapCanvas, &QgsMapCanvas::selectionChanged,
-           this, &QgisApp::selectionChanged );
-  connect( mMapCanvas, &QgsMapCanvas::extentsChanged,
-           this, &QgisApp::markDirty );
-  connect( mMapCanvas, &QgsMapCanvas::layersChanged,
-           this, &QgisApp::markDirty );
+  connect( mMapCanvas, &QgsMapCanvas::scaleChanged, this, &QgisApp::updateMouseCoordinatePrecision );
+  connect( mMapCanvas, &QgsMapCanvas::mapToolSet, this, &QgisApp::mapToolChanged );
+  connect( mMapCanvas, &QgsMapCanvas::selectionChanged, this, &QgisApp::selectionChanged );
+  connect( mMapCanvas, &QgsMapCanvas::extentsChanged, this, &QgisApp::markDirty );
+  connect( mMapCanvas, &QgsMapCanvas::layersChanged, this, &QgisApp::markDirty );
 
-  connect( mMapCanvas, &QgsMapCanvas::zoomLastStatusChanged,
-           mActionZoomLast, &QAction::setEnabled );
-  connect( mMapCanvas, &QgsMapCanvas::zoomNextStatusChanged,
-           mActionZoomNext, &QAction::setEnabled );
-  connect( mRenderSuppressionCBox, &QAbstractButton::toggled,
-           this, [ = ]( bool flag )
+  connect( mMapCanvas, &QgsMapCanvas::zoomLastStatusChanged, mActionZoomLast, &QAction::setEnabled );
+  connect( mMapCanvas, &QgsMapCanvas::zoomNextStatusChanged, mActionZoomNext, &QAction::setEnabled );
+
+  connect( mRenderSuppressionCBox, &QAbstractButton::toggled, this, [ = ]( bool flag )
   {
     Q_FOREACH ( QgsMapCanvas *canvas, mapCanvases() )
       canvas->setRenderFlag( flag );
-  }
-         );
+  } );
 
-  connect( mMapCanvas, &QgsMapCanvas::destinationCrsChanged,
-           this, &QgisApp::reprojectAnnotations );
+  connect( mMapCanvas, &QgsMapCanvas::destinationCrsChanged, this, &QgisApp::reprojectAnnotations );
 
   // connect MapCanvas keyPress event so we can check if selected feature collection must be deleted
-  connect( mMapCanvas, &QgsMapCanvas::keyPressed,
-           this, &QgisApp::mapCanvas_keyPressed );
+  connect( mMapCanvas, &QgsMapCanvas::keyPressed, this, &QgisApp::mapCanvas_keyPressed );
 
   // project crs connections
   connect( QgsProject::instance(), &QgsProject::crsChanged, this, &QgisApp::projectCrsChanged );

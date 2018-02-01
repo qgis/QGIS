@@ -695,6 +695,8 @@ void QgsMapCanvas::stopRendering()
     connect( mJob, &QgsMapRendererQImageJob::finished, mJob, &QgsMapRendererQImageJob::deleteLater );
     mJob->cancelWithoutBlocking();
     mJob = nullptr;
+
+    emit mapCanvasRefreshed();
   }
   stopPreviewJobs();
 }
