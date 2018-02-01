@@ -79,6 +79,10 @@ class hillshade(GdalAlgorithm):
         arguments.append(unicode(self.getParameterValue(self.INPUT)))
         arguments.append(unicode(self.getOutputValue(self.OUTPUT)))
 
+        out = unicode(self.getOutputValue(self.OUTPUT))
+        arguments.append('-of')
+        arguments.append(GdalUtils.getFormatShortNameFromFilename(out))
+
         arguments.append('-b')
         arguments.append(unicode(self.getParameterValue(self.BAND)))
         arguments.append('-z')

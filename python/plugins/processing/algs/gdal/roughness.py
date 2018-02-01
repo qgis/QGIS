@@ -64,6 +64,9 @@ class roughness(GdalAlgorithm):
         arguments.append('-of')
         arguments.append(GdalUtils.getFormatShortNameFromFilename(output))
 
+        arguments.append('-of')
+        arguments.append(GdalUtils.getFormatShortNameFromFilename(output))
+
         arguments.append('-b')
         arguments.append(unicode(self.getParameterValue(self.BAND)))
 
