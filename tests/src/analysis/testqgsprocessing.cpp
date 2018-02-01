@@ -83,7 +83,6 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
       // duplicate name!
       QgsProcessingParameterBoolean *p2 = new QgsProcessingParameterBoolean( "p1" );
       QVERIFY( !addParameter( p2 ) );
-      delete p2;
       QCOMPARE( parameterDefinitions().count(), 1 );
 
       QCOMPARE( parameterDefinition( "p1" ), parameterDefinitions().at( 0 ) );
@@ -189,7 +188,6 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
       // duplicate name!
       QgsProcessingOutputVectorLayer *p2 = new QgsProcessingOutputVectorLayer( "p1" );
       QVERIFY( !addOutput( p2 ) );
-      delete p2;
       QCOMPARE( outputDefinitions().count(), 1 );
 
       QCOMPARE( outputDefinition( "p1" ), outputDefinitions().at( 0 ) );
