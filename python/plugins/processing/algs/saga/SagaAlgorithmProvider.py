@@ -30,6 +30,7 @@ from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.core import (QgsProcessingProvider,
                        QgsProcessingUtils,
+                       QgsApplication,
                        QgsMessageLog)
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 from processing.tools.system import isWindows, isMac
@@ -134,7 +135,7 @@ class SagaAlgorithmProvider(QgsProcessingProvider):
         return False
 
     def icon(self):
-        return QIcon(os.path.join(pluginPath, 'images', 'saga.png'))
+        return QgsApplication.getThemeIcon("/providerSaga.svg")
 
     def tr(self, string, context=''):
         if context == '':
