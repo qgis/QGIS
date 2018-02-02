@@ -572,7 +572,7 @@ bool QgsAttributeForm::saveMultiEdits()
 
 bool QgsAttributeForm::save()
 {
-  if ( mIsSaving )
+  if ( mIsSaving || !mDirty )
     return true;
 
   mIsSaving = true;
@@ -601,16 +601,20 @@ bool QgsAttributeForm::save()
 
   mIsSaving = false;
   mUnsavedMultiEditChanges = false;
+  mDirty = false;
 
   return success;
 }
 
 void QgsAttributeForm::resetValues()
 {
+  mValuesInitialized = false;
   Q_FOREACH ( QgsWidgetWrapper *ww, mWidgets )
   {
     ww->setFeature( mFeature );
   }
+  mValuesInitialized = true;
+  mDirty = false;
 }
 
 void QgsAttributeForm::resetSearch()
@@ -664,6 +668,9 @@ void QgsAttributeForm::onAttributeChanged( const QVariant &value )
   // Safety check, if we receive the same value again, no reason to do anything
   if ( oldValue == value && oldValue.isNull() == value.isNull() )
     return;
+
+  if ( mValuesInitialized )
+    mDirty = true;
 
   switch ( mMode )
   {
