@@ -40,6 +40,16 @@ QString QgsRangeFieldFormatter::representValue( QgsVectorLayer *layer, int field
 
   QString result;
 
+  // Prepare locale
+  std::function<QLocale()> f_locale = [ ]
+  {
+    QLocale locale( QgsApplication::instance()->locale() );
+    QLocale::NumberOptions options( locale.numberOptions() );
+    options |= QLocale::NumberOption::OmitGroupSeparator;
+    locale.setNumberOptions( options );
+    return locale;
+  };
+
   const QgsField field = layer->fields().at( fieldIndex );
 
   if ( field.type() == QVariant::Double &&
@@ -54,11 +64,7 @@ QString QgsRangeFieldFormatter::representValue( QgsVectorLayer *layer, int field
       if ( ok )
       {
         // TODO: make the format configurable!
-        QLocale locale( QgsApplication::instance()->locale() );
-        QLocale::NumberOptions options( locale.numberOptions() );
-        options |= QLocale::NumberOption::OmitGroupSeparator;
-        locale.setNumberOptions( options );
-        result = locale.toString( val, 'f', precision );
+        result = f_locale().toString( val, 'f', precision );
       }
     }
   }
@@ -69,11 +75,7 @@ QString QgsRangeFieldFormatter::representValue( QgsVectorLayer *layer, int field
     double val( value.toInt( &ok ) );
     if ( ok )
     {
-      QLocale locale( QgsApplication::instance()->locale() );
-      QLocale::NumberOptions options( locale.numberOptions() );
-      options |= QLocale::NumberOption::OmitGroupSeparator;
-      locale.setNumberOptions( options );
-      result = locale.toString( val );
+      result =  f_locale().toString( val );
     }
   }
   else
