@@ -31,7 +31,10 @@ import importlib
 
 from qgis.PyQt.QtCore import QCoreApplication
 
-from qgis.core import QgsProcessingAlgorithm, QgsMessageLog
+from qgis.core import (QgsProcessingAlgorithm,
+                       QgsProcessingFeatureBasedAlgorithm,
+                       QgsMessageLog
+                       )
 
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.tools.system import mkdir, userFolder
@@ -64,7 +67,7 @@ def loadAlgorithm(moduleName, filePath):
         spec.loader.exec_module(module)
         for x in dir(module):
             obj = getattr(module, x)
-            if inspect.isclass(obj) and issubclass(obj, QgsProcessingAlgorithm) and obj.__name__ != "QgsProcessingAlgorithm":
+            if inspect.isclass(obj) and issubclass(obj, (QgsProcessingAlgorithm, QgsProcessingFeatureBasedAlgorithm)) and obj.__name__ not in ("QgsProcessingAlgorithm", "QgsProcessingFeatureBasedAlgorithm"):
                 scriptsRegistry[x] = filePath
                 return obj()
     except ImportError as e:

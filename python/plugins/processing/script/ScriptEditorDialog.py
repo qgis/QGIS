@@ -37,7 +37,11 @@ from qgis.PyQt.QtWidgets import (QMessageBox,
                                  QFileDialog)
 
 from qgis.gui import QgsGui, QgsErrorDialog
-from qgis.core import QgsApplication, QgsSettings, QgsError, QgsProcessingAlgorithm
+from qgis.core import (QgsApplication,
+                       QgsSettings,
+                       QgsError,
+                       QgsProcessingAlgorithm,
+                       QgsProcessingFeatureBasedAlgorithm)
 from qgis.utils import iface, OverrideCursor
 
 from processing.gui.AlgorithmDialog import AlgorithmDialog
@@ -208,7 +212,7 @@ class ScriptEditorDialog(BASE, WIDGET):
 
         alg = None
         for k, v in d.items():
-            if inspect.isclass(v) and issubclass(v, QgsProcessingAlgorithm) and v.__name__ != "QgsProcessingAlgorithm":
+            if inspect.isclass(v) and issubclass(v, (QgsProcessingAlgorithm, QgsProcessingFeatureBasedAlgorithm)) and v.__name__ not in ("QgsProcessingAlgorithm", "QgsProcessingFeatureBasedAlgorithm"):
                 alg = v()
                 break
 
