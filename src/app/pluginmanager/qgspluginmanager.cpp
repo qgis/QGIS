@@ -1605,7 +1605,7 @@ void QgsPluginManager::showEvent( QShowEvent *e )
     QTimer::singleShot( 0, this, SLOT( warnAboutMissingObjects() ) );
   }
 
-  QDialog::showEvent( e );
+  QgsOptionsDialogBase::showEvent( e );
 }
 
 

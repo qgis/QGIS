@@ -745,7 +745,7 @@ Qt::ItemFlags QgsAttributeTableModel::flags( const QModelIndex &index ) const
   if ( index.column() >= mFieldCount )
     return Qt::NoItemFlags;
 
-  Qt::ItemFlags flags = QAbstractItemModel::flags( index );
+  Qt::ItemFlags flags = QAbstractTableModel::flags( index );
 
   bool editable = false;
   const int fieldIndex = mAttributes[index.column()];

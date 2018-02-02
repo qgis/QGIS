@@ -236,7 +236,7 @@ bool QgsVertexEditorModel::setData( const QModelIndex &index, const QVariant &va
 
 Qt::ItemFlags QgsVertexEditorModel::flags( const QModelIndex &index ) const
 {
-  Qt::ItemFlags flags = QAbstractItemModel::flags( index );
+  Qt::ItemFlags flags = QAbstractTableModel::flags( index );
 
   if ( index.isValid() )
   {

@@ -316,7 +316,7 @@ void QgsAuthTrustedCAsDialog::showEvent( QShowEvent *e )
   {
     treeTrustedCAs->setFocus();
   }
-  QWidget::showEvent( e );
+  QDialog::showEvent( e );
 }
 
 QgsMessageBar *QgsAuthTrustedCAsDialog::messageBar()

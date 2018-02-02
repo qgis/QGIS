@@ -173,5 +173,5 @@ void QgsDataSourceManagerDialog::makeConnections( QgsAbstractDataSourceWidget *d
 void QgsDataSourceManagerDialog::showEvent( QShowEvent *e )
 {
   ui->mOptionsStackedWidget->currentWidget()->show();
-  QDialog::showEvent( e );
+  QgsOptionsDialogBase::showEvent( e );
 }

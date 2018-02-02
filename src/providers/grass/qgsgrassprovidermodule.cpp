@@ -412,7 +412,7 @@ QIcon QgsGrassMapsetItem::icon()
       return QgsApplication::getThemeIcon( "/grass_mapset_search.png" );
     }
   }
-  return QgsDataItem::icon();
+  return QgsDirectoryItem::icon();
 }
 
 void QgsGrassMapsetItem::setState( State state )
