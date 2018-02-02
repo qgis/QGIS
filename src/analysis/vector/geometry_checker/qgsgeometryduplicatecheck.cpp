@@ -72,7 +72,7 @@ void QgsGeometryDuplicateCheck::collectErrors( QList<QgsGeometryCheckError *> &e
       }
       else if ( !errMsg.isEmpty() )
       {
-        messages.append( tr( "Duplicate check failed for (%1, %2): %3" ).arg( layerFeatureA.id() ).arg( layerFeatureB.id() ).arg( errMsg ) );
+        messages.append( tr( "Duplicate check failed for (%1, %2): %3" ).arg( layerFeatureA.id(), layerFeatureB.id(), errMsg ) );
       }
       delete diffGeom;
     }

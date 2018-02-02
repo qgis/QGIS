@@ -95,8 +95,7 @@ bool Qgs2To3Migration::requiresMigration()
   }
   else
   {
-    QString msg = QString( "Can not open %1" ).arg( migrationFile.fileName() );
-    QgsDebugMsg( msg );
+    QgsDebugMsg( QString( "Can not open %1" ).arg( migrationFile.fileName() ) );
     mMigrationFileVersion = settingsMigrationVersion;
   }
 
