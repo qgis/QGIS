@@ -129,7 +129,7 @@ void QgsDb2NewConnection::btnConnect_clicked()
   testConnection();
 }
 
-void QgsDb2NewConnection::on_btnListDatabase_clicked()
+void QgsDb2NewConnection::btnListDatabase_clicked()
 {
   listDatabases();
 }
