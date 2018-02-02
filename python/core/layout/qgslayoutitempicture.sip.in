@@ -264,7 +264,7 @@ the item's frame, only the way the picture is drawn within the item.
 .. seealso:: :py:func:`pictureRotation`
 %End
 
-    void setResizeMode( ResizeMode mode );
+    void setResizeMode( QgsLayoutItemPicture::ResizeMode mode );
 %Docstring
 Sets the resize ``mode`` used for drawing the picture within the item bounds.
 

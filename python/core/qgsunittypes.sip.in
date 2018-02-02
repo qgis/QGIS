@@ -189,12 +189,12 @@ Returns the conversion factor between the specified distance units.
 %End
 
 
-    static DistanceUnitType unitType( AreaUnit unit );
+    static DistanceUnitType unitType( QgsUnitTypes::AreaUnit unit );
 %Docstring
 Returns the type for an areal unit.
 %End
 
-    static QString encodeUnit( AreaUnit unit );
+    static QString encodeUnit( QgsUnitTypes::AreaUnit unit );
 %Docstring
 Encodes an areal unit to a string.
 
@@ -217,7 +217,7 @@ Decodes an areal unit from a string.
 .. seealso:: :py:func:`encodeUnit`
 %End
 
-    static QString toString( AreaUnit unit );
+    static QString toString( QgsUnitTypes::AreaUnit unit );
 %Docstring
 Returns a translated string representing an areal unit.
 
@@ -226,7 +226,7 @@ Returns a translated string representing an areal unit.
 .. seealso:: :py:func:`stringToAreaUnit`
 %End
 
-    static QString toAbbreviatedString( AreaUnit unit );
+    static QString toAbbreviatedString( QgsUnitTypes::AreaUnit unit );
 %Docstring
 Returns a translated abbreviation representing an areal unit.
 
@@ -247,7 +247,7 @@ Converts a translated string to an areal unit.
 .. seealso:: :py:func:`toString`
 %End
 
-    static double fromUnitToUnitFactor( AreaUnit fromUnit, AreaUnit toUnit );
+    static double fromUnitToUnitFactor( QgsUnitTypes::AreaUnit fromUnit, QgsUnitTypes::AreaUnit toUnit );
 %Docstring
 Returns the conversion factor between the specified areal units.
 
@@ -257,7 +257,7 @@ Returns the conversion factor between the specified areal units.
 :return: multiplication factor to convert between units
 %End
 
-    static AreaUnit distanceToAreaUnit( QgsUnitTypes::DistanceUnit distanceUnit );
+    static QgsUnitTypes::AreaUnit distanceToAreaUnit( QgsUnitTypes::DistanceUnit distanceUnit );
 %Docstring
 Converts a distance unit to its corresponding area unit, e.g., meters to square meters
 
@@ -267,7 +267,7 @@ Converts a distance unit to its corresponding area unit, e.g., meters to square 
 %End
 
 
-    static QString encodeUnit( AngleUnit unit );
+    static QString encodeUnit( QgsUnitTypes::AngleUnit unit );
 %Docstring
 Encodes an angular unit to a string.
 
@@ -278,7 +278,7 @@ Encodes an angular unit to a string.
 .. seealso:: :py:func:`decodeAngleUnit`
 %End
 
-    static AngleUnit decodeAngleUnit( const QString &string, bool *ok /Out/ = 0 );
+    static QgsUnitTypes::AngleUnit decodeAngleUnit( const QString &string, bool *ok /Out/ = 0 );
 %Docstring
 Decodes an angular unit from a string.
 
@@ -290,14 +290,14 @@ Decodes an angular unit from a string.
 .. seealso:: :py:func:`encodeUnit`
 %End
 
-    static QString toString( AngleUnit unit );
+    static QString toString( QgsUnitTypes::AngleUnit unit );
 %Docstring
 Returns a translated string representing an angular unit.
 
 :param unit: unit to convert to string
 %End
 
-    static double fromUnitToUnitFactor( AngleUnit fromUnit, AngleUnit toUnit );
+    static double fromUnitToUnitFactor( QgsUnitTypes::AngleUnit fromUnit, QgsUnitTypes::AngleUnit toUnit );
 %Docstring
 Returns the conversion factor between the specified angular units.
 
@@ -307,7 +307,7 @@ Returns the conversion factor between the specified angular units.
 :return: multiplication factor to convert between units
 %End
 
-    static QString formatAngle( double angle, int decimals, AngleUnit unit );
+    static QString formatAngle( double angle, int decimals, QgsUnitTypes::AngleUnit unit );
 %Docstring
 Returns an angle formatted as a friendly string.
 
@@ -376,7 +376,7 @@ square kilometers
 %End
 
 
-    static QString encodeUnit( RenderUnit unit );
+    static QString encodeUnit( QgsUnitTypes::RenderUnit unit );
 %Docstring
 Encodes a render unit to a string.
 
@@ -387,7 +387,7 @@ Encodes a render unit to a string.
 .. seealso:: :py:func:`decodeRenderUnit`
 %End
 
-    static RenderUnit decodeRenderUnit( const QString &string, bool *ok /Out/ = 0 );
+    static QgsUnitTypes::RenderUnit decodeRenderUnit( const QString &string, bool *ok /Out/ = 0 );
 %Docstring
 Decodes a render unit from a string.
 
@@ -399,7 +399,7 @@ Decodes a render unit from a string.
 .. seealso:: :py:func:`encodeUnit`
 %End
 
-    static QString toString( RenderUnit unit );
+    static QString toString( QgsUnitTypes::RenderUnit unit );
 %Docstring
 Returns a translated string representing a render ``unit``.
 
@@ -408,7 +408,7 @@ Returns a translated string representing a render ``unit``.
 
 
 
-    static QString encodeUnit( LayoutUnit unit );
+    static QString encodeUnit( QgsUnitTypes::LayoutUnit unit );
 %Docstring
 Encodes a layout unit to a string.
 
@@ -421,7 +421,7 @@ Encodes a layout unit to a string.
 .. versionadded:: 3.0
 %End
 
-    static LayoutUnit decodeLayoutUnit( const QString &string, bool *ok /Out/ = 0 );
+    static QgsUnitTypes::LayoutUnit decodeLayoutUnit( const QString &string, bool *ok /Out/ = 0 );
 %Docstring
 Decodes a layout unit from a string.
 
@@ -435,21 +435,21 @@ Decodes a layout unit from a string.
 .. versionadded:: 3.0
 %End
 
-    static LayoutUnitType unitType( const LayoutUnit units );
+    static QgsUnitTypes::LayoutUnitType unitType( const QgsUnitTypes::LayoutUnit units );
 %Docstring
 Returns the type for a unit of measurement.
 
 .. versionadded:: 3.0
 %End
 
-    static QString toAbbreviatedString( LayoutUnit unit );
+    static QString toAbbreviatedString( QgsUnitTypes::LayoutUnit unit );
 %Docstring
 Returns a translated abbreviation representing a layout ``unit`` (e.g. "mm").
 
 .. versionadded:: 3.0
 %End
 
-    static QString toString( LayoutUnit unit );
+    static QString toString( QgsUnitTypes::LayoutUnit unit );
 %Docstring
 Returns a translated string representing a layout ``unit``.
 

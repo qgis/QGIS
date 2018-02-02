@@ -245,7 +245,7 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
      * \param mode ResizeMode to use for image file
      * \see resizeMode
      */
-    void setResizeMode( ResizeMode mode );
+    void setResizeMode( QgsLayoutItemPicture::ResizeMode mode );
 
     /**
      * Recalculates the source image (if using an expression for picture's source)

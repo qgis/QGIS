@@ -230,7 +230,7 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      * \param err the error represented as a string. Empty if none.
      * \param status
      */
-    void constraintStatusChanged( const QString &constraint, const QString &desc, const QString &err, ConstraintResult status );
+    void constraintStatusChanged( const QString &constraint, const QString &desc, const QString &err, QgsEditorWidgetWrapper::ConstraintResult status );
 
     /**
      * Emit this signal when the constraint result visibility changed.
