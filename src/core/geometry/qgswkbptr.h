@@ -82,12 +82,12 @@ class CORE_EXPORT QgsWkbPtr
     inline const QgsWkbPtr &operator>>( char &v ) const { read( v ); return *this; } SIP_SKIP
     inline const QgsWkbPtr &operator>>( QgsWkbTypes::Type &v ) const { read( v ); return *this; } SIP_SKIP
 
-    inline QgsWkbPtr &operator<<( const double &v ) { write( v ); return *this; } SIP_SKIP
-    inline QgsWkbPtr &operator<<( const float &r ) { double v = r; write( v ); return *this; } SIP_SKIP
-    inline QgsWkbPtr &operator<<( const int &v ) { write( v ); return *this; } SIP_SKIP
-    inline QgsWkbPtr &operator<<( const unsigned int &v ) { write( v ); return *this; } SIP_SKIP
-    inline QgsWkbPtr &operator<<( const char &v ) { write( v ); return *this; } SIP_SKIP
-    inline QgsWkbPtr &operator<<( const QgsWkbTypes::Type &v ) { write( v ); return *this; } SIP_SKIP
+    inline QgsWkbPtr &operator<<( double v ) { write( v ); return *this; } SIP_SKIP
+    inline QgsWkbPtr &operator<<( float r ) { double v = r; write( v ); return *this; } SIP_SKIP
+    inline QgsWkbPtr &operator<<( int v ) { write( v ); return *this; } SIP_SKIP
+    inline QgsWkbPtr &operator<<( unsigned int v ) { write( v ); return *this; } SIP_SKIP
+    inline QgsWkbPtr &operator<<( char v ) { write( v ); return *this; } SIP_SKIP
+    inline QgsWkbPtr &operator<<( QgsWkbTypes::Type v ) { write( v ); return *this; } SIP_SKIP
     //! Append data from a byte array
     inline QgsWkbPtr &operator<<( const QByteArray &data ) { write( data ); return *this; } SIP_SKIP
 

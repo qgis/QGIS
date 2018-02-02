@@ -25,7 +25,7 @@
 // QgsTask
 //
 
-QgsTask::QgsTask( const QString &name, const Flags &flags )
+QgsTask::QgsTask( const QString &name, Flags flags )
   : mFlags( flags )
   , mDescription( name )
 {

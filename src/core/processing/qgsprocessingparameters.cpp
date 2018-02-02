@@ -2064,7 +2064,7 @@ QgsProcessingParameterNumber::Type QgsProcessingParameterNumber::dataType() cons
   return mDataType;
 }
 
-void QgsProcessingParameterNumber::setDataType( const Type &dataType )
+void QgsProcessingParameterNumber::setDataType( Type dataType )
 {
   mDataType = dataType;
 }
@@ -2167,7 +2167,7 @@ QgsProcessingParameterNumber::Type QgsProcessingParameterRange::dataType() const
   return mDataType;
 }
 
-void QgsProcessingParameterRange::setDataType( const QgsProcessingParameterNumber::Type &dataType )
+void QgsProcessingParameterRange::setDataType( QgsProcessingParameterNumber::Type dataType )
 {
   mDataType = dataType;
 }
@@ -2787,7 +2787,7 @@ QgsProcessingParameterField::DataType QgsProcessingParameterField::dataType() co
   return mDataType;
 }
 
-void QgsProcessingParameterField::setDataType( const DataType &dataType )
+void QgsProcessingParameterField::setDataType( DataType dataType )
 {
   mDataType = dataType;
 }

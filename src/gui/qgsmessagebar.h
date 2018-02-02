@@ -92,7 +92,7 @@ class GUI_EXPORT QgsMessageBar: public QFrame
     static QgsMessageBarItem *createMessage( QWidget *widget, QWidget *parent = nullptr ) SIP_FACTORY;
 
     //! convenience method for pushing a message to the bar
-    void pushMessage( const QString &text, MessageLevel level = INFO, int duration = 5 ) { return pushMessage( QString(), text, level, duration ); }
+    void pushMessage( const QString &text, MessageLevel level = INFO, int duration = 5 ) { pushMessage( QString(), text, level, duration ); }
     //! convenience method for pushing a message with title to the bar
     void pushMessage( const QString &title, const QString &text, MessageLevel level = INFO, int duration = 5 );
 

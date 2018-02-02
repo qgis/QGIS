@@ -180,7 +180,7 @@ bool QgsAttributeFormWidget::searchWidgetToolButtonVisible() const
 
 void QgsAttributeFormWidget::setSearchWidgetToolButtonVisible( bool searchWidgetToolButtonVisible )
 {
-  return mSearchWidgetToolButton->setVisible( searchWidgetToolButtonVisible );
+  mSearchWidgetToolButton->setVisible( searchWidgetToolButtonVisible );
 }
 
 QWidget *QgsAttributeFormWidget::searchPage() const

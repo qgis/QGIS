@@ -95,8 +95,8 @@ class GUI_EXPORT QgsSearchHighlightOptionWidget : public QObject
     QMap<QTreeWidgetItem *, bool> mTreeInitialExpand = QMap<QTreeWidgetItem *, bool>();
     bool mValid = true;
     bool mChangedStyle = false;
-    std::function < bool( QString )> mTextFound = []( QString searchText ) {Q_UNUSED( searchText ); return false;};
-    std::function < void( QString )> mHighlight = []( QString searchText ) {Q_UNUSED( searchText );};
+    std::function < bool( const QString & )> mTextFound = []( const QString &searchText ) {Q_UNUSED( searchText ); return false;};
+    std::function < void( const QString & )> mHighlight = []( const QString &searchText ) {Q_UNUSED( searchText );};
     std::function < void()> mReset = []() {};
     bool mInstalledFilter = false;
 };

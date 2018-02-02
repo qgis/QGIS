@@ -356,7 +356,7 @@ void QgsColorButton::dropEvent( QDropEvent *e )
   }
 }
 
-QScreen *QgsColorButton::findScreenAt( const QPoint &pos )
+QScreen *QgsColorButton::findScreenAt( QPoint pos )
 {
   for ( QScreen *screen : QGuiApplication::screens() )
   {

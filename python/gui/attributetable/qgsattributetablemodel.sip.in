@@ -164,7 +164,7 @@ Returns the layer this model uses as backend. Retrieved from the layer cache.
 Returns the layer cache this model uses as backend.
 %End
 
-    void executeAction( const QUuid &action, const QModelIndex &idx ) const;
+    void executeAction( QUuid action, const QModelIndex &idx ) const;
 %Docstring
 Execute an action
 %End

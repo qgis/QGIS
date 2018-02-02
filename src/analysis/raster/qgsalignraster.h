@@ -181,7 +181,7 @@ class ANALYSIS_EXPORT QgsAlignRaster
     QPointF gridOffset() const { return QPointF( mGridOffsetX, mGridOffsetY ); }
 
     //! Set output cell size
-    void setCellSize( double x, double y ) { return setCellSize( QSizeF( x, y ) ); }
+    void setCellSize( double x, double y ) { setCellSize( QSizeF( x, y ) ); }
     //! Set output cell size
     void setCellSize( QSizeF size ) { mCellSizeX = size.width(); mCellSizeY = size.height(); }
     //! Get output cell size

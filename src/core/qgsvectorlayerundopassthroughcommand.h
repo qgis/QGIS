@@ -162,7 +162,7 @@ class CORE_EXPORT QgsVectorLayerUndoPassthroughCommandChangeGeometry : public Qg
      * \param fid feature ID of feature to change
      * \param geom new geometru
      */
-    QgsVectorLayerUndoPassthroughCommandChangeGeometry( QgsVectorLayerEditBuffer *buffer SIP_TRANSFER, const QgsFeatureId &fid, const QgsGeometry &geom );
+    QgsVectorLayerUndoPassthroughCommandChangeGeometry( QgsVectorLayerEditBuffer *buffer SIP_TRANSFER, QgsFeatureId fid, const QgsGeometry &geom );
 
     void undo() override;
     void redo() override;

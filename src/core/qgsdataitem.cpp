@@ -605,13 +605,13 @@ QgsMapLayer::LayerType QgsLayerItem::mapLayerType() const
   return QgsMapLayer::VectorLayer;
 }
 
-QString QgsLayerItem::layerTypeAsString( const QgsLayerItem::LayerType &layerType )
+QString QgsLayerItem::layerTypeAsString( QgsLayerItem::LayerType layerType )
 {
   static int enumIdx = staticMetaObject.indexOfEnumerator( "LayerType" );
   return staticMetaObject.enumerator( enumIdx ).valueToKey( layerType );
 }
 
-QString QgsLayerItem::iconName( const QgsLayerItem::LayerType &layerType )
+QString QgsLayerItem::iconName( QgsLayerItem::LayerType layerType )
 {
   switch ( layerType )
   {

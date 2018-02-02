@@ -57,7 +57,7 @@ Returns the current button mode.
 .. seealso:: :py:func:`setMode`
 %End
 
-    void setMode( const QgsFontButton::Mode &mode );
+    void setMode( Mode mode );
 %Docstring
 Sets the current button ``mode``. This can be used to toggle between
 the full capabilities of the button (for configuring QgsTextFormat/QgsTextRenderer objects)

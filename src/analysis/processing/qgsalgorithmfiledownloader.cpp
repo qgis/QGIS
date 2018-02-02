@@ -97,7 +97,7 @@ QVariantMap QgsFileDownloaderAlgorithm::processAlgorithm( const QVariantMap &par
   return outputs;
 }
 
-void QgsFileDownloaderAlgorithm::reportErrors( QStringList errors )
+void QgsFileDownloaderAlgorithm::reportErrors( const QStringList &errors )
 {
   throw QgsProcessingException( errors.join( '\n' ) );
 }

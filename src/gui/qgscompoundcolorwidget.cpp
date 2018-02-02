@@ -543,7 +543,7 @@ void QgsCompoundColorWidget::mActionShowInButtons_toggled( bool state )
   }
 }
 
-QScreen *QgsCompoundColorWidget::findScreenAt( const QPoint &pos )
+QScreen *QgsCompoundColorWidget::findScreenAt( QPoint pos )
 {
   for ( QScreen *screen : QGuiApplication::screens() )
   {

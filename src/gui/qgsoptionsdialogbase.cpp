@@ -411,28 +411,28 @@ QgsSearchHighlightOptionWidget::QgsSearchHighlightOptionWidget( QWidget *widget 
   if ( qobject_cast<QLabel *>( widget ) )
   {
     styleSheet = QStringLiteral( "QLabel { background-color: yellow; color: blue;}" );
-    mTextFound = [ = ]( QString searchText ) {return qobject_cast<QLabel *>( mWidget )->text().contains( searchText, Qt::CaseInsensitive );};
+    mTextFound = [ = ]( const QString & searchText ) {return qobject_cast<QLabel *>( mWidget )->text().contains( searchText, Qt::CaseInsensitive );};
   }
   else if ( qobject_cast<QCheckBox *>( widget ) )
   {
     styleSheet = QStringLiteral( "QCheckBox { background-color: yellow; color: blue;}" );
-    mTextFound = [ = ]( QString searchText ) {return qobject_cast<QCheckBox *>( mWidget )->text().contains( searchText, Qt::CaseInsensitive );};
+    mTextFound = [ = ]( const QString & searchText ) {return qobject_cast<QCheckBox *>( mWidget )->text().contains( searchText, Qt::CaseInsensitive );};
   }
   else if ( qobject_cast<QAbstractButton *>( widget ) )
   {
     styleSheet = QStringLiteral( "QAbstractButton { background-color: yellow; color: blue;}" );
-    mTextFound = [ = ]( QString searchText ) {return qobject_cast<QAbstractButton *>( mWidget )->text().contains( searchText, Qt::CaseInsensitive );};
+    mTextFound = [ = ]( const QString & searchText ) {return qobject_cast<QAbstractButton *>( mWidget )->text().contains( searchText, Qt::CaseInsensitive );};
   }
   else if ( qobject_cast<QGroupBox *>( widget ) )
   {
     styleSheet = QStringLiteral( "QGroupBox::title { background-color: yellow; color: blue;}" );
-    mTextFound = [ = ]( QString searchText ) {return qobject_cast<QGroupBox *>( mWidget )->title().contains( searchText, Qt::CaseInsensitive );};
+    mTextFound = [ = ]( const QString & searchText ) {return qobject_cast<QGroupBox *>( mWidget )->title().contains( searchText, Qt::CaseInsensitive );};
   }
   if ( !styleSheet.isEmpty() )
   {
     styleSheet.prepend( "/*!search!*/" ).append( "/*!search!*/" );
 
-    mHighlight = [ = ]( QString searchText )
+    mHighlight = [ = ]( const QString & searchText )
     {
       Q_UNUSED( searchText );
       mWidget->setStyleSheet( mWidget->styleSheet() + styleSheet );
@@ -450,7 +450,7 @@ QgsSearchHighlightOptionWidget::QgsSearchHighlightOptionWidget( QWidget *widget 
   }
   else if ( qobject_cast<QTreeView *>( widget ) )
   {
-    mTextFound = [ = ]( QString searchText )
+    mTextFound = [ = ]( const QString & searchText )
     {
       QTreeView *treeView = qobject_cast<QTreeView *>( mWidget );
       if ( !treeView )
@@ -461,7 +461,7 @@ QgsSearchHighlightOptionWidget::QgsSearchHighlightOptionWidget( QWidget *widget 
 
     if ( qobject_cast<QTreeWidget *>( widget ) )
     {
-      mHighlight = [ = ]( QString searchText )
+      mHighlight = [ = ]( const QString & searchText )
       {
         QTreeWidget *treeWidget = qobject_cast<QTreeWidget *>( widget );
         if ( treeWidget )

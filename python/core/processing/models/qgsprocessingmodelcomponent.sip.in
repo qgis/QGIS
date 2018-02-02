@@ -44,7 +44,7 @@ Returns the position of the model component within the graphical modeler.
 .. seealso:: :py:func:`setPosition`
 %End
 
-    void setPosition( const QPointF &position );
+    void setPosition( QPointF position );
 %Docstring
 Sets the ``position`` of the model component within the graphical modeler.
 

@@ -698,7 +698,7 @@ QgsFontButton::Mode QgsFontButton::mode() const
   return mMode;
 }
 
-void QgsFontButton::setMode( const Mode &mode )
+void QgsFontButton::setMode( Mode mode )
 {
   mMode = mode;
   updatePreview();
