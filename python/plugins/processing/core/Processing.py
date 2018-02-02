@@ -104,28 +104,6 @@ class Processing(object):
         Processing.BASIC_PROVIDERS = []
 
     @staticmethod
-    def addScripts(folder):
-        #Processing.initialize()
-        #provider = QgsApplication.processingRegistry().providerById("qgis")
-        #scripts = ScriptUtils.loadFromFolder(folder)
-        #for script in scripts:
-        #    script.allowEdit = False
-        #    script._icon = provider.icon()
-        #provider.externalAlgs.extend(scripts)
-        #provider.refreshAlgorithms()
-        pass
-
-    @staticmethod
-    def removeScripts(folder):
-        #provider = QgsApplication.processingRegistry().providerById("qgis")
-        #for alg in provider.externalAlgs[::-1]:
-        #    path = os.path.dirname(alg.descriptionFile)
-        #    if path == folder:
-        #        provider.externalAlgs.remove(alg)
-        #provider.refreshAlgorithms()
-        pass
-
-    @staticmethod
     def runAlgorithm(algOrName, parameters, onFinish=None, feedback=None, context=None):
         if isinstance(algOrName, QgsProcessingAlgorithm):
             alg = algOrName
