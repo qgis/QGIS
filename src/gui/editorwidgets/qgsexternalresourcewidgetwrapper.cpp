@@ -207,7 +207,7 @@ void QgsExternalResourceWidgetWrapper::setValue( const QVariant &value )
   if ( mLabel )
   {
     mLabel->setText( value.toString() );
-    valueChanged( value.toString() ); // emit signal that value has changed, do not do it for other widgets
+    emit valueChanged( value.toString() ); // emit signal that value has changed, do not do it for other widgets
   }
 
   if ( mQgsWidget )

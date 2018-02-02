@@ -727,7 +727,7 @@ bool QgsMergedBookmarksTableModel::projectAvailable() const
 
 void QgsMergedBookmarksTableModel::moveBookmark( QAbstractTableModel &modelFrom, QAbstractTableModel &modelTo, int row )
 {
-  emit beginResetModel();
+  beginResetModel();
   QSqlTableModel *qgisModel = dynamic_cast<QSqlTableModel *>( &modelTo );
   if ( !qgisModel )
   {
@@ -765,7 +765,7 @@ void QgsMergedBookmarksTableModel::moveBookmark( QAbstractTableModel &modelFrom,
     qgisModel->select();
     modelFrom.removeRows( row, 1 );
   }
-  emit endResetModel();
+  endResetModel();
   emit layoutChanged();
 }
 
