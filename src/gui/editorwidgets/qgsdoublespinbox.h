@@ -126,6 +126,12 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
      */
     double clearValue() const;
 
+    /**
+     * Set alignment in the embedded line edit widget
+     * \param alignment
+     */
+    void setLineEditAlignment( Qt::Alignment alignment );
+
     double valueFromText( const QString &text ) const override;
     QValidator::State validate( QString &input, int &pos ) const override;
     void paintEvent( QPaintEvent *e ) override;

@@ -34,7 +34,6 @@ QgsDoubleSpinBox::QgsDoubleSpinBox( QWidget *parent )
   // By default, group separator is off
   setLocale( QLocale( QgsApplication::locale( ) ) );
   setLineEdit( mLineEdit );
-  mLineEdit->setAlignment( Qt::AlignRight );
 
   QSize msz = minimumSizeHint();
   setMinimumSize( msz.width() + CLEAR_ICON_SIZE + 9 + frameWidth() * 2 + 2,
@@ -135,6 +134,11 @@ double QgsDoubleSpinBox::clearValue() const
     return maximum();
   else
     return mCustomClearValue;
+}
+
+void QgsDoubleSpinBox::setLineEditAlignment( Qt::Alignment alignment )
+{
+  mLineEdit->setAlignment( alignment );
 }
 
 QString QgsDoubleSpinBox::stripped( const QString &originalText ) const
