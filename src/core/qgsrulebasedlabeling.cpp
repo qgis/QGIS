@@ -182,7 +182,7 @@ QgsRuleBasedLabeling::Rule *QgsRuleBasedLabeling::Rule::findRuleByKey( const QSt
   if ( key == mRuleKey )
     return this;
 
-  for ( Rule *rule : mChildren )
+  for ( Rule *rule : qgis::as_const( mChildren ) )
   {
     Rule *r = rule->findRuleByKey( key );
     if ( r )

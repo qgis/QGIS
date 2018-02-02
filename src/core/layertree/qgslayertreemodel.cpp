@@ -303,7 +303,8 @@ QVariant QgsLayerTreeModel::data( const QModelIndex &index, int role ) const
         if ( !layer->abstract().isEmpty() )
         {
           parts << QStringLiteral();
-          for ( const auto &l : layer->abstract().split( "\n" ) )
+          const QStringList abstractLines = layer->abstract().split( "\n" );
+          for ( const auto &l : abstractLines )
           {
             parts << l.toHtmlEscaped();
           }

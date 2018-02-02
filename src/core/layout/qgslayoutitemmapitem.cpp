@@ -201,7 +201,7 @@ bool QgsLayoutItemMapItemStack::writeXml( QDomElement &elem, QDomDocument &doc, 
 
 void QgsLayoutItemMapItemStack::finalizeRestoreFromXml()
 {
-  for ( QgsLayoutItemMapItem *item : mItems )
+  for ( QgsLayoutItemMapItem *item : qgis::as_const( mItems ) )
   {
     item->finalizeRestoreFromXml();
   }

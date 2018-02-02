@@ -232,7 +232,8 @@ int QgsAuxiliaryLayer::createProperty( QgsPalLayerSettings::Property property, Q
     {
       const QgsProperty prop = QgsProperty::fromField( fieldName );
 
-      for ( const QString &providerId : layer->labeling()->subProviders() )
+      const QStringList subProviderIds = layer->labeling()->subProviders();
+      for ( const QString &providerId : subProviderIds )
       {
         QgsPalLayerSettings *settings = new QgsPalLayerSettings( layer->labeling()->settings( providerId ) );
 
