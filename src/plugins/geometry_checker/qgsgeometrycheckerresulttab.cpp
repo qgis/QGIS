@@ -461,7 +461,7 @@ void QgsGeometryCheckerResultTab::fixErrors( bool prompt )
     rows = ui.tableWidgetErrors->selectionModel()->selectedRows();
   }
   QList<QgsGeometryCheckError *> errors;
-  for ( const QModelIndex &index : rows )
+  for ( const QModelIndex &index : qgis::as_const( rows ) )
   {
     QgsGeometryCheckError *error = ui.tableWidgetErrors->item( index.row(), 0 )->data( Qt::UserRole ).value<QgsGeometryCheckError *>();
     if ( error->status() < QgsGeometryCheckError::StatusFixed )
@@ -507,7 +507,7 @@ void QgsGeometryCheckerResultTab::fixErrors( bool prompt )
     ui.progressBarFixErrors->setVisible( true );
     ui.progressBarFixErrors->setRange( 0, errors.size() );
 
-    for ( QgsGeometryCheckError *error : errors )
+    for ( QgsGeometryCheckError *error : qgis::as_const( errors ) )
     {
       int fixMethod = QgsSettings().value( sSettingsGroup + error->check()->errorName(), QVariant::fromValue<int>( 0 ) ).toInt();
       mChecker->fixError( error, fixMethod );

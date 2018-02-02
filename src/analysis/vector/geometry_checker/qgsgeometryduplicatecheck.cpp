@@ -22,11 +22,11 @@
 QString QgsGeometryDuplicateCheckError::duplicatesString( const QMap<QString, QgsFeaturePool *> &featurePools, const QMap<QString, QList<QgsFeatureId>> &duplicates )
 {
   QStringList str;
-  for ( const QString &layerId : duplicates.keys() )
+  for ( auto it = duplicates.constBegin(); it != duplicates.constEnd(); ++it )
   {
-    str.append( featurePools[layerId]->getLayer()->name() + ":" );
+    str.append( featurePools[it.key()]->getLayer()->name() + ":" );
     QStringList ids;
-    for ( QgsFeatureId id : duplicates[layerId] )
+    for ( QgsFeatureId id : it.value() )
     {
       ids.append( QString::number( id ) );
     }
