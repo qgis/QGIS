@@ -756,7 +756,7 @@ void QgsCompoundColorWidget::keyPressEvent( QKeyEvent *e )
   if ( !mPickingColor )
   {
     //if not picking a color, use default tool button behavior
-    QWidget::keyPressEvent( e );
+    QgsPanelWidget::keyPressEvent( e );
     return;
   }
 

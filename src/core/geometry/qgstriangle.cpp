@@ -98,7 +98,7 @@ QgsTriangle *QgsTriangle::createEmptyWithSameType() const
 
 void QgsTriangle::clear()
 {
-  QgsCurvePolygon::clear();
+  QgsPolygon::clear();
   mWkbType = QgsWkbTypes::Triangle;
 }
 

@@ -46,7 +46,7 @@ QgsMultiLineString *QgsMultiLineString::clone() const
 
 void QgsMultiLineString::clear()
 {
-  QgsGeometryCollection::clear();
+  QgsMultiCurve::clear();
   mWkbType = QgsWkbTypes::MultiLineString;
 }
 
@@ -136,7 +136,7 @@ bool QgsMultiLineString::addGeometry( QgsAbstractGeometry *g )
     g->addMValue();
   else if ( !isMeasure() && g->isMeasure() )
     g->dropMValue();
-  return QgsGeometryCollection::addGeometry( g );
+  return QgsGeometryCollection::addGeometry( g ); // clazy:exclude=skipped-base-method
 }
 
 bool QgsMultiLineString::insertGeometry( QgsAbstractGeometry *g, int index )
@@ -147,7 +147,7 @@ bool QgsMultiLineString::insertGeometry( QgsAbstractGeometry *g, int index )
     return false;
   }
 
-  return QgsGeometryCollection::insertGeometry( g, index );
+  return QgsMultiCurve::insertGeometry( g, index ); // clazy:exclude=skipped-base-method
 }
 
 QgsMultiCurve *QgsMultiLineString::toCurveType() const
