@@ -4387,7 +4387,7 @@ QgsOgrLayerUniquePtr QgsOgrProviderUtils::getLayer( const QString &dsName,
 
 static QDateTime getLastModified( const QString &dsName )
 {
-  if ( dsName.toLower().endsWith( ".gpkg" ) )
+  if ( dsName.endsWith( ".gpkg", Qt::CaseInsensitive ) )
   {
     QFileInfo info( dsName + "-wal" );
     if ( info.exists() )
