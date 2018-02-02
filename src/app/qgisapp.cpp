@@ -6840,7 +6840,7 @@ void QgisApp::saveAsRasterFile( QgsRasterLayer *rasterLayer )
       emit layerSavedAs( rlWeakPointer, fileName );
 
     messageBar()->pushMessage( tr( "Saving Done" ),
-                               tr( "Successfully saved raster layer to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( QFileInfo( newFilename ).path() ).toString() ).arg( QDir::toNativeSeparators( newFilename ) ),
+                               tr( "Successfully saved raster layer to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( QFileInfo( newFilename ).path() ).toString(), QDir::toNativeSeparators( newFilename ) ),
                                QgsMessageBar::SUCCESS, messageTimeout() );
   } );
 
@@ -7043,7 +7043,7 @@ void QgisApp::saveAsVectorFileGeneral( QgsVectorLayer *vlayer, bool symbologyOpt
       }
       this->emit layerSavedAs( vlayer, vectorFilename );
       this->messageBar()->pushMessage( tr( "Saving Done" ),
-                                       tr( "Successfully saved vector layer to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( QFileInfo( newFilename ).path() ).toString() ).arg( QDir::toNativeSeparators( newFilename ) ),
+                                       tr( "Successfully saved vector layer to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( QFileInfo( newFilename ).path() ).toString(), QDir::toNativeSeparators( newFilename ) ),
                                        QgsMessageBar::SUCCESS, messageTimeout() );
     }
            );
@@ -10079,7 +10079,7 @@ QgsVectorLayer *QgisApp::addVectorLayer( const QString &vectorLayerPath, const Q
   else
   {
     QString message = layer->dataProvider()->error().message( QgsErrorMessage::Text );
-    QString msg = tr( "The layer %1 is not a valid layer and can not be added to the map. Reason: %2" ).arg( vectorLayerPath ).arg( message );
+    QString msg = tr( "The layer %1 is not a valid layer and can not be added to the map. Reason: %2" ).arg( vectorLayerPath, message );
     messageBar()->pushMessage( tr( "Layer is not valid" ), msg, QgsMessageBar::CRITICAL, messageTimeout() );
 
     delete layer;

@@ -52,7 +52,7 @@ void QgsGeometryContainedCheck::collectErrors( QList<QgsGeometryCheckError *> &e
       }
       else if ( !errMsg.isEmpty() )
       {
-        messages.append( tr( "Contained check failed for (%1, %2): %3" ).arg( layerFeatureB.id() ).arg( layerFeatureA.id() ).arg( errMsg ) );
+        messages.append( tr( "Contained check failed for (%1, %2): %3" ).arg( layerFeatureB.id(), layerFeatureA.id(), errMsg ) );
       }
     }
   }

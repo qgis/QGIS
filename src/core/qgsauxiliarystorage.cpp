@@ -368,7 +368,7 @@ QString QgsAuxiliaryLayer::nameFromProperty( const QgsPropertyDefinition &def, b
     fieldName =  QString( "%1_%2" ).arg( fieldName, def.name().toLower() );
 
   if ( !def.comment().isEmpty() )
-    fieldName = QString( "%1_%2" ).arg( fieldName ).arg( def.comment() );
+    fieldName = QString( "%1_%2" ).arg( fieldName, def.comment() );
 
   if ( joined )
     fieldName = QString( "%1%2" ).arg( AS_JOINPREFIX, fieldName );
@@ -665,15 +665,20 @@ bool QgsAuxiliaryStorage::exec( const QString &sql, sqlite3 *handler )
 
 void QgsAuxiliaryStorage::debugMsg( const QString &sql, sqlite3 *handler )
 {
+#ifdef QGISDEBUG
   const QString err = QString::fromUtf8( sqlite3_errmsg( handler ) );
   const QString msg = QObject::tr( "Unable to execute" );
-  const QString errMsg = QObject::tr( "%1 '%2': %3" ).arg( msg ).arg( sql ).arg( err );
+  const QString errMsg = QObject::tr( "%1 '%2': %3" ).arg( msg, sql, err );
   QgsDebugMsg( errMsg );
+#else
+  Q_UNUSED( sql );
+  Q_UNUSED( handler );
+#endif
 }
 
 bool QgsAuxiliaryStorage::createTable( const QString &type, const QString &table, sqlite3 *handler )
 {
-  const QString sql = QStringLiteral( "CREATE TABLE IF NOT EXISTS '%1' ( '%2' %3  )" ).arg( table ).arg( AS_JOINFIELD ).arg( type );
+  const QString sql = QStringLiteral( "CREATE TABLE IF NOT EXISTS '%1' ( '%2' %3  )" ).arg( table, AS_JOINFIELD, type );
 
   if ( !exec( sql, handler ) )
     return false;

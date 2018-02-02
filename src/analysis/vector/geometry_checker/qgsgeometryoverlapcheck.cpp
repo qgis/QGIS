@@ -64,7 +64,7 @@ void QgsGeometryOverlapCheck::collectErrors( QList<QgsGeometryCheckError *> &err
         }
         else if ( !errMsg.isEmpty() )
         {
-          messages.append( tr( "Overlap check between features %1 and %2 %3" ).arg( layerFeatureA.id() ).arg( layerFeatureB.id() ).arg( errMsg ) );
+          messages.append( tr( "Overlap check between features %1 and %2 %3" ).arg( layerFeatureA.id(), layerFeatureB.id(), errMsg ) );
         }
         delete interGeom;
       }
