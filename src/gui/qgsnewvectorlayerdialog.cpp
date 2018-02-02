@@ -270,7 +270,6 @@ QString QgsNewVectorLayerDialog::runAndCreateLayer( QWidget *parent, QString *pE
   geomDialog.attributes( attributes );
 
   QgsSettings settings;
-  QString filterString = QgsVectorFileWriter::filterForDriver( fileformat );
   QString fileName = geomDialog.filename();
   if ( fileformat == QLatin1String( "ESRI Shapefile" ) && !fileName.endsWith( QLatin1String( ".shp" ), Qt::CaseInsensitive ) )
     fileName += QLatin1String( ".shp" );
