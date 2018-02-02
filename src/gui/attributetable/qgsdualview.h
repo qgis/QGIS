@@ -406,7 +406,7 @@ class GUI_EXPORT QgsAttributeTableAction : public QAction
      *
      * \since QGIS 3.0
      */
-    QgsAttributeTableAction( const QString &name, QgsDualView *dualView, const QUuid &action, const QModelIndex &fieldIdx )
+    QgsAttributeTableAction( const QString &name, QgsDualView *dualView, QUuid action, const QModelIndex &fieldIdx )
       : QAction( name, dualView )
       , mDualView( dualView )
       , mAction( action )

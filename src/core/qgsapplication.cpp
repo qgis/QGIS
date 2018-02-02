@@ -491,7 +491,7 @@ QIcon QgsApplication::getThemeIcon( const QString &name )
   return icon;
 }
 
-QCursor QgsApplication::getThemeCursor( const Cursor &cursor )
+QCursor QgsApplication::getThemeCursor( Cursor cursor )
 {
   QgsApplication *app = instance();
   if ( app && app->mCursorCache.contains( cursor ) )

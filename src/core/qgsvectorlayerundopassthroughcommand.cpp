@@ -177,7 +177,7 @@ void QgsVectorLayerUndoPassthroughCommandDeleteFeatures::redo()
   }
 }
 
-QgsVectorLayerUndoPassthroughCommandChangeGeometry::QgsVectorLayerUndoPassthroughCommandChangeGeometry( QgsVectorLayerEditBuffer *buffer, const QgsFeatureId &fid, const QgsGeometry &geom )
+QgsVectorLayerUndoPassthroughCommandChangeGeometry::QgsVectorLayerUndoPassthroughCommandChangeGeometry( QgsVectorLayerEditBuffer *buffer, QgsFeatureId fid, const QgsGeometry &geom )
   : QgsVectorLayerUndoPassthroughCommand( buffer, QObject::tr( "change geometry" ) )
   , mFid( fid )
   , mNewGeom( geom )

@@ -472,7 +472,7 @@ void QgsRuleBasedLabeling::setSettings( QgsPalLayerSettings *settings, const QSt
   {
     Rule *rule = mRootRule->findRuleByKey( providerId );
     if ( rule && rule->settings() )
-      return rule->setSettings( settings );
+      rule->setSettings( settings );
   }
 }
 

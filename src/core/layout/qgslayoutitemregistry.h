@@ -115,8 +115,8 @@ class CORE_EXPORT QgsLayoutItemMetadata : public QgsLayoutItemAbstractMetadata
      * and \a visibleName, and function pointers for the various item creation functions.
      */
     QgsLayoutItemMetadata( int type, const QString &visibleName,
-                           QgsLayoutItemCreateFunc pfCreate,
-                           QgsLayoutItemPathResolverFunc pfPathResolver = nullptr )
+                           const QgsLayoutItemCreateFunc &pfCreate,
+                           const QgsLayoutItemPathResolverFunc &pfPathResolver = nullptr )
       : QgsLayoutItemAbstractMetadata( type, visibleName )
       , mCreateFunc( pfCreate )
       , mPathResolverFunc( pfPathResolver )
@@ -236,8 +236,8 @@ class CORE_EXPORT QgsLayoutMultiFrameMetadata : public QgsLayoutMultiFrameAbstra
      * and \a visibleName, and function pointers for the various item creation functions.
      */
     QgsLayoutMultiFrameMetadata( int type, const QString &visibleName,
-                                 QgsLayoutMultiFrameCreateFunc pfCreate,
-                                 QgsLayoutMultiFramePathResolverFunc pfPathResolver = nullptr )
+                                 const QgsLayoutMultiFrameCreateFunc &pfCreate,
+                                 const QgsLayoutMultiFramePathResolverFunc &pfPathResolver = nullptr )
       : QgsLayoutMultiFrameAbstractMetadata( type, visibleName )
       , mCreateFunc( pfCreate )
       , mPathResolverFunc( pfPathResolver )

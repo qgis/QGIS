@@ -270,7 +270,7 @@ class CORE_EXPORT QgsFeatureFilterModel : public QAbstractItemModel
     {
       Entry() = default;
 
-      Entry( QVariant _identifierValue, const QString &_value, const QgsFeature &_feature )
+      Entry( const QVariant &_identifierValue, const QString &_value, const QgsFeature &_feature )
         : identifierValue( _identifierValue )
         , value( _value )
         , feature( _feature )

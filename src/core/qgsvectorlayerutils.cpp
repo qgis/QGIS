@@ -395,7 +395,7 @@ QgsFeatureIds QgsVectorLayerUtils::QgsDuplicateFeatureContext::duplicatedFeature
   return mDuplicatedFeatures[layer];
 }
 
-void QgsVectorLayerUtils::QgsDuplicateFeatureContext::setDuplicatedFeatures( QgsVectorLayer *layer, QgsFeatureIds ids )
+void QgsVectorLayerUtils::QgsDuplicateFeatureContext::setDuplicatedFeatures( QgsVectorLayer *layer, const QgsFeatureIds &ids )
 {
   mDuplicatedFeatures.insert( layer, ids );
 }

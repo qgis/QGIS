@@ -251,7 +251,7 @@ Returns any flags associated with the parameter.
 .. seealso:: :py:func:`setFlags`
 %End
 
-    void setFlags( const Flags &flags );
+    void setFlags( Flags flags );
 %Docstring
 Sets the ``flags`` associated with the parameter.
 
@@ -1205,7 +1205,7 @@ Returns the acceptable data type for the parameter.
 .. seealso:: :py:func:`setDataType`
 %End
 
-    void setDataType( const Type &type );
+    void setDataType( Type type );
 %Docstring
 Sets the acceptable data ``type`` for the parameter.
 
@@ -1264,7 +1264,7 @@ Returns the acceptable data type for the range.
 .. seealso:: :py:func:`setDataType`
 %End
 
-    void setDataType( const QgsProcessingParameterNumber::Type &dataType );
+    void setDataType( QgsProcessingParameterNumber::Type dataType );
 %Docstring
 Sets the acceptable data ``type`` for the range.
 
@@ -1663,7 +1663,7 @@ Returns the acceptable data type for the field.
 .. seealso:: :py:func:`setDataType`
 %End
 
-    void setDataType( const DataType &type );
+    void setDataType( DataType type );
 %Docstring
 Sets the acceptable data ``type`` for the field.
 

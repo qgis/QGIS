@@ -335,7 +335,7 @@ class CORE_EXPORT QgsApplication : public QApplication
      * Cursors are automatically scaled to look like a 16px cursor on 96dpi
      * screens.
      */
-    static QCursor getThemeCursor( const Cursor &cursor );
+    static QCursor getThemeCursor( Cursor cursor );
 
     /**
      * Helper to get a theme icon as a pixmap. It will fall back to the

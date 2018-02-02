@@ -40,9 +40,9 @@ and ``destinationTransformId`` transforms.
 
       int destinationTransformId;
 
-      bool operator==( const QgsDatumTransform::TransformPair &other ) const;
+      bool operator==( QgsDatumTransform::TransformPair other ) const;
 
-      bool operator!=( const QgsDatumTransform::TransformPair &other ) const;
+      bool operator!=( QgsDatumTransform::TransformPair other ) const;
 
     };
 

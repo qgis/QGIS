@@ -52,7 +52,7 @@ Returns any flags set in the context.
 .. seealso:: :py:func:`setFlags`
 %End
 
-    void setFlags( const QgsProcessingContext::Flags &flags );
+    void setFlags( QgsProcessingContext::Flags flags );
 %Docstring
 Sets ``flags`` for the context.
 
@@ -161,7 +161,7 @@ Returns the behavior used for checking invalid geometries in input layers.
 .. seealso:: :py:func:`setInvalidGeometryCheck`
 %End
 
-    void setInvalidGeometryCheck( const QgsFeatureRequest::InvalidGeometryCheck &check );
+    void setInvalidGeometryCheck( QgsFeatureRequest::InvalidGeometryCheck check );
 %Docstring
 Sets the behavior used for checking invalid geometries in input layers.
 Settings this to anything but QgsFeatureRequest.GeometryNoCheck will also
