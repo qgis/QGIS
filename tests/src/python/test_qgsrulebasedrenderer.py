@@ -60,9 +60,9 @@ class TestQgsRulebasedRenderer(unittest.TestCase):
         QgsProject.instance().addMapLayer(layer)
 
         # Create rulebased style
-        sym1 = QgsFillSymbol.createSimple({'color': '#fdbf6f'})
-        sym2 = QgsFillSymbol.createSimple({'color': '#71bd6c'})
-        sym3 = QgsFillSymbol.createSimple({'color': '#1f78b4'})
+        sym1 = QgsFillSymbol.createSimple({'color': '#fdbf6f', 'outline_color': 'black'})
+        sym2 = QgsFillSymbol.createSimple({'color': '#71bd6c', 'outline_color': 'black'})
+        sym3 = QgsFillSymbol.createSimple({'color': '#1f78b4', 'outline_color': 'black'})
 
         self.r1 = QgsRuleBasedRenderer.Rule(sym1, 0, 0, '"id" = 1')
         self.r2 = QgsRuleBasedRenderer.Rule(sym2, 0, 0, '"id" = 2')

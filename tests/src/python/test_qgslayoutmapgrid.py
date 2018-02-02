@@ -124,6 +124,7 @@ class TestQgsLayoutMapGrid(unittest.TestCase):
         map.grid().setIntervalY(2000)
         map.grid().setAnnotationEnabled(False)
         map.grid().setBlendMode(QPainter.CompositionMode_SourceOver)
+        map.grid().markerSymbol().symbolLayer(0).setStrokeColor(QColor(0, 0, 0))
         map.updateBoundingRect()
 
         checker = QgsLayoutChecker('composermap_markergrid', layout)

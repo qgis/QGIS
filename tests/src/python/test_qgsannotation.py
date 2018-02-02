@@ -55,6 +55,8 @@ class TestQgsAnnotation(unittest.TestCase):
     def testTextAnnotation(self):
         """ test rendering a text annotation"""
         a = QgsTextAnnotation()
+        a.fillSymbol().symbolLayer(0).setStrokeColor(QColor(0, 0, 0))
+        a.markerSymbol().symbolLayer(0).setStrokeColor(QColor(0, 0, 0))
         a.setFrameSize(QSizeF(300, 200))
         a.setFrameOffsetFromReferencePoint(QPointF(40, 50))
         doc = QTextDocument()
@@ -71,6 +73,8 @@ class TestQgsAnnotation(unittest.TestCase):
     def testSvgAnnotation(self):
         """ test rendering a svg annotation"""
         a = QgsSvgAnnotation()
+        a.fillSymbol().symbolLayer(0).setStrokeColor(QColor(0, 0, 0))
+        a.markerSymbol().symbolLayer(0).setStrokeColor(QColor(0, 0, 0))
         a.setFrameSize(QSizeF(300, 200))
         a.setFrameOffsetFromReferencePoint(QPointF(40, 50))
         svg = TEST_DATA_DIR + "/sample_svg.svg"
@@ -86,6 +90,8 @@ class TestQgsAnnotation(unittest.TestCase):
     def testHtmlAnnotation(self):
         """ test rendering a html annotation"""
         a = QgsHtmlAnnotation()
+        a.fillSymbol().symbolLayer(0).setStrokeColor(QColor(0, 0, 0))
+        a.markerSymbol().symbolLayer(0).setStrokeColor(QColor(0, 0, 0))
         a.setFrameSize(QSizeF(400, 250))
         a.setFrameOffsetFromReferencePoint(QPointF(70, 90))
         html = TEST_DATA_DIR + "/test_html.html"
@@ -104,6 +110,8 @@ class TestQgsAnnotation(unittest.TestCase):
                                'test', "memory")
 
         a = QgsHtmlAnnotation()
+        a.fillSymbol().symbolLayer(0).setStrokeColor(QColor(0, 0, 0))
+        a.markerSymbol().symbolLayer(0).setStrokeColor(QColor(0, 0, 0))
         a.setFrameSize(QSizeF(400, 250))
         a.setFrameOffsetFromReferencePoint(QPointF(70, 90))
         a.setMapLayer(layer)
@@ -121,6 +129,7 @@ class TestQgsAnnotation(unittest.TestCase):
     def testRelativePosition(self):
         """ test rendering an annotation without map point"""
         a = QgsHtmlAnnotation()
+        a.fillSymbol().symbolLayer(0).setStrokeColor(QColor(0, 0, 0))
         a.setFrameSize(QSizeF(400, 250))
         a.setHasFixedMapPosition(False)
         html = TEST_DATA_DIR + "/test_html.html"
@@ -131,6 +140,7 @@ class TestQgsAnnotation(unittest.TestCase):
     def testMargins(self):
         """ test rendering an annotation with margins"""
         a = QgsHtmlAnnotation()
+        a.fillSymbol().symbolLayer(0).setStrokeColor(QColor(0, 0, 0))
         a.setFrameSize(QSizeF(400, 250))
         a.setHasFixedMapPosition(False)
         a.setContentsMargin(QgsMargins(15, 10, 30, 20))
@@ -144,7 +154,7 @@ class TestQgsAnnotation(unittest.TestCase):
         a = QgsTextAnnotation()
         a.setFrameSize(QSizeF(400, 250))
         a.setHasFixedMapPosition(False)
-        a.setFillSymbol(QgsFillSymbol.createSimple({'color': 'blue', 'width_border': '5'}))
+        a.setFillSymbol(QgsFillSymbol.createSimple({'color': 'blue', 'width_border': '5', 'outline_color': 'black'}))
         im = self.renderAnnotation(a, QPointF(20, 30))
         self.assertTrue(self.imageCheck('annotation_fillstyle', 'annotation_fillstyle', im))
 

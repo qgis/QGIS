@@ -1877,6 +1877,7 @@ void TestQgsLayoutItem::blendMode()
   QgsFillSymbol *fillSymbol = new QgsFillSymbol();
   fillSymbol->changeSymbolLayer( 0, simpleFill );
   simpleFill->setColor( QColor( 255, 150, 0 ) );
+  simpleFill->setStrokeColor( Qt::black );
   mComposerRect1->setSymbol( fillSymbol );
   delete fillSymbol;
 
@@ -1889,6 +1890,7 @@ void TestQgsLayoutItem::blendMode()
   QgsFillSymbol *fillSymbol2 = new QgsFillSymbol();
   fillSymbol2->changeSymbolLayer( 0, simpleFill2 );
   simpleFill2->setColor( QColor( 0, 100, 150 ) );
+  simpleFill2->setStrokeColor( Qt::black );
   mComposerRect2->setSymbol( fillSymbol2 );
   delete fillSymbol2;
 
@@ -1926,6 +1928,7 @@ void TestQgsLayoutItem::opacity()
   QgsFillSymbol *fillSymbol = new QgsFillSymbol();
   fillSymbol->changeSymbolLayer( 0, simpleFill );
   simpleFill->setColor( QColor( 255, 150, 0 ) );
+  simpleFill->setStrokeColor( Qt::black );
   mComposerRect1->setSymbol( fillSymbol );
   delete fillSymbol;
 
@@ -1938,6 +1941,7 @@ void TestQgsLayoutItem::opacity()
   QgsFillSymbol *fillSymbol2 = new QgsFillSymbol();
   fillSymbol2->changeSymbolLayer( 0, simpleFill2 );
   simpleFill2->setColor( QColor( 0, 100, 150 ) );
+  simpleFill2->setStrokeColor( Qt::black );
   mComposerRect2->setSymbol( fillSymbol2 );
   delete fillSymbol2;
 
