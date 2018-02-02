@@ -364,12 +364,6 @@ class CORE_EXPORT QgsLayoutMultiFrame: public QgsLayoutObject, public QgsLayoutU
   signals:
 
     /**
-     * Emitted when the properties of a multi frame have changed, and the GUI item widget
-     * must be updated.
-     */
-    void changed();
-
-    /**
      * Emitted when the contents of the multi frame have changed and the frames
      * must be redrawn.
      */
