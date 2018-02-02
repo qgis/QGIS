@@ -53,7 +53,7 @@ void QgsGeometryLineLayerIntersectionCheck::collectErrors( QList<QgsGeometryChec
           }
           else if ( const QgsPolygon *polygon = dynamic_cast<const QgsPolygon *>( part ) )
           {
-            QList< const QgsLineString* > rings = QgsGeometryCheckerUtils::polygonRings( polygon );
+            QList< const QgsLineString * > rings = QgsGeometryCheckerUtils::polygonRings( polygon );
             for ( const QgsLineString *ring : rings )
             {
               const QList< QgsPoint > intersections = QgsGeometryCheckerUtils::lineIntersections( line, ring, mContext->tolerance );
