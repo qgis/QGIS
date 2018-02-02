@@ -2606,8 +2606,10 @@ namespace QgsWms
             }
             else if ( mLayerGroups.contains( lname ) )
             {
-              for ( QgsMapLayer *layer : mLayerGroups[lname] )
+              // Reverse order for group members
+              for ( auto it = mLayerGroups[lname].rbegin(); it !=  mLayerGroups[lname].rend(); ++it )
               {
+                QgsMapLayer *layer = *it;
                 if ( !mRestrictedLayers.contains( layerNickname( *layer ) ) )
                 {
                   layer->readSld( namedElem, err );
@@ -2664,6 +2666,7 @@ namespace QgsWms
       }
       else if ( mLayerGroups.contains( nickname ) )
       {
+        // Reverse order for group members
         for ( auto it = mLayerGroups[nickname].rbegin(); it !=  mLayerGroups[nickname].rend(); ++it )
         {
           QgsMapLayer *layer = *it;
