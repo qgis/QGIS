@@ -30,8 +30,10 @@ class QgsProcessingFeedback;
 /**
  * Native file downloader algorithm.
  */
-class QgsFileDownloaderAlgorithm : public QgsProcessingAlgorithm, public QObject
+class QgsFileDownloaderAlgorithm : public QObject, public QgsProcessingAlgorithm
 {
+    Q_OBJECT
+
   public:
     QgsFileDownloaderAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
