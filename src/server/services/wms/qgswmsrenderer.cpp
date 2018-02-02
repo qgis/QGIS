@@ -2606,15 +2606,13 @@ namespace QgsWms
             }
             else if ( mLayerGroups.contains( lname ) )
             {
-              // Reverse order for group members
-              for ( auto it = mLayerGroups[lname].rbegin(); it !=  mLayerGroups[lname].rend(); ++it )
+              for ( QgsMapLayer *layer : mLayerGroups[lname] )
               {
-                QgsMapLayer *layer = *it;
                 if ( !mRestrictedLayers.contains( layerNickname( *layer ) ) )
                 {
                   layer->readSld( namedElem, err );
                   layer->setCustomProperty( "readSLD", true );
-                  layers.append( layer );
+                  layers.insert( 0, layer );
                 }
               }
             }
@@ -2666,10 +2664,8 @@ namespace QgsWms
       }
       else if ( mLayerGroups.contains( nickname ) )
       {
-        // Reverse order for group members
-        for ( auto it = mLayerGroups[nickname].rbegin(); it !=  mLayerGroups[nickname].rend(); ++it )
+        for ( QgsMapLayer *layer : mLayerGroups[nickname] )
         {
-          QgsMapLayer *layer = *it;
           if ( !mRestrictedLayers.contains( layerNickname( *layer ) ) )
           {
             if ( !style.isEmpty() )
@@ -2680,7 +2676,7 @@ namespace QgsWms
                 throw QgsMapServiceException( QStringLiteral( "StyleNotDefined" ), QStringLiteral( "Style \"%1\" does not exist for layer \"%2\"" ).arg( style, layerNickname( *layer ) ) );
               }
             }
-            layers.append( layer );
+            layers.insert( 0, layer );
           }
         }
       }
