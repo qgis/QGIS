@@ -101,7 +101,7 @@ QMap< QgsOgrProviderUtils::DatasetIdentification,
 
 QMap< QString, int > QgsOgrProviderUtils::sMapCountOpenedDS;
 
-QMap< GDALDatasetH, bool> QgsOgrProviderUtils::sMapDSHandleToUpdateMode;
+QHash< GDALDatasetH, bool> QgsOgrProviderUtils::sMapDSHandleToUpdateMode;
 
 QMap< QString, QDateTime > QgsOgrProviderUtils::sMapDSNameToLastModifiedDate;
 
