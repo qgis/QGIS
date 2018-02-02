@@ -92,7 +92,7 @@ QgsHistogramWidget::~QgsHistogramWidget()
 
 static bool _rangesByLower( const QgsRendererRangeV2& a, const QgsRendererRangeV2& b )
 {
-  return a.lowerValue() < b.lowerValue() ? -1 : 0;
+  return a.lowerValue() < b.lowerValue();
 }
 
 void QgsHistogramWidget::setGraduatedRanges( const QgsRangeList &ranges )
