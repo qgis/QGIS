@@ -2664,8 +2664,9 @@ namespace QgsWms
       }
       else if ( mLayerGroups.contains( nickname ) )
       {
-        for ( QgsMapLayer *layer : mLayerGroups[nickname] )
+        for ( auto it = mLayerGroups[nickname].rbegin(); it !=  mLayerGroups[nickname].rend(); ++it )
         {
+          QgsMapLayer *layer = *it;
           if ( !mRestrictedLayers.contains( layerNickname( *layer ) ) )
           {
             if ( !style.isEmpty() )
