@@ -22,7 +22,6 @@
 %Include qgsabstractdatasourcewidget.sip
 %Include qgssourceselectprovider.sip
 %Include qgssourceselectproviderregistry.sip
-%Include qgsvscrollarea.sip
 %Include attributetable/qgsfeaturemodel.sip
 %Include auth/qgsauthauthoritieseditor.sip
 %Include auth/qgsauthcertificateinfo.sip
@@ -201,6 +200,7 @@
 %Include qgstreewidgetitem.sip
 %Include qgsunitselectionwidget.sip
 %Include qgsvariableeditorwidget.sip
+%Include qgsvscrollarea.sip
 %Include qgsfiledownloaderdialog.sip
 %Include raster/qgsmultibandcolorrendererwidget.sip
 %Include raster/qgspalettedrendererwidget.sip
