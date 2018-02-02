@@ -765,6 +765,8 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      */
     bool shouldDrawItem() const;
 
+    QgsExpressionContext createExpressionContext() const override;
+
   public slots:
 
     /**
@@ -808,8 +810,6 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * \see itemRotation()
     */
     virtual void rotateItem( const double angle, const QPointF &transformOrigin );
-
-    QgsExpressionContext createExpressionContext() const override;
 
   signals:
 

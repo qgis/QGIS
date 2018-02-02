@@ -852,6 +852,9 @@ Cancels the current item command and discards it.
 Returns whether the item should be drawn in the current context.
 %End
 
+    virtual QgsExpressionContext createExpressionContext() const;
+
+
   public slots:
 
     virtual void refresh();
@@ -899,9 +902,6 @@ Rotates the item by a specified ``angle`` in degrees clockwise around a specifie
 
 .. seealso:: :py:func:`itemRotation`
 %End
-
-    virtual QgsExpressionContext createExpressionContext() const;
-
 
   signals:
 
