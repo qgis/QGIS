@@ -1655,8 +1655,9 @@ bool QgsCompositionConverter::readOldComposerObjectXml( QgsLayoutObject *layoutI
 
 void QgsCompositionConverter::readOldDataDefinedPropertyMap( const QDomElement &itemElem, QgsPropertyCollection &dataDefinedProperties )
 {
-  QgsPropertiesDefinition::const_iterator i = QgsCompositionConverter::propertyDefinitions().constBegin();
-  for ( ; i != QgsCompositionConverter::propertyDefinitions().constEnd(); ++i )
+  const QgsPropertiesDefinition defs = QgsCompositionConverter::propertyDefinitions();
+  QgsPropertiesDefinition::const_iterator i = defs.constBegin();
+  for ( ; i != defs.constEnd(); ++i )
   {
     QString elemName = i.value().name();
     QDomNodeList ddNodeList = itemElem.elementsByTagName( elemName );

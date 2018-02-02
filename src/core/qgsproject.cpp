@@ -2414,12 +2414,13 @@ void QgsProject::setTrustLayerMetadata( bool trust )
 
 bool QgsProject::saveAuxiliaryStorage( const QString &filename )
 {
-  for ( QgsMapLayer *l : mapLayers().values() )
+  const QMap<QString, QgsMapLayer *> layers = mapLayers();
+  for ( auto it = layers.constBegin(); it != layers.constEnd(); ++it )
   {
-    if ( l->type() != QgsMapLayer::VectorLayer )
+    if ( it.value()->type() != QgsMapLayer::VectorLayer )
       continue;
 
-    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( l );
+    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( it.value() );
     if ( vl && vl->auxiliaryLayer() )
     {
       vl->auxiliaryLayer()->save();
