@@ -428,11 +428,11 @@ QgsPropertyDefinition QgsAuxiliaryLayer::propertyDefinitionFromField( const QgsF
   if ( origin.compare( "labeling", Qt::CaseInsensitive ) == 0 )
   {
     const QgsPropertiesDefinition props = QgsPalLayerSettings::propertyDefinitions();
-    for ( const QgsPropertyDefinition &p : props.values() )
+    for ( auto it = props.constBegin(); it != props.constEnd(); ++it )
     {
-      if ( p.name().compare( propertyName, Qt::CaseInsensitive ) == 0 )
+      if ( it.value().name().compare( propertyName, Qt::CaseInsensitive ) == 0 )
       {
-        def = p;
+        def = it.value();
         if ( parts.size() == 3 )
           def.setComment( parts[2] );
         break;
@@ -442,11 +442,11 @@ QgsPropertyDefinition QgsAuxiliaryLayer::propertyDefinitionFromField( const QgsF
   else if ( origin.compare( "symbol", Qt::CaseInsensitive ) == 0 )
   {
     const QgsPropertiesDefinition props = QgsSymbolLayer::propertyDefinitions();
-    for ( const QgsPropertyDefinition &p : props.values() )
+    for ( auto it = props.constBegin(); it != props.constEnd(); ++it )
     {
-      if ( p.name().compare( propertyName, Qt::CaseInsensitive ) == 0 )
+      if ( it.value().name().compare( propertyName, Qt::CaseInsensitive ) == 0 )
       {
-        def = p;
+        def = it.value();
         if ( parts.size() == 3 )
           def.setComment( parts[2] );
         break;
@@ -456,11 +456,11 @@ QgsPropertyDefinition QgsAuxiliaryLayer::propertyDefinitionFromField( const QgsF
   else if ( origin.compare( "diagram", Qt::CaseInsensitive ) == 0 )
   {
     const QgsPropertiesDefinition props = QgsDiagramLayerSettings::propertyDefinitions();
-    for ( const QgsPropertyDefinition &p : props.values() )
+    for ( auto it = props.constBegin(); it != props.constEnd(); ++it )
     {
-      if ( p.name().compare( propertyName, Qt::CaseInsensitive ) == 0 )
+      if ( it.value().name().compare( propertyName, Qt::CaseInsensitive ) == 0 )
       {
-        def = p;
+        def = it.value();
         if ( parts.size() == 3 )
           def.setComment( parts[2] );
         break;
