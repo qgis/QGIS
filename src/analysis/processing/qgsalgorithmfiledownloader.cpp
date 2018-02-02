@@ -88,7 +88,7 @@ QVariantMap QgsFileDownloaderAlgorithm::processAlgorithm( const QVariantMap &par
   loop.exec();
 
   timer.stop();
-  bool exists = QFileInfo( outputFile ).exists();
+  bool exists = QFileInfo::exists( outputFile );
   if ( !feedback->isCanceled() && !exists )
     throw QgsProcessingException( tr( "Output file doesn't exist." ) );
 
