@@ -161,20 +161,32 @@ void QgsClipboard::setSystemClipboard()
   QMimeData *m = new QMimeData();
   m->setText( textCopy );
 
-  QgsSettings settings;
-  CopyFormat format = AttributesWithWKT;
-  if ( settings.contains( QStringLiteral( "/qgis/copyFeatureFormat" ) ) )
+  if ( mFeatureClipboard.count() < 1000 )
   {
-    format = static_cast< CopyFormat >( settings.value( QStringLiteral( "qgis/copyFeatureFormat" ), true ).toInt() );
-  }
+    QgsSettings settings;
+    CopyFormat format = AttributesWithWKT;
+    if ( settings.contains( QStringLiteral( "/qgis/copyFeatureFormat" ) ) )
+    {
+      format = static_cast< CopyFormat >( settings.value( QStringLiteral( "qgis/copyFeatureFormat" ), true ).toInt() );
+    }
 
-  if ( format == AttributesWithWKT && mFeatureClipboard.count() < 1000 )
-  {
-    QString htmlCopy = textCopy;
-    htmlCopy.replace( QRegExp( "\n" ), QStringLiteral( "</td></tr><tr><td>" ) );
-    htmlCopy.replace( QRegExp( "\t" ), QStringLiteral( "</td><td>" ) );
-    htmlCopy = QStringLiteral( "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\"><html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\"/></head><body><table border=\"1\"><tr><td>" ) + htmlCopy + QStringLiteral( "</td></tr></table></body></html>" );
-    m->setHtml( htmlCopy );
+    QString htmlCopy;
+    switch ( format )
+    {
+      case AttributesOnly:
+      case AttributesWithWKT:
+        htmlCopy = textCopy;
+        htmlCopy.replace( '\n', QStringLiteral( "</td></tr><tr><td>" ) );
+        htmlCopy.replace( '\t', QStringLiteral( "</td><td>" ) );
+        htmlCopy = QStringLiteral( "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\"><html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\"/></head><body><table border=\"1\"><tr><td>" ) + htmlCopy + QStringLiteral( "</td></tr></table></body></html>" );
+        break;
+      case GeoJSON:
+        break;
+    }
+    if ( !htmlCopy.isEmpty() )
+    {
+      m->setHtml( htmlCopy );
+    }
   }
 
   // With qgis running under Linux, but with a Windows based X
