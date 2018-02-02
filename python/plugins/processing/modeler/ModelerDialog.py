@@ -114,8 +114,8 @@ class ModelerDialog(BASE, WIDGET):
             QgsApplication.getThemeIcon('/mActionSaveAsPDF.svg'))
         self.mActionExportSvg.setIcon(
             QgsApplication.getThemeIcon('/mActionSaveAsSVG.svg'))
-        #~ self.mActionExportPython.setIcon(
-            #~ QgsApplication.getThemeIcon('/mActionSaveAsPython.svg'))
+        #self.mActionExportPython.setIcon(
+        #    QgsApplication.getThemeIcon('/mActionSaveAsPython.svg'))
         self.mActionEditHelp.setIcon(
             QgsApplication.getThemeIcon('/mActionEditHelpContent.svg'))
         self.mActionRun.setIcon(
