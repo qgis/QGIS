@@ -13237,13 +13237,13 @@ QgsFeature QgisApp::duplicateFeatureDigitized( QgsMapLayer *mlayer, const QgsFea
       childrenInfo += ( tr( "%1 children on layer %2 duplicated" ).arg( duplicateFeatureContext.duplicatedFeatures( chl ).size() ).arg( chl->name() ) );
     }
 
-    messageBar()->pushMessage( tr( "Feature on layer %2 duplicated\n%3" ).arg( layer->name() ).arg( childrenInfo ), QgsMessageBar::SUCCESS, 5 );
+    messageBar()->pushMessage( tr( "Feature on layer %2 duplicated\n%3" ).arg( layer->name(), childrenInfo ), QgsMessageBar::SUCCESS, 5 );
 
     mMapCanvas->unsetMapTool( digitizeFeature );
   }
          );
 
-  connect( digitizeFeature, static_cast<void ( QgsMapToolDigitizeFeature::* )()>( &QgsMapToolDigitizeFeature::digitizingFinished ), this, [this, digitizeFeature]()
+  connect( digitizeFeature, static_cast<void ( QgsMapToolDigitizeFeature::* )()>( &QgsMapToolDigitizeFeature::digitizingFinished ), this, [digitizeFeature]()
   {
     digitizeFeature->deleteLater();
   }

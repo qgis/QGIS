@@ -3472,7 +3472,7 @@ void QgsLayoutDesignerDialog::createReportWidget()
 void QgsLayoutDesignerDialog::initializeRegistry()
 {
   sInitializedRegistry = true;
-  auto createPageWidget = ( [this]( QgsLayoutItem * item )->QgsLayoutItemBaseWidget *
+  auto createPageWidget = ( []( QgsLayoutItem * item )->QgsLayoutItemBaseWidget *
   {
     std::unique_ptr< QgsLayoutPagePropertiesWidget > newWidget = qgis::make_unique< QgsLayoutPagePropertiesWidget >( nullptr, item );
     return newWidget.release();
