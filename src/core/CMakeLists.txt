@@ -473,6 +473,7 @@ SET(QGIS_CORE_SRCS
   3d/qgs3drendererregistry.cpp
   3d/qgsabstract3drenderer.cpp
 
+  fieldformatter/qgsrangefieldformatter.cpp
   fieldformatter/qgsdatetimefieldformatter.cpp
   fieldformatter/qgsfallbackfieldformatter.cpp
   fieldformatter/qgskeyvaluefieldformatter.cpp
@@ -1110,6 +1111,7 @@ SET(QGIS_CORE_HDRS
   3d/qgs3drendererregistry.h
   3d/qgsabstract3drenderer.h
 
+  fieldformatter/qgsrangefieldformatter.h
   fieldformatter/qgsdatetimefieldformatter.h
   fieldformatter/qgsfallbackfieldformatter.h
   fieldformatter/qgskeyvaluefieldformatter.h

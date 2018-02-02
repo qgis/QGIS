@@ -47,12 +47,14 @@ QWidget *QgsRangeWidgetWrapper::createWidget( QWidget *parent )
       case QVariant::Double:
       {
         editor = new QgsDoubleSpinBox( parent );
+        static_cast<QgsDoubleSpinBox *>( editor )->setLineEditAlignment( Qt::AlignRight );
         break;
       }
       case QVariant::Int:
       case QVariant::LongLong:
       default:
         editor = new QgsSpinBox( parent );
+        static_cast<QgsSpinBox *>( editor )->setLineEditAlignment( Qt::AlignRight );
         break;
     }
   }
