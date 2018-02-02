@@ -193,7 +193,7 @@ void QgsPointDistanceRenderer::checkLegendSymbolItem( const QString &key, bool s
   if ( !mRenderer )
     return;
 
-  return mRenderer->checkLegendSymbolItem( key, state );
+  mRenderer->checkLegendSymbolItem( key, state );
 }
 
 QString QgsPointDistanceRenderer::filter( const QgsFields &fields )
