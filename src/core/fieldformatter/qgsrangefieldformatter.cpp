@@ -53,14 +53,14 @@ QString QgsRangeFieldFormatter::representValue( QgsVectorLayer *layer, int field
   const QgsField field = layer->fields().at( fieldIndex );
 
   if ( field.type() == QVariant::Double &&
-       field.editorWidgetSetup().config().contains( QStringLiteral( "Precision" ) ) &&
+       config.contains( QStringLiteral( "Precision" ) ) &&
        value.isValid( ) )
   {
     bool ok;
     double val( value.toDouble( &ok ) );
     if ( ok )
     {
-      int precision( field.editorWidgetSetup().config()[ QStringLiteral( "Precision" ) ].toInt( &ok ) );
+      int precision( config[ QStringLiteral( "Precision" ) ].toInt( &ok ) );
       if ( ok )
       {
         // TODO: make the format configurable!
