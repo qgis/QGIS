@@ -541,7 +541,7 @@ QgsCurvePolygon *QgsCurvePolygon::snappedToGrid( double hSpacing, double vSpacin
 bool QgsCurvePolygon::removeDuplicateNodes( double epsilon, bool useZValues )
 {
   bool result = false;
-  auto cleanRing = [this, &result, epsilon, useZValues ]( QgsCurve * ring )->bool
+  auto cleanRing = [epsilon, useZValues ]( QgsCurve * ring )->bool
   {
     if ( ring->numPoints() <= 4 )
       return false;
