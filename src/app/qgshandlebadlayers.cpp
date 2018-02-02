@@ -392,7 +392,7 @@ void QgsHandleBadLayers::accept()
   QDialog::accept();
 }
 
-void QgsHandleBadLayers::rejected()
+void QgsHandleBadLayers::reject()
 {
 
   if ( mLayerList->rowCount() > 0  &&
