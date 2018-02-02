@@ -169,9 +169,9 @@ bool QgsRangeWidgetWrapper::valid() const
 void QgsRangeWidgetWrapper::valueChangedVariant( const QVariant &v )
 {
   if ( v.type() == QVariant::Int )
-    valueChanged( v.toInt() );
+    emit valueChanged( v.toInt() );
   if ( v.type() == QVariant::Double )
-    valueChanged( v.toDouble() );
+    emit valueChanged( v.toDouble() );
 }
 
 QVariant QgsRangeWidgetWrapper::value() const
