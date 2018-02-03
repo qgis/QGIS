@@ -201,21 +201,21 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
 
     bool isValid() const override;
     virtual bool isSaveAndLoadStyleToDatabaseSupported() const override { return true; }
-<<<<<<< HEAD
+    <<< <<< < HEAD
     bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = nullptr ) override;
-=======
+    == == == =
 
-    /**
-     * Adds features
-     *  - implementation of Provider function 'addFeatures'
-     * \note
-     *  - implemented in QgsSpatialiteDbLayer
-     * \param flist feature to add
-     *  \returns True in case of success and False in case of error or container not supported
-     * \see QgsSpatialiteDbLayer::addLayerFeatures
-     * \since QGIS 3.0
-     */
-    bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = 0 ) override;
+      /**
+       * Adds features
+       *  - implementation of Provider function 'addFeatures'
+       * \note
+       *  - implemented in QgsSpatialiteDbLayer
+       * \param flist feature to add
+       *  \returns True in case of success and False in case of error or container not supported
+       * \see QgsSpatialiteDbLayer::addLayerFeatures
+       * \since QGIS 3.0
+       */
+      bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = 0 ) override;
 
     /**
      * Deletes features
@@ -227,7 +227,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * \see QgsSpatialiteDbLayer::deleteLayerFeatures
      * \since QGIS 3.0
      */
->>>>>>> Refactured version based master from 2017-11-17. Minimal Spatialite connection with load_extension. RasterLite2 without source dependency. Full QgsLayerItem and QgsLayerMetadata support.
+    >>> >>> > Refactured version based master from 2017 - 11 - 17. Minimal Spatialite connection with load_extension. RasterLite2 without source dependency. Full QgsLayerItem and QgsLayerMetadata support.
     bool deleteFeatures( const QgsFeatureIds &id ) override;
 
     /**
@@ -299,22 +299,22 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * \since QGIS 3.0
     */
     QVariant defaultValue( int fieldId ) const override;
-<<<<<<< HEAD
+    <<< <<< < HEAD
     virtual bool skipConstraintCheck( int fieldIndex, QgsFieldConstraints::Constraint constraint, const QVariant &value = QVariant() ) const override;
-=======
+    == == == =
 
-    /**
-     * Creates attributes Index
-     *  - implementation of Provider function 'createAttributeIndex'
-     * \note
-     *  - implemented in QgsSpatialiteDbLayer
-     * \param field number of attribute to created the index for
-     * \returns True in case of success and False in case of error
-     * \see QgsSpatiaLiteProvider::createLayerAttributeIndex
-     * \since QGIS 3.0
-     */
->>>>>>> Refactured version based master from 2017-11-17. Minimal Spatialite connection with load_extension. RasterLite2 without source dependency. Full QgsLayerItem and QgsLayerMetadata support.
-    bool createAttributeIndex( int field ) override;
+      /**
+       * Creates attributes Index
+       *  - implementation of Provider function 'createAttributeIndex'
+       * \note
+       *  - implemented in QgsSpatialiteDbLayer
+       * \param field number of attribute to created the index for
+       * \returns True in case of success and False in case of error
+       * \see QgsSpatiaLiteProvider::createLayerAttributeIndex
+       * \since QGIS 3.0
+       */
+      >>> >>> > Refactured version based master from 2017 - 11 - 17. Minimal Spatialite connection with load_extension. RasterLite2 without source dependency. Full QgsLayerItem and QgsLayerMetadata support.
+      bool createAttributeIndex( int field ) override;
 
     /**
      * The class allowing to reuse the same sqlite handle for more layers
@@ -1235,23 +1235,24 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      */
     QString mUriPrimaryKey;
 
-<<<<<<< HEAD
+    <<< <<< < HEAD
     //! Flag indicating whether the primary key is auto-generated
     bool mPrimaryKeyAutoIncrement = false;
 
     //! List of primary key columns in the table
     QgsAttributeList mPrimaryKeyAttrs;
-=======
-    /**
-     * Name of the geometry column in the table
-     * \note
-     *  from QgsDataSourceUri::geometryColumn().toLower()
-     *  Used to build 'mUriLayerName'
-     * \see QgsSpatiaLiteProvider
-     * \since QGIS 3.0
-     */
-    QString mUriGeometryColumn;
->>>>>>> Refactured version based master from 2017-11-17. Minimal Spatialite connection with load_extension. RasterLite2 without source dependency. Full QgsLayerItem and QgsLayerMetadata support.
+    == == == =
+
+      /**
+       * Name of the geometry column in the table
+       * \note
+       *  from QgsDataSourceUri::geometryColumn().toLower()
+       *  Used to build 'mUriLayerName'
+       * \see QgsSpatiaLiteProvider
+       * \since QGIS 3.0
+       */
+      QString mUriGeometryColumn;
+    >>> >>> > Refactured version based master from 2017 - 11 - 17. Minimal Spatialite connection with load_extension. RasterLite2 without source dependency. Full QgsLayerItem and QgsLayerMetadata support.
 
     /**
      * Name of the geometry column in the table
@@ -1443,24 +1444,25 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      */
     QString mAbstract;
 
-<<<<<<< HEAD
+    <<< <<< < HEAD
     QgsVectorDataProvider::Capabilities mEnabledCapabilities = nullptr;
-=======
-    /**
-     * Copyright of the Layer
-     * - based on Provider specific values
-     * \note
-     *  - Spatialite since 4.5.0: vector_coverages(copyright)
-     *  - RasterLite2: raster_coverages(copyright)
-     *  - GeoPackage: none
-     *  - MbTiles: none
-     *  - FdoOgr: none
-     * \see QgsSpatialiteDbLayer::getCopyright
-     * \see QgsSpatialiteDbInfo::readVectorRasterCoverages
-     * \since QGIS 3.0
-     */
-    QString mCopyright;
->>>>>>> Refactured version based master from 2017-11-17. Minimal Spatialite connection with load_extension. RasterLite2 without source dependency. Full QgsLayerItem and QgsLayerMetadata support.
+    == == == =
+
+      /**
+       * Copyright of the Layer
+       * - based on Provider specific values
+       * \note
+       *  - Spatialite since 4.5.0: vector_coverages(copyright)
+       *  - RasterLite2: raster_coverages(copyright)
+       *  - GeoPackage: none
+       *  - MbTiles: none
+       *  - FdoOgr: none
+       * \see QgsSpatialiteDbLayer::getCopyright
+       * \see QgsSpatialiteDbInfo::readVectorRasterCoverages
+       * \since QGIS 3.0
+       */
+      QString mCopyright;
+    >>> >>> > Refactured version based master from 2017 - 11 - 17. Minimal Spatialite connection with load_extension. RasterLite2 without source dependency. Full QgsLayerItem and QgsLayerMetadata support.
 
     /**
      * Srid of the Layer
@@ -1559,7 +1561,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
                            const QgsAttributeList &fetchAttributes,
                            bool fetchGeometry,
                            QString whereClause );
-<<<<<<< HEAD
+    <<< <<< < HEAD
     bool getFeature( sqlite3_stmt *stmt, bool fetchGeometry,
                      QgsFeature &feature,
                      const QgsAttributeList &fetchAttributes );
@@ -1591,8 +1593,6 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     void fetchConstraints();
 
     void insertDefaultValue( int fieldIndex, QString defaultVal );
-=======
->>>>>>> Refactured version based master from 2017-11-17. Minimal Spatialite connection with load_extension. RasterLite2 without source dependency. Full QgsLayerItem and QgsLayerMetadata support.
 
     /**
      * getFeature
