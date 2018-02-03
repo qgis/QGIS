@@ -113,15 +113,16 @@ class LayerPreview(QgsMapCanvas):
                 else:
                     vl = table.toMapLayer()
 
-                if not vl.isValid():
+                if vl and not vl.isValid():
                     vl.deleteLater()
                     vl = None
 
             # remove old layer (if any) and set new
             if self.currentLayer:
-                QgsProject.instance().removeMapLayers([self.currentLayer.id()])
+                if not QgsProject.instance().layerTreeRoot().findLayer(self.currentLayer.id()):
+                    QgsProject.instance().removeMapLayers([self.currentLayer.id()])
 
-            if vl:
+            if vl and vl.isValid():
                 self.setLayers([vl])
                 QgsProject.instance().addMapLayers([vl], False)
                 self.zoomToFullExtent()
