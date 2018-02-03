@@ -25,7 +25,7 @@
 
 /**
  * \ingroup gui
- * \class QgsSearchHighlightOptionWidget
+ * \class QgsOptionsDialogHighlightWidget
  * Container for a widget to be used to search text in the option dialog
  * If the widget type is handled, it is valid.
  * It can perform a text search in the widget and highlight it in case of success.
@@ -37,6 +37,13 @@ class GUI_EXPORT QgsOptionsDialogHighlightWidget : public QObject
 
     Q_OBJECT
   public:
+
+    /**
+     * create a highlight widget implementation for the proper widget type.
+     * For instance a QgsOptionsDialogHighlightButton for button.
+     * @return a QgsOptionsDialogHighlightWidget or a nullptr if there is no implementation
+     * for the given widget.
+     */
     static QgsOptionsDialogHighlightWidget *createWidget( QWidget *widget ) SIP_FACTORY;
 
     /**
