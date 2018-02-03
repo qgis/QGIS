@@ -278,7 +278,7 @@ if not exist %OSGEO4W_ROOT%\httpd.d mkdir %OSGEO4W_ROOT%\httpd.d
 sed -e 's/@package@/%PACKAGENAME%/g' -e 's/@version@/%VERSION%/g' httpd.conf.tmpl >%OSGEO4W_ROOT%\httpd.d\httpd_%PACKAGENAME%.conf.tmpl
 if errorlevel 1 (echo creation of httpd.conf template failed & goto error)
 
-set packages="" "-common" "-server" "-devel" "-globe-plugin" "-oracle-provider" "-grass-plugin-common"
+set packages="" "-common" "-server" "-devel" "-oracle-provider" "-grass-plugin-common"
 
 for %%g IN (%GRASS_VERSIONS%) do (
 	for /F "delims=." %%i in ("%%g") do set v=%%i
@@ -468,13 +468,6 @@ for %%g IN (%GRASS_VERSIONS%) do (
 	if errorlevel 1 (echo tar grass-plugin!w! failed & goto error)
 )
 
-tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%-globe-plugin/%PACKAGENAME%-globe-plugin-%VERSION%-%PACKAGE%.tar.bz2 ^
-	--exclude-from exclude ^
-	--exclude "*.pyc" ^
-	"apps/%PACKAGENAME%/globe" ^
-	"apps/%PACKAGENAME%/plugins/globeplugin.dll"
-if errorlevel 1 (echo tar globe-plugin failed & goto error)
-
 tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%-oracle-provider/%PACKAGENAME%-oracle-provider-%VERSION%-%PACKAGE%.tar.bz2 ^
 	"apps/%PACKAGENAME%/plugins/oracleprovider.dll" ^
 	"apps/%PACKAGENAME%/qtplugins/sqldrivers/qsqlocispatial.dll"
@@ -497,7 +490,7 @@ exit /b 1
 
 :error
 echo BUILD ERROR %ERRORLEVEL%: %DATE% %TIME%
-for %%i in ("" "-common" "-server" "-devel" "-grass-plugin" "-globe-plugin" "-oracle-provider") do (
+for %%i in (%packages%) do (
 	if exist %ARCH%\release\qgis\%PACKAGENAME%%%i\%PACKAGENAME%%%i-%VERSION%-%PACKAGE%.tar.bz2 del %ARCH%\release\qgis\%PACKAGENAME%%%i\%PACKAGENAME%%%i-%VERSION%-%PACKAGE%.tar.bz2
 )
 exit /b 1

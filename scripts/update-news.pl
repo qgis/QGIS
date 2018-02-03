@@ -11,7 +11,6 @@
 use strict;
 use warnings;
 use Pod::Usage;
-use LWP::Simple;
 use File::Temp qw/tempfile/;
 use File::Copy qw/copy/;
 use HTML::Entities qw/decode_entities/;
@@ -29,7 +28,7 @@ while(<$in>) {
 	last if /^Last Change/;
 }
 
-my $content = get("http://changelog.qgis.org/en/qgis/version/$major.$minor.0/gnu/" );
+my $content = `curl -s http://changelog.qgis.org/en/qgis/version/$major.$minor.0/gnu/`;
 die "Couldn't get it!" unless defined $content;
 
 print $news "\n= What's new in Version $major.$minor '$releasename'? =\n\n";
