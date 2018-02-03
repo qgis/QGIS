@@ -99,7 +99,7 @@ class CORE_EXPORT QgsSpatiaLiteConnection : public QObject
     static QString connectionPath( const QString &name );
 
     /**
-     * Create a SpatialiteDbInfo based Connection
+     * Create a QgsSpatialiteDbInfo based Connection
      *  -> containing all needed Information about a Spatial Sqlite3 Container
      * \note
      *  - check result with spatialiteDbInfo->isDbSqlite3()
@@ -110,7 +110,7 @@ class CORE_EXPORT QgsSpatiaLiteConnection : public QObject
     * \returns true if file is a sqlite3 Database
     * \since QGIS 3.0
     */
-    SpatialiteDbInfo *CreateSpatialiteConnection( QString sLayerName = QString::null, bool bLoadLayers = true, bool bShared = true, SpatialiteDbInfo::SpatialMetadata dbCreateOption = SpatialiteDbInfo::SpatialUnknown );
+    QgsSpatialiteDbInfo *CreateSpatialiteConnection( QString sLayerName = QString::null, bool bLoadLayers = true, bool bShared = true, QgsSpatialiteDbInfo::SpatialMetadata dbCreateOption = QgsSpatialiteDbInfo::SpatialUnknown );
 
   protected:
 

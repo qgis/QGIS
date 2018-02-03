@@ -27,9 +27,9 @@
 /**
  * Class to connect to Spatialite/Rasterlite2 Database
   * - replaces previous QgsSLConnect class used for static connections
-  * - contains and SpatialiteDbInfo object when used as a instance class
+  * - contains and QgsSpatialiteDbInfo object when used as a instance class
   * \note
-  *  SpatialiteDbInfo is the backbone of the QgisSpatialite/RasterLite2 Providers
+  *  QgsSpatialiteDbInfo is the backbone of the QgisSpatialite/RasterLite2 Providers
   *  When shared, the QgsSqliteHandle class will used the same connection of each Layer in the same Database
   *  QgsDebugMsgLevel = 3: for connection messages that deal with QgsSpatiaLiteProvider,QgsOgrProvider or QgsGdalProvider
   *  QgsDebugMsgLevel = 4: for connection messages that deal with connections not supporting QgsSpatiaLiteProvider,QgsOgrProvider or QgsGdalProvider
@@ -41,7 +41,7 @@
   * \param dbPath the absolute file path used to open the Database
   * \param shared was created with share option
   * \param bInitSpatialite was QgsSqliteHandle::sqlite3_open_v2 called with spatialite  [default=false]
-  * \see SpatialiteDbLayer
+  * \see QgsSpatialiteDbLayer
   * \see loadExtension
   * \since QGIS 3.0
  */
@@ -64,7 +64,7 @@ class CORE_EXPORT QgsSqliteHandle
 
     /**
      * The sqlite handler
-     *  - used in SpatialiteDbInfo
+     *  - used in QgsSpatialiteDbInfo
      * \note
      *  - closing done through QgsSqliteHandle
      * \see QgsSqliteHandle::openDb
@@ -106,11 +106,11 @@ class CORE_EXPORT QgsSqliteHandle
 
     /**
      * Connection info (DB-path) without table and geometry
-     * - this will be called from classes using SpatialiteDbInfo
+     * - this will be called from classes using QgsSpatialiteDbInfo
      * \note
-     *  - to call for Database and Table/Geometry portion use: SpatialiteDbLayer::getLayerDataSourceUri()
+     *  - to call for Database and Table/Geometry portion use: QgsSpatialiteDbLayer::getLayerDataSourceUri()
     * \returns uri with Database only
-    * \see SpatialiteDbLayer::getLayerDataSourceUri()
+    * \see QgsSpatialiteDbLayer::getLayerDataSourceUri()
     * \since QGIS 3.0
     */
     QString getDatabaseUri() const { return mDatabaseUri; }
@@ -191,7 +191,7 @@ class CORE_EXPORT QgsSqliteHandle
      * \note
      *  -1 not being shared
     * \returns Count on how often this Connection is being used
-     * \see SpatialiteDbInfo::getQSqliteHandle()
+     * \see QgsSpatialiteDbInfo::getQSqliteHandle()
      * \since QGIS 3.0
      */
     int removeRef()
@@ -217,27 +217,27 @@ class CORE_EXPORT QgsSqliteHandle
     }
 
     /**
-     * Set SpatialiteDbInfo pointer when valid
+     * Set QgsSpatialiteDbInfo pointer when valid
      * \see setStatus
-     * \see SpatialiteDbInfo::attachQSqliteHandle
+     * \see QgsSpatialiteDbInfo::attachQSqliteHandle
      * \since QGIS 1.8
      */
-    void setSpatialiteDbInfo( SpatialiteDbInfo *spatialiteDbInfo )
+    void setQgsSpatialiteDbInfo( QgsSpatialiteDbInfo *spatialiteDbInfo )
     {
       mSpatialiteDbInfo = spatialiteDbInfo;
       setStatus();
     }
 
     /**
-     * Retrieve SpatialiteDbInfo
+     * Retrieve QgsSpatialiteDbInfo
      * - containing all Information about Database file
      * \note
      * - isDbValid() return if the connection contains layers that are supported by
      * -- QgsSpatiaLiteProvider, QgsGdalProvider and QgsOgrProvider
-     * \see SpatialiteDbInfo::isDbValid()
+     * \see QgsSpatialiteDbInfo::isDbValid()
      * \since QGIS 3.0
      */
-    SpatialiteDbInfo *getSpatialiteDbInfo() const { return mSpatialiteDbInfo; }
+    QgsSpatialiteDbInfo *getSpatialiteDbInfo() const { return mSpatialiteDbInfo; }
 
     /**
      * Is the read Database supported by QgsSpatiaLiteProvider or
@@ -325,7 +325,7 @@ class CORE_EXPORT QgsSqliteHandle
      * When used in QgsDataItem's, many threads are running at once
      * - a reconnect may take place in one DataItem before the other has compleated
      * A shared connection will not return a connection that has been invalidated
-     * \see SpatialiteDbInfo::~SpatialiteDbInfo
+     * \see QgsSpatialiteDbInfo::~QgsSpatialiteDbInfo
      * \see openDb
      * \since QGIS 1.8
      */
@@ -340,7 +340,7 @@ class CORE_EXPORT QgsSqliteHandle
      * \note
      *  The spatialite-Library allows only a 64 connections at one time
      *  - connection should only be initalized when really needed
-     *  -> which will be called from SpatialiteDbInfo when needed
+     *  -> which will be called from QgsSpatialiteDbInfo when needed
      * \param bRasterLite2 load with RasterLite2 [default=false]
      * \returns true if 'mod_spatialite' succeeded
      * \see mIsSpatialiteActive
@@ -356,7 +356,7 @@ class CORE_EXPORT QgsSqliteHandle
      * \note
      *  The Spatialite-Library contains placeholders for RasterLite2 function
      *  - during 'mod_rasterlite2' these will be replaced with the real functions
-     *  -> which will be called from SpatialiteDbInfo when needed
+     *  -> which will be called from QgsSpatialiteDbInfo when needed
      * \returns true if 'mod_rasterlite2' succeeded
      * \see mIsRasterLite2Active
      * \see mIsSpatialiteActive
@@ -372,7 +372,7 @@ class CORE_EXPORT QgsSqliteHandle
      *  - will close the Database connection
      *  - if 'sqlite3_load_extension' has been used
      *  -> these extensions will be unloaded
-     *  - if SpatialiteDbInfo is being used
+     *  - if QgsSpatialiteDbInfo is being used
      *  -> will be deleted
      * \see openDb
      * \see closeDb
@@ -391,11 +391,11 @@ class CORE_EXPORT QgsSqliteHandle
      * \param shared share this connection with others [default]
      * \param sLayerName when used will load the Layer-Information of that Layer only
      * \param bLoadLayers Load all Layer-Information or only 'sniff' [default] the Database the Database
-     * \returns SpatialiteDbInfo with collected results if supported by QgsSpatiaLiteProvider,QgsOgrProvider or QgsGdalProvider
+     * \returns QgsSpatialiteDbInfo with collected results if supported by QgsSpatiaLiteProvider,QgsOgrProvider or QgsGdalProvider
      * \see QgsSqliteHandle
      * \since QGIS 1.8
      */
-    static QgsSqliteHandle *openDb( const QString &dbPath, bool shared = true, QString sLayerName = QString::null, bool bLoadLayers = true, SpatialiteDbInfo::SpatialMetadata dbCreateOption = SpatialiteDbInfo::SpatialUnknown );
+    static QgsSqliteHandle *openDb( const QString &dbPath, bool shared = true, QString sLayerName = QString::null, bool bLoadLayers = true, QgsSpatialiteDbInfo::SpatialMetadata dbCreateOption = QgsSpatialiteDbInfo::SpatialUnknown );
 
     /**
      * Close a (possibly cached) Spatialite Database
@@ -422,11 +422,11 @@ class CORE_EXPORT QgsSqliteHandle
      * \note
      *  The spatialite-Library allows only a 64 connections at one time
      *  - connection should only be initalized when really needed
-     *  -> which will be called from SpatialiteDbInfo when needed
+     *  -> which will be called from QgsSpatialiteDbInfo when needed
      * \param sqlite_handle : SQLite db handle [must be open]
      * \param sFileName FileName, without path [for messages only]
      * \returns true if 'mod_spatialite' succeeded
-     * \see SpatialiteDbInfo
+     * \see QgsSpatialiteDbInfo
      * \see sqlite3_open
      * \see sqlite3_open_v2
      * \see initRasterlite2
@@ -513,7 +513,7 @@ class CORE_EXPORT QgsSqliteHandle
 
     /**
      * The sqlite handler
-     *  - used in SpatialiteDbInfo
+     *  - used in QgsSpatialiteDbInfo
      * \see QgsSqliteHandle::openDb
      * \see sqliteClose()
     * \since QGIS 1.8
@@ -547,11 +547,11 @@ class CORE_EXPORT QgsSqliteHandle
 
     /**
      * Connection info (DB-path) without table and geometry
-     * - this will be called from classes using SpatialiteDbInfo
+     * - this will be called from classes using QgsSpatialiteDbInfo
      * \note
-     *  - to call for Database and Table/Geometry portion use: SpatialiteDbLayer::getLayerDataSourceUri()
+     *  - to call for Database and Table/Geometry portion use: QgsSpatialiteDbLayer::getLayerDataSourceUri()
     * \returns uri with Database only
-    * \see SpatialiteDbLayer::getLayerDataSourceUri()
+    * \see QgsSpatialiteDbLayer::getLayerDataSourceUri()
     * \since QGIS 3.0
     */
     QString mDatabaseUri;
@@ -618,15 +618,15 @@ class CORE_EXPORT QgsSqliteHandle
     bool mDbValid;
 
     /**
-     * Retrieve SpatialiteDbInfo
+     * Retrieve QgsSpatialiteDbInfo
      * - containing all Information about Database file
      * \note
      * - isDbValid() return if the connection contains layers that are supported by
      * -- QgsSpatiaLiteProvider, QgsGdalProvider and QgsOgrProvider
-     * \see SpatialiteDbInfo::isDbValid()
+     * \see QgsSpatialiteDbInfo::isDbValid()
      * \since QGIS 3.0
      */
-    SpatialiteDbInfo *mSpatialiteDbInfo = nullptr;
+    QgsSpatialiteDbInfo *mSpatialiteDbInfo = nullptr;
 
     /**
      * Map of cached of QgsSqliteHandle connections

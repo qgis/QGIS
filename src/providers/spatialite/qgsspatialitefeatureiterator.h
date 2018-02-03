@@ -42,7 +42,7 @@ class QgsSpatiaLiteFeatureSource : public QgsAbstractFeatureSource
      * \note
      * - isDbValid() return if the connection contains layers that are supported by
      * -- QgsSpatiaLiteProvider, QgsGdalProvider and QgsOgrProvider
-     * \see SpatialiteDbInfo::isDbValid()
+     * \see QgsSpatialiteDbInfo::isDbValid()
      * \since QGIS 3.0
      */
     QgsSqliteHandle *mQSqliteHandle = nullptr;
@@ -53,7 +53,7 @@ class QgsSpatiaLiteFeatureSource : public QgsAbstractFeatureSource
      * \note
      * - isDbValid() return if the connection contains layers that are supported by
      * -- QgsSpatiaLiteProvider, QgsGdalProvider and QgsOgrProvider
-     * \see SpatialiteDbInfo::isDbValid()
+     * \see QgsSpatialiteDbInfo::isDbValid()
      * \since QGIS 3.0
      */
     QgsSqliteHandle *getQSqliteHandle() const { return mQSqliteHandle; }
@@ -64,43 +64,43 @@ class QgsSpatiaLiteFeatureSource : public QgsAbstractFeatureSource
      * \note
      * - isDbValid() return if the connection contains layers that are supported by
      * -- QgsSpatiaLiteProvider, QgsGdalProvider and QgsOgrProvider
-     * \see SpatialiteDbInfo::isDbValid()
+     * \see QgsSpatialiteDbInfo::isDbValid()
      * \since QGIS 3.0
      */
     sqlite3 *dbSqliteHandle() const { return getQSqliteHandle()->handle(); }
 
     /**
-     * Retrieve SpatialiteDbInfo
+     * Retrieve QgsSpatialiteDbInfo
      * - containing all Information about Database file
      * \note
      * - isDbValid() return if the connection contains layers that are supported by
      * -- QgsSpatiaLiteProvider, QgsGdalProvider and QgsOgrProvider
-     * \see SpatialiteDbInfo::isDbValid()
+     * \see QgsSpatialiteDbInfo::isDbValid()
      * \since QGIS 3.0
      */
-    SpatialiteDbInfo *mSpatialiteDbInfo = nullptr;
+    QgsSpatialiteDbInfo *mSpatialiteDbInfo = nullptr;
 
     /**
      * The active Layer
      * - being read by the Provider
      * \note
      * - isLayerValid() return true if everything is considered correct
-     * \see SpatialiteDbLayer::isLayerValid
+     * \see QgsSpatialiteDbLayer::isLayerValid
      * \see setDbLayer
      * \since QGIS 3.0
      */
-    SpatialiteDbLayer *mDbLayer = nullptr;
+    QgsSpatialiteDbLayer *mDbLayer = nullptr;
 
     /**
      * The active Layer
      * - being read by the Provider
      * \note
      * - isLayerValid() return true if everything is considered correct
-     * \see SpatialiteDbLayer::isLayerValid
+     * \see QgsSpatialiteDbLayer::isLayerValid
      * \see setDbLayer
      * \since QGIS 3.0
      */
-    SpatialiteDbLayer *getDbLayer() const { return mDbLayer; }
+    QgsSpatialiteDbLayer *getDbLayer() const { return mDbLayer; }
 
     /**
      * Name of the geometry column in the table
@@ -115,7 +115,7 @@ class QgsSpatiaLiteFeatureSource : public QgsAbstractFeatureSource
      * List of layer fields in the table
      * \note
      *  - from PRAGMA table_info()
-     * \see SpatialiteDbLayer::getAttributeFields
+     * \see QgsSpatialiteDbLayer::getAttributeFields
      * \since QGIS 3.0
      */
     QgsFields mAttributeFields;
@@ -124,7 +124,7 @@ class QgsSpatiaLiteFeatureSource : public QgsAbstractFeatureSource
      * Name of the primary key column in the table
      * \note
      *  -> SpatialView: entry of view_rowid of views_geometry_columns
-     * \see SpatialiteDbLayer::getPrimaryKey
+     * \see QgsSpatialiteDbLayer::getPrimaryKey
      * \since QGIS 3.0
      */
     QString mPrimaryKey;
@@ -134,7 +134,7 @@ class QgsSpatiaLiteFeatureSource : public QgsAbstractFeatureSource
      * \note
      *  - SpatialView: name from entry of view_rowid of views_geometry_columns
      *  -> position from inside the PRAGMA table_info('name')
-     * \see SpatialiteDbLayer::getPrimaryKeyCId
+     * \see QgsSpatialiteDbLayer::getPrimaryKeyCId
      * \since QGIS 3.0
      */
     int mPrimaryKeyCId;
@@ -144,7 +144,7 @@ class QgsSpatiaLiteFeatureSource : public QgsAbstractFeatureSource
      * \note
      *  Vector: Layer format: 'table_name(geometry_name)'
      *  Raster: Layer format: 'coverage_name'
-     * \see SpatialiteDbLayer::getLayerName
+     * \see QgsSpatialiteDbLayer::getLayerName
      * \since QGIS 3.0
      */
     QString mLayerName;
@@ -154,7 +154,7 @@ class QgsSpatiaLiteFeatureSource : public QgsAbstractFeatureSource
      * - representing mGeometryType
      * \note
      *  - QgsWkbTypes::displayString(mGeometryType)
-     * \see SpatialiteDbLayer::getGeometryType
+     * \see QgsSpatialiteDbLayer::getGeometryType
      * \since QGIS 3.0
      */
     QString mGeometryTypeString;
@@ -163,7 +163,7 @@ class QgsSpatiaLiteFeatureSource : public QgsAbstractFeatureSource
      * The SpatialIndex-Type used for the Geometry
      * \note
      *  Uses the same numbering as Spatialite [0,1,2]
-     * \see SpatialiteDbLayer::getSpatialIndexType
+     * \see QgsSpatialiteDbLayer::getSpatialIndexType
      * \since QGIS 3.0
      */
     int mSpatialIndexType;
@@ -208,7 +208,7 @@ class QgsSpatiaLiteFeatureSource : public QgsAbstractFeatureSource
     /**
      *Flag indicating if the layer data source is based on a View
      * \note
-     *  result of getLayerType() == SpatialiteDbInfo::SpatialView
+     *  result of getLayerType() == QgsSpatialiteDbInfo::SpatialView
      * otherwise not used
      * \see setDbLayer
      * \since QGIS 3.0
@@ -218,7 +218,7 @@ class QgsSpatiaLiteFeatureSource : public QgsAbstractFeatureSource
     /**
      * Flag indicating if the layer data source is based on a VirtualShape
      * \note
-     *  result of getLayerType() == SpatialiteDbInfo::VirtualShape
+     *  result of getLayerType() == QgsSpatialiteDbInfo::VirtualShape
      * otherwise not used
      * \see setDbLayer
      * \since QGIS 3.0
@@ -230,8 +230,8 @@ class QgsSpatiaLiteFeatureSource : public QgsAbstractFeatureSource
      * \note
      *  For SpatialTable/VirtualShapes: result of getTableName will be used
      *  For SpatialViews: result of getViewTableName will be used
-     * \see SpatialiteDbLayer::getTableName
-     * \see SpatialiteDbLayer::getViewTableName
+     * \see QgsSpatialiteDbLayer::getTableName
+     * \see QgsSpatialiteDbLayer::getViewTableName
      * \see QgsSpatiaLiteFeatureSource::mIndexTable
      * \since QGIS 3.0
      */
@@ -242,8 +242,8 @@ class QgsSpatiaLiteFeatureSource : public QgsAbstractFeatureSource
      * \note
      *  For SpatialTable/VirtualShapes: result of getGeometryColumn will be used
      *  For SpatialViews: result of getViewTableGeometryColumn will be used
-     * \see SpatialiteDbLayer::getGeometryColumn
-     * \see SpatialiteDbLayer::getViewTableGeometryColumn
+     * \see QgsSpatialiteDbLayer::getGeometryColumn
+     * \see QgsSpatialiteDbLayer::getViewTableGeometryColumn
      * \see QgsSpatiaLiteFeatureSource::mIndexGeometry
      * \since QGIS 3.0
      */
@@ -252,7 +252,7 @@ class QgsSpatiaLiteFeatureSource : public QgsAbstractFeatureSource
     /**
      * this Geometry is supported by an R*Tree spatial index
      * \note
-     *  result of getDbLayer()->getSpatialIndexType() == SpatialiteDbInfo::SpatialIndexRTree
+     *  result of getDbLayer()->getSpatialIndexType() == QgsSpatialiteDbInfo::SpatialIndexRTree
      *  Used in QgsSpatiaLiteFeatureIterator
      * \see setDbLayer
      * \see QgsSpatiaLiteFeatureSource::mSpatialIndexRTree
@@ -264,7 +264,7 @@ class QgsSpatiaLiteFeatureSource : public QgsAbstractFeatureSource
     /**
      * this Geometry is supported by an MBR cache spatial index
      * \note
-     *  result of getDbLayer()->getSpatialIndexType() == SpatialiteDbInfo::SpatialIndexMbrCache
+     *  result of getDbLayer()->getSpatialIndexType() == QgsSpatialiteDbInfo::SpatialIndexMbrCache
      *  Used in QgsSpatiaLiteFeatureIterator
      * \see setDbLayer
      * \see QgsSpatiaLiteFeatureSource::mSpatialIndexMbrCache

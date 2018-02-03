@@ -136,125 +136,17 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
   if ( path.isEmpty() )
     return nullptr;
   // Check if supported by QgsSpatiaLiteProvider or QgsRasterLite2Provider and some Mime-Types
-  SpatialiteDbInfo *spatialiteDbInfo = QgsSpatiaLiteUtils::CreateSpatialiteDbInfo( path, false, false );
-  bool bIsGdal = false;
-  if ( spatialiteDbInfo )
+  bool isSupportedFormat = false;
+  bool bIsGeoPackage = false;
+  bool isOgr = false; // this is Gdal
+  // QgsSpatialiteDbInfo can load Gdal/Ogr Sqlite3-formats using the QgsGdal/OgrProviders
+  bool allowOgrGdal = true; // allow the Spatialite::dataItem version to deal with Gdal/Ogr Sqlite3-formats
+  if ( QgsSpatiaLiteUtils::CheckOgrGdalDataItem( path, isOgr, allowOgrGdal, &isSupportedFormat, &bIsGeoPackage ) )
   {
-    // The file/directory exists and Magic-Header of file has been read and certain File-Types are known
-    bool bUnSupportedFormat = false;
-    bool bIsSpatialite = false;
-    bool bIsOgr = false;
-    QString sMimeType = spatialiteDbInfo->getFileMimeTypeString();
-    QString sSpatialMetadata = spatialiteDbInfo->dbSpatialMetadataString();
-    if ( spatialiteDbInfo->isDbSqlite3() )
-    {
-      // This is a Sqlite3-Container
-      if ( !spatialiteDbInfo->isDbValid() )
-      {
-        // This is a Sqlite3-Container containing a non-supported format
-        bUnSupportedFormat = true;
-      }
-      else
-      {
-        // This is a valid Sqlite3-Container containing a supported Provider
-        if ( spatialiteDbInfo->isDbGdalOgr() )
-        {
-          // This is a Sqlite3-Container supported by QgsGdalProvider or QgsOgrProvider
-#if 1
-          // QgsSpatiaLiteSourceSelect/QgsSpatialiteLayerItem can display Gdal/Ogr sqlite3 based Sources (GeoPackage, MbTiles, FDO etc.)
-          //  and when selected call the needed QgsOgrProvider or QgsGdalProvider
-          // - if not desired (possible User-Setting), then this can be prevented here
-          bIsSpatialite = true;
-          QgsDebugMsgLevel( QString( "Sending a Gdal/Ogr supported SQLite file to QgsSpatialiteLayerItem. SpatialMetadata[%1]" ).arg( sSpatialMetadata ), 7 );
-#else
-          switch ( spatialiteDbInfo->dbSpatialMetadata() )
-          {
-            case SpatialiteDbInfo::SpatialiteFdoOgr:
-              // contains Fdo Layers for QgsOgrProvider
-              bIsOgr = true;
-              break;
-            case SpatialiteDbInfo::SpatialiteGpkg:
-              // contains GeoPackage Layers for QgsGdalProvider and/or QgsOgrProvider
-              bIsOgr = true;
-              break;
-            case SpatialiteDbInfo::SpatialiteMBTiles:
-              // contains a MBTiles Layer for QgsGdalProvider
-              bIsGdal = true;
-              break;
-            case SpatialiteDbInfo::SpatialiteLegacy:
-              if ( spatialiteDbInfo->dbRasterLite1LayersCount() > 0 )
-              {
-                // contains RasterLite1 Layers for QgsGdalProvider
-                bIsGdal = true;
-              }
-              break;
-            default:
-              break;
-          }
-#endif
-        }
-        if ( ( !bIsGdal ) && ( spatialiteDbInfo->isDbSpatialite() ) )
-        {
-          // This is a Sqlite3-Container supported by QgsSpatiaLiteProvider and/or QgsRasterLite2Provider
-          // - RasterLite1 is not supported by  by QgsSpatiaLiteProvider or QgsRasterLite2Provider
-          bIsSpatialite = true;
-        }
-      }
-    }
-    else
-    {
-      // This is not a Sqlite3-Container
-      switch ( spatialiteDbInfo->getFileMimeType() )
-      {
-        case SpatialiteDbInfo::MimeNotExists:
-        case SpatialiteDbInfo::MimeExeUnix:
-        case SpatialiteDbInfo::MimeRtf:
-        case SpatialiteDbInfo::MimePid:
-        case SpatialiteDbInfo::MimeBz2:
-        case SpatialiteDbInfo::MimeTar:
-        case SpatialiteDbInfo::MimeRar:
-        case SpatialiteDbInfo::MimeXar:
-        case SpatialiteDbInfo::Mime7z:
-        case SpatialiteDbInfo::MimeSqlite2:
-          // Known File-formats that are not supported by Gdal/Ogr
-          bUnSupportedFormat = true;
-          break;
-        case SpatialiteDbInfo::MimeKmz:
-        case SpatialiteDbInfo::MimeKml:
-          // This could be supported by Ogr
-          bIsOgr = true;
-          break;
-        // Everthing else, leave to Gdal/Ogr to check
-        case SpatialiteDbInfo::MimeZip:
-        default:
-          break;
-      }
-    }
-    if ( !spatialiteDbInfo->checkConnectionNeeded() )
-    {
-      // Delete only if not being used elsewhere, Connection will be closed
-      delete spatialiteDbInfo;
-    }
-    spatialiteDbInfo = nullptr;
-    if ( bUnSupportedFormat )
-    {
-      QgsDebugMsgLevel( QString( "Skipping file with known Magic-Header [%1] that is not supported." ).arg( sMimeType ), 4 );
-      return nullptr;
-    }
-    if ( bIsSpatialite )
-    {
-      // Do not load Spatialite formats  [Geometries, RasterLite2]
-      QgsDebugMsgLevel( QString( "Skipping SQLite file because QgsSpatialiteLayerItem will deal with it. SpatialMetadata[%1]" ).arg( sSpatialMetadata ), 4 );
-      return nullptr;
-    }
-    if ( bIsOgr )
-    {
-      QgsDebugMsgLevel( QString( "Skipping SQLite file because QgsOgrLayerItem will deal with it. SpatialMetadata[%1]" ).arg( sSpatialMetadata ), 4 );
-      return nullptr;
-    }
-    // Avoids Gdal from reading files that out of the question
+    // either delt with elsewhere or contains a Magic-Header that is not supported by Ogr/Gdal
+    return nullptr;
   }
-  if ( bIsGdal )
+  if ( isSupportedFormat )
   {
 #if 0
     QgsDataItem *item = nullptr;

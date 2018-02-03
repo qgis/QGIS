@@ -9,14 +9,17 @@ SET(SPATIALITE_SRCS
   qgsspatialiteprovider.cpp
   qgsspatialitedataitems.cpp
   qgsspatialitefeatureiterator.cpp
+  qgsspatialitedbinfomodel.cpp
   qgsspatialitetablemodel.cpp
 )
 
 SET(SPATIALITE_MOC_HDRS
   qgsspatialiteprovider.h
   qgsspatialitedataitems.h
+  qgsspatialitedbinfomodel.h
   qgsspatialitetablemodel.h
 )
+
 
 IF (WITH_GUI)
   SET(SPATIALITE_SRCS ${SPATIALITE_SRCS}
@@ -37,6 +40,8 @@ SET(RASTERLITE2_MOC_HDRS
 
 ########################################################
 # Build
+
+QT5_WRAP_UI(SPATIALITE_UI_H qgsspatialitesourceselectbase.ui)
 
 QT5_WRAP_CPP(SPATIALITE_MOC_SRCS ${SPATIALITE_MOC_HDRS})
 QT5_WRAP_CPP(RASTERLITE2_MOC_SRCS ${RASTERLITE2_MOC_HDRS})
@@ -59,6 +64,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/gui
   ${CMAKE_BINARY_DIR}/src/ui
+  ${CMAKE_CURRENT_BINARY_DIR} # ui_xxx_dlg.h
 )
 INCLUDE_DIRECTORIES(SYSTEM
   ${SQLITE3_INCLUDE_DIR}
@@ -67,12 +73,16 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${GDAL_INCLUDE_DIR}
 )
 
-ADD_LIBRARY (spatialiteprovider MODULE ${SPATIALITE_SRCS} ${SPATIALITE_MOC_SRCS})
+ADD_LIBRARY (spatialite45provider MODULE
+  ${SPATIALITE_SRCS}
+  ${SPATIALITE_MOC_SRCS}
+  ${SPATIALITE_UI_H}
+)
 SET(SPATIALITE_LIBRARYS_PROVIDER
   ${SPATIALITE_LIBRARY}
 )
 
-TARGET_LINK_LIBRARIES(spatialiteprovider
+TARGET_LINK_LIBRARIES(spatialite45provider
   qgis_core
   ${SPATIALITE_LIBRARYS_PROVIDER}
 )
@@ -85,7 +95,7 @@ TARGET_LINK_LIBRARIES(rasterlite2provider
 )
 
 IF (WITH_GUI)
-  TARGET_LINK_LIBRARIES (spatialiteprovider
+  TARGET_LINK_LIBRARIES (spatialite45provider
     qgis_gui
   )
 ENDIF ()
@@ -99,7 +109,7 @@ ENDIF ()
 # clang-tidy
 IF(CLANG_TIDY_EXE)
   SET_TARGET_PROPERTIES(
-    spatialiteprovider PROPERTIES
+    spatialite45provider PROPERTIES
     CXX_CLANG_TIDY "${DO_CLANG_TIDY}"
   )
 ENDIF(CLANG_TIDY_EXE)
@@ -114,7 +124,7 @@ ENDIF(CLANG_TIDY_EXE)
 ########################################################
 # Install
 
-INSTALL(TARGETS spatialiteprovider
+INSTALL(TARGETS spatialite45provider
   RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
   LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})
 

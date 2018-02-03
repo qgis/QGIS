@@ -77,13 +77,13 @@ QgsSpatiaLiteConnection::QgsSpatiaLiteConnection( const QString &name )
   // for canonicalFilePath, the file must exist
   if ( file_info.exists() )
   {
-    // SpatialiteDbInfo uses the actual absolute path [with resolved soft-links]
+    // QgsSpatialiteDbInfo uses the actual absolute path [with resolved soft-links]
     mDbPath = file_info.canonicalFilePath();
   }
 }
-SpatialiteDbInfo *QgsSpatiaLiteConnection::CreateSpatialiteConnection( QString sLayerName,  bool bLoadLayers,  bool bShared, SpatialiteDbInfo::SpatialMetadata dbCreateOption )
+QgsSpatialiteDbInfo *QgsSpatiaLiteConnection::CreateSpatialiteConnection( QString sLayerName,  bool bLoadLayers,  bool bShared, QgsSpatialiteDbInfo::SpatialMetadata dbCreateOption )
 {
-  SpatialiteDbInfo *spatialiteDbInfo = nullptr;
+  QgsSpatialiteDbInfo *spatialiteDbInfo = nullptr;
   QgsSqliteHandle *qSqliteHandle = QgsSqliteHandle::openDb( mDbPath, bShared, sLayerName, bLoadLayers, dbCreateOption );
   if ( ( qSqliteHandle ) && ( qSqliteHandle->getSpatialiteDbInfo() ) )
   {

@@ -106,7 +106,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * Amount of features
      *  - implementation of Provider function 'featureCount'
      * \note
-     *  - implemented in SpatialiteDbLayer
+     *  - implemented in QgsSpatialiteDbLayer
      *  \returns amount of features of the Layer
      * \see getNumberFeatures
      * \since QGIS 3.0
@@ -117,7 +117,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * Extent of the Layer
      *  - implementation of Provider function 'extent'
      * \note
-     *  - implemented in SpatialiteDbLayer
+     *  - implemented in QgsSpatialiteDbLayer
      *  \returns QgsRectangle extent of the Layer
      *  - getLayerExtent is called retrieving the extent without calling UpdateLayerStatistics
      * \see getLayerExtent
@@ -129,7 +129,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * Extent of the Layer
      *  - implementation of Provider function 'updateExtents'
      * \note
-     *  - implemented in SpatialiteDbLayer
+     *  - implemented in QgsSpatialiteDbLayer
      *  - getLayerExtent is called retrieving the extent after a UpdateLayerStatistics
      * \see getLayerExtent
      * \since QGIS 3.0
@@ -140,7 +140,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * List of fields
      *  - implementation of Provider function 'fields'
      * \note
-     *  - implemented in SpatialiteDbLayer
+     *  - implemented in QgsSpatialiteDbLayer
      *  \returns QgsFields of the Layer
      * \see getAttributeFields
      * \since QGIS 3.0
@@ -209,10 +209,10 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * Adds features
      *  - implementation of Provider function 'addFeatures'
      * \note
-     *  - implemented in SpatialiteDbLayer
+     *  - implemented in QgsSpatialiteDbLayer
      * \param flist feature to add
      *  \returns True in case of success and False in case of error or container not supported
-     * \see SpatialiteDbLayer::addLayerFeatures
+     * \see QgsSpatialiteDbLayer::addLayerFeatures
      * \since QGIS 3.0
      */
     bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = 0 ) override;
@@ -221,10 +221,10 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * Deletes features
      *  - implementation of Provider function 'deleteFeatures'
      * \note
-     *  - implemented in SpatialiteDbLayer
+     *  - implemented in QgsSpatialiteDbLayer
      * \param id QgsFeatureIds to delete
      *  \returns True in case of success and False in case of error or container not supported
-     * \see SpatialiteDbLayer::deleteLayerFeatures
+     * \see QgsSpatialiteDbLayer::deleteLayerFeatures
      * \since QGIS 3.0
      */
 >>>>>>> Refactured version based master from 2017-11-17. Minimal Spatialite connection with load_extension. RasterLite2 without source dependency. Full QgsLayerItem and QgsLayerMetadata support.
@@ -234,11 +234,11 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * Deletes all records of Layer-Table
      *  - implementation of Provider function 'truncate'
      * \note
-     *  - implemented in SpatialiteDbLayer
+     *  - implemented in QgsSpatialiteDbLayer
      * \param id QgsFeatureIds to delete
      * \returns True in case of success and False in case of error or container not supported
      * \see getNumberFeatures
-     * \see SpatialiteDbLayer::truncateLayerTableRows
+     * \see QgsSpatialiteDbLayer::truncateLayerTableRows
      * \since QGIS 3.0
      */
     bool truncate() override;
@@ -247,10 +247,10 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * Adds attributes
      *  - implementation of Provider function 'addAttributes'
      * \note
-     *  - implemented in SpatialiteDbLayer
+     *  - implemented in QgsSpatialiteDbLayer
      * \param attributes List of QgsField
      *  \returns True in case of success and False in case of error
-     * \see SpatialiteDbLayer::addLayerAttributes
+     * \see QgsSpatialiteDbLayer::addLayerAttributes
      * \since QGIS 3.0
      */
     bool addAttributes( const QList<QgsField> &attributes ) override;
@@ -262,7 +262,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      *  - Spatialite specific [GeoPackage could be implemented, but not forseen]
      * \param attr_map collection of attributes to change
      *   \returns True in case of success and False in case of error
-     * \see SpatialiteDbLayer::changeAttributeValues
+     * \see QgsSpatialiteDbLayer::changeAttributeValues
      * \since QGIS 3.0
      */
     bool changeAttributeValues( const QgsChangedAttributesMap &attr_map ) override;
@@ -271,10 +271,10 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * Updates features
      *  - implementation of Provider function 'changeGeometryValues'
      * \note
-     *  - implemented in SpatialiteDbLayer
+     *  - implemented in QgsSpatialiteDbLayer
      * \param geometry_map collection of geometries to change
      *  \returns True in case of success and False in case of error
-     * \see SpatialiteDbLayer::changeLayerGeometryValues
+     * \see QgsSpatialiteDbLayer::changeLayerGeometryValues
      * \since QGIS 3.0
      */
     bool changeGeometryValues( const QgsGeometryMap &geometry_map ) override;
@@ -283,7 +283,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * Based on Layer-Type, set QgsVectorDataProvider::Capabilities
      *  - implementation of Provider function 'capabilities'
      * \note
-     *  - implemented in SpatialiteDbLayer
+     *  - implemented in QgsSpatialiteDbLayer
      * \see getCapabilities
      * \since QGIS 3.0
     */
@@ -293,7 +293,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * Based on Layer-Type, set QgsVectorDataProvider::Capabilities
      *  - implementation of Provider function 'defaultValue'
      * \note
-     *  - implemented in SpatialiteDbLayer
+     *  - implemented in QgsSpatialiteDbLayer
      * \see getDefaultValues()
      * \returns value from Map of field index of the default values
      * \since QGIS 3.0
@@ -307,7 +307,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * Creates attributes Index
      *  - implementation of Provider function 'createAttributeIndex'
      * \note
-     *  - implemented in SpatialiteDbLayer
+     *  - implemented in QgsSpatialiteDbLayer
      * \param field number of attribute to created the index for
      * \returns True in case of success and False in case of error
      * \see QgsSpatiaLiteProvider::createLayerAttributeIndex
@@ -322,21 +322,21 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * \note
      * - isDbValid() return if the connection contains layers that are supported by
      * -- QgsSpatiaLiteProvider, QgsGdalProvider and QgsOgrProvider
-     * \see SpatialiteDbInfo::isDbValid()
+     * \see QgsSpatialiteDbInfo::isDbValid()
      * \since QGIS 3.0
      */
     QgsSqliteHandle *getQSqliteHandle() const { return mQSqliteHandle; }
 
     /**
-     * Retrieve SpatialiteDbInfo
+     * Retrieve QgsSpatialiteDbInfo
      * - containing all Information about Database file
      * \note
      * - isDbValid() return if the connection contains layers that are supported by
      * -- QgsSpatiaLiteProvider, QgsGdalProvider and QgsOgrProvider
-     * \see SpatialiteDbInfo::isDbValid()
+     * \see QgsSpatialiteDbInfo::isDbValid()
      * \since QGIS 3.0
      */
-    SpatialiteDbInfo *getSpatialiteDbInfo() const { return mSpatialiteDbInfo; }
+    QgsSpatialiteDbInfo *getSpatialiteDbInfo() const { return mSpatialiteDbInfo; }
 
     /**
      * The Database filename (with Path)
@@ -349,16 +349,16 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * The Spatialite internal Database structure being read
      * \note
      *  -  based on result of CheckSpatialMetaData
-     * \see SpatialiteDbInfo::getSniffDatabaseType
+     * \see QgsSpatialiteDbInfo::getSniffDatabaseType
     * \since QGIS 3.0
     */
-    SpatialiteDbInfo::SpatialMetadata dbSpatialMetadata() const { return getSpatialiteDbInfo()->dbSpatialMetadata(); }
+    QgsSpatialiteDbInfo::SpatialMetadata dbSpatialMetadata() const { return getSpatialiteDbInfo()->dbSpatialMetadata(); }
 
     /**
      * The Spatialite Version Driver being used
      * \note
      *  - returned from spatialite_version()
-     * \see SpatialiteDbInfo::getSniffDatabaseType
+     * \see QgsSpatialiteDbInfo::getSniffDatabaseType
     * \since QGIS 3.0
     */
     QString dbSpatialiteVersionInfo() const { return getSpatialiteDbInfo()->dbSpatialiteVersionInfo(); }
@@ -367,7 +367,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * The major Spatialite Version being used
      * \note
      *  - extracted from spatialite_version()
-     * \see SpatialiteDbInfo::getSniffDatabaseType
+     * \see QgsSpatialiteDbInfo::getSniffDatabaseType
      * \since QGIS 3.0
     */
     int dbSpatialiteVersionMajor() const { return getSpatialiteDbInfo()->dbSpatialiteVersionMajor(); }
@@ -376,7 +376,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * The minor Spatialite Version being used
      * \note
      *  - extracted from spatialite_version()
-     * \see SpatialiteDbInfo::getSniffDatabaseType
+     * \see QgsSpatialiteDbInfo::getSniffDatabaseType
      * \since QGIS 3.0
     */
     int dbSpatialiteVersionMinor() const { return getSpatialiteDbInfo()->dbSpatialiteVersionMinor(); }
@@ -385,7 +385,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * The revision Spatialite Version being used
      * \note
      *  - extracted from spatialite_version()
-     * \see SpatialiteDbInfo::getSniffDatabaseType
+     * \see QgsSpatialiteDbInfo::getSniffDatabaseType
     * \since QGIS 3.0
     */
     int dbSpatialiteVersionRevision() const { return getSpatialiteDbInfo()->dbSpatialiteVersionRevision(); }
@@ -417,7 +417,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * - from the vector_layers View
      * \note
      * - this does not reflect the amount of SpatialTables that have been loaded
-     * \see SpatialiteDbInfo::dbSpatialTablesLayersCount
+     * \see QgsSpatialiteDbInfo::dbSpatialTablesLayersCount
      * \since QGIS 3.0
      */
     int dbSpatialTablesLayersCount() const { return getSpatialiteDbInfo()->dbSpatialTablesLayersCount(); }
@@ -427,7 +427,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * - from the vector_layers View
      * \note
      * - this does not reflect the amount of SpatialViews that have been loaded
-     * \see SpatialiteDbInfo::dbSpatialViewsLayersCount
+     * \see QgsSpatialiteDbInfo::dbSpatialViewsLayersCount
      * \since QGIS 3.0
      */
     int dbSpatialViewsLayersCount() const { return getSpatialiteDbInfo()->dbSpatialViewsLayersCount(); }
@@ -437,7 +437,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * - from the vector_layers View
      * \note
      * - this does not reflect the amount of VirtualShapes that have been loaded
-     * \see SpatialiteDbInfo::dbVirtualShapesLayersCount
+     * \see QgsSpatialiteDbInfo::dbVirtualShapesLayersCount
      * \since QGIS 3.0
      */
     int dbVirtualShapesLayersCount() const { return getSpatialiteDbInfo()->dbVirtualShapesLayersCount(); }
@@ -448,7 +448,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * \note
      * - the Gdal-RasterLite1-Driver is needed to Determineeee this
      * - this does not reflect the amount of RasterLite1-Rasters that have been loaded
-     * \see SpatialiteDbInfo::dbRasterLite1LayersCount
+     * \see QgsSpatialiteDbInfo::dbRasterLite1LayersCount
      * \since QGIS 3.0
      */
     int dbRasterLite1LayersCount() const { return getSpatialiteDbInfo()->dbRasterLite1LayersCount(); }
@@ -458,7 +458,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * - from the vector_coverages table Table [-1 if Table not found]
      * \note
      * - this does not reflect the amount of RasterLite2 Vector-Coverages that have been loaded
-     * \see SpatialiteDbInfo::dbVectorCoveragesLayersCount
+     * \see QgsSpatialiteDbInfo::dbVectorCoveragesLayersCount
      * \since QGIS 3.0
      */
     int dbVectorCoveragesLayersCount() const { return getSpatialiteDbInfo()->dbVectorCoveragesLayersCount(); }
@@ -468,7 +468,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * - from the raster_coverages table Table [-1 if Table not found]
      * \note
      * - this does not reflect the amount of RasterLite2 Raster-Coverages that have been loaded
-     * \see SpatialiteDbInfo::dbRasterCoveragesLayersCount
+     * \see QgsSpatialiteDbInfo::dbRasterCoveragesLayersCount
      * \since QGIS 3.0
      */
     int dbRasterCoveragesLayersCount() const { return getSpatialiteDbInfo()->dbRasterCoveragesLayersCount(); }
@@ -478,7 +478,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * - from the topologies table Table [-1 if Table not found]
      * \note
      * - this does not reflect the amount of Topology-Layers that have been loaded
-     * \see SpatialiteDbInfo::dbTopologyExportLayersCount
+     * \see QgsSpatialiteDbInfo::dbTopologyExportLayersCount
      * \since QGIS 3.0
      */
     int dbTopologyExportLayersCount() const { return getSpatialiteDbInfo()->dbTopologyExportLayersCount(); }
@@ -490,7 +490,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      *  - Based on GRASS GIS was initially released under the GPLv2+ license terms.
      * \returns true if GCP_* Sql-Functions are supported
      * \see https://www.gaia-gis.it/fossil/libspatialite/wiki?name=Ground+Control+Points
-     * \see SpatialiteDbInfo::hasDbGcpSupport
+     * \see QgsSpatialiteDbInfo::hasDbGcpSupport
      * \since QGIS 3.0
      */
     bool hasDbGcpSupport() const { return getSpatialiteDbInfo()->hasDbGcpSupport(); }
@@ -503,7 +503,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * \returns true if Topology Sql-Functions are supported
      * \see https://www.gaia-gis.it/fossil/libspatialite/wiki?name=ISO+Topology
      * \see https://git.osgeo.org/gogs/rttopo/librttopo
-     * \see SpatialiteDbInfo::hasDbTopologySupport
+     * \see QgsSpatialiteDbInfo::hasDbTopologySupport
      * \since QGIS 3.0
      */
     bool hasDbTopologySupport() const { return getSpatialiteDbInfo()->hasDbTopologySupport(); }
@@ -512,7 +512,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * Is the used connection Spatialite 4.5.0 or greater
      * \note
      *  - bsed on values offrom spatialite_version()
-     * \see SpatialiteDbInfo::isDbVersion45
+     * \see QgsSpatialiteDbInfo::isDbVersion45
     * \since QGIS 3.0
     */
     bool isDbVersion45() const { return getSpatialiteDbInfo()-> isDbVersion45(); }
@@ -521,9 +521,9 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * Loaded Layers-Counter
      * - contained in mDbLayers
      * \note
-     * - only when GetSpatialiteDbInfoWrapper is called with LoadLayers=true
+     * - only when GetQgsSpatialiteDbInfoWrapper is called with LoadLayers=true
      * -- will all the Layers be loaded
-     * \see SpatialiteDbInfo::dbLayersCount
+     * \see QgsSpatialiteDbInfo::dbLayersCount
      * \since QGIS 3.0
      */
     int dbLayersCount() const { return getSpatialiteDbInfo()->dbLayersCount(); }
@@ -534,7 +534,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * \note
      * - this amount may differ from dbLayersCount()
      * -- which only returns the amount of Loaded-Vector-Layers
-     * \see SpatialiteDbInfo::dbVectorLayersCount
+     * \see QgsSpatialiteDbInfo::dbVectorLayersCount
      * \since QGIS 3.0
      */
     int dbVectorLayersCount() const { return getSpatialiteDbInfo()->dbVectorLayersCount(); }
@@ -544,7 +544,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * \note
      *  Uses sqlite3_db_readonly( mSqliteHandle, "main" )
      * \returns result of sqlite3_db_readonly( mSqliteHandle, "main" )
-     * \see SpatialiteDbInfo::isDbReadOnly
+     * \see QgsSpatialiteDbInfo::isDbReadOnly
     * \since QGIS 3.0
     */
     bool isDbReadOnly() const { return getSpatialiteDbInfo()->isDbReadOnly(); }
@@ -555,7 +555,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * \note
      *  when false: the file is either a non-supported sqlite3 container
      *  or not a sqlite3 file (a fossil file would be a sqlite3 container not supported)
-     * \see SpatialiteDbInfo::isDbValid
+     * \see QgsSpatialiteDbInfo::isDbValid
      * \since QGIS 3.0
      */
     bool isDbValid() const { if ( getSpatialiteDbInfo() ) return getSpatialiteDbInfo()->isDbValid(); else return false;}
@@ -566,7 +566,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * \note
      *  - Spatialite specific functions should not be called when false
      *  -> UpdateLayerStatistics()
-     * \see SpatialiteDbInfo::isDbSpatialite
+     * \see QgsSpatialiteDbInfo::isDbSpatialite
      * \since QGIS 3.0
      */
     bool isDbSpatialite() const { return getSpatialiteDbInfo()->isDbSpatialite(); }
@@ -580,7 +580,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * \see setSqliteHandle
      * \see dbHasSpatialite
      * \see QgsSqliteHandle::isDbSpatialiteActive
-     * \see SpatialiteDbInfo::isDbSpatialiteActive
+     * \see QgsSpatialiteDbInfo::isDbSpatialiteActive
      * \since QGIS 3.0
      */
     bool isDbSpatialiteActive() const { return getSpatialiteDbInfo()->isDbSpatialiteActive(); }
@@ -591,7 +591,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * \note
      *   load Spatialite-Driver if not active
      * \returns true if Driver is active
-     * \see SpatialiteDbInfo::dbHasSpatialite
+     * \see QgsSpatialiteDbInfo::dbHasSpatialite
      * \since QGIS 3.0
      */
     bool dbHasSpatialite() const { return getSpatialiteDbInfo()->dbHasSpatialite( true ); }
@@ -611,11 +611,11 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * - being read by the Provider
      * \note
      * - isLayerValid() return true if everything is considered correct
-     * \see SpatialiteDbLayer::isLayerValid
+     * \see QgsSpatialiteDbLayer::isLayerValid
      * \see setDbLayer
      * \since QGIS 3.0
      */
-    SpatialiteDbLayer *getDbLayer() const  { return mDbLayer; }
+    QgsSpatialiteDbLayer *getDbLayer() const  { return mDbLayer; }
 
     /**
      * The sqlite handler
@@ -623,7 +623,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * \note
      * - isDbValid() return if the connection contains layers that are supported by
      * -- QgsSpatiaLiteProvider, QgsGdalProvider and QgsOgrProvider
-     * \see SpatialiteDbInfo::isDbValid
+     * \see QgsSpatialiteDbInfo::isDbValid
      * \since QGIS 3.0
      */
     sqlite3 *dbSqliteHandle() const { return getSpatialiteDbInfo()->dbSqliteHandle(); }
@@ -633,8 +633,8 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * \note
      *  For SpatialViews
      *  - the regiestered TABLE can be retrieved with getViewTableName()
-     * \see SpatialiteDbLayer::getTableName
-     * \see SpatialiteDbLayer::getViewTableName
+     * \see QgsSpatialiteDbLayer::getTableName
+     * \see QgsSpatialiteDbLayer::getViewTableName
      * \since QGIS 3.0
      */
     QString getTableName() const { return mTableName; }
@@ -645,7 +645,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      *  For SpatialTable/VirtualShapes: empty
      *  For SpatialViews:
      *  - the registered VIEW can be retrieved with getTableName()
-     * \see SpatialiteDbLayer::getViewTableName
+     * \see QgsSpatialiteDbLayer::getViewTableName
      * \since QGIS 3.0
      */
     QString getViewTableName() const { return mViewTableName; }
@@ -655,8 +655,8 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * \note
      *  For SpatialTable/VirtualShapes: result of getTableName will be used
      *  For SpatialViews: result of getViewTableName will be used
-     * \see SpatialiteDbLayer::getTableName
-     * \see SpatialiteDbLayer::getViewTableName
+     * \see QgsSpatialiteDbLayer::getTableName
+     * \see QgsSpatialiteDbLayer::getViewTableName
      * \see QgsSpatiaLiteFeatureSource::mIndexTable
      * \since QGIS 3.0
      */
@@ -667,7 +667,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * \note
      *  Vector: should always be filled
      *  Raster: may be empty
-     * \see SpatialiteDbLayer::getGeometryColumn
+     * \see QgsSpatialiteDbLayer::getGeometryColumn
      * \since QGIS 3.0
      */
     QString getGeometryColumn() const { return mGeometryColumn; }
@@ -678,7 +678,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      *  For SpatialTable/VirtualShapes: empty
      *  For SpatialViews:
      *  - the registered VIEW can be retrieved with getTableName()
-     * \see SpatialiteDbLayer::getViewTableGeometryColumn
+     * \see QgsSpatialiteDbLayer::getViewTableGeometryColumn
      * \since QGIS 3.0
      */
     QString getViewTableGeometryColumn() const { return mViewTableGeometryColumn; }
@@ -688,8 +688,8 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * \note
      *  For SpatialTable/VirtualShapes: result of getGeometryColumn will be used
      *  For SpatialViews: result of getViewTableGeometryColumn will be used
-     * \see SpatialiteDbLayer::getGeometryColumn
-     * \see SpatialiteDbLayer::getViewTableGeometryColumn
+     * \see QgsSpatialiteDbLayer::getGeometryColumn
+     * \see QgsSpatialiteDbLayer::getViewTableGeometryColumn
      * \see QgsSpatiaLiteFeatureSource::mIndexGeometry
      * \since QGIS 3.0
      */
@@ -700,7 +700,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * \note
      *  Vector: Layer format: 'table_name(geometry_name)'
      *  Raster: Layer format: 'coverage_name'
-     * \see SpatialiteDbLayer::getLayerName
+     * \see QgsSpatialiteDbLayer::getLayerName
      * \since QGIS 3.0
      */
     QString getLayerName() const { return mLayerName; }
@@ -714,8 +714,8 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      *  - GeoPackage: gpkg_contents(identifier)
      *  - MbTiles: metadata(name)
      *  - FdoOgr: none
-     * \see SpatialiteDbLayer::getTitle
-     * \see SpatialiteDbInfo::readVectorRasterCoverages
+     * \see QgsSpatialiteDbLayer::getTitle
+     * \see QgsSpatialiteDbInfo::readVectorRasterCoverages
      * \since QGIS 3.0
      */
     QString getTitle() const { return mTitle; }
@@ -729,8 +729,8 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      *  - GeoPackage: gpkg_contents(description)
      *  - MbTiles: metadata(description)
      *  - FdoOgr: none
-     * \see SpatialiteDbLayer::getAbstract
-     * \see SpatialiteDbInfo::readVectorRasterCoverages
+     * \see QgsSpatialiteDbLayer::getAbstract
+     * \see QgsSpatialiteDbInfo::readVectorRasterCoverages
      * \since QGIS 3.0
      */
     QString getAbstract() const { return mAbstract; }
@@ -744,8 +744,8 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      *  - GeoPackage: none
      *  - MbTiles: none
      *  - FdoOgr: none
-     * \see SpatialiteDbLayer::getCopyright
-     * \see SpatialiteDbInfo::readVectorRasterCoverages
+     * \see QgsSpatialiteDbLayer::getCopyright
+     * \see QgsSpatialiteDbInfo::readVectorRasterCoverages
      * \since QGIS 3.0
      */
     QString getCopyright() const { return mCopyright; }
@@ -759,21 +759,21 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      *  - GeoPackage: gpkg_contents(srs_id)
      *  - MbTiles: always 4326
      *  - FdoOgr: geometry_columns(srid)
-     * \see SpatialiteDbLayer::getSrid
+     * \see QgsSpatialiteDbLayer::getSrid
      * \since QGIS 3.0
      */
     int getSrid() const { return mSrid; }
 
     /**
      * The AuthId [auth_name||':'||auth_srid]
-     * \see SpatialiteDbLayer::getAuthId
+     * \see QgsSpatialiteDbLayer::getAuthId
      * \since QGIS 3.0
      */
     QString getAuthId() const { return mAuthId; }
 
     /**
      * The Proj4text [from mSrid]
-     * \see SpatialiteDbLayer::getProj4text
+     * \see QgsSpatialiteDbLayer::getProj4text
      * \since QGIS 3.0
      */
     QString getProj4text() const { return mProj4text; }
@@ -782,7 +782,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * The SpatialIndex-Type used for the Geometry
      * \note
      *  Uses the same numbering as Spatialite [0,1,2]
-     * \see SpatialiteDbLayer::getSpatialIndexType
+     * \see QgsSpatialiteDbLayer::getSpatialIndexType
      * \since QGIS 3.0
      */
     int getSpatialIndexType() const { return mSpatialIndexType; }
@@ -790,17 +790,17 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     /**
      * The Spatialite Layer-Type of the Layer
      * - representing mLayerType
-     * \see SpatialiteDbLayer::getLayerType
+     * \see QgsSpatialiteDbLayer::getLayerType
      * \since QGIS 3.0
      */
-    SpatialiteDbInfo::SpatialiteLayerType getLayerType() const { return mLayerType; }
+    QgsSpatialiteDbInfo::SpatialiteLayerType getLayerType() const { return mLayerType; }
 
     /**
      * The Spatialite Geometry-Type of the Layer
      * - representing mGeometryType
      * \note
      *  - QgsWkbTypes::displayString(mGeometryType)
-     * \see SpatialiteDbLayer::getGeometryType
+     * \see QgsSpatialiteDbLayer::getGeometryType
      * \since QGIS 3.0
      */
     QgsWkbTypes::Type getGeometryType() const { return mGeometryType; }
@@ -810,7 +810,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * - representing mGeometryType
      * \note
      *  - QgsWkbTypes::displayString(mGeometryType)
-     * \see SpatialiteDbLayer::getGeometryType
+     * \see QgsSpatialiteDbLayer::getGeometryType
      * \since QGIS 3.0
      */
     QString getGeometryTypeString() const { return mGeometryTypeString; }
@@ -820,7 +820,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * - based on the Srid of the Layer
      * \note
      *  - QgsWkbTypes::displayString(mGeometryType)
-     * \see SpatialiteDbLayer::getCoordDimensions
+     * \see QgsSpatialiteDbLayer::getCoordDimensions
      * \since QGIS 3.0
      */
     int getCoordDimensions() const { return getDbLayer()->getCoordDimensions(); }
@@ -831,8 +831,8 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      *  With UpdateLayerStatistics the Number of features will also be updated and retrieved
      * \param bUpdate force reading from Database
      * \param bUpdateStatistics UpdateLayerStatistics before reading
-     * \see SpatialiteDbLayer::getLayerExtent
-     * \see SpatialiteDbLayer::getNumberFeatures
+     * \see QgsSpatialiteDbLayer::getLayerExtent
+     * \see QgsSpatialiteDbLayer::getNumberFeatures
      * \since QGIS 3.0
      */
     QgsRectangle getLayerExtent( bool bUpdate = false, bool bUpdateStatistics = false ) const { return getDbLayer()->getLayerExtent( bUpdate, bUpdateStatistics ); }
@@ -855,7 +855,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      *  SpatialView: default: true [readonly]
      *  -  if Insert/Update or Delete TRIGGERs exists:  false [writable]
      *  VirtualShape: always true [readonly]
-     * \see SpatialiteDbLayer::isLayerReadOnly
+     * \see QgsSpatialiteDbLayer::isLayerReadOnly
      * \since QGIS 3.0
      */
     int isLayerReadOnly() const { return getDbLayer()->isLayerReadOnly(); }
@@ -865,7 +865,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * \note
      *  No idea what this is used for [at the moment not being retrieved]
      *  - from 'vector_layers_auth'
-     * \see SpatialiteDbLayer::isLayerHidden
+     * \see QgsSpatialiteDbLayer::isLayerHidden
      * \since QGIS 3.0
      */
     int isLayerHidden() const { return getDbLayer()->isLayerHidden(); }
@@ -875,7 +875,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * \note
      *  Only a simple counter when inserting into mDbLayers
      * - value is never used
-     * \see SpatialiteDbLayer::getLayerId
+     * \see QgsSpatialiteDbLayer::getLayerId
      * \since QGIS 3.0
      */
     int getLayerId() const { return getDbLayer()->getLayerId(); }
@@ -894,7 +894,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * - this should be called with Update, after alterations of the TABLE have been made
      * -> will call GetDbLayersInfo to re-read field data
      * \param bUpdate force reading from Database
-     * \see SpatialiteDbLayer::GetDbLayersInfo
+     * \see QgsSpatialiteDbLayer::GetDbLayersInfo
      * \since QGIS 3.0
      */
     QgsVectorDataProvider::Capabilities getCapabilities( bool bUpdate = false ) const { return getDbLayer()->getCapabilities( bUpdate ); }
@@ -903,7 +903,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * Name of the primary key column in the table
      * \note
      *  -> SpatialView: entry of view_rowid of views_geometry_columns
-     * \see SpatialiteDbLayer::getPrimaryKey
+     * \see QgsSpatialiteDbLayer::getPrimaryKey
      * \since QGIS 3.0
      */
     QString getPrimaryKey() const { return mPrimaryKey; }
@@ -913,7 +913,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * \note
      *  - SpatialView: name from entry of view_rowid of views_geometry_columns
      *  -> position from inside the PRAGMA table_info('name')
-     * \see SpatialiteDbLayer::getPrimaryKeyCId
+     * \see QgsSpatialiteDbLayer::getPrimaryKeyCId
      * \since QGIS 3.0
      */
     int getPrimaryKeyCId() const { return mPrimaryKeyCId; }
@@ -922,7 +922,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * List of primary key columns in the table
      * \note
      *  -> SpatialView: entry of view_rowid of views_geometry_columns
-     * \see SpatialiteDbLayer::getPrimaryKeyAttrs
+     * \see QgsSpatialiteDbLayer::getPrimaryKeyAttrs
      * \since QGIS 3.0
      */
     QgsAttributeList getPrimaryKeyAttrs() const { return mPrimaryKeyAttrs; }
@@ -931,7 +931,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * List of layer fields in the table
      * \note
      *  - from PRAGMA table_info()
-     * \see SpatialiteDbLayer::getAttributeFields
+     * \see QgsSpatialiteDbLayer::getAttributeFields
      * \since QGIS 3.0
      */
     QgsFields getAttributeFields() const { return mAttributeFields; }
@@ -941,18 +941,18 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * List of default values of the table and possible the view
      * \note
      *  - from PRAGMA table_info()
-     * \see SpatialiteDbLayer::getDefaultValues
+     * \see QgsSpatialiteDbLayer::getDefaultValues
      * \since QGIS 3.0
      */
     QMap<int, QVariant> getDefaultValues() const { return getDbLayer()->getDefaultValues(); }
 
     /**
      * Connection info (DB-path) without table and geometry
-     * - this will be called from the SpatialiteDbLayer::getDatabaseUri()
+     * - this will be called from the QgsSpatialiteDbLayer::getDatabaseUri()
      * \note
-     *  - to call for Database and Table/Geometry portion use: SpatialiteDbLayer::getDatabaseUri()
+     *  - to call for Database and Table/Geometry portion use: QgsSpatialiteDbLayer::getDatabaseUri()
     * \returns uri with Database only
-     * \see SpatialiteDbInfo::getDatabaseUri
+     * \see QgsSpatialiteDbInfo::getDatabaseUri
     * \since QGIS 3.0
     */
     QString getDatabaseUri() const { return getSpatialiteDbInfo()->getDatabaseUri(); }
@@ -960,10 +960,10 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     /**
      * Connection info (DB-path) with table and geometry
      * \note
-     *  - to call for Database portion only, use: SpatialiteDbInfo::getDatabaseUri()
+     *  - to call for Database portion only, use: QgsSpatialiteDbInfo::getDatabaseUri()
      *  - For RasterLite1: GDAL-Syntax will be used
     * \returns uri with Database and Table/Geometry Information
-     * \see SpatialiteDbLayer::getLayerDataSourceUri
+     * \see QgsSpatialiteDbLayer::getLayerDataSourceUri
     * \since QGIS 3.0
     */
     QString getLayerDataSourceUri() const { return getDbLayer()->getLayerDataSourceUri(); }
@@ -972,7 +972,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * Is the Layer valid
      * \note
      *  when false: the Layer should not be rendered
-     * \see SpatialiteDbLayer::isLayerValid
+     * \see QgsSpatialiteDbLayer::isLayerValid
      * \since QGIS 3.0
      */
     bool isLayerValid() const { if ( getDbLayer() ) return getDbLayer()->isLayerValid(); else return false;}
@@ -983,7 +983,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * \note
      *  - Spatialite specific functions should not be called when false
      *  when false: the Layer should not be rendered
-     * \see SpatialiteDbLayer::isLayerSpatialite
+     * \see QgsSpatialiteDbLayer::isLayerSpatialite
      * \since QGIS 3.0
      */
     bool isLayerSpatialite() const { if ( getDbLayer() ) return getDbLayer()->isLayerSpatialite(); else return false;}
@@ -1068,22 +1068,22 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * - checking will be done to insure that the Database connected to is considered valid
      * \note
      * - isLayerValid() return true if everything is considered correct
-     * \see SpatialiteDbLayer::isLayerValid
+     * \see QgsSpatialiteDbLayer::isLayerValid
      * \see mDbLayer
      * \since QGIS 3.0
      */
     bool setSqliteHandle( QgsSqliteHandle *qSqliteHandle );
 
     /**
-     * SpatialiteDbInfo Object
+     * QgsSpatialiteDbInfo Object
      * - containing all Information about Database file
      * \note
      * - isDbValid() return if the connection contains layers that are supported by
      * -- QgsSpatiaLiteProvider, QgsGdalProvider and QgsOgrProvider
-     * \see SpatialiteDbInfo::isDbValid
+     * \see QgsSpatialiteDbInfo::isDbValid
      * \since QGIS 3.0
      */
-    SpatialiteDbInfo *mSpatialiteDbInfo = nullptr;
+    QgsSpatialiteDbInfo *mSpatialiteDbInfo = nullptr;
 
     /**
      * Is the read Database supported by QgsSpatiaLiteProvider or
@@ -1100,22 +1100,22 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * - checking will be done to insure that the Layer is considered valid
      * \note
      * - isLayerValid() return true if everything is considered correct
-     * \see SpatialiteDbLayer::isLayerValid
+     * \see QgsSpatialiteDbLayer::isLayerValid
      * \see mDbLayer
      * \since QGIS 3.0
      */
-    bool setDbLayer( SpatialiteDbLayer *dbLayer );
+    bool setDbLayer( QgsSpatialiteDbLayer *dbLayer );
 
     /**
      * The active Layer
      * - being read by the Provider
      * \note
      * - isLayerValid() return true if everything is considered correct
-     * \see SpatialiteDbLayer::isLayerValid
+     * \see QgsSpatialiteDbLayer::isLayerValid
      * \see setDbLayer
      * \since QGIS 3.0
      */
-    SpatialiteDbLayer *mDbLayer = nullptr;
+    QgsSpatialiteDbLayer *mDbLayer = nullptr;
 
     /**
      * Is the Layer valid
@@ -1162,7 +1162,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     /**
      * Flag indicating if the layer data source is based on a Spatial Table
      * \note
-     *  result of getLayerType() == SpatialiteDbInfo::SpatialTable or TopologyExport
+     *  result of getLayerType() == QgsSpatialiteDbInfo::SpatialTable or TopologyExport
      * otherwise not used
      * \see setDbLayer
      * \since QGIS 3.0
@@ -1172,7 +1172,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     /**
      *Flag indicating if the layer data source is based on a View
      * \note
-     *  result of getLayerType() == SpatialiteDbInfo::SpatialView
+     *  result of getLayerType() == QgsSpatialiteDbInfo::SpatialView
      * otherwise not used
      * \see setDbLayer
      * \since QGIS 3.0
@@ -1182,7 +1182,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     /**
      * Flag indicating if the layer data source is based on a VirtualShape
      * \note
-     *  result of getLayerType() == SpatialiteDbInfo::VirtualShape
+     *  result of getLayerType() == QgsSpatialiteDbInfo::VirtualShape
      * otherwise not used
      * \see setDbLayer
      * \since QGIS 3.0
@@ -1310,8 +1310,8 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * \note
      *  For SpatialTable/VirtualShapes: result of getTableName will be used
      *  For SpatialViews: result of getViewTableName will be used
-     * \see SpatialiteDbLayer::getTableName
-     * \see SpatialiteDbLayer::getViewTableName
+     * \see QgsSpatialiteDbLayer::getTableName
+     * \see QgsSpatialiteDbLayer::getViewTableName
      * \see QgsSpatiaLiteFeatureSource::mIndexTable
      * \since QGIS 3.0
      */
@@ -1320,16 +1320,16 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     /**
      * The Spatialite Layer-Type of the Layer
      * - representing mLayerType
-     * \see SpatialiteDbLayer::getLayerType
+     * \see QgsSpatialiteDbLayer::getLayerType
      * \since QGIS 3.0
      */
-    SpatialiteDbInfo::SpatialiteLayerType mLayerType;
+    QgsSpatialiteDbInfo::SpatialiteLayerType mLayerType;
 
     /**
      * The SpatialIndex-Type used for the Geometry
      * \note
      *  Uses the same numbering as Spatialite [0,1,2]
-     * \see SpatialiteDbLayer::getSpatialIndexType
+     * \see QgsSpatialiteDbLayer::getSpatialIndexType
      * \since QGIS 3.0
      */
     int mSpatialIndexType;
@@ -1349,7 +1349,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * - representing mGeometryType
      * \note
      *  - QgsWkbTypes::displayString(mGeometryType)
-     * \see SpatialiteDbLayer::getGeometryType
+     * \see QgsSpatialiteDbLayer::getGeometryType
      * \since QGIS 3.0
      */
     QString mGeometryTypeString;
@@ -1358,7 +1358,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * List of layer fields in the table
      * \note
      *  - from PRAGMA table_info()
-     * \see SpatialiteDbLayer::getAttributeFields
+     * \see QgsSpatialiteDbLayer::getAttributeFields
      * \since QGIS 3.0
      */
     QgsFields mAttributeFields;
@@ -1367,7 +1367,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * Name of the primary key column in the table
      * \note
      *  -> SpatialView: entry of view_rowid of views_geometry_columns
-     * \see SpatialiteDbLayer::getPrimaryKey
+     * \see QgsSpatialiteDbLayer::getPrimaryKey
      * \since QGIS 3.0
      */
     QString mPrimaryKey;
@@ -1377,7 +1377,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * \note
      *  - SpatialView: name from entry of view_rowid of views_geometry_columns
      *  -> position from inside the PRAGMA table_info('name')
-     * \see SpatialiteDbLayer::getPrimaryKeyCId
+     * \see QgsSpatialiteDbLayer::getPrimaryKeyCId
      * \since QGIS 3.0
      */
     int mPrimaryKeyCId;
@@ -1386,7 +1386,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * List of primary key columns in the table
      * \note
      *  -> SpatialView: entry of view_rowid of views_geometry_columns
-     * \see SpatialiteDbLayer::getPrimaryKeyAttrs
+     * \see QgsSpatialiteDbLayer::getPrimaryKeyAttrs
      * \since QGIS 3.0
      */
     QgsAttributeList mPrimaryKeyAttrs;
@@ -1396,8 +1396,8 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * \note
      *  For SpatialTable/VirtualShapes: result of getGeometryColumn will be used
      *  For SpatialViews: result of getViewTableGeometryColumn will be used
-     * \see SpatialiteDbLayer::getGeometryColumn
-     * \see SpatialiteDbLayer::getViewTableGeometryColumn
+     * \see QgsSpatialiteDbLayer::getGeometryColumn
+     * \see QgsSpatialiteDbLayer::getViewTableGeometryColumn
      * \see QgsSpatiaLiteFeatureSource::mIndexGeometry
      * \since QGIS 3.0
      */
@@ -1408,7 +1408,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      * \note
      *  Vector: Layer format: 'table_name(geometry_name)'
      *  Raster: Layer format: 'coverage_name'
-     * \see SpatialiteDbLayer::getLayerName
+     * \see QgsSpatialiteDbLayer::getLayerName
      * \since QGIS 3.0
      */
     QString mLayerName;
@@ -1422,8 +1422,8 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      *  - GeoPackage: gpkg_contents(identifier)
      *  - MbTiles: metadata(name)
      *  - FdoOgr: none
-     * \see SpatialiteDbLayer::getTitle
-     * \see SpatialiteDbInfo::readVectorRasterCoverages
+     * \see QgsSpatialiteDbLayer::getTitle
+     * \see QgsSpatialiteDbInfo::readVectorRasterCoverages
      * \since QGIS 3.0
      */
     QString mTitle;
@@ -1437,8 +1437,8 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      *  - GeoPackage: gpkg_contents(description)
      *  - MbTiles: metadata(description)
      *  - FdoOgr: none
-     * \see SpatialiteDbLayer::getAbstract
-     * \see SpatialiteDbInfo::readVectorRasterCoverages
+     * \see QgsSpatialiteDbLayer::getAbstract
+     * \see QgsSpatialiteDbInfo::readVectorRasterCoverages
      * \since QGIS 3.0
      */
     QString mAbstract;
@@ -1455,8 +1455,8 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      *  - GeoPackage: none
      *  - MbTiles: none
      *  - FdoOgr: none
-     * \see SpatialiteDbLayer::getCopyright
-     * \see SpatialiteDbInfo::readVectorRasterCoverages
+     * \see QgsSpatialiteDbLayer::getCopyright
+     * \see QgsSpatialiteDbInfo::readVectorRasterCoverages
      * \since QGIS 3.0
      */
     QString mCopyright;
@@ -1471,21 +1471,21 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      *  - GeoPackage: gpkg_contents(srs_id)
      *  - MbTiles: always 4326
      *  - FdoOgr: geometry_columns(srid)
-     * \see SpatialiteDbLayer::getSrid
+     * \see QgsSpatialiteDbLayer::getSrid
      * \since QGIS 3.0
      */
     int mSrid;
 
     /**
      * The AuthId [auth_name||':'||auth_srid]
-     * \see SpatialiteDbLayer::getAuthId
+     * \see QgsSpatialiteDbLayer::getAuthId
      * \since QGIS 3.0
      */
     QString mAuthId;
 
     /**
      * The Proj4text [from mSrid]
-     * \see SpatialiteDbLayer::getProj4text
+     * \see QgsSpatialiteDbLayer::getProj4text
      * \since QGIS 3.0
      */
     QString mProj4text;
@@ -1502,7 +1502,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     /**
      * this Geometry is supported by an R*Tree spatial index
      * \note
-     *  result of getDbLayer()->getSpatialIndexType() == SpatialiteDbInfo::SpatialIndexRTree
+     *  result of getDbLayer()->getSpatialIndexType() == QgsSpatialiteDbInfo::SpatialIndexRTree
      *  Used in QgsSpatiaLiteFeatureIterator
      * \see setDbLayer
      * \see QgsSpatiaLiteFeatureSource::mSpatialIndexRTree
@@ -1514,7 +1514,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     /**
      * this Geometry is supported by an MBR cache spatial index
      * \note
-     *  result of getDbLayer()->getSpatialIndexType() == SpatialiteDbInfo::SpatialIndexMbrCache
+     *  result of getDbLayer()->getSpatialIndexType() == QgsSpatialiteDbInfo::SpatialIndexMbrCache
      *  Used in QgsSpatiaLiteFeatureIterator
      * \see setDbLayer
      * \see QgsSpatiaLiteFeatureSource::mSpatialIndexMbrCache
@@ -1525,10 +1525,10 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
 
     /**
      * Retrieve a specific of layer fields of the table
-     * - using SpatialiteDbLayer
+     * - using QgsSpatialiteDbLayer
      * \note
      * \returns result from getDbLayer()->getAttributeField( index );
-     * \see SpatialiteDbLayer::getAttributeField
+     * \see QgsSpatialiteDbLayer::getAttributeField
      * \since QGIS 3.0
      */
     QgsField field( int index ) const;

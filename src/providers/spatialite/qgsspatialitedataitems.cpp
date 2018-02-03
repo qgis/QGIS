@@ -48,7 +48,7 @@ QGISEXTERN int dataCapabilities()
 //-----------------------------------------------------------------
 // Notes:
 // 'path' is empty: call QgsSpatialiteRootItem to fill with QgsSpatiaLiteConnection::connectionList
-// 'path' is not empty: SpatialiteDbInfo is called in SniffMinimal modus
+// 'path' is not empty: QgsSpatialiteDbInfo is called in SniffMinimal modus
 // - will retrieve basic information about the file
 //-- is Sqlite3-Container, contains Layers supported by Providers [bLoadLayers = false]
 // --> will end swiftly if false
@@ -82,12 +82,12 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
   QgsDataItem *item = nullptr;
   if ( path.isEmpty() )
   {
-    return new QgsSpatialiteRootItem( parentItem, QStringLiteral( "SpatiaLite" ), QStringLiteral( "spatialite:" ) );
+    return new QgsSpatialiteRootItem( parentItem, QStringLiteral( "SpatiaLite 5.0" ), QStringLiteral( "spatialite:" ) );
     return item;
   }
   bool bLoadLayers = false; // Minimal information. extended information will be retrieved only when needed
   bool bShared = false; // do not retain connection, connection will always be closed after usage
-  SpatialiteDbInfo *spatialiteDbInfo = QgsSpatiaLiteUtils::CreateSpatialiteDbInfo( path, bLoadLayers, bShared );
+  QgsSpatialiteDbInfo *spatialiteDbInfo = QgsSpatiaLiteUtils::CreateQgsSpatialiteDbInfo( path, bLoadLayers, bShared );
   if ( spatialiteDbInfo )
   {
     // The file exists, check for supported Sqlite3-Container formats
@@ -152,8 +152,8 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
 // Metadata [QgsBrowserDockWidget::showProperties()]
 // - QgsRasterLayer/QgsVectorLayer->htmlMetadata()
 //-----------------------------------------------------------------
-QgsSpatialiteLayerItem::QgsSpatialiteLayerItem( QgsDataItem *parent, QString filePath, QString sLayerName, SpatialiteDbInfo *spatialiteDbInfo )
-  : QgsLayerItem( parent, "", filePath, "", QgsLayerItem::Point, QStringLiteral( "spatialite" ) ), mSpatialiteDbInfo( spatialiteDbInfo )
+QgsSpatialiteLayerItem::QgsSpatialiteLayerItem( QgsDataItem *parent, QString filePath, QString sLayerName, QgsSpatialiteDbInfo *spatialiteDbInfo )
+  : QgsLayerItem( parent, "", filePath, "", QgsLayerItem::Point, QStringLiteral( "spatialite45" ) ), mSpatialiteDbInfo( spatialiteDbInfo )
 {
   mLayerType = QgsLayerItem::NoType;
   if ( path() == QStringLiteral( "spatialite:" ) )
@@ -166,7 +166,7 @@ QgsSpatialiteLayerItem::QgsSpatialiteLayerItem( QgsDataItem *parent, QString fil
     {
       bool bLoadLayers = false; // Minimal information. extended information will be retrieved only when needed
       bool bShared = false; // do not retain connection, connection will always be closed after usage
-      mSpatialiteDbInfo = QgsSpatiaLiteUtils::CreateSpatialiteDbInfo( path(), bLoadLayers, bShared );
+      mSpatialiteDbInfo = QgsSpatiaLiteUtils::CreateQgsSpatialiteDbInfo( path(), bLoadLayers, bShared );
       if ( mSpatialiteDbInfo )
       {
         if ( ( mSpatialiteDbInfo->isDbSpatialite() ) || ( mSpatialiteDbInfo->isDbGdalOgr() ) )
@@ -194,7 +194,7 @@ QgsSpatialiteLayerItem::QgsSpatialiteLayerItem( QgsDataItem *parent, QString fil
     QString sTableName  = QString::null;
     QString sGeometryColumn = QString::null;
     // Extract TableName/GeometryColumn from sent 'table_name' or 'table_name(field_name)' from LayerName
-    SpatialiteDbInfo::parseLayerName( name(), sTableName, sGeometryColumn );
+    QgsSpatialiteDbInfo::parseLayerName( name(), sTableName, sGeometryColumn );
     QString sGeometryType; // For Layers that contain no Geometries, this will be the Layer-Type
     QString sLayerTypeSpatialite;
     int iSpatialIndex = -1;
@@ -203,40 +203,40 @@ QgsSpatialiteLayerItem::QgsSpatialiteLayerItem( QgsDataItem *parent, QString fil
     {
       QString sSpatialMetadata = QString( "%1,%2" ).arg( mSpatialiteDbInfo->dbSpatialMetadataString() ).arg( sLayerTypeSpatialite );
       mUri = mSpatialiteDbInfo->getDbLayerUris( name() );
-      mLayerTypeSpatialite = SpatialiteDbInfo::SpatialiteLayerTypeFromName( sLayerTypeSpatialite );
-      mLayerTypeIcon = SpatialiteDbInfo::SpatialiteLayerTypeIcon( mLayerTypeSpatialite );
+      mLayerTypeSpatialite = QgsSpatialiteDbInfo::SpatialiteLayerTypeFromName( sLayerTypeSpatialite );
+      mLayerTypeIcon = QgsSpatialiteDbInfo::SpatialiteLayerTypeIcon( mLayerTypeSpatialite );
       mGeometryType = QgsWkbTypes::parseType( sGeometryType );
       QgsWkbTypes::Type singleType = QgsWkbTypes::singleType( QgsWkbTypes::flatType( mGeometryType ) );
       switch ( singleType )
       {
         case QgsWkbTypes::Point:
           mLayerType = QgsLayerItem::Point;
-          mGeometryTypeIcon = SpatialiteDbInfo::SpatialGeometryTypeIcon( mGeometryType );
+          mGeometryTypeIcon = QgsSpatialiteDbInfo::SpatialGeometryTypeIcon( mGeometryType );
           break;
         case QgsWkbTypes::LineString:
           mLayerType = QgsLayerItem::Line;
-          mGeometryTypeIcon = SpatialiteDbInfo::SpatialGeometryTypeIcon( mGeometryType );
+          mGeometryTypeIcon = QgsSpatialiteDbInfo::SpatialGeometryTypeIcon( mGeometryType );
           break;
         case QgsWkbTypes::Polygon:
           mLayerType = QgsLayerItem::Polygon;
-          mGeometryTypeIcon = SpatialiteDbInfo::SpatialGeometryTypeIcon( mGeometryType );
+          mGeometryTypeIcon = QgsSpatialiteDbInfo::SpatialGeometryTypeIcon( mGeometryType );
           break;
         default:
           // RasterLayers  will not contain a valid Geometry-Type
           mGeometryTypeIcon = mLayerTypeIcon;
           switch ( mLayerTypeSpatialite )
           {
-            case SpatialiteDbInfo::RasterLite2Raster:
-            case SpatialiteDbInfo::GeoPackageRaster:
-            case SpatialiteDbInfo::MBTilesTable:
-            case SpatialiteDbInfo::MBTilesView:
+            case QgsSpatialiteDbInfo::RasterLite2Raster:
+            case QgsSpatialiteDbInfo::GeoPackageRaster:
+            case QgsSpatialiteDbInfo::MBTilesTable:
+            case QgsSpatialiteDbInfo::MBTilesView:
             {
               mLayerType = QgsLayerItem::Raster;
-              mGeometryTypeIcon =  SpatialiteDbInfo::NonSpatialTablesTypeIcon( sLayerTypeSpatialite );
+              mGeometryTypeIcon =  QgsSpatialiteDbInfo::NonSpatialTablesTypeIcon( sLayerTypeSpatialite );
             }
             break;
-            case SpatialiteDbInfo::SpatialiteTopology:
-            case SpatialiteDbInfo::RasterLite2Vector:
+            case QgsSpatialiteDbInfo::SpatialiteTopology:
+            case QgsSpatialiteDbInfo::RasterLite2Vector:
             {
               // This should never happen, since they contain a Geometry-Type
               mLayerType = QgsLayerItem::Vector;
@@ -307,7 +307,7 @@ void QgsSpatialiteLayerItem::deleteLayer()
 // -> 'createChildren' will call QgsSpatialiteLayerItem
 // --> for each single Layer
 //-----------------------------------------------------------------
-QgsSpatialiteCollectionItem::QgsSpatialiteCollectionItem( QgsDataItem *parent, const QString name, const QString filePath, SpatialiteDbInfo *spatialiteDbInfo )
+QgsSpatialiteCollectionItem::QgsSpatialiteCollectionItem( QgsDataItem *parent, const QString name, const QString filePath, QgsSpatialiteDbInfo *spatialiteDbInfo )
   : QgsDataCollectionItem( parent, name, filePath ), mSpatialiteDbInfo( spatialiteDbInfo )
 {
   mToolTip = name;
@@ -355,7 +355,7 @@ QVector<QgsDataItem *> QgsSpatialiteCollectionItem::createChildren()
     // mTableModel.setSqliteDb( spatialiteDbInfo, cbxAllowGeometrylessTables->isChecked() );
     //               i_removed_count += mVectorLayers.remove( sLayerMetadata );
     //               i_removed_count += mVectorLayersTypes.remove( sLayerMetadata );
-    SpatialiteDbInfo::SpatialiteLayerType typeLayer = SpatialiteDbInfo::AllSpatialLayers;
+    QgsSpatialiteDbInfo::SpatialiteLayerType typeLayer = QgsSpatialiteDbInfo::AllSpatialLayers;
     QMap<QString, QString> mapLayers = mSpatialiteDbInfo->getDbLayersType( typeLayer );
     for ( QMap<QString, QString>::iterator itLayers = mapLayers.begin(); itLayers != mapLayers.end(); ++itLayers )
     {
@@ -385,6 +385,7 @@ bool QgsSpatialiteCollectionItem::equal( const QgsDataItem *other )
 //-----------------------------------------------------------------
 QList<QAction *> QgsSpatialiteCollectionItem::actions( QWidget *parent )
 {
+  Q_UNUSED( parent );
   QList<QAction *> lst;
 
   //QAction* actionEdit = new QAction( tr( "Edit..." ), parent );

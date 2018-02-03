@@ -30,30 +30,98 @@ class  QgsSpatiaLiteTableModel: public QStandardItemModel
   Q_OBJECT public:
 
     QgsSpatiaLiteTableModel();
-    //! Sets an sql statement that belongs to a cell specified by a model index
-    void setSql( const QModelIndex &index, const QString &sql );
 
-    //! Returns the number of tables in the model
+    /**
+     * Returns the number of tables in the model
+     * \note
+     *  - set, but not not used [candidate to be removed]
+    * \returns count of Tables in Database
+    * \since QGIS 3.0
+    */
     int tableCount() const
     {
       return mTableCount;
     }
-    //! Returns the Column 'Table' from the selected Item
-    int getColumnSortHidden() const { return i_field_sort_hidden; }
-    //! Returns the Column 'Table' from the selected Item
-    int getTableNameIndex() const { return i_field_table; }
+
+    /**
+     * Returns the Index of Column 'Hidden' from the selected Item
+     * \note
+     *  - set during construction. Avoid manual use of numeric value in code
+    * \returns index-number of column being used in QgsSpatiaLiteSourceSelect
+    * \see mColumnSortHidden
+    * \see QgsSpatiaLiteSourceSelect::on_mSearchColumnComboBox_currentIndexChanged
+    * \since QGIS 3.0
+    */
+    int getColumnSortHidden() const { return mColumnSortHidden; }
+
+    /**
+     * Returns the Index of Column 'Table' from the selected Item
+     * \note
+     *  - set during construction. Avoid manual use of numeric value in code
+    * \returns index-number of column being used in QgsSpatiaLiteSourceSelect
+    * \see mColumnTable
+    * \see QgsSpatiaLiteSourceSelect::on_mSearchColumnComboBox_currentIndexChanged
+    * \since QGIS 3.0
+    */
+    int getTableNameIndex() const { return mColumnTable; }
+
+    /**
+     * Returns the Value of Column 'Table' from the selected Item
+     * \note
+     *  - Index value set during construction. Avoid manual use of numeric value in code
+    * \returns QString-Value of column being used in QgsSpatiaLiteSourceSelect
+    * \see getTableNameIndex
+    * \see QgsSpatiaLiteSourceSelect::on_mSearchColumnComboBox_currentIndexChanged
+    * \since QGIS 3.0
+    */
     QString getTableName( const QModelIndex &index ) const
     {
-      return itemFromIndex( index.sibling( index.row(), i_field_table ) )->text();
+      return itemFromIndex( index.sibling( index.row(), getTableNameIndex() ) )->text();
     }
-    //! Returns NonSpatialItemIndex  Item-Inxex
+
+    /**
+     * Returns NonSpatialItemIndex  Item-Index
+     * \note
+     *  - not used [candidate to be removed]
+    * \returns index-number of column being used in QgsSpatiaLiteSourceSelect
+    * \since QGIS 3.0
+    */
     QModelIndex getNonSpatialItemIndex() const { return mNonSpatialItem->index(); }
-    //! Returns the Column 'Geometry column' from the selected Item
-    int getGeometryNameIndex() const { return i_field_geometry_name; }
+
+    /**
+     * Returns the Index of Column 'Geometry' from the selected Item
+     * \note
+     *  - set during construction. Avoid manual use of numeric value in code
+    * \returns index-number of column being used in QgsSpatiaLiteSourceSelect
+    * \see mColumnGeometryName
+    * \see QgsSpatiaLiteSourceSelect::on_mSearchColumnComboBox_currentIndexChanged
+    * \since QGIS 3.0
+    */
+    int getGeometryNameIndex() const { return mColumnGeometryName; }
+
+    /**
+     * Returns the Value of Column 'Geometry' from the selected Item
+     * \note
+     *  - Index value set during construction. Avoid manual use of numeric value in code
+    * \returns QString-Value of column being used in QgsSpatiaLiteSourceSelect
+    * \see getTableNameIndex
+    * \see QgsSpatiaLiteSourceSelect::on_mSearchColumnComboBox_currentIndexChanged
+    * \since QGIS 3.0
+    */
     QString getGeometryName( const QModelIndex &index ) const
     {
-      return itemFromIndex( index.sibling( index.row(), i_field_geometry_name ) )->text();
+      return itemFromIndex( index.sibling( index.row(), getGeometryNameIndex() ) )->text();
     }
+
+    /**
+     * Returns the LayerName based on  Values of the Columns 'Table' and 'Geometry' from the selected Item
+     * \note
+     *  - checking is done to insure the the retured value exists
+    * \returns QString Value of LayerName
+    * \see getTableNameIndex
+    * \see getLayerNameUris
+    * \since QGIS 3.0
+    */
     QString getLayerName( const QModelIndex &index ) const
     {
       QString sLayerName = getTableName( index );
@@ -68,6 +136,15 @@ class  QgsSpatiaLiteTableModel: public QStandardItemModel
       }
       return QString();
     }
+
+    /**
+     * Returns the Urls based on  LayerName  from the selected Item
+     * \note
+     *  - checking is done to insure the the retured value exists
+    * \returns QString Value of LayerName
+    * \see getLayerName
+    * \since QGIS 3.0
+    */
     QString getLayerNameUris( const QModelIndex &index ) const
     {
       QString sLayerUris = QString();
@@ -78,43 +155,113 @@ class  QgsSpatiaLiteTableModel: public QStandardItemModel
       }
       return sLayerUris;
     }
-    //! Returns the Column 'Geometry column' from the selected Item
-    int getGeometryTypeIndex() const { return i_field_geometry_type; }
+
+    /**
+     * Returns the Index of Column 'Geometry' from the selected Item
+     * \note
+     *  - set during construction. Avoid manual use of numeric value in code
+    * \returns index-number of column being used in QgsSpatiaLiteSourceSelect
+    * \see mColumnGeometryType
+    * \see QgsSpatiaLiteSourceSelect::on_mSearchColumnComboBox_currentIndexChanged
+    * \since QGIS 3.0
+    */
+    int getGeometryTypeIndex() const { return mColumnGeometryType; }
+
+    /**
+     * Returns the GeometryType based on  Value of the Column 'GeometryType' from the selected Item
+     * \note
+     *  - set during construction. Avoid manual use of numeric value in code
+    * \returns QString Value of GeometryType
+    * \see getTableNameIndex
+    * \see getLayerNameUris
+    * \since QGIS 3.0
+    */
     QString getGeometryType( const QModelIndex &index ) const
     {
-      return itemFromIndex( index.sibling( index.row(), i_field_geometry_type ) )->text();
+      return itemFromIndex( index.sibling( index.row(), getGeometryTypeIndex() ) )->text();
     }
-    //! Returns the Column 'Sql' from the selected Item
-    int getSqlQueryIndex() const { return i_field_sql; }
+
+    /**
+     * Returns the Index of Column 'Sql' from the selected Item
+     * \note
+     *  - set during construction. Avoid manual use of numeric value in code
+    * \returns index-number of column being used in QgsSpatiaLiteSourceSelect
+    * \see getSqlQueryIndex
+    * \see QgsSpatiaLiteSourceSelect::on_mSearchColumnComboBox_currentIndexChanged
+    * \since QGIS 3.0
+    */
+    int getSqlQueryIndex() const { return mColumnSql; }
+
+    /**
+     * Returns the Sql-Query based on  Value of the Column 'Sql' from the selected Item
+     * \note
+     *  - set during construction. Avoid manual use of numeric value in code
+    * \returns QString Value of GeometryType
+    * \see getTableNameIndex
+    * \see getLayerNameUris
+    * \since QGIS 3.0
+    */
     QString getSqlQuery( const QModelIndex &index ) const
     {
-      return itemFromIndex( index.sibling( index.row(), i_field_sql ) )->text();
+      return itemFromIndex( index.sibling( index.row(), getSqlQueryIndex() ) )->text();
     }
-    void setSqliteDb( SpatialiteDbInfo *spatialiteDbInfo, bool loadGeometrylessTables = false );
+
+    /**
+     * Sets an sql statement that belongs to a cell specified by a model index
+     * \note
+     *  - checking is done that the Table and Geometry-Name are valid
+    * \returns QString Value of GeometryType
+    * \see getTableNameIndex
+    * \see getGeometryNameIndex
+    * \see QgsSpatiaLiteSourceSelect::on_mConnectionsTreeView_doubleClicked
+    * \since QGIS 3.0
+    */
+    void setSql( const QModelIndex &index, const QString &sql );
+
+    /**
+     * Set the active Database
+     * \note
+     *  - this will build the Table-Model
+    * \returns QString Value of Database file
+    * \see QgsSpatiaLiteSourceSelect::setQgsSpatialiteDbInfo
+    * \see QgsSpatiaLiteTableModel::createDatabase
+    * \since QGIS 3.0
+    */
+    void setSpatialiteDbInfo( QgsSpatialiteDbInfo *spatialiteDbInfo, bool loadGeometrylessTables = true );
+
+    /**
+     * Returns the active Database file-path
+     * \note
+     *  - checking is done to insure the the retured value exists
+    * \returns QString Value of Database file
+     * \param withPath default: full path of file, otherwise base-name of file
+    * \see QgsSpatiaLiteSourceSelect::updateStatistics
+    * \since QGIS 3.0
+    */
     QString getDbName( bool withPath = true ) const
     {
-      QString sDBName = QString();
+      QString sDatabaseName = QString();
       if ( ( mSpatialiteDbInfo ) && ( mSpatialiteDbInfo->isDbValid() ) )
       {
         if ( withPath )
         {
-          sDBName = mSpatialiteDbInfo->getDatabaseFileName();
+          sDatabaseName = mSpatialiteDbInfo->getDatabaseFileName();
         }
         else
         {
-          sDBName = mSpatialiteDbInfo->getFileName();
+          sDatabaseName = mSpatialiteDbInfo->getFileName();
         }
       }
-      return sDBName;
+      return sDatabaseName;
     }
 
     /**
      * Connection info (DB-path) without table and geometry
-     * - this will be called from classes using SpatialiteDbInfo
+     * - this will be called from classes using QgsSpatialiteDbInfo
      * \note
-     *  - to call for Database and Table/Geometry portion use: SpatialiteDbLayer::getLayerDataSourceUri()
+     *  - to call for Database and Table/Geometry portion use: QgsSpatialiteDbLayer::getLayerDataSourceUri()
     * \returns uri with Database only
-    * \see SpatialiteDbLayer::getLayerDataSourceUri()
+    * \see QgsSpatialiteDbLayer::getLayerDataSourceUri()
     * \since QGIS 3.0
     */
     QString getDatabaseUri() const
@@ -128,19 +275,19 @@ class  QgsSpatiaLiteTableModel: public QStandardItemModel
     }
 
     /**
-     * Retrieve SpatialiteDbInfo
+     * Retrieve QgsSpatialiteDbInfo
      * - containing all Information about Database file
      * \note
      * - isDbValid() return if the connection contains layers that are supported by
      * -- QgsSpatiaLiteProvider, QgsGdalProvider and QgsOgrProvider
-     * \see SpatialiteDbInfo::isDbValid()
+     * \see QgsSpatialiteDbInfo::isDbValid()
      * \since QGIS 3.0
      */
-    SpatialiteDbInfo *getSpatialiteDbInfo() const { return mSpatialiteDbInfo; }
+    QgsSpatialiteDbInfo *getSpatialiteDbInfo() const { return mSpatialiteDbInfo; }
 
     /**
      * UpdateLayerStatistics for the Database or Layers
-     * - this will be called from the SpatialiteDbLayer::UpdateLayerStatistics
+     * - this will be called from the QgsSpatialiteDbLayer::UpdateLayerStatistics
      * - this is also called with a selection of tables/geometries
      *  -> calls InvalidateLayerStatistics before UpdateLayerStatistics
      * \note
@@ -152,7 +299,7 @@ class  QgsSpatiaLiteTableModel: public QStandardItemModel
      *  - All commands within a TRANSACTION
      * \param saLayers List of LayerNames formatted as 'table_name(geometry_name)'
      * \returns result of the last returned rc
-     * \see SpatialiteDbInfo::::UpdateLayerStatistics
+     * \see QgsSpatialiteDbInfo::::UpdateLayerStatistics
      * \since QGIS 3.0
      */
     bool UpdateLayerStatistics( QStringList saLayers )
@@ -169,7 +316,7 @@ class  QgsSpatiaLiteTableModel: public QStandardItemModel
      * \note
      *  - Spatialite specific functions should not be called when false
      *  -> UpdateLayerStatistics()
-     * \see SpatialiteDbInfo::isDbSpatialite()
+     * \see QgsSpatialiteDbInfo::isDbSpatialite()
      * \since QGIS 3.0
      */
     bool isSpatialite() const
@@ -197,7 +344,7 @@ class  QgsSpatiaLiteTableModel: public QStandardItemModel
      * -> GeoPackage [Ogr]: 'PathToFile|layername=table_name'
      * \see mDbLayersDataSourceUris
      * \see mDbLayers
-     * \see getSpatialiteDbLayer
+     * \see getQgsSpatialiteDbLayer
      * \see prepareDataSourceUris
      * \since QGIS 3.0
      */
@@ -212,12 +359,12 @@ class  QgsSpatiaLiteTableModel: public QStandardItemModel
      * - Value: Uris dependent on provider
      * - can be for both QgsSpatiaLiteProvider or QgsGdalProvider
      * \returns mSelectedLayersUris  Map of LayerNames and  valid Layer-Uris entries
-     * \see SpatialiteDbInfo::setSelectedDbLayers
-     * \see SpatialiteDbInfo::getSelectedDbRasterLayers
-     * \see SpatialiteDbInfo::getSelectedDbVectorLayers
+     * \see QgsSpatialiteDbInfo::setSelectedDbLayers
+     * \see QgsSpatialiteDbInfo::getSelectedDbRasterLayers
+     * \see QgsSpatialiteDbInfo::getSelectedDbVectorLayers
      * \since QGIS 3.0
      */
-    QMap<QString, QString>  getSelectedLayersUris() const { return mSpatialiteDbInfo->getSelectedLayersUris(); }
+    QMap<QString, QString>  getConnectionsSelectedLayersUris() const { return mSpatialiteDbInfo->getSelectedLayersUris(); }
 
     /**
      * Add a list of database layers to the map
@@ -232,22 +379,21 @@ class  QgsSpatiaLiteTableModel: public QStandardItemModel
      * \see getSelectedLayersUris
      * \since QGIS 3.0
      */
-    int addDbMapLayers( QStringList saSelectedLayers, QStringList saSelectedLayersSql ) const {  return mSpatialiteDbInfo->addDbMapLayers( saSelectedLayers, saSelectedLayersSql );  }
+    int addDbMapLayers( QStringList saSelectedLayers, QStringList saSelectedLayersSql, QStringList saSelectedLayersStyles ) const {  return mSpatialiteDbInfo->addDbMapLayers( saSelectedLayers,  saSelectedLayersStyles, saSelectedLayersSql );  }
 
     /**
      * Create a new Database
-     *  - for use with SpatialiteDbInfo::createDatabase
+     *  - for use with QgsSpatialiteDbInfo::createDatabase
      * \note
      * - SpatialMetadata::Spatialite40: InitSpatialMetadata only
-     * - SpatialMetadata::Spatialite45: also with Styles/Raster/VectorCoveragesTable's
+     * - SpatialMetadata::Spatialite50: also with Styles/Raster/VectorCoveragesTable's
      * - SpatialMetadata::SpatialiteGpkg: using spatialite 'gpkgCreateBaseTables' function
      * - SpatialMetadata::SpatialiteMBTiles: creating a view-base MbTiles file with grid tables
      * \returns true if the created Database is valid and of the Container-Type requested
-     * \see SpatialiteDbInfo::createDatabase
+     * \see QgsSpatialiteDbInfo::createDatabase
      * \since QGIS 3.0
      */
-    bool createDatabase( QString sDatabaseFileName, SpatialiteDbInfo::SpatialMetadata dbCreateOption = SpatialiteDbInfo::Spatialite40 );
-
+    bool createDatabase( QString sDatabaseFileName, QgsSpatialiteDbInfo::SpatialMetadata dbCreateOption = QgsSpatialiteDbInfo::Spatialite40 );
 
   private:
     enum EntryType
@@ -256,14 +402,86 @@ class  QgsSpatiaLiteTableModel: public QStandardItemModel
       EntryTypeMap = 1
     };
 
-    //! Number of tables in the model
+    /**
+     * Returns the number of tables in the model
+     * \note
+     *  - set, but not not used [candidate to be removed]
+    * \returns count of Tables in Database
+    * \since QGIS 3.0
+    */
     int mTableCount;
+
+    /**
+     * Builds expected amout of Tables the number of tables in the model
+     * \note
+     *  - set and used for display
+    * \returns count of Tables in Database
+    * \see addRootEntry
+    * \since QGIS 3.0
+    */
     int mTableCounter;
-    int i_field_sort_hidden;
-    int i_field_table;
-    int i_field_geometry_type;
-    int i_field_geometry_name;
-    int i_field_sql;
+
+    /**
+     * Returns the Index of Column 'Hidden' from the selected Item
+     * \note
+     *  - set during construction. Avoid manual use of numeric value in code
+    * \returns index-number of column being used in QgsSpatiaLiteSourceSelect
+    * \see getColumnSortHidden
+    * \see QgsSpatiaLiteSourceSelect::on_mSearchColumnComboBox_currentIndexChanged
+    * \since QGIS 3.0
+    */
+    int mColumnSortHidden;
+
+    /**
+     * Returns the Index of Column 'Table' from the selected Item
+     * \note
+     *  - set during construction. Avoid manual use of numeric value in code
+    * \returns index-number of column being used in QgsSpatiaLiteSourceSelect
+    * \see getTableNameIndex
+    * \see getTableName
+    * \since QGIS 3.0
+    */
+    int mColumnTable;
+
+    /**
+     * Returns the Index of Column 'Geometry' from the selected Item
+     * \note
+     *  - set during construction. Avoid manual use of numeric value in code
+    * \returns index-number of column being used in QgsSpatiaLiteSourceSelect
+    * \see getGeometryTypeIndex
+    * \see QgsSpatiaLiteSourceSelect::on_mSearchColumnComboBox_currentIndexChanged
+    * \since QGIS 3.0
+    */
+    int mColumnGeometryType;
+
+    /**
+     * Returns the Index of Column 'Geometry' from the selected Item
+     * \note
+     *  - set during construction. Avoid manual use of numeric value in code
+    * \returns index-number of column being used in QgsSpatiaLiteSourceSelect
+    * \see getGeometryNameIndex
+    * \see QgsSpatiaLiteSourceSelect::on_mSearchColumnComboBox_currentIndexChanged
+    * \since QGIS 3.0
+    */
+    int mColumnGeometryName;
+
+    /**
+     * Returns the Index of Column 'Sql' from the selected Item
+     * \note
+     *  - set during construction. Avoid manual use of numeric value in code
+    * \returns index-number of column being used in QgsSpatiaLiteSourceSelect
+    * \see getSqlQueryIndex
+    * \see getSqlQuery
+    * \since QGIS 3.0
+    */
+    int mColumnSql;
+
+    /**
+     * Coulumn Names of Model
+     * \note
+     *  - set during construction.
+    * \since QGIS 3.0
+    */
     QStringList headerLabels;
 
     /**
@@ -278,14 +496,14 @@ class  QgsSpatiaLiteTableModel: public QStandardItemModel
      * \see addTableEntry
      * \since QGIS 3.0
      */
-    void addTableEntryType( QMap<QString, QString> mapLayers, QgsSpatiaLiteTableModel::EntryType entryType = QgsSpatiaLiteTableModel::EntryTypeLayer, SpatialiteDbInfo::SpatialiteLayerType layerType = SpatialiteDbInfo::SpatialiteUnknown );
+    void addTableEntryType( QMap<QString, QString> mapLayers, QgsSpatiaLiteTableModel::EntryType entryType = QgsSpatiaLiteTableModel::EntryTypeLayer, QgsSpatialiteDbInfo::SpatialiteLayerType layerType = QgsSpatialiteDbInfo::SpatialiteUnknown );
 
     /**
      * Build entry for the  Layer-Type in Root
      * \see addRootEntry
      * \since QGIS 3.0
      */
-    QList < QStandardItem * > createLayerTypeEntry( SpatialiteDbInfo::SpatialiteLayerType layerType = SpatialiteDbInfo::SpatialTable, int amountLayers = 0 );
+    QList < QStandardItem * > createLayerTypeEntry( QgsSpatialiteDbInfo::SpatialiteLayerType layerType = QgsSpatialiteDbInfo::SpatialTable, int amountLayers = 0 );
 
     /**
      * Fill the model Item based on the retrieved Layer
@@ -297,24 +515,24 @@ class  QgsSpatiaLiteTableModel: public QStandardItemModel
      * Fill the model Item based on the retrieved Layer
      * \since QGIS 3.0
      */
-    void addTableEntryLayer( SpatialiteDbLayer *dbLayer, int iLayersCount = 1 );
+    void addTableEntryLayer( QgsSpatialiteDbLayer *dbLayer, int iLayersCount = 1 );
 
     /**
      * Fill the model Item based on the retrieved Layer
      * \since QGIS 3.0
      */
-    void addTableEntryMap( QString sKey, QString sValue, SpatialiteDbInfo::SpatialiteLayerType layerType = SpatialiteDbInfo::NonSpatialTables );
+    void addTableEntryMap( QString sKey, QString sValue, QgsSpatialiteDbInfo::SpatialiteLayerType layerType = QgsSpatialiteDbInfo::NonSpatialTables );
 
     /**
-     * SpatialiteDbInfo Object
+     * QgsSpatialiteDbInfo Object
      * - containing all Information about Database file
      * \note
      * - isDbValid() return if the connection contains layers that are supported by
      * -- QgsSpatiaLiteProvider, QgsGdalProvider and QgsOgrProvider
-     * \see SpatialiteDbInfo::isDbValid()
+     * \see QgsSpatialiteDbInfo::isDbValid()
      * \since QGIS 3.0
      */
-    SpatialiteDbInfo *mSpatialiteDbInfo = nullptr;
+    QgsSpatialiteDbInfo *mSpatialiteDbInfo = nullptr;
 
     /**
      * List of DataSourceUri of valid Layers
@@ -332,14 +550,40 @@ class  QgsSpatiaLiteTableModel: public QStandardItemModel
      * -> GeoPackage [Ogr]: 'PathToFile|layername=table_name'
      * \see mDbLayersDataSourceUris
      * \see mDbLayers
-     * \see getSpatialiteDbLayer
+     * \see getQgsSpatialiteDbLayer
      * \see prepareDataSourceUris
      * \since QGIS 3.0
      */
     QMap<QString, QString> mDbLayersDataSourceUris;
 
+    /**
+     * Placeholder for RootItem
+     * - used as insert point of child Spatial Items when building
+     * \note
+     * - removes all entries when a new Database is being opened
+     * \see setSpatialiteDbInfo
+     * \see addRootEntry
+     * \since QGIS 3.0
+     */
     QStandardItem *mDbRootItem = nullptr;
+
+    /**
+     * Placeholder for NonSpatial Items
+     * - used as insert point of child NonSpatial Items when building
+     * \note
+     * - removes all entries when a new Database is being opened
+     * \see addTableEntryMap
+     * \since QGIS 3.0
+     */
     QStandardItem *mNonSpatialItem = nullptr;
+
+    /**
+     * Returns if Non-spatialTable should be shown
+     * \note
+     *  - set, but not used since all tables are shown [candidate to be removed]
+    * \returns true as default
+    * \since QGIS 3.0
+    */
     bool mLoadGeometrylessTables = true;
 };
 

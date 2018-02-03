@@ -42,13 +42,13 @@ extern "C"
 #include <spatialite.h>
 }
 
-class SpatialiteDbLayer;
+class QgsSpatialiteDbLayer;
 class QgsSqliteHandle;
 
 /**
  * Class to contain all information needed for a Spatialite/Rasterlite2 connection
   * - it will 'sniff' all Tables, retaining minimal information for each Table/Layer found
-  * - upond demand, a list of SpatialiteDbLayer classes will be collected
+  * - upond demand, a list of QgsSpatialiteDbLayer classes will be collected
   *  -> thus only called once for each connection
   * \note
   *  - The result of this class will be contained in the QgsSqliteHandle class
@@ -58,10 +58,10 @@ class QgsSqliteHandle;
   * QgsDebugMsgLevel = 4: for connection messages that deal with connections not supporting QgsSpatiaLiteProvider,QgsOgrProvider or QgsGdalProvider
   * QgsDebugMsgLevel = 5: experimental code under development
   * \see QgsSqliteHandle
-  * \see SpatialiteDbLayer
+  * \see QgsSpatialiteDbLayer
   * \since QGIS 3.0
  */
-class CORE_EXPORT SpatialiteDbInfo : public QObject
+class CORE_EXPORT QgsSpatialiteDbInfo : public QObject
 {
     Q_OBJECT
   public:
@@ -80,11 +80,37 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
     static const QString SPATIALITE_ARRAY_SUFFIX;
 
     /**
-     * List of Table-Types in a Spatialite Database
-     * - For all versions of Spatialite
+     * List of Table-Types
+     * -  with short description on how the Table is used
+     * \note
+     * - for Spatialite, RasterLite2, Topology, GeoPackage, MBTiles, OgrFdo
+     * -> must be maintained when new types are created by the projects
+     * - intended for gui use when listing tables, or as title of a sub-group where those type are stored in
+     * - contains information of the group (and possible sub-groups) in shown in QgsSpatialiteDbInfoItem
+     * \see getSpatialiteTypes()
+     * \see getSpatialiteTableTypes()
+     * \see readNonSpatialTables()
+     * \see QgsSpatialiteDbInfoItem::buildNonSpatialTablesGroups
      * \since QGIS 3.0
      */
     static QStringList mSpatialiteTypes;
+
+    /**
+     * List of AdministrationTable-Types
+     * -  created in readNonSpatialTables
+     * -  used in QgsSpatialiteDbInfoItem::buildNonSpatialTablesGroups
+     * \note
+     * - for Spatialite, RasterLite2, Topology, GeoPackage, MBTiles, OgrFdo
+     * -> must be maintained when new types are created by the projects
+     * - key: name of table
+     * - value: category from getSpatialiteTypes
+     * \see getSpatialiteTypes()
+     * \see getSpatialiteTableTypes()
+     * \see readNonSpatialTables()
+     * \see QgsSpatialiteDbInfoItem::buildNonSpatialTablesGroups
+     * \since QGIS 3.0
+     */
+    static  QMap<QString, QString> mSpatialiteTableTypes;
 
     /**
       * SniffTypes
@@ -97,7 +123,7 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
       *  - SniffDatabaseType: Determinens Sqlite3-Container-Type [SpatialMetadata]
       *  - SniffMinimal: Load and store Information about Tables/Layers with the amount for each [SpatialiteLayerType]
       * Spatialite Connection needed and will be started for these Types:
-      *  - SniffLoadLayers: Load and store Information about Layers with details [SpatialiteDbLayer] and used Spatialite version
+      *  - SniffLoadLayers: Load and store Information about Layers with details [QgsSpatialiteDbLayer] and used Spatialite version
       *  - SniffExtendend: (planned) possible Editing of of Layer-Propeties such as Column-Names
       * \since QGIS 3.0
       */
@@ -114,7 +140,7 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
       * Spatialite-Database Structure
       *  - based on result of CheckSpatialMetaData
       *  -> on the Database being read
-      * \note 'Spatialite45'
+      * \note 'Spatialite50'
       *  - is not returned by CheckSpatialMetaData
       * \since QGIS 3.0
       */
@@ -125,7 +151,7 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
       SpatialiteFdoOgr = 2,
       Spatialite40 = 3,
       SpatialiteGpkg = 4,
-      Spatialite45 = 5,
+      Spatialite50 = 5,
       SpatialiteMBTiles = 100
     };
     enum SpatialIndexType
@@ -158,7 +184,8 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
       Metadata = 1000,
       AllSpatialLayers = 1500,
       NonSpatialTables = 1501,
-      AllLayers = 1502
+      SpatialRefSysAux = 1502,
+      AllLayers = 1599
     };
     enum MimeType
     {
@@ -206,11 +233,11 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
       MimeGdalGml = 9102,
       MimeSqlite2 = 9999
     };
-    SpatialiteDbInfo( QString sDatabaseFilename, sqlite3 *sqlite_handle  = nullptr, SpatialMetadata dbCreateOption = SpatialiteDbInfo::SpatialUnknown );
-    ~SpatialiteDbInfo();
+    QgsSpatialiteDbInfo( QString sDatabaseFilename, sqlite3 *sqlite_handle  = nullptr, SpatialMetadata dbCreateOption = QgsSpatialiteDbInfo::SpatialUnknown );
+    ~QgsSpatialiteDbInfo();
 
     /**
-     * Create a SpatialiteDbInfo based Connection
+     * Create a QgsSpatialiteDbInfo based Connection
      *  -> containing all needed Information about a Spatial Sqlite3 Container
      * \note
      *  - check result with spatialiteDbInfo->isDbSqlite3()
@@ -228,13 +255,14 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
     * \returns not nullptr if file exists
     * \since QGIS 3.0
     */
-    static SpatialiteDbInfo *FetchSpatialiteDbInfo( const QString sDatabaseFileName, bool bShared = false,
-        QString sLayerName = QString::null, bool bLoadLayers = false, SpatialiteDbInfo::SpatialMetadata dbCreateOption = SpatialiteDbInfo::SpatialUnknown, SpatialSniff sniffType = SpatialiteDbInfo::SniffUnknown );
+    static QgsSpatialiteDbInfo *FetchSpatialiteDbInfo( const QString sDatabaseFileName, bool bShared = false,
+        QString sLayerName = QString::null, bool bLoadLayers = false, QgsSpatialiteDbInfo::SpatialMetadata dbCreateOption = QgsSpatialiteDbInfo::SpatialUnknown, SpatialSniff sniffType = QgsSpatialiteDbInfo::SniffUnknown );
 
     /**
      * Parse the LayerName String into TableName and GeomeryColumn portions
      * - Input as 'table_name' or 'table_name(geometry_name)'
      * \note
+     *  This is a convenience function for parsing
      *  - A Vector Layer is expected to have a GeomeryColumn name
      *  - A Raster Layer is not expected to have a GeomeryColumn name
      * \param sLayerName IN: 'table_name' or 'table_name(geometry_name)'
@@ -254,7 +282,7 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
       if ( ( sTableName.contains( QStringLiteral( "(" ) ) ) && ( sTableName.endsWith( QStringLiteral( ")" ) ) ) )
       {
         QStringList sa_layername = sTableName.split( QStringLiteral( "(" ) );
-        if ( sa_layername.size() == 2 )
+        if ( sa_layername.count() == 2 )
         {
           // Extract TableName/GeometryColumn from sent 'table_name' or 'table_name(field_name)' from LayerName
           sGeometryColumn = sa_layername[1].replace( QStringLiteral( ")" ), QStringLiteral( "" ) );
@@ -269,13 +297,13 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
       * MimeType as String
       * \since QGIS 3.0
       */
-    static QString FileMimeTypeString( SpatialiteDbInfo::MimeType mimeType );
+    static QString FileMimeTypeString( QgsSpatialiteDbInfo::MimeType mimeType );
 
     /**
       * SniffType as String
       * \since QGIS 3.0
       */
-    static QString SniffTypeString( SpatialiteDbInfo::SpatialSniff sniffType );
+    static QString SniffTypeString( QgsSpatialiteDbInfo::SpatialSniff sniffType );
 
     /**
      * The Database filename (with Path)
@@ -314,7 +342,7 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
       *  \see readMagicHeaderFromFile
       * \since QGIS 3.0
       */
-    QString getFileMimeTypeString() const { return SpatialiteDbInfo::FileMimeTypeString( mMimeType ); }
+    QString getFileMimeTypeString() const { return QgsSpatialiteDbInfo::FileMimeTypeString( mMimeType ); }
 
     /**
      * The sqlite handler
@@ -322,7 +350,7 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
      * \note
      * - isDbValid() return if the connection contains layers that are supported by
      * -- QgsSpatiaLiteProvider, QgsGdalProvider and QgsOgrProvider
-     * \see SpatialiteDbInfo::isDbValid()
+     * \see QgsSpatialiteDbInfo::isDbValid()
      * \since QGIS 3.0
      */
     sqlite3 *dbSqliteHandle() const { return mSqliteHandle; }
@@ -333,7 +361,7 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
      * \note
      * - isDbValid() return if the connection contains layers that are supported by
      * -- QgsSpatiaLiteProvider, QgsGdalProvider and QgsOgrProvider
-     * \see SpatialiteDbInfo::isDbValid()
+     * \see QgsSpatialiteDbInfo::isDbValid()
      * \since QGIS 3.0
      */
     QgsSqliteHandle *getQSqliteHandle() const { return mQSqliteHandle; }
@@ -343,7 +371,7 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
      * \note
      *  -1 not being shared
     * \returns Count on how often this Connection is being used
-     * \see SpatialiteDbInfo::getQSqliteHandle()
+     * \see QgsSpatialiteDbInfo::getQSqliteHandle()
      * \since QGIS 3.0
      */
     int getConnectionRef() const;
@@ -353,7 +381,7 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
      * \note
      *  -1 not being shared
     * \returns Count on how often this Connection is being used
-     * \see SpatialiteDbInfo::getQSqliteHandle()
+     * \see QgsSpatialiteDbInfo::getQSqliteHandle()
      * \since QGIS 3.0
      */
     int removeConnectionRef() const;
@@ -362,9 +390,9 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
      * Check if this connection is needed
      * \note
      *  if false, removeConnectionRef will have been called
-     *  - SpatialiteDbInfo can be deleted
+     *  - QgsSpatialiteDbInfo can be deleted
     * \returns false if not needed and 'delete' can be called
-     * \see SpatialiteDbInfo::getQSqliteHandle()
+     * \see QgsSpatialiteDbInfo::getQSqliteHandle()
      * \since QGIS 3.0
      */
     bool checkConnectionNeeded();
@@ -406,11 +434,11 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
 
     /**
      * Connection info (DB-path) without table and geometry
-     * - this will be called from classes using SpatialiteDbInfo
+     * - this will be called from classes using QgsSpatialiteDbInfo
      * \note
-     *  - to call for Database and Table/Geometry portion use: SpatialiteDbLayer::getLayerDataSourceUri()
+     *  - to call for Database and Table/Geometry portion use: QgsSpatialiteDbLayer::getLayerDataSourceUri()
     * \returns uri with Database only
-    * \see SpatialiteDbLayer::getLayerDataSourceUri()
+    * \see QgsSpatialiteDbLayer::getLayerDataSourceUri()
     * \since QGIS 3.0
     */
     QString getDatabaseUri() const
@@ -519,13 +547,13 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
      * \see getSniffDatabaseType
     * \since QGIS 3.0
     */
-    SpatialiteDbInfo::SpatialMetadata dbSpatialMetadata() const { return mSpatialMetadata; }
+    QgsSpatialiteDbInfo::SpatialMetadata dbSpatialMetadata() const { return mSpatialMetadata; }
 
     /**
      * Contains collected Metadata for the Database
      * \brief A structured metadata store for a map layer.
      * \note
-     *  - SpatialiteDbLayer will use a copy this as starting point
+     *  - QgsSpatialiteDbLayer will use a copy this as starting point
      * \see QgsMapLayer::htmlMetadata()
      * \see QgsMapLayer::metadata
      * \see QgsMapLayer::setMetadata
@@ -650,6 +678,36 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
      * \since QGIS 3.0
      */
     int dbSpatialTablesLayersCount() const { return mHasSpatialTables; }
+
+    /**
+     * Does the read Database contain a spatial_ref_sys_aux TABLE
+     * - determine through Sql-Queries, without usage of any Drivers
+     * \note
+     *   true=Spatialite 5.0 Layout
+     * \see getSniffReadLayers
+     * \see readVectorLayers
+     * \since QGIS 3.0
+     */
+    bool dbSpatialRefSysAux() const { return mHasSpatialRefSysAux; }
+
+    /**
+     * Read used Srid in Database and store collected infomation
+     * - called during prepare, after reading Tables
+     * \note
+     *  - Since Spatialite 5.0 a 'spatial_ref_sys_aux' exists with more detailed information about the Srid
+     *  'readSpatialRefSysAux' will read this TABLE for the Srid's being used in the Database
+     *  For Spatialite Databases created for Versions 2.4 untill 4.3, this will be emulated
+     *  - the same for GeoPackage and FdoOgr
+     * Seperator: '@' [QgsSpatialiteDbInfo::ParseSeparatorCoverage]
+     * Result should be parsed with 'parseSridInfo'
+     * \returns mDbSridInfo with Information about used Srid's
+     * \see parseSridInfo
+     * \see mDbSridInfo
+     * \see getDbSridInfo
+     * \see getDbSridInfoCount
+     * \since QGIS 3.0
+     */
+    QMap<int, QString> readSpatialRefSysAux( QList< int > listSrid );
 
     /**
      * Amount of SpatialViews  found in the Database
@@ -855,8 +913,9 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
 
     /**
      * Is the used connection Spatialite 4.5.0 or greater
+     *  - Topology support
      * \note
-     *  - bsed on values offrom spatialite_version()
+     *  - based on values from spatialite_version()
      * \see getSpatialiteVersion
     * \since QGIS 3.0
     */
@@ -901,7 +960,7 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
      * \see dbLayersCount()
      * \since QGIS 3.0
      */
-    int dbVectorLayersCount() const { return mVectorLayers.size(); }
+    int dbVectorLayersCount() const { return mVectorLayers.count(); }
 
     /**
      * Flag indicating if the layer data source (Sqkite3) has ReadOnly restrictions
@@ -924,6 +983,39 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
     * \since QGIS 3.0
     */
     bool getDbLoadLayers() const { return mLoadLayers; }
+
+    /**
+     * List of used Srid's in  the Database
+      * Seperator: '@' [QgsSpatialiteDbInfo::ParseSeparatorCoverage]
+     * \note
+     *  - Since Spatialite 5.0 a 'spatial_ref_sys_aux' exists with more detailed information about the Srid
+     *  'readSpatialRefSysAux' will read this TABLE for the Srid's being used in the Database
+     *  For Spatialite Databases created for Versions 2.4 untill 4.3, this will be emulated
+     *  - the same for GeoPackage and FdoOgr
+     * Seperator: '@' [QgsSpatialiteDbInfo::ParseSeparatorCoverage]
+     * Result should be parsed with 'parseSridInfo'
+     * \returns true if all information  will be retrieved when running
+     * \see readSpatialRefSysAuxCount
+     * \see mDbSridInfo
+     * \see parseSridInfo
+    * \since QGIS 3.0
+    */
+    QMap<int, QString> getDbSridInfo() const { return mDbSridInfo; }
+
+    /**
+     * Count of used Srid's in  the Database
+     * \note
+     *  - Since Spatialite 5.0 a 'spatial_ref_sys_aux' exists with more detailed information about the Srid
+     *  'readSpatialRefSysAux' will read this TABLE for the Srid's being used in the Database
+     *  For Spatialite Databases created for Versions 2.4 untill 4.3, this will be emulated
+     *  - the same for GeoPackage and FdoOgr
+     * Seperator: '@' [QgsSpatialiteDbInfo::ParseSeparatorCoverage]
+     * Result should be parsed with 'parseSridInfo'
+     * \returns count of used Srid in the Database
+     * \see readSpatialRefSysAux
+    * \since QGIS 3.0
+    */
+    int  getDbSridInfoCount() const { return mDbSridInfo.count(); }
 
     /**
      * Is the read Database supported by QgsSpatiaLiteProvider or
@@ -988,7 +1080,7 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
      *  - Topology
      * \since QGIS 3.0
      */
-    bool isDbSpatialite45() const { return mIsSpatialite45; }
+    bool isDbSpatialite50() const { return mIsSpatialite50; }
 
     /**
      * The read Database only supported by the QgsOgrProvider or QgsGdalProvider Drivers
@@ -999,6 +1091,24 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
      * \since QGIS 3.0
      */
     bool isDbGdalOgr() const { return mIsGdalOgr; }
+
+    /**
+     * Is the read Database a MbTilesDatabase
+     * - supported by the QgsGdalProvider Driver
+     * \note
+     *  - QgsGdalProvider: MbTiles
+     * \since QGIS 3.0
+     */
+    bool isDbMbTiles() const { return mIsMbTiles; }
+
+    /**
+     * Is the Database a GeoPackage
+     * - supported by QgsGdalProvider or QgsOgrProvider
+     * \note
+     *  - GeoPackage specific functions should not be called when false
+     * \since QGIS 3.0
+     */
+    bool isDbGeoPackage() const { return mIsGeoPackage; }
 
     /**
      * Does the file contain the Sqlite3 'Magic Header String'
@@ -1016,7 +1126,7 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
       * \note
       *  - SniffDatabaseType: Determins Sqlite3-Container-Type [SpatialMetadata] and used Spatialite version
       *  - SniffMinimal: Load and store Information about Tables/Layers with the amount for each [SpatialiteLayerType]
-      *  - SniffLoadLayers: Load and store Information about Layers with details [SpatialiteDbLayer]
+      *  - SniffLoadLayers: Load and store Information about Layers with details [QgsSpatialiteDbLayer]
       *  - SniffExtendend: (planned) possible Editing of of Layer-Propeties such as Column-Names
       * \since QGIS 3.0
       */
@@ -1031,11 +1141,11 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
       * \note
       *  - SniffDatabaseType: Determins Sqlite3-Container-Type [SpatialMetadata] and used Spatialite version
       *  - SniffMinimal: Load and store Information about Tables/Layers with the amount for each [SpatialiteLayerType]
-      *  - SniffLoadLayers: Load and store Information about Layers with details [SpatialiteDbLayer]
+      *  - SniffLoadLayers: Load and store Information about Layers with details [QgsSpatialiteDbLayer]
       *  - SniffExtendend: (planned) possible Editing of of Layer-Propeties such as Column-Names
       * \since QGIS 3.0
       */
-    QString getSniffTypeString() const { return SpatialiteDbInfo::SniffTypeString( mSniffType ); }
+    QString getSniffTypeString() const { return QgsSpatialiteDbInfo::SniffTypeString( mSniffType ); }
 
     /**
       * Set SniffType
@@ -1046,7 +1156,7 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
       * \note
       *  - SniffDatabaseType: Determine Sqlite3-Container-Type [SpatialMetadata] and used Spatialite version
       *  - SniffMinimal: Load and store Information about Tables/Layers with the amount for each [SpatialiteLayerType]
-      *  - SniffLoadLayers: Load and store Information about Layers with details [SpatialiteDbLayer]
+      *  - SniffLoadLayers: Load and store Information about Layers with details [QgsSpatialiteDbLayer]
       *  - SniffExtendend: (planned) possible Editing of of Layer-Propeties such as Column-Names
       * \since QGIS 3.0
       */
@@ -1054,8 +1164,8 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
 
     /**
      * Set if checking has been done to insure that this is a Sqlite3 file
-     * \see SpatialiteDbInfo::FetchSpatialiteDbInfo
-     * \see SpatialiteDbInfo::readSqlite3MagicHeader
+     * \see QgsSpatialiteDbInfo::FetchSpatialiteDbInfo
+     * \see QgsSpatialiteDbInfo::readSqlite3MagicHeader
      * \since QGIS 3.0
      */
     void setDbSqlite3( bool bIsSqlite3 ) { mIsSqlite3 = bIsSqlite3; }
@@ -1067,6 +1177,12 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
      *  This is a convenience function
      * - Key: LayerName formatted as 'table_name(geometry_name)' or 'table_name'
      * - Value: GeometryType and Srid formatted as 'geometry_type:srid:provider:layertype'
+     *  For NonSpatialTables:
+     *  -  bNonSpatialTablesGroups=true: retrieve a QMap with Key as Group-Name instead of Layer-Name
+     *  For GeoPackageLayers:
+     *  -  bNonSpatialTablesGroups=true: retrieve both GeoPackageVector and GeoPackageRaster Layers
+     * \param typeLayer LayerType to retrieve
+     * \param bNonSpatialTablesGroups when true: retrieve a QMap with Key as Group-Name instead of Layer-Name [NonSpatialTables only]
      * \see getDbVectorLayers()
      * \see getDbRasterCoveragesLayers()
      * \see getDbRasterLite1Layers()
@@ -1074,9 +1190,10 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
      * \see getDbMBTilesLayers()
      * \see getDbGeoPackageLayers()
      * \see getDbFdoOgrLayers()
+     * \see QgsSpatialiteDbInfoItem::buildNonSpatialTablesGroups
      * \since QGIS 3.0
      */
-    QMap<QString, QString> getDbLayersType( SpatialiteLayerType typeLayer = SpatialiteDbInfo::SpatialTable );
+    QMap<QString, QString> getDbLayersType( SpatialiteLayerType typeLayer = QgsSpatialiteDbInfo::SpatialTable, bool bNonSpatialTablesGroups = false );
 
     /**
      * Map of tables and views that are contained in the VectorLayers
@@ -1110,7 +1227,8 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
      * - There will allways be a 'native' srid/extent with the corresponding Wsg84 (4326) values
      * - There can be any amount of 'alternative' srid/extent with the corresponding Wsg84 (4326) values
      * - Key: LayerName formatted as 'table_name(geometry_name)' or 'table_name'
-     * - Value: native_srid€srid€;extent_minx€extent_miny€extent_maxx€extent_maxy€geo_minx€geo_miny€geo_maxx€geo_maxy
+     * - Value: native_srid€srid€;extent_minx€extent_miny€extent_maxx€extent_maxy€geo_minx€geo_miny€geo_maxx€geo_maxy€horz_resolution€vert_resolution
+     * Resolution will allways be 0.0, being Vectors
      * \see mVectorCoveragesLayersExtent
      * \see readVectorRasterCoverages
      * \since QGIS 3.0
@@ -1125,7 +1243,7 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
      * - There will allways be a 'native' srid/extent with the corresponding Wsg84 (4326) values
      * - There can be any amount of 'alternative' srid/extent with the corresponding Wsg84 (4326) values
      * - Key: LayerName formatted as 'table_name(geometry_name)' or 'table_name'
-     * - Value: native_srid€srid€;extent_minx€extent_miny€extent_maxx€extent_maxy€geo_minx€geo_miny€geo_maxx€geo_maxy
+     * - Value: native_srid€srid€;extent_minx€extent_miny€extent_maxx€extent_maxy€geo_minx€geo_miny€geo_maxx€geo_maxy€horz_resolution€vert_resolution
      * \see mVectorCoveragesLayersExtent
      * \see readVectorRasterCoverages
      * \since QGIS 3.0
@@ -1171,9 +1289,10 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
     /**
      * Map of style_name and Metadata of VectorStyle
      * \note
-     * - Key: StyleName as retrieved from SE_vector_styled_layers_view
-     * - Value: StyleType, StyleTitle, StyleAbstract
+     * - Key: StyleId as retrieved from SE_vector_styled_layers_view
+     * - Value: StyleName, StyleTitle, StyleAbstract,TestStylesForQGis
      * -> style_type: StyleVector
+     *  - QgsSpatialiteDbInfo::ParseSeparatorCoverage ('€') is used a separator
      * \see readVectorRasterStyles
      * \since QGIS 3.0
      */
@@ -1182,9 +1301,10 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
     /**
      * Map of style_name and Metadata of RasterStyle
      * \note
-     * - Key: StyleName as retrieved from SE_raster_styled_layers_view
-     * - Value: StyleType, StyleTitle, StyleAbstract
+     * - Key: StyleId as retrieved from SE_raster_styled_layers_view
+     * - Value: StyleName, StyleTitle, StyleAbstract,TestStylesForQGis
      * -> style_type: StyleRaster
+     *  - QgsSpatialiteDbInfo::ParseSeparatorCoverage ('€') is used a separator
      * \see readVectorRasterStyles
      * \since QGIS 3.0
      */
@@ -1243,13 +1363,29 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
     QMap<QString, QString> getDbMBTilesLayers() const { return mMBTilesLayers; }
 
     /**
+     * Map of the MBTiles name,value columns of the metadata TABLE
+     * - Since there can be only 1 Raster-Layer
+     *  - no support for Grids due to lask of samples
+     *  -> this must be rendered be the QgsGdalProvider
+     * \note
+     * - Key: Column name of metadata TABLE
+     * - Value: Column value of metadata TABLE
+     * -> layer_type: MBTilesTable of MBTilesView
+     * - Checking is done if the 'MBTiles' Gdal Driver is active
+     * \see readMBTilesLayers
+     * \see QgsSpatialiteDbInfoItem::addMBTilesMetadataItems
+     * \since QGIS 3.0
+     */
+    QMap<QString, QString> getDbMBTileMetaData() const { return mMBTilesMetaData; }
+
+    /**
      * Map of table_name that are contained in geopackage_contents
      *  -> this must be rendered be the QgsGdalProvider or QgsOgrProvider
      * \note
      * - Key: LayerName formatted as 'table_name'
      * - Value: LayerType and Srid formatted as 'layer_type:srid'
      * -> layer_type: GeoPackageVector or GeoPackageRaster
-     * - Checking is done if the 'GPKG' Gdal/Ogr Driver is active
+     * - Checking is done if the 'GPKG' Ogr/Gdal Driver is active
      * \see readGeoPackageLayers
      * \since QGIS 3.0
      */
@@ -1262,7 +1398,7 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
      * \note
      * - Key: LayerName formatted as 'table_name(geometry_name)' or 'table_name'
      * - Value: GeometryType and Srid formatted as 'geometry_type:srid:provider:layertype'
-     * - Checking is done if the SQLite' Gdal/Ogr Driver is active
+     * - Checking is done if the SQLite' Ogr/Gdal Driver is active
      * \see readFdoOgrLayers
      * \since QGIS 3.0
      */
@@ -1275,7 +1411,7 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
      * - Key: LayerName formatted as 'table_name'
      * - Value: LayerType and Srid formatted as 'layer_type:srid'
      * -> layer_type: GeoPackageVector or GeoPackageRaster
-     * - Checking is done if the 'GPKG' Gdal/Ogr Driver is active
+     * - Checking is done if the 'GPKG' Ogr/Gdal Driver is active
      * \see readGeoPackageLayers
      * \since QGIS 3.0
      */
@@ -1292,7 +1428,7 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
 
     /**
      * UpdateLayerStatistics for the Database or Layers
-     * - this will be called from the SpatialiteDbLayer::UpdateLayerStatistics
+     * - this will be called from the QgsSpatialiteDbLayer::UpdateLayerStatistics
      * - this is also called with a selection of tables/geometries
      *  -> calls InvalidateLayerStatistics before UpdateLayerStatistics
      * \note
@@ -1304,33 +1440,76 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
      *  - All commands within a TRANSACTION
      * \param saLayers List of LayerNames formatted as 'table_name(geometry_name)'
      * \returns result of the last returned rc
-     * \see SpatialiteDbLayer::UpdateLayerStatistics
+     * \see QgsSpatialiteDbLayer::UpdateLayerStatistics
      * \since QGIS 3.0
      */
     bool UpdateLayerStatistics( QStringList saLayers );
 
     /**
      * Retrieve Map of valid Layers supported by this Database [mLayerName as Key]
-     * - contains Layer-Name and a SpatialiteDbLayer-Pointer
+     * - contains Layer-Name and a QgsSpatialiteDbLayer-Pointer
      * \note
      * - contains all Layer-Types (SpatialTable/View, RasterLite1/2, Topology and VirtualShape)
-     * -- when  getDbLoadLayers is true, getSpatialiteDbLayer will load all layers
-     * \returns mDbLayers Map of LayerNames and valid SpatialiteDbLayer entries
+     * -- when  getDbLoadLayers is true, getQgsSpatialiteDbLayer will load all layers
+     * \returns mDbLayers Map of LayerNames and valid QgsSpatialiteDbLayer entries
      * \see getDbLoadLayers
      * \since QGIS 3.0
      */
-    QMap<QString, SpatialiteDbLayer *> getDbLayers() const { return mDbLayers; }
+    QMap<QString, QgsSpatialiteDbLayer *> getDbLayers() const { return mDbLayers; }
 
     /**
      * Collection list of unique (lower case) Group Layers
      * - with the amount of Layer for each Group
      * \note
      *  When: 'table_name' contains at least 2 '_' (such as 'berlin_streets_1650')
-     *  - assume it belongs to a group of 'berlin_streets' for QgsSpatiaLiteTableModel
-     *  - for SpatialViews only
+     *  - assume it belongs to a group of 'berlin_streets' for QgsSpatialiteDbInfoItem
+     *  - for Vectors only [SpatialView,SpatialView,GeoPackageVector,GdalFdoOgr]
      * \since QGIS 3.0
      */
-    QMap<QString, int> getListGroupNames() const { return mMapGroupNames; }
+    QMap<QString, int> getMapGroupNames() const { return mMapGroupNames; }
+
+    /**
+     * Collection list of unique (lower case) Sub-Groups belonging to a Parent-Group
+     * - based on the given LayerType, which can be a Parent-Group) or other Parent-Group given
+     * \note
+     *  If no Group-Name is geven, all Sub-Groups will be returned [not used]
+     *  - prepareGroupLayers must run before this is called
+     *  - iGroupSeperatorCount will be set with the amout of Seperators used for this group
+     *  --  which needed by checkSubGroupNames
+     * Input from getMapGroupNames() key[middle_earth;GeoPackageVector;2]
+     *  - will search for GroupName[GeoPackageVector]  and return 'middle_earth'
+     * \param sGroupName IN which Group to search for
+     * \param iGroupSeperatorCount OUT Amount of Seperators used for the found group
+     * \returns saSubGroupNames List of Sub-Groups belonging to Parent-Group
+     * \see checkSubGroupNames
+     * \see prepareGroupLayers
+     * \see parseGroupLayerEntry
+     * \see addGroupLayerEntry
+     * \since QGIS 3.0
+     */
+    QStringList getListSubGroupNames( QString sGroupName, int &iGroupSeperatorCount );
+
+    /**
+     * Check if the given Layer-Name belongs to a specific Sub-Groups
+     * - or a general checking if this LayerName will be added to a Sub-Group
+     * \note
+     *  The geometry portion of a Layer-Name will be removed
+     *  - if true, will be added to that Sub-Group
+     *  - if false,  will ba added after all of the Sub-Groups
+     * \param sLayerName which Layer/Group-Name to search for
+     * \param sSearchGroup looking for a specific Sub-Group, when not empty
+     * \param iGroupSeperatorCount Amount of Seperators used for the given group
+     * \param saSubGroupNames GroupList to search in, retrieved from getListSubGroupNames
+     * \returns true if the LayerName was found in the List, based on parsing rule for the Sub-Groupe
+     * \see getListSubGroupNames
+     * \see prepareGroupLayers
+     * \see parseGroupLayerEntry
+     * \see addGroupLayerEntry
+     * \see QgsSpatialiteDbInfoItem::createGroupLayerItem
+     * \see QgsSpatialiteDbInfoItem::buildSpatialSubGroups
+     * \since QGIS 3.0
+     */
+    bool checkSubGroupNames( QString sLayerName, QString sSearchGroup, int iGroupSeperatorCount, QStringList saSubGroupNames );
 
     /**
      * Map of valid Selected Layers requested by the User
@@ -1357,12 +1536,13 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
      * - requested by User to add to main QGis
      * -> emit addDatabaseLayers for each supported Provider
      * \param saSelectedLayers formatted as 'table_name(geometry_name)'
+     * \param saSelectedLayersStyles Style-Name for selected Layers
      * \param saSelectedLayersSql Extra Sql-Query for selected Layers
      * \returns amount of Uris entries
      * \see getSelectedLayersUris
      * \since QGIS 3.0
      */
-    int addDbMapLayers( QStringList saSelectedLayers, QStringList saSelectedLayersSql );
+    int addDbMapLayers( QStringList saSelectedLayers, QStringList saSelectedLayersStyles, QStringList saSelectedLayersSql );
 
     /**
      * List of DataSourceUri of valid Layers
@@ -1380,7 +1560,7 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
      * -> GeoPackage [Ogr]: 'PathToFile|layername=table_name'
      * \see mDbLayersDataSourceUris
      * \see mDbLayers
-     * \see getSpatialiteDbLayer
+     * \see getQgsSpatialiteDbLayer
      * \see prepareDataSourceUris
      * \since QGIS 3.0
      */
@@ -1390,7 +1570,7 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
      * Resolve unset settings about the Database
      * Goal: to (semi) Automate unresolved settings when needed
      * - will be called after major information has been retrieved from the Database
-     * \see SpatialiteDbInfo::createDbLayerInfoUri
+     * \see QgsSpatialiteDbInfo::createDbLayerInfoUri
      * \see prepareCapabilities
      * \see checkLayerStyles
      * \returns mIsLayerValid if the Layer is considered valid
@@ -1399,7 +1579,18 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
     bool prepare();
 
     /**
-     * Retrieve SpatialiteDbLayer-Pointer for a given
+     * Clear and resset start values
+     * \note
+     *  Called in destructor and when the Database should be re-read
+     *  Database connection will not be closed when bReload = true
+     * \param bReload re-read Database [default=false]
+     * \see prepare
+     * \since QGIS 3.0
+     */
+    bool prepareReload( bool bReload = false );
+
+    /**
+     * Retrieve QgsSpatialiteDbLayer-Pointer for a given
      * -  Layer-Name or Uri of Layer
      * - starts Spatialite Connection, if not done allready
      * \note
@@ -1411,7 +1602,7 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
      * \see QgsSpatiaLiteProvider::setSqliteHandle
      * \since QGIS 3.0
      */
-    SpatialiteDbLayer *getSpatialiteDbLayer( QString sLayerName, bool loadLayer = true );
+    QgsSpatialiteDbLayer *getQgsSpatialiteDbLayer( QString sLayerName, bool loadLayer = true );
 
     /**
      * Retrieve formatted Uris
@@ -1438,63 +1629,75 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
     QString getDbLayerInfo( QString sLayerName );
 
     /**
-     * Retrieve SpatialiteDbLayer-Pointer for a given
+     * Retrieve QgsSpatialiteDbLayer-Pointer for a given
      * -  LayerId
      * \note
      * - LayerId is only valid for the active session and MUST not be used for project storing
      * \param sLayerName Layer-Name or Uri of Layer
      * \param loadLayer when true [default], Load Layer-Information if not already loaded
-     * \see getSpatialiteDbLayer
+     * \see getQgsSpatialiteDbLayer
      * \since QGIS 3.0
      */
-    SpatialiteDbLayer *getSpatialiteDbLayer( int layerId );
+    QgsSpatialiteDbLayer *getQgsSpatialiteDbLayer( int layerId );
 
     /**
      * Returns the enum  value from the given String of the Layer-Types of the Sqlite3 Container
-     * - SpatialiteDbInfo::SpatialiteLayerType
+     * - QgsSpatialiteDbInfo::SpatialiteLayerType
      * \note
      * - SpatialTable, SpatialView, VirtualShape, RasterLite1, RasterLite2
      * - SpatialiteTopology, TopologyExport, GeoPackageVector, GeoPackageRaster
      * - MBTilesTable, MBTilesView
      * \since QGIS 3.0
      */
-    static SpatialiteDbInfo::SpatialiteLayerType SpatialiteLayerTypeFromName( const QString &typeName );
+    static QgsSpatialiteDbInfo::SpatialiteLayerType SpatialiteLayerTypeFromName( const QString &typeName );
 
     /**
      * Returns the String value of the enum of Layer-Types of the Sqlite3 Container
-     * - SpatialiteDbInfo::SpatialiteLayerType
+     * - QgsSpatialiteDbInfo::SpatialiteLayerType
      * \note
      * - SpatialTable, SpatialView, VirtualShape, RasterLite1, RasterLite2
      * - SpatialiteTopology, TopologyExport, GeoPackageVector, GeoPackageRaster
      * - MBTilesTable, MBTilesView
-     * \see SpatialiteDbLayer::setLayerType
+     * \see QgsSpatialiteDbLayer::setLayerType
      * \since QGIS 3.0
      */
-    static QString SpatialiteLayerTypeName( SpatialiteDbInfo::SpatialiteLayerType layerType );
+    static QString SpatialiteLayerTypeName( QgsSpatialiteDbInfo::SpatialiteLayerType layerType );
 
     /**
      * Returns the QIcon representation  of the enum of Layer-Types of the Sqlite3 Container
-     * - SpatialiteDbInfo::SpatialiteLayerType
+     * - QgsSpatialiteDbInfo::SpatialiteLayerType
      * \note
      * - SpatialTable, SpatialView, VirtualShape, RasterLite1, RasterLite2
      * - SpatialiteTopology, TopologyExport, GeoPackageVector, GeoPackageRaster
      * - MBTilesTable, MBTilesView
-     * \see SpatialiteDbLayer::setLayerType
+     * \see QgsSpatialiteDbLayer::setLayerType
      * \since QGIS 3.0
      */
-    static QIcon SpatialiteLayerTypeIcon( SpatialiteDbInfo::SpatialiteLayerType layerType );
+    static QIcon SpatialiteLayerTypeIcon( QgsSpatialiteDbInfo::SpatialiteLayerType layerType );
 
     /**
      * Returns the QIcon representation  of non-Spatialial or Spatial-Admin TABLEs in a Sqlite3 Container
-     * - SpatialiteDbInfo::SpatialiteLayerType
+     * - QgsSpatialiteDbInfo::SpatialiteLayerType
      * \note
      * - SpatialTable, SpatialView, VirtualShape, RasterLite1, RasterLite2
      * - SpatialiteTopology, TopologyExport, GeoPackageVector, GeoPackageRaster
      * - MBTilesTable, MBTilesView
-     * \see SpatialiteDbLayer::setLayerType
+     * \see QgsSpatialiteDbLayer::setLayerType
      * \since QGIS 3.0
      */
     static QIcon NonSpatialTablesTypeIcon( QString typeName );
+
+    /**
+     * Returns the QIcon representation  ofTABLE Column Field
+     * \note
+     * - QVariant::type()
+     * - Primary-Key: QVariant::KeySequence
+     * - Foreign-Key: QVariant::UserType
+     * \see QgsSpatialiteDbLayer::getAttributeFields
+     * \see QgsSpatialiteDbInfoItem::addColumnItems
+     * \since QGIS 3.0
+     */
+    static QIcon QVariantTypeIcon( QVariant::Type fieldType );
 
     /**
      * Returns QIcon representation of the enum of a Geometry-Type
@@ -1510,57 +1713,57 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
 
     /**
      * Returns the String value of the enum of SpatialIndex-Types
-     * \see SpatialiteDbLayer::setSpatialIndexType
+     * \see QgsSpatialiteDbLayer::setSpatialIndexType
      * \since QGIS 3.0
      */
-    static QString SpatialIndexTypeName( SpatialiteDbInfo::SpatialIndexType spatialIndexType );
+    static QString SpatialIndexTypeName( QgsSpatialiteDbInfo::SpatialIndexType spatialIndexType );
 
     /**
      * Returns the enum  value from the given String of a Sqlite3 Container-Types
-     * - SpatialiteDbInfo::SpatialMetadata
+     * - QgsSpatialiteDbInfo::SpatialMetadata
      * \note
-     * - SpatialiteLegacy, SpatialiteFdoOgr, Spatialite40, SpatialiteGpkg, Spatialite45, SpatialiteMBTiles and SpatialUnknown
+     * - SpatialiteLegacy, SpatialiteFdoOgr, Spatialite40, SpatialiteGpkg, Spatialite50, SpatialiteMBTiles and SpatialUnknown
      * \param typeName enum as String
      * \returns SpatialMetadata enum
      * \since QGIS 3.0
      */
-    static SpatialiteDbInfo::SpatialMetadata SpatialMetadataTypeFromName( const QString &typeName );
+    static QgsSpatialiteDbInfo::SpatialMetadata SpatialMetadataTypeFromName( const QString &typeName );
 
     /**
      * Returns the String value of the enum of SpatialMetadata-Types (Sqlite3 Container-Types)
-     * - SpatialiteDbInfo::SpatialMetadata
+     * - QgsSpatialiteDbInfo::SpatialMetadata
      * \note
-     * - SpatialiteLegacy, SpatialiteFdoOgr, Spatialite40, SpatialiteGpkg, Spatialite45, SpatialiteMBTiles and SpatialUnknown
+     * - SpatialiteLegacy, SpatialiteFdoOgr, Spatialite40, SpatialiteGpkg, Spatialite50, SpatialiteMBTiles and SpatialUnknown
      * \param spatialMetadataType SpatialMetadata enum
      * \returns SpatialMetadata enum as String
-     * \see SpatialiteDbInfo::setSpatialMetadata
+     * \see QgsSpatialiteDbInfo::setSpatialMetadata
      * \since QGIS 3.0
      */
-    static QString SpatialMetadataTypeName( SpatialiteDbInfo::SpatialMetadata spatialMetadataType );
+    static QString SpatialMetadataTypeName( QgsSpatialiteDbInfo::SpatialMetadata spatialMetadataType );
 
     /**
      * Returns QIcon representation of the enum of SpatialMetadata-Types (Sqlite3 Container-Types)
-     * - SpatialiteDbInfo::SpatialMetadata
+     * - QgsSpatialiteDbInfo::SpatialMetadata
      * \note
-     * - SpatialiteLegacy, SpatialiteFdoOgr, Spatialite40, SpatialiteGpkg, Spatialite45, SpatialiteMBTiles and SpatialUnknown
+     * - SpatialiteLegacy, SpatialiteFdoOgr, Spatialite40, SpatialiteGpkg, Spatialite50, SpatialiteMBTiles and SpatialUnknown
      * \param spatialMetadataType SpatialMetadata enum
      * \returns SpatialMetadata enum as String
-     * \see SpatialiteDbInfo::getSpatialMetadataIcon
+     * \see QgsSpatialiteDbInfo::getSpatialMetadataIcon
      * \since QGIS 3.0
      */
-    static QIcon SpatialMetadataTypeIcon( SpatialiteDbInfo::SpatialMetadata spatialMetadataType );
+    static QIcon SpatialMetadataTypeIcon( QgsSpatialiteDbInfo::SpatialMetadata spatialMetadataType );
 
     /**
      * Returns QIcon representation of the enum of SpatialMetadata-Types (Sqlite3 Container-Types)
-     * - SpatialiteDbInfo::SpatialMetadata
+     * - QgsSpatialiteDbInfo::SpatialMetadata
      * \note
-     * - SpatialiteLegacy, SpatialiteFdoOgr, Spatialite40, SpatialiteGpkg, Spatialite45, SpatialiteMBTiles and SpatialUnknown
+     * - SpatialiteLegacy, SpatialiteFdoOgr, Spatialite40, SpatialiteGpkg, Spatialite50, SpatialiteMBTiles and SpatialUnknown
      * \param spatialMetadataType SpatialMetadata enum
      * \returns SpatialMetadata enum as Icon
-     * \see SpatialiteDbInfo::setSpatialMetadata
+     * \see QgsSpatialiteDbInfo::setSpatialMetadata
      * \since QGIS 3.0
      */
-    QIcon getSpatialMetadataIcon() const { return SpatialiteDbInfo::SpatialMetadataTypeIcon( mSpatialMetadata ); }
+    QIcon getSpatialMetadataIcon() const { return QgsSpatialiteDbInfo::SpatialMetadataTypeIcon( mSpatialMetadata ); }
 
     /**
      * Returns the enum  value from the given String of a SpatialIndex-Types
@@ -1568,7 +1771,7 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
      * - at the moment not used but intended for external use
      * \since QGIS 3.0
      */
-    static SpatialiteDbInfo::SpatialIndexType SpatiaIndexTypeFromName( const QString &typeName );
+    static QgsSpatialiteDbInfo::SpatialIndexType SpatiaIndexTypeFromName( const QString &typeName );
 
     /**
      * Convert QVariant::String to a more realistic type
@@ -1585,10 +1788,50 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
      * List of Table-Types
      * -  with short description on how the Table is used
      * \note
+     * - for Spatialite, RasterLite2, Topology, GeoPackage, MBTiles, OgrFdo
+     * -> must be maintained when new types are created by the projects
      * - intended for gui use when listing tables, or as title of a sub-group where those type are stored in
+     * - contains information of the group (and possible sub-groupe) in shown in
+     * \see mSpatialiteTypes
+     * \see getSpatialiteTableTypes()
+     * \see readNonSpatialTables()
+     * \see QgsSpatialiteDbInfoItem::buildNonSpatialTablesGroups
      * \since QGIS 3.0
      */
     static QStringList getSpatialiteTypes();
+
+    /**
+     * List of Table-Types
+     * -  search mSpatialiteTypes and return found value
+     * \note
+     * - for Spatialite, RasterLite2, Topology, GeoPackage, MBTiles, OgrFdo
+     * -> must be maintained when new types are created by the projects
+     * - intended for gui use when listing tables, or as title of a sub-group where those type are stored in
+     * - contains information of the group (and possible sub-groupe) in shown in
+     * \see mSpatialiteTypes
+     * \see getSpatialiteTableTypes()
+     * \see readNonSpatialTables()
+     * \see QgsSpatialiteDbInfoItem::buildNonSpatialTablesGroups
+     * \since QGIS 3.0
+     */
+    static QString getSpatialiteTypesFilter( QString sFilter );
+
+    /**
+     * List of AdministrationTable-Types
+     * -  created in readNonSpatialTables
+     * -  used in QgsSpatialiteDbInfoItem::buildNonSpatialTablesGroups
+     * \note
+     * - for Spatialite, RasterLite2, Topology, GeoPackage, MBTiles, OgrFdo
+     * -> must be maintained when new types are created by the projects
+     * - key: name of table
+     * - value: category from getSpatialiteTypes
+     * \see mSpatialiteTableTypes
+     * \see getSpatialiteTypes()
+     * \see readNonSpatialTables()
+     * \see QgsSpatialiteDbInfoItem::buildNonSpatialTablesGroups
+     * \since QGIS 3.0
+     */
+    static QMap<QString, QString> getSpatialiteTableTypes();
 
     /**
      * Retrieve Capabilities of QgsSqliteHandle connection
@@ -1599,21 +1842,21 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
      *  - otherwise all tables with geometries
      * \param sLayerName when used
      * \param bLoadLayers Load all Layer-Information or only 'sniff' [default] the Database
-     * \returns SpatialiteDbInfo with collected results
+     * \returns QgsSpatialiteDbInfo with collected results
      * \see QgsSqliteHandle
      * \since QGIS 3.0
      */
-    bool getSpatialiteLayerInfo( QString sLayerName = QString::null, bool bLoadLayers = false, SpatialSniff sniffType = SpatialiteDbInfo::SniffUnknown );
+    bool getSpatialiteLayerInfo( QString sLayerName = QString::null, bool bLoadLayers = false, SpatialSniff sniffType = QgsSpatialiteDbInfo::SniffUnknown );
 
     /**
-     * Attach and existing SpatialiteDbInfo object to a QSqliteHandle
+     * Attach and existing QgsSpatialiteDbInfo object to a QSqliteHandle
      * - at this point we are 'sniffing' the Capabilities of the opened Database
      * \note
      *  - checking is done that the Database is not readonly
      * \param qSqliteHandle
      * \returns true is succesfull
      * \see QgsSqliteHandle
-     * \see SpatialiteDbInfo::FetchSpatialiteDbInfo
+     * \see QgsSpatialiteDbInfo::FetchSpatialiteDbInfo
      * \since QGIS 3.0
      */
     bool attachQSqliteHandle( QgsSqliteHandle *qSqliteHandle );
@@ -1624,7 +1867,7 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
      *  -> format: 'table_name(geometry_name)', Error text
      * \since QGIS 3.0
      */
-    QMap<QString, QString> getWarnings() const { return mWarnings; }
+    QMap<QString, QString> getDbWarnings() const { return mDbWarnings; }
 
     /**
      * Collection of reasons for the Database being invalid
@@ -1632,7 +1875,7 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
      *  -> format: 'table_name(geometry_name)', Error text
      * \since QGIS 3.0
      */
-    QMap<QString, QString> getErrors() const { return mErrors; }
+    QMap<QString, QString> getDbErrors() const { return mDbErrors; }
 
     /**
      * The internal Parse Separator
@@ -1655,17 +1898,33 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
     static const QString ParseSeparatorUris;
 
     /**
-     * The internal Parse Separator
+     * The internal Group Separator
+
      * - used for the Coverage/Style-Type/Title/Abstract/Copyright
      * \note
      *  - hoping that '€' will not be found in the Title/Abstract/Copyright Text
      *  \see readVectorRasterCoverages
      *  \see readVectorRasterStyles
-     *  \see SpatialiteDbLayer::checkLayerStyles
-     *  \see SpatialiteDbLayer::setLayerStyleSelected
+     *  \see QgsSpatialiteDbLayer::checkLayerStyles
+     *  \see QgsSpatialiteDbLayer::setLayerStyleSelected
      * \since QGIS 3.0
      */
     static const QString ParseSeparatorCoverage;
+
+    /**
+     * The internal Parse Separator
+     * - used for the QgsSpatialiteDbInfoItem Table listing
+     * \note
+     * Sub-Groups logic.
+     * A Layer-Name with at least 2 '_' in the TableName AND
+     * - there is more than 1 entry with the same base name
+     *  \see addGroupLayerEntry
+     *  \see prepareGroupLayers
+     *  \see QgsSpatialiteDbLayer::checkLayerStyles
+     *  \see QgsSpatialiteDbLayer::setLayerStyleSelected
+     * \since QGIS 3.0
+     */
+    static const QString ParseSeparatorGroup;
 
     /**
      * Retrieve the selected vector Style
@@ -1717,7 +1976,7 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
      * This information can be retrieved without a Spatialite connecton.
      * - Key: coverage_name from SE_vector_styled_layers or SE_raster_styled_layers
      * - Value: style_id
-     * -> SpatialiteDbLayer will retrieve the style_id that belongs to it [there may be more than 1]
+     * -> QgsSpatialiteDbLayer will retrieve the style_id that belongs to it [there may be more than 1]
      * \see readVectorRasterStyles
      * \since QGIS 3.0
      */
@@ -1738,7 +1997,7 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
      * \see setLayerStyleSelected
      * \since QGIS 3.0
      */
-    QDomElement getDbStyleNamedLayerElement( SpatialiteDbInfo::SpatialiteLayerType styleType, int iStyleId, QString &errorMessage, int *iDebug = nullptr, QString sSaveXmlFileName = QString::null );
+    QDomElement getDbStyleNamedLayerElement( QgsSpatialiteDbInfo::SpatialiteLayerType styleType, int iStyleId, QString &errorMessage, int *iDebug = nullptr, QString sSaveXmlFileName = QString::null );
 
     /**
      * Create LayerInfo String and Uri
@@ -1761,7 +2020,7 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
      * \param iIsHidden is the Layer hidden
      * \returns sLayerInfo
      * \see prepareDataSourceUris
-     * \see SpatialiteDbLayer::prepare
+     * \see QgsSpatialiteDbLayer::prepare
      * \see readVectorLayers
      * \see readVectorRasterCoverages
      * \see GetTopologyLayersInfo
@@ -1771,46 +2030,152 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
      * \see readMBTilesLayers
      * \since QGIS 3.0
      */
-    QString createDbLayerInfoUri( QString &sLayerInfo, QString &sDataSourceUri, QString sLayerName, SpatialiteDbInfo::SpatialiteLayerType layerType, QString sGeometryType, int iSrid, int iSpatialIndex = -1, int iIsHidden = 0 );
+    QString createDbLayerInfoUri( QString &sLayerInfo, QString &sDataSourceUri, QString sLayerName, QgsSpatialiteDbInfo::SpatialiteLayerType layerType, QString sGeometryType, int iSrid, int iSpatialIndex = -1, int iIsHidden = 0 );
 
     /**
      * Parse the LayerInfo String
      * - intended to store and retrieve general Infomation about the Layer
-     * - needed when 'sniffing' the Layer, when no SpatialiteDbLayer exists
+     * - needed when 'sniffing' the Layer, when no QgsSpatialiteDbLayer exists
      * \note
      *  - the LayerInfo String is created in createDbLayerInfoUri
-     *  - SpatialiteDbInfo::ParseSeparatorGeneral (';') is used a separator
-     * \param sLayerInfo the input to parse
-     * \param sGeometryType the returned result from field 0 of sLayerInfo
-     * \param iSrid the returned result from field 1 of sLayerInfo
-     * \param sProvider the returned result from field 2 of sLayerInfo
-     * \param sLayerType the returned result from field 3 of sLayerInfo
-     * \param iSpatialIndex the returned result from field 4 of sLayerInfo
-     * \param iIsHidden the returned result from field 5 of sLayerInfo
-     * \returns true if the correct amount of ields were found
+     *  This is a convenience function for parsing for use with
+     *  - QgsSpatialiteDbInfo::ParseSeparatorGeneral (';') is used a separator
+     * \param sLayerInfo IN the input to parse
+     * \param sGeometryType OUT the returned result from field 0 of sLayerInfo
+     * \param iSrid OUT the returned result from field 1 of sLayerInfo
+     * \param sProvider OUT the returned result from field 2 of sLayerInfo
+     * \param sLayerType OUT the returned result from field 3 of sLayerInfo
+     * \param iSpatialIndex OUT the returned result from field 4 of sLayerInfo
+     * \param iIsHidden OUT the returned result from field 5 of sLayerInfo
+     * \returns true if the correct amount of fields were found
      * \see prepareDataSourceUris
      * \see addDbMapLayers
      * \see QgsSpatialiteLayerItem
      * \since QGIS 3.0
      */
-    bool parseLayerInfo( QString sLayerInfo, QString &sGeometryType, int &iSrid, QString &sProvide, QString &sLayerType, int &iSpatialIndex, int &iIsHidden );
+    bool parseLayerInfo( QString sLayerInfo, QString &sGeometryType, int &iSrid, QString &sProvider, QString &sLayerType, int &iSpatialIndex, int &iIsHidden );
+
+    /**
+     * List of used Srid's in  the Database
+      * Seperator: '@' [QgsSpatialiteDbInfo::ParseSeparatorCoverage]
+     * \note
+     *  - Since Spatialite 5.0 a 'spatial_ref_sys_aux' exists with more detailed information about the Srid
+     *  'readSpatialRefSysAux' will read this TABLE for the Srid's being used in the Database
+     *  For Spatialite Databases created for Versions 2.4 untill 4.3, this will be emulated
+     *  - the same for GeoPackage and FdoOgr
+     * Seperator: '@' [QgsSpatialiteDbInfo::ParseSeparatorCoverage]
+     * Result should be parsed with 'parseSridInfo'
+     * \returns true if all information  will be retrieved when running
+     * \see readSpatialRefSysAuxCount
+     * \see mDbSridInfo
+     * \see parseSridInfo
+    * \since QGIS 3.0
+    */
+    QMap<int, QString> mDbSridInfo;
+
+    /**
+     * SridInfo [SpatialRefSysAux]
+     * - parse result of SpatialRefSysAux
+     * Seperator: '@' [QgsSpatialiteDbInfo::ParseSeparatorCoverage]
+     * default size=5, can be 16 [default 16]
+     * \note
+     *  - Since Spatialite 5.0 a 'spatial_ref_sys_aux' exists with more detailed information about the Srid
+     *  'readSpatialRefSysAux' will read this TABLE for the Srid's being used in the Database
+     *  For Spatialite Databases created for Versions 2.4 untill 4.3, this will be emulated
+     *  - the same for GeoPackage and FdoOgr
+     *  For MbTiles the values for 3857 [WGS 84 / Pseudo-Mercator] and 4326 [WGS 84] are hardcoded into the function
+     *  For emulated sources, an attempt will be made to parse the SrsWkt and set the missing values
+     * - Projection-Parametes will be extracted from the  SrsWkt and set in sProjectionParameters
+     * -- Format: 'parm=value;parm=value' using QgsSpatialiteDbInfo::ParseSeparatorGeneral
+     * \param sSpatialRefSysAux IN Types the input to parse
+     * \param iSrid OUT the returned result from field 0 of sSpatialRefSysAux
+     * \param sAuthName OUT the returned result from field 1 of sSpatialRefSysAux
+     * \param sRefSysName OUT the returned result from field 2 of sSpatialRefSysAux
+     * \param sProjText OUT the returned result from field 3 of sSpatialRefSysAuxe
+     * \param sSrsWkt OUT the returned result from field 4 of sSpatialRefSysAux
+     * \param iIsGeographic OUT the returned result from field 5 of sSpatialRefSysAux
+     * \param iHasFlippedAxes OUT the returned result from field 6 of sSpatialRefSysAux
+     * \param sSpheroid OUT the returned result from field 7 of sSpatialRefSysAux
+     * \param sPrimeMeridian OUT the returned result from field 8 of sSpatialRefSysAux
+     * \param sDatum OUT the returned result from field 9 of sSpatialRefSysAux
+     * \param sProjection OUT the returned result from field 10 of sSpatialRefSysAux
+     * \param sMapUnit OUT the returned result from field 11 of sSpatialRefSysAux
+     * \param sAxis1Name OUT the returned result from field 12 of sSpatialRefSysAux
+     * \param sAxis1Orientation OUT the returned result from field 13 of sSpatialRefSysAux
+     * \param sAxis2Name OUT the returned result from field 14 of sSpatialRefSysAux
+     * \param sAxis2Orientation OUT the returned result from field 15 of sSpatialRefSysAux
+     * \param sProjectionParameters OUT added Projection Parameters from sSrsWkt, if found
+     * \returns true if the correct amount of fields were found
+     * \see QgsSpatialiteDbInfo::readSpatialRefSysAux
+     * \see QgsSpatialiteLayerItem::buildSpatialRefSysAuxGroup
+     * \since QGIS 3.0
+     */
+    static bool parseSridInfo( QString sSpatialRefSysAux, int &iSrid, QString &sAuthName, QString &sRefSysName, QString &sProjText, QString &sSrsWkt,
+                               int &iIsGeographic, int &iHasFlippedAxes, QString &sSpheroid, QString &sPrimeMeridian, QString &sDatum, QString &sProjection, QString &sMapUnit,
+                               QString &sAxis1Name, QString &sAxis1Orientation, QString &sAxis2Name, QString &sAxis2Orientation, QString &sProjectionParameters );
+
+    /**
+     * Spatialite StylesInfo
+     * - parse result of getLayerCoverageStylesInfo
+     * Seperator: '@' [QgsSpatialiteDbInfo::ParseSeparatorCoverage]
+     * default size=4
+     * \note
+     *  Raster and Vector Styles exist
+     *  - Key: StyleId as retrieved from SE_raster_styled_layers_view
+     *  - Value: StyleName, StyleTitle, StyleAbstract,TestStylesForQGis
+     * \param sStyleInfo IN Types the input to parse
+     * \param sStyleName OUT the returned result from field 0 of sSpatialiteTable
+     * \param sStyleTitle OUT the returned result from field 1 of sSpatialiteTable
+     * \param sStyleAbstract OUT the returned result from field 2 of sSpatialiteTable
+     * \param sTestStylesForQGis OUT the returned result from field 3 of sSpatialiteTable
+     * \returns true if the correct amount of fields were found
+     * \see QgsSpatialiteDbInfo::readVectorRasterStyles
+     * \see QgsSpatialiteDbInfo::getLayerCoverageStylesInfo
+     * \see QgsSpatialiteLayerItem::addLayerStylesItems
+     * \see QgsSpatialiteLayerItem::buildStylesGroupItem
+     * \since QGIS 3.0
+     */
+    static bool parseStyleInfo( QString sStyleInfo, QString &sStyleName, QString &sStyleTitle, QString &sStyleAbstract, QString &sTestStylesForQGis );
+
+    /**
+     * SpatialiteTableTypes
+     * - parse result of getDbLayersType
+     * default size=4, can be 5
+     * \note
+     *  - the sSpatialiteTable is created in readNonSpatialTables
+     *  - and optional TableName (added in buildNonSpatialTablesGroups)
+     *  This is a convenience function for parsing for use with
+     *  - QgsSpatialiteDbInfo::ParseSeparatorGeneral (';') is used a separator
+     * \param sSpatialiteTable IN Types the input to parse
+     * \param sTableType OUT the returned result from field 0 of sSpatialiteTable
+     * \param sGroupName OUT the returned result from field 1 of sSpatialiteTable
+     * \param sParentGroupName OUT the returned result from field 2 of sSpatialiteTable
+     * \param sGroupSort OUT the returned result from field 3 of sSpatialiteTable
+     * \param sTableName OUT the returned result from field 4 of sSpatialiteTable [if it exists]
+     * \returns true if the correct amount of fields were found
+     * \see QgsSpatialiteDbInfo::getDbLayersType
+     * \see QgsSpatialiteLayerItem::buildNonSpatialTablesGroups
+     * \since QGIS 3.0
+     */
+    static bool parseSpatialiteTableTypes( QString sSpatialiteTableTypes, QString &sTableType, QString &sGroupName, QString &sParentGroupName, QString &sGroupSort, QString &sTableName );
 
     /**
      * Parse the LayerCoverage String
      * - intended to store and retrieve general Infomation about the Raster Layer
-     * - needed when 'sniffing' the Layer, when no SpatialiteDbLayer exists
+     * - needed when 'sniffing' the Layer, when no QgsSpatialiteDbLayer exists
      * \note
      *  - the LayerInfo String is created in createDbLayerInfoUri
-     *  - SpatialiteDbInfo::ParseSeparatorCoverage ('€') is used a separator
-     * \param sLayerInfo the input to parse
-     * \param sLayerType the returned result from field 0 of sLayerInfo
-     * \param sLayerName the returned result from field 1 of sLayerInfo
-     * \param sTitle the returned result from field 2 of sLayerInfo
-     * \param sAbstract the returned result from field 3 of sLayerInfo
-     * \param sCopyright the returned result from field 4 of sLayerInfo
-     * \param sLicense the returned result from field 5 of sLayerInfo
-     * \param iSrid the returned result from field 5 of sLayerInfo
-     * \returns true if the correct amount of ields were found
+     *  This is a convenience function for parsing for use with
+     *  - QgsSpatialiteDbInfo::ParseSeparatorCoverage ('€') is used a separator
+     * \param sLayerInfo IN the input to parse
+     * \param sLayerType OUT the returned result from field 0 of sLayerInfo
+     * \param sLayerName OUT the returned result from field 1 of sLayerInfo
+     * \param sTitle OUT the returned result from field 2 of sLayerInfo
+     * \param sAbstract OUT the returned result from field 3 of sLayerInfo
+     * \param sCopyright OUT the returned result from field 4 of sLayerInfo
+     * \param sLicense OUT the returned result from field 5 of sLayerInfo
+     * \param iSrid OUT the returned result from field 5 of sLayerInfo
+     * \returns true if the correct amount of fields were found
      * \see prepareDataSourceUris
      * \see addDbMapLayers
      * \see QgsSpatialiteLayerItem
@@ -1886,7 +2251,7 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
      * \note
      * - isDbValid() return if the connection contains layers that are supported by
      * -- QgsSpatiaLiteProvider, QgsGdalProvider and QgsOgrProvider
-     * \see SpatialiteDbInfo::isDbValid()
+     * \see QgsSpatialiteDbInfo::isDbValid()
      * \since QGIS 3.0
      */
     QgsSqliteHandle *mQSqliteHandle = nullptr;
@@ -1898,7 +2263,7 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
      * \see getSniffDatabaseType
     * \since QGIS 3.0
     */
-    SpatialiteDbInfo::SpatialMetadata mSpatialMetadata;
+    QgsSpatialiteDbInfo::SpatialMetadata mSpatialMetadata;
 
     /**
      * Database create pption
@@ -1911,7 +2276,7 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
      * - SpatialiteFdoOgr: not supported (treat as if SpatialUnknown)
     * \since QGIS 3.0
     */
-    SpatialiteDbInfo::SpatialMetadata mDbCreateOption;
+    QgsSpatialiteDbInfo::SpatialMetadata mDbCreateOption;
 
     /**
      * The Spatialite internal Database structure being read (as String)
@@ -1937,7 +2302,7 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
      * Contains collected Metadata for the Database
      * \brief A structured metadata store for a map layer.
      * \note
-     *  - SpatialiteDbLayer will use a copy this as starting point
+     *  - QgsSpatialiteDbLayer will use a copy this as starting point
      * \see QgsMapLayer::htmlMetadata()
      * \see QgsMapLayer::metadata
      * \see QgsMapLayer::setMetadata
@@ -1949,7 +2314,7 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
      * Set the collected Metadata for the Layer
      * \brief A structured metadata store for a map layer.
      * \note
-     *  - SpatialiteDbLayer will use a copy of SpatialiteDbInfo  mLayerMetadata as starting point
+     *  - QgsSpatialiteDbLayer will use a copy of QgsSpatialiteDbInfo  mLayerMetadata as starting point
      * \see prepare
      * \see QgsMapLayer::htmlMetadata()
      * \see QgsMapLayer::metadata
@@ -2053,6 +2418,10 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
      * -> for Databases created with a version before 4.0.0, vector_layers will be simulated
      * \note
      *   -1=no vector_layers entries, otherwise amount (0 being empty)
+     *  For SpatialiteLegacy
+     * - this value will be with the value of mHasLegacyGeometryLayers
+     * When both values are the same
+     *  - Queries must be done against geometry_columns instead of vector_layers
      * \see getSniffMinimal
      * \see getSniffReadLayers
      * \see readVectorLayers
@@ -2096,6 +2465,17 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
      * \since QGIS 3.0
      */
     int mHasSpatialTables;
+
+    /**
+     * Does the read Database contain a spatial_ref_sys_aux TABLE
+     * - determine through Sql-Queries, without usage of any Drivers
+     * \note
+     *   true=Spatialite 5.0 Layout
+     * \see getSniffReadLayers
+     * \see readVectorLayers
+     * \since QGIS 3.0
+     */
+    bool mHasSpatialRefSysAux = false;
 
     /**
      * Does the read Database contain SpatialViews views
@@ -2421,7 +2801,7 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
      * - supported by QgsRasterLite2Provider
      * \note
      *  - RasterLite2 specific functions should not be called when false
-     * \see SpatialiteDbLayer::rl2GetMapImageFromRaster
+     * \see QgsSpatialiteDbLayer::rl2GetMapImageFromRaster
      * \since QGIS 3.0
      */
     bool mIsRasterLite2;
@@ -2442,7 +2822,7 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
      *  - Topology
      * \since QGIS 3.0
      */
-    bool mIsSpatialite45;
+    bool mIsSpatialite50;
 
     /**
      * Is the read Database not supported by QgsSpatiaLiteProvider but
@@ -2454,6 +2834,24 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
      * \since QGIS 3.0
      */
     bool mIsGdalOgr;
+
+    /**
+     * Is the read Database a MbTilesDatabase
+     * - supported by the QgsGdalProvider Driver
+     * \note
+     *  - QgsGdalProvider: MbTiles
+     * \since QGIS 3.0
+     */
+    bool mIsMbTiles = false;
+
+    /**
+     * Is the Database a GeoPackage
+     * - supported by QgsGdalProvider or QgsOgrProvider
+     * \note
+     *  - GeoPackage specific functions should not be called when false
+     * \since QGIS 3.0
+     */
+    bool mIsGeoPackage = false;
 
     /**
      * Does the file contain the Sqlite3 'Magic Header String'
@@ -2480,7 +2878,7 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
       * \note
       *  - SniffDatabaseType: Determins Sqlite3-Container-Type [SpatialMetadata] and used Spatialite version
       *  - SniffMinimal: Load and store Information about Tables/Layers with the amount for each [SpatialiteLayerType]
-      *  - SniffLoadLayers: Load and store Information about Layers with details [SpatialiteDbLayer]
+      *  - SniffLoadLayers: Load and store Information about Layers with details [QgsSpatialiteDbLayer]
       *  - SniffExtendend: (planned) possible Editing of of Layer-Propeties such as Column-Names
       * \since QGIS 3.0
       */
@@ -2621,13 +3019,13 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
 
     /**
      * Map of valid Layers supported by this Database [mLayerName as Key]
-     * - contains Layer-Name and a SpatialiteDbLayer-Pointer
+     * - contains Layer-Name and a QgsSpatialiteDbLayer-Pointer
      * \note
      * - contains all Layer-Types (SpatialTable/View, RasterLite1/2, Topology and VirtualShape)
-     * \see getSpatialiteDbLayer
+     * \see getQgsSpatialiteDbLayer
      * \since QGIS 3.0
      */
-    QMap<QString, SpatialiteDbLayer *> mDbLayers;
+    QMap<QString, QgsSpatialiteDbLayer *> mDbLayers;
 
     /**
      * Function to remove known Admin-Tables from the Layers-List
@@ -2733,7 +3131,8 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
      * - There will allways be a 'native' srid/extent with the corresponding Wsg84 (4326) values
      * - There can be any amount of 'alternative' srid/extent with the corresponding Wsg84 (4326) values
      * - Key: LayerName formatted as 'table_name(geometry_name)' or 'table_name'
-     * - Value: native_srid€srid€;extent_minx€extent_miny€extent_maxx€extent_maxy€geo_minx€geo_miny€geo_maxx€geo_maxy
+     * - Value: native_srid€srid€;extent_minx€extent_miny€extent_maxx€extent_maxy€geo_minx€geo_miny€geo_maxx€geo_maxy€horz_resolution€vert_resolution
+     * Resolution will allways be 0.0, being Vectors
      * \see getDbVectorCoveragesLayersExtent
      * \see readVectorRasterCoverages
      * \since QGIS 3.0
@@ -2748,7 +3147,7 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
      * - There will allways be a 'native' srid/extent with the corresponding Wsg84 (4326) values
      * - There can be any amount of 'alternative' srid/extent with the corresponding Wsg84 (4326) values
      * - Key: LayerName formatted as 'table_name(geometry_name)' or 'table_name'
-     * - Value: native_srid€srid€;extent_minx€extent_miny€extent_maxx€extent_maxy€geo_minx€geo_miny€geo_maxx€geo_maxy
+     * - Value: native_srid€srid€;extent_minx€extent_miny€extent_maxx€extent_maxy€geo_minx€geo_miny€geo_maxx€geo_maxy€horz_resolution€vert_resolution
      * \see getDbVectorCoveragesLayersExtent
      * \see readVectorRasterCoverages
      * \since QGIS 3.0
@@ -2820,13 +3219,29 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
     QMap<QString, QString> mMBTilesLayers;
 
     /**
+     * Map of the MBTiles name,value columns of the metadata TABLE
+     * - Since there can be only 1 Raster-Layer
+     *  - no support for Grids due to lask of samples
+     *  -> this must be rendered be the QgsGdalProvider
+     * \note
+     * - Key: Column name of metadata TABLE
+     * - Value: Column value of metadata TABLE
+     * -> layer_type: MBTilesTable of MBTilesView
+     * - Checking is done if the 'MBTiles' Gdal Driver is active
+     * \see readMBTilesLayers
+     * \see QgsSpatialiteDbInfoItem::addMBTilesMetadataItems
+     * \since QGIS 3.0
+     */
+    QMap<QString, QString> mMBTilesMetaData;
+
+    /**
      * Map of table_name that are contained in geopackage_contents
      *  -> this must be rendered be the QgsGdalProvider or QgsOgrProvider
      * \note
      * - Key: LayerName formatted as 'table_name'
      * - Value: LayerType and Srid formatted as 'layer_type:srid'
      * -> layer_type: GeoPackageVector or GeoPackageRaster
-     * - Checking is done if the 'GPKG' Gdal/Ogr Driver is active
+     * - Checking is done if the 'GPKG' Ogr/Gdal Driver is active
      * \see readGeoPackageLayers
      * \since QGIS 3.0
      */
@@ -2861,7 +3276,7 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
      * -> GeoPackage [Ogr]: 'PathToFile|layername=table_name'
      * \see mDbLayersDataSourceUris
      * \see mDbLayers
-     * \see getSpatialiteDbLayer
+     * \see getQgsSpatialiteDbLayer
      * \see prepareDataSourceUris
      * \since QGIS 3.0
      */
@@ -2916,7 +3331,7 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
      * \note
      * Without a Spatialite connecton the Title, Abstract and Xml cannot be retrieved
      * - Key: style_id as retrieved from SE_vector_styled_layers_view
-     * - Value: StyleType, StyleTitle, StyleAbstract
+     * - Value: StyleName, StyleTitle, StyleAbstract,TestStylesForQGis
      * -> style_type: StyleVector
      * \see readVectorRasterStyles
      * \since QGIS 3.0
@@ -2928,7 +3343,7 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
      * \note
      * Without a Spatialite connecton the Title, Abstract and Xml cannot be retrieved
      * - Key: style_id as retrieved from SE_raster_styled_layers
-     * - Value: StyleType, StyleTitle, StyleAbstract
+     * - Value: StyleName, StyleTitle, StyleAbstract,TestStylesForQGis
      * -> style_type: StyleRaster
      * \see readVectorRasterStyles
      * \since QGIS 3.0
@@ -2941,7 +3356,7 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
      * This information can be retrieved without a Spatialite connecton.
      * - Key: coverage_name from SE_vector_styled_layers or SE_raster_styled_layers
      * - Value: style_id
-     * -> SpatialiteDbLayer will retrieve the style_id that belongs to it [there may be more than 1]
+     * -> QgsSpatialiteDbLayer will retrieve the style_id that belongs to it [there may be more than 1]
      * \see readVectorRasterStyles
      * \since QGIS 3.0
      */
@@ -2969,7 +3384,7 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
 
     /**
      * Retrieve Layers-Information of QgsSqliteHandle connection
-     * - used to fill list in  SpatialiteDbInfo
+     * - used to fill list in  QgsSpatialiteDbInfo
      * \note
      * Spatial* : QString( "%1,table=%2 (%3)" ).arg( getDatabaseFileName() ).arg( sTableName ).arg(sGeometryColumn);
      * - gathers all information from gaiaGetVectorLayersList
@@ -3006,11 +3421,11 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
 
     /**
      * Retrieve RasterLite2 Vector/Raster Layers-Information QgsSqliteHandle connection
-     * - used to fill list in  SpatialiteDbInfo
+     * - used to fill list in  QgsSpatialiteDbInfo
      * \note
      * - results are stored in mVectorLayers
      * - there is no direct Spatialite/RasterLite2 driver support needed during this function
-     * \param dbConnectionInfo SpatialiteDbInfo
+     * \param dbConnectionInfo QgsSpatialiteDbInfo
      * \param sLayerName Name of the Layer to search for format: 'table_name(geometry_name)'
      * \returns true or false
      * \see GetDbLayersInfo
@@ -3022,19 +3437,20 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
 
     /**
      * Retrieve RasterLite2 Vector/Raster Styles-Information
-     * - used to fill list in SpatialiteDbLayer
+     * - used to fill list in QgsSpatialiteDbLayer
      * \note
      * - As default: only load Styles that are used by the Layers [true]
      * - false=Retrieve all the Styles contained in the Database [may, one day, be needed]
      * - Spatialite/RasterLite2 driver support is needed to retreive the xml-documents
-     * \param bTestStylesForQgis true=call testNamedLayerElement from getDbStyleNamedLayerElement to test if valid for Qgis
+     *  - QgsSpatialiteDbInfo::ParseSeparatorCoverage ('€') is used a separator
+     * \param bTestStylesForQGis true=call testNamedLayerElement from getDbStyleNamedLayerElement to test if valid for Qgis
      * \returns mVectorStyleData.count() amount of VectorRaster-Styles loaded
      * \see GetDbLayersInfo
      * \see mVectorStyleData
      * \see mVectorStyleInfo
      * \since QGIS 3.0
      */
-    int readVectorRasterStyles( bool bTestStylesForQgis = false );
+    int readVectorRasterStyles( bool bTestStylesForQGis = false );
 
     /**
      * Determine if valid RasterLite1 Layers exist
@@ -3071,7 +3487,7 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
      * - checks for File-Types defined MimeType
      * \param sDatabaseFileName filename to read
      * \returns MimeType of the given file
-     * \see SpatialiteDbInfo
+     * \see QgsSpatialiteDbInfo
      * \since QGIS 3.0
      */
     static MimeType readMagicHeaderFromFile( QString sDatabaseFileName );
@@ -3095,7 +3511,7 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
      * - called from constructor with a supported option
      * \note
      * - SpatialMetadata::Spatialite40: InitSpatialMetadata only
-     * - SpatialMetadata::Spatialite45: also with Styles/Raster/VectorCoveragesTable's
+     * - SpatialMetadata::Spatialite50: also with Styles/Raster/VectorCoveragesTable's
      * \returns true if the Database was created and considered valid
      * \see mDbCreateOption
      * \see createDatabase
@@ -3169,7 +3585,7 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
      *  -> this must be rendered with QgsOgrProvider
      * \note
      * - results are stored in mFdoOgrLayers
-     * - Checking is done if the SQLite' Gdal/Ogr Driver is active
+     * - Checking is done if the SQLite' Ogr/Gdal Driver is active
      * - there is no direct Spatialite/RasterLite2 driver support needed during this function
      * \returns true if the count of valid-layers > 0
      * \see getSniffLayerMetadata
@@ -3180,12 +3596,12 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
 
     /**
      * Retrieve SpatialTables/SpatialViews or VirtualTables-Layers-Information of QgsSqliteHandle connection
-     * - used to fill list in  SpatialiteDbInfo
+     * - used to fill list in  QgsSpatialiteDbInfo
      * All Layers will be loaded if sLayerName is empty
      * \note
      * There is no direct Spatialite driver support needed during this function
      * - if specific Layer is requested, a Spatialite driver will be started
-     * \param dbConnectionInfo SpatialiteDbInfo
+     * \param dbConnectionInfo QgsSpatialiteDbInfo
      * \param sLayerName Name of the Layer to search for format: 'table_name(geometry_name)'
      * \returns true or false
      * \see GetDbLayersInfo
@@ -3195,13 +3611,13 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
 
     /**
      * Retrieve RasterLite2 Raster-Layers-Information of QgsSqliteHandle connection
-     * - used to fill list in  SpatialiteDbInfo
+     * - used to fill list in  QgsSpatialiteDbInfo
      * All Layers will be loaded if sLayerName is empty
      * \note
      *  RasterLite2 [gdal]: QString( "%3:%1:%2" ).arg( getDatabaseFileName() ).arg( sTableName ).arg( "RASTERLITE2" )
      * - there is no direct RasterLite2 driver support needed during this function
      * - at present (2017-07-31) QGdalProvider cannot read RasterLite2 created with the development version
-     * \param dbConnectionInfo SpatialiteDbInfo
+     * \param dbConnectionInfo QgsSpatialiteDbInfo
      * \param sLayerName Name of the Layer to search for format: 'table_name(geometry_name)'
      * \returns true or false
      * \see GetDbLayersInfo
@@ -3211,10 +3627,10 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
 
     /**
      * Retrieve Topology Layers-Information of QgsSqliteHandle connection
-     * - used to fill list in  SpatialiteDbInfo
+     * - used to fill list in  QgsSpatialiteDbInfo
      * All Layers will be loaded if sLayerName is empty
      * \note
-     * \param dbConnectionInfo SpatialiteDbInfo
+     * \param dbConnectionInfo QgsSpatialiteDbInfo
      * \param sLayerName Name of the Layer to search for format: 'table_name(geometry_name)'
      * \returns true or false
      * \see GetDbLayersInfo
@@ -3224,11 +3640,11 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
 
     /**
      * Retrieve RasterLite1 Layers-Information of QgsSqliteHandle connection
-     * - used to fill list in  SpatialiteDbInfo
+     * - used to fill list in  QgsSpatialiteDbInfo
      * All Layers will be loaded if sLayerName is empty
      * \note
      *  RasterLite1: QString( "%3:%1,table=%2" ).arg( getDatabaseFileName() ).arg( sTableName ).arg( "RASTERLITE" );
-     * \param dbConnectionInfo SpatialiteDbInfo
+     * \param dbConnectionInfo QgsSpatialiteDbInfo
      * \param sLayerName Name of the Layer to search for format: 'table_name(geometry_name)'
      * \returns true or false
      * \see GetDbLayersInfo
@@ -3238,11 +3654,11 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
 
     /**
      * Retrieve MBTiles Layers-Information of QgsSqliteHandle connection
-     * - used to fill list in  SpatialiteDbInfo
+     * - used to fill list in  QgsSpatialiteDbInfo
      * All Layers will be loaded if sLayerName is empty
      * \note
      *  MBTiles: QString( "%1" ).arg( getDatabaseFileName() )
-     * \param dbConnectionInfo SpatialiteDbInfo
+     * \param dbConnectionInfo QgsSpatialiteDbInfo
      * \param sLayerName Name of the Layer to search for format: 'name'
      * \returns true or false
      * \see GetDbLayersInfo
@@ -3252,12 +3668,12 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
 
     /**
      * Retrieve GeoPackage Layers-Information of QgsSqliteHandle connection
-     * - used to fill list in  SpatialiteDbInfo
+     * - used to fill list in  QgsSpatialiteDbInfo
      * All Layers will be loaded if sLayerName is empty
      * \note
      *  GeoPackageVector: QString( "%1|%3=%2" ).arg( getDatabaseFileName() ).arg( sTableName ).arg( "layername" );
      *  GeoPackageRaster: QString( "%3:%1:%2" ).arg( getDatabaseFileName() ).arg( sTableName ).arg( "GPKG" );
-     * \param dbConnectionInfo SpatialiteDbInfo
+     * \param dbConnectionInfo QgsSpatialiteDbInfo
      * \param sLayerName Name of the Layer to search for format: 'table_name(geometry_name)'
      * \returns true or false
      * \see GetDbLayersInfo
@@ -3267,11 +3683,11 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
 
     /**
      * Retrieve FdoOgr Layers-Information of QgsSqliteHandle connection
-     * - used to fill list in  SpatialiteDbInfo
+     * - used to fill list in  QgsSpatialiteDbInfo
      * All Layers will be loaded if sLayerName is empty
      * \note
      *  GdalFdoOgr: QString( "%1|%3=%2" ).arg( getDatabaseFileName() ).arg( sTableName ).arg( "layername" );
-     * \param dbConnectionInfo SpatialiteDbInfo
+     * \param dbConnectionInfo QgsSpatialiteDbInfo
      * \param sLayerName Name of the Layer to search for format: 'table_name(geometry_name)'
      * \returns true or false
      * \see GetDbLayersInfo
@@ -3281,7 +3697,7 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
 
     /**
      * Retrieve and store Non-Spatial tables, views and all triggers
-     * - used to fill list in  SpatialiteDbInfo
+     * - used to fill list in  QgsSpatialiteDbInfo
      * \note
      * \returns true or false
      * \see GetDbLayersInfo
@@ -3295,7 +3711,7 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
      * \note
      *  In cases such as a 'SpatialView' that contains invalid sql-syntax:
      * - 'SQL error: 'table' is not a function' will be returned
-     * \param dbConnectionInfo SpatialiteDbInfo
+     * \param dbConnectionInfo QgsSpatialiteDbInfo
      * \param sLayerName Name of the Layer to search for format: 'table_name(geometry_name)'
      * \returns true or false
      * \see GetDbLayersInfo
@@ -3317,7 +3733,7 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
      *  -> format: 'table_name(geometry_name)', Warning text
      * \since QGIS 3.0
      */
-    QMap<QString, QString> mWarnings;
+    QMap<QString, QString> mDbWarnings;
 
     /**
      * Collection of reasons for the Database being invalid
@@ -3325,15 +3741,15 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
      *  -> format: 'table_name(geometry_name)', Error text
      * \since QGIS 3.0
      */
-    QMap<QString, QString> mErrors;
+    QMap<QString, QString> mDbErrors;
 
     /**
      * Collection list of unique (lower case) Group Layers [for external use]
      * - with the amount of Layer for each Group
      * \note
      *  When: 'table_name' contains at least 2 '_' (such as 'berlin_streets_1650')
-     *  - assume it belongs to a group of 'berlin_streets' for QgsSpatiaLiteTableModel
-     *  - for SpatialViews only
+     *  - assume it belongs to a group of 'berlin_streets' for QgsSpatialiteDbInfoItem
+     *  - for Vectors only [SpatialView,SpatialView,GeoPackageVector,GdalFdoOgr]
      * \since QGIS 3.0
      */
     QMap<QString, int> mMapGroupNames;
@@ -3342,19 +3758,66 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
      * Collection list of unique (lower case) Group Layers [for internal use]
      * \note
      *  When: 'table_name' contains at least 2 '_' (such as 'berlin_streets_1650')
-     *  - assume it belongs to a group of 'berlin_streets' for QgsSpatiaLiteTableModel
-     *  - for SpatialViews only
+     *  - assume it belongs to a group of 'berlin_streets' for QgsSpatialiteDbInfoItem
+     *  - for Vectors only [SpatialView,SpatialView,GeoPackageVector,GdalFdoOgr]
      * \since QGIS 3.0
      */
     QStringList mListGroupNames;
 
     /**
+     * Add (a possibly) Sub-Group Layer [lower case entries]
+     * - froma a Table/Layer-Name
+     * \note
+     *  - prepareGroupLayers must be called after all entries have been made
+     * \param sGroupLayerEntry Entry to add
+     * \param sLayerType LayerType of the Entry [Group-Name]
+     * \param iGroupSeperatorCount Amount of Seperators to look for, before adding
+     * \see readVectorLayers
+     * \see readGeoPackageLayers
+     * \see readFdoOgrLayers
+     * \see readNonSpatialTables
+     * \see prepareGroupLayers
+     * \see ParseSeparatorGroup
+     * \since QGIS 3.0
+     */
+    int addGroupLayerEntry( QString sGroupLayerEntry, QString sLayerType, int iGroupSeperatorCount = 2 );
+
+    /**
      * Builds list of unique Group Layers [lower case entries]
-     * removes single entries
-     * \see createDbLayerInfoUri
+     * - removes single entries
+     * \note
+     *  - addGroupLayerEntry must called beforhand with possible canditates
+     *  - will create final list of Sub-Groups with more than 1 entry per Sub-Group
+     *  - getListSubGroupNames can only be called after this runs
+     * \see getListSubGroupNames
+     * \see addGroupLayerEntry
+     * \see parse
+     * \see mListGroupNames
+     * \see mMapGroupNames
+     * \see ParseSeparatorGroup
      * \since QGIS 3.0
      */
     int prepareGroupLayers();
+
+    /**
+     * Parse the GroupLayerEntry String
+     * - intended to store and retrieve general Infomation about the Layer
+     * - needed when 'sniffing' the Layer, when no QgsSpatialiteDbLayer exists
+     * \note
+     *  - The LayerInfo String is created in createDbLayerInfoUri
+     *  This is a convenience function for parsing for use with
+     *  - QgsSpatialiteDbInfo::ParseSeparatorGeneral (';') is used a separator
+     * \param sListGroupInfo IN the input to parse
+     * \param sListGroupName OUT the returned result from field 0 of sLayerInfo
+     * \param sLayerType OUT the returned result from field 1 of sGroupLayerEntry
+     * \param iGroupSeperatorCount OUT the returned result from field 2 of sGroupLayerEntry
+     * \returns true if the correct amount of fields were found
+     * \see prepareDataSourceUris
+     * \see addDbMapLayers
+     * \see QgsSpatialiteLayerItem
+     * \since QGIS 3.0
+     */
+    bool parseGroupLayerEntry( QString sListGroupInfo, QString &sListGroupName, QString &sLayerType, int &iGroupSeperatorCount );
 };
 
 /**
@@ -3362,21 +3825,21 @@ class CORE_EXPORT SpatialiteDbInfo : public QObject
  * \returns point with all needed data
  * \since QGIS 3.0
  */
-class CORE_EXPORT SpatialiteDbLayer : public QObject
+class CORE_EXPORT QgsSpatialiteDbLayer : public QObject
 {
     Q_OBJECT
   public:
-    SpatialiteDbLayer( SpatialiteDbInfo *dbConnectionInfo );
-    ~SpatialiteDbLayer();
+    QgsSpatialiteDbLayer( QgsSpatialiteDbInfo *dbConnectionInfo );
+    ~QgsSpatialiteDbLayer();
 
     /**
      * The Database Info-Structure being read
      * \note
      *  - From the Database filename (with Path)
-     * \see mDbSpatialiteInfo
+     * \see mSpatialiteDbInfo
     * \since QGIS 3.0
     */
-    SpatialiteDbInfo *getDbSpatialiteInfo() const { return mDbSpatialiteInfo; }
+    QgsSpatialiteDbInfo *getSpatialiteDbInfo() const { return mSpatialiteDbInfo; }
 
     /**
      * The major Spatialite Version being used
@@ -3385,7 +3848,7 @@ class CORE_EXPORT SpatialiteDbLayer : public QObject
      * \see getSniffDatabaseType
     * \since QGIS 3.0
     */
-    int dbSpatialiteVersionMajor() const { return getDbSpatialiteInfo()->dbSpatialiteVersionMajor(); }
+    int dbSpatialiteVersionMajor() const { return getSpatialiteDbInfo()->dbSpatialiteVersionMajor(); }
 
     /**
      * The minor Spatialite Version being used
@@ -3394,7 +3857,7 @@ class CORE_EXPORT SpatialiteDbLayer : public QObject
      * \see getSniffDatabaseType
      * \since QGIS 3.0
     */
-    int dbSpatialiteVersionMinor() const { return getDbSpatialiteInfo()->dbSpatialiteVersionMinor(); }
+    int dbSpatialiteVersionMinor() const { return getSpatialiteDbInfo()->dbSpatialiteVersionMinor(); }
 
     /**
      * The revision Spatialite Version being used
@@ -3403,7 +3866,7 @@ class CORE_EXPORT SpatialiteDbLayer : public QObject
      * \see getSniffDatabaseType
      * \since QGIS 3.0
     */
-    int dbSpatialiteVersionRevision() const { return getDbSpatialiteInfo()->dbSpatialiteVersionRevision(); }
+    int dbSpatialiteVersionRevision() const { return getSpatialiteDbInfo()->dbSpatialiteVersionRevision(); }
 
     /**
      * The sqlite handler
@@ -3411,10 +3874,10 @@ class CORE_EXPORT SpatialiteDbLayer : public QObject
      * \note
      * - isDbValid() return if the connection contains layers that are supported by
      * -- QgsSpatiaLiteProvider, QgsGdalProvider and QgsOgrProvider
-     * \see SpatialiteDbInfo::isDbValid()
+     * \see QgsSpatialiteDbInfo::isDbValid()
      * \since QGIS 3.0
      */
-    sqlite3 *dbSqliteHandle() const { return getDbSpatialiteInfo()->dbSqliteHandle(); }
+    sqlite3 *dbSqliteHandle() const { return getSpatialiteDbInfo()->dbSqliteHandle(); }
 
     /**
      * The Database filename (with Path)
@@ -3427,18 +3890,18 @@ class CORE_EXPORT SpatialiteDbLayer : public QObject
      * The Database Uri of the Info-Structure being read
      * \note
      *  - used in setParentIdentifier of QgsLayerMetadata
-     * \see mDbSpatialiteInfo
+     * \see mSpatialiteDbInfo
      * \see mLayerMetadata
     * \since QGIS 3.0
     */
-    QString getDatabaseUri() const { return getDbSpatialiteInfo()->getDatabaseUri(); }
+    QString getDatabaseUri() const { return getSpatialiteDbInfo()->getDatabaseUri(); }
 
     /**
      * The Database Directory without file
     * \returns mDirectoryName  name of the complete  path,  (without without symbolic links), excluding the file-name
     * \since QGIS 3.0
     */
-    QString getDatabaseDirectoryName() const { return getDbSpatialiteInfo()->getDirectoryName(); }
+    QString getDatabaseDirectoryName() const { return getSpatialiteDbInfo()->getDirectoryName(); }
 
     /**
      * Name of the table/view with no schema
@@ -3472,13 +3935,13 @@ class CORE_EXPORT SpatialiteDbLayer : public QObject
      * List-Group-Name (lower case)
      * \note
      *  When: 'table_name' contains at least 2 '_' (such as 'berlin_streets_1650')
-     *  - assume it belongs to a group of 'berlin_streets' for QgsSpatiaLiteTableModel
-     *  - for SpatialViews only
+     *  - assume it belongs to a group of 'berlin_streets' for QgsSpatialiteDbInfoItem
+     *  - for Vectors only [SpatialView,SpatialView,GeoPackageVector,GdalFdoOgr]
      * \since QGIS 3.0
      */
     QString getLayerGroupName() const
     {
-      if ( getDbSpatialiteInfo()->getListGroupNames().contains( mListGroupName ) )
+      if ( getSpatialiteDbInfo()->getMapGroupNames().contains( mListGroupName ) )
       {
         return mListGroupName;
       }
@@ -3521,7 +3984,7 @@ class CORE_EXPORT SpatialiteDbLayer : public QObject
      *  For SpatialTable/VirtualShapes: empty
      *  For SpatialViews:
      *  - the registered VIEW can be retrieved with getTableName()
-     * \see SpatialiteDbLayer::GetLayerSettings()
+     * \see QgsSpatialiteDbLayer::GetLayerSettings()
      * \since QGIS 3.0
      */
     QString getLayerViewTableName() const { return mLayerViewTableName; }
@@ -3611,12 +4074,12 @@ class CORE_EXPORT SpatialiteDbLayer : public QObject
 
     /**
      * UpdateLayerStatistics for the Layer
-     * - calls SpatialiteDbInfo::UpdateLayerStatistics
+     * - calls QgsSpatialiteDbInfo::UpdateLayerStatistics
      * \note
-     *  - to call for all geometries of a Table, call SpatialiteDbInfo::UpdateLayerStatistics
+     *  - to call for all geometries of a Table, call QgsSpatialiteDbInfo::UpdateLayerStatistics
      *  -- with the Table-Name only
      * \returns result of the internal Spatalite function update_layer_statistics
-     * \see SpatialiteDbInfo::UpdateLayerStatistics
+     * \see QgsSpatialiteDbInfo::UpdateLayerStatistics
      * \since QGIS 3.0
      */
     bool UpdateLayerStatistics();
@@ -3653,7 +4116,7 @@ class CORE_EXPORT SpatialiteDbLayer : public QObject
      * \see mSpatialIndexTypeString
      * \since QGIS 3.0
      */
-    SpatialiteDbInfo::SpatialIndexType getSpatialIndexType() const { return mSpatialIndexType; }
+    QgsSpatialiteDbInfo::SpatialIndexType getSpatialIndexType() const { return mSpatialIndexType; }
 
     /**
      * The SpatialIndex-Type used for the Geometry as String
@@ -3671,7 +4134,7 @@ class CORE_EXPORT SpatialiteDbLayer : public QObject
      *  \see mLayerTypeString
      * \since QGIS 3.0
      */
-    SpatialiteDbInfo::SpatialiteLayerType getLayerType() const { return mLayerType; }
+    QgsSpatialiteDbInfo::SpatialiteLayerType getLayerType() const { return mLayerType; }
 
     /**
      * Set the Spatialite Layer-Type String
@@ -3689,7 +4152,7 @@ class CORE_EXPORT SpatialiteDbLayer : public QObject
      *  - field 1=Srid of the Layer
      *  - field 2=The Provider Name
      * \see prepare
-     * \see SpatialiteDbInfo::createDbLayerInfoUri
+     * \see QgsSpatialiteDbInfo::createDbLayerInfoUri
      * \since QGIS 3.0
      */
     QString getLayerInfo() const { return mLayerInfo; }
@@ -3698,7 +4161,7 @@ class CORE_EXPORT SpatialiteDbLayer : public QObject
      * Contains collected Metadata for the Layer
      * \brief A structured metadata store for a map layer.
      * \note
-     *  - SpatialiteDbLayer will use a copy of SpatialiteDbInfo  mLayerMetadata as starting point
+     *  - QgsSpatialiteDbLayer will use a copy of QgsSpatialiteDbInfo  mLayerMetadata as starting point
      * \see QgsMapLayer::htmlMetadata()
      * \see QgsMapLayer::metadata
      * \see QgsMapLayer::setMetadata
@@ -3706,13 +4169,21 @@ class CORE_EXPORT SpatialiteDbLayer : public QObject
      * \see QgsRasterLite2Provider::setDbLayer
      * \since QGIS 3.0
     */
-    QgsLayerMetadata getLayerMetadata() const { return mLayerMetadata; }
+    QgsLayerMetadata getLayerMetadata()
+    {
+      if ( !mLayerMetadata.identifier().contains( mDataSourceUri ) )
+      {
+        // force creation, if not done already [called during loading of Layers in project]
+        setLayerMetadata();
+      }
+      return mLayerMetadata;
+    }
 
     /**
      * Set the  Layer-DataSourceUri String
      * - Provider dependent
      * \see prepare
-     * \see SpatialiteDbInfo::createDbLayerInfoUri
+     * \see QgsSpatialiteDbInfo::createDbLayerInfoUri
      * \since QGIS 3.0
      */
     QString getLayerDataSourceUri() const { return mDataSourceUri; }
@@ -3741,7 +4212,7 @@ class CORE_EXPORT SpatialiteDbLayer : public QObject
 
     /**
      * Returns QIcon representation of the enum of Layer-Types of the Sqlite3 Container
-     * - SpatialiteDbInfo::SpatialiteLayerType
+     * - QgsSpatialiteDbInfo::SpatialiteLayerType
      * \note
      * - SpatialTable, SpatialView, VirtualShape, RasterLite1, RasterLite2
      * - SpatialiteTopology, TopologyExport, GeoPackageVector, GeoPackageRaster
@@ -3749,7 +4220,7 @@ class CORE_EXPORT SpatialiteDbLayer : public QObject
      * \see SpatialiteLayerTypeNameIcon
      * \since QGIS 3.0
      */
-    QIcon getLayerTypeIcon() const { return SpatialiteDbInfo::SpatialiteLayerTypeIcon( mLayerType ); }
+    QIcon getLayerTypeIcon() const { return QgsSpatialiteDbInfo::SpatialiteLayerTypeIcon( mLayerType ); }
 
     /**
      * The Spatialite Geometry-Type of the Layer
@@ -3776,7 +4247,7 @@ class CORE_EXPORT SpatialiteDbLayer : public QObject
      * Return the QgsLayerItem Icon for the Spatialite Geometry-Type
      * \since QGIS 3.0
      */
-    QIcon getGeometryTypeIcon() const { return SpatialiteDbInfo::SpatialGeometryTypeIcon( mGeometryType ); }
+    QIcon getGeometryTypeIcon() const { return QgsSpatialiteDbInfo::SpatialGeometryTypeIcon( mGeometryType ); }
 
     /**
      * The Spatialite Coord-Dimensions of the Layer
@@ -3849,6 +4320,42 @@ class CORE_EXPORT SpatialiteDbLayer : public QObject
      * \since QGIS 3.0
      */
     int getLayerImageHeight() const { return mLayerImageExtent.y(); }
+
+    /**
+     * Layer Extent X (Minimal)
+     *  - result in Map-Units
+     * \note
+     *  - retrieved from extent values
+     * \since QGIS 3.0
+     */
+    double getLayerExtentMinX() const { return mLayerExtent.xMinimum(); }
+
+    /**
+     * Layer Extent X (Maximum)
+     *  - result in Map-Units
+     * \note
+     *  - retrieved from extent values
+     * \since QGIS 3.0
+     */
+    double getLayerExtentMaxX() const { return mLayerExtent.xMaximum(); }
+
+    /**
+     * Layer Extent Y (Minimal)
+     *  - result in Map-Units
+     * \note
+     *  - retrieved from extent values
+     * \since QGIS 3.0
+     */
+    double getLayerExtentMinY() const { return mLayerExtent.yMinimum(); }
+
+    /**
+     * Layer Extent Y (Maximum)
+     *  - result in Map-Units
+     * \note
+     *  - retrieved from extent values
+     * \since QGIS 3.0
+     */
+    double getLayerExtentMaxY() const { return mLayerExtent.yMaximum(); }
 
     /**
      * RasterLite2 Raster-Layer Extent X (Width, Horizontal)
@@ -4120,14 +4627,19 @@ class CORE_EXPORT SpatialiteDbLayer : public QObject
      * Set the Rectangle that contains the extent (bounding box) of the layer
      *  - will also set the EWKT
      * \note
-     *  The Srid must be set beforhand for the correct result
+     *  The Srid must be set beforehand for the correct result
+     *  If the layerResolution is set and the imageExtent is not
+     *  - imageExtent will be calculated [default: RasterLite2]
+     *  If the imageExtent is set and the layerResolution is not
+     *  - layerResolution will be calculated [default: MbTiles]
      * \param layerExtent Layer Extent [Vectors and Rasters]
      * \param layerResolution Layer Resolution [Rasters only]
+     * \param imageExten Layer Resolution [Rasters only]
      * \see mLayerExtent
      * \see mLayerExtentEWKT
      * \since QGIS 3.0
      */
-    QString setLayerExtent( QgsRectangle layerExtent, QgsPointXY layerResolution = QgsPointXY( 0.0, 0.0 ) );
+    QString setLayerExtent( QgsRectangle layerExtent, QgsPointXY layerResolution = QgsPointXY( 0.0, 0.0 ), QgsPointXY imageExtent = QgsPointXY( 0.0, 0.0 ) );
 
     /**
      * Map of coverage_name Extent information that are contained in the RasterLite2 Vector-Layers
@@ -4137,12 +4649,13 @@ class CORE_EXPORT SpatialiteDbLayer : public QObject
      * - There will allways be a 'native' srid/extent with the corresponding Wsg84 (4326) values
      * - There can be any amount of 'alternative' srid/extent with the corresponding Wsg84 (4326) values
      * - Contains the value contained in mVectorCoveragesLayersExtent
-     * - Value: native_srid€srid€;extent_minx€extent_miny€extent_maxx€extent_maxy€geo_minx€geo_miny€geo_maxx€geo_maxy
-     * \see SpatialiteDbInfo::getDbVectorCoveragesLayersExtent
-     * \see SpatialiteDbInfo::readVectorRasterCoverages
+     * - Value: native_srid€srid€;extent_minx€extent_miny€extent_maxx€extent_maxy€geo_minx€geo_miny€geo_maxx€geo_maxy€horz_resolution€vert_resolution
+     * For Vectors, Resolution will allways be 0.0
+     * \see QgsSpatialiteDbInfo::getDbVectorCoveragesLayersExtent
+     * \see QgsSpatialiteDbInfo::readVectorRasterCoverages
      * \since QGIS 3.0
      */
-    QMap<int, QgsBox3d> mLayerExtents;
+    QMap<int, QgsBox3d> getLayerExtents() const { return mLayerExtents; }
 
     /**
      * Set the Layer Extents for (possible) Vector/Raster-Coverages
@@ -4151,10 +4664,11 @@ class CORE_EXPORT SpatialiteDbLayer : public QObject
      * - There will allways be a 'native' srid/extent with the corresponding Wsg84 (4326) values
      * - There can be any amount of 'alternative' srid/extent with the corresponding Wsg84 (4326) values
      * - Contains the value contained in mVectorCoveragesLayersExtent
-     * - Value: native_srid€srid€;extent_minx€extent_miny€extent_maxx€extent_maxy€geo_minx€geo_miny€geo_maxx€geo_maxy
+     * - Value: native_srid€srid€;extent_minx€extent_miny€extent_maxx€extent_maxy€geo_minx€geo_miny€geo_maxx€geo_maxy€horz_resolution€vert_resolution
+     * For Vectors, Resolution will allways be 0.0
      * \see prepare()
-     * \see SpatialiteDbInfo::getDbVectorCoveragesLayersExtent
-     * \see SpatialiteDbInfo::readVectorRasterCoverages
+     * \see QgsSpatialiteDbInfo::getDbVectorCoveragesLayersExtent
+     * \see QgsSpatialiteDbInfo::readVectorRasterCoverages
      * \since QGIS 3.0
      */
     int setLayerExtents( QList<QString> layerExtents );
@@ -4180,7 +4694,7 @@ class CORE_EXPORT SpatialiteDbLayer : public QObject
      * Set list for each Band in a RasterLite2 Raster
      * - information about nodata, min/max pixel value
      * \note
-     *  - SpatialiteDbInfo::ParseSeparatorGeneral (';') is used a separator
+     *  - QgsSpatialiteDbInfo::ParseSeparatorGeneral (';') is used a separator
      * - position 0: nodata_pixel as double
      * - position 1: pixel_min value as double
      * - position 2: pixel_max value as double
@@ -4188,7 +4702,7 @@ class CORE_EXPORT SpatialiteDbLayer : public QObject
      * - position 4: estimated Variance value as double
      * - position 5: estimated Standard Deviation value as double
      * - position 6: the total count of valid pixels (excluding NoData pixels) value as integer
-     * \see SpatialiteDbInfo::GetRasterLite2RasterLayersInfo
+     * \see QgsSpatialiteDbInfo::GetRasterLite2RasterLayersInfo
      * \since QGIS 3.0
      */
     void setLayerBandsInfo( QStringList layerBandsInfo, QMap<int, QImage> layerBandsHistograms );
@@ -4197,7 +4711,7 @@ class CORE_EXPORT SpatialiteDbLayer : public QObject
      * Retrieve list for each Band in a RasterLite2 Raster
      * - information about nodata, min/max pixel value
      * \note
-     *  - SpatialiteDbInfo::ParseSeparatorGeneral (';') is used a separator
+     *  - QgsSpatialiteDbInfo::ParseSeparatorGeneral (';') is used a separator
      * - position 0: nodata_pixel as double
      * - position 1: pixel_min value as double
      * - position 2: pixel_max value as double
@@ -4205,7 +4719,7 @@ class CORE_EXPORT SpatialiteDbLayer : public QObject
      * - position 4: estimated Variance value as double
      * - position 5: estimated Standard Deviation value as double
      * - position 6: the total count of valid pixels (excluding NoData pixels) value as integer
-     * \see SpatialiteDbLayer::getLayerGetBandStatistics
+     * \see QgsSpatialiteDbLayer::getLayerGetBandStatistics
      * \since QGIS 3.0
      */
     QStringList getLayerBandsInfo() const { return mLayerBandsInfo; }
@@ -4214,7 +4728,7 @@ class CORE_EXPORT SpatialiteDbLayer : public QObject
      * Create list for each Band in a RasterLite2 Raster
      * - this should be called by a Provider when needed
      * \note
-     *  - SpatialiteDbInfo::ParseSeparatorGeneral (';') is used a separator
+     *  - QgsSpatialiteDbInfo::ParseSeparatorGeneral (';') is used a separator
      * - position 0: nodata_pixel as double
      * - position 1: pixel_min value as double
      * - position 2: pixel_max value as double
@@ -4222,7 +4736,7 @@ class CORE_EXPORT SpatialiteDbLayer : public QObject
      * - position 4: estimated Variance value as double
      * - position 5: estimated Standard Deviation value as double
      * - position 6: the total count of valid pixels (excluding NoData pixels) value as integer
-     * \see SpatialiteDbInfo::GetRasterLite2RasterLayersInfo
+     * \see QgsSpatialiteDbInfo::GetRasterLite2RasterLayersInfo
      * \since QGIS 3.0
      */
     QStringList getLayerGetBandStatistics();
@@ -4232,7 +4746,7 @@ class CORE_EXPORT SpatialiteDbLayer : public QObject
      * - a PNG image representing the estimated distribution Histogram from a specific Band
      * \note
      *  - RL2_GetBandStatistics_Histogram
-     * \see SpatialiteDbInfo::GetRasterLite2RasterLayersInfo
+     * \see QgsSpatialiteDbInfo::GetRasterLite2RasterLayersInfo
      * \since QGIS 3.0
      */
     QMap<int, QImage> getLayerBandsHistograms() const { return mLayerBandsHistograms; }
@@ -4284,7 +4798,7 @@ class CORE_EXPORT SpatialiteDbLayer : public QObject
      *  \see setLayerStyleSelected
      * \since QGIS 3.0
      */
-    int getLayerStyleSelectedId() const { return mLayerStyleSelected; }
+    int getLayerStyleIdSelected() const { return mLayerStyleIdSelected; }
 
     /**
      * The selected Style as Name
@@ -4318,7 +4832,7 @@ class CORE_EXPORT SpatialiteDbLayer : public QObject
      * \param iStyleId to retrieve
      * \returns xml QString of Xml-Document
      * \see setLayerStyleSelected
-     * \see SpatialiteDbInfo::getDbStyleXml
+     * \see QgsSpatialiteDbInfo::getDbStyleXml
      * \see getLayerStyleNamedLayerElement
      * \since QGIS 3.0
      */
@@ -4326,16 +4840,17 @@ class CORE_EXPORT SpatialiteDbLayer : public QObject
 
     /**
      * List of style_id of Styles belong to this Layer
+     * - There can be more than 1
      * \note
      * This information can be retrieved without a Spatialite connecton.
      * - Key: coverage_name from SE_vector_styled_layers or SE_raster_styled_layers
      * - Value: style_id
-     * -> SpatialiteDbLayer will retrieve the style_id that belongs to it [there may be more than 1]
-     * \see SpatialiteDbInfo::readVectorRasterStyles
+     * -> QgsSpatialiteDbLayer will retrieve the style_id that belongs to it [there may be more than 1]
+     * \see QgsSpatialiteDbInfo::readVectorRasterStyles
      * \see checkLayerStyles
      * \since QGIS 3.0
      */
-    QList< int> mStylesId;
+    QList< int> getStylesId() const { return mStylesId; }
 
     /**
      * Retrieve the selected Style
@@ -4348,10 +4863,10 @@ class CORE_EXPORT SpatialiteDbLayer : public QObject
      *   -> contained in list of registered stled_id in mStylesId
      * \param iStyleId to retrieve
      * \param errorMessage for messages returning any caus of error
-     * \returns xlm QDomElement containing 'NamedLayer' stored in SpatialiteDbInfo
+     * \returns xlm QDomElement containing 'NamedLayer' stored in QgsSpatialiteDbInfo
      * \see setLayerStyleSelected
-     * \see SpatialiteDbInfo::getDbStyleNamedLayerElement
-     * \see SpatialiteDbInfo::
+     * \see QgsSpatialiteDbInfo::getDbStyleNamedLayerElement
+     * \see QgsSpatialiteDbInfo::
      * \since QGIS 3.0
      */
     QDomElement getLayerStyleNamedLayerElement( int iStyleId = -1, QString errorMessage = QString::null );
@@ -4361,7 +4876,7 @@ class CORE_EXPORT SpatialiteDbLayer : public QObject
      * \note
      *  -  which can be retrieved with getLayerStyle
      *  -  mStylesId.cont() > 0
-     * \see mLayerStyleSelected
+     * \see mLayerStyleIdSelected
      * \see getLayerStyle
      * \see setLayerStyleSelected
      * \since QGIS 3.0
@@ -4410,6 +4925,15 @@ class CORE_EXPORT SpatialiteDbLayer : public QObject
     long getNumberFeatures( bool bUpdateStatistics = false );
 
     /**
+     * Number of features in the layer
+     * \note
+     *  Without calling getLayerExtent agoin
+     * \see mNumberFeatures
+     * \since QGIS 3.0
+     */
+    long getFeaturesCount() const { return mNumberFeatures; }
+
+    /**
      * The Spatialite Layer-Readonly status [true or false]
      * \note
      *  SpatialTable: always false [writable]
@@ -4436,7 +4960,7 @@ class CORE_EXPORT SpatialiteDbLayer : public QObject
      * \note
      *  Only a simple counter when inserting into mDbLayers
      * - value is never used
-     * \see SpatialiteDbInfo::mDbLayers
+     * \see QgsSpatialiteDbInfo::mDbLayers
      * \since QGIS 3.0
      */
     int getLayerId() const { return mLayerId; }
@@ -4445,12 +4969,17 @@ class CORE_EXPORT SpatialiteDbLayer : public QObject
      * Based on Layer-Type, store Style-Names
      * - SE_vector_styled_layers_view / SE_raster_styled_layers_view
      * \note
+     * Collect Styles registered to this Layer, setting StyleId and StyleInfo
      * - VectorStyle: collects names of installed Vector-Styles
      * - RasterStyle: collects names of installed Raster-Styles
      * - there is no direct Spatialite/RasterLite2 driver support needed during this function
      * \param bUpdate force reading from Database
-     * \ mVectorStyleInfo
      * \see prepare
+     * \see mStylesId
+     * \see mLayerStyleInfo
+     * \see QgsSpatialiteDbInfo::getLayerNamesStyles
+     * \see QgsSpatialiteDbInfo::getDbVectorStylesInfo
+     * \see QgsSpatialiteDbInfo::getDbRasterStylesInfo
      * \since QGIS 3.0
      */
     bool checkLayerStyles();
@@ -4458,10 +4987,12 @@ class CORE_EXPORT SpatialiteDbLayer : public QObject
     /**
      * Map of style_name and Metadata
      * \note
-     * - Key: StyleIdas retrieved from SE_vector_styled_layers_view / SE_raster_styled_layers_view
-     * - Value: StyleType, StyleTitle, StyleAbstract
+     * - Key: StyleId retrieved from SE_vector_styled_layers_view / SE_raster_styled_layers_view
+     * - Value: StyleName, StyleTitle, StyleAbstract,TestStylesForQGis
      * -> style_type: StyleVector,StyleRaster
+     *  - QgsSpatialiteDbInfo::ParseSeparatorCoverage ('€') is used a separator
      * \see readVectorRasterStyles
+     * \see mStyleId
      * \since QGIS 3.0
      */
     QMap<int, QString> getLayerCoverageStylesInfo() const { return mLayerStyleInfo; }
@@ -4484,6 +5015,25 @@ class CORE_EXPORT SpatialiteDbLayer : public QObject
      * \since QGIS 3.0
      */
     QgsVectorDataProvider::Capabilities getCapabilities( bool bUpdate = false );
+
+    /**
+     * Based on Layer-Type, set QgsVectorDataProvider::Capabilities as String
+     * - Writable Spatialview: based on found TRIGGERs
+     * \note
+     * - this should be called after the LayerType and PrimaryKeys have been set
+     * \note
+     * The following receive: QgsVectorDataProvider::NoCapabilities
+     * - SpatialiteTopology: will serve only TopologyExport, which ate SpatialTables
+     * - VectorStyle: nothing as yet
+     * - RasterStyle: nothing as yet
+     * \note
+     * - this should be called with Update, after alterations of the TABLE have been made
+     * -> will call GetDbLayersInfo to re-read field data
+     * \param bUpdate force reading from Database
+     * \see getCapabilities
+     * \since QGIS 3.0
+     */
+    QString getCapabilitiesString() const { return mEnabledCapabilitiesString; }
 
     /**
      * Name of the table or subquery
@@ -4563,20 +5113,20 @@ class CORE_EXPORT SpatialiteDbLayer : public QObject
     QMap<int, QVariant> getDefaultValues() const { return mDefaultValues; }
 
     /**
-     * Collection of warnings for the Database being invalid
+     * Collection of warnings for the Database-Layer being invalid
      * \note
      *  -> format: 'table_name(geometry_name)', Error text
      * \since QGIS 3.0
      */
-    QMap<QString, QString> getWarnings() const { return mWarnings; }
+    QMap<QString, QString> getLayerWarnings() const { return mLayerWarnings; }
 
     /**
-     * Collection of reasons for the Database being invalid
+     * Collection of reasons for the Database-Layer being invalid
      * \note
      *  -> format: 'table_name(geometry_name)', Error text
      * \since QGIS 3.0
      */
-    QMap<QString, QString> getErrors() const { return mErrors; }
+    QMap<QString, QString> getLayerErrors() const { return mLayerErrors; }
 
     /**
      * Is the Layer valid
@@ -4590,7 +5140,7 @@ class CORE_EXPORT SpatialiteDbLayer : public QObject
      * Resolve unset settings in Layer
      * Goal: to (semi) Automate unresolved settings when needed
      * - will be called after major information has been retrieved from the Database
-     * \see SpatialiteDbInfo::createDbLayerInfoUri
+     * \see QgsSpatialiteDbInfo::createDbLayerInfoUri
      * \see prepareCapabilities
      * \see checkLayerStyles
      * \returns mIsLayerValid if the Layer is considered valid
@@ -4604,7 +5154,7 @@ class CORE_EXPORT SpatialiteDbLayer : public QObject
      * \note
      *  - updating internal layer-data, such as NumberFeatures
      *  - Spatialite specific [GeoPackage could be implemented, but not forseen]
-     * \param flist feature to add
+     * \param first feature to add
      * \returns True in case of success and False in case of error or container not supported
      * \see getNumberFeatures
      * \see QgsSpatiaLiteProvider::addFeatures
@@ -4737,16 +5287,30 @@ class CORE_EXPORT SpatialiteDbLayer : public QObject
      * \since QGIS 3.0
      */
     QList<QByteArray *> getMapBandsFromRasterLite2( int width, int height, const QgsRectangle &viewExtent, QString styleName, QString bgColor, QString &errCause );
+
+    /**
+     * Convert Spatialite GeometryType to QgsWkbTypes::Type
+     * \note
+     * - this also be used to interpret the type field returned by pragma table_info
+     * \param spatialiteGeometryType Spatialite-GeometryType
+     * \param spatialiteGeometryDimension Spatialite-Dimensions
+     * \returns geomType as QgsWkbTypes::Type
+     * \see GetRasterLite1LayersInfo
+     * \see GetSpatialiteQgsField
+     * \see QgsSpatialiteDbInfoItem::addColumnItems
+     * \since QGIS 3.0
+     */
+    static QgsWkbTypes::Type GetGeometryTypeLegacy( const QString spatialiteGeometryType, const QString spatialiteGeometryDimension = QString::null );
   private:
 
     /**
      * The Database Info-Structure being read
      * \note
      *  - From the Database filename (with Path)
-     * \see mDbSpatialiteInfo
+     * \see mSpatialiteDbInfo
     * \since QGIS 3.0
     */
-    SpatialiteDbInfo *mDbSpatialiteInfo = nullptr;;
+    QgsSpatialiteDbInfo *mSpatialiteDbInfo = nullptr;;
 
     /**
      * The Database filename (with Path)
@@ -4787,8 +5351,8 @@ class CORE_EXPORT SpatialiteDbLayer : public QObject
      * List-Group-Name (lower case)
      * \note
      *  When: 'table_name' contains at least 2 '_' (such as 'berlin_streets_1650')
-     *  - assume it belongs to a group of 'berlin_streets' for QgsSpatiaLiteTableModel
-     *  - for SpatialViews
+     *  - assume it belongs to a group of 'berlin_streets' for QgsSpatialiteDbInfoItem
+     *  - for Vectors only [SpatialView,SpatialView,GeoPackageVector,GdalFdoOgr]
      * \since QGIS 3.0
      */
     QString mListGroupName;
@@ -4830,7 +5394,7 @@ class CORE_EXPORT SpatialiteDbLayer : public QObject
      *  For SpatialTable/VirtualShapes: empty
      *  For SpatialViews:
      *  - the registered VIEW can be retrieved with getTableName()
-     * \see SpatialiteDbLayer::GetLayerSettings()
+     * \see QgsSpatialiteDbLayer::GetLayerSettings()
      * \since QGIS 3.0
      */
     QString mLayerViewTableName;
@@ -4907,6 +5471,22 @@ class CORE_EXPORT SpatialiteDbLayer : public QObject
     int mSrid;
 
     /**
+     * Map of coverage_name Extent information that are contained in the RasterLite2 Vector-Layers
+     * - short list of the Layers retrieved from raster_coverages
+     *  - ordered by coverage_name, native_srid DESC
+     * \note
+     * - There will allways be a 'native' srid/extent with the corresponding Wsg84 (4326) values
+     * - There can be any amount of 'alternative' srid/extent with the corresponding Wsg84 (4326) values
+     * - Contains the value contained in mVectorCoveragesLayersExtent
+     * - Value: native_srid€srid€;extent_minx€extent_miny€extent_maxx€extent_maxy€geo_minx€geo_miny€geo_maxx€geo_maxy€horz_resolution€vert_resolution
+     * For Vectors, Resolution will allways be 0.0
+     * \see QgsSpatialiteDbInfo::getDbVectorCoveragesLayersExtent
+     * \see QgsSpatialiteDbInfo::readVectorRasterCoverages
+     * \since QGIS 3.0
+     */
+    QMap<int, QgsBox3d> mLayerExtents;
+
+    /**
      * The AuthId [auth_name||':'||auth_srid]
      *  \see setSrid
      * \since QGIS 3.0
@@ -4928,7 +5508,7 @@ class CORE_EXPORT SpatialiteDbLayer : public QObject
      * \see mSpatialIndexTypeString
      * \since QGIS 3.0
      */
-    SpatialiteDbInfo::SpatialIndexType mSpatialIndexType;
+    QgsSpatialiteDbInfo::SpatialIndexType mSpatialIndexType;
 
     /**
      * The SpatialIndex-Type used for the Geometry as String
@@ -4958,7 +5538,7 @@ class CORE_EXPORT SpatialiteDbLayer : public QObject
      *  \see mLayerTypeString
      * \since QGIS 3.0
      */
-    SpatialiteDbInfo::SpatialiteLayerType mLayerType;
+    QgsSpatialiteDbInfo::SpatialiteLayerType mLayerType;
 
     /**
      * Set the Spatialite Layer-Type String
@@ -4976,7 +5556,7 @@ class CORE_EXPORT SpatialiteDbLayer : public QObject
      *  - field 1=Srid of the Layer
      *  - field 2=The Provider Name
      * \see prepare
-     * \see SpatialiteDbInfo::createDbLayerInfoUri
+     * \see QgsSpatialiteDbInfo::createDbLayerInfoUri
      * \since QGIS 3.0
      */
     QString mLayerInfo;
@@ -4985,7 +5565,7 @@ class CORE_EXPORT SpatialiteDbLayer : public QObject
      * Set the  Layer-DataSourceUri String
      * - Provider dependent
      * \see prepare
-     * \see SpatialiteDbInfo::createDbLayerInfoUri
+     * \see QgsSpatialiteDbInfo::createDbLayerInfoUri
      * \since QGIS 3.0
      */
     QString mDataSourceUri;
@@ -5000,7 +5580,7 @@ class CORE_EXPORT SpatialiteDbLayer : public QObject
      * \see mIsSpatialite
      * \since QGIS 3.0
      */
-    void setLayerType( SpatialiteDbInfo::SpatialiteLayerType layerType );
+    void setLayerType( QgsSpatialiteDbInfo::SpatialiteLayerType layerType );
 
     /**
      * Is the Layer
@@ -5020,7 +5600,34 @@ class CORE_EXPORT SpatialiteDbLayer : public QObject
      *  -> rl2GetMapImageFromRaster()
      * \since QGIS 3.0
      */
-    bool mIsRasterLite2;
+    bool mIsRasterLite2 = false;
+
+    /**
+     * Is the Layer a RasterLite1 Layer
+     * - supported by QgsGdalProvider
+     * \note
+     *  - RasterLite1 specific functions should not be called when false
+     * \since QGIS 3.0
+     */
+    bool mIsRasterLite1 = false;
+
+    /**
+     * Is the Layer a GeoPackage Layer
+     * - supported by QgsGdalProvider or QgsOgrProvider
+     * \note
+     *  - GeoPackage specific functions should not be called when false
+     * \since QGIS 3.0
+     */
+    bool mIsGeoPackage = false;
+
+    /**
+     * Is the Layer a MbTiles file
+     * - supported by the QgsOgrProvider or QgsGdalProvider Drivers
+     * \note
+     *  - QgsGdalProvider:  MbTiles
+     * \since QGIS 3.0
+     */
+    bool mIsMbTiles = false;
 
     /**
      * The Spatialite Geometry-Type of the Layer
@@ -5323,7 +5930,21 @@ class CORE_EXPORT SpatialiteDbLayer : public QObject
      *  \see getLayerStyleSelected
      * \since QGIS 3.0
      */
-    int mLayerStyleSelected;
+    int mLayerStyleIdSelected;
+
+    /**
+     * List of style_id of Styles belong to this Layer
+     * - There can be more than 1
+     * \note
+     * This information can be retrieved without a Spatialite connecton.
+     * - Key: coverage_name from SE_vector_styled_layers or SE_raster_styled_layers
+     * - Value: style_id
+     * -> QgsSpatialiteDbLayer will retrieve the style_id that belongs to it [there may be more than 1]
+     * \see QgsSpatialiteDbInfo::readVectorRasterStyles
+     * \see checkLayerStyles
+     * \since QGIS 3.0
+     */
+    QList< int> mStylesId;
 
     /**
      * The selected Style as String (name of Style)
@@ -5436,19 +6057,48 @@ class CORE_EXPORT SpatialiteDbLayer : public QObject
      * \note
      *  Only a simple counter when inserting into mDbLayers
      * - value is never used
-     * \see SpatialiteDbInfo::mDbLayers
+     * \see QgsSpatialiteDbInfo::mDbLayers
      * \since QGIS 3.0
      */
     int mLayerId;
 
     /**
-     * The Spatialite Layer Capabilities
+     * Based on Layer-Type, set QgsVectorDataProvider::Capabilities
+     * - Writable Spatialview: based on found TRIGGERs
      * \note
-     *  -> SpatialView: entry of view_rowid of views_geometry_columns
-     * \see getCapabilities
+     * - this should be called after the LayerType and PrimaryKeys have been set
+     * \note
+     * The following receive: QgsVectorDataProvider::NoCapabilities
+     * - SpatialiteTopology: will serve only TopologyExport, which ate SpatialTables
+     * - VectorStyle: nothing as yet
+     * - RasterStyle: nothing as yet
+     * \note
+     * - this should be called with Update, after alterations of the TABLE have been made
+     * -> will call GetDbLayersInfo to re-read field data
+     * \param bUpdate force reading from Database
+     * \see GetDbLayersInfo
      * \since QGIS 3.0
      */
     QgsVectorDataProvider::Capabilities mEnabledCapabilities;
+
+    /**
+     * Based on Layer-Type, set QgsVectorDataProvider::Capabilities as String
+     * - Writable Spatialview: based on found TRIGGERs
+     * \note
+     * - this should be called after the LayerType and PrimaryKeys have been set
+     * \note
+     * The following receive: QgsVectorDataProvider::NoCapabilities
+     * - SpatialiteTopology: will serve only TopologyExport, which ate SpatialTables
+     * - VectorStyle: nothing as yet
+     * - RasterStyle: nothing as yet
+     * \note
+     * - this should be called with Update, after alterations of the TABLE have been made
+     * -> will call GetDbLayersInfo to re-read field data
+     * \param bUpdate force reading from Database
+     * \see getCapabilities
+     * \since QGIS 3.0
+     */
+    QString mEnabledCapabilitiesString;
 
     /**
      * Name of the table or subquery
@@ -5491,8 +6141,8 @@ class CORE_EXPORT SpatialiteDbLayer : public QObject
      * Set the Layer as invalid, with possible Message, returns amount of Errors collected
      * \note
      *  Cause could be provider specific
-     * \see SpatialiteDbInfo::GetVectorLayersInfo
-     * \see SpatialiteDbLayer::getCapabilities
+     * \see QgsSpatialiteDbInfo::GetVectorLayersInfo
+     * \see QgsSpatialiteDbLayer::getCapabilities
      * \since QGIS 3.0
      */
     int setLayerInvalid( QString sLayerName = QString::null, QString errCause = QString::null );
@@ -5529,7 +6179,7 @@ class CORE_EXPORT SpatialiteDbLayer : public QObject
      * For each Band in a RasterLite2 Raster
      * - information about nodata, min/max pixel value
      * \note
-     *  - SpatialiteDbInfo::ParseSeparatorGeneral (';') is used a separator
+     *  - QgsSpatialiteDbInfo::ParseSeparatorGeneral (';') is used a separator
      * - position 0: nodata_pixel as double
      * - position 1: pixel_min value as double
      * - position 2: pixel_max value as double
@@ -5537,7 +6187,7 @@ class CORE_EXPORT SpatialiteDbLayer : public QObject
      * - position 4: estimated Variance value as double
      * - position 5: estimated Standard Deviation value as double
      * - position 6: the total count of valid pixels (excluding NoData pixels) value as integer
-     * \see SpatialiteDbInfo::GetRasterLite2RasterLayersInfo
+     * \see QgsSpatialiteDbInfo::GetRasterLite2RasterLayersInfo
      * \since QGIS 3.0
      */
     QStringList mLayerBandsInfo;
@@ -5547,14 +6197,14 @@ class CORE_EXPORT SpatialiteDbLayer : public QObject
      * - a PNG image representing the estimated distribution Histogram from a specific Band
      * \note
      *  - RL2_GetBandStatistics_Histogram
-     * \see SpatialiteDbInfo::GetRasterLite2RasterLayersInfo
+     * \see QgsSpatialiteDbInfo::GetRasterLite2RasterLayersInfo
      * \since QGIS 3.0
      */
     QMap<int, QImage> mLayerBandsHistograms;
 
     /**
      * Map of valid Topology-ExportLayers
-     * - contains Layer-Name and a SpatialiteDbLayer-Pointer
+     * - contains Layer-Name and a QgsSpatialiteDbLayer-Pointer
      * \note
      * - these are exported SpatialTables [Topology-Features (Metadata) and Geometry]
      * see chapter: TopoGeo_ExportTopoLayer: exporting a full TopoLayer into a GeoTable
@@ -5562,7 +6212,7 @@ class CORE_EXPORT SpatialiteDbLayer : public QObject
      * \see https://www.gaia-gis.it/fossil/libspatialite/wiki?name=topo-advanced#ExportTopoLayer
      * \since QGIS 3.0
      */
-    QMap<QString, SpatialiteDbLayer *> mTopologyExportLayers;
+    QMap<QString, QgsSpatialiteDbLayer *> mTopologyExportLayers;
 
     /**
      * Map of mDataSourceUri of mTopologyExportLayers
@@ -5572,19 +6222,6 @@ class CORE_EXPORT SpatialiteDbLayer : public QObject
      * \since QGIS 3.0
      */
     QMap<QString, QString> mTopologyExportLayersDataSourceUris;
-
-    /**
-     * Convert Spatialite GeometryType to QgsWkbTypes::Type
-     * \note
-     * - this also be used to interpret the type field returned by pragma table_info
-     * \param spatialiteGeometryType Spatialite-GeometryType
-     * \param spatialiteGeometryDimension Spatialite-Dimensions
-     * \returns geomType as QgsWkbTypes::Type
-     * \see GetRasterLite1LayersInfo
-     * \see GetSpatialiteQgsField
-     * \since QGIS 3.0
-     */
-    static QgsWkbTypes::Type GetGeometryTypeLegacy( const QString spatialiteGeometryType, const QString spatialiteGeometryDimension = QString::null );
 
     /**
      * Fill QgsField from values retrieved  from pragma table_info
@@ -5600,7 +6237,7 @@ class CORE_EXPORT SpatialiteDbLayer : public QObject
      * \see GetSpatialiteQgsField
      * \since QGIS 3.0
      */
-    static QgsField GetSpatialiteQgsField( const QString sName, const QString sType, QString sDefaultValue, QVariant &defaultVariant );
+    static QgsField GetSpatialiteQgsField( const QString sName, QString sType, QString sDefaultValue, QVariant &defaultVariant, bool bPrimaryKey = false );
 
     /**
      * Read and fill AttributeFields and Default values
@@ -5629,7 +6266,7 @@ class CORE_EXPORT SpatialiteDbLayer : public QObject
 
     /**
      * Retrieve and set View Capabilities
-     * - used to set entries in SpatialiteDbLayer
+     * - used to set entries in QgsSpatialiteDbLayer
      * \note
      * Starting with Spatialite 4.5.0, this information is contained within the results of gaiaGetVectorLayersList
      * \returns isReadOnly true or false
@@ -5658,27 +6295,27 @@ class CORE_EXPORT SpatialiteDbLayer : public QObject
     bool GetLayerSettings();
 
     /**
-     * Collection of warnings for the Database being invalid
+     * Collection of warnings for the Database-Layer being invalid
      * \note
      *  -> format: 'table_name(geometry_name)', Error text
      * \since QGIS 3.0
      */
-    QMap<QString, QString> mWarnings;
+    QMap<QString, QString> mLayerWarnings;
 
     /**
-     * Collection of reasons for the Database being invalid
+     * Collection of reasons for the Database-Layer being invalid
      * \note
      *  -> format: 'table_name(geometry_name)', Error text
      * \since QGIS 3.0
      */
-    QMap<QString, QString> mErrors;
+    QMap<QString, QString> mLayerErrors;
 
     /**
      * Map of style_id and Metadata
      * \note
      * Without a Spatialite connecton the Title, Abstract and Xml cannot be retrieved
      * - Key: style_id as retrieved from SE_vector_styled_layers or SE_raster_styled_layers
-     * - Value: StyleType, StyleTitle, StyleAbstract
+     * - Value: StyleName, StyleTitle, StyleAbstract,TestStylesForQGis
      * -> style_type: StyleVector,StyleRaster
      * \see readVectorRasterStyles
      * \since QGIS 3.0
@@ -5689,7 +6326,7 @@ class CORE_EXPORT SpatialiteDbLayer : public QObject
      * Contains collected Metadata for the Layer
      * \brief A structured metadata store for a map layer.
      * \note
-     *  - SpatialiteDbLayer will use a copy of SpatialiteDbInfo  mLayerMetadata as starting point
+     *  - QgsSpatialiteDbLayer will use a copy of QgsSpatialiteDbInfo  mLayerMetadata as starting point
      * \see QgsMapLayer::htmlMetadata()
      * \see QgsMapLayer::metadata
      * \see QgsMapLayer::setMetadata
@@ -5701,7 +6338,7 @@ class CORE_EXPORT SpatialiteDbLayer : public QObject
      * Set the collected Metadata for the Layer
      * \brief A structured metadata store for a map layer.
      * \note
-     *  - SpatialiteDbLayer will use a copy of SpatialiteDbInfo  mLayerMetadata as starting point
+     *  - QgsSpatialiteDbLayer will use a copy of QgsSpatialiteDbInfo  mLayerMetadata as starting point
      * \see prepare
      * \see QgsMapLayer::htmlMetadata()
      * \see QgsMapLayer::metadata
@@ -5725,20 +6362,20 @@ class CORE_EXPORT SpatialiteDbLayer : public QObject
     /**
      * Style-Type of Layer (if any)
      * \note
-     * SpatialiteDbInfo::StyleVector
-     *  - SpatialiteDbInfo::SpatialTable
-     *  - SpatialiteDbInfo::SpatialView:
-     *  - SpatialiteDbInfo::VirtualShape
-     *  - SpatialiteDbInfo::TopologyExport
-     * SpatialiteDbInfo::StyleRaster
-     *  - SpatialiteDbInfo::RasterLite2Raster
+     * QgsSpatialiteDbInfo::StyleVector
+     *  - QgsSpatialiteDbInfo::SpatialTable
+     *  - QgsSpatialiteDbInfo::SpatialView:
+     *  - QgsSpatialiteDbInfo::VirtualShape
+     *  - QgsSpatialiteDbInfo::TopologyExport
+     * QgsSpatialiteDbInfo::StyleRaster
+     *  - QgsSpatialiteDbInfo::RasterLite2Raster
      * \see mLayerStyleSelected
      * \see getLayerStyle
      * \see setLayerStyleSelected
      * \see hasLayerStyle
      * \since QGIS 3.0
      */
-    SpatialiteDbInfo::SpatialiteLayerType mStyleType;
+    QgsSpatialiteDbInfo::SpatialiteLayerType mStyleType;
 
     /**
      * Prepares sql statement for geometry field.
@@ -5792,7 +6429,7 @@ class CORE_EXPORT SpatialiteDbLayer : public QObject
      * Set list for each Band in a RasterLite2 Raster
      * - information from RL2_GetBandStatistics_Min
      * \note
-     *  - SpatialiteDbInfo::ParseSeparatorGeneral (';') is used a separator
+     *  - QgsSpatialiteDbInfo::ParseSeparatorGeneral (';') is used a separator
      * - position 1: pixel_min value as integer
      * \see setLayerBandsInfo
      * \see QgsRasterLite2Provider::readBlock
@@ -5827,7 +6464,7 @@ class CORE_EXPORT SpatialiteDbLayer : public QObject
                                      QString styleName = QString(), QString mimeType = QString( "image/png" ), QString bgColor = QString( "#ffffff" ),
                                      bool bTransparent = true, int quality = 80, bool bReaspect = true );
 
-    friend class SpatialiteDbInfo;
+    friend class QgsSpatialiteDbInfo;
 };
 
 /**
@@ -5882,7 +6519,38 @@ class CORE_EXPORT QgsSpatiaLiteUtils
     // static functions
 
     /**
-     * Create a SpatialiteDbInfo based Connection
+      * Open a raster or vector file, if supported by Spatialite; ignore other files.
+      * Used to process a commandline argument, FileOpen or Drop event.
+      * Set interactive to true if it is OK to ask the user for information (mostly for
+      * when a vector layer has sublayers and we want to ask which sublayers to use).
+      * \param fileName to check and if supported load
+      * \param allowInteractive to check and if supported load
+      * \param allowOgrGdal allow Ogr/Gdal formats to be loaded
+      * \param sProviderKey OUT will be filled if valid Datasource contains more than 1 Layer
+      * \returns true if the file is successfully opened with Spatialite, otherwise continue with openLayer
+      * \see QgisApp::openLayer
+      * \since QGIS 3.0
+      */
+    static bool OpenLayerSpatialite( QString fileName, bool allowInteractive, bool allowOgrGdal, QString *sProviderKey );
+
+    /**
+      * Open a raster or vector file, if supported by Spatialite; ignore other files.
+      * Used to process a commandline argument, FileOpen or Drop event.
+      * Set interactive to true if it is OK to ask the user for information (mostly for
+      * when a vector layer has sublayers and we want to ask which sublayers to use).
+      * \param fileName to check and if supported load
+      * \param isOgr called to check Ogr or otherwise Gdal
+      * \param allowOgrGdal allow Ogr/Gdal formats to be checked or ignored
+      * \param isSupportedFormat OUT a Ogr or Gdal non-Sqlite3 format that cannot be delt with with QgsSpatialiteDbInfo
+      * \param isGeoPackage OUT if result can be used with QgsGeoPackageCollectionItem
+      * \returns true if the file is not supported or supported elsewhere
+      * \see dataItem
+      * \since QGIS 3.0
+      */
+    static bool CheckOgrGdalDataItem( QString fileName, bool isOgr, bool allowOgrGdal, bool *isSupportedFormat, bool *isGeoPackage );
+
+    /**
+     * Create a QgsSpatialiteDbInfo based Connection
      *  -> containing all needed Information about a Spatial Sqlite3 Container
      * \note
      *  - check result with spatialiteDbInfo->isDbSqlite3()
@@ -5894,24 +6562,24 @@ class CORE_EXPORT QgsSpatiaLiteUtils
     * \returns not nullptr if file exists
     * \since QGIS 3.0
     */
-    static SpatialiteDbInfo *CreateSpatialiteDbInfo( QString dbPath, bool bLoadLayers = true, bool bShared = true, SpatialiteDbInfo::SpatialMetadata dbCreateOption = SpatialiteDbInfo::SpatialUnknown );
+    static QgsSpatialiteDbInfo *CreateQgsSpatialiteDbInfo( QString dbPath, bool bLoadLayers = true, bool bShared = true, QgsSpatialiteDbInfo::SpatialMetadata dbCreateOption = QgsSpatialiteDbInfo::SpatialUnknown );
 
     /**
      * Create a new Database
-     * - for use with SpatialiteDbInfo
+     * - for use with QgsSpatialiteDbInfo
      * \note
      * - supported containers: Spatialite, GeoPackage and MBTiles
      * \returns true if the created Database is valid and of the Container-Type requested
      * \param sDatabaseFileName name of the Database to be created
      * \param errCause OUT: error Text
-     * \param dbCreateOption the Container-Type to create [default=Spatialite45]
+     * \param dbCreateOption the Container-Type to create [default=Spatialite50]
      * \see mDbCreateOption
      * \see createDatabaseSpatialite
      * \see createDatabaseGeoPackage
      * \see createDatabaseMBtiles
      * \since QGIS 3.0
      */
-    static bool createSpatialDatabase( QString sDatabaseFileName, QString &errCause, SpatialiteDbInfo::SpatialMetadata dbCreateOption = SpatialiteDbInfo::Spatialite45 );
+    static bool createSpatialDatabase( QString sDatabaseFileName, QString &errCause, QgsSpatialiteDbInfo::SpatialMetadata dbCreateOption = QgsSpatialiteDbInfo::Spatialite50 );
     static QString createIndexName( QString tableName, QString field );
     static QString quotedIdentifier( QString id );
     static QString quotedValue( QString value );
@@ -5953,11 +6621,11 @@ class CORE_EXPORT QgsSpatiaLiteUtils
      * \param sLayerName when used
      * \param bLoadLayers Load all Layer-Information or only 'sniff' [default] the Database
      * \param sqlite_handle opened using QgsSqliteHandle class
-     * \returns SpatialiteDbInfo with collected results
+     * \returns QgsSpatialiteDbInfo with collected results
      * \see QgsSqliteHandle
      * \since QGIS 3.0
      */
-    static SpatialiteDbInfo *GetSpatialiteLayerInfoWrapper( QString sDatabaseFileName, QString sLayerName = QString::null, bool bLoadLayers = false, sqlite3 *sqlite_handle  = nullptr );
+    static QgsSpatialiteDbInfo *GetSpatialiteLayerInfoWrapper( QString sDatabaseFileName, QString sLayerName = QString::null, bool bLoadLayers = false, sqlite3 *sqlite_handle  = nullptr );
   private:
 
 };

@@ -37,22 +37,22 @@ QMap < QString, QgsSqliteHandle * > QgsSqliteHandle::sHandles;
 // -> will contain an empty Uuid
 //-----------------------------------------------------------------
 // Note: for extrnal functions, such as
-// - QgsSpatiaLiteProvider::deleteLayer [SpatialiteDbInfo::dropGeoTable]
+// - QgsSpatiaLiteProvider::deleteLayer [QgsSpatialiteDbInfo::dropGeoTable]
 // -> the fetched coonection Uuid should be the same as
 // a possibly active Layer in QgsSpatiaLiteProvider
 // -> The QgsSpatiaLiteProvider should invalidate itsself
 //-----------------------------------------------------------------
-QgsSqliteHandle *QgsSqliteHandle::openDb( const QString &dbPath, bool shared,  QString sLayerName, bool bLoadLayers, SpatialiteDbInfo::SpatialMetadata dbCreateOption )
+QgsSqliteHandle *QgsSqliteHandle::openDb( const QString &dbPath, bool shared,  QString sLayerName, bool bLoadLayers, QgsSpatialiteDbInfo::SpatialMetadata dbCreateOption )
 {
   QString sDbPath = dbPath;
   QFileInfo file_info( dbPath );
   // for canonicalFilePath, the file must exist
   if ( file_info.exists() )
   {
-    // SpatialiteDbInfo uses the actual absolute path [with resolved soft-links]
+    // QgsSpatialiteDbInfo uses the actual absolute path [with resolved soft-links]
     sDbPath = file_info.canonicalFilePath();
   }
-  SpatialiteDbInfo::SpatialSniff sniffType = SpatialiteDbInfo::SniffUnknown;
+  QgsSpatialiteDbInfo::SpatialSniff sniffType = QgsSpatialiteDbInfo::SniffUnknown;
   // if allready loaded, use it [shared or not]
   if ( sHandles.contains( sDbPath ) )
   {
@@ -88,7 +88,7 @@ QgsSqliteHandle *QgsSqliteHandle::openDb( const QString &dbPath, bool shared,  Q
   // If NOT 'shared' == 1 and/or NOT isDbValid(): ConnectionRef[-1]
   // -> will contain an empty Uuid
   //-----------------------------------------------------------------
-  SpatialiteDbInfo *spatialiteDbInfo = SpatialiteDbInfo::FetchSpatialiteDbInfo( sDbPath, shared, sLayerName, bLoadLayers, dbCreateOption, sniffType );
+  QgsSpatialiteDbInfo *spatialiteDbInfo = QgsSpatialiteDbInfo::FetchSpatialiteDbInfo( sDbPath, shared, sLayerName, bLoadLayers, dbCreateOption, sniffType );
   if ( spatialiteDbInfo )
   {
     if ( spatialiteDbInfo->getQSqliteHandle() )
@@ -213,7 +213,7 @@ bool QgsSqliteHandle::loadExtension( sqlite3 *sqlite_handle,  bool bRasterLite2,
   else
   {
     // avoid 'not authorized' error
-    sqlite3_enable_load_extension( sqlite_handle, 1 ); // allways returns SQLITE_OK
+    sqlite3_enable_load_extension( sqlite_handle, 1 ); // always returns SQLITE_OK
   }
   i_rc = sqlite3_load_extension( sqlite_handle, sExtension.toUtf8().constData(), nullptr, &errMsg );
   if ( i_rc == SQLITE_OK )

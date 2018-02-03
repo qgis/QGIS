@@ -18,27 +18,27 @@
 #include "qgsdataitem.h"
 #include "qgsspatialiteconnection.h"
 
-class SpatialiteDbInfo;
+class QgsSpatialiteDbInfo;
 
 /**
  * Item that represents a layer that can be opened with the Spatialite Provider
  * Used in QgsBrowserWatcher/Model logic to display as a member in the list of Layers (Geometry or Raster) contained in the Sqlite-Container
  * \note
  *  called from dataItem when given path is not empty and only 1 Layer or from a QgsSpatialiteCollectionItem where > 1 Layer
- *  represent a SpatialiteDbLayer inside a SpatialiteDbInfo
+ *  represent a QgsSpatialiteDbLayer inside a QgsSpatialiteDbInfo
  * QgsSpatialiteCollectionItem::createChildren calls this for each Layer found
  * For the given Layer-Name, getDbLayerInfo will retrieve the needed metadata to set all values needed to display the Layer-Type
  * and through getDbLayerUris to retrieve the needed Uri of the Layer
  * mProviderKey will be set from the value retrieved from getDbLayerInfo [default: 'spatialite', but also 'rasterlite2', 'gdal' and 'ogr' are possible]
- * \see SpatialiteDbInfo::getDbLayerInfo
- * \see SpatialiteDbInfo::getDbLayerUris
+ * \see QgsSpatialiteDbInfo::getDbLayerInfo
+ * \see QgsSpatialiteDbInfo::getDbLayerUris
  * \since QGIS 3.0
  */
 class QgsSpatialiteLayerItem : public QgsLayerItem
 {
     Q_OBJECT
   public:
-    QgsSpatialiteLayerItem( QgsDataItem *parent, QString filePath, QString sLayerName, SpatialiteDbInfo *spatialiteDbInfo = nullptr );
+    QgsSpatialiteLayerItem( QgsDataItem *parent, QString filePath, QString sLayerName, QgsSpatialiteDbInfo *spatialiteDbInfo = nullptr );
 
 #ifdef HAVE_GUI
 
@@ -59,21 +59,21 @@ class QgsSpatialiteLayerItem : public QgsLayerItem
   private:
 
     /**
-     * SpatialiteDbInfo Object
+     * QgsSpatialiteDbInfo Object
      * - containing all Information about Database file
      * \note
      * - isDbValid() return if the connection contains layers that are supported by
      * -- QgsSpatiaLiteProvider, QgsGdalProvider and QgsOgrProvider
-     * \see SpatialiteDbInfo::isDbValid()
+     * \see QgsSpatialiteDbInfo::isDbValid()
      * \since QGIS 3.0
      */
-    SpatialiteDbInfo *mSpatialiteDbInfo = nullptr;
+    QgsSpatialiteDbInfo *mSpatialiteDbInfo = nullptr;
 
     /**
      * Layer-Info
      * \note
      * - Value: GeometryType and Srid formatted as 'geometry_type:srid:provider:layertype'
-     * \see SpatialiteDbInfo::parseLayerInfo
+     * \see QgsSpatialiteDbInfo::parseLayerInfo
      * \since QGIS 3.0
      */
     QString mLayerInfo;
@@ -92,7 +92,7 @@ class QgsSpatialiteLayerItem : public QgsLayerItem
      * Srid, as retrieved from Layer-Info
      * \note
      * - Value: GeometryType and Srid formatted as 'geometry_type:srid:provider:layertype'
-     * \see SpatialiteDbInfo::parseLayerInfo
+     * \see QgsSpatialiteDbInfo::parseLayerInfo
      * \since QGIS 3.0
      */
     int mLayerSrid = -1;
@@ -101,7 +101,7 @@ class QgsSpatialiteLayerItem : public QgsLayerItem
      * Provider, as retrieved from Layer-Info
      * \note
      * - Value: GeometryType and Srid formatted as 'geometry_type:srid:provider:layertype'
-     * \see SpatialiteDbInfo::parseLayerInfo
+     * \see QgsSpatialiteDbInfo::parseLayerInfo
      * \since QGIS 3.0
      */
     QString mProvider = "spatialite";
@@ -112,20 +112,20 @@ class QgsSpatialiteLayerItem : public QgsLayerItem
      * - SpatialTable, SpatialView, VirtualShape, RasterLite1, RasterLite2
      * - SpatialiteTopology, TopologyExport, GeoPackageVector, GeoPackageRaster
      * - MBTilesTable, MBTilesView
-     *  \see SpatialiteDbInfo::SpatialiteLayerTypeFromName
+     *  \see QgsSpatialiteDbInfo::SpatialiteLayerTypeFromName
      *  \see mLayerTypeString
      * \since QGIS 3.0
      */
-    SpatialiteDbInfo::SpatialiteLayerType mLayerTypeSpatialite = SpatialiteDbInfo::SpatialiteUnknown;
+    QgsSpatialiteDbInfo::SpatialiteLayerType mLayerTypeSpatialite = QgsSpatialiteDbInfo::SpatialiteUnknown;
 
     /**
      * Returns QIcon representation of the enum of Layer-Types of the Sqlite3 Container
-     * - SpatialiteDbInfo::SpatialiteLayerType
+     * - QgsSpatialiteDbInfo::SpatialiteLayerType
      * \note
      * - SpatialTable, SpatialView, VirtualShape, RasterLite1, RasterLite2
      * - SpatialiteTopology, TopologyExport, GeoPackageVector, GeoPackageRaster
      * - MBTilesTable, MBTilesView
-     * \see SpatialiteDbInfo::SpatialiteLayerTypeIcon::SpatialiteLayerTypeNameIcon
+     * \see QgsSpatialiteDbInfo::SpatialiteLayerTypeIcon::SpatialiteLayerTypeNameIcon
      * \since QGIS 3.0
      */
     QIcon mLayerTypeIcon;
@@ -137,7 +137,7 @@ class QgsSpatialiteLayerItem : public QgsLayerItem
      * - QgsWkbTypes::Point, Multi and 25D
      * - QgsWkbTypes::LineString, Multi and 25D
      * - QgsWkbTypes::Polygon, Multi and 25D
-     * \see SpatialiteDbInfo::SpatialGeometryTypeIcon
+     * \see QgsSpatialiteDbInfo::SpatialGeometryTypeIcon
      * \since QGIS 3.0
      */
     QIcon mGeometryTypeIcon;
@@ -149,28 +149,28 @@ class QgsSpatialiteLayerItem : public QgsLayerItem
  * \note
  *  called from dataItem when given path is not empty and the amout of Layers > 1
  * - collection all Layers in a Spatialite-Database, as QgsSpatialiteLayerItem
- *  represent a SpatialiteDbInfo that contains SpatialiteDbLayer objects
+ *  represent a QgsSpatialiteDbInfo that contains QgsSpatialiteDbLayer objects
  * \see QgsSpatialiteLayerItem
- * \see SpatialiteDbLayer
- * \see SpatialiteDbInfo
+ * \see QgsSpatialiteDbLayer
+ * \see QgsSpatialiteDbInfo
  * \since QGIS 3.0
  */
 class QgsSpatialiteCollectionItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    QgsSpatialiteCollectionItem( QgsDataItem *parent, const QString name, const QString filePath, SpatialiteDbInfo *spatialiteDbInfo = nullptr );
+    QgsSpatialiteCollectionItem( QgsDataItem *parent, const QString name, const QString filePath, QgsSpatialiteDbInfo *spatialiteDbInfo = nullptr );
 
     /**
      * Create children. Children are not expected to have parent set.
      * used by QgsBrowserWatcher/Model logic
      * \note
-     *  A list of unique Layer-Names will be retrieved from SpatialiteDbInfo
+     *  A list of unique Layer-Names will be retrieved from QgsSpatialiteDbInfo
      * - for each Layer-Name QgsSpatialiteLayerItem will be called
      *  This method MUST BE THREAD SAFE.
      * \see QgsSpatialiteLayerItem
-     * \see SpatialiteDbLayer
-     * \see SpatialiteDbInfo:.getDbLayersType
+     * \see QgsSpatialiteDbLayer
+     * \see QgsSpatialiteDbInfo:.getDbLayersType
      * \since QGIS 3.0
      */
     QVector<QgsDataItem *> createChildren() override;
@@ -195,15 +195,15 @@ class QgsSpatialiteCollectionItem : public QgsDataCollectionItem
   protected:
 
     /**
-     * SpatialiteDbInfo Object
+     * QgsSpatialiteDbInfo Object
      * - containing all Information about Database file
      * \note
      * - isDbValid() return if the connection contains layers that are supported by
      * -- QgsSpatiaLiteProvider, QgsGdalProvider and QgsOgrProvider
-     * \see SpatialiteDbInfo::isDbValid()
+     * \see QgsSpatialiteDbInfo::isDbValid()
      * \since QGIS 3.0
      */
-    SpatialiteDbInfo *mSpatialiteDbInfo = nullptr;
+    QgsSpatialiteDbInfo *mSpatialiteDbInfo = nullptr;
 };
 
 /**
@@ -249,15 +249,15 @@ class QgsSpatialiteConnectionItem : public QgsDataCollectionItem
     QString mDbPath;
 
     /**
-     * SpatialiteDbInfo Object
+     * QgsSpatialiteDbInfo Object
      * - containing all Information about Database file
      * \note
      * - isDbValid() return if the connection contains layers that are supported by
      * -- QgsSpatiaLiteProvider, QgsGdalProvider and QgsOgrProvider
-     * \see SpatialiteDbInfo::isDbValid()
+     * \see QgsSpatialiteDbInfo::isDbValid()
      * \since QGIS 3.0
      */
-    SpatialiteDbInfo *mSpatialiteDbInfo = nullptr;
+    QgsSpatialiteDbInfo *mSpatialiteDbInfo = nullptr;
 };
 
 /**

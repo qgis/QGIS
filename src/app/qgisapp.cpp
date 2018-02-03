@@ -5891,6 +5891,37 @@ void QgisApp::openProject( const QString &fileName )
 }
 
 /**
+  Open a raster or vector file when a supported spatialite/RasterLite2 format
+  @returns true if the file is successfully opened
+  */
+bool QgisApp::openLayerSpatialite( const QString &fileName, bool allowInteractive )
+{
+  // Check for Formats supported by QgsSpatialiteDbInfo
+  // - QgsSpatialiteDbInfo can load Gdal/Ogr Sqlite3-formats using the QgsGdal/OgrProviders
+  bool allowOgrGdal = true;
+  // If it is not desired that Ogr/Gdal that QgsSpatialiteDbInfo to load these formats, set to false
+  QString sProviderKey = QString();
+  if ( QgsSpatiaLiteUtils::OpenLayerSpatialite( fileName, allowInteractive, allowOgrGdal, &sProviderKey ) )
+  {
+    if ( !sProviderKey.isEmpty() )
+    {
+      // Valid Datasource contains more than 1 Layer and allowInteractive is true
+      // QgsAbstractDataSourceWidget [from gui] cannot (and should not) be called from QgsSpatiaLiteUtils [in core].
+      QgsAbstractDataSourceWidget *dbs = dynamic_cast<QgsAbstractDataSourceWidget *>( QgsProviderRegistry::instance()->createSelectionWidget( sProviderKey, this ) );
+      if ( dbs )
+      {
+        // Load selected file into DataSourceWidget
+        emit dbs->addDatabaseLayers( QStringList( fileName ), sProviderKey );
+        dbs->exec();
+      }
+    }
+    // Loading of Vectors/Rasters supported by QgsSpatialiteDbInfo has been dealt with
+    return true;
+  }
+  return false;
+}
+
+/**
   Open a raster or vector file; ignore other files.
   Used to process a commandline argument or OpenDocument AppleEvent.
   @returns true if the file is successfully opened
@@ -5899,6 +5930,13 @@ bool QgisApp::openLayer( const QString &fileName, bool allowInteractive )
 {
   QFileInfo fileInfo( fileName );
   bool ok( false );
+
+  // Check for Formats supported by QgsSpatialiteDbInfo
+  if ( openLayerSpatialite( fileName, allowInteractive ) )
+  {
+    // Loading of Vectors/Rasters supported by QgsSpatialiteDbInfo has been dealt with
+    return true;
+  }
 
   CPLPushErrorHandler( CPLQuietErrorHandler );
 
@@ -5914,7 +5952,7 @@ bool QgisApp::openLayer( const QString &fileName, bool allowInteractive )
   }
   bool bLoadLayers = false; // Minimal information. extended information will be retrieved only when needed
   bool bShared = true; // Retain connection, connection will be closed after last usage
-  SpatialiteDbInfo *spatialiteDbInfo = QgsSpatiaLiteUtils::CreateSpatialiteDbInfo( fileName, bLoadLayers, bShared );
+  QgsSpatialiteDbInfo *spatialiteDbInfo = QgsSpatiaLiteUtils::CreateQgsSpatialiteDbInfo( fileName, bLoadLayers, bShared );
   if ( spatialiteDbInfo )
   {
     // The file exists, check if it contains something we support
@@ -5945,7 +5983,7 @@ bool QgisApp::openLayer( const QString &fileName, bool allowInteractive )
         else
         {
           // When only 1 Layer, load directly through spatialiteDbInfo [use only the absolute filename]
-          if ( spatialiteDbInfo->addDbMapLayers( QStringList( spatialiteDbInfo->getDatabaseFileName() ), QStringList( ) ) )
+          if ( spatialiteDbInfo->addDbMapLayers( QStringList( spatialiteDbInfo->getDatabaseFileName() ), QStringList( ), QStringList( ) ) )
           {
             return true;
           }

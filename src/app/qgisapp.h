@@ -207,11 +207,23 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void setExtent( const QgsRectangle &rect );
 
     /**
+     * Open a raster or vector file, if supported by Spatialite; ignore other files.
+      Used to process a commandline argument, FileOpen or Drop event.
+      \returns true if the file is successfully opened with Spatialite, otherwise continuw with openLayer
+    * \see openLayer
+    * \since QGIS 3.0
+      */
+    bool openLayerSpatialite( const QString &fileName, bool allowInteractive = false );
+
+    /**
      * Open a raster or vector file; ignore other files.
+      Calls openLayerSpatialite to check for and deal with Spatialite/RasterLite2 formats.
       Used to process a commandline argument, FileOpen or Drop event.
       Set interactive to true if it is OK to ask the user for information (mostly for
       when a vector layer has sublayers and we want to ask which sublayers to use).
       \returns true if the file is successfully opened
+    * \see openLayerSpatialite
+    * \since QGIS 3.0
       */
     bool openLayer( const QString &fileName, bool allowInteractive = false );
 
