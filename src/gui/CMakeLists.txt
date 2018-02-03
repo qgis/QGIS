@@ -314,6 +314,8 @@ SET(QGIS_GUI_SRCS
   qgsnewgeopackagelayerdialog.cpp
   qgsopacitywidget.cpp
   qgsoptionsdialogbase.cpp
+  qgsoptionsdialoghighlightwidget.cpp
+  qgsoptionsdialoghighlightwidgetsimpl.cpp
   qgsorderbydialog.cpp
   qgsowssourceselect.cpp
   qgspanelwidget.cpp
@@ -479,6 +481,8 @@ SET(QGIS_GUI_MOC_HDRS
   qgsnewgeopackagelayerdialog.h
   qgsopacitywidget.h
   qgsoptionsdialogbase.h
+  qgsoptionsdialoghighlightwidget.h
+  qgsoptionsdialoghighlightwidgetsimpl.h
   qgsoptionswidgetfactory.h
   qgsorderbydialog.h
   qgsowssourceselect.h

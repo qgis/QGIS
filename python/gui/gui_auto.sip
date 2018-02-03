@@ -160,6 +160,8 @@
 %Include qgsnewgeopackagelayerdialog.sip
 %Include qgsopacitywidget.sip
 %Include qgsoptionsdialogbase.sip
+%Include qgsoptionsdialoghighlightwidget.sip
+%Include qgsoptionsdialoghighlightwidgetsimpl.sip
 %Include qgsoptionswidgetfactory.sip
 %Include qgsorderbydialog.sip
 %Include qgsowssourceselect.sip
