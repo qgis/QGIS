@@ -48,6 +48,7 @@
 
 #include <cmath>
 #include <map>
+#include <random>
 
 inline
 QgsProperty rotateWholeSymbol( double additionalRotation, const QgsProperty &property )
@@ -307,7 +308,13 @@ QgsSymbol *QgsSymbol::defaultSymbol( QgsWkbTypes::GeometryType geomType )
   if ( defaultSymbol.isEmpty() ||
        QgsProject::instance()->readBoolEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/RandomColors" ), true ) )
   {
-    s->setColor( QColor::fromHsv( qrand() % 360, 64 + qrand() % 192, 128 + qrand() % 128 ) );
+    // Make sure we use get uniquely seeded random numbers, and not the same sequence of numbers
+    std::random_device rd;
+    std::mt19937 mt( rd() );
+    std::uniform_int_distribution<int> hueDist( 0, 359 );
+    std::uniform_int_distribution<int> satDist( 64, 255 );
+    std::uniform_int_distribution<int> valueDist( 128, 255 );
+    s->setColor( QColor::fromHsv( hueDist( mt ), satDist( mt ), valueDist( mt ) ) );
   }
 
   return s;
