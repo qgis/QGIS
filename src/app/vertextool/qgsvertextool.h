@@ -87,7 +87,7 @@ class APP_EXPORT QgsVertexTool : public QgsMapToolAdvancedDigitizing
 
     void onCachedGeometryDeleted( QgsFeatureId fid );
 
-    void showVertexEditor();
+    void showVertexEditor();  //#spellok
 
     void deleteVertexEditorSelection();
 

@@ -408,7 +408,7 @@ void QgsVertexTool::cadCanvasPressEvent( QgsMapMouseEvent *e )
       {
         QMenu menu;
         QAction *actionVertexEditor = menu.addAction( tr( "Vertex editor" ) );
-        connect( actionVertexEditor, &QAction::triggered, this, &QgsVertexTool::showVertexEditor );
+        connect( actionVertexEditor, &QAction::triggered, this, &QgsVertexTool::showVertexEditor );  //#spellok
         menu.exec( mCanvas->mapToGlobal( e->pos() ) );
       }
     }
@@ -974,7 +974,7 @@ void QgsVertexTool::onCachedGeometryDeleted( QgsFeatureId fid )
 }
 
 
-void QgsVertexTool::showVertexEditor()
+void QgsVertexTool::showVertexEditor()  //#spellok
 {
   QgsPointLocator::Match m = mLastMouseMoveMatch;
   if ( !m.isValid() || !m.layer() )
