@@ -47,7 +47,8 @@ from qgis.PyQt.QtGui import (QIcon,
 
 from qgis.gui import (QgsDoubleSpinBox,
                       QgsSpinBox,
-                      QgsOptionsPageWidget)
+                      QgsOptionsPageWidget,
+                      QgsOptionsDialogHighlightWidget)
 from qgis.core import NULL, QgsApplication, QgsSettings
 from qgis.utils import OverrideCursor
 
@@ -68,13 +69,15 @@ class ConfigOptionsPage(QgsOptionsPageWidget):
 
     def __init__(self, parent):
         super(ConfigOptionsPage, self).__init__(parent)
-        self.config_widget = ConfigDialog()
+        self.config_widget = ConfigDialog(False)
         layout = QHBoxLayout()
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setMargin(0)
         self.setLayout(layout)
         layout.addWidget(self.config_widget)
         self.setObjectName('processingOptions')
+        self.highlightWidget = ProcessingTreeHighlight(self.config_widget)
+        self.registerHighlightWidget(self.highlightWidget)
 
     def apply(self):
         self.config_widget.accept()
@@ -83,9 +86,24 @@ class ConfigOptionsPage(QgsOptionsPageWidget):
         return 'processing/index.html'
 
 
+class ProcessingTreeHighlight(QgsOptionsDialogHighlightWidget):
+    def __init__(self, config_dialog):
+        super(ProcessingTreeHighlight, self).__init__(config_dialog.tree)
+        self.config_dialog = config_dialog
+
+    def highlightText(self, text):
+        return self.config_dialog.textChanged(text)
+
+    def searchText(self, text):
+        return self.config_dialog.textChanged(text)
+
+    def reset(self):
+        self.config_dialog.textChanged('')
+
+
 class ConfigDialog(BASE, WIDGET):
 
-    def __init__(self):
+    def __init__(self, showSearch=True):
         super(ConfigDialog, self).__init__(None)
         self.setupUi(self)
 
@@ -95,29 +113,36 @@ class ConfigDialog(BASE, WIDGET):
         self.groupIcon.addPixmap(self.style().standardPixmap(
             QStyle.SP_DirOpenIcon), QIcon.Normal, QIcon.On)
 
-        if hasattr(self.searchBox, 'setPlaceholderText'):
-            self.searchBox.setPlaceholderText(self.tr('Search...'))
-
         self.model = QStandardItemModel()
         self.tree.setModel(self.model)
 
         self.delegate = SettingDelegate()
         self.tree.setItemDelegateForColumn(1, self.delegate)
 
-        self.searchBox.textChanged.connect(self.textChanged)
+        if showSearch:
+            if hasattr(self.searchBox, 'setPlaceholderText'):
+                self.searchBox.setPlaceholderText(self.tr('Search...'))
+            self.searchBox.textChanged.connect(self.textChanged)
+        else:
+            self.searchBox.hide()
 
         self.fillTree()
 
         self.saveMenus = False
         self.tree.expanded.connect(self.itemExpanded)
 
-    def textChanged(self):
-        text = str(self.searchBox.text().lower())
+    def textChanged(self, text=None):
+        if text is not None:
+            text = str(text.lower())
+        else:
+            text = str(self.searchBox.text().lower())
         self._filterItem(self.model.invisibleRootItem(), text)
         if text:
             self.tree.expandAll()
+            return True
         else:
             self.tree.collapseAll()
+            return False
 
     def _filterItem(self, item, text):
         if item.hasChildren():

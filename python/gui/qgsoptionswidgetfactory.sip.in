@@ -38,12 +38,24 @@ If an empty string is returned by this method the default QGIS options
 help will be retrieved.
 %End
 
+
+
+
   public slots:
 
     virtual void apply() = 0;
 %Docstring
 Called to permanently apply the settings shown in the options page (e.g. save them to
 QgsSettings objects). This is usually called when the options dialog is accepted.
+%End
+
+  protected:
+
+    void registerHighlightWidget( QgsOptionsDialogHighlightWidget *highlightWidget /Transfer/ );
+%Docstring
+Register a highlight widget to be used to search and highlight text in
+options dialogs. This can be used to provide a custom implementation of
+:py:class:`QgsOptionsDialogHighlightWidget`.
 %End
 
 };
