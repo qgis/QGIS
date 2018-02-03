@@ -13,57 +13,6 @@
 
 
 
-class QgsSearchHighlightOptionWidget : QObject
-{
-%Docstring
-Container for a widget to be used to search text in the option dialog
-If the widget type is handled, it is valid.
-It can perform a text search in the widget and highlight it in case of success.
-This uses stylesheets.
-
-.. versionadded:: 3.0
-%End
-
-%TypeHeaderCode
-#include "qgsoptionsdialogbase.h"
-%End
-  public:
-
-    explicit QgsSearchHighlightOptionWidget( QWidget *widget = 0 );
-%Docstring
-Constructor
-
-:param widget: the widget used to search text into
-%End
-
-    bool isValid();
-%Docstring
-Returns if it valid: if the widget type is handled and if the widget is not still available
-%End
-
-    bool searchHighlight( const QString &searchText );
-%Docstring
-search for a text pattern and highlight the widget if the text is found
-
-:return: true if the text pattern is found
-%End
-
-    void reset();
-%Docstring
-reset the style to the original state
-%End
-
-    QWidget *widget();
-%Docstring
-return the widget
-%End
-
-    virtual bool eventFilter( QObject *obj, QEvent *event );
-
-
-};
-
-
 
 class QgsOptionsDialogBase : QDialog
 {

@@ -26,8 +26,6 @@
 #include <QDialog>
 #include <QPointer>
 #include <QStyledItemDelegate>
-#include <QMap>
-
 
 class QDialogButtonBox;
 class QListWidget;
@@ -37,69 +35,9 @@ class QPainter;
 class QStackedWidget;
 class QStyleOptionViewItem;
 class QSplitter;
-class QTreeWidgetItem;
 
 class QgsFilterLineEdit;
-
-/**
- * \ingroup gui
- * \class QgsSearchHighlightOptionWidget
- * Container for a widget to be used to search text in the option dialog
- * If the widget type is handled, it is valid.
- * It can perform a text search in the widget and highlight it in case of success.
- * This uses stylesheets.
- * \since QGIS 3.0
- */
-class GUI_EXPORT QgsSearchHighlightOptionWidget : public QObject
-{
-    Q_OBJECT
-  public:
-
-    /**
-     * Constructor
-     * \param widget the widget used to search text into
-     */
-    explicit QgsSearchHighlightOptionWidget( QWidget *widget = nullptr );
-
-    /**
-     * Returns if it valid: if the widget type is handled and if the widget is not still available
-     */
-    bool isValid() { return mWidget && mValid; }
-
-    /**
-     * search for a text pattern and highlight the widget if the text is found
-     * \returns true if the text pattern is found
-     */
-    bool searchHighlight( const QString &searchText );
-
-    /**
-     *  reset the style to the original state
-     */
-    void reset();
-
-    /**
-     * return the widget
-     */
-    QWidget *widget() { return mWidget; }
-
-    bool eventFilter( QObject *obj, QEvent *event ) override;
-
-  private slots:
-    void widgetDestroyed();
-
-  private:
-    QPointer< QWidget > mWidget;
-    QString mSearchText = QString();
-    // a map to save the tree state (backouground, font, expanded) before highlighting items
-    QMap<QTreeWidgetItem *, QPair<QBrush, QBrush>> mTreeInitialStyle = QMap<QTreeWidgetItem *, QPair<QBrush, QBrush>>();
-    QMap<QTreeWidgetItem *, bool> mTreeInitialExpand = QMap<QTreeWidgetItem *, bool>();
-    bool mValid = true;
-    bool mChangedStyle = false;
-    std::function < bool( const QString & )> mTextFound = []( const QString &searchText ) {Q_UNUSED( searchText ); return false;};
-    std::function < void( const QString & )> mHighlight = []( const QString &searchText ) {Q_UNUSED( searchText );};
-    std::function < void()> mReset = []() {};
-    bool mInstalledFilter = false;
-};
+class QgsOptionsDialogHighlightWidget;
 
 
 /**
@@ -190,7 +128,7 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
      */
     void registerTextSearchWidgets();
 
-    QList< QPair< QgsSearchHighlightOptionWidget *, int > > mRegisteredSearchWidgets;
+    QList< QPair< QgsOptionsDialogHighlightWidget *, int > > mRegisteredSearchWidgets;
 
     QString mOptsKey;
     bool mInit;
