@@ -33,12 +33,19 @@ QgsReportLayoutSectionWidget::QgsReportLayoutSectionWidget( QgsReportOrganizerWi
   connect( mButtonEditFooter, &QPushButton::clicked, this, &QgsReportLayoutSectionWidget::editFooter );
 
   mCheckShowHeader->setChecked( section->headerEnabled() );
+  mButtonEditHeader->setEnabled( section->headerEnabled() );
   mCheckShowFooter->setChecked( section->footerEnabled() );
+  mButtonEditFooter->setEnabled( section->footerEnabled() );
   mCheckShowBody->setChecked( section->bodyEnabled() );
+  mButtonEditBody->setEnabled( section->bodyEnabled() );
 
   connect( mCheckShowHeader, &QCheckBox::toggled, this, &QgsReportLayoutSectionWidget::toggleHeader );
   connect( mCheckShowFooter, &QCheckBox::toggled, this, &QgsReportLayoutSectionWidget::toggleFooter );
   connect( mCheckShowBody, &QCheckBox::toggled, this, &QgsReportLayoutSectionWidget::toggleBody );
+
+  connect( mCheckShowHeader, &QCheckBox::toggled, mButtonEditHeader, &QPushButton::setEnabled );
+  connect( mCheckShowFooter, &QCheckBox::toggled, mButtonEditFooter, &QPushButton::setEnabled );
+  connect( mCheckShowBody, &QCheckBox::toggled, mButtonEditBody, &QPushButton::setEnabled );
 }
 
 void QgsReportLayoutSectionWidget::toggleHeader( bool enabled )
