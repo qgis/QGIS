@@ -24,7 +24,14 @@ This uses stylesheets.
 #include "qgsoptionsdialoghighlightwidget.h"
 %End
   public:
+
     static QgsOptionsDialogHighlightWidget *createWidget( QWidget *widget ) /Factory/;
+%Docstring
+create a highlight widget implementation for the proper widget type.
+For instance a QgsOptionsDialogHighlightButton for button.
+@return a QgsOptionsDialogHighlightWidget or a None if there is no implementation
+for the given widget.
+%End
 
     bool isValid();
 %Docstring
