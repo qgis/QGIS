@@ -138,7 +138,7 @@ class GUI_EXPORT QgsGraduatedSymbolRendererWidget : public QgsRendererWidget, pr
 
     void updateGraduatedSymbolIcon();
 
-    //! return a list of indexes for the classes under selection
+    //! Returns a list of indexes for the classes under selection
     QList<int> selectedClasses();
     QgsRangeList selectedRanges();
 

@@ -951,8 +951,7 @@ void QgsCategorizedSymbolRendererWidget::updateSymbolsFromWidget()
   mCategorizedSymbol.reset( dlg->symbol()->clone() );
 
   updateCategorizedSymbolIcon();
-
-  // When there is a slection, change the selected symbols alone
+  // When there is a selection, change the selected symbols only
   QItemSelectionModel *m = viewCategories->selectionModel();
   QModelIndexList i = m->selectedRows();
 

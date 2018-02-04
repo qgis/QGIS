@@ -70,7 +70,7 @@ Toggle the link between classes boundaries
 
     QList<int> selectedClasses();
 %Docstring
-return a list of indexes for the classes under selection
+Returns a list of indexes for the classes under selection
 %End
     QgsRangeList selectedRanges();
 
