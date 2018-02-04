@@ -28,7 +28,7 @@
 
 #include "qgsoptionsdialoghighlightwidgetsimpl.h"
 
-
+#include <functional>
 
 // ****************
 // QLabel
@@ -190,6 +190,18 @@ bool QgsOptionsDialogHighlightTree::highlightText( const QString &text )
   QTreeWidget *treeWidget = qobject_cast<QTreeWidget *>( mTreeView );
   if ( treeWidget )
   {
+    mTreeInitialVisible.clear();
+    // initially hide everything
+    std::function< void( QTreeWidgetItem *, bool ) > setChildrenVisible;
+    setChildrenVisible = [this, &setChildrenVisible]( QTreeWidgetItem * item, bool visible )
+    {
+      for ( int i = 0; i < item->childCount(); ++i )
+        setChildrenVisible( item->child( i ), visible );
+      mTreeInitialVisible.insert( item, !item->isHidden() );
+      item->setHidden( !visible );
+    };
+    setChildrenVisible( treeWidget->invisibleRootItem(), false );
+
     QList<QTreeWidgetItem *> items = treeWidget->findItems( text, Qt::MatchContains | Qt::MatchRecursive, 0 );
     success = items.count() ? true : false;
     mTreeInitialStyle.clear();
@@ -199,6 +211,7 @@ bool QgsOptionsDialogHighlightTree::highlightText( const QString &text )
       mTreeInitialStyle.insert( item, qMakePair( item->background( 0 ), item->foreground( 0 ) ) );
       item->setBackground( 0, QBrush( QColor( Qt::yellow ) ) );
       item->setForeground( 0, QBrush( QColor( Qt::blue ) ) );
+      setChildrenVisible( item, true );
 
       QTreeWidgetItem *parent = item;
       while ( ( parent = parent->parent() ) )
@@ -207,6 +220,7 @@ bool QgsOptionsDialogHighlightTree::highlightText( const QString &text )
           break;
         mTreeInitialExpand.insert( parent, parent->isExpanded() );
         parent->setExpanded( true );
+        parent->setHidden( false );
       }
     }
   }
@@ -222,6 +236,15 @@ void QgsOptionsDialogHighlightTree::reset()
   QTreeWidget *treeWidget = qobject_cast<QTreeWidget *>( mTreeView );
   if ( treeWidget )
   {
+    // show everything
+    std::function< void( QTreeWidgetItem * ) > showChildren;
+    showChildren = [this, &showChildren]( QTreeWidgetItem * item )
+    {
+      for ( int i = 0; i < item->childCount(); ++i )
+        showChildren( item->child( i ) );
+      item->setHidden( !mTreeInitialVisible.value( item, true ) );
+    };
+    showChildren( treeWidget->invisibleRootItem() );
     for ( QTreeWidgetItem *item : mTreeInitialExpand.keys() )
     {
       if ( item )
