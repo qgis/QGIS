@@ -4676,3 +4676,15 @@ tests:
       OUTPUT:
         name: expected/removed_duplicated_nodes_line.gml
         type: vector
+
+  - algorithm: qgis:keepnbiggestparts
+    name: Keep N biggest parts
+    params:
+      PARTS: 1
+      POLYGONS:
+        name: multipolys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/biggest_parts.gml
+        type: vector

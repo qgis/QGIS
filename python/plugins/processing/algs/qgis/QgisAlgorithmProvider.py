@@ -80,6 +80,7 @@ from .IdwInterpolation import IdwInterpolation
 from .ImportIntoPostGIS import ImportIntoPostGIS
 from .ImportIntoSpatialite import ImportIntoSpatialite
 from .Intersection import Intersection
+from .KeepNBiggestParts import KeepNBiggestParts
 from .LinesToPolygons import LinesToPolygons
 from .MinimumBoundingGeometry import MinimumBoundingGeometry
 from .NearestNeighbourAnalysis import NearestNeighbourAnalysis
@@ -200,6 +201,7 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
                 ImportIntoPostGIS(),
                 ImportIntoSpatialite(),
                 Intersection(),
+                KeepNBiggestParts(),
                 LinesToPolygons(),
                 MinimumBoundingGeometry(),
                 NearestNeighbourAnalysis(),
