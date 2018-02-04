@@ -147,7 +147,7 @@ class WidgetWrapper(QObject):
         self.col = col
         self.dialogType = dialogTypes.get(dialog.__class__.__name__, DIALOG_STANDARD)
         self.widget = self.createWidget(**kwargs)
-        if param.defaultValue() is not None:
+        if param.defaultValue():
             self.setValue(param.defaultValue())
 
     def comboValue(self, validator=None, combobox=None):
