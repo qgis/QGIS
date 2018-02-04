@@ -780,7 +780,6 @@ void QgsGraduatedSymbolRendererWidget::updateSymbolsFromWidget()
   }
   else
   {
-    updateGraduatedSymbolIcon();
     mRenderer->updateSymbols( mGraduatedSymbol.get() );
   }
 
@@ -880,6 +879,7 @@ void QgsGraduatedSymbolRendererWidget::changeGraduatedSymbol()
 
   connect( dlg, &QgsPanelWidget::widgetChanged, this, &QgsGraduatedSymbolRendererWidget::updateSymbolsFromWidget );
   connect( dlg, &QgsPanelWidget::panelAccepted, this, &QgsGraduatedSymbolRendererWidget::cleanUpSymbolSelector );
+  connect( dlg, &QgsPanelWidget::panelAccepted, this, &QgsGraduatedSymbolRendererWidget::updateGraduatedSymbolIcon );
   openPanel( dlg );
 }
 
