@@ -52,6 +52,13 @@ Adds all default color schemes to this color scheme.
 .. seealso:: :py:func:`addUserSchemes`
 %End
 
+    void initStyleScheme();
+%Docstring
+Initializes the default random style color scheme for the user.
+
+.. versionadded:: 3.2
+%End
+
     void addUserSchemes();
 %Docstring
 Creates schemes for all gpl palettes in the user's palettes folder.

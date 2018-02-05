@@ -59,6 +59,12 @@ class CORE_EXPORT QgsColorSchemeRegistry
     void addDefaultSchemes();
 
     /**
+     * Initializes the default random style color scheme for the user.
+     * \since QGIS 3.2
+     */
+    void initStyleScheme();
+
+    /**
      * Creates schemes for all gpl palettes in the user's palettes folder.
      * \see populateFromInstance
      * \see addDefaultSchemes

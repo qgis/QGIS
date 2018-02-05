@@ -271,6 +271,9 @@ void QgsApplication::init( QString profileFolder )
   // so we read actual value in main.cpp
   ABISYM( mMaxThreads ) = -1;
 
+  colorSchemeRegistry()->addDefaultSchemes();
+  colorSchemeRegistry()->initStyleScheme();
+
   ABISYM( mInitialized ) = true;
 }
 
@@ -1718,7 +1721,6 @@ QgsApplication::ApplicationMembers::ApplicationMembers()
   mFieldFormatterRegistry = new QgsFieldFormatterRegistry();
   mSvgCache = new QgsSvgCache();
   mColorSchemeRegistry = new QgsColorSchemeRegistry();
-  mColorSchemeRegistry->addDefaultSchemes();
   mPaintEffectRegistry = new QgsPaintEffectRegistry();
   mSymbolLayerRegistry = new QgsSymbolLayerRegistry();
   mRendererRegistry = new QgsRendererRegistry();

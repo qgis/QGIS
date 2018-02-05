@@ -104,7 +104,8 @@ class TestQgsColorSchemeRegistry : public QObject
 
 void TestQgsColorSchemeRegistry::initTestCase()
 {
-
+  QgsApplication::init();
+  QgsApplication::initQgis();
 }
 
 void TestQgsColorSchemeRegistry::cleanupTestCase()
@@ -249,6 +250,8 @@ void TestQgsColorSchemeRegistry::fetchRandomStyleColor()
     QVERIFY( registry->fetchRandomStyleColor().isValid() );
   }
 
+  // we expect the default application color scheme registry to have a randomStyleColorScheme set
+  QVERIFY( QgsApplication::colorSchemeRegistry()->randomStyleColorScheme() );
 }
 
 QGSTEST_MAIN( TestQgsColorSchemeRegistry )
