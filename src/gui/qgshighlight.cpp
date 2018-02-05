@@ -321,6 +321,8 @@ void QgsHighlight::paint( QPainter *p )
       return;
     QgsMapSettings mapSettings = mMapCanvas->mapSettings();
     QgsRenderContext context = QgsRenderContext::fromMapSettings( mapSettings );
+    context.expressionContext() << QgsExpressionContextUtils::layerScope( mLayer );
+
 
     // Because lower level outlines must be covered by upper level fill color
     // we render first with temporary opaque color, which is then replaced
@@ -341,6 +343,7 @@ void QgsHighlight::paint( QPainter *p )
       context.setPainter( &imagePainter );
 
       renderer->startRender( context, layer->fields() );
+      context.expressionContext().setFeature( mFeature );
       renderer->renderFeature( mFeature, context );
       renderer->stopRender( context );
 
