@@ -51,6 +51,17 @@ void QgsColorSchemeRegistry::addDefaultSchemes()
   addUserSchemes();
 }
 
+void QgsColorSchemeRegistry::initStyleScheme()
+{
+  QString stylePalette = QgsApplication::pkgDataPath() + QStringLiteral( "/resources/new_layer_colors.gpl" );
+  if ( QFileInfo::exists( stylePalette ) )
+  {
+    QgsUserColorScheme *scheme = new QgsUserColorScheme( stylePalette );
+    addColorScheme( scheme );
+    setRandomStyleColorScheme( scheme );
+  }
+}
+
 void QgsColorSchemeRegistry::addUserSchemes()
 {
   QString palettesDir = QgsApplication::qgisSettingsDirPath() + "/palettes";
