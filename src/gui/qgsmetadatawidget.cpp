@@ -35,7 +35,10 @@ QgsMetadataWidget::QgsMetadataWidget( QWidget *parent, QgsMapLayer *layer )
     mLayer( layer )
 {
   setupUi( this );
-  mMetadata = layer->metadata();
+  if ( mLayer )
+  {
+    mMetadata = mLayer->metadata();
+  }
   tabWidget->setCurrentIndex( 0 );
 
   // Disable the encoding
@@ -107,15 +110,36 @@ QgsMetadataWidget::QgsMetadataWidget( QWidget *parent, QgsMapLayer *layer )
   connect( btnRemoveCategory, &QPushButton::clicked, this, &QgsMetadataWidget::removeSelectedCategories );
 
   fillComboBox();
+  if ( !mLayer )
+  {
+    btnAutoSource->setEnabled( false );
+    btnAutoEncoding->setEnabled( false );
+    btnAutoCrs->setEnabled( false );
+  }
+  setMetadata( mMetadata );
+}
+
+void QgsMetadataWidget::setMetadata( const QgsLayerMetadata &layerMetadata )
+{
+  mMetadata = layerMetadata;
   setPropertiesFromLayer();
 }
 
-void QgsMetadataWidget::fillSourceFromLayer()
+QgsLayerMetadata QgsMetadataWidget::metadata()
 {
-  lineEditIdentifier->setText( mLayer->publicSource() );
+  saveMetadata( mMetadata );
+  return mMetadata;
 }
 
-void QgsMetadataWidget::addVocabulary()
+void QgsMetadataWidget::fillSourceFromLayer() const
+{
+  if ( mLayer )
+  {
+    lineEditIdentifier->setText( mLayer->publicSource() );
+  }
+}
+
+void QgsMetadataWidget::addVocabulary() const
 {
   int row = tabKeywords->rowCount();
   tabKeywords->setRowCount( row + 1 );
@@ -130,7 +154,7 @@ void QgsMetadataWidget::addVocabulary()
   tabKeywords->setItem( row, 1, pCell );
 }
 
-void QgsMetadataWidget::removeSelectedVocabulary()
+void QgsMetadataWidget::removeSelectedVocabulary() const
 {
   QItemSelectionModel *selectionModel = tabKeywords->selectionModel();
   const QModelIndexList selectedRows = selectionModel->selectedRows();
@@ -152,7 +176,7 @@ void QgsMetadataWidget::addLicence()
   }
 }
 
-void QgsMetadataWidget::removeSelectedLicence()
+void QgsMetadataWidget::removeSelectedLicence() const
 {
   QItemSelectionModel *selectionModel = tabLicenses->selectionModel();
   const QModelIndexList selectedRows = selectionModel->selectedRows();
@@ -173,7 +197,7 @@ void QgsMetadataWidget::addRight()
   }
 }
 
-void QgsMetadataWidget::removeSelectedRight()
+void QgsMetadataWidget::removeSelectedRight() const
 {
   QItemSelectionModel *selection = listRights->selectionModel();
   if ( selection->hasSelection() )
@@ -187,22 +211,22 @@ void QgsMetadataWidget::removeSelectedRight()
   }
 }
 
-void QgsMetadataWidget::addConstraint()
+void QgsMetadataWidget::addConstraint() const
 {
   int row = mConstraintsModel->rowCount();
   mConstraintsModel->setItem( row, 0, new QStandardItem( QString( tr( "undefined %1" ) ).arg( row + 1 ) ) );
   mConstraintsModel->setItem( row, 1, new QStandardItem( QString( tr( "undefined %1" ) ).arg( row + 1 ) ) );
 }
 
-void QgsMetadataWidget::removeSelectedConstraint()
+void QgsMetadataWidget::removeSelectedConstraint() const
 {
   const QModelIndexList selectedRows = tabConstraints->selectionModel()->selectedRows();
   mConstraintsModel->removeRow( selectedRows[0].row() );
 }
 
-void QgsMetadataWidget::crsChanged()
+void QgsMetadataWidget::crsChanged() const
 {
-  if ( mCrs.isValid() )
+  if ( ( mCrs.isValid() ) && ( mLayer ) )
   {
     lblCurrentCrs->setText( tr( "CRS: %1 - %2" ).arg( mCrs.authid(), mCrs.description() ) );
     spatialExtentSelector->setEnabled( true );
@@ -233,7 +257,7 @@ void QgsMetadataWidget::crsChanged()
   }
 }
 
-void QgsMetadataWidget::addAddress()
+void QgsMetadataWidget::addAddress() const
 {
   int row = tabAddresses->rowCount();
   tabAddresses->setRowCount( row + 1 );
@@ -259,7 +283,7 @@ void QgsMetadataWidget::addAddress()
   tabAddresses->setItem( row, 5, new QTableWidgetItem() );
 }
 
-void QgsMetadataWidget::removeSelectedAddress()
+void QgsMetadataWidget::removeSelectedAddress() const
 {
   QItemSelectionModel *selectionModel = tabAddresses->selectionModel();
   const QModelIndexList selectedRows = selectionModel->selectedRows();
@@ -281,7 +305,7 @@ void QgsMetadataWidget::fillCrsFromProvider()
   crsChanged();
 }
 
-void QgsMetadataWidget::addLink()
+void QgsMetadataWidget::addLink() const
 {
   int row = mLinksModel->rowCount();
   mLinksModel->setItem( row, 0, new QStandardItem( QString( tr( "undefined %1" ) ).arg( row + 1 ) ) );
@@ -293,7 +317,7 @@ void QgsMetadataWidget::addLink()
   mLinksModel->setItem( row, 6, new QStandardItem() );
 }
 
-void QgsMetadataWidget::removeSelectedLink()
+void QgsMetadataWidget::removeSelectedLink() const
 {
   const QModelIndexList selectedRows = tabLinks->selectionModel()->selectedRows();
   mLinksModel->removeRow( selectedRows[0].row() );
@@ -310,7 +334,7 @@ void QgsMetadataWidget::addHistory()
   }
 }
 
-void QgsMetadataWidget::removeSelectedHistory()
+void QgsMetadataWidget::removeSelectedHistory() const
 {
   QItemSelectionModel *selection = listHistory->selectionModel();
   if ( selection->hasSelection() )
@@ -324,7 +348,7 @@ void QgsMetadataWidget::removeSelectedHistory()
   }
 }
 
-void QgsMetadataWidget::fillComboBox()
+void QgsMetadataWidget::fillComboBox() const
 {
   // Set default values in type combobox
   // It is advised to use the ISO 19115 MD_ScopeCode values. E.g. 'dataset' or 'series'.
@@ -522,7 +546,7 @@ void QgsMetadataWidget::setPropertiesFromLayer()
   mHistoryModel->setStringList( mMetadata.history() );
 }
 
-void QgsMetadataWidget::saveMetadata( QgsLayerMetadata &layerMetadata )
+void QgsMetadataWidget::saveMetadata( QgsLayerMetadata &layerMetadata ) const
 {
   layerMetadata.setParentIdentifier( lineEditParentId->text() );
   layerMetadata.setIdentifier( lineEditIdentifier->text() );
@@ -635,7 +659,7 @@ void QgsMetadataWidget::saveMetadata( QgsLayerMetadata &layerMetadata )
   layerMetadata.setHistory( mHistoryModel->stringList() );
 }
 
-bool QgsMetadataWidget::checkMetadata()
+bool QgsMetadataWidget::checkMetadata() const
 {
   QgsLayerMetadata metadata = QgsLayerMetadata();
   saveMetadata( metadata );
@@ -815,9 +839,11 @@ void QgsMetadataWidget::setMapCanvas( QgsMapCanvas *canvas )
 void QgsMetadataWidget::acceptMetadata()
 {
   saveMetadata( mMetadata );
-
-  // Save layer metadata properties
-  mLayer->setMetadata( mMetadata );
+  if ( mLayer )
+  {
+    // Save layer metadata properties
+    mLayer->setMetadata( mMetadata );
+  }
 }
 
 void QgsMetadataWidget::setMetadata( const QgsLayerMetadata &metadata )
@@ -826,7 +852,7 @@ void QgsMetadataWidget::setMetadata( const QgsLayerMetadata &metadata )
   setPropertiesFromLayer();
 }
 
-void QgsMetadataWidget::syncFromCategoriesTabToKeywordsTab()
+void QgsMetadataWidget::syncFromCategoriesTabToKeywordsTab() const
 {
   if ( mCategoriesModel->rowCount() > 0 )
   {
@@ -847,7 +873,7 @@ void QgsMetadataWidget::syncFromCategoriesTabToKeywordsTab()
   }
 }
 
-void QgsMetadataWidget::updatePanel()
+void QgsMetadataWidget::updatePanel() const
 {
   int index = tabWidget->currentIndex();
   QString currentTabText = tabWidget->widget( index )->objectName();

@@ -726,6 +726,11 @@ class CORE_EXPORT QgsLayerMetadata
      */
     bool writeMetadataXml( QDomElement &metadataElement, QDomDocument &document ) const;
 
+    /**
+     * Compares two features
+     */
+    bool operator==( const QgsLayerMetadata &metadataOther ) const SIP_SKIP;
+
   private:
 
     /*

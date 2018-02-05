@@ -767,3 +767,26 @@ void QgsLayerMetadata::Extent::setTemporalExtents( const QList<QgsDateTimeRange>
 {
   mTemporalExtents = temporalExtents;
 }
+
+bool QgsLayerMetadata::operator==( const QgsLayerMetadata &metadataOther )  const
+{
+  return ( ( parentIdentifier() == metadataOther.parentIdentifier() ) &&
+           ( identifier() == metadataOther.identifier() ) &&
+           ( language() == metadataOther.language() ) &&
+           ( type() == metadataOther.type() ) &&
+           ( title() == metadataOther.title() ) &&
+           ( abstract() == metadataOther.abstract() ) &&
+           ( fees() == metadataOther.fees() ) &&
+           ( rights() == metadataOther.rights() ) &&
+           ( licenses() == metadataOther.licenses() ) &&
+           ( history() == metadataOther.history() ) &&
+           ( encoding() == metadataOther.encoding() ) &&
+           ( crs() == metadataOther.crs() ) &&
+           ( keywords() == metadataOther.keywords() ) &&
+           ( categories() == metadataOther.categories() ) &&
+           // QgsLayerMetadata::ConstraintList, LinkList, Extent, ContactList need to be delt with properly
+           ( constraints().count() == metadataOther.constraints().count() ) &&
+           ( extent().spatialExtents().count() == metadataOther.extent().spatialExtents().count() ) &&
+           ( contacts().count() == metadataOther.contacts().count() ) &&
+           ( links().count() == metadataOther.links().count() ) );
+}
