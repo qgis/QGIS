@@ -53,7 +53,7 @@ void QgsColorSchemeRegistry::addDefaultSchemes()
 
 void QgsColorSchemeRegistry::initStyleScheme()
 {
-  QString stylePalette = QgsApplication::pkgDataPath() + QStringLiteral( "/resources/new_layer_colors.gpl" );
+  QString stylePalette = QgsApplication::pkgDataPath() + QStringLiteral( "/resources/palettes/new_layer_colors.gpl" );
   if ( QFileInfo::exists( stylePalette ) )
   {
     QgsUserColorScheme *scheme = new QgsUserColorScheme( stylePalette );

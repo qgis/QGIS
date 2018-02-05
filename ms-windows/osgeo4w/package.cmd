@@ -415,6 +415,7 @@ tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%/%PACKAGENAME%-%VERS
 	"apps/%PACKAGENAME%/resources/themes/" ^
 	"apps/%PACKAGENAME%/resources/data/" ^
 	"apps/%PACKAGENAME%/resources/metadata-ISO/" ^
+	"apps/%PACKAGENAME%/resources/palettes/" ^
 	"apps/%PACKAGENAME%/resources/2to3migration.txt" ^
 	"apps/%PACKAGENAME%/resources/qgis_global_settings.ini" ^
 	"apps/%PACKAGENAME%/qgiscrashhandler.exe" ^
