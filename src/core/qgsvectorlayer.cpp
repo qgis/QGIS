@@ -3730,7 +3730,7 @@ QList<double> QgsVectorLayer::getDoubleValues( const QString &fieldOrExpression,
   if ( nullCount )
     *nullCount = 0;
 
-  QList<QVariant> variantValues = getValues( fieldOrExpression, ok, selectedOnly );
+  QList<QVariant> variantValues = getValues( fieldOrExpression, ok, selectedOnly, feedback );
   if ( !ok )
     return values;
 
