@@ -264,6 +264,21 @@ class CORE_EXPORT QgsProcessingParameterDefinition
     virtual QgsProcessingParameterDefinition *clone() const = 0 SIP_FACTORY;
 
     /**
+     * Returns the visiblity of the parameter. This flag can used to show/hide
+     * this parameter from AlgorithmDialog or exclude from passing to parameter
+     * processing algorithms.
+     * \see setVisible()
+     */
+    bool isVisible() { return mVisible; }
+
+    /**
+     * Sets the \a mVisible of the parameter. This value is used to flag
+     * visiblity of parameter
+     * \see isVisible()
+     */
+    bool setVisible( bool v ) { return mVisible = v; }
+
+    /**
      * Unique parameter type name.
      */
     virtual QString type() const = 0;
@@ -494,6 +509,8 @@ class CORE_EXPORT QgsProcessingParameterDefinition
 
     //! True for dynamic parameters, which can have data-defined (QgsProperty) based values
     bool mIsDynamic = false;
+
+    bool mVisible = true;
 
     //! Data defined property definition
     QgsPropertyDefinition mPropertyDefinition;

@@ -119,6 +119,7 @@ class ParametersPanel(BASE, WIDGET):
                 wrapper = WidgetWrapperFactory.create_wrapper(param, self.parent)
                 self.wrappers[param.name()] = wrapper
                 widget = wrapper.widget
+                widget.setVisible(param.isVisible())
 
                 if widget is not None:
                     if isinstance(param, QgsProcessingParameterFeatureSource):
@@ -147,6 +148,7 @@ class ParametersPanel(BASE, WIDGET):
                         widget.setText(desc)
                     else:
                         label = QLabel(desc)
+                        label.setVisible(param.isVisible())
                         # label.setToolTip(tooltip)
                         self.labels[param.name()] = label
 

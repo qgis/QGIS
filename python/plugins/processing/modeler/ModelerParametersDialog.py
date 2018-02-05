@@ -133,7 +133,7 @@ class ModelerParametersDialog(QDialog):
                 self.verticalLayout.addLayout(advancedButtonHLayout)
                 break
         for param in self._alg.parameterDefinitions():
-            if param.isDestination() or param.flags() & QgsProcessingParameterDefinition.FlagHidden:
+            if not param.isVisible() or param.isDestination() or param.flags() & QgsProcessingParameterDefinition.FlagHidden:
                 continue
             desc = param.description()
             if isinstance(param, QgsProcessingParameterExtent):
