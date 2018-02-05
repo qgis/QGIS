@@ -378,6 +378,7 @@ void QgsLayoutItemPicture::loadRemotePicture( const QString &url )
     QImageReader imageReader( reply );
     mImage = imageReader.read();
     mMode = FormatRaster;
+    delete reply;
   }
   else
   {
