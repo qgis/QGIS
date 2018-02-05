@@ -66,7 +66,7 @@ class ImportIntoSpatialite(QgisAlgorithm):
 
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT, self.tr('Layer to import')))
-        self.addParameter(QgsProcessingParameterVectorLayer(self.DATABASE, self.tr('File database'), [], False, False))
+        self.addParameter(QgsProcessingParameterVectorLayer(self.DATABASE, self.tr('File database'), optional=False))
         self.addParameter(QgsProcessingParameterString(self.TABLENAME, self.tr('Table to import to (leave blank to use layer name)'), optional=True))
         self.addParameter(QgsProcessingParameterField(self.PRIMARY_KEY, self.tr('Primary key field'), None, self.INPUT, QgsProcessingParameterField.Any, False, True))
         self.addParameter(QgsProcessingParameterString(self.GEOMETRY_COLUMN, self.tr('Geometry column'), 'geom'))
