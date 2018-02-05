@@ -487,7 +487,7 @@ int QgsLayoutItem::page() const
 
 QPointF QgsLayoutItem::pagePos() const
 {
-  QPointF p = pos();
+  QPointF p = positionAtReferencePoint( mReferencePoint );
 
   if ( !mLayout )
     return p;
