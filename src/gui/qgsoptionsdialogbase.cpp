@@ -207,6 +207,8 @@ void QgsOptionsDialogBase::restoreOptionsBaseUi( const QString &title )
 
 void QgsOptionsDialogBase::searchText( const QString &text )
 {
+  const int minimumTextLength = 3;
+
   mSearchLineEdit->setMinimumWidth( text.isEmpty() ? 0 : 70 );
 
   if ( !mOptStackedWidget )
@@ -219,12 +221,12 @@ void QgsOptionsDialogBase::searchText( const QString &text )
   // hide all page if text has to be search, show them all otherwise
   for ( int r = 0; r < mOptListWidget->count(); ++r )
   {
-    mOptListWidget->setRowHidden( r, !text.isEmpty() );
+    mOptListWidget->setRowHidden( r, text.length() >= minimumTextLength );
   }
 
   for ( const QPair< QgsOptionsDialogHighlightWidget *, int > &rsw : qgis::as_const( mRegisteredSearchWidgets ) )
   {
-    if ( rsw.first->searchHighlight( text ) )
+    if ( rsw.first->searchHighlight( text.length() >= minimumTextLength ? text : QString() ) )
     {
       mOptListWidget->setRowHidden( rsw.second, false );
     }
