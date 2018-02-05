@@ -58,6 +58,7 @@ class APP_EXPORT QgsStatisticalSummaryDockWidget : public QgsDockWidget, private
   private slots:
 
     void layerChanged( QgsMapLayer *layer );
+    void fieldChanged();
     void statActionTriggered( bool checked );
     void layersRemoved( const QStringList &layers );
     void layerSelectionChanged();
@@ -92,6 +93,8 @@ class APP_EXPORT QgsStatisticalSummaryDockWidget : public QgsDockWidget, private
     QMenu *mStatisticsMenu = nullptr;
     DataType mFieldType;
     DataType mPreviousFieldType;
+
+    QString mExpression;
 };
 
 #endif // QGSSTATISTICALSUMMARYDOCKWIDGET_H
