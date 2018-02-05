@@ -9,7 +9,6 @@
 
 
 
-
 class QgsLayoutUtils
 {
 %Docstring
@@ -219,6 +218,11 @@ the a specified ``rotation`` amount.
 Decodes a ``string`` representing a paper orientation and returns the
 decoded orientation.
 If the string was correctly decoded, ``ok`` will be set to true.
+%End
+
+    static double scaleFactorFromItemStyle( const QStyleOptionGraphicsItem *style );
+%Docstring
+Extracts the scale factor from an item ``style``.
 %End
 
 };
