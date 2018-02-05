@@ -138,7 +138,7 @@ class ConfigDialog(BASE, WIDGET):
             text = str(text.lower())
         else:
             text = str(self.searchBox.text().lower())
-        self._filterItem(self.model.invisibleRootItem(), text)
+        found = self._filterItem(self.model.invisibleRootItem(), text)
 
         self.auto_adjust_columns = False
         if text:
@@ -150,18 +150,17 @@ class ConfigDialog(BASE, WIDGET):
         self.auto_adjust_columns = True
 
         if text:
-            return True
+            return found
         else:
             self.tree.collapseAll()
             return False
 
     def _filterItem(self, item, text):
         if item.hasChildren():
-            show = False
+            show = isinstance(item, QStandardItem) and bool(text) and (text in item.text().lower())
             for i in range(item.rowCount()):
                 child = item.child(i)
-                showChild = self._filterItem(child, text)
-                show = (showChild or show)
+                show = self._filterItem(child, text) or show
             self.tree.setRowHidden(item.row(), item.index().parent(), not show)
             return show
 
