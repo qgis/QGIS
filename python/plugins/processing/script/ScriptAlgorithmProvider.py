@@ -36,7 +36,6 @@ from processing.gui.DeleteScriptAction import DeleteScriptAction
 from processing.gui.CreateNewScriptAction import CreateNewScriptAction
 from processing.script.ScriptUtils import ScriptUtils
 from processing.script.AddScriptFromFileAction import AddScriptFromFileAction
-from processing.gui.GetScriptsAndModels import GetScriptsAction
 from processing.gui.ProviderActions import (ProviderActions,
                                             ProviderContextMenuActions)
 from processing.script.CreateScriptCollectionPluginAction import CreateScriptCollectionPluginAction
@@ -53,7 +52,6 @@ class ScriptAlgorithmProvider(QgsProcessingProvider):
         self.actions = [CreateNewScriptAction('Create new script',
                                               CreateNewScriptAction.SCRIPT_PYTHON),
                         AddScriptFromFileAction(),
-                        GetScriptsAction(),
                         CreateScriptCollectionPluginAction()]
         self.contextMenuActions = \
             [EditScriptAction(EditScriptAction.SCRIPT_PYTHON),

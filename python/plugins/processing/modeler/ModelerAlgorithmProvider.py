@@ -43,7 +43,6 @@ from processing.modeler.EditModelAction import EditModelAction
 from processing.modeler.CreateNewModelAction import CreateNewModelAction
 from processing.modeler.DeleteModelAction import DeleteModelAction
 from processing.modeler.AddModelFromFileAction import AddModelFromFileAction
-from processing.gui.GetScriptsAndModels import GetModelsAction
 from processing.gui.ProviderActions import (ProviderActions,
                                             ProviderContextMenuActions)
 
@@ -54,7 +53,7 @@ class ModelerAlgorithmProvider(QgsProcessingProvider):
 
     def __init__(self):
         super().__init__()
-        self.actions = [CreateNewModelAction(), AddModelFromFileAction(), GetModelsAction()]
+        self.actions = [CreateNewModelAction(), AddModelFromFileAction()]
         self.contextMenuActions = [EditModelAction(), DeleteModelAction()]
         self.algs = []
 
