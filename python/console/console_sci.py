@@ -614,14 +614,16 @@ class ShellScintilla(QsciScintilla, code.InteractiveInterpreter):
         sys.stderr.write(txt)
 
     def writeCMD(self, txt):
-        sys.stdout.fire_keyboard_interrupt = False
+        if sys.stdout:
+            sys.stdout.fire_keyboard_interrupt = False
         if len(txt) > 0:
             getCmdString = self.text()
             prompt = getCmdString[0:4]
             sys.stdout.write(prompt + txt + '\n')
 
     def runsource(self, source, filename='<input>', symbol='single'):
-        sys.stdout.fire_keyboard_interrupt = False
+        if sys.stdout:
+            sys.stdout.fire_keyboard_interrupt = False
         hook = sys.excepthook
         try:
             def excepthook(etype, value, tb):
