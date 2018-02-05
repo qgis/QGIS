@@ -24,6 +24,7 @@
 
 //#include "qgsdataitem.h"
 #include "qgsdatasourceuri.h"
+#include "qgslayermetadata.h"
 #include "qgserror.h"
 
 typedef int dataCapabilities_t(); // SIP_SKIP
@@ -492,6 +493,30 @@ class CORE_EXPORT QgsDataProvider : public QObject
      */
     virtual bool renderInPreview( const QgsDataProvider::PreviewContext &context ); // SIP_SKIP
 
+    /**
+     * Retrieve collected Metadata from the Provider source
+     * \brief A structured metadata store for a map layer.
+     * \note
+     * \see QgsVectorLayer::setDataProvider
+     * \see QgsRasterLayer::setDataProvider
+     * \see setLayerMetadata
+     * \see mLayerMetadata
+    * \since QGIS 3.0
+    */
+    virtual const QgsLayerMetadata &layerMetadata() const { return mLayerMetadata; };
+
+    /**
+     * Set collected Metadata from the Provider source
+     * \brief A structured metadata store for a map layer.
+     * \note
+     * \see QgsVectorLayer::setDataProvider
+     * \see QgsRasterLayer::setDataProvider
+     * \see layerMetadata
+     * \see mLayerMetadata
+    * \since QGIS 3.0
+    */
+    virtual void setLayerMetadata( const QgsLayerMetadata &layerMetadata ) { mLayerMetadata = layerMetadata; };
+
   signals:
 
     /**
@@ -543,6 +568,18 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * This could be a file, database, or server address.
      */
     QString mDataSourceURI;
+
+    /**
+     * Contains collected Metadata for the Provider source
+     * \brief A structured metadata store for a map layer.
+     * \note
+     *  - QgsVectorLayer::setDataProvider
+     *  - QgsRasterLayer::setDataProvider
+     * \see layerMetadata
+     * \see setLayerMetadata
+    * \since QGIS 3.0
+    */
+    QgsLayerMetadata mLayerMetadata;
 
     QMap< int, QVariant > mProviderProperties;
 };

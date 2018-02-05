@@ -35,7 +35,10 @@ QgsMetadataWidget::QgsMetadataWidget( QWidget *parent, QgsMapLayer *layer )
     mLayer( layer )
 {
   setupUi( this );
-  mMetadata = layer->metadata();
+  if ( mLayer )
+  {
+    mMetadata = mLayer->metadata();
+  }
   tabWidget->setCurrentIndex( 0 );
 
   // Disable the encoding
@@ -107,12 +110,36 @@ QgsMetadataWidget::QgsMetadataWidget( QWidget *parent, QgsMapLayer *layer )
   connect( btnRemoveCategory, &QPushButton::clicked, this, &QgsMetadataWidget::removeSelectedCategory );
 
   fillComboBox();
+  if ( !mLayer )
+  {
+    btnAutoSource->setEnabled( false );
+    btnAutoEncoding->setEnabled( false );
+    btnAutoCrs->setEnabled( false );
+  }
+  setMetadata( mMetadata );
+}
+
+void QgsMetadataWidget::setMetadata( const QgsLayerMetadata &layerMetadata )
+{
+  mMetadata = layerMetadata;
   setPropertiesFromLayer();
+}
+
+QgsLayerMetadata QgsMetadataWidget::getMetadata()
+{
+  if ( saveMetadata( mMetadata ) )
+  {
+   emit metadataChanged();
+  }
+  return mMetadata;
 }
 
 void QgsMetadataWidget::fillSourceFromLayer() const
 {
-  lineEditIdentifier->setText( mLayer->publicSource() );
+  if ( mLayer )
+  {
+    lineEditIdentifier->setText( mLayer->publicSource() );
+  }
 }
 
 void QgsMetadataWidget::addVocabulary() const
@@ -202,7 +229,7 @@ void QgsMetadataWidget::removeSelectedConstraint() const
 
 void QgsMetadataWidget::crsChanged() const
 {
-  if ( mCrs.isValid() )
+  if ( ( mCrs.isValid() ) && ( mLayer ) )
   {
     lblCurrentCrs->setText( tr( "CRS: %1 - %2" ).arg( mCrs.authid(), mCrs.description() ) );
     spatialExtentSelector->setEnabled( true );
@@ -522,8 +549,9 @@ void QgsMetadataWidget::setPropertiesFromLayer()
   mHistoryModel->setStringList( mMetadata.history() );
 }
 
-void QgsMetadataWidget::saveMetadata( QgsLayerMetadata &layerMetadata ) const
+bool QgsMetadataWidget::saveMetadata( QgsLayerMetadata &layerMetadata ) const
 {
+  bool bHasChanged = false;
   layerMetadata.setParentIdentifier( lineEditParentId->text() );
   layerMetadata.setIdentifier( lineEditIdentifier->text() );
   layerMetadata.setTitle( lineEditTitle->text() );
@@ -633,6 +661,48 @@ void QgsMetadataWidget::saveMetadata( QgsLayerMetadata &layerMetadata ) const
 
   // History
   layerMetadata.setHistory( mHistoryModel->stringList() );
+  // Check for changes
+  if ( ( layerMetadata.parentIdentifier() != mMetadata.parentIdentifier() ) ||
+       ( layerMetadata.identifier() != mMetadata.identifier() ) ||
+       ( layerMetadata.title() != mMetadata.title() ) ||
+       ( layerMetadata.type() != mMetadata.type() ) ||
+       ( layerMetadata.language() != mMetadata.language() ) ||
+       ( layerMetadata.fees() != mMetadata.fees() ) ||
+       ( layerMetadata.abstract() != mMetadata.abstract() ) )
+  {
+    bHasChanged = true;
+  }
+  if ( !bHasChanged )
+  {
+    QSet<QString> subtraction = layerMetadata.licenses().toSet().subtract( mMetadata.licenses().toSet() );
+    if ( subtraction.count() > 0 )
+    {
+      bHasChanged = true;
+    }
+    subtraction = layerMetadata.rights().toSet().subtract( mMetadata.rights().toSet() );
+    if ( subtraction.count() > 0 )
+    {
+      bHasChanged = true;
+    }
+    subtraction = mHistoryModel->stringList().toSet().subtract( mMetadata.history().toSet() );
+    if ( subtraction.count() > 0 )
+    {
+      bHasChanged = true;
+    }
+    if ( layerMetadata.keywords().count() != mMetadata.keywords().count() )
+    {
+      bHasChanged = true;
+    }
+    if ( layerMetadata.constraints().count() != mMetadata.constraints().count() )
+    {
+      bHasChanged = true;
+    }
+    if ( layerMetadata.links().count() != mMetadata.links().count() )
+    {
+      bHasChanged = true;
+    }
+  }
+  return bHasChanged;
 }
 
 bool QgsMetadataWidget::checkMetadata() const
@@ -815,9 +885,11 @@ void QgsMetadataWidget::setMapCanvas( QgsMapCanvas *canvas )
 void QgsMetadataWidget::acceptMetadata()
 {
   saveMetadata( mMetadata );
-
-  // Save layer metadata properties
-  mLayer->setMetadata( mMetadata );
+  if ( mLayer )
+  {
+    // Save layer metadata properties
+    mLayer->setMetadata( mMetadata );
+  }
 }
 
 void QgsMetadataWidget::setMetadata( const QgsLayerMetadata &metadata )
