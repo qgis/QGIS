@@ -38,7 +38,6 @@ from qgis.core import (QgsApplication,
 
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 
-#from processing.gui.GetScriptsAndModels import GetModelsAction
 from processing.gui.ProviderActions import (ProviderActions,
                                             ProviderContextMenuActions)
 
@@ -57,9 +56,6 @@ class ModelerAlgorithmProvider(QgsProcessingProvider):
     def __init__(self):
         super().__init__()
         self.actions = [CreateNewModelAction(), AddModelFromFileAction()]
-                        AddModelFromFileAction(),
-                        #GetModelsAction()
-                        ]
         self.contextMenuActions = [EditModelAction(), DeleteModelAction()]
         self.algs = []
 
