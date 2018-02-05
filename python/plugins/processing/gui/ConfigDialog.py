@@ -87,6 +87,7 @@ class ConfigOptionsPage(QgsOptionsPageWidget):
 
 
 class ProcessingTreeHighlight(QgsOptionsDialogHighlightWidget):
+
     def __init__(self, config_dialog):
         super(ProcessingTreeHighlight, self).__init__(config_dialog.tree)
         self.config_dialog = config_dialog
@@ -130,6 +131,7 @@ class ConfigDialog(BASE, WIDGET):
 
         self.saveMenus = False
         self.tree.expanded.connect(self.itemExpanded)
+        self.auto_adjust_columns = True
 
     def textChanged(self, text=None):
         if text is not None:
@@ -137,8 +139,17 @@ class ConfigDialog(BASE, WIDGET):
         else:
             text = str(self.searchBox.text().lower())
         self._filterItem(self.model.invisibleRootItem(), text)
+
+        self.auto_adjust_columns = False
         if text:
             self.tree.expandAll()
+        else:
+            self.tree.collapseAll()
+
+        self.adjustColumns()
+        self.auto_adjust_columns = True
+
+        if text:
             return True
         else:
             self.tree.collapseAll()
@@ -329,7 +340,8 @@ class ConfigDialog(BASE, WIDGET):
     def itemExpanded(self, idx):
         if idx == self.menusItem.index():
             self.saveMenus = True
-        self.adjustColumns()
+        if self.auto_adjust_columns:
+            self.adjustColumns()
 
     def adjustColumns(self):
         self.tree.resizeColumnToContents(0)
