@@ -2687,3 +2687,8 @@ void QgsProject::setRequiredLayers( const QSet<QgsMapLayer *> &layers )
   }
   writeEntry( QStringLiteral( "RequiredLayers" ), QStringLiteral( "Layers" ), layerIds );
 }
+
+void QgsProject::addUiFormLocalCopy( QTemporaryFile *file )
+{
+  mUiFormLocalCopies.append( file );
+}

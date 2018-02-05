@@ -25,8 +25,8 @@
 #include <QDomDocument>
 
 #include "qgsattributeeditorelement.h"
+#include "qgsreadwritecontext.h"
 
-class QgsReadWriteContext;
 class QgsRelationManager;
 class QgsEditFormConfigPrivate;
 
@@ -94,6 +94,15 @@ class CORE_EXPORT QgsEditFormConfig
     };
 
     /**
+     * The FormPath enum determins the path of the custom UI form
+     */
+    enum FormPath
+    {
+      Original, //!< User entered directory or URL
+      LocalCopy //!< If the Original is an URL, this is for the local copy of the file
+    };
+
+    /**
      * Copy constructor
      *
      * \since QGIS 3.0
@@ -135,16 +144,22 @@ class CORE_EXPORT QgsEditFormConfig
     //! Set the active layout style for the attribute editor for this layer
     void setLayout( EditorLayout editorLayout );
 
-    //! Get path to the .ui form. Only meaningful with EditorLayout::UiFileLayout.
-    QString uiForm() const;
+    /**
+     * \brief Get path to the .ui form. Only meaningful with EditorLayout::UiFileLayout
+     * If the form is from a URL and \a path is Original, the original URL
+     * of the UI form is returned instead of the local copy.
+     */
+    QString uiForm( FormPath path = LocalCopy ) const;
 
     /**
      * Set path to the .ui form.
-     * When a string is provided, the layout style will be set to EditorLayout::UiFileLayout,
+     * When a string is provided in \a ui, the layout style will be set to EditorLayout::UiFileLayout,
      * if an empty or a null string is provided, the layout style will be set to
      * EditorLayout::GeneratedLayout.
+     * If \a ui is a URL, a local copy of the file will be made and will be used to create the forms
+     * \a context is provided to save error messages
      */
-    void setUiForm( const QString &ui );
+    bool setUiForm( const QString &ui, QString *errMsg SIP_OUT = nullptr );
 
     /**
      * Set the editor widget config for a widget which is not for a simple field.

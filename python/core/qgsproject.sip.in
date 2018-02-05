@@ -932,6 +932,16 @@ Returns the current auxiliary storage.
 .. versionadded:: 3.0
 %End
 
+    void addUiFormLocalCopy( QTemporaryFile *file );
+%Docstring
+Save a pointer to temporary file to keep local copy
+available of downloaded UI forms during project's life
+
+:param file: the pointer to the temporary file
+
+.. versionadded:: 3.2
+%End
+
     const QgsProjectMetadata &metadata() const;
 %Docstring
 Returns a reference to the project's metadata store.

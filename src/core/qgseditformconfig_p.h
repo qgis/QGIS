@@ -65,8 +65,10 @@ class QgsEditFormConfigPrivate : public QSharedData
     //! Defines the default layout to use for the attribute editor (Drag and drop, UI File, Generated)
     QgsEditFormConfig::EditorLayout mEditorLayout = QgsEditFormConfig::GeneratedLayout;
 
-    //! Init form instance
+    //! Path to the UI form
     QString mUiFormPath;
+    //! URL of the UI form if taken from the web
+    QString mUiFormUrl;
     //! Name of the Python form init function
     QString mInitFunction;
     //! Path of the Python external file to be loaded

@@ -17,6 +17,7 @@
 #include "qgsattributetypedialog.h"
 #include "qgsattributerelationedit.h"
 #include "qgsattributesforminitcode.h"
+#include "qgisapp.h"
 
 QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer, QWidget *parent )
   : QWidget( parent )
@@ -168,7 +169,7 @@ void QgsAttributesFormProperties::initLayoutConfig()
   mEditorLayoutComboBox_currentIndexChanged( mEditorLayoutComboBox->currentIndex() );
 
   QgsEditFormConfig cfg = mLayer->editFormConfig();
-  mEditFormLineEdit->setText( cfg.uiForm() );
+  mEditFormLineEdit->setText( cfg.uiForm( QgsEditFormConfig::Original ) );
 }
 
 void QgsAttributesFormProperties::initInitPython()
@@ -683,7 +684,9 @@ void QgsAttributesFormProperties::apply()
     editFormConfig.addTab( createAttributeEditorWidget( tabItem, nullptr, false ) );
   }
 
-  editFormConfig.setUiForm( mEditFormLineEdit->text() );
+  QString *errMsg = new QString();
+  if ( !editFormConfig.setUiForm( mEditFormLineEdit->text(), errMsg ) )
+    QgisApp::instance()->messageBar()->pushMessage( *errMsg, Qgis::Warning );
 
   editFormConfig.setLayout( ( QgsEditFormConfig::EditorLayout ) mEditorLayoutComboBox->currentIndex() );
 

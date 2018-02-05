@@ -1117,23 +1117,27 @@ void QgsAttributeForm::init()
   if ( mContext.allowCustomUi() && mLayer->editFormConfig().layout() == QgsEditFormConfig::UiFileLayout &&
        !mLayer->editFormConfig().uiForm().isEmpty() )
   {
-    QFile file( mLayer->editFormConfig().uiForm() );
+    QgsDebugMsg( QString( "loading form: %1" ).arg( mLayer->editFormConfig().uiForm() ) );
+    QFile file( mLayer->editFormConfig().uiForm( QgsEditFormConfig::LocalCopy ) );
 
     if ( file.open( QFile::ReadOnly ) )
     {
       QUiLoader loader;
 
-      QFileInfo fi( mLayer->editFormConfig().uiForm() );
+      QFileInfo fi( file );
       loader.setWorkingDirectory( fi.dir() );
       formWidget = loader.load( &file, this );
-      formWidget->setWindowFlags( Qt::Widget );
-      layout->addWidget( formWidget );
-      formWidget->show();
-      file.close();
-      mButtonBox = findChild<QDialogButtonBox *>();
-      createWrappers();
+      if ( formWidget )
+      {
+        formWidget->setWindowFlags( Qt::Widget );
+        layout->addWidget( formWidget );
+        formWidget->show();
+        file.close();
+        mButtonBox = findChild<QDialogButtonBox *>();
+        createWrappers();
 
-      formWidget->installEventFilter( this );
+        formWidget->installEventFilter( this );
+      }
     }
   }
 
