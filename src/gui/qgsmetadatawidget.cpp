@@ -33,82 +33,110 @@ QgsMetadataWidget::QgsMetadataWidget( QWidget *parent, QgsMapLayer *layer )
     mLayer( layer )
 {
   setupUi( this );
-  mMetadata = layer->metadata();
+  if ( mLayer )
+  {
+    mMetadata = mLayer->metadata();
+  }
+  setMetadata( mMetadata );
+}
+
+void QgsMetadataWidget::setMetadata( const QgsLayerMetadata &layerMetadata )
+{
+  mMetadata = layerMetadata;
   tabWidget->setCurrentIndex( 0 );
+  if ( !mDefaultCategoriesModel )
+  {
+    // Tasks that need to only be done once during the lifetime of the widget
+    // Disable the encoding and contacts [tabContactsDialog]
+    encodingFrame->setHidden( true );
+    tabWidget->removeTab( 5 );
+    // Default categories, we want them translated, so we are not using a CSV.
+    mDefaultCategories << tr( "Farming" ) << tr( "Climatology Meteorology Atmosphere" ) << tr( "Location" ) << tr( "Intelligence Military" ) << tr( "Transportation" ) << tr( "Structure" ) << tr( "Boundaries" );
+    mDefaultCategories << tr( "Inland Waters" ) << tr( "Planning Cadastre" ) << tr( "Geoscientific Information" ) << tr( "Elevation" ) << tr( "Health" ) << tr( "Biota" ) << tr( "Oceans" ) << tr( "Environment" );
+    mDefaultCategories << tr( "Utilities Communication" ) << tr( "Economy" ) << tr( "Society" ) << tr( "Imagery Base Maps Earth Cover" );
+    mDefaultCategoriesModel = new QStringListModel( mDefaultCategories );
+    mDefaultCategoriesModel->sort( 0 );  // Sorting using translations
+    listDefaultCategories->setModel( mDefaultCategoriesModel );
 
-  // Disable the encoding and contacts
-  encodingFrame->setHidden( true );
-  tabWidget->removeTab( 5 );
+    // Categories
+    mCategoriesModel = new QStringListModel( listCategories );
+    listCategories->setModel( mCategoriesModel );
 
-  // Default categories, we want them translated, so we are not using a CSV.
-  mDefaultCategories << tr( "Farming" ) << tr( "Climatology Meteorology Atmosphere" ) << tr( "Location" ) << tr( "Intelligence Military" ) << tr( "Transportation" ) << tr( "Structure" ) << tr( "Boundaries" );
-  mDefaultCategories << tr( "Inland Waters" ) << tr( "Planning Cadastre" ) << tr( "Geoscientific Information" ) << tr( "Elevation" ) << tr( "Health" ) << tr( "Biota" ) << tr( "Oceans" ) << tr( "Environment" );
-  mDefaultCategories << tr( "Utilities Communication" ) << tr( "Economy" ) << tr( "Society" ) << tr( "Imagery Base Maps Earth Cover" );
-  mDefaultCategoriesModel = new QStringListModel( mDefaultCategories );
-  mDefaultCategoriesModel->sort( 0 );  // Sorting using translations
-  listDefaultCategories->setModel( mDefaultCategoriesModel );
+    // Rights
+    mRightsModel = new QStringListModel( listRights );
+    listRights->setModel( mRightsModel );
 
-  // Categories
-  mCategoriesModel = new QStringListModel( listCategories );
-  listCategories->setModel( mCategoriesModel );
+    // Setup the constraints view
+    mConstraintsModel = new QStandardItemModel( tabConstraints );
+    mConstraintsModel->setColumnCount( 2 );
+    QStringList constraintheaders;
+    constraintheaders << tr( "Type" ) << tr( "Constraint" );
+    mConstraintsModel->setHorizontalHeaderLabels( constraintheaders );
+    tabConstraints->setModel( mConstraintsModel );
+    tabConstraints->setItemDelegate( new ConstraintItemDelegate() );
 
-  // Rights
-  mRightsModel = new QStringListModel( listRights );
-  listRights->setModel( mRightsModel );
+    // Setup the link view
+    mLinksModel = new QStandardItemModel( tabLinks );
+    mLinksModel->setColumnCount( 7 );
+    QStringList headers = QStringList();
+    headers << tr( "Name" ) << tr( "Type" ) << tr( "URL" ) << tr( "Description" ) << tr( "Format" ) << tr( "MIME" ) << tr( "Size" );
+    mLinksModel->setHorizontalHeaderLabels( headers );
+    tabLinks->setModel( mLinksModel );
+    tabLinks->setItemDelegate( new LinkItemDelegate() );
 
-  // Setup the constraints view
-  mConstraintsModel = new QStandardItemModel( tabConstraints );
-  mConstraintsModel->setColumnCount( 2 );
-  QStringList constraintheaders;
-  constraintheaders << tr( "Type" ) << tr( "Constraint" );
-  mConstraintsModel->setHorizontalHeaderLabels( constraintheaders );
-  tabConstraints->setModel( mConstraintsModel );
-  tabConstraints->setItemDelegate( new ConstraintItemDelegate( this ) );
+    // History
+    mHistoryModel = new QStringListModel( listHistory );
+    listHistory->setModel( mHistoryModel );
 
-  // Setup the link view
-  mLinksModel = new QStandardItemModel( tabLinks );
-  mLinksModel->setColumnCount( 7 );
-  QStringList headers = QStringList();
-  headers << tr( "Name" ) << tr( "Type" ) << tr( "URL" ) << tr( "Description" ) << tr( "Format" ) << tr( "MIME" ) << tr( "Size" );
-  mLinksModel->setHorizontalHeaderLabels( headers );
-  tabLinks->setModel( mLinksModel );
-  tabLinks->setItemDelegate( new LinkItemDelegate( this ) );
-
-  // History
-  mHistoryModel = new QStringListModel( listHistory );
-  listHistory->setModel( mHistoryModel );
-
-  // Connect signals and slots
-  connect( tabWidget, &QTabWidget::currentChanged, this, &QgsMetadataWidget::updatePanel );
-  connect( btnAutoSource, &QPushButton::clicked, this, &QgsMetadataWidget::fillSourceFromLayer );
-  connect( btnAddVocabulary, &QPushButton::clicked, this, &QgsMetadataWidget::addVocabulary );
-  connect( btnRemoveVocabulary, &QPushButton::clicked, this, &QgsMetadataWidget::removeSelectedVocabulary );
-  connect( btnAddRight, &QPushButton::clicked, this, &QgsMetadataWidget::addRight );
-  connect( btnRemoveRight, &QPushButton::clicked, this, &QgsMetadataWidget::removeSelectedRight );
-  connect( btnAddLicence, &QPushButton::clicked, this, &QgsMetadataWidget::addLicence );
-  connect( btnRemoveLicence, &QPushButton::clicked, this, &QgsMetadataWidget::removeSelectedLicence );
-  connect( btnAddConstraint, &QPushButton::clicked, this, &QgsMetadataWidget::addConstraint );
-  connect( btnRemoveConstraint, &QPushButton::clicked, this, &QgsMetadataWidget::removeSelectedConstraint );
-  connect( btnAutoCrs, &QPushButton::clicked, this, &QgsMetadataWidget::fillCrsFromLayer );
-  connect( btnAddContact, &QPushButton::clicked, this, &QgsMetadataWidget::addContact );
-  connect( btnRemoveContact, &QPushButton::clicked, this, &QgsMetadataWidget::removeSelectedContact );
-  connect( tabContacts, &QTableWidget::itemSelectionChanged, this, &QgsMetadataWidget::updateContactDetails );
-  connect( btnAddLink, &QPushButton::clicked, this, &QgsMetadataWidget::addLink );
-  connect( btnRemoveLink, &QPushButton::clicked, this, &QgsMetadataWidget::removeSelectedLink );
-  connect( btnAddHistory, &QPushButton::clicked, this, &QgsMetadataWidget::addHistory );
-  connect( btnRemoveHistory, &QPushButton::clicked, this, &QgsMetadataWidget::removeSelectedHistory );
-  connect( btnNewCategory, &QPushButton::clicked, this, &QgsMetadataWidget::addNewCategory );
-  connect( btnAddDefaultCategory, &QPushButton::clicked, this, &QgsMetadataWidget::addDefaultCategory );
-  connect( btnRemoveCategory, &QPushButton::clicked, this, &QgsMetadataWidget::removeSelectedCategory );
-
-  fillComboBox();
+    // Connect signals and slots
+    connect( tabWidget, &QTabWidget::currentChanged, this, &QgsMetadataWidget::updatePanel );
+    connect( btnAutoSource, &QPushButton::clicked, this, &QgsMetadataWidget::fillSourceFromLayer );
+    connect( btnAddVocabulary, &QPushButton::clicked, this, &QgsMetadataWidget::addVocabulary );
+    connect( btnRemoveVocabulary, &QPushButton::clicked, this, &QgsMetadataWidget::removeSelectedVocabulary );
+    connect( btnAddRight, &QPushButton::clicked, this, &QgsMetadataWidget::addRight );
+    connect( btnRemoveRight, &QPushButton::clicked, this, &QgsMetadataWidget::removeSelectedRight );
+    connect( btnAddLicence, &QPushButton::clicked, this, &QgsMetadataWidget::addLicence );
+    connect( btnRemoveLicence, &QPushButton::clicked, this, &QgsMetadataWidget::removeSelectedLicence );
+    connect( btnAddConstraint, &QPushButton::clicked, this, &QgsMetadataWidget::addConstraint );
+    connect( btnRemoveConstraint, &QPushButton::clicked, this, &QgsMetadataWidget::removeSelectedConstraint );
+    connect( btnAutoCrs, &QPushButton::clicked, this, &QgsMetadataWidget::fillCrsFromLayer );
+    connect( btnAddContact, &QPushButton::clicked, this, &QgsMetadataWidget::addContact );
+    connect( btnRemoveContact, &QPushButton::clicked, this, &QgsMetadataWidget::removeSelectedContact );
+    connect( tabContacts, &QTableWidget::itemSelectionChanged, this, &QgsMetadataWidget::updateContactDetails );
+    connect( btnAddLink, &QPushButton::clicked, this, &QgsMetadataWidget::addLink );
+    connect( btnRemoveLink, &QPushButton::clicked, this, &QgsMetadataWidget::removeSelectedLink );
+    connect( btnAddHistory, &QPushButton::clicked, this, &QgsMetadataWidget::addHistory );
+    connect( btnRemoveHistory, &QPushButton::clicked, this, &QgsMetadataWidget::removeSelectedHistory );
+    connect( btnNewCategory, &QPushButton::clicked, this, &QgsMetadataWidget::addNewCategory );
+    connect( btnAddDefaultCategory, &QPushButton::clicked, this, &QgsMetadataWidget::addDefaultCategory );
+    connect( btnRemoveCategory, &QPushButton::clicked, this, &QgsMetadataWidget::removeSelectedCategory );
+    fillComboBox();
+  }
   setPropertiesFromLayer();
   updateContactDetails();
+  if ( !mLayer )
+  {
+    btnAutoSource->setEnabled( false );
+    btnAutoEncoding->setEnabled( false );
+    btnAutoCrs->setEnabled( false );
+  }
+}
+
+QgsLayerMetadata QgsMetadataWidget::getMetadata()
+{
+  if ( saveMetadata( mMetadata ) )
+  {
+   emit metadataChanged();
+  }
+  return mMetadata;
 }
 
 void QgsMetadataWidget::fillSourceFromLayer() const
 {
-  lineEditIdentifier->setText( mLayer->publicSource() );
+  if ( mLayer )
+  {
+    lineEditIdentifier->setText( mLayer->publicSource() );
+  }
 }
 
 void QgsMetadataWidget::addVocabulary() const
@@ -198,7 +226,10 @@ void QgsMetadataWidget::removeSelectedConstraint() const
 
 void QgsMetadataWidget::fillCrsFromLayer() const
 {
-  selectionCrs->setCrs( mLayer->crs() );
+  if ( mLayer )
+  {
+    selectionCrs->setCrs( mLayer->crs() );
+  }
 }
 
 void QgsMetadataWidget::addContact() const
@@ -437,8 +468,9 @@ void QgsMetadataWidget::setPropertiesFromLayer() const
   mHistoryModel->setStringList( mMetadata.history() );
 }
 
-void QgsMetadataWidget::saveMetadata( QgsLayerMetadata &layerMetadata ) const
+bool QgsMetadataWidget::saveMetadata( QgsLayerMetadata &layerMetadata ) const
 {
+  bool bHasChanged = false;
   layerMetadata.setParentIdentifier( lineEditParentId->text() );
   layerMetadata.setIdentifier( lineEditIdentifier->text() );
   layerMetadata.setTitle( lineEditTitle->text() );
@@ -501,6 +533,48 @@ void QgsMetadataWidget::saveMetadata( QgsLayerMetadata &layerMetadata ) const
 
   // History
   layerMetadata.setHistory( mHistoryModel->stringList() );
+  // Check for changes
+  if ( ( layerMetadata.parentIdentifier() != mMetadata.parentIdentifier() ) ||
+       ( layerMetadata.identifier() != mMetadata.identifier() ) ||
+       ( layerMetadata.title() != mMetadata.title() ) ||
+       ( layerMetadata.type() != mMetadata.type() ) ||
+       ( layerMetadata.language() != mMetadata.language() ) ||
+       ( layerMetadata.fees() != mMetadata.fees() ) ||
+       ( layerMetadata.abstract() != mMetadata.abstract() ) )
+  {
+    bHasChanged = true;
+  }
+  if ( !bHasChanged )
+  {
+    QSet<QString> subtraction = layerMetadata.licenses().toSet().subtract( mMetadata.licenses().toSet() );
+    if ( subtraction.count() > 0 )
+    {
+      bHasChanged = true;
+    }
+    subtraction = layerMetadata.rights().toSet().subtract( mMetadata.rights().toSet() );
+    if ( subtraction.count() > 0 )
+    {
+      bHasChanged = true;
+    }
+    subtraction = mHistoryModel->stringList().toSet().subtract( mMetadata.history().toSet() );
+    if ( subtraction.count() > 0 )
+    {
+      bHasChanged = true;
+    }
+    if ( layerMetadata.keywords().count() != mMetadata.keywords().count() )
+    {
+      bHasChanged = true;
+    }
+    if ( layerMetadata.constraints().count() != mMetadata.constraints().count() )
+    {
+      bHasChanged = true;
+    }
+    if ( layerMetadata.links().count() != mMetadata.links().count() )
+    {
+      bHasChanged = true;
+    }
+  }
+  return bHasChanged;
 }
 
 bool QgsMetadataWidget::checkMetadata() const
@@ -677,9 +751,11 @@ QMap<QString, QString> QgsMetadataWidget::parseTypes()
 void QgsMetadataWidget::acceptMetadata()
 {
   saveMetadata( mMetadata );
-
-  // Save layer metadata properties
-  mLayer->setMetadata( mMetadata );
+  if ( mLayer )
+  {
+    // Save layer metadata properties
+    mLayer->setMetadata( mMetadata );
+  }
 }
 
 void QgsMetadataWidget::syncFromCategoriesTabToKeywordsTab() const

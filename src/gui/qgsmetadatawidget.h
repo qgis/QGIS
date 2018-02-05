@@ -41,16 +41,50 @@ class GUI_EXPORT QgsMetadataWidget : public QWidget, private Ui::QgsMetadataWidg
 
     /**
      * Constructor for the wizard.
+     * \note
+     * For use with Layer. Sets mMetadata if pointer is valid
+     *  calls setMetadata, using mMetadata
+     * \param layer to set the main QgsLayerMetadata with mLayer->metadata() when not nullptr
+     * \see mMetadata
+     * \see setMetadata
+     * \since QGIS 3.0
      */
     QgsMetadataWidget( QWidget *parent, QgsMapLayer *layer = nullptr );
 
     /**
-     * Save all fields in a QgsLayerMetadata object.
+     * Set a QgsLayerMetadata object.
+     * \note
+     * Called from constructor and initializes child widged on first use
+     * Can be called from outside to change the QgsLayerMetadata object.
+     * \param layerMetadata to set the main  QgsLayerMetadata
+     * \see mMetadata
+     * \since QGIS 3.0
      */
-    void saveMetadata( QgsLayerMetadata &layerMetadata ) const;
+    void setMetadata( const QgsLayerMetadata &layerMetadata );
+
+    /**
+     * Retrieved a QgsLayerMetadata object.
+     * \note
+     *  saveMetdata is called before returning QgsLayerMetadata
+     * \see saveMetadata
+     * \since QGIS 3.0
+     */
+    QgsLayerMetadata getMetadata();
+
+    /**
+     * Save all fields in a QgsLayerMetadata object.
+     * \see getMetadata
+     * \see acceptMetadata
+     * \see checkMetadata
+     * \since QGIS 3.0
+     */
+    bool saveMetadata( QgsLayerMetadata &layerMetadata ) const;
 
     /**
      * Check if values in the wizard are correct.
+     * \see updatePanel
+     * \see saveMetadata
+     * \since QGIS 3.0
      */
     bool checkMetadata() const;
 
@@ -85,6 +119,16 @@ class GUI_EXPORT QgsMetadataWidget : public QWidget, private Ui::QgsMetadataWidg
      * Returns a list of types available by default in the wizard.
      */
     static QMap<QString, QString> parseTypes();
+
+  signals:
+
+    /**
+     * Emitted when the layer's metadata is changed.
+     * \see setMetadata()
+     * \see getMetadata()
+     * \since QGIS 3.0
+     */
+    void metadataChanged();
 
   private:
     void updatePanel() const;
