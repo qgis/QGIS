@@ -22,7 +22,7 @@ QgsVirtualLayerTask::QgsVirtualLayerTask( const QgsVirtualLayerDefinition &defin
   : QgsTask()
   , mDefinition( definition )
 {
-  mDefinition.setPostpone( true );
+  mDefinition.setLazy( true );
   mLayer = qgis::make_unique<QgsVectorLayer>( mDefinition.toString(), "layer", "virtual" );
 }
 

@@ -157,9 +157,9 @@ QgsVirtualLayerDefinition QgsVirtualLayerDefinition::fromUrl( const QUrl &url )
         }
       }
     }
-    else if ( key == QLatin1String( "postpone" ) )
+    else if ( key == QLatin1String( "lazy" ) )
     {
-      def.setPostpone( true );
+      def.setLazy( true );
     }
   }
   def.setFields( fields );
@@ -213,9 +213,9 @@ QUrl QgsVirtualLayerDefinition::toUrl() const
       url.addQueryItem( QStringLiteral( "field" ), f.name() + ":text" );
   }
 
-  if ( postpone() )
+  if ( isLazy() )
   {
-    url.addQueryItem( QStringLiteral( "postpone" ), QLatin1String( "" ) );
+    url.addQueryItem( QStringLiteral( "lazy" ), QLatin1String( "" ) );
   }
 
   return url;

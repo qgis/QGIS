@@ -150,19 +150,19 @@ Get the name of the field with unique identifiers
 Set the name of the field with unique identifiers
 %End
 
-    void setPostpone( bool postpone );
+    void setLazy( bool lazy );
 %Docstring
-Sets the postpone mode. If ``postpone`` is true, then the loading is
+Sets the lazy mode. If ``lazy`` is true, then the loading is
 delayed until an explicit reloading of the layer.
 
-:param postpone: True to delay the loading, false otherwise
+:param lazy: True to delay the loading, false otherwise
 
 .. versionadded:: 3.2
 %End
 
-    bool postpone() const;
+    bool isLazy() const;
 %Docstring
-Returns the postpone mode.
+Returns the lazy mode.
 
 :return: True if the loading is delayed, false otherwise.
 

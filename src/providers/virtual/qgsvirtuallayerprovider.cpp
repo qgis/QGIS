@@ -76,7 +76,7 @@ QgsVirtualLayerProvider::QgsVirtualLayerProvider( QString const &uri )
   {
     mDefinition = QgsVirtualLayerDefinition::fromUrl( url );
 
-    if ( !mDefinition.postpone() )
+    if ( !mDefinition.isLazy() )
     {
       reloadData();
     }

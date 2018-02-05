@@ -132,19 +132,19 @@ class CORE_EXPORT QgsVirtualLayerDefinition
     void setUid( const QString &uid ) { mUid = uid; }
 
     /**
-     * Sets the postpone mode. If \a postpone is true, then the loading is
+     * Sets the lazy mode. If \a lazy is true, then the loading is
      * delayed until an explicit reloading of the layer.
-     * \param postpone True to delay the loading, false otherwise
+     * \param lazy True to delay the loading, false otherwise
      * \since QGIS 3.2
      */
-    void setPostpone( bool postpone ) { mPostpone = postpone; }
+    void setLazy( bool lazy ) { mLazy = lazy; }
 
     /**
-     * Returns the postpone mode.
+     * Returns the lazy mode.
      * \returns True if the loading is delayed, false otherwise.
      * \since QGIS 3.2
      */
-    bool postpone() const { return mPostpone; }
+    bool isLazy() const { return mLazy; }
 
     //! Get the name of the geometry field. Empty if no geometry field
     QString geometryField() const { return mGeometryField; }
@@ -189,7 +189,7 @@ class CORE_EXPORT QgsVirtualLayerDefinition
     QString mGeometryField;
     QString mFilePath;
     QgsFields mFields;
-    bool mPostpone = false;
+    bool mLazy = false;
     QgsWkbTypes::Type mGeometryWkbType = QgsWkbTypes::Unknown;
     long mGeometrySrid = 0;
 };
