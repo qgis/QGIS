@@ -51,7 +51,7 @@ QgsSettings objects). This is usually called when the options dialog is accepted
 
   protected:
 
-    void registerHighlightWidget( QgsOptionsDialogHighlightWidget *highlightWidget /Transfer/ );
+    void registerHighlightWidget( QgsOptionsDialogHighlightWidget *highlightWidget );
 %Docstring
 Register a highlight widget to be used to search and highlight text in
 options dialogs. This can be used to provide a custom implementation of

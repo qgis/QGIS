@@ -75,7 +75,7 @@ class GUI_EXPORT QgsOptionsPageWidget : public QWidget
      * options dialogs. This can be used to provide a custom implementation of
      * QgsOptionsDialogHighlightWidget.
      */
-    void registerHighlightWidget( QgsOptionsDialogHighlightWidget *highlightWidget SIP_TRANSFER )
+    void registerHighlightWidget( QgsOptionsDialogHighlightWidget *highlightWidget )
     {
       mHighlighWidgets.insert( highlightWidget->widget(), highlightWidget );
     }
