@@ -39,6 +39,7 @@
 #include "qgspolygon.h"
 #include "qgsclipper.h"
 #include "qgsproperty.h"
+#include "qgscolorschemeregistry.h"
 
 #include <QColor>
 #include <QImage>
@@ -322,13 +323,7 @@ QgsSymbol *QgsSymbol::defaultSymbol( QgsWkbTypes::GeometryType geomType )
   if ( defaultSymbol.isEmpty() ||
        QgsProject::instance()->readBoolEntry( QStringLiteral( "DefaultStyles" ), QStringLiteral( "/RandomColors" ), true ) )
   {
-    // Make sure we use get uniquely seeded random numbers, and not the same sequence of numbers
-    std::random_device rd;
-    std::mt19937 mt( rd() );
-    std::uniform_int_distribution<int> hueDist( 0, 359 );
-    std::uniform_int_distribution<int> satDist( 64, 255 );
-    std::uniform_int_distribution<int> valueDist( 128, 255 );
-    s->setColor( QColor::fromHsv( hueDist( mt ), satDist( mt ), valueDist( mt ) ) );
+    s->setColor( QgsApplication::colorSchemeRegistry()->fetchRandomStyleColor() );
   }
 
   return s;
