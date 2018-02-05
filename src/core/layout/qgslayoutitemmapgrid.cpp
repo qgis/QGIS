@@ -1458,10 +1458,10 @@ QString QgsLayoutItemMapGrid::gridAnnotationString( double value, QgsLayoutItemM
   switch ( coord )
   {
     case Longitude:
-      return QgsCoordinateFormatter::formatX( value, format, flags );
+      return QgsCoordinateFormatter::formatX( value, format, mGridAnnotationPrecision, flags );
 
     case Latitude:
-      return QgsCoordinateFormatter::formatY( value, format, flags );
+      return QgsCoordinateFormatter::formatY( value, format, mGridAnnotationPrecision, flags );
   }
 
   return QString(); // no warnings
