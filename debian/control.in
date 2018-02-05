@@ -422,8 +422,8 @@ Pre-Depends: ${misc:Pre-Depends}
 Depends:
  qgis-providers-common (= ${source:Version}),
  libqt4-sql-sqlite,
-#    jessie         trusty                                   # libqca2-plugin-ossl,
-#sid        stretch        xenial yakkety zesty artful bionic# libqca2-plugins,
+#            jessie wheezy saucy trusty utopic vivid                    # libqca2-plugin-ossl,
+#sid stretch                                         wily xenial yakkety# libqca2-plugins,
  ${shlibs:Depends},
  ${misc:Depends}
 Breaks: qgis (<= 1.6)
