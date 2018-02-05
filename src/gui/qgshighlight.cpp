@@ -346,21 +346,23 @@ void QgsHighlight::paint( QPainter *p )
 
       imagePainter.end();
 
-      QColor color( mPen.color() );  // true output color
+      // true output color
+      int penRed = mPen.color().red();
+      int penGreen = mPen.color().green();
+      int penBlue = mPen.color().blue();
       // coefficient to subtract alpha using green (temporary fill)
       double k = ( 255. - mBrush.color().alpha() ) / 255.;
+      QRgb *line = nullptr;
       for ( int r = 0; r < image.height(); r++ )
       {
+        line = ( QRgb * )image.scanLine( r );
         for ( int c = 0; c < image.width(); c++ )
         {
-          QRgb rgba = image.pixel( c, r );
-          int alpha = qAlpha( rgba );
+          int alpha = qAlpha( line[c] );
           if ( alpha > 0 )
           {
-            int green = qGreen( rgba );
-            color.setAlpha( qBound<int>( 0, alpha - ( green * k ), 255 ) );
-
-            image.setPixel( c, r, color.rgba() );
+            int green = qGreen( line[c] );
+            line[c] = qRgba( penRed, penGreen, penBlue, qBound<int>( 0, alpha - ( green * k ), 255 ) );
           }
         }
       }
