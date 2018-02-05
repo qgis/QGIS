@@ -146,6 +146,8 @@ class GUI_EXPORT QgsGraduatedSymbolRendererWidget : public QgsRendererWidget, pr
     void changeRange( int rangeIdx );
 
     void changeSelectedSymbols();
+    //! Applies current symbol to selected ranges, or to all ranges if none is selected
+    void applyChangeToSymbol();
 
     QList<QgsSymbol *> selectedSymbols() override;
     QgsSymbol *findSymbolForRange( double lowerBound, double upperBound, const QgsRangeList &ranges ) const;

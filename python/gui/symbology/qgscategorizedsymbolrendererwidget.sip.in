@@ -110,6 +110,10 @@ Changes the selected symbols alone for the change button, if there is a selectio
 %End
 
     void changeCategorySymbol();
+    void applyChangeToSymbol();
+%Docstring
+Applies current symbol to selected categories, or to all categories if none is selected
+%End
 
     virtual QList<QgsSymbol *> selectedSymbols();
 

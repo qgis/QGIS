@@ -173,6 +173,8 @@ class GUI_EXPORT QgsCategorizedSymbolRendererWidget : public QgsRendererWidget, 
     void changeSelectedSymbols();
 
     void changeCategorySymbol();
+    //! Applies current symbol to selected categories, or to all categories if none is selected
+    void applyChangeToSymbol();
 
     QList<QgsSymbol *> selectedSymbols() override;
     QgsCategoryList selectedCategoryList();

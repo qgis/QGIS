@@ -544,14 +544,32 @@ void QgsCategorizedSymbolRendererWidget::changeSelectedSymbols()
 
 void QgsCategorizedSymbolRendererWidget::changeCategorizedSymbol()
 {
+  QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
   QgsSymbol *newSymbol = mCategorizedSymbol->clone();
-  QgsSymbolSelectorWidget *dlg = new QgsSymbolSelectorWidget( newSymbol, mStyle, mLayer, nullptr );
-  dlg->setContext( mContext );
+  if ( panel && panel->dockMode() )
+  {
+    QgsSymbolSelectorWidget *dlg = new QgsSymbolSelectorWidget( newSymbol, mStyle, mLayer, panel );
+    dlg->setContext( mContext );
+    connect( dlg, &QgsPanelWidget::widgetChanged, this, &QgsCategorizedSymbolRendererWidget::updateSymbolsFromWidget );
+    connect( dlg, &QgsPanelWidget::panelAccepted, this, &QgsCategorizedSymbolRendererWidget::cleanUpSymbolSelector );
+    connect( dlg, &QgsPanelWidget::panelAccepted, this, &QgsCategorizedSymbolRendererWidget::updateCategorizedSymbolIcon );
+    openPanel( dlg );
+  }
+  else
+  {
+    QgsSymbolSelectorDialog dlg( newSymbol, mStyle, mLayer, panel );
+    dlg.setContext( mContext );
+    if ( !dlg.exec() || !newSymbol )
+    {
+      delete newSymbol;
+      return;
+    }
 
-  connect( dlg, &QgsPanelWidget::widgetChanged, this, &QgsCategorizedSymbolRendererWidget::updateSymbolsFromWidget );
-  connect( dlg, &QgsPanelWidget::panelAccepted, this, &QgsCategorizedSymbolRendererWidget::cleanUpSymbolSelector );
-  connect( dlg, &QgsPanelWidget::panelAccepted, this, &QgsCategorizedSymbolRendererWidget::updateCategorizedSymbolIcon );
-  openPanel( dlg );
+    delete mCategorizedSymbol;
+    mCategorizedSymbol = newSymbol;
+    updateCategorizedSymbolIcon();
+    applyChangeToSymbol();
+  }
 }
 
 void QgsCategorizedSymbolRendererWidget::updateCategorizedSymbolIcon()
@@ -593,11 +611,29 @@ void QgsCategorizedSymbolRendererWidget::changeCategorySymbol()
     symbol = QgsSymbol::defaultSymbol( mLayer->geometryType() );
   }
 
-  QgsSymbolSelectorWidget *dlg = new QgsSymbolSelectorWidget( symbol, mStyle, mLayer, nullptr );
-  dlg->setContext( mContext );
-  connect( dlg, &QgsPanelWidget::widgetChanged, this, &QgsCategorizedSymbolRendererWidget::updateSymbolsFromWidget );
-  connect( dlg, &QgsPanelWidget::panelAccepted, this, &QgsCategorizedSymbolRendererWidget::cleanUpSymbolSelector );
-  openPanel( dlg );
+  QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
+  if ( panel && panel->dockMode() )
+  {
+    QgsSymbolSelectorWidget *dlg = new QgsSymbolSelectorWidget( symbol, mStyle, mLayer, panel );
+    dlg->setContext( mContext );
+    connect( dlg, &QgsPanelWidget::widgetChanged, this, &QgsCategorizedSymbolRendererWidget::updateSymbolsFromWidget );
+    connect( dlg, &QgsPanelWidget::panelAccepted, this, &QgsCategorizedSymbolRendererWidget::cleanUpSymbolSelector );
+    openPanel( dlg );
+  }
+  else
+  {
+    QgsSymbolSelectorDialog dlg( symbol, mStyle, mLayer, panel );
+    dlg.setContext( mContext );
+    if ( !dlg.exec() || !symbol )
+    {
+      delete symbol;
+      return;
+    }
+
+    delete mCategorizedSymbol;
+    mCategorizedSymbol = symbol;
+    applyChangeToSymbol();
+  }
 }
 
 static void _createCategories( QgsCategoryList &cats, QList<QVariant> &values, QgsSymbol *symbol )
@@ -954,6 +990,11 @@ void QgsCategorizedSymbolRendererWidget::updateSymbolsFromWidget()
   QgsSymbolSelectorWidget *dlg = qobject_cast<QgsSymbolSelectorWidget *>( sender() );
   mCategorizedSymbol.reset( dlg->symbol()->clone() );
 
+  applyChangeToSymbol();
+}
+
+void QgsCategorizedSymbolRendererWidget::applyChangeToSymbol()
+{
   // When there is a selection, change the selected symbols only
   QItemSelectionModel *m = viewCategories->selectionModel();
   QModelIndexList i = m->selectedRows();

@@ -78,6 +78,10 @@ Returns a list of indexes for the classes under selection
     void changeRange( int rangeIdx );
 
     void changeSelectedSymbols();
+    void applyChangeToSymbol();
+%Docstring
+Applies current symbol to selected ranges, or to all ranges if none is selected
+%End
 
     virtual QList<QgsSymbol *> selectedSymbols();
 
