@@ -2,10 +2,10 @@
 
 """
 ***************************************************************************
-    __init__.py
+    CreateNewScriptAction.py
     ---------------------
-    Date                 : May 2016
-    Copyright            : (C) 2016 by Victor Olaya
+    Date                 : August 2012
+    Copyright            : (C) 2012 by Victor Olaya
     Email                : volayaf at gmail dot com
 ***************************************************************************
 *                                                                         *
@@ -18,8 +18,8 @@
 """
 
 __author__ = 'Victor Olaya'
-__date__ = 'May 2016'
-__copyright__ = '(C) 2016, Victor Olaya'
+__date__ = 'August 2012'
+__copyright__ = '(C) 2012, Victor Olaya'
 
 # This will get replaced with a git SHA1 when you do a git archive
 
@@ -27,13 +27,19 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from processing.core.Processing import Processing
+from qgis.core import QgsApplication
+
+from processing.gui.ToolboxAction import ToolboxAction
+
+from processing.script.ScriptEditorDialog import ScriptEditorDialog
 
 
-class ProcessingExampleScriptsPlugin:
+class CreateNewScriptAction(ToolboxAction):
 
-    def initGui(self):
-        Processing.addScripts(os.path.join(os.path.dirname(__file__), "scripts"))
+    def __init__(self):
+        self.name = self.tr("Create new script")
+        self.group = self.tr("Tools")
 
-    def unload(self):
-        Processing.removeScripts(os.path.join(os.path.dirname(__file__), "scripts"))
+    def execute(self):
+        dlg = ScriptEditorDialog(None)
+        dlg.show()

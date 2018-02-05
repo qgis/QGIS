@@ -107,7 +107,6 @@
    <addaction name="actionSaveScript"/>
    <addaction name="actionSaveScriptAs"/>
    <addaction name="separator"/>
-   <addaction name="actionEditScriptHelp"/>
    <addaction name="separator"/>
    <addaction name="actionRunScript"/>
    <addaction name="separator"/>
@@ -154,14 +153,6 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+S</string>
-   </property>
-  </action>
-  <action name="actionEditScriptHelp">
-   <property name="text">
-    <string>Edit script help</string>
-   </property>
-   <property name="toolTip">
-    <string>Edit script help</string>
    </property>
   </action>
   <action name="actionRunScript">
@@ -251,7 +242,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>FindReplace</string>
+    <string>Find &amp; replace</string>
    </property>
   </action>
  </widget>
@@ -259,7 +250,7 @@
   <customwidget>
    <class>ScriptEdit</class>
    <extends>QTextEdit</extends>
-   <header>processing.gui.ScriptEdit</header>
+   <header location="global">processing.script.ScriptEdit</header>
   </customwidget>
  </customwidgets>
  <resources/>

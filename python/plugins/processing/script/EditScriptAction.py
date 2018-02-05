@@ -25,23 +25,32 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+import inspect
+
+from qgis.core import QgsProcessingAlgorithm
+from qgis.utils import iface
+
 from processing.gui.ContextAction import ContextAction
-from processing.gui.ScriptEditorDialog import ScriptEditorDialog
-from processing.script.ScriptAlgorithm import ScriptAlgorithm
+
+from processing.script.ScriptEditorDialog import ScriptEditorDialog
+from processing.script import ScriptUtils
 
 
 class EditScriptAction(ContextAction):
 
-    SCRIPT_PYTHON = 0
-
-    def __init__(self, scriptType):
-        self.name = self.tr('Edit script', 'EditScriptAction')
-        self.scriptType = scriptType
+    def __init__(self):
+        self.name = self.tr("Edit script")
 
     def isEnabled(self):
-        if self.scriptType == ScriptEditorDialog.SCRIPT_PYTHON:
-            return isinstance(self.itemData, ScriptAlgorithm) and self.itemData.allowEdit
+        return isinstance(self.itemData, QgsProcessingAlgorithm) and self.itemData.provider().id() == "script"
 
     def execute(self):
-        dlg = ScriptEditorDialog(self.scriptType, self.itemData)
-        dlg.show()
+        filePath = ScriptUtils.findAlgorithmSource(self.itemData.__class__.__name__)
+        if filePath is not None:
+            dlg = ScriptEditorDialog(filePath, iface.mainWindow())
+            dlg.show()
+        else:
+            QgsMessageBox.warning(None,
+                                  self.tr("File not found"),
+                                  self.tr("Can not find corresponding script file.")
+                                  )

@@ -29,33 +29,34 @@ import os
 
 from qgis.PyQt.QtWidgets import QMessageBox
 
-from qgis.core import QgsApplication
+from qgis.core import QgsApplication, QgsProcessingAlgorithm
 
 from processing.gui.ContextAction import ContextAction
 
-from processing.script.ScriptAlgorithm import ScriptAlgorithm
+from processing.script import ScriptUtils
 
 
 class DeleteScriptAction(ContextAction):
 
-    SCRIPT_PYTHON = 0
-
-    def __init__(self, scriptType):
-        self.name = self.tr('Delete script', 'DeleteScriptAction')
-        self.scriptType = scriptType
+    def __init__(self):
+        self.name = self.tr("Delete script")
 
     def isEnabled(self):
-        if self.scriptType == self.SCRIPT_PYTHON:
-            return isinstance(self.itemData, ScriptAlgorithm) and self.itemData.allowEdit
+        return isinstance(self.itemData, QgsProcessingAlgorithm) and self.itemData.provider().id() == "script"
 
     def execute(self):
         reply = QMessageBox.question(None,
-                                     self.tr('Confirmation', 'DeleteScriptAction'),
-                                     self.tr('Are you sure you want to delete this script?',
-                                             'DeleteScriptAction'),
+                                     self.tr("Confirmation"),
+                                     self.tr("Are you sure you want to delete this script?"),
                                      QMessageBox.Yes | QMessageBox.No,
                                      QMessageBox.No)
         if reply == QMessageBox.Yes:
-            os.remove(self.itemData.descriptionFile)
-            if self.scriptType == self.SCRIPT_PYTHON:
-                QgsApplication.processingRegistry().providerById('script').refreshAlgorithms()
+            filePath = ScriptUtils.findAlgorithmSource(self.itemData.__class__.__name__)
+            if filePath is not None:
+                os.remove(filePath)
+                QgsApplication.processingRegistry().providerById("script").refreshAlgorithms()
+            else:
+                QgsMessageBox.warning(None,
+                                      self.tr("File not found"),
+                                      self.tr("Can not find corresponding script file.")
+                                      )

@@ -45,12 +45,12 @@ from qgis.core import (QgsMessageLog,
                        QgsProcessingOutputMapLayer)
 
 import processing
-from processing.script.ScriptUtils import ScriptUtils
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.gui.MessageBarProgress import MessageBarProgress
 from processing.gui.RenderingStyles import RenderingStyles
 from processing.gui.Postprocessing import handleAlgorithmResults
 from processing.gui.AlgorithmExecutor import execute
+from processing.script import ScriptUtils
 from processing.tools import dataobjects
 
 from processing.algs.qgis.QgisAlgorithmProvider import QgisAlgorithmProvider  # NOQA
@@ -102,28 +102,6 @@ class Processing(object):
             QgsApplication.processingRegistry().removeProvider(p)
 
         Processing.BASIC_PROVIDERS = []
-
-    @staticmethod
-    def addScripts(folder):
-        Processing.initialize()
-        provider = QgsApplication.processingRegistry().providerById("qgis")
-        scripts = ScriptUtils.loadFromFolder(folder)
-        # fix_print_with_import
-        print(scripts)
-        for script in scripts:
-            script.allowEdit = False
-            script._icon = provider.icon()
-        provider.externalAlgs.extend(scripts)
-        provider.refreshAlgorithms()
-
-    @staticmethod
-    def removeScripts(folder):
-        provider = QgsApplication.processingRegistry().providerById("qgis")
-        for alg in provider.externalAlgs[::-1]:
-            path = os.path.dirname(alg.descriptionFile)
-            if path == folder:
-                provider.externalAlgs.remove(alg)
-        provider.refreshAlgorithms()
 
     @staticmethod
     def runAlgorithm(algOrName, parameters, onFinish=None, feedback=None, context=None):

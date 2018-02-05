@@ -180,7 +180,7 @@ class ProcessingToolbox(QgsDockWidget, WIDGET):
             menu = QMenu(provider.name(), self)
             for action in actions:
                 action.setData(self)
-                act = QAction(action.i18n_name, menu)
+                act = QAction(action.name, menu)
                 act.triggered.connect(action.execute)
                 menu.addAction(act)
             toolbarButton.setMenu(menu)

@@ -55,7 +55,6 @@ from qgis.testing import _UnexpectedSuccess
 from utilities import unitTestDataPath
 
 import processing
-from processing.script.ScriptAlgorithm import ScriptAlgorithm  # NOQA
 
 
 def processingTestDataPath():
@@ -87,13 +86,8 @@ class AlgorithmsTest(object):
 
         params = self.load_params(defs['params'])
 
-        if defs['algorithm'].startswith('script:'):
-            filePath = os.path.join(processingTestDataPath(), 'scripts', '{}.py'.format(defs['algorithm'][len('script:'):]))
-            alg = ScriptAlgorithm(filePath)
-            alg.initAlgorithm()
-        else:
-            print('Running alg: "{}"'.format(defs['algorithm']))
-            alg = QgsApplication.processingRegistry().createAlgorithmById(defs['algorithm'])
+        print('Running alg: "{}"'.format(defs['algorithm']))
+        alg = QgsApplication.processingRegistry().createAlgorithmById(defs['algorithm'])
 
         parameters = {}
         if isinstance(params, list):

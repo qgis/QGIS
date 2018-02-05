@@ -114,8 +114,8 @@ class ModelerDialog(BASE, WIDGET):
             QgsApplication.getThemeIcon('/mActionSaveAsPDF.svg'))
         self.mActionExportSvg.setIcon(
             QgsApplication.getThemeIcon('/mActionSaveAsSVG.svg'))
-        self.mActionExportPython.setIcon(
-            QgsApplication.getThemeIcon('/mActionSaveAsPython.svg'))
+        #self.mActionExportPython.setIcon(
+        #    QgsApplication.getThemeIcon('/mActionSaveAsPython.svg'))
         self.mActionEditHelp.setIcon(
             QgsApplication.getThemeIcon('/mActionEditHelpContent.svg'))
         self.mActionRun.setIcon(
@@ -270,7 +270,7 @@ class ModelerDialog(BASE, WIDGET):
         self.mActionExportImage.triggered.connect(self.exportAsImage)
         self.mActionExportPdf.triggered.connect(self.exportAsPdf)
         self.mActionExportSvg.triggered.connect(self.exportAsSvg)
-        self.mActionExportPython.triggered.connect(self.exportAsPython)
+        #self.mActionExportPython.triggered.connect(self.exportAsPython)
         self.mActionEditHelp.triggered.connect(self.editHelp)
         self.mActionRun.triggered.connect(self.runModel)
 
@@ -805,7 +805,7 @@ class TreeActionItem(QTreeWidgetItem):
     def __init__(self, action):
         QTreeWidgetItem.__init__(self)
         self.action = action
-        self.setText(0, action.i18n_name)
+        self.setText(0, action.name)
         self.setIcon(0, action.getIcon())
         self.setData(0, ModelerDialog.NAME_ROLE, action.name)
 

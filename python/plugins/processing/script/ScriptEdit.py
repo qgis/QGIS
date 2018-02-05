@@ -37,15 +37,11 @@ from qgis.PyQt.Qsci import QsciScintilla, QsciLexerPython, QsciAPIs
 
 class ScriptEdit(QsciScintilla):
 
-    LEXER_PYTHON = 0
-    LEXER_R = 1
-
     def __init__(self, parent=None):
         QsciScintilla.__init__(self, parent)
 
         self.lexer = None
         self.api = None
-        self.lexerType = -1
 
         self.setCommonOptions()
         self.initShortcuts()
@@ -61,8 +57,6 @@ class ScriptEdit(QsciScintilla):
         font.setPointSize(20)
         self.setFont(font)
         self.setMarginsFont(font)
-
-        self.initLexer()
 
         self.setBraceMatching(QsciScintilla.SloppyBraceMatch)
 
@@ -105,9 +99,9 @@ class ScriptEdit(QsciScintilla):
         self.setAutoCompletionSource(QsciScintilla.AcsAPIs)
 
         self.setFonts(10)
+        self.initLexer()
 
     def setFonts(self, size):
-
         # Load font from Python console settings
         settings = QgsSettings()
         fontName = settings.value('pythonConsole/fontfamilytext', 'Monospace')
@@ -152,57 +146,52 @@ class ScriptEdit(QsciScintilla):
     def autoComplete(self):
         self.autoCompleteFromAll()
 
-    def setLexerType(self, lexerType):
-        self.lexerType = lexerType
-        self.initLexer()
-
     def initLexer(self):
-        if self.lexerType == self.LEXER_PYTHON:
-            self.lexer = QsciLexerPython()
+        self.lexer = QsciLexerPython()
 
-            colorDefault = QColor('#2e3436')
-            colorComment = QColor('#c00')
-            colorCommentBlock = QColor('#3465a4')
-            colorNumber = QColor('#4e9a06')
-            colorType = QColor('#4e9a06')
-            colorKeyword = QColor('#204a87')
-            colorString = QColor('#ce5c00')
+        colorDefault = QColor('#2e3436')
+        colorComment = QColor('#c00')
+        colorCommentBlock = QColor('#3465a4')
+        colorNumber = QColor('#4e9a06')
+        colorType = QColor('#4e9a06')
+        colorKeyword = QColor('#204a87')
+        colorString = QColor('#ce5c00')
 
-            self.lexer.setDefaultFont(self.defaultFont)
-            self.lexer.setDefaultColor(colorDefault)
+        self.lexer.setDefaultFont(self.defaultFont)
+        self.lexer.setDefaultColor(colorDefault)
 
-            self.lexer.setColor(colorComment, 1)
-            self.lexer.setColor(colorNumber, 2)
-            self.lexer.setColor(colorString, 3)
-            self.lexer.setColor(colorString, 4)
-            self.lexer.setColor(colorKeyword, 5)
-            self.lexer.setColor(colorString, 6)
-            self.lexer.setColor(colorString, 7)
-            self.lexer.setColor(colorType, 8)
-            self.lexer.setColor(colorCommentBlock, 12)
-            self.lexer.setColor(colorString, 15)
+        self.lexer.setColor(colorComment, 1)
+        self.lexer.setColor(colorNumber, 2)
+        self.lexer.setColor(colorString, 3)
+        self.lexer.setColor(colorString, 4)
+        self.lexer.setColor(colorKeyword, 5)
+        self.lexer.setColor(colorString, 6)
+        self.lexer.setColor(colorString, 7)
+        self.lexer.setColor(colorType, 8)
+        self.lexer.setColor(colorCommentBlock, 12)
+        self.lexer.setColor(colorString, 15)
 
-            self.lexer.setFont(self.italicFont, 1)
-            self.lexer.setFont(self.boldFont, 5)
-            self.lexer.setFont(self.boldFont, 8)
-            self.lexer.setFont(self.italicFont, 12)
+        self.lexer.setFont(self.italicFont, 1)
+        self.lexer.setFont(self.boldFont, 5)
+        self.lexer.setFont(self.boldFont, 8)
+        self.lexer.setFont(self.italicFont, 12)
 
-            self.api = QsciAPIs(self.lexer)
+        self.api = QsciAPIs(self.lexer)
 
-            settings = QgsSettings()
-            useDefaultAPI = bool(settings.value('pythonConsole/preloadAPI',
-                                                True))
-            if useDefaultAPI:
-                # Load QGIS API shipped with Python console
-                self.api.loadPrepared(
-                    os.path.join(QgsApplication.pkgDataPath(),
-                                 'python', 'qsci_apis', 'pyqgis.pap'))
-            else:
-                # Load user-defined API files
-                apiPaths = settings.value('pythonConsole/userAPI', [])
-                for path in apiPaths:
-                    self.api.load(path)
-                self.api.prepare()
-                self.lexer.setAPIs(self.api)
+        settings = QgsSettings()
+        useDefaultAPI = bool(settings.value('pythonConsole/preloadAPI',
+                                            True))
+        if useDefaultAPI:
+            # Load QGIS API shipped with Python console
+            self.api.loadPrepared(
+                os.path.join(QgsApplication.pkgDataPath(),
+                             'python', 'qsci_apis', 'pyqgis.pap'))
+        else:
+            # Load user-defined API files
+            apiPaths = settings.value('pythonConsole/userAPI', [])
+            for path in apiPaths:
+                self.api.load(path)
+            self.api.prepare()
+            self.lexer.setAPIs(self.api)
 
         self.setLexer(self.lexer)
