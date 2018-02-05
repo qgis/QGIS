@@ -29,7 +29,7 @@ from qgis.PyQt.QtWidgets import QMainWindow, QApplication, QMenu, QTabWidget, QG
 from qgis.PyQt.QtGui import QIcon, QKeySequence
 
 from qgis.gui import QgsMessageBar
-from qgis.core import QgsSettings, QgsMapLayer
+from qgis.core import QgsSettings, QgsMapLayer, QgsApplication
 from qgis.utils import OverrideCursor
 
 from .info_viewer import InfoViewer
@@ -55,6 +55,7 @@ class DBManager(QMainWindow):
         self.restoreGeometry(settings.value("/DB_Manager/mainWindow/geometry", QByteArray(), type=QByteArray))
         self.restoreState(settings.value("/DB_Manager/mainWindow/windowState", QByteArray(), type=QByteArray))
 
+        self.toolBar.setIconSize(self.iface.iconSize())
         self.tabs.currentChanged.connect(self.tabChanged)
         self.tree.selectedItemChanged.connect(self.itemChanged)
         self.tree.model().dataChanged.connect(self.iface.reloadConnections)
@@ -428,9 +429,11 @@ class DBManager(QMainWindow):
         sep.setObjectName("DB_Manager_DbMenu_placeholder")
         sep.setVisible(False)
 
-        self.actionRefresh = self.menuDb.addAction(QIcon(":/db_manager/actions/refresh"), self.tr("&Refresh"),
+        self.actionRefresh = self.menuDb.addAction(QgsApplication.getThemeIcon("/mActionDraw.svg"),
+                                                   self.tr("&Refresh"),
                                                    self.refreshActionSlot, QKeySequence("F5"))
-        self.actionSqlWindow = self.menuDb.addAction(QIcon(":/db_manager/actions/sql_window"), self.tr("&SQL window"),
+        self.actionSqlWindow = self.menuDb.addAction(QgsApplication.getThemeIcon("/dbmanagerSQLWindow.svg"),
+                                                     self.tr("&SQL window"),
                                                      self.runSqlWindow, QKeySequence("F2"))
         self.menuDb.addSeparator()
         self.actionClose = self.menuDb.addAction(QIcon(), self.tr("&Exit"), self.close, QKeySequence("CTRL+Q"))
@@ -447,9 +450,10 @@ class DBManager(QMainWindow):
         sep.setObjectName("DB_Manager_TableMenu_placeholder")
         sep.setVisible(False)
 
-        self.actionImport = self.menuTable.addAction(QIcon(":/db_manager/actions/import"),
+        self.actionImport = self.menuTable.addAction(QgsApplication.getThemeIcon("/dbmanagerImport.svg"),
                                                      self.tr("&Import layer/file"), self.importActionSlot)
-        self.actionExport = self.menuTable.addAction(QIcon(":/db_manager/actions/export"), self.tr("&Export to file"),
+        self.actionExport = self.menuTable.addAction(QgsApplication.getThemeIcon("/dbmanagerExport.svg"),
+                                                     self.tr("&Export to file"),
                                                      self.exportActionSlot)
         self.menuTable.addSeparator()
         #self.actionShowSystemTables = self.menuTable.addAction(self.tr("Show system tables/views"), self.showSystemTables)
