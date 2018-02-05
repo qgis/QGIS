@@ -780,7 +780,7 @@ void QgsLayoutItemMap::paint( QPainter *painter, const QStyleOptionGraphicsItem 
       if ( !mPainterJob && !mDrawingPreview )
       {
         // this is the map's very first paint - trigger a cache update
-        mPreviewScaleFactor = style->matrix.m11();
+        mPreviewScaleFactor = QgsLayoutUtils::scaleFactorFromItemStyle( style );
         mBackgroundUpdateTimer->start( 1 );
       }
     }
@@ -789,7 +789,7 @@ void QgsLayoutItemMap::paint( QPainter *painter, const QStyleOptionGraphicsItem 
       if ( mCacheInvalidated && !mDrawingPreview )
       {
         // cache was invalidated - trigger a background update
-        mPreviewScaleFactor = style->matrix.m11();
+        mPreviewScaleFactor = QgsLayoutUtils::scaleFactorFromItemStyle( style );
         mBackgroundUpdateTimer->start( 1 );
       }
 
@@ -841,7 +841,7 @@ void QgsLayoutItemMap::paint( QPainter *painter, const QStyleOptionGraphicsItem 
     if ( containsAdvancedEffects() && ( !mLayout || !( mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagForceVectorOutput ) ) )
     {
       // rasterize
-      double destinationDpi = style->matrix.m11() * 25.4;
+      double destinationDpi = QgsLayoutUtils::scaleFactorFromItemStyle( style ) * 25.4;
       double layoutUnitsInInches = mLayout ? mLayout->convertFromLayoutUnits( 1, QgsUnitTypes::LayoutInches ).length() : 1;
       int widthInPixels = std::round( boundingRect().width() * layoutUnitsInInches * destinationDpi );
       int heightInPixels = std::round( boundingRect().height() * layoutUnitsInInches * destinationDpi );

@@ -19,6 +19,7 @@
 #include "qgssymbol.h"
 #include "qgsmapsettings.h"
 #include "qgslayout.h"
+#include "qgslayoututils.h"
 #include <limits>
 #include <cmath>
 #include <QStyleOptionGraphicsItem>
@@ -164,7 +165,7 @@ void QgsLayoutNodesItem::drawNodes( QgsRenderContext &context, const QStyleOptio
 {
   context.painter()->setRenderHint( QPainter::Antialiasing, false );
 
-  double rectSize = 9.0 / itemStyle->matrix.m11();
+  double rectSize = 9.0 / QgsLayoutUtils::scaleFactorFromItemStyle( itemStyle );
 
   QgsStringMap properties;
   properties.insert( QStringLiteral( "name" ), QStringLiteral( "cross" ) );
@@ -177,7 +178,7 @@ void QgsLayoutNodesItem::drawNodes( QgsRenderContext &context, const QStyleOptio
 
   symbol->startRender( context );
   for ( QPointF pt : mPolygon )
-    symbol->renderPoint( pt * itemStyle->matrix.m11(), nullptr, context );
+    symbol->renderPoint( pt * QgsLayoutUtils::scaleFactorFromItemStyle( itemStyle ), nullptr, context );
   symbol->stopRender( context );
 
   if ( mSelectedNode >= 0 && mSelectedNode < mPolygon.size() )
@@ -186,7 +187,7 @@ void QgsLayoutNodesItem::drawNodes( QgsRenderContext &context, const QStyleOptio
 
 void QgsLayoutNodesItem::drawSelectedNode( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle ) const
 {
-  double rectSize = 9.0 / itemStyle->matrix.m11();
+  double rectSize = 9.0 / QgsLayoutUtils::scaleFactorFromItemStyle( itemStyle );
 
   QgsStringMap properties;
   properties.insert( QStringLiteral( "name" ), QStringLiteral( "square" ) );
@@ -199,7 +200,7 @@ void QgsLayoutNodesItem::drawSelectedNode( QgsRenderContext &context, const QSty
   symbol->setSize( rectSize );
 
   symbol->startRender( context );
-  symbol->renderPoint( mPolygon.at( mSelectedNode ) * itemStyle->matrix.m11(), nullptr, context );
+  symbol->renderPoint( mPolygon.at( mSelectedNode ) * QgsLayoutUtils::scaleFactorFromItemStyle( itemStyle ), nullptr, context );
   symbol->stopRender( context );
 }
 

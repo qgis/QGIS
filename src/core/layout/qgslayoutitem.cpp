@@ -244,7 +244,7 @@ void QgsLayoutItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *it
   }
 
   bool previewRender = !mLayout || mLayout->renderContext().isPreviewRender();
-  double destinationDpi = previewRender ? itemStyle->matrix.m11() * 25.4 : mLayout->renderContext().dpi();
+  double destinationDpi = previewRender ? QgsLayoutUtils::scaleFactorFromItemStyle( itemStyle ) * 25.4 : mLayout->renderContext().dpi();
   bool useImageCache = false;
   bool forceRasterOutput = containsAdvancedEffects() && ( !mLayout || !( mLayout->renderContext().flags() & QgsLayoutRenderContext::FlagForceVectorOutput ) );
 
@@ -255,8 +255,8 @@ void QgsLayoutItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *it
 
     if ( previewRender )
     {
-      widthInPixels = boundingRect().width() * itemStyle->matrix.m11();
-      heightInPixels = boundingRect().height() * itemStyle->matrix.m11();
+      widthInPixels = boundingRect().width() * QgsLayoutUtils::scaleFactorFromItemStyle( itemStyle );
+      heightInPixels = boundingRect().height() * QgsLayoutUtils::scaleFactorFromItemStyle( itemStyle );
     }
     else
     {
