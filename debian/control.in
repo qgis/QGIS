@@ -48,6 +48,8 @@ Build-Depends:
 #sid stretch jessie wily xenial yakkety# pyqt4.qsci-dev,
 #sid stretch jessie trusty utopic vivid wily xenial yakkety# python-pyspatialite,
 #sid wheezy jessie stretch trusty vivid wily xenial yakkety# python-nose2,
+#            jessie wheezy precise saucy trusty utopic vivid                    # libqca2-plugin-ossl,
+#sid stretch                                                 wily xenial yakkety# libqca2-plugins,
  python-sip (>= 4.5.0),
  python-sip-dev (>= 4.5.0),
  libosgearth-dev,
@@ -422,8 +424,8 @@ Pre-Depends: ${misc:Pre-Depends}
 Depends:
  qgis-providers-common (= ${source:Version}),
  libqt4-sql-sqlite,
-#            jessie wheezy saucy trusty utopic vivid                    # libqca2-plugin-ossl,
-#sid stretch                                         wily xenial yakkety# libqca2-plugins,
+#            jessie wheezy precise saucy trusty utopic vivid                    # libqca2-plugin-ossl,
+#sid stretch                                                 wily xenial yakkety# libqca2-plugins,
  ${shlibs:Depends},
  ${misc:Depends}
 Breaks: qgis (<= 1.6)
