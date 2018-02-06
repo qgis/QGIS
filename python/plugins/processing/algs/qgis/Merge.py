@@ -81,7 +81,7 @@ class Merge(GeoAlgorithm):
                         if (dfield.type() != sfield.type()):
                             raise GeoAlgorithmExecutionException(
                                 self.tr('{} field in layer {} has different '
-                                        'data type than in other layers.'))
+                                        'data type than in other layers.'.format(sfield.name(), layer.name())))
 
                 if not found:
                     fields.append(sfield)
