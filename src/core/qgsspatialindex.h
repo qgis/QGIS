@@ -97,6 +97,20 @@ class CORE_EXPORT QgsSpatialIndex
     //! Implement assignment operator
     QgsSpatialIndex &operator=( const QgsSpatialIndex &other );
 
+    /**
+     * Detaches the index, forcing a deep copy of the underlying
+     * spatial index data.
+     *
+     * Since the underlying libspatialindex is not thread safe on some platforms (e.g. Windows),
+     * manual calls to detach() must be made if a QgsSpatialIndex is to be accessed across multiple threads.
+     *
+     * Note that for platforms on which libspatialindex is thread safe, calling
+     * detach() has no effect and does not force the deep copy.
+     *
+     * \since QGIS 3.0
+     */
+    void detach();
+
     /* operations */
 
     //! Add feature to index
