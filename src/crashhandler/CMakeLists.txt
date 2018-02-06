@@ -23,8 +23,9 @@ ADD_EXECUTABLE(qgiscrashhandler WIN32
     )
 
 TARGET_LINK_LIBRARIES(qgiscrashhandler
-  ${QT_QTCORE_LIBRARY}
-  ${QT_QTGUI_LIBRARY}
+  ${Qt5Core_LIBRARIES}
+  ${Qt5Gui_LIBRARIES}
+  ${Qt5Widgets_LIBRARIES}
   DbgHelp
 )
 

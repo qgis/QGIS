@@ -37,56 +37,6 @@ include(MacroAddFileDependencies)
 
 # Portability helpers.
 
-set(QT_QTGUI_LIBRARIES
-  ${Qt5Gui_LIBRARIES}
-  ${Qt5Widgets_LIBRARIES}
-  ${Qt5PrintSupport_LIBRARIES}
-  ${Qt5Svg_LIBRARIES}
-)
-
-set(QT_INCLUDES
-    ${Qt5Gui_INCLUDE_DIRS}
-    ${Qt5Widgets_INCLUDE_DIRS}
-    ${Qt5PrintSupport_INCLUDE_DIRS}
-    ${Qt5Svg_INCLUDE_DIRS}
-)
-set(QT_QTGUI_LIBRARY ${QT_QTGUI_LIBRARIES})
-
-set(_qt_modules
-  Core
-  Declarative
-  Widgets
-  Script
-  ScriptTools
-  Network
-  Test
-  Designer
-  Concurrent
-  Xml
-  XmlPatterns
-  UiTools
-  Qml
-  Quick1
-  WebKit
-  WebKitWidgets
-  Sql
-  OpenGL
-)
-
-foreach(_module ${_qt_modules})
-    string(TOUPPER ${_module} _module_upper)
-    set(QT_QT${_module_upper}_LIBRARIES ${Qt5${_module}_LIBRARIES})
-    set(QT_QT${_module_upper}_LIBRARY ${QT_QT${_module_upper}_LIBRARIES})
-    list(APPEND QT_INCLUDES ${Qt5${_module}_INCLUDE_DIRS})
-    set(QT_QT${_module_upper}_FOUND ${Qt5${_module}_FOUND})
-endforeach()
-
-list(APPEND QT_QTCORE_LIBRARY ${Qt5Concurrent_LIBRARIES})
-
-list(APPEND QT_QTWEBKIT_LIBRARY ${Qt5WebKitWidgets_LIBRARIES})
-
-Find_Program(QT_LRELEASE_EXECUTABLE NAMES lrelease-qt5 lrelease)
-
 add_definitions(-DQT_DISABLE_DEPRECATED_BEFORE=0)
 
 # get the Qt plugins directory
