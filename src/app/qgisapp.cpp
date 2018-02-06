@@ -8928,8 +8928,10 @@ void QgisApp::duplicateVectorStyle( QgsVectorLayer *srcLayer, QgsVectorLayer *de
     rootNode.setAttribute( QStringLiteral( "version" ), Qgis::QGIS_VERSION );
     doc.appendChild( rootNode );
     QString errorMsg;
-    srcLayer->writeSymbology( rootNode, doc, errorMsg, QgsReadWriteContext() );
-    destLayer->readSymbology( rootNode, errorMsg, QgsReadWriteContext() );
+    QgsReadWriteContext writeContext = QgsReadWriteContext();
+    srcLayer->writeSymbology( rootNode, doc, errorMsg, writeContext );
+    QgsReadWriteContext readContext = QgsReadWriteContext();
+    destLayer->readSymbology( rootNode, errorMsg, readContext );
   }
 }
 

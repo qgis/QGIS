@@ -273,7 +273,7 @@ class CORE_EXPORT QgsEditFormConfig
      * Read XML information
      * Deserialize on project load
      */
-    void readXml( const QDomNode &node, const QgsReadWriteContext &context );
+    void readXml( const QDomNode &node,  QgsReadWriteContext &context );
 
     /**
      * Write XML information

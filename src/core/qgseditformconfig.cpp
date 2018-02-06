@@ -258,7 +258,7 @@ void QgsEditFormConfig::setSuppress( QgsEditFormConfig::FeatureFormSuppress s )
   d->mSuppressForm = s;
 }
 
-void QgsEditFormConfig::readXml( const QDomNode &node, const QgsReadWriteContext &context )
+void QgsEditFormConfig::readXml( const QDomNode &node, QgsReadWriteContext &context )
 {
   d.detach();
 

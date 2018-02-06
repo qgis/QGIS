@@ -202,7 +202,7 @@ QPainter::CompositionMode QgsMapLayer::blendMode() const
 }
 
 
-bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, const QgsReadWriteContext &context )
+bool QgsMapLayer::readLayerXml( const QDomElement &layerElement,  QgsReadWriteContext &context )
 {
   bool layerError;
 
@@ -559,7 +559,7 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, const QgsReadWr
 } // bool QgsMapLayer::readLayerXML
 
 
-bool QgsMapLayer::readXml( const QDomNode &layer_node, const QgsReadWriteContext &context )
+bool QgsMapLayer::readXml( const QDomNode &layer_node, QgsReadWriteContext &context )
 {
   Q_UNUSED( layer_node );
   Q_UNUSED( context );
@@ -1310,7 +1310,8 @@ bool QgsMapLayer::importNamedStyle( QDomDocument &myDocument, QString &myErrorMe
     setMinimumScale( myRoot.attribute( QStringLiteral( "minScale" ) ).toDouble() );
   }
 
-  return readSymbology( myRoot, myErrorMessage, QgsReadWriteContext() ); // TODO: support relative paths in QML?
+  QgsReadWriteContext context = QgsReadWriteContext();
+  return readSymbology( myRoot, myErrorMessage, context ); // TODO: support relative paths in QML?
 }
 
 void QgsMapLayer::exportNamedMetadata( QDomDocument &doc, QString &errorMsg ) const
@@ -1791,7 +1792,7 @@ QString QgsMapLayer::loadSldStyle( const QString &uri, bool &resultFlag )
   return QLatin1String( "" );
 }
 
-bool QgsMapLayer::readStyle( const QDomNode &node, QString &errorMessage, const QgsReadWriteContext &context )
+bool QgsMapLayer::readStyle( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context )
 {
   Q_UNUSED( node );
   Q_UNUSED( errorMessage );

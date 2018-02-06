@@ -354,19 +354,19 @@ Time stamp of data source in the moment when data/metadata were loaded by provid
     void showStatusMessage( const QString &message );
 
   protected:
-    virtual bool readSymbology( const QDomNode &node, QString &errorMessage, const QgsReadWriteContext &context );
+    virtual bool readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context );
 
 %Docstring
  Read the symbology for the current layer from the Dom node supplied
 %End
 
-    virtual bool readStyle( const QDomNode &node, QString &errorMessage, const QgsReadWriteContext &context );
+    virtual bool readStyle( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context );
 
 %Docstring
  Read the style information for the current layer from the Dom node supplied
 %End
 
-    virtual bool readXml( const QDomNode &layer_node, const QgsReadWriteContext &context );
+    virtual bool readXml( const QDomNode &layer_node, QgsReadWriteContext &context );
 
 %Docstring
  Reads layer specific state from project file Dom node

@@ -387,13 +387,13 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
   protected:
     //! \brief Read the symbology for the current layer from the Dom node supplied
-    bool readSymbology( const QDomNode &node, QString &errorMessage, const QgsReadWriteContext &context ) override;
+    bool readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context ) override;
 
     //! \brief Read the style information for the current layer from the Dom node supplied
-    bool readStyle( const QDomNode &node, QString &errorMessage, const QgsReadWriteContext &context ) override;
+    bool readStyle( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context ) override;
 
     //! \brief Reads layer specific state from project file Dom node
-    bool readXml( const QDomNode &layer_node, const QgsReadWriteContext &context ) override;
+    bool readXml( const QDomNode &layer_node, QgsReadWriteContext &context ) override;
 
     //! \brief Write the symbology for the layer into the docment provided
     bool writeSymbology( QDomNode &, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const override;

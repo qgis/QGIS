@@ -452,7 +452,7 @@ Returns true if the layer is considered a spatial layer, ie it has some form of 
 .. versionadded:: 2.16
 %End
 
-    bool readLayerXml( const QDomElement &layerElement, const QgsReadWriteContext &context );
+    bool readLayerXml( const QDomElement &layerElement, QgsReadWriteContext &context );
 %Docstring
 Sets state from Dom document
 
@@ -825,7 +825,7 @@ the SLD file could not be loaded
 
 
 
-    virtual bool readSymbology( const QDomNode &node, QString &errorMessage, const QgsReadWriteContext &context ) = 0;
+    virtual bool readSymbology( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context ) = 0;
 %Docstring
 Read the symbology for the current layer from the Dom node supplied.
 
@@ -836,7 +836,7 @@ Read the symbology for the current layer from the Dom node supplied.
 :return: true in case of success.
 %End
 
-    virtual bool readStyle( const QDomNode &node, QString &errorMessage, const QgsReadWriteContext &context );
+    virtual bool readStyle( const QDomNode &node, QString &errorMessage, QgsReadWriteContext &context );
 %Docstring
 Read the style for the current layer from the Dom node supplied.
 
@@ -1361,7 +1361,7 @@ Set the extent
 Set whether layer is valid or not - should be used in constructor.
 %End
 
-    virtual bool readXml( const QDomNode &layer_node, const QgsReadWriteContext &context );
+    virtual bool readXml( const QDomNode &layer_node, QgsReadWriteContext &context );
 %Docstring
 Called by readLayerXML(), used by children to read state specific to them from
 project files.
