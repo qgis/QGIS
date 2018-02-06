@@ -1310,7 +1310,7 @@ QgsGeorefPluginGui::SaveGCPs QgsGeorefPluginGui::checkNeedGCPSave()
 
   if ( !equalGCPlists( mInitialPoints, mPoints ) )
   {
-    QMessageBox::StandardButton a = QMessageBox::information( this, tr( "Save GCPs" ),
+    QMessageBox::StandardButton a = QMessageBox::question( this, tr( "Save GCPs" ),
                                     tr( "Save GCP points?" ),
                                     QMessageBox::Save | QMessageBox::Discard
                                     | QMessageBox::Cancel );

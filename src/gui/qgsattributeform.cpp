@@ -129,8 +129,8 @@ void QgsAttributeForm::setMode( QgsAttributeForm::Mode mode )
     if ( mUnsavedMultiEditChanges )
     {
       // prompt for save
-      int res = QMessageBox::information( this, tr( "Multiedit attributes" ),
-                                          tr( "Apply changes to edited features?" ), QMessageBox::Yes | QMessageBox::No );
+      int res = QMessageBox::question( this, tr( "Multiedit attributes" ),
+                                       tr( "Apply changes to edited features?" ), QMessageBox::Yes | QMessageBox::No );
       if ( res == QMessageBox::Yes )
       {
         save();
