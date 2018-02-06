@@ -74,7 +74,7 @@ class GUI_EXPORT QgsMetadataWidget : public QWidget, private Ui::QgsMetadataWidg
      * \see acceptMetadata
      * \see checkMetadata
      */
-    bool saveMetadata( QgsLayerMetadata &layerMetadata ) const;
+    void saveMetadata( QgsLayerMetadata &layerMetadata ) const;
 
     /**
      * Check if values in the wizard are correct.

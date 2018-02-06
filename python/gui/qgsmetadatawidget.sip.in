@@ -54,7 +54,7 @@ saveMetdata is called before returning :py:class:`QgsLayerMetadata`
 .. seealso:: :py:func:`saveMetadata`
 %End
 
-    bool saveMetadata( QgsLayerMetadata &layerMetadata ) const;
+    void saveMetadata( QgsLayerMetadata &layerMetadata ) const;
 %Docstring
 Save all fields in a QgsLayerMetadata object.
 
