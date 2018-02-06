@@ -22,9 +22,10 @@
 #include "qgsstringstatisticalsummary.h"
 #include "qgsdatetimestatisticalsummary.h"
 #include "qgsdockwidget.h"
+#include "qgsfeatureiterator.h"
 #include "qgsfeedback.h"
-#include "qgsvectorlayer.h"
 #include "qgsvectorlayerutils.h"
+#include "qgstaskmanager.h"
 #include "qgis_app.h"
 
 class QMenu;
@@ -40,82 +41,69 @@ class QgsBrowserTreeFilterProxyModel;
  * \class QgsStatisticsValueGatherer
 * Calculated raster stats for paletted renderer in a thread
 */
-class QgsStatisticsValueGatherer: public QThread
+class QgsStatisticsValueGatherer : public QgsTask
 {
     Q_OBJECT
 
   public:
-    QgsStatisticsValueGatherer( QgsVectorLayer *layer, QString sourceFieldExp, bool selectedOnly )
-      : mLayer( layer )
-      , mExpression( sourceFieldExp )
-      , mSelectedOnly( selectedOnly )
-      , mWasCanceled( false )
-    {}
-
-    void run() override
+    QgsStatisticsValueGatherer( QgsVectorLayer *layer, QgsFeatureIterator fit, int featureCount, QString sourceFieldExp )
+      : QgsTask( tr( "Fetching statistic values" ) )
+      , mFeatureIterator( fit )
+      , mFeatureCount( featureCount )
+      , mFieldExpression( sourceFieldExp )
     {
-      mWasCanceled = false;
-
-      // allow responsive cancelation
-      mFeedback = new QgsFeedback();
-      connect( mFeedback, &QgsFeedback::progressChanged, this, &QgsStatisticsValueGatherer::progressChanged );
-
-      bool ok;
-      mValues = QgsVectorLayerUtils::getValues( mLayer, mExpression, ok, mSelectedOnly, mFeedback );
-      if ( !ok )
+      mFieldIndex = layer->fields().lookupField( mFieldExpression );
+      if ( mFieldIndex == -1 )
       {
-        mWasCanceled = true;
+        // use expression, already validated
+        mExpression.reset( new QgsExpression( mFieldExpression ) );
+        mContext.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( layer ) );
       }
-
-      // be overly cautious - it's *possible* stop() might be called between deleting mFeedback and nulling it
-      mFeedbackMutex.lock();
-      delete mFeedback;
-      mFeedback = nullptr;
-      mFeedbackMutex.unlock();
-
-      emit gatheredValues();
     }
 
-    //! Informs the gatherer to immediately stop collecting values
-    void stop()
+    bool run() override
     {
-      // be cautious, in case gatherer stops naturally just as we are canceling it and mFeedback gets deleted
-      mFeedbackMutex.lock();
-      if ( mFeedback )
-        mFeedback->cancel();
-      mFeedbackMutex.unlock();
+      QgsFeature f;
+      int current = 0;
+      while ( mFeatureIterator.nextFeature( f ) )
+      {
+        if ( mExpression )
+        {
+          mContext.setFeature( f );
+          QVariant v = mExpression->evaluate( &mContext );
+          mValues << v;
+        }
+        else
+        {
+          mValues << f.attribute( mFieldIndex );
+        }
 
-      mWasCanceled = true;
+        if ( isCanceled() )
+        {
+          return false;
+        }
+
+        current++;
+        if ( mFeatureCount > 0 )
+        {
+          setProgress( 100.0 * static_cast< double >( current ) / mFeatureCount );
+        }
+      }
+      return true;
     }
-
-    //! Returns true if collection was canceled before completion
-    bool wasCanceled() const { return mWasCanceled; }
 
     QList<QVariant> values() const { return mValues; }
 
-  signals:
-
-    /**
-     * Emitted when values have been collected
-     */
-    void gatheredValues();
-
-  signals:
-    //! Internal routines can connect to this signal if they use event loop
-    void canceled();
-
-    void progressChanged( double progress );
-
   private:
 
-    QgsVectorLayer *mLayer = nullptr;
-    QString mExpression;
-    bool mSelectedOnly = false;
+    QgsFeatureIterator mFeatureIterator;
+    int mFeatureCount;
+    QString mFieldExpression;
+    int mFieldIndex;
     QList<QVariant> mValues;
-    int mMissingValues;
-    QgsFeedback *mFeedback = nullptr;
-    QMutex mFeedbackMutex;
-    bool mWasCanceled;
+
+    std::unique_ptr<QgsExpression> mExpression;
+    QgsExpressionContext mContext;
 };
 
 /**
@@ -149,7 +137,7 @@ class APP_EXPORT QgsStatisticalSummaryDockWidget : public QgsDockWidget, private
     void statActionTriggered( bool checked );
     void layersRemoved( const QStringList &layers );
     void layerSelectionChanged();
-    void gathererThreadFinished();
+    void gathererFinished();
 
   private:
 

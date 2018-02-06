@@ -22,13 +22,10 @@
 #include "qgsvectordataprovider.h"
 #include "qgsproject.h"
 #include "qgsrelationmanager.h"
-#include "qgslogger.h"
 #include "qgsfeedback.h"
 
 QgsFeatureIterator QgsVectorLayerUtils::getValuesIterator( const QgsVectorLayer *layer, const QString &fieldOrExpression, bool &ok, bool selectedOnly )
 {
-  QgsFeatureIterator fit;
-
   std::unique_ptr<QgsExpression> expression;
   QgsExpressionContext context;
 
@@ -42,7 +39,7 @@ QgsFeatureIterator QgsVectorLayerUtils::getValuesIterator( const QgsVectorLayer 
     if ( expression->hasParserError() || !expression->prepare( &context ) )
     {
       ok = false;
-      return fit;
+      return QgsFeatureIterator();
     }
   }
 
@@ -58,16 +55,15 @@ QgsFeatureIterator QgsVectorLayerUtils::getValuesIterator( const QgsVectorLayer 
                                          QgsFeatureRequest::NoGeometry )
                               .setSubsetOfAttributes( lst, layer->fields() );
 
+  ok = true;
   if ( !selectedOnly )
   {
-    fit = layer->getFeatures( request );
+    return layer->getFeatures( request );
   }
   else
   {
-    fit = layer->getSelectedFeatures( request );
+    return layer->getSelectedFeatures( request );
   }
-
-  return fit;
 }
 
 QList<QVariant> QgsVectorLayerUtils::getValues( const QgsVectorLayer *layer, const QString &fieldOrExpression, bool &ok, bool selectedOnly, QgsFeedback *feedback )
