@@ -266,6 +266,14 @@ QgsSpatialIndex &QgsSpatialIndex::operator=( const QgsSpatialIndex &other )
   return *this;
 }
 
+void QgsSpatialIndex::detach()
+{
+  // libspatialindex is not thread safe on windows - so force the deep copy
+#if defined(Q_OS_WIN)
+  d.detach();
+#endif
+}
+
 SpatialIndex::Region QgsSpatialIndex::rectToRegion( const QgsRectangle &rect )
 {
   double pt1[2] = { rect.xMinimum(), rect.yMinimum() },
