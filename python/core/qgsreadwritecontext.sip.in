@@ -37,6 +37,16 @@ Returns path resolver for conversion between relative and absolute paths
 Sets up path resolver for conversion between relative and absolute paths
 %End
 
+    void pushMessage( Qgis::MessageLevel level, const QString &message );
+%Docstring
+append a message to the context
+%End
+
+    QList<QPair<Qgis::MessageLevel, QString>> takeMessages();
+%Docstring
+return the stored messages and remove them
+%End
+
 };
 
 /************************************************************************

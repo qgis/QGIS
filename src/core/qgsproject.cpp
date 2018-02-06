@@ -716,6 +716,11 @@ bool QgsProject::_getMapLayers( const QDomDocument &doc, QList<QDomNode> &broken
       {
         returnStatus = false;
       }
+      const auto messages = context.takeMessages();
+      if ( messages.count() )
+      {
+        emit loadingLayerMessages( tr( "Loading layer %1" ).arg( name ), messages );
+      }
     }
     emit layerLoaded( i + 1, nl.count() );
     i++;

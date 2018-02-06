@@ -3230,6 +3230,8 @@ void QgisApp::setupConnections()
            this, &QgisApp::showProgress );
   connect( QgsProject::instance(), &QgsProject::loadingLayer,
            this, &QgisApp::showStatusMessage );
+  connect( QgsProject::instance(), &QgsProject::loadingLayerMessages,
+           this, &QgisApp::loadingLayerMessages );
   connect( QgsProject::instance(), &QgsProject::readProject,
            this, &QgisApp::readProject );
   connect( QgsProject::instance(), &QgsProject::writeProject,
@@ -11236,6 +11238,14 @@ void QgisApp::updateMouseCoordinatePrecision()
 void QgisApp::showStatusMessage( const QString &message )
 {
   mStatusBar->showMessage( message );
+}
+
+void QgisApp::loadingLayerMessages( const QString &layerName, const QList<QPair<Qgis::MessageLevel, QString> > &messages )
+{
+  for ( const auto message : messages )
+  {
+    messageBar()->pushMessage( layerName, message.second, message.first );
+  }
 }
 
 void QgisApp::displayMapToolMessage( const QString &message, Qgis::MessageLevel level )

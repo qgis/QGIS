@@ -910,7 +910,9 @@ Emitted when a layer from a projects was read.
 :param n: number of layers
 %End
 
-    void loadingLayer( const QString & );
+    void loadingLayer( const QString &layerName );
+
+    void loadingLayerMessages( const QString &layerName, const QList<QPair<Qgis::MessageLevel, QString>> &messages );
 
     void nonIdentifiableLayersChanged( QStringList nonIdentifiableLayers );
 %Docstring

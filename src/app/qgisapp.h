@@ -926,6 +926,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void showProgress( int progress, int totalSteps );
     void showStatusMessage( const QString &message );
 
+    void loadingLayerMessages( const QString &layerName, const QList<QPair<Qgis::MessageLevel, QString>> &messages );
+
     //! set the active layer
     bool setActiveLayer( QgsMapLayer * );
 

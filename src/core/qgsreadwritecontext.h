@@ -19,6 +19,7 @@
 #define QGSREADWRITECONTEXT_H
 
 #include "qgspathresolver.h"
+#include "qgis.h"
 
 /**
  * \class QgsReadWriteContext
@@ -41,8 +42,15 @@ class CORE_EXPORT QgsReadWriteContext
     //! Sets up path resolver for conversion between relative and absolute paths
     void setPathResolver( const QgsPathResolver &resolver ) { mPathResolver = resolver; }
 
+    //! append a message to the context
+    void pushMessage( Qgis::MessageLevel level, const QString &message ) {mMessages.append( qMakePair( level, message ) );}
+
+    //! return the stored messages and remove them
+    QList<QPair<Qgis::MessageLevel, QString>> takeMessages() {return mMessages; mMessages.clear();}
+
   private:
     QgsPathResolver mPathResolver;
+    QList<QPair<Qgis::MessageLevel, QString>> mMessages;
 };
 
 #endif // QGSREADWRITECONTEXT_H
