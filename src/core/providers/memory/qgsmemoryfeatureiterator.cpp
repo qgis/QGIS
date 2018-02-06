@@ -240,7 +240,7 @@ QgsMemoryFeatureSource::QgsMemoryFeatureSource( const QgsMemoryProvider *p )
   mExpressionContext.setFields( mFields );
 
   // QgsSpatialIndex is not thread safe - so make spatial index safe to use across threads by forcing a full deep copy
-  if ( mSpatialIndex )
+  if ( mSpatialIndex && p->thread() != QThread::currentThread() )
     mSpatialIndex->detach();
 }
 
