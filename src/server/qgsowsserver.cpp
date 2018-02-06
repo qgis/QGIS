@@ -64,3 +64,24 @@ void QgsOWSServer::restoreLayerFilters( const QHash<QgsMapLayer*, QString>& filt
     }
   }
 }
+
+QString QgsOWSServer::featureGmlId( const QgsFeature* f, const QgsAttributeList& pkAttributes )
+{
+  if ( !f )
+  {
+    return QString();
+  }
+
+  if ( pkAttributes.isEmpty() )
+  {
+    return QString::number( f->id() );
+  }
+
+  QString pkId;
+  QgsAttributeList::const_iterator it = pkAttributes.constBegin();
+  for ( ; it != pkAttributes.constEnd(); ++it )
+  {
+    pkId.append( f->attribute( *it ).toString() );
+  }
+  return pkId;
+}

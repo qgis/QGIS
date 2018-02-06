@@ -3312,7 +3312,8 @@ QDomElement QgsWMSServer::createFeatureGML(
 {
   //qgs:%TYPENAME%
   QDomElement typeNameElement = doc.createElement( "qgs:" + typeName /*qgs:%TYPENAME%*/ );
-  typeNameElement.setAttribute( "fid", typeName + "." + QString::number( feat->id() ) );
+  QString gmlId = featureGmlId( feat, layer->dataProvider()->pkAttributeIndexes() );
+  typeNameElement.setAttribute( "fid", typeName + "." + gmlId );
 
   const QgsCoordinateTransform* transform = nullptr;
   if ( layer && layer->crs() != crs )
