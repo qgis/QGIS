@@ -57,6 +57,56 @@ Returns the duplicated features in the given layer
 
     };
 
+    static QgsFeatureIterator getValuesIterator( const QgsVectorLayer *layer, const QString &fieldOrExpression, bool &ok, bool selectedOnly );
+%Docstring
+Create a feature iterator for a specified field name or expression.
+
+:param layer: vector layer to retrieve values from
+:param fieldOrExpression: field name or an expression string
+:param ok: will be set to false if field or expression is invalid, otherwise true
+:param selectedOnly: set to true to get values from selected features only
+
+:return: feature iterator
+
+.. versionadded:: 3.0
+%End
+
+    static QList< QVariant > getValues( const QgsVectorLayer *layer, const QString &fieldOrExpression, bool &ok, bool selectedOnly = false, QgsFeedback *feedback = 0 );
+%Docstring
+Fetches all values from a specified field name or expression.
+
+:param layer: vector layer to retrieve values from
+:param fieldOrExpression: field name or an expression string
+:param ok: will be set to false if field or expression is invalid, otherwise true
+:param selectedOnly: set to true to get values from selected features only
+:param feedback: optional feedback object to allow cancelation
+
+:return: list of fetched values
+
+.. versionadded:: 3.0
+
+.. seealso:: :py:func:`getDoubleValues`
+%End
+
+    static QList< double > getDoubleValues( const QgsVectorLayer *layer, const QString &fieldOrExpression, bool &ok, bool selectedOnly = false, int *nullCount = 0, QgsFeedback *feedback = 0 );
+%Docstring
+Fetches all double values from a specified field name or expression. Null values or
+invalid expression results are skipped.
+
+:param layer: vector layer to retrieve values from
+:param fieldOrExpression: field name or an expression string evaluating to a double value
+:param ok: will be set to false if field or expression is invalid, otherwise true
+:param selectedOnly: set to true to get values from selected features only
+:param nullCount: optional pointer to integer to store number of null values encountered in
+:param feedback: optional feedback object to allow cancelation
+
+:return: list of fetched values
+
+.. versionadded:: 3.0
+
+.. seealso:: :py:func:`getValues`
+%End
+
     static bool valueExists( const QgsVectorLayer *layer, int fieldIndex, const QVariant &value, const QgsFeatureIds &ignoreIds = QgsFeatureIds() );
 %Docstring
 Returns true if the specified value already exists within a field. This method can be used to test for uniqueness

@@ -2015,40 +2015,6 @@ Calculates an aggregated value from the layer's features.
 .. versionadded:: 2.16
 %End
 
-    QList< QVariant > getValues( const QString &fieldOrExpression, bool &ok, bool selectedOnly = false, QgsFeedback *feedback = 0 ) const;
-%Docstring
-Fetches all values from a specified field name or expression.
-
-:param fieldOrExpression: field name or an expression string
-:param ok: will be set to false if field or expression is invalid, otherwise true
-:param selectedOnly: set to true to get values from selected features only
-:param feedback: optional feedback object to allow cancelation
-
-:return: list of fetched values
-
-.. versionadded:: 2.9
-
-.. seealso:: :py:func:`getDoubleValues`
-%End
-
-    QList< double > getDoubleValues( const QString &fieldOrExpression, bool &ok, bool selectedOnly = false, int *nullCount = 0, QgsFeedback *feedback = 0 ) const;
-%Docstring
-Fetches all double values from a specified field name or expression. Null values or
-invalid expression results are skipped.
-
-:param fieldOrExpression: field name or an expression string evaluating to a double value
-:param ok: will be set to false if field or expression is invalid, otherwise true
-:param selectedOnly: set to true to get values from selected features only
-:param nullCount: optional pointer to integer to store number of null values encountered in
-:param feedback: optional feedback object to allow cancelation
-
-:return: list of fetched values
-
-.. versionadded:: 2.9
-
-.. seealso:: :py:func:`getValues`
-%End
-
     void setFeatureBlendMode( QPainter::CompositionMode blendMode );
 %Docstring
 Set the blending mode used for rendering each feature

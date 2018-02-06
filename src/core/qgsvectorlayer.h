@@ -1821,32 +1821,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
                         QgsExpressionContext *context = nullptr,
                         bool *ok = nullptr ) const;
 
-    /**
-     * Fetches all values from a specified field name or expression.
-     * \param fieldOrExpression field name or an expression string
-     * \param ok will be set to false if field or expression is invalid, otherwise true
-     * \param selectedOnly set to true to get values from selected features only
-     * \param feedback optional feedback object to allow cancelation
-     * \returns list of fetched values
-     * \since QGIS 2.9
-     * \see getDoubleValues
-     */
-    QList< QVariant > getValues( const QString &fieldOrExpression, bool &ok, bool selectedOnly = false, QgsFeedback *feedback = nullptr ) const;
-
-    /**
-     * Fetches all double values from a specified field name or expression. Null values or
-     * invalid expression results are skipped.
-     * \param fieldOrExpression field name or an expression string evaluating to a double value
-     * \param ok will be set to false if field or expression is invalid, otherwise true
-     * \param selectedOnly set to true to get values from selected features only
-     * \param nullCount optional pointer to integer to store number of null values encountered in
-     * \param feedback optional feedback object to allow cancelation
-     * \returns list of fetched values
-     * \since QGIS 2.9
-     * \see getValues
-     */
-    QList< double > getDoubleValues( const QString &fieldOrExpression, bool &ok, bool selectedOnly = false, int *nullCount = nullptr, QgsFeedback *feedback = nullptr ) const;
-
     //! Set the blending mode used for rendering each feature
     void setFeatureBlendMode( QPainter::CompositionMode blendMode );
     //! Returns the current blending mode for features

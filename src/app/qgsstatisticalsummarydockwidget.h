@@ -24,6 +24,7 @@
 #include "qgsdockwidget.h"
 #include "qgsfeedback.h"
 #include "qgsvectorlayer.h"
+#include "qgsvectorlayerutils.h"
 #include "qgis_app.h"
 
 class QMenu;
@@ -60,7 +61,7 @@ class QgsStatisticsValueGatherer: public QThread
       connect( mFeedback, &QgsFeedback::progressChanged, this, &QgsStatisticsValueGatherer::progressChanged );
 
       bool ok;
-      mValues = mLayer->getValues( mExpression, ok, mSelectedOnly, mFeedback );
+      mValues = QgsVectorLayerUtils::getValues( mLayer, mExpression, ok, mSelectedOnly, mFeedback );
       if ( !ok )
       {
         mWasCanceled = true;
