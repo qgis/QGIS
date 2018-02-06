@@ -210,9 +210,9 @@ void QgsBookmarks::deleteClicked()
     return;
 
   // make sure the user really wants to delete these bookmarks
-  if ( QMessageBox::Cancel == QMessageBox::information( this, tr( "Delete Bookmarks" ),
+  if ( QMessageBox::No == QMessageBox::question( this, tr( "Delete Bookmarks" ),
        tr( "Are you sure you want to delete %n bookmark(s)?", "number of rows", rows.size() ),
-       QMessageBox::Ok | QMessageBox::Cancel ) )
+       QMessageBox::Yes | QMessageBox::No ) )
     return;
 
   // Remove in reverse order to keep the merged model indexes
