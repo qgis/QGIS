@@ -889,6 +889,11 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
 
     void loadingLayer( const QString &layerName );
 
+    /**
+     * @brief Emitted when loading layers has produced some messages
+     * @param layerName the layer name
+     * @param messages a list of pairs of Qgis::MessageLevel and messages
+     */
     void loadingLayerMessages( const QString &layerName, const QList<QPair<Qgis::MessageLevel, QString>> &messages );
 
     //! Emitted when the list of layer which are excluded from map identification changes

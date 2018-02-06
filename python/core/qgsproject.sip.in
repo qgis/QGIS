@@ -913,6 +913,11 @@ Emitted when a layer from a projects was read.
     void loadingLayer( const QString &layerName );
 
     void loadingLayerMessages( const QString &layerName, const QList<QPair<Qgis::MessageLevel, QString>> &messages );
+%Docstring
+ Emitted when loading layers has produced some messages
+@param layerName the layer name
+@param messages a list of pairs of Qgis.MessageLevel and messages
+%End
 
     void nonIdentifiableLayersChanged( QStringList nonIdentifiableLayers );
 %Docstring
