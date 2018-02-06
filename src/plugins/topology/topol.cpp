@@ -21,7 +21,7 @@
 #include "qgisinterface.h"
 #include "qgsguiutils.h"
 
-// Qt4 Related Includes
+// Qt Related Includes
 #include <QAction>
 #include <QToolBar>
 #include <QFile>

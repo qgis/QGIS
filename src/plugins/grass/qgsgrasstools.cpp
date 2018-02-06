@@ -220,7 +220,7 @@ void QgsGrassTools::runModule( QString name, bool direct )
 
   if ( !pixmap.isNull() )
   {
-    // Icon size in QT4 does not seem to be variable
+    // Icon size in QT does not seem to be variable
     // -> reset the width to max icon width
     if ( mTabWidget->iconSize().width() < pixmap.width() )
     {
