@@ -563,18 +563,6 @@ class CORE_EXPORT QgsDataProvider : public QObject
      */
     QString mDataSourceURI;
 
-    /**
-     * Contains collected Metadata for the Provider source
-     * \brief A structured metadata store for a map layer.
-     * \note
-     *  - QgsVectorLayer::setDataProvider
-     *  - QgsRasterLayer::setDataProvider
-     * \see layerMetadata
-     * \see setLayerMetadata
-    * \since QGIS 3.0
-    */
-    QgsLayerMetadata mLayerMetadata;
-
     QMap< int, QVariant > mProviderProperties;
 };
 
