@@ -25,7 +25,7 @@ from qgis.PyQt.QtGui import QColor, QCursor
 from qgis.PyQt.QtWidgets import QApplication
 
 from qgis.gui import QgsMapCanvas, QgsMessageBar
-from qgis.core import QgsVectorLayer, QgsProject, QgsSettings
+from qgis.core import Qgis, QgsVectorLayer, QgsProject, QgsSettings
 from qgis.utils import OverrideCursor
 
 from .db_plugins.plugin import Table
@@ -102,7 +102,7 @@ class LayerPreview(QgsMapCanvas):
                         self.parent.tabs.setCurrentWidget(self.parent.info)
                         self.parent.infoBar.pushMessage(
                             QApplication.translate("DBManagerPlugin", "Unable to find a valid unique field"),
-                            QgsMessageBar.WARNING, self.parent.iface.messageTimeout())
+                            Qgis.Warning, self.parent.iface.messageTimeout())
                         return
 
                     uri = table.database().uri()

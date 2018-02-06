@@ -115,7 +115,7 @@ class SERVER_EXPORT QgsServer
      */
     static void printRequestParameters(
       const QMap< QString, QString> &parameterMap,
-      QgsMessageLog::MessageLevel logLevel );
+      Qgis::MessageLevel logLevel );
 
     static QFileInfo defaultProjectFile();
     static QFileInfo defaultAdminSLD();

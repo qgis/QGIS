@@ -23,7 +23,7 @@ email                : brush.tyler@gmail.com
 from qgis.PyQt.QtCore import pyqtSignal
 from qgis.PyQt.QtWidgets import QWidget, QTreeView, QMenu, QLabel
 
-from qgis.core import QgsProject, QgsMessageLog
+from qgis.core import Qgis, QgsProject, QgsMessageLog
 from qgis.gui import QgsMessageBar, QgsMessageBarItem
 
 from .db_model import DBModel, PluginItem
@@ -171,7 +171,7 @@ class DBTree(QTreeView):
                 msgLabel.setWordWrap(True)
                 msgLabel.linkActivated.connect(self.mainWindow.iface.mainWindow().findChild(QWidget, "MessageLog").show)
                 msgLabel.linkActivated.connect(self.mainWindow.iface.mainWindow().raise_)
-                self.mainWindow.infoBar.pushItem(QgsMessageBarItem(msgLabel, QgsMessageBar.WARNING))
+                self.mainWindow.infoBar.pushItem(QgsMessageBarItem(msgLabel, Qgis.Warning))
 
     def reconnect(self):
         db = self.currentDatabase()

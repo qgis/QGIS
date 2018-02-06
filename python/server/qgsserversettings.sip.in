@@ -76,7 +76,7 @@ Returns the maximum number of cached layers.
 :return: the number of cached layers.
 %End
 
-    QgsMessageLog::MessageLevel logLevel() const;
+    Qgis::MessageLevel logLevel() const;
 %Docstring
 Returns the log level.
 

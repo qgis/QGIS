@@ -67,7 +67,7 @@ int QgsGml::getFeatures( const QString &uri, QgsWkbTypes::Type *wkbType, QgsRect
       QgsMessageLog::logMessage(
         tr( "GML Getfeature network request update failed for authcfg %1" ).arg( authcfg ),
         tr( "Network" ),
-        QgsMessageLog::CRITICAL
+        Qgis::Critical
       );
       return 1;
     }
@@ -86,7 +86,7 @@ int QgsGml::getFeatures( const QString &uri, QgsWkbTypes::Type *wkbType, QgsRect
       QgsMessageLog::logMessage(
         tr( "GML Getfeature network reply update failed for authcfg %1" ).arg( authcfg ),
         tr( "Network" ),
-        QgsMessageLog::CRITICAL
+        Qgis::Critical
       );
       return 1;
     }
@@ -148,7 +148,7 @@ int QgsGml::getFeatures( const QString &uri, QgsWkbTypes::Type *wkbType, QgsRect
     QgsMessageLog::logMessage(
       tr( "GML Getfeature network request failed with error: %1" ).arg( replyErrorString ),
       tr( "Network" ),
-      QgsMessageLog::CRITICAL
+      Qgis::Critical
     );
     return 1;
   }

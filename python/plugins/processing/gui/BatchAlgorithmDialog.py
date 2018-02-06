@@ -39,7 +39,8 @@ from qgis.core import (QgsProcessingParameterDefinition,
                        QgsProcessingOutputHtml,
                        QgsProcessingOutputNumber,
                        QgsProcessingOutputString,
-                       QgsProject)
+                       QgsProject,
+                       Qgis)
 
 from qgis.gui import (QgsMessageBar,
                       QgsProcessingAlgorithmDialogBase)
@@ -89,7 +90,7 @@ class BatchAlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                 if not param.checkValueIsAcceptable(wrapper.value()):
                     self.messageBar().pushMessage("", self.tr('Wrong or missing parameter value: {0} (row {1})').format(
                         param.description(), row + 1),
-                        level=QgsMessageBar.WARNING, duration=5)
+                        level=Qgis.Warning, duration=5)
                     return
                 col += 1
             count_visible_outputs = 0
@@ -111,7 +112,7 @@ class BatchAlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                 else:
                     self.messageBar().pushMessage("", self.tr('Wrong or missing output value: {0} (row {1})').format(
                         out.description(), row + 1),
-                        level=QgsMessageBar.WARNING, duration=5)
+                        level=Qgis.Warning, duration=5)
                     return
 
             alg_parameters.append(parameters)

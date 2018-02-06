@@ -32,7 +32,8 @@ from qgis.PyQt.QtCore import QCoreApplication, Qt
 from qgis.PyQt.QtWidgets import QMessageBox, QPushButton, QSizePolicy, QDialogButtonBox
 from qgis.PyQt.QtGui import QColor, QPalette
 
-from qgis.core import (QgsProject,
+from qgis.core import (Qgis,
+                       QgsProject,
                        QgsApplication,
                        QgsProcessingUtils,
                        QgsProcessingParameterDefinition,
@@ -275,7 +276,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                 pass
             self.messageBar().clearWidgets()
             self.messageBar().pushMessage("", self.tr("Wrong or missing parameter value: {0}").format(e.parameter.description()),
-                                          level=QgsMessageBar.WARNING, duration=5)
+                                          level=Qgis.Warning, duration=5)
 
     def finish(self, successful, result, context, feedback):
         keepOpen = not successful or ProcessingConfig.getSetting(ProcessingConfig.KEEP_DIALOG_OPEN)

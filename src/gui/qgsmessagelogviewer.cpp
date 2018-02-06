@@ -35,8 +35,8 @@ QgsMessageLogViewer::QgsMessageLogViewer( QWidget *parent, Qt::WindowFlags fl )
 {
   setupUi( this );
 
-  connect( QgsApplication::messageLog(), static_cast<void ( QgsMessageLog::* )( const QString &, const QString &, QgsMessageLog::MessageLevel )>( &QgsMessageLog::messageReceived ),
-           this, static_cast<void ( QgsMessageLogViewer::* )( const QString &, const QString &, QgsMessageLog::MessageLevel )>( &QgsMessageLogViewer::logMessage ) );
+  connect( QgsApplication::messageLog(), static_cast<void ( QgsMessageLog::* )( const QString &, const QString &, Qgis::MessageLevel )>( &QgsMessageLog::messageReceived ),
+           this, static_cast<void ( QgsMessageLogViewer::* )( const QString &, const QString &, Qgis::MessageLevel )>( &QgsMessageLogViewer::logMessage ) );
 
   connect( tabWidget, &QTabWidget::tabCloseRequested, this, &QgsMessageLogViewer::closeTab );
 }
@@ -50,7 +50,7 @@ void QgsMessageLogViewer::reject()
 {
 }
 
-void QgsMessageLogViewer::logMessage( const QString &message, const QString &tag, QgsMessageLog::MessageLevel level )
+void QgsMessageLogViewer::logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level )
 {
   QString cleanedTag = tag;
   if ( cleanedTag.isNull() )
@@ -76,16 +76,19 @@ void QgsMessageLogViewer::logMessage( const QString &message, const QString &tag
   QString levelString;
   switch ( level )
   {
-    case QgsMessageLog::INFO:
+    case Qgis::Info:
       levelString = QStringLiteral( "INFO" );
       break;
-    case QgsMessageLog::WARNING:
+    case Qgis::Warning:
       levelString = QStringLiteral( "WARNING" );
       break;
-    case QgsMessageLog::CRITICAL:
+    case Qgis::Critical:
       levelString = QStringLiteral( "CRITICAL" );
       break;
-    case QgsMessageLog::NONE:
+    case Qgis::Success:
+      levelString = QStringLiteral( "SUCCESS" );
+      break;
+    case Qgis::None:
       levelString = QStringLiteral( "NONE" );
       break;
   }

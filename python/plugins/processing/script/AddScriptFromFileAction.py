@@ -30,7 +30,7 @@ import shutil
 
 from qgis.PyQt.QtWidgets import QFileDialog
 
-from qgis.core import QgsApplication, QgsMessageLog, QgsSettings
+from qgis.core import Qgis, QgsApplication, QgsMessageLog, QgsSettings
 
 from processing.gui.ToolboxAction import ToolboxAction
 
@@ -61,7 +61,7 @@ class AddScriptFromFileAction(ToolboxAction):
                 except OSError as e:
                     QgsMessageLog.logMessage("Could not copy script '{}'\n{}".format(s, str(e)),
                                              "Processing",
-                                             QgsMessageLog.WARNING)
+                                             Qgis.Warning)
 
             if valid > 0:
                 QgsApplication.processingRegistry().providerById("script").refreshAlgorithms()

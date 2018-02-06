@@ -187,7 +187,7 @@ The values is calculated from searchRadiusMM().
 %End
 
   signals:
-    void messageEmitted( const QString &message, QgsMessageBar::MessageLevel = QgsMessageBar::INFO );
+    void messageEmitted( const QString &message, Qgis::MessageLevel = Qgis::Info );
 %Docstring
 emit a message
 %End

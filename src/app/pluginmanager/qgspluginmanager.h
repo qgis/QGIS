@@ -181,7 +181,7 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     void clearRepositoryFilter();
 
     //! show the given message in the Plugin Manager internal message bar
-    void pushMessage( const QString &text, QgsMessageBar::MessageLevel level, int duration = -1 );
+    void pushMessage( const QString &text, Qgis::MessageLevel level, int duration = -1 );
 
 #ifndef WITH_QTWEBKIT
     //! vote button was clicked
