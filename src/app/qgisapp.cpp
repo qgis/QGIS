@@ -8792,14 +8792,14 @@ void QgisApp::cancelAllEdits( bool verifyAction )
 bool QgisApp::verifyEditsActionDialog( const QString &act, const QString &upon )
 {
   bool res = false;
-  switch ( QMessageBox::information( nullptr,
-                                     tr( "Current edits" ),
-                                     tr( "%1 current changes for %2 layer(s)?" )
-                                     .arg( act,
-                                         upon ),
-                                     QMessageBox::Cancel | QMessageBox::Ok ) )
+  switch ( QMessageBox::question( nullptr,
+                                  tr( "Current edits" ),
+                                  tr( "%1 current changes for %2 layer(s)?" )
+                                  .arg( act,
+                                        upon ),
+                                  QMessageBox::Yes | QMessageBox::No ) )
   {
-    case QMessageBox::Ok:
+    case QMessageBox::Yes:
       res = true;
       break;
     default:
