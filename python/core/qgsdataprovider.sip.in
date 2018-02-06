@@ -362,7 +362,7 @@ The default implementation does nothing.
 %End
 
 
-    virtual const QgsLayerMetadata &layerMetadata() const;
+    virtual QgsLayerMetadata layerMetadata() const;
 %Docstring
 Retrieve collected Metadata from the Provider source
  A structured metadata store for a map layer.

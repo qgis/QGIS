@@ -500,7 +500,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * \see setLayerMetadata
     * \since QGIS 3.0
     */
-    virtual const QgsLayerMetadata &layerMetadata() const { return QgsLayerMetadata(); };
+    virtual QgsLayerMetadata layerMetadata() const { return QgsLayerMetadata(); };
 
     /**
      * Set collected Metadata from the Provider source
