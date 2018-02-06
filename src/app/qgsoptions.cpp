@@ -755,12 +755,27 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   connect( mButtonExportColors, &QAbstractButton::clicked, mTreeCustomColors, &QgsColorSchemeList::showExportColorsDialog );
 
   //find custom color scheme from registry
+  refreshSchemeComboBox();
   QList<QgsCustomColorScheme *> customSchemes;
   QgsApplication::colorSchemeRegistry()->schemes( customSchemes );
   if ( customSchemes.length() > 0 )
   {
     mTreeCustomColors->setScheme( customSchemes.at( 0 ) );
+    mColorSchemesComboBox->setCurrentIndex( mColorSchemesComboBox->findText( customSchemes.at( 0 )->schemeName() ) );
   }
+  connect( mColorSchemesComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [ = ]( int index )
+  {
+    //save changes to scheme
+    if ( mTreeCustomColors->isDirty() )
+    {
+      mTreeCustomColors->saveColorsToScheme();
+    }
+
+    QgsColorScheme *scheme = QgsApplication::colorSchemeRegistry()->schemes().value( index );
+    if ( scheme )
+      mTreeCustomColors->setScheme( scheme );
+  } );
+
 
   //
   // Layout settings
@@ -2242,6 +2257,19 @@ void QgsOptions::addScaleToScaleList( QListWidgetItem *newItem )
   newItem->setData( Qt::UserRole, newItem->text() );
   newItem->setFlags( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable );
   mListGlobalScales->insertItem( i, newItem );
+}
+
+void QgsOptions::refreshSchemeComboBox()
+{
+  mColorSchemesComboBox->blockSignals( true );
+  mColorSchemesComboBox->clear();
+  QList<QgsColorScheme *> schemeList = QgsApplication::colorSchemeRegistry()->schemes();
+  QList<QgsColorScheme *>::const_iterator schemeIt = schemeList.constBegin();
+  for ( ; schemeIt != schemeList.constEnd(); ++schemeIt )
+  {
+    mColorSchemesComboBox->addItem( ( *schemeIt )->schemeName() );
+  }
+  mColorSchemesComboBox->blockSignals( false );
 }
 
 void QgsOptions::scaleItemChanged( QListWidgetItem *changedScaleItem )

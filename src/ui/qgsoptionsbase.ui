@@ -3571,66 +3571,10 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <item>
                 <widget class="QgsCollapsibleGroupBox" name="groupBox_7">
                  <property name="title">
-                  <string>Standard colors</string>
+                  <string>Color schemes</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_12">
-                  <item row="3" column="1">
-                   <widget class="QToolButton" name="mButtonPasteColors">
-                    <property name="toolTip">
-                     <string>Paste colors</string>
-                    </property>
-                    <property name="text">
-                     <string/>
-                    </property>
-                    <property name="icon">
-                     <iconset resource="../../images/images.qrc">
-                      <normaloff>:/images/themes/default/mActionEditPaste.svg</normaloff>:/images/themes/default/mActionEditPaste.svg</iconset>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="5" column="1">
-                   <widget class="QToolButton" name="mButtonExportColors">
-                    <property name="toolTip">
-                     <string>Export colors</string>
-                    </property>
-                    <property name="text">
-                     <string/>
-                    </property>
-                    <property name="icon">
-                     <iconset resource="../../images/images.qrc">
-                      <normaloff>:/images/themes/default/mActionFileSave.svg</normaloff>:/images/themes/default/mActionFileSave.svg</iconset>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="0" column="1">
-                   <widget class="QToolButton" name="mButtonAddColor">
-                    <property name="toolTip">
-                     <string>Add color</string>
-                    </property>
-                    <property name="text">
-                     <string/>
-                    </property>
-                    <property name="icon">
-                     <iconset resource="../../images/images.qrc">
-                      <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="1" column="1">
-                   <widget class="QToolButton" name="mButtonRemoveColor">
-                    <property name="toolTip">
-                     <string>Remove color</string>
-                    </property>
-                    <property name="text">
-                     <string/>
-                    </property>
-                    <property name="icon">
-                     <iconset resource="../../images/images.qrc">
-                      <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="6" column="1">
+                  <item row="7" column="1">
                    <spacer name="verticalSpacer_12">
                     <property name="orientation">
                      <enum>Qt::Vertical</enum>
@@ -3643,21 +3587,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                     </property>
                    </spacer>
                   </item>
-                  <item row="2" column="1">
-                   <widget class="QToolButton" name="mButtonCopyColors">
-                    <property name="toolTip">
-                     <string>Copy colors</string>
-                    </property>
-                    <property name="text">
-                     <string/>
-                    </property>
-                    <property name="icon">
-                     <iconset resource="../../images/images.qrc">
-                      <normaloff>:/images/themes/default/mActionEditCopy.svg</normaloff>:/images/themes/default/mActionEditCopy.svg</iconset>
-                    </property>
-                   </widget>
-                  </item>
-                  <item row="4" column="1">
+                  <item row="5" column="1">
                    <widget class="QToolButton" name="mButtonImportColors">
                     <property name="toolTip">
                      <string>Import colors from file</string>
@@ -3671,12 +3601,89 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="0" column="0" rowspan="8">
+                  <item row="4" column="1">
+                   <widget class="QToolButton" name="mButtonPasteColors">
+                    <property name="toolTip">
+                     <string>Paste colors</string>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="../../images/images.qrc">
+                      <normaloff>:/images/themes/default/mActionEditPaste.svg</normaloff>:/images/themes/default/mActionEditPaste.svg</iconset>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="1">
+                   <widget class="QToolButton" name="mButtonAddColor">
+                    <property name="toolTip">
+                     <string>Add color</string>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="../../images/images.qrc">
+                      <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="1" column="0" rowspan="8">
                    <widget class="QgsColorSchemeList" name="mTreeCustomColors" native="true">
                     <property name="focusPolicy">
                      <enum>Qt::StrongFocus</enum>
                     </property>
                    </widget>
+                  </item>
+                  <item row="2" column="1">
+                   <widget class="QToolButton" name="mButtonRemoveColor">
+                    <property name="toolTip">
+                     <string>Remove color</string>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="../../images/images.qrc">
+                      <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="1">
+                   <widget class="QToolButton" name="mButtonCopyColors">
+                    <property name="toolTip">
+                     <string>Copy colors</string>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="../../images/images.qrc">
+                      <normaloff>:/images/themes/default/mActionEditCopy.svg</normaloff>:/images/themes/default/mActionEditCopy.svg</iconset>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="6" column="1">
+                   <widget class="QToolButton" name="mButtonExportColors">
+                    <property name="toolTip">
+                     <string>Export colors</string>
+                    </property>
+                    <property name="text">
+                     <string/>
+                    </property>
+                    <property name="icon">
+                     <iconset resource="../../images/images.qrc">
+                      <normaloff>:/images/themes/default/mActionFileSave.svg</normaloff>:/images/themes/default/mActionFileSave.svg</iconset>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="0" column="0">
+                   <layout class="QHBoxLayout" name="horizontalLayout_22">
+                    <item>
+                     <widget class="QComboBox" name="mColorSchemesComboBox"/>
+                    </item>
+                   </layout>
                   </item>
                  </layout>
                 </widget>

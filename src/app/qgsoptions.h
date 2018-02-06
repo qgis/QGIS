@@ -250,6 +250,8 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     QListWidgetItem *addScaleToScaleList( const QString &newScale );
     void addScaleToScaleList( QListWidgetItem *newItem );
 
+    void refreshSchemeComboBox();
+
   protected:
     QgisAppStyleSheet *mStyleSheetBuilder = nullptr;
     QMap<QString, QVariant> mStyleSheetNewOpts;
