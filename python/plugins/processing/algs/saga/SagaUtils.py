@@ -31,7 +31,8 @@ import subprocess
 import time
 
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis.core import (QgsApplication,
+from qgis.core import (Qgis,
+                       QgsApplication,
                        QgsProcessingUtils,
                        QgsMessageLog)
 from processing.core.ProcessingConfig import ProcessingConfig
@@ -196,4 +197,4 @@ def executeSaga(feedback):
             pass
 
     if ProcessingConfig.getSetting(SAGA_LOG_CONSOLE):
-        QgsMessageLog.logMessage('\n'.join(loglines), 'Processing', QgsMessageLog.INFO)
+        QgsMessageLog.logMessage('\n'.join(loglines), 'Processing', Qgis.Info)

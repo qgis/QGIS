@@ -151,7 +151,7 @@ void QgsApplication::init( QString profileFolder )
   qRegisterMetaType<QgsProcessingOutputLayerDefinition>( "QgsProcessingOutputLayerDefinition" );
   qRegisterMetaType<QgsUnitTypes::LayoutUnit>( "QgsUnitTypes::LayoutUnit" );
   qRegisterMetaType<QgsFeatureIds>( "QgsFeatureIds" );
-  qRegisterMetaType<QgsMessageLog::MessageLevel>( "QgsMessageLog::MessageLevel" );
+  qRegisterMetaType<Qgis::MessageLevel>( "Qgis::MessageLevel" );
   qRegisterMetaType<QgsReferencedRectangle>( "QgsReferencedRectangle" );
   qRegisterMetaType<QgsReferencedPointXY>( "QgsReferencedPointXY" );
   qRegisterMetaType<QgsLayoutRenderContext::Flags>( "QgsLayoutRenderContext::Flags" );
@@ -491,7 +491,7 @@ QIcon QgsApplication::getThemeIcon( const QString &name )
   return icon;
 }
 
-QCursor QgsApplication::getThemeCursor( const Cursor &cursor )
+QCursor QgsApplication::getThemeCursor( Cursor cursor )
 {
   QgsApplication *app = instance();
   if ( app && app->mCursorCache.contains( cursor ) )

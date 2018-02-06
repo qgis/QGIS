@@ -2443,7 +2443,7 @@ namespace QgsWms
       renderer.reset( QgsFeatureRenderer::loadSld( el, param.mGeom.type(), errorMsg ) );
       if ( !renderer )
       {
-        QgsMessageLog::logMessage( errorMsg, "Server", QgsMessageLog::INFO );
+        QgsMessageLog::logMessage( errorMsg, "Server", Qgis::Info );
         continue;
       }
 
@@ -2612,7 +2612,7 @@ namespace QgsWms
                 {
                   layer->readSld( namedElem, err );
                   layer->setCustomProperty( "readSLD", true );
-                  layers.append( layer );
+                  layers.insert( 0, layer );
                 }
               }
             }
@@ -2676,7 +2676,7 @@ namespace QgsWms
                 throw QgsMapServiceException( QStringLiteral( "StyleNotDefined" ), QStringLiteral( "Style \"%1\" does not exist for layer \"%2\"" ).arg( style, layerNickname( *layer ) ) );
               }
             }
-            layers.append( layer );
+            layers.insert( 0, layer );
           }
         }
       }

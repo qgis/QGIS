@@ -28,7 +28,8 @@ __revision__ = '$Format:%H$'
 import sys
 from copy import deepcopy
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis.core import (QgsFeature,
+from qgis.core import (Qgis,
+                       QgsFeature,
                        QgsVectorFileWriter,
                        QgsProcessingFeedback,
                        QgsSettings,
@@ -60,7 +61,7 @@ def execute(alg, parameters, context=None, feedback=None):
         results, ok = alg.run(parameters, context, feedback)
         return ok, results
     except QgsProcessingException as e:
-        QgsMessageLog.logMessage(str(sys.exc_info()[0]), 'Processing', QgsMessageLog.CRITICAL)
+        QgsMessageLog.logMessage(str(sys.exc_info()[0]), 'Processing', Qgis.Critical)
         if feedback is not None:
             feedback.reportError(e.msg)
         return False, {}

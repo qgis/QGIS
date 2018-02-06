@@ -39,12 +39,15 @@ QgsReportSectionFieldGroupWidget::QgsReportSectionFieldGroupWidget( QgsReportOrg
   mSortAscendingCheckBox->setChecked( section->sortAscending() );
 
   mCheckShowHeader->setChecked( section->headerEnabled() );
+  mButtonEditHeader->setChecked( section->headerEnabled() );
   mCheckHeaderAlwaysVisible->setChecked( section->headerVisibility() == QgsReportSectionFieldGroup::AlwaysInclude );
   mCheckHeaderAlwaysVisible->setEnabled( section->headerEnabled() );
   mCheckShowFooter->setChecked( section->footerEnabled() );
+  mButtonEditFooter->setEnabled( section->footerEnabled() );
   mCheckFooterAlwaysVisible->setChecked( section->headerVisibility() == QgsReportSectionFieldGroup::AlwaysInclude );
   mCheckFooterAlwaysVisible->setEnabled( section->footerEnabled() );
   mCheckShowBody->setChecked( section->bodyEnabled() );
+  mButtonEditBody->setEnabled( section->bodyEnabled() );
 
   connect( mSortAscendingCheckBox, &QCheckBox::toggled, this, &QgsReportSectionFieldGroupWidget::sortAscendingToggled );
   connect( mLayerComboBox, &QgsMapLayerComboBox::layerChanged, this, &QgsReportSectionFieldGroupWidget::setLayer );
@@ -54,6 +57,10 @@ QgsReportSectionFieldGroupWidget::QgsReportSectionFieldGroupWidget( QgsReportOrg
   connect( mCheckShowFooter, &QCheckBox::toggled, this, &QgsReportSectionFieldGroupWidget::toggleFooter );
   connect( mCheckFooterAlwaysVisible, &QCheckBox::toggled, this, &QgsReportSectionFieldGroupWidget::toggleFooterAlwaysVisible );
   connect( mCheckShowBody, &QCheckBox::toggled, this, &QgsReportSectionFieldGroupWidget::toggleBody );
+
+  connect( mCheckShowHeader, &QCheckBox::toggled, mButtonEditHeader, &QPushButton::setEnabled );
+  connect( mCheckShowFooter, &QCheckBox::toggled, mButtonEditFooter, &QPushButton::setEnabled );
+  connect( mCheckShowBody, &QCheckBox::toggled, mButtonEditBody, &QPushButton::setEnabled );
 }
 
 void QgsReportSectionFieldGroupWidget::toggleHeader( bool enabled )

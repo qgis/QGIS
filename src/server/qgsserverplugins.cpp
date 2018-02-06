@@ -48,7 +48,7 @@ bool QgsServerPlugins::initPlugins( QgsServerInterface *interface )
   pythonlibName.prepend( "lib" );
 #endif
   QString version = QStringLiteral( "%1.%2.%3" ).arg( Qgis::QGIS_VERSION_INT / 10000 ).arg( Qgis::QGIS_VERSION_INT / 100 % 100 ).arg( Qgis::QGIS_VERSION_INT % 100 );
-  QgsMessageLog::logMessage( QStringLiteral( "load library %1 (%2)" ).arg( pythonlibName, version ), __FILE__, QgsMessageLog::INFO );
+  QgsMessageLog::logMessage( QStringLiteral( "load library %1 (%2)" ).arg( pythonlibName, version ), __FILE__, Qgis::Info );
   QLibrary pythonlib( pythonlibName, version );
   // It's necessary to set these two load hints, otherwise Python library won't work correctly
   // see http://lists.kde.org/?l=pykde&m=117190116820758&w=2
@@ -63,7 +63,7 @@ bool QgsServerPlugins::initPlugins( QgsServerInterface *interface )
     }
   }
 
-  QgsMessageLog::logMessage( QStringLiteral( "Python support library loaded successfully." ), __FILE__, QgsMessageLog::INFO );
+  QgsMessageLog::logMessage( QStringLiteral( "Python support library loaded successfully." ), __FILE__, Qgis::Info );
   typedef QgsPythonUtils*( *inst )();
   inst pythonlib_inst = ( inst ) cast_to_fptr( pythonlib.resolve( "instance" ) );
   if ( !pythonlib_inst )
@@ -101,16 +101,16 @@ bool QgsServerPlugins::initPlugins( QgsServerInterface *interface )
         {
           atLeastOneEnabled = true;
           serverPlugins().append( pluginName );
-          QgsMessageLog::logMessage( QStringLiteral( "Server plugin %1 loaded!" ).arg( pluginName ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
+          QgsMessageLog::logMessage( QStringLiteral( "Server plugin %1 loaded!" ).arg( pluginName ), QStringLiteral( "Server" ), Qgis::Info );
         }
         else
         {
-          QgsMessageLog::logMessage( QStringLiteral( "Error loading server plugin %1" ).arg( pluginName ), QStringLiteral( "Server" ), QgsMessageLog::CRITICAL );
+          QgsMessageLog::logMessage( QStringLiteral( "Error loading server plugin %1" ).arg( pluginName ), QStringLiteral( "Server" ), Qgis::Critical );
         }
       }
       else
       {
-        QgsMessageLog::logMessage( QStringLiteral( "Error starting server plugin %1" ).arg( pluginName ), QStringLiteral( "Server" ), QgsMessageLog::CRITICAL );
+        QgsMessageLog::logMessage( QStringLiteral( "Error starting server plugin %1" ).arg( pluginName ), QStringLiteral( "Server" ), Qgis::Critical );
       }
     }
   }

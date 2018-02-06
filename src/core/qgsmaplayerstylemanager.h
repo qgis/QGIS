@@ -25,6 +25,7 @@ class QgsMapLayer;
 #include <QObject>
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 
 class QDomElement;
 
@@ -96,8 +97,12 @@ class CORE_EXPORT QgsMapLayerStyleManager : public QObject
 {
     Q_OBJECT
   public:
-    //! Construct a style manager associated with a map layer (must not be null)
-    QgsMapLayerStyleManager( QgsMapLayer *layer );
+
+    /**
+     * Construct a style manager associated with a map layer (must not be null).
+     * The style manager will be parented to \a layer.
+     */
+    QgsMapLayerStyleManager( QgsMapLayer *layer SIP_TRANSFERTHIS );
 
     //! Get pointer to the associated map layer
     QgsMapLayer *layer() const { return mLayer; }

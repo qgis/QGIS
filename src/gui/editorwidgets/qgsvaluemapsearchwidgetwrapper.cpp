@@ -80,10 +80,6 @@ QgsSearchWidgetWrapper::FilterFlags QgsValueMapSearchWidgetWrapper::defaultFlags
 
 QString QgsValueMapSearchWidgetWrapper::createExpression( QgsSearchWidgetWrapper::FilterFlags flags ) const
 {
-  //if deselect value, always pass
-  if ( mComboBox->currentIndex() == 0 )
-    return QString();
-
   //clear any unsupported flags
   flags &= supportedFlags();
 
@@ -94,6 +90,10 @@ QString QgsValueMapSearchWidgetWrapper::createExpression( QgsSearchWidgetWrapper
     return fieldName + " IS NULL";
   if ( flags & IsNotNull )
     return fieldName + " IS NOT NULL";
+
+  //if deselect value, always pass
+  if ( mComboBox->currentIndex() == 0 )
+    return QString();
 
   QString currentKey = mComboBox->currentData().toString();
 

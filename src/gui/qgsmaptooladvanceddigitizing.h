@@ -67,7 +67,7 @@ class GUI_EXPORT QgsMapToolAdvancedDigitizing : public QgsMapToolEdit
      * Returns whether functionality of advanced digitizing dock widget is currently allowed.
      *
      * Tools may decide to switch this support on/off based on the current state of the map tool.
-     * For example, in node tool before user picks a vertex to move, advanced digitizing dock
+     * For example, in vertex tool before user picks a vertex to move, advanced digitizing dock
      * widget should be disabled and only enabled once a vertex is being moved. Other map tools
      * may keep advanced digitizing allowed all the time.
      *

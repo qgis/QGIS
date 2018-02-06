@@ -106,10 +106,10 @@ SET(QGIS_APP_SRCS
   qgsmaptoolsvgannotation.cpp
   qgsmaptooltextannotation.cpp
 
-  nodetool/qgsselectedfeature.cpp
-  nodetool/qgsvertexentry.cpp
-  nodetool/qgsnodeeditor.cpp
-  nodetool/qgsnodetool.cpp
+  vertextool/qgsselectedfeature.cpp
+  vertextool/qgsvertexentry.cpp
+  vertextool/qgsvertexeditor.cpp
+  vertextool/qgsvertextool.cpp
 
   qgslayerstylingwidget.cpp
   qgsmeasuredialog.cpp
@@ -337,9 +337,9 @@ SET (QGIS_APP_MOC_HDRS
   qgsmaptoolregularpolygoncenterpoint.h
   qgsmaptoolregularpolygoncentercorner.h
 
-  nodetool/qgsselectedfeature.h
-  nodetool/qgsnodeeditor.h
-  nodetool/qgsnodetool.h
+  vertextool/qgsselectedfeature.h
+  vertextool/qgsvertexeditor.h
+  vertextool/qgsvertextool.h
 
   qgslayerstylingwidget.h
   qgsmeasuredialog.h
@@ -707,8 +707,8 @@ ADD_LIBRARY(qgis_app SHARED ${QGIS_APP_SRCS} ${QGIS_APP_MOC_SRCS} ${QGIS_APP_HDR
 
 TARGET_LINK_LIBRARIES(qgis_app
   ${QWT_LIBRARY}
-  ${QT_QTSQL_LIBRARY}
-  ${QT_QTUITOOLS_LIBRARY}
+  ${Qt5Sql_LIBRARIES}
+  ${Qt5UiTools_LIBRARIES}
   ${OPTIONAL_QTWEBKIT}
   #should only be needed for win
   ${QT_QTMAIN_LIBRARY}
@@ -720,6 +720,10 @@ TARGET_LINK_LIBRARIES(qgis_app
   qgis_native
   libdxfrw
 )
+
+IF(ENABLE_MODELTEST)
+  TARGET_LINK_LIBRARIES(qgis_app ${Qt5Test_LIBRARIES})
+ENDIF(ENABLE_MODELTEST)
 
 IF (WITH_3D)
   TARGET_LINK_LIBRARIES(qgis_app

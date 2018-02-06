@@ -131,7 +131,7 @@ class SERVER_EXPORT QgsServerSettings
      * Returns the log level.
       * \returns the log level.
       */
-    QgsMessageLog::MessageLevel logLevel() const;
+    Qgis::MessageLevel logLevel() const;
 
     /**
      * Returns the QGS project file to use.

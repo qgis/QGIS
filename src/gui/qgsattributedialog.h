@@ -56,18 +56,6 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog
     ~QgsAttributeDialog() override;
 
     /**
-     * Saves the size and position for the next time
-     *  this dialog box will be used.
-     */
-    void saveGeometry();
-
-    /**
-     * Restores the size and position from the last time
-     *  this dialog box was used.
-     */
-    void restoreGeometry();
-
-    /**
      * \brief setHighlight
      * \param h The highlight. Ownership is taken.
      */

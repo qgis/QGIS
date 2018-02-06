@@ -27,7 +27,7 @@ from qgis.PyQt.QtWidgets import QApplication, QAction, QMenu, QInputDialog, QMes
 from qgis.PyQt.QtGui import QKeySequence, QIcon
 
 from qgis.gui import QgsMessageBar
-from qgis.core import QgsSettings
+from qgis.core import Qgis, QgsSettings
 from ..db_plugins import createDbPlugin
 
 
@@ -357,7 +357,7 @@ class Database(DbItemObject):
         else:
             QApplication.restoreOverrideCursor()
             parent.infoBar.pushMessage(QApplication.translate("DBManagerPlugin", "Cannot delete the selected item."),
-                                       QgsMessageBar.INFO, parent.iface.messageTimeout())
+                                       Qgis.Info, parent.iface.messageTimeout())
             QApplication.setOverrideCursor(Qt.WaitCursor)
 
     def createSchemaActionSlot(self, item, action, parent):
@@ -366,7 +366,7 @@ class Database(DbItemObject):
             if not isinstance(item, (DBPlugin, Schema, Table)) or item.database() is None:
                 parent.infoBar.pushMessage(
                     QApplication.translate("DBManagerPlugin", "No database selected or you are not connected to it."),
-                    QgsMessageBar.INFO, parent.iface.messageTimeout())
+                    Qgis.Info, parent.iface.messageTimeout())
                 return
             (schema, ok) = QInputDialog.getText(parent, QApplication.translate("DBManagerPlugin", "New schema"),
                                                 QApplication.translate("DBManagerPlugin", "Enter new schema name"))
@@ -383,7 +383,7 @@ class Database(DbItemObject):
             if not isinstance(item, Schema):
                 parent.infoBar.pushMessage(
                     QApplication.translate("DBManagerPlugin", "Select an empty schema for deletion."),
-                    QgsMessageBar.INFO, parent.iface.messageTimeout())
+                    Qgis.Info, parent.iface.messageTimeout())
                 return
             res = QMessageBox.question(parent, QApplication.translate("DBManagerPlugin", "hey!"),
                                        QApplication.translate("DBManagerPlugin",
@@ -414,7 +414,7 @@ class Database(DbItemObject):
         if not hasattr(item, 'database') or item.database() is None:
             parent.infoBar.pushMessage(
                 QApplication.translate("DBManagerPlugin", "No database selected or you are not connected to it."),
-                QgsMessageBar.INFO, parent.iface.messageTimeout())
+                Qgis.Info, parent.iface.messageTimeout())
             return
         from ..dlg_create_table import DlgCreateTable
 
@@ -426,7 +426,7 @@ class Database(DbItemObject):
         try:
             if not isinstance(item, Table) or item.isView:
                 parent.infoBar.pushMessage(QApplication.translate("DBManagerPlugin", "Select a table to edit."),
-                                           QgsMessageBar.INFO, parent.iface.messageTimeout())
+                                           Qgis.Info, parent.iface.messageTimeout())
                 return
             from ..dlg_table_properties import DlgTableProperties
 
@@ -440,7 +440,7 @@ class Database(DbItemObject):
             if not isinstance(item, Table):
                 parent.infoBar.pushMessage(
                     QApplication.translate("DBManagerPlugin", "Select a table/view for deletion."),
-                    QgsMessageBar.INFO, parent.iface.messageTimeout())
+                    Qgis.Info, parent.iface.messageTimeout())
                 return
             res = QMessageBox.question(parent, QApplication.translate("DBManagerPlugin", "hey!"),
                                        QApplication.translate("DBManagerPlugin",
@@ -458,7 +458,7 @@ class Database(DbItemObject):
         try:
             if not isinstance(item, Table) or item.isView:
                 parent.infoBar.pushMessage(QApplication.translate("DBManagerPlugin", "Select a table to empty it."),
-                                           QgsMessageBar.INFO, parent.iface.messageTimeout())
+                                           Qgis.Info, parent.iface.messageTimeout())
                 return
             res = QMessageBox.question(parent, QApplication.translate("DBManagerPlugin", "hey!"),
                                        QApplication.translate("DBManagerPlugin",
@@ -485,7 +485,7 @@ class Database(DbItemObject):
         try:
             if not isinstance(item, Table):
                 parent.infoBar.pushMessage(QApplication.translate("DBManagerPlugin", "Select a table/view."),
-                                           QgsMessageBar.INFO, parent.iface.messageTimeout())
+                                           Qgis.Info, parent.iface.messageTimeout())
                 return
         finally:
             QApplication.setOverrideCursor(Qt.WaitCursor)

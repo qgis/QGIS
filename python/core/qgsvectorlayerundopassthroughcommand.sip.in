@@ -154,7 +154,7 @@ class QgsVectorLayerUndoPassthroughCommandChangeGeometry : QgsVectorLayerUndoPas
 %End
   public:
 
-    QgsVectorLayerUndoPassthroughCommandChangeGeometry( QgsVectorLayerEditBuffer *buffer /Transfer/, const QgsFeatureId &fid, const QgsGeometry &geom );
+    QgsVectorLayerUndoPassthroughCommandChangeGeometry( QgsVectorLayerEditBuffer *buffer /Transfer/, QgsFeatureId fid, const QgsGeometry &geom );
 %Docstring
 Constructor for QgsVectorLayerUndoPassthroughCommandChangeGeometry
 

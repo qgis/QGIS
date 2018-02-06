@@ -72,7 +72,7 @@ Optional ``flags`` can be specified to control the output format.
 .. seealso:: :py:func:`formatX`
 %End
 
-    static QString format( QgsPointXY point, Format format, int precision = 12,  FormatFlags flags = FlagDegreesUseStringSuffix );
+    static QString format( const QgsPointXY &point, Format format, int precision = 12,  FormatFlags flags = FlagDegreesUseStringSuffix );
 %Docstring
 Formats a ``point`` according to the specified parameters.
 

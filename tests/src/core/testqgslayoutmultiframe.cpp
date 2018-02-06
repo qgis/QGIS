@@ -522,7 +522,7 @@ void TestQgsLayoutMultiFrame::registry()
   QVERIFY( registry.itemTypes().isEmpty() );
   QVERIFY( !registry.createMultiFrame( 1, nullptr ) );
 
-  auto create = []( QgsLayout * layout )->QgsLayoutMultiFrame*
+  auto create = []( QgsLayout * layout )->QgsLayoutMultiFrame *
   {
     return new TestMultiFrame( layout );
   };

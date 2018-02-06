@@ -61,7 +61,7 @@ class APP_EXPORT QgsMapToolIdentifyAction : public QgsMapToolIdentify
 
   public slots:
     void handleCopyToClipboard( QgsFeatureStore & );
-    void handleChangedRasterResults( QList<IdentifyResult> &results );
+    void handleChangedRasterResults( QList<QgsMapToolIdentify::IdentifyResult> &results );
 
   signals:
 

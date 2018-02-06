@@ -210,9 +210,9 @@ void QgsBookmarks::deleteClicked()
     return;
 
   // make sure the user really wants to delete these bookmarks
-  if ( QMessageBox::Cancel == QMessageBox::information( this, tr( "Delete Bookmarks" ),
+  if ( QMessageBox::No == QMessageBox::question( this, tr( "Delete Bookmarks" ),
        tr( "Are you sure you want to delete %n bookmark(s)?", "number of rows", rows.size() ),
-       QMessageBox::Ok | QMessageBox::Cancel ) )
+       QMessageBox::Yes | QMessageBox::No ) )
     return;
 
   // Remove in reverse order to keep the merged model indexes
@@ -727,7 +727,7 @@ bool QgsMergedBookmarksTableModel::projectAvailable() const
 
 void QgsMergedBookmarksTableModel::moveBookmark( QAbstractTableModel &modelFrom, QAbstractTableModel &modelTo, int row )
 {
-  emit beginResetModel();
+  beginResetModel();
   QSqlTableModel *qgisModel = dynamic_cast<QSqlTableModel *>( &modelTo );
   if ( !qgisModel )
   {
@@ -765,7 +765,7 @@ void QgsMergedBookmarksTableModel::moveBookmark( QAbstractTableModel &modelFrom,
     qgisModel->select();
     modelFrom.removeRows( row, 1 );
   }
-  emit endResetModel();
+  endResetModel();
   emit layoutChanged();
 }
 

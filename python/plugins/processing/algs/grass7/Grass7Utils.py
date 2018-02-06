@@ -31,7 +31,8 @@ import shlex
 import subprocess
 import os
 
-from qgis.core import (QgsApplication,
+from qgis.core import (Qgis,
+                       QgsApplication,
                        QgsProcessingUtils,
                        QgsMessageLog)
 from qgis.PyQt.QtCore import QCoreApplication
@@ -349,7 +350,7 @@ class Grass7Utils:
         loglines.append(Grass7Utils.tr('GRASS GIS 7 execution console output'))
         grassOutDone = False
         command, grassenv = Grass7Utils.prepareGrassExecution(commands)
-        #QgsMessageLog.logMessage('exec: {}'.format(command), 'DEBUG', QgsMessageLog.INFO)
+        #QgsMessageLog.logMessage('exec: {}'.format(command), 'DEBUG', Qgis.Info)
 
         # For MS-Windows, we need to hide the console window.
         if isWindows():
@@ -408,7 +409,7 @@ class Grass7Utils:
                         feedback.pushConsoleInfo(line)
 
         if ProcessingConfig.getSetting(Grass7Utils.GRASS_LOG_CONSOLE):
-            QgsMessageLog.logMessage('\n'.join(loglines), 'Processing', QgsMessageLog.INFO)
+            QgsMessageLog.logMessage('\n'.join(loglines), 'Processing', Qgis.Info)
 
     # GRASS session is used to hold the layers already exported or
     # produced in GRASS between multiple calls to GRASS algorithms.

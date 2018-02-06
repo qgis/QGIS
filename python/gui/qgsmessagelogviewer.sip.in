@@ -29,7 +29,7 @@ QgsApplication.messageLog() instance.
 
   public slots:
 
-    void logMessage( const QString &message, const QString &tag, QgsMessageLog::MessageLevel level );
+    void logMessage( const QString &message, const QString &tag, Qgis::MessageLevel level );
 %Docstring
 Logs a ``message`` to the viewer.
 %End

@@ -93,7 +93,7 @@ class CORE_EXPORT QgsProcessingContext
      * Sets \a flags for the context.
      * \see flags()
      */
-    void setFlags( const QgsProcessingContext::Flags &flags ) { mFlags = flags; }
+    void setFlags( QgsProcessingContext::Flags flags ) { mFlags = flags; }
 
     /**
      * Returns the project in which the algorithm is being executed.
@@ -220,7 +220,7 @@ class CORE_EXPORT QgsProcessingContext
      * reset the invalidGeometryCallback() to a default implementation.
      * \see invalidGeometryCheck()
      */
-    void setInvalidGeometryCheck( const QgsFeatureRequest::InvalidGeometryCheck &check )
+    void setInvalidGeometryCheck( QgsFeatureRequest::InvalidGeometryCheck check )
     {
       mInvalidGeometryCheck = check;
 
@@ -260,7 +260,7 @@ class CORE_EXPORT QgsProcessingContext
      * \see invalidGeometryCallback()
      */
 #ifndef SIP_RUN
-    void setInvalidGeometryCallback( std::function< void( const QgsFeature & ) > callback ) { mInvalidGeometryCallback = callback; }
+    void setInvalidGeometryCallback( const std::function< void( const QgsFeature & ) > &callback ) { mInvalidGeometryCallback = callback; }
 #else
     void setInvalidGeometryCallback( SIP_PYCALLABLE / AllowNone / );
     % MethodCode
@@ -294,7 +294,7 @@ class CORE_EXPORT QgsProcessingContext
      * \see transformErrorCallback()
      */
 #ifndef SIP_RUN
-    void setTransformErrorCallback( std::function< void( const QgsFeature & ) > callback ) { mTransformErrorCallback = callback; }
+    void setTransformErrorCallback( const std::function< void( const QgsFeature & ) > &callback ) { mTransformErrorCallback = callback; }
 #else
     void setTransformErrorCallback( SIP_PYCALLABLE / AllowNone / );
     % MethodCode

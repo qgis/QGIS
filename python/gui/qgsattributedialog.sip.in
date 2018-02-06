@@ -32,18 +32,6 @@ Create an attribute dialog for a given layer and feature
 
     ~QgsAttributeDialog();
 
-    void saveGeometry();
-%Docstring
-Saves the size and position for the next time
-this dialog box will be used.
-%End
-
-    void restoreGeometry();
-%Docstring
-Restores the size and position from the last time
-this dialog box was used.
-%End
-
     void setHighlight( QgsHighlight *h );
 %Docstring
  setHighlight

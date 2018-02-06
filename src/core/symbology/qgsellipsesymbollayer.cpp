@@ -29,7 +29,7 @@
 
 QgsEllipseSymbolLayer::QgsEllipseSymbolLayer()
   : mSymbolName( QStringLiteral( "circle" ) )
-  , mStrokeColor( Qt::black )
+  , mStrokeColor( QColor( 70, 70, 70 ) )
 {
   mColor = Qt::white;
   mPen.setColor( mStrokeColor );

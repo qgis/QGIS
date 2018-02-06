@@ -69,7 +69,7 @@ void QgsMapToolCircle2TangentsPoint::cadCanvasReleaseEvent( QgsMapMouseEvent *e 
       if ( !isIntersect )
       {
         QgisApp::instance()->messageBar()->pushMessage( tr( "Error" ), tr( "Segments are parallels" ),
-            QgsMessageBar::CRITICAL, QgisApp::instance()->messageTimeout() );
+            Qgis::Critical, QgisApp::instance()->messageTimeout() );
         deactivate();
       }
       else

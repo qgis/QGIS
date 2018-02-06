@@ -362,7 +362,8 @@ QgsFeature QgsVectorLayerUtils::duplicateFeature( QgsVectorLayer *layer, const Q
         //set childlayer editable
         relation.referencingLayer()->startEditing();
         //change the fk of the child to the id of the new parent
-        for ( const QgsRelation::FieldPair &fieldPair : relation.fieldPairs() )
+        const auto pairs = relation.fieldPairs();
+        for ( const QgsRelation::FieldPair &fieldPair : pairs )
         {
           childFeature.setAttribute( fieldPair.first, newFeature.attribute( fieldPair.second ) );
         }
@@ -394,7 +395,7 @@ QgsFeatureIds QgsVectorLayerUtils::QgsDuplicateFeatureContext::duplicatedFeature
   return mDuplicatedFeatures[layer];
 }
 
-void QgsVectorLayerUtils::QgsDuplicateFeatureContext::setDuplicatedFeatures( QgsVectorLayer *layer, QgsFeatureIds ids )
+void QgsVectorLayerUtils::QgsDuplicateFeatureContext::setDuplicatedFeatures( QgsVectorLayer *layer, const QgsFeatureIds &ids )
 {
   mDuplicatedFeatures.insert( layer, ids );
 }

@@ -101,7 +101,7 @@ QMap< QgsOgrProviderUtils::DatasetIdentification,
 
 QMap< QString, int > QgsOgrProviderUtils::sMapCountOpenedDS;
 
-QMap< GDALDatasetH, bool> QgsOgrProviderUtils::sMapDSHandleToUpdateMode;
+QHash< GDALDatasetH, bool> QgsOgrProviderUtils::sMapDSHandleToUpdateMode;
 
 QMap< QString, QDateTime > QgsOgrProviderUtils::sMapDSNameToLastModifiedDate;
 
@@ -190,7 +190,7 @@ void QgsOgrProvider::repack()
     QString packedDbf( mFilePath.left( mFilePath.size() - 4 ) + "_packed.dbf" );
     if ( QFile::exists( packedDbf ) )
     {
-      QgsMessageLog::logMessage( tr( "Possible corruption after REPACK detected. %1 still exists. This may point to a permission or locking problem of the original DBF." ).arg( packedDbf ), tr( "OGR" ), QgsMessageLog::CRITICAL );
+      QgsMessageLog::logMessage( tr( "Possible corruption after REPACK detected. %1 still exists. This may point to a permission or locking problem of the original DBF." ).arg( packedDbf ), tr( "OGR" ), Qgis::Critical );
 
       mOgrSqlLayer.reset();
       mOgrOrigLayer.reset();
@@ -207,7 +207,7 @@ void QgsOgrProvider::repack()
 
       if ( !mOgrOrigLayer )
       {
-        QgsMessageLog::logMessage( tr( "Original layer could not be reopened." ) + " " + errCause, tr( "OGR" ), QgsMessageLog::CRITICAL );
+        QgsMessageLog::logMessage( tr( "Original layer could not be reopened." ) + " " + errCause, tr( "OGR" ), Qgis::Critical );
         mValid = false;
       }
 
@@ -4387,7 +4387,7 @@ QgsOgrLayerUniquePtr QgsOgrProviderUtils::getLayer( const QString &dsName,
 
 static QDateTime getLastModified( const QString &dsName )
 {
-  if ( dsName.toLower().endsWith( ".gpkg" ) )
+  if ( dsName.endsWith( ".gpkg", Qt::CaseInsensitive ) )
   {
     QFileInfo info( dsName + "-wal" );
     if ( info.exists() )

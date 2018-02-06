@@ -72,6 +72,19 @@ class CORE_EXPORT Qgis
     //
 
     /**
+     * \brief Level for messages
+     * This will be used both for message log and message bar in application.
+     */
+    enum MessageLevel
+    {
+      Info = 0,
+      Warning = 1,
+      Critical = 2,
+      Success = 3,
+      None = 4
+    };
+
+    /**
      * Raster data types.
      *  This is modified and extended copy of GDALDataType.
      */
@@ -137,6 +150,17 @@ class CORE_EXPORT Qgis
     */
     static const double UI_SCALE_FACTOR;
 
+    /**
+     * Default snapping distance tolerance.
+     *  \since QGIS 3.0
+    */
+    static const double DEFAULT_SNAP_TOLERANCE;
+
+    /**
+     * Default snapping distance units.
+     *  \since QGIS 3.0
+    */
+    static const int DEFAULT_SNAP_UNITS;
 };
 
 // hack to workaround warnings when casting void pointers

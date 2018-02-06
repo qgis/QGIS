@@ -119,6 +119,13 @@ Returns the value used when clear() is called.
 .. seealso:: :py:func:`setClearValue`
 %End
 
+    void setLineEditAlignment( Qt::Alignment alignment );
+%Docstring
+Set alignment in the embedded line edit widget
+
+:param alignment:
+%End
+
     virtual double valueFromText( const QString &text ) const;
 
     virtual QValidator::State validate( QString &input, int &pos ) const;

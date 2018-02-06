@@ -335,7 +335,7 @@ default theme if the active theme does not have the required icon.
       Sampler,
     };
 
-    static QCursor getThemeCursor( const Cursor &cursor );
+    static QCursor getThemeCursor( Cursor cursor );
 %Docstring
 Helper to get a theme cursor. It will fall back to the
 default theme if the active theme does not have the required icon.

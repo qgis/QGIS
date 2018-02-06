@@ -99,7 +99,7 @@ QStringList makeKeyTokens_( const QString &scope, const QString &key )
     {
 
       QString errorString = QObject::tr( "Entry token invalid : '%1'. The token will not be saved to file." ).arg( keyToken );
-      QgsMessageLog::logMessage( errorString, QString(), QgsMessageLog::CRITICAL );
+      QgsMessageLog::logMessage( errorString, QString(), Qgis::Critical );
 
     }
 
@@ -2295,7 +2295,7 @@ QList<QgsMapLayer *> QgsProject::addMapLayers(
   bool addToLegend,
   bool takeOwnership )
 {
-  QList<QgsMapLayer *> myResultList = mLayerStore->addMapLayers( layers, takeOwnership );
+  const QList<QgsMapLayer *> myResultList = mLayerStore->addMapLayers( layers, takeOwnership );
   if ( !myResultList.isEmpty() )
   {
     if ( addToLegend )
@@ -2414,12 +2414,13 @@ void QgsProject::setTrustLayerMetadata( bool trust )
 
 bool QgsProject::saveAuxiliaryStorage( const QString &filename )
 {
-  for ( QgsMapLayer *l : mapLayers().values() )
+  const QMap<QString, QgsMapLayer *> layers = mapLayers();
+  for ( auto it = layers.constBegin(); it != layers.constEnd(); ++it )
   {
-    if ( l->type() != QgsMapLayer::VectorLayer )
+    if ( it.value()->type() != QgsMapLayer::VectorLayer )
       continue;
 
-    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( l );
+    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( it.value() );
     if ( vl && vl->auxiliaryLayer() )
     {
       vl->auxiliaryLayer()->save();

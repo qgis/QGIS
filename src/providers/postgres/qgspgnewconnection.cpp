@@ -202,7 +202,7 @@ void QgsPgNewConnection::testConnection()
   {
     // Database successfully opened; we can now issue SQL commands.
     bar->pushMessage( tr( "Connection to %1 was successful." ).arg( txtDatabase->text() ),
-                      QgsMessageBar::INFO );
+                      Qgis::Info );
 
     // free pg connection resources
     conn->unref();
@@ -210,7 +210,7 @@ void QgsPgNewConnection::testConnection()
   else
   {
     bar->pushMessage( tr( "Connection failed - consult message log for details." ),
-                      QgsMessageBar::WARNING );
+                      Qgis::Warning );
   }
 }
 

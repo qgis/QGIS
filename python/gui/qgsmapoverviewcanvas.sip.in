@@ -48,7 +48,15 @@ Returns list of layers visible in the overview
 
     void updateFullExtent();
 
-  public slots:
+  protected slots:
+    void mapRenderingFinished();
+
+    void layerRepaintRequested( bool deferred = false );
+%Docstring
+Triggered when a layer in the overview requests a repaint.
+%End
+
+  protected:
 
     void drawExtentRect();
 %Docstring
@@ -60,15 +68,10 @@ used for overview canvas to reflect changed extent in main map canvas
 Should be called when the canvas destination CRS is changed
 %End
 
-  protected slots:
-    void mapRenderingFinished();
-
-    void layerRepaintRequested( bool deferred = false );
+    void transformContextChanged();
 %Docstring
-Triggered when a layer in the overview requests a repaint.
+Called when the canvas transform context is changed
 %End
-
-  protected:
 
     virtual void paintEvent( QPaintEvent *pe );
 

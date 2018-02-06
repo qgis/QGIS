@@ -152,7 +152,7 @@ QVariantMap QgsMergeVectorAlgorithm::processAlgorithm( const QVariantMap &parame
           if ( destField.type() != sourceField.type() )
           {
             throw QgsProcessingException( QObject::tr( "%1 field in layer %2 has different data type than in other layers (%3 instead of %4)" )
-                                          .arg( sourceField.name(), vl->name() ).arg( sourceField.typeName() ).arg( destField.typeName() ) );
+                                          .arg( sourceField.name(), vl->name(), sourceField.typeName(), destField.typeName() ) );
           }
           break;
         }

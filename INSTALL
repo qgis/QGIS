@@ -1,10 +1,10 @@
 QGIS
 Building QGIS from source - step by step
-Thursday November 02, 2017
+Friday February 02, 2018
 
 
-Last Updated: Thursday November 02, 2017
-Last Change : Thursday November 02, 2017
+Last Updated: Friday February 02, 2018
+Last Change : Friday February 02, 2018
 
 
   1. Introduction
@@ -100,7 +100,7 @@ Required build dependencies:
 - Proj >= 4.4.x
 - GEOS >= 3.4
 - Sqlite3 >= 3.0.0
-- SpatiaLite
+- SpatiaLite >= 4.2.0
 - libspatialindex
 - GDAL/OGR >= 2.1
 - Qwt >= 5.0 & (< 6.1 with internal QwtPolar)
@@ -456,35 +456,7 @@ For the QGIS build you need to install following packages from cygwin:
 
 and from OSGeo4W (select Advanced Installation):
 
-- expat
-- fcgi
-- gdal
-- grass
-- gsl-devel
-- iconv
-- libzip-devel
-- libspatialindex-devel
-- pyqt5
-- python3-devel
-- python3-qscintilla
-- python3-nose2
-- python3-future
-- python3-pyyaml
-- python3-mock
-- python3-six
-- qca-qt5-devel
-- qca-qt5-libs
-- qscintilla-qt5
-- qt5-devel
-- qt5-libs-debug
-- qtwebkit-qt5-devel
-- qtwebkit-qt5-libs-debug
-- qwt-devel-qt5
-- sip-qt5
-- spatialite
-- oci
-- qtkeychain
-- libzip
+- qgis-dev-deps
 
 This will also select packages the above packages depend on.
 

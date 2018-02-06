@@ -59,7 +59,7 @@ Set an id for this relation
 Set a name for this relation
 %End
 
-    void setStrength( const RelationStrength &strength );
+    void setStrength( RelationStrength strength );
 %Docstring
 Set a strength for this relation
 

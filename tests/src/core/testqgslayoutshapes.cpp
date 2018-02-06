@@ -303,6 +303,7 @@ void TestQgsLayoutShapes::shapeRotation()
   QgsFillSymbol *fillSymbol = new QgsFillSymbol();
   fillSymbol->changeSymbolLayer( 0, simpleFill );
   simpleFill->setColor( QColor( 255, 150, 0 ) );
+  simpleFill->setStrokeColor( Qt::black );
   //simpleFill->setStrokeColor( Qt::yellow );
   //simpleFill->setStrokeWidth( 6 );
   shape->setSymbol( fillSymbol );

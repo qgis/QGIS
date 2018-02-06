@@ -446,14 +446,14 @@ Returns comments of the layer
 .. versionadded:: 2.12
 %End
 
-    static QString layerTypeAsString( const LayerType &layerType );
+    static QString layerTypeAsString( LayerType layerType );
 %Docstring
 Returns the string representation of the given ``layerType``
 
 .. versionadded:: 3
 %End
 
-    static QString iconName( const LayerType &layerType );
+    static QString iconName( LayerType layerType );
 %Docstring
 Returns the icon name of the given ``layerType``
 

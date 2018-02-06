@@ -83,7 +83,6 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
       // duplicate name!
       QgsProcessingParameterBoolean *p2 = new QgsProcessingParameterBoolean( "p1" );
       QVERIFY( !addParameter( p2 ) );
-      delete p2;
       QCOMPARE( parameterDefinitions().count(), 1 );
 
       QCOMPARE( parameterDefinition( "p1" ), parameterDefinitions().at( 0 ) );
@@ -147,6 +146,15 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
       QCOMPARE( rasterParam->defaultFileExtension(), QStringLiteral( "tif" ) ); // before alg is accessible
       addParameter( rasterParam );
       QCOMPARE( rasterParam->defaultFileExtension(), QStringLiteral( "tif" ) );
+
+      // should allow parameters with same name but different case (required for grass provider)
+      QgsProcessingParameterBoolean *p1C = new QgsProcessingParameterBoolean( "P1" );
+      QVERIFY( addParameter( p1C ) );
+      QCOMPARE( parameterDefinitions().count(), 8 );
+
+      // parameterDefinition should be case insensitive, but prioritize correct case matches
+      QCOMPARE( parameterDefinition( "p1" ), parameterDefinitions().at( 0 ) );
+      QCOMPARE( parameterDefinition( "P1" ), parameterDefinitions().at( 7 ) );
     }
 
     void runParameterChecks2()
@@ -180,7 +188,6 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
       // duplicate name!
       QgsProcessingOutputVectorLayer *p2 = new QgsProcessingOutputVectorLayer( "p1" );
       QVERIFY( !addOutput( p2 ) );
-      delete p2;
       QCOMPARE( outputDefinitions().count(), 1 );
 
       QCOMPARE( outputDefinition( "p1" ), outputDefinitions().at( 0 ) );
@@ -507,14 +514,12 @@ void TestQgsProcessing::addProvider()
   QVERIFY( !r.addProvider( p3 ) );
   QCOMPARE( r.providers().toSet(), QSet< QgsProcessingProvider * >() << p << p2 );
   QCOMPARE( spyProviderAdded.count(), 2 );
-  delete p3;
 
   // test that adding a provider which does not load means it is not added to registry
   DummyProviderNoLoad *p4 = new DummyProviderNoLoad( "p4" );
   QVERIFY( !r.addProvider( p4 ) );
   QCOMPARE( r.providers().toSet(), QSet< QgsProcessingProvider * >() << p << p2 );
   QCOMPARE( spyProviderAdded.count(), 2 );
-  delete p4;
 }
 
 void TestQgsProcessing::providerById()

@@ -453,7 +453,7 @@ void QgsMapToolOffsetCurve::setOffsetForRubberBand( double offset )
     mCtrlWasHeldOnFeatureSelection = false;
     mGeometryModified = false;
     deleteDistanceWidget();
-    emit messageEmitted( tr( "Creating offset geometry failed: %1" ).arg( offsetGeom.lastError() ), QgsMessageBar::CRITICAL );
+    emit messageEmitted( tr( "Creating offset geometry failed: %1" ).arg( offsetGeom.lastError() ), Qgis::Critical );
   }
   else
   {

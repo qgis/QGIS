@@ -473,6 +473,7 @@ SET(QGIS_CORE_SRCS
   3d/qgs3drendererregistry.cpp
   3d/qgsabstract3drenderer.cpp
 
+  fieldformatter/qgsrangefieldformatter.cpp
   fieldformatter/qgsdatetimefieldformatter.cpp
   fieldformatter/qgsfallbackfieldformatter.cpp
   fieldformatter/qgskeyvaluefieldformatter.cpp
@@ -1110,6 +1111,7 @@ SET(QGIS_CORE_HDRS
   3d/qgs3drendererregistry.h
   3d/qgsabstract3drenderer.h
 
+  fieldformatter/qgsrangefieldformatter.h
   fieldformatter/qgsdatetimefieldformatter.h
   fieldformatter/qgsfallbackfieldformatter.h
   fieldformatter/qgskeyvaluefieldformatter.h
@@ -1211,7 +1213,7 @@ GENERATE_EXPORT_HEADER(
 SET(QGIS_CORE_HDRS ${QGIS_CORE_HDRS} ${CMAKE_CURRENT_BINARY_DIR}/qgis_core.h)
 
 IF(ENABLE_MODELTEST)
-  TARGET_LINK_LIBRARIES(qgis_core ${QT_QTTEST_LIBRARY})
+  TARGET_LINK_LIBRARIES(qgis_core ${Qt5Test_LIBRARIES})
 ENDIF(ENABLE_MODELTEST)
 
 IF(NOT APPLE)
@@ -1268,13 +1270,16 @@ IF (QT_MOBILITY_LOCATION_FOUND)
 ENDIF (QT_MOBILITY_LOCATION_FOUND)
 
 TARGET_LINK_LIBRARIES(qgis_core
-  ${QT_QTXML_LIBRARY}
-  ${QT_QTCORE_LIBRARY}
-  ${QT_QTGUI_LIBRARY}
-  ${QT_QTNETWORK_LIBRARY}
-  ${QT_QTSVG_LIBRARY}
+  ${Qt5Xml_LIBRARIES}
+  ${Qt5Core_LIBRARIES}
+  ${Qt5Gui_LIBRARIES}
+  ${Qt5Widgets_LIBRARIES}
+  ${Qt5Svg_LIBRARIES}
+  ${Qt5PrintSupport_LIBRARIES}
+  ${Qt5Network_LIBRARIES}
   ${OPTIONAL_QTWEBKIT}
-  ${QT_QTSQL_LIBRARY}
+  ${Qt5Sql_LIBRARIES}
+  ${Qt5Concurrent_LIBRARIES}
   ${QCA_LIBRARY}
   ${QTKEYCHAIN_LIBRARY}
   ${PROJ_LIBRARY}

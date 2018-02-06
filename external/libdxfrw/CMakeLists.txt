@@ -1,6 +1,10 @@
 INCLUDE_DIRECTORIES(
-	${CMAKE_SOURCE_DIR}/src/core
-  ${CMAKE_BINARY_DIR}/src/core
+        ${CMAKE_SOURCE_DIR}/src/core
+        ${CMAKE_SOURCE_DIR}/src/core/geometry
+
+        ${CMAKE_BINARY_DIR}/src/core
+        ${CMAKE_BINARY_DIR}/src/core/geometry
+
 	${Qt5Core_INCLUDE_DIRS}
 )
 

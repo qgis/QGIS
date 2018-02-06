@@ -254,7 +254,7 @@ long QgsSearchQueryBuilder::countRecords( const QString &searchString )
 }
 
 
-void QgsSearchQueryBuilder::on_btnOk_clicked()
+void QgsSearchQueryBuilder::btnOk_clicked()
 {
   // if user hits OK and there is no query, skip the validation
   if ( txtSQL->text().trimmed().length() > 0 )

@@ -1386,6 +1386,16 @@ void TestQgsLayoutItem::page()
   QCOMPARE( item->page(), 2 );
   QCOMPARE( item->pagePositionWithUnits(), QgsLayoutPoint( 5, 6, QgsUnitTypes::LayoutCentimeters ) );
   QCOMPARE( item->positionWithUnits(), QgsLayoutPoint( 5, 38, QgsUnitTypes::LayoutCentimeters ) );
+
+  // non-top-left reference
+  item->setReferencePoint( QgsLayoutItem::Middle );
+  item->attemptMove( QgsLayoutPoint( 5, 6 ), true, false, 0 );
+  QCOMPARE( item->pagePos(), QPointF( 5, 6 ) );
+  QCOMPARE( item->pagePositionWithUnits(), QgsLayoutPoint( 5, 6 ) );
+  item->attemptMove( QgsLayoutPoint( 5, 6 ), true, false, 1 );
+  QCOMPARE( item->page(), 1 );
+  QCOMPARE( item->pagePos(), QPointF( 5, 6 ) );
+  QCOMPARE( item->pagePositionWithUnits(), QgsLayoutPoint( 5, 6, QgsUnitTypes::LayoutMillimeters ) );
 }
 
 void TestQgsLayoutItem::itemVariablesFunction()
@@ -1524,6 +1534,24 @@ void TestQgsLayoutItem::rotation()
   QCOMPARE( item2->positionWithUnits().y(), 16.0 );
   QCOMPARE( item2->pos().x(), 7.0 );
   QCOMPARE( item2->pos().y(), 16.0 );
+
+  // test that refresh rotation doesn't move item (#18037)
+  item2 = qgis::make_unique< TestItem >( &l );
+  item2->setReferencePoint( QgsLayoutItem::Middle );
+  item2->attemptMove( QgsLayoutPoint( 5.0, 8.0 ) );
+  item2->attemptResize( QgsLayoutSize( 10.0, 6.0 ) );
+  item2->setItemRotation( 45 );
+  QCOMPARE( item2->positionWithUnits().x(), 5.0 );
+  QCOMPARE( item2->positionWithUnits().y(), 8.0 );
+  QGSCOMPARENEAR( item2->pos().x(), 3.58, 0.01 );
+  QGSCOMPARENEAR( item2->pos().y(), 2.343146, 0.01 );
+  QCOMPARE( item2->rotation(), 45.0 );
+  item2->refresh();
+  QCOMPARE( item2->positionWithUnits().x(), 5.0 );
+  QCOMPARE( item2->positionWithUnits().y(), 8.0 );
+  QGSCOMPARENEAR( item2->pos().x(), 3.58, 0.01 );
+  QGSCOMPARENEAR( item2->pos().y(), 2.343146, 0.01 );
+  QCOMPARE( item2->rotation(), 45.0 );
 
 
   //TODO also changing size?
@@ -1877,6 +1905,7 @@ void TestQgsLayoutItem::blendMode()
   QgsFillSymbol *fillSymbol = new QgsFillSymbol();
   fillSymbol->changeSymbolLayer( 0, simpleFill );
   simpleFill->setColor( QColor( 255, 150, 0 ) );
+  simpleFill->setStrokeColor( Qt::black );
   mComposerRect1->setSymbol( fillSymbol );
   delete fillSymbol;
 
@@ -1889,6 +1918,7 @@ void TestQgsLayoutItem::blendMode()
   QgsFillSymbol *fillSymbol2 = new QgsFillSymbol();
   fillSymbol2->changeSymbolLayer( 0, simpleFill2 );
   simpleFill2->setColor( QColor( 0, 100, 150 ) );
+  simpleFill2->setStrokeColor( Qt::black );
   mComposerRect2->setSymbol( fillSymbol2 );
   delete fillSymbol2;
 
@@ -1926,6 +1956,7 @@ void TestQgsLayoutItem::opacity()
   QgsFillSymbol *fillSymbol = new QgsFillSymbol();
   fillSymbol->changeSymbolLayer( 0, simpleFill );
   simpleFill->setColor( QColor( 255, 150, 0 ) );
+  simpleFill->setStrokeColor( Qt::black );
   mComposerRect1->setSymbol( fillSymbol );
   delete fillSymbol;
 
@@ -1938,6 +1969,7 @@ void TestQgsLayoutItem::opacity()
   QgsFillSymbol *fillSymbol2 = new QgsFillSymbol();
   fillSymbol2->changeSymbolLayer( 0, simpleFill2 );
   simpleFill2->setColor( QColor( 0, 100, 150 ) );
+  simpleFill2->setStrokeColor( Qt::black );
   mComposerRect2->setSymbol( fillSymbol2 );
   delete fillSymbol2;
 

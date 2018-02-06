@@ -122,6 +122,7 @@
         <file>themes/default/grass_mapset_open.png</file>
         <file>themes/default/grass_mapset_search.png</file>
         <file>themes/default/histogram.svg</file>
+        <file>themes/default/heatmap.svg</file>
         <file>themes/default/join_bevel.svg</file>
         <file>themes/default/join_miter.svg</file>
         <file>themes/default/join_round.svg</file>
@@ -273,7 +274,7 @@
         <file>themes/default/mActionNewSpatiaLiteLayer.svg</file>
         <file>themes/default/mActionNewGeoPackageLayer.svg</file>
         <file>themes/default/mActionNewVectorLayer.svg</file>
-        <file>themes/default/mActionNodeTool.svg</file>
+        <file>themes/default/mActionVertexTool.svg</file>
         <file>themes/default/mActionOffsetCurve.svg</file>
         <file>themes/default/mActionOpenTable.svg</file>
         <file>themes/default/mActionAddTable.svg</file>
@@ -595,7 +596,7 @@
         <file>themes/default/providerGdal.svg</file>
         <file>themes/default/providerGrass.svg</file>
         <file>themes/default/providerQgis.svg</file>
-        <file>themes/default/providerR.svg</file>
+        <file>themes/default/providerSaga.svg</file>
         <file>themes/default/processingModel.svg</file>
         <file>themes/default/processingScript.svg</file>
         <file>themes/default/processingAlgorithm.svg</file>

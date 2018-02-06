@@ -66,21 +66,21 @@ Views using this model should connect to and properly process this signal.
 
   public slots:
 
-    virtual void select( const QModelIndex &index, SelectionFlags command );
+    virtual void select( const QModelIndex &index, QItemSelectionModel::SelectionFlags command );
 %Docstring
 Overwritten to do NOTHING (we handle selection ourselves)
 
 .. seealso:: :py:func:`selectFeatures`
 %End
 
-    virtual void select( const QItemSelection &selection, SelectionFlags command );
+    virtual void select( const QItemSelection &selection, QItemSelectionModel::SelectionFlags command );
 %Docstring
 Overwritten to do NOTHING (we handle selection ourselves)
 
 .. seealso:: :py:func:`selectFeatures`
 %End
 
-    virtual void selectFeatures( const QItemSelection &selection, SelectionFlags command );
+    virtual void selectFeatures( const QItemSelection &selection, QItemSelectionModel::SelectionFlags command );
 %Docstring
 Select features on this table. Is to be used in favor of the stock select methods.
 

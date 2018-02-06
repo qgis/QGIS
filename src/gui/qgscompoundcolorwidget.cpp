@@ -543,7 +543,7 @@ void QgsCompoundColorWidget::mActionShowInButtons_toggled( bool state )
   }
 }
 
-QScreen *QgsCompoundColorWidget::findScreenAt( const QPoint &pos )
+QScreen *QgsCompoundColorWidget::findScreenAt( QPoint pos )
 {
   for ( QScreen *screen : QGuiApplication::screens() )
   {
@@ -756,7 +756,7 @@ void QgsCompoundColorWidget::keyPressEvent( QKeyEvent *e )
   if ( !mPickingColor )
   {
     //if not picking a color, use default tool button behavior
-    QWidget::keyPressEvent( e );
+    QgsPanelWidget::keyPressEvent( e );
     return;
   }
 

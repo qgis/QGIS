@@ -127,7 +127,7 @@ void QgsDateTimeEdit::focusOutEvent( QFocusEvent *event )
     {
       displayNull();
     }
-    QWidget::focusOutEvent( event );
+    QAbstractSpinBox::focusOutEvent( event );
     emit editingFinished();
   }
   else

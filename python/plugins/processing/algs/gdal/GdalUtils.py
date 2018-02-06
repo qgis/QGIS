@@ -35,7 +35,8 @@ import psycopg2
 from osgeo import gdal
 from osgeo import ogr
 
-from qgis.core import (QgsApplication,
+from qgis.core import (Qgis,
+                       QgsApplication,
                        QgsVectorFileWriter,
                        QgsProcessingFeedback,
                        QgsProcessingUtils,
@@ -84,7 +85,7 @@ class GdalUtils:
                 os.putenv('PATH', envval)
 
         fused_command = ' '.join([str(c) for c in commands])
-        QgsMessageLog.logMessage(fused_command, 'Processing', QgsMessageLog.INFO)
+        QgsMessageLog.logMessage(fused_command, 'Processing', Qgis.Info)
         feedback.pushInfo('GDAL command:')
         feedback.pushCommandInfo(fused_command)
         feedback.pushInfo('GDAL command output:')
@@ -114,7 +115,7 @@ class GdalUtils:
                         str(e) + u'\nTried 5 times without success. Last iteration stopped after reading {} line(s).\nLast line(s):\n{}'.format(
                             len(loglines), u'\n'.join(loglines[-10:])))
 
-            QgsMessageLog.logMessage('\n'.join(loglines), 'Processing', QgsMessageLog.INFO)
+            QgsMessageLog.logMessage('\n'.join(loglines), 'Processing', Qgis.Info)
             GdalUtils.consoleOutput = loglines
 
     @staticmethod

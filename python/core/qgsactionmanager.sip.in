@@ -53,14 +53,14 @@ dialog box.
 Add a new action to this list.
 %End
 
-    void removeAction( const QUuid &actionId );
+    void removeAction( QUuid actionId );
 %Docstring
 Remove an action by its id.
 
 .. versionadded:: 3.0
 %End
 
-    void doAction( const QUuid &actionId, const QgsFeature &feature, int defaultValueIndex = 0, const QgsExpressionContextScope &scope = QgsExpressionContextScope() ) /PyName=doActionFeature/;
+    void doAction( QUuid actionId, const QgsFeature &feature, int defaultValueIndex = 0, const QgsExpressionContextScope &scope = QgsExpressionContextScope() ) /PyName=doActionFeature/;
 %Docstring
 Does the given action.
 
@@ -74,7 +74,7 @@ Does the given action.
    available in Python bindings as doActionFeature
 %End
 
-    void doAction( const QUuid &actionId, const QgsFeature &feature, const QgsExpressionContext &context );
+    void doAction( QUuid actionId, const QgsFeature &feature, const QgsExpressionContext &context );
 %Docstring
 Does the action using the expression engine to replace any embedded expressions
 in the action definition.
@@ -112,14 +112,14 @@ Writes the actions out in XML format
 Reads the actions in in XML format
 %End
 
-    QgsAction action( const QUuid &id );
+    QgsAction action( QUuid id );
 %Docstring
 Get an action by its id.
 
 .. versionadded:: 3.0
 %End
 
-    void setDefaultAction( const QString &actionScope, const QUuid &actionId );
+    void setDefaultAction( const QString &actionScope, QUuid actionId );
 %Docstring
 Each scope can have a default action. This will be saved in the project
 file.

@@ -134,7 +134,8 @@ class ANALYSIS_EXPORT QgsGeometryCheckError
     void setFixed( int method )
     {
       mStatus = StatusFixed;
-      mResolutionMessage = mCheck->getResolutionMethods()[method];
+      const QStringList methods = mCheck->getResolutionMethods();
+      mResolutionMessage = methods[method];
     }
     void setFixFailed( const QString &reason )
     {

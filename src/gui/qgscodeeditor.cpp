@@ -76,7 +76,7 @@ void QgsCodeEditor::keyPressEvent( QKeyEvent *event )
   if ( event->key() == Qt::Key_Escape && !isListActive() )
   {
     // Shortcut QScintilla and redirect the event to the QWidget handler
-    QWidget::keyPressEvent( event );
+    QWidget::keyPressEvent( event ); // clazy:exclude=skipped-base-method
   }
   else
   {

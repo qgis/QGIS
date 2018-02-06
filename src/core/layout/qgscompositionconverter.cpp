@@ -128,6 +128,9 @@ std::unique_ptr< QgsPrintLayout > QgsCompositionConverter::createLayoutFromCompo
   // Guides
   layout->guides().setVisible( composerElement.attribute( QStringLiteral( "guidesVisible" ), QStringLiteral( "1" ) ).toInt() != 0 );
 
+  int printResolution = composerElement.attribute( "printResolution", "300" ).toInt();
+  layout->renderContext().setDpi( printResolution );
+
   // Create pages
   int pages = composerElement.attribute( QStringLiteral( "numPages" ) ).toInt( );
   float paperHeight = composerElement.attribute( QStringLiteral( "paperHeight" ) ).toDouble( );
@@ -1652,8 +1655,9 @@ bool QgsCompositionConverter::readOldComposerObjectXml( QgsLayoutObject *layoutI
 
 void QgsCompositionConverter::readOldDataDefinedPropertyMap( const QDomElement &itemElem, QgsPropertyCollection &dataDefinedProperties )
 {
-  QgsPropertiesDefinition::const_iterator i = QgsCompositionConverter::propertyDefinitions().constBegin();
-  for ( ; i != QgsCompositionConverter::propertyDefinitions().constEnd(); ++i )
+  const QgsPropertiesDefinition defs = QgsCompositionConverter::propertyDefinitions();
+  QgsPropertiesDefinition::const_iterator i = defs.constBegin();
+  for ( ; i != defs.constEnd(); ++i )
   {
     QString elemName = i.value().name();
     QDomNodeList ddNodeList = itemElem.elementsByTagName( elemName );

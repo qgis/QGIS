@@ -4,7 +4,7 @@ if "%OSGEO4W_DESKTOP%"=="" set OSGEO4W_DESKTOP=~$folder.common_desktop$
 
 copy bin\@package@-bin.exe bin\@package@-bin-grass@grassmajor@.exe
 copy bin\@package@-bin.vars bin\@package@-bin-grass@grassmajor@.vars
-"%OSGEO4W_ROOT%\bin\@package@-grass@grassmajor@.bat" --exit
+call "%OSGEO4W_ROOT%\bin\@package@-grass@grassmajor@.bat" --postinstall
 
 if not %OSGEO4W_MENU_LINKS%==0 mkdir "%OSGEO4W_STARTMENU%"
 if not %OSGEO4W_DESKTOP_LINKS%==0 mkdir "%OSGEO4W_DESKTOP%"

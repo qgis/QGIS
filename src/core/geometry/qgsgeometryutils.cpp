@@ -76,7 +76,7 @@ QgsPoint QgsGeometryUtils::closestVertex( const QgsAbstractGeometry &geom, const
   {
     currentDist = QgsGeometryUtils::sqrDistance2D( pt, vertex );
     // The <= is on purpose: for geometries with closing vertices, this ensures
-    // that the closing vertex is retuned. For the node tool, the rubberband
+    // that the closing vertex is returned. For the vertex tool, the rubberband
     // of the closing vertex is above the opening vertex, hence with the <=
     // situations where the covered opening vertex rubberband is selected are
     // avoided.

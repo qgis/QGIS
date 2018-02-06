@@ -105,12 +105,12 @@ to this anchor widget whenever the widget's parent is resized or moved.
 Emitted when the anchor widget changes
 %End
 
-    void anchorPointChanged( AnchorPoint point );
+    void anchorPointChanged( QgsFloatingWidget::AnchorPoint point );
 %Docstring
 Emitted when the anchor point changes
 %End
 
-    void anchorWidgetPointChanged( AnchorPoint point );
+    void anchorWidgetPointChanged( QgsFloatingWidget::AnchorPoint point );
 %Docstring
 Emitted when the anchor widget point changes
 %End

@@ -52,7 +52,7 @@ clean up and terminate at the earliest possible convenience.
     typedef QFlags<QgsTask::Flag> Flags;
 
 
-    QgsTask( const QString &description = QString(), const Flags &flags = AllFlags );
+    QgsTask( const QString &description = QString(), QgsTask::Flags flags = AllFlags );
 %Docstring
 Constructor for QgsTask.
 
@@ -311,7 +311,7 @@ Constructor for QgsTaskManager.
     struct TaskDefinition
     {
 
-      explicit TaskDefinition( QgsTask *task, QgsTaskList dependentTasks = QgsTaskList() );
+      explicit TaskDefinition( QgsTask *task, const QgsTaskList &dependentTasks = QgsTaskList() );
 %Docstring
 Constructor for TaskDefinition. Ownership of the task is not transferred to the definition,
 but will be transferred to a QgsTaskManager.

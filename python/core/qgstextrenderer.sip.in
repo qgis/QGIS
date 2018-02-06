@@ -380,7 +380,7 @@ and vertical margins to add to the text when calculating the size of the shape.
 .. seealso:: :py:func:`sizeType`
 %End
 
-    void setSize( const QSizeF &size );
+    void setSize( QSizeF size );
 %Docstring
 Sets the size of the background shape. The meaning of the size depends on the current sizeType(),
 e.g., for size types of QgsTextBackgroundSettings.SizeFixed the size will represent the actual width and
@@ -490,7 +490,7 @@ via offsetUnit().
 .. seealso:: :py:func:`offsetUnit`
 %End
 
-    void setOffset( const QPointF &offset );
+    void setOffset( QPointF offset );
 %Docstring
 Sets the offset used for drawing the background shape. Units are specified using
 setOffsetUnit().
@@ -554,7 +554,7 @@ through radiiUnit().
 .. seealso:: :py:func:`radiiUnit`
 %End
 
-    void setRadii( const QSizeF &radii );
+    void setRadii( QSizeF radii );
 %Docstring
 Sets the radii used for rounding the corners of shapes. This is only used if
 type() is set to QgsTextBackgroundSettings.ShapeRectangle or QgsTextBackgroundSettings.ShapeSquare.
@@ -1539,7 +1539,7 @@ formats like SVG to maintain text as text objects, but at the cost of degraded
 rendering and may result in side effects like misaligned text buffers.
 %End
 
-    static void drawText( const QPointF &point, double rotation, HAlignment alignment, const QStringList &textLines,
+    static void drawText( QPointF point, double rotation, HAlignment alignment, const QStringList &textLines,
                           QgsRenderContext &context, const QgsTextFormat &format,
                           bool drawAsOutlines = true );
 %Docstring
@@ -1576,7 +1576,7 @@ formats like SVG to maintain text as text objects, but at the cost of degraded
 rendering and may result in side effects like misaligned text buffers.
 %End
 
-    static void drawPart( const QPointF &origin, double rotation, HAlignment alignment, const QStringList &textLines,
+    static void drawPart( QPointF origin, double rotation, HAlignment alignment, const QStringList &textLines,
                           QgsRenderContext &context, const QgsTextFormat &format,
                           TextPart part, bool drawAsOutlines = true );
 %Docstring

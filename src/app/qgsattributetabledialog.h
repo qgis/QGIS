@@ -75,6 +75,11 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
   private slots:
 
     /**
+     * Cut selected rows to the clipboard
+     */
+    void mActionCutSelectedRows_triggered();
+
+    /**
      * Copies selected rows to the clipboard
      */
     void mActionCopySelectedRows_triggered();

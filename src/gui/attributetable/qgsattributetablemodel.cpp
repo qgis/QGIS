@@ -745,7 +745,7 @@ Qt::ItemFlags QgsAttributeTableModel::flags( const QModelIndex &index ) const
   if ( index.column() >= mFieldCount )
     return Qt::NoItemFlags;
 
-  Qt::ItemFlags flags = QAbstractItemModel::flags( index );
+  Qt::ItemFlags flags = QAbstractTableModel::flags( index );
 
   bool editable = false;
   const int fieldIndex = mAttributes[index.column()];
@@ -781,7 +781,7 @@ void QgsAttributeTableModel::reload( const QModelIndex &index1, const QModelInde
 }
 
 
-void QgsAttributeTableModel::executeAction( const QUuid &action, const QModelIndex &idx ) const
+void QgsAttributeTableModel::executeAction( QUuid action, const QModelIndex &idx ) const
 {
   QgsFeature f = feature( idx );
   layer()->actions()->doAction( action, f, fieldIdx( idx.column() ) );

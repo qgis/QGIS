@@ -47,12 +47,14 @@ QWidget *QgsRangeWidgetWrapper::createWidget( QWidget *parent )
       case QVariant::Double:
       {
         editor = new QgsDoubleSpinBox( parent );
+        static_cast<QgsDoubleSpinBox *>( editor )->setLineEditAlignment( Qt::AlignRight );
         break;
       }
       case QVariant::Int:
       case QVariant::LongLong:
       default:
         editor = new QgsSpinBox( parent );
+        static_cast<QgsSpinBox *>( editor )->setLineEditAlignment( Qt::AlignRight );
         break;
     }
   }
@@ -85,21 +87,19 @@ void QgsRangeWidgetWrapper::initWidget( QWidget *editor )
   QVariant min( config( QStringLiteral( "Min" ) ) );
   QVariant max( config( QStringLiteral( "Max" ) ) );
   QVariant step( config( QStringLiteral( "Step" ) ) );
+  QVariant precision( config( QStringLiteral( "Precision" ) ) );
 
   if ( mDoubleSpinBox )
   {
-    // set the precision if field is integer
-    int precision = layer()->fields().at( fieldIdx() ).precision();
-    if ( precision > 0 )
-    {
-      mDoubleSpinBox->setDecimals( layer()->fields().at( fieldIdx() ).precision() );
-    }
-
-    QgsDoubleSpinBox *qgsWidget = dynamic_cast<QgsDoubleSpinBox *>( mDoubleSpinBox );
-
     double stepval = step.isValid() ? step.toDouble() : 1.0;
     double minval = min.isValid() ? min.toDouble() : std::numeric_limits<double>::lowest();
     double maxval  = max.isValid() ? max.toDouble() : std::numeric_limits<double>::max();
+    int precisionval = precision.isValid() ? precision.toInt() : layer()->fields().at( fieldIdx() ).precision();
+
+    mDoubleSpinBox->setDecimals( precisionval );
+
+    QgsDoubleSpinBox *qgsWidget = dynamic_cast<QgsDoubleSpinBox *>( mDoubleSpinBox );
+
 
     if ( qgsWidget )
       qgsWidget->setShowClearButton( allowNull );
@@ -107,9 +107,9 @@ void QgsRangeWidgetWrapper::initWidget( QWidget *editor )
     if ( allowNull )
     {
       double decr;
-      if ( precision > 0 )
+      if ( precisionval > 0 )
       {
-        decr = std::pow( 10, -precision );
+        decr = std::pow( 10, -precisionval );
       }
       else
       {
@@ -171,9 +171,9 @@ bool QgsRangeWidgetWrapper::valid() const
 void QgsRangeWidgetWrapper::valueChangedVariant( const QVariant &v )
 {
   if ( v.type() == QVariant::Int )
-    valueChanged( v.toInt() );
+    emit valueChanged( v.toInt() );
   if ( v.type() == QVariant::Double )
-    valueChanged( v.toDouble() );
+    emit valueChanged( v.toDouble() );
 }
 
 QVariant QgsRangeWidgetWrapper::value() const

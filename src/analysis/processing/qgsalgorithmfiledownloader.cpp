@@ -88,7 +88,7 @@ QVariantMap QgsFileDownloaderAlgorithm::processAlgorithm( const QVariantMap &par
   loop.exec();
 
   timer.stop();
-  bool exists = QFileInfo( outputFile ).exists();
+  bool exists = QFileInfo::exists( outputFile );
   if ( !feedback->isCanceled() && !exists )
     throw QgsProcessingException( tr( "Output file doesn't exist." ) );
 
@@ -97,7 +97,7 @@ QVariantMap QgsFileDownloaderAlgorithm::processAlgorithm( const QVariantMap &par
   return outputs;
 }
 
-void QgsFileDownloaderAlgorithm::reportErrors( QStringList errors )
+void QgsFileDownloaderAlgorithm::reportErrors( const QStringList &errors )
 {
   throw QgsProcessingException( errors.join( '\n' ) );
 }
@@ -110,7 +110,7 @@ void QgsFileDownloaderAlgorithm::sendProgressFeedback()
     if ( mTotal.isEmpty() )
       mFeedback->pushInfo( tr( "%1 downloaded." ).arg( mReceived ) );
     else
-      mFeedback->pushInfo( tr( "%1 of %2 downloaded." ).arg( mReceived ).arg( mTotal ) );
+      mFeedback->pushInfo( tr( "%1 of %2 downloaded." ).arg( mReceived, mTotal ) );
   }
 }
 

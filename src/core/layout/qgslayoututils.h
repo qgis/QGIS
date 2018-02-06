@@ -27,7 +27,7 @@ class QgsLayout;
 class QgsLayoutItemMap;
 class QPainter;
 class QRectF;
-
+class QStyleOptionGraphicsItem;
 
 /**
  * \ingroup core
@@ -205,6 +205,11 @@ class CORE_EXPORT QgsLayoutUtils
      * If the string was correctly decoded, \a ok will be set to true.
      */
     static QgsLayoutItemPage::Orientation decodePaperOrientation( const QString &string, bool &ok );
+
+    /**
+     * Extracts the scale factor from an item \a style.
+     */
+    static double scaleFactorFromItemStyle( const QStyleOptionGraphicsItem *style );
 
   private:
 

@@ -272,7 +272,7 @@ void QgsRubberBand::addGeometry( const QgsGeometry &geometry, const QgsCoordinat
   else if ( QgsWkbTypes::geometryType( geomType ) == QgsWkbTypes::PointGeometry && QgsWkbTypes::isMultiType( geomType ) )
   {
     const QgsMultiPointXY mpt = geom.asMultiPoint();
-    for ( QgsPointXY pt : mpt )
+    for ( const QgsPointXY &pt : mpt )
     {
       addPoint( pt, false, idx );
       removeLastPoint( idx, false );
@@ -282,7 +282,7 @@ void QgsRubberBand::addGeometry( const QgsGeometry &geometry, const QgsCoordinat
   else if ( QgsWkbTypes::geometryType( geomType ) == QgsWkbTypes::LineGeometry && !QgsWkbTypes::isMultiType( geomType ) )
   {
     const QgsPolylineXY line = geom.asPolyline();
-    for ( QgsPointXY pt : line )
+    for ( const QgsPointXY &pt : line )
     {
       addPoint( pt, false, idx );
     }
@@ -296,7 +296,7 @@ void QgsRubberBand::addGeometry( const QgsGeometry &geometry, const QgsCoordinat
       {
         continue;
       }
-      for ( QgsPointXY pt : line )
+      for ( const QgsPointXY &pt : line )
       {
         addPoint( pt, false, idx );
       }
@@ -307,7 +307,7 @@ void QgsRubberBand::addGeometry( const QgsGeometry &geometry, const QgsCoordinat
   {
     const QgsPolygonXY poly = geom.asPolygon();
     const QgsPolylineXY line = poly.at( 0 );
-    for ( QgsPointXY pt : line )
+    for ( const QgsPointXY &pt : line )
     {
       addPoint( pt, false, idx );
     }
@@ -321,7 +321,7 @@ void QgsRubberBand::addGeometry( const QgsGeometry &geometry, const QgsCoordinat
         continue;
 
       const QgsPolylineXY line = poly.at( 0 );
-      for ( QgsPointXY pt : line )
+      for ( const QgsPointXY &pt : line )
       {
         addPoint( pt, false, idx );
       }

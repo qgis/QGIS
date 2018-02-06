@@ -53,7 +53,7 @@ QgsOgrLayerItem::QgsOgrLayerItem( QgsDataItem *parent,
   mToolTip = uri;
   setState( Populated ); // children are not expected
 
-  if ( mPath.toLower().endsWith( QLatin1String( ".shp" ) ) )
+  if ( mPath.endsWith( QLatin1String( ".shp" ), Qt::CaseInsensitive ) )
   {
     if ( OGRGetDriverCount() == 0 )
     {

@@ -67,7 +67,7 @@ class CORE_EXPORT QgsVectorLayerUtils
          * To set info about duplicated features to the function feedback (layout and ids)
          * \since QGIS 3.0
          */
-        void setDuplicatedFeatures( QgsVectorLayer *layer, QgsFeatureIds ids );
+        void setDuplicatedFeatures( QgsVectorLayer *layer, const QgsFeatureIds &ids );
     };
 
     /**
