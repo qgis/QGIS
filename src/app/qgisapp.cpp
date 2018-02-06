@@ -1982,11 +1982,11 @@ void QgisApp::createActions()
   connect( mActionToggleEditing, &QAction::triggered, this, [ = ] { toggleEditing(); } );
   connect( mActionSaveLayerEdits, &QAction::triggered, this, &QgisApp::saveActiveLayerEdits );
   connect( mActionSaveEdits, &QAction::triggered, this, [ = ] { saveEdits(); } );
-  connect( mActionSaveAllEdits, &QAction::triggered, this, &QgisApp::saveAllEdits );
+  connect( mActionSaveAllEdits, &QAction::triggered, this, [ = ] { saveAllEdits(); } );
   connect( mActionRollbackEdits, &QAction::triggered, this, &QgisApp::rollbackEdits );
-  connect( mActionRollbackAllEdits, &QAction::triggered, this, &QgisApp::rollbackAllEdits );
+  connect( mActionRollbackAllEdits, &QAction::triggered, this, [ = ] { rollbackAllEdits(); } );
   connect( mActionCancelEdits, &QAction::triggered, this, [ = ] { cancelEdits(); } );
-  connect( mActionCancelAllEdits, &QAction::triggered, this, &QgisApp::cancelAllEdits );
+  connect( mActionCancelAllEdits, &QAction::triggered, this, [ = ] { cancelAllEdits(); } );
   connect( mActionLayerSaveAs, &QAction::triggered, this, [ = ] { saveAsFile(); } );
   connect( mActionSaveLayerDefinition, &QAction::triggered, this, &QgisApp::saveAsLayerDefinition );
   connect( mActionRemoveLayer, &QAction::triggered, this, &QgisApp::removeLayer );
