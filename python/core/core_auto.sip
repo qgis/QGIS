@@ -127,6 +127,7 @@
 %Include qgsvectorlayerundopassthroughcommand.sip
 %Include qgsvectorlayerutils.sip
 %Include qgsvirtuallayertask.sip
+%Include qgsvectorsimplifymethod.sip
 %Include qgsvirtuallayerdefinition.sip
 %Include qgsvirtuallayerdefinitionutils.sip
 %Include qgsmapthemecollection.sip
@@ -348,6 +349,7 @@
 %Include qgsvectorlayereditbuffer.sip
 %Include qgsvectorlayereditpassthrough.sip
 %Include qgsvectorlayer.sip
+%Include qgsvirtuallayertask.sip
 %Include qgsvectorlayerfeaturecounter.sip
 %Include qgsvectorlayerjoinbuffer.sip
 %Include qgsvectorlayertools.sip
