@@ -461,7 +461,7 @@ namespace QgsWfs
 
   void QgsWfsParameters::log( const QString &msg ) const
   {
-    QgsMessageLog::logMessage( msg, "Server", QgsMessageLog::INFO );
+    QgsMessageLog::logMessage( msg, "Server", Qgis::Info );
   }
 
   void QgsWfsParameters::raiseError( ParameterName paramName ) const

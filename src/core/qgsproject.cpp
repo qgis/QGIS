@@ -99,7 +99,7 @@ QStringList makeKeyTokens_( const QString &scope, const QString &key )
     {
 
       QString errorString = QObject::tr( "Entry token invalid : '%1'. The token will not be saved to file." ).arg( keyToken );
-      QgsMessageLog::logMessage( errorString, QString(), QgsMessageLog::CRITICAL );
+      QgsMessageLog::logMessage( errorString, QString(), Qgis::Critical );
 
     }
 

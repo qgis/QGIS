@@ -338,7 +338,7 @@ class Repositories(QObject):
                     "QgsPluginInstaller",
                     "Update of network request with authentication "
                     "credentials FAILED for configuration '{0}'").format(authcfg)
-                iface.pluginManagerInterface().pushMessage(msg, QgsMessageBar.WARNING)
+                iface.pluginManagerInterface().pushMessage(msg, Qgis.Warning)
                 self.mRepositories[key]["QRequest"] = None
                 return
         self.mRepositories[key]["QRequest"].setAttribute(QNetworkRequest.User, key)

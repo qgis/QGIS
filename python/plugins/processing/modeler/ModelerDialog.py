@@ -44,7 +44,8 @@ from qgis.PyQt.QtWidgets import (QGraphicsView,
 from qgis.PyQt.QtGui import QIcon, QImage, QPainter, QKeySequence
 from qgis.PyQt.QtSvg import QSvgGenerator
 from qgis.PyQt.QtPrintSupport import QPrinter
-from qgis.core import (QgsApplication,
+from qgis.core import (Qgis,
+                       QgsApplication,
                        QgsProcessingAlgorithm,
                        QgsSettings,
                        QgsMessageLog,
@@ -324,7 +325,7 @@ class ModelerDialog(BASE, WIDGET):
 
     def runModel(self):
         if len(self.model.childAlgorithms()) == 0:
-            self.bar.pushMessage("", "Model doesn't contain any algorithm and/or parameter and can't be executed", level=QgsMessageBar.WARNING, duration=5)
+            self.bar.pushMessage("", "Model doesn't contain any algorithm and/or parameter and can't be executed", level=Qgis.Warning, duration=5)
             return
 
         dlg = AlgorithmDialog(self.model)
@@ -395,7 +396,7 @@ class ModelerDialog(BASE, WIDGET):
 
         img.save(filename)
 
-        self.bar.pushMessage("", "Model was correctly exported as image", level=QgsMessageBar.SUCCESS, duration=5)
+        self.bar.pushMessage("", "Model was correctly exported as image", level=Qgis.Success, duration=5)
         self.repaintModel(controls=True)
 
     def exportAsPdf(self):
@@ -423,7 +424,7 @@ class ModelerDialog(BASE, WIDGET):
         self.scene.render(painter, printerRect, totalRect)
         painter.end()
 
-        self.bar.pushMessage("", "Model was correctly exported as PDF", level=QgsMessageBar.SUCCESS, duration=5)
+        self.bar.pushMessage("", "Model was correctly exported as PDF", level=Qgis.Success, duration=5)
         self.repaintModel(controls=True)
 
     def exportAsSvg(self):
@@ -451,7 +452,7 @@ class ModelerDialog(BASE, WIDGET):
         self.scene.render(painter, svgRect, totalRect)
         painter.end()
 
-        self.bar.pushMessage("", "Model was correctly exported as SVG", level=QgsMessageBar.SUCCESS, duration=5)
+        self.bar.pushMessage("", "Model was correctly exported as SVG", level=Qgis.Success, duration=5)
         self.repaintModel(controls=True)
 
     def exportAsPython(self):
@@ -468,7 +469,7 @@ class ModelerDialog(BASE, WIDGET):
         with codecs.open(filename, 'w', encoding='utf-8') as fout:
             fout.write(text)
 
-        self.bar.pushMessage("", "Model was correctly exported as python script", level=QgsMessageBar.SUCCESS, duration=5)
+        self.bar.pushMessage("", "Model was correctly exported as python script", level=Qgis.Success, duration=5)
 
     def saveModel(self, saveAs):
         if str(self.textGroup.text()).strip() == '' \
@@ -503,7 +504,7 @@ class ModelerDialog(BASE, WIDGET):
                                                 "the 'Save as...' option."))
                 return
             self.update_model.emit()
-            self.bar.pushMessage("", "Model was correctly saved", level=QgsMessageBar.SUCCESS, duration=5)
+            self.bar.pushMessage("", "Model was correctly saved", level=Qgis.Success, duration=5)
 
             self.hasChanged = False
 
@@ -529,7 +530,7 @@ class ModelerDialog(BASE, WIDGET):
         else:
             QgsMessageLog.logMessage(self.tr('Could not load model {0}').format(filename),
                                      self.tr('Processing'),
-                                     QgsMessageLog.CRITICAL)
+                                     Qgis.Critical)
             QMessageBox.critical(self, self.tr('Could not open model'),
                                  self.tr('The selected model could not be loaded.\n'
                                          'See the log for more information.'))

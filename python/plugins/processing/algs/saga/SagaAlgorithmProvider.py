@@ -28,7 +28,8 @@ __revision__ = '$Format:%H$'
 import os
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis.core import (QgsProcessingProvider,
+from qgis.core import (Qgis,
+                       QgsProcessingProvider,
                        QgsProcessingUtils,
                        QgsApplication,
                        QgsMessageLog)
@@ -81,13 +82,13 @@ class SagaAlgorithmProvider(QgsProcessingProvider):
         version = SagaUtils.getInstalledVersion(True)
         if version is None:
             QgsMessageLog.logMessage(self.tr('Problem with SAGA installation: SAGA was not found or is not correctly installed'),
-                                     self.tr('Processing'), QgsMessageLog.CRITICAL)
+                                     self.tr('Processing'), Qgis.Critical)
             return
 
         if not version.startswith('2.3.'):
             QgsMessageLog.logMessage(self.tr('Problem with SAGA installation: unsupported SAGA version found.'),
                                      self.tr('Processing'),
-                                     QgsMessageLog.CRITICAL)
+                                     Qgis.Critical)
             return
 
         self.algs = []
@@ -100,10 +101,10 @@ class SagaAlgorithmProvider(QgsProcessingProvider):
                         self.algs.append(alg)
                     else:
                         QgsMessageLog.logMessage(self.tr('Could not open SAGA algorithm: {}'.format(descriptionFile)),
-                                                 self.tr('Processing'), QgsMessageLog.CRITICAL)
+                                                 self.tr('Processing'), Qgis.Critical)
                 except Exception as e:
                     QgsMessageLog.logMessage(self.tr('Could not open SAGA algorithm: {}\n{}'.format(descriptionFile, str(e))),
-                                             self.tr('Processing'), QgsMessageLog.CRITICAL)
+                                             self.tr('Processing'), Qgis.Critical)
 
         self.algs.append(SplitRGBBands())
         for a in self.algs:

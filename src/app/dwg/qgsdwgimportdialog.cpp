@@ -243,7 +243,7 @@ void QgsDwgImportDialog::pbLoadDatabase_clicked()
   }
   else
   {
-    QgisApp::instance()->messageBar()->pushMessage( tr( "Could not open layer list" ), QgsMessageBar::CRITICAL, 4 );
+    QgisApp::instance()->messageBar()->pushMessage( tr( "Could not open layer list" ), Qgis::Critical, 4 );
   }
 }
 
@@ -268,11 +268,11 @@ void QgsDwgImportDialog::pbImportDrawing_clicked()
   QString error;
   if ( importer.import( leDrawing->text(), error, cbExpandInserts->isChecked(), cbUseCurves->isChecked() ) )
   {
-    QgisApp::instance()->messageBar()->pushMessage( tr( "Drawing import completed." ), QgsMessageBar::INFO, 4 );
+    QgisApp::instance()->messageBar()->pushMessage( tr( "Drawing import completed." ), Qgis::Info, 4 );
   }
   else
   {
-    QgisApp::instance()->messageBar()->pushMessage( tr( "Drawing import failed (%1)" ).arg( error ), QgsMessageBar::CRITICAL, 4 );
+    QgisApp::instance()->messageBar()->pushMessage( tr( "Drawing import failed (%1)" ).arg( error ), Qgis::Critical, 4 );
   }
 
   pbLoadDatabase_clicked();

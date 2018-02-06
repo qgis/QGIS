@@ -2443,7 +2443,7 @@ namespace QgsWms
       renderer.reset( QgsFeatureRenderer::loadSld( el, param.mGeom.type(), errorMsg ) );
       if ( !renderer )
       {
-        QgsMessageLog::logMessage( errorMsg, "Server", QgsMessageLog::INFO );
+        QgsMessageLog::logMessage( errorMsg, "Server", Qgis::Info );
         continue;
       }
 

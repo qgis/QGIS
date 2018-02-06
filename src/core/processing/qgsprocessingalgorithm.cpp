@@ -383,7 +383,7 @@ QVariantMap QgsProcessingAlgorithm::run( const QVariantMap &parameters, QgsProce
   }
   catch ( QgsProcessingException &e )
   {
-    QgsMessageLog::logMessage( e.what(), QObject::tr( "Processing" ), QgsMessageLog::CRITICAL );
+    QgsMessageLog::logMessage( e.what(), QObject::tr( "Processing" ), Qgis::Critical );
     feedback->reportError( e.what() );
     return QVariantMap();
   }
@@ -409,7 +409,7 @@ bool QgsProcessingAlgorithm::prepare( const QVariantMap &parameters, QgsProcessi
   }
   catch ( QgsProcessingException &e )
   {
-    QgsMessageLog::logMessage( e.what(), QObject::tr( "Processing" ), QgsMessageLog::CRITICAL );
+    QgsMessageLog::logMessage( e.what(), QObject::tr( "Processing" ), Qgis::Critical );
     feedback->reportError( e.what() );
     return false;
   }
@@ -494,7 +494,7 @@ QVariantMap QgsProcessingAlgorithm::postProcess( QgsProcessingContext &context, 
   }
   catch ( QgsProcessingException &e )
   {
-    QgsMessageLog::logMessage( e.what(), QObject::tr( "Processing" ), QgsMessageLog::CRITICAL );
+    QgsMessageLog::logMessage( e.what(), QObject::tr( "Processing" ), Qgis::Critical );
     feedback->reportError( e.what() );
     return QVariantMap();
   }

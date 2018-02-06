@@ -1605,9 +1605,16 @@ QgsMarkerSymbolLayer        {#qgis_api_break_3_0_QgsMarkerSymbolLayer}
 - bounds() is now pure virtual and must be implemented in all subclasses.
 
 
+QgsMessageBar        {#qgis_api_break_3_0_QgsMessageBar}
+---------------------------
+
+- MessageLevel has been removed. Use Qgis::MessageLevel instead
+
+
 QgsMessageLog        {#qgis_api_break_3_0_QgsMessageLog}
 ---------------------------
 
+- MessageLevel has been removed. Use Qgis::MessageLevel instead
 - This class is no longer a singleton and instance() has been removed. Instead use QgsApplication::messageLog() to access an application-wide log.
 
 QgsMessageLogViewer        {#qgis_api_break_3_0_QgsMessageLogViewer}

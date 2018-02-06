@@ -455,14 +455,14 @@ void QgsAttributeForm::pushSelectedFeaturesMessage()
     mMessageBar->pushMessage( QString(),
                               tr( "%1 matching %2 selected" ).arg( count )
                               .arg( count == 1 ? tr( "feature" ) : tr( "features" ) ),
-                              QgsMessageBar::INFO,
+                              Qgis::Info,
                               messageTimeout() );
   }
   else
   {
     mMessageBar->pushMessage( QString(),
                               tr( "No matching features found" ),
-                              QgsMessageBar::WARNING,
+                              Qgis::Warning,
                               messageTimeout() );
   }
 }
@@ -557,12 +557,12 @@ bool QgsAttributeForm::saveMultiEdits()
   {
     mLayer->endEditCommand();
     mLayer->triggerRepaint();
-    mMultiEditMessageBarItem = new QgsMessageBarItem( tr( "Attribute changes for multiple features applied" ), QgsMessageBar::SUCCESS, messageTimeout() );
+    mMultiEditMessageBarItem = new QgsMessageBarItem( tr( "Attribute changes for multiple features applied" ), Qgis::Success, messageTimeout() );
   }
   else
   {
     mLayer->destroyEditCommand();
-    mMultiEditMessageBarItem = new QgsMessageBarItem( tr( "Changes could not be applied" ), QgsMessageBar::WARNING, messageTimeout() );
+    mMultiEditMessageBarItem = new QgsMessageBarItem( tr( "Changes could not be applied" ), Qgis::Warning, messageTimeout() );
   }
 
   if ( !mButtonBox->isVisible() )
@@ -695,7 +695,7 @@ void QgsAttributeForm::onAttributeChanged( const QVariant &value )
         connect( msgLabel, &QLabel::linkActivated, this, &QgsAttributeForm::multiEditMessageClicked );
         clearMultiEditMessages();
 
-        mMultiEditUnsavedMessageBarItem = new QgsMessageBarItem( msgLabel, QgsMessageBar::WARNING );
+        mMultiEditUnsavedMessageBarItem = new QgsMessageBarItem( msgLabel, Qgis::Warning );
         if ( !mButtonBox->isVisible() )
           mMessageBar->pushItem( mMultiEditUnsavedMessageBarItem );
       }

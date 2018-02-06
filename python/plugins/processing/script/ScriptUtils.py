@@ -31,7 +31,8 @@ import importlib
 
 from qgis.PyQt.QtCore import QCoreApplication
 
-from qgis.core import (QgsProcessingAlgorithm,
+from qgis.core import (Qgis,
+                       QgsProcessingAlgorithm,
                        QgsProcessingFeatureBasedAlgorithm,
                        QgsMessageLog
                        )
@@ -73,7 +74,7 @@ def loadAlgorithm(moduleName, filePath):
     except ImportError as e:
         QgsMessageLog.logMessage("Could not import script algorithm '{}' from '{}'\n{}".format(moduleName, filePath, str(e)),
                                  "Processing",
-                                 QgsMessageLog.CRITICAL)
+                                 Qgis.Critical)
 
 
 def findAlgorithmSource(className):

@@ -35,7 +35,8 @@ from qgis.PyQt.QtWidgets import (QDialog, QDialogButtonBox, QLabel, QLineEdit,
                                  QFrame, QPushButton, QSizePolicy, QVBoxLayout,
                                  QHBoxLayout, QWidget)
 
-from qgis.core import (QgsProcessingParameterDefinition,
+from qgis.core import (Qgis,
+                       QgsProcessingParameterDefinition,
                        QgsProcessingParameterPoint,
                        QgsProcessingParameterExtent,
                        QgsProcessingModelAlgorithm,
@@ -310,7 +311,7 @@ class ModelerParametersDialog(QDialog):
             except InvalidParameterValue:
                 self.bar.pushMessage(self.tr("Error"),
                                      self.tr("Wrong or missing value for parameter '{}'").format(param.description()),
-                                     level=QgsMessageBar.WARNING)
+                                     level=Qgis.Warning)
                 return None
 
             if isinstance(val, QgsProcessingModelChildParameterSource):
@@ -325,7 +326,7 @@ class ModelerParametersDialog(QDialog):
                         or (subval is None and not param.flags() & QgsProcessingParameterDefinition.FlagOptional):
                     self.bar.pushMessage(self.tr("Error"), self.tr("Wrong or missing value for parameter '{}'").format(
                         param.description()),
-                        level=QgsMessageBar.WARNING)
+                        level=Qgis.Warning)
                     return None
             alg.addParameterSources(param.name(), val)
 

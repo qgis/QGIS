@@ -33,7 +33,8 @@ import importlib
 
 from qgis.PyQt.QtCore import QCoreApplication, QUrl
 
-from qgis.core import (QgsRasterLayer,
+from qgis.core import (Qgis,
+                       QgsRasterLayer,
                        QgsApplication,
                        QgsMapLayer,
                        QgsProcessingUtils,
@@ -232,7 +233,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                             hasRasterOutput = True
                     line = lines.readline().strip('\n').strip()
                 except Exception as e:
-                    QgsMessageLog.logMessage(self.tr('Could not open GRASS GIS 7 algorithm: {0}\n{1}').format(self.descriptionFile, line), self.tr('Processing'), QgsMessageLog.CRITICAL)
+                    QgsMessageLog.logMessage(self.tr('Could not open GRASS GIS 7 algorithm: {0}\n{1}').format(self.descriptionFile, line), self.tr('Processing'), Qgis.Critical)
                     raise e
 
         param = QgsProcessingParameterExtent(
@@ -382,7 +383,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
             feedback.pushCommandInfo(line)
             loglines.append(line)
         if ProcessingConfig.getSetting(Grass7Utils.GRASS_LOG_COMMANDS):
-            QgsMessageLog.logMessage("\n".join(loglines), self.tr('Processing'), QgsMessageLog.INFO)
+            QgsMessageLog.logMessage("\n".join(loglines), self.tr('Processing'), Qgis.Info)
 
         Grass7Utils.executeGrass(self.commands, feedback, self.outputCommands)
 
@@ -478,7 +479,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         # Add the default parameters commands
         self.commands.append(command)
 
-        QgsMessageLog.logMessage('processInputs end. Commands: {}'.format(self.commands), 'Grass7', QgsMessageLog.INFO)
+        QgsMessageLog.logMessage('processInputs end. Commands: {}'.format(self.commands), 'Grass7', Qgis.Info)
 
     def processCommand(self, parameters, context, delOutputs=False):
         """
@@ -610,7 +611,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
 
         command += ' --overwrite'
         self.commands.append(command)
-        QgsMessageLog.logMessage('processCommands end. Commands: {}'.format(self.commands), 'Grass7', QgsMessageLog.INFO)
+        QgsMessageLog.logMessage('processCommands end. Commands: {}'.format(self.commands), 'Grass7', Qgis.Info)
 
     def vectorOutputType(self, parameters, context):
         """Determine vector output types for outputs"""
