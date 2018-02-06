@@ -207,6 +207,8 @@ void QgsOptionsDialogBase::restoreOptionsBaseUi( const QString &title )
 
 void QgsOptionsDialogBase::searchText( const QString &text )
 {
+  const int minimumTextLength = 3;
+
   mSearchLineEdit->setMinimumWidth( text.isEmpty() ? 0 : 70 );
 
   if ( !mOptStackedWidget )
@@ -219,12 +221,12 @@ void QgsOptionsDialogBase::searchText( const QString &text )
   // hide all page if text has to be search, show them all otherwise
   for ( int r = 0; r < mOptListWidget->count(); ++r )
   {
-    mOptListWidget->setRowHidden( r, !text.isEmpty() );
+    mOptListWidget->setRowHidden( r, text.length() >= minimumTextLength );
   }
 
   for ( const QPair< QgsOptionsDialogHighlightWidget *, int > &rsw : qgis::as_const( mRegisteredSearchWidgets ) )
   {
-    if ( rsw.first->searchHighlight( text ) )
+    if ( rsw.first->searchHighlight( text.length() >= minimumTextLength ? text : QString() ) )
     {
       mOptListWidget->setRowHidden( rsw.second, false );
     }
@@ -256,7 +258,25 @@ void QgsOptionsDialogBase::registerTextSearchWidgets()
   {
     Q_FOREACH ( QWidget *w, mOptStackedWidget->widget( i )->findChildren<QWidget *>() )
     {
-      QgsOptionsDialogHighlightWidget *shw = QgsOptionsDialogHighlightWidget::createWidget( w );
+
+      // get custom highlight widget in user added pages
+      QMap<QWidget *, QgsOptionsDialogHighlightWidget *> customHighlightWidgets = QMap<QWidget *, QgsOptionsDialogHighlightWidget *>();
+      QgsOptionsPageWidget *opw = qobject_cast<QgsOptionsPageWidget *>( mOptStackedWidget->widget( i ) );
+      if ( opw )
+      {
+        customHighlightWidgets = opw->registeredHighlightWidgets();
+      }
+      QgsOptionsDialogHighlightWidget *shw = nullptr;
+      // take custom if exists
+      if ( customHighlightWidgets.contains( w ) )
+      {
+        shw = customHighlightWidgets.value( w );
+      }
+      // try to construct one otherwise
+      if ( !shw || !shw->isValid() )
+      {
+        shw = QgsOptionsDialogHighlightWidget::createWidget( w );
+      }
       if ( shw && shw->isValid() )
       {
         QgsDebugMsgLevel( QString( "Registering: %1" ).arg( w->objectName() ), 4 );

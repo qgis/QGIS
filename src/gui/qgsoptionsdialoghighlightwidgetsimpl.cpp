@@ -214,13 +214,14 @@ bool QgsOptionsDialogHighlightTree::highlightText( const QString &text )
       setChildrenVisible( item, true );
 
       QTreeWidgetItem *parent = item;
-      while ( ( parent = parent->parent() ) )
+      while ( parent )
       {
         if ( mTreeInitialExpand.contains( parent ) )
           break;
         mTreeInitialExpand.insert( parent, parent->isExpanded() );
         parent->setExpanded( true );
         parent->setHidden( false );
+        parent = parent->parent();
       }
     }
   }
