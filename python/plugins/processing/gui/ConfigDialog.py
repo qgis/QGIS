@@ -155,19 +155,19 @@ class ConfigDialog(BASE, WIDGET):
             self.tree.collapseAll()
             return False
 
-    def _filterItem(self, item, text):
+    def _filterItem(self, item, text, forceShow=False):
         if item.hasChildren():
-            show = isinstance(item, QStandardItem) and bool(text) and (text in item.text().lower())
+            show = forceShow or isinstance(item, QStandardItem) and bool(text) and (text in item.text().lower())
             for i in range(item.rowCount()):
                 child = item.child(i)
-                show = self._filterItem(child, text) or show
+                show = self._filterItem(child, text, forceShow) or show
             self.tree.setRowHidden(item.row(), item.index().parent(), not show)
             return show
 
         elif isinstance(item, QStandardItem):
-            hide = bool(text) and (text not in item.text().lower())
-            self.tree.setRowHidden(item.row(), item.index().parent(), hide)
-            return not hide
+            show = forceShow or bool(text) and (text in item.text().lower())
+            self.tree.setRowHidden(item.row(), item.index().parent(), not show)
+            return show
 
     def fillTree(self):
         self.fillTreeUsingProviders()
