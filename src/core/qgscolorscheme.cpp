@@ -303,6 +303,8 @@ QgsUserColorScheme::QgsUserColorScheme( const QString &filename )
   : mFilename( filename )
 {
   QFile sourceFile( gplFilePath() );
+  QFileInfo sourceFileInfo( gplFilePath() );
+  mEditable = sourceFileInfo.isWritable();
 
   //read in name
   if ( sourceFile.open( QIODevice::ReadOnly ) )
