@@ -71,7 +71,7 @@ ADD_LIBRARY (oracleprovider MODULE ${ORACLE_SRCS} ${ORACLE_HDRS} ${ORACLE_MOC_SR
 
 TARGET_LINK_LIBRARIES (oracleprovider
   qgis_core
-  ${QT_QTSQL_LIBRARY}
+  ${Qt5Sql_LIBRARIES}
 )
 
 IF (WITH_GUI)

@@ -229,8 +229,9 @@ MACRO(ADD_GRASSPLUGIN GRASS_BUILD_VERSION)
     )
 
     TARGET_LINK_LIBRARIES (qgis.g.browser${GRASS_BUILD_VERSION}
-      ${QT_QTGUI_LIBRARY}
-      ${QT_QTCORE_LIBRARY}
+      ${Qt5Gui_LIBRARIES}
+      ${Qt5Widgets_LIBRARIES}
+      ${Qt5Core_LIBRARIES}
     )
 
     ########################################################
