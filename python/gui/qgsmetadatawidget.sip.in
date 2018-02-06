@@ -28,21 +28,11 @@ class QgsMetadataWidget : QWidget
 Constructor for the wizard.
 \note
 For use with a source \layer. This constructor automatically sets the widget's metadata() if the ``layer`` pointer is valid.
-calls setMetadata, using mMetadata
+calls setMetadata
 
 :param layer: to set the main QgsLayerMetadata with mLayer->metadata() when not None
 
 .. seealso:: :py:func:`setMetadata`
-%End
-
-    void setMetadata( const QgsLayerMetadata &layerMetadata );
-%Docstring
-Sets the ``metadata`` to display in the widget
-\note
-Called from constructor and initializes child widget on first use
-Can be called from outside to change the QgsLayerMetadata object.
-
-.. seealso:: :py:func:`metadata`
 %End
 
     QgsLayerMetadata metadata();

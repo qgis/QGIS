@@ -114,15 +114,8 @@ QgsMetadataWidget::QgsMetadataWidget( QWidget *parent, QgsMapLayer *layer )
   {
     btnAutoSource->setEnabled( false );
     btnAutoEncoding->setEnabled( false );
-    btnAutoCrs->setEnabled( false );
   }
   setMetadata( mMetadata );
-}
-
-void QgsMetadataWidget::setMetadata( const QgsLayerMetadata &layerMetadata )
-{
-  mMetadata = layerMetadata;
-  setPropertiesFromLayer();
 }
 
 QgsLayerMetadata QgsMetadataWidget::metadata()
