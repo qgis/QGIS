@@ -798,7 +798,15 @@ int main( int argc, char *argv[] )
   QCoreApplication::setAttribute( Qt::AA_DisableWindowContextHelpButton, true );
 #endif
 
+  // Create QgsApplication now, profileFolder is not specified yet,
+  // see the second call to QgsApplication::init( profileFoder ) after
+  // the profile has been initialized
+  QgsApplication myApp( argc, argv, myUseGuiFlag );
+
   // SetUp the QgsSettings Global Settings:
+  // Note: this needs to be called after QgsApplication has been created
+  // because of the call to QgsApplication::pkgDataPath()!
+  //
   // - use the path specified with --globalsettingsfile path,
   // - use the environment if not found
   // - use a default location as a fallback
@@ -867,7 +875,8 @@ int main( int argc, char *argv[] )
   QgsDebugMsg( QString( "\t - %1" ).arg( profileFolder ) );
   QgsDebugMsg( QString( "\t - %1" ).arg( rootProfileFolder ) );
 
-  QgsApplication myApp( argc, argv, myUseGuiFlag, profileFolder );
+  // Call init( profileFolder ) to set up all profiles stuff
+  QgsApplication::init( profileFolder );
 
   // Settings migration is only supported on the default profile for now.
   if ( profileName == "default" )
