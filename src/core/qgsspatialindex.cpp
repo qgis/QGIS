@@ -186,8 +186,8 @@ class QgsSpatialIndexData : public QSharedData
       initTree();
 
       // copy R-tree data one by one (is there a faster way??)
-      double low[]  = { DBL_MIN, DBL_MIN };
-      double high[] = { DBL_MAX, DBL_MAX };
+      double low[]  = { std::numeric_limits<double>::lowest(), std::numeric_limits<double>::lowest() };
+      double high[] = { std::numeric_limits<double>::max(), std::numeric_limits<double>::max() };
       SpatialIndex::Region query( low, high, 2 );
       QgsSpatialIndexCopyVisitor visitor( mRTree );
       other.mRTree->intersectsWithQuery( query, visitor );
