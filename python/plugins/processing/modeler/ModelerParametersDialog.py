@@ -133,7 +133,7 @@ class ModelerParametersDialog(QDialog):
                 self.verticalLayout.addLayout(advancedButtonHLayout)
                 break
         for param in self._alg.parameterDefinitions():
-            if not param.isVisible() or param.isDestination() or param.flags() & QgsProcessingParameterDefinition.FlagHidden:
+            if param.isDestination() or param.flags() & QgsProcessingParameterDefinition.FlagHidden:
                 continue
             desc = param.description()
             if isinstance(param, QgsProcessingParameterExtent):
@@ -143,6 +143,7 @@ class ModelerParametersDialog(QDialog):
             if param.flags() & QgsProcessingParameterDefinition.FlagOptional:
                 desc += self.tr(' [optional]')
             label = QLabel(desc)
+            label.setVisible(param.isVisible())
             self.labels[param.name()] = label
 
             wrapper = WidgetWrapperFactory.create_wrapper(param, self)
@@ -150,6 +151,7 @@ class ModelerParametersDialog(QDialog):
 
             widget = wrapper.widget
             if widget is not None:
+                widget.setVisible(param.isVisible())
                 self.valueItems[param.name()] = widget
                 tooltip = param.description()
                 label.setToolTip(tooltip)
@@ -303,7 +305,7 @@ class ModelerParametersDialog(QDialog):
             alg.setChildId(self.childId)
         alg.setDescription(self.descriptionBox.text())
         for param in self._alg.parameterDefinitions():
-            if param.isDestination() or param.flags() & QgsProcessingParameterDefinition.FlagHidden:
+            if not param.isVisible() or param.isDestination() or param.flags() & QgsProcessingParameterDefinition.FlagHidden:
                 continue
             try:
                 val = self.wrappers[param.name()].value()
