@@ -767,3 +767,25 @@ void QgsLayerMetadata::Extent::setTemporalExtents( const QList<QgsDateTimeRange>
 {
   mTemporalExtents = temporalExtents;
 }
+
+bool QgsLayerMetadata::operator==( const QgsLayerMetadata &metadataOther )  const
+{
+  return ( ( parentIdentifier() == metadataOther.parentIdentifier() ) &&
+           ( identifier() == metadataOther.identifier() ) &&
+           ( language() == metadataOther.language() ) &&
+           ( type() == metadataOther.type() ) &&
+           ( title() == metadataOther.title() ) &&
+           ( abstract() == metadataOther.abstract() ) &&
+           ( fees() == metadataOther.fees() ) &&
+           ( constraints() == metadataOther.constraints() ) &&
+           ( rights() == metadataOther.rights() ) &&
+           ( licenses() == metadataOther.licenses() ) &&
+           ( history() == metadataOther.history() ) &&
+           ( encoding() == metadataOther.encoding() ) &&
+           ( extent().spatialExtents() == metadataOther.extent().spatialExtents() ) &&
+           ( crs() == metadataOther.crs() ) &&
+           ( keywords() == metadataOther.keywords() ) &&
+           ( categories() == metadataOther.categories() ) &&
+           ( contacts() == metadataOther.contacts() ) &&
+           ( links() == metadataOther.links() ) );
+}

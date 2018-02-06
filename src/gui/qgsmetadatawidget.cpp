@@ -125,12 +125,9 @@ void QgsMetadataWidget::setMetadata( const QgsLayerMetadata &layerMetadata )
   setPropertiesFromLayer();
 }
 
-QgsLayerMetadata QgsMetadataWidget::getMetadata()
+QgsLayerMetadata QgsMetadataWidget::metadata()
 {
-  if ( saveMetadata( mMetadata ) )
-  {
-   emit metadataChanged();
-  }
+  saveMetadata( mMetadata );
   return mMetadata;
 }
 
@@ -549,9 +546,8 @@ void QgsMetadataWidget::setPropertiesFromLayer()
   mHistoryModel->setStringList( mMetadata.history() );
 }
 
-bool QgsMetadataWidget::saveMetadata( QgsLayerMetadata &layerMetadata ) const
+void QgsMetadataWidget::saveMetadata( QgsLayerMetadata &layerMetadata ) const
 {
-  bool bHasChanged = false;
   layerMetadata.setParentIdentifier( lineEditParentId->text() );
   layerMetadata.setIdentifier( lineEditIdentifier->text() );
   layerMetadata.setTitle( lineEditTitle->text() );
@@ -661,48 +657,6 @@ bool QgsMetadataWidget::saveMetadata( QgsLayerMetadata &layerMetadata ) const
 
   // History
   layerMetadata.setHistory( mHistoryModel->stringList() );
-  // Check for changes
-  if ( ( layerMetadata.parentIdentifier() != mMetadata.parentIdentifier() ) ||
-       ( layerMetadata.identifier() != mMetadata.identifier() ) ||
-       ( layerMetadata.title() != mMetadata.title() ) ||
-       ( layerMetadata.type() != mMetadata.type() ) ||
-       ( layerMetadata.language() != mMetadata.language() ) ||
-       ( layerMetadata.fees() != mMetadata.fees() ) ||
-       ( layerMetadata.abstract() != mMetadata.abstract() ) )
-  {
-    bHasChanged = true;
-  }
-  if ( !bHasChanged )
-  {
-    QSet<QString> subtraction = layerMetadata.licenses().toSet().subtract( mMetadata.licenses().toSet() );
-    if ( subtraction.count() > 0 )
-    {
-      bHasChanged = true;
-    }
-    subtraction = layerMetadata.rights().toSet().subtract( mMetadata.rights().toSet() );
-    if ( subtraction.count() > 0 )
-    {
-      bHasChanged = true;
-    }
-    subtraction = mHistoryModel->stringList().toSet().subtract( mMetadata.history().toSet() );
-    if ( subtraction.count() > 0 )
-    {
-      bHasChanged = true;
-    }
-    if ( layerMetadata.keywords().count() != mMetadata.keywords().count() )
-    {
-      bHasChanged = true;
-    }
-    if ( layerMetadata.constraints().count() != mMetadata.constraints().count() )
-    {
-      bHasChanged = true;
-    }
-    if ( layerMetadata.links().count() != mMetadata.links().count() )
-    {
-      bHasChanged = true;
-    }
-  }
-  return bHasChanged;
 }
 
 bool QgsMetadataWidget::checkMetadata() const

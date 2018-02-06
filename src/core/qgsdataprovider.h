@@ -497,25 +497,19 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * Retrieve collected Metadata from the Provider source
      * \brief A structured metadata store for a map layer.
      * \note
-     * \see QgsVectorLayer::setDataProvider
-     * \see QgsRasterLayer::setDataProvider
      * \see setLayerMetadata
-     * \see mLayerMetadata
     * \since QGIS 3.0
     */
-    virtual const QgsLayerMetadata &layerMetadata() const { return mLayerMetadata; };
+    virtual const QgsLayerMetadata &layerMetadata() const { return QgsLayerMetadata(); };
 
     /**
      * Set collected Metadata from the Provider source
      * \brief A structured metadata store for a map layer.
      * \note
-     * \see QgsVectorLayer::setDataProvider
-     * \see QgsRasterLayer::setDataProvider
      * \see layerMetadata
-     * \see mLayerMetadata
     * \since QGIS 3.0
     */
-    virtual void setLayerMetadata( const QgsLayerMetadata &layerMetadata ) { mLayerMetadata = layerMetadata; };
+    virtual bool setLayerMetadata( const QgsLayerMetadata &layerMetadata ) { Q_UNUSED( layerMetadata ); return false; }
 
   signals:
 

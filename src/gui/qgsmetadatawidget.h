@@ -44,41 +44,35 @@ class GUI_EXPORT QgsMetadataWidget : public QWidget, private Ui::QgsMetadataWidg
     /**
      * Constructor for the wizard.
      * \note
-     * For use with Layer. Sets mMetadata if pointer is valid
+     * For use with a source \layer. This constructor automatically sets the widget's metadata() if the \a layer pointer is valid.
      *  calls setMetadata, using mMetadata
      * \param layer to set the main QgsLayerMetadata with mLayer->metadata() when not nullptr
-     * \see mMetadata
      * \see setMetadata
-     * \since QGIS 3.0
      */
     QgsMetadataWidget( QWidget *parent, QgsMapLayer *layer = nullptr );
 
     /**
-     * Set a QgsLayerMetadata object.
+     * Sets the \a metadata to display in the widget
      * \note
-     * Called from constructor and initializes child widged on first use
+     * Called from constructor and initializes child widget on first use
      * Can be called from outside to change the QgsLayerMetadata object.
-     * \param layerMetadata to set the main  QgsLayerMetadata
-     * \see mMetadata
-     * \since QGIS 3.0
+     * \see metadata()
      */
     void setMetadata( const QgsLayerMetadata &layerMetadata );
 
     /**
-     * Retrieved a QgsLayerMetadata object.
+     * Retrieves a QgsLayerMetadata object representing the current state of the widget.
      * \note
      *  saveMetdata is called before returning QgsLayerMetadata
      * \see saveMetadata
-     * \since QGIS 3.0
      */
-    QgsLayerMetadata getMetadata();
+    QgsLayerMetadata metadata();
 
     /**
      * Save all fields in a QgsLayerMetadata object.
      * \see getMetadata
      * \see acceptMetadata
      * \see checkMetadata
-     * \since QGIS 3.0
      */
     bool saveMetadata( QgsLayerMetadata &layerMetadata ) const;
 
@@ -86,7 +80,6 @@ class GUI_EXPORT QgsMetadataWidget : public QWidget, private Ui::QgsMetadataWidg
      * Check if values in the wizard are correct.
      * \see updatePanel
      * \see saveMetadata
-     * \since QGIS 3.0
      */
     bool checkMetadata() const;
 
@@ -136,16 +129,6 @@ class GUI_EXPORT QgsMetadataWidget : public QWidget, private Ui::QgsMetadataWidg
      * Sets a map \a canvas associated with the widget.
      */
     void setMapCanvas( QgsMapCanvas *canvas );
-
-  signals:
-
-    /**
-     * Emitted when the layer's metadata is changed.
-     * \see setMetadata()
-     * \see getMetadata()
-     * \since QGIS 3.0
-     */
-    void metadataChanged();
 
   private:
     void updatePanel() const;
