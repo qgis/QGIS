@@ -777,15 +777,16 @@ bool QgsLayerMetadata::operator==( const QgsLayerMetadata &metadataOther )  cons
            ( title() == metadataOther.title() ) &&
            ( abstract() == metadataOther.abstract() ) &&
            ( fees() == metadataOther.fees() ) &&
-           ( constraints() == metadataOther.constraints() ) &&
            ( rights() == metadataOther.rights() ) &&
            ( licenses() == metadataOther.licenses() ) &&
            ( history() == metadataOther.history() ) &&
            ( encoding() == metadataOther.encoding() ) &&
-           ( extent().spatialExtents() == metadataOther.extent().spatialExtents() ) &&
            ( crs() == metadataOther.crs() ) &&
            ( keywords() == metadataOther.keywords() ) &&
            ( categories() == metadataOther.categories() ) &&
-           ( contacts() == metadataOther.contacts() ) &&
-           ( links() == metadataOther.links() ) );
+           // QgsLayerMetadata::ConstraintList, LinkList, Extent, ContactList need to be delt with properly
+           ( constraints().count() == metadataOther.constraints().count() ) &&
+           ( extent().spatialExtents().count() == metadataOther.extent().spatialExtents().count() ) &&
+           ( contacts().count() == metadataOther.contacts().count() ) &&
+           ( links().count() == metadataOther.links().count() ) );
 }
