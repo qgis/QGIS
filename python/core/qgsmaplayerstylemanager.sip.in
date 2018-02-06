@@ -101,9 +101,11 @@ style followed by restoration of the original style (for example, when rendering
 #include "qgsmaplayerstylemanager.h"
 %End
   public:
-    QgsMapLayerStyleManager( QgsMapLayer *layer );
+
+    QgsMapLayerStyleManager( QgsMapLayer *layer /TransferThis/ );
 %Docstring
-Construct a style manager associated with a map layer (must not be null)
+Construct a style manager associated with a map layer (must not be null).
+The style manager will be parented to ``layer``.
 %End
 
     QgsMapLayer *layer() const;
