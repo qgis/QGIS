@@ -1426,7 +1426,7 @@
      <normaloff>:/images/themes/default/mActionSaveAsSVG.svg</normaloff>:/images/themes/default/mActionSaveAsSVG.svg</iconset>
    </property>
    <property name="text">
-    <string>Export Report as S&amp;VG...</string>
+    <string>Export Report as &amp;SVG...</string>
    </property>
    <property name="toolTip">
     <string>Export Report as SVG</string>
