@@ -1046,7 +1046,7 @@ namespace QgsWms
     double OGC_PX_M = 0.00028; // OGC reference pixel size in meter, also used by qgis
     int dpm = 1 / OGC_PX_M;
     if ( !mWmsParameters.dpi().isEmpty() )
-      dpm = mWmsParameters.dpiAsInt() / 0.0254;
+      dpm = mWmsParameters.dpiAsDouble() / 0.0254;
 
     image->setDotsPerMeterX( dpm );
     image->setDotsPerMeterY( dpm );
