@@ -21,6 +21,7 @@
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterlayer.h"
 #include "qgssettings.h"
+#include "qgsgui.h"
 
 #include "cpl_string.h"
 #include "gdal.h"
@@ -31,6 +32,8 @@
 QgsRasterCalcDialog::QgsRasterCalcDialog( QWidget *parent, Qt::WindowFlags f ): QDialog( parent, f )
 {
   setupUi( this );
+  QgsGui::instance()->enableAutoGeometryRestore( this );
+
   connect( mOutputLayerPushButton, &QPushButton::clicked, this, &QgsRasterCalcDialog::mOutputLayerPushButton_clicked );
   connect( mRasterBandsListWidget, &QListWidget::itemDoubleClicked, this, &QgsRasterCalcDialog::mRasterBandsListWidget_itemDoubleClicked );
   connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsRasterCalcDialog::mButtonBox_accepted );
@@ -63,9 +66,6 @@ QgsRasterCalcDialog::QgsRasterCalcDialog( QWidget *parent, Qt::WindowFlags f ): 
   connect( mOrButton, &QPushButton::clicked, this, &QgsRasterCalcDialog::mOrButton_clicked );
   connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsRasterCalcDialog::showHelp );
 
-  QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "Windows/RasterCalc/geometry" ) ).toByteArray() );
-
   //add supported output formats
   insertAvailableOutputFormats();
   insertAvailableRasterBands();
@@ -77,12 +77,6 @@ QgsRasterCalcDialog::QgsRasterCalcDialog( QWidget *parent, Qt::WindowFlags f ): 
   }
 
   mExpressionTextEdit->setCurrentFont( QFontDatabase::systemFont( QFontDatabase::FixedFont ) );
-}
-
-QgsRasterCalcDialog::~QgsRasterCalcDialog()
-{
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "Windows/RasterCalc/geometry" ), saveGeometry() );
 }
 
 QString QgsRasterCalcDialog::formulaString() const
