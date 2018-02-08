@@ -1046,8 +1046,8 @@ take note of the path where you have installed mxe.
     4.4.2. Building the dependencies
     ================================
 
-Please see the README under ms-windows/mxe for a list of the dependencies that needs to be
-build in mxe before attempting to build QGIS.
+Please see the README under ms-windows/mxe for a list of the dependencies that need to be
+built in mxe before attempting to build QGIS.
 
 
     4.4.3. Cross-Building QGIS
@@ -1059,7 +1059,7 @@ can also change the build and release directory.
     4.4.4. Testing QGIS
     ====================
 
-Copy and unzip the release package ona a Windows machine and launch it!
+Copy and unzip the release package on a Windows machine and launch it!
 
 
   5. Building on MacOS X

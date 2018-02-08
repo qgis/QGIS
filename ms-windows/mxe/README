@@ -7,8 +7,8 @@ For now, Python bindings cannot be built with mxe.
 Follow the instructions on the website to prepare the mxe environment, you
 will need to build all required dependencies for QGIS.
 
-Note that someof the packages listed below are dependencies of other 
-packages, you will probably not need to build them all explicitely.
+Note that some of the packages listed below are dependencies of other
+packages, you will probably not need to build them all explicitly.
 
 
 armadillo

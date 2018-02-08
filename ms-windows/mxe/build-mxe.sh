@@ -51,6 +51,7 @@ if [[ "$COMMAND" != *"package"* ]]; then
 
   [ -d $BUILD_DIR ] || mkdir $BUILD_DIR
   [ -d $RELEASE_DIR ] || mkdir $RELEASE_DIR
+  [ -d $RELEASE_DIR/qt5 ] || mkdir $RELEASE_DIR/qt5
 
 fi
 
@@ -91,7 +92,7 @@ cp -r $MXE/usr/i686-w64-mingw32.shared/qt5/plugins $RELEASE_DIR/qt5
 
 cat <<__TXT__ > ${RELEASE_DIR}/qt.conf
 [Paths]
-Plugins = ./qt5/plugins
+Plugins = qt5
 __TXT__
 
 
