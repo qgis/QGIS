@@ -5331,7 +5331,7 @@ void QgisApp::showRasterCalculator()
     p.setMaximum( 100.0 );
     QgsFeedback feedback;
     connect( &feedback, &QgsFeedback::progressChanged, &p, &QProgressDialog::setValue );
-    connect( &feedback, &QgsFeedback::canceled, &p, &QProgressDialog::cancel );
+    connect( &p, &QProgressDialog::canceled, &feedback, &QgsFeedback::cancel );
     QgsRasterCalculator::Result res = static_cast< QgsRasterCalculator::Result >( rc.processCalculation( &feedback ) );
     switch ( res )
     {
