@@ -313,8 +313,8 @@ void QgsVectorLayerUndoCommandAddAttribute::undo()
 void QgsVectorLayerUndoCommandAddAttribute::redo()
 {
   mBuffer->mAddedAttributes.append( mField );
-  mBuffer->updateLayerFields();
   mBuffer->handleAttributeAdded( mFieldIndex );
+  mBuffer->updateLayerFields();
 
   emit mBuffer->attributeAdded( mFieldIndex );
 }
