@@ -47,14 +47,21 @@ bool QgsAfsSourceSelect::connectToService( const QgsOwsConnection &connection )
   QStringList layerErrors;
   foreach ( const QVariant &layerInfo, serviceInfoMap["layers"].toList() )
   {
-    QVariantMap layerInfoMap = layerInfo.toMap();
+    const QVariantMap layerInfoMap = layerInfo.toMap();
     if ( !layerInfoMap[QStringLiteral( "id" )].isValid() )
     {
       continue;
     }
 
+    if ( !layerInfoMap.value( QStringLiteral( "subLayerIds" ) ).toList().empty() )
+    {
+      // group layer - do not show as it is not possible to load
+      // TODO - turn model into a tree and show nested groups
+      continue;
+    }
+
     // Get layer info
-    QVariantMap layerData = QgsArcGisRestUtils::getLayerInfo( connection.uri().param( QStringLiteral( "url" ) ) + "/" + layerInfoMap[QStringLiteral( "id" )].toString(), errorTitle, errorMessage );
+    const QVariantMap layerData = QgsArcGisRestUtils::getLayerInfo( connection.uri().param( QStringLiteral( "url" ) ) + "/" + layerInfoMap[QStringLiteral( "id" )].toString(), errorTitle, errorMessage );
     if ( layerData.isEmpty() )
     {
       layerErrors.append( tr( "Layer %1: %2 - %3" ).arg( layerInfoMap[QStringLiteral( "id" )].toString(), errorTitle, errorMessage ) );
