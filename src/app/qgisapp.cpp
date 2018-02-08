@@ -2936,6 +2936,7 @@ void QgisApp::createStatusBar()
 
   mLocatorWidget->locator()->registerFilter( new QgsActionLocatorFilter( actionObjects ) );
   mLocatorWidget->locator()->registerFilter( new QgsActiveLayerFeaturesLocatorFilter() );
+  mLocatorWidget->locator()->registerFilter( new QgsExpressionCalculatorLocatorFilter() );
 }
 
 void QgisApp::setIconSizes( int size )
