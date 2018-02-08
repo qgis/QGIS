@@ -572,8 +572,25 @@ bool QgsAttributeForm::saveMultiEdits()
 
 bool QgsAttributeForm::save()
 {
-  if ( mIsSaving || !mDirty )
+  if ( mIsSaving )
     return true;
+
+  // only do the dirty checks when editing an existing feature - for new
+  // features we need to add them even if the attributes are unchanged from the initial
+  // default values
+  switch ( mMode )
+  {
+    case SingleEditMode:
+    case MultiEditMode:
+      if ( !mDirty )
+        return true;
+      break;
+
+    case AddFeatureMode:
+    case SearchMode:
+    case AggregateSearchMode:
+      break;
+  }
 
   mIsSaving = true;
 
