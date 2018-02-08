@@ -112,6 +112,22 @@ class QgsActiveLayerFeaturesLocatorFilter : public QgsLocatorFilter
     QIcon mLayerIcon;
 };
 
+class QgsExpressionCalculatorLocatorFilter : public QgsLocatorFilter
+{
+    Q_OBJECT
+
+  public:
+
+    QgsExpressionCalculatorLocatorFilter( QObject *parent = nullptr );
+    QString name() const override { return QStringLiteral( "calculator" ); }
+    QString displayName() const override { return tr( "Calculator" ); }
+    Priority priority() const override { return Highest; }
+    QString prefix() const override { return QStringLiteral( "=" ); }
+
+    void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;
+    void triggerResult( const QgsLocatorResult &result ) override;
+};
+
 
 #endif // QGSINBUILTLOCATORFILTERS_H
 
