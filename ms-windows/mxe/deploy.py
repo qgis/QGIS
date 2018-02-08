@@ -22,9 +22,12 @@ import os.path
 import argparse
 parser = argparse.ArgumentParser()
 
-parser.add_argument("--build", help="where to place libraries, optional, files will go to target location by default")
-parser.add_argument("--objdump", help="objdump executable (/home/user/mxe/usr/bin/i686-w64-mingw32.shared-objdump)")
-parser.add_argument("--libs", help="where to search for libraries (optional) infers from objdump")
+parser.add_argument(
+    "--build", help="where to place libraries, optional, files will go to target location by default")
+parser.add_argument(
+    "--objdump", help="objdump executable (/home/user/mxe/usr/bin/i686-w64-mingw32.shared-objdump)")
+parser.add_argument(
+    "--libs", help="where to search for libraries (optional) infers from objdump")
 parser.add_argument("target")
 
 args = parser.parse_args()
@@ -42,9 +45,9 @@ else:
 
 libs = args.libs
 if not args.libs:
-    libs = objdump_path.replace('/bin', '').replace('-objdump','')
+    libs = objdump_path.replace('/bin', '').replace('-objdump', '')
 
-    
+
 # build_path = "/home/user/ClionProjects/project/build/"
 # libs = "/home/user/mxe/usr/i686-w64-mingw32.shared"
 # objdump_path = "/home/user/mxe/usr/bin/i686-w64-mingw32.shared-objdump"
@@ -56,7 +59,7 @@ def run_check():
 
 
 def find_dll(dll):
-    out = subprocess.getoutput("find " + libs + " | grep -i '" + dll+"$'")
+    out = subprocess.getoutput("find " + libs + " | grep -i '" + dll + "$'")
     return out.strip('\n')
 
 
@@ -107,6 +110,7 @@ def library_install_objdump(path, level):
                 level += 1
                 library_install_objdump(dll, level)
 
+
 skip_libs = list()
 done = list()
 
@@ -115,9 +119,10 @@ def main():
 
     os.chdir(build_path)
 
-    #library_install_exe(target)
+    # library_install_exe(target)
     library_install_objdump(target, 0)
 
     pass
+
 
 main()
