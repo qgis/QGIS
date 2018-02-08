@@ -62,10 +62,10 @@
          <property name="floatable">
           <bool>false</bool>
          </property>
+         <addaction name="mOpenFormAction"/>
          <addaction name="mExpandAction"/>
          <addaction name="mCollapseAction"/>
          <addaction name="mExpandNewAction"/>
-         <addaction name="mOpenFormAction"/>
          <addaction name="mClearResultsAction"/>
          <addaction name="mActionCopy"/>
          <addaction name="mActionPrint"/>
@@ -291,7 +291,7 @@
   <action name="mOpenFormAction">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionPropertyItem.svg</normaloff>:/images/themes/default/mActionPropertyItem.svg</iconset>
+     <normaloff>:/images/themes/default/mActionFormView.svg</normaloff>:/images/themes/default/mActionFormView.svg</iconset>
    </property>
    <property name="text">
     <string>Open Form</string>
