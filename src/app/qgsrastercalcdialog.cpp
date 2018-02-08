@@ -26,6 +26,7 @@
 #include "gdal.h"
 
 #include <QFileDialog>
+#include <QFontDatabase>
 
 QgsRasterCalcDialog::QgsRasterCalcDialog( QWidget *parent, Qt::WindowFlags f ): QDialog( parent, f )
 {
@@ -74,6 +75,8 @@ QgsRasterCalcDialog::QgsRasterCalcDialog( QWidget *parent, Qt::WindowFlags f ): 
     //grab default crs from first raster
     mCrsSelector->setCrs( mAvailableRasterBands.at( 0 ).raster->crs() );
   }
+
+  mExpressionTextEdit->setCurrentFont( QFontDatabase::systemFont( QFontDatabase::FixedFont ) );
 }
 
 QgsRasterCalcDialog::~QgsRasterCalcDialog()
