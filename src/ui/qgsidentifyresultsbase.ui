@@ -63,10 +63,13 @@
           <bool>false</bool>
          </property>
          <addaction name="mOpenFormAction"/>
+         <addaction name="separator"/>
          <addaction name="mExpandAction"/>
          <addaction name="mCollapseAction"/>
          <addaction name="mExpandNewAction"/>
+         <addaction name="separator"/>
          <addaction name="mClearResultsAction"/>
+         <addaction name="separator"/>
          <addaction name="mActionCopy"/>
          <addaction name="mActionPrint"/>
         </widget>
