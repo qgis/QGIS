@@ -288,7 +288,7 @@
     <string>Expand New Results</string>
    </property>
    <property name="toolTip">
-    <string>New results will be expanded by default.</string>
+    <string>Expand New Results by Default</string>
    </property>
   </action>
   <action name="mOpenFormAction">
@@ -324,7 +324,7 @@
     <string>Copy Feature</string>
    </property>
    <property name="toolTip">
-    <string>Copy selected feature to clipboard.</string>
+    <string>Copy Selected Feature to Clipboard </string>
    </property>
   </action>
   <action name="mActionPrint">
@@ -336,7 +336,7 @@
     <string>Print Response</string>
    </property>
    <property name="toolTip">
-    <string>Print selected HTML response.</string>
+    <string>Print Selected HTML Response</string>
    </property>
   </action>
  </widget>
