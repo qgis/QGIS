@@ -103,6 +103,9 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
     void loadStyle_clicked();
     //! Save a style when appriate button is pressed.
     void saveStyleAs_clicked();
+    //! Restore dialog modality and focus, usually after a pixel clicked to pick transparency color
+    void restoreWindowModality();
+
 
     //! Load a saved metadata file.
     void loadMetadata();
