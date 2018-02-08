@@ -34,12 +34,10 @@ QgsRasterCalcDialog::QgsRasterCalcDialog( QgsRasterLayer *rasterLayer, QWidget *
   setupUi( this );
   QgsGui::instance()->enableAutoGeometryRestore( this );
 
-  connect( mOutputLayerPushButton, &QPushButton::clicked, this, &QgsRasterCalcDialog::mOutputLayerPushButton_clicked );
   connect( mRasterBandsListWidget, &QListWidget::itemDoubleClicked, this, &QgsRasterCalcDialog::mRasterBandsListWidget_itemDoubleClicked );
   connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsRasterCalcDialog::mButtonBox_accepted );
   connect( mCurrentLayerExtentButton, &QPushButton::clicked, this, &QgsRasterCalcDialog::mCurrentLayerExtentButton_clicked );
   connect( mExpressionTextEdit, &QTextEdit::textChanged, this, &QgsRasterCalcDialog::mExpressionTextEdit_textChanged );
-  connect( mOutputLayerLineEdit, &QLineEdit::textChanged, this, &QgsRasterCalcDialog::mOutputLayerLineEdit_textChanged );
   connect( mPlusPushButton, &QPushButton::clicked, this, &QgsRasterCalcDialog::mPlusPushButton_clicked );
   connect( mMinusPushButton, &QPushButton::clicked, this, &QgsRasterCalcDialog::mMinusPushButton_clicked );
   connect( mMultiplyPushButton, &QPushButton::clicked, this, &QgsRasterCalcDialog::mMultiplyPushButton_clicked );
@@ -77,6 +75,11 @@ QgsRasterCalcDialog::QgsRasterCalcDialog( QgsRasterLayer *rasterLayer, QWidget *
   insertAvailableRasterBands();
 
   mExpressionTextEdit->setCurrentFont( QFontDatabase::systemFont( QFontDatabase::FixedFont ) );
+
+  QgsSettings settings;
+  mOutputLayer->setDialogTitle( tr( "Enter result file" ) );
+  mOutputLayer->setDefaultRoot( settings.value( QStringLiteral( "/RasterCalculator/lastOutputDir" ), QDir::homePath() ).toString() );
+  connect( mOutputLayer, &QgsFileWidget::fileChanged, this, [ = ]() { setAcceptButtonState(); } );
 }
 
 QString QgsRasterCalcDialog::formulaString() const
@@ -86,7 +89,7 @@ QString QgsRasterCalcDialog::formulaString() const
 
 QString QgsRasterCalcDialog::outputFile() const
 {
-  QString outputFileName = mOutputLayerLineEdit->text();
+  QString outputFileName = mOutputLayer->filePath();
   QFileInfo fileInfo( outputFileName );
   QString suffix = fileInfo.suffix();
   if ( !suffix.isEmpty() )
@@ -253,22 +256,12 @@ void QgsRasterCalcDialog::mButtonBox_accepted()
   //save last output format
   QgsSettings s;
   s.setValue( QStringLiteral( "/RasterCalculator/lastOutputFormat" ), QVariant( mOutputFormatComboBox->currentText() ) );
-  s.setValue( QStringLiteral( "/RasterCalculator/lastOutputDir" ), QVariant( QFileInfo( mOutputLayerLineEdit->text() ).absolutePath() ) );
+  s.setValue( QStringLiteral( "/RasterCalculator/lastOutputDir" ), QVariant( QFileInfo( mOutputLayer->filePath() ).absolutePath() ) );
 }
 
 void QgsRasterCalcDialog::showHelp()
 {
   QgsHelp::openHelp( QStringLiteral( "working_with_raster/raster_analysis.html#raster-calculator" ) );
-}
-
-void QgsRasterCalcDialog::mOutputLayerPushButton_clicked()
-{
-  QgsSettings s;
-  QString saveFileName = QFileDialog::getSaveFileName( nullptr, tr( "Enter result file" ), s.value( QStringLiteral( "/RasterCalculator/lastOutputDir" ), QDir::homePath() ).toString() );
-  if ( !saveFileName.isNull() )
-  {
-    mOutputLayerLineEdit->setText( saveFileName );
-  }
 }
 
 void QgsRasterCalcDialog::mCurrentLayerExtentButton_clicked()
@@ -320,12 +313,6 @@ void QgsRasterCalcDialog::mExpressionTextEdit_textChanged()
   mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
 }
 
-void QgsRasterCalcDialog::mOutputLayerLineEdit_textChanged( const QString &text )
-{
-  Q_UNUSED( text );
-  setAcceptButtonState();
-}
-
 void QgsRasterCalcDialog::setAcceptButtonState()
 {
   if ( expressionValid() && filePathValid() )
@@ -352,7 +339,7 @@ bool QgsRasterCalcDialog::expressionValid() const
 
 bool QgsRasterCalcDialog::filePathValid() const
 {
-  QString outputPath = mOutputLayerLineEdit->text();
+  QString outputPath = mOutputLayer->filePath();
   if ( outputPath.isEmpty() )
     return false;
 

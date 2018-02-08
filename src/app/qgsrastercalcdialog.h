@@ -46,12 +46,10 @@ class APP_EXPORT QgsRasterCalcDialog: public QDialog, private Ui::QgsRasterCalcD
     QVector<QgsRasterCalculatorEntry> rasterEntries() const;
 
   private slots:
-    void mOutputLayerPushButton_clicked();
     void mRasterBandsListWidget_itemDoubleClicked( QListWidgetItem *item );
     void mButtonBox_accepted();
     void mCurrentLayerExtentButton_clicked();
     void mExpressionTextEdit_textChanged();
-    void mOutputLayerLineEdit_textChanged( const QString &text );
     //! Enables OK button if calculator expression is valid and output file path exists
     void setAcceptButtonState();
     void showHelp();
