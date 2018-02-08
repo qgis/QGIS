@@ -79,7 +79,7 @@ bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, bool fetchGeo
   QVariantList featuresData = queryData[QStringLiteral( "features" )].toList();
   if ( featuresData.isEmpty() )
   {
-    QgsDebugMsg( "Query returned no features" );
+    QgsDebugMsgLevel( "Query returned no features", 3 );
     return false;
   }
   for ( int i = 0, n = featuresData.size(); i < n; ++i )
