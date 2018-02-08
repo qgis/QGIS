@@ -97,12 +97,17 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri )
   // Read fields
   foreach ( const QVariant &fieldData, layerData["fields"].toList() )
   {
-    QVariantMap fieldDataMap = fieldData.toMap();
-    QString fieldName = fieldDataMap[QStringLiteral( "name" )].toString();
+    const QVariantMap fieldDataMap = fieldData.toMap();
+    const QString fieldName = fieldDataMap[QStringLiteral( "name" )].toString();
     QVariant::Type type = QgsArcGisRestUtils::mapEsriFieldType( fieldDataMap[QStringLiteral( "type" )].toString() );
-    if ( fieldName == QLatin1String( "geometry" ) || type == QVariant::Invalid )
+    if ( fieldName == QLatin1String( "geometry" ) || fieldDataMap[QStringLiteral( "type" )].toString() == QLatin1String( "esriFieldTypeGeometry" ) )
     {
-      QgsDebugMsg( QString( "Skipping unsupported (or possibly geometry) field" ).arg( fieldName ) );
+      // skip geometry field
+      continue;
+    }
+    if ( type == QVariant::Invalid )
+    {
+      QgsDebugMsg( QString( "Skipping unsupported field %1 of type %2" ).arg( fieldName, fieldDataMap[QStringLiteral( "type" )].toString() ) );
       continue;
     }
     QgsField field( fieldName, type, fieldDataMap[QStringLiteral( "type" )].toString(), fieldDataMap[QStringLiteral( "length" )].toInt() );
