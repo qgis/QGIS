@@ -28,7 +28,7 @@ class APP_EXPORT QgsRasterCalcDialog: public QDialog, private Ui::QgsRasterCalcD
 {
     Q_OBJECT
   public:
-    QgsRasterCalcDialog( QWidget *parent = nullptr, Qt::WindowFlags f = nullptr );
+    QgsRasterCalcDialog( QgsRasterLayer *rasterLayer = nullptr, QWidget *parent = nullptr, Qt::WindowFlags f = nullptr );
 
     QString formulaString() const;
     QString outputFile() const;
@@ -83,7 +83,10 @@ class APP_EXPORT QgsRasterCalcDialog: public QDialog, private Ui::QgsRasterCalcD
     void mOrButton_clicked();
 
   private:
-    //insert available GDAL drivers that support the create() option
+    //! Sets the extent and size of the output
+    void setExtentSize( int width, int height, QgsRectangle bbox );
+
+    // Insert available GDAL drivers that support the create() option
     void insertAvailableOutputFormats();
     //! Accesses the available raster layers/bands from the layer registry
     void insertAvailableRasterBands();
@@ -99,6 +102,8 @@ class APP_EXPORT QgsRasterCalcDialog: public QDialog, private Ui::QgsRasterCalcD
     QMap<QString, QString> mDriverExtensionMap;
 
     QList<QgsRasterCalculatorEntry> mAvailableRasterBands;
+
+    bool mExtentSizeSet = false;
 };
 
 #endif // QGSRASTERCALCDIALOG_H

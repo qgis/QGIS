@@ -5320,7 +5320,7 @@ void QgisApp::newGeoPackageLayer()
 
 void QgisApp::showRasterCalculator()
 {
-  QgsRasterCalcDialog d( this );
+  QgsRasterCalcDialog d( dynamic_cast<QgsRasterLayer *>( activeLayer() ), this );
   if ( d.exec() == QDialog::Accepted )
   {
     //invoke analysis library

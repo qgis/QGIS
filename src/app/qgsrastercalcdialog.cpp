@@ -29,7 +29,7 @@
 #include <QFileDialog>
 #include <QFontDatabase>
 
-QgsRasterCalcDialog::QgsRasterCalcDialog( QWidget *parent, Qt::WindowFlags f ): QDialog( parent, f )
+QgsRasterCalcDialog::QgsRasterCalcDialog( QgsRasterLayer *rasterLayer, QWidget *parent, Qt::WindowFlags f ): QDialog( parent, f )
 {
   setupUi( this );
   QgsGui::instance()->enableAutoGeometryRestore( this );
@@ -66,15 +66,15 @@ QgsRasterCalcDialog::QgsRasterCalcDialog( QWidget *parent, Qt::WindowFlags f ): 
   connect( mOrButton, &QPushButton::clicked, this, &QgsRasterCalcDialog::mOrButton_clicked );
   connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsRasterCalcDialog::showHelp );
 
+  if ( rasterLayer && rasterLayer->dataProvider() && rasterLayer->dataProvider()->name() == QLatin1String( "gdal" ) )
+  {
+    setExtentSize( rasterLayer->width(), rasterLayer->height(), rasterLayer->extent() );
+    mCrsSelector->setCrs( rasterLayer->crs() );
+  }
+
   //add supported output formats
   insertAvailableOutputFormats();
   insertAvailableRasterBands();
-
-  if ( !mAvailableRasterBands.isEmpty() )
-  {
-    //grab default crs from first raster
-    mCrsSelector->setCrs( mAvailableRasterBands.at( 0 ).raster->crs() );
-  }
 
   mExpressionTextEdit->setCurrentFont( QFontDatabase::systemFont( QFontDatabase::FixedFont ) );
 }
@@ -148,27 +148,31 @@ QVector<QgsRasterCalculatorEntry> QgsRasterCalcDialog::rasterEntries() const
   return entries;
 }
 
+void QgsRasterCalcDialog::setExtentSize( int width, int height, QgsRectangle bbox )
+{
+  mNColumnsSpinBox->setValue( width );
+  mNRowsSpinBox->setValue( height );
+  mXMinSpinBox->setValue( bbox.xMinimum() );
+  mXMaxSpinBox->setValue( bbox.xMaximum() );
+  mYMinSpinBox->setValue( bbox.yMinimum() );
+  mYMaxSpinBox->setValue( bbox.yMaximum() );
+  mExtentSizeSet = true;
+}
+
 void QgsRasterCalcDialog::insertAvailableRasterBands()
 {
   const QMap<QString, QgsMapLayer *> &layers = QgsProject::instance()->mapLayers();
   QMap<QString, QgsMapLayer *>::const_iterator layerIt = layers.constBegin();
 
-  bool firstLayer = true;
   for ( ; layerIt != layers.constEnd(); ++layerIt )
   {
     QgsRasterLayer *rlayer = dynamic_cast<QgsRasterLayer *>( layerIt.value() );
     if ( rlayer && rlayer->dataProvider() && rlayer->dataProvider()->name() == QLatin1String( "gdal" ) )
     {
-      if ( firstLayer ) //set bounding box / resolution of output to the values of the first possible input layer
+      if ( !mExtentSizeSet ) //set bounding box / resolution of output to the values of the first possible input layer
       {
-        mNColumnsSpinBox->setValue( rlayer->width() );
-        mNRowsSpinBox->setValue( rlayer->height() );
-        QgsRectangle bbox = rlayer->extent();
-        mXMinSpinBox->setValue( bbox.xMinimum() );
-        mXMaxSpinBox->setValue( bbox.xMaximum() );
-        mYMinSpinBox->setValue( bbox.yMinimum() );
-        mYMaxSpinBox->setValue( bbox.yMaximum() );
-        firstLayer = false;
+        setExtentSize( rlayer->width(), rlayer->height(), rlayer->extent() );
+        mCrsSelector->setCrs( rlayer->crs() );
       }
       //get number of bands
       for ( int i = 0; i < rlayer->bandCount(); ++i )
