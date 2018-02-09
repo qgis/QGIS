@@ -1,7 +1,7 @@
 v.in.ascii
 Creates a vector map from an ASCII points file or ASCII vector file.
 Vector (v.*)
-QgsProcessingParameterFile|input|ASCII file to be imported|False|txt|None|False
+QgsProcessingParameterFile|input|ASCII file to be imported|QgsProcessingParameterFile.File|txt|None|False
 QgsProcessingParameterEnum|format|Input file format|point;standard|False|0|True
 QgsProcessingParameterString|separator|Field separator|pipe|False|True
 QgsProcessingParameterString|text|Text delimiter|None|False|True

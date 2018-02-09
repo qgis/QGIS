@@ -7,8 +7,8 @@ QgsProcessingParameterRasterDestination|PREDICTION|Presence Prediction
 QgsProcessingParameterRasterDestination|PROBABILITY|Presence Probability
 QgsProcessingParameterNumber|BACKGROUND|Background Sample Density [Percent]|QgsProcessingParameterNumber.Double|1.000000|False| 0.000000| 100.000000
 QgsProcessingParameterEnum|METHOD|Method|[0] Yoshimasa Tsuruoka;[1] Dekang Lin|False|0
-QgsProcessingParameterFile|YT_FILE_LOAD|Load from File...|False|None|False
-QgsProcessingParameterFile|YT_FILE_SAVE|Save to File...|False|None|False
+QgsProcessingParameterFile|YT_FILE_LOAD|Load from File...|QgsProcessingParameterFile.File|None|False
+QgsProcessingParameterFile|YT_FILE_SAVE|Save to File...|QgsProcessingParameterFile.File|None|False
 QgsProcessingParameterEnum|YT_REGUL|Regularization|[0] none;[1] L1;[2] L2|False|1
 QgsProcessingParameterNumber|YT_REGUL_VAL|Regularization Factor|QgsProcessingParameterNumber.Double|1.000000|False| 0.000000|None
 QgsProcessingParameterBoolean|YT_NUMASREAL|Real-valued Numerical Features|True
