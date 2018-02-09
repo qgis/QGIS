@@ -62,8 +62,11 @@ class CORE_EXPORT QgsMultiPoint: public QgsGeometryCollection
       return nullptr;
     }
 #endif
-  protected:
+
     QgsMultiPoint *createEmptyWithSameType() const override SIP_FACTORY;
+
+  protected:
+
     bool wktOmitChildType() const override;
 
 };

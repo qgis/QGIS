@@ -159,8 +159,9 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     }
 #endif
 
-  protected:
     QgsGeometryCollection *createEmptyWithSameType() const override SIP_FACTORY;
+
+  protected:
     int childCount() const override;
     QgsAbstractGeometry *childGeometry( int index ) const override;
 

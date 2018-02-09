@@ -102,16 +102,6 @@ static QgsGeometry generalizeWkbGeometryByBoundingBox(
   }
 }
 
-template<class T>
-static T *createEmptySameTypeGeom( const T &geom )
-{
-  // TODO - this is inefficient - we clone the geometry's content only to throw it away immediately
-  T *output( qgsgeometry_cast<T *>( geom.clone() ) );
-  Q_ASSERT( output );
-  output->clear();
-  return output;
-}
-
 QgsGeometry QgsMapToPixelSimplifier::simplifyGeometry(
   int simplifyFlags,
   SimplifyAlgorithm simplifyAlgorithm,
@@ -280,7 +270,7 @@ QgsGeometry QgsMapToPixelSimplifier::simplifyGeometry(
   else if ( QgsWkbTypes::isMultiType( flatType ) )
   {
     const QgsGeometryCollection &srcCollection = dynamic_cast<const QgsGeometryCollection &>( geometry );
-    std::unique_ptr<QgsGeometryCollection> collection( createEmptySameTypeGeom( srcCollection ) );
+    std::unique_ptr<QgsGeometryCollection> collection( srcCollection.createEmptyWithSameType() );
     const int numGeoms = srcCollection.numGeometries();
     for ( int i = 0; i < numGeoms; ++i )
     {

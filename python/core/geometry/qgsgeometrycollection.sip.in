@@ -176,9 +176,10 @@ Returns a geometry without curves. Caller takes ownership
 
 
 
-  protected:
     virtual QgsGeometryCollection *createEmptyWithSameType() const /Factory/;
 
+
+  protected:
     virtual int childCount() const;
 
     virtual QgsAbstractGeometry *childGeometry( int index ) const;
