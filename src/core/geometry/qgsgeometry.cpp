@@ -1258,8 +1258,16 @@ bool QgsGeometry::convertToMultiType()
     return false;
   }
 
-  multiGeom->addGeometry( d->geometry->clone() );
-  reset( std::move( geom ) );
+  //try to avoid cloning existing geometry whenever we can
+
+  //want to see a magic trick?... gather round kiddies...
+  detach(); // maybe a clone, hopefully not if we're the only ref to the private data
+  // now we cheat a bit and steal the private geometry and add it direct to the multigeom
+  // we can do this because we're the only ref to this geometry, guaranteed by the detach call above
+  multiGeom->addGeometry( d->geometry.release() );
+  // and replace it with the multi geometry.
+  // TADA! a clone free conversion in some cases
+  d->geometry = std::move( geom );
   return true;
 }
 
