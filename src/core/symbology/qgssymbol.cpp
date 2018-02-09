@@ -651,6 +651,11 @@ bool QgsSymbol::hasDataDefinedProperties() const
   {
     if ( layer->dataDefinedProperties().hasActiveProperties() )
       return true;
+    // we treat geometry generator layers like they have data defined properties,
+    // since the WHOLE layer is based on expressions and requires the full expression
+    // context
+    if ( layer->layerType() == QLatin1String( "GeometryGenerator" ) )
+      return true;
   }
   return false;
 }
@@ -708,17 +713,20 @@ void QgsSymbol::renderFeature( const QgsFeature &feature, QgsRenderContext &cont
   ExpressionContextScopePopper scopePopper;
   if ( mSymbolRenderContext->expressionContextScope() )
   {
-    // this is somewhat nasty - by appending this scope here it's now owned
-    // by both mSymbolRenderContext AND context.expressionContext()
-    // the RAII scopePopper is required to make sure it always has ownership transferred back
-    // from context.expressionContext(), even if exceptions of other early exits occur in this
-    // function
-    context.expressionContext().appendScope( mSymbolRenderContext->expressionContextScope() );
-    scopePopper.context = &context.expressionContext();
+    if ( hasDataDefinedProperties() )
+    {
+      // this is somewhat nasty - by appending this scope here it's now owned
+      // by both mSymbolRenderContext AND context.expressionContext()
+      // the RAII scopePopper is required to make sure it always has ownership transferred back
+      // from context.expressionContext(), even if exceptions of other early exits occur in this
+      // function
+      context.expressionContext().appendScope( mSymbolRenderContext->expressionContextScope() );
+      scopePopper.context = &context.expressionContext();
 
-    QgsExpressionContextUtils::updateSymbolScope( this, mSymbolRenderContext->expressionContextScope() );
-    mSymbolRenderContext->expressionContextScope()->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_PART_COUNT, mSymbolRenderContext->geometryPartCount(), true ) );
-    mSymbolRenderContext->expressionContextScope()->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_PART_NUM, 1, true ) );
+      QgsExpressionContextUtils::updateSymbolScope( this, mSymbolRenderContext->expressionContextScope() );
+      mSymbolRenderContext->expressionContextScope()->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_PART_COUNT, mSymbolRenderContext->geometryPartCount(), true ) );
+      mSymbolRenderContext->expressionContextScope()->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_GEOMETRY_PART_NUM, 1, true ) );
+    }
   }
 
   // Collection of markers to paint, only used for no curve types.
