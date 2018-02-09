@@ -28,7 +28,7 @@ __revision__ = '$Format:%H$'
 from qgis.PyQt.QtCore import Qt, QCoreApplication
 from qgis.PyQt.QtWidgets import QProgressBar
 from qgis.utils import iface
-from qgis.core import QgsProcessingFeedback
+from qgis.core import QgsProcessingFeedback, Qgis
 from processing.gui.MessageDialog import MessageDialog
 
 
@@ -46,7 +46,7 @@ class MessageBarProgress(QgsProcessingFeedback):
         self.progress.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
         self.progressMessageBar.layout().addWidget(self.progress)
         iface.messageBar().pushWidget(self.progressMessageBar,
-                                      iface.messageBar().INFO)
+                                      Qgis.Info)
 
     def reportError(self, msg):
         self.msg.append(msg)
