@@ -53,6 +53,17 @@ should be a unique, short, character only string, eg "qgis" or "gdal". This
 string should not be localised.
 
 .. seealso:: :py:func:`name`
+
+.. seealso:: :py:func:`helpId`
+%End
+
+    virtual QString helpId() const;
+%Docstring
+Returns the provider help id string, used for creating QgsHelp urls for algorithms
+belong to this provider. By default, this returns the provider's id(). This string
+should not be localised.
+
+.. seealso:: :py:func:`id`
 %End
 
     virtual QString name() const = 0;
