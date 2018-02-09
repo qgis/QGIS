@@ -231,17 +231,13 @@ bool QgsMemoryFeatureIterator::close()
 QgsMemoryFeatureSource::QgsMemoryFeatureSource( const QgsMemoryProvider *p )
   : mFields( p->mFields )
   , mFeatures( p->mFeatures )
-  , mSpatialIndex( p->mSpatialIndex ? qgis::make_unique< QgsSpatialIndex >( *p->mSpatialIndex ) : nullptr ) // this is just a shallow copy, but see below...
+  , mSpatialIndex( p->mSpatialIndex ? qgis::make_unique< QgsSpatialIndex >( *p->mSpatialIndex ) : nullptr ) // just shallow copy
   , mSubsetString( p->mSubsetString )
   , mCrs( p->mCrs )
 {
   mExpressionContext << QgsExpressionContextUtils::globalScope()
                      << QgsExpressionContextUtils::projectScope( QgsProject::instance() );
   mExpressionContext.setFields( mFields );
-
-  // QgsSpatialIndex is not thread safe - so make spatial index safe to use across threads by forcing a full deep copy
-  if ( mSpatialIndex && p->thread() != QThread::currentThread() )
-    mSpatialIndex->detach();
 }
 
 QgsFeatureIterator QgsMemoryFeatureSource::getFeatures( const QgsFeatureRequest &request )
