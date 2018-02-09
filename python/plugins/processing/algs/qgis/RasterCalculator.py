@@ -97,7 +97,7 @@ class RasterCalculator(QgisAlgorithm):
         self.addParameter(ParameterRasterCalculatorExpression(self.EXPRESSION, self.tr('Expression'),
                                                               multiLine=True))
         self.addParameter(QgsProcessingParameterMultipleLayers(self.LAYERS,
-                                                               self.tr('Reference layer(s) (used for automated determination extent and cellsize)'),
+                                                               self.tr('Reference layer(s) (used for automated extent, cellsize, and CRS)'),
                                                                layerType=QgsProcessing.TypeRaster,
                                                                optional=True))
         self.addParameter(QgsProcessingParameterNumber(self.CELLSIZE,
@@ -107,7 +107,7 @@ class RasterCalculator(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterExtent(self.EXTENT,
                                                        self.tr('Output extent'),
                                                        optional=True))
-        self.addParameter(QgsProcessingParameterCrs(self.CRS, 'Output CRS', 'ProjectCrs'))
+        self.addParameter(QgsProcessingParameterCrs(self.CRS, 'Output CRS', optional=True))
         self.addParameter(QgsProcessingParameterRasterDestination(self.OUTPUT, self.tr('Output')))
 
     def name(self):
@@ -119,22 +119,34 @@ class RasterCalculator(QgisAlgorithm):
     def processAlgorithm(self, parameters, context, feedback):
         expression = self.parameterAsString(parameters, self.EXPRESSION, context)
         layers = self.parameterAsLayerList(parameters, self.LAYERS, context)
-        crs = self.parameterAsCrs(parameters, self.CRS, context)
 
         layersDict = {}
         if layers:
             layersDict = {os.path.basename(lyr.source().split(".")[0]): lyr for lyr in layers}
 
+        crs = self.parameterAsCrs(parameters, self.CRS, context)
+        if not layers and not crs.isValid():
+            raise QgsProcessingException(self.tr("No reference layer selected nor CRS provided"))
+
+        if not crs.isValid() and layers:
+            crs = list(layersDict.values())[0].crs()
+
         bbox = self.parameterAsExtent(parameters, self.EXTENT, context)
         if not layers and bbox.isNull():
-            raise QgsProcessingException(self.tr("No reference layer selected to automate extent box"))
+            raise QgsProcessingException(self.tr("No reference layer selected nor extent box provided"))
+
+        if not bbox.isNull():
+            bboxCrs = self.parameterAsExtentCrs(parameters, self.EXTENT, context)
+            if bboxCrs != crs:
+                transform = QgsCoordinateTransform(bboxCrs, crs, context.project())
+                bbox = transform.transformBoundingBox(bbox)
 
         if bbox.isNull() and layers:
             bbox = QgsProcessingUtils.combineLayerExtents(layers, crs)
 
         cellsize = self.parameterAsDouble(parameters, self.CELLSIZE, context)
         if not layers and cellsize == 0:
-            raise QgsProcessingException(self.tr("No reference layer selected to automate cellsize value"))
+            raise QgsProcessingException(self.tr("No reference layer selected nor cellsize value provided"))
 
         def _cellsize(layer):
             ext = layer.extent()
