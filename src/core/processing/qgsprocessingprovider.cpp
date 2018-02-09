@@ -41,6 +41,11 @@ QString QgsProcessingProvider::svgIconPath() const
   return QgsApplication::iconPath( QStringLiteral( "processingAlgorithm.svg" ) );
 }
 
+QString QgsProcessingProvider::helpId() const
+{
+  return id();
+}
+
 QString QgsProcessingProvider::longName() const
 {
   return name();
