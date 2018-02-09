@@ -180,6 +180,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   {
     mPixelSelectorTool = qgis::make_unique<QgsMapToolEmitPoint>( canvas );
     connect( mPixelSelectorTool.get(), &QgsMapToolEmitPoint::canvasClicked, this, &QgsRasterLayerProperties::pixelSelected );
+    connect( mPixelSelectorTool.get(), &QgsMapToolEmitPoint::deactivated, this, &QgsRasterLayerProperties::restoreWindowModality );
   }
   else
   {
@@ -1194,16 +1195,16 @@ void QgsRasterLayerProperties::pbnAddValuesFromDisplay_clicked()
   {
     //Need to work around the modality of the dialog but can not just hide() it.
     // According to Qt5 docs, to change modality the dialog needs to be hidden
-    // and shown it again.
+    // and shown again.
     hide();
     setModal( false );
-    showMinimized();
 
     // Transfer focus to the canvas to use the selector tool
     mMapCanvas->window()->raise();
     mMapCanvas->window()->activateWindow();
     mMapCanvas->window()->setFocus();
     mMapCanvas->setMapTool( mPixelSelectorTool.get() );
+
   }
 }
 
@@ -1636,10 +1637,6 @@ void QgsRasterLayerProperties::pixelSelected( const QgsPointXY &canvasPoint, con
     return;
   }
 
-  raise();
-  setModal( true );
-  activateWindow();
-
   //Get the pixel values and add a new entry to the transparency table
   if ( mMapCanvas && mPixelSelectorTool )
   {
@@ -1870,6 +1867,15 @@ void QgsRasterLayerProperties::saveStyleAs_clicked()
     settings.setValue( QStringLiteral( "style/lastStyleDir" ), QFileInfo( outputFileName ).absolutePath() );
   else
     QMessageBox::information( this, tr( "Saved Style" ), message );
+}
+
+void QgsRasterLayerProperties::restoreWindowModality()
+{
+  hide();
+  setModal( true );
+  show();
+  raise();
+  activateWindow();
 }
 
 //
