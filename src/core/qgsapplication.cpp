@@ -69,9 +69,9 @@
 #else
 #include <winsock.h>
 #include <windows.h>
-#include <Lmcons.h>
+#include <lmcons.h>
 #define SECURITY_WIN32
-#include <Security.h>
+#include <security.h>
 #pragma comment( lib, "Secur32.lib" )
 #endif
 

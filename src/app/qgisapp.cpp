@@ -431,7 +431,7 @@ extern "C"
 #include <dlfcn.h>
 #else
 #include <windows.h>
-#include <DbgHelp.h>
+#include <dbghelp.h>
 #endif
 
 class QTreeWidgetItem;
