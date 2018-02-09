@@ -91,10 +91,7 @@ static QgsGeometry generalizeWkbGeometryByBoundingBox(
   // Write the generalized geometry
   if ( geometryType == QgsWkbTypes::LineString )
   {
-    QgsLineString *lineString = new QgsLineString();
-    lineString->addVertex( QgsPoint( x1, y1 ) );
-    lineString->addVertex( QgsPoint( x2, y2 ) );
-    return QgsGeometry( lineString );
+    return QgsGeometry( qgis::make_unique< QgsLineString >( QVector<double>() << x1 << x2, QVector<double>() << y1 << y2 ) );
   }
   else
   {
@@ -127,9 +124,9 @@ QgsGeometry QgsMapToPixelSimplifier::simplifyGeometry(
   // Write the geometry
   if ( flatType == QgsWkbTypes::LineString || flatType == QgsWkbTypes::CircularString )
   {
+    const QgsCurve &srcCurve = dynamic_cast<const QgsCurve &>( geometry );
     const int numPoints = srcCurve.numPoints();
 
-    const QgsCurve &srcCurve = dynamic_cast<const QgsCurve &>( geometry );
     std::unique_ptr<QgsCurve> output;
 
     QVector< double > lineStringX;
