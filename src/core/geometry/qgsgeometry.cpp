@@ -223,17 +223,20 @@ QgsGeometry QgsGeometry::fromMultiPolygonXY( const QgsMultiPolygonXY &multipoly 
 
 QgsGeometry QgsGeometry::fromRect( const QgsRectangle &rect )
 {
-  QgsPolylineXY ring;
-  ring.append( QgsPointXY( rect.xMinimum(), rect.yMinimum() ) );
-  ring.append( QgsPointXY( rect.xMaximum(), rect.yMinimum() ) );
-  ring.append( QgsPointXY( rect.xMaximum(), rect.yMaximum() ) );
-  ring.append( QgsPointXY( rect.xMinimum(), rect.yMaximum() ) );
-  ring.append( QgsPointXY( rect.xMinimum(), rect.yMinimum() ) );
-
-  QgsPolygonXY polygon;
-  polygon.append( ring );
-
-  return fromPolygonXY( polygon );
+  std::unique_ptr< QgsLineString > ext = qgis::make_unique< QgsLineString >(
+      QVector< double >() << rect.xMinimum()
+      << rect.xMaximum()
+      << rect.xMaximum()
+      << rect.xMinimum()
+      << rect.xMinimum(),
+      QVector< double >() << rect.yMinimum()
+      << rect.yMinimum()
+      << rect.yMaximum()
+      << rect.yMaximum()
+      << rect.yMinimum() );
+  std::unique_ptr< QgsPolygon > polygon = qgis::make_unique< QgsPolygon >();
+  polygon->setExteriorRing( ext.release() );
+  return QgsGeometry( std::move( polygon ) );
 }
 
 QgsGeometry QgsGeometry::collectGeometry( const QVector< QgsGeometry > &geometries )
