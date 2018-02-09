@@ -85,7 +85,7 @@ class BatchInputSelectionPanel(QWidget):
         popupmenu = QMenu()
 
         if not (isinstance(self.param, QgsProcessingParameterMultipleLayers) and
-                self.param.datatype == dataobjects.TYPE_FILE):
+                self.param.layerType == dataobjects.TYPE_FILE):
             selectLayerAction = QAction(
                 self.tr('Select from open layers'), self.pushButton)
             selectLayerAction.triggered.connect(self.showLayerSelectionDialog)
