@@ -127,13 +127,28 @@ QgsGeometry QgsMapToPixelSimplifier::simplifyGeometry(
   // Write the geometry
   if ( flatType == QgsWkbTypes::LineString || flatType == QgsWkbTypes::CircularString )
   {
+    const int numPoints = srcCurve.numPoints();
+
     const QgsCurve &srcCurve = dynamic_cast<const QgsCurve &>( geometry );
-    std::unique_ptr<QgsCurve> output( createEmptySameTypeGeom( srcCurve ) );
+    std::unique_ptr<QgsCurve> output;
+
+    QVector< double > lineStringX;
+    QVector< double > lineStringY;
+    if ( flatType == QgsWkbTypes::LineString )
+    {
+      // if we are making a linestring, we do it in an optimised way by directly constructing
+      // the final x/y vectors, which avoids calling the slower insertVertex method
+      lineStringX.reserve( numPoints );
+      lineStringY.reserve( numPoints );
+    }
+    else
+    {
+      output.reset( qgsgeometry_cast< QgsCurve * >( srcCurve.createEmptyWithSameType() ) );
+    }
+
     double x = 0.0, y = 0.0, lastX = 0.0, lastY = 0.0;
     QgsRectangle r;
     r.setMinimal();
-
-    const int numPoints = srcCurve.numPoints();
 
     if ( numPoints <= ( isaLinearRing ? 4 : 2 ) )
       isGeneralizable = false;
@@ -169,7 +184,13 @@ QgsGeometry QgsMapToPixelSimplifier::simplifyGeometry(
                !equalSnapToGrid( x, y, lastX, lastY, gridOriginX, gridOriginY, gridInverseSizeXY ) ||
                ( !isaLinearRing && ( i == 1 || i >= numPoints - 2 ) ) )
           {
-            output->insertVertex( QgsVertexId( 0, 0, output->numPoints() ), QgsPoint( x, y ) );
+            if ( output )
+              output->insertVertex( QgsVertexId( 0, 0, output->numPoints() ), QgsPoint( x, y ) );
+            else
+            {
+              lineStringX.append( x );
+              lineStringY.append( y );
+            }
             lastX = x;
             lastY = y;
           }
@@ -192,7 +213,13 @@ QgsGeometry QgsMapToPixelSimplifier::simplifyGeometry(
         {
           if ( ea.res_arealist[ i ] > map2pixelTol )
           {
-            output->insertVertex( QgsVertexId( 0, 0, output->numPoints() ), ea.inpts.at( i ) );
+            if ( output )
+              output->insertVertex( QgsVertexId( 0, 0, output->numPoints() ), ea.inpts.at( i ) );
+            else
+            {
+              lineStringX.append( ea.inpts.at( i ).x() );
+              lineStringY.append( ea.inpts.at( i ).y() );
+            }
           }
         }
         break;
@@ -214,7 +241,13 @@ QgsGeometry QgsMapToPixelSimplifier::simplifyGeometry(
                ( isLongSegment = ( calculateLengthSquared2D( x, y, lastX, lastY ) > map2pixelTol ) ) ||
                ( !isaLinearRing && ( i == 1 || i >= numPoints - 2 ) ) )
           {
-            output->insertVertex( QgsVertexId( 0, 0, output->numPoints() ), QgsPoint( x, y ) );
+            if ( output )
+              output->insertVertex( QgsVertexId( 0, 0, output->numPoints() ), QgsPoint( x, y ) );
+            else
+            {
+              lineStringX.append( x );
+              lineStringY.append( y );
+            }
             lastX = x;
             lastY = y;
 
@@ -226,6 +259,10 @@ QgsGeometry QgsMapToPixelSimplifier::simplifyGeometry(
       }
     }
 
+    if ( !output )
+    {
+      output = qgis::make_unique< QgsLineString >( lineStringX, lineStringY );
+    }
     if ( output->numPoints() < ( isaLinearRing ? 4 : 2 ) )
     {
       // we simplified the geometry too much!
