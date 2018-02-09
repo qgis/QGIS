@@ -165,11 +165,13 @@ class RasterCalculator(QgisAlgorithm):
         entries = []
         for name, lyr in layersDict.items():
             for n in range(lyr.bandCount()):
-                entry = QgsRasterCalculatorEntry()
-                entry.ref = '{:s}@{:d}'.format(name, n + 1)
-                entry.raster = lyr
-                entry.bandNumber = n + 1
-                entries.append(entry)
+                ref = '{:s}@{:d}'.format(name, n + 1)
+                if ref in expression:
+                    entry = QgsRasterCalculatorEntry()
+                    entry.ref = ref
+                    entry.raster = lyr
+                    entry.bandNumber = n + 1
+                    entries.append(entry)
 
         output = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
 
