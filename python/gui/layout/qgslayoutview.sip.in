@@ -42,6 +42,8 @@ QgsLayoutView manages the layout interaction tools and mouse/key events.
 Constructor for QgsLayoutView.
 %End
 
+    ~QgsLayoutView();
+
     QgsLayout *currentLayout();
 %Docstring
 Returns the current layout associated with the view.
@@ -540,6 +542,12 @@ status bar.
 %Docstring
 Emitted when an ``item`` is "focused" in the view, i.e. it becomes the active
 item and should have its properties displayed in any designer windows.
+%End
+
+    void willBeDeleted();
+%Docstring
+Emitted in the destructor when the view is about to be deleted,
+but is still in a perfectly valid state.
 %End
 
   protected:
