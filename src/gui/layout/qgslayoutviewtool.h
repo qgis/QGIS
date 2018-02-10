@@ -215,7 +215,7 @@ class GUI_EXPORT QgsLayoutViewTool : public QObject
   private:
 
     //! Pointer to layout view.
-    QPointer< QgsLayoutView > mView;
+    QgsLayoutView *mView = nullptr;
 
     QgsLayoutViewTool::Flags mFlags = nullptr;
 
