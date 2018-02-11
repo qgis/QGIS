@@ -66,6 +66,7 @@ from qgis.core import (
     QgsProcessingOutputRasterLayer,
     QgsProcessingOutputVectorLayer,
     QgsProcessingOutputMapLayer,
+    QgsProcessingOutputMultipleLayers,
     QgsProcessingOutputFile,
     QgsProcessingOutputString,
     QgsProcessingOutputNumber,
@@ -544,20 +545,23 @@ class MultipleLayerWidgetWrapper(WidgetWrapper):
                                                             QgsProcessingParameterVectorLayer,
                                                             QgsProcessingParameterMultipleLayers),
                                                            [QgsProcessingOutputVectorLayer,
-                                                            QgsProcessingOutputMapLayer])
+                                                            QgsProcessingOutputMapLayer,
+                                                            QgsProcessingOutputMultipleLayers])
         elif self.param.layerType() == QgsProcessing.TypeVector:
             options = self.dialog.getAvailableValuesOfType((QgsProcessingParameterFeatureSource,
                                                             QgsProcessingParameterVectorLayer,
                                                             QgsProcessingParameterMultipleLayers),
                                                            [QgsProcessingOutputVectorLayer,
-                                                            QgsProcessingOutputMapLayer],
+                                                            QgsProcessingOutputMapLayer,
+                                                            QgsProcessingOutputMultipleLayers],
                                                            [QgsProcessing.TypeVector])
         elif self.param.layerType() == QgsProcessing.TypeVectorPoint:
             options = self.dialog.getAvailableValuesOfType((QgsProcessingParameterFeatureSource,
                                                             QgsProcessingParameterVectorLayer,
                                                             QgsProcessingParameterMultipleLayers),
                                                            [QgsProcessingOutputVectorLayer,
-                                                            QgsProcessingOutputMapLayer],
+                                                            QgsProcessingOutputMapLayer,
+                                                            QgsProcessingOutputMultipleLayers],
                                                            [QgsProcessing.TypeVectorPoint,
                                                             QgsProcessing.TypeVectorAnyGeometry])
         elif self.param.layerType() == QgsProcessing.TypeVectorLine:
@@ -565,7 +569,8 @@ class MultipleLayerWidgetWrapper(WidgetWrapper):
                                                             QgsProcessingParameterVectorLayer,
                                                             QgsProcessingParameterMultipleLayers),
                                                            [QgsProcessingOutputVectorLayer,
-                                                            QgsProcessingOutputMapLayer],
+                                                            QgsProcessingOutputMapLayer,
+                                                            QgsProcessingOutputMultipleLayers],
                                                            [QgsProcessing.TypeVectorLine,
                                                             QgsProcessing.TypeVectorAnyGeometry])
         elif self.param.layerType() == QgsProcessing.TypeVectorPolygon:
@@ -573,18 +578,22 @@ class MultipleLayerWidgetWrapper(WidgetWrapper):
                                                             QgsProcessingParameterVectorLayer,
                                                             QgsProcessingParameterMultipleLayers),
                                                            [QgsProcessingOutputVectorLayer,
-                                                            QgsProcessingOutputMapLayer],
+                                                            QgsProcessingOutputMapLayer,
+                                                            QgsProcessingOutputMultipleLayers],
                                                            [QgsProcessing.TypeVectorPolygon,
                                                             QgsProcessing.TypeVectorAnyGeometry])
         elif self.param.layerType() == QgsProcessing.TypeRaster:
             options = self.dialog.getAvailableValuesOfType(
                 (QgsProcessingParameterRasterLayer, QgsProcessingParameterMultipleLayers),
                 [QgsProcessingOutputRasterLayer,
-                 QgsProcessingOutputMapLayer])
+                 QgsProcessingOutputMapLayer,
+                 QgsProcessingOutputMultipleLayers])
         elif self.param.layerType() == QgsProcessing.TypeVector:
             options = self.dialog.getAvailableValuesOfType((QgsProcessingParameterFeatureSource,
                                                             QgsProcessingParameterVectorLayer,
-                                                            QgsProcessingParameterMultipleLayers), QgsProcessingOutputVectorLayer)
+                                                            QgsProcessingParameterMultipleLayers),
+                                                           [QgsProcessingOutputVectorLayer,
+                                                            QgsProcessingOutputMultipleLayers])
         else:
             options = self.dialog.getAvailableValuesOfType(QgsProcessingParameterFile, QgsProcessingOutputFile)
         options = sorted(options, key=lambda opt: self.dialog.resolveValueDescription(opt))
