@@ -45,6 +45,7 @@ QUrl QgsHelp::helpUrl( const QString &key )
   QStringList paths = settings.value( QStringLiteral( "help/helpSearchPath" ) ).toStringList();
   if ( paths.isEmpty() )
   {
+    QgsMessageLog::logMessage( QObject::tr( "Help location is not configured!" ), QObject::tr( "QGIS Help" ) );
     return helpNotFound;
   }
 
