@@ -16,7 +16,7 @@ import qgis  # NOQA
 
 import os
 
-from qgis.core import QgsVectorLayer, QgsProject
+from qgis.core import QgsVectorLayer, QgsMapLayerRegistry
 
 from qgis.testing import start_app, unittest
 
@@ -37,7 +37,7 @@ class TestQgsPostgresDomain(unittest.TestCase):
         # Create test layer
         cls.vl = QgsVectorLayer(cls.dbconn + ' sslmode=disable key=\'pk\' table="qgis_test"."colors" sql=', 'colors', 'postgres')
 
-        QgsProject.instance().addMapLayer(cls.vl)
+        QgsMapLayerRegistry.instance().addMapLayer(cls.vl, True)
 
     def test_postgres_domain(self):
         self.assertEqual(self.vl.dataProvider().enumValues(1), ['red', 'green', 'blue'])
