@@ -42,6 +42,7 @@ class TestQgsPostgresDomain(unittest.TestCase):
     def test_postgres_domain(self):
         self.assertEqual(self.vl.dataProvider().enumValues(1), ['red', 'green', 'blue'])
         self.assertEqual(self.vl.dataProvider().enumValues(2), ['yellow', 'cyan', 'magenta'])
+        self.assertEqual(self.vl.dataProvider().enumValues(3), ['Alchemilla', 'Alstroemeria', 'Alyssum'])
 
 
 if __name__ == '__main__':

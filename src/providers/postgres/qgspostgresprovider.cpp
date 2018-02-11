@@ -1735,7 +1735,15 @@ bool QgsPostgresProvider::parseDomainCheckConstraint( QStringList &enumValues, c
   if ( domainResult.PQresultStatus() == PGRES_TUPLES_OK && domainResult.PQntuples() > 0 && !domainResult.PQgetvalue( 0, 0 ).isNull() )
   {
     //a domain type
-    QString domainCheckDefinitionSql = QStringLiteral( "SELECT consrc FROM pg_constraint WHERE conname=(SELECT constraint_name FROM information_schema.domain_constraints WHERE domain_name=%1 AND domain_schema=%2)" )
+    QString domainCheckDefinitionSql = QStringLiteral( ""
+                                       "SELECT consrc FROM pg_constraint "
+                                       "  WHERE contypid =("
+                                       "    SELECT oid FROM pg_type "
+                                       "      WHERE typname = %1 "
+                                       "      AND typnamespace =("
+                                       "        SELECT oid FROM pg_namespace WHERE nspname = %2"
+                                       "      )"
+                                       "    )" )
                                        .arg( quotedValue( domainResult.PQgetvalue( 0, 0 ) ) )
                                        .arg( quotedValue( domainResult.PQgetvalue( 0, 1 ) ) );
     QgsPostgresResult domainCheckRes( connectionRO()->PQexec( domainCheckDefinitionSql ) );
