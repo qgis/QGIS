@@ -608,6 +608,9 @@ class MultipleLayerWidgetWrapper(WidgetWrapper):
                     options = QgsProcessingUtils.compatibleRasterLayers(QgsProject.instance(), False)
                 elif self.param.layerType() in (QgsProcessing.TypeVectorAnyGeometry, QgsProcessing.TypeVector):
                     options = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance(), [], False)
+                elif self.param.layerType() == QgsProcessing.TypeMapLayer:
+                    options = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance(), [], False)
+                    options.extend(QgsProcessingUtils.compatibleRasterLayers(QgsProject.instance(), False))
                 else:
                     options = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance(), [self.param.layerType()],
                                                                         False)
@@ -627,6 +630,9 @@ class MultipleLayerWidgetWrapper(WidgetWrapper):
                 options = QgsProcessingUtils.compatibleRasterLayers(QgsProject.instance(), False)
             elif self.param.layerType() in (QgsProcessing.TypeVectorAnyGeometry, QgsProcessing.TypeVector):
                 options = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance(), [], False)
+            elif self.param.layerType() == QgsProcessing.TypeMapLayer:
+                options = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance(), [], False)
+                options.extend(QgsProcessingUtils.compatibleRasterLayers(QgsProject.instance(), False))
             else:
                 options = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance(), [self.param.layerType()],
                                                                     False)
@@ -667,6 +673,9 @@ class MultipleLayerWidgetWrapper(WidgetWrapper):
                     options = QgsProcessingUtils.compatibleRasterLayers(QgsProject.instance(), False)
                 elif self.param.layerType() in (QgsProcessing.TypeVectorAnyGeometry, QgsProcessing.TypeVector):
                     options = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance(), [], False)
+                elif self.param.layerType() == QgsProcessing.TypeMapLayer:
+                    options = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance(), [], False)
+                    options.extend(QgsProcessingUtils.compatibleRasterLayers(QgsProject.instance(), False))
                 else:
                     options = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance(), [self.param.layerType()],
                                                                         False)
