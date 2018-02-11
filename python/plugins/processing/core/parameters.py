@@ -118,7 +118,10 @@ def getParameterFromString(s):
                     params[5] = True if params[5].lower() == 'true' else False
             elif clazz == QgsProcessingParameterFeatureSource:
                 if len(params) > 2:
-                    params[2] = [int(p) for p in params[2].split(';')]
+                    try:
+                        params[2] = [int(p) for p in params[2].split(';')]
+                    except:
+                        params[2] = [getattr(QgsProcessing, p.split(".")[1]) for p in params[2].split(';')]
                 if len(params) > 4:
                     params[4] = True if params[4].lower() == 'true' else False
             elif clazz == QgsProcessingParameterMultipleLayers:
@@ -136,9 +139,14 @@ def getParameterFromString(s):
                     params[3] = True if params[3].lower() == 'true' else False
                 if len(params) > 4:
                     params[4] = params[4].split(';')
+                if len(params) > 6:
+                    params[6] = True if params[6].lower() == 'true' else False
             elif clazz == QgsProcessingParameterField:
                 if len(params) > 4:
-                    params[4] = int(params[4])
+                    try:
+                        params[4] = int(params[4])
+                    except:
+                        params[4] = getattr(QgsProcessingParameterField, params[4].split(".")[1])
                 if len(params) > 5:
                     params[5] = True if params[5].lower() == 'true' else False
                 if len(params) > 6:
