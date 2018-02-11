@@ -1582,6 +1582,9 @@ void QgsPostgresProvider::enumValues( int index, QStringList& enumList )
   QString fieldName = mAttributeFields.at( index ).name();
   QString typeName = mAttributeFields.at( index ).typeName();
 
+  // Remove schema extension from typeName
+  typeName.remove( QRegExp( "^([^.]+\\.)+" ) );
+
   //is type an enum?
   QString typeSql = QString( "SELECT typtype FROM pg_type WHERE typname=%1" ).arg( quotedValue( typeName ) );
   QgsPostgresResult typeRes( connectionRO()->PQexec( typeSql ) );
@@ -1634,12 +1637,22 @@ bool QgsPostgresProvider::parseDomainCheckConstraint( QStringList& enumValues, c
   enumValues.clear();
 
   //is it a domain type with a check constraint?
-  QString domainSql = QString( "SELECT domain_name FROM information_schema.columns WHERE table_name=%1 AND column_name=%2" ).arg( quotedValue( mTableName ), quotedValue( attributeName ) );
+  QString domainSql = QString( "SELECT domain_name, domain_schema FROM information_schema.columns WHERE table_name=%1 AND column_name=%2" ).arg( quotedValue( mTableName ), quotedValue( attributeName ) );
   QgsPostgresResult domainResult( connectionRO()->PQexec( domainSql ) );
-  if ( domainResult.PQresultStatus() == PGRES_TUPLES_OK && domainResult.PQntuples() > 0 )
+  if ( domainResult.PQresultStatus() == PGRES_TUPLES_OK && domainResult.PQntuples() > 0 && !domainResult.PQgetvalue( 0, 0 ).isNull() )
   {
     //a domain type
-    QString domainCheckDefinitionSql = QString( "SELECT consrc FROM pg_constraint WHERE conname=(SELECT constraint_name FROM information_schema.domain_constraints WHERE domain_name=%1)" ).arg( quotedValue( domainResult.PQgetvalue( 0, 0 ) ) );
+    QString domainCheckDefinitionSql = QString( ""
+                                       "SELECT consrc FROM pg_constraint "
+                                       "  WHERE contypid =("
+                                       "    SELECT oid FROM pg_type "
+                                       "      WHERE typname = %1 "
+                                       "      AND typnamespace =("
+                                       "        SELECT oid FROM pg_namespace WHERE nspname = %2"
+                                       "      )"
+                                       "    )" )
+                                       .arg( quotedValue( domainResult.PQgetvalue( 0, 0 ) ) )
+                                       .arg( quotedValue( domainResult.PQgetvalue( 0, 1 ) ) );
     QgsPostgresResult domainCheckRes( connectionRO()->PQexec( domainCheckDefinitionSql ) );
     if ( domainCheckRes.PQresultStatus() == PGRES_TUPLES_OK && domainCheckRes.PQntuples() > 0 )
     {

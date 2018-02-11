@@ -5,6 +5,7 @@ SCRIPTS="
   tests/testdata/provider/testdata_pg_reltests.sql
   tests/testdata/provider/testdata_pg_vectorjoin.sql
   tests/testdata/provider/testdata_pg_raster.sql
+  tests/testdata/provider/testdata_pg_domain.sql
 "
 
 createdb qgis_test || exit 1
