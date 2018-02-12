@@ -430,7 +430,7 @@ class DBManager(QMainWindow):
 
         self.actionRefresh = self.menuDb.addAction(QIcon(":/db_manager/actions/refresh"), self.tr("&Refresh"),
                                                    self.refreshActionSlot, QKeySequence("F5"))
-        self.actionSqlWindow = self.menuDb.addAction(QIcon(":/db_manager/actions/sql_window"), self.tr("&SQL window"),
+        self.actionSqlWindow = self.menuDb.addAction(QIcon(":/db_manager/actions/sql_window"), self.tr("&SQL Window"),
                                                      self.runSqlWindow, QKeySequence("F2"))
         self.menuDb.addSeparator()
         self.actionClose = self.menuDb.addAction(QIcon(), self.tr("&Exit"), self.close, QKeySequence("CTRL+Q"))
@@ -448,8 +448,8 @@ class DBManager(QMainWindow):
         sep.setVisible(False)
 
         self.actionImport = self.menuTable.addAction(QIcon(":/db_manager/actions/import"),
-                                                     self.tr("&Import layer/file"), self.importActionSlot)
-        self.actionExport = self.menuTable.addAction(QIcon(":/db_manager/actions/export"), self.tr("&Export to file"),
+                                                     self.tr("&Import Layer/file…"), self.importActionSlot)
+        self.actionExport = self.menuTable.addAction(QIcon(":/db_manager/actions/export"), self.tr("&Export to File…"),
                                                      self.exportActionSlot)
         self.menuTable.addSeparator()
         #self.actionShowSystemTables = self.menuTable.addAction(self.tr("Show system tables/views"), self.showSystemTables)
