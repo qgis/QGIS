@@ -74,6 +74,12 @@ Abstract base class for filters which collect locator results.
 Constructor for QgsLocatorFilter.
 %End
 
+    virtual QgsLocatorFilter *clone() const = 0 /Factory/;
+%Docstring
+Creates a clone of the filter. New requests are always executed in a
+clone of the original filter.
+%End
+
     virtual QString name() const = 0;
 %Docstring
 Returns the unique name for the filter. This should be an untranslated string identifying the filter.
@@ -106,6 +112,20 @@ results from this filter.
    as these are reserved for core QGIS functions. If a plugin registers
    a filter with a prefix shorter than 3 characters then the prefix will
    be ignored.
+%End
+
+    virtual void prepare( const QString &string, const QgsLocatorContext &context );
+%Docstring
+Prepares the filter instance for an upcoming search for the specified ``string``. This method is always called
+from the main thread, and individual filter subclasses should perform whatever
+tasks are required in order to allow a subsequent search to safely execute
+on a background thread.
+%End
+
+    void executeSearchAndDelete( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback );
+%Docstring
+Executes a search for this filter instance, and then deletes the current instance
+of the filter.
 %End
 
     virtual void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) = 0;
@@ -189,6 +209,8 @@ custom configuration widget.
 %End
 
   signals:
+
+    void finished();
 
     void resultFetched( const QgsLocatorResult &result );
 %Docstring

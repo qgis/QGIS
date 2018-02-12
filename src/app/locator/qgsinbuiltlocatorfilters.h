@@ -19,6 +19,9 @@
 #define QGSINBUILTLOCATORFILTERS_H
 
 #include "qgslocatorfilter.h"
+#include "qgsexpressioncontext.h"
+#include "qgsfeatureiterator.h"
+
 class QAction;
 
 class QgsLayerTreeLocatorFilter : public QgsLocatorFilter
@@ -28,13 +31,19 @@ class QgsLayerTreeLocatorFilter : public QgsLocatorFilter
   public:
 
     QgsLayerTreeLocatorFilter( QObject *parent = nullptr );
+    QgsLayerTreeLocatorFilter *clone() const override;
     QString name() const override { return QStringLiteral( "layertree" ); }
     QString displayName() const override { return tr( "Project Layers" ); }
     Priority priority() const override { return Highest; }
     QString prefix() const override { return QStringLiteral( "l" ); }
 
+    void prepare( const QString &string, const QgsLocatorContext &context ) override;
     void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;
     void triggerResult( const QgsLocatorResult &result ) override;
+
+  private:
+
+    QVector< QgsLocatorResult > mResults;
 
 };
 
@@ -45,14 +54,19 @@ class QgsLayoutLocatorFilter : public QgsLocatorFilter
   public:
 
     QgsLayoutLocatorFilter( QObject *parent = nullptr );
+    QgsLayoutLocatorFilter *clone() const override;
     QString name() const override { return QStringLiteral( "layouts" ); }
     QString displayName() const override { return tr( "Project Layouts" ); }
     Priority priority() const override { return Highest; }
     QString prefix() const override { return QStringLiteral( "pl" ); }
 
+    void prepare( const QString &string, const QgsLocatorContext &context ) override;
     void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;
     void triggerResult( const QgsLocatorResult &result ) override;
 
+  private:
+
+    QVector< QgsLocatorResult > mResults;
 };
 
 class QgsActionLocatorFilter : public QgsLocatorFilter
@@ -62,16 +76,19 @@ class QgsActionLocatorFilter : public QgsLocatorFilter
   public:
 
     QgsActionLocatorFilter( const QList<QWidget *> &parentObjectsForActions, QObject *parent = nullptr );
+    QgsActionLocatorFilter *clone() const override;
     QString name() const override { return QStringLiteral( "actions" ); }
     QString displayName() const override { return tr( "Actions" ); }
     Priority priority() const override { return Lowest; }
     QString prefix() const override { return QStringLiteral( "." ); }
 
+    void prepare( const QString &string, const QgsLocatorContext &context ) override;
     void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;
     void triggerResult( const QgsLocatorResult &result ) override;
   private:
 
     QList< QWidget * > mActionParents;
+    QVector< QgsLocatorResult > mResults;
 
     void searchActions( const QString &string, QWidget *parent, QList< QAction *> &found );
 
@@ -84,13 +101,23 @@ class QgsActiveLayerFeaturesLocatorFilter : public QgsLocatorFilter
   public:
 
     QgsActiveLayerFeaturesLocatorFilter( QObject *parent = nullptr );
+    QgsActiveLayerFeaturesLocatorFilter *clone() const override;
     QString name() const override { return QStringLiteral( "features" ); }
     QString displayName() const override { return tr( "Active Layer Features" ); }
     Priority priority() const override { return Medium; }
     QString prefix() const override { return QStringLiteral( "f" ); }
 
+    void prepare( const QString &string, const QgsLocatorContext &context ) override;
     void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;
     void triggerResult( const QgsLocatorResult &result ) override;
+
+  private:
+
+    QgsExpression mDispExpression;
+    QgsExpressionContext mContext;
+    QgsFeatureIterator mIterator;
+    QString mLayerId;
+    QIcon mLayerIcon;
 };
 
 

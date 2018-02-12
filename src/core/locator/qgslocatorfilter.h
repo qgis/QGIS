@@ -53,7 +53,7 @@ class CORE_EXPORT QgsLocatorResult
     {}
 
     /**
-     * Filter from which the result was obtained.
+     * Filter from which the result was obtained. This is automatically set.
      */
     QgsLocatorFilter *filter = nullptr;
 
@@ -112,6 +112,12 @@ class CORE_EXPORT QgsLocatorFilter : public QObject
     QgsLocatorFilter( QObject *parent = nullptr );
 
     /**
+     * Creates a clone of the filter. New requests are always executed in a
+     * clone of the original filter.
+     */
+    virtual QgsLocatorFilter *clone() const = 0 SIP_FACTORY;
+
+    /**
      * Returns the unique name for the filter. This should be an untranslated string identifying the filter.
      * \see displayName()
      */
@@ -139,6 +145,20 @@ class CORE_EXPORT QgsLocatorFilter : public QObject
      * be ignored.
      */
     virtual QString prefix() const { return QString(); }
+
+    /**
+     * Prepares the filter instance for an upcoming search for the specified \a string. This method is always called
+     * from the main thread, and individual filter subclasses should perform whatever
+     * tasks are required in order to allow a subsequent search to safely execute
+     * on a background thread.
+     */
+    virtual void prepare( const QString &string, const QgsLocatorContext &context ) { Q_UNUSED( string ); Q_UNUSED( context ); }
+
+    /**
+     * Executes a search for this filter instance, and then deletes the current instance
+     * of the filter.
+     */
+    void executeSearchAndDelete( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback );
 
     /**
      * Retrieves the filter results for a specified search \a string. The \a context
@@ -213,6 +233,8 @@ class CORE_EXPORT QgsLocatorFilter : public QObject
     virtual void openConfigWidget( QWidget *parent = nullptr );
 
   signals:
+
+    void finished();
 
     /**
      * Should be emitted by filters whenever they encounter a matching result

@@ -155,10 +155,8 @@ class CORE_EXPORT QgsLocator : public QObject
     std::unique_ptr< QgsFeedback > mOwnedFeedback;
 
     QList< QgsLocatorFilter * > mFilters;
-    QList< QgsLocatorFilter * > mActiveFilters;
     QMap< QString, QgsLocatorFilter *> mPrefixedFilters;
-    QFuture< void > mFuture;
-    QFutureWatcher< void > mFutureWatcher;
+    QList< QThread * > mActiveThreads;
 
     void cancelRunningQuery();
 

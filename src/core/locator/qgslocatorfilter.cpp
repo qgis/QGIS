@@ -18,11 +18,20 @@
 
 #include "qgslocatorfilter.h"
 #include "qgsstringutils.h"
+#include "qgsfeedback.h"
+#include <QThread>
 
 QgsLocatorFilter::QgsLocatorFilter( QObject *parent )
   : QObject( parent )
 {
 
+}
+
+void QgsLocatorFilter::executeSearchAndDelete( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback )
+{
+  if ( !feedback->isCanceled() )
+    fetchResults( string, context, feedback );
+  emit finished();
 }
 
 bool QgsLocatorFilter::stringMatches( const QString &candidate, const QString &search )

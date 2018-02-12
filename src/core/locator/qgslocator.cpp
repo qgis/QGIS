@@ -24,8 +24,6 @@ QgsLocator::QgsLocator( QObject *parent )
   : QObject( parent )
 {
   qRegisterMetaType<QgsLocatorResult>( "QgsLocatorResult" );
-
-  connect( &mFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsLocator::finished );
 }
 
 QgsLocator::~QgsLocator()
@@ -58,7 +56,6 @@ void QgsLocator::registerFilter( QgsLocatorFilter *filter )
 {
   mFilters.append( filter );
   filter->setParent( this );
-  connect( filter, &QgsLocatorFilter::resultFetched, this, &QgsLocator::filterSentResult, Qt::QueuedConnection );
 
   if ( !filter->prefix().isEmpty() )
   {
@@ -104,34 +101,63 @@ void QgsLocator::fetchResults( const QString &string, const QgsLocatorContext &c
   }
   mFeedback = feedback;
 
-  mActiveFilters.clear();
+  QList< QgsLocatorFilter * > activeFilters;
   QString searchString = string;
   if ( searchString.indexOf( ' ' ) > 0 )
   {
     QString prefix = searchString.left( searchString.indexOf( ' ' ) );
     if ( mPrefixedFilters.contains( prefix ) && mPrefixedFilters.value( prefix )->enabled() )
     {
-      mActiveFilters << mPrefixedFilters.value( prefix );
+      activeFilters << mPrefixedFilters.value( prefix );
       searchString = searchString.mid( prefix.length() + 1 );
     }
   }
-  if ( mActiveFilters.isEmpty() )
+  if ( activeFilters.isEmpty() )
   {
-    Q_FOREACH ( QgsLocatorFilter *filter, mFilters )
+    for ( QgsLocatorFilter *filter : qgis::as_const( mFilters ) )
     {
       if ( filter->useWithoutPrefix() && filter->enabled() )
-        mActiveFilters << filter;
+        activeFilters << filter;
     }
   }
 
-  auto gatherFilterResults = [searchString, context, feedback]( QgsLocatorFilter * filter )
+  QList< QgsLocatorFilter *> clonedFilters;
+  for ( QgsLocatorFilter *filter : qgis::as_const( activeFilters ) )
   {
-    if ( !feedback->isCanceled() )
-      filter->fetchResults( searchString, context, feedback );
-  };
+    QgsLocatorFilter *clone = filter->clone();
+    connect( clone, &QgsLocatorFilter::resultFetched, clone, [this, filter]( QgsLocatorResult result )
+    {
+      result.filter = filter;
+      emit filterSentResult( result );
+    }, Qt::QueuedConnection );
+    clone->prepare( searchString, context );
+    clonedFilters.append( clone );
+  }
 
-  mFuture = QtConcurrent::map( mActiveFilters, gatherFilterResults );
-  mFutureWatcher.setFuture( mFuture );
+  mActiveThreads.clear();
+  for ( QgsLocatorFilter *filter : qgis::as_const( clonedFilters ) )
+  {
+    QThread *thread = new QThread();
+    mActiveThreads.append( thread );
+    filter->moveToThread( thread );
+    connect( thread, &QThread::started, filter, [filter, searchString, context, feedback]
+    {
+      filter->executeSearchAndDelete( searchString, context, feedback );
+    }, Qt::QueuedConnection );
+    connect( filter, &QgsLocatorFilter::finished, thread, [thread]
+    {
+      thread->quit();
+    } );
+    connect( filter, &QgsLocatorFilter::finished, filter, &QgsLocatorFilter::deleteLater );
+    connect( thread, &QThread::finished, thread, [this, thread]
+    {
+      mActiveThreads.removeAll( thread );
+      if ( mActiveThreads.empty() )
+        emit finished();
+    } );
+    connect( thread, &QThread::finished, thread, &QThread::deleteLater );
+    thread->start();
+  }
 }
 
 void QgsLocator::cancel()
@@ -147,7 +173,7 @@ void QgsLocator::cancelWithoutBlocking()
 
 bool QgsLocator::isRunning() const
 {
-  return mFuture.isRunning();
+  return !mActiveThreads.empty();
 }
 
 void QgsLocator::filterSentResult( QgsLocatorResult result )
@@ -156,22 +182,18 @@ void QgsLocator::filterSentResult( QgsLocatorResult result )
   if ( mFeedback->isCanceled() )
     return;
 
-  if ( !result.filter )
-  {
-    // filter forgot to set itself
-    result.filter = qobject_cast< QgsLocatorFilter *>( sender() );
-  }
-
   emit foundResult( result );
 }
 
 void QgsLocator::cancelRunningQuery()
 {
-  if ( mFuture.isRunning() )
+  if ( !mActiveThreads.empty() )
   {
     // cancel existing job
     mFeedback->cancel();
-    mFuture.cancel();
-    mFuture.waitForFinished();
+    while ( !mActiveThreads.empty() )
+    {
+      QCoreApplication::processEvents();
+    }
   }
 }
