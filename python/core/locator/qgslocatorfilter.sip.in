@@ -134,12 +134,6 @@ tasks are required in order to allow a subsequent search to safely execute
 on a background thread.
 %End
 
-    void executeSearchAndDelete( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback );
-%Docstring
-Executes a search for this filter instance, and then deletes the current instance
-of the filter.
-%End
-
     virtual void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) = 0;
 %Docstring
 Retrieves the filter results for a specified search ``string``. The ``context``
@@ -152,6 +146,9 @@ signal whenever they encounter a matching result.
 Subclasses should periodically check the ``feedback`` object to determine
 whether the query has been canceled. If so, the subclass should return
 from this method as soon as possible.
+
+This will be called from a background thread unless flags() returns the
+QgsLocatorFilter.FlagFast flag.
 %End
 
     virtual void triggerResult( const QgsLocatorResult &result ) = 0;

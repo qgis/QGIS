@@ -152,12 +152,11 @@ void QgsLocator::fetchResults( const QString &string, const QgsLocatorContext &c
     filter->moveToThread( thread );
     connect( thread, &QThread::started, filter, [filter, searchString, context, feedback]
     {
-      filter->executeSearchAndDelete( searchString, context, feedback );
+      if ( !feedback->isCanceled() )
+        filter->fetchResults( searchString, context, feedback );
+      filter->emit finished();
     }, Qt::QueuedConnection );
-    connect( filter, &QgsLocatorFilter::finished, thread, [thread]
-    {
-      thread->quit();
-    } );
+    connect( filter, &QgsLocatorFilter::finished, thread, &QThread::quit );
     connect( filter, &QgsLocatorFilter::finished, filter, &QgsLocatorFilter::deleteLater );
     connect( thread, &QThread::finished, thread, [this, thread]
     {

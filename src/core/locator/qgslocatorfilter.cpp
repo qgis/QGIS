@@ -32,13 +32,6 @@ QgsLocatorFilter::Flags QgsLocatorFilter::flags() const
   return nullptr;
 }
 
-void QgsLocatorFilter::executeSearchAndDelete( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback )
-{
-  if ( !feedback->isCanceled() )
-    fetchResults( string, context, feedback );
-  emit finished();
-}
-
 bool QgsLocatorFilter::stringMatches( const QString &candidate, const QString &search )
 {
   return candidate.contains( search, Qt::CaseInsensitive );

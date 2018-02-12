@@ -166,12 +166,6 @@ class CORE_EXPORT QgsLocatorFilter : public QObject
     virtual void prepare( const QString &string, const QgsLocatorContext &context ) { Q_UNUSED( string ); Q_UNUSED( context ); }
 
     /**
-     * Executes a search for this filter instance, and then deletes the current instance
-     * of the filter.
-     */
-    void executeSearchAndDelete( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback );
-
-    /**
      * Retrieves the filter results for a specified search \a string. The \a context
      * argument encapsulates the context relating to the search (such as a map
      * extent to prioritize).
@@ -182,6 +176,9 @@ class CORE_EXPORT QgsLocatorFilter : public QObject
      * Subclasses should periodically check the \a feedback object to determine
      * whether the query has been canceled. If so, the subclass should return
      * from this method as soon as possible.
+     *
+     * This will be called from a background thread unless flags() returns the
+     * QgsLocatorFilter::FlagFast flag.
      */
     virtual void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) = 0;
 
