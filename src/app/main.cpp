@@ -798,6 +798,8 @@ int main( int argc, char *argv[] )
   QCoreApplication::setAttribute( Qt::AA_DisableWindowContextHelpButton, true );
 #endif
 
+  QgsApplication myApp( argc, argv, myUseGuiFlag );
+
   // SetUp the QgsSettings Global Settings:
   // - use the path specified with --globalsettingsfile path,
   // - use the environment if not found
@@ -809,7 +811,8 @@ int main( int argc, char *argv[] )
 
   if ( globalsettingsfile.isEmpty() )
   {
-    QString default_globalsettingsfile = QgsApplication::pkgDataPath() + "/qgis_global_settings.ini";
+    QString default_globalsettingsfile = QgsApplication::resolvePkgPath() + "/resources/qgis_global_settings.ini";
+    QgsDebugMsg( "GLOABL SETTINGS FILE:" + default_globalsettingsfile );
     if ( QFile::exists( default_globalsettingsfile ) )
     {
       globalsettingsfile = default_globalsettingsfile;
@@ -850,6 +853,8 @@ int main( int argc, char *argv[] )
   }
   delete globalSettings;
 
+  QgsDebugMsg( "CONFIG LOCAL STORAGE:" + configLocalStorageLocation );
+
   QString rootProfileFolder = QgsUserProfileManager::resolveProfilesFolder( configLocalStorageLocation );
   QgsUserProfileManager manager( rootProfileFolder );
   QgsUserProfile *profile = manager.getProfile( profileName, true );
@@ -867,7 +872,7 @@ int main( int argc, char *argv[] )
   QgsDebugMsg( QString( "\t - %1" ).arg( profileFolder ) );
   QgsDebugMsg( QString( "\t - %1" ).arg( rootProfileFolder ) );
 
-  QgsApplication myApp( argc, argv, myUseGuiFlag, profileFolder );
+  myApp.init( profileFolder );
 
   // Settings migration is only supported on the default profile for now.
   if ( profileName == "default" )
