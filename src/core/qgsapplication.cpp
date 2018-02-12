@@ -596,9 +596,8 @@ QString QgsApplication::resolvePkgPath()
 
   if ( f.exists() && f.open( QIODevice::ReadOnly ) )
   {
-    return f.readLine().trimmed();
     QgsDebugMsg("Running from build dir!");
-    return buildSourcePath;
+    return f.readLine().trimmed();
   }
   else
   {
