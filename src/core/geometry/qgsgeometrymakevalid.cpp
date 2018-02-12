@@ -716,7 +716,7 @@ static GEOSGeometry *LWGEOM_GEOS_makeValidMultiLine( const GEOSGeometry *gin, QS
   int ngeoms = GEOSGetNumGeometries_r( handle, gin );
   uint32_t nlines_alloc = ngeoms;
   QVector<GEOSGeometry *> lines;
-  QVector<GEOSGeometry *> points( ngeoms );
+  QVector<GEOSGeometry *> points;
   lines.reserve( nlines_alloc );
   points.reserve( ngeoms );
 
