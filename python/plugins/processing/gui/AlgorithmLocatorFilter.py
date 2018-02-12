@@ -89,7 +89,7 @@ class AlgorithmLocatorFilter(QgsLocatorFilter):
                 dlg.setMessage(message)
                 dlg.exec_()
                 return
-            dlg = alg.createCustomParametersWidget()
+            dlg = alg.createCustomParametersWidget(None)
             if not dlg:
                 dlg = AlgorithmDialog(alg)
             canvas = iface.mapCanvas()
