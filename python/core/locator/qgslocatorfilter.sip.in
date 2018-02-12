@@ -211,6 +211,9 @@ custom configuration widget.
   signals:
 
     void finished();
+%Docstring
+Emitted when the filter finishes fetching results.
+%End
 
     void resultFetched( const QgsLocatorResult &result );
 %Docstring

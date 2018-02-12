@@ -234,6 +234,9 @@ class CORE_EXPORT QgsLocatorFilter : public QObject
 
   signals:
 
+    /**
+     * Emitted when the filter finishes fetching results.
+     */
     void finished();
 
     /**
