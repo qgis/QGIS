@@ -157,7 +157,7 @@ class GUI_EXPORT QgsCollapsibleGroupBoxBasic : public QGroupBox
     bool mScrollOnExpand;
     bool mShown;
     QScrollArea *mParentScrollArea = nullptr;
-    QgsGroupBoxCollapseButton *mCollapseButton = nullptr;
+    std::unique_ptr<QgsGroupBoxCollapseButton> mCollapseButton;
     QWidget *mSyncParent = nullptr;
     QString mSyncGroup;
     bool mAltDown;
