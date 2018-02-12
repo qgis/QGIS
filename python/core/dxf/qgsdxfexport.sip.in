@@ -20,6 +20,18 @@ class QgsDxfExport
 #include "qgsdxfexport.h"
 %End
   public:
+
+    struct DxfLayer
+    {
+      DxfLayer( QgsVectorLayer *vl, int layerOutputAttributeIndex = -1 );
+
+      QgsVectorLayer *layer() const;
+      int layerOutputAttributeIndex() const;
+
+      QgsVectorLayer *mLayer;
+      int mLayerOutputAttributeIndex;
+    };
+
     enum SymbologyExport
     {
       NoSymbology,
@@ -64,7 +76,7 @@ Returns the export flags.
 .. seealso:: :py:func:`setFlags`
 %End
 
-    void addLayers( const QList< QPair<QgsVectorLayer *, int > > &layers );
+    void addLayers( const QList< QgsDxfExport::DxfLayer > &layers );
 %Docstring
 Add layers to export
 
