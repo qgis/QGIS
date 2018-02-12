@@ -278,9 +278,9 @@ bool QgsVectorLayerAndAttributeModel::setData( const QModelIndex &index, const Q
 }
 
 
-QList< QPair<QgsVectorLayer *, int> > QgsVectorLayerAndAttributeModel::layers() const
+QList< QgsDxfExport::DxfLayer > QgsVectorLayerAndAttributeModel::layers() const
 {
-  QList< QPair<QgsVectorLayer *, int> > layers;
+  QList< QgsDxfExport::DxfLayer > layers;
   QHash< QString, int > layerIdx;
 
   Q_FOREACH ( const QModelIndex &idx, mCheckedLeafs )
@@ -295,7 +295,7 @@ QList< QPair<QgsVectorLayer *, int> > QgsVectorLayerAndAttributeModel::layers() 
         if ( !layerIdx.contains( vl->id() ) )
         {
           layerIdx.insert( vl->id(), layers.size() );
-          layers << qMakePair<QgsVectorLayer *, int>( vl, mAttributeIdx.value( vl, -1 ) );
+          layers << QgsDxfExport::DxfLayer( vl, mAttributeIdx.value( vl, -1 ) );
         }
       }
     }
@@ -306,14 +306,14 @@ QList< QPair<QgsVectorLayer *, int> > QgsVectorLayerAndAttributeModel::layers() 
       if ( !layerIdx.contains( vl->id() ) )
       {
         layerIdx.insert( vl->id(), layers.size() );
-        layers << qMakePair<QgsVectorLayer *, int>( vl, mAttributeIdx.value( vl, -1 ) );
+        layers << QgsDxfExport::DxfLayer( vl, mAttributeIdx.value( vl, -1 ) );
       }
     }
   }
 
   QgsLayerTreeMapCanvasBridge* bridge = QgisApp::instance()->layerTreeCanvasBridge();
   QStringList inDrawingOrder = bridge->hasCustomLayerOrder() ? bridge->customLayerOrder() : bridge->defaultLayerOrder();
-  QList< QPair<QgsVectorLayer *, int> > layersInROrder;
+  QList< QgsDxfExport::DxfLayer > layersInROrder;
 
   for ( int i = inDrawingOrder.size() - 1; i >= 0; i-- )
   {
@@ -530,7 +530,7 @@ void QgsDxfExportDialog::unSelectAll()
 }
 
 
-QList< QPair<QgsVectorLayer *, int> > QgsDxfExportDialog::layers() const
+QList< QgsDxfExport::DxfLayer > QgsDxfExportDialog::layers() const
 {
   const QgsVectorLayerAndAttributeModel *model = dynamic_cast< const QgsVectorLayerAndAttributeModel *>( mTreeView->model() );
   Q_ASSERT( model );

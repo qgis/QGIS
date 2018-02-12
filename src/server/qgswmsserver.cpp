@@ -1519,7 +1519,7 @@ void QgsWMSServer::getMapAsDxf()
   QMap<QString, QString > formatOptionsMap;
   readFormatOptions( formatOptionsMap );
 
-  QList< QPair<QgsVectorLayer *, int > > layers;
+  QList< QgsDxfExport::DxfLayer > layers;
   readDxfLayerSettings( layers, formatOptionsMap );
   dxf.addLayers( layers );
 
@@ -3566,7 +3566,7 @@ void QgsWMSServer::readFormatOptions( QMap<QString, QString>& formatOptions ) co
   }
 }
 
-void QgsWMSServer::readDxfLayerSettings( QList< QPair<QgsVectorLayer *, int > >& layers, const QMap<QString, QString>& formatOptionsMap ) const
+void QgsWMSServer::readDxfLayerSettings( QList< QgsDxfExport::DxfLayer >& layers, const QMap<QString, QString>& formatOptionsMap ) const
 {
   layers.clear();
 
@@ -3624,7 +3624,7 @@ void QgsWMSServer::readDxfLayerSettings( QList< QPair<QgsVectorLayer *, int > >&
         continue;
       }
 
-      layers.append( qMakePair( vlayer, layerAttribute ) );
+      layers.append( QgsDxfExport::DxfLayer( vlayer, layerAttribute ) );
     }
   }
 }
