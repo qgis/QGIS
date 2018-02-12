@@ -26,6 +26,7 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
+import time
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import QUrl
@@ -56,12 +57,12 @@ class ResultsDock(BASE, WIDGET):
         elements = resultsList.getResults()
         for element in elements:
             item = TreeResultItem(element)
-            self.treeResults.addTopLevelItem(item)
+            self.treeResults.insertTopLevelItem(0, item)
         self.treeResults.blockSignals(False)
 
     def updateDescription(self, current, previous):
         if isinstance(current, TreeResultItem):
-            html = '<b>Algorithm</b>: {}<br><b>File path</b>: {}'.format(current.text(0), current.filename)
+            html = '<b>Algorithm</b>: {}<br><b>File path</b>: {}'.format(current.algorithm, current.filename)
             self.txtDescription.setHtml(html)
 
     def openResult(self, item, column):
@@ -73,5 +74,6 @@ class TreeResultItem(QTreeWidgetItem):
     def __init__(self, result):
         QTreeWidgetItem.__init__(self)
         self.setIcon(0, result.icon)
-        self.setText(0, result.name)
+        self.setText(0, '{0} [{1}]'.format(result.name, time.strftime('%I:%M:%S%p', result.timestamp)))
+        self.algorithm = result.name
         self.filename = result.filename
