@@ -412,9 +412,8 @@ class CORE_EXPORT QgsTriangle : public QgsPolygon
     }
 #endif
 
-  protected:
-
     QgsTriangle *createEmptyWithSameType() const override SIP_FACTORY;
+
 
 };
 #endif // QGSTRIANGLE_H

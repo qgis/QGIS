@@ -39,8 +39,12 @@ class QgsBox3d;
 class CORE_EXPORT QgsRectangle
 {
   public:
+
+    //! Constructor for a null rectangle
+    QgsRectangle() = default; // optimised constructor for null rectangle - no need to call normalize here
+
     //! Constructor
-    QgsRectangle( double xMin = 0, double yMin = 0, double xMax = 0, double yMax = 0 );
+    explicit QgsRectangle( double xMin, double yMin = 0, double xMax = 0, double yMax = 0 );
     //! Construct a rectangle from two points. The rectangle is normalized after construction.
     QgsRectangle( const QgsPointXY &p1, const QgsPointXY &p2 );
     //! Construct a rectangle from a QRectF. The rectangle is normalized after construction.
@@ -332,10 +336,10 @@ class CORE_EXPORT QgsRectangle
 
   private:
 
-    double mXmin;
-    double mYmin;
-    double mXmax;
-    double mYmax;
+    double mXmin = 0.0;
+    double mYmin = 0.0;
+    double mXmax = 0.0;
+    double mYmax = 0.0;
 
 };
 

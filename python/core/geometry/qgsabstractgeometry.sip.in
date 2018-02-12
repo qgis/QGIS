@@ -596,8 +596,6 @@ Returns Java-style iterator for traversal of vertices of the geometry
 .. versionadded:: 3.0
 %End
 
-  protected:
-
     virtual QgsAbstractGeometry *createEmptyWithSameType() const = 0 /Factory/;
 %Docstring
 Creates a new geometry with the same class and same WKB type as the original and transfers ownership.
@@ -611,6 +609,8 @@ To create it, the geometry is default constructed and then the WKB is changed.
 
    Not available in Python bindings
 %End
+
+  protected:
 
     virtual bool hasChildGeometries() const;
 %Docstring

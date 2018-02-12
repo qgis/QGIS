@@ -253,8 +253,11 @@ class CORE_EXPORT QgsLineString: public QgsCurve
       return nullptr;
     }
 #endif
-  protected:
+
     QgsLineString *createEmptyWithSameType() const override SIP_FACTORY;
+
+  protected:
+
     QgsRectangle calculateBoundingBox() const override;
 
   private:

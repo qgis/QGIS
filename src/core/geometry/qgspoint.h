@@ -455,8 +455,10 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     }
 #endif
 
-  protected:
     QgsPoint *createEmptyWithSameType() const override SIP_FACTORY;
+
+  protected:
+
     int childCount() const override;
     QgsPoint childPoint( int index ) const override;
 

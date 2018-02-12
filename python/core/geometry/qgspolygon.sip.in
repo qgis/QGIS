@@ -62,10 +62,10 @@ negative if the point lies outside the polygon.
 %End
 
 
-  protected:
-
     virtual QgsPolygon *createEmptyWithSameType() const /Factory/;
 
+
+  protected:
 
 
 };
