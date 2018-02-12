@@ -286,7 +286,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
             # add html results to results dock
             for out in self.algorithm().outputDefinitions():
                 if isinstance(out, QgsProcessingOutputHtml) and out.name() in result and result[out.name()]:
-                    resultsList.addResult(icon=self.algorithm().icon(), name=out.description(),
+                    resultsList.addResult(icon=self.algorithm().icon(), name=out.description(), timestamp=time.localtime(),
                                           result=result[out.name()])
 
             if not handleAlgorithmResults(self.algorithm(), context, feedback, not keepOpen):
