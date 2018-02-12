@@ -58,16 +58,23 @@ class CORE_EXPORT QgsDxfExport
      */
     struct DxfLayer
     {
-      DxfLayer( QgsVectorLayer *vl, int layerOutputAttributeIndex = -1 )
-        : mLayer( vl )
-        , mLayerOutputAttributeIndex( layerOutputAttributeIndex )
-      {}
+        DxfLayer( QgsVectorLayer *vl, int layerOutputAttributeIndex = -1 )
+          : mLayer( vl )
+          , mLayerOutputAttributeIndex( layerOutputAttributeIndex )
+        {}
 
-      QgsVectorLayer *layer() const {return mLayer;}
-      int layerOutputAttributeIndex() const {return mLayerOutputAttributeIndex;}
+        //! Return the layer
+        QgsVectorLayer *layer() const {return mLayer;}
 
-      QgsVectorLayer *mLayer;
-      int mLayerOutputAttributeIndex;
+        /**
+         * Return the attribute index used to split into multiple layers.
+         * The attribute value is used for layer names.
+         */
+        int layerOutputAttributeIndex() const {return mLayerOutputAttributeIndex;}
+
+      private:
+        QgsVectorLayer *mLayer = nullptr;
+        int mLayerOutputAttributeIndex = -1;
     };
 
     enum SymbologyExport

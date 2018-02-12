@@ -23,13 +23,19 @@ class QgsDxfExport
 
     struct DxfLayer
     {
-      DxfLayer( QgsVectorLayer *vl, int layerOutputAttributeIndex = -1 );
+        DxfLayer( QgsVectorLayer *vl, int layerOutputAttributeIndex = -1 );
 
-      QgsVectorLayer *layer() const;
-      int layerOutputAttributeIndex() const;
+        QgsVectorLayer *layer() const;
+%Docstring
+Return the layer
+%End
 
-      QgsVectorLayer *mLayer;
-      int mLayerOutputAttributeIndex;
+        int layerOutputAttributeIndex() const;
+%Docstring
+Return the attribute index used to split into multiple layers.
+The attribute value is used for layer names.
+%End
+
     };
 
     enum SymbologyExport
