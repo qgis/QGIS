@@ -1268,7 +1268,7 @@ int main( int argc, char *argv[] )
 
     QStringList layerIds;
     QList< QgsDxfExport::DxfLayer > layers;
-    if ( !dxfMapTheme.isEmpty() )
+    if ( !dxfPreset.isEmpty() )
     {
       Q_FOREACH ( const QString& layer, QgsProject::instance()->visibilityPresetCollection()->presetVisibleLayers( dxfPreset ) )
       {

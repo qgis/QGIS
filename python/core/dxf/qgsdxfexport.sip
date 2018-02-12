@@ -21,6 +21,22 @@ class QgsDxfExport
 #include <qgsdxfexport.h>
 %End
   public:
+    struct DxfLayer
+    {
+      DxfLayer( QgsVectorLayer *vl, int layerOutputAttributeIndex = -1 );
+
+      QgsVectorLayer *layer() const;
+      %Docstring
+      Return the layer
+      %End
+
+      int layerOutputAttributeIndex() const;
+      %Docstring
+      Return the attribute index used to split into multiple layers.
+      The attribute value is used for layer names.
+      %End
+    };
+
     enum SymbologyExport
     {
       NoSymbology, //export only data
@@ -42,7 +58,7 @@ class QgsDxfExport
      * @param layers list of layers and corresponding attribute indexes that determine the layer name (-1 for original layer name or title)
      * @see setLayerTitleAsName
      */
-    void addLayers( const QList< QPair<QgsVectorLayer *, int > > &layers );
+    void addLayers( const QList< QgsDxfExport::DxfLayer > &layers );
 
     /**
      * Export to a dxf file in the given encoding

@@ -20,6 +20,7 @@
 
 #include "qgsowsserver.h"
 #include "qgswmsconfigparser.h"
+#include "qgsdxfexport.h"
 #include <QDomDocument>
 #include <QMap>
 #include <QPair>
@@ -281,7 +282,7 @@ class QgsWMSServer: public QgsOWSServer
 
     /** Reads and extracts the different options in the FORMAT_OPTIONS parameter*/
     void readFormatOptions( QMap<QString, QString>& formatOptions ) const;
-    void readDxfLayerSettings( QList< QPair<QgsVectorLayer *, int > >& layers, const QMap<QString, QString>& formatOptionsMap ) const;
+    void readDxfLayerSettings( QList< QgsDxfExport::DxfLayer >& layers, const QMap<QString, QString>& formatOptionsMap ) const;
 };
 
 #endif

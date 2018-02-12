@@ -51,8 +51,8 @@ class CORE_EXPORT QgsDxfExport
     struct DxfLayer
     {
       DxfLayer( QgsVectorLayer *vl, int layerOutputAttributeIndex = -1 )
-        : mLayer( vl )
-        , mLayerOutputAttributeIndex( layerOutputAttributeIndex )
+          : mLayer( vl )
+          , mLayerOutputAttributeIndex( layerOutputAttributeIndex )
       {}
 
       QgsVectorLayer *layer() const {return mLayer;}

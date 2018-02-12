@@ -408,14 +408,14 @@ void QgsDxfExport::setMapSettings( const QgsMapSettings &settings )
 
 void QgsDxfExport::addLayers( const QList<DxfLayer> &layers )
 {
-  QList<QgsMapLayer *> layerList;
+  QStringList layerList;
 
   mLayerNameAttribute.clear();
 
   QList< DxfLayer >::const_iterator layerIt = layers.constBegin();
   for ( ; layerIt != layers.constEnd(); ++layerIt )
   {
-    layerList << layerIt->layer();
+    layerList << layerIt->layer()->id();
     if ( layerIt->layerOutputAttributeIndex() >= 0 )
       mLayerNameAttribute.insert( layerIt->layer()->id(), layerIt->layerOutputAttributeIndex() );
   }

@@ -311,6 +311,8 @@ QList< QgsDxfExport::DxfLayer > QgsVectorLayerAndAttributeModel::layers() const
     }
   }
 
+  QgsLayerTreeMapCanvasBridge* bridge = QgisApp::instance()->layerTreeCanvasBridge();
+  QStringList inDrawingOrder = bridge->hasCustomLayerOrder() ? bridge->customLayerOrder() : bridge->defaultLayerOrder();
   QList< QgsDxfExport::DxfLayer > layersInROrder;
 
   for ( int i = inDrawingOrder.size() - 1; i >= 0; i-- )
