@@ -29,7 +29,9 @@ import os
 import time
 
 from qgis.PyQt import uic
-from qgis.PyQt.QtCore import QUrl
+from qgis.PyQt.QtCore import (QUrl,
+                              QFileInfo,
+                              QDir)
 from qgis.PyQt.QtGui import QDesktopServices
 from qgis.PyQt.QtWidgets import QTreeWidgetItem
 
@@ -49,6 +51,9 @@ class ResultsDock(BASE, WIDGET):
         self.treeResults.currentItemChanged.connect(self.updateDescription)
         self.treeResults.itemDoubleClicked.connect(self.openResult)
 
+        self.txtDescription.setOpenLinks(False)
+        self.txtDescription.anchorClicked.connect(self.openLink)
+
         self.fillTree()
 
     def fillTree(self):
@@ -62,8 +67,11 @@ class ResultsDock(BASE, WIDGET):
 
     def updateDescription(self, current, previous):
         if isinstance(current, TreeResultItem):
-            html = '<b>Algorithm</b>: {}<br><b>File path</b>: {}'.format(current.algorithm, current.filename)
+            html = '<b>Algorithm</b>: {}<br><b>File path</b>: <a href="{}">{}</a>'.format(current.algorithm, QUrl.fromLocalFile(current.filename).toString(), QDir.toNativeSeparators(current.filename))
             self.txtDescription.setHtml(html)
+
+    def openLink(self, url):
+        QDesktopServices.openUrl(url)
 
     def openResult(self, item, column):
         QDesktopServices.openUrl(QUrl.fromLocalFile(item.filename))
