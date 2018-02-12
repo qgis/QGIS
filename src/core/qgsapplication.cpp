@@ -91,9 +91,13 @@ QString ABISYM( QgsApplication::mLibraryPath );
 QString ABISYM( QgsApplication::mLibexecPath );
 QString ABISYM( QgsApplication::mThemeName );
 QString ABISYM( QgsApplication::mUIThemeName );
+QString ABISYM( QgsApplication::mProfilePath );
+
 QStringList ABISYM( QgsApplication::mDefaultSvgPaths );
 QMap<QString, QString> ABISYM( QgsApplication::mSystemEnvVars );
 QString ABISYM( QgsApplication::mConfigPath );
+
+bool ABISYM( QgsApplication::mInitialized ) = false;
 bool ABISYM( QgsApplication::mRunningFromBuildDir ) = false;
 QString ABISYM( QgsApplication::mBuildSourcePath );
 #ifdef _MSC_VER
@@ -121,7 +125,7 @@ QgsApplication::QgsApplication( int &argc, char **argv, bool GUIenabled, const Q
 
   mApplicationMembers = new ApplicationMembers();
 
-  init( profileFolder ); // init can also be called directly by e.g. unit tests that don't inherit QApplication.
+  ABISYM( mProfilePath ) = profileFolder;
 }
 
 void QgsApplication::init( QString profileFolder )
@@ -145,6 +149,8 @@ void QgsApplication::init( QString profileFolder )
     profileFolder = profile->folder();
     delete profile;
   }
+
+  ABISYM( mProfilePath ) = profileFolder;
 
   qRegisterMetaType<QgsGeometry::Error>( "QgsGeometry::Error" );
   qRegisterMetaType<QgsProcessingFeatureSourceDefinition>( "QgsProcessingFeatureSourceDefinition" );
@@ -259,6 +265,8 @@ void QgsApplication::init( QString profileFolder )
   // this should be read from QgsSettings but we don't know where they are at this point
   // so we read actual value in main.cpp
   ABISYM( mMaxThreads ) = -1;
+
+  ABISYM( mInitialized ) = true;
 }
 
 QgsApplication::~QgsApplication()
@@ -589,14 +597,14 @@ QString QgsApplication::resolvePkgPath()
   Q_FOREACH ( const QString &path, QStringList() << "" << "/.." << "/bin" << "/../../.." )
   {
     f.setFileName( prefixPath + path + "/qgisbuildpath.txt" );
-    QgsDebugMsg(f.fileName());
+    QgsDebugMsg( f.fileName() );
     if ( f.exists() )
       break;
   }
 
   if ( f.exists() && f.open( QIODevice::ReadOnly ) )
   {
-    QgsDebugMsg("Running from build dir!");
+    QgsDebugMsg( "Running from build dir!" );
     return f.readLine().trimmed();
   }
   else
@@ -980,6 +988,11 @@ QgsApplication::endian_t QgsApplication::endian()
 
 void QgsApplication::initQgis()
 {
+  if ( !ABISYM( mInitialized ) )
+  {
+    init( ABISYM( mProfilePath ) );
+  }
+
   // set the provider plugin path (this creates provider registry)
   QgsProviderRegistry::instance( pluginPath() );
 

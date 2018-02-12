@@ -798,7 +798,8 @@ int main( int argc, char *argv[] )
   QCoreApplication::setAttribute( Qt::AA_DisableWindowContextHelpButton, true );
 #endif
 
-  QApplication *subapp = new QApplication(argc, argv);
+  QgsApplication myApp( argc, argv, myUseGuiFlag );
+
   // SetUp the QgsSettings Global Settings:
   // - use the path specified with --globalsettingsfile path,
   // - use the environment if not found
@@ -851,7 +852,6 @@ int main( int argc, char *argv[] )
     }
   }
   delete globalSettings;
-  delete subapp;
 
   QgsDebugMsg( "CONFIG LOCAL STORAGE:" + configLocalStorageLocation );
 
@@ -872,7 +872,7 @@ int main( int argc, char *argv[] )
   QgsDebugMsg( QString( "\t - %1" ).arg( profileFolder ) );
   QgsDebugMsg( QString( "\t - %1" ).arg( rootProfileFolder ) );
 
-  QgsApplication myApp( argc, argv, myUseGuiFlag, profileFolder );
+  myApp.init( profileFolder );
 
   // Settings migration is only supported on the default profile for now.
   if ( profileName == "default" )
