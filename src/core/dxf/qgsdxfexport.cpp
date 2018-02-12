@@ -398,18 +398,18 @@ QgsDxfExport::Flags QgsDxfExport::flags() const
   return mFlags;
 }
 
-void QgsDxfExport::addLayers( const QList< QPair< QgsVectorLayer *, int > > &layers )
+void QgsDxfExport::addLayers( const QList<DxfLayer> &layers )
 {
   QList<QgsMapLayer *> layerList;
 
   mLayerNameAttribute.clear();
 
-  QList< QPair< QgsVectorLayer *, int > >::const_iterator layerIt = layers.constBegin();
+  QList< DxfLayer >::const_iterator layerIt = layers.constBegin();
   for ( ; layerIt != layers.constEnd(); ++layerIt )
   {
-    layerList << layerIt->first;
-    if ( layerIt->second >= 0 )
-      mLayerNameAttribute.insert( layerIt->first->id(), layerIt->second );
+    layerList << layerIt->layer();
+    if ( layerIt->layerOutputAttributeIndex() >= 0 )
+      mLayerNameAttribute.insert( layerIt->layer()->id(), layerIt->layerOutputAttributeIndex() );
   }
 
   mMapSettings.setLayers( layerList );
