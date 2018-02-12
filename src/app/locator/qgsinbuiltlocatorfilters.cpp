@@ -36,10 +36,8 @@ QgsLayerTreeLocatorFilter *QgsLayerTreeLocatorFilter::clone() const
   return new QgsLayerTreeLocatorFilter();
 }
 
-void QgsLayerTreeLocatorFilter::prepare( const QString &string, const QgsLocatorContext & )
+void QgsLayerTreeLocatorFilter::fetchResults( const QString &string, const QgsLocatorContext &, QgsFeedback * )
 {
-  // collect results in main thread, since this method is inexpensive and
-  // accessing the layer tree root is not thread safe
   QgsLayerTree *tree = QgsProject::instance()->layerTreeRoot();
   const QList<QgsLayerTreeLayer *> layers = tree->findLayers();
   for ( QgsLayerTreeLayer *layer : layers )
@@ -51,16 +49,8 @@ void QgsLayerTreeLocatorFilter::prepare( const QString &string, const QgsLocator
       result.userData = layer->layerId();
       result.icon = QgsMapLayerModel::iconForLayer( layer->layer() );
       result.score = static_cast< double >( string.length() ) / layer->layer()->name().length();
-      mResults.append( result );
+      emit resultFetched( result );
     }
-  }
-}
-
-void QgsLayerTreeLocatorFilter::fetchResults( const QString &, const QgsLocatorContext &, QgsFeedback * )
-{
-  for ( const QgsLocatorResult &result : qgis::as_const( mResults ) )
-  {
-    emit resultFetched( result );
   }
 }
 
@@ -84,11 +74,8 @@ QgsLayoutLocatorFilter *QgsLayoutLocatorFilter::clone() const
   return new QgsLayoutLocatorFilter();
 }
 
-void QgsLayoutLocatorFilter::prepare( const QString &string, const QgsLocatorContext & )
+void QgsLayoutLocatorFilter::fetchResults( const QString &string, const QgsLocatorContext &, QgsFeedback * )
 {
-  // collect results in main thread, since this method is inexpensive and
-  // accessing the project layouts is not thread safe
-
   const QList< QgsMasterLayoutInterface * > layouts = QgsProject::instance()->layoutManager()->layouts();
   for ( QgsMasterLayoutInterface *layout : layouts )
   {
@@ -99,16 +86,8 @@ void QgsLayoutLocatorFilter::prepare( const QString &string, const QgsLocatorCon
       result.userData = layout->name();
       //result.icon = QgsMapLayerModel::iconForLayer( layer->layer() );
       result.score = static_cast< double >( string.length() ) / layout->name().length();
-      mResults.append( result );
+      emit resultFetched( result );
     }
-  }
-}
-
-void QgsLayoutLocatorFilter::fetchResults( const QString &, const QgsLocatorContext &, QgsFeedback * )
-{
-  for ( const QgsLocatorResult &result : qgis::as_const( mResults ) )
-  {
-    emit resultFetched( result );
   }
 }
 
@@ -137,7 +116,7 @@ QgsActionLocatorFilter *QgsActionLocatorFilter::clone() const
   return new QgsActionLocatorFilter( mActionParents );
 }
 
-void QgsActionLocatorFilter::prepare( const QString &string, const QgsLocatorContext & )
+void QgsActionLocatorFilter::fetchResults( const QString &string, const QgsLocatorContext &, QgsFeedback * )
 {
   // collect results in main thread, since this method is inexpensive and
   // accessing the gui actions is not thread safe
@@ -147,14 +126,6 @@ void QgsActionLocatorFilter::prepare( const QString &string, const QgsLocatorCon
   for ( QWidget *object : qgis::as_const( mActionParents ) )
   {
     searchActions( string,  object, found );
-  }
-}
-
-void QgsActionLocatorFilter::fetchResults( const QString &, const QgsLocatorContext &, QgsFeedback * )
-{
-  for ( const QgsLocatorResult &result : qgis::as_const( mResults ) )
-  {
-    emit resultFetched( result );
   }
 }
 
@@ -194,7 +165,7 @@ void QgsActionLocatorFilter::searchActions( const QString &string, QWidget *pare
       result.userData = QVariant::fromValue( action );
       result.icon = action->icon();
       result.score = static_cast< double >( string.length() ) / searchText.length();
-      mResults.append( result );
+      emit resultFetched( result );
       found << action;
     }
   }

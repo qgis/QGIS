@@ -409,6 +409,11 @@ QgsLocatorFilterFilter *QgsLocatorFilterFilter::clone() const
   return new QgsLocatorFilterFilter( mLocator );
 }
 
+QgsLocatorFilter::Flags QgsLocatorFilterFilter::flags() const
+{
+  return QgsLocatorFilter::FlagFast;
+}
+
 void QgsLocatorFilterFilter::fetchResults( const QString &string, const QgsLocatorContext &, QgsFeedback *feedback )
 {
   if ( !string.isEmpty() )

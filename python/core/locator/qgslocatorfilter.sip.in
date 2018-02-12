@@ -69,6 +69,13 @@ Abstract base class for filters which collect locator results.
       Lowest
     };
 
+    enum Flag
+    {
+      FlagFast,
+    };
+    typedef QFlags<QgsLocatorFilter::Flag> Flags;
+
+
     QgsLocatorFilter( QObject *parent = 0 );
 %Docstring
 Constructor for QgsLocatorFilter.
@@ -92,6 +99,11 @@ Returns the unique name for the filter. This should be an untranslated string id
 Returns a translated, user-friendly name for the filter.
 
 .. seealso:: :py:func:`name`
+%End
+
+    virtual QgsLocatorFilter::Flags flags() const;
+%Docstring
+Returns flags which specify the filter's behavior.
 %End
 
     virtual Priority priority() const;
@@ -222,6 +234,9 @@ during within their fetchResults() implementation.
 %End
 
 };
+
+QFlags<QgsLocatorFilter::Flag> operator|(QgsLocatorFilter::Flag f1, QFlags<QgsLocatorFilter::Flag> f2);
+
 
 
 

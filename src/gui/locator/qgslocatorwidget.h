@@ -135,6 +135,7 @@ class QgsLocatorFilterFilter : public QgsLocatorFilter
     QgsLocatorFilterFilter( QgsLocatorWidget *widget, QObject *parent = nullptr );
 
     QgsLocatorFilterFilter *clone() const override SIP_FACTORY;
+    QgsLocatorFilter::Flags flags() const override;
 
     QString name() const override { return QStringLiteral( "filters" );}
     QString displayName() const override { return QString(); }

@@ -39,7 +39,6 @@ class AlgorithmLocatorFilter(QgsLocatorFilter):
 
     def __init__(self, parent=None):
         super(AlgorithmLocatorFilter, self).__init__(parent)
-        self.found_results = []
 
     def clone(self):
         return AlgorithmLocatorFilter()
@@ -56,7 +55,10 @@ class AlgorithmLocatorFilter(QgsLocatorFilter):
     def prefix(self):
         return 'a'
 
-    def prepare(self, string, context):
+    def flags(self):
+        return QgsLocatorFilter.FlagFast
+
+    def fetchResults(self, string, context, feedback):
         # collect results in main thread, since this method is inexpensive and
         # accessing the processing registry is not thread safe
         for a in QgsApplication.processingRegistry().algorithms():
@@ -73,11 +75,7 @@ class AlgorithmLocatorFilter(QgsLocatorFilter):
                     result.score = float(len(string)) / len(a.displayName())
                 else:
                     result.score = 0
-                self.found_results.append(result)
-
-    def fetchResults(self, string, context, feedback):
-        for result in self.found_results:
-            self.resultFetched.emit(result)
+                self.resultFetched.emit(result)
 
     def triggerResult(self, result):
         alg = QgsApplication.processingRegistry().createAlgorithmById(result.userData)

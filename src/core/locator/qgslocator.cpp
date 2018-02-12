@@ -121,21 +121,31 @@ void QgsLocator::fetchResults( const QString &string, const QgsLocatorContext &c
     }
   }
 
-  QList< QgsLocatorFilter *> clonedFilters;
+  QList< QgsLocatorFilter *> threadedFilters;
   for ( QgsLocatorFilter *filter : qgis::as_const( activeFilters ) )
   {
-    QgsLocatorFilter *clone = filter->clone();
-    connect( clone, &QgsLocatorFilter::resultFetched, clone, [this, filter]( QgsLocatorResult result )
+    std::unique_ptr< QgsLocatorFilter > clone( filter->clone() );
+    connect( clone.get(), &QgsLocatorFilter::resultFetched, clone.get(), [this, filter]( QgsLocatorResult result )
     {
       result.filter = filter;
       emit filterSentResult( result );
-    }, Qt::QueuedConnection );
+    } );
     clone->prepare( searchString, context );
-    clonedFilters.append( clone );
+
+    if ( clone->flags() & QgsLocatorFilter::FlagFast )
+    {
+      // filter is fast enough to fetch results on the main thread
+      clone->fetchResults( searchString, context, feedback );
+    }
+    else
+    {
+      // run filter in background
+      threadedFilters.append( clone.release() );
+    }
   }
 
   mActiveThreads.clear();
-  for ( QgsLocatorFilter *filter : qgis::as_const( clonedFilters ) )
+  for ( QgsLocatorFilter *filter : qgis::as_const( threadedFilters ) )
   {
     QThread *thread = new QThread();
     mActiveThreads.append( thread );
@@ -158,6 +168,9 @@ void QgsLocator::fetchResults( const QString &string, const QgsLocatorContext &c
     connect( thread, &QThread::finished, thread, &QThread::deleteLater );
     thread->start();
   }
+
+  if ( mActiveThreads.empty() )
+    emit finished();
 }
 
 void QgsLocator::cancel()

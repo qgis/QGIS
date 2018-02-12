@@ -36,14 +36,10 @@ class QgsLayerTreeLocatorFilter : public QgsLocatorFilter
     QString displayName() const override { return tr( "Project Layers" ); }
     Priority priority() const override { return Highest; }
     QString prefix() const override { return QStringLiteral( "l" ); }
+    QgsLocatorFilter::Flags flags() const override { return QgsLocatorFilter::FlagFast; }
 
-    void prepare( const QString &string, const QgsLocatorContext &context ) override;
     void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;
     void triggerResult( const QgsLocatorResult &result ) override;
-
-  private:
-
-    QVector< QgsLocatorResult > mResults;
 
 };
 
@@ -59,14 +55,11 @@ class QgsLayoutLocatorFilter : public QgsLocatorFilter
     QString displayName() const override { return tr( "Project Layouts" ); }
     Priority priority() const override { return Highest; }
     QString prefix() const override { return QStringLiteral( "pl" ); }
+    QgsLocatorFilter::Flags flags() const override { return QgsLocatorFilter::FlagFast; }
 
-    void prepare( const QString &string, const QgsLocatorContext &context ) override;
     void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;
     void triggerResult( const QgsLocatorResult &result ) override;
 
-  private:
-
-    QVector< QgsLocatorResult > mResults;
 };
 
 class QgsActionLocatorFilter : public QgsLocatorFilter
@@ -81,14 +74,13 @@ class QgsActionLocatorFilter : public QgsLocatorFilter
     QString displayName() const override { return tr( "Actions" ); }
     Priority priority() const override { return Lowest; }
     QString prefix() const override { return QStringLiteral( "." ); }
+    QgsLocatorFilter::Flags flags() const override { return QgsLocatorFilter::FlagFast; }
 
-    void prepare( const QString &string, const QgsLocatorContext &context ) override;
     void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;
     void triggerResult( const QgsLocatorResult &result ) override;
   private:
 
     QList< QWidget * > mActionParents;
-    QVector< QgsLocatorResult > mResults;
 
     void searchActions( const QString &string, QWidget *parent, QList< QAction *> &found );
 

@@ -106,6 +106,12 @@ class CORE_EXPORT QgsLocatorFilter : public QObject
       Lowest //!< Lowest priority
     };
 
+    enum Flag
+    {
+      FlagFast = 1 << 1, //!< Filter finds results quickly and can be safely run in the main thread
+    };
+    Q_DECLARE_FLAGS( Flags, Flag )
+
     /**
      * Constructor for QgsLocatorFilter.
      */
@@ -128,6 +134,11 @@ class CORE_EXPORT QgsLocatorFilter : public QObject
      * \see name()
      */
     virtual QString displayName() const = 0;
+
+    /**
+     * Returns flags which specify the filter's behavior.
+     */
+    virtual QgsLocatorFilter::Flags flags() const;
 
     /**
      * Returns the priority for the filter, which controls how results are
@@ -253,6 +264,8 @@ class CORE_EXPORT QgsLocatorFilter : public QObject
 };
 
 Q_DECLARE_METATYPE( QgsLocatorResult )
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsLocatorFilter::Flags )
+
 
 #endif // QGSLOCATORFILTER_H
 
