@@ -125,7 +125,7 @@ class TableDataModel(BaseTableModel):
     def getData(self, row, col):
         if row < self.fetchedFrom or row >= self.fetchedFrom + self.fetchedCount:
             margin = self.fetchedCount / 2
-            start = self.rowCount() - margin if row + margin >= self.rowCount() else row - margin
+            start = int(self.rowCount() - margin if row + margin >= self.rowCount() else row - margin)
             if start < 0:
                 start = 0
             self.fetchMoreData(start)
