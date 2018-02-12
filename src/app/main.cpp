@@ -798,6 +798,7 @@ int main( int argc, char *argv[] )
   QCoreApplication::setAttribute( Qt::AA_DisableWindowContextHelpButton, true );
 #endif
 
+  QApplication *subapp = new QApplication(argc, argv);
   // SetUp the QgsSettings Global Settings:
   // - use the path specified with --globalsettingsfile path,
   // - use the environment if not found
@@ -809,7 +810,8 @@ int main( int argc, char *argv[] )
 
   if ( globalsettingsfile.isEmpty() )
   {
-    QString default_globalsettingsfile = QgsApplication::pkgDataPath() + "/qgis_global_settings.ini";
+    QString default_globalsettingsfile = QgsApplication::resolvePkgPath() + "/resources/qgis_global_settings.ini";
+    QgsDebugMsg( "GLOABL SETTINGS FILE:" + default_globalsettingsfile );
     if ( QFile::exists( default_globalsettingsfile ) )
     {
       globalsettingsfile = default_globalsettingsfile;
@@ -849,6 +851,9 @@ int main( int argc, char *argv[] )
     }
   }
   delete globalSettings;
+  delete subapp;
+
+  QgsDebugMsg( "CONFIG LOCAL STORAGE:" + configLocalStorageLocation );
 
   QString rootProfileFolder = QgsUserProfileManager::resolveProfilesFolder( configLocalStorageLocation );
   QgsUserProfileManager manager( rootProfileFolder );

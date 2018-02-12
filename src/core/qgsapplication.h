@@ -184,6 +184,8 @@ class CORE_EXPORT QgsApplication : public QApplication
      */
     static void setThemeName( const QString &themeName );
 
+    static QString resolvePkgPath( );
+
     /**
      * Set the active theme to the specified theme.
      * The theme name should be a single word e.g. 'default','classic'.

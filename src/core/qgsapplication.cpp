@@ -577,6 +577,36 @@ void QgsApplication::setThemeName( const QString &themeName )
   ABISYM( mThemeName ) = themeName;
 }
 
+QString QgsApplication::resolvePkgPath()
+{
+#if defined(ANDROID)
+  QString prefixPath( getenv( "QGIS_PREFIX_PATH" ) ? getenv( "QGIS_PREFIX_PATH" ) : QDir::homePath() );
+#else
+  QString prefixPath( getenv( "QGIS_PREFIX_PATH" ) ? getenv( "QGIS_PREFIX_PATH" ) : applicationDirPath() );
+#endif
+  QFile f;
+  // "/../../.." is for Mac bundled app in build directory
+  Q_FOREACH ( const QString &path, QStringList() << "" << "/.." << "/bin" << "/../../.." )
+  {
+    f.setFileName( prefixPath + path + "/qgisbuildpath.txt" );
+    QgsDebugMsg(f.fileName());
+    if ( f.exists() )
+      break;
+  }
+
+  if ( f.exists() && f.open( QIODevice::ReadOnly ) )
+  {
+    return f.readLine().trimmed();
+    QgsDebugMsg("Running from build dir!");
+    return buildSourcePath;
+  }
+  else
+  {
+    return prefixPath + '/' + QStringLiteral( QGIS_DATA_SUBDIR );
+  }
+
+}
+
 QString QgsApplication::themeName()
 {
   return ABISYM( mThemeName );
