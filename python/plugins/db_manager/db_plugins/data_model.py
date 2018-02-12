@@ -246,7 +246,7 @@ class TableFieldsModel(SimpleTableModel):
         fld.name = self.data(self.index(row, 0)) or ""
 
         typestr = self.data(self.index(row, 1)) or ""
-        regex = QRegExp("([^\(]+)\(([^\)]+)\)")
+        regex = QRegExp("([^\\(]+)\\(([^\\)]+)\\)")
         startpos = regex.indexIn(typestr)
         if startpos >= 0:
             fld.dataType = regex.cap(1).strip()
