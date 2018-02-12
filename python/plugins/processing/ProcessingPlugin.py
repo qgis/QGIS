@@ -180,8 +180,6 @@ class ProcessingPlugin:
         self.iface.addDockWidget(Qt.RightDockWidgetArea, self.resultsDock)
         self.resultsDock.hide()
 
-        resultsList.resultAdded.connect(self.resultsDock.fillTree)
-
         self.menu = QMenu(self.iface.mainWindow().menuBar())
         self.menu.setObjectName('processing')
         self.menu.setTitle(self.tr('Pro&cessing'))

@@ -32,6 +32,7 @@ from qgis.PyQt import uic
 from qgis.PyQt.QtCore import (QUrl,
                               QFileInfo,
                               QDir)
+from qgis.gui import QgsDockWidget
 from qgis.PyQt.QtGui import QDesktopServices
 from qgis.PyQt.QtWidgets import QTreeWidgetItem
 
@@ -42,11 +43,13 @@ WIDGET, BASE = uic.loadUiType(
     os.path.join(pluginPath, 'ui', 'resultsdockbase.ui'))
 
 
-class ResultsDock(BASE, WIDGET):
+class ResultsDock(QgsDockWidget, WIDGET):
 
     def __init__(self):
         super(ResultsDock, self).__init__(None)
         self.setupUi(self)
+
+        resultsList.resultAdded.connect(self.addResult)
 
         self.treeResults.currentItemChanged.connect(self.updateDescription)
         self.treeResults.itemDoubleClicked.connect(self.openResult)
@@ -55,6 +58,13 @@ class ResultsDock(BASE, WIDGET):
         self.txtDescription.anchorClicked.connect(self.openLink)
 
         self.fillTree()
+
+    def addResult(self):
+        self.fillTree()
+
+        # Automatically open the panel for users to see output
+        self.setUserVisible(True)
+        self.treeResults.setCurrentItem(self.treeResults.topLevelItem(0))
 
     def fillTree(self):
         self.treeResults.blockSignals(True)
