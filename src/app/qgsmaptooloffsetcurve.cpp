@@ -13,6 +13,11 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QGraphicsProxyWidget>
+#include <QMouseEvent>
+#include <QGridLayout>
+#include <QLabel>
+
 #include "qgsdoublespinbox.h"
 #include "qgsfeatureiterator.h"
 #include "qgsmaptooloffsetcurve.h"
@@ -21,33 +26,29 @@
 #include "qgsrubberband.h"
 #include "qgssnappingutils.h"
 #include "qgsvectorlayer.h"
-#include "qgsvertexmarker.h"
+#include "qgssnapindicator.h"
 #include "qgssnappingconfig.h"
 #include "qgssettings.h"
 #include "qgisapp.h"
 
-#include <QGraphicsProxyWidget>
-#include <QMouseEvent>
 #include "qgisapp.h"
 
 QgsMapToolOffsetCurve::QgsMapToolOffsetCurve( QgsMapCanvas *canvas )
   : QgsMapToolEdit( canvas )
+  , mSnapIndicator( qgis::make_unique< QgsSnapIndicator >( canvas ) )
 {
 }
 
 QgsMapToolOffsetCurve::~QgsMapToolOffsetCurve()
 {
-  deleteRubberBandAndGeometry();
-  deleteDistanceWidget();
-  delete mSnapVertexMarker;
+  cancel();
 }
 
 void QgsMapToolOffsetCurve::keyPressEvent( QKeyEvent *e )
 {
   if ( e && e->key() == Qt::Key_Escape && !e->isAutoRepeat() )
   {
-    deleteRubberBandAndGeometry();
-    deleteDistanceWidget();
+    cancel();
   }
   else
   {
@@ -58,23 +59,11 @@ void QgsMapToolOffsetCurve::keyPressEvent( QKeyEvent *e )
 
 void QgsMapToolOffsetCurve::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
-  if ( !mCanvas )
-  {
-    return;
-  }
-
-  QgsVectorLayer *layer = currentVectorLayer();
-  if ( !layer )
-  {
-    deleteRubberBandAndGeometry();
-    notifyNotVectorLayer();
-    return;
-  }
+  mCtrlHeldOnFirstClick = false;
 
   if ( e->button() == Qt::RightButton )
   {
-    deleteRubberBandAndGeometry();
-    deleteDistanceWidget();
+    cancel();
     return;
   }
 
@@ -83,7 +72,6 @@ void QgsMapToolOffsetCurve::canvasReleaseEvent( QgsMapMouseEvent *e )
     // first click, get feature to modify
     deleteRubberBandAndGeometry();
     mGeometryModified = false;
-    mCtrlWasHeldOnFeatureSelection = false;
 
     QgsSnappingUtils *snapping = mCanvas->snappingUtils();
 
@@ -106,50 +94,53 @@ void QgsMapToolOffsetCurve::canvasReleaseEvent( QgsMapMouseEvent *e )
 
     if ( match.hasEdge() && match.layer() )
     {
-      mSourceLayerId = match.layer()->id();
+      mLayer = match.layer();
       QgsFeature fet;
       if ( match.layer()->getFeatures( QgsFeatureRequest( match.featureId() ) ).nextFeature( fet ) )
       {
-        mCtrlWasHeldOnFeatureSelection = ( e->modifiers() & Qt::ControlModifier ); //no geometry modification if ctrl is pressed
+        mCtrlHeldOnFirstClick = ( e->modifiers() & Qt::ControlModifier ); //no geometry modification if ctrl is pressed
         prepareGeometry( match.layer(), match, fet );
         mRubberBand = createRubberBand();
         if ( mRubberBand )
         {
-          mRubberBand->setToGeometry( mManipulatedGeometry, layer );
+          mRubberBand->setToGeometry( mManipulatedGeometry, match.layer() );
         }
         mModifiedFeature = fet.id();
-        createDistanceWidget();
+        createUserInputWidget();
       }
     }
 
     if ( mOriginalGeometry.isNull() )
     {
       emit messageEmitted( tr( "Could not find a nearby feature in any vector layer." ) );
+      cancel();
+      notifyNotVectorLayer();
     }
   }
   else
   {
     // second click - apply changes
-    applyOffset( e->modifiers() & Qt::ControlModifier );
+    double offset = calculateOffset( e->snapPoint() );
+    applyOffset( offset, e->modifiers() );
   }
 }
 
-void QgsMapToolOffsetCurve::applyOffset( bool forceCopy )
+void QgsMapToolOffsetCurve::applyOffset( const double &offset, const Qt::KeyboardModifiers &modifiers )
 {
-  QgsVectorLayer *layer = currentVectorLayer();
-  if ( !layer )
+  if ( !mLayer || offset == 0.0 )
   {
-    deleteRubberBandAndGeometry();
+    cancel();
     notifyNotVectorLayer();
     return;
   }
 
+  updateGeometryAndRubberBand( offset );
+
   // no modification
   if ( !mGeometryModified )
   {
-    deleteRubberBandAndGeometry();
-    layer->destroyEditCommand();
-    deleteDistanceWidget();
+    mLayer->destroyEditCommand();
+    cancel();
     return;
   }
 
@@ -207,12 +198,12 @@ void QgsMapToolOffsetCurve::applyOffset( bool forceCopy )
     mModifiedGeometry = geometry;
   }
 
-  layer->beginEditCommand( tr( "Offset curve" ) );
+  mLayer->beginEditCommand( tr( "Offset curve" ) );
 
   bool editOk;
-  if ( mSourceLayerId == layer->id() && !mCtrlWasHeldOnFeatureSelection && !forceCopy )
+  if ( !mCtrlHeldOnFirstClick && !modifiers.testFlag( Qt::ControlModifier ) )
   {
-    editOk = layer->changeGeometry( mModifiedFeature, mModifiedGeometry );
+    editOk = mLayer->changeGeometry( mModifiedFeature, mModifiedGeometry );
   }
   else
   {
@@ -220,97 +211,86 @@ void QgsMapToolOffsetCurve::applyOffset( bool forceCopy )
     f.setGeometry( mModifiedGeometry );
 
     //add empty values for all fields (allows inserting attribute values via the feature form in the same session)
-    QgsAttributes attrs( layer->fields().count() );
-    const QgsFields &fields = layer->fields();
+    QgsAttributes attrs( mLayer->fields().count() );
+    const QgsFields &fields = mLayer->fields();
     for ( int idx = 0; idx < fields.count(); ++idx )
     {
       attrs[idx] = QVariant();
     }
     f.setAttributes( attrs );
-    editOk = layer->addFeature( f );
+    editOk = mLayer->addFeature( f );
   }
 
   if ( editOk )
   {
-    layer->endEditCommand();
+    mLayer->endEditCommand();
   }
   else
   {
-    layer->destroyEditCommand();
+    mLayer->destroyEditCommand();
+    emit messageEmitted( "Could not apply offset", Qgis::Critical );
   }
 
   deleteRubberBandAndGeometry();
-  deleteDistanceWidget();
-  delete mSnapVertexMarker;
-  mSnapVertexMarker = nullptr;
-  mCtrlWasHeldOnFeatureSelection = false;
-  layer->triggerRepaint();
+  deleteUserInputWidget();
+  mLayer->triggerRepaint();
+  mLayer = nullptr;
 }
 
-void QgsMapToolOffsetCurve::placeOffsetCurveToValue()
+void QgsMapToolOffsetCurve::cancel()
 {
-  setOffsetForRubberBand( mDistanceWidget->value() );
+  deleteUserInputWidget();
+  deleteRubberBandAndGeometry();
+  mLayer = nullptr;
+}
+
+double QgsMapToolOffsetCurve::calculateOffset( QgsPointXY mapPoint )
+{
+  double offset = 0.0;
+  if ( mLayer )
+  {
+    //get offset from current position rectangular to feature
+    QgsPointXY layerCoords = toLayerCoordinates( mLayer, mapPoint );
+
+    QgsPointXY minDistPoint;
+    int beforeVertex;
+    int leftOf = 0;
+
+    offset = std::sqrt( mOriginalGeometry.closestSegmentWithContext( layerCoords, minDistPoint, beforeVertex, &leftOf ) );
+    offset = leftOf < 0 ? offset : -offset;
+  }
+  return offset;
 }
 
 void QgsMapToolOffsetCurve::canvasMoveEvent( QgsMapMouseEvent *e )
 {
-  delete mSnapVertexMarker;
-  mSnapVertexMarker = nullptr;
-
   if ( mOriginalGeometry.isNull() || !mRubberBand )
   {
     return;
   }
 
-  QgsVectorLayer *layer = currentVectorLayer();
-  if ( !layer )
-  {
-    return;
-  }
-
-
   mGeometryModified = true;
 
-  //get offset from current position rectangular to feature
-  QgsPointXY layerCoords = toLayerCoordinates( layer, e->pos() );
+  QgsPointXY mapPoint = e->snapPoint();
+  mSnapIndicator->setMatch( e->mapPointMatch() );
 
-  //snap cursor to background layers
-  QgsPointLocator::Match m = mCanvas->snappingUtils()->snapToMap( e->pos() );
-  if ( m.isValid() )
-  {
-    if ( ( m.layer() && m.layer()->id() != mSourceLayerId ) || m.featureId() != mModifiedFeature )
-    {
-      layerCoords = toLayerCoordinates( layer, m.point() );
-      mSnapVertexMarker = new QgsVertexMarker( mCanvas );
-      mSnapVertexMarker->setIconType( QgsVertexMarker::ICON_CROSS );
-      mSnapVertexMarker->setColor( Qt::green );
-      mSnapVertexMarker->setPenWidth( 1 );
-      mSnapVertexMarker->setCenter( m.point() );
-    }
-  }
-
-  QgsPointXY minDistPoint;
-  int beforeVertex;
-  int leftOf = 0;
-  double offset = std::sqrt( mOriginalGeometry.closestSegmentWithContext( layerCoords, minDistPoint, beforeVertex, &leftOf ) );
+  double offset = calculateOffset( mapPoint );
   if ( offset == 0.0 )
   {
     return;
   }
-  offset = leftOf < 0 ? offset : -offset;
 
+  if ( mUserInputWidget )
+  {
+    disconnect( mUserInputWidget, &QgsOffsetUserWidget::offsetChanged, this, &QgsMapToolOffsetCurve::updateGeometryAndRubberBand );
+    mUserInputWidget->setOffset( offset );
+    connect( mUserInputWidget, &QgsOffsetUserWidget::offsetChanged, this, &QgsMapToolOffsetCurve::updateGeometryAndRubberBand );
+    mUserInputWidget->setFocus( Qt::TabFocusReason );
+    mUserInputWidget->editor()->selectAll();
+  }
 
-  if ( mDistanceWidget )
-  {
-    // this will also set the rubber band
-    mDistanceWidget->setValue( offset );
-    mDistanceWidget->setFocus( Qt::TabFocusReason );
-  }
-  else
-  {
-    //create offset geometry using geos
-    setOffsetForRubberBand( offset );
-  }
+  //create offset geometry using geos
+  updateGeometryAndRubberBand( offset );
 }
 
 void QgsMapToolOffsetCurve::prepareGeometry( QgsVectorLayer *vl, const QgsPointLocator::Match &match, QgsFeature &snappedFeature )
@@ -374,38 +354,34 @@ void QgsMapToolOffsetCurve::prepareGeometry( QgsVectorLayer *vl, const QgsPointL
   }
 }
 
-void QgsMapToolOffsetCurve::createDistanceWidget()
+void QgsMapToolOffsetCurve::createUserInputWidget()
 {
   if ( !mCanvas )
   {
     return;
   }
 
-  deleteDistanceWidget();
+  deleteUserInputWidget();
+  mUserInputWidget = new QgsOffsetUserWidget();
+  QgisApp::instance()->addUserInputWidget( mUserInputWidget );
+  mUserInputWidget->setFocus( Qt::TabFocusReason );
 
-  mDistanceWidget = new QgsDoubleSpinBox();
-  mDistanceWidget->setMinimum( -99999999 );
-  mDistanceWidget->setMaximum( 99999999 );
-  mDistanceWidget->setDecimals( 6 );
-  mDistanceWidget->setPrefix( tr( "Offset: " ) );
-  mDistanceWidget->setClearValue( 0.0 );
-  QgisApp::instance()->addUserInputWidget( mDistanceWidget );
-
-  mDistanceWidget->setFocus( Qt::TabFocusReason );
-
-  connect( mDistanceWidget, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsMapToolOffsetCurve::placeOffsetCurveToValue );
-  connect( mDistanceWidget, &QAbstractSpinBox::editingFinished, this, [ = ] { applyOffset(); } );
+  connect( mUserInputWidget, &QgsOffsetUserWidget::offsetChanged, this, &QgsMapToolOffsetCurve::updateGeometryAndRubberBand );
+  connect( mUserInputWidget, &QgsOffsetUserWidget::offsetEditingFinished, this, &QgsMapToolOffsetCurve::applyOffset );
+  connect( mUserInputWidget, &QgsOffsetUserWidget::offsetEditingCanceled, this, &QgsMapToolOffsetCurve::cancel );
 }
 
-void QgsMapToolOffsetCurve::deleteDistanceWidget()
+void QgsMapToolOffsetCurve::deleteUserInputWidget()
 {
-  if ( mDistanceWidget )
+  if ( mUserInputWidget )
   {
-    disconnect( mDistanceWidget, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsMapToolOffsetCurve::placeOffsetCurveToValue );
-    mDistanceWidget->releaseKeyboard();
-    mDistanceWidget->deleteLater();
+    disconnect( mUserInputWidget, &QgsOffsetUserWidget::offsetChanged, this, &QgsMapToolOffsetCurve::updateGeometryAndRubberBand );
+    disconnect( mUserInputWidget, &QgsOffsetUserWidget::offsetEditingFinished, this, &QgsMapToolOffsetCurve::applyOffset );
+    disconnect( mUserInputWidget, &QgsOffsetUserWidget::offsetEditingCanceled, this, &QgsMapToolOffsetCurve::cancel );
+    mUserInputWidget->releaseKeyboard();
+    mUserInputWidget->deleteLater();
   }
-  mDistanceWidget = nullptr;
+  mUserInputWidget = nullptr;
 }
 
 void QgsMapToolOffsetCurve::deleteRubberBandAndGeometry()
@@ -416,15 +392,14 @@ void QgsMapToolOffsetCurve::deleteRubberBandAndGeometry()
   mRubberBand = nullptr;
 }
 
-void QgsMapToolOffsetCurve::setOffsetForRubberBand( double offset )
+void QgsMapToolOffsetCurve::updateGeometryAndRubberBand( double offset )
 {
   if ( !mRubberBand || mOriginalGeometry.isNull() )
   {
     return;
   }
 
-  QgsVectorLayer *sourceLayer = dynamic_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( mSourceLayerId ) );
-  if ( !sourceLayer )
+  if ( !mLayer )
   {
     return;
   }
@@ -447,17 +422,81 @@ void QgsMapToolOffsetCurve::setOffsetForRubberBand( double offset )
   if ( !offsetGeom )
   {
     deleteRubberBandAndGeometry();
-    deleteDistanceWidget();
-    delete mSnapVertexMarker;
-    mSnapVertexMarker = nullptr;
-    mCtrlWasHeldOnFeatureSelection = false;
+    deleteUserInputWidget();
+    mLayer = nullptr;
     mGeometryModified = false;
-    deleteDistanceWidget();
     emit messageEmitted( tr( "Creating offset geometry failed: %1" ).arg( offsetGeom.lastError() ), Qgis::Critical );
   }
   else
   {
     mModifiedGeometry = offsetGeom;
-    mRubberBand->setToGeometry( mModifiedGeometry, sourceLayer );
+    mRubberBand->setToGeometry( mModifiedGeometry, mLayer );
   }
+}
+
+
+// ******************
+// Offset User Widget
+
+QgsOffsetUserWidget::QgsOffsetUserWidget( QWidget *parent )
+  : QWidget( parent )
+{
+  mLayout = new QGridLayout( this );
+  mLayout->setContentsMargins( 0, 0, 0, 0 );
+  //mLayout->setAlignment( Qt::AlignLeft );
+  setLayout( mLayout );
+
+  QLabel *lbl = new QLabel( tr( "Offset" ), this );
+  lbl->setAlignment( Qt::AlignRight | Qt::AlignCenter );
+  mLayout->addWidget( lbl, 0, 0 );
+
+  mOffsetSpinBox = new QgsDoubleSpinBox();
+  mOffsetSpinBox->setMinimum( -99999999 );
+  mOffsetSpinBox->setMaximum( 99999999 );
+  mOffsetSpinBox->setDecimals( 6 );
+  mOffsetSpinBox->setClearValue( 0.0 );
+  mOffsetSpinBox->setShowClearButton( false );
+  mLayout->addWidget( mOffsetSpinBox, 0, 1 );
+
+  // connect signals
+  mOffsetSpinBox->installEventFilter( this );
+  connect( mOffsetSpinBox, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgsOffsetUserWidget::offsetSpinBoxValueChanged );
+
+  // config focus
+  setFocusProxy( mOffsetSpinBox );
+}
+
+void QgsOffsetUserWidget::setOffset( double offset )
+{
+  mOffsetSpinBox->setValue( offset );
+}
+
+double QgsOffsetUserWidget::offset()
+{
+  return mOffsetSpinBox->value();
+}
+
+bool QgsOffsetUserWidget::eventFilter( QObject *obj, QEvent *ev )
+{
+  if ( obj == mOffsetSpinBox && ev->type() == QEvent::KeyPress )
+  {
+    QKeyEvent *event = static_cast<QKeyEvent *>( ev );
+    if ( event->key() == Qt::Key_Escape )
+    {
+      emit offsetEditingCanceled();
+      return true;
+    }
+    if ( event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return )
+    {
+      emit offsetEditingFinished( offset(), event->modifiers() );
+      return true;
+    }
+  }
+
+  return false;
+}
+
+void QgsOffsetUserWidget::offsetSpinBoxValueChanged( double offset )
+{
+  emit offsetChanged( offset );
 }
