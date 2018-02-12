@@ -58,17 +58,17 @@ void QgsCollapsibleGroupBoxBasic::init()
   mExpandIcon = QgsApplication::getThemeIcon( QStringLiteral( "/mIconExpand.svg" ) );
 
   // collapse button
-  mCollapseButton = new QgsGroupBoxCollapseButton( this );
+  mCollapseButton = qgis::make_unique<QgsGroupBoxCollapseButton>( nullptr );
   mCollapseButton->setObjectName( QStringLiteral( "collapseButton" ) );
   mCollapseButton->setAutoRaise( true );
   mCollapseButton->setFixedSize( 16, 16 );
   // TODO set size (as well as margins) depending on theme, in updateStyle()
   mCollapseButton->setIconSize( QSize( 12, 12 ) );
   mCollapseButton->setIcon( mCollapseIcon );
-  setFocusProxy( mCollapseButton );
+  setFocusProxy( mCollapseButton.get() );
   setFocusPolicy( Qt::StrongFocus );
 
-  connect( mCollapseButton, &QAbstractButton::clicked, this, &QgsCollapsibleGroupBoxBasic::toggleCollapsed );
+  connect( mCollapseButton.get(), &QAbstractButton::clicked, this, &QgsCollapsibleGroupBoxBasic::toggleCollapsed );
   connect( this, &QGroupBox::toggled, this, &QgsCollapsibleGroupBoxBasic::checkToggled );
   connect( this, &QGroupBox::clicked, this, &QgsCollapsibleGroupBoxBasic::checkClicked );
 }
@@ -221,7 +221,7 @@ void QgsCollapsibleGroupBoxBasic::toggleCollapsed()
 {
   // verify if sender is this group box's collapse button
   QgsGroupBoxCollapseButton *collBtn = qobject_cast<QgsGroupBoxCollapseButton *>( QObject::sender() );
-  bool senderCollBtn = ( collBtn && collBtn == mCollapseButton );
+  bool senderCollBtn = ( collBtn && collBtn == mCollapseButton.get() );
 
   mAltDown = ( mAltDown || mCollapseButton->altDown() );
   mShiftDown = ( mShiftDown || mCollapseButton->shiftDown() );
@@ -426,7 +426,7 @@ void QgsCollapsibleGroupBoxBasic::setCollapsed( bool collapse )
     mParentScrollArea->ensureWidgetVisible( this );
     //and then make sure the top of the widget is visible - otherwise tall group boxes
     //scroll to their centres, which is disorienting for users
-    mParentScrollArea->ensureWidgetVisible( mCollapseButton, 0, 5 );
+    mParentScrollArea->ensureWidgetVisible( mCollapseButton.get(), 0, 5 );
     mParentScrollArea->setUpdatesEnabled( true );
   }
   // emit signal for connections using collapsed state
@@ -444,7 +444,7 @@ void QgsCollapsibleGroupBoxBasic::collapseExpandFixes()
     Q_FOREACH ( QObject *child, children() )
     {
       QWidget *w = qobject_cast<QWidget *>( child );
-      if ( w && w != mCollapseButton )
+      if ( w && w != mCollapseButton.get() )
       {
         w->setProperty( hideKey, true );
         w->hide();
@@ -456,7 +456,7 @@ void QgsCollapsibleGroupBoxBasic::collapseExpandFixes()
     Q_FOREACH ( QObject *child, children() )
     {
       QWidget *w = qobject_cast<QWidget *>( child );
-      if ( w && w != mCollapseButton )
+      if ( w && w != mCollapseButton.get() )
       {
         if ( w->property( hideKey ).toBool() )
           w->show();
