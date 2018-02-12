@@ -1072,12 +1072,9 @@ void QgsDxfExport::writeEntities()
       else
       {
         QgsSymbolV2List symbolList = renderer->symbolsForFeature( fet, ctx );
-        if ( symbolList.size() < 1 )
-        {
-          continue;
-        }
+        bool hasSymbology = symbolList.size() > 0;
 
-        if ( mSymbologyExport == QgsDxfExport::SymbolLayerSymbology ) // symbol layer symbology, but layer does not use symbol levels
+        if ( hasSymbology && mSymbologyExport == QgsDxfExport::SymbolLayerSymbology ) // symbol layer symbology, but layer does not use symbol levels
         {
           QgsSymbolV2List::iterator symbolIt = symbolList.begin();
           for ( ; symbolIt != symbolList.end(); ++symbolIt )
@@ -1089,7 +1086,7 @@ void QgsDxfExport::writeEntities()
             }
           }
         }
-        else
+        else if ( hasSymbology )
         {
           // take first symbollayer from first symbol
           QgsSymbolV2* s = symbolList.first();
