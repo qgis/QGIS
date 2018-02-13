@@ -200,7 +200,7 @@ void QgsMapToolOffsetCurve::applyOffset( const double &offset, const Qt::Keyboar
   mLayer->beginEditCommand( tr( "Offset curve" ) );
 
   bool editOk;
-  if ( !mCtrlHeldOnFirstClick && !modifiers.testFlag( Qt::ControlModifier ) )
+  if ( !mCtrlHeldOnFirstClick && !( modifiers & Qt::ControlModifier ) )
   {
     editOk = mLayer->changeGeometry( mModifiedFeature, mModifiedGeometry );
   }
@@ -240,7 +240,6 @@ void QgsMapToolOffsetCurve::cancel()
 {
   deleteUserInputWidget();
   deleteRubberBandAndGeometry();
-  mCtrlHeldOnFirstClick = false;
   mLayer = nullptr;
 }
 
@@ -413,7 +412,7 @@ void QgsMapToolOffsetCurve::updateGeometryAndRubberBand( double offset )
   }
   else
   {
-    offsetGeom = mManipulatedGeometry.buffer( offset, quadSegments, capStyle, joinStyle, miterLimit );
+    offsetGeom = mManipulatedGeometry.buffer( -offset, quadSegments, capStyle, joinStyle, miterLimit );
   }
 
   if ( !offsetGeom )
@@ -440,13 +439,15 @@ QgsOffsetUserWidget::QgsOffsetUserWidget( QWidget *parent )
 {
   setupUi( this );
 
+  mOffsetSpinBox->setDecimals( 6 );
+
   // fill comboboxes
-  mJoinStyleComboBox->addItem( tr( "round" ), QgsGeometry::JoinStyleRound );
-  mJoinStyleComboBox->addItem( tr( "miter" ), QgsGeometry::JoinStyleMiter );
-  mJoinStyleComboBox->addItem( tr( "bevel" ), QgsGeometry::JoinStyleBevel );
-  mCapStyleComboBox->addItem( tr( "round" ), QgsGeometry::CapRound );
-  mCapStyleComboBox->addItem( tr( "flat" ), QgsGeometry::CapFlat );
-  mCapStyleComboBox->addItem( tr( "square" ), QgsGeometry::CapSquare );
+  mJoinStyleComboBox->addItem( tr( "Round" ), QgsGeometry::JoinStyleRound );
+  mJoinStyleComboBox->addItem( tr( "Miter" ), QgsGeometry::JoinStyleMiter );
+  mJoinStyleComboBox->addItem( tr( "Bevel" ), QgsGeometry::JoinStyleBevel );
+  mCapStyleComboBox->addItem( tr( "Round" ), QgsGeometry::CapRound );
+  mCapStyleComboBox->addItem( tr( "Flat" ), QgsGeometry::CapFlat );
+  mCapStyleComboBox->addItem( tr( "Square" ), QgsGeometry::CapSquare );
 
   QgsSettings s;
   QgsGeometry::JoinStyle joinStyle = static_cast< QgsGeometry::JoinStyle >( s.value( QStringLiteral( "/qgis/digitizing/offset_join_style" ), QgsGeometry::JoinStyleRound ).toInt() );
