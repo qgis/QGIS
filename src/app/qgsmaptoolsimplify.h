@@ -27,27 +27,7 @@
 class QgsRubberBand;
 class QgsMapToolSimplify;
 class QgsCoordinateTransform;
-
-class APP_EXPORT QgsSimplifyDialog : public QDialog, private Ui::SimplifyLineDialog
-{
-    Q_OBJECT
-
-  public:
-
-    QgsSimplifyDialog( QgsMapToolSimplify *tool, QWidget *parent = nullptr );
-
-    void updateStatusText();
-    void enableOkButton( bool enabled );
-
-  protected:
-
-    //! Also cancels pending simplification
-    void closeEvent( QCloseEvent *e ) override;
-
-  private:
-    QgsMapToolSimplify *mTool = nullptr;
-
-};
+class QgsSimplifyUserInputWidget;
 
 
 //! Map tool to simplify line/polygon features
@@ -82,8 +62,6 @@ class APP_EXPORT QgsMapToolSimplify: public QgsMapToolEdit
 
     Method method() const;
 
-    void setMethod( Method method );
-
     int smoothIterations() const;
     void setSmoothIterations( int smoothIterations );
 
@@ -94,12 +72,14 @@ class APP_EXPORT QgsMapToolSimplify: public QgsMapToolEdit
     //! Slot to change display when slidebar is moved
     void setTolerance( double tolerance );
 
-    void setToleranceUnits( int units );
+    void setToleranceUnits( const QgsTolerance::UnitType &units );
 
     //! Slot to store feature after simplification
     void storeSimplified();
 
     void clearSelection();
+
+    void setMethod( Method method );
 
   private:
 
@@ -107,6 +87,8 @@ class APP_EXPORT QgsMapToolSimplify: public QgsMapToolEdit
     void selectFeaturesInRect();
 
     void updateSimplificationPreview();
+
+    void createUserInputWidget();
 
     /**
      * Simplifies a \a geometry to the specified \a tolerance, respecting the preset
@@ -116,7 +98,7 @@ class APP_EXPORT QgsMapToolSimplify: public QgsMapToolEdit
 
     // data
     //! Dialog with slider to set correct tolerance value
-    QgsSimplifyDialog *mSimplifyDialog = nullptr;
+    QgsSimplifyUserInputWidget *mSimplifyUserWidget = nullptr;
 
     //! Rubber bands to draw current state of simplification
     QList<QgsRubberBand *> mRubberBands;
@@ -143,6 +125,32 @@ class APP_EXPORT QgsMapToolSimplify: public QgsMapToolEdit
 
     int mSmoothIterations = 1;
     double mSmoothOffset = 0.25;
+};
+
+
+class APP_EXPORT QgsSimplifyUserInputWidget : public QWidget, private Ui::SimplifyUserInputWidgetBase
+{
+    Q_OBJECT
+
+  public:
+
+    QgsSimplifyUserInputWidget( QWidget *parent = nullptr );
+
+    void updateStatusText( const QString &text );
+    void enableOkButton( bool enabled );
+
+    void setConfig( const QgsMapToolSimplify::Method &method, const double &tolerance,
+                    const QgsTolerance::UnitType &units, const double &smoothOffset,
+                    const int &smoothIterations );
+
+  signals:
+    void accepted();
+    void rejected();
+    void toleranceChanged( double tolerance );
+    void toleranceUnitsChanged( QgsTolerance::UnitType units );
+    void methodChanged( QgsMapToolSimplify::Method method );
+    void smoothOffsetChanged( double offset );
+    void smoothIterationsChanged( int iterations );
 
 };
 
