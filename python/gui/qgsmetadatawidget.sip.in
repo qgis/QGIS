@@ -28,17 +28,17 @@ class QgsMetadataWidget : QWidget
 Constructor for the wizard.
 %End
 
-    void saveMetadata( QgsLayerMetadata &layerMetadata ) const;
+    void saveMetadata( QgsLayerMetadata &layerMetadata );
 %Docstring
 Save all fields in a QgsLayerMetadata object.
 %End
 
-    bool checkMetadata() const;
+    bool checkMetadata();
 %Docstring
 Check if values in the wizard are correct.
 %End
 
-    void crsChanged() const;
+    void crsChanged();
 %Docstring
 If the CRS is updated.
 %End
