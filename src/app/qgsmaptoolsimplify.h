@@ -50,6 +50,7 @@ class APP_EXPORT QgsMapToolSimplify: public QgsMapToolEdit
     void canvasPressEvent( QgsMapMouseEvent *e ) override;
     void canvasMoveEvent( QgsMapMouseEvent *e ) override;
     void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
+    void keyReleaseEvent( QKeyEvent *e ) override;
 
     //! called when map tool is being deactivated
     void deactivate() override;
@@ -152,6 +153,9 @@ class APP_EXPORT QgsSimplifyUserInputWidget : public QWidget, private Ui::Simpli
     void smoothOffsetChanged( double offset );
     void smoothIterationsChanged( int iterations );
 
+  protected:
+    bool eventFilter( QObject *object, QEvent *ev ) override;
+    void keyReleaseEvent( QKeyEvent *event ) override;
 };
 
 #endif

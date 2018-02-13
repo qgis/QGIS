@@ -45,7 +45,7 @@ QgsSimplifyUserInputWidget::QgsSimplifyUserInputWidget( QWidget *parent )
   mToleranceUnitsComboBox->addItem( tr( "Pixels" ), QgsTolerance::Pixels );
   mToleranceUnitsComboBox->addItem( tr( "Map units" ), QgsTolerance::ProjectUnits );
 
-  mSpinToleranceSpinBox->setShowClearButton( false );
+  mToleranceSpinBox->setShowClearButton( false );
 
   mOffsetSpin->setClearValue( 25 );
   mIterationsSpin->setClearValue( 1 );
@@ -55,7 +55,7 @@ QgsSimplifyUserInputWidget::QgsSimplifyUserInputWidget( QWidget *parent )
     mOptionsStackedWidget->setCurrentIndex( 1 );
 
   // communication with map tool
-  connect( mSpinToleranceSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSimplifyUserInputWidget::toleranceChanged );
+  connect( mToleranceSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSimplifyUserInputWidget::toleranceChanged );
   connect( mToleranceUnitsComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [ = ]( const int index ) {emit toleranceUnitsChanged( ( QgsTolerance::UnitType )index );} );
   connect( mMethodComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [ = ]( const int method ) {emit methodChanged( ( QgsMapToolSimplify::Method )method );} );
   connect( mMethodComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [ = ]
@@ -71,6 +71,12 @@ QgsSimplifyUserInputWidget::QgsSimplifyUserInputWidget( QWidget *parent )
 
   connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsSimplifyUserInputWidget::accepted );
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QgsSimplifyUserInputWidget::rejected );
+
+  mToleranceSpinBox->installEventFilter( this );
+  mOffsetSpin->installEventFilter( this );
+  mIterationsSpin->installEventFilter( this );
+
+  setFocusProxy( mButtonBox );
 }
 
 void QgsSimplifyUserInputWidget::setConfig( const QgsMapToolSimplify::Method &method,
@@ -81,7 +87,7 @@ void QgsSimplifyUserInputWidget::setConfig( const QgsMapToolSimplify::Method &me
 {
   mMethodComboBox->setCurrentIndex( mMethodComboBox->findData( method ) );
 
-  mSpinToleranceSpinBox->setValue( tolerance );
+  mToleranceSpinBox->setValue( tolerance );
   mToleranceUnitsComboBox->setCurrentIndex( mToleranceUnitsComboBox->findData( units ) );
   mOffsetSpin->setValue( 100 * smoothOffset );
   mIterationsSpin->setValue( smoothIterations );
@@ -95,6 +101,37 @@ void QgsSimplifyUserInputWidget::updateStatusText( const QString &text )
 void QgsSimplifyUserInputWidget::enableOkButton( bool enabled )
 {
   mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( enabled );
+}
+
+bool QgsSimplifyUserInputWidget::eventFilter( QObject *object, QEvent *ev )
+{
+  Q_UNUSED( object );
+  if ( ev->type() == QEvent::KeyPress )
+  {
+    QKeyEvent *event = static_cast<QKeyEvent *>( ev );
+    if ( event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return )
+    {
+      emit accepted();
+      return true;
+    }
+  }
+
+  return false;
+}
+
+void QgsSimplifyUserInputWidget::keyReleaseEvent( QKeyEvent *event )
+{
+  if ( event->key() == Qt::Key_Escape )
+  {
+    emit rejected();
+    return;
+  }
+  if ( event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return )
+  {
+    emit accepted();
+    return;
+  }
+  QWidget::keyReleaseEvent( event );
 }
 
 ////////////////////////////////////////////////////////////////////////////
@@ -370,6 +407,15 @@ void QgsMapToolSimplify::canvasReleaseEvent( QgsMapMouseEvent *e )
   updateSimplificationPreview();
 }
 
+void QgsMapToolSimplify::keyReleaseEvent( QKeyEvent *e )
+{
+  if ( e->key() == Qt::Key_Escape )
+  {
+    clearSelection();
+    return;
+  }
+  QgsMapTool::keyReleaseEvent( e );
+}
 
 void QgsMapToolSimplify::selectOneFeature( QPoint canvasPoint )
 {
