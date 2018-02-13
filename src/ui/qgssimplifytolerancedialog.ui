@@ -117,6 +117,9 @@
        </item>
        <item>
         <widget class="QgsSpinBox" name="mIterationsSpin">
+         <property name="toolTip">
+          <string>Number of smooth iterations. More iterations results in smoother geometries, at the expense of greatly increasing the number of vertices in those geometries.</string>
+         </property>
          <property name="minimum">
           <number>1</number>
          </property>
@@ -137,6 +140,9 @@
        </item>
        <item>
         <widget class="QgsSpinBox" name="mOffsetSpin">
+         <property name="toolTip">
+          <string>Offset from existing vertices at which to insert smoothed vertices. Larger values result in &quot;looser&quot; smoothing, smaller values result in &quot;tight&quot; smoothing.</string>
+         </property>
          <property name="suffix">
           <string> %</string>
          </property>
