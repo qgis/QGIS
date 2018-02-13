@@ -211,14 +211,15 @@ class ProcessingPlugin:
         self.menu.addAction(self.historyAction)
         self.toolbox.processingToolbar.addAction(self.historyAction)
 
-        self.resultsAction = self.resultsDock.toggleViewAction()
-        self.resultsAction.setObjectName('resultsAction')
-        self.resultsAction.setIcon(
-            QgsApplication.getThemeIcon("/processingResult.svg"))
-        self.resultsAction.setText(self.tr('&Results Viewer'))
+        self.resultsAction = QAction(
+            QgsApplication.getThemeIcon("/processingResult.svg"),
+            self.tr('&Results Viewer'), self.iface.mainWindow())
+        self.resultsAction.setCheckable(True)
         self.iface.registerMainWindowAction(self.resultsAction, 'Ctrl+Alt+R')
         self.menu.addAction(self.resultsAction)
         self.toolbox.processingToolbar.addAction(self.resultsAction)
+        self.resultsDock.visibilityChanged.connect(self.resultsAction.setChecked)
+        self.resultsAction.toggled.connect(self.resultsDock.setUserVisible)
 
         self.optionsAction = QAction(
             QgsApplication.getThemeIcon("/mActionOptions.svg"),
