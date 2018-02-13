@@ -36,7 +36,7 @@ from qgis.core import (QgsDataSourceUri,
                        QgsVectorLayerExporter,
                        QgsProject,
                        QgsSettings)
-from qgis.gui import QgsMessageViewer
+from qgis.gui import QgsMessageViewer, QgsProjectionSelectionWidget
 from qgis.utils import OverrideCursor
 
 from .ui.ui_DlgImportVector import Ui_DbManagerDlgImportVector as Ui_Dialog
@@ -68,6 +68,8 @@ class DlgImportVector(QDialog, Ui_Dialog):
         # updates of UI
         self.setupWorkingMode(self.mode)
         self.cboSchema.currentIndexChanged.connect(self.populateTables)
+        self.widgetSourceSrid.setOptionVisible(QgsProjectionSelectionWidget.CrsNotSet, True)
+        self.widgetTargetSrid.setOptionVisible(QgsProjectionSelectionWidget.CrsNotSet, True)
 
     def setupWorkingMode(self, mode):
         """ hide the widget to select a layer/file if the input layer is already set """
@@ -210,9 +212,10 @@ class DlgImportVector(QDialog, Ui_Dialog):
         self.editGeomColumn.setText(geom)
 
         srcCrs = self.inLayer.crs()
-        srid = srcCrs.postgisSrid() if srcCrs.isValid() else 4326
-        self.editSourceSrid.setText("%s" % srid)
-        self.editTargetSrid.setText("%s" % srid)
+        if not srcCrs.isValid():
+            srcCrs = QgsCoordinateReferenceSystem(4326)
+        self.widgetSourceSrid.setCrs(srcCrs)
+        self.widgetTargetSrid.setCrs(srcCrs)
 
         return True
 
@@ -278,19 +281,15 @@ class DlgImportVector(QDialog, Ui_Dialog):
             return
 
         if self.chkSourceSrid.isEnabled() and self.chkSourceSrid.isChecked():
-            try:
-                sourceSrid = self.editSourceSrid.text()
-            except ValueError:
-                QMessageBox.information(self, self.tr("Import to database"),
-                                        self.tr("Invalid source srid: must be an integer"))
+            if not self.widgetSourceSrid.crs().isValid():
+                QMessageBox.critical(self, self.tr("Import to database"),
+                                     self.tr("Invalid source srid: must be a valid crs"))
                 return
 
         if self.chkTargetSrid.isEnabled() and self.chkTargetSrid.isChecked():
-            try:
-                targetSrid = self.editTargetSrid.text()
-            except ValueError:
-                QMessageBox.information(self, self.tr("Import to database"),
-                                        self.tr("Invalid target srid: must be an integer"))
+            if not self.widgetTargetSrid.crs().isValid():
+                QMessageBox.critical(self, self.tr("Import to database"),
+                                     self.tr("Invalid target srid: must be a valid crs"))
                 return
 
         with OverrideCursor(Qt.WaitCursor):
@@ -344,13 +343,11 @@ class DlgImportVector(QDialog, Ui_Dialog):
 
                 outCrs = QgsCoordinateReferenceSystem()
                 if self.chkTargetSrid.isEnabled() and self.chkTargetSrid.isChecked():
-                    targetSrid = int(self.editTargetSrid.text())
-                    outCrs = QgsCoordinateReferenceSystem(targetSrid)
+                    outCrs = self.widgetTargetSrid.crs()
 
                 # update input layer crs and encoding
                 if self.chkSourceSrid.isEnabled() and self.chkSourceSrid.isChecked():
-                    sourceSrid = int(self.editSourceSrid.text())
-                    inCrs = QgsCoordinateReferenceSystem(sourceSrid)
+                    inCrs = self.widgetSourceSrid.crs()
                     self.inLayer.setCrs(inCrs)
 
                 if self.chkEncoding.isEnabled() and self.chkEncoding.isChecked():
