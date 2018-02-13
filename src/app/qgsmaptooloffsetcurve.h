@@ -19,6 +19,7 @@
 #include "qgsmaptooledit.h"
 #include "qgsgeometry.h"
 #include "qgis_app.h"
+#include "ui_qgsoffsetuserinputwidget.h"
 
 class QGridLayout;
 
@@ -26,7 +27,7 @@ class QgsSnapIndicator;
 class QgsDoubleSpinBox;
 class QGraphicsProxyWidget;
 
-class APP_EXPORT QgsOffsetUserWidget : public QWidget
+class APP_EXPORT QgsOffsetUserWidget : public QWidget, private Ui::QgsOffsetUserInputBase
 {
     Q_OBJECT
 
@@ -35,25 +36,19 @@ class APP_EXPORT QgsOffsetUserWidget : public QWidget
     explicit QgsOffsetUserWidget( QWidget *parent = nullptr );
 
     void setOffset( double offset );
-
     double offset();
+    QDoubleSpinBox *editor() const {return mOffsetSpinBox;}
 
-    QgsDoubleSpinBox *editor() {return mOffsetSpinBox;}
+    void setPolygonMode( bool polygon );
 
   signals:
     void offsetChanged( double offset );
     void offsetEditingFinished( double offset, const Qt::KeyboardModifiers &modifiers );
     void offsetEditingCanceled();
+    void offsetConfigChanged();
 
   protected:
     bool eventFilter( QObject *obj, QEvent *ev ) override;
-
-  private slots:
-    void offsetSpinBoxValueChanged( double offset );
-
-  private:
-    QGridLayout *mLayout = nullptr;
-    QgsDoubleSpinBox *mOffsetSpinBox = nullptr;
 };
 
 class APP_EXPORT QgsMapToolOffsetCurve: public QgsMapToolEdit
