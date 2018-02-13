@@ -421,7 +421,7 @@ qgis:rastercalculator: >
 
   - sin(), cos(), tan(), atan2(), ln(), log10()
 
-  The extent and cell size can be defined by the user. If the extent is not specified, the minimum extent that covers the input layers will be used. If the cell size is not specified, the minimum cell size of all input layers will be used.
+  The extent, cell size, and output CRS can be defined by the user. If the extent is not specified, the minimum extent that covers selected reference layer(s) will be used. If the cell size is not specified, the minimum cell size of selected reference layer(s) will be used. If the output CRS is not specified, the CRS of the first reference layer will be used.
 
   The cell size is assumed to be the same in both X and Y axes.
 
