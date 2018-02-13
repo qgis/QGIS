@@ -23,7 +23,6 @@
 #include "qgsfeature.h"
 #include "qgstolerance.h"
 #include "qgis_app.h"
-#include "qgsmaptopixelgeometrysimplifier.h"
 
 class QgsRubberBand;
 class QgsMapToolSimplify;
@@ -56,6 +55,15 @@ class APP_EXPORT QgsMapToolSimplify: public QgsMapToolEdit
 {
     Q_OBJECT
   public:
+
+    enum Method
+    {
+      SimplifyDistance    = 0,
+      SimplifySnapToGrid  = 1,
+      SimplifyVisvalingam = 2,
+      Smooth = 3
+    };
+
     QgsMapToolSimplify( QgsMapCanvas *canvas );
     ~QgsMapToolSimplify() override;
 
@@ -72,9 +80,15 @@ class APP_EXPORT QgsMapToolSimplify: public QgsMapToolEdit
 
     QString statusText() const;
 
-    QgsMapToPixelSimplifier::SimplifyAlgorithm method() const;
+    Method method() const;
 
-    void setMethod( QgsMapToPixelSimplifier::SimplifyAlgorithm method );
+    void setMethod( Method method );
+
+    int smoothIterations() const;
+    void setSmoothIterations( int smoothIterations );
+
+    double smoothOffset() const;
+    void setSmoothOffset( double smoothOffset );
 
   public slots:
     //! Slot to change display when slidebar is moved
@@ -125,7 +139,10 @@ class APP_EXPORT QgsMapToolSimplify: public QgsMapToolEdit
     int mReducedVertexCount = 0;
     bool mReducedHasErrors = false;
 
-    QgsMapToPixelSimplifier::SimplifyAlgorithm mMethod = QgsMapToPixelSimplifier::Distance;
+    Method mMethod = SimplifyDistance;
+
+    int mSmoothIterations = 1;
+    double mSmoothOffset = 0.25;
 
 };
 
