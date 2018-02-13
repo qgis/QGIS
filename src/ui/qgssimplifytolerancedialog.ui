@@ -7,21 +7,24 @@
     <x>0</x>
     <y>0</y>
     <width>527</width>
-    <height>63</height>
+    <height>98</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Simplification Tool</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="3">
-    <widget class="QPushButton" name="okButton">
+   <item row="1" column="0">
+    <widget class="QLabel" name="label">
      <property name="text">
-      <string>OK</string>
+      <string>Tolerance</string>
      </property>
     </widget>
    </item>
-   <item row="0" column="2">
+   <item row="3" column="0" colspan="4">
+    <widget class="QLabel" name="labelStatus"/>
+   </item>
+   <item row="1" column="2">
     <widget class="QComboBox" name="cboToleranceUnits">
      <item>
       <property name="text">
@@ -40,15 +43,8 @@
      </item>
     </widget>
    </item>
-   <item row="0" column="0">
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string>Tolerance</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="1">
-    <widget class="QDoubleSpinBox" name="spinTolerance">
+   <item row="1" column="1">
+    <widget class="QgsDoubleSpinBox" name="spinTolerance">
      <property name="decimals">
       <number>6</number>
      </property>
@@ -60,12 +56,34 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="0" colspan="4">
-    <widget class="QLabel" name="labelStatus"/>
+   <item row="0" column="0">
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>Method</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="3">
+    <widget class="QPushButton" name="okButton">
+     <property name="text">
+      <string>OK</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1" colspan="2">
+    <widget class="QComboBox" name="mMethodComboBox"/>
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsDoubleSpinBox</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>qgsdoublespinbox.h</header>
+  </customwidget>
+ </customwidgets>
  <tabstops>
+  <tabstop>mMethodComboBox</tabstop>
   <tabstop>spinTolerance</tabstop>
   <tabstop>cboToleranceUnits</tabstop>
   <tabstop>okButton</tabstop>

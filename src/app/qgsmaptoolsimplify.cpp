@@ -23,7 +23,7 @@
 #include "qgstolerance.h"
 #include "qgisapp.h"
 #include "qgssettings.h"
-
+#include "qgsmaptopixelgeometrysimplifier.h"
 #include <QMouseEvent>
 
 #include <cmath>
@@ -35,12 +35,22 @@ QgsSimplifyDialog::QgsSimplifyDialog( QgsMapToolSimplify *tool, QWidget *parent 
 {
   setupUi( this );
 
+  mMethodComboBox->addItem( tr( "Simplify by distance" ), ( int )QgsVectorSimplifyMethod::Distance );
+  mMethodComboBox->addItem( tr( "Simplify by snapping to grid" ), ( int )QgsVectorSimplifyMethod::SnapToGrid );
+  mMethodComboBox->addItem( tr( "Simplify by area (Visvalingam)" ), ( int )QgsVectorSimplifyMethod::Visvalingam );
+
   spinTolerance->setValue( mTool->tolerance() );
+  spinTolerance->setShowClearButton( false );
   cboToleranceUnits->setCurrentIndex( ( int ) mTool->toleranceUnits() );
+  mMethodComboBox->setCurrentIndex( mMethodComboBox->findData( mTool->method() ) );
 
   // communication with map tool
   connect( spinTolerance, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), mTool, &QgsMapToolSimplify::setTolerance );
   connect( cboToleranceUnits, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), mTool, &QgsMapToolSimplify::setToleranceUnits );
+  connect( mMethodComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), mTool, [ = ]
+  {
+    mTool->setMethod( static_cast< QgsMapToPixelSimplifier::SimplifyAlgorithm >( mMethodComboBox->currentData().toInt() ) );
+  } );
   connect( okButton, &QAbstractButton::clicked, mTool, &QgsMapToolSimplify::storeSimplified );
 }
 
@@ -70,6 +80,7 @@ QgsMapToolSimplify::QgsMapToolSimplify( QgsMapCanvas *canvas )
   QgsSettings settings;
   mTolerance = settings.value( QStringLiteral( "digitizing/simplify_tolerance" ), 1 ).toDouble();
   mToleranceUnits = settings.enumValue( QStringLiteral( "digitizing/simplify_tolerance_units" ), QgsTolerance::LayerUnits );
+  mMethod = static_cast< QgsMapToPixelSimplifier::SimplifyAlgorithm >( settings.value( QStringLiteral( "digitizing/simplify_method" ), 0 ).toInt() );
 
   mSimplifyDialog = new QgsSimplifyDialog( this, canvas->topLevelWidget() );
 }
@@ -111,9 +122,10 @@ void QgsMapToolSimplify::updateSimplificationPreview()
   mReducedHasErrors = false;
   mReducedVertexCount = 0;
   int i = 0;
+
   Q_FOREACH ( const QgsFeature &fSel, mSelectedFeatures )
   {
-    QgsGeometry g = fSel.geometry().simplify( layerTolerance );
+    QgsGeometry g = processGeometry( fSel.geometry(), layerTolerance );
     if ( !g.isNull() )
     {
       mReducedVertexCount += g.constGet()->nCoordinates();
@@ -128,6 +140,39 @@ void QgsMapToolSimplify::updateSimplificationPreview()
   mSimplifyDialog->enableOkButton( !mReducedHasErrors );
 }
 
+QgsGeometry QgsMapToolSimplify::processGeometry( const QgsGeometry &geometry, double tolerance ) const
+{
+  switch ( mMethod )
+  {
+    case QgsMapToPixelSimplifier::Distance:
+      return geometry.simplify( tolerance );
+
+    case QgsMapToPixelSimplifier::SnapToGrid:
+    case QgsMapToPixelSimplifier::Visvalingam:
+    {
+      QgsMapToPixelSimplifier simplifier( QgsMapToPixelSimplifier::SimplifyGeometry, tolerance, mMethod );
+      return simplifier.simplify( geometry );
+    }
+  }
+  return QgsGeometry(); //no warnings
+}
+
+QgsMapToPixelSimplifier::SimplifyAlgorithm QgsMapToolSimplify::method() const
+{
+  return mMethod;
+}
+
+void QgsMapToolSimplify::setMethod( QgsMapToPixelSimplifier::SimplifyAlgorithm method )
+{
+  mMethod = method;
+
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "digitizing/simplify_method" ), method );
+
+  if ( !mSelectedFeatures.isEmpty() )
+    updateSimplificationPreview();
+}
+
 void QgsMapToolSimplify::storeSimplified()
 {
   QgsVectorLayer *vlayer = currentVectorLayer();
@@ -136,7 +181,7 @@ void QgsMapToolSimplify::storeSimplified()
   vlayer->beginEditCommand( tr( "Geometry simplified" ) );
   Q_FOREACH ( const QgsFeature &feat, mSelectedFeatures )
   {
-    QgsGeometry g = feat.geometry().simplify( layerTolerance );
+    QgsGeometry g = processGeometry( feat.geometry(), layerTolerance );
     if ( !g.isNull() )
     {
       vlayer->changeGeometry( feat.id(), g );
