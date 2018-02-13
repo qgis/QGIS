@@ -23,6 +23,7 @@
 #include "qgsfeature.h"
 #include "qgstolerance.h"
 #include "qgis_app.h"
+#include "qgsmaptopixelgeometrysimplifier.h"
 
 class QgsRubberBand;
 class QgsMapToolSimplify;
@@ -71,6 +72,10 @@ class APP_EXPORT QgsMapToolSimplify: public QgsMapToolEdit
 
     QString statusText() const;
 
+    QgsMapToPixelSimplifier::SimplifyAlgorithm method() const;
+
+    void setMethod( QgsMapToPixelSimplifier::SimplifyAlgorithm method );
+
   public slots:
     //! Slot to change display when slidebar is moved
     void setTolerance( double tolerance );
@@ -88,6 +93,12 @@ class APP_EXPORT QgsMapToolSimplify: public QgsMapToolEdit
     void selectFeaturesInRect();
 
     void updateSimplificationPreview();
+
+    /**
+     * Simplifies a \a geometry to the specified \a tolerance, respecting the preset
+     * simplification method.
+     */
+    QgsGeometry processGeometry( const QgsGeometry &geometry, double tolerance ) const;
 
     // data
     //! Dialog with slider to set correct tolerance value
@@ -113,6 +124,9 @@ class APP_EXPORT QgsMapToolSimplify: public QgsMapToolEdit
     int mOriginalVertexCount = 0;
     int mReducedVertexCount = 0;
     bool mReducedHasErrors = false;
+
+    QgsMapToPixelSimplifier::SimplifyAlgorithm mMethod = QgsMapToPixelSimplifier::Distance;
+
 };
 
 #endif
