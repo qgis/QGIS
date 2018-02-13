@@ -271,6 +271,7 @@ class DestinationSelectionPanel(BASE, WIDGET):
             self.saveToTemporary()
         else:
             self.leText.setText(value)
+            self.use_temporary = False
 
     def getValue(self):
         key = None
