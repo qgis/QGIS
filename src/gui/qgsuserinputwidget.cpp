@@ -40,6 +40,10 @@ QgsUserInputWidget::QgsUserInputWidget( QWidget *parent )
   topLayout->addWidget( f );
   setLayout( topLayout );
 
+  // this allows the widget to be resized on demand
+  topLayout->setSizeConstraint( QLayout::SetFixedSize );
+  mLayout->setSizeConstraint( QLayout::SetFixedSize );
+
   setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding );
   hide();
 }
