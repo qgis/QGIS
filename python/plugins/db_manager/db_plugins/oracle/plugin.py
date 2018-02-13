@@ -245,7 +245,7 @@ class ORDatabase(Database):
             "DBManagerPlugin", "&Table"), self.createTableActionSlot)
         action = QAction(QIcon(":/db_manager/actions/edit_table"),
                          QApplication.translate(
-                             "DBManagerPlugin", "&Edit Eable…"), self)
+                             "DBManagerPlugin", "&Edit Table…"), self)
         mainWindow.registerAction(action, QApplication.translate(
             "DBManagerPlugin", "&Table"), self.editTableActionSlot)
         action = QAction(QIcon(":/db_manager/actions/del_table"),

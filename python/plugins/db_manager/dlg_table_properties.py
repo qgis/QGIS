@@ -238,7 +238,7 @@ class DlgTableProperties(QDialog, Ui_Dialog):
         sel = self.viewConstraints.selectionModel()
         indexes = sel.selectedRows()
         if len(indexes) == 0:
-            QMessageBox.information(self, self.tr("DB Manager"), self.tr("No constraints were selected"))
+            QMessageBox.information(self, self.tr("DB Manager"), self.tr("No constraints were selected."))
             return -1
         return indexes[0].row()
 
