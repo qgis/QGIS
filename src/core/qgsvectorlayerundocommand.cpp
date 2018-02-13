@@ -118,9 +118,7 @@ QgsVectorLayerUndoCommandChangeGeometry::QgsVectorLayerUndoCommandChangeGeometry
   }
   else
   {
-    bool changedAlready = mBuffer->mChangedGeometries.contains( mFid );
-    QgsGeometry geom;
-    mOldGeom = changedAlready ? geom : QgsGeometry();
+    mOldGeom = mBuffer->mChangedGeometries.value( mFid, QgsGeometry() );
   }
 }
 

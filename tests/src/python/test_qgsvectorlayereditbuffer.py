@@ -278,7 +278,7 @@ class TestQgsVectorLayerEditBuffer(unittest.TestCase):
         self.assertFalse(layer.editBuffer().isFeatureGeometryChanged(1))
         self.assertFalse(layer.editBuffer().isFeatureGeometryChanged(2))
 
-        # change attribute values
+        # change geometry
         layer.changeGeometry(1, QgsGeometry.fromPointXY(QgsPointXY(10, 20)))
 
         # test contents of buffer
@@ -286,15 +286,64 @@ class TestQgsVectorLayerEditBuffer(unittest.TestCase):
         self.assertEqual(layer.editBuffer().changedGeometries()[1].constGet().x(), 10)
         self.assertTrue(layer.editBuffer().isFeatureGeometryChanged(1))
         self.assertFalse(layer.editBuffer().isFeatureGeometryChanged(2))
+        self.assertEqual(layer.undoStack().count(), 1)
+
+        self.assertEqual(layer.getFeature(1).geometry().constGet().x(), 10)
+        self.assertEqual(layer.getFeature(2).geometry().constGet().x(), 2)
+
+        # apply second change to same feature
+        layer.beginEditCommand('second change') # need to use an edit command to avoid the two geometry changes being merged
+        layer.changeGeometry(1, QgsGeometry.fromPointXY(QgsPointXY(100, 200)))
+        layer.endEditCommand()
+
+        # test contents of buffer
+        self.assertEqual(list(layer.editBuffer().changedGeometries().keys()), [1])
+        self.assertEqual(layer.editBuffer().changedGeometries()[1].constGet().x(), 100)
+        self.assertTrue(layer.editBuffer().isFeatureGeometryChanged(1))
+        self.assertFalse(layer.editBuffer().isFeatureGeometryChanged(2))
+        self.assertEqual(layer.undoStack().count(), 2)
+
+        self.assertEqual(layer.getFeature(1).geometry().constGet().x(), 100)
+        self.assertEqual(layer.getFeature(2).geometry().constGet().x(), 2)
 
         layer.changeGeometry(2, QgsGeometry.fromPointXY(QgsPointXY(20, 40)))
 
         # test contents of buffer
         self.assertEqual(set(layer.editBuffer().changedGeometries().keys()), set([1, 2]))
-        self.assertEqual(layer.editBuffer().changedGeometries()[1].constGet().x(), 10)
+        self.assertEqual(layer.editBuffer().changedGeometries()[1].constGet().x(), 100)
         self.assertEqual(layer.editBuffer().changedGeometries()[2].constGet().x(), 20)
         self.assertTrue(layer.editBuffer().isFeatureGeometryChanged(1))
         self.assertTrue(layer.editBuffer().isFeatureGeometryChanged(2))
+        self.assertEqual(layer.undoStack().count(), 3)
+
+        self.assertEqual(layer.getFeature(1).geometry().constGet().x(), 100)
+        self.assertEqual(layer.getFeature(2).geometry().constGet().x(), 20)
+
+        layer.undoStack().undo()
+
+        self.assertEqual(list(layer.editBuffer().changedGeometries().keys()), [1])
+        self.assertEqual(layer.editBuffer().changedGeometries()[1].constGet().x(), 100)
+        self.assertTrue(layer.editBuffer().isFeatureGeometryChanged(1))
+        self.assertFalse(layer.editBuffer().isFeatureGeometryChanged(2))
+
+        self.assertEqual(layer.getFeature(1).geometry().constGet().x(), 100)
+        self.assertEqual(layer.getFeature(2).geometry().constGet().x(), 2)
+
+        layer.undoStack().undo()
+        self.assertEqual(list(layer.editBuffer().changedGeometries().keys()), [1])
+        self.assertTrue(layer.editBuffer().isFeatureGeometryChanged(1))
+        self.assertFalse(layer.editBuffer().isFeatureGeometryChanged(2))
+
+        self.assertEqual(layer.getFeature(1).geometry().constGet().x(), 10)
+        self.assertEqual(layer.getFeature(2).geometry().constGet().x(), 2)
+
+        layer.undoStack().undo()
+        self.assertEqual(list(layer.editBuffer().changedGeometries().keys()), [])
+        self.assertFalse(layer.editBuffer().isFeatureGeometryChanged(1))
+        self.assertFalse(layer.editBuffer().isFeatureGeometryChanged(2))
+
+        self.assertEqual(layer.getFeature(1).geometry().constGet().x(), 1)
+        self.assertEqual(layer.getFeature(2).geometry().constGet().x(), 2)
 
     def testDeleteAttribute(self):
         # test deleting attributes from an edit buffer
