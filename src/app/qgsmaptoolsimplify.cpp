@@ -13,6 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QPushButton>
+
 #include "qgsmaptoolsimplify.h"
 
 #include "qgsfeatureiterator.h"
@@ -29,9 +31,8 @@
 #include <cmath>
 #include <cfloat>
 
-QgsSimplifyDialog::QgsSimplifyDialog( QgsMapToolSimplify *tool, QWidget *parent )
-  : QDialog( parent )
-  , mTool( tool )
+QgsSimplifyUserInputWidget::QgsSimplifyUserInputWidget( QWidget *parent )
+  : QWidget( parent )
 {
   setupUi( this );
 
@@ -40,54 +41,61 @@ QgsSimplifyDialog::QgsSimplifyDialog( QgsMapToolSimplify *tool, QWidget *parent 
   mMethodComboBox->addItem( tr( "Simplify by area (Visvalingam)" ), QgsMapToolSimplify::SimplifyVisvalingam );
   mMethodComboBox->addItem( tr( "Smooth" ), QgsMapToolSimplify::Smooth );
 
-  spinTolerance->setValue( mTool->tolerance() );
-  spinTolerance->setShowClearButton( false );
-  cboToleranceUnits->setCurrentIndex( ( int ) mTool->toleranceUnits() );
+  mToleranceUnitsComboBox->addItem( tr( "Layer units" ), QgsTolerance::LayerUnits );
+  mToleranceUnitsComboBox->addItem( tr( "Pixels" ), QgsTolerance::Pixels );
+  mToleranceUnitsComboBox->addItem( tr( "Map units" ), QgsTolerance::ProjectUnits );
+
+  mSpinToleranceSpinBox->setShowClearButton( false );
 
   mOffsetSpin->setClearValue( 25 );
-  mOffsetSpin->setValue( mTool->smoothOffset() * 100 );
   mIterationsSpin->setClearValue( 1 );
-  mIterationsSpin->setValue( mTool->smoothIterations() );
-
-  mMethodComboBox->setCurrentIndex( mMethodComboBox->findData( mTool->method() ) );
   if ( mMethodComboBox->currentData().toInt() != QgsMapToolSimplify::Smooth )
     mOptionsStackedWidget->setCurrentIndex( 0 );
   else
     mOptionsStackedWidget->setCurrentIndex( 1 );
 
   // communication with map tool
-  connect( spinTolerance, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), mTool, &QgsMapToolSimplify::setTolerance );
-  connect( cboToleranceUnits, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), mTool, &QgsMapToolSimplify::setToleranceUnits );
-  connect( mMethodComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), mTool, [ = ]
+  connect( mSpinToleranceSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsSimplifyUserInputWidget::toleranceChanged );
+  connect( mToleranceUnitsComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [ = ]( const int index ) {emit toleranceUnitsChanged( ( QgsTolerance::UnitType )index );} );
+  connect( mMethodComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [ = ]( const int method ) {emit methodChanged( ( QgsMapToolSimplify::Method )method );} );
+  connect( mMethodComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [ = ]
   {
-    mTool->setMethod( static_cast< QgsMapToolSimplify::Method >( mMethodComboBox->currentData().toInt() ) );
     if ( mMethodComboBox->currentData().toInt() != QgsMapToolSimplify::Smooth )
       mOptionsStackedWidget->setCurrentIndex( 0 );
     else
       mOptionsStackedWidget->setCurrentIndex( 1 );
   } );
 
-  connect( mOffsetSpin, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), mTool, [ = ]( int value ) { mTool->setSmoothOffset( value / 100.0 ); } );
-  connect( mIterationsSpin, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), mTool, [ = ]( int value ) { mTool->setSmoothIterations( value ); } );
-  connect( okButton, &QAbstractButton::clicked, mTool, &QgsMapToolSimplify::storeSimplified );
+  connect( mOffsetSpin, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, [ = ]( const int offset ) {emit smoothOffsetChanged( offset / 100.0 );} );
+  connect( mIterationsSpin, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsSimplifyUserInputWidget::smoothIterationsChanged );
+
+  connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsSimplifyUserInputWidget::accepted );
+  connect( mButtonBox, &QDialogButtonBox::rejected, this, &QgsSimplifyUserInputWidget::rejected );
 }
 
-void QgsSimplifyDialog::updateStatusText()
+void QgsSimplifyUserInputWidget::setConfig( const QgsMapToolSimplify::Method &method,
+    const double &tolerance,
+    const QgsTolerance::UnitType &units,
+    const double &smoothOffset,
+    const int &smoothIterations )
 {
-  labelStatus->setText( mTool->statusText() );
+  mMethodComboBox->setCurrentIndex( mMethodComboBox->findData( method ) );
+
+  mSpinToleranceSpinBox->setValue( tolerance );
+  mToleranceUnitsComboBox->setCurrentIndex( mToleranceUnitsComboBox->findData( units ) );
+  mOffsetSpin->setValue( 100 * smoothOffset );
+  mIterationsSpin->setValue( smoothIterations );
 }
 
-void QgsSimplifyDialog::enableOkButton( bool enabled )
+void QgsSimplifyUserInputWidget::updateStatusText( const QString &text )
 {
-  okButton->setEnabled( enabled );
+  labelStatus->setText( text );
 }
 
-void QgsSimplifyDialog::closeEvent( QCloseEvent *e )
+void QgsSimplifyUserInputWidget::enableOkButton( bool enabled )
 {
-  QDialog::closeEvent( e );
-  mTool->clearSelection();
+  mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( enabled );
 }
-
 
 ////////////////////////////////////////////////////////////////////////////
 
@@ -101,14 +109,11 @@ QgsMapToolSimplify::QgsMapToolSimplify( QgsMapCanvas *canvas )
   mMethod = static_cast< QgsMapToolSimplify::Method >( settings.value( QStringLiteral( "digitizing/simplify_method" ), 0 ).toInt() );
   mSmoothIterations = settings.value( QStringLiteral( "digitizing/smooth_iterations" ), 1 ).toInt();
   mSmoothOffset = settings.value( QStringLiteral( "digitizing/smooth_offset" ), 0.25 ).toDouble();
-
-  mSimplifyDialog = new QgsSimplifyDialog( this, canvas->topLevelWidget() );
 }
 
 QgsMapToolSimplify::~QgsMapToolSimplify()
 {
   clearSelection();
-  delete mSimplifyDialog;
 }
 
 
@@ -123,10 +128,8 @@ void QgsMapToolSimplify::setTolerance( double tolerance )
     updateSimplificationPreview();
 }
 
-void QgsMapToolSimplify::setToleranceUnits( int units )
+void QgsMapToolSimplify::setToleranceUnits( const QgsTolerance::UnitType &units )
 {
-  mToleranceUnits = ( QgsTolerance::UnitType ) units;
-
   QgsSettings settings;
   settings.setValue( QStringLiteral( "digitizing/simplify_tolerance_units" ), units );
 
@@ -156,8 +159,28 @@ void QgsMapToolSimplify::updateSimplificationPreview()
     ++i;
   }
 
-  mSimplifyDialog->updateStatusText();
-  mSimplifyDialog->enableOkButton( !mReducedHasErrors );
+  if ( mSimplifyUserWidget )
+  {
+    mSimplifyUserWidget->updateStatusText( statusText() );
+    mSimplifyUserWidget->enableOkButton( !mReducedHasErrors );
+  }
+}
+
+void QgsMapToolSimplify::createUserInputWidget()
+{
+  mSimplifyUserWidget = new QgsSimplifyUserInputWidget( );
+  mSimplifyUserWidget->setConfig( method(), tolerance(), toleranceUnits(), smoothOffset(), smoothIterations() );
+
+  connect( mSimplifyUserWidget, &QgsSimplifyUserInputWidget::methodChanged, this, &QgsMapToolSimplify::setMethod );
+  connect( mSimplifyUserWidget, &QgsSimplifyUserInputWidget::toleranceChanged, this, &QgsMapToolSimplify::setTolerance );
+  connect( mSimplifyUserWidget, &QgsSimplifyUserInputWidget::toleranceUnitsChanged, this, &QgsMapToolSimplify::setToleranceUnits );
+  connect( mSimplifyUserWidget, &QgsSimplifyUserInputWidget::smoothOffsetChanged, this, &QgsMapToolSimplify::setSmoothOffset );
+  connect( mSimplifyUserWidget, &QgsSimplifyUserInputWidget::smoothIterationsChanged, this, &QgsMapToolSimplify::setSmoothIterations );
+  connect( mSimplifyUserWidget, &QgsSimplifyUserInputWidget::accepted, this, &QgsMapToolSimplify::storeSimplified );
+  connect( mSimplifyUserWidget, &QgsSimplifyUserInputWidget::rejected, this, &QgsMapToolSimplify::clearSelection );
+
+  QgisApp::instance()->addUserInputWidget( mSimplifyUserWidget );
+  mSimplifyUserWidget->setFocus( Qt::TabFocusReason );
 }
 
 QgsGeometry QgsMapToolSimplify::processGeometry( const QgsGeometry &geometry, double tolerance ) const
@@ -295,10 +318,13 @@ void QgsMapToolSimplify::canvasMoveEvent( QgsMapMouseEvent *e )
 
 void QgsMapToolSimplify::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
-  if ( e->button() != Qt::LeftButton )
+  if ( e->button() == Qt::RightButton )
+  {
+    clearSelection();
     return;
+  }
 
-  if ( !currentVectorLayer() )
+  if ( e->button() != Qt::LeftButton || !currentVectorLayer() )
     return;
 
   delete mSelectionRubberBand;
@@ -340,10 +366,8 @@ void QgsMapToolSimplify::canvasReleaseEvent( QgsMapMouseEvent *e )
     rb->show();
     mRubberBands << rb;
   }
+  createUserInputWidget();
   updateSimplificationPreview();
-
-  // show dialog as a non-modal window
-  mSimplifyDialog->show();
 }
 
 
@@ -399,7 +423,8 @@ void QgsMapToolSimplify::selectFeaturesInRect()
 void QgsMapToolSimplify::clearSelection()
 {
   mSelectedFeatures.clear();
-
+  delete mSimplifyUserWidget;
+  mSimplifyUserWidget = nullptr;
   qDeleteAll( mRubberBands );
   mRubberBands.clear();
 }
@@ -408,9 +433,6 @@ void QgsMapToolSimplify::deactivate()
 {
   delete mSelectionRubberBand;
   mSelectionRubberBand = nullptr;
-
-  if ( mSimplifyDialog->isVisible() )
-    mSimplifyDialog->close();
   clearSelection();
   QgsMapTool::deactivate();
 }

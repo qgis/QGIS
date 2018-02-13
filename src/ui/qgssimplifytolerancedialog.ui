@@ -1,31 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>SimplifyLineDialog</class>
- <widget class="QDialog" name="SimplifyLineDialog">
+ <class>SimplifyUserInputWidgetBase</class>
+ <widget class="QWidget" name="SimplifyUserInputWidgetBase">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>520</width>
-    <height>106</height>
+    <width>452</width>
+    <height>114</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Simplification Tool</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="2" column="0" colspan="4">
+   <item row="2" column="0" colspan="5">
     <widget class="QLabel" name="labelStatus"/>
-   </item>
-   <item row="0" column="1" colspan="2">
-    <widget class="QComboBox" name="mMethodComboBox"/>
-   </item>
-   <item row="0" column="3">
-    <widget class="QPushButton" name="okButton">
-     <property name="text">
-      <string>OK</string>
-     </property>
-    </widget>
    </item>
    <item row="0" column="0">
     <widget class="QLabel" name="label_2">
@@ -34,10 +24,10 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="0" colspan="4">
+   <item row="1" column="0" colspan="5">
     <widget class="QStackedWidget" name="mOptionsStackedWidget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="page">
       <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,1,1">
@@ -61,7 +51,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QgsDoubleSpinBox" name="spinTolerance">
+        <widget class="QgsDoubleSpinBox" name="mSpinToleranceSpinBox">
          <property name="decimals">
           <number>6</number>
          </property>
@@ -74,23 +64,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QComboBox" name="cboToleranceUnits">
-         <item>
-          <property name="text">
-           <string>Layer units</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Pixels</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Map units</string>
-          </property>
-         </item>
-        </widget>
+        <widget class="QComboBox" name="mToleranceUnitsComboBox"/>
        </item>
       </layout>
      </widget>
@@ -155,6 +129,16 @@
      </widget>
     </widget>
    </item>
+   <item row="0" column="1" colspan="2">
+    <widget class="QComboBox" name="mMethodComboBox"/>
+   </item>
+   <item row="0" column="3">
+    <widget class="QDialogButtonBox" name="mButtonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <customwidgets>
@@ -171,25 +155,7 @@
  </customwidgets>
  <tabstops>
   <tabstop>mMethodComboBox</tabstop>
-  <tabstop>okButton</tabstop>
  </tabstops>
  <resources/>
- <connections>
-  <connection>
-   <sender>okButton</sender>
-   <signal>clicked()</signal>
-   <receiver>SimplifyLineDialog</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>390</x>
-     <y>24</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>236</x>
-     <y>30</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>
