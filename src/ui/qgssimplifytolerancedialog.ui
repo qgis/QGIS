@@ -10,6 +10,12 @@
     <height>114</height>
    </rect>
   </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
   <property name="windowTitle">
    <string>Simplification Tool</string>
   </property>
@@ -51,7 +57,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QgsDoubleSpinBox" name="mSpinToleranceSpinBox">
+        <widget class="QgsDoubleSpinBox" name="mToleranceSpinBox">
          <property name="decimals">
           <number>6</number>
          </property>
@@ -64,7 +70,14 @@
         </widget>
        </item>
        <item>
-        <widget class="QComboBox" name="mToleranceUnitsComboBox"/>
+        <widget class="QComboBox" name="mToleranceUnitsComboBox">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>
@@ -91,6 +104,12 @@
        </item>
        <item>
         <widget class="QgsSpinBox" name="mIterationsSpin">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="toolTip">
           <string>Number of smooth iterations. More iterations results in smoother geometries, at the expense of greatly increasing the number of vertices in those geometries.</string>
          </property>
@@ -114,6 +133,12 @@
        </item>
        <item>
         <widget class="QgsSpinBox" name="mOffsetSpin">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="toolTip">
           <string>Offset from existing vertices at which to insert smoothed vertices. Larger values result in &quot;looser&quot; smoothing, smaller values result in &quot;tight&quot; smoothing.</string>
          </property>
@@ -129,13 +154,26 @@
      </widget>
     </widget>
    </item>
-   <item row="0" column="1" colspan="2">
-    <widget class="QComboBox" name="mMethodComboBox"/>
-   </item>
    <item row="0" column="3">
     <widget class="QDialogButtonBox" name="mButtonBox">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="standardButtons">
       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1" colspan="2">
+    <widget class="QComboBox" name="mMethodComboBox">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
      </property>
     </widget>
    </item>
