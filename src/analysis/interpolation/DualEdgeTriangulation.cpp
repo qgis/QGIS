@@ -2796,7 +2796,7 @@ bool DualEdgeTriangulation::saveToTAFF( QString filename ) const
   QFile outputfile( filename );
   if ( !outputfile.open( IO_WriteOnly ) )
   {
-    QMessageBox::warning( 0, "warning", "File could not be written", QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton );
+    QMessageBox::warning( 0, tr( "Warning" ), tr( "File could not be written." ), QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton );
     return false;
   }
 
