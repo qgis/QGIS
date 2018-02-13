@@ -1794,7 +1794,7 @@ void QgsLayoutDesignerDialog::exportToRaster()
                             tr( "Trying to create image %1 (%2×%3 @ %4dpi ) "
                                 "resulted in a memory overflow.\n\n"
                                 "Please try a lower resolution or a smaller paper size." )
-                            .arg( exporter.errorFile(), imageSize.width(), imageSize.height(), settings.dpi ),
+                            .arg( exporter.errorFile() ).arg( imageSize.width() ).arg( imageSize.height() ).arg( settings.dpi ),
                             QMessageBox::Ok, QMessageBox::Ok );
       break;
 
