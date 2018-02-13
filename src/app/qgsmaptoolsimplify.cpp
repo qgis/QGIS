@@ -66,10 +66,6 @@ void QgsSimplifyDialog::closeEvent( QCloseEvent *e )
 
 QgsMapToolSimplify::QgsMapToolSimplify( QgsMapCanvas *canvas )
   : QgsMapToolEdit( canvas )
-  , mDragging( false )
-  , mOriginalVertexCount( 0 )
-  , mReducedVertexCount( 0 )
-  , mReducedHasErrors( false )
 {
   QgsSettings settings;
   mTolerance = settings.value( QStringLiteral( "digitizing/simplify_tolerance" ), 1 ).toDouble();
@@ -120,7 +116,7 @@ void QgsMapToolSimplify::updateSimplificationPreview()
     QgsGeometry g = fSel.geometry().simplify( layerTolerance );
     if ( !g.isNull() )
     {
-      mReducedVertexCount += vertexCount( g );
+      mReducedVertexCount += g.constGet()->nCoordinates();
       mRubberBands.at( i )->setToGeometry( g, vl );
     }
     else
@@ -131,45 +127,6 @@ void QgsMapToolSimplify::updateSimplificationPreview()
   mSimplifyDialog->updateStatusText();
   mSimplifyDialog->enableOkButton( !mReducedHasErrors );
 }
-
-
-int QgsMapToolSimplify::vertexCount( const QgsGeometry &g ) const
-{
-  switch ( g.type() )
-  {
-    case QgsWkbTypes::LineGeometry:
-    {
-      int count = 0;
-      if ( g.isMultipart() )
-      {
-        Q_FOREACH ( const QgsPolylineXY &polyline, g.asMultiPolyline() )
-          count += polyline.count();
-      }
-      else
-        count = g.asPolyline().count();
-      return count;
-    }
-    case QgsWkbTypes::PolygonGeometry:
-    {
-      int count = 0;
-      if ( g.isMultipart() )
-      {
-        Q_FOREACH ( const QgsPolygonXY &polygon, g.asMultiPolygon() )
-          Q_FOREACH ( const QgsPolylineXY &ring, polygon )
-            count += ring.count();
-      }
-      else
-      {
-        Q_FOREACH ( const QgsPolylineXY &ring, g.asPolygon() )
-          count += ring.count();
-      }
-      return count;
-    }
-    default:
-      return 0;
-  }
-}
-
 
 void QgsMapToolSimplify::storeSimplified()
 {
@@ -191,8 +148,6 @@ void QgsMapToolSimplify::storeSimplified()
 
   vlayer->triggerRepaint();
 }
-
-
 
 void QgsMapToolSimplify::canvasPressEvent( QgsMapMouseEvent *e )
 {
@@ -274,7 +229,8 @@ void QgsMapToolSimplify::canvasReleaseEvent( QgsMapMouseEvent *e )
   mOriginalVertexCount = 0;
   Q_FOREACH ( const QgsFeature &f, mSelectedFeatures )
   {
-    mOriginalVertexCount += vertexCount( f.geometry() );
+    if ( f.hasGeometry() )
+      mOriginalVertexCount += f.geometry().constGet()->nCoordinates();
 
     QgsRubberBand *rb = new QgsRubberBand( mCanvas );
     rb->setColor( QColor( 255, 0, 0, 65 ) );

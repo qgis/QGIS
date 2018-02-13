@@ -89,8 +89,6 @@ class APP_EXPORT QgsMapToolSimplify: public QgsMapToolEdit
 
     void updateSimplificationPreview();
 
-    int vertexCount( const QgsGeometry &g ) const;
-
     // data
     //! Dialog with slider to set correct tolerance value
     QgsSimplifyDialog *mSimplifyDialog = nullptr;
@@ -101,20 +99,20 @@ class APP_EXPORT QgsMapToolSimplify: public QgsMapToolEdit
     QList<QgsFeature> mSelectedFeatures;
 
     //! Real value of tolerance
-    double mTolerance;
+    double mTolerance = 1.0;
 
-    QgsTolerance::UnitType mToleranceUnits;
+    QgsTolerance::UnitType mToleranceUnits = QgsTolerance::LayerUnits;
 
     //! stores actual selection rect
     QRect mSelectionRect;
     //! shows actual selection rect
     QgsRubberBand *mSelectionRubberBand = nullptr;
     //! Flag to indicate a map canvas drag operation is taking place
-    bool mDragging;
+    bool mDragging = false;
 
-    int mOriginalVertexCount;
-    int mReducedVertexCount;
-    bool mReducedHasErrors;
+    int mOriginalVertexCount = 0;
+    int mReducedVertexCount = 0;
+    bool mReducedHasErrors = false;
 };
 
 #endif
