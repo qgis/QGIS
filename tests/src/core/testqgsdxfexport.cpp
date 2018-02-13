@@ -102,7 +102,7 @@ void TestQgsDxfExport::cleanup()
 void TestQgsDxfExport::testPoints()
 {
   QgsDxfExport d;
-  d.addLayers( QList< QPair< QgsVectorLayer *, int > >() << qMakePair( mPointLayer, -1 ) );
+  d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( mPointLayer ) );
 
   QgsMapSettings mapSettings;
   QSize size( 640, 480 );
@@ -130,7 +130,7 @@ void TestQgsDxfExport::testPoints()
 void TestQgsDxfExport::testLines()
 {
   QgsDxfExport d;
-  d.addLayers( QList< QPair< QgsVectorLayer *, int > >() << qMakePair( mLineLayer, -1 ) );
+  d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( mLineLayer ) );
 
   QgsMapSettings mapSettings;
   QSize size( 640, 480 );
@@ -158,7 +158,7 @@ void TestQgsDxfExport::testLines()
 void TestQgsDxfExport::testPolygons()
 {
   QgsDxfExport d;
-  d.addLayers( QList< QPair< QgsVectorLayer *, int > >() << qMakePair( mPolygonLayer, -1 ) );
+  d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( mPolygonLayer ) );
 
   QgsMapSettings mapSettings;
   QSize size( 640, 480 );
@@ -207,7 +207,7 @@ void TestQgsDxfExport::testText()
   mPointLayer->setLabelsEnabled( true );
 
   QgsDxfExport d;
-  d.addLayers( QList< QPair< QgsVectorLayer *, int > >() << qMakePair( mPointLayer, -1 ) );
+  d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( mPointLayer ) );
 
   QgsMapSettings mapSettings;
   QSize size( 640, 480 );
@@ -274,7 +274,7 @@ bool TestQgsDxfExport::testMtext( QgsVectorLayer *vlayer, const QString &tempFil
   vlayer->setLabelsEnabled( true );
 
   QgsDxfExport d;
-  d.addLayers( QList< QPair< QgsVectorLayer *, int > >() << qMakePair( vlayer, -1 ) );
+  d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( vlayer ) );
 
   QgsMapSettings mapSettings;
   QSize size( 640, 480 );

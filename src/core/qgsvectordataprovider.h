@@ -595,9 +595,6 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
     //! The names of the providers native types
     QList< NativeType > mNativeTypes;
 
-    //! Old notation *
-    QMap<QString, QVariant::Type> mOldTypeList;
-
     //! List of errors
     mutable QStringList mErrors;
 
