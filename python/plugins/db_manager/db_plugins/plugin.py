@@ -327,7 +327,7 @@ class Database(DbItemObject):
                          QApplication.translate("DBManagerPlugin", "&Edit Table…"), self)
         mainWindow.registerAction(action, QApplication.translate("DBManagerPlugin", "&Table"), self.editTableActionSlot)
         action = QAction(QIcon(":/db_manager/actions/del_table"),
-                         QApplication.translate("DBManagerPlugin", "&Delete Table/view…"), self)
+                         QApplication.translate("DBManagerPlugin", "&Delete Table/View…"), self)
         mainWindow.registerAction(action, QApplication.translate("DBManagerPlugin", "&Table"),
                                   self.deleteTableActionSlot)
         action = QAction(QApplication.translate("DBManagerPlugin", "&Empty Table…"), self)
