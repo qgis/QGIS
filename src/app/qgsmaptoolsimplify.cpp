@@ -35,22 +35,40 @@ QgsSimplifyDialog::QgsSimplifyDialog( QgsMapToolSimplify *tool, QWidget *parent 
 {
   setupUi( this );
 
-  mMethodComboBox->addItem( tr( "Simplify by distance" ), ( int )QgsVectorSimplifyMethod::Distance );
-  mMethodComboBox->addItem( tr( "Simplify by snapping to grid" ), ( int )QgsVectorSimplifyMethod::SnapToGrid );
-  mMethodComboBox->addItem( tr( "Simplify by area (Visvalingam)" ), ( int )QgsVectorSimplifyMethod::Visvalingam );
+  mMethodComboBox->addItem( tr( "Simplify by distance" ), QgsMapToolSimplify::SimplifyDistance );
+  mMethodComboBox->addItem( tr( "Simplify by snapping to grid" ), QgsMapToolSimplify::SimplifySnapToGrid );
+  mMethodComboBox->addItem( tr( "Simplify by area (Visvalingam)" ), QgsMapToolSimplify::SimplifyVisvalingam );
+  mMethodComboBox->addItem( tr( "Smooth" ), QgsMapToolSimplify::Smooth );
 
   spinTolerance->setValue( mTool->tolerance() );
   spinTolerance->setShowClearButton( false );
   cboToleranceUnits->setCurrentIndex( ( int ) mTool->toleranceUnits() );
+
+  mOffsetSpin->setClearValue( 25 );
+  mOffsetSpin->setValue( mTool->smoothOffset() * 100 );
+  mIterationsSpin->setClearValue( 1 );
+  mIterationsSpin->setValue( mTool->smoothIterations() );
+
   mMethodComboBox->setCurrentIndex( mMethodComboBox->findData( mTool->method() ) );
+  if ( mMethodComboBox->currentData().toInt() != QgsMapToolSimplify::Smooth )
+    mOptionsStackedWidget->setCurrentIndex( 0 );
+  else
+    mOptionsStackedWidget->setCurrentIndex( 1 );
 
   // communication with map tool
   connect( spinTolerance, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), mTool, &QgsMapToolSimplify::setTolerance );
   connect( cboToleranceUnits, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), mTool, &QgsMapToolSimplify::setToleranceUnits );
   connect( mMethodComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), mTool, [ = ]
   {
-    mTool->setMethod( static_cast< QgsMapToPixelSimplifier::SimplifyAlgorithm >( mMethodComboBox->currentData().toInt() ) );
+    mTool->setMethod( static_cast< QgsMapToolSimplify::Method >( mMethodComboBox->currentData().toInt() ) );
+    if ( mMethodComboBox->currentData().toInt() != QgsMapToolSimplify::Smooth )
+      mOptionsStackedWidget->setCurrentIndex( 0 );
+    else
+      mOptionsStackedWidget->setCurrentIndex( 1 );
   } );
+
+  connect( mOffsetSpin, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), mTool, [ = ]( int value ) { mTool->setSmoothOffset( value / 100.0 ); } );
+  connect( mIterationsSpin, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), mTool, [ = ]( int value ) { mTool->setSmoothIterations( value ); } );
   connect( okButton, &QAbstractButton::clicked, mTool, &QgsMapToolSimplify::storeSimplified );
 }
 
@@ -79,8 +97,10 @@ QgsMapToolSimplify::QgsMapToolSimplify( QgsMapCanvas *canvas )
 {
   QgsSettings settings;
   mTolerance = settings.value( QStringLiteral( "digitizing/simplify_tolerance" ), 1 ).toDouble();
-  mToleranceUnits = settings.enumValue( QStringLiteral( "digitizing/simplify_tolerance_units" ), QgsTolerance::LayerUnits );
-  mMethod = static_cast< QgsMapToPixelSimplifier::SimplifyAlgorithm >( settings.value( QStringLiteral( "digitizing/simplify_method" ), 0 ).toInt() );
+  mToleranceUnits = static_cast< QgsTolerance::UnitType >( settings.value( QStringLiteral( "digitizing/simplify_tolerance_units" ), 0 ).toInt() );
+  mMethod = static_cast< QgsMapToolSimplify::Method >( settings.value( QStringLiteral( "digitizing/simplify_method" ), 0 ).toInt() );
+  mSmoothIterations = settings.value( QStringLiteral( "digitizing/smooth_iterations" ), 1 ).toInt();
+  mSmoothOffset = settings.value( QStringLiteral( "digitizing/smooth_offset" ), 0.25 ).toDouble();
 
   mSimplifyDialog = new QgsSimplifyDialog( this, canvas->topLevelWidget() );
 }
@@ -144,25 +164,62 @@ QgsGeometry QgsMapToolSimplify::processGeometry( const QgsGeometry &geometry, do
 {
   switch ( mMethod )
   {
-    case QgsMapToPixelSimplifier::Distance:
+    case SimplifyDistance:
       return geometry.simplify( tolerance );
 
-    case QgsMapToPixelSimplifier::SnapToGrid:
-    case QgsMapToPixelSimplifier::Visvalingam:
+    case SimplifySnapToGrid:
+    case SimplifyVisvalingam:
     {
-      QgsMapToPixelSimplifier simplifier( QgsMapToPixelSimplifier::SimplifyGeometry, tolerance, mMethod );
+
+      QgsMapToPixelSimplifier simplifier( QgsMapToPixelSimplifier::SimplifyGeometry, tolerance, mMethod == SimplifySnapToGrid ? QgsMapToPixelSimplifier::SnapToGrid : QgsMapToPixelSimplifier::Visvalingam );
       return simplifier.simplify( geometry );
     }
+
+    case Smooth:
+      return geometry.smooth( mSmoothIterations, mSmoothOffset );
+
   }
   return QgsGeometry(); //no warnings
 }
 
-QgsMapToPixelSimplifier::SimplifyAlgorithm QgsMapToolSimplify::method() const
+double QgsMapToolSimplify::smoothOffset() const
+{
+  return mSmoothOffset;
+}
+
+void QgsMapToolSimplify::setSmoothOffset( double smoothOffset )
+{
+  mSmoothOffset = smoothOffset;
+
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "digitizing/smooth_offset" ), smoothOffset );
+
+  if ( !mSelectedFeatures.isEmpty() )
+    updateSimplificationPreview();
+}
+
+int QgsMapToolSimplify::smoothIterations() const
+{
+  return mSmoothIterations;
+}
+
+void QgsMapToolSimplify::setSmoothIterations( int smoothIterations )
+{
+  mSmoothIterations = smoothIterations;
+
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "digitizing/smooth_iterations" ), smoothIterations );
+
+  if ( !mSelectedFeatures.isEmpty() )
+    updateSimplificationPreview();
+}
+
+QgsMapToolSimplify::Method QgsMapToolSimplify::method() const
 {
   return mMethod;
 }
 
-void QgsMapToolSimplify::setMethod( QgsMapToPixelSimplifier::SimplifyAlgorithm method )
+void QgsMapToolSimplify::setMethod( QgsMapToolSimplify::Method method )
 {
   mMethod = method;
 
