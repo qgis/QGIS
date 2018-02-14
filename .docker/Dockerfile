@@ -5,7 +5,9 @@ LABEL Description="Docker container with QGIS dependencies" Vendor="QGIS.org" Ve
 
 RUN  apt-get update \
   && apt-get install -y software-properties-common \
-  && add-apt-repository ppa:ubuntugis/ubuntugis-unstable \
+  && echo "deb http://ppa.launchpad.net/ubuntugis/ubuntugis-unstable/ubuntu xenial main" >> /etc/apt/sources.list \
+  && echo "deb-src http://ppa.launchpad.net/ubuntugis/ubuntugis-unstable/ubuntu xenial main" >> /etc/apt/sources.list \
+  && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 314DF160 \
   && apt-get update \
   && apt-get install -y \
     bison \
