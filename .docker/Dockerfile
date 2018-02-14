@@ -12,7 +12,6 @@ RUN  apt-get update \
     ca-certificates \
     ccache \
     clang \
-    # cmake \
     curl \
     dh-python \
     flex \
@@ -89,9 +88,14 @@ RUN  apt-get update \
     termcolor \
   && apt-get autoremove -y python3-pip python2.7 \
   && apt-get clean \
-  && curl -s -S -O https://cmake.org/files/v3.10/cmake-3.10.1-Linux-x86_64.tar.gz \
-  && tar --strip-components=1 -zx -f cmake-3.10.1-Linux-x86_64.tar.gz -C /usr/local \
-  && rm cmake-3.10.1-Linux-x86_64.tar.gz
+  && curl -s -S -O https://cmake.org/files/v3.10/cmake-3.10.2-Linux-x86_64.tar.gz \
+  && tar --strip-components=1 -zx -f cmake-3.10.2-Linux-x86_64.tar.gz -C /usr/local \
+  && rm cmake-3.10.2-Linux-x86_64.tar.gz \
+  && mkdir /root/sip \
+  && curl -s -S -O -L https://sourceforge.net/projects/pyqt/files/sip/sip-4.19.7/sip-4.19.7.tar.gz \
+  && tar --strip-components=1 -zx -f sip-4.19.7.tar.gz -C /root/sip \
+  && python3 /root/sip/configure.py && make && make install \
+  && rm sip-4.19.7.tar.gz
 
 RUN echo "alias python=python3" >> ~/.bash_aliases
 
