@@ -1698,8 +1698,8 @@ QgsSvgMarkerSymbolLayer::QgsSvgMarkerSymbolLayer( const QString &path, double si
   mScaleMethod = scaleMethod;
   mStrokeWidth = 0.2;
   mStrokeWidthUnit = QgsUnitTypes::RenderMillimeters;
-  mColor = QColor( 70, 70, 70 );
-  mStrokeColor = QColor( 70, 70, 70 );
+  mColor = QColor( 35, 35, 35 );
+  mStrokeColor = QColor( 35, 35, 35 );
   updateDefaultAspectRatio();
 }
 
