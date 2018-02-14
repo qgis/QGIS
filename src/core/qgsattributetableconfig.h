@@ -192,7 +192,7 @@ class CORE_EXPORT QgsAttributeTableConfig
 
     /**
      * Compare this configuration's columns name, type, and order to \a other.
-     * Other settings (column width and visibility) are not considered.
+     * The column's width is not considered.
      */
     bool hasSameColumns( const QgsAttributeTableConfig &other ) const;
 

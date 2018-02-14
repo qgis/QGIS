@@ -289,7 +289,9 @@ bool QgsAttributeTableConfig::hasSameColumns( const QgsAttributeTableConfig &oth
   {
     for ( int i = 0; i < columns().size(); i++ )
     {
-      if ( columns().at( i ).name != other.columns().at( i ).name || columns().at( i ).type != other.columns().at( i ).type )
+      if ( columns().at( i ).name != other.columns().at( i ).name ||
+           columns().at( i ).type != other.columns().at( i ).type ||
+           columns().at( i ).hidden != other.columns().at( i ).hidden )
       {
         return false;
       }

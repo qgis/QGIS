@@ -131,6 +131,10 @@ class TestQgsAttributeTableConfig(unittest.TestCase):
         config2.setColumns([c1, c2])
         self.assertTrue(config.hasSameColumns(config2))
 
+        c1.hidden = True
+        config2.setColumns([c1, c2])
+        self.assertFalse(config.hasSameColumns(config2))
+
         config2.setColumns([c2, c1])
         self.assertFalse(config.hasSameColumns(config2))
 
