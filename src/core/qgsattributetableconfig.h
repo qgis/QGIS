@@ -191,6 +191,11 @@ class CORE_EXPORT QgsAttributeTableConfig
     void setSortOrder( Qt::SortOrder sortOrder );
 
     /**
+     * Compare this configuration's columns name and type to other.
+     */
+    bool sameColumns( const QgsAttributeTableConfig &other ) const;
+
+    /**
      * Compare this configuration to other.
      */
     bool operator!= ( const QgsAttributeTableConfig &other ) const;

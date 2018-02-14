@@ -283,6 +283,23 @@ void QgsAttributeTableConfig::writeXml( QDomNode &node ) const
   node.appendChild( configElement );
 }
 
+bool QgsAttributeTableConfig::sameColumns( const QgsAttributeTableConfig &other ) const
+{
+  if ( columns().size() == other.columns().size() )
+  {
+    for ( int i = 0; i < columns().size(); i++ )
+    {
+      if ( columns().at( i ).name != other.columns().at( i ).name || columns().at( i ).type != other.columns().at( i ).type )
+      {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  return false;
+}
+
 bool QgsAttributeTableConfig::ColumnConfig::operator== ( const ColumnConfig &other ) const
 {
   return type == other.type && name == other.name && hidden == other.hidden && width == other.width;
