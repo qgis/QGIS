@@ -115,7 +115,7 @@ class RandomPointsPolygons(QgisAlgorithm):
         if expression.hasParserError():
             raise QgsProcessingException(expression.parserErrorString())
 
-        expressionContext = self.createExpressionContext(parameters, context)
+        expressionContext = self.createExpressionContext(parameters, context, source)
         if not expression.prepare(expressionContext):
             raise QgsProcessingException(
                 self.tr('Evaluation error: {0}').format(expression.evalErrorString()))
