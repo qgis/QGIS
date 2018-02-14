@@ -1712,7 +1712,7 @@ QgsSVGFillSymbolLayer::QgsSVGFillSymbolLayer( const QString &svgFilePath, double
   mStrokeWidth = 0.3;
   mAngle = angle;
   mColor = QColor( 255, 255, 255 );
-  mSvgStrokeColor = QColor( 70, 70, 70 );
+  mSvgStrokeColor = QColor( 35, 35, 35 );
   mSvgStrokeWidth = 0.2;
   setDefaultSvgParams();
   mSvgPattern = nullptr;
@@ -1729,7 +1729,7 @@ QgsSVGFillSymbolLayer::QgsSVGFillSymbolLayer( const QByteArray &svgData, double 
   mStrokeWidth = 0.3;
   mAngle = angle;
   mColor = QColor( 255, 255, 255 );
-  mSvgStrokeColor = QColor( 70, 70, 70 );
+  mSvgStrokeColor = QColor( 35, 35, 35 );
   mSvgStrokeWidth = 0.2;
   setSubSymbol( new QgsLineSymbol() );
   setDefaultSvgParams();
