@@ -42,7 +42,8 @@ from qgis.core import (QgsMessageLog,
                        QgsProcessingParameterDefinition,
                        QgsProcessingOutputVectorLayer,
                        QgsProcessingOutputRasterLayer,
-                       QgsProcessingOutputMapLayer)
+                       QgsProcessingOutputMapLayer,
+                       QgsProcessingOutputMultipleLayers)
 
 import processing
 from processing.core.ProcessingConfig import ProcessingConfig
@@ -163,6 +164,22 @@ class Processing(object):
                             layer = context.takeResultLayer(result) # transfer layer ownership out of context
                             if layer:
                                 results[out.name()] = layer # replace layer string ref with actual layer (+ownership)
+                    elif isinstance(out, QgsProcessingOutputMultipleLayers):
+                        result = results[out.name()]
+                        if result:
+                            layers_result = []
+                            for l in result:
+                                if not isinstance(result, QgsMapLayer):
+                                    layer = context.takeResultLayer(l) # transfer layer ownership out of context
+                                    if layer:
+                                        layers_result.append(layer)
+                                    else:
+                                        layers_result.append(l)
+                                else:
+                                    layers_result.append(l)
+
+                            results[out.name()] = layers_result # replace layers strings ref with actual layers (+ownership)
+
         else:
             msg = Processing.tr("There were errors executing the algorithm.")
             feedback.reportError(msg)

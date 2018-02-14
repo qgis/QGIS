@@ -181,6 +181,12 @@ Set the sort order
 .. versionadded:: 2.16
 %End
 
+    bool hasSameColumns( const QgsAttributeTableConfig &other ) const;
+%Docstring
+Compare this configuration's columns name, type, and order to ``other``.
+The column's width is not considered.
+%End
+
     bool operator!= ( const QgsAttributeTableConfig &other ) const;
 
 };

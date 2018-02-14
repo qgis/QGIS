@@ -22,7 +22,10 @@ QgsLayoutViewTool::QgsLayoutViewTool( QgsLayoutView *view, const QString &name )
   , mView( view )
   , mToolName( name )
 {
-
+  connect( mView, &QgsLayoutView::willBeDeleted, this, [ = ]
+  {
+    mView = nullptr;
+  } );
 }
 
 bool QgsLayoutViewTool::isClickAndDrag( QPoint startViewPoint, QPoint endViewPoint ) const

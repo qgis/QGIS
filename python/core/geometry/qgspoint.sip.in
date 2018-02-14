@@ -419,8 +419,10 @@ Angle undefined. Always returns 0.0
 
 
 
-  protected:
     virtual QgsPoint *createEmptyWithSameType() const /Factory/;
+
+
+  protected:
 
     virtual int childCount() const;
 

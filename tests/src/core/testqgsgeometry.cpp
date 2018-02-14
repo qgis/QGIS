@@ -15984,6 +15984,9 @@ void TestQgsGeometry::makeValid()
   // collection with invalid geometries
   geoms << qMakePair( QStringLiteral( "GEOMETRYCOLLECTION(LINESTRING(0 0, 0 0), POLYGON((0 0, 10 10, 10 0, 0 10, 0 0)), LINESTRING(10 0, 10 10))" ),
                       QStringLiteral( "GEOMETRYCOLLECTION(POINT(0 0), MULTIPOLYGON(((5 5, 0 0, 0 10, 5 5)),((5 5, 10 10, 10 0, 5 5))), LINESTRING(10 0, 10 10)))" ) );
+  // null line (#18077)
+  geoms << qMakePair( QStringLiteral( "MultiLineString ((356984.0625 6300089, 356984.0625 6300089))" ),
+                      QStringLiteral( "MultiPoint ((356984.0625 6300089))" ) );
 
   Q_FOREACH ( const InputAndExpectedWktPair &pair, geoms )
   {

@@ -469,9 +469,12 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri )
   bool supportsBoolean = false;
 
 #if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,3,0)
-  const char *pszDataTypes = GDALGetMetadataItem( mOgrOrigLayer->driver(), GDAL_DMD_CREATIONFIELDDATASUBTYPES, nullptr );
-  if ( pszDataTypes && strstr( pszDataTypes, "Boolean" ) )
-    supportsBoolean = true;
+  if ( mOgrOrigLayer )
+  {
+    const char *pszDataTypes = GDALGetMetadataItem( mOgrOrigLayer->driver(), GDAL_DMD_CREATIONFIELDDATASUBTYPES, nullptr );
+    if ( pszDataTypes && strstr( pszDataTypes, "Boolean" ) )
+      supportsBoolean = true;
+  }
 #else
   if ( mGDALDriverName == QLatin1String( "GeoJSON" ) ||
        mGDALDriverName == QLatin1String( "GML" ) ||

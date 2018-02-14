@@ -431,7 +431,7 @@ extern "C"
 #include <dlfcn.h>
 #else
 #include <windows.h>
-#include <DbgHelp.h>
+#include <dbghelp.h>
 #endif
 
 class QTreeWidgetItem;
@@ -2782,8 +2782,9 @@ void QgisApp::createStatusBar()
   // And also rendering suppression checkbox
   mProgressBar = new QProgressBar( mStatusBar );
   mProgressBar->setObjectName( QStringLiteral( "mProgressBar" ) );
-  mProgressBar->setMaximumWidth( 0 );
+  mProgressBar->setMaximumWidth( 100 );
   mProgressBar->setMaximumHeight( 18 );
+  mProgressBar->hide();
   mStatusBar->addPermanentWidget( mProgressBar, 1 );
 
   connect( mMapCanvas, &QgsMapCanvas::renderStarting, this, &QgisApp::canvasRefreshStarted );
@@ -6446,7 +6447,8 @@ void QgisApp::refreshFeatureActions()
   QList<QgsAction> actions = vlayer->actions()->actions( QStringLiteral( "Canvas" ) );
   Q_FOREACH ( const QgsAction &action, actions )
   {
-    QAction *qAction = new QAction( action.icon(), action.shortTitle(), mFeatureActionMenu );
+    QString actionTitle = !action.shortTitle().isEmpty() ? action.shortTitle() : action.icon().isNull() ? action.name() : QStringLiteral( "" );
+    QAction *qAction = new QAction( action.icon(), actionTitle, mFeatureActionMenu );
     qAction->setData( QVariant::fromValue<QgsAction>( action ) );
     mFeatureActionMenu->addAction( qAction );
 
@@ -11071,14 +11073,14 @@ void QgisApp::showProgress( int progress, int totalSteps )
   if ( progress == totalSteps )
   {
     mProgressBar->reset();
-    mProgressBar->setMaximumWidth( 0 );
+    mProgressBar->hide();
   }
   else
   {
     //only call show if not already hidden to reduce flicker
-    if ( mProgressBar->maximumWidth() == 0 )
+    if ( !mProgressBar->isVisible() )
     {
-      mProgressBar->setMaximumWidth( 100 );
+      mProgressBar->show();
     }
     mProgressBar->setMaximum( totalSteps );
     mProgressBar->setValue( progress );
@@ -12568,7 +12570,7 @@ void QgisApp::readProject( const QDomDocument &doc )
   }
 }
 
-void QgisApp::showLayerProperties( QgsMapLayer *ml )
+void QgisApp::showLayerProperties( QgsMapLayer *mapLayer )
 {
   /*
   TODO: Consider reusing the property dialogs again.
@@ -12579,15 +12581,15 @@ void QgisApp::showLayerProperties( QgsMapLayer *ml )
   a separate copy of the dialog pointer needs to be stored with each layer.
   */
 
-  if ( !ml )
+  if ( !mapLayer )
     return;
 
-  if ( !QgsProject::instance()->layerIsEmbedded( ml->id() ).isEmpty() )
+  if ( !QgsProject::instance()->layerIsEmbedded( mapLayer->id() ).isEmpty() )
   {
     return; //don't show properties of embedded layers
   }
 
-  if ( ml->type() == QgsMapLayer::RasterLayer )
+  if ( mapLayer->type() == QgsMapLayer::RasterLayer )
   {
 #if 0 // See note above about reusing this
     QgsRasterLayerProperties *rlp = nullptr;
@@ -12601,27 +12603,27 @@ void QgisApp::showLayerProperties( QgsMapLayer *ml )
       // handled by rendererChanged() connect( rlp, SIGNAL( refreshLegend( QString, bool ) ), mLayerTreeView, SLOT( refreshLayerSymbology( QString ) ) );
     }
 #else
-    QgsRasterLayerProperties *rlp = new QgsRasterLayerProperties( ml, mMapCanvas, this );
+    QgsRasterLayerProperties *rasterLayerPropertiesDialog = new QgsRasterLayerProperties( mapLayer, mMapCanvas, this );
 #endif
     // Cannot use exec here due to raster transparency map tool:
     // in order to pass focus to the canvas, the dialog needs to
     // be hidden and shown in non-modal mode.
-    rlp->setModal( true );
-    rlp->show();
+    rasterLayerPropertiesDialog->setModal( true );
+    rasterLayerPropertiesDialog->show();
     // Delete (later, for safety) since dialog cannot be reused without
     // updating code
-    connect( rlp, &QgsRasterLayerProperties::accepted, [ rlp ]
+    connect( rasterLayerPropertiesDialog, &QgsRasterLayerProperties::accepted, [ rasterLayerPropertiesDialog ]
     {
-      rlp->deleteLater();
+      rasterLayerPropertiesDialog->deleteLater();
     } );
-    connect( rlp, &QgsRasterLayerProperties::rejected, [ rlp ]
+    connect( rasterLayerPropertiesDialog, &QgsRasterLayerProperties::rejected, [ rasterLayerPropertiesDialog ]
     {
-      rlp->deleteLater();
+      rasterLayerPropertiesDialog->deleteLater();
     } );
   }
-  else if ( ml->type() == QgsMapLayer::VectorLayer ) // VECTOR
+  else if ( mapLayer->type() == QgsMapLayer::VectorLayer ) // VECTOR
   {
-    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( ml );
+    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mapLayer );
 
 #if 0 // See note above about reusing this
     QgsVectorLayerProperties *vlp = nullptr;
@@ -12635,26 +12637,26 @@ void QgisApp::showLayerProperties( QgsMapLayer *ml )
       // handled by rendererChanged() connect( vlp, SIGNAL( refreshLegend( QString ) ), mLayerTreeView, SLOT( refreshLayerSymbology( QString ) ) );
     }
 #else
-    QgsVectorLayerProperties *vlp = new QgsVectorLayerProperties( vlayer, this );
+    QgsVectorLayerProperties *vectorLayerPropertiesDialog = new QgsVectorLayerProperties( vlayer, this );
 #endif
     Q_FOREACH ( QgsMapLayerConfigWidgetFactory *factory, mMapLayerPanelFactories )
     {
-      vlp->addPropertiesPageFactory( factory );
+      vectorLayerPropertiesDialog->addPropertiesPageFactory( factory );
     }
 
     mMapStyleWidget->blockUpdates( true );
-    if ( vlp->exec() )
+    if ( vectorLayerPropertiesDialog->exec() )
     {
-      activateDeactivateLayerRelatedActions( ml );
+      activateDeactivateLayerRelatedActions( mapLayer );
       mMapStyleWidget->updateCurrentWidgetLayer();
     }
     mMapStyleWidget->blockUpdates( false );
 
-    delete vlp; // delete since dialog cannot be reused without updating code
+    delete vectorLayerPropertiesDialog; // delete since dialog cannot be reused without updating code
   }
-  else if ( ml->type() == QgsMapLayer::PluginLayer )
+  else if ( mapLayer->type() == QgsMapLayer::PluginLayer )
   {
-    QgsPluginLayer *pl = qobject_cast<QgsPluginLayer *>( ml );
+    QgsPluginLayer *pl = qobject_cast<QgsPluginLayer *>( mapLayer );
     if ( !pl )
       return;
 

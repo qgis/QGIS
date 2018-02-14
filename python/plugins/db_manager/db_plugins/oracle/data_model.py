@@ -91,9 +91,9 @@ class ORTableDataModel(TableDataModel):
                 row >= self.fetchedFrom + self.fetchedCount):
             margin = self.fetchedCount / 2
             if row + margin >= self.rowCount():
-                start = self.rowCount() - margin
+                start = int(self.rowCount() - margin)
             else:
-                start = row - margin
+                start = int(row - margin)
             if start < 0:
                 start = 0
             self.fetchMoreData(start)
