@@ -283,7 +283,7 @@ void QgsAttributeTableConfig::writeXml( QDomNode &node ) const
   node.appendChild( configElement );
 }
 
-bool QgsAttributeTableConfig::sameColumns( const QgsAttributeTableConfig &other ) const
+bool QgsAttributeTableConfig::hasSameColumns( const QgsAttributeTableConfig &other ) const
 {
   if ( columns().size() == other.columns().size() )
   {

@@ -135,7 +135,7 @@ void QgsAttributeTableFilterModel::setAttributeTableConfig( const QgsAttributeTa
   mConfig = config;
   mConfig.update( layer()->fields() );
 
-  if ( mConfig.sameColumns( oldConfig ) )
+  if ( mConfig.hasSameColumns( oldConfig ) )
   {
     return;
   }
