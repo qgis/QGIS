@@ -273,23 +273,23 @@ class DlgImportVector(QDialog, Ui_Dialog):
 
         # sanity checks
         if self.inLayer is None:
-            QMessageBox.information(self, self.tr("Import to database"), self.tr("Input layer missing or not valid"))
+            QMessageBox.critical(self, self.tr("Import to Database"), self.tr("Input layer missing or not valid."))
             return
 
         if self.cboTable.currentText() == "":
-            QMessageBox.information(self, self.tr("Import to database"), self.tr("Output table name is required"))
+            QMessageBox.critical(self, self.tr("Import to Database"), self.tr("Output table name is required."))
             return
 
         if self.chkSourceSrid.isEnabled() and self.chkSourceSrid.isChecked():
             if not self.widgetSourceSrid.crs().isValid():
-                QMessageBox.critical(self, self.tr("Import to database"),
-                                     self.tr("Invalid source srid: must be a valid crs"))
+                QMessageBox.critical(self, self.tr("Import to Database"),
+                                     self.tr("Invalid source srid: must be a valid crs."))
                 return
 
         if self.chkTargetSrid.isEnabled() and self.chkTargetSrid.isChecked():
             if not self.widgetTargetSrid.crs().isValid():
-                QMessageBox.critical(self, self.tr("Import to database"),
-                                     self.tr("Invalid target srid: must be a valid crs"))
+                QMessageBox.critical(self, self.tr("Import to Database"),
+                                     self.tr("Invalid target srid: must be a valid crs."))
                 return
 
         with OverrideCursor(Qt.WaitCursor):
@@ -369,7 +369,7 @@ class DlgImportVector(QDialog, Ui_Dialog):
 
         if ret != 0:
             output = QgsMessageViewer()
-            output.setTitle(self.tr("Import to database"))
+            output.setTitle(self.tr("Import to Database"))
             output.setMessageAsPlainText(self.tr("Error {0}\n{1}").format(ret, errMsg))
             output.showMessage()
             return
@@ -380,7 +380,7 @@ class DlgImportVector(QDialog, Ui_Dialog):
 
         self.db.connection().reconnect()
         self.db.refresh()
-        QMessageBox.information(self, self.tr("Import to database"), self.tr("Import was successful."))
+        QMessageBox.information(self, self.tr("Import to Database"), self.tr("Import was successful."))
         return QDialog.accept(self)
 
     def closeEvent(self, event):
