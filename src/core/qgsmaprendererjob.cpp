@@ -343,7 +343,10 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter *painter, QgsLabelingEn
     if ( hasStyleOverride )
       ml->styleManager()->setOverrideStyle( mSettings.layerStyleOverrides().value( ml->id() ) );
 
+    QTime layerTime;
+    layerTime.start();
     job.renderer = ml->createMapRenderer( job.context );
+    job.renderingTime = layerTime.elapsed(); // include job preparation time in layer rendering time
 
     if ( hasStyleOverride )
       ml->styleManager()->restoreOverrideStyle();

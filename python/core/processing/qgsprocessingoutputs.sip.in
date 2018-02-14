@@ -33,6 +33,8 @@ as generated layers or calculated values.
       sipType = sipType_QgsProcessingOutputRasterLayer;
     else if ( sipCpp->type() == QgsProcessingOutputMapLayer::typeName() )
       sipType = sipType_QgsProcessingOutputMapLayer;
+    else if ( sipCpp->type() == QgsProcessingOutputMultipleLayers::typeName() )
+      sipType = sipType_QgsProcessingOutputMultipleLayers;
     else if ( sipCpp->type() == QgsProcessingOutputHtml::typeName() )
       sipType = sipType_QgsProcessingOutputHtml;
     else if ( sipCpp->type() == QgsProcessingOutputNumber::typeName() )
@@ -187,6 +189,42 @@ A raster layer output for processing algorithms.
     QgsProcessingOutputRasterLayer( const QString &name, const QString &description = QString() );
 %Docstring
 Constructor for QgsProcessingOutputRasterLayer.
+%End
+
+    static QString typeName();
+%Docstring
+Returns the type name for the output class.
+%End
+    virtual QString type() const;
+
+
+};
+
+class QgsProcessingOutputMultipleLayers : QgsProcessingOutputDefinition
+{
+%Docstring
+A multi-layer output for processing algorithms which create map layers, when
+the number and nature of the output layers is not predefined.
+
+.. note::
+
+   Always prefer to explicitly define QgsProcessingOutputVectorLayer,
+   QgsProcessingOutputRasterLayer or QgsProcessingOutputMapLayer where possible. :py:class:`QgsProcessingOutputMultipleLayers`
+   should only ever be used when the number of output layers is not
+   fixed - e.g. as a result of processing all layers in a specified
+   folder.
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingoutputs.h"
+%End
+  public:
+
+    QgsProcessingOutputMultipleLayers( const QString &name, const QString &description = QString() );
+%Docstring
+Constructor for QgsProcessingOutputMultipleLayers.
 %End
 
     static QString typeName();

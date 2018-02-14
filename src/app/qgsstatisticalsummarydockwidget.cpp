@@ -251,6 +251,8 @@ void QgsStatisticalSummaryDockWidget::updateNumericStatistics()
     row++;
   }
 
+  mStatisticsTable->resizeColumnsToContents();
+
   gathererFinished();
 }
 
@@ -259,7 +261,7 @@ void QgsStatisticalSummaryDockWidget::updateStringStatistics()
   if ( !mGatherer )
     return;
 
-  QVariantList values = mGatherer->values();//mLayer->getValues( field, ok, selectedOnly );
+  QVariantList values = mGatherer->values();
 
   QList< QgsStringStatisticalSummary::Statistic > statsToDisplay;
   QgsStringStatisticalSummary::Statistics statsToCalc = nullptr;
@@ -287,6 +289,8 @@ void QgsStatisticalSummaryDockWidget::updateStringStatistics()
             stats.count() != 0 );
     row++;
   }
+
+  mStatisticsTable->resizeColumnsToContents();
 
   gathererFinished();
 }
@@ -410,6 +414,8 @@ void QgsStatisticalSummaryDockWidget::updateDateTimeStatistics()
             stats.count() != 0 );
     row++;
   }
+
+  mStatisticsTable->resizeColumnsToContents();
 
   gathererFinished();
 }

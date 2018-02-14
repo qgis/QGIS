@@ -1251,7 +1251,7 @@ QgsRectangle QgsWFSSingleFeatureRequest::getExtent()
     getFeatureUrl.addQueryItem( QStringLiteral( "MAXFEATURES" ), QString::number( 1 ) );
 
   if ( !sendGET( getFeatureUrl, true ) )
-    return -1;
+    return QgsRectangle();
 
   const QByteArray &buffer = response();
 

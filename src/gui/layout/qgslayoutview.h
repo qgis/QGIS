@@ -76,6 +76,8 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
      */
     QgsLayoutView( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
+    ~QgsLayoutView();
+
     /**
      * Returns the current layout associated with the view.
      * \see setCurrentLayout()
@@ -514,6 +516,12 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
      * item and should have its properties displayed in any designer windows.
      */
     void itemFocused( QgsLayoutItem *item );
+
+    /**
+     * Emitted in the destructor when the view is about to be deleted,
+     * but is still in a perfectly valid state.
+     */
+    void willBeDeleted();
 
   protected:
     void mousePressEvent( QMouseEvent *event ) override;

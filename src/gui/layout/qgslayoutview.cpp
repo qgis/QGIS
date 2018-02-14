@@ -68,6 +68,11 @@ QgsLayoutView::QgsLayoutView( QWidget *parent )
   connect( this, &QgsLayoutView::zoomLevelChanged, this, &QgsLayoutView::invalidateCachedRenders );
 }
 
+QgsLayoutView::~QgsLayoutView()
+{
+  emit willBeDeleted();
+}
+
 QgsLayout *QgsLayoutView::currentLayout()
 {
   return qobject_cast<QgsLayout *>( scene() );

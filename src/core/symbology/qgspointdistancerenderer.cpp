@@ -459,6 +459,11 @@ QgsExpressionContextScope *QgsPointDistanceRenderer::createGroupScope( const Clu
 
     clusterScope->addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_CLUSTER_SIZE, group.size(), true ) );
   }
+  if ( !group.empty() )
+  {
+    // data defined properties may require a feature in the expression context, so just use first feature in group
+    clusterScope->setFeature( group.at( 0 ).feature );
+  }
   return clusterScope;
 }
 

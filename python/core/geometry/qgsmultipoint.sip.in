@@ -51,8 +51,11 @@ class QgsMultiPoint: QgsGeometryCollection
     virtual double segmentLength( QgsVertexId startVertex ) const;
 
 
-  protected:
+
     virtual QgsMultiPoint *createEmptyWithSameType() const /Factory/;
+
+
+  protected:
 
     virtual bool wktOmitChildType() const;
 

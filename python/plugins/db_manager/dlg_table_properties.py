@@ -107,7 +107,7 @@ class DlgTableProperties(QDialog, Ui_Dialog):
         sel = self.viewFields.selectionModel()
         indexes = sel.selectedRows()
         if len(indexes) == 0:
-            QMessageBox.information(self, self.tr("DB Manager"), self.tr("nothing selected"))
+            QMessageBox.information(self, self.tr("DB Manager"), self.tr("No columns were selected."))
             return -1
         return indexes[0].row()
 
@@ -238,7 +238,7 @@ class DlgTableProperties(QDialog, Ui_Dialog):
         sel = self.viewConstraints.selectionModel()
         indexes = sel.selectedRows()
         if len(indexes) == 0:
-            QMessageBox.information(self, self.tr("DB Manager"), self.tr("Nothing selected"))
+            QMessageBox.information(self, self.tr("DB Manager"), self.tr("No constraints were selected."))
             return -1
         return indexes[0].row()
 
@@ -296,7 +296,7 @@ class DlgTableProperties(QDialog, Ui_Dialog):
         sel = self.viewIndexes.selectionModel()
         indexes = sel.selectedRows()
         if len(indexes) == 0:
-            QMessageBox.information(self, self.tr("DB Manager"), self.tr("Nothing selected"))
+            QMessageBox.information(self, self.tr("DB Manager"), self.tr("No indices were selected."))
             return -1
         return indexes[0].row()
 

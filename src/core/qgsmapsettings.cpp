@@ -406,9 +406,9 @@ QgsRectangle QgsMapSettings::layerExtentToOutputExtent( const QgsMapLayer *layer
     QgsCoordinateTransform ct = layerTransform( layer );
     if ( ct.isValid() )
     {
-      QgsDebugMsg( QString( "sourceCrs = " + ct.sourceCrs().authid() ) );
-      QgsDebugMsg( QString( "destCRS = " + ct.destinationCrs().authid() ) );
-      QgsDebugMsg( QString( "extent = " + extent.toString() ) );
+      QgsDebugMsgLevel( QString( "sourceCrs = " + ct.sourceCrs().authid() ), 3 );
+      QgsDebugMsgLevel( QString( "destCRS = " + ct.destinationCrs().authid() ), 3 );
+      QgsDebugMsgLevel( QString( "extent = " + extent.toString() ), 3 );
       extent = ct.transformBoundingBox( extent );
     }
   }
@@ -417,7 +417,7 @@ QgsRectangle QgsMapSettings::layerExtentToOutputExtent( const QgsMapLayer *layer
     QgsMessageLog::logMessage( QStringLiteral( "Transform error caught: %1" ).arg( cse.what() ), QStringLiteral( "CRS" ) );
   }
 
-  QgsDebugMsg( QString( "proj extent = " + extent.toString() ) );
+  QgsDebugMsgLevel( QString( "proj extent = " + extent.toString() ), 3 );
 
   return extent;
 }
@@ -430,9 +430,9 @@ QgsRectangle QgsMapSettings::outputExtentToLayerExtent( const QgsMapLayer *layer
     QgsCoordinateTransform ct = layerTransform( layer );
     if ( ct.isValid() )
     {
-      QgsDebugMsg( QString( "sourceCrs = " + ct.sourceCrs().authid() ) );
-      QgsDebugMsg( QString( "destCRS = " + ct.destinationCrs().authid() ) );
-      QgsDebugMsg( QString( "extent = " + extent.toString() ) );
+      QgsDebugMsgLevel( QString( "sourceCrs = " + ct.sourceCrs().authid() ), 3 );
+      QgsDebugMsgLevel( QString( "destCRS = " + ct.destinationCrs().authid() ), 3 );
+      QgsDebugMsgLevel( QString( "extent = " + extent.toString() ), 3 );
       extent = ct.transformBoundingBox( extent, QgsCoordinateTransform::ReverseTransform );
     }
   }
@@ -441,7 +441,7 @@ QgsRectangle QgsMapSettings::outputExtentToLayerExtent( const QgsMapLayer *layer
     QgsMessageLog::logMessage( QStringLiteral( "Transform error caught: %1" ).arg( cse.what() ), QStringLiteral( "CRS" ) );
   }
 
-  QgsDebugMsg( QString( "proj extent = " + extent.toString() ) );
+  QgsDebugMsgLevel( QString( "proj extent = " + extent.toString() ), 3 );
 
   return extent;
 }
