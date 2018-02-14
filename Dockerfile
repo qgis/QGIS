@@ -1,7 +1,7 @@
 
-# CACHE_TAG is provided by Docker cloud
+# CACHE_TAG is provided by Docker cloud
 # see https://docs.docker.com/docker-cloud/builds/advanced/
-# using ARG in FROM requires min v17.05.0-ce
+# using ARG in FROM requires min v17.05.0-ce
 ARG  CACHE_TAG=latest
 
 FROM  qgis/qgis3-build-deps:${CACHE_TAG}
@@ -18,10 +18,12 @@ WORKDIR /usr/src/QGIS/build
 
 RUN cmake \
  -GNinja \
+ -DCMAKE_BUILD_TYPE=Release \
  -DCMAKE_INSTALL_PREFIX=/usr \
  -DBINDINGS_GLOBAL_INSTALL=ON \
  -DWITH_STAGED_PLUGINS=ON \
  -DWITH_GRASS=ON \
+ -DWITH_3D=ON \
  -DSUPPRESS_QT_WARNINGS=ON \
  -DENABLE_TESTS=OFF \
  -DWITH_QSPATIALITE=ON \
