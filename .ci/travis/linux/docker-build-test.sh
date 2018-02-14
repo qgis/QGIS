@@ -39,6 +39,7 @@ echo "travis_fold:start:cmake"
 echo "${bold}Running cmake...${endbold}"
 cmake \
  -GNinja \
+ -DWITH_3D=ON \
  -DWITH_STAGED_PLUGINS=ON \
  -DWITH_GRASS=OFF \
  -DSUPPRESS_QT_WARNINGS=ON \
