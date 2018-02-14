@@ -1,4 +1,4 @@
-FROM      ubuntu:16.04
+FROM      ubuntu:18.04
 MAINTAINER Denis Rouzaud <denis.rouzaud@gmail.com>
 
 LABEL Description="Docker container with QGIS dependencies" Vendor="QGIS.org" Version="1.0"
@@ -90,12 +90,7 @@ RUN  apt-get update \
   && apt-get clean \
   && curl -s -S -O https://cmake.org/files/v3.10/cmake-3.10.2-Linux-x86_64.tar.gz \
   && tar --strip-components=1 -zx -f cmake-3.10.2-Linux-x86_64.tar.gz -C /usr/local \
-  && rm cmake-3.10.2-Linux-x86_64.tar.gz \
-  && mkdir /root/sip \
-  && curl -s -S -O -L https://sourceforge.net/projects/pyqt/files/sip/sip-4.19.7/sip-4.19.7.tar.gz \
-  && tar --strip-components=1 -zx -f sip-4.19.7.tar.gz -C /root/sip \
-  && python3 /root/sip/configure.py && make && make install \
-  && rm sip-4.19.7.tar.gz
+  && rm cmake-3.10.2-Linux-x86_64.tar.gz
 
 RUN echo "alias python=python3" >> ~/.bash_aliases
 
