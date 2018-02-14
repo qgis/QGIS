@@ -3666,7 +3666,7 @@ void QgsDxfExport::writeMText( const QString &layer, const QString &text, const 
     writeGroup( 3, t.left( 250 ) );
     t = t.mid( 250 );
   }
-  writeGroup( 1, text );
+  writeGroup( 1, t );
 
   writeGroup( 50, angle );        // Rotation angle in radians
   writeGroup( 41, width * 1.1 );  // Reference rectangle width
@@ -4414,6 +4414,7 @@ void QgsDxfExport::drawLabel( const QString &layerId, QgsRenderContext &context,
   else
   {
     txt = txt.replace( wrapchr, QLatin1String( "\\P" ) );
+    txt.replace( " ", "\\~" );
 
     if ( tmpLyr.format().font().underline() )
     {

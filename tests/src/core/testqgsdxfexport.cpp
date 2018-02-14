@@ -43,6 +43,7 @@ class TestQgsDxfExport : public QObject
     void testPolygons();
     void testMtext();
     void testMTextNoSymbology(); //tests if label export works if layer has vector renderer type 'no symbols'
+    void testMTextEscapeSpaces();
     void testText();
 
   private:
@@ -82,6 +83,7 @@ void TestQgsDxfExport::init()
   mPointLayerNoSymbols = new QgsVectorLayer( filename, QStringLiteral( "points" ), QStringLiteral( "ogr" ) );
   QVERIFY( mPointLayerNoSymbols->isValid() );
   mPointLayerNoSymbols->setRenderer( new QgsNullSymbolRenderer() );
+  mPointLayerNoSymbols->addExpressionField( QStringLiteral( "'A text with spaces'" ), QgsField( QStringLiteral( "Spacestest" ), QVariant::String ) );
   QgsProject::instance()->addMapLayer( mPointLayerNoSymbols );
   filename = QStringLiteral( TEST_DATA_DIR ) + "/lines.shp";
   mLineLayer = new QgsVectorLayer( filename, QStringLiteral( "lines" ), QStringLiteral( "ogr" ) );
@@ -191,6 +193,41 @@ void TestQgsDxfExport::testMtext()
 void TestQgsDxfExport::testMTextNoSymbology()
 {
   QVERIFY( testMtext( mPointLayerNoSymbols, QStringLiteral( "text_no_symbology_dxf" ) ) );
+}
+
+void TestQgsDxfExport::testMTextEscapeSpaces()
+{
+  QgsPalLayerSettings settings;
+  settings.fieldName = QStringLiteral( "Spacestest" );
+  QgsTextFormat format;
+  format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ).family() );
+  format.setSize( 12 );
+  format.setNamedStyle( QStringLiteral( "Bold" ) );
+  format.setColor( QColor( 200, 0, 200 ) );
+  settings.setFormat( format );
+  mPointLayerNoSymbols->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
+  mPointLayerNoSymbols->setLabelsEnabled( true );
+
+  QgsDxfExport d;
+  d.addLayers( QList< QgsDxfExport::DxfLayer >() << QgsDxfExport::DxfLayer( mPointLayerNoSymbols ) );
+
+  QgsMapSettings mapSettings;
+  QSize size( 640, 480 );
+  mapSettings.setOutputSize( size );
+  mapSettings.setExtent( mPointLayerNoSymbols->extent() );
+  mapSettings.setLayers( QList<QgsMapLayer *>() << mPointLayerNoSymbols );
+  mapSettings.setOutputDpi( 96 );
+  mapSettings.setDestinationCrs( mPointLayerNoSymbols->crs() );
+
+  d.setMapSettings( mapSettings );
+  d.setSymbologyScale( 1000 );
+  d.setSymbologyExport( QgsDxfExport::FeatureSymbology );
+
+  QString file = getTempFileName( "mtext_escape_spaces" );
+  QFile dxfFile( file );
+  QCOMPARE( d.writeToFile( &dxfFile, QStringLiteral( "CP1252" ) ), 0 );
+  dxfFile.close();
+  QVERIFY( fileContainsText( file, "\\fQGIS Vera Sans|i0|b1;\\H3.81136;A\\~text\\~with\\~spaces" ) );
 }
 
 void TestQgsDxfExport::testText()
