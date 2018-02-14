@@ -109,6 +109,29 @@ class TestQgsAttributeTableConfig(unittest.TestCase):
         self.assertFalse(config.columnHidden(0))
         self.assertTrue(config.columnHidden(1))
 
+    def testSameColumns(self):
+        """ test sameColumns() check """
+
+        config = QgsAttributeTableConfig()
+        c1 = QgsAttributeTableConfig.ColumnConfig()
+        c1.name = 'test'
+        c1.hidden = False
+        c1.width = 100
+        c2 = QgsAttributeTableConfig.ColumnConfig()
+        c2.name = 'test2'
+        c2.hidden = False
+        c2.width = 120
+        config.setColumns([c1, c2])
+
+        config2 = QgsAttributeTableConfig()
+        c1.width = 200
+        config2.setColumns([c1, c2])
+        self.assertTrue(config.sameColumns(config2))
+
+        c2.name = 'test3'
+        config2.setColumns([c1, c2])
+        self.assertFalse(config.sameColumns(config2))
+
     def testMapVisibleColumn(self):
         pass
 
