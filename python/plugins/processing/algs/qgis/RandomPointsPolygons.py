@@ -136,6 +136,9 @@ class RandomPointsPolygons(QgisAlgorithm):
             if feedback.isCanceled():
                 break
 
+            if not f.hasGeometry():
+                continue
+
             current_progress = total * current
             feedback.setProgress(current_progress)
 
@@ -147,6 +150,9 @@ class RandomPointsPolygons(QgisAlgorithm):
                 continue
 
             fGeom = f.geometry()
+            engine = QgsGeometry.createGeometryEngine(fGeom.constGet())
+            engine.prepareGeometry()
+
             bbox = fGeom.boundingBox()
             if strategy == 0:
                 pointCount = int(value)
@@ -176,7 +182,7 @@ class RandomPointsPolygons(QgisAlgorithm):
 
                 p = QgsPointXY(rx, ry)
                 geom = QgsGeometry.fromPointXY(p)
-                if geom.within(fGeom) and \
+                if engine.contains(geom.constGet()) and \
                         vector.checkMinDistance(p, index, minDistance, points):
                     f = QgsFeature(nPoints)
                     f.initAttributes(1)
