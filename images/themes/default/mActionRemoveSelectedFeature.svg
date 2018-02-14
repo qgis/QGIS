@@ -1,0 +1,34 @@
+<svg width="10.4mm" height="10.41mm" version="1.1" viewBox="0 0 10.398247 10.413774" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <g transform="translate(-754.5 724.6)">
+  <g transform="translate(0 14.55)">
+   <g transform="matrix(1.89 0 0 1.89 -700.5 622)">
+    <path d="m770.1-718.9h5.027v3.704h-5.027z" fill="#e6e6e6" stroke="#6e97c4" stroke-width=".2646"/>
+    <path d="m770.1-720.2h5.027v1.323h-5.027z" fill="#bad9ec" stroke="#6e97c4" stroke-width=".2646"/>
+    <g fill="none">
+     <g stroke="#6e97c4">
+      <path d="m770.7-719.5h1.058" overflow="visible" stroke-width=".5292"/>
+      <path d="m772.3-719.5h2.117" stroke-width=".5292"/>
+      <path d="m770.7-718.3h1.058" overflow="visible" stroke-width=".2646"/>
+      <path d="m772.3-718.3h2.117" stroke-width=".2646"/>
+     </g>
+     <path d="m770.7-717.5h1.058" overflow="visible" stroke="#c00" stroke-opacity=".902" stroke-width=".2646"/>
+     <path d="m772.3-717.5h2.117" stroke="#c00" stroke-opacity=".902" stroke-width=".2646"/>
+     <g stroke="#6e97c4" stroke-width=".2646">
+      <path d="m770.7-716.8h1.058" overflow="visible"/>
+      <path d="m772.3-716.8h2.117"/>
+      <path d="m770.7-716h1.058" overflow="visible"/>
+      <path d="m772.3-716h2.117"/>
+     </g>
+    </g>
+   </g>
+  </g>
+  <g transform="matrix(1.9 0 0 1.9 -676.5 618.3)">
+   <rect x="756" y="-704" width="2.646" height="2.646" rx=".5322" fill="#d26464" stroke-width=".2646"/>
+   <g fill-rule="evenodd">
+    <path d="m756.2-702.7h2.117v-0.5292c0-0.5292-0.1323-0.5292-1.058-0.5292s-1.058 0-1.058 0.5292v0.5292z" fill="#fcffff" opacity=".3" stroke-width=".2646"/>
+    <path d="m756.7-702.1 1.123-1.123" fill="#fff" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width=".5292"/>
+    <path d="m756.7-703.2 1.123 1.123" fill="#fff" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width=".5292"/>
+   </g>
+  </g>
+ </g>
+</svg>
