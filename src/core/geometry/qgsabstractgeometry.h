@@ -617,8 +617,6 @@ class CORE_EXPORT QgsAbstractGeometry
      */
     QgsVertexIterator vertices() const;
 
-  protected:
-
     /**
      * Creates a new geometry with the same class and same WKB type as the original and transfers ownership.
      * To create it, the geometry is default constructed and then the WKB is changed.
@@ -627,6 +625,8 @@ class CORE_EXPORT QgsAbstractGeometry
      * \note Not available in Python bindings
      */
     virtual QgsAbstractGeometry *createEmptyWithSameType() const = 0 SIP_FACTORY;
+
+  protected:
 
     /**
      * Returns whether the geometry has any child geometries (false for point / curve, true otherwise)

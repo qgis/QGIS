@@ -281,7 +281,7 @@ QMenu *QgsAppLayerTreeViewMenuProvider::createContextMenu()
 
       if ( layer && layer->type() == QgsMapLayer::VectorLayer && static_cast<QgsVectorLayer *>( layer )->providerType() == QLatin1String( "virtual" ) )
       {
-        menu->addAction( tr( "Edit virtual layer settings" ), QgisApp::instance(), SLOT( addVirtualLayer() ) );
+        menu->addAction( tr( "Edit Virtual Layer…" ), QgisApp::instance(), SLOT( addVirtualLayer() ) );
       }
     }
 

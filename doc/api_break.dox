@@ -1181,7 +1181,7 @@ and the new ramp can be retrieved after executing the dialog by calling ramp().
 QgsGraduatedSymbolRenderer        {#qgis_api_break_3_0_QgsGraduatedSymbolRenderer}
 --------------------------
 
-- getDataValues() has been removed - use QgsVectorLayer::getDoubleValues() instead
+- getDataValues() has been removed - use QgsVectorLayerUtils::getDoubleValues() instead
 
 
 QgsGraduatedSymbolRenderer        {#qgis_api_break_3_0_QgsGraduatedSymbolRendererWidget}
@@ -2457,6 +2457,7 @@ displayExpression instead. For the map tip use mapTipTemplate() instead.
 - pendingAllAttributesList() was dropped. Use allAttributes() instead.
 - pendingPkAttributesList() and pkAttributeList() were dropped. Use primaryKeyAttributes() instead.
 - pendingFeatureCount() was dropped. Use featureCount() instead.
+- getValues() and getDoubleValues() functions moved to QgsVectorLayerUtils.
 
 
 QgsVectorLayerEditBuffer        {#qgis_api_break_3_0_QgsVectorLayerEditBuffer}

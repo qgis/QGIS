@@ -425,9 +425,8 @@ Example:
 %End
 
 
-  protected:
-
     virtual QgsTriangle *createEmptyWithSameType() const /Factory/;
+
 
 
 };

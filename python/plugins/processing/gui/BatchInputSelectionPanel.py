@@ -85,7 +85,7 @@ class BatchInputSelectionPanel(QWidget):
         popupmenu = QMenu()
 
         if not (isinstance(self.param, QgsProcessingParameterMultipleLayers) and
-                self.param.datatype == dataobjects.TYPE_FILE):
+                self.param.layerType == dataobjects.TYPE_FILE):
             selectLayerAction = QAction(
                 self.tr('Select from open layers'), self.pushButton)
             selectLayerAction.triggered.connect(self.showLayerSelectionDialog)
@@ -120,10 +120,19 @@ class BatchInputSelectionPanel(QWidget):
 
         dlg = MultipleInputDialog([layer.name() for layer in layers])
         dlg.exec_()
+
+        def generate_layer_id(layer):
+            # prefer layer name if unique
+            if len([l for l in layers if l.name().lower() == layer.name().lower()]) == 1:
+                return layer.name()
+            else:
+                # otherwise fall back to layer id
+                return layer.id()
+
         if dlg.selectedoptions is not None:
             selected = dlg.selectedoptions
             if len(selected) == 1:
-                self.setValue(layers[selected[0]].id())
+                self.setValue(generate_layer_id(layers[selected[0]]))
             else:
                 if isinstance(self.param, QgsProcessingParameterMultipleLayers):
                     self.text.setText(';'.join(layers[idx].id() for idx in selected))
@@ -133,7 +142,7 @@ class BatchInputSelectionPanel(QWidget):
                         self._panel().addRow()
                     for i, layeridx in enumerate(selected):
                         self._table().cellWidget(i + self.row,
-                                                 self.col).setValue(layers[layeridx].id())
+                                                 self.col).setValue(generate_layer_id(layers[layeridx]))
 
     def showFileSelectionDialog(self):
         settings = QgsSettings()

@@ -175,8 +175,11 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
       return nullptr;
     }
 #endif
-  protected:
+
     QgsCurvePolygon *createEmptyWithSameType() const override SIP_FACTORY;
+
+  protected:
+
     int childCount() const override;
     QgsAbstractGeometry *childGeometry( int index ) const override;
 

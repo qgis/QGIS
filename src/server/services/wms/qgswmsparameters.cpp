@@ -685,9 +685,9 @@ namespace QgsWms
     return value( ParameterName::DPI ).toString();
   }
 
-  int QgsWmsParameters::dpiAsInt() const
+  double QgsWmsParameters::dpiAsDouble() const
   {
-    return toInt( ParameterName::DPI );
+    return toDouble( ParameterName::DPI );
   }
 
   QString QgsWmsParameters::version() const

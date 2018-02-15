@@ -64,7 +64,6 @@ class TestQgsPostgresProvider: public QObject
       qDebug() << "actual: " << decoded;
       QCOMPARE( decoded.toList(), expected );
     }
-
 };
 
 QGSTEST_MAIN( TestQgsPostgresProvider )

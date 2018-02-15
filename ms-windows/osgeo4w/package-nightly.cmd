@@ -67,7 +67,7 @@ if not exist "%SETUPAPI_LIBRARY%" (echo SETUPAPI_LIBRARY not found & goto error)
 
 set CMAKE_OPT=^
 	-D SIP_BINARY_PATH=%O4W_ROOT%/apps/Python36/sip.exe ^
-	-D CMAKE_CXX_FLAGS_RELWITHDEBINFO="/MD /ZI /MP /Od /D NDEBUG /D QGISDEBUG" ^
+	-D CMAKE_CXX_FLAGS_RELWITHDEBINFO="/MD /ZI /MP /Od /D NDEBUG" ^
 	-D CMAKE_PDB_OUTPUT_DIRECTORY_RELWITHDEBINFO=%BUILDDIR%\apps\%PACKAGENAME%\pdb ^
 	-D SPATIALINDEX_LIBRARY=%O4W_ROOT%/lib/spatialindex_i.lib
 goto cmake
@@ -83,7 +83,7 @@ if not exist "%SETUPAPI_LIBRARY%" (echo SETUPAPI_LIBRARY not found & goto error)
 set CMAKE_OPT=^
 	-D SPATIALINDEX_LIBRARY=%O4W_ROOT%/lib/spatialindex-64.lib ^
 	-D SIP_BINARY_PATH=%O4W_ROOT%/apps/Python36/sip.exe ^
-	-D CMAKE_CXX_FLAGS_RELWITHDEBINFO="/MD /Zi /MP /Od /D NDEBUG /D QGISDEBUG" ^
+	-D CMAKE_CXX_FLAGS_RELWITHDEBINFO="/MD /Zi /MP /Od /D NDEBUG" ^
 	-D CMAKE_PDB_OUTPUT_DIRECTORY_RELWITHDEBINFO=%BUILDDIR%\apps\%PACKAGENAME%\pdb ^
 	-D SETUPAPI_LIBRARY="%SETUPAPI_LIBRARY%" ^
 	-D CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_NO_WARNINGS=TRUE
@@ -205,9 +205,14 @@ if errorlevel 1 (echo clean failed & goto error)
 :skipclean
 if exist ..\skipbuild (echo skip build & goto skipbuild)
 echo ALL_BUILD: %DATE% %TIME%
-cmake --build %BUILDDIR% --config %BUILDCONF%
-if errorlevel 1 cmake --build %BUILDDIR% --config %BUILDCONF%
-if errorlevel 1 (echo build failed twice & goto error)
+cmake --build %BUILDDIR% --target NightlyBuild --config %BUILDCONF%
+if errorlevel 1 cmake --build %BUILDDIR% --target NightlyBuild --config %BUILDCONF%
+if errorlevel 1 (
+	cmake --build %BUILDDIR% --target NightlySubmit --config %BUILDCONF%
+	if errorlevel 1 echo SUBMITTING BUILD ERRORS WAS NOT SUCCESSFUL.
+	echo build failed twice
+	goto error
+)
 
 :skipbuild
 if exist ..\skiptests goto skiptests
@@ -230,8 +235,10 @@ for %%g IN (%GRASS_VERSIONS%) do (
 PATH %path%;%BUILDDIR%\output\plugins
 set QT_PLUGIN_PATH=%BUILDDIR%\output\plugins;%OSGEO4W_ROOT%\apps\qt5\plugins
 
-cmake --build %BUILDDIR% --target Nightly --config %BUILDCONF%
+cmake --build %BUILDDIR% --target NightlyTest --config %BUILDCONF%
 if errorlevel 1 echo TESTS WERE NOT SUCCESSFUL.
+cmake --build %BUILDDIR% --target NightlySubmit --config %BUILDCONF%
+if errorlevel 1 echo TEST SUBMISSION WAS NOT SUCCESSFUL.
 
 set TEMP=%oldtemp%
 set TMP=%oldtmp%

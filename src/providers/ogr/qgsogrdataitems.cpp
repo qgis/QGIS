@@ -139,6 +139,21 @@ QgsLayerItem::LayerType QgsOgrLayerItem::layerTypeFromDb( const QString &geometr
   {
     return QgsLayerItem::LayerType::Raster;
   }
+
+  // fallback - try parsing as a WKT type string
+  switch ( QgsWkbTypes::geometryType( QgsWkbTypes::parseType( geometryType ) ) )
+  {
+    case QgsWkbTypes::PointGeometry:
+      return QgsLayerItem::LayerType::Point;
+    case QgsWkbTypes::LineGeometry:
+      return QgsLayerItem::LayerType::Line;
+    case QgsWkbTypes::PolygonGeometry:
+      return QgsLayerItem::LayerType::Polygon;
+    case QgsWkbTypes::UnknownGeometry:
+    case QgsWkbTypes::NullGeometry:
+      break;
+  }
+
   return QgsLayerItem::LayerType::TableLayer;
 }
 

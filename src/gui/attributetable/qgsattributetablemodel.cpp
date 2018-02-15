@@ -264,6 +264,7 @@ void QgsAttributeTableModel::attributeDeleted( int idx )
 
 void QgsAttributeTableModel::layerDeleted()
 {
+  mLayerCache = nullptr;
   removeRows( 0, rowCount() );
 
   mAttributeWidgetCaches.clear();
@@ -596,7 +597,7 @@ QVariant QgsAttributeTableModel::headerData( int section, Qt::Orientation orient
 
 QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) const
 {
-  if ( !index.isValid() ||
+  if ( !index.isValid() || !layer() ||
        ( role != Qt::TextAlignmentRole
          && role != Qt::DisplayRole
          && role != Qt::ToolTipRole
@@ -742,7 +743,7 @@ Qt::ItemFlags QgsAttributeTableModel::flags( const QModelIndex &index ) const
   if ( !index.isValid() )
     return Qt::ItemIsEnabled;
 
-  if ( index.column() >= mFieldCount )
+  if ( index.column() >= mFieldCount || !layer() )
     return Qt::NoItemFlags;
 
   Qt::ItemFlags flags = QAbstractTableModel::flags( index );

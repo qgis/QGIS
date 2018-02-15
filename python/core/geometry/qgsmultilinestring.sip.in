@@ -49,8 +49,11 @@ Returns the geometry converted to the more generic curve type :py:class:`QgsMult
 :return: the converted geometry. Caller takes ownership*
 %End
 
-  protected:
+
     virtual QgsMultiLineString *createEmptyWithSameType() const /Factory/;
+
+
+  protected:
 
     virtual bool wktOmitChildType() const;
 

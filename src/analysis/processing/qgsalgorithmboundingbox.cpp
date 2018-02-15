@@ -86,6 +86,15 @@ QgsFeature QgsBoundingBoxAlgorithm::processFeature( const QgsFeature &feature, Q
           << bounds.perimeter();
     f.setAttributes( attrs );
   }
+  else
+  {
+    QgsAttributes attrs = f.attributes();
+    attrs << QVariant()
+          << QVariant()
+          << QVariant()
+          << QVariant();
+    f.setAttributes( attrs );
+  }
   return f;
 }
 

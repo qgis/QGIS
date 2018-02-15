@@ -86,6 +86,11 @@ QString QgsNativeAlgorithms::id() const
   return QStringLiteral( "native" );
 }
 
+QString QgsNativeAlgorithms::helpId() const
+{
+  return QStringLiteral( "qgis" );
+}
+
 QString QgsNativeAlgorithms::name() const
 {
   return tr( "QGIS (native c++)" );

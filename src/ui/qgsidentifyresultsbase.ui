@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Identify Results</string>
+   <string>Identify Results Panel</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_4">
    <property name="spacing">
@@ -62,11 +62,14 @@
          <property name="floatable">
           <bool>false</bool>
          </property>
+         <addaction name="mOpenFormAction"/>
+         <addaction name="separator"/>
          <addaction name="mExpandAction"/>
          <addaction name="mCollapseAction"/>
          <addaction name="mExpandNewAction"/>
-         <addaction name="mOpenFormAction"/>
+         <addaction name="separator"/>
          <addaction name="mClearResultsAction"/>
+         <addaction name="separator"/>
          <addaction name="mActionCopy"/>
          <addaction name="mActionPrint"/>
         </widget>
@@ -285,13 +288,13 @@
     <string>Expand New Results</string>
    </property>
    <property name="toolTip">
-    <string>New results will be expanded by default.</string>
+    <string>Expand New Results by Default</string>
    </property>
   </action>
   <action name="mOpenFormAction">
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionPropertyItem.svg</normaloff>:/images/themes/default/mActionPropertyItem.svg</iconset>
+     <normaloff>:/images/themes/default/mActionFormView.svg</normaloff>:/images/themes/default/mActionFormView.svg</iconset>
    </property>
    <property name="text">
     <string>Open Form</string>
@@ -321,7 +324,7 @@
     <string>Copy Feature</string>
    </property>
    <property name="toolTip">
-    <string>Copy selected feature to clipboard.</string>
+    <string>Copy Selected Feature to Clipboard </string>
    </property>
   </action>
   <action name="mActionPrint">
@@ -333,7 +336,7 @@
     <string>Print Response</string>
    </property>
    <property name="toolTip">
-    <string>Print selected HTML response.</string>
+    <string>Print Selected HTML Response</string>
    </property>
   </action>
  </widget>

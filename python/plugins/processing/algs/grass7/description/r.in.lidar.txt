@@ -1,7 +1,7 @@
 r.in.lidar
 Creates a raster map from LAS LiDAR points using univariate statistics.
 Raster (r.*)
-QgsProcessingParameterFile|input|LAS input file|False|las|None|False
+QgsProcessingParameterFile|input|LAS input file|QgsProcessingParameterFile.File|las|None|False
 QgsProcessingParameterEnum|method|Statistic to use for raster values|n;min;max;range;sum;mean;stddev;variance;coeff_var;median;percentile;skewness;trimmean|False|5|True
 QgsProcessingParameterEnum|type|Storage type for resultant raster map|CELL;FCELL;DCELL|False|1|True
 QgsProcessingParameterRasterLayer|base_raster|Subtract raster values from the Z coordinates|None|True

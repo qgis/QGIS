@@ -66,8 +66,17 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
      * should be a unique, short, character only string, eg "qgis" or "gdal". This
      * string should not be localised.
      * \see name()
+     * \see helpId()
      */
     virtual QString id() const = 0;
+
+    /**
+     * Returns the provider help id string, used for creating QgsHelp urls for algorithms
+     * belong to this provider. By default, this returns the provider's id(). This string
+     * should not be localised.
+     * \see id()
+     */
+    virtual QString helpId() const;
 
     /**
      * Returns the provider name, which is used to describe the provider within the GUI.

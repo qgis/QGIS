@@ -378,7 +378,7 @@ class PGTableField(TableField):
 
         # get modifier (e.g. "precision,scale") from formatted type string
         trimmedTypeStr = typeStr.strip()
-        regex = QRegExp("\((.+)\)$")
+        regex = QRegExp("\\((.+)\\)$")
         startpos = regex.indexIn(trimmedTypeStr)
         if startpos >= 0:
             self.modifier = regex.cap(1).strip()

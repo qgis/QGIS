@@ -81,8 +81,7 @@ class GUI_EXPORT QgsOptionsPageWidget : public QWidget
     }
 
   private:
-    QMap<QWidget *, QgsOptionsDialogHighlightWidget *> mHighlighWidgets = QMap<QWidget *, QgsOptionsDialogHighlightWidget *>();
-
+    QMap<QWidget *, QgsOptionsDialogHighlightWidget *> mHighlighWidgets;
 
 
 };

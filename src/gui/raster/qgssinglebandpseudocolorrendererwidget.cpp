@@ -629,6 +629,7 @@ void QgsSingleBandPseudoColorRendererWidget::mColormapTreeWidget_itemDoubleClick
     if ( newColor.isValid() )
     {
       item->setBackground( ColorColumn, QBrush( newColor ) );
+      loadMinMaxFromTree();
       emit widgetChanged();
     }
   }
@@ -858,6 +859,8 @@ void QgsSingleBandPseudoColorRendererWidget::changeColor()
       item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
       item->setBackground( ColorColumn, QBrush( newColor ) );
     }
+
+    loadMinMaxFromTree();
     emit widgetChanged();
   }
 }
@@ -884,6 +887,8 @@ void QgsSingleBandPseudoColorRendererWidget::changeOpacity()
       newColor.setAlpha( newOpacity );
       item->setBackground( ColorColumn, QBrush( newColor ) );
     }
+
+    loadMinMaxFromTree();
     emit widgetChanged();
   }
 }

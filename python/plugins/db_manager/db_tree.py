@@ -125,12 +125,12 @@ class DBTree(QTreeView):
         menu = QMenu(self)
 
         if isinstance(item, (Table, Schema)):
-            menu.addAction(self.tr("Rename"), self.rename)
-            menu.addAction(self.tr("Delete"), self.delete)
+            menu.addAction(self.tr("Rename…"), self.rename)
+            menu.addAction(self.tr("Delete…"), self.delete)
 
             if isinstance(item, Table) and item.canBeAddedToCanvas():
                 menu.addSeparator()
-                menu.addAction(self.tr("Add to canvas"), self.addLayer)
+                menu.addAction(self.tr("Add to Canvas"), self.addLayer)
 
         elif isinstance(item, DBPlugin):
             if item.database() is not None:
@@ -138,7 +138,7 @@ class DBTree(QTreeView):
             menu.addAction(self.tr("Remove"), self.delete)
 
         elif not index.parent().isValid() and item.typeName() in ("spatialite", "gpkg"):
-            menu.addAction(self.tr("New Connection..."), self.newConnection)
+            menu.addAction(self.tr("New Connection…"), self.newConnection)
 
         if not menu.isEmpty():
             menu.exec_(ev.globalPos())

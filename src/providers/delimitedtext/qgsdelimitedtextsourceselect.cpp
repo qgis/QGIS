@@ -539,11 +539,14 @@ void QgsDelimitedTextSourceSelect::updateFieldLists()
 
   bool haveFields = fieldNo > 0;
 
-  bool isXY = cmbWktField->currentIndex() < 0 ||
-              ( geomTypeXY->isChecked() &&
-                ( cmbXField->currentIndex() >= 0 && cmbYField->currentIndex() >= 0 ) );
-  geomTypeXY->setChecked( isXY );
-  geomTypeWKT->setChecked( ! isXY );
+  if ( !geomTypeNone->isChecked() )
+  {
+    bool isXY = cmbWktField->currentIndex() < 0 ||
+                ( geomTypeXY->isChecked() &&
+                  ( cmbXField->currentIndex() >= 0 && cmbYField->currentIndex() >= 0 ) );
+    geomTypeXY->setChecked( isXY );
+    geomTypeWKT->setChecked( ! isXY );
+  }
   swGeomType->setCurrentIndex( bgGeomType->checkedId() );
 
   if ( haveFields )

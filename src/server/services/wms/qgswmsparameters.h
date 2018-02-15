@@ -892,7 +892,7 @@ namespace QgsWms
        * \returns dpi parameter
        * \throws QgsBadRequestException
        */
-      int dpiAsInt() const;
+      double dpiAsDouble() const;
 
       /**
        * Returns TEMPLATE parameter or an empty string if not defined.

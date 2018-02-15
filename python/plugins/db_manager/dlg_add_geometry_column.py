@@ -47,7 +47,7 @@ class DlgAddGeometryColumn(QDialog, Ui_Dialog):
     def createGeomColumn(self):
         """ first check whether everything's fine """
         if self.editName.text() == "":
-            QMessageBox.critical(self, self.tr("DB Manager"), self.tr("field name must not be empty"))
+            QMessageBox.critical(self, self.tr("DB Manager"), self.tr("Field name must not be empty."))
             return
 
         name = self.editName.text()

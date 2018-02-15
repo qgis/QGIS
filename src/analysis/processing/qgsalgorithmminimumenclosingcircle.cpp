@@ -100,6 +100,13 @@ QgsFeature QgsMinimumEnclosingCircleAlgorithm::processFeature( const QgsFeature 
           << M_PI *radius *radius;
     f.setAttributes( attrs );
   }
+  else
+  {
+    QgsAttributes attrs = f.attributes();
+    attrs << QVariant()
+          << QVariant();
+    f.setAttributes( attrs );
+  }
   return f;
 }
 
